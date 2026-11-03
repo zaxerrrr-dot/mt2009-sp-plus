@@ -727,6 +727,75 @@
 	int s_aiPlayerBotSungmaMapCensus[9] = { 0 };
 	DWORD s_dwPlayerBotSungmaLastCensus = 0;
 
+	// MT2009_PLUS_BOT_TRAINER_MAP_PICK_V1 - the map by the champion experience it gives, measured (the night's trainer,
+	// 3/4 November: in six hours of 3 November a bot earned 59 700 champion experience an hour on Twierdza, 37 900 on
+	// Dongan, 29 000 on Seoganland, 32 600 on Namgan, 18 700 on Yilad, 18 600 on Wawoz, 45 200 on Rozpadlina, 2 000 on
+	// Schronienie and 84 000 on Zejscie - the highest map a bot may take is not the best one: a Champion of 25 on
+	// Schronienie earned a twentieth of what Rozpadlina would have given it). The census keeps a map's champion
+	// experience and its bots' time over the last PLAYERBOT_SUNGMA_RATE_SLOTS censuses (five minutes each); the pick
+	// takes, of the maps the bot may stand on (every rule of the pick as before), a lower one only when it gives at least
+	// PLAYERBOT_SUNGMA_RATE_BETTER_PCT of the highest one's rate, both measured over PLAYERBOT_SUNGMA_RATE_MIN_BH bot-hours,
+	// and the lower one's band reaches the bot's Champion level within PLAYERBOT_SUNGMA_RATE_BAND_SLACK (at most
+	// PLAYERBOT_SUNGMA_RATE_MAX_DOWN maps under the default; the Twierdza only within its own band). The map it stands
+	// on is held a further PLAYERBOT_SUNGMA_RATE_STAY_PCT (no flapping). A cold core (after a restart) starts from the
+	// rates above (PLAYERBOT_SUNGMA_RATE_SEED, a weight of PLAYERBOT_SUNGMA_RATE_SEED_BH bot-hours). The champion's tempo
+	// is untouched (no rate, no table): only where the bot spends its hour. Event flag m2_bot_map_rate_off: the old pick.
+	const int PLAYERBOT_SUNGMA_RATE_SLOTS = 36;	// three hours of censuses
+	const double PLAYERBOT_SUNGMA_RATE_MIN_BH = 2.0;
+	const int PLAYERBOT_SUNGMA_RATE_BETTER_PCT = 140;
+	const int PLAYERBOT_SUNGMA_RATE_STAY_PCT = 115;
+	const int PLAYERBOT_SUNGMA_RATE_BAND_SLACK = 3;
+	const int PLAYERBOT_SUNGMA_RATE_MAX_DOWN = 2;
+	const double PLAYERBOT_SUNGMA_RATE_SEED_BH = 4.0;
+	const long long PLAYERBOT_SUNGMA_RATE_SEED[9] = { 59700, 37900, 29000, 32600, 18700, 18600, 45200, 2000, 84000 };
+	struct TPlayerBotSungmaRate
+	{
+		long long exp[PLAYERBOT_SUNGMA_RATE_SLOTS];
+		long long botMs[PLAYERBOT_SUNGMA_RATE_SLOTS];
+		int pos;
+		unsigned int picksDown, picksHeld;
+		TPlayerBotSungmaRate() : pos(0), picksDown(0), picksHeld(0)
+		{
+			memset(exp, 0, sizeof(exp));
+			memset(botMs, 0, sizeof(botMs));
+		}
+	};
+	TPlayerBotSungmaRate s_aPlayerBotSungmaRate[9];
+
+	bool IsPlayerBotSungmaRateOff()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_map_rate_off") != 0;
+	}
+
+	void NotePlayerBotSungmaRate(int slot, long long championExp, long long botMs)
+	{
+		if (slot < 0 || slot >= 9 || botMs < 0)
+			return;
+		TPlayerBotSungmaRate& r = s_aPlayerBotSungmaRate[slot];
+		r.exp[r.pos] = std::max<long long>(0, championExp);
+		r.botMs[r.pos] = botMs;
+		r.pos = (r.pos + 1) % PLAYERBOT_SUNGMA_RATE_SLOTS;
+	}
+
+	// The map's champion experience a bot-hour (the seed's weight on top of the window's); botHours the window's own.
+	long long GetPlayerBotSungmaRate(int slot, double* botHours)
+	{
+		if (slot < 0 || slot >= 9)
+			return 0;
+		const TPlayerBotSungmaRate& r = s_aPlayerBotSungmaRate[slot];
+		long long exp = 0, ms = 0;
+		for (int i = 0; i < PLAYERBOT_SUNGMA_RATE_SLOTS; ++i)
+		{
+			exp += r.exp[i];
+			ms += r.botMs[i];
+		}
+		const double bh = (double)ms / 3600000.0;
+		if (botHours)
+			*botHours = bh;
+		const double seedExp = (double)PLAYERBOT_SUNGMA_RATE_SEED[slot] * PLAYERBOT_SUNGMA_RATE_SEED_BH;
+		return (long long)(((double)exp + seedExp) / (bh + PLAYERBOT_SUNGMA_RATE_SEED_BH));
+	}
+
 	// ------------------------------------------------------------ the pick
 
 	bool HasPlayerBotSungmaRoom(int slot, long currentMap)
@@ -751,6 +820,8 @@
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a map above the one it stands on (any map, from home) is a step up
 		const int currentSlot = currentMap ? GetPlayerBotSungmaSlot(currentMap) : -1;
 		long lowest = 0;
+		int defaultSlot = -1, bestSlot = -1;	// MT2009_PLUS_BOT_TRAINER_MAP_PICK_V1
+		long long bestRate = 0;
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: a lower map of another element is no pick (the element changes only up the
 		// maps); with nothing else that fits, the bot stays where it is - or, from home, the lowest map it may take.
@@ -788,7 +859,56 @@
 				if (nn != b->second.mapNotNow.end() && (int)(nn->second - dwNow) > 0)
 					continue;
 			}
-			return m.lMap;
+			// MT2009_PLUS_BOT_TRAINER_MAP_PICK_V1: the highest map that fits is the default; a lower one that fits too
+			// and gives clearly more champion experience a bot-hour (measured) is taken instead
+			if (defaultSlot < 0)
+			{
+				defaultSlot = i;
+				if (IsPlayerBotSungmaRateOff())
+					return m.lMap;
+				continue;
+			}
+			// at most PLAYERBOT_SUNGMA_RATE_MAX_DOWN maps under the default, within the band's slack - the first map
+			// (the Twierdza, the beginners') only within its own band
+			if (i < defaultSlot - PLAYERBOT_SUNGMA_RATE_MAX_DOWN ||
+					champion > (int)m.bChampionMax + (i == 0 ? 0 : PLAYERBOT_SUNGMA_RATE_BAND_SLACK))
+				continue;
+			double bh = 0.0;
+			long long rate = GetPlayerBotSungmaRate(i, &bh);
+			if (i == currentSlot)
+				rate = rate * PLAYERBOT_SUNGMA_RATE_STAY_PCT / 100;
+			if (rate > bestRate)
+			{
+				bestRate = rate;
+				bestSlot = i;
+			}
+		}
+		if (defaultSlot >= 0)
+		{
+			double bhDefault = 0.0;
+			long long rateDefault = GetPlayerBotSungmaRate(defaultSlot, &bhDefault);
+			if (defaultSlot == currentSlot)
+				rateDefault = rateDefault * PLAYERBOT_SUNGMA_RATE_STAY_PCT / 100;
+			if (bestSlot >= 0 && bestRate * 100 >= rateDefault * PLAYERBOT_SUNGMA_RATE_BETTER_PCT)
+			{
+				// the highest map's own measure is what is being overruled: only with its window's bot-hours (an
+				// emptied map goes back to its default bots once its window runs dry - the pick looks at it again)
+				if (bhDefault >= PLAYERBOT_SUNGMA_RATE_MIN_BH)
+				{
+					if (bestSlot == currentSlot)
+						++s_aPlayerBotSungmaRate[bestSlot].picksHeld;
+					else
+					{
+						++s_aPlayerBotSungmaRate[bestSlot].picksDown;
+						PlayerBotLogThrottled("sungma_rate_pick", dwNow,
+								"PLAYERBOT_SUNGMA: pick by rate pid=%u name=%s champion=%d default=%ld (%lld) pick=%ld (%lld) current=%ld",
+								ch->GetPlayerID(), ch->GetName(), champion, PLAYERBOT_SUNGMA_MAPS[defaultSlot].lMap, rateDefault,
+								PLAYERBOT_SUNGMA_MAPS[bestSlot].lMap, bestRate, currentMap);
+					}
+					return PLAYERBOT_SUNGMA_MAPS[bestSlot].lMap;
+				}
+			}
+			return PLAYERBOT_SUNGMA_MAPS[defaultSlot].lMap;
 		}
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
 		if (skipped)
@@ -1941,10 +2061,17 @@
 	// MT2009_PLUS_BOT_TRAINER_REARM_V1: the best weapon of the bag this bot may wear (FindPlayerBotBestBagWeapon's rules),
 	// else the highest one of its class it can put on at all; true when the hand holds a weapon after it.
 	unsigned int s_uPlayerBotTrainerRearmed = 0, s_uPlayerBotTrainerRearmFailed = 0;
+	const DWORD PLAYERBOT_TRAINER_REARM_GRACE_MS = 60 * 1000;
 	bool RearmPlayerBotFromBag(LPCHARACTER ch, TPlayerBotAIState& state, const char* where)
 	{
 		if (!ch || !ch->IsItemLoaded() || ch->GetWear(WEAR_WEAPON) != NULL)
 			return false;
+		static std::map<DWORD, DWORD> s_mapNextTry;
+		const DWORD dwNow = get_dword_time();
+		DWORD& next = s_mapNextTry[ch->GetPlayerID()];
+		if (next != 0 && (int)(dwNow - next) < 0)
+			return false;
+		next = dwNow + 5000;
 		LPITEM weapon = FindPlayerBotBestBagWeapon(ch, NULL, NULL);
 		const char* how = "best";
 		if (!weapon)
@@ -1970,6 +2097,10 @@
 			return false;
 		}
 		const DWORD vnum = weapon->GetVnum();
+		// what the engine would say, before the put-on (the log's why)
+		const bool canNow = ch->CanEquipNow(weapon);
+		const bool busy = ch->IsBusy(), stun = ch->IsStun(), locked = weapon->isLocked(), poly = ch->IsPolymorphed();
+		const int cellFor = weapon->FindEquipCell(ch);
 		const bool ok = PlayerBotEquipItem(ch, weapon) && ch->GetWear(WEAR_WEAPON) != NULL;
 		state.bEquipPending = true;
 		state.dwNextEquipmentCheckTime = 0;
@@ -1977,8 +2108,11 @@
 			++s_uPlayerBotTrainerRearmed;
 		else
 			++s_uPlayerBotTrainerRearmFailed;
-		sys_log(0, "PLAYERBOT_TRAINER: rearm %s pid=%u name=%s where=%s map=%ld vnum=%u how=%s rearmed=%u failed=%u",
-				ok ? "ok" : "refused", ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex(), vnum, how,
+		sys_log(0, "PLAYERBOT_TRAINER: rearm %s pid=%u name=%s where=%s map=%ld vnum=%u how=%s can_now=%d busy=%d stun=%d locked=%d "
+				"poly=%d cell=%d window=%d pos=%d costume_weapon=%u rearmed=%u failed=%u",
+				ok ? "ok" : "refused", ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex(), vnum, how, canNow ? 1 : 0,
+				busy ? 1 : 0, stun ? 1 : 0, locked ? 1 : 0, poly ? 1 : 0, cellFor, (int)weapon->GetWindow(), (int)weapon->GetCell(),
+				ch->GetWear(WEAR_COSTUME_WEAPON) ? ch->GetWear(WEAR_COSTUME_WEAPON)->GetVnum() : 0,
 				s_uPlayerBotTrainerRearmed, s_uPlayerBotTrainerRearmFailed);
 		return ok;
 	}
@@ -2008,6 +2142,11 @@
 			// equipment pass put it back) arms itself here: it was sent home at its first tick on the map, came back ten
 			// minutes later, and was sent home again - ~2 800 handovers a day for nothing.
 			if (ch->GetWear(WEAR_WEAPON) == NULL && RearmPlayerBotFromBag(ch, state, "sungma"))
+				return 0;
+			// the engine refuses a put-on in the first moments of a load (the equip pulse, a busy state): the hand's
+			// weapon is tried again for PLAYERBOT_TRAINER_REARM_GRACE_MS before the way home
+			if (ch->GetWear(WEAR_WEAPON) == NULL && dwNow - res.dwArrived < PLAYERBOT_TRAINER_REARM_GRACE_MS &&
+					FindPlayerBotBestBagWeapon(ch, NULL, NULL) != NULL)
 				return 0;
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_blocked");
 		}
@@ -2222,9 +2361,25 @@
 			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the map's parties, retreats and deaths by cause
 			LogPlayerBotSungmaFightCensus(i, PLAYERBOT_SUNGMA_MAPS[i].lMap, PLAYERBOT_SUNGMA_MAPS[i].szKey, (int)leaders[i].size(),
 					inParty[i], lone[i], here[i], st.kills, st.deaths);	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the fight2 line
+			NotePlayerBotSungmaRate(i, st.championExp - st.championExpAtCensus, (long long)here[i] * (long long)span);	// MT2009_PLUS_BOT_TRAINER_MAP_PICK_V1
 			st.killsAtCensus = st.kills;
 			st.expAtCensus = st.exp;
 			st.championExpAtCensus = st.championExp;
+		}
+		// MT2009_PLUS_BOT_TRAINER_MAP_PICK_V1: the rates the pick reads (champion experience a bot-hour, the window's
+		// bot-hours) and the picks they made (down: a lower map than the highest that fits; held: its own map kept)
+		{
+			char buf[512];
+			size_t used = 0;
+			for (int i = 0; i < PLAYERBOT_SUNGMA_MAP_COUNT && used + 64 < sizeof(buf); ++i)
+			{
+				double bh = 0.0;
+				const long long rate = GetPlayerBotSungmaRate(i, &bh);
+				used += snprintf(buf + used, sizeof(buf) - used, " %s=%lld/%.1fbh/d%u/h%u", PLAYERBOT_SUNGMA_MAPS[i].szKey, rate, bh,
+						s_aPlayerBotSungmaRate[i].picksDown, s_aPlayerBotSungmaRate[i].picksHeld);
+			}
+			sys_log(0, "PLAYERBOT_TRAINER: map rates channel=%u on=%d rearmed=%u rearm_failed=%u%s", (unsigned int)g_bChannel,
+					IsPlayerBotSungmaRateOff() ? 0 : 1, s_uPlayerBotTrainerRearmed, s_uPlayerBotTrainerRearmFailed, buf);
 		}
 	}
 
