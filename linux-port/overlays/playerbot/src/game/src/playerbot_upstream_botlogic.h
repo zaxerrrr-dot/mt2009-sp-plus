@@ -63,6 +63,9 @@ namespace
 		// The shop management's word on grinding for sale (point 3): off, none.
 		if (IsPlayerBotShopMgmtOn() && GetPlayerBotShopMgmt(PLAYERBOT_SM_L30_SALE_LINES) <= 0)
 			return false;
+		// MT2009_PLUS_BOT_SALE_REFINE_NEAR_LEVEL_V1: near the bot's level only.
+		if (!IsPlayerBotSaleRefineNearLevel(ch, item))
+			return false;
 		return item->GetRefineLevel() < GetPlayerBotLevel30SaleTarget(item);
 	}
 

@@ -1147,6 +1147,11 @@ namespace
 	// An expired one stays on until the Alchemist recharges it ("Dobrych
 	// kamieni nie powinien sciagac nigdy ... tylko wtedy, gdy ma lepszy
 	// gotowy do wstawienia na jego miejsce", the operator, 3 October 2026).
+	// MT2009_PLUS_BOT_DS_CLEARLY_BETTER_V1 (EquipPlayerBotBestDragonSouls): grades over the worn stone that put a
+	// stone on at once; counted (the census's "ds_clearly_better").
+	const int PLAYERBOT_DS_CLEARLY_BETTER_GRADES = 2;
+	unsigned int s_uPlayerBotDsClearlyBetter = 0;
+
 	int EquipPlayerBotBestDragonSouls(LPCHARACTER ch)
 	{
 		int changed = 0;
@@ -1164,7 +1169,17 @@ namespace
 			// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's Mythic stone waits for the kind's work too (its
 			// steps and beans; a pull-out keeps a Mythic stone 15% of the time) - but an empty slot does not wait
 			// empty: PlacePlayerBotDsInterim.
-			if (best && (GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotDsBulk(ch)))
+			// MT2009_PLUS_BOT_DS_CLEARLY_BETTER_V1 (the owner, 3 November 2026: "Bot wczesniej zaklada Smoczy Kamien
+			// lepszy o min. 2 klasy (zdjecie jak u gracza - stary moze sie zniszczyc)"): a stone of the bag at least
+			// PLAYERBOT_DS_CLEARLY_BETTER_GRADES grades over the worn one goes on now - not after the kind's refine
+			// work, not after the worn one's time ran out (an expired one is kept on only against a stone it matches).
+			// The worn one comes off the player's way (PullOutPlayerBotDs: the engine's odds may destroy it).
+			const bool clearlyBetter = best && worn &&
+					(int)GetPlayerBotDsGrade(best) >= (int)GetPlayerBotDsGrade(worn) + PLAYERBOT_DS_CLEARLY_BETTER_GRADES &&
+					!IsPlayerBotSidekickLockedItem(ch, worn);
+			if (clearlyBetter)
+				++s_uPlayerBotDsClearlyBetter;
+			if (best && !clearlyBetter && (GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotDsBulk(ch)))
 			{
 				LPITEM a = NULL, b = NULL;
 				if (FindPlayerBotDsRefine(ch, kind, a, b) != 0)	// PLAYERBOT_DS_WORK_NONE
