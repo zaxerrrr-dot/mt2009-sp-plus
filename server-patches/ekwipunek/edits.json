@@ -157,6 +157,12 @@
  },
  {
   "file": "item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (potion quickslot)",
+  "old": "\t\t\tLPCHARACTER pOwner = GetOwner();\n\t\t\tWORD wCell = GetCell();\n\n\t\t\tRemoveFromCharacter();\n\n\t\t\tif (!IsDragonSoul())\n",
+  "new": "\t\t\tLPCHARACTER pOwner = GetOwner();\n\t\t\tWORD wCell = GetCell();\n\t\t\tconst bool bEkwStored = Mt2009IsSpecialWindow(GetWindow()); // MT2009_PLUS_EKWIPUNEK_V1 (potion quickslot): a storage's cell is no bag cell\n\n\t\t\tRemoveFromCharacter();\n\n\t\t\tif (!IsDragonSoul() && !bEkwStored)\n"
+ },
+ {
+  "file": "item.cpp",
   "marker": "MT2009_PLUS_EKWIPUNEK_V1 (count quickslot)",
   "old": "\t\t\tif (!IsDragonSoul())\n\t\t\t{\n\t\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);\n",
   "new": "\t\t\tif (!IsDragonSoul() && !Mt2009IsSpecialWindow(GetWindow())) // MT2009_PLUS_EKWIPUNEK_V1 (count quickslot)\n\t\t\t{\n\t\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);\n"

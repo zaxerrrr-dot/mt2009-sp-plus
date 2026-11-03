@@ -184,6 +184,17 @@ edit(I, "remove",
 	"\t\t\t\t\tsys_err(\"CItem::RemoveFromCharacter: pos >= SPECIAL_INVENTORY_MAX_NUM\");\n"
 	"\t\t\t\telse\n\t\t\t\t\tpOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);\n\t\t\t}\n"
 	"\t\t\telse\n\t\t\t{\n\t\t\t\tTItemPos cell(INVENTORY, m_wCell);\n")
+# MT2009_PLUS_EKWIPUNEK_V1 (potion quickslot) - the owner's list of 3 November 2026 (B): "po teleporcie zostaja tylko
+# skille, znikaja przedmioty uzytkowe". SetCount(0)'s first branch (subtype USE_ABILITY_UP / USE_POTION = 0 / 70020, the
+# type not asked - every material, chest, book and soul stone of subtype 0 takes it) chained or deleted the quick slot of
+# the BAG cell with the storage cell's number whenever a storage stack ran out (Mt2009SpecialRemoveItem: quests, crafting,
+# refine materials; the stack joins of "stos" / "sortuj" / the recategorizing at every hello after a warp): the potions
+# of bag cells 0-15 left the bar one by one. A storage's cell is no bag cell - its emptied stack leaves the bar alone.
+edit(I, "potion quickslot",
+	"\t\t\tLPCHARACTER pOwner = GetOwner();\n\t\t\tWORD wCell = GetCell();\n\n\t\t\tRemoveFromCharacter();\n\n\t\t\tif (!IsDragonSoul())\n",
+	"\t\t\tLPCHARACTER pOwner = GetOwner();\n\t\t\tWORD wCell = GetCell();\n"
+	"\t\t\tconst bool bEkwStored = Mt2009IsSpecialWindow(GetWindow()); // " + M + " (potion quickslot): a storage's cell is no bag cell\n\n"
+	"\t\t\tRemoveFromCharacter();\n\n\t\t\tif (!IsDragonSoul() && !bEkwStored)\n")
 edit(I, "count quickslot",
 	"\t\t\tif (!IsDragonSoul())\n\t\t\t{\n\t\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);\n",
 	"\t\t\tif (!IsDragonSoul() && !Mt2009IsSpecialWindow(GetWindow())) // " + M + " (count quickslot)\n"

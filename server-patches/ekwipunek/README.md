@@ -10,7 +10,7 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 | Część | Miejsce |
 |---|---|
 | Logika serwera | `linux-port/overlays/playerbot/src/game/src/playerbot_ekwipunek.cpp` (metody `CHARACTER`, `/ekwipunek`) |
-| Haki silnika | `edits.json` (70 zmian w 15 plikach: common `length.h`, db `ClientManagerPlayer.cpp`, game); `gen_edits.py` je generuje i sprawdza, `apply_ekwipunek.py` (Linux) i `Apply-EkwipunekPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Buffi) czytają ten sam plik |
+| Haki silnika | `edits.json` (71 zmian w 15 plikach: common `length.h`, db `ClientManagerPlayer.cpp`, game); `gen_edits.py` je generuje i sprawdza, `apply_ekwipunek.py` (Linux) i `Apply-EkwipunekPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Buffi) czytają ten sam plik |
 | Baza | `linux-port/docker/mariadb/playerbot/apply.sh` (krok „extra inventory”): `player.item.window` dostaje na końcu `UPGRADE_INVENTORY`, `BOOK_INVENTORY`, `STONE_INVENTORY`, `CHANGE_INVENTORY`, `CHEST_INVENTORY` |
 | Exe (3.0) | `client-patches/exe` – `ENABLE_SPECIAL_STORAGE` (opis w `client-patches/exe/README.md`) |
 | Klient (root) | `client-2.0.30/root/uiekwipunek.py` (okno), haki w `uiinventory.py`, `uiexchange.py`, `uicube.py` (nowa kopia), `game.py`, `interfacemodule.py`, `keybind.py`; ikony `root/mt2009_ui/ekwipunek/*.png` (z Amerii), `root/mt2009_ui/sidebar/ekwipunek_0[1-3].tga` |
@@ -106,6 +106,10 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   przenoszona, nie otwierana).
 - **Seon-Hae**: suplement przeciągnięty z zakładki prosto na pole dodatku (`/seonhae add … <okno dodatku>`, piąte słowo
   opcjonalne – stary klient bez zmian).
+- **Pasek szybkiego wyboru** (edycja `potion quickslot` w `item.cpp`): wyczerpany stos w magazynie (zabranie materiałów
+  przez quest / wytwarzanie / ulepszanie, łączenie stosów, przeniesienie kategorii po teleporcie) przepinał albo usuwał
+  pozycję paska wskazującą pole **torby** o tym samym numerze – przez to po teleporcie znikały mikstury z paska, a skille
+  zostawały. Teraz pusty stos magazynu nie rusza paska (gałąź `SetCount(0)` dla podtypu 0 / mikstur).
 - **Wytwarzanie u NPC** (kowal, kucharz, alchemicy – `crafting.lua`): serwer już liczył i zabierał materiały z magazynów
   (`CountSpecifyItem` / `RemoveSpecifyItem`); okno (`uicuberenewal.CraftingRenewalWindow`) liczy je teraz też.
 
