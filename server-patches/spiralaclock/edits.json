@@ -1,0 +1,26 @@
+[
+ {
+  "file": "questpc.h",
+  "marker": "MT2009_PLUS_SPIRALA_CZASU_V2 (decl)",
+  "old": "\t\t\tvoid\t\tSetQuestTitle(const string& quest,const string & title);\n",
+  "new": "\t\t\tvoid\t\tSetQuestTitle(const string& quest,const string & title);\n\t\t\t// MT2009_PLUS_SPIRALA_CZASU_V2 (decl) (server-patches/spiralaclock): another quest's clock, sent at once\n\t\t\tbool\t\tM2SetQuestClock(const string& quest, const string& name, int value);\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_SPIRALA_CZASU_V2 (clock)",
+  "old": "\tvoid PC::SetCurrentQuestClockName(const string& name)\n",
+  "new": "\t// MT2009_PLUS_SPIRALA_CZASU_V2 (clock) (server-patches/spiralaclock): q.set_clock_of(quest, name, seconds) - the\n\t// clock of ANOTHER quest's letter, as q.set_title2 does for its title. Spirala Czasu (spirala_czasu.quest) cuts\n\t// the Biologist's / the stable keeper's / a relic's wait while its own quest runs, and q.set_clock would only\n\t// touch the spiral's own state: this one stores the clock in that quest's state and sends the client a\n\t// QuestInfo update (clock name + value) right away, so the letter and the quest window count down from the\n\t// new time at once. Sent only while the quest's letter is on the client (bStart - q.start / send_letter, not\n\t// cleared by q.done): an update of an unknown index would make the client an empty quest. Returns whether\n\t// it was sent.\n\tbool PC::M2SetQuestClock(const string& quest, const string& name, int value)\n\t{\n\t\tconst unsigned int qi = CQuestManager::instance().GetQuestIndexByName(quest);\n\t\tQuestInfo::iterator it = qi ? m_QuestInfo.find(qi) : m_QuestInfo.end();\n\t\tif (it == m_QuestInfo.end())\n\t\t\treturn false;\n\t\tit->second._clock_name = name;\n\t\tit->second._clock_value = value;\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tif (!it->second.bStart || !it->second.iIndex || !ch || !ch->GetDesc() || ch->GetPlayerID() != GetID())\n\t\t\treturn false;\n\n\t\tQuestState* old = m_RunningQuestState;\n\t\tconst int old2 = m_iSendToClient;\n\t\tm_RunningQuestState = &it->second;\n\t\tm_iSendToClient = QUEST_SEND_CLOCK_NAME | QUEST_SEND_CLOCK_VALUE;\n\t\tSendQuestInfoPakcet();\n\t\tm_RunningQuestState = old;\n\t\tm_iSendToClient = old2;\n\t\treturn true;\n\t}\n\n\tvoid PC::SetCurrentQuestClockName(const string& name)\n"
+ },
+ {
+  "file": "questlua_quest.cpp",
+  "marker": "MT2009_PLUS_SPIRALA_CZASU_V2 (lua)",
+  "old": "\tALUA(quest_set_clock_name)\n",
+  "new": "\t// MT2009_PLUS_SPIRALA_CZASU_V2 (lua) (server-patches/spiralaclock): q.set_clock_of(quest name, clock name, seconds) -\n\t// another quest's letter clock, sent to the client at once (PC::M2SetQuestClock); true when sent.\n\tALUA(quest_m2_set_clock_of)\n\t{\n\t\tPC* pPC = CQuestManager::instance().GetCurrentPC();\n\t\tif (!pPC || !lua_isstring(L, 1) || !lua_isstring(L, 2) || !lua_isnumber(L, 3))\n\t\t{\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tlua_pushboolean(L, pPC->M2SetQuestClock(lua_tostring(L, 1), lua_tostring(L, 2), (int)rint(lua_tonumber(L, 3))) ? 1 : 0);\n\t\treturn 1;\n\t}\n\n\tALUA(quest_set_clock_name)\n"
+ },
+ {
+  "file": "questlua_quest.cpp",
+  "marker": "MT2009_PLUS_SPIRALA_CZASU_V2 (table)",
+  "old": "\t\t\t{ \"set_clock_name\",\t\t\tquest_set_clock_name\t\t},\n",
+  "new": "\t\t\t{ \"set_clock_name\",\t\t\tquest_set_clock_name\t\t},\n\t\t\t{ \"set_clock_of\",\t\t\tquest_m2_set_clock_of\t\t}, // MT2009_PLUS_SPIRALA_CZASU_V2 (table)\n"
+ }
+]

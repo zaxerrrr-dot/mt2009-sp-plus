@@ -161,6 +161,10 @@ quest relikt_alchemik begin
 	state daily_wait begin
 		when letter begin
 			send_letter("Dusza Œwiat³a (powtarzalna)")
+			local left = pc.getqf("given") + 86400 - get_time()
+			if left > 0 then
+				q.set_clock("Pozosta³o", left)
+			end
 		end
 
 		when button or info begin

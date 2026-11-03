@@ -16,9 +16,21 @@
 --     konie_rozwoj.zloty_czas (Zlota Ksiega Konia, zloty_stan 2) i konie_rozwoj.pasza_czas (pasza dla konia);
 --   * Relikty (tools/relikty) - wynik badan duszy: relikt_bron / zbroja / alchemik / uriel .given + 24 h, i ponowne
 --     oddanie popiolow Chaegirabowi: relikt_chaegirab.last + 24 h.
--- Nowy koniec = teraz + floor(pozostaly * (100 - X) / 100). Zegar w liscie misji Biologa odswieza sie przy nastepnej
--- rozmowie z nim. Nie dla botow (ich Biolog i stajenny nigdy nie czekaja). cp1250; zaden napis nie konczy sie polska
--- litera (qc).
+-- Nowy koniec = teraz + floor(pozostaly * (100 - X) / 100). Nie dla botow (ich Biolog i stajenny nigdy nie czekaja).
+-- cp1250; zaden napis nie konczy sie polska litera (qc).
+--
+-- MT2009_PLUS_SPIRALA_CZASU_V2 (wlasciciel, 3.11.2026): zegar odswieza sie OD RAZU po uzyciu spirali, nie dopiero po
+-- rozmowie z NPC czy ponownym wejsciu. Zegar listu misji nalezy do TAMTEJ misji (QuestInfo jej stanu), a q.set_clock
+-- dziala tylko na biezaca (spirale) - stad q.set_clock_of(misja, nazwa, sekundy) w silniku (server-patches/
+-- spiralaclock, PC::M2SetQuestClock): zapisuje zegar w stanie tamtej misji i od razu wysyla klientowi aktualizacje
+-- (list z boku ekranu i okno misji odliczaja od nowego czasu); nic nie wysyla, gdy jej listu nie ma u klienta.
+--   * Biolog: misja collect_quest_* w stanie go_to_disciple / key_item, zegar "Pozostalo" jak collect_data.send_delay
+--     (a listy go_to_disciple naszych collect_quest_lv70-94 / cz* pokazuja go teraz tez po zalogowaniu, jak lv30);
+--   * stajenny: list stanu wait (pony_buy / horse_upgrade / horse_upgrade2) ma teraz zegar "Pozostaly czas" (make_time);
+--   * relikty: list "... (powtarzalna)" stanu daily_wait ma teraz zegar "Pozostalo" (given + 24 h; gen_relikty.py);
+--   * Seon-Hae: okno 6./7. bonusu (uiseonhae.py) dostaje "SEONHAE state ..." z nowym czasem, jak przy otwarciu u NPC;
+--   * Zlota Ksiega Konia, pasza i Relikt Duszy Chaegiraba nie maja listu ani zegara - czas widac tylko w rozmowie,
+--     liczony na biezaco, wiec nic do odswiezenia.
 quest spirala_czasu begin
 	state start begin
 		function spirals()
@@ -49,8 +61,8 @@ quest spirala_czasu begin
 
 		-- the Biologist's row the player is on (its quest in go_to_disciple / key_item - the state flag is the crc32 of
 		-- the state's name, admin_panel.py BIOLOGIST_*_STATE), named as Owsap's dialog names it
-		function bio_name()
-			local rows = {
+		function bio_rows()
+			return {
 				{ "collect_quest_lv30", "Bio-badanie 1" }, { "collect_quest_lv40", "Bio-badanie 2" },
 				{ "collect_quest_lv50", "Bio-badanie 3" }, { "collect_quest_lv60", "Bio-badanie 4" },
 				{ "collect_quest_lv70", "Bio-badanie 5" }, { "collect_quest_lv80", "Bio-badanie 6" },
@@ -59,15 +71,55 @@ quest spirala_czasu begin
 				{ "collect_quest_cz1", "Oczyszczone Rdzenie" }, { "collect_quest_cz10", "Kryszta³y Metin" },
 				{ "collect_quest_cz20", "Mroczne Paprocie" },
 			}
+		end
+
+		-- the row in progress (its state go_to_disciple or key_item), nil when none
+		function bio_row()
+			local rows = spirala_czasu.bio_rows()
 			-- the hashes as strings: qc prints a number literal with six digits (1.67561e+09)
 			local go, key = tonumber("1675612723"), tonumber("-1726153001")
 			for i = 1, table.getn(rows) do
 				local st = pc.getf(rows[i][1], "__status")
 				if st == go or st == key then
-					return rows[i][2]
+					return rows[i]
 				end
 			end
-			return "Badania Biologa"
+			return nil
+		end
+
+		function bio_name()
+			local row = spirala_czasu.bio_row()
+			if row == nil then
+				return "Badania Biologa"
+			end
+			return row[2]
+		end
+
+		-- MT2009_PLUS_SPIRALA_CZASU_V2: the new time at once in the letter / quest window of the quest whose wait it was
+		-- (q.set_clock_of, server-patches/spiralaclock) and in Seon-Hae's window; nl = the seconds now left
+		function odswiez(w, nl)
+			if w[5] == "biolog" then
+				local row = spirala_czasu.bio_row()
+				if row ~= nil then
+					q.set_clock_of(row[1], "Pozosta³o", nl)
+				end
+			elseif w[5] == "seonhae" then
+				local on = 0
+				if game.get_event_flag("m2_seonhae_on") == 1 then
+					on = 1
+				end
+				local wm = game.get_event_flag("m2_seonhae_wait_min")
+				if wm <= 0 then
+					wm = 1440
+				elseif wm > 10080 then
+					wm = 10080
+				end
+				cmdchat(string.format("SEONHAE state %d 1 %d %d %d", on, pc.getf("seonhae", "vnum"), nl, wm))
+			elseif w[2] == "pony_buy" or w[2] == "horse_upgrade" or w[2] == "horse_upgrade2" then
+				q.set_clock_of(w[2], gameforge.horse_upgrade2.rest_time, nl)
+			elseif w[3] == "given" then
+				q.set_clock_of(w[2], "Pozosta³o", nl)
+			end
 		end
 
 		function ok(kind)
@@ -169,6 +221,7 @@ quest spirala_czasu begin
 				end
 				pc.remove_item(vnum, 1)
 				pc.setf(w[2], w[3], get_time() + nl - w[4])
+				spirala_czasu.odswiez(w, nl)
 				char_log(0, "SPIRALA_CZASU", string.format("%d %s.%s %d -> %d", vnum, w[2], w[3], l, nl))
 				say("Czas oczekiwania zosta³ skrócony.")
 				say_reward(spirala_czasu.label(w) .. ": " .. spirala_czasu.czas(nl))
