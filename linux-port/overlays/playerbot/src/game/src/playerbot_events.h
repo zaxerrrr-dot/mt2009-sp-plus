@@ -257,6 +257,7 @@ namespace {
 			case playerbot_events::KIND_FLOWER:
 			case playerbot_events::KIND_EASTER:
 			case playerbot_events::KIND_HALLOWEEN:	// MT2009_PLUS_HALLOWEEN_V1
+			case playerbot_events::KIND_POTEGA:	// MT2009_PLUS_POTEGA_MADROSCI_V1: often on for whole days
 				return 2 * 60 * 60 * 1000;
 		}
 		return PLAYERBOT_EVENTS_REMINDER_INTERVAL;
@@ -310,6 +311,9 @@ namespace {
 		// MT2009_PLUS_SUPERSTONE_V1: the level is the extra stones beside every Metin.
 		else if (kind == playerbot_events::KIND_SUPERSTONE)
 			snprintf(body, sizeof(body), "Super Kamienie Metin - przy kazdym Metinie %d dodatkowe", MINMAX(1, value, 4));
+		// MT2009_PLUS_POTEGA_MADROSCI_V1: Uriel's experience bonus.
+		else if (kind == playerbot_events::KIND_POTEGA)
+			snprintf(body, sizeof(body), "Potega madrosci - spytaj Uriela w pierwszej wiosce o bonus PD");
 		// MT2009_PLUS_CHEST_DROP_EVENT_V1: the chest by name (the first one, when several run).
 		else if (kind == playerbot_events::KIND_CHESTDROP)
 			snprintf(body, sizeof(body), "%s dropi z potworow", PlayerBotChestDropNames().c_str());
@@ -332,6 +336,9 @@ namespace {
 				snprintf(text, sizeof(text), "Event zakonczony: drop szkatulek.");
 			else if (kind == playerbot_events::KIND_SUPERSTONE)	// MT2009_PLUS_SUPERSTONE_V1
 				snprintf(text, sizeof(text), "Event zakonczony: Super Kamienie Metin.");
+			// MT2009_PLUS_POTEGA_MADROSCI_V1: a bonus already given runs its time out.
+			else if (kind == playerbot_events::KIND_POTEGA)
+				snprintf(text, sizeof(text), "Event zakonczony: Potega madrosci. Otrzymany bonus PD trwa do konca swojego czasu.");
 			// MT2009_PLUS_CATCH_KING_V1: Catch the King's top ten collect too.
 			else if (kind == playerbot_events::KIND_RUMI || kind == playerbot_events::KIND_YUTNORI || kind == playerbot_events::KIND_CATCHKING)
 				snprintf(text, sizeof(text), "Event zakonczony: %s. Nagrody za ranking mozna odebrac przy stole przez 7 dni.",

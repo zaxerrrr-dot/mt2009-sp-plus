@@ -1082,6 +1082,13 @@ namespace playerbot_bpbots
 				snprintf(out, size, "%s", PickLine(k));
 				return true;
 			}
+			// MT2009_PLUS_POTEGA_MADROSCI_V1: Uriel's experience bonus.
+			case playerbot_events::KIND_POTEGA:
+			{
+				static const char* const k[] = { "bylem u Uriela, bonus PD wziety", "potega madrosci trwa, idzcie do Uriela", "z bonusem od Uriela leci szybciej xd" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
 			case playerbot_events::KIND_FLOWER: case playerbot_events::KIND_EASTER:
 			{
 				static const char* const k[] = { "event trwa, zbieram co sie da", "kwiaty dzis wszedzie xd", "kto robi event? ile macie?" };

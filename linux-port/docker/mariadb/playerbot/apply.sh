@@ -4917,6 +4917,18 @@ if [ -s /opt/playerbot/worldboss.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" (the owner, 3 November 2026; potega_madrosci.quest, playerbot_potega.h,
+# seban-panel potega_madrosci.py) - potega_madrosci.sql: player.potega_madrosci_tier (the level / Champion level ranges and
+# their experience bonus, the pl-wiki's table seeded once) and player.potega_madrosci_config (the minutes, the bots).
+# Every start, idempotent.
+if [ -s /opt/playerbot/potega_madrosci.sql ]; then
+    if db < /opt/playerbot/potega_madrosci.sql; then
+        echo "[playerbot-migrate] Potega madrosci: potega_madrosci.sql applied"
+    else
+        fail_step "Potega madrosci: potega_madrosci.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_SM_GRANTS_V1: Smocze Monety paid to accounts at an interval (the owner, 28 October 2026; seban-panel
 # sm_grants.py) - sm_grants.sql: account.sm_grant_config (the switch, off by default), account.sm_grant_tier (the
 # player and bot tiers) and account.sm_grant_log (one row per account, interval and period). Every start, idempotent:

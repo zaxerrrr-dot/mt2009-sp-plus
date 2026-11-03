@@ -240,6 +240,7 @@ namespace
 				case playerbot_events::KIND_CHESTDROP: name = "skrzynki z mobow"; break;
 				case playerbot_events::KIND_HALLOWEEN: name = "Halloween (dynie z mobow)"; break;	// MT2009_PLUS_HALLOWEEN_V1
 				case playerbot_events::KIND_SUPERSTONE: name = "super kamienie"; break;	// MT2009_PLUS_SUPERSTONE_V1
+				case playerbot_events::KIND_POTEGA: name = "potega madrosci u Uriela"; break;	// MT2009_PLUS_POTEGA_MADROSCI_V1
 				default: break;
 			}
 			if (!name)

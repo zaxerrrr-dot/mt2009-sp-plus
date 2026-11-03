@@ -334,6 +334,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // world, and the bots that answer them. After the raids, whose fight it
 // borrows and which it gives way to.
 #include "playerbot_world_events.h"
+// MT2009_PLUS_POTEGA_MADROSCI_V1 (include): "Potega madrosci" - Uriel's experience bonus for the bots that pass him.
+#include "playerbot_potega.h"
 // MT2009_PLUS_GUILD_DUTY_V1 (include): the guild leader's duties - the yang
 // collection, the item mission and its bank, the Demon Tower expedition.
 // After the tower and the guild land, whose raid and grounds it uses.
@@ -8290,6 +8292,13 @@ WritePlayerBotGuildStatus(dwNow);
 		// tick its session ended: the rest never got a turn. It claims the tick
 		// like fishing does, for a bounded few minutes, and ends the moment
 		// anything real wants the bot.
+		// MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" (playerbot_potega.h) - while the event runs, a bot near
+		// an Uriel with no bonus yet takes it on its way out to hunt: after every errand of the village, before the
+		// linger and the world travel; its own staggered clock, a few walkers at once.
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin && !curTarget &&
+				ManagePlayerBotPotega(ch, state, dwNow))
+			continue;
+
 		if (!bBagFirst && ManagePlayerBotTownLinger(ch, state, dwNow))
 			continue;
 
