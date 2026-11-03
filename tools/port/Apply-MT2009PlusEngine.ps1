@@ -2039,4 +2039,17 @@ if ((Test-Path -LiteralPath $fishPuzzleApply -PathType Leaf) -and
     }
 }
 
+# The new fishing minigame (server-patches/fishren, MT2009_PLUS_FISHING_RENEWAL_V1; the owner, 3 November 2026): a
+# client that said "/fishren hello" casts into the renewal's game (CHARACTER::fishing in char.cpp - after enginefixes'
+# MT2009_PLUS_FISHING_FREE_V1), "/fishren" (cmd.cpp). The logic is fish_renewal.cpp (the overlay). After fishpuzzle.
+$fishRenApply = Join-Path $repo 'server-patches/fishren/Apply-FishRenPatch.ps1'
+if ((Test-Path -LiteralPath $fishRenApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $fishRenResult = & $fishRenApply -SourceDir $engineGameSource
+    if ($fishRenResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} fishing renewal edit(s).' -f $fishRenResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
