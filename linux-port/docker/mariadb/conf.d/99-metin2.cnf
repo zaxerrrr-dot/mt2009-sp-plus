@@ -37,3 +37,12 @@ innodb_flush_log_at_trx_commit = 2
 # long read of log.log would hold the game's log writes back. ALWAYS appends
 # them at the end while the table is read, as before any row was deleted.
 concurrent_insert = ALWAYS
+
+# MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1 (3 November 2026): the default 128 MB
+# buffer pool held less than player.item alone (180 MB) next to ~27 GB of
+# tables; every 5-minute panel snapshot of player.item and every cleanup read
+# pushed the game's own pages out, and the logins waited on disk reads
+# (Innodb_buffer_pool_reads: 196M of 7.6G requests on the Yohara test server).
+# 1 GB keeps the game's hot tables in memory on any machine that runs the
+# cores; raise it on a big host (half of the RAM left over is a fair start).
+innodb_buffer_pool_size = 1G
