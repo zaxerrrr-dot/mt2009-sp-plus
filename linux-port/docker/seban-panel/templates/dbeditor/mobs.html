@@ -6,7 +6,7 @@
 <p class="eyebrow">EDYTOR BAZY DANYCH · POTWORY</p>
 <h1>👹 Potwory i bossowie</h1>
 <p class="muted">Znajdź potwora po nazwie, numerze (vnum), randze, poziomie albo mapie i zmień mu PŻ, obrażenia, obronę, poziom,
-  doświadczenie i yang za zabicie, agresję, szybkość i odporności. Zmiana trafia do bazy od razu, a do gry po restarcie („Zastosuj”).
+  doświadczenie i yang za zabicie, mnożnik obrażeń i siłę umiejętności, agresję, szybkość i odporności. Zmiana trafia do bazy od razu, a do gry po restarcie („Zastosuj”).
   Wiele potworów naraz (np. ×2 PŻ wszystkim bossom) zmienisz w <a href="{{ url_for('dbeditor.mobs_mass') }}">zmianie masowej</a>.</p>
 
 <section class="panel">
@@ -19,7 +19,7 @@
   {% if results %}
   <div class="dbe-scroll">
   <table class="dbe-table compact dbe-mobs">
-    <thead><tr><th>Potwór</th><th>Vnum</th><th>Poz.</th><th>Ranga</th><th>PŻ</th><th>Obrażenia</th><th>Obrona</th><th>Exp</th><th>Yang</th><th>Agresja</th><th>Gdzie</th><th></th></tr></thead>
+    <thead><tr><th>Potwór</th><th>Vnum</th><th>Poz.</th><th>Ranga</th><th>PŻ</th><th>Obrażenia</th><th>Obrona</th><th>Exp</th><th>Yang</th><th title="{{ hit_note }}">Cios bossa (szac.)</th><th>Agresja</th><th>Gdzie</th><th></th></tr></thead>
     <tbody>
     {% for m in results %}
       <tr>
@@ -32,6 +32,8 @@
         <td class="num">{{ m.def }}</td>
         <td class="num">{{ '{:,}'.format(m.exp|int).replace(',', ' ') }}</td>
         <td class="num">{{ m.gold_min }}–{{ m.gold_max }}</td>
+        {#- MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: bosses only #}
+        <td class="num">{% set h = hits.get(m.vnum) %}{% if h %}<span title="zwykły cios · mnożnik ×{{ m.dam_text }}">⚔️ {{ fmt_hits(h.melee) }}</span>{% if h.skill_max %}<br><span title="najmocniejsza umiejętność">✨ {{ fmt_hits(h.skill_max) }}</span>{% endif %}{% else %}<span class="muted">—</span>{% endif %}</td>
         <td>{% if m.aggressive %}<span class="dbe-tag pending" title="zasięg wzroku {{ m.aggressive_sight }}">agresywny</span>{% else %}<span class="muted">—</span>{% endif %}</td>
         <td class="dbe-where">{% for idx in where_map.get(m.vnum, []) %}<span>{{ map_title(idx) }}</span>{% endfor %}</td>
         <td><a class="button dbe-small" href="{{ url_for('dbeditor.mob_edit', vnum=m.vnum) }}">Edytuj</a></td>
@@ -40,6 +42,7 @@
     </tbody>
   </table>
   </div>
+  {% if hits %}<p class="muted dbe-note">Cios bossa: ⚔️ zwykły cios, ✨ najmocniejsza umiejętność – {{ hit_note }}.</p>{% endif %}
   {% else %}<p class="muted">Nic nie znaleziono. Spróbuj krótszego fragmentu nazwy albo innego filtra.</p>{% endif %}
 </section>
 {% else %}

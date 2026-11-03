@@ -109,6 +109,11 @@ def _literal(spec, value):
         if not _INT.match(text):
             raise ValueError(value)
         return text
+    if kind == "float":  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1 (mob_proto dam_multiply): a plain number, never hex
+        number = float(str(value).strip())
+        if number != number or number in (float("inf"), float("-inf")):
+            raise ValueError(value)
+        return repr(number)
     return _hex(value, "cp1250" if kind == "cp1250" else "utf-8")
 
 
@@ -267,6 +272,8 @@ def restore(note=RESTORE_NOTE):
         value = e["new_value"]
         if spec["kind"] == "int":
             value = int(value) if value not in (None, "") else 0
+        elif spec["kind"] == "float":  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+            value = float(value) if value not in (None, "") else 0.0
         fields.setdefault(e["tbl"], {}).setdefault(e["row_key"], {})[e["col"]] = value if value is not None else ""
     restored, errors = 0, []
     for table, keyed in fields.items():

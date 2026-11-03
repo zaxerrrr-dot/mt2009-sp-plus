@@ -17,7 +17,7 @@
     <p class="eyebrow">{{ mob.kind_name|upper }} · VNUM {{ mob.vnum }}</p>
     <h1>{{ mob.display_name }}</h1>
     <p class="muted">Poziom {{ mob.level }} · {{ mob.rank_name }} · {{ mob.type_name }}{% if mob.aggressive %} · agresywny{% endif %}
-      · mnożnik obrażeń {{ mob.dam_multiply if mob.dam_multiply is not none else 1 }}
+      · mnożnik obrażeń ×{{ mob.dam_text }}
       {% if mob.drop_item %} · drop specjalny: przedmiot {{ mob.drop_item }}{% endif %}</p>
   </div>
 </section>
@@ -43,7 +43,36 @@
       <label class="{{ 'dbe-boot' if 'rank' in boot_always }}">{{ specs['rank'].label }}
         <select name="rank">{% set cur = (raw['rank'] if 'rank' in raw else mob['rank'])|int %}{% for r, label in ranks.items() %}<option value="{{ r }}" {{ 'selected' if cur == r }}>{{ r }} – {{ label }}</option>{% endfor %}</select>
         <small>Boss i Król liczą się jako bossowie (respawn „Bossy”, bonus „Silny przeciw bossom”).</small></label>
+      {#- MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1 #}
+      <label class="{{ 'dbe-boot' if 'dam_multiply' in boot_always }}">{{ specs['dam_multiply'].label }}
+        <input name="dam_multiply" type="number" step="0.01" min="{{ [specs['dam_multiply'].min, (mob.dam_multiply or 0)|float]|min }}" max="{{ specs['dam_multiply'].max }}"
+          value="{{ raw['dam_multiply'] if 'dam_multiply' in raw else ((mob.dam_multiply or 0)|float)|round(2) }}" required>
+        <small>mnoży każdy cios potwora – zwykły i z umiejętności (1 = bez zmian, 2 = dwa razy mocniej; od {{ num(specs['dam_multiply'].min) }} do {{ num(specs['dam_multiply'].max) }}){% if 'dam_multiply' in boot_always %} <b class="dbe-warn">⚠ wraca przy starcie</b>{% endif %}</small></label>
     </div>
+  </section>
+
+  {#- MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the estimated hits and the skills' levels #}
+  <section class="panel" id="ciosy">
+    <h2>Jak mocno bije</h2>
+    <p class="muted">Szacunek według wzoru gry dla obecnie zapisanych wartości: {{ hit_note }}. Po zapisaniu zmiany odśwież stronę, żeby zobaczyć nowe liczby.</p>
+    <table class="dbe-table compact">
+      <thead><tr><th>Cios</th><th>Poziom (siła)</th><th>Szacowane obrażenia</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>⚔️ Zwykły cios</td><td class="muted">—</td><td class="num"><b>{{ fmt_hits(hit.melee) }}</b></td>
+          <td class="muted">obrażenia {{ mob.damage_min }}–{{ mob.damage_max }}, siła {{ mob.st }}, zręczność {{ mob.dx }}, poziom {{ mob.level }}, mnożnik ×{{ mob.dam_text }}</td></tr>
+        {% for s in hit.skills %}
+        <tr class="{{ 'dbe-boot' if s.col in boot_always }}"><td>✨ Umiejętność {{ s.slot + 1 }}: <b>{{ s.name }}</b> <small class="muted">#{{ s.vnum }}</small></td>
+          <td><input name="{{ s.col }}" type="number" min="0" max="{{ specs[s.col].max }}" value="{{ raw[s.col] if s.col in raw else s.level }}" class="dbe-narrow" required>
+            {% if s.col in boot_always %}<b class="dbe-warn">⚠ wraca przy starcie</b>{% endif %}</td>
+          <td class="num">{% if s.hit %}<b>{{ fmt_hits(s.hit) }}</b>{% else %}<span class="muted">—</span>{% endif %}</td>
+          <td class="muted">{% if s.hit %}≈ {{ num(s.ratio, 1) }}× zwykły cios (k = {{ num(s.k) }}){% else %}{{ s.why }}{% endif %}</td></tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">Ten potwór nie ma umiejętności – bije tylko zwykłym ciosem.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if hit.skills %}<p class="muted dbe-note">Siła umiejętności 0–40. {{ skill_hint }}. Umiejętność (jej rodzaj) się tu nie zmienia – tylko jej siła.
+      Z tej samej umiejętności potwór korzysta mniej więcej co kilka sekund (zależnie od jej czasu odnowienia).</p>{% endif %}
   </section>
 
   <section class="panel">
