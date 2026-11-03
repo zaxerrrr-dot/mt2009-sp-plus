@@ -95,6 +95,11 @@ NEW_LINES = [
 	(55009, 1, 129, 1, 8, 0, '', 'Skrzynia Ksiąg Zwierza = nasza Skrzynia Ksiąg Peta (decyzja: dodaj)'),
 	(55001, 1, 19, 1, 8, 0, '', 'Odżywka = nasza Proteinowa Przekąska (życie peta; decyzja: dodaj)'),
 	(55001, 1, 30, 2, 12, 0, '', 'Odżywka = nasza Proteinowa Przekąska (decyzja: dodaj, za SZ)'),
+	# MT2009_PLUS_SPIRALA_CZASU_V1 (the owner, 3.11.2026): Spirala Czasu 10 / 20 / 30% (apply.sh, quest spirala_czasu) - the
+	# pl-wiki's 45 SM for the 30% one, the 10% and 20% in proportion; the multiples are the window's (x5 = 5 x the price)
+	(72347, 1, 15, 1, 2, 0, '', 'Spirala Czasu (10%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
+	(72348, 1, 30, 1, 2, 0, '', 'Spirala Czasu (20%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
+	(72349, 1, 45, 1, 2, 0, '', 'Spirala Czasu (30%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
 ]
 # "Dodaj jako szkatułkę tak jak kostiumy, że można losować dowolny amulet na 7 dni": a chest rolled at the purchase,
 # each piece of jewellery of the unique slots equally, 7 days; the list's three offers (1, 10+1, 20+3).

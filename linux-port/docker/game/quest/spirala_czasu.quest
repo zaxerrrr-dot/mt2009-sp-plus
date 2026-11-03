@@ -1,0 +1,189 @@
+-- MT2009_PLUS_SPIRALA_CZASU_V1 (wlasciciel, 3.11.2026): Spirala Czasu (10%) / (20%) / (30%) - vnumy GF 72347 / 72348 /
+-- 72349 (pl-wiki "Spirala Czasu (10%)" ...: "Skraca o 10% czas oczekiwania, az znow bedzie mozliwe oddanie przedmiotu
+-- misji odpowiedniemu NPC"; Owsap v6.2.6 time_spiral.quest). Przedmioty: apply.sh (MT2009_PLUS_SPIRALA_CZASU_V1),
+-- klient: client-patches/client-2.0.30/tools/spirala, ItemShop V3: owner_decisions.NEW_LINES (15 / 30 / 45 SM).
+-- Mechanika (wlasciciel): uzycie otwiera okno misji z oczekiwaniami, ktore dla tej postaci wlasnie trwaja - przy dwoch i
+-- wiecej najpierw lista (kazde z pozostalym czasem), przy jednym od razu potwierdzenie jak w oryginale (tytul: nazwa
+-- spirali, "Bio-badanie 5: 5 godz., 16 min.", "Skraca czas oczekiwania o 30%", "Czy chcesz uzyc Spirali Czasu?" Tak /
+-- Nie; teksty Owsapa, locale_quest 10823-10844, 11331-11334). Tak: POZOSTALY czas maleje o 10 / 20 / 30%, znika jedna
+-- spirala, okno pokazuje nowy czas i "Uzyj ponownie" - spirala po spirali bez limitu. Nic nie trwa -> "Brak otwartych
+-- misji z czasem oczekiwania.", spirala zostaje. Nigdy ksiegi umiejetnosci (od tego jest Zwoj Egzorcyzmu) -
+-- tylko misje z czekaniem na NPC:
+--   * Badania Biologa - collect_quest.wait (collect_data / m2_difficulty.lua, wszystkie collect_quest_lv* i cz*:
+--     Biolog, Seon-Pyeong, Chaegirab), gdy collect_data.is_wait() (czas swiata > 0, bez Eliksiru Poszukiwacza);
+--   * 6. i 7. bonus - seonhae.ready, gdy Seon-Hae trzyma przedmiot (seonhae.vnum; playerbot_seonhae.h);
+--   * Stajenny - pony_buy.make_time, horse_upgrade.make_time, horse_upgrade2.make_time (stan wait; m2_horse_wait),
+--     konie_rozwoj.zloty_czas (Zlota Ksiega Konia, zloty_stan 2) i konie_rozwoj.pasza_czas (pasza dla konia);
+--   * Relikty (tools/relikty) - wynik badan duszy: relikt_bron / zbroja / alchemik / uriel .given + 24 h, i ponowne
+--     oddanie popiolow Chaegirabowi: relikt_chaegirab.last + 24 h.
+-- Nowy koniec = teraz + floor(pozostaly * (100 - X) / 100). Zegar w liscie misji Biologa odswieza sie przy nastepnej
+-- rozmowie z nim. Nie dla botow (ich Biolog i stajenny nigdy nie czekaja). cp1250; zaden napis nie konczy sie polska
+-- litera (qc).
+quest spirala_czasu begin
+	state start begin
+		function spirals()
+			return {
+				[72347] = { 10, "Spirala Czasu (10%)" },
+				[72348] = { 20, "Spirala Czasu (20%)" },
+				[72349] = { 30, "Spirala Czasu (30%)" },
+			}
+		end
+
+		-- { napis, quest, flaga, przesuniecie (koniec = flaga + przesuniecie), warunek (spirala_czasu.ok) }
+		function waits()
+			return {
+				{ "", "collect_quest", "wait", 0, "biolog" },
+				{ "6. i 7. bonus (Seon-Hae)", "seonhae", "ready", 0, "seonhae" },
+				{ "Stajenny: pierwszy koñ (kucyk)", "pony_buy", "make_time", 0, "" },
+				{ "Stajenny: awans konia (11)", "horse_upgrade", "make_time", 0, "" },
+				{ "Stajenny: awans konia (21)", "horse_upgrade2", "make_time", 0, "" },
+				{ "Z³ota Ksiêga Konia", "konie_rozwoj", "zloty_czas", 0, "zloty" },
+				{ "Pasza dla konia", "konie_rozwoj", "pasza_czas", 0, "pasza" },
+				{ "Dusza Miecza", "relikt_bron", "given", 86400, "" },
+				{ "Dusza Ochrony", "relikt_zbroja", "given", 86400, "" },
+				{ "Dusza Œwiat³a", "relikt_alchemik", "given", 86400, "" },
+				{ "Dusza Ozdoby", "relikt_uriel", "given", 86400, "" },
+				{ "Relikt Duszy", "relikt_chaegirab", "last", 86400, "" },
+			}
+		end
+
+		-- the Biologist's row the player is on (its quest in go_to_disciple / key_item - the state flag is the crc32 of
+		-- the state's name, admin_panel.py BIOLOGIST_*_STATE), named as Owsap's dialog names it
+		function bio_name()
+			local rows = {
+				{ "collect_quest_lv30", "Bio-badanie 1" }, { "collect_quest_lv40", "Bio-badanie 2" },
+				{ "collect_quest_lv50", "Bio-badanie 3" }, { "collect_quest_lv60", "Bio-badanie 4" },
+				{ "collect_quest_lv70", "Bio-badanie 5" }, { "collect_quest_lv80", "Bio-badanie 6" },
+				{ "collect_quest_lv85", "Bio-badanie 7" }, { "collect_quest_lv90", "Bio-badanie 8" },
+				{ "collect_quest_lv92", "Badanie Seona-Pyeonga" }, { "collect_quest_lv94", "Badanie Seona-Pyeonga 2" },
+				{ "collect_quest_cz1", "Oczyszczone Rdzenie" }, { "collect_quest_cz10", "Kryszta³y Metin" },
+				{ "collect_quest_cz20", "Mroczne Paprocie" },
+			}
+			-- the hashes as strings: qc prints a number literal with six digits (1.67561e+09)
+			local go, key = tonumber("1675612723"), tonumber("-1726153001")
+			for i = 1, table.getn(rows) do
+				local st = pc.getf(rows[i][1], "__status")
+				if st == go or st == key then
+					return rows[i][2]
+				end
+			end
+			return "Badania Biologa"
+		end
+
+		function ok(kind)
+			if kind == "biolog" then
+				return collect_data.is_wait()
+			elseif kind == "seonhae" then
+				return pc.getf("seonhae", "vnum") ~= 0
+			elseif kind == "zloty" then
+				return pc.getf("konie_rozwoj", "zloty_stan") == 2
+			elseif kind == "pasza" then
+				return pc.getf("konie_rozwoj", "pasza_stan") == 0
+			end
+			return true
+		end
+
+		function left(w)
+			if not spirala_czasu.ok(w[5]) then
+				return 0
+			end
+			local v = pc.getf(w[2], w[3])
+			if v == nil or v <= 0 then
+				return 0
+			end
+			local l = v + w[4] - get_time()
+			if l < 0 then
+				return 0
+			end
+			return l
+		end
+
+		function label(w)
+			if w[5] == "biolog" then
+				return spirala_czasu.bio_name()
+			end
+			return w[1]
+		end
+
+		-- "5 godz., 16 min." as the original
+		function czas(s)
+			local h = math.floor(s / 3600)
+			local m = math.floor(math.mod(s, 3600) / 60)
+			if h > 0 then
+				return string.format("%d godz., %d min.", h, m)
+			elseif m > 0 then
+				return string.format("%d min., %d sek.", m, math.mod(s, 60))
+			end
+			return string.format("%d sek.", s)
+		end
+
+		function run(vnum)
+			local sp = spirala_czasu.spirals()[vnum]
+			if sp == nil then
+				return
+			end
+			local p, title = sp[1], sp[2]
+			while true do
+				local all = spirala_czasu.waits()
+				local idx, opts = {}, {}
+				for i = 1, table.getn(all) do
+					local l = spirala_czasu.left(all[i])
+					if l > 0 then
+						table.insert(idx, i)
+						table.insert(opts, spirala_czasu.label(all[i]) .. ": " .. spirala_czasu.czas(l))
+					end
+				end
+				say_title(title)
+				if table.getn(idx) == 0 then
+					say("Brak otwartych misji z czasem oczekiwania.")
+					return
+				end
+				local pick = 1
+				if table.getn(idx) > 1 then
+					say("Dziêki temu skróci siê czas oczekiwania. Wybierz")
+					say("badanie, które chcesz przyœpieszyæ.")
+					table.insert(opts, "Anuluj")
+					pick = select_table(opts)
+					if pick == nil or pick > table.getn(idx) then
+						return
+					end
+					say_title(title)
+				end
+				local w = all[idx[pick]]
+				say(opts[pick])
+				say("Skraca czas oczekiwania o " .. p .. "%")
+				say("Czy chcesz u¿yæ Spirali Czasu?")
+				if select("Tak", "Nie") ~= 1 then
+					return
+				end
+				-- again after the dialog: the bag and the wait
+				if pc.count_item(vnum) < 1 then
+					return
+				end
+				local l = spirala_czasu.left(w)
+				local nl = math.floor(l * (100 - p) / 100)
+				say_title(title)
+				if l <= 0 or nl <= 0 then
+					say("Nie mo¿esz wiêcej skróciæ czasu oczekiwania.")
+					return
+				end
+				pc.remove_item(vnum, 1)
+				pc.setf(w[2], w[3], get_time() + nl - w[4])
+				char_log(0, "SPIRALA_CZASU", string.format("%d %s.%s %d -> %d", vnum, w[2], w[3], l, nl))
+				say("Czas oczekiwania zosta³ skrócony.")
+				say_reward(spirala_czasu.label(w) .. ": " .. spirala_czasu.czas(nl))
+				syschat(title .. " - " .. spirala_czasu.label(w) .. ": " .. spirala_czasu.czas(nl))
+				if pc.count_item(vnum) < 1 then
+					return
+				end
+				if select("U¿yj ponownie", "Zamknij") ~= 1 then
+					return
+				end
+			end
+		end
+
+		when 72347.use or 72348.use or 72349.use with not pc.is_bot() begin
+			spirala_czasu.run(item.get_vnum())
+		end
+	end
+end
