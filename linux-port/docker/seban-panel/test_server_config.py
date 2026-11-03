@@ -10,7 +10,10 @@ switches through env_editor.apply_live + env.pending, the rest as one
 env.request for the updater, rates through queue_rate_restart, rows through
 write_events, and a history entry. Also the chest drop's 7th column
 (MT2009_PLUS_CHEST_DROP_TARGET_V1) through read_events / write_events and the
-monsters' percent switches of the .env editor."""
+monsters' percent switches of the .env editor. EMERALD (the owner, 3 November
+2026, pl-wiki "Serwery EMERALD"): its settings, the whole week row by row, the
+players' damage switch (M2_PLAYER_ATTACK, MT2009_PLUS_PC_ATTACK_V1) and the
+World Boss's mode (worldboss = always)."""
 import json
 import tempfile
 import time
@@ -31,7 +34,7 @@ class ShippedProfiles(unittest.TestCase):
         data = server_config.load()
         server_config.check_event_kinds(data["profiles"], panel.EVENT_KINDS, panel.EVENT_KEYED_KINDS)
         ids = [p["id"] for p in data["profiles"]]
-        self.assertEqual(ids, ["mt2009", "clean_easy", "clean_hard", "sapphire"])
+        self.assertEqual(ids, ["mt2009", "clean_easy", "clean_hard", "sapphire", "emerald"])
         for profile in data["profiles"]:
             for key, value in profile["env"].items():
                 self.assertIsNone(env_schema.validate(key, value), (profile["id"], key, value))
@@ -41,6 +44,68 @@ class ShippedProfiles(unittest.TestCase):
                 self.assertIn(key, env_schema.BY_KEY)
             for link in group["links"]:
                 self.assertIn(link["endpoint"], panel.app.view_functions)
+
+    def test_event_servers_are_hard(self):
+        # The owner (3 November 2026): every event server waits as in the original (skill books, Biologist, horse).
+        profiles = {p["id"]: p for p in server_config.load()["profiles"]}
+        for ident in ("sapphire", "emerald"):
+            self.assertEqual(profiles[ident]["env"]["M2_DIFFICULTY"], "hard", ident)
+            self.assertEqual(profiles[ident]["env"]["M2_BONUS_MODE"], "global", ident)
+
+    def test_emerald_settings(self):
+        # pl-wiki "Serwery EMERALD": 150% drop and EXP as the base, -10% monster damage and health, +10% player
+        # damage, Skrzynia Ucznia and Bronie dla Mlodych Bohaterow, Boss Swiata and Dzieci Kwiaty all the time.
+        emerald = next(p for p in server_config.load()["profiles"] if p["id"] == "emerald")
+        self.assertEqual(emerald["title"], "EMERALD")
+        self.assertEqual(emerald["env"], {"M2_BONUS_MODE": "global", "M2_DIFFICULTY": "hard", "M2_MONSTER_HP": "90",
+                                          "M2_MONSTER_ATTACK": "90", "M2_PLAYER_ATTACK": "110", "M2_STARTER_CHEST": "1",
+                                          "M2_MLODZI_BOHATEROWIE": "1"})
+        self.assertEqual(emerald["rates"], {"exp": 150, "drop": 150, "yang": 100})
+        self.assertEqual(emerald["worldboss"], 1)
+        for key in ("M2_MONSTER_HP", "M2_MONSTER_ATTACK"):
+            self.assertEqual(env_schema.monster_percent(emerald["env"][key]), 90)
+        self.assertEqual(env_schema.monster_percent(emerald["env"]["M2_PLAYER_ATTACK"]), 110)
+
+    def test_emerald_calendar(self):
+        # The wiki's "cotygodniowe eventy dodatkowe", cell by cell: the same week as Sapphire's, every item a 7% drop
+        # from every Metin and boss, the fishing puzzle (Wednesday 0-12, Saturday 12-16) left out, Saturday 20-24 the
+        # Moonlight chest event from monsters and Metins (kind chest), and the flower event all week first.
+        emerald = next(p for p in server_config.load()["profiles"] if p["id"] == "emerald")
+        rows = emerald["events"]
+        self.assertEqual(rows[0], {"kind": "flower", "days": [1, 2, 3, 4, 5, 6, 7], "start": "00:00", "end": "24:00",
+                                   "value": 0, "map": 0, "on": True})
+        slots = ("00:00", "12:00", "16:00", "20:00", "24:00")
+        week = {
+            1: (71094, 100300, 25040, 71187),       # Rada Pustelnika, Zielona Smocza Fasola, Zwoj Blog., Nugget (ziel.)
+            2: (72724, 51501, 72351, 76014),        # Eliksir Slonca (S), Cor Draconis, Male Blogoslawienstwo, Zaczarowanie (n)
+            3: (None, 70024, 71094, "superstone"),  # fishing, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
+            4: (72728, 72351, 51501, 76013),        # Eliksir Ksiezyca (S), Male Blog., Cor Draconis, Wzmocnienie (n)
+            5: (100300, 76014, "superstone", 51501),
+            6: (25040, None, 53235, "chest"),       # Zwoj Blog., fishing, Robin (1d), Szkatulka Blasku Ksiezyca (z potworow)
+            7: (71001, 76013, 71001, 71012),        # Zwoj Egzorcyzmu, Wzmocnienie (n), Zwoj Egzorcyzmu, Ksiega Lidera
+        }
+        want = []
+        for day, items in sorted(week.items()):
+            for slot, what in enumerate(items):
+                if what is None:
+                    continue
+                row = {"days": [day], "start": slots[slot], "end": slots[slot + 1], "on": True}
+                if what == "superstone":
+                    row.update(kind="superstone", value=1, map=0)
+                elif what == "chest":
+                    row.update(kind="chest", value=0, map=0)
+                else:
+                    row.update(kind="chestdrop", value=70, map=what, target=1)
+                want.append(row)
+        for index, (got, expected) in enumerate(zip(rows[1:], want)):
+            self.assertEqual(got, expected, "row %d" % (index + 1))
+        self.assertEqual(len(rows), 1 + len(want))
+        self.assertEqual(len(rows), 27)
+        self.assertLessEqual(len(rows), server_config.EVENT_ROWS_MAX)
+        chests = [r["map"] for r in rows if r["kind"] == "chestdrop"]
+        self.assertEqual(len(chests), 23)
+        self.assertEqual(sorted(set(chests)), [25040, 51501, 53235, 70024, 71001, 71012, 71094, 71187, 72351, 72724,
+                                               72728, 76013, 76014, 100300])
 
     def test_sapphire_calendar(self):
         # MT2009_PLUS_SERVER_CONFIG_V1 (the owner, 3 November 2026): the original Sapphire week (pl-wiki "Eventy")
@@ -74,6 +139,8 @@ class ShippedProfiles(unittest.TestCase):
         self.assertNotIn(990071, [r["map"] for r in rows])  # no item of its own invented
         self.assertLessEqual(len(rows), server_config.EVENT_ROWS_MAX)
         self.assertEqual(sapphire["env"]["M2_MONSTER_ATTACK"], "80")
+        self.assertEqual(sapphire["env"]["M2_DIFFICULTY"], "hard")
+        self.assertNotIn("worldboss", sapphire)
         self.assertEqual(sapphire["rates"], {"exp": 100, "drop": 150, "yang": 100})
 
 
@@ -93,6 +160,9 @@ class Parser(unittest.TestCase):
         self.bad("event chestdrop 1 24:00 12:00 70 51501")
         self.bad("event chestdrop 1 00:00 12:00 70 51501 5")
         self.bad("env M2_DIFFICULTY = easy\nrm -rf /")
+        self.bad("worldboss = sometimes")
+        self.bad("env M2_PLAYER_ATTACK = easy")          # a player's damage has no "easy"
+        self.bad("env M2_PLAYER_ATTACK = 301")
         with self.assertRaises(server_config.ProfileError):
             server_config.parse("[profile empty]\ntitle = Nic\n")
         with self.assertRaises(server_config.ProfileError):
@@ -120,6 +190,18 @@ class Parser(unittest.TestCase):
         rows, added = server_config.merge_events([], profile["events"] * 2)
         self.assertEqual(added, 1)
 
+    def test_worldboss_plan(self):
+        profile = server_config.parse("[profile a]\nworldboss = always\n")["profiles"][0]
+        self.assertEqual(profile["worldboss"], 1)
+        changed = server_config.plan(profile, {}, {}, [], 2)["worldboss"]
+        self.assertEqual((changed["old"], changed["new"], changed["value"], changed["known"]),
+                         ("tylko w oknach Planera eventów", "zawsze włączony", 1, True))
+        self.assertIsNone(server_config.plan(profile, {}, {}, [], 1)["worldboss"])
+        self.assertFalse(server_config.plan(profile, {}, {}, [], None)["worldboss"]["known"])
+        # A profile without the line never touches the boss.
+        plain = server_config.parse("[profile b]\nrate exp = 100\n")["profiles"][0]
+        self.assertIsNone(server_config.plan(plain, {}, {}, [], 0)["worldboss"])
+
     def test_monster_percent(self):
         self.assertEqual(env_schema.monster_percent("default"), 100)
         self.assertEqual(env_schema.monster_percent("easy"), 80)
@@ -128,11 +210,23 @@ class Parser(unittest.TestCase):
         self.assertIsNone(env_schema.monster_percent("hard"))
         self.assertEqual(env_editor.live_values_from_flags({"m2_mob_attack": 80})["M2_MONSTER_ATTACK"], "80")
         self.assertEqual(env_editor.live_values_from_flags({})["M2_MONSTER_HP"], "default")
+        # MT2009_PLUS_PC_ATTACK_V1: the players' damage, the same way.
+        self.assertEqual(env_editor.live_values_from_flags({"m2_pc_attack": 110})["M2_PLAYER_ATTACK"], "110")
+        self.assertEqual(env_editor.live_values_from_flags({"m2_pc_attack": 100})["M2_PLAYER_ATTACK"], "default")
+        self.assertIsNone(env_schema.validate("M2_PLAYER_ATTACK", "110"))
+        self.assertIsNone(env_schema.validate("M2_PLAYER_ATTACK", "default"))
+        self.assertIn("M2_PLAYER_ATTACK", env_schema.LIVE_KEYS)
 
 
 class FakeCursor:
+    worldboss_row = {"mode": 2}
+
     def __init__(self, log):
         self.log, self.lastrowid = log, 0
+
+    def fetchone(self):
+        last = self.log[-1][0] if self.log else ""
+        return self.worldboss_row if "worldboss_config" in last else None
 
     def execute(self, sql, args=None):
         self.log.append((sql, args))
@@ -205,7 +299,7 @@ class Routes(unittest.TestCase):
 
     def test_page_lists_profiles_and_groups(self):
         html = self.client.get("/advanced/server-config").get_data(as_text=True)
-        for text in ("SAPPHIRE", "CLEAN GLOBAL EASY", "CLEAN GLOBAL HARD", "Świat i trudność", "Siła ataku potworów",
+        for text in ("SAPPHIRE", "EMERALD", "Siła ataku graczy na potwory", "part_worldboss", "CLEAN GLOBAL EASY", "CLEAN GLOBAL HARD", "Świat i trudność", "Siła ataku potworów",
                      "Wybierz konfigurację świata"):
             self.assertIn(text, html)
 
@@ -226,7 +320,7 @@ class Routes(unittest.TestCase):
         pending = json.loads((self.spool / "env.pending").read_text())["values"]
         self.assertEqual(pending, {"M2_MONSTER_HP": "80", "M2_MONSTER_ATTACK": "80"})
         request = json.loads((self.spool / "env.request").read_text())
-        self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global"})
+        self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global", "M2_DIFFICULTY": "hard"})
         self.assertEqual(self.rates_called, [{"exp": 100, "drop": 150, "yang": 100}])
         rows, _nows = panel.read_events()
         self.assertEqual(len(rows), 26)
@@ -243,6 +337,38 @@ class Routes(unittest.TestCase):
         with patch.object(env_editor, "apply_live", return_value={}):
             self.apply("sapphire", parts=("events",))
         self.assertEqual(len(panel.read_events()[0]), 26)
+
+    def test_apply_emerald_through_the_existing_paths(self):
+        self.ready()
+        with patch.object(env_editor, "apply_live", return_value={"MOB_HP": "done", "MOB_ATTACK": "done",
+                                                                    "PC_ATTACK": "done"}) as live:
+            self.apply("emerald", parts=("env", "rates", "events", "worldboss"))
+        live.assert_called_once()
+        self.assertEqual(live.call_args[0][1], {"M2_MONSTER_HP": "90", "M2_MONSTER_ATTACK": "90", "M2_PLAYER_ATTACK": "110"})
+        request = json.loads((self.spool / "env.request").read_text())
+        self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global", "M2_DIFFICULTY": "hard"})
+        self.assertEqual(self.rates_called, [{"exp": 150, "drop": 150, "yang": 100}])
+        rows, _nows = panel.read_events()
+        self.assertEqual(len(rows), 27)
+        text = self.events_file.read_text()
+        self.assertIn("flower\t*\t00:00\t24:00\t0\n", text)
+        self.assertIn("chest\t6\t20:00\t24:00\t0\n", text)
+        self.assertIn("superstone\t3\t20:00\t24:00\t1\n", text)
+        self.assertIn("chestdrop\t2\t16:00\t20:00\t70\t72351\t1\n", text)
+        self.assertIn(("UPDATE player.worldboss_config SET mode = %s WHERE id = 1", (1,)), self.sql)
+        history = json.loads((self.spool / server_config.HISTORY_FILE).read_text())
+        self.assertEqual(history[-1]["worldboss"], {"old": "tylko w oknach Planera eventów", "new": "zawsze włączony"})
+        # Without the "Boss Świata" part the mode is left alone.
+        self.sql.clear()
+        with patch.object(env_editor, "apply_live", return_value={}):
+            self.apply("emerald", parts=("events",))
+        self.assertFalse([q for q in self.sql if q[0].startswith("UPDATE player.worldboss_config")])
+        self.assertEqual(len(panel.read_events()[0]), 27)
+
+    def test_worldboss_needs_its_table(self):
+        with patch.object(FakeCursor, "worldboss_row", None):
+            self.apply("emerald", parts=("worldboss",))
+        self.assertFalse([q for q in self.sql if q[0].startswith("UPDATE player.worldboss_config")])
 
     def test_without_updater_only_live_parts(self):
         # No watcher: a profile with a queued .env change is refused whole.

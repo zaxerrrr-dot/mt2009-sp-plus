@@ -25,7 +25,7 @@
 @media (max-width:520px){.cfg-field{grid-template-columns:1fr}}
 </style>
 <p class="eyebrow">ZAAWANSOWANE · KONFIGURACJA SERWERA</p><h1>Konfiguracja serwera</h1>
-<p class="muted">Gotowe konfiguracje świata (profile) i najważniejsze ustawienia w jednym miejscu. Profil zmienia naraz ustawienia serwera, raty i – jeśli go ma – kalendarz eventów; wcześniej pokazuje dokładnie, co się zmieni. Wszystko można później zmienić tutaj, w <a href="{{ url_for('server_env') }}">Ustawieniach serwera (.env)</a>, w „Gra i serwer” i w Planerze eventów.</p>
+<p class="muted">Gotowe konfiguracje świata (profile) i najważniejsze ustawienia w jednym miejscu. Profil zmienia naraz ustawienia serwera, raty i – jeśli je ma – kalendarz eventów i tryb Bossa Świata; wcześniej pokazuje dokładnie, co się zmieni. Wszystko można później zmienić tutaj, w <a href="{{ url_for('server_env') }}">Ustawieniach serwera (.env)</a>, w „Gra i serwer” i w Planerze eventów.</p>
 
 {% if error %}<section class="panel env-banner env-banner-warn"><h2>⚠ Plik konfiguracji ma błąd</h2><p><code>{{ error }}</code></p></section>{% endif %}
 
@@ -56,15 +56,17 @@
 {% for c in pl.env %}<li>{{ c.label }}: <span class="cfg-old">{{ c.old }}</span> → <b>{{ c.new }}</b>{% if c.live %}<span class="cfg-tag">od razu</span>{% else %}<span class="cfg-tag">restart</span>{% endif %}</li>{% endfor %}
 {% for r in pl.rates %}<li>Rate {{ {'exp': 'doświadczenia', 'drop': 'dropu', 'yang': 'yang'}[r.name] }}: <span class="cfg-old">{{ r.old }}%</span> → <b>{{ r.new }}%</b><span class="cfg-tag">restart</span></li>{% endfor %}
 {% if pl.events %}<li>Planer eventów: <b>+{{ pl.events }}</b> wierszy{% if not pl.events_fit %} – <b>za dużo</b> (najwyżej {{ event_rows_max }}, byłoby {{ pl.events_total }}){% endif %}</li>{% endif %}
-{% if not pl.env and not pl.rates and not pl.events %}<li>nic – ta konfiguracja jest już ustawiona</li>{% endif %}
+{% if pl.worldboss %}<li>Boss Świata: <span class="cfg-old">{{ pl.worldboss.old }}</span> → <b>{{ pl.worldboss.new }}</b><span class="cfg-tag">od razu</span></li>{% endif %}
+{% if not pl.env and not pl.rates and not pl.events and not pl.worldboss %}<li>nic – ta konfiguracja jest już ustawiona</li>{% endif %}
 </ul>
-{% if pl.env or pl.rates or pl.events %}
+{% if pl.env or pl.rates or pl.events or pl.worldboss %}
 <form method="post" action="{{ url_for('server_config_apply') }}" class="cfg-apply-form">
 <input type="hidden" name="config_csrf" value="{{ config_csrf }}"><input type="hidden" name="profile" value="{{ p.id }}">
 <div class="cfg-parts">
 {% if pl.env %}<label><input type="checkbox" name="part_env" value="1" {% if not (first_run and first_run.installer_profile == p.id) %}checked{% endif %}> ustawienia</label>{% endif %}
 {% if pl.rates %}<label><input type="checkbox" name="part_rates" value="1" {% if not (first_run and first_run.installer_profile == p.id) %}checked{% endif %}> raty</label>{% endif %}
 {% if pl.events %}<label><input type="checkbox" name="part_events" value="1" checked> kalendarz eventów</label>{% endif %}
+{% if pl.worldboss %}<label><input type="checkbox" name="part_worldboss" value="1" checked> Boss Świata</label>{% endif %}
 </div>
 <div class="cfg-apply"><input name="confirm" placeholder="{{ confirm_word }}" autocomplete="off" aria-label="Potwierdzenie"><button>Zastosuj</button></div>
 </form>
@@ -103,7 +105,7 @@
 <h2 id="historia">Historia zmian</h2>
 {% if history %}
 <table class="cfg-history"><thead><tr><th>Kiedy</th><th>Konfiguracja</th><th>Zmiany</th></tr></thead><tbody>
-{% for h in history %}<tr><td><span data-epoch="{{ h.time }}"></span></td><td>{{ h.title }}</td><td>{% for c in h.env %}{{ c.key }}: {{ c.old }} → {{ c.new }}{% if not loop.last %}; {% endif %}{% endfor %}{% if h.rates %}{% if h.env %}; {% endif %}raty: {% for r in h.rates %}{{ r.name }} {{ r.old }}→{{ r.new }}%{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if h.events_added %}; Planer eventów +{{ h.events_added }}{% endif %}</td></tr>{% endfor %}
+{% for h in history %}<tr><td><span data-epoch="{{ h.time }}"></span></td><td>{{ h.title }}</td><td>{% for c in h.env %}{{ c.key }}: {{ c.old }} → {{ c.new }}{% if not loop.last %}; {% endif %}{% endfor %}{% if h.rates %}{% if h.env %}; {% endif %}raty: {% for r in h.rates %}{{ r.name }} {{ r.old }}→{{ r.new }}%{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if h.events_added %}; Planer eventów +{{ h.events_added }}{% endif %}{% if h.worldboss %}; Boss Świata: {{ h.worldboss.old }} → {{ h.worldboss.new }}{% endif %}</td></tr>{% endfor %}
 </tbody></table>
 {% else %}<p class="muted small">Żadna konfiguracja nie była jeszcze stosowana. Zmiany pojedynczych ustawień zapisuje historia kopii <code>.env</code> aktualizatora.</p>{% endif %}
 
