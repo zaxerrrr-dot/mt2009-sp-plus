@@ -1849,6 +1849,22 @@ def write_events(rows, nows, settings=None):
     settings lines are kept as they are unless new ones are given."""
     if settings is None:
         settings = read_event_settings()
+    # MT2009_PLUS_SERVER_CONFIG_V1: the lines of kinds this page does not edit
+    # (the advanced panel's chest drops and Boss Swiata windows, the server
+    # configurations' calendars) are kept as they are - this page used to drop
+    # them at its every save.
+    foreign = []
+    try:
+        with open(EVENTS_FILE, "r", encoding="utf-8", errors="replace") as fh:
+            for old in fh.read().splitlines():
+                old = old.rstrip("\r")
+                f = (old[len("#off\t"):] if old.startswith("#off\t") else old).split("\t")
+                kind = f[1] if f[0] == "now" and len(f) >= 2 else f[0]
+                if len(f) >= 4 and re.fullmatch(r"[a-z]{2,16}", kind or "") and kind not in EVENT_KINDS \
+                        and kind != "bots" and not old.startswith("# "):
+                    foreign.append(old)
+    except OSError:
+        pass
     body = ["# Metin2 playerbots -- timed events (the panel's Events page).",
             "# kind<TAB>days<TAB>from<TAB>to<TAB>value[<TAB>map]  |  now<TAB>kind<TAB>until_epoch<TAB>value[<TAB>map<TAB>since]",
             "# days: * or 1..7 (1 = Monday); a '#off' line is a row switched off.",
@@ -1874,6 +1890,7 @@ def write_events(rows, nows, settings=None):
     for n in world:
         body.append("now\t%s\t%d\t%d\t%d\t%d" % (n["kind"], int(n["until"]), int(n.get("value", 0)),
                                                 int(n.get("map", 0)), int(n.get("since", 0))))
+    body.extend(foreign)  # MT2009_PLUS_SERVER_CONFIG_V1
     body.append("bots\t%d" % max(0, min(100, int(settings.get("bots", EVENT_BOTS_DEFAULT)))))
     tmp = EVENTS_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
