@@ -5648,6 +5648,25 @@
 72805	Eliksir W. SungMa (WIT)	Wzmacnia twoj¹ Wolê SungMa (WIT) o +5 na 30 min.
 72806	Eliksir W. SungMa (ODP)	Wzmacnia twoj¹ Wolê SungMa (ODP) o +5 na 30 min.
 72807	Eliksir W. SungMa (INT)	Wzmacnia twoj¹ Wolê SungMa (INT) o +5 na 30 min.
+39048	Skrz. Woj. M. Cia³a (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Saturna (D).
+71204	Encyklopedia Saturna (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Wojowników Mocy Cia³a.
+39050	Skrz. Woj.M. Ducho. (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Ziemi (D).
+71206	Encyklopedia Ziemi (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Wojowników Mocy Duchowej.
+39052	Skrz. Ninja M.Ostrza (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Marsa (D).
+71208	Encyklopedia Marsa (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Ninja Mocy Ostrza.
+39054	Skrz. Ninja M. £uku (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklop. Jupitera (D).
+71210	Encyklop. Jupitera (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Ninja Mocy £uku.
+39056	Skrzynia Sura Broni (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Urana (D).
+71212	Encyklopedia Urana (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Sury Broni.
+39058	Skrzynia Sura Magii (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Neptuna (D).
+71214	Encyklopedia Neptuna (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Sury Magii.
+39060	Skrz. Szam. M. Smoka (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklop. Merkurego (D).
+71216	Encyklop. Merkurego (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Szamanów Mocy Smoka.
+39062	Skrz. Szam. M. Lecz. (D)	W tej wspania³ej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura M¹droœci (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierœcieñ Teleportacji i Encyklopedia Wenus (D).
+71218	Encyklopedia Wenus (D)	Pakiet zawieraj¹cy 25 losowo wybranych ksi¹g z instrukcjami umiejêtnoœci dla Szamanów Mocy Leczenia.
+72347	Spirala Czasu (10%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 10% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
+72348	Spirala Czasu (20%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 20% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
+72349	Spirala Czasu (30%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 30% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
 39119	Kamieñ Mocy ¯ywio³ów	Po³yskuj¹cy amulet daje ci 10% mocy wszystkich ¿ywio³ów: b³yskawic, ognia, lodu, wiatru, ziemi i mroku. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 39120	Kamieñ Ochrony ¯ywio³ów	Po³yskuj¹cy amulet daje ci +10% odpornoœci na wszystkie ¿ywio³y: b³yskawice, ogieñ, lód, wiatr, ziemiê i mrok. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 83036	Srebrne Pude³ko Kart Potwora	To srebrne pude³ko zawiera losow¹ Kartê Potwora albo 1000 Yang. Spróbuj szczêœcia! Karty pochodz¹ z poziomów misji 1-15 (bez potworów Yohary). U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J).
