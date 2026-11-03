@@ -1938,6 +1938,51 @@
 		}
 	}
 
+	// MT2009_PLUS_BOT_TRAINER_REARM_V1: the best weapon of the bag this bot may wear (FindPlayerBotBestBagWeapon's rules),
+	// else the highest one of its class it can put on at all; true when the hand holds a weapon after it.
+	unsigned int s_uPlayerBotTrainerRearmed = 0, s_uPlayerBotTrainerRearmFailed = 0;
+	bool RearmPlayerBotFromBag(LPCHARACTER ch, TPlayerBotAIState& state, const char* where)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->GetWear(WEAR_WEAPON) != NULL)
+			return false;
+		LPITEM weapon = FindPlayerBotBestBagWeapon(ch, NULL, NULL);
+		const char* how = "best";
+		if (!weapon)
+		{
+			how = "any";
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!item || item->GetCell() != cell || item->IsEquipped() || item->GetType() != ITEM_WEAPON ||
+						item->GetSubType() == WEAPON_ARROW || item->GetLevelLimit() > ch->GetLevel() ||
+						item->FindEquipCell(ch) != WEAR_WEAPON || !ch->CanEquipNow(item))
+					continue;
+				if (!weapon || item->GetLevelLimit() > weapon->GetLevelLimit() ||
+						(item->GetLevelLimit() == weapon->GetLevelLimit() && item->GetRefineLevel() > weapon->GetRefineLevel()))
+					weapon = item;
+			}
+		}
+		if (!weapon)
+		{
+			++s_uPlayerBotTrainerRearmFailed;
+			PlayerBotLogThrottled("trainer_rearm_none", get_dword_time(), "PLAYERBOT_TRAINER: rearm none pid=%u name=%s where=%s map=%ld",
+					ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex());
+			return false;
+		}
+		const DWORD vnum = weapon->GetVnum();
+		const bool ok = PlayerBotEquipItem(ch, weapon) && ch->GetWear(WEAR_WEAPON) != NULL;
+		state.bEquipPending = true;
+		state.dwNextEquipmentCheckTime = 0;
+		if (ok)
+			++s_uPlayerBotTrainerRearmed;
+		else
+			++s_uPlayerBotTrainerRearmFailed;
+		sys_log(0, "PLAYERBOT_TRAINER: rearm %s pid=%u name=%s where=%s map=%ld vnum=%u how=%s rearmed=%u failed=%u",
+				ok ? "ok" : "refused", ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex(), vnum, how,
+				s_uPlayerBotTrainerRearmed, s_uPlayerBotTrainerRearmFailed);
+		return ok;
+	}
+
 	// The travel pass's part for a resident of purpose "yohara" (ManagePlayerBotYoharaTravel): -1 hunt on, 0/1 its answer.
 	int ManagePlayerBotSungmaResident(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res, DWORD dwNow)
 	{
@@ -1957,7 +2002,15 @@
 		if (member && dwNow - res.dwArrived >= (DWORD)cfg.cohortStayMin * 60000U)
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_stay_over");
 		if (IsPlayerBotYoharaFightStopped(ch, res, dwNow))
+		{
+			// MT2009_PLUS_BOT_TRAINER_REARM_V1: a resident whose hand is empty with a weapon of its own in the bag (51 of the
+			// 900 on 3 November - a piece taken off for an anvil, a Seon-Hae or a 6/7 roll and the bot logged out before the
+			// equipment pass put it back) arms itself here: it was sent home at its first tick on the map, came back ten
+			// minutes later, and was sent home again - ~2 800 handovers a day for nothing.
+			if (ch->GetWear(WEAR_WEAPON) == NULL && RearmPlayerBotFromBag(ch, state, "sungma"))
+				return 0;
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_blocked");
+		}
 		SpendPlayerBotSungmaPoints(ch, b, dwNow);
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 		// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch's excursion (its own answer)

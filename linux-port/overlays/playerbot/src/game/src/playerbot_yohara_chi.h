@@ -368,6 +368,22 @@ namespace
 			why = "yang";
 			return false;
 		}
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: every piece here is of level 105 - the owner's ladder alone (Zwoj Wojny
+		// under +4, the Blessing Scroll to +6, Boga Smokow / Podrecznik over), the plain anvil only at 100%, the spares too
+		if (IsPlayerBotHighGear(item))
+		{
+			if (playerbot_high_gear::StepNeedsScroll((int)recipe->prob))
+			{
+				scrollCell = FindPlayerBotHighGearScrollCell(ch, item->GetRefineLevel());
+				if (scrollCell < 0)
+				{
+					NotePlayerBotHighGearWait(ch, item, (int)recipe->prob, "chi");
+					why = "scroll";
+					return false;
+				}
+			}
+			return true;
+		}
 		if (project && (int)recipe->prob < PLAYERBOT_CHI_PLAIN_MIN_PROB)
 		{
 			scrollCell = FindPlayerBotRefineScrollCell(ch, (BYTE)(item->GetVnum() % 10), (int)recipe->prob);
@@ -395,6 +411,14 @@ namespace
 			const int have = (int)ch->CountSpecifyItem(vnum);
 			if (have < count)
 				missing[vnum] += count - have;
+		}
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the ladder's scroll the step lacks, by its tradeable vnum (the market)
+		if (IsPlayerBotHighGear(item))
+		{
+			if (playerbot_high_gear::StepNeedsScroll((int)recipe->prob) &&
+					FindPlayerBotHighGearScrollCell(ch, item->GetRefineLevel()) < 0)
+				missing[GetPlayerBotHighGearMarketScroll(item->GetRefineLevel())] += 1;
+			return;
 		}
 		if (project && (int)recipe->prob < PLAYERBOT_CHI_PLAIN_MIN_PROB &&
 				FindPlayerBotRefineScrollCell(ch, (BYTE)(item->GetVnum() % 10), (int)recipe->prob) < 0)
@@ -612,6 +636,9 @@ namespace
 		const long long goldBefore = (long long)ch->GetGold();
 		LPITEM scroll = scrollCell >= 0 ? ch->GetInventoryItem(scrollCell) : NULL;
 		const DWORD scrollVnum = scroll ? scroll->GetVnum() : 0;
+		const bool highGear = IsPlayerBotHighGear(item);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+		const playerbot_high_gear::EScrollKind hgKind = GetPlayerBotScrollKind(scroll);
+		const int plusBefore = (int)item->GetRefineLevel();
 		bool attempted;
 		if (scrollCell >= 0)
 		{
@@ -634,6 +661,8 @@ namespace
 		}
 		const bool success = (int)ch->CountSpecifyItem(nextVnum) > before;
 		const bool burned = !success && (!after || (after->GetVnum() != oldVnum && after->GetVnum() + 1 != oldVnum));
+		if (highGear)
+			NotePlayerBotHighGearStep(ch, hgKind, plusBefore, recipe ? (int)recipe->prob : 100, success);
 		const long long paid = goldBefore - (long long)ch->GetGold();
 		++s_kPlayerBotChiStats.refines;
 		if (success)
@@ -686,6 +715,10 @@ namespace
 
 	bool HasPlayerBotChiSmithWork(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the Blacksmith's scrolls of the ladder (Zwoj Wojny, Boga Smokow, Podrecznik)
+		// are made at this smith too - a Sung Ma bot sees no other Kowal
+		if (PlayerBotWantsSmithScrollCraft(ch))
+			return true;
 		const int target = GetPlayerBotChiTarget(ch);
 		int scrollCell;
 		const char* why;
@@ -1079,7 +1112,8 @@ namespace
 			return 1;
 		c.dwNextAction = dwNow + number(2500, 5000);
 		const bool did = c.iActions < PLAYERBOT_CHI_VISIT_ACTIONS &&
-				(atMaster ? RunPlayerBotChiMasterStep(ch, state) : RunPlayerBotChiSmithStep(ch, state));
+				(atMaster ? RunPlayerBotChiMasterStep(ch, state)
+					: (CraftPlayerBotSmithScrolls(ch, "chi") > 0 || RunPlayerBotChiSmithStep(ch, state)));	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
 		if (did)
 		{
 			++c.iActions;
