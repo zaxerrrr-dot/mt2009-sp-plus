@@ -473,8 +473,11 @@ namespace champion
 			return;
 		if (to->FindAffect(AFFECT_EXP_BLOCK))
 			return;
+		// MT2009_PLUS_PD_BONUS_V1 (champion exp): the items' experience too - the rings, the lollipops, the amulets and the
+		// costume sets (POINT_RAMADAN_CANDY_BONUS_EXP, server-patches/pdbonus), as the ordinary GiveExp counts them; the
+		// Champion's bar heard only the potions and the mounts (POINT_MALL_EXPBONUS).
 		const int iBonus = MAX(0, 100 + CPrivManager::instance().GetPriv(to, PRIV_EXP_PCT) + to->GetPoint(POINT_EXP) +
-				to->GetPoint(POINT_MALL_EXPBONUS));
+				to->GetPoint(POINT_MALL_EXPBONUS) + to->GetPoint(POINT_RAMADAN_CANDY_BONUS_EXP));
 		unsigned long long exp = (unsigned long long)dwBase * iBonus / 100 * ExpRatePct() / 100;
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a bot's own calibration on top (conqueror_exp_rate_bot, per cent; 0/unset = 100 -
 		// a bot earns as a person does; the plan's D4: the night's measure sets it).

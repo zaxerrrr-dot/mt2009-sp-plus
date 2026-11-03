@@ -3601,6 +3601,9 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["MLODZI_OPEN"] = self.__MlodziOpen
 		serverCommandList["MLODZI_CLOSE"] = self.__MlodziClose
 		serverCommandList["BonusMode"] = self.__BonusMode # MT2009_PLUS_GLOBAL_BONUS_V1
+		serverCommandList["AttrMaxBegin"] = self.__AttrMaxBegin # MT2009_PLUS_PD_BONUS_V1
+		serverCommandList["AttrMax"] = self.__AttrMax # MT2009_PLUS_PD_BONUS_V1
+		serverCommandList["AttrMaxEnd"] = self.__AttrMaxEnd # MT2009_PLUS_PD_BONUS_V1
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
@@ -4424,6 +4427,20 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_GLOBAL_BONUS_V1: "BonusMode 0|1" at login (quest zywioly) - the server's M2_BONUS_MODE: 1 = global,
 	# the tooltip's bonus maxima of the global server and the element icons of every monster (localeinfo_point.py,
 	# uitarget.py, zywioly_global.py).
+	# MT2009_PLUS_PD_BONUS_V1 (attr max): this world's bonus maxima at login (server-patches/pdbonus) - "AttrMaxBegin <sets>",
+	# "AttrMax <rare> <apply>:<v0>/<v1>/... ...", "AttrMaxEnd"; the tooltip's gold line reads them (localeinfo_point.py).
+	def __AttrMaxBegin(self, sets = "0", *args):
+		import localeinfo_point
+		localeinfo_point.AttrMaxBegin(sets)
+
+	def __AttrMax(self, rare = "0", *tokens):
+		import localeinfo_point
+		localeinfo_point.AttrMaxLine(rare, tokens)
+
+	def __AttrMaxEnd(self, *args):
+		import localeinfo_point
+		localeinfo_point.AttrMaxEnd()
+
 	def __BonusMode(self, mode = "0", *args):
 		import localeinfo_point
 		localeinfo_point.SetBonusMode(str(mode).strip() == "1")

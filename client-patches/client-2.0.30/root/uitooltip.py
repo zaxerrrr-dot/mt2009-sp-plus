@@ -1034,7 +1034,9 @@ class ItemToolTip(ToolTip):
 						affectString = affectString.replace("+", "")
 					affectColor = self.__GetAttributeColor(i, value)
 
-					isMaxBonus = localeinfo_point.ATTR_MAX_VALUES.has_key(type) and localeinfo_point.ATTR_MAX_VALUES[type] <= value
+					# MT2009_PLUS_PD_BONUS_V1 (attr max): the gold line by this world's maxima for this kind of item (the
+					# server's item_attr / item_attr_rare - bonus mode and panel editor included; localeinfo_point.py)
+					isMaxBonus = localeinfo_point.IsMaxAttrValue(type, value, i, item.GetItemType(), item.GetItemSubType())
 
 					if isMaxBonus:
 						value_color = "ffb52b"

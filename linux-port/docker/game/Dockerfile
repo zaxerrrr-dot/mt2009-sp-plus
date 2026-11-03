@@ -565,6 +565,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter + boss chests + Okey chests, M3 drops appended"
 
+# MT2009_PLUS_PD_BONUS_V1 (server-patches/pdbonus): the map-90 Metins' Pierscien Doswiadczenia (39002) joins the experience
+# rings' unique group 10000 (stock: 72001-72003, 72049, 72050, 70005) - outside it the ring gave nothing at all. In the group
+# it gives the rings' +50% (item.cpp, POINT_RAMADAN_CANDY_BONUS_EXP) and cannot be worn with another ring of the group.
+# The next free index (a group stops reading at the first index it lacks); once only.
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt \
+ && awk 'BEGIN{g=0; n=0; has=0} /^[[:blank:]]*Group/{g=0} /^[[:blank:]]*Vnum[[:blank:]]+10000([^0-9]|$)/{g=1; n=0; has=0} g && $1 ~ /^[0-9]+$/ { n=$1+0; if ($2 == "39002") has=1 } g && /^[[:blank:]]*}/ { if (!has) { printf "\t%d\t39002\t1\t1\t-- Pierscien Doswiadczenia (Metiny map 90)\r\n", n+1; done=1 } g=0 } { print } END{ if (!done && !has) { print "FATAL: no unique group 10000" > "/dev/stderr"; exit 1 } }' "$f" > "$f.new" \
+ && mv "$f.new" "$f" \
+ && grep -q -E '^[[:blank:]]*[0-9]+[[:blank:]]+39002[[:blank:]]' "$f" \
+ && echo "share: 39002 in the experience rings' group 10000"
+
 # MT2009_PLUS_DRAGON_NO_ROTTEN_CHEST_V1: Beran-Setaou / the Blue Dragon (2493) no longer drops the
 # Sprochniala Skrzynia (50124; the owner, 1 October). Its lines in the dragon's mob_drop_item groups
 # get a 0 chance (the group's numbering stays as it is); every other mob keeps the chest.
