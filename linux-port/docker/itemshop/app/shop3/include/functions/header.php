@@ -186,7 +186,9 @@
 		{
 			if(isset($_POST['searchString']))
 			{
-				header("Location: ".$shop_url."search/".str_replace("+", "±", $_POST['searchString']));
+				// MT2009_PLUS_ITEMSHOP_SEARCH_URL_V1: the term encoded in the redirect - "Spirala Czasu (10%)" went out raw
+				// ("%)" is no URL escape) and the game's browser could not open the page; a "/" would split the route.
+				header("Location: ".$shop_url."search/".rawurlencode(str_replace(array("+", "/"), array("±", " "), $_POST['searchString'])));
 				die();
 			}
 			$id = isset($_GET['id']) ? $_GET['id'] : null;
