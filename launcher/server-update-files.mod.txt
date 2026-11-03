@@ -131,6 +131,9 @@ linux-port/docker/game/special_item_group.wiki_nowe.txt
 linux-port/docker/game/costume_sets.txt
 linux-port/docker/game/drop_wiki.txt
 linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
+# MT2009_PLUS_237_GLOBAL_MODE_V1: the alchemy table and the monsters' drops of M2_BONUS_MODE=global (game/Dockerfile).
+linux-port/docker/game/dragon_soul_applys.global.txt
+linux-port/docker/game/moby_global/*
 linux-port/docker/game/special_spawns.baroness.txt
 # MT2009_PLUS_OCHAO_V1: Swiatynia Ochao's share files (Dockerfile step "share: Swiatynia Ochao").
 linux-port/docker/game/ochao/*
@@ -173,6 +176,14 @@ linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_goblin/*
 # MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole and Kraina Gigantow (Dockerfile step "share: Wezowe Pole and Kraina Gigantow",
 # apply.sh's maps_wz.sql).
+# MT2009_PLUS_237_ZAKLETY_LAS_V1: Zaklety Las's share files (Dockerfile step "share: Zaklety Las (353) and Erebu").
+# MT2009_PLUS_237_MAPS90_V1: the level-90 maps' server_attr / npc.txt (Dockerfile steps after Zaklety Las).
+linux-port/docker/game/cape301/map/Metin2_map_CapeDragonHead/*
+linux-port/docker/game/maps302/map/metin2_map_dawnmistwood/*
+linux-port/docker/game/maps302/map/metin2_map_BayBlackSand/*
+linux-port/docker/game/maps302/map/metin2_map_Mt_Thunder/*
+# MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole (80) and Kraina Gigantow (70) - Dockerfile step "share: Wezowe Pole (80) and
+# Kraina Gigantow (70)", apply.sh's maps_wz.sql; MT2009_PLUS_PASS69_OFF_V1's quests are in quest/* above.
 linux-port/docker/game/maps_wz/*
 linux-port/docker/game/maps_wz/map/metin2_map_snakefield/*
 linux-port/docker/game/maps_wz/map/metin2_map_giantland/*

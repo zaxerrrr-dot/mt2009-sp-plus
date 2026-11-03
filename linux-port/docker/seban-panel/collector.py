@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pymysql
 
+import bot_stats
 import log_maintenance
 
 INTERVAL = int(os.environ.get("SEBAN_COLLECTOR_INTERVAL", "300"))
@@ -507,6 +508,12 @@ def collect(con, previous):
                 cur.execute("INSERT IGNORE INTO player.web_seban_metric_snapshot VALUES (%s,%s,%s)",
                             (now, f"lvl_{int(bracket)}_{int(bracket)+9}", count))
         check_plus9_refines(cur)
+        # MT2009_PLUS_SEBAN_BOT_STATS_V1: the dungeon runs the cores closed
+        # since the last round (bot_stats.py); never stops the snapshots.
+        try:
+            bot_stats.import_dungeon_runs(cur, CHANNEL_VAR_ROOT)
+        except Exception as exc:
+            print(f"[seban-collector] bot dungeon runs: {exc}", flush=True)
     return previous
 
 

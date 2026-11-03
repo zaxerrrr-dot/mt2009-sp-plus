@@ -130,6 +130,10 @@ namespace
 		const DWORD pid = ch->GetPlayerID();
 		if (IsPlayerBotInMeetup(pid) || IsPlayerBotDealMeeting(pid) || IsPlayerBotDropper(state.bPersonality))
 			return false;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1: a bot away in another kingdom is
+		// not called home for a meeting (its trip plans its own there).
+		if (IsPlayerBotOnKingdomVisit(pid))
+			return false;
 		if (ch->GetMyShop() || ch->GetExchange() || IsPlayerBotInDungeonBusiness(ch, state) ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
 				IsPlayerBotArezzoHeld(ch) || IsPlayerBotOchaoForced(ch) || state.dwGuildWarEnemyGID != 0 || state.bWorldEventKind != 0 ||

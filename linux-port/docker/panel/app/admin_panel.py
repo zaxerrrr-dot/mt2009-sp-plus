@@ -321,6 +321,11 @@ PLAYERBOT_STATUS_PATHS = (
     "/opt/metin2/var/channel4/first/playerbot_status.tsv",
     "/opt/metin2/var/channel4/game1/playerbot_status.tsv",
     "/opt/metin2/var/channel4/game2/playerbot_status.tsv",
+    # MT2009_PLUS_237_NEWCORE_V1 / MT2009_PLUS_YOHARA_CORE_V1: each channel's Yohara core (game3) - the bots handed over there.
+    "/opt/metin2/var/channel1/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel2/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel3/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel4/game3/playerbot_status.tsv",
 )
 _PLAYERBOT_STATUS_LOCK = threading.Lock()
 _PLAYERBOT_STATUS_CACHE_KEY = None
@@ -1198,6 +1203,39 @@ AI_WEIGHT_KEYS = [
 ]
 
 
+# MT2009_PLUS_BOT_KINGDOM_VISITS_V1: the bots' shopping trips to another
+# kingdom's first village through Orc Valley and the guilds' raids on one
+# (playerbot_kingdom_visits.h, playerbot_config.h PLAYERBOT_VISIT_KEYS): key,
+# default, lowest, highest, the control ("switch", "range", "number") and its
+# step. The core clamps to the same ranges.
+KINGDOM_VISIT_KEYS = [
+    ("VISITS", 1, 0, 1, "switch", 1),
+    ("VISIT_PER_HOUR", 200, 0, 600, "range", 10),
+    ("VISIT_MAX", 80, 0, 300, "range", 5),
+    ("VISIT_MIN_LEVEL", 35, 1, 120, "number", 1),
+    ("VISIT_MIN_GOLD", 200000, 0, 2000000000, "number", 10000),
+    ("VISIT_STAY_MIN", 8, 1, 120, "number", 1),
+    ("VISIT_STAY_MAX", 15, 1, 180, "number", 1),
+    ("VISIT_TRADE_PCT", 35, 0, 100, "range", 5),
+    ("VISIT_CHEAPER_PCT", 15, 0, 90, "range", 1),
+    ("VISIT_MIN_SAVING", 20000, 0, 2000000, "range", 5000),
+    ("RAIDS", 1, 0, 1, "switch", 1),
+    ("RAID_EVERY_MIN", 60, 10, 1440, "range", 5),
+    ("RAID_MIN_MIN", 10, 1, 120, "number", 1),
+    ("RAID_MAX_MIN", 20, 1, 180, "number", 1),
+    ("RAID_SIZE", 8, 2, 30, "range", 1),
+    ("RAID_SIZE_MAX", 16, 2, 40, "range", 1),  # MT2009_PLUS_BOT_TOWNRAID_SIZE_V1
+    ("RAID_MIN_LEVEL", 40, 15, 120, "number", 1),
+    ("RAID_DEFENDERS", 8, 0, 40, "range", 1),
+    ("RAID_RETREAT_DEATHS_PCT", 100, 10, 1000, "number", 10),
+    ("RAID_RETREAT_FAST_PCT", 50, 10, 500, "number", 10),
+    ("RAID_RETREAT_FAST_MIN", 3, 1, 30, "number", 1),
+    ("RAID_SPARE_SEC", 60, 0, 900, "number", 10),
+    ("RAID_TAUNT_SEC", 20, 0, 600, "range", 5),
+]
+KINGDOM_VISIT_RANGE = dict((k[0], (k[2], k[3])) for k in KINGDOM_VISIT_KEYS)
+
+
 def read_ai_weights():
     """What the file says now. Anything missing or unreadable is neutral."""
     vals = {k: AI_W_NEUTRAL for k, _ in AI_WEIGHT_KEYS}
@@ -1269,6 +1307,13 @@ def read_ai_weights():
     # The lowest plus a refine under a Blessing or Dragon God scroll may land
     # on; 1 is no floor, which is also what the core starts from.
     vals["SCROLL_FROM"] = 1
+    # MT2009_PLUS_BOT_DROPPER_ROTATION_V1: hours of play time between two
+    # draws of the guild materials dropper (0: fixed by pid, the old rule).
+    vals["GUILD_DROPPER_HOURS"] = 24
+    # MT2009_PLUS_BOT_KINGDOM_VISITS_V1: the trips to another kingdom's first
+    # village and the raids on one.
+    for _kv in KINGDOM_VISIT_KEYS:
+        vals[_kv[0]] = _kv[1]
     # The bots' guild wars: minutes a war lasts (15 or 30) and hours from the
     # start of one to the next in a kingdom (1-4). DUDU's ask; the defaults are
     # what the core did before there was a choice.
@@ -1414,6 +1459,19 @@ def read_ai_weights():
                     except ValueError:
                         pass
                     continue
+                if name in KINGDOM_VISIT_RANGE:
+                    try:
+                        _lo, _hi = KINGDOM_VISIT_RANGE[name]
+                        vals[name] = max(_lo, min(_hi, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "GUILD_DROPPER_HOURS":
+                    try:
+                        vals["GUILD_DROPPER_HOURS"] = max(0, min(720, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
                 if name == "WAR_MINUTES":
                     try:
                         vals["WAR_MINUTES"] = 15 if int(parts[1]) <= 15 else 30
@@ -1534,6 +1592,11 @@ def write_ai_weights(vals):
     # The lowest plus a scroll refine may land on; 1 leaves the bots' own
     # rules alone.
     body.append("SCROLL_FROM\t%d" % max(1, min(9, int(vals.get("SCROLL_FROM", 1)))))
+    # MT2009_PLUS_BOT_DROPPER_ROTATION_V1: the guild materials dropper's draw.
+    body.append("GUILD_DROPPER_HOURS\t%d" % max(0, min(720, int(vals.get("GUILD_DROPPER_HOURS", 24)))))
+    # MT2009_PLUS_BOT_KINGDOM_VISITS_V1: the trips and the raids.
+    for _kv in KINGDOM_VISIT_KEYS:
+        body.append("%s\t%d" % (_kv[0], max(_kv[2], min(_kv[3], int(vals.get(_kv[0], _kv[1]))))))
     # The bots' guild wars: how long (15 or 30 minutes) and how often (every
     # 1-4 hours in each kingdom).
     body.append("WAR_MINUTES\t%d" % (15 if int(vals.get("WAR_MINUTES", 30)) <= 15 else 30))
@@ -1633,6 +1696,7 @@ EVENTS_STATUS_FILES = [
     "/opt/metin2/var/channel1/game1/playerbot_events_status.tsv",
     "/opt/metin2/var/channel1/first/playerbot_events_status.tsv",
     "/opt/metin2/var/channel1/game2/playerbot_events_status.tsv",
+    "/opt/metin2/var/channel1/game3/playerbot_events_status.tsv",  # MT2009_PLUS_237_NEWCORE_V1
 ]
 # The bot guilds, one file per core (playerbot_guild.h writes it once a
 # minute): every core knows every guild, but counts only the bots of it
@@ -1641,6 +1705,7 @@ GUILD_STATUS_FILES = [
     "/opt/metin2/var/channel1/game1/playerbot_guild_status.tsv",
     "/opt/metin2/var/channel1/first/playerbot_guild_status.tsv",
     "/opt/metin2/var/channel1/game2/playerbot_guild_status.tsv",
+    "/opt/metin2/var/channel1/game3/playerbot_guild_status.tsv",  # MT2009_PLUS_237_NEWCORE_V1
 ]
 GUILD_TIER_KEYS = ("gl_tier_elite", "gl_tier_strong", "gl_tier_medium", "gl_tier_ordinary")
 GUILD_EMPIRE_KEYS = {1: "gl_empire_shinsoo", 2: "gl_empire_chunjo", 3: "gl_empire_jinno"}
@@ -4719,6 +4784,39 @@ T.update({
                   "pl":"Najniższy plus, na jaki bot ulepsza pod Zwojem Błogosławieństwa albo Zwojem Boga Smoków. Przy +7 zwój idzie tylko na ulepszenia na +7, +8 i +9, a każde niższe bot robi u kowala bez zwoju, jak gracz, który zwojów nie ma - więc przedmiot może spłonąć. Przy +1 nie ma ograniczenia i boty używają zwojów tak jak dotąd: od +7, a wcześniej na założonym przedmiocie, który mógłby spłonąć, i na przedmiocie z cennymi bonusami. Działa w pięć sekund.",
                   "de":"Das niedrigste Plus, auf das ein Bot unter einer Segens- oder Drachengott-Schriftrolle verbessert. Bei +7 geht eine Schriftrolle nur auf die Verbesserungen auf +7, +8 und +9; jede niedrigere macht der Bot beim Schmied ohne Schriftrolle, wie ein Spieler ohne Schriftrollen - der Gegenstand kann also verbrennen. Bei +1 gibt es keine Einschränkung. Wirkt innerhalb von fünf Sekunden.",
                   "tr":"Botun Kutsama veya Ejderha Tanrısı parşömeniyle yükselttiği en düşük artı. +7'de parşömen yalnızca +7, +8 ve +9 yükseltmelerinde kullanılır; daha düşük her yükseltmeyi bot demircide parşömensiz yapar, parşömeni olmayan bir oyuncu gibi - yani eşya yanabilir. +1'de kısıtlama yoktur. Beş saniye içinde uygulanır."},
+ "ai_gdropper":  {"en":"Guild materials droppers: new draw every","pl":"Dropki surowców: nowe losowanie co"},
+ "ai_gdropper_help":{"en":"Hours of a character's own play time after which it is drawn again for the guild materials dropper (Kamień Węgielny, Pień, Dykta). The number of droppers stays as it was; only who farms changes, so the same character does not stay a dropper for good. 0 = the old rule, the same bots for good. Applies within a minute.",
+                  "pl":"Po ilu godzinach własnego czasu gry postaci bot jest losowany na dropka surowców gildii (Kamień Węgielny, Pień, Dykta) od nowa. Liczba dropków zostaje taka sama, zmienia się tylko, kto farmi - ta sama postać nie zostaje dropkiem na zawsze. 0 = stara zasada, na zawsze te same boty. Działa w ciągu minuty."},
+ "ai_gdropper_off":{"en":"fixed (old rule)","pl":"na stałe (stara zasada)"},
+ "ai_kv":        {"en":"Kingdom trips and raids","pl":"Wycieczki i najazdy na inne królestwa"},
+ "ai_kv_help":   {"en":"Bots travel to another kingdom's first village through Orc Valley (in by their own entry, out through the other kingdom's gate), buy at the stands there and strike deals with the local bots on the trade chat; they stay neutral. A bot goes only for a line it would buy that is not on sale in its own kingdom at all, or is cheaper there (Teleporters both ways included) by the percent and the yang set below; it buys that line first. About once an hour per kingdom a bot guild of another kingdom raids a village for 10-20 minutes and fights everybody of other kingdoms there (not in the safe zone, not under the PvP protection level); the village's bots defend it and more are called home; raiders who die too often fall back into the safe zone, shop and go home. The taunts go on the normal chat only. Channel 1, the core that hosts the valley and the villages. Applies within five seconds.",
+                  "pl":"Boty jeżdżą do M1 innego królestwa przez Dolinę Orków (wchodzą swoim wejściem, wychodzą bramą tamtego królestwa), kupują na straganach i dogadują się z miejscowymi botami na czacie handlowym; są neutralne. Bot idzie tylko po przedmiot, który by kupił, a którego w jego królestwie nikt nie sprzedaje, albo który tam jest tańszy (z Teleporterami w obie strony) o procent i yang ustawione niżej; ten przedmiot kupuje najpierw. Mniej więcej raz na godzinę na królestwo gildia botów innego królestwa robi 10-20-minutowy najazd na wioskę i bije wszystkich z innych królestw (nie w strefie bezpiecznej, nie poniżej poziomu ochrony PvP); boty wioski bronią się, a kolejne są wzywane do domu; najeźdźcy, którzy giną za często, wycofują się do strefy, robią zakupy i wracają. Wyzwiska tylko na zwykłym czacie. Kanał 1, rdzeń z doliną i wioskami. Działa w pięć sekund."},
+ "ai_kv_on":     {"en":"Trips to other kingdoms on (master switch)","pl":"Wycieczki do innych królestw włączone (główny przełącznik)"},
+ "ai_kv_raids_on":{"en":"Guild raids on villages on","pl":"Najazdy gildii na wioski włączone"},
+ "ai_kv_raid_now":{"en":"Raid now","pl":"Najazd teraz"},
+ "ai_kv_raid_any":{"en":"the kingdom due next","pl":"królestwo, na które przypada najbliższy"},
+ "ai_kv_raid_now_done":{"en":"Requested: the core calls a raid on its next pass (within seconds) if none is under way on that kingdom and a bot guild can go.","pl":"Zlecone: rdzeń zwoła najazd przy najbliższym przebiegu (w kilka sekund), jeśli na to królestwo żaden nie trwa i jakaś gildia botów może iść."},
+ "ai_kv_visit_per_hour":{"en":"Shopping trips started per hour (most; only bots with a reason go)","pl":"Wycieczek na zakupy na godzinę (najwięcej; idą tylko boty z powodem)"},
+ "ai_kv_visit_max":{"en":"Shoppers away at once (most)","pl":"Najwięcej kupujących naraz"},
+ "ai_kv_visit_min_level":{"en":"Shopper's lowest level","pl":"Najniższy poziom kupującego"},
+ "ai_kv_visit_min_gold":{"en":"Shopper's lowest yang","pl":"Najmniej yang u kupującego"},
+ "ai_kv_visit_stay_min":{"en":"Stay in the village from (min)","pl":"Pobyt w wiosce od (min)"},
+ "ai_kv_visit_stay_max":{"en":"Stay in the village to (min)","pl":"Pobyt w wiosce do (min)"},
+ "ai_kv_visit_trade_pct":{"en":"Shoppers who look for a deal with a local bot (%)","pl":"Kupujący, którzy szukają wymiany z miejscowym botem (%)"},
+ "ai_kv_visit_cheaper_pct":{"en":"Go only if it is cheaper there by at least (%, Teleporters included)","pl":"Idzie tylko, gdy tam taniej o co najmniej (%, z Teleporterami)"},
+ "ai_kv_visit_min_saving":{"en":"... and saves at least (yang)","pl":"... i oszczędza co najmniej (yang)"},
+ "ai_kv_raid_every_min":{"en":"Minutes between two raids on one kingdom","pl":"Minut między najazdami na jedno królestwo"},
+ "ai_kv_raid_min_min":{"en":"Raid's fight lasts from (min)","pl":"Walka najazdu trwa od (min)"},
+ "ai_kv_raid_max_min":{"en":"Raid's fight lasts to (min)","pl":"Walka najazdu trwa do (min)"},
+ "ai_kv_raid_size":{"en":"Raiders of a raid (a guild topped up from its kingdom)","pl":"Najeźdźców w najeździe (gildia dopełniona botami z królestwa)"},
+ "ai_kv_raid_size_max":{"en":"... more for a crowded village (a third of its bots), at most","pl":"... więcej przy zatłoczonej wiosce (1/3 jej botów), najwięcej"},
+ "ai_kv_raid_min_level":{"en":"Raider's lowest level","pl":"Najniższy poziom najeźdźcy"},
+ "ai_kv_raid_defenders":{"en":"Defenders called home","pl":"Obrońców wzywanych do wioski"},
+ "ai_kv_raid_retreat_deaths_pct":{"en":"Retreat after the raiders' deaths in all (% of the raiders)","pl":"Odwrót po śmierciach najeźdźców łącznie (% liczby najeźdźców)"},
+ "ai_kv_raid_retreat_fast_pct":{"en":"... or quickly (% of the raiders)","pl":"... albo szybko (% liczby najeźdźców)"},
+ "ai_kv_raid_retreat_fast_min":{"en":"... within (min)","pl":"... w ciągu (min)"},
+ "ai_kv_raid_spare_sec":{"en":"A fallen victim left alone for (s)","pl":"Pokonany zostawiony w spokoju na (s)"},
+ "ai_kv_raid_taunt_sec":{"en":"Seconds between two taunts of a side (0 = none)","pl":"Sekund między wyzwiskami jednej strony (0 = brak)"},
  "ai_scroll_off":{"en":"no restriction","pl":"bez ograniczenia","de":"keine Einschränkung","tr":"kısıtlama yok"},
  "ai_scroll_top":{"en":"only the upgrade to +9","pl":"tylko ulepszenie na +9","de":"nur die Verbesserung auf +9","tr":"yalnızca +9 yükseltmesi"},
  "ai_chest":     {"en":"Moonlight Treasure Chests","pl":"Szkatułki Księżycowe","de":"Mondschein-Schatztruhen","tr":"Ay Işığı Sandıkları"},
@@ -5326,6 +5424,7 @@ app = Flask(__name__)
 app.jinja_env.globals["DISCORD"] = DISCORD_URL
 app.jinja_env.globals["WEBSITE"] = WEBSITE_URL
 app.jinja_env.globals["COFFEE"] = COFFEE_URL
+app.jinja_env.globals["KV_KEYS"] = KINGDOM_VISIT_KEYS  # MT2009_PLUS_BOT_KINGDOM_VISITS_V1
 app.jinja_env.globals["minutes_label"] = event_minutes_label  # MT2009_PLUS_EVENTS_7_DAYS_V1
 app.secret_key = CONF["flask_secret"]
 
@@ -8539,6 +8638,39 @@ TPL_AI = BASE.replace("__BODY__", """
          oninput="document.getElementById('v_SCROLL_FROM').textContent='+'+this.value">
   <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
     <span>+1 — {{t('ai_scroll_off')}}</span><span>+9 — {{t('ai_scroll_top')}}</span>
+  </div>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🪵 {{t('ai_gdropper')}}
+      <span class="badge" id="v_GUILD_DROPPER_HOURS">{{cur.get('GUILD_DROPPER_HOURS', 24)}} h</span></h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_gdropper_help')}}</p>
+  <input type="range" name="GUILD_DROPPER_HOURS" id="s_GUILD_DROPPER_HOURS" min="0" max="168" step="1" value="{{cur.get('GUILD_DROPPER_HOURS', 24)}}" style="width:100%"
+         oninput="document.getElementById('v_GUILD_DROPPER_HOURS').textContent=this.value+' h'">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0 — {{t('ai_gdropper_off')}}</span><span>168 h</span>
+  </div>
+</div>
+<div style="margin-bottom:18px">{# MT2009_PLUS_BOT_KINGDOM_VISITS_V1 #}
+  <input type="hidden" name="KV_FORM" value="1">
+  <h3 style="margin:0 0 2px">🗺️ {{t('ai_kv')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_kv_help')}}</p>
+  <label><input type="checkbox" name="VISITS" value="1" {% if cur.get('VISITS', 1) %}checked{% endif %}> {{t('ai_kv_on')}}</label><br>
+  <label><input type="checkbox" name="RAIDS" value="1" {% if cur.get('RAIDS', 1) %}checked{% endif %}> {{t('ai_kv_raids_on')}}</label>
+  {% for kv in KV_KEYS %}{% if kv[4] == 'range' %}
+  <h4 style="margin:10px 0 2px">{{t('ai_kv_' ~ kv[0]|lower)}}
+      <span class="badge" id="v_{{kv[0]}}">{{cur.get(kv[0], kv[1])}}</span></h4>
+  <input type="range" name="{{kv[0]}}" min="{{kv[2]}}" max="{{kv[3]}}" step="{{kv[5]}}" value="{{cur.get(kv[0], kv[1])}}" style="width:100%"
+         oninput="document.getElementById('v_{{kv[0]}}').textContent=this.value">
+  {% elif kv[4] == 'number' %}
+  <div style="margin-top:8px"><label>{{t('ai_kv_' ~ kv[0]|lower)}}
+    <input type="number" name="{{kv[0]}}" min="{{kv[2]}}" max="{{kv[3]}}" step="{{kv[5]}}" style="width:120px" value="{{cur.get(kv[0], kv[1])}}"></label></div>
+  {% endif %}{% endfor %}
+  <div style="margin-top:10px">
+    <select name="RAID_TARGET">
+      <option value="0">{{t('ai_kv_raid_any')}}</option>
+      <option value="1">Shinsoo</option><option value="2">Chunjo</option><option value="3">Jinno</option>
+    </select>
+    <button type="submit" formaction="{{url_for('ai_raid_now')}}" formmethod="post">{{t('ai_kv_raid_now')}}</button>
   </div>
 </div>
 <div style="margin-bottom:18px">
@@ -14047,6 +14179,11 @@ def api_bot_logs(bot_name):
             "/opt/metin2/var/channel4/game1/syslog",
             "/opt/metin2/var/channel4/first/syslog",
             "/opt/metin2/var/channel4/game2/syslog",
+            # MT2009_PLUS_237_NEWCORE_V1: the map cores
+            "/opt/metin2/var/channel1/game3/syslog",
+            "/opt/metin2/var/channel2/game3/syslog",
+            "/opt/metin2/var/channel3/game3/syslog",
+            "/opt/metin2/var/channel4/game3/syslog",
         ]
         matched_lines = []
         # The whole name and not a prefix of one: "botgrom" used to match
@@ -20024,7 +20161,7 @@ def read_channels_state():
         base = re.match(r"\s*(\d+)", eff.get("PORTS", ""))
         base = base.group(1) if base else "13000"
     base = int(base)
-    ports = eff.get("PORTS", "%d-%d" % (base, base + 2))
+    ports = eff.get("PORTS", "%d-%d" % (base, base + 3))  # MT2009_PLUS_237_NEWCORE_V1: + the map core (game3)
     last = re.search(r"(\d+)\s*$", ports)
     ports_open = bool(last) and int(last.group(1)) >= base + 12
     # MT2009_PLUS_CH34_V1: CH3 (BASE+20..22) and CH4 (BASE+30..32), in a row
@@ -20840,6 +20977,23 @@ def ai_weights():
             vals["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", 1))))
         except (TypeError, ValueError):
             vals["SCROLL_FROM"] = 1
+        # MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+        try:
+            vals["GUILD_DROPPER_HOURS"] = max(0, min(720, int(request.form.get("GUILD_DROPPER_HOURS", old.get("GUILD_DROPPER_HOURS", 24)))))
+        except (TypeError, ValueError):
+            vals["GUILD_DROPPER_HOURS"] = old.get("GUILD_DROPPER_HOURS", 24)
+        # MT2009_PLUS_BOT_KINGDOM_VISITS_V1: a form without the section (a tab
+        # opened before it existed) keeps the file's.
+        for _kv in KINGDOM_VISIT_KEYS:
+            if "KV_FORM" not in request.form:
+                vals[_kv[0]] = old.get(_kv[0], _kv[1])
+            elif _kv[4] == "switch":
+                vals[_kv[0]] = 1 if request.form.get(_kv[0]) else 0
+            else:
+                try:
+                    vals[_kv[0]] = max(_kv[2], min(_kv[3], int(request.form.get(_kv[0], old.get(_kv[0], _kv[1])))))
+                except (TypeError, ValueError):
+                    vals[_kv[0]] = old.get(_kv[0], _kv[1])
         try:
             vals["WAR_MINUTES"] = 15 if int(request.form.get("WAR_MINUTES", 30)) <= 15 else 30
         except (TypeError, ValueError):
@@ -20927,6 +21081,30 @@ def ai_tower_now():
         flash(t("ai_tower_now_done"))
     except OSError as e:
         flash("%s: %s" % (t("ai_tower_now"), e))
+    return redirect(url_for("ai_weights"))
+
+
+@app.route("/ai/raid_now", methods=["POST"])
+@login_required
+def ai_raid_now():
+    """"Now" for the bots' raid on a kingdom's first village
+    (MT2009_PLUS_BOT_KINGDOM_VISITS_V1): the core watches this file's mtime
+    (PLAYERBOT_RAID_NOW_PATH in playerbot_kingdom_visits.h) and reads the
+    kingdom from it - 1, 2 or 3, or 0 for the one due next."""
+    path = os.path.join(AI_SPOOL, "playerbot_raid_now")
+    try:
+        target = int(request.form.get("RAID_TARGET", 0))
+    except (TypeError, ValueError):
+        target = 0
+    if target not in (1, 2, 3):
+        target = 0
+    try:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("%d\n" % target)
+        os.utime(path, None)
+        flash(t("ai_kv_raid_now_done"))
+    except OSError as e:
+        flash("%s: %s" % (t("ai_kv_raid_now"), e))
     return redirect(url_for("ai_weights"))
 
 
