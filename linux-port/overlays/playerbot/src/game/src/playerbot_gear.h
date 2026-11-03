@@ -508,6 +508,26 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_SHIELD41_V1 (IsPlayerBotOutdatedGear): a level-41 shield in the bag this bot can put on.
+	const int PLAYERBOT_SHIELD41_LEVEL = 41;
+	unsigned int s_uPlayerBotShield41Steps = 0;
+	bool PlayerBotOwnsShield41(LPCHARACTER ch, LPITEM worn)
+	{
+		if (!ch || !ch->IsItemLoaded() || (worn && !worn->IsEquipped()))
+			return false;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM held = ch->GetInventoryItem(cell);
+			if (held && held->GetCell() == cell && held->GetType() == ITEM_ARMOR && held->GetSubType() == ARMOR_SHIELD &&
+					(int)held->GetLevelLimit() == PLAYERBOT_SHIELD41_LEVEL && IsPlayerBotEquipmentCandidate(ch, held))
+			{
+				++s_uPlayerBotShield41Steps;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	bool IsPlayerBotOutdatedGear(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->GetType() != ITEM_ARMOR || !IsPlayerBotOutdatedGearSubType(item->GetSubType()))
@@ -517,6 +537,13 @@ namespace
 			return true;
 		if ((int)ch->GetLevel() >= PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL &&
 				(int)item->GetLevelLimit() + PLAYERBOT_OUTDATED_GEAR_LEVELS <= (int)ch->GetLevel())
+			return true;
+		// MT2009_PLUS_BOT_SHIELD41_V1 (the owner, 3 November 2026: "Tarcza na 41 poz. jako etap przejsciowy"): a shield
+		// under level forty-one gives way to a level-41 shield the bot owns and may wear - the step between the
+		// merchants' 21 and the 61 - whatever the two score: forty bots of 40-49 on the test world kept a lv0/lv21
+		// shield +8 with a level-41 one in the bag. The anvil raises the new one from there.
+		if (item->GetSubType() == ARMOR_SHIELD && (int)item->GetLevelLimit() < PLAYERBOT_SHIELD41_LEVEL &&
+				(int)ch->GetLevel() >= PLAYERBOT_SHIELD41_LEVEL && PlayerBotOwnsShield41(ch, item))
 			return true;
 		// MT2009_PLUS_BOT_SMITHY_V1, point 2: a helmet or a shield under the
 		// merchants' best for the bot is outdated from level twenty-one - the
@@ -3268,11 +3295,31 @@ namespace
 		return (int)(PlayerBotNavHash(salt) % 100U) < PLAYERBOT_LEVEL30_SALE_REFINE_PERCENT;
 	}
 
+	// MT2009_PLUS_BOT_SALE_REFINE_NEAR_LEVEL_V1 (the owner, 3 November 2026: "Masowe ulepszanie na sprzedaz i
+	// Rzemieslnik tylko na przedmiotach w okolicy poziomu bota"): the anvil work a bot does for the market - the
+	// level-30 weapons ground for sale (PlayerBotRefinesLevel30ForSale), the day's surplus one (the lottery,
+	// playerbot_upstream_botlogic.h) and the gambler's stock (IsPlayerBotGambleStock) - only on a piece within
+	// PLAYERBOT_SALE_REFINE_LEVEL_SPAN levels under the bot: bots of seventy-three to a hundred and seventeen ground
+	// level-30 weapons on the test world (3 November), "no lv84 bot refining a lv32 weapon". What it refines for
+	// itself is not asked. Counted: "sale refine far".
+	const int PLAYERBOT_SALE_REFINE_LEVEL_SPAN = 20;
+	unsigned int s_uPlayerBotSaleRefineFar = 0;
+	bool IsPlayerBotSaleRefineNearLevel(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item)
+			return false;
+		if ((int)ch->GetLevel() <= (int)item->GetLevelLimit() + PLAYERBOT_SALE_REFINE_LEVEL_SPAN)
+			return true;
+		++s_uPlayerBotSaleRefineFar;
+		return false;
+	}
+
 	bool PlayerBotRefinesLevel30ForSale(LPCHARACTER ch, LPITEM item, DWORD itemId)
 	{
 		if (!ch || !item || !IsPlayerBotSpecialLevel30Weapon(item) || item->CanUsedBy(ch) ||
 				IsPlayerBotL30WeaponSeller(ch) || // MT2009_PLUS_L30_WEAPON_DROPPER_V2
-				IsPlayerBotScrollOnlyWeapon(item) || !IsPlayerBotLevel30SaleDraw(ch, itemId))
+				IsPlayerBotScrollOnlyWeapon(item) || !IsPlayerBotLevel30SaleDraw(ch, itemId) ||
+				!IsPlayerBotSaleRefineNearLevel(ch, item))	// MT2009_PLUS_BOT_SALE_REFINE_NEAR_LEVEL_V1
 			return false;
 		// The bow or fan a keeper builds for its sash is not goods.
 		if (IsPlayerBotSashGrailProject(ch, item))
@@ -4143,6 +4190,38 @@ namespace
 	// sale rule raises for a counter, the scroll rule's piece or the sash's
 	// grail; and the Law of Advancement's plus (GetPlayerBotLawRefinePlus) is
 	// asked beside the target, so a piece the law is short of still climbs.
+	// MT2009_PLUS_BOT_JEWEL_DEVELOP_V1 (the owner, 3 November 2026: "Boty rozwijaja bransolety, naszyjniki, kolczyki,
+	// buty od 70-75 poz. i helm 41 od 60 poz. (zamiast zostawiac na +4)"): the bracelet, the necklace, the earrings
+	// and the boots a bot of PLAYERBOT_JEWEL_DEVELOP_LEVEL and up fights in, and the level-41 helmet of a bot of
+	// PLAYERBOT_HELM41_DEVELOP_LEVEL and up, climb past the persona's +4 for the small pieces (which waited for the
+	// weapon, the armour and the shield at +7) and past the mature bot's freeze on its weakest gear - to the bot's
+	// drawn aim, to +9 under a scroll. 508 of those pieces stood at +4 on the bots of 70-89 of the test world
+	// (3 November). The plain anvil's own bars (the worn piece without a spare) stand: the scrolls come from the
+	// market's pack (MT2009_PLUS_BOT_SCROLL_PACK_V1). Counted ("small pieces developed").
+	const int PLAYERBOT_JEWEL_DEVELOP_LEVEL = 70;
+	const int PLAYERBOT_HELM41_DEVELOP_LEVEL = 60;
+	const int PLAYERBOT_HELM41_LEVEL = 41;
+	unsigned int s_uPlayerBotSmallPiecesDeveloped = 0;
+	int GetPlayerBotFightingSlotOf(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotDevelopedSmallPiece(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_ARMOR || GetPlayerBotFightingSlotOf(ch, item) < 0)
+			return false;
+		switch (item->GetSubType())
+		{
+			case ARMOR_WRIST:
+			case ARMOR_NECK:
+			case ARMOR_EAR:
+			case ARMOR_FOOTS:
+				return (int)ch->GetLevel() >= PLAYERBOT_JEWEL_DEVELOP_LEVEL;
+			case ARMOR_HEAD:
+				return (int)item->GetLevelLimit() == PLAYERBOT_HELM41_LEVEL &&
+						(int)ch->GetLevel() >= PLAYERBOT_HELM41_DEVELOP_LEVEL;
+			default:
+				return false;
+		}
+	}
+
 	bool IsPlayerBotMatureLowGear(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || (int)ch->GetLevel() < PLAYERBOT_MATURE_GEAR_LEVEL ||
@@ -4151,7 +4230,8 @@ namespace
 			return false;
 		if (IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotArcherStoneWeapon(ch, item) ||
 				IsPlayerBotSashGrailProject(ch, item) || IsPlayerBotScrollRulePiece(ch, item) ||
-				PlayerBotRefinesLowArmourForSale(ch, item) || PlayerBotRefinesSpareForSale(ch, item))
+				PlayerBotRefinesLowArmourForSale(ch, item) || PlayerBotRefinesSpareForSale(ch, item) ||
+				IsPlayerBotDevelopedSmallPiece(ch, item))	// MT2009_PLUS_BOT_JEWEL_DEVELOP_V1
 			return false;
 		return true;
 	}
@@ -4199,6 +4279,16 @@ namespace
 		// ready for its next tier (GetPlayerBotFutureProjectTarget).
 		if (IsPlayerBotFutureProject(ch, item))
 			return GetPlayerBotFutureProjectTarget(ch, item);
+		// MT2009_PLUS_BOT_JEWEL_DEVELOP_V1: the small pieces of a bot of seventy and the level-41 helmet of one of sixty
+		// climb to the drawn aim, to the scroll ladder's +9 with a scroll in the bag.
+		if (IsPlayerBotDevelopedSmallPiece(ch, item))
+		{
+			const BYTE drawn = GetPlayerBotRefineAmbitionDrawn(ch, item);
+			if (item->GetRefineLevel() >= PLAYERBOT_GEAR_MIN_PLUS && item->GetRefineLevel() < drawn)
+				++s_uPlayerBotSmallPiecesDeveloped;
+			return CountPlayerBotSafeRefineScrolls(ch) > 0 && !IsPlayerBotScrollFreeGear(item)
+					? std::max<BYTE>(drawn, PLAYERBOT_SCROLL_REFINE_MAX_PLUS) : drawn;
+		}
 		// Under Iwakura's personalities the helmet, the boots and the jewellery
 		// go no further than +4 until the weapon, the armour and the shield
 		// stand at +7 (GetPlayerBotRefineAmbition) - and a scroll in the bag,

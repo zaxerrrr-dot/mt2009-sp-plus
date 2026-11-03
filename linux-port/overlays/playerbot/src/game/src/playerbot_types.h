@@ -2387,6 +2387,9 @@ namespace
 	// Four since Iwakura's Patch 4, point 6: "natychmiast aplikuje Dodania, a
 	// nastepnie jesli przedmiot posiada 4 bonusy dodatkowe to zmienia bonusy".
 	const int PLAYERBOT_BONUS_CHANGE_MIN_LINES = 4;
+	// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1 (the owner, 3 November 2026): with no ordinary add stone in the bag the change
+	// goes on a piece of three lines already (playerbot_bonus_rules.h, PlainChangeLinesReached).
+	const int PLAYERBOT_BONUS_CHANGE_NO_ADD_LINES = 3;
 	// What the lines rolled on a piece add to what a stall asks for it.
 	//
 	// A counter wanted the same 150 000 for boots +7 carrying five bonus lines
@@ -4216,6 +4219,9 @@ namespace
 	// is drawn by: V1's ice of 81, V2's Setaou of 87.
 	const BYTE PLAYERBOT_GROTTO_V1_MIN_LEVEL = 78;
 	const BYTE PLAYERBOT_GROTTO_V2_MIN_LEVEL = 84;
+	// MT2009_PLUS_BOT_GROTTO2_90_95_V1 (playerbot_travel.h): the levels whose exp ground is the Grotto V2 alone.
+	const int PLAYERBOT_GROTTO2_ONLY_MIN_LEVEL = 90;
+	const int PLAYERBOT_GROTTO2_ONLY_MAX_LEVEL = 95;
 	// MT2009_PLUS_OCHAO_BOTS_V1 (map): the Temple of Ochao (map 209,
 	// metin2_map_mt_th_dungeon_01), entered from Orc Valley through Straznik
 	// Swiatyni from level 95 (temple_of_the_ochao.quest) and left through the

@@ -329,6 +329,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // person. After the Arezzo dungeon cohort, whose scan and boss break-off it
 // borrows with the tower's fight.
 #include "playerbot_party_dungeon.h"
+#include "playerbot_f_census.h" // MT2009_PLUS_BOT_F_CENSUS_V1: the counters of the owner's bot list of 3 November 2026
 // Pirate Tanaka and Zuo's Metin rain: what the timed events put into the
 // world, and the bots that answer them. After the raids, whose fight it
 // borrows and which it gives way to.

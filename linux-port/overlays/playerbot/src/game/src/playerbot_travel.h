@@ -1074,6 +1074,18 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 / _SZC_V1 / _LOOTRUN_V1 (draw): the owner's route of
 		// 21 October - Zaklety Las to 110, the Time Rift (SZC) 110-119, a loot run on a 90-level
 		// map now and then - over another core, within the .env's limits (playerbot_yohara_bots.h).
+		// MT2009_PLUS_BOT_GROTTO2_90_95_V1 (the owner, 3 November 2026: "Boty 90-95 expia tylko w Grocie Wygnancow v2"):
+		// from ninety to ninety-five the Grotto of Exile V2 (Setaou 87-97) is the one exp ground - ahead of the Yohara
+		// route's Zaklety Las and loot runs, the Temple of Ochao and the Grotto V1's third. A stone hunter keeps its
+		// stones (no grotto has one); a core that does not host the grotto keeps the draw below.
+		if (!stoneHunter && (int)level >= PLAYERBOT_GROTTO2_ONLY_MIN_LEVEL && (int)level <= PLAYERBOT_GROTTO2_ONLY_MAX_LEVEL &&
+				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2))
+		{
+			PlayerBotLogThrottled("grotto2_only", get_dword_time(),
+					"PLAYERBOT_TRAVEL: grotto v2 for 90-95 pid=%u name=%s level=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)level);
+			return PLAYERBOT_MAP_GROTTO_V2;
+		}
 		{
 			const long yohara = GetPlayerBotYoharaFrontier(ch, stoneHunter);
 			if (yohara != 0)

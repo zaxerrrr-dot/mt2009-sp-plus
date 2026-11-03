@@ -320,6 +320,11 @@ namespace
 		switch (item->GetType())
 		{
 			case ITEM_USE:
+				// MT2009_PLUS_BOT_LOOT_YOHARA_V1 (the owner, 30 October, poprawki-3.0.8 point 3: "duzo mikstur - boty
+				// obok ich nie zbieraja"): on a Sung Ma map a bot drinks its potions by the hundred and walks to Dongan
+				// for more (the errand, playerbot_yohara_sungma.h) - the potions at its feet are not beneath it there.
+				if (IsPlayerBotSungmaMapOn(ch->GetMapIndex()))
+					return false;
 				return item->GetSubType() == USE_POTION ||
 						item->GetSubType() == USE_POTION_NODELAY;
 			case ITEM_MATERIAL:
@@ -334,6 +339,13 @@ namespace
 				// ... warto podnosic tak czy siak").
 				if (item->GetType() == ITEM_ARMOR &&
 						(item->GetSubType() == ARMOR_HEAD || item->GetSubType() == ARMOR_SHIELD))
+					return false;
+				// MT2009_PLUS_BOT_LOOT_YOHARA_V1: nor a talisman or a glove (the slots past the earrings). A
+				// Talizman Lodu+0 is a level-20 piece the merchant pays 2 000 for, and was "merchant fodder" to
+				// every bot of sixty and up - while it is what the bots refine and wear for the Sung Ma maps'
+				// elements and a counter's dear line (poprawki-3.0.8 point 3: "Talizman Lodu+0 (duzo wart i
+				// potrzebny botom!)" on the ground beside them).
+				if (item->GetType() == ITEM_ARMOR && item->GetSubType() >= ARMOR_PENDANT)
 					return false;
 				// Nor a Stalki: the Baroness drops them for a crowd whose best is
 				// past sixty-six, and outgrown they are still a counter's second
@@ -546,6 +558,7 @@ namespace
 	const long long PLAYERBOT_LOOT_ROOM_MIN_VALUE = 50000LL;
 	const DWORD PLAYERBOT_LOOT_ROOM_GAP_MS = 15000;
 	std::map<DWORD, DWORD> s_mapPlayerBotLootRoomAt;
+	unsigned int s_uPlayerBotLootRoomSold = 0;	// MT2009_PLUS_BOT_LOOT_YOHARA_V1: room made by a junk sale
 
 	bool IsPlayerBotLootRoomGapOpen(LPCHARACTER ch, DWORD dwNow)
 	{
@@ -581,6 +594,35 @@ namespace
 		s_mapPlayerBotLootRoomAt[ch->GetPlayerID()] = dwNow ? dwNow : 1;
 		LPITEM victim = NULL;
 		long long victimValue = 0;
+		// MT2009_PLUS_BOT_LOOT_YOHARA_V1: first the bag's junk - what the next merchant visit sells anyway
+		// (IsPlayerBotJunkItem, the family cap of a bag under pressure included) - sold where the bot stands at the
+		// merchant's price, whatever its kind: a Yohara resident never walks to a merchant for its bag
+		// (MT2009_PLUS_BOT_SUNGMA_TRIPS_V1), and its bag's junk held the drops off the ground between two tidies.
+		LPITEM junk = NULL;
+		long long junkValue = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->GetWindow() != INVENTORY ||
+					(int)item->GetSize() < (int)drop->GetSize() || item->GetVnum() == drop->GetVnum() ||
+					IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) || !IsPlayerBotJunkItem(ch, item))
+				continue;
+			const long long value = GetPlayerBotJunkSalePrice(item);
+			if (junk && value >= junkValue)
+				continue;
+			junk = item;
+			junkValue = value;
+		}
+		if (junk)
+		{
+			sys_log(0, "PLAYERBOT_LOOT: make room sold pid=%u name=%s map=%ld sold=%u count=%u gold=%lld for=%u value=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), junk->GetVnum(),
+					(unsigned int)junk->GetCount(), junkValue, drop->GetVnum(), dropValue);
+			PlayerBotChangeGold(ch, junkValue);
+			ITEM_MANAGER::instance().RemoveItem(junk, "PLAYERBOT_LOOT_ROOM_SOLD");
+			++s_uPlayerBotLootRoomSold;
+			return true;
+		}
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
