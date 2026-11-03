@@ -179,6 +179,14 @@ namespace
 	// guild on a side before its clock runs out (the WAR_KILLS key; 0 is the
 	// clock alone). The default is the operator's hundred.
 	int s_iPlayerBotWarKills = 200; // MT2009_PLUS_GUILD_WAR_ARENA_V1: 200 (the owner, 3 October)
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1 (a player's report, 29 October:
+	// "dropki surowcow" of 50-60 in armour of level 18 or 26): the guild
+	// materials dropper is no longer a bot's trade for life. Every this many
+	// hours of the character's own play time (POINT_PLAYTIME) the draw is
+	// made again, at the share that keeps the number of droppers what it was
+	// (GetPlayerBotGuildDropperShare). The GUILD_DROPPER_HOURS key; 0 is the
+	// old rule, the same bots by pid for good.
+	int s_iPlayerBotGuildDropperHours = 24;
 	// Whether a bot reads its books without the engine's day between them.
 	// On by default: the day is what makes a book a month's project, and the
 	// books were rotting in the bags of bots that could not read them yet.
@@ -385,6 +393,72 @@ namespace
 	};
 	int s_aiPlayerBotShopMgmt[PLAYERBOT_SM_COUNT] = {};
 
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (the owner, 29 October: "wycieczki
+	// botow na zakupy do M1 innego krolestwa" and the guilds' raids on another
+	// kingdom's first village, playerbot_kingdom_visits.h): the numbers by
+	// their key, default and range, the shop management's way. VISITS 0 is
+	// the master switch (no trip, no raid), RAIDS 0 the raids alone.
+	enum EPlayerBotVisitKey
+	{
+		PLAYERBOT_KV_VISITS,            // master switch
+		PLAYERBOT_KV_PER_HOUR,          // shopping trips started an hour on a core, at most (V2: the clock's turns,
+		                                // each weighing a few bots; only one with a reason goes)
+		PLAYERBOT_KV_MAX,               // shoppers away at once on a core
+		PLAYERBOT_KV_MIN_LEVEL,         // a shopper's lowest level (Orc Valley is crossed)
+		PLAYERBOT_KV_MIN_GOLD,          // and its lowest purse
+		PLAYERBOT_KV_STAY_MIN,          // minutes in the foreign village, from
+		PLAYERBOT_KV_STAY_MAX,          // ... to
+		PLAYERBOT_KV_TRADE_PCT,         // percent of shoppers who look for a trade with a local bot
+		PLAYERBOT_KV_CHEAPER_PCT,       // V2: a trip for a line there this many percent cheaper (trip included) than at home
+		PLAYERBOT_KV_MIN_SAVING,        // V2: ... saving this much yang at least (a line not sold at home: always)
+		PLAYERBOT_KV_RAIDS,             // the raids' switch
+		PLAYERBOT_KV_RAID_EVERY_MIN,    // minutes between two raids on one kingdom
+		PLAYERBOT_KV_RAID_MIN_MIN,      // a raid's fight lasts from
+		PLAYERBOT_KV_RAID_MAX_MIN,      // ... to (minutes)
+		PLAYERBOT_KV_RAID_SIZE,         // raiders of a raid (a guild topped up from its kingdom's band)
+		PLAYERBOT_KV_RAID_SIZE_MAX,     // MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: ... a third of the village's bots if more, this at most
+		PLAYERBOT_KV_RAID_MIN_LEVEL,    // a raider's lowest level
+		PLAYERBOT_KV_RAID_DEFENDERS,    // bots of the raided kingdom called home to defend
+		PLAYERBOT_KV_RETREAT_DEATHS_PCT,// raiders' deaths (percent of the raiders) that end the raid
+		PLAYERBOT_KV_RETREAT_FAST_PCT,  // ... or within RETREAT_FAST_MIN minutes
+		PLAYERBOT_KV_RETREAT_FAST_MIN,
+		PLAYERBOT_KV_SPARE_SEC,         // a victim left alone this long after its death
+		PLAYERBOT_KV_TAUNT_SEC,         // seconds between two taunts of a side on the local chat (0 off)
+		PLAYERBOT_KV_COUNT
+	};
+	const TPlayerBotShopMgmtKey PLAYERBOT_VISIT_KEYS[PLAYERBOT_KV_COUNT] = {
+		{ "VISITS", 1, 0, 1 },
+		{ "VISIT_PER_HOUR", 200, 0, 600 },
+		{ "VISIT_MAX", 80, 0, 300 },
+		{ "VISIT_MIN_LEVEL", 35, 1, 120 },
+		{ "VISIT_MIN_GOLD", 200000, 0, 2000000000 },
+		{ "VISIT_STAY_MIN", 8, 1, 120 },
+		{ "VISIT_STAY_MAX", 15, 1, 180 },
+		{ "VISIT_TRADE_PCT", 35, 0, 100 },
+		{ "VISIT_CHEAPER_PCT", 15, 0, 90 },
+		{ "VISIT_MIN_SAVING", 20000, 0, 100000000 },
+		{ "RAIDS", 1, 0, 1 },
+		{ "RAID_EVERY_MIN", 60, 10, 1440 },
+		{ "RAID_MIN_MIN", 10, 1, 120 },
+		{ "RAID_MAX_MIN", 20, 1, 180 },
+		{ "RAID_SIZE", 8, 2, 30 },
+		{ "RAID_SIZE_MAX", 16, 2, 40 },
+		{ "RAID_MIN_LEVEL", 40, 15, 120 },
+		{ "RAID_DEFENDERS", 8, 0, 40 },
+		{ "RAID_RETREAT_DEATHS_PCT", 100, 10, 1000 },
+		{ "RAID_RETREAT_FAST_PCT", 50, 10, 500 },
+		{ "RAID_RETREAT_FAST_MIN", 3, 1, 30 },
+		{ "RAID_SPARE_SEC", 60, 0, 900 },
+		{ "RAID_TAUNT_SEC", 20, 0, 600 },
+	};
+	int s_aiPlayerBotVisit[PLAYERBOT_KV_COUNT] = {};
+	int FindPlayerBotVisitKey(const char* szKey);
+	void ResetPlayerBotVisitSettings()
+	{
+		for (int i = 0; i < PLAYERBOT_KV_COUNT; ++i)
+			s_aiPlayerBotVisit[i] = PLAYERBOT_VISIT_KEYS[i].iDefault;
+	}
+
 	int FindPlayerBotShopMgmtKey(const char* szKey);
 	void ResetPlayerBotShopMgmt()
 	{
@@ -418,9 +492,11 @@ namespace
 		s_iPlayerBotStone4ReleaseVisit = 2;
 		s_bPlayerBotStone4Off = false;
 		ResetPlayerBotShopMgmt();   // MT2009_PLUS_BOT_SHOP_MGMT_V1
+		ResetPlayerBotVisitSettings();   // MT2009_PLUS_BOT_KINGDOM_VISITS_V1
 		s_iPlayerBotWarMinutes = 30;
 		s_iPlayerBotWarEveryHours = 1;
 		s_iPlayerBotWarKills = 200;
+		s_iPlayerBotGuildDropperHours = 24; // MT2009_PLUS_BOT_DROPPER_ROTATION_V1
 		s_bPlayerBotFastBooks = true;
 		s_bPlayerBotNight = true;
 		s_bPlayerBotLifeSchedule = false;
@@ -862,6 +938,19 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_iPlayerBotKingdomPvpPercent = percent;
 			return;
 		}
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1: one key a number, clamped.
+		{
+			const int key = FindPlayerBotVisitKey(szKey);
+			if (key >= 0)
+			{
+				const TPlayerBotShopMgmtKey& k = PLAYERBOT_VISIT_KEYS[key];
+				const int v = value < k.iLow ? k.iLow : (value > k.iHigh ? k.iHigh : (int)value);
+				if (v != s_aiPlayerBotVisit[key])
+					sys_log(0, "PLAYERBOT_CONFIG: %s %d", k.szName, v);
+				s_aiPlayerBotVisit[key] = v;
+				return;
+			}
+		}
 		// MT2009_PLUS_BOT_SHOP_MGMT_V1: one key a number, clamped.
 		{
 			const int key = FindPlayerBotShopMgmtKey(szKey);
@@ -918,6 +1007,17 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			if (kills != s_iPlayerBotWarKills)
 				sys_log(0, "PLAYERBOT_CONFIG: a guild war with bots is won at %d kills%s", kills, kills ? "" : " (the clock alone)");
 			s_iPlayerBotWarKills = kills;
+			return;
+		}
+		// MT2009_PLUS_BOT_DROPPER_ROTATION_V1: hours of play time between two
+		// draws of the guild materials dropper, 0 for the old fixed draw.
+		if (PlayerBotWeightNameEquals(szKey, "GUILD_DROPPER_HOURS"))
+		{
+			const int hours = value < 0 ? 0 : (value > 720 ? 720 : (int)value);
+			if (hours != s_iPlayerBotGuildDropperHours)
+				sys_log(0, "PLAYERBOT_CONFIG: guild materials droppers drawn %s%d%s", hours ? "every " : "",
+						hours, hours ? " hours of play time" : " (fixed by pid)");
+			s_iPlayerBotGuildDropperHours = hours;
 			return;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "SCROLL_FROM"))
@@ -1094,6 +1194,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_iPlayerBotWarEveryHours;
 		if (PlayerBotWeightNameEquals(szKey, "WAR_KILLS"))
 			return s_iPlayerBotWarKills;
+		if (PlayerBotWeightNameEquals(szKey, "GUILD_DROPPER_HOURS")) // MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+			return s_iPlayerBotGuildDropperHours;
 		if (PlayerBotWeightNameEquals(szKey, "CHEST"))
 			return !s_bPlayerBotChestFromFile ? -1 :
 					(GetPlayerBotChestWantedPermille(false) >= 0 ? GetPlayerBotChestWantedPermille(false) : g_iMoonlightChestPermille);
@@ -1156,6 +1258,16 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			if (key >= 0)
 			{
 				const TPlayerBotShopMgmtKey& k = PLAYERBOT_SHOP_MGMT_KEYS[key];
+				value = value < k.iLow ? k.iLow : (value > k.iHigh ? k.iHigh : value);
+				return true;
+			}
+		}
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1
+		{
+			const int key = FindPlayerBotVisitKey(szKey);
+			if (key >= 0)
+			{
+				const TPlayerBotShopMgmtKey& k = PLAYERBOT_VISIT_KEYS[key];
 				value = value < k.iLow ? k.iLow : (value > k.iHigh ? k.iHigh : value);
 				return true;
 			}
@@ -1646,6 +1758,21 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		return IsPlayerBotShopMgmtOn() && GetPlayerBotShopMgmt(PLAYERBOT_SM_STACK) != 0;
 	}
 
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V1
+	int FindPlayerBotVisitKey(const char* szKey)
+	{
+		for (int i = 0; i < PLAYERBOT_KV_COUNT; ++i)
+			if (PlayerBotWeightNameEquals(szKey, PLAYERBOT_VISIT_KEYS[i].szName))
+				return i;
+		return -1;
+	}
+	int GetPlayerBotVisitSetting(int key)
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return key >= 0 && key < PLAYERBOT_KV_COUNT ? s_aiPlayerBotVisit[key] : 0;
+	}
+
 	// MT2009_PLUS_BOT_STONE4_MARKET_V1
 	int GetPlayerBotStone4Setting(const int& setting)
 	{
@@ -1669,6 +1796,14 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (!s_bPlayerBotWeightsInitialised)
 			ResetPlayerBotWeights();
 		return s_bPlayerBotStone4Off;
+	}
+
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+	int GetPlayerBotGuildDropperHours()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_iPlayerBotGuildDropperHours;
 	}
 
 	int GetPlayerBotScrollFromPlus()

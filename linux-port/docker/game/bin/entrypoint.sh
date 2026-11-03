@@ -101,6 +101,7 @@ PLAYERBOT_CH2_SHARE="${PLAYERBOT_CH2_SHARE:-40}"
 # MT2009_PLUS_CH34_V1: the third and fourth channel, on the same principle as
 # the second (bots play there and relog to CH1 for anything at the stalls),
 # off by default. Each is three more cores (first/game1/game2, ~2.5-3 GB RAM,
+# and its map core game3, MT2009_PLUS_237_NEWCORE_V1, ~0.2-0.8 GB;
 # nearly all of it game1's map data).
 # They go on in a row: CH3 only with CH2, CH4 only with CH3 - the cores are
 # channels 1..M2_CHANNELS and the client lists CH1..CHn.

@@ -2880,7 +2880,9 @@ namespace
 	// minutes; the bound cape first (FindPlayerBotValourCapeCell), and past
 	// PLAYERBOT_CAPE_BOUND_HOARD of them the rest goes at the merchant's
 	// (SellPlayerBotJunkAtMerchant) - they can be neither sold nor traded.
-	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 76007, 70038, 70138, 70057 };
+	// MT2009_PLUS_DROP90_V1: and 39006, the cape the level-90 maps' bosses and
+	// Metins drop (tradeable since; the bots knew only the four above).
+	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 76007, 70038, 70138, 70057, 39006 };
 	const DWORD PLAYERBOT_CAPE_MARKET_VNUM = 70038;
 	const DWORD PLAYERBOT_CAPE_BOUND_VNUM = 76007;
 	const int PLAYERBOT_CAPE_BOUND_HOARD = 200;
@@ -6289,7 +6291,10 @@ namespace
 	// at the unequip. A bot wears them while it hunts and takes them off in
 	// town ("pierscienie czy rekawice zaklada sie na slot na x czasu ... oby
 	// nie ubierali ich w miescie", Tieru, 15 September).
-	const DWORD PLAYERBOT_EXP_RING_VNUMS[] = { 70005, 72001, 72002, 72003, 72049, 72050 };
+	// MT2009_PLUS_DROP90_V1: 39002 too - the ring the level-90 maps' bosses and
+	// Metins drop (70005's masked twin, in group 10000 since; Dockerfile). The
+	// equipment pass, not knowing it, put it on in town like any unique.
+	const DWORD PLAYERBOT_EXP_RING_VNUMS[] = { 70005, 72001, 72002, 72003, 72049, 72050, 39002 };
 	const DWORD PLAYERBOT_THIEF_GLOVE_VNUMS[] = { 70043, 72004, 72005 };
 	bool IsPlayerBotExpRing(DWORD vnum)
 	{
@@ -7876,6 +7881,15 @@ namespace
 		s_mapPlayerBotDropperShopUntil[dwPID] = dwNow + PLAYERBOT_DROPPER_SHOP_WINDOW_MS;
 	}
 
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V2: a gear pick made in the window keeps it
+	// open for the walk to its stand.
+	void ExtendPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow, DWORD dwFor)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotDropperShopUntil.find(dwPID);
+		if (it != s_mapPlayerBotDropperShopUntil.end() && (int)(it->second - (dwNow + dwFor)) < 0)
+			it->second = dwNow + dwFor;
+	}
+
 	bool IsPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow)
 	{
 		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotDropperShopUntil.find(dwPID);
@@ -7901,6 +7915,13 @@ namespace
 	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
 	// (playerbot_shouters.h), kept out of everything the population does.
 	bool IsPlayerBotShouterPID(DWORD pid);
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (playerbot_kingdom_visits.h, included
+	// last): a bot on a trip to another kingdom's first village (shopping or a
+	// raid), a character a raid lets this bot strike, and a blow between two
+	// bots that a raid explains (the Anti-PK protocol leaves it alone).
+	bool IsPlayerBotOnKingdomVisit(DWORD pid);
+	bool IsPlayerBotKingdomRaidFoe(LPCHARACTER ch, LPCHARACTER target);
+	bool IsPlayerBotKingdomRaidBlow(LPCHARACTER victim, LPCHARACTER attacker);
 	// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's three, medal droppers that shout
 	// (playerbot_shouters.h); not counted by IsPlayerBotShouterPID.
 	bool IsPlayerBotMedalShouterPID(DWORD pid);

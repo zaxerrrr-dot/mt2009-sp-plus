@@ -122,7 +122,7 @@ MT2009 PLUS content (alchemy, sashes, saddlebags...).
 
 ### What gets opened
 
-Ports **11000** and **13000–13002** for the game, and **80/443** if you gave a
+Ports **11000** and **13000–13003** for the game, and **80/443** if you gave a
 domain. The script handles `ufw`, `firewalld` and plain `iptables`, and if it
 finds no firewall it tells you the ports may need opening in your provider's
 control panel instead.
@@ -198,7 +198,7 @@ everybody knows them, and nothing in this installation changes them for you.
 
 **"Players cannot connect."** Almost always the provider's own firewall, which
 sits outside your server and which the script cannot reach. Check your provider's
-control panel for ports 11000 and 13000–13002. Second most likely: the client is
+control panel for ports 11000 and 13000–13003. Second most likely: the client is
 pointed at the wrong address — rebuild it with the right one (see below).
 
 **"The download link does not work."** It is probably still building. On the
