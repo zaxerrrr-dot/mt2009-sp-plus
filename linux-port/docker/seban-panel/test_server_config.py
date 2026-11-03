@@ -68,7 +68,7 @@ class ShippedProfiles(unittest.TestCase):
 
     def test_emerald_calendar(self):
         # The wiki's "cotygodniowe eventy dodatkowe", cell by cell: the same week as Sapphire's, every item a 7% drop
-        # from every Metin and boss, the fishing puzzle (Wednesday 0-12, Saturday 12-16) left out, Saturday 20-24 the
+        # from every Metin and boss, the fishing puzzle (Wednesday 0-12, Saturday 12-16, MT2009_PLUS_FISH_PUZZLE_V1), Saturday 20-24 the
         # Moonlight chest event from monsters and Metins (kind chest), and the flower event all week first.
         emerald = next(p for p in server_config.load()["profiles"] if p["id"] == "emerald")
         rows = emerald["events"]
@@ -78,10 +78,10 @@ class ShippedProfiles(unittest.TestCase):
         week = {
             1: (71094, 100300, 25040, 71187),       # Rada Pustelnika, Zielona Smocza Fasola, Zwoj Blog., Nugget (ziel.)
             2: (72724, 51501, 72351, 76014),        # Eliksir Slonca (S), Cor Draconis, Male Blogoslawienstwo, Zaczarowanie (n)
-            3: (None, 70024, 71094, "superstone"),  # fishing, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
+            3: ("fishpuzzle", 70024, 71094, "superstone"),  # Event Rybacki - Puzzle, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
             4: (72728, 72351, 51501, 76013),        # Eliksir Ksiezyca (S), Male Blog., Cor Draconis, Wzmocnienie (n)
             5: (100300, 76014, "superstone", 51501),
-            6: (25040, None, 53235, "chest"),       # Zwoj Blog., fishing, Robin (1d), Szkatulka Blasku Ksiezyca (z potworow)
+            6: (25040, "fishpuzzle", 53235, "chest"),  # Zwoj Blog., Event Rybacki - Puzzle, Robin (1d), Szkatulka Blasku Ksiezyca (z potworow)
             7: (71001, 76013, 71001, 71012),        # Zwoj Egzorcyzmu, Wzmocnienie (n), Zwoj Egzorcyzmu, Ksiega Lidera
         }
         want = []
@@ -92,15 +92,20 @@ class ShippedProfiles(unittest.TestCase):
                 row = {"days": [day], "start": slots[slot], "end": slots[slot + 1], "on": True}
                 if what == "superstone":
                     row.update(kind="superstone", value=1, map=0)
+                elif what == "fishpuzzle":  # MT2009_PLUS_FISH_PUZZLE_V1
+                    row.update(kind="fishpuzzle", value=0, map=0)
                 elif what == "chest":
                     row.update(kind="chest", value=0, map=0)
                 else:
                     row.update(kind="chestdrop", value=70, map=what, target=1)
                 want.append(row)
-        for index, (got, expected) in enumerate(zip(rows[1:], want)):
-            self.assertEqual(got, expected, "row %d" % (index + 1))
-        self.assertEqual(len(rows), 1 + len(want))
-        self.assertEqual(len(rows), 27)
+        # MT2009_PLUS_POTEGA_MADROSCI: Uriel's Potega madrosci all week, after the flower row
+        self.assertEqual(rows[1], {"kind": "potega", "days": [1, 2, 3, 4, 5, 6, 7], "start": "00:00", "end": "24:00",
+                                   "value": 0, "map": 0, "on": True})
+        for index, (got, expected) in enumerate(zip(rows[2:], want)):
+            self.assertEqual(got, expected, "row %d" % (index + 2))
+        self.assertEqual(len(rows), 2 + len(want))
+        self.assertEqual(len(rows), 30)
         self.assertLessEqual(len(rows), server_config.EVENT_ROWS_MAX)
         chests = [r["map"] for r in rows if r["kind"] == "chestdrop"]
         self.assertEqual(len(chests), 23)
@@ -109,7 +114,7 @@ class ShippedProfiles(unittest.TestCase):
 
     def test_sapphire_calendar(self):
         # MT2009_PLUS_SERVER_CONFIG_V1 (the owner, 3 November 2026): the original Sapphire week (pl-wiki "Eventy")
-        # exactly - four slots a day, the fishing puzzle event (Wednesday 0-12, Saturday 12-16) left out, every item
+        # exactly - four slots a day, the fishing puzzle event (Wednesday 0-12, Saturday 12-16), every item
         # a 7% drop from every Metin and boss.
         sapphire = next(p for p in server_config.load()["profiles"] if p["id"] == "sapphire")
         rows = sapphire["events"]
@@ -117,10 +122,10 @@ class ShippedProfiles(unittest.TestCase):
         week = {
             1: (71094, 100300, 25040, 71187),       # Rada Pustelnika, Zielona Smocza Fasola, Zwoj Blog., Nugget (ziel.)
             2: (72724, 51501, 72351, 76014),        # Eliksir Slonca (S), Cor Draconis, Male Blogoslawienstwo, Zaczarowanie (n)
-            3: (None, 70024, 71094, "superstone"),  # fishing, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
+            3: ("fishpuzzle", 70024, 71094, "superstone"),  # Event Rybacki - Puzzle, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
             4: (72728, 72351, 51501, 76013),        # Eliksir Ksiezyca (S), Male Blog., Cor Draconis, Wzmocnienie (n)
             5: (100300, 76014, "superstone", 51501),
-            6: (25040, None, 53235, 50011),         # Zwoj Blog., fishing, Robin (1d), Szkatulka Blasku Ksiezyca
+            6: (25040, "fishpuzzle", 53235, 50011),  # Zwoj Blog., Event Rybacki - Puzzle, Robin (1d), Szkatulka Blasku Ksiezyca
             7: (71001, 76013, 71001, 71012),        # Zwoj Egzorcyzmu, Wzmocnienie (n), Zwoj Egzorcyzmu, Ksiazka Lidera
         }
         want = []
@@ -131,11 +136,16 @@ class ShippedProfiles(unittest.TestCase):
                 row = {"days": [day], "start": slots[slot], "end": slots[slot + 1], "on": True}
                 if what == "superstone":
                     row.update(kind="superstone", value=1, map=0)
+                elif what == "fishpuzzle":  # MT2009_PLUS_FISH_PUZZLE_V1
+                    row.update(kind="fishpuzzle", value=0, map=0)
                 else:
                     row.update(kind="chestdrop", value=70, map=what, target=1)
                 want.append(row)
-        self.assertEqual(rows, want)
-        self.assertEqual(len(rows), 26)
+        # MT2009_PLUS_POTEGA_MADROSCI: Uriel's Potega madrosci all week, first
+        self.assertEqual(rows[0], {"kind": "potega", "days": [1, 2, 3, 4, 5, 6, 7], "start": "00:00", "end": "24:00",
+                                   "value": 0, "map": 0, "on": True})
+        self.assertEqual(rows[1:], want)
+        self.assertEqual(len(rows), 29)
         self.assertNotIn(990071, [r["map"] for r in rows])  # no item of its own invented
         self.assertLessEqual(len(rows), server_config.EVENT_ROWS_MAX)
         self.assertEqual(sapphire["env"]["M2_MONSTER_ATTACK"], "80")
@@ -323,7 +333,7 @@ class Routes(unittest.TestCase):
         self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global", "M2_DIFFICULTY": "hard"})
         self.assertEqual(self.rates_called, [{"exp": 100, "drop": 150, "yang": 100}])
         rows, _nows = panel.read_events()
-        self.assertEqual(len(rows), 26)
+        self.assertEqual(len(rows), 29)  # + potega, 2 x fishpuzzle
         text = self.events_file.read_text()
         self.assertIn("chestdrop\t4\t00:00\t12:00\t70\t72728\t1\n", text)
         self.assertIn("chestdrop\t6\t20:00\t24:00\t70\t50011\t1\n", text)
@@ -336,7 +346,7 @@ class Routes(unittest.TestCase):
         (self.spool / "env.request").unlink()
         with patch.object(env_editor, "apply_live", return_value={}):
             self.apply("sapphire", parts=("events",))
-        self.assertEqual(len(panel.read_events()[0]), 26)
+        self.assertEqual(len(panel.read_events()[0]), 29)
 
     def test_apply_emerald_through_the_existing_paths(self):
         self.ready()
@@ -349,7 +359,7 @@ class Routes(unittest.TestCase):
         self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global", "M2_DIFFICULTY": "hard"})
         self.assertEqual(self.rates_called, [{"exp": 150, "drop": 150, "yang": 100}])
         rows, _nows = panel.read_events()
-        self.assertEqual(len(rows), 27)
+        self.assertEqual(len(rows), 30)  # + potega, 2 x fishpuzzle
         text = self.events_file.read_text()
         self.assertIn("flower\t*\t00:00\t24:00\t0\n", text)
         self.assertIn("chest\t6\t20:00\t24:00\t0\n", text)
@@ -363,7 +373,7 @@ class Routes(unittest.TestCase):
         with patch.object(env_editor, "apply_live", return_value={}):
             self.apply("emerald", parts=("events",))
         self.assertFalse([q for q in self.sql if q[0].startswith("UPDATE player.worldboss_config")])
-        self.assertEqual(len(panel.read_events()[0]), 27)
+        self.assertEqual(len(panel.read_events()[0]), 30)
 
     def test_worldboss_needs_its_table(self):
         with patch.object(FakeCursor, "worldboss_row", None):
@@ -380,7 +390,7 @@ class Routes(unittest.TestCase):
         # Rates and the calendar alone need no updater.
         self.apply("sapphire", parts=("rates", "events"))
         self.assertEqual(self.rates_called, [{"exp": 100, "drop": 150, "yang": 100}])
-        self.assertEqual(len(panel.read_events()[0]), 26)
+        self.assertEqual(len(panel.read_events()[0]), 29)
 
     def test_dismiss_hides_the_reminder(self):
         self.assertIn("Wybierz konfigurację świata", self.client.get("/advanced/server-config").get_data(as_text=True))

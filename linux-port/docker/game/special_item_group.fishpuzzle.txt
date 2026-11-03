@@ -1,0 +1,82 @@
+# MT2009_PLUS_FISH_PUZZLE_V1: Zl. Skrzynia na Ryby (M) / (S) / (D) 83001-83003 - the rewards of Event Rybacki - Puzzle
+# (fish_puzzle.cpp: (D) for a board laid in 10 attempts or fewer, (S) 11-24, (M) 25 or more). The contents are the
+# pl-wiki's list of "Zl. Skrzynia na Ryby (D)" in our items (the wiki gives no chances; the horse seal, the hands and
+# the sash have no item here and are left out); the three share it, the difference is how many times one opens:
+# 1 / 2 / 3 (ShipDefense_ChestKeep, playerbot_ship_defense.cpp). Each opening gives ONE line, by weight (the last
+# column). Appended to special_item_group.txt by the Dockerfile (once, after any group of the same vnum is cut out);
+# the Seban panel's "Szkatulki" page edits it.
+Group	MT2009_fishpuzzle_83001
+{
+	Vnum	83001 -- Zl. Skrzynia na Ryby (M) - 1 otwarcie
+	1	50108	5	100 -- Fajerwerki
+	2	100300	1	60 -- Zielona Smocza Fasola
+	3	55401	1	30 -- Jajo Malpki
+	4	50525	1	50 -- Kamien Duchowy+
+	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
+	6	71158	1	30 -- Medal Bohatera
+	7	76008	5	80 -- Medal Smoka
+	8	71014	5	100 -- Mikstura Ataku +10
+	9	71050	5	100 -- Mikstura Szybkosci
+	10	76012	5	100 -- Mikstura Szybkosci (B)
+	11	70038	20	100 -- Peleryna Mestwa
+	12	70005	1	50 -- Pierscien Doswiadczenia
+	13	70039	1	60 -- Podrecznik Kowala
+	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
+	15	76014	1	70 -- Zaczarowanie Przedm.(n)
+	16	25040	1	60 -- Zwoj Blogoslawienstwa
+	17	71001	1	80 -- Zwoj Egzorcyzmu
+	18	gold	50000	100 -- 50 000 yang
+	19	gold	100000	70 -- 100 000 yang
+	20	gold	500000	20 -- 500 000 yang
+	21	exp	100000	80 -- 100 000 PD
+}
+Group	MT2009_fishpuzzle_83002
+{
+	Vnum	83002 -- Zl. Skrzynia na Ryby (S) - 2 otwarcia
+	1	50108	5	100 -- Fajerwerki
+	2	100300	1	60 -- Zielona Smocza Fasola
+	3	55401	1	30 -- Jajo Malpki
+	4	50525	1	50 -- Kamien Duchowy+
+	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
+	6	71158	1	30 -- Medal Bohatera
+	7	76008	5	80 -- Medal Smoka
+	8	71014	5	100 -- Mikstura Ataku +10
+	9	71050	5	100 -- Mikstura Szybkosci
+	10	76012	5	100 -- Mikstura Szybkosci (B)
+	11	70038	20	100 -- Peleryna Mestwa
+	12	70005	1	50 -- Pierscien Doswiadczenia
+	13	70039	1	60 -- Podrecznik Kowala
+	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
+	15	76014	1	70 -- Zaczarowanie Przedm.(n)
+	16	25040	1	60 -- Zwoj Blogoslawienstwa
+	17	71001	1	80 -- Zwoj Egzorcyzmu
+	18	gold	50000	100 -- 50 000 yang
+	19	gold	100000	70 -- 100 000 yang
+	20	gold	500000	20 -- 500 000 yang
+	21	exp	100000	80 -- 100 000 PD
+}
+Group	MT2009_fishpuzzle_83003
+{
+	Vnum	83003 -- Zl. Skrzynia na Ryby (D) - 3 otwarcia
+	1	50108	5	100 -- Fajerwerki
+	2	100300	1	60 -- Zielona Smocza Fasola
+	3	55401	1	30 -- Jajo Malpki
+	4	50525	1	50 -- Kamien Duchowy+
+	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
+	6	71158	1	30 -- Medal Bohatera
+	7	76008	5	80 -- Medal Smoka
+	8	71014	5	100 -- Mikstura Ataku +10
+	9	71050	5	100 -- Mikstura Szybkosci
+	10	76012	5	100 -- Mikstura Szybkosci (B)
+	11	70038	20	100 -- Peleryna Mestwa
+	12	70005	1	50 -- Pierscien Doswiadczenia
+	13	70039	1	60 -- Podrecznik Kowala
+	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
+	15	76014	1	70 -- Zaczarowanie Przedm.(n)
+	16	25040	1	60 -- Zwoj Blogoslawienstwa
+	17	71001	1	80 -- Zwoj Egzorcyzmu
+	18	gold	50000	100 -- 50 000 yang
+	19	gold	100000	70 -- 100 000 yang
+	20	gold	500000	20 -- 500 000 yang
+	21	exp	100000	80 -- 100 000 PD
+}

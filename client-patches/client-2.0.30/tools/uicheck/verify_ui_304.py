@@ -40,6 +40,8 @@ FEATURES = [
     ('dmgprint+round306', ['game.py', 'interfacemodule.py', 'uiaffectbar.py', 'uiattributelist.py', 'uiautohunt.py',
                            'uisystem.py', 'uitooltip.py', 'uiaddeq.py', 'uiingameevent.py', 'keybind.py',
                            'uiscript/systemdialog.py']),
+    # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (the pictures in the pack "fishpuzzle", tools/fishpuzzle)
+    ('fishpuzzle', ['uifishpuzzle.py', 'uiscript/fishpuzzlewindow.py']),
 ]
 
 OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]

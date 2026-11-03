@@ -258,6 +258,7 @@ namespace {
 			case playerbot_events::KIND_EASTER:
 			case playerbot_events::KIND_HALLOWEEN:	// MT2009_PLUS_HALLOWEEN_V1
 			case playerbot_events::KIND_POTEGA:	// MT2009_PLUS_POTEGA_MADROSCI_V1: often on for whole days
+			case playerbot_events::KIND_FISHPUZZLE:	// MT2009_PLUS_FISH_PUZZLE_V1
 				return 2 * 60 * 60 * 1000;
 		}
 		return PLAYERBOT_EVENTS_REMINDER_INTERVAL;
@@ -276,6 +277,8 @@ namespace {
 			case playerbot_events::KIND_EASTER: return "Event wielkanocny (metiny wielkanocne i Wielkanocny Zajac)";
 			// MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h).
 			case playerbot_events::KIND_HALLOWEEN: return "Halloween: Upiorne Dynie i Jack Pumpkin";
+			// MT2009_PLUS_FISH_PUZZLE_V1 (fish_puzzle.cpp).
+			case playerbot_events::KIND_FISHPUZZLE: return "Event Rybacki - Puzzle";
 		}
 		return NULL;
 	}

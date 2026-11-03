@@ -124,6 +124,10 @@ namespace mt2009_ingame_event
 		// option, the village guard's line) and playerbot_potega.h (the bots) read. A GM's /eventflag potega_madrosci 1
 		// runs it too.
 		{ "potega",		playerbot_events::KIND_POTEGA,		"potega_madrosci",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
+		// MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - the switch fish_puzzle_event (fishing finds the
+		// puzzle boxes, fish_puzzle.cpp); after a scheduled run 7 days (fish_puzzle_reward) in which the event list
+		// still opens the puzzle window for the boxes left. A GM's /eventflag fish_puzzle_event 1 runs it too.
+		{ "fishpuzzle",	playerbot_events::KIND_FISHPUZZLE,	"fish_puzzle_event",		FLAG_VALUE,		1, NULL,			NULL,						"fish_puzzle_reward",		0, false },
 	};
 	const int DEFS = sizeof(s_defs) / sizeof(s_defs[0]);
 

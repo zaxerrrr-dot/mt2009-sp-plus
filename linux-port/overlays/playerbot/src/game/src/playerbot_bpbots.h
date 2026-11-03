@@ -1082,6 +1082,13 @@ namespace playerbot_bpbots
 				snprintf(out, size, "%s", PickLine(k));
 				return true;
 			}
+			// MT2009_PLUS_FISH_PUZZLE_V1: only talk - a bot never fishes a puzzle box (fish_puzzle.cpp skips bots).
+			case playerbot_events::KIND_FISHPUZZLE:
+			{
+				static const char* const k[] = { "event rybacki trwa, ktos lowi?", "ile prob wam wyszlo w puzzlach?", "z wedka nad wode, puzzle same sie nie ulozo xd" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
 			// MT2009_PLUS_POTEGA_MADROSCI_V1: Uriel's experience bonus.
 			case playerbot_events::KIND_POTEGA:
 			{

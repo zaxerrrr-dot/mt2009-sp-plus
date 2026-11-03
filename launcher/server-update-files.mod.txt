@@ -690,3 +690,11 @@ linux-port/docker/game/src/server/game/src/questlua_horse.cpp
 linux-port/docker/mariadb/playerbot/konie.sql
 linux-port/docker/mariadb/playerbot/juki_usuniecie.sql
 linux-port/docker/game/special_item_group.konie.txt
+# MT2009_PLUS_FISH_PUZZLE_V1 (server-patches/fishpuzzle): Event Rybacki - Puzzle - the engine file pair with the overlay,
+# fishing.cpp (char_item.cpp / cmd.cpp above),
+# the table and items fish_puzzle.sql (apply.sh), the reward chests special_item_group.fishpuzzle.txt (game/Dockerfile).
+linux-port/overlays/playerbot/src/game/src/fish_puzzle.cpp
+linux-port/docker/game/src/server/game/src/fish_puzzle.cpp
+linux-port/docker/game/src/server/game/src/fishing.cpp
+linux-port/docker/mariadb/playerbot/fish_puzzle.sql
+linux-port/docker/game/special_item_group.fishpuzzle.txt

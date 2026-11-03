@@ -1314,6 +1314,10 @@ bool ShipDefense_ChestKeep(LPITEM item)
 		iUses = 3;
 	else if (item->GetVnum() == 54700)	// MT2009_PLUS_BERAN_CHEST_V1: Skrzynia Berana-Setaou opens 2 times (pl-wiki 17.3)
 		iUses = 2;
+	// MT2009_PLUS_FISH_PUZZLE_V1: Zl. Skrzynia na Ryby (M) / (S) / (D) 83001-83003 open 1 / 2 / 3 times (pl-wiki;
+	// fish_puzzle.cpp gives them for the finished fishing puzzle)
+	else if (item->GetVnum() >= 83001 && item->GetVnum() <= 83003)
+		iUses = (int)(item->GetVnum() - 83000);
 	else
 		return false;
 	const long lUsed = MAX(0L, item->GetSocket(0)) + 1;

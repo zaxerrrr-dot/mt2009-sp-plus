@@ -505,6 +505,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiitemshopv3").DestroyWindow()
 		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window and ranking (uiworldboss.py).
 		__import__("uiworldboss").DestroyWindow()
+		# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle's window (uifishpuzzle.py).
+		__import__("uifishpuzzle").DestroyWindow()
 		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
 		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
@@ -2773,6 +2775,8 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiminigameyutnori").Register()
 				# MT2009_PLUS_WORLDBOSS_V1: the hub's Boss Swiata button opens its window (uiworldboss.py).
 				__import__("uiworldboss").Register()
+				# MT2009_PLUS_FISH_PUZZLE_V1: the hub's Event Rybacki - Puzzle button opens its window (uifishpuzzle.py).
+				__import__("uifishpuzzle").Register()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 				# MT2009_PLUS_EKWIPUNEK_V1: "/ekwipunek hello" - the server routes items into the extra
@@ -3596,6 +3600,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["SidekickSkillEnd"] = self.__SidekickSkillEnd
 		serverCommandList["WOF"] = self.__WheelOfFortune # MT2009_PLUS_WHEEL_V1
 		serverCommandList["WB"] = self.__WorldBoss # MT2009_PLUS_WORLDBOSS_V1
+		serverCommandList["FP"] = self.__FishPuzzle # MT2009_PLUS_FISH_PUZZLE_V1
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
@@ -4366,6 +4371,10 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's lines (uiworldboss.py).
 	def __WorldBoss(self, *args):
 		__import__("uiworldboss").OnCommand(*args)
+
+	# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle's lines (uifishpuzzle.py).
+	def __FishPuzzle(self, *args):
+		__import__("uifishpuzzle").OnCommand(*args)
 
 	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
 	def __Buffi(self, *args):
