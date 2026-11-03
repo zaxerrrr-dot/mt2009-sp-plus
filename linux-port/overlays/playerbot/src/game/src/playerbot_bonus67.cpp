@@ -191,8 +191,9 @@ namespace
 		if (!ch || ch->GetMobRank() < MOB_RANK_BOSS)
 			return false;
 #ifdef MT2009_PLUS_BONUS67_WIKI
+		// The owner, 3 November 2026: "bez metinow" - Metin stones stay out by default; b67_boss_metin 1 counts them.
 		if (ch->IsStone())
-			return quest::CQuestManager::instance().GetEventFlag("b67_boss_no_metin") <= 0;
+			return quest::CQuestManager::instance().GetEventFlag("b67_boss_metin") > 0;
 #endif
 		return ch->IsMonster() && !ch->IsStone();
 	}
