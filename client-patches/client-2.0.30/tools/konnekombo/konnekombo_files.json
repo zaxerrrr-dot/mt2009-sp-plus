@@ -1,0 +1,173 @@
+{
+ "note": "the players' 3.0.6 install: the file the exe opens (pack gf_official, registered before pc_1/pc_2/pc2_1/pc2_2) - md5 of its content (read 3 November 2026); pliki/ = GF 26.1.11's, byte for byte the same",
+ "files": {
+  "d:/ymir work/pc/assassin/horse_dualhand_sword/combo_01.msa": {
+   "md5": "e6fb9bdcd20616f7000114c6661caef2",
+   "size": 3585
+  },
+  "d:/ymir work/pc/assassin/horse_dualhand_sword/combo_02.msa": {
+   "md5": "bb2763e11c3a16632608f6b04a0a713e",
+   "size": 3184
+  },
+  "d:/ymir work/pc/assassin/horse_dualhand_sword/combo_03.msa": {
+   "md5": "13c608748b3fce510b11596549b68946",
+   "size": 3665
+  },
+  "d:/ymir work/pc/assassin/horse_onehand_sword/combo_01.msa": {
+   "md5": "40430673d7205417d9952451daf11da0",
+   "size": 3571
+  },
+  "d:/ymir work/pc/assassin/horse_onehand_sword/combo_02.msa": {
+   "md5": "41292c01fedd999cf2f9f45f548c5e5a",
+   "size": 2245
+  },
+  "d:/ymir work/pc/assassin/horse_onehand_sword/combo_03.msa": {
+   "md5": "cdf20c9fe6d1b0582eef419afaed5077",
+   "size": 2703
+  },
+  "d:/ymir work/pc/shaman/horse_bell/combo_01.msa": {
+   "md5": "6d8f6b97d6741a06a47dd7fe8161d43e",
+   "size": 3235
+  },
+  "d:/ymir work/pc/shaman/horse_bell/combo_02.msa": {
+   "md5": "3e80d822310f0662a3e56c2904c387eb",
+   "size": 2424
+  },
+  "d:/ymir work/pc/shaman/horse_bell/combo_03.msa": {
+   "md5": "86a0c859be02e5d1bcc1d0ac1c95ce04",
+   "size": 3145
+  },
+  "d:/ymir work/pc/shaman/horse_fan/combo_01.msa": {
+   "md5": "76b5a2c37ddb73c160e359939cb47a55",
+   "size": 985
+  },
+  "d:/ymir work/pc/shaman/horse_fan/combo_02.msa": {
+   "md5": "353a4c23a301971e3f172d7e08446709",
+   "size": 984
+  },
+  "d:/ymir work/pc/shaman/horse_fan/combo_03.msa": {
+   "md5": "59f4785c25f72d58e1e6180f1e5ea974",
+   "size": 987
+  },
+  "d:/ymir work/pc/sura/horse_onehand_sword/combo_01.msa": {
+   "md5": "9a5adbbca72a36b33cfb6c9a863601a9",
+   "size": 2756
+  },
+  "d:/ymir work/pc/sura/horse_onehand_sword/combo_02.msa": {
+   "md5": "8c9c03aa5c3ca131c3098f137acc48d4",
+   "size": 2545
+  },
+  "d:/ymir work/pc/sura/horse_onehand_sword/combo_03.msa": {
+   "md5": "ca15426e919e5dffe6250509fad2facd",
+   "size": 2927
+  },
+  "d:/ymir work/pc/warrior/horse_onehand_sword/combo_01.msa": {
+   "md5": "2da4eabbad6b135d58376964cc28d232",
+   "size": 2757
+  },
+  "d:/ymir work/pc/warrior/horse_onehand_sword/combo_02.msa": {
+   "md5": "a8d91cbdfd240ea663b65eff927ab268",
+   "size": 2294
+  },
+  "d:/ymir work/pc/warrior/horse_onehand_sword/combo_03.msa": {
+   "md5": "d2e579ab6d07d77513f5cebc06db3efd",
+   "size": 2585
+  },
+  "d:/ymir work/pc/warrior/horse_twohand_sword/combo_01.msa": {
+   "md5": "a396a7adf6ada434541d1c902bb441a6",
+   "size": 3013
+  },
+  "d:/ymir work/pc/warrior/horse_twohand_sword/combo_02.msa": {
+   "md5": "44aed62a36f4e8f49d5d192c81eded91",
+   "size": 3174
+  },
+  "d:/ymir work/pc/warrior/horse_twohand_sword/combo_03.msa": {
+   "md5": "2d1fe846f2424ae305e933f39975c197",
+   "size": 2754
+  },
+  "d:/ymir work/pc2/assassin/horse_dualhand_sword/combo_01.msa": {
+   "md5": "ec3f3692d5dab712649129df2aa075b8",
+   "size": 3586
+  },
+  "d:/ymir work/pc2/assassin/horse_dualhand_sword/combo_02.msa": {
+   "md5": "d4861235b901a7f50d27f452dbc68588",
+   "size": 3185
+  },
+  "d:/ymir work/pc2/assassin/horse_dualhand_sword/combo_03.msa": {
+   "md5": "7efa998c45c487f7767d68945ee6d017",
+   "size": 3666
+  },
+  "d:/ymir work/pc2/assassin/horse_onehand_sword/combo_01.msa": {
+   "md5": "dadc6462c1cd239218a963f63f6e6b3a",
+   "size": 3572
+  },
+  "d:/ymir work/pc2/assassin/horse_onehand_sword/combo_02.msa": {
+   "md5": "83cf6eead20ef300af9ce9d68f55b5b9",
+   "size": 2246
+  },
+  "d:/ymir work/pc2/assassin/horse_onehand_sword/combo_03.msa": {
+   "md5": "bbd93f7ca23347f58e26b149f78d215c",
+   "size": 2704
+  },
+  "d:/ymir work/pc2/shaman/horse_bell/combo_01.msa": {
+   "md5": "60ac9e1adc37627d31495117324523ce",
+   "size": 3236
+  },
+  "d:/ymir work/pc2/shaman/horse_bell/combo_02.msa": {
+   "md5": "311fe2d7e7bd0b9cf58c410b313177bb",
+   "size": 2425
+  },
+  "d:/ymir work/pc2/shaman/horse_bell/combo_03.msa": {
+   "md5": "2d249d798ee52062d85c702cc77729f5",
+   "size": 3146
+  },
+  "d:/ymir work/pc2/shaman/horse_fan/combo_01.msa": {
+   "md5": "cfbb6000cd13d7d008884d9246691823",
+   "size": 986
+  },
+  "d:/ymir work/pc2/shaman/horse_fan/combo_02.msa": {
+   "md5": "1f253af8807c871b7ea208df054dab86",
+   "size": 985
+  },
+  "d:/ymir work/pc2/shaman/horse_fan/combo_03.msa": {
+   "md5": "c3734420ec204e1bac3dc2b94b3452a0",
+   "size": 988
+  },
+  "d:/ymir work/pc2/sura/horse_onehand_sword/combo_01.msa": {
+   "md5": "b43c70b3773a6324a5e5d7b3fef37128",
+   "size": 2757
+  },
+  "d:/ymir work/pc2/sura/horse_onehand_sword/combo_02.msa": {
+   "md5": "f987156931f48e5c334083dc0c92cd58",
+   "size": 2546
+  },
+  "d:/ymir work/pc2/sura/horse_onehand_sword/combo_03.msa": {
+   "md5": "bca22009b68f322c439faec2fb364b99",
+   "size": 2928
+  },
+  "d:/ymir work/pc2/warrior/horse_onehand_sword/combo_01.msa": {
+   "md5": "c890fbdd915e871755bfaff87b5f67c8",
+   "size": 2758
+  },
+  "d:/ymir work/pc2/warrior/horse_onehand_sword/combo_02.msa": {
+   "md5": "8ba16a0400a0a322b5512ec75471ca45",
+   "size": 2295
+  },
+  "d:/ymir work/pc2/warrior/horse_onehand_sword/combo_03.msa": {
+   "md5": "166974b69f818a10231420fa663dbf05",
+   "size": 2586
+  },
+  "d:/ymir work/pc2/warrior/horse_twohand_sword/combo_01.msa": {
+   "md5": "c890fbdd915e871755bfaff87b5f67c8",
+   "size": 2758
+  },
+  "d:/ymir work/pc2/warrior/horse_twohand_sword/combo_02.msa": {
+   "md5": "8ba16a0400a0a322b5512ec75471ca45",
+   "size": 2295
+  },
+  "d:/ymir work/pc2/warrior/horse_twohand_sword/combo_03.msa": {
+   "md5": "166974b69f818a10231420fa663dbf05",
+   "size": 2586
+  }
+ }
+}
