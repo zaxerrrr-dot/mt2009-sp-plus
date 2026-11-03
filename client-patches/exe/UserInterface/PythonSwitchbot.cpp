@@ -16,6 +16,21 @@
 
 static_assert(SWITCHBOT == 16, "the window SWITCHBOT is the server's 16 (after the extra inventory's 11-15)");
 
+// MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1 / MT2009_PLUS_SWITCHBOT_COSTUME_V1: the attribute sets the server numbers its
+// SUBHEADER_GC_SWITCHBOT_SEND_ATTRIBUTE_INFORMATION rows with (its common/length.h EAttributeSet with ENABLE_ITEM_ATTR_COSTUME,
+// ENABLE_WEAPON_COSTUME_SYSTEM, ENABLE_PENDANT_SYSTEM and ENABLE_GLOVE_SYSTEM: the eight old sets 0-7, the costume's
+// 8-10, the talisman's 11, the glove's 12 - 13 sets, item_attr's columns). This exe's own EAttributeSet has no costume
+// sets (ENABLE_ITEM_ATTR_COSTUME is off here), so its ATTRIBUTE_SET_PENDANT is not the server's - the server's numbers.
+enum
+{
+	SERVER_ATTRIBUTE_SET_COSTUME_BODY = 8,
+	SERVER_ATTRIBUTE_SET_COSTUME_HAIR = 9,
+	SERVER_ATTRIBUTE_SET_COSTUME_WEAPON = 10,
+	SERVER_ATTRIBUTE_SET_PENDANT = 11,
+	SERVER_ATTRIBUTE_SET_GLOVE = 12,
+};
+static_assert(ATTRIBUTE_SET_EAR == 7, "the eight old attribute sets are numbered as on the server");
+
 CPythonSwitchbot::CPythonSwitchbot()
 {
 	Initialize();
@@ -133,7 +148,7 @@ int CPythonSwitchbot::GetAttibuteSet(BYTE slot)
 		return ATTRIBUTE_SET_WEAPON;
 	}
 
-	if (item_type == ITEM_ARMOR || item_type == ITEM_COSTUME)
+	if (item_type == ITEM_ARMOR)
 	{
 		switch (item_subtype)
 		{
@@ -157,6 +172,32 @@ int CPythonSwitchbot::GetAttibuteSet(BYTE slot)
 
 		case ARMOR_EAR:
 			return ATTRIBUTE_SET_EAR;
+
+		// MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1: a talisman and a glove (the server's switchbot takes them now)
+		case ARMOR_PENDANT:
+			return SERVER_ATTRIBUTE_SET_PENDANT;
+
+		case ARMOR_GLOVE:
+			return SERVER_ATTRIBUTE_SET_GLOVE;
+		}
+	}
+
+	// MT2009_PLUS_SWITCHBOT_COSTUME_V1: a costume, a hairstyle, a weapon skin - their own sets (item_attr.costume_*).
+	// Ameria's code gave a costume the armour's set of its subtype (a hairstyle the helmet's, a weapon skin the feet's).
+	if (item_type == ITEM_COSTUME)
+	{
+		switch (item_subtype)
+		{
+		case COSTUME_BODY:
+			return SERVER_ATTRIBUTE_SET_COSTUME_BODY;
+
+		case COSTUME_HAIR:
+			return SERVER_ATTRIBUTE_SET_COSTUME_HAIR;
+
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+		case COSTUME_WEAPON:
+			return SERVER_ATTRIBUTE_SET_COSTUME_WEAPON;
+#endif
 		}
 	}
 

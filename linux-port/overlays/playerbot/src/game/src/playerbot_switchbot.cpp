@@ -7,7 +7,9 @@
 //
 // Ameria's rules, kept:
 //   * five slots (SWITCHBOT_SLOT_COUNT), each one item of the bag: a weapon, or an armour of the body, head, shield,
-//     wrist, feet, neck or ear (SwitchbotHelper::IsValidItem) - no costume, no glove, no talisman;
+//     wrist, feet, neck or ear, a talisman or a glove (SwitchbotHelper::IsValidItem; talismans and gloves since
+//     MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1), or a costume, hairstyle or weapon skin (MT2009_PLUS_SWITCHBOT_COSTUME_V1,
+//     changed with 70064 Zaczaruj kostium only, see c_dwCostumeSwitchingItem) - no arrow / quiver, mount or sash;
 //   * an item put in stays in its bag cell, locked (CItem::Lock) - it cannot be moved, put on, sold, traded or stored
 //     while it is in a slot; the slot shows it (an item of the window SWITCHBOT, the client's player.SWITCHBOT);
 //   * per slot up to five alternatives (SWITCHBOT_ALTERNATIVE_COUNT) of up to five wanted bonuses with a minimal value
@@ -66,6 +68,12 @@ namespace
 		71284,
 		71151,
 	};
+
+	// MT2009_PLUS_SWITCHBOT_COSTUME_V1 (the owner, 3 November 2026: the bonus switcher changes the bonuses of costumes,
+	// hairstyles and weapon skins too, with 70064 "Zaczaruj kostium"): a costume takes only the costume change item
+	// (char_item.cpp USE_CHANGE_COSTUME_ATTR - the only item of that kind; 71084 and the other Zaczarowania refuse a
+	// costume by hand), every other item only c_arSwitchingItems (70064 refuses it by hand).
+	const DWORD c_dwCostumeSwitchingItem = 70064;
 
 	enum
 	{
@@ -302,6 +310,36 @@ bool SwitchbotHelper::IsValidItem(LPITEM pkItem)
 		case ARMOR_FOOTS:
 		case ARMOR_NECK:
 		case ARMOR_EAR:
+			return true;
+
+		// MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1 (the owner's list of 3 November 2026: bonuses of gloves and talismans
+		// could not be changed in the bonus switcher): a talisman (ARMOR_PENDANT - Talizman Woli 81000+, the element
+		// talismans) and a glove (ARMOR_GLOVE - Rekawice Mocy 23000+, server-patches/rekawice) are changed by hand with
+		// the same Zaczarowanie Przedmiotu (char_item.cpp USE_CHANGE_ATTRIBUTE: GetAttributeSetIndex() gives them
+		// ATTRIBUTE_SET_PENDANT / ATTRIBUTE_SET_GLOVE, item_attr.pendant / item_attr.glove), so the switchbot takes them
+		// too - Ameria's list had only the eight old kinds. 71151 stays weapon / body armour only (CanUseSwitcherOn).
+#ifdef ENABLE_PENDANT_SYSTEM
+		case ARMOR_PENDANT:
+			return true;
+#endif
+#ifdef ENABLE_GLOVE_SYSTEM
+		case ARMOR_GLOVE:
+			return true;
+#endif
+		}
+		return false;
+
+	// MT2009_PLUS_SWITCHBOT_COSTUME_V1: what 70064 Zaczaruj kostium takes by hand (char_item.cpp USE_CHANGE_COSTUME_ATTR) -
+	// a costume, a hairstyle or a weapon skin; their bonus pools are item_attr.costume_body / costume_hair /
+	// costume_weapon (costume_attr_global.sql), the engine's ATTRIBUTE_SET_COSTUME_*.
+	case ITEM_COSTUME:
+		switch (pkItem->GetSubType())
+		{
+		case COSTUME_BODY:
+		case COSTUME_HAIR:
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+		case COSTUME_WEAPON:
+#endif
 			return true;
 		}
 		return false;
@@ -627,24 +665,73 @@ void CSwitchbot::SwitchItems()
 				continue;
 			}
 
-			DWORD dwUseVnum = 0;
-			for (const auto& itemVnum : c_arSwitchingItems)
-			{
-				if (!CanUseSwitcherOn(itemVnum, pkItem))
-					continue;
+			const bool bCostume = pkItem->GetType() == ITEM_COSTUME;
 
-				if (pkOwner->CountSpecifyItem(itemVnum) >= SWITCHBOT_PRICE_AMOUNT)
+			DWORD dwUseVnum = 0;
+			if (bCostume)
+			{
+				if (pkOwner->CountSpecifyItem(c_dwCostumeSwitchingItem) >= SWITCHBOT_PRICE_AMOUNT)
+					dwUseVnum = c_dwCostumeSwitchingItem;
+			}
+			else
+			{
+				for (const auto& itemVnum : c_arSwitchingItems)
 				{
-					dwUseVnum = itemVnum;
-					break;
+					if (!CanUseSwitcherOn(itemVnum, pkItem))
+						continue;
+
+					if (pkOwner->CountSpecifyItem(itemVnum) >= SWITCHBOT_PRICE_AMOUNT)
+					{
+						dwUseVnum = itemVnum;
+						break;
+					}
 				}
 			}
 
 			if (!dwUseVnum)
 			{
 				Stop();
-				pkOwner->ChatPacket(CHAT_TYPE_INFO, "Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.");
+				pkOwner->ChatPacket(CHAT_TYPE_INFO, bCostume
+					? "Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium."
+					: "Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.");
 				return;
+			}
+
+			if (bCostume)
+			{
+				// MT2009_PLUS_SWITCHBOT_COSTUME_V1: as 70064 by hand (char_item.cpp USE_CHANGE_COSTUME_ATTR) - the same
+				// number of bonuses again; a roll that came out with another number puts the old bonuses back, keeps
+				// the change item and stops the slot.
+				const int iCountBefore = pkItem->GetAttributeCount();
+				TPlayerItemAttribute aBefore[ITEM_ATTRIBUTE_MAX_NUM];
+				memcpy(aBefore, pkItem->GetAttributes(), sizeof(aBefore));
+
+				pkItem->ChangeAttribute();
+
+				if (pkItem->GetAttributeCount() != iCountBefore)
+				{
+					pkItem->SetAttributes(aBefore);
+					pkItem->UpdatePacket();
+					sys_err("switchbot: %s pid %u costume id %u vnum %u rolled %d bonus(es) (had %d) - restored",
+						pkOwner->GetName(), pkOwner->GetPlayerID(), pkItem->GetID(), pkItem->GetVnum(),
+						pkItem->GetAttributeCount(), iCountBefore);
+					pkOwner->ChatPacket(CHAT_TYPE_INFO, "Switchbot: nie udalo sie zmienic bonusow tego kostiumu.");
+					SetActive(bSlot, false);
+					if (!HasActiveSlots())
+						Stop();
+					else
+						CSwitchbotManager::Instance().SendSwitchbotUpdate(m_table.player_id);
+					continue;
+				}
+
+				LogManager::instance().ItemLog(pkOwner, (int)pkItem->GetID(), (int)dwUseVnum, "CHANGE_COSTUME_ATTR", "switchbot");
+
+				pkOwner->RemoveSpecifyItem(dwUseVnum, SWITCHBOT_PRICE_AMOUNT);
+
+				SetSwitchbotItemSwitcherUsed(pkOwner, bSlot, GetSwitchbotItemSwitcherUsed(pkOwner, bSlot) + 1);
+
+				SendItemUpdate(pkOwner, bSlot, pkItem);
+				continue;
 			}
 
 			// as by hand (char_item.cpp): the change item's vnum, the changed item's id
