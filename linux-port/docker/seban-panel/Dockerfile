@@ -16,11 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # event_autogen.py (MT2009_PLUS_EVENTS_AUTOGEN_V1): the events planner's week generator.
 # sm_grants.py (MT2009_PLUS_SM_GRANTS_V1): "Smocze Monety - nadawanie" and its worker.
 # env_schema.py, env_editor.py (MT2009_PLUS_ENV_EDITOR_V1): "Ustawienia serwera (.env)".
+# snapshot_retention.py (MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1): the collector's cleanup of its own snapshots.
 # bot_stats.py (MT2009_PLUS_SEBAN_BOT_STATS_V1): "Statystyki botów" and the collector's dungeon runs import.
 # special_item_group.snapshot.txt (MT2009_PLUS_CHEST_EDITOR_V1): the chests page's
 # copy of the game's file, shown until the game publishes its own; starred
 # for the same reason as VERSION.
-COPY app.py collector.py item_grants.py sm_grants.py decisions.py decision_tables.py event_autogen.py env_schema.py env_editor.py log_maintenance.py bot_stats.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
+COPY app.py collector.py item_grants.py sm_grants.py decisions.py decision_tables.py event_autogen.py env_schema.py env_editor.py log_maintenance.py snapshot_retention.py bot_stats.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
 COPY dbeditor ./dbeditor
 # MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (market_preview/__init__.py).
 COPY market_preview ./market_preview

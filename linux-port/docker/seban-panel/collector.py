@@ -1,5 +1,6 @@
 import os
 import re
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -8,6 +9,7 @@ import pymysql
 
 import bot_stats
 import log_maintenance
+import snapshot_retention
 
 INTERVAL = int(os.environ.get("SEBAN_COLLECTOR_INTERVAL", "300"))
 CHANNEL_VAR_ROOT = Path(os.environ.get("PLAYERBOTS_VAR_ROOT", "/opt/metin2/var"))
@@ -519,6 +521,12 @@ def collect(con, previous):
 
 def main():
     previous = None
+    # MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1: the snapshot tables written
+    # above are thinned and pruned hourly (snapshot_retention.py) in a thread
+    # of their own: the first cleanup of a big table takes tens of minutes of
+    # small batches and must not hold up the 5-minute snapshots. A named
+    # lock in the database keeps it from overlapping a manual run.
+    threading.Thread(target=snapshot_retention.loop, name="snapshot-retention", daemon=True).start()
     while True:
         try:
             with connect() as con:

@@ -2225,10 +2225,15 @@ def live_bots():
     threshold = max(1, min(120, int(settings().get("stuck_minutes", "5"))))
     historical = {}
     try:
+        # MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1: only the last hour before
+        # the threshold - the GROUP BY used to read every position ever kept
+        # (17M rows on the Yohara test server, 3 November); a position older
+        # than that is no "stuck since" evidence anyway.
         prior = rows("""SELECT s.pid,s.map_index,s.x,s.y FROM player.web_seban_bot_position_snapshot s
           JOIN (SELECT pid, MAX(captured_at) captured_at FROM player.web_seban_bot_position_snapshot
-                WHERE captured_at <= NOW() - INTERVAL %s MINUTE GROUP BY pid) old
-          ON old.pid=s.pid AND old.captured_at=s.captured_at WHERE s.pid IN (""" + placeholders + ")", (threshold, *ids))
+                WHERE captured_at <= NOW() - INTERVAL %s MINUTE AND captured_at > NOW() - INTERVAL %s MINUTE
+                  AND pid IN (""" + placeholders + """) GROUP BY pid) old
+          ON old.pid=s.pid AND old.captured_at=s.captured_at""", (threshold, threshold + 60, *ids))
         historical = {row["pid"]: row for row in prior}
     except pymysql.MySQLError:
         pass
