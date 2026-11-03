@@ -3747,6 +3747,16 @@ for f in yohara_maps2 yohara_items2; do
     fi
 done
 
+# MT2009_PLUS_ZODIAC_MERCHANT_V1: the Kupiec Zodiaku's shop 41 as the pl-wiki (Zdobna Skrz. z Odlamkiem 39068 x1, the
+# wiki's prices as the items' gold). After yohara_items.sql, which adds 39068; zodiak_kupiec.sql is idempotent.
+if [ -s /opt/playerbot/zodiak_kupiec.sql ]; then
+    if db < /opt/playerbot/zodiak_kupiec.sql; then
+        echo "[playerbot-migrate] zodiac: zodiak_kupiec.sql applied"
+    else
+        fail_step "zodiac: zodiak_kupiec.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_KAWUCO_V1: Kawuco (20413), the boots NPC of Przyladek Smoczego Ognia (the pl-wiki's place; the game image
 # spawns him, quest kawuco opens his cube window with the Ogniste Buty / Buty Oceanu recipes of cube.buty.txt).
 # kawuco.sql is idempotent (INSERT IGNORE): his mob_proto row - Owsap's (the official vnum) in our columns.

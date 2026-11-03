@@ -400,5 +400,11 @@
   "marker": "MT2009_PLUS_ZODIAC_V1 (67)",
   "old": "\t\t\t\tIncDeadCount();\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.IsDead\", 1);\n",
   "new": "\t\t\t\tZodiacUnpetrify(this, \"death\");\t// MT2009_PLUS_ZODIAC_V1 (67) - MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: death ends the statue / dog\n\t\t\t\tIncDeadCount();\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.IsDead\", 1);\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (68)",
+  "old": "\t\tch->SetZodiacItems(r_item.vnum, 0);\n\t\tch->SetPurchaseZodiacItems(r_item.vnum, r_item.count);\n",
+  "new": "\t\t// MT2009_PLUS_ZODIAC_V1 (68) - MT2009_PLUS_ZODIAC_MERCHANT_V1: the bought count comes off the line's limit\n\t\t// (playerbot_zodiac_temple.cpp FProcessZodiacItem: every line once a run, the Zdobna Skrz. z Odlamkiem 39068\n\t\t// x1 five times, as the pl-wiki's Kupiec Zodiaku) - the package zeroed it, one purchase of anything\n\t\tconst DWORD dwZodiacLeft = ch->CountZodiacItems(r_item.vnum);\n\t\tch->SetZodiacItems(r_item.vnum, dwZodiacLeft > (DWORD)r_item.count ? (int)(dwZodiacLeft - (DWORD)r_item.count) : 0);\n\t\tch->SetPurchaseZodiacItems(r_item.vnum, r_item.count);\n"
  }
 ]

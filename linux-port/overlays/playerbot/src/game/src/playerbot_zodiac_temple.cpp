@@ -3497,6 +3497,10 @@ struct FProcessZodiacItem
 
 					ch->SetZodiacItems(33032, 200); // Prisma del despertar(Q)
 					ch->SetZodiacItems(72329, 1); // Pergamino de esferas
+					// MT2009_PLUS_ZODIAC_MERCHANT_V1 (the owner, 3 November 2026, as the pl-wiki's Kupiec Zodiaku): the
+					// Zdobna Skrz. z Odlamkiem 39068 (x1 for 1 000 000 Yang) may be bought five times a run - every
+					// other line once; shop.cpp's hook (68) takes the bought count off instead of zeroing the line
+					ch->SetZodiacItems(39068, 5);
 				}
 				else
 				{
@@ -3511,6 +3515,8 @@ struct FProcessZodiacItem
 
 					ch->SetPurchaseZodiacItems(33032, 0); // Prisma del despertar
 					ch->SetPurchaseZodiacItems(72329, 0); // Pergamino de esferas
+					ch->SetZodiacItems(39068, 0); // MT2009_PLUS_ZODIAC_MERCHANT_V1: Zdobna Skrz. z Odlamkiem
+					ch->SetPurchaseZodiacItems(39068, 0);
 				}
 			}
 		}

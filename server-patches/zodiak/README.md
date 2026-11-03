@@ -87,6 +87,7 @@ skrypt nie zapisuje niczego, jeśli choć jednej kotwicy nie ma dokładnie raz �
 | `(62)` | `shop.cpp` | Zodiak - licznik zakupu |
 | `(63)` | `char_affect.cpp` | Zodiak - uzycie makra |
 | `(65)` | `battle.cpp` | premia do obrażeń potworów w świątyni o połowę (decyzja właściciela 9.10): poziom ×4 powyżej 85, ×2,5 niżej (paczka: ×8 / ×5); osobna zmiana po `(37)`, więc przerabia też drzewo z dawnym hakiem |
+| `(68)` | `shop.cpp` | MT2009_PLUS_ZODIAC_MERCHANT_V1 (3.11): zakup u Kupca odejmuje kupioną liczbę od limitu linii (paczka zerowała) – Zdobną Skrz. z Odłamkiem (39068) można kupić 5 razy, resztę raz na przejście |
 | `(64)` | `common/CommonDefines.h` | ENABLE_12ZI |
 
 Numery wspólne z exe (muszą być takie same po obu stronach): pakiet **GC 220** `HEADER_GC_SEPCIAL_ZODIAC_EFFECT`
@@ -174,6 +175,20 @@ Purgatorium, Jotun Thrym, Książę Ochao, Goryl Ochao, Niszczyciel/Uzdrowiciel/
 Ognisty Książę Żaru, Mroźny Książę, Bagjanamu, Wódz Wojenny Schronienia, potwory Inwazji Sung Ma, skrzynie Jotuna/Bagjanamu,
 nagrody Dongan/Yilad/Zaklętego Lasu/Strażnicy Nemere/Twierdzy, Smocze Skrzynie, Złoty Łup Królewski, Skrzynia Kamienia
 Księżycowego, Skrzynka Tajemnic, Złota Skrzynia Proroka i inne skrzynie eventowe.
+
+## Kupiec Zodiaku i Pergamin Sfer (`MT2009_PLUS_ZODIAC_MERCHANT_V1`, `MT2009_PLUS_ZODIAC_SCROLL_USE_V1`, 3.11.2026, wiki PL)
+
+Sklep 41 jak na wiki: Pryzmat Ożywienia (Q) x200 – 3 000 000, Insygnia Zi…Gui x50 – po 1 000 000, Pergamin Sfer x1 –
+1 000 000, **Zdobna Skrz. z Odłamkiem (39068) x1 – 1 000 000, 5 razy** (zawartość: grupa `MT2009_yitems_39068`, 11 odłamków
++ Księga Umiejętności, jak wiki). Cena linii = `gold` × liczba, więc `linux-port/docker/mariadb/playerbot/zodiak_kupiec.sql`
+(po `yohara_items.sql`) ustawia `gold` 33032 = 15 000, 72329 = 1 000 000, 39068 = 1 000 000 i dodaje linię 39068; limity:
+`FProcessZodiacItem` (39068 → 5) i hak `(68)`. Boty liczą cenę sztuki (linia / liczba). Klient: `tools/zodiak/patch_zodiak_kupiec_client.py`
+(te same `gold`, opis Pergaminu Sfer z wiki).
+
+Pergamin Sfer (72329, 72327 handel; Znak Strażnika 72328 też) nie dawał się użyć: pytanie w `uiinventory.py` wołało
+`QuestionDialog.GetTextSize()`, której nasz `uiCommon` nie ma – wyjątek kończył klik przed pakietem. Teraz szerokość z
+`textLine.GetTextSize()`; pytanie „Czy chcesz naładować 30 Animosfer?” (`localeinfo.py`). Serwer bez zmian: +30 Animosfer
+(`player.bead`, hak `(48)`), bez limitu 36 (limit dotyczy tylko odnawiania 1/h), jak wiki.
 
 ## Do sprawdzenia / znane braki
 
