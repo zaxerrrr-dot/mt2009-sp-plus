@@ -577,6 +577,23 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_MAX_BONUS_VALUE_V1 (the owner, 3 November 2026: "Sprzet z max bonusami trzyma wartosc"): a weapon
+	// or an armour piece of really good lines - PLAYERBOT_MAX_BONUS_TOP_LINES or more at the top of what this world rolls
+	// (IsPlayerBotTopBonusLine). Its counter line takes no markdown of age or of its family's glut, its +0..+5 price
+	// is not cut (GetPlayerBotLowPlusBonusCap), and the bag's family cap and hold time never send it to the merchant.
+	const int PLAYERBOT_MAX_BONUS_TOP_LINES = 2;
+	bool IsPlayerBotMaxBonusPiece(LPITEM item)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
+			return false;
+		int top = 0;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) != APPLY_NONE &&
+					IsPlayerBotTopBonusLine(item->GetAttributeType(i), item->GetAttributeValue(i)))
+				++top;
+		return top >= PLAYERBOT_MAX_BONUS_TOP_LINES;
+	}
+
 	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (the owner, 16 October: "Od teraz
 	// boty niech zostawiaja tylko produkty z dwoma bonusami - niech traktuja
 	// je jako drogocenne i wystawiaja na lady zgodnie z cennikiem. Przedmioty
@@ -1508,7 +1525,8 @@ namespace
 	playerbot_bonus_rules::TLimits GetPlayerBotBonusLimits()
 	{
 		const playerbot_bonus_rules::TLimits limits = {
-			PLAYERBOT_BONUS_MAX_LINES, PLAYERBOT_BONUS_CHANGE_MIN_LINES
+			PLAYERBOT_BONUS_MAX_LINES, PLAYERBOT_BONUS_CHANGE_MIN_LINES,
+			PLAYERBOT_BONUS_CHANGE_NO_ADD_LINES	// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1
 		};
 		return limits;
 	}
@@ -1876,6 +1894,25 @@ namespace
 		return n;
 	}
 
+	// MT2009_PLUS_BOT_LOW_GEAR_STONES_V1 (the owner, 3 November 2026: "mniej marnuja kamieni na niski sprzet"): a worn
+	// piece under level PLAYERBOT_BONUS_LOW_GEAR_LEVEL that the bot has outgrown by PLAYERBOT_BONUS_LOW_GEAR_OUTGROWN
+	// levels takes no ordinary add or change stone - it is the next piece's slot, not a project. 318 of the 699
+	// ordinary stones of the test world's 3 November went on pieces thirty to eighty levels under their bots (boots of
+	// twenty on a bot of seventy). Not a level-30 weapon (its own family's rules). Counted: "low gear spared".
+	const int PLAYERBOT_BONUS_LOW_GEAR_LEVEL = 45;
+	const int PLAYERBOT_BONUS_LOW_GEAR_OUTGROWN = 30;
+	unsigned int s_uPlayerBotLowGearStonesSpared = 0;
+	bool IsPlayerBotOutgrownLowStonePiece(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || IsPlayerBotSpecialLevel30Weapon(item))
+			return false;
+		const int level = (int)item->GetLevelLimit();
+		if (level >= PLAYERBOT_BONUS_LOW_GEAR_LEVEL || (int)ch->GetLevel() < level + PLAYERBOT_BONUS_LOW_GEAR_OUTGROWN)
+			return false;
+		++s_uPlayerBotLowGearStonesSpared;
+		return true;
+	}
+
 	void CollectPlayerBotBonusTargets(LPCHARACTER ch, std::vector<TPlayerBotBonusTarget>& out)
 	{
 		out.clear();
@@ -1964,6 +2001,13 @@ namespace
 				plain = playerbot_bonus_rules::PLAIN_NONE;
 			else
 				continue;
+			// MT2009_PLUS_BOT_LOW_GEAR_STONES_V1: no ordinary stone on outgrown low gear (a green one may still fit).
+			if (plain != playerbot_bonus_rules::PLAIN_NONE && IsPlayerBotOutgrownLowStonePiece(ch, item))
+			{
+				if (!CanPlayerBotTakeGreenBonusStone(item))
+					continue;
+				plain = playerbot_bonus_rules::PLAIN_NONE;
+			}
 			if (plainWaits)
 				plain = playerbot_bonus_rules::PLAIN_NONE;
 			const TPlayerBotBonusTarget target = { item, wearCell, (BYTE)PLAYERBOT_BONUS_TARGET_WORN, (BYTE)plain };
@@ -2038,6 +2082,17 @@ namespace
 		else if (number(1, 100) <= aiItemAttributeAddPercent[count])
 			item->AddAttribute();
 		ConsumePlayerBotBonusStoneAt(ch, stoneCell);
+		// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1: a change on a piece short of its four lines (no add stone in the bag) -
+		// counted, the count said once a minute.
+		if (step == PLAYERBOT_BONUS_STEP_CHANGE && count < PLAYERBOT_BONUS_CHANGE_MIN_LINES &&
+				!IsPlayerBotSpecialLevel30Weapon(item))
+		{
+			static unsigned int s_uChangeNoAdd = 0;
+			++s_uChangeNoAdd;
+			PlayerBotLogThrottled("bonus_change_no_add", get_dword_time(),
+					"PLAYERBOT_BONUS: change without add stones pid=%u name=%s vnum=%u lines=%d total=%u",
+					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), count, s_uChangeNoAdd);
+		}
 
 		// The gear history shows the stone spent (PLAYERBOT_BONUS); this names
 		// the piece it was spent on, which is what a player asks - "na jaki
@@ -2207,7 +2262,10 @@ namespace
 				: playerbot_bonus_rules::STEP_CHANGE;
 		for (size_t i = 0; i < pieces.size(); ++i)
 		{
-			if (pieces[i].goods)
+			// MT2009_PLUS_BOT_L30_MIX_BUY_V1 (the owner, 3 November 2026: "Boty mieszaja bron 30 lvl do lepszych
+			// srednich i dokupuja kamienie"): a level-30 weapon mixed for its average is a change stone's need, for sale
+			// or not - the goods' other pieces take only the surplus and buy none.
+			if (pieces[i].goods && !(pieces[i].mixAverage && !add))
 				continue;
 			const playerbot_bonus_rules::TStepChoice c =
 					playerbot_bonus_rules::StepFor(pieces[i], kinds, limits, restOpen, false);

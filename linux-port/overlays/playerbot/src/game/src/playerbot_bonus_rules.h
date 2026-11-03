@@ -82,7 +82,18 @@ struct TLimits
 {
 	int stoneLines;
 	int plainChangeMinLines;
+	// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1 (the owner, 3 November 2026: "Boty bez kamieni dodajacych zmieniaja bonusy juz
+	// na przedmiotach z 3 bonusami"): a bag with no ordinary add stone mixes a piece of this many lines - it cannot be
+	// filled to four now, and the change stones lay unused while three-line pieces waited for an add that never came.
+	int plainChangeNoAddLines;
 };
+
+// Whether the ordinary change may go on a piece of this many lines (the full piece, or one the bag cannot fill).
+inline bool PlainChangeLinesReached(int lines, const TBag& bag, const TLimits& limits)
+{
+	return lines >= limits.plainChangeMinLines ||
+			(!bag.plainAdd && limits.plainChangeNoAddLines > 0 && lines >= limits.plainChangeNoAddLines);
+}
 
 // One piece, as the choice needs it.
 struct TPiece
@@ -162,7 +173,7 @@ inline TStepChoice StepFor(const TPiece& p, const TBag& bag, const TLimits& limi
 	// the full piece.
 	if (p.greenFits && bag.greenChange && p.wantsGreenChange)
 		return TStepChoice{ STEP_CHANGE, STONE_GREEN };
-	if (plainChange && p.wantsPlainChange && (p.lines >= limits.plainChangeMinLines || p.mixAverage))
+	if (plainChange && p.wantsPlainChange && (PlainChangeLinesReached(p.lines, bag, limits) || p.mixAverage))
 		return TStepChoice{ STEP_CHANGE, STONE_PLAIN };
 	return none;
 }
@@ -179,7 +190,7 @@ inline bool CategoryTakesPlainAdd(const TPiece& p, const TBag& bag, const TLimit
 inline bool CategoryTakesPlainChange(const TPiece& p, const TBag& bag, const TLimits& limits)
 {
 	return !p.goods && p.plain == PLAIN_CATEGORY && bag.plainChange && p.lines > 0 &&
-			p.lines >= limits.plainChangeMinLines && !p.pinned && p.wantsPlainChange;
+			PlainChangeLinesReached(p.lines, bag, limits) && !p.pinned && p.wantsPlainChange;
 }
 
 // The kinds of ordinary stone the rest of the worn gear may take: each kind

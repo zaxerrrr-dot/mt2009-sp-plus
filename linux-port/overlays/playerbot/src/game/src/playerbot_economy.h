@@ -1647,6 +1647,30 @@ namespace
 				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
 	}
 
+	// MT2009_PLUS_BOT_ONE_CANDIDATE_V1 (the owner, 3 November 2026: "Jeden przyszly kandydat na slot w torbie, nie
+	// wiele kopii"): of the bag's pieces the bot could put on in one slot only the best (the equipment pass's score, the
+	// lower id on a tie) is its next piece - kept from the merchant and the counter as the bot's own. The copies behind
+	// it are goods or scrap by the ordinary rules: three Kapelusz Duszy and two Krwawy Helm+6 lay in one bag of a bot
+	// of seventy-two (the test world, 3 November).
+	bool IsPlayerBotBestBagPieceForSlot(LPCHARACTER ch, LPITEM item, int wearCell, long long score)
+	{
+		if (!ch || !item)
+			return false;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (!other || other == item || other->GetCell() != cell || other->IsEquipped() ||
+					(other->GetType() != ITEM_WEAPON && other->GetType() != ITEM_ARMOR) ||
+					other->GetLevelLimit() > ch->GetLevel() || !IsPlayerBotEquipmentCandidate(ch, other) ||
+					other->FindEquipCell(ch) != wearCell)
+				continue;
+			const long long otherScore = GetPlayerBotEquipmentScore(other, ch);
+			if (otherScore > score || (otherScore == score && other->GetID() < item->GetID()))
+				return false;
+		}
+		return true;
+	}
+
 	// A bag piece this bot would put on: its slot is empty or it outscores
 	// what is worn there. Everything else the junk rule may let go under
 	// pressure.
@@ -1659,7 +1683,11 @@ namespace
 		if (wearCell < 0 || wearCell >= WEAR_MAX_NUM)
 			return false;
 		LPITEM worn = ch->GetWear(wearCell);
-		return !worn || GetPlayerBotEquipmentScore(item, ch) > GetPlayerBotEquipmentScore(worn, ch);
+		const long long score = GetPlayerBotEquipmentScore(item, ch);
+		if (worn && score <= GetPlayerBotEquipmentScore(worn, ch))
+			return false;
+		// MT2009_PLUS_BOT_ONE_CANDIDATE_V1: one candidate a slot (IsPlayerBotBestBagPieceForSlot).
+		return IsPlayerBotBestBagPieceForSlot(ch, item, wearCell, score);
 	}
 
 	// Books of one skill in the cells before this one, in books. Cell order
@@ -2430,7 +2458,9 @@ namespace
 			return true;
 #endif
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
-				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) || IsPlayerBotTowerSmithReserve(ch, item) ||
+				(IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) &&	// MT2009_PLUS_BOT_ONE_CANDIDATE_V1: the slot's best
+					IsPlayerBotBestBagPieceForSlot(ch, item, item->FindEquipCell(ch), GetPlayerBotEquipmentScore(item, ch))) ||
+				IsPlayerBotTowerSmithReserve(ch, item) ||
 				(item->GetType() == ITEM_WEAPON ? IsPlayerBotKeptBackupWeapon(ch, item)
 					: IsPlayerBotKeptBackupArmour(ch, item)))
 			return true;
@@ -2555,6 +2585,132 @@ namespace
 			return !PlayerBotNeedsRefineMaterial(ch, vnum) && !IsPlayerBotKeptCraftMaterial(ch, item);
 		return vnum >= PLAYERBOT_HERB_VNUM_FIRST && vnum <= PLAYERBOT_HERB_VNUM_LAST &&
 				!IsPlayerBotHerbGatherer(ch);
+	}
+
+	// MT2009_PLUS_BOT_MAX_BONUS_VALUE_V1 (playerbot_bonus.h).
+	bool IsPlayerBotMaxBonusPiece(LPITEM item);
+
+	// MT2009_PLUS_BOT_PLAIN_LOW_GEAR_V1 (the owner, 3 November 2026: "Goly sprzet <30 lvl bez bonusow i < +6 nie trafia
+	// na lady"): a weapon or a piece of the seven armour slots under level thirty, with no bonus line and under +6 - no
+	// counter's (ScorePlayerBotShopStock refuses it, the stand takes the old lines home, BotOfflineWeakScrapLine) and the
+	// merchant's at the next visit (IsPlayerBotJunkItem), unless the bot keeps it for itself. 4 022 such lines stood on
+	// the test world's counters on 3 November (Skorzana Maska+2 72 times, Pieciokatna Tarcza+0 54). Not a prize, a
+	// level-30 weapon (level thirty is not under it), a Stalki, nor a piece with a stone in a socket.
+	const int PLAYERBOT_PLAIN_LOW_GEAR_LEVEL = 30;
+	const int PLAYERBOT_PLAIN_LOW_GEAR_MIN_PLUS = 6;
+	unsigned int s_uPlayerBotPlainLowGearRefused = 0, s_uPlayerBotPlainLowGearScrap = 0, s_uPlayerBotPlainLowGearTakenOff = 0;
+	bool IsPlayerBotPlainLowGearPiece(LPITEM item)
+	{
+		if (!item || !item->GetProto())
+			return false;
+		if (item->GetType() == ITEM_WEAPON)
+		{
+			if (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item))
+				return false;
+		}
+		else if (item->GetType() != ITEM_ARMOR || item->GetSubType() >= ARMOR_PENDANT)
+			return false;
+		if ((int)item->GetLevelLimit() >= PLAYERBOT_PLAIN_LOW_GEAR_LEVEL ||
+				(int)item->GetRefineLevel() >= PLAYERBOT_PLAIN_LOW_GEAR_MIN_PLUS || item->GetAttributeCount() > 0 ||
+				IsPlayerBotPrizeItem(item) || IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item))
+			return false;
+		for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+			if (item->GetSocket(i) > 1)
+				return false;
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_HELM_SHIELD_HOLD_V1 (the owner, 3 November 2026: "Nie trzymaja wszystkich helmow i tarcz czekajacych
+	// na lade: max 2 najlepsze z rodziny, max kilka godzin, reszta do kupca"). A helmet or a shield the bot keeps for no
+	// reason of its own (IsPlayerBotGearKeptForSelf, Iwakura's list, a gambler's, the operator's word...) waits for a
+	// counter only as one of the PLAYERBOT_GOODS_FAMILY_BAG_KEEP best of its family in the bag (the asking price, the
+	// earlier cell on a tie) and for PLAYERBOT_HELM_SHIELD_HOLD_MS from the first look at it; the rest, and those two
+	// after that, are the merchant's. The smithy's first-two-by-cell rule (IsPlayerBotExcessHelmShield) stays; this one
+	// takes the bonus goods too, by worth rather than by cell. The same family cap holds every other weapon and armour
+	// piece while the bag is under pressure (IsPlayerBotBagUnderPressure) - a Yohara resident's bag of ten Miecz
+	// Bojowy+5/+6 with lines and nineteen more level-65 weapons left a Talizman Lodu on the ground (poprawki-3.0.8
+	// point 3). Never a piece of really good lines (IsPlayerBotMaxBonusPiece), a prize, a level-30 weapon or a Stalki.
+	const int PLAYERBOT_GOODS_FAMILY_BAG_KEEP = 2;
+	const DWORD PLAYERBOT_HELM_SHIELD_HOLD_MS = 3 * 60 * 60 * 1000;
+	const size_t PLAYERBOT_HELM_SHIELD_SINCE_MAX = 200000;
+	std::map<DWORD, DWORD> s_mapPlayerBotHelmShieldSince;
+	unsigned int s_uPlayerBotHelmShieldRanked = 0, s_uPlayerBotHelmShieldAged = 0, s_uPlayerBotGoodsFamilyCapped = 0;
+
+	bool IsPlayerBotHelmShieldPiece(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_ARMOR &&
+				(item->GetSubType() == ARMOR_HEAD || item->GetSubType() == ARMOR_SHIELD);
+	}
+
+	// A bag piece of gear the bot has no reason of its own to keep - what the family cap and the hold time weigh.
+	bool IsPlayerBotBagGoodsHoardPiece(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
+				item->GetWindow() != INVENTORY || ch->GetInventoryItem(item->GetCell()) != item)
+			return false;
+		if (item->GetType() == ITEM_WEAPON)
+		{
+			if (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item))
+				return false;
+		}
+		else if (item->GetType() != ITEM_ARMOR || item->GetSubType() >= ARMOR_PENDANT)
+			return false;
+		if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE || IsPlayerBotPrizeItem(item) ||
+				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotMaxBonusPiece(item) ||
+				IsPlayerBotAwakeningGoods(item->GetVnum()) || IsPlayerBotMlodziKept(ch, item) ||
+				IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
+				IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotLppKeptItem(ch, item) ||
+				IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item))
+			return false;
+		return !IsPlayerBotGearKeptForSelf(ch, item);
+	}
+
+	// 1: past its family's best two, 2: held too long (a helmet or a shield), 0: neither.
+	int GetPlayerBotBagGoodsSurplus(LPCHARACTER ch, LPITEM item)
+	{
+		const bool helmShield = IsPlayerBotHelmShieldPiece(item);
+		if (!helmShield && !IsPlayerBotBagUnderPressure(ch))
+			return 0;
+		if (!IsPlayerBotBagGoodsHoardPiece(ch, item))
+			return 0;
+		const DWORD family = GetPlayerBotItemFamily(item);
+		long long mine = -1;
+		int ahead = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && ahead < PLAYERBOT_GOODS_FAMILY_BAG_KEEP; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (!other || other == item || other->GetCell() != cell || other->GetType() != item->GetType() ||
+					other->GetSubType() != item->GetSubType() || GetPlayerBotItemFamily(other) != family ||
+					!IsPlayerBotBagGoodsHoardPiece(ch, other))
+				continue;
+			if (mine < 0)
+				mine = (long long)GetPlayerBotShopAskingPrice(item);
+			const long long value = (long long)GetPlayerBotShopAskingPrice(other);
+			if (value > mine || (value == mine && cell < item->GetCell()))
+				++ahead;
+		}
+		if (ahead >= PLAYERBOT_GOODS_FAMILY_BAG_KEEP)
+			return 1;
+		if (!helmShield)
+			return 0;
+		const DWORD now = get_dword_time() ? get_dword_time() : 1;
+		if (s_mapPlayerBotHelmShieldSince.size() > PLAYERBOT_HELM_SHIELD_SINCE_MAX)
+		{
+			for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotHelmShieldSince.begin();
+					it != s_mapPlayerBotHelmShieldSince.end(); )
+			{
+				if ((DWORD)(now - it->second) >= 2 * PLAYERBOT_HELM_SHIELD_HOLD_MS)
+					s_mapPlayerBotHelmShieldSince.erase(it++);
+				else
+					++it;
+			}
+			if (s_mapPlayerBotHelmShieldSince.size() > PLAYERBOT_HELM_SHIELD_SINCE_MAX)
+				s_mapPlayerBotHelmShieldSince.clear();
+		}
+		DWORD& since = s_mapPlayerBotHelmShieldSince[item->GetID()];
+		if (since == 0)
+			since = now;
+		return (DWORD)(now - since) >= PLAYERBOT_HELM_SHIELD_HOLD_MS ? 2 : 0;
 	}
 
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
@@ -2701,6 +2857,27 @@ namespace
 		// bot of sixty-four had just picked up for the level it was reaching.
 		if (IsPlayerBotStalkiItem(item))
 			return false;
+		// MT2009_PLUS_BOT_PLAIN_LOW_GEAR_V1: plain gear under thirty and +6 is no counter's - the merchant's.
+		if (IsPlayerBotPlainLowGearPiece(item) && IsPlayerBotBagGoodsHoardPiece(ch, item))
+		{
+			++s_uPlayerBotPlainLowGearScrap;
+			return true;
+		}
+		// MT2009_PLUS_BOT_HELM_SHIELD_HOLD_V1: past its family's best two, or a helmet or a shield held too long.
+		switch (GetPlayerBotBagGoodsSurplus(ch, item))
+		{
+			case 1:
+				if (IsPlayerBotHelmShieldPiece(item))
+					++s_uPlayerBotHelmShieldRanked;
+				else
+					++s_uPlayerBotGoodsFamilyCapped;
+				return true;
+			case 2:
+				++s_uPlayerBotHelmShieldAged;
+				return true;
+			default:
+				break;
+		}
 		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: nor a piece whose lines are its
 		// worth - a +7's by MARKET_V3, or the owner's add-on a line while no
 		// Moonlight chests are in the world (IsPlayerBotBonusGoodsPiece): the

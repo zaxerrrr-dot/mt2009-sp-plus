@@ -26,6 +26,51 @@ namespace {
     // Patch 4, whose visits add up to four lines where they added one
     // (PLAYERBOT_OFFLINE_RESTOCK_CHAIN): game1 of m2zip spent 13 to 33 tokens
     // a minute of its 120 on the evening of 25 September.
+    // MT2009_PLUS_BOT_LINE_CLOCK_V1 (the owner, 3 November 2026: "Niesprzedane linie tanieja z czasem" - the old
+    // inflated prices fall slowly): a line's markdown clock (playerbot_offline::ListedLine) lived in this core's memory
+    // only, so every restart clocked the whole counter from the first visit that saw it again - a line of a week stood
+    // at its first step of 10% after each restart and never reached the 40%. The clock is the shop's own now:
+    // player.ikashop_item_meta.since (ikashop_qol.h, the person's "stale" frame) - read once a core for every line, and
+    // a bot's line with no row gets one at its first look (INSERT IGNORE, since = then), so the next core knows it.
+    // At most PLAYERBOT_LINE_CLOCK_MAX_AGE_S back (the dword clock's span).
+    const long long PLAYERBOT_LINE_CLOCK_MAX_AGE_S = 20LL * 24 * 3600;
+    std::unordered_map<uint32_t, long long> s_mapBotOfflineLineSince;
+    bool s_bBotOfflineLineSinceLoaded = false;
+    unsigned int s_uBotOfflineLineClockKnown = 0, s_uBotOfflineLineClockNew = 0;
+
+    // The observed-since a line with no clock in this core gets: its persisted age, else now (and a row for it).
+    uint32_t BotOfflinePersistedObservedSince(uint32_t id, DWORD now) {
+        if (!s_bBotOfflineLineSinceLoaded) {
+            s_bBotOfflineLineSinceLoaded = true;
+            std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery("SELECT item_id, since FROM ikashop_item_meta"));
+            if (msg && msg->Get() && msg->Get()->uiNumRows > 0) {
+                MYSQL_ROW row;
+                while ((row = mysql_fetch_row(msg->Get()->pSQLResult))) {
+                    uint32_t item = 0;
+                    long long since = 0;
+                    str_to_number(item, row[0]);
+                    str_to_number(since, row[1]);
+                    if (item && since > 0) s_mapBotOfflineLineSince[item] = since;
+                }
+            }
+            sys_log(0, "PLAYERBOT_OFFLINE: line clocks loaded rows=%u", (unsigned int)s_mapBotOfflineLineSince.size());
+        }
+        const long long globalNow = (long long)get_global_time();
+        auto known = s_mapBotOfflineLineSince.find(id);
+        if (known == s_mapBotOfflineLineSince.end()) {
+            s_mapBotOfflineLineSince[id] = globalNow;
+            DBManager::instance().Query(
+                "INSERT IGNORE INTO ikashop_item_meta (item_id, owner, since, ap_anchor) VALUES (%u, 0, %lld, %lld)",
+                id, globalNow, globalNow);
+            ++s_uBotOfflineLineClockNew;
+            return now ? now : 1;
+        }
+        ++s_uBotOfflineLineClockKnown;
+        const long long age = std::max(0LL, std::min(PLAYERBOT_LINE_CLOCK_MAX_AGE_S, globalNow - known->second));
+        const uint32_t since = (uint32_t)(now - (uint32_t)(age * 1000LL));
+        return since ? since : 1;
+    }
+
     const DWORD PLAYERBOT_OFFLINE_MUTATION_MS = 350;
     const unsigned PLAYERBOT_OFFLINE_MUTATION_BURST = 8;
     unsigned s_botOfflineTokens = PLAYERBOT_OFFLINE_MUTATION_BURST;
@@ -1355,7 +1400,7 @@ namespace {
             // A line from before this core started is clocked from the first
             // visit that sees it, as the markdown clocks it.
             if (listed->second.when == 0 && listed->second.observedSince == 0)
-                listed->second.observedSince = now;
+                listed->second.observedSince = BotOfflinePersistedObservedSince(id, now);   // MT2009_PLUS_BOT_LINE_CLOCK_V1
             const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
             if (now - since >= PLAYERBOT_RARE_GOODS_MERCHANT_AFTER_MS) {
                 vnum = line->GetInfo().vnum;
@@ -1396,7 +1441,7 @@ namespace {
                 listed = o.listed.emplace(id, playerbot_offline::ListedLine{
                         line->GetInfo().vnum, 0u, 0u, 0 }).first;
             if (listed->second.when == 0 && listed->second.observedSince == 0)
-                listed->second.observedSince = now;
+                listed->second.observedSince = BotOfflinePersistedObservedSince(id, now);   // MT2009_PLUS_BOT_LINE_CLOCK_V1
             const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
             if (now - since < PLAYERBOT_GOODS_UNSOLD_MS) continue;
             LPITEM preview = BotOfflinePreview(*line);
@@ -1435,9 +1480,13 @@ namespace {
             if (bagFree < (int)line->GetTable()->bSize + PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP) continue;
             LPITEM preview = BotOfflinePreview(*line);
             if (!preview) continue;
-            const bool scrap = IsPlayerBotOneWeakBonusPiece(preview) &&
+            // MT2009_PLUS_BOT_PLAIN_LOW_GEAR_V1: and plain gear under thirty and +6 (IsPlayerBotPlainLowGearPiece) - the
+            // lines that went up before the rule come home the same way, for the merchant.
+            const bool plainLow = IsPlayerBotPlainLowGearPiece(preview);
+            const bool scrap = (IsPlayerBotOneWeakBonusPiece(preview) || plainLow) &&
                     GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
                     !IsPlayerBotGambleForSale(ch, preview) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            if (scrap && plainLow) ++s_uPlayerBotPlainLowGearTakenOff;
             M2_DELETE(preview);
             if (scrap) return id;
         }
@@ -1550,7 +1599,7 @@ namespace {
         if (listed == o.listed.end())
             listed = o.listed.emplace(id, playerbot_offline::ListedLine{ vnum, 0u, 0u, 0 }).first;
         if (listed->second.when == 0 && listed->second.observedSince == 0)
-            listed->second.observedSince = now ? now : 1;
+            listed->second.observedSince = BotOfflinePersistedObservedSince(id, now);   // MT2009_PLUS_BOT_LINE_CLOCK_V1
         const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
         return now - since;
     }
@@ -2489,6 +2538,11 @@ namespace {
         int discount = 0, markup = 0;
         uint32_t standing = 0;
     };
+    // MT2009_PLUS_BOT_LINE_CLOCK_V1: the slow markdown past the forty (BotOfflineRepriceTarget).
+    const DWORD PLAYERBOT_SHOP_UNSOLD_SLOW_STEP_MS = 24 * 60 * 60 * 1000;
+    const int PLAYERBOT_SHOP_UNSOLD_SLOW_PERCENT = 5;
+    const int PLAYERBOT_SHOP_UNSOLD_SLOW_MAX_TOTAL = 70;
+    unsigned int s_uBotOfflineSlowMarkdown = 0;
     TBotOfflineRepriceTarget BotOfflineRepriceTarget(LPITEM preview, uint32_t id,
             std::map<uint32_t, playerbot_offline::ListedLine>* listedLines, DWORD now,
             TPlayerBotPriceTraceScope& priceTrace, bool generationMoved) {
@@ -2517,7 +2571,7 @@ namespace {
             scratch.observedSince = now; // nobody here holds its clock: unmarked, as a line first seen
         // Unknown age after restart is not the process uptime.
         if (line->when == 0 && line->observedSince == 0)
-            line->observedSince = now;
+            line->observedSince = listedLines ? BotOfflinePersistedObservedSince(id, now) : now;   // MT2009_PLUS_BOT_LINE_CLOCK_V1
         const uint32_t since = line->when ? line->when : line->observedSince;
         const uint32_t standing = now - since;
         int discount = playerbot_price_rules::UnsoldMarkdownPercent(standing,
@@ -2530,6 +2584,25 @@ namespace {
                 (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()));
         if (operatorPriced)
             discount = 0;
+        // MT2009_PLUS_BOT_LINE_CLOCK_V1 (the owner, 3 November 2026: "Niesprzedane linie tanieja z czasem"): a line past
+        // the markdown's forty (twelve hours) goes on down slowly - PLAYERBOT_SHOP_UNSOLD_SLOW_PERCENT more for every
+        // PLAYERBOT_SHOP_UNSOLD_SLOW_STEP_MS it stands on, to PLAYERBOT_SHOP_UNSOLD_SLOW_MAX_TOTAL - so the inflated
+        // prices of old lines come down to what sells; never under the line's floor (below).
+        // MT2009_PLUS_BOT_MAX_BONUS_VALUE_V1: a piece of really good lines keeps its value - no markdown of age.
+        else if (IsPlayerBotMaxBonusPiece(preview))
+            discount = 0;
+        else if (discount >= PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL && PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT > 0) {
+            const uint32_t fullAt = PLAYERBOT_OFFLINE_UNSOLD_STEP_MS *
+                (uint32_t)(PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL / PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT);
+            if (standing > fullAt) {
+                const int slow = std::min(PLAYERBOT_SHOP_UNSOLD_SLOW_MAX_TOTAL - PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL,
+                    (int)((standing - fullAt) / PLAYERBOT_SHOP_UNSOLD_SLOW_STEP_MS) * PLAYERBOT_SHOP_UNSOLD_SLOW_PERCENT);
+                if (slow > 0) {
+                    discount += slow;
+                    ++s_uBotOfflineSlowMarkdown;
+                }
+            }
+        }
         int markup = 0;
         const long long askingNow = (long long)GetPlayerBotShopAskingPrice(preview);
         if (priceTrace.On() && !operatorPriced) {
