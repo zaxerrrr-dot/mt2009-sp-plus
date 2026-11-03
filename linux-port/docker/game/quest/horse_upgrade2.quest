@@ -207,6 +207,11 @@ quest horse_upgrade2 begin
 			makequestbutton(gameforge.horse_upgrade2._280_makequestbutton)
 			q.set_title(gameforge.horse_upgrade2._280_makequestbutton)
 			q.start()
+			-- MT2009_PLUS_SPIRALA_CZASU_V2: the stable keeper's wait as a clock in the letter (as the Biologist's);
+			-- Spirala Czasu sets it again (q.set_clock_of) the moment it cuts the wait
+			if pc.getqf("make_time") > get_time() then
+				q.set_clock(gameforge.horse_upgrade2.rest_time, pc.getqf("make_time") - get_time())
+			end
 		end
 		when button begin
 			say_title(gameforge.horse_upgrade2._280_makequestbutton)

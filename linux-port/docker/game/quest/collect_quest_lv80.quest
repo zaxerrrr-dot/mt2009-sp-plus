@@ -48,6 +48,10 @@ quest collect_quest_lv80  begin
 		when letter begin
 
 			send_letter(gameforge.collect_quest_lv60._220_sendLetter)
+			-- MT2009_PLUS_SPIRALA_CZASU_V2: the research's wait as a clock in the letter at every login too (the
+			-- stock collect_quest_lv30 does it), not only right after a hand-in; Spirala Czasu sets it again
+			-- (q.set_clock_of) the moment it cuts the wait
+			collect_data.send_delay()
 		end
 		when button or info begin
 			say_title(gameforge.collect_quest_lv80._80_sayTitle)

@@ -614,6 +614,12 @@ def quest_text(q, npc, soul, who, first, daily, frags, nxt, prev):
         w('\tstate daily_wait begin')
         w('\t\twhen letter begin')
         w('\t\t\tsend_letter(%s)' % lua_s(daily))
+        # MT2009_PLUS_SPIRALA_CZASU_V2: the research's clock in the letter (as the Biologist's) - Spirala Czasu
+        # sets it again (q.set_clock_of) the moment it cuts the wait
+        w('\t\t\tlocal left = pc.getqf("given") + %d - get_time()' % DAY)
+        w('\t\t\tif left > 0 then')
+        w('\t\t\t\tq.set_clock("Pozostało", left)')
+        w('\t\t\tend')
         w('\t\tend')
         w('')
         w('\t\twhen button or info begin')
