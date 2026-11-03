@@ -29,7 +29,9 @@
 // stand of the map (bots' and people's), at most every PLAYERBOT_SM_COUPON_LOOK_MS: the coupon - or the part of a stack -
 // that covers the gap with the least overshoot (no more than the gap again, or 100 coins), the cheapest that covers it,
 // else the cheapest a coin; at most PLAYERBOT_SM_COUPON_PRICE_CAP_PCT of its coins' worth at the market's rate (the
-// price sheet's Kupon SM (100), GetPlayerBotIshop3YangPerCoin - 20 000 yang a coin before the sheet's scale) and out of
+// price sheet's Kupon SM (100), GetPlayerBotSmCouponYangPerCoin - 20 000 yang a coin on the yang-rate curve, the world-yang
+// inflation clamped; MT2009_PLUS_BOT_SM_COUPON_PRICE_V1, playerbot_town.h: the rate the bots' own coupon lines ask, at
+// most 105% of it, so a bot's line is another bot's buy) and out of
 // PLAYERBOT_SM_COUPON_PURSE_PCT of what the bot can spare (its gold less its reserves and the floor); a person's line
 // also within the bots' cap on a person's price. PLAYERBOT_SM_COUPON_DAY_COUPONS coupons and
 // PLAYERBOT_SM_COUPON_DAY_COINS coins a bot a day at most. A Sung Ma bot goes home to its first village's stands for one
@@ -93,8 +95,23 @@ namespace
 	{
 		if (!IsPlayerBotSmCouponVnum(vnum))
 			return 0;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		return GetPlayerBotSmCouponCoinsOf(vnum);
+#else
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
 		return proto ? std::max<long long>(0, proto->alValues[0]) : 0;
+#endif
+	}
+
+	// The yang a coin is worth to a buyer of a coupon - the one rate the bots' coupon lines ask by
+	// (MT2009_PLUS_BOT_SM_COUPON_PRICE_V1); the V3 goals' own rate before it.
+	long long GetPlayerBotSmCouponBuyRate()
+	{
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		return GetPlayerBotSmCouponYangPerCoin();
+#else
+		return GetPlayerBotIshop3YangPerCoin();
+#endif
 	}
 
 	// The coins of the coupons in the bag (every cell, as the voucher pass reads it).
@@ -226,7 +243,7 @@ namespace
 	{
 		if (coins <= 0 || price <= 0)
 			return 1;
-		const long long cap = coins * GetPlayerBotIshop3YangPerCoin() * PLAYERBOT_SM_COUPON_PRICE_CAP_PCT / 100;
+		const long long cap = coins * GetPlayerBotSmCouponBuyRate() * PLAYERBOT_SM_COUPON_PRICE_CAP_PCT / 100;
 		if (price > cap)
 			return 1;
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
@@ -409,7 +426,7 @@ namespace
 					"PLAYERBOT_SMKUPON: none bought pid=%u name=%s map=%ld gap=%lld reason=%s why=%s gold=%lld yang_per_coin=%lld",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), gap, n.szReason,
 					sawPurse ? "purse" : sawPrice ? "price" : sawAny ? "no_fit" : "no_offer", (long long)ch->GetGold(),
-					GetPlayerBotIshop3YangPerCoin());
+					GetPlayerBotSmCouponBuyRate());
 			return false;
 		}
 		auto& o = state.offlineShop;
@@ -506,6 +523,32 @@ namespace
 	void WritePlayerBotSmCouponCensus(DWORD dwNow)
 	{
 		TPlayerBotSmCouponStats& s = s_kPlayerBotSmCoupons;
+		// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: the coupon lines on the bots' counters of this core, those out of the coin
+		// rule's band (put right at their keepers' next service) and those put right since the last census.
+		unsigned int lines = 0, outOfBand = 0;
+		long long lineCoins = 0;
+#if defined(ENABLE_IKASHOP_RENEWAL) && defined(MT2009_PLUS_BOT_SM_COUPON_PRICE_V1)
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			if (!shop || !CPlayerBotManager::instance().IsRegisteredBotPID(shop->GetOwnerPID()))
+				continue;	// the engine's ledger holds people's counters too - never theirs
+			for (const auto& [id, line] : shop->GetItems())
+			{
+				if (!line || !IsPlayerBotSmCouponVnum(line->GetInfo().vnum))
+					continue;
+				const long long count = std::max<long long>(1, (long long)line->GetInfo().count);
+				++lines;
+				lineCoins += GetPlayerBotSmCouponValue(line->GetInfo().vnum) * count;
+				if (IsPlayerBotSmCouponPriceOutOfBand(line->GetInfo().vnum, count, (long long)line->GetPrice().GetTotalYangAmount()))
+					++outOfBand;
+			}
+		}
+#endif
+		unsigned int repriced = 0;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		repriced = s_uPlayerBotSmCouponRepriced;
+		s_uPlayerBotSmCouponRepriced = 0;
+#endif
 		unsigned int open = 0;
 		const long today = (long)(get_global_time() / 86400);
 		for (std::map<DWORD, TPlayerBotSmCouponNeed>::iterator it = s_mapPlayerBotSmCouponNeed.begin();
@@ -522,7 +565,8 @@ namespace
 			else
 				++it;
 		}
-		if (s.uShortfalls == 0 && s.uRaised == 0 && s.uLooks == 0 && s.uBuys == 0 && s.uCashes == 0 && open == 0)
+		if (s.uShortfalls == 0 && s.uRaised == 0 && s.uLooks == 0 && s.uBuys == 0 && s.uCashes == 0 && open == 0 &&
+				lines == 0 && repriced == 0)
 			return;
 		std::string reasons;
 		for (std::map<std::string, unsigned int>::const_iterator r = s.byReason.begin(); r != s.byReason.end(); ++r)
@@ -533,10 +577,12 @@ namespace
 		}
 		sys_log(0, "PLAYERBOT_SMKUPON: census shortfalls=%u raised=%u by=%s looks=%u picks=%u no_offer=%u refused_price=%u "
 				"refused_purse=%u day_cap=%u buys=%u coupons=%u coins_bought=%lld yang=%lld cashed=%u sm_gained=%lld "
-				"other_cashed_for_need=%lld unblocked=%u open=%u yang_per_coin=%lld",
+				"other_cashed_for_need=%lld unblocked=%u open=%u yang_per_coin=%lld counter_lines=%u counter_coins=%lld "
+				"out_of_band=%u repriced=%u",
 				s.uShortfalls, s.uRaised, reasons.empty() ? "-" : reasons.c_str(), s.uLooks, s.uPicks, s.uNoOffer,
 				s.uRefusedPrice, s.uRefusedPurse, s.uDayCap, s.uBuys, s.uBoughtCoupons, s.llBoughtCoins, s.llYang, s.uCashes,
-				s.llCashedCoins, s.llOtherCashed, s.uUnblocked, open, GetPlayerBotIshop3YangPerCoin());
+				s.llCashedCoins, s.llOtherCashed, s.uUnblocked, open, GetPlayerBotSmCouponBuyRate(), lines, lineCoins,
+				outOfBand, repriced);
 		s = TPlayerBotSmCouponStats();
 	}
 }

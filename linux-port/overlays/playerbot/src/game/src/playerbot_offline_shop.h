@@ -537,6 +537,10 @@ namespace {
     // hundred thousand and the markdowns under it (blipu's report); the hourly
     // reprice reaches a line in hours, and a player empties a counter in
     // minutes.
+    // MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: and a Kupon SM line asking out of the
+    // coin rule's band (IsPlayerBotSmCouponPriceOutOfBand, playerbot_town.h) -
+    // the hundreds of millions of the inflated sheet - goes to what the keeper
+    // asks for it now, down or up, the same first step of the visit.
     DWORD BotOfflineUnderFloorLine(LPCHARACTER ch, NativeShop shop, long long& price, long long& was,
             DWORD& vnum) {
         price = was = 0;
@@ -545,6 +549,25 @@ namespace {
         TPlayerBotPricingKeeper pricing(ch->GetPlayerID());
         for (const auto& [id, line] : shop->GetItems()) {
             if (!line || !line->GetTable()) continue;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+            if (IsPlayerBotSmCouponVnum(line->GetInfo().vnum)) {
+                const long long asked = (long long)line->GetPrice().GetTotalYangAmount();
+                const long long count = std::max<long long>(1, (long long)line->GetInfo().count);
+                if (!IsPlayerBotSmCouponPriceOutOfBand(line->GetInfo().vnum, count, asked)) continue;
+                LPITEM preview = BotOfflinePreview(*line);
+                if (!preview) continue;
+                price = (long long)GetPlayerBotListingPrice(preview, GetPlayerBotShopAskingPrice(preview), 0);
+                was = asked;
+                vnum = preview->GetVnum();
+                M2_DELETE(preview);
+                if (price <= 0 || IsPlayerBotSmCouponPriceOutOfBand(vnum, count, price)) {
+                    price = was = 0;
+                    vnum = 0;
+                    continue;
+                }
+                return id;
+            }
+#endif
             const BYTE type = line->GetTable()->bType;
             const BYTE sub = line->GetTable()->bSubType;
             if (line->GetInfo().vnum != PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
@@ -577,6 +600,14 @@ namespace {
         info.yang = price;
         ikashop::GetManager().RecvShopEditItemClientPacket(ch, itemid, info);
         if (!EndCall(ch->GetPlayerID())) return false;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+        if (IsPlayerBotSmCouponVnum(vnum)) {
+            ++s_uPlayerBotSmCouponRepriced;
+            sys_log(0, "PLAYERBOT_SMKUPON: repriced a coupon line pid=%u name=%s item=%u vnum=%u price=%lld was=%lld "
+                "yang_per_coin=%lld", ch->GetPlayerID(), ch->GetName(), itemid, vnum, price, was,
+                GetPlayerBotSmCouponYangPerCoin());
+        } else
+#endif
         sys_log(0, "PLAYERBOT_OFFLINE: raised to its floor pid=%u name=%s item=%u vnum=%u price=%lld was=%lld",
             ch->GetPlayerID(), ch->GetName(), itemid, vnum, price, was);
         if (IsPlayerBotExplainOn()) {
