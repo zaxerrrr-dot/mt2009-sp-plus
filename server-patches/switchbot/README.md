@@ -32,13 +32,16 @@ Amerii, zastosuj nowy kod po stronie serwera jak i klienta.”* Znacznik: `MT200
 
 ## Zasady (jak w Amerii)
 
-- 5 pól, w każdym jeden przedmiot z ekwipunku: broń albo zbroja, hełm, tarcza, bransoleta, buty, naszyjnik, kolczyki
-  (bez kostiumów, rękawic, talizmanów, strzał/kołczanów). Przedmiot zostaje na swoim miejscu w torbie, zablokowany –
+- 5 pól, w każdym jeden przedmiot z ekwipunku: broń albo zbroja, hełm, tarcza, bransoleta, buty, naszyjnik, kolczyki,
+  talizman, rękawice (`MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1`, lista właściciela z 3.11.2026), kostium, fryzura,
+  nakładka na broń (`MT2009_PLUS_SWITCHBOT_COSTUME_V1`) – bez strzał/kołczanów, wierzchowców i szarf. Przedmiot zostaje na swoim miejscu w torbie, zablokowany –
   nie da się go przenieść, założyć, sprzedać, wymienić ani schować, dopóki jest w polu.
 - Na pole do 5 „alternatyw” po 5 bonusów z minimalną wartością; pole kończy, gdy przedmiot ma wszystkie bonusy jednej
   ustawionej alternatywy. Okno pokazuje 2 alternatywy (Ameria odblokowywała 3–5 płatnym „premium switchbotem” – pominięte).
 - Zmiana co 0,2 s na każde aktywne pole (zwykłe `ChangeAttribute` silnika). Koszt: 1 Zaczarowanie Przedmiotu na zmianę,
-  w kolejności 39028, 71084, 76014, 71151 (71151 tylko broń / zbroja do 40 poziomu). Liczone i zabierane także z
+  w kolejności 39028, 71084, 76014, 71284, 71151 (71151 tylko broń / zbroja do 40 poziomu). Kostium, fryzura i nakładka:
+  tylko 70064 Zaczaruj kostium (jak ręcznie – ta sama liczba bonusów; los z inną liczbą przywraca stare bonusy, nie
+  zabiera przedmiotu i zatrzymuje pole). Okno pod Start/Stop pokazuje, który przedmiot zużywa wybrane pole. Liczone i zabierane także z
   dodatkowego ekwipunku (zakładka Zaczarowania). Brak zaczarowań – switchbot staje.
 - Koniec: szept od „[Switchbot]” z nazwą przedmiotu, numerem pola i liczbą zużytych zaczarowań. Przerwa, gdy gracz nie
   może działać (śmierć, handel, sklep, magazyn, kostka, trwający quest, teleport).
