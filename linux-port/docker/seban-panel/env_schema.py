@@ -45,7 +45,9 @@ import re
 # 4: M2_MLODZI_BOHATEROWIE (Yohara 3.x, MT2009_PLUS_MLODZI_BOHATEROWIE_V1).
 # 5: M2_SEBAN_KEEP_* and M2_SEBAN_GEAR_PER_CHARACTER (Yohara 3.0.7,
 #    MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1).
-SCHEMA_VERSION = 5
+# 6: M2_MONSTER_ATTACK (MT2009_PLUS_MOB_ATTACK_V1) and M2_SERVER_PROFILE
+#    (MT2009_PLUS_SERVER_CONFIG_V1), Yohara 3.0.7.
+SCHEMA_VERSION = 6
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -321,6 +323,17 @@ SCHEMA = [
        "Panel klasyczny zmienia to od razu; ta wartość obowiązuje, gdy ją zmienisz.",
        "swiat", "string", "default", GAME, pattern=r"default|easy|[1-9]\d|[12]\d\d|300",
        hint="default, easy albo liczba od 10 do 300", suggestions=["default", "easy", "50", "150", "200"]),
+    # MT2009_PLUS_MOB_ATTACK_V1 (server-patches/mobattack): the twin of the health above.
+    _e("M2_MONSTER_ATTACK", "Siła ataku potworów",
+       "Ile obrażeń zadają potwory i bossowie: default = jak w grze (100%), easy = 80%, albo liczba 10–300 (procent). "
+       "Obrażenia graczy i botów się nie zmieniają. „Konfiguracja serwera” zmienia to od razu; ta wartość obowiązuje, gdy ją zmienisz.",
+       "swiat", "string", "default", GAME, pattern=r"default|easy|[1-9]\d|[12]\d\d|300",
+       hint="default, easy albo liczba od 10 do 300", suggestions=["default", "easy", "50", "150", "200"]),
+    # MT2009_PLUS_SERVER_CONFIG_V1: the profile vps-install.sh --profile chose; informational.
+    _e("M2_SERVER_PROFILE", "Profil serwera (pierwszy start)",
+       "Nazwa profilu z „Konfiguracji serwera” wybranego przy instalacji (instalator VPS --profile). "
+       "Sam wpis niczego nie zmienia – profil stosuje się na stronie „Konfiguracja serwera”, która też pamięta, co zastosowano.",
+       "swiat", "string", "", [], pattern=r"[a-z0-9_]{1,32}", hint="małe litery, cyfry i _", allow_empty=True),
     _e("M2_BONUS_MODE", "Bonusy przedmiotów i żywioły",
        "mt2009 = jak dotąd: Maks. PŻ do 1500, Maks. PE do 250, regeneracja do 12%, żywioły mają bossowie i wybrane mapy oraz lochy, "
        "odporność na żywioł odejmuje cały swój procent. global = bonusy jak na serwerze globalnym: Maks. PŻ do 2000, Maks. PE do 80 "
@@ -800,7 +813,25 @@ LIVE_KEYS = {
     "M2_SHOP_BIG": "SHOPBIG",  # MT2009_PLUS_SHOP_QOL_V2
     "M2_ALCHEMY": "RARE",
     "M2_SASHES": "RARE",
+    # MT2009_PLUS_SERVER_CONFIG_V1: the monsters' health and damage, percents
+    # (web_admin.quest MOB_HP / MOB_ATTACK set the flags on every core).
+    "M2_MONSTER_HP": "MOB_HP",
+    "M2_MONSTER_ATTACK": "MOB_ATTACK",
 }
+
+
+def monster_percent(value):
+    """M2_MONSTER_HP / M2_MONSTER_ATTACK as the migrator reads them: default
+    (or empty, 0) = 100, easy = 80, else a percent held to 10..300; None for
+    anything else (MT2009_PLUS_SERVER_CONFIG_V1)."""
+    text = str(value or "").strip().lower().rstrip("%")
+    if text in ("", "0", "default", "normal"):
+        return 100
+    if text == "easy":
+        return 80
+    if not text.isdigit():
+        return None
+    return max(10, min(300, int(text)))
 
 
 def public_schema():

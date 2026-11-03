@@ -188,7 +188,11 @@ def queue_request(spool, changes):
 LIVE_WAIT = 6.0
 LIVE_FINAL = ("done", "failed", "bad_args", "cancelled", "player_offline")
 _FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off",
-          "m2_teleport_map_on", "m2_shop_big_on")
+          "m2_teleport_map_on", "m2_shop_big_on",
+          "m2_mob_hp", "m2_mob_attack")  # MT2009_PLUS_SERVER_CONFIG_V1
+# MT2009_PLUS_SERVER_CONFIG_V1: the percent switches - .env key -> (event flag, queue command).
+_PERCENT_SWITCHES = {"M2_MONSTER_HP": ("m2_mob_hp", "MOB_HP"),
+                     "M2_MONSTER_ATTACK": ("m2_mob_attack", "MOB_ATTACK")}
 
 
 def _flag_rows(cur):
@@ -218,6 +222,10 @@ def live_values_from_flags(flags):
     out["M2_TELEPORT_MAP"] = "1" if flags.get("m2_teleport_map_on") == 1 else "0"
     # MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops; no row = off.
     out["M2_SHOP_BIG"] = "1" if flags.get("m2_shop_big_on") == 1 else "0"
+    # MT2009_PLUS_SERVER_CONFIG_V1: a percent; no row, 0 or 100 = the game's own.
+    for key, (flag, _cmd) in _PERCENT_SWITCHES.items():
+        pct = env_schema.monster_percent(flags.get(flag, 0))
+        out[key] = "default" if pct in (None, 100) else str(pct)
     return out
 
 
@@ -281,6 +289,13 @@ def apply_live(db_connect, changes, wait=LIVE_WAIT, sleep=time.sleep):
             on = 1 if changes["M2_SHOP_BIG"] == "1" else 0
             flag("m2_shop_big_on", on)
             queue("SHOPBIG", str(on))
+        # MT2009_PLUS_SERVER_CONFIG_V1: the monsters' health and damage.
+        for key, (flag_name, cmd) in _PERCENT_SWITCHES.items():
+            if key in changes:
+                pct = env_schema.monster_percent(changes[key])
+                if pct is not None:
+                    flag(flag_name, pct)
+                    queue(cmd, str(pct))
         if "M2_ALCHEMY" in changes or "M2_SASHES" in changes:
             alchemy = 1 if changes.get("M2_ALCHEMY", now.get("M2_ALCHEMY", "1")) == "1" else 0
             sashes = 1 if changes.get("M2_SASHES", now.get("M2_SASHES", "1")) == "1" else 0
@@ -342,7 +357,7 @@ def install(app, login_required, csrf_token, spool_getter, db_connect=None):
                             "Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
         if other:
             return jsonify({"ok": False, "message": "Aktualizator nie działa, więc od razu można zmienić tylko przełączniki oznaczone „działa od razu” "
-                            "(Arezzo, Seon-Hae, alchemia, szarfy). Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
+                            "(Arezzo, Seon-Hae, alchemia, szarfy, życie i siła ataku potworów). Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
         try:
             outcome = apply_live(db_connect, clean)
         except Exception:

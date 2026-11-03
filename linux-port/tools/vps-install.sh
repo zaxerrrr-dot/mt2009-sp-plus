@@ -73,6 +73,7 @@ SWAP_SIZE_MB=4096
 # Options (the dispatch at the bottom fills them).
 ADDRESS=''
 BOTS=''
+PROFILE=''
 FOLLOW=auto
 NO_SWAP=0
 FORCE=0
@@ -446,13 +447,76 @@ secure_existing_env() {
     say "linux-port/docker/.env jest - hasla bazy zostaja takie, jakie sa."
 }
 
+# MT2009_PLUS_SERVER_CONFIG_V1: --profile NAME - one configuration of
+# linux-port/docker/seban-panel/server_profiles.txt (the advanced panel's
+# "Konfiguracja serwera"), for a world not made yet: its "env KEY = value"
+# lines go into the new .env, its "rate exp|drop|yang = N" lines into
+# M2_RATE_* (a fresh world's rates), and M2_SERVER_PROFILE remembers the
+# choice, so the panel offers the profile's event calendar on its first
+# visit. Only plain keys and values are taken (A-Z0-9_ = a-z0-9._,:/-); the
+# panel's parser checks the same file in full (test_server_config.py).
+PROFILES_FILE="$COMPOSE_DIR/seban-panel/server_profiles.txt"
+
+profile_lines() {
+    awk -v want="[profile $1]" '
+        /^\[/ { on = ($0 == want); next }
+        on && /^(env|rate)[ \t]/ { print }' "$PROFILES_FILE" 2>/dev/null | tr -d '\r'
+}
+
+profile_names() {
+    sed -n 's/^\[profile \([a-z0-9_]*\)\]$/\1/p' "$PROFILES_FILE" 2>/dev/null | tr '\n' ' '
+}
+
+check_profile() {
+    [ -n "$PROFILE" ] || return 0
+    case "$PROFILE" in
+        *[!a-z0-9_]*) die "--profile: nazwa z malych liter, cyfr i _ (dostepne: $(profile_names))" ;;
+    esac
+    [ -n "$(profile_lines "$PROFILE")" ] || die "--profile $PROFILE: nie ma takiej konfiguracji w $PROFILES_FILE (dostepne: $(profile_names))"
+}
+
+apply_profile() {
+    [ -n "$PROFILE" ] || return 0
+    _applied=''
+    _lines=$(profile_lines "$PROFILE")
+    set -f   # the words below are split, never globbed
+    _old_ifs=$IFS
+    IFS='
+'
+    for _line in $_lines; do
+        IFS=$_old_ifs
+        # "env KEY = value" / "rate name = N", spaces around = optional.
+        set -- $(printf '%s\n' "$_line" | sed 's/=/ = /')
+        _what=$1; _key=$2; _val=${4:-}
+        case "$_what" in
+            env) ;;
+            rate)
+                case "$_key" in
+                    exp) _key=M2_RATE_EXP ;; drop) _key=M2_RATE_DROP ;; yang) _key=M2_RATE_YANG ;;
+                    *) warn "profil $PROFILE: pomijam rate $_key"; continue ;;
+                esac ;;
+            *) continue ;;
+        esac
+        case "$_key" in ''|*[!A-Z0-9_]*) warn "profil $PROFILE: pomijam linie '$_line'"; continue ;; esac
+        case "$_val" in *[!A-Za-z0-9._,:/-]*) warn "profil $PROFILE: pomijam $_key (niedozwolone znaki)"; continue ;; esac
+        env_set "$_key" "$_val"
+        _applied="$_applied $_key=$_val"
+    done
+    IFS=$_old_ifs
+    set +f
+    env_set M2_SERVER_PROFILE "$PROFILE"
+    say "Konfiguracja serwera: profil $PROFILE -$_applied (kalendarz eventow profilu dopiszesz w panelu zaawansowanym: Konfiguracja serwera)."
+}
+
 ENV_KEPT=0
 prepare_env() {
     if [ -f "$ENV_FILE" ]; then
         secure_existing_env
         ENV_KEPT=1
+        [ -n "$PROFILE" ] && warn "--profile $PROFILE pominiety: .env juz jest (istniejacy swiat) - konfiguracje zmienisz w panelu zaawansowanym (Konfiguracja serwera)"
     else
         write_new_env
+        apply_profile
     fi
 }
 
@@ -720,6 +784,7 @@ cmd_install() {
     check_tree
     check_arch
     check_machine
+    check_profile
     # The swap and the refusal before Docker: a machine that is going to be
     # refused should not get Docker installed first.
     ensure_swap
@@ -885,6 +950,9 @@ uzycie: sudo sh linux-port/tools/vps-install.sh [polecenie] [opcje]
 opcje:
   --address ADRES   publiczny adres serwera (domyslnie: odczytany IPv4)
   --bots N          liczba botow (domyslnie: wedlug pamieci 150/400/800)
+  --profile NAZWA   konfiguracja nowego swiata z panelu (Konfiguracja serwera):
+                    mt2009, clean_easy, clean_hard, sapphire - tylko gdy .env
+                    jeszcze nie ma; pozniej zmienisz ja w panelu zaawansowanym
   --no-follow       nie pokazuj logu na biezaco (tak robi launcher)
   --follow          pokazuj log na biezaco nawet bez terminala
   --no-swap         nie zakladaj pliku wymiany
@@ -908,16 +976,18 @@ esac
 P1=''; P2=''; _npos=0
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        --address|--bots|--from)
+        --address|--bots|--from|--profile)
             [ "$#" -ge 2 ] || die "$1: brak wartosci"
             case "$1" in
                 --address) ADDRESS=$2 ;;
                 --bots) BOTS=$2 ;;
                 --from) FROM=$2 ;;
+                --profile) PROFILE=$2 ;;
             esac
             shift ;;
         --address=*) ADDRESS=${1#*=} ;;
         --bots=*) BOTS=${1#*=} ;;
+        --profile=*) PROFILE=${1#*=} ;;
         --from=*) FROM=${1#*=} ;;
         --no-follow) FOLLOW=no ;;
         --follow) FOLLOW=yes ;;
@@ -949,6 +1019,7 @@ case "$_cmd" in
             set --
             [ -n "$ADDRESS" ] && set -- "$@" --address "$ADDRESS"
             [ -n "$BOTS" ] && set -- "$@" --bots "$BOTS"
+            [ -n "$PROFILE" ] && set -- "$@" --profile "$PROFILE"
             [ -n "$FROM" ] && set -- "$@" --from "$FROM"
             [ "$FOLLOW" = no ] && set -- "$@" --no-follow
             [ "$FOLLOW" = yes ] && set -- "$@" --follow

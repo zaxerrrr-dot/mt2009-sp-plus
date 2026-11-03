@@ -2572,6 +2572,19 @@ EVENT_CHESTDROP_KIND = "chestdrop"
 EVENT_KEYED_KINDS = EVENT_WORLD_KINDS + (EVENT_CHESTDROP_KIND,)
 # Kinds the week generator never draws: the chest drop needs its chest.
 EVENT_AUTOGEN_EXCLUDED = (EVENT_CHESTDROP_KIND,)
+# MT2009_PLUS_CHEST_DROP_TARGET_V1: a chest drop line's seventh column - who
+# drops it (playerbot_event_rules.h ChestDropTarget). 0 is written as nothing,
+# the file every core before this one reads.
+EVENT_CHESTDROP_TARGETS = ((0, "potwory i Metiny"), (1, "tylko bossowie i Metiny"), (2, "tylko zwykłe potwory"))
+EVENT_CHESTDROP_TARGET_IDS = frozenset(index for index, _label in EVENT_CHESTDROP_TARGETS)
+
+
+def event_chestdrop_target(value):
+    try:
+        value = int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+    return value if value in EVENT_CHESTDROP_TARGET_IDS else 0
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1, playerbot_events.h).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
@@ -2848,8 +2861,12 @@ def read_events():
                 map_id = int(fields[5])
             except ValueError:
                 pass
-        rows.append({"kind": fields[0], "days": days, "start": start, "end": end,
-                     "value": value, "on": enabled, "map": map_id})
+        row = {"kind": fields[0], "days": days, "start": start, "end": end,
+               "value": value, "on": enabled, "map": map_id}
+        # MT2009_PLUS_CHEST_DROP_TARGET_V1: and its seventh, who drops it.
+        if fields[0] == EVENT_CHESTDROP_KIND:
+            row["target"] = event_chestdrop_target(fields[6] if len(fields) >= 7 else 0)
+        rows.append(row)
     return rows, nows
 
 
@@ -2860,7 +2877,8 @@ def write_events(rows, nows, event_settings=None):
         "# kind<TAB>days<TAB>from<TAB>to<TAB>value[<TAB>map] | now<TAB>kind<TAB>until_epoch<TAB>value[<TAB>map<TAB>since]",
         "# days: * or 1..7 (1 = Monday); #off keeps a disabled plan row.",
         "# map: Tanaka and Zuo only, 0 = the event picks. bots: the share of bots that answer them.",
-        "# chestdrop: value = the chance a kill in per mille (1-1000), map = the chest's item vnum.",
+        "# chestdrop: value = the chance a kill in per mille (1-1000), map = the chest's item vnum,",
+        "#   7th column (optional): 1 = bosses and Metins only, 2 = ordinary monsters only.",
         "",
     ]
     for row in rows:
@@ -2868,6 +2886,9 @@ def write_events(rows, nows, event_settings=None):
         line = "%s\t%s\t%s\t%s\t%d" % (row["kind"], days, row["start"], row["end"], int(row["value"]))
         if row["kind"] in EVENT_KEYED_KINDS:  # MT2009_PLUS_CHEST_DROP_EVENT_V1: + the vnum
             line += "\t%d" % int(row.get("map", 0))
+        # MT2009_PLUS_CHEST_DROP_TARGET_V1: + who drops it, only when not everybody.
+        if row["kind"] == EVENT_CHESTDROP_KIND and event_chestdrop_target(row.get("target")):
+            line += "\t%d" % event_chestdrop_target(row.get("target"))
         body.append(line if row.get("on", True) else "#off\t" + line)
     stamp = time.time()
     for kind in EVENT_KINDS:
@@ -10430,6 +10451,7 @@ def events():
                     if not event_item_info(map_id):
                         flash(f"Wiersz {index + 1}: nie ma przedmiotu o VNUM {request.form.get(f'r{index}_vnum') or '(puste)'} — podaj VNUM istniejącej szkatułki.", "error")
                         return redirect(url_for("events"))
+                    target = event_chestdrop_target(request.form.get(f"r{index}_target"))  # MT2009_PLUS_CHEST_DROP_TARGET_V1
                 elif kind in EVENT_WORLD_KINDS:
                     value = event_world_value(kind, value)
                     try:
@@ -10443,6 +10465,8 @@ def events():
                 new_rows.append({"kind": kind, "days": days, "start": start, "end": end,
                                  "value": 0 if kind in EVENT_FLAG_KINDS else value, "map": map_id,
                                  "on": bool(request.form.get(f"r{index}_on"))})
+                if kind == EVENT_CHESTDROP_KIND:
+                    new_rows[-1]["target"] = target
             try:
                 write_events(new_rows, nows)
             except OSError:
@@ -10534,7 +10558,7 @@ def events():
                            level_kinds=EVENT_LEVEL_KINDS,  # MT2009_PLUS_SUPERSTONE_V1
                            event_maps=EVENT_MAPS, event_settings=read_event_settings(),
                            autogen_lengths=event_autogen.LENGTHS,  # MT2009_PLUS_EVENTS_AUTOGEN_V1
-                           autogen_excluded=EVENT_AUTOGEN_EXCLUDED, chestdrop_kind=EVENT_CHESTDROP_KIND,
+                           autogen_excluded=EVENT_AUTOGEN_EXCLUDED, chestdrop_kind=EVENT_CHESTDROP_KIND, chestdrop_targets=EVENT_CHESTDROP_TARGETS,
                            chest_runs=event_chestdrop_runs(rows, nows),  # MT2009_PLUS_CHEST_DROP_EVENT_V1
                            chest_items={str(row["map"]): event_item_info(row["map"]) for row in rows
                                         if row["kind"] == EVENT_CHESTDROP_KIND})
@@ -12686,6 +12710,18 @@ dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
 import env_editor
 
 env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL, db_connect=lambda: db())
+
+# MT2009_PLUS_SERVER_CONFIG_V1: "Konfiguracja serwera" - whole configurations
+# (server_profiles.txt) applied through the paths above: the .env editor's
+# live switches and updater queue, the rates' restart, the events planner.
+import server_config
+
+server_config.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL,
+                      db_connect=lambda: db(), read_rates=lambda: read_rates(),
+                      queue_rate_restart=lambda values: queue_rate_restart(values),
+                      restart_in_flight=lambda: restart_in_flight(),
+                      read_events=lambda: read_events(), write_events=lambda rows, nows: write_events(rows, nows),
+                      event_kinds=EVENT_KINDS, keyed_kinds=EVENT_KEYED_KINDS)
 
 
 # MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (wersja eksperymentalna) - every

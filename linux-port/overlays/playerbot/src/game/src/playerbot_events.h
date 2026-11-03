@@ -652,7 +652,8 @@ namespace {
 					playerbot_events::EvaluateWorldByMap(s_vecPlayerBotEvents, kind, (long)now, dayIndex, minute, byVnum);
 					bool changed = byVnum.size() != s_vecPlayerBotChestDrops.size();
 					for (size_t i = 0; i < byVnum.size() && !changed; ++i)
-						changed = byVnum[i].map != s_vecPlayerBotChestDrops[i].map || byVnum[i].value != s_vecPlayerBotChestDrops[i].value;
+						changed = byVnum[i].map != s_vecPlayerBotChestDrops[i].map || byVnum[i].value != s_vecPlayerBotChestDrops[i].value
+							|| byVnum[i].target != s_vecPlayerBotChestDrops[i].target;	// MT2009_PLUS_CHEST_DROP_TARGET_V1
 					if (changed)
 						sys_log(0, "PLAYERBOT_EVENT: chest drops now %u vnum(s)", (unsigned int)byVnum.size());
 					s_vecPlayerBotChestDrops.swap(byVnum);
@@ -775,7 +776,18 @@ void Mt2009PlusChestDrops(LPCHARACTER victim, LPCHARACTER killer, std::vector<LP
 	{
 		const playerbot_events::Status& st = s_vecPlayerBotChestDrops[i];
 		const DWORD vnum = (DWORD)st.map;
-		if (!vnum || st.value <= 0 || number(1, 1000) > st.value)
+		if (!vnum || st.value <= 0)
+			continue;
+		// MT2009_PLUS_CHEST_DROP_TARGET_V1: the line's seventh column - every
+		// monster and Metin (0), bosses and Metins only (1), or ordinary
+		// monsters only (2). A boss is a monster of rank boss or above.
+		if (st.target != playerbot_events::TARGET_ALL)
+		{
+			const bool bossOrMetin = victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS;
+			if ((st.target == playerbot_events::TARGET_BOSS_METIN) != bossOrMetin)
+				continue;
+		}
+		if (number(1, 1000) > st.value)
 			continue;
 		if (LPITEM item = ITEM_MANAGER::instance().CreateItem(vnum, 1, 0, true))
 			vec_item.emplace_back(item);

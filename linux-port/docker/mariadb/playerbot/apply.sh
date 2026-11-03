@@ -1493,6 +1493,32 @@ else
     fail_step "could not write the monster health flag; the cores keep the last one" >&2
 fi
 
+# MT2009_PLUS_MOB_ATTACK_V1: how hard monsters hit (the owner, 3 November 2026,
+# from the server configurator's EASY / SAPPHIRE profiles), the same rule as the
+# health above: .env's M2_MONSTER_ATTACK - default (100, the game as it was
+# made), easy (80) or a percent from 10 to 300 - becomes the flag m2_mob_attack
+# only when it changed since the last start (m2_mob_attack_env), so a choice
+# made in the advanced panel's "Konfiguracja serwera" outlives a restart.
+mobatk=$(printf '%s' "${M2_MONSTER_ATTACK:-default}" | tr 'A-Z' 'a-z' | tr -d ' \r%')
+case "$mobatk" in
+    ''|0|default|normal) mobatk=100 ;;
+    easy) mobatk=80 ;;
+    *[!0-9]*)
+        echo "[playerbot-migrate] WARNING: M2_MONSTER_ATTACK=$mobatk is not default, easy or a percent; monsters keep the game's damage" >&2
+        mobatk=100 ;;
+    *) mobatk=$(printf '%s\n' "$mobatk" | awk '{ p = int($1 + 0); if (p < 10) p = 10; if (p > 300) p = 300; printf "%d", p }') ;;
+esac
+mobatk_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_mob_attack_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ "$mobatk_env" = "$mobatk" ]; then
+    echo "[playerbot-migrate] monster damage: .env unchanged since the last start - the flag stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_mob_attack', '', $mobatk),
+        (0, 'm2_mob_attack_env', '', $mobatk);"; then
+    echo "[playerbot-migrate] monster damage: ${mobatk}% of what monsters deal (from .env)"
+else
+    fail_step "could not write the monster damage flag; the cores keep the last one" >&2
+fi
+
 # The starter kit (the operator, 30 September, on Iwakura's proposal):
 # what a player's new character and a bot the seed makes from now on start
 # wearing - default nothing past what the game gives, medium the class's

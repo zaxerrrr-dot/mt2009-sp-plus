@@ -26,6 +26,8 @@
 //   					halloween (MT2009_PLUS_HALLOWEEN_V1)
 //   					(MT2009_PLUS_EVENT_MANAGER_V1, playerbot_ingame_events.h)
 //   bots	50				half of the bots that could come to an event do
+//   chestdrop	3	00:00	12:00	70	51501	1	Wednesday morning: Cor Draconis, 7%, from
+//   					bosses and Metins only (the 7th column, MT2009_PLUS_CHEST_DROP_TARGET_V1)
 //   #off	yang	*	12:00	13:00	25	a row the operator switched off
 //
 // Days are 1 (Monday) to 7 (Sunday) or "*"; a window whose end is not after
@@ -166,7 +168,26 @@ struct Window {
 	long until = 0;
 	long map = 0;             // a world event's map; 0 lets the event pick
 	long since = 0;           // an "activate now" line's first second, 0 when unknown
+	// MT2009_PLUS_CHEST_DROP_TARGET_V1 (the server configurator's calendars, the
+	// owner, 3 November 2026): a chest drop line's seventh column, who drops it -
+	// TARGET_ALL (0, nothing written: every monster and Metin, as before),
+	// TARGET_BOSS_METIN (1: bosses and Metin stones only) or TARGET_ORDINARY
+	// (2: ordinary monsters only, no boss, no Metin).
+	int target = 0;
 };
+
+enum ChestDropTarget
+{
+	TARGET_ALL = 0,
+	TARGET_BOSS_METIN = 1,
+	TARGET_ORDINARY = 2,
+	TARGET_MAX = 3
+};
+
+inline int ClampTarget(int value)
+{
+	return value < 0 || value >= TARGET_MAX ? TARGET_ALL : value;
+}
 
 // The lines that are no event: settings the events share.
 struct Settings {
@@ -237,8 +258,8 @@ inline bool ParseLine(const char* text, Window& out)
 		buf[len - 1] = '\0';
 	if (!buf[0] || buf[0] == '#')
 		return false;
-	char* f[6] = { 0, 0, 0, 0, 0, 0 };
-	const int n = SplitTabs(buf, f, 6);
+	char* f[7] = { 0, 0, 0, 0, 0, 0, 0 };
+	const int n = SplitTabs(buf, f, 7);
 	Window w;
 	if (strcmp(f[0], "now") == 0)
 	{
@@ -260,6 +281,8 @@ inline bool ParseLine(const char* text, Window& out)
 			w.map = 0;
 		if (w.since < 0 || w.since >= w.until)
 			w.since = 0;
+		if (n >= 7 && w.kind == KIND_CHESTDROP)	// MT2009_PLUS_CHEST_DROP_TARGET_V1
+			w.target = ClampTarget(atoi(f[6]));
 		out = w;
 		return true;
 	}
@@ -276,6 +299,8 @@ inline bool ParseLine(const char* text, Window& out)
 		w.map = atol(f[5]);
 	if (w.map < 0)
 		w.map = 0;
+	if (n >= 7 && w.kind == KIND_CHESTDROP)	// MT2009_PLUS_CHEST_DROP_TARGET_V1
+		w.target = ClampTarget(atoi(f[6]));
 	out = w;
 	return true;
 }
@@ -367,6 +392,7 @@ struct Status {
 	long map = 0;
 	long since = 0;
 	long nextMap = 0;
+	int target = 0;	// MT2009_PLUS_CHEST_DROP_TARGET_V1: the chest drop's, with its map
 };
 
 // nowEpoch is the wall clock; dayIndex and minute are its local reading.
@@ -389,6 +415,7 @@ inline Status Evaluate(const std::vector<Window>& windows, int kind, long nowEpo
 				{
 					st.map = w.map;
 					st.since = w.since;
+					st.target = w.target;
 				}
 				st.active = true;
 				if (w.until > st.until)
@@ -404,6 +431,7 @@ inline Status Evaluate(const std::vector<Window>& windows, int kind, long nowEpo
 			{
 				st.map = w.map;
 				st.since = minuteStart - (long)MinutesSinceStart(w, minute) * 60;
+				st.target = w.target;
 			}
 			st.active = true;
 			const long until = minuteStart + (long)MinutesToEnd(w, minute) * 60;
@@ -434,28 +462,34 @@ inline Status Evaluate(const std::vector<Window>& windows, int kind, long nowEpo
 // first rain stopped two minutes in (Derpsonkowy95, 27 September). The lines
 // of one map merge the way Evaluate merges a kind's, and map 0, "the event
 // picks", is an event of its own. Only the active ones, in the order their
-// maps first appear in the file.
+// maps first appear in the file. MT2009_PLUS_CHEST_DROP_TARGET_V1: a chest
+// drop's map and target together are one event - the same chest from bosses
+// and Metins in one line and from ordinary monsters in another runs twice.
 inline void EvaluateWorldByMap(const std::vector<Window>& windows, int kind, long nowEpoch,
 		int dayIndex, int minute, std::vector<Status>& out)
 {
 	out.clear();
 	std::vector<long> maps;
+	std::vector<int> targets;
 	for (size_t i = 0; i < windows.size(); ++i)
 	{
 		if (windows[i].kind != kind)
 			continue;
 		bool seen = false;
 		for (size_t k = 0; k < maps.size() && !seen; ++k)
-			seen = maps[k] == windows[i].map;
+			seen = maps[k] == windows[i].map && targets[k] == windows[i].target;
 		if (!seen)
+		{
 			maps.push_back(windows[i].map);
+			targets.push_back(windows[i].target);
+		}
 	}
 	std::vector<Window> ofMap;
 	for (size_t k = 0; k < maps.size(); ++k)
 	{
 		ofMap.clear();
 		for (size_t i = 0; i < windows.size(); ++i)
-			if (windows[i].kind == kind && windows[i].map == maps[k])
+			if (windows[i].kind == kind && windows[i].map == maps[k] && windows[i].target == targets[k])
 				ofMap.push_back(windows[i]);
 		const Status st = Evaluate(ofMap, kind, nowEpoch, dayIndex, minute);
 		if (st.active)

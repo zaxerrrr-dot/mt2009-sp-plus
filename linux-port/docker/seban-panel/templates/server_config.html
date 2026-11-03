@@ -1,0 +1,132 @@
+{% extends 'base.html' %}{% block title %}Konfiguracja serwera · {{ panel_brand }}{% endblock %}{% block content %}
+{#- MT2009_PLUS_SERVER_CONFIG_V1: whole configurations (server_profiles.txt) and the
+    world's main settings in one place. Profiles are applied by server_config.py
+    through the .env editor's paths, the rates' restart and the events planner;
+    the settings cards save through the .env editor's own endpoint. -#}
+<style>
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.cfg-card{display:flex;flex-direction:column;gap:8px}
+.cfg-card h3{margin:0}
+.cfg-changes{margin:0;padding-left:18px;font-size:.92em}
+.cfg-changes li{margin:2px 0}
+.cfg-old{opacity:.7;text-decoration:line-through}
+.cfg-tag{display:inline-block;font-size:.75em;padding:1px 6px;border-radius:8px;background:rgba(127,127,127,.18);margin-left:4px}
+.cfg-parts{display:flex;flex-wrap:wrap;gap:10px;font-size:.92em}
+.cfg-apply{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cfg-apply input[name=confirm]{width:120px}
+.cfg-field{display:grid;grid-template-columns:minmax(160px,1fr) minmax(140px,220px);gap:4px 12px;align-items:center;padding:6px 0;border-top:1px solid rgba(127,127,127,.15)}
+.cfg-field small{grid-column:1/-1;opacity:.75}
+.cfg-field input,.cfg-field select{width:100%}
+.cfg-msg{min-height:1.2em;font-size:.92em}
+.cfg-msg.is-bad{color:#e06c6c}
+.cfg-banner{border-left:4px solid #d9a441}
+.cfg-history{width:100%;font-size:.9em}
+.cfg-history td{vertical-align:top;padding:4px 6px}
+@media (max-width:520px){.cfg-field{grid-template-columns:1fr}}
+</style>
+<p class="eyebrow">ZAAWANSOWANE · KONFIGURACJA SERWERA</p><h1>Konfiguracja serwera</h1>
+<p class="muted">Gotowe konfiguracje świata (profile) i najważniejsze ustawienia w jednym miejscu. Profil zmienia naraz ustawienia serwera, raty i – jeśli go ma – kalendarz eventów; wcześniej pokazuje dokładnie, co się zmieni. Wszystko można później zmienić tutaj, w <a href="{{ url_for('server_env') }}">Ustawieniach serwera (.env)</a>, w „Gra i serwer” i w Planerze eventów.</p>
+
+{% if error %}<section class="panel env-banner env-banner-warn"><h2>⚠ Plik konfiguracji ma błąd</h2><p><code>{{ error }}</code></p></section>{% endif %}
+
+{% if first_run %}
+<section class="panel cfg-banner" id="pierwsze-uruchomienie">
+<h2>👋 Wybierz konfigurację świata</h2>
+{% if first_run.installer_profile %}<p>Instalator ustawił już profil <b>{{ first_run.installer_profile }}</b> (ustawienia i raty). Jeśli ten profil ma kalendarz eventów, dopisz go niżej, zaznaczając tylko „kalendarz eventów”.</p>
+{% else %}<p>Nowy świat? Wybierz poniżej konfigurację, od której zaczyna, albo zostaw ustawienia, które ma – to przypomnienie znika po zastosowaniu konfiguracji albo po kliknięciu „Nie teraz”.</p>{% endif %}
+<form method="post" action="{{ url_for('server_config_dismiss') }}"><input type="hidden" name="config_csrf" value="{{ config_csrf }}"><button class="secondary">Nie teraz – nie pokazuj więcej</button></form>
+</section>
+{% endif %}
+
+{% if not editor.ready %}
+<section class="panel env-banner env-banner-warn">
+<p><b>Aktualizator nie działa.</b> {% if live.available %}Od razu działają tylko przełączniki oznaczone „od razu” (w tym życie i siła ataku potworów), raty i kalendarz eventów; pozostałe ustawienia profilu zapisze aktualizator, gdy go uruchomisz (instrukcja w <a href="{{ url_for('server_env') }}">Ustawieniach serwera (.env)</a>).{% else %}Brak też połączenia z bazą świata – ustawień nie da się teraz zmienić.{% endif %}</p>
+</section>
+{% endif %}
+
+<h2>Gotowe konfiguracje</h2>
+<p class="muted small">Zastosowanie: zaznacz części, wpisz <b>{{ confirm_word }}</b> i kliknij „Zastosuj”. Ustawienia oznaczone „od razu” działają w grze bez restartu; pozostałe zapisuje aktualizator i ponownie uruchamia serwer gry. Zmiana rat zleca restart rdzeni. Kalendarz jest <b>dopisywany</b> do Planera eventów – nic tam nie jest usuwane.{% if state.applied_title %} Ostatnio zastosowana: <b>{{ state.applied_title }}</b>.{% endif %}</p>
+<div class="cfg-grid">
+{% for p in profiles %}{% set pl = plans[p.id] %}
+<section class="panel cfg-card" id="profil-{{ p.id }}">
+<h3>{{ p.title }}{% if state.applied == p.id %}<span class="cfg-tag">zastosowana</span>{% endif %}</h3>
+<p class="muted small">{{ p.desc }}</p>
+<p class="small"><b>Co się zmieni:</b></p>
+<ul class="cfg-changes">
+{% for c in pl.env %}<li>{{ c.label }}: <span class="cfg-old">{{ c.old }}</span> → <b>{{ c.new }}</b>{% if c.live %}<span class="cfg-tag">od razu</span>{% else %}<span class="cfg-tag">restart</span>{% endif %}</li>{% endfor %}
+{% for r in pl.rates %}<li>Rate {{ {'exp': 'doświadczenia', 'drop': 'dropu', 'yang': 'yang'}[r.name] }}: <span class="cfg-old">{{ r.old }}%</span> → <b>{{ r.new }}%</b><span class="cfg-tag">restart</span></li>{% endfor %}
+{% if pl.events %}<li>Planer eventów: <b>+{{ pl.events }}</b> wierszy{% if not pl.events_fit %} – <b>za dużo</b> (najwyżej {{ event_rows_max }}, byłoby {{ pl.events_total }}){% endif %}</li>{% endif %}
+{% if not pl.env and not pl.rates and not pl.events %}<li>nic – ta konfiguracja jest już ustawiona</li>{% endif %}
+</ul>
+{% if pl.env or pl.rates or pl.events %}
+<form method="post" action="{{ url_for('server_config_apply') }}" class="cfg-apply-form">
+<input type="hidden" name="config_csrf" value="{{ config_csrf }}"><input type="hidden" name="profile" value="{{ p.id }}">
+<div class="cfg-parts">
+{% if pl.env %}<label><input type="checkbox" name="part_env" value="1" {% if not (first_run and first_run.installer_profile == p.id) %}checked{% endif %}> ustawienia</label>{% endif %}
+{% if pl.rates %}<label><input type="checkbox" name="part_rates" value="1" {% if not (first_run and first_run.installer_profile == p.id) %}checked{% endif %}> raty</label>{% endif %}
+{% if pl.events %}<label><input type="checkbox" name="part_events" value="1" checked> kalendarz eventów</label>{% endif %}
+</div>
+<div class="cfg-apply"><input name="confirm" placeholder="{{ confirm_word }}" autocomplete="off" aria-label="Potwierdzenie"><button>Zastosuj</button></div>
+</form>
+{% endif %}
+</section>
+{% endfor %}
+</div>
+
+<h2 id="ustawienia">Ustawienia</h2>
+<p class="muted small">Każda karta zapisuje się osobno, tak jak <a href="{{ url_for('server_env') }}">Ustawienia serwera (.env)</a> (to samo sprawdzanie i ta sama kolejka aktualizatora). Ustawienia ryzykowne (adres serwera) wymagają wpisania <b>{{ danger_word }}</b>.</p>
+<div class="cfg-grid">
+{% for g in groups %}
+<section class="panel cfg-card" id="grupa-{{ g.id }}">
+<h3>{{ g.title }}</h3>
+{% if g.desc %}<p class="muted small">{{ g.desc }}</p>{% endif %}
+{% if g.fields %}
+<form class="cfg-settings" data-group="{{ g.id }}">
+{% for f in g.fields %}
+<div class="cfg-field">
+<label for="cfg-{{ g.id }}-{{ f.key }}">{{ f.label }}{% if f.key in live['keys'] %}<span class="cfg-tag">od razu</span>{% endif %}</label>
+{% if f.type == 'bool' %}<select id="cfg-{{ g.id }}-{{ f.key }}" data-key="{{ f.key }}" data-was="{{ f.current }}"><option value="1" {% if f.current == '1' %}selected{% endif %}>włączone</option><option value="0" {% if f.current != '1' %}selected{% endif %}>wyłączone</option></select>
+{% elif f.type == 'enum' %}<select id="cfg-{{ g.id }}-{{ f.key }}" data-key="{{ f.key }}" data-was="{{ f.current }}">{% for value, label in f.options %}<option value="{{ value }}" {% if value == f.current %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+{% else %}<input id="cfg-{{ g.id }}-{{ f.key }}" data-key="{{ f.key }}" data-was="{{ f.current }}" value="{{ f.current }}"{% if f.type == 'int' %} type="number"{% if f.min is defined %} min="{{ f.min }}"{% endif %}{% if f.max is defined %} max="{{ f.max }}"{% endif %}{% endif %}>{% endif %}
+<small>{{ f.desc }}</small>
+</div>
+{% endfor %}
+<div class="cfg-apply"><input name="confirm" placeholder="{{ danger_word }} (tylko ryzykowne)" autocomplete="off" aria-label="Potwierdzenie"><button>Zapisz</button></div>
+<p class="cfg-msg" aria-live="polite"></p>
+</form>
+{% endif %}
+{% for l in g.links %}<p><a href="{{ url_for(l.endpoint) }}">{{ l.text }} →</a></p>{% endfor %}
+</section>
+{% endfor %}
+</div>
+
+<h2 id="historia">Historia zmian</h2>
+{% if history %}
+<table class="cfg-history"><thead><tr><th>Kiedy</th><th>Konfiguracja</th><th>Zmiany</th></tr></thead><tbody>
+{% for h in history %}<tr><td><span data-epoch="{{ h.time }}"></span></td><td>{{ h.title }}</td><td>{% for c in h.env %}{{ c.key }}: {{ c.old }} → {{ c.new }}{% if not loop.last %}; {% endif %}{% endfor %}{% if h.rates %}{% if h.env %}; {% endif %}raty: {% for r in h.rates %}{{ r.name }} {{ r.old }}→{{ r.new }}%{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if h.events_added %}; Planer eventów +{{ h.events_added }}{% endif %}</td></tr>{% endfor %}
+</tbody></table>
+{% else %}<p class="muted small">Żadna konfiguracja nie była jeszcze stosowana. Zmiany pojedynczych ustawień zapisuje historia kopii <code>.env</code> aktualizatora.</p>{% endif %}
+
+<script>
+(function(){
+document.querySelectorAll('[data-epoch]').forEach(function(el){var t=new Date(Number(el.dataset.epoch)*1000);el.textContent=t.toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'})});
+var csrf={{ config_csrf|tojson }},saveUrl={{ env_save_url|tojson }};
+document.querySelectorAll('form.cfg-settings').forEach(function(form){
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var out=form.querySelector('.cfg-msg'),changes={};
+    form.querySelectorAll('[data-key]').forEach(function(el){var v=String(el.value).trim();if(v!==el.dataset.was)changes[el.dataset.key]=v});
+    if(!Object.keys(changes).length){out.textContent='Nic nie zmieniono.';out.classList.remove('is-bad');return}
+    var body=new FormData();body.append('env_csrf',csrf);body.append('changes',JSON.stringify(changes));body.append('confirm',form.querySelector('[name=confirm]').value);
+    out.textContent='Zapisuję…';out.classList.remove('is-bad');
+    fetch(saveUrl,{method:'POST',body:body,credentials:'same-origin',headers:{'X-Requested-With':'fetch'}}).then(function(r){return r.json().catch(function(){return {ok:false,message:'Nieoczekiwana odpowiedź serwera ('+r.status+').'}})}).then(function(data){
+      var msg=(data&&data.message)||(data&&data.status&&data.status.message)||(data&&data.ok?'Zapisano.':'Nie zapisano.');
+      if(data&&data.errors){var e=Object.keys(data.errors).map(function(k){return k+': '+data.errors[k]});if(e.length)msg+=' '+e.join('; ')}
+      if(data&&data.ok){Object.keys(changes).forEach(function(k){var el=form.querySelector('[data-key="'+k+'"]');if(el)el.dataset.was=changes[k]});if(!data.live)msg='Zlecono zapis – aktualizator zapisze .env i uruchomi ponownie potrzebne usługi (postęp: Ustawienia serwera (.env)).'}
+      out.textContent=msg;out.classList.toggle('is-bad',!(data&&data.ok));
+    }).catch(function(){out.textContent='Brak połączenia z panelem.';out.classList.add('is-bad')});
+  });
+});
+})();
+</script>
+{% endblock %}
