@@ -4569,6 +4569,26 @@ INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
 DROP TEMPORARY TABLE world.skrzynie_klas_item;
 UPDATE world.item_proto SET type = 18, subtype = 0, stack = 200, flag = 4, antiflag = IF(vnum >= 71204, 221568, 90496) WHERE vnum IN (39048, 71204, 39050, 71206, 39052, 71208, 39054, 71210, 39056, 71212, 39058, 71214, 39060, 71216, 39062, 71218);" \
     || fail_step "could not add the class chests (39048-39062) and their encyclopedias (71204-71218)"
+# MT2009_PLUS_SPIRALA_CZASU_V1 (the owner, 3 November 2026): Spirala Czasu (10%) / (20%) / (30%) for the second ItemShop -
+# GF's vnums 72347 / 72348 / 72349 (pl-wiki "Spirala Czasu (10%)" ..., Owsap's item_proto: value1 = the percent).
+# ITEM_QUEST, stack 200, no drop / sale / trade / private shop, the storeroom allowed (pl-wiki "Magazynowanie: Tak").
+# Using one opens quest spirala_czasu: the remaining time of one running mission wait (the Biologist, the stable
+# keeper, Seon-Hae's 6th/7th bonus, the relics' research) is cut by value1 percent. Copies of 72804 with the values
+# cleared. The client's records: client-patches/client-2.0.30/tools/spirala (keep the names equal). Every start.
+db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.spirala_czasu_item;
+CREATE TEMPORARY TABLE world.spirala_czasu_item AS SELECT * FROM world.item_proto WHERE vnum = 72804 LIMIT 1;
+UPDATE world.spirala_czasu_item SET type = 18, subtype = 0, stack = 200, flag = 4, wearflag = 0, antiflag = 90496, gold = 0, shop_buy_price = 0, limittype0 = 0, limitvalue0 = 0, limittype1 = 0, limitvalue1 = 0, applytype0 = 0, applyvalue0 = 0, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
+UPDATE world.spirala_czasu_item SET vnum = 72347, name = 'Time Spiral (10%)', locale_name = 'Spirala Czasu (10%)', value1 = 10;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.spirala_czasu_item;
+UPDATE world.spirala_czasu_item SET vnum = 72348, name = 'Time Spiral (20%)', locale_name = 'Spirala Czasu (20%)', value1 = 20;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.spirala_czasu_item;
+UPDATE world.spirala_czasu_item SET vnum = 72349, name = 'Time Spiral (30%)', locale_name = 'Spirala Czasu (30%)', value1 = 30;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.spirala_czasu_item;
+DROP TEMPORARY TABLE world.spirala_czasu_item;
+UPDATE world.item_proto SET type = 18, subtype = 0, stack = 200, flag = 4, antiflag = 90496, value1 = (vnum - 72346) * 10,
+    locale_name = CONCAT('Spirala Czasu (', (vnum - 72346) * 10, '%)') WHERE vnum IN (72347, 72348, 72349);" \
+    || fail_step "could not add Spirala Czasu (72347-72349)"
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" 2>/dev/null || echo x)" = "6" ]; then
 # MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu nalezy usunac wszystkie amulety, amulety sa dostepne
 # tylko w kolach do losowania"; the sash too): the sets' amulets (71202, 71188, 71199, 70607, 72713) and the Szarfa
