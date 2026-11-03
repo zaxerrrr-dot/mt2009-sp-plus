@@ -27,6 +27,13 @@
 # (uiinventory.py); the window opens by the inventory side bar's button and the
 # "bonus_switch" key (keybind.py), as the old one.
 #
+# MT2009_PLUS_SWITCHBOT_GLOVE_TALISMAN_V1 / MT2009_PLUS_SWITCHBOT_COSTUME_V1 (the
+# owner's list of 3 November 2026): talismans and gloves too (the same
+# Zaczarowanie Przedmiotu as by hand), and costumes, hairstyles and weapon skins
+# with 70064 Zaczaruj kostium only (as by hand); the line under Start / Stop says
+# which item the selected tab's item uses up. The exe's switchbot.GetAttributesForSet
+# knows their bonus sets (client-patches/exe PythonSwitchbot.cpp, same round).
+#
 # Python 2.7 as the client has it.
 
 import app
@@ -85,7 +92,9 @@ TOP_PANEL_WIDTH = BOARD_WIDTH - (BORDER_SPACE * 2)
 MAIN_PANEL_WIDTH = BOARD_WIDTH - BORDER_SPACE * 2
 MAIN_PANEL_HEIGHT = INPUT_HEIGHT * 6 #1 AlternativeRow 5 Attribute
 
-BOT_PANEL_HEIGHT = 40
+# MT2009_PLUS_SWITCHBOT_COSTUME_V1: 18 px more for the line of the item used up
+BOT_PANEL_HEIGHT = 58
+BOT_PANEL_BUTTON_Y = -8
 BOT_PANEL_WIDTH = BOARD_WIDTH - BORDER_SPACE * 2
 
 ATTR_SLOT_COUNT = 5
@@ -109,6 +118,19 @@ TEXT_ACCEPT = getattr(localeInfo, "UI_ACCEPT", "Akceptuj")
 TEXT_CANCEL = getattr(localeInfo, "UI_CANCEL", "Anuluj")
 TEXT_NEEDS_EXE = "Switchbot wymaga nowego klienta (exe 3.0)."
 TEXT_SEARCH_TOOLTIP = "Szukaj bonusu"
+TEXT_COST_COSTUME = "Zu\xbfywa: Zaczaruj kostium"
+TEXT_COST_NORMAL = "Zu\xbfywa: Zaczarowanie Przedmiotu"
+
+# MT2009_PLUS_SWITCHBOT_COSTUME_V1: what the server's switchbot takes (playerbot_switchbot.cpp
+# SwitchbotHelper::IsValidItem) - a costume, a hairstyle, a weapon skin (changed with 70064)
+SWITCHBOT_COSTUME_SUBTYPES = [getattr(item, name) for name in ("COSTUME_TYPE_BODY", "COSTUME_TYPE_HAIR", "COSTUME_TYPE_WEAPON") if hasattr(item, name)]
+
+
+def IsCostumeItem(vnum):
+	if not vnum:
+		return False
+	item.SelectItem(vnum)
+	return item.GetItemType() == getattr(item, "ITEM_TYPE_COSTUME", 28) and item.GetItemSubType() in SWITCHBOT_COSTUME_SUBTYPES
 
 CONFIG_FILE = os.path.join("autohunt", "switchbot.cfg")
 
@@ -581,6 +603,7 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 		self.saveButton = None
 		self.startButton = None
 		self.stopButton = None
+		self.costTextLine = None
 		self.tooltipItem = None
 
 	def __LoadWindow(self):
@@ -669,7 +692,7 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 		self.saveButton.SetDownVisual(IMG + "save_attr_03.sub")
 		self.saveButton.SetDisableVisual(IMG + "save_attr_03.sub")
 		self.saveButton.SetWindowVerticalAlignCenter()
-		self.saveButton.SetPosition(BORDER_SPACE, 0)
+		self.saveButton.SetPosition(BORDER_SPACE, BOT_PANEL_BUTTON_Y)
 		self.saveButton.SetToolTipText(TEXT_SAVE_BUTTON)
 		self.saveButton.Show()
 
@@ -681,7 +704,7 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 		self.startButton.SetDisableVisual(IMG + "btn_big_03.sub")
 		self.startButton.SetWindowVerticalAlignCenter()
 		self.startButton.SetWindowHorizontalAlignCenter()
-		self.startButton.SetPosition(-self.startButton.GetWidth() / 2, 0)
+		self.startButton.SetPosition(-self.startButton.GetWidth() / 2, BOT_PANEL_BUTTON_Y)
 		self.startButton.SetText(TEXT_START)
 		self.startButton.Show()
 
@@ -693,9 +716,18 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 		self.stopButton.SetDisableVisual(IMG + "btn_big_03.sub")
 		self.stopButton.SetWindowVerticalAlignCenter()
 		self.stopButton.SetWindowHorizontalAlignCenter()
-		self.stopButton.SetPosition(self.stopButton.GetWidth() / 2 + 20, 0)
+		self.stopButton.SetPosition(self.stopButton.GetWidth() / 2 + 20, BOT_PANEL_BUTTON_Y)
 		self.stopButton.SetText(TEXT_STOP)
 		self.stopButton.Show()
+
+		# MT2009_PLUS_SWITCHBOT_COSTUME_V1: the item the selected tab's item uses up
+		self.costTextLine = ui.TextLine()
+		self.costTextLine.SetParent(self.botPanel)
+		self.costTextLine.SetWindowHorizontalAlignCenter()
+		self.costTextLine.SetHorizontalAlignCenter()
+		self.costTextLine.SetPosition(0, BOT_PANEL_HEIGHT - 19)
+		self.costTextLine.SetText("")
+		self.costTextLine.Show()
 
 		try:
 			import uiToolTip
@@ -842,7 +874,19 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 
 			row.RefreshAttributeRow(self.selectedSlot, self.alternative, i)
 
+	def __RefreshCostText(self):
+		if not self.costTextLine:
+			return
+		vnum = player.GetItemIndex(player.SWITCHBOT, self.selectedSlot)
+		if not vnum:
+			self.costTextLine.SetText("")
+		elif IsCostumeItem(vnum):
+			self.costTextLine.SetText(TEXT_COST_COSTUME)
+		else:
+			self.costTextLine.SetText(TEXT_COST_NORMAL)
+
 	def __RefreshButtons(self):
+		self.__RefreshCostText()
 		if self.IsEmptySlot() or not self.__AnyAttributeConfigured():
 			self.startButton.Disable()
 			self.stopButton.Disable()
@@ -984,14 +1028,15 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 		return slot.IsActive()
 
 	def TakeInventoryItem(self, pos):
-		"""uiinventory's right click with the window open (ours): a weapon or an armour
-		goes into the selected tab, or the first free one."""
+		"""uiinventory's right click with the window open (ours): a weapon, an armour
+		(talismans and gloves too) or a costume / hairstyle / weapon skin goes into the
+		selected tab, or the first free one."""
 		vnum = player.GetItemIndex(player.INVENTORY, pos)
 		if not vnum:
 			return False
 		item.SelectItem(vnum)
 		itemType = item.GetItemType()
-		if itemType != item.ITEM_TYPE_WEAPON and itemType != item.ITEM_TYPE_ARMOR:
+		if itemType != item.ITEM_TYPE_WEAPON and itemType != item.ITEM_TYPE_ARMOR and not IsCostumeItem(vnum):
 			return False
 		target = -1
 		if not self.itemTabs[self.selectedSlot].IsEmpty() or switchbot.IsActive(self.selectedSlot):

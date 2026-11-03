@@ -507,6 +507,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiworldboss").DestroyWindow()
 		# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle's window (uifishpuzzle.py).
 		__import__("uifishpuzzle").DestroyWindow()
+		# MT2009_PLUS_FISHING_RENEWAL_V1: the new fishing minigame's window (uifishingrenewal.py).
+		__import__("uifishingrenewal").DestroyWindow()
 		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
 		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
@@ -2778,6 +2780,9 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_FISH_PUZZLE_V1 / V2: the hub's Event Rybacki - Puzzle button opens its window, and with the fish
 				# puzzle exe "/fishpuzzle hello" - the server sends its packets from now on (uifishpuzzle.py).
 				__import__("uifishpuzzle").Register()
+				# MT2009_PLUS_FISHING_RENEWAL_V1: "/fishren hello" - the server opens the new fishing minigame
+				# (uifishingrenewal.py) instead of the bar one from now on.
+				__import__("uifishingrenewal").Start()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 				# MT2009_PLUS_EKWIPUNEK_V1: "/ekwipunek hello" - the server routes items into the extra
@@ -3602,6 +3607,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["WOF"] = self.__WheelOfFortune # MT2009_PLUS_WHEEL_V1
 		serverCommandList["WB"] = self.__WorldBoss # MT2009_PLUS_WORLDBOSS_V1
 		serverCommandList["FP"] = self.__FishPuzzle # MT2009_PLUS_FISH_PUZZLE_V1
+		serverCommandList["FISHREN"] = self.__FishingRenewal # MT2009_PLUS_FISHING_RENEWAL_V1
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
@@ -4390,6 +4396,10 @@ class GameWindow(ui.ScriptWindow):
 
 	def MiniGameFishReward(self, vnum):
 		__import__("uifishpuzzle").OnReward(vnum)
+
+	# MT2009_PLUS_FISHING_RENEWAL_V1: the new fishing minigame's lines - "start <token> <s> <hits>", "stop".
+	def __FishingRenewal(self, *args):
+		__import__("uifishingrenewal").OnCommand(*args)
 
 	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
 	def __Buffi(self, *args):

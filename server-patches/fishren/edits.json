@@ -1,0 +1,26 @@
+[
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FISHING_RENEWAL_V1 (pull)",
+  "old": "void CHARACTER::fishing()\n{\n\tif (m_pkFishingEvent || m_pkPreFishingEvent)\n\t{\n",
+  "new": "void CHARACTER::fishing()\n{\n\t// MT2009_PLUS_FISHING_RENEWAL_V1 (pull): a renewal cast (the new fishing window, fish_renewal.cpp) ends here - the old take never sees it\n\t{\n\t\tbool Mt2009FishRenPull(LPCHARACTER ch);\n\t\tif (m_pkPreFishingEvent && Mt2009FishRenPull(this))\n\t\t\treturn;\n\t}\n\n\tif (m_pkFishingEvent || m_pkPreFishingEvent)\n\t{\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FISHING_RENEWAL_V1 (cast)",
+  "old": "\tm_pkPreFishingEvent = fishing::CreatePreFishingEvent(this);\n}\n",
+  "new": "\t// MT2009_PLUS_FISHING_RENEWAL_V1 (cast): the new fishing window's cast for a client that has it (fish_renewal.cpp); NULL - the bar minigame\n\t{\n\t\tLPEVENT Mt2009FishRenCast(LPCHARACTER ch);\n\t\tm_pkPreFishingEvent = Mt2009FishRenCast(this);\n\t}\n\tif (!m_pkPreFishingEvent)\n\t\tm_pkPreFishingEvent = fishing::CreatePreFishingEvent(this);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FISHING_RENEWAL_V1 (command declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_FISHING_RENEWAL_V1 (command declare): \"/fishren hello|end <token> <hits>\" - fish_renewal.cpp\nvoid Mt2009FishRenCommand(LPCHARACTER ch, const char* argument);\nACMD(do_fishren)\n{\n\tMt2009FishRenCommand(ch, argument);\n}\n\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FISHING_RENEWAL_V1 (command table)",
+  "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"fishren\",\tdo_fishren,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_FISHING_RENEWAL_V1 (command table)\n"
+ }
+]
