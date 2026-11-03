@@ -1,0 +1,195 @@
+-- MT2009_PLUS_POTEGA_MADROSCI_V1: "Potêga m¹droœci" (the owner, 3 November 2026; the pl-wiki's server pages:
+-- "Spytaj Uriela o potêgê m¹droœci, aby otrzymaæ bonus PD w zale¿noœci od przedzia³u poziomów"). cp1250; no string
+-- ends with a Polish letter (qc).
+--
+-- While the event runs - the event flag potega_madrosci, which the in-game event manager writes for the events
+-- planner's kind "potega" (playerbot_ingame_events.h; a GM's /eventflag potega_madrosci 1 too) - Uriel (20011: every
+-- first village, and Dongan) has the option "Potêga m¹droœci": the affect 730 on point 127
+-- (POINT_RAMADAN_CANDY_BONUS_EXP, the point every item experience bonus goes through since server-patches/pdbonus:
+-- added to the rate factor like the server's rates, uncapped, counted by the Champion bar, shown in the bonus
+-- window's PD line and as an icon in the affect bar, uiaffectbar.py) for the configured minutes, +N% by the
+-- character's level range - or, for a Champion (Champion level 1+), by its Champion level range only.
+--
+-- One bonus at a time: asked again while it lasts, Uriel says how long it still lasts; only when the range has
+-- changed since (a level up into the next range, a first Champion level) he offers to renew it - the new percent for
+-- the full time. When the event ends a given bonus runs its time out.
+--
+-- The village guard (Stra¿nik Wsi 11000 / 11002 / 11004 and the second villages' 11100 / 11102 / 11104) has
+-- "Bonus eventowy PD Uriela wg przedzia³u poziomów": the configured ranges, the time, whether the event runs now and
+-- the bonus for the character's own level.
+--
+-- The ranges and the time are player.potega_madrosci_tier / _config (mariadb/playerbot/potega_madrosci.sql; the
+-- advanced panel's page "Potêga m¹droœci", seban-panel potega_madrosci.py), read on every talk - a change is live at
+-- the next one. Without the tables (a world before the migration) the wiki's table. The bots take the same bonus in
+-- the AI (playerbot_potega.h).
+quest potega_madrosci begin
+	state start begin
+		-- mysql_direct_query() returns the rows first on r40250 and second on mt2009 (web_admin's wa_query).
+		function query(q)
+			if mysql_direct_query == nil then
+				return nil
+			end
+			local a, b = mysql_direct_query(q)
+			if type(a) == "table" then
+				return a
+			end
+			if type(b) == "table" then
+				return b
+			end
+			return nil
+		end
+
+		function config()
+			local c = { minutes = 240, tiers = {} }
+			local t = potega_madrosci.query("SELECT champion, lvl_from, lvl_to, pct FROM player.potega_madrosci_tier WHERE enabled = 1 ORDER BY champion, lvl_from, lvl_to")
+			if t == nil then
+				c.tiers = { { champion = 0, from = 41, to = 80, pct = 25 }, { champion = 0, from = 81, to = 100, pct = 50 },
+					{ champion = 0, from = 101, to = 120, pct = 100 }, { champion = 1, from = 1, to = 10, pct = 125 },
+					{ champion = 1, from = 11, to = 30, pct = 100 } }
+				return c
+			end
+			local i
+			for i = 1, table.getn(t) do
+				local r = t[i]
+				if type(r) == "table" then
+					local x = { champion = tonumber(r.champion) or 0, from = tonumber(r.lvl_from) or 0,
+						to = tonumber(r.lvl_to) or 0, pct = tonumber(r.pct) or 0 }
+					if x.pct > 0 and x.to >= x.from then
+						table.insert(c.tiers, x)
+					end
+				end
+			end
+			local m = potega_madrosci.query("SELECT minutes FROM player.potega_madrosci_config WHERE id = 1")
+			if m ~= nil and type(m[1]) == "table" and tonumber(m[1].minutes) ~= nil then
+				c.minutes = tonumber(m[1].minutes)
+			end
+			if c.minutes < 1 then
+				c.minutes = 1
+			end
+			return c
+		end
+
+		-- A Champion by the Champion ranges only, anybody else by the level ranges; the first range that holds it.
+		function pct_for(c)
+			local champion = 0
+			local level = pc.get_level()
+			if pc.get_conqueror_level ~= nil and pc.get_conqueror_level() >= 1 then
+				champion = 1
+				level = pc.get_conqueror_level()
+			end
+			local i
+			for i = 1, table.getn(c.tiers) do
+				local x = c.tiers[i]
+				if x.champion == champion and level >= x.from and level <= x.to then
+					return math.floor(x.pct)
+				end
+			end
+			return 0
+		end
+
+		function time_text(sec)
+			local h = math.floor(sec / 3600)
+			local m = math.floor(math.mod(sec, 3600) / 60)
+			if h > 0 and m > 0 then
+				return string.format("%d godz. %d min.", h, m)
+			elseif h > 0 then
+				return string.format("%d godz.", h)
+			end
+			return string.format("%d min.", math.max(1, m))
+		end
+
+		function is_on()
+			return game.get_event_flag("potega_madrosci") > 0
+		end
+
+		function give(c, pct)
+			affect.remove_new(730)
+			affect.add_new(730, 127, pct, c.minutes * 60, 0, true)
+			pc.setqf("pct", pct)
+		end
+
+		function table_lines(c)
+			local i
+			local any = false
+			for i = 1, table.getn(c.tiers) do
+				local x = c.tiers[i]
+				local who = "Poziom"
+				if x.champion == 1 then
+					who = "Czempion"
+				end
+				say(string.format("%s %d-%d: +%d%% PD", who, x.from, x.to, math.floor(x.pct)))
+				any = true
+			end
+			if not any then
+				say("Brak ustawionych przedzia³ów poziomów.")
+			end
+		end
+
+		when 20011.chat."Potêga m¹droœci" with potega_madrosci.is_on() begin
+			local c = potega_madrosci.config()
+			local pct = potega_madrosci.pct_for(c)
+			say_title(mob_name(20011)..":")
+			if pct <= 0 then
+				say("M¹droœæ przychodzi z doœwiadczeniem, ale dla")
+				say("twojego poziomu nie mam teraz b³ogos³awieñstwa.")
+				say("")
+				potega_madrosci.table_lines(c)
+				return
+			end
+			local left = affect.get_duration(730)
+			if left == nil then
+				left = 0
+			end
+			if left > 0 then
+				local had = pc.getqf("pct")
+				if had == pct then
+					say("Potêga m¹droœci ju¿ jest z tob¹.")
+					say(string.format("Bonus PD +%d%% potrwa jeszcze: %s", pct, potega_madrosci.time_text(left)))
+					say("Wróæ, gdy przeminie.")
+					return
+				end
+				say("Twoja m¹droœæ uros³a od naszej ostatniej rozmowy.")
+				say(string.format("Mogê odnowiæ b³ogos³awieñstwo: +%d%% PD na %s", pct, potega_madrosci.time_text(c.minutes * 60)))
+				say(string.format("Obecne potrwa jeszcze: %s", potega_madrosci.time_text(left)))
+				if select("Odnów b³ogos³awieñstwo", "Nie teraz") ~= 1 then
+					return
+				end
+				potega_madrosci.give(c, pct)
+				say_title(mob_name(20011)..":")
+				say(string.format("Gotowe. Bonus PD +%d%% na %s", pct, potega_madrosci.time_text(c.minutes * 60)))
+				return
+			end
+			say("Wiedza to potêga, która roœnie z ka¿d¹ walk¹.")
+			say("Niech moje b³ogos³awieñstwo ci w tym pomo¿e.")
+			say("")
+			potega_madrosci.give(c, pct)
+			say_reward(string.format("Bonus PD +%d%% na %s", pct, potega_madrosci.time_text(c.minutes * 60)))
+		end
+
+		when 11000.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" or 11002.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" or 11004.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" or 11100.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" or 11102.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" or 11104.chat."Bonus eventowy PD Uriela wg przedzia³u poziomów" begin
+			local c = potega_madrosci.config()
+			local pct = potega_madrosci.pct_for(c)
+			say_title(mob_name(npc.get_race())..":")
+			if potega_madrosci.is_on() then
+				say("Uriel dzieli siê teraz potêg¹ m¹droœci.")
+				say("Spytaj go o ni¹ w pierwszej wiosce.")
+			else
+				say("Uriel nie dzieli siê teraz potêg¹ m¹droœci.")
+				say("Czekaj na event w kalendarzu wydarzeñ.")
+			end
+			say("")
+			say(string.format("Bonus PD na %s wed³ug przedzia³u poziomów:", potega_madrosci.time_text(c.minutes * 60)))
+			potega_madrosci.table_lines(c)
+			say("")
+			if pct > 0 then
+				say_reward(string.format("Dla twojego poziomu: +%d%% PD", pct))
+			else
+				say("Twój poziom nie mieœci siê w ¿adnym przedziale.")
+			end
+			local left = affect.get_duration(730)
+			if left ~= nil and left > 0 then
+				say(string.format("Twój bonus potrwa jeszcze: %s", potega_madrosci.time_text(left)))
+			end
+		end
+	end
+end

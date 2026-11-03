@@ -1593,12 +1593,16 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "halloween",  # MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h; Autor: Owsap)
                # MT2009_PLUS_SUPERSTONE_V1: Super Kamienie - the value is the level, 1-4 extra
                # stones beside every Metin on a world map (event flag superstone_event).
-               "superstone")
+               "superstone",
+               # MT2009_PLUS_POTEGA_MADROSCI_V1: Potega madrosci - Uriel's experience bonus by level
+               # range (event flag potega_madrosci; potega_madrosci.quest, playerbot_potega.h).
+               "potega")
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
                     "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
-                    "halloween")  # MT2009_PLUS_HALLOWEEN_V1
+                    "halloween",  # MT2009_PLUS_HALLOWEEN_V1
+                    "potega")  # MT2009_PLUS_POTEGA_MADROSCI_V1
 # Tanaka and Zuo put something into the world (playerbot_world_events.h): their
 # value is a count - pirates at once, Metin stones a wave - and they carry a
 # map, 0 letting the event pick. The core holds the same bounds
@@ -4809,6 +4813,7 @@ T.update({
  "ev_kind_flower":{"en":"Flower Event","pl":"Dzieci Kwiaty","de":"Blumen-Event","tr":"\u00c7i\u00e7ek Etkinli\u011fi"},
  "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
  "ev_kind_halloween":{"en":"Halloween (pumpkins, Jack Pumpkin)","pl":"Halloween (dynie i Jack Pumpkin)","de":"Halloween (K\u00fcrbisse, Jack Pumpkin)","tr":"Cad\u0131lar Bayram\u0131 (bal kaba\u011f\u0131, Jack Pumpkin)"},
+ "ev_kind_potega":{"en":"Power of Wisdom (Uriel's EXP bonus)","pl":"Pot\u0119ga m\u0105dro\u015bci (bonus PD od Uriela)","de":"Macht der Weisheit (EP-Bonus von Uriel)","tr":"Bilgeli\u011fin G\u00fcc\u00fc (Uriel'in TP bonusu)"},
  "ev_kind_superstone":{"en":"Super Metin Stones","pl":"Super Kamienie Metin","de":"Super-Metinsteine","tr":"S\u00fcper Metin Ta\u015flar\u0131"},
  "ev_now_superstone":{"en":"Extra stones (1-4)","pl":"Dodatkowe kamienie (1-4)","de":"Zus\u00e4tzliche Steine (1-4)","tr":"Ek ta\u015flar (1-4)"},
  "ev_superstone_value_help":{"en":"For Super Metin Stones the value is how many extra stones stand beside every Metin on the world maps (1-4, 0 = 2); dungeons get none.","pl":"Dla Super Kamieni Metin warto\u015b\u0107 to liczba dodatkowych kamieni przy ka\u017cdym Metinie na mapach \u015bwiata (1-4, 0 = 2); lochy ich nie dostaj\u0105.","de":"Bei Super-Metinsteinen ist der Wert die Zahl der zus\u00e4tzlichen Steine neben jedem Metin auf den Weltkarten (1-4, 0 = 2); Dungeons bekommen keine.","tr":"S\u00fcper Metin Ta\u015flar\u0131 i\u00e7in de\u011fer, d\u00fcnya haritalar\u0131ndaki her Metin'in yan\u0131ndaki ek ta\u015f say\u0131s\u0131d\u0131r (1-4, 0 = 2); zindanlar almaz."},

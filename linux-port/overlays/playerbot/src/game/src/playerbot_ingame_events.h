@@ -120,6 +120,10 @@ namespace mt2009_ingame_event
 		// every Metin stone on a world map (char_manager.cpp, server-patches/superstone); the scheduler's
 		// value is the level (Value). A GM's /eventflag superstone_event N runs it too.
 		{ "superstone",	playerbot_events::KIND_SUPERSTONE,	"superstone_event",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
+		// MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" - the flag is the switch potega_madrosci.quest (Uriel's
+		// option, the village guard's line) and playerbot_potega.h (the bots) read. A GM's /eventflag potega_madrosci 1
+		// runs it too.
+		{ "potega",		playerbot_events::KIND_POTEGA,		"potega_madrosci",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
 	};
 	const int DEFS = sizeof(s_defs) / sizeof(s_defs[0]);
 

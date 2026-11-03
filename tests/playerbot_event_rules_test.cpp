@@ -19,4 +19,8 @@ int main(){
   v.push_back(a); v.push_back(b); v.push_back(c);
   std::vector<Status> out; EvaluateWorldByMap(v, KIND_CHESTDROP, 1700000000, 0, 600, out);
   assert(out.size()==2 && out[0].target==1 && out[0].value==70 && out[1].target==2 && out[1].value==30);
+  // MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" all day every day (the SAPPHIRE / EMERALD profiles' line).
+  Window p; assert(ParseLine("potega\t*\t00:00\t24:00\t0", p) && p.kind==KIND_POTEGA && KindFromName("potega")==KIND_POTEGA);
+  std::vector<Window> pv(1, p);
+  assert(Evaluate(pv, KIND_POTEGA, 1700000000, 2, 0).active && Evaluate(pv, KIND_POTEGA, 1700000000, 6, 1439).active);
   puts("ok"); return 0; }
