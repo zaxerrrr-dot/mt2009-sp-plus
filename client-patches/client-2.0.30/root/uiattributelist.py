@@ -321,7 +321,10 @@ def BuildCategories():
 		("DETAILS_CATE_6", [
 			("DETAILS_71", "DETAILS_TOOLTIP_71", player.POINT_MALL_ATTBONUS),
 			("DETAILS_72", "DETAILS_TOOLTIP_72", player.POINT_MALL_DEFBONUS),
-			("DETAILS_73", "DETAILS_TOOLTIP_73", player.POINT_MALL_EXPBONUS),
+			# MT2009_PLUS_PD_BONUS_V1 (PD line): every experience bonus of the person, as the server's GiveExp adds them to
+			# the rate - the potions and mounts (POINT_MALL_EXPBONUS) and the items: rings, lollipops, amulets, costume
+			# sets (POINT_RAMADAN_CANDY_BONUS_EXP 127, server-patches/pdbonus). It showed only the first: PD 0% with a ring.
+			("DETAILS_73", "DETAILS_TOOLTIP_73", (player.POINT_MALL_EXPBONUS, Point("POINT_RAMADAN_CANDY_BONUS_EXP", 127))),
 			("DETAILS_74", "DETAILS_TOOLTIP_74", player.POINT_MALL_ITEMBONUS),
 			("DETAILS_75", "DETAILS_TOOLTIP_75", player.POINT_MALL_GOLDBONUS),
 		]),
@@ -338,7 +341,14 @@ def BuildCategories():
 		]),
 	]
 
+# MT2009_PLUS_PD_BONUS_V1 (per cent lines): the drop and Yang bonuses are +x% (their item line reads "x1.5")
+PERCENT_POINTS = (player.POINT_MALL_ITEMBONUS, player.POINT_MALL_GOLDBONUS)
+
 def IsPercentPoint(point):
+	if isinstance(point, tuple):
+		point = point[0]
+	if point in PERCENT_POINTS:
+		return True
 	try:
 		import localeinfo_point
 		text = localeinfo_point.GetApplyString(point, 1)
@@ -453,11 +463,15 @@ class Label(object):
 		return LABEL_GAP * 2
 
 	def Refresh(self):
-		val = player.GetStatus(self.point)
-		# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (poprawki 3.0.8 #2): a point the server never sent (its slot still zeroed) reads
-		# as the exe's XOR key 0xe73ac1da = -415579686 ("Antymagia -415579686%") - that is 0
-		if val in (NEVER_SET_POINT, NEVER_SET_POINT & 0xffffffff):
-			val = 0
+		# MT2009_PLUS_PD_BONUS_V1 (PD line): a line of several points shows their sum
+		val = 0
+		for point in (self.point if isinstance(self.point, tuple) else (self.point,)):
+			one = player.GetStatus(point)
+			# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (poprawki 3.0.8 #2): a point the server never sent (its slot still zeroed) reads
+			# as the exe's XOR key 0xe73ac1da = -415579686 ("Antymagia -415579686%") - that is 0
+			if one in (NEVER_SET_POINT, NEVER_SET_POINT & 0xffffffff):
+				one = 0
+			val += one
 		if self.isPercent:
 			self.value.SetText("%d%%" % val)
 		else:

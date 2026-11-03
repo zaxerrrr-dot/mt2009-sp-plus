@@ -15,6 +15,7 @@ import flamewindPath
 import itemshop_subscriptionwindow
 import updateable
 import mathUtils
+import localeinfo_point # MT2009_PLUS_PD_BONUS_V1
 from _weakref import proxy
 
 EVENT_ARRANGE_AFFECT_LIST = "EVENT_ARRANGE_AFFECT_LIST" # args | width: number, height: number
@@ -159,12 +160,14 @@ AFFECT_SHOW_DATA = {
 			"description" : localeInfo.MALL_EXP_BONUS_NAME,
 			"icon" : "d:/ymir work/ui/skill/common/affect/exp_bonus.sub",
 		},
+		# MT2009_PLUS_PD_BONUS_V1 (mall multipliers): the affect holds +x%; the line shows the multiplier (Medal Szczescia
+		# +50: "x1.5", it said "x50.0") - localeinfo_point.GetApplyString
 		player.POINT_MALL_ITEMBONUS : {
-			"description" : localeInfo.TOOLTIP_MALL_ITEMBONUS,
+			"description" : lambda value: localeinfo_point.GetApplyString(player.POINT_MALL_ITEMBONUS, value),
 			"icon" : "d:/ymir work/ui/skill/common/affect/item_bonus.sub",
 		},
 		player.POINT_MALL_GOLDBONUS : {
-			"description" : localeInfo.TOOLTIP_MALL_GOLDBONUS,
+			"description" : lambda value: localeinfo_point.GetApplyString(player.POINT_MALL_GOLDBONUS, value),
 			"icon" : "d:/ymir work/ui/skill/common/affect/gold_bonus.sub",
 		},
 
