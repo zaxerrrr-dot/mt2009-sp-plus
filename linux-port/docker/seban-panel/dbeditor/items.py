@@ -166,6 +166,10 @@ POINT_LABELS = {
     251: ("Rękawice: atrybuty podstawowe", "%"),
     # MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamień Antymagii (server-patches/antimagic) - PvP, ignores the target's magic resistance
     252: ("Antymagia (ignoruje odporność na magię, PvP)", "%"),
+    # MT2009_PLUS_BONUS67_WIKI_V1: the 6th/7th bonuses of the wiki round 2 (server-patches/bonusy67b, tools/bonusy67)
+    253: ("Obrażenia niższe przy PŻ powyżej 90%", "%"),
+    254: ("Atak krwawienia", "%"),
+    255: ("Odporność na atak krwawienia", "%"),
 }
 TECHNICAL_POINTS = {1, 2, 3, 4, 5, 7, 9, 11, 20, 24, 25, 26, 27, 29, 30, 31, 35, 36, 91, 92, 102, 103, 104, 105,
                     106, 108, 109, 110, 111, 112, 113, 125, 126, 127, 128, 129, 169, 170, 171, 172, 173, 174,

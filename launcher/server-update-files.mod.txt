@@ -627,6 +627,11 @@ linux-port/docker/game/balathor/monster/guild_whitedragon_statue/*
 # cmd_gm.cpp, db ProtoReader.cpp; playerbot_* lines for the bots' prices and stone rules), the items antymagia.sql and
 # the apply ENUM step (apply.sh; tools/antimagic).
 linux-port/docker/mariadb/playerbot/antymagia.sql
+# MT2009_PLUS_BONUS67_WIKI_V1 (server-patches/bonusy67b): the 6th/7th bonuses of the wiki round 2 (points 253-255: the
+# "+90% PZ" body armour line, the bleeding) - the engine files it changes are above (length.h, char.cpp, battle.cpp);
+# the logic is playerbot_bonus67.cpp / playerbot_bonus.h (the playerbot_* lines); the pool's round 2 and the apply ENUM
+# step (apply.sh; tools/bonusy67/gen_bonusy67b_sql.py).
+linux-port/docker/mariadb/playerbot/bonusy67b_wiki.sql
 # MT2009_PLUS_ADDEQ_V1 (server-patches/addeq): Druga strona ekwipunku, the "Official Additional Equipment Page" package - the
 # engine files it changes are above (char.h, char.cpp, char_item.cpp, item.cpp, char_skill.cpp, cmd.cpp); the logic is
 # playerbot_addeq.cpp (the playerbot_* lines); the unlock items 38306 / 76055 addeq.sql (apply.sh, tools/addeq).

@@ -34,7 +34,10 @@ static_assert(POINT_PACKET_NUM == 193, "the points packet carries the server's P
 static_assert(POINT_SUNGMA_PER_STR == 193 && POINT_SUNGMA_PER_IMMUNE == 196, "POINT_SUNGMA_PER_* differ from the server (193-196)");
 static_assert(POINT_HIT_PCT == 197, "POINT_HIT_PCT (197) differs from the server");
 // MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii's point 252 is the last one (server-patches/antimagic)
-static_assert(POINT_ANTI_RESIST_MAGIC == 252 && POINT_MAX_NUM == 253, "POINT_ANTI_RESIST_MAGIC (252) / POINT_MAX_NUM (253) differ from the server");
+static_assert(POINT_ANTI_RESIST_MAGIC == 252, "POINT_ANTI_RESIST_MAGIC (252) differs from the server");
+// MT2009_PLUS_BONUS67_WIKI_V1: the server's 253-255 (server-patches/bonusy67b) take the last numbers of a one-byte type
+static_assert(POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255 && POINT_MAX_NUM == 256,
+		"POINT_RESIST_COMBAT / POINT_BLEEDING_PCT / POINT_BLEEDING_REDUCE (253-255) / POINT_MAX_NUM (256) differ from the server");
 static_assert(METIN_SUNGMA == 2, "METIN_SUNGMA differs from the server (2)");
 static_assert(FLY_CONQUEROR_EXP == 30, "FLY_CONQUEROR_EXP differs from the server (30)");
 #ifdef ENABLE_GLOVE_SYSTEM

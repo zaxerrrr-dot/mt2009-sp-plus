@@ -4825,6 +4825,48 @@ for m2_am_table in item_attr item_attr_rare; do
         *) fail_step "anti-magic stones: $m2_am_table's apply ENUM does not end with POINT_GLOVE_BASE_ATTR_PCT - left as it is" >&2 ;;
     esac
 done
+# MT2009_PLUS_BONUS67_WIKI_V1 (server-patches/bonusy67b; the owner, 3 November 2026: all the 6/7 bonuses of the wiki):
+#   1. the apply ENUM of item_attr and item_attr_rare gets the last three point numbers after POINT_ANTI_RESIST_MAGIC
+#      (252): POINT_RESIST_COMBAT 253, POINT_BLEEDING_PCT 254, POINT_BLEEDING_REDUCE 255 (apply+0 = the POINT_* number;
+#      an item keeps its bonus type in one byte - all 256 taken); only an ENUM that ends with POINT_ANTI_RESIST_MAGIC
+#      (252 names after the empty one) gets them, nullability and default kept; idempotent.
+#   2. once per world (marker rare_6_7_wiki_v3): bonusy67b_wiki.sql (tools/bonusy67/gen_bonusy67b_sql.py) - the pool's
+#      round 2: the three new rows, "x% obrazen bedzie dodanych do PE" (POINT_STEAL_SP) in place of round 1's
+#      POINT_DAMAGE_SP_RECOVER, the en-wiki's shoes' POINT_STEAL_HP and talisman's 1.-5. dodany bonus. Never empties it.
+m2_b67b_names="'POINT_RESIST_COMBAT','POINT_BLEEDING_PCT','POINT_BLEEDING_REDUCE'"
+for m2_b67b_table in item_attr item_attr_rare; do
+    m2_b67b_enum=$(m2_b67_type $m2_b67b_table)
+    case "$m2_b67b_enum" in
+        *"'POINT_BLEEDING_REDUCE'"*) ;;
+        *"'POINT_ANTI_RESIST_MAGIC')")
+            m2_b67b_null=$(db -N -e "SELECT IF(IS_NULLABLE = 'YES', 'NULL', 'NOT NULL'), IFNULL(COLUMN_DEFAULT, '') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = '$m2_b67b_table' AND COLUMN_NAME = 'apply'" 2>/dev/null | tr -d '\r')
+            m2_b67b_def=$(printf '%s' "$m2_b67b_null" | cut -f2 | tr -d "'")
+            m2_b67b_null=$(printf '%s' "$m2_b67b_null" | cut -f1)
+            [ -n "$m2_b67b_def" ] && m2_b67b_def=" DEFAULT '$m2_b67b_def'"
+            if [ "$(printf '%s' "$m2_b67b_enum" | grep -o "','" | wc -l | tr -d ' ')" = 251 ] &&
+                    db -e "ALTER TABLE world.$m2_b67b_table MODIFY apply ${m2_b67b_enum%)},$m2_b67b_names) $m2_b67b_null$m2_b67b_def;"; then
+                echo "[playerbot-migrate] 6th/7th bonuses round 2: $m2_b67b_table apply ENUM up to POINT_BLEEDING_REDUCE (255)"
+            else
+                fail_step "6th/7th bonuses round 2: could not add the points 253-255 to $m2_b67b_table's apply ENUM (not 252 names?)" >&2
+            fi ;;
+        *) fail_step "6th/7th bonuses round 2: $m2_b67b_table's apply ENUM does not end with POINT_ANTI_RESIST_MAGIC - left as it is" >&2 ;;
+    esac
+done
+if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_wiki_v3'" 2>/dev/null || echo 1)" = 0 ]; then
+    if [ -s /opt/playerbot/bonusy67b_wiki.sql ] &&
+            db -N -e "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr_rare' AND COLUMN_NAME = 'apply' AND COLUMN_TYPE LIKE '%''POINT_BLEEDING_REDUCE''%'" 2>/dev/null | grep -q 1 &&
+            [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_wiki_v2'" 2>/dev/null || echo 0)" = 1 ]; then
+        if db < /opt/playerbot/bonusy67b_wiki.sql; then
+            echo "[playerbot-migrate] 6th/7th bonus pool round 2: bonusy67b_wiki.sql applied ($(db -N -e "SELECT COUNT(*) FROM world.item_attr_rare" 2>/dev/null | tr -d ' \r') rows)"
+        else
+            fail_step "6th/7th bonus pool round 2: bonusy67b_wiki.sql failed; item_attr_rare stays as it was" >&2
+        fi
+    else
+        fail_step "6th/7th bonus pool round 2: no bonusy67b_wiki.sql, no points 253-255 in item_attr_rare's ENUM or no round 1 yet - next start" >&2
+    fi
+else
+    echo "[playerbot-migrate] 6th/7th bonus pool round 2: applied already (rare_6_7_wiki_v3)"
+fi
 if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; then
     if db < /opt/playerbot/zywioly_moby_global.sql; then
         echo "[playerbot-migrate] bonus mode: global - elements on every monster (zywioly_moby_global.sql)"

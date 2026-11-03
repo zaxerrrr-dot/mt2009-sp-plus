@@ -3191,6 +3191,10 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "POINT_ANTI_RESIST_MAGIC", POINT_ANTI_RESIST_MAGIC);
 	PyModule_AddIntConstant(poModule, "POINT_RESIST_MAGIC_REDUCTION", POINT_ANTI_RESIST_MAGIC);
 #endif
+	// MT2009_PLUS_BONUS67_WIKI_V1: the server's 253-255 (server-patches/bonusy67b; root localeinfo_point.py, uiattributelist.py)
+	PyModule_AddIntConstant(poModule, "POINT_RESIST_COMBAT", POINT_RESIST_COMBAT);
+	PyModule_AddIntConstant(poModule, "POINT_BLEEDING_PCT", POINT_BLEEDING_PCT);
+	PyModule_AddIntConstant(poModule, "POINT_BLEEDING_REDUCE", POINT_BLEEDING_REDUCE);
 	PyModule_AddIntConstant(poModule, "POINT_MAGIC_ATT_BONUS_PER", POINT_MAGIC_ATT_BONUS_PER);
 	PyModule_AddIntConstant(poModule, "POINT_MELEE_MAGIC_ATT_BONUS_PER", POINT_MELEE_MAGIC_ATT_BONUS_PER);
 	PyModule_AddIntConstant(poModule, "POINT_MANASHIELD", POINT_MANASHIELD);

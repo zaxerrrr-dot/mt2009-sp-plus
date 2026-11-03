@@ -1362,8 +1362,14 @@ enum EPointTypes
 	// line (player.POINT_RESIST_MAGIC_REDUCTION). The server's 198-251 (bonusy67) never come, so they have no names here.
 	// Without #ifdef: every file must see the same POINT_MAX_NUM (CPythonPlayer's m_alPoint, the effects' table).
 	POINT_ANTI_RESIST_MAGIC = 252,
+	// MT2009_PLUS_BONUS67_WIKI_V1 (server-patches/bonusy67b): the server's last three points - the 6th/7th bonuses of the
+	// wiki round 2, sent as point changes for the character window's lines (uiattributelist.py shows them only when
+	// player.MAX_NUM is above their number). An older exe (POINT_MAX_NUM 253) drops them in CPythonPlayer::SetStatus.
+	POINT_RESIST_COMBAT = 253,	// "Jesli masz powyzej 90% PZ, doznajesz obrazenia nizsze o x%"
+	POINT_BLEEDING_PCT = 254,	// "Atak krwawienia +x%" (no Lycan here: not the wolfman's APPLY_BLEEDING_PCT)
+	POINT_BLEEDING_REDUCE = 255,	// "Odpornosc na atak krwawienia +x%"
 
-	POINT_MAX_NUM,	// 253
+	POINT_MAX_NUM,	// 256
 };
 
 enum EDragonSoulRefineWindowSize

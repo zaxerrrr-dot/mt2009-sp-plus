@@ -17,7 +17,12 @@
 #include <map>
 #include <vector>
 
-#ifdef MT2009_PLUS_ANTI_RESIST_MAGIC
+#if defined(MT2009_PLUS_ANTI_RESIST_MAGIC) && defined(MT2009_PLUS_BONUS67_WIKI)
+// MT2009_PLUS_BONUS67_WIKI_V1: the wiki's round 2 takes the last three numbers (253-255, server-patches/bonusy67b)
+static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_ANTI_RESIST_MAGIC == 252
+		&& POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255 && POINT_MAX_NUM == 256,
+		"the 6th/7th bonus points 198-251, the anti-magic 252 and 253-255 (item_attr ENUM of apply.sh, root/localeinfo_point.py)");
+#elif defined(MT2009_PLUS_ANTI_RESIST_MAGIC)
 // MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii's point follows them (252, server-patches/antimagic)
 static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_ANTI_RESIST_MAGIC == 252
 		&& POINT_MAX_NUM == 253,
@@ -84,8 +89,10 @@ namespace
 		DWORD dwFallUntil;
 		DWORD dwFallReady;
 		DWORD dwLightningReady;
+		DWORD dwBleedUntil;	// MT2009_PLUS_BONUS67_WIKI_V1: bleeding until then
+		bool bBled;			// a monster bleeds once (the wiki, as the poison), then it is immune
 		DWORD dwLast;
-		TState() : dwFallUntil(0), dwFallReady(0), dwLightningReady(0), dwLast(0)
+		TState() : dwFallUntil(0), dwFallReady(0), dwLightningReady(0), dwBleedUntil(0), bBled(false), dwLast(0)
 		{
 			for (int i = 0; i < HIT_BUFF_COUNT; ++i)
 				adwBuffUntil[i] = adwBuffReady[i] = 0;
@@ -176,9 +183,18 @@ namespace
 	}
 
 	// "Boss or more" of the official lines: a monster of the boss rank and up; Metin stones have their own lines.
+	// MT2009_PLUS_BONUS67_WIKI_V1 (the owner, 3 November: "exactly as the wiki"): the wiki's "Obrazenia od ataku przeciwko
+	// bossom" are against the monsters of "Stopien 5" (the engine's MOB_RANK_BOSS - "all Metin stones belong to it") and
+	// "Stopien Boss" (MOB_RANK_KING), so a Metin stone counts as a boss now - b67_boss_no_metin 1 is the old rule.
 	bool IsBoss(const CHARACTER* ch)
 	{
-		return ch && ch->IsMonster() && !ch->IsStone() && ch->GetMobRank() >= MOB_RANK_BOSS;
+		if (!ch || ch->GetMobRank() < MOB_RANK_BOSS)
+			return false;
+#ifdef MT2009_PLUS_BONUS67_WIKI
+		if (ch->IsStone())
+			return quest::CQuestManager::instance().GetEventFlag("b67_boss_no_metin") <= 0;
+#endif
+		return ch->IsMonster() && !ch->IsStone();
 	}
 
 	struct FCollectMonsters
@@ -373,6 +389,20 @@ int Bonus67Damage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType, int i
 			iDam = MAX(1, iDam * (100 - MIN(99, iPct)) / 100);
 	}
 
+#ifdef MT2009_PLUS_BONUS67_WIKI
+	// MT2009_PLUS_BONUS67_WIKI_V1: "Jesli masz powyzej 90% PZ, doznajesz obrazenia nizsze o x%" (the body armour's 6th/7th
+	// bonus, 1-5%). A blow a player or bot takes - a normal hit or a skill, from a monster or a player (the wiki names no
+	// kind) - while its HP is at 90% or more before the blow: x% less, once here (after the engine's normal hit / skill
+	// defence and the boss lines, before the hit buffs). Capped at b67_combat_max (10, at most 50), never below 1; the
+	// damage over time (poison, bleeding, burning) and the special blows are not "a blow taken".
+	if ((bNormal || bSkill) && IsPlayer(pkVictim))
+	{
+		const int iPct = MIN((int) pkVictim->GetPoint(POINT_RESIST_COMBAT), EventFlag("b67_combat_max", 10, 50));
+		if (iPct > 0 && (long long) pkVictim->GetHP() * 100 >= (long long) pkVictim->GetMaxHP() * 90)
+			iDam = MAX(1, (int) ((long long) iDam * (100 - iPct) / 100));
+	}
+#endif
+
 	if (bNormal || bSkill)
 	{
 		if (IsPlayer(pkAttacker))
@@ -389,6 +419,100 @@ int Bonus67Damage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType, int i
 	}
 	return iDam;
 }
+
+#ifdef MT2009_PLUS_BONUS67_WIKI
+// MT2009_PLUS_BONUS67_WIKI_V1: "Atak krwawienia" / "Odpornosc na atak krwawienia" (6th/7th bonuses of every item but the
+// gloves, 1-5%). The wiki ("Krwawienie"): 5% of the max HP every 3 s for 25 s, the HP regeneration stopped; a character
+// can bleed again and again, a monster once (then it is immune, as with the poison); the resistance lowers the
+// bleeding's damage by twice its per cent - X * (100 - 2Y)%, it never lowers the chance. Our numbers: a normal hit of a
+// player or bot (battle.cpp NormalAttackAffect, next to the poison) with x% chance, the poison's level rule (a lower
+// attacker gets through less often), 9 ticks (at once, then every 3 s: 24 s); a tick is the max HP x the poison's
+// rate (a character 50 = 5%; a monster by its rank 8 / 5 / 4 / 3 / 2.5 / 0.1%, less its poison resistance, so what is
+// immune to the poison is immune to this) - the engine's own bleeding (ENABLE_WOLFMAN_CHARACTER, off here) used the
+// same. It hurts as the poison (DAMAGE_TYPE_POISON: the poison's colour, it never kills) and no Metin stone bleeds.
+namespace
+{
+	enum
+	{
+		BLEEDING_TICKS = 9,
+		BLEEDING_TICK_MS = 3000,
+	};
+	const int s_aiBleedRate[MOB_RANK_MAX_NUM] = { 80, 50, 40, 30, 25, 1 };
+	const int s_aiBleedLevelAdjust[9] = { 100, 90, 80, 70, 50, 30, 10, 5, 0 };
+}
+
+EVENTINFO(bonus67_bleeding_info)
+{
+	DWORD dwVID;
+	DWORD dwAttackerVID;
+	int iCount;
+	bonus67_bleeding_info() : dwVID(0), dwAttackerVID(0), iCount(0) {}
+};
+
+EVENTFUNC(bonus67_bleeding_event)
+{
+	bonus67_bleeding_info* info = dynamic_cast<bonus67_bleeding_info*>(event->info);
+	if (!info)
+		return 0;
+	LPCHARACTER ch = CHARACTER_MANAGER::instance().Find(info->dwVID);
+	if (!ch || ch->IsDead() || !ch->GetSectree())
+		return 0;
+	int iRate;
+	if (ch->IsNPC())
+		iRate = MAX(0, s_aiBleedRate[MINMAX(0, (int) ch->GetMobRank(), MOB_RANK_MAX_NUM - 1)] - (int) ch->GetPoint(POINT_POISON_REDUCE));
+	else
+		iRate = 50 * (100 - 2 * MINMAX(0, (int) ch->GetPoint(POINT_BLEEDING_REDUCE), 50)) / 100;
+	const int iDam = (int) ((long long) ch->GetMaxHP() * iRate / 1000);
+	LPCHARACTER pkAttacker = CHARACTER_MANAGER::instance().Find(info->dwAttackerVID);
+	if (pkAttacker && (pkAttacker->IsDead() || pkAttacker->GetMapIndex() != ch->GetMapIndex()))
+		pkAttacker = NULL;
+	if (iDam > 0 && ch->Damage(pkAttacker, iDam, DAMAGE_TYPE_POISON))
+		return 0;
+	if (--info->iCount <= 0)
+		return 0;
+	return PASSES_PER_SEC(BLEEDING_TICK_MS / 1000);
+}
+
+void Bonus67Bleeding(LPCHARACTER pkAttacker, LPCHARACTER pkVictim)
+{
+	if (!IsPlayer(pkAttacker) || !pkVictim || pkVictim == pkAttacker || pkVictim->IsDead() || pkVictim->IsStone() ||
+			pkVictim->IsDoor() || (pkVictim->IsNPC() && !pkVictim->IsMonster()))
+		return;
+	const int iPct = MIN((int) pkAttacker->GetPoint(POINT_BLEEDING_PCT), 100);
+	if (iPct <= 0 || number(1, 100) > iPct)
+		return;
+	{ bool ChampionImmuneBlocks(LPCHARACTER, LPCHARACTER); if (ChampionImmuneBlocks(pkAttacker, pkVictim)) return; }
+	const DWORD dwNow = get_dword_time();
+	TState& st = GetState(pkVictim, dwNow);
+	if (st.dwBleedUntil && !Reached(dwNow, st.dwBleedUntil))
+		return;	// bleeding already
+	if (pkVictim->IsNPC() && st.bBled)
+		return;	// a monster bleeds once
+	if (pkAttacker->GetLevel() < pkVictim->GetLevel())
+	{
+		const int iDelta = MIN(8, (int) (pkVictim->GetLevel() - pkAttacker->GetLevel()));
+		if (number(1, 100) > s_aiBleedLevelAdjust[iDelta])
+			return;
+	}
+	st.bBled = true;
+	st.dwBleedUntil = dwNow + BLEEDING_TICKS * BLEEDING_TICK_MS;
+	bonus67_bleeding_info* info = AllocEventInfo<bonus67_bleeding_info>();
+	info->dwVID = (DWORD) pkVictim->GetVID();
+	info->dwAttackerVID = (DWORD) pkAttacker->GetVID();
+	info->iCount = BLEEDING_TICKS;
+	event_create(bonus67_bleeding_event, info, 1);
+	if (pkVictim->GetDesc())
+		pkVictim->ChatPacket(CHAT_TYPE_INFO, "Krwawisz! (%d sek.)", BLEEDING_TICKS * BLEEDING_TICK_MS / 1000);
+}
+
+bool Bonus67IsBleeding(const CHARACTER* ch)
+{
+	if (!ch)
+		return false;
+	const TState* st = FindState(ch);
+	return st && st->dwBleedUntil && !Reached(get_dword_time(), st->dwBleedUntil);
+}
+#endif
 
 bool Bonus67FallResist(const CHARACTER* ch)
 {

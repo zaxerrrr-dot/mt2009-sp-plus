@@ -1,0 +1,44 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (points)",
+  "old": "\tPOINT_ANTI_RESIST_MAGIC,\t// 252\n\tPOINT_MAX_NUM,\t// 253 (an item keeps its bonus type in one byte: at most 256)\n",
+  "new": "\tPOINT_ANTI_RESIST_MAGIC,\t// 252\n\t// MT2009_PLUS_BONUS67_WIKI_V1 (points): the 6th/7th bonuses of the wiki round 2 (the owner, 3 November 2026;\n\t// server-patches/bonusy67b, playerbot_bonus67.cpp) - the last three numbers an item's bonus type (one byte) has.\n\t// Sent to the client as point changes (an exe with POINT_MAX_NUM 256 shows them in the bonus window; an older\n\t// one drops a type >= its 253 in CPythonPlayer::SetStatus); the item tooltip names them (root/localeinfo_point.py).\n#define MT2009_PLUS_BONUS67_WIKI\n\tPOINT_RESIST_COMBAT,\t// 253 \"Jesli masz powyzej 90% PZ, doznajesz obrazenia nizsze o x%\" (body armour)\n\tPOINT_BLEEDING_PCT,\t// 254 \"Atak krwawienia +x%\" - x% chance a normal hit makes the victim bleed\n\tPOINT_BLEEDING_REDUCE,\t// 255 \"Odpornosc na atak krwawienia +x%\" - the bleeding's damage x 2% lower\n\tPOINT_MAX_NUM,\t// 256 (an item keeps its bonus type in one byte: all 256 taken)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (point change)",
+  "old": "\t\tcase POINT_GLOVE_BASE_ATTR_PCT:\n\t\tcase POINT_RESIST_HUMAN:\n",
+  "new": "\t\tcase POINT_GLOVE_BASE_ATTR_PCT:\n\t\t// MT2009_PLUS_BONUS67_WIKI_V1 (point change): the 6th/7th bonuses of the wiki round 2 (253-255)\n\t\tcase POINT_RESIST_COMBAT:\n\t\tcase POINT_BLEEDING_PCT:\n\t\tcase POINT_BLEEDING_REDUCE:\n\t\tcase POINT_RESIST_HUMAN:\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (point packet)",
+  "old": "type == POINT_ANTI_RESIST_MAGIC /* MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (point packet): 252 to the client (exe POINT_MAX_NUM 253) */",
+  "new": "type == POINT_ANTI_RESIST_MAGIC /* MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (point packet): 252 to the client (exe POINT_MAX_NUM 253) */ || type == POINT_RESIST_COMBAT || type == POINT_BLEEDING_PCT || type == POINT_BLEEDING_REDUCE /* MT2009_PLUS_BONUS67_WIKI_V1 (point packet): 253-255 too (an older exe drops them) */"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (login points)",
+  "old": "\t\tPOINT_SUNGMA_PER_IMMUNE, POINT_HIT_PCT, POINT_ANTI_RESIST_MAGIC };\n",
+  "new": "\t\tPOINT_SUNGMA_PER_IMMUNE, POINT_HIT_PCT, POINT_ANTI_RESIST_MAGIC,\n\t\tPOINT_RESIST_COMBAT, POINT_BLEEDING_PCT, POINT_BLEEDING_REDUCE }; // MT2009_PLUS_BONUS67_WIKI_V1 (login points)\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (bleeding)",
+  "old": "\tif (pkAttacker->GetPoint(POINT_POISON_PCT) && !pkVictim->IsAffectFlag(AFF_POISON))\n\t{\n\t\tif (number(1, 100) <= pkAttacker->GetPoint(POINT_POISON_PCT))\n\t\t\tpkVictim->AttackedByPoison(pkAttacker);\n\t}\n",
+  "new": "\tif (pkAttacker->GetPoint(POINT_POISON_PCT) && !pkVictim->IsAffectFlag(AFF_POISON))\n\t{\n\t\tif (number(1, 100) <= pkAttacker->GetPoint(POINT_POISON_PCT))\n\t\t\tpkVictim->AttackedByPoison(pkAttacker);\n\t}\n\t{ // MT2009_PLUS_BONUS67_WIKI_V1 (bleeding): \"Atak krwawienia\" of the 6th/7th bonuses (playerbot_bonus67.cpp)\n\t\tvoid Bonus67Bleeding(LPCHARACTER pkAttacker, LPCHARACTER pkVictim);\n\t\tBonus67Bleeding(pkAttacker, pkVictim);\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (regen npc)",
+  "old": "\t\tif (ch->IsAffectFlag(AFF_POISON))\n\t\t\treturn PASSES_PER_SEC(MAX(1, ch->GetMobTable().bRegenCycle));\n",
+  "new": "\t\tif (ch->IsAffectFlag(AFF_POISON))\n\t\t\treturn PASSES_PER_SEC(MAX(1, ch->GetMobTable().bRegenCycle));\n\t\t{ // MT2009_PLUS_BONUS67_WIKI_V1 (regen npc): a bleeding monster does not regenerate (playerbot_bonus67.cpp)\n\t\t\tbool Bonus67IsBleeding(const CHARACTER* ch);\n\t\t\tif (Bonus67IsBleeding(ch))\n\t\t\t\treturn PASSES_PER_SEC(MAX(1, ch->GetMobTable().bRegenCycle));\n\t\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_WIKI_V1 (regen pc)",
+  "old": "\t\tif (ch->IsAffectFlag(AFF_POISON) == true)\n\t\t{\n\t\t\treturn 3;\n\t\t}\n",
+  "new": "\t\tif (ch->IsAffectFlag(AFF_POISON) == true)\n\t\t{\n\t\t\treturn 3;\n\t\t}\n\t\t{ // MT2009_PLUS_BONUS67_WIKI_V1 (regen pc): a bleeding character does not regenerate (playerbot_bonus67.cpp)\n\t\t\tbool Bonus67IsBleeding(const CHARACTER* ch);\n\t\t\tif (Bonus67IsBleeding(ch))\n\t\t\t\treturn 3;\n\t\t}\n"
+ }
+]
