@@ -5032,6 +5032,18 @@ if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (83050, 50048
 ishop_once konie_50901 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (50901, 83050, 1, 399, 'DRAGON_COIN', 0), (50902, 50048, 50, 249, 'DRAGON_COIN', 0), (50903, 50048, 250, 1099, 'DRAGON_COIN', 0);" "could not add the horse care kit and the horse feed to the ItemShop"
 fi
 
+# MT2009_PLUS_DROP307_V1 (the owner's list of 3 November 2026, Yohara 3.x section C): drop307.sql - the level-90 and
+# Yohara rings / gloves / capes stack, trade and come off, Ksiegi Riposty in stacks of 200, Lodowa Runa Aury into the
+# safebox and Kolekcjoner, the tradeable Kamien Kowala / Magiczny Metal (39015 / 39016) and Kowal's recipes 7-10 for
+# them, the yang of Zaklety Las. Last, after every step that writes these rows. Idempotent.
+if [ -s /opt/playerbot/drop307.sql ]; then
+    if db < /opt/playerbot/drop307.sql; then
+        echo "[playerbot-migrate] drop 3.0.7: rings / gloves / capes, riposte books, ice aura rune, tradeable smith materials, Zaklety Las yang"
+    else
+        fail_step "drop 3.0.7: drop307.sql failed (MT2009_PLUS_DROP307_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

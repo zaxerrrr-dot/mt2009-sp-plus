@@ -284,6 +284,8 @@ RUN set -eux; \
     # row's, so nobody could hand in a single 30167 (2.0.95).
     # collect_quest_lv70 drops its Konar Zelkova (30165) whatever the bag
     # already holds - the branch stacks (MT2009_PLUS_UPSTREAM_BOTLOGIC_ZELKOVA_V1).
+    # collect_quest_lv80 / lv90 drop their Certyfikat Tugyisa (30166) / Notatka Przywodcy (30168) the same way - into
+    # the stack the bag already holds, no empty cell needed (MT2009_PLUS_BIOLOG_STACK_V1, the owner 3 November 2026).
     # collect_quest_lv92 / lv94 are Seon-Pyeong's research (Klejnoty Zawisci, Klejnoty Madrosci and Kamien Dusz
     # Beran-Setaou, a permanent bonus of three to choose) over the package's empty lv92 stub - lv90 already sets it
     # to "run" - and collect_quest_cz1 / cz10 / cz20 Chaegirab's in Dongan (Oczyszczone Rdzenie, Krysztaly Metin,
@@ -419,7 +421,7 @@ RUN set -eux; \
     # (MT2009_PLUS_BALATHOR_V1, author dracaryS; offered only while M2_BALATHOR_ON=1 hosts the map).
     # event_halloween_hair is Owsap's Halloween event (MT2009_PLUS_HALLOWEEN_V1, Autor: Owsap) in
     # place of the package's copy, whose handlers the runtime stage removes first.
-    for q in web_admin speed_boost starter_chest starter_kit konie gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv80 collect_quest_lv90 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -3281,6 +3283,40 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/spider3-add; F="$L/mob_dr
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_spider3_207[1-5][[:space:]]*$' "$F")" = 5 \
  && rm -rf "$A" \
  && echo "share: 3 Loch Pajakow - the five spiders' drops (5 limit groups of level 60)"
+
+# MT2009_PLUS_DROP307_V1 (the owner's list of 3 November 2026, Yohara 3.x section C) - after every share append:
+#  * drop307/drop307.awk over mob_drop_item.txt and special_item_group.txt: Lza Bogini (70012), Plaszcz Uciekiniera
+#    (70048), Symbol / Rekawica Krola Przepowiedni (70050 / 70051) drop from no monster, Metin, boss nor boss / dungeon
+#    chest any more (the event's and the Biologist's boxes keep them; the fishing too); Krol Bao (misja) (6692) loses
+#    every drop group (the pl-wiki: no drop; server-patches/drop307 takes the world's extras and the preview); the
+#    bosses' and the boss chests' Kamien Kowala / Magiczny Metal are the tradeable 39015 / 39016 (mariadb drop307.sql);
+#  * drop307/mob_drop_item.drop307.txt: the 90+ maps' and the Sung Ma field maps' bosses (39 groups) - Pozwolenie na
+#    Zaczarowanie x2 15%, Pozwolenie na Wzmocnienie x2 8%, Magiczny Metal 5%; the champion maps' also Cor Draconis
+#    (szlif.) x2 50% and Blogoslawienstwo Przedmiotu 5%;
+#  * fishing_drop.lua: the fishing's Kamien Kowala / Magiczny Metal are 39015 / 39016;
+#  * crafting_data.lua: Kowal's window (CRAFTING_BLACKSMITH) lists recipes 7-10 (world.crafting_proto, drop307.sql) -
+#    the tradeable 39015 / 39016 make the same Podrecznik Kowala / Zwoj Boga Smokow as 71025 / 71026.
+COPY drop307/ /tmp/drop307/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/drop307; F="$L/mob_drop_item.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_drop307_' "$F" \
+ && awk -v kind=mob -f "$A/drop307.awk" "$F" > "$F.new" && mv "$F.new" "$F" \
+ && awk -v kind=sig -f "$A/drop307.awk" "$L/special_item_group.txt" > "$L/special_item_group.txt.new" \
+ && mv "$L/special_item_group.txt.new" "$L/special_item_group.txt" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.drop307.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.drop307.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_drop307_[0-9]+[[:space:]]*$' "$F")" = 39 \
+ && ! awk '{ t = $0; sub(/\r$/, "", t); split(t, f); if (tolower(f[1]) == "mob" && f[2] == "6692") n++ } END { exit n ? 0 : 1 }' "$F" \
+ && ! awk '{ t = $0; sub(/\r$/, "", t); split(t, f); if (f[1] ~ /^[0-9]+$/ && (f[2] == "70012" || f[2] == "70048" || f[2] == "70050" || f[2] == "70051")) n++ } END { exit n ? 0 : 1 }' "$F" \
+ && G="$L/quest/libs/fishing/fishing_drop.lua" \
+ && sed -i -E 's/^([[:blank:]]*)71025(,[[:blank:]]*1,)/\139015\2/; s/^([[:blank:]]*)71026(,[[:blank:]]*1,)/\139016\2/' "$G" \
+ && ! grep -q -E '^[[:blank:]]*710(25|26),' "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*3901[56],' "$G")" -ge 2 \
+ && C="$L/quest/libs/crafting/crafting_data.lua" \
+ && sed -i -E 's/^([[:blank:]]*)1,2,3,4,5,6([[:blank:]]*\r?)$/\11,2,3,4,5,6,7,8,9,10\2/' "$C" \
+ && test "$(grep -c -E '^[[:blank:]]*1,2,3,4,5,6,7,8,9,10[[:space:]]*$' "$C")" -eq 1 \
+ && rm -rf "$A" \
+ && echo "share: drop 3.0.7 - no Lza Bogini / Plaszcz / Krol Przepowiedni drops, Krol Bao (misja) without drop, the 90+ and champion bosses' rows, tradeable smith materials (MT2009_PLUS_DROP307_V1)"
 
 # MT2009_PLUS_ARMOR105_V1 (the owner, 22 October 2026): the level-105 armours' materials (tools/zbroje105) drop from
 # our generators' files, appended by their own steps above - the owner's monster sheet (yohara_arkusz: the En-Tai,

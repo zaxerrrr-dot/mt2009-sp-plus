@@ -16,7 +16,7 @@
 -- The window is client-patches/client-2.0.30/root/uitpbookmarks.py, opened by
 -- the inventory sidebar's button; using the scroll keeps its own job.
 --
--- The scroll is the ItemShop's Zwoj Powrotu (22010, 10 for 39 DC; the memory
+-- The scroll is the ItemShop's Zwoj Powrotu (22010, 10 for 39 DC; also the dropped 22011 and 39043; the memory
 -- scroll the engine's USE_TALISMAN fills with a position on its first use) and
 -- the same scroll as Zwoj Teleportacji (22020). Clean = socket 0 empty, a
 -- position not yet written into it. Saving needs one in the bag; a teleport
@@ -113,7 +113,10 @@ quest tp_bookmarks begin
 			for cell = 0, 224 do
 				if item.select_cell(cell) then
 					local vnum = item.get_vnum()
-					if (vnum == 22010 or vnum == 22020) and item.get_socket(0) == 0 then
+					-- MT2009_PLUS_TP_BOOKMARKS_DROP_SCROLL_V1 (the owner's list of 3 November 2026: "Zwoje powrotu z dropu nie
+					-- dzialaja w zapisie pozycji (tylko z IS dzialaja)"): the dropped Zwoj Powrotu (22011, common_drop_item)
+					-- and its masked twin (39043) count as the ItemShop's 22010 - the same memory scroll (USE_TALISMAN).
+					if (vnum == 22010 or vnum == 22011 or vnum == 39043 or vnum == 22020) and item.get_socket(0) == 0 then
 						count = count + item.get_count()
 						if first < 0 then
 							first = cell
@@ -208,7 +211,7 @@ quest tp_bookmarks begin
 			end
 			local cell, count = tp_bookmarks.find_scroll()
 			if count <= 0 then
-				syschat("Zapisane pozycje dzia³aj¹ tylko z czystym Zwojem Powrotu (ItemShop) w ekwipunku.")
+				syschat("Zapisane pozycje dzia³aj¹ tylko z czystym Zwojem Powrotu w ekwipunku.")
 				tp_bookmarks.send_list()
 				return
 			end
@@ -284,7 +287,7 @@ quest tp_bookmarks begin
 			end
 			local cell, count = tp_bookmarks.find_scroll()
 			if cell < 0 or not item.select_cell(cell) then
-				syschat("Teleportacja wymaga czystego Zwoju Powrotu (ItemShop) w ekwipunku.")
+				syschat("Teleportacja wymaga czystego Zwoju Powrotu w ekwipunku.")
 				tp_bookmarks.send_list()
 				return
 			end

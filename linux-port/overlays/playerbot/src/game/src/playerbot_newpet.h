@@ -197,7 +197,10 @@ namespace mt2009_newpet
 	const EvolutionCost EVOLUTION_COSTS[EVOLUTION_MAX] = {
 		{ { 27992, 27993, 27994, 0, 0 }, { 5, 5, 5, 0, 0 }, 5000000LL },
 		{ { 50513, 30009, 27992, 27993, 27994 }, { 10, 10, 5, 5, 5 }, 20000000LL },
-		{ { 31005, 31006, 50255, 0, 0 }, { 10, 10, 10, 0, 0 }, 50000000LL },
+		// MT2009_PLUS_PET_EVOLUTION_100_V1 (the owner's list of 3 November 2026): Brave -> Heroic (level 100) takes 10
+		// Kamien Plomienia (30524), 10 Kamien Lodowego Plomienia (30525) and 100 rough Cor Draconis (50255) - no more
+		// Nieb. Esencja Krysztalu (31005) / Czerw. Kwarc Pieklow (31006), which nothing in this world drops.
+		{ { 30524, 30525, 50255, 0, 0 }, { 10, 10, 100, 0, 0 }, 50000000LL },
 	};
 
 	// The eggs: per kill, one in N (0 = never), from monsters of level 10 or
