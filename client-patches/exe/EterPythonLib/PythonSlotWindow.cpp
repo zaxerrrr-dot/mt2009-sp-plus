@@ -606,6 +606,24 @@ void CSlotWindow::DisableCoverButton(DWORD dwIndex)
 	pSlot->pCoverButton->Disable();
 }
 
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2: wndMgr.DeleteCoverButton - the fish puzzle's laid pieces are cover buttons, gone with a new board. The
+// "always render" mark goes with it (the render would ask the deleted button).
+void CSlotWindow::DeleteCoverButton(DWORD dwIndex)
+{
+	TSlot * pSlot;
+	if (!GetSlotPointer(dwIndex, &pSlot))
+		return;
+
+	REMOVE_BIT(pSlot->dwState, SLOT_STATE_ALWAYS_RENDER_COVER);
+	if (!pSlot->pCoverButton)
+		return;
+
+	CWindowManager::Instance().DestroyWindow(pSlot->pCoverButton);
+	pSlot->pCoverButton = NULL;
+}
+#endif
+
 void CSlotWindow::SetAlwaysRenderCoverButton(DWORD dwIndex, bool bAlwaysRender)
 {
 	TSlot * pSlot;
@@ -1469,7 +1487,7 @@ void CSlotWindow::OnRender()
 
 		if (!rSlot.isItem)
 		{
-			if (IS_SET(rSlot.dwState, SLOT_STATE_ALWAYS_RENDER_COVER))
+			if (IS_SET(rSlot.dwState, SLOT_STATE_ALWAYS_RENDER_COVER) && rSlot.pCoverButton)	// MT2009_PLUS_FISH_PUZZLE_V2: no button, no render
 			{
 				rSlot.pCoverButton->Show();
 				rSlot.pCoverButton->SetPosition(rSlot.ixPosition, rSlot.iyPosition);

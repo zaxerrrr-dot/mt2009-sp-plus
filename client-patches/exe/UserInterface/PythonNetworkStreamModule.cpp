@@ -1644,6 +1644,33 @@ PyObject* netRegisterErrorLog(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2: net.SendUseFishBox(window, cell), net.SendAddFishBox(cell) - the package's names
+PyObject* netSendFishBoxUse(PyObject* poSelf, PyObject* poArgs)
+{
+	int iWindow;
+	if (!PyTuple_GetInteger(poArgs, 0, &iWindow))
+		return Py_BuildException();
+
+	int iCell;
+	if (!PyTuple_GetInteger(poArgs, 1, &iCell))
+		return Py_BuildException();
+
+	CPythonNetworkStream::Instance().SendFishBoxUse((BYTE)iWindow, (WORD)iCell);
+	return Py_BuildNone();
+}
+
+PyObject* netSendFishShapeAdd(PyObject* poSelf, PyObject* poArgs)
+{
+	int iShapePos;
+	if (!PyTuple_GetInteger(poArgs, 0, &iShapePos))
+		return Py_BuildException();
+
+	CPythonNetworkStream::Instance().SendFishShapeAdd((BYTE)iShapePos);
+	return Py_BuildNone();
+}
+#endif
+
 PyObject* netSendMessengerBlockPacket(PyObject* poSelf, PyObject* poArgs)
 {
 	char* szName;
@@ -1994,6 +2021,10 @@ void initnet()
 
 		// Log
 		{ "RegisterErrorLog",						netRegisterErrorLog,						METH_VARARGS },
+#ifdef ENABLE_FISH_EVENT
+		{ "SendUseFishBox",							netSendFishBoxUse,							METH_VARARGS },	// MT2009_PLUS_FISH_PUZZLE_V2
+		{ "SendAddFishBox",							netSendFishShapeAdd,						METH_VARARGS },
+#endif
 
 #ifdef ENABLE_CHEQUE_SYSTEM
 		{ "SendExchangeChequeAddPacket",			netSendExchangeChequeAddPacket,				METH_VARARGS },

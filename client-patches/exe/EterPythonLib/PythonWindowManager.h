@@ -116,6 +116,11 @@ namespace UI
 			void		AttachIcon(DWORD dwType, DWORD dwIndex, DWORD dwSlotNumber, BYTE byWidth, BYTE byHeight);
 			void		DeattachIcon();
 			void		SetAttachingFlag(BOOL bFlag);
+#ifdef ENABLE_FISH_EVENT
+			// MT2009_PLUS_FISH_PUZZLE_V2: wndMgr.SetDisableDeattach - the fish piece stays on the mouse until laid or thrown away
+			void		SetDisableDeattach(bool bFlag) { m_bIsDisableDettach = bFlag; }
+			bool		IsDisableDeattach() { return m_bIsDisableDettach; }
+#endif
 			// Attaching Icon
 
 			void		OnceIgnoreMouseLeftButtonUpEvent();
@@ -190,6 +195,9 @@ namespace UI
 			DWORD					m_dwAttachingSlotNumber;
 			BYTE					m_byAttachingIconWidth;
 			BYTE					m_byAttachingIconHeight;
+#ifdef ENABLE_FISH_EVENT
+			bool					m_bIsDisableDettach;	// MT2009_PLUS_FISH_PUZZLE_V2
+#endif
 			// Attaching Icon
 
 			CWindow	*				m_pActiveWindow;

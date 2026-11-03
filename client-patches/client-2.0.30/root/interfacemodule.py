@@ -5622,6 +5622,7 @@ class Interface(object):
 
 	def ShowDefaultWindows(self):
 		__import__("uiingameevent").SetButtonHidden(False) # MT2009_PLUS_EVENT_MANAGER_V1
+		__import__("uifishpuzzle").SetBannerHidden(False) # MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle's banner
 		self.wndTaskBar.Show()
 		self.wndMiniMap.Show()
 		self.wndMiniMap.ShowMiniMap()
@@ -5657,6 +5658,7 @@ class Interface(object):
 
 	def HideAllWindows(self):
 		__import__("uiingameevent").SetButtonHidden(True) # MT2009_PLUS_EVENT_MANAGER_V1
+		__import__("uifishpuzzle").SetBannerHidden(True) # MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle's banner
 		if self.wndGarbageBin:
 			self.wndGarbageBin.Close()
 		if self.wndTaskBar:

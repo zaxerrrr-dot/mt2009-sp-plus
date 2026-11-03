@@ -1287,6 +1287,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvSwitchbotPacket();
 				break;
 #endif
+#ifdef ENABLE_FISH_EVENT
+			case HEADER_GC_FISH_EVENT_INFO: // MT2009_PLUS_FISH_PUZZLE_V2
+				ret = RecvFishEventInfo();
+				break;
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();

@@ -143,6 +143,9 @@ namespace UI
 
 			void EnableCoverButton(DWORD dwIndex);
 			void DisableCoverButton(DWORD dwIndex);
+#ifdef ENABLE_FISH_EVENT
+			void DeleteCoverButton(DWORD dwIndex);	// MT2009_PLUS_FISH_PUZZLE_V2
+#endif
 			void SetAlwaysRenderCoverButton(DWORD dwIndex, bool bAlwaysRender = false);
 
 			void ShowSlotBaseImage(DWORD dwIndex);

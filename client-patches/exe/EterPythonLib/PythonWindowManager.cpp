@@ -29,6 +29,9 @@ namespace UI
 		m_pRightCaptureWindow(NULL),
 		m_pLockWindow(NULL),
 		m_bAttachingFlag(FALSE),
+#ifdef ENABLE_FISH_EVENT
+		m_bIsDisableDettach(false),	// MT2009_PLUS_FISH_PUZZLE_V2
+#endif
 		m_dwAttachingType(0),
 		m_dwAttachingIndex(0),
 		m_dwAttachingSlotNumber(0),
@@ -552,6 +555,10 @@ namespace UI
 
 	void CWindowManager::DeattachIcon()
 	{
+#ifdef ENABLE_FISH_EVENT
+		if (IsDisableDeattach())	// MT2009_PLUS_FISH_PUZZLE_V2
+			return;
+#endif
 		SetAttachingFlag(FALSE);
 		if (m_poMouseHandler)
 			PyCallClassMemberFunc(m_poMouseHandler, "DeattachObject", BuildEmptyTuple());

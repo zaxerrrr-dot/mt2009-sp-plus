@@ -2365,6 +2365,57 @@ PyObject * wndButtonIsDown(PyObject * poSelf, PyObject * poArgs)
 	return Py_BuildValue("i", ((UI::CButton*)pWindow)->IsPressed());
 }
 
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle's wndMgr functions (the package's names; a wrong window is ignored, not a crash).
+// wndMgr.ResetFrame / SetAniImgScale, which its python uses too, are MT2009_PLUS_MINIGAMES_V1's (ENABLE_OWSAP_WNDMGR_EX).
+PyObject * wndMgrSetPickedAreaRender(PyObject * poSelf, PyObject * poArgs)
+{
+	UI::CWindow * pWin;
+	if (!PyTuple_GetWindow(poArgs, 0, &pWin))
+		return Py_BuildException();
+
+	int iFlag;
+	if (!PyTuple_GetInteger(poArgs, 1, &iFlag))
+		return Py_BuildException();
+
+	if (!pWin->IsType(UI::CGridSlotWindow::Type()))
+	{
+		TraceError("wndMgr.SetPickedAreaRender : not a grid window");
+		return Py_BuildNone();
+	}
+
+	((UI::CGridSlotWindow *)pWin)->SetPickedAreaRender(iFlag ? true : false);
+	return Py_BuildNone();
+}
+
+PyObject * wndMgrDeleteCoverButton(PyObject * poSelf, PyObject * poArgs)
+{
+	UI::CWindow * pWindow;
+	if (!PyTuple_GetWindow(poArgs, 0, &pWindow))
+		return Py_BuildException();
+
+	int iSlotIndex;
+	if (!PyTuple_GetInteger(poArgs, 1, &iSlotIndex))
+		return Py_BuildException();
+
+	if (!pWindow->IsType(UI::CSlotWindow::Type()))
+		return Py_BuildNone();
+
+	((UI::CSlotWindow *)pWindow)->DeleteCoverButton(iSlotIndex);
+	return Py_BuildNone();
+}
+
+PyObject * wndMgrSetDisableDeattach(PyObject * poSelf, PyObject * poArgs)
+{
+	int iFlag;
+	if (!PyTuple_GetInteger(poArgs, 0, &iFlag))
+		return Py_BuildException();
+
+	UI::CWindowManager::Instance().SetDisableDeattach(iFlag ? true : false);
+	return Py_BuildNone();
+}
+#endif
+
 extern BOOL g_bOutlineBoxEnable;
 extern BOOL g_bShowOverInWindowName;
 
@@ -3475,6 +3526,12 @@ void initwndMgr()
 		{ "Down",						wndButtonDown,						METH_VARARGS },
 		{ "SetUp",						wndButtonSetUp,						METH_VARARGS },
 		{ "IsDown",						wndButtonIsDown,					METH_VARARGS },
+#ifdef ENABLE_FISH_EVENT
+		// MT2009_PLUS_FISH_PUZZLE_V2
+		{ "SetPickedAreaRender",		wndMgrSetPickedAreaRender,			METH_VARARGS },
+		{ "DeleteCoverButton",			wndMgrDeleteCoverButton,			METH_VARARGS },
+		{ "SetDisableDeattach",			wndMgrSetDisableDeattach,			METH_VARARGS },
+#endif
 
 		// DragButton
 		{ "SetRestrictMovementArea",	wndButtonSetRestrictMovementArea,	METH_VARARGS },

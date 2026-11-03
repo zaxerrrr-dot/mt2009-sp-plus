@@ -151,6 +151,9 @@ enum
 #endif
 #ifdef ENABLE_SWITCHBOT
 	HEADER_CG_SWITCHBOT							= 170,	// MT2009_PLUS_SWITCHBOT_V1 (cg header)
+#ifdef ENABLE_FISH_EVENT
+	HEADER_CG_FISH_EVENT_SEND					= 219,	// MT2009_PLUS_FISH_PUZZLE_V2 (cg header): the fish puzzle (the package's number)
+#endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
@@ -368,6 +371,9 @@ enum
 #endif
 #ifdef ENABLE_SWITCHBOT
 	HEADER_GC_SWITCHBOT							= 171,	// MT2009_PLUS_SWITCHBOT_V1 (gc header)
+#ifdef ENABLE_FISH_EVENT
+	HEADER_GC_FISH_EVENT_INFO					= 223,	// MT2009_PLUS_FISH_PUZZLE_V2 (gc header): the fish puzzle (the package's number)
+#endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_GC_MINI_GAME_CATCH_KING				= 238,
@@ -3946,7 +3952,37 @@ typedef struct command_npc_location_helper_gc
 } TPacketGCNPCLocationHelper;
 #endif
 
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2 (packets): the fish puzzle - byte for byte the server's (server-patches/fishpuzzle, fish_puzzle.cpp).
+// CG 219: this head, then BOX_USE: BYTE window, WORD cell | SHAPE_ADD: BYTE cell, then the sequence byte.
+enum
+{
+	FISH_EVENT_SUBHEADER_BOX_USE,
+	FISH_EVENT_SUBHEADER_SHAPE_ADD,
+	FISH_EVENT_SUBHEADER_GC_REWARD,
+	FISH_EVENT_SUBHEADER_GC_ENABLE,
+};
+
+typedef struct SPacketCGFishEvent
+{
+	BYTE	bHeader;
+	BYTE	bSubheader;
+} TPacketCGFishEvent;
+
+typedef struct SPacketGCFishEventInfo
+{
+	BYTE	bHeader;
+	BYTE	bSubheader;
+	DWORD	dwFirstArg;
+	DWORD	dwSecondArg;
+} TPacketGCFishEventInfo;
+#endif
+
 #pragma pack(pop)
+
+#ifdef ENABLE_FISH_EVENT
+static_assert(sizeof(TPacketCGFishEvent) == 2 && sizeof(TPacketGCFishEventInfo) == 10, "fish event packets (server packet.h)");
+#endif
 
 #ifdef ENABLE_NPC_LOCATION_HELPER
 static_assert(sizeof(TPacketCGNPCLocationHelper) == 18, "CG NPC location helper must be 18 bytes (server packet.h)");

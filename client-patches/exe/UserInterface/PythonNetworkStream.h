@@ -722,6 +722,14 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendNPCLocationHelperPacket(BYTE bSubHeader, int iMapIndex, DWORD dwVnum, int iX, int iY);
 	protected:
 #endif
+#ifdef ENABLE_FISH_EVENT
+		// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle (PythonNetworkStreamPhaseGameItem.cpp)
+		bool RecvFishEventInfo();
+	public:
+		bool SendFishBoxUse(BYTE bWindow, WORD wCell);
+		bool SendFishShapeAdd(BYTE bPos);
+	protected:
+#endif
 #ifdef ENABLE_SWITCHBOT
 		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
 		bool RecvSwitchbotPacket();
