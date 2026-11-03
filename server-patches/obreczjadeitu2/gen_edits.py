@@ -10,6 +10,7 @@ import sys
 M = 'MT2009_PLUS_JADE_BRACELET_V2'
 J = 'MT2009_PLUS_JADE_JEWELLERY_V1'
 V1 = 'MT2009_PLUS_JADE_BRACELET_V1'
+B = 'MT2009_PLUS_JADE_BASE_V1'
 
 EDITS = [
     # V2: two lines (Precyzja, the Will of the jade) with the wiki's ranges in place of V1's one Will line
@@ -66,6 +67,19 @@ EDITS = [
          new='\t\t// ' + J + ' (jewel): and into their Kolia / Klipsy Jadeitu\n'
              '\t\t{ 50664, 14580, 16580, 17570 },\n\t\t{ 50661, 14590, 16590, 17580 },\n'
              '\t\t{ 50662, 14600, 16600, 17590 },\n\t\t{ 50663, 14610, 16610, 17600 },\n'),
+    # MT2009_PLUS_JADE_BASE_V1 (the owner, 3 Nov - Yohara 3.0.7: a Kolia Jadeitu Nocy+9 with five bonuses "already has
+    # the 6th/7th bonus"): the two lines are the piece's base attribute now (its yextra, playerbot_yohara_gear.cpp), the
+    # 6th and 7th slots the 6/7 system's (the pool's neck / ear / wrist columns, pl-wiki "6. i 7. bonus") - V1's guards
+    # against 71051 / 71052 / 72351 / Seon-Hae go; in their place an old piece's lines leave the slots first (else a
+    # change would roll them away and an addition would see two extra bonuses)
+] + [
+    dict(file='item_attribute.cpp', marker=B + ' (%s)' % tag,
+         old='\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // ' + V1 + ' (%s): its Will line\n\t\treturn false;\n' % tag,
+         new='\t{ // ' + B + ' (%s): the jade\'s base lines are no bonus any more - an old piece\'s leave its 6th/7th slots\n'
+             '\t\tvoid Mt2009JadeBaseMigrate(LPITEM item);\n'
+             '\t\tMt2009JadeBaseMigrate(this);\n'
+             '\t}\n' % tag)
+    for tag in ('change rare', 'change rare 2', 'add rare', 'add rare 2')
 ]
 
 

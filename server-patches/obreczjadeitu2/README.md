@@ -60,6 +60,32 @@ wiersz kolczyków Turmalinu 17570 – to Klipsy Jadeitu Mgły, takich kolczyków
 `root/constinfo.py`, `yoharagear.py`. Tworzenie u Mistrza Chi (quest `yohara_mapy4`) i skrzynie (od 15.10.2026 wiersze
 grup samych skrzyń wg arkusza właściciela – `tools/yohara_chestdrops`, `MT2009_PLUS_CHEST_DROPS_V1`).
 
+## Linie podstawowe jako atrybut podstawowy (`MT2009_PLUS_JADE_BASE_V1`, 3.11.2026)
+
+Błąd z serwera testowego 3.0.7 (właściciel): Kolia Jadeitu Nocy+9 z 5 bonusami – Seon-Hae, Małe Błogosławieństwo (72351)
+i Błogosławieństwo Przedmiotu (71052) mówiły, że przedmiot **już ma** 6. i 7. bonus. Przyczyna: Precyzja i Wola leżały
+w 6. i 7. komórce bonusu (np. `player.item` id 2000062662: `attrtype5/6` = 197 (14) i 185 (24)), więc
+`GetRareAttrCount()` liczył je jako dodatkowe bonusy, a strażniki V1 (`(add rare)`, `(change rare)`…) i tak odrzucały
+biżuterię z jadeitu. Wiki: „Biżuteria może mieć 2 podstawowe bonusy” (linie przedmiotu, u Owsapa `ApplyRandom`, nie
+atrybut), a strona „6. i 7. bonus” ma kolumny naszyjników, kolczyków i bransolet – tak jak Wola rękawic
+(`MT2009_PLUS_GLOVE_BASE_V1`) obie linie są teraz **atrybutem podstawowym** przedmiotu:
+
+- `player.item_yextra` (po id przedmiotu, jak rękawice): bity 8–15 Wola, 16–23 Precyzja (0 = brak, 80% ją ma), bit 24
+  „ustawione”. Klient dostaje to przez `YITEM` (`yoharagear.JadeBaseLines`), dymek rysuje je jak dotąd – białe linie
+  przedmiotu; 6. i 7. komórka to zwykłe 6/7 bonusy (pula `item_attr_rare`, kolumny neck / ear / wrist – bez Precyzji
+  i Woli, więc taka linia w 6./7. komórce to zawsze stara linia podstawowa).
+- Przeniesienie: przy wczytaniu przedmiotu (`OnAfterCreatedItem`, haczyk rękawic), a dla pewności także przed każdym
+  liczeniem 6/7 (`Mt2009JadeBaseMigrate`: edycje `MT2009_PLUS_JADE_BASE_V1 (add rare)`, `(add rare 2)`,
+  `(change rare)`, `(change rare 2)` w miejscu strażników V1 i `CheckItem` Seon-Hae). Stare linie wygrywają, 6/7 bonusy
+  za nimi przesuwają się w górę; brak Woli – losowana z zakresu poziomu.
+- Nowy przedmiot: losowanie jak dotąd, ale do yextra; ulepszenie przenosi obie wartości (`Carry`); punkty
+  (`Mt2009JadeBraceletSocketPoints`) dają linie podstawowe + jadeit w gniazdach (przedmiot jeszcze nieprzeniesiony –
+  linie z komórek, nigdy podwójnie); Seon-Hae trzyma i oddaje yextra (`Mt2009JadeBaseRestore`).
+- Boty: liczą linie podstawowe w ocenie ekwipunku (`SumPlayerBotItemLines`, ocena przedmiotu), a biżuteria z jadeitu
+  może iść do Seon-Hae i pod 71052 (`playerbot_shop_aids.h`). Panel pokazuje linie z `item_yextra`.
+- Talizmany Woli bez zmian (ich dwie linie to nadal 6./7. komórka) – Seon-Hae mówi przy nich „brak bonusu dla tego
+  przedmiotu” zamiast „ma już dwa”.
+
 ## Silnik
 
 `item_manager.cpp` `(new)`, `item_attribute.cpp` `(refine)`, `(types)`, `item.cpp` `(socket points)`, `(jewel)`,

@@ -7,7 +7,8 @@
 //     apply * 10000 + stone level * 1000 + stone kind * 100 + value;
 //   * Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu (17570-17609,
 //     MT2009_PLUS_JADE_JEWELLERY_V1): two random base lines (Precyzja, the Will of the jade) with the wiki's ranges of
-//     each kind, carried by a refine; the jade in the Diamond's sockets (up to 3) adds the wiki's per-socket values;
+//     each kind, carried by a refine - the item's base attribute (MT2009_PLUS_JADE_BASE_V1: its yextra, not the 6th / 7th
+//     bonus slots, which are the 6/7 system's); the jade in the Diamond's sockets (up to 3) adds the wiki's per-socket values;
 //   * Precyzja (POINT_HIT_PCT, 197) and the Sung Ma per cent bonuses (POINT_SUNGMA_PER_*, 193-196): the effective
 //     Sung Ma stat a map's requirement is checked against.
 // The engine's hooks declare what they call (the edits of the three patches); this header is for the overlay itself.
@@ -39,6 +40,15 @@ namespace yohara_gear
 // MT2009_PLUS_GLOVE_BASE_V1: a glove's Will as worn (its base attribute raised by its "Atrybuty podstawowe rekawic +x%"
 // lines) and its kind (POINT_SUNGMA_*); 0 for any other item.
 int Mt2009GloveBaseWill(LPITEM item, unsigned char& bWillType);
+
+// MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's base lines (its yextra, no bonus slot since 3.0.7): its Will kind
+// and value, its Precyzja (0: none); false for any other item or a piece whose lines are still in its bonus slots.
+bool Mt2009JadeBaseLines(LPITEM item, unsigned char& bWillType, int& iWill, int& iPrecision);
+// The old base lines of a piece of jade out of its 6th / 7th bonus slots (or a random base when it has none) - the 6/7
+// systems call it before they count the extra bonuses; nothing for any other item or a piece already done.
+void Mt2009JadeBaseMigrate(LPITEM item);
+// Seon-Hae's hold: the kept yextra's base back on the piece made again.
+void Mt2009JadeBaseRestore(LPITEM item, unsigned int dwYExtra);
 
 // MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 / MT2009_PLUS_BOT_YOHARA_G0_V1 (playerbot_yohara_g0.cpp): the account-bound items of the
 // bots' G0 package - bound (the engine's flag, server-patches/g0bind: no drop, trade, merchant or shop), marked with

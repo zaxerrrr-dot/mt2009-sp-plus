@@ -59,8 +59,10 @@
 #include "log.h"
 #include "constants.h"
 
-// MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli,
-// Obrecz Jadeitu, Rekawice Sung Ma) - AddRareAttribute(2) refuses them, so Seon-Hae must not take them.
+// MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli) - AddRareAttribute(2)
+// refuses them, so Seon-Hae must not take them. The gloves' Will (MT2009_PLUS_GLOVE_BASE_V1) and - MT2009_PLUS_JADE_BASE_V1,
+// 3.0.7 - the jade jewellery's two lines (Obrecz / Kolia / Klipsy Jadeitu) are their base attribute, not bonus slots:
+// those pieces take the 6th and 7th bonus as any other jewellery.
 bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/talizmanwoli)
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/obreczjadeitu)
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType);	// playerbot_yohara_gear.cpp
@@ -68,6 +70,9 @@ bool MlodziIsWeaponVnum(unsigned int vnum);	// MT2009_PLUS_MLODZI_BOHATEROWIE_V1
 // MT2009_PLUS_GLOVE_BASE_V1: a glove's Will is its base attribute (its yextra, by item id) - the remade glove gets the
 // kept one back (playerbot_yohara_gear.cpp)
 void Mt2009GloveRestore(LPITEM item, DWORD dwYExtra);
+// MT2009_PLUS_JADE_BASE_V1: the jade's old 6th/7th base lines out of the bonus slots, the kept base back (playerbot_yohara_gear.cpp)
+void Mt2009JadeBaseMigrate(LPITEM item);
+void Mt2009JadeBaseRestore(LPITEM item, DWORD dwYExtra);
 
 namespace mt2009_seonhae
 {
@@ -94,7 +99,7 @@ namespace mt2009_seonhae
 	const char* const F_SOCKET[ITEM_SOCKET_MAX_NUM] = { "seonhae.s0", "seonhae.s1", "seonhae.s2" };
 	const char* const F_ATTR[ITEM_ATTRIBUTE_MAX_NUM] = { "seonhae.a0", "seonhae.a1", "seonhae.a2", "seonhae.a3",
 		"seonhae.a4", "seonhae.a5", "seonhae.a6" };
-	const char* const F_YEXTRA = "seonhae.yx";	// MT2009_PLUS_GLOVE_BASE_V1: the item's yextra (a glove's Will)
+	const char* const F_YEXTRA = "seonhae.yx";	// MT2009_PLUS_GLOVE_BASE_V1: the item's yextra (a glove's Will; MT2009_PLUS_JADE_BASE_V1 the jade's lines)
 
 	enum
 	{
@@ -263,6 +268,9 @@ namespace mt2009_seonhae
 			return MSG_BAD_ITEM;
 		if (item->GetAttributeSetIndex() < 0)
 			return MSG_BAD_ITEM;
+		// MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery whose base lines are still in its 6th/7th slots (a copy of
+		// an old one) moves them first - they are no extra bonuses (the owner, 3 Nov: Kolia Jadeitu Nocy+9 "already has")
+		Mt2009JadeBaseMigrate(item);
 		if (item->IsEquipped() || item->IsExchanging() || item->isLocked() || item->IsChangingAttr() || item->GetCount() != 1)
 			return MSG_ITEM_LOCKED;
 		if (IS_SET(item->GetFlag(), ITEM_FLAG_UNIQUE))
@@ -275,18 +283,19 @@ namespace mt2009_seonhae
 		}
 		if (item->GetAttributeCount() < ITEM_ATTRIBUTE_NORM_NUM)
 			return MSG_NEED_FIVE;
-		if (item->GetRareAttrCount() >= ITEM_ATTRIBUTE_RARE_NUM)
-			return MSG_HAS_TWO;
-		if (!RarePoolHasRoom(item))
-			return MSG_NO_POOL;
 		{	// MT2009_PLUS_SEONHAE_RESERVED_V1: the shards would be spent and no bonus could ever be put on it
 			BYTE bReserved;
 			// MT2009_PLUS_SEONHAE_GLOVE_V1 / MT2009_PLUS_GLOVE_BASE_V1: a glove is taken - its Will is its base
 			// attribute, its 6th and then its 7th bonus come from the pool's glove column (server-patches/bonusy67;
-			// AddRareAttribute fills the first free slot, as 71051 does).
-			if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved))
+			// AddRareAttribute fills the first free slot, as 71051 does). MT2009_PLUS_JADE_BASE_V1: before the count of
+			// the extra bonuses - a Talizman Woli's two own lines are none ("no bonus for this item", not "it has two").
+			if (Mt2009WillTalismanType(item->GetVnum(), bReserved))
 				return MSG_NO_POOL;
 		}
+		if (item->GetRareAttrCount() >= ITEM_ATTRIBUTE_RARE_NUM)
+			return MSG_HAS_TWO;
+		if (!RarePoolHasRoom(item))
+			return MSG_NO_POOL;
 		return 0;
 	}
 
@@ -474,6 +483,7 @@ namespace mt2009_seonhae
 		item->SetSockets(sockets);
 		item->SetAttributes(attrs);
 		Mt2009GloveRestore(item, (DWORD)ch->GetQuestFlag(F_YEXTRA)); // MT2009_PLUS_GLOVE_BASE_V1 (collect): a glove's Will back
+		Mt2009JadeBaseRestore(item, (DWORD)ch->GetQuestFlag(F_YEXTRA)); // MT2009_PLUS_JADE_BASE_V1 (collect): the jade's base back
 
 		const int cell = ch->GetEmptyInventoryEx(item);
 		if (cell < 0)

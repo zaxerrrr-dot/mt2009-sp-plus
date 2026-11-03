@@ -40,5 +40,29 @@
   "marker": "MT2009_PLUS_JADE_JEWELLERY_V1 (jewel)",
   "old": "\t\t{ 50664, 14580, 0, 0 },\n\t\t{ 50661, 14590, 0, 0 },\n\t\t{ 50662, 14600, 0, 0 },\n\t\t{ 50663, 14610, 0, 0 },\n",
   "new": "\t\t// MT2009_PLUS_JADE_JEWELLERY_V1 (jewel): and into their Kolia / Klipsy Jadeitu\n\t\t{ 50664, 14580, 16580, 17570 },\n\t\t{ 50661, 14590, 16590, 17580 },\n\t\t{ 50662, 14600, 16600, 17590 },\n\t\t{ 50663, 14610, 16610, 17600 },\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BASE_V1 (change rare)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare): its Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n\t\tvoid Mt2009JadeBaseMigrate(LPITEM item);\n\t\tMt2009JadeBaseMigrate(this);\n\t}\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BASE_V1 (change rare 2)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare 2): its Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n\t\tvoid Mt2009JadeBaseMigrate(LPITEM item);\n\t\tMt2009JadeBaseMigrate(this);\n\t}\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BASE_V1 (add rare)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare): its Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n\t\tvoid Mt2009JadeBaseMigrate(LPITEM item);\n\t\tMt2009JadeBaseMigrate(this);\n\t}\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BASE_V1 (add rare 2)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare 2): its Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n\t\tvoid Mt2009JadeBaseMigrate(LPITEM item);\n\t\tMt2009JadeBaseMigrate(this);\n\t}\n"
  }
 ]

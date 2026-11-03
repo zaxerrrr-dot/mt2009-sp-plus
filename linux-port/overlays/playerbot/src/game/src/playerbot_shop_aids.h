@@ -285,8 +285,10 @@ namespace
 		if (item->GetAttributeCount() < ITEM_ATTRIBUTE_NORM_NUM || item->GetRareAttrCount() >= ITEM_ATTRIBUTE_RARE_NUM ||
 				!mt2009_seonhae::RarePoolHasRoom(item))
 			return false;
+		// MT2009_PLUS_JADE_BASE_V1: the jade jewellery's two lines are its base attribute (no bonus slot) - it takes the
+		// 6th and 7th bonus as any other jewellery; a Talizman Woli's slots stay its own lines
 		BYTE bReserved;
-		if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved))
+		if (Mt2009WillTalismanType(item->GetVnum(), bReserved))
 			return false;
 		return true;
 	}
@@ -995,8 +997,8 @@ namespace
 	}
 
 	// Whether CItem::ChangeRareAttribute2 would take the piece at all (char_item.cpp case 71052, item_attribute.cpp):
-	// lines to change, an attribute set, not a costume; never a young heroes' weapon, a Will talisman, a Jade piece -
-	// and the glove has its own pass (PLAYERBOT_GLOVE67).
+	// lines to change, an attribute set, not a costume; never a young heroes' weapon, a Will talisman - and the glove
+	// has its own pass (PLAYERBOT_GLOVE67). MT2009_PLUS_JADE_BASE_V1: a Jade piece's 6th/7th are real bonuses now.
 	bool IsPlayerBotRare67Piece(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item || item->GetRareAttrCount() == 0 || item->GetAttributeSetIndex() < 0 || item->GetType() == ITEM_COSTUME ||
@@ -1004,8 +1006,7 @@ namespace
 				MlodziIsWeaponVnum(item->GetVnum()))
 			return false;
 		BYTE bReserved = 0;
-		return !Mt2009WillTalismanType(item->GetVnum(), bReserved) && !Mt2009JadeBraceletType(item->GetVnum(), bReserved) &&
-				!Mt2009GloveType(item->GetVnum(), bReserved);
+		return !Mt2009WillTalismanType(item->GetVnum(), bReserved) && !Mt2009GloveType(item->GetVnum(), bReserved);
 	}
 
 	// The worn piece the pass would roll again now (the slots' order), NULL none: done, gave up, nothing to roll.

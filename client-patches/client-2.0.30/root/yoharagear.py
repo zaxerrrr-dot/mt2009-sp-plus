@@ -4,7 +4,8 @@
 #     apply * 10000 + stone level * 1000 + stone kind * 100 + value (apply = POINT_SUNGMA_* 184-187); the glove's own
 #     Will is its base attribute (MT2009_PLUS_GLOVE_BASE_V1, GloveBaseLine);
 #   * Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu (17570-17609,
-#     MT2009_PLUS_JADE_JEWELLERY_V1): what the jade in the k-th socket adds to their two lines (pl-wiki, each kind).
+#     MT2009_PLUS_JADE_JEWELLERY_V1): what the jade in the k-th socket adds to their two lines (pl-wiki, each kind); the
+#     two lines are their base attribute (MT2009_PLUS_JADE_BASE_V1, JadeBaseLines), the 6th / 7th the 6/7 system's.
 import localeinfo_point
 
 SUNGMA_SOCKET_MIN = 1000000
@@ -94,12 +95,75 @@ def GloveBaseLine(vnum, extra, attrSlot):
 	return (localeinfo_point.GetApplyString(point, value) or "", True)
 
 
+# MT2009_PLUS_JADE_BASE_V1 (3.0.7, the owner: a Kolia Jadeitu Nocy+9 with five bonuses "already had" the 6th/7th): the
+# two lines of a piece of jade jewellery (Precyzja, the Will of the jade) are its base attribute - the server keeps them
+# in the item's yextra (YITEM, ysets.py): bits 8-15 the Will, 16-23 Precyzja (0: none), bit 24 set once they are there;
+# the 6th and 7th bonus slots are the 6/7 system's (Seon-Hae, 71051, 71052 / 72351). A piece the server has not moved
+# yet (or the client has not heard: a trade, a shop, Seon-Hae's window) - the old lines of its bonus slots, else the
+# wiki's ranges of its level.
+JADE_BASE_KNOWN = 1 << 24
+JADE_PRECISION_RANGE = ((1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 10), (9, 11), (10, 14))
+JADE_WILL_RANGE = ((1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14), (15, 17), (18, 20), (21, 24))
+JADE_EAR_WILL_RANGE = ((1, 2), (2, 4), (3, 6), (5, 8), (7, 10), (9, 12), (13, 14), (15, 17), (18, 20), (21, 24))
+
+
+def JadeLegacySlots(vnum, attrSlot):
+	"""The 6th/7th slots holding a piece's old base line (Precyzja or its Will - the 6/7 pool never gives them)."""
+	data = JADE_ITEMS.get(vnum - vnum % 10)
+	if not data or not attrSlot:
+		return []
+	return [i for i in xrange(5, min(7, len(attrSlot))) if attrSlot[i][0] in (POINT_HIT_PCT, data[0])]
+
+
+def JadeBase(vnum, extra, attrSlot):
+	"""(Precyzja, Will, known) of a piece of jade jewellery: its base lines (0 = none); known False - the ranges."""
+	data = JADE_ITEMS.get(vnum - vnum % 10)
+	if not data:
+		return (0, 0, False)
+	legacy = JadeLegacySlots(vnum, attrSlot)
+	if legacy:
+		precision, will = 0, 0
+		for i in legacy:
+			if attrSlot[i][0] == POINT_HIT_PCT:
+				precision = attrSlot[i][1]
+			else:
+				will = attrSlot[i][1]
+		return (precision, will, True)
+	if extra & JADE_BASE_KNOWN:
+		return ((extra >> 16) & 0xFF, (extra >> 8) & 0xFF, True)
+	return (0, 0, False)
+
+
+def JadeBaseLines(vnum, extra, attrSlot):
+	"""[(text, known)] - the base lines of a piece of jade jewellery to draw as its own lines."""
+	data = JADE_ITEMS.get(vnum - vnum % 10)
+	if not data:
+		return []
+	(will, jewel, kind) = data
+	level = vnum % 10
+	(precision, willValue, known) = JadeBase(vnum, extra, attrSlot)
+	if known:
+		lines = []
+		if precision > 0:
+			lines.append((localeinfo_point.GetApplyString(POINT_HIT_PCT, precision) or "", True))
+		if willValue > 0:
+			lines.append((localeinfo_point.GetApplyString(will, willValue) or "", True))
+		return [l for l in lines if l[0]]
+	lines = []
+	for (point, (low, high)) in ((POINT_HIT_PCT, JADE_PRECISION_RANGE[level]),
+			(will, (JADE_EAR_WILL_RANGE if kind == "ear" else JADE_WILL_RANGE)[level])):
+		text = localeinfo_point.GetApplyString(point, low) or ""
+		if text:
+			lines.append((text + " - %d" % high, False))
+	return lines
+
+
 def JadeJewel(vnum):
 	data = JADE_ITEMS.get(vnum - vnum % 10)
 	return data[1] if data else 0
 
 
-def JadeSocketLines(vnum, socket, attrSlot):
+def JadeSocketLines(vnum, socket, attrSlot, extra=0):
 	"""The two lines (Precyzja, Wola) the jade in socket 0..2 adds - only to a line the item has."""
 	data = JADE_ITEMS.get(vnum - vnum % 10)
 	level = vnum % 10
@@ -107,13 +171,10 @@ def JadeSocketLines(vnum, socket, attrSlot):
 		return ("", "")
 	(will, jewel, kind) = data
 	(socketPrecision, socketWill) = JADE_KIND_TABLES[kind]
-	hasPrecision, hasWill = False, False
-	if attrSlot:
-		for (attrType, attrValue) in attrSlot:
-			if attrType == POINT_HIT_PCT:
-				hasPrecision = True
-			elif attrType == will:
-				hasWill = True
+	# MT2009_PLUS_JADE_BASE_V1: the lines of its base (unknown: the Will always, Precyzja most likely)
+	(precision, willValue, known) = JadeBase(vnum, extra, attrSlot)
+	hasPrecision = precision > 0 or not known
+	hasWill = willValue > 0 or not known
 	first = localeinfo_point.GetApplyString(POINT_HIT_PCT, socketPrecision[socket][level]) if hasPrecision else ""
 	second = localeinfo_point.GetApplyString(will, socketWill[socket][level]) if hasWill else ""
 	if not first and not second:

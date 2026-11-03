@@ -1134,6 +1134,22 @@ class ItemToolTip(ToolTip):
 		except:
 			pass
 
+	# MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's Precyzja and Will - its base attribute (yoharagear.JadeBaseLines);
+	# the wiki's ranges of its level while the client has not heard them (the player's own piece: asked by "/yitem")
+	def __AppendJadeBaseInformation(self, itemVnum, attrSlot):
+		lines = yoharagear.JadeBaseLines(itemVnum, getattr(self, "ysetsExtra", 0), attrSlot)
+		unknown = False
+		for (text, known) in lines:
+			self.AppendTextLine(text, self.GetChangeTextLineColor(1) if known else self.CONDITION_COLOR)
+			unknown = unknown or not known
+		if unknown:
+			try:
+				ysets = __import__("ysets")
+				if ysets._lastOwn[0]:
+					ysets._AskServer()
+			except:
+				pass
+
 	def __SetItemTitle(self, itemVnum, metinSlot, attrSlot):
 		if self.__IsPolymorphItem(itemVnum):
 			self.__SetPolymorphItemTitle(metinSlot[0])
@@ -1355,19 +1371,24 @@ class ItemToolTip(ToolTip):
 			# (MT2009_PLUS_JADE_JEWELLERY_V1: a jade necklace's / earrings' too).
 			# MT2009_PLUS_GLOVE_BASE_V1 (the owner, 20 Oct): a glove's Will is its base attribute (the item's yextra, not a
 			# bonus slot) - drawn as its fixed line; its 6th and 7th bonus are the 6/7 system's, drawn as bonuses.
-			yoharaOwn = yoharagear.IsJadeJewellery(itemVnum)
-			if yoharaOwn:
-				self.__AppendAffectInformation(attrSlot)
-			else:
-				self.__AppendAffectInformation()
+			# MT2009_PLUS_JADE_BASE_V1 (3.0.7): the jade's two lines are its base attribute (the item's yextra, as the
+			# glove's Will) - drawn as its fixed lines; its 6th and 7th bonus are the 6/7 system's, drawn as bonuses. A
+			# piece the server has not moved yet keeps them in its 6th/7th slots - drawn as its lines, not as bonuses.
+			bonusSlot = attrSlot
+			self.__AppendAffectInformation()
 			if yoharagear.IsGlove(itemVnum):
 				self.__AppendGloveBaseInformation(itemVnum, attrSlot)
+			elif yoharagear.IsJadeJewellery(itemVnum):
+				self.__AppendJadeBaseInformation(itemVnum, attrSlot)
+				legacy = yoharagear.JadeLegacySlots(itemVnum, attrSlot)
+				if legacy:
+					bonusSlot = [((0, 0) if i in legacy else attrSlot[i]) for i in xrange(len(attrSlot))]
 			else:
 				self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			# MT2009_PLUS_SEONHAE_V1: armour and jewellery showed only the five
 			# bonuses - the 6th and 7th were never drawn.
-			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_RARE_START if yoharaOwn else player.ATTRIBUTE_SLOT_MAX_NUM)
-			self.__AppendSeonHaeHint(itemVnum, attrSlot)
+			self.__AppendAttributeInformation(bonusSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
+			self.__AppendSeonHaeHint(itemVnum, bonusSlot)
 
 			self.AppendWearableInformation()
 
@@ -2422,7 +2443,7 @@ class ItemToolTip(ToolTip):
 		jewel = yoharagear.JadeJewel(itemVnum)
 		for pos in xrange(end):
 			if pos < cur:
-				(line1, line2) = yoharagear.JadeSocketLines(itemVnum, pos, attrSlot)
+				(line1, line2) = yoharagear.JadeSocketLines(itemVnum, pos, attrSlot, getattr(self, "ysetsExtra", 0)) # MT2009_PLUS_JADE_BASE_V1
 				leftTime = metinSlot[2] if cur == pos + 1 else 0
 				self.__AppendMetinSlotInfo_AppendMetinSocketData(pos, jewel, line1, line2, "", leftTime)
 			else:
