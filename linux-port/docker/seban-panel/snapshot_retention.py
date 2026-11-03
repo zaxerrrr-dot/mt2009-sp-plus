@@ -460,7 +460,7 @@ def ensure_time_index(cur, table, column, say):
         cur.execute("SET SESSION lock_wait_timeout=DEFAULT")
 
 
-def oldest(cur, table, column, below=None, since=None):
+def oldest(cur, table, column, below=None, since=None, schema="player"):
     """MIN(column) (below `below`, from `since` on): one index seek."""
     where, params = [], []
     if since is not None:
@@ -470,25 +470,26 @@ def oldest(cur, table, column, below=None, since=None):
         where.append(f"`{column}` < %s")
         params.append(below)
     clause = (" WHERE " + " AND ".join(where)) if where else ""
-    cur.execute(f"SELECT MIN(`{column}`) FROM player.`{table}`{clause}", params)
+    cur.execute(f"SELECT MIN(`{column}`) FROM {schema}.`{table}`{clause}", params)
     row = cur.fetchone()
     return row[0] if row else None
 
 
-def delete_older(cur, table, column, cutoff, throttle):
+def delete_older(cur, table, column, cutoff, throttle, schema="player"):
     """DELETE ... WHERE column < cutoff, throttle.batch rows a statement,
-    walking forward from the oldest row (see "How it deletes")."""
+    walking forward from the oldest row (see "How it deletes"). `column`
+    must lead an index. log_maintenance's prune uses it too (schema log)."""
     total = 0
-    position = oldest(cur, table, column, below=cutoff)
+    position = oldest(cur, table, column, below=cutoff, schema=schema)
     while position is not None:
         limit = throttle.batch
         rows = throttle.execute(
-            cur, f"DELETE FROM player.`{table}` WHERE `{column}` >= %s AND `{column}` < %s LIMIT {limit}",
+            cur, f"DELETE FROM {schema}.`{table}` WHERE `{column}` >= %s AND `{column}` < %s LIMIT {limit}",
             (position, cutoff), limit)
         total += rows
         if rows < limit:
             break
-        position = oldest(cur, table, column, below=cutoff, since=position)
+        position = oldest(cur, table, column, below=cutoff, since=position, schema=schema)
     return total
 
 
