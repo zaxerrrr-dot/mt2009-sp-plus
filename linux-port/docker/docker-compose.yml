@@ -207,6 +207,17 @@ services:
     restart: unless-stopped
     stop_grace_period: 90s
     init: true
+    # MT2009_PLUS_EPHEMERAL_PORTS_V1 (the owner's list of 3 November 2026: "Rzadki blad przy starcie serwera: jeden z
+    # kanalow startuje bez map Yohary"; his own server's fix of 2 November): the cores' own outgoing connections (P2P,
+    # to the DB core) take their source ports from the ephemeral range, by default 32768-60999. A stack whose game
+    # ports sit in it (M2_GAME_PORT_BASE 38000 on his server: ch1-first's P2P connection to ch1-game2 got source port
+    # 38004 before ch2-game3, CH2's Yohara core at BASE+4, bound it - "socket_bind: Address already in use", CH2 ran
+    # without its Yohara maps) lost a core at random. The range starts above every listening port of the container
+    # (game BASE..BASE+40, P2P 14xxx, auth 11000, the DB core); 49152-60999 (the IANA dynamic range) keeps clear of a
+    # base up to 49100 (38000 and 43000 on the owner's VPSes). A stack with its base higher sets M2_EPHEMERAL_PORT_RANGE
+    # in .env ("<low> <high>", above BASE+40).
+    sysctls:
+      net.ipv4.ip_local_port_range: "${M2_EPHEMERAL_PORT_RANGE:-49152 60999}"
 
     depends_on:
       mariadb:
