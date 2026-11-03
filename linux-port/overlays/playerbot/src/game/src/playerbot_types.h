@@ -10522,6 +10522,13 @@ namespace
 	void NotePlayerBotSmCouponsCashed(LPCHARACTER ch, long long coins, DWORD dwNow);
 	void NotePlayerBotSmCouponPurchase(LPCHARACTER ch, const char* reason);
 	void WritePlayerBotSmCouponCensus(DWORD dwNow);
+#define MT2009_PLUS_BOT_SM_COUPON_PRICE_V1 1
+	// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1 (the owner, 3 November 2026): every Kupon SM on a bot's counter asks its coins
+	// at one coin rate (GetPlayerBotSmCouponYangPerCoin - the sheet's Kupon SM (100), the inflation clamped) within a
+	// band the buyers of playerbot_sm_coupons.h pay; a bot's own line out of the band is put right at its next counter
+	// service. Defined in playerbot_town.h, before the asking price.
+	long long GetPlayerBotSmCouponYangPerCoin();
+	bool IsPlayerBotSmCouponPriceOutOfBand(DWORD vnum, long long count, long long asked);
 #define MT2009_PLUS_BOT_SEONHAE_V2 1
 	// MT2009_PLUS_BOT_SEONHAE_V2 (the owner, 28 October 2026; playerbot_shop_aids.h): 71052 on every worn piece with
 	// 6th/7th lines, the Blacksmith's scrolls (Kamien Kowala 71025 / Magiczny Metal 71026 + a Blessing Scroll at Kowal

@@ -3886,6 +3886,12 @@ namespace
 		// billion to +200, GetPlayerBotRefineInvestment): no floor under it.
 		if (item && IsPlayerBotFixedPriceTalismanVnum(item->GetVnum()))
 			return 0;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: nor a Kupon SM - its band is its own (GetPlayerBotSmCouponListPrice); the
+		// market floor of its inflated sheet number held every coupon line at hundreds of millions.
+		if (item && IsPlayerBotSmCouponVnum(item->GetVnum()))
+			return 0;
+#endif
 		const DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
 				GetPlayerBotMarketFloor(item));
 		return floor == 0 ? 0 : HumanizePlayerBotPrice(floor, true);
@@ -4033,10 +4039,142 @@ namespace
 		return (DWORD)std::min<unsigned long long>(cap, 0xFFFFFFFFULL);
 	}
 
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+	// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1 (the owner, 3 November 2026: 55 Kupon SM (50) on the Yohara test world's bots'
+	// counters, ~7 at 3.5-4.8 M, the rest 26 M to 1.26 bn). Every Kupon SM was a sheet row (80014-80018, 80031, 80032 in
+	// PLAYERBOT_EXTRA_MATERIAL_PRICES) priced like a material: ScalePlayerBotIwakuraPrice - the yang-rate curve AND the
+	// world-yang inflation factor - then the market floor of that number, the keeper's spread, the rare goods' premium and
+	// the step limiter. The test world's yang (368 bn, most of it the GM characters') put the inflation at its cap, x1001
+	// (log.playerbot_listing: "1=100:100:10010000" then "19=1001000000" - the 50's 1 000 000 times 1001), at x26.9 and
+	// x434 on the days before (the 26-33 M and 390-510 M lines), and the market floor (a share of the same inflated
+	// number) and the reprice kept every line there. A coupon is no material - it is Smocze Monety - so every coupon line
+	// now asks one rule:
+	//   the coins (value0 x count) x the coin's yang rate (GetPlayerBotSmCouponYangPerCoin: the sheet's Kupon SM (100) a
+	//   coin, on the yang-rate curve, times the world-yang inflation only up to PLAYERBOT_SM_COUPON_INFLATION_MAX_PERCENT)
+	//   x the keeper's percent: its own stable draw of PLAYERBOT_SM_COUPON_SPREAD_MIN..MAX, less a quarter of the line's
+	//   unsold markdown and the coupons' glut on the counters, never out of PLAYERBOT_SM_COUPON_LIST_MIN..MAX_PERCENT
+	//   (the max under the buyers' 110%, playerbot_sm_coupons.h, so a bot's line is a bot's buy) -
+	// with no floor, markup, rare premium, sale memory, step limiter or slip. A bot's own coupon line out of
+	// PLAYERBOT_SM_COUPON_BAND_MIN..MAX_PERCENT of the rule's 100% is put right first thing at its keeper's next counter
+	// service (BotOfflineUnderFloorLine, playerbot_offline_shop.h), counted in the PLAYERBOT_SMKUPON census. A person's
+	// line is never touched.
+	const int PLAYERBOT_SM_COUPON_INFLATION_MAX_PERCENT = 350;
+	const int PLAYERBOT_SM_COUPON_SPREAD_MIN = 95;
+	const int PLAYERBOT_SM_COUPON_SPREAD_MAX = 105;
+	const int PLAYERBOT_SM_COUPON_LIST_MIN_PERCENT = 80;
+	const int PLAYERBOT_SM_COUPON_LIST_MAX_PERCENT = 105;
+	const int PLAYERBOT_SM_COUPON_BAND_MIN_PERCENT = 80;
+	const int PLAYERBOT_SM_COUPON_BAND_MAX_PERCENT = 120;
+	// The glut: a percent off for every PLAYERBOT_SM_COUPON_GLUT_STEP_COINS coins of coupons on the bots' counters of
+	// this core over PLAYERBOT_SM_COUPON_GLUT_FREE_COINS, to PLAYERBOT_SM_COUPON_GLUT_MAX_PERCENT.
+	const long long PLAYERBOT_SM_COUPON_GLUT_FREE_COINS = 2000;
+	const long long PLAYERBOT_SM_COUPON_GLUT_STEP_COINS = 500;
+	const int PLAYERBOT_SM_COUPON_GLUT_MAX_PERCENT = 10;
+	const DWORD PLAYERBOT_SM_COUPON_100_SHEET_DEFAULT = 2000000;
+	unsigned int s_uPlayerBotSmCouponRepriced = 0;	// out-of-band lines put right (the census)
+
+	long long GetPlayerBotSmCouponCoinsOf(DWORD vnum)
+	{
+		if (!IsPlayerBotSmCouponVnum(vnum))
+			return 0;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		return proto ? std::max<long long>(0, proto->alValues[0]) : 0;
+	}
+
+	// The yang a Smocze Moneta is worth on a counter: the sheet's Kupon SM (100) over its hundred coins (20 000), on the
+	// yang-rate curve, times the world-yang inflation clamped to 1 .. PLAYERBOT_SM_COUPON_INFLATION_MAX_PERCENT.
+	long long GetPlayerBotSmCouponYangPerCoin()
+	{
+		DWORD sheet = 0;
+		for (size_t i = 0; sheet == 0 && i < sizeof(PLAYERBOT_EXTRA_MATERIAL_PRICES) / sizeof(PLAYERBOT_EXTRA_MATERIAL_PRICES[0]); ++i)
+			if (PLAYERBOT_EXTRA_MATERIAL_PRICES[i].dwVnum == 80014)
+				sheet = PLAYERBOT_EXTRA_MATERIAL_PRICES[i].dwPrice;
+		for (size_t i = 0; sheet == 0 && i < sizeof(PLAYERBOT_MATERIAL_PRICES) / sizeof(PLAYERBOT_MATERIAL_PRICES[0]); ++i)
+			if (PLAYERBOT_MATERIAL_PRICES[i].dwVnum == 80014)
+				sheet = PLAYERBOT_MATERIAL_PRICES[i].dwPrice;
+		if (sheet == 0)
+			sheet = PLAYERBOT_SM_COUPON_100_SHEET_DEFAULT;
+		const long long one = playerbot_price_rules::INFLATION_FACTOR_ONE;
+		const long long inflation = std::max(one, std::min(GetPlayerBotInflationFactor(),
+				one * PLAYERBOT_SM_COUPON_INFLATION_MAX_PERCENT / 100));
+		const long long curved = (long long)sheet / 100 * std::max(1LL, GetPlayerBotPriceCurvePercent()) / 100;
+		return std::max(1LL, curved * inflation / one);
+	}
+
+	// The rule's 100%: the coins of the line at the coin's rate.
+	long long GetPlayerBotSmCouponFairPrice(DWORD vnum, long long count)
+	{
+		return GetPlayerBotSmCouponCoinsOf(vnum) * std::max(1LL, count) * GetPlayerBotSmCouponYangPerCoin();
+	}
+
+	// The coupons' coins on the bots' counters of this core (the market ledger).
+	long long GetPlayerBotSmCouponCoinsOnCounters()
+	{
+		static const DWORD vnums[] = { 80032, 80031, 80017, 80014, 80018, 80015, 80016 };
+		long long coins = 0;
+		for (size_t i = 0; i < sizeof(vnums) / sizeof(vnums[0]); ++i)
+		{
+			const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(vnums[i]);
+			if (e)
+				coins += (long long)e->dwSupplyUnits * GetPlayerBotSmCouponCoinsOf(vnums[i]);
+		}
+		return coins;
+	}
+
+	// The keeper's percent of the rule's 100% (see above); 100 with no keeper (a buyer's or a player's hint).
+	int GetPlayerBotSmCouponListPercent(DWORD keeper, DWORD vnum, int markdownPercent)
+	{
+		if (keeper == 0)
+			return 100;
+		const DWORD span = (DWORD)(PLAYERBOT_SM_COUPON_SPREAD_MAX - PLAYERBOT_SM_COUPON_SPREAD_MIN + 1);
+		int pct = PLAYERBOT_SM_COUPON_SPREAD_MIN + (int)(PlayerBotNavHash(keeper ^ (vnum * 2654435761U) ^ 0x534d4b50U) % span);
+		pct -= std::max(0, markdownPercent) / 4;
+		const long long over = GetPlayerBotSmCouponCoinsOnCounters() - PLAYERBOT_SM_COUPON_GLUT_FREE_COINS;
+		if (over > 0)
+			pct -= (int)std::min<long long>(PLAYERBOT_SM_COUPON_GLUT_MAX_PERCENT, over / PLAYERBOT_SM_COUPON_GLUT_STEP_COINS);
+		return std::max(PLAYERBOT_SM_COUPON_LIST_MIN_PERCENT, std::min(PLAYERBOT_SM_COUPON_LIST_MAX_PERCENT, pct));
+	}
+
+	// What a keeper's coupon line asks (rounded the way a person writes it, never over the list's top).
+	long long GetPlayerBotSmCouponListPrice(DWORD keeper, DWORD vnum, long long count, int markdownPercent)
+	{
+		const long long fair = GetPlayerBotSmCouponFairPrice(vnum, count);
+		if (fair <= 0)
+			return 0;
+		long long price = fair * GetPlayerBotSmCouponListPercent(keeper, vnum, markdownPercent) / 100;
+		if (price < 0xFFFFFFFFLL)
+			price = (long long)RoundPlayerBotPrice((DWORD)price);
+		return std::max(1LL, std::min(price, fair * PLAYERBOT_SM_COUPON_LIST_MAX_PERCENT / 100));
+	}
+
+	// A coupon line asking out of the band (the rule's 80..120%).
+	bool IsPlayerBotSmCouponPriceOutOfBand(DWORD vnum, long long count, long long asked)
+	{
+		// Not before this core has read the world's yang (the first minute after a start the inflation is x1, and every
+		// line would look dear and be cut to the bare sheet).
+		if (s_llPlayerBotWorldYang <= 0)
+			return false;
+		const long long fair = GetPlayerBotSmCouponFairPrice(vnum, count);
+		if (fair <= 0 || asked <= 0)
+			return false;
+		return asked * 100 < fair * PLAYERBOT_SM_COUPON_BAND_MIN_PERCENT || asked * 100 > fair * PLAYERBOT_SM_COUPON_BAND_MAX_PERCENT;
+	}
+#endif
+
 	DWORD GetPlayerBotShopAskingPriceRaw(LPITEM item)
 	{
 		if (!item)
 			return 1;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: a Kupon SM is its coins at the coin's rate - nothing of the sheet's way below.
+		if (IsPlayerBotSmCouponVnum(item->GetVnum()))
+		{
+			const long long fair = GetPlayerBotSmCouponFairPrice(item->GetVnum(), (long long)item->GetCount());
+			const DWORD coupon = (DWORD)std::max(1LL, std::min(fair, 0xFFFFFFFELL));
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, coupon, GetPlayerBotSmCouponYangPerCoin());
+			return coupon;
+		}
+#endif
 		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
 		// (playerbot_craft_exchange.h).
 		// MT2009_PLUS_OWNER_PRICES_V2: on the curve above.
@@ -4696,6 +4834,20 @@ namespace
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: a Kupon SM asks the coin rule's band - no markup, rare premium or glut of a
+		// family; the line's markdown only a quarter, within the band (GetPlayerBotSmCouponListPrice).
+		if (item && IsPlayerBotSmCouponVnum(item->GetVnum()))
+		{
+			if (markupOut)
+				*markupOut = 0;
+			const long long coupon = GetPlayerBotSmCouponListPrice(GetPlayerBotPricingKeeper(item), item->GetVnum(),
+					(long long)item->GetCount(), markdownPercent);
+			if (IsPlayerBotListingTracing())
+				PlayerBotListingStep(per::STEP_MARKDOWN, coupon, markdownPercent / 4);
+			return coupon > 0 ? (DWORD)std::min(coupon, 0xFFFFFFFELL) : asking;
+		}
+#endif
 		int markup = markdownPercent > 0 || !item ? 0
 				: GetPlayerBotShortageMarkupPercent(item->GetVnum());
 		// MT2009_PLUS_MARKET_LIFE_V1, point 5: a rare kind's line, read before
@@ -4810,6 +4962,10 @@ namespace
 	// books, which the engine types ITEM_USE.
 	bool IsPlayerBotPriceSlipKind(LPITEM item)
 	{
+#ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
+		if (item && IsPlayerBotSmCouponVnum(item->GetVnum()))
+			return false;	// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: a coupon asks its band, never a slip
+#endif
 		return item && playerbot_stall_rules::IsSlipKind((int)item->GetCount(),
 				item->GetType() == ITEM_SKILLBOOK || IsPlayerBotGeneralSkillBook(item->GetVnum()),
 				IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()));
