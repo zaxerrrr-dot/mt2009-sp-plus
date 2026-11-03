@@ -3423,6 +3423,15 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/drop307; F="$L/mob_drop_i
  && rm -rf "$A" \
  && echo "share: drop 3.0.7 - no Lza Bogini / Plaszcz / Krol Przepowiedni drops, Krol Bao (misja) without drop, the 90+ and champion bosses' rows, tradeable smith materials (MT2009_PLUS_DROP307_V1)"
 
+# MT2009_PLUS_ZWOJ_SKARBU_OFF_V1 (the owner, 3 November 2026): Zwoj Skarbu (Stopien A) 70434 drops nowhere - it leads to
+# Swiatynia Enigma, which this world does not have; the item itself stays as the wiki has it (no stacking, 3 days). Every
+# "drop" row of it in mob_drop_item.txt (the Yohara maps' and dungeons' groups) gets chance 0, so the groups' numbering
+# stays. Checked: no row of 70434 with a chance above 0 is left.
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt \
+ && awk 'BEGIN{OFS="\t"} { line=$0; sub(/\r$/, "", line); n=split(line, f, /[\t]+/); if (n >= 5 && f[3] == "70434") { f[5] = "0"; out=f[1]; for (k=2; k<=n; k++) out=out "\t" f[k]; print out "\r"; c++ } else print $0 } END { print c+0 > "/tmp/zwoj.count" }' "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && echo "share: Zwoj Skarbu 70434 off in $(cat /tmp/zwoj.count) drop rows" && rm -f /tmp/zwoj.count
+
 # MT2009_PLUS_ARMOR105_V1 (the owner, 22 October 2026): the level-105 armours' materials (tools/zbroje105) drop from
 # our generators' files, appended by their own steps above - the owner's monster sheet (yohara_arkusz: the En-Tai,
 # moby_global: the Ochao), the pl-wiki's lists (yohara_zaklety: Bojownik En-Tai, Bagjanamu, Jotun Thrym) and the chests

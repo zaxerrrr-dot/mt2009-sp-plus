@@ -1,5 +1,5 @@
 # MT2009_PLUS_STACK307_V1 / MT2009_PLUS_EKWIPUNEK_KEYS_V1 / MT2009_PLUS_COLLECTOR_TOPAZ_V1 - checks a built client:
-#   - gamedata/item_proto (dbdata): 50338-50343 and 70434 stack (STACKABLE, no ANTI_STACK, stack 200), 70434 without
+#   - gamedata/item_proto (dbdata): 50338-50343 stack (70434 left as it is) (STACKABLE, no ANTI_STACK, stack 200), 70434 without
 #     its limit - exactly as patch_ystack307_client.py leaves them;
 #   - the root pack: uiekwipunek.py routes the treasure boxes and keys to the chests (TREASURE_TYPES, IsKeyOnBox) and
 #     uicollector.py takes Topaz Woli 72353.

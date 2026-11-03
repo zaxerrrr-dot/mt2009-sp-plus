@@ -5,7 +5,8 @@
 #
 #   50338-50343 Charyzma / Inspiracja Nowicjusza / Adepta / Eksperta: STACKABLE on, ANTI_STACK off, stack 200
 #     (the wiki: "Laczenie: tak").
-#   70434 Zwoj Skarbu (Stopien A): STACKABLE on, ANTI_STACK off, stack 200 and no limit (the package's LIMIT_REAL_TIME
+#   (withdrawn 3 Nov: 70434 Zwoj Skarbu (Stopien A) stays unchanged)
+#   was: 70434 Zwoj Skarbu (Stopien A): STACKABLE on, ANTI_STACK off, stack 200 and no limit (the package's LIMIT_REAL_TIME
 #     259200 - each piece's own end time, so no two ever stacked; this server has no Swiatynia Enigma yet).
 #
 # Run on a plain copy of gamedata/item_proto, in the m2pack-lzo image for the proto's MCOZ (clientY.sh's data step,
@@ -31,7 +32,7 @@ STACK = 200
 
 # vnum: drop the limit 0 too - the same rows as stack307.sql
 RULES = dict((v, False) for v in range(50338, 50344))
-RULES[70434] = True
+# 70434 Zwoj Skarbu stays as the wiki has it (no stacking, 3 days) - the owner, 3 November 2026; its drop is off instead.
 
 
 def want(r):

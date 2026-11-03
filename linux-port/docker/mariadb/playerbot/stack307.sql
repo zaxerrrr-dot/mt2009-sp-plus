@@ -12,15 +12,5 @@
 UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
  WHERE vnum BETWEEN 50338 AND 50343;
 
--- 2. Zwoj Skarbu (Stopien A) 70434 (the Yohara bosses' and chests' scroll): the wiki's scroll takes a champion into the
---    secret Swiatynia Enigma and lives 3 days (LIMIT_REAL_TIME 259200 - socket 0 holds each piece's own end, so no two
---    pieces ever stacked: the engine joins only pieces with the same sockets). This server has no such dungeon (the
---    scroll is a collectible and a seller's item - yohara_items.sql: "the secret dungeons of the treasure scrolls -
---    none here yet"), so the 3 days only threw the drop away. Without the limit the scroll keeps and stacks (200).
---    Should the dungeon come, the limit returns with it.
-UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200, limittype0 = 0, limitvalue0 = 0
- WHERE vnum = 70434;
---    The pieces players and bots hold already: their end time (socket 0, set at the drop) cleared, so they join the new
---    ones' stacks and are no longer taken when the old 3 days run out (the engine starts the expiry only for a proto
---    with LIMIT_REAL_TIME - after this the old end time would be a stray socket that splits the stacks).
-UPDATE player.item SET socket0 = 0 WHERE vnum = 70434 AND socket0 <> 0;
+-- 2. Zwoj Skarbu (Stopien A) 70434 stays as the wiki has it (no stacking, 3 days) - the owner, 3 November 2026; its drop
+--    is switched off instead (MT2009_PLUS_ZWOJ_SKARBU_OFF_V1).
