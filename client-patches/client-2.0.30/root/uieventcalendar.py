@@ -41,11 +41,18 @@ KIND_GOBLIN = 8
 # (playerbot_ingame_events.h); their names and icons are the event hub's
 # (uiingameevent.py EVENTS, by the kind's name).
 KIND_CATCHKING, KIND_RUMI, KIND_YUTNORI, KIND_FLOWER, KIND_EASTER = range(9, 14)
+# MT2009_PLUS_SERVER_CONFIG_V1: the kinds the panel gained after the calendar
+# (playerbot_event_rules.h) - the chest drop of any item (the map column is its
+# vnum, the value the chance a kill in per mille), Boss Swiata, Halloween and the
+# Super Kamienie Metin (the value is the level). They showed as "Event 14".."17".
+KIND_CHESTDROP, KIND_WORLDBOSS, KIND_HALLOWEEN, KIND_SUPERSTONE = range(14, 18)
 KIND_KEYS = {KIND_CATCHKING: 'catchking', KIND_RUMI: 'rumi', KIND_YUTNORI: 'yutnori',
-		KIND_FLOWER: 'flower', KIND_EASTER: 'easter'}
+		KIND_FLOWER: 'flower', KIND_EASTER: 'easter',
+		KIND_WORLDBOSS: 'worldboss', KIND_HALLOWEEN: 'halloween'}
 # Every kind's name, the key the in-game event list knows it by.
 KIND_NAMES = ('chest', 'exp', 'drop', 'yang', 'tanaka', 'zuo', 'bossloot', 'metinloot', 'goblin',
-		'catchking', 'rumi', 'yutnori', 'flower', 'easter')
+		'catchking', 'rumi', 'yutnori', 'flower', 'easter',
+		'chestdrop', 'worldboss', 'halloween', 'superstone')
 KIND_ICON = {
 	KIND_CHEST: 'moonlight_event.tga',
 	KIND_EXP: 'exp_event.tga',
@@ -89,7 +96,20 @@ NEXT_EVENT = 'PPM - nast\xeapny event'
 SOON = 30 * 60
 
 
-def KindName(kind, value):
+def ItemName(vnum):
+	# MT2009_PLUS_SERVER_CONFIG_V1: the chest drop's item, by its vnum.
+	try:
+		import item
+		item.SelectItem(vnum)
+		name = item.GetItemName()
+		if name:
+			return name
+	except:
+		pass
+	return 'VNUM %d' % vnum
+
+
+def KindName(kind, value, mapIndex=0):
 	if kind == KIND_CHEST:
 		return 'Szkatu\xb3ki Blasku Ksi\xea\xbfyca'
 	if kind == KIND_EXP:
@@ -108,6 +128,10 @@ def KindName(kind, value):
 		return 'Podw\xf3jny loot z Metin\xf3w'
 	if kind == KIND_GOBLIN:
 		return 'Poszukiwanie skarb\xf3w (Goblin)'
+	if kind == KIND_CHESTDROP:
+		return 'Drop: %s (%s%%)' % (ItemName(mapIndex), ('%g' % (value / 10.0)).replace('.', ','))
+	if kind == KIND_SUPERSTONE:
+		return 'Super Kamienie Metin (+%d)' % value
 	if kind in KIND_KEYS:
 		return __import__('uiingameevent').Presentation(KIND_KEYS[kind])['name']
 	return 'Event %d' % kind
@@ -335,7 +359,7 @@ def ShowDayToolTip(day):
 	now = ServerNow()
 	if events:
 		for start, end, kind, value, mapIndex in events:
-			tip.AppendTextLine(Colorful(KindName(kind, value)))
+			tip.AppendTextLine(Colorful(KindName(kind, value, mapIndex)))
 			if kind in WORLD_KINDS:
 				tip.AppendTextLine(Colorful(SPAWN_MAPS))
 				tip.AppendTextLine(Colorful(MAP_NAMES.get(mapIndex, RANDOM_MAP) if mapIndex else RANDOM_MAP))
