@@ -1,0 +1,38 @@
+[
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (use scope)",
+  "old": "\tch->UseItem(((struct command_item_use *) data)->Cell);\n}\n",
+  "new": "\t// MT2009_PLUS_IRREMOVABLE_DELETE_V1 (use scope): a refused take-off of a worn irremovable item in this use asks whether to destroy it\n\tvoid Mt2009IrremScope(LPCHARACTER ch);\n\tMt2009IrremScope(ch);\n\tch->UseItem(((struct command_item_use *) data)->Cell);\n\tMt2009IrremScope(NULL);\n}\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (move scope)",
+  "old": "\tif (ch)\n\t\tch->MoveItem(pinfo->Cell, pinfo->CellTo, pinfo->count);\n}\n",
+  "new": "\t// MT2009_PLUS_IRREMOVABLE_DELETE_V1 (move scope): a refused take-off of a worn irremovable item in this move asks whether to destroy it\n\tvoid Mt2009IrremScope(LPCHARACTER ch);\n\tif (ch)\n\t{\n\t\tMt2009IrremScope(ch);\n\t\tch->MoveItem(pinfo->Cell, pinfo->CellTo, pinfo->count);\n\t\tMt2009IrremScope(NULL);\n\t}\n}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (move)",
+  "old": "\tif (INVENTORY == Cell.window_type && Cell.cell >= INVENTORY_MAX_NUM && IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))\n\t{\n\t\tif (bDSMoveTrace) sys_err(\"[DS_EQUIP_MOVE_TRACE] return false at ITEM_FLAG_IRREMOVABLE horse-page check\");\n\t\treturn false;\n\t}\n",
+  "new": "\tif (INVENTORY == Cell.window_type && Cell.cell >= INVENTORY_MAX_NUM && IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))\n\t{\n\t\tif (bDSMoveTrace) sys_err(\"[DS_EQUIP_MOVE_TRACE] return false at ITEM_FLAG_IRREMOVABLE horse-page check\");\n\t\t// MT2009_PLUS_IRREMOVABLE_DELETE_V1 (move): the worn one dragged out - ask whether to destroy it (irremovable_delete.cpp)\n\t\t{ void Mt2009IrremAsk(LPCHARACTER ch, LPITEM item); Mt2009IrremAsk(this, item); }\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (unequip)",
+  "old": "\tif (IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))\n\t\treturn false;\n",
+  "new": "\tif (IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))\n\t{\n\t\t// MT2009_PLUS_IRREMOVABLE_DELETE_V1 (unequip): within the player's own use / move only - ask whether to destroy it\n\t\t{ void Mt2009IrremAsk(LPCHARACTER ch, LPITEM item); Mt2009IrremAsk(this, item); }\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (command declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_IRREMOVABLE_DELETE_V1 (command declare): \"/irrem usun <token>\" | \"/irrem anuluj\" - irremovable_delete.cpp\nvoid Mt2009IrremCommand(LPCHARACTER ch, const char* argument);\nACMD(do_irrem)\n{\n\tMt2009IrremCommand(ch, argument);\n}\n\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_IRREMOVABLE_DELETE_V1 (command table)",
+  "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"irrem\",\tdo_irrem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_IRREMOVABLE_DELETE_V1 (command table)\n"
+ }
+]

@@ -2052,4 +2052,18 @@ if ((Test-Path -LiteralPath $fishRenApply -PathType Leaf) -and
     }
 }
 
+# A worn irremovable item asks whether to destroy it (server-patches/irrem, MT2009_PLUS_IRREMOVABLE_DELETE_V1; the
+# owner, 3 November 2026): the player's own ItemUse / ItemMove (input_main.cpp - after switchbot's hooks) open a scope,
+# CanUnequipNow's ITEM_FLAG_IRREMOVABLE branch and MoveItem's early test ask (char_item.cpp), "/irrem" (cmd.cpp). The
+# logic is irremovable_delete.cpp (the overlay). After fishren.
+$irremApply = Join-Path $repo 'server-patches/irrem/Apply-IrremPatch.ps1'
+if ((Test-Path -LiteralPath $irremApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $irremResult = & $irremApply -SourceDir $engineGameSource
+    if ($irremResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} irremovable item edit(s).' -f $irremResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
