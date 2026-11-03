@@ -113,6 +113,31 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 - **Wytwarzanie u NPC** (kowal, kucharz, alchemicy – `crafting.lua`): serwer już liczył i zabierał materiały z magazynów
   (`CountSpecifyItem` / `RemoveSpecifyItem`); okno (`uicuberenewal.CraftingRenewalWindow`) liczy je teraz też.
 
+## Handel i sklep offline prosto z dodatkowego EQ (`MT2009_PLUS_EKWIPUNEK_HANDEL_V1`, 03.11.2026)
+
+Prośba właściciela: *„Z dodatkowego EQ można dawać przedmioty bezpośrednio na handel i na tobół (sklep offline)”*.
+
+- **Serwer już to przyjmował**: `CExchange::AddItem` / `Check` / `Done` czytają przedmiot po jego oknie
+  (`GetItem`, `IsValidItemPosition` zna okna 11–15), blokada `SetExchanging`, wszystkie sprawdzenia jak dla torby
+  (antyflagi `GIVE`, `isLocked`, właściciel), `Done` kieruje do magazynu odbiorcy i nie rusza paska torby; sklep
+  Ikarusa (`CHARACTER::OpenMyShop` → `OpenOfflineShop`, `RecvShopAddItemClientPacket`) też bierze `GetItem(pos)`
+  z `CheckItem` – wystawiona linia od razu znika z magazynu (`MoveAndDestroyInstance`), sprzedaż/zwrot idą jak z torby.
+  Brakowało klienta.
+- **Edycje „HANDEL”** (`gen_edits.py`): `shop.cpp` – sprzedaż w zwykłym (nie offline) straganie nie czyści pozycji
+  paska szybkiego wyboru wskazującej pole **torby** o numerze pola magazynu; `cmd_gm.cpp` – `/flea_price` (podpowiedź
+  ceny z Domu Towarowego w oknie ceny) czyta też magazyny. Nakładka: `Mt2009EkwAutoStack*` nie dokłada podniesionych
+  przedmiotów do stosu, który leży w handlu (handel oddaje tyle, ile obie strony widziały).
+- **Klient**: przeciąganie z dodatkowego EQ na własną stronę okna handlu (`uiexchange.py` – działało), na pole okna
+  zakładania sklepu (`offlineshopbuilder.py`) i otwartego sklepu (`offlineshopui.py` – nowy w `client-2.0.30/root`,
+  `offlineshopmanage.py`, także druga strona); **PPM** w dodatkowym EQ przy otwartym handlu / oknie sklepu dodaje
+  przedmiot tam (jak PPM w torbie; dymek pokazuje „PPM: dodaj do handlu” / „PPM: wystaw w sklepie”). Przedmiot
+  w handlu lub na liście nowego sklepu jest przyciemniony, nie da się go podnieść, użyć, przenieść PPM ani na niego
+  upuścić; „Połącz stosy” / „Sortuj” czekają do zamknięcia tych okien. Torba nie oznacza już swojego pola o tym samym
+  numerze (zdarzenia handlu / budowy sklepu są po oknie przedmiotu). Okno sklepu dostaje teraz numer okna przedmiotu,
+  nie typ slotu (typ slotu Smoczych Kamieni = 11 = okno „Ulepszaczy”). Zapisana konfiguracja sklepu pamięta okno.
+  Okno ceny pyta Dom Towarowy także o przedmiot z magazynu (`shopautoprice.py`), dymek przedmiotu w oknie zakładania
+  sklepu czyta gniazda i bonusy z właściwego okna (`uitooltip.py`).
+
 ## Komendy
 
 `/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>|wszystko`, `/ekwipunek doekw <pole torby>`, `/ekwipunek stos <okno>`, `/ekwipunek dotorby <okno> <pole>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,

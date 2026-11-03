@@ -424,5 +424,17 @@
   "marker": "MT2009_PLUS_EKWIPUNEK_REFINE_V1 (keep open info)",
   "old": "\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell);\n",
   "new": "\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell, bEkwRefineWindow, bEkwRefineScrollWindow); // MT2009_PLUS_EKWIPUNEK_REFINE_V1 (keep open info)\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (stall quickslot)",
+  "old": "\tif (m_pkPC)\n\t{\n\t\tm_pkPC->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n",
+  "new": "\tif (m_pkPC)\n\t{\n\t\tif (!Mt2009IsSpecialWindow(item->GetWindow())) // MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (stall quickslot): a storage's cell is no bag cell\n\t\t\tm_pkPC->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (flea price)",
+  "old": "\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange, withSales);\n",
+  "new": "\t// MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (flea price): a category storage's item has its hint too (the shop's price window of an item\n\t// dragged from the Dodatkowy ekwipunek)\n\tif (requestID != 0 && window < WINDOW_TYPE_MAX && Mt2009IsSpecialWindow((BYTE)window) && cell < SPECIAL_INVENTORY_MAX_NUM)\n\t{\n\t\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, (BYTE)window, (WORD)cell, requestID, withRange, withSales);\n\t\treturn;\n\t}\n\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange, withSales);\n"
  }
 ]

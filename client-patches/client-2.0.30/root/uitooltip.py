@@ -825,12 +825,13 @@ class ItemToolTip(ToolTip):
 		else:
 			self.AppendSellingPrice(shop.GetPrivateShopItemPrice(invenType, invenPos))
 
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the item's own window (a storage of the Dodatkowy ekwipunek, the bag)
 		metinSlot = []
 		for i in xrange(player.METIN_SOCKET_MAX_NUM):
-			metinSlot.append(player.GetItemMetinSocket(invenPos, i))
+			metinSlot.append(player.GetItemMetinSocket(invenType, invenPos, i))
 		attrSlot = []
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
-			attrSlot.append(player.GetItemAttribute(invenPos, i))
+			attrSlot.append(player.GetItemAttribute(invenType, invenPos, i))
 
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
 

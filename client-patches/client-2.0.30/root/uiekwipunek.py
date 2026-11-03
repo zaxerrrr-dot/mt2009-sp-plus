@@ -71,6 +71,27 @@
 #   - a supplement dragged from here onto the Seon-Hae window's additive slot
 #     (uiseonhae.py: SupportOf).
 #
+# MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (the owner, 3 November 2026: "Z dodatkowego
+# EQ mozna dawac przedmioty bezposrednio na handel i na tobol (sklep
+# offline)"): an item of a storage goes straight into
+#   - the trade window (uiexchange.py) - dragged onto the own side, or a right
+#     click here while the trade is open;
+#   - the offline shop - the new shop's window (offlineshopbuilder.py) and the
+#     open shop's (offlineshopmanage.py, offlineshopui.py MyShopSlots, the
+#     second page too): dragged onto a free cell, or a right click here while
+#     one of them is open; the price window asks the Dom Towarowy's hint for it
+#     as for a bag item (shopautoprice.py; the server's /flea_price reads the
+#     storages, server-patches/ekwipunek "HANDEL" edits).
+# The server took a storage's item there already (CExchange::AddItem,
+# CHARACTER::OpenMyShop, the Ikarus shop's add-item: GetItem by the item's
+# window, every check of a bag item - antiflags, lock, trade, owner); the
+# client offered the bag only. An item in the trade or on the new shop's list
+# is dimmed here and can't be picked up or right-clicked into another window
+# (InUse: uiinventory.py's trade / shop builder events, by the item's window -
+# the bag marked its own cell of the same number before); the trade's server
+# lock (SetExchanging) keeps every move, use and /ekwipunek command off it, and
+# a shop's line leaves the storage the moment it is listed (MoveAndDestroyInstance).
+#
 # Python 2.7 as the client has it; the Polish letters are CP1250 escapes.
 
 import app
@@ -159,7 +180,14 @@ _state = {
 	'categories': None,
 	'refineWindow': None,
 	'interface': None,	# MT2009_PLUS_EKWIPUNEK_ROW2_V1: weakref.ref of interfacemodule.Interface
+	'inUse': set(),		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: (window, cell) in the trade / on the new shop's list
 }
+
+# MT2009_PLUS_EKWIPUNEK_HANDEL_V1
+TEXT_QUICK_EXCHANGE = "PPM: dodaj do handlu"
+TEXT_QUICK_SHOP = "PPM: wystaw w sklepie"
+TEXT_BUSY_SORT = "Zamknij handel lub okno zak\xb3adania sklepu, zanim po\xb3\xb9czysz lub posortujesz przedmioty."
+TEXT_IN_USE = "Ten przedmiot jest ju\xbf w handlu lub na li\x9cie sklepu."
 
 _USE_TYPE = getattr(item, "ITEM_TYPE_USE", 3)
 
@@ -208,6 +236,14 @@ def WindowOfSlotType(slotType):
 		if slot == slotType:
 			return win
 	return -1
+
+
+def IsEkwWindow(window):
+	"""MT2009_PLUS_EKWIPUNEK_HANDEL_V1: one of the storages' item windows."""
+	for win, slot, name, icon in Categories():
+		if win == window:
+			return True
+	return False
 
 
 def NameOfWindow(window):
@@ -468,6 +504,83 @@ def CubeItemOf(attachedType, attachedPos):
 	if not IsEkwSlotType(attachedType):
 		return None
 	return (WindowOfSlotType(attachedType), attachedPos)
+
+
+# ---------------------------------------------------------------- MT2009_PLUS_EKWIPUNEK_HANDEL_V1: trade and shop
+
+def IsInUse(window, cell):
+	"""A storage's item put in the trade or on the new shop's list."""
+	return (window, cell) in _state['inUse']
+
+
+def MarkInUse(window, cell):
+	"""uiinventory.py: the trade (EVENT_ADD_ITEM_TO_EXCHANGE) or the new shop's
+	list (ADD_ITEM_TO_SHOP_BUILDER) took the storage's item at (window, cell)."""
+	if not IsEkwWindow(window):
+		return False
+	_state['inUse'].add((window, cell))
+	Refresh()
+	return True
+
+
+def MarkClean(window, cell):
+	"""uiinventory.py: the item came off the new shop's list."""
+	if not IsEkwWindow(window):
+		return False
+	_state['inUse'].discard((window, cell))
+	Refresh()
+	return True
+
+
+def ClearInUse():
+	"""uiinventory.py: the trade or the new shop's window closed."""
+	if not _state['inUse']:
+		return
+	_state['inUse'].clear()
+	Refresh()
+
+
+def _QuickTarget():
+	"""(window, kind) of the open window a right click here gives the item to:
+	the trade, the new shop's window, the open shop's - the bag's order
+	(uiinventory.UseItemSlot) - or None."""
+	interface = _Interface()
+	if not interface:
+		return None
+	for attr, kind in (("dlgExchange", "exchange"), ("offlineShopBuilder", "myshop"), ("offlineShopManage", "myshop_manage")):
+		wnd = getattr(interface, attr, None)
+		try:
+			if wnd and wnd.IsShow() and hasattr(wnd, "QuickAddFrom"):
+				return (wnd, kind)
+		except Exception:
+			pass
+	return None
+
+
+def QuickAddText():
+	"""The tooltip's hint line while a right click here gives the item away."""
+	target = _QuickTarget()
+	if not target:
+		return ""
+	if target[1] == "exchange":
+		return TEXT_QUICK_EXCHANGE
+	return TEXT_QUICK_SHOP
+
+
+def QuickAdd(window, cell):
+	"""A right click on a storage's item with the trade or a shop window open:
+	the item goes there (the price window for a shop). True when one was open
+	(the click is taken)."""
+	target = _QuickTarget()
+	if not target:
+		return False
+	if IsInUse(window, cell):
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_IN_USE)
+		return True
+	if not player.GetItemIndex(window, cell):
+		return True
+	target[0].QuickAddFrom(window, cell)
+	return True
 
 
 def IsWindowOpen():
@@ -868,7 +981,19 @@ class EkwipunekWindow(ui.ScriptWindow):
 				continue
 			count = player.GetItemCount(window, pos)
 			self.grid.SetItemSlot(local, vnum, count if count > 1 else 0, socket=self.__Sockets(window, pos))
+			self.__Dim(local, window, pos)
 		self.grid.RefreshSlot()
+
+	def __Dim(self, local, window, pos):
+		"""MT2009_PLUS_EKWIPUNEK_HANDEL_V1: an item in the trade / on the new
+		shop's list dimmed, as the bag's."""
+		try:
+			if IsInUse(window, pos):
+				self.grid.DisableSlot(local)
+			else:
+				self.grid.EnableSlot(local)
+		except Exception:
+			pass
 
 	def __Sockets(self, window, pos):
 		"""MT2009_PLUS_EKWIPUNEK_CATS_V2: the item's sockets for the slot - a
@@ -924,6 +1049,7 @@ class EkwipunekWindow(ui.ScriptWindow):
 			count = player.GetItemCount(window, pos)
 			self.grid.SetItemSlot(local, player.GetItemIndex(window, pos), count if count > 1 else 0,
 				socket=self.__Sockets(window, pos))
+			self.__Dim(local, window, pos)
 		self.grid.RefreshSlot()
 
 	def OnUpdate(self):
@@ -942,6 +1068,11 @@ class EkwipunekWindow(ui.ScriptWindow):
 			return
 		self.tooltip.ClearToolTip()
 		self.tooltip.SetInventoryItem(pos, self.Window())
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the right click's way into the open trade / shop
+		hint = QuickAddText()
+		if hint and player.GetItemIndex(self.Window(), pos):
+			self.tooltip.AppendSpace(5)
+			self.tooltip.AppendTextLine(hint)
 
 	def OnOverOutItem(self):
 		if self.tooltip:
@@ -959,6 +1090,11 @@ class EkwipunekWindow(ui.ScriptWindow):
 		# MT2009_PLUS_EKWIPUNEK_REFINE_V1: a refine scroll (from the bag or a storage)
 		# dropped on another item here opens the refine window for that item
 		targetVnum = player.GetItemIndex(window, pos)
+		if targetVnum and IsInUse(window, pos):
+			# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: nothing joins or goes onto an item in the trade / on the shop's list
+			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_IN_USE)
+			Deattach()
+			return
 		if vnum and targetVnum and targetVnum != vnum and item.IsRefineScroll(vnum) and \
 				(attachedType == player.SLOT_TYPE_INVENTORY or IsEkwSlotType(attachedType)):
 			if attachedType == player.SLOT_TYPE_INVENTORY:
@@ -1017,6 +1153,9 @@ class EkwipunekWindow(ui.ScriptWindow):
 		count = player.GetItemCount(window, pos)
 		if not vnum:
 			return
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: in the trade / on the new shop's list - stays where it is
+		if IsInUse(window, pos):
+			return
 
 		cursor = app.GetCursor()
 		if app.SELL == cursor:
@@ -1049,6 +1188,13 @@ class EkwipunekWindow(ui.ScriptWindow):
 		if self.openAll and self.openAll.IsRunning():
 			self.openAll.Stop()
 			return
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: with the trade or a shop window open the item goes there (as the bag's
+		# right click); an item already there stays
+		if QuickAdd(window, pos):
+			self.OnOverOutItem()
+			return
+		if IsInUse(window, pos):
+			return
 		if app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL):
 			if self.openAll and self.openAll.Start(window, pos):
 				self.OnOverOutItem()
@@ -1070,6 +1216,8 @@ class EkwipunekWindow(ui.ScriptWindow):
 				return
 			Deattach()
 		if not player.GetItemIndex(self.Window(), pos):
+			return
+		if IsInUse(self.Window(), pos):	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1
 			return
 		if self.openAll and self.openAll.IsRunning():
 			self.openAll.Stop()
@@ -1145,7 +1293,18 @@ class EkwipunekWindow(ui.ScriptWindow):
 		dialog.Open()
 		self.questionDialog = dialog
 
+	def __Busy(self):
+		"""MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the new shop's list holds the cells
+		of its items (the server does not know them before the shop opens) - no
+		stacking or sorting under it, nor under the trade."""
+		if _state['inUse']:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_BUSY_SORT)
+			return True
+		return False
+
 	def AskStack(self):
+		if self.__Busy():
+			return
 		self.__Ask(TEXT_STACK_ASK % self.CategoryName(), self.Stack)
 
 	def Stack(self):
@@ -1153,6 +1312,8 @@ class EkwipunekWindow(ui.ScriptWindow):
 		self.__CloseDialogs()
 
 	def AskSort(self):
+		if self.__Busy():
+			return
 		self.__Ask(TEXT_SORT_ASK, self.Sort)
 
 	def Sort(self):
@@ -1210,6 +1371,7 @@ def Refresh():
 def DestroyWindow():
 	window = _state['window']
 	_state['window'] = None
+	_state['inUse'].clear()	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1
 	dialog = _state.get('dialog')
 	if dialog:
 		dialog.Close()

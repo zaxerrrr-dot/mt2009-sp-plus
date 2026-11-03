@@ -474,6 +474,38 @@ redit(IM, "keep open info",
 	"\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell);\n",
 	"\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell, bEkwRefineWindow, bEkwRefineScrollWindow); // " + R + " (keep open info)\n")
 
+# ---------------------------------------------------------------- MT2009_PLUS_EKWIPUNEK_HANDEL_V1
+# The owner, 3 November 2026: "Z dodatkowego EQ mozna dawac przedmioty bezposrednio na handel i na tobol (sklep
+# offline)". The trade (CExchange: GetItem / IsValidItemPosition take the storages, Done routes and guards the quickslot)
+# and the Ikarus shop (CHARACTER::OpenMyShop -> OpenOfflineShop, RecvShopAddItemClientPacket: GetItem(pos), CheckItem,
+# the item moved into the shop at once by MoveAndDestroyInstance) took a storage's item already - the client did not
+# offer it (root/uiekwipunek.py, uiexchange.py, offlineshopbuilder.py, offlineshopmanage.py, offlineshopui.py). Left:
+#  - the old-style stall (time 0, CShop with the owner's item pointers): a sale cleared the quickslot of the BAG cell
+#    with the storage cell's number;
+#  - the Dom Towarowy hint of the shop's price window ("/flea_price") answered a bag cell only.
+HM = "MT2009_PLUS_EKWIPUNEK_HANDEL_V1"
+
+
+def hedit(file, tag, old, new):
+	E.append({"file": file, "marker": "%s (%s)" % (HM, tag), "old": old, "new": new})
+
+
+hedit("shop.cpp", "stall quickslot",
+	"\tif (m_pkPC)\n\t{\n\t\tm_pkPC->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n",
+	"\tif (m_pkPC)\n\t{\n"
+	"\t\tif (!Mt2009IsSpecialWindow(item->GetWindow())) // " + HM + " (stall quickslot): a storage's cell is no bag cell\n"
+	"\t\t\tm_pkPC->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n")
+hedit("cmd_gm.cpp", "flea price",
+	"\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n"
+	"\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange, withSales);\n",
+	"\t// " + HM + " (flea price): a category storage's item has its hint too (the shop's price window of an item\n"
+	"\t// dragged from the Dodatkowy ekwipunek)\n"
+	"\tif (requestID != 0 && window < WINDOW_TYPE_MAX && Mt2009IsSpecialWindow((BYTE)window) && cell < SPECIAL_INVENTORY_MAX_NUM)\n"
+	"\t{\n\t\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, (BYTE)window, (WORD)cell, requestID, withRange, withSales);\n\t\treturn;\n\t}\n"
+	"\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n"
+	"\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange, withSales);\n")
+
+
 def main():
 	json.dump(E, open(os.path.join(HERE, "edits.json"), "w"), indent=1)
 	print("ekwipunek: %d edit(s) written" % len(E))

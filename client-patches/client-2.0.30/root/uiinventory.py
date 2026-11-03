@@ -1051,6 +1051,7 @@ class InventorySlotManager(GridSlotStateManager):
 
 	def OnExchangeClose(self): # handel
 		self.ClearSlotStates(self.SLOT_STATE_UNUSABLE, self.SLOT_STATE_IN_USE)
+		__import__("uiekwipunek").ClearInUse() # MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (the trade's / new shop's storage items)
 
 	def OnMassSellStop(self):
 		self.ClearSlotStates(self.SLOT_STATE_TO_BE_SOLD)
@@ -1083,13 +1084,24 @@ class InventorySlotManager(GridSlotStateManager):
 	def OnRemoveItemFromItemExchange(self, sourceSlotPos): # nie handel
 		self.MarkItemClean(sourceSlotPos)
 
+	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: by the item's window - a storage's item is marked in the Dodatkowy ekwipunek
+	# (uiekwipunek.MarkInUse), and no other window's marks the bag's cell of the same number
 	def OnAddItemToExchange(self, sourceWindowType, sourceSlotPos): # handel
+		if sourceWindowType != player.INVENTORY:
+			__import__("uiekwipunek").MarkInUse(sourceWindowType, sourceSlotPos)
+			return
 		self.MarkItemInUse(sourceSlotPos)
 
 	def OnAddItemToShopBuilder(self, sourceSlotPos, sourceWindowType):
+		if sourceWindowType != player.INVENTORY:
+			__import__("uiekwipunek").MarkInUse(sourceWindowType, sourceSlotPos)
+			return
 		self.MarkItemInUse(sourceSlotPos)
 
 	def OnRemoveItemFromShopBuilder(self, sourceSlotPos, sourceWindowType):
+		if sourceWindowType != player.INVENTORY:
+			__import__("uiekwipunek").MarkClean(sourceWindowType, sourceSlotPos)
+			return
 		self.MarkItemClean(sourceSlotPos)
 
 	def SetItemSlotLimit_NPCShop(self):
