@@ -12,7 +12,8 @@
 //    and fewer than two extra ones, 1-10 Powershards of the item's level band
 //    (the band table below - Owsap's item_proto column 67AttrMaterial, which our
 //    protos have not) and 0-5 Additives (72064-72067: 5/10/20/50 for five) and sends
-//    "/seonhae add <cell> <shards> <additive cell> <additives>". The chance is
+//    "/seonhae add <cell> <shards> <additive cell> <additives> [<additive window>]"
+//    (the window: MT2009_PLUS_EKWIPUNEK_CATS_V2, a supplement of the extra inventory). The chance is
 //    the wiki's (MT2009_PLUS_SEONHAE_WIKI_V1): shards x 2 + additive% x additives / 5,
 //    at most 100 (10 shards 20 %, with 5 Power Additives 70 %; 1 shard + 5 Power 52 %).
 //  - everything is checked here again (the client's window is only a form):
@@ -319,17 +320,22 @@ namespace mt2009_seonhae
 
 	void Add(LPCHARACTER ch, const char* argument)
 	{
-		char a1[16], a2[16], a3[16], a4[16];
+		char a1[16], a2[16], a3[16], a4[16], a5[16];
 		const char* rest = one_argument(argument, a1, sizeof(a1));
 		rest = one_argument(rest, a2, sizeof(a2));
 		rest = one_argument(rest, a3, sizeof(a3));
-		one_argument(rest, a4, sizeof(a4));
+		rest = one_argument(rest, a4, sizeof(a4));
+		one_argument(rest, a5, sizeof(a5));
 		if (!*a1 || !*a2 || !*a3 || !*a4)
 			return;
 		const int cell = atoi(a1);
 		const int materials = atoi(a2);
 		const int supportCell = atoi(a3);
 		const int supports = atoi(a4);
+		// MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Suplement z zakladki przeciagany bezposrednio do
+		// okna Seon-Hae"): an optional fifth word, the additive's window - the bag (INVENTORY, also when left out, as
+		// the older root sends it) or the extra inventory's Zaczarowanie storage the supplements are kept in
+		const int supportWindow = *a5 ? atoi(a5) : (int)INVENTORY;
 
 		if (!IsOn())
 			return Msg(ch, MSG_OFF);
@@ -357,9 +363,21 @@ namespace mt2009_seonhae
 			return Msg(ch, MSG_BAD_SUPPORT);
 		if (supports > 0)
 		{
-			if (supportCell < 0 || supportCell >= INVENTORY_MAX_NUM || supportCell == cell)
+			LPITEM support = NULL;
+			if (supportWindow == (int)INVENTORY)
+			{
+				if (supportCell < 0 || supportCell >= INVENTORY_MAX_NUM || supportCell == cell)
+					return Msg(ch, MSG_BAD_SUPPORT);
+				support = ch->GetInventoryItem((WORD)supportCell);
+			}
+			else if (supportWindow > 0 && supportWindow <= 255 && Mt2009IsSpecialWindow((BYTE)supportWindow))
+			{
+				if (supportCell < 0 || supportCell >= SPECIAL_INVENTORY_MAX_NUM)
+					return Msg(ch, MSG_BAD_SUPPORT);
+				support = ch->Mt2009SpecialGetItem((BYTE)supportWindow, (WORD)supportCell);
+			}
+			else
 				return Msg(ch, MSG_BAD_SUPPORT);
-			LPITEM support = ch->GetInventoryItem((WORD)supportCell);
 			if (!support || support->IsExchanging() || support->isLocked())
 				return Msg(ch, MSG_BAD_SUPPORT);
 			supportVnum = support->GetVnum();

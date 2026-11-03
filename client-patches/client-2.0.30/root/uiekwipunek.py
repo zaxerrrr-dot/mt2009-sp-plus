@@ -50,6 +50,27 @@
 # player.UPGRADE_INVENTORY ...). With an older exe this module does nothing and
 # never says hello, so the server keeps every item in the bag.
 #
+# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner's list of 3 November 2026, section B):
+#   - the second row's Kostiumy / Alchemia / ItemShop buttons are gone (the
+#     equipment window has its own round buttons 15-18 again); only Skrzynie
+#     stays in that row;
+#   - the categories as the owner sorts them (CategoryOf, with the server's
+#     Mt2009EkwCategoryOf in step): Zaczarowanie also takes the Pozwolenia,
+#     Marmur Blogoslawienstwa, Blogoslawienstwo Przedmiotu, the 6/7 shards and
+#     supplements, Wzmocnienie Przedmiotu, Zielona Sila, Zaczaruj / Transformuj
+#     kostium; the aura runes stay with the materials; the herbalism recipes go
+#     to Ksiegi; the refine scrolls and Kamien Runiczny stay in the bag (those
+#     stored before are dragged / right-clicked out; the server moves the stored
+#     items whose category moved at the hello);
+#   - a skill book shows its own skill's icon, as in the bag (the slot gets the
+#     sockets: ui.SlotWindow.SetItemSlot, skillbookicon.py);
+#   - "Sortuj" sorts every category at once ("/ekwipunek sortuj wszystko");
+#   - Ctrl + right click on a bag item while this window is open moves it into
+#     its category (MoveBagItemByCtrl, "/ekwipunek doekw <cell>") - a chest is
+#     moved, not opened;
+#   - a supplement dragged from here onto the Seon-Hae window's additive slot
+#     (uiseonhae.py: SupportOf).
+#
 # Python 2.7 as the client has it; the Polish letters are CP1250 escapes.
 
 import app
@@ -74,13 +95,10 @@ TEXT_MANAGE_TIP = "Sortowanie i wyszukiwanie"
 TEXT_STACK_TIP = "Po\xb3\xb9cz stosy"
 TEXT_STACK_ASK = "Po\xb3\xb9czy\xe6 stosy w kategorii \"%s\"?"
 TEXT_SORT_TIP = "Sortuj"
-TEXT_SORT_ASK = "Po\xb3\xb9czy\xe6 stosy i posortowa\xe6 kategori\xea \"%s\"?"
+# MT2009_PLUS_EKWIPUNEK_CATS_V2: every category at once
+TEXT_SORT_ASK = "Po\xb3\xb9czy\xe6 stosy i posortowa\xe6 wszystkie kategorie?"
 TEXT_NEEDS_EXE = "Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0)."
 TEXT_WRONG_KIND = "Ten przedmiot nie pasuje do kategorii \"%s\"."
-# MT2009_PLUS_EKWIPUNEK_ROW2_V1: the second row's window buttons (tooltips)
-TEXT_COSTUME_TIP = "Kostiumy"
-TEXT_ALCHEMY_TIP = "Alchemia"
-TEXT_ITEMSHOP_TIP = "ItemShop"
 TEXT_ATTACH_ASK = "W\xb3o\xbfy\xe6 %s do przedmiotu?"
 TEXT_OPEN_START = "Otwieranie skrzynek: %d szt."
 TEXT_OPEN_DONE = "Otwarto skrzynek: %d."
@@ -109,6 +127,20 @@ EXTRA_VNUMS = {
 	72346: "CHANGE_INVENTORY",
 }
 
+# MT2009_PLUS_EKWIPUNEK_CATS_V2 (playerbot_ekwipunek.cpp, Mt2009EkwCategoryOf - keep both in step):
+# Zaczarowanie by vnum - Pozwolenie na Wzmocnienie (x2) / na Zaczarowanie 30368-30370, Blogoslawienstwo
+# Przedmiotu 71052, the 6/7 shards 39070-39081, the supplements 72064-72067; and by the use subtype
+# (ITEM_USE): USE_ADD_ATTRIBUTE 19 (Wzmocnienie Przedmiotu, Zielona Sila), USE_ADD_ATTRIBUTE2 22 (Marmur
+# Blogoslawienstwa), USE_CHANGE_COSTUME_ATTR 34 (Zaczaruj kostium), USE_RESET_COSTUME_ATTR 35 (Transformuj
+# kostium). Ulepszacze by vnum: the aura runes 49990-49995. Ksiegi: USE_CRAFT_RECIPE 33 (the herbalism
+# recipes) and Losowa Receptura 50910. The bag: Kamien Runiczny 31225 and the refine scrolls.
+CHANGE_VNUMS = set(range(30368, 30371) + [71052] + range(39070, 39082) + range(72064, 72068))
+CHANGE_USE_SUBTYPES = (19, 22, 34, 35)
+UPGRADE_VNUMS = set(range(49990, 49996))
+USE_CRAFT_RECIPE = 33
+RECIPE_VNUMS = set([50910])
+BAG_VNUMS = set([31225])
+
 # MT2009_PLUS_EKWIPUNEK_BOOKS_V1: the books of other types than ITEM_SKILLBOOK
 # (playerbot_ekwipunek.cpp, Mt2009EkwCategoryOf - keep both in step): Sztuka
 # Combo, Ksiega Misji, the language books, Ksiega Polimorfii, Ksiega Precyzji,
@@ -129,12 +161,15 @@ _state = {
 	'interface': None,	# MT2009_PLUS_EKWIPUNEK_ROW2_V1: weakref.ref of interfacemodule.Interface
 }
 
+_USE_TYPE = getattr(item, "ITEM_TYPE_USE", 3)
+
 
 # ---------------------------------------------------------------- MT2009_PLUS_EKWIPUNEK_ROW2_V1
 
 def BindInterface(interface):
-	"""interfacemodule.py, when it builds the inventory: the second row's
-	buttons open the windows the interface holds."""
+	"""interfacemodule.py, when it builds the inventory. (The second row's
+	window buttons it served - MT2009_PLUS_EKWIPUNEK_ROW2_V1 - are gone since
+	MT2009_PLUS_EKWIPUNEK_CATS_V2; the reference stays for later buttons.)"""
 	_state['interface'] = weakref.ref(interface) if interface else None
 
 
@@ -143,38 +178,6 @@ def _Interface():
 	if ref is None:
 		return None
 	return ref()
-
-
-def ToggleCostumeWindow():
-	"""Kostiumy: the costume window, as the inventory's costume button opened
-	it (uiinventory.InventoryWindow.ClickCostumeButton - it keeps the window)."""
-	if not getattr(app, "ENABLE_COSTUME_SYSTEM", 0):
-		return
-	interface = _Interface()
-	inventory = getattr(interface, "wndInventory", None) if interface else None
-	if inventory and hasattr(inventory, "ClickCostumeButton"):
-		inventory.ClickCostumeButton()
-		costume = getattr(inventory, "wndCostume", None)
-		if costume and costume.IsShow():
-			costume.SetTop()
-
-
-def ToggleDragonSoulWindow():
-	"""Alchemia: the Dragon Soul window, as the inventory's Dragon Soul button
-	(with the note when the character may not use it yet)."""
-	interface = _Interface()
-	if interface and hasattr(interface, "ToggleDragonSoulWindow"):
-		interface.ToggleDragonSoulWindow()
-
-
-def ToggleItemShop():
-	"""ItemShop: as the minimap's and the taskbar's ItemShop button
-	(uiItemShop opens it, or closes it when it is open)."""
-	try:
-		eventManager.EventManager().send_event(__import__("uiItemShop").EVENT_OPEN_ITEMSHOP)
-	except Exception, e:
-		import dbg
-		dbg.TraceError("uiekwipunek.ToggleItemShop: %s" % str(e))
 
 
 def IsSupported():
@@ -222,14 +225,24 @@ def CategoryOf(vnum):
 		return getattr(player, EXTRA_VNUMS[vnum])
 	if vnum in BOOK_VNUMS:
 		return player.BOOK_INVENTORY
+	# MT2009_PLUS_EKWIPUNEK_CATS_V2: the owner's categories of 3 November 2026
+	if vnum in CHANGE_VNUMS:
+		return player.CHANGE_INVENTORY
 	item.SelectItem(vnum)
 	itemType = item.GetItemType()
 	subType = item.GetItemSubType()
+	if itemType == _USE_TYPE and subType in CHANGE_USE_SUBTYPES:
+		return player.CHANGE_INVENTORY
+	if vnum in UPGRADE_VNUMS:
+		return player.UPGRADE_INVENTORY
+	if vnum in BAG_VNUMS:
+		return 0
+	if vnum in RECIPE_VNUMS or (itemType == _USE_TYPE and subType == USE_CRAFT_RECIPE):
+		return player.BOOK_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_MATERIAL", -1) and subType == 0:
 		return player.UPGRADE_INVENTORY
-	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the refine scrolls with the materials (the server's rule)
-	if item.IsRefineScroll(vnum):
-		return player.UPGRADE_INVENTORY
+	# MT2009_PLUS_EKWIPUNEK_REFINE_V1 put the refine scrolls with the materials;
+	# MT2009_PLUS_EKWIPUNEK_CATS_V2: they stay in the bag (the server's rule)
 	if itemType == getattr(item, "ITEM_TYPE_SKILLBOOK", -1):
 		return player.BOOK_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_SKILLFORGET", 22):
@@ -352,8 +365,12 @@ def DropOnPlayerItem(attachedType, attachedPos, cell):
 		_AskAttachMetin(window, attachedPos, cell, srcVnum)
 		return True
 	if window == player.CHANGE_INVENTORY:
-		net.SendItemUseToItemPacket(window, attachedPos, player.INVENTORY, cell)
-		return True
+		# MT2009_PLUS_EKWIPUNEK_CATS_V2: the stones, marbles and 71052 are used on the piece; the Pozwolenia, shards
+		# and supplements kept here too (materials) only when their item table says they apply to an item
+		item.SelectItem(srcVnum)
+		if item.GetItemType() == _USE_TYPE:
+			net.SendItemUseToItemPacket(window, attachedPos, player.INVENTORY, cell)
+			return True
 	ITEM_FLAG_APPLICABLE = 1 << 14
 	if (player.GetItemFlags(window, attachedPos) & ITEM_FLAG_APPLICABLE) == ITEM_FLAG_APPLICABLE:
 		net.SendItemUseToItemPacket(window, attachedPos, player.INVENTORY, cell)
@@ -451,6 +468,41 @@ def CubeItemOf(attachedType, attachedPos):
 	if not IsEkwSlotType(attachedType):
 		return None
 	return (WindowOfSlotType(attachedType), attachedPos)
+
+
+def IsWindowOpen():
+	window = _state['window']
+	return window is not None and window.IsShow()
+
+
+def MoveBagItemByCtrl(cell):
+	"""MT2009_PLUS_EKWIPUNEK_CATS_V2 - uiinventory.py's right click on a bag
+	item: with Ctrl held and this window open the item goes into its category
+	("/ekwipunek doekw <cell>": its stacks first, then a free cell; a chest is
+	moved, not opened). True when it was taken (the bag does nothing else)."""
+	if not IsSupported() or not IsWindowOpen():
+		return False
+	if not (app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(getattr(app, "DIK_RCONTROL", app.DIK_LCONTROL))):
+		return False
+	if player.IsEquipmentSlot(cell):
+		return False
+	vnum = player.GetItemIndex(cell)
+	if not vnum:
+		return False
+	window = CategoryOf(vnum)
+	if not window:
+		return False	# no category: the bag's own Ctrl + right click (open the stack, use)
+	net.SendChatPacket("/ekwipunek doekw %d" % cell)
+	return True
+
+
+def SupportOf(attachedType, attachedPos):
+	"""MT2009_PLUS_EKWIPUNEK_CATS_V2 - uiseonhae.py: (window, cell, vnum) of a
+	storage's item on the cursor (a supplement from Zaczarowanie), or None."""
+	if not IsEkwSlotType(attachedType):
+		return None
+	window = WindowOfSlotType(attachedType)
+	return (window, attachedPos, player.GetItemIndex(window, attachedPos))
 
 
 # ---------------------------------------------------------------- opening a stack of chests
@@ -660,17 +712,6 @@ class EkwipunekWindow(ui.ScriptWindow):
 			button.SetToolTipText(name)
 			button.SAFE_SetEvent(self.SetCategory, i)
 			self.categoryButtons.append(button)
-		# MT2009_PLUS_EKWIPUNEK_ROW2_V1: the second row's window buttons. The
-		# windows behind them are built on their first click: no click sample
-		# (MSS32 crashes on it then, as with the inventory's side bar).
-		for name, tip, event in (("Window_costume", TEXT_COSTUME_TIP, ToggleCostumeWindow),
-				("Window_alchemy", TEXT_ALCHEMY_TIP, ToggleDragonSoulWindow),
-				("Window_itemshop", TEXT_ITEMSHOP_TIP, ToggleItemShop)):
-			button = self.GetChild(name)
-			button.SetToolTipText(tip)
-			button.disableClickSound = True
-			button.SetEvent(event)
-
 		self.objectToMove = [grid, categoryBoard] + self.pageTabs
 
 		tooltip = uiToolTip.ItemToolTip()
@@ -826,8 +867,17 @@ class EkwipunekWindow(ui.ScriptWindow):
 				self.grid.ClearSlot(local)
 				continue
 			count = player.GetItemCount(window, pos)
-			self.grid.SetItemSlot(local, vnum, count if count > 1 else 0)
+			self.grid.SetItemSlot(local, vnum, count if count > 1 else 0, socket=self.__Sockets(window, pos))
 		self.grid.RefreshSlot()
+
+	def __Sockets(self, window, pos):
+		"""MT2009_PLUS_EKWIPUNEK_CATS_V2: the item's sockets for the slot - a
+		skill book (50300) shows its own skill's icon then, as in the bag
+		(uiinventory.RefreshBagSlotWindow, ui.SlotWindow.SetItemSlot)."""
+		try:
+			return tuple([player.GetItemMetinSocket(window, pos, j) for j in xrange(player.METIN_SOCKET_MAX_NUM)])
+		except Exception:
+			return None
 
 	def __ItemName(self, window, pos, vnum):
 		item.SelectItem(vnum)
@@ -872,7 +922,8 @@ class EkwipunekWindow(ui.ScriptWindow):
 				continue
 			pos = found[local]
 			count = player.GetItemCount(window, pos)
-			self.grid.SetItemSlot(local, player.GetItemIndex(window, pos), count if count > 1 else 0)
+			self.grid.SetItemSlot(local, player.GetItemIndex(window, pos), count if count > 1 else 0,
+				socket=self.__Sockets(window, pos))
 		self.grid.RefreshSlot()
 
 	def OnUpdate(self):
@@ -1102,10 +1153,11 @@ class EkwipunekWindow(ui.ScriptWindow):
 		self.__CloseDialogs()
 
 	def AskSort(self):
-		self.__Ask(TEXT_SORT_ASK % self.CategoryName(), self.Sort)
+		self.__Ask(TEXT_SORT_ASK, self.Sort)
 
 	def Sort(self):
-		net.SendChatPacket("/ekwipunek sortuj %d" % self.Window())
+		# MT2009_PLUS_EKWIPUNEK_CATS_V2: every category at once
+		net.SendChatPacket("/ekwipunek sortuj wszystko")
 		self.__CloseDialogs()
 
 

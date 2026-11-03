@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_INVENTORY_V2_V1 - the pictures of the official v2 inventory (the package "offical_inventory_v2", Autor:
 # dracaryS; root/inventoryv2.py, uiscript/inventoryequipwindow.py) in a new pack, inv2_ui, with its Index line:
-#   d:/ymir work/ui/new_inventory/equip_bg_mt2009.png      the equipment picture (the package's, its pet frame wiped)
+#   d:/ymir work/ui/new_inventory/equip_bg_mt2009.png      the equipment picture (the package's, its pet frame wiped); its bottom right corner background only (MT2009_PLUS_INVENTORY_WIKI_V1)
 #   d:/ymir work/ui/new_inventory/equip_bg_sub.png         the rings + round buttons picture
 #   d:/ymir work/ui/new_inventory/equip_pagebtn_bg.png     the frame under a page tab
 #   d:/ymir work/ui/new_inventory/btn_[0-3]_[0-2].png      the four round buttons (normal / over / down)

@@ -6,9 +6,9 @@ import player
 # MT2009_PLUS_INVENTORY_V2_V1 - the equipment window of the official v2 inventory (the package "offical_inventory_v2",
 # Autor: dracaryS; root/inventoryv2.py, uiinventory.py): the worn items in their own window, docked over the bag
 # (uiscript/inventorywindowv2.py) - the page tabs of Druga strona ekwipunku (uiaddeq.py, MT2009_PLUS_ADDEQ_V1) at the
-# top, the package's equipment picture (new_inventory/equip_bg_mt2009.png - its pet frame wiped: no pet slot here, the
-# frame stays empty) and under it the two rings and the four round buttons
-# (Alchemia, Magazyn przedmiotow, Sklep = Magazyn ItemShop, Kostiumy). Pictures: the pack inv2_ui (tools/inv2).
+# top, the package's equipment picture (new_inventory/equip_bg_mt2009.png - no pet slot here, its frame is background)
+# and under it the two rings and the four round buttons (Alchemia, Magazyn ItemShop, Osobisty Sklepik Premium,
+# Kostiumy). Pictures: the pack inv2_ui (tools/inv2).
 #
 # ONE slot window ("EquipmentSlot", as the old inventory had) covers both pictures, so uiinventory.py fills and reads
 # it as before (RefreshEquipSlotWindow, the rings included). Slot places = the package's (EquipmentSlot0); the rings
@@ -48,9 +48,13 @@ if EQUIPMENT_GLOVE_SLOT:
 
 # MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): the page tabs' pictures are the package's tab
 # (game/windows/tab_button_large_half_0N.sub of the newer clients) as PNGs in the pack inv2_ui - the players' etc has
-# no such .sub: the radio buttons had no size, no picture, and their I-IV stood at the buttons' corners. The bottom
-# right frame of the equipment picture stays empty: the horse bag (removed from Yohara) and the chest preview (now in
-# the side bar) buttons are gone; the round "Sklep" button opens the ItemShop storage (uiinventory.ClickMyShopButton).
+# no such .sub: the radio buttons had no size, no picture, and their I-IV stood at the buttons' corners. The horse bag
+# (removed from Yohara) and the chest preview (now in the side bar) buttons are gone.
+# MT2009_PLUS_INVENTORY_WIKI_V1 (the owner's list of 3 November 2026, poprawki-3.0.8 point 4): the layout of the wiki -
+# the empty bottom right frame (right of 11 Rekawice, under 7 Naszyjnik) is gone from the picture (equip_bg_mt2009.png
+# takes that corner from the GF client's equipment_bg_without_ring.tga: the background only, tools/inv2/
+# make_inv2_images.py), and the round buttons are 15 Panel Alchemii, 16 Magazyn ItemShop, 17 Osobisty Sklepik Premium
+# (the own offline shop again - not a second ItemShop storage button as in 3.0.6b), 18 Kostiumy.
 TAB_IMAGE = ROOT + "tab_half_%02d.png"
 
 
@@ -149,9 +153,11 @@ window = {
 					"image" : ROOT + "equip_bg_sub.png",
 					"children" :
 					(
+						# MT2009_PLUS_INVENTORY_WIKI_V1: the wiki's 15-18 - Panel Alchemii, Magazyn ItemShop (/click_mall),
+						# Osobisty Sklepik Premium (the own offline shop), Kostiumy
 						RoundButton("DSSButton", 6, 0, uiScriptLocale.TASKBAR_DRAGON_SOUL),
-						RoundButton("DepositButton", 41, 1, uiScriptLocale.POCKET_DEPOSIT),
-						RoundButton("MyShopButton", 79, 2, "Magazyn ItemShop"),
+						RoundButton("DepositButton", 41, 1, "Magazyn ItemShop"),
+						RoundButton("MyShopButton", 79, 2, "Osobisty Sklepik Premium"),
 						RoundButton("CostumeButton", 120, 3, uiScriptLocale.COSTUME_WINDOW_TITLE),
 					),
 				},

@@ -476,10 +476,11 @@ class SidebarWindow(ui.Window):
 		# (the owner, 5 October) - Shift+K (keybind "autohunt_quick") stays.
 		("pickup", "Sortowanie autopickup", "OnClickPickupFilter", "pickup_filter"),
 		("trash", "Kosz", "OnClickGarbageBin", "garbage_bin"),
-		# MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): "Sklep" - the own offline shop (a bundle icon) in the
-		# shop search's place (the search stays on its key, F5); "Podglad skrzyn" in the Kolo Fortuny's place (the
-		# wheel stays on F12). Icons: tools/inv2/make_sidebar_icons.py.
-		("offlineshop", "Sklep", "OnClickOfflineShop", None),
+		# MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): "Podglad skrzyn" in the Kolo Fortuny's place (the
+		# wheel stays on F12; the shop search on F5). Icons: tools/inv2/make_sidebar_icons.py.
+		# MT2009_PLUS_INVENTORY_WIKI_V1 (the owner's list of 3 November 2026, poprawki-3.0.8 point 4): the "Sklep"
+		# button (the own offline shop) is gone from the side bar altogether - the offline shop opens from the
+		# equipment window's round button 17 "Osobisty Sklepik Premium", as on the wiki.
 		("battlepass", "Battle Pass", "OnClickBattlePass", None),
 		("calendar", "Kalendarz event\xf3w", "OnClickEventCalendar", "event_calendar"),
 		("chestpreview", "Podgl\xb9d skrzy\xf1", "OnClickChestPreview", None),
@@ -813,13 +814,6 @@ class SidebarWindow(ui.Window):
 		interface = self.__GetInterface()
 		if interface is not None:
 			interface.ToggleGarbageBinWindow()
-
-	# Sklep - the own offline shop's window (interfacemodule.OpenPrivateShopManage: offlineShopManage.Toggle,
-	# ikashop.SendOpenShopOwner), as the equipment window's shop button opened it before.
-	def OnClickOfflineShop(self):
-		interface = self.__GetInterface()
-		if interface is not None:
-			interface.OpenPrivateShopManage()
 
 	# Battle Pass - as the taskbar's button.
 	def OnClickBattlePass(self):
@@ -2079,11 +2073,14 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndChestPreview = uichestpreview.ChestPreviewWindow(self)
 		self.wndChestPreview.Toggle()
 
-	# MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): the round "Sklep" button opens the ItemShop storage
-	# from anywhere (/click_mall - the server answers ShowMeMallPassword, the mall storage); the own offline shop
-	# opens from the side bar's "Sklep" (SidebarWindow.OnClickOfflineShop).
+	# MT2009_PLUS_INVENTORY_WIKI_V1 (the owner's list of 3 November 2026, poprawki-3.0.8 point 4: "wracamy do ukladu
+	# z wiki" - 15 Panel Alchemii, 16 Magazyn ItemShop, 17 Osobisty Sklepik Premium, 18 Kostiumy): the round button 17
+	# opens the own offline shop again (interfacemodule.OpenPrivateShopManage: offlineShopManage.Toggle,
+	# ikashop.SendOpenShopOwner) - 3.0.6b had it open the ItemShop storage, which button 16 (ClickDepositButton,
+	# /click_mall) already does.
 	def ClickMyShopButton(self):
-		net.SendChatPacket("/click_mall")
+		if self.interface:
+			self.interface.OpenPrivateShopManage()
 
 	def SetEquipmentPage(self, page):
 		self.equipmentPageIndex = page
@@ -3299,6 +3296,13 @@ class InventoryWindow(ui.ScriptWindow):
 		# MT2009_PLUS_SWITCHBOT_V1: with the switchbot open, a weapon or an armour goes into its selected tab
 		# (or the first free one) instead of being put on - as the old bonus switcher did.
 		if __import__("uiswitchbot").TakeInventoryItem(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return
+
+		# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026): Ctrl + right click with the extra inventory's
+		# window open moves the item into its category (a chest too - moved, not opened; "/ekwipunek doekw")
+		if __import__("uiekwipunek").MoveBagItemByCtrl(slotIndex):
 			mouseModule.mouseController.DeattachObject()
 			self.OverOutItem()
 			return

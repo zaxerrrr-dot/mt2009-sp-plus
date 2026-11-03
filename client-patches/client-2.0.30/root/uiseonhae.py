@@ -14,7 +14,11 @@
 #   SEONHAE done <1 added | 2 not> <vnum>
 #   SEONHAE msg <id> <data>
 # and the window answers "/seonhae open", "/seonhae add <cell> <shards>
-# <additive cell> <additives>", "/seonhae collect". The window is only a form:
+# <additive cell> <additives> [<additive window>]", "/seonhae collect".
+# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Suplement z
+# zakladki przeciagany bezposrednio do okna Seon-Hae"): the additive may come
+# from the extra inventory's Zaczarowanie tab (uiekwipunek.SupportOf) - its
+# window goes as the fifth word (left out for the bag). The window is only a form:
 # the server checks everything again (the item, the shard by the item's level,
 # the counts, the additive by its vnum, the distance to Seon-Hae).
 #
@@ -293,6 +297,7 @@ class SeonHaeWindow(ui.ScriptWindow):
 		self.supportDown = None
 		self.supportCountText = None
 		self.supportPos = -1
+		self.supportWindow = player.INVENTORY	# MT2009_PLUS_EKWIPUNEK_CATS_V2
 		self.supportVnum = 0
 		self.supportCount = 0
 
@@ -563,16 +568,29 @@ class SeonHaeWindow(ui.ScriptWindow):
 			return
 		attachedType = mouseModule.mouseController.GetAttachedType()
 		attachedPos = mouseModule.mouseController.GetAttachedSlotNumber()
-		if player.SLOT_TYPE_INVENTORY != attachedType:
-			return
-		vnum = player.GetItemIndex(attachedPos)
+		window = player.INVENTORY
+		if player.SLOT_TYPE_INVENTORY == attachedType:
+			vnum = player.GetItemIndex(attachedPos)
+			if attachedPos == self.registPos:
+				return
+		else:
+			# MT2009_PLUS_EKWIPUNEK_CATS_V2: a supplement of the extra inventory
+			try:
+				support = __import__("uiekwipunek").SupportOf(attachedType, attachedPos)
+			except Exception:
+				support = None
+			if not support:
+				return
+			(window, attachedPos, vnum) = support
 		if vnum not in SUPPORT_PCT:
 			AppendChat(MESSAGES[11])
 			return
-		if attachedPos == self.registPos:
-			return
-		mouseModule.mouseController.DeattachObject()
+		if window == player.INVENTORY:
+			mouseModule.mouseController.DeattachObject()
+		else:
+			__import__("uiekwipunek").Deattach()	# its own cursor icon goes with it
 		self.supportPos = attachedPos
+		self.supportWindow = window
 		self.supportVnum = vnum
 		self.supportCount = min(1, player.GetItemCountByVnum(vnum))
 		self.__Refresh()
@@ -586,8 +604,14 @@ class SeonHaeWindow(ui.ScriptWindow):
 
 	def __ClearSupport(self):
 		self.supportPos = -1
+		self.supportWindow = player.INVENTORY
 		self.supportVnum = 0
 		self.supportCount = 0
+
+	def __SupportVnumNow(self):
+		if self.supportWindow != player.INVENTORY:
+			return player.GetItemIndex(self.supportWindow, self.supportPos)
+		return player.GetItemIndex(self.supportPos)
 
 	def __ClickMaterial(self, up):
 		if self.holding or not self.materialVnum:
@@ -637,7 +661,11 @@ class SeonHaeWindow(ui.ScriptWindow):
 			return
 		supportPos = self.supportPos if (self.supportPos >= 0 and self.supportCount > 0) else -1
 		supportCount = self.supportCount if supportPos >= 0 else 0
-		Send('add %d %d %d %d' % (self.registPos, self.materialCount, supportPos, supportCount))
+		if supportPos >= 0 and self.supportWindow != player.INVENTORY:
+			# MT2009_PLUS_EKWIPUNEK_CATS_V2: the additive's window (the extra inventory)
+			Send('add %d %d %d %d %d' % (self.registPos, self.materialCount, supportPos, supportCount, self.supportWindow))
+		else:
+			Send('add %d %d %d %d' % (self.registPos, self.materialCount, supportPos, supportCount))
 
 	## tooltips
 
@@ -668,7 +696,10 @@ class SeonHaeWindow(ui.ScriptWindow):
 
 	def __OverInSupportSlot(self, slotIndex):
 		if self.supportPos >= 0 and self.itemToolTip:
-			self.itemToolTip.SetInventoryItem(self.supportPos)
+			if self.supportWindow != player.INVENTORY:
+				self.itemToolTip.SetInventoryItem(self.supportPos, self.supportWindow)
+			else:
+				self.itemToolTip.SetInventoryItem(self.supportPos)
 
 	def __OverOutItem(self):
 		if self.itemToolTip:
@@ -694,7 +725,7 @@ class SeonHaeWindow(ui.ScriptWindow):
 			self.materialVnum = 0
 			self.materialCount = 0
 			changed = True
-		if self.supportPos >= 0 and player.GetItemIndex(self.supportPos) != self.supportVnum:
+		if self.supportPos >= 0 and self.__SupportVnumNow() != self.supportVnum:
 			self.__ClearSupport()
 			changed = True
 		if self.materialVnum and self.materialCount > player.GetItemCountByVnum(self.materialVnum):

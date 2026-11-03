@@ -18,6 +18,9 @@
 # inventory's costume button opened), Alchemia - the Dragon Soul window (Ameria's
 # Dragon Soul button of its taskbar, DragonSoul_Button_0x), ItemShop - the
 # in-game ItemShop. uiekwipunek.py binds them.
+# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026): those three window
+# buttons are gone again (the equipment window's round buttons 15-18 open them);
+# the second row keeps the chests, at its first place.
 
 import uiScriptLocale
 
@@ -241,11 +244,9 @@ window = {
 						CategoryButton("Category_stone", "stone", 1, 0),
 						CategoryButton("Category_book", "book", 2, 0),
 						CategoryButton("Category_bonus", "bonus", 3, 0),
-						# MT2009_PLUS_EKWIPUNEK_ROW2_V1: Ameria's second row (chests where its guild button is)
-						CategoryButton("Window_costume", "costume", 0, 1, "button"),
-						CategoryButton("Category_chest", "chest", 1, 1),
-						CategoryButton("Window_alchemy", "alchemy", 2, 1, "button"),
-						CategoryButton("Window_itemshop", "ishop", 3, 1, "button"),
+						# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Usunac przyciski kostiumow,
+						# alchemii, itemshopu (w przyszlosci inne)"): the second row has the chests alone, first in it
+						CategoryButton("Category_chest", "chest", 0, 1),
 					),
 				},
 			),
