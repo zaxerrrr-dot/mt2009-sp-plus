@@ -948,7 +948,11 @@ class SwitchbotWindow(ui.BoardWithTitleBar):
 
 		attributes = switchbot.GetAttributesForSet(self.selectedSlot)
 
-		selectedAttributes = [switchbot.GetAttribute(self.selectedSlot, self.alternative, attrIndex)[0] for attrIndex in xrange(ATTR_SLOT_COUNT)]
+		# MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1: only the bonuses of the alternative's other rows are left out (a bonus is
+		# wanted once) - the row being chosen keeps its own one in the list (Ameria's code hid it too, so a row set to
+		# e.g. Odpornosc na Ogien looked as if the item could not roll it). The list and its maxima are the server's
+		# (switchbot attribute information: item_attr of this world, in its bonus mode).
+		selectedAttributes = [switchbot.GetAttribute(self.selectedSlot, self.alternative, attrIndex)[0] for attrIndex in xrange(ATTR_SLOT_COUNT) if attrIndex != attrIdx]
 
 		for (type, value) in attributes:
 			if type in selectedAttributes:

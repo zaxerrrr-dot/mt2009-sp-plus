@@ -64,3 +64,8 @@ Amerii, zastosuj nowy kod po stronie serwera jak i klienta.”* Znacznik: `MT200
 `/switchbot hello` (root/uiswitchbot.py). Reszta to pakiety: CG 170 (`START` + 5 alternatyw / `STOP`), GC 171
 (`UPDATE` – cała tabela, `UPDATE_ITEM` – nowe bonusy przedmiotu, `SEND_ATTRIBUTE_INFORMATION` – bonusy i maksima
 każdego zestawu z `item_attr`), GG 39.
+
+Lista bonusów do wyboru i ich maksima (`MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1`): wartości liczone tak jak przy
+losowaniu (`BonusModeSetAttrValue`, `playerbot_bonus_mode.cpp`) – w trybie `M2_BONUS_MODE=global` talizman ma odporność
+na ogień / błyskawice / wiatr do 25% (5% na poziom), a nie 15% z wiersza zbroi. Wiersz, który się właśnie wybiera,
+widzi na liście swój własny bonus (ukryte są tylko bonusy pozostałych wierszy tej alternatywy).
