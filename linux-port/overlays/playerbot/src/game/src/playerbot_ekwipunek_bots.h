@@ -132,6 +132,10 @@ namespace
 				// materials before) are counted / fetched where they lie (CountSpecifyItem, FetchPlayerBotShopAidBagItem)
 				return item->GetType() != ITEM_MATERIAL;
 			case CHEST_INVENTORY:
+				// MT2009_PLUS_EKWIPUNEK_KEYS_V1: the boxes opened with a key and their keys are chests now - the bot's
+				// box opening (playerbot_consumables.h), its key sale and its market read the bag's cells: kept there
+				if (item->GetType() == ITEM_TREASURE_BOX || item->GetType() == ITEM_TREASURE_KEY)
+					return true;
 				return IsPlayerBotKeptCor(ch, item);
 		}
 		return true;
@@ -158,6 +162,8 @@ namespace
 			case CHANGE_INVENTORY:
 				return proto->bType != ITEM_MATERIAL;	// MT2009_PLUS_EKWIPUNEK_CATS_V2
 			case CHEST_INVENTORY:
+				if (proto->bType == ITEM_TREASURE_BOX || proto->bType == ITEM_TREASURE_KEY)	// MT2009_PLUS_EKWIPUNEK_KEYS_V1
+					return true;
 				return IsPlayerBotOpenableCorVnum(vnum) && IsPlayerBotAlchemyUser(ch);
 		}
 		return true;

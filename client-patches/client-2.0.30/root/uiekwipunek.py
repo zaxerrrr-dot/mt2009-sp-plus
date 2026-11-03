@@ -291,6 +291,9 @@ def CategoryOf(vnum):
 		return 0
 	if itemType == getattr(item, "ITEM_TYPE_GIFTBOX", -1):
 		return player.CHEST_INVENTORY
+	# MT2009_PLUS_EKWIPUNEK_KEYS_V1: the boxes opened with a key and their keys
+	if itemType in TREASURE_TYPES:
+		return player.CHEST_INVENTORY
 	return 0
 
 
@@ -298,6 +301,27 @@ def CategoryOf(vnum):
 # I-III, Eksperta I-III, Mistrza I-III, Arcymistrza - never go into the chests' storage (playerbot_ekwipunek.cpp,
 # Mt2009EkwCategoryOf - keep both in step).
 STARTER_CHESTS = set(range(50187, 50197) + [50212, 50213])
+
+# MT2009_PLUS_EKWIPUNEK_KEYS_V1 (a player's report on Yohara 3.0.7, 3 November 2026): the boxes that open only with
+# their key (ITEM_TREASURE_BOX - Zlota / Srebrna Szkatulka, Plat. Skrzynia Skarbow, the Yohara jewel chests) and the
+# keys (ITEM_TREASURE_KEY - Zloty / Srebrny Klucz, Klucz Nimfy Wodnej, Idealny Klucz, Plat. Klucz) go with the chests
+# (playerbot_ekwipunek.cpp, Mt2009EkwCategoryOf - keep both in step). A key dropped on a box - in this window, from the
+# bag onto a box here or from here onto a box in the bag - opens it (UseKeyOnBox: the item-on-item use, the server's
+# ITEM_TREASURE_KEY takes a box of any window and checks the pair).
+TREASURE_BOX_TYPE = getattr(item, "ITEM_TYPE_TREASURE_BOX", 20)
+TREASURE_KEY_TYPE = getattr(item, "ITEM_TYPE_TREASURE_KEY", 21)
+TREASURE_TYPES = (TREASURE_BOX_TYPE, TREASURE_KEY_TYPE)
+
+
+def IsKeyOnBox(srcVnum, dstVnum):
+	"""MT2009_PLUS_EKWIPUNEK_KEYS_V1: a key (ITEM_TREASURE_KEY) held over a box (ITEM_TREASURE_BOX)."""
+	if not srcVnum or not dstVnum or srcVnum == dstVnum:
+		return False
+	item.SelectItem(srcVnum)
+	if item.GetItemType() != TREASURE_KEY_TYPE:
+		return False
+	item.SelectItem(dstVnum)
+	return item.GetItemType() == TREASURE_BOX_TYPE
 
 
 # ---------------------------------------------------------------- the cursor
@@ -390,6 +414,9 @@ def DropOnPlayerItem(attachedType, attachedPos, cell):
 		net.SendItemMovePacket(window, attachedPos, player.INVENTORY, cell, count)
 		return True
 	if player.IsEquipmentSlot(cell):
+		return True
+	if IsKeyOnBox(srcVnum, dstVnum):	# MT2009_PLUS_EKWIPUNEK_KEYS_V1: a stored key opens the bag's box
+		net.SendItemUseToItemPacket(window, attachedPos, player.INVENTORY, cell)
 		return True
 	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: a refine scroll from the materials' storage
 	# opens the refine window for the item (the server takes the scroll from here)
@@ -1095,7 +1122,9 @@ class EkwipunekWindow(ui.ScriptWindow):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_IN_USE)
 			Deattach()
 			return
-		if vnum and targetVnum and targetVnum != vnum and item.IsRefineScroll(vnum) and \
+		# MT2009_PLUS_EKWIPUNEK_KEYS_V1: a key (from the bag or a storage) dropped on a box here opens it
+		keyOnBox = vnum and targetVnum and IsKeyOnBox(vnum, targetVnum)
+		if (keyOnBox or (vnum and targetVnum and targetVnum != vnum and item.IsRefineScroll(vnum))) and \
 				(attachedType == player.SLOT_TYPE_INVENTORY or IsEkwSlotType(attachedType)):
 			if attachedType == player.SLOT_TYPE_INVENTORY:
 				srcWindow = player.INVENTORY

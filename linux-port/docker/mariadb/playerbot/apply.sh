@@ -5190,6 +5190,17 @@ if [ -s /opt/playerbot/drop307.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_STACK307_V1 (a player's report on Yohara 3.0.7, 3 November 2026): stack307.sql - Charyzma / Inspiracja
+# 50338-50343 and Zwoj Skarbu (Stopien A) 70434 stack (200; the scroll without its 3-day limit, the held ones' end time
+# cleared). After drop307.sql. Idempotent.
+if [ -s /opt/playerbot/stack307.sql ]; then
+    if db < /opt/playerbot/stack307.sql; then
+        echo "[playerbot-migrate] stack 3.0.7: Charyzma / Inspiracja and Zwoj Skarbu (Stopien A) stack"
+    else
+        fail_step "stack 3.0.7: stack307.sql failed (MT2009_PLUS_STACK307_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_SMALL_BLESSING_V1 (the owner, 3 November 2026): male_blogoslawienstwo.sql - Male Blogoslawienstwo 72351,
 # the SAPPHIRE calendar's Tuesday / Thursday drop (71052 with a 10% chance, server-patches/maleblog). Idempotent.
 if [ -s /opt/playerbot/male_blogoslawienstwo.sql ]; then

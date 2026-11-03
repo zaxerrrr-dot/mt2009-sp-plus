@@ -1018,9 +1018,10 @@ class CollectorWindow(ui.BoardWithTitleBar):
 	@staticmethod
 	def __Refused(vnum):
 		"""What the server refuses whatever happens: ANTI_SAFEBOX - except the
-		Zodiac Insignia 33001-33024 (MT2009_PLUS_COLLECTOR_ZODIAC_V1, the
-		server's StorableDespiteSafeboxFlag)."""
-		if 33001 <= vnum <= 33024:
+		Zodiac Insignia 33001-33024 (MT2009_PLUS_COLLECTOR_ZODIAC_V1) and Topaz
+		Woli 72353 (MT2009_PLUS_COLLECTOR_TOPAZ_V1) - the server's
+		StorableDespiteSafeboxFlag."""
+		if 33001 <= vnum <= 33024 or vnum == 72353:
 			return False
 		try:
 			item.SelectItem(vnum)
