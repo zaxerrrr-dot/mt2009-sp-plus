@@ -22,6 +22,7 @@ import uiAttributeList
 import utils
 import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 import riposty # MT2009_PLUS_RIPOSTY_V1
+import skillhack # MT2009_PLUS_SKILL_HACK_V1
 import questrenewal # MT2009_PLUS_QUEST_RENEWAL_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
@@ -182,6 +183,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 	PAGE_SLOT_COUNT = 12
 	PAGE_HORSE = 2
+	PAGE_FOREIGN = 3 # MT2009_PLUS_SKILL_HACK_V1: the other path's tab (skillhack.py)
 
 	SKILL_GROUP_NAME_DICT = {
 		playerSettingModule.JOB_WARRIOR	: { 1 : localeInfo.SKILL_GROUP_WARRIOR_1,	2 : localeInfo.SKILL_GROUP_WARRIOR_2, },
@@ -272,6 +274,7 @@ class CharacterWindow(ui.ScriptWindow):
 		self.supportSkillPointValue = None
 		self.skillGroupButton1 = None
 		self.skillGroupButton2 = None
+		self.skillGroupButton3 = None # MT2009_PLUS_SKILL_HACK_V1
 		self.activeSkillGroupName = None
 
 		self.guildNameSlot = None
@@ -337,6 +340,8 @@ class CharacterWindow(ui.ScriptWindow):
 		self.supportSkillPointValue = self.GetChild("Support_Skill_Point_Value")
 		self.skillGroupButton1 = self.GetChild("Skill_Group_Button_1")
 		self.skillGroupButton2 = self.GetChild("Skill_Group_Button_2")
+		self.skillGroupButton3 = self.GetChild("Skill_Group_Button_3") # MT2009_PLUS_SKILL_HACK_V1
+		self.skillGroupButton3.Hide()
 		self.activeSkillGroupName = self.GetChild("Active_Skill_Group_Name")
 
 		self.sprintOnboardingTint = self.GetChild("SprintOnboardingTint")
@@ -399,6 +404,7 @@ class CharacterWindow(ui.ScriptWindow):
 		self.skillGroupButton = (
 			self.GetChild("Skill_Group_Button_1"),
 			self.GetChild("Skill_Group_Button_2"),
+			self.GetChild("Skill_Group_Button_3"), # MT2009_PLUS_SKILL_HACK_V1
 		)
 
 
@@ -1459,7 +1465,9 @@ class CharacterWindow(ui.ScriptWindow):
 			# MT2009_PLUS_RIPOSTY_V1 / MT2009_PLUS_SKILL_WINDOW_V1: places 7 / 8 show the known riposte / boost (their
 			# hidden slots), place 9 the 9th skill (slot 7) - riposty.SourceSlot
 			srcSlotIndex = slotIndex
-			if "ACTIVE" == name and self.PAGE_HORSE != self.curSelectedSkillGroup:
+			if "ACTIVE" == name and self.PAGE_FOREIGN == self.curSelectedSkillGroup:
+				srcSlotIndex = skillhack.SourceSlot(slotIndex) # MT2009_PLUS_SKILL_HACK_V1: the other path's tab
+			elif "ACTIVE" == name and self.PAGE_HORSE != self.curSelectedSkillGroup:
 				srcSlotIndex = riposty.SourceSlot(slotIndex)
 			skillIndex = getSkillIndex(srcSlotIndex)
 			if "SUPPORT" == name and 0 == skillIndex:
@@ -1508,7 +1516,16 @@ class CharacterWindow(ui.ScriptWindow):
 					else:
 						skillPage.SetSlotCountNew(realSlotIndex, skillGrade, skillLevel)
 
-					if app.ENABLE_SLOT_WINDOW_EX:
+					if "ACTIVE" == name and skillhack.Applies():
+						# MT2009_PLUS_SKILL_HACK_V1: with the second tab a place shows another skill after a tab change -
+						# its own cooldown and toggle state from the exe, not the place's previous one
+						if j == min(skillGrade, skill.SKILL_GRADE_COUNT-1):
+							if player.IsSkillActive(srcSlotIndex):
+								skillPage.ActivateSlot(realSlotIndex)
+							if player.IsSkillCoolTime(srcSlotIndex):
+								coolTime, elapsedTime = player.GetSkillCoolTime(srcSlotIndex)
+								skillPage.SetSlotCoolTime(realSlotIndex, coolTime, elapsedTime)
+					elif app.ENABLE_SLOT_WINDOW_EX:
 						isActive = activeList.get(realSlotIndex, False)
 						coolTime,elapsedTime = cooltmList.get(realSlotIndex, (0,0))
 						if isActive:
@@ -1581,7 +1598,9 @@ class CharacterWindow(ui.ScriptWindow):
 			for i in xrange(self.PAGE_SLOT_COUNT):
 				slotIndex = i + startSlotIndex
 				srcSlotIndex = slotIndex
-				if "ACTIVE" == name:
+				if "ACTIVE" == name and self.PAGE_FOREIGN == self.curSelectedSkillGroup:
+					srcSlotIndex = skillhack.SourceSlot(slotIndex) # MT2009_PLUS_SKILL_HACK_V1: the other path's tab
+				elif "ACTIVE" == name:
 					srcSlotIndex = riposty.SourceSlot(slotIndex) # MT2009_PLUS_SKILL_WINDOW_V1: places 7 / 8 / 9 - riposte, boost, 9th skill
 				skillIndex = player.GetSkillIndex(srcSlotIndex)
 				skillGrade = player.GetSkillGrade(srcSlotIndex)
@@ -1684,7 +1703,10 @@ class CharacterWindow(ui.ScriptWindow):
 		## ACTIVE
 		if skill.SKILL_TYPE_ACTIVE == skillType:
 			skillGrade = player.GetSkillGrade(slotIndex)
-			slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
+			place = self.__SourceSlotToPlace(slotIndex)
+			if not place: # MT2009_PLUS_SKILL_HACK_V1: a skill of the tab not shown (its state comes back with the tab)
+				return
+			slotIndex = self.__GetRealSkillSlot(skillGrade, place)
 		## ETC
 		else:
 			slotIndex = self.__GetETCSkillRealSlotIndex(slotIndex)
@@ -1696,7 +1718,10 @@ class CharacterWindow(ui.ScriptWindow):
 
 	def OnActivateSkill(self, slotIndex):
 		skillGrade = player.GetSkillGrade(slotIndex)
-		slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
+		place = self.__SourceSlotToPlace(slotIndex)
+		if not place: # MT2009_PLUS_SKILL_HACK_V1
+			return
+		slotIndex = self.__GetRealSkillSlot(skillGrade, place)
 
 		for slotWindow in self.skillPageDict.values():
 			if slotWindow.HasSlot(slotIndex):
@@ -1705,7 +1730,10 @@ class CharacterWindow(ui.ScriptWindow):
 
 	def OnDeactivateSkill(self, slotIndex):
 		skillGrade = player.GetSkillGrade(slotIndex)
-		slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
+		place = self.__SourceSlotToPlace(slotIndex)
+		if not place: # MT2009_PLUS_SKILL_HACK_V1
+			return
+		slotIndex = self.__GetRealSkillSlot(skillGrade, place)
 
 		for slotWindow in self.skillPageDict.values():
 			if slotWindow.HasSlot(slotIndex):
@@ -1814,6 +1842,18 @@ class CharacterWindow(ui.ScriptWindow):
 		self.__SetSkillGroupName(race, group)
 
 		## Skill
+		# MT2009_PLUS_SKILL_HACK_V1: the other path's tab keeps the shown tab; without it the tab is gone (switched off)
+		if 0 != group and skillhack.Applies():
+			button = 0
+			if self.PAGE_FOREIGN == self.curSelectedSkillGroup:
+				button = 1
+			elif self.PAGE_HORSE == self.curSelectedSkillGroup and self.__CanUseHorseSkill():
+				button = 2
+			self.__SelectSkillGroup(button)
+			return
+		if self.PAGE_FOREIGN == self.curSelectedSkillGroup:
+			self.curSelectedSkillGroup = 0
+
 		if 0 == group:
 			self.__SelectSkillGroup(0)
 
@@ -1831,6 +1871,19 @@ class CharacterWindow(ui.ScriptWindow):
 			return
 
 		nameList = self.SKILL_GROUP_NAME_DICT[job]
+
+		# MT2009_PLUS_SKILL_HACK_V1: the third button only with the other path's tab
+		self.skillGroupButton3.Hide()
+		if 0 != group and skillhack.Applies():
+			self.activeSkillGroupName.Hide()
+			self.skillGroupButton1.SetText(nameList.get(group, "Noname"))
+			self.skillGroupButton2.SetText(skillhack.OtherGroupName(nameList))
+			self.skillGroupButton1.Show()
+			self.skillGroupButton2.Show()
+			if self.__CanUseHorseSkill():
+				self.skillGroupButton3.SetText(localeInfo.SKILL_GROUP_HORSE)
+				self.skillGroupButton3.Show()
+			return
 
 		if 0 == group:
 			self.skillGroupButton1.SetText(nameList[1])
@@ -1871,6 +1924,22 @@ class CharacterWindow(ui.ScriptWindow):
 		for btn in self.skillGroupButton:
 			btn.SetUp()
 		self.skillGroupButton[index].Down()
+
+		# MT2009_PLUS_SKILL_HACK_V1: [main path] [other path] [horse] - the main path stays registered under the other
+		# path's tab (its skills keep slots 1-14, the other path's are 61-67)
+		if skillhack.Applies():
+			group = net.GetMainActorSkillGroup()
+			if 1 == index:
+				self.curSelectedSkillGroup = self.PAGE_FOREIGN
+				self.__SetSkillSlotData(net.GetMainActorRace(), group, net.GetMainActorEmpire())
+				return
+			if 2 == index and self.__CanUseHorseSkill():
+				index = self.PAGE_HORSE
+			else:
+				index = group - 1
+			self.curSelectedSkillGroup = index
+			self.__SetSkillSlotData(net.GetMainActorRace(), index+1, net.GetMainActorEmpire())
+			return
 
 		if self.__CanUseHorseSkill():
 			if 0 == index:
@@ -1930,12 +1999,19 @@ class CharacterWindow(ui.ScriptWindow):
 			return realSkillSlot
 		if self.PAGE_HORSE == self.curSelectedSkillGroup:
 			return realSkillSlot + self.ACTIVE_PAGE_SLOT_COUNT
+		if self.PAGE_FOREIGN == self.curSelectedSkillGroup: # MT2009_PLUS_SKILL_HACK_V1: the other path's tab
+			return skillhack.SourceSlot(realSkillSlot % skill.SKILL_GRADE_STEP_COUNT)
 		return riposty.SourceSlot(realSkillSlot % skill.SKILL_GRADE_STEP_COUNT)
 
 	def __SourceSlotToPlace(self, srcSlotIndex):
 		# MT2009_PLUS_SKILL_WINDOW_V1: the place of the active page that shows a skill slot (the 9th skill's 7 -> 9)
 		if self.PAGE_HORSE == self.curSelectedSkillGroup:
 			return srcSlotIndex
+		# MT2009_PLUS_SKILL_HACK_V1: 0 - the skill is on the tab not shown (the other path's / the main path's)
+		if self.PAGE_FOREIGN == self.curSelectedSkillGroup:
+			return skillhack.PlaceOfSource(srcSlotIndex)
+		if skillhack.IsForeignSlot(srcSlotIndex):
+			return 0
 		return riposty.PlaceOfSource(srcSlotIndex)
 
 	def __GetSkillGradeFromSlot(self, skillSlot):
