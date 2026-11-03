@@ -320,9 +320,17 @@ bool BagCell(LPCHARACTER ch, int cell)
 const DWORD ZODIAC_INSIGNIA_FIRST = 33001;
 const DWORD ZODIAC_INSIGNIA_LAST = 33024;
 
+// MT2009_PLUS_COLLECTOR_TOPAZ_V1 (a player's report on Yohara 3.0.7, 3 November 2026: "Topazu Woli nie da sie
+// wlozyc do Kolekcjonera"): Topaz Woli 72353, the Talizman Woli's refine material (6 x (N+1) a step, dropped by the
+// dozen on the Yohara maps), carries ANTI_SAFEBOX as on the wiki ("Magazynowanie: nie") together with ANTI_GIVE, DROP
+// and MYSHOP - bound to the account, as the Insignia. The classic safebox keeps refusing it; the collector's store
+// (the account's own, nothing in it changes hands) takes it as it takes the Insignia. The client's window knows it
+// too (uicollector.py, __Refused).
+const DWORD TOPAZ_WOLI = 72353;
+
 bool StorableDespiteSafeboxFlag(DWORD vnum)
 {
-	return vnum >= ZODIAC_INSIGNIA_FIRST && vnum <= ZODIAC_INSIGNIA_LAST;
+	return (vnum >= ZODIAC_INSIGNIA_FIRST && vnum <= ZODIAC_INSIGNIA_LAST) || vnum == TOPAZ_WOLI;
 }
 
 // Whether this bag item may go into the store: the classic safebox's rules.
