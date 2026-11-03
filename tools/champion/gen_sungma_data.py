@@ -60,7 +60,7 @@ def _r(a, b):
 
 # map index: (map name, ordinary monsters of its regen, stones, bosses)
 SUNGMA_MAP_SPAWNS = {
-    374: ("metin2_map_empirecastle", _r(6686, 6690) + _r(6693, 6697) + [6700], [8067], [6691, 6692, 6698, 6699]),
+    374: ("metin2_map_empirecastle", _r(6686, 6690) + _r(6693, 6697) + [6700], [8067], [6691, 6698, 6699]),	# 6692 King Bao (Quest): 1, as the pl-wiki (owner 3 Nov)
     373: ("metin2_map_eastplain_01", _r(6700, 6704) + _r(6710, 6715), [8067, 8625], [6705, 6706, 6716, 6717]),
     376: ("metin2_map_eastplain_02", _r(6718, 6722), [8063, 8067, 8626], [6723, 6724]),
     377: ("metin2_map_eastplain_03", _r(6700, 6704) + _r(6710, 6714) + _r(6718, 6722) + _r(6725, 6729),

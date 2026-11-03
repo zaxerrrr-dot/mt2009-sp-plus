@@ -119,11 +119,15 @@ add('char.cpp', 'mall att error',
     "\t\t\tlimit = 20;\n"
     "\t\t\tmax_val = 50;\n",
     "\t\tcase POINT_MALL_ATTBONUS:\n"
+    "\t\t\t// MT2009_PLUS_PD_BONUS_V1 (mall att error): a young heroes' weapon (+50) with Atak Boga Smokow (+15/20) is\n"
+    "\t\t\t// 65-70 by the rules and flooded syserr with POINT_ERROR type 114 on every hit; and a hit counted only 20 of it\n"
+    "\t\t\t// (the owner, 3 November 2026: \"jesli pokazuje 50% ataku, tak ma dawac\"). Both are PointChange's own cap now.\n"
+    "\t\t\tlimit = 100;\n"
+    "\t\t\tmax_val = 100;\n"
+    "\t\t\tbreak;\n"
+    "\n"
     "\t\tcase POINT_MALL_DEFBONUS:\n"
     "\t\t\tlimit = 20;\n"
-    "\t\t\t// MT2009_PLUS_PD_BONUS_V1 (mall att error): the error threshold is PointChange's own cap (100) - a young heroes'\n"
-    "\t\t\t// weapon (+50) with Atak Boga Smokow (+15/20) is 65-70 by the rules and flooded syserr with POINT_ERROR type 114\n"
-    "\t\t\t// on every hit. What counts in a hit stays the limit above.\n"
     "\t\t\tmax_val = 100;\n")
 
 # 5. The bonus maxima of this world (item_attr / item_attr_rare as loaded) for the tooltip's gold line (mt2009_attrmax.cpp).
