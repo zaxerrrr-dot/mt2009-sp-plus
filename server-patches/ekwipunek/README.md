@@ -85,8 +85,32 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   wystawione w sklepie gracza, zablokowane przed sortowaniem (Alt+LPM) i te, dla których magazyn jest pełny (czat
   podaje liczby i pełne kategorie). Tylko prawdziwy gracz z nowym exe.
 
+## Poprawki 3.0.7 (lista właściciela z 03.11.2026, sekcja B – `MT2009_PLUS_EKWIPUNEK_CATS_V2`)
+
+- **Kategorie** (`Mt2009EkwCategoryOf` i `uiekwipunek.CategoryOf` w parze): do **Zaczarowania** także Pozwolenia
+  (30368–30370), Marmur Błogosławieństwa (`USE_ADD_ATTRIBUTE2`), Błogosławieństwo Przedmiotu 71052, odłamki 6/7
+  39070–39081 (wszystkie kolory, lśniące, Święty), suplementy 72064–72067, Wzmocnienie Przedmiotu i Zielona Siła
+  (`USE_ADD_ATTRIBUTE`), Zaczaruj / Transformuj kostium (`USE_CHANGE_COSTUME_ATTR` / `USE_RESET_COSTUME_ATTR`); do
+  **Ulepszaczy** runy aury 49990–49995 (po vnumie); do **Ksiąg** receptury zielarstwa (`USE_CRAFT_RECIPE`, 50910).
+  **Zwoje ulepszania** (`USE_TUNING`: Zwój Błogosławieństwa, Zwój Boga Smoków, Magiczny Kamień…) i Kamień Runiczny
+  31225 zostają w torbie; te, które już leżą w Ulepszaczach, zostają tam (przeciąganie / prawy klik do torby, ulepszanie
+  z magazynu działa jak wcześniej).
+- **Przeniesienie po zmianie kategorii** (`Mt2009EkwRecategorize`): przy każdym `/ekwipunek hello` przedmioty magazynów,
+  których kategoria jest teraz inna (np. Pozwolenia i odłamki z Ulepszaczy), idą do nowego magazynu (najpierw do stosów,
+  potem wolne pole; bez miejsca zostają). Bez SQL – zrobi się samo przy wejściu do gry. Boty: przebieg
+  `ManagePlayerBotEkwipunek` przenosi je tak samo (bez kategorii – do torby); zaczarowania-materiały (Pozwolenia,
+  odłamki, suplementy) i receptury to dla bota „towar” (`IsPlayerBotEkwWorkingStock`).
+- **Okno**: bez przycisków Kostiumy / Alchemia / ItemShop (drugi rząd ma same Skrzynie); księga umiejętności ma ikonę
+  swojej umiejętności jak w torbie; „Sortuj” sortuje wszystkie kategorie naraz (`/ekwipunek sortuj wszystko`).
+- **Ctrl + PPM w torbie** przy otwartym oknie: przedmiot do swojej kategorii (`/ekwipunek doekw <pole>`; skrzynia
+  przenoszona, nie otwierana).
+- **Seon-Hae**: suplement przeciągnięty z zakładki prosto na pole dodatku (`/seonhae add … <okno dodatku>`, piąte słowo
+  opcjonalne – stary klient bez zmian).
+- **Wytwarzanie u NPC** (kowal, kucharz, alchemicy – `crafting.lua`): serwer już liczył i zabierał materiały z magazynów
+  (`CountSpecifyItem` / `RemoveSpecifyItem`); okno (`uicuberenewal.CraftingRenewalWindow`) liczy je teraz też.
+
 ## Komendy
 
-`/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>`, `/ekwipunek stos <okno>`, `/ekwipunek dotorby <okno> <pole>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,
+`/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>|wszystko`, `/ekwipunek doekw <pole torby>`, `/ekwipunek stos <okno>`, `/ekwipunek dotorby <okno> <pole>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,
 `/ekwipunek kostka <pole kostki> <okno> <pole>`, `/ekwipunek przenies [keep=<hex>]` – wysyłają je `uiekwipunek.py`,
 `uicube.py`, `inventoryarrange.py`. Serwer → klient: `ekwipunek_ok <strony>`, `ekwipunek_refine <okno>`.

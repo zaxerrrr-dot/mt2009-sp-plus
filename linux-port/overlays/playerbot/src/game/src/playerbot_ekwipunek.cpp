@@ -9,10 +9,14 @@
 // appended the same way, ekwipunek.sql), four pages of 5 x 9 cells each (SPECIAL_INVENTORY_MAX_NUM 180), items of one
 // category only:
 //   UPGRADE_INVENTORY  ITEM_MATERIAL / MATERIAL_LEATHER (the refine materials) and Ameria's 27987, 27799, 70031,
-//                      27992-27994; here also the refine scrolls (ITEM_USE / USE_TUNING, MT2009_PLUS_EKWIPUNEK_REFINE_V1);
-//   BOOK_INVENTORY     ITEM_SKILLBOOK and Ameria's extra books 50301-50303;
+//                      27992-27994, the aura runes; the refine scrolls (ITEM_USE / USE_TUNING) went here from
+//                      MT2009_PLUS_EKWIPUNEK_REFINE_V1 until MT2009_PLUS_EKWIPUNEK_CATS_V2 (3 November 2026: in the bag);
+//   BOOK_INVENTORY     ITEM_SKILLBOOK and Ameria's extra books 50301-50303, every read book, the herbalism recipes;
 //   STONE_INVENTORY    ITEM_METIN / METIN_NORMAL (the soul stones);
-//   CHANGE_INVENTORY   ITEM_USE / USE_CHANGE_ATTRIBUTE (Zaczarowanie przedmiotu) and Ameria's 72346;
+//   CHANGE_INVENTORY   ITEM_USE / USE_CHANGE_ATTRIBUTE (Zaczarowanie przedmiotu) and Ameria's 72346; since
+//                      MT2009_PLUS_EKWIPUNEK_CATS_V2 also the Pozwolenia, Marmur Blogoslawienstwa, Blogoslawienstwo
+//                      Przedmiotu, the 6/7 shards and supplements, Wzmocnienie Przedmiotu, Zielona Sila and the costume
+//                      enchant / transform (Mt2009EkwCategoryOf);
 //   CHEST_INVENTORY    ITEM_GIFTBOX (the chests).
 // Ameria's sixth window, COSTUME_INVENTORY, is left out: its CItem::IsCostume() returns false before anything else
 // ("when create false for to inv"), so Ameria never fills it.
@@ -36,8 +40,12 @@
 // a bag stay there - Ameria has no button that moves them (a drag does).
 //
 // Commands (root/uiekwipunek.py):
-//   /ekwipunek hello                              this client knows the windows - route from now on
-//   /ekwipunek sortuj <window>                    Ameria's two buttons in one: stacks joined, then sorted by kind
+//   /ekwipunek hello                              this client knows the windows - route from now on (and the stored
+//                                                 items whose category moved go to their storage, Mt2009EkwRecategorize)
+//   /ekwipunek sortuj <window>|wszystko           Ameria's two buttons in one: stacks joined, then sorted by kind (every
+//                                                 storage at once with "wszystko", MT2009_PLUS_EKWIPUNEK_CATS_V2)
+//   /ekwipunek doekw <cell>                       Ctrl + right click on a bag item with the window open: into its
+//                                                 storage (MT2009_PLUS_EKWIPUNEK_CATS_V2)
 //   /ekwipunek sprzedaj <window> <cell> <count>   the NPC shop's sale from a storage (CShopManager::Sell)
 //   /ekwipunek kostka <cube index> <window> <cell> an item of a storage into the crafting window (Cube_add_item)
 //   /ekwipunek stos <window>                      Ameria's "stack" button: the stacks joined (MT2009_PLUS_EKWIPUNEK_LOOK_V1)
@@ -105,6 +113,33 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 			return CHANGE_INVENTORY;
 	}
 
+	// MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner's list of 3 November 2026, section B): the categories as the owner sorts
+	// them. Kept with root/uiekwipunek.py (CategoryOf, CHANGE_VNUMS, UPGRADE_VNUMS, BAG_VNUMS) in step.
+	//  - Zaczarowanie (CHANGE_INVENTORY): besides the change stones (USE_CHANGE_ATTRIBUTE) the Pozwolenia 30368-30370,
+	//    Marmur Blogoslawienstwa (USE_ADD_ATTRIBUTE2), Blogoslawienstwo Przedmiotu 71052, the 6/7 bonus shards
+	//    39070-39081 (every colour, the shining ones and Swiety), the Seon-Hae supplements 72064-72067, Wzmocnienie
+	//    Przedmiotu and Zielona Sila (USE_ADD_ATTRIBUTE), Zaczaruj / Transformuj kostium (USE_CHANGE_COSTUME_ATTR /
+	//    USE_RESET_COSTUME_ATTR). The Pozwolenia, shards and supplements are ITEM_MATERIAL - they went with the refine
+	//    materials before; Mt2009EkwRecategorize moves those already stored there.
+	//  - Ulepszacze (UPGRADE_INVENTORY): the aura runes 49990-49995 by name (they are ITEM_MATERIAL as well); the refine
+	//    scrolls (USE_TUNING: Zwoj Blogoslawienstwa, Zwoj Boga Smokow, Magiczny Kamien...) and Kamien Runiczny 31225
+	//    stay in the bag - "zostaja w glownym EQ"; those stored before stay where they are and are dragged out.
+	//  - Ksiegi (BOOK_INVENTORY): the herbalism recipes (USE_CRAFT_RECIPE 50909-50947) and Losowa Receptura 50910.
+	if ((dwVnum >= 30368 && dwVnum <= 30370)	// Pozwolenie na Wzmocnienie (x2) / na Zaczarowanie Przedmiotu
+		|| dwVnum == 71052	// Blogoslawienstwo Przedmiotu
+		|| (dwVnum >= 39070 && dwVnum <= 39081)	// the 6/7 bonus shards (Szary .. Teczowy, Lsniace, Swiety)
+		|| (dwVnum >= 72064 && dwVnum <= 72067))	// Maly / Sredni / Duzy / Silny Suplement
+		return CHANGE_INVENTORY;
+	if (bType == ITEM_USE && (bSubType == USE_ADD_ATTRIBUTE || bSubType == USE_ADD_ATTRIBUTE2
+			|| bSubType == USE_CHANGE_COSTUME_ATTR || bSubType == USE_RESET_COSTUME_ATTR))
+		return CHANGE_INVENTORY;
+	if (dwVnum >= 49990 && dwVnum <= 49995)	// Lodowa / Ognista Runa Aury
+		return UPGRADE_INVENTORY;
+	if (dwVnum == 31225)	// Kamien Runiczny
+		return 0;
+	if ((bType == ITEM_USE && bSubType == USE_CRAFT_RECIPE) || dwVnum == 50910)
+		return BOOK_INVENTORY;
+
 	// MT2009_PLUS_EKWIPUNEK_BOOKS_V1: every book that is read goes with the books (the owner, 21 October 2026: "Ksiegi
 	// Precyzji nie wchodza do dodatkowego ekwipunku" - Ameria's rule, ITEM_SKILLBOOK and 50301-50303, missed the books
 	// our client and Yohara have of other types). Kept with root/uiekwipunek.py (CategoryOf, BOOK_VNUMS) in step.
@@ -129,12 +164,10 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 
 	if (bType == ITEM_MATERIAL && bSubType == MATERIAL_LEATHER)
 		return UPGRADE_INVENTORY;
-	// MT2009_PLUS_EKWIPUNEK_REFINE_V1 (category): the refine scrolls and stones used on an item (ITEM_USE / USE_TUNING -
-	// Zwoj Blogoslawienstwa, Magiczny Kamien, Podrecznik Kowala, Zwoj Wojny, Zwoj Boga Smokow, Kamien Rytualny,
-	// Gwarancja Rzemiosla) - in none of Ameria's categories; with the materials, since they are refined from there
-	// (the owner, 21 October 2026: "jak ulepszacz jest w dodatkowym EQ, to mozna ulepszac").
-	if (bType == ITEM_USE && bSubType == USE_TUNING)
-		return UPGRADE_INVENTORY;
+	// MT2009_PLUS_EKWIPUNEK_REFINE_V1 (category) put the refine scrolls (ITEM_USE / USE_TUNING) with the materials; since
+	// MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Zwoj Blogoslawienstwa, Zwoj Boga Smokow, Kamien Runiczny
+	// i inne ulepszajace zostaja w glownym EQ") they stay in the bag. A scroll already in the storage still refines from
+	// there (the REFINE edits) and is dragged or right-clicked out into the bag.
 	if (bType == ITEM_SKILLBOOK)
 		return BOOK_INVENTORY;
 	if (bType == ITEM_METIN && bSubType == METIN_NORMAL)
@@ -769,6 +802,122 @@ static void EkwMoveBagToStorages(LPCHARACTER ch, const std::string& keep)
 	}
 }
 
+// MT2009_PLUS_EKWIPUNEK_CATS_V2: the storages' items whose category moved (the owner, 3 November 2026: the Pozwolenia,
+// shards and supplements "lezace w Ulepszaczach przeniesc" to Zaczarowanie) go to their new storage - into its stacks of
+// the same item first, then a free cell; what has no room there stays. An item of no category any more (a refine
+// scroll) stays where it is - the owner: "te, ktore juz sa w Ulepszaczach - mozna przeciagnac do plecaka". Run at every
+// "/ekwipunek hello" (login and every warp; a few hundred cells, nothing to do once sorted), so a later category change
+// sorts itself too. Returns the items moved.
+int Mt2009EkwRecategorize(LPCHARACTER ch)
+{
+	if (!ch)
+		return 0;
+	LPSHOP pkMyShop = ch->GetMyShop();
+	int moved = 0;
+	for (BYTE w = UPGRADE_INVENTORY; w <= CHEST_INVENTORY; ++w)
+	{
+		for (WORD i = 0; i < SPECIAL_INVENTORY_MAX_NUM; ++i)
+		{
+			LPITEM item = ch->Mt2009SpecialGetItem(w, i);
+			if (!item || item->GetCell() != i || item->isLocked() || item->IsExchanging())
+				continue;
+			if (pkMyShop && pkMyShop->IsSellingItem(item->GetID()))
+				continue;
+			const BYTE bTarget = Mt2009EkwCategoryOfItem(item);
+			if (!bTarget || bTarget == w)
+				continue;
+
+			if (EkwStacks(item))
+			{
+				for (WORD j = 0; j < SPECIAL_INVENTORY_MAX_NUM && item; ++j)
+				{
+					LPITEM item2 = ch->Mt2009SpecialGetItem(bTarget, j);
+					if (!item2 || item2->GetVnum() != item->GetVnum() || !EkwSameSockets(item, item2))
+						continue;
+					if (item2->isLocked() || item2->IsExchanging() || item2->GetCount() >= item2->GetMaxStack())
+						continue;
+					const ITEM_COUNT add = MIN(item2->GetMaxStack() - item2->GetCount(), item->GetCount());
+					item2->SetCount(item2->GetCount() + add);
+					if (add >= item->GetCount())
+					{
+						item->SetCount(0);	// all of it joined - SetCount destroys it
+						item = NULL;
+						++moved;
+						break;
+					}
+					item->SetCount(item->GetCount() - add);
+				}
+				if (!item)
+					continue;
+			}
+
+			const int cell = ch->GetEmptySpecialInventory(bTarget, item->GetSize());
+			if (cell < 0)
+				continue;
+			item->RemoveFromCharacter();
+			item->AddToCharacter(ch, TItemPos(bTarget, cell));
+			ITEM_MANAGER::instance().FlushDelayedSave(item);
+			++moved;
+		}
+	}
+	if (moved)
+		sys_log(0, "EKWIPUNEK: recategorized pid=%u name=%s moved=%d", ch->GetPlayerID(), ch->GetName(), moved);
+	return moved;
+}
+
+// MT2009_PLUS_EKWIPUNEK_CATS_V2: Ctrl + right click on an item of the bag while the extra inventory's window is open
+// (root/uiinventory.py; the owner, 3 November 2026: "Ctrl+PPM w plecaku przy otwartym oknie dodatkowego EQ przenosi do
+// kategorii (skrzynie tez - przenoszone, nie otwierane)") - "Przenies do extra EQ" for that one cell: into its storage's
+// stacks first, then a free cell; a full storage says so.
+static void EkwMoveCellToStorage(LPCHARACTER ch, int iCell)
+{
+	if (iCell < 0 || iCell >= ch->GetInventoryMaxCount() || iCell >= INVENTORY_MAX_NUM)
+		return;
+	LPITEM item = ch->GetInventoryItem(iCell);
+	if (!item || item->GetCell() != iCell || item->IsEquipped() || item->isLocked() || item->IsExchanging())
+		return;
+	LPSHOP pkMyShop = ch->GetMyShop();
+	if (pkMyShop && pkMyShop->IsSellingItem(item->GetID()))
+		return;
+	const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
+	if (!bWindow)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Ten przedmiot nie nale\277y do \277adnej kategorii dodatkowego ekwipunku.");
+		return;
+	}
+
+	if (EkwStacks(item))
+	{
+		for (WORD j = 0; j < SPECIAL_INVENTORY_MAX_NUM; ++j)
+		{
+			LPITEM item2 = ch->Mt2009SpecialGetItem(bWindow, j);
+			if (!item2 || item2->GetVnum() != item->GetVnum() || !EkwSameSockets(item, item2))
+				continue;
+			if (item2->isLocked() || item2->IsExchanging() || item2->GetCount() >= item2->GetMaxStack())
+				continue;
+			const ITEM_COUNT add = MIN(item2->GetMaxStack() - item2->GetCount(), item->GetCount());
+			item2->SetCount(item2->GetCount() + add);
+			if (add >= item->GetCount())
+			{
+				item->SetCount(0);	// gone - SetCount clears its quickslot and destroys it
+				return;
+			}
+			item->SetCount(item->GetCount() - add);
+		}
+	}
+
+	const int cell = ch->GetEmptySpecialInventory(bWindow, item->GetSize());
+	if (cell < 0)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Brak miejsca w kategorii: %s.", EkwStorageName(bWindow));
+		return;
+	}
+	ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, iCell, 255);
+	item->RemoveFromCharacter();
+	item->AddToCharacter(ch, TItemPos(bWindow, cell));
+	ITEM_MANAGER::instance().FlushDelayedSave(item);
+}
+
 // MT2009_PLUS_EKWIPUNEK_TOBAG_V1: a right click on an item of the extra inventory (root/uiekwipunek.py; the owner,
 // 21 October 2026: "prawy klik w dodatkowym ekwipunku ma przenosic przedmiot do glownego ekwipunku") - the whole stack
 // into the bag: first into the bag's stacks of the same item (same sockets), then the rest into the bag's first free
@@ -859,13 +1008,30 @@ ACMD(do_ekwipunek)
 	{
 		ch->SetSpecialStorageClient(true);
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "ekwipunek_ok %d", (int) SPECIAL_INVENTORY_PAGE_COUNT);
+		if (ch->IsItemLoaded() && ch->CanHandleItem() && !ch->GetExchange() && !ch->GetShop() && !ch->IsCubeOpen())
+			Mt2009EkwRecategorize(ch);	// MT2009_PLUS_EKWIPUNEK_CATS_V2: the items whose category moved
+		return;
+	}
+
+	// MT2009_PLUS_EKWIPUNEK_CATS_V2: "/ekwipunek doekw <cell>" - Ctrl + right click on a bag item with the window open
+	if (sub == "doekw")
+	{
+		int cell = -1;
+		if (!ch->Mt2009EkwRoutes() || !EkwParseInt(arg2, cell))
+			return;
+		if (ch->IsDead() || ch->GetExchange() || ch->GetShop() || ch->IsCubeOpen() || !ch->CanHandleItem())
+			return;
+		EkwMoveCellToStorage(ch, cell);
 		return;
 	}
 
 	if (sub == "sortuj")
 	{
+		// MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Sortuj sortuje wszystkie kategorie naraz"):
+		// "/ekwipunek sortuj wszystko" - every storage in one go (one 3 s clock for all of them)
+		const bool bAll = !strcmp(arg2, "wszystko");
 		BYTE bWindow = 0;
-		if (!EkwParseWindow(arg2, bWindow))
+		if (!bAll && !EkwParseWindow(arg2, bWindow))
 			return;
 		if (ch->IsDead() || ch->GetExchange() || ch->GetShop() || ch->IsOpenSafebox() || ch->IsCubeOpen() || !ch->CanHandleItem())
 		{
@@ -877,7 +1043,13 @@ ACMD(do_ekwipunek)
 			ch->ChatPacket(CHAT_TYPE_INFO, "Sortowac mozna raz na 3 sekundy.");
 			return;
 		}
-		EkwSort(ch, bWindow);
+		if (bAll)
+		{
+			for (BYTE w = UPGRADE_INVENTORY; w <= CHEST_INVENTORY; ++w)
+				EkwSort(ch, w);
+		}
+		else
+			EkwSort(ch, bWindow);
 		return;
 	}
 

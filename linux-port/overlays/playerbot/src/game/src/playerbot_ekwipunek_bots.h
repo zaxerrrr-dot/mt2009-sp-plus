@@ -59,6 +59,7 @@ namespace
 		int topUp = 0;			// a bag stack topped up from the storage
 		int refillGoods = 0;	// goods back into a roomy bag
 		int fetched = 0;		// PlayerBotEkwFetchVnum
+		int recategorized = 0;	// MT2009_PLUS_EKWIPUNEK_CATS_V2: a stored item whose category moved
 	};
 
 	bool ArePlayerBotEkwOff()
@@ -113,6 +114,9 @@ namespace
 					const DWORD skill = GetPlayerBotSkillBookSkillVnum(item);
 					return skill != 0 && IsPlayerBotOwnSkill(ch, skill);
 				}
+				// MT2009_PLUS_EKWIPUNEK_CATS_V2: the herbalism recipes are goods (no bot learns them)
+				if (item->GetType() == ITEM_USE)
+					return false;
 				return true;	// the general, horse, pet, mission books and the Forgetting Scroll
 			case STONE_INVENTORY:
 			{
@@ -123,7 +127,10 @@ namespace
 						 kind < mt2009_awakening::STONE_KINDS);	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: no step of Kamien Antymagii
 			}
 			case CHANGE_INVENTORY:
-				return true;
+				// MT2009_PLUS_EKWIPUNEK_CATS_V2: the change and add stones, the marbles, 71052 and the costume stones are
+				// used by the bag's cells; the Pozwolenia, 6/7 shards and supplements (ITEM_MATERIAL, with the refine
+				// materials before) are counted / fetched where they lie (CountSpecifyItem, FetchPlayerBotShopAidBagItem)
+				return item->GetType() != ITEM_MATERIAL;
 			case CHEST_INVENTORY:
 				return IsPlayerBotKeptCor(ch, item);
 		}
@@ -141,7 +148,7 @@ namespace
 			case UPGRADE_INVENTORY:
 				return proto->bType != ITEM_MATERIAL;
 			case BOOK_INVENTORY:
-				return proto->bType != ITEM_SKILLBOOK;
+				return proto->bType != ITEM_SKILLBOOK && proto->bType != ITEM_USE;	// MT2009_PLUS_EKWIPUNEK_CATS_V2: recipes
 			case STONE_INVENTORY:
 			{
 				int grade = 0, kind = 0;
@@ -149,7 +156,7 @@ namespace
 						(mt2009_awakening::IsRefinableStone(vnum, grade, kind) && kind < mt2009_awakening::STONE_KINDS);
 			}
 			case CHANGE_INVENTORY:
-				return true;
+				return proto->bType != ITEM_MATERIAL;	// MT2009_PLUS_EKWIPUNEK_CATS_V2
 			case CHEST_INVENTORY:
 				return IsPlayerBotOpenableCorVnum(vnum) && IsPlayerBotAlchemyUser(ch);
 		}
@@ -223,7 +230,8 @@ namespace
 		const int cell = ch->GetEmptySpecialInventory(bWindow, item->GetSize());
 		if (cell < 0)
 			return false;
-		ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, wFromCell, 255);
+		if (item->GetWindow() == INVENTORY)	// MT2009_PLUS_EKWIPUNEK_CATS_V2: a storage's item (recategorized) has no quickslot
+			ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, wFromCell, 255);
 		item->RemoveFromCharacter();
 		if (!item->AddToCharacter(ch, TItemPos(bWindow, (WORD)cell)))
 		{
@@ -899,6 +907,24 @@ namespace
 			LPITEM item = stored[i];
 			if (!IsPlayerBotEkwMovable(ch, item))
 				continue;
+			// MT2009_PLUS_EKWIPUNEK_CATS_V2 (3 November 2026): a stored item whose category moved - the Pozwolenia, shards
+			// and supplements from the materials' storage to Zaczarowanie, the refine scrolls (no category now) to the bag
+			{
+				const BYTE bNow = Mt2009EkwCategoryOfItem(item);
+				if (bNow != item->GetWindow())
+				{
+					bool bGone = false;
+					const bool bMoved = bNow ? PlayerBotEkwToStorage(ch, item, bNow, st, bGone)
+							: (freeNow >= PLAYERBOT_EKW_WORK_REFILL_MIN_FREE && PlayerBotEkwToBag(ch, item, st, bGone));
+					if (bMoved)
+					{
+						++moves;
+						++st.recategorized;
+						freeNow = CountPlayerBotFreeInventoryCells(ch);
+					}
+					continue;
+				}
+			}
 			const BYTE bWindow = item->GetWindow();
 			const bool work = IsPlayerBotEkwWorkingStock(ch, item, bWindow);
 			LPITEM bagStack = PlayerBotEkwStacks(item) ? PlayerBotEkwBagStackOf(ch, item) : NULL;
@@ -996,9 +1022,9 @@ namespace
 			return;
 		const int freeAfter = CountPlayerBotFreeInventoryCells(ch);
 		sys_log(0, "PLAYERBOT_EKW: pass pid=%u name=%s lv=%d free_before=%d free_after=%d stash_surplus=%d stash_goods=%d "
-				"joined_units=%d refill_work=%d topup=%d refill_goods=%d stored_cells=%d map=%ld",
+				"joined_units=%d refill_work=%d topup=%d refill_goods=%d recategorized=%d stored_cells=%d map=%ld",
 				pid, ch->GetName(), ch->GetLevel(), freeBefore, freeAfter, st.stashSurplus, st.stashGoods, st.joined,
-				st.refillWork, st.topUp, st.refillGoods, CountPlayerBotEkwStoredCells(ch), ch->GetMapIndex());
+				st.refillWork, st.topUp, st.refillGoods, st.recategorized, CountPlayerBotEkwStoredCells(ch), ch->GetMapIndex());
 	}
 }
 

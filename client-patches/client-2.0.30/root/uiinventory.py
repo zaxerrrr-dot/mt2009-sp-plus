@@ -3303,6 +3303,13 @@ class InventoryWindow(ui.ScriptWindow):
 			self.OverOutItem()
 			return
 
+		# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026): Ctrl + right click with the extra inventory's
+		# window open moves the item into its category (a chest too - moved, not opened; "/ekwipunek doekw")
+		if __import__("uiekwipunek").MoveBagItemByCtrl(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return
+
 		if self.__OpenAllByCtrl(slotIndex):	# MT2009_PLUS_OPEN_ALL_V1
 			return
 

@@ -179,7 +179,8 @@ def _BagCountsCube():
 
 
 def _BagCountsCraft():
-	# the inventory pages only - what crafting.lua's pc.count_item counts (uicraft.py: utils.CountItemCountInInventory)
+	# the inventory pages (uicraft.py: utils.CountItemCountInInventory) and the extra inventory - what crafting.lua's
+	# pc.count_item counts
 	counts = {}
 	try:
 		pageCount = player.INVENTORY_PAGE_COUNT - 1
@@ -192,6 +193,19 @@ def _BagCountsCraft():
 		vnum = player.GetItemIndex(i)
 		if vnum:
 			counts[vnum] = counts.get(vnum, 0) + player.GetItemCount(i)
+	# MT2009_PLUS_EKWIPUNEK_CATS_V2 (the owner, 3 November 2026: "Okna wytwarzania u NPC (kowal, kucharz, alchemicy...)
+	# licza i zabieraja materialy z dodatkowego EQ"): crafting.lua's pc.count_item / pc.remove_item are the engine's
+	# CountSpecifyItem / RemoveSpecifyItem, which count and take the extra inventory's storages too
+	# (server-patches/ekwipunek "count" / "remove") - the window counts them as well
+	try:
+		import uiekwipunek
+		for window, slotType, name, icon in uiekwipunek.Categories():
+			for pos in xrange(uiekwipunek.COLUMNS * uiekwipunek.ROWS * len(uiekwipunek.PAGE_NAMES)):
+				vnum = player.GetItemIndex(window, pos)
+				if vnum:
+					counts[vnum] = counts.get(vnum, 0) + player.GetItemCount(window, pos)
+	except Exception:
+		pass
 	return counts
 
 
