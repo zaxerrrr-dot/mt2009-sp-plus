@@ -5136,6 +5136,16 @@ if [ -s /opt/playerbot/drop307.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_SMALL_BLESSING_V1 (the owner, 3 November 2026): male_blogoslawienstwo.sql - Male Blogoslawienstwo 72351,
+# the SAPPHIRE calendar's Tuesday / Thursday drop (71052 with a 10% chance, server-patches/maleblog). Idempotent.
+if [ -s /opt/playerbot/male_blogoslawienstwo.sql ]; then
+    if db < /opt/playerbot/male_blogoslawienstwo.sql; then
+        echo "[playerbot-migrate] Male Blogoslawienstwo 72351: male_blogoslawienstwo.sql applied"
+    else
+        fail_step "Male Blogoslawienstwo: male_blogoslawienstwo.sql failed (MT2009_PLUS_SMALL_BLESSING_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
