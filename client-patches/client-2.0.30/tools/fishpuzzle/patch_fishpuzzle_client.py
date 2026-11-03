@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# MT2009_PLUS_FISH_PUZZLE_V1 - Event Rybacki - Puzzle (the owner, 3 November 2026; pl-wiki "Event Rybacki - Puzzle",
+# MT2009_PLUS_FISH_PUZZLE_V1 / V2 - Event Rybacki - Puzzle (the owner, 3 November 2026; pl-wiki "Event Rybacki - Puzzle",
 # "Pudlo wedkarskich puzzli", "Zl. Skrzynia na Ryby (D)") in the client's data. The server's side:
 # linux-port/docker/mariadb/playerbot/fish_puzzle.sql (world.item_proto - keep the two equal), server-patches/fishpuzzle.
 #
-#   25106  Pudlo wedkarskich puzzli     ITEM_QUEST, stack 200, no drop / sale / private shop: used, it opens the puzzle
-#   25107  Luks. pudlo wedk. puzzli     window (root/uifishpuzzle.py), where it is opened for a piece
+#   25106  Pudlo wedkarskich puzzli     ITEM_QUEST, stack 200; V2: the package's antiflags (no drop, no give, no private
+#   25107  Luks. pudlo wedk. puzzli     shop - its item_proto.txt); used, it opens the puzzle game (root/uifishpuzzle.py,
+#                                       uiminigamefishevent.py), where it is opened for a piece
 #   83001  Zl. Skrzynia na Ryby (M)     ITEM_GIFTBOX, one a slot, opened 1 / 2 / 3 times - the reward of a finished
 #   83002  Zl. Skrzynia na Ryby (S)     board by its attempts (25+ / 11-24 / 10 or fewer)
 #   83003  Zl. Skrzynia na Ryby (D)
@@ -22,13 +23,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 import patch_monstercard_client as base  # noqa: E402
 
 FLAG_STACKABLE = 4
-# no drop, sale, PK drop, private shop (= fish_puzzle.sql 82304); the chests: no stacking only (32768, as 50270)
-ANTI_BOX = 128 | 256 | 16384 | 65536
+# V2: the package's ANTI_DROP | ANTI_GIVE | ANTI_MYSHOP (= fish_puzzle.sql 73856); the chests: no stacking only (32768, as 50270)
+ANTI_BOX = 128 | 8192 | 65536
 ANTI_CHEST = 32768
-BOX_DESC = (u'Zawiera losowy element puzzli do zabawy w wędkarskie puzzle (Event Rybacki - Puzzle). Kliknij prawym '
-	u'przyciskiem myszy, aby otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.')
-DELUXE_DESC = (u'Zawiera luksusowy, duży element puzzli (3 x 2) do zabawy w wędkarskie puzzle (Event Rybacki - Puzzle). '
-	u'Kliknij prawym przyciskiem myszy, aby otworzyć okno puzzli.')
+BOX_DESC = (u'Zawiera losowy element do Wędkarskich Puzzli (Event Rybacki - Puzzle). Kliknij prawym przyciskiem '
+	u'myszy, aby otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.')
+DELUXE_DESC = (u'Zawiera duży element (3 x 2) do Wędkarskich Puzzli (Event Rybacki - Puzzle). Kliknij prawym '
+	u'przyciskiem myszy, aby otworzyć okno puzzli.')
 CHEST_DESC = u'Nagroda za ułożenie wędkarskich puzzli w %s. Można otworzyć %s.'
 # (vnum, name, Polish name, type, stack, antiflag, flags, icon, description)
 ITEMS = (

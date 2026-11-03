@@ -173,8 +173,29 @@ enum ESlotType
 #ifdef ENABLE_SWITCHBOT
 	SLOT_TYPE_SWITCHBOT,	// MT2009_PLUS_SWITCHBOT_V1 (slot type): root/uiswitchbot.py
 #endif
+#ifdef ENABLE_FISH_EVENT
+	SLOT_TYPE_FISH_EVENT,	// MT2009_PLUS_FISH_PUZZLE_V2 (slot type): the fish piece on the mouse (root/uiminigamefishevent.py)
+#endif
 	SLOT_TYPE_MAX,
 };
+
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2: PythonGridSlotWindow.cpp compares the attaching type with Locale_inc.h's number (the package's scale fix)
+static_assert(SLOT_TYPE_FISH_EVENT == MT2009_SLOT_TYPE_FISH_EVENT, "MT2009_SLOT_TYPE_FISH_EVENT (Locale_inc.h) must be SLOT_TYPE_FISH_EVENT");
+
+enum EFishEventInfo
+{
+	FISH_EVENT_SHAPE_NONE,
+	FISH_EVENT_SHAPE_1,
+	FISH_EVENT_SHAPE_2,
+	FISH_EVENT_SHAPE_3,
+	FISH_EVENT_SHAPE_4,
+	FISH_EVENT_SHAPE_5,
+	FISH_EVENT_SHAPE_6,
+	FISH_EVENT_SHAPE_7,
+	FISH_EVENT_SHAPE_MAX_NUM,
+};
+#endif
 
 #pragma pack (push, 1)
 #define WORD_MAX 0xffff

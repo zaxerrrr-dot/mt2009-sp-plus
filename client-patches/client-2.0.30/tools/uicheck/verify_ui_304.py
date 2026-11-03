@@ -40,8 +40,11 @@ FEATURES = [
     ('dmgprint+round306', ['game.py', 'interfacemodule.py', 'uiaffectbar.py', 'uiattributelist.py', 'uiautohunt.py',
                            'uisystem.py', 'uitooltip.py', 'uiaddeq.py', 'uiingameevent.py', 'keybind.py',
                            'uiscript/systemdialog.py']),
-    # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (the pictures in the pack "fishpuzzle", tools/fishpuzzle)
-    ('fishpuzzle', ['uifishpuzzle.py', 'uiscript/fishpuzzlewindow.py']),
+    # MT2009_PLUS_FISH_PUZZLE_V1 / V2: Event Rybacki - Puzzle, the package "Mini Game Fish Event (17.3)" (the pictures in the
+    # pack "fishpuzzle", tools/fishpuzzle; the completion effects and the page buttons in "minigames")
+    ('fishpuzzle', ['uifishpuzzle.py', 'uiminigame.py', 'uiminigamefishevent.py', 'uiscript/minigamewindow.py',
+                    'uiscript/minigamedialog.py', 'uiscript/minigamefishgamepage.py',
+                    'uiscript/minigamefisheventwaitingpage.py']),
 ]
 
 OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]

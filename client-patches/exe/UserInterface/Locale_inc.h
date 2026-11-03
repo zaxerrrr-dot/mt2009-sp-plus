@@ -365,5 +365,18 @@
 // RequestMoveGlobalQuickSlot / RequestUseGlobalQuickSlot and player.QUICKSLOT_COUNT_PER_LINE for root's expanded
 // quick slot bar (uitaskbar.py, 4 rows x 8). No packet or server change (40 slots on both sides already).
 #define ENABLE_QUICKSLOT_IMPROVE
+// MT2009_PLUS_FISH_PUZZLE_V2 (Event Rybacki - Puzzle, the owner's package "Mini Game Fish Event (17.3)" + its "FIX jigsaw SCALE"): the fish
+// jigsaw - packets CG 219 HEADER_CG_FISH_EVENT_SEND / GC 223 HEADER_GC_FISH_EVENT_INFO (Packet.h, free in our server's
+// packet.h too; the server sends GC 223 only after root's "/fishpuzzle hello"), net.SendUseFishBox / SendAddFishBox,
+// the game window's MiniGameFishEvent / MiniGameFishUse / MiniGameFishAdd / MiniGameFishReward, player.SLOT_TYPE_FISH_EVENT,
+// app.FISH_EVENT_SHAPE_1..7, app.ENABLE_MINI_GAME / ENABLE_FISH_EVENT (/ WJ_ENABLE_TRADABLE_ICON = 0), wndMgr.
+// SetPickedAreaRender / DeleteCoverButton / SetDisableDeattach and the grid slot's picked area for the 3-wide and the
+// L / Z pieces (PythonGridSlotWindow.cpp). Root: uiminigame.py, uiminigamefishevent.py, uifishpuzzle.py.
+#define ENABLE_MINI_GAME
+#define ENABLE_FISH_EVENT
+// The grid slot window (EterPythonLib) cannot see GameType.h: the slot type number of SLOT_TYPE_FISH_EVENT, checked by
+// a static_assert there - the package's "FIX jigsaw SCALE" ("dwAttachedType == 14/17/19": the number moves with every
+// slot type before it; ours: 0-11 the stock ones, 12-16 ENABLE_SPECIAL_STORAGE, 17 ENABLE_SWITCHBOT, 18 the fish piece).
+#define MT2009_SLOT_TYPE_FISH_EVENT 18
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

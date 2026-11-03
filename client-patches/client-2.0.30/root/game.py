@@ -2777,7 +2777,8 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiminigameyutnori").Register()
 				# MT2009_PLUS_WORLDBOSS_V1: the hub's Boss Swiata button opens its window (uiworldboss.py).
 				__import__("uiworldboss").Register()
-				# MT2009_PLUS_FISH_PUZZLE_V1: the hub's Event Rybacki - Puzzle button opens its window (uifishpuzzle.py).
+				# MT2009_PLUS_FISH_PUZZLE_V1 / V2: the hub's Event Rybacki - Puzzle button opens its window, and with the fish
+				# puzzle exe "/fishpuzzle hello" - the server sends its packets from now on (uifishpuzzle.py).
 				__import__("uifishpuzzle").Register()
 				# MT2009_PLUS_FISHING_RENEWAL_V1: "/fishren hello" - the server opens the new fishing minigame
 				# (uifishingrenewal.py) instead of the bar one from now on.
@@ -4378,9 +4379,23 @@ class GameWindow(ui.ScriptWindow):
 	def __WorldBoss(self, *args):
 		__import__("uiworldboss").OnCommand(*args)
 
-	# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle's lines (uifishpuzzle.py).
+	# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle's lines (uifishpuzzle.py) - V2: only "FP open".
 	def __FishPuzzle(self, *args):
 		__import__("uifishpuzzle").OnCommand(*args)
+
+	# MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle exe's calls (GC 223, the package's names) - uifishpuzzle.py, uiminigame.py,
+	# uiminigamefishevent.py.
+	def MiniGameFishEvent(self, isEnable, lastUseCount):
+		__import__("uifishpuzzle").OnEvent(self.interface, isEnable, lastUseCount)
+
+	def MiniGameFishUse(self, shape, useCount):
+		__import__("uifishpuzzle").OnUse(shape, useCount)
+
+	def MiniGameFishAdd(self, pos, shape):
+		__import__("uifishpuzzle").OnAdd(pos, shape)
+
+	def MiniGameFishReward(self, vnum):
+		__import__("uifishpuzzle").OnReward(vnum)
 
 	# MT2009_PLUS_FISHING_RENEWAL_V1: the new fishing minigame's lines - "start <token> <s> <hits>", "stop".
 	def __FishingRenewal(self, *args):

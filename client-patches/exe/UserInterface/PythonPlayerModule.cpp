@@ -2955,6 +2955,9 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "SWITCHBOT",					SWITCHBOT);
 	PyModule_AddIntConstant(poModule, "SLOT_TYPE_SWITCHBOT",			SLOT_TYPE_SWITCHBOT);
 #endif
+#ifdef ENABLE_FISH_EVENT
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_FISH_EVENT",			SLOT_TYPE_FISH_EVENT);	// MT2009_PLUS_FISH_PUZZLE_V2
+#endif
 
 	PyModule_AddIntConstant(poModule, "RESERVED_WINDOW",					RESERVED_WINDOW);
 	PyModule_AddIntConstant(poModule, "INVENTORY",							INVENTORY);

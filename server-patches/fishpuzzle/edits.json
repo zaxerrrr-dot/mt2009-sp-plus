@@ -15,12 +15,42 @@
   "file": "cmd.cpp",
   "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (command declare)",
   "old": "struct command_info cmd_info[] =\n",
-  "new": "// MT2009_PLUS_FISH_PUZZLE_V1 (command declare): \"/fishpuzzle open|box <1|2>|place <cell>|discard\" - fish_puzzle.cpp\nvoid Mt2009FishPuzzleCommand(LPCHARACTER ch, const char* argument);\nACMD(do_fishpuzzle)\n{\n\tMt2009FishPuzzleCommand(ch, argument);\n}\n\nstruct command_info cmd_info[] =\n"
+  "new": "// MT2009_PLUS_FISH_PUZZLE_V1 (command declare): \"/fishpuzzle hello\" - a client with the fish event exe (fish_puzzle.cpp)\nvoid Mt2009FishPuzzleCommand(LPCHARACTER ch, const char* argument);\nACMD(do_fishpuzzle)\n{\n\tMt2009FishPuzzleCommand(ch, argument);\n}\n\nstruct command_info cmd_info[] =\n"
  },
  {
   "file": "cmd.cpp",
   "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (command table)",
   "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
   "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"fishpuzzle\",\tdo_fishpuzzle,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_FISH_PUZZLE_V1 (command table)\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V2 (cg header)",
+  "old": "\tHEADER_CG_SWITCHBOT\t\t\t\t= 170,\n",
+  "new": "\tHEADER_CG_SWITCHBOT\t\t\t\t= 170,\n\tHEADER_CG_FISH_EVENT_SEND\t\t= 219,\t// MT2009_PLUS_FISH_PUZZLE_V2 (cg header): fish puzzle - fish_puzzle.cpp\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V2 (gc header)",
+  "old": "\tHEADER_GC_SWITCHBOT\t\t\t\t\t\t= 171,\n",
+  "new": "\tHEADER_GC_SWITCHBOT\t\t\t\t\t\t= 171,\n\tHEADER_GC_FISH_EVENT_INFO\t\t\t\t= 223,\t// MT2009_PLUS_FISH_PUZZLE_V2 (gc header): fish puzzle - fish_puzzle.cpp\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V2 (packet)",
+  "old": "static_assert(sizeof(TSwitchbotUpdateItem) == 44, \"switchbot update item\");\n",
+  "new": "static_assert(sizeof(TSwitchbotUpdateItem) == 44, \"switchbot update item\");\n\n// MT2009_PLUS_FISH_PUZZLE_V2 (packet): the fish puzzle event (the package \"Mini Game Fish Event (17.3)\", fish_puzzle.cpp).\n// CG 219 = this head + BOX_USE: BYTE window, WORD cell | SHAPE_ADD: BYTE cell (then the sequence byte);\n// GC 223 = TPacketGCFishEventInfo (BOX_USE shape, attempts | SHAPE_ADD cell, shape | GC_REWARD vnum | GC_ENABLE on, attempts).\nenum\n{\n\tFISH_EVENT_SUBHEADER_BOX_USE,\n\tFISH_EVENT_SUBHEADER_SHAPE_ADD,\n\tFISH_EVENT_SUBHEADER_GC_REWARD,\n\tFISH_EVENT_SUBHEADER_GC_ENABLE,\n};\n\ntypedef struct SPacketCGFishEvent\n{\n\tBYTE\tbHeader;\n\tBYTE\tbSubheader;\n} TPacketCGFishEvent;\n\ntypedef struct SPacketGCFishEventInfo\n{\n\tBYTE\tbHeader;\n\tBYTE\tbSubheader;\n\tDWORD\tdwFirstArg;\n\tDWORD\tdwSecondArg;\n} TPacketGCFishEventInfo;\n\nstatic_assert(sizeof(TPacketCGFishEvent) == 2 && sizeof(TPacketGCFishEventInfo) == 10, \"fish event packets\");\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V2 (size)",
+  "old": "\tSet(HEADER_CG_SWITCHBOT, sizeof(TPacketCGSwitchbot), \"Switchbot\", true);\n",
+  "new": "\tSet(HEADER_CG_SWITCHBOT, sizeof(TPacketCGSwitchbot), \"Switchbot\", true);\n\tSet(HEADER_CG_FISH_EVENT_SEND, sizeof(TPacketCGFishEvent), \"FishEvent\", true);\t// MT2009_PLUS_FISH_PUZZLE_V2 (size)\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V2 (packet)",
+  "old": "\t\t\t\tint Mt2009SwitchbotPacket(LPCHARACTER ch, const char* data, size_t uiBytes);\n\t\t\t\tif ((iExtraLen = Mt2009SwitchbotPacket(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n",
+  "new": "\t\t\t\tint Mt2009SwitchbotPacket(LPCHARACTER ch, const char* data, size_t uiBytes);\n\t\t\t\tif ((iExtraLen = Mt2009SwitchbotPacket(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_FISH_PUZZLE_V2 (packet): the fish puzzle event - fish_puzzle.cpp\n\t\tcase HEADER_CG_FISH_EVENT_SEND:\n\t\t\t{\n\t\t\t\tint Mt2009FishEventPacket(LPCHARACTER ch, const char* data, size_t uiBytes);\n\t\t\t\tif ((iExtraLen = Mt2009FishEventPacket(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n"
  }
 ]

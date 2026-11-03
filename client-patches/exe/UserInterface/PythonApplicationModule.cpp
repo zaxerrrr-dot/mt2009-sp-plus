@@ -1643,6 +1643,30 @@ void initapp()
 
 	// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 feature flags
 	PyModule_AddIntConstant(poModule, "MT2009_MINIGAMES", 1);
+	// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle (root/uiminigame.py, uiminigamefishevent.py); WJ_ENABLE_TRADABLE_ICON is not in
+	// this exe (the package's python asks it)
+#ifdef ENABLE_MINI_GAME
+	PyModule_AddIntConstant(poModule, "ENABLE_MINI_GAME", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_MINI_GAME", 0);
+#endif
+#ifdef ENABLE_FISH_EVENT
+	PyModule_AddIntConstant(poModule, "ENABLE_FISH_EVENT", 1);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_1", FISH_EVENT_SHAPE_1);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_2", FISH_EVENT_SHAPE_2);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_3", FISH_EVENT_SHAPE_3);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_4", FISH_EVENT_SHAPE_4);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_5", FISH_EVENT_SHAPE_5);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_6", FISH_EVENT_SHAPE_6);
+	PyModule_AddIntConstant(poModule, "FISH_EVENT_SHAPE_7", FISH_EVENT_SHAPE_7);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_FISH_EVENT", 0);
+#endif
+#ifdef WJ_ENABLE_TRADABLE_ICON
+	PyModule_AddIntConstant(poModule, "WJ_ENABLE_TRADABLE_ICON", 1);
+#else
+	PyModule_AddIntConstant(poModule, "WJ_ENABLE_TRADABLE_ICON", 0);
+#endif
 #ifdef ENABLE_MINI_GAME_RUMI
 	PyModule_AddIntConstant(poModule, "ENABLE_MINI_GAME_RUMI", 1);
 #else

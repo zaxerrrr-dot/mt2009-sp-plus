@@ -945,3 +945,28 @@ Siedem plików to oryginały GF 26.1.11 z paczki `etc` instalacji; `deadly_ring.
 nowa paczka `ringfx` (`client-2.0.30/tools/ringfx`, `verify_ringfx.py` sprawdza też numery SE serwer ↔ exe). Sprawdzone
 `clang-cl /Zs` (exe-src8 + cała nakładka + `clang-cl-compat.patch`): `PythonNetworkStreamPhaseGameItem.cpp`,
 `PythonCharacterManagerModule.cpp`, `PythonPlayerSettingsModule.cpp`, `InstanceBase.cpp` (30.10.2026).
+
+## Wędkarskie Puzzle (Event Rybacki - Puzzle) – `MT2009_PLUS_FISH_PUZZLE_V2` (`ENABLE_MINI_GAME`, `ENABLE_FISH_EVENT`)
+
+Zmiany źródła exe z paczki właściciela „Mini Game Fish Event (17.3)” („Jigsaw FULL + Fix Scale”, 3.11.2026) z jego
+poprawkami. Serwer: `server-patches/fishpuzzle` + `fish_puzzle.cpp`; root: `uifishpuzzle.py`, `uiminigame.py`,
+`uiminigamefishevent.py`, `uiscript/minigame*.py`; obrazki: paczka `fishpuzzle` (`client-2.0.30/tools/fishpuzzle`).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MINI_GAME`, `ENABLE_FISH_EVENT`, `MT2009_SLOT_TYPE_FISH_EVENT 18` |
+| `UserInterface/GameType.h` | `SLOT_TYPE_FISH_EVENT` (po `SLOT_TYPE_SWITCHBOT`; `static_assert` == 18), `EFishEventInfo` (`FISH_EVENT_SHAPE_1..7`) |
+| `UserInterface/Packet.h` | CG **219** `HEADER_CG_FISH_EVENT_SEND`, GC **223** `HEADER_GC_FISH_EVENT_INFO` (numery paczki, wolne u nas i w serwerze), podnagłówki, `TPacketCGFishEvent` (2 B), `TPacketGCFishEventInfo` (10 B) |
+| `UserInterface/PythonNetworkStream*.cpp/.h` | GC 223 stały 10 B → `MiniGameFishUse/Add/Reward/Event` okna gry; `SendFishBoxUse(okno, pole)`, `SendFishShapeAdd(pole)` |
+| `UserInterface/PythonNetworkStreamModule.cpp` | `net.SendUseFishBox`, `net.SendAddFishBox` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_MINI_GAME`, `app.ENABLE_FISH_EVENT`, `app.FISH_EVENT_SHAPE_1..7`, `app.WJ_ENABLE_TRADABLE_ICON` = 0 |
+| `UserInterface/PythonPlayerModule.cpp` | `player.SLOT_TYPE_FISH_EVENT` |
+| `EterPythonLib/PythonGridSlotWindow.cpp/.h` (**nowe w nakładce**) | `SetPickedAreaRender`; szerokość 3 w `GetPickedSlotList` (było 2); kształty L/Z (3, 4, 6 – poprawka właściciela „5 → 4”) sprawdzane i rysowane tylko na swoich polach; typ porównywany z `MT2009_SLOT_TYPE_FISH_EVENT` (poprawka skali paczki: „`dwAttachedType == 14/17/19`” – u nas 18) |
+| `EterPythonLib/PythonSlotWindow.cpp/.h` | `DeleteCoverButton` (zdejmuje też znak „zawsze rysuj osłonę”); render osłony bez przycisku nie wywołuje NULL |
+| `EterPythonLib/PythonWindowManager.cpp/.h` | `SetDisableDeattach` / `IsDisableDeattach` (element zostaje na myszy), pole zainicjowane w konstruktorze |
+| `EterPythonLib/PythonWindowManagerModule.cpp` | `wndMgr.SetPickedAreaRender`, `DeleteCoverButton`, `SetDisableDeattach` (zły typ okna = nic). `wndMgr.ResetFrame` / `SetAniImgScale` (poprawka D właściciela) już są – `MT2009_PLUS_MINIGAMES_V1`, z kontrolą typu |
+
+Pętle paczki „erase w for z ++it” (UB na końcu listy) zastąpione `__MT2009_FishPieceRemoveFreeCells` – te same pola (lista
+kolumnami: L3 bez 3. pola, L4 bez 2., Z6 bez 2. i 5.). Zbudowane `build.sh msvc --smoke` (exe-src10 = exe-src8 + ta
+nakładka, osobny `EXEBUILD_WORK`): `cache/yohara/exe-out10/metin2client.exe`, sha256 `34e2a053…12911d` (z `PythonSwitchbot.cpp` z claude/y-switch), smoke do ekranu
+logowania (3.11.2026).

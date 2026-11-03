@@ -1384,9 +1384,11 @@ class ExpandedImageBox(ImageBox):
 class AniImageBox(Window):
 	def __init__(self, layer = "UI"):
 		Window.__init__(self, layer)
+		self.end_frame_event = None	# MT2009_PLUS_FISH_PUZZLE_V2: SetEndFrameEvent (the fish puzzle's effects)
 
 	def __del__(self):
 		Window.__del__(self)
+		self.end_frame_event = None
 
 	def RegisterWindow(self, layer):
 		self.hWnd = wndMgr.RegisterAniImageBox(self, layer)
@@ -1409,8 +1411,18 @@ class AniImageBox(Window):
 		if hasattr(wndMgr, "ResetFrame"):
 			wndMgr.ResetFrame(self.hWnd)
 
+	# MT2009_PLUS_FISH_PUZZLE_V2 (the package's AniImageBox): the exe calls OnEndFrame after the last frame;
+	# SetScale is the minigames' exe's wndMgr.SetAniImgScale (nothing in an older exe).
+	def SetEndFrameEvent(self, event):
+		self.end_frame_event = event
+
 	def OnEndFrame(self):
-		pass
+		if self.end_frame_event:
+			self.end_frame_event()
+
+	def SetScale(self, xScale, yScale):
+		if hasattr(wndMgr, "SetAniImgScale"):
+			wndMgr.SetAniImgScale(self.hWnd, xScale, yScale)
 
 class Button(Window):
 	def __init__(self, layer = "UI"):
@@ -1975,6 +1987,11 @@ class SlotWindow(Window):
 		self.eventOverInItem = None
 		self.eventOverOutItem = None
 		self.eventPressedSlotButton = None
+		# MT2009_PLUS_FISH_PUZZLE_V2: the event's second argument (the package's "window" of SetSelectEmptySlotEvent & co.)
+		self.eventSelectEmptySlotWindow = None
+		self.eventSelectItemSlotWindow = None
+		self.eventUnselectItemSlotWindow = None
+		self.eventOverInItemWindow = None
 
 	def __del__(self):
 		Window.__del__(self)
@@ -1987,6 +2004,11 @@ class SlotWindow(Window):
 		self.eventOverInItem = None
 		self.eventOverOutItem = None
 		self.eventPressedSlotButton = None
+		# MT2009_PLUS_FISH_PUZZLE_V2: the event's second argument (the package's "window" of SetSelectEmptySlotEvent & co.)
+		self.eventSelectEmptySlotWindow = None
+		self.eventSelectItemSlotWindow = None
+		self.eventUnselectItemSlotWindow = None
+		self.eventOverInItemWindow = None
 
 	def RegisterWindow(self, layer):
 		self.hWnd = wndMgr.RegisterSlotWindow(self, layer)
@@ -2018,6 +2040,11 @@ class SlotWindow(Window):
 
 	def SetAlwaysRenderCoverButton(self, slotIndex, bAlwaysRender = True):
 		wndMgr.SetAlwaysRenderCoverButton(self.hWnd, slotIndex, bAlwaysRender)
+
+	# MT2009_PLUS_FISH_PUZZLE_V2: wndMgr.DeleteCoverButton (the fish puzzle exe)
+	def DeleteCoverButton(self, slotIndex):
+		if hasattr(wndMgr, "DeleteCoverButton"):
+			wndMgr.DeleteCoverButton(self.hWnd, slotIndex)
 
 	def AppendSlotButton(self, upName, overName, downName):
 		wndMgr.AppendSlotButton(self.hWnd, upName, overName, downName)
@@ -2071,23 +2098,28 @@ class SlotWindow(Window):
 				self.eventUnselectEmptySlot=__mem_func__(event)
 				self.eventUnselectItemSlot=__mem_func__(event)
 
-	def SetSelectEmptySlotEvent(self, empty):
+	# MT2009_PLUS_FISH_PUZZLE_V2: an optional second argument given back to the event (the package's ui.py)
+	def SetSelectEmptySlotEvent(self, empty, window = None):
 		self.eventSelectEmptySlot = empty
+		self.eventSelectEmptySlotWindow = window
 
-	def SetSelectItemSlotEvent(self, item):
+	def SetSelectItemSlotEvent(self, item, window = None):
 		self.eventSelectItemSlot = item
+		self.eventSelectItemSlotWindow = window
 
 	def SetUnselectEmptySlotEvent(self, empty):
 		self.eventUnselectEmptySlot = empty
 
-	def SetUnselectItemSlotEvent(self, item):
+	def SetUnselectItemSlotEvent(self, item, window = None):
 		self.eventUnselectItemSlot = item
+		self.eventUnselectItemSlotWindow = window
 
 	def SetUseSlotEvent(self, use):
 		self.eventUseSlot = use
 
-	def SetOverInItemEvent(self, event):
+	def SetOverInItemEvent(self, event, window = None):
 		self.eventOverInItem = event
+		self.eventOverInItemWindow = window
 
 	def SetOverOutItemEvent(self, event):
 		self.eventOverOutItem = event
@@ -2265,11 +2297,17 @@ class SlotWindow(Window):
 	## Event
 	def OnSelectEmptySlot(self, slotNumber):
 		if self.eventSelectEmptySlot:
-			self.eventSelectEmptySlot(slotNumber)
+			if self.eventSelectEmptySlotWindow:
+				self.eventSelectEmptySlot(slotNumber, self.eventSelectEmptySlotWindow)
+			else:
+				self.eventSelectEmptySlot(slotNumber)
 
 	def OnSelectItemSlot(self, slotNumber):
 		if self.eventSelectItemSlot:
-			self.eventSelectItemSlot(slotNumber)
+			if self.eventSelectItemSlotWindow:
+				self.eventSelectItemSlot(slotNumber, self.eventSelectItemSlotWindow)
+			else:
+				self.eventSelectItemSlot(slotNumber)
 
 	def OnUnselectEmptySlot(self, slotNumber):
 		if self.eventUnselectEmptySlot:
@@ -2277,7 +2315,10 @@ class SlotWindow(Window):
 
 	def OnUnselectItemSlot(self, slotNumber):
 		if self.eventUnselectItemSlot:
-			self.eventUnselectItemSlot(slotNumber)
+			if self.eventUnselectItemSlotWindow:
+				self.eventUnselectItemSlot(slotNumber, self.eventUnselectItemSlotWindow)
+			else:
+				self.eventUnselectItemSlot(slotNumber)
 
 	def OnUseSlot(self, slotNumber):
 		if self.eventUseSlot:
@@ -2285,7 +2326,10 @@ class SlotWindow(Window):
 
 	def OnOverInItem(self, slotNumber):
 		if self.eventOverInItem:
-			self.eventOverInItem(slotNumber)
+			if self.eventOverInItemWindow:
+				self.eventOverInItem(slotNumber, self.eventOverInItemWindow)
+			else:
+				self.eventOverInItem(slotNumber)
 
 	def OnOverOutItem(self):
 		if self.eventOverOutItem:
@@ -2329,6 +2373,11 @@ class GridSlotWindow(SlotWindow):
 
 	def GetStartIndex(self):
 		return self.startIndex
+
+	# MT2009_PLUS_FISH_PUZZLE_V2: no picked area while the fish puzzle asks a question (the fish puzzle exe)
+	def SetPickedAreaRender(self, flag):
+		if hasattr(wndMgr, "SetPickedAreaRender"):
+			wndMgr.SetPickedAreaRender(self.hWnd, flag)
 
 	def FindEmptySlot(self, neededItemSize=1, startIndex=0):
 		busySlots = []

@@ -671,6 +671,8 @@ namespace mt2009_ingame_event
 // The mini games' own seconds (their files are included after this one).
 void YutnoriTick(DWORD dwNow);	// playerbot_yutnori.h (MT2009_PLUS_YUTNORI_V1)
 void YutnoriGmInfo(LPCHARACTER ch);
+// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle's banner on / off for its clients (fish_puzzle.cpp).
+void Mt2009FishEventTick();
 
 // Every pass of the events (playerbot_events.h), once a second at most.
 void InGameEventTick(DWORD dwNow)
@@ -681,6 +683,7 @@ void InGameEventTick(DWORD dwNow)
 	s_dwNextSecond = dwNow + 1000;
 	EverySecond(dwNow);
 	YutnoriTick(dwNow);
+	Mt2009FishEventTick();
 }
 
 // "/ingame_event hello <caps>" from the client's python, "/ingame_event info"

@@ -1,50 +1,76 @@
-// MT2009_PLUS_FISH_PUZZLE_V1 - Event Rybacki - Puzzle (Wedkarskie Puzzle; the owner, 3 November 2026; server-patches/
-// fishpuzzle, README.md). The official event of version 17.3 (pl-wiki "Event Rybacki - Puzzle", "Minigra: Wedkarskie
-// Puzzle", "Pudlo wedkarskich puzzli", "Zl. Skrzynia na Ryby (D)"); the window and its pictures are GF 26.1.11's
-// (uiscript/minigamefishgamepage.py, d:/ymir work/ui/minigame/fish_event, fishingevnet001.dds).
+// MT2009_PLUS_FISH_PUZZLE_V1 / MT2009_PLUS_FISH_PUZZLE_V2 - Event Rybacki - Puzzle (Wedkarskie Puzzle; the owner,
+// 3 November 2026; server-patches/fishpuzzle, README.md). The official event of version 17.3 (pl-wiki "Event Rybacki -
+// Puzzle", "Minigra: Wedkarskie Puzzle", "Pudlo wedkarskich puzzli", "Zl. Skrzynia na Ryby (D)").
 //
-// NO NEW EXE. Neither our exe (client-build = exe-src8, exe-out9) nor the Ameria sources have the official
-// HEADER_CG/GC fish event packets (Ameria has only a stray IsOpenJigsaw() call and the desc text; Owsap only the two
-// uiscripts), so everything goes through the chat command channel every python-only system here uses:
-//   client -> server  "/fishpuzzle open | box <1 normal | 2 deluxe> | place <cell 0-23> | discard"
-//   server -> client  "FP state <event on> <attempts> <pending shape 0-7> <normal boxes> <deluxe boxes> <pieces|->"
-//                     "FP open"   (a box used from the inventory: the window opens)
-//                     "FP piece <shape> <attempts>"   (a box was opened - the piece to place)
-//                     "FP done <attempts> <reward vnum>"   (the board is full: the reward came, the board is empty again)
-//   pieces: two characters a placed piece - its shape '1'-'7' and its top-left cell 'a' + (0..23), row by row (6 x 4).
+// V2 (the owner's package "Mini Game Fish Event (17.3)" - "Jigsaw FULL + Fix Scale", 3 November 2026: "fully like on
+// the global server, with this package; if the exe is needed we do it in the exe"): the package's game and its real
+// packets, in a new exe (client-patches/exe, ENABLE_FISH_EVENT). V1's chat command protocol ("/fishpuzzle open|box|
+// place|discard", "FP state|piece|done") is retired; "/fishpuzzle" now only says hello.
 //
-// The rules (the wiki): fishing during the event finds a Pudlo wedkarskich puzzli (25106) with 30% of the catches
-// (event flag fish_puzzle_chance, per mille, 300), with Rybie Wnetrznosci (the premium fish mind or the unique group
-// 10009: 71008, 72013-72015) every catch, and then 2% (fish_puzzle_deluxe, 20) of the catches a Luks. pudlo wedk.
-// puzzli (25107) instead. A box opened in the window gives one random piece of six (25106) or the big 3x2 piece
-// (25107); every box opened is an attempt. The piece goes onto the 6 x 4 board where it fits (no overlap, inside the
-// board) or is thrown away (right click). The board full: +30 000 experience and by the attempts Zl. Skrzynia na Ryby
-// (D) 83003 (10 or fewer), (S) 83002 (11-24) or (M) 83001 (25 or more) - opened 3 / 2 / 1 time(s)
-// (ShipDefense_ChestKeep), the contents special_item_group.fishpuzzle.txt. The board, the piece in hand and the
-// attempts live in player.fish_puzzle (fish_puzzle.sql), so a relog or a channel change keeps the game.
+//   CG 219 HEADER_CG_FISH_EVENT_SEND  { BYTE header; BYTE sub; } + by sub, then the sequence byte:
+//          0 BOX_USE    + BYTE window, WORD cell     a box from the inventory opened in the window (one attempt)
+//          1 SHAPE_ADD  + BYTE cell                  the piece in hand laid with its top-left corner on the cell
+//   GC 223 HEADER_GC_FISH_EVENT_INFO  { BYTE header; BYTE sub; DWORD arg1; DWORD arg2; }   10 B
+//          0 BOX_USE    shape, attempts               the piece to hold (also again after a refused place)
+//          1 SHAPE_ADD  cell, shape                   a laid piece (and every piece of the board after ENABLE)
+//          2 GC_REWARD  reward vnum, 0                the board is full: the reward came, the board is empty again
+//          3 GC_ENABLE  event shown 0/1, attempts     the event banner; ENABLE is followed by the board's pieces
+// The numbers are free in our server packet.h and our exe Packet.h (both have 216-218, 220, 226, 238 but not 219 or
+// 223) and are the package's own. An exe without them stops at an unknown header, so a client gets GC 223 only after
+// its python said "/fishpuzzle hello" (root uifishpuzzle.py, only when app.ENABLE_FISH_EVENT): an old client gets
+// nothing of it - a box used from its inventory says the event needs the new client, its old chat commands the same.
 //
-// The event (planner kind "fishpuzzle", event flag fish_puzzle_event, playerbot_ingame_events.h) only gates the
-// boxes found while fishing: boxes left over can be opened and the board finished after it, as the wiki's window
-// stays in the event list's reward window. Bots never get a box (their catches are skipped) and cannot play.
+// The rules are the package's (char.cpp FishEvent*, fishing.cpp): during the event every fish caught (the fishing game
+// won) gives 5 Pudel wedkarskich puzzli 25106 (event flag fish_puzzle_boxes); with Rybie Wnetrznosci (the premium fish
+// mind or the unique group 10009: 71008, 72013-72015 - the package asks UNIQUE_ITEM_FISH_MIND) 10% of the catches give
+// one Luks. pudlo wedk. puzzli 25107 instead (fish_puzzle_deluxe, per mille, 100). A box opened in the window is one
+// attempt and a random piece of shapes 1-6 (25106) or the 3 x 2 piece 7 (25107); the piece goes onto the 6 x 4 board
+// where it fits (inside, no overlap - the package's own table let an L wrap round the board's right edge, here the
+// cells are checked) or is thrown away in the client (right click; the server keeps it until the next box, as the
+// package). The board full: +30 000 experience and by the attempts Zl. Skrzynia na Ryby (D) 83003 (10 or fewer), (S)
+// 83002 (11-24) or (M) 83001 (25 or more) - the package's 25113 / 25112 / 25111 are GACHA chests without contents;
+// GF 26.1.11's item_list has the three chests as 83001-83003 (icon 25111.tga), so those stay (ShipDefense_ChestKeep:
+// opened 3 / 2 / 1 times, special_item_group.fishpuzzle.txt).
+// Fixed against the package: the piece in hand is spent by the place (the package kept it - the same piece could be
+// laid again and again), the box cell is read as a WORD (the package read one char), a place out of the board or of
+// a client that said no hello is ignored.
+//
+// The board, the piece in hand and the attempts live in player.fish_puzzle (fish_puzzle.sql) - the package's
+// player.fish_slots / fish_use_count columns (TPlayerTable, db ClientManagerPlayer) are not taken: the same state
+// without a db core rebuild or a player table change. The piece in hand is gone at the next hello (a new game window
+// after a login, warp or channel change has no piece on the mouse) - the package lost it at the logout.
+//
+// The event (planner kind "fishpuzzle" 19, event flag fish_puzzle_event, playerbot_ingame_events.h; or a GM's
+// "/e enable_fish_event 1", the package's flag) gates the boxes found while fishing; the banner shows while it runs and
+// through its 7-day reward window (fish_puzzle_reward), so the boxes left can still be laid. A change of that state
+// sends ENABLE and the board again to every client that said hello (Mt2009FishEventTick, once a second). Bots never
+// get a box (their catches are skipped) and cannot play.
 #include "stdafx.h"
 #include "constants.h"
 #include "config.h"
 #include "char.h"
+#include "char_manager.h"
 #include "desc.h"
 #include "item.h"
 #include "item_manager.h"
 #include "db.h"
 #include "log.h"
+#include "packet.h"
 #include "questmanager.h"
 #include "unique_item.h"
 #include "utils.h"
 
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+// playerbot_ingame_events.h (MT2009_PLUS_EVENT_MANAGER_V1)
+bool InGameEventIsActive(const char* key);
+DWORD InGameEventRewardEndTime(const char* key);
 
 namespace fishpuzzle
 {
@@ -61,11 +87,14 @@ namespace fishpuzzle
 		CHEST_S = 83002,	// Zl. Skrzynia na Ryby (S): 11-24
 		CHEST_D = 83003,	// Zl. Skrzynia na Ryby (D): 10 or fewer
 		REWARD_EXP = 30000,
-		COMMAND_GAP_MS = 150,
+		PACKET_GAP_MS = 100,
+		DEFAULT_BOXES = 5,
+		DEFAULT_DELUXE_PERMILLE = 100,
 	};
 
-	// The seven pieces, as GF's pictures fish_1..fish_7.sub draw them (fishingevnet001.dds, 32 px a cell): the cells
-	// (dx, dy) of each from its top-left corner, which need not be filled (the L pieces).
+	// The seven pieces, as GF's pictures fish_1..fish_7.sub draw them (fishingevnet001.dds, 32 px a cell) and the
+	// package's tables (char.cpp positionList, uiMiniGameFishEvent.py positionInfo: 0,6,12 / 0 / 0,6,7 / 0,1,7 /
+	// 0,1,6,7 / 0,1,7,8 / 0,1,2,6,7,8): the cells (dx, dy) of each from its top-left corner.
 	struct TShape
 	{
 		BYTE n;
@@ -97,7 +126,9 @@ namespace fishpuzzle
 		int completed;
 	};
 
-	std::map<DWORD, DWORD> s_mapLastCommand;	// pid -> get_dword_time() of the last command
+	std::map<DWORD, DWORD> s_mapHello;			// pid -> the desc handle that said hello (a new connection must say it again)
+	std::map<DWORD, DWORD> s_mapLastPacket;		// pid -> get_dword_time() of the last box / place
+	int s_iShown = -1;							// the banner state the hello'd clients were last told
 
 	bool Fits(const std::vector<TPiece>& pieces, BYTE shape, int pos, bool* grid = NULL)
 	{
@@ -190,9 +221,19 @@ namespace fishpuzzle
 				pid, Encode(st.pieces).c_str(), (unsigned int)st.pending, st.uses, st.completed));
 	}
 
+	// The boxes are found while the event runs (the planner's flag or the package's own).
 	bool EventOn()
 	{
-		return quest::CQuestManager::instance().GetEventFlag("fish_puzzle_event") > 0;
+		quest::CQuestManager& q = quest::CQuestManager::instance();
+		return q.GetEventFlag("fish_puzzle_event") > 0 || q.GetEventFlag("enable_fish_event") > 0;
+	}
+
+	// The banner shows while it runs and through the scheduled run's reward window.
+	bool EventShown()
+	{
+		if (EventOn() || InGameEventIsActive("fishpuzzle"))
+			return true;
+		return InGameEventRewardEndTime("fishpuzzle") > (DWORD)time(NULL);
 	}
 
 	bool Playable(LPCHARACTER ch)
@@ -200,12 +241,32 @@ namespace fishpuzzle
 		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot() && ch->GetDesc()->IsPhase(PHASE_GAME);
 	}
 
-	void SendState(LPCHARACTER ch, const TState& st)
+	bool HasHello(LPCHARACTER ch)
 	{
-		const std::string pieces = Encode(st.pieces);
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "FP state %d %d %u %u %u %s", EventOn() ? 1 : 0, st.uses, (unsigned int)st.pending,
-				(unsigned int)ch->CountSpecifyItem(BOX_NORMAL), (unsigned int)ch->CountSpecifyItem(BOX_DELUXE),
-				pieces.empty() ? "-" : pieces.c_str());
+		if (!Playable(ch))
+			return false;
+		std::map<DWORD, DWORD>::const_iterator it = s_mapHello.find(ch->GetPlayerID());
+		return it != s_mapHello.end() && it->second == ch->GetDesc()->GetHandle();
+	}
+
+	void SendInfo(LPCHARACTER ch, BYTE sub, DWORD arg1, DWORD arg2)
+	{
+		if (!HasHello(ch))
+			return;
+		TPacketGCFishEventInfo p;
+		p.bHeader = HEADER_GC_FISH_EVENT_INFO;
+		p.bSubheader = sub;
+		p.dwFirstArg = arg1;
+		p.dwSecondArg = arg2;
+		ch->GetDesc()->Packet(&p, sizeof(p));
+	}
+
+	// The package's FishEventGeneralInfo: the banner and the attempts, then every laid piece.
+	void SendGeneral(LPCHARACTER ch, const TState& st)
+	{
+		SendInfo(ch, FISH_EVENT_SUBHEADER_GC_ENABLE, EventShown() ? 1 : 0, (DWORD)st.uses);
+		for (size_t i = 0; i < st.pieces.size(); ++i)
+			SendInfo(ch, FISH_EVENT_SUBHEADER_SHAPE_ADD, st.pieces[i].pos, st.pieces[i].shape);
 	}
 
 	DWORD RewardFor(int uses)
@@ -217,53 +278,73 @@ namespace fishpuzzle
 		return CHEST_M;
 	}
 
-	bool Busy(LPCHARACTER ch)
+	bool TooFast(LPCHARACTER ch)
 	{
-		if (ch->GetExchange() || ch->GetShopOwner() || ch->IsOpenSafebox() || ch->GetMyShop())
-		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Zamknij handel, sklep i magazyn, zanim otworzysz pud\263o puzzli.");
+		const DWORD now = get_dword_time();
+		DWORD& last = s_mapLastPacket[ch->GetPlayerID()];
+		if (last && now - last < (DWORD)PACKET_GAP_MS)
 			return true;
-		}
+		last = now;
 		return false;
 	}
 
-	void Box(LPCHARACTER ch, TState& st, int kind)
+	void Hello(LPCHARACTER ch)
 	{
+		s_mapHello[ch->GetPlayerID()] = ch->GetDesc()->GetHandle();
+		TState st;
+		Load(ch->GetPlayerID(), st);
 		if (st.pending)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Najpierw u\277yj albo odrzu\346 element puzzli, kt\363ry trzymasz.");
-			return;
+			// a new game window holds no piece: the one held before is gone, as the package's at the logout
+			st.pending = 0;
+			Save(ch->GetPlayerID(), st);
 		}
-		const DWORD vnum = kind == 2 ? BOX_DELUXE : BOX_NORMAL;
-		if (ch->CountSpecifyItem(vnum) < 1)
-		{
-			ch->ChatPacket(CHAT_TYPE_INFO, kind == 2 ? "Nie masz luksusowego pud\263a w\352dkarskich puzzli."
-					: "Nie masz pud\263a w\352dkarskich puzzli - z\263ap je w\352dk\261 podczas eventu.");
-			return;
-		}
-		if (Busy(ch))
-			return;
-		ch->RemoveSpecifyItem(vnum, 1);
-		st.pending = kind == 2 ? (BYTE)SHAPE_DELUXE : (BYTE)number(1, 6);
-		++st.uses;
-		Save(ch->GetPlayerID(), st);
-		LogManager::instance().ItemLog(ch, 0, vnum, "FISH_PUZZLE_BOX", std::to_string((int)st.pending).c_str());
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "FP piece %u %d", (unsigned int)st.pending, st.uses);
+		SendGeneral(ch, st);
 	}
 
-	void Place(LPCHARACTER ch, TState& st, int pos)
+	// The package's FishEventUseBox.
+	void UseBox(LPCHARACTER ch, BYTE window, WORD cell)
 	{
-		if (!st.pending)
+		if (window != INVENTORY || !ch->CanHandleItem())
+			return;
+		const TItemPos pos(window, cell);
+		LPITEM item;
+		if (!ch->IsValidItemPosition(pos) || !(item = ch->GetItem(pos)) || item->IsExchanging())
+			return;
+		const DWORD vnum = item->GetVnum();
+		if (vnum != BOX_NORMAL && vnum != BOX_DELUXE)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Nie mo\277esz tutaj u\277y\346 tego przedmiotu.");
+			return;
+		}
+		TState st;
+		Load(ch->GetPlayerID(), st);
+		st.pending = vnum == BOX_DELUXE ? (BYTE)SHAPE_DELUXE : (BYTE)number(1, 6);
+		++st.uses;
+		item->SetCount(item->GetCount() - 1);
+		Save(ch->GetPlayerID(), st);
+		LogManager::instance().ItemLog(ch, 0, vnum, "FISH_PUZZLE_BOX", std::to_string((int)st.pending).c_str());
+		SendInfo(ch, FISH_EVENT_SUBHEADER_BOX_USE, st.pending, (DWORD)st.uses);
+	}
+
+	// The package's FishEventAddShape / FishEventPlaceShape / FishEventCheckEnd.
+	void AddShape(LPCHARACTER ch, BYTE cell)
+	{
+		TState st;
+		Load(ch->GetPlayerID(), st);
+		if (!st.pending || cell >= CELLS)
 			return;
 		bool grid[CELLS];
-		if (!Fits(st.pieces, st.pending, pos, grid))
+		if (!Fits(st.pieces, st.pending, cell, grid))
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Ten element nie zmie\266ci si\352 w tym miejscu.");
+			// the piece back on the mouse (the package's answer), it stays the one in hand
+			SendInfo(ch, FISH_EVENT_SUBHEADER_BOX_USE, st.pending, (DWORD)st.uses);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Ten element nie pasuje w tym miejscu.");
 			return;
 		}
 		TPiece p;
 		p.shape = st.pending;
-		p.pos = (BYTE)pos;
+		p.pos = cell;
 		st.pieces.push_back(p);
 		st.pending = 0;
 		bool full = true;
@@ -273,6 +354,7 @@ namespace fishpuzzle
 		if (!full)
 		{
 			Save(ch->GetPlayerID(), st);
+			SendInfo(ch, FISH_EVENT_SUBHEADER_SHAPE_ADD, p.pos, p.shape);
 			return;
 		}
 		// the board is full: the reward, then an empty board (saved first - a crash after it pays nothing twice)
@@ -282,63 +364,82 @@ namespace fishpuzzle
 		st.uses = 0;
 		++st.completed;
 		Save(ch->GetPlayerID(), st);
-		ch->PointChange(POINT_EXP, REWARD_EXP, true);
+		SendInfo(ch, FISH_EVENT_SUBHEADER_SHAPE_ADD, p.pos, p.shape);
 		LPITEM item = ch->AutoGiveItem(reward, 1);
+		ch->PointChange(POINT_EXP, REWARD_EXP, true);
 		LogManager::instance().ItemLog(ch, item ? item->GetID() : 0, reward, "FISH_PUZZLE_REWARD", std::to_string(uses).c_str());
 		sys_log(0, "FISH_PUZZLE: %s (%u) finished the board in %d attempt(s), reward %u", ch->GetName(), ch->GetPlayerID(), uses, reward);
-		ch->ChatPacket(CHAT_TYPE_INFO, "Puzzle u\263o\277one w %d pr\363bach! Otrzymujesz %d PD i nagrod\352.", uses, (int)REWARD_EXP);
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "FP done %d %u", uses, reward);
+		SendInfo(ch, FISH_EVENT_SUBHEADER_GC_REWARD, reward, 0);
 	}
 }
 
-// "/fishpuzzle ..." (cmd.cpp, server-patches/fishpuzzle)
+// CG 219 (input_main.cpp, server-patches/fishpuzzle): the extra length after the 2-byte head, -1 = wait for more.
+int Mt2009FishEventPacket(LPCHARACTER ch, const char* data, size_t uiBytes)
+{
+	using namespace fishpuzzle;
+	if (uiBytes < sizeof(TPacketCGFishEvent))
+		return -1;
+	const TPacketCGFishEvent* p = reinterpret_cast<const TPacketCGFishEvent*>(data);
+	const char* c_pData = data + sizeof(TPacketCGFishEvent);
+	uiBytes -= sizeof(TPacketCGFishEvent);
+
+	switch (p->bSubheader)
+	{
+		case FISH_EVENT_SUBHEADER_BOX_USE:
+		{
+			const size_t extra = sizeof(BYTE) + sizeof(WORD);
+			if (uiBytes < extra)
+				return -1;
+			const BYTE window = (BYTE)c_pData[0];
+			WORD cell = 0;
+			memcpy(&cell, c_pData + 1, sizeof(WORD));
+			if (ch && HasHello(ch) && !TooFast(ch))
+			{
+				sys_log(0, "INPUT: %s FISH_EVENT: USE_BOX %u %u", ch->GetName(), (unsigned int)window, (unsigned int)cell);
+				UseBox(ch, window, cell);
+			}
+			return (int)extra;
+		}
+
+		case FISH_EVENT_SUBHEADER_SHAPE_ADD:
+		{
+			if (uiBytes < sizeof(BYTE))
+				return -1;
+			const BYTE cell = (BYTE)c_pData[0];
+			if (ch && HasHello(ch) && !TooFast(ch))
+			{
+				sys_log(0, "INPUT: %s FISH_EVENT: ADD_SHAPE %u", ch->GetName(), (unsigned int)cell);
+				AddShape(ch, cell);
+			}
+			return (int)sizeof(BYTE);
+		}
+
+		default:
+			sys_err("FISH_EVENT: unknown subheader %u from %s", (unsigned int)p->bSubheader, ch ? ch->GetName() : "?");
+			break;
+	}
+	return 0;
+}
+
+// "/fishpuzzle hello" (cmd.cpp, server-patches/fishpuzzle) from root uifishpuzzle.py - only a client whose exe has
+// ENABLE_FISH_EVENT says it. V1's other commands come from an old client: it is told to update.
 void Mt2009FishPuzzleCommand(LPCHARACTER ch, const char* argument)
 {
 	using namespace fishpuzzle;
 	if (!Playable(ch))
 		return;
-	const DWORD now = get_dword_time();
-	DWORD& last = s_mapLastCommand[ch->GetPlayerID()];
-	if (last && now - last < (DWORD)COMMAND_GAP_MS)
-		return;
-	last = now;
-
-	char sub[32] = { 0 }, arg[32] = { 0 };
-	two_arguments(argument, sub, sizeof(sub), arg, sizeof(arg));
-	TState st;
-	Load(ch->GetPlayerID(), st);
-	if (!*sub || !strcmp(sub, "open"))
+	char sub[32] = { 0 };
+	one_argument(argument, sub, sizeof(sub));
+	if (!strcmp(sub, "hello"))
 	{
-		SendState(ch, st);
+		Hello(ch);
 		return;
 	}
-	if (!strcmp(sub, "box"))
-	{
-		int kind = 1;
-		str_to_number(kind, arg);
-		Box(ch, st, kind == 2 ? 2 : 1);
-	}
-	else if (!strcmp(sub, "place"))
-	{
-		int pos = -1;
-		if (!*arg || !str_to_number(pos, arg))
-			return;
-		Place(ch, st, pos);
-	}
-	else if (!strcmp(sub, "discard"))
-	{
-		if (!st.pending)
-			return;
-		st.pending = 0;
-		Save(ch->GetPlayerID(), st);
-	}
-	else
-		return;
-	SendState(ch, st);
+	ch->ChatPacket(CHAT_TYPE_INFO, "W\352dkarskie Puzzle wymagaj\261 nowej wersji klienta - zaktualizuj gr\352.");
 }
 
-// UseItemEx (char_item.cpp): a puzzle box used from the inventory opens the window (nothing is used up);
-// -1 = not a puzzle box, 0 = refused, 1 = done.
+// UseItemEx (char_item.cpp): a puzzle box used from the inventory opens the window ("FP open", root
+// uifishpuzzle.py); nothing is used up - a box is opened in the window. -1 = not a puzzle box, 0 = refused, 1 = done.
 int Mt2009FishPuzzleUseItem(LPCHARACTER ch, LPITEM item)
 {
 	using namespace fishpuzzle;
@@ -346,14 +447,16 @@ int Mt2009FishPuzzleUseItem(LPCHARACTER ch, LPITEM item)
 		return -1;
 	if (!Playable(ch))
 		return 0;
-	TState st;
-	Load(ch->GetPlayerID(), st);
-	SendState(ch, st);
+	if (!HasHello(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "W\352dkarskie Puzzle wymagaj\261 nowej wersji klienta - zaktualizuj gr\352.");
+		return 0;
+	}
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "FP open");
 	return 1;
 }
 
-// fishing::ProcessFishingGameSuccess (fishing.cpp): a catch during the event may bring a puzzle box.
+// fishing::ProcessFishingGameSuccess (fishing.cpp): during the event every catch brings boxes (the package's rule).
 void Mt2009FishPuzzleOnCatch(LPCHARACTER ch)
 {
 	using namespace fishpuzzle;
@@ -361,20 +464,47 @@ void Mt2009FishPuzzleOnCatch(LPCHARACTER ch)
 		return;
 	quest::CQuestManager& q = quest::CQuestManager::instance();
 	const bool mind = ch->GetPremiumRemainSeconds(PREMIUM_FISH_MIND) > 0 || ch->IsEquipUniqueGroup(UNIQUE_GROUP_FISH_MIND);
-	int chance = q.GetEventFlag("fish_puzzle_chance");
-	if (chance <= 0)
-		chance = 300;
+	int boxes = q.GetEventFlag("fish_puzzle_boxes");
+	if (boxes <= 0)
+		boxes = DEFAULT_BOXES;
+	if (boxes > 200)
+		boxes = 200;
 	int deluxe = q.GetEventFlag("fish_puzzle_deluxe");
 	if (deluxe <= 0)
-		deluxe = 20;
-	DWORD vnum = 0;
+		deluxe = DEFAULT_DELUXE_PERMILLE;
 	if (mind && number(1, 1000) <= deluxe)
-		vnum = BOX_DELUXE;
-	else if (mind || number(1, 1000) <= chance)
-		vnum = BOX_NORMAL;
-	if (!vnum)
+		ch->AutoGiveItem(BOX_DELUXE, 1);
+	else
+		ch->AutoGiveItem(BOX_NORMAL, boxes);
+}
+
+// InGameEventTick (playerbot_ingame_events.h), once a second: the banner on or off for every hello'd client when the
+// event starts, ends or its reward window closes (ENABLE and the board, as at the hello).
+void Mt2009FishEventTick()
+{
+	using namespace fishpuzzle;
+	const int shown = EventShown() ? 1 : 0;
+	if (shown == s_iShown)
 		return;
-	ch->AutoGiveItem(vnum, 1);
+	const bool first = s_iShown < 0;
+	s_iShown = shown;
+	for (std::map<DWORD, DWORD>::iterator it = s_mapHello.begin(); it != s_mapHello.end(); )
+	{
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+		if (!ch || !HasHello(ch))
+		{
+			s_mapLastPacket.erase(it->first);
+			s_mapHello.erase(it++);
+			continue;
+		}
+		if (!first)
+		{
+			TState st;
+			Load(ch->GetPlayerID(), st);
+			SendGeneral(ch, st);
+		}
+		++it;
+	}
 }
 
 // MT2009_PLUS_FISH_PUZZLE_V1 (link): the catch hook in fishing.cpp declares the function at block scope inside

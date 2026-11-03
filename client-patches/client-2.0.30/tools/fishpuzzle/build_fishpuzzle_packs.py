@@ -4,8 +4,13 @@
 # locale/pl/itemdesc.txt), and a new pack "fishpuzzle" with everything of files/ - the icons (icon/item/25106.tga,
 # 25107.tga, 25111.tga) and the puzzle window's pictures, GF 26.1.11's d:/ymir work/ui/fishingevnet001.dds and the 11
 # d:/ymir work/ui/minigame/fish_event/*.sub on it (files/d_/... is packed as d:/...; the players' install has none of
-# them - a name some pack of BASE / OUT has stops the build) + its Index line at the end. The window itself is root
-# python (root/uifishpuzzle.py, root/uiscript/fishpuzzlewindow.py) and goes with the root pack.
+# them - a name some pack of BASE / OUT has stops the build) + its Index line at the end.
+# MT2009_PLUS_FISH_PUZZLE_V2 (the owner's package "Mini Game Fish Event (17.3)"): + the event banner
+# d:/ymir work/ui/minigame/banner.sub on d:/ymir work/ui/public_check.dds (the package's ui/), and the rules
+# locale/pl/fish_event_desc.txt (CP1250, ours in Polish - the package's was Romanian). The game is root python
+# (root/uifishpuzzle.py, uiminigame.py, uiminigamefishevent.py, uiscript/minigame*.py) and goes with the root pack;
+# its completion effects (minigame/rumi/card_completion_effect) and the page buttons (public_intro_btn) are in the
+# players' "minigames" pack already.
 # BUILD ORDER - it shares gamedata and dbdata: after every other Yohara step that writes them (e.g. right after
 # ../spirala), on the same OUT (a pack already in OUT - an earlier step changed it - is the one patched):
 #

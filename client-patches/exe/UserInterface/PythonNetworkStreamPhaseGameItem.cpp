@@ -1377,6 +1377,96 @@ bool CPythonNetworkStream::RecvCaptcha()
 	
 	return true;
 }
+
+#ifdef ENABLE_FISH_EVENT
+// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle (the package's functions; root/uiminigamefishevent.py)
+bool CPythonNetworkStream::SendFishBoxUse(BYTE bWindow, WORD wCell)
+{
+	if (!__CanActMainInstance())
+		return true;
+
+	TPacketCGFishEvent packetFishEvent;
+	packetFishEvent.bHeader = HEADER_CG_FISH_EVENT_SEND;
+	packetFishEvent.bSubheader = FISH_EVENT_SUBHEADER_BOX_USE;
+
+	if (!Send(sizeof(TPacketCGFishEvent), &packetFishEvent))
+	{
+		Tracef("SendFishBoxUse Error\n");
+		return false;
+	}
+
+	if (!Send(sizeof(bWindow), &bWindow))
+	{
+		Tracef("SendFishBoxUse Error\n");
+		return false;
+	}
+
+	if (!Send(sizeof(wCell), &wCell))
+	{
+		Tracef("SendFishBoxUse Error\n");
+		return false;
+	}
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendFishShapeAdd(BYTE bPos)
+{
+	if (!__CanActMainInstance())
+		return true;
+
+	TPacketCGFishEvent packetFishEvent;
+	packetFishEvent.bHeader = HEADER_CG_FISH_EVENT_SEND;
+	packetFishEvent.bSubheader = FISH_EVENT_SUBHEADER_SHAPE_ADD;
+
+	if (!Send(sizeof(TPacketCGFishEvent), &packetFishEvent))
+	{
+		Tracef("SendFishShapeAdd Error\n");
+		return false;
+	}
+
+	if (!Send(sizeof(BYTE), &bPos))
+	{
+		Tracef("SendFishShapeAdd Error\n");
+		return false;
+	}
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::RecvFishEventInfo()
+{
+	TPacketGCFishEventInfo fishEventPacket;
+
+	if (!Recv(sizeof(fishEventPacket), &fishEventPacket))
+		return false;
+
+	switch (fishEventPacket.bSubheader)
+	{
+		case FISH_EVENT_SUBHEADER_BOX_USE:
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "MiniGameFishUse", Py_BuildValue("(ii)", fishEventPacket.dwFirstArg, fishEventPacket.dwSecondArg));
+			break;
+
+		case FISH_EVENT_SUBHEADER_SHAPE_ADD:
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "MiniGameFishAdd", Py_BuildValue("(ii)", fishEventPacket.dwFirstArg, fishEventPacket.dwSecondArg));
+			break;
+
+		case FISH_EVENT_SUBHEADER_GC_REWARD:
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "MiniGameFishReward", Py_BuildValue("(i)", fishEventPacket.dwFirstArg));
+			break;
+
+		case FISH_EVENT_SUBHEADER_GC_ENABLE:
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "MiniGameFishEvent", Py_BuildValue("(ii)", fishEventPacket.dwFirstArg, fishEventPacket.dwSecondArg));
+			break;
+
+		default:
+			TraceError("RecvFishEventInfo: unknown subheader %d", fishEventPacket.bSubheader);
+			break;
+	}
+
+	return true;
+}
+#endif
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 
 // Files shared by GameCore.top
