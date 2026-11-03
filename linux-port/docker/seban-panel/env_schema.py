@@ -48,7 +48,8 @@ import re
 # 6: M2_MONSTER_ATTACK (MT2009_PLUS_MOB_ATTACK_V1) and M2_SERVER_PROFILE
 #    (MT2009_PLUS_SERVER_CONFIG_V1), Yohara 3.0.7.
 # 7: M2_PLAYER_ATTACK (MT2009_PLUS_PC_ATTACK_V1, the EMERALD configuration).
-SCHEMA_VERSION = 7
+# 8: M2_SEBAN_SNAPSHOT_HEAVY_HOURS (MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1).
+SCHEMA_VERSION = 8
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -622,6 +623,10 @@ SCHEMA = [
        "Ile ostatnich wpisów historii ekwipunku (karta postaci) zostaje dla każdej postaci; karta pokazuje 60. "
        "Niezależnie od tego nic starszego niż 60 dni. 0 = bez limitu na postać.",
        "baza", "int", "300", SEBAN, min=0, max=100000, step=50),
+    _e("M2_SEBAN_SNAPSHOT_HEAVY_HOURS", "Panel: godziny dużego sprzątania",
+       "W tych godzinach (czas serwera, od-do) panel usuwa zaległe stare migawki; w dzień tylko bieżącą, małą część, "
+       "żeby nie spowalniać logowania i gry. 3-6 = od 3:00 do 6:00, 0-24 = zawsze, 0-0 = tylko ręcznie.",
+       "baza", "string", "3-6", SEBAN, pattern=r"([01]?\d|2[0-4])-([01]?\d|2[0-4])"),
     _e("M2_TABLE_POSTFIX", "Przyrostek nazw tabel", "Przyrostek nazw tabel gry. Zostaw puste.", "baza", "string", "", ["game"], readonly=True,
        readonly_reason="Zmiana przyrostka sprawia, że serwer szuka innych tabel – świat wyglądałby na pusty."),
 
