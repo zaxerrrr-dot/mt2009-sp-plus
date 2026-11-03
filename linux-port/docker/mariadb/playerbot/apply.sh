@@ -4476,6 +4476,52 @@ UPDATE world.item_proto SET locale_name = 'Zielona Smocza Fasola' WHERE vnum = 1
 UPDATE world.item_proto SET locale_name = 'Niebieska Smocza Fasola' WHERE vnum = 100400;
 UPDATE world.item_proto SET locale_name = 'Różowa Smocza Fasola' WHERE vnum = 100500;" \
     || fail_step "could not add the second ItemShop's round-5 items (Auto Lowy 7/14 dni, Szklo Handlu, Buff / Eliksir SungMa)"
+# MT2009_PLUS_CLASS_CHESTS_V1 (the owner's list of 3 November 2026): the eight class chests of the second ItemShop (pl-wiki
+# "Skrzynia Sura Broni (D)" and the seven others, GF's vnums 39048-39062 even) and their encyclopedias (71204-71218 even,
+# "Encyklopedia Urana (D)" ...). ITEM_QUEST, stack 200, no drop / sale / trade / private shop (the encyclopedia not in the
+# storeroom either). A chest gives 10x Mikstura Madrosci (3h), 20x Zwoj Egzorcyzmu, 10x Rada Pustelnika, 5x Pierscien
+# Teleportacji and its path's encyclopedia, which gives 25 random skill instructions (50400 + skill) of that path - quest
+# skrzynie_klas. Copies of 72804 (a stack-200 quest item) with the values cleared. The client's records:
+# client-patches/client-2.0.30/tools/skrzynieklas (keep the names equal). Every start (INSERT IGNORE + UPDATE).
+db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.skrzynie_klas_item;
+CREATE TEMPORARY TABLE world.skrzynie_klas_item AS SELECT * FROM world.item_proto WHERE vnum = 72804 LIMIT 1;
+UPDATE world.skrzynie_klas_item SET type = 18, subtype = 0, stack = 200, flag = 4, wearflag = 0, gold = 0, shop_buy_price = 0, limittype0 = 0, limitvalue0 = 0, limittype1 = 0, limitvalue1 = 0, applytype0 = 0, applyvalue0 = 0, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
+UPDATE world.skrzynie_klas_item SET vnum = 39048, name = 'Body Warrior Chest (L)', locale_name = 'Skrz. Woj. M. Ciała (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71204, name = 'Saturn Encyclopedia (L)', locale_name = 'Encyklopedia Saturna (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39050, name = 'Mental Warrior Chest (L)', locale_name = 'Skrz. Woj.M. Ducho. (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71206, name = 'Earth Encyclopedia (L)', locale_name = 'Encyklopedia Ziemi (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39052, name = 'Blade Ninja Chest (L)', locale_name = 'Skrz. Ninja M.Ostrza (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71208, name = 'Mars Encyclopedia (L)', locale_name = 'Encyklopedia Marsa (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39054, name = 'Archery Ninja Chest (L)', locale_name = 'Skrz. Ninja M. Łuku (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71210, name = 'Jupiter Encyclopedia (L)', locale_name = 'Encyklop. Jupitera (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39056, name = 'Weaponry Sura Chest (L)', locale_name = 'Skrzynia Sura Broni (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71212, name = 'Uranus Encyclopedia (L)', locale_name = 'Encyklopedia Urana (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39058, name = 'Magic Sura Chest (L)', locale_name = 'Skrzynia Sura Magii (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71214, name = 'Neptune Encyclopedia (L)', locale_name = 'Encyklopedia Neptuna (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39060, name = 'Dragon Shaman Chest (L)', locale_name = 'Skrz. Szam. M. Smoka (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71216, name = 'Mercury Encyclopedia (L)', locale_name = 'Encyklop. Merkurego (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 39062, name = 'Healing Shaman Chest (L)', locale_name = 'Skrz. Szam. M. Lecz. (D)', antiflag = 90496;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+UPDATE world.skrzynie_klas_item SET vnum = 71218, name = 'Venus Encyclopedia (L)', locale_name = 'Encyklopedia Wenus (D)', antiflag = 221568;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
+DROP TEMPORARY TABLE world.skrzynie_klas_item;
+UPDATE world.item_proto SET type = 18, subtype = 0, stack = 200, flag = 4, antiflag = IF(vnum >= 71204, 221568, 90496) WHERE vnum IN (39048, 71204, 39050, 71206, 39052, 71208, 39054, 71210, 39056, 71212, 39058, 71214, 39060, 71216, 39062, 71218);" \
+    || fail_step "could not add the class chests (39048-39062) and their encyclopedias (71204-71218)"
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" 2>/dev/null || echo x)" = "6" ]; then
 # MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu nalezy usunac wszystkie amulety, amulety sa dostepne
 # tylko w kolach do losowania"; the sash too): the sets' amulets (71202, 71188, 71199, 70607, 72713) and the Szarfa
