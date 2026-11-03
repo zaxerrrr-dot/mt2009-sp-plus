@@ -8,13 +8,20 @@
 #   d:/ymir work/ui/new_inventory/btn_[0-3]_[0-2].png    the package's round buttons (Alchemia, Magazyn, Sklep, Kostiumy)
 #   d:/ymir work/ui/new_inventory/equip_bg_mt2009.png    the package's equip_bg_0.png with the pet icon of the bottom right
 #                                                        frame wiped (no pet slot here): the inside of the sub picture's
-#                                                        empty ring frame is copied over it - that frame holds our small
+#                                                        empty ring frame is copied over it - that frame held our small
 #                                                        buttons (horse bag, chest preview; uiscript/inventoryequipwindow.py)
+#                                                        MT2009_PLUS_INVENTORY_WIKI_V1 (the owner, 3 November 2026: the
+#                                                        empty frame right of 11 Rekawice "usunac"): with --gf=<the GF
+#                                                        client's d:/ymir work/ui/equipment_bg_without_ring.tga> the whole
+#                                                        bottom right corner (CORNER) is that picture's - the background
+#                                                        pattern and the border, no frame (the GF picture's top 157 x 138
+#                                                        is the package's equip_bg_0.png pixel for pixel elsewhere)
 #
 # (tab_half_0[1-3].png of the same folder, MT2009_PLUS_INVENTORY_V2_V2, were cut once by hand from the GF client's
 # windows.dds - build_inv2_packs.py says where; this script leaves them as they are.)
 #
-#   python3 make_inv2_images.py <package dir>/Binary/etc/ymir\ work/ui/new_inventory [--check]
+#   python3 make_inv2_images.py <package dir>/Binary/etc/ymir\ work/ui/new_inventory \
+#       --gf=/opt/metin2/cache/gf/Gameforge_26.1.11/_client/d_/ymir\ work/ui/equipment_bg_without_ring.tga [--check]
 import os
 import struct
 import sys
@@ -26,6 +33,7 @@ COPY = ['equip_bg_sub.png', 'equip_pagebtn_bg.png'] + ['btn_%d_%d.png' % (a, b) 
 # the bottom right frame's inside in equip_bg_0.png (157 x 138) and where it is taken from in equip_bg_sub.png
 DST = (119, 103, 28, 29)		# x, y, w, h
 SRC = (8, 8)					# the first ring frame's inside
+CORNER = (112, 96, 45, 42)		# MT2009_PLUS_INVENTORY_WIKI_V1: x, y, w, h of equip_bg_0.png taken from the GF picture
 
 
 def load(path):
@@ -77,7 +85,27 @@ def save(w, h, ct, rows):
 		+ chunk(b'IDAT', zlib.compress(raw, 9)) + chunk(b'IEND', b''))
 
 
-def build(src):
+def load_tga(path):
+	# an uncompressed 24 / 32 bit TGA (the GF client's equipment_bg_without_ring.tga: 157 x 223, 24 bit) as RGB rows
+	b = open(path, 'rb').read()
+	assert b[2] == 2, (path, b[2])
+	w, h = struct.unpack('<HH', b[12:16])
+	px = b[16] // 8
+	assert px in (3, 4), (path, b[16])
+	o = 18 + b[0]
+	rows = []
+	for y in range(h):
+		r = bytearray()
+		for x in range(w):
+			q = o + (y * w + x) * px
+			r += bytes((b[q + 2], b[q + 1], b[q]))
+		rows.append(r)
+	if not (b[17] & 0x20):
+		rows.reverse()
+	return w, h, rows
+
+
+def build(src, gf=None):
 	out = {}
 	for n in COPY:
 		out[n] = open(os.path.join(src, n), 'rb').read()
@@ -90,6 +118,12 @@ def build(src):
 		for dx in range(dw):
 			s = srows[SRC[1] + dy]
 			rows[y0 + dy][(x0 + dx) * bpp:(x0 + dx + 1) * bpp] = s[(SRC[0] + dx) * bpp:(SRC[0] + dx + 1) * bpp]
+	if gf:
+		gw, gh, grows = load_tga(gf)
+		assert gw == w and gh >= h and bpp == 3, (gw, gh, bpp)
+		cx, cy, cw, ch = CORNER
+		for dy in range(ch):
+			rows[cy + dy][cx * bpp:(cx + cw) * bpp] = grows[cy + dy][cx * 3:(cx + cw) * 3]
 	out['equip_bg_mt2009.png'] = save(w, h, ct, rows)
 	assert load_bytes_ok(out['equip_bg_mt2009.png'])
 	return out
@@ -108,7 +142,8 @@ def load_bytes_ok(b):
 
 def main():
 	args = [a for a in sys.argv[1:] if not a.startswith('--')]
-	files = build(args[0])
+	gf = [a[5:] for a in sys.argv[1:] if a.startswith('--gf=')]
+	files = build(args[0], gf[0] if gf else None)
 	if '--check' in sys.argv:
 		bad = [n for n, b in sorted(files.items()) if not os.path.isfile(os.path.join(OUT, n))
 			or open(os.path.join(OUT, n), 'rb').read() != b]

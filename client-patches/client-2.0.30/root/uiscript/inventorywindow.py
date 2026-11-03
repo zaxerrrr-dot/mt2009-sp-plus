@@ -193,7 +193,7 @@ window = {
 
 									"x" : 17,"y" : 2,
 
-									"tooltip_text" : uiScriptLocale.POCKET_DEPOSIT,
+									"tooltip_text" : "Magazyn ItemShop",	# MT2009_PLUS_INVENTORY_WIKI_V1
 
 									"default_image" : flamewindPath.GetInventory("deposit_btn1"),
 									"over_image" : flamewindPath.GetInventory("deposit_btn2"),
@@ -205,7 +205,7 @@ window = {
 
 									"x": 32, "y": 2,
 
-									"tooltip_text" : "Magazyn ItemShop",	# MT2009_PLUS_INVENTORY_V2_V2
+									"tooltip_text" : "Osobisty Sklepik Premium",	# MT2009_PLUS_INVENTORY_WIKI_V1: the offline shop
 
 									"default_image": flamewindPath.GetInventory("myshop_btn1"),
 									"over_image": flamewindPath.GetInventory("myshop_btn2"),
