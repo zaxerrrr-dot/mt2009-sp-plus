@@ -659,7 +659,9 @@ namespace
 					what, oldVnum, materials);
 			return false;
 		}
-		const bool success = (int)ch->CountSpecifyItem(nextVnum) > before;
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the outcome off the cell the step left (read before the re-equip) - a worn
+		// piece put back on is no longer in the bag's count, and 33 of 3 November's 71 "BURNED" were successes so read
+		const bool success = (after && after->GetVnum() == nextVnum) || (int)ch->CountSpecifyItem(nextVnum) > before;
 		const bool burned = !success && (!after || (after->GetVnum() != oldVnum && after->GetVnum() + 1 != oldVnum));
 		if (highGear)
 			NotePlayerBotHighGearStep(ch, hgKind, plusBefore, recipe ? (int)recipe->prob : 100, success);
