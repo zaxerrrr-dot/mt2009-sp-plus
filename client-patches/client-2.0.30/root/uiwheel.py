@@ -86,6 +86,47 @@ TEXT_PAGE = 'Strona %d/%d'
 TEXT_KEY = 'Ko\xb3o Losu: zdobywasz klucz (%d/%d).'
 TEXT_GATE = 'Ko\xb3o Losu: brama otwarta - poziom %d!'
 
+# MT2009_PLUS_KOLA_AUTOSPIN_V1 (the owner, 3 November 2026: "Do kola losow itemshop dodaj opcje autospin"):
+# a small panel top right - how many spins (5 / 10 / 25 / 50 / 100 / until the coins run out), "stop at a main
+# prize" (the wheel's own rarity: the special fields, "Glowne nagrody") and "fast spinning" (no turning
+# animation, the stop field at once). Every spin is still the window's own "/kolo krec", one after the other:
+# the next is asked only after the server told the prize of the one before (and at least AUTO_GAP_MS after
+# the last click, over the server's 1.5 s between two spins), so the server's transaction (the balance, the
+# row lock, the log) checks each one as a click would. It stops by itself when the coins do not cover the next
+# spin, on any refusal ("WOF kfail") or a spin left unanswered, when the window closes or the wheel is off.
+# The last choices are kept in kolo_autospin.cfg (in the client's folder, like autotarget.cfg).
+AUTO_COUNTS = (5, 10, 25, 50, 100, 0)	# 0: until the coins run out
+AUTO_GAP_MS = 2000	# click to click, at least (the server refuses a spin within 1.5 s of the one before)
+AUTO_PAUSE_MS = 1200	# after the prize is told, before the next click (normal spinning)
+AUTO_PAUSE_FAST_MS = 300	# the same, fast spinning
+AUTO_FAST_REVEAL_MS = 500	# fast spinning: from the server's answer to the prize told
+AUTO_ANSWER_S = 10.0	# a spin unanswered this long stops the autospin
+AUTO_CONFIG = 'kolo_autospin.cfg'
+AUTO_X = BOX_X	# the panel: top right, above the welcome box (which grows up from the bottom to about y 210)
+AUTO_Y = 34
+AUTO_H = 150
+TEXT_AUTO_TITLE = 'Autospin'
+TEXT_AUTO_COUNT = 'Obroty:'
+TEXT_AUTO_ALL = 'do ko\xf1ca SM'
+TEXT_AUTO_STOP_SPECIAL = 'Stop: g\xb3\xf3wna nagroda'
+TEXT_AUTO_FAST = 'Szybkie kr\xeacenie'
+TEXT_AUTO_START = 'Start autospin'
+TEXT_AUTO_STOP = 'Zatrzymaj'
+TEXT_AUTO_IDLE = 'Wybierz liczb\xea obrot\xf3w.'
+TEXT_AUTO_PROGRESS = 'Obr\xf3t %d/%s, wydano %d SM'
+TEXT_AUTO_WON = 'Wygrane: %d, g\xb3\xf3wne: %d'
+TEXT_AUTO_DONE = ('Autospin: koniec (%d obrot\xf3w).', 'Autospin: koniec.')
+TEXT_AUTO_STOPPED = ('Autospin zatrzymany.', 'Autospin zatrzymany.')
+TEXT_AUTO_NO_COINS = ('Autospin: za ma\xb3o Smoczych Monet na kolejny obr\xf3t.', 'Autospin: za ma\xb3o SM.')
+TEXT_AUTO_SPECIAL = ('Autospin: g\xb3\xf3wna nagroda - zatrzymany.', 'Autospin: g\xb3\xf3wna nagroda!')
+TEXT_AUTO_FAIL = ('Autospin zatrzymany - obr\xf3t odrzucony.', 'Autospin: obr\xf3t odrzucony.')
+TEXT_AUTO_TIMEOUT = ('Autospin zatrzymany - brak odpowiedzi serwera.', 'Autospin: brak odpowiedzi.')
+TEXT_AUTO_OFF = ('Autospin zatrzymany - Ko\xb3o Losu jest wy\xb3\xb9czone.', 'Autospin: ko\xb3o wy\xb3\xb9czone.')
+TEXT_AUTO_SUMMARY = 'Autospin: %d obrot\xf3w, wydano %d SM, g\xb3\xf3wne nagrody: %d.'
+TEXT_AUTO_LIST = 'Autospin - wygrane: %s'
+CHECKBOX_IMAGE = 'mt2009_ui/checkbox/checkbox.tga'
+CHECKED_IMAGE = 'mt2009_ui/checkbox/checked.tga'
+
 BROWN = grp.GenerateColor(0.4, 0.1765, 0.0706, 1.0)	# #662d12
 DARK = grp.GenerateColor(0.2353, 0.1176, 0.0863, 1.0)	# #3c1e16
 GOLD = grp.GenerateColor(0.949, 0.902, 0.624, 1.0)	# #f2e69f
@@ -196,6 +237,123 @@ def ParseEntries(text, fields):
 			continue
 		out.append(tuple([_Int(v) for v in values[:fields]]))
 	return out
+
+
+def LoadAutoSettings():
+	"""MT2009_PLUS_KOLA_AUTOSPIN_V1: (count index, stop at a main prize, fast) from kolo_autospin.cfg."""
+	index, stopSpecial, fast = 1, 1, 0
+	try:
+		handle = open(AUTO_CONFIG, 'r')
+		try:
+			for line in handle.read().splitlines():
+				key, sep, value = line.partition('=')
+				if not sep:
+					continue
+				key = key.strip()
+				value = _Int(value.strip(), -1)
+				if key == 'count' and value in AUTO_COUNTS:
+					index = list(AUTO_COUNTS).index(value)
+				elif key == 'stop_special' and value in (0, 1):
+					stopSpecial = value
+				elif key == 'fast' and value in (0, 1):
+					fast = value
+		finally:
+			handle.close()
+	except Exception:
+		pass
+	return index, stopSpecial, fast
+
+
+def SaveAutoSettings(index, stopSpecial, fast):
+	try:
+		handle = open(AUTO_CONFIG, 'w')
+		try:
+			handle.write('count=%d\nstop_special=%d\nfast=%d\n' % (AUTO_COUNTS[index], 1 if stopSpecial else 0, 1 if fast else 0))
+		finally:
+			handle.close()
+	except Exception:
+		pass
+
+
+def WonList(won):
+	"""MT2009_PLUS_KOLA_AUTOSPIN_V1: the autospin's prizes, most often first: ['10x Foo (3x)', ...]."""
+	rows = sorted(won.items(), key=lambda kv: (-kv[1][0], kv[1][1]))
+	out = []
+	for (vnum, count), (times, name) in rows:
+		out.append(name if times == 1 else '%s (%dx)' % (name, times))
+	return out
+
+
+class ClickText(ui.Window):
+	"""MT2009_PLUS_KOLA_AUTOSPIN_V1: a text (with a check box if checkable) that answers a click."""
+
+	def __init__(self, parent, x, y, w, text, event, checkable=False):
+		ui.Window.__init__(self)
+		self.SetParent(parent)
+		self.SetPosition(x, y)
+		self.SetSize(w, 16)
+		self.event = event
+		self.box = None
+		self.mark = None
+		self.textMark = None
+		left = 0
+		if checkable:
+			left = 18
+			try:
+				box = ui.ImageBox()
+				box.SetParent(self)
+				box.AddFlag('not_pick')
+				box.LoadImage(CHECKBOX_IMAGE)
+				box.SetPosition(0, 2)
+				box.Show()
+				mark = ui.ImageBox()
+				mark.SetParent(self)
+				mark.AddFlag('not_pick')
+				mark.LoadImage(CHECKED_IMAGE)
+				mark.SetPosition(0, -2)
+				self.box = box
+				self.mark = mark
+			except Exception:
+				self.box = self.mark = None
+				textMark = ui.TextLine()
+				textMark.SetParent(self)
+				textMark.AddFlag('not_pick')
+				textMark.SetPosition(0, 1)
+				textMark.SetPackedFontColor(BROWN)
+				textMark.Show()
+				self.textMark = textMark
+		label = ui.TextLine()
+		label.SetParent(self)
+		label.AddFlag('not_pick')
+		label.SetPosition(left, 1)
+		label.SetPackedFontColor(BROWN)
+		label.SetText(text)
+		label.Show()
+		self.label = label
+		self.Show()
+
+	def __del__(self):
+		ui.Window.__del__(self)
+
+	def SetText(self, text):
+		self.label.SetText(text)
+
+	def SetColor(self, color):
+		self.label.SetPackedFontColor(color)
+
+	def SetChecked(self, checked):
+		if self.textMark:
+			self.textMark.SetText('[x]' if checked else '[ ]')
+		elif self.mark:
+			if checked:
+				self.mark.Show()
+			else:
+				self.mark.Hide()
+
+	def OnMouseLeftButtonUp(self):
+		if self.event:
+			self.event()
+		return True
 
 
 _data = {
@@ -511,6 +669,12 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		self.slotImages = {}	# (tier, k) -> ImageBox
 		self.lastPrize = None
 		self.idle = {}	# (tier, pos) -> Sprite
+		# MT2009_PLUS_KOLA_AUTOSPIN_V1: the choices, and the run (None: no autospin running)
+		(self.autoIndex, self.autoStopSpecial, self.autoFast) = LoadAutoSettings()
+		self.auto = None	# {'target', 'done', 'spent', 'won', 'specials', 'cost'}
+		self.autoLast = None	# the last run, shown after it ended
+		self.autoGen = 0
+		self.fastSpin = False	# the spin running now goes without the turning animation
 		self.__Build()
 
 	def __del__(self):
@@ -694,7 +858,50 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		close.Show()
 		self.closeButton = close
 
+		self.__BuildAuto()
 		self.__ApplyState()
+
+	def __BuildAuto(self):
+		"""MT2009_PLUS_KOLA_AUTOSPIN_V1: the autospin panel, the welcome box's art cut to AUTO_H."""
+		panel = ui.ExpandedImageBox()
+		panel.SetParent(self)
+		panel.LoadImage(UI + 'box.jpg')
+		panel.SetPosition(AUTO_X, AUTO_Y)
+		panel.SetRenderingRect(0.0, 0.0, 0.0, -1.0 + float(AUTO_H) / float(BOX_MAX_H))
+		panel.AddFlag('not_pick')
+		panel.Show()
+		self.autoPanel = panel
+		y = BOX_PAD - 2
+		title = self.__Text(panel, BOX_PAD, y, BROWN, True)
+		title.SetText(TEXT_AUTO_TITLE)
+		y += 20
+		countLabel = self.__Text(panel, BOX_PAD, y + 1, BROWN)
+		countLabel.SetText(TEXT_AUTO_COUNT)
+		self.autoCountLabel = countLabel
+		self.autoPrev = ClickText(panel, BOX_PAD + 52, y, 14, '<', ui.__mem_func__(self.__AutoPrevCount))
+		self.autoCount = self.__Text(panel, BOX_PAD + 52 + 14 + 40, y + 1, DARK, True, True)
+		self.autoNext = ClickText(panel, BOX_PAD + 52 + 14 + 80, y, 14, '>', ui.__mem_func__(self.__AutoNextCount))
+		y += 20
+		self.autoSpecialCheck = ClickText(panel, BOX_PAD, y, BOX_INNER, TEXT_AUTO_STOP_SPECIAL,
+				ui.__mem_func__(self.__AutoToggleSpecial), True)
+		y += 18
+		self.autoFastCheck = ClickText(panel, BOX_PAD, y, BOX_INNER, TEXT_AUTO_FAST, ui.__mem_func__(self.__AutoToggleFast), True)
+		y += 20
+		button = ui.Button()
+		button.SetParent(panel)
+		button.SetUpVisual(UI + 'exit.png')
+		button.SetOverVisual(UI + 'exit_h.png')
+		button.SetDownVisual(UI + 'exit_h.png')
+		button.SetText(TEXT_AUTO_START)
+		button.SetPosition((BOX_W - EXIT_W) / 2, y)
+		button.SetEvent(ui.__mem_func__(self.__OnAuto))
+		button.Show()
+		self.autoButton = button
+		y += 32
+		self.autoStatus = self.__Text(panel, BOX_PAD, y, DARK)
+		y += 17
+		self.autoWon = self.__Text(panel, BOX_PAD, y, DARK)
+		self.__RefreshAuto()
 
 	# --------------------------------------------------------------- helpers
 
@@ -763,6 +970,8 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		net.SendChatPacket('/kolo')
 
 	def Close(self):
+		if self.auto:	# MT2009_PLUS_KOLA_AUTOSPIN_V1: closing the window ends the autospin
+			self.__AutoStop(TEXT_AUTO_STOPPED)
 		if self.animating or self.playing:
 			self.__Finish(True)
 		self.__StopIdle()
@@ -773,6 +982,8 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 
 	def Destroy(self):
 		self.HideItemToolTip()
+		self.auto = None
+		self.autoGen += 1
 		self.timers = []
 		self.queues = {}
 		self.running = {}
@@ -862,7 +1073,8 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 				key.Box(key.home[0], key.home[1], 56, 56)
 				key.Show()
 		self.__BuildLadder()
-		self.__SetButton(self.animating or self.waiting)
+		# MT2009_PLUS_KOLA_AUTOSPIN_V1: during an autospin the button stays "KRECI SIE..." between the spins
+		self.__SetButton(self.animating or self.waiting or bool(self.auto))
 		self.__RefreshPanel()
 
 	def __RefreshPanel(self):
@@ -1083,7 +1295,157 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 
 	# ------------------------------------------------------------------- spin
 
+	# --------------------------------------------------------------- autospin
+
+	def __RefreshAuto(self):
+		"""MT2009_PLUS_KOLA_AUTOSPIN_V1: the panel's choices, button and counters."""
+		count = AUTO_COUNTS[self.autoIndex]
+		self.autoCount.SetText(str(count) if count else TEXT_AUTO_ALL)
+		self.autoSpecialCheck.SetChecked(self.autoStopSpecial)
+		self.autoFastCheck.SetChecked(self.autoFast)
+		self.autoButton.SetText(TEXT_AUTO_STOP if self.auto else TEXT_AUTO_START)
+		run = self.auto or self.autoLast
+		if not run:
+			self.autoStatus.SetText(TEXT_AUTO_IDLE)
+			self.autoWon.SetText('')
+			return
+		target = str(run['target']) if run['target'] else TEXT_AUTO_ALL
+		self.autoStatus.SetText(TEXT_AUTO_PROGRESS % (run['done'], target, run['spent']))
+		self.autoWon.SetText(TEXT_AUTO_WON % (run['done'], run['specials']))
+
+	def __AutoSave(self):
+		SaveAutoSettings(self.autoIndex, self.autoStopSpecial, self.autoFast)
+
+	def __AutoPrevCount(self):
+		if self.auto:
+			return
+		self.autoIndex = (self.autoIndex - 1) % len(AUTO_COUNTS)
+		self.__AutoSave()
+		self.__RefreshAuto()
+
+	def __AutoNextCount(self):
+		if self.auto:
+			return
+		self.autoIndex = (self.autoIndex + 1) % len(AUTO_COUNTS)
+		self.__AutoSave()
+		self.__RefreshAuto()
+
+	def __AutoToggleSpecial(self):
+		# may change during a run too: the next prize is checked with the new choice
+		self.autoStopSpecial = 0 if self.autoStopSpecial else 1
+		self.__AutoSave()
+		self.__RefreshAuto()
+
+	def __AutoToggleFast(self):
+		self.autoFast = 0 if self.autoFast else 1
+		self.__AutoSave()
+		self.__RefreshAuto()
+
+	def __OnAuto(self):
+		if self.auto:
+			if self.waiting:
+				# the spin asked for is on its way: counted when it comes, then the run ends
+				self.auto['stop'] = True
+				return
+			self.__AutoStop(TEXT_AUTO_STOPPED)
+			return
+		if self.waiting or self.animating or not self.enabled:
+			return
+		if self.balance < self.cost:
+			self.__AutoMessage(TEXT_AUTO_NO_COINS)
+			return
+		self.auto = {'target': AUTO_COUNTS[self.autoIndex], 'done': 0, 'spent': 0, 'won': {}, 'specials': 0, 'cost': 0}
+		self.autoLast = None
+		self.autoGen += 1
+		self.__AutoSave()
+		self.__RefreshAuto()
+		self.__AutoNext(self.autoGen)
+
+	def __AutoMessage(self, text):
+		"""text: (the chat's line, the welcome box's short one)."""
+		chat.AppendChat(chat.CHAT_TYPE_INFO, text[0])
+		self.message.SetText(text[1])
+		self.__RefreshPanel()
+
+	def __AutoNext(self, gen):
+		"""The next spin of the run: asked like a click, after the prize of the one before is told."""
+		run = self.auto
+		if not run or gen != self.autoGen:
+			return
+		if not self.IsShow():
+			return self.__AutoStop(TEXT_AUTO_STOPPED)
+		if not self.enabled:
+			return self.__AutoStop(TEXT_AUTO_OFF)
+		if run['target'] and run['done'] >= run['target']:
+			return self.__AutoStop((TEXT_AUTO_DONE[0] % run['done'], TEXT_AUTO_DONE[1]))
+		if self.balance < self.cost:
+			return self.__AutoStop(TEXT_AUTO_NO_COINS)
+		if self.waiting or self.animating:
+			# the spin before is still turning (should not happen): look again a moment later
+			self.After(500, lambda: self.__AutoNext(gen))
+			return
+		gap = (self.spinClicked + AUTO_GAP_MS / 1000.0) - app.GetTime()
+		if gap > 0:
+			self.After(gap * 1000.0 + 50, lambda: self.__AutoNext(gen))
+			return
+		run['cost'] = self.cost
+		self.__RequestSpin()
+
+	def __AutoSpun(self, position, special):
+		"""The server's answer to a spin of the run: counted (the prize, the coins)."""
+		run = self.auto
+		if not run or position > len(self.layout):
+			return
+		vnum, count, src = self.layout[position - 1]
+		run['done'] += 1
+		run['spent'] += run['cost']
+		if special:
+			run['specials'] += 1
+		key = (vnum, count)
+		times, name = run['won'].get(key, (0, PrizeName(vnum, count)))
+		run['won'][key] = (times + 1, name)
+		self.__RefreshAuto()
+
+	def __AutoAfterPrize(self, special):
+		"""The prize told: stop at a main prize (if chosen), else the next spin after a pause."""
+		run = self.auto
+		if not run:
+			return
+		if run.get('stop'):
+			return self.__AutoStop(TEXT_AUTO_STOPPED)
+		if special and self.autoStopSpecial:
+			return self.__AutoStop(TEXT_AUTO_SPECIAL)
+		if run['target'] and run['done'] >= run['target']:
+			return self.__AutoStop((TEXT_AUTO_DONE[0] % run['done'], TEXT_AUTO_DONE[1]))
+		gen = self.autoGen
+		self.After(AUTO_PAUSE_FAST_MS if self.autoFast else AUTO_PAUSE_MS, lambda: self.__AutoNext(gen))
+
+	def __AutoStop(self, text):
+		run = self.auto
+		if not run:
+			return
+		self.auto = None
+		self.autoLast = run
+		self.autoGen += 1
+		if text:
+			self.__AutoMessage(text)
+		if run['done']:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_AUTO_SUMMARY % (run['done'], run['spent'], run['specials']))
+			names = WonList(run['won'])
+			while names:	# a few prizes a line, the chat cuts long lines
+				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_AUTO_LIST % ', '.join(names[:5]))
+				names = names[5:]
+		if not self.animating and not self.waiting:
+			self.__SetButton(False)
+		self.__RefreshAuto()
+
 	def __OnSpin(self, *args):
+		# MT2009_PLUS_KOLA_AUTOSPIN_V1: the autospin asks for its spins itself (the button waits)
+		if self.auto:
+			return
+		self.__RequestSpin()
+
+	def __RequestSpin(self):
 		if self.waiting or self.animating or not self.enabled:
 			return
 		self.waiting = True
@@ -1096,6 +1458,10 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		self.waiting = False
 		if not self.animating:
 			self.__SetButton(False)
+		# MT2009_PLUS_KOLA_AUTOSPIN_V1: any refusal (the coins, the database, too fast) ends the autospin;
+		# the server's own line in the chat tells why
+		if self.auto:
+			self.__AutoStop(TEXT_AUTO_FAIL)
 
 	def OnLayout(self, entries):
 		if not self.animating:
@@ -1114,6 +1480,8 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		self.spinGen += 1
 		gen = self.spinGen
 		self.spinInfo = (position, keyHit, special, self.tier, self.keys)
+		self.fastSpin = bool(self.auto and self.autoFast)	# MT2009_PLUS_KOLA_AUTOSPIN_V1
+		self.__AutoSpun(position, special)
 		self.__StopIdle()
 		self.__SetButton(True)
 		self.pointer.Show()
@@ -1125,6 +1493,18 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 			sprite.alpha = 1.0
 			sprite.Box(sprite.home[0], sprite.home[1], ICON, ICON)
 			sprite.Show()
+		if self.fastSpin:
+			# MT2009_PLUS_KOLA_AUTOSPIN_V1: fast spinning - the stop field at once, one short pop of its
+			# icon, the prize told half a second later (no flying key: the ladder fills with the new state)
+			self.__Frame(position)
+			sprite = self.rewards[position - 1]
+			sprite.img.SetTop()
+			pop = lambda s: {'w': (s.w, s.w + 20), 'h': (s.h, s.h + 20), 'x': (s.x, s.x - 10), 'y': (s.y, s.y - 10)}
+			back = lambda s: {'w': (s.w, s.w - 20), 'h': (s.h, s.h - 20), 'x': (s.x, s.x + 10), 'y': (s.y, s.y + 10)}
+			self.Queue(sprite, (pop, 150, EaseP, None))
+			self.Queue(sprite, (back, 200, EaseP, None))
+			self.After(AUTO_FAST_REVEAL_MS, lambda: self.__Reveal(gen))
+			return
 		# the steps: field 1 .. 32 + position, a second after the click
 		last = 32 + position
 		delay = max(0.0, 1.0 - (app.GetTime() - self.spinClicked)) * 1000.0
@@ -1229,6 +1609,8 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 		if instant:
 			self.spinGen += 1
 			self.__BackToIdle(self.spinGen)
+		elif self.auto:
+			self.__AutoAfterPrize(special)	# MT2009_PLUS_KOLA_AUTOSPIN_V1
 
 	def __BackToIdle(self, gen):
 		if gen != self.spinGen or self.animating:
@@ -1260,6 +1642,12 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 
 	def OnUpdate(self):
 		self.__Tick()
+		# MT2009_PLUS_KOLA_AUTOSPIN_V1: a spin of the run the server never answered ends it
+		if self.auto and self.waiting and app.GetTime() - self.spinClicked > AUTO_ANSWER_S:
+			self.waiting = False
+			if not self.animating:
+				self.__SetButton(False)
+			self.__AutoStop(TEXT_AUTO_TIMEOUT)
 		if self.tier > 1 and not self.animating:
 			self.__RefreshClock()
 
