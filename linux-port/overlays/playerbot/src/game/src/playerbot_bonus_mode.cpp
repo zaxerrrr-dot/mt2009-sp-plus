@@ -40,12 +40,22 @@ int BonusModeItemDropBonus(LPCHARACTER killer)
 	return MAX(0, killer->GetPoint(POINT_ITEM_DROP_BONUS));
 }
 
-long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value)
+// MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1: the same rule by attribute set, for what has no item at hand - the switchbot's
+// list of bonuses and their maxima (playerbot_switchbot.cpp SendItemAttributeInformations) gives exactly what
+// CItem::AddAttr gives an item of that set.
+long BonusModeSetAttrValue(int iSet, BYTE apply, BYTE level, long value)
 {
 #ifdef ENABLE_PENDANT_SYSTEM
-	if (item && level > 0 && item->GetAttributeSetIndex() == ATTRIBUTE_SET_PENDANT &&
+	if (level > 0 && iSet == ATTRIBUTE_SET_PENDANT &&
 			(apply == POINT_RESIST_FIRE || apply == POINT_RESIST_ELEC || apply == POINT_RESIST_WIND) && BonusModeGlobal())
 		return 5 * MIN(5, (int)level);
 #endif
 	return value;
+}
+
+long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value)
+{
+	if (!item)
+		return value;
+	return BonusModeSetAttrValue(item->GetAttributeSetIndex(), apply, level, value);
 }

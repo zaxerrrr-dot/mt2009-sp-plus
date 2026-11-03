@@ -1082,6 +1082,25 @@ void CSwitchbotManager::P2PReceiveSwitchbot(const TSwitchbotTable& table)
 	pkSwitchbot->SetIsWarping(true);
 }
 
+// MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1 (the owner, 3 November 2026, the switchbot's list for a talisman: "W talizmanie
+// bonus switcher nie pokazuja sie bonusy (wartosci) jakie sa na talizmanach"): the list of a slot's bonuses and their
+// maxima is this packet (the exe keeps it by set, PythonSwitchbot.cpp GetAttributesForSet / GetAttributeMaxValue, and
+// uiswitchbot.py offers it and caps a typed value with it). It gave every bonus its row's value at the set's highest
+// level, lValues[max - 1], but M2_BONUS_MODE=global gives a talisman its own fire / lightning / wind resistance -
+// 5% a level, 25% at the top (BonusModeAttrValue in CItem::AddAttr, server-patches/bonusyglobal) - while the row holds
+// the armour's 2-15%: the list said 15%, a typed 25% was cut to 15%, and a slot aiming at "the maximum" stopped at
+// 15%. Now the same rule as the roll (BonusModeSetAttrValue), so the list has exactly what the server can roll for each
+// kind in the bonus mode of this world. The set numbers are the exe's SERVER_ATTRIBUTE_SET_* (PythonSwitchbot.cpp):
+long BonusModeSetAttrValue(int iSet, BYTE apply, BYTE level, long value);
+static_assert(ATTRIBUTE_SET_EAR == 7, "switchbot: the exe numbers the eight old sets 0-7");
+#if defined(ENABLE_ITEM_ATTR_COSTUME) && defined(ENABLE_WEAPON_COSTUME_SYSTEM)
+static_assert(ATTRIBUTE_SET_COSTUME_BODY == 8 && ATTRIBUTE_SET_COSTUME_HAIR == 9 && ATTRIBUTE_SET_COSTUME_WEAPON == 10,
+	"switchbot: the exe's SERVER_ATTRIBUTE_SET_COSTUME_* are 8-10");
+#endif
+#if defined(ENABLE_PENDANT_SYSTEM) && defined(ENABLE_GLOVE_SYSTEM) && defined(ENABLE_ITEM_ATTR_COSTUME) && defined(ENABLE_WEAPON_COSTUME_SYSTEM)
+static_assert(ATTRIBUTE_SET_PENDANT == 11 && ATTRIBUTE_SET_GLOVE == 12, "switchbot: the exe's SERVER_ATTRIBUTE_SET_PENDANT / _GLOVE are 11 / 12");
+#endif
+
 void CSwitchbotManager::SendItemAttributeInformations(LPCHARACTER ch)
 {
 	if (!ch)
@@ -1108,13 +1127,14 @@ void CSwitchbotManager::SendItemAttributeInformations(LPCHARACTER ch)
 		{
 			const TItemAttrTable& r = it.second;
 
-			BYTE max = r.bMaxLevelBySet[bAttributeSet];
-			if (max > 0 && max <= ITEM_ATTRIBUTE_MAX_LEVEL)
+			// a set's level above 5 rolls the fifth value (CItem::AddAttr lValues[MIN(4, level - 1)], mt2009_attrmax.cpp)
+			const BYTE max = (BYTE) MIN((int) r.bMaxLevelBySet[bAttributeSet], (int) ITEM_ATTRIBUTE_MAX_LEVEL);
+			if (max > 0)
 			{
 				TSwitchbotAttributeInfo table = {};
 				table.attribute_set = bAttributeSet;
 				table.apply_num = it.first;
-				table.max_value = r.lValues[max - 1];
+				table.max_value = BonusModeSetAttrValue(bAttributeSet, (BYTE) it.first, max, r.lValues[max - 1]); // MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1
 
 				buf.write(&table, sizeof(table));
 			}
