@@ -126,6 +126,15 @@ quest erebu begin
 			pc.setf("erebu", "off", get_global_time())
 		end
 
+		-- MT2009_PLUS_ZAKLETY_ABSENCE_RESET_V1 (the owner, 3 November): a warp is a logout too, so leaving the
+		-- forest by a teleport ring, a scroll or the Teleporter left "off" on the character, and the next way in
+		-- (the En-Tai Guardian's portal) more than 10 minutes later threw him out at once as "too long absent".
+		-- Every login off the open forest (any other map, Erebu's instances too) clears the marker: only a real
+		-- logout inside the forest followed by a login inside it counts.
+		when login with pc.get_map_index() ~= 353 and pc.getf("erebu", "off") ~= 0 begin
+			pc.setf("erebu", "off", 0)
+		end
+
 		when login with pc.get_map_index() == 353 begin
 			local c = erebu.cfg()
 			local off = pc.getf("erebu", "off")

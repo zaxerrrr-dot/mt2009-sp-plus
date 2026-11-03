@@ -74,6 +74,9 @@ quest temple_of_the_ochao begin
 				return
 			end
 			if s == 1 then
+				-- MT2009_PLUS_ZAKLETY_ABSENCE_RESET_V1: the way in starts the forest anew - no absence
+				-- marker of an earlier stay (erebu.quest) may follow the character in
+				pc.setf("erebu", "off", 0)
 				pc.warp(815800, 1505000)
 			else
 				pc.warp(1277900, 1734400)
