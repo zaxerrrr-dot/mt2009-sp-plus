@@ -96,3 +96,99 @@ section
 	apply_value	8	10	12	15	20
 	apply_duration	60	120	180	300	600
 end
+
+# Zl. Eliksir Ogn. Mocy
+section
+	item_vnum	50842
+	apply_type	179
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. Eliksir Mroznej Mocy
+section
+	item_vnum	50843
+	apply_type	180
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. Eliksir Piorun. Mocy
+section
+	item_vnum	50844
+	apply_type	178
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Z. Eliksir Mocy Pln. W.
+section
+	item_vnum	50845
+	apply_type	181
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zloty Eliksir Mocy Ziemi
+section
+	item_vnum	50846
+	apply_type	182
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. Eliksir Mrocz. Mocy
+section
+	item_vnum	50847
+	apply_type	183
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Z. Eliksir Odp. na Ogien
+section
+	item_vnum	50848
+	apply_type	75
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. Eliksir Odp. na Lod
+section
+	item_vnum	50849
+	apply_type	133
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. El. Odp. na Pioruny
+section
+	item_vnum	50850
+	apply_type	76
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. El. Odp. na Pln. W.
+section
+	item_vnum	50851
+	apply_type	78
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. El. Odp. na Ziemie
+section
+	item_vnum	50852
+	apply_type	134
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end
+
+# Zl. Eliksir Odp. na Mrok
+section
+	item_vnum	50853
+	apply_type	135
+	apply_value	20	20	20	20	20
+	apply_duration	600	600	600	600	600
+end

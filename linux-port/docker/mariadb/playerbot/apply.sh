@@ -4461,6 +4461,16 @@ if [ -s /opt/playerbot/yohara_eliksiry.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_MIKSTURY_V1: Sok z Korzenia Gango (50804) heals 50 HP as on the pl-wiki (the owner, 4 November 2026) -
+# yohara_mikstury.sql. Idempotent (only a row still at the package's 90).
+if [ -s /opt/playerbot/yohara_mikstury.sql ]; then
+    if db < /opt/playerbot/yohara_mikstury.sql; then
+        echo "[playerbot-migrate] potions: yohara_mikstury.sql applied (MT2009_PLUS_MIKSTURY_V1)"
+    else
+        fail_step "potions: yohara_mikstury.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_ELEMENT_STONES_V1: Kamien Ochrony Zywiolow (39120) and Kamien Mocy Zywiolow (39119) - the owner, 28 October
 # 2026 - kamienie_zywiolow.sql (tools/kamienie_zywiolow/gen_kamienie_zywiolow.py): the two unique-slot amulets (7 days of
 # real time) and their six bonus lines each in world.item_extra_apply (made above). Idempotent (INSERT IGNORE). Only one
