@@ -8051,6 +8051,19 @@ namespace
 	// at twenty million filled 775 pages and no bot could pay for one.
 	const int PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS = 20;
 	const int PLAYERBOT_CRAFT_MATERIAL_COUNTER_LINES = 4;
+#define MT2009_PLUS_BOT_DUST_MARKET_V1 1
+	// MT2009_PLUS_BOT_DUST_MARKET_V1 (2.x: the counter's yang room alone, from the Yohara line's 782fd9d5 - its dust
+	// market, Champion buyers, shell and pearls are not here): a counter at the bots' yang cap (PLAYERBOT_GOLD_MAX)
+	// that refuses a line of the cheap goods (IsPlayerBotDustMarketGoodsVnum) takes home its dearest line unsold for
+	// PLAYERBOT_DUST_MARKET_ROOM_STAND_MS and holds that kind back for PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS
+	// (playerbot_offline_shop.h: PLAYERBOT_OFFLINE: yang cap / yang room).
+	const DWORD PLAYERBOT_DUST_MARKET_ROOM_STAND_MS = 6 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS = 12 * 60 * 60 * 1000;
+	// The goods the yang cap makes room for, on 2.x: Magiczny Pyl and Materialy Rzemieslnicze.
+	inline bool IsPlayerBotDustMarketGoodsVnum(DWORD vnum)
+	{
+		return vnum == PLAYERBOT_MAGIC_DUST_VNUM || vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED;
+	}
 	// MT2009_PLUS_MARKET_SINK_V1: a Cor Draconis line is at most this many
 	// (lines of 50-67 filled 50 pages), and a counter shows at most this many
 	// Cor lines. The Cors bought off a counter, for the census

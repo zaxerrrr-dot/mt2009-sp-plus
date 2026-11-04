@@ -2339,6 +2339,9 @@ namespace {
         row.refusedAbove = refused;
         if (refused > 0) row.flags |= per::LFLAG_LOW_RANK;
     }
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+    bool IsPlayerBotYangRoomHeld(LPCHARACTER ch, DWORD vnum, DWORD now);   // MT2009_PLUS_BOT_DUST_MARKET_V1 (below)
+#endif
     void BotOfflinePrepareVisitLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop) {
         auto& o = state.offlineShop;
         o.preparedItem = 0;
@@ -2361,6 +2364,9 @@ namespace {
             ++rank;
             LPITEM item = ch->GetInventoryItem(cell);
             if (!item || BotOfflineSlot(ch, shop, item) < 0) { ++refused; continue; }
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+            if (IsPlayerBotYangRoomHeld(ch, item->GetVnum(), get_dword_time())) { ++refused; continue; }   // MT2009_PLUS_BOT_DUST_MARKET_V1
+#endif
             if (BotOfflineCounterRefuses(shop, item)) { ++refused; continue; }
             // The explanation is read off the stack before it is cut.
             TPlayerBotListingExplain row;
@@ -2704,6 +2710,71 @@ namespace {
                 ch->GetPlayerID(), ch->GetName(), spareVnum, asking, bestVnum, bestValue, spareLines, clearGoods ? 1 : 0);
         return true;
     }
+
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+    // MT2009_PLUS_BOT_DUST_MARKET_V1: a bot's counter holds PLAYERBOT_GOLD_MAX (2 000 000 000) of lines at most
+    // (MT2009_PLUS_YANG_LIMITS_V1), and on 31 October on channel 1 game1 the add step refused one line after another
+    // there - 15 970 lines cut an hour (2 115 of them Materialy Rzemieslnicze, about a hundred a minute priced) against
+    // five adds acked, every cut poured back by the next visit's merge, and the ledger's supply of the materials 0.
+    // When a line of the cheap goods (IsPlayerBotDustMarketGoodsVnum - on 2.x Magiczny Pyl and the materials; the
+    // Yohara line's dust market, its Champion buyers and the shell are not here) is refused for the cap, the counter's dearest other line that has stood unsold
+    // PLAYERBOT_DUST_MARKET_ROOM_STAND_MS (or of an unknown age: put up before a restart) comes home, and its kind waits
+    // off this counter PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS - or the restock would put it straight back up first. One line
+    // a step; the next step adds the goods. A line of the goods themselves, an operator-ruled, a slipped or a rare one
+    // (Cor, sash, Dragon Stone) never goes for it.
+    std::map<DWORD, std::map<DWORD, DWORD> > s_mapPlayerBotYangRoomHeld;   // pid -> vnum -> until
+
+    bool IsPlayerBotYangRoomHeld(LPCHARACTER ch, DWORD vnum, DWORD now) {
+        if (!ch || s_mapPlayerBotYangRoomHeld.empty()) return false;
+        auto bot = s_mapPlayerBotYangRoomHeld.find(ch->GetPlayerID());
+        if (bot == s_mapPlayerBotYangRoomHeld.end()) return false;
+        auto held = bot->second.find(vnum);
+        if (held == bot->second.end()) return false;
+        if ((int)(held->second - now) > 0) return true;
+        bot->second.erase(held);
+        if (bot->second.empty()) s_mapPlayerBotYangRoomHeld.erase(bot);
+        return false;
+    }
+
+    bool BotOfflineYangRoom(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD goodsVnum,
+            long long goodsPrice, DWORD now) {
+        if (!ch || !shop || !IsPlayerBotDustMarketGoodsVnum(goodsVnum)) return false;
+        const long long total = (long long)shop->GetTotalYangValue();
+        const auto& listed = state.offlineShop.listed;
+        DWORD bestId = 0, bestVnum = 0;
+        long long bestValue = 0;
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line || !line->GetTable()) continue;
+            const DWORD vnum = line->GetInfo().vnum;
+            if (IsPlayerBotDustMarketGoodsVnum(vnum) || IsPlayerBotCorVnum(vnum) || (vnum >= 110000 && vnum <= 175499) ||
+                    (line->GetTable()->bType == ITEM_COSTUME && IsPlayerBotSashVnum(vnum)) ||
+                    GetPlayerBotRareGoodsKind(vnum) != PLAYERBOT_RARE_GOODS_NONE || s_setPlayerBotPriceSlips.count(id) ||
+                    ch->GetEmptyInventory(line->GetTable()->bSize) < 0)
+                continue;
+            const long long value = (long long)line->GetPrice().GetTotalYangAmount();
+            // The dearest, and dear enough that its going makes the goods' room.
+            if (value <= bestValue || total - value + goodsPrice >= (long long)PLAYERBOT_GOLD_MAX) continue;
+            const auto known = listed.find(id);
+            const uint32_t since = known == listed.end() ? 0
+                    : (known->second.when ? known->second.when : known->second.observedSince);
+            if (since != 0 && now - since < PLAYERBOT_DUST_MARKET_ROOM_STAND_MS) continue;
+            auto preview = BotOfflinePreview(*line);
+            if (!preview) continue;
+            const bool ruled = GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_NONE;
+            M2_DELETE(preview);
+            if (ruled) continue;
+            bestId = id;
+            bestVnum = vnum;
+            bestValue = value;
+        }
+        if (!bestId || !BotOfflineTakeOff(ch, state, bestId, 0, now, "yang_room")) return false;
+        s_mapPlayerBotYangRoomHeld[ch->GetPlayerID()][bestVnum] = now + PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS;
+        sys_log(0, "PLAYERBOT_OFFLINE: yang room pid=%u name=%s goods=%u goods_price=%lld total=%lld took_off=%u value=%lld held_h=%u",
+                ch->GetPlayerID(), ch->GetName(), goodsVnum, goodsPrice, total, bestVnum, bestValue,
+                (unsigned int)(PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS / 3600000U));
+        return true;
+    }
+#endif
 
     bool ManagePlayerBotOfflineService(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
         using namespace playerbot_offline;
@@ -3377,6 +3448,10 @@ namespace {
             if (!allowRestock && Due(now, o.nextReprice) && !shop->GetItems().empty()) break;
             ++addRank;
             auto item = ch->GetInventoryItem(cell);
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+            // MT2009_PLUS_BOT_DUST_MARKET_V1: a kind taken home for the goods' room waits off the counter.
+            if (item && IsPlayerBotYangRoomHeld(ch, item->GetVnum(), now)) { ++addRefused; continue; }
+#endif
             int pos = BotOfflineSlot(ch, shop, item);
             if (pos < 0) { ++addRefused; ++addNoRoom; continue; }
             if (BotOfflineCounterRefuses(shop, item)) { ++addRefused; continue; }
@@ -3434,6 +3509,25 @@ namespace {
                 price.yang = BotOfflineSlipPrice(item, price.yang,
                         (long long)PLAYERBOT_GOLD_MAX - 1 - (long long)shop->GetTotalYangValue()); // MT2009_PLUS_YANG_LIMITS_V1
             const bool slipped = price.yang != meant;
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+            // MT2009_PLUS_BOT_DUST_MARKET_V1: the yang cap's refusal said (throttled - it was silent, and the line
+            // was cut for nothing), and for the cheap goods (IsPlayerBotDustMarketGoodsVnum) the counter's room made.
+            if (price.yang > 0 && price.yang < PLAYERBOT_GOLD_MAX &&
+                    shop->GetTotalYangValue() >= PLAYERBOT_GOLD_MAX - price.yang) {
+                const DWORD cappedVnum = item->GetVnum();
+                PlayerBotLogThrottled("offline_yang_cap", now,
+                        "PLAYERBOT_OFFLINE: yang cap pid=%u name=%s vnum=%u count=%u price=%lld total=%lld lines=%u",
+                        ch->GetPlayerID(), ch->GetName(), cappedVnum, (unsigned int)item->GetCount(), (long long)price.yang,
+                        (long long)shop->GetTotalYangValue(), (unsigned int)shop->GetItems().size());
+                if (IsPlayerBotDustMarketGoodsVnum(cappedVnum)) {
+                    if (BotOfflineYangRoom(ch, state, shop, cappedVnum, (long long)price.yang, now)) {
+                        BotOfflineFinishVisit(ch, state, now);
+                        BotOfflineChainVisit(state, now);
+                        return false;
+                    }
+                }
+            }
+#endif
             if (price.yang <= 0 || price.yang >= PLAYERBOT_GOLD_MAX || // MT2009_PLUS_YANG_LIMITS_V1
                     shop->GetTotalYangValue() >= PLAYERBOT_GOLD_MAX - price.yang) { ++addRefused; continue; } // MT2009_PLUS_YANG_LIMITS_V1
             if (slipped) {
