@@ -52,7 +52,7 @@ OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]
 ACCEPTED = {
     'game.py:128 MISSING d:/ymir work/pc/common/effect/armor/armor-4-2-2.mse':
         'costume set aura since 2.x: in the base pc packs (no listing); the 2.37 / 3.0.1 roots named it already',
-    'uiingameevent.py:89 PATTERN-NO-MATCH d:/ymir work/ui/minimap/e_open_*.tga':
+    'uiingameevent.py:95 PATTERN-NO-MATCH d:/ymir work/ui/minimap/e_open_*.tga':
         'pack.Exist() first, FALLBACK_BUTTON otherwise',
 }
 fails, total = [], 0
