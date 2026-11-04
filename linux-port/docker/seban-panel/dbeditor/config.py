@@ -401,7 +401,7 @@ class DropFiles(FilePart):
             if not entries:
                 errors.append("tabela łowienia bez żadnej pozycji")
             items.update(int(e["item"]) for e in entries if e["item"].isdigit())
-            problems = fishing.validate(entries, None, dict(fishing.ROD_BONUS_DEFAULT))
+            problems = fishing.validate(entries, None)
             errors += [str(p) for p in problems[:10]]
         elif key == "dragonsoul":
             from dbeditor import dragonsoul
