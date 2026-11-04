@@ -369,8 +369,8 @@ for _b67Point, _b67Name in (
 	(211, "Si\xb3a w walce z kamieniami Metin (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_STONE
 	(212, "Silny przeciwko potworom Zodiaku (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_CZ
 	(213, "Si\xb3a w walce z mistykami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_MILGYO
-	(214, "Si\xb3a w walce z orkom (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ORC
-	(215, "Si\xb3a w walce diab\xb3ami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_DEVIL
+	(214, "Si\xb3a w walce z orkami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ORC
+	(215, "Si\xb3a w walce z diab\xb3ami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_DEVIL
 	(216, "Si\xb3a w walce z insektami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_INSECT
 	(217, "Si\xb3a w walce ze zwierz\xeatami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ANIMAL
 	(218, "Si\xb3a B\xb3yskawic (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_ELECT
@@ -501,7 +501,7 @@ AFFECT_DICT[getattr(player, "POINT_IMMUNE_FALL", 90)] = "Odporno\x9c\xe6 na Upad
 # MT2009_PLUS_BONUS67_SKILL_V1 (end)
 # MT2009_PLUS_BONUS67_WIKI_NAMES_V1 (begin) (poprawki 3.0.10 #1)
 # Every 6th/7th bonus line word for word as on the pl-wiki's "6. i 7. bonus" - its capitals and punctuation, its own
-# slips too ("z orkom", "w walce diablami": the owner wants it word for word); the lines above carry them. "Max PZ",
+# slips ("z orkom", "w walce diablami") - fixed to "z orkami" / "z diablami" at the owner's word (4 Nov). "Max PZ",
 # "Max PE" and "Sila w walce z kamieniami Metin" are the wiki's names of those bonuses on any item. The wiki words the
 # shield's block and the PE absorption of the 6th/7th bonus otherwise than the bonus list does: an item's 6th/7th
 # slot shows those two through GetRareApplyString (uitooltip.py), its 1st-5th slots keep the list's names.
