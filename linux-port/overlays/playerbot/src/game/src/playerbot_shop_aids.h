@@ -1260,7 +1260,8 @@ namespace
 				continue;
 			// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: a level-100+ piece takes a Boga Smokow / Podrecznik only from +6 (the
 			// ladder) - under it the Blessing Scroll stays one (the +4..+6 steps and the Zwoj Wojny's base)
-			if (IsPlayerBotHighGear(worn) && (int)worn->GetRefineLevel() < playerbot_high_gear::DRAGON_FROM)
+			if (IsPlayerBotHighGear(worn) && ((int)worn->GetRefineLevel() < playerbot_high_gear::DRAGON_FROM ||
+					(int)worn->GetRefineLevel() >= GetPlayerBotHighGearTarget(ch, worn)))
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
 			if (recipe && recipe->prob < 100)
@@ -1346,8 +1347,11 @@ namespace
 				if (recipe->materials[m].vnum && (int)ElementsRefineMaterialCount(ch, worn, recipe->materials[m].vnum) <
 						(int)recipe->materials[m].count)
 					mats = false;
-			if (mats)
-				steps += playerbot_high_gear::WAR_BELOW - (int)worn->GetRefineLevel();
+			// up to its target plus only (the first night: bots of Champion 3-7, their jade and gloves at their +3 order,
+			// went to the smith for War scrolls no order would take)
+			const int upTo = std::min(playerbot_high_gear::WAR_BELOW, GetPlayerBotHighGearTarget(ch, worn));
+			if (mats && upTo > (int)worn->GetRefineLevel())
+				steps += upTo - (int)worn->GetRefineLevel();
 		}
 		return std::max(0, std::min(steps, PLAYERBOT_WAR_SCROLL_HOLD_MAX) - CountPlayerBotWarScrolls(ch));
 	}

@@ -1117,6 +1117,7 @@ namespace
 	}
 
 	// MovePlayerBotSungmaRevived: a member stands up where it fell (see PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS).
+	unsigned int s_uPlayerBotTrainerReviveBusyRefused = 0;	// MT2009_PLUS_BOT_TRAINER_REVIVE_V1
 	bool IsPlayerBotSungmaRevivedInParty(LPCHARACTER ch)
 	{
 		if (!ch || !ch->GetParty() ||
@@ -1124,11 +1125,23 @@ namespace
 			return false;
 		std::vector<TPlayerBotSungmaMob> mobs;
 		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_AGGRO_RADIUS, mobs);
-		int awake = 0;
+		int awake = 0, busy = 0;
 		for (size_t i = 0; i < mobs.size(); ++i)
+		{
 			if (mobs[i].onMe || (mobs[i].idle && mobs[i].aggressive))
 				++awake;
-		return awake <= PLAYERBOT_SUNGMA_REVIVE_PACK_MAX;
+			else if (!mobs[i].idle)
+				++busy;
+		}
+		// MT2009_PLUS_BOT_TRAINER_REVIVE_V1: the monsters on its party count too - the first night's measure (4 November,
+		// 00:20-00:57, game3): 31 of 117 bots revived by their party in place fell again within 90 s, with 6-8 monsters
+		// round them that were on the others when it stood up and on it a second later (the safe point's: 115 of 620)
+		if (awake + busy > PLAYERBOT_SUNGMA_REVIVE_PACK_MAX)
+		{
+			++s_uPlayerBotTrainerReviveBusyRefused;
+			return false;
+		}
+		return true;
 	}
 
 	// ------------------------------------------------------------ the spot it pulled too much on

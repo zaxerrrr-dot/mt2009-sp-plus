@@ -2378,8 +2378,9 @@
 				used += snprintf(buf + used, sizeof(buf) - used, " %s=%lld/%.1fbh/d%u/h%u", PLAYERBOT_SUNGMA_MAPS[i].szKey, rate, bh,
 						s_aPlayerBotSungmaRate[i].picksDown, s_aPlayerBotSungmaRate[i].picksHeld);
 			}
-			sys_log(0, "PLAYERBOT_TRAINER: map rates channel=%u on=%d rearmed=%u rearm_failed=%u%s", (unsigned int)g_bChannel,
-					IsPlayerBotSungmaRateOff() ? 0 : 1, s_uPlayerBotTrainerRearmed, s_uPlayerBotTrainerRearmFailed, buf);
+			sys_log(0, "PLAYERBOT_TRAINER: map rates channel=%u on=%d rearmed=%u rearm_failed=%u revive_busy_refused=%u%s",
+					(unsigned int)g_bChannel, IsPlayerBotSungmaRateOff() ? 0 : 1, s_uPlayerBotTrainerRearmed,
+					s_uPlayerBotTrainerRearmFailed, s_uPlayerBotTrainerReviveBusyRefused, buf);
 		}
 	}
 

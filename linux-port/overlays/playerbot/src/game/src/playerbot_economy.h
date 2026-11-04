@@ -4430,8 +4430,25 @@ namespace
 		}
 	}
 
-	// The worn level-100+ pieces with a step under 100% ahead (the ladder's work), and what their scrolls keep: three a
-	// piece of every kind (a counter never takes the scroll the next step needs).
+	// The plus a level-100+ piece is raised to: Mistrz Chi's order's (the gloves, the jade, the Will talismans -
+	// playerbot_yohara_chi.h, +3 / +6 / +9 by the Champion level), else the anvil's aim.
+	int GetPlayerBotChiTarget(LPCHARACTER ch);
+	bool IsPlayerBotChiGloveVnum(DWORD vnum);
+	int GetPlayerBotChiJadeSlot(DWORD vnum);
+	int GetPlayerBotWillTalismanKind(DWORD vnum);
+	int GetPlayerBotHighGearTarget(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item)
+			return 0;
+		const DWORD v = item->GetVnum();
+		const int talisman = GetPlayerBotWillTalismanKind(v);
+		if (IsPlayerBotChiGloveVnum(v) || GetPlayerBotChiJadeSlot(v) >= 0 || (talisman >= 0 && talisman <= 2))
+			return GetPlayerBotChiTarget(ch);
+		return (int)GetPlayerBotRefineTarget(ch, item);
+	}
+
+	// The worn level-100+ pieces with a step under 100% ahead (the ladder's work) - under their target plus - and what
+	// their scrolls keep: three a piece of every kind (a counter never takes the scroll the next step needs).
 	const BYTE PLAYERBOT_HIGH_GEAR_WEAR[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS, WEAR_WRIST, WEAR_NECK,
 			WEAR_EAR, WEAR_GLOVE, WEAR_PENDANT };
 	const int PLAYERBOT_HIGH_GEAR_SCROLL_KEEP_A_PIECE = 3;
@@ -4443,6 +4460,8 @@ namespace
 		{
 			LPITEM worn = ch->GetWear(PLAYERBOT_HIGH_GEAR_WEAR[i]);
 			if (!worn || worn->GetRefinedVnum() == 0 || !IsPlayerBotHighGear(worn))
+				continue;
+			if ((int)worn->GetRefineLevel() >= GetPlayerBotHighGearTarget(ch, worn))
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
 			if (!recipe || !playerbot_high_gear::StepNeedsScroll((int)recipe->prob))

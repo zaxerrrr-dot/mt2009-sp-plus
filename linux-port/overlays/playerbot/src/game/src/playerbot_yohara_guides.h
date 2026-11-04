@@ -1329,6 +1329,86 @@ namespace
 		return f.m_championSum >= (floorLevel + 2) * f.m_count && (int)red >= PLAYERBOT_BOSS_ROUTE_RED_MIN;
 	}
 
+	// MT2009_PLUS_BOT_TRAINER_BOSS_NEEDS_V1 - where each piece's materials drop, as a decision (the night's trainer, 4 November:
+	// "gdzie dropi kazdy element"): Mistrz Chi's steps wait for the plates (Plyta z Surowego Metalu 31216, Rog Trolla 31217,
+	// Plyta ze Stali Kuzniczej / Ozdobnej 31218 / 31224 - the jade), the hardeners (Utwardzacz Skory 31251 / + 31252 - the
+	// Rekawice Mocy) and the Topaz Woli (72353 - the Talizman Woli), and on 4 November at 00:30 the visits' missing lists
+	// were 31251 (36 bots), 72353 (25), 31216 (19), 31218 / 31224 (17). The Sung Ma bosses drop them (mob_drop_item.txt of
+	// 3 November, the rows of 2% and over: race, vnum, count, chance in per mille - Kao, Krol Bao, Argos, Natanan 20% plates
+	// x2, 10% hardener, 40% topaz x2; the Myr chiefs and the War Chiefs 8% / 4% / 25%). A boss route's plan adds to an
+	// area's loot what its bosses drop of the materials its party's members lack: PLAYERBOT_BOSS_NEED_UNIT_YANG a piece
+	// at the drop's odds - a needed material is worth more to the party than its counter price.
+	struct TPlayerBotBossNeedDrop { DWORD dwRace; DWORD dwVnum; int iCount; int iPermille; };
+	const TPlayerBotBossNeedDrop PLAYERBOT_BOSS_NEED_DROPS[] = {
+		{ 6691, 31216, 2, 200 }, { 6691, 31217, 2, 200 }, { 6691, 31218, 2, 200 }, { 6691, 31224, 2, 200 }, { 6691, 31251, 1, 100 },
+		{ 6691, 31252, 1, 50 }, { 6691, 72353, 2, 400 }, { 6698, 31216, 2, 200 }, { 6698, 31217, 2, 200 }, { 6698, 31218, 2, 200 },
+		{ 6698, 31224, 2, 200 }, { 6698, 31251, 1, 100 }, { 6698, 31252, 1, 50 }, { 6698, 72353, 2, 400 }, { 6699, 31216, 2, 200 },
+		{ 6699, 31217, 2, 200 }, { 6699, 31218, 2, 200 }, { 6699, 31224, 2, 200 }, { 6699, 31251, 1, 100 }, { 6699, 31252, 1, 50 },
+		{ 6699, 72353, 2, 400 }, { 6705, 31216, 2, 200 }, { 6705, 31217, 2, 200 }, { 6705, 31218, 2, 200 }, { 6705, 31224, 2, 200 },
+		{ 6705, 31251, 1, 100 }, { 6705, 31252, 1, 50 }, { 6705, 72353, 2, 400 }, { 6706, 31216, 2, 200 }, { 6706, 31217, 2, 200 },
+		{ 6706, 31218, 2, 200 }, { 6706, 31224, 2, 200 }, { 6706, 31251, 1, 100 }, { 6706, 31252, 1, 50 }, { 6706, 72353, 2, 400 },
+		{ 6716, 31216, 2, 200 }, { 6716, 31217, 2, 200 }, { 6716, 31218, 2, 200 }, { 6716, 31224, 2, 200 }, { 6716, 31251, 1, 100 },
+		{ 6716, 31252, 1, 50 }, { 6716, 72353, 2, 400 }, { 6717, 31216, 2, 200 }, { 6717, 31217, 2, 200 }, { 6717, 31218, 2, 200 },
+		{ 6717, 31224, 2, 200 }, { 6717, 31251, 1, 100 }, { 6717, 31252, 1, 50 }, { 6717, 72353, 2, 400 }, { 6723, 31216, 2, 80 },
+		{ 6723, 31217, 2, 80 }, { 6723, 31218, 2, 80 }, { 6723, 31224, 2, 80 }, { 6723, 31251, 1, 40 }, { 6723, 31252, 1, 20 },
+		{ 6723, 72353, 2, 250 }, { 6724, 31216, 2, 80 }, { 6724, 31217, 2, 80 }, { 6724, 31218, 2, 80 }, { 6724, 31224, 2, 80 },
+		{ 6724, 31251, 1, 40 }, { 6724, 31252, 1, 20 }, { 6724, 72353, 2, 250 }, { 6730, 31216, 2, 80 }, { 6730, 31217, 2, 80 },
+		{ 6730, 31218, 2, 80 }, { 6730, 31224, 2, 80 }, { 6730, 31251, 1, 40 }, { 6730, 31252, 1, 20 }, { 6730, 72353, 2, 250 },
+		{ 6731, 31216, 2, 80 }, { 6731, 31217, 2, 80 }, { 6731, 31218, 2, 80 }, { 6731, 31224, 2, 80 }, { 6731, 31251, 1, 40 },
+		{ 6731, 31252, 1, 20 }, { 6731, 72353, 2, 250 }, { 6763, 31251, 1, 40 }, { 6763, 31252, 1, 20 }, { 6763, 72353, 2, 250 },
+		{ 6764, 31216, 2, 80 }, { 6764, 31218, 2, 80 }, { 6764, 31224, 2, 80 }, { 6764, 31251, 1, 40 }, { 6764, 31252, 1, 20 },
+		{ 6764, 72353, 2, 250 }, { 6775, 31251, 1, 40 }, { 6775, 31252, 1, 20 }, { 6775, 72353, 2, 250 }, { 6776, 31217, 2, 80 },
+		{ 6776, 31251, 1, 40 }, { 6776, 31252, 1, 20 }, { 6776, 72353, 2, 250 }, { 6782, 31217, 2, 80 }, { 6782, 31251, 1, 40 },
+		{ 6782, 31252, 1, 20 }, { 6782, 72353, 2, 250 }, { 6783, 31217, 2, 80 }, { 6783, 31251, 1, 40 }, { 6783, 31252, 1, 20 },
+		{ 6783, 72353, 2, 250 }, { 6789, 72353, 2, 250 }, { 6797, 30618, 1, 80 }, { 6797, 72353, 1, 150 }, { 6880, 31251, 1, 40 },
+		{ 6880, 31252, 1, 20 }, { 6880, 72353, 2, 250 }, { 6881, 31216, 2, 80 }, { 6881, 31218, 2, 80 }, { 6881, 31224, 2, 80 },
+		{ 6881, 31251, 1, 40 }, { 6881, 31252, 1, 20 }, { 6881, 72353, 2, 250 }, { 6887, 31251, 1, 40 }, { 6887, 31252, 1, 20 },
+		{ 6887, 72353, 2, 250 }, { 6888, 31217, 2, 80 }, { 6888, 31251, 1, 40 }, { 6888, 31252, 1, 20 }, { 6888, 72353, 2, 250 },
+		{ 6894, 31217, 2, 80 }, { 6894, 31251, 1, 40 }, { 6894, 31252, 1, 20 }, { 6894, 72353, 2, 250 }, { 6895, 31217, 2, 80 },
+		{ 6895, 31251, 1, 40 }, { 6895, 31252, 1, 20 }, { 6895, 72353, 2, 250 },
+	};
+	const long long PLAYERBOT_BOSS_NEED_UNIT_YANG = 1000000LL;
+	// the party's lacks while a plan is made (ManagePlayerBotYoharaBossRoute), NULL else
+	const std::map<DWORD, int>* s_pPlayerBotBossPartyNeeds = NULL;
+	unsigned int s_uPlayerBotBossNeedPlans = 0, s_uPlayerBotBossNeedStops = 0;
+
+	struct FCollectPlayerBotBossPartyNeeds
+	{
+		LPCHARACTER m_leader;
+		std::map<DWORD, int>& m_needs;
+		FCollectPlayerBotBossPartyNeeds(LPCHARACTER leader, std::map<DWORD, int>& needs) : m_leader(leader), m_needs(needs) {}
+		void operator()(LPCHARACTER member)
+		{
+			if (!member || member->IsDead() || !member->IsPC())
+				return;
+			const TPlayerBotChiNeeds& n = GetPlayerBotChiNeeds(member);
+			for (std::map<DWORD, int>::const_iterator it = n.missing.begin(); it != n.missing.end(); ++it)
+				if (it->second > 0)
+					m_needs[it->first] += it->second;
+		}
+	};
+
+	// What an area's bosses drop of the party's lacks, in yang (their average, as the area's worth).
+	long long GetPlayerBotBossAreaNeedWorth(const TPlayerBotBossArea& a)
+	{
+		if (!s_pPlayerBotBossPartyNeeds || s_pPlayerBotBossPartyNeeds->empty())
+			return 0;
+		long long sum = 0;
+		int n = 0;
+		for (int i = 0; i < 4 && a.adwRace[i]; ++i)
+		{
+			++n;
+			for (size_t d = 0; d < sizeof(PLAYERBOT_BOSS_NEED_DROPS) / sizeof(PLAYERBOT_BOSS_NEED_DROPS[0]); ++d)
+			{
+				const TPlayerBotBossNeedDrop& r = PLAYERBOT_BOSS_NEED_DROPS[d];
+				if (r.dwRace != a.adwRace[i] || s_pPlayerBotBossPartyNeeds->find(r.dwVnum) == s_pPlayerBotBossPartyNeeds->end())
+					continue;
+				sum += PLAYERBOT_BOSS_NEED_UNIT_YANG * r.iCount * r.iPermille / 1000;
+			}
+		}
+		return n ? sum / n : 0;
+	}
+
 	// The worth of going for an area from (x, y): its loot x its chance, halved every PLAYERBOT_BOSS_ROUTE_HALF_WALK.
 	long long ScorePlayerBotBossArea(int area, long x, long y, DWORD dwNow)
 	{
@@ -1336,7 +1416,7 @@ namespace
 		if (chance <= 0)
 			return 0;
 		const TPlayerBotBossArea& a = PLAYERBOT_BOSS_AREAS[area];
-		const long long worth = (long long)GetPlayerBotBossAreaWorth(a) * chance / 100;
+		const long long worth = ((long long)GetPlayerBotBossAreaWorth(a) + GetPlayerBotBossAreaNeedWorth(a)) * chance / 100;
 		const int d = DISTANCE_APPROX(x - a.x, y - a.y);
 		return worth * PLAYERBOT_BOSS_ROUTE_HALF_WALK / (PLAYERBOT_BOSS_ROUTE_HALF_WALK + d);
 	}
@@ -1374,6 +1454,13 @@ namespace
 			const bool nav = navigation.Init(ch->GetMapIndex());
 			int stops[PLAYERBOT_BOSS_ROUTE_PLAN_STOPS] = { -1, -1, -1 };
 			long long worths[PLAYERBOT_BOSS_ROUTE_PLAN_STOPS] = { 0, 0, 0 };
+			// MT2009_PLUS_BOT_TRAINER_BOSS_NEEDS_V1: the members' lacks for this plan's scores
+			std::map<DWORD, int> partyNeeds;
+			{
+				FCollectPlayerBotBossPartyNeeds f(ch, partyNeeds);
+				party->ForEachOnMapMember(f, ch->GetMapIndex());
+			}
+			s_pPlayerBotBossPartyNeeds = &partyNeeds;
 			long fx = ch->GetX(), fy = ch->GetY();
 			for (int k = 0; k < PLAYERBOT_BOSS_ROUTE_PLAN_STOPS; ++k)
 			{
@@ -1396,6 +1483,13 @@ namespace
 				fx = PLAYERBOT_BOSS_AREAS[stops[k]].x;
 				fy = PLAYERBOT_BOSS_AREAS[stops[k]].y;
 			}
+			// MT2009_PLUS_BOT_TRAINER_BOSS_NEEDS_V1: the first stop's share of the lacks (the census)
+			const long long needFirst = stops[0] >= 0 ? GetPlayerBotBossAreaNeedWorth(PLAYERBOT_BOSS_AREAS[stops[0]]) : 0;
+			s_pPlayerBotBossPartyNeeds = NULL;
+			if (!partyNeeds.empty())
+				++s_uPlayerBotBossNeedPlans;
+			if (needFirst > 0)
+				++s_uPlayerBotBossNeedStops;
 			if (stops[0] < 0)
 				return -1;
 			g.iRouteArea = stops[0];
@@ -1408,10 +1502,12 @@ namespace
 				snprintf(one, sizeof(one), "%s%d:%s:%lldk", k ? "," : "", stops[k], PLAYERBOT_BOSS_AREAS[stops[k]].szName, worths[k] / 1000);
 				plan += one;
 			}
-			sys_log(0, "PLAYERBOT_SUNGMA: boss_route plan channel=%u pid=%u name=%s map=%ld members=%u route=[%s] chance=%d dist=%d",
+			sys_log(0, "PLAYERBOT_SUNGMA: boss_route plan channel=%u pid=%u name=%s map=%ld members=%u route=[%s] chance=%d dist=%d "
+					"need_kinds=%u need_first=%lldk need_plans=%u need_stops=%u",
 					(unsigned int)g_bChannel, ch->GetPlayerID(), ch->GetName(), base, (unsigned int)party->GetMemberCount(), plan.c_str(),
 					GetPlayerBotBossAreaChance(stops[0], dwNow),
-					DISTANCE_APPROX(ch->GetX() - PLAYERBOT_BOSS_AREAS[stops[0]].x, ch->GetY() - PLAYERBOT_BOSS_AREAS[stops[0]].y));
+					DISTANCE_APPROX(ch->GetX() - PLAYERBOT_BOSS_AREAS[stops[0]].x, ch->GetY() - PLAYERBOT_BOSS_AREAS[stops[0]].y),
+					(unsigned int)partyNeeds.size(), needFirst / 1000, s_uPlayerBotBossNeedPlans, s_uPlayerBotBossNeedStops);
 		}
 		const int area = g.iRouteArea;
 		const TPlayerBotBossArea& a = PLAYERBOT_BOSS_AREAS[area];
