@@ -3008,7 +3008,8 @@ void GrowthPetOnSafeboxLoad(LPCHARACTER ch) { growth_pet::OnSafeboxLoad(ch); }
 void GrowthPetOnItemAdd(LPCHARACTER ch, LPITEM item) { growth_pet::OnItemAdd(ch, item); }
 void GrowthPetOnDestroy(LPCHARACTER ch) { growth_pet::OnDestroy(ch); }
 void GrowthPetOnKillExp(LPCHARACTER victim, LPCHARACTER to, long long exp) { growth_pet::OnKillExp(victim, to, exp); }
-void GrowthPetOnChampionExp(LPCHARACTER victim, LPCHARACTER to, unsigned long long exp) { growth_pet::OnChampionExp(victim, to, exp); }
+// playerbot_champion.cpp declares it at block scope inside champion::GiveExp, i.e. as champion::GrowthPetOnChampionExp.
+namespace champion { void GrowthPetOnChampionExp(LPCHARACTER victim, LPCHARACTER to, unsigned long long exp) { growth_pet::OnChampionExp(victim, to, exp); } }
 void GrowthPetOnSungmaKill(LPCHARACTER victim, LPCHARACTER killer) { growth_pet::OnSungmaKill(victim, killer); }
 void GrowthPetOnOwnerExpLoss(LPCHARACTER ch, long long loss, long long need) { growth_pet::OnOwnerExpLoss(ch, loss, need); }
 void GrowthPetEncodeInsert(LPCHARACTER pet, LPDESC d) { growth_pet::EncodeInsert(pet, d); }
