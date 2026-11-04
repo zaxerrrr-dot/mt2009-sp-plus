@@ -14,7 +14,7 @@
 //     (HEADER_GC_SKILL_COOLTIME_END, as the gloves' lines). Both lines on one character: each rolls, the longer cut.
 //   * "Czas trwania <umiejetnosc> +x sek.": the skill's affect x seconds longer (after the items' per cent).
 //   * "Na x sek. otrzymujesz bonus do ataku / obrony / zwieksza szybkosc zaklecia przy uzyciu <umiejetnosc>": using
-//     the skill gives the caster Wartosc Ataku + b67_skill_att (50) / Obrona + b67_skill_def (50) / Szybkosc
+//     the skill gives the caster Wartosc Ataku + b67_skill_att_pct (5%) / Obrona + b67_skill_def_pct (5%) / Szybkosc
 //     zaklecia + b67_skill_cast (20%) for x seconds (one affect each: 830 / 831 / 832, a new use starts it again).
 //     The wiki gives no amount: the defaults are the 6th/7th Wartosc Ataku line's maximum (50) and the same for the
 //     defence; event flags change them.
@@ -138,8 +138,10 @@ static void Bonus67cSkillUsed(LPCHARACTER ch, unsigned int dwVnum)
 		int iDefault;
 		int iMax;
 	} s_aBuff[] = {
-		{ B67C_ATT, AFFECT_B67C_SKILL_ATT, POINT_ATT_GRADE_BONUS, "b67_skill_att", 50, 1000 },
-		{ B67C_DEF, AFFECT_B67C_SKILL_DEF, POINT_DEF_GRADE_BONUS, "b67_skill_def", 50, 1000 },
+		// MT2009_PLUS_BONUS67_SKILL_BUFF_PCT_V1 (the owner, 4 November 2026: "+5% wartosci ataku/obrony"): per cent of
+		// the caster's own Wartosc Ataku / Obrona (POINT_ATT_GRADE / POINT_DEF_GRADE, without this buff), not a flat 50.
+		{ B67C_ATT, AFFECT_B67C_SKILL_ATT, POINT_ATT_GRADE_BONUS, "b67_skill_att_pct", 5, 100 },
+		{ B67C_DEF, AFFECT_B67C_SKILL_DEF, POINT_DEF_GRADE_BONUS, "b67_skill_def_pct", 5, 100 },
 		{ B67C_CAST, AFFECT_B67C_SKILL_CAST, POINT_CASTING_SPEED, "b67_skill_cast", 20, 100 },
 	};
 	for (size_t i = 0; i < sizeof(s_aBuff) / sizeof(s_aBuff[0]); ++i)
@@ -147,8 +149,15 @@ static void Bonus67cSkillUsed(LPCHARACTER ch, unsigned int dwVnum)
 		const int iSec = MIN(B67cLine(ch, s_aBuff[i].iKind, dwVnum), 60);
 		if (iSec <= 0)
 			continue;
-		ch->AddAffect(s_aBuff[i].dwAffect, s_aBuff[i].wPoint, EventFlag(s_aBuff[i].c_pszFlag, s_aBuff[i].iDefault, s_aBuff[i].iMax),
-				AFF_NONE, iSec, 0, true);
+		int iValue = EventFlag(s_aBuff[i].c_pszFlag, s_aBuff[i].iDefault, s_aBuff[i].iMax);
+		if (s_aBuff[i].iKind != B67C_CAST)
+		{
+			// a per cent of the value as it is without this buff (a renewed use does not compound)
+			ch->RemoveAffect(s_aBuff[i].dwAffect);
+			const int iBase = ch->GetPoint(s_aBuff[i].iKind == B67C_ATT ? POINT_ATT_GRADE : POINT_DEF_GRADE);
+			iValue = MAX(1, (int) ((long long) MAX(0, iBase) * iValue / 100));
+		}
+		ch->AddAffect(s_aBuff[i].dwAffect, s_aBuff[i].wPoint, iValue, AFF_NONE, iSec, 0, true);
 	}
 }
 
