@@ -1,0 +1,22 @@
+-- MT2009_PLUS_FISHING_GLOBAL_V1 (the owner, 4 November 2026: cache/yohara/decyzje-lowienie-mikstury.md "£owienie" 1-2
+-- and Wêdka Wêglowa): the Rybak (9009) upgrades a rod as on the global server - free, value3 % (+1 100 %, then 39 %),
+-- a failure takes 10 % of its points (fishing.cpp RealRefineRod, server-patches/fishglobal: the rod now always comes
+-- to this dialog, no refine window) - and makes Wêdka Wêglowa in his crafting window (cube.lowienie.txt). The talk is
+-- quest/libs/fishing/fishing.lua (lowienie/fishing.lua). The package's quest fisher keeps his shop; its take handler
+-- (9009/take/fisher.start) is removed by the Dockerfile. CP1250; no literal ends with a Polish letter (qc).
+quest rybak_wedki begin
+	state start begin
+		when 9009.take begin
+			fishing_manage.take_rod()
+		end
+
+		when 9009.chat."Wêdka Wêglowa" begin
+			fishing_manage.carbon_rod_talk()
+		end
+
+		when 9009.chat."GM: szanse po³owu" with pc.is_gm() begin
+			setskin(NOWINDOW)
+			fishing_manage.show_odds()
+		end
+	end
+end

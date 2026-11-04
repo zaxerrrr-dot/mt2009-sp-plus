@@ -6,8 +6,8 @@
 <p class="eyebrow">EDYTOR BAZY DANYCH · ŁOWIENIE RYB</p>
 <h1>🎣 Łowienie ryb {% if source == 'custom' %}<small class="muted">· zmienione w panelu</small>{% endif %}</h1>
 <section class="panel dbt-note">
-  <p>Gdy ryba bierze (szansa ok. 20% + premia wędki), gra losuje <b>jedną pozycję</b> z tabeli niżej – spośród tych, które pasują do <b>wędki</b> (od +… do +…) i do <b>bonusu</b> wędkarza (bonus wędki + przynęta + 10 z premium). <b>Waga</b> mówi, jak często pozycja wypada w porównaniu z innymi.</p>
-  <p class="muted">Ta wersja gry nie używa pliku fishing.txt (długości ryb i „klasy map” z niego nie działają) – łowienie liczy biblioteka questów fishing_drop.lua i to ją zmienia ta strona. Boty łowią przez tę samą tabelę.</p>
+  <p>Gdy ryba bierze (szansa ok. 20% + poziom wędki / 2, +10 z Rybimi Wnętrznościami lub Bonusem Złotego Tuńczyka), gra losuje <b>jedną pozycję</b> z tabeli niżej – spośród tych, które pasują do <b>wędki</b> (od +… do +…; Wędka Węglowa = 22). <b>Waga</b> mówi, jak często pozycja wypada w porównaniu z innymi. <b>Rodzaj</b>: 0 – zwykła ryba lub przedmiot (waga bez zmian), 1 – lepsza ryba (waga × (1 + 0,10 × (wędka − 1))), 2 – rzadka ryba: tylko z Rybimi Wnętrznościami albo Bonusem Złotego Tuńczyka (waga × (1 + 0,25 × (wędka − 4)) × 2, przy przynęcie z tuńczyka × 2,5), 3 – Złoty Tuńczyk (raz dziennie, nie dla botów).</p>
+  <p class="muted">Ta wersja gry nie używa pliku fishing.txt (długości ryb i „klasy map” z niego nie działają) – łowienie liczy biblioteka questów fishing_drop.lua i to ją zmienia ta strona. Boty łowią przez tę samą tabelę (bez Złotego Tuńczyka).</p>
 </section>
 <section class="panel dbt-note {{ status.kind if status.kind in ('ok', 'error') else 'warn' }}">
   <p><b>Stan w grze:</b> {{ status.text }}{% if status.time %} <small class="muted">(raport gry: {{ status.time.strftime('%Y-%m-%d %H:%M') }})</small>{% endif %}</p>
@@ -18,12 +18,12 @@
 <section class="panel">
   <h2>Co łowi każda wędka</h2>
   <form method="get" class="dbt-actions">
-    <label>Przynęta<select name="przyneta">{% for vnum, name, bonus in baits %}<option value="{{ bonus }}" {{ 'selected' if bonus == extra }}>{{ name }} (+{{ bonus }})</option>{% endfor %}</select></label>
-    <label class="dbe-check"><input type="checkbox" name="premium" value="1" {{ 'checked' if premium }}> premium „Umysł Rybaka” (+10)</label>
+    <label>Rzadkie ryby<select name="rzadkie">{% for v, name in rares %}<option value="{{ v }}" {{ 'selected' if v == rare }}>{{ name }}</option>{% endfor %}</select></label>
+    <label class="dbe-check"><input type="checkbox" name="tunczyk" value="1" {{ 'checked' if tuna }}> Złoty Tuńczyk może brać (dziś jeszcze nie złowiony)</label>
     <button>Pokaż</button>
   </form>
   <div class="dbt-wrap"><table class="dbt-table dbt-matrix">
-    <thead><tr><th>Przedmiot</th>{% for lv in levels %}<th class="num" title="{{ rods[lv].name }}, bonus wędki {{ rods[lv].bonus }}">+{{ lv }}<br><small>bonus {{ rods[lv].bonus + extra + (10 if premium else 0) }}</small></th>{% endfor %}</tr></thead>
+    <thead><tr><th>Przedmiot</th>{% for lv in levels %}<th class="num" title="{{ rods[lv].name }}, szansa brania {{ rods[lv].chance }}%">{{ 'W' if lv == 22 else '+' ~ lv }}<br><small>{{ rods[lv].chance }}%</small></th>{% endfor %}</tr></thead>
     <tbody>
     {% for e in lines %}{% set i = loop.index0 %}
       <tr><td><span class="dbt-name">{% if e.icon %}<img src="{{ e.icon }}" alt="">{% endif %}<span class="{{ 'dbt-bad' if e.bad }}">{{ e.label }}{% if e.count > 1 %} ×{{ e.count }}{% endif %}</span></span></td>
@@ -39,15 +39,15 @@
 <input type="hidden" name="row_count" id="dbt-row-count" value="{{ lines|length }}">
 <section class="panel">
   <h2>Tabela łowienia ({{ lines|length }} pozycji)</h2>
-  <p class="muted">Przedmiot: numer (VNUM) albo słowo <b>{{ dye }}</b> (losowa farba do włosów). Wędka +0…+9 (wędek +10…+{{ rod_max }} nie da się zdobyć). Minimalny bonus: pozycja wypada tylko, gdy bonus wędkarza jest co najmniej taki.</p>
+  <p class="muted">Przedmiot: numer (VNUM) albo słowo <b>{{ dye }}</b> (losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {{ rod_max }}. Rodzaj: {% for v, name in tiers %}{{ v }} – {{ name }}{{ '; ' if not loop.last }}{% endfor %}.</p>
   <div class="dbt-wrap"><table class="dbt-table">
-    <thead><tr><th>Przedmiot</th><th>Nazwa</th><th class="num">Ilość</th><th class="num">Od wędki +</th><th class="num">Do wędki +</th><th class="num">Min. bonus</th><th class="num">Waga</th><th>Usuń</th></tr></thead>
+    <thead><tr><th>Przedmiot</th><th>Nazwa</th><th class="num">Ilość</th><th class="num">Od wędki +</th><th class="num">Do wędki +</th><th class="num">Rodzaj</th><th class="num">Waga</th><th>Usuń</th></tr></thead>
     <tbody id="dbt-rows">
     {% for e in lines %}{% set i = loop.index0 %}
       <tr>
         <td><input name="r{{ i }}_item" value="{{ e.item }}" aria-label="Przedmiot"><input type="hidden" name="r{{ i }}_comment" value="{{ e.comment }}"></td>
         <td><span class="dbt-name">{% if e.icon %}<img src="{{ e.icon }}" alt="">{% endif %}<span class="{{ 'dbt-bad' if e.bad }}">{{ e.label }}</span></span></td>
-        {% for k in ('count', 'rod_min', 'rod_max', 'bonus', 'weight') %}<td class="num"><input name="r{{ i }}_{{ k }}" value="{{ e[k] }}" inputmode="numeric" style="width:70px"></td>{% endfor %}
+        {% for k in ('count', 'rod_min', 'rod_max', 'tier', 'weight') %}<td class="num"><input name="r{{ i }}_{{ k }}" value="{{ e[k] }}" inputmode="numeric" style="width:70px"></td>{% endfor %}
         <td><input type="checkbox" name="r{{ i }}_delete" value="1" style="width:auto"></td>
       </tr>
     {% endfor %}
@@ -55,8 +55,8 @@
   </table></div>
   <template id="dbt-row-template"><tr>
     <td><input name="r__i___item" placeholder="VNUM lub {{ dye }}"></td><td class="muted">nowa pozycja</td>
-    <td class="num"><input name="r__i___count" value="1" style="width:70px"></td><td class="num"><input name="r__i___rod_min" value="0" style="width:70px"></td>
-    <td class="num"><input name="r__i___rod_max" value="9" style="width:70px"></td><td class="num"><input name="r__i___bonus" value="0" style="width:70px"></td>
+    <td class="num"><input name="r__i___count" value="1" style="width:70px"></td><td class="num"><input name="r__i___rod_min" value="1" style="width:70px"></td>
+    <td class="num"><input name="r__i___rod_max" value="22" style="width:70px"></td><td class="num"><input name="r__i___tier" value="0" style="width:70px"></td>
     <td class="num"><input name="r__i___weight" value="10" style="width:70px"></td><td><input type="checkbox" name="r__i___delete" value="1" style="width:auto"></td>
   </tr></template>
   <p><button type="button" id="dbt-add">➕ Dodaj pozycję</button></p>
@@ -65,7 +65,7 @@
     <button name="action" value="save">💾 Zapisz</button>
     {% if source == 'custom' %}<button name="action" value="reset" onclick="return confirm('Łowienie wróci do tabeli z obrazu gry. Na pewno?')">↺ Przywróć z obrazu gry</button>{% endif %}
   </div>
-  <p class="muted">Przed zapisem panel sprawdza, czy każdy przedmiot istnieje i czy każda wędka +0…+9 bez przynęty ma co złowić; gra sprawdza to jeszcze raz przy starcie i w razie błędu zostaje przy swojej tabeli.</p>
+  <p class="muted">Przed zapisem panel sprawdza, czy każdy przedmiot istnieje i czy każda wędka (+1…+20 i Węglowa) bez Rybich Wnętrzności ma co złowić; gra sprawdza to jeszcze raz przy starcie i w razie błędu zostaje przy swojej tabeli.</p>
 </section>
 </form>
 <script>

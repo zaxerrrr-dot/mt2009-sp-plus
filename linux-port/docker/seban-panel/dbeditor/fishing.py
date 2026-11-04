@@ -5,22 +5,25 @@ Where it lives: NOT in locale/poland/fishing.txt. This engine's fishing.cpp
 leftover of the old engine (its "map grade" chances and fish lengths are
 never read). A catch is decided by the quest library
   share/locale/poland/quest/libs/fishing/fishing_drop.lua
-whose table fishing_drop_table holds six numbers per line:
+whose table fishing_drop_table holds six numbers per line
+(MT2009_PLUS_FISHING_GLOBAL_V1, game/lowienie/fishing_drop.lua):
   itemVnum ("farba" = a random hair dye 70202-70206), itemCount,
-  reqRodLevel, maxRodLevel, minimumBonus, poolValue (a weight).
-fishing.quest -> fishing_manage.predict_fish() draws one line among those
-whose rod level range holds the rod's level ((vnum - 27400) / 10: Wędka+0 =
-0 ... Wędka+9 = 9) and whose minimumBonus the angler's bonus reaches (rod
-value0 + the bait's value0 + 10 with the premium Fish Mind), by weight.
+  rodFrom, rodTo (the rod's level: Wędka+1 ... Wędka+20 = 1 ... 20 - value0 / 10;
+  Wędka Węglowa 22), tier, weight.
+The tier: 0 a common fish or an item (its weight), 1 a better fish (weight x
+(1 + 0.10 x (level - 1))), 2 a rare fish - only with Rybie Wnętrzności or
+the golden tuna's bonus (weight x (1 + 0.25 x (level - 4)) x 2, the tuna's
+5 minutes x 2.5), 3 Zloty Tunczyk (once a day, not for bots).
+fishing.quest -> fishing_manage.predict_fish() draws one line by weight.
 Bots fish through the same CHARACTER::fishing() / quest path.
 
 The quest libraries are read when the cores boot. The panel writes only the
 lines (plain text) into the spool both containers mount:
-    <spool>/fishing/fishing_drop.custom.txt
+    <spool>/fishing/fishing_drop.v2.custom.txt
 and the game's m2-fishing (bin/m2-fishing, run by m2-supervise before the
 cores boot) rebuilds the live fishing_drop.lua from the image's copy with
 those lines, after checking them (and every item against item_proto, every
-rod level 0-9 having something to catch); a file that fails is not used and
+rod level 1-20 and 22 having something of tier 0/1 to catch); a file that fails is not used and
 <spool>/fishing/status says why. The image's file comes back as
 fishing/fishing_drop.base.lua; until a game with m2-fishing has run, the
 panel shows its snapshot (dbeditor/fishing_drop.snapshot.lua).
@@ -38,27 +41,30 @@ from dbeditor import tables_common
 
 KEY = "fishing"
 FOLDER = "fishing"
-SNAPSHOT = Path(__file__).resolve().parent / "fishing_drop.snapshot.lua"   # the image's file, 4 Oct 2026
+SNAPSHOT = Path(__file__).resolve().parent / "fishing_drop.snapshot.lua"   # the image's file (MT2009_PLUS_FISHING_GLOBAL_V1)
 ROD_BASE = 27400
-ROD_LEVELS = range(0, 10)        # Wędka+0 ... Wędka+9 (+9 does not refine further)
-ROD_MAX = 19                     # the item table also has 27500-27590 (+10..+19)
+CARBON_ROD = 27591
+CARBON_LEVEL = 22                # Wędka Węglowa counts as level 22
+ROD_LEVELS = list(range(1, 21)) + [CARBON_LEVEL]   # Wędka+1 ... Wędka+20, Wędka Węglowa
+ROD_MAX = 22
 DYE = "farba"
 DYE_VNUMS = (70202, 70203, 70204, 70205, 70206)
-# rod level -> its own bonus (item_proto value0), when the database is not around
-ROD_BONUS_DEFAULT = {0: 0, 1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60, 7: 70, 8: 80, 9: 100}
-BAITS = ((0, "bez przynęty / Papka", 0), (27801, "Robak", 10), (27802, "Drobne Ryby", 20))
-PREMIUM_BONUS = 10
-LIMITS = {"count": (1, 200), "rod_min": (0, ROD_MAX), "rod_max": (0, ROD_MAX), "bonus": (0, 1000),
+TIERS = ((0, "zwykła / przedmiot"), (1, "lepsza ryba"), (2, "rzadka ryba (Wnętrzności / tuńczyk)"),
+         (3, "Złoty Tuńczyk (raz dziennie)"))
+# the rare fish's multiplier x100: none (no rare fish), Rybie Wnętrzności / the tuna's 60 minutes x2, its 5 minutes x2.5
+RARE = ((0, "bez Rybich Wnętrzności"), (200, "Rybie Wnętrzności / Bonus Tuńczyka 60 min (x2)"),
+        (250, "Bonus Tuńczyka 5 min (x2,5)"))
+LIMITS = {"count": (1, 200), "rod_min": (1, ROD_MAX), "rod_max": (1, ROD_MAX), "tier": (0, 3),
           "weight": (1, 1000000)}
 LABELS = {"item": "Przedmiot", "count": "Ilość", "rod_min": "Od wędki +", "rod_max": "Do wędki +",
-          "bonus": "Minimalny bonus", "weight": "Waga"}
+          "tier": "Rodzaj", "weight": "Waga"}
 TABLE_START = re.compile(r"^\s*local\s+fishing_drop_table\s*=\s*\{")
 
 
 def register_file():
     """The fishing file in dropfiles' table: custom path, status, backups and
     the "pending" list of /db/apply come with it."""
-    df.FILES.setdefault(KEY, (FOLDER, "fishing_drop.custom.txt", "status", "Łowienie ryb (fishing_drop.lua)"))
+    df.FILES.setdefault(KEY, (FOLDER, "fishing_drop.v2.custom.txt", "status", "Łowienie ryb (fishing_drop.lua)"))
     df.BASES.setdefault(KEY, (FOLDER, "fishing_drop.base.lua"))
 
 
@@ -90,9 +96,9 @@ def parse_lua(text):
     return entries
 
 
-def entry(item, count, rod_min, rod_max, bonus, weight, comment=""):
+def entry(item, count, rod_min, rod_max, tier, weight, comment=""):
     return {"item": str(item).lower(), "count": int(count), "rod_min": int(rod_min), "rod_max": int(rod_max),
-            "bonus": int(bonus), "weight": int(weight), "comment": comment}
+            "tier": int(tier), "weight": int(weight), "comment": comment}
 
 
 def parse_custom(text):
@@ -115,9 +121,9 @@ def render_custom(entries, reason=""):
     lines = ["# MT2009_PLUS_DB_EDITOR_V1 - tabela lowienia ryb zapisana w panelu Seban",
              f"# zapis: {datetime.now():%Y-%m-%d %H:%M:%S} - {df.ascii_comment(reason)}",
              "# m2-fishing wstawia te linie do quest/libs/fishing/fishing_drop.lua (fishing_drop_table).",
-             "# przedmiot\tilosc\twedka_od\twedka_do\tmin_bonus\twaga", ""]
+             "# przedmiot\tilosc\twedka_od\twedka_do\trodzaj\twaga", ""]
     for e in entries:
-        line = "\t".join(str(e[k]) for k in ("item", "count", "rod_min", "rod_max", "bonus", "weight"))
+        line = "\t".join(str(e[k]) for k in ("item", "count", "rod_min", "rod_max", "tier", "weight"))
         comment = df.ascii_comment(e.get("comment", ""))
         lines.append(line + (f"\t# {comment}" if comment else ""))
     return ("\r\n".join(lines) + "\r\n").encode("ascii")
@@ -125,18 +131,33 @@ def render_custom(entries, reason=""):
 
 # ------------------------------------------------------------------- odds ---
 def rod_level(vnum):
-    return (int(vnum) - ROD_BASE) // 10
+    return CARBON_LEVEL if int(vnum) == CARBON_ROD else (int(vnum) - ROD_BASE) // 10 + 1
 
 
-def chances(entries, level, bonus):
-    """[(entry index, %)] of one rod level and bonus - the quest's own draw."""
-    allowed = [(i, e["weight"]) for i, e in enumerate(entries)
-               if e["rod_min"] <= level <= e["rod_max"] and bonus >= e["bonus"]]
+def row_weight(e, level, rare, tuna):
+    """fishing_drop.lua's row_weight: the line's weight for a rod level, the rare fish's multiplier x100 and whether
+    Zloty Tunczyk may bite."""
+    if not e["rod_min"] <= level <= e["rod_max"]:
+        return 0
+    w = e["weight"]
+    if e["tier"] == 1:
+        return w * (10 + (level - 1)) // 10
+    if e["tier"] == 2:
+        return 0 if rare <= 0 else w * (4 + max(0, level - 4)) * rare // 400
+    if e["tier"] == 3:
+        return w if tuna else 0
+    return w
+
+
+def chances(entries, level, rare=0, tuna=False):
+    """[(entry index, %)] of one rod level - the quest's own draw."""
+    allowed = [(i, row_weight(e, level, rare, tuna)) for i, e in enumerate(entries)]
+    allowed = [(i, w) for i, w in allowed if w > 0]
     total = sum(w for _i, w in allowed)
     return {i: (100.0 * w / total if total else 0.0) for i, w in allowed}, total
 
 
-def validate(entries, known_items, rod_bonus):
+def validate(entries, known_items):
     """Problems the game would hit, in Polish ([] = fine). known_items: the
     VNUMs item_proto has (None = not checked)."""
     problems = []
@@ -154,10 +175,9 @@ def validate(entries, known_items, rod_bonus):
             problems.append(f"Wiersz {n}: „od wędki” jest większe niż „do wędki”.")
     if not problems:
         for level in ROD_LEVELS:
-            if not chances(entries, level, rod_bonus.get(level, 0))[1]:
-                problems.append(f"Wędka +{level} (bonus {rod_bonus.get(level, 0)}) bez przynęty nie złowiłaby nic – "
-                                "gra pokazałaby błąd. Dodaj coś dla tej wędki z minimalnym bonusem "
-                                f"≤ {rod_bonus.get(level, 0)}.")
+            if not chances(entries, level)[1]:
+                problems.append(f"Wędka poziomu {level} bez Rybich Wnętrzności nie złowiłaby nic – gra pokazałaby "
+                                "błąd. Dodaj dla niej coś rodzaju 0 albo 1.")
     return problems
 
 
@@ -174,7 +194,7 @@ def form_entries(form):
         if form.get(p + "delete") or not item:
             continue
         values = {}
-        for key in ("count", "rod_min", "rod_max", "bonus", "weight"):
+        for key in ("count", "rod_min", "rod_max", "tier", "weight"):
             raw = (form.get(p + key) or "").strip()
             if not re.fullmatch(r"\d{1,10}", raw):
                 errors.append(f"Wiersz {i + 1}: {LABELS[key]} – „{raw}” to nie liczba całkowita.")
@@ -208,18 +228,19 @@ def install(bp, ctx):
         return entries, source
 
     def rod_info():
-        """{level: {"vnum", "name", "bonus", "chance"}} from item_proto."""
+        """{level: {"vnum", "name", "chance"}} from item_proto (the bite chance 20 + value5)."""
         if "dbt_rods" in g:
             return g.dbt_rods
-        info = {lv: {"vnum": ROD_BASE + 10 * lv, "name": f"Wędka+{lv}", "bonus": b, "chance": 20}
-                for lv, b in ROD_BONUS_DEFAULT.items()}
+        info = {lv: {"vnum": ROD_BASE + 10 * (lv - 1), "name": f"Wędka+{lv}", "chance": 20 + lv // 2}
+                for lv in ROD_LEVELS if lv != CARBON_LEVEL}
+        info[CARBON_LEVEL] = {"vnum": CARBON_ROD, "name": "Wędka Węglowa", "chance": 32}
         try:
-            for r in rows("SELECT vnum, locale_name, value0, value5 FROM player.item_proto WHERE type=13 "
-                          "AND vnum BETWEEN %s AND %s", (ROD_BASE, ROD_BASE + 90)):
+            for r in rows("SELECT vnum, locale_name, value5 FROM player.item_proto WHERE type=13 "
+                          "AND vnum BETWEEN %s AND %s", (ROD_BASE, CARBON_ROD)):
                 lv = rod_level(r["vnum"])
-                if lv in info and int(r["vnum"]) % 10 == 0:
+                if lv in info and (int(r["vnum"]) % 10 == 0 or int(r["vnum"]) == CARBON_ROD):
                     info[lv].update(name=game_text(r["locale_name"]) or info[lv]["name"],
-                                    bonus=int(r.get("value0") or 0), chance=20 + int(r.get("value5") or 0))
+                                    chance=20 + int(r.get("value5") or 0))
         except Exception:
             pass
         g.dbt_rods = info
@@ -255,19 +276,19 @@ def install(bp, ctx):
         entries, source = current(spool)
         rods = rod_info()
         try:
-            extra = int(request.args.get("przyneta", "10"))
+            rare = int(request.args.get("rzadkie", "0"))
         except ValueError:
-            extra = 10
-        premium = request.args.get("premium") == "1"
-        bonus_extra = extra + (PREMIUM_BONUS if premium else 0)
+            rare = 0
+        rare = rare if rare in dict(RARE) else 0
+        tuna = request.args.get("tunczyk") == "1"
         lines, _names = decorate(entries)
         matrix, totals = {}, {}
         for lv in ROD_LEVELS:
-            matrix[lv], totals[lv] = chances(entries, lv, rods[lv]["bonus"] + bonus_extra)
-        problems = validate(entries, None, {lv: rods[lv]["bonus"] for lv in ROD_LEVELS})
+            matrix[lv], totals[lv] = chances(entries, lv, rare, tuna)
+        problems = validate(entries, None)
         backups = df.list_backups(spool, [KEY], 20)
         return render_template("dbeditor/fishing.html", lines=lines, source=source, rods=rods, levels=list(ROD_LEVELS),
-                               matrix=matrix, totals=totals, baits=BAITS, extra=extra, premium=premium,
+                               matrix=matrix, totals=totals, rares=RARE, rare=rare, tuna=tuna, tiers=TIERS,
                                problems=problems, status=df.live_state(spool, KEY), backups=backups,
                                pending=[1] if df.live_state(spool, KEY)["pending"] else [], rod_max=ROD_MAX,
                                dye=DYE, csrf=df.csrf_token())
@@ -300,14 +321,14 @@ def install(bp, ctx):
         except Exception:
             known = None
             flash("Nie udało się sprawdzić przedmiotów w bazie – sprawdzi je gra przy starcie.", "warning")
-        problems = errors or validate(entries, known, {lv: rods[lv]["bonus"] for lv in ROD_LEVELS})
+        problems = errors or validate(entries, known)
         if problems:
             for problem in problems[:12]:
                 flash(problem, "error")
             flash("Nic nie zapisano – popraw tabelę.", "error")
             return redirect(url_for("dbeditor.fishing"))
         base, _source = base_entries(spool)
-        key = lambda es: [(e["item"], e["count"], e["rod_min"], e["rod_max"], e["bonus"], e["weight"]) for e in es]
+        key = lambda es: [(e["item"], e["count"], e["rod_min"], e["rod_max"], e["tier"], e["weight"]) for e in es]
         try:
             if key(entries) == key(base):
                 df.write_custom(spool, KEY, None, "tabela taka jak w obrazie gry")
@@ -321,4 +342,4 @@ def install(bp, ctx):
         return redirect(url_for("dbeditor.fishing"))
 
     dbeditor.add_section("dbeditor.fishing", "🎣", "Łowienie ryb",
-                         "co i jak często łowi każda wędka +0…+9 (z przynętą), ryby i skarby")
+                         "co i jak często łowi każda wędka +1…+20 i Węglowa, ryby i skarby")

@@ -707,6 +707,14 @@ linux-port/docker/game/special_item_group.fishpuzzle.txt
 # overlay (char.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/fish_renewal.cpp
 linux-port/docker/game/src/server/game/src/fish_renewal.cpp
+# MT2009_PLUS_FISHING_GLOBAL_V1 (server-patches/fishglobal): fishing as on the global server - the engine file pair with
+# the overlay (fishing.cpp, char_item.cpp, item_manager.cpp above), the items yohara_lowienie.sql (apply.sh), the catch
+# lowienie/fishing.lua + fishing_drop.lua, the chest lowienie/special_item_group.lowienie.txt and the carbon rod's
+# recipe lowienie/cube.lowienie.txt (game/Dockerfile), the quests rybak_wedki / zloty_tunczyk (quest/* above).
+linux-port/overlays/playerbot/src/game/src/fish_global.cpp
+linux-port/docker/game/src/server/game/src/fish_global.cpp
+linux-port/docker/mariadb/playerbot/yohara_lowienie.sql
+linux-port/docker/game/lowienie/*
 # MT2009_PLUS_IRREMOVABLE_DELETE_V1 (server-patches/irrem): a worn irremovable item asks whether to destroy it - the
 # engine file pair with the overlay (char_item.cpp / input_main.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/irremovable_delete.cpp

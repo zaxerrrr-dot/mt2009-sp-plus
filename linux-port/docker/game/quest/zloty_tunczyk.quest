@@ -1,0 +1,12 @@
+-- MT2009_PLUS_FISHING_GLOBAL_V1 (the owner, 4 November 2026, decision 12; Owsap v6.2.6 golden_tuna.quest ported):
+-- Z³oty Tuñczyk (27797, once a day from fishing - lowienie/fishing_drop.lua) - release (30 %: Bonus Z³otego Tuñczyka
+-- 60 minutes, else Mokre Szaty: -50 movement 5 minutes), cut (1 % Wêdka Wêglowa, Niebieska / Bia³a Per³a, Skrzynia
+-- Nimfy Wodnej, Ma³¿ or nothing) or bait (the bonus 5 minutes, x2.5). The talk is quest/libs/fishing/fishing.lua
+-- (fishing_manage.golden_tuna). CP1250.
+quest zloty_tunczyk begin
+	state start begin
+		when 27797.use begin
+			fishing_manage.golden_tuna()
+		end
+	end
+end
