@@ -2106,4 +2106,17 @@ if ((Test-Path -LiteralPath $bonusy67cApply -PathType Leaf) -and
     }
 }
 
+# Kolor umiejetnosci (server-patches/skillcolor, MT2009_PLUS_SKILL_COLOR_V1; the owner, 4 November 2026): a character's
+# colour of a skill's effects (player.skill_color, playerbot_skillcolor.cpp), packets CG 56 / GC 59 (client 1.3.2).
+# Its anchors are the fish puzzle's packet lines and the skill hack's login line: after bonusy67c, the last.
+$skillcolorApply = Join-Path $repo 'server-patches/skillcolor/Apply-SkillcolorPatch.ps1'
+if ((Test-Path -LiteralPath $skillcolorApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $skillcolorResult = & $skillcolorApply -SourceDir $engineGameSource
+    if ($skillcolorResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} skill colour edit(s).' -f $skillcolorResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

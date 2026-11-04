@@ -43,10 +43,19 @@ class CEffectManager : public CScreen, public CSingleton<CEffectManager>
 		void DeleteAllInstances();
 
 		// Usage
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: c_pdwSkillColor - a skill's five colours for the new instance (NULL: its own)
+		int CreateEffect(DWORD dwID, const D3DXVECTOR3 & c_rv3Position, const D3DXVECTOR3 & c_rv3Rotation, const DWORD * c_pdwSkillColor = NULL);
+#else
 		int CreateEffect(DWORD dwID, const D3DXVECTOR3 & c_rv3Position, const D3DXVECTOR3 & c_rv3Rotation);
+#endif
 		int CreateEffect(const char * c_szFileName, const D3DXVECTOR3 & c_rv3Position, const D3DXVECTOR3 & c_rv3Rotation);
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		void CreateEffectInstance(DWORD dwInstanceIndex, DWORD dwID, const DWORD * c_pdwSkillColor = NULL);	// MT2009_PLUS_SKILL_COLOR_V1
+#else
 		void CreateEffectInstance(DWORD dwInstanceIndex, DWORD dwID);
+#endif
 		BOOL SelectEffectInstance(DWORD dwInstanceIndex);
 		bool DestroyEffectInstance(DWORD dwInstanceIndex);
 		void DeactiveEffectInstance(DWORD dwInstanceIndex);

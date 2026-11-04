@@ -79,6 +79,9 @@
 #include <set>
 #include <string>
 
+// MT2009_PLUS_SKILL_COLOR_V1 (buffi): playerbot_skillcolor.cpp - declared here, outside the namespace
+void SkillColorOnBuffiCast(LPCHARACTER owner, LPCHARACTER mob, DWORD dwBuffiSkill, DWORD dwShamanSkill);
+
 namespace mt2009_buffi
 {
 	const DWORD SEAL_7D = 61025;			// Buffi (7 dni) - Ameria's starter chest
@@ -419,6 +422,9 @@ namespace mt2009_buffi
 		const double k = Power(bLevel);
 		const double f = GradeFactor(bLevel);
 		const long lDuration = 3600;
+		// MT2009_PLUS_SKILL_COLOR_V1 (buffi): the buff (and the Buffi's cast motion) in the owner's colour of the Buffi
+		// skill - before the affect, so the client attaches it in that colour (playerbot_skillcolor.cpp)
+		::SkillColorOnBuffiCast(owner, mob, buff.dwSkill, buff.dwAffect);
 		switch (buff.dwSkill)
 		{
 			case 164:

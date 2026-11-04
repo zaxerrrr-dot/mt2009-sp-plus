@@ -176,6 +176,18 @@ void CEffectInstance::__SetParticleData(CParticleSystemData * pData)
 
 	m_ParticleInstanceVector.push_back(pInstance);
 }
+#ifdef ENABLE_MT2009_SKILL_COLOR
+void CEffectInstance::SetMt2009SkillColor(const DWORD * c_pdwSkillColor)
+{
+	// MT2009_PLUS_SKILL_COLOR_V1: this instance's own systems only - the loaded effect (shared by every instance of
+	// the .mse) is never touched
+	if (!c_pdwSkillColor)
+		return;
+	for (size_t i = 0; i < m_ParticleInstanceVector.size(); ++i)
+		m_ParticleInstanceVector[i]->SetMt2009SkillColor(c_pdwSkillColor[i < 4 ? i : 4]);
+}
+
+#endif
 void CEffectInstance::__SetMeshData(CEffectMeshScript * pMesh)
 {
 	CEffectMeshInstance * pMeshInstance = CEffectMeshInstance::New();

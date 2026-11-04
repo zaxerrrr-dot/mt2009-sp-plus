@@ -173,6 +173,9 @@ CNetworkActorManager::~CNetworkActorManager()
 void CNetworkActorManager::Destroy()
 {
 	m_kNetActorDict.clear();
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
 
 	m_dwMainVID=0;
 	m_lMainPosX=0;
@@ -186,6 +189,9 @@ void CNetworkActorManager::SetMainActorVID(DWORD dwVID)
 	m_lMainPosY=0;
 
 	m_kNetActorDict.clear();
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1 (the server sends them again after the add packets)
+#endif
 }
 
 void CNetworkActorManager::Update()
@@ -253,6 +259,9 @@ void CNetworkActorManager::__RemoveAllGroundItems()
 void CNetworkActorManager::__RemoveAllActors()
 {
 	m_kNetActorDict.clear();
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
 
 	CPythonCharacterManager & rkChrMgr = CPythonCharacterManager::Instance();
 	rkChrMgr.DeleteAllInstances();
@@ -282,6 +291,9 @@ void CNetworkActorManager::__RemoveDynamicActors()
 			auto it = m_kNetActorDict.find(dwCharacterVIDList[i]);
 			if (it != m_kNetActorDict.end())
 				m_kNetActorDict.erase(it);
+#ifdef ENABLE_MT2009_SKILL_COLOR
+			m_kMt2009SkillColor.erase(dwCharacterVIDList[i]);	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
 		}
 	}
 
@@ -441,6 +453,9 @@ CInstanceBase* CNetworkActorManager::__AppendCharacterManagerActor(SNetworkActor
 	if (rkNetActorData.m_dwWeaponElement)
 		pNewInstance->SetWeaponElement(rkNetActorData.m_dwWeaponElement);
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	__Mt2009ApplySkillColors(dwVID, pNewInstance);	// MT2009_PLUS_SKILL_COLOR_V1: the instance is new - its skill colours
+#endif
 
 	if (kCreateData.m_isMain)
 	{
@@ -512,6 +527,9 @@ void CNetworkActorManager::RemoveActor(DWORD dwVID)
 	__RemoveCharacterManagerActor(rkNetActorData);
 
 	m_kNetActorDict.erase(f);
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColor.erase(dwVID);	// MT2009_PLUS_SKILL_COLOR_V1 (out of sight: the server sends them with its next add)
+#endif
 }
 
 void CNetworkActorManager::UpdateActor(const SNetworkUpdateActorData& c_rkNetUpdateActorData)

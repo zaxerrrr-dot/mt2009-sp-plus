@@ -5148,6 +5148,25 @@ else
     fail_step "switchbot: could not create player.switchbot"
 fi
 
+# MT2009_PLUS_SKILL_COLOR_V1: Kolor umiejetnosci (server-patches/skillcolor/README.md, playerbot_skillcolor.cpp) - a
+# character's colour of a skill's effect: one row a coloured skill (the five layers, 0 = the effect's own colour, else
+# 0xFFrrggbb); a skill back on "Domyslne" loses its row. Read by the cores at login, written when the window changes it.
+# Idempotent: CREATE TABLE IF NOT EXISTS (no row = default colours, so nothing else is needed).
+if db -e "CREATE TABLE IF NOT EXISTS player.skill_color (
+    player_id INT UNSIGNED NOT NULL,
+    skill_vnum SMALLINT UNSIGNED NOT NULL,
+    col1 INT UNSIGNED NOT NULL DEFAULT 0,
+    col2 INT UNSIGNED NOT NULL DEFAULT 0,
+    col3 INT UNSIGNED NOT NULL DEFAULT 0,
+    col4 INT UNSIGNED NOT NULL DEFAULT 0,
+    col5 INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (player_id, skill_vnum)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;"; then
+    :
+else
+    fail_step "skill colour: could not create player.skill_color"
+fi
+
 # MT2009_PLUS_COMMUNITY_V1: the Community window (server-patches/community/README.md, playerbot_community.cpp) -
 # community.sql: player.status_message and player.community_flags (and the same two in player_deleted, same order).
 # Idempotent: ADD COLUMN IF NOT EXISTS. Without them only the window's extras are missing - the friend list's own

@@ -257,6 +257,21 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		void SetShape(DWORD eShape, float fSpecular=0.0f);
 		void ChangeMaterial(const char * c_szFileName);
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	public:
+		// MT2009_PLUS_SKILL_COLOR_V1: a skill's five colours (0xFFrrggbb, 0 = the effect's own) by its motion index
+		// (the motion's index - NAME_SKILL: every grade's motion of a coloured skill, CInstanceBase fills them from
+		// CPythonSkill) - every effect, effect on the target and flying object of that motion is made in them
+		struct SMt2009SkillColor
+		{
+			DWORD adwColor[5];
+		};
+		void Mt2009ClearSkillColors() { m_kMt2009SkillColorByMotion.clear(); }
+		void Mt2009SetSkillColorOfMotion(WORD wMotionIndex, const DWORD * c_pdwColor);
+		const DWORD * Mt2009GetSkillColorOfMotion(DWORD dwMotionKey) const;	// NULL: none
+	protected:
+		std::map<WORD, SMt2009SkillColor> m_kMt2009SkillColorByMotion;
+#endif
 	public:
 		void SetComboType(WORD wComboType);
 
@@ -307,7 +322,12 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		void UpdateAttachingInstances();
 		void  DettachEffect(DWORD dwEID);
 		DWORD AttachEffectByName(DWORD dwParentPartIndex, const char * c_pszBoneName, const char * c_pszEffectFileName);
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: c_pdwSkillColor - a skill's five colours for the effect (NULL: its own)
+		DWORD AttachEffectByID(DWORD dwParentPartIndex, const char * c_pszBoneName, DWORD dwEffectID, const D3DXVECTOR3 * c_pv3Position = NULL, const DWORD * c_pdwSkillColor = NULL);
+#else
 		DWORD AttachEffectByID(DWORD dwParentPartIndex, const char * c_pszBoneName, DWORD dwEffectID, const D3DXVECTOR3 * c_pv3Position = NULL);
+#endif
 		DWORD AttachSmokeEffect(DWORD eSmoke);
 
 		/////////////////////////////////////////////////////////////////////////////////////

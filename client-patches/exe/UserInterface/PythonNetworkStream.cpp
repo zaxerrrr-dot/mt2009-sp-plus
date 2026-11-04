@@ -228,6 +228,10 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 			// MT2009_PLUS_FISH_PUZZLE_V2 (header)
 			Set(HEADER_GC_FISH_EVENT_INFO, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCFishEventInfo), STATIC_SIZE_PACKET));
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+			// MT2009_PLUS_SKILL_COLOR_V1 (header): 28 bytes
+			Set(HEADER_GC_SKILL_COLOR, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSkillColor), STATIC_SIZE_PACKET));
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			// MT2009_PLUS_EVENT_MANAGER_V1
 			Set(HEADER_GC_INGAME_EVENT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCInGameEvent), DYNAMIC_SIZE_PACKET));

@@ -1011,3 +1011,36 @@ waliduje), nowe bonusy 6/7 to linie przedmiotu, nie applies. Sprawdzone: `clang-
 UserInterface/GameLib/EterPythonLib – zero zwężeń `WORD` → `BYTE` w kodzie bonusów; build MSVC (`build.sh msvc --smoke`,
 osobny `EXEBUILD_WORK=cache/yohara/exebuild-wide`, źródła `cache/yohara/exe-src11` = exe-src10 + ta nakładka):
 `cache/yohara/exe-out11/metin2client.exe` (sha256 `9f72aee7…988aff`), smoke do ekranu logowania (4.11.2026).
+
+## Kolor umiejętności – `MT2009_PLUS_SKILL_COLOR_V1` (`ENABLE_MT2009_SKILL_COLOR`; `server-patches/skillcolor`)
+
+Z paczki właściciela „SKILL_COLOR_SYSTEM by OSWAP (FULL)” – przepisane (opis i różnice: README łatki). Kolor umiejętności
+ma pięć warstw (n-ty system cząsteczek efektu, 5. także każdy następny; 0 = własny kolor, inaczej `0xFFrrggbb`).
+Cząsteczka zachowuje przezroczystość i jasność (najmocniejszy z r/g/b) i bierze barwę koloru – **kolor instancji**,
+wczytane `.mse` nigdy nie są zmieniane (paczka zmieniała współdzielone dane i dlatego robiła kopię każdego efektu na imię
+gracza – `GetCaseCRC32(name + file)`, `RegisterEffect(..., name)` – tego tu nie ma). Bez `#define` exe jak dotąd.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_SKILL_COLOR` |
+| `UserInterface/Packet.h` | CG **56** `HEADER_CG_SKILL_COLOR`, GC **59** `HEADER_GC_SKILL_COLOR` (wolne u nas i na serwerze), `TPacketCGSkillColor` 23 B, `TPacketGCSkillColor` 28 B, `SKILL_COLOR_LAYERS`/`_TYPE_OWN`/`_TYPE_BUFF`, `static_assert` |
+| `UserInterface/Mt2009SkillColor.cpp` (**nowy**, + `UserInterface.vcxproj(.filters)`) | `CInstanceBase::Mt2009SetSkillColor/GetSkillColor/GetSkillColorOfFly`, mapa ruch → kolor z `CPythonSkill` (każdy stopień `GradeData`, `wMotionIndex`, `wMotionIndexForMe`; bez 164–167), efekty wzmocnień (własne: 3, 4 – poświata broni, 19, 34, 49, 63, 64, 65, 78, 79; szamańskie 94/95/96/110/111 – kolor rzucającego) zakładane od nowa przy zmianie; `CNetworkActorManager::Mt2009SetSkillColor` (kolory per VID – nowa instancja: widok, koń – dostaje je z powrotem); `RecvSkillColorPacket` / `SendSkillColorPacket`; `player.SetSkillColor(vnum, c1..c5)` / `player.GetSkillColor(vnum)` (−1 = własny, inaczej `0xRRGGBB`), `app.ENABLE_SKILL_COLOR_SYSTEM`, `app.MT2009_SKILL_COLOR_EXE` |
+| `UserInterface/UserInterface.cpp` | `Mt2009SkillColor_RegisterPython()` po `Mt2009Champion_RegisterPython()` |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | GC 59 stały 28 B → `RecvSkillColorPacket`; pakiet „fly” serwera (Burzowy Szpon, Ognisty Duch) w kolorze rzucającego |
+| `UserInterface/NetworkActorManager.cpp/.h` | kolory per VID: zapisywane tylko dla znanego aktora, nakładane na nową instancję (`__AppendCharacterManagerActor`), usuwane z aktorem / przy czyszczeniu |
+| `UserInterface/InstanceBase.cpp/.h`, `InstanceBaseEffect.cpp` | mapa kolorów instancji (czyszczona w `__Initialize`), `__AttachEffect` – kolor efektu wzmocnienia / Aury Miecza |
+| `GameLib/ActorInstance.cpp/.h` | `SMt2009SkillColor`, mapa indeks ruchu (− `NAME_SKILL`) → kolor (`Mt2009SetSkillColorOfMotion`, `Mt2009GetSkillColorOfMotion(klucz ruchu)` – każdy tryb: pieszo, konno, broń), `AttachEffectByID(..., c_pdwSkillColor = NULL)` |
+| `GameLib/ActorInstanceMotionEvent.cpp`, `ActorInstanceAttach.cpp` | zdarzenia ruchu: efekt, efekt na celu, pocisk – w kolorach bieżącego ruchu |
+| `GameLib/FlyingInstance.cpp/.h`, `FlyingObjectManager.cpp/.h` | pocisk pamięta kolory (przed `Create`): jego efekty i trafienie; `CreateFlyingInstanceFlyTarget` / `CreateIndexedFly` z kolorem (domyślnie `NULL`) |
+| `EffectLib/EffectManager.cpp/.h`, `EffectInstance.cpp/.h` | `CreateEffect` / `CreateEffectInstance` z kolorem (domyślnie `NULL`), `CEffectInstance::SetMt2009SkillColor` – warstwy na systemy cząsteczek instancji |
+| `EffectLib/ParticleSystemInstance.cpp/.h`, `ParticleInstance.cpp/.h` | kolor warstwy w systemie i w każdej cząsteczce (pule czyszczone), `Mt2009SkillColorTint` w `Transform` (`D3DRS_TEXTUREFACTOR`) |
+
+Root: `uiskillcolor.py` (okno), `skillcolorpick.py` (kolor z kliknięcia liczony, nie zrzut ekranu – paczka czytała piksel
+ekranu `wndMgr.GetColorAtPosition`, tego nie ma), `uiscript/skillcolorwindow.py`, przycisk w `uicharacter.py`; obrazki –
+paczka `skillcolor` (`client-2.0.30/tools/skillcolor`). Bez `player.SetSkillColor` (starszy exe) przycisku nie ma.
+Wersja: root `constinfo.py` 1.3.2 tylko z `app.MT2009_SKILL_COLOR_EXE`; auth `M2_CLIENT_MIN_VERSION` 1010302.
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44; osobny `EXEBUILD_WORK=cache/yohara/exebuild-color`, źródła
+`cache/yohara/exe-src14` = exe-src12 + ta nakładka – po scaleniu poprawek 3.0.10 nakładka exe bez innych zmian):
+`cache/yohara/exe-out14/metin2client.exe` (sha256 `a7765317…3032e6`), bez ostrzeżeń w zmienionych plikach, smoke do
+ekranu logowania (4.11.2026).

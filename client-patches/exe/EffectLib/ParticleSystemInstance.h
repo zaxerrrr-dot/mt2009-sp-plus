@@ -64,6 +64,12 @@ class CParticleSystemInstance : public CEffectElementBaseInstance
 
 		DWORD GetEmissionCount();
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: the skill colour of this layer (0xFFrrggbb, 0 = the effect's own) - every particle
+		// made from now on takes it (CEffectInstance::SetMt2009SkillColor)
+		void SetMt2009SkillColor(DWORD dwColor) { m_dwMt2009SkillColor = dwColor; }
+#endif
+
 	protected:
 		void OnInitialize();
 		void OnDestroy();
@@ -88,6 +94,9 @@ class CParticleSystemInstance : public CEffectElementBaseInstance
 
 		CParticleProperty * m_pParticleProperty;
 		CEmitterProperty * m_pEmitterProperty;
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		DWORD m_dwMt2009SkillColor;	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
 };
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

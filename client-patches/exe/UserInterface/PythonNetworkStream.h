@@ -730,6 +730,13 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendFishShapeAdd(BYTE bPos);
 	protected:
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: Kolor umiejetnosci (Mt2009SkillColor.cpp)
+		bool RecvSkillColorPacket();
+	public:
+		bool SendSkillColorPacket(WORD wSkillVnum, const DWORD* c_pdwColor);
+	protected:
+#endif
 #ifdef ENABLE_SWITCHBOT
 		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
 		bool RecvSwitchbotPacket();
