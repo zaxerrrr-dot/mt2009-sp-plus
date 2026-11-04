@@ -125,6 +125,8 @@ void CRaceMotionData::SetName(UINT eName)
 		case NAME_SLAP_HURT_WITH_WOLFMAN:
 #endif
 		case NAME_DIG:
+		// MT2009_PLUS_PICKUP_MOTION_TYPE_V1: the "pickup" emotion's motion (pick_up.msa, PythonPlayerSettingsModule) - was "UNKNOWN NAME 352" in syserr
+		case NAME_PICKUP:
 			SetType(TYPE_EVENT);
 			break;
 		case NAME_DEAD:

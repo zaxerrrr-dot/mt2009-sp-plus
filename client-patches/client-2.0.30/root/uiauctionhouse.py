@@ -366,11 +366,15 @@ def _SelectedName(vnum):
 
 def ItemNameOf(vnum):
 	# nazwa przedmiotu albo "", gdy klient go nie zna
+	if vnum <= 0:
+		return ""
 	if vnum in _itemNameCache:
 		return _itemNameCache[vnum]
 	try:
 		if not _fallbackItemName:
-			_fallbackItemName.append(_SelectedName(MISSING_ITEM_VNUM))
+			# MT2009_PLUS_NO_MISSING_VNUM_PROBE_V1: an unknown vnum selects 60001 in the exe - its name is the
+			# fallback; asking for 2147483000 wrote "Cannot find item by" into syserr
+			_fallbackItemName.append(_SelectedName(FALLBACK_ITEM_VNUM))
 		name = _SelectedName(vnum)
 	except:
 		return ""
