@@ -1276,6 +1276,10 @@ namespace
 			// The 91-97 ground round the outside, and Yonghan's Commander, are
 			// the boss raid's business (playerbot_boss_raid.h), which moves a bot
 			// to its spot rather than walking it through the maze.
+			// MT2009_PLUS_GROTA2_REGEN_V2 (4 November): the global map's spots
+			// join them, the far ones too - the white/blue rooms of 93 are where
+			// a bot of 90-95 belongs; the straight line still halves a far hub's
+			// worth, the navigation (CanReach, A*) walks the maze.
 			const TPlayerBotHuntingHub grottoV2Hubs[] = {
 				{  216100, 1269400, 84, 255, false, 0 },
 				{  233200, 1283400, 84, 255, false, 0 },
@@ -1286,12 +1290,37 @@ namespace
 				{  239200, 1268000, 84, 255, false, 0 },
 				{  201900, 1269000, 86, 255, false, 0 },
 				{  261200, 1289500, 86, 255, false, 0 },
-				// MT2009_PLUS_GROTA2_REGEN_V1: three inner rooms (2409's Setaou) the package left empty and
-				// grota2/regen.grota2.txt fills - 12-14 spawn lines each, 1.1-1.5 km of walking from the arrival,
-				// the room's centre with 5 m of free ground all round (tools/grota2/gen_grota2.py's server_attr).
-				{  247700, 1295700, 86, 255, false, 0 },
+				// MT2009_PLUS_GROTA2_REGEN_V1: inner rooms (2409's Setaou) the package left empty - 12-14 spawn lines
+				// each, 1.1-1.5 km of walking from the arrival, the room's centre with 5 m of free ground all round
+				// (tools/grota2/gen_grota2.py's server_attr). The third (261800, 1266200) is V2's white 1078:637 now.
+				{  247700, 1295700, 86, 255, false, 0 },	// the orange 950:950 (2409, 32 lines)
 				{  259500, 1255900, 86, 255, false, 0 },
-				{  261800, 1266200, 86, 255, false, 0 }
+				// MT2009_PLUS_GROTA2_REGEN_V2: the spots of the global map (grota2/gen_report.txt): each spot room's
+				// middle with 5 m free all round, the band the median level of its monsters less three - the white
+				// and blue ones Komendant/Magistrat (2414/2413, 93) from 90, the green SOBA and the red MAXIMAXI
+				// Soldat/Bogenschuetze (91) from 88, the orange EISSOBA 2 the inner Setaou (89) from 86.
+				{  261400, 1266900, 90, 255, false, 0 },	// white 1078:637
+				{  210100, 1287100, 90, 255, false, 0 },	// white 565:839
+				{  228300, 1237900, 90, 255, false, 0 },	// white 747:347
+				{  202100, 1229400, 90, 255, false, 0 },	// white 485:262
+				{  286600, 1230100, 90, 255, false, 0 },	// white 1330:269
+				{  168400, 1276100, 90, 255, false, 0 },	// MK 1 (200:730)
+				{  178200, 1276100, 90, 255, false, 0 },	// MK 1
+				{  168400, 1308600, 90, 255, false, 0 },	// MK 2 (200:1050)
+				{  178000, 1308700, 90, 255, false, 0 },	// MK 2
+				{  193200, 1277100, 90, 255, false, 0 },	// PRESUB 1 (400:740)
+				{  193100, 1303600, 90, 255, false, 0 },	// PRESUB 2 (400:1000)
+				{  213300, 1303700, 90, 255, false, 0 },	// PRESUB 3 (600:1000)
+				{  221900, 1220600, 88, 255, false, 0 },	// SOBA 1 (680:175)
+				{  222100, 1229200, 88, 255, false, 0 },	// SOBA 1
+				{  265000, 1220600, 88, 255, false, 0 },	// SOBA 1 (1111:175)
+				{  264900, 1229000, 88, 255, false, 0 },	// SOBA 1
+				{  244900, 1229100, 88, 255, false, 0 },	// SOBA 2 (915:250)
+				{  245100, 1238900, 88, 255, false, 0 },	// SOBA 2
+				{  178400, 1230800, 88, 255, false, 0 },	// MAXIMAXI (250:414)
+				{  178500, 1244600, 88, 255, false, 0 },	// MAXIMAXI
+				{  228700, 1296100, 86, 255, false, 0 },	// EISSOBA 2 (750:1000)
+				{  228900, 1304600, 86, 255, false, 0 }	// EISSOBA 2
 			};
 			// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) - its second part only
 			// (the Giants, the ogres and the golems; the first part's cursed animals

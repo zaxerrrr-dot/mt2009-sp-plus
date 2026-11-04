@@ -1,31 +1,100 @@
-MT2009_PLUS_GROTA2_REGEN_V1 - Grota Wygnancow V2 (73, metin2_map_skipia_dungeon_02)
+MT2009_PLUS_GROTA2_REGEN_V2 - Grota Wygnancow V2 (73, metin2_map_skipia_dungeon_02)
 main walkable piece 733363 m2; uncovered = more than 25 m of walking from a spawn centre (fill: 40 m)
-package: 638 live r lines + 84 commented 2410 (made 2409 by the Dockerfile step)
-uncovered before: 372640 m2 (51%)
-after 2410 + the newer dump's 598 points (1 left out on BLOCK): 105596 m2 (14%)
-after 89 fill points: 60211 m2 (8.2%)
-restored by group_group: {2409: 295, 2408: 66, 2414: 43, 2413: 110, 2412: 67, 2411: 17}
-fill by group_group: {2408: 6, 2409: 26, 2413: 17, 2414: 8, 2412: 18, 2411: 14}
+package: 638 live r lines, uncovered 372640 m2 (51%)
+global dump: 2016 lines (16 moved off BLOCK, 1 left out), uncovered 111215 m2 (15%)
+fill: 94 points {2414: 18, 2409: 31, 2408: 3, 2412: 15, 2411: 14, 2413: 13}
+final: 2156 lines {2408: 248, 2409: 769, 2411: 217, 2412: 270, 2413: 333, 2414: 319}, uncovered 67848 m2 (9.3%)
 bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
+
+spots (rooms x0-x1/y0-y1; group_group: lines before -> after; the median level of the monsters):
+  SOBA 1 (680:175)       green  650-717/141-208 652-719/227-294
+      {2411: 9, 2412: 2, 2413: 4, 2414: 8} -> {2411: 14, 2412: 14}, median 91
+  SOBA 1 (1111:175)      green  1081-1148/141-207 1080-1147/225-292
+      {2411: 5, 2412: 5, 2413: 6, 2414: 10} -> {2411: 15, 2412: 15}, median 91
+  SOBA 2 (915:250)       green  880-947/226-293 881-949/323-391
+      {2409: 8, 2411: 4, 2412: 10, 2413: 2} -> {2411: 14, 2412: 14}, median 91
+  MAXIMAXI (250:414)     red    215-282/243-309 214-285/379-450
+      {2409: 2, 2411: 4, 2412: 15, 2413: 3, 2414: 2} -> {2409: 2, 2411: 4, 2412: 17, 2413: 3, 2414: 2}, median 91
+  PRESUB 1 (400:740)     blue   361-432/703-775
+      {2408: 4, 2409: 6} -> {2413: 7, 2414: 7}, median 93
+  PRESUB 2 (400:1000)    blue   362-429/970-1038
+      {2408: 4, 2409: 3} -> {2413: 7, 2414: 7}, median 93
+  PRESUB 3 (600:1000)    blue   563-632/971-1039
+      {2408: 6} -> {2413: 7, 2414: 7}, median 93
+  EISSOBA 2 (750:1000)   orange 717-785/895-963 720-787/980-1048
+      {2409: 22, 2414: 7} -> {2409: 25, 2414: 7}, median 89
+  950:950                orange 903-973/892-962
+      {2409: 32} -> {2409: 32}, median 89
+  MK 1 (200:730)         white  115-182/696-763 213-280/695-763
+      {2411: 8, 2412: 6, 2413: 13, 2414: 6} -> {2413: 16, 2414: 17}, median 93
+  MK 2 (200:1050)        white  115-182/1021-1087 211-278/1022-1089
+      {2408: 5, 2411: 2, 2412: 11, 2413: 4, 2414: 2} -> {2413: 14, 2414: 14}, median 93
+  white 485:262          white  452-519/229-296
+      {2411: 4, 2412: 4, 2413: 6} -> {2413: 7, 2414: 7}, median 93
+  white 747:347          white  712-783/312-383
+      {2409: 6, 2411: 3} -> {2413: 7, 2414: 7}, median 93
+  white 1330:269         white  1295-1365/234-304
+      {2411: 13, 2412: 2} -> {2413: 7, 2414: 8}, median 93
+  white 1078:637         white  1045-1111/604-670
+      {2409: 22} -> {2413: 11, 2414: 11}, median 93
+  white 565:839          white  531-599/806-873
+      {2408: 12, 2409: 17} -> {2413: 14, 2414: 15}, median 93
+
+bots (grottoV2Hubs, a spot room's middle with 5 m free all round; the band = the median less three):
+  {  221900, 1220600, 88, 255, false, 0 },	// SOBA 1 (680:175)
+  {  222100, 1229200, 88, 255, false, 0 },	// SOBA 1 (680:175)
+  {  265000, 1220600, 88, 255, false, 0 },	// SOBA 1 (1111:175)
+  {  264900, 1229000, 88, 255, false, 0 },	// SOBA 1 (1111:175)
+  {  244900, 1229100, 88, 255, false, 0 },	// SOBA 2 (915:250)
+  {  245100, 1238900, 88, 255, false, 0 },	// SOBA 2 (915:250)
+  {  178400, 1230800, 88, 255, false, 0 },	// MAXIMAXI (250:414)
+  {  178500, 1244600, 88, 255, false, 0 },	// MAXIMAXI (250:414)
+  {  193200, 1277100, 90, 255, false, 0 },	// PRESUB 1 (400:740)
+  {  193100, 1303600, 90, 255, false, 0 },	// PRESUB 2 (400:1000)
+  {  213300, 1303700, 90, 255, false, 0 },	// PRESUB 3 (600:1000)
+  {  228700, 1296100, 86, 255, false, 0 },	// EISSOBA 2 (750:1000)
+  {  228900, 1304600, 86, 255, false, 0 },	// EISSOBA 2 (750:1000)
+  {  247400, 1295900, 86, 255, false, 0 },	// 950:950
+  {  168400, 1276100, 90, 255, false, 0 },	// MK 1 (200:730)
+  {  178200, 1276100, 90, 255, false, 0 },	// MK 1 (200:730)
+  {  168400, 1308600, 90, 255, false, 0 },	// MK 2 (200:1050)
+  {  178000, 1308700, 90, 255, false, 0 },	// MK 2 (200:1050)
+  {  202100, 1229400, 90, 255, false, 0 },	// white 485:262
+  {  228300, 1237900, 90, 255, false, 0 },	// white 747:347
+  {  286600, 1230100, 90, 255, false, 0 },	// white 1330:269
+  {  261400, 1266900, 90, 255, false, 0 },	// white 1078:637
+  {  210100, 1287100, 90, 255, false, 0 },	// white 565:839
   moved 822,998 -> 822,1002 (BLOCK)
   moved 801,1000 -> 801,1002 (BLOCK)
   moved 574,912 -> 574,917 (BLOCK)
   moved 383,1284 -> 383,1288 (BLOCK)
   moved 359,312 -> 359,310 (BLOCK)
   moved 333,451 -> 335,451 (BLOCK)
+  moved 183,1067 -> 182,1067 (BLOCK)
+  moved 183,1067 -> 182,1067 (BLOCK)
   moved 161,471 -> 159,471 (BLOCK)
   moved 1431,975 -> 1432,975 (BLOCK)
+  moved 1266,1125 -> 1265,1125 (BLOCK)
+  moved 1266,1125 -> 1265,1125 (BLOCK)
+  moved 1066,492 -> 1066,491 (BLOCK)
+  moved 1066,492 -> 1066,491 (BLOCK)
   moved 1033,1000 -> 1033,1002 (BLOCK)
   moved 1016,372 -> 1017,372 (BLOCK)
   left out 1133,629 2411 (BLOCK, nothing free within 6 m)
-  + fill 847,756 group_group 2408
+  + fill 295,184 group_group 2414
+  + fill 472,164 group_group 2414
+  + fill 847,756 group_group 2409
+  + fill 565,184 group_group 2414
+  + fill 373,164 group_group 2414
   + fill 914,725 group_group 2409
-  + fill 854,693 group_group 2408
-  + fill 399,184 group_group 2413
+  + fill 854,693 group_group 2409
+  + fill 422,184 group_group 2414
+  + fill 607,164 group_group 2414
   + fill 974,184 group_group 2414
   + fill 1108,504 group_group 2409
-  + fill 900,1125 group_group 2412
+  + fill 900,1125 group_group 2408
   + fill 1147,287 group_group 2412
+  + fill 528,164 group_group 2414
   + fill 876,1205 group_group 2412
   + fill 280,448 group_group 2412
   + fill 1107,469 group_group 2409
@@ -33,15 +102,16 @@ bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
   + fill 1341,987 group_group 2411
   + fill 576,377 group_group 2411
   + fill 845,465 group_group 2409
-  + fill 896,759 group_group 2408
+  + fill 896,759 group_group 2409
   + fill 593,1125 group_group 2411
   + fill 853,1241 group_group 2412
-  + fill 1024,491 group_group 2413
-  + fill 1082,491 group_group 2413
   + fill 1265,576 group_group 2413
+  + fill 324,164 group_group 2414
+  + fill 1020,486 group_group 2413
   + fill 453,666 group_group 2409
   + fill 466,1142 group_group 2409
-  + fill 1172,367 group_group 2412
+  + fill 500,184 group_group 2414
+  + fill 1172,367 group_group 2409
   + fill 519,378 group_group 2412
   + fill 632,382 group_group 2409
   + fill 1045,401 group_group 2412
@@ -50,7 +120,6 @@ bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
   + fill 568,971 group_group 2408
   + fill 1324,1244 group_group 2411
   + fill 631,1247 group_group 2412
-  + fill 559,184 group_group 2413
   + fill 1259,323 group_group 2409
   + fill 377,384 group_group 2413
   + fill 1264,386 group_group 2409
@@ -59,18 +128,18 @@ bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
   + fill 763,1148 group_group 2409
   + fill 696,1332 group_group 2414
   + fill 707,141 group_group 2414
+  + fill 633,184 group_group 2414
   + fill 1232,225 group_group 2413
   + fill 717,381 group_group 2411
   + fill 900,693 group_group 2409
   + fill 1046,955 group_group 2409
   + fill 960,1334 group_group 2413
-  + fill 424,164 group_group 2414
   + fill 286,667 group_group 2413
   + fill 945,1068 group_group 2409
   + fill 760,1268 group_group 2412
+  + fill 348,184 group_group 2414
   + fill 239,324 group_group 2412
   + fill 1281,549 group_group 2412
-  + fill 863,728 group_group 2408
   + fill 922,1044 group_group 2409
   + fill 1365,1239 group_group 2411
   + fill 787,1243 group_group 2412
@@ -97,13 +166,12 @@ bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
   + fill 211,1084 group_group 2412
   + fill 427,1122 group_group 2413
   + fill 903,1246 group_group 2412
-  + fill 378,164 group_group 2413
   + fill 719,289 group_group 2411
   + fill 115,305 group_group 2414
   + fill 283,388 group_group 2412
   + fill 672,446 group_group 2409
   + fill 678,606 group_group 2409
   + fill 537,806 group_group 2409
-  + fill 1364,935 group_group 2412
+  + fill 1364,935 group_group 2409
   + fill 1061,1086 group_group 2413
   + fill 1104,1164 group_group 2411
