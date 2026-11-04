@@ -6,164 +6,176 @@
 
 # MT2009_PLUS_CHEST_DROPS_V1: 31253 - 25 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_MIKSTURY_V1): 1 rows, 1.000% each
+#   (Zlote Ziolo for the golden elixirs - the owner, 4 November 2026); the sheet's rows scaled to what is left.
 # Left out (renormalised): Torba Emocji 2.488% - no system; Szklo Detekcji 1.244% - no system;
 #   EXP x100 1.244% - a group gives no champion EXP; EXP x200 1.244% - a group gives no champion EXP;
 #   EXP x400 0.746% - a group gives no champion EXP
 Group	MT2009_ydung4_31253
 {
 	Vnum	31253 -- Skrzynia Mistrza Gnolli (Gnoll Kapitan)
-	1	27003	20	13369 -- Czerwona Mikstura(D) x20
-	2	27006	20	13369 -- Niebieska Mikstura(D) x20
-	3	31245	1	8021 -- Twarda Skora
-	4	31246	1	8021 -- Wzor Rekawicy
-	5	27112	1	8021 -- Zielona Mikstura(D) (10m)
-	6	31248	1	8021 -- Liliowa Runa SungMa
-	7	31246	2	5348 -- Wzor Rekawicy x2
-	8	31250	1	5348 -- Zolta Runa SungMa
-	9	31245	2	5348 -- Twarda Skora x2
-	10	31249	1	2674 -- Niebieska Runa SungMa
-	11	31247	1	2674 -- Czerwona Runa SungMa
-	12	31251	1	2674 -- Utwardzacz Skory
-	13	95926	1	2674 -- Kamyki - ours 95926 (50926 is a recipe here)
-	14	71095	1	2139 -- Przepustka
-	15	50513	1	2139 -- Kamien Duchowy
-	16	50529	1	1337 -- Skrzynia Ksiag (9.skill)
-	17	50341	1	1337 -- Inspiracja Nowicjusza
-	18	50338	1	1337 -- Charyzma Nowicjusza
-	19	31252	1	1337 -- Utwardzacz Skory+
-	20	gold	200000	1337 -- Yang 200000
-	21	50342	1	802 -- Inspiracja Adepta
-	22	50339	1	802 -- Charyzma Adepta
-	23	gold	400000	802 -- Yang 400000
-	24	70401	1	802 -- Sztandar Czaszki
-	25	50121	1	267 -- Zelazne Pudelko
+	1	27003	20	13235 -- Czerwona Mikstura(D) x20
+	2	27006	20	13235 -- Niebieska Mikstura(D) x20
+	3	31245	1	7941 -- Twarda Skora
+	4	31246	1	7941 -- Wzor Rekawicy
+	5	27112	1	7941 -- Zielona Mikstura(D) (10m)
+	6	31248	1	7941 -- Liliowa Runa SungMa
+	7	31246	2	5294 -- Wzor Rekawicy x2
+	8	31250	1	5294 -- Zolta Runa SungMa
+	9	31245	2	5294 -- Twarda Skora x2
+	10	31249	1	2647 -- Niebieska Runa SungMa
+	11	31247	1	2647 -- Czerwona Runa SungMa
+	12	31251	1	2647 -- Utwardzacz Skory
+	13	95926	1	2647 -- Kamyki - ours 95926 (50926 is a recipe here)
+	14	71095	1	2118 -- Przepustka
+	15	50513	1	2118 -- Kamien Duchowy
+	16	50529	1	1324 -- Skrzynia Ksiag (9.skill)
+	17	50341	1	1324 -- Inspiracja Nowicjusza
+	18	50338	1	1324 -- Charyzma Nowicjusza
+	19	31252	1	1324 -- Utwardzacz Skory+
+	20	gold	200000	1324 -- Yang 200000
+	21	50342	1	794 -- Inspiracja Adepta
+	22	50339	1	794 -- Charyzma Adepta
+	23	gold	400000	794 -- Yang 400000
+	24	70401	1	794 -- Sztandar Czaszki
+	25	50121	1	265 -- Zelazne Pudelko
+	26	50741	1	1000 -- Zlote Ziolo - owner 4.11, 1%
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 31254 - 24 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_MIKSTURY_V1): 1 rows, 1.000% each
+#   (Zlote Ziolo for the golden elixirs - the owner, 4 November 2026); the sheet's rows scaled to what is left.
 # Left out (renormalised): Torba Emocji 2.370% - no system; EXP x100 1.185% - a group gives no champion EXP;
 #   Szklo Detekcji 1.185% - no system; EXP x300 1.185% - a group gives no champion EXP;
 #   EXP x600 0.711% - a group gives no champion EXP
 Group	MT2009_ydung4_31254
 {
 	Vnum	31254 -- Skrzynia Mistrza Ahtrina (Ahtrin Kapitan)
-	1	27003	20	12690 -- Czerwona Mikstura(D) x20
-	2	27006	20	12690 -- Niebieska Mikstura(D) x20
-	3	31252	1	12690 -- Utwardzacz Skory+
-	4	31246	1	7614 -- Wzor Rekawicy
-	5	31245	1	7614 -- Twarda Skora
-	6	31248	1	7614 -- Liliowa Runa SungMa
-	7	31249	1	5076 -- Niebieska Runa SungMa
-	8	31251	1	5076 -- Utwardzacz Skory
-	9	31245	2	5076 -- Twarda Skora x2
-	10	31246	2	3807 -- Wzor Rekawicy x2
-	11	27112	1	2538 -- Zielona Mikstura(D) (10m)
-	12	31250	1	2538 -- Zolta Runa SungMa
-	13	31247	1	2538 -- Czerwona Runa SungMa
-	14	71095	1	2030 -- Przepustka
-	15	50513	1	2030 -- Kamien Duchowy
-	16	50341	1	1269 -- Inspiracja Nowicjusza
-	17	50529	1	1269 -- Skrzynia Ksiag (9.skill)
-	18	50338	1	1269 -- Charyzma Nowicjusza
-	19	gold	200000	1269 -- Yang 200000
-	20	gold	400000	761 -- Yang 400000
-	21	50342	1	761 -- Inspiracja Adepta
-	22	50339	1	761 -- Charyzma Adepta
-	23	70401	1	761 -- Sztandar Czaszki
-	24	50121	1	254 -- Zelazne Pudelko
+	1	27003	20	12563 -- Czerwona Mikstura(D) x20
+	2	27006	20	12563 -- Niebieska Mikstura(D) x20
+	3	31252	1	12563 -- Utwardzacz Skory+
+	4	31246	1	7538 -- Wzor Rekawicy
+	5	31245	1	7538 -- Twarda Skora
+	6	31248	1	7538 -- Liliowa Runa SungMa
+	7	31249	1	5025 -- Niebieska Runa SungMa
+	8	31251	1	5025 -- Utwardzacz Skory
+	9	31245	2	5025 -- Twarda Skora x2
+	10	31246	2	3769 -- Wzor Rekawicy x2
+	11	27112	1	2513 -- Zielona Mikstura(D) (10m)
+	12	31250	1	2513 -- Zolta Runa SungMa
+	13	31247	1	2513 -- Czerwona Runa SungMa
+	14	71095	1	2010 -- Przepustka
+	15	50513	1	2010 -- Kamien Duchowy
+	16	50341	1	1256 -- Inspiracja Nowicjusza
+	17	50529	1	1256 -- Skrzynia Ksiag (9.skill)
+	18	50338	1	1256 -- Charyzma Nowicjusza
+	19	gold	200000	1256 -- Yang 200000
+	20	gold	400000	754 -- Yang 400000
+	21	50342	1	754 -- Inspiracja Adepta
+	22	50339	1	754 -- Charyzma Adepta
+	23	70401	1	754 -- Sztandar Czaszki
+	24	50121	1	251 -- Zelazne Pudelko
+	25	50741	1	1000 -- Zlote Ziolo - owner 4.11, 1%
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 31255 - 34 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_MIKSTURY_V1): 1 rows, 1.000% each
+#   (Zlote Ziolo for the golden elixirs - the owner, 4 November 2026); the sheet's rows scaled to what is left.
 # Left out (renormalised): Torba Emocji 1.704% - no system; EXP x300 0.852% - a group gives no champion EXP;
 #   EXP x600 0.852% - a group gives no champion EXP; EXP x1000 0.511% - a group gives no champion EXP;
 #   Male Blogoslawienstwo 0.170% - not in our world
 Group	MT2009_ydung4_31255
 {
 	Vnum	31255 -- Skrzynia Zdobiona Zlotem (Ahtrin Wielki Mistrz (mrok))
-	1	27006	50	8881 -- Niebieska Mikstura(D) x50
-	2	31245	1	8881 -- Twarda Skora
-	3	31246	1	8881 -- Wzor Rekawicy
-	4	27003	50	8881 -- Czerwona Mikstura(D) x50
-	5	31247	1	8881 -- Czerwona Runa SungMa
-	6	31248	1	5329 -- Liliowa Runa SungMa
-	7	31251	1	5329 -- Utwardzacz Skory
-	8	31250	1	3552 -- Zolta Runa SungMa
-	9	31249	1	3552 -- Niebieska Runa SungMa
-	10	31245	2	3552 -- Twarda Skora x2
-	11	50529	1	3552 -- Skrzynia Ksiag (9.skill)
-	12	31246	2	2664 -- Wzor Rekawicy x2
-	13	27992	1	2664 -- Biala Perla
-	14	27993	1	1776 -- Niebieska Perla
-	15	27994	1	1776 -- Krwawa Perla
-	16	50342	1	1776 -- Inspiracja Adepta
-	17	50338	1	1776 -- Charyzma Nowicjusza
-	18	50339	1	1776 -- Charyzma Adepta
-	19	70014	1	1776 -- Pigulka Krwi
-	20	50341	1	1776 -- Inspiracja Nowicjusza
-	21	100700	1	1421 -- Smoczy Plomien (B)
-	22	50513	1	1421 -- Kamien Duchowy
-	23	71095	1	1421 -- Przepustka
-	24	50525	1	1421 -- Kamien Duchowy+
-	25	25040	1	1421 -- Zwoj Blogoslawienstwa
-	26	31252	1	888 -- Utwardzacz Skory+
-	27	70005	1	888 -- Pierscien Doswiad. (1h)
-	28	70043	1	888 -- Rekawica Zlodzieja (3h) - the 2 h one - none of 3 h here
-	29	gold	200000	888 -- Yang 200000
-	30	gold	400000	533 -- Yang 400000
-	31	50343	1	533 -- Inspiracja Eksperta
-	32	50340	1	533 -- Charyzma Eksperta
-	33	50120	1	533 -- Zelazna Szkatulka
-	34	95926	50	178 -- Kamyki x50 - ours 95926 (50926 is a recipe here)
+	1	27006	50	8792 -- Niebieska Mikstura(D) x50
+	2	31245	1	8792 -- Twarda Skora
+	3	31246	1	8792 -- Wzor Rekawicy
+	4	27003	50	8792 -- Czerwona Mikstura(D) x50
+	5	31247	1	8792 -- Czerwona Runa SungMa
+	6	31248	1	5275 -- Liliowa Runa SungMa
+	7	31251	1	5275 -- Utwardzacz Skory
+	8	31250	1	3517 -- Zolta Runa SungMa
+	9	31249	1	3517 -- Niebieska Runa SungMa
+	10	31245	2	3517 -- Twarda Skora x2
+	11	50529	1	3517 -- Skrzynia Ksiag (9.skill)
+	12	31246	2	2638 -- Wzor Rekawicy x2
+	13	27992	1	2638 -- Biala Perla
+	14	27993	1	1758 -- Niebieska Perla
+	15	27994	1	1758 -- Krwawa Perla
+	16	50342	1	1758 -- Inspiracja Adepta
+	17	50338	1	1758 -- Charyzma Nowicjusza
+	18	50339	1	1758 -- Charyzma Adepta
+	19	70014	1	1758 -- Pigulka Krwi
+	20	50341	1	1758 -- Inspiracja Nowicjusza
+	21	100700	1	1407 -- Smoczy Plomien (B)
+	22	50513	1	1407 -- Kamien Duchowy
+	23	71095	1	1407 -- Przepustka
+	24	50525	1	1407 -- Kamien Duchowy+
+	25	25040	1	1407 -- Zwoj Blogoslawienstwa
+	26	31252	1	879 -- Utwardzacz Skory+
+	27	70005	1	879 -- Pierscien Doswiad. (1h)
+	28	70043	1	879 -- Rekawica Zlodzieja (3h) - the 2 h one - none of 3 h here
+	29	gold	200000	879 -- Yang 200000
+	30	gold	400000	528 -- Yang 400000
+	31	50343	1	528 -- Inspiracja Eksperta
+	32	50340	1	528 -- Charyzma Eksperta
+	33	50120	1	528 -- Zelazna Szkatulka
+	34	95926	50	176 -- Kamyki x50 - ours 95926 (50926 is a recipe here)
+	35	50741	1	1000 -- Zlote Ziolo - owner 4.11, 1%
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 31256 - 43 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_MIKSTURY_V1): 1 rows, 1.000% each
+#   (Zlote Ziolo for the golden elixirs - the owner, 4 November 2026); the sheet's rows scaled to what is left.
 # Left out (renormalised): Szklo Detekcji 0.255% - no system
 Group	MT2009_ydung4_31256
 {
 	Vnum	31256 -- Skrzynia Labiryntowa (Ahtrin Wielki Mistrz)
-	1	50325	1	10230 -- Ksiega Precyzji
-	2	27007	50	5115 -- Czerwona Mikstura (XXL) x50
-	3	27008	30	5115 -- Niebieska Mikstura (XXL) x30
-	4	81250	1	5115 -- Talizman Woli ODP+0
-	5	81300	1	5115 -- Talizman Woli WIT+0
-	6	81550	1	5115 -- Talizman Woli INT+0
-	7	17570	1	4092 -- Klipsy Jadeitu Mgly+0
-	8	31250	1	4092 -- Zolta Runa SungMa
-	9	14580	1	4092 -- Obrecz Jadeitu Mgly+0
-	10	16580	1	4092 -- Kolia Jadeitu Mgly+0
-	11	31247	1	4092 -- Czerwona Runa SungMa
-	12	31248	1	4092 -- Liliowa Runa SungMa
-	13	31249	1	4092 -- Niebieska Runa SungMa
-	14	31251	1	4194 -- Utwardzacz Skory
-	15	31224	1	3325 -- Plyta ze Stali Ozdobnej
-	16	31216	1	3069 -- Plyta z Surowego Metalu
-	17	17580	1	3069 -- Klipsy Jadeitu Slonca+0
-	18	16590	1	3069 -- Kolia Jadeitu Slonca+0
-	19	14590	1	3069 -- Obrecz Jadeitu Slonca+0
-	20	72353	9	2558 -- Topaz Woli x9
-	21	31217	1	2046 -- Rog Trolla
-	22	31218	1	2046 -- Plyta ze Stali Kuzniczej
-	23	gold	500000	2046 -- Yang 500000
-	24	81000	1	1790 -- Talizman Woli SILA+0
-	25	72353	1	1790 -- Topaz Woli
-	26	80019	1	512 -- Delikatne Sukno
-	27	50527	1	307 -- Mikstura Talentu
-	28	76015	1	256 -- Kula Blogoslawienstwa
-	29	71095	1	256 -- Przepustka
-	30	16503	1	153 -- Rubinowy Naszyjnik+3
-	31	17563	1	153 -- Szafirowe Kolczyki+3
-	32	14503	1	153 -- Rubinowa Bransoleta+3
-	33	14523	1	153 -- Granatowa Bransoleta+3
-	34	14543	1	153 -- Szmaragdowa Bransoleta+3
-	35	14563	1	153 -- Szafirowa Bransoleta+3
-	36	14573	1	153 -- Bransoleta z Turmalinu+3
-	37	16523	1	153 -- Granatowy Naszyjnik+3
-	38	16543	1	153 -- Szmaragdowy Naszyjnik+3
-	39	16563	1	153 -- Szafirowy Naszyjnik+3
-	40	16573	1	153 -- Naszyjnik z Turmalinu+3
-	41	17503	1	153 -- Rubinowe Kolczyki+3
-	42	17523	1	153 -- Granatowe Kolczyki+3
-	43	17543	1	153 -- Szmaragdowe Kolczyki+3
+	1	50325	1	10128 -- Ksiega Precyzji
+	2	27007	50	5064 -- Czerwona Mikstura (XXL) x50
+	3	27008	30	5064 -- Niebieska Mikstura (XXL) x30
+	4	81250	1	5064 -- Talizman Woli ODP+0
+	5	81300	1	5064 -- Talizman Woli WIT+0
+	6	81550	1	5064 -- Talizman Woli INT+0
+	7	17570	1	4051 -- Klipsy Jadeitu Mgly+0
+	8	31250	1	4051 -- Zolta Runa SungMa
+	9	14580	1	4051 -- Obrecz Jadeitu Mgly+0
+	10	16580	1	4051 -- Kolia Jadeitu Mgly+0
+	11	31247	1	4051 -- Czerwona Runa SungMa
+	12	31248	1	4051 -- Liliowa Runa SungMa
+	13	31249	1	4051 -- Niebieska Runa SungMa
+	14	31251	1	4152 -- Utwardzacz Skory
+	15	31224	1	3292 -- Plyta ze Stali Ozdobnej
+	16	31216	1	3038 -- Plyta z Surowego Metalu
+	17	17580	1	3038 -- Klipsy Jadeitu Slonca+0
+	18	16590	1	3038 -- Kolia Jadeitu Slonca+0
+	19	14590	1	3038 -- Obrecz Jadeitu Slonca+0
+	20	72353	9	2532 -- Topaz Woli x9
+	21	31217	1	2026 -- Rog Trolla
+	22	31218	1	2026 -- Plyta ze Stali Kuzniczej
+	23	gold	500000	2026 -- Yang 500000
+	24	81000	1	1772 -- Talizman Woli SILA+0
+	25	72353	1	1772 -- Topaz Woli
+	26	80019	1	506 -- Delikatne Sukno
+	27	50527	1	304 -- Mikstura Talentu
+	28	76015	1	253 -- Kula Blogoslawienstwa
+	29	71095	1	253 -- Przepustka
+	30	16503	1	152 -- Rubinowy Naszyjnik+3
+	31	17563	1	152 -- Szafirowe Kolczyki+3
+	32	14503	1	152 -- Rubinowa Bransoleta+3
+	33	14523	1	152 -- Granatowa Bransoleta+3
+	34	14543	1	152 -- Szmaragdowa Bransoleta+3
+	35	14563	1	152 -- Szafirowa Bransoleta+3
+	36	14573	1	152 -- Bransoleta z Turmalinu+3
+	37	16523	1	152 -- Granatowy Naszyjnik+3
+	38	16543	1	152 -- Szmaragdowy Naszyjnik+3
+	39	16563	1	152 -- Szafirowy Naszyjnik+3
+	40	16573	1	152 -- Naszyjnik z Turmalinu+3
+	41	17503	1	152 -- Rubinowe Kolczyki+3
+	42	17523	1	152 -- Granatowe Kolczyki+3
+	43	17543	1	152 -- Szmaragdowe Kolczyki+3
+	44	50741	1	1000 -- Zlote Ziolo - owner 4.11, 1%
 }
