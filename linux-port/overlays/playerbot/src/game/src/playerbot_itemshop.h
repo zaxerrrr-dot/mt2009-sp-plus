@@ -355,6 +355,24 @@ namespace
 	{
 		if (ch->GetLevel() < PLAYERBOT_BONUS_MIN_LEVEL)
 			return false;
+		// MT2009_PLUS_BOT_L30_MIX_BUY_V1: a level-30 weapon short of its average, worn or in the bag, and no change
+		// stone to mix it with (PlayerBotWouldSpendDustStone asks the bonus pass's own choice).
+		if (PlayerBotWouldSpendDustStone(ch, false))
+		{
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (item && item->GetCell() == cell && IsPlayerBotSpecialLevel30Weapon(item) &&
+						(int)item->GetRefineLevel() >= PLAYERBOT_BONUS_L30_MIX_MIN_PLUS && CanPlayerBotRerollItem(item) &&
+						!HasPlayerBotFinishedBonus(ch, item, WEAR_WEAPON))
+				{
+					PlayerBotLogThrottled("l30_mix_buy", get_dword_time(),
+							"PLAYERBOT_BONUS: change stone wanted for a level-30 weapon pid=%u name=%s vnum=%u plus=%u",
+							ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetRefineLevel());
+					return true;
+				}
+			}
+		}
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		if (!CanPlayerBotRerollItem(weapon))
 			return false;

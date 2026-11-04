@@ -2363,6 +2363,9 @@ namespace
 	// Four since Iwakura's Patch 4, point 6: "natychmiast aplikuje Dodania, a
 	// nastepnie jesli przedmiot posiada 4 bonusy dodatkowe to zmienia bonusy".
 	const int PLAYERBOT_BONUS_CHANGE_MIN_LINES = 4;
+	// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1 (the owner, 3 November 2026): with no ordinary add stone in the bag the change
+	// goes on a piece of three lines already (playerbot_bonus_rules.h, PlainChangeLinesReached).
+	const int PLAYERBOT_BONUS_CHANGE_NO_ADD_LINES = 3;
 	// What the lines rolled on a piece add to what a stall asks for it.
 	//
 	// A counter wanted the same 150 000 for boots +7 carrying five bonus lines
