@@ -703,6 +703,10 @@ linux-port/docker/game/src/server/game/src/fish_puzzle.cpp
 linux-port/docker/game/src/server/game/src/fishing.cpp
 linux-port/docker/mariadb/playerbot/fish_puzzle.sql
 linux-port/docker/game/special_item_group.fishpuzzle.txt
+# MT2009_PLUS_TITLES_V1 (server-patches/tytuly): Tytuly - playerbot_titles.cpp (the playerbot_* lines), the engine files
+# it changes are above (packet.h, packet_info.cpp, input_main.cpp, input_login.cpp, char.cpp, char_item.cpp, cmd.cpp,
+# questlua.cpp), the table and the certificates tytuly.sql (apply.sh).
+linux-port/docker/mariadb/playerbot/tytuly.sql
 # MT2009_PLUS_FISHING_RENEWAL_V1 (server-patches/fishren): the new fishing minigame - the engine file pair with the
 # overlay (char.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/fish_renewal.cpp

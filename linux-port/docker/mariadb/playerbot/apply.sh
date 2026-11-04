@@ -5391,6 +5391,17 @@ if [ -s /opt/playerbot/fish_puzzle.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_TITLES_V1 (the owner, 4 November 2026): tytuly.sql - Tytuly: the players' titles (player.player_title: pid,
+# title_index, end_time 0 = for good, equipped) and the certificates 57000-57002; the engine part server-patches/tytuly +
+# playerbot_titles.cpp. Idempotent (CREATE TABLE IF NOT EXISTS, ADD COLUMN IF NOT EXISTS, INSERT IGNORE).
+if [ -s /opt/playerbot/tytuly.sql ]; then
+    if db < /opt/playerbot/tytuly.sql; then
+        echo "[playerbot-migrate] Tytuly: tytuly.sql applied"
+    else
+        fail_step "Tytuly: tytuly.sql failed (MT2009_PLUS_TITLES_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
