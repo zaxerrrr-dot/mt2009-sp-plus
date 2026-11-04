@@ -60,6 +60,9 @@
 // included once, after playerbot_dungeon_panel.h.
 #include <ctime>
 
+// MT2009_PLUS_TITLES_V2: the weekly "Zabojca" top 3 get the titles 2-4 (playerbot_titles.cpp)
+bool TitleSystemGrantPid(DWORD pid, DWORD title, DWORD seconds);
+
 namespace mt2009_wrank
 {
 	enum ECategory
@@ -743,6 +746,10 @@ namespace mt2009_wrank
 							next, (unsigned int)cat, (unsigned int)(i + 1), r.pid, r.name.c_str(), r.level,
 							(unsigned int)r.empire, r.value, r.bot ? 1U : 0U);
 					Exec(query);
+					// MT2009_PLUS_TITLES_V2 (the wiki's Combat Zone titles): the PvP category's 1st / 2nd / 3rd -
+					// Niepokonany / Zwiastun Wojny / Rzeznik for 7 days; a bot's place gives nothing.
+					if (cat == CAT_PLAYER && i < 3 && !r.bot)
+						TitleSystemGrantPid(r.pid, (DWORD)(2 + i), 0);
 				}
 				if (!top.empty())
 				{

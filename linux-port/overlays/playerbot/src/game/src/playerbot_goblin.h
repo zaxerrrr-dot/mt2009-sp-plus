@@ -54,6 +54,9 @@
 // and for a GM "/goblin gm <doblony|tury|klucze|reset|wyspa|bilet> [n]".
 #include "start_position.h"
 
+// MT2009_PLUS_TITLES_V2: Lowca Monet (playerbot_titles.cpp)
+bool TitleSystemGrantPid(DWORD pid, DWORD title, DWORD seconds);
+
 namespace mt2009_goblin
 {
 	const DWORD TICKET_VNUM = 70617;
@@ -473,6 +476,26 @@ namespace mt2009_goblin
 
 	int Gold(LPCHARACTER ch) { return std::min(GOLD_MAX, Flag(ch, F_GOLD)); }
 	void SetGold(LPCHARACTER ch, int v) { ch->SetQuestFlag(F_GOLD, std::max(0, std::min(GOLD_MAX, v))); }
+
+	// MT2009_PLUS_TITLES_V2 (it-wiki "Cacciatore di Monete": 10 000 Doubloons gathered): every Doubloon a player won
+	// (a wave's kill, the right chest - what the purse took) counts for good in "goblin.earned" (not one of the flags a
+	// new event clears); at 10 000 the title Lowca Monet for good. Bots: nothing.
+	const char* const F_EARNED = "goblin.earned";
+	const int TITLE_COIN_HUNTER_GOLD = 10000;
+	const DWORD TITLE_COIN_HUNTER = 1012;
+
+	void AddGold(LPCHARACTER ch, int n)
+	{
+		const int before = Gold(ch);
+		SetGold(ch, before + n);
+		const int won = Gold(ch) - before;
+		if (won <= 0 || !ch->GetDesc() || ch->GetDesc()->IsBot())
+			return;
+		const int earned = std::max(0, ch->GetQuestFlag(F_EARNED)) + won;
+		ch->SetQuestFlag(F_EARNED, earned);
+		if (earned >= TITLE_COIN_HUNTER_GOLD && earned - won < TITLE_COIN_HUNTER_GOLD)
+			TitleSystemGrantPid(ch->GetPlayerID(), TITLE_COIN_HUNTER, 0);
+	}
 	int Rounds(LPCHARACTER ch) { return Flag(ch, F_ROUND); }
 	int VirtualKeys(LPCHARACTER ch) { return Flag(ch, F_KEYS); }
 	int Keys(LPCHARACTER ch) { return VirtualKeys(ch) + (int)ch->CountSpecifyItem(KEY_VNUM); }
@@ -1100,7 +1123,7 @@ namespace mt2009_goblin
 					Msg(owner, MSG_GOLD_FULL);
 				else
 				{
-					SetGold(owner, Gold(owner) + 1);
+					AddGold(owner, 1);	// MT2009_PLUS_TITLES_V2: counted for Lowca Monet
 					Msg(owner, MSG_GOLD_1);
 				}
 			}
@@ -1183,7 +1206,7 @@ namespace mt2009_goblin
 		if (inst.phase != PHASE_CHEST_SUCCESS || !owner)
 			return;
 		SetPhase(inst, owner, PHASE_REWARD);
-		SetGold(owner, Gold(owner) + GOLD_CHEST);
+		AddGold(owner, GOLD_CHEST);	// MT2009_PLUS_TITLES_V2: counted for Lowca Monet
 		inst.success = true;
 		Msg(owner, MSG_FOUND_BOX);
 		Msg(owner, MSG_GOLD_100);

@@ -13,7 +13,7 @@
 //     never sees GC 189 (no client version gate needed); bots never say it, nor have a title (no query for them);
 //   * who wears what: GC VISUAL (vid, title) to every viewer that said hello - after its add packet (EncodeInsert) and
 //     when it changes (the package abused SpecificEffectPacket with "path|index" to everyone around at each insert);
-//   * the certificates 57000-57002 (the package's vnums): value0 the title, value1 the time in seconds (0 = the
+//   * the certificates 57000-57008 (the package's vnums and V2's): value0 the title, value1 the time in seconds (0 = the
 //     title's default); a timed title already owned is lengthened (the package refused it);
 //   * GM: /tytul (also the package's /title_system), quests: title.give / has / remove / equipped (questlua.cpp);
 //   * expiry and the "one hour left" notice: a 60 s tick over the characters that own a timed title.
@@ -81,44 +81,54 @@ namespace titles
 	const DWORD COLOR = 0xFFD6E3F3;	// the package's ice blue
 	const char* const FX = "d:/ymir work/effect/etc/title/";
 
-	// The package's titles and its Polish names (title_gf.txt / title_wz.txt); the official server's sources (its
-	// premium membership, its other servers, Battle Royale) replaced by ours - the owner decides the rest (README).
+	// MT2009_PLUS_TITLES_V2 (the owner, 4.11.2026: "Tytuly jak na wiki, ale wiele tych rzeczy nie mamy dostepnych u nas,
+	// wiec trzeba kupic certyfikaty w ItemShopie"): the wiki's titles (tr-wiki "Unvan Sistemi", en "Titles", de "Titel
+	// System", it "Titoli (Sistema)"; the Polish names of pl-wiki where it has them - Czciciel Slonca, Gwiazda Polarna,
+	// the ranks Heroiczna / Legendarna / Mistyczna -, else the package's Polish files), with the wiki's looks and times:
+	//   * automatic where the wiki's source has ours: 2-4 the weekly ranking's "Zabojca" 1st-3rd (the wiki's Combat Zone
+	//     ranking, 7 days, playerbot_weekly_rank.h), 1011 a game of Okey with 500+ points (playerbot_rumi.h), 1012
+	//     10 000 Doublons gathered in the Treasure Hunt (playerbot_goblin.h) - TitleSystemGrantPid;
+	//   * every other one (Battle Royale, the membership and its ranks, its monthly raffle, the Tombola, the transfer from
+	//     a boost server - none of them here): its own certificate 57000-57008 in the ItemShop (tytuly.sql), for the
+	//     wiki's time (the membership's titles: one month = 30 days; the Tombola's: 365 days, pl-wiki);
+	//   * out (no wiki lists them): 6 Plomienny Pogromca and 7 Bezlitosny Sedzia (Meley / Balathor guild rankings).
+	// No title has a bonus (the wiki gives none). The wiki's Metin+ title is "PLUS" here (no other server's names).
 	const SProto TITLES[] =
 	{
-		{ 1000, TYPE_NAMEPLATE, true, 0, 1005, 0, COLOR, "Szcz\xea\x9c""ciarz",
-			"Niebieski Certyfikat Tytu\xb3u albo wygrana w losowaniu na evencie.", "" },
-		{ 1002, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Heroiczny",
-			"Czerwony Certyfikat Tytu\xb3u (30 dni, kolejny przed\xb3u\xbf""a).", "" },
-		{ 1003, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Legendarny",
-			"Nagroda za eventy (nadaje GM).", "" },
-		{ 1004, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Mistyczny",
-			"Nagroda za eventy (nadaje GM).", "" },
-		{ 1005, TYPE_NAMEPLATE, true, 0, 1000, 0, COLOR, "Czciciel S\xb3o\xf1""ca",
-			"Zielony Certyfikat Tytu\xb3u albo letni event.", "" },
-		{ 1006, TYPE_NAMEPLATE, true, 0, 1002, 0, COLOR, "Gwiazda Polarna",
-			"Do zdobycia podczas zimowego eventu.", "" },
-		{ 1011, TYPE_NAMEPLATE, true, 0, 1001, 0, COLOR, "Wielki Mistrz Okey",
-			"Zdob\xb9""d\x9f 500 lub wi\xea""cej punkt\xf3w w jednej rundzie Okey.", "" },
-		{ 1012, TYPE_NAMEPLATE, true, 0, 1004, 0, COLOR, "\xa3owca Monet",
-			"Nagroda za eventy (nadaje GM).", "" },
 		{ 1, TYPE_EFFECT, false, 3 * 3600, 2000, 0, COLOR, "Ostatni Ocala\xb3y",
-			"Przetrwaj do ko\xf1""ca eventu na arenie (3 godziny).", "crown01.mse" },
-		{ 2, TYPE_EFFECT, false, 7 * DAY, 3003, 0, COLOR, "Niepokonany",
-			"Zajmij 1. miejsce w tygodniowym rankingu zab\xf3jc\xf3w (7 dni).", "title_04_trophy.mse" },
-		{ 3, TYPE_EFFECT, false, 7 * DAY, 3004, 0, COLOR, "Zwiastun Wojny",
-			"Zajmij 2. miejsce w tygodniowym rankingu zab\xf3jc\xf3w (7 dni).", "title_05_medal.mse" },
-		{ 4, TYPE_EFFECT, false, 7 * DAY, 3002, 0, COLOR, "Rze\x9fnik",
-			"Zajmij 3. miejsce w tygodniowym rankingu zab\xf3jc\xf3w (7 dni).", "title_03_fist.mse" },
-		{ 6, TYPE_EFFECT, false, 7 * DAY, 3005, 0, COLOR, "P\xb3omienny Pogromca",
-			"Zajmij 1. miejsce w tygodniowym rankingu Schronienia Meley (7 dni).", "title_dragon_red.mse" },
-		{ 7, TYPE_EFFECT, false, 7 * DAY, 3006, 0, COLOR, "Bezlitosny S\xea""dzia",
-			"Zajmij 1. miejsce w tygodniowym rankingu Krypty Balathora (7 dni).", "title_dragon_gw.mse" },
+			"Certyfikat \"Tytu\xb3 Ostatni Ocala\xb3y\" z ItemShopu (3 godziny).", "crown01.mse" },
+		{ 2, TYPE_EFFECT, false, 7 * DAY, 2001, 0, COLOR, "Niepokonany",
+			"1. miejsce w tygodniowym rankingu Zab\xf3jca (zabici gracze) - nadawany sam po ko\xf1""cu sezonu (7 dni).", "title_rank_1.mse" },
+		{ 3, TYPE_EFFECT, false, 7 * DAY, 2002, 0, COLOR, "Zwiastun Wojny",
+			"2. miejsce w tygodniowym rankingu Zab\xf3jca (zabici gracze) - nadawany sam po ko\xf1""cu sezonu (7 dni).", "title_rank_2.mse" },
+		{ 4, TYPE_EFFECT, false, 7 * DAY, 2003, 0, COLOR, "Rze\x9fnik",
+			"3. miejsce w tygodniowym rankingu Zab\xf3jca (zabici gracze) - nadawany sam po ko\xf1""cu sezonu (7 dni).", "title_rank_3.mse" },
+		{ 1000, TYPE_NAMEPLATE, true, 0, 1005, 0, COLOR, "Szcz\xea\x9c""ciarz",
+			"Certyfikat \"Tytu\xb3 Szcz\xea\x9c""ciarz\" z ItemShopu (na sta\xb3""e).", "" },
+		{ 1001, TYPE_EFFECT, false, 30 * DAY, 3000, 0, COLOR, "PLUS",
+			"Certyfikat \"Tytu\xb3 PLUS\" z ItemShopu (30 dni, kolejny przed\xb3u\xbf""a o 30 dni).", "title_01_shield.mse" },
+		{ 1002, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Heroiczny",
+			"Certyfikat \"Tytu\xb3 Heroiczny\" z ItemShopu (30 dni, kolejny przed\xb3u\xbf""a o 30 dni).", "" },
+		{ 1003, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Legendarny",
+			"Certyfikat \"Tytu\xb3 Legendarny\" z ItemShopu (30 dni, kolejny przed\xb3u\xbf""a o 30 dni).", "" },
+		{ 1004, TYPE_NAMEPLATE, false, 30 * DAY, 1003, 0, COLOR, "Mistyczny",
+			"Certyfikat \"Tytu\xb3 Mistyczny\" z ItemShopu (30 dni, kolejny przed\xb3u\xbf""a o 30 dni).", "" },
+		{ 1005, TYPE_NAMEPLATE, false, 365 * DAY, 1000, 0, COLOR, "Czciciel S\xb3o\xf1""ca",
+			"Certyfikat \"Tytu\xb3 Czciciel S\xb3o\xf1""ca\" z ItemShopu (365 dni, kolejny przed\xb3u\xbf""a).", "" },
+		{ 1006, TYPE_NAMEPLATE, false, 365 * DAY, 1002, 0, COLOR, "Gwiazda Polarna",
+			"Certyfikat \"Tytu\xb3 Gwiazda Polarna\" z ItemShopu (365 dni, kolejny przed\xb3u\xbf""a).", "" },
+		{ 1007, TYPE_NAMEPLATE, true, 0, 1003, 0, COLOR, "Czempion Nyx",
+			"Certyfikat \"Tytu\xb3 Czempion Nyx\" z ItemShopu (na sta\xb3""e).", "" },
+		{ 1011, TYPE_NAMEPLATE, true, 0, 1001, 0, COLOR, "Wielki Mistrz Okey",
+			"Zdob\xb9""d\x9f 500 lub wi\xea""cej punkt\xf3w w jednej grze Okey - nadawany sam (na sta\xb3""e).", "" },
+		{ 1012, TYPE_NAMEPLATE, true, 0, 1004, 0, COLOR, "\xa3owca Monet",
+			"Zbierz \xb3\xb9""cznie 10 000 Doblon\xf3w w Poszukiwaniu skarb\xf3w z Goblinem - nadawany sam (na sta\xb3""e).", "" },
 	};
 	const size_t TITLE_COUNT = sizeof(TITLES) / sizeof(TITLES[0]);
 
 	// the certificates (the package's vnums); value0 = the title, value1 = its time (s, 0 = the title's default)
 	const DWORD CERT_FIRST = 57000;
-	const DWORD CERT_LAST = 57002;
+	const DWORD CERT_LAST = 57008;	// MT2009_PLUS_TITLES_V2: one a title of no source here (tytuly.sql)
 
 	const DWORD ACTION_GAP_MS = 1000;	// one equip / unequip a second (the package's cooldown)
 	const int TICK_SEC = 60;
@@ -138,6 +148,8 @@ namespace titles
 	// by VID - like skillcolor's state: a PC's titles from its rows at login, gone with the character
 	std::unordered_map<DWORD, SState> s_state;
 	LPEVENT s_pkTick = NULL;
+	// MT2009_PLUS_TITLES_V2: the rows another core granted (granted_at) are read since this time (the core's start)
+	DWORD s_dwPolledTo = 0;
 
 	const SProto* Find(DWORD index)
 	{
@@ -314,10 +326,12 @@ namespace titles
 	};
 
 	void Expire(LPCHARACTER ch, SState& st, DWORD now);
+	void PollGranted(DWORD now);
 
 	EVENTFUNC(titles_tick)
 	{
 		const DWORD now = (DWORD) get_global_time();
+		PollGranted(now);
 		std::vector<DWORD> vids;
 		for (std::unordered_map<DWORD, SState>::const_iterator it = s_state.begin(); it != s_state.end(); ++it)
 			if (!it->second.owned.empty())
@@ -337,6 +351,8 @@ namespace titles
 	{
 		if (s_pkTick)
 			return;
+		if (!s_dwPolledTo)
+			s_dwPolledTo = (DWORD) get_global_time();
 		titles_tick_info* info = AllocEventInfo<titles_tick_info>();
 		s_pkTick = event_create(titles_tick, info, PASSES_PER_SEC(TICK_SEC));
 	}
@@ -413,6 +429,83 @@ namespace titles
 		if (wear)
 			BroadcastVisual(ch);
 		return true;
+	}
+
+	// MT2009_PLUS_TITLES_V2: a title the server gives by itself (the weekly ranking, Okey, the Treasure Hunt) - its own
+	// time from now (seconds 0 = the title's default; never added on top: a timed one owned longer keeps its end), a
+	// permanent one owned already is nothing. The character on this core: its state at once (worn when it wears none);
+	// elsewhere or offline: the row with granted_at = now, which the core it is on reads within a minute (PollGranted)
+	// and every core reads at its next login.
+	bool Settle(LPCHARACTER ch, SState& st, const SProto& t, DWORD end, DWORD now)
+	{
+		std::map<DWORD, DWORD>::const_iterator it = st.owned.find(t.index);
+		const bool owned = it != st.owned.end() && (it->second == 0 || it->second > now);
+		if (owned && (it->second == 0 || (end && it->second >= end)))
+			return false;
+		st.owned[t.index] = end;
+		st.warned.erase(t.index);
+		const bool wear = !st.equipped;
+		if (wear)
+			st.equipped = t.index;
+		EnsureTick();
+		Notify(ch, owned ? MSG_PROLONGED : MSG_GOT, t.index);
+		SendOwned(ch);
+		if (wear)
+			BroadcastVisual(ch);
+		return true;
+	}
+
+	bool GrantPid(DWORD pid, DWORD index, DWORD seconds)
+	{
+		const SProto* t = Find(index);
+		if (!t || !pid)
+			return false;
+		const DWORD now = (DWORD) get_global_time();
+		const DWORD end = t->permanent ? 0 : now + (seconds ? seconds : t->duration);
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+		SState* st = ch && IsPlayer(ch) ? StateOf(ch) : NULL;
+		if (st && st->pid == pid)
+		{
+			if (!Settle(ch, *st, *t, end, now))
+				return false;
+			SaveRow(pid, index, end, st->equipped == index);
+			if (st->equipped == index)
+				SaveEquipped(pid, index);
+			return true;
+		}
+		DBManager::instance().Query("INSERT INTO player.player_title (pid, title_index, end_time, equipped, granted_at) "
+			"VALUES (%u, %u, %u, 0, %u) ON DUPLICATE KEY UPDATE "
+			"end_time = IF(end_time = 0 OR VALUES(end_time) = 0, 0, GREATEST(end_time, VALUES(end_time))), "
+			"granted_at = VALUES(granted_at)", pid, index, end, now);
+		return true;
+	}
+
+	// the rows granted elsewhere since the last read, for the characters of this core (an owned one is nothing)
+	void PollGranted(DWORD now)
+	{
+		if (!s_dwPolledTo)
+			s_dwPolledTo = now;
+		const DWORD from = s_dwPolledTo > 1 ? s_dwPolledTo - 1 : 0;	// a second back: the same second twice is nothing
+		s_dwPolledTo = now;
+		std::unique_ptr<SQLMsg> m(DBManager::instance().DirectQuery(
+			"SELECT pid, title_index, end_time FROM player.player_title WHERE granted_at >= %u", from));
+		if (!m.get() || m->uiSQLErrno != 0 || !m->Get() || !m->Get()->pSQLResult)
+			return;
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(m->Get()->pSQLResult)))
+		{
+			DWORD pid = 0, index = 0, end = 0;
+			str_to_number(pid, row[0]);
+			str_to_number(index, row[1]);
+			str_to_number(end, row[2]);
+			const SProto* t = Find(index);
+			LPCHARACTER ch = t ? CHARACTER_MANAGER::instance().FindByPID(pid) : NULL;
+			SState* st = ch && IsPlayer(ch) ? StateOf(ch) : NULL;
+			if (!st || st->pid != pid || (end && end <= now))
+				continue;
+			if (Settle(ch, *st, *t, t->permanent ? 0 : end, now) && st->equipped == index)
+				SaveEquipped(pid, index);
+		}
 	}
 
 	bool Remove(LPCHARACTER ch, DWORD index)
@@ -558,8 +651,7 @@ void TitleSystemOnLogin(LPCHARACTER ch)
 			equipped = index;
 	}
 	st.equipped = equipped;
-	if (!st.owned.empty())
-		EnsureTick();
+	EnsureTick();	// MT2009_PLUS_TITLES_V2: always - the tick also reads the titles other cores grant (PollGranted)
 	if (st.equipped)
 		BroadcastVisual(ch);
 }
@@ -586,7 +678,15 @@ void TitleSystemOnDestroy(LPCHARACTER ch)
 		titles::s_state.erase((DWORD) ch->GetVID());
 }
 
-// char_item.cpp UseItemEx (MT2009_PLUS_TITLES_V1 (use)): a certificate 57000-57002 - -1 not one, 0 refused, 1 used
+// MT2009_PLUS_TITLES_V2: a title the server gives by itself (playerbot_weekly_rank.h, playerbot_rumi.h,
+// playerbot_goblin.h) to a player by his pid - seconds 0 = the title's default time. False: no such title, or nothing
+// new (a permanent one owned, a timed one owned longer). The callers keep bots out.
+bool TitleSystemGrantPid(DWORD pid, DWORD title, DWORD seconds)
+{
+	return titles::GrantPid(pid, title, seconds);
+}
+
+// char_item.cpp UseItemEx (MT2009_PLUS_TITLES_V1 (use)): a certificate 57000-57008 (V2) - -1 not one, 0 refused, 1 used
 int TitleSystemUseItem(LPCHARACTER ch, LPITEM item)
 {
 	using namespace titles;

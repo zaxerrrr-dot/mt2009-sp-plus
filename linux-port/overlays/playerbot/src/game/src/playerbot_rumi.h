@@ -82,6 +82,9 @@ namespace
 	void PlayerBotMinigameCard(LPCHARACTER ch, int game);
 }
 
+// MT2009_PLUS_TITLES_V2: Wielki Mistrz Okey (playerbot_titles.cpp)
+bool TitleSystemGrantPid(DWORD pid, DWORD title, DWORD seconds);
+
 namespace mt2009_rumi
 {
 	enum
@@ -106,6 +109,8 @@ namespace mt2009_rumi
 
 		SCORE_LOW = 300,
 		SCORE_MID = 400,
+		TITLE_OKEY_SCORE = 500,	// MT2009_PLUS_TITLES_V2
+		TITLE_OKEY = 1011,
 
 		ITEM_CARD_PIECE = 79505,	// Karta Okey
 		ITEM_CARD_PACK = 79506,		// Zestaw kart Okey
@@ -562,6 +567,9 @@ namespace mt2009_rumi
 		// Out of the list before anything is given.
 		s_games.erase(it);
 		SaveScore(ch->GetPlayerID(), score, count);
+		// MT2009_PLUS_TITLES_V2 (it-wiki "Gran Maestro di Okey"): 500 or more points in one game - the title for good
+		if (score >= TITLE_OKEY_SCORE && ch->GetDesc() && !ch->GetDesc()->IsBot())
+			TitleSystemGrantPid(ch->GetPlayerID(), TITLE_OKEY, 0);
 		if (!t)
 			sys_err("RUMI: no item_proto row for the chest %u", vnum);
 		else if (logout || count > 1)

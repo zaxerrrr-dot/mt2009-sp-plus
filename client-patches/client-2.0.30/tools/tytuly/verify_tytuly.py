@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# MT2009_PLUS_TITLES_V1 - Tytuly in OUT (build_tytuly_packs.py): the 3 certificate records of gamedata/item_proto, their
+# MT2009_PLUS_TITLES_V1 / V2 - Tytuly in OUT (build_tytuly_packs.py): the 9 certificate records (V2: 57000-57008) of gamedata/item_proto, their
 # item_list.txt and itemdesc.txt lines exactly as patch_tytuly_client.py makes them, pack "tytuly" with exactly files/
 # (every sub image's picture in the pack and its rectangle inside it, every plate picture a title_<res>.sub names, every
 # texture an effect names, the icons 32x32 TGA), listed in pack/Index, and no other pack of OUT with one of those names.
@@ -102,7 +102,9 @@ for name, b in sorted(pack.items()):
 			if (folder + ref.lower()) not in pack:
 				fails.append('%s: texture %s not in the pack' % (name, ref))
 for need in ('d:/ymir work/ui/titlesystem_001.dds', 'd:/ymir work/ui/game/title/char_face.dds',
-		'd:/ymir work/effect/etc/title/crown01.mse'):
+		'd:/ymir work/effect/etc/title/crown01.mse', 'd:/ymir work/effect/etc/title/title_01_shield.mse',
+		'd:/ymir work/effect/etc/title/title_rank_1.mse', 'd:/ymir work/effect/etc/title/title_rank_2.mse',
+		'd:/ymir work/effect/etc/title/title_rank_3.mse'):	# the catalogue's effects (V2: the PLUS shield, the medals)
 	if need not in pack:
 		fails.append('%s missing' % need)
 for p in sorted(f[:-6] for f in os.listdir(OUT) if f.endswith('.index')):
@@ -119,4 +121,4 @@ if fails:
 	for f in fails:
 		print('  ' + f)
 	sys.exit(1)
-print('tytuly OK: 3 certificates, pack %s %d entries (%d .sub checked), Index' % (B.ICON_PACK, len(pack), subs))
+print('tytuly OK: %d certificates, pack %s %d entries (%d .sub checked), Index' % (len(pc.items()), B.ICON_PACK, len(pack), subs))

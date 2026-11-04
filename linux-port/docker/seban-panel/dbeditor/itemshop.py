@@ -159,6 +159,8 @@ BOOT_ONCE = {
     "addeq_unlock_19": {"adds": (19,), "note": "Strona ekwipunku II (76055)"},
     # MT2009_PLUS_HORSE40_V1 (tools/konie): Zestaw Opieki nad Koniem 399 SM, Pasza dla Konia x50 / x250, tab Mounty
     "konie_50901": {"adds": (50901, 50902, 50903), "note": "Zestaw Opieki nad Koniem i Pasza dla Konia (x50, x250)"},
+    # MT2009_PLUS_TITLES_V2: the title certificates 57000-57008 (tytuly.sql), tab Wyposazenie
+    "tytuly_certs_40": {"adds": tuple(range(40, 49)), "note": "Certyfikaty tytułów (Tytuł Heroiczny, Szczęściarz, ...)"},
 }
 
 

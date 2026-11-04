@@ -5415,7 +5415,7 @@ if [ -s /opt/playerbot/fish_puzzle.sql ]; then
 fi
 
 # MT2009_PLUS_TITLES_V1 (the owner, 4 November 2026): tytuly.sql - Tytuly: the players' titles (player.player_title: pid,
-# title_index, end_time 0 = for good, equipped) and the certificates 57000-57002; the engine part server-patches/tytuly +
+# title_index, end_time 0 = for good, equipped, V2 granted_at) and the certificates 57000-57008; the engine part server-patches/tytuly +
 # playerbot_titles.cpp. Idempotent (CREATE TABLE IF NOT EXISTS, ADD COLUMN IF NOT EXISTS, INSERT IGNORE).
 if [ -s /opt/playerbot/tytuly.sql ]; then
     if db < /opt/playerbot/tytuly.sql; then
@@ -5423,6 +5423,24 @@ if [ -s /opt/playerbot/tytuly.sql ]; then
     else
         fail_step "Tytuly: tytuly.sql failed (MT2009_PLUS_TITLES_V1)" >&2
     fi
+fi
+# MT2009_PLUS_TITLES_V2 (the owner, 4 November 2026: "Tytuly jak na wiki ... trzeba kupic certyfikaty w ItemShopie"): the
+# certificates 57000-57008 of the titles whose wiki source we do not have (tytuly.sql) in the in-game ItemShop's
+# "Wyposazenie" (40-48) - the second ItemShop (V3, /shop3/) sells them too (its view itemshop3.shop). The prices are the
+# proposal of 4 November (the wiki names none): 30-day titles 49 / 79 / 99 / 129 SM by rank, the 365-day banners
+# 299, Szczesciarz (for good) 199, Czempion Nyx (for good) 149, Ostatni Ocalaly (3 h) 9. Once per install (the Seban
+# panel's BOOT_ONCE: tytuly_certs_40); bots never buy them (gen_bot_catalogue.py NEVER).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum BETWEEN 57000 AND 57008;" 2>/dev/null || echo x)" = "9" ]; then
+ishop_once tytuly_certs_40 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(40, 57003, 1, 49, 'DRAGON_COIN', 0),
+(41, 57000, 1, 79, 'DRAGON_COIN', 0),
+(42, 57004, 1, 99, 'DRAGON_COIN', 0),
+(43, 57005, 1, 129, 'DRAGON_COIN', 0),
+(44, 57002, 1, 299, 'DRAGON_COIN', 0),
+(45, 57006, 1, 299, 'DRAGON_COIN', 0),
+(46, 57001, 1, 199, 'DRAGON_COIN', 0),
+(47, 57007, 1, 149, 'DRAGON_COIN', 0),
+(48, 57008, 1, 9, 'DRAGON_COIN', 0);" "could not add the title certificates to the ItemShop (MT2009_PLUS_TITLES_V2)"
 fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
