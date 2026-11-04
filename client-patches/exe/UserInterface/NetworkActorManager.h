@@ -172,6 +172,11 @@ class CNetworkActorManager : public CReferenceObject
 		// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon element of an actor (kept for its instance's re-creation)
 		bool SetActorWeaponElement(DWORD dwVID, DWORD dwType);
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: an actor's colour of one skill (GC 59; kept per VID for its instance's re-creation,
+		// Mt2009SkillColor.cpp)
+		void Mt2009SetSkillColor(DWORD dwVID, BYTE bType, WORD wSkillVnum, const DWORD* c_pdwColor);
+#endif
 
 		void Update();
 
@@ -204,6 +209,10 @@ class CNetworkActorManager : public CReferenceObject
 		LONG m_lMainPosY;
 
 		std::map<DWORD, SNetworkActorData> m_kNetActorDict;
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		void __Mt2009ApplySkillColors(DWORD dwVID, CInstanceBase* pkInst);	// MT2009_PLUS_SKILL_COLOR_V1
+		std::map<DWORD, std::map<DWORD, CActorInstance::SMt2009SkillColor> > m_kMt2009SkillColor;	// VID -> (type << 16) | vnum
+#endif
 };
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

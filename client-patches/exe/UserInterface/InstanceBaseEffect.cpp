@@ -1415,9 +1415,18 @@ DWORD CInstanceBase::__AttachEffect(UINT eEftType)
 	if (eEftType>=EFFECT_NUM)
 		return 0;
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	// MT2009_PLUS_SKILL_COLOR_V1: a self buff / shaman buff / Aura Miecza in its skill's colour (NULL: its own)
+	const DWORD* c_pdwSkillColor = __Mt2009SkillColorOfEffect(eEftType);
+#endif
+
 	if (ms_astAffectEffectAttachBone[eEftType].empty())
 	{
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		return m_GraphicThingInstance.AttachEffectByID(0, NULL, ms_adwCRCAffectEffect[eEftType], NULL, c_pdwSkillColor);
+#else
 		return m_GraphicThingInstance.AttachEffectByID(0, NULL, ms_adwCRCAffectEffect[eEftType]);
+#endif
 	}
 	else
 	{
@@ -1427,19 +1436,31 @@ DWORD CInstanceBase::__AttachEffect(UINT eEftType)
 		{
 			if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON, &c_szBoneName))
 			{
+#ifdef ENABLE_MT2009_SKILL_COLOR
+				return m_GraphicThingInstance.AttachEffectByID(0, c_szBoneName, ms_adwCRCAffectEffect[eEftType], NULL, c_pdwSkillColor);
+#else
 				return m_GraphicThingInstance.AttachEffectByID(0, c_szBoneName, ms_adwCRCAffectEffect[eEftType]);
+#endif
 			}
 		}
 		else if (0 == rstrBoneName.compare("PART_WEAPON_LEFT"))
 		{
 			if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON_LEFT, &c_szBoneName))
 			{
+#ifdef ENABLE_MT2009_SKILL_COLOR
+				return m_GraphicThingInstance.AttachEffectByID(0, c_szBoneName, ms_adwCRCAffectEffect[eEftType], NULL, c_pdwSkillColor);
+#else
 				return m_GraphicThingInstance.AttachEffectByID(0, c_szBoneName, ms_adwCRCAffectEffect[eEftType]);
+#endif
 			}
 		}
 		else
 		{
+#ifdef ENABLE_MT2009_SKILL_COLOR
+			return m_GraphicThingInstance.AttachEffectByID(0, rstrBoneName.c_str(), ms_adwCRCAffectEffect[eEftType], NULL, c_pdwSkillColor);
+#else
 			return m_GraphicThingInstance.AttachEffectByID(0, rstrBoneName.c_str(), ms_adwCRCAffectEffect[eEftType]);
+#endif
 		}
 	}
 

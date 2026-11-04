@@ -1292,6 +1292,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvFishEventInfo();
 				break;
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+			case HEADER_GC_SKILL_COLOR: // MT2009_PLUS_SKILL_COLOR_V1
+				ret = RecvSkillColorPacket();
+				break;
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();
@@ -3693,7 +3698,12 @@ bool CPythonNetworkStream::RecvCreateFlyPacket()
 	if (!pkStartInst || !pkEndInst)
 		return true;
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	// MT2009_PLUS_SKILL_COLOR_V1: Burzowy Szpon's jump / Ognisty Duch's shot in its caster's colour
+	rkFlyMgr.CreateIndexedFly(kPacket.bType, pkStartInst->GetGraphicThingInstancePtr(), pkEndInst->GetGraphicThingInstancePtr(), pkStartInst->Mt2009GetSkillColorOfFly(kPacket.bType));
+#else
 	rkFlyMgr.CreateIndexedFly(kPacket.bType, pkStartInst->GetGraphicThingInstancePtr(), pkEndInst->GetGraphicThingInstancePtr());
+#endif
 
 	return true;
 }

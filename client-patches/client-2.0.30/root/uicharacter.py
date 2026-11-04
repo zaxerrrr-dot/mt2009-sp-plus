@@ -23,6 +23,7 @@ import utils
 import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 import riposty # MT2009_PLUS_RIPOSTY_V1
 import skillhack # MT2009_PLUS_SKILL_HACK_V1
+import uiskillcolor # MT2009_PLUS_SKILL_COLOR_V1
 import questrenewal # MT2009_PLUS_QUEST_RENEWAL_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
@@ -275,6 +276,7 @@ class CharacterWindow(ui.ScriptWindow):
 		self.skillGroupButton1 = None
 		self.skillGroupButton2 = None
 		self.skillGroupButton3 = None # MT2009_PLUS_SKILL_HACK_V1
+		self.skillColorButton = None # MT2009_PLUS_SKILL_COLOR_V1
 		self.activeSkillGroupName = None
 
 		self.guildNameSlot = None
@@ -343,6 +345,9 @@ class CharacterWindow(ui.ScriptWindow):
 		self.skillGroupButton3 = self.GetChild("Skill_Group_Button_3") # MT2009_PLUS_SKILL_HACK_V1
 		self.skillGroupButton3.Hide()
 		self.activeSkillGroupName = self.GetChild("Active_Skill_Group_Name")
+		# MT2009_PLUS_SKILL_COLOR_V1: Kolor umiejetnosci - "Kolory" in the right column's 5th row of the skill tab (empty on
+		# every tab, as in GF: uiscript/characterwindow.py), opens uiskillcolor's window; none with an older exe
+		self.skillColorButton = uiskillcolor.CreateButton(self.GetChild("Skill_Page"), 140, 186)
 
 		self.sprintOnboardingTint = self.GetChild("SprintOnboardingTint")
 		self.sprintOnboardingIcon = self.GetChild("SprintOnboardingIcon")
@@ -676,6 +681,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 	@ui.WindowDestroy
 	def Destroy(self):
+		uiskillcolor.DestroyWindow() # MT2009_PLUS_SKILL_COLOR_V1
 		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
 			self.questRenewal.Destroy()
 			self.questRenewal = None

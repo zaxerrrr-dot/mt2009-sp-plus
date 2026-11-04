@@ -524,6 +524,14 @@ class CInstanceBase
 		DWORD					GetWeaponElement() const { return m_dwWeaponElement; }
 		static bool				RegisterWeaponElementEffect(DWORD dwType, DWORD dwKind, const char* c_szFileName);
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		// MT2009_PLUS_SKILL_COLOR_V1: the character's colours of its skills (Mt2009SkillColor.cpp) - bType
+		// SKILL_COLOR_TYPE_OWN (its own: the skill's motions and self buffs) / _BUFF (the shaman buff it carries, its
+		// caster's); five 0xFFrrggbb / 0, all 0 (or NULL) takes it off
+		void					Mt2009SetSkillColor(BYTE bType, WORD wSkillVnum, const DWORD* c_pdwColor);
+		const DWORD*			Mt2009GetSkillColor(BYTE bType, WORD wSkillVnum) const;
+		const DWORD*			Mt2009GetSkillColorOfFly(DWORD dwFlyIndex) const;
+#endif
 		void					AttachBox(bool isVisible);
 		void					SetBack(DWORD dwItem);
 		bool					SetWeapon(DWORD eWeapon);
@@ -987,6 +995,11 @@ class CInstanceBase
 		void	__AttachWeaponElementEffect();	// after the weapon's refine effect (SetWeapon), again after SetRace
 		DWORD	m_dwWeaponElement;				// 0 none, 1 Blyskawica .. 6 Mrok
 		DWORD	m_dwWeaponElementEffect[2];		// right / left hand
+#endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+		const DWORD* __Mt2009SkillColorOfEffect(UINT eEftType) const;	// MT2009_PLUS_SKILL_COLOR_V1
+		void	__Mt2009RefreshSkillColorMotions();
+		std::map<DWORD, CActorInstance::SMt2009SkillColor> m_kMt2009SkillColor;	// (type << 16) | vnum
 #endif
 
 	protected:

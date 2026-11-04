@@ -834,6 +834,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #endif
 #ifdef ENABLE_CONQUEROR_LEVEL
 	{ void Mt2009Champion_RegisterPython(); Mt2009Champion_RegisterPython(); } // MT2009_PLUS_CHAMPION_V2
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	{ void Mt2009SkillColor_RegisterPython(); Mt2009SkillColor_RegisterPython(); } // MT2009_PLUS_SKILL_COLOR_V1
+#endif
 #endif
 	initsafebox();
 	initguild();

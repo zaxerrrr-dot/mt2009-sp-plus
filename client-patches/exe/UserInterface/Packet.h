@@ -154,6 +154,9 @@ enum
 #ifdef ENABLE_FISH_EVENT
 	HEADER_CG_FISH_EVENT_SEND					= 219,	// MT2009_PLUS_FISH_PUZZLE_V2 (cg header): the fish puzzle (the package's number)
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	HEADER_CG_SKILL_COLOR						= 56,	// MT2009_PLUS_SKILL_COLOR_V1 (cg header): one skill's colour (the package's number)
+#endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
@@ -373,6 +376,9 @@ enum
 	HEADER_GC_SWITCHBOT							= 171,	// MT2009_PLUS_SWITCHBOT_V1 (gc header)
 #ifdef ENABLE_FISH_EVENT
 	HEADER_GC_FISH_EVENT_INFO					= 223,	// MT2009_PLUS_FISH_PUZZLE_V2 (gc header): the fish puzzle (the package's number)
+#endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	HEADER_GC_SKILL_COLOR						= 59,	// MT2009_PLUS_SKILL_COLOR_V1 (gc header): a character's colour of one skill
 #endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
@@ -3978,10 +3984,40 @@ typedef struct SPacketGCFishEventInfo
 } TPacketGCFishEventInfo;
 #endif
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+// MT2009_PLUS_SKILL_COLOR_V1 (structs): Kolor umiejetnosci - as the server's packet.h (server-patches/skillcolor). A colour
+// is 0 (the effect's own) or 0xFFrrggbb; layer n colours the effect's particle system n (the 5th also every later one).
+enum
+{
+	SKILL_COLOR_LAYERS = 5,
+	SKILL_COLOR_TYPE_OWN = 0,	// the character's own colour of the skill
+	SKILL_COLOR_TYPE_BUFF = 1,	// the colour of the shaman buff it carries (its caster's; 94/95/96/110/111)
+};
+
+typedef struct SPacketCGSkillColor
+{
+	BYTE	bHeader;
+	WORD	wSkillVnum;
+	DWORD	adwColor[SKILL_COLOR_LAYERS];
+} TPacketCGSkillColor;
+
+typedef struct SPacketGCSkillColor
+{
+	BYTE	bHeader;
+	DWORD	dwVID;
+	BYTE	bType;
+	WORD	wSkillVnum;
+	DWORD	adwColor[SKILL_COLOR_LAYERS];
+} TPacketGCSkillColor;
+#endif
+
 #pragma pack(pop)
 
 #ifdef ENABLE_FISH_EVENT
 static_assert(sizeof(TPacketCGFishEvent) == 2 && sizeof(TPacketGCFishEventInfo) == 10, "fish event packets (server packet.h)");
+#endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+static_assert(sizeof(TPacketCGSkillColor) == 23 && sizeof(TPacketGCSkillColor) == 28, "skill colour packets (server packet.h)");
 #endif
 
 #ifdef ENABLE_NPC_LOCATION_HELPER

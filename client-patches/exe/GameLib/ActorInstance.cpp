@@ -396,6 +396,35 @@ bool CActorInstance::IsHerb()
 	return m_eRace >= 20601 && m_eRace <= 20644;
 }
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+// MT2009_PLUS_SKILL_COLOR_V1: one motion's colours (all five 0: the motion has none)
+void CActorInstance::Mt2009SetSkillColorOfMotion(WORD wMotionIndex, const DWORD * c_pdwColor)
+{
+	bool bAny = false;
+	for (int i = 0; c_pdwColor && i < 5; ++i)
+		bAny = bAny || c_pdwColor[i] != 0;
+	if (!bAny)
+	{
+		m_kMt2009SkillColorByMotion.erase(wMotionIndex);
+		return;
+	}
+	SMt2009SkillColor& r = m_kMt2009SkillColorByMotion[wMotionIndex];
+	memcpy(r.adwColor, c_pdwColor, sizeof(r.adwColor));
+}
+
+// the colours of a motion key (MAKE_MOTION_KEY(mode, NAME_SKILL + n)), any mode (on foot, on a horse, with a weapon...)
+const DWORD * CActorInstance::Mt2009GetSkillColorOfMotion(DWORD dwMotionKey) const
+{
+	if (m_kMt2009SkillColorByMotion.empty())
+		return NULL;
+	const WORD wIndex = GET_MOTION_INDEX(dwMotionKey);
+	if (wIndex < CRaceMotionData::NAME_SKILL || wIndex >= CRaceMotionData::NAME_SKILL_END)
+		return NULL;
+	std::map<WORD, SMt2009SkillColor>::const_iterator it = m_kMt2009SkillColorByMotion.find((WORD) (wIndex - CRaceMotionData::NAME_SKILL));
+	return it == m_kMt2009SkillColorByMotion.end() ? NULL : it->second.adwColor;
+}
+
+#endif
 void CActorInstance::DestroySystem()
 {
 }
@@ -1036,6 +1065,9 @@ void CActorInstance::__Initialize()
 	__BlendAlpha_Initialize();
 #ifdef ENABLE_MT2009_AUTOHUNT_TEST
 	m_bAutoHuntTestPass = false;	// MT2009_PLUS_AUTOHUNT_TEST_V1 (a pooled actor starts without it)
+#endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColorByMotion.clear();	// MT2009_PLUS_SKILL_COLOR_V1 (a pooled actor starts without them)
 #endif
 
 	ClearFlyTargeter();

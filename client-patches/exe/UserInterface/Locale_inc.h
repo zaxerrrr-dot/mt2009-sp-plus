@@ -378,5 +378,15 @@
 // a static_assert there - the package's "FIX jigsaw SCALE" ("dwAttachedType == 14/17/19": the number moves with every
 // slot type before it; ours: 0-11 the stock ones, 12-16 ENABLE_SPECIAL_STORAGE, 17 ENABLE_SWITCHBOT, 18 the fish piece).
 #define MT2009_SLOT_TYPE_FISH_EVENT 18
+// MT2009_PLUS_SKILL_COLOR_V1 (Kolor umiejetnosci, the owner's package "SKILL_COLOR_SYSTEM by OSWAP (FULL)", rebuilt -
+// server-patches/skillcolor/README.md): a character's colour of a skill's effects, five layers (the effect's particle
+// systems 1-5, the 5th also every later one). Packets CG 56 HEADER_CG_SKILL_COLOR (23 B) / GC 59 HEADER_GC_SKILL_COLOR
+// (28 B, one skill of one character: its own colour or the colour of the shaman buff it carries). Each particle keeps
+// its alpha and brightness and takes the colour's hue (CParticleInstance) - an instance's colour, never the shared
+// effect data (the package recoloured the loaded .mse and needed a copy of every effect per player name). The
+// skill's motion events (effects, effects on the target, flying objects and their hits) and the affect effects of
+// the self buffs / the shaman buffs / Aura Miecza. player.SetSkillColor / GetSkillColor, app.ENABLE_SKILL_COLOR_SYSTEM,
+// app.MT2009_SKILL_COLOR_EXE (root constinfo.py: client 1.3.2). Root: uiskillcolor.py, uiscript/skillcolorwindow.py.
+#define ENABLE_MT2009_SKILL_COLOR
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

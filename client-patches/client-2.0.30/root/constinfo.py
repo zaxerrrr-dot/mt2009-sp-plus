@@ -30,6 +30,12 @@ if getattr(app, "MT2009_CHAMPION_EXE", 0) and hasattr(player, "CONQUEROR_LEVEL")
 	# "UPDATE" before a single packet of the new layout reaches them. A new root on an old exe stays 1.3.0 - refused too.
 	if getattr(app, "MT2009_WIDE_ATTR_EXE", 0):
 		GAME_VERSION["minor"] = 1
+		# MT2009_PLUS_SKILL_COLOR_V1 (server-patches/skillcolor): Kolor umiejetnosci - the server sends a character's
+		# skill colours in a new packet (GC 59) an older exe cannot read. Only this root with that exe
+		# (app.MT2009_SKILL_COLOR_EXE) says 1.3.2 (1010302); the auth core (M2_CLIENT_MIN_VERSION 1010302) refuses
+		# 1.3.1 and older with "UPDATE". A new root on an older exe stays 1.3.1 (or 1.3.0) - refused too.
+		if getattr(app, "MT2009_SKILL_COLOR_EXE", 0):
+			GAME_VERSION["minor"] = 2
 
 # EXTRA BEGIN
 ENABLE_NEW_LEVELSKILL_SYSTEM = False # loads 5 (B,M,G,P,F) skills .mse

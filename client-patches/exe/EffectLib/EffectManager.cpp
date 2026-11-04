@@ -172,11 +172,19 @@ int CEffectManager::CreateEffect(const char * c_szFileName, const D3DXVECTOR3 & 
 	return CreateEffect(dwID, c_rv3Position, c_rv3Rotation);
 }
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+int CEffectManager::CreateEffect(DWORD dwID, const D3DXVECTOR3 & c_rv3Position, const D3DXVECTOR3 & c_rv3Rotation, const DWORD * c_pdwSkillColor)
+#else
 int CEffectManager::CreateEffect(DWORD dwID, const D3DXVECTOR3 & c_rv3Position, const D3DXVECTOR3 & c_rv3Rotation)
+#endif
 {
 	int iInstanceIndex = GetEmptyIndex();
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	CreateEffectInstance(iInstanceIndex, dwID, c_pdwSkillColor);	// MT2009_PLUS_SKILL_COLOR_V1
+#else
 	CreateEffectInstance(iInstanceIndex, dwID);
+#endif
 	SelectEffectInstance(iInstanceIndex);
 	D3DXMATRIX mat;
 	D3DXMatrixRotationYawPitchRoll(&mat,D3DXToRadian(c_rv3Rotation.x),D3DXToRadian(c_rv3Rotation.y),D3DXToRadian(c_rv3Rotation.z));
@@ -188,7 +196,11 @@ int CEffectManager::CreateEffect(DWORD dwID, const D3DXVECTOR3 & c_rv3Position, 
 	return iInstanceIndex;
 }
 
+#ifdef ENABLE_MT2009_SKILL_COLOR
+void CEffectManager::CreateEffectInstance(DWORD dwInstanceIndex, DWORD dwID, const DWORD * c_pdwSkillColor)
+#else
 void CEffectManager::CreateEffectInstance(DWORD dwInstanceIndex, DWORD dwID)
+#endif
 {
 	if (!dwID)
 		return;
@@ -202,6 +214,9 @@ void CEffectManager::CreateEffectInstance(DWORD dwInstanceIndex, DWORD dwID)
 
 	CEffectInstance * pEffectInstance = CEffectInstance::New();
 	pEffectInstance->SetEffectDataPointer(pEffect);
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	pEffectInstance->SetMt2009SkillColor(c_pdwSkillColor);	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
 
 	m_kEftInstMap.emplace(dwInstanceIndex, pEffectInstance);
 }

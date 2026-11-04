@@ -3679,6 +3679,9 @@ void CInstanceBase::__Initialize()
 	m_dwWeaponElement = 0;	// MT2009_PLUS_WEAPON_ELEMENT_V1 (the effect goes with the actor)
 	m_dwWeaponElementEffect[0] = m_dwWeaponElementEffect[1] = 0;
 #endif
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1 (a pooled instance starts without them)
+#endif
 
 	m_sAlignment = 0;
 #ifdef ENABLE_RANK_TITLE
