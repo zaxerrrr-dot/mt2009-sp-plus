@@ -1,7 +1,10 @@
 -- MT2009_PLUS_YUTNORI_V1: the Yut Nori boxes (playerbot_yutnori.h, quest/minigame_yutnori.quest).
 -- Owsap's groups (special_item_group.txt, v6.2.6) with his vnums 50920-50922 moved to
 -- 83032-83034 (ours are Receptura items) and his items we do not have replaced by ours:
--- no pet eggs, mounts, costumes or sashes (those come from the ItemShop only), no weapons.
+-- no mounts, costumes or sashes (those come from the ItemShop only), no weapons.
+-- MT2009_PLUS_GROWTH_PET_V1 (4 November 2026): the growth pets' eggs the pl-wiki gives - Zloty Pakiet:
+-- Jajo Razadora / Nemere (about 0.6% each), Srebrny Pakiet: Jajo Malpiszona / Pajaka / Razadora / Nemere
+-- (about 0.8% / 0.6% / 0.2% / 0.2%).
 -- A game's box: 83030 (score >= 220), 83031 (150-219), 83034 (below 150); the ranking's
 -- top ten get 83030 (10 / 5 / 3 / 1) at the table NPC during the reward window.
 Group	mt2009_yut_golden_trophy
@@ -40,6 +43,8 @@ Group	mt2009_yut_golden_bundle
 	15	exp	100000	4 -- 100 000 doswiadczenia
 	16	gold	500000	4 -- 500 000 yang
 	17	71153	1	8 -- Mikstura Madrosci
+	18	55403	1	2 -- Jajo Razadora
+	19	55404	1	2 -- Jajo Nemere
 }
 
 Group	mt2009_yut_silver_bundle
@@ -61,6 +66,10 @@ Group	mt2009_yut_silver_bundle
 	14	27994	1	13 -- Krwawa Perla
 	15	50108	10	20 -- Fajerwerki
 	16	50107	10	20 -- Chinska Ognista Petarda
+	17	55401	1	4 -- Jajo Malpiszona
+	18	55402	1	3 -- Jajo Pajaka
+	19	55403	1	1 -- Jajo Razadora
+	20	55404	1	1 -- Jajo Nemere
 }
 
 Group	mt2009_yut_bronze_bundle

@@ -1529,7 +1529,7 @@ Group	MT2009_yarkusz_6819
 	5	83066	1	5	-- Los. Klucz do Skrz. Sk.
 	6	83065	1	5	-- Losowa Skrzynia Skarbow
 	7	31249	1	4	-- Niebieska Runa SungMa
-	8	95737	1	2	-- Przeb. Ksiega Zwierza (sheet 55007)
+	8	55007	1	2	-- Przeb. Ksiega Zwierza
 	9	27112	1	40	-- Zielona Mikstura(D)
 	10	50737	1	10	-- Ziemne Pnacze
 	11	31250	1	4	-- Zielona Runa SungMa

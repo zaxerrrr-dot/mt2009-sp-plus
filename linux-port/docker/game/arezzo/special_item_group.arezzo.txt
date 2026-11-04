@@ -151,38 +151,34 @@ Group	MT2009_chest_biblioteka_misc
 Group	MT2009_chest_biblioteka_pet
 {
 	Vnum	950733
-	1	55010	1	10
-	2	55011	1	10
-	3	55012	1	10
-	4	55013	1	10
-	5	55014	1	10
-	6	55015	1	10
-	7	55016	1	10
-	8	55017	1	10
-	9	55018	1	10
-	10	55019	1	10
-	11	55020	1	10
-	12	55021	1	10
-	13	55022	1	10
-	14	55023	1	10
-	15	55024	1	10
-	16	55025	1	10
-	17	55026	1	10
-	18	55027	1	10
-	19	55028	1	10
-	20	55029	1	10
-	21	55030	1	10
-	22	55031	1	10
-	23	55009	1	30
-	24	55101	3	60
-	25	55108	3	60
-	26	55115	3	60
-	27	55102	1	30
-	28	55109	1	30
-	29	55116	1	30
-	30	55001	5	216
-	31	55032	1	150
-	32	55035	1	50
+	1	55010	1	10 -- Odpornosc (wojownik)
+	2	55011	1	10 -- Odpornosc (sura)
+	3	55012	1	10 -- Odpornosc (ninja)
+	4	55013	1	10 -- Odpornosc (szaman)
+	5	55014	1	10 -- Odpornosc (likan)
+	6	55015	1	10 -- Ksiega Berserka
+	7	55016	1	10 -- Ksiega Antymagii
+	8	55017	1	9 -- Ksiega Przyspieszenia
+	9	55018	1	10 -- Ksiega Przebicia
+	10	55019	1	10 -- Ksiega Odnowy
+	11	55020	1	10 -- Ksiega Wampira
+	12	55021	1	10 -- Ksiega Ducha
+	13	55022	1	9 -- Ksiega Przeszkody
+	14	55023	1	9 -- Ksiega Zwierciadla
+	15	55024	1	10 -- Ksiega Dropu Yang
+	16	55025	1	10 -- Ksiega Zasiegu
+	17	55026	1	9 -- Ksiega Niesmiertelnosci
+	18	55027	1	9 -- Ksiega Uzdrowienia
+	19	55034	1	9 -- Ksiega Browarnika
+	20	55035	1	9 -- Ksiega Lowcy Potworow
+	21	55036	1	9 -- Ksiega Spostrzegawczosci
+	22	55037	1	9 -- Ksiega Absorpcji Zycia
+	23	55038	1	9 -- Ksiega Lekkie jak Piorko
+	24	55009	1	30 -- Skrzynia Ksiag Zwierza
+	25	55028	3	180 -- Smakolyk x3
+	26	55028	1	240 -- Smakolyk
+	27	55001	5	216 -- Odzywka x5
+	28	55031	1	50 -- Smakolyk+
 }
 # MT2009_PLUS_AREZZO_BALANCE_V1: the library chest's purse (always), upgrade materials of its level (40%) and a
 # valuable (15%) - the bottom of the ladder (Biblioteka/Wukong < Razador/Skorpion < Nemere < Dzungla).

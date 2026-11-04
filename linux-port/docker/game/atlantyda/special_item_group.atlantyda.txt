@@ -89,41 +89,34 @@ Group	MT2009_chest_30921_misc
 Group	MT2009_chest_30921_pet
 {
 	Vnum	950923
-	1	55010	1	10 -- ksiega peta
-	2	55011	1	10 -- ksiega peta
-	3	55012	1	10 -- ksiega peta
-	4	55013	1	10 -- ksiega peta
-	5	55014	1	10 -- ksiega peta
-	6	55015	1	10 -- ksiega peta
-	7	55016	1	10 -- ksiega peta
-	8	55017	1	10 -- ksiega peta
-	9	55018	1	10 -- ksiega peta
-	10	55019	1	10 -- ksiega peta
-	11	55020	1	10 -- ksiega peta
-	12	55021	1	10 -- ksiega peta
-	13	55022	1	10 -- ksiega peta
-	14	55023	1	10 -- ksiega peta
-	15	55024	1	10 -- ksiega peta
-	16	55025	1	10 -- ksiega peta
-	17	55026	1	10 -- ksiega peta
-	18	55027	1	10 -- ksiega peta
-	19	55028	1	10 -- ksiega peta
-	20	55029	1	10 -- ksiega peta
-	21	55030	1	10 -- ksiega peta
-	22	55031	1	10 -- ksiega peta
-	23	55009	1	30 -- Skrzynia Ksiag Peta
-	24	55101	3	60 -- Eliksir
-	25	55108	3	60 -- Eliksir
-	26	55115	3	60 -- Eliksir
-	27	55102	1	30 -- Eliksir
-	28	55109	1	30 -- Eliksir
-	29	55116	1	30 -- Eliksir
-	30	55103	1	15 -- Eliksir
-	31	55110	1	15 -- Eliksir
-	32	55117	1	15 -- Eliksir
-	33	55001	5	216 -- Proteinowa Przekaska
-	34	55032	1	150 -- Smakolyk
-	35	55035	1	50 -- Smakolyk+
+	1	55010	1	10 -- Odpornosc (wojownik)
+	2	55011	1	10 -- Odpornosc (sura)
+	3	55012	1	10 -- Odpornosc (ninja)
+	4	55013	1	10 -- Odpornosc (szaman)
+	5	55014	1	10 -- Odpornosc (likan)
+	6	55015	1	10 -- Ksiega Berserka
+	7	55016	1	10 -- Ksiega Antymagii
+	8	55017	1	9 -- Ksiega Przyspieszenia
+	9	55018	1	10 -- Ksiega Przebicia
+	10	55019	1	10 -- Ksiega Odnowy
+	11	55020	1	10 -- Ksiega Wampira
+	12	55021	1	10 -- Ksiega Ducha
+	13	55022	1	9 -- Ksiega Przeszkody
+	14	55023	1	9 -- Ksiega Zwierciadla
+	15	55024	1	10 -- Ksiega Dropu Yang
+	16	55025	1	10 -- Ksiega Zasiegu
+	17	55026	1	9 -- Ksiega Niesmiertelnosci
+	18	55027	1	9 -- Ksiega Uzdrowienia
+	19	55034	1	9 -- Ksiega Browarnika
+	20	55035	1	9 -- Ksiega Lowcy Potworow
+	21	55036	1	9 -- Ksiega Spostrzegawczosci
+	22	55037	1	9 -- Ksiega Absorpcji Zycia
+	23	55038	1	9 -- Ksiega Lekkie jak Piorko
+	24	55009	1	30 -- Skrzynia Ksiag Zwierza
+	25	55028	3	180 -- Smakolyk x3
+	26	55028	1	240 -- Smakolyk
+	27	55031	1	95 -- Smakolyk+
+	28	55001	5	216 -- Odzywka x5
 }
 Group	MT2009_chest_30921_sakwa
 {

@@ -40,7 +40,7 @@ Group	MT2009_balathor_83076
 	Vnum	83076 -- Mrozna Skrz. Balathora+ (5 different rows an opening, by weight)
 	Pick	5
 	1	15440	1	10 -- Ogniste Buty+0
-	2	55035	1	30 -- Smakolyk+
+	2	55031	1	30 -- Smakolyk+ (MT2009_PLUS_GROWTH_PET_V1: the growth pets' 55031, was the old 55035)
 	3	30616	2	40 -- Dwutlenek Tytanu x2
 	4	30617	2	40 -- Agat x2
 	5	30602	1	30 -- Niebieski Barwnik
@@ -57,4 +57,5 @@ Group	MT2009_balathor_83076
 	16	31269	1	25 -- Luska Balathora
 	17	31264	1	25 -- Sciegno Balathora
 	18	31266	1	25 -- Skrzydlo Balathora
+	19	55414	1	3 -- Jajo Aamona (MT2009_PLUS_GROWTH_PET_V1: a stand-in for Zdobiona Skrzynia Aamona, which this world lacks)
 }

@@ -181,6 +181,7 @@ EXISTING = {
     27987: 'Malz', 'gold': 'Yang',
     # MT2009_PLUS_YOHARA_ITEMS4_V1 (tools/yohara_maps4/gen_yitems4.py, yohara_items4.sql)
     72339: 'Kamien Metin z Yohara', 95737: 'Przeb. Ksiega Zwierza',
+    55007: 'Przeb. Ksiega Zwierza',    # MT2009_PLUS_GROWTH_PET_V1: the material (was the gift box 95737)
 }
 EXISTING.update(MAPS2_ITEMS)
 # items of the second batch this one gives their use: Pyl Wezowy (70428) adds a minute in Swiatynia Wezy (quest
@@ -422,7 +423,7 @@ def drops():
                (31237, 1, 8), (31263, 1, 8), (30618, 1, 8), (49992, 1, 3), (49993, 1, 1), (31239, 1, 8),
                (31240, 1, 8), (31241, 1, 8), (39081, 1, 5), (72353, 1, 15), (72740, 1, 3), (50513, 1, 15),
                (90006, 1, 10), (28046, 1, 10), (50527, 1, 5), (71015, 1, 10), (95735, 1, 10), (72006, 1, 10),
-               (50529, 1, 5), (83067, 1, 5), (70401, 1, 3), (70434, 1, 3), (95737, 1, 2)] +
+               (50529, 1, 5), (83067, 1, 5), (70401, 1, 3), (70434, 1, 3), (55007, 1, 2)] +
               [(v, 1, 1) for v in range(55050, 55068) if v != 55061]))
     # Glebie: Alastor (TR wiki: Kamien Duchowy), the eggs (TR: Dumny Smok Pln. Wiatru - a mount, none here)
     d.append((6790, 'Alastor (slaby)', [(50513, 1, 30), (90006, 1, 20)]))
@@ -466,7 +467,7 @@ def drops():
         d.append((v, 'Mistrz Miecza Kao' + (' (mrok)' if v < 6865 else ' (lod)'), [(31261, 1, 12)] + d12))
     for v in (6870, 6871):
         d.append((v, 'Tajemniczy Mnich' + (' (lod)' if v == 6870 else ' (mrok)'),
-                  [(90006, 1, 20), (28046, 1, 10), (70408, 1, 10), (70434, 1, 5), (31261, 5, 30), (95737, 1, 2)]))
+                  [(90006, 1, 20), (28046, 1, 10), (70408, 1, 10), (70434, 1, 5), (31261, 5, 30), (55007, 1, 2)]))
     # Krolestwo Zywiolow: the areas' monsters (D16), the Metins (D15), the plateau's lords (D17)
     d16 = [(27007, 5, 2)] + SET1 + NATURE + PROJECT
     for v in (3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 3988, 3989, 3990, 3991, 4006):

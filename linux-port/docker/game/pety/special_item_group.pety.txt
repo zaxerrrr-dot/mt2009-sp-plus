@@ -1,0 +1,51 @@
+# MT2009_PLUS_GROWTH_PET_V1: the growth pets' chests (4 November 2026), one thing an opening, by weight.
+# Skrzynka na Zwierzaka (55400): one of the ten eggs at the rates of the Turkish wiki's "Pet Sandigi" list x 100000
+# (Jajo Malpiszona 50%, Pajaka 25%, Nemere 8.333%, Razadora 7.833%, Baashido 4.167%, Mini Azraela 2.083%, Grubego
+# Mini Kata 2%, Czerwone Jajo Smoka 0.417%, Niebieskie Jajo Smoka / Nessie 0.083% each).
+# Skrzynia Ksiag Zwierza (55009): one of the 23 skill books at the Turkish wiki's "Pet Kitabi Sandigi" rates x 10
+# (Duch / Zasieg 14.2%, Berserk / Antymagia / Wampir / Drop Yang 9.4%, Przebicie 4.7%, Odnowa 3.8%, each Odpornosc
+# 2.8%, Browarnik / Lowca Potworow / Uzdrowienie / Niesmiertelnosc 1.4%, the rest 0.9%).
+# Appended by the Dockerfile step "share: growth pets" - it stops the build if 55400 or 55009 has a group already.
+
+Group	MT2009_pety_55400
+{
+	Vnum	55400 -- Skrzynka na Zwierzaka
+	1	55401	1	50000 -- Jajo Malpiszona
+	2	55402	1	25000 -- Jajo Pajaka
+	3	55403	1	7833 -- Jajo Razadora
+	4	55404	1	8333 -- Jajo Nemere
+	5	55405	1	83 -- Niebieskie Jajo Smoka
+	6	55409	1	4167 -- Jajo Baashido
+	7	55408	1	2000 -- Jajo Grubego Mini Kata
+	8	55410	1	83 -- Jajo Nessie
+	9	55406	1	417 -- Czerwone Jajo Smoka
+	10	55407	1	2083 -- Jajo Mini Azraela
+}
+
+Group	MT2009_pety_55009
+{
+	Vnum	55009 -- Skrzynia Ksiag Zwierza
+	1	55015	1	94 -- Ksiega Berserka
+	2	55017	1	9 -- Ksiega Przyspieszenia
+	3	55034	1	14 -- Ksiega Browarnika
+	4	55018	1	47 -- Ksiega Przebicia
+	5	55021	1	142 -- Ksiega Ducha
+	6	55022	1	9 -- Ksiega Przeszkody
+	7	55037	1	9 -- Ksiega Absorpcji Zycia
+	8	55016	1	94 -- Ksiega Antymagii
+	9	55035	1	14 -- Ksiega Lowcy Potworow
+	10	55025	1	142 -- Ksiega Zasiegu
+	11	55036	1	9 -- Ksiega Spostrzegawczosci
+	12	55023	1	9 -- Ksiega Zwierciadla
+	13	55020	1	94 -- Ksiega Wampira
+	14	55010	1	28 -- Odpornosc (wojownik)
+	15	55011	1	28 -- Odpornosc (sura)
+	16	55012	1	28 -- Odpornosc (ninja)
+	17	55013	1	28 -- Odpornosc (szaman)
+	18	55014	1	28 -- Odpornosc (likan)
+	19	55024	1	94 -- Ksiega Dropu Yang
+	20	55019	1	38 -- Ksiega Odnowy
+	21	55038	1	9 -- Ksiega Lekkie jak Piorko
+	22	55027	1	14 -- Ksiega Uzdrowienia
+	23	55026	1	14 -- Ksiega Niesmiertelnosci
+}

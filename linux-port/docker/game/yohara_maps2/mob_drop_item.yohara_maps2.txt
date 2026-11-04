@@ -11,7 +11,8 @@
 // batch's monsters on Namgan (trolls, hounds, Dreczony Duch, Natanan) and Metin Swiadomosc keep their drops
 // (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.
 // Wodz Wojenny Schronienia (6789) gives exactly one Zamarzniety Klucz a kill (a "limit" group at 100 - the
-// owner, 14 October). The war chiefs' Przeb. Ksiega Zwierza (95737) and the chests' bracelets, Kamien Metin
+// owner, 14 October). The war chiefs' Przeb. Ksiega Zwierza (55007, the growth pets' material,
+// MT2009_PLUS_GROWTH_PET_V1 - was the gift box 95737) and the chests' bracelets, Kamien Metin
 // z Yohara, Plat. Skrzynia / Klucz: MT2009_PLUS_YOHARA_ITEMS4_V1 (yohara_items4.sql).
 
 Group	MT2009_ymaps2_6718
@@ -568,7 +569,7 @@ Group	MT2009_ymaps2_6764
 	23	31238	1	8	-- Polyskujaca Muszla
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	26	95737	1	2	-- Przeb. Ksiega Zwierza
+	26	55007	1	2	-- Przeb. Ksiega Zwierza
 	27	50527	1	3	-- Mikstura Talentu
 }
 
@@ -748,7 +749,7 @@ Group	MT2009_ymaps2_6881
 	23	31238	1	8	-- Polyskujaca Muszla
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	26	95737	1	2	-- Przeb. Ksiega Zwierza
+	26	55007	1	2	-- Przeb. Ksiega Zwierza
 	27	50527	1	3	-- Mikstura Talentu
 }
 
@@ -995,7 +996,7 @@ Group	MT2009_ymaps2_6776
 	39	70048	1	8	-- Peleryna Maskujaca
 	40	70038	20	10	-- Peleryna Mestwa x20
 	41	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	42	95737	1	2	-- Przeb. Ksiega Zwierza
+	42	55007	1	2	-- Przeb. Ksiega Zwierza
 	43	31259	1	3	-- Kowadlo Pln. Wiatru
 }
 
@@ -1242,7 +1243,7 @@ Group	MT2009_ymaps2_6888
 	39	70048	1	8	-- Peleryna Maskujaca
 	40	70038	20	10	-- Peleryna Mestwa x20
 	41	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	42	95737	1	2	-- Przeb. Ksiega Zwierza
+	42	55007	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps2_6784
@@ -1457,7 +1458,7 @@ Group	MT2009_ymaps2_6789
 	37	83065	1	5	-- Losowa Skrzynia Skarbow
 	38	83066	1	5	-- Los. Klucz do Skrz. Sk.
 	39	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	40	95737	1	2	-- Przeb. Ksiega Zwierza
+	40	55007	1	2	-- Przeb. Ksiega Zwierza
 	41	55050	1	0.3	-- Jazda (Zwinne Kopyta)
 	42	55051	1	0.3	-- Jazda Konna (PD)
 	43	55052	1	0.3	-- Jazda (Gwalt. Wichura)

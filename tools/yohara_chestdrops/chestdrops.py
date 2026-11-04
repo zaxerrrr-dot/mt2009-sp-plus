@@ -53,7 +53,7 @@ SUBST = {
     30600: (95602, ''),
     30611: (95603, ''),
     30612: (95601, ''),
-    76044: (55009, 'our Skrzynia Ksiag Peta'),
+    76044: (55009, 'ours 55009'),
     9999999: ('exp', ''),
     1: ('gold', ''),
 }
@@ -70,7 +70,6 @@ SKIP = {
     72355: 'no system',
     72356: 'no system',
     72351: 'not in our world',
-    55412: 'no such pet',
     9999998: 'a group gives no champion EXP',
     27213: 'not in our world',
     27214: 'not in our world',
@@ -83,8 +82,9 @@ SKIP = {
     # 50514 / 50515 (Podreczniki: Dopalacz / Riposta) are ours since MT2009_PLUS_RIPOSTY_V1 (tools/yohara_items)
     # MT2009_PLUS_ARMOR105_V1 (22 October 2026): the level-105 armours' materials 30601, 30605, 30607, 30609, 30614,
     # 30615, 30619, 30625, 30628 are ours (tools/zbroje105) - back in the chests
-    55004: 'not in our world',
-    55005: 'not in our world',
+    # MT2009_PLUS_GROWTH_PET_V1 (4 November 2026): Biale Jajo Smoka (55412) and the Ksiegi Dzikiego / Dzielnego
+    # Zwierza (55004 / 55005) are ours (mariadb/playerbot/pety.sql) - back in B. Smocza Skrz. (ciezka), Skrzynia
+    # Razadora / Nemere / Jotuna Thryma / Bagjanamu. Losowa Skrzynka (55400, Skrzynka na Zwierzaka) stays out.
 }
 # MT2009_PLUS_CHEST_DROPS_V2: the Zodiac treasures' rows we lack (as Zlota Skrzynia Zodiaku 33033 leaves them out)
 for _v in (86001, 86011, 86021, 86031, 86041, 86051):              # Szarfa Zi/Yin/Chen/Wu/Shen/Xu (prosta)
