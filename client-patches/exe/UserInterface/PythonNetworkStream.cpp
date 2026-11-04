@@ -232,6 +232,22 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 			// MT2009_PLUS_SKILL_COLOR_V1 (header): 28 bytes
 			Set(HEADER_GC_SKILL_COLOR, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSkillColor), STATIC_SIZE_PACKET));
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+			// MT2009_PLUS_GROWTH_PET_V1 (headers): all fixed size (Packet.h static_asserts the sizes of SPEC.md)
+			Set(HEADER_GC_PET, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPet), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_SET, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetSet), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_SET_EXCHANGE, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetSet), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_DEL, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetDelete), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_SUMMON, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetSummon), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_POINT_CHANGE, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetPointUpdate), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_NAME_CHANGE_RESULT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetNameChangeResult), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_DETERMINE_RESULT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetDetermineResult), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_ATTR_CHANGE_RESULT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetAttrChangeResult), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_SKILL_UPDATE, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetSkillUpdate), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_SKILL_COOLTIME, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetSkillCooltime), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_LOOK, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetLook), STATIC_SIZE_PACKET));
+			Set(HEADER_GC_PET_POTENTIAL, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCPetPotential), STATIC_SIZE_PACKET));
+#endif
 #ifdef ENABLE_MT2009_TITLES
 			// MT2009_PLUS_TITLES_V1 (header): dynamic (WORD size after the header)
 			Set(HEADER_GC_TITLE, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCTitle), DYNAMIC_SIZE_PACKET));

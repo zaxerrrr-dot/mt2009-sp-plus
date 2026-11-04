@@ -2014,6 +2014,9 @@ void CPythonPlayer::Clear()
 #ifdef ENABLE_FLOWER_EVENT
 	m_dwFlowerEvent = 0;
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	GrowthPet_Clear();	// MT2009_PLUS_GROWTH_PET_V1 (the server sends the pets again after the login)
+#endif
 
 	m_bisProcessingEmotion = FALSE;
 

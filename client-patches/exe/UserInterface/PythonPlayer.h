@@ -803,6 +803,56 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		void			__AutoHuntTest_DropTarget();
 		void			__AutoHuntTest_UpdateRangeEffect();
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	// MT2009_PLUS_GROWTH_PET_V1: System zwierzat domowych - the pets of the owner (GC 225) and of the exchange partner
+	// (GC 226), keyed by pet id (= socket 2 of the seal / bag). Mt2009GrowthPet.cpp
+	public:
+		struct SGrowthPetSkill
+		{
+			BYTE	bLocked;
+			BYTE	bSkill;
+			BYTE	bLevel;
+			DWORD	dwCooltime;
+			BYTE	abFormula1[GROWTH_PET_SKILL_LEVEL_MAX];	// activation chance % per skill level 1..20 (GC 233)
+			WORD	awFormula2[GROWTH_PET_SKILL_LEVEL_MAX];	// value in tenths
+			BYTE	abFormula3[GROWTH_PET_SKILL_LEVEL_MAX];	// duration in tenths of a second
+		};
+		struct SGrowthPet
+		{
+			DWORD			dwID;
+			DWORD			dwSummonItemVnum;
+			std::string		strName;
+			DWORD			adwPoints[POINT_UPBRINGING_MAX_NUM];
+			SGrowthPetSkill	aSkill[GROWTH_PET_SKILL_SLOTS];
+			bool			bExchange;
+		};
+		struct SGrowthPetPotential	// GC 236
+		{
+			BYTE					bOpenSlots;
+			TGrowthPetPotentialSlot	aSlot[GROWTH_PET_POTENTIAL_SLOTS];
+		};
+
+		void			GrowthPet_Clear();
+		void			GrowthPet_Set(const TPacketGCPetSet& c_rkPacket, bool bExchange);
+		SGrowthPet*		GrowthPet_Find(DWORD dwID);
+		void			GrowthPet_Delete(DWORD dwID);
+		void			GrowthPet_ClearExchange();
+		void			GrowthPet_SetPoint(DWORD dwID, BYTE bPoint, DWORD dwValue);
+		void			GrowthPet_SetSkills(DWORD dwID, const TGrowthPetSkillUpdate* c_pkSkill);
+		void			GrowthPet_SetSkillCooltime(DWORD dwID, BYTE bSlot, DWORD dwCooltime);
+		void			GrowthPet_SetPotential(const TPacketGCPetPotential& c_rkPacket);
+		const SGrowthPetPotential* GrowthPet_FindPotential(DWORD dwID) const;
+		void			GrowthPet_SetActive(DWORD dwID) { m_dwGrowthPetActiveID = dwID; }
+		DWORD			GrowthPet_GetActive() const { return m_dwGrowthPetActiveID; }
+
+		bool			m_bGrowthPetHatchingWindow;
+		bool			m_bGrowthPetNameChangeWindow;
+		bool			m_bGrowthPetFeedWindow;
+	protected:
+		std::map<DWORD, SGrowthPet>				m_kGrowthPet;
+		std::map<DWORD, SGrowthPetPotential>	m_kGrowthPetPotential;
+		DWORD									m_dwGrowthPetActiveID;
+#endif
 };
 
 extern const int c_iFastestSendingCount;

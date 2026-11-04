@@ -1061,7 +1061,7 @@ Bez `#define` exe jak dotąd; bez zmian w EffectLib/GameLib (paczka: skalowanie 
 | Plik | Zmiana |
 |---|---|
 | `UserInterface/Locale_inc.h` | `ENABLE_MT2009_TITLES` |
-| `UserInterface/Packet.h` | CG **185** `HEADER_CG_TITLE`, GC **189** `HEADER_GC_TITLE` (numery paczki; wolne u nas, na serwerze i poza zakresami zarezerwowanymi dla zwierzaków CG 122–133 / GC 200–215), struktury jak w `packet.h` serwera (`static_assert` rozmiarów w `Mt2009Titles.cpp`: 6 / 6 / 309 / 8 / 5 / 8 B) |
+| `UserInterface/Packet.h` | CG **185** `HEADER_CG_TITLE`, GC **189** `HEADER_GC_TITLE` (numery paczki; wolne u nas, na serwerze i poza zakresami zwierzaków CG 122–134 / GC 224–236 – `MT2009_PLUS_GROWTH_PET_V1`), struktury jak w `packet.h` serwera (`static_assert` rozmiarów w `Mt2009Titles.cpp`: 6 / 6 / 309 / 8 / 5 / 8 B) |
 | `UserInterface/Mt2009Titles.cpp` (**nowy**, + `UserInterface.vcxproj(.filters)`) | dane tytułów, `RecvTitlePacket` / `SendTitlePacket`, efekty nad głową (synchronizacja co klatkę), obrazki przy imieniu, podgląd, moduł `titleSystem`, `app.MT2009_TITLES_EXE` |
 | `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | GC 189 dynamiczny → `RecvTitlePacket`; w `SetGamePhase` powitanie (CG 185 OPEN) – serwer wysyła GC 189 tylko klientowi, który się przywitał, więc starszy exe go nie zobaczy |
 | `UserInterface/PythonTextTail.cpp` | `ArrangeTextTail` / `Render` / `DeleteCharacterTextTail` / `Clear`: obrazki i nazwa tytułu nad najwyższą linią (imię, gildia, osobowość) |
@@ -1078,3 +1078,77 @@ Python (`titleSystem`): `SetHandler`, `RequestOpen`, `RequestEquip`, `GetTitles`
 Zbudowane `build.sh msvc --smoke` (MSVC 14.44, `EXEBUILD_WORK=cache/exebuild`, źródła `cache/yohara/exe-src15` =
 exe-src14 + ta nakładka): `cache/yohara/exe-out15/metin2client.exe` (sha256 `dac9ca96…61fc0cfd`), bez ostrzeżeń w
 zmienionych plikach, smoke do ekranu logowania (4.11.2026).
+
+## System zwierząt domowych – `MT2009_PLUS_GROWTH_PET_V1` (`ENABLE_GROWTH_PET_SYSTEM`)
+
+Oficjalny system zwierzaków (pieczęć, wyklucie z jaja, poziomy, ewolucje 1–6, umiejętności, karmienie, odnawianie życia,
+klatka transportowa, zmiana imienia, Sfera Losu, poziom czempiona i sloty potencjału) – przeniesiony ze źródeł Anka2
+(`ENABLE_GROWTH_PET_SYSTEM` + `ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL`) według kontraktu wspólnego z serwerem
+(`server-patches/pety`) i rootem (`SPEC.md`). Cały kod w jednym nowym pliku `Mt2009GrowthPet.cpp` (jak `Mt2009SkillColor.cpp`),
+w pozostałych plikach tylko krótkie bloki za `#ifdef`. Bez `#define` exe jak dotąd.
+
+Różnice względem Anka2: numery GC **224–236** (Anka2 173–184 są u nas zajęte), pozycje karmienia i odnawiania to `TItemPos`
+(każde okno ekwipunku, także magazyny specjalne) z liczbą sztuk, `bLocked` jako `BYTE`, punkty czempiona (11–19), nowe GC 235
+(wygląd) / GC 236 + CG 134 (sloty potencjału). Nie przeniesione: wzór skali z poziomu (`SetPetLevel`: poziom × 0,2 – błędny),
+typ postaci `IsGrowthPet` (serwer tworzy zwierzaka jako zwykłego NPC-zwierzaka), link czatu `petitem:` i pasek szybkich
+slotów dla pieczęci. Pakiety dodania postaci bez zmian.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_GROWTH_PET_SYSTEM`, w nim `ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL` |
+| `UserInterface/Packet.h` | CG **122–134**, GC **224–236** (wolne w exe-src15), stałe `GROWTH_PET_*`, `EGrowthPetPoints` (`POINT_UPBRINGING_*`, 20 punktów), `EGrowthPetSubheader` (0–15), `PET_WINDOW_*`, `FEED_*`, `PET_POTENTIAL_INSERT/REMOVE`, struktury z `SPEC.md`, `static_assert` każdego rozmiaru (oraz `TItemPos` = 3 B, `ITEM_PET` = 37) |
+| `UserInterface/Mt2009GrowthPet.cpp` (**nowy**, + `UserInterface.vcxproj(.filters)`) | odbiór GC 224–236, wysyłanie CG 122–134, dane zwierzaków w `CPythonPlayer`, wczytanie `pet_skill.txt`, skala z GC 235 w `CNetworkActorManager`, funkcje i stałe Pythona (niżej) |
+| `UserInterface/PythonNetworkStream.cpp/.h` | GC 224–236 zarejestrowane jako pakiety stałej długości (`STATIC_SIZE_PACKET`), deklaracje `RecvGrowthPet*` / `SendPet*` |
+| `UserInterface/PythonNetworkStreamPhaseGame.cpp` | `case` GC 224–236; koniec wymiany (`EXCHANGE_SUBHEADER_GC_END`) usuwa zwierzaki partnera (GC 226) |
+| `UserInterface/PythonPlayer.h/.cpp` | `SGrowthPet` / `SGrowthPetSkill` / `SGrowthPetPotential`, mapy po id zwierzaka (= gniazdo 2 pieczęci / klatki), aktywny zwierzak, flagi okien; `Clear()` czyści (serwer wysyła je znowu po wejściu) |
+| `UserInterface/NetworkActorManager.cpp/.h` | GC 235: skala per VID (także zanim instancja powstanie), nakładana na każdą nową instancję (`__AppendCharacterManagerActor`), usuwana z aktorem / przy teleportacji / czyszczeniu |
+| `UserInterface/PythonApplication.cpp` | `LoadLocaleData`: `locale/<język>/pet_skill.txt` (jak `SkillDesc.txt`), zapasowo `locale/pl/pet_skill.txt`; brak pliku to tylko wpis w logu |
+| `UserInterface/UserInterface.cpp` | `Mt2009GrowthPet_RegisterPython()` po wymianie wyglądu (po modułach app/player/item/net/skill) |
+
+Pakiety (wszystkie stałej długości; rozmiary w B): GC 224 `PET` 2 (podnagłówek), 225 `PET_SET` 131, 226 `PET_SET_EXCHANGE` 131,
+227 `PET_DEL` 5, 228 `PET_SUMMON` 5, 229 `PET_POINT_CHANGE` 10, 230 `PET_NAME_CHANGE_RESULT` 27, 231 `PET_DETERMINE_RESULT` 2,
+232 `PET_ATTR_CHANGE_RESULT` 5, 233 `PET_SKILL_UPDATE` 266, 234 `PET_SKILL_COOLTIME` 10, 235 `PET_LOOK` 9, 236 `PET_POTENTIAL` 26;
+CG 122 `PET_HATCH` 25, 123 `PET_WINDOW_TYPE` 2, 124 `PET_WINDOW` 3, 125 `PET_NAME_CHANGE` 28, 126 `PET_FEED` 47,
+127 `PET_DETERMINE` 4, 128 `PET_ATTR_CHANGE` 7, 129 `PET_REVIVE` 54, 130 `PET_LEARN_SKILL` 5, 131 `PET_SKILL_UPGRADE` 2,
+132 `PET_DELETE_SKILL` 5, 133 `PET_DELETE_ALL_SKILL` 4, 134 `PET_POTENTIAL` 6.
+
+GC 235: skala modelu = skala rasy NPC (tabela skal) × `wScalePct / 100` (100 = bez zmian, 0 traktowane jak 100, najwyżej
+1000), tylko dla instancji nie-gracza. Serwer musi wysłać GC 235 po każdym dodaniu zwierzaka u widza (wyjście z zasięgu
+usuwa zapamiętaną skalę). `bEvolution` / `bType78` na razie nieużywane.
+
+Python:
+- `net`: `SendPetHatchingPacket(name, window, cell)`, `SendPetHatchingWindowPacket(state)`, `SendPetNameChangeWindowPacket(state)`
+  (okno `PET_WINDOW_NAME_CHANGE` – Anka2 wysyłała tu omyłkowo `PET_WINDOW_HATCH`), `SendPetWindowType(type)`,
+  `SendPetFeedPacket(index, [(window, cell, count), ...])` (do 9; `FEED_EVOL_EVENT` z pustą listą), `SendPetAttrDetermine(window, cell)`,
+  `SendPetAttrChange(sealWindow, sealCell, itemWindow, itemCell)`, `SendPetRevive(sealWindow, sealCell, [(window, cell, count), ...])`
+  (do 10), `SendPetLearnSkill(slot, window, cell)`, `SendPetSkillUpgradeRequest(slot)`, `SendPetDeleteSkill(slot, window, cell)`,
+  `SendPetDeleteAllSkill(window, cell)`, `SendPetNameChangePacket(name, scrollWindow, scrollCell, sealWindow, sealCell)`,
+  `SendPetPotential(action, slot, window, cell)`, `CheckUsePetItem()` (zawsze `PET_EGG_USE_TRUE`). Listy przyjmują też stary
+  zapis Anka2 (`[cell, ...]`, `[count, ...]` – główny ekwipunek).
+- `player`: `GetPetItem(petId)` → `(vnum, level, evolution, hp, def, sp, lifeEnd, maxLife, birthday, exp, itemExp, nextExp,
+  championLevel, championExp, championItemExp, championNextExp, res, blockPen, precision, type, skillSlots, name)` (hp/def/sp/
+  res/blockPen/precision w 0,001 %; nieznany zwierzak: zera i `""`), `GetPetSkill(petId, slot)` → `(skill, level, cooltime)`
+  (z jednym argumentem krotka Anka2 z 10 wartości), `GetPetSkillByIndex(petId, slot, skillLevel 1..20)` → `(activatePct,
+  valueTenths, durationTenths)` (z dwoma argumentami krotka Anka2 z 9 wartości), `GetPetPotential(petId, slot)` → `(eggVnum,
+  skill, level, endTime)`, `GetPetPotentialSlots(petId)`, `GetPetLifeTime(petId)` → `(lifeEnd, maxLife)`, `GetPetExpPoints(petId)`
+  → `(exp, mobExpNeeded, itemExp, itemExpNeeded)` (podział `NEXT_EXP * 9 / 10` / reszta), `GetPetChampionExpPoints(petId)`
+  (to samo dla czempiona), `IsPetExchange(petId)`, `GetActivePetItemId()`, `GetActivePetItemVNum()`, `GetPetItemVNumInBag(petId)`,
+  `SetOpenPetHatchingWindow/NameChangeWindow/FeedWindow(bool)`, `IsOpenPetHatchingWindow/FeedWindow/NameChangeWindow()`; stałe
+  `PET_FEED_SLOT_MAX`, `PET_REVIVE_MATERIAL_SLOT_MAX`, `PET_SKILL_COUNT_MAX`, `PET_GROWTH_SKILL_LEVEL_MAX`, `PET_GROWTH_EVOL_MAX` (6),
+  `PET_GROWTH_SKILL_OPEN_EVOL_LEVEL` (4), `PET_POTENTIAL_SLOT_MAX`, `PET_MAX_LEVEL`, `PET_CHAMPION_MAX_LEVEL`, `PET_HATCHING_MONEY`,
+  `PET_SKILL_UPGRADE_PRICE`, `PET_NAME_MIN/MAX_SIZE`, `LIFE_TIME_FLASH_MIN_TIME`, `SPECIAL_EVOL_MIN_AGE`, `PET_ATTR_DETERMINE_ITEM`,
+  `PET_ATTR_CHANGE_ITEM`, `FEED_*`, `PET_WINDOW_*`, `PET_POTENTIAL_INSERT/REMOVE`, `POINT_UPBRINGING_*`.
+- `skill`: `GetPetSkillInfo(id)` → `(name, description, type, cooldown)`, `GetPetSkillIconImage(id)` (obrazek przy pierwszym
+  użyciu), `GetPetSkillIconPath(id)` (`d:/ymir work/ui/skill/pet/<ikona>.sub`), `PET_SKILL_USE_TYPE_NONE/PASSIVE/AUTO/MAX`.
+- `item`: `ITEM_TYPE_GROWTH_PET` (= `ITEM_PET` 37), podtypy `PET_EGG` … `PET_PRIMIUM_FEEDSTUFF` (0–13), `ITEM_ANTIFLAG_PETFEED` (0),
+  `EGG_USE_*`, `PET_EGG_USE_*`, `NAME_CHANGE_USE_*`, `PET_NAME_MIN/MAX_SIZE`, `PET_HATCHING_MONEY`, `PET_ATTR_CHANGE_ITEMVNUM`.
+- `app`: `ENABLE_GROWTH_PET_SYSTEM`, `ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL`, `MT2009_GROWTH_PET_EXE` (bramka wersji w root `constinfo.py`).
+- Okno gry: `PetHatchingWindowCommand(i)`, `PetFeedReuslt(i)` [sic], `PetReviveResult(i)`, `PetWindowTypeResult(i)`,
+  `PetNameChangeWindowCommand(i)` (0 sukces, 1 złe imię – także z GC 224 podnagłówki 8/9), `PetAffectShowerRefresh()` (GC 233,
+  przywołanie / odwołanie / usunięcie aktywnego), `PetAttrDetermineResult(type)`, `PetAttrChangeResult(cell, type)`,
+  `PetEvolveResult(1)`, `PetPotentialResult(0/1)`, `PetPotentialRefresh(petId)` (GC 236), `PetInfoRefresh(petId)` (po GC 225/226,
+  227, 228, 229, 230 sukces, 233, 236 i odwołaniu), `RefreshInventory` przy przywołaniu / odwołaniu.
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44, osobny `EXEBUILD_WORK=cache/yohara/exebuild-pety`, źródła
+`cache/yohara/exe-src16` = exe-src15 (z tytułami) + ta nakładka): `cache/yohara/exe-out16/metin2client.exe` (sha256
+`b23d3c15…b40e4fc7`), bez ostrzeżeń w zmienionych plikach, smoke do ekranu logowania (4.11.2026).

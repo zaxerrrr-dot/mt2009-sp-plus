@@ -177,6 +177,11 @@ class CNetworkActorManager : public CReferenceObject
 		// Mt2009SkillColor.cpp)
 		void Mt2009SetSkillColor(DWORD dwVID, BYTE bType, WORD wSkillVnum, const DWORD* c_pdwColor);
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+		// MT2009_PLUS_GROWTH_PET_V1: GC 235 - a growth pet's model scale in per cent, kept per VID (also before its
+		// instance exists) and applied to every new instance of it (Mt2009GrowthPet.cpp)
+		void Mt2009SetGrowthPetLook(DWORD dwVID, WORD wScalePct);
+#endif
 
 		void Update();
 
@@ -212,6 +217,10 @@ class CNetworkActorManager : public CReferenceObject
 #ifdef ENABLE_MT2009_SKILL_COLOR
 		void __Mt2009ApplySkillColors(DWORD dwVID, CInstanceBase* pkInst);	// MT2009_PLUS_SKILL_COLOR_V1
 		std::map<DWORD, std::map<DWORD, CActorInstance::SMt2009SkillColor> > m_kMt2009SkillColor;	// VID -> (type << 16) | vnum
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+		void __Mt2009ApplyGrowthPetLook(DWORD dwVID, CInstanceBase* pkInst);	// MT2009_PLUS_GROWTH_PET_V1
+		std::map<DWORD, WORD> m_kMt2009GrowthPetScale;	// VID -> scale in per cent
 #endif
 };
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f

@@ -1297,6 +1297,48 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvSkillColorPacket();
 				break;
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+			// MT2009_PLUS_GROWTH_PET_V1 (Mt2009GrowthPet.cpp)
+			case HEADER_GC_PET:
+				ret = RecvGrowthPet();
+				break;
+			case HEADER_GC_PET_SET:
+				ret = RecvGrowthPetSet(false);
+				break;
+			case HEADER_GC_PET_SET_EXCHANGE:
+				ret = RecvGrowthPetSet(true);
+				break;
+			case HEADER_GC_PET_DEL:
+				ret = RecvGrowthPetDelete();
+				break;
+			case HEADER_GC_PET_SUMMON:
+				ret = RecvGrowthPetSummon();
+				break;
+			case HEADER_GC_PET_POINT_CHANGE:
+				ret = RecvGrowthPetPointChange();
+				break;
+			case HEADER_GC_PET_NAME_CHANGE_RESULT:
+				ret = RecvGrowthPetNameChangeResult();
+				break;
+			case HEADER_GC_PET_DETERMINE_RESULT:
+				ret = RecvGrowthPetDetermineResult();
+				break;
+			case HEADER_GC_PET_ATTR_CHANGE_RESULT:
+				ret = RecvGrowthPetAttrChangeResult();
+				break;
+			case HEADER_GC_PET_SKILL_UPDATE:
+				ret = RecvGrowthPetSkillUpdate();
+				break;
+			case HEADER_GC_PET_SKILL_COOLTIME:
+				ret = RecvGrowthPetSkillCooltime();
+				break;
+			case HEADER_GC_PET_LOOK:
+				ret = RecvGrowthPetLook();
+				break;
+			case HEADER_GC_PET_POTENTIAL:
+				ret = RecvGrowthPetPotential();
+				break;
+#endif
 #ifdef ENABLE_MT2009_TITLES
 			case HEADER_GC_TITLE: // MT2009_PLUS_TITLES_V1
 				ret = RecvTitlePacket();
@@ -2763,6 +2805,9 @@ bool CPythonNetworkStream::RecvExchangePacket()
 			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "EndExchange", Py_BuildValue("()"));
 			__RefreshInventoryWindow();
 			CPythonExchange::Instance().End();
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+			CPythonPlayer::Instance().GrowthPet_ClearExchange();	// MT2009_PLUS_GROWTH_PET_V1: the partner's pets (GC 226)
+#endif
 			break;
 
 		case EXCHANGE_SUBHEADER_GC_ALREADY:
