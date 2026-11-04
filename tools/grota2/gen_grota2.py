@@ -23,7 +23,7 @@ now this file whole:
      is in a spot's room is taken out and the room gets its spot's monsters on a grid of points across it -
        white (MK 1/2 and the five white rooms) and blue (PRESUB 1-3): the hardest - Komendant (2414: 97 with two
          Magistrates) and Magistrat (2413: 95) groups, half and half;
-       green (SOBA 1, 1', 2): Soldat + Bogenschuetze - 2411 and 2412, half and half;
+       green (SOBA 1, 1', 2): the dump's own groups there (Komendanci too - the owner, 4 November 2026), topped up;
        red (MAXIMAXI) and orange (EISSOBA 2, 950:950): the dump's own groups there, topped up;
      at least MIN_PER_ROOM lines in a spot's room (more where the dump already has more).
   The bosses: the dump's Dowodca Yonghan (2491) places we lack (boss.grota2.txt, our 20 min). The ghosts (30121 -
@@ -72,9 +72,9 @@ SOBA = (2411, 2412)
 # The players' map of the global Grota V2 (the owner, 4 November 2026; its coordinates are the map's own metres,
 # 2 m a pixel): name, colour, the rooms (a point in each), the groups (None: the dump's own).
 SPOTS = [
-    ('SOBA 1 (680:175)', 'green', [(683, 174), (685, 260)], SOBA),
-    ('SOBA 1 (1111:175)', 'green', [(1114, 174), (1113, 258)], SOBA),
-    ('SOBA 2 (915:250)', 'green', [(913, 259), (915, 357)], SOBA),
+    ('SOBA 1 (680:175)', 'green', [(683, 174), (685, 260)], None),
+    ('SOBA 1 (1111:175)', 'green', [(1114, 174), (1113, 258)], None),
+    ('SOBA 2 (915:250)', 'green', [(913, 259), (915, 357)], None),
     ('MAXIMAXI (250:414)', 'red', [(248, 276), (249, 414)], None),
     ('PRESUB 1 (400:740)', 'blue', [(396, 739)], HARD),
     ('PRESUB 2 (400:1000)', 'blue', [(395, 1004)], HARD),
