@@ -377,7 +377,10 @@ EOF
 # MT2009_PLUS_SKILL_COLOR_V1 (server-patches/skillcolor, 4 November 2026): 1010302 = client 1.3.2 - the cores send a
 # character's skill colours in a new packet (GC 59, HEADER_GC_SKILL_COLOR) an older exe cannot read; root constinfo.py
 # says 1.3.2 only with the exe that reads it (app.MT2009_SKILL_COLOR_EXE). 1.3.1 is refused at login like any older one.
-M2_CLIENT_MIN_VERSION="${M2_CLIENT_MIN_VERSION:-1010302}"
+# MT2009_PLUS_GROWTH_PET_V1 (server-patches/pety, 4 November 2026): 1010303 = client 1.3.3 - System Zwierzat Domowych's
+# packets (CG 122-134, GC 224-236) need the exe that has them; root constinfo.py says 1.3.3 only with it
+# (app.MT2009_GROWTH_PET_EXE). 1.3.2 is refused at login like any older one.
+M2_CLIENT_MIN_VERSION="${M2_CLIENT_MIN_VERSION:-1010303}"
 render_auth() {
   local d="$VAR_DIR/auth"
   core_skeleton "$d"

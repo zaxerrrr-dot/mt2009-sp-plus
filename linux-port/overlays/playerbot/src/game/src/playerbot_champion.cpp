@@ -484,6 +484,9 @@ namespace champion
 		// a bot earns as a person does; the plan's D4: the night's measure sets it).
 		if (IsBotCharacter(to))
 			exp = exp * BotExpRatePct() / 100;
+		// MT2009_PLUS_GROWTH_PET_V1 (champion exp): a summoned champion pet takes the same champion experience (en-wiki:
+		// champion pets grow only in the Yohara regions; nothing is taken from the owner; growth_pet.cpp)
+		{ void GrowthPetOnChampionExp(LPCHARACTER, LPCHARACTER, unsigned long long); GrowthPetOnChampionExp(pkVictim, to, exp); }
 		const unsigned int dwCap = MAX(1u, to->GetConquerorNextExp() / 10);
 		if (exp > dwCap)
 			exp = dwCap;
@@ -577,6 +580,25 @@ void ChampionDistributeExp(LPCHARACTER pkVictim)
 	}
 	if (llTotal <= 0)
 		return;
+
+	// MT2009_PLUS_GROWTH_PET_V1 (sungma drop): Smaczny Smakolyk, the Yohara monsters' "alternative drop" (en/tr-wiki),
+	// for the one who dealt the most damage (growth_pet.cpp)
+	{
+		LPCHARACTER pkTop = NULL;
+		long long llTop = 0;
+		for (CHARACTER::TDamageMap::const_iterator it = rDamage.begin(); it != rDamage.end(); ++it)
+		{
+			LPCHARACTER pAttacker = it->second.iTotalDamage > llTop ? CHARACTER_MANAGER::instance().Find(it->first) : NULL;
+			if (pAttacker && pAttacker->IsPC() && pAttacker->GetMapIndex() == pkVictim->GetMapIndex())
+			{
+				pkTop = pAttacker;
+				llTop = it->second.iTotalDamage;
+			}
+		}
+		void GrowthPetOnSungmaKill(LPCHARACTER, LPCHARACTER);
+		if (pkTop)
+			GrowthPetOnSungmaKill(pkVictim, pkTop);
+	}
 
 	for (size_t i = 0; i < solo.size(); ++i)
 	{

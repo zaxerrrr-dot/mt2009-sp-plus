@@ -1,0 +1,249 @@
+#!/usr/bin/env python3
+"""gen_edits.py [<game/src of a patched tree>] -- writes edits.json of server-patches/pety (MT2009_PLUS_GROWTH_PET_V1,
+README.md) and, given a tree, checks that every edit's code is there exactly once (or its marker already is).
+The tree must be patched with every patch before pety (yohara-deploy.sh's list, then tytuly)."""
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+M = 'MT2009_PLUS_GROWTH_PET_V1'
+
+
+def E(file, tag, old, new_before='', new_after=''):
+    marker = '%s (%s)' % (M, tag)
+    assert marker in new_before + new_after, marker
+    return {'file': file, 'marker': marker, 'old': old, 'new': new_before + old + new_after}
+
+
+EDITS = [
+    # ---- common ----
+    E('../../common/tables.h', 'gd headers',
+      '\tHEADER_GD_PLAYERBOT_RETIRE_PURGE = 172,\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (gd headers): System Zwierzat Domowych (server-patches/pety, growth_pet_db.cpp)\n'
+      '\tHEADER_GD_GROWTH_PET_SAVE = 147,\n'
+      '\tHEADER_GD_GROWTH_PET_DELETE = 148,\n'
+      '\tHEADER_GD_GROWTH_PET_LOAD = 149,\n'),
+    E('../../common/tables.h', 'dg headers',
+      '\tHEADER_DG_USE_CODE_VOUCHER\t\t= 184,\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (dg headers): the pets a core asked for; the skill proto after the boot packet\n'
+      '\tHEADER_DG_GROWTH_PET_LOAD\t\t= 185,\n'
+      '\tHEADER_DG_GROWTH_PET_SKILL_TABLE\t= 186,\n'),
+    E('../../common/tables.h', 'types',
+      '// playerbot retirement (HEADER_GD_PLAYERBOT_RETIRE_PURGE)\n', new_before=
+      '// MT2009_PLUS_GROWTH_PET_V1 (types): the pet row, the load packets and the skill proto (common/growth_pet_types.h,\n'
+      '// installed by server-patches/pety/apply_pety.py) - inside this file\'s #pragma pack(1), the same in game and db.\n'
+      '#include "growth_pet_types.h"\n\n'),
+    # ---- game: packets ----
+    E('packet.h', 'cg header',
+      '\tHEADER_CG_FISH_EVENT_SEND\t\t= 219,\t// MT2009_PLUS_FISH_PUZZLE_V2 (cg header): fish puzzle - fish_puzzle.cpp\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (cg header): System Zwierzat Domowych - the pet window (growth_pet.cpp); free here\n'
+      '\t// and in the exe (Anka2\'s 122-133, ours 134 for the champion potential slots)\n'
+      '\tHEADER_CG_PET_HATCH\t\t\t\t= 122,\n'
+      '\tHEADER_CG_PET_WINDOW_TYPE\t\t= 123,\n'
+      '\tHEADER_CG_PET_WINDOW\t\t\t= 124,\n'
+      '\tHEADER_CG_PET_NAME_CHANGE\t\t= 125,\n'
+      '\tHEADER_CG_PET_FEED\t\t\t\t= 126,\n'
+      '\tHEADER_CG_PET_DETERMINE\t\t\t= 127,\n'
+      '\tHEADER_CG_PET_ATTR_CHANGE\t\t= 128,\n'
+      '\tHEADER_CG_PET_REVIVE\t\t\t= 129,\n'
+      '\tHEADER_CG_PET_LEARN_SKILL\t\t= 130,\n'
+      '\tHEADER_CG_PET_SKILL_UPGRADE\t\t= 131,\n'
+      '\tHEADER_CG_PET_DELETE_SKILL\t\t= 132,\n'
+      '\tHEADER_CG_PET_DELETE_ALL_SKILL\t= 133,\n'
+      '\tHEADER_CG_PET_POTENTIAL\t\t\t= 134,\n'),
+    E('packet.h', 'gc header',
+      '\tHEADER_GC_FISH_EVENT_INFO\t\t\t\t= 223,\t// MT2009_PLUS_FISH_PUZZLE_V2 (gc header): fish puzzle - fish_puzzle.cpp\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (gc header): System Zwierzat Domowych (growth_pet.cpp) - not Anka2\'s 173-184 (181-183\n'
+      '\t// are the mini games here); 224-236 are free here and in the exe\n'
+      '\tHEADER_GC_PET\t\t\t\t\t\t= 224,\n'
+      '\tHEADER_GC_PET_SET\t\t\t\t\t= 225,\n'
+      '\tHEADER_GC_PET_SET_EXCHANGE\t\t\t= 226,\n'
+      '\tHEADER_GC_PET_DEL\t\t\t\t\t= 227,\n'
+      '\tHEADER_GC_PET_SUMMON\t\t\t\t= 228,\n'
+      '\tHEADER_GC_PET_POINT_CHANGE\t\t\t= 229,\n'
+      '\tHEADER_GC_PET_NAME_CHANGE_RESULT\t= 230,\n'
+      '\tHEADER_GC_PET_DETERMINE_RESULT\t\t= 231,\n'
+      '\tHEADER_GC_PET_ATTR_CHANGE_RESULT\t= 232,\n'
+      '\tHEADER_GC_PET_SKILL_UPDATE\t\t\t= 233,\n'
+      '\tHEADER_GC_PET_SKILL_COOLTIME\t\t= 234,\n'
+      '\tHEADER_GC_PET_LOOK\t\t\t\t\t= 235,\n'
+      '\tHEADER_GC_PET_POTENTIAL\t\t\t\t= 236,\n'),
+    E('packet.h', 'structs',
+      'static_assert(sizeof(TPacketCGSkillColor) == 23 && sizeof(TPacketGCSkillColor) == 28, "skill colour packets (exe the same)");\n',
+      new_after=
+      '\n// MT2009_PLUS_GROWTH_PET_V1 (structs): System Zwierzat Domowych - the pet packets (overlay growth_pet_packets.h; the\n'
+      '// exe has the same layouts and static_asserts)\n'
+      '#include "growth_pet_packets.h"\n'),
+    E('packet_info.cpp', 'size',
+      '\tSet(HEADER_CG_SKILL_COLOR, sizeof(TPacketCGSkillColor), "SkillColor", true);\t// MT2009_PLUS_SKILL_COLOR_V1 (size): 23 bytes\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (size): the pet window\'s packets, fixed sizes, with the sequence byte\n'
+      '\tSet(HEADER_CG_PET_HATCH, sizeof(TPacketCGPetHatch), "PetHatch", true);\n'
+      '\tSet(HEADER_CG_PET_WINDOW_TYPE, sizeof(TPacketCGPetWindowType), "PetWindowType", true);\n'
+      '\tSet(HEADER_CG_PET_WINDOW, sizeof(TPacketCGPetWindow), "PetWindow", true);\n'
+      '\tSet(HEADER_CG_PET_NAME_CHANGE, sizeof(TPacketCGPetNameChange), "PetNameChange", true);\n'
+      '\tSet(HEADER_CG_PET_FEED, sizeof(TPacketCGPetFeed), "PetFeed", true);\n'
+      '\tSet(HEADER_CG_PET_DETERMINE, sizeof(TPacketCGPetDetermine), "PetDetermine", true);\n'
+      '\tSet(HEADER_CG_PET_ATTR_CHANGE, sizeof(TPacketCGPetAttrChange), "PetAttrChange", true);\n'
+      '\tSet(HEADER_CG_PET_REVIVE, sizeof(TPacketCGPetRevive), "PetRevive", true);\n'
+      '\tSet(HEADER_CG_PET_LEARN_SKILL, sizeof(TPacketCGPetLearnSkill), "PetLearnSkill", true);\n'
+      '\tSet(HEADER_CG_PET_SKILL_UPGRADE, sizeof(TPacketCGPetSkillUpgrade), "PetSkillUpgrade", true);\n'
+      '\tSet(HEADER_CG_PET_DELETE_SKILL, sizeof(TPacketCGPetDeleteSkill), "PetDeleteSkill", true);\n'
+      '\tSet(HEADER_CG_PET_DELETE_ALL_SKILL, sizeof(TPacketCGPetDeleteAllSkill), "PetDeleteAllSkill", true);\n'
+      '\tSet(HEADER_CG_PET_POTENTIAL, sizeof(TPacketCGPetPotential), "PetPotential", true);\n'),
+    E('input_main.cpp', 'packet',
+      '\t\tcase HEADER_CG_USE_SKILL:\n\t\t\tif (!ch->IsObserverMode())\n\t\t\t\tUseSkill(ch, c_pData);\n\t\t\tbreak;\n',
+      new_after=
+      '\n\t\t// MT2009_PLUS_GROWTH_PET_V1 (packet): the pet window (growth_pet.cpp checks every item and position itself)\n'
+      '\t\tcase HEADER_CG_PET_HATCH:\n\t\tcase HEADER_CG_PET_WINDOW_TYPE:\n\t\tcase HEADER_CG_PET_WINDOW:\n'
+      '\t\tcase HEADER_CG_PET_NAME_CHANGE:\n\t\tcase HEADER_CG_PET_FEED:\n\t\tcase HEADER_CG_PET_DETERMINE:\n'
+      '\t\tcase HEADER_CG_PET_ATTR_CHANGE:\n\t\tcase HEADER_CG_PET_REVIVE:\n\t\tcase HEADER_CG_PET_LEARN_SKILL:\n'
+      '\t\tcase HEADER_CG_PET_SKILL_UPGRADE:\n\t\tcase HEADER_CG_PET_DELETE_SKILL:\n\t\tcase HEADER_CG_PET_DELETE_ALL_SKILL:\n'
+      '\t\tcase HEADER_CG_PET_POTENTIAL:\n'
+      '\t\t\tif (!ch->IsObserverMode())\n'
+      '\t\t\t{\n'
+      '\t\t\t\tvoid GrowthPetPacket(LPCHARACTER ch, BYTE header, const char* data);\n'
+      '\t\t\t\tGrowthPetPacket(ch, bHeader, c_pData);\n'
+      '\t\t\t}\n'
+      '\t\t\tbreak;\n'),
+    # ---- game: db ----
+    E('input_db.cpp', 'item load',
+      '\tch->SetItemLoaded();\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (item load): the pets of the seals and cages in the bags, and an old-system pet\'s\n'
+      '\t// seal (growth_pet.cpp)\n'
+      '\t{ void GrowthPetOnItemLoad(LPCHARACTER); GrowthPetOnItemLoad(ch); }\n'),
+    E('input_db.cpp', 'safebox load',
+      '\td->GetCharacter()->LoadSafebox(iSize, p->dwGold, p->wItemCount, (TPlayerItem *) (c_pData + sizeof(TSafeboxTable)));\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (safebox load): the pets of the seals and cages in the storeroom (their tooltips)\n'
+      '\t{ void GrowthPetOnSafeboxLoad(LPCHARACTER); GrowthPetOnSafeboxLoad(d->GetCharacter()); }\n'),
+    E('input_db.cpp', 'db',
+      '\tcase HEADER_DG_SAFEBOX_LOAD:\n', new_before=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (db): the pets a core asked for (by the descriptor handle) and the skill proto\n'
+      '\tcase HEADER_DG_GROWTH_PET_LOAD:\n'
+      '\tcase HEADER_DG_GROWTH_PET_SKILL_TABLE:\n'
+      '\t\t{\n'
+      '\t\t\tvoid GrowthPetDBPacket(DWORD dwHandle, BYTE header, const char* data);\n'
+      '\t\t\tGrowthPetDBPacket(m_dwHandle, bHeader, c_pData);\n'
+      '\t\t}\n'
+      '\t\tbreak;\n\n'),
+    # ---- game: items, exp, battle ----
+    E('char_item.cpp', 'use',
+      '\t\tconst int iBuffiUse = BuffiUseItem(this, item);\n\t\tif (iBuffiUse >= 0)\n\t\t\treturn iBuffiUse != 0;\n\t}\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (use): eggs, seals, the cage, the food (growth_pet.cpp); the ItemShop pets\n'
+      '\t// (PET_PAY) and anything else go on (-1)\n'
+      '\t{\n'
+      '\t\tint GrowthPetUseItem(LPCHARACTER ch, LPITEM item, TItemPos destCell);\n'
+      '\t\tconst int iGrowthPetUse = GrowthPetUseItem(this, item, DestCell);\n'
+      '\t\tif (iGrowthPetUse >= 0)\n'
+      '\t\t\treturn iGrowthPetUse != 0;\n'
+      '\t}\n'),
+    E('item.cpp', 'add',
+      '\t{ void Mt2009WElemNotifyItem(LPCHARACTER, int, int, LPITEM, bool); Mt2009WElemNotifyItem(ch, 1, pos, this, false); }\n',
+      new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (add): a seal or cage that came after the login - its pet (growth_pet.cpp)\n'
+      '\tif (GetType() == ITEM_PET)\n'
+      '\t{ void GrowthPetOnItemAdd(LPCHARACTER, LPITEM); GrowthPetOnItemAdd(ch, this); }\n'),
+    E('exchange.cpp', 'exchange',
+      '\t\t\tMt2009WElemExchangeAdd(m_pOwner, GetCompany()->GetOwner(), display_pos, item); }\n', new_after=
+      '\t\t// MT2009_PLUS_GROWTH_PET_V1 (exchange): a cage\'s pet for the partner\'s tooltip (GC 226)\n'
+      '\t\t{ void GrowthPetOnExchangeItem(LPCHARACTER, LPCHARACTER, LPITEM); GrowthPetOnExchangeItem(m_pOwner, GetCompany()->GetOwner(), item); }\n'),
+    E('char_battle.cpp', 'exp',
+      '\t\tNewPetOnExp(from, to, iExp);\n\t}\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (exp): the summoned growth pet takes the kill\'s experience with the owner\'s bonuses,\n'
+      '\t// before the player\'s own caps (nothing is taken from the owner; growth_pet.cpp)\n'
+      '\t{ void GrowthPetOnKillExp(LPCHARACTER, LPCHARACTER, long long); GrowthPetOnKillExp(from, to, (long long)iOldExp); }\n'),
+    E('char_battle.cpp', 'death',
+      '\t\tPointChange(POINT_EXP, -iLoss, true);\n', new_after=
+      '\t\t// MT2009_PLUS_GROWTH_PET_V1 (death): the summoned pet loses experience with its owner (pl-wiki)\n'
+      '\t\t{ void GrowthPetOnOwnerExpLoss(LPCHARACTER, long long, long long); GrowthPetOnOwnerExpLoss(this, iLoss, (long long)GetNextExp()); }\n'),
+    E('char_battle.cpp', 'invincible',
+      '\tif (IsPC() && IsObserverMode())\n\t{\n\t\treturn false;\n\t}\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (invincible): Niesmiertelnosc of the owner\'s pet (growth_pet.cpp)\n'
+      '\t{ bool GrowthPetIsInvincible(LPCHARACTER); if (dam > 0 && GrowthPetIsInvincible(this)) return false; }\n'),
+    E('char_battle.cpp', 'block',
+      '\t\t\tif (GetPoint(POINT_BLOCK) && number(1, 100) <= GetPoint(POINT_BLOCK))\n', new_before=
+      '\t\t\t// MT2009_PLUS_GROWTH_PET_V1 (block): Przebicie bloku of the attacker\'s champion pet lowers the chance (growth_pet.cpp)\n'
+      '\t\t\tint iM2PetBlockPen = 0;\n'
+      '\t\t\t{ int GrowthPetBlockPenetration(LPCHARACTER); if (pAttacker) iM2PetBlockPen = GrowthPetBlockPenetration(pAttacker); }\n'
+      '\t\t\tif (iM2PetBlockPen > 0)\n'
+      '\t\t\t{\n'
+      '\t\t\t\tif (GetPoint(POINT_BLOCK) > iM2PetBlockPen && number(1, 100) <= GetPoint(POINT_BLOCK) - iM2PetBlockPen)\n'
+      '\t\t\t\t{\n'
+      '\t\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n'
+      '\t\t\t\t\treturn false;\n'
+      '\t\t\t\t}\n'
+      '\t\t\t}\n'
+      '\t\t\telse\n'),
+    # ---- game: the character ----
+    E('char.cpp', 'destroy',
+      '\ts_mapM2RegenBaseMaxHP.erase((DWORD) GetVID());\t// MT2009_PLUS_DUNGEON_MOB_HP_V2 (destroy)\n', new_after=
+      '\t{ void GrowthPetOnDestroy(LPCHARACTER); GrowthPetOnDestroy(this); }\t// MT2009_PLUS_GROWTH_PET_V1 (destroy)\n'),
+    E('char.cpp', 'insert',
+      '\tif (iDur)\n\t{\n\t\tTPacketGCMove pack;\n', new_before=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (insert): a growth pet\'s scale and stage to this viewer (GC 235, growth_pet.cpp)\n'
+      '\t{ void GrowthPetEncodeInsert(LPCHARACTER, LPDESC); GrowthPetEncodeInsert(this, d); }\n\n'),
+    E('cmd.cpp', 'declare',
+      'ACMD(do_fishpuzzle)\n', new_before=
+      'ACMD(do_pet_set);\t// MT2009_PLUS_GROWTH_PET_V1 (declare): growth_pet.cpp\n'),
+    E('cmd.cpp', 'table',
+      '\t{ "fishpuzzle",\tdo_fishpuzzle,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_FISH_PUZZLE_V1 (command table)\n',
+      new_after=
+      '\t{ "pet_set",\tdo_pet_set,\t0,\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}, // MT2009_PLUS_GROWTH_PET_V1 (table): the summoned pet\'s values\n'),
+    # ---- db core ----
+    E('../../db/src/ClientManager.cpp', 'db dispatch',
+      '\t\t\tcase HEADER_GD_USAGE:\n\t\t\t\tRecvUsage(peer, (TPacketGDUsage*)data);\n\t\t\t\tbreak;\n', new_after=
+      '\n\t\t\t// MT2009_PLUS_GROWTH_PET_V1 (db dispatch): System Zwierzat Domowych (growth_pet_db.cpp)\n'
+      '\t\t\tcase HEADER_GD_GROWTH_PET_SAVE:\n'
+      '\t\t\tcase HEADER_GD_GROWTH_PET_DELETE:\n'
+      '\t\t\tcase HEADER_GD_GROWTH_PET_LOAD:\n'
+      '\t\t\t\t{\n'
+      '\t\t\t\t\tbool GrowthPetDBPacket(CPeer* peer, DWORD dwHandle, BYTE bHeader, const char* data, DWORD dwLength);\n'
+      '\t\t\t\t\tGrowthPetDBPacket(peer, dwHandle, header, data, dwLength);\n'
+      '\t\t\t\t}\n'
+      '\t\t\t\tbreak;\n'),
+    E('../../db/src/ClientManager.cpp', 'db boot',
+      '\tpeer->EncodeWORD(0xffff);\n#ifdef ENABLE_IKASHOP_RENEWAL\n\tSendIkarusShopTable(peer);\n#endif\n', new_after=
+      '\t// MT2009_PLUS_GROWTH_PET_V1 (db boot): the pets\' skill proto right after the boot packet (DG 186)\n'
+      '\t{ void GrowthPetDBSendSkillTable(CPeer*); GrowthPetDBSendSkillTable(peer); }\n'),
+    E('../../db/src/ClientManager.cpp', 'db update',
+      '\t\t\tUpdateItemCache();\n\n\t\t\tUpdateLogoutPlayer();\n', new_after=
+      '\t\t\t{ void GrowthPetDBUpdate(); GrowthPetDBUpdate(); }\t// MT2009_PLUS_GROWTH_PET_V1 (db update)\n'),
+    {'file': '../../db/src/ClientManager.cpp', 'marker': M + ' (db shutdown)',
+     'old': '\tm_mapItemPriceListCache.clear();\n\t// END_OF_MYSHOP_PRICE_LIST\n}\n',
+     'new': '\tm_mapItemPriceListCache.clear();\n\t// END_OF_MYSHOP_PRICE_LIST\n'
+            '\t{ void GrowthPetDBFlushAll(); GrowthPetDBFlushAll(); }\t// ' + M + ' (db shutdown): every unsaved pet written\n}\n'},
+]
+
+
+def check(tree):
+    texts = {}
+    bad = 0
+    for e in EDITS:
+        path = os.path.join(tree, e['file'])
+        if path not in texts:
+            texts[path] = open(path, 'rb').read().decode('latin-1').replace('\r\n', '\n')
+        t = texts[path]
+        if e['marker'] in t:
+            print('already: %s %s' % (e['file'], e['marker']))
+            continue
+        n = t.count(e['old'])
+        if n != 1:
+            print('ANCHOR x%d: %s %s' % (n, e['file'], e['marker']))
+            bad += 1
+    return bad
+
+
+def main():
+    json.dump(EDITS, open(os.path.join(HERE, 'edits.json'), 'w'), indent=1, ensure_ascii=True)
+    print('edits.json: %d edits' % len(EDITS))
+    if len(sys.argv) > 1:
+        sys.exit(1 if check(sys.argv[1]) else 0)
+
+
+if __name__ == '__main__':
+    main()
