@@ -36,6 +36,11 @@ if getattr(app, "MT2009_CHAMPION_EXE", 0) and hasattr(player, "CONQUEROR_LEVEL")
 		# 1.3.1 and older with "UPDATE". A new root on an older exe stays 1.3.1 (or 1.3.0) - refused too.
 		if getattr(app, "MT2009_SKILL_COLOR_EXE", 0):
 			GAME_VERSION["minor"] = 2
+			# MT2009_PLUS_GROWTH_PET_V1 (server-patches/pety): System Zwierzat Domowych - new packets (CG 122-134, GC 224-236)
+			# an older exe cannot read. Only this root with that exe (app.MT2009_GROWTH_PET_EXE) says 1.3.3 (1010303); the
+			# auth core (M2_CLIENT_MIN_VERSION 1010303) refuses 1.3.2 and older with "UPDATE".
+			if getattr(app, "MT2009_GROWTH_PET_EXE", 0):
+				GAME_VERSION["minor"] = 3
 
 # EXTRA BEGIN
 ENABLE_NEW_LEVELSKILL_SYSTEM = False # loads 5 (B,M,G,P,F) skills .mse

@@ -4884,6 +4884,10 @@ class Interface(object):
 		self.offlineShopGuest.SetToolTip(self.tooltip, self.tooltipItem)
 		self.wndCrafting.SetItemToolTip(self.tooltipItem)
 
+		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's windows (uipetinfo.py) know the inventory and the item tooltip;
+		# they are made when first needed (the pet window: U, the side bar's button, the small window's seal).
+		__import__("uipetinfo").Create(self)
+
 		self.__InitWhisper()
 		self.DRAGON_SOUL_IS_QUALIFIED = True if app.ENABLE_NO_DSS_QUALIFICATION else False
 
@@ -4930,6 +4934,7 @@ class Interface(object):
 	################################
 
 	def Close(self):
+		__import__("uipetinfo").Destroy()	# MT2009_PLUS_GROWTH_PET_V1
 		# MT2009_PLUS_BALATHOR_V1
 		if self.wndBalathorInfo:
 			self.wndBalathorInfo.Destroy()
@@ -5852,6 +5857,11 @@ class Interface(object):
 		self.ToggleCharacterWindow("STATUS")
 
 	# MT2009_PLUS_CHAMPION_V2: the key "Czempion" - the status tab's Sung Ma page (uicharacter.py)
+	# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py).
+	def TogglePetInformationWindow(self):
+		if not player.IsObserverMode():
+			__import__("uipetinfo").ToggleWindow()
+
 	def ToggleChampionPage(self):
 		if player.IsObserverMode() or not self.wndCharacter:
 			return

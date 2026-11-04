@@ -498,6 +498,8 @@ class SidebarWindow(ui.Window):
 		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
 		# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py).
 		("ekwipunek", "Dodatkowy ekwipunek", "OnClickExtraInventory", "extra_inventory"),
+		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py), the official taskbar pet button's picture.
+		("pet", "Zwierzak domowy", "OnClickPet", "new_pet"),
 	)
 
 	def __init__(self, wndInventory):
@@ -853,6 +855,9 @@ class SidebarWindow(ui.Window):
 	def OnClickWeeklyRank(self):
 		import uiweeklyrank
 		uiweeklyrank.ToggleWindow()
+
+	def OnClickPet(self):	# MT2009_PLUS_GROWTH_PET_V1
+		__import__("uipetinfo").ToggleWindow()
 
 	def OnClickExtraInventory(self):	# MT2009_PLUS_EKWIPUNEK_V1
 		__import__("uiekwipunek").ToggleWindow()
@@ -2700,6 +2705,15 @@ class InventoryWindow(ui.ScriptWindow):
 		if srcItemSlotPos == dstItemSlotPos:
 			return
 
+		# MT2009_PLUS_GROWTH_PET_V1: Odzywka / Boska Odzywka onto a seal and a seal onto Klatka Transportowa are an
+		# item-to-item use; Pergamin Nazwy Zwierzaka onto a seal opens the rename window (uipetinfo.py).
+		petDrop = __import__("uipetinfo").DropOnItem(srcItemVID, srcItemSlotPos, dstItemSlotPos)
+		if petDrop == "use":
+			self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)
+			return
+		elif petDrop == "done":
+			return
+
 		# Cor Draconis containers are stackable, but some client item-proto
 		# variants classify them as use-to-item objects.  Merge identical Cors
 		# before the generic use-item dispatch can intercept the drop.
@@ -2923,6 +2937,8 @@ class InventoryWindow(ui.ScriptWindow):
 
 
 	def __IsUsableItemToItem(self, srcItemVNum, srcSlotPos):
+		if __import__("uipetinfo").IsUsableOnItem(srcItemVNum): # MT2009_PLUS_GROWTH_PET_V1
+			return True
 		if __import__("welem").IsScroll(srcItemVNum): # MT2009_PLUS_WEAPON_ELEMENT_V1
 			return True
 		if item.IsRefineScroll(srcItemVNum):
@@ -2946,6 +2962,9 @@ class InventoryWindow(ui.ScriptWindow):
 	def __CanUseSrcItemToDstItem(self, srcItemVNum, srcSlotPos, dstSlotPos):
 		if srcSlotPos == dstSlotPos:
 			return False
+
+		if __import__("uipetinfo").CanUseOnItem(srcItemVNum, dstSlotPos): # MT2009_PLUS_GROWTH_PET_V1
+			return True
 
 		# MT2009_PLUS_WEAPON_ELEMENT_V1: an element scroll lights a weapon (the server checks +7, the type, the level, the element)
 		if __import__("welem").IsScroll(srcItemVNum):
@@ -3319,6 +3338,13 @@ class InventoryWindow(ui.ScriptWindow):
 			self.OverOutItem()
 			return
 
+		# MT2009_PLUS_GROWTH_PET_V1: with the pet window open (its feed window, the type change or revive page, the
+		# potential window) the item goes into it (uipetinfo.py).
+		if __import__("uipetinfo").TakeInventoryItem(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return
+
 		if self.__OpenAllByCtrl(slotIndex):	# MT2009_PLUS_OPEN_ALL_V1
 			return
 
@@ -3350,6 +3376,10 @@ class InventoryWindow(ui.ScriptWindow):
 
 	def __UseItem(self, slotIndex):
 		ItemVNum = player.GetItemIndex(slotIndex)
+		# MT2009_PLUS_GROWTH_PET_V1: an egg opens the hatching window (name + 100.000 Yang; the server refuses an egg
+		# used directly), Reverti Zwierza asks and removes every skill of the summoned pet (uipetinfo.py).
+		if __import__("uipetinfo").UseBagItem(slotIndex, ItemVNum):
+			return
 		# MT2009_PLUS_FLOWER_V1: a flower that would replace another flower's
 		# buff asks first (uiflowerevent.py, Owsap's uiinventory question).
 		if __import__("uiflowerevent").ConfirmFlowerUse(slotIndex, ItemVNum):
