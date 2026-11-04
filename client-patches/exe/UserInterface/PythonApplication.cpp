@@ -383,6 +383,9 @@ void CPythonApplication::UpdateGame()
 #ifdef ENABLE_MONSTER_CARD_MODEL
 	{ void Mt2009MonsterModel_Update(); Mt2009MonsterModel_Update(); } // MT2009_PLUS_MONSTER_CARD_MODEL_V1
 #endif
+#ifdef ENABLE_MT2009_TITLES
+	{ void Mt2009Titles_Update(); Mt2009Titles_Update(); } // MT2009_PLUS_TITLES_V1: worn effects, banner frames, the preview
+#endif
 	DWORD t7=ELTimer_GetMSec();
 	m_kEftMgr.Update(); //@fixme029
 	m_kEftMgr.UpdateSound();
@@ -1355,6 +1358,9 @@ void CPythonApplication::Destroy()
 #endif
 #ifdef ENABLE_MONSTER_CARD_MODEL
 	{ void Mt2009MonsterModel_Destroy(); Mt2009MonsterModel_Destroy(); } // MT2009_PLUS_MONSTER_CARD_MODEL_V1
+#endif
+#ifdef ENABLE_MT2009_TITLES
+	{ void Mt2009Titles_Destroy(); Mt2009Titles_Destroy(); } // MT2009_PLUS_TITLES_V1
 #endif
 #if defined(RENDER_TARGET)
 	m_kRenderTargetManager.Destroy();

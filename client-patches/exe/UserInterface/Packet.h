@@ -157,6 +157,9 @@ enum
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	HEADER_CG_SKILL_COLOR						= 56,	// MT2009_PLUS_SKILL_COLOR_V1 (cg header): one skill's colour (the package's number)
 #endif
+#ifdef ENABLE_MT2009_TITLES
+	HEADER_CG_TITLE								= 185,	// MT2009_PLUS_TITLES_V1 (cg header): the hello / the title window (the package's number)
+#endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
@@ -379,6 +382,9 @@ enum
 #endif
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	HEADER_GC_SKILL_COLOR						= 59,	// MT2009_PLUS_SKILL_COLOR_V1 (gc header): a character's colour of one skill
+#endif
+#ifdef ENABLE_MT2009_TITLES
+	HEADER_GC_TITLE								= 189,	// MT2009_PLUS_TITLES_V1 (gc header): titles - dynamic (TABLE, PLAYER, EQUIPPED, NOTIFY, VISUAL)
 #endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
@@ -4009,6 +4015,71 @@ typedef struct SPacketGCSkillColor
 	WORD	wSkillVnum;
 	DWORD	adwColor[SKILL_COLOR_LAYERS];
 } TPacketGCSkillColor;
+#endif
+
+#ifdef ENABLE_MT2009_TITLES
+// MT2009_PLUS_TITLES_V1 (structs): Tytuly - as the server's packet.h (server-patches/tytuly); the sizes: Mt2009Titles.cpp static_assert
+enum
+{
+	TITLE_CG_OPEN = 0,
+	TITLE_CG_EQUIP = 1,
+	TITLE_CG_UNEQUIP = 2,
+	TITLE_GC_TABLE = 0,
+	TITLE_GC_PLAYER = 1,
+	TITLE_GC_EQUIPPED = 2,
+	TITLE_GC_NOTIFY = 3,
+	TITLE_GC_VISUAL = 4,
+	TITLE_NAME_LEN = 32,
+	TITLE_CONDITION_LEN = 160,
+	TITLE_EFFECT_LEN = 96,
+};
+
+typedef struct SPacketCGTitle
+{
+	BYTE	bHeader;
+	BYTE	bSubHeader;
+	DWORD	dwTitle;
+} TPacketCGTitle;
+
+typedef struct SPacketGCTitle
+{
+	BYTE	bHeader;
+	WORD	wSize;
+	BYTE	bSubHeader;
+	WORD	wCount;
+} TPacketGCTitle;
+
+typedef struct SPacketGCTitleRow
+{
+	DWORD	dwTitle;
+	BYTE	bType;
+	BYTE	bPermanent;
+	WORD	wResource;
+	DWORD	dwDuration;
+	DWORD	dwColor;
+	short	sEffectZ;
+	char	szName[TITLE_NAME_LEN + 1];
+	char	szCondition[TITLE_CONDITION_LEN + 1];
+	char	szEffect[TITLE_EFFECT_LEN + 1];
+} TPacketGCTitleRow;
+
+typedef struct SPacketGCTitleOwned
+{
+	DWORD	dwTitle;
+	DWORD	dwEndTime;
+} TPacketGCTitleOwned;
+
+typedef struct SPacketGCTitleNotify
+{
+	BYTE	bMessage;
+	DWORD	dwTitle;
+} TPacketGCTitleNotify;
+
+typedef struct SPacketGCTitleVisual
+{
+	DWORD	dwVID;
+	DWORD	dwTitle;
+} TPacketGCTitleVisual;
 #endif
 
 #pragma pack(pop)

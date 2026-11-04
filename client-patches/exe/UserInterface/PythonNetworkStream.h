@@ -737,6 +737,13 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendSkillColorPacket(WORD wSkillVnum, const DWORD* c_pdwColor);
 	protected:
 #endif
+#ifdef ENABLE_MT2009_TITLES
+		// MT2009_PLUS_TITLES_V1: Tytuly (Mt2009Titles.cpp)
+		bool RecvTitlePacket();
+	public:
+		bool SendTitlePacket(BYTE bSubHeader, DWORD dwTitle);
+	protected:
+#endif
 #ifdef ENABLE_SWITCHBOT
 		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
 		bool RecvSwitchbotPacket();

@@ -628,6 +628,8 @@ namespace UI
 			// (render-to-texture during the UI pass, as Digi Rasta's view did); true = drawn, skip the default
 			typedef bool (*TRenderHook)(int iIndex, const RECT& rcWindow, const RECT* pClipRect);
 			static void SetRenderHook(TRenderHook pfnHook) { ms_pfnRenderHook = pfnHook; }
+			// MT2009_PLUS_TITLES_V1: the hook before (Mt2009Titles.cpp chains it - its own index first, any other to the one before)
+			static TRenderHook GetRenderHook() { return ms_pfnRenderHook; }
 
 		protected:
 			void OnUpdate();

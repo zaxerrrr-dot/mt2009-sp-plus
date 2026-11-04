@@ -388,5 +388,11 @@
 // the self buffs / the shaman buffs / Aura Miecza. player.SetSkillColor / GetSkillColor, app.ENABLE_SKILL_COLOR_SYSTEM,
 // app.MT2009_SKILL_COLOR_EXE (root constinfo.py: client 1.3.2). Root: uiskillcolor.py, uiscript/skillcolorwindow.py.
 #define ENABLE_MT2009_SKILL_COLOR
+// MT2009_PLUS_TITLES_V1 (Tytuly, the owner's package "Official Title System Renewal", rebuilt - server-patches/tytuly/README.md):
+// a character's worn title drawn with his name (a plate, an animated banner) or over his head (an effect); the window's
+// preview. Packets CG 185 HEADER_CG_TITLE (6 B) / GC 189 HEADER_GC_TITLE (dynamic) - the server sends GC 189 only after
+// this exe's hello (CG OPEN at the game phase), so an older exe never sees it. Module titleSystem, app.MT2009_TITLES_EXE
+// (Mt2009Titles.cpp). Root: uicharactertitle.py, uiscript/charactertitlewindow.py, the portrait button (uicharacter.py).
+#define ENABLE_MT2009_TITLES
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

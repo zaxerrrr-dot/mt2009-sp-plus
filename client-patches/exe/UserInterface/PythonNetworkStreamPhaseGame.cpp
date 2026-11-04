@@ -1297,6 +1297,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvSkillColorPacket();
 				break;
 #endif
+#ifdef ENABLE_MT2009_TITLES
+			case HEADER_GC_TITLE: // MT2009_PLUS_TITLES_V1
+				ret = RecvTitlePacket();
+				break;
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();
@@ -1620,6 +1625,9 @@ void CPythonNetworkStream::SetGamePhase()
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
 
 	__RefreshStatus();
+#ifdef ENABLE_MT2009_TITLES
+	{ void Mt2009Titles_OnGamePhase(); Mt2009Titles_OnGamePhase(); } // MT2009_PLUS_TITLES_V1: the hello (CG 185 OPEN)
+#endif
 }
 
 bool CPythonNetworkStream::RecvObserverAddPacket()
