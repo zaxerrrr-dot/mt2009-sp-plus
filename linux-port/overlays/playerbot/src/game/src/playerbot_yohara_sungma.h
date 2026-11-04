@@ -2110,7 +2110,7 @@
 			++s_uPlayerBotTrainerRearmFailed;
 		sys_log(0, "PLAYERBOT_TRAINER: rearm %s pid=%u name=%s where=%s map=%ld vnum=%u how=%s can_now=%d busy=%d stun=%d locked=%d "
 				"poly=%d cell=%d window=%d pos=%d costume_weapon=%u rearmed=%u failed=%u",
-				ok ? "ok" : "refused", ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex(), vnum, how, canNow ? 1 : 0,
+				ok ? "ok" : (canNow ? "pending" : "refused"), ch->GetPlayerID(), ch->GetName(), where, ch->GetMapIndex(), vnum, how, canNow ? 1 : 0,
 				busy ? 1 : 0, stun ? 1 : 0, locked ? 1 : 0, poly ? 1 : 0, cellFor, (int)weapon->GetWindow(), (int)weapon->GetCell(),
 				ch->GetWear(WEAR_COSTUME_WEAPON) ? ch->GetWear(WEAR_COSTUME_WEAPON)->GetVnum() : 0,
 				s_uPlayerBotTrainerRearmed, s_uPlayerBotTrainerRearmFailed);

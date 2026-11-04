@@ -1136,9 +1136,14 @@ namespace
 		// MT2009_PLUS_BOT_TRAINER_REVIVE_V1: the monsters on its party count too - the first night's measure (4 November,
 		// 00:20-00:57, game3): 31 of 117 bots revived by their party in place fell again within 90 s, with 6-8 monsters
 		// round them that were on the others when it stood up and on it a second later (the safe point's: 115 of 620)
-		if (awake + busy > PLAYERBOT_SUNGMA_REVIVE_PACK_MAX)
+		// the trainer's A/B (4 November, 03:15): with the busy ones counted the "again" share fell (24% -> 18%) but the
+		// deaths a bot-hour rose with the walk back to the party - so it is the event flag m2_bot_revive_busy 1's, off by
+		// default (the old count: awake only)
+		const bool countBusy = quest::CQuestManager::instance().GetEventFlag("m2_bot_revive_busy") != 0;
+		if (awake + (countBusy ? busy : 0) > PLAYERBOT_SUNGMA_REVIVE_PACK_MAX)
 		{
-			++s_uPlayerBotTrainerReviveBusyRefused;
+			if (countBusy && awake <= PLAYERBOT_SUNGMA_REVIVE_PACK_MAX)
+				++s_uPlayerBotTrainerReviveBusyRefused;
 			return false;
 		}
 		return true;
