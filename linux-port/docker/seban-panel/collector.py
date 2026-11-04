@@ -1,5 +1,6 @@
 import os
 import re
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -8,6 +9,7 @@ import pymysql
 
 import bot_stats
 import log_maintenance
+import snapshot_retention
 
 INTERVAL = int(os.environ.get("SEBAN_COLLECTOR_INTERVAL", "300"))
 CHANNEL_VAR_ROOT = Path(os.environ.get("PLAYERBOTS_VAR_ROOT", "/opt/metin2/var"))
@@ -37,7 +39,16 @@ def status_paths():
 
 
 def connect():
-    return pymysql.connect(host=os.environ.get("DB_HOST", "mariadb"), port=int(os.environ.get("DB_PORT", "3306")), user=os.environ["DB_USER"], password=os.environ["DB_PASSWORD"], charset="utf8mb4", autocommit=True)
+    con = pymysql.connect(host=os.environ.get("DB_HOST", "mariadb"), port=int(os.environ.get("DB_PORT", "3306")), user=os.environ["DB_USER"], password=os.environ["DB_PASSWORD"], charset="utf8mb4", autocommit=True)
+    # MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: every snapshot is an INSERT ...
+    # SELECT over player.item (1.1M rows, read whole every 5 minutes). Under
+    # the default REPEATABLE READ InnoDB reads the source rows of an INSERT ...
+    # SELECT with shared locks - every item row of the world, held for the
+    # statement - and the db core's item saves (UPDATE item) waited behind
+    # them. READ COMMITTED reads a snapshot instead and locks nothing there.
+    with con.cursor() as cur:
+        cur.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
+    return con
 
 
 def decode_cp1250(value):
@@ -519,6 +530,12 @@ def collect(con, previous):
 
 def main():
     previous = None
+    # MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1: the snapshot tables written
+    # above are thinned and pruned hourly (snapshot_retention.py) in a thread
+    # of their own: the first cleanup of a big table takes tens of minutes of
+    # small batches and must not hold up the 5-minute snapshots. A named
+    # lock in the database keeps it from overlapping a manual run.
+    threading.Thread(target=snapshot_retention.loop, name="snapshot-retention", daemon=True).start()
     while True:
         try:
             with connect() as con:
