@@ -25,6 +25,10 @@ def main():
         text = texts[e["file"]]
         if e["marker"] in text:
             continue
+        # the "item bonus cap" edit only takes a case label out - its new code carries no marker; it is there when
+        # the old code is gone and the new one stands (a second run over a patched tree, the package build)
+        if e["old"] not in text and e["new"] in text:
+            continue
         if text.count(e["old"]) != 1:
             sys.exit("pdbonus: %s - the expected code of %s is not in the file; nothing changed" % (e["file"], e["marker"]))
         texts[e["file"]] = text.replace(e["old"], e["new"])

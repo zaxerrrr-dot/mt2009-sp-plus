@@ -26,6 +26,8 @@ $applied = 0
 foreach ($e in $edits) {
     $text = $texts[$e.file]
     if ($text.Contains($e.marker)) { continue }
+    # "item bonus cap" carries no marker: already there when the old code is gone and the new one stands
+    if (-not $text.Contains($e.old) -and $text.Contains($e.new)) { continue }
     $first = $text.IndexOf($e.old, [StringComparison]::Ordinal)
     if ($first -lt 0 -or $text.IndexOf($e.old, $first + 1, [StringComparison]::Ordinal) -ge 0) {
         throw "Nie mozna zastosowac poprawki $($e.marker): nie znaleziono oczekiwanego kodu w $($e.file)."
