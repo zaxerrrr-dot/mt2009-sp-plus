@@ -5281,6 +5281,57 @@ fi
 # says nothing - 2.23.0 copied the chests 30773-30776 from 50270/50271 a few hundred lines before
 # it made those, and every fresh world's cores stopped at boot on mob_drop_item.arezzo.txt. The
 # list is read from this file, so a copy added later is checked too.
+# MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr; the owner, 3 November 2026: room for every 6th/7th bonus of the
+# wiki): an item's bonus type, an item_proto apply and an affect's point are two bytes in the cores (WORD, up to
+# POINT_MAX_NUM 512) - every column that keeps one becomes SMALLINT UNSIGNED: attrtype0..6 of player.item (every bag,
+# the safebox, the item-shop storage, the Ikarus shops' and auctions' items), player.item_award and any copy/backup
+# table with them, applytype0..2 of world.item_proto and its copies (item_proto_apply_global/_mt2009, ...),
+# player.affect.bApplyOn, world.item_extra_apply.apply_type and world.locale_point.point. Values are kept as they are
+# (0..255 fit both); found through information_schema (base tables only, views follow by themselves), so it is
+# idempotent - a column that is SMALLINT already is not touched, and a later copy of an old table is widened on the
+# next start. One ALTER a table (all its columns at once). InnoDB cannot change a column's type in place
+# (INSTANT/NOCOPY/INPLACE all refuse it on MariaDB 11.8), so it is a table copy with LOCK=SHARED: reads go on,
+# writes wait - player.item (about 1.1 million rows) took ~30 s on a copy of the test world; this runs while the
+# cores are down (the game service waits for this migrator). Nullability, default and comment kept.
+m2_wide_cols=$(db -N -e "SELECT CONCAT('\`', c.TABLE_SCHEMA, '\`.\`', c.TABLE_NAME, '\`'), c.COLUMN_NAME, c.IS_NULLABLE, IFNULL(c.COLUMN_DEFAULT, 'NULL'), REPLACE(c.COLUMN_COMMENT, '''', '''''') FROM information_schema.COLUMNS c JOIN information_schema.TABLES t ON t.TABLE_SCHEMA = c.TABLE_SCHEMA AND t.TABLE_NAME = c.TABLE_NAME WHERE t.TABLE_TYPE = 'BASE TABLE' AND c.DATA_TYPE = 'tinyint' AND c.TABLE_SCHEMA NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys') AND (c.COLUMN_NAME REGEXP '^attrtype[0-6]\$' OR c.COLUMN_NAME REGEXP '^applytype[0-2]\$' OR (c.TABLE_NAME = 'affect' AND c.COLUMN_NAME = 'bApplyOn') OR (c.TABLE_NAME = 'item_extra_apply' AND c.COLUMN_NAME = 'apply_type') OR (c.TABLE_NAME = 'locale_point' AND c.COLUMN_NAME = 'point')) ORDER BY c.TABLE_SCHEMA, c.TABLE_NAME, c.ORDINAL_POSITION" 2>/dev/null) \
+    || { fail_step "two-byte bonus types: could not read information_schema - the columns stay as they are"; m2_wide_cols=""; }
+m2_wide_tab=""
+m2_wide_sql=""
+m2_wide_done=0
+m2_wide_alter() {
+    [ -n "$m2_wide_tab" ] || return 0
+    m2_wide_t0=$(date +%s)
+    if db -e "ALTER TABLE $m2_wide_tab $m2_wide_sql, ALGORITHM=COPY, LOCK=SHARED;" </dev/null; then
+        m2_wide_done=$((m2_wide_done + 1))
+        echo "[playerbot-migrate] two-byte bonus types: $m2_wide_tab widened to SMALLINT UNSIGNED in $(( $(date +%s) - m2_wide_t0 )) s"
+    else
+        fail_step "two-byte bonus types: could not widen $m2_wide_tab ($m2_wide_sql) - it keeps one-byte types; the next start tries again"
+    fi
+}
+m2_wide_tabchar=$(printf '\t')
+while IFS="$m2_wide_tabchar" read -r m2_wide_t m2_wide_c m2_wide_null m2_wide_def m2_wide_cmt; do
+    [ -n "$m2_wide_t" ] || continue
+    if [ "$m2_wide_t" != "$m2_wide_tab" ]; then
+        m2_wide_alter
+        m2_wide_tab=$m2_wide_t
+        m2_wide_sql=""
+    fi
+    m2_wide_one="MODIFY \`$m2_wide_c\` SMALLINT UNSIGNED"
+    if [ "$m2_wide_null" = NO ]; then m2_wide_one="$m2_wide_one NOT NULL"; else m2_wide_one="$m2_wide_one NULL"; fi
+    case "$m2_wide_def" in
+        NULL) [ "$m2_wide_null" = NO ] || m2_wide_one="$m2_wide_one DEFAULT NULL" ;;
+        *[!0-9]*|'') ;;
+        *) m2_wide_one="$m2_wide_one DEFAULT $m2_wide_def" ;;
+    esac
+    [ -z "$m2_wide_cmt" ] || m2_wide_one="$m2_wide_one COMMENT '$m2_wide_cmt'"
+    m2_wide_sql="${m2_wide_sql:+$m2_wide_sql, }$m2_wide_one"
+done <<M2_WIDE_COLS
+$m2_wide_cols
+M2_WIDE_COLS
+m2_wide_alter
+if [ -z "$m2_wide_cols" ]; then
+    echo "[playerbot-migrate] two-byte bonus types: every bonus type column is SMALLINT already"
+fi
 migrate_copies() { # migrate_copies item|mob -- "source:copy" per copy this script makes
     awk -v t="world.$1_proto" '
         index($0, "AS SELECT * FROM " t " WHERE vnum = ") {

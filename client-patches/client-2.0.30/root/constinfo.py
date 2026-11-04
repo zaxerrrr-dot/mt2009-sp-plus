@@ -24,6 +24,12 @@ if getattr(app, "MT2009_CHAMPION_EXE", 0) and hasattr(player, "CONQUEROR_LEVEL")
 		"minor" : 0,
 		"is_beta" : False,
 	}
+	# MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr): an item's bonus type is two bytes - every item packet, the
+	# point change and the affects grew. Only this root with the exe that reads them (app.MT2009_WIDE_ATTR_EXE) says
+	# 1.3.1 (1010301); the auth core's server_version (M2_CLIENT_MIN_VERSION 1010301) refuses 1.3.0 and older with
+	# "UPDATE" before a single packet of the new layout reaches them. A new root on an old exe stays 1.3.0 - refused too.
+	if getattr(app, "MT2009_WIDE_ATTR_EXE", 0):
+		GAME_VERSION["minor"] = 1
 
 # EXTRA BEGIN
 ENABLE_NEW_LEVELSKILL_SYSTEM = False # loads 5 (B,M,G,P,F) skills .mse

@@ -16,6 +16,8 @@
 #ifndef MT2009_PLUS_PLAYERBOT_BONUS67_H
 #define MT2009_PLUS_PLAYERBOT_BONUS67_H
 
+#include "mt2009_wideattr.h" // MT2009_PLUS_WIDE_ATTR_V1: TMt2009PointNum - WORD with server-patches/wideattr, BYTE without
+
 class CHARACTER;
 class CItem;
 typedef CHARACTER* LPCHARACTER;
@@ -23,7 +25,7 @@ typedef CItem* LPITEM;
 
 // A bonus's total as the character uses it: the point, the hit buff of that point (an element power / resistance
 // for a few seconds) and its "+x% of the total" line. Any other point: GetPoint.
-int Bonus67Total(const CHARACTER* ch, unsigned char bPoint);
+int Bonus67Total(const CHARACTER* ch, TMt2009PointNum bPoint); // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 // battle.cpp CalcAttBonus: the race bonus total (iPointValue) against pkVictim with the attacker's *_PER_* lines.
 int Bonus67AttBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iPointValue);
 // CHARACTER::Damage (after the normal hit / skill bonuses): the boss lines; it starts the hit buffs, the gloves'
@@ -36,7 +38,7 @@ bool Bonus67FallResist(const CHARACTER* ch);
 unsigned int Bonus67SkillCooldown(LPCHARACTER ch, unsigned int dwVnum, unsigned int dwNextUsable);
 // CItem::ModifyPoints: an attribute slot's value as worn (FIRST..FIFTH_ATTRIBUTE_BONUS; the glove's Will is its base
 // attribute since MT2009_PLUS_GLOVE_BASE_V1 - playerbot_yohara_gear.cpp Mt2009GloveBaseWill).
-int Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue);
+int Bonus67AttrValue(LPITEM item, int iSlot, TMt2009PointNum bType, int iValue); // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 // CItem::AddRareAttribute(2) / ChangeRareAttribute(2) on a glove: its 6th and 7th slots from the pool's glove column
 // (MT2009_PLUS_GLOVE_BASE_V1: an addition fills the first free one, a change rolls the lines it has again). iMode 0 add
 // (the panel's level odds), 1 add2 (aiPct), 2 change, 3 change2. -1: not a glove.

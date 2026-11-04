@@ -152,7 +152,7 @@ def Catalog(everything=False):
         return list(_catalog)
     known = set(kind for kind, label in _catalog)
     rest = [(kind, BonusLabel(kind)) for kind in localeinfo_point.AFFECT_DICT.keys()
-        if isinstance(kind, int) and 0 < kind < 256 and kind not in known]
+        if isinstance(kind, int) and 0 < kind <= pf.BONUS_KIND_MAX and kind not in known]  # MT2009_PLUS_WIDE_ATTR_V1
     rest.sort(key=lambda entry: entry[1].lower())
     return list(_catalog) + rest
 

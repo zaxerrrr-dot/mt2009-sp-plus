@@ -592,7 +592,7 @@ bool Mt2009AuraModifyPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 	{
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 		{
-			const BYTE type = t->aApplies[i].bType;
+			const WORD type = t->aApplies[i].bType; // MT2009_PLUS_WIDE_ATTR_V1
 			if (type == POINT_NONE || owner->IsUtilityPoint(type) || type == POINT_MOV_SPEED)
 				continue;
 			const int value = aura::Drain(t->aApplies[i].lValue, level);
@@ -623,7 +623,7 @@ bool Mt2009AuraModifyPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 	}
 	for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 	{
-		const BYTE type = item->GetAttributeType(i);
+		const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 		if (!type || owner->IsUtilityPoint(type))
 			continue;
 		const int value = aura::Drain(item->GetAttribute(i).sValue, level);

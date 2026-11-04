@@ -72,8 +72,8 @@ class CPythonExchange : public CSingleton<CPythonExchange>
 		void			SetItemMetinSocketToTarget(int pos, int imetinpos, DWORD vnum);
 		void			SetItemMetinSocketToSelf(int pos, int imetinpos, DWORD vnum);
 
-		void			SetItemAttributeToTarget(int pos, int iattrpos, BYTE byType, short sValue);
-		void			SetItemAttributeToSelf(int pos, int iattrpos, BYTE byType, short sValue);
+		void			SetItemAttributeToTarget(int pos, int iattrpos, WORD byType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1
+		void			SetItemAttributeToSelf(int pos, int iattrpos, WORD byType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1
 
 		void			DelItemOfTarget(BYTE pos);
 		void			DelItemOfSelf(BYTE pos);
@@ -87,8 +87,8 @@ class CPythonExchange : public CSingleton<CPythonExchange>
 		DWORD			GetItemMetinSocketFromTarget(BYTE pos, int iMetinSocketPos);
 		DWORD			GetItemMetinSocketFromSelf(BYTE pos, int iMetinSocketPos);
 
-		void			GetItemAttributeFromTarget(BYTE pos, int iAttrPos, BYTE * pbyType, short * psValue);
-		void			GetItemAttributeFromSelf(BYTE pos, int iAttrPos, BYTE * pbyType, short * psValue);
+		void			GetItemAttributeFromTarget(BYTE pos, int iAttrPos, WORD * pbyType, short * psValue); // MT2009_PLUS_WIDE_ATTR_V1
+		void			GetItemAttributeFromSelf(BYTE pos, int iAttrPos, WORD * pbyType, short * psValue); // MT2009_PLUS_WIDE_ATTR_V1
 
 		void			SetAcceptToTarget(BYTE Accept);
 		void			SetAcceptToSelf(BYTE Accept);

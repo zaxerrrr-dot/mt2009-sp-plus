@@ -370,7 +370,11 @@ EOF
 # the character packets, so an older client would desync on the first packet;
 # refused at login it shows its own "Wymagana aktualizacja klienta gry przez
 # Patcher." instead. M2_CLIENT_MIN_VERSION overrides it (0 = no gate).
-M2_CLIENT_MIN_VERSION="${M2_CLIENT_MIN_VERSION:-1010300}"
+# MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr, 4 November 2026): 1010301 = client 1.3.1 - an item's bonus type
+# is two bytes, so every item packet (bags, safebox, item-shop storage, shops, exchange, switchbot, Ikarus shops), the
+# point change and the affects grew; root constinfo.py says 1.3.1 only with the exe that reads them
+# (app.MT2009_WIDE_ATTR_EXE). A 1.3.0 client is refused at login like any older one instead of misreading them.
+M2_CLIENT_MIN_VERSION="${M2_CLIENT_MIN_VERSION:-1010301}"
 render_auth() {
   local d="$VAR_DIR/auth"
   core_skeleton "$d"

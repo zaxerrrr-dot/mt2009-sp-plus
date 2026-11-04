@@ -276,7 +276,8 @@ static_assert(DRAGON_SOUL_EQUIP_SLOT_END == 271, "seven-slot Dragon Soul decks r
 
 typedef struct TPlayerItemAttribute
 {
-    BYTE        bType;
+    WORD        bType;	// MT2009_PLUS_WIDE_ATTR_V1: a POINT_* number up to POINT_MAX_NUM 512 (the server's common/tables.h,
+                        // server-patches/wideattr) - every item packet carries 4 B a bonus line
     short       sValue;
 } TPlayerItemAttribute;
 

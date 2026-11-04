@@ -7174,7 +7174,7 @@ namespace
 	bool WantsPlayerBotG0DustFromMarket(LPCHARACTER ch);
 	void NotePlayerBotG0DustBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	void NotePlayerBotG0DustMade(LPCHARACTER ch, int made);
-	long long GetPlayerBotSungmaWillWeight(LPCHARACTER ch, BYTE bType);
+	long long GetPlayerBotSungmaWillWeight(LPCHARACTER ch, WORD bType); // MT2009_PLUS_WIDE_ATTR_V1
 	bool GetPlayerBotG0WillTalismanScore(LPCHARACTER ch, LPITEM item, long long& score);
 	long GetPlayerBotG0DustTrip(LPCHARACTER ch, DWORD dwNow);
 	bool IsPlayerBotG0ZakletyStay(LPCHARACTER ch);
@@ -10338,7 +10338,7 @@ namespace
 	// Whether item_attr rolls the line on that attribute set (ATTRIBUTE_SET_*).
 	bool IsPlayerBotApplyOnAttrSet(BYTE type, int set);
 	// A Yohara bot's costume / hairstyle line: 1 worth keeping, 0 not, -1 not a Yohara bot (the old scoring decides).
-	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, BYTE type, long value);
+	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, WORD type, long value); // MT2009_PLUS_WIDE_ATTR_V1
 	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: the costume / hairstyle can roll the hunt element's resistance (fire,
 	// lightning or wind on costume_body / costume_hair) and holds no good line of it - the piece is not finished.
 	bool IsPlayerBotCostumeHuntLineMissing(LPCHARACTER ch, LPITEM costume);

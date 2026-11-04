@@ -676,7 +676,7 @@ namespace
 		return ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2;
 	}
 
-	long long ScorePlayerBotApply(BYTE bType, long lValue, LPCHARACTER ch = NULL)
+	long long ScorePlayerBotApply(WORD bType, long lValue, LPCHARACTER ch = NULL) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 #ifdef MT2009_PLUS_ELEMENTS_V1
 		// MT2009_PLUS_ELEMENTS_V1 (bots): a talisman's element power (Autor: Digi Rasta,
@@ -863,7 +863,7 @@ namespace
 
 	// The lines a hit is made of, and which the hit model below reads itself -
 	// the flat scorer must not count them a second time on a weapon.
-	bool IsPlayerBotHitModelApply(BYTE applyType, LPCHARACTER ch)
+	bool IsPlayerBotHitModelApply(WORD applyType, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (applyType)
 		{
@@ -1385,7 +1385,7 @@ namespace
 	// (PLAYERBOT_BONUS_TIER_PERCENT) - the same scale the reroll pass applies
 	// in ScorePlayerBotBonusLine, so the pass that buys a piece and the pass
 	// that rerolls it agree about what a line is worth.
-	long long ScorePlayerBotApplyTiered(BYTE bType, long lValue, LPCHARACTER ch)
+	long long ScorePlayerBotApplyTiered(WORD bType, long lValue, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const long long raw = ScorePlayerBotApply(bType, lValue, ch);
 		const int tier = ch ? GetPlayerBotBonusTier(bType, (int)ch->GetJob(), false) : 0;
@@ -1529,7 +1529,7 @@ namespace
 		long long lines = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (t == APPLY_NONE || GetPlayerBotBonusTier(t, (int)ch->GetJob(), false) < PLAYERBOT_BOOTS_MIN_LINE_TIER)
 				continue;
 			lines += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
@@ -1724,7 +1724,7 @@ namespace
 		long long protoLines = 0, rolledLines = 0;
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetProto()->aApplies[i].bType;
+			const WORD t = item->GetProto()->aApplies[i].bType; // MT2009_PLUS_WIDE_ATTR_V1
 			if (bWeaponHitDone && IsPlayerBotHitModelApply(t, ch))
 				continue;
 			protoLines += ScorePlayerBotApplyTiered(t, item->GetProto()->aApplies[i].lValue, ch);
@@ -1757,7 +1757,7 @@ namespace
 		}
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (bWeaponHitDone && IsPlayerBotHitModelApply(t, ch))
 				continue;
 			rolledLines += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
@@ -3247,7 +3247,7 @@ namespace
 		long avg = 0, skill = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (t == APPLY_NORMAL_HIT_DAMAGE_BONUS)
 				avg += item->GetAttributeValue(i);
 			else if (t == APPLY_SKILL_DAMAGE_BONUS)

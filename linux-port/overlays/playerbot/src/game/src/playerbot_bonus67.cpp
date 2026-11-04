@@ -2,6 +2,7 @@
 // New file outside the engine's own (the overlay's playerbot_* files build with every game core); the hooks are the
 // edits of server-patches/bonusy67 (each declares what it calls).
 #include "stdafx.h"
+#include "mt2009_wideattr.h" // MT2009_PLUS_WIDE_ATTR_V1
 #include "playerbot_bonus67.h"
 #include "constants.h"
 #include "config.h"
@@ -17,7 +18,16 @@
 #include <map>
 #include <vector>
 
-#if defined(MT2009_PLUS_ANTI_RESIST_MAGIC) && defined(MT2009_PLUS_BONUS67_WIKI)
+#if defined(MT2009_PLUS_WIDE_ATTR)
+// MT2009_PLUS_WIDE_ATTR_V1: the bonus type is two bytes (server-patches/wideattr) - 253-255 as before, the new points
+// follow from POINT_WIDE_END (256) up, POINT_MAX_NUM 512 (the exe's)
+static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_ANTI_RESIST_MAGIC == 252
+		&& POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255
+		&& POINT_WIDE_END >= 256 && POINT_WIDE_END <= POINT_MAX_NUM && POINT_MAX_NUM == 512,
+		"the 6th/7th bonus points 198-251, the anti-magic 252, 253-255 and the two-byte ones (item_attr ENUM of apply.sh)");
+static_assert(sizeof(((TPlayerItemAttribute*)0)->bType) == 2 && sizeof(((TItemApply*)0)->bType) == 2,
+		"an item's bonus type and an item_proto apply are two bytes (common/tables.h)");
+#elif defined(MT2009_PLUS_ANTI_RESIST_MAGIC) && defined(MT2009_PLUS_BONUS67_WIKI)
 // MT2009_PLUS_BONUS67_WIKI_V1: the wiki's round 2 takes the last three numbers (253-255, server-patches/bonusy67b)
 static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_ANTI_RESIST_MAGIC == 252
 		&& POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255 && POINT_MAX_NUM == 256,
@@ -31,7 +41,9 @@ static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT ==
 static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_MAX_NUM == 252,
 		"the 6th/7th bonus points 198-251 (item_attr ENUM of apply.sh MT2009_PLUS_BONUS67_V1, root/localeinfo_point.py)");
 #endif
+#ifndef MT2009_PLUS_WIDE_ATTR
 static_assert(POINT_MAX_NUM <= 256, "an item keeps its bonus type in one byte");
+#endif
 static_assert(SKILL_ILIPUNGU - SKILL_FINISH == POINT_GLOVE_COOLDOWN_ILIPUNGU - POINT_GLOVE_COOLDOWN_FINISH,
 		"one glove cooldown line a champion skill, in the skills' order");
 #ifdef MT2009_PLUS_ELEC_GLOVE_SE
@@ -270,7 +282,7 @@ namespace
 	}
 
 	// An item's own rare line of this type (0 when it has none).
-	int ItemRareValue(LPITEM item, BYTE bType)
+	int ItemRareValue(LPITEM item, WORD bType) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 			if (item->GetAttributeType(i) == bType)
@@ -310,7 +322,7 @@ namespace
 	}
 }
 
-int Bonus67Total(const CHARACTER* ch, unsigned char bPoint)
+int Bonus67Total(const CHARACTER* ch, TMt2009PointNum bPoint) // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 {
 	if (!ch || bPoint >= POINT_MAX_NUM)
 		return 0;
@@ -578,14 +590,14 @@ unsigned int Bonus67SkillCooldown(LPCHARACTER ch, unsigned int dwVnum, unsigned 
 	return dwNew;
 }
 
-int Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue)
+int Bonus67AttrValue(LPITEM item, int iSlot, TMt2009PointNum bType, int iValue) // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 {
 	if (!item || !iValue)
 		return iValue;
 	// MT2009_PLUS_GLOVE_BASE_V1: the glove's Will is no bonus slot any more - its "+x%" is Mt2009GloveBaseWill's
 	int iPct = 0;
 	if (iSlot >= 0 && iSlot < 5)
-		iPct = ItemRareValue(item, (BYTE) (POINT_FIRST_ATTRIBUTE_BONUS + iSlot));
+		iPct = ItemRareValue(item, (WORD) (POINT_FIRST_ATTRIBUTE_BONUS + iSlot)); // MT2009_PLUS_WIDE_ATTR_V1
 	if (iPct <= 0)
 		return iValue;
 	return iValue + iValue * iPct / 100;
@@ -597,7 +609,7 @@ int Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue)
 // alike. The pool's glove column (item_attr_rare.glove) and the level odds of the engine's own path.
 namespace
 {
-	bool GloveRareRoll(LPITEM item, int iSlot, int iSet, int iMode, const int* aiPct, const std::vector<BYTE>& vecSkip)
+	bool GloveRareRoll(LPITEM item, int iSlot, int iSet, int iMode, const int* aiPct, const std::vector<WORD>& vecSkip) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		std::vector<int> vecAvail;
 		unsigned int uTotal = 0;
@@ -606,7 +618,7 @@ namespace
 			const TItemAttrTable& r = it->second;
 			if (!r.dwApplyIndex || r.dwApplyIndex >= POINT_MAX_NUM || !r.bMaxLevelBySet[iSet] || !r.dwProb)
 				continue;
-			if (std::find(vecSkip.begin(), vecSkip.end(), (BYTE) r.dwApplyIndex) != vecSkip.end())
+			if (std::find(vecSkip.begin(), vecSkip.end(), (WORD) r.dwApplyIndex) != vecSkip.end()) // MT2009_PLUS_WIDE_ATTR_V1
 				continue;
 			vecAvail.push_back(it->first);
 			uTotal += r.dwProb;
@@ -632,7 +644,7 @@ namespace
 		const long lValue = r.lValues[MINMAX(1, iLevel, 5) - 1];
 		if (!lValue)
 			return false;
-		item->SetForceAttribute(iSlot, (BYTE) iApply, (short) lValue);
+		item->SetForceAttribute(iSlot, (WORD) iApply, (short) lValue); // MT2009_PLUS_WIDE_ATTR_V1
 		sys_log(0, "BONUS67: glove %u (id %u) bonus %d: line %d = %ld (level %d)", item->GetVnum(), item->GetID(),
 				iSlot + 1, iApply, lValue, iLevel);
 		return true;
@@ -648,7 +660,7 @@ int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct)
 	if (iSet < 0)
 		return 0;
 	// never the glove's own flat Will (its base attribute) - the pool has no such line, kept as a guard
-	std::vector<BYTE> vecSkip(1, bWillType);
+	std::vector<WORD> vecSkip(1, bWillType); // MT2009_PLUS_WIDE_ATTR_V1
 	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 		if (item->GetAttributeType(i))
 			vecSkip.push_back(item->GetAttributeType(i));

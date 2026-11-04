@@ -253,7 +253,7 @@ namespace
 		return true;
 	}
 
-	int GetPlayerBotElementMapLineElement(BYTE type)
+	int GetPlayerBotElementMapLineElement(WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		for (int e = 0; e < 6; ++e)
 			if (PLAYERBOT_ELEMENT_MAP_POINTS[e] == type)
@@ -263,7 +263,7 @@ namespace
 
 	// One point of the goal's resistance in Max HP: 1% of it on a map all of that element, by the share; half at or
 	// over the want. -1: not the goal's element (the caller's own weight).
-	long GetPlayerBotElementMapPointInHp(LPCHARACTER ch, BYTE type)
+	long GetPlayerBotElementMapPointInHp(LPCHARACTER ch, WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const int e = GetPlayerBotElementMapLineElement(type);
 		TPlayerBotElementMapView v;
@@ -276,14 +276,14 @@ namespace
 	}
 
 	// The equipment score (ScorePlayerBotApply's scale - Max HP fifteen a point).
-	long long GetPlayerBotElementMapApplyScore(LPCHARACTER ch, BYTE type, long value)
+	long long GetPlayerBotElementMapApplyScore(LPCHARACTER ch, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const long hp = value > 0 ? GetPlayerBotElementMapPointInHp(ch, type) : -1;
 		return hp < 0 ? -1 : (long long)value * hp * 15;
 	}
 
 	// The bonus line's score (ScorePlayerBotBonusLineRaw's scale - Max HP a quarter a point), never under the old weight.
-	int GetPlayerBotElementMapLineScore(LPCHARACTER ch, BYTE type, long value)
+	int GetPlayerBotElementMapLineScore(LPCHARACTER ch, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const long hp = value > 0 ? GetPlayerBotElementMapPointInHp(ch, type) : -1;
 		return hp < 0 ? -1 : (int)std::max<long>(value * 3, value * hp / 4);

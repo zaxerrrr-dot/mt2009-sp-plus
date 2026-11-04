@@ -315,7 +315,7 @@ namespace mt2009_seonhae
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM && len > 0 && len < (int)sizeof(buf); ++i)
 		{
 			const unsigned int packed = (unsigned int)ch->GetQuestFlag(F_ATTR[i]);
-			len += snprintf(buf + len, sizeof(buf) - len, " %u %d", (packed >> 16) & 0xFF, (int)(short)(packed & 0xFFFF));
+			len += snprintf(buf + len, sizeof(buf) - len, " %u %d", (packed >> 16) & 0xFFFF, (int)(short)(packed & 0xFFFF)); // MT2009_PLUS_WIDE_ATTR_V1
 		}
 		Cmd(ch, "%s", buf);
 	}
@@ -417,7 +417,7 @@ namespace mt2009_seonhae
 			ch->SetQuestFlag(F_SOCKET[i], (int)item->GetSocket(i));
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const short v = item->GetAttributeValue(i);
 			ch->SetQuestFlag(F_ATTR[i], t ? (int)(((unsigned int)t << 16) | (unsigned short)v) : 0);
 		}
@@ -477,7 +477,7 @@ namespace mt2009_seonhae
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
 			const unsigned int packed = (unsigned int)ch->GetQuestFlag(F_ATTR[i]);
-			attrs[i].bType = (BYTE)((packed >> 16) & 0xFF);
+			attrs[i].bType = (WORD)((packed >> 16) & 0xFFFF); // MT2009_PLUS_WIDE_ATTR_V1
 			attrs[i].sValue = attrs[i].bType ? (short)(packed & 0xFFFF) : 0;
 		}
 		item->SetSockets(sockets);

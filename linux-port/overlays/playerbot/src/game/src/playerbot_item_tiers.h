@@ -333,7 +333,7 @@ namespace
 	}
 
 	// The bonus line's tier for this job, or 0 when his list does not name it.
-	int GetPlayerBotBonusTier(BYTE apply, int job, bool pvp)
+	int GetPlayerBotBonusTier(WORD apply, int job, bool pvp) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		for (size_t i = 0; i < sizeof(PLAYERBOT_BONUS_TIERS) / sizeof(PLAYERBOT_BONUS_TIERS[0]); ++i)
 			if (PLAYERBOT_BONUS_TIERS[i].bApply == apply)

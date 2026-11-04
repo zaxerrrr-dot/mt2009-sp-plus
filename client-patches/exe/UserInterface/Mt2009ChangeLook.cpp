@@ -23,12 +23,13 @@
 #ifdef ENABLE_CHANGELOOK_SYSTEM
 
 // the server's sizes (game -m32, pack(1); measured on the engine with server-patches/transmutacja, 14 October 2026):
-// the look is one DWORD at the end of each
-static_assert(sizeof(TPacketGCItemSet2) == 58, "GC item set (21) is 58 B on the server (TPacketGCItemSet)");
-static_assert(sizeof(TPacketGCItemUpdate) == 45, "GC item update (25) is 45 B on the server");
-static_assert(sizeof(TPacketGCExchange) == 58, "GC exchange is 58 B on the server (packet_exchange)");
+// the look is one DWORD at the end of each; MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr, measured 4 November 2026): each
+// of the seven bonus lines is 4 B (WORD type), 7 B more than before
+static_assert(sizeof(TPacketGCItemSet2) == 65, "GC item set (21) is 65 B on the server (TPacketGCItemSet)");
+static_assert(sizeof(TPacketGCItemUpdate) == 52, "GC item update (25) is 52 B on the server");
+static_assert(sizeof(TPacketGCExchange) == 65, "GC exchange is 65 B on the server (packet_exchange)");
 #ifdef ENABLE_IKASHOP_RENEWAL
-static_assert(sizeof(ikashop::TPlayerItem) == 56, "the server's TPlayerItem (common/tables.h) is 56 B");
+static_assert(sizeof(ikashop::TPlayerItem) == 63, "the server's TPlayerItem (common/tables.h) is 63 B");
 #endif
 
 namespace

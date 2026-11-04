@@ -261,13 +261,18 @@ def _Other(text):
     return 0
 
 
+# MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr): a bonus type is two bytes - the last one the exe knows
+# (player.MAX_NUM 512 with app.MT2009_WIDE_ATTR_EXE; 256 before); the server takes up to its POINT_MAX_NUM the same
+BONUS_KIND_MAX = max(255, getattr(player, 'MAX_NUM', 256) - 1)
+
+
 def _Conds(text):
     conds = []
     for token in text.split(','):
         fields = token.split(':')
         if len(fields) not in (3, 4) or len(conds) >= COND_MAX:
             continue
-        kind = _Int(fields[0], 0, 255)
+        kind = _Int(fields[0], 0, BONUS_KIND_MAX)  # MT2009_PLUS_WIDE_ATTR_V1: a bonus type up to the exe's POINT_MAX_NUM
         op = _Int(fields[3], COND_AT_LEAST, COND_ABSENT_OR_ABOVE) if len(fields) == 4 else COND_AT_LEAST
         if kind > 0:
             conds.append((kind, _Int(fields[1], 0, 32767), _Int(fields[2], SLOTS_ANY, SLOTS_RARE), op))

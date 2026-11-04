@@ -95,7 +95,7 @@ namespace {
         if (cellOut) *cellOut = cell;
         int useful = 0;
         for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i) {
-            const BYTE type = item->GetAttributeType(i);
+            const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
             const long value = item->GetAttributeValue(i);
             if (type == APPLY_NONE || value <= 0) continue;
             const int tier = GetPlayerBotBonusTier(type, (int)ch->GetJob(), false);

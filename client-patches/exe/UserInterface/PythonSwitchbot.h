@@ -20,7 +20,7 @@ public:
 	void Initialize();
 	void Update(const TSwitchbotTable& table);
 
-	void SetAttribute(BYTE slot, BYTE alternative, BYTE attrIdx, BYTE attrType, int attrValue);
+	void SetAttribute(BYTE slot, BYTE alternative, BYTE attrIdx, WORD attrType, int attrValue); // MT2009_PLUS_WIDE_ATTR_V1
 	TPlayerItemAttribute GetAttribute(BYTE slot, BYTE alternative, BYTE attrIdx);
 	void GetAlternatives(BYTE slot, std::vector<TSwitchbotAttributeAlternativeTable>& attributes);
 	int GetAttibuteSet(BYTE slot);
@@ -32,10 +32,10 @@ public:
 
 	void AddAttributeToMap(const TSwitchbotAttributeInfo& table);
 	void GetAttributesBySet(int iAttributeSet, std::vector<TPlayerItemAttribute>& vec_attributes);
-	long GetAttributeMaxValue(int iAttributeSet, BYTE attrType);
+	long GetAttributeMaxValue(int iAttributeSet, WORD attrType); // MT2009_PLUS_WIDE_ATTR_V1
 
 protected:
 	TSwitchbotTable m_SwitchbotTable;
-	std::map<BYTE, std::map<BYTE, long>> m_map_AttributesBySet;
+	std::map<BYTE, std::map<WORD, long>> m_map_AttributesBySet; // MT2009_PLUS_WIDE_ATTR_V1: attribute set -> bonus type (a WORD) -> max
 };
 #endif

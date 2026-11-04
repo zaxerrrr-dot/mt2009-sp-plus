@@ -538,7 +538,7 @@ namespace
 		}
 		rId = b->bId;
 		rValue = b->asValue[iLevel];
-		relic->SetForceAttribute(iSlot, (BYTE) rId, (short) rValue);
+		relic->SetForceAttribute(iSlot, (WORD) rId, (short) rValue); // MT2009_PLUS_WIDE_ATTR_V1
 		return true;
 	}
 

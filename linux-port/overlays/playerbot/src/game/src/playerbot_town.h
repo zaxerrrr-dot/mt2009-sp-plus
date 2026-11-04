@@ -5024,13 +5024,13 @@ namespace
 	// Does this item carry a bonus line worth more than the item itself? A large
 	// health roll or a shield rolled with block or reflect is what a player looks
 	// for, and it is worth a counter slot at any refine.
-	bool HasPlayerBotValuableBonus(LPITEM item, BYTE* typeOut = NULL, long* valueOut = NULL)
+	bool HasPlayerBotValuableBonus(LPITEM item, WORD* typeOut = NULL, long* valueOut = NULL) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (!item)
 			return false;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (value <= 0)
 				continue;
@@ -5558,7 +5558,7 @@ namespace
 					item->GetRefineLevel(), HasPlayerBotValuableBonus(item) ? 1 : 0);
 		// Then anything rolled with a bonus a player would go looking for.
 		{
-			BYTE valuableType = 0;
+			WORD valuableType = 0; // MT2009_PLUS_WIDE_ATTR_V1
 			long valuableValue = 0;
 			if (HasPlayerBotValuableBonus(item, &valuableType, &valuableValue))
 				return PlayerBotGoods(1500, per::GOODS_VALUABLE_BONUS, valuableType, valuableValue);

@@ -2080,4 +2080,17 @@ if ((Test-Path -LiteralPath $irremApply -PathType Leaf) -and
     }
 }
 
+# Dwubajtowy typ bonusu (server-patches/wideattr, MT2009_PLUS_WIDE_ATTR_V1; the owner, 3 November 2026): an item's
+# bonus type (TPlayerItemAttribute::bType), an item_proto apply and an affect's point are WORD, POINT_MAX_NUM 512 - every
+# packet with them grows (the exe of client-patches/exe the same). Its anchors are every other patch's lines: the LAST.
+$wideattrApply = Join-Path $repo 'server-patches/wideattr/Apply-WideattrPatch.ps1'
+if ((Test-Path -LiteralPath $wideattrApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $wideattrResult = & $wideattrApply -SourceDir $engineGameSource
+    if ($wideattrResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} two-byte bonus type edit(s).' -f $wideattrResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

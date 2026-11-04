@@ -424,7 +424,7 @@ namespace
 
 	// ------------------------------------------------------------ the gear's score
 
-	long long GetPlayerBotSungmaWillWeight(LPCHARACTER ch, BYTE bType)
+	long long GetPlayerBotSungmaWillWeight(LPCHARACTER ch, WORD bType) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (bType < POINT_SUNGMA_STR || bType > POINT_SUNGMA_IMMUNE || !IsPlayerBotSungmaWillUser(ch))
 			return -1;

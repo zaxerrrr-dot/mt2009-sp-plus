@@ -498,7 +498,7 @@ namespace mt2009_flower
 			ch->ChatPacket(CHAT_TYPE_INFO, "Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.");
 			return false;
 		}
-		const BYTE point = (BYTE)item->GetValue(1);
+		const WORD point = (WORD)item->GetValue(1); // MT2009_PLUS_WIDE_ATTR_V1
 		const long base = item->GetValue(2);
 		const long duration = item->GetValue(3) > 0 ? item->GetValue(3) : 43200;
 		const long perLevel = item->GetValue(4) > 0 ? item->GetValue(4) : base;

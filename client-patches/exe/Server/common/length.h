@@ -1369,7 +1369,11 @@ enum EPointTypes
 	POINT_BLEEDING_PCT = 254,	// "Atak krwawienia +x%" (no Lycan here: not the wolfman's APPLY_BLEEDING_PCT)
 	POINT_BLEEDING_REDUCE = 255,	// "Odpornosc na atak krwawienia +x%"
 
-	POINT_MAX_NUM,	// 256
+	// MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr): an item's bonus type, an affect's point and a point change are two bytes, the
+	// server's points go on from 256 (its POINT_WIDE_END) and its POINT_MAX_NUM is 512 - this one too, so a new point
+	// (player.GetStatus(n), the bonus window, the tooltip's localeinfo_point.py) needs no new exe; a name here only for
+	// the C++ that uses one.
+	POINT_MAX_NUM = 512,
 };
 
 enum EDragonSoulRefineWindowSize

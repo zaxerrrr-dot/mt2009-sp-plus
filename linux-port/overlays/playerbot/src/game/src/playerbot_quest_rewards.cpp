@@ -418,7 +418,7 @@ namespace mt2009_quest_rewards
 		return amount > 0;
 	}
 
-	bool OnBonus(LPCHARACTER ch, BYTE& point, long& value)
+	bool OnBonus(LPCHARACTER ch, TMt2009PointNum& point, long& value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (!ch)
 			return true;
@@ -426,7 +426,7 @@ namespace mt2009_quest_rewards
 		QuestRules* q = Find(quest);
 		if (!q)
 			return true;
-		const BYTE orig_point = point;
+		const TMt2009PointNum orig_point = point; // MT2009_PLUS_WIDE_ATTR_V1
 		const long orig_value = value;
 		bool give = true;
 		auto it = q->bonus.find(std::make_pair((int) orig_point, orig_value));
@@ -443,7 +443,7 @@ namespace mt2009_quest_rewards
 				give = false;
 			else
 			{
-				point = (BYTE) rule->point;
+				point = (TMt2009PointNum) rule->point; // MT2009_PLUS_WIDE_ATTR_V1
 				value = rule->value;
 			}
 			sys_log(0, "QUEST_REWARD_OVERRIDE %s: bonus %d %ld -> %d %ld (%s)", quest.c_str(), (int) orig_point, orig_value,

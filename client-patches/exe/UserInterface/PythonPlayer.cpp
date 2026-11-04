@@ -739,7 +739,7 @@ DWORD CPythonPlayer::GetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex)
 	return GetItemData(Cell)->alSockets[dwMetinSocketIndex];
 }
 
-void CPythonPlayer::GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE * pbyType, short * psValue)
+void CPythonPlayer::GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, WORD * pbyType, short * psValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	*pbyType = 0;
 	*psValue = 0;
@@ -773,7 +773,7 @@ void CPythonPlayer::SetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex, 
 	(const_cast <TItemData *>(GetItemData(Cell)))->alSockets[dwMetinSocketIndex] = dwMetinNumber;
 }
 
-void CPythonPlayer::SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, BYTE byType, short sValue)
+void CPythonPlayer::SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, WORD byType, short sValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (!Cell.IsValidItemPosition())
 		return;

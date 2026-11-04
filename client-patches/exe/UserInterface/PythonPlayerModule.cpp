@@ -1049,7 +1049,7 @@ PyObject * playerGetItemAttribute(PyObject* poSelf, PyObject* poArgs)
 	default:
 		return Py_BuildException();
 	}
-	BYTE byType;
+	WORD byType; // MT2009_PLUS_WIDE_ATTR_V1
 	short sValue;
 	CPythonPlayer::Instance().GetItemAttribute(Cell, iAttributeSlotIndex, &byType, &sValue);
 

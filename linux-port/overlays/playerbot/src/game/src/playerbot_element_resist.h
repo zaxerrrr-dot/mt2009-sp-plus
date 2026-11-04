@@ -310,7 +310,7 @@ namespace
 	}
 
 	// (3) A Yohara bot's costume / hairstyle line.
-	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, BYTE type, long value)
+	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (!ch || !costume || costume->GetType() != ITEM_COSTUME || !IsPlayerBotYoharaBonusMember(ch))
 			return -1;
