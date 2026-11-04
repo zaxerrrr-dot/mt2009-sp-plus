@@ -5220,7 +5220,8 @@ namespace
 	// seven above the old ceiling are the good ones - the speed and dexterity
 	// buffs and the 1800-second Golden Crucian - so every one of them fell
 	// through to the junk rule's `return true` and was vendored for pennies.
-	const DWORD PLAYERBOT_GRILLED_FISH_LAST_VNUM = 27883;
+	// MT2009_PLUS_FISHING_GLOBAL_V1: to 27887 - Wezoglow, Skaber, Krab Krolewski and Rak Niebieski grilled.
+	const DWORD PLAYERBOT_GRILLED_FISH_LAST_VNUM = 27887;
 	// What a shellfish holds, from the engine's own table (char_item.cpp,
 	// case 27987): half a Stone Piece, thirty percent nothing, then a white,
 	// a blue or a blood pearl. Thousandths. Once the population has opened

@@ -621,11 +621,12 @@ namespace
 	static_assert(PLAYERBOT_FISHING_ARRIVE >= PLAYERBOT_NAV_ARRIVAL_DISTANCE,
 			"an arrival radius below the navigation's own strands the bot short of it");
 
-	// Rods in the bag, whatever their grade. The engine refines a rod as it
-	// is fished with (fishing.cpp: a roll per catch, and the rod becomes its
-	// GetRefinedVnum, a new item), so a bot's Wedka+1 is a Wedka+2 after a
-	// session and CountSpecifyItem(27400) says none: three of five anglers in
-	// Joan had bought rods until the bag was full of them.
+	// Rods in the bag, whatever their grade. A rod gains points as it is
+	// fished with and the bot upgrades it (UpgradePlayerBotRod -
+	// fishing::RealRefineRod: a new item of its GetRefinedVnum), so a bot's
+	// Wedka+1 is a Wedka+2 after a while and CountSpecifyItem(27400) says
+	// none: three of five anglers in Joan had bought rods until the bag was
+	// full of them.
 	int CountPlayerBotRods(LPCHARACTER ch)
 	{
 		int rods = 0;
@@ -771,10 +772,13 @@ namespace
 
 	// The rod is worthless in a fight, so a finished session always puts the real
 	// weapon back before the bot rejoins the grind.
+	void StowPlayerBotFishMind(LPCHARACTER ch);	// MT2009_PLUS_FISHING_GLOBAL_V1, below
+
 	void StowPlayerBotRod(LPCHARACTER ch)
 	{
 		if (!ch)
 			return;
+		StowPlayerBotFishMind(ch);	// MT2009_PLUS_FISHING_GLOBAL_V1
 		LPITEM rod = ch->GetWear(WEAR_WEAPON);
 		if (!rod || rod->GetType() != ITEM_ROD)
 			return;
@@ -891,13 +895,12 @@ namespace
 	// at exactly ten points - full, for ever - because `RealRefineRod` is
 	// reached only from a GM command and from a quest dialog a bot cannot open.
 	//
-	// Reimplemented rather than called, the way `CollectPlayerBotBattleHorse`
-	// reimplements the stable keeper's quest. The numbers are the item's own:
-	// `GetValue(3)` is the percentage and `GetValue(4)` is what a failure
-	// leaves behind. +0 is free - a hundred percent, and its failure row points
-	// back at itself - while +1 upwards is a real gamble (88, 77, 66, 55) that
-	// drops the rod a grade. That is the Fisherman's arithmetic and not ours to
-	// soften.
+	// MT2009_PLUS_FISHING_GLOBAL_V1 (the owner, 4 November 2026: "Boty ulepszaja
+	// wedki"): the engine's own fishing::RealRefineRod now, the same call the
+	// Rybak's dialog makes for a player (quest rybak_wedki) - the global rule,
+	// free, value3 per cent (+1 100, then 39), a failure keeps the rod with 10%
+	// of its points less (server-patches/fishglobal). Wedka+20 and Wedka
+	// Weglowa have no next step (refined vnum 0) and are never tried.
 	bool UpgradePlayerBotRod(LPCHARACTER ch)
 	{
 		if (!ch || IsPlayerBotGearFrozen(ch))
@@ -933,24 +936,101 @@ namespace
 		if (rod->GetWindow() != INVENTORY || rod->GetCell() >= PLAYERBOT_BAG_CELLS)
 			return false;
 		const DWORD oldVnum = rod->GetVnum();
-		const BYTE bCell = rod->GetCell();
+		const DWORD nextVnum = rod->GetRefinedVnum();
 		const int chance = rod->GetValue(3);
-		const DWORD nextVnum = number(1, 100) <= chance
-				? rod->GetRefinedVnum() : (DWORD)rod->GetValue(4);
-		if (nextVnum == 0)
+		const long points = rod->GetSocket(0);
+		// rod is gone after a success (the engine puts the new grade in its cell)
+		const int result = fishing::RealRefineRod(ch, rod);
+		if (result == 2)
 			return false;
-		LPITEM fresh = ITEM_MANAGER::instance().CreateItem(nextVnum, 1);
-		if (!fresh)
-			return false;
-		const bool won = nextVnum > oldVnum;
-		ITEM_MANAGER::instance().RemoveItem(rod, "REMOVE (REFINE FISH_ROD)");
-		fresh->AddToCharacter(ch, TItemPos(INVENTORY, bCell));
-		LogManager::instance().ItemLog(ch, fresh,
-				won ? "REFINE FISH_ROD SUCCESS" : "REFINE FISH_ROD FAIL", fresh->GetName());
-		sys_log(0, "PLAYERBOT_FISHING: rod upgrade pid=%u name=%s %u -> %u chance=%d %s",
-				ch->GetPlayerID(), ch->GetName(), oldVnum, nextVnum, chance,
-				won ? "SUCCESS" : "FAIL");
+		sys_log(0, "PLAYERBOT_FISHING: rod upgrade pid=%u name=%s %u -> %u chance=%d points=%ld %s",
+				ch->GetPlayerID(), ch->GetName(), oldVnum, result == 1 ? nextVnum : oldVnum, chance, points,
+				result == 1 ? "SUCCESS" : "FAIL (-10% points)");
 		return true;
+	}
+
+	// MT2009_PLUS_FISHING_GLOBAL_V1 (the owner, 4 November 2026: "Boty ... uzywaja
+	// Rybich Wnetrznosci"): the rare fish bite only with Rybie Wnetrznosci
+	// (fishing_drop.lua tier 2: 71008 / 72013-72015 worn, or the premium), so an
+	// angler whose rod reaches them (+4) wears one for the session: one from the
+	// bag, else one bought - 72015 (three hours, its minutes run only while worn)
+	// for PLAYERBOT_FISH_MIND_PRICE yang, the ItemShop's 18 SM line at the price
+	// sheet's coin. The rings and gloves come off for a session
+	// (playerbot_unique_slots.h, "session"), so a unique slot is free then; the
+	// mind comes off again with the rod (StowPlayerBotFishMind). Never Wedka
+	// Weglowa nor the golden tuna (fishing_drop.lua: no tuna for a bot).
+	const DWORD PLAYERBOT_FISH_MIND_BUY_VNUM = 72015;
+	const long long PLAYERBOT_FISH_MIND_PRICE = 900000;
+	const int PLAYERBOT_FISH_MIND_MIN_ROD_LEVEL = 4;
+
+	bool IsPlayerBotFishMind(DWORD vnum)
+	{
+		return vnum == 71008 || vnum == 72013 || vnum == 72014 || vnum == 72015;
+	}
+
+	bool IsPlayerBotWearingFishMind(LPCHARACTER ch)
+	{
+		for (int wear = WEAR_UNIQUE1; wear <= WEAR_UNIQUE2; ++wear)
+		{
+			LPITEM worn = ch->GetWear(wear);
+			if (worn && IsPlayerBotFishMind(worn->GetVnum()))
+				return true;
+		}
+		return false;
+	}
+
+	void WearPlayerBotFishMind(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotGearFrozen(ch) || IsPlayerBotWearingFishMind(ch) ||
+				ch->GetPremiumRemainSeconds(PREMIUM_FISH_MIND) > 0)
+			return;
+		LPITEM rod = ch->GetWear(WEAR_WEAPON);
+		if (!rod || rod->GetType() != ITEM_ROD || rod->GetValue(0) / 10 < PLAYERBOT_FISH_MIND_MIN_ROD_LEVEL)
+			return;
+		if (ch->GetWear(WEAR_UNIQUE1) && ch->GetWear(WEAR_UNIQUE2))
+			return;
+		LPITEM mind = NULL;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !mind; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetType() == ITEM_UNIQUE && IsPlayerBotFishMind(item->GetVnum()) &&
+					!item->isLocked() && !item->IsExchanging())
+				mind = item;
+		}
+		bool bought = false;
+		if (!mind)
+		{
+			if ((long long)ch->GetGold() < PLAYERBOT_FISH_MIND_PRICE + PLAYERBOT_FISH_MIND_PRICE ||
+					CountPlayerBotFreeInventoryCells(ch) < 2)
+				return;
+			mind = ITEM_MANAGER::instance().CreateItem(PLAYERBOT_FISH_MIND_BUY_VNUM, 1);
+			if (!mind)
+				return;
+			const int cell = ch->GetEmptyInventory(mind->GetSize());
+			if (cell < 0)
+			{
+				M2_DESTROY_ITEM(mind);
+				return;
+			}
+			mind->AddToCharacter(ch, TItemPos(INVENTORY, cell));
+			ch->PointChange(POINT_GOLD, -PLAYERBOT_FISH_MIND_PRICE);
+			bought = true;
+		}
+		if (PlayerBotEquipItem(ch, mind) && mind->IsEquipped())
+			sys_log(0, "PLAYERBOT_FISHING: Rybie Wnetrznosci on pid=%u name=%s vnum=%u%s",
+					ch->GetPlayerID(), ch->GetName(), mind->GetVnum(), bought ? " (bought)" : "");
+	}
+
+	void StowPlayerBotFishMind(LPCHARACTER ch)
+	{
+		if (!ch)
+			return;
+		for (int wear = WEAR_UNIQUE1; wear <= WEAR_UNIQUE2; ++wear)
+		{
+			LPITEM worn = ch->GetWear(wear);
+			if (worn && IsPlayerBotFishMind(worn->GetVnum()) && ch->GetEmptyInventory(worn->GetSize()) >= 0)
+				ch->UnequipItem(worn);
+		}
 	}
 
 	int CountPlayerBotDeadFish(LPCHARACTER ch)
@@ -1802,6 +1882,9 @@ namespace
 				state.dwNextFishingCheckTime = dwNow + PLAYERBOT_FISHING_NO_ROOM_WAIT_MS;
 			return false;
 		}
+
+		// MT2009_PLUS_FISHING_GLOBAL_V1: Rybie Wnetrznosci for a rod of +4 or more
+		WearPlayerBotFishMind(ch);
 
 		if (dwNow < state.dwNextFishingActionTime)
 			return true;

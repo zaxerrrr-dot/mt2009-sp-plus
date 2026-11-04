@@ -12,9 +12,14 @@
 #
 #  The panel therefore writes only the table's lines, plain text, into the
 #  spool volume both containers share:
-#      $SPOOL/fishing/fishing_drop.custom.txt
-#          item<TAB>count<TAB>rod_from<TAB>rod_to<TAB>min_bonus<TAB>weight  [# comment]
-#          (item: a VNUM or "farba" - a random hair dye)
+#      $SPOOL/fishing/fishing_drop.v2.custom.txt
+#          item<TAB>count<TAB>rod_from<TAB>rod_to<TAB>tier<TAB>weight  [# comment]
+#          (item: a VNUM or "farba" - a random hair dye; MT2009_PLUS_FISHING_GLOBAL_V1:
+#          the rod's level 1-20, Wedka Weglowa 22; tier 0 common / 1 better fish /
+#          2 rare fish - only with Rybie Wnetrznosci or the golden tuna's bonus /
+#          3 Zloty Tunczyk - once a day; lowienie/fishing_drop.lua. The file of the
+#          old table - fishing_drop.custom.txt, rods +0..+9 and a minimum bonus -
+#          is not read any more.)
 #  and before the cores boot (m2-supervise, boot_cores) `apply' rebuilds the
 #  live fishing_drop.lua: the image's copy with the lines between
 #  "local fishing_drop_table = {" and its "}" replaced by the panel's. No file
@@ -25,8 +30,8 @@
 #  Checked before anything is used (a failing file is not used at all, the
 #  cores boot with the image's table and the panel is told why):
 #    * six fields per line, whole numbers in range, rod_from <= rod_to;
-#    * every rod +0..+9 with its own bonus (item_proto value0, no bait) has
-#      something to catch - the quest's draw would fail otherwise;
+#    * every rod level 1-20 and 22 has something of tier 0 or 1 to catch
+#      (without Rybie Wnetrznosci) - the quest's draw would fail otherwise;
 #    * every item is in item_proto (when the database answers).
 #
 #  Subcommands
@@ -46,11 +51,9 @@ SPOOL="${M2_RATES_SPOOL:-/opt/m2spool}/fishing"
 
 LIVE="$LIBDIR/fishing_drop.lua"
 IMAGE="$LIBDIR/fishing_drop.image.lua"
-CUSTOM="$SPOOL/fishing_drop.custom.txt"
+CUSTOM="$SPOOL/fishing_drop.v2.custom.txt"
 STATUS="$SPOOL/status"
 WORK="$VAR_DIR/fishing"
-# rod level -> the rod's own bonus, when the database does not answer
-ROD_BONUS_DEFAULT="0:0 1:10 2:20 3:30 4:40 5:50 6:60 7:70 8:80 9:100"
 
 say() { printf '%s [fishing] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
 
@@ -121,13 +124,8 @@ cmd_apply() {
     fi
     _sha=$(sha256sum "$CUSTOM" | cut -d' ' -f1)
 
-    # The rods' own bonus (item_proto value0) of the rods +0..+9.
-    _rods=$(db_query "SELECT (vnum - 27400) DIV 10, value0 FROM player.item_proto${M2_TABLE_POSTFIX:-} WHERE type = 13 AND vnum BETWEEN 27400 AND 27490 AND vnum % 10 = 0" \
-        | awk '{ printf "%s:%s ", $1, $2 }')
-    [ -n "$_rods" ] || _rods=$ROD_BONUS_DEFAULT
-
     sed '1s/^\xEF\xBB\xBF//; s/\r$//; s/#.*$//; s/[[:blank:]]*$//' "$CUSTOM" > "$WORK/custom.norm" || return 1
-    awk -v rods="$_rods" '
+    awk '
     function err(m) { print "E line " NR ": " m; bad = 1; exit }
     function isint(s) { return s ~ /^[0-9]+$/ }
     function range(v, lo, hi, what) { if (!isint(v) || v + 0 < lo || v + 0 > hi) err(what " must be " lo "-" hi) }
@@ -135,26 +133,24 @@ cmd_apply() {
     {
         n = split($0, f, /[[:blank:]]+/)
         if (f[1] == "") { for (i = 2; i <= n; i++) f[i - 1] = f[i]; n-- }
-        if (n != 6) err("six fields needed: item count rod_from rod_to min_bonus weight")
+        if (n != 6) err("six fields needed: item count rod_from rod_to tier weight")
         if (f[1] != "farba" && !isint(f[1])) err("item \"" f[1] "\" is not a number (or farba)")
-        range(f[2], 1, 200, "count"); range(f[3], 0, 19, "rod_from"); range(f[4], 0, 19, "rod_to")
-        range(f[5], 0, 1000, "min_bonus"); range(f[6], 1, 1000000, "weight")
+        range(f[2], 1, 200, "count"); range(f[3], 1, 22, "rod_from"); range(f[4], 1, 22, "rod_to")
+        range(f[5], 0, 3, "tier"); range(f[6], 1, 1000000, "weight")
         if (f[3] + 0 > f[4] + 0) err("rod_from is above rod_to")
         if (isint(f[1])) print "I " f[1]
         item = (f[1] == "farba") ? "\"farba\"" : f[1]
         print "L     " item ", " f[2] ", " f[3] ", " f[4] ", " f[5] ", " f[6] ", "
-        rows++; rmin[rows] = f[3] + 0; rmax[rows] = f[4] + 0; rbon[rows] = f[5] + 0; rw[rows] = f[6] + 0
+        rows++; rmin[rows] = f[3] + 0; rmax[rows] = f[4] + 0; rtier[rows] = f[5] + 0; rw[rows] = f[6] + 0
     }
     END {
         if (bad) exit
         if (!rows) { print "E no lines"; exit }
-        m = split(rods, pairs, " ")
-        for (p = 1; p <= m; p++) {
-            split(pairs[p], kv, ":"); lv = kv[1] + 0; bonus = kv[2] + 0
-            if (lv < 0 || lv > 9) continue
+        for (lv = 1; lv <= 22; lv++) {
+            if (lv == 21) continue
             pool = 0
-            for (r = 1; r <= rows; r++) if (rmin[r] <= lv && lv <= rmax[r] && bonus >= rbon[r]) pool += rw[r]
-            if (!pool) { print "E rod +" lv " (bonus " bonus ") would catch nothing"; exit }
+            for (r = 1; r <= rows; r++) if (rmin[r] <= lv && lv <= rmax[r] && rtier[r] <= 1) pool += rw[r]
+            if (!pool) { print "E rod level " lv " would catch nothing without Rybie Wnetrznosci"; exit }
         }
     }
     ' "$WORK/custom.norm" > "$WORK/custom.check" 2>&1

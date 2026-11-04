@@ -2132,4 +2132,18 @@ if ((Test-Path -LiteralPath $miksturyApply -PathType Leaf) -and
     }
 }
 
+# Lowienie jak na globalu (server-patches/fishglobal, MT2009_PLUS_FISHING_GLOBAL_V1; the owner, 4 November 2026): the
+# bite chance with a worn Rybie Wnetrznosci or the golden tuna's bonus, the free rod upgrade at the Rybak's dialog with
+# -10% points on a failure (fishing.cpp, char_item.cpp), Skrzynia Nimfy Wodnej from monsters of level 70+
+# (item_manager.cpp). The logic is fish_global.cpp (the overlay). After chestsash, konie, fishpuzzle and fishren.
+$fishGlobalApply = Join-Path $repo 'server-patches/fishglobal/Apply-FishGlobalPatch.ps1'
+if ((Test-Path -LiteralPath $fishGlobalApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'fishing.cpp') -PathType Leaf)) {
+    $fishGlobalResult = & $fishGlobalApply -SourceDir $engineGameSource
+    if ($fishGlobalResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} global fishing edit(s).' -f $fishGlobalResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

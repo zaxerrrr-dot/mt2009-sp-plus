@@ -373,6 +373,11 @@ namespace
 		// Yohara bots' protection stone - playerbot_element_stones.h), never this pass's.
 		if (item->GetType() == ITEM_UNIQUE && Mt2009IsElementStone(item->GetVnum()))
 			return false;
+		// MT2009_PLUS_FISHING_GLOBAL_V1: Rybie Wnetrznosci (71008, 72013-72015) - worn only for a fishing session
+		// (WearPlayerBotFishMind / StowPlayerBotFishMind, playerbot_activities.h), their minutes run while worn.
+		if (item->GetType() == ITEM_UNIQUE && (item->GetVnum() == 71008 ||
+				(item->GetVnum() >= 72013 && item->GetVnum() <= 72015)))
+			return false;
 
 		switch (item->GetType())
 		{

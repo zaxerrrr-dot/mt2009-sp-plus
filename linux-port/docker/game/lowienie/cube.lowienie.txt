@@ -1,0 +1,15 @@
+# MT2009_PLUS_FISHING_GLOBAL_V1: Wedka Weglowa (27591) at the Rybak (9009) - the owner, 4 November 2026 ("przepis u
+# Rybaka 9009: 27621 + 27622 + 27623 + 3x 27624, 100%, bez Yang"; GF / Owsap cube.txt the same). Appended to the share's
+# cube.txt by the Dockerfile; his crafting window opens from quest mikstury_okno ("Wytwarzanie mikstur") and from
+# quest rybak_wedki ("Wedka Weglowa").
+
+# Wedka Weglowa <- Wedzisko, Przelotka, Rekojesc, 3x Wlokno Weglowe
+section
+npc	9009
+item	27621	1
+item	27622	1
+item	27623	1
+item	27624	3
+reward	27591	1
+percent	100
+end

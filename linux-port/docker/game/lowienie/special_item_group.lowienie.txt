@@ -1,0 +1,27 @@
+# MT2009_PLUS_FISHING_GLOBAL_V1: Skrzynia Nimfy Wodnej 27625 (the global 83032 is our Zloty Pakiet Yutnori) - opened
+# with Klucz Nimfy Wodnej 50043 (key value 3). The owner's table (4 November 2026, decision 10, 16 items + Zlote Ziolo
+# 50741 at 1% - the others scaled down to 99%, the sum 99.39% of the screen -> 99%); the weights are the per cents
+# x 100. One line an opening. Stand-ins: Losowa Skrzynka (55400, not in this world) -> 50011 as the flower boxes do;
+# Odzywka -> 55001 (our Proteinowa Przekaska, the same item). Zlote Ziolo 50741 is added by the potions' branch
+# (claude/y-mikstury2): deploy both together. Appended to special_item_group.txt by the Dockerfile.
+Group	MT2009_lowienie_27625
+{
+	Vnum	27625 -- Skrzynia Nimfy Wodnej
+	1	gold	100000	2092 -- 100 000 Yang
+	2	55004	1	996 -- Ksiega Dzikiego Zwierza
+	3	55003	1	996 -- Ksiega Mlodego Zwierza
+	4	55005	1	896 -- Ksiega Dzielnego Zwierza
+	5	71083	1	827 -- Ksiega Obrobki Kamienia
+	6	50011	1	687 -- Losowa Skrzynka - u nas Szkat. Blasku Ksiezyca (55400 nie istnieje; jak special_item_group.flower.txt)
+	7	27624	1	687 -- Wlokno Weglowe
+	8	55001	1	488 -- Odzywka (u nas Proteinowa Przekaska)
+	9	27623	1	349 -- Rekojesc
+	10	27621	1	349 -- Wedzisko
+	11	27622	1	349 -- Przelotka
+	12	51501	1	279 -- Cor Draconis (surowe)
+	13	25040	1	279 -- Zwoj Blogoslawienstwa
+	14	71034	1	279 -- Mikstura Ataku +15 (30 min)
+	15	76033	10	279 -- Wino Kwiatu Brzoskwini+ x10 (en-wiki)
+	16	55009	1	69 -- Skrzynia Ksiag Zwierza
+	17	50741	1	100 -- Zlote Ziolo (wlasciciel: ok. 1%)
+}

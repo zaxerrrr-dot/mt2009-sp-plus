@@ -1,0 +1,44 @@
+[
+ {
+  "file": "fishing.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (decl)",
+  "old": "#include \"unique_item.h\"\n#endif\n",
+  "new": "#include \"unique_item.h\"\n#endif\n\n// MT2009_PLUS_FISHING_GLOBAL_V1 (decl): Rybie Wnetrznosci (premium or worn) or the golden tuna's bonus - fish_global.cpp\nbool Mt2009FishMindOrTuna(LPCHARACTER ch);\n"
+ },
+ {
+  "file": "fishing.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (chance)",
+  "old": "\t\tif (ch->GetPremiumRemainSeconds(PREMIUM_FISH_MIND) > 0)\n\t\t\tchance += 10;\n",
+  "new": "\t\t// MT2009_PLUS_FISHING_GLOBAL_V1 (chance): Rybie Wnetrznosci - the premium or the worn item - or the golden tuna's bonus\n\t\tif (::Mt2009FishMindOrTuna(ch))\n\t\t\tchance += 10;\n"
+ },
+ {
+  "file": "fishing.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (refinable)",
+  "old": "\t\treturn (rod->GetSocket(0) == rod->GetValue(2));\n",
+  "new": "\t\t// MT2009_PLUS_FISHING_GLOBAL_V1 (refinable): only a rod with a next step (not +20 nor Wedka Weglowa)\n\t\treturn rod->GetRefinedVnum() > 0 && rod->GetSocket(0) == rod->GetValue(2);\n"
+ },
+ {
+  "file": "fishing.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (rod fail)",
+  "old": "\t\t\tLPITEM pkNewItem = ITEM_MANAGER::instance().CreateItem(rod->GetValue(4), 1);\n",
+  "new": "\t\t\t// MT2009_PLUS_FISHING_GLOBAL_V1 (rod fail): the rod stays, 10% of its points less (the global rule)\n\t\t\t{\n\t\t\t\tconst long lPoints = rod->GetSocket(0);\n\t\t\t\tconst long lLose = MAX(1L, lPoints / 10);\n\t\t\t\trod->SetSocket(0, MAX(0L, lPoints - lLose), true, \"SOCKET_FISHING\");\n\t\t\t\tLogManager::instance().ItemLog(ch, rod, \"REFINE FISH_ROD FAIL\", rod->GetName());\n\t\t\t\treturn 0;\n\t\t\t}\n\t\t\tLPITEM pkNewItem = ITEM_MANAGER::instance().CreateItem(rod->GetValue(4), 1);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (fisher take)",
+  "old": "\t\tcase fishing::FISHER_MOB:\n\t\t{\n\t\t\tif (fishing::RefinableRod(item))\n\t\t\t{\n\t\t\t\tfrom->SetRefineNPC(this);\n\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_FISHER);\n\t\t\t}\n\t\t\telse {\n",
+  "new": "\t\tcase fishing::FISHER_MOB:\n\t\t{\n\t\t\t// MT2009_PLUS_FISHING_GLOBAL_V1 (fisher take): no refine window - the rod goes to the Rybak's dialog (quest rybak_wedki), which\n\t\t\t// upgrades it for free (__fish_real_refine_rod -> fishing::RealRefineRod)\n\t\t\t{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (chest sash)",
+  "old": "dwBoxVnum != 50012 && dwBoxVnum != 50013 &&\n",
+  "new": "dwBoxVnum != 50012 && dwBoxVnum != 50013 &&\n\t\t\t\t\t\t\t\tdwBoxVnum != 27625 /* MT2009_PLUS_FISHING_GLOBAL_V1 (chest sash): Skrzynia Nimfy Wodnej */ &&\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_FISHING_GLOBAL_V1 (nimfa drop)",
+  "old": "\t{ void Mt2009KonieDrop(LPCHARACTER, LPCHARACTER, std::vector<LPITEM>&); Mt2009KonieDrop(pkChr, pkKiller, vec_item); }\n",
+  "new": "\t{ void Mt2009KonieDrop(LPCHARACTER, LPCHARACTER, std::vector<LPITEM>&); Mt2009KonieDrop(pkChr, pkKiller, vec_item); }\n\t// MT2009_PLUS_FISHING_GLOBAL_V1 (nimfa drop): Skrzynia Nimfy Wodnej from every monster of level 70+ (fish_global.cpp)\n\t{ void Mt2009FishNimfaDrop(LPCHARACTER, LPCHARACTER, int, int, std::vector<LPITEM>&); Mt2009FishNimfaDrop(pkChr, pkKiller, iDeltaPercent, iRandRange, vec_item); }\n"
+ }
+]

@@ -4471,6 +4471,19 @@ if [ -s /opt/playerbot/yohara_mikstury.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_FISHING_GLOBAL_V1: fishing as on the global server (the owner, 4 November 2026) - yohara_lowienie.sql
+# (tools/yohara_lowienie/gen_ylowienie.py): rods Wedka+1..+20 (the global numbers, the chain to +20, no refine set - the
+# upgrade is free at the Rybak's dialog), Wedka Weglowa 27591 and its parts 27621-27624, the fish 27824-27827 (alive /
+# dead / grilled), the grilled fish of the wiki, Zloty Tunczyk 27797, Skrzynia Nimfy Wodnej 27625, the Rybak's prices
+# and Kula Rybaka. Idempotent (INSERT IGNORE + UPDATEs). Before the bonus mode's step (27883 stays its).
+if [ -s /opt/playerbot/yohara_lowienie.sql ]; then
+    if db < /opt/playerbot/yohara_lowienie.sql; then
+        echo "[playerbot-migrate] fishing as on the global server: yohara_lowienie.sql applied (MT2009_PLUS_FISHING_GLOBAL_V1)"
+    else
+        fail_step "fishing: yohara_lowienie.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_ELEMENT_STONES_V1: Kamien Ochrony Zywiolow (39120) and Kamien Mocy Zywiolow (39119) - the owner, 28 October
 # 2026 - kamienie_zywiolow.sql (tools/kamienie_zywiolow/gen_kamienie_zywiolow.py): the two unique-slot amulets (7 days of
 # real time) and their six bonus lines each in world.item_extra_apply (made above). Idempotent (INSERT IGNORE). Only one

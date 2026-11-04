@@ -114,12 +114,14 @@ def seed(fake):
     attr("world.item_attr_rare", "POINT_MAX_HP", 1, (150, 250, 500, 800, 850), weapon=5, body=5)
     for level in range(1, 120):           # level 120 has no row: the compiled value
         fake.con.execute("INSERT INTO common.exp_table VALUES (?, ?)", (level, exptable.BUILTIN[level]))
-    items = [(27400 + 10 * lv, f"Wedka+{lv}", 13, fishing.ROD_BONUS_DEFAULT[lv], lv) for lv in range(10)]
+    items = [(27400 + 10 * lv, f"Wedka+{lv + 1}", 13, 10 * (lv + 1), (lv + 1) // 2) for lv in range(20)]
+    items += [(27591, "Wedka Weglowa", 13, 220, 12)]
     items += [(v, f"Przedmiot {v}", 3, 0, 0) for v in (27801, 27802, 27803, 27804, 27805, 27806, 27807, 27808, 27809,
                                                          27810, 27811, 27812, 27813, 27814, 27815, 27816, 27818, 27819,
                                                          27820, 27821, 27822, 27823, 70201, 70202, 70007, 70051, 70050,
                                                          50002, 70049, 70048, 70102, 50009, 50008, 70006, 27798, 25040,
-                                                         30370, 30373, 30374, 71025, 71026)]
+                                                         30370, 30373, 30374, 71025, 71026, 27824, 27825, 27826,
+                                                         27827, 27797, 50043, 80008, 39015, 39016)]
     fake.con.executemany("INSERT INTO player.item_proto VALUES (?, ?, ?, ?, ?)", items)
 
 
@@ -304,30 +306,37 @@ class FishingTests(Base):
 
     def test_parse_snapshot_and_odds(self):
         entries = self.snapshot()
-        self.assertEqual(len(entries), 40)
-        self.assertNotIn("71282", [e["item"] for e in entries])            # commented out by the Dockerfile
-        self.assertEqual(entries[0], fishing.entry("27802", 1, 0, 5, 0, 393, comment=""))
+        self.assertEqual(len(entries), 47)
+        self.assertNotIn("71282", [e["item"] for e in entries])            # never in MT2009_PLUS_FISHING_GLOBAL_V1's table
+        self.assertEqual(entries[0], fishing.entry("27802", 1, 1, 22, 0, 2000, comment="Drobne Ryby"))
         self.assertIn("farba", [e["item"] for e in entries])
         for level in fishing.ROD_LEVELS:
-            odds, total = fishing.chances(entries, level, fishing.ROD_BONUS_DEFAULT[level])
+            odds, total = fishing.chances(entries, level)
             self.assertGreater(total, 0, level)
             self.assertAlmostEqual(sum(odds.values()), 100.0)
-        self.assertEqual(fishing.validate(entries, None, fishing.ROD_BONUS_DEFAULT), [])
+        # the rare fish only with Rybie Wnetrznosci, more of them the better the rod
+        rare = lambda level, mult: sum(p for i, p in fishing.chances(entries, level, mult)[0].items()
+                                       if entries[i]["tier"] == 2)
+        self.assertEqual(rare(20, 0), 0)
+        self.assertGreater(rare(20, 200), rare(4, 200))
+        self.assertGreater(rare(22, 250), rare(22, 200))
+        self.assertEqual(fishing.validate(entries, None), [])
         again = fishing.parse_custom(fishing.render_custom(entries, "test ł").decode("ascii"))
         self.assertEqual([{k: e[k] for k in fishing.LIMITS} for e in again],
                          [{k: e[k] for k in fishing.LIMITS} for e in entries])
 
     def test_validate(self):
-        only_big = [fishing.entry("27802", 1, 0, 9, 50, 10)]
-        problems = fishing.validate(only_big, {27802}, fishing.ROD_BONUS_DEFAULT)
-        self.assertTrue(any("Wędka +0" in p for p in problems))
-        self.assertTrue(fishing.validate([fishing.entry("123", 1, 0, 9, 0, 1)], {27802}, fishing.ROD_BONUS_DEFAULT))
-        self.assertTrue(fishing.validate([fishing.entry("27802", 1, 5, 2, 0, 1)], None, fishing.ROD_BONUS_DEFAULT))
+        only_rare = [fishing.entry("27802", 1, 1, 22, 2, 10)]
+        problems = fishing.validate(only_rare, {27802})
+        self.assertTrue(any("Wędka poziomu 1 " in p for p in problems))
+        self.assertTrue(fishing.validate([fishing.entry("123", 1, 1, 22, 0, 1)], {27802}))
+        self.assertTrue(fishing.validate([fishing.entry("27802", 1, 5, 2, 0, 1)], None))
+        self.assertTrue(fishing.validate([fishing.entry("27802", 1, 1, 22, 4, 1)], None))
 
     def form(self, entries, **extra):
         data = {"row_count": str(len(entries)), "action": "save"}
         for i, e in enumerate(entries):
-            for key in ("item", "count", "rod_min", "rod_max", "bonus", "weight"):
+            for key in ("item", "count", "rod_min", "rod_max", "tier", "weight"):
                 data[f"r{i}_{key}"] = str(e[key])
         data.update(extra)
         return data
@@ -339,13 +348,13 @@ class FishingTests(Base):
         entries = self.snapshot()
         entries[0]["weight"] = 500
         page = self.post("/db/fishing", self.form(entries, r5_delete="1")).get_data(as_text=True)
-        self.assertIn("Zapisano tabelę łowienia (39 pozycji)", page)
+        self.assertIn("Zapisano tabelę łowienia (46 pozycji)", page)
         saved = fishing.parse_custom(df.custom_path(self.spool, "fishing").read_text(encoding="ascii"))
-        self.assertEqual((len(saved), saved[0]["weight"]), (39, 500))
+        self.assertEqual((len(saved), saved[0]["weight"]), (46, 500))
         self.assertEqual([p["key"] for p in df.pending_changes(self.spool)], ["fishing"])      # on /db/apply
-        page = self.post("/db/fishing", self.form([fishing.entry("99999", 1, 0, 9, 0, 1)])).get_data(as_text=True)
+        page = self.post("/db/fishing", self.form([fishing.entry("99999", 1, 1, 22, 0, 1)])).get_data(as_text=True)
         self.assertIn("nie ma w grze", page)
-        self.assertEqual(len(fishing.parse_custom(df.custom_path(self.spool, "fishing").read_text())), 39)
+        self.assertEqual(len(fishing.parse_custom(df.custom_path(self.spool, "fishing").read_text())), 46)
         self.post("/db/fishing", {"action": "reset"})
         self.assertFalse(df.custom_path(self.spool, "fishing").exists())
         self.assertEqual(len(df.list_backups(self.spool, ["fishing"])), 2)
@@ -371,18 +380,18 @@ class GameSideTests(unittest.TestCase):
             image = fishing.SNAPSHOT.read_bytes()
             (lib / "fishing_drop.lua").write_bytes(image)
             spool = root / "spool"
-            entries = fishing.parse_lua(image.decode())[:3] + [fishing.entry("farba", 1, 0, 9, 0, 5)]
+            entries = fishing.parse_lua(image.decode())[:3] + [fishing.entry("farba", 1, 1, 22, 0, 5)]
             df.write_custom(spool, "fishing", fishing.render_custom(entries, "test"))
             self.run_m2(root, "prepare", "apply")
             live = (lib / "fishing_drop.lua").read_bytes().decode()
             self.assertEqual(fishing.parse_lua(live), [dict(e, comment="") for e in entries])
-            self.assertIn('"farba", 1, 0, 9, 0, 5,', live)
+            self.assertIn('"farba", 1, 1, 22, 0, 5,', live)
             self.assertIn("local fishing_drop_data_length = 6", live)        # the rest of the image stays
             self.assertEqual((spool / "fishing" / "fishing_drop.base.lua").read_bytes(), image)
             self.assertEqual(df.live_state(spool, "fishing")["kind"], "ok")
             self.assertEqual(df.pending_changes(spool), [])
-            # a rod that would catch nothing: rejected, the image's table goes back
-            df.write_custom(spool, "fishing", fishing.render_custom([fishing.entry("27802", 1, 0, 9, 90, 5)], "bad"))
+            # a rod that would catch nothing (only a rare fish): rejected, the image's table goes back
+            df.write_custom(spool, "fishing", fishing.render_custom([fishing.entry("27802", 1, 1, 22, 2, 5)], "bad"))
             self.run_m2(root, "apply")
             self.assertEqual((lib / "fishing_drop.lua").read_bytes(), image)
             state = df.live_state(spool, "fishing")

@@ -572,26 +572,26 @@ namespace
 		{ 27113,      500 },	// Fioletowa Mikstura(M)
 		{ 27114,     1500 },	// Fioletowa Mikstura(S)
 		{ 27115,     3000 },	// Fioletowa Mikstura(D)
-		{ 27400,    15000 },	// Wedka +0
-		{ 27410,    65000 },	// Wedka +1
-		{ 27420,   150000 },	// Wedka +2
-		{ 27430,   320000 },	// Wedka +3
-		{ 27440,   580000 },	// Wedka +4
-		{ 27450,  1110000 },	// Wedka +5
-		{ 27460,  1700000 },	// Wedka +6
-		{ 27470,  2500000 },	// Wedka +7
-		{ 27480,  3500000 },	// Wedka +8
-		{ 27490,  4600000 },	// Wedka +9
-		{ 27500,  7000000 },	// Wedka +10
-		{ 27510, 10000000 },	// Wedka +11
-		{ 27520, 10000000 },	// Wedka +12
-		{ 27530, 10000000 },	// Wedka +13
-		{ 27540, 10000000 },	// Wedka +14
-		{ 27550, 10000000 },	// Wedka +15
-		{ 27560, 10000000 },	// Wedka +16
-		{ 27570, 10000000 },	// Wedka +17
-		{ 27580, 10000000 },	// Wedka +18
-		{ 27590, 10000000 },	// Wedka +19
+		{ 27400,    15000 },	// Wedka+1 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27410,    65000 },	// Wedka+2 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27420,   150000 },	// Wedka+3 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27430,   320000 },	// Wedka+4 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27440,   580000 },	// Wedka+5 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27450,  1110000 },	// Wedka+6 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27460,  1700000 },	// Wedka+7 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27470,  2500000 },	// Wedka+8 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27480,  3500000 },	// Wedka+9 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27490,  4600000 },	// Wedka+10 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27500,  7000000 },	// Wedka+11 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27510, 10000000 },	// Wedka+12 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27520, 10000000 },	// Wedka+13 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27530, 10000000 },	// Wedka+14 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27540, 10000000 },	// Wedka+15 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27550, 10000000 },	// Wedka+16 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27560, 10000000 },	// Wedka+17 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27570, 10000000 },	// Wedka+18 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27580, 10000000 },	// Wedka+19 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
+		{ 27590, 10000000 },	// Wedka+20 (MT2009_PLUS_FISHING_GLOBAL_V1: +1..+20)
 		{ 27798,    15000 },	// Skamieniala Krewetka
 		{ 30378,   100000 },	// Materialy Rzemieslnicze (operator, 25 September 2026)
 		{ 39002,   500000 },	// Pierscien Doswiadczenia
@@ -1301,6 +1301,13 @@ namespace
 		{ 70430,   9410000 },	// Wejscie do Swiatyni Wezy (REF: analogia: the family's median of 1 priced (31160))
 		// Chest keys
 		{ 50043,    869000 },	// Klucz Nimfy Wodnej (REF: analogia: 83051 Id. Skrzynia Talizmanu x 0.50 (half a box-and-key pair (Id. Skrzynia Talizmanu)))
+		// MT2009_PLUS_FISHING_GLOBAL_V1: Skrzynia Nimfy Wodnej (the other half of the key's pair) and Wedka Weglowa's parts
+		// (3.5% / 6.9% of a chest each, three fibres a rod; the rod itself is bound and never sold)
+		{ 27625,    869000 },	// Skrzynia Nimfy Wodnej
+		{ 27621,   3000000 },	// Wedzisko
+		{ 27622,   3000000 },	// Przelotka
+		{ 27623,   3000000 },	// Rekojesc
+		{ 27624,   1500000 },	// Wlokno Weglowe
 		{ 83054,    869000 },	// Idealny Klucz (REF: analogia: 83051 Id. Skrzynia Talizmanu x 0.50 (half a box-and-key pair (Id. Skrzynia Talizmanu)))
 		{ 83056,    869000 },	// Plat. Klucz do Skrz. Sk. (REF: analogia: 83051 Id. Skrzynia Talizmanu x 0.50 (half a box-and-key pair (Id. Skrzynia Talizmanu)))
 		// General materials no row priced yet (they drop on Yohara too)
