@@ -678,6 +678,16 @@ namespace
 
 	long long ScorePlayerBotApply(WORD bType, long lValue, LPCHARACTER ch = NULL) // MT2009_PLUS_WIDE_ATTR_V1
 	{
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1 (gear score): the wiki's round 3 lines (256-318) at the bonus scoring's weight
+		// (playerbot_bonus67c.inc) on this scale's 50 a point - a skill line of another class or way next to nothing.
+		if (bType >= POINT_ALIGNMENT_DAMAGE_BONUS && bType < POINT_WIDE_END)
+		{
+			const int iScore = Bonus67SkillLineScore(ch, bType, (int) lValue);
+			if (iScore >= 0)
+				return (long long) iScore * 50;
+		}
+#endif
 #ifdef MT2009_PLUS_ELEMENTS_V1
 		// MT2009_PLUS_ELEMENTS_V1 (bots): a talisman's element power (Autor: Digi Rasta,
 		// server-patches/zywioly) - the talisman is armour of its own slot (WEAR_PENDANT) and
@@ -805,7 +815,13 @@ namespace
 				return (long long)lValue * (IsPlayerBotMagicSchool(ch) ? 300 : 60);
 			case APPLY_IMMUNE_STUN:
 			case APPLY_IMMUNE_SLOW:
+				return (long long)lValue * 1000;
 			case APPLY_IMMUNE_FALL:
+#ifdef MT2009_PLUS_BONUS67_SKILL
+				// MT2009_PLUS_BONUS67_SKILL_V1: a chance of 5-20% now (the body armour's 6/7 line), the old flag 1000
+				if (lValue > 1 && lValue < 100)
+					return (long long)lValue * 100;
+#endif
 				return (long long)lValue * 1000;
 #ifdef PLAYERBOT_ENGINE_MT2009
 			// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 "...Smokow" helmets' Mag./krotkodys. atak (1-8%) - a multiplier

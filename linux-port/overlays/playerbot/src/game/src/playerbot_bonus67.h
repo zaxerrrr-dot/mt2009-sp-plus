@@ -44,4 +44,21 @@ int Bonus67AttrValue(LPITEM item, int iSlot, TMt2009PointNum bType, int iValue);
 // (the panel's level odds), 1 add2 (aiPct), 2 change, 3 change2. -1: not a glove.
 int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);
 
+// MT2009_PLUS_BONUS67_SKILL_V1: the 6th/7th bonuses of the wiki round 3 (server-patches/bonusy67c, the points 256-318 -
+// tools/bonusy67/bonusy67c_data.py). Defined with and without the patch (no-ops without it), so the overlay links in
+// every core.
+// FuncSplashDamage (char_skill.cpp) before a skill's blow: the body armour's "Obrazenia od <umiejetnosc> +x%".
+int Bonus67SkillHitDamage(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, unsigned int dwVnum, int iDam);
+// ... after it (iDealt = the HP the victim lost): the weapon's HP absorption, stun and knockback of that skill.
+void Bonus67SkillHitAfter(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, unsigned int dwVnum, int iDealt, bool bDead);
+// CHARACTER::ComputeSkill: "Czas trwania <umiejetnosc> +x sek." - the seconds added to the skill's affect.
+int Bonus67SkillDurationSec(LPCHARACTER ch, unsigned int dwVnum);
+// CItem::AddRareAttribute / PutRareAttributeWithLevel: may this pool line roll on this item (a skill's line: the
+// item's class can use the skill)?
+bool Bonus67RareFits(CItem* item, int iApply);
+// CalcPlayerBonus (battle.cpp): the half humans' bonus against a player with "+x% of the total".
+int Bonus67PerHuman(LPCHARACTER pkAttacker, int iValue);
+// The bots' bonus scoring (playerbot_bonus.h): what a round 3 line is worth to this character (-1: not one of them).
+int Bonus67SkillLineScore(LPCHARACTER ch, unsigned int dwPoint, int iValue);
+
 #endif

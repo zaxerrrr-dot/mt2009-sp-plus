@@ -58,6 +58,7 @@
 #include "questmanager.h"
 #include "log.h"
 #include "constants.h"
+#include "playerbot_bonus67.h" // MT2009_PLUS_BONUS67_SKILL_V1: Bonus67RareFits
 
 // MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli) - AddRareAttribute(2)
 // refuses them, so Seon-Hae must not take them. The gloves' Will (MT2009_PLUS_GLOVE_BASE_V1) and - MT2009_PLUS_JADE_BASE_V1,
@@ -252,7 +253,8 @@ namespace mt2009_seonhae
 		if (set < 0 || set >= ATTRIBUTE_SET_MAX_NUM)
 			return false;
 		for (TItemAttrMap::const_iterator it = g_map_itemRare.begin(); it != g_map_itemRare.end(); ++it)
-			if (it->second.bMaxLevelBySet[set] > 0 && it->second.dwProb > 0 && !item->HasRareAttr((BYTE)it->first))
+			if (it->second.bMaxLevelBySet[set] > 0 && it->second.dwProb > 0 && !item->HasRareAttr((WORD)it->first)
+					&& Bonus67RareFits(item, it->first)) // MT2009_PLUS_BONUS67_SKILL_V1: a skill's line - the item's class only
 				return true;
 		return false;
 	}

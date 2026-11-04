@@ -13,8 +13,10 @@
 #include "item.h"
 #include "sectree.h"
 #include "questmanager.h"
+#include "affect.h"
 
 #include <algorithm>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -76,8 +78,8 @@ namespace
 	// A bonus and its "+x% of the total" line.
 	struct TPer
 	{
-		BYTE bPoint;
-		BYTE bPer;
+		WORD bPoint; // MT2009_PLUS_BONUS67_SKILL_V1: the round 3's "+x% of the total" lines are two-byte points
+		WORD bPer;
 	};
 	const TPer s_aPer[] = {
 		{ POINT_ATTBONUS_MONSTER, POINT_ATTBONUS_PER_MONSTER }, { POINT_ATTBONUS_STONE, POINT_ATTBONUS_PER_STONE },
@@ -91,6 +93,12 @@ namespace
 		{ POINT_RESIST_ELEC, POINT_RESIST_PER_ELEC }, { POINT_RESIST_FIRE, POINT_RESIST_PER_FIRE },
 		{ POINT_RESIST_ICE, POINT_RESIST_PER_ICE }, { POINT_RESIST_WIND, POINT_RESIST_PER_WIND },
 		{ POINT_RESIST_EARTH, POINT_RESIST_PER_EARTH }, { POINT_RESIST_DARK, POINT_RESIST_PER_DARK },
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1: the en-wiki's weapon - "Strong against Half Humans / Undead / Desert Monsters
+		// (1~15% / 1~15% / 1~20%) of total value"
+		{ POINT_ATTBONUS_HUMAN, POINT_ATTBONUS_PER_HUMAN }, { POINT_ATTBONUS_UNDEAD, POINT_ATTBONUS_PER_UNDEAD },
+		{ POINT_ATTBONUS_DESERT, POINT_ATTBONUS_PER_DESERT },
+#endif
 	};
 
 	// What a character's lines started, by VID (a VID is never given twice): the hit buffs and the gloves' times.
@@ -351,7 +359,7 @@ int Bonus67AttBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iPointValu
 	// the lines whose bonus CalcAttBonus has just counted: the same conditions
 	struct
 	{
-		BYTE bPoint;
+		WORD bPoint; // MT2009_PLUS_BONUS67_SKILL_V1
 		bool bOn;
 	} aLines[] = {
 		{ POINT_ATTBONUS_MONSTER, true },
@@ -361,6 +369,12 @@ int Bonus67AttBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iPointValu
 		{ POINT_ATTBONUS_ORC, pkVictim->IsRaceFlag(RACE_FLAG_ORC) },
 		{ POINT_ATTBONUS_MILGYO, pkVictim->IsRaceFlag(RACE_FLAG_MILGYO) },
 		{ POINT_ATTBONUS_INSECT, pkVictim->IsRaceFlag(RACE_FLAG_INSECT) },
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1: the half humans', the undead's and the desert's (CalcAttBonus's race flags)
+		{ POINT_ATTBONUS_HUMAN, pkVictim->IsRaceFlag(RACE_FLAG_HUMAN) },
+		{ POINT_ATTBONUS_UNDEAD, pkVictim->IsRaceFlag(RACE_FLAG_UNDEAD) },
+		{ POINT_ATTBONUS_DESERT, pkVictim->IsRaceFlag(RACE_FLAG_DESERT) },
+#endif
 	};
 	for (size_t i = 0; i < sizeof(aLines) / sizeof(aLines[0]); ++i)
 	{
@@ -401,6 +415,22 @@ int Bonus67Damage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType, int i
 		if ((bNormal || bSkill) && iPct > 0)
 			iDam = MAX(1, iDam * (100 - MIN(99, iPct)) / 100);
 	}
+
+#ifdef MT2009_PLUS_BONUS67_SKILL
+	// MT2009_PLUS_BONUS67_SKILL_V1: "Niski ranking powoduje zwiekszenie zadawanych obrazen" (the weapon's and the helmet's
+	// 6th/7th bonus; pl-wiki "Niski_ranking_powoduje_zwiekszenie_zadawanych_obrazen"): every blow a player or bot deals
+	// (a normal hit or a skill, to a monster or a player) is stronger by its rank's per cent - Agresywny +1%, Nieuczciwy
+	// +2%, Zlosliwy +3%, Okrutny +5% (the client's grades of GetAlignment/10: below 0, -4000, -8000, -12000); nothing at
+	// a rank of 0 or more. The line's value is 1: the weapon's and the helmet's add up (the owner: x2 with both).
+	if ((bNormal || bSkill) && IsPlayer(pkAttacker))
+	{
+		const int iLines = MINMAX(0, (int) pkAttacker->GetPoint(POINT_ALIGNMENT_DAMAGE_BONUS), 2);
+		const int iAlign = pkAttacker->GetAlignment() / 10;
+		const int iRankPct = iAlign >= 0 ? 0 : iAlign > -4000 ? 1 : iAlign > -8000 ? 2 : iAlign > -12000 ? 3 : 5;
+		if (iLines > 0 && iRankPct > 0)
+			iDam += (int) ((long long) iDam * iRankPct * iLines / 100);
+	}
+#endif
 
 #ifdef MT2009_PLUS_BONUS67_WIKI
 	// MT2009_PLUS_BONUS67_WIKI_V1: "Jesli masz powyzej 90% PZ, doznajesz obrazenia nizsze o x%" (the body armour's 6th/7th
@@ -531,6 +561,18 @@ bool Bonus67FallResist(const CHARACTER* ch)
 {
 	if (!IsPlayer(ch))
 		return false;
+#ifdef MT2009_PLUS_BONUS67_SKILL
+	// MT2009_PLUS_BONUS67_SKILL_V1: "Odpornosc na Upadek +x%" (the body armour's 6th/7th bonus, POINT_IMMUNE_FALL 90 -
+	// a flag nothing read till now). The wiki: it lowers the chance of the fall from a mount the Zodiac's monsters
+	// cause; this engine has no such fall, so it is what falls a character here: each push / knock-down a blow or a
+	// skill would give (CHARACTER::IsResistPush - the crush skills, the knockback lines, a great hit's slide) is
+	// resisted with x% chance. 100 or more (an old item_proto immunity) never falls.
+	{
+		const int iFall = MIN((int) ch->GetPoint(POINT_IMMUNE_FALL), 100);
+		if (iFall > 0 && number(1, 100) <= iFall)
+			return true;
+	}
+#endif
 	const TState* st = FindState(ch);
 	return st && st->dwFallUntil && !Reached(get_dword_time(), st->dwFallUntil);
 }
@@ -566,8 +608,21 @@ EVENTFUNC(bonus67_cooltime_event)
 	return 0;
 }
 
+#ifdef MT2009_PLUS_BONUS67_SKILL
+#include "playerbot_bonus67c.inc"
+#endif
+
 unsigned int Bonus67SkillCooldown(LPCHARACTER ch, unsigned int dwVnum, unsigned int dwNextUsable)
 {
+#ifdef MT2009_PLUS_BONUS67_SKILL
+	// MT2009_PLUS_BONUS67_SKILL_V1: the weapon's lines of the skill just used - its buff for x seconds (attack, defence,
+	// casting speed) and its "Czas regeneracji ...: -x sek. z 10% / 20% szans" (playerbot_bonus67c.inc)
+	if (IsPlayer(ch) && dwNextUsable)
+	{
+		Bonus67cSkillUsed(ch, dwVnum);
+		dwNextUsable = Bonus67cCooldownCut(ch, dwVnum, dwNextUsable);
+	}
+#endif
 	if (!IsPlayer(ch) || dwVnum < SKILL_FINISH || dwVnum > SKILL_ILIPUNGU || !dwNextUsable)
 		return dwNextUsable;
 	const int iPct = MIN((int) ch->GetPoint(POINT_GLOVE_COOLDOWN_FINISH + (dwVnum - SKILL_FINISH)), 100);
@@ -691,3 +746,14 @@ int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct)
 	}
 	return bAny && bDone ? 1 : 0;
 }
+
+#ifndef MT2009_PLUS_BONUS67_SKILL
+// MT2009_PLUS_BONUS67_SKILL_V1: without server-patches/bonusy67c (no points 256-318) the round 3's hooks do nothing -
+// defined so the overlay links in every core (playerbot_bonus67.h).
+int Bonus67SkillHitDamage(LPCHARACTER, LPCHARACTER, unsigned int, int iDam) { return iDam; }
+void Bonus67SkillHitAfter(LPCHARACTER, LPCHARACTER, unsigned int, int, bool) {}
+int Bonus67SkillDurationSec(LPCHARACTER, unsigned int) { return 0; }
+bool Bonus67RareFits(CItem*, int) { return true; }
+int Bonus67PerHuman(LPCHARACTER, int iValue) { return iValue; }
+int Bonus67SkillLineScore(LPCHARACTER, unsigned int, int) { return -1; }
+#endif

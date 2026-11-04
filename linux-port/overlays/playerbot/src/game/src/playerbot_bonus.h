@@ -73,6 +73,18 @@ namespace
 
 		const bool bCaster = IsPlayerBotCaster(ch);
 
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1 (bot weights): the wiki's round 3 (256-318, playerbot_bonus67c.inc) - a skill's
+		// line is worth something only to the class and way that casts it (1 to the rest: a line is still a line);
+		// "Niski ranking" only to a bot of a low rank.
+		if (type >= POINT_ALIGNMENT_DAMAGE_BONUS && type < POINT_WIDE_END)
+		{
+			const int iScore = Bonus67SkillLineScore(ch, type, value);
+			if (iScore >= 0)
+				return iScore;
+		}
+#endif
+
 		switch (type)
 		{
 			// The two damage lines are not the same line for every character,
@@ -227,7 +239,12 @@ namespace
 			// the rest of the game, and a bot was rerolling it away.
 			case APPLY_IMMUNE_STUN:             return 400;
 			case APPLY_IMMUNE_SLOW:             return 250;
+#ifdef MT2009_PLUS_BONUS67_SKILL
+			// MT2009_PLUS_BONUS67_SKILL_V1: "Odpornosc na Upadek +x%" - a chance now (5-20%), not the old immunity
+			case APPLY_IMMUNE_FALL:             return value >= 100 ? 120 : value * 2;
+#else
 			case APPLY_IMMUNE_FALL:             return 120;
+#endif
 			// Mana is what stops a bot keeping its buffs up - 213 of 1300 held
 			// less than the 300 SP a mastered aura costs - and it rolls to
 			// eighty, so this is one of the few lines that can fix that.

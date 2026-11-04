@@ -2093,4 +2093,17 @@ if ((Test-Path -LiteralPath $wideattrApply -PathType Leaf) -and
     }
 }
 
+# Bonusy 6/7 z wiki, runda 3 - umiejetnosci (server-patches/bonusy67c, MT2009_PLUS_BONUS67_SKILL_V1; the owner, 4 November
+# 2026): the first two-byte points (256-318: skill lines, low rank, "+x% of the total" of three races). Its anchor is
+# wideattr's POINT_WIDE_END line: after it.
+$bonusy67cApply = Join-Path $repo 'server-patches/bonusy67c/Apply-Bonusy67cPatch.ps1'
+if ((Test-Path -LiteralPath $bonusy67cApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $bonusy67cResult = & $bonusy67cApply -SourceDir $engineGameSource
+    if ($bonusy67cResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} 6th/7th bonus round 3 edit(s).' -f $bonusy67cResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
