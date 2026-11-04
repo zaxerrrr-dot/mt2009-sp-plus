@@ -402,6 +402,7 @@ HAVE = {
     30035: 'Krem Do Twarzy', 30042: 'Pazur Tygrysa', 30080: 'Ksiega Klatw+', 30083: 'Nieznane Lekarstwo+',
     30089: 'Futro Yeti+', 30192: 'Mleczny Sok', 30193: 'Kosc Palca', 30194: 'Orkowa Maczuga', 30550: 'Niebieski Rzemyk',
     39004: 'Kula Blogoslawienstwa', 50513: 'Kamien Duchowy', 55003: 'Ksiega Mlodego Zwierza',
+    55004: 'Ksiega Dzikiego Zwierza', 55005: 'Ksiega Dzielnego Zwierza', 55411: 'Jajo Exedyara',
     55406: 'Czerwone Jajo Smoka', 70031: 'Broszura Szermierki', 100700: 'Smoczy Plomien (B)',
     50323: 'Skrzynia Ksiag: Riposta', 50324: 'Skrzynia Ksiag: Dopalacz',
     460: 'Runiczny Miecz', 1340: 'Kolec Pieciu Elementow', 2370: 'Luk Feniksa', 3190: 'Ostrze Slonca',
@@ -418,8 +419,11 @@ HAVE = {
 
 # -- the chests: the pl-wiki's lists, one bullet = one equal share (TEMP - PROCENTY.md: the owner's sheet will give
 #    the real chances), a bullet with variants (+4/+5/+6, x5/x10, 10-60 mln Yang) splits its share; DRAWS things an
-#    opening (the wiki: "kilka losowych przedmiotów"). Left out - not in our world: Ksiega Dzikiego / Dzielnego Zwierza
-#    (55004 / 55005), Helm Zielonego Lasu (21544-21546 - the Lycan's), Wladca Smokow (6090). Kufer / Skrzynia Riposty
+#    opening (the wiki: "kilka losowych przedmiotów"). Left out - not in our world: Helm Zielonego Lasu (21544-21546 -
+#    the Lycan's), Wladca Smokow (6090). MT2009_PLUS_GROWTH_PET_V1 (4 November 2026): Ksiega Dzikiego / Dzielnego
+#    Zwierza (55004 / 55005) are ours now - a bullet each, like Ksiega Mlodego Zwierza; the queen's chest also gives
+#    Jajo Exedyara (55411) at half the share of Czerwone Jajo Smoka (a row (vnum, count, weight) keeps its own weight)
+#    - our stand-in for the Dragon Kings, whom this world lacks. Kufer / Skrzynia Riposty
 #    / Dopalacza (the official 50296-50299, five books / five chests of books): our Skrzynia Ksiag: Riposta /
 #    Dopalacz (50323 / 50324) - one for a Skrzynia, five for a Kufer. ---------------------------------------------
 SHARE = 12
@@ -430,7 +434,8 @@ def chest_bullets():
     queen = [
         [(55406, 1)], [(27994, 1)], [(27993, 1)], [(27992, 1)], [(D.HELM_PLAN, 1)], [(30194, 5)], [(30011, 5)],
         [(30089, 5)], [(30083, 5)], [(30035, 5)], [(30192, 5)], [(D.RED_SCALE, 3)], [(D.RED_HORN, 3)], [(30550, 5)],
-        [(39004, 1)], [(50513, 1)], [(55003, 1)], [(50324, 5)], [(50323, 5)],
+        [(39004, 1)], [(50513, 1)], [(55003, 1)], [(55004, 1)], [(55005, 1)], [(50324, 5)], [(50323, 5)],
+        [(55411, 1, SHARE // 2)],
         [(15374, 1), (15375, 1), (15376, 1)], [(15434, 1), (15435, 1), (15436, 1)],
         [(12404, 1), (12405, 1), (12406, 1)], [(12684, 1), (12685, 1), (12686, 1)],
         [(12284, 1), (12285, 1), (12286, 1)], [(12544, 1), (12545, 1), (12546, 1)],
@@ -440,7 +445,8 @@ def chest_bullets():
     guard = [
         [(27992, 1)], [(15374, 1), (15375, 1), (15376, 1)], [(D.RED_SCALE, 3)], [(D.RED_HORN, 3)],
         [(30089, 5), (30089, 10)], [(12284, 1), (12285, 1), (12286, 1)], [(30011, 5), (30011, 10)], [(1340, 1)],
-        [(30193, 5)], [(30035, 10)], [(27994, 1)], [(30080, 10)], [(55003, 1)], [(50324, 5)],
+        [(30193, 5)], [(30035, 10)], [(27994, 1)], [(30080, 10)], [(55003, 1)], [(55004, 1)], [(55005, 1)],
+        [(50324, 5)],
         [(12544, 1), (12545, 1), (12546, 1)], [(30192, 5)], [(27993, 1)], [(30550, 5), (30550, 10)], [(30083, 10)],
         [(30194, 2)], [(30031, 10)], [(3190, 1)], [(30042, 2)], [(D.HELM_PLAN, 5)], [(460, 1)], [(50324, 1)],
         [(50323, 1)], [(100700, 1)],
@@ -473,8 +479,9 @@ def write_sig(byv):
         k = 0
         for b in bullets:
             assert SHARE % len(b) == 0, b
-            w = SHARE // len(b)
-            for v, c in b:
+            for e in b:
+                v, c = e[:2]
+                w = e[2] if len(e) > 2 else SHARE // len(b)
                 assert v == 'gold' or v in byv or v in HAVE, v
                 k += 1
                 L.append('\t%d\t%s\t%d\t%d -- %s (TEMP - PROCENTY.md)' % (k, v, c, w, nm(byv, v, c)))

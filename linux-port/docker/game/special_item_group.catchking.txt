@@ -4,6 +4,9 @@
 # 50930, this world's "Receptura" items: here 50968-50970. Owsap's contents rebuilt from this
 # world's items (no mounts, pets, sashes, costumes or Cor Draconis - those come from elsewhere);
 # each Loot gives ONE line, by weight (the last column).
+# MT2009_PLUS_GROWTH_PET_V1 (4 November 2026): the pl-wiki's growth pet items - Zloty: Jajo Razadora /
+# Nemere and Skrzynia Ksiag Zwierza (about 0.6% / 0.6% / 0.9%), Srebrny: Jajo Malpiszona / Pajaka /
+# Razadora / Nemere (about 1% / 0.7% / 0.3% / 0.3%).
 Group	MT2009_catchking_gold
 {
 	Vnum	50968 -- Zloty Lup Krolewski (550+ punktow)
@@ -28,6 +31,9 @@ Group	MT2009_catchking_gold
 	19	79604	1	60 -- Talia Krolewska
 	20	gold	1000000	100 -- 1 000 000 yang
 	21	gold	2000000	50 -- 2 000 000 yang
+	22	55403	1	10 -- Jajo Razadora
+	23	55404	1	10 -- Jajo Nemere
+	24	55009	1	15 -- Skrzynia Ksiag Zwierza
 }
 Group	MT2009_catchking_silver
 {
@@ -51,6 +57,10 @@ Group	MT2009_catchking_silver
 	17	gold	500000	100 -- 500 000 yang
 	18	gold	300000	100 -- 300 000 yang
 	19	exp	100000	60 -- 100 000 doswiadczenia
+	20	55401	1	15 -- Jajo Malpiszona
+	21	55402	1	10 -- Jajo Pajaka
+	22	55403	1	4 -- Jajo Razadora
+	23	55404	1	4 -- Jajo Nemere
 }
 Group	MT2009_catchking_bronze
 {

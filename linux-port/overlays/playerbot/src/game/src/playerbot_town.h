@@ -3520,8 +3520,9 @@ namespace
 		return line > 0xFFFFFFFFULL ? 0xFFFFFFFFU : (DWORD)line;
 	}
 
-	// The Transporter z Petem, priced by its pet below (MT2009_PLUS_OWNER_PRICES_V2 (E)).
-	const DWORD PLAYERBOT_PET_CARRIER_VNUM = 55007;
+	// The Klatka Transportowa (MT2009_PLUS_GROWTH_PET_V1: the old Transporter z Petem 55007 is gone), priced by its pet
+	// below (MT2009_PLUS_OWNER_PRICES_V2 (E)); an empty one has no operator price.
+	const DWORD PLAYERBOT_PET_CARRIER_VNUM = 55002;
 
 	// ---- MT2009_PLUS_MARKET_V3: the living market (2 October) ----
 	//
@@ -4014,30 +4015,29 @@ namespace
 				GetPlayerBotOperatorLevelPercent(ch ? (int)ch->GetLevel() : 1) / 100;
 	}
 
-	// MT2009_PLUS_OWNER_PRICES_V2 (E): a Transporter z Petem (55007) is worth
-	// the treats its pet ate - "cena zalezna od lvl peta, policz ilosc
-	// potrzebnych smakolykow na kazdy lvl i odejmij 10%" (the owner): the
-	// experience from level 1 to the pet's level (mt2009_newpet::Need, the
-	// player table), over one Smakolyk's (55032, value0 of its proto), at the
-	// Smakolyk's 400 000, less 10%. The level is socket 1 less the evolution
-	// in its thousands (playerbot_newpet.h, the packing).
+	// MT2009_PLUS_OWNER_PRICES_V2 (E): a pet in its cage is worth the treats its pet ate - "cena zalezna od lvl peta,
+	// policz ilosc potrzebnych smakolykow na kazdy lvl i odejmij 10%" (the owner). MT2009_PLUS_GROWTH_PET_V1: the
+	// growth pet's item experience from level 1 to its level (growth_pet::NeedItemExp, the wiki's table) over one
+	// Smakolyk's (55028, value0 of its proto: 80 000), at the Smakolyk's 400 000, less 10 %; the level from the pet when
+	// this core knows it (a cage in a bag here), else level 1; at most 200 000 000.
 	const unsigned long long PLAYERBOT_PET_TREAT_PRICE = 400000ULL;
 	const int PLAYERBOT_PET_CARRIER_PERCENT = 90;
 
 	DWORD GetPlayerBotPetCarrierPrice(LPITEM item)
 	{
-		if (!item || item->GetVnum() != PLAYERBOT_PET_CARRIER_VNUM)
+		if (!item || item->GetVnum() != PLAYERBOT_PET_CARRIER_VNUM || !item->GetSocket(2))
 			return 0;
-		const int level = std::max(1, (int)(item->GetSocket(1) % 1000));
-		const TItemTable* treat = ITEM_MANAGER::instance().GetTable(mt2009_newpet::ITEM_TREAT);
-		const unsigned long long perTreat = treat && treat->alValues[0] > 0 ? (unsigned long long)treat->alValues[0] : 800000ULL;
+		growth_pet::PetView pet;
+		const int level = growth_pet::GetPet((DWORD)item->GetSocket(2), pet) ? std::max(1, pet.level) : 1;
+		const TItemTable* treat = ITEM_MANAGER::instance().GetTable(55028);
+		const unsigned long long perTreat = treat && treat->alValues[0] > 0 ? (unsigned long long)treat->alValues[0] : 80000ULL;
 		unsigned long long need = 0;
-		for (int l = 1; l < level && l < PLAYER_MAX_LEVEL_CONST; ++l)
-			need += mt2009_newpet::Need(l);
+		for (int l = 1; l < level; ++l)
+			need += growth_pet::NeedItemExp(l);
 		const unsigned long long treats = (need + perTreat - 1) / perTreat;
 		const unsigned long long price = std::max<unsigned long long>(1ULL, treats) * PLAYERBOT_PET_TREAT_PRICE *
 				PLAYERBOT_PET_CARRIER_PERCENT / 100ULL;
-		return (DWORD)std::min<unsigned long long>(price, 0xFFFFFFFFULL);
+		return (DWORD)std::min<unsigned long long>(price, 200000000ULL);
 	}
 
 	// MT2009_PLUS_BOT_LOW_PLUS_BONUS_PRICE_V1 (the owner, 3 November 2026: "Sprzet +0..+5 z bonusem nie az tak drogi

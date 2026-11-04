@@ -1,0 +1,213 @@
+// MT2009_PLUS_GROWTH_PET_V1: the growth pets' drops the pl-wiki names and no other file of ours gives (4 November 2026).
+// One "drop" group a monster (the engine adds it to the monster's other drop groups - item_manager_read_tables.cpp;
+// a mob's first limit group stays its own). The wiki gives no chances - ours:
+//  * Jajo Mini Azraela (55407) 4% - Charon (2597), Azrael (2598) and Azrael (BS) (4449), as the monkeys' / the
+//    Baroness' eggs in moby_global;
+//  * Ksiega Dzikiego Zwierza (55004) 5% - Metin Lasu and the wiki's bosses; Ksiega Dzielnego Zwierza (55005) 3% - the
+//    same bosses (no Metin) and Jotun Thrym; Bohat. Ksiega Zwierza (55006) 10% - Gnoll Kapitan, Ahtrin Kapitan (both),
+//    Ahtrin Wielki Mistrz (Ksiega Mlodego Zwierza 55003 drops already - moby_global, yohara_arkusz);
+//  * Smakolyk (55028) 1% and Smakolyk+ (55031) 0.3% - Metin Lasu (8061), the stand-in for Metin Agonii, which this
+//    world does not have.
+// Not here: the wiki's Baashido, Szkieletor and the Halloween bosses (not in this world). Appended by the Dockerfile
+// step "share: growth pets" - it stops the build if a group MT2009_pety_ exists already.
+
+Group	MT2009_pety_691
+{
+	Mob	691	-- Wodz Orkow
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_1093
+{
+	Mob	1093	-- Umarly Rozpruwacz
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_1304
+{
+	Mob	1304	-- Zjawa Zolt. Tygrysa
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_1901
+{
+	Mob	1901	-- Dziewiec Ogonow
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_2091
+{
+	Mob	2091	-- Krolowa Pajakow
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_2092
+{
+	Mob	2092	-- Baronowna Pajakow
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_2597
+{
+	Mob	2597	-- Charon
+	Type	drop
+	1	55407	1	4	-- Jajo Mini Azraela
+}
+
+Group	MT2009_pety_2598
+{
+	Mob	2598	-- Azrael
+	Type	drop
+	1	55407	1	4	-- Jajo Mini Azraela
+}
+
+Group	MT2009_pety_3190
+{
+	Mob	3190	-- Arges
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3390
+{
+	Mob	3390	-- Lemur Hrabia
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3490
+{
+	Mob	3490	-- General Kappa
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3590
+{
+	Mob	3590	-- Trupia Twarz
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3690
+{
+	Mob	3690	-- General Lobster
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3911
+{
+	Mob	3911	-- Aku-Boku
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3912
+{
+	Mob	3912	-- Arboretum
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3913
+{
+	Mob	3913	-- Sycomor
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_3965
+{
+	Mob	3965	-- Skarb Hydry
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_4449
+{
+	Mob	4449	-- Azrael (BS)
+	Type	drop
+	1	55407	1	4	-- Jajo Mini Azraela
+}
+
+Group	MT2009_pety_5163
+{
+	Mob	5163	-- Lord Malp
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_6151
+{
+	Mob	6151	-- Szel
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_6192
+{
+	Mob	6192	-- Jotun Thrym
+	Type	drop
+	1	55005	1	3	-- Ksiega Dzielnego Zwierza
+}
+
+Group	MT2009_pety_6805
+{
+	Mob	6805	-- Gnoll Kapitan
+	Type	drop
+	1	55006	1	10	-- Bohat. Ksiega Zwierza
+}
+
+Group	MT2009_pety_6814
+{
+	Mob	6814	-- Ahtrin Kapitan (lvl-126)
+	Type	drop
+	1	55006	1	10	-- Bohat. Ksiega Zwierza
+}
+
+Group	MT2009_pety_6815
+{
+	Mob	6815	-- Ahtrin Kapitan (lvl-127)
+	Type	drop
+	1	55006	1	10	-- Bohat. Ksiega Zwierza
+}
+
+Group	MT2009_pety_6820
+{
+	Mob	6820	-- Ahtrin Wielki Mistrz
+	Type	drop
+	1	55006	1	10	-- Bohat. Ksiega Zwierza
+}
+
+Group	MT2009_pety_8061
+{
+	Mob	8061	-- Metin Lasu
+	Type	drop
+	1	55004	1	5	-- Ksiega Dzikiego Zwierza
+	2	55028	1	1	-- Smakolyk
+	3	55031	1	0.3	-- Smakolyk+
+}

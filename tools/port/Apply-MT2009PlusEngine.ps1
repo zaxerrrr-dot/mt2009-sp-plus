@@ -2158,6 +2158,18 @@ if ((Test-Path -LiteralPath $tytulyApply -PathType Leaf) -and
         Write-Host ('Applied {0} title edit(s).' -f $tytulyResult.Applied) -ForegroundColor DarkGray
     }
 }
+# System Zwierzat Domowych (server-patches/pety, MT2009_PLUS_GROWTH_PET_V1; the owner, 4 November 2026): the official growth
+# pet (growth_pet.cpp, player.growth_pet), packets CG 122-134 / GC 224-236 (client 1.3.3), the db core's growth_pet_db.cpp and
+# common/growth_pet_types.h installed from server-patches/pety/files. After tytuly, the last.
+$petyApply = Join-Path $repo 'server-patches/pety/Apply-PetyPatch.ps1'
+if ((Test-Path -LiteralPath $petyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $petyResult = & $petyApply -SourceDir $engineGameSource
+    if ($petyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} growth pet edit(s).' -f $petyResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # "Ten efekt jest juz aktywny." at most once a minute a character (server-patches/efektaktywny,
 # MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1; the owner's report, 4 November 2026): autohunt used Grzaniec 50216 / Znak

@@ -176,6 +176,9 @@ void CNetworkActorManager::Destroy()
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	m_kMt2009GrowthPetScale.clear();	// MT2009_PLUS_GROWTH_PET_V1
+#endif
 
 	m_dwMainVID=0;
 	m_lMainPosX=0;
@@ -191,6 +194,9 @@ void CNetworkActorManager::SetMainActorVID(DWORD dwVID)
 	m_kNetActorDict.clear();
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1 (the server sends them again after the add packets)
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	m_kMt2009GrowthPetScale.clear();	// MT2009_PLUS_GROWTH_PET_V1 (a warp: the server sends GC 235 again after the add packets)
 #endif
 }
 
@@ -262,6 +268,9 @@ void CNetworkActorManager::__RemoveAllActors()
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	m_kMt2009GrowthPetScale.clear();	// MT2009_PLUS_GROWTH_PET_V1
+#endif
 
 	CPythonCharacterManager & rkChrMgr = CPythonCharacterManager::Instance();
 	rkChrMgr.DeleteAllInstances();
@@ -293,6 +302,9 @@ void CNetworkActorManager::__RemoveDynamicActors()
 				m_kNetActorDict.erase(it);
 #ifdef ENABLE_MT2009_SKILL_COLOR
 			m_kMt2009SkillColor.erase(dwCharacterVIDList[i]);	// MT2009_PLUS_SKILL_COLOR_V1
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+			m_kMt2009GrowthPetScale.erase(dwCharacterVIDList[i]);	// MT2009_PLUS_GROWTH_PET_V1
 #endif
 		}
 	}
@@ -456,6 +468,9 @@ CInstanceBase* CNetworkActorManager::__AppendCharacterManagerActor(SNetworkActor
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	__Mt2009ApplySkillColors(dwVID, pNewInstance);	// MT2009_PLUS_SKILL_COLOR_V1: the instance is new - its skill colours
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	__Mt2009ApplyGrowthPetLook(dwVID, pNewInstance);	// MT2009_PLUS_GROWTH_PET_V1: the instance is new - its GC 235 scale
+#endif
 
 	if (kCreateData.m_isMain)
 	{
@@ -529,6 +544,9 @@ void CNetworkActorManager::RemoveActor(DWORD dwVID)
 	m_kNetActorDict.erase(f);
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	m_kMt2009SkillColor.erase(dwVID);	// MT2009_PLUS_SKILL_COLOR_V1 (out of sight: the server sends them with its next add)
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	m_kMt2009GrowthPetScale.erase(dwVID);	// MT2009_PLUS_GROWTH_PET_V1 (out of sight: the server sends GC 235 after its next add)
 #endif
 }
 

@@ -1787,179 +1787,37 @@ ishop_once marriage_201 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vn
 # them. INSERT IGNORE: a line the operator changed by hand is kept. Once per
 # install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
 ishop_once autohunt_rings_6 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" "could not add the ItemShop's Auto Lowy ticket and rings"
-# MT2009 PLUS New Pet System (playerbot_newpet.h, MT2009_PLUS_NEW_PET_V1):
-# the second pet, hatched from an egg and levelled by its owner's kills. Its
-# items (55001-55118, 55401-55411; type ITEM_PET = 37, handled by the game's
-# NewPetUseItem - the ItemShop seals keep PET_UPBRINGING/PET_PAY), the pet
-# mobs (34036-34083, clones of 34001 as the ItemShop pets are; the client's
-# npclist.txt has their models), the ItemShop's pet page lines 40901-40927
-# (eggs, supplies, the pet transporter). MT2009_PLUS_NEW_PET_SHOP_V1: no NPC
-# shop sells a new-pet item - they come from the ItemShop and the Metin drops
-# only (the owner, 29 September); 2.14.0 and older put the Proteinowa
-# Przekaska and the Transporter Peta on the General Store (shop 3, Handlarka),
-# the DELETE below takes them off on every existing install.
-# Last, after the item-shop data (mod/10_ingame_itemshop.sql rewrites
-# common.itemshop_items once per install). INSERT IGNORE: a row the operator
-# changed by hand is kept. The names are UTF-8 here, SET NAMES converts them
-# to the tables' CP1250. The db core reads the protos at boot. Idempotent.
-db -e "SET NAMES utf8mb4;
-DROP TEMPORARY TABLE IF EXISTS world.np_item;
-CREATE TEMPORARY TABLE world.np_item AS SELECT * FROM world.item_proto WHERE vnum = 50513 LIMIT 1;
-UPDATE world.np_item SET vnum = 55401, name = 'Jajo Małpki', locale_name = 'Jajo Małpki', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55402, name = 'Jajo Pajączka', locale_name = 'Jajo Pajączka', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55403, name = 'Jajo Mini Razadora', locale_name = 'Jajo Mini Razadora', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55404, name = 'Jajo Mini Nemere', locale_name = 'Jajo Mini Nemere', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55405, name = 'Jajo Smoczka', locale_name = 'Jajo Smoczka', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55406, name = 'Jajo Czerwonego Smoczka', locale_name = 'Jajo Czerwonego Smoczka', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55409, name = 'Jajo Baashido', locale_name = 'Jajo Baashido', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55410, name = 'Jajo Nessie', locale_name = 'Jajo Nessie', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55411, name = 'Jajo Exedyara', locale_name = 'Jajo Exedyara', type = 37, subtype = 0, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 5000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55001, name = 'Proteinowa Przekąska', locale_name = 'Proteinowa Przekąska', type = 37, subtype = 3, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 50000, shop_buy_price = 500, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55002, name = 'Transporter Peta', locale_name = 'Transporter Peta', type = 37, subtype = 2, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 500000, shop_buy_price = 5000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55007, name = 'Transporter z Petem', locale_name = 'Transporter z Petem', type = 37, subtype = 2, stack = 1, size = 1, antiflag = 33024, flag = 0, wearflag = 0, gold = 0, shop_buy_price = 0, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55008, name = 'Zwój Imienia Peta', locale_name = 'Zwój Imienia Peta', type = 37, subtype = 6, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 500, shop_buy_price = 500, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55009, name = 'Skrzynia Ksiąg Peta', locale_name = 'Skrzynia Ksiąg Peta', type = 37, subtype = 2, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55010, name = 'Sztuka Łowcy Metinów', locale_name = 'Sztuka Łowcy Metinów', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 1, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55011, name = 'Sztuka Łowcy Bossów', locale_name = 'Sztuka Łowcy Bossów', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 2, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55012, name = 'Sztuka Łowcy Nieumarłych', locale_name = 'Sztuka Łowcy Nieumarłych', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 3, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55013, name = 'Sztuka Bogobójcy', locale_name = 'Sztuka Bogobójcy', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 4, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55014, name = 'Sztuka Najwyższego Mędrca', locale_name = 'Sztuka Najwyższego Mędrca', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 5, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55015, name = 'Sztuka Łowcy Potworów', locale_name = 'Sztuka Łowcy Potworów', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 6, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55016, name = 'Sztuka Siły', locale_name = 'Sztuka Siły', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 7, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55017, name = 'Sztuka Wiedzy', locale_name = 'Sztuka Wiedzy', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 8, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55018, name = 'Sztuka Cienia', locale_name = 'Sztuka Cienia', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 9, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55019, name = 'Sztuka Łowcy Magii', locale_name = 'Sztuka Łowcy Magii', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 10, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55020, name = 'Sztuka Łowcy Broni', locale_name = 'Sztuka Łowcy Broni', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 11, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55021, name = 'Sztuka Świętej Ochrony', locale_name = 'Sztuka Świętej Ochrony', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 12, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55022, name = 'Sztuka Świętej Zbroi', locale_name = 'Sztuka Świętej Zbroi', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 13, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55023, name = 'Sztuka Bożego Błogosławieństwa', locale_name = 'Sztuka Bożego Błogosławieństwa', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 14, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55024, name = 'Sztuka Najwyższego Wojownika', locale_name = 'Sztuka Najwyższego Wojownika', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 15, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55025, name = 'Sztuka Mistrza Bossów', locale_name = 'Sztuka Mistrza Bossów', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 16, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55026, name = 'Sztuka Świętego Żywiołu', locale_name = 'Sztuka Świętego Żywiołu', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 17, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55027, name = 'Sztuka Mistrza Broni', locale_name = 'Sztuka Mistrza Broni', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 18, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55028, name = 'Sztuka Mistrza Magii', locale_name = 'Sztuka Mistrza Magii', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 19, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55029, name = 'Sztuka Mistrza Łowów', locale_name = 'Sztuka Mistrza Łowów', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 20, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55030, name = 'Sztuka Świętej Wody', locale_name = 'Sztuka Świętej Wody', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 21, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55031, name = 'Sztuka Życia', locale_name = 'Sztuka Życia', type = 37, subtype = 4, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 22, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55032, name = 'Smakołyk', locale_name = 'Smakołyk', type = 37, subtype = 7, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 500, shop_buy_price = 500, value0 = 800000, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55033, name = 'Pet Reverti', locale_name = 'Pet Reverti', type = 37, subtype = 8, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 500, shop_buy_price = 500, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55034, name = 'Pet Revertus', locale_name = 'Pet Revertus', type = 37, subtype = 5, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 500, shop_buy_price = 500, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55035, name = 'Smakołyk+', locale_name = 'Smakołyk+', type = 37, subtype = 9, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 500, shop_buy_price = 500, value0 = 5, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55036, name = 'Klucz Miejsca Umiejętności', locale_name = 'Klucz Miejsca Umiejętności', type = 37, subtype = 10, stack = 200, size = 1, antiflag = 0, flag = 4, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55101, name = 'Eliksir Witalności (S)', locale_name = 'Eliksir Witalności (S)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 1, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55102, name = 'Eliksir Witalności (M)', locale_name = 'Eliksir Witalności (M)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 2, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55103, name = 'Eliksir Witalności (L)', locale_name = 'Eliksir Witalności (L)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 3, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55104, name = 'Eliksir Witalności (XL)', locale_name = 'Eliksir Witalności (XL)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 0, value1 = 4, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55108, name = 'Eliksir Walki (S)', locale_name = 'Eliksir Walki (S)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 1, value1 = 1, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55109, name = 'Eliksir Walki (M)', locale_name = 'Eliksir Walki (M)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 1, value1 = 2, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55110, name = 'Eliksir Walki (L)', locale_name = 'Eliksir Walki (L)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 1, value1 = 3, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55111, name = 'Eliksir Walki (XL)', locale_name = 'Eliksir Walki (XL)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 1, value1 = 4, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55115, name = 'Eliksir Mocy (S)', locale_name = 'Eliksir Mocy (S)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 2, value1 = 1, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55116, name = 'Eliksir Mocy (M)', locale_name = 'Eliksir Mocy (M)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 2, value1 = 2, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55117, name = 'Eliksir Mocy (L)', locale_name = 'Eliksir Mocy (L)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 2, value1 = 3, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.np_item SET vnum = 55118, name = 'Eliksir Mocy (XL)', locale_name = 'Eliksir Mocy (XL)', type = 37, subtype = 11, stack = 200, size = 1, antiflag = 0, flag = 516, wearflag = 0, gold = 1000, shop_buy_price = 1000, value0 = 2, value1 = 4, value2 = 0, value3 = 0, value4 = 0, value5 = 0;
-INSERT IGNORE INTO world.item_proto SELECT * FROM world.np_item;
-UPDATE world.item_proto SET gold = shop_buy_price WHERE vnum IN (55401, 55402, 55403, 55404, 55405, 55406, 55409, 55410, 55411, 55001, 55002, 55007, 55008, 55009, 55010, 55011, 55012, 55013, 55014, 55015, 55016, 55017, 55018, 55019, 55020, 55021, 55022, 55023, 55024, 55025, 55026, 55027, 55028, 55029, 55030, 55031, 55032, 55033, 55034, 55035, 55036, 55101, 55102, 55103, 55104, 55108, 55109, 55110, 55111, 55115, 55116, 55117, 55118) AND gold < shop_buy_price;
-DROP TEMPORARY TABLE IF EXISTS world.np_mob;
-CREATE TEMPORARY TABLE world.np_mob AS SELECT * FROM world.mob_proto WHERE vnum = 34001 LIMIT 1;
-UPDATE world.np_mob SET vnum = 34041, name = 'Małpka', locale_name = 'Małpka';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34042, name = 'Małpka (Heroiczna)', locale_name = 'Małpka (Heroiczna)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34045, name = 'Pajączek', locale_name = 'Pajączek';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34046, name = 'Pajączek (Heroiczny)', locale_name = 'Pajączek (Heroiczny)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34049, name = 'Mini Razador', locale_name = 'Mini Razador';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34050, name = 'Mini Razador (Heroiczny)', locale_name = 'Mini Razador (Heroiczny)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34053, name = 'Mini Nemere', locale_name = 'Mini Nemere';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34054, name = 'Mini Nemere (Heroiczny)', locale_name = 'Mini Nemere (Heroiczny)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34036, name = 'Smoczek', locale_name = 'Smoczek';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34037, name = 'Smoczek (Heroiczny)', locale_name = 'Smoczek (Heroiczny)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34064, name = 'Czerwony Smoczek', locale_name = 'Czerwony Smoczek';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34065, name = 'Czerwony Smoczek (Hero)', locale_name = 'Czerwony Smoczek (Hero)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34080, name = 'Mały Baashido', locale_name = 'Mały Baashido';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34081, name = 'Mały Baashido (Hero)', locale_name = 'Mały Baashido (Hero)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34082, name = 'Nessie', locale_name = 'Nessie';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34083, name = 'Nessie (Heroiczna)', locale_name = 'Nessie (Heroiczna)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34047, name = 'Pisklę Exedyara', locale_name = 'Pisklę Exedyara';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-UPDATE world.np_mob SET vnum = 34048, name = 'Pisklę Exedyara (Hero)', locale_name = 'Pisklę Exedyara (Hero)';
-INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999;" || fail_step "could not add the New Pet System's items and mobs" >&2
-# The ItemShop's pet page lines, once per install (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
-ishop_once newpet_40901 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40901, 55401, 1, 29, 'DRAGON_COIN', 0), (40902, 55402, 1, 29, 'DRAGON_COIN', 0), (40903, 55403, 1, 29, 'DRAGON_COIN', 0), (40904, 55404, 1, 29, 'DRAGON_COIN', 0), (40905, 55405, 1, 29, 'DRAGON_COIN', 0), (40906, 55406, 1, 29, 'DRAGON_COIN', 0), (40907, 55409, 1, 29, 'DRAGON_COIN', 0), (40908, 55410, 1, 29, 'DRAGON_COIN', 0), (40909, 55411, 1, 29, 'DRAGON_COIN', 0), (40920, 55001, 10, 9, 'DRAGON_COIN', 0), (40924, 55008, 1, 9, 'DRAGON_COIN', 0), (40925, 55033, 1, 9, 'DRAGON_COIN', 0), (40926, 55034, 1, 5, 'DRAGON_COIN', 0), (40927, 55036, 1, 200, 'DRAGON_COIN', 0), (40928, 55002, 1, 19, 'DRAGON_COIN', 0);" "could not add the New Pet System's ItemShop lines"
-# MT2009_PLUS_OWNER_PRICES_V2 (ItemShop): the Smakolyk (55032), the Smakolyk+
-# (55035) and the Skrzynia Ksiag Peta (55009) leave the ItemShop - players and
-# bots trade them at 400 000 / 500 000 / 800 000 a piece - and the Klucz
-# Miejsca Umiejetnosci (55036) costs 200 Smocze Monety, was 49 (the owner,
-# 1 October 2026). Once per install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1),
-# so an install that has the old lines loses them and the operator may sell them again.
-ishop_once owner_prices_pets "DELETE FROM common.itemshop_items WHERE vnum IN (55009, 55032, 55035); UPDATE common.itemshop_items SET price = 200 WHERE vnum = 55036 AND price = 49;" "could not apply the owner's pet ItemShop changes"
+# MT2009_PLUS_GROWTH_PET_V1: System Zwierzat Domowych (server-patches/pety/README.md; the owner, 4 November 2026: the
+# official growth pet, made to match the wiki, replaces the New Pet System MT2009_PLUS_NEW_PET_V1). pety.sql (GENERATED
+# by tools/pety/gen_pety_sql.py from tools/pety/pety_data.py): player.growth_pet and player.growth_pet_skill_proto (the
+# wiki's skill tables, read by the db core at boot), the 69 pet items (the official vnums, the wiki's names and rules)
+# and the 42 pet mobs, and the one-time migration (marker pety:migracja_v1 in player.playerbot_migrations; one
+# transaction): every player.newpet_pet pet -> a growth pet of the same species, name and level (the game rolls its type
+# and gives its seal at the owner's next login), every old pet item in the bags / storerooms / Ikarus shops / item awards
+# -> a wiki item, the old pet lines of the in-game ItemShop removed, the elixirs 55101-55118 out of item_proto. The old
+# block (New Pet items/mobs with INSERT IGNORE, "DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999"
+# and its ItemShop lines 40901-40928) is gone with it. Idempotent.
+if [ -s /opt/playerbot/pety.sql ]; then
+    if db < /opt/playerbot/pety.sql; then
+        echo "[playerbot-migrate] growth pets: pety.sql applied (MT2009_PLUS_GROWTH_PET_V1)"
+    else
+        fail_step "growth pets: pety.sql failed (MT2009_PLUS_GROWTH_PET_V1)" >&2
+    fi
+fi
+# MT2009_PLUS_GROWTH_PET_V1 (shop): Sfera Losu Zwierzaka at Handlarka Roznosci (shop 3, NPC 9003) for 10 000 Yang (pl-wiki;
+# the price is the item's gold). INSERT IGNORE - a row the operator removed comes back only with a fresh install's seed.
+db -e "INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) SELECT 3, 55032, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.shop WHERE vnum = 3) AND EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 55032);" \
+    || fail_step "growth pets: could not put Sfera Losu Zwierzaka in the General Store" >&2
+# MT2009_PLUS_GROWTH_PET_V1 (ItemShop): the pl-wiki's Item-Shop lines of the Pety tab (40930-40937; not the old
+# 40901-40928, which itemshop3.line_overrides hide on the web): Skrzynka na Zwierzaka 39, Odzywka 19, Klatka Transportowa
+# 79, Pergamin Nazwy Zwierzaka 49, Reverti Zwierza 79, Revertus Zwierza 59, Boska Odzywka 179, Skrzynia Ksiag Zwierza
+# 129 Smocze Monety. Once per install (ishop_once) - the operator may change or remove them.
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (55400, 55100);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once pety_40930 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40930, 55400, 1, 39, 'DRAGON_COIN', 0), (40931, 55001, 1, 19, 'DRAGON_COIN', 0), (40932, 55002, 1, 79, 'DRAGON_COIN', 0), (40933, 55008, 1, 49, 'DRAGON_COIN', 0), (40934, 55029, 1, 79, 'DRAGON_COIN', 0), (40935, 55030, 1, 59, 'DRAGON_COIN', 0), (40936, 55100, 1, 179, 'DRAGON_COIN', 0), (40937, 55009, 1, 129, 'DRAGON_COIN', 0);" "could not add the growth pets' ItemShop lines"
+# the web ItemShop (itemshop3.shop) has its own Odzywka / Skrzynia Ksiag Zwierza lines (v3_lines 100172-100174): the two
+# in-game twins hidden there
+db -e "INSERT IGNORE INTO itemshop3.line_overrides (idx, hidden) SELECT 40931, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'itemshop3' AND TABLE_NAME = 'line_overrides'); INSERT IGNORE INTO itemshop3.line_overrides (idx, hidden) SELECT 40937, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'itemshop3' AND TABLE_NAME = 'line_overrides');" 2>/dev/null || true
+fi
 # MT2009_PLUS_WHEEL_V1: Bilet Kola Fortuny (80030), the Kolo Fortuny's ticket (playerbot_wheel.h,
 # "/kolo"): quest type, stacks to 200, tradeable, no drop/NPC sale (the SM coupon's antiflags); the
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.

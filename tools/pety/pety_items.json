@@ -1,0 +1,2171 @@
+{
+ "items": [
+  {
+   "antiflag": 0,
+   "desc": "Przeciągnij na pieczęć zwierzaka: odnawia czas trwania do 100%. Martwego zwierzaka ożywia (50% czasu trwania, wiek od nowa). Potrzebna też do rozwoju zwierzaka.",
+   "flag": 4,
+   "gold": 50000,
+   "icon": "icon/item/55001.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odżywka",
+   "shop_buy_price": 500,
+   "stack": 200,
+   "subtype": 3,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55001
+  },
+  {
+   "antiflag": 115072,
+   "desc": "Przeciągnij pieczęć zwierzaka na klatkę: zwierzak może zmienić właściciela przez 30 dni i nie starzeje się w klatce. Prawy przycisk myszy na klatce ze zwierzakiem wyjmuje go.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55002.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Klatka Transportowa",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 2,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55002
+  },
+  {
+   "antiflag": 0,
+   "desc": "Potrzebna do rozwoju zwierzaka domowego do stopnia „Dziki”.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55003.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Młodego Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 5,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55003
+  },
+  {
+   "antiflag": 0,
+   "desc": "Potrzebna do rozwoju zwierzaka domowego do stopnia „Dzielny”.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55004.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Dzikiego Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 5,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55004
+  },
+  {
+   "antiflag": 0,
+   "desc": "Potrzebna do rozwoju zwierzaka domowego do stopnia „Bohaterski”.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55005.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Dzielnego Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 5,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55005
+  },
+  {
+   "antiflag": 0,
+   "desc": "Potrzebna do rozwoju zwierzaka domowego do stopnia „Przebudzony”.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55006.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Bohat. Księga Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 5,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55006
+  },
+  {
+   "antiflag": 0,
+   "desc": "Potrzebna do rozwoju zwierzaka domowego do stopnia „Mocny”.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55007.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Przeb. Księga Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 5,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55007
+  },
+  {
+   "antiflag": 90240,
+   "desc": "Zmienia imię zwierzaka domowego (100.000 Yang).",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55008.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Pergamin Nazwy Zwierzaka",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 6,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55008
+  },
+  {
+   "antiflag": 0,
+   "desc": "Zawiera jedną losową księgę umiejętności zwierzaka.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55009.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Skrzynia Ksiąg Zwierza",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 23,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55009
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (wojownik)”: Zwiększa odporność na ataki Wojownika.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odporność (wojownik)",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55010
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (sura)”: Zwiększa odporność na ataki Sury.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odporność (sura)",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55011
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (ninja)”: Zwiększa odporność na ataki Ninja.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odporność (ninja)",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55012
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (szaman)”: Zwiększa odporność na ataki Szamana.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odporność (szaman)",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55013
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (likan)”: Zwiększa odporność na ataki Likana.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Odporność (likan)",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    5,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55014
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Berserk”: Zwiększa magiczny i krótkodystansowy atak.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Berserka",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    6,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55015
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Antymagia”: Zmniejsza obronę magiczną przeciwnika.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Antymagii",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    7,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55016
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przyspieszenie”: Zwiększa szybkość zaklęcia.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Przyspieszenia",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    8,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55017
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przebicie”: Zwiększa szanse na przeszywający cios.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Przebicia",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    9,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55018
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odnowa”: Regeneruje PŻ, jeśli zdrowie postaci spadnie poniżej 20%.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55011.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Odnowy",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55019
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Wampir”: Zwiększa szansę na kradzież PŻ.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Wampira",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    11,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55020
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Duch”: Zwiększa szansę na kradzież PE.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Ducha",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55021
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przeszkoda”: Zwiększa szansę na blok ciosów.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Przeszkody",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    13,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55022
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Zwierciadło”: Zwiększa wartość odbitych ciosów.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Zwierciadła",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    14,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55023
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Drop Yang”: Zwiększa szansę na drop Yang.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Dropu Yang",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    15,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55024
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Zasięg”: Zwiększa zasięg ataku z łuku.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Zasięgu",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    16,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55025
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Nieśmiertelność”: Daje tymczasową nieśmiertelność.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55011.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Nieśmiertelności",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    17,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55026
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Uzdrowienie”: Usuwa negatywne efekty (otrucie, krwawienie i spowolnienie).",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55011.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Uzdrowienia",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    18,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55027
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Browarnik”: Zwiększa efektywność mikstur regeneracyjnych.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Browarnika",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    19,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55034
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Łowca Potworów”: Zwiększa siłę przeciwko potworom.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Łowcy Potworów",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55035
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Spostrzegawczość”: Zwiększa ilość zdobywanych PD.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Spostrzegawczości",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    21,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55036
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Absorpcja Życia”: Przywraca PŻ po zabiciu potwora.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55012.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Absorpcji Życia",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    22,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55037
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Lekkie jak Piórko”: Aktywuje na krótki czas „Bezszelestny chód”.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55011.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Księga Lekkie jak Piórko",
+   "shop_buy_price": 1000,
+   "stack": 1,
+   "subtype": 4,
+   "type": 37,
+   "values": [
+    23,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55038
+  },
+  {
+   "antiflag": 49536,
+   "desc": "Daje zwierzakowi 80.000 PD przedmiotu (okno „Przedmiot EXP”).",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55028.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Smakołyk",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 7,
+   "type": 37,
+   "values": [
+    80000,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55028
+  },
+  {
+   "antiflag": 0,
+   "desc": "Usuwa wszystkie umiejętności zwierzaka (prawy przycisk myszy przy otwartym oknie zwierzaka).",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55029.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Reverti Zwierza",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 8,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55029
+  },
+  {
+   "antiflag": 0,
+   "desc": "Usuwa jedną wybraną umiejętność zwierzaka (przeciągnij na umiejętność).",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55030.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Revertus Zwierza",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 5,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55030
+  },
+  {
+   "antiflag": 49536,
+   "desc": "Daje zwierzakowi 5% PD przedmiotu potrzebnych do następnego poziomu.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55031.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Smakołyk+",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 9,
+   "type": 37,
+   "values": [
+    5,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55031
+  },
+  {
+   "antiflag": 0,
+   "desc": "Pokazuje typ zwierzaka (przycisk „Sfera losu” w oknie zwierzaka).",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55033.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Sfera Losu Zwierzaka",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 10,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55032
+  },
+  {
+   "antiflag": 16512,
+   "desc": "Losuje od nowa typ zwierzaka (1-8), jego czas trwania i - gdy nie zna umiejętności - liczbę miejsc na umiejętności.",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55032.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Zaczaruj zwierzaka",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 11,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55033
+  },
+  {
+   "antiflag": 0,
+   "desc": "Prawy przycisk myszy: 200.000 PD dla zwierzaka (poziom 1-105) albo 1.200 PD czempiona dla zwierzaka z poziomem czempiona.",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55040.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Smaczny Smakołyk",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 7,
+   "type": 37,
+   "values": [
+    200000,
+    1200,
+    1,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55042
+  },
+  {
+   "antiflag": 16512,
+   "desc": "Ożywia martwego zwierzaka z pełnym czasem trwania; zachowuje 80% wieku (zakładka „Wskrzeszanie” okna innego, żywego zwierzaka).",
+   "flag": 4,
+   "gold": 0,
+   "icon": "icon/item/55100.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Boska Odżywka",
+   "shop_buy_price": 0,
+   "stack": 200,
+   "subtype": 13,
+   "type": 37,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55100
+  },
+  {
+   "antiflag": 0,
+   "desc": "Zawiera losowe jajo zwierzaka domowego.",
+   "flag": 4,
+   "gold": 10000,
+   "icon": "icon/item/55400.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Skrzynka na Zwierzaka",
+   "shop_buy_price": 1000,
+   "stack": 200,
+   "subtype": 0,
+   "type": 23,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "vnum": 55400
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mały Małpiszon” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55401.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Małpiszona",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55701,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55401
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55701.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mały Małpiszon (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34041,
+    0,
+    0,
+    34042,
+    34216,
+    0
+   ],
+   "vnum": 55701
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mały Pająk” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55402.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Pająka",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55702,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55402
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55702.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mały Pająk (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34045,
+    0,
+    0,
+    34046,
+    34217,
+    0
+   ],
+   "vnum": 55702
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mały Razador” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55403.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Razadora",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55703,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55403
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55703.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mały Razador (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34049,
+    0,
+    0,
+    34050,
+    34218,
+    0
+   ],
+   "vnum": 55703
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mała Nemere” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55404.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Nemere",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55704,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55404
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55704.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mała Nemere (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34053,
+    0,
+    0,
+    34054,
+    34219,
+    0
+   ],
+   "vnum": 55704
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Niebieski Mały Smok” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55405.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Niebieskie Jajo Smoka",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55705,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55405
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55705.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Niebieski Mały Smok (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34036,
+    0,
+    0,
+    34037,
+    34220,
+    0
+   ],
+   "vnum": 55705
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mała Meley” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55406.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Czerwone Jajo Smoka",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55706,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55406
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55706.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mała Meley (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34064,
+    0,
+    0,
+    34065,
+    34221,
+    0
+   ],
+   "vnum": 55706
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mini Azrael” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55407.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Mini Azraela",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55707,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55407
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55707.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mini Azrael (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34073,
+    0,
+    0,
+    34074,
+    34222,
+    0
+   ],
+   "vnum": 55707
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Gruby Mini Kat” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55408.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Grubego Mini Kata",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55708,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55408
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55708.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Gruby Mini Kat (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34075,
+    0,
+    0,
+    34076,
+    34223,
+    0
+   ],
+   "vnum": 55708
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mały Baashido” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55409.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Baashido",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55709,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55409
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55709.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mały Baashido (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34080,
+    0,
+    0,
+    34081,
+    34224,
+    0
+   ],
+   "vnum": 55709
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Nessie” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55410.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Nessie",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55710,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55410
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55710.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Nessie (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34082,
+    0,
+    0,
+    34083,
+    34225,
+    0
+   ],
+   "vnum": 55710
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Wyląg Exedyara” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55411.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Exedyara",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55711,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55411
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55711.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Wyląg Exedyara (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34047,
+    0,
+    0,
+    34048,
+    34226,
+    0
+   ],
+   "vnum": 55711
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Gniewny Mini Alastor” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55412.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Białe Jajo Smoka",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55712,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55412
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55712.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Gniewny Mini Alastor (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34077,
+    0,
+    0,
+    34078,
+    34227,
+    0
+   ],
+   "vnum": 55712
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mini-Dowódca” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55413.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Strażnika",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55713,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55413
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55713.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mini-Dowódca (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34165,
+    0,
+    0,
+    34166,
+    34228,
+    0
+   ],
+   "vnum": 55713
+  },
+  {
+   "antiflag": 32768,
+   "desc": "Prawy przycisk myszy: wykluwa zwierzaka „Mały Aamon” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.",
+   "flag": 0,
+   "gold": 10000,
+   "icon": "icon/item/55414.tga",
+   "limittype0": 7,
+   "limitvalue0": 604800,
+   "name": "Jajo Aamona",
+   "shop_buy_price": 5000,
+   "stack": 1,
+   "subtype": 0,
+   "type": 37,
+   "values": [
+    55714,
+    0,
+    0,
+    100000,
+    0,
+    0
+   ],
+   "vnum": 55414
+  },
+  {
+   "antiflag": 123008,
+   "desc": "Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.",
+   "flag": 0,
+   "gold": 0,
+   "icon": "icon/item/55714.tga",
+   "limittype0": 0,
+   "limitvalue0": 0,
+   "name": "Mały Aamon (pieczęć)",
+   "shop_buy_price": 0,
+   "stack": 1,
+   "subtype": 1,
+   "type": 37,
+   "values": [
+    34229,
+    0,
+    0,
+    34230,
+    34231,
+    0
+   ],
+   "vnum": 55714
+  }
+ ],
+ "mobs": [
+  {
+   "name": "Mały Małpiszon",
+   "vnum": 34041
+  },
+  {
+   "name": "Mały Małpiszon",
+   "vnum": 34042
+  },
+  {
+   "name": "Mały Małpiszon",
+   "vnum": 34216
+  },
+  {
+   "name": "Mały Pająk",
+   "vnum": 34045
+  },
+  {
+   "name": "Mały Pająk",
+   "vnum": 34046
+  },
+  {
+   "name": "Mały Pająk",
+   "vnum": 34217
+  },
+  {
+   "name": "Mały Razador",
+   "vnum": 34049
+  },
+  {
+   "name": "Mały Razador",
+   "vnum": 34050
+  },
+  {
+   "name": "Mały Razador",
+   "vnum": 34218
+  },
+  {
+   "name": "Mała Nemere",
+   "vnum": 34053
+  },
+  {
+   "name": "Mała Nemere",
+   "vnum": 34054
+  },
+  {
+   "name": "Mała Nemere",
+   "vnum": 34219
+  },
+  {
+   "name": "Niebieski Mały Smok",
+   "vnum": 34036
+  },
+  {
+   "name": "Niebieski Mały Smok",
+   "vnum": 34037
+  },
+  {
+   "name": "Niebieski Mały Smok",
+   "vnum": 34220
+  },
+  {
+   "name": "Mała Meley",
+   "vnum": 34064
+  },
+  {
+   "name": "Mała Meley",
+   "vnum": 34065
+  },
+  {
+   "name": "Mała Meley",
+   "vnum": 34221
+  },
+  {
+   "name": "Mini Azrael",
+   "vnum": 34073
+  },
+  {
+   "name": "Mini Azrael",
+   "vnum": 34074
+  },
+  {
+   "name": "Mini Azrael",
+   "vnum": 34222
+  },
+  {
+   "name": "Gruby Mini Kat",
+   "vnum": 34075
+  },
+  {
+   "name": "Gruby Mini Kat",
+   "vnum": 34076
+  },
+  {
+   "name": "Gruby Mini Kat",
+   "vnum": 34223
+  },
+  {
+   "name": "Mały Baashido",
+   "vnum": 34080
+  },
+  {
+   "name": "Mały Baashido",
+   "vnum": 34081
+  },
+  {
+   "name": "Mały Baashido",
+   "vnum": 34224
+  },
+  {
+   "name": "Nessie",
+   "vnum": 34082
+  },
+  {
+   "name": "Nessie",
+   "vnum": 34083
+  },
+  {
+   "name": "Nessie",
+   "vnum": 34225
+  },
+  {
+   "name": "Wyląg Exedyara",
+   "vnum": 34047
+  },
+  {
+   "name": "Wyląg Exedyara",
+   "vnum": 34048
+  },
+  {
+   "name": "Wyląg Exedyara",
+   "vnum": 34226
+  },
+  {
+   "name": "Gniewny Mini Alastor",
+   "vnum": 34077
+  },
+  {
+   "name": "Gniewny Mini Alastor",
+   "vnum": 34078
+  },
+  {
+   "name": "Gniewny Mini Alastor",
+   "vnum": 34227
+  },
+  {
+   "name": "Mini-Dowódca",
+   "vnum": 34165
+  },
+  {
+   "name": "Mini-Dowódca",
+   "vnum": 34166
+  },
+  {
+   "name": "Mini-Dowódca",
+   "vnum": 34228
+  },
+  {
+   "name": "Mały Aamon",
+   "vnum": 34229
+  },
+  {
+   "name": "Mały Aamon",
+   "vnum": 34230
+  },
+  {
+   "name": "Mały Aamon",
+   "vnum": 34231
+  }
+ ],
+ "skills": {
+  "1": {
+   "book": 55010,
+   "book_name": "Odporność (wojownik)",
+   "cooldown": 0,
+   "desc": "Zwiększa odporność na ataki Wojownika.",
+   "icon": "jijoong",
+   "kind": "PASSIVE",
+   "name": "Odporność (wojownik)",
+   "unit": "%10"
+  },
+  "2": {
+   "book": 55011,
+   "book_name": "Odporność (sura)",
+   "cooldown": 0,
+   "desc": "Zwiększa odporność na ataki Sury.",
+   "icon": "jijoong",
+   "kind": "PASSIVE",
+   "name": "Odporność (sura)",
+   "unit": "%10"
+  },
+  "3": {
+   "book": 55012,
+   "book_name": "Odporność (ninja)",
+   "cooldown": 0,
+   "desc": "Zwiększa odporność na ataki Ninja.",
+   "icon": "jijoong",
+   "kind": "PASSIVE",
+   "name": "Odporność (ninja)",
+   "unit": "%10"
+  },
+  "4": {
+   "book": 55013,
+   "book_name": "Odporność (szaman)",
+   "cooldown": 0,
+   "desc": "Zwiększa odporność na ataki Szamana.",
+   "icon": "jijoong",
+   "kind": "PASSIVE",
+   "name": "Odporność (szaman)",
+   "unit": "%10"
+  },
+  "5": {
+   "book": 55014,
+   "book_name": "Odporność (likan)",
+   "cooldown": 0,
+   "desc": "Zwiększa odporność na ataki Likana.",
+   "icon": "jijoong",
+   "kind": "PASSIVE",
+   "name": "Odporność (likan)",
+   "unit": "%10"
+  },
+  "6": {
+   "book": 55015,
+   "book_name": "Księga Berserka",
+   "cooldown": 0,
+   "desc": "Zwiększa magiczny i krótkodystansowy atak.",
+   "icon": "pacheon",
+   "kind": "PASSIVE",
+   "name": "Berserk",
+   "unit": "%10"
+  },
+  "7": {
+   "book": 55016,
+   "book_name": "Księga Antymagii",
+   "cooldown": 0,
+   "desc": "Zmniejsza obronę magiczną przeciwnika.",
+   "icon": "cheonryeong",
+   "kind": "PASSIVE",
+   "name": "Antymagia",
+   "unit": "%10"
+  },
+  "8": {
+   "book": 55017,
+   "book_name": "Księga Przyspieszenia",
+   "cooldown": 0,
+   "desc": "Zwiększa szybkość zaklęcia.",
+   "icon": "banya",
+   "kind": "PASSIVE",
+   "name": "Przyspieszenie",
+   "unit": "%10"
+  },
+  "9": {
+   "book": 55018,
+   "book_name": "Księga Przebicia",
+   "cooldown": 0,
+   "desc": "Zwiększa szanse na przeszywający cios.",
+   "icon": "choehoenbimu",
+   "kind": "PASSIVE",
+   "name": "Przebicie",
+   "unit": "%10"
+  },
+  "10": {
+   "book": 55019,
+   "book_name": "Księga Odnowy",
+   "cooldown": 480,
+   "desc": "Regeneruje PŻ, jeśli zdrowie postaci spadnie poniżej 20%.",
+   "icon": "heal",
+   "kind": "AUTO",
+   "name": "Odnowa",
+   "unit": "hp"
+  },
+  "11": {
+   "book": 55020,
+   "book_name": "Księga Wampira",
+   "cooldown": 0,
+   "desc": "Zwiększa szansę na kradzież PŻ.",
+   "icon": "stealhp",
+   "kind": "PASSIVE",
+   "name": "Wampir",
+   "unit": "%10"
+  },
+  "12": {
+   "book": 55021,
+   "book_name": "Księga Ducha",
+   "cooldown": 0,
+   "desc": "Zwiększa szansę na kradzież PE.",
+   "icon": "stealmp",
+   "kind": "PASSIVE",
+   "name": "Duch",
+   "unit": "%10"
+  },
+  "13": {
+   "book": 55022,
+   "book_name": "Księga Przeszkody",
+   "cooldown": 0,
+   "desc": "Zwiększa szansę na blok ciosów.",
+   "icon": "block",
+   "kind": "PASSIVE",
+   "name": "Przeszkoda",
+   "unit": "%10"
+  },
+  "14": {
+   "book": 55023,
+   "book_name": "Księga Zwierciadła",
+   "cooldown": 0,
+   "desc": "Zwiększa wartość odbitych ciosów.",
+   "icon": "reflect_melee",
+   "kind": "PASSIVE",
+   "name": "Zwierciadło",
+   "unit": "%10"
+  },
+  "15": {
+   "book": 55024,
+   "book_name": "Księga Dropu Yang",
+   "cooldown": 0,
+   "desc": "Zwiększa szansę na drop Yang.",
+   "icon": "gold_drop",
+   "kind": "PASSIVE",
+   "name": "Drop Yang",
+   "unit": "%10"
+  },
+  "16": {
+   "book": 55025,
+   "book_name": "Księga Zasięgu",
+   "cooldown": 0,
+   "desc": "Zwiększa zasięg ataku z łuku.",
+   "icon": "bow_distance",
+   "kind": "PASSIVE",
+   "name": "Zasięg",
+   "unit": "m10"
+  },
+  "17": {
+   "book": 55026,
+   "book_name": "Księga Nieśmiertelności",
+   "cooldown": 600,
+   "desc": "Daje tymczasową nieśmiertelność.",
+   "icon": "invincibility",
+   "kind": "AUTO",
+   "name": "Nieśmiertelność",
+   "unit": "s10"
+  },
+  "18": {
+   "book": 55027,
+   "book_name": "Księga Uzdrowienia",
+   "cooldown": 480,
+   "desc": "Usuwa negatywne efekty (otrucie, krwawienie i spowolnienie).",
+   "icon": "removal",
+   "kind": "AUTO",
+   "name": "Uzdrowienie",
+   "unit": "%10"
+  },
+  "19": {
+   "book": 55034,
+   "book_name": "Księga Browarnika",
+   "cooldown": 0,
+   "desc": "Zwiększa efektywność mikstur regeneracyjnych.",
+   "icon": "potion",
+   "kind": "PASSIVE",
+   "name": "Browarnik",
+   "unit": "%10"
+  },
+  "20": {
+   "book": 55035,
+   "book_name": "Księga Łowcy Potworów",
+   "cooldown": 0,
+   "desc": "Zwiększa siłę przeciwko potworom.",
+   "icon": "mob_bonus",
+   "kind": "PASSIVE",
+   "name": "Łowca Potworów",
+   "unit": "%10"
+  },
+  "21": {
+   "book": 55036,
+   "book_name": "Księga Spostrzegawczości",
+   "cooldown": 0,
+   "desc": "Zwiększa ilość zdobywanych PD.",
+   "icon": "exp",
+   "kind": "PASSIVE",
+   "name": "Spostrzegawczość",
+   "unit": "%10"
+  },
+  "22": {
+   "book": 55037,
+   "book_name": "Księga Absorpcji Życia",
+   "cooldown": 0,
+   "desc": "Przywraca PŻ po zabiciu potwora.",
+   "icon": "hp_recover",
+   "kind": "PASSIVE",
+   "name": "Absorpcja Życia",
+   "unit": "%10"
+  },
+  "23": {
+   "book": 55038,
+   "book_name": "Księga Lekkie jak Piórko",
+   "cooldown": 180,
+   "desc": "Aktywuje na krótki czas „Bezszelestny chód”.",
+   "icon": "feather",
+   "kind": "AUTO",
+   "name": "Lekkie jak Piórko",
+   "unit": "dmg"
+  }
+ },
+ "species": [
+  {
+   "egg": 55401,
+   "egg_name": "Jajo Małpiszona",
+   "idx": 1,
+   "mobs": [
+    34041,
+    34042,
+    34216
+   ],
+   "name": "Mały Małpiszon",
+   "seal": 55701
+  },
+  {
+   "egg": 55402,
+   "egg_name": "Jajo Pająka",
+   "idx": 2,
+   "mobs": [
+    34045,
+    34046,
+    34217
+   ],
+   "name": "Mały Pająk",
+   "seal": 55702
+  },
+  {
+   "egg": 55403,
+   "egg_name": "Jajo Razadora",
+   "idx": 3,
+   "mobs": [
+    34049,
+    34050,
+    34218
+   ],
+   "name": "Mały Razador",
+   "seal": 55703
+  },
+  {
+   "egg": 55404,
+   "egg_name": "Jajo Nemere",
+   "idx": 4,
+   "mobs": [
+    34053,
+    34054,
+    34219
+   ],
+   "name": "Mała Nemere",
+   "seal": 55704
+  },
+  {
+   "egg": 55405,
+   "egg_name": "Niebieskie Jajo Smoka",
+   "idx": 5,
+   "mobs": [
+    34036,
+    34037,
+    34220
+   ],
+   "name": "Niebieski Mały Smok",
+   "seal": 55705
+  },
+  {
+   "egg": 55406,
+   "egg_name": "Czerwone Jajo Smoka",
+   "idx": 6,
+   "mobs": [
+    34064,
+    34065,
+    34221
+   ],
+   "name": "Mała Meley",
+   "seal": 55706
+  },
+  {
+   "egg": 55407,
+   "egg_name": "Jajo Mini Azraela",
+   "idx": 7,
+   "mobs": [
+    34073,
+    34074,
+    34222
+   ],
+   "name": "Mini Azrael",
+   "seal": 55707
+  },
+  {
+   "egg": 55408,
+   "egg_name": "Jajo Grubego Mini Kata",
+   "idx": 8,
+   "mobs": [
+    34075,
+    34076,
+    34223
+   ],
+   "name": "Gruby Mini Kat",
+   "seal": 55708
+  },
+  {
+   "egg": 55409,
+   "egg_name": "Jajo Baashido",
+   "idx": 9,
+   "mobs": [
+    34080,
+    34081,
+    34224
+   ],
+   "name": "Mały Baashido",
+   "seal": 55709
+  },
+  {
+   "egg": 55410,
+   "egg_name": "Jajo Nessie",
+   "idx": 10,
+   "mobs": [
+    34082,
+    34083,
+    34225
+   ],
+   "name": "Nessie",
+   "seal": 55710
+  },
+  {
+   "egg": 55411,
+   "egg_name": "Jajo Exedyara",
+   "idx": 11,
+   "mobs": [
+    34047,
+    34048,
+    34226
+   ],
+   "name": "Wyląg Exedyara",
+   "seal": 55711
+  },
+  {
+   "egg": 55412,
+   "egg_name": "Białe Jajo Smoka",
+   "idx": 12,
+   "mobs": [
+    34077,
+    34078,
+    34227
+   ],
+   "name": "Gniewny Mini Alastor",
+   "seal": 55712
+  },
+  {
+   "egg": 55413,
+   "egg_name": "Jajo Strażnika",
+   "idx": 13,
+   "mobs": [
+    34165,
+    34166,
+    34228
+   ],
+   "name": "Mini-Dowódca",
+   "seal": 55713
+  },
+  {
+   "egg": 55414,
+   "egg_name": "Jajo Aamona",
+   "idx": 14,
+   "mobs": [
+    34229,
+    34230,
+    34231
+   ],
+   "name": "Mały Aamon",
+   "seal": 55714
+  }
+ ],
+ "stages": {
+  "1": "Młody",
+  "2": "Dziki",
+  "3": "Dzielny",
+  "4": "Bohaterski",
+  "5": "Przebudzony",
+  "6": "Mocny"
+ }
+}

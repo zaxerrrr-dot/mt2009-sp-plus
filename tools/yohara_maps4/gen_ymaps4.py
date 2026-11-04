@@ -112,7 +112,7 @@ GGROUPS = collections.OrderedDict([
 #    thing 0.03-0.1; a boss (hourly): weapons +5 2 / +6 0.5, materials 3-10, Topaz Woli x2 25. Nothing compensates
 #    the test server's drop event.) Left out as in the batches before: the Odlamki 39070-39077 (the Seon-Hae event
 #    drops them by level), Kamien Demonow +4 (we have +0 only: +0 as the second batch), the Eliksiry W. SungMa
-#    27213-27216 (not in our world). Przeb. Ksiega Zwierza: 95737 (gen_yitems4.py).
+#    27213-27216 (not in our world). Przeb. Ksiega Zwierza: 55007 (MT2009_PLUS_GROWTH_PET_V1; was the gift box 95737).
 WILL = [(81000, 1, 0.05), (81300, 1, 0.05), (81250, 1, 0.05), (81550, 1, 0.05)]
 TOPAZ = (72353, 1, 0.4)
 RANDOM_CHEST = [(83065, 1, 0.1), (83066, 1, 0.1)]
@@ -142,7 +142,7 @@ def boss_drop(el, war):
          (70048, 1, 8), (50529, 1, 3), (70038, 20, 10, 'Peleryna Mestwa x20'), (83065, 1, 5), (83066, 1, 5)]
     if war:
         # Zwoj Skarbu (A); Kowadlo Pln. Wiatru - both Wodze (lod: "Ulepszacze", blyskawice: "Inne")
-        r += [(70434, 1, 2), (31259, 1, 3), (95737, 1, 2)]
+        r += [(70434, 1, 2), (31259, 1, 3), (55007, 1, 2)]
     return r
 
 

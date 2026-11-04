@@ -394,5 +394,15 @@
 // this exe's hello (CG OPEN at the game phase), so an older exe never sees it. Module titleSystem, app.MT2009_TITLES_EXE
 // (Mt2009Titles.cpp). Root: uicharactertitle.py, uiscript/charactertitlewindow.py, the portrait button (uicharacter.py).
 #define ENABLE_MT2009_TITLES
+// MT2009_PLUS_GROWTH_PET_V1 (System zwierzat domowych - the official growth pet, ported from the Anka2 sources, server-patches/
+// pety, contract SPEC.md): packets CG 122-134 / GC 224-236 (NOT Anka2's GC numbers - ours are taken), the pet data per pet
+// id (player.GetPetItem / GetPetSkill / GetPetSkillByIndex / GetPetPotential ...), net.SendPet*, skill.GetPetSkillInfo
+// from locale/<lang>/pet_skill.txt, item.ITEM_TYPE_GROWTH_PET (= ITEM_PET 37) + item.PET_* subtypes, the game window's
+// Pet* callbacks, GC 235 the scale of a growth pet's model (any viewer). Everything in Mt2009GrowthPet.cpp. root
+// constinfo.py: app.MT2009_GROWTH_PET_EXE. ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL: the champion points / potential slots.
+#define ENABLE_GROWTH_PET_SYSTEM
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+#define ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL
+#endif
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

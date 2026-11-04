@@ -152,7 +152,8 @@ CATEGORIES = (
 		# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (uiitemshopv3.py), next to the old one.
 		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main ItemShop on the Yohara line - the id stays (saved key maps).
 		('itemshop_v3', 'ItemShop', ((SHIFT, 'DIK_F12'),), False),
-		('new_pet', 'Zwierzak', ((0, 'DIK_U'),), False),
+		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py) - the old New Pet window's id and key.
+		('new_pet', 'Zwierzak domowy', ((0, 'DIK_U'),), False),
 		('dungeon_info', 'Wyprawy', ((0, 'DIK_X'),), False),
 		('battle_pass', 'Battle Pass', (), False),
 		('tp_bookmarks', 'Zapisane pozycje', (), False),

@@ -188,6 +188,11 @@ class PasswordDialog(ui.ScriptWindow):
 		self.sendMessage = msg
 
 	def ShowDialog(self):
+		# MT2009_PLUS_GROWTH_PET_V1: no storehouse while an egg is being hatched (the egg must stay in the bag).
+		if getattr(player, "IsOpenPetHatchingWindow", lambda: 0)():
+			import chat, petlocale
+			chat.AppendChat(chat.CHAT_TYPE_INFO, petlocale.T("HATCH_BUSY"))
+			return
 		self.passwordValue.SetText("")
 		self.passwordValue.SetFocus()
 		self.SetCenterPosition()

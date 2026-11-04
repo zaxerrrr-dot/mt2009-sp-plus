@@ -90,7 +90,7 @@ Seban → Edytor bazy danych → ItemShop.
 
 | Plik | Miejsce | Co |
 |---|---|---|
-| `packet.h` | nagłówki | `HEADER_CG_TITLE = 185`, `HEADER_GC_TITLE = 189` (numery paczki) – wolne u nas i w exe (sprawdzone: wszystkie CG/GC naszego `packet.h`, `npc_location_helper.h`, `input_udp.cpp`, `Packet.h` exe i gałęzi y-lowienie / y-mikstury2 / y-grupy) i poza zakresami zarezerwowanymi dla zwierzaków (CG 122–133, GC 200–215) |
+| `packet.h` | nagłówki | `HEADER_CG_TITLE = 185`, `HEADER_GC_TITLE = 189` (numery paczki) – wolne u nas i w exe (sprawdzone: wszystkie CG/GC naszego `packet.h`, `npc_location_helper.h`, `input_udp.cpp`, `Packet.h` exe i gałęzi y-lowienie / y-mikstury2 / y-grupy) i poza zakresami zarezerwowanymi dla zwierzaków (CG 122–134, GC 224–236 – System Zwierząt Domowych, `server-patches/pety`) |
 | `packet.h` | struktury | `TPacketCGTitle` (6 B), `TPacketGCTitle` (6 B, dynamiczny), wiersze `TPacketGCTitleRow` (309 B), `TPacketGCTitleOwned` (8 B), `TPacketGCTitleNotify` (5 B), `TPacketGCTitleVisual` (8 B), `static_assert` (exe to samo) |
 | `packet_info.cpp` | rozmiary | CG 185, stały, z bajtem sekwencji |
 | `input_main.cpp` | pakiety | `TitleSystemPacket` (powitanie/odświeżenie, załóż, zdejmij) |

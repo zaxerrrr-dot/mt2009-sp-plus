@@ -737,6 +737,37 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendSkillColorPacket(WORD wSkillVnum, const DWORD* c_pdwColor);
 	protected:
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+		// MT2009_PLUS_GROWTH_PET_V1: System zwierzat domowych (Mt2009GrowthPet.cpp)
+		bool RecvGrowthPet();
+		bool RecvGrowthPetSet(bool bExchange);
+		bool RecvGrowthPetDelete();
+		bool RecvGrowthPetSummon();
+		bool RecvGrowthPetPointChange();
+		bool RecvGrowthPetNameChangeResult();
+		bool RecvGrowthPetDetermineResult();
+		bool RecvGrowthPetAttrChangeResult();
+		bool RecvGrowthPetSkillUpdate();
+		bool RecvGrowthPetSkillCooltime();
+		bool RecvGrowthPetLook();
+		bool RecvGrowthPetPotential();
+		void __GrowthPetCallGame(const char* c_szFunc, PyObject* poArgs);
+	public:
+		bool SendPetHatchingPacket(const char* c_szName, TItemPos eggPos);
+		bool SendPetWindowType(BYTE bType);
+		bool SendPetWindowPacket(BYTE bWindow, bool bState);
+		bool SendPetNameChangePacket(const char* c_szName, TItemPos changeNamePos, TItemPos upBringingPos);
+		bool SendPetFeedPacket(BYTE bIndex, const std::vector<std::pair<TItemPos, WORD> >& c_rkItems);
+		bool SendPetAttrDetermine(TItemPos determinePos);
+		bool SendPetAttrChange(TItemPos upBringingPos, TItemPos attrChangePos);
+		bool SendPetRevive(TItemPos upBringingPos, const std::vector<std::pair<TItemPos, WORD> >& c_rkItems);
+		bool SendPetLearnSkill(BYTE bSlot, TItemPos learnSkillPos);
+		bool SendPetSkillUpgradeRequest(BYTE bSlot);
+		bool SendPetDeleteSkill(BYTE bSlot, TItemPos deleteSkillPos);
+		bool SendPetDeleteAllSkill(TItemPos deleteAllSkillPos);
+		bool SendPetPotential(BYTE bAction, BYTE bSlot, TItemPos eggPos);
+	protected:
+#endif
 #ifdef ENABLE_MT2009_TITLES
 		// MT2009_PLUS_TITLES_V1: Tytuly (Mt2009Titles.cpp)
 		bool RecvTitlePacket();

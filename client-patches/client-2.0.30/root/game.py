@@ -522,8 +522,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
 		__import__("uidungeoninfo").DestroyWindow()
-		# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
-		__import__("uinewpet").DestroyWindow()
+		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's windows (uipetinfo.py; the New Pet System's uinewpet.py is retired).
+		__import__("uipetinfo").Destroy()
 		# MT2009_PLUS_YUTNORI_V1: Yut Nori's window (uiminigameyutnori.py), before the hub.
 		__import__("uiminigameyutnori").Destroy()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
@@ -864,8 +864,9 @@ class GameWindow(ui.ScriptWindow):
 			"world_boss"		: (lambda : Window("uiworldboss"), None),
 			# MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py), no key by default (the Esc menu's button opens it too).
 			"relic"				: (lambda : Window("uirelikt"), None),
-			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
-			"new_pet"			: (lambda : Window("uinewpet"), None),
+			# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py) - the action keeps the old New Pet
+			# window's id (and its U), so a key somebody saved for it opens the new window.
+			"new_pet"			: (lambda : __import__("uipetinfo").ToggleWindow(), None),
 			# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel ("Wyprawy", uidungeoninfo.py).
 			"dungeon_info"		: (lambda : Window("uidungeoninfo"), None),
 			# The inventory bar's windows that never had a key (none by default).
@@ -2781,6 +2782,7 @@ class GameWindow(ui.ScriptWindow):
 	def OnUpdate(self):
 		app.UpdateGame()
 		self.__KeepWalkingAfterMount()
+		__import__("uipetinfo").OnUpdate()	# MT2009_PLUS_GROWTH_PET_V1: the small pet window, the locked bag slots
 
 		# The drop strip follows the target's bar and goes with it.
 		if self.mobDropWindow and self.mobDropWindow.IsShow():
@@ -2825,8 +2827,6 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_FISHING_RENEWAL_V1: "/fishren hello" - the server opens the new fishing minigame
 				# (uifishingrenewal.py) instead of the bar one from now on.
 				__import__("uifishingrenewal").Start()
-				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
-				__import__("uinewpet").Start()
 				# MT2009_PLUS_EKWIPUNEK_V1: "/ekwipunek hello" - the server routes items into the extra
 				# inventory from now on (only with the 3.0 exe that knows its windows; uiekwipunek.py).
 				__import__("uiekwipunek").Start()
@@ -3651,7 +3651,6 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["FP"] = self.__FishPuzzle # MT2009_PLUS_FISH_PUZZLE_V1
 		serverCommandList["FISHREN"] = self.__FishingRenewal # MT2009_PLUS_FISHING_RENEWAL_V1
 		serverCommandList["IRREM"] = self.__IrremovableDelete # MT2009_PLUS_IRREMOVABLE_DELETE_V1
-		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
 		# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "PickupSound <vnum>" after a pick-up (digiqol.py)
@@ -4498,10 +4497,42 @@ class GameWindow(ui.ScriptWindow):
 	def __ReliktOpen(self, *args):
 		__import__("uirelikt").OnServerOpen(*args)
 
-	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
-	def __NewPet(self, *args):
-		import uinewpet
-		uinewpet.OnCommand(*args)
+	# MT2009_PLUS_GROWTH_PET_V1: the exe's callbacks of the growth pet (server-patches/pety SPEC), all to uipetinfo.py.
+	def PetHatchingWindowCommand(self, command):
+		__import__("uipetinfo").HatchingWindowCommand(command)
+
+	def PetNameChangeWindowCommand(self, command):
+		__import__("uipetinfo").NameChangeWindowCommand(command)
+
+	def PetFeedReuslt(self, result):
+		__import__("uipetinfo").FeedResult(result)
+
+	def PetReviveResult(self, result):
+		__import__("uipetinfo").ReviveResult(result)
+
+	def PetWindowTypeResult(self, result):
+		__import__("uipetinfo").WindowTypeResult(result)
+
+	def PetAffectShowerRefresh(self):
+		__import__("uipetinfo").RefreshAll()
+
+	def PetAttrDetermineResult(self, petType):
+		__import__("uipetinfo").AttrDetermineResult(petType)
+
+	def PetAttrChangeResult(self, cell, petType):
+		__import__("uipetinfo").AttrChangeResult(cell, petType)
+
+	def PetEvolveResult(self, result):
+		__import__("uipetinfo").EvolveResult(result)
+
+	def PetPotentialResult(self, result):
+		__import__("uipetinfo").PotentialResult(result)
+
+	def PetPotentialRefresh(self, petId):
+		__import__("uipetinfo").RefreshAll(petId)
+
+	def PetInfoRefresh(self, petId):
+		__import__("uipetinfo").RefreshAll(petId)
 
 	# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's lines (uigoblin.py).
 	def __Goblin(self, *args):

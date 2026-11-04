@@ -188,7 +188,7 @@ Group	MT2009_ymaps3_6797
 	31	83067	1	5	-- Skrzynia z Bransoletka
 	32	70401	1	3	-- Sztandar Czaszki
 	33	70434	1	3	-- Zwoj Skarbu (Stopien A)
-	34	95737	1	2	-- Przeb. Ksiega Zwierza
+	34	55007	1	2	-- Przeb. Ksiega Zwierza
 	35	55050	1	1	-- Jazda (Zwinne Kopyta)
 	36	55051	1	1	-- Jazda Konna (PD)
 	37	55052	1	1	-- Jazda (Gwalt. Wichura)
@@ -835,7 +835,7 @@ Group	MT2009_ymaps3_6870
 	3	70408	1	10	-- Tajemniczy Bilet
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
-	6	95737	1	2	-- Przeb. Ksiega Zwierza
+	6	55007	1	2	-- Przeb. Ksiega Zwierza
 	7	50527	1	3	-- Mikstura Talentu
 }
 
@@ -848,7 +848,7 @@ Group	MT2009_ymaps3_6871
 	3	70408	1	10	-- Tajemniczy Bilet
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
-	6	95737	1	2	-- Przeb. Ksiega Zwierza
+	6	55007	1	2	-- Przeb. Ksiega Zwierza
 	7	50527	1	3	-- Mikstura Talentu
 }
 

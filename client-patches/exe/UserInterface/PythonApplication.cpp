@@ -980,6 +980,18 @@ bool LoadLocaleData(const char* localePath)
 		return false;
 	}
 
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	// MT2009_PLUS_GROWTH_PET_V1: the growth pet skills (skill.GetPetSkillInfo), locale/<language>/pet_skill.txt like
+	// SkillDesc.txt (locale/pl/pet_skill.txt when the language has none). Optional: older packs have no such file.
+	{
+		bool Mt2009GrowthPet_LoadSkillTable(const char* c_szFileName);
+		char szPetSkill[256];
+		snprintf(szPetSkill, sizeof(szPetSkill), "locale/%s/pet_skill.txt", currentLanguage.c_str());
+		if (!Mt2009GrowthPet_LoadSkillTable(szPetSkill) && !Mt2009GrowthPet_LoadSkillTable("locale/pl/pet_skill.txt"))
+			Tracenf("LoadLocaleData - no %s (growth pet skills without names)", szPetSkill);
+	}
+#endif
+
 	if (!rkNetStream.LoadInsultList(szInsultList))
 	{
 		Tracenf("CPythonApplication - CPythonNetworkStream::LoadInsultList(%s)", szInsultList);

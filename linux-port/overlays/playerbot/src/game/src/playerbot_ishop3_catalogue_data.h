@@ -624,13 +624,15 @@ namespace
 		{  53380, PLAYERBOT_ISHOP3_NEED_LOOK_PET, 0, 0, 0, 1, 1, 1 },	// Maly Zimowy Skrzat - a pet seal
 		{  53385, PLAYERBOT_ISHOP3_NEED_LOOK_PET, 0, 0, 0, 1, 1, 1 },	// Maly Pavo - a pet seal
 		{  53388, PLAYERBOT_ISHOP3_NEED_LOOK_PET, 0, 0, 0, 1, 1, 1 },	// Maly Hati - a pet seal
-		{  55001, PLAYERBOT_ISHOP3_NEED_NEWPET, 4, 8, 0, 2, 2, 3 },	// Proteinowa Przekaska - PLAYERBOT_NEWPET_PROTEIN_KEEP
-		{  55002, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Klatka Transportowa - the pet transporter - trading pets is the players'
+		{  55001, PLAYERBOT_ISHOP3_NEED_NEWPET, 4, 8, 0, 2, 2, 3 },	// Odzywka - PLAYERBOT_NEWPET_FOOD_KEEP (MT2009_PLUS_GROWTH_PET_V1)
+		{  55002, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Klatka Transportowa - trading pets is the players'
 		{  55008, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Pergamin Nazwy Zwierzaka - a pet rename - never
-		{  55009, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Skrzynia Ksiag Peta - Skrzynia Ksiag Peta - the bots take the exact books off the counters
-		{  55033, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Reverti Zwierza - Reverti - the bots keep their pets' skills
-		{  55034, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Revertus Zwierza - Revertus - the bots keep their pets' skills
-		{  55036, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Klucz Miejsca Umiejetnosci - the heroic pet's slot key - no bot logic opens it
+		{  55009, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Skrzynia Ksiag Zwierza - the bots take the exact books off the counters
+		{  55029, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Reverti Zwierza - the bots keep their pets' skills
+		{  55030, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Revertus Zwierza - the bots keep their pets' skills
+		{  55033, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Zaczaruj zwierzaka - no bot logic re-rolls a pet
+		{  55100, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Boska Odzywka - the bots revive with Odzywka
+		{  55400, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Skrzynka na Zwierzaka - the bots take the eggs off the counters
 		{  56000, PLAYERBOT_ISHOP3_NEED_LOOK_MOUNT, 0, 0, 0, 1, 1, 1 },	// Appaloosa - a mount
 		{  70020, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Wino z Kwiatu Brzoskwini - the wine - no potion list of the bots drinks it
 		{  70024, PLAYERBOT_ISHOP3_NEED_BONUS_STONE, 2, 4, 0, 1, 1, 1 },	// Marmur Blogoslawienstwa - the marble for a piece of four lines

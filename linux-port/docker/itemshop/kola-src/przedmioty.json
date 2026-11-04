@@ -1358,16 +1358,16 @@
   "expire_rel_sec": null
  },
  "7121": {
-  "vnum": 55009,
+  "vnum": 55033,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Skrzynia Ksiąg Peta",
-  "status": "zamiennik",
+  "name": "Zaczaruj zwierzaka",
+  "status": "ok",
   "src_name": "Zaczaruj zwierzaka",
-  "note": "Brak zmiany parametrów zwierzaka; propozycja: Skrzynia Ksiąg Peta (losowa księga umiejętności peta)",
-  "icon_vnum": 55009,
+  "note": "",
+  "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
  },
@@ -1520,7 +1520,7 @@
   "name": "Odżywka",
   "status": "zamiennik",
   "src_name": "Ekspresowe Leczenie Najemnika",
-  "note": "Brak najemników; propozycja: Odżywka - leczy/odnawia peta (towarzysza)",
+  "note": "Brak najemników; propozycja: Odżywka - karmi i wskrzesza peta",
   "icon_vnum": 55001,
   "limit": null,
   "expire_rel_sec": null
@@ -1568,7 +1568,7 @@
   "expire_rel_sec": null
  },
  "9580": {
-  "vnum": 55032,
+  "vnum": 55028,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,

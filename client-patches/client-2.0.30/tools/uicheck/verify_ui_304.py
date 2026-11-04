@@ -45,6 +45,10 @@ FEATURES = [
     ('fishpuzzle', ['uifishpuzzle.py', 'uiminigame.py', 'uiminigamefishevent.py', 'uiscript/minigamewindow.py',
                     'uiscript/minigamedialog.py', 'uiscript/minigamefishgamepage.py',
                     'uiscript/minigamefisheventwaitingpage.py']),
+    # MT2009_PLUS_GROWTH_PET_V1: the growth pet's windows (their art: pack "pety", tools/pety/build_pety_packs.py)
+    ('pety', ['uipetinfo.py', 'uiscript/petinformationwindow.py', 'uiscript/petfeedwindow.py',
+              'uiscript/pethatchingwindow.py', 'uiscript/petnamechangewindow.py',
+              'uiscript/petminiinformationwindow.py', 'uiscript/petpotentialwindow.py']),
 ]
 
 OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]

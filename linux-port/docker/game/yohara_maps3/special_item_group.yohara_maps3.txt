@@ -57,78 +57,78 @@ Group	MT2009_yitems3_70411
 	45	31239	1	213 -- Polyskujaca Biala Perla
 }
 
-# MT2009_PLUS_CHEST_DROPS_V1: 70412 - 62 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 70412 - 63 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
-# Left out (renormalised): Male Blogoslawienstwo 4.566% - not in our world; Biale Jajo Smoka 1.005% - no such pet;
-#   Szklo Handlu 0.822% - no system; Osobisty Sklepik Premium 0.639% - no system;
-#   Szpon Wezowy+0 0.457% - the Lycan's (no such class here);
+# Left out (renormalised): Male Blogoslawienstwo 4.566% - not in our world; Szklo Handlu 0.822% - no system;
+#   Osobisty Sklepik Premium 0.639% - no system; Szpon Wezowy+0 0.457% - the Lycan's (no such class here);
 #   Pazur Smoka Mroku+0 0.183% - the Lycan's (no such class here);
 #   Zbroja Smoka Nieba+0 0.183% - the Lycan's (no such class here)
 Group	MT2009_yitems3_70412
 {
 	Vnum	70412 -- B. Smocza Skrz. (ciezka)
-	1	72740	1	4955 -- Licencja Najemnika
-	2	31244	7	4955 -- Kamien Rekawic Pln. W. x7
-	3	31242	15	4361 -- Kamien Broni Pln. Wiatru x15
-	4	31238	1	4361 -- Polyskujaca Muszla
-	5	31243	15	4361 -- Kamien Broni Pln. W+ x15
-	6	31237	1	4163 -- Kamien Duchowy Pln. W.
-	7	31236	1	4163 -- Biala Smocza Luska
-	8	376	1	3766 -- Miecz Wezowy (wykon.)
-	9	396	1	3766 -- Ostrze Wezowe (wykon.)
-	10	1226	1	3766 -- Sztylet Wezowy (wykon.)
-	11	2246	1	3766 -- Luk Wezowy (wykon.)
-	12	3266	1	3766 -- Wielki Miecz Wez. (wyk.)
-	13	5216	1	3766 -- Dzwon Wezowy (wykon.)
-	14	7346	1	3766 -- Wachlarz Wezowy (wykon.)
-	15	6166	1	3766 -- Szpon Wezowy (wykon.)
-	16	71019	6	2379 -- Blogoslawienstwo Magii x6
-	17	71095	1	2379 -- Przepustka
-	18	31263	5	2081 -- Kamien Szlif. Pln. W. x5
-	19	71018	6	1982 -- Blogoslawienstwo Zycia x6
-	20	72353	6	1784 -- Topaz Woli x6
-	21	31241	1	1388 -- Polyskujaca Krwawa Perla
-	22	31235	1	1288 -- Biala Glowa Smoka
-	23	39081	1	1288 -- Swiety Fragment (120)
-	24	55001	1	1288 -- Odzywka
-	25	50325	1	1288 -- Ksiega Precyzji
-	26	71020	6	1189 -- Blogoslawienstwo Smoka x6
-	27	71085	1	1189 -- Wzmocnienie Przedmiotu
-	28	71084	1	1189 -- Zaczarowanie Przedmiotu
-	29	31240	1	1189 -- Polyskujaca Nieb. Perla
-	30	71257	1	1189 -- Dumny Smok Pln. Wiatru (7d)
-	31	28446	1	1090 -- Kamien Demonow+4
-	32	50527	1	991 -- Mikstura Talentu
-	33	76015	1	991 -- Kula Blogoslawienstwa
-	34	50662	1	892 -- Jadeit Nocy
-	35	50663	1	892 -- Jadeit Dymu
-	36	95926	200	892 -- Kamyki x200 - ours 95926 (50926 is a recipe here)
-	37	31239	1	793 -- Polyskujaca Biala Perla
-	38	49993	1	694 -- Ognista Runa Aury (100)
-	39	71025	1	496 -- Kamien Kowala
-	40	360	1	496 -- Miecz Wezowy+0
-	41	380	1	496 -- Ostrze Wezowe+0
-	42	1210	1	496 -- Sztylet Wezowy+0
-	43	2230	1	496 -- Luk Wezowy+0
-	44	3250	1	496 -- Wielki Miecz Wezowy+0
-	45	5200	1	496 -- Dzwon Wezowy+0
-	46	7330	1	496 -- Wachlarz Wezowy+0
-	47	30616	1	496 -- Dwutlenek Tytanu
-	48	30617	1	496 -- Agat
-	49	30618	1	496 -- Kamien Ksiezycowy
-	50	100700	1	396 -- Smoczy Plomien (B)
-	51	28447	1	198 -- Kamien Mocy Demonow+4
-	52	320	1	198 -- Miecz Smoka Mroku+0
-	53	340	1	198 -- Brzeszczot Smoka Mrok+0
-	54	1190	1	198 -- Sztylet Smoka Mroku+0
-	55	2210	1	198 -- Luk Smoka Mroku+0
-	56	5170	1	198 -- Dzwon Smoka Mroku+0
-	57	7310	1	198 -- Wachlarz Smoka Mroku+0
-	58	21210	1	198 -- Zbroja Smoka Mroku+0
-	59	21230	1	198 -- Zbroja Smoka Wiatru+0
-	60	21270	1	198 -- Zbroja Boskiego Smoka+0
-	61	3230	1	198 -- Ostrze Smoka Mroku+0
-	62	21250	1	198 -- Zbroja Smoka Magii+0
+	1	72740	1	4902 -- Licencja Najemnika
+	2	31244	7	4902 -- Kamien Rekawic Pln. W. x7
+	3	31242	15	4314 -- Kamien Broni Pln. Wiatru x15
+	4	31238	1	4314 -- Polyskujaca Muszla
+	5	31243	15	4314 -- Kamien Broni Pln. W+ x15
+	6	31237	1	4118 -- Kamien Duchowy Pln. W.
+	7	31236	1	4118 -- Biala Smocza Luska
+	8	376	1	3725 -- Miecz Wezowy (wykon.)
+	9	396	1	3725 -- Ostrze Wezowe (wykon.)
+	10	1226	1	3725 -- Sztylet Wezowy (wykon.)
+	11	2246	1	3725 -- Luk Wezowy (wykon.)
+	12	3266	1	3725 -- Wielki Miecz Wez. (wyk.)
+	13	5216	1	3725 -- Dzwon Wezowy (wykon.)
+	14	7346	1	3725 -- Wachlarz Wezowy (wykon.)
+	15	6166	1	3725 -- Szpon Wezowy (wykon.)
+	16	71019	6	2353 -- Blogoslawienstwo Magii x6
+	17	71095	1	2353 -- Przepustka
+	18	31263	5	2059 -- Kamien Szlif. Pln. W. x5
+	19	71018	6	1961 -- Blogoslawienstwo Zycia x6
+	20	72353	6	1765 -- Topaz Woli x6
+	21	31241	1	1373 -- Polyskujaca Krwawa Perla
+	22	31235	1	1275 -- Biala Glowa Smoka
+	23	39081	1	1275 -- Swiety Fragment (120)
+	24	55001	1	1275 -- Odzywka
+	25	50325	1	1275 -- Ksiega Precyzji
+	26	71020	6	1176 -- Blogoslawienstwo Smoka x6
+	27	71085	1	1176 -- Wzmocnienie Przedmiotu
+	28	71084	1	1176 -- Zaczarowanie Przedmiotu
+	29	31240	1	1176 -- Polyskujaca Nieb. Perla
+	30	71257	1	1176 -- Dumny Smok Pln. Wiatru (7d)
+	31	55412	1	1078 -- Biale Jajo Smoka (7d)
+	32	28446	1	1078 -- Kamien Demonow+4
+	33	50527	1	980 -- Mikstura Talentu
+	34	76015	1	980 -- Kula Blogoslawienstwa
+	35	50662	1	882 -- Jadeit Nocy
+	36	50663	1	882 -- Jadeit Dymu
+	37	95926	200	882 -- Kamyki x200 - ours 95926 (50926 is a recipe here)
+	38	31239	1	784 -- Polyskujaca Biala Perla
+	39	49993	1	686 -- Ognista Runa Aury (100)
+	40	71025	1	490 -- Kamien Kowala
+	41	360	1	490 -- Miecz Wezowy+0
+	42	380	1	490 -- Ostrze Wezowe+0
+	43	1210	1	490 -- Sztylet Wezowy+0
+	44	2230	1	490 -- Luk Wezowy+0
+	45	3250	1	490 -- Wielki Miecz Wezowy+0
+	46	5200	1	490 -- Dzwon Wezowy+0
+	47	7330	1	490 -- Wachlarz Wezowy+0
+	48	30616	1	490 -- Dwutlenek Tytanu
+	49	30617	1	490 -- Agat
+	50	30618	1	490 -- Kamien Ksiezycowy
+	51	100700	1	392 -- Smoczy Plomien (B)
+	52	28447	1	196 -- Kamien Mocy Demonow+4
+	53	320	1	196 -- Miecz Smoka Mroku+0
+	54	340	1	196 -- Brzeszczot Smoka Mrok+0
+	55	1190	1	196 -- Sztylet Smoka Mroku+0
+	56	2210	1	196 -- Luk Smoka Mroku+0
+	57	5170	1	196 -- Dzwon Smoka Mroku+0
+	58	7310	1	196 -- Wachlarz Smoka Mroku+0
+	59	21210	1	196 -- Zbroja Smoka Mroku+0
+	60	21230	1	196 -- Zbroja Smoka Wiatru+0
+	61	21270	1	196 -- Zbroja Boskiego Smoka+0
+	62	3230	1	196 -- Ostrze Smoka Mroku+0
+	63	21250	1	196 -- Zbroja Smoka Magii+0
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 70429 - 39 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),

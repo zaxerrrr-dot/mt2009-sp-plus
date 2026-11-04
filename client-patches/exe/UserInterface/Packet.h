@@ -167,6 +167,22 @@ enum
 #ifdef ENABLE_NPC_LOCATION_HELPER
 	HEADER_CG_NPC_LOCATION_HELPER				= 196,	// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (cg header)
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	// MT2009_PLUS_GROWTH_PET_V1 (cg headers): the growth pet (Anka2's numbers, free in ours; 134 is new)
+	HEADER_CG_PET_HATCH							= 122,
+	HEADER_CG_PET_WINDOW_TYPE					= 123,
+	HEADER_CG_PET_WINDOW						= 124,
+	HEADER_CG_PET_NAME_CHANGE					= 125,
+	HEADER_CG_PET_FEED							= 126,
+	HEADER_CG_PET_DETERMINE						= 127,
+	HEADER_CG_PET_ATTR_CHANGE					= 128,
+	HEADER_CG_PET_REVIVE						= 129,
+	HEADER_CG_PET_LEARN_SKILL					= 130,
+	HEADER_CG_PET_SKILL_UPGRADE					= 131,
+	HEADER_CG_PET_DELETE_SKILL					= 132,
+	HEADER_CG_PET_DELETE_ALL_SKILL				= 133,
+	HEADER_CG_PET_POTENTIAL						= 134,
+#endif
 
 	HEADER_CG_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_CG_TIME_SYNC							= 0xfc,
@@ -395,6 +411,22 @@ enum
 #endif
 #ifdef ENABLE_12ZI
 	HEADER_GC_SEPCIAL_ZODIAC_EFFECT				= 220, // MT2009_PLUS_ZODIAC_V1: the Zodiac bosses' effects (server packet.h)
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	// MT2009_PLUS_GROWTH_PET_V1 (gc headers): the growth pet - NOT Anka2's 173-184 (ours are taken); 235/236 are new
+	HEADER_GC_PET								= 224,
+	HEADER_GC_PET_SET							= 225,
+	HEADER_GC_PET_SET_EXCHANGE					= 226,
+	HEADER_GC_PET_DEL							= 227,
+	HEADER_GC_PET_SUMMON						= 228,
+	HEADER_GC_PET_POINT_CHANGE					= 229,
+	HEADER_GC_PET_NAME_CHANGE_RESULT			= 230,
+	HEADER_GC_PET_DETERMINE_RESULT				= 231,
+	HEADER_GC_PET_ATTR_CHANGE_RESULT			= 232,
+	HEADER_GC_PET_SKILL_UPDATE					= 233,
+	HEADER_GC_PET_SKILL_COOLTIME				= 234,
+	HEADER_GC_PET_LOOK							= 235,
+	HEADER_GC_PET_POTENTIAL						= 236,
 #endif
 
 	HEADER_GC_KEY_AGREEMENT_COMPLETED			= 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
@@ -4017,6 +4049,285 @@ typedef struct SPacketGCSkillColor
 } TPacketGCSkillColor;
 #endif
 
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+// MT2009_PLUS_GROWTH_PET_V1 (structs): System zwierzat domowych - identical on both sides (contract SPEC.md, the server's
+// packet.h in server-patches/pety). Anka2's layout except: feed / revive positions are TItemPos (any inventory window),
+// bLocked is a BYTE, the champion points, GC 235 PET_LOOK, GC 236 / CG 134 the potential slots.
+enum EGrowthPet
+{
+	GROWTH_PET_NAME_MIN = 4,
+	GROWTH_PET_NAME_MAX = 20,			// name bytes (cp1250); the packets carry char[21]
+	GROWTH_PET_SKILL_SLOTS = 3,			// Anka2 PET_SKILL_COUNT_MAX
+	GROWTH_PET_SKILL_LEVEL_MAX = 20,	// PET_GROWTH_SKILL_LEVEL_MAX
+	GROWTH_PET_FEED_SLOTS = 9,			// PET_FEED_SLOT_MAX
+	GROWTH_PET_REVIVE_SLOTS = 10,		// PET_REVIVE_MATERIAL_SLOT_MAX
+	GROWTH_PET_POTENTIAL_SLOTS = 2,
+	GROWTH_PET_MAX_LEVEL = 105,
+	GROWTH_PET_CHAMPION_MAX_LEVEL = 30,
+	GROWTH_PET_HATCHING_MONEY = 100000,
+	GROWTH_PET_SKILL_UPGRADE_PRICE = 2000000,
+	GROWTH_PET_EVOL_MAX = 6,			// 1 Mlody, 2 Dziki, 3 Dzielny, 4 Bohaterski, 5 Przebudzony, 6 Mocny
+	GROWTH_PET_SKILL_OPEN_EVOL_LEVEL = 4,
+};
+
+enum EGrowthPetPoints	// index into dwPoints[]
+{
+	POINT_UPBRINGING_PET_LEVEL,				// 0
+	POINT_UPBRINGING_PET_EXP,				// 1 mob exp of the current level
+	POINT_UPBRINGING_PET_ITEM_EXP,			// 2 item exp of the current level
+	POINT_UPBRINGING_PET_NEXT_EXP,			// 3 mob + item exp the level needs
+	POINT_UPBRINGING_PET_EVOL_LEVEL,		// 4 1..6
+	POINT_UPBRINGING_PET_HP,				// 5 0.001 %
+	POINT_UPBRINGING_PET_DEF_GRADE,			// 6 0.001 %
+	POINT_UPBRINGING_PET_SP,				// 7 0.001 %
+	POINT_UPBRINGING_DURATION,				// 8 unix time the life ends
+	POINT_UPBRINGING_MAX_DURATION,			// 9 seconds of a full life
+	POINT_UPBRINGING_BIRTHDAY,				// 10 unix time
+	POINT_UPBRINGING_CHAMPION_LEVEL,		// 11 0 = none, 1..30
+	POINT_UPBRINGING_CHAMPION_EXP,			// 12
+	POINT_UPBRINGING_CHAMPION_ITEM_EXP,		// 13
+	POINT_UPBRINGING_CHAMPION_NEXT_EXP,		// 14
+	POINT_UPBRINGING_CHAMPION_RES,			// 15 0.001 %
+	POINT_UPBRINGING_CHAMPION_BLOCK_PEN,	// 16 0.001 %
+	POINT_UPBRINGING_CHAMPION_PRECISION,	// 17 0.001 %
+	POINT_UPBRINGING_TYPE,					// 18 1..8 after Sfera Losu, else 0
+	POINT_UPBRINGING_SKILL_SLOTS,			// 19 1..3
+	POINT_UPBRINGING_MAX_NUM,				// 20
+};
+
+enum EGrowthPetSubheader	// TPacketGCPet.subheader (Anka2's order, 13-15 new)
+{
+	SUBHEADER_PET_EGG_USE_SUCCESS,				// 0
+	SUBHEADER_PET_EGG_USE_FAILED_BECAUSE_NAME,	// 1
+	SUBHEADER_PET_EGG_USE_FAILED_TIMEOVER,		// 2
+	SUBHEADER_PET_UNSUMMON,						// 3
+	SUBHEADER_PET_FEED_FAILED,					// 4
+	SUBHEADER_PET_FEED_SUCCESS,					// 5
+	SUBHEADER_PET_REVIVE_FAILED,				// 6
+	SUBHEADER_PET_REVIVE_SUCCESS,				// 7
+	SUBHEADER_PET_NAME_CHANGE_FAILED,			// 8
+	SUBHEADER_PET_NAME_CHANGE_SUCCESS,			// 9
+	SUBHEADER_PET_WINDOW_TYPE_INFO,				// 10
+	SUBHEADER_PET_WINDOW_TYPE_ATTR_CHANGE,		// 11
+	SUBHEADER_PET_WINDOW_TYPE_PREMIUM_FEED,		// 12
+	SUBHEADER_PET_EVOLVE_SUCCESS,				// 13 python PetEvolveResult(1)
+	SUBHEADER_PET_POTENTIAL_FAILED,				// 14 python PetPotentialResult(0)
+	SUBHEADER_PET_POTENTIAL_SUCCESS,			// 15 python PetPotentialResult(1)
+};
+
+enum EGrowthPetWindow { PET_WINDOW_HATCH, PET_WINDOW_NAME_CHANGE };	// TPacketCGPetWindow.window
+enum EGrowthPetWindowType { PET_WINDOW_INFO, PET_WINDOW_ATTR_CHANGE, PET_WINDOW_PRIMIUM_FEEDSTUFF };	// CG 123 type
+enum EGrowthPetFeed { FEED_LIFE_TIME_EVENT, FEED_EVOL_EVENT, FEED_EXP_EVENT, FEED_BUTTON_MAX };	// TPacketCGPetFeed.index
+enum EGrowthPetPotentialAction { PET_POTENTIAL_INSERT = 0, PET_POTENTIAL_REMOVE = 1 };
+
+typedef struct SGrowthPetSkillInfo
+{
+	BYTE	bLocked;
+	BYTE	bSkill;
+	BYTE	bLevel;
+	DWORD	dwCooltime;
+} TGrowthPetSkillInfo;
+
+typedef struct SPacketGCPet
+{
+	BYTE	header;
+	BYTE	subheader;
+} TPacketGCPet;
+
+typedef struct SPacketGCPetSet	// GC 225 (own pets) / GC 226 (the exchange partner's)
+{
+	BYTE	header;
+	DWORD	dwID;				// pet id (= socket 2 of its seal / bag)
+	DWORD	dwSummonItemVnum;	// the seal's vnum, also for a pet in a bag
+	char	szName[GROWTH_PET_NAME_MAX + 1];
+	TGrowthPetSkillInfo aSkill[GROWTH_PET_SKILL_SLOTS];
+	DWORD	dwPoints[POINT_UPBRINGING_MAX_NUM];
+} TPacketGCPetSet;
+
+typedef struct SPacketGCPetDelete
+{
+	BYTE	header;
+	DWORD	dwID;
+} TPacketGCPetDelete;
+
+typedef struct SPacketGCPetSummon
+{
+	BYTE	header;
+	DWORD	dwID;
+} TPacketGCPetSummon;
+
+typedef struct SPacketGCPetPointUpdate
+{
+	BYTE	header;
+	DWORD	dwID;
+	BYTE	bPoint;
+	DWORD	dwValue;
+} TPacketGCPetPointUpdate;
+
+typedef struct SPacketGCPetNameChangeResult
+{
+	BYTE	header;
+	BYTE	subheader;
+	DWORD	dwID;
+	char	szName[GROWTH_PET_NAME_MAX + 1];
+} TPacketGCPetNameChangeResult;
+
+typedef struct SPacketGCPetDetermineResult
+{
+	BYTE	header;
+	BYTE	type;
+} TPacketGCPetDetermineResult;
+
+typedef struct SPacketGCPetAttrChangeResult
+{
+	BYTE	header;
+	BYTE	type;
+	TItemPos pos;
+} TPacketGCPetAttrChangeResult;
+
+typedef struct SGrowthPetSkillUpdate
+{
+	BYTE	bLocked;
+	BYTE	bSkill;
+	BYTE	bLevel;
+	DWORD	dwCooltime;
+	BYTE	bSkillFormula1[GROWTH_PET_SKILL_LEVEL_MAX];	// activation chance % at skill level 1..20
+	WORD	wSkillFormula2[GROWTH_PET_SKILL_LEVEL_MAX];	// the value at skill level 1..20, in tenths
+	BYTE	bSkillFormula3[GROWTH_PET_SKILL_LEVEL_MAX];	// duration in tenths of a second, 0 = none
+} TGrowthPetSkillUpdate;
+
+typedef struct SPacketGCPetSkillUpdate
+{
+	BYTE	header;
+	DWORD	dwID;
+	TGrowthPetSkillUpdate aSkill[GROWTH_PET_SKILL_SLOTS];
+} TPacketGCPetSkillUpdate;
+
+typedef struct SPacketGCPetSkillCooltime
+{
+	BYTE	header;
+	DWORD	dwID;
+	BYTE	bSlot;
+	DWORD	dwCooltime;
+} TPacketGCPetSkillCooltime;
+
+typedef struct SPacketGCPetLook	// GC 235: a growth pet's look for every viewer
+{
+	BYTE	header;
+	DWORD	dwVID;
+	WORD	wScalePct;		// the model scale in per cent (100 = as is)
+	BYTE	bEvolution;		// 1..6
+	BYTE	bType78;		// 1: a pet of type 7/8 (a glow effect may come later; unused now)
+} TPacketGCPetLook;
+
+typedef struct SGrowthPetPotentialSlot
+{
+	DWORD	dwEggVnum;
+	BYTE	bSkill;
+	BYTE	bLevel;
+	DWORD	dwEndTime;
+} TGrowthPetPotentialSlot;
+
+typedef struct SPacketGCPetPotential	// GC 236
+{
+	BYTE	header;
+	DWORD	dwID;
+	BYTE	bOpenSlots;
+	TGrowthPetPotentialSlot aSlot[GROWTH_PET_POTENTIAL_SLOTS];
+} TPacketGCPetPotential;
+
+typedef struct SPacketCGPetHatch
+{
+	BYTE	header;
+	char	name[GROWTH_PET_NAME_MAX + 1];
+	TItemPos eggPos;
+} TPacketCGPetHatch;
+
+typedef struct SPacketCGPetWindow
+{
+	BYTE	header;
+	BYTE	window;
+	BYTE	state;
+} TPacketCGPetWindow;
+
+typedef struct SPacketCGPetWindowType
+{
+	BYTE	header;
+	BYTE	type;
+} TPacketCGPetWindowType;
+
+typedef struct SPacketCGPetFeed
+{
+	BYTE	header;
+	BYTE	index;
+	TItemPos pos[GROWTH_PET_FEED_SLOTS];
+	WORD	count[GROWTH_PET_FEED_SLOTS];
+} TPacketCGPetFeed;
+
+typedef struct SPacketCGPetDetermine
+{
+	BYTE	header;
+	TItemPos determinePos;
+} TPacketCGPetDetermine;
+
+typedef struct SPacketCGPetAttrChange
+{
+	BYTE	header;
+	TItemPos upBringingPos;
+	TItemPos attrChangePos;
+} TPacketCGPetAttrChange;
+
+typedef struct SPacketCGPetRevive
+{
+	BYTE	header;
+	TItemPos upBringingPos;
+	TItemPos pos[GROWTH_PET_REVIVE_SLOTS];
+	WORD	count[GROWTH_PET_REVIVE_SLOTS];
+} TPacketCGPetRevive;
+
+typedef struct SPacketCGPetLearnSkill
+{
+	BYTE	header;
+	BYTE	slotIndex;
+	TItemPos learnSkillPos;
+} TPacketCGPetLearnSkill;
+
+typedef struct SPacketCGPetSkillUpgrade
+{
+	BYTE	header;
+	BYTE	slotIndex;
+} TPacketCGPetSkillUpgrade;
+
+typedef struct SPacketCGPetDeleteSkill
+{
+	BYTE	header;
+	BYTE	slotIndex;
+	TItemPos deleteSkillPos;
+} TPacketCGPetDeleteSkill;
+
+typedef struct SPacketCGPetDeleteAllSkill
+{
+	BYTE	header;
+	TItemPos deleteAllSkillPos;
+} TPacketCGPetDeleteAllSkill;
+
+typedef struct SPacketCGPetNameChange
+{
+	BYTE	header;
+	char	name[GROWTH_PET_NAME_MAX + 1];
+	TItemPos changeNamePos;
+	TItemPos upBringingPos;
+} TPacketCGPetNameChange;
+
+typedef struct SPacketCGPetPotential	// CG 134
+{
+	BYTE	header;
+	BYTE	action;		// PET_POTENTIAL_INSERT / PET_POTENTIAL_REMOVE
+	BYTE	slot;
+	TItemPos eggPos;
+} TPacketCGPetPotential;
+#endif
+
 #ifdef ENABLE_MT2009_TITLES
 // MT2009_PLUS_TITLES_V1 (structs): Tytuly - as the server's packet.h (server-patches/tytuly); the sizes: Mt2009Titles.cpp static_assert
 enum
@@ -4114,6 +4425,21 @@ static_assert(sizeof(TPacketGCPointChange) == 18 && sizeof(TShopItemData) == 57 
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 static_assert(sizeof(TPacketGCMiniGameCatchKingResult) == 11, "CatchKing result must be 11 bytes (Owsap)");
+#endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+// MT2009_PLUS_GROWTH_PET_V1 (sizes): SPEC.md - the server's packet.h asserts the same
+static_assert(sizeof(TItemPos) == 3, "growth pet: TItemPos must be BYTE + WORD");
+static_assert(ITEM_PET == 37, "growth pet: item type ITEM_PET must be 37 (item.ITEM_TYPE_GROWTH_PET)");
+static_assert(sizeof(TGrowthPetSkillInfo) == 7 && sizeof(TPacketGCPet) == 2 && sizeof(TPacketGCPetSet) == 131, "growth pet GC 224/225");
+static_assert(sizeof(TPacketGCPetDelete) == 5 && sizeof(TPacketGCPetSummon) == 5 && sizeof(TPacketGCPetPointUpdate) == 10, "growth pet GC 227-229");
+static_assert(sizeof(TPacketGCPetNameChangeResult) == 27 && sizeof(TPacketGCPetDetermineResult) == 2 && sizeof(TPacketGCPetAttrChangeResult) == 5, "growth pet GC 230-232");
+static_assert(sizeof(TGrowthPetSkillUpdate) == 87 && sizeof(TPacketGCPetSkillUpdate) == 266 && sizeof(TPacketGCPetSkillCooltime) == 10, "growth pet GC 233/234");
+static_assert(sizeof(TPacketGCPetLook) == 9 && sizeof(TGrowthPetPotentialSlot) == 10 && sizeof(TPacketGCPetPotential) == 26, "growth pet GC 235/236");
+static_assert(sizeof(TPacketCGPetHatch) == 25 && sizeof(TPacketCGPetWindow) == 3 && sizeof(TPacketCGPetWindowType) == 2, "growth pet CG 122-124");
+static_assert(sizeof(TPacketCGPetFeed) == 47 && sizeof(TPacketCGPetDetermine) == 4 && sizeof(TPacketCGPetAttrChange) == 7, "growth pet CG 126-128");
+static_assert(sizeof(TPacketCGPetRevive) == 54 && sizeof(TPacketCGPetLearnSkill) == 5 && sizeof(TPacketCGPetSkillUpgrade) == 2, "growth pet CG 129-131");
+static_assert(sizeof(TPacketCGPetDeleteSkill) == 5 && sizeof(TPacketCGPetDeleteAllSkill) == 4 && sizeof(TPacketCGPetNameChange) == 28, "growth pet CG 125/132/133");
+static_assert(sizeof(TPacketCGPetPotential) == 6, "growth pet CG 134");
 #endif
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

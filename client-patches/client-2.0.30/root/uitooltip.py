@@ -1253,14 +1253,12 @@ class ItemToolTip(ToolTip):
 			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
 			self.ShowToolTip()
 			return
-		# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet in its transporter
-		# (uinewpet.py) - its name, species, level and evolution.
-		elif 55007 == itemVnum:
-			self.SetTitle(item.GetItemName())
-			if 0 != metinSlot:
-				for (petLine, petColor) in __import__("uinewpet").TransporterLines(metinSlot):
-					self.AppendTextLine(petLine, petColor)
-			self.AppendDescription(item.GetItemDescription(), 26)
+		# MT2009_PLUS_GROWTH_PET_V1: a growth pet item (type 37: egg - its time left and potential skills, seal and
+		# Klatka Transportowa - the pet's level, stage, age, life, bonuses, skills, champion level; skill books) -
+		# uipetinfo.py; the New Pet System's transporter (uinewpet.py) is retired. Also in the storehouse (the
+		# safebox's tooltip comes here with the item's sockets).
+		elif __import__("uipetinfo").IsGrowthPetItem(itemVnum):
+			__import__("uipetinfo").ItemTooltip(self, itemVnum, metinSlot if 0 != metinSlot else None)
 			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
 			self.ShowToolTip()
 			return
@@ -3576,3 +3574,18 @@ def SetItemToolTipInstance(instance):
 		del _instanceItemToolTip
 
 	_instanceItemToolTip = instance
+
+
+# MT2009_PLUS_GROWTH_PET_V1: a growth pet's skill (the pet window, uipetinfo.py): name, kind, description, the value
+# now and at the next level (player.GetPetSkillByIndex - the server's numbers for this pet), chance, duration, cooldown.
+class PetSkillToolTip(ToolTip):
+	def __init__(self):
+		ToolTip.__init__(self, 220)
+
+	def __del__(self):
+		ToolTip.__del__(self)
+
+	def SetPetSkill(self, petId, slot, skillIndex=0, skillLevel=0):
+		self.ClearToolTip()
+		__import__("uipetinfo").AppendSkillToolTip(self, petId, slot, skillIndex, skillLevel)
+		self.ShowToolTip()

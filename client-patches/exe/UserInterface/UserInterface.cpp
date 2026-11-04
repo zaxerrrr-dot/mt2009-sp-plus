@@ -851,6 +851,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #ifdef ENABLE_CHANGELOOK_SYSTEM
 	{ void Mt2009ChangeLook_RegisterPython(); Mt2009ChangeLook_RegisterPython(); } // MT2009_PLUS_CHANGE_LOOK_V1 (after player, safebox, exchange)
 #endif
+#ifdef ENABLE_GROWTH_PET_SYSTEM
+	{ void Mt2009GrowthPet_RegisterPython(); Mt2009GrowthPet_RegisterPython(); } // MT2009_PLUS_GROWTH_PET_V1 (after app, player, item, net, skill)
+#endif
 #ifdef __USE_CYTHON__
 	// don't add this line if you're implementing cython via .pyd:
 #ifndef __CYTHON_PYD__

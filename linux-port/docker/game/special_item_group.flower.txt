@@ -1,14 +1,17 @@
 # MT2009_PLUS_FLOWER_V1: the Flower Event's gift boxes (playerbot_flower.h) - what 10 shoots
 # of one flower give in the event window. Owsap's flower_event.txt (v6.2.6) with our items
 # where Owsap's do not exist here (72059 -> 71094 Rada Pustelnika, the (L) potions -> the (D)
-# ones, 55408 -> 55401 Jajo Malpki, 55400 -> 50011 Szkatulka Blasku Ksiezyca). Every line
+# ones, 55400 -> 50011 Szkatulka Blasku Ksiezyca). Every line
 # equally likely (weight 100). The operator edits them on the Seban panel's "Szkatulki"
 # page (chests/special_item_group.custom.txt; a core restart applies them); what one box
 # per flower is, and how many, is the classic panel's "Dzieci Kwiaty" page (flower_event.tsv).
+# MT2009_PLUS_GROWTH_PET_V1 (4 November 2026): the growth pets' eggs as the pl-wiki gives them -
+# Chryzantema / Konwalia: Jajo Grubego Mini Kata (55408, was 55401), Narcyz: Jajo Pajaka,
+# Lilia / Slonecznik: Jajo Malpiszona.
 Group	mt2009_flower_chryzantema
 {
 	Vnum	83023 -- Pudelko z Chryzantema
-	1	55401	1	100 -- Jajo Malpki
+	1	55408	1	100 -- Jajo Grubego Mini Kata
 	2	71094	1	100 -- Rada Pustelnika
 	3	50255	1	100 -- Cor Draconis (surowe)
 	4	27102	5	100 -- Zielona Mikstura (D)
@@ -28,7 +31,7 @@ Group	mt2009_flower_chryzantema
 Group	mt2009_flower_konwalia
 {
 	Vnum	83024 -- Pudelko z Konwalia
-	1	55401	1	100 -- Jajo Malpki
+	1	55408	1	100 -- Jajo Grubego Mini Kata
 	2	71094	1	100 -- Rada Pustelnika
 	3	50255	1	100 -- Cor Draconis (surowe)
 	4	27102	3	100 -- Zielona Mikstura (D)
@@ -48,7 +51,7 @@ Group	mt2009_flower_konwalia
 Group	mt2009_flower_narcyz
 {
 	Vnum	83025 -- Pudelko z Narcyzem
-	1	55402	1	100 -- Jajo Pajaczka
+	1	55402	1	100 -- Jajo Pajaka
 	2	71094	1	100 -- Rada Pustelnika
 	3	27006	30	100 -- Niebieska Mikstura (D)
 	4	27102	3	100 -- Zielona Mikstura (D)
@@ -69,7 +72,7 @@ Group	mt2009_flower_narcyz
 Group	mt2009_flower_lilia
 {
 	Vnum	83026 -- Pudelko z Lilia
-	1	55401	1	100 -- Jajo Malpki
+	1	55401	1	100 -- Jajo Malpiszona
 	2	71094	1	100 -- Rada Pustelnika
 	3	27006	30	100 -- Niebieska Mikstura (D)
 	4	27102	3	100 -- Zielona Mikstura (D)
@@ -90,7 +93,7 @@ Group	mt2009_flower_lilia
 Group	mt2009_flower_slonecznik
 {
 	Vnum	83027 -- Pudelko ze Slonecznikiem
-	1	55401	1	100 -- Jajo Malpki
+	1	55401	1	100 -- Jajo Malpiszona
 	2	71094	1	100 -- Rada Pustelnika
 	3	27006	30	100 -- Niebieska Mikstura (D)
 	4	27102	3	100 -- Zielona Mikstura (D)

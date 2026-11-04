@@ -17,114 +17,115 @@ Group	MT2009_chest_50270
 	Type	Pct
 	1	s950270	1	100 -- the official chest: one item by the owner's sheet (MT2009_PLUS_CHEST_DROPS_V1) - only the sheet (the owner, 15 October: the Arezzo purse / materials / valuable, belt, talisman and Zodiac lines removed)
 }
-# MT2009_PLUS_CHEST_DROPS_V1: 50270 - 97 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 50270 - 99 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
 # Left out (renormalised): Torba Emocji 1.695% - no system;
 #   Zbroja Nocnego Cienia+3 0.904% - the Lycan's (no such class here);
-#   Ksiega Dzikiego Zwierza 0.791% - not in our world; Ksiega Dzielnego Zwierza 0.791% - not in our world;
 #   Kolczasty Szpon+4 0.565% - the Lycan's (no such class here);
 #   Zbroja Nocnego Cienia+4 0.565% - the Lycan's (no such class here);
 #   Kolczasty Szpon+3 0.565% - the Lycan's (no such class here)
 Group	MT2009_chest_razador_sheet
 {
 	Vnum	950270 -- Skrzynia Razadora - the official chest (the sheet's 54702)
-	1	exp	600000	3001 -- EXP 600000
-	2	gold	800000	3001 -- Yang 800000
-	3	exp	800000	3001 -- EXP 800000
-	4	exp	1000000	2401 -- EXP 1000000
-	5	gold	1000000	1801 -- Yang 1000000
-	6	27003	1	1200 -- Czerwona Mikstura(D)
-	7	50254	1	1200 -- Skrzynia Mroku
-	8	30502	1	1200 -- Rubinowa Ozdoba
-	9	30505	1	1200 -- Szmaragdowa Ozdoba
-	10	30508	1	1200 -- Szafirowa Ozdoba
-	11	30511	1	1200 -- Czerwony Material
-	12	30513	1	1200 -- Szlachetny Naramiennik
-	13	30516	1	1200 -- Antyczny Naramiennik
-	14	30519	1	1200 -- Zloty Hak
-	15	70005	1	1200 -- Pierscien Doswiad. (1h)
-	16	27002	1	1200 -- Czerwona Mikstura(S)
-	17	27005	1	1200 -- Niebieska Mikstura(S)
-	18	50300	1	1200 -- Ksiega Umiejetnosci
-	19	30500	1	1200 -- Rubinowy Ozdobny Noz
-	20	30520	1	1801 -- Zlota Spinka
-	21	30503	1	1200 -- Ametystowy Ozdobny Noz
-	22	30504	1	1200 -- Srebrny Zacisk
-	23	30506	1	1200 -- Szafirowy Ozdobny Noz
-	24	30507	1	1200 -- Brazowy Zacisk
-	25	30509	1	1200 -- Niebieska Smocza Stal
-	26	30510	1	1200 -- Wytworny Naramiennik
-	27	30512	1	1200 -- Czerwona Smocza Stal
-	28	30514	1	1200 -- Fioletowy Material
-	29	30515	1	1200 -- Purpurowa Smocza Stal
-	30	30517	1	1200 -- Zloty Material
-	31	30518	1	1200 -- Zlota Przedza
-	32	18010	1	960 -- Pas Skorzany+0
-	33	18030	1	960 -- Pas Madrosci+0
-	34	14163	1	960 -- Krysztalowa Bransoleta+3
-	35	14201	1	960 -- Bransol. Z Niebian.Lez+1
-	36	16182	1	960 -- Ametystowy Naszyjnik+2
-	37	17163	1	960 -- Krysztalowe Kolczyki+3
-	38	17201	1	960 -- Kolczyki Z Niebian.Lez+1
-	39	13140	1	960 -- Tarcza Tytanow+0
-	40	183	1	960 -- Zatruty miecz+3
-	41	193	1	960 -- Lwi Miecz+3
-	42	3163	1	960 -- Miecz Zalu+3
-	43	2173	1	960 -- Stalowy Luk Kruka+3
-	44	1133	1	960 -- Skrzydla Demona Chakr.+3
-	45	7153	1	960 -- Ekstazyjny Wachlarz+3
-	46	5123	1	960 -- Bambusowy Dzwon+3
-	47	11293	1	960 -- Zbroja Z Czarnej Stali+3
-	48	11493	1	960 -- Ubranie Czarn. Wiatru+3
-	49	11693	1	960 -- Zbr. Plyt. Czar. Magii+3
-	50	11893	1	960 -- Czarna Szata+3
-	51	30524	1	960 -- Kamien Plomienia
-	52	18020	1	960 -- Pas Przepychu+0
-	53	18080	1	960 -- Pas Dusz+0
-	54	14182	1	960 -- Ametystowa Bransoleta+2
-	55	16163	1	960 -- Krysztalowy Naszyjnik+3
-	56	16201	1	960 -- Naszyj. Z Niebian.Lez+1
-	57	17182	1	960 -- Ametystowe Kolczyki+2
-	58	13062	1	960 -- Sokola Tarcza+2
-	59	13122	1	960 -- Tarcza Smoka+2
-	60	70058	1	960 -- Pierscien Teleportacji
-	61	71095	1	960 -- Przepustka
-	62	184	1	960 -- Zatruty miecz+4
-	63	194	1	960 -- Lwi Miecz+4
-	64	3164	1	960 -- Miecz Zalu+4
-	65	2174	1	960 -- Stalowy Luk Kruka+4
-	66	1134	1	960 -- Skrzydla Demona Chakr.+4
-	67	7154	1	960 -- Ekstazyjny Wachlarz+4
-	68	5124	1	960 -- Bambusowy Dzwon+4
-	69	11294	1	960 -- Zbroja Z Czarnej Stali+4
-	70	11494	1	960 -- Ubranie Czarn. Wiatru+4
-	71	11694	1	960 -- Zbr. Plyt. Czar. Magii+4
-	72	11894	1	960 -- Czarna Szata+4
-	73	30625	1	960 -- Padparadza
-	74	30617	1	960 -- Agat
-	75	55009	1	840 -- Skrzynia Ksiag Zwierza - our Skrzynia Ksiag Peta
-	76	13102	1	600 -- Lwia Tarcza+2
-	77	30603	1	600 -- Czerwony Barwnik
-	78	30610	1	600 -- Mithril
-	79	30628	1	600 -- Boski Kwiat
-	80	30521	1	600 -- Element Pierscienia
-	81	30522	1	600 -- Ogniwa Lancucha
-	82	30523	1	600 -- Element Ozdoby
-	83	18000	1	600 -- Pas Lniany+0
-	84	13082	1	600 -- Tarcza Tygrysa+2
-	85	13162	1	600 -- Tarcza Trzech Wladcow+2
-	86	55003	1	600 -- Ksiega Mlodego Zwierza
-	87	50324	1	600 -- Skrzynia Ksiag: Dopalacz
-	88	30614	1	600 -- Czarny Barwnik
-	89	95602	1	600 -- Wzor Kroju
-	90	30604	1	600 -- Szary Barwnik
-	91	95601	1	600 -- Stabilne Sznury
-	92	50525	1	600 -- Kamien Duchowy+
-	93	30623	1	600 -- Ksiega Prawdy
-	94	30624	1	600 -- Dusza Prawdy
-	95	30629	1	600 -- Eliksir Bogow
-	96	100700	1	480 -- Smoczy Plomien (B)
-	97	55403	1	360 -- Jajo Razadora (7d)
+	1	exp	600000	2952 -- EXP 600000
+	2	gold	800000	2952 -- Yang 800000
+	3	exp	800000	2952 -- EXP 800000
+	4	exp	1000000	2361 -- EXP 1000000
+	5	gold	1000000	1771 -- Yang 1000000
+	6	27003	1	1181 -- Czerwona Mikstura(D)
+	7	50254	1	1181 -- Skrzynia Mroku
+	8	30502	1	1181 -- Rubinowa Ozdoba
+	9	30505	1	1181 -- Szmaragdowa Ozdoba
+	10	30508	1	1181 -- Szafirowa Ozdoba
+	11	30511	1	1181 -- Czerwony Material
+	12	30513	1	1181 -- Szlachetny Naramiennik
+	13	30516	1	1181 -- Antyczny Naramiennik
+	14	30519	1	1181 -- Zloty Hak
+	15	70005	1	1181 -- Pierscien Doswiad. (1h)
+	16	27002	1	1181 -- Czerwona Mikstura(S)
+	17	27005	1	1181 -- Niebieska Mikstura(S)
+	18	50300	1	1181 -- Ksiega Umiejetnosci
+	19	30500	1	1181 -- Rubinowy Ozdobny Noz
+	20	30520	1	1771 -- Zlota Spinka
+	21	30503	1	1181 -- Ametystowy Ozdobny Noz
+	22	30504	1	1181 -- Srebrny Zacisk
+	23	30506	1	1181 -- Szafirowy Ozdobny Noz
+	24	30507	1	1181 -- Brazowy Zacisk
+	25	30509	1	1181 -- Niebieska Smocza Stal
+	26	30510	1	1181 -- Wytworny Naramiennik
+	27	30512	1	1181 -- Czerwona Smocza Stal
+	28	30514	1	1181 -- Fioletowy Material
+	29	30515	1	1181 -- Purpurowa Smocza Stal
+	30	30517	1	1181 -- Zloty Material
+	31	30518	1	1181 -- Zlota Przedza
+	32	18010	1	945 -- Pas Skorzany+0
+	33	18030	1	945 -- Pas Madrosci+0
+	34	14163	1	945 -- Krysztalowa Bransoleta+3
+	35	14201	1	945 -- Bransol. Z Niebian.Lez+1
+	36	16182	1	945 -- Ametystowy Naszyjnik+2
+	37	17163	1	945 -- Krysztalowe Kolczyki+3
+	38	17201	1	945 -- Kolczyki Z Niebian.Lez+1
+	39	13140	1	945 -- Tarcza Tytanow+0
+	40	183	1	945 -- Zatruty miecz+3
+	41	193	1	945 -- Lwi Miecz+3
+	42	3163	1	945 -- Miecz Zalu+3
+	43	2173	1	945 -- Stalowy Luk Kruka+3
+	44	1133	1	945 -- Skrzydla Demona Chakr.+3
+	45	7153	1	945 -- Ekstazyjny Wachlarz+3
+	46	5123	1	945 -- Bambusowy Dzwon+3
+	47	11293	1	945 -- Zbroja Z Czarnej Stali+3
+	48	11493	1	945 -- Ubranie Czarn. Wiatru+3
+	49	11693	1	945 -- Zbr. Plyt. Czar. Magii+3
+	50	11893	1	945 -- Czarna Szata+3
+	51	30524	1	945 -- Kamien Plomienia
+	52	18020	1	945 -- Pas Przepychu+0
+	53	18080	1	945 -- Pas Dusz+0
+	54	14182	1	945 -- Ametystowa Bransoleta+2
+	55	16163	1	945 -- Krysztalowy Naszyjnik+3
+	56	16201	1	945 -- Naszyj. Z Niebian.Lez+1
+	57	17182	1	945 -- Ametystowe Kolczyki+2
+	58	13062	1	945 -- Sokola Tarcza+2
+	59	13122	1	945 -- Tarcza Smoka+2
+	60	70058	1	945 -- Pierscien Teleportacji
+	61	71095	1	945 -- Przepustka
+	62	184	1	945 -- Zatruty miecz+4
+	63	194	1	945 -- Lwi Miecz+4
+	64	3164	1	945 -- Miecz Zalu+4
+	65	2174	1	945 -- Stalowy Luk Kruka+4
+	66	1134	1	945 -- Skrzydla Demona Chakr.+4
+	67	7154	1	945 -- Ekstazyjny Wachlarz+4
+	68	5124	1	945 -- Bambusowy Dzwon+4
+	69	11294	1	945 -- Zbroja Z Czarnej Stali+4
+	70	11494	1	945 -- Ubranie Czarn. Wiatru+4
+	71	11694	1	945 -- Zbr. Plyt. Czar. Magii+4
+	72	11894	1	945 -- Czarna Szata+4
+	73	30625	1	945 -- Padparadza
+	74	30617	1	945 -- Agat
+	75	55004	1	826 -- Ksiega Dzikiego Zwierza
+	76	55005	1	826 -- Ksiega Dzielnego Zwierza
+	77	55009	1	826 -- Skrzynia Ksiag Zwierza - ours 55009
+	78	13102	1	590 -- Lwia Tarcza+2
+	79	30603	1	590 -- Czerwony Barwnik
+	80	30610	1	590 -- Mithril
+	81	30628	1	590 -- Boski Kwiat
+	82	30521	1	590 -- Element Pierscienia
+	83	30522	1	590 -- Ogniwa Lancucha
+	84	30523	1	590 -- Element Ozdoby
+	85	18000	1	590 -- Pas Lniany+0
+	86	13082	1	590 -- Tarcza Tygrysa+2
+	87	13162	1	590 -- Tarcza Trzech Wladcow+2
+	88	55003	1	590 -- Ksiega Mlodego Zwierza
+	89	50324	1	590 -- Skrzynia Ksiag: Dopalacz
+	90	30614	1	590 -- Czarny Barwnik
+	91	95602	1	590 -- Wzor Kroju
+	92	30604	1	590 -- Szary Barwnik
+	93	95601	1	590 -- Stabilne Sznury
+	94	50525	1	590 -- Kamien Duchowy+
+	95	30623	1	590 -- Ksiega Prawdy
+	96	30624	1	590 -- Dusza Prawdy
+	97	30629	1	590 -- Eliksir Bogow
+	98	100700	1	472 -- Smoczy Plomien (B)
+	99	55403	1	354 -- Jajo Razadora (7d)
 }
 Group	MT2009_chest_50271
 {
@@ -132,119 +133,120 @@ Group	MT2009_chest_50271
 	Type	Pct
 	1	s950275	1	100 -- the official chest: one item by the owner's sheet (MT2009_PLUS_CHEST_DROPS_V1) - only the sheet (the owner, 15 October: the Arezzo purse / materials / valuable, belt, talisman and Zodiac lines removed)
 }
-# MT2009_PLUS_CHEST_DROPS_V1: 50271 - 102 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 50271 - 104 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
 # Left out (renormalised): Torba Emocji 1.678% - no system;
 #   Zbroja Nocnego Cienia+4 0.895% - the Lycan's (no such class here);
 #   Kolczasty Szpon+4 0.895% - the Lycan's (no such class here);
 #   Zbroja Nocnego Cienia+3 0.895% - the Lycan's (no such class here);
-#   Kolczasty Szpon+3 0.895% - the Lycan's (no such class here); Ksiega Dzikiego Zwierza 0.559% - not in our world;
-#   Ksiega Dzielnego Zwierza 0.336% - not in our world
+#   Kolczasty Szpon+3 0.895% - the Lycan's (no such class here)
 Group	MT2009_chest_nemere_sheet
 {
 	Vnum	950275 -- Skrzynia Nemere - the official chest (the sheet's 54703)
-	1	exp	600000	2980 -- EXP 600000
-	2	exp	800000	2980 -- EXP 800000
-	3	gold	800000	2980 -- Yang 800000
-	4	exp	1000000	2384 -- EXP 1000000
-	5	50300	1	1788 -- Ksiega Umiejetnosci
-	6	50254	1	1788 -- Skrzynia Mroku
-	7	gold	1000000	1788 -- Yang 1000000
-	8	30500	1	1192 -- Rubinowy Ozdobny Noz
-	9	30520	1	2384 -- Zlota Spinka
-	10	30503	1	1192 -- Ametystowy Ozdobny Noz
-	11	30504	1	1192 -- Srebrny Zacisk
-	12	30505	1	1192 -- Szmaragdowa Ozdoba
-	13	30506	1	1192 -- Szafirowy Ozdobny Noz
-	14	30507	1	1192 -- Brazowy Zacisk
-	15	30509	1	1192 -- Niebieska Smocza Stal
-	16	30510	1	1192 -- Wytworny Naramiennik
-	17	30511	1	1192 -- Czerwony Material
-	18	30512	1	1192 -- Czerwona Smocza Stal
-	19	30514	1	1192 -- Fioletowy Material
-	20	30515	1	1192 -- Purpurowa Smocza Stal
-	21	30516	1	1192 -- Antyczny Naramiennik
-	22	30517	1	1192 -- Zloty Material
-	23	30518	1	1192 -- Zlota Przedza
-	24	30521	1	1192 -- Element Pierscienia
-	25	30522	1	1192 -- Ogniwa Lancucha
-	26	30523	1	1192 -- Element Ozdoby
-	27	71095	1	1192 -- Przepustka
-	28	30502	1	1192 -- Rubinowa Ozdoba
-	29	30508	1	1192 -- Szafirowa Ozdoba
-	30	30513	1	1192 -- Szlachetny Naramiennik
-	31	30519	1	1192 -- Zloty Hak
-	32	70058	1	1192 -- Pierscien Teleportacji
-	33	183	1	954 -- Zatruty miecz+3
-	34	193	1	954 -- Lwi Miecz+3
-	35	3163	1	954 -- Miecz Zalu+3
-	36	2173	1	954 -- Stalowy Luk Kruka+3
-	37	1134	1	954 -- Skrzydla Demona Chakr.+4
-	38	7154	1	954 -- Ekstazyjny Wachlarz+4
-	39	5124	1	954 -- Bambusowy Dzwon+4
-	40	11294	1	954 -- Zbroja Z Czarnej Stali+4
-	41	11494	1	954 -- Ubranie Czarn. Wiatru+4
-	42	11893	1	954 -- Czarna Szata+3
-	43	30525	1	954 -- Kamien Lodowe. Plomienia
-	44	30616	1	1907 -- Dwutlenek Tytanu
-	45	50342	1	954 -- Inspiracja Adepta
-	46	184	1	954 -- Zatruty miecz+4
-	47	194	1	954 -- Lwi Miecz+4
-	48	3164	1	954 -- Miecz Zalu+4
-	49	2174	1	954 -- Stalowy Luk Kruka+4
-	50	1133	1	954 -- Skrzydla Demona Chakr.+3
-	51	7153	1	954 -- Ekstazyjny Wachlarz+3
-	52	5123	1	954 -- Bambusowy Dzwon+3
-	53	11293	1	954 -- Zbroja Z Czarnej Stali+3
-	54	11493	1	954 -- Ubranie Czarn. Wiatru+3
-	55	11693	1	954 -- Zbr. Plyt. Czar. Magii+3
-	56	11694	1	954 -- Zbr. Plyt. Czar. Magii+4
-	57	11894	1	954 -- Czarna Szata+4
-	58	13162	1	954 -- Tarcza Trzech Wladcow+2
-	59	30626	1	954 -- Cyjanit
-	60	50339	1	954 -- Charyzma Adepta
-	61	14163	1	834 -- Krysztalowa Bransoleta+3
-	62	14201	1	834 -- Bransol. Z Niebian.Lez+1
-	63	16163	1	834 -- Krysztalowy Naszyjnik+3
-	64	16182	1	834 -- Ametystowy Naszyjnik+2
-	65	17163	1	834 -- Krysztalowe Kolczyki+3
-	66	17182	1	834 -- Ametystowe Kolczyki+2
-	67	17201	1	834 -- Kolczyki Z Niebian.Lez+1
-	68	13062	1	834 -- Sokola Tarcza+2
-	69	13102	1	834 -- Lwia Tarcza+2
-	70	13122	1	834 -- Tarcza Smoka+2
-	71	13140	1	834 -- Tarcza Tytanow+0
-	72	14182	1	834 -- Ametystowa Bransoleta+2
-	73	16201	1	834 -- Naszyj. Z Niebian.Lez+1
-	74	13082	1	834 -- Tarcza Tygrysa+2
-	75	18010	1	596 -- Pas Skorzany+0
-	76	18080	1	596 -- Pas Dusz+0
-	77	55003	1	596 -- Ksiega Mlodego Zwierza
-	78	50525	1	596 -- Kamien Duchowy+
-	79	76007	1	596 -- Peleryna Mestwa
-	80	30623	1	596 -- Ksiega Prawdy
-	81	30627	1	596 -- Owoc Bogow
-	82	18000	1	596 -- Pas Lniany+0
-	83	18020	1	596 -- Pas Przepychu+0
-	84	18030	1	596 -- Pas Madrosci+0
-	85	95602	1	596 -- Wzor Kroju
-	86	70012	1	596 -- Lza Bogini (3h)
-	87	30624	1	596 -- Dusza Prawdy
-	88	100700	1	477 -- Smoczy Plomien (B)
-	89	55404	1	358 -- Jajo Nemere (7d)
-	90	50324	1	358 -- Skrzynia Ksiag: Dopalacz
-	91	30602	1	358 -- Niebieski Barwnik
-	92	30615	1	358 -- Bialy Barwnik
-	93	30604	1	358 -- Szary Barwnik
-	94	95601	1	358 -- Stabilne Sznury
-	95	30610	1	358 -- Mithril
-	96	25040	1	358 -- Zwoj Blogoslawienstwa
-	97	70048	1	358 -- Peleryna Maskujaca (4h)
-	98	70037	1	358 -- Ksiega Zapomnienia
-	99	70014	1	358 -- Pigulka Krwi
-	100	70043	1	358 -- Rekawica Zlodzieja (2h)
-	101	70005	1	358 -- Pierscien Doswiad. (1h)
-	102	55009	1	119 -- Skrzynia Ksiag Zwierza - our Skrzynia Ksiag Peta
+	1	exp	600000	2952 -- EXP 600000
+	2	exp	800000	2952 -- EXP 800000
+	3	gold	800000	2952 -- Yang 800000
+	4	exp	1000000	2361 -- EXP 1000000
+	5	50300	1	1771 -- Ksiega Umiejetnosci
+	6	50254	1	1771 -- Skrzynia Mroku
+	7	gold	1000000	1771 -- Yang 1000000
+	8	30500	1	1181 -- Rubinowy Ozdobny Noz
+	9	30520	1	2361 -- Zlota Spinka
+	10	30503	1	1181 -- Ametystowy Ozdobny Noz
+	11	30504	1	1181 -- Srebrny Zacisk
+	12	30505	1	1181 -- Szmaragdowa Ozdoba
+	13	30506	1	1181 -- Szafirowy Ozdobny Noz
+	14	30507	1	1181 -- Brazowy Zacisk
+	15	30509	1	1181 -- Niebieska Smocza Stal
+	16	30510	1	1181 -- Wytworny Naramiennik
+	17	30511	1	1181 -- Czerwony Material
+	18	30512	1	1181 -- Czerwona Smocza Stal
+	19	30514	1	1181 -- Fioletowy Material
+	20	30515	1	1181 -- Purpurowa Smocza Stal
+	21	30516	1	1181 -- Antyczny Naramiennik
+	22	30517	1	1181 -- Zloty Material
+	23	30518	1	1181 -- Zlota Przedza
+	24	30521	1	1181 -- Element Pierscienia
+	25	30522	1	1181 -- Ogniwa Lancucha
+	26	30523	1	1181 -- Element Ozdoby
+	27	71095	1	1181 -- Przepustka
+	28	30502	1	1181 -- Rubinowa Ozdoba
+	29	30508	1	1181 -- Szafirowa Ozdoba
+	30	30513	1	1181 -- Szlachetny Naramiennik
+	31	30519	1	1181 -- Zloty Hak
+	32	70058	1	1181 -- Pierscien Teleportacji
+	33	183	1	945 -- Zatruty miecz+3
+	34	193	1	945 -- Lwi Miecz+3
+	35	3163	1	945 -- Miecz Zalu+3
+	36	2173	1	945 -- Stalowy Luk Kruka+3
+	37	1134	1	945 -- Skrzydla Demona Chakr.+4
+	38	7154	1	945 -- Ekstazyjny Wachlarz+4
+	39	5124	1	945 -- Bambusowy Dzwon+4
+	40	11294	1	945 -- Zbroja Z Czarnej Stali+4
+	41	11494	1	945 -- Ubranie Czarn. Wiatru+4
+	42	11893	1	945 -- Czarna Szata+3
+	43	30525	1	945 -- Kamien Lodowe. Plomienia
+	44	30616	1	1889 -- Dwutlenek Tytanu
+	45	50342	1	945 -- Inspiracja Adepta
+	46	184	1	945 -- Zatruty miecz+4
+	47	194	1	945 -- Lwi Miecz+4
+	48	3164	1	945 -- Miecz Zalu+4
+	49	2174	1	945 -- Stalowy Luk Kruka+4
+	50	1133	1	945 -- Skrzydla Demona Chakr.+3
+	51	7153	1	945 -- Ekstazyjny Wachlarz+3
+	52	5123	1	945 -- Bambusowy Dzwon+3
+	53	11293	1	945 -- Zbroja Z Czarnej Stali+3
+	54	11493	1	945 -- Ubranie Czarn. Wiatru+3
+	55	11693	1	945 -- Zbr. Plyt. Czar. Magii+3
+	56	11694	1	945 -- Zbr. Plyt. Czar. Magii+4
+	57	11894	1	945 -- Czarna Szata+4
+	58	13162	1	945 -- Tarcza Trzech Wladcow+2
+	59	30626	1	945 -- Cyjanit
+	60	50339	1	945 -- Charyzma Adepta
+	61	14163	1	826 -- Krysztalowa Bransoleta+3
+	62	14201	1	826 -- Bransol. Z Niebian.Lez+1
+	63	16163	1	826 -- Krysztalowy Naszyjnik+3
+	64	16182	1	826 -- Ametystowy Naszyjnik+2
+	65	17163	1	826 -- Krysztalowe Kolczyki+3
+	66	17182	1	826 -- Ametystowe Kolczyki+2
+	67	17201	1	826 -- Kolczyki Z Niebian.Lez+1
+	68	13062	1	826 -- Sokola Tarcza+2
+	69	13102	1	826 -- Lwia Tarcza+2
+	70	13122	1	826 -- Tarcza Smoka+2
+	71	13140	1	826 -- Tarcza Tytanow+0
+	72	14182	1	826 -- Ametystowa Bransoleta+2
+	73	16201	1	826 -- Naszyj. Z Niebian.Lez+1
+	74	13082	1	826 -- Tarcza Tygrysa+2
+	75	18010	1	590 -- Pas Skorzany+0
+	76	18080	1	590 -- Pas Dusz+0
+	77	55003	1	590 -- Ksiega Mlodego Zwierza
+	78	50525	1	590 -- Kamien Duchowy+
+	79	76007	1	590 -- Peleryna Mestwa
+	80	30623	1	590 -- Ksiega Prawdy
+	81	30627	1	590 -- Owoc Bogow
+	82	18000	1	590 -- Pas Lniany+0
+	83	18020	1	590 -- Pas Przepychu+0
+	84	18030	1	590 -- Pas Madrosci+0
+	85	55004	1	590 -- Ksiega Dzikiego Zwierza
+	86	95602	1	590 -- Wzor Kroju
+	87	70012	1	590 -- Lza Bogini (3h)
+	88	30624	1	590 -- Dusza Prawdy
+	89	100700	1	472 -- Smoczy Plomien (B)
+	90	55404	1	354 -- Jajo Nemere (7d)
+	91	55005	1	354 -- Ksiega Dzielnego Zwierza
+	92	50324	1	354 -- Skrzynia Ksiag: Dopalacz
+	93	30602	1	354 -- Niebieski Barwnik
+	94	30615	1	354 -- Bialy Barwnik
+	95	30604	1	354 -- Szary Barwnik
+	96	95601	1	354 -- Stabilne Sznury
+	97	30610	1	354 -- Mithril
+	98	25040	1	354 -- Zwoj Blogoslawienstwa
+	99	70048	1	354 -- Peleryna Maskujaca (4h)
+	100	70037	1	354 -- Ksiega Zapomnienia
+	101	70014	1	354 -- Pigulka Krwi
+	102	70043	1	354 -- Rekawica Zlodzieja (2h)
+	103	70005	1	354 -- Pierscien Doswiad. (1h)
+	104	55009	1	118 -- Skrzynia Ksiag Zwierza - ours 55009
 }
 # MT2009_PLUS_AREZZO_BALANCE_V1 (the owner, 5 October: "practically nothing sensible drops" from Razador and Nemere):
 # both chests get a purse (always), upgrade materials of their tier and a valuable - soul stones up to +4,
