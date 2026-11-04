@@ -1,0 +1,14 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1 (nog)",
+  "old": "\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n",
+  "new": "\t\t\t\t\t\t\t\t\t\t// MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1 (nog): the refusal's line at most once a minute a character (autohunt tried it every few seconds)\n\t\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\t\tstatic std::map<DWORD, DWORD> s_mapLastLine;\n\t\t\t\t\t\t\t\t\t\t\tDWORD& rdwLast = s_mapLastLine[GetPlayerID()];\n\t\t\t\t\t\t\t\t\t\t\tconst DWORD dwNow = get_dword_time();\n\t\t\t\t\t\t\t\t\t\t\tif (!rdwLast || dwNow - rdwLast >= 60000)\n\t\t\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\t\t\trdwLast = dwNow;\n\t\t\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1 (cz)",
+  "old": "\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"The effect is already active.\"));\n",
+  "new": "\t\t\t\t\t\t\t\t\t// MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1 (cz): the refusal's line at most once a minute a character (autohunt tried it every few seconds)\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tstatic std::map<DWORD, DWORD> s_mapLastLine;\n\t\t\t\t\t\t\t\t\t\tDWORD& rdwLast = s_mapLastLine[GetPlayerID()];\n\t\t\t\t\t\t\t\t\t\tconst DWORD dwNow = get_dword_time();\n\t\t\t\t\t\t\t\t\t\tif (!rdwLast || dwNow - rdwLast >= 60000)\n\t\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\t\trdwLast = dwNow;\n\t\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"The effect is already active.\"));\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n"
+ }
+]

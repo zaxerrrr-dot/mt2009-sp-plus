@@ -1105,6 +1105,13 @@ def _AffectOn(affects, affect, point, value=None):
         return True
 
 
+# MT2009_PLUS_AUTOHUNT_SPECIAL_AFFECT_V1: vnum -> the affect type whose presence makes the server refuse it
+SPECIAL_ITEM_AFFECTS = {
+    50216: 302,  # Grzaniec (ITEM_NOG_POCKET) - AFFECT_NOG_ABILITY
+    72328: 600,  # Znak Straznika - AFFECT_CZ_UNLIMIT_ENTER
+}
+
+
 def ItemAffectPresent(vnum, cell):
     """Use the same (affect, point) identity as the server and icon bar.
     Shared potion effects must match even when another item supplied them.
@@ -1138,6 +1145,11 @@ def ItemAffectPresent(vnum, cell):
         if kind != item.ITEM_TYPE_USE:
             return False
         subtype = item.GetItemSubType()
+        # MT2009_PLUS_AUTOHUNT_SPECIAL_AFFECT_V1: USE_SPECIAL items the server refuses while their
+        # affect runs ("Ten efekt jest juz aktywny.", char_item.cpp) - Grzaniec 50216 (ITEM_NOG_POCKET,
+        # AFFECT_NOG_ABILITY 302) and Znak Straznika 72328 (AFFECT_CZ_UNLIMIT_ENTER 600)
+        if vnum in SPECIAL_ITEM_AFFECTS:
+            return SPECIAL_ITEM_AFFECTS[vnum] in affects
         if 50800 < vnum <= 50820:
             # the juices and waters: AFFECT_EXP_BONUS_EURO_FREE per point (char_item.cpp ITEM_USE 50801-50820)
             if subtype == getattr(item, 'USE_AFFECT', -1):
