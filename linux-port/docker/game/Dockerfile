@@ -934,6 +934,27 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
 
+# MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026; server-patches/mikstury/README.md): m2_mikstury_limity.lua is
+# dofile'd after m2_difficulty.lua and before m2_mikstury.lua (the step below wraps what it sets) and replaces
+# potion_system.use_potion - the herbal potions and the grilled fish (item type 36) with no group limit, no block by an
+# ItemShop speed potion, the same bonus refreshed or upgraded (a weaker one refused), the fish exceptions (the EXP fish
+# 27879 < 27883 < 27887 never together, Zloty Karas 27883 and Krab Krolewski 27886 exclude each other). The package's
+# compiled herb_pick timer of quest herbalism calls m2_mikstury_limity.herb_picked() after a successful pick (Zlote
+# Ziolo 50741, 1%, decision M3).
+COPY quest/m2_mikstury_limity.lua /opt/metin2/share/locale/poland/quest/libs/other/m2_mikstury_limity.lua
+RUN set -eu; L=/opt/metin2/share/locale/poland; O="$L/quest/libs/other/_otherModuleLoader.lua" \
+ && LC_ALL=C grep -q 'other/m2_difficulty.lua' "$O" \
+ && LC_ALL=C grep -q 'other/potion_system.lua' "$O" \
+ && ! LC_ALL=C grep -q 'other/m2_mikstury.lua' "$O" \
+ && if ! LC_ALL=C grep -q 'other/m2_mikstury_limity.lua' "$O"; then printf 'dofile( LIBDIR .. "other/m2_mikstury_limity.lua")\n' >> "$O"; fi \
+ && test "$(LC_ALL=C grep -c 'other/m2_mikstury_limity.lua' "$O")" -eq 1 \
+ && test -s "$L/quest/libs/other/m2_mikstury_limity.lua" \
+ && H="$L/quest/object/herb_pick/timer/herbalism.start" \
+ && test "$(tr -d '\r' < "$H" | LC_ALL=C grep -c '^pc \. add_player_stat ( PLAYER_STATS_HERBALISM_FLAG , item_count ) $')" -eq 1 \
+ && if ! LC_ALL=C grep -q 'm2_mikstury_limity' "$H"; then LC_ALL=C sed -i 's/^\(pc \. add_player_stat ( PLAYER_STATS_HERBALISM_FLAG , item_count ) \)\(\r\?\)$/\1\2\nm2_mikstury_limity . herb_picked ( ) \2/' "$H"; fi \
+ && test "$(tr -d '\r' < "$H" | LC_ALL=C grep -c '^m2_mikstury_limity \. herb_picked ( ) $')" -eq 1 \
+ && echo "share: potions with no group limit, the fish exceptions, Zlote Ziolo from herbs (MT2009_PLUS_MIKSTURY_V1)"
+
 # MT2009_PLUS_BIOLOG_ELIKSIR_V1 / MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): m2_mikstury.lua is
 # dofile'd after m2_difficulty.lua and wraps potion_system.use_potion (Mikstura Geniuszu 51782, Mikstura Determinacji
 # 51783 and Mikstura Szybkiej Analizy 51785 refused - withdrawn, not on the pl-wiki) and collect_data.take_chance
