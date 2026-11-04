@@ -2635,6 +2635,13 @@ namespace
 		return !IsPlayerBotGearKeptForSelf(ch, item);
 	}
 
+	// MT2009_PLUS_BOT_GOODS_VALUABLE_V1 (the owner, 3 November 2026: "albo jesli jest to drogocenne - wystawia na
+	// sklep"): a piece asking at least this on a counter is never the family cap's or the hold time's merchant fodder
+	// while the bot can keep a counter (PlayerBotCanOpenShop) - it waits in the bag for its counter. Counted: "valuable
+	// kept".
+	const long long PLAYERBOT_GOODS_VALUABLE_PRICE = 1000000;
+	unsigned int s_uPlayerBotGoodsValuableKept = 0;
+
 	// 1: past its family's best two, 2: held too long (a helmet or a shield), 0: neither.
 	int GetPlayerBotBagGoodsSurplus(LPCHARACTER ch, LPITEM item)
 	{
@@ -2643,6 +2650,11 @@ namespace
 			return 0;
 		if (!IsPlayerBotBagGoodsHoardPiece(ch, item))
 			return 0;
+		if (PlayerBotCanOpenShop(ch) && (long long)GetPlayerBotShopAskingPrice(item) >= PLAYERBOT_GOODS_VALUABLE_PRICE)
+		{
+			++s_uPlayerBotGoodsValuableKept;	// MT2009_PLUS_BOT_GOODS_VALUABLE_V1
+			return 0;
+		}
 		const DWORD family = GetPlayerBotItemFamily(item);
 		long long mine = -1;
 		int ahead = 0;

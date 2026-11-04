@@ -23,6 +23,8 @@
 //   m1_square             high bots' strolls on the first village's square (MT2009_PLUS_BOT_M1_SQUARE_STROLL_V1)
 //   pdg_solo / pdg_far    a person's party bots' own targets in a dungeon / the instance's nearest
 //                         (MT2009_PLUS_BOT_PDG_SOLO_V1)
+//   valuable_kept         bag pieces asking >= 1 mln kept from the family cap / hold time for a counter
+//                         (MT2009_PLUS_BOT_GOODS_VALUABLE_V1)
 //
 // Included once, after playerbot_party_dungeon.h (the last of the counters' files).
 
@@ -39,14 +41,14 @@ namespace
 		sys_log(0, "PLAYERBOT_F: census plain_low_refused=%u plain_low_scrap=%u plain_low_lines=%u "
 				"helm_shield_ranked=%u helm_shield_aged=%u family_capped=%u family_glut=%u low_plus_capped=%u "
 				"slow_markdown=%u clocks_known=%u clocks_new=%u low_gear_spared=%u sale_refine_far=%u ds_clearly_better=%u "
-				"shield41=%u scroll_pack=%u small_developed=%u m1_square=%u pdg_solo=%u pdg_far=%u",
+				"shield41=%u scroll_pack=%u small_developed=%u m1_square=%u pdg_solo=%u pdg_far=%u valuable_kept=%u",
 				s_uPlayerBotPlainLowGearRefused, s_uPlayerBotPlainLowGearScrap,
 				s_uPlayerBotPlainLowGearTakenOff, s_uPlayerBotHelmShieldRanked, s_uPlayerBotHelmShieldAged,
 				s_uPlayerBotGoodsFamilyCapped, s_uPlayerBotFamilyGlutPriced, s_uPlayerBotLowPlusBonusCapped,
 				slowMarkdown, clocksKnown, clocksNew,
 				s_uPlayerBotLowGearStonesSpared, s_uPlayerBotSaleRefineFar, s_uPlayerBotDsClearlyBetter,
 				s_uPlayerBotShield41Steps, s_uPlayerBotScrollPackWanted, s_uPlayerBotSmallPiecesDeveloped,
-				s_uPlayerBotM1SquareStrolls, s_uPlayerBotPdgSoloPicks, s_uPlayerBotPdgSoloFar);
+				s_uPlayerBotM1SquareStrolls, s_uPlayerBotPdgSoloPicks, s_uPlayerBotPdgSoloFar, s_uPlayerBotGoodsValuableKept);
 	}
 }
 
