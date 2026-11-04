@@ -391,6 +391,7 @@ class GameWindow(ui.ScriptWindow):
 		# and the keybind window and its wait for a key go with it.
 		self.keyActions = {}
 		self.keyActionsHeld = {}
+		self.heldMoveActions = {}
 		__import__("uikeybind").DestroyWindow()
 
 		chat.Close()
@@ -931,6 +932,8 @@ class GameWindow(ui.ScriptWindow):
 		self.keyActions = actions
 		# The key that started each held action, for its release.
 		self.keyActionsHeld = {}
+		# MT2009_PLUS_MOUNT_KEEP_WALKING_V1: the held walking keys and their actions (__KeepWalkingAfterMount).
+		self.heldMoveActions = {}
 		keybind.SetAvailable(actions.keys())
 
 		# Kept for anything that still looks at them; the keys go through
@@ -2359,11 +2362,14 @@ class GameWindow(ui.ScriptWindow):
 			press, release = entry
 			if release:
 				self.keyActionsHeld[key] = release
+			if action.startswith("move_"):
+				self.heldMoveActions[key] = action
 			press()
 
 		return True
 
 	def __ReleaseKeyAction(self, key):
+		getattr(self, "heldMoveActions", {}).pop(key, None)
 		release = getattr(self, "keyActionsHeld", {}).pop(key, None)
 		if release:
 			release()
@@ -2739,8 +2745,42 @@ class GameWindow(ui.ScriptWindow):
 			if dlg:
 				dlg.OnUpdatePerSecond()
 
+	# MT2009_PLUS_MOUNT_KEEP_WALKING_V1 (poprawki 3.0.10 #2): getting on or off a mount with W (or any walking key) held
+	# stopped the character until the key was pressed again. The server sends the rider to itself anew (MountVnum ->
+	# EncodeInsertPacket), the exe deletes the main character and makes a new one (CNetworkActorManager::
+	# __AppendCharacterManagerActor) and the walk ends with the old one - the exe does not walk the new one on (its held
+	# keys, CPythonPlayer m_isUp/Down/Left/Right, go with CPythonPlayer::NEW_Stop), while this window sends a key only when
+	# it goes down. So when the
+	# mount state changes, every walking key still held (app.IsPressed) is pressed again - at once and a few times in the
+	# next 0.8 s, as the new character, its shape and the server's update packet come in over several frames.
+	MOUNT_KEEP_WALKING_DELAYS = (0.0, 0.15, 0.4, 0.8)
+
+	def __KeepWalkingAfterMount(self):
+		try:
+			mounted = bool(player.IsMountingHorse())
+		except Exception:
+			return
+		now = app.GetTime()
+		last = getattr(self, "keepWalkingMounted", None)
+		self.keepWalkingMounted = mounted
+		if last is not None and last != mounted:
+			self.keepWalkingTimes = [now + delay for delay in self.MOUNT_KEEP_WALKING_DELAYS]
+		times = getattr(self, "keepWalkingTimes", None)
+		if not times or now < times[0]:
+			return
+		while times and now >= times[0]:
+			times.pop(0)
+		actions = getattr(self, "keyActions", {})
+		for (key, action) in getattr(self, "heldMoveActions", {}).items():
+			if not app.IsPressed(key):
+				continue
+			entry = actions.get(action)
+			if entry:
+				entry[0]()
+
 	def OnUpdate(self):
 		app.UpdateGame()
+		self.__KeepWalkingAfterMount()
 
 		# The drop strip follows the target's bar and goes with it.
 		if self.mobDropWindow and self.mobDropWindow.IsShow():
