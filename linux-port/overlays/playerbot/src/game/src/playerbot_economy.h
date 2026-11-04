@@ -2628,7 +2628,9 @@ namespace
 				IsPlayerBotAwakeningGoods(item->GetVnum()) ||
 				IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
 				IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotLppKeptItem(ch, item) ||
-				IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item))
+				IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item) ||
+				IsPlayerBotSashGrailProject(ch, item) || IsPlayerBotArcherStoneWeapon(ch, item) ||
+				(item->GetType() == ITEM_WEAPON && item == FindPlayerBotLinesProject(ch)))
 			return false;
 		return !IsPlayerBotGearKeptForSelf(ch, item);
 	}

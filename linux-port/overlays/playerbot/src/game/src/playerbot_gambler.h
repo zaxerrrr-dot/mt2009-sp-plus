@@ -294,6 +294,9 @@ namespace
 			return false;
 		if (!IsPlayerBotGambleLevelOk(item))
 			return false;
+		// MT2009_PLUS_BOT_SALE_REFINE_NEAR_LEVEL_V1: the gambler's anvil near its own level only.
+		if (!IsPlayerBotSaleRefineNearLevel(ch, item))
+			return false;
 		if (IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotScrollOnlyWeapon(item) ||
 				IsPlayerBotPrizeItem(item) || IsPlayerBotMerchantOnlyGear(item))
 			return false;

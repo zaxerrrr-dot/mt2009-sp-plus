@@ -658,6 +658,91 @@ namespace
 	// What attacks the bot or the person, what the person hits, the stones,
 	// the nearest monster round the person - the target in hand kept while
 	// nothing with the better claim comes.
+	// MT2009_PLUS_BOT_PDG_SOLO_V1 (the owner, 3 November 2026: "Boty w druzynie w dungeonie robia dungeon samodzielnie
+	// (nie biegaja za liderem, nie bija tych samych mobow)"): a bot of a person's party inside a dungeon fights as if
+	// it ran the dungeon alone - what attacks it, the stones, the nearest monster round itself (within
+	// PLAYERBOT_PDG_SOLO_HUNT_RANGE, else the nearest of the instance) - and leaves the person's own target to the
+	// person while anything else is there to fight. Between the fights it does not walk back to the person; only a
+	// person the dungeon jumped to another room (far, or past a wall) is caught up with, once nothing is left round the
+	// bot. The bots' own runs (a bot leads them) keep the fight round their leader. Counted ("pdg solo").
+	const int PLAYERBOT_PDG_SOLO_HUNT_RANGE = 3000;
+	unsigned int s_uPlayerBotPdgSoloPicks = 0, s_uPlayerBotPdgSoloFar = 0;
+
+	LPCHARACTER PickPlayerBotPdgSoloFoe(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER person, DWORD dwNow)
+	{
+		const long map = ch->GetMapIndex();
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
+		bool dragonShielded = false;
+		if (map / 10000 == 208)
+			for (size_t i = 0; i < scan.foes.size() && !dragonShielded; ++i)
+				dragonShielded = scan.foes[i].dwRace >= 8031 && scan.foes[i].dwRace <= 8034;
+		LPCHARACTER personTarget = person ? person->GetTarget() : NULL;
+		LPCHARACTER threat = NULL, stone = NULL, near = NULL, far = NULL, personOnly = NULL;
+		int dThreat = INT_MAX, dStone = INT_MAX, dNear = INT_MAX, dFar = INT_MAX;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!IsPlayerBotPdgFoe(ch, c))
+				continue;
+			if (dragonShielded && c->GetRaceNum() == PLAYERBOT_PDG_BLUE_DRAGON)
+				continue;
+			if (IsPlayerBotZodiacLeftToPerson(c->GetRaceNum()))
+				continue;
+			const int dBot = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+			if (c->GetVictim() == ch && dBot <= PLAYERBOT_PDG_THREAT_RANGE && dBot < dThreat)
+			{
+				threat = c;
+				dThreat = dBot;
+			}
+			// the person's own target: the person's fight, while there is another
+			if (c == personTarget)
+			{
+				personOnly = c;
+				continue;
+			}
+			if (dBot <= PLAYERBOT_PDG_SOLO_HUNT_RANGE)
+			{
+				if (c->IsStone() && dBot < dStone)
+				{
+					stone = c;
+					dStone = dBot;
+				}
+				if (dBot < dNear)
+				{
+					near = c;
+					dNear = dBot;
+				}
+			}
+			else if (dBot < dFar)
+			{
+				far = c;
+				dFar = dBot;
+			}
+		}
+		LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+		if (!IsPlayerBotPdgFoe(ch, cur) || (dragonShielded && cur->GetRaceNum() == PLAYERBOT_PDG_BLUE_DRAGON) ||
+				(cur == personTarget && (near || far)))
+			cur = NULL;
+		LPCHARACTER pick = NULL;
+		if (threat)
+			pick = cur && cur->GetVictim() == ch ? cur : threat;
+		else if (cur && (!stone || cur->IsStone()))
+			pick = cur;
+		else if (stone || near)
+			pick = stone ? stone : near;
+		else if (far && IsPlayerBotReachable(map, ch->GetX(), ch->GetY(), far->GetX(), far->GetY()))
+		{
+			// the nearest of the instance only on the bot's own ground - another room is the dungeon's jump's
+			pick = far;
+			++s_uPlayerBotPdgSoloFar;
+		}
+		else
+			pick = personOnly;
+		if (pick)
+			++s_uPlayerBotPdgSoloPicks;
+		return pick;
+	}
+
 	LPCHARACTER PickPlayerBotPdgFoe(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER person, DWORD dwNow)
 	{
 		const long map = ch->GetMapIndex();
@@ -734,10 +819,14 @@ namespace
 			return true;
 		if (BuffPlayerBotTowerFellows(ch, state, dwNow))
 			return true;
+		// MT2009_PLUS_BOT_PDG_SOLO_V1: a person's party bot (not a bot's run) fights on its own and is caught up with
+		// the person only once nothing is left round it.
+		const bool solo = !(person->GetDesc() && person->GetDesc()->IsBot());
+		LPCHARACTER soloFoe = solo ? PickPlayerBotPdgSoloFoe(ch, state, person, dwNow) : NULL;
 		// Caught up with a person a quest jumped to another room, or one far
 		// beyond a wall: the way the dungeon jumped the person.
 		const int toPerson = DISTANCE_APPROX(ch->GetX() - person->GetX(), ch->GetY() - person->GetY());
-		if (toPerson > PLAYERBOT_PDG_CATCH_UP_DISTANCE && dwNow >= b.dwNextCatchUp && !person->IsWarping() &&
+		if (!soloFoe && toPerson > PLAYERBOT_PDG_CATCH_UP_DISTANCE && dwNow >= b.dwNextCatchUp && !person->IsWarping() &&
 				!person->IsDead())
 		{
 			b.dwNextCatchUp = dwNow + PLAYERBOT_PDG_CATCH_UP_RETRY_MS;
@@ -750,7 +839,7 @@ namespace
 				return true;
 			}
 		}
-		LPCHARACTER foe = PickPlayerBotPdgFoe(ch, state, person, dwNow);
+		LPCHARACTER foe = solo ? soloFoe : PickPlayerBotPdgFoe(ch, state, person, dwNow);
 		if (foe)
 		{
 			const DWORD before = state.dwTargetVID;
@@ -775,11 +864,11 @@ namespace
 			}
 			return fought;
 		}
-		// Nothing to fight: at the person's side.
+		// Nothing to fight: at the person's side - a solo bot where it stands (MT2009_PLUS_BOT_PDG_SOLO_V1).
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
 		const int stay = PLAYERBOT_PDG_STAY_DISTANCE - (int)(ch->GetPlayerID() % 4) * 50;
-		if (toPerson > stay)
+		if (!solo && toPerson > stay)
 		{
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 			MovePlayerBot(ch, person->GetX(), person->GetY(), dwNow, 6, true, false);

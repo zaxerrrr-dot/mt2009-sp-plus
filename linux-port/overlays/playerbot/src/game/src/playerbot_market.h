@@ -197,6 +197,46 @@ namespace
 				(view.project->GetRefineLevel() < 9 || !::BonusModeGlobal());	// MT2009_PLUS_REFINE_GLOBAL_V1
 	}
 
+	// MT2009_PLUS_BOT_SCROLL_PACK_V1 (the owner, 3 November 2026: "Plan ulepszen kupuje material tez w paczce po 2 szt.
+	// (tarcze 21-40 nie stoja na +4)"): the scroll a worn piece's next step waits for. The plain anvil is barred to a
+	// piece the bot fights in with no spare for its slot (IsPlayerBotPlainAnvilBarred) - 309 bots of 21-40 stood in a
+	// Bojowa Tarcza+4 on the test world (3 November), "refine held, no burn of worn ... without a scroll" two thousand
+	// times a minute - and the market bought a scroll for the weapon alone. A bot with such a piece under its target
+	// buys scrolls up to PLAYERBOT_SCROLL_PACK (a line of two, or the part of a stack the purse takes): the step and
+	// the one after it. Counted ("scroll pack wanted").
+	const int PLAYERBOT_SCROLL_PACK = 2;
+	unsigned int s_uPlayerBotScrollPackWanted = 0;
+	bool PlayerBotNeedsScrollForWornGear(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || CountPlayerBotSafeRefineScrolls(ch) >= PLAYERBOT_SCROLL_PACK)
+			return false;
+		static const BYTE slots[] = { WEAR_BODY, WEAR_SHIELD, WEAR_HEAD, WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR };
+		for (size_t i = 0; i < sizeof(slots) / sizeof(slots[0]); ++i)
+		{
+			LPITEM worn = ch->GetWear(slots[i]);
+			if (!worn || worn->GetRefinedVnum() == 0 || IsPlayerBotScrollFreeGear(worn) ||
+					worn->GetRefineLevel() >= GetPlayerBotRefineTarget(ch, worn) ||
+					!IsPlayerBotScrollStepAllowed(worn->GetRefineLevel()) || !IsPlayerBotPlainAnvilBarred(ch, worn) ||
+					!CanPlayerBotPayRefineStep(ch, worn))
+				continue;
+			++s_uPlayerBotScrollPackWanted;
+			return true;
+		}
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_SCROLL_PACK_V1: a safe refine scroll on any bot counter of this core (the ledger).
+	bool PlayerBotMarketHasSafeScrolls()
+	{
+		for (TPlayerBotMarketLedger::const_iterator it = s_mapMarketLedger.begin(); it != s_mapMarketLedger.end(); ++it)
+			if (it->second.dwSupplyUnits > 0 && IsPlayerBotSafeRefineScroll(it->first))
+				return true;
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_F_CENSUS_V1: defined in playerbot_f_census.h, after the last of its counters' files.
+	void LogPlayerBotSectionFCensus();
+
 	// Would this bot rather have the item than the money?
 	bool WantsPlayerBotStallItemOwn(LPCHARACTER ch, LPITEM offer);
 	// MT2009_PLUS_MARKET_LIFE_V1, point 9: or would it buy it on a whim - a
@@ -440,6 +480,11 @@ namespace
 		// And a refine scroll, for a weapon that is refined under one.
 		if (IsPlayerBotSafeRefineScroll(offer->GetVnum()) && PlayerBotNeedsScrollForWeapon(ch))
 			return true;
+		// MT2009_PLUS_BOT_SCROLL_PACK_V1: and for a worn piece the plain anvil may not take, up to a pack of two.
+		if (IsPlayerBotSafeRefineScroll(offer->GetVnum()) &&
+				CountPlayerBotSafeRefineScrolls(ch) + (int)offer->GetCount() <= PLAYERBOT_SCROLL_PACK &&
+				PlayerBotNeedsScrollForWornGear(ch))
+			return true;
 		// A key for a chest it holds and cannot open.
 		if (offer->GetType() == ITEM_TREASURE_KEY)
 			return PlayerBotWantsTreasureKey(ch, offer);
@@ -651,6 +696,10 @@ namespace
 			return true;
 		// A scroll for a weapon that is refined under one.
 		if (PlayerBotNeedsScrollForWeapon(ch))
+			return true;
+		// MT2009_PLUS_BOT_SCROLL_PACK_V1: a pack of scrolls for a worn piece the plain anvil may not take - while a
+		// counter has scrolls (the ledger).
+		if (PlayerBotNeedsScrollForWornGear(ch) && PlayerBotMarketHasSafeScrolls())
 			return true;
 		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon on its first village's stands
 		// it would buy now (playerbot_gear_upgrade.h).
@@ -1835,6 +1884,7 @@ namespace
 		LogPlayerBotSashCensus();
 		LogPlayerBotSaddlebagCensus();
 		LogPlayerBotAlchemyCensus();
+		LogPlayerBotSectionFCensus();	// MT2009_PLUS_BOT_F_CENSUS_V1 (playerbot_f_census.h)
 		LogPlayerBotHerbalistCensus(dwNow);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotWeaponUpgrades(dwNow); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1

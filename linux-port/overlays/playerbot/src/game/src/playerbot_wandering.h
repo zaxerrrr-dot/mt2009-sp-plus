@@ -686,6 +686,10 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_M1_SQUARE_STROLL_V1 (ManagePlayerBotWandering): over the first village's top band by this much.
+	const int PLAYERBOT_M1_SQUARE_STROLL_OVER = 3;
+	unsigned int s_uPlayerBotM1SquareStrolls = 0;
+
 	void ManagePlayerBotWandering(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch)
@@ -780,6 +784,35 @@ namespace
 		if (ground != NULL && IsPlayerBotM1Map(ch->GetMapIndex()))
 		{
 			const DWORD pid = ch->GetPlayerID();
+
+			// MT2009_PLUS_BOT_M1_SQUARE_STROLL_V1 (the owner, 3 November 2026: "Wysokie boty czekajace w pierwszej
+			// wiosce spaceruja po placu, nie po lace"): a bot the village has outgrown - over its top band by more than
+			// the band's three, a bot waiting there for an errand, a trip or a party - hunts nothing worth the walk
+			// out: the top bands' meadows filled with bots of seventy and up on horses. It walks the square instead,
+			// a place on the market ring every few seconds (the town rest's ring), and a herb row's monster it hunts
+			// on purpose (GetPlayerBotVillageHuntLevel) or a Metin it breaks still takes it out.
+			if (ground->hubs != NULL && ground->hubCount > 0 && !IsPlayerBotMetinHunting(state, dwNow) &&
+					GetPlayerBotVillageHuntLevel(ch) == (int)ch->GetLevel())
+			{
+				int top = 0;
+				for (int h = 0; h < (int)ground->hubCount; ++h)
+					top = std::max(top, (int)ground->hubs[h].mobLevel);
+				long pitchX = 0, pitchY = 0;
+				if ((int)ch->GetLevel() > top + PLAYERBOT_M1_SQUARE_STROLL_OVER &&
+						GetPlayerBotShopCentre(ch->GetMapIndex(), pitchX, pitchY))
+				{
+					long offsetX = 0, offsetY = 0;
+					GetPlayerBotStableOffset(pid ^ (dwNow >> 13), 0x504c4143U,
+							PLAYERBOT_SHOP_RING_MIN, PLAYERBOT_SHOP_RING_RADIUS + 900, offsetX, offsetY);
+					state.dwNextWanderTime = dwNow + number((int)PLAYERBOT_TOWN_BROWSE_MIN, (int)PLAYERBOT_TOWN_BROWSE_MAX);
+					++s_uPlayerBotM1SquareStrolls;
+					PlayerBotLogThrottled("m1_square_stroll", dwNow,
+							"PLAYERBOT_TRAVEL: high bot strolls the square pid=%u name=%s level=%u map=%ld top_band=%d strolls=%u",
+							pid, ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(), top, s_uPlayerBotM1SquareStrolls);
+					MovePlayerBot(ch, pitchX + offsetX, pitchY + offsetY, dwNow, 6, true);
+					return;
+				}
+			}
 
 			// 1. Role: Metin breaker (25% of bots). These are the in-bounds
 			// centres from metin2_map_b1/stone.txt, converted to world coordinates.
