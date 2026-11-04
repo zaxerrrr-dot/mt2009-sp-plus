@@ -2146,4 +2146,17 @@ if ((Test-Path -LiteralPath $fishGlobalApply -PathType Leaf) -and
     }
 }
 
+# Tytuly (server-patches/tytuly, MT2009_PLUS_TITLES_V1; the owner, 4 November 2026): a character's titles (player.player_title,
+# playerbot_titles.cpp), packets CG 185 / GC 189 (only to a client that said hello - an older exe never gets them), the
+# certificates 57000-57002, /tytul, the quests' title.*. Its anchors are skill colour's lines: after skillcolor, the last.
+$tytulyApply = Join-Path $repo 'server-patches/tytuly/Apply-TytulyPatch.ps1'
+if ((Test-Path -LiteralPath $tytulyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua.cpp') -PathType Leaf)) {
+    $tytulyResult = & $tytulyApply -SourceDir $engineGameSource
+    if ($tytulyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} title edit(s).' -f $tytulyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

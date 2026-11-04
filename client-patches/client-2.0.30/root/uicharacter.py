@@ -24,6 +24,7 @@ import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 import riposty # MT2009_PLUS_RIPOSTY_V1
 import skillhack # MT2009_PLUS_SKILL_HACK_V1
 import uiskillcolor # MT2009_PLUS_SKILL_COLOR_V1
+import uicharactertitle # MT2009_PLUS_TITLES_V1
 import questrenewal # MT2009_PLUS_QUEST_RENEWAL_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
@@ -322,6 +323,8 @@ class CharacterWindow(ui.ScriptWindow):
 		if 949 == app.GetDefaultCodePage():
 			faceSlot.SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowJobToolTip)
 			faceSlot.SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideJobToolTip)
+		# MT2009_PLUS_TITLES_V1: Tytuly - the portrait opens the title window (uicharactertitle.py); none with an older exe
+		self.titleFaceButton = uicharactertitle.CreateFaceButton(faceSlot)
 
 		self.statusPlusLabel = self.GetChild("Status_Plus_Label")
 		self.statusPlusValue = self.GetChild("Status_Plus_Value")	# MT2009_PLUS_CHAMPION_WINDOW_V1
@@ -682,6 +685,8 @@ class CharacterWindow(ui.ScriptWindow):
 	@ui.WindowDestroy
 	def Destroy(self):
 		uiskillcolor.DestroyWindow() # MT2009_PLUS_SKILL_COLOR_V1
+		uicharactertitle.DestroyWindow() # MT2009_PLUS_TITLES_V1
+		self.titleFaceButton = None
 		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
 			self.questRenewal.Destroy()
 			self.questRenewal = None

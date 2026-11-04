@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "game\title\title_07_banner_red.dds"
+left 624
+top 0
+right 832
+bottom 128

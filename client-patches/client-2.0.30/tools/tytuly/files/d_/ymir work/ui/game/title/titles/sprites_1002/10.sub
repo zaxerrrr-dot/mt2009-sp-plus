@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "game\title\title_08_banner_blue.dds"
+left 832
+top 128
+right 1040
+bottom 256

@@ -1,0 +1,4 @@
+type	NAMEPLATE
+left_image	ui/game/title/title_08_blue_left.tga
+middle_image	ui/game/title/title_08_blue_middle.tga
+right_image	ui/game/title/title_08_blue_right.tga

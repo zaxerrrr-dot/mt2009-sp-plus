@@ -838,6 +838,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	{ void Mt2009SkillColor_RegisterPython(); Mt2009SkillColor_RegisterPython(); } // MT2009_PLUS_SKILL_COLOR_V1
 #endif
 #endif
+#ifdef ENABLE_MT2009_TITLES
+	{ void Mt2009Titles_RegisterPython(); Mt2009Titles_RegisterPython(); } // MT2009_PLUS_TITLES_V1 (after the Monster Cards' render hook)
+#endif
 	initsafebox();
 	initguild();
 	initServerStateChecker();

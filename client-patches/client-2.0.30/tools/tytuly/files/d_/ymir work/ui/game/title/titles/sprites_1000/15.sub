@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "game\title\title_06_banner_gold.dds"
+left 624
+top 256
+right 832
+bottom 384

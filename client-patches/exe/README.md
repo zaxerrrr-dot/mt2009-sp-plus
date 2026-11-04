@@ -1044,3 +1044,37 @@ Zbudowane `build.sh msvc --smoke` (MSVC 14.44; osobny `EXEBUILD_WORK=cache/yohar
 `cache/yohara/exe-src14` = exe-src12 + ta nakładka – po scaleniu poprawek 3.0.10 nakładka exe bez innych zmian):
 `cache/yohara/exe-out14/metin2client.exe` (sha256 `a7765317…3032e6`), bez ostrzeżeń w zmienionych plikach, smoke do
 ekranu logowania (4.11.2026).
+
+## Tytuły – `MT2009_PLUS_TITLES_V1` (`ENABLE_MT2009_TITLES`)
+
+Z paczki właściciela „Official Title System Renewal” – przepisane (opis i różnice: `server-patches/tytuly/README.md`).
+Założony tytuł postaci jest rysowany przy jej imieniu: tabliczka z nazwą (lewa/środek/prawa część z
+`d:/ymir work/ui/game/title/titles/title_<zasób>.sub`, środek rozciągnięty na nazwę) i – gdy `.sub` ma `sprites` –
+animowany baner za nią, albo efekt nad głową (plik efektu z katalogu serwera; zakładany od nowa na nowej instancji: w
+zasięgu wzroku, koń, przemiana). Katalog (nazwy, wygląd, zasoby, efekty, kolory) przychodzi z serwera – bez plików
+locale. Podgląd w oknie tytułów: efekt wybranego tytułu rysowany do render targetu (indeks 40, `titleSystem.RENDER_TARGET_INDEX`)
+na tle okna, przez hook `UI::CRenderTarget` (łańcuch z hookiem Kart Potworów), własną kamerą (cząsteczki zwrócone do
+niej) – instancja efektu poza mapą menedżera efektów, więc świat jej nie rysuje (paczka zmieniała w tym celu EffectLib).
+Bez `#define` exe jak dotąd; bez zmian w EffectLib/GameLib (paczka: skalowanie efektu z odległością kamery,
+`SetAttachingEffectTranslation`, wymuszanie rysowania poza frustum – niepotrzebne).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_TITLES` |
+| `UserInterface/Packet.h` | CG **185** `HEADER_CG_TITLE`, GC **189** `HEADER_GC_TITLE` (numery paczki; wolne u nas, na serwerze i poza zakresami zarezerwowanymi dla zwierzaków CG 122–133 / GC 200–215), struktury jak w `packet.h` serwera (`static_assert` rozmiarów w `Mt2009Titles.cpp`: 6 / 6 / 309 / 8 / 5 / 8 B) |
+| `UserInterface/Mt2009Titles.cpp` (**nowy**, + `UserInterface.vcxproj(.filters)`) | dane tytułów, `RecvTitlePacket` / `SendTitlePacket`, efekty nad głową (synchronizacja co klatkę), obrazki przy imieniu, podgląd, moduł `titleSystem`, `app.MT2009_TITLES_EXE` |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | GC 189 dynamiczny → `RecvTitlePacket`; w `SetGamePhase` powitanie (CG 185 OPEN) – serwer wysyła GC 189 tylko klientowi, który się przywitał, więc starszy exe go nie zobaczy |
+| `UserInterface/PythonTextTail.cpp` | `ArrangeTextTail` / `Render` / `DeleteCharacterTextTail` / `Clear`: obrazki i nazwa tytułu nad najwyższą linią (imię, gildia, osobowość) |
+| `UserInterface/PythonApplication.cpp` | `Mt2009Titles_Update()` w `UpdateGame` (efekty, klatki banerów, efekt podglądu), `Mt2009Titles_Destroy()` |
+| `UserInterface/UserInterface.cpp` | `Mt2009Titles_RegisterPython()` po kolorze umiejętności (po hooku Kart Potworów) |
+| `EterPythonLib/PythonWindow.h` | `UI::CRenderTarget::GetRenderHook()` – łańcuch hooków |
+
+Python (`titleSystem`): `SetHandler`, `RequestOpen`, `RequestEquip`, `GetTitles`, `GetOwned`, `GetEquipped`,
+`IsDataReceived`, `GetPlate`, `SetShowOthers` / `GetShowOthers` („Ukryj tytuły innych graczy” w Opcjach dodatkowych),
+`PreviewSelect`, `PreviewShow`, `RENDER_TARGET_INDEX`, `TYPE_TEXT/EFFECT/NAMEPLATE`. Root: `uicharactertitle.py`,
+`uiscript/charactertitlewindow.py`, portret w `uicharacter.py`, opcja w `uiopcjedodatkowe.py`; obrazki i efekty – paczka
+`tytuly` (`client-2.0.30/tools/tytuly`).
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44, `EXEBUILD_WORK=cache/exebuild`, źródła `cache/yohara/exe-src15` =
+exe-src14 + ta nakładka): `cache/yohara/exe-out15/metin2client.exe` (sha256 `dac9ca96…61fc0cfd`), bez ostrzeżeń w
+zmienionych plikach, smoke do ekranu logowania (4.11.2026).

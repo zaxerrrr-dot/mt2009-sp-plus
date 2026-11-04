@@ -1,0 +1,8 @@
+type	NAMEPLATE
+left_image	ui/game/title/title_08_blue_left.tga
+middle_image	ui/game/title/title_08_blue_middle.tga
+right_image	ui/game/title/title_08_blue_right.tga
+sprites	ui/game/title/titles/sprites_1002/
+sprites_count	36
+sprite_size_x	208
+sprite_size_y	128

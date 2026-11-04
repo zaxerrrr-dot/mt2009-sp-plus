@@ -289,6 +289,15 @@ void CPythonTextTail::ArrangeTextTail()
 		pTextTail->pTextInstance->SetColor(pTextTail->Color.r, pTextTail->Color.g, pTextTail->Color.b);
 		pTextTail->pTextInstance->SetPosition(pTextTail->x + fxAdd, pTextTail->y, pTextTail->z);
 		pTextTail->pTextInstance->Update();
+#ifdef ENABLE_MT2009_TITLES
+		// MT2009_PLUS_TITLES_V1 (arrange): the worn title above the top line (the guild line / the personality line / the name)
+		{
+			void Mt2009Titles_ArrangeTail(DWORD dwVID, float x, float y, float z, float fLineAbove);
+			const float fLineAbove = (pMarkInstance && pGuildNameInstance) ? c_fyGuildNamePosition + fPersonalityOffset :
+				(pTextTail->pPersonalityTextInstance ? c_fyGuildNamePosition : 0.0f);
+			Mt2009Titles_ArrangeTail(pTextTail->dwVirtualID, pTextTail->x, pTextTail->y, pTextTail->z, fLineAbove);
+		}
+#endif
 	}
 
 	for (TChatTailMap::iterator itorChat=m_ChatTailMap.begin(); itorChat!=m_ChatTailMap.end();)
@@ -340,6 +349,9 @@ void CPythonTextTail::Render()
 		{
 			pTextTail->pPersonalityTextInstance->Render();
 		}
+#ifdef ENABLE_MT2009_TITLES
+		{ void Mt2009Titles_RenderTail(DWORD dwVID); Mt2009Titles_RenderTail(pTextTail->dwVirtualID); } // MT2009_PLUS_TITLES_V1 (render)
+#endif
 	}
 
 	for (itor = m_ItemTextTailList.begin(); itor != m_ItemTextTailList.end(); ++itor)
@@ -852,6 +864,9 @@ void CPythonTextTail::DeleteCharacterTextTail(DWORD VirtualID)
 	{
 		DeleteTextTail(itorCharacter->second);
 		m_CharacterTextTailMap.erase(itorCharacter);
+#ifdef ENABLE_MT2009_TITLES
+		{ void Mt2009Titles_DeleteTail(DWORD dwVID); Mt2009Titles_DeleteTail(VirtualID); } // MT2009_PLUS_TITLES_V1 (delete)
+#endif
 	}
 	else
 	{
@@ -1148,6 +1163,9 @@ void CPythonTextTail::Destroy()
 
 void CPythonTextTail::Clear()
 {
+#ifdef ENABLE_MT2009_TITLES
+	{ void Mt2009Titles_DeleteTail(DWORD dwVID); Mt2009Titles_DeleteTail(0); } // MT2009_PLUS_TITLES_V1 (clear)
+#endif
 	m_CharacterTextTailMap.clear();
 	m_CharacterTextTailList.clear();
 	m_ItemTextTailMap.clear();
