@@ -1022,13 +1022,17 @@ class ItemToolTip(ToolTip):
 				if 0 == value:
 					continue
 
-				affectString = localeInfo.GetApplyString(type, value)
+				# MT2009_PLUS_BONUS67_WIKI_NAMES_V1: a 6th/7th slot in the wiki's words (localeinfo_point.GetRareApplyString)
+				GetString = localeInfo.GetApplyString
+				if getattr(player, "ATTRIBUTE_SLOT_RARE_START", 5) <= i < getattr(player, "ATTRIBUTE_SLOT_RARE_END", 7):
+					GetString = localeinfo_point.GetRareApplyString
+				affectString = GetString(type, value)
 				if app.ENABLE_ACCE_COSTUME_SYSTEM:
 					if item.GetItemType() == item.ITEM_TYPE_COSTUME:
 						if item.GetItemSubType() == item.COSTUME_TYPE_ACCE:
 							if itemAbsChance != 0:
 								value = self.CalcAcceValue(value, itemAbsChance)
-								affectString = localeInfo.GetApplyString(type, value)
+								affectString = GetString(type, value)
 
 				if affectString:
 					if value < 0:
