@@ -341,10 +341,10 @@ for _zywPoint, _zywName in (
 		(getattr(player, "POINT_SUNGMA_IMMUNE", 187), "Inteligencja Sung Ma +%d"),
 		# MT2009_PLUS_YOHARA_EXE2_V1: the Sung Ma per cent bonuses (GF's APPLY_SUNGMA_PER_*, points 193-196) and Precyzja
 		# (GF's APPLY_HIT_PCT, point 197) - server-patches/precyzja
-		(getattr(player, "POINT_SUNGMA_PER_STR", 193), "Si\xb3a Sung Ma +%d%%"),
-		(getattr(player, "POINT_SUNGMA_PER_HP", 194), "Witalno\x9c\xe6 Sung Ma +%d%%"),
-		(getattr(player, "POINT_SUNGMA_PER_MOVE", 195), "Odporno\x9c\xe6 Sung Ma +%d%%"),
-		(getattr(player, "POINT_SUNGMA_PER_IMMUNE", 196), "Inteligencja Sung Ma +%d%%"),
+		(getattr(player, "POINT_SUNGMA_PER_STR", 193), "%d%% Wola SungMa (SI\xa3A)"),
+		(getattr(player, "POINT_SUNGMA_PER_HP", 194), "%d%% Wola SungMa (WIT)"),
+		(getattr(player, "POINT_SUNGMA_PER_MOVE", 195), "%d%% Wola SungMa (ODP)"),
+		(getattr(player, "POINT_SUNGMA_PER_IMMUNE", 196), "%d%% Wola SungMa (INT)"),
 		(getattr(player, "POINT_HIT_PCT", 197), "Precyzja +%d"),
 	):
 	AFFECT_DICT.setdefault(_zywPoint, _zywName)
@@ -369,8 +369,8 @@ for _b67Point, _b67Name in (
 	(211, "Si\xb3a w walce z kamieniami Metin (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_STONE
 	(212, "Silny przeciwko potworom Zodiaku (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_CZ
 	(213, "Si\xb3a w walce z mistykami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_MILGYO
-	(214, "Si\xb3a w walce z orkami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ORC
-	(215, "Si\xb3a w walce z diab\xb3ami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_DEVIL
+	(214, "Si\xb3a w walce z orkom (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ORC
+	(215, "Si\xb3a w walce diab\xb3ami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_DEVIL
 	(216, "Si\xb3a w walce z insektami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_INSECT
 	(217, "Si\xb3a w walce ze zwierz\xeatami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ANIMAL
 	(218, "Si\xb3a B\xb3yskawic (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_ELECT
@@ -379,14 +379,14 @@ for _b67Point, _b67Name in (
 	(221, "Si\xb3a Wiatru (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_WIND
 	(222, "Si\xb3a Ziemi (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_EARTH
 	(223, "Si\xb3a Mroku (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_DARK
-	(224, "Odporno\x9c\xe6 na ludzi (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_HUMAN
-	(225, "Odporno\x9c\xe6 na magi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_MAGIC
-	(226, "Odporno\x9c\xe6 na b\xb3yskawice (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ELEC
-	(227, "Odporno\x9c\xe6 na ogie\xf1 (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_FIRE
-	(228, "Odporno\x9c\xe6 na l\xf3d (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ICE
-	(229, "Odporno\x9c\xe6 na wiatr (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_WIND
-	(230, "Odporno\x9c\xe6 na ziemi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_EARTH
-	(231, "Odporno\x9c\xe6 na mrok (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_DARK
+	(224, "Odporno\x9c\xe6 na Ludzi (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_HUMAN
+	(225, "Odporno\x9c\xe6 na Magi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_MAGIC
+	(226, "Odporno\x9c\xe6 na B\xb3yskawice (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ELEC
+	(227, "Odporno\x9c\xe6 na Ogie\xf1 (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_FIRE
+	(228, "Odporno\x9c\xe6 na L\xf3d (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ICE
+	(229, "Odporno\x9c\xe6 na Wiatr (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_WIND
+	(230, "Odporno\x9c\xe6 na Ziemi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_EARTH
+	(231, "Odporno\x9c\xe6 na Mrok (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_DARK
 	(232, "Obra\xbfenia od ataku boss\xf3w -%d%%"),	# POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE
 	(233, "Obra\xbfenia od umiej\xeatno\x9cci boss\xf3w -%d%%"),	# POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE
 	(234, "Obra\xbfenia od ataku przeciwko bossom +%d%%"),	# POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE
@@ -396,17 +396,17 @@ for _b67Point, _b67Name in (
 	(238, "3. dodany bonus +%d%%"),	# POINT_THIRD_ATTRIBUTE_BONUS
 	(239, "4. dodany bonus +%d%%"),	# POINT_FOURTH_ATTRIBUTE_BONUS
 	(240, "5. dodany bonus +%d%%"),	# POINT_FIFTH_ATTRIBUTE_BONUS
-	(241, "Podczas walki %d%% szans na odporno\x9c\xe6 na upadek (regeneracja 60 sek.)"),	# POINT_GLOVE_FALL_RESIST
-	(242, "Atakuj potwory w pobli\xbfu b\xb3yskawicami (regeneracja 15 sek.)"),	# POINT_GLOVE_LIGHTNING
-	(243, "Trz\xeasienie: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_FINISH
-	(244, "\x8cwiat\xb3o Gwiazd: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_ILGWANGPYO
-	(245, "Strza\xb3 Wichury: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_PUNGLOEPO
-	(246, "Piekielny Cios: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_GEOMAGGWI
-	(247, "Fala \x8cmierci: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_MABEOBAGGWI
-	(248, "Meteor: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_METEO
-	(249, "Tarcza Eteru: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_CHEONUN
-	(250, "Burza Szpon\xf3w: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_ILIPUNGU
-	(251, "Atrybuty podstawowe r\xeakawic +%d%%"),	# POINT_GLOVE_BASE_ATTR_PCT
+	(241, "Podczas walki istnieje %d%% prawdopodobie\xf1stwa na odporno\x9c\xe6 na upadek (czas regeneracji 60 sek.)."),	# POINT_GLOVE_FALL_RESIST
+	(242, "Atakuj potwory w pobli\xbfu podczas walki za pomoc\xb9 b\xb3yskawic, kt\xf3rych obra\xbfenia odpowiadaj\xb9 obra\xbfeniom od automatycznego ataku (czas regeneracji 15 sek.)."),	# POINT_GLOVE_LIGHTNING
+	(243, "W przypadku u\xbfycia Trz\xeasienia z prawdopodobie\xf1stwem %d%% skraca kolejny czas regeneracji Trz\xeasienia o 5 sekund."),	# POINT_GLOVE_COOLDOWN_FINISH
+	(244, "W przypadku u\xbfycia \x8cwiat\xb3a Gwiazd z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji \x8cwiat\xb3a Gwiazd o 5 sekund."),	# POINT_GLOVE_COOLDOWN_ILGWANGPYO
+	(245, "W przypadku u\xbfycia Strza\xb3u Wichury z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Strza\xb3u Wichury o 5 sekund."),	# POINT_GLOVE_COOLDOWN_PUNGLOEPO
+	(246, "W przypadku u\xbfycia Piekielnego Ciosu z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Piekielnego Ciosu o 5 sekund."),	# POINT_GLOVE_COOLDOWN_GEOMAGGWI
+	(247, "W przypadku u\xbfycia Fali \x8cmierci z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Fali \x8cmierci o 5 sekund."),	# POINT_GLOVE_COOLDOWN_MABEOBAGGWI
+	(248, "W przypadku u\xbfycia Meteoru z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Meteoru o 5 sekund."),	# POINT_GLOVE_COOLDOWN_METEO
+	(249, "W przypadku u\xbfycia Tarczy Eteru z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Tarczy Eteru o 5 sekund."),	# POINT_GLOVE_COOLDOWN_CHEONUN
+	(250, "W przypadku u\xbfycia Burzy Szpon\xf3w z prawdopodobie\xf1stwem od %d%% skraca kolejny czas regeneracji Burzy Szpon\xf3w o 5 sekund."),	# POINT_GLOVE_COOLDOWN_ILIPUNGU
+	(251, "Atrybuty podstawowe r\xeakawic s\xb9 zwi\xeakszone o %d %% (bonusy wbudowane r\xeakawic)"),	# POINT_GLOVE_BASE_ATTR_PCT
 	):
 	AFFECT_DICT.setdefault(_b67Point, _b67Name)
 
@@ -421,8 +421,8 @@ AFFECT_DICT.setdefault(getattr(player, "POINT_ANTI_RESIST_MAGIC", 252), "Ignoruj
 # every item but the gloves. A new exe names them (player.POINT_RESIST_COMBAT ...); an older one: the numbers.
 for _b67bPoint, _b67bName in (
 	(getattr(player, "POINT_RESIST_COMBAT", 253), "Je\x9cli masz powy\xbfej 90%% P\xaf, doznajesz obra\xbfenia ni\xbfsze o %d%%."),
-	(getattr(player, "POINT_BLEEDING_PCT", 254), "Atak krwawienia +%d%%"),
-	(getattr(player, "POINT_BLEEDING_REDUCE", 255), "Odporno\x9c\xe6 na atak krwawienia +%d%%"),
+	(getattr(player, "POINT_BLEEDING_PCT", 254), "Atak krwawienia + %d%%"),
+	(getattr(player, "POINT_BLEEDING_REDUCE", 255), "Odporno\x9c\xe6 na Atak Krwawienia + %d%%"),
 	):
 	AFFECT_DICT.setdefault(_b67bPoint, _b67bName)
 
@@ -499,6 +499,26 @@ for _b67cPoint, _b67cName in (
 	AFFECT_DICT.setdefault(_b67cPoint, _b67cName)
 AFFECT_DICT[getattr(player, "POINT_IMMUNE_FALL", 90)] = "Odporno\x9c\xe6 na Upadek +%d%%"
 # MT2009_PLUS_BONUS67_SKILL_V1 (end)
+# MT2009_PLUS_BONUS67_WIKI_NAMES_V1 (begin) (poprawki 3.0.10 #1)
+# Every 6th/7th bonus line word for word as on the pl-wiki's "6. i 7. bonus" - its capitals and punctuation, its own
+# slips too ("z orkom", "w walce diablami": the owner wants it word for word); the lines above carry them. "Max PZ",
+# "Max PE" and "Sila w walce z kamieniami Metin" are the wiki's names of those bonuses on any item. The wiki words the
+# shield's block and the PE absorption of the 6th/7th bonus otherwise than the bonus list does: an item's 6th/7th
+# slot shows those two through GetRareApplyString (uitooltip.py), its 1st-5th slots keep the list's names.
+AFFECT_DICT[player.POINT_MAX_HP] = "Max P\xaf: +%d"
+AFFECT_DICT[player.POINT_MAX_SP] = "Max PE: +%d"
+AFFECT_DICT[getattr(player, "POINT_ATTBONUS_STONE", 149)] = "Si\xb3a w walce z kamieniami Metin +%d%%"
+RARE_AFFECT_DICT = {
+	player.POINT_STEAL_SP: "Absorbuje obra\xbfenia do %d%% jako PE",
+	player.POINT_BLOCK: "%d%% szans na zablokowanie obra\xbfe\xf1 od ataku",
+}
+
+def GetRareApplyString(affectType, affectValue):
+	"""The text of an item's 6th/7th bonus line (the wiki's words where they differ from the bonus list's)."""
+	if affectValue and affectType in RARE_AFFECT_DICT:
+		return RARE_AFFECT_DICT[affectType] % affectValue
+	return GetApplyString(affectType, affectValue)
+# MT2009_PLUS_BONUS67_WIKI_NAMES_V1 (end)
 def Is1000PCT(affectType):
 	return affectType in POINT_1000PCT_Tuple
 
