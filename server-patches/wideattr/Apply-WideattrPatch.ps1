@@ -26,6 +26,19 @@ $applied = 0
 foreach ($e in $edits) {
     $text = $texts[$e.file]
     if ($text.Contains($e.new)) { continue }
+    # a later patch (bonusy67c) puts its points between the new lines: applied when the old code is gone and each new line stands, in order
+    if (-not $text.Contains($e.old)) {
+        $pos = 0; $all = $true
+        foreach ($line in ($e.new -split "`n")) {
+            if (-not $line.Trim()) { continue }
+            $code = ($line -split '//', 2)[0].TrimEnd()
+            if ($code.Trim()) { $line = $code }  # a trailing comment may be renumbered (POINT_WIDE_END after bonusy67c)
+            $i = $text.IndexOf($line, $pos, [StringComparison]::Ordinal)
+            if ($i -lt 0) { $all = $false; break }
+            $pos = $i + $line.Length
+        }
+        if ($all) { continue }
+    }
     $first = $text.IndexOf($e.old, [StringComparison]::Ordinal)
     if ($first -lt 0 -or $text.IndexOf($e.old, $first + 1, [StringComparison]::Ordinal) -ge 0) {
         throw "Nie mozna zastosowac poprawki $($e.marker): nie znaleziono oczekiwanego kodu w $($e.file)."

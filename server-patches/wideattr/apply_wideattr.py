@@ -10,6 +10,26 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+def lines_in_order(text, new):
+    # a later patch of the list (bonusy67c) puts its points between the lines of an edit's new code (length.h #1: above
+    # the comment, before POINT_WIDE_END) - the edit is there when the old code is gone and each of its new lines stands,
+    # in order (a second run over a patched tree: the package build, a later deploy)
+    # (a code line's trailing comment may be renumbered by it - POINT_WIDE_END's "// 256" is "// 319" after bonusy67c -
+    # so a line with code before its "//" is looked for by that code)
+    pos = 0
+    for line in new.split("\n"):
+        if not line.strip():
+            continue
+        code = line.split("//", 1)[0].rstrip()
+        if code.strip():
+            line = code
+        i = text.find(line, pos)
+        if i < 0:
+            return False
+        pos = i + len(line)
+    return True
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit("usage: apply_wideattr.py <game/src dir>")
@@ -23,7 +43,7 @@ def main():
     applied = 0
     for e in edits:
         text = texts[e["file"]]
-        if e["new"] in text:
+        if e["new"] in text or (e["old"] not in text and lines_in_order(text, e["new"])):
             continue
         if text.count(e["old"]) != 1:
             sys.exit("wideattr: %s - the expected code of %s is not in the file; nothing changed" % (e["file"], e["marker"]))
