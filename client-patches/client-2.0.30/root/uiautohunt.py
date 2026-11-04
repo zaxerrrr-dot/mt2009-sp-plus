@@ -1092,10 +1092,28 @@ def AffectDuration(entry):
     return longest
 
 
+def _AffectOn(affects, affect, point, value=None):
+    """MT2009_PLUS_MIKSTURY_V1: the (affect, point) runs - at least as strong as value when it is given."""
+    on = affects.get(affect, {})
+    if point not in on:
+        return False
+    if value is None:
+        return True
+    try:
+        return on[point][0] >= value
+    except (IndexError, KeyError, TypeError):
+        return True
+
+
 def ItemAffectPresent(vnum, cell):
     """Use the same (affect, point) identity as the server and icon bar.
     Shared potion effects must match even when another item supplied them.
     HP/SP recovery potions and unrelated points are deliberately left alone.
+    MT2009_PLUS_MIKSTURY_V1 (server-patches/mikstury): different bonuses
+    always run together now - Woda Mong no longer blocks the dews / elixirs
+    and a herbal potion no longer blocks an ItemShop one; the same bonus
+    still running at least as strong means "present" (the server would only
+    refresh it), so autohunt drinks a buff when it is gone.
     """
     affects = AffectDict()
     if not affects:
@@ -1105,13 +1123,31 @@ def ItemAffectPresent(vnum, cell):
         kind = item.GetItemType()
         if kind == getattr(item, 'ITEM_TYPE_BLEND', -1):
             point = player.GetItemMetinSocket(cell, 0)
-            return point in affects.get(chr.AFFECT_BLEND, {}) or player.POINT_RESIST_MAGIC in affects.get(chr.NEW_AFFECT_EXP_BONUS_EURO_FREE, {})
+            return _AffectOn(affects, chr.AFFECT_BLEND, point, player.GetItemMetinSocket(cell, 1))
+        if kind == getattr(item, 'ITEM_TYPE_POTION', -1):
+            # the herbal potions and the grilled fish (quest potion_system): AFFECT_POTION_START + group per point
+            affect = getattr(chr, 'AFFECT_POTION_GENERAL_USE', 350) + item.GetValue(1)
+            if item.GetValue(4) > 0:
+                return item.GetValue(4) in affects
+            points = []
+            for i in xrange(getattr(item, 'ITEM_APPLY_MAX_NUM', 3)):
+                (point, value) = item.GetAffect(i)
+                if point:
+                    points.append((point, value))
+            return bool(points) and all(_AffectOn(affects, affect, point, value) for point, value in points)
         if kind != item.ITEM_TYPE_USE:
             return False
         subtype = item.GetItemSubType()
+        if 50800 < vnum <= 50820:
+            # the juices and waters: AFFECT_EXP_BONUS_EURO_FREE per point (char_item.cpp ITEM_USE 50801-50820)
+            if subtype == getattr(item, 'USE_AFFECT', -1):
+                return _AffectOn(affects, chr.NEW_AFFECT_EXP_BONUS_EURO_FREE, item.GetValue(1), item.GetValue(2))
+            if subtype == getattr(item, 'USE_ABILITY_UP', -1):
+                return _AffectOn(affects, chr.NEW_AFFECT_EXP_BONUS_EURO_FREE, item.GetValue(0), item.GetValue(2))
+            return False
         if subtype == getattr(item, 'USE_AFFECT', -1):
             affect, point = item.GetValue(0), item.GetValue(1)
-            return point in affects.get(affect, {}) or (point != 0 and point in affects.get(chr.AFFECT_POTION_BOOST, {}))
+            return _AffectOn(affects, affect, point)
         if subtype == getattr(item, 'USE_ABILITY_UP', -1):
             point = item.GetValue(0)
             

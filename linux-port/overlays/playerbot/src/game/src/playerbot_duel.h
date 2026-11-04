@@ -309,8 +309,9 @@ bool PreparePlayerBotDuelItem(LPCHARACTER ch,playerbot_pvp::Challenge& prep,DWOR
             }
             continue;
         }
-        if(ch->FindAffect(b.affect,b.point) || ch->FindAffect(AFFECT_POTION_BOOST,b.point)) continue;
-        if(b.affect==AFFECT_BLEND && ch->FindAffect(AFFECT_EXP_BONUS_EURO_FREE,POINT_RESIST_MAGIC)) continue;
+        // MT2009_PLUS_MIKSTURY_V1: only its own (affect, point) running stops it - a herbal potion of the point and
+        // Woda Mong no longer block it on the server (server-patches/mikstury)
+        if(ch->FindAffect(b.affect,b.point)) continue;
         bool covered=false;
         for(const CAffect* a:ch->GetAffectContainer())
             if(a->bApplyOn==b.point && a->lApplyValue>=b.value && a->lDuration>=playerbot_duel::minBuffSeconds) covered=true;
