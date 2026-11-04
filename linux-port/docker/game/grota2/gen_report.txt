@@ -1,0 +1,109 @@
+MT2009_PLUS_GROTA2_REGEN_V1 - Grota Wygnancow V2 (73, metin2_map_skipia_dungeon_02)
+main walkable piece 733363 m2; uncovered = more than 25 m of walking from a spawn centre (fill: 40 m)
+package: 638 live r lines + 84 commented 2410 (made 2409 by the Dockerfile step)
+uncovered before: 372640 m2 (51%)
+after 2410 + the newer dump's 598 points (1 left out on BLOCK): 105596 m2 (14%)
+after 89 fill points: 60211 m2 (8.2%)
+restored by group_group: {2409: 295, 2408: 66, 2414: 43, 2413: 110, 2412: 67, 2411: 17}
+fill by group_group: {2408: 6, 2409: 26, 2413: 17, 2414: 8, 2412: 18, 2411: 14}
+bosses 2491 added: [(1443, 285), (1346, 1307), (237, 1298), (149, 428)]
+  moved 822,998 -> 822,1002 (BLOCK)
+  moved 801,1000 -> 801,1002 (BLOCK)
+  moved 574,912 -> 574,917 (BLOCK)
+  moved 383,1284 -> 383,1288 (BLOCK)
+  moved 359,312 -> 359,310 (BLOCK)
+  moved 333,451 -> 335,451 (BLOCK)
+  moved 161,471 -> 159,471 (BLOCK)
+  moved 1431,975 -> 1432,975 (BLOCK)
+  moved 1033,1000 -> 1033,1002 (BLOCK)
+  moved 1016,372 -> 1017,372 (BLOCK)
+  left out 1133,629 2411 (BLOCK, nothing free within 6 m)
+  + fill 847,756 group_group 2408
+  + fill 914,725 group_group 2409
+  + fill 854,693 group_group 2408
+  + fill 399,184 group_group 2413
+  + fill 974,184 group_group 2414
+  + fill 1108,504 group_group 2409
+  + fill 900,1125 group_group 2412
+  + fill 1147,287 group_group 2412
+  + fill 876,1205 group_group 2412
+  + fill 280,448 group_group 2412
+  + fill 1107,469 group_group 2409
+  + fill 537,605 group_group 2409
+  + fill 1341,987 group_group 2411
+  + fill 576,377 group_group 2411
+  + fill 845,465 group_group 2409
+  + fill 896,759 group_group 2408
+  + fill 593,1125 group_group 2411
+  + fill 853,1241 group_group 2412
+  + fill 1024,491 group_group 2413
+  + fill 1082,491 group_group 2413
+  + fill 1265,576 group_group 2413
+  + fill 453,666 group_group 2409
+  + fill 466,1142 group_group 2409
+  + fill 1172,367 group_group 2412
+  + fill 519,378 group_group 2412
+  + fill 632,382 group_group 2409
+  + fill 1045,401 group_group 2412
+  + fill 880,489 group_group 2413
+  + fill 313,594 group_group 2414
+  + fill 568,971 group_group 2408
+  + fill 1324,1244 group_group 2411
+  + fill 631,1247 group_group 2412
+  + fill 559,184 group_group 2413
+  + fill 1259,323 group_group 2409
+  + fill 377,384 group_group 2413
+  + fill 1264,386 group_group 2409
+  + fill 845,407 group_group 2409
+  + fill 630,1034 group_group 2408
+  + fill 763,1148 group_group 2409
+  + fill 696,1332 group_group 2414
+  + fill 707,141 group_group 2414
+  + fill 1232,225 group_group 2413
+  + fill 717,381 group_group 2411
+  + fill 900,693 group_group 2409
+  + fill 1046,955 group_group 2409
+  + fill 960,1334 group_group 2413
+  + fill 424,164 group_group 2414
+  + fill 286,667 group_group 2413
+  + fill 945,1068 group_group 2409
+  + fill 760,1268 group_group 2412
+  + fill 239,324 group_group 2412
+  + fill 1281,549 group_group 2412
+  + fill 863,728 group_group 2408
+  + fill 922,1044 group_group 2409
+  + fill 1365,1239 group_group 2411
+  + fill 787,1243 group_group 2412
+  + fill 848,164 group_group 2413
+  + fill 295,278 group_group 2413
+  + fill 1167,289 group_group 2413
+  + fill 1109,292 group_group 2411
+  + fill 1081,323 group_group 2409
+  + fill 466,383 group_group 2411
+  + fill 670,547 group_group 2409
+  + fill 985,547 group_group 2409
+  + fill 1165,960 group_group 2409
+  + fill 1071,1244 group_group 2413
+  + fill 959,1246 group_group 2411
+  + fill 952,164 group_group 2414
+  + fill 1297,237 group_group 2411
+  + fill 181,305 group_group 2414
+  + fill 216,445 group_group 2412
+  + fill 819,481 group_group 2409
+  + fill 1188,486 group_group 2409
+  + fill 1364,573 group_group 2411
+  + fill 448,604 group_group 2409
+  + fill 309,1040 group_group 2411
+  + fill 211,1084 group_group 2412
+  + fill 427,1122 group_group 2413
+  + fill 903,1246 group_group 2412
+  + fill 378,164 group_group 2413
+  + fill 719,289 group_group 2411
+  + fill 115,305 group_group 2414
+  + fill 283,388 group_group 2412
+  + fill 672,446 group_group 2409
+  + fill 678,606 group_group 2409
+  + fill 537,806 group_group 2409
+  + fill 1364,935 group_group 2412
+  + fill 1061,1086 group_group 2413
+  + fill 1104,1164 group_group 2411

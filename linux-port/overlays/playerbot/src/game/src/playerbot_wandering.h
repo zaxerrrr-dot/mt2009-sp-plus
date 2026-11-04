@@ -1248,7 +1248,13 @@ namespace
 				{  253900, 1264900, 86, 255, false, 0 },
 				{  239200, 1268000, 84, 255, false, 0 },
 				{  201900, 1269000, 86, 255, false, 0 },
-				{  261200, 1289500, 86, 255, false, 0 }
+				{  261200, 1289500, 86, 255, false, 0 },
+				// MT2009_PLUS_GROTA2_REGEN_V1: three inner rooms (2409's Setaou) the package left empty and
+				// grota2/regen.grota2.txt fills - 12-14 spawn lines each, 1.1-1.5 km of walking from the arrival,
+				// the room's centre with 5 m of free ground all round (tools/grota2/gen_grota2.py's server_attr).
+				{  247700, 1295700, 86, 255, false, 0 },
+				{  259500, 1255900, 86, 255, false, 0 },
+				{  261800, 1266200, 86, 255, false, 0 }
 			};
 			// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) - its second part only
 			// (the Giants, the ogres and the golems; the first part's cursed animals
