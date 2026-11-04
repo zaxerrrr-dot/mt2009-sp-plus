@@ -1,0 +1,19 @@
+    Kolejnosc: klient 2.0.64 -> klient-test-yohara-3.0.0.zip ->
+    klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip -> klient-test-yohara-3.0.6-latka.zip
+    -> klient-test-yohara-3.0.6b-poprawki.zip -> klient-test-yohara-3.0.7-latka.zip
+    -> klient-test-yohara-3.0.8-latka.zip -> klient-test-yohara-3.0.9-latka.zip
+    -> klient-test-yohara-3.0.10-latka.zip. Poprawki 3.0.9b
+    (klient-test-yohara-3.0.9b-poprawki.zip) nie sa potrzebne - latka 3.0.10
+    je zawiera (mozna je wgrac przed nia, nic nie psuja).
+    Z latek 3.0.8, 3.0.9 i 3.0.10 kopiuj folder "pack" ORAZ metin2client.exe.
+    Gotowy klient zglasza sie jako wersja 1.3.2. Serwer odrzuca kazdy starszy
+    klient (M2_CLIENT_MIN_VERSION=1010302, domyslnie) komunikatem "Wymagana
+    aktualizacja klienta gry przez Patcher." - nie lacz sie starszym klientem.
+----
+- Kolejność łatek klienta: klient 2.0.64 → klient-test-yohara-3.0.0.zip → klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip
+  → klient-test-yohara-3.0.6-latka.zip → klient-test-yohara-3.0.6b-poprawki.zip → klient-test-yohara-3.0.7-latka.zip
+  → klient-test-yohara-3.0.8-latka.zip → klient-test-yohara-3.0.9-latka.zip → klient-test-yohara-3.0.10-latka.zip
+  (poprawki 3.0.9b nie są potrzebne – łatka 3.0.10 je zawiera). Z łatek 3.0.8, 3.0.9 i 3.0.10 kopiuj folder „pack”
+  ORAZ metin2client.exe. Kto ma już klienta 3.0.10 z testów – nic nie wgrywa.
+- Gotowy klient zgłasza się jako wersja 1.3.2. Serwer 3.0.7 odrzuca każdy starszy klient (M2_CLIENT_MIN_VERSION=1010302,
+  domyślnie) komunikatem „Wymagana aktualizacja klienta gry przez Patcher.”.

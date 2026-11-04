@@ -8,6 +8,13 @@ from the previous full package (MT2009_PLUS_YOHARA_PKG_V1).
         --client-version 3.0.6 --changelog CHANGELOG-YOHARA-3.0.6.md \
         --client-chain klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip,klient-test-yohara-3.0.6-latka.zip \
         --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.3-test-serwer.zip
+    python3 tools/yohara_pkg/build_server_pkg.py --version 3.0.7 --prev-version 3.0.6 \
+        --client-version 3.0.10 --changelog CHANGELOG-YOHARA-3.0.7.md \
+        --client-chain klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip,klient-test-yohara-3.0.6-latka.zip,\
+klient-test-yohara-3.0.6b-poprawki.zip,klient-test-yohara-3.0.7-latka.zip,klient-test-yohara-3.0.8-latka.zip,\
+klient-test-yohara-3.0.9-latka.zip,klient-test-yohara-3.0.10-latka.zip \
+        --client-note-file client-note-3.0.7.txt \
+        --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.6-test-serwer.zip
 
 What goes in (the way 3.0.0-3.0.2 were made, written down):
   * every file git tracks at --ref, without the repository-only trees
@@ -173,7 +180,7 @@ Potrzebny jest klient Yohara {client}:
  3. na to, po kolei: {chain_txt}
     (http://141.94.100.53/aktualizacje/test-plus/)
     - kazdy rozpakuj do folderu klienta i zastap pliki.
-Ten klient ma 3 Loch Pajakow i Krypte Balathora - w tej paczce sa domyslnie
+{client_note}Ten klient ma 3 Loch Pajakow i Krypte Balathora - w tej paczce sa domyslnie
 wlaczone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1). Starszy klient zamyka sie
 przy wejsciu na te mapy.
 Wazne: NIE uruchamiaj MT2009-Patcher.exe i nie klikaj w launcherze
@@ -218,7 +225,7 @@ AKTUALIZACJE I EDYTOR .env
 KLIENT
 - Wgraj klienta Yohara {client}: na klienta Yohara 3.0.0 po kolei {chain_txt}
   (http://141.94.100.53/aktualizacje/test-plus/) – bez niego nowe mapy i okna nie zadziałają.
-- Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
+{client_note_latka}- Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
 
 Twój plik .env, hasła, postacie i świat zostają bez zmian.
 Plików w łatce: {count}.
@@ -266,6 +273,10 @@ def main():
                     help='client zips put on the Yohara 3.0.0 client, in order, comma separated '
                          '(default: klient-yohara-<client>-aktualizacja-od-3.0.0.zip)')
     ap.add_argument('--changelog', required=True)
+    # MT2009_PLUS_YOHARA_PKG_V2: what else the players must know about the client (the version the auth core
+    # demands, optional patches) - two blocks split by a line '----': the full package's INSTRUKCJA (ASCII, indented
+    # by 4) and the patch's LATKA (Polish letters, '- ' lines); a missing file = no note (3.0.0-3.0.6 packages).
+    ap.add_argument('--client-note-file', default=None)
     ap.add_argument('--ref', default='HEAD')
     ap.add_argument('--repo', default='/opt/metin2/git/wt-yohara')
     ap.add_argument('--test-tree', default='/opt/metin2/mt2009plustest')
@@ -278,6 +289,13 @@ def main():
     v, tag = a.version, a.version + '-test'
     chain = (a.client_chain or 'klient-yohara-%s-aktualizacja-od-3.0.0.zip' % a.client_version).split(',')
     chain_txt = ', '.join(chain)
+    note_full = note_latka = ''
+    if a.client_note_file:
+        with open(a.client_note_file, encoding='utf-8') as f:
+            parts = f.read().split('\n----\n')
+        if len(parts) != 2:
+            raise SystemExit('%s: expected two blocks split by a line ----' % a.client_note_file)
+        note_full, note_latka = (p.strip('\n') + '\n' for p in parts)
     stage = a.stage or '/opt/metin2/cache/yohara/pkg-%s' % v.replace('.', '')
     name = 'MT2009-PLUS-Serwer-Yohara-%s' % tag
     root = os.path.join(stage, name)
@@ -356,7 +374,7 @@ def main():
     write(os.path.join(root, '.m2launcher-rebuild-pending'), 'Yohara %s: first build required\n' % tag)
     write(os.path.join(root, 'INSTRUKCJA-YOHARA-TEST.txt'),
           INSTRUKCJA.format(tag=tag, v=v, prev=a.prev_version or '?', client=a.client_version,
-                            chain_txt=chain_txt).replace('\n', '\r\n'))
+                            chain_txt=chain_txt, client_note=note_full).replace('\n', '\r\n'))
     shutil.copy2(a.changelog, os.path.join(root, 'CHANGELOG-YOHARA-%s.md' % v))
     for keep in ('linux-port/docker/game/src/serverfiles/share/package', 'linux-port/docker/game/src/serverfiles/mark-default'):
         os.makedirs(os.path.join(root, keep), exist_ok=True)
@@ -391,7 +409,7 @@ def main():
                     removed.append(rel)
         write(os.path.join(lroot, 'LATKA-%s-INSTRUKCJA.txt' % v),
               LATKA.format(prev=a.prev_version, v=v, name=lname, client=a.client_version, count=count + 1,
-                          chain_txt=chain_txt))
+                          chain_txt=chain_txt, client_note_latka=note_latka))
         lout = os.path.join(a.out, 'MT2009-PLUS-Yohara-latka-%s-do-%s-test.zip' % (a.prev_version, v))
         ldigest = zip_dir(stage, lname, lout)
         write(os.path.join(stage, 'latka-obsolete-files.txt'), '\n'.join(sorted(removed)) + '\n')
