@@ -502,15 +502,13 @@ void TitleSystemPacket(LPCHARACTER ch, const char* data)
 	switch (p->bSubHeader)
 	{
 		case TITLE_CG_OPEN:
-		{
-			const bool first = !st->hello;
+			// the hello at every game phase (also the window's refresh): the catalogue, the owned titles and the
+			// titles of everyone in sight (the client forgets them at a new game phase)
 			st->hello = true;
 			SendTable(ch);
 			SendOwned(ch);
-			if (first)
-				SendViewVisuals(ch);
+			SendViewVisuals(ch);
 			break;
-		}
 		case TITLE_CG_EQUIP:
 			if (st->hello)
 				Equip(ch, p->dwTitle);
