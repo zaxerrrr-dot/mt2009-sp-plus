@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "game/title/char_face.dds"
+left 2
+top 3
+right 46
+bottom 47

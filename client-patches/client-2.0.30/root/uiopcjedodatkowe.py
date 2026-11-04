@@ -18,6 +18,10 @@ import chr
 import chrmgr
 import ui
 from _weakref import proxy
+try:
+	import titleSystem # MT2009_PLUS_TITLES_V1: Tytuly (Mt2009Titles.cpp)
+except ImportError:
+	titleSystem = None
 
 CONFIG_FILE = "opcje_dodatkowe.cfg"
 # The package's check box pictures (its ui/game/refine/checkbox.tga / checked.tga), in our root pack.
@@ -37,6 +41,11 @@ def _HasShops():
 
 def _HasChatLog():
 	return hasattr(app, "SetChatLog")
+
+
+def _HasTitles():
+	"""MT2009_PLUS_TITLES_V1: the exe draws titles (titleSystem.SetShowOthers)."""
+	return titleSystem is not None and hasattr(titleSystem, "SetShowOthers")
 
 
 def _HasParts():
@@ -62,6 +71,9 @@ OPTIONS = (
 	# MT2009_PLUS_BOSS_SKULL_TOGGLE_V1 (Autor: Vekirion): the skull over a boss's / miniboss's head
 	# (MT2009_PLUS_BOSS_SKULL_V1, game.py "BossMark") - shown unless ticked.
 	("bossskull_off", "Ukryj czaszk\xea nad bossami", lambda: True),
+	# MT2009_PLUS_TITLES_V1: the other players' titles (plates, banners, effects over the head) hidden - the player's
+	# own always shown (uicharactertitle.py, Mt2009Titles.cpp)
+	("titles_off", "Ukryj tytu\xb3y innych graczy", _HasTitles),
 	# AH_V1 [Autor: Vekirion]: Dom Aukcyjny (uiauctionhouse.py) - podpowiedzi nazw: wylaczone = tylko przedmioty
 	# aktualnie wystawione (serwer, z filtrami), wlaczone = wszystkie nazwy z klienta.
 	("ah_allnames", "Podpowiadaj wszystkie nazwy przedmiot\xf3w", lambda: True),
@@ -239,6 +251,8 @@ def Apply(force=False):
 		if effects != _state["effects"]:
 			_state["effects"] = effects
 			app.SetHideEffects(int(effects[0]), int(effects[1]))
+	if _HasTitles():
+		titleSystem.SetShowOthers(0 if s["titles_off"] else 1) # MT2009_PLUS_TITLES_V1
 	if _HasChatLog() and s["chatlog"] != _state["chatlog"]:
 		_state["chatlog"] = s["chatlog"]
 		app.SetChatLog(int(s["chatlog"]))
