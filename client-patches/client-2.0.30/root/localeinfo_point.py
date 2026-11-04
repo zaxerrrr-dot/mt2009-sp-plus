@@ -519,6 +519,67 @@ def GetRareApplyString(affectType, affectValue):
 		return RARE_AFFECT_DICT[affectType] % affectValue
 	return GetApplyString(affectType, affectValue)
 # MT2009_PLUS_BONUS67_WIKI_NAMES_V1 (end)
+# MT2009_PLUS_ALCHEMY_WIKI_NAMES_V1 (begin) (the owner, 4 Nov 2026: the alchemy bonus names exactly as on the pl-wiki)
+# A dragon stone's bonus lines (uitooltip.py, ITEM_TYPE_DS) in the wiki's alchemy words and form ("6% Odpornosc na Mrok",
+# "+2.400 Max. PZ"): the DS_APPLY_<POINT> lines of locale/pl/locale_game.txt (client-2.0.30/tools/alchemia, the list
+# and its wiki sources in alchemia_names.py). DS_APPLY_BASIC_<POINT> names the stone's 1st (basic) bonus where the wiki
+# names it otherwise than an additional one (Jadeit "PE" / Granat "PZ"). "%s" in a name = the value grouped by dots.
+# A bonus without a line (the mt2009 bonus mode's race bonuses; a locale file without the lines) keeps the shared name
+# (GetApplyString) - the names of every other item are not touched. DS_FALLBACK_POINTS: the points the exe's player
+# module has no POINT_ name for (the element powers 178-183, Sung Ma 184-187, Precyzja 197).
+DS_FALLBACK_POINTS = {
+	"ENCHANT_ELECT": 178, "ENCHANT_FIRE": 179, "ENCHANT_ICE": 180, "ENCHANT_WIND": 181, "ENCHANT_EARTH": 182,
+	"ENCHANT_DARK": 183, "SUNGMA_STR": 184, "SUNGMA_HP": 185, "SUNGMA_MOVE": 186, "SUNGMA_IMMUNE": 187,
+	"HIT_PCT": 197, "ATTBONUS_STONE": 149,
+}
+_dsApplyNames = None
+
+def _LoadDragonSoulApplyNames():
+	basic, other = {}, {}
+	for key in dir(localeInfo):
+		if not key.startswith("DS_APPLY_"):
+			continue
+		text = getattr(localeInfo, key)
+		if not isinstance(text, str) or not text:
+			continue
+		name, table = key[9:], other
+		if name.startswith("BASIC_"):
+			name, table = name[6:], basic
+		point = getattr(player, "POINT_" + name, DS_FALLBACK_POINTS.get(name))
+		if point is not None:
+			table[point] = text
+	return (basic, other)
+
+def _DragonSoulNumber(value):
+	digits = str(abs(int(value)))
+	groups = []
+	while len(digits) > 3:
+		groups.insert(0, digits[-3:])
+		digits = digits[:-3]
+	groups.insert(0, digits)
+	return ("-" if value < 0 else "") + ".".join(groups)
+
+def GetDragonSoulApplyString(slotIndex, affectType, affectValue):
+	"""The text of a dragon stone's bonus line (slot 0 = the stone's basic bonus) - the pl-wiki's alchemy name."""
+	global _dsApplyNames
+	if not affectType or not affectValue:
+		return None
+	if _dsApplyNames is None:
+		_dsApplyNames = _LoadDragonSoulApplyNames()
+	text = None
+	if 0 == slotIndex:
+		text = _dsApplyNames[0].get(affectType)
+	if text is None:
+		text = _dsApplyNames[1].get(affectType)
+	if text is None:
+		return GetApplyString(affectType, affectValue)
+	try:
+		if "%s" in text:
+			return text % _DragonSoulNumber(affectValue)
+		return text % affectValue
+	except (TypeError, ValueError):
+		return GetApplyString(affectType, affectValue)
+# MT2009_PLUS_ALCHEMY_WIKI_NAMES_V1 (end)
 def Is1000PCT(affectType):
 	return affectType in POINT_1000PCT_Tuple
 

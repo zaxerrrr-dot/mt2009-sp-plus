@@ -1012,7 +1012,7 @@ class ItemToolTip(ToolTip):
 
 		return "\n".join(formatted_lines)
 
-	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_MAX_NUM): # MT2009_PLUS_SOULSTONE9_V1: all 7 bonuses (Digi Rasta)
+	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_MAX_NUM, dragonSoul = False): # MT2009_PLUS_SOULSTONE9_V1: all 7 bonuses (Digi Rasta)
 		if 0 != attrSlot:
 			# MT2009_PLUS_SEONHAE_V1: never past the list a caller gave
 			for i in xrange(min(slotCount, len(attrSlot))):
@@ -1026,6 +1026,10 @@ class ItemToolTip(ToolTip):
 				GetString = localeInfo.GetApplyString
 				if getattr(player, "ATTRIBUTE_SLOT_RARE_START", 5) <= i < getattr(player, "ATTRIBUTE_SLOT_RARE_END", 7):
 					GetString = localeinfo_point.GetRareApplyString
+				# MT2009_PLUS_ALCHEMY_WIKI_NAMES_V1: a dragon stone's lines (all its slots - its 6th/7th are additional
+				# bonuses, not an item's 6/7 bonus) in the pl-wiki's alchemy words; slot 0 = the stone's basic bonus
+				if dragonSoul:
+					GetString = lambda t, v, s = i: localeinfo_point.GetDragonSoulApplyString(s, t, v)
 				affectString = GetString(type, value)
 				if app.ENABLE_ACCE_COSTUME_SYSTEM:
 					if item.GetItemType() == item.ITEM_TYPE_COSTUME:
@@ -1860,7 +1864,7 @@ class ItemToolTip(ToolTip):
 					self.AppendTextLine("Gotowy do u\xbfycia", self.POSITIVE_COLOR)
 		elif item.ITEM_TYPE_DS == itemType:
 			self.AppendTextLine(self.__DragonSoulInfoString(itemVnum))
-			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
+			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM, dragonSoul = True) # MT2009_PLUS_ALCHEMY_WIKI_NAMES_V1
 		else:
 			self.__AppendLimitInformation()
 
