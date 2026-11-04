@@ -79,6 +79,7 @@ import uiItemShop
 
 import uiItemExchange
 import uiPlayerStat
+import uifarmsession # MT2009_PLUS_FARM_SESSION_V1: Sesja farmienia (the Y key)
 import flamewindPath
 
 import eventManager
@@ -4569,6 +4570,10 @@ class Interface(object):
 
 		self.wndPlayerStat = uiPlayerStat.PlayerStatsWindow()
 		self.wndPlayerStat.Hide()
+		# MT2009_PLUS_FARM_SESSION_V1 (DR_FARM_SESSION_V1): Sesja farmienia - Y opens this one (game.py); the old
+		# stats window above stays (keybind row "player_stat_general", and game.py's per-second clock).
+		self.wndFarmSession = uifarmsession.FarmSessionWindow()
+		self.wndFarmSession.Hide()
 
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			self.wndDragonSoul.SetDragonSoulRefineWindow(self.wndDragonSoulRefine)
@@ -5009,6 +5014,9 @@ class Interface(object):
 		if self.wndPlayerStat:
 			self.wndPlayerStat.Destroy()
 
+		if self.wndFarmSession: # MT2009_PLUS_FARM_SESSION_V1
+			self.wndFarmSession.Destroy()
+
 		if self.wndDragonSoul:
 			self.wndDragonSoul.Destroy()
 
@@ -5221,6 +5229,7 @@ class Interface(object):
 		del self.wndSpecialShop
 		del self.wndAttributeList
 		del self.wndPlayerStat
+		del self.wndFarmSession # MT2009_PLUS_FARM_SESSION_V1
 		if self.wndDragonSoul:
 			del self.wndDragonSoul
 		if self.wndDragonSoulRefine:
@@ -5701,6 +5710,9 @@ class Interface(object):
 
 		if self.wndPlayerStat:
 			self.wndPlayerStat.Hide()
+
+		if self.wndFarmSession: # MT2009_PLUS_FARM_SESSION_V1
+			self.wndFarmSession.Hide()
 
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			self.wndDragonSoul.Hide()

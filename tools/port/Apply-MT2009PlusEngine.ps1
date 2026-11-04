@@ -2184,4 +2184,17 @@ if ((Test-Path -LiteralPath $efektAktywnyApply -PathType Leaf) -and
     }
 }
 
+# Sesja farmienia (server-patches/sesja, MT2009_PLUS_FARM_SESSION_V1; the owner, 5 November 2026): Digi Rasta's
+# p-sesja-farmienia (DR_FARM_SESSION_V1 in CommonDefines.h, dr_farm_session.cpp in the overlay), the tables player.dr_farm_*
+# made by the core at its start. Its anchors are the patched files as they stand after pety: the last.
+$sesjaApply = Join-Path $repo 'server-patches/sesja/Apply-SesjaPatch.ps1'
+if ((Test-Path -LiteralPath $sesjaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $sesjaResult = & $sesjaApply -SourceDir $engineGameSource
+    if ($sesjaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} farm session edit(s).' -f $sesjaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

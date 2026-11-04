@@ -1,0 +1,212 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (define)",
+  "old": "#define ENABLE_CHANGELOOK_SYSTEM\n",
+  "new": "#define ENABLE_CHANGELOOK_SYSTEM\n// MT2009_PLUS_FARM_SESSION_V1 (define): Sesja farmienia (server-patches/sesja) - Digi Rasta's p-sesja-farmienia, its own define:\n// dr_farm_session.cpp / .h (the overlay) and the hooks of the patch are under it. //#define DR_FARM_DEBUG: a test\n// build only (every line to the client in the syslog, /sesja start 60).\n#define DR_FARM_SESSION_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"char_manager.h\"\n",
+  "new": "#include \"char_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the farm session (dr_farm_session.h)\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"char_manager.h\"\n",
+  "new": "#include \"char_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the farm session (dr_farm_session.h)\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"char_manager.h\"\n",
+  "new": "#include \"char_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the farm session (dr_farm_session.h)\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"char_manager.h\"\n",
+  "new": "#include \"char_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the farm session (dr_farm_session.h)\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"char_manager.h\"\n",
+  "new": "#include \"char_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the farm session (dr_farm_session.h)\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"playerbot_manager.h\"\n",
+  "new": "#include \"playerbot_manager.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the kills, the exp and the drop of the farm session\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (include)",
+  "old": "#include \"../../common/CommonDefines.h\"\n",
+  "new": "#include \"../../common/CommonDefines.h\"\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (include): the owner of a kill's item may count it\n#\tinclude \"dr_farm_session.h\"\n#endif\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (start)",
+  "old": "\tOXEvent_manager.Initialize();\n",
+  "new": "\tOXEvent_manager.Initialize();\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (start): the tables player.dr_farm_* (dr_farm_session.cpp, CREATE TABLE IF NOT EXISTS)\n\tDrFarmInit();\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (declare)",
+  "old": "ACMD(do_towarzysz);\n",
+  "new": "ACMD(do_towarzysz);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (declare): /sesja, the farm session (dr_farm_session.cpp)\nACMD(do_sesja);\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (table)",
+  "old": "\t{ \"towarzysz\",\tdo_towarzysz,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"towarzysz\",\tdo_towarzysz,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (table): /sesja\n\t{ \"sesja\",\tdo_sesja,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (command)",
+  "old": "// \"Towarzysz\", the player's own companion (playerbot_sidekick.h): the\n",
+  "new": "#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (command): \"/sesja start <sec>|pauza|wznow|koniec|stan|pelne|historia|stat\" - the Y window sends these, a\n// player may type them too (dr_farm_session.cpp answers with FarmInfo and the rest)\nACMD(do_sesja)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tDrFarmCommand(ch, argument);\n}\n#endif\n\n// \"Towarzysz\", the player's own companion (playerbot_sidekick.h): the\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (enter)",
+  "old": "\t\tch->playerData->SendSpecialFlagsToClient(ch);\n\n",
+  "new": "\t\tch->playerData->SendSpecialFlagsToClient(ch);\n\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (enter): the open farm session of the player is read (dr_farm_session.cpp), humans only\n\tif (!d->IsBot())\n\t\tDrFarmOnEnterGame(ch);\n#endif\n\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (logout)",
+  "old": "\t\tCatchKingOnDisconnect(this);\n\t}\n",
+  "new": "\t\tCatchKingOnDisconnect(this);\n\t}\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (logout): the farm session stops counting and is written (a logout, a change of channel or of core)\n\tDrFarmOnDisconnect(this);\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (owner)",
+  "old": "\tm_dwOwnershipPID = ch->GetPlayerID();\n",
+  "new": "\tm_dwOwnershipPID = ch->GetPlayerID();\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (owner): the owner may count a kill's item at its pick-up (dr_farm_session.h)\n\tif (g_iDrFarmActive)\n\t\tDrFarmTagOwner(m_dwVID, m_dwOwnershipPID);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (ground yang boss)",
+  "old": "\t\t\t\titem->AddToGround(GetMapIndex(), pos);\n\t\t\t\titem->StartDestroyEvent();\n\n\t\t\t\tiTotalGold += iGold; // Total gold\n",
+  "new": "\t\t\t\titem->AddToGround(GetMapIndex(), pos);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (ground yang boss): a boss's yang counts at its pick-up (dr_farm_session.h)\n\t\t\t\tif (g_iDrFarmActive)\n\t\t\t\t\tDrFarmTagGroundYang(item, this, pkAttacker);\n#endif\n\t\t\t\titem->StartDestroyEvent();\n\n\t\t\t\tiTotalGold += iGold; // Total gold\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (ground yang)",
+  "old": "\t\t\t\t\tpos.y = GetY() + (number(-7, 7) * 20);\n\n\t\t\t\t\titem->AddToGround(GetMapIndex(), pos);\n\t\t\t\t\titem->StartDestroyEvent();\n",
+  "new": "\t\t\t\t\tpos.y = GetY() + (number(-7, 7) * 20);\n\n\t\t\t\t\titem->AddToGround(GetMapIndex(), pos);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (ground yang): yang on the ground counts at its pick-up (dr_farm_session.h)\n\t\t\t\t\tif (g_iDrFarmActive)\n\t\t\t\t\t\tDrFarmTagGroundYang(item, this, pkAttacker);\n#endif\n\t\t\t\t\titem->StartDestroyEvent();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (kill)",
+  "old": "\t\tCHARACTER_MANAGER::instance().KillLog(GetRaceNum());\n",
+  "new": "\t\tCHARACTER_MANAGER::instance().KillLog(GetRaceNum());\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (kill): the kill for the farm sessions of the killer (its owner's for a companion), its party and those\n// who hurt the victim, every rank; what the rewards below give for it (a card, a rank fruit, a rune: on the ground\n// under the killer's name, or straight into a bag) is its drop (dr_farm_session.h)\n\t\tif (g_iDrFarmActive)\n\t\t{\n\t\t\tstd::vector<LPCHARACTER> hurt;\n\t\t\tfor (TDamageMap::iterator it = m_map_kDamage.begin(); it != m_map_kDamage.end(); ++it)\n\t\t\t{\n\t\t\t\tLPCHARACTER attacker = CHARACTER_MANAGER::instance().Find(it->first);\n\t\t\t\tif (attacker)\n\t\t\t\t\thurt.push_back(attacker);\n\t\t\t}\n\t\t\tDrFarmOnKill(this, pkQuestKiller, hurt);\n\t\t}\n\t\tDrFarmKillScope drFarmKillRewards(this, pkQuestKiller);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (drop scope)",
+  "old": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n\tRewardGold(pkAttacker);\n",
+  "new": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (drop scope): the yang RewardGold gives (GiveGold) and what the drop below puts straight into a bag\n// (AutoGiveItem) count for this kill (dr_farm_session.h)\n\tDrFarmKillScope drFarmKillDrop(this, pkAttacker);\n#endif\n\tRewardGold(pkAttacker);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (drop)",
+  "old": "\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item) || bAwakeningDrop || bTalismanDrop)\n\t{\n",
+  "new": "\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item) || bAwakeningDrop || bTalismanDrop)\n\t{\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (drop): the kill's items (the awakening stone and the talisman too) count at their pick-up\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmTagDrops(this, pkAttacker, s_vec_item);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (exp)",
+  "old": "\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n\t// MT2009_PLUS_NEW_PET_V1 (exp given)",
+  "new": "\tto->PointChange(POINT_EXP, iExp, true);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (exp): the experience for a human's farm session (dr_farm_session.h)\n\tif (g_iDrFarmActive)\n\t\tDrFarmOnExp(to, iExp);\n#endif\n\tfrom->CreateFly(FLY_EXP, to);\n\t// MT2009_PLUS_NEW_PET_V1 (exp given)"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (party yang)",
+  "old": "\t\t\t\t\tch->ChangeGold(iMoney);\n",
+  "new": "\t\t\t\t\tch->ChangeGold(iMoney);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (party yang): a member's share of a kill's yang\n\t\t\t\t\tif (g_iDrFarmActive)\n\t\t\t\t\t\tDrFarmOnYang(ch, iMoney);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (own yang)",
+  "old": "\t\tChangeGold(dwMyAmount);\n",
+  "new": "\t\tChangeGold(dwMyAmount);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (own yang): the own share of a kill's yang\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmOnYang(this, dwMyAmount);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (yang)",
+  "old": "\t\tChangeGold(iAmount);\n\n\t\tif (iAmount > 1000)\n",
+  "new": "\t\tChangeGold(iAmount);\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (yang): a kill's yang\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmOnYang(this, iAmount);\n#endif\n\n\t\tif (iAmount > 1000)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (pickup)",
+  "old": "\tif (item->IsOwnership(this))\n\t{\n\t\t// MT2009_PLUS_GAYA_CURRENCY_V1 (pickup)",
+  "new": "#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (pickup): a kill's item counts for the bag it lands in, read before it moves (dr_farm_session.h)\n\tconst TDrFarmPick drFarmPick = DrFarmPickBegin(item);\n#endif\n\tif (item->IsOwnership(this))\n\t{\n\t\t// MT2009_PLUS_GAYA_CURRENCY_V1 (pickup)"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (pickup yang)",
+  "old": "\t\t\tAddPlayerStat(PLAYER_STATS_GOLD_FLAG, item->GetCount());\n\t\t\tGiveGold(item->GetCount());\n",
+  "new": "\t\t\tAddPlayerStat(PLAYER_STATS_GOLD_FLAG, item->GetCount());\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (pickup yang): a kill's yang from the ground, for whoever GiveGold pays\n\t\t\tDrFarmKillScope drFarmPickYang(drFarmPick);\n#endif\n\t\t\tGiveGold(item->GetCount());\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (pickup stacked)",
+  "old": "\t\t\tauto finalItem = AutoStackItem(item);\n\t\t\tif (finalItem)\n\t\t\t{\n",
+  "new": "\t\t\tauto finalItem = AutoStackItem(item);\n\t\t\tif (finalItem)\n\t\t\t{\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (pickup stacked): the own bag\n\t\t\t\tif (drFarmPick.tagged)\n\t\t\t\t\tDrFarmPickDone(drFarmPick, this);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (pickup add)",
+  "old": "\t\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (pickup add)\n",
+  "new": "\t\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (pickup add)\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (pickup add): the own bag\n\t\t\tif (drFarmPick.tagged)\n\t\t\t\tDrFarmPickDone(drFarmPick, this);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (party stacked)",
+  "old": "\t\tauto finalItem = owner->AutoStackItem(item);\n\t\tif (finalItem)\n\t\t{\n",
+  "new": "\t\tauto finalItem = owner->AutoStackItem(item);\n\t\tif (finalItem)\n\t\t{\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (party stacked): the owner's bag\n\t\t\tif (drFarmPick.tagged)\n\t\t\t\tDrFarmPickDone(drFarmPick, owner);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (party add)",
+  "old": "\t\titem->AddToCharacter(owner, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (party add)\n",
+  "new": "\t\titem->AddToCharacter(owner, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (party add)\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (party add): the owner's bag\n\t\tif (drFarmPick.tagged)\n\t\t\tDrFarmPickDone(drFarmPick, owner);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (give)",
+  "old": "\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, cell));\n",
+  "new": "\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, cell));\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (give): a kill's item handed straight into the bag\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmOnAutoGive(this, item->GetVnum(), item->GetCount());\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (give vnum found)",
+  "old": "\tif (foundItem)\n\t{\n\t\tif (bMsg)\n\t\t\tChatPacketRecieveItem(this, foundItem, original_count);\n",
+  "new": "\tif (foundItem)\n\t{\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (give vnum found): a kill's item\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmOnAutoGive(this, dwItemVnum, original_count);\n#endif\n\t\tif (bMsg)\n\t\t\tChatPacketRecieveItem(this, foundItem, original_count);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (give vnum stacked)",
+  "old": "\t\tauto finalItem = AutoStackItem(item); // @fixme316\n\t\tif (finalItem)\n\t\t{\n",
+  "new": "\t\tauto finalItem = AutoStackItem(item); // @fixme316\n\t\tif (finalItem)\n\t\t{\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (give vnum stacked): a kill's item\n\t\t\tif (g_iDrFarmActive)\n\t\t\t\tDrFarmOnAutoGive(this, dwItemVnum, original_count);\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (give vnum blend)",
+  "old": "\t\t\t\t\t\tinv_item->SetCount(inv_item->GetCount() + item->GetCount());\n\t\t\t\t\t\treturn inv_item;\n",
+  "new": "\t\t\t\t\t\tinv_item->SetCount(inv_item->GetCount() + item->GetCount());\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (give vnum blend): a kill's item\n\t\t\t\t\t\tif (g_iDrFarmActive)\n\t\t\t\t\t\t\tDrFarmOnAutoGive(this, dwItemVnum, original_count);\n#endif\n\t\t\t\t\t\treturn inv_item;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FARM_SESSION_V1 (give vnum add)",
+  "old": "\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell));\n\t\tLogManager::instance().ItemLog(this, item, \"SYSTEM\", item->GetName());\n",
+  "new": "\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell));\n#ifdef DR_FARM_SESSION_V1 // MT2009_PLUS_FARM_SESSION_V1 (give vnum add): a kill's item\n\t\tif (g_iDrFarmActive)\n\t\t\tDrFarmOnAutoGive(this, dwItemVnum, original_count);\n#endif\n\t\tLogManager::instance().ItemLog(this, item, \"SYSTEM\", item->GetName());\n"
+ }
+]
