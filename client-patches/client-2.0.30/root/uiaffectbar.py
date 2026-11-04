@@ -1278,3 +1278,17 @@ AFFECT_SHOW_DATA[AFFECT_POTEGA_MADROSCI] = {
 	"description" : "Pot\xeaga m\xb9dro\x9cci (Uriel);Bonus PD +%d%%",
 	"icon" : "d:/ymir work/ui/skill/common/affect/exp_bonus.sub",
 }
+
+# MT2009_PLUS_FISHING_GLOBAL_V1: the golden tuna (the server's quest zloty_tunczyk, lowienie/fishing.lua) - the Bonus
+# Zlotego Tunczyka (affect 742, value 200 the 60 minutes of a release, 250 the 5 minutes of the bait: the rare fish as
+# with Rybie Wnetrznosci) and Mokre Szaty (743, movement -50 for 5 minutes, not cleared by Pieczony Okon).
+AFFECT_FISHING_GOLD_TUNA = 742
+AFFECT_FISHING_WET_CLOTHES = 743
+AFFECT_SHOW_DATA[AFFECT_FISHING_GOLD_TUNA] = {
+	"description" : "Bonus Z\xb3otego Tu\xf1czyka: rzadkie ryby, wi\xeaksza szansa na branie",
+	"icon" : "icon/item/27797.tga",
+}
+AFFECT_SHOW_DATA[AFFECT_FISHING_WET_CLOTHES] = {
+	"description" : "Mokre Szaty: szybko\x9c\xe6 ruchu -50",
+	"icon" : "d:/ymir work/ui/skill/common/affect/slow.sub",
+}

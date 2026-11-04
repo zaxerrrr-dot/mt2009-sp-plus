@@ -1524,7 +1524,19 @@ class ItemToolTip(ToolTip):
 		## Rod ##
 		elif item.ITEM_TYPE_ROD == itemType:
 
-			if 0 != metinSlot:
+			# MT2009_PLUS_FISHING_GLOBAL_V1: Wedka Weglowa (27591) - level 22, no points (socket 0 holds its end time,
+			# LIMIT_REAL_TIME 30 days): the level, the bait, the bite bonus and the time left
+			if 0 != metinSlot and 27591 == itemVnum:
+				self.__AppendLimitInformation()
+				self.AppendSpace(5)
+				if metinSlot[2] > 0:
+					item.SelectItem(metinSlot[2])
+					self.AppendTextLine(localeInfo.ITEM_ROD_BAIT % item.GetItemName(), self.NORMAL_COLOR)
+					item.SelectItem(itemVnum)
+				self.AppendTextLine(localeInfo.TOOLTIP_FISHINGROD_LEVEL % 22, self.NORMAL_COLOR)
+				self.AppendTextLine(localeInfo.FISHING_CHANCE_BONUS % item.GetValue(5), self.POSITIVE_COLOR)
+				self.AppendMallItemLastTime(metinSlot[0])
+			elif 0 != metinSlot:
 				curLevel = item.GetValue(0) / 10
 				curEXP = metinSlot[0]
 				bait = metinSlot[2]
