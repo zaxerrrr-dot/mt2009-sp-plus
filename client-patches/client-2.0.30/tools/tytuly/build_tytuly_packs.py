@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_TITLES_V1 - the client build's part of Tytuly (the owner's package "Official Title System Renewal", rebuilt;
-# server-patches/tytuly): the three certificates 57000-57002 (patch_tytuly_client.py) in the existing packs "gamedata"
+# server-patches/tytuly): the certificates 57000-57008 (V2; three until V1) (patch_tytuly_client.py) in the existing packs "gamedata"
 # (gamedata/item_list.txt) and "dbdata" (gamedata/item_proto, locale/pl/itemdesc.txt), and a new pack "tytuly" with
 # everything of files/ (make_tytuly_files.py): the title window's pictures (GF 26.1.11's d:/ymir work/ui/titlesystem_001.dds
 # and the package's 18 window .sub), the plates and the animated banners (d:/ymir work/ui/game/title/..., the resources

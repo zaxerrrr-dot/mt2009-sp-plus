@@ -6,7 +6,8 @@
 #   python3 make_tytuly_files.py <package "02. Client" dir> <GF _client dir>
 # Taken: the window's 18 .sub, the plates (title_0x_*_left/middle/right.tga) and banners (title_0x_banner_*.dds), the
 # resources title_1000..1005.sub (the plates the catalogue uses) and the banners' frames sprites_1000..1002, every
-# effect of effect/etc/title (10 .mse + their textures), the certificate icons 57000-57002. Not taken: the package's
+# effect of effect/etc/title (10 .mse + their textures), the certificate icons 57000-57002 (V2: + the rank medals,
+# RANK_MSE). Not taken: the package's
 # title_0000 / 2000-2003 / 3000-3006 .sub (the exe takes an effect title's file from the server's catalogue) and its
 # char_face_*.sub on Windows.dds (the players' install may have another windows.dds): the portrait button's three
 # pictures and the pencil are cut out of GF's windows.dds (DXT5 blocks, x 284-432, y 848-940) into
@@ -27,6 +28,47 @@ FACE = (
 	('char_face_write_default', 338, 850, 353, 865),
 	('char_face_write_over', 359, 850, 374, 865),
 )
+
+
+# MT2009_PLUS_TITLES_V2: a still picture over the head (crown01.mse's particle: one at a time, billboard, alpha blend)
+RANK_MSE = (
+	'BoundingSphereRadius   100.000000\r\nBoundingSpherePosition 0.000000 0.000000 0.000000\r\n\r\n'
+	'Group Particle\r\n{\r\n'
+	'    StartTime           0.000000\r\n'
+	'    List TimeEventPosition\r\n    {\r\n        0.000000 "MOVING_TYPE_DIRECT" 0.000000 0.000000 0.000000\r\n    }\r\n'
+	'    Group EmitterProperty\r\n    {\r\n'
+	'        MaxEmissionCount        1\r\n'
+	'        CycleLength             1.000000\r\n        CycleLoopEnable         1\r\n        LoopCount               0\r\n'
+	'        EmitterShape            0\r\n        EmitterAdvancedType     0\r\n        EmitterEmitFromEdgeFlag  0\r\n'
+	'        EmittingDirection       0.000000 0.000000 0.000000\r\n'
+	'        List TimeEventEmittingSize\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmittingAngularVelocity\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmittingDirectionX\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmittingDirectionY\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmittingDirectionZ\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmittingVelocity\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventEmissionCountPerSecond\r\n        {\r\n            0.000000 20.000000\r\n        }\r\n'
+	'        List TimeEventLifeTime\r\n        {\r\n            0.000000 3600.000000\r\n        }\r\n'
+	'        List TimeEventSizeX\r\n        {\r\n            0.000000 64.000000\r\n        }\r\n'
+	'        List TimeEventSizeY\r\n        {\r\n            0.000000 64.000000\r\n        }\r\n'
+	'    }\r\n'
+	'    Group ParticleProperty\r\n    {\r\n'
+	'        SrcBlendType                 5\r\n        DestBlendType                6\r\n        ColorOperationType           4\r\n'
+	'        BillboardType                1\r\n        RotationType                 0\r\n        RotationSpeed                0.000000\r\n'
+	'        RotationRandomStartingBegin  0\r\n        RotationRandomStartingEnd    0\r\n'
+	'        AttachEnable                 1\r\n        StretchEnable                0\r\n'
+	'        TexAniType                   0\r\n        TexAniDelay                  0.029000\r\n        TexAniRandomStartFrameEnable 0\r\n'
+	'        List TimeEventGravity\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventAirResistance\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TimeEventScaleX\r\n        {\r\n            0.000000 0.600000\r\n        }\r\n'
+	'        List TimeEventScaleY\r\n        {\r\n            0.000000 0.600000\r\n        }\r\n'
+	'        List TimeEventColorRed\r\n        {\r\n            0.000000 1.000000\r\n        }\r\n'
+	'        List TimeEventColorGreen\r\n        {\r\n            0.000000 1.000000\r\n        }\r\n'
+	'        List TimeEventColorBlue\r\n        {\r\n            0.000000 1.000000\r\n        }\r\n'
+	'        List TimeEventAlpha\r\n        {\r\n            0.000000 1.000000\r\n            1.000000 1.000000\r\n        }\r\n'
+	'        List TimeEventRotation\r\n        {\r\n            0.000000 0.000000\r\n        }\r\n'
+	'        List TextureFiles\r\n        {\r\n            "%s"\r\n        }\r\n'
+	'    }\r\n}\r\n')
 
 
 def copy(src, dst):
@@ -79,6 +121,14 @@ def main():
 		copy(os.path.join(fx, f), os.path.join(dst_fx, f.lower()))
 	for f in ('crown01.mse', 'crown01.dds'):
 		copy(os.path.join(gf, 'd_', 'ymir work', 'effect', 'battleroyale', f), os.path.join(dst_fx, f))
+	# MT2009_PLUS_TITLES_V2: the weekly ranking's titles 2-4 look as on the wiki (en "Titles": the Combat Zone's medals
+	# - GF's title_2001..2003.sub, IMAGE effect/etc/ranking_battle/ranker_1..3.tga over the head). The exe draws an
+	# effect title, not an image one: title_rank_<n>.mse shows GF's medal as one still billboard over the head (crown01's
+	# particle, no movement, always fully visible, an hour's life), the medal picture next to it.
+	for n in (1, 2, 3):
+		copy(os.path.join(gf, 'd_', 'ymir work', 'effect', 'etc', 'ranking_battle', 'ranker_%d.tga' % n),
+			os.path.join(dst_fx, 'ranker_%d.tga' % n))
+		open(os.path.join(dst_fx, 'title_rank_%d.mse' % n), 'w', newline='').write(RANK_MSE % ('ranker_%d.tga' % n))
 	copy(os.path.join(gf, 'd_', 'ymir work', 'ui', 'titlesystem_001.dds'), os.path.join(OUT, 'd_', 'ymir work', 'ui', 'titlesystem_001.dds'))
 	dds = cut_dxt5(os.path.join(gf, 'd_', 'ymir work', 'ui', 'windows.dds'), CUT_X, CUT_Y, CUT_W, CUT_H)
 	open(os.path.join(dst_ui, 'char_face.dds'), 'wb').write(dds)
