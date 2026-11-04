@@ -12,7 +12,8 @@
 #                LIMIT_REAL_TIME (86 400 / 604 800 s) and price
 #     30395      Plonaca Strzala (Balathor's Hwacha arrow; was Ognista Strzala)
 #   item_list.txt (gamedata): 8011 / 8012 with 8010's icon (an arrow has no model)
-#   itemdesc.txt (dbdata locale/pl): 8010-8012 and 30395
+#   itemdesc.txt (dbdata locale/pl): 8010-8012 and 30395; V2: 8000-8009 (a stack fades with the distance, a quiver not)
+#   V2 (MT2009_PLUS_ARROWS_GLOBAL_V2): the quivers 8010-8012 from level 1 (was 35)
 #
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
 #     <repo>/client-patches/client-2.0.30/tools/strzaly/patch_strzaly_client.py <item_proto> <item_list.txt> <itemdesc.txt> [<out dir>]
@@ -34,6 +35,7 @@ ARROWS = {8000: (0, 1, 3), 8001: (10, 2, 10), 8002: (30, 3, 15), 8003: (40, 4, 1
 WOODEN_PRICE = 5
 QUIVER = 8010
 QUIVER_VALUES = (0, 4, 0, 25, 0, 0)
+QUIVER_LEVEL = 1  # MT2009_PLUS_ARROWS_GLOBAL_V2 (the owner, 5 November 2026): level 1, not 35
 # vnum: (seconds, price, how long in the description)
 NEW_QUIVERS = {8011: (86400, 100000, u'1 dzień'), 8012: (604800, 550000, u'7 dni')}
 ICON = u'icon/item/08010.tga'
@@ -49,7 +51,18 @@ def quiver_desc(how_long):
             u'zużywania strzał, a obrażenia nie maleją wraz z odległością. Działa %s od zakupu.' % how_long)
 
 
+# MT2009_PLUS_ARROWS_GLOBAL_V2: a stack of arrows fades with the distance (server-patches/strzaly, as on the global
+# server), a quiver does not - the arrows' tooltips say so (their names as the client's item_proto has them).
+ARROW_NAMES = {8000: u'Drewniana Strzała', 8001: u'Bambusowa Strzała', 8002: u'Kamienna Strzała',
+               8003: u'Żelazna Strzała', 8004: u'Stalowa Strzała', 8005: u'Srebrna Strzała',
+               8006: u'Ognista Strzała', 8007: u'Trująca Strzała', 8008: u'Lodowa Strzała', 8009: u'Przeklęta Strzała'}
+ARROW_DESC = (u'Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), '
+              u'potem o 5%% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.')
+
+
 DESCS = {QUIVER: (QUIVER_NAME, quiver_desc(u'14 dni')), FLAMING: (FLAMING_NAME, FLAMING_DESC)}
+for _v, _n in ARROW_NAMES.items():
+    DESCS[_v] = (_n, ARROW_DESC % ())
 for _v, (_s, _p, _h) in NEW_QUIVERS.items():
     DESCS[_v] = (QUIVER_NAME, quiver_desc(_h))
 ALL = sorted(set(ARROWS) | {QUIVER, FLAMING} | set(NEW_QUIVERS))
@@ -74,10 +87,10 @@ def want(vnum, r):
     elif vnum == QUIVER or vnum in NEW_QUIVERS:
         struct.pack_into('<I', r, 0, vnum)
         struct.pack_into('<6i', r, 139, *QUIVER_VALUES)
+        secs = NEW_QUIVERS[vnum][0] if vnum in NEW_QUIVERS else struct.unpack_from('<Bi', r, 114)[1]
+        struct.pack_into('<BiBi', r, 114, 7, secs, 1, QUIVER_LEVEL)
         if vnum in NEW_QUIVERS:
-            secs, price, _ = NEW_QUIVERS[vnum]
-            lt1, lv1 = struct.unpack_from('<Bi', r, 119)
-            struct.pack_into('<BiBi', r, 114, 7, secs, lt1, lv1)
+            price = NEW_QUIVERS[vnum][1]
             struct.pack_into('<qq', r, 98, price, price)
     elif vnum == FLAMING:
         r[41:74] = fixed(FLAMING_NAME, 33)

@@ -4771,25 +4771,17 @@ namespace
 	}
 
 	// What an arrow adds to a shot, as the engine counts it: value3, which
-	// both engines add to the bow's roll (wooden 3 to silver 25). -1 for an
-	// arrow that cannot hurt anything at a bow's range: mt2009's
-	// CalcArrowDamage fades a shot past value4 down to value2 per cent (twice
-	// that against a monster) at value5, and the four elemental arrows
-	// (8006-8009) carry 0 in all three there, so past point-blank they deal
-	// nothing. Worn with a quiver that never empties, one of them would be an
-	// Archer that shoots for nothing for life. r40250 fades a shot by the
-	// distance alone and reads no value2.
+	// both engines add to the bow's roll (wooden 3 to silver 25). -1 for
+	// what is no arrow.
 	int GetPlayerBotArrowGrade(LPITEM arrow)
 	{
 		if (!arrow || arrow->GetType() != ITEM_WEAPON || arrow->GetSubType() != WEAPON_ARROW)
 			return -1;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-		// DR_ARCHER_ARROW_V1 (p-lucznicy-strzaly, 28.10.2026): the fade only where CalcArrowDamage applies it
-		// (value5 > value4) - the GF values (gf_wartosci.sql) zero value2, value4 and value5 of 8000-8005, which then
-		// hit at full damage at any range, and every Archer bot stood unable to shoot.
-		if (arrow->GetValue(5) > arrow->GetValue(4) && arrow->GetValue(2) <= 0)
-			return -1;
-#endif
+		// DR_ARCHER_ARROW_V1 (p-lucznicy-strzaly, 28.10.2026) rejected an arrow whose value4 / value5 fade reached
+		// 0 per cent. MT2009_PLUS_ARROWS_GLOBAL_V2 (server-patches/strzaly): CalcArrowDamage fades every stack of
+		// arrows by the distance alone (5 per cent a metre past 5 m, as r40250 does) and never a quiver, and reads
+		// no value2 / value4 / value5 - every arrow hurts, and the best is the one with the highest value3; a quiver
+		// (IsPlayerBotQuiver) goes before any stack.
 		return std::max<int>(0, (int)arrow->GetValue(3));
 	}
 

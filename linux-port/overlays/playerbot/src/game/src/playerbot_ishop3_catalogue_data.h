@@ -88,7 +88,7 @@ namespace
 	};
 
 	const TPlayerBotIshop3CatalogueRow PLAYERBOT_ISHOP3_CATALOGUE[] = {
-		{   8010, PLAYERBOT_ISHOP3_NEED_QUIVER, 1, 1, 35, 1, 1, 1 },	// Kolczan - one, worn; 14 days
+		{   8010, PLAYERBOT_ISHOP3_NEED_QUIVER, 1, 1, 0, 1, 1, 1 },	// Kolczan - one, worn; 14 days
 		{  22000, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 2 },	// Zwoj Powrotu Do Miasta - return scrolls - a bot travels by its own warps
 		{  22010, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 2, 2, 3 },	// Zwoj Powrotu - return scrolls - a bot travels by its own warps
 		{  25041, PLAYERBOT_ISHOP3_NEED_REFINE_SCROLL, 6, 6, 0, 2, 2, 2 },	// Zwoj Blogoslawienstwa - a worn piece under scroll work, no safe scroll held

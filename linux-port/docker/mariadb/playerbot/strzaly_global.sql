@@ -2,13 +2,14 @@
 -- strzaly i wartosci bonusow jak na globalu, nie ograniczaj ataku w moby jak dotychczas"; the pl-wiki's category
 -- Przedmioty/Amunicja). apply.sh runs it every start after gf_wartosci.sql / refine_global.sql. Idempotent.
 --
---   8000-8005  the six arrows: level, attack (value3) and magic attack (value1) of the wiki, no bonus line, no fade
---              (value2 / value4 / value5 0 - every shot at full strength, at a monster and at a player alike). The
+--   8000-8005  the six arrows: level, attack (value3) and magic attack (value1) of the wiki, no bonus line, value2 /
+--              value4 / value5 0 (the engine no longer reads them: a stack fades by the distance alone, a quiver
+--              never - MT2009_PLUS_ARROWS_GLOBAL_V2, server-patches/strzaly). The
 --              Wooden Arrow's price as the wiki's 100 for 20 Yang (COUNT_PER_1GOLD, 5 a Yang; ours was 1 a Yang).
 --   8011/8012  Kolczan for 1 day (100 000 Yang) and for 7 days (550 000 Yang) at the General Store (shop 3, 9003),
 --              the wiki's two quivers. Copies of the ItemShop's 14-day Kolczan 8010 (apply.sh, MT2009_PLUS_QUIVER_V1:
 --              Ninja only, unlimited arrows - a timed arrow is a quiver to the engine and the bots - 25 / 4, no
---              trade / drop / stall / safebox). The time runs from the purchase (LIMIT_REAL_TIME).
+--              trade / drop / stall / safebox; level 1 - V2, was 35). The time runs from the purchase (LIMIT_REAL_TIME).
 --   30395      Balathor's Hwacha arrow takes the wiki's name, Plonaca Strzala (it was Ognista Strzala - the same
 --              name as the Archer's skill and the arrow 8006).
 -- The client's rows: client-patches/client-2.0.30/tools/strzaly (item_proto, item_list, itemdesc, itemname).
