@@ -19,6 +19,13 @@
 //     owner's colour of the Buffi skill (164 -> 94, 165 -> 96, 166 -> 110, 167 -> 111), and the Buffi's own cast
 //     motion the same.
 // A colour is 0 (the effect's own) or 0xFFrrggbb; the exe keeps each particle's alpha and brightness and swaps its hue.
+// MT2009_PLUS_SKILL_COLOR_RELOG_V1 (the owner, 4 November 2026, poprawki-3.0.11 item 1): the "got" colour (a shaman
+// buff's / Buffi buff's caster's colour) outlives a relog, a warp and a channel change - it is kept in
+// player.skill_color_buff (apply.sh: a row per buff the character carries in someone else's colour, written when it
+// changes), read back at login and sent with the own colours (before the affects: LoadAffect waits for PHASE_GAME, so
+// the client attaches the running buff's effect already coloured, and re-tints whatever it attached before). A got
+// colour whose affect is gone (the buff ran out) is dropped - and its row deleted - the next time the character is
+// shown to someone (SkillColorEncodeInsert).
 #include "stdafx.h"
 #include "constants.h"
 #include "utils.h"
@@ -31,6 +38,8 @@
 #include <cstdlib>
 #include <map>
 #include <unordered_map>
+#include <vector>
+#include <memory>
 
 namespace skillcolor
 {
@@ -158,6 +167,50 @@ namespace skillcolor
 		return it == st->second.own.end() ? Zero() : it->second;
 	}
 
+	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: the got colour of a player (bots and mobs keep it in memory only)
+	bool KeepsGot(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot() && ch->GetPlayerID();
+	}
+
+	void SaveGot(LPCHARACTER ch, WORD vnum, const SColors& s)
+	{
+		if (!KeepsGot(ch))
+			return;
+		if (IsDefault(s))
+			DBManager::instance().Query("DELETE FROM player.skill_color_buff WHERE player_id = %u AND skill_vnum = %u", ch->GetPlayerID(), (unsigned int) vnum);
+		else
+			DBManager::instance().Query("REPLACE INTO player.skill_color_buff (player_id, skill_vnum, col1, col2, col3, col4, col5) "
+					"VALUES (%u, %u, %u, %u, %u, %u, %u)", ch->GetPlayerID(), (unsigned int) vnum, s.c[0], s.c[1], s.c[2], s.c[3], s.c[4]);
+	}
+
+	// one row set of "SELECT skill_vnum, col1..col5" -> table (only the rows accepted by ok(vnum)); the vnums put in
+	template <typename F>
+	void Read(const char* c_pszTable, DWORD pid, std::map<WORD, SColors>& table, F ok, std::vector<WORD>& changed)
+	{
+		std::unique_ptr<SQLMsg> m(DBManager::instance().DirectQuery(
+			"SELECT skill_vnum, col1, col2, col3, col4, col5 FROM player.%s WHERE player_id = %u", c_pszTable, pid));
+		if (!m.get() || m->uiSQLErrno != 0 || !m->Get() || !m->Get()->pSQLResult)
+			return;
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(m->Get()->pSQLResult)))
+		{
+			unsigned int vnum = 0;
+			str_to_number(vnum, row[0]);
+			if (!ok(vnum))
+				continue;
+			SColors s;
+			bool valid = true;
+			for (int i = 0; i < SKILL_COLOR_LAYERS; ++i)
+			{
+				s.c[i] = row[1 + i] ? (DWORD) strtoul(row[1 + i], NULL, 10) : 0;	// INT UNSIGNED, up to 0xFFFFFFFF
+				valid = valid && ValidColor(s.c[i]);
+			}
+			if (valid && Put(table, (WORD) vnum, s))
+				changed.push_back((WORD) vnum);
+		}
+	}
+
 	void Save(DWORD pid, WORD vnum, const SColors& s)
 	{
 		if (IsDefault(s))
@@ -209,7 +262,10 @@ void SkillColorPacket(LPCHARACTER ch, const char* data)
 	Broadcast(ch, SKILL_COLOR_TYPE_OWN, (WORD) vnum, s);
 	// a shaman buff on himself shows his new colour at once
 	if (IsBuffSkill(vnum) && st.got.count((WORD) vnum) && Put(st.got, (WORD) vnum, s))
+	{
 		Broadcast(ch, SKILL_COLOR_TYPE_BUFF, (WORD) vnum, s);
+		SaveGot(ch, (WORD) vnum, s);	// MT2009_PLUS_SKILL_COLOR_RELOG_V1
+	}
 }
 
 // input_login.cpp (MT2009_PLUS_SKILL_COLOR_V1 (login)): the character's row (every core reads it again - a change made
@@ -221,27 +277,17 @@ void SkillColorOnLogin(LPCHARACTER ch)
 		return;	// bots never have a colour (no row, no query)
 	SState& st = s_state[(DWORD) ch->GetVID()];
 	st.own.clear();
-	std::unique_ptr<SQLMsg> m(DBManager::instance().DirectQuery(
-		"SELECT skill_vnum, col1, col2, col3, col4, col5 FROM player.skill_color WHERE player_id = %u", ch->GetPlayerID()));
-	if (!m.get() || m->uiSQLErrno != 0 || !m->Get() || !m->Get()->pSQLResult)
-		return;
-	MYSQL_ROW row;
-	while ((row = mysql_fetch_row(m->Get()->pSQLResult)))
-	{
-		unsigned int vnum = 0;
-		str_to_number(vnum, row[0]);
-		if (Kind(ch, vnum) == KIND_NONE)
-			continue;
-		SColors s;
-		bool ok = true;
-		for (int i = 0; i < SKILL_COLOR_LAYERS; ++i)
-		{
-			s.c[i] = row[1 + i] ? (DWORD) strtoul(row[1 + i], NULL, 10) : 0;	// INT UNSIGNED, up to 0xFFFFFFFF
-			ok = ok && ValidColor(s.c[i]);
-		}
-		if (ok && Put(st.own, (WORD) vnum, s))
-			Broadcast(ch, SKILL_COLOR_TYPE_OWN, (WORD) vnum, s);
-	}
+	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: the own rows and the got rows (the buffs it carries in their caster's colour -
+	// they used to live only as long as the VID), every one to it and to everyone around before its affects come
+	// (LoadAffect waits for PHASE_GAME: a second later)
+	st.got.clear();
+	std::vector<WORD> own, got;
+	Read("skill_color", ch->GetPlayerID(), st.own, [ch](unsigned int vnum) { return Kind(ch, vnum) != KIND_NONE; }, own);
+	Read("skill_color_buff", ch->GetPlayerID(), st.got, [](unsigned int vnum) { return IsBuffSkill(vnum); }, got);
+	for (size_t i = 0; i < own.size(); ++i)
+		Broadcast(ch, SKILL_COLOR_TYPE_OWN, own[i], st.own[own[i]]);
+	for (size_t i = 0; i < got.size(); ++i)
+		Broadcast(ch, SKILL_COLOR_TYPE_BUFF, got[i], st.got[got[i]]);
 }
 
 // char.cpp EncodeInsertPacket (MT2009_PLUS_SKILL_COLOR_V1 (insert)): ch's colours to one viewer, after its add packets.
@@ -250,9 +296,21 @@ void SkillColorEncodeInsert(LPCHARACTER ch, LPDESC d)
 	using namespace skillcolor;
 	if (!ch || !d)
 		return;
-	std::unordered_map<DWORD, SState>::const_iterator st = s_state.find((DWORD) ch->GetVID());
+	std::unordered_map<DWORD, SState>::iterator st = s_state.find((DWORD) ch->GetVID());
 	if (st == s_state.end())
 		return;
+	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: a got colour whose buff ran out (its affects loaded) goes, its row too
+	if (ch->IsLoadedAffect())
+		for (std::map<WORD, SColors>::iterator it = st->second.got.begin(); it != st->second.got.end(); )
+		{
+			if (ch->FindAffect(it->first))
+			{
+				++it;
+				continue;
+			}
+			SaveGot(ch, it->first, Zero());
+			st->second.got.erase(it++);
+		}
 	TPacketGCSkillColor p;
 	for (std::map<WORD, SColors>::const_iterator it = st->second.own.begin(); it != st->second.own.end(); ++it)
 	{
@@ -282,7 +340,10 @@ void SkillColorOnBuff(LPCHARACTER caster, LPCHARACTER victim, DWORD dwVnum)
 		st = s_state.insert(std::make_pair((DWORD) victim->GetVID(), SState())).first;
 	}
 	if (Put(st->second.got, (WORD) dwVnum, s))
+	{
 		Broadcast(victim, SKILL_COLOR_TYPE_BUFF, (WORD) dwVnum, s);
+		SaveGot(victim, (WORD) dwVnum, s);	// MT2009_PLUS_SKILL_COLOR_RELOG_V1
+	}
 }
 
 // playerbot_buffi.cpp Cast (MT2009_PLUS_SKILL_COLOR_V1 (buffi)): the Buffi's buff dwShamanSkill (94/96/110/111) on its
@@ -311,7 +372,10 @@ void SkillColorOnBuffiCast(LPCHARACTER owner, LPCHARACTER mob, DWORD dwBuffiSkil
 		st = s_state.insert(std::make_pair((DWORD) owner->GetVID(), SState())).first;
 	}
 	if (Put(st->second.got, (WORD) dwShamanSkill, s))
+	{
 		Broadcast(owner, SKILL_COLOR_TYPE_BUFF, (WORD) dwShamanSkill, s);
+		SaveGot(owner, (WORD) dwShamanSkill, s);	// MT2009_PLUS_SKILL_COLOR_RELOG_V1
+	}
 }
 
 // char.cpp Destroy (MT2009_PLUS_SKILL_COLOR_V1 (destroy)): the VID's state goes with it

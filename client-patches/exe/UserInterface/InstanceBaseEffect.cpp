@@ -1418,6 +1418,7 @@ DWORD CInstanceBase::__AttachEffect(UINT eEftType)
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	// MT2009_PLUS_SKILL_COLOR_V1: a self buff / shaman buff / Aura Miecza in its skill's colour (NULL: its own)
 	const DWORD* c_pdwSkillColor = __Mt2009SkillColorOfEffect(eEftType);
+	__Mt2009NoteAttachedSkillColor(eEftType, c_pdwSkillColor);	// MT2009_PLUS_SKILL_COLOR_RELOG_V1
 #endif
 
 	if (ms_astAffectEffectAttachBone[eEftType].empty())

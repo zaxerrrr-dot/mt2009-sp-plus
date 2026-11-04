@@ -531,6 +531,9 @@ class CInstanceBase
 		void					Mt2009SetSkillColor(BYTE bType, WORD wSkillVnum, const DWORD* c_pdwColor);
 		const DWORD*			Mt2009GetSkillColor(BYTE bType, WORD wSkillVnum) const;
 		const DWORD*			Mt2009GetSkillColorOfFly(DWORD dwFlyIndex) const;
+		// MT2009_PLUS_SKILL_COLOR_RELOG_V1: every running buff effect (and Aura Miecza's glow) attached in another colour
+		// than its skill's colour now is put on again in it - after a relog / into sight the effects came before the colours
+		void					Mt2009RefreshAffectSkillColors();
 #endif
 		void					AttachBox(bool isVisible);
 		void					SetBack(DWORD dwItem);
@@ -1000,6 +1003,12 @@ class CInstanceBase
 		const DWORD* __Mt2009SkillColorOfEffect(UINT eEftType) const;	// MT2009_PLUS_SKILL_COLOR_V1
 		void	__Mt2009RefreshSkillColorMotions();
 		std::map<DWORD, CActorInstance::SMt2009SkillColor> m_kMt2009SkillColor;	// (type << 16) | vnum
+		// MT2009_PLUS_SKILL_COLOR_RELOG_V1: the colour (a hash, 0 = the effect's own) each affect effect / the sword aura
+		// glow was attached in (__AttachEffect), checked twice a second against the skill's colour now (Update)
+		void	__Mt2009NoteAttachedSkillColor(UINT eEftType, const DWORD* c_pdwSkillColor);
+		DWORD	m_adwMt2009AffectColorSig[AFF_BITS_MAX];
+		DWORD	m_dwMt2009SwordAuraColorSig;
+		DWORD	m_dwMt2009NextColorCheck;
 #endif
 
 	protected:

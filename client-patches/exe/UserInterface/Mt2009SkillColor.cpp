@@ -83,9 +83,61 @@ namespace
 		}
 		return false;
 	}
+
+	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: a colour's hash (0: the effect's own colour)
+	DWORD Sig(const DWORD * c)
+	{
+		if (!c || IsDefault(c))
+			return 0;
+		DWORD h = 2166136261u;
+		for (int i = 0; i < SKILL_COLOR_LAYERS; ++i)
+			for (int b = 0; b < 4; ++b)
+				h = (h ^ ((c[i] >> (b * 8)) & 0xff)) * 16777619u;
+		return h ? h : 1;
+	}
+
+	// the affects AffectSkill knows (the ones whose effect wears a skill colour)
+	const UINT s_auMt2009ColorAffects[] =
+	{
+		AFF_SKILL_BERSERK, AFF_SKILL_STRONG_BODY, AFF_SKILL_STRONG_BODY_WITH_FALL, AFF_SKILL_STEALTH, AFF_SKILL_FEATHER_WALK,
+		AFF_SKILL_ENCHANTED_BLADE, AFF_SKILL_TERROR, AFF_SKILL_ENCHANTED_ARMOR, AFF_SKILL_FLAME_SPIRIT, AFF_SKILL_MANASHIELD,
+		AFF_SKILL_BLESSING, AFF_SKILL_REFLECT, AFF_SKILL_DRAGON_HELP, AFF_SKILL_SWIFTNESS, AFF_SKILL_ATTACK_UP,
+	};
 }
 
 // ---------------------------------------------------------------------------------------------------- CInstanceBase
+
+// MT2009_PLUS_SKILL_COLOR_RELOG_V1 (the owner, 4 November 2026: after a relog Aura Miecza, Silne Cialo, the shaman and
+// Buffi buffs showed the default colour until cast again). An effect wears the colour its skill had when __AttachEffect
+// made it - the running buffs of a character that logs in / comes into sight are attached from its affect flags, and
+// whatever path attached one before its colours (GC 59) reached the instance left it in the default colour. Each
+// attach now notes its colour; Mt2009SetSkillColor and Update (twice a second) put on again every effect whose noted
+// colour is not its skill's colour now (the server also keeps the caster's colour of a running buff over a relog).
+void CInstanceBase::__Mt2009NoteAttachedSkillColor(UINT eEftType, const DWORD * c_pdwSkillColor)
+{
+	if (EFFECT_WEAPON + WEAPON_ONEHAND == eEftType || EFFECT_WEAPON + WEAPON_TWOHAND == eEftType)
+		m_dwMt2009SwordAuraColorSig = Sig(c_pdwSkillColor);
+	else if (eEftType >= EFFECT_AFFECT && eEftType < EFFECT_AFFECT_END)
+		m_adwMt2009AffectColorSig[eEftType - EFFECT_AFFECT] = Sig(c_pdwSkillColor);
+}
+
+void CInstanceBase::Mt2009RefreshAffectSkillColors()
+{
+	if (IsInvisibility() || IsAffect(AFF_REVIVE_INVISIBLE))
+		return;	// __AttachEffect makes nothing now (the effect would be lost) / the effects are hidden for a while: later
+	for (size_t i = 0; i < sizeof(s_auMt2009ColorAffects) / sizeof(s_auMt2009ColorAffects[0]); ++i)
+	{
+		const UINT eAffect = s_auMt2009ColorAffects[i];
+		if (eAffect >= AFF_BITS_MAX || !m_adwCRCAffectEffect[eAffect])
+			continue;
+		if (m_adwMt2009AffectColorSig[eAffect] == Sig(__Mt2009SkillColorOfEffect(EFFECT_AFFECT + eAffect)))
+			continue;
+		__DetachEffect(m_adwCRCAffectEffect[eAffect]);
+		m_adwCRCAffectEffect[eAffect] = __AttachEffect(EFFECT_AFFECT + eAffect);
+	}
+	if (m_kWarrior.m_dwGeomgyeongEffect && m_dwMt2009SwordAuraColorSig != Sig(__Mt2009SkillColorOfEffect(EFFECT_WEAPON + WEAPON_ONEHAND)))
+		__Warrior_SetGeomgyeongAffect(true);	// Aura Miecza: the weapon's glow again
+}
 
 void CInstanceBase::Mt2009SetSkillColor(BYTE bType, WORD wSkillVnum, const DWORD * c_pdwColor)
 {
@@ -120,6 +172,7 @@ void CInstanceBase::Mt2009SetSkillColor(BYTE bType, WORD wSkillVnum, const DWORD
 	}
 	if (SKILL_COLOR_TYPE_OWN == bType && 4 == wSkillVnum && m_kWarrior.m_dwGeomgyeongEffect)
 		__Warrior_SetGeomgyeongAffect(true);	// Aura Miecza: the weapon's glow again
+	Mt2009RefreshAffectSkillColors();	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: any other effect still in an older colour
 }
 
 const DWORD * CInstanceBase::Mt2009GetSkillColor(BYTE bType, WORD wSkillVnum) const

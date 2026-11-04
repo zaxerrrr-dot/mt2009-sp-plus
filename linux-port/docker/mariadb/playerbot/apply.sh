@@ -5048,6 +5048,24 @@ else
     fail_step "skill colour: could not create player.skill_color"
 fi
 
+# MT2009_PLUS_SKILL_COLOR_RELOG_V1: the colour a character's running shaman / Buffi buff wears - its CASTER's (the owner,
+# 4 November 2026: after a relog the buffs showed the default colour) - one row a buff, written when it changes, read
+# back at login, deleted when the buff ran out (playerbot_skillcolor.cpp). Idempotent: CREATE TABLE IF NOT EXISTS.
+if db -e "CREATE TABLE IF NOT EXISTS player.skill_color_buff (
+    player_id INT UNSIGNED NOT NULL,
+    skill_vnum SMALLINT UNSIGNED NOT NULL,
+    col1 INT UNSIGNED NOT NULL DEFAULT 0,
+    col2 INT UNSIGNED NOT NULL DEFAULT 0,
+    col3 INT UNSIGNED NOT NULL DEFAULT 0,
+    col4 INT UNSIGNED NOT NULL DEFAULT 0,
+    col5 INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (player_id, skill_vnum)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;"; then
+    :
+else
+    fail_step "skill colour: could not create player.skill_color_buff"
+fi
+
 # MT2009_PLUS_COMMUNITY_V1: the Community window (server-patches/community/README.md, playerbot_community.cpp) -
 # community.sql: player.status_message and player.community_flags (and the same two in player_deleted, same order).
 # Idempotent: ADD COLUMN IF NOT EXISTS. Without them only the window's extras are missing - the friend list's own

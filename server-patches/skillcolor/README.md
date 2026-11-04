@@ -59,6 +59,22 @@ między zmianami, zapis, rozsyłanie) i `playerbot_buffi.cpp` (`Cast`: `SkillCol
 
 Boty: nie wysyłają pakietu, nie mają wiersza, logowanie bota nie robi zapytania – nic im się nie zmienia.
 
+## Kolory po relogu – `MT2009_PLUS_SKILL_COLOR_RELOG_V1`
+
+Właściciel, 4.11.2026 (poprawki 3.0.11, p. 1): po wylogowaniu i zalogowaniu trwające wzmocnienia (Aura Miecza, Silne
+Ciało, szamańskie, Buffi) miały domyślny kolor, dopiero ponowne użycie przywracało wybrany.
+
+- **Serwer** (tylko nakładka `playerbot_skillcolor.cpp`, bez nowych edycji rdzenia): kolor „got” (wzmocnienie od
+  szamana / Buffi w kolorze rzucającego) żył tylko tyle co VID – po relogu, teleporcie czy zmianie CH znikał. Teraz jest
+  w `player.skill_color_buff` (wiersz na wzmocnienie, zapis przy zmianie), czytany przy logowaniu razem z własnymi i
+  wysyłany postaci i wszystkim wokół **przed** afektami (`LoadAffect` czeka na `PHASE_GAME`). Kolor „got” wzmocnienia,
+  które już minęło, wypada (z wierszem) przy następnym pokazaniu postaci komuś (`SkillColorEncodeInsert`).
+- **Exe**: każdy efekt afektu (i poświata Aury Miecza) zapamiętuje kolor, w którym go założono (`__AttachEffect`);
+  `Mt2009SetSkillColor` i `Update` (co 0,5 s) zakładają od nowa każdy efekt, którego kolor nie jest już kolorem jego
+  umiejętności – czyli efekty trwających wzmocnień założone, zanim kolory dotarły do instancji (logowanie, wejście w
+  zasięg, nowa instancja), dostają kolor same, bez ponownego użycia. Nie przy niewidzialności (efekt by przepadł) ani
+  w 5 s ochrony po wejściu (efekty ukryte) – wtedy chwilę później.
+
 ## Baza
 
 `linux-port/docker/mariadb/playerbot/apply.sh` (`MT2009_PLUS_SKILL_COLOR_V1`, po bloku `switchbot`):

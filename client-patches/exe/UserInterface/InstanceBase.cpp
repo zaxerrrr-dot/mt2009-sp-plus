@@ -2025,6 +2025,18 @@ void CInstanceBase::Update()
 	__ComboProcess();
 
 	ProcessDamage();
+
+#ifdef ENABLE_MT2009_SKILL_COLOR
+	// MT2009_PLUS_SKILL_COLOR_RELOG_V1: twice a second - a running buff's effect in an older colour than its skill's now
+	{
+		const DWORD dwNow = ELTimer_GetMSec();
+		if (dwNow >= m_dwMt2009NextColorCheck)
+		{
+			m_dwMt2009NextColorCheck = dwNow + 500;
+			Mt2009RefreshAffectSkillColors();
+		}
+	}
+#endif
 }
 
 #if defined(RENDER_TARGET)
@@ -3681,6 +3693,9 @@ void CInstanceBase::__Initialize()
 #endif
 #ifdef ENABLE_MT2009_SKILL_COLOR
 	m_kMt2009SkillColor.clear();	// MT2009_PLUS_SKILL_COLOR_V1 (a pooled instance starts without them)
+	memset(m_adwMt2009AffectColorSig, 0, sizeof(m_adwMt2009AffectColorSig));	// MT2009_PLUS_SKILL_COLOR_RELOG_V1
+	m_dwMt2009SwordAuraColorSig = 0;
+	m_dwMt2009NextColorCheck = 0;
 #endif
 
 	m_sAlignment = 0;
