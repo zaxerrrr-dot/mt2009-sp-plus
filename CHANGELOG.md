@@ -17,6 +17,47 @@ every version here.
 
 ---
 
+## 2.41.0 — 2026-11-04 — mądrzejsze boty, mniej lagów, Grota Wygnańców V2
+
+Nie wymaga nowego klienta – wystarczy klient **2.0.71**.
+
+### Mniej lagów przy logowaniu i zapisie przedmiotów
+- Sprzątanie starych wpisów botów nie blokuje już bazy. Wcześniej leciało na każdym rdzeniu co 15 minut i potrafiło zatrzymać bazę na 30–40 sekund, a wtedy logowanie i zapis przedmiotów czekały. Teraz robi je jeden rdzeń, w nocy (3:00–6:00), małymi porcjami.
+- Panel zaawansowany co 5 minut robi zdjęcie świata. Przy tym nie blokuje już tabeli przedmiotów graczy.
+- Logi serwera dostały indeksy i czyszczą się małymi porcjami, z przerwami.
+- Zdjęcia świata z panelu nie rosną już bez końca: przez 2 dni zostają wszystkie, potem jedno na godzinę (do 14 dni), a później jedno dziennie. Ustawisz to w panelu w „Ustawieniach serwera (.env)”. Pierwsze sprzątanie dużej bazy trwa w tle kilkadziesiąt minut. Jeśli serwer jest zajęty, czeka na noc.
+- Baza danych dostała 1 GB pamięci podręcznej zamiast 128 MB, więc najczęściej czytane dane gry zostają w pamięci.
+
+### Ekwipunek botów
+- Kamień Smoka o dwa stopnie lepszy boty zakładają od razu, bez czekania.
+- Tarczę 41 poz. traktują jako etap przejściowy przed lepszą.
+- Zwoje do ulepszania kupują po 2 sztuki.
+- Biżuterię od 70 poz. i hełm 41 poz. od 60 poz. ulepszają dalej niż do +4.
+- Na sprzedaż ulepszają tylko przedmioty bliskie swojemu poziomowi.
+
+### Gdzie boty spędzają czas
+- Wysokie boty spacerują po placu M1, zamiast stać w miejscu.
+- Boty na poziomach 90–95 expią w Grocie Wygnańców V2.
+- W lochu z drużyną gracza boty walczą też samodzielnie, a nie tylko idą za graczem.
+
+### Handel botów
+- W torbie trzymają najwyżej 2 najlepsze sztuki z jednej rodziny przedmiotów. Hełmy i tarcze na zapas trzymają najwyżej 3 godziny.
+- Zwykły ekwipunek poniżej 30 poz. i poniżej +6 sprzedają w sklepie NPC. Nie wystawiają go już na straganach.
+- Gdy jakiegoś towaru jest na rynku za dużo, boty go taniej wyceniają.
+- Ceny na straganach botów schodzą powoli z czasem, a po przekroczeniu 40% obniżki jeszcze wolniej. Ten zegar przetrwa restart serwera.
+- Przedmioty z maksymalnymi bonusami trzymają cenę.
+- Za bonusy na przedmiotach +0 do +5 dopłata jest najwyżej 50%.
+- Przedmiotu wartego co najmniej 1 000 000 Yang bot nie sprzeda w sklepie NPC, tylko wystawi go na straganie.
+- Gdy stragan bota jest pełny (limit Yang), najdroższy towar, który długo się nie sprzedawał, wraca do bota i robi miejsce.
+- Na przedmiotach z 3 bonusami boty używają Zwoju Zmiany, gdy nie mają Zwoju Dodania. Do mieszania bonusów na broni 30 poz. kupują Zwoje Zmiany.
+- Na przedmioty, z których bot już wyrósł, nie tracą zwykłych kamieni.
+
+### Grota Wygnańców V2
+- Puste sale Groty V2 mają potwory: zamiast 638 jest 1409 miejsc, w których się odradzają, a Dowódców Yonghan jest 5 zamiast 1.
+- Boty mają w Grocie 3 nowe miejsca polowań.
+
+---
+
 ## 2.40.0 — 2026-10-30 — wyprawy i najazdy botów, dropki surowców, mapy 90, Katakumby
 
 Wymaga nowego klienta **2.0.71** (Auto Łowy, dane przedmiotów). Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
