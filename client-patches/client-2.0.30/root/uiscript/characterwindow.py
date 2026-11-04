@@ -461,6 +461,23 @@ window = {
 									"down_image" : "d:/ymir work/ui/game/windows/skill_tab_button_03.sub",
 								},
 
+								## MT2009_PLUS_SKILL_HACK_V1: the third tab - [main path] [other path] [horse] while the server's
+								## SKILL2 is on (uicharacter.py, skillhack.py); hidden otherwise
+								{
+									"name" : "Skill_Group_Button_3",
+									"type" : "radio_button",
+
+									"x" : 95,
+									"y" : 2,
+
+									"text" : "Group3",
+									"text_color" : 0xFFFFE3AD,
+
+									"default_image" : "d:/ymir work/ui/game/windows/skill_tab_button_01.sub",
+									"over_image" : "d:/ymir work/ui/game/windows/skill_tab_button_02.sub",
+									"down_image" : "d:/ymir work/ui/game/windows/skill_tab_button_03.sub",
+								},
+
 								{
 									"name" : "Active_Skill_Group_Name",
 									"type" : "text",

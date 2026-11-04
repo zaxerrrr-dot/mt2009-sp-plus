@@ -1016,6 +1016,38 @@ quest web_admin begin
 				end
 			end
 
+			-- MT2009_PLUS_SKILL_HACK_V1: the other specialisation's skills (the .env page's
+			-- M2_SKILL_HACK), same shape as SHOPBIG. arg1 = "1" on, "0" off; written as
+			-- m2_skill_hack - every core tells its players online at once (playerbot_skillhack.cpp).
+			-- In its own do-block: its locals end with it.
+			do
+			local srows2 = wa_query("SELECT id, arg1 FROM player.web_admin_queue WHERE status='pending' AND cmd='SKILL2' ORDER BY id ASC LIMIT 3")
+			if type(srows2) == "table" then
+				local si2
+				for si2 = 1, table.getn(srows2) do
+					local sr2 = srows2[si2]
+					if type(sr2) == "table" then
+						local sqid2 = tonumber(sr2.id)
+						local son2 = nil
+						if type(sr2.arg1) == "string" then
+							son2 = tonumber(sr2.arg1)
+						end
+						if sqid2 ~= nil then
+							local sres2 = "done"
+							if son2 == nil or son2 < 0 or son2 > 1 then
+								sres2 = "bad_args"
+							elseif game.set_event_flag == nil then
+								sres2 = "failed"
+							else
+								game.set_event_flag("m2_skill_hack", son2)
+							end
+							wa_query("UPDATE player.web_admin_queue SET status='" .. sres2 .. "' WHERE id=" .. sqid2 .. " AND status='pending' LIMIT 1")
+						end
+					end
+				end
+			end
+			end
+
 			-- The health of monsters, bosses and Metin stones, the same way (the
 			-- operator, 30 September, for Frelik's proposal): m2_mob_hp is a
 			-- percent of the max_hp each is born with, and every core rescales

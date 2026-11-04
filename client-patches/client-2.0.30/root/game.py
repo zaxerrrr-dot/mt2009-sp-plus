@@ -3633,6 +3633,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["AttrMaxEnd"] = self.__AttrMaxEnd # MT2009_PLUS_PD_BONUS_V1
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
+		serverCommandList["SKILL2"] = self.__Skill2 # MT2009_PLUS_SKILL_HACK_V1
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
 		serverCommandList["ekwipunek_refine"] = self.__EkwipunekRefine # MT2009_PLUS_EKWIPUNEK_REFINE_V1
 		serverCommandList["addeq_page"] = self.__AddeqPage # MT2009_PLUS_ADDEQ_V1
@@ -4412,6 +4413,21 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
 	def __Buffi(self, *args):
 		__import__("uibuffi").OnCommand(*args)
+
+	# MT2009_PLUS_SKILL_HACK_V1: "SKILL2 1|0" - the other path's skills on the skill window's second tab (skillhack.py).
+	# The server sends the skill levels again right after an "on", into the slots registered here.
+	def __Skill2(self, on="0", *rest):
+		import skillhack
+		skillhack.SetState(on)
+		try:
+			skillhack.RegisterSlots()
+		except:
+			pass
+		try:
+			if self.interface:
+				self.interface.RefreshCharacter()
+		except:
+			pass
 
 	# MT2009_PLUS_EKWIPUNEK_V1: the server's answer to the extra inventory's hello (uiekwipunek.py).
 	def __Ekwipunek(self, *args):

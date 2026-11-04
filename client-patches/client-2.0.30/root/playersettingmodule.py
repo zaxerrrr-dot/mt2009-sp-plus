@@ -116,6 +116,10 @@ def RegisterSkill(race, group, empire=0):
 	for i in xrange(len(ACTIVE_GUILD_SKILL_INDEX_LIST)):
 		player.SetSkill(210 + i, ACTIVE_GUILD_SKILL_INDEX_LIST[i])
 
+	# MT2009_PLUS_SKILL_HACK_V1: the other path's skills in slots 61-67 while the server's SKILL2 says on (emptied
+	# otherwise) - after the main path, so the exe's vnum -> slot dictionary holds both paths (skillhack.py)
+	__import__("skillhack").RegisterSlots()
+
 
 def RestoreNinthSkillSlot():
 	# MT2009_PLUS_SKILL9_V1 (fix 3.0 #1/#1b): the exe's RecvSkillLevelNew (every skill packet - a book read, a level up)
