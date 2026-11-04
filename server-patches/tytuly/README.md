@@ -45,6 +45,7 @@ występuje dokładnie raz, zatrzymuje całość, zanim cokolwiek zostanie zapisa
 | 6 | Płomienny Pogromca | czerwony smok | 7 dni | GM, quest |
 | 7 | Bezlitosny Sędzia | biało-zielony smok | 7 dni | GM, quest |
 
+Zasady, kiedy dawać te tytuły (np. automatycznie dla 1.–3. miejsca rankingu zabójców), są do decyzji właściciela.
 Opisy warunków w oknie (kolumna „warunek” katalogu) mówią, do czego tytuł jest pomyślany (ranking zabójców, Schronienie
 Meley, Krypta Balathora, Okey, eventy) – samo przyznawanie z tych źródeł nie jest podłączone (decyzja właściciela).
 Wypadły tytuły serwera oficjalnego bez odpowiednika u nas (członkostwo premium, transfery z innych serwerów).
@@ -53,7 +54,7 @@ Wypadły tytuły serwera oficjalnego bez odpowiednika u nas (członkostwo premiu
 
 | Plik | Miejsce | Co |
 |---|---|---|
-| `packet.h` | nagłówki | `HEADER_CG_TITLE = 185`, `HEADER_GC_TITLE = 189` (numery paczki) – wolne u nas i w exe (sprawdzone: wszystkie CG/GC naszego `packet.h`, `npc_location_helper.h`, `input_udp.cpp`, `Packet.h` exe i gałęzi y-lowienie / y-mikstury2 / y-grupy) |
+| `packet.h` | nagłówki | `HEADER_CG_TITLE = 185`, `HEADER_GC_TITLE = 189` (numery paczki) – wolne u nas i w exe (sprawdzone: wszystkie CG/GC naszego `packet.h`, `npc_location_helper.h`, `input_udp.cpp`, `Packet.h` exe i gałęzi y-lowienie / y-mikstury2 / y-grupy) i poza zakresami zarezerwowanymi dla zwierzaków (CG 122–133, GC 200–215) |
 | `packet.h` | struktury | `TPacketCGTitle` (6 B), `TPacketGCTitle` (6 B, dynamiczny), wiersze `TPacketGCTitleRow` (309 B), `TPacketGCTitleOwned` (8 B), `TPacketGCTitleNotify` (5 B), `TPacketGCTitleVisual` (8 B), `static_assert` (exe to samo) |
 | `packet_info.cpp` | rozmiary | CG 185, stały, z bajtem sekwencji |
 | `input_main.cpp` | pakiety | `TitleSystemPacket` (powitanie/odświeżenie, załóż, zdejmij) |
@@ -90,6 +91,9 @@ prywatnego = 123008). Sprawdzone na jednorazowym MariaDB 11.8 (dwa przebiegi).
 ## Klient
 
 - Exe (`client-patches/exe`, `ENABLE_MT2009_TITLES`, `Mt2009Titles.cpp`) – README exe.
-- Root: `uicharactertitle.py`, `uiscript/charactertitlewindow.py`, portret w `uiscript/characterwindow.py` i
-  `uicharacter.py`.
+- Root: `uicharactertitle.py` (okno: lista tytułów z katalogu serwera – kłódka / klepsydra / nieskończoność, założony
+  tytuł, „Załóż” / „Zdejmij”, podgląd tabliczki z banerem albo efektu, opis zdobycia i czas; komunikaty na czacie także
+  przy zamkniętym oknie), `uiscript/charactertitlewindow.py` (układ paczki), portret w oknie postaci otwiera okno
+  (`uicharacter.py`, przycisk GF nad ramką twarzy), „Ukryj tytuły innych graczy” w Opcjach dodatkowych
+  (`uiopcjedodatkowe.py`). Bez exe z `titleSystem` nic z tego się nie pokazuje.
 - Dane: paczka `tytuly` + certyfikaty w `gamedata`/`dbdata` (`client-2.0.30/tools/tytuly`).
