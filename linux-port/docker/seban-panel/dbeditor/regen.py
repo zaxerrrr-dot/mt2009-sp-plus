@@ -742,7 +742,16 @@ def install(bp, ctx):
     _group_cache = {}
 
     def groups(kind):
-        """group.txt / group_group.txt as the game published them (cached by mtime)."""
+        """group.txt / group_group.txt as the game published them (cached by mtime) -
+        with the "Grupy potworów" page's changes when that part is there
+        (MT2009_PLUS_DB_EDITOR_GROUPS_V1: m2-groups merges them before m2-regen checks)."""
+        try:
+            from dbeditor import groups as group_part
+            merged = group_part.regen_groups(df.spool_dir(), kind)
+        except ImportError:
+            merged = None
+        if merged is not None:
+            return merged
         path = base_dir(df.spool_dir()) / ("group.txt" if kind == "group" else "group_group.txt")
         try:
             stamp = (str(path), path.stat().st_mtime_ns)
@@ -1013,7 +1022,8 @@ def install(bp, ctx):
             if row["type"] != "e":
                 key = (row["type"] in ("g", "r"), row["type"], row["vnum"])
                 item = summary.setdefault(key, {"what": words["what"], "rows": 0, "count": 0, "times": set(),
-                                                "bad": words["bad"], "group": key[0]})
+                                                "bad": words["bad"], "group": key[0],
+                                                "kind": key[1], "vnum": key[2]})
                 item["rows"] += 1
                 item["count"] += row["count"]
                 item["times"].add(row["time"])

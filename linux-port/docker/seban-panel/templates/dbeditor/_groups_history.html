@@ -1,0 +1,19 @@
+{#- MT2009_PLUS_DB_EDITOR_GROUPS_V1: the history of the "Grupy potworów" pages (groups.history.jsonl) with "Cofnij". Needs history, csrf. -#}
+<table class="dbe-table compact dbg-history">
+  <thead><tr><th>Kiedy</th><th>Grupa</th><th>Co</th><th></th></tr></thead>
+  <tbody>
+  {% for h in history %}
+    <tr>
+      <td class="dbg-nowrap">{{ h.when.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td class="dbg-nowrap">{% if h.vnum is not none %}<a href="{{ url_for('dbeditor.groups_edit', kind=h.kind, vnum=h.vnum) }}">{{ kind_names.get(h.kind, h.kind) }} {{ h.vnum }}</a>{% else %}{{ 'group.txt' if h.kind == 'g' else 'group_group.txt' }}{% endif %}</td>
+      <td>{{ h.what }}{% if h.note %} <small class="muted">– {{ h.note }}</small>{% endif %}
+        {% if h.before or h.after %}<details class="dbg-diff"><summary class="muted">przed / po</summary>
+          <div class="dbg-diff-grid"><pre>{{ h.before or '(wersja z obrazu gry)' }}</pre><pre>{{ h.after or '(wersja z obrazu gry / brak)' }}</pre></div></details>{% endif %}</td>
+      <td>{% if h.vnum is not none %}<form method="post" action="{{ url_for('dbeditor.groups_undo') }}" class="dbe-inline" onsubmit="return confirm('Cofnąć tę zmianę?')">
+          <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="entry" value="{{ h.id }}">
+          <button class="quiet-btn dbe-small">↩️ Cofnij</button></form>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p class="muted dbg-small">„Cofnij” przywraca grupę sprzed tej zmiany – jeśli później nie zmieniano jej jeszcze raz (wtedy najpierw cofnij późniejszą zmianę).</p>

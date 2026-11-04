@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_GROUPS_V1: one group / set of groups - members, where it stands, the edit form (dbeditor/groups.py). #}
+{% block title %}{{ kind_names[kind] }} {{ vnum }} · Grupy potworów · {{ panel_brand }}{% endblock %}
+{% block content %}
+{% include 'dbeditor/_groups_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · GRUPY POTWORÓW · {{ file_name }}</p>
+<h1>👥 {% if new %}Nowa {{ 'grupa' if kind == 'g' else 'zestaw grup' }}{% else %}{{ kind_names[kind] }} {{ vnum }}{% endif %}
+  {% if not new %}<small class="muted dbg-name">{{ name }}</small>{% endif %}</h1>
+<p>
+  {% if custom %}<span class="dbr-tag custom">{{ 'dodana w panelu' if not in_base else 'zmieniona w panelu' }}</span>{% elif not new %}<span class="dbr-tag">z obrazu gry</span>{% endif %}
+  {% if status.kind in ('pending', 'unknown') %}<span class="dbr-tag pending">{{ file_name }}: zmiany czekają na restart</span>{% elif status.kind == 'error' %}<span class="dbr-tag bad">{{ file_name }}: gra odrzuciła plik panelu</span>{% endif %}
+</p>
+{% if status.kind == 'error' %}<section class="panel dbr-status error"><p>{{ status.text }}</p></section>{% endif %}
+{% if drift %}<section class="panel dbr-status pending"><p><b>Aktualizacja serwera zmieniła tę {{ 'grupę' if kind == 'g' else 'grupę grup' }} w plikach gry</b>
+  od czasu zmiany w panelu. Gra nadal używa wersji z panelu – porównaj obie wersje niżej („Tak wygląda w pliku”) i zostaw swoją
+  albo kliknij „Przywróć wersję z obrazu gry”.</p></section>{% endif %}
+
+{% if not new %}
+<div class="dbg-layout">
+<section class="panel">
+  {% if kind == 'g' %}
+  <h2>Skład <small class="muted">{{ members|sum(attribute='count') }} {{ 'potwór' if members|sum(attribute='count') == 1 else 'potworów' }} pojawia się razem</small></h2>
+  <table class="dbe-table compact">
+    <thead><tr><th></th><th>Potwór</th><th>Vnum</th><th>Poz.</th><th>Ranga</th><th>Ile</th></tr></thead>
+    <tbody>{% for m in members %}
+      <tr class="{{ 'dbg-bad' if not m.known }}"><td>{{ '👑' if m.role == 'Lider' else '' }} {{ m.role }}</td>
+        <td>{% if 'dbeditor.mob_edit' in dbd_endpoints and m.known %}<a href="{{ url_for('dbeditor.mob_edit', vnum=m.vnum) }}">{{ m.name }}</a>{% else %}{{ m.name }}{% endif %}</td>
+        <td>{{ m.vnum }}</td><td>{{ m.level if m.level is not none else '—' }}</td><td>{{ m.rank }}</td><td>{{ m.count }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  {% else %}
+  <h2>Grupy w zestawie <small class="muted">przy każdym odrodzeniu gra losuje jedną</small></h2>
+  <table class="dbe-table compact">
+    <thead><tr><th>Grupa</th><th>Skład</th><th>Poz.</th><th>Szansa</th><th title="Waga zapisana w pliku">Waga w pliku</th></tr></thead>
+    <tbody>{% for m in members %}
+      <tr class="{{ 'dbg-bad' if not m.known }}"><td><a href="{{ url_for('dbeditor.groups_edit', kind='g', vnum=m.vnum) }}">{{ m.vnum }}</a></td>
+        <td>{% if m.known %}{{ m.text }} <small class="muted">({{ m.size }} szt.)</small>{% else %}<span class="dbr-bad">BRAK TAKIEJ GRUPY w group.txt – gra jej nie wystawi</span>{% endif %}</td>
+        <td>{% if m.levels %}{{ m.levels[0] }}{% if m.levels[1] != m.levels[0] %}–{{ m.levels[1] }}{% endif %}{% else %}—{% endif %}</td>
+        <td>{{ '%.1f'|format(m.chance)|replace('.', ',') }}%</td><td>{{ m.weight }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  <p class="muted dbg-small">Silnik gry czyta wagę z pliku, ale z niej nie korzysta – każda grupa zestawu ma taką samą szansę.
+    Ta sama grupa wpisana dwa razy ma podwójną szansę.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Gdzie stoi</h2>
+  {% if uses %}
+  <table class="dbe-table compact">
+    <thead><tr><th>Mapa</th><th>Plik</th><th>Punkty spawnu</th><th>Naraz</th></tr></thead>
+    <tbody>{% for u in uses %}
+      <tr><td>{% if u.link %}<a href="{{ u.link }}">{{ u.label }}</a>{% else %}{{ u.label }}{% endif %}</td>
+        <td>{{ u.file_name }}</td><td>{{ u.points }}</td><td>{{ u.count }} {{ 'grupa' if u.count == 1 else 'grup' }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  {% else %}<p class="muted">Nie stoi bezpośrednio w żadnym pliku spawnu map ani bossów czasowych.</p>{% endif %}
+  {% if kind == 'g' %}
+    {% if via %}
+    <h3>W zestawach grup</h3>
+    <ul class="dbg-via">{% for v in via %}
+      <li><a href="{{ url_for('dbeditor.groups_edit', kind='r', vnum=v.vnum) }}">Zestaw {{ v.vnum }}</a> (1 z {{ v.size }})
+        {% if v.uses %}– {% for u in v.uses %}{% if u.link %}<a href="{{ u.link }}">{{ u.label }}</a>{% else %}{{ u.label }}{% endif %} <small class="muted">({{ u.points }} pkt.)</small>{{ ', ' if not loop.last }}{% endfor %}{% else %}<span class="muted">– zestaw nieużywany w spawnach map</span>{% endif %}</li>
+    {% endfor %}</ul>
+    {% endif %}
+  {% endif %}
+  <p class="muted dbg-small">Grupy wywoływane przez zadania i lochy (ich własne pliki) nie są tu liczone.</p>
+</section>
+</div>
+{% endif %}
+
+<section class="panel" id="edytuj">
+  <h2>{% if new %}Utwórz{% else %}Zmień skład{% endif %}</h2>
+  <form method="post" action="{{ url_for('dbeditor.groups_save') }}" class="dbg-form">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}">
+    <input type="hidden" name="rev" value="{{ rev }}">
+    <input type="hidden" name="kind" value="{{ kind }}">
+    <input type="hidden" name="action" value="{{ 'new' if new else 'save' }}">
+    <div class="dbg-fields">
+      {% if new %}<label>Numer (Vnum)<input type="number" name="vnum" value="{{ vnum }}" min="1" required class="dbg-narrow"></label>
+      {% else %}<input type="hidden" name="vnum" value="{{ vnum }}">{% endif %}
+      <label>Nazwa w pliku <small class="muted">(jedno słowo, tylko dla porządku)</small><input name="name" value="{{ name }}" maxlength="64" placeholder="np. MT2009_wilki_10"></label>
+      {% if kind == 'g' %}
+      <label>👑 Lider – numer potwora<input name="leader" value="{{ leader }}" required inputmode="numeric" list="dbg-mobs" data-dbg-pick="m" class="dbg-vnum">
+        <small class="muted" data-dbg-label>{{ mob_name(leader|int) if leader and leader|string|int else '' }}</small></label>
+      {% endif %}
+    </div>
+    <table class="dbe-table compact dbg-rows" data-dbg-rows>
+      <thead><tr><th>{{ 'Członek – numer potwora' if kind == 'g' else 'Numer grupy (group.txt)' }}</th><th>{{ 'Ile sztuk' if kind == 'g' else 'Waga w pliku' }}</th><th></th></tr></thead>
+      <tbody>{% for v, c in rows %}
+        <tr><td><input name="m_vnum" value="{{ v }}" inputmode="numeric" list="{{ 'dbg-mobs' if kind == 'g' else 'dbg-groups' }}" data-dbg-pick="{{ 'm' if kind == 'g' else 'g' }}" class="dbg-vnum">
+            <small class="muted" data-dbg-label>{% if v and kind == 'g' and v|string|int %}{{ mob_name(v|int) }}{% endif %}</small></td>
+          <td><input name="m_count" value="{{ c }}" type="number" min="1" max="{{ max_members if kind == 'g' else max_weight }}" placeholder="1" class="dbg-narrow"></td>
+          <td><button type="button" class="quiet-btn dbe-small" data-dbg-clear title="Wyczyść wiersz">✖</button></td></tr>
+      {% endfor %}</tbody>
+    </table>
+    <datalist id="dbg-mobs"></datalist><datalist id="dbg-groups"></datalist>
+    <p><button type="button" class="quiet-btn" data-dbg-add>➕ Dodaj wiersz</button>
+      <small class="muted">Wpisz numer albo fragment nazwy i wybierz z listy. Pusty wiersz jest pomijany.
+      {% if kind == 'g' %}Najwyżej {{ max_members }} członków (oprócz lidera).{% else %}Najwyżej {{ max_members }} grup.{% endif %}</small></p>
+    <label class="dbg-note">Notatka do historii (opcjonalnie)<input name="note" maxlength="120" placeholder="np. mniej wilków na M1"></label>
+    <div class="dbe-actions">
+      <button type="submit">💾 {% if new %}Utwórz{% else %}Zapisz skład{% endif %}</button>
+      <span class="muted">Po zapisaniu zmiana czeka na restart gry („Zastosuj”) – gra czyta grupy tylko przy starcie.</span>
+    </div>
+  </form>
+  {% if not new %}
+  <div class="dbg-more">
+    {% if custom and in_base %}
+    <form method="post" action="{{ url_for('dbeditor.groups_save') }}" class="dbe-inline" onsubmit="return confirm('Przywrócić wersję z obrazu gry?')">
+      <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="rev" value="{{ rev }}">
+      <input type="hidden" name="kind" value="{{ kind }}"><input type="hidden" name="vnum" value="{{ vnum }}"><input type="hidden" name="action" value="revert">
+      <button class="quiet-btn">↩️ Przywróć wersję z obrazu gry</button></form>
+    {% endif %}
+    {% if custom and not in_base %}
+    <form method="post" action="{{ url_for('dbeditor.groups_save') }}" class="dbe-inline" onsubmit="return confirm('Usunąć tę grupę?')">
+      <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="rev" value="{{ rev }}">
+      <input type="hidden" name="kind" value="{{ kind }}"><input type="hidden" name="vnum" value="{{ vnum }}"><input type="hidden" name="action" value="delete">
+      <button class="quiet-btn">🗑️ Usuń grupę (dodaną w panelu)</button></form>
+    {% endif %}
+    <a class="button quiet-btn" href="{{ url_for('dbeditor.groups_new', kind=kind, kopia=vnum) }}">📄 Utwórz kopię jako nową grupę</a>
+  </div>
+  <details class="dbg-diff"><summary class="muted">Tak wygląda w pliku{% if custom and in_base %} (i wersja z obrazu gry){% endif %}</summary>
+    <div class="dbg-diff-grid"><pre>{{ rendered }}</pre>{% if custom and in_base %}<pre>{{ base_rendered }}</pre>{% endif %}</div></details>
+  {% endif %}
+</section>
+
+{% if history %}
+<section class="panel">
+  <h2>🕘 Historia tej {{ 'grupy' if kind == 'g' else 'grupy grup' }}</h2>
+  {% include 'dbeditor/_groups_history.html' %}
+</section>
+{% endif %}
+{% endblock %}

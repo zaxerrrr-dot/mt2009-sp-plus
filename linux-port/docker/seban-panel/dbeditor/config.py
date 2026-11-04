@@ -113,6 +113,7 @@ FILE_PARTS = (
     ("fishing", "Łowienie ryb"),
     ("dragonsoul", "Alchemia (Smocze Kamienie)"),  # MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1
     ("cube", "Wytwarzanie (Seon-Pyeong, cube)"),  # MT2009_PLUS_DB_EDITOR_CUBE_V1
+    ("groups", "Grupy potworów (group.txt, group_group.txt)"),  # MT2009_PLUS_DB_EDITOR_GROUPS_V1
     ("spawns", "Respawn bossów i metinów"),
     ("regen", "Spawny potworów na mapach"),
 )
@@ -296,7 +297,8 @@ class FilePart:
 
 class DropFiles(FilePart):
     KEYS = {"drops": ("mob", "common", "etc"), "chests": ("chest",), "fishing": ("fishing",),
-            "dragonsoul": ("dragonsoul",), "cube": ("cube",)}
+            "dragonsoul": ("dragonsoul",), "cube": ("cube",),
+            "groups": ("mobgroup", "mobgroupgroup")}  # MT2009_PLUS_DB_EDITOR_GROUPS_V1
 
     def available(self):
         if self.part == "fishing":
@@ -315,6 +317,12 @@ class DropFiles(FilePart):
             try:
                 from dbeditor import cube
                 cube.register_file()
+            except ImportError:
+                return False
+        if self.part == "groups":  # MT2009_PLUS_DB_EDITOR_GROUPS_V1
+            try:
+                from dbeditor import groups
+                groups.register_file()
             except ImportError:
                 return False
         return True
@@ -348,6 +356,12 @@ class DropFiles(FilePart):
             from dbeditor import cube
             cube.save(spool, data, reason or "import konfiguracji")
             return
+        if key in ("mobgroup", "mobgroupgroup"):  # MT2009_PLUS_DB_EDITOR_GROUPS_V1: in the page's history too
+            from dbeditor import groups
+            if data is not None and not _has_group(data):
+                data = None
+            groups.save_whole(spool, "g" if key == "mobgroup" else "r", data, reason or "import konfiguracji")
+            return
         df.write_custom(spool, key, data, reason)
 
     def title(self, key):
@@ -356,7 +370,7 @@ class DropFiles(FilePart):
     def effective(self, key, data):
         if data is None:
             return False
-        if key in ("mob", "chest"):
+        if key in ("mob", "chest", "mobgroup", "mobgroupgroup"):
             return _has_group(data)
         if key == "fishing":
             from dbeditor import fishing
@@ -412,6 +426,25 @@ class DropFiles(FilePart):
             errors += cube.validate(doc)[0][:10]
             items.update(v for r in doc["recipes"] for v, _c in r["items"] + r["rewards"])
             mobs.update(v for r in doc["recipes"] for v in r["npcs"])
+        elif key in ("mobgroup", "mobgroupgroup"):  # MT2009_PLUS_DB_EDITOR_GROUPS_V1
+            from dbeditor import groups
+            kind = "g" if key == "mobgroup" else "r"
+            parsed = groups.parse(text, kind)
+            errors += parsed["problems"][:10]
+            if not parsed["blocks"] and _has_group(data):
+                errors.append("plik grup bez żadnej poprawnej grupy")
+            for block in parsed["blocks"]:
+                if block["bad"]:
+                    errors.append(f"grupa {block['vnum']}: " + "; ".join(block["bad"][:3]))
+                if len(block["members"]) > groups.MAX_MEMBERS:
+                    errors.append(f"grupa {block['vnum']}: więcej niż {groups.MAX_MEMBERS} członków")
+                if kind == "g":
+                    mobs.update([block["leader"][1]] + [m for _w, m in block["members"]])
+            if kind == "r":
+                known = set(groups.state(spool)["g"]["effective"])
+                missing = sorted({gv for b in parsed["blocks"] for gv, _w in b["members"]} - known)
+                if known and missing:
+                    warnings.append("nieznane na tym serwerze grupy (group.txt): " + ", ".join(map(str, missing[:12])))
         unknown_items = sorted(items - lookup("item", sorted(items))) if items else []
         unknown_mobs = sorted(mobs - lookup("mob", sorted(mobs))) if mobs else []
         if unknown_items:
@@ -549,6 +582,7 @@ class RegenFiles(FilePart):
 
 FILE_ADAPTERS = {"drops": DropFiles("drops"), "chests": DropFiles("chests"), "fishing": DropFiles("fishing"),
                  "dragonsoul": DropFiles("dragonsoul"), "cube": DropFiles("cube"),
+                 "groups": DropFiles("groups"),  # MT2009_PLUS_DB_EDITOR_GROUPS_V1
                  "spawns": SpawnFiles("spawns"), "regen": RegenFiles("regen")}
 
 

@@ -1,0 +1,30 @@
+/* MT2009_PLUS_DB_EDITOR_GROUPS_V1: "Grupy potworów" (dbeditor/groups.py, templates/dbeditor/groups*.html). */
+.dbg-counts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+.dbg-narrow{width:90px}
+.dbg-vnum{width:130px}
+.dbg-small{font-size:12px}
+.dbg-nowrap{white-space:nowrap}
+.dbg-name{font-size:12px;word-break:break-all}
+.dbg-scroll{overflow-x:auto}
+.dbg-table td{vertical-align:top}
+.dbg-where span{display:inline-block;margin:0 6px 3px 0;padding:1px 7px;border-radius:8px;font-size:12px;background:color-mix(in srgb,var(--blue2,#3a5a9f) 14%,transparent)}
+.dbg-where small{display:block}
+.dbg-bad td{background:#ff575712}
+.dbg-pager{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.dbg-pager a,.dbg-pager span{padding:4px 10px;border-radius:8px;background:color-mix(in srgb,var(--blue2,#3a5a9f) 12%,transparent);font-size:13px}
+.dbg-pager span{background:var(--gold,#d6a74a);color:#1b1309}
+.dbg-pager em{color:var(--muted,#8a96a8)}
+.dbg-filter-note{margin:10px 0 0}
+.dbg-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.dbg-layout > *{min-width:0}
+.dbg-fields{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-bottom:10px}
+.dbg-fields label,.dbg-note{display:grid;gap:4px;color:var(--muted);font-size:13px}
+.dbg-note{max-width:520px;margin:8px 0}
+.dbg-rows td{vertical-align:middle}
+.dbg-rows small{margin-left:6px}
+.dbg-more{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.dbg-via{margin:.3em 0;padding-left:1.2em}
+.dbg-diff summary{cursor:pointer;font-size:12px}
+.dbg-diff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.dbg-diff pre{font-size:12px;max-height:260px;overflow:auto;margin:6px 0;padding:8px;border-radius:8px;background:color-mix(in srgb,var(--muted,#8a96a8) 12%,transparent)}
+@media (max-width:800px){.dbg-layout{grid-template-columns:1fr}.dbe-search input[type=search]{min-width:0;width:100%}}

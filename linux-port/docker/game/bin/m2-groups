@@ -1,0 +1,268 @@
+#!/bin/sh
+# =============================================================================
+#  m2-groups -- the monster groups (group.txt) and the groups of groups
+#  (group_group.txt) as the Seban panel's "Grupy potworów" page saved them
+#  (MT2009_PLUS_DB_EDITOR_GROUPS_V1, dbeditor/groups.py).
+#
+#  Both files live in the image and every core reads them once, while it
+#  boots (CMobManager::Initialize -> LoadGroup / LoadGroupGroup); a server
+#  update ships a new image and with it new files, so an edit made in the
+#  image would be lost on the next update. The panel therefore writes only
+#  the groups the operator changed or added into the spool volume both
+#  containers share:
+#      $SPOOL/groups/group.custom.txt
+#      $SPOOL/groups/group_group.custom.txt
+#  and before the cores boot (m2-supervise, boot_cores - before m2-regen and
+#  m2-spawns, which check their spawn lines against the live group files)
+#  `apply' rebuilds each live file: the image's file with those groups cut
+#  out, the operator's groups appended (the m2-chests way). A group whose
+#  vnum the image does not have is simply added; a file without a panel
+#  file is the image's again. The image's files go back to the panel as
+#  $SPOOL/groups/group.base.txt / group_group.base.txt, every map's npc.txt
+#  as $SPOOL/groups/base/maps/<map>/npc.txt (the page counts the spawn
+#  points of a group in it too), and how the last apply went as
+#  $SPOOL/groups/group.status / group_group.status (state, time, groups,
+#  sha of the panel's file used, message).
+#
+#  What is checked first (a file that fails is not used at all: that file
+#  stays the image's and the panel is told why) - what would stop a core
+#  (CTextFileLoader exit(1)s on a "Group" line that is not exactly two
+#  words) or make LoadGroup read something else than the panel meant:
+#    * the layout: Group <one word> / { / Vnum <n> / ... / }, every Vnum
+#      once;
+#    * group.txt: a "Leader <name> <vnum>" line, members "1 <name> <vnum>",
+#      "2 ..." numbered from 1 without a gap, at most 255;
+#    * group_group.txt: members "1 <group> [weight]", the same numbering;
+#    * every monster in mob_proto (when the database answers), every group
+#      of a group of groups in the live group.txt.
+#
+#  Subcommands
+#      prepare   as root, at container start: keep the image's files, make
+#                the live ones writable by the service account, the spool
+#      apply     rebuild the live files (run by m2-supervise before a boot)
+# =============================================================================
+set -u
+LC_ALL=C
+export LC_ALL
+
+SHARE_DIR="${M2_SHARE_DIR:-/opt/metin2/share}"
+VAR_DIR="${M2_VAR_DIR:-/opt/metin2/var}"
+LOCALE_DIR="$SHARE_DIR/locale/${M2_LOCALE_NAME:-poland}"
+MAP_DIR="$LOCALE_DIR/map"
+SPOOL="${M2_RATES_SPOOL:-/opt/m2spool}/groups"
+WORK="$VAR_DIR/groups"
+
+say() { printf '%s [groups] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
+
+write_status() { # write_status KIND STATE GROUPS SHA MESSAGE
+    _file="$SPOOL/$1.status"; shift
+    _tmp="$_file.new.$$"
+    { printf 'state=%s\n' "$1"
+      printf 'time=%s\n' "$(date +%s 2>/dev/null)"
+      printf 'groups=%s\n' "$2"
+      printf 'sha=%s\n' "$3"
+      printf 'message=%s\n' "$4"
+    } > "$_tmp" 2>/dev/null || { rm -f "$_tmp"; return 1; }
+    chmod 0664 "$_tmp" 2>/dev/null
+    mv -f "$_tmp" "$_file" 2>/dev/null || rm -f "$_tmp"
+    return 0
+}
+
+spool_folder() { # spool_folder DIR -- a folder both containers can use
+    mkdir -p "$1" 2>/dev/null || return 1
+    chgrp m2spool "$1" 2>/dev/null
+    chmod 2770 "$1" 2>/dev/null
+    return 0
+}
+
+publish() { # publish SOURCE TARGET -- a read-only copy of an image file for the panel
+    [ -f "$1" ] || return 0
+    cmp -s "$1" "$2" && return 0
+    spool_folder "$(dirname "$2")" || return 0
+    cp "$1" "$2.new.$$" 2>/dev/null && chmod 0664 "$2.new.$$" 2>/dev/null \
+        && mv -f "$2.new.$$" "$2" 2>/dev/null || rm -f "$2.new.$$"
+}
+
+# The live file is rewritten in place: the locale folder belongs to root, the
+# file itself to the service account (prepare).
+put_live() { # put_live SOURCE TARGET
+    cmp -s "$1" "$2" && return 0
+    cat "$1" > "$2"
+}
+
+# mobs_missing LIST -- the monsters of the comma-separated LIST mob_proto does
+# not have; returns 2 when the database did not answer.
+mobs_missing() {
+    [ -n "$1" ] || return 0
+    command -v mariadb >/dev/null 2>&1 || return 2
+    MYSQL_PWD="${M2_DB_PASSWORD:-}" mariadb -h "${M2_DB_HOST:-mariadb}" -P "${M2_DB_PORT:-3306}" \
+        -u "${M2_DB_USER:-metin2}" -N -B --connect-timeout=10 \
+        -e "SELECT vnum FROM player.mob_proto${M2_TABLE_POSTFIX:-} WHERE vnum IN ($1)" \
+        > "$WORK/mobs.found" 2>/dev/null || return 2
+    printf '%s\n' "$1" | tr ',' '\n' | sort -u > "$WORK/mobs.wanted"
+    sort -u "$WORK/mobs.found" | comm -23 "$WORK/mobs.wanted" - | tr '\n' ' '
+    return 0
+}
+
+# check KIND FILE -- the panel's file as LoadGroup / LoadGroupGroup read it.
+# Prints "V <vnum>" per group, "M <mob>" (group) or "G <group>" (group_group)
+# per member, or "E <why>".
+check() {
+    awk -v kind="$1" '
+    function err(m) { print "E line " NR ": " m; bad = 1; exit }
+    { sub(/\r$/, ""); sub(/[[:blank:]]+$/, "") }
+    # CMemoryTextFileLoader::SplitLine: a line whose first word starts with "#" is no line
+    /^[[:blank:]]*$/ || /^[[:blank:]]*#/ { next }
+    {
+        n = split($0, f, /[[:blank:]]+/)
+        if (f[1] == "") { for (i = 2; i <= n; i++) f[i - 1] = f[i]; n-- }
+        key = tolower(f[1])
+        if (state == 0) {
+            if (key != "group") err("expected Group <name>")
+            if (n != 2) err("a Group line has exactly two words (the core stops on others)")
+            state = 1; vnum = ""; leader = 0; next_idx = 1; next
+        }
+        if (state == 1) { if (f[1] != "{") err("expected {"); state = 2; next }
+        if (f[1] == "}") {
+            if (vnum == "") err("group without Vnum")
+            if (kind == "group" && !leader) err("group " vnum " without Leader")
+            if (next_idx == 1 && kind == "group_group") err("group of groups " vnum " without members")
+            if (vnum in seen) err("Vnum " vnum " twice")
+            seen[vnum] = 1; print "V " vnum; state = 0; next
+        }
+        if (n < 2) err("\"" f[1] "\" without a value")
+        if (key == "vnum") { if (f[2] !~ /^[0-9]+$/ || f[2] + 0 < 1) err("bad Vnum"); vnum = f[2] + 0; next }
+        if (key == "leader") {
+            if (kind != "group") err("unexpected Leader")
+            if (n < 3 || f[3] !~ /^[0-9]+$/ || f[3] + 0 < 1) err("Leader needs <name> <monster vnum>")
+            leader = 1; print "M " f[3] + 0; next
+        }
+        if (f[1] !~ /^[0-9]+$/) err("unexpected \"" f[1] "\"")
+        if (f[1] + 0 != next_idx) err("member " f[1] " where " next_idx " belongs")
+        if (next_idx > 255) err("more than 255 members")
+        next_idx++
+        if (kind == "group") {
+            if (n < 3 || f[3] !~ /^[0-9]+$/ || f[3] + 0 < 1) err("a member needs <name> <monster vnum>")
+            print "M " f[3] + 0
+        } else {
+            if (f[2] !~ /^[0-9]+$/ || f[2] + 0 < 1) err("a member needs <group vnum>")
+            if (n >= 3 && f[3] !~ /^[0-9]+$/) err("the weight must be a whole number")
+            print "G " f[2] + 0
+        }
+    }
+    END { if (!bad && state != 0) print "E the last group is not closed" }
+    ' "$2"
+}
+
+# apply_one KIND -- rebuild the live KIND.txt from the image's and the panel's.
+apply_one() {
+    _k=$1
+    _live="$LOCALE_DIR/$_k.txt"; _img="$LOCALE_DIR/$_k.image.txt"; _cus="$SPOOL/$_k.custom.txt"
+    [ -f "$_img" ] || { say "no $_img (m2-groups prepare did not run) -- $_k.txt left as the image has it"; return 0; }
+    publish "$_img" "$SPOOL/$_k.base.txt"
+    if [ ! -s "$_cus" ]; then
+        put_live "$_img" "$_live" || { say "could not write $_live"; return 1; }
+        write_status "$_k" base 0 "" "no groups changed in the panel -- the image's $_k.txt is live"
+        return 0
+    fi
+    _sha=$(sha256sum "$_cus" | cut -d' ' -f1)
+    _norm="$WORK/$_k.custom.norm"
+    sed '1s/^\xEF\xBB\xBF//; s/\r$//' "$_cus" > "$_norm" || return 1
+    check "$_k" "$_norm" > "$WORK/$_k.check" 2>&1
+    _why=$(sed -n 's/^E //p' "$WORK/$_k.check" | head -1)
+    if [ -z "$_why" ] && ! grep -q '^V ' "$WORK/$_k.check"; then
+        _why="the check did not run ($(head -c 200 "$WORK/$_k.check" | tr '\n' ' '))"
+    fi
+    if [ -z "$_why" ] && [ "$_k" = "group" ]; then
+        _list=$(sed -n 's/^M //p' "$WORK/$_k.check" | sort -un | tr '\n' ',' | sed 's/,$//')
+        _missing=$(mobs_missing "$_list"); _rc=$?
+        if [ "$_rc" = "2" ]; then
+            say "could not check the monsters against the database -- trusting the panel's check"
+        elif [ -n "$(printf '%s' "$_missing" | tr -d ' ')" ]; then
+            _why="no such monster (mob_proto): $_missing"
+        fi
+    fi
+    if [ -z "$_why" ] && [ "$_k" = "group_group" ]; then
+        # the groups the live group.txt has (built just before this)
+        tr -d '\r' < "$LOCALE_DIR/group.txt" 2>/dev/null \
+            | awk 'tolower($1) == "vnum" && $2 ~ /^[0-9]+$/ { print $2 + 0 }' | sort -u > "$WORK/groups.found"
+        _missing=$(sed -n 's/^G //p' "$WORK/$_k.check" | sort -u | comm -23 - "$WORK/groups.found" | tr '\n' ' ')
+        [ -n "$(printf '%s' "$_missing" | tr -d ' ')" ] && _why="no such group (group.txt): $_missing"
+    fi
+    if [ -n "$_why" ]; then
+        say "the panel's $_k.txt was NOT used: $_why"
+        put_live "$_img" "$_live"
+        write_status "$_k" rejected 0 "$_sha" "$_why"
+        return 0
+    fi
+    _groups=$(sed -n 's/^V //p' "$WORK/$_k.check" | tr '\n' ' ')
+    _count=$(printf '%s' "$_groups" | wc -w | tr -d ' ')
+    # The image's file without the replaced groups (a group runs from its
+    # "Group" line to its "}"; what lies before it goes with it), then the
+    # operator's groups with the image's line ends.
+    awk -v list=" $_groups " '
+    BEGIN { keep = 1 }
+    tolower($0) ~ /^[[:blank:]]*group[[:blank:]]/ { keep = 1 }
+    { blk = blk $0 "\n" }
+    {
+        line = $0; sub(/\r$/, "", line)
+        if (tolower(line) ~ /^[[:blank:]]*vnum[[:blank:]]+[0-9]+/) {
+            n = split(line, f, /[[:blank:]]+/); v = (f[1] == "" ? f[3] : f[2]) + 0
+            if (index(list, " " v " ")) keep = 0
+        }
+    }
+    /^[[:blank:]]*}/ { if (keep) printf "%s", blk; blk = ""; keep = 1 }
+    END { if (keep) printf "%s", blk }
+    ' "$_img" > "$WORK/$_k.live.new" || { say "could not build the live $_k.txt"; put_live "$_img" "$_live"; return 1; }
+    if [ "$(head -c 65536 "$_img" | tr -d -c '\r' | wc -c)" -gt 0 ]; then _eol='\r'; else _eol=''; fi
+    {
+        printf "${_eol}\n# ---- MT2009_PLUS_DB_EDITOR_GROUPS_V1: groups changed in the Seban panel ----${_eol}\n"
+        sed "s/\$/$_eol/" "$_norm"
+    } >> "$WORK/$_k.live.new"
+    if ! put_live "$WORK/$_k.live.new" "$_live"; then
+        say "could not write $_live -- left as it was"
+        write_status "$_k" failed 0 "$_sha" "the game container could not write $_k.txt"
+        return 1
+    fi
+    say "$_k.txt from the panel applied: $_count group(s)"
+    write_status "$_k" ok "$_count" "$_sha" "applied: $_groups"
+    return 0
+}
+
+cmd_prepare() {
+    for _k in group group_group; do
+        _live="$LOCALE_DIR/$_k.txt"
+        [ -f "$_live" ] || { say "no $_live -- nothing to prepare"; continue; }
+        # The first start of a container: the file is still the image's.
+        [ -f "$LOCALE_DIR/$_k.image.txt" ] || cp -p "$_live" "$LOCALE_DIR/$_k.image.txt" || return 1
+        chown metin2:metin2 "$_live" 2>/dev/null
+        chmod 0644 "$_live" 2>/dev/null
+    done
+    mkdir -p "$WORK" 2>/dev/null && chown metin2:metin2 "$WORK" 2>/dev/null
+    for _d in "$SPOOL" "$SPOOL/backup" "$SPOOL/base" "$SPOOL/base/maps"; do
+        spool_folder "$_d"
+    done
+    chgrp -R m2spool "$SPOOL" 2>/dev/null
+    return 0
+}
+
+cmd_apply() {
+    mkdir -p "$WORK" 2>/dev/null
+    spool_folder "$SPOOL" || { say "no spool folder $SPOOL -- the image's groups stay"; return 0; }
+    _result=0
+    # group.txt first: group_group.txt is checked against the live group.txt.
+    apply_one group || _result=1
+    apply_one group_group || _result=1
+    # npc.txt of every map, for the page's "where is this group used".
+    for _d in "$MAP_DIR"/*/; do
+        [ -f "${_d}npc.txt" ] || continue
+        publish "${_d}npc.txt" "$SPOOL/base/maps/$(basename "$_d")/npc.txt"
+    done
+    return "$_result"
+}
+
+case "${1:-}" in
+    prepare) cmd_prepare ;;
+    apply)   cmd_apply ;;
+    *) echo "usage: m2-groups prepare|apply"; exit 1 ;;
+esac

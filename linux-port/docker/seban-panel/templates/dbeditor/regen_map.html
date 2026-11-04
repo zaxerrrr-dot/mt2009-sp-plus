@@ -141,7 +141,7 @@
   {% if summary %}
   <div class="table-wrap"><table class="dbr-table">
     <thead><tr><th>Potwór / grupa</th><th>Wpisów</th><th>Naraz razem</th><th>Odradza się co</th></tr></thead>
-    <tbody>{% for s in summary %}<tr{% if s.bad %} class="dbr-badrow"{% endif %}><td>{{ s.what }}</td><td>{{ s.rows }}</td><td>{{ s.count }} {{ 'grup' if s.group else 'potw.' }}</td><td>{{ s.time }}</td></tr>{% endfor %}</tbody>
+    <tbody>{% for s in summary %}<tr{% if s.bad %} class="dbr-badrow"{% endif %}><td>{{ s.what }}{% if s.group and s.vnum is defined and 'dbeditor.groups_edit' in dbd_endpoints %} <a href="{{ url_for('dbeditor.groups_edit', kind=s.kind, vnum=s.vnum) }}" title="Skład i inne mapy tej grupy">👥</a>{% endif %}</td><td>{{ s.rows }}</td><td>{{ s.count }} {{ 'grup' if s.group else 'potw.' }}</td><td>{{ s.time }}</td></tr>{% endfor %}</tbody>
   </table></div>
   {% else %}<p class="muted">Ta mapa nie ma żadnych spawnów.</p>{% endif %}
 </section>

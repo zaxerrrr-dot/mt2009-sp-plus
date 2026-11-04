@@ -4,7 +4,8 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-regen.css') }}">
 <script src="{{ url_for('static', filename='dbeditor-regen.js') }}" defer></script>
-<nav class="dbr-crumbs"><a href="{{ url_for('dbeditor.index') }}">🗄️ Edytor bazy danych</a><span>🗺️ Spawny potworów</span></nav>
+<nav class="dbr-crumbs"><a href="{{ url_for('dbeditor.index') }}">🗄️ Edytor bazy danych</a><span>🗺️ Spawny potworów</span>
+  {% if dbd_endpoints is defined and 'dbeditor.groups_index' in dbd_endpoints %}<a href="{{ url_for('dbeditor.groups_index') }}">👥 Grupy potworów</a>{% endif %}</nav>
 <p class="eyebrow">EDYTOR BAZY DANYCH · SPAWNY POTWORÓW</p>
 <h1>🗺️ Spawny potworów na mapach</h1>
 <p class="muted">Każda mapa ma listę „spawnów”: <b>który potwór albo która grupa</b>, <b>w którym miejscu</b>, <b>co ile czasu</b> się odradza i <b>ile naraz</b> stoi. Wybierz mapę, żeby zobaczyć ją na podglądzie i zmienić spawny. Gra czyta te pliki tylko przy starcie – po zmianach kliknij <b>Zastosuj</b> w <a href="{{ url_for('dbeditor.index') }}">Edytorze bazy danych</a>.</p>

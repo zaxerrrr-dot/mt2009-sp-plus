@@ -1,0 +1,13 @@
+{#- MT2009_PLUS_DB_EDITOR_GROUPS_V1: the top of the "Grupy potworów" pages (dbeditor/groups.py) -
+    styles, crumbs, the game's report of both files. Needs status ({"g": state, "r": state}) or one state. -#}
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-items.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-regen.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-groups.css') }}">
+<script src="{{ url_for('static', filename='dbeditor-groups.js') }}" defer></script>
+<nav class="dbr-crumbs">
+  <a href="{{ url_for('dbeditor.index') }}">🗄️ Edytor bazy danych</a>
+  {% if 'dbeditor.mobs' in dbd_endpoints %}<a href="{{ url_for('dbeditor.mobs') }}">👹 Potwory i bossowie</a>{% endif %}
+  <a href="{{ url_for('dbeditor.groups_index') }}">👥 Grupy potworów</a>
+  {% if 'dbeditor.regen_index' in dbd_endpoints %}<a href="{{ url_for('dbeditor.regen_index') }}">🗺️ Spawny potworów</a>{% endif %}
+  {% if 'dbeditor.spawns' in dbd_endpoints %}<a href="{{ url_for('dbeditor.spawns') }}">⏱️ Respawn bossów i metinów</a>{% endif %}
+</nav>

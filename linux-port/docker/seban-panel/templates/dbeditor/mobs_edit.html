@@ -136,6 +136,9 @@
   </table>
   <p class="muted">Zwykłe potwory z regen.txt nie są tu wymienione.</p>
   {% else %}<p class="muted">Nie ma go w plikach bossów, Metinów ani bossów czasowych (może pojawiać się w zwykłym respawnie, lochu albo z zadania).</p>{% endif %}
+  {% if dbd_endpoints is defined and 'dbeditor.groups_index' in dbd_endpoints %}
+  <p>👥 <a href="{{ url_for('dbeditor.groups_index', mob=mob.vnum) }}">Grupy potworów, w których jest ten potwór</a> – z mapami i punktami spawnu.</p>
+  {% endif %}
 </section>
 
 {% if history %}

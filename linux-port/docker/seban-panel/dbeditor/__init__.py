@@ -41,7 +41,9 @@ def install(app, ctx):
 
     # The parts, in the order the hub shows them. A part that is missing (an
     # older image) is skipped.
-    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine",
+    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen",
+                 "groups",  # MT2009_PLUS_DB_EDITOR_GROUPS_V1 (Grupy potworów: group.txt, group_group.txt)
+                 "shops", "refine",
                  "itemshop",  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
                  "quests",  # MT2009_PLUS_DB_EDITOR_QUESTS_V1 (Questy: on/off, rewards)
                  "attrs", "exptable", "fishing", "dragonsoul",

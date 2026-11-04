@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_GROUPS_V1: Grupy potworów - every group and set of groups (dbeditor/groups.py, groups_index). #}
+{% block title %}Grupy potworów · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% block content %}
+{% include 'dbeditor/_groups_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · GRUPY POTWORÓW</p>
+<h1>👥 Grupy potworów</h1>
+<p class="muted">Na mapach potwory stoją często nie pojedynczo, tylko <b>grupami</b>: lider i jego świta pojawiają się razem
+  (plik <code>group.txt</code>). <b>Zestaw grup</b> (<code>group_group.txt</code>) to kilka grup, z których przy każdym
+  odrodzeniu gra losuje jedną. Tu są wszystkie: kto w nich jest, jaki ma poziom, na których mapach i w ilu punktach
+  spawnu stoją. Skład grupy zmienisz po kliknięciu jej numeru.</p>
+<p class="muted dbr-help">Gra czyta grupy tylko przy starcie rdzeni – zmiana działa po kliknięciu <b>Zastosuj</b>
+  w <a href="{{ url_for('dbeditor.index') }}">Edytorze bazy danych</a> (restart, gracze online rozłączeni na ok. minutę).
+  Przy aktualizacji serwera zmiany z panelu zostają i są nakładane na nowe pliki gry.</p>
+
+{% if pending %}
+<section class="panel dbr-status pending">
+  <p><b>Czeka na restart gry:</b></p>
+  <ul>{% for p in pending %}<li>{{ p.title }} – {{ p.text }}{% if p.detail %} <small class="muted">({{ p.detail }})</small>{% endif %}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+{% for kind in ('g', 'r') %}{% set s = status[kind] %}{% if s.kind == 'error' %}
+<section class="panel dbr-status error"><p><b>{{ 'group.txt' if kind == 'g' else 'group_group.txt' }}:</b> {{ s.text }}</p></section>
+{% endif %}{% endfor %}
+{% if problems %}
+<section class="panel dbr-status unknown">
+  <p><b>Uwagi do plików gry</b> (tak je czyta rdzeń):</p>
+  <ul class="dbg-small">{% for p in problems[:10] %}<li>{{ p }}</li>{% endfor %}{% if problems|length > 10 %}<li>… i {{ problems|length - 10 }} więcej</li>{% endif %}</ul>
+</section>
+{% endif %}
+
+{% if not published %}
+<section class="panel dbr-status error">
+  <p><b>Gra nie udostępniła jeszcze plików grup.</b> Panel czyta je z folderu wymiany (<code>/opt/m2spool/groups</code>,
+    a na starszym obrazie gry z <code>spawns/base</code> albo <code>regen/base</code>), który obraz gry wypełnia przy
+    starcie rdzeni. Zaktualizuj obraz gry i zrestartuj rdzenie – potem grupy pojawią się tutaj.</p>
+</section>
+{% else %}
+<section class="panel">
+  <p class="dbg-counts">
+    <span><b>{{ counts.g }}</b> grup</span> · <span><b>{{ counts.r }}</b> zestawów grup</span>
+    {% if counts.custom %} · <span class="dbr-tag custom">{{ counts.custom }} zmienionych w panelu</span>{% endif %}
+    · <a href="{{ url_for('dbeditor.groups_new', kind='g') }}">➕ Nowa grupa</a>
+    · <a href="{{ url_for('dbeditor.groups_new', kind='r') }}">➕ Nowy zestaw grup</a>
+  </p>
+  <form method="get" class="dbe-search">
+    <label>Szukaj<input type="search" name="q" value="{{ f.q }}" placeholder="nazwa potwora, numer grupy albo potwora"></label>
+    <label>Rodzaj
+      <select name="typ"><option value="">— grupy i zestawy —</option>
+        <option value="g" {{ 'selected' if f.typ == 'g' }}>tylko grupy</option>
+        <option value="r" {{ 'selected' if f.typ == 'r' }}>tylko zestawy grup</option></select></label>
+    <label>Poziom od<input type="number" name="lvl_od" min="1" max="255" value="{{ f.lvl_od }}" class="dbg-narrow"></label>
+    <label>do<input type="number" name="lvl_do" min="1" max="255" value="{{ f.lvl_do }}" class="dbg-narrow"></label>
+    <label>Mapa
+      <select name="mapa"><option value="">— każda —</option>{% for folder, label, n in map_choices %}<option value="{{ folder }}" {{ 'selected' if f.mapa == folder }}>{{ label }} ({{ n }})</option>{% endfor %}</select></label>
+    <label>Użycie
+      <select name="uzycie"><option value="">— wszystkie —</option>
+        <option value="uzywane" {{ 'selected' if f.uzycie == 'uzywane' }}>stoją na mapach</option>
+        <option value="nieuzywane" {{ 'selected' if f.uzycie == 'nieuzywane' }}>nieużywane w spawnach map</option></select></label>
+    <label>Sortuj
+      <select name="sort">{% for key, label in sorts.items() %}<option value="{{ key }}" {{ 'selected' if f.sort == key }}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Kolejność
+      <select name="kier"><option value="">rosnąco</option><option value="malejaco" {{ 'selected' if f.kier == 'malejaco' }}>malejąco</option></select></label>
+    <label class="dbe-check small"><input type="checkbox" name="zmienione" value="1" {{ 'checked' if f.zmienione }}> tylko zmienione w panelu</label>
+    {% if f.mob %}<input type="hidden" name="mob" value="{{ f.mob }}">{% endif %}
+    <button>Szukaj</button>
+    {% if args %}<a href="{{ url_for('dbeditor.groups_index') }}">wyczyść</a>{% endif %}
+  </form>
+  {% if mob %}<p class="dbg-filter-note">Tylko grupy z potworem <b>{{ mob_label }}</b> ({{ mob }}){% if 'dbeditor.mob_edit' in dbd_endpoints %} – <a href="{{ url_for('dbeditor.mob_edit', vnum=mob) }}">karta potwora</a>{% endif %}
+    · <a href="{{ url_for('dbeditor.groups_index', **args_nomob) }}">pokaż wszystkie grupy</a></p>{% endif %}
+</section>
+
+<section class="panel" id="lista">
+  <h2>{{ total }} {{ 'wynik' if total == 1 else 'wyników' }}{% if pages > 1 %} <small class="muted">strona {{ page }} z {{ pages }}</small>{% endif %}</h2>
+  {% if items %}
+  <div class="dbg-scroll">
+  <table class="dbe-table compact dbg-table">
+    <thead><tr><th>Nr</th><th>Skład</th><th>Poziom</th><th>Ile</th><th>Gdzie stoi</th><th>Punkty spawnu</th><th></th></tr></thead>
+    <tbody>
+    {% for i in items %}
+      <tr class="{{ 'dbg-bad' if i.bad }}">
+        <td class="dbg-nowrap"><a href="{{ url_for('dbeditor.groups_edit', kind=i.kind, vnum=i.vnum) }}"><b>{{ i.vnum }}</b></a><br>
+          <span class="dbr-tag">{{ kind_names[i.kind] }}</span></td>
+        <td>{% if i.kind == 'g' %}<b>{{ i.lead }}</b>{% if i.size > 1 %} <span class="muted">+ {{ i.size - 1 }} {{ 'potwór' if i.size == 2 else 'potwory' if i.size - 1 < 5 else 'potworów' }}</span>{% endif %}
+            {% else %}1 z {{ i.size }}: {{ i.lead }}{% endif %}
+          <br><small class="muted dbg-name">{{ i.name }}</small>
+          {% if i.custom %}<span class="dbr-tag custom">{{ 'nowa w panelu' if i.new else 'zmieniona w panelu' }}</span>{% endif %}
+          {% if i.drift %}<span class="dbr-tag bad" title="Aktualizacja serwera zmieniła wersję z obrazu gry – gra używa wersji z panelu">obraz gry się zmienił</span>{% endif %}
+          {% if i.bad %}<span class="dbr-tag bad">{{ 'nieznany potwór' if i.kind == 'g' else 'brak grupy' }}</span>{% endif %}</td>
+        <td class="dbg-nowrap">{% if i.lmax %}{{ i.lmin }}{% if i.lmax != i.lmin %}–{{ i.lmax }}{% endif %}{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{{ i.size }}</td>
+        <td class="dbg-where">{% for label in i.map_labels[:6] %}<span>{{ label }}</span>{% endfor %}{% if i.map_labels|length > 6 %}<span>+{{ i.map_labels|length - 6 }}</span>{% endif %}
+          {% if i.kind == 'g' and i.via %}<small class="muted">w {{ i.via|length }} {{ 'zestawie' if i.via|length == 1 else 'zestawach' }} grup</small>{% endif %}
+          {% if not i.used %}<small class="muted">nieużywana w spawnach map</small>{% endif %}</td>
+        <td>{{ i.points or '—' }}</td>
+        <td><a class="button dbe-small" href="{{ url_for('dbeditor.groups_edit', kind=i.kind, vnum=i.vnum) }}">Szczegóły</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% if pages > 1 %}
+  <nav class="dbg-pager">
+    {% set lo = [1, page - 4]|max %}{% set hi = [pages, page + 4]|min %}
+    {% if lo > 1 %}<a href="{{ url_for('dbeditor.groups_index', strona=1, **args) }}#lista">1</a>{% if lo > 2 %}<em>…</em>{% endif %}{% endif %}
+    {% for p in range(lo, hi + 1) %}{% if p == page %}<span>{{ p }}</span>{% else %}<a href="{{ url_for('dbeditor.groups_index', strona=p, **args) }}#lista">{{ p }}</a>{% endif %}{% endfor %}
+    {% if hi < pages %}{% if hi < pages - 1 %}<em>…</em>{% endif %}<a href="{{ url_for('dbeditor.groups_index', strona=pages, **args) }}#lista">{{ pages }}</a>{% endif %}
+  </nav>
+  {% endif %}
+  <p class="muted dbg-small">„Punkty spawnu” liczą wpisy w plikach map (regen.txt, boss.txt, stone.txt, npc.txt) i bossów
+    czasowych. Grupy wywoływane przez zadania i lochy (ich własne pliki) nie są tu liczone. Pełne pliki, tak jak gra je zbuduje:
+    <a href="{{ url_for('dbeditor.groups_file', kind='g') }}">group.txt</a> · <a href="{{ url_for('dbeditor.groups_file', kind='r') }}">group_group.txt</a>.</p>
+  {% else %}<p class="muted">Nic nie znaleziono. Spróbuj krótszego fragmentu nazwy albo innego filtra.</p>{% endif %}
+</section>
+{% endif %}
+
+{% if history %}
+<section class="panel" id="historia">
+  <h2>🕘 Ostatnie zmiany grup</h2>
+  {% include 'dbeditor/_groups_history.html' %}
+</section>
+{% endif %}
+{% if backups %}
+<section class="panel">
+  <details><summary><b>🗂️ Kopie zapasowe plików</b> <small class="muted">(cały plik sprzed każdego zapisu)</small></summary>
+  <table class="dbe-table compact">
+    <thead><tr><th>Kopia</th><th>Plik</th><th>Kiedy</th><th></th></tr></thead>
+    <tbody>{% for b in backups %}
+      <tr><td><code>{{ b.name }}</code></td><td>{{ b.title }}</td><td>{{ b.time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td><form method="post" action="{{ url_for('dbeditor.groups_undo') }}" class="dbe-inline" onsubmit="return confirm('Przywrócić cały plik z tej kopii? Obecny stan też trafi do kopii.')">
+          <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="backup" value="{{ b.name }}">
+          <button class="quiet-btn dbe-small">{{ 'Wróć do pliku z obrazu' if b.empty else 'Przywróć' }}</button></form></td></tr>
+    {% endfor %}</tbody>
+  </table>
+  </details>
+</section>
+{% endif %}
+{% endblock %}
