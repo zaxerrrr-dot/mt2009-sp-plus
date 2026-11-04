@@ -2184,4 +2184,16 @@ if ((Test-Path -LiteralPath $efektAktywnyApply -PathType Leaf) -and
     }
 }
 
+# Arrows as on the global server (server-patches/strzaly, MT2009_PLUS_ARROWS_GLOBAL_V1; the owner, 5 November 2026):
+# CalcArrowDamage no longer cuts an Archer's extra arrows at monsters by 10-30 per cent (battle.cpp). Anywhere in the order.
+$strzalyApply = Join-Path $repo 'server-patches/strzaly/Apply-StrzalyPatch.ps1'
+if ((Test-Path -LiteralPath $strzalyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $strzalyResult = & $strzalyApply -SourceDir $engineGameSource
+    if ($strzalyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} arrow edit(s).' -f $strzalyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

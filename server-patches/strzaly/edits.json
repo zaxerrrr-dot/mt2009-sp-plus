@@ -1,0 +1,8 @@
+[
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARROWS_GLOBAL_V1 (no mob cut)",
+  "old": "\t// ogolny nerf obrazen ze zwyklych strzal dla archera\n\tif (dwSkill == 0 &&\n\t\tpkVictim != pkAttacker->GetTarget() && pkVictim->IsNPC() &&\n\t\tvictimCount > 1)\n\t{\n\t\tif (pkVictim->GetMobRank() < MOB_RANK_BOSS)\n\t\t{\n\t\t\tint max_damage_reduction = 30;\n\t\t\tint min_damage_reduction = 10;\n\t\t\tint delta_damage_reduction = max_damage_reduction - min_damage_reduction;\n\t\t\tint progress = MIN(pkAttacker->GetLevel()*100 / 60, 100);\n\n\t\t\tint reduction = max_damage_reduction - delta_damage_reduction * progress / 100;\n\n\t\t\tif (victimCount == 2)\n\t\t\t\treduction /= 2;\n\n\t\t\tiAtk = iAtk * (100 - reduction) / 100;\n\t\t}\n\t}\n",
+  "new": "\t// MT2009_PLUS_ARROWS_GLOBAL_V1 (no mob cut): the package cut an Archer's plain shot at a\n\t// monster other than the target by 10-30 per cent (30 at level 1, 10 from\n\t// level 60, half that with two victims) whenever the shot had more than one\n\t// victim - every extra arrow of MT2009_PLUS_ARCHER_MULTISHOT. The global\n\t// server has no such cut: each arrow strikes a monster at full strength (the\n\t// owner, 5 November 2026: \"nie ograniczaj ataku w moby jak dotychczas\").\n\t// victimCount stays in the signature for the callers (players' FuncShoot,\n\t// the bots' extra arrows in playerbot_targeting.h).\n\t(void) victimCount;\n"
+ }
+]

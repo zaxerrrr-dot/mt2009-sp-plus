@@ -2893,7 +2893,10 @@ db -e "DELETE FROM itemshop.ishop_bundle_items WHERE vnum BETWEEN 71131 AND 7113
 # UseArrow spends none - and the expiry event takes it after 14 days. The
 # Silver Arrow's (8005) values with no level floor: value2 100 / value4 1300 /
 # value5 2250 are CalcArrowDamage's fade (MT2009_PLUS_ARROW_RANGE_V1), value3 25
-# the bonus added to the bow's roll. Ninja only (antiflag 52), not stackable,
+# the bonus added to the bow's roll. MT2009_PLUS_ARROWS_GLOBAL_V1 (the owner, 5 November
+# 2026, "jak na globalu"): the global Kolczan's 25 / 4 - value1 4 (magic attack, was 0) and no fade at
+# all (value2 / value4 / value5 0, as GF's 8000-8005 in gf_wartosci.sql), so its shots never weaken
+# with the distance (the wiki: the quiver's damage does not fall with range). Ninja only (antiflag 52), not stackable,
 # never dropped, sold, traded, put on a stall or lost on a PK death (the
 # safebox takes it). The row is rewritten on every start; the db core reads
 # the protos at boot. On sale: in-game line 10 (Wyposazenie, 1-99) and the web
@@ -2911,7 +2914,7 @@ UPDATE world.item_proto SET name = 'Quiver', locale_name = _cp1250 X'4B6FB3637A6
     antiflag = 123316, flag = 0, wearflag = 512, gold = 0, shop_buy_price = 0, refined_vnum = 0, refine_set = 0,
     limittype0 = 7, limitvalue0 = 1209600, limittype1 = 1, limitvalue1 = 35,
     applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
-    value0 = 0, value1 = 0, value2 = 100, value3 = 25, value4 = 1300, value5 = 2250
+    value0 = 0, value1 = 4, value2 = 0, value3 = 25, value4 = 0, value5 = 0
 WHERE vnum = 8010;" || fail_step "could not add Kolczan (the quiver item)" >&2
 # Its ItemShop lines, once per install (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
 ishop_once quiver_10 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (10, 8010, 1, 100, 'DRAGON_COIN', 35);
@@ -4973,6 +4976,19 @@ if [ -s /opt/playerbot/refine_global.sql ]; then
         echo "[playerbot-migrate] refining as on the global server: refine_global.sql applied"
     else
         fail_step "refining as on the global server: refine_global.sql failed" >&2
+    fi
+fi
+
+# MT2009_PLUS_ARROWS_GLOBAL_V1: the ammunition as on the global server (the owner, 5 November 2026; the pl-wiki's
+# Przedmioty/Amunicja) - strzaly_global.sql: the six arrows 8000-8005 at the wiki's level / attack / magic attack with
+# no fade, the Wooden Arrow at 5 a Yang, Kolczan for 1 day / 7 days (8011 / 8012, copies of the ItemShop's 8010 above)
+# at the General Store for 100 000 / 550 000 Yang, Balathor's arrow 30395 named Plonaca Strzala. The engine half
+# (no cut of an Archer's extra arrows at monsters): server-patches/strzaly. After gf_wartosci.sql. Every start, idempotent.
+if [ -s /opt/playerbot/strzaly_global.sql ]; then
+    if db < /opt/playerbot/strzaly_global.sql; then
+        echo "[playerbot-migrate] arrows as on the global server: strzaly_global.sql applied"
+    else
+        fail_step "arrows as on the global server: strzaly_global.sql failed" >&2
     fi
 fi
 

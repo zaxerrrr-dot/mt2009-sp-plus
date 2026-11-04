@@ -2677,8 +2677,10 @@ namespace
 
 		// MT2009_PLUS_ARCHER_MULTISHOT_V1: the shot's extra arrows, already on
 		// their way in the clients (SendPlayerBotAttackPacket), on the engine's
-		// arrow damage for a shot at that many (CalcArrowDamage takes a share
-		// off an extra target, as it does for a player's), and no arrow spent.
+		// arrow damage, and no arrow spent. MT2009_PLUS_ARROWS_GLOBAL_V1: each
+		// extra arrow strikes at full strength, as a player's does (the cut of
+		// 10-30 per cent CalcArrowDamage took off an extra target is gone,
+		// server-patches/strzaly).
 		if (isBow && !bIsDuel && extraArrows && !extraArrows->empty())
 		{
 			const int victims = (int)extraArrows->size() + 1;
