@@ -4414,6 +4414,25 @@ namespace
 				bestCell = cell;
 			}
 		}
+		// The owner's switch (event flag m2_bot_war_fallback 1, off by default): a step under +4 with no Zwoj Wojny and no
+		// Magiczna Ruda Miedzi to make one goes under a Blessing Scroll (it never destroys either) - the first night showed
+		// the ore bound by the Smocze Znaki: 70-80 such steps waiting at a time once the marks ran out.
+		if (bestCell < 0 && (int)plusLevel < playerbot_high_gear::WAR_BELOW && !rich &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_war_fallback") != 0 && ch->CountSpecifyItem(70035) == 0)
+		{
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM scroll = ch->GetInventoryItem(cell);
+				if (!scroll || scroll->GetCell() != cell)
+					continue;
+				const int rank = playerbot_high_gear::RankScroll((int)plusLevel, GetPlayerBotScrollKind(scroll), true);
+				if (rank > bestRank)
+				{
+					bestRank = rank;
+					bestCell = cell;
+				}
+			}
+		}
 		return bestCell;
 	}
 
