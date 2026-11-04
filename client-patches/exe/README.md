@@ -1044,7 +1044,8 @@ Wersja: root `constinfo.py` 1.3.2 tylko z `app.MT2009_SKILL_COLOR_EXE`; auth `M2
 `InstanceBase.cpp` (`__Initialize`: zerowanie; koniec `Update`: sprawdzenie co 0,5 s), `InstanceBaseEffect.cpp`
 (`__AttachEffect`: zapis koloru założenia), `Mt2009SkillColor.cpp` (`__Mt2009NoteAttachedSkillColor`,
 `Mt2009RefreshAffectSkillColors`, wywołanie na końcu `Mt2009SetSkillColor`) – efekt trwającego wzmocnienia założony
-w innym kolorze niż obecny kolor umiejętności zakładany od nowa (README łatki `skillcolor`). exe-src17 = exe-src16 + to.
+w innym kolorze niż obecny kolor umiejętności zakładany od nowa (README łatki `skillcolor`). exe-src17 = exe-src16 + to;
+`cache/yohara/exe-out17/metin2client.exe` (sha256 `c1c31b96…ed305ac`, MSVC 14.44, smoke do ekranu logowania, 5.11.2026).
 
 Zbudowane `build.sh msvc --smoke` (MSVC 14.44; osobny `EXEBUILD_WORK=cache/yohara/exebuild-color`, źródła
 `cache/yohara/exe-src14` = exe-src12 + ta nakładka – po scaleniu poprawek 3.0.10 nakładka exe bez innych zmian):
