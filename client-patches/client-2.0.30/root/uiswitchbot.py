@@ -1470,8 +1470,16 @@ class ConfigurationWindow(ui.BoardWithTitleBar):
 	def __init__(self, wndSwitchbot=None):
 		ui.BoardWithTitleBar.__init__(self)
 
-		from weakref import proxy
-		self.wndSwitchbot = proxy(wndSwitchbot) if wndSwitchbot else None
+		# MT2009_PLUS_SWITCHBOT_PROXY_FIX_V1: the switchbot window may come as a weakproxy already (the save
+		# button's event calls through one) - a proxy of a proxy is a TypeError ("cannot create weak reference
+		# to 'weakproxy' object")
+		import weakref
+		if wndSwitchbot is None:
+			self.wndSwitchbot = None
+		elif isinstance(wndSwitchbot, weakref.ProxyTypes):
+			self.wndSwitchbot = wndSwitchbot
+		else:
+			self.wndSwitchbot = weakref.proxy(wndSwitchbot)
 		self.dict = {}
 		self.listItems = {}
 		self.nameInput = None
