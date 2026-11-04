@@ -563,7 +563,7 @@
 					continue;
 				for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
 				{
-					const BYTE bType = stone->GetAttributeType(a);
+					const WORD bType = stone->GetAttributeType(a); // MT2009_PLUS_WIDE_ATTR_V1
 					if (bType == s_aPoint[what])
 						iFlat += stone->GetAttributeValue(a);
 					else if (bType == POINT_SUNGMA_PER_STR + what)

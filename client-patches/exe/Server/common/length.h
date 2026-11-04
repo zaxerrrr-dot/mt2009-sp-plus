@@ -1369,7 +1369,77 @@ enum EPointTypes
 	POINT_BLEEDING_PCT = 254,	// "Atak krwawienia +x%" (no Lycan here: not the wolfman's APPLY_BLEEDING_PCT)
 	POINT_BLEEDING_REDUCE = 255,	// "Odpornosc na atak krwawienia +x%"
 
-	POINT_MAX_NUM,	// 256
+	// MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr): an item's bonus type, an affect's point and a point change are two bytes, the
+	// server's points go on from 256 (its POINT_WIDE_END) and its POINT_MAX_NUM is 512 - this one too, so a new point
+	// (player.GetStatus(n), the bonus window, the tooltip's localeinfo_point.py) needs no new exe; a name here only for
+	// the C++ that uses one.
+	// MT2009_PLUS_BONUS67_SKILL_V1 (server-patches/bonusy67c): the server's 6th/7th bonuses of the wiki round 3 (256-318,
+	// tools/bonusy67/bonusy67c_data.py) - names only, the same numbers as the server's; no C++ here uses them (the
+	// tooltip and the bonus window read them by number), so this exe needs no rebuild for them.
+	POINT_ALIGNMENT_DAMAGE_BONUS = 256,	// Niski ranking powoduje zwiekszenie zadawanych obrazen
+	POINT_ATTBONUS_PER_HUMAN,	// Silny przeciwko pol-ludziom (+x% lacznej wartosci)
+	POINT_ATTBONUS_PER_UNDEAD,	// Silny przeciwko nieumarlym (+x% lacznej wartosci)
+	POINT_ATTBONUS_PER_DESERT,	// Silny przeciwko potworom pustyni (+x% lacznej wartosci)
+	POINT_USE_SKILL_PALBANG_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu wiru miecza
+	POINT_USE_SKILL_AMSEOP_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu zasadzki
+	POINT_USE_SKILL_YEONSA_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu powtarzalnego strzalu
+	POINT_USE_SKILL_TUSOK_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu duchowego ciosu
+	POINT_USE_SKILL_YONGBI_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu strzelajacego smoka
+	POINT_USE_SKILL_PAERYONG_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu smoczego skowytu
+	POINT_USE_SKILL_BYEURAK_HP_ABSORB,	// Absorbujesz do x% PZ przy uzyciu przywolania blyskawicy
+	POINT_USE_SKILL_CHAIN_HP_ABSORB,	// Absorbuje x% PZ przy uzyciu burzowego szponu
+	POINT_USE_SKILL_SAMYEON_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji trzystronnego ciecia: -x sek. z 10% szans
+	POINT_USE_SKILL_GEOMPUNG_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji uderzenia miecza: -x sek. z 10% szans
+	POINT_USE_SKILL_GUNGSIN_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji szybkiego ataku: -x sek. z 10% szans
+	POINT_USE_SKILL_KWANKYEOK_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji deszczu strzal: -x sek. z 10% szans
+	POINT_USE_SKILL_YONGKWON_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji smoczego wiru: -x sek. z 10% szans
+	POINT_USE_SKILL_MARYUNG_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji mrocznego uderzenia: -x sek. z 10% szans
+	POINT_USE_SKILL_BIPABU_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji latajacego talizmanu: -x sek. z 10% szans
+	POINT_USE_SKILL_NOEJEON_NEXT_COOLTIME_DECREASE_10PER,	// Czas regeneracji blyskawicznego rzutu: -x sek. z 10% szans
+	POINT_USE_SKILL_SAMYEON_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji trzystronnego ciecia: -x sek. z 20% szans
+	POINT_USE_SKILL_GEOMPUNG_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji uderzenia miecza: -x sek. z 20% szans
+	POINT_USE_SKILL_GUNGSIN_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji szybkiego ataku: -x sek. z 20% szans
+	POINT_USE_SKILL_KWANKYEOK_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji deszczu strzal: -x sek. z 20% szans
+	POINT_USE_SKILL_YONGKWON_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji smoczego wiru: -x sek. z 20% szans
+	POINT_USE_SKILL_MARYUNG_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji mrocznego uderzenia: -x sek. z 20% szans
+	POINT_USE_SKILL_BIPABU_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji latajacego talizmanu: -x sek. z 20% szans
+	POINT_USE_SKILL_NOEJEON_NEXT_COOLTIME_DECREASE_20PER,	// Czas regeneracji blyskawicznego rzutu: -x sek. z 20% szans
+	POINT_SKILL_DURATION_INCREASE_GEOMKYUNG,	// Czas trwania aury miecza +x sek.
+	POINT_SKILL_DURATION_INCREASE_EUNHYUNG,	// Czas trwania krycia sie +x sek.
+	POINT_SKILL_DURATION_INCREASE_GYEONGGONG,	// Czas trwania bezszelestnego chodu +x sek.
+	POINT_USE_SKILL_GIHYEOL_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu woli zycia
+	POINT_USE_SKILL_NOEGEOM_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu kregu mieczy
+	POINT_USE_SKILL_SANGONG_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu trujacej chmury
+	POINT_USE_SKILL_GIGUNG_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu zatrutej strzaly
+	POINT_USE_SKILL_TERROR_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu strachu
+	POINT_USE_SKILL_MUYEONG_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu ognistego ducha
+	POINT_USE_SKILL_GICHEON_ATT_GRADE_BONUS,	// Na x sek. zwieksza bonus do ataku przy uzyciu pomocy smoka
+	POINT_USE_SKILL_JEONGEOP_ATT_GRADE_BONUS,	// Na x sek. otrzymujesz bonus do ataku przy uzyciu leczenia
+	POINT_USE_SKILL_GWIGEOM_DEF_BONUS,	// Na x sek. otrzymujesz bonus do obrony przy uzyciu czarowanego ostrza
+	POINT_USE_SKILL_HOSIN_DEF_BONUS,	// Na x sek. otrzymujesz bonus do obrony przy uzyciu blogoslawienstwa
+	POINT_USE_SKILL_JEUNGRYEOK_DEF_BONUS,	// Na x sek. otrzymujesz bonus do obrony przy uzyciu ataku+
+	POINT_USE_SKILL_CHUNKEON_CASTING_SPEED,	// Na x sek. zwieksza szybkosc zaklecia przy uzyciu silnego ciala
+	POINT_USE_SKILL_MANASHIELD_CASTING_SPEED,	// Na x sek. zwieksza szybkosc zaklecia przy uzyciu mrocznej ochrony
+	POINT_USE_SKILL_SAMYEON_STUN,	// Trzystronne ciecie ma x% szans na ogluszenie przeciwnika
+	POINT_USE_SKILL_GIGONGCHAM_STUN,	// Duchowe uderzenie ma x% szans na ogluszenie przeciwnika
+	POINT_USE_SKILL_CHARYUN_STUN,	// Wirujacy sztylet ma x% szans na ogluszenie przeciwnika
+	POINT_USE_SKILL_PABEOB_STUN,	// Rozproszenie magii ma x% szans na ogluszenie przeciwnika
+	POINT_USE_SKILL_MAHWAN_STUN,	// Mroczna sfera ma x% szans na ogluszenie przeciwnika
+	POINT_USE_SKILL_GYOKSAN_KNOCKBACK,	// Walniecie ma x% szans na oddanie przeciwnikowi
+	POINT_USE_SKILL_SEOMJEON_KNOCKBACK,	// Wolno dzialajaca trucizna ma x% szans na oddanie przeciwnikowi
+	POINT_USE_SKILL_KWANKYEOK_KNOCKBACK,	// Deszcz strzal ma x% szans na oddanie przeciwnikowi
+	POINT_USE_SKILL_SWAERYUNG_KNOCKBACK,	// Uderzenie palcem ma x% szans na oddanie przeciwnikowi
+	POINT_USE_SKILL_HWAYEOMPOK_KNOCKBACK,	// Ogniste uderzenie ma x% szans na oddanie przeciwnikowi
+	POINT_SKILL_DAMAGE_SAMYEON,	// Obrazenia od trzystronnego ciecia +x%
+	POINT_SKILL_DAMAGE_GEOMPUNG,	// Obrazenia od uderzenia miecza +x%
+	POINT_SKILL_DAMAGE_GUNGSIN,	// Obrazenia od szybkiego ataku +x%
+	POINT_SKILL_DAMAGE_KWANKYEOK,	// Obrazenia od deszczu strzal +x%
+	POINT_SKILL_DAMAGE_YONGKWON,	// Obrazenia od smoczego wiru +x%
+	POINT_SKILL_DAMAGE_MARYUNG,	// Obrazenia od mrocznego uderzenia +x%
+	POINT_SKILL_DAMAGE_BIPABU,	// Obrazenia od latajacego talizmanu +x%
+	POINT_SKILL_DAMAGE_YONGBI,	// Obrazenia od strzelajacego smoka +x%
+	POINT_SKILL_DAMAGE_NOEJEON,	// Obrazenia od blyskawicznego rzutu +x%
+	POINT_MAX_NUM = 512,
 };
 
 enum EDragonSoulRefineWindowSize

@@ -102,7 +102,7 @@ namespace
 
 	// The element a resistance line is against (the flat line, the 6th/7th "+x%" line, the hit buff's), -1 for any
 	// other line.
-	int GetPlayerBotResistLineElement(BYTE type)
+	int GetPlayerBotResistLineElement(WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (type)
 		{
@@ -126,7 +126,7 @@ namespace
 
 	// D14: the weight factor of a line for this bot - PLAYERBOT_YOHARA_RESIST_FACTOR for a resistance to an element of
 	// its Yohara map, 1 for anything else.
-	int GetPlayerBotYoharaResistFactor(LPCHARACTER ch, BYTE type)
+	int GetPlayerBotYoharaResistFactor(LPCHARACTER ch, WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const int e = GetPlayerBotResistLineElement(type);
 		if (e < 0 || !ch)

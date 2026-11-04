@@ -217,6 +217,18 @@ PL = {
 	"DETAILS_MT_SKILL_DURATION": "Czas umiej\xeatno\x9cci",
 	"DETAILS_TOOLTIP_MT_SKILL_DURATION": "Wyd\xb3u\xbfa czas trwania twoich umiej\xeatno\x9cci.",
 	"DETAILS_MT_CATE_SUNGMA": "Bonusy Sung Ma",
+	# MT2009_PLUS_BONUS67_SKILL_V1: the 6th/7th bonuses of the wiki round 3 (server-patches/bonusy67c, 256-259) and 90
+	"DETAILS_MT_CATE_B67C": "Bonusy 6/7 (dodatkowe)",
+	"DETAILS_MT_LOW_RANK": "Niski ranking",
+	"DETAILS_TOOLTIP_MT_LOW_RANK": "Niski ranking powoduje zwi\xeakszenie zadawanych obra\xbfe\xf1: Agresywny +1%, Nieuczciwy +2%, Z\xb3o\x9cliwy +3%, Okrutny +5% (bro\xf1 i he\xb3m razem: x2).",
+	"DETAILS_MT_PER_HUMAN": "P\xf3\xb3-ludzie (+% \xb3\xb9cznej)",
+	"DETAILS_TOOLTIP_MT_PER_HUMAN": "Silny przeciwko p\xf3\xb3-ludziom: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
+	"DETAILS_MT_PER_UNDEAD": "Nieumarli (+% \xb3\xb9cznej)",
+	"DETAILS_TOOLTIP_MT_PER_UNDEAD": "Silny przeciwko nieumar\xb3ym: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
+	"DETAILS_MT_PER_DESERT": "Pustynia (+% \xb3\xb9cznej)",
+	"DETAILS_TOOLTIP_MT_PER_DESERT": "Silny przeciwko potworom pustyni: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
+	"DETAILS_MT_FALL": "Odp. na upadek",
+	"DETAILS_TOOLTIP_MT_FALL": "Odporno\x9c\xe6 na Upadek: szansa, \xbfe cios lub umiej\xeatno\x9c\xe6 nie przewr\xf3ci ani nie odrzuci postaci.",
 	"DETAILS_MT_SUNGMA_STR": "Si\xb3a Sung Ma",
 	"DETAILS_MT_SUNGMA_HP": "Witalno\x9c\xe6 Sung Ma",
 	"DETAILS_MT_SUNGMA_MOVE": "Odporno\x9c\xe6 Sung Ma",
@@ -244,6 +256,13 @@ def Bonus67bPoint(name, number):
 	if getattr(player, "MAX_NUM", 0) <= number:
 		return None
 	return getattr(player, name, number)
+
+# MT2009_PLUS_BONUS67_SKILL_V1: the points 256 and up (server-patches/bonusy67c) - an exe with two-byte bonus types
+# (POINT_MAX_NUM 512, app.MT2009_WIDE_ATTR_EXE) keeps them; the skill lines (260-318) are in the item's tooltip only.
+def Bonus67cPoint(number):
+	if getattr(player, "MAX_NUM", 0) <= number:
+		return None
+	return number
 
 # (title key, [(name key, tooltip key, point), ...]) - the package's order; a point None is left out
 def BuildCategories():
@@ -355,6 +374,14 @@ def BuildCategories():
 			("DETAILS_MT_SUNGMA_PER_HP", "DETAILS_TOOLTIP_MT_SUNGMA_PER", Point("POINT_SUNGMA_PER_HP", 194)),
 			("DETAILS_MT_SUNGMA_PER_MOVE", "DETAILS_TOOLTIP_MT_SUNGMA_PER", Point("POINT_SUNGMA_PER_MOVE", 195)),
 			("DETAILS_MT_SUNGMA_PER_IMMUNE", "DETAILS_TOOLTIP_MT_SUNGMA_PER", Point("POINT_SUNGMA_PER_IMMUNE", 196)),
+		]),
+		# MT2009_PLUS_BONUS67_SKILL_V1: the round 3's lines that are no skill's (256-259) and "Odpornosc na Upadek" (90)
+		("DETAILS_MT_CATE_B67C", [
+			("DETAILS_MT_LOW_RANK", "DETAILS_TOOLTIP_MT_LOW_RANK", Bonus67cPoint(256)),
+			("DETAILS_MT_PER_HUMAN", "DETAILS_TOOLTIP_MT_PER_HUMAN", Bonus67cPoint(257)),
+			("DETAILS_MT_PER_UNDEAD", "DETAILS_TOOLTIP_MT_PER_UNDEAD", Bonus67cPoint(258)),
+			("DETAILS_MT_PER_DESERT", "DETAILS_TOOLTIP_MT_PER_DESERT", Bonus67cPoint(259)),
+			("DETAILS_MT_FALL", "DETAILS_TOOLTIP_MT_FALL", Point("POINT_IMMUNE_FALL", 90)),
 		]),
 	]
 

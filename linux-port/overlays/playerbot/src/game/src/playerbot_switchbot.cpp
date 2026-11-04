@@ -1091,7 +1091,7 @@ void CSwitchbotManager::P2PReceiveSwitchbot(const TSwitchbotTable& table)
 // the armour's 2-15%: the list said 15%, a typed 25% was cut to 15%, and a slot aiming at "the maximum" stopped at
 // 15%. Now the same rule as the roll (BonusModeSetAttrValue), so the list has exactly what the server can roll for each
 // kind in the bonus mode of this world. The set numbers are the exe's SERVER_ATTRIBUTE_SET_* (PythonSwitchbot.cpp):
-long BonusModeSetAttrValue(int iSet, BYTE apply, BYTE level, long value);
+long BonusModeSetAttrValue(int iSet, WORD apply, BYTE level, long value); // MT2009_PLUS_WIDE_ATTR_V1
 static_assert(ATTRIBUTE_SET_EAR == 7, "switchbot: the exe numbers the eight old sets 0-7");
 #if defined(ENABLE_ITEM_ATTR_COSTUME) && defined(ENABLE_WEAPON_COSTUME_SYSTEM)
 static_assert(ATTRIBUTE_SET_COSTUME_BODY == 8 && ATTRIBUTE_SET_COSTUME_HAIR == 9 && ATTRIBUTE_SET_COSTUME_WEAPON == 10,
@@ -1134,7 +1134,7 @@ void CSwitchbotManager::SendItemAttributeInformations(LPCHARACTER ch)
 				TSwitchbotAttributeInfo table = {};
 				table.attribute_set = bAttributeSet;
 				table.apply_num = it.first;
-				table.max_value = BonusModeSetAttrValue(bAttributeSet, (BYTE) it.first, max, r.lValues[max - 1]); // MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1
+				table.max_value = BonusModeSetAttrValue(bAttributeSet, (WORD) it.first, max, r.lValues[max - 1]); // MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1
 
 				buf.write(&table, sizeof(table));
 			}

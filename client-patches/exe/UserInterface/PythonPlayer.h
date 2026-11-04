@@ -301,7 +301,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		const TItemData * GetItemData(TItemPos Cell) const;
 		void	SetItemCount(TItemPos Cell, ITEM_COUNT byCount);
 		void	SetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex, DWORD dwMetinNumber);
-		void	SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, BYTE byType, short sValue);
+		void	SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, WORD byType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1
 		DWORD	GetItemIndex(TItemPos Cell);
 		DWORD	GetItemFlags(TItemPos Cell);
 		DWORD	GetItemAntiFlags(TItemPos Cell);
@@ -310,7 +310,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		ITEM_COUNT	GetItemCount(TItemPos Cell);
 		ITEM_COUNT	GetItemCountByVnum(DWORD dwVnum);
 		DWORD	GetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex);
-		void	GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE * pbyType, short * psValue);
+		void	GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, WORD * pbyType, short * psValue); // MT2009_PLUS_WIDE_ATTR_V1
 		void	SendClickItemPacket(DWORD dwIID);
 
 		void	RequestAddLocalQuickSlot(DWORD dwLocalSlotIndex, DWORD dwWndType, DWORD dwWndItemPos);

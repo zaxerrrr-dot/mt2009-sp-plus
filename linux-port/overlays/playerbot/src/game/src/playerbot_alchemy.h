@@ -345,7 +345,7 @@ namespace
 	// one replaces, which is no loss worth that; the Change Stone (100600) - the ItemShop's.
 	// Taught besides the lines: the blue and pink beans (PickPlayerBotDsBean), the bean break-even
 	// (IsPlayerBotDsStrengthWorthTrying) and the Tongs of Time (MakePlayerBotDragonHeart).
-	int GetPlayerBotDsYoharaLinePref(BYTE type, LPCHARACTER ch)
+	int GetPlayerBotDsYoharaLinePref(WORD type, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const BYTE job = ch ? ch->GetJob() : JOB_WARRIOR;
 		const BYTE group = ch ? ch->GetSkillGroup() : 0;

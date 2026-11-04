@@ -506,7 +506,7 @@ namespace
 		memset(aKeep, 0, sizeof(aKeep));
 		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 		{
-			const BYTE bType = item->GetAttributeType(i);
+			const WORD bType = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (bType == POINT_HIT_PCT || bType == bWillType)
 			{
 				(bType == POINT_HIT_PCT ? iPrecision : iWill) = item->GetAttributeValue(i);
@@ -662,7 +662,7 @@ void Mt2009JadeBraceletV2Refine(LPITEM pOld, LPITEM pNew)
 	int iOldPrecision = JadeBasePrecision(pOld), iOldWill = JadeBaseWill(pOld);
 	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 	{
-		const BYTE bType = pOld->GetAttributeType(i);
+		const WORD bType = pOld->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 		if (bType == POINT_HIT_PCT)
 			iOldPrecision = pOld->GetAttributeValue(i);
 		else if (bType == bWillType)

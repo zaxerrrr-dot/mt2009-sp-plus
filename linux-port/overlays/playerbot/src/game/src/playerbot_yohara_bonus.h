@@ -104,7 +104,7 @@
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_bonus.h, in the anonymous namespace.
 
 // playerbot_bonus_mode.cpp (MT2009_PLUS_GLOBAL_BONUS_V1): the value a line of that level gets on that item.
-long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value);
+long BonusModeAttrValue(CItem* item, TMt2009PointNum apply, BYTE level, long value); // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 
 namespace
 {
@@ -278,7 +278,7 @@ namespace
 	// wanted); every other element's resistance is wanted nowhere. The defensive lines the owner's guide asks for on
 	// Yohara are wanted where they roll: arrow dodge (helmet, boots), arrow and magic resistance (armour, bracelet,
 	// helmet, boots, necklace, earrings); the shield's must is the melee block.
-	int GetPlayerBotYoharaBonusRole(LPCHARACTER ch, BYTE wearCell, BYTE type, bool addonWeapon)
+	int GetPlayerBotYoharaBonusRole(LPCHARACTER ch, BYTE wearCell, WORD type, bool addonWeapon) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		using namespace playerbot_yohara_bonus_rules;
 		const bool caster = IsPlayerBotCaster(ch);
@@ -366,7 +366,7 @@ namespace
 	}
 
 	// The highest level a line may roll at on this piece's attribute set; 0 when it never rolls there.
-	int GetPlayerBotYoharaBonusSlotMaxLevel(LPITEM item, BYTE type)
+	int GetPlayerBotYoharaBonusSlotMaxLevel(LPITEM item, WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const int set = item ? item->GetAttributeSetIndex() : -1;
 		if (set < 0 || set >= ATTRIBUTE_SET_MAX_NUM)
@@ -378,7 +378,7 @@ namespace
 	}
 
 	// A line's level (1-5) by the table's values; the slot's own top level counts as 5.
-	int GetPlayerBotYoharaBonusLineLevel(LPITEM item, BYTE type, long value)
+	int GetPlayerBotYoharaBonusLineLevel(LPITEM item, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (value <= 0)
 			return 0;
@@ -485,7 +485,7 @@ namespace
 		int count = 0;
 		for (int i = 0; i < PLAYERBOT_BONUS_MARBLE_LINES && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (type == 0 || value <= 0)
 				continue;

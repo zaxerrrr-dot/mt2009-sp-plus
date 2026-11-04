@@ -676,8 +676,18 @@ namespace
 		return ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2;
 	}
 
-	long long ScorePlayerBotApply(BYTE bType, long lValue, LPCHARACTER ch = NULL)
+	long long ScorePlayerBotApply(WORD bType, long lValue, LPCHARACTER ch = NULL) // MT2009_PLUS_WIDE_ATTR_V1
 	{
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1 (gear score): the wiki's round 3 lines (256-318) at the bonus scoring's weight
+		// (playerbot_bonus67c.inc) on this scale's 50 a point - a skill line of another class or way next to nothing.
+		if (bType >= POINT_ALIGNMENT_DAMAGE_BONUS && bType < POINT_WIDE_END)
+		{
+			const int iScore = Bonus67SkillLineScore(ch, bType, (int) lValue);
+			if (iScore >= 0)
+				return (long long) iScore * 50;
+		}
+#endif
 #ifdef MT2009_PLUS_ELEMENTS_V1
 		// MT2009_PLUS_ELEMENTS_V1 (bots): a talisman's element power (Autor: Digi Rasta,
 		// server-patches/zywioly) - the talisman is armour of its own slot (WEAR_PENDANT) and
@@ -805,7 +815,13 @@ namespace
 				return (long long)lValue * (IsPlayerBotMagicSchool(ch) ? 300 : 60);
 			case APPLY_IMMUNE_STUN:
 			case APPLY_IMMUNE_SLOW:
+				return (long long)lValue * 1000;
 			case APPLY_IMMUNE_FALL:
+#ifdef MT2009_PLUS_BONUS67_SKILL
+				// MT2009_PLUS_BONUS67_SKILL_V1: a chance of 5-20% now (the body armour's 6/7 line), the old flag 1000
+				if (lValue > 1 && lValue < 100)
+					return (long long)lValue * 100;
+#endif
 				return (long long)lValue * 1000;
 #ifdef PLAYERBOT_ENGINE_MT2009
 			// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 "...Smokow" helmets' Mag./krotkodys. atak (1-8%) - a multiplier
@@ -863,7 +879,7 @@ namespace
 
 	// The lines a hit is made of, and which the hit model below reads itself -
 	// the flat scorer must not count them a second time on a weapon.
-	bool IsPlayerBotHitModelApply(BYTE applyType, LPCHARACTER ch)
+	bool IsPlayerBotHitModelApply(WORD applyType, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (applyType)
 		{
@@ -1385,7 +1401,7 @@ namespace
 	// (PLAYERBOT_BONUS_TIER_PERCENT) - the same scale the reroll pass applies
 	// in ScorePlayerBotBonusLine, so the pass that buys a piece and the pass
 	// that rerolls it agree about what a line is worth.
-	long long ScorePlayerBotApplyTiered(BYTE bType, long lValue, LPCHARACTER ch)
+	long long ScorePlayerBotApplyTiered(WORD bType, long lValue, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const long long raw = ScorePlayerBotApply(bType, lValue, ch);
 		const int tier = ch ? GetPlayerBotBonusTier(bType, (int)ch->GetJob(), false) : 0;
@@ -1529,7 +1545,7 @@ namespace
 		long long lines = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (t == APPLY_NONE || GetPlayerBotBonusTier(t, (int)ch->GetJob(), false) < PLAYERBOT_BOOTS_MIN_LINE_TIER)
 				continue;
 			lines += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
@@ -1724,7 +1740,7 @@ namespace
 		long long protoLines = 0, rolledLines = 0;
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetProto()->aApplies[i].bType;
+			const WORD t = item->GetProto()->aApplies[i].bType; // MT2009_PLUS_WIDE_ATTR_V1
 			if (bWeaponHitDone && IsPlayerBotHitModelApply(t, ch))
 				continue;
 			protoLines += ScorePlayerBotApplyTiered(t, item->GetProto()->aApplies[i].lValue, ch);
@@ -1757,7 +1773,7 @@ namespace
 		}
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (bWeaponHitDone && IsPlayerBotHitModelApply(t, ch))
 				continue;
 			rolledLines += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
@@ -3247,7 +3263,7 @@ namespace
 		long avg = 0, skill = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (t == APPLY_NORMAL_HIT_DAMAGE_BONUS)
 				avg += item->GetAttributeValue(i);
 			else if (t == APPLY_SKILL_DAMAGE_BONUS)

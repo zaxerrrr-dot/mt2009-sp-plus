@@ -718,7 +718,7 @@ namespace
 
 	// ======================================================================== the glove's 6th / 7th lines
 
-	int GetPlayerBotGlove67Role(LPCHARACTER ch, LPITEM glove, BYTE type, int shortKind)
+	int GetPlayerBotGlove67Role(LPCHARACTER ch, LPITEM glove, WORD type, int shortKind) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		BYTE bWill = 0;
 		Mt2009GloveType(glove->GetVnum(), bWill);
@@ -746,7 +746,7 @@ namespace
 		bool must = false, allWanted = true;
 		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 		{
-			const BYTE type = glove->GetAttributeType(i);
+			const WORD type = glove->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (!type)
 				continue;
 			const int role = GetPlayerBotGlove67Role(ch, glove, type, shortKind);
@@ -880,7 +880,7 @@ namespace
 		POINT_HIT_BUFF_RESIST_DARK };
 
 	// The element index of a line of one of the tables above (-1 none).
-	int GetPlayerBotRare67LineElement(const BYTE* table, BYTE type)
+	int GetPlayerBotRare67LineElement(const BYTE* table, WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
 			if (table[e] == type)
@@ -890,7 +890,7 @@ namespace
 
 	// One line of a piece's 6th/7th slots: GLOVE67_MUST / GLOVE67_WANTED / GLOVE67_OTHER, by the piece's attribute set
 	// (the pool's columns, world.item_attr_rare) and the bot's needs.
-	int GetPlayerBotRare67Role(LPITEM item, int set, BYTE type, const TPlayerBotRare67Need& n)
+	int GetPlayerBotRare67Role(LPITEM item, int set, WORD type, const TPlayerBotRare67Need& n) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const BYTE classAtt = n.bCaster ? POINT_MAGIC_ATT_GRADE_BONUS : POINT_ATT_GRADE_BONUS;
 		const BYTE classBoss = n.bCaster ? POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE : POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE;
@@ -971,7 +971,7 @@ namespace
 		bool must = false, allWanted = true;
 		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (!type)
 				continue;
 			const int role = GetPlayerBotRare67Role(item, set, type, n);

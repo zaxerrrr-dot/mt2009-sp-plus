@@ -177,7 +177,7 @@ namespace
 		long avg = 0, skill = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (t == APPLY_NORMAL_HIT_DAMAGE_BONUS) avg += item->GetAttributeValue(i);
 			else if (t == APPLY_SKILL_DAMAGE_BONUS) skill += item->GetAttributeValue(i);
 		}

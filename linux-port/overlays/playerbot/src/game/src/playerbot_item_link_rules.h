@@ -41,7 +41,7 @@ inline size_t WhisperRoom(size_t senderNameLen)
 
 struct TAttr
 {
-	unsigned char type;
+	unsigned short type; // MT2009_PLUS_WIDE_ATTR_V1
 	short value;
 };
 

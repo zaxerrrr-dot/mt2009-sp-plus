@@ -1,0 +1,644 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (length.h #1)",
+  "old": "\tPOINT_MAX_NUM,\t// 256 (an item keeps its bonus type in one byte: all 256 taken)\n",
+  "new": "\t// MT2009_PLUS_WIDE_ATTR_V1 (points): an item's bonus type, an affect's point and a point change are two bytes now (server-patches/\n\t// wideattr: TPlayerItemAttribute::bType, TItemApply::bType, the affects' bApplyOn, every packet and table that carries\n\t// them - player.item.attrtype0..6 SMALLINT UNSIGNED). New points take the numbers from 256 up, ABOVE this comment, in\n\t// order; item_attr's / item_attr_rare's apply ENUM gets their names in the same order (ENUM position = the number,\n\t// the db core reads apply+0). POINT_WIDE_END is the first free number; POINT_MAX_NUM stays 512 = the exe's\n\t// POINT_MAX_NUM (client-patches/exe), so a new point reaches the client's bonus window without a new exe.\n#define MT2009_PLUS_WIDE_ATTR\n\tPOINT_WIDE_END,\t// 256 - the first free number (not a point)\n\tPOINT_MAX_NUM = 512,\t// an item's bonus type is a WORD: up to 512 points, the exe's m_alPoint has 512\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (tables.h #1)",
+  "old": "{\n\tBYTE\tbType;\n\tshort\tsValue;\n",
+  "new": "{\n\tWORD\tbType;\t// MT2009_PLUS_WIDE_ATTR_V1 (attr): a POINT_* number up to POINT_MAX_NUM 512 (was BYTE; the exe's Packet.h the same)\n\tshort\tsValue;\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (tables.h #2)",
+  "old": "typedef struct SItemApply\n{\n\tBYTE\tbType;\n\tlong\tlValue;\n",
+  "new": "typedef struct SItemApply\n{\n\tWORD\tbType;\t// MT2009_PLUS_WIDE_ATTR_V1 (apply): a POINT_* number (item_proto applytype0..2 SMALLINT UNSIGNED; the client's own item_proto keeps BYTE)\n\tlong\tlValue;\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (tables.h #3)",
+  "old": "\tDWORD\tdwType;\n\tBYTE\tbApplyOn;\n\tlong\tlApplyValue;\n",
+  "new": "\tDWORD\tdwType;\n\tWORD\tbApplyOn;\t// MT2009_PLUS_WIDE_ATTR_V1 (affect element): a POINT_* number (player.affect.bApplyOn SMALLINT UNSIGNED; GC affect add)\n\tlong\tlApplyValue;\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (tables.h #4)",
+  "old": "\tDWORD\tdwType;\n\tBYTE\tbApplyOn;\n} TPacketGDRemoveAffect;\n",
+  "new": "\tDWORD\tdwType;\n\tWORD\tbApplyOn;\t// MT2009_PLUS_WIDE_ATTR_V1 (remove affect)\n} TPacketGDRemoveAffect;\n"
+ },
+ {
+  "file": "affect.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (affect.h #1)",
+  "old": "\t\tBYTE    bApplyOn;\n",
+  "new": "\t\tWORD    bApplyOn;\t// MT2009_PLUS_WIDE_ATTR_V1 (affect): a POINT_* number up to POINT_MAX_NUM 512\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (packet.h #1)",
+  "old": "\tDWORD\tdwVID;\n\tBYTE\ttype;\n",
+  "new": "\tDWORD\tdwVID;\n\tWORD\ttype;\t// MT2009_PLUS_WIDE_ATTR_V1 (point change): a POINT_* number up to 512 (the exe's Packet.h the same)\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (packet.h #2)",
+  "old": "\tBYTE\tbApplyOn;\n",
+  "new": "\tWORD\tbApplyOn;\t// MT2009_PLUS_WIDE_ATTR_V1 (affect remove)\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (packet.h #3)",
+  "old": "};\t// 15 B\n",
+  "new": "};\t// 20 B (MT2009_PLUS_WIDE_ATTR_V1: 5 x 4 B, the bonus type a WORD)\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (packet.h #4)",
+  "old": "};\t// 409 B\n",
+  "new": "};\t// 534 B (MT2009_PLUS_WIDE_ATTR_V1)\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (packet.h #5)",
+  "old": "};\t// 44 B\n\nstatic_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 15, \"switchbot alternative\");\nstatic_assert(sizeof(TSwitchbotTable) == 409, \"switchbot table\");\nstatic_assert(sizeof(TSwitchbotAttributeInfo) == 9, \"switchbot attribute info\");\nstatic_assert(sizeof(TPacketCGSwitchbot) == 5 && sizeof(TPacketGCSwitchbot) == 5, \"switchbot packets\");\nstatic_assert(sizeof(TSwitchbotUpdateItem) == 44, \"switchbot update item\");\n",
+  "new": "};\t// 51 B (MT2009_PLUS_WIDE_ATTR_V1)\n\n// MT2009_PLUS_WIDE_ATTR_V1 (switchbot sizes): TPlayerItemAttribute is 4 B (WORD type + short value) - the exe the same\nstatic_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 20, \"switchbot alternative\");\nstatic_assert(sizeof(TSwitchbotTable) == 534, \"switchbot table\");\nstatic_assert(sizeof(TSwitchbotAttributeInfo) == 9, \"switchbot attribute info\");\nstatic_assert(sizeof(TPacketCGSwitchbot) == 5 && sizeof(TPacketGCSwitchbot) == 5, \"switchbot packets\");\nstatic_assert(sizeof(TSwitchbotUpdateItem) == 51, \"switchbot update item\");\n// MT2009_PLUS_WIDE_ATTR_V1 (sizes): every packet with a bonus line / an affect's point / a point change as the exe of\n// client-patches/exe reads it (its Packet.h / Mt2009ChangeLook.cpp static_assert the same numbers)\nstatic_assert(sizeof(TPlayerItemAttribute) == 4 && sizeof(TPlayerItem) == 63, \"bonus line 4 B, TPlayerItem 63 B\");\nstatic_assert(sizeof(TPacketGCItemSet) == 65 && sizeof(TPacketGCItemUpdate) == 52 && sizeof(packet_exchange) == 65,\n\t\t\"GC item set 65 B, item update 52 B, exchange 65 B\");\nstatic_assert(sizeof(packet_shop_item) == 57 && sizeof(SEquipmentItemSet) == 48 && sizeof(ikashop::TFilterInfo) == 86,\n\t\t\"shop item 57 B, view equipment item 48 B, Ikarus shop search filter 86 B\");\nstatic_assert(sizeof(TPacketAffectElement) == 26 && sizeof(TPacketGCAffectRemove) == 7 && sizeof(TPacketGCPointChange) == 18,\n\t\t\"affect element 26 B, affect remove 7 B, point change 18 B\");\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.h #1)",
+  "old": "\t\tvoid\t\t\tSetRealPoint(BYTE idx, int val);\n\t\tint\t\t\t\tGetRealPoint(BYTE idx) const;\n\n\t\tvoid\t\t\tSetPoint(BYTE idx, int val);\n\t\tint\t\t\t\tGetPoint(BYTE idx) const;\n\t\tint\t\t\t\tGetLimitPoint(BYTE idx) const;\n\t\tint\t\t\t\tGetPolymorphPoint(BYTE idx) const;\n\t\tint\t\t\t\tGetResistPoint(BYTE idx, LPCHARACTER pkAttacker = NULL) const;\n",
+  "new": "\t\tvoid\t\t\tSetRealPoint(WORD idx, int val); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tint\t\t\t\tGetRealPoint(WORD idx) const; // MT2009_PLUS_WIDE_ATTR_V1\n\n\t\tvoid\t\t\tSetPoint(WORD idx, int val); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tint\t\t\t\tGetPoint(WORD idx) const; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tint\t\t\t\tGetLimitPoint(WORD idx) const; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tint\t\t\t\tGetPolymorphPoint(WORD idx) const; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tint\t\t\t\tGetResistPoint(WORD idx, LPCHARACTER pkAttacker = NULL) const; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.h #2)",
+  "old": "\t\tvoid\t\t\tPointChange(BYTE type, int amount, bool bAmount = false, bool bBroadcast = false);\n\t\tvoid\t\t\tPointsPacket();\n\t\tvoid\t\t\tCheckMaximumPoints();\n\t\tbool\t\t\tIsUtilityPoint(BYTE point);\n",
+  "new": "\t\tvoid\t\t\tPointChange(WORD type, int amount, bool bAmount = false, bool bBroadcast = false); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tvoid\t\t\tPointsPacket();\n\t\tvoid\t\t\tCheckMaximumPoints();\n\t\tbool\t\t\tIsUtilityPoint(WORD point); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.h #3)",
+  "old": "\t\tbool\t\t\tCanAddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration);\n\t\tvoid\t\t\tOnAddAffect(DWORD dwType, BYTE& bApplyOn, long& lApplyValue, DWORD dwFlag, long lDuration);\n\t\tbool\t\t\tAddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube = false, DWORD itemVnum = 0);\n",
+  "new": "\t\tbool\t\t\tCanAddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tvoid\t\t\tOnAddAffect(DWORD dwType, WORD& bApplyOn, long& lApplyValue, DWORD dwFlag, long lDuration); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tbool\t\t\tAddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube = false, DWORD itemVnum = 0); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.h #4)",
+  "old": "\t\tCAffect *\t\tFindAffect(DWORD dwType, BYTE bApply=POINT_NONE) const;\n",
+  "new": "\t\tCAffect *\t\tFindAffect(DWORD dwType, WORD bApply=POINT_NONE) const; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #1)",
+  "old": "\tfor (BYTE bType : abExtraPoints)\n",
+  "new": "\t// MT2009_PLUS_WIDE_ATTR_V1 (login points): and every two-byte point (256 .. POINT_WIDE_END-1, none yet) - the exe's\n\t// POINT_MAX_NUM is 512, so a new point reaches its bonus window without a new exe\n\tstd::vector<WORD> vecExtraPoints(abExtraPoints, abExtraPoints + sizeof(abExtraPoints) / sizeof(abExtraPoints[0]));\n\tfor (int iWide = POINT_BLEEDING_REDUCE + 1; iWide < POINT_WIDE_END; ++iWide)\n\t\tvecExtraPoints.push_back((WORD) iWide);\n\tfor (WORD bType : vecExtraPoints)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #2)",
+  "old": "int CHARACTER::GetRealPoint(BYTE type) const\n",
+  "new": "int CHARACTER::GetRealPoint(WORD type) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #3)",
+  "old": "void CHARACTER::SetRealPoint(BYTE type, int val)\n",
+  "new": "void CHARACTER::SetRealPoint(WORD type, int val) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #4)",
+  "old": "int CHARACTER::GetPolymorphPoint(BYTE type) const\n",
+  "new": "int CHARACTER::GetPolymorphPoint(WORD type) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #5)",
+  "old": "int\tCHARACTER::GetResistPoint(BYTE idx, LPCHARACTER pkAttacker) const\n",
+  "new": "int\tCHARACTER::GetResistPoint(WORD idx, LPCHARACTER pkAttacker) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #6)",
+  "old": "\tint Bonus67Total(const CHARACTER* ch, unsigned char bPoint);\n",
+  "new": "\tint Bonus67Total(const CHARACTER* ch, WORD bPoint); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #7)",
+  "old": "int CHARACTER::GetPoint(BYTE type) const\n",
+  "new": "int CHARACTER::GetPoint(WORD type) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #8)",
+  "old": "int CHARACTER::GetLimitPoint(BYTE type) const\n",
+  "new": "int CHARACTER::GetLimitPoint(WORD type) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #9)",
+  "old": "void CHARACTER::SetPoint(BYTE type, int val)\n",
+  "new": "void CHARACTER::SetPoint(WORD type, int val) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #10)",
+  "old": "bool CHARACTER::IsUtilityPoint(BYTE point)\n",
+  "new": "bool CHARACTER::IsUtilityPoint(WORD point) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #11)",
+  "old": "void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast)\n",
+  "new": "void CHARACTER::PointChange(WORD type, int amount, bool bAmount, bool bBroadcast) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char.cpp #12)",
+  "old": "\tif (GetDesc() && (type < POINT_PACKET_NUM || (type >= POINT_SUNGMA_PER_STR && type <= POINT_HIT_PCT) || type == POINT_ANTI_RESIST_MAGIC /* MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (point packet): 252 to the client (exe POINT_MAX_NUM 253) */ || type == POINT_RESIST_COMBAT || type == POINT_BLEEDING_PCT || type == POINT_BLEEDING_REDUCE /* MT2009_PLUS_BONUS67_WIKI_V1 (point packet): 253-255 too (an older exe drops them) */)) /* MT2009_PLUS_BONUS67_V1 (point packet): 198-251 stay on the server */ // MT2009_PLUS_ELEMENTS_V1 (no point packet): the element powers stay on the server\n",
+  "new": "\tif (GetDesc() && (type < POINT_PACKET_NUM || (type >= POINT_SUNGMA_PER_STR && type <= POINT_HIT_PCT) || type == POINT_ANTI_RESIST_MAGIC /* MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (point packet): 252 to the client (exe POINT_MAX_NUM 253) */ || type == POINT_RESIST_COMBAT || type == POINT_BLEEDING_PCT || type == POINT_BLEEDING_REDUCE /* MT2009_PLUS_BONUS67_WIKI_V1 (point packet): 253-255 too (an older exe drops them) */ || (type > POINT_BLEEDING_REDUCE && type < POINT_WIDE_END) /* MT2009_PLUS_WIDE_ATTR_V1 (point packet): every two-byte point (the exe's POINT_MAX_NUM 512) */)) /* MT2009_PLUS_BONUS67_V1 (point packet): 198-251 stay on the server */ // MT2009_PLUS_ELEMENTS_V1 (no point packet): the element powers stay on the server\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_affect.cpp #1)",
+  "old": "void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, BYTE point)\n",
+  "new": "void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, WORD point) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_affect.cpp #2)",
+  "old": "CAffect * CHARACTER::FindAffect(DWORD dwType, BYTE bApply) const\n",
+  "new": "CAffect * CHARACTER::FindAffect(DWORD dwType, WORD bApply) const // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_affect.cpp #3)",
+  "old": "bool CHARACTER::CanAddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration)\n",
+  "new": "bool CHARACTER::CanAddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_affect.cpp #4)",
+  "old": "void CHARACTER::OnAddAffect(DWORD dwType, BYTE& bApplyOn, long& lApplyValue, DWORD dwFlag, long lDuration)\n",
+  "new": "void CHARACTER::OnAddAffect(DWORD dwType, WORD& bApplyOn, long& lApplyValue, DWORD dwFlag, long lDuration) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_affect.cpp #5)",
+  "old": "bool CHARACTER::AddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube, DWORD itemVnum)\n",
+  "new": "bool CHARACTER::AddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube, DWORD itemVnum) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #1)",
+  "old": "\t\t\t\t\t\t{\n\t\t\t\t\t\t\tBYTE bPoint = item->GetValue(0);\n\t\t\t\t\t\t\tlong lValue = item->GetValue(2);\n",
+  "new": "\t\t\t\t\t\t{\n\t\t\t\t\t\t\tWORD bPoint = item->GetValue(0); // MT2009_PLUS_WIDE_ATTR_V1\n\t\t\t\t\t\t\tlong lValue = item->GetValue(2);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #2)",
+  "old": "\t\t\t\t\t\t{\n\t\t\t\t\t\t\tBYTE bPoint = item->GetValue(0);\n\t\t\t\t\t\t\tswitch (bPoint)\n",
+  "new": "\t\t\t\t\t\t{\n\t\t\t\t\t\t\tWORD bPoint = item->GetValue(0); // MT2009_PLUS_WIDE_ATTR_V1\n\t\t\t\t\t\t\tswitch (bPoint)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #3)",
+  "old": "\t\t\t\t\t\t\tBYTE bPoint = (BYTE)item->GetValue(1);\n",
+  "new": "\t\t\t\t\t\t\tWORD bPoint = (WORD)item->GetValue(1); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #4)",
+  "old": "\t\t\t\t\t\t\tconst BYTE bPoint = (BYTE)item->GetValue(1);\n",
+  "new": "\t\t\t\t\t\t\tconst WORD bPoint = (WORD)item->GetValue(1); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #5)",
+  "old": "\tBYTE type;\n",
+  "new": "\tWORD type;\t// MT2009_PLUS_WIDE_ATTR_V1 (pickup rule): a bonus type up to POINT_MAX_NUM\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #6)",
+  "old": "\t\t\tconst BYTE type = item->GetAttributeType(i);\n",
+  "new": "\t\t\tconst WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_item.cpp #7)",
+  "old": "\t\tif (sscanf(token, \"%d:%d:%d:%d\", &type, &value, &slots, &op) < 2 || type <= 0 || type > 255)\n\t\t\tcontinue;\n\t\tSMt2009PlusPickupCond cond;\n\t\tcond.type = (BYTE) type;\n",
+  "new": "\t\tif (sscanf(token, \"%d:%d:%d:%d\", &type, &value, &slots, &op) < 2 || type <= 0 || type >= POINT_MAX_NUM) // MT2009_PLUS_WIDE_ATTR_V1 (pickup rule)\n\t\t\tcontinue;\n\t\tSMt2009PlusPickupCond cond;\n\t\tcond.type = (WORD) type;\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_skill.cpp #1)",
+  "old": "\tFuncSplashAffect(LPCHARACTER ch, int x, int y, int iDist, DWORD dwVnum, BYTE bPointOn, int iAmount, DWORD dwAffectFlag, int iDuration, int iSPCost, bool bOverride, int iMaxHit)\n",
+  "new": "\tFuncSplashAffect(LPCHARACTER ch, int x, int y, int iDist, DWORD dwVnum, WORD bPointOn, int iAmount, DWORD dwAffectFlag, int iDuration, int iSPCost, bool bOverride, int iMaxHit) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (char_skill.cpp #2)",
+  "old": "\tBYTE\tm_bPointOn;\n",
+  "new": "\tWORD\tm_bPointOn; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "skill.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (skill.h #1)",
+  "old": "\t\tBYTE\tbPointOn;\n",
+  "new": "\t\tWORD\tbPointOn; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "skill.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (skill.h #2)",
+  "old": "\t\tBYTE\tbPointOn2;\n",
+  "new": "\t\tWORD\tbPointOn2; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "skill.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (skill.h #3)",
+  "old": "\t\tBYTE bPointOn3;\n",
+  "new": "\t\tWORD bPointOn3; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #1)",
+  "old": "\t\tlong\t\tFindApplyValue(BYTE bApplyType);\n",
+  "new": "\t\tlong\t\tFindApplyValue(WORD bApplyType); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #2)",
+  "old": "\t\tBYTE\t\tGetAttributeType(int i)\t{ return m_aAttr[i].bType;\t}\n",
+  "new": "\t\tWORD\t\tGetAttributeType(int i)\t{ return m_aAttr[i].bType;\t} // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #3)",
+  "old": "\t\tint\t\tFindAttribute(BYTE bType);\n\t\tbool\t\tRemoveAttributeAt(int index);\n\t\tbool\t\tRemoveAttributeType(BYTE bType);\n\n\t\tbool\t\tHasAnyAttr();\n\t\tbool\t\tHasAttr(BYTE bApply);\n\t\tbool\t\tHasRareAttr(BYTE bApply);\n",
+  "new": "\t\tint\t\tFindAttribute(WORD bType); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tbool\t\tRemoveAttributeAt(int index);\n\t\tbool\t\tRemoveAttributeType(WORD bType); // MT2009_PLUS_WIDE_ATTR_V1\n\n\t\tbool\t\tHasAnyAttr();\n\t\tbool\t\tHasAttr(WORD bApply); // MT2009_PLUS_WIDE_ATTR_V1\n\t\tbool\t\tHasRareAttr(WORD bApply); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #4)",
+  "old": "\t\tvoid\t\tAddAttribute(BYTE bType, short sValue);\n",
+  "new": "\t\tvoid\t\tAddAttribute(WORD bType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #5)",
+  "old": "\t\tvoid\t\tSetAttribute(int i, BYTE bType, short sValue);\n\tpublic:\n\t\tvoid\t\tSetForceAttribute(int i, BYTE bType, short sValue);\n",
+  "new": "\t\tvoid\t\tSetAttribute(int i, WORD bType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1\n\tpublic:\n\t\tvoid\t\tSetForceAttribute(int i, WORD bType, short sValue); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #6)",
+  "old": "\t\tvoid\t\tAddAttr(BYTE bApply, BYTE bLevel);\n",
+  "new": "\t\tvoid\t\tAddAttr(WORD bApply, BYTE bLevel); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.h #7)",
+  "old": "\t\tvoid\t\tAddRareAttr(BYTE bApply, BYTE bLevel);\n",
+  "new": "\t\tvoid\t\tAddRareAttr(WORD bApply, BYTE bLevel); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #1)",
+  "old": "\t\t\t\t\tint Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue);\n",
+  "new": "\t\t\t\t\tint Bonus67AttrValue(LPITEM item, int iSlot, WORD bType, int iValue); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #2)",
+  "old": "\tBYTE bPoint;\n",
+  "new": "\tWORD bPoint; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #3)",
+  "old": "\t\t\tb.bPoint = (BYTE)point;\n",
+  "new": "\t\t\tb.bPoint = (WORD)point; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #4)",
+  "old": "\t\tTMt2009PlusSetBonus hp = { (BYTE)POINT_MAX_HP, false, MT2009_PLUS_COSTUME_SET_HP };\n\t\tTMt2009PlusSetBonus att = { (BYTE)POINT_ATT_GRADE_BONUS, false, MT2009_PLUS_COSTUME_SET_ATT };\n",
+  "new": "\t\tTMt2009PlusSetBonus hp = { (WORD)POINT_MAX_HP, false, MT2009_PLUS_COSTUME_SET_HP };\n\t\tTMt2009PlusSetBonus att = { (WORD)POINT_ATT_GRADE_BONUS, false, MT2009_PLUS_COSTUME_SET_ATT };\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #5)",
+  "old": "long CItem::FindApplyValue(BYTE bApplyType)\n",
+  "new": "long CItem::FindApplyValue(WORD bApplyType) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item.cpp #6)",
+  "old": "void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, BYTE point);\n",
+  "new": "void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, WORD point); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #1)",
+  "old": "bool CItem::HasAttr(BYTE bApply)\n",
+  "new": "bool CItem::HasAttr(WORD bApply) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #2)",
+  "old": "bool CItem::HasRareAttr(BYTE bApply)\n",
+  "new": "bool CItem::HasRareAttr(WORD bApply) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #3)",
+  "old": "void CItem::AddAttribute(BYTE bApply, short sValue)\n",
+  "new": "void CItem::AddAttribute(WORD bApply, short sValue) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #4)",
+  "old": "long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value);\n\nvoid CItem::AddAttr(BYTE bApply, BYTE bLevel)\n",
+  "new": "long BonusModeAttrValue(CItem* item, WORD apply, BYTE level, long value); // MT2009_PLUS_WIDE_ATTR_V1\n\nvoid CItem::AddAttr(WORD bApply, BYTE bLevel) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #5)",
+  "old": "int CItem::FindAttribute(BYTE bType)\n",
+  "new": "int CItem::FindAttribute(WORD bType) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #6)",
+  "old": "bool CItem::RemoveAttributeType(BYTE bType)\n",
+  "new": "bool CItem::RemoveAttributeType(WORD bType) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #7)",
+  "old": "void CItem::SetAttribute(int i, BYTE bType, short sValue)\n",
+  "new": "void CItem::SetAttribute(int i, WORD bType, short sValue) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #8)",
+  "old": "void CItem::SetForceAttribute(int i, BYTE bType, short sValue)\n",
+  "new": "void CItem::SetForceAttribute(int i, WORD bType, short sValue) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #9)",
+  "old": "\t\tconst BYTE bType = pOld->GetAttributeType(i);\n",
+  "new": "\t\tconst WORD bType = pOld->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_attribute.cpp #10)",
+  "old": "void CItem::AddRareAttr(BYTE bApply, BYTE bLevel)\n",
+  "new": "void CItem::AddRareAttr(WORD bApply, BYTE bLevel) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (item_manager.cpp #1)",
+  "old": "\t\t\tBYTE randomPoint = aiUniqueApplyWeapon70Types[number(0, std::size(aiUniqueApplyWeapon70Types)-1)];\n",
+  "new": "\t\t\tWORD randomPoint = aiUniqueApplyWeapon70Types[number(0, std::size(aiUniqueApplyWeapon70Types)-1)]; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "constants.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (constants.h #1)",
+  "old": "TItemApply GetUniqueApplyWeapon70(BYTE bPoint, DWORD refineLevel);\n",
+  "new": "TItemApply GetUniqueApplyWeapon70(WORD bPoint, DWORD refineLevel); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "constants.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (constants.cpp #1)",
+  "old": "int GetUniqueApplyWeapon70PointIndex(BYTE bPoint)\n",
+  "new": "int GetUniqueApplyWeapon70PointIndex(WORD bPoint) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "constants.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (constants.cpp #2)",
+  "old": "TItemApply GetUniqueApplyWeapon70(BYTE bPoint, DWORD refineLevel)\n",
+  "new": "TItemApply GetUniqueApplyWeapon70(WORD bPoint, DWORD refineLevel) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "battle.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (battle.h #1)",
+  "old": "\t\tBYTE att_point,\n\t\tDWORD immune_flag,\n\t\tDWORD affect_idx,\n\t\tBYTE affect_point,\n",
+  "new": "\t\tWORD att_point, // MT2009_PLUS_WIDE_ATTR_V1\n\t\tDWORD immune_flag,\n\t\tDWORD affect_idx,\n\t\tWORD affect_point, // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "battle.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (battle.h #2)",
+  "old": "\t{ int ChampionAffectBonus(LPCHARACTER, LPCHARACTER, BYTE); if (pkAttacker) pct_value += ChampionAffectBonus(pkAttacker, pkVictim, att_point); }\n",
+  "new": "\t{ int ChampionAffectBonus(LPCHARACTER, LPCHARACTER, WORD); if (pkAttacker) pct_value += ChampionAffectBonus(pkAttacker, pkVictim, att_point); } // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "battle.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (battle.h #3)",
+  "old": "\t\tint success_pct,\n\t\tDWORD immune_flag,\n\t\tDWORD affect_idx,\n\t\tBYTE affect_point,\n\t\tlong affect_amount,\n\t\tDWORD affect_flag,\n",
+  "new": "\t\tint success_pct,\n\t\tDWORD immune_flag,\n\t\tDWORD affect_idx,\n\t\tWORD affect_point, // MT2009_PLUS_WIDE_ATTR_V1\n\t\tlong affect_amount,\n\t\tDWORD affect_flag,\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (DragonSoul.cpp #1)",
+  "old": "\t\tconst BYTE bType = pDS->GetAttributeType(i);\n",
+  "new": "\t\tconst WORD bType = pDS->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (DragonSoul.cpp #2)",
+  "old": "\tfWeight /= 100.f;\n\n\tint n = MIN(basic_apply_num, vec_basic_applys.size());\n\tfor (int i = 0; i < n; i++)\n\t{\n\t\tconst SApply& basic_apply = vec_basic_applys[i];\n\t\tBYTE bType = basic_apply.apply_type;\n\t\tshort sValue = (short)(ceil((float)basic_apply.apply_value * fWeight - 0.01f));\n\n\t\tpDS->SetForceAttribute(i, bType, sValue);\n\t}\n\n\tfor (int i = DRAGON_SOUL_ADDITIONAL_ATTR_START_IDX; i < ITEM_ATTRIBUTE_MAX_NUM; i++)\n",
+  "new": "\tfWeight /= 100.f;\n\n\tint n = MIN(basic_apply_num, vec_basic_applys.size());\n\tfor (int i = 0; i < n; i++)\n\t{\n\t\tconst SApply& basic_apply = vec_basic_applys[i];\n\t\tWORD bType = basic_apply.apply_type; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tshort sValue = (short)(ceil((float)basic_apply.apply_value * fWeight - 0.01f));\n\n\t\tpDS->SetForceAttribute(i, bType, sValue);\n\t}\n\n\tfor (int i = DRAGON_SOUL_ADDITIONAL_ATTR_START_IDX; i < ITEM_ATTRIBUTE_MAX_NUM; i++)\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (DragonSoul.cpp #3)",
+  "old": "\t\tBYTE bType = pDS->GetAttributeType(i);\n",
+  "new": "\t\tWORD bType = pDS->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (DragonSoul.cpp #4)",
+  "old": "\tfWeight /= 100.f;\n\n\tint n = MIN(basic_apply_num, vec_basic_applys.size());\n\tfor (int i = 0; i < n; i++)\n\t{\n\t\tconst SApply& basic_apply = vec_basic_applys[i];\n\t\tBYTE bType = basic_apply.apply_type;\n\t\tshort sValue = (short)(ceil((float)basic_apply.apply_value * fWeight - 0.01f));\n\n\t\tpDS->SetForceAttribute(i, bType, sValue);\n\t}\n\n\tBYTE additional_attr_num = MIN(number (add_min, add_max), 3);\n",
+  "new": "\tfWeight /= 100.f;\n\n\tint n = MIN(basic_apply_num, vec_basic_applys.size());\n\tfor (int i = 0; i < n; i++)\n\t{\n\t\tconst SApply& basic_apply = vec_basic_applys[i];\n\t\tWORD bType = basic_apply.apply_type; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tshort sValue = (short)(ceil((float)basic_apply.apply_value * fWeight - 0.01f));\n\n\t\tpDS->SetForceAttribute(i, bType, sValue);\n\t}\n\n\tBYTE additional_attr_num = MIN(number (add_min, add_max), 3);\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (DragonSoul.cpp #5)",
+  "old": "\t\t\tBYTE bType = additional_attr.apply_type;\n",
+  "new": "\t\t\tWORD bType = additional_attr.apply_type; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dragon_soul_table.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dragon_soul_table.h #1)",
+  "old": "\tSApply (BYTE at, int av, float p = 0.f) : apply_type(at), apply_value(av), prob(p) {}\n\tBYTE apply_type;\n",
+  "new": "\tSApply (WORD at, int av, float p = 0.f) : apply_type(at), apply_value(av), prob(p) {} // MT2009_PLUS_WIDE_ATTR_V1\n\tWORD apply_type; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dragon_soul_table.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dragon_soul_table.cpp #1)",
+  "old": "static BYTE FindDragonSoulApplyType(const char* c_pszName)\n{\n\tstatic const struct { const char* name; BYTE point; } s_table[] =\n",
+  "new": "static WORD FindDragonSoulApplyType(const char* c_pszName) // MT2009_PLUS_WIDE_ATTR_V1\n{\n\tstatic const struct { const char* name; WORD point; } s_table[] = // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dragon_soul_table.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dragon_soul_table.cpp #2)",
+  "old": "\t\t\t}\n\t\t\tBYTE at;\n",
+  "new": "\t\t\t}\n\t\t\tWORD at; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dragon_soul_table.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dragon_soul_table.cpp #3)",
+  "old": "\t\t\tpChild->GetRow(j, &pRow);\n\n\t\t\tBYTE at;\n\t\t\tint av;\n",
+  "new": "\t\t\tpChild->GetRow(j, &pRow);\n\n\t\t\tWORD at; // MT2009_PLUS_WIDE_ATTR_V1\n\t\t\tint av;\n"
+ },
+ {
+  "file": "dungeon.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dungeon.h #1)",
+  "old": "\tvoid\tAddAffectAll(long lFromMapIndex, DWORD dwAffectType, BYTE bPoint, long lValue, long lDuration);\n\tvoid\tRemoveAffectAll(long lFromMapIndex, DWORD dwAffectType, BYTE bPoint = POINT_NONE);\n",
+  "new": "\tvoid\tAddAffectAll(long lFromMapIndex, DWORD dwAffectType, WORD bPoint, long lValue, long lDuration); // MT2009_PLUS_WIDE_ATTR_V1\n\tvoid\tRemoveAffectAll(long lFromMapIndex, DWORD dwAffectType, WORD bPoint = POINT_NONE); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dungeon.cpp #1)",
+  "old": "\tBYTE bPoint;\n\tlong lValue;\n\tlong lDuration;\n\tFAddAffect(DWORD dwAffectType, BYTE bPoint, long lValue, long lDuration)\n",
+  "new": "\tWORD bPoint; // MT2009_PLUS_WIDE_ATTR_V1\n\tlong lValue;\n\tlong lDuration;\n\tFAddAffect(DWORD dwAffectType, WORD bPoint, long lValue, long lDuration) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dungeon.cpp #2)",
+  "old": "\tBYTE bPoint;\n\tFRemoveAffect(DWORD dwAffectType, BYTE bPoint)\n",
+  "new": "\tWORD bPoint; // MT2009_PLUS_WIDE_ATTR_V1\n\tFRemoveAffect(DWORD dwAffectType, WORD bPoint) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dungeon.cpp #3)",
+  "old": "void CDungeon::AddAffectAll(long lFromMapIndex, DWORD dwAffectType, BYTE bPoint, long lValue, long lDuration)\n",
+  "new": "void CDungeon::AddAffectAll(long lFromMapIndex, DWORD dwAffectType, WORD bPoint, long lValue, long lDuration) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (dungeon.cpp #4)",
+  "old": "void CDungeon::RemoveAffectAll(long lFromMapIndex, DWORD dwAffectType, BYTE bPoint)\n",
+  "new": "void CDungeon::RemoveAffectAll(long lFromMapIndex, DWORD dwAffectType, WORD bPoint) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "log.h",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (log.h #1)",
+  "old": "\t\tvoid\t\tItemAttrLog(DWORD who, DWORD itemID, DWORD itemVnum, BYTE type, int value, const char* what=\"ATTR\");\n",
+  "new": "\t\tvoid\t\tItemAttrLog(DWORD who, DWORD itemID, DWORD itemVnum, WORD type, int value, const char* what=\"ATTR\"); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "log.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (log.cpp #1)",
+  "old": "void LogManager::ItemAttrLog(DWORD who, DWORD itemID, DWORD itemVnum, BYTE type, int value, const char* what)\n",
+  "new": "void LogManager::ItemAttrLog(DWORD who, DWORD itemID, DWORD itemVnum, WORD type, int value, const char* what) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (cmd_gm.cpp #1)",
+  "old": "\tBYTE\tpoint = 0;\n",
+  "new": "\tWORD\tpoint = 0; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_affect.cpp #1)",
+  "old": "\t\tBYTE applyOn = (BYTE) lua_tonumber(L, 1);\n",
+  "new": "\t\tWORD applyOn = (WORD)lua_tonumber(L, 1); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_affect.cpp #2)",
+  "old": "\t\tBYTE pointType = (long)lua_tonumber(L, 2);\n",
+  "new": "\t\tWORD pointType = (long)lua_tonumber(L, 2); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_affect.cpp #3)",
+  "old": "\t\tBYTE bPoint = lua_isnumber(L, 2) ? (BYTE)lua_tonumber(L, 2) : POINT_NONE;\n",
+  "new": "\t\tWORD bPoint = lua_isnumber(L, 2) ? (WORD)lua_tonumber(L, 2) : POINT_NONE; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_affect.cpp #4)",
+  "old": "\t\tCQuestManager & q = CQuestManager::instance();\n\n\t\tBYTE point_type = (BYTE) lua_tonumber(L, 1);\n\n",
+  "new": "\t\tCQuestManager & q = CQuestManager::instance();\n\n\t\tWORD point_type = (WORD)lua_tonumber(L, 1); // MT2009_PLUS_WIDE_ATTR_V1\n\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_affect.cpp #5)",
+  "old": "\t\t\treturn 0;\n\n\t\tBYTE point_type = (BYTE) lua_tonumber(L, 1);\n\n",
+  "new": "\t\t\treturn 0;\n\n\t\tWORD point_type = (WORD)lua_tonumber(L, 1); // MT2009_PLUS_WIDE_ATTR_V1\n\n"
+ },
+ {
+  "file": "questlua_dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_dungeon.cpp #1)",
+  "old": "\t\tBYTE point_type = (BYTE)lua_tonumber(L, 2);\n",
+  "new": "\t\tWORD point_type = (WORD)lua_tonumber(L, 2); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_dungeon.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_dungeon.cpp #2)",
+  "old": "\t\tBYTE point_type = lua_isnumber(L, 2) ? (BYTE)lua_tonumber(L, 2) : POINT_NONE;\n",
+  "new": "\t\tWORD point_type = lua_isnumber(L, 2) ? (WORD)lua_tonumber(L, 2) : POINT_NONE; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_item.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_item.cpp #1)",
+  "old": "\t\t\t\tBYTE bType = pTable->aApplies[i].bType;\n",
+  "new": "\t\t\t\tWORD bType = pTable->aApplies[i].bType; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_party.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_party.cpp #1)",
+  "old": "\t\tBYTE bApplyOn;\n",
+  "new": "\t\tWORD bApplyOn; // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_party.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_party.cpp #2)",
+  "old": "\t\tFGiveBuff (DWORD _dwType, BYTE _bApplyOn, long _lApplyValue, DWORD _dwFlag, long _lDuration,\n",
+  "new": "\t\tFGiveBuff (DWORD _dwType, WORD _bApplyOn, long _lApplyValue, DWORD _dwFlag, long _lDuration, // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_party.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_party.cpp #3)",
+  "old": "\t\tBYTE bApplyOn = lua_tonumber(L, 2);\n",
+  "new": "\t\tWORD bApplyOn = lua_tonumber(L, 2); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_pc.cpp #1)",
+  "old": "\t\tBYTE bPoint = static_cast<BYTE>(lua_tonumber(L, 1));\n",
+  "new": "\t\tWORD bPoint = static_cast<WORD>(lua_tonumber(L, 1)); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_pc.cpp #2)",
+  "old": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tBYTE bPoint = lua_isnumber(L, 2) ? (BYTE)lua_tonumber(L, 2) : POINT_NONE;\n\t\tCAffect* affect = ch->FindAffect(affectVnum, bPoint);\n",
+  "new": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tWORD bPoint = lua_isnumber(L, 2) ? (WORD)lua_tonumber(L, 2) : POINT_NONE; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tCAffect* affect = ch->FindAffect(affectVnum, bPoint);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_pc.cpp #3)",
+  "old": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tBYTE bPoint = lua_isnumber(L, 2) ? (BYTE)lua_tonumber(L, 2) : POINT_NONE;\n\t\tCAffect* pkAff = ch->FindAffect(affectVnum, bPoint);\n",
+  "new": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tWORD bPoint = lua_isnumber(L, 2) ? (WORD)lua_tonumber(L, 2) : POINT_NONE; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tCAffect* pkAff = ch->FindAffect(affectVnum, bPoint);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_pc.cpp #4)",
+  "old": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tBYTE bPoint = lua_isnumber(L, 2) ? (BYTE)lua_tonumber(L, 2) : POINT_NONE;\n\t\tif (ch->FindAffect(affectVnum, bPoint))\n",
+  "new": "\t\tDWORD affectVnum = (DWORD)lua_tonumber(L, 1);\n\t\tWORD bPoint = lua_isnumber(L, 2) ? (WORD)lua_tonumber(L, 2) : POINT_NONE; // MT2009_PLUS_WIDE_ATTR_V1\n\t\tif (ch->FindAffect(affectVnum, bPoint))\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_WIDE_ATTR_V1 (questlua_pc.cpp #5)",
+  "old": "\t\tlua_pushnumber(L, ch->GetPoint((BYTE)lua_tonumber(L, 1)));\n",
+  "new": "\t\tlua_pushnumber(L, ch->GetPoint((WORD)lua_tonumber(L, 1))); // MT2009_PLUS_WIDE_ATTR_V1\n"
+ }
+]

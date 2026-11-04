@@ -64,7 +64,7 @@ namespace
 	//
 	// The scoring stays coarse on purpose: it tells "worth keeping" from "roll
 	// it again", it does not model the damage formula.
-	int ScorePlayerBotBonusLineRaw(LPCHARACTER ch, BYTE wearCell, BYTE type, short value)
+	int ScorePlayerBotBonusLineRaw(LPCHARACTER ch, BYTE wearCell, WORD type, short value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		// A negative roll exists (movement speed on some sets) and is worth less
 		// than nothing, so it must not be able to prop up a bad item's total.
@@ -72,6 +72,18 @@ namespace
 			return 0;
 
 		const bool bCaster = IsPlayerBotCaster(ch);
+
+#ifdef MT2009_PLUS_BONUS67_SKILL
+		// MT2009_PLUS_BONUS67_SKILL_V1 (bot weights): the wiki's round 3 (256-318, playerbot_bonus67c.inc) - a skill's
+		// line is worth something only to the class and way that casts it (1 to the rest: a line is still a line);
+		// "Niski ranking" only to a bot of a low rank.
+		if (type >= POINT_ALIGNMENT_DAMAGE_BONUS && type < POINT_WIDE_END)
+		{
+			const int iScore = Bonus67SkillLineScore(ch, type, value);
+			if (iScore >= 0)
+				return iScore;
+		}
+#endif
 
 		switch (type)
 		{
@@ -227,7 +239,12 @@ namespace
 			// the rest of the game, and a bot was rerolling it away.
 			case APPLY_IMMUNE_STUN:             return 400;
 			case APPLY_IMMUNE_SLOW:             return 250;
+#ifdef MT2009_PLUS_BONUS67_SKILL
+			// MT2009_PLUS_BONUS67_SKILL_V1: "Odpornosc na Upadek +x%" - a chance now (5-20%), not the old immunity
+			case APPLY_IMMUNE_FALL:             return value >= 100 ? 120 : value * 2;
+#else
 			case APPLY_IMMUNE_FALL:             return 120;
+#endif
 			// Mana is what stops a bot keeping its buffs up - 213 of 1300 held
 			// less than the 300 SP a mastered aura costs - and it rolls to
 			// eighty, so this is one of the few lines that can fix that.
@@ -317,7 +334,7 @@ namespace
 	// jewellery and the boots a bot of twenty wears are the weakest thing it
 	// owns - and that is the point: a line on one of them is worth more early
 	// than a grade of refine on any of them.
-	bool IsPlayerBotEarlySlotLine(BYTE wearCell, BYTE type)
+	bool IsPlayerBotEarlySlotLine(BYTE wearCell, WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (wearCell)
 		{
@@ -350,7 +367,7 @@ namespace
 		return wearCell == WEAR_NECK || wearCell == WEAR_WRIST || wearCell == WEAR_FOOTS;
 	}
 
-	int ScorePlayerBotBonusLine(LPCHARACTER ch, BYTE wearCell, BYTE type, short value)
+	int ScorePlayerBotBonusLine(LPCHARACTER ch, BYTE wearCell, WORD type, short value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		const int raw = ScorePlayerBotBonusLineRaw(ch, wearCell, type, value);
 		const int tier = ch ? GetPlayerBotBonusTier(type, (int)ch->GetJob(), false) : 0;
@@ -395,7 +412,7 @@ namespace
 			int others = 0;
 			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 			{
-				const BYTE type = item->GetAttributeType(i);
+				const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 				const long value = item->GetAttributeValue(i);
 				if (value <= 0)
 					continue;
@@ -417,7 +434,7 @@ namespace
 		const BYTE wantedRace = GetPlayerBotRaceApplyType(GetPlayerBotFightingRace(ch));
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (value <= 0)
 				continue;
@@ -555,7 +572,7 @@ namespace
 	// Two entries used to name lines that cannot roll here at all: health as a
 	// percentage is in no attribute table, and "strong against monsters" is only
 	// in the rare one, where it is ten and not twenty.
-	bool IsPlayerBotTopBonusLine(BYTE type, long value)
+	bool IsPlayerBotTopBonusLine(WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (type)
 		{
@@ -643,7 +660,7 @@ namespace
 		PLAYERBOT_GOODS_BONUS_GOODS = 2,	// two or more, one valuable, or the weapon exceptions
 	};
 
-	bool IsPlayerBotStrongAgainstApply(BYTE type)
+	bool IsPlayerBotStrongAgainstApply(WORD type) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (type)
 		{
@@ -687,7 +704,7 @@ namespace
 		int lines = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (type == APPLY_NONE || value <= 0)
 				continue;
@@ -701,7 +718,7 @@ namespace
 	// Whether this line of this piece counts - for the goods rule and for the
 	// price list alike. `outright` is IsPlayerBotOutrightBonusWeapon(item),
 	// asked once by a caller walking every line.
-	bool IsPlayerBotGoodsLineCounted(LPITEM item, bool outright, BYTE type, long value)
+	bool IsPlayerBotGoodsLineCounted(LPITEM item, bool outright, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (!item || type == APPLY_NONE || value <= 0)
 			return false;
@@ -724,7 +741,7 @@ namespace
 		bool valuable = false;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (!IsPlayerBotGoodsLineCounted(item, outright, type, value))
 				continue;
@@ -774,7 +791,7 @@ namespace
 
 	// The top roll of an apply on this item's attribute set, from the
 	// engine's own table; zero when the table has no such line.
-	long GetPlayerBotBonusMaxRoll(LPITEM item, BYTE bApply)
+	long GetPlayerBotBonusMaxRoll(LPITEM item, WORD bApply) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		TItemAttrMap::const_iterator it = g_map_itemAttr.find(bApply);
 		if (it == g_map_itemAttr.end())
@@ -831,7 +848,7 @@ namespace
 	// top it names (playerbot_price_rules.h says which asks what). A line at
 	// its top that his sheet prices at x1.0 still counts as one. The shop sign
 	// asks the same question, so it cannot praise a line the price ignored.
-	WORD GetPlayerBotBonusLinePct(LPITEM item, BYTE slot, int level, BYTE type, long value, bool* atTop)
+	WORD GetPlayerBotBonusLinePct(LPITEM item, BYTE slot, int level, WORD type, long value, bool* atTop) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (atTop)
 			*atTop = false;
@@ -964,7 +981,7 @@ namespace
 		const int count = item->GetAttributeCount();
 		for (int i = 0; i < count && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (value <= 0 || !IsPlayerBotTopBonusLine(type, 0x7FFFFFFFL))
 				continue;
@@ -1059,7 +1076,7 @@ namespace
 		const bool outright = weapon && IsPlayerBotOutrightBonusWeapon(item);
 		for (int i = 0; item && i < playerbot_price_rules::BONUS_COUNT_MAX_LINES && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (type == 0 || value == 0)
 				continue;
@@ -1392,7 +1409,7 @@ namespace
 			return false;
 		for (TItemAttrMap::const_iterator it = g_map_itemAttr.begin(); it != g_map_itemAttr.end(); ++it)
 			if (it->second.bMaxLevelBySet[set] != 0 && it->second.dwProb != 0 &&
-					!item->HasAttr((BYTE)it->first))
+					!item->HasAttr((WORD)it->first)) // MT2009_PLUS_WIDE_ATTR_V1
 				return true;
 		return false;
 	}
@@ -1665,7 +1682,7 @@ namespace
 			return false;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			if (type == APPLY_NONE || value <= 0)
 				continue;
@@ -2635,7 +2652,7 @@ namespace
 		}
 	}
 
-	int ScorePlayerBotCostumeLine(LPCHARACTER ch, LPITEM item, BYTE type, long value)
+	int ScorePlayerBotCostumeLine(LPCHARACTER ch, LPITEM item, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		// Three costume lines the armour's scoring has no case for, and whose
 		// raw numbers (stamina to 400) would pass for the best line there is.

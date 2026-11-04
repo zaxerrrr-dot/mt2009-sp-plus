@@ -46,6 +46,7 @@
 // POINT type, so there is nothing to recompute it from).
 // Included after the engine's own headers (DWORD, BYTE, YANG, LPCHARACTER).
 #include <string>
+#include "mt2009_wideattr.h" // MT2009_PLUS_WIDE_ATTR_V1 (TMt2009PointNum: OnBonus takes the engine's point type)
 
 namespace mt2009_quest_rewards
 {
@@ -60,7 +61,7 @@ namespace mt2009_quest_rewards
 	// false: give nothing (the caller returns)
 	bool OnGold(LPCHARACTER ch, YANG& amount);
 	bool OnExp(LPCHARACTER ch, DWORD& amount);
-	bool OnBonus(LPCHARACTER ch, BYTE& point, long& value);
+	bool OnBonus(LPCHARACTER ch, TMt2009PointNum& point, long& value); // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 	void OnState(LPCHARACTER ch, const std::string& quest, const std::string& state);
 	unsigned int RuleCount();
 }

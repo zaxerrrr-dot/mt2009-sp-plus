@@ -58,6 +58,7 @@
 #include "questmanager.h"
 #include "log.h"
 #include "constants.h"
+#include "playerbot_bonus67.h" // MT2009_PLUS_BONUS67_SKILL_V1: Bonus67RareFits
 
 // MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli) - AddRareAttribute(2)
 // refuses them, so Seon-Hae must not take them. The gloves' Will (MT2009_PLUS_GLOVE_BASE_V1) and - MT2009_PLUS_JADE_BASE_V1,
@@ -252,7 +253,8 @@ namespace mt2009_seonhae
 		if (set < 0 || set >= ATTRIBUTE_SET_MAX_NUM)
 			return false;
 		for (TItemAttrMap::const_iterator it = g_map_itemRare.begin(); it != g_map_itemRare.end(); ++it)
-			if (it->second.bMaxLevelBySet[set] > 0 && it->second.dwProb > 0 && !item->HasRareAttr((BYTE)it->first))
+			if (it->second.bMaxLevelBySet[set] > 0 && it->second.dwProb > 0 && !item->HasRareAttr((WORD)it->first)
+					&& Bonus67RareFits(item, it->first)) // MT2009_PLUS_BONUS67_SKILL_V1: a skill's line - the item's class only
 				return true;
 		return false;
 	}
@@ -315,7 +317,7 @@ namespace mt2009_seonhae
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM && len > 0 && len < (int)sizeof(buf); ++i)
 		{
 			const unsigned int packed = (unsigned int)ch->GetQuestFlag(F_ATTR[i]);
-			len += snprintf(buf + len, sizeof(buf) - len, " %u %d", (packed >> 16) & 0xFF, (int)(short)(packed & 0xFFFF));
+			len += snprintf(buf + len, sizeof(buf) - len, " %u %d", (packed >> 16) & 0xFFFF, (int)(short)(packed & 0xFFFF)); // MT2009_PLUS_WIDE_ATTR_V1
 		}
 		Cmd(ch, "%s", buf);
 	}
@@ -417,7 +419,7 @@ namespace mt2009_seonhae
 			ch->SetQuestFlag(F_SOCKET[i], (int)item->GetSocket(i));
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE t = item->GetAttributeType(i);
+			const WORD t = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const short v = item->GetAttributeValue(i);
 			ch->SetQuestFlag(F_ATTR[i], t ? (int)(((unsigned int)t << 16) | (unsigned short)v) : 0);
 		}
@@ -477,7 +479,7 @@ namespace mt2009_seonhae
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
 			const unsigned int packed = (unsigned int)ch->GetQuestFlag(F_ATTR[i]);
-			attrs[i].bType = (BYTE)((packed >> 16) & 0xFF);
+			attrs[i].bType = (WORD)((packed >> 16) & 0xFFFF); // MT2009_PLUS_WIDE_ATTR_V1
 			attrs[i].sValue = attrs[i].bType ? (short)(packed & 0xFFFF) : 0;
 		}
 		item->SetSockets(sockets);

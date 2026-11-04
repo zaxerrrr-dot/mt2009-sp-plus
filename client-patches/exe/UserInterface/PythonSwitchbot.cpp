@@ -56,7 +56,7 @@ void CPythonSwitchbot::Update(const TSwitchbotTable& table)
 	m_SwitchbotTable.player_id = table.player_id;
 }
 
-void CPythonSwitchbot::SetAttribute(BYTE slot, BYTE alternative, BYTE attrIdx, BYTE attrType, int attrValue)
+void CPythonSwitchbot::SetAttribute(BYTE slot, BYTE alternative, BYTE attrIdx, WORD attrType, int attrValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (slot >= SWITCHBOT_SLOT_COUNT)
 	{
@@ -243,7 +243,7 @@ void CPythonSwitchbot::ClearAttributeMap()
 
 void CPythonSwitchbot::AddAttributeToMap(const TSwitchbotAttributeInfo& table)
 {
-	m_map_AttributesBySet[table.attribute_set][(BYTE)table.apply_num] = table.max_value;
+	m_map_AttributesBySet[table.attribute_set][(WORD)table.apply_num] = table.max_value; // MT2009_PLUS_WIDE_ATTR_V1
 }
 
 void CPythonSwitchbot::GetAttributesBySet(int iAttributeSet, std::vector<TPlayerItemAttribute>& vec_attributes)
@@ -269,7 +269,7 @@ void CPythonSwitchbot::GetAttributesBySet(int iAttributeSet, std::vector<TPlayer
 	}
 }
 
-long CPythonSwitchbot::GetAttributeMaxValue(int iAttributeSet, BYTE attrType)
+long CPythonSwitchbot::GetAttributeMaxValue(int iAttributeSet, WORD attrType) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (iAttributeSet == -1)
 	{
@@ -513,8 +513,8 @@ PyObject* switchbotSetAttribute(PyObject* poSelf, PyObject* poArgs)
 		return Py_BuildException();
 	}
 
-	BYTE bType;
-	if (!PyTuple_GetByte(poArgs, 3, &bType))
+	WORD bType; // MT2009_PLUS_WIDE_ATTR_V1: a bonus type up to 512
+	if (!PyTuple_GetInteger(poArgs, 3, &bType))
 	{
 		return Py_BuildException();
 	}
@@ -581,8 +581,8 @@ PyObject* switchbotGetAttributeMaxValue(PyObject* poSelf, PyObject* poArgs)
 		return Py_BuildException();
 	}
 
-	BYTE bAttrType;
-	if (!PyTuple_GetByte(poArgs, 1, &bAttrType))
+	WORD bAttrType; // MT2009_PLUS_WIDE_ATTR_V1
+	if (!PyTuple_GetInteger(poArgs, 1, &bAttrType))
 	{
 		return Py_BuildException();
 	}

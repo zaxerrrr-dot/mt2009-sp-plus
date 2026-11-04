@@ -14,6 +14,7 @@
 // The chance of an experience bonus (POINT_EXP_DOUBLE_BONUS) needs nothing: the engine has always given it
 // (char_battle.cpp); only global rolls it on items.
 #include "stdafx.h"
+#include "mt2009_wideattr.h" // MT2009_PLUS_WIDE_ATTR_V1
 #include "char.h"
 #include "item.h"
 #include "questmanager.h"
@@ -43,7 +44,7 @@ int BonusModeItemDropBonus(LPCHARACTER killer)
 // MT2009_PLUS_SWITCHBOT_ATTR_VALUES_V1: the same rule by attribute set, for what has no item at hand - the switchbot's
 // list of bonuses and their maxima (playerbot_switchbot.cpp SendItemAttributeInformations) gives exactly what
 // CItem::AddAttr gives an item of that set.
-long BonusModeSetAttrValue(int iSet, BYTE apply, BYTE level, long value)
+long BonusModeSetAttrValue(int iSet, WORD apply, BYTE level, long value) // MT2009_PLUS_WIDE_ATTR_V1
 {
 #ifdef ENABLE_PENDANT_SYSTEM
 	if (level > 0 && iSet == ATTRIBUTE_SET_PENDANT &&
@@ -53,7 +54,7 @@ long BonusModeSetAttrValue(int iSet, BYTE apply, BYTE level, long value)
 	return value;
 }
 
-long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value)
+long BonusModeAttrValue(CItem* item, TMt2009PointNum apply, BYTE level, long value) // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 {
 	if (!item)
 		return value;

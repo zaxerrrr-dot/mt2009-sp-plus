@@ -4885,6 +4885,85 @@ if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare
 else
     echo "[playerbot-migrate] 6th/7th bonus pool round 2: applied already (rare_6_7_wiki_v3)"
 fi
+# MT2009_PLUS_BONUS67_SKILL_V1 (server-patches/bonusy67c; the owner, 4 November 2026: every missing 6/7 bonus of the wiki
+# but the Lycan's - tools/bonusy67/bonusy67c_data.py):
+#   1. the apply ENUM of item_attr and item_attr_rare gets the first two-byte points after POINT_BLEEDING_REDUCE (255):
+#      POINT_ALIGNMENT_DAMAGE_BONUS 256 ... POINT_SKILL_DAMAGE_NOEJEON 318 (apply+0 = the POINT_* number - an item's bonus
+#      type is two bytes since MT2009_PLUS_WIDE_ATTR_V1; an ENUM over 255 names reads apply+0 = 256 and up); only an ENUM
+#      that ends with POINT_BLEEDING_REDUCE (255 names) gets them, nullability and default kept; idempotent.
+#   2. once per world (marker rare_6_7_wiki_v4): bonusy67c_wiki.sql (tools/bonusy67/gen_bonusy67c_sql.py) - the pool's
+#      round 3: 63 rows (weapon: low rank, "+x% of the total" of half humans / undead / desert, the skills' HP
+#      absorption, cooldown, duration, buffs, stun, knockback; body armour: a skill's damage; helmet: low rank) and the
+#      body armour's "Odpornosc na Upadek" (POINT_IMMUNE_FALL 90, 5-20%). Never empties it.
+m2_b67c_names="'POINT_ALIGNMENT_DAMAGE_BONUS','POINT_ATTBONUS_PER_HUMAN','POINT_ATTBONUS_PER_UNDEAD'"
+m2_b67c_names="$m2_b67c_names,'POINT_ATTBONUS_PER_DESERT','POINT_USE_SKILL_PALBANG_HP_ABSORB','POINT_USE_SKILL_AMSEOP_HP_ABSORB'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_YEONSA_HP_ABSORB','POINT_USE_SKILL_TUSOK_HP_ABSORB'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_YONGBI_HP_ABSORB','POINT_USE_SKILL_PAERYONG_HP_ABSORB'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_BYEURAK_HP_ABSORB','POINT_USE_SKILL_CHAIN_HP_ABSORB'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_SAMYEON_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GEOMPUNG_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GUNGSIN_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_KWANKYEOK_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_YONGKWON_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_MARYUNG_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_BIPABU_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_NOEJEON_NEXT_COOLTIME_DECREASE_10PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_SAMYEON_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GEOMPUNG_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GUNGSIN_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_KWANKYEOK_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_YONGKWON_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_MARYUNG_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_BIPABU_NEXT_COOLTIME_DECREASE_20PER'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_NOEJEON_NEXT_COOLTIME_DECREASE_20PER','POINT_SKILL_DURATION_INCREASE_GEOMKYUNG'"
+m2_b67c_names="$m2_b67c_names,'POINT_SKILL_DURATION_INCREASE_EUNHYUNG','POINT_SKILL_DURATION_INCREASE_GYEONGGONG'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GIHYEOL_ATT_GRADE_BONUS','POINT_USE_SKILL_NOEGEOM_ATT_GRADE_BONUS'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_SANGONG_ATT_GRADE_BONUS','POINT_USE_SKILL_GIGUNG_ATT_GRADE_BONUS'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_TERROR_ATT_GRADE_BONUS','POINT_USE_SKILL_MUYEONG_ATT_GRADE_BONUS'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GICHEON_ATT_GRADE_BONUS','POINT_USE_SKILL_JEONGEOP_ATT_GRADE_BONUS'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GWIGEOM_DEF_BONUS','POINT_USE_SKILL_HOSIN_DEF_BONUS'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_JEUNGRYEOK_DEF_BONUS','POINT_USE_SKILL_CHUNKEON_CASTING_SPEED'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_MANASHIELD_CASTING_SPEED','POINT_USE_SKILL_SAMYEON_STUN'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_GIGONGCHAM_STUN','POINT_USE_SKILL_CHARYUN_STUN','POINT_USE_SKILL_PABEOB_STUN'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_MAHWAN_STUN','POINT_USE_SKILL_GYOKSAN_KNOCKBACK'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_SEOMJEON_KNOCKBACK','POINT_USE_SKILL_KWANKYEOK_KNOCKBACK'"
+m2_b67c_names="$m2_b67c_names,'POINT_USE_SKILL_SWAERYUNG_KNOCKBACK','POINT_USE_SKILL_HWAYEOMPOK_KNOCKBACK'"
+m2_b67c_names="$m2_b67c_names,'POINT_SKILL_DAMAGE_SAMYEON','POINT_SKILL_DAMAGE_GEOMPUNG','POINT_SKILL_DAMAGE_GUNGSIN'"
+m2_b67c_names="$m2_b67c_names,'POINT_SKILL_DAMAGE_KWANKYEOK','POINT_SKILL_DAMAGE_YONGKWON','POINT_SKILL_DAMAGE_MARYUNG'"
+m2_b67c_names="$m2_b67c_names,'POINT_SKILL_DAMAGE_BIPABU','POINT_SKILL_DAMAGE_YONGBI','POINT_SKILL_DAMAGE_NOEJEON'"
+for m2_b67c_table in item_attr item_attr_rare; do
+    m2_b67c_enum=$(m2_b67_type $m2_b67c_table)
+    case "$m2_b67c_enum" in
+        *"'POINT_SKILL_DAMAGE_NOEJEON'"*) ;;
+        *"'POINT_BLEEDING_REDUCE')")
+            m2_b67c_null=$(db -N -e "SELECT IF(IS_NULLABLE = 'YES', 'NULL', 'NOT NULL'), IFNULL(COLUMN_DEFAULT, '') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = '$m2_b67c_table' AND COLUMN_NAME = 'apply'" 2>/dev/null | tr -d '\r')
+            m2_b67c_def=$(printf '%s' "$m2_b67c_null" | cut -f2 | tr -d "'")
+            m2_b67c_null=$(printf '%s' "$m2_b67c_null" | cut -f1)
+            [ -n "$m2_b67c_def" ] && m2_b67c_def=" DEFAULT '$m2_b67c_def'"
+            if [ "$(printf '%s' "$m2_b67c_enum" | grep -o "','" | wc -l | tr -d ' ')" = 254 ] &&
+                    db -e "ALTER TABLE world.$m2_b67c_table MODIFY apply ${m2_b67c_enum%)},$m2_b67c_names) $m2_b67c_null$m2_b67c_def;"; then
+                echo "[playerbot-migrate] 6th/7th bonuses round 3: $m2_b67c_table apply ENUM up to POINT_SKILL_DAMAGE_NOEJEON (318)"
+            else
+                fail_step "6th/7th bonuses round 3: could not add the points 256-318 to $m2_b67c_table's apply ENUM (not 255 names?)" >&2
+            fi ;;
+        *) fail_step "6th/7th bonuses round 3: $m2_b67c_table's apply ENUM does not end with POINT_BLEEDING_REDUCE - left as it is" >&2 ;;
+    esac
+done
+if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_wiki_v4'" 2>/dev/null || echo 1)" = 0 ]; then
+    if [ -s /opt/playerbot/bonusy67c_wiki.sql ] &&
+            db -N -e "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr_rare' AND COLUMN_NAME = 'apply' AND COLUMN_TYPE LIKE '%''POINT_SKILL_DAMAGE_NOEJEON''%'" 2>/dev/null | grep -q 1 &&
+            [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_wiki_v3'" 2>/dev/null || echo 0)" = 1 ]; then
+        if db < /opt/playerbot/bonusy67c_wiki.sql; then
+            echo "[playerbot-migrate] 6th/7th bonus pool round 3: bonusy67c_wiki.sql applied ($(db -N -e "SELECT COUNT(*) FROM world.item_attr_rare" 2>/dev/null | tr -d ' \r') rows)"
+        else
+            fail_step "6th/7th bonus pool round 3: bonusy67c_wiki.sql failed; item_attr_rare stays as it was" >&2
+        fi
+    else
+        fail_step "6th/7th bonus pool round 3: no bonusy67c_wiki.sql, no points 256-318 in item_attr_rare's ENUM or no round 2 yet - next start" >&2
+    fi
+else
+    echo "[playerbot-migrate] 6th/7th bonus pool round 3: applied already (rare_6_7_wiki_v4)"
+fi
 if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; then
     if db < /opt/playerbot/zywioly_moby_global.sql; then
         echo "[playerbot-migrate] bonus mode: global - elements on every monster (zywioly_moby_global.sql)"
@@ -5299,6 +5378,57 @@ fi
 # says nothing - 2.23.0 copied the chests 30773-30776 from 50270/50271 a few hundred lines before
 # it made those, and every fresh world's cores stopped at boot on mob_drop_item.arezzo.txt. The
 # list is read from this file, so a copy added later is checked too.
+# MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr; the owner, 3 November 2026: room for every 6th/7th bonus of the
+# wiki): an item's bonus type, an item_proto apply and an affect's point are two bytes in the cores (WORD, up to
+# POINT_MAX_NUM 512) - every column that keeps one becomes SMALLINT UNSIGNED: attrtype0..6 of player.item (every bag,
+# the safebox, the item-shop storage, the Ikarus shops' and auctions' items), player.item_award and any copy/backup
+# table with them, applytype0..2 of world.item_proto and its copies (item_proto_apply_global/_mt2009, ...),
+# player.affect.bApplyOn, world.item_extra_apply.apply_type and world.locale_point.point. Values are kept as they are
+# (0..255 fit both); found through information_schema (base tables only, views follow by themselves), so it is
+# idempotent - a column that is SMALLINT already is not touched, and a later copy of an old table is widened on the
+# next start. One ALTER a table (all its columns at once). InnoDB cannot change a column's type in place
+# (INSTANT/NOCOPY/INPLACE all refuse it on MariaDB 11.8), so it is a table copy with LOCK=SHARED: reads go on,
+# writes wait - player.item (about 1.1 million rows) took ~30 s on a copy of the test world; this runs while the
+# cores are down (the game service waits for this migrator). Nullability, default and comment kept.
+m2_wide_cols=$(db -N -e "SELECT CONCAT('\`', c.TABLE_SCHEMA, '\`.\`', c.TABLE_NAME, '\`'), c.COLUMN_NAME, c.IS_NULLABLE, IFNULL(c.COLUMN_DEFAULT, 'NULL'), REPLACE(c.COLUMN_COMMENT, '''', '''''') FROM information_schema.COLUMNS c JOIN information_schema.TABLES t ON t.TABLE_SCHEMA = c.TABLE_SCHEMA AND t.TABLE_NAME = c.TABLE_NAME WHERE t.TABLE_TYPE = 'BASE TABLE' AND c.DATA_TYPE = 'tinyint' AND c.TABLE_SCHEMA NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys') AND (c.COLUMN_NAME REGEXP '^attrtype[0-6]\$' OR c.COLUMN_NAME REGEXP '^applytype[0-2]\$' OR (c.TABLE_NAME = 'affect' AND c.COLUMN_NAME = 'bApplyOn') OR (c.TABLE_NAME = 'item_extra_apply' AND c.COLUMN_NAME = 'apply_type') OR (c.TABLE_NAME = 'locale_point' AND c.COLUMN_NAME = 'point')) ORDER BY c.TABLE_SCHEMA, c.TABLE_NAME, c.ORDINAL_POSITION" 2>/dev/null) \
+    || { fail_step "two-byte bonus types: could not read information_schema - the columns stay as they are"; m2_wide_cols=""; }
+m2_wide_tab=""
+m2_wide_sql=""
+m2_wide_done=0
+m2_wide_alter() {
+    [ -n "$m2_wide_tab" ] || return 0
+    m2_wide_t0=$(date +%s)
+    if db -e "ALTER TABLE $m2_wide_tab $m2_wide_sql, ALGORITHM=COPY, LOCK=SHARED;" </dev/null; then
+        m2_wide_done=$((m2_wide_done + 1))
+        echo "[playerbot-migrate] two-byte bonus types: $m2_wide_tab widened to SMALLINT UNSIGNED in $(( $(date +%s) - m2_wide_t0 )) s"
+    else
+        fail_step "two-byte bonus types: could not widen $m2_wide_tab ($m2_wide_sql) - it keeps one-byte types; the next start tries again"
+    fi
+}
+m2_wide_tabchar=$(printf '\t')
+while IFS="$m2_wide_tabchar" read -r m2_wide_t m2_wide_c m2_wide_null m2_wide_def m2_wide_cmt; do
+    [ -n "$m2_wide_t" ] || continue
+    if [ "$m2_wide_t" != "$m2_wide_tab" ]; then
+        m2_wide_alter
+        m2_wide_tab=$m2_wide_t
+        m2_wide_sql=""
+    fi
+    m2_wide_one="MODIFY \`$m2_wide_c\` SMALLINT UNSIGNED"
+    if [ "$m2_wide_null" = NO ]; then m2_wide_one="$m2_wide_one NOT NULL"; else m2_wide_one="$m2_wide_one NULL"; fi
+    case "$m2_wide_def" in
+        NULL) [ "$m2_wide_null" = NO ] || m2_wide_one="$m2_wide_one DEFAULT NULL" ;;
+        *[!0-9]*|'') ;;
+        *) m2_wide_one="$m2_wide_one DEFAULT $m2_wide_def" ;;
+    esac
+    [ -z "$m2_wide_cmt" ] || m2_wide_one="$m2_wide_one COMMENT '$m2_wide_cmt'"
+    m2_wide_sql="${m2_wide_sql:+$m2_wide_sql, }$m2_wide_one"
+done <<M2_WIDE_COLS
+$m2_wide_cols
+M2_WIDE_COLS
+m2_wide_alter
+if [ -z "$m2_wide_cols" ]; then
+    echo "[playerbot-migrate] two-byte bonus types: every bonus type column is SMALLINT already"
+fi
 migrate_copies() { # migrate_copies item|mob -- "source:copy" per copy this script makes
     awk -v t="world.$1_proto" '
         index($0, "AS SELECT * FROM " t " WHERE vnum = ") {

@@ -105,7 +105,7 @@ void CPythonExchange::SetItemMetinSocketToSelf(int pos, int imetinpos, DWORD vnu
 	m_self.item_metin[pos][imetinpos] = vnum;
 }
 
-void CPythonExchange::SetItemAttributeToTarget(int pos, int iattrpos, BYTE byType, short sValue)
+void CPythonExchange::SetItemAttributeToTarget(int pos, int iattrpos, WORD byType, short sValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;
@@ -114,7 +114,7 @@ void CPythonExchange::SetItemAttributeToTarget(int pos, int iattrpos, BYTE byTyp
 	m_victim.item_attr[pos][iattrpos].sValue = sValue;
 }
 
-void CPythonExchange::SetItemAttributeToSelf(int pos, int iattrpos, BYTE byType, short sValue)
+void CPythonExchange::SetItemAttributeToSelf(int pos, int iattrpos, WORD byType, short sValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;
@@ -189,7 +189,7 @@ DWORD CPythonExchange::GetItemMetinSocketFromSelf(BYTE pos, int iMetinSocketPos)
 	return m_self.item_metin[pos][iMetinSocketPos];
 }
 
-void CPythonExchange::GetItemAttributeFromTarget(BYTE pos, int iAttrPos, BYTE * pbyType, short * psValue)
+void CPythonExchange::GetItemAttributeFromTarget(BYTE pos, int iAttrPos, WORD * pbyType, short * psValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;
@@ -198,7 +198,7 @@ void CPythonExchange::GetItemAttributeFromTarget(BYTE pos, int iAttrPos, BYTE * 
 	*psValue = m_victim.item_attr[pos][iAttrPos].sValue;
 }
 
-void CPythonExchange::GetItemAttributeFromSelf(BYTE pos, int iAttrPos, BYTE * pbyType, short * psValue)
+void CPythonExchange::GetItemAttributeFromSelf(BYTE pos, int iAttrPos, WORD * pbyType, short * psValue) // MT2009_PLUS_WIDE_ATTR_V1
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;

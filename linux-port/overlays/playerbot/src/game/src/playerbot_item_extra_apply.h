@@ -69,10 +69,10 @@ inline void LoadMt2009ItemExtraApplies(Mt2009ItemExtraApplyTable& table)
 		const DWORD dwVnum = (DWORD)strtoul(row[0], NULL, 10);
 		const long lType = strtol(row[1], NULL, 10);
 		const long lValue = strtol(row[2], NULL, 10);
-		if (dwVnum == 0 || lType <= 0 || lType > 255 || lType >= POINT_MAX_NUM)
+		if (dwVnum == 0 || lType <= 0 || lType >= POINT_MAX_NUM) // MT2009_PLUS_WIDE_ATTR_V1
 			continue;
 		TItemApply apply;
-		apply.bType = (BYTE)lType;
+		apply.bType = (WORD)lType; // MT2009_PLUS_WIDE_ATTR_V1
 		apply.lValue = lValue;
 		table.lines[dwVnum].push_back(apply);
 		++count;

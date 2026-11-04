@@ -4,6 +4,7 @@
 // patch defines it); the map table and the monsters' experience build without it, so the bots' map filters
 // (champion::IsSungmaMap) link either way.
 #include "stdafx.h"
+#include "mt2009_wideattr.h" // MT2009_PLUS_WIDE_ATTR_V1
 #include "playerbot_champion.h"
 #include "constants.h"
 #include "config.h"
@@ -271,7 +272,7 @@ namespace champion
 	// MT2009_PLUS_CHAMPION_V2: Stage B - the numbers go as points (the exe's POINT_CONQUEROR_*/POINT_SUNGMA_*, the
 	// character window's Sung Ma page reads player.GetStatus); Stage A's "champion_info" chat line is gone (a 3.0
 	// client only - older ones are refused at login, server_version in m2-render-config).
-	static void SendPoint(LPCHARACTER ch, BYTE bType, long lValue)
+	static void SendPoint(LPCHARACTER ch, WORD bType, long lValue) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		TPacketGCPointChange pack;
 		pack.header = HEADER_GC_CHARACTER_POINT_CHANGE;
@@ -666,7 +667,7 @@ int ChampionDamage(LPCHARACTER pkVictim, LPCHARACTER pAttacker, int iDam)
 
 // MT2009_PLUS_SUNGMA_BONUS_V1: battle.h AttackAffect (a normal hit's stun / slow): a person's chance at a monster of a
 // Sung Ma map grows by 1% every 100 of Inteligencja above the requirement.
-int ChampionAffectBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, BYTE bAttPoint)
+int ChampionAffectBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, TMt2009PointNum bAttPoint) // MT2009_PLUS_WIDE_ATTR_V1 (mt2009_wideattr.h)
 {
 	if ((bAttPoint != POINT_STUN_PCT && bAttPoint != POINT_SLOW_PCT) || !pkAttacker || !pkVictim ||
 			!pkAttacker->IsPC() || pkVictim->IsPC())

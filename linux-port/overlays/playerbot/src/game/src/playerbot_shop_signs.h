@@ -72,7 +72,7 @@ namespace
 		{ APPLY_SKILL_DAMAGE_BONUS, "UM", true },
 	};
 
-	const TPlayerBotSignBonusLabel* FindPlayerBotSignBonusLabel(BYTE bApply)
+	const TPlayerBotSignBonusLabel* FindPlayerBotSignBonusLabel(WORD bApply) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		for (size_t i = 0; i < sizeof(PLAYERBOT_SIGN_BONUS_LABELS) / sizeof(PLAYERBOT_SIGN_BONUS_LABELS[0]); ++i)
 			if (PLAYERBOT_SIGN_BONUS_LABELS[i].bApply == bApply)
@@ -98,7 +98,7 @@ namespace
 		const int count = item->GetAttributeCount();
 		for (int i = 0; i < count && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE type = item->GetAttributeType(i);
+			const WORD type = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			const long value = item->GetAttributeValue(i);
 			const TPlayerBotSignBonusLabel* label = FindPlayerBotSignBonusLabel(type);
 			if (type == 0 || value <= 0 || !label)

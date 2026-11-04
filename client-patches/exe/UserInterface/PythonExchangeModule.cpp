@@ -133,7 +133,7 @@ PyObject * exchangeGetItemAttributeFromTarget(PyObject * poTarget, PyObject * po
 	if (!PyTuple_GetInteger(poArgs, 1, &iAttrSlotPos))
 		return Py_BuildException();
 
-	BYTE byType;
+	WORD byType; // MT2009_PLUS_WIDE_ATTR_V1
 	short sValue;
 	CPythonExchange::Instance().GetItemAttributeFromTarget(pos, iAttrSlotPos, &byType, &sValue);
 
@@ -149,7 +149,7 @@ PyObject * exchangeGetItemAttributeFromSelf(PyObject * poTarget, PyObject * poAr
 	if (!PyTuple_GetInteger(poArgs, 1, &iAttrSlotPos))
 		return Py_BuildException();
 
-	BYTE byType;
+	WORD byType; // MT2009_PLUS_WIDE_ATTR_V1
 	short sValue;
 	CPythonExchange::Instance().GetItemAttributeFromSelf(pos, iAttrSlotPos, &byType, &sValue);
 

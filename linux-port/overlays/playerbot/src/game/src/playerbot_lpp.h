@@ -258,7 +258,7 @@ namespace
 			// "Wysoka Wartosc": a line of his tier 5 or 6, rolled half-way up.
 			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 			{
-				const BYTE apply = item->GetAttributeType(i);
+				const WORD apply = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 				if (apply == 0)
 					continue;
 				const int bonusTier = std::max(GetPlayerBotBonusTier(apply, job, false),
@@ -296,7 +296,7 @@ namespace
 		const int job = piece.ownClass ? (int)ch->GetJob() : -1;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
-			const BYTE apply = item->GetAttributeType(i);
+			const WORD apply = item->GetAttributeType(i); // MT2009_PLUS_WIDE_ATTR_V1
 			if (apply == 0)
 				continue;
 			const int bonusTier = std::max(GetPlayerBotBonusTier(apply, job, false),

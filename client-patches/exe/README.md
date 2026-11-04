@@ -988,3 +988,26 @@ Root (`uiattributelist.py`) pokazuje trzy linie okna bonusów tylko, gdy `player
 (`POINT_MAX_NUM` 253 – odrzuca typ ≥ 253 w `CPythonPlayer::SetStatus`) ich nie pokazuje i nic się nie psuje; dymek
 przedmiotu działa na każdym exe (`localeinfo_point.py`, nazwy po numerze). Sprawdzone: `g++ -fsyntax-only` wyliczenia
 `length.h` z `static_assert` 252 / 253–255 / 256.
+
+## Dwubajtowy typ bonusu – `MT2009_PLUS_WIDE_ATTR_V1` (bez `#ifdef`; `server-patches/wideattr`)
+
+Serwer trzyma typ bonusu przedmiotu, punkt efektu i typ zmiany punktu w 2 bajtach (`WORD`, do `POINT_MAX_NUM` 512), więc
+każdy pakiet z przedmiotem urósł o 7 B (7 linii × 1 B). Ten exe czyta nowy układ; starszy (1.3.0) jest odrzucany przy
+logowaniu (root `constinfo.py` mówi 1.3.1 tylko z `app.MT2009_WIDE_ATTR_EXE`, auth `M2_CLIENT_MIN_VERSION` 1010301).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/GameType.h` | `TPlayerItemAttribute::bType` `WORD` (linia bonusu 4 B) – zestaw/aktualizacja przedmiotu, sklep, wymiana, przechowalnia, Ikarus, switchbot, podgląd ekwipunku |
+| `UserInterface/Packet.h` | `TPacketGCPointChange::Type`, `TPacketAffectElement::bPointIdxApplyOn`, `TPacketGCAffectRemove::bApplyOn` `WORD`; `static_assert` rozmiarów jak na serwerze (linia 4 B, efekt 26 B, usunięcie efektu 7 B, zmiana punktu 18 B, przedmiot sklepu 57 B, podgląd ekwipunku 48 B, filtr Ikarus 86 B, switchbot 20/534/51 B, wyszukiwarka sklepów 103 B) |
+| `UserInterface/Mt2009ChangeLook.cpp` | `static_assert`: item set 65 B, item update 52 B, wymiana 65 B, `ikashop::TPlayerItem` 63 B |
+| `Server/common/length.h` | `POINT_MAX_NUM = 512` – nowe punkty serwera (256+) trafiają do `m_alPoint` / `player.GetStatus(n)` bez nowego exe |
+| `UserInterface/Mt2009Champion.cpp` | `static_assert` `POINT_MAX_NUM` 512; `app.MT2009_WIDE_ATTR_EXE` = 1 |
+| `UserInterface/PythonPlayer.h/.cpp`, `AbstractPlayer.h` (**nowy w nakładce**), `PythonPlayerModule.cpp` | `Get/SetItemAttribute` z typem `WORD` |
+| `UserInterface/PythonExchange.h/.cpp`, `PythonExchangeModule.cpp` | atrybuty wymiany `WORD` |
+| `UserInterface/PythonSwitchbot.h/.cpp` | `SetAttribute`, mapa maksimów i `GetAttributeMaxValue` z typem `WORD`; `switchbot.SetAttribute` / `GetAttributeMaxValue` czytają typ jako liczbę (`PyTuple_GetInteger`), nie bajt |
+
+Rekord `item_proto` klienta (184 B, `TItemApply` z 1-bajtowym typem) **bez zmian**: applies protu zostają 0–255 (panel
+waliduje), nowe bonusy 6/7 to linie przedmiotu, nie applies. Sprawdzone: `clang-cl -fsyntax-only -Wconversion` całego
+UserInterface/GameLib/EterPythonLib – zero zwężeń `WORD` → `BYTE` w kodzie bonusów; build MSVC (`build.sh msvc --smoke`,
+osobny `EXEBUILD_WORK=cache/yohara/exebuild-wide`, źródła `cache/yohara/exe-src11` = exe-src10 + ta nakładka):
+`cache/yohara/exe-out11/metin2client.exe` (sha256 `9f72aee7…988aff`), smoke do ekranu logowania (4.11.2026).

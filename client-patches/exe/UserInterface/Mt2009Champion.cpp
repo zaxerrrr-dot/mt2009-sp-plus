@@ -18,6 +18,8 @@
 *   player.SUNGMA_PER_STR / _HP / _MOVE / _IMMUNE, player.HIT_PCT (and player.POINT_* of them), item.APPLY_SUNGMA_PER_*,
 *   item.APPLY_HIT_PCT, item.METIN_SUNGMA, item.EQUIPMENT_GLOVE (ENABLE_GLOVE_SYSTEM, PythonItemModule.cpp),
 *   effect.FLY_CONQUEROR_EXP, app.MT2009_YOHARA_EXE2 (1: the glove slot, the stones and the points are there).
+*
+* MT2009_PLUS_WIDE_ATTR_V1: app.MT2009_WIDE_ATTR_EXE (1: two-byte bonus types, POINT_MAX_NUM 512 - client 1.3.1).
 */
 #include "StdAfx.h"
 #include "PythonPlayer.h"
@@ -36,8 +38,9 @@ static_assert(POINT_HIT_PCT == 197, "POINT_HIT_PCT (197) differs from the server
 // MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii's point 252 is the last one (server-patches/antimagic)
 static_assert(POINT_ANTI_RESIST_MAGIC == 252, "POINT_ANTI_RESIST_MAGIC (252) differs from the server");
 // MT2009_PLUS_BONUS67_WIKI_V1: the server's 253-255 (server-patches/bonusy67b) take the last numbers of a one-byte type
-static_assert(POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255 && POINT_MAX_NUM == 256,
-		"POINT_RESIST_COMBAT / POINT_BLEEDING_PCT / POINT_BLEEDING_REDUCE (253-255) / POINT_MAX_NUM (256) differ from the server");
+// MT2009_PLUS_WIDE_ATTR_V1: two-byte bonus types (server-patches/wideattr) - POINT_MAX_NUM 512 as the server's
+static_assert(POINT_RESIST_COMBAT == 253 && POINT_BLEEDING_PCT == 254 && POINT_BLEEDING_REDUCE == 255 && POINT_MAX_NUM == 512,
+		"POINT_RESIST_COMBAT / POINT_BLEEDING_PCT / POINT_BLEEDING_REDUCE (253-255) / POINT_MAX_NUM (512) differ from the server");
 static_assert(METIN_SUNGMA == 2, "METIN_SUNGMA differs from the server (2)");
 static_assert(FLY_CONQUEROR_EXP == 30, "FLY_CONQUEROR_EXP differs from the server (30)");
 #ifdef ENABLE_GLOVE_SYSTEM
@@ -156,5 +159,11 @@ void Mt2009Champion_RegisterPython()
 	AddInt("item", "METIN_SUNGMA", METIN_SUNGMA);
 	AddInt("effect", "FLY_CONQUEROR_EXP", FLY_CONQUEROR_EXP);
 	AddInt("app", "MT2009_YOHARA_EXE2", 1);
+
+	// MT2009_PLUS_WIDE_ATTR_V1 (server-patches/wideattr): this exe reads the two-byte bonus type (TPlayerItemAttribute 4 B,
+	// the point change's and the affects' WORD point, POINT_MAX_NUM 512) - root's constinfo.py says client 1.3.1 only
+	// with it, and the auth core's server_version (m2-render-config, M2_CLIENT_MIN_VERSION 1010301) refuses an older
+	// client with "UPDATE" before a single item packet of the new layout reaches it
+	AddInt("app", "MT2009_WIDE_ATTR_EXE", 1);
 }
 #endif // ENABLE_CONQUEROR_LEVEL

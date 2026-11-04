@@ -248,7 +248,7 @@ namespace
 	// One line of a piece in a sash of this absorption, as the engine gives it
 	// (CItem::CalcAcceBonus: a positive line is at least 1), scored for the
 	// bot's class the way its gear is (ScorePlayerBotApplyTiered).
-	long long ScorePlayerBotSashLine(BYTE type, long value, int absorption, LPCHARACTER ch)
+	long long ScorePlayerBotSashLine(WORD type, long value, int absorption, LPCHARACTER ch) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (type == APPLY_NONE || type == APPLY_SKILL || value == 0)
 			return 0;
@@ -337,7 +337,7 @@ namespace
 	// item_attr rolls (a stat of 8, 1000 HP, 5% attack speed, 10% cast speed,
 	// 5% critical or piercing or against half-humans, 10% against a race), or
 	// an average-damage line of 20% or a skill-damage line of 10%.
-	bool IsPlayerBotSashStrongLine(BYTE type, long value)
+	bool IsPlayerBotSashStrongLine(WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		switch (type)
 		{
@@ -384,7 +384,7 @@ namespace
 	// not roll (the weapons' average and skill damage) a top line of the
 	// price rules (IsPlayerBotTopBonusLine). The sash grail is exempt - it is
 	// the best piece there is.
-	bool IsPlayerBotSashPerfectLine(LPITEM attrSet, BYTE type, long value)
+	bool IsPlayerBotSashPerfectLine(LPITEM attrSet, WORD type, long value) // MT2009_PLUS_WIDE_ATTR_V1
 	{
 		if (type == APPLY_NONE || value <= 0)
 			return false;

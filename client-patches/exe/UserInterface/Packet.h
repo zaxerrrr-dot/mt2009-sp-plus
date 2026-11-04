@@ -1585,7 +1585,7 @@ typedef struct packet_point_change
     int         header;
 
 	DWORD		dwVID;
-	BYTE		Type;
+	WORD		Type;	// MT2009_PLUS_WIDE_ATTR_V1 (point change): a POINT_* number up to 512 (server packet.h)
 
 	long        amount;
     long        value;
@@ -1797,7 +1797,7 @@ typedef struct packet_gc_private_shop_search_mark
 
 static_assert(sizeof(TPacketGCTargetDrop) == 285, "target drop packet size mismatch");
 static_assert(sizeof(TPacketCGPrivateShopSearch) == 72, "private shop search request size mismatch");
-static_assert(sizeof(TPacketGCPrivateShopSearchItem) == 96, "private shop search result size mismatch");
+static_assert(sizeof(TPacketGCPrivateShopSearchItem) == 103, "private shop search result size mismatch"); // MT2009_PLUS_WIDE_ATTR_V1: 7 bonus lines x 4 B (client-only - the server sends no 216)
 static_assert(sizeof(TPacketCGPrivateShopSearchBuyItem) == 17, "private shop search buy size mismatch");
 static_assert(sizeof(TPacketGCPrivateShopSearchMark) == 13, "private shop search mark size mismatch");
 
@@ -2537,7 +2537,7 @@ typedef struct SPacketGCTargetDelete
 typedef struct SPacketAffectElement
 {
     DWORD       dwType;
-    BYTE        bPointIdxApplyOn;
+    WORD        bPointIdxApplyOn;	// MT2009_PLUS_WIDE_ATTR_V1 (affect element): the server's TPacketAffectElement::bApplyOn
     long        lApplyValue;
     DWORD       dwFlag;
     long        lDuration;
@@ -2555,7 +2555,7 @@ typedef struct SPacketGCAffectRemove
 {
     BYTE bHeader;
     DWORD dwType;
-    BYTE bApplyOn;
+    WORD bApplyOn;	// MT2009_PLUS_WIDE_ATTR_V1 (affect remove)
 } TPacketGCAffectRemove;
 
 typedef struct packet_mall_open
@@ -3999,8 +3999,11 @@ static_assert(sizeof(TPacketCGFlowerEvent) == 4, "CG Flower must be 4 bytes (Ows
 #ifdef ENABLE_SWITCHBOT
 // MT2009_PLUS_SWITCHBOT_V1 (sizes): the server's static_assert the same
 static_assert(sizeof(TPacketCGSwitchbot) == 5 && sizeof(TPacketGCSwitchbot) == 5, "switchbot packets must be 5 bytes");
-static_assert(sizeof(TSwitchbotUpdateItem) == 44, "switchbot update item must be 44 bytes");
-static_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 15 && sizeof(TSwitchbotTable) == 409 && sizeof(TSwitchbotAttributeInfo) == 9, "switchbot tables");
+// MT2009_PLUS_WIDE_ATTR_V1 (switchbot sizes): a bonus line is 4 B (WORD type + short value) - the server's packet.h the same
+static_assert(sizeof(TSwitchbotUpdateItem) == 51, "switchbot update item must be 51 bytes");
+static_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 20 && sizeof(TSwitchbotTable) == 534 && sizeof(TSwitchbotAttributeInfo) == 9, "switchbot tables");
+static_assert(sizeof(TPlayerItemAttribute) == 4 && sizeof(TPacketAffectElement) == 26 && sizeof(TPacketGCAffectRemove) == 7, "MT2009_PLUS_WIDE_ATTR_V1: two-byte bonus type / affect point");
+static_assert(sizeof(TPacketGCPointChange) == 18 && sizeof(TShopItemData) == 57 && sizeof(SEquipmentItemSet) == 48 && sizeof(ikashop::TFilterInfo) == 86, "MT2009_PLUS_WIDE_ATTR_V1: point change 18 B, shop item 57 B, view equipment item 48 B, Ikarus search filter 86 B (server packet.h)");
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 static_assert(sizeof(TPacketGCMiniGameCatchKingResult) == 11, "CatchKing result must be 11 bytes (Owsap)");
