@@ -43,12 +43,15 @@ DOCK_OFFSET_X = 253 - 3
 TOOLTIP_COLOR = 0xffffff00
 
 # the package's locale/pl/locale_game.txt (cp1250; DETAILS_22 fixed: the critical hit, not the piercing one)
+# MT2009_PLUS_BONUS67_WIKI_NAMES_V1 (poprawki 3.0.10 #1): the lines of the 6th/7th bonuses carry the pl-wiki's names ("6. i 7.
+# bonus", word for word, the value in its box - DETAILS_0/12/55/56, RESIST_COMBAT, BLEEDING*, LOW_RANK, FALL, SUNGMA_PER_*);
+# a name wider than the label goes on more lines (Label).
 PL = {
-	"DETAILS_0": "Si\xb3a vs Metin",
+	"DETAILS_0": "Si\xb3a w walce z kamieniami Metin",
 	"DETAILS_1": "Si\xb3a vs Ludziom",
 	"DETAILS_10": "Si\xb3a vs Pot. Pustyni",
 	"DETAILS_11": "Si\xb3a vs Insektom",
-	"DETAILS_12": "Si\xb3a Ataku",
+	"DETAILS_12": "Warto\x9c\xe6 Ataku",
 	"DETAILS_13": "Si\xb3a Obrony",
 	"DETAILS_14": "Przeci\xeatne Obra\xbfenia",
 	"DETAILS_15": "Odp. na Przeci\xea.Obr.",
@@ -92,8 +95,8 @@ PL = {
 	"DETAILS_52": "Odporno\x9c\xe6 na Strza\xb3",
 	"DETAILS_53": "Szansa na Omdlenie",
 	"DETAILS_54": "Szansa na Spowolnie.",
-	"DETAILS_55": "Szansa na Zatrucie",
-	"DETAILS_56": "Odp. na Trucizn\xea",
+	"DETAILS_55": "Szansa na Otrucie",
+	"DETAILS_56": "Odporno\x9c\xe6 na Trucizny",
 	"DETAILS_59": "Kradzie\xbf \xafycia",
 	"DETAILS_60": "Kradzie\xbf PE",
 	"DETAILS_61": "Regeneracja P\xaf",
@@ -115,9 +118,9 @@ PL = {
 	"DETAILS_76": "Odp. na Magi\xea",
 	"DETAILS_77": "Antymagia",
 	# MT2009_PLUS_BONUS67_WIKI_V1: the 6th/7th bonuses 253-255 (server-patches/bonusy67b)
-	"DETAILS_MT_RESIST_COMBAT": "Obra\xbfenia przy PZ 90%+",
+	"DETAILS_MT_RESIST_COMBAT": "Je\x9cli masz powy\xbfej 90% P\xaf, doznajesz obra\xbfenia ni\xbfsze o x%.",
 	"DETAILS_MT_BLEEDING": "Atak krwawienia",
-	"DETAILS_MT_BLEEDING_REDUCE": "Odp. na krwawienie",
+	"DETAILS_MT_BLEEDING_REDUCE": "Odporno\x9c\xe6 na Atak Krwawienia",
 	"DETAILS_TOOLTIP_MT_RESIST_COMBAT": "Je\x9cli masz powy\xbfej 90% P\xaf, doznajesz obra\xbfenia ni\xbfsze o podany procent.",
 	"DETAILS_TOOLTIP_MT_BLEEDING": "Szansa, \xbfe zwyk\xb3y cios wywo\xb3a krwawienie: 5% P\xaf co 3 sek. (potw\xf3r wg stopnia), bez regeneracji P\xaf.",
 	"DETAILS_TOOLTIP_MT_BLEEDING_REDUCE": "Zmniejsza obra\xbfenia od krwawienia o podwojon\xb9 warto\x9c\xe6 (5% = -10%).",
@@ -219,7 +222,7 @@ PL = {
 	"DETAILS_MT_CATE_SUNGMA": "Bonusy Sung Ma",
 	# MT2009_PLUS_BONUS67_SKILL_V1: the 6th/7th bonuses of the wiki round 3 (server-patches/bonusy67c, 256-259) and 90
 	"DETAILS_MT_CATE_B67C": "Bonusy 6/7 (dodatkowe)",
-	"DETAILS_MT_LOW_RANK": "Niski ranking",
+	"DETAILS_MT_LOW_RANK": "Niski ranking powoduje zwi\xeakszenie zadawanych obra\xbfe\xf1",
 	"DETAILS_TOOLTIP_MT_LOW_RANK": "Niski ranking powoduje zwi\xeakszenie zadawanych obra\xbfe\xf1: Agresywny +1%, Nieuczciwy +2%, Z\xb3o\x9cliwy +3%, Okrutny +5% (bro\xf1 i he\xb3m razem: x2).",
 	"DETAILS_MT_PER_HUMAN": "P\xf3\xb3-ludzie (+% \xb3\xb9cznej)",
 	"DETAILS_TOOLTIP_MT_PER_HUMAN": "Silny przeciwko p\xf3\xb3-ludziom: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
@@ -227,16 +230,16 @@ PL = {
 	"DETAILS_TOOLTIP_MT_PER_UNDEAD": "Silny przeciwko nieumar\xb3ym: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
 	"DETAILS_MT_PER_DESERT": "Pustynia (+% \xb3\xb9cznej)",
 	"DETAILS_TOOLTIP_MT_PER_DESERT": "Silny przeciwko potworom pustyni: +x% \xb3\xb9cznej warto\x9cci tego bonusu.",
-	"DETAILS_MT_FALL": "Odp. na upadek",
+	"DETAILS_MT_FALL": "Odporno\x9c\xe6 na Upadek",
 	"DETAILS_TOOLTIP_MT_FALL": "Odporno\x9c\xe6 na Upadek: szansa, \xbfe cios lub umiej\xeatno\x9c\xe6 nie przewr\xf3ci ani nie odrzuci postaci.",
 	"DETAILS_MT_SUNGMA_STR": "Si\xb3a Sung Ma",
 	"DETAILS_MT_SUNGMA_HP": "Witalno\x9c\xe6 Sung Ma",
 	"DETAILS_MT_SUNGMA_MOVE": "Odporno\x9c\xe6 Sung Ma",
 	"DETAILS_MT_SUNGMA_IMMUNE": "Inteligencja Sung Ma",
-	"DETAILS_MT_SUNGMA_PER_STR": "Si\xb3a Sung Ma (%)",
-	"DETAILS_MT_SUNGMA_PER_HP": "Witalno\x9c\xe6 Sung Ma (%)",
-	"DETAILS_MT_SUNGMA_PER_MOVE": "Odporno\x9c\xe6 Sung Ma (%)",
-	"DETAILS_MT_SUNGMA_PER_IMMUNE": "Inteligencja Sung Ma (%)",
+	"DETAILS_MT_SUNGMA_PER_STR": "Wola SungMa (SI\xa3A)",
+	"DETAILS_MT_SUNGMA_PER_HP": "Wola SungMa (WIT)",
+	"DETAILS_MT_SUNGMA_PER_MOVE": "Wola SungMa (ODP)",
+	"DETAILS_MT_SUNGMA_PER_IMMUNE": "Wola SungMa (INT)",
 	"DETAILS_TOOLTIP_MT_SUNGMA": "Statystyka Sung Ma z przedmiot\xf3w Yohary: mapy Yohary wymagaj\xb9 jej odpowiedniej warto\x9cci.",
 	"DETAILS_TOOLTIP_MT_SUNGMA_PER": "Zwi\xeaksza statystyk\xea Sung Ma o podany procent.",
 }
@@ -437,6 +440,32 @@ class Title(object):
 	def GetGap(self):
 		return LABEL_GAP
 
+# MT2009_PLUS_BONUS67_WIKI_NAMES_V1: the words of a name on as many lines as its width needs (the wiki's long 6th/7th
+# lines); a word wider than a line stays whole on its own line.
+def TextWidth(text):
+	line = ui.TextLine()
+	line.SetText(text)
+	try:
+		return int(line.GetTextSize()[0])
+	except Exception:
+		return len(text) * 6
+
+def SplitName(text, width = LABEL_NAME_WIDTH - 6):
+	if TextWidth(text) <= width:
+		return [text]
+	lines = []
+	current = ""
+	for word in text.split(" "):
+		trial = (current + " " + word) if current else word
+		if current and TextWidth(trial) > width:
+			lines.append(current)
+			current = word
+		else:
+			current = trial
+	if current:
+		lines.append(current)
+	return lines or [text]
+
 class Label(object):
 	def __init__(self, parent, mask, text, tooltip_text, point):
 		self.point = point
@@ -451,16 +480,22 @@ class Label(object):
 		nameWindow.SetStringEvent("MOUSE_OVER_OUT", ui.__mem_func__(parent.ButtonOverOut))
 		nameWindow.Show()
 
-		name = ui.TextLine()
-		name.SetParent(nameWindow)
-		name.AddFlag("not_pick")
-		name.SetPosition(0, 0)
-		name.SetHorizontalAlignCenter()
-		name.SetVerticalAlignCenter()
-		name.SetWindowHorizontalAlignCenter()
-		name.SetWindowVerticalAlignCenter()
-		name.SetText(text)
-		name.Show()
+		# MT2009_PLUS_BONUS67_WIKI_NAMES_V1: one text line per line of the name (SplitName); the box goes down with them
+		names = []
+		lines = SplitName(text)
+		for (row, lineText) in enumerate(lines):
+			name = ui.TextLine()
+			name.SetParent(nameWindow)
+			name.AddFlag("not_pick")
+			name.SetPosition(0, row * LABEL_HEIGHT + LABEL_HEIGHT / 2)
+			name.SetHorizontalAlignCenter()
+			name.SetVerticalAlignCenter()
+			name.SetWindowHorizontalAlignCenter()
+			name.SetText(lineText)
+			name.Show()
+			names.append(name)
+		self.extraHeight = (len(lines) - 1) * LABEL_HEIGHT
+		nameWindow.SetSize(LABEL_NAME_WIDTH, LABEL_HEIGHT + self.extraHeight)
 
 		box = ui.ThinBoardCircle()
 		box.SetParent(parent)
@@ -479,24 +514,24 @@ class Label(object):
 		value.SetWindowVerticalAlignCenter()
 		value.Show()
 
-		for wnd in (nameWindow, name, box, value):
+		for wnd in [nameWindow, box, value] + names:
 			wnd.SetClippingMaskWindow(mask)
 
 		self.nameWindow = nameWindow
-		self.name = name
+		self.names = names
 		self.box = box
 		self.value = value
 		self.Refresh()
 
 	def Destroy(self):
 		self.nameWindow = None
-		self.name = None
+		self.names = []
 		self.box = None
 		self.value = None
 
 	def SetY(self, y, visible):
 		self.nameWindow.SetPosition(LABEL_NAME_POS_X, y)
-		self.box.SetPosition(LABEL_START_X, y + LABEL_GAP)
+		self.box.SetPosition(LABEL_START_X, y + LABEL_GAP + self.extraHeight)
 		for wnd in (self.nameWindow, self.box):
 			if visible:
 				wnd.Show()
@@ -504,7 +539,7 @@ class Label(object):
 				wnd.Hide()
 
 	def GetGap(self):
-		return LABEL_GAP * 2
+		return LABEL_GAP * 2 + self.extraHeight
 
 	def Refresh(self):
 		# MT2009_PLUS_PD_BONUS_V1 (PD line): a line of several points shows their sum
