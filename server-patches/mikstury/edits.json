@@ -1,0 +1,56 @@
+[
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (rule)",
+  "old": "bool CHARACTER::AddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube, DWORD itemVnum) // MT2009_PLUS_WIDE_ATTR_V1\n",
+  "new": "// MT2009_PLUS_MIKSTURY_V1 (rule): one bonus (affect type + point) of a potion, a juice, a water, a dew, an elixir or an\n// ItemShop buff (server-patches/mikstury/README.md; the owner, 4 November 2026). Nothing of that type and point on:\n// yes. A stronger one on: no (\"Silniejszy efekt...\"). The same value on and lasting at least as long as the new one\n// would: no - the item would be spent for nothing. Otherwise yes: the caller adds with override + per point, so the\n// new value and time replace the old (a refresh, or an upgrade). Different points / types never meet here.\nbool MiksturyMayRefresh(LPCHARACTER ch, DWORD dwType, WORD wPoint, long lValue, long lDuration)\n{\n\tif (!ch)\n\t\treturn false;\n\tconst CAffect* pkAff = ch->FindAffect(dwType, wPoint);\n\tif (!pkAff)\n\t\treturn true;\n\tif (pkAff->lApplyValue > lValue)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Silniejszy efekt tego rodzaju ju\\277 dzia\\263a.\");\n\t\treturn false;\n\t}\n\tif (pkAff->lApplyValue == lValue && pkAff->lDuration >= lDuration)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ten efekt ju\\277 dzia\\263a i potrwa d\\263u\\277ej ni\\277 nowy.\");\n\t\treturn false;\n\t}\n\treturn true;\n}\n\nbool CHARACTER::AddAffect(DWORD dwType, WORD bApplyOn, long lApplyValue, DWORD dwFlag, long lDuration, long lSPCost, bool bOverride, bool IsCube, DWORD itemVnum) // MT2009_PLUS_WIDE_ATTR_V1\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (decl)",
+  "old": "#define ENABLE_UNIQUE_ITEM_AUTOSPLIT\n",
+  "new": "#define ENABLE_UNIQUE_ITEM_AUTOSPLIT\n// MT2009_PLUS_MIKSTURY_V1 (decl): the stacking rule of the buff items (char_affect.cpp)\nbool MiksturyMayRefresh(LPCHARACTER ch, DWORD dwType, WORD wPoint, long lValue, long lDuration);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (juice)",
+  "old": "\t\t\t\t\t\tcase USE_ABILITY_UP:\n\t\t\t\t\t\t\tif (FindAffect(affect_type, apply_type))\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n",
+  "new": "\t\t\t\t\t\tcase USE_ABILITY_UP:\n\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (juice): the same bonus refreshes or upgrades, a weaker one is refused\n\t\t\t\t\t\t\tif (!MiksturyMayRefresh(this, affect_type, apply_type, apply_value, apply_duration))\n\t\t\t\t\t\t\t\treturn false;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (water)",
+  "old": "\t\t\t\t\t\t\tif (FindAffect(AFFECT_EXP_BONUS_EURO_FREE, item->GetValue(1)))\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\telse\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tAddAffect(AFFECT_EXP_BONUS_EURO_FREE, item->GetValue(1), item->GetValue(2), 0, item->GetValue(3), 0, false, true, item->GetVnum());\n\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t\t\t}\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (water): refresh / upgrade, override per point\n\t\t\t\t\t\t\tif (MiksturyMayRefresh(this, AFFECT_EXP_BONUS_EURO_FREE, item->GetValue(1), item->GetValue(2), item->GetValue(3)))\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tAddAffect(AFFECT_EXP_BONUS_EURO_FREE, item->GetValue(1), item->GetValue(2), 0, item->GetValue(3), 0, true, true, item->GetVnum());\n\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t\t\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (speed mov)",
+  "old": "\t\t\t\t\t\t\t\tcase POINT_MOV_SPEED:\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_MOV_SPEED, POINT_MOV_SPEED, item->GetValue(2), AFF_MOV_SPEED_POTION, item->GetValue(1), 0, true);\n",
+  "new": "\t\t\t\t\t\t\t\tcase POINT_MOV_SPEED:\n\t\t\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (speed mov): a weaker speed potion no longer overwrites a stronger one\n\t\t\t\t\t\t\t\t\tif (!MiksturyMayRefresh(this, AFFECT_MOV_SPEED, POINT_MOV_SPEED, item->GetValue(2), item->GetValue(1)))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_MOV_SPEED, POINT_MOV_SPEED, item->GetValue(2), AFF_MOV_SPEED_POTION, item->GetValue(1), 0, true);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (speed att)",
+  "old": "\t\t\t\t\t\t\t\tcase POINT_ATT_SPEED:\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_ATT_SPEED, POINT_ATT_SPEED, item->GetValue(2), AFF_ATT_SPEED_POTION, item->GetValue(1), 0, true);\n",
+  "new": "\t\t\t\t\t\t\t\tcase POINT_ATT_SPEED:\n\t\t\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (speed att): a weaker attack-speed potion no longer overwrites a stronger one\n\t\t\t\t\t\t\t\t\tif (!MiksturyMayRefresh(this, AFFECT_ATT_SPEED, POINT_ATT_SPEED, item->GetValue(2), item->GetValue(1)))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_ATT_SPEED, POINT_ATT_SPEED, item->GetValue(2), AFF_ATT_SPEED_POTION, item->GetValue(1), 0, true);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (stats)",
+  "old": "\t\t\t\t\t\t\t\tcase POINT_DEF_GRADE_BONUS:\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_STR, bPoint, item->GetValue(2), 0, item->GetValue(1), 0, true);\n",
+  "new": "\t\t\t\t\t\t\t\tcase POINT_DEF_GRADE_BONUS:\n\t\t\t\t\t\t\t\tcase POINT_RESIST_MAGIC:\n\t\t\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (stats): one record per stat (IsCube), so two different stats run together\n\t\t\t\t\t\t\t\t\tif (!MiksturyMayRefresh(this, AFFECT_STR, bPoint, item->GetValue(2), item->GetValue(1)))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\tAddAffect(AFFECT_STR, bPoint, item->GetValue(2), 0, item->GetValue(1), 0, true, true, item->GetVnum());\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (use affect)",
+  "old": "\t\t\t\t\t\t\telse if (FindAffect(item->GetValue(0), item->GetValue(1)))\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (bPoint != POINT_NONE && FindAffect(AFFECT_POTION_BOOST, bPoint))\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (addAffect)\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tAddAffect(item->GetValue(0), item->GetValue(1), item->GetValue(2), 0, item->GetValue(3), 0, false, false, item->GetVnum());\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (use affect): the same (type, point) refreshes or upgrades, a weaker one is refused; a herbal\n\t\t\t\t\t\t\t// potion of the same point no longer blocks it (another affect type - both run)\n\t\t\t\t\t\t\telse if (!MiksturyMayRefresh(this, item->GetValue(0), bPoint, item->GetValue(2), item->GetValue(3)))\n\t\t\t\t\t\t\t\treturn false;\n\n\t\t\t\t\t\t\tif (addAffect)\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tAddAffect(item->GetValue(0), item->GetValue(1), item->GetValue(2), 0, item->GetValue(3), 0, true, true, item->GetVnum());\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V1 (blend)",
+  "old": "\t\t\t\tif (FindAffect(affect_type, apply_type))\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tif (FindAffect(AFFECT_EXP_BONUS_EURO_FREE, POINT_RESIST_MAGIC))\n\t\t\t\t\t{\n\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t}\n\t\t\t\t\telse\n\t\t\t\t\t{\n\t\t\t\t\t\tAddAffect(affect_type, apply_type, apply_value, 0, apply_duration, 0, false);\n\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t}\n\t\t\t\t}\n",
+  "new": "\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (blend): the same point refreshes or upgrades; Woda Mong no longer blocks the dews and elixirs\n\t\t\t\tif (MiksturyMayRefresh(this, affect_type, apply_type, apply_value, apply_duration))\n\t\t\t\t{\n\t\t\t\t\tAddAffect(affect_type, apply_type, apply_value, 0, apply_duration, 0, true, true, item->GetVnum());\n\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t}\n"
+ }
+]

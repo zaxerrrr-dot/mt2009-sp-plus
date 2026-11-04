@@ -274,12 +274,12 @@ gold	10000000
 gaya	200
 end
 
-# Lekarstwo Iluzji <- 20 Lisci Zycia (Baek-Go, wiki "Lekarstwo Iluzji")
+# Lekarstwo Iluzji <- 20 Lisci Zycia (Baek-Go, wiki "Lekarstwo Iluzji": 50% - MT2009_PLUS_MIKSTURY_V1, the owner 4.11.2026)
 section
 npc	20018
 item	31145	20
 reward	31144	1
-percent	100
+percent	50
 end
 
 # Zwyczajna Szata Aury <- Ladny Kamien Chaosu, 200 Odlamkow Energii, Wyjatkowy Barwnik (Baek-Go, wiki "System Szat Aury")

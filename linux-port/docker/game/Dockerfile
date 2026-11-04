@@ -934,6 +934,27 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
 
+# MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026; server-patches/mikstury/README.md): m2_mikstury_limity.lua is
+# dofile'd after m2_difficulty.lua and before m2_mikstury.lua (the step below wraps what it sets) and replaces
+# potion_system.use_potion - the herbal potions and the grilled fish (item type 36) with no group limit, no block by an
+# ItemShop speed potion, the same bonus refreshed or upgraded (a weaker one refused), the fish exceptions (the EXP fish
+# 27879 < 27883 < 27887 never together, Zloty Karas 27883 and Krab Krolewski 27886 exclude each other). The package's
+# compiled herb_pick timer of quest herbalism calls m2_mikstury_limity.herb_picked() after a successful pick (Zlote
+# Ziolo 50741, 1%, decision M3).
+COPY quest/m2_mikstury_limity.lua /opt/metin2/share/locale/poland/quest/libs/other/m2_mikstury_limity.lua
+RUN set -eu; L=/opt/metin2/share/locale/poland; O="$L/quest/libs/other/_otherModuleLoader.lua" \
+ && LC_ALL=C grep -q 'other/m2_difficulty.lua' "$O" \
+ && LC_ALL=C grep -q 'other/potion_system.lua' "$O" \
+ && ! LC_ALL=C grep -q 'other/m2_mikstury.lua' "$O" \
+ && if ! LC_ALL=C grep -q 'other/m2_mikstury_limity.lua' "$O"; then printf 'dofile( LIBDIR .. "other/m2_mikstury_limity.lua")\n' >> "$O"; fi \
+ && test "$(LC_ALL=C grep -c 'other/m2_mikstury_limity.lua' "$O")" -eq 1 \
+ && test -s "$L/quest/libs/other/m2_mikstury_limity.lua" \
+ && H="$L/quest/object/herb_pick/timer/herbalism.start" \
+ && test "$(tr -d '\r' < "$H" | LC_ALL=C grep -c '^pc \. add_player_stat ( PLAYER_STATS_HERBALISM_FLAG , item_count ) $')" -eq 1 \
+ && if ! LC_ALL=C grep -q 'm2_mikstury_limity' "$H"; then LC_ALL=C sed -i 's/^\(pc \. add_player_stat ( PLAYER_STATS_HERBALISM_FLAG , item_count ) \)\(\r\?\)$/\1\2\nm2_mikstury_limity . herb_picked ( ) \2/' "$H"; fi \
+ && test "$(tr -d '\r' < "$H" | LC_ALL=C grep -c '^m2_mikstury_limity \. herb_picked ( ) $')" -eq 1 \
+ && echo "share: potions with no group limit, the fish exceptions, Zlote Ziolo from herbs (MT2009_PLUS_MIKSTURY_V1)"
+
 # MT2009_PLUS_BIOLOG_ELIKSIR_V1 / MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): m2_mikstury.lua is
 # dofile'd after m2_difficulty.lua and wraps potion_system.use_potion (Mikstura Geniuszu 51782, Mikstura Determinacji
 # 51783 and Mikstura Szybkiej Analizy 51785 refused - withdrawn, not on the pl-wiki) and collect_data.take_chance
@@ -1779,7 +1800,9 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-czepiec/cub
 # "Zielarstwo"): Huahn-So (20022) makes 50830-50841 from 10 herbs (95733-95736, 50737, 50738) and 20 empty bottles
 # (50739 power / 50740 resistance), 90% - cube.eliksiry.txt, appended to cube.txt; quest eliksiry_yohary opens his window.
 # blend.eliksiry.txt gives each elixir its point (the element powers 178-183, the resistances 75/76/78/133/134/135),
-# +8-20% and 1-10 minutes - appended to blend.txt. blend_item.cpp reads apply_type as a number (str_to_number), so the
+# +8-20% and 1-10 minutes - appended to blend.txt. MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026): 50 000 Yang an
+# elixir, and the golden ones 50842-50853 (+1 Zlote Ziolo 50741, 100 000 Yang, always +20% for 10 minutes) - 24 recipes,
+# 24 blend rows. blend_item.cpp reads apply_type as a number (str_to_number), so the
 # package's dews (Rosy 50821-50826, also Huahn-So's) had apply_type 0 - no effect; their names become the points here
 # (CRITICAL_PCT 40, PENETRATE_PCT 41, ATTACK_SPEED 17, RESIST_MAGIC 77, ATT_BONUS 95 = ATT_GRADE_BONUS,
 # DEF_BONUS 96 = DEF_GRADE_BONUS - the global data's apply names). Krysztal Energii's ENERGY (51002) is left as it is.
@@ -1790,17 +1813,18 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; B=$L/blend.txt; A
  && n=$(grep -c -E '^section' "$A/cube.eliksiry.txt") && b=$(grep -c -E '^section' "$C") \
  && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
  && cat "$A/cube.eliksiry.txt" >> "$C" \
- && test "$n" -eq 12 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
- && test "$(grep -c -E '^npc[[:blank:]]+20022[[:space:]]*$' "$C")" -eq 30 \
+ && test "$n" -eq 24 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20022[[:space:]]*$' "$C")" -eq 42 \
+ && test "$(grep -c -E '^gold[[:blank:]]+(50000|100000)[[:space:]]*$' "$A/cube.eliksiry.txt")" -eq 24 \
  && sed -i -E 's/^([[:blank:]]*apply_type[[:blank:]]+)CRITICAL_PCT\b/\140/; s/^([[:blank:]]*apply_type[[:blank:]]+)PENETRATE_PCT\b/\141/; s/^([[:blank:]]*apply_type[[:blank:]]+)ATTACK_SPEED\b/\117/; s/^([[:blank:]]*apply_type[[:blank:]]+)RESIST_MAGIC\b/\177/; s/^([[:blank:]]*apply_type[[:blank:]]+)ATT_BONUS\b/\195/; s/^([[:blank:]]*apply_type[[:blank:]]+)DEF_BONUS\b/\196/' "$B" \
  && test "$(grep -c -E '^[[:blank:]]*apply_type[[:blank:]]+(40|41|17|77|95|96)[[:space:]]*$' "$B")" -eq 6 \
  && bb=$(grep -c -E '^section' "$B") \
  && { [ -z "$(tail -c 1 "$B")" ] || printf '\r\n' >> "$B"; } \
  && cat "$A/blend.eliksiry.txt" >> "$B" \
- && test "$(grep -c -E '^section' "$B")" -eq "$((bb + 12))" \
- && test "$(grep -c -E '^[[:blank:]]*item_vnum[[:blank:]]+508(3[0-9]|4[01])[[:space:]]*$' "$B")" -eq 12 \
+ && test "$(grep -c -E '^section' "$B")" -eq "$((bb + 24))" \
+ && test "$(grep -c -E '^[[:blank:]]*item_vnum[[:blank:]]+508(3[0-9]|4[0-9]|5[0-3])[[:space:]]*$' "$B")" -eq 24 \
  && rm -rf "$A" \
- && echo "share: Huahn-So's elixirs of Yohara - $n recipes, 12 blend rows, the dews' apply types as points (MT2009_PLUS_YELIXIRS_V1)"
+ && echo "share: Huahn-So's elixirs of Yohara - $n recipes, 24 blend rows, the dews' apply types as points (MT2009_PLUS_YELIXIRS_V1, MT2009_PLUS_MIKSTURY_V1)"
 
 # MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
 # quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia

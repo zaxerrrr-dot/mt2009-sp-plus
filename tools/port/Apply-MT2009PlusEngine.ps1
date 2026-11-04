@@ -2119,4 +2119,17 @@ if ((Test-Path -LiteralPath $skillcolorApply -PathType Leaf) -and
     }
 }
 
+# Mikstury bez limitu (server-patches/mikstury, MT2009_PLUS_MIKSTURY_V1; the owner, 4 November 2026): different bonuses of
+# potions, juices, waters, dews, elixirs and ItemShop buffs always run together; the same bonus refreshes or upgrades, a
+# weaker one is refused (MiksturyMayRefresh, char_affect.cpp). Its anchors are the patched UseItemEx: the last.
+$miksturyApply = Join-Path $repo 'server-patches/mikstury/Apply-MiksturyPatch.ps1'
+if ((Test-Path -LiteralPath $miksturyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $miksturyResult = & $miksturyApply -SourceDir $engineGameSource
+    if ($miksturyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} potion stacking edit(s).' -f $miksturyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

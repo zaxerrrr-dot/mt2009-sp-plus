@@ -781,8 +781,20 @@ namespace
 			const int group = item->GetValue(1);
 			if (group < 1 || group > 3)
 				continue;
-			if (ch->FindAffect(AFFECT_POTION_START + group))
-				continue;   // that kind is already running
+			// MT2009_PLUS_MIKSTURY_V1: no group limit any more (m2_mikstury_limity.lua) - a potion is skipped only
+			// when its own bonus already runs in its group's affect at least as strong
+			bool running = false;
+			for (int a = 0; a < ITEM_APPLY_MAX_NUM; ++a)
+			{
+				const TItemTable* proto = item->GetProto();
+				if (!proto || proto->aApplies[a].bType == APPLY_NONE)
+					break;
+				const CAffect* aff = ch->FindAffect(AFFECT_POTION_START + group, proto->aApplies[a].bType);
+				if (aff && aff->lApplyValue >= proto->aApplies[a].lValue)
+					running = true;
+			}
+			if (running)
+				continue;   // that bonus is already running
 			const DWORD vnum = item->GetVnum();
 			if (!ch->UseItem(TItemPos(INVENTORY, cell)))
 				continue;

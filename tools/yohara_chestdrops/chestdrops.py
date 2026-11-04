@@ -127,6 +127,15 @@ EXTRA = {54700: [
     (71123, 1, _BERAN_RARE, 'Smocza Luska - ' + _WIKI),
     (71129, 1, _BERAN_RARE, 'Smoczy Szpon - ' + _WIKI),
 ]}
+EXTRA_NOTE = {54700: ('MT2009_PLUS_BERAN_CHEST_V1', 'the pl-wiki\'s list, no rate - the owner, 15 October 2026')}
+
+# MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026, M3): Zlote Ziolo (50741, the golden elixirs' herb) rarely from the
+# Yohara bosses' chests - the four of Jaskinie Gnolli / Wieza Sung Mahi (Gnoll Kapitan, Ahtrin Kapitan, Ahtrin Wielki
+# Mistrz); 1% an opening (the wiki gives no rate; the Water Nymph chest's ~1%), the sheet's rows scaled to what is left.
+GOLDEN_HERB_CHESTS = (31253, 31254, 31255, 31256)
+for _c in GOLDEN_HERB_CHESTS:
+    EXTRA.setdefault(_c, []).append((50741, 1, 0.01, 'Zlote Ziolo - owner 4.11, 1%'))
+    EXTRA_NOTE[_c] = ('MT2009_PLUS_MIKSTURY_V1', 'Zlote Ziolo for the golden elixirs - the owner, 4 November 2026')
 
 
 def ascii_pl(s):
@@ -217,9 +226,10 @@ def comment(chest):
         L.append('# The owner\'s own chance kept: ' + ', '.join('vnum %d weight %d' % kv for kv in sorted(FIXED[chest].items())) +
                  ' (the rest scaled to what is left).')
     if chest in EXTRA:
-        L.append('# Not in the sheet, added at a chance of their own (MT2009_PLUS_BERAN_CHEST_V1): %d rows, %.3f%% each'
-                 % (len(EXTRA[chest]), EXTRA[chest][0][2] * 100))
-        L.append('#   (the pl-wiki\'s list, no rate - the owner, 15 October 2026); the sheet\'s rows scaled to what is left.')
+        marker, why = EXTRA_NOTE[chest]
+        L.append('# Not in the sheet, added at a chance of their own (%s): %d rows, %.3f%% each'
+                 % (marker, len(EXTRA[chest]), EXTRA[chest][0][2] * 100))
+        L.append('#   (%s); the sheet\'s rows scaled to what is left.' % why)
     if skipped:
         s = '# Left out (renormalised): ' + '; '.join('%s%s %.3f%% - %s' % (n, ' x%d' % c if c > 1 else '', p * 100, w)
                                                      for n, c, p, w in skipped)
