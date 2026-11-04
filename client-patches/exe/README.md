@@ -1040,6 +1040,12 @@ ekranu `wndMgr.GetColorAtPosition`, tego nie ma), `uiscript/skillcolorwindow.py`
 paczka `skillcolor` (`client-2.0.30/tools/skillcolor`). Bez `player.SetSkillColor` (starszy exe) przycisku nie ma.
 Wersja: root `constinfo.py` 1.3.2 tylko z `app.MT2009_SKILL_COLOR_EXE`; auth `M2_CLIENT_MIN_VERSION` 1010302.
 
+**Kolory po relogu** (`MT2009_PLUS_SKILL_COLOR_RELOG_V1`, 4.11.2026): `InstanceBase.h` (deklaracje + 3 pola),
+`InstanceBase.cpp` (`__Initialize`: zerowanie; koniec `Update`: sprawdzenie co 0,5 s), `InstanceBaseEffect.cpp`
+(`__AttachEffect`: zapis koloru założenia), `Mt2009SkillColor.cpp` (`__Mt2009NoteAttachedSkillColor`,
+`Mt2009RefreshAffectSkillColors`, wywołanie na końcu `Mt2009SetSkillColor`) – efekt trwającego wzmocnienia założony
+w innym kolorze niż obecny kolor umiejętności zakładany od nowa (README łatki `skillcolor`). exe-src17 = exe-src16 + to.
+
 Zbudowane `build.sh msvc --smoke` (MSVC 14.44; osobny `EXEBUILD_WORK=cache/yohara/exebuild-color`, źródła
 `cache/yohara/exe-src14` = exe-src12 + ta nakładka – po scaleniu poprawek 3.0.10 nakładka exe bez innych zmian):
 `cache/yohara/exe-out14/metin2client.exe` (sha256 `a7765317…3032e6`), bez ostrzeżeń w zmienionych plikach, smoke do
