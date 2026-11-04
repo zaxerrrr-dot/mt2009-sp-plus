@@ -33,7 +33,7 @@
 #    FRONT_DAMAGE "back_damage.msa" = their front_damage.msa (they had no hit motion); the Christmas cloud mount's
 #    WAIT1/WAIT2 (0 %) wait1.msa/wait2.msa = its wait.msa; maze_keingnoll_boss SPECIAL5 special_attack3_1.msa = its
 #    special_attack3.msa; the ice dragon NPC's SPAWN drop.msa = its loop.msa (its WAIT). Not fixable here (no client has them): GF's encrypted
-#    pet_fenfire_01/02.mse, npc_yut_result_02.mse; lion.psd is a developer path inside a base-client file.
+#    npc_yut_result_02.mse (pet_fenfire_01/02.mse: EFFECT_STANDINS); lion.psd is a developer path inside a base-client file.
 import os
 import re
 
@@ -214,6 +214,17 @@ MOTION_STANDINS = dict(
      ('d:/ymir work/npc2/whitedragon_npc_ice/drop.msa', 'd:/ymir work/npc2/whitedragon_npc_ice/loop.msa')])
 
 
+# MT2009_PLUS_FENFIRE_EFFECT_V1 (the owner's syserr of 4 November 2026): the Halloween 2021 will-o'-the-wisp pet
+# (npc_pet/halloween_2021_fenfire_01/02.msm, npclist 34150-34152) attaches pet_fenfire_01/02.mse to its bone "efff" -
+# GF's encrypted files, in no client ("CEffectManager::RegisterEffect - LoadScript(...pet_fenfire_0N.mse) Error"). The
+# GF pet flame of the three-eyed cat stands in: the orange one for _01, the blue one for _02 (its texture
+# effect/monster2/12_a05_burn_01.dds is in the client - zodiak_maps).
+EFFECT_STANDINS = {
+    'd:/ymir work/effect/pet/pet_fenfire_01.mse': 'd:/ymir work/effect/pet/pet_cat3eye_fire.mse',
+    'd:/ymir work/effect/pet/pet_fenfire_02.mse': 'd:/ymir work/effect/pet/pet_cat3eye_fire_blue.mse',
+}
+
+
 def motlist_missing(text, folder, exists):
     """[(line, file)] of a motlist whose file is in no pack (exists(name) -> bool)."""
     out = []
@@ -228,6 +239,8 @@ def new_pack_files():
     """{in-pack name: bytes} of yfinal_mobs."""
     out = {}
     for k, src in MOTION_STANDINS.items():
+        out[k] = _gf(src)
+    for k, src in EFFECT_STANDINS.items():
         out[k] = _gf(src)
     for n in range(2, 6):
         k = 'd:/ymir work/monster2/metinstone_east/metinstone_east_%02d.dds' % n

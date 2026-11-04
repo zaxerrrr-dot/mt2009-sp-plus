@@ -2159,4 +2159,17 @@ if ((Test-Path -LiteralPath $tytulyApply -PathType Leaf) -and
     }
 }
 
+# "Ten efekt jest juz aktywny." at most once a minute a character (server-patches/efektaktywny,
+# MT2009_PLUS_EFFECT_ACTIVE_QUIET_V1; the owner's report, 4 November 2026): autohunt used Grzaniec 50216 / Znak
+# Straznika 72328 while their affect ran and every refusal filled the chat (char_item.cpp). Anywhere in the order.
+$efektAktywnyApply = Join-Path $repo 'server-patches/efektaktywny/Apply-EfektAktywnyPatch.ps1'
+if ((Test-Path -LiteralPath $efektAktywnyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $efektAktywnyResult = & $efektAktywnyApply -SourceDir $engineGameSource
+    if ($efektAktywnyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} effect-active line edit(s).' -f $efektAktywnyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

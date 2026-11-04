@@ -176,6 +176,9 @@ def Short(text, limit):
 # item.SelectItem of a vnum the client does not know selects another item (the
 # Dom Aukcyjny found it: uiauctionhouse.ItemNameOf); a name the same as that of
 # a vnum surely missing is "unknown".
+# MT2009_PLUS_NO_MISSING_VNUM_PROBE_V1: an unknown vnum selects the exe's fallback 60001 (PythonItemModule
+# itemSelectItem) - its name is the "unknown" one; asking for 2147483000 wrote "Cannot find item by" into syserr
+FALLBACK_ITEM_VNUM = 60001
 MISSING_ITEM_VNUM = 2147483000
 SENTINEL_ITEM_VNUM = 1
 _fallbackName = []
@@ -194,15 +197,17 @@ def _SelectedName(vnum):
 
 def ItemNameOf(vnum):
     """The item's name, or '' when the client does not know it."""
+    if vnum <= 0:
+        return ''
     if vnum in _nameCache:
         return _nameCache[vnum]
     try:
         if not _fallbackName:
-            _fallbackName.append(_SelectedName(MISSING_ITEM_VNUM))
+            _fallbackName.append(_SelectedName(FALLBACK_ITEM_VNUM))
         name = _SelectedName(vnum)
     except Exception:
         return ''
-    if vnum != SENTINEL_ITEM_VNUM and name == _fallbackName[0]:
+    if vnum not in (FALLBACK_ITEM_VNUM, SENTINEL_ITEM_VNUM) and name == _fallbackName[0]:
         name = ''
     _nameCache[vnum] = name
     return name
