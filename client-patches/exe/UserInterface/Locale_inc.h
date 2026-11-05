@@ -394,6 +394,12 @@
 // this exe's hello (CG OPEN at the game phase), so an older exe never sees it. Module titleSystem, app.MT2009_TITLES_EXE
 // (Mt2009Titles.cpp). Root: uicharactertitle.py, uiscript/charactertitlewindow.py, the portrait button (uicharacter.py).
 #define ENABLE_MT2009_TITLES
+// MT2009_PLUS_REMOTE_CALL_V1 (Enasir - the summonable storekeeper / merchant, the "Official Remote Call" package rebuilt -
+// server-patches/remotecall/README.md): packets CG 190 HEADER_CG_REMOTE_CALL (2 B + sequence: hello, summon, dismiss) /
+// GC 190 HEADER_GC_REMOTE_CALL (14 B: state, summoned, gone, message, Enasir's storeroom). The server answers only this
+// exe's requests (the hello at the game phase), so an older exe never sees GC 190. Module remoteCall,
+// app.MT2009_REMOTE_CALL_EXE, the game window's BINARY_RemoteCall_Event(sub, value) (Mt2009RemoteCall.cpp).
+#define ENABLE_MT2009_REMOTE_CALL
 // MT2009_PLUS_GROWTH_PET_V1 (System zwierzat domowych - the official growth pet, ported from the Anka2 sources, server-patches/
 // pety, contract SPEC.md): packets CG 122-134 / GC 224-236 (NOT Anka2's GC numbers - ours are taken), the pet data per pet
 // id (player.GetPetItem / GetPetSkill / GetPetSkillByIndex / GetPetPotential ...), net.SendPet*, skill.GetPetSkillInfo

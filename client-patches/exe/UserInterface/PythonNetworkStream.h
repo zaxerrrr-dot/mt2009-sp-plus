@@ -775,6 +775,13 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendTitlePacket(BYTE bSubHeader, DWORD dwTitle);
 	protected:
 #endif
+#ifdef ENABLE_MT2009_REMOTE_CALL
+		// MT2009_PLUS_REMOTE_CALL_V1: Enasir (Mt2009RemoteCall.cpp)
+		bool RecvRemoteCallPacket();
+	public:
+		bool SendRemoteCallPacket(BYTE bSubHeader);
+	protected:
+#endif
 #ifdef ENABLE_SWITCHBOT
 		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
 		bool RecvSwitchbotPacket();

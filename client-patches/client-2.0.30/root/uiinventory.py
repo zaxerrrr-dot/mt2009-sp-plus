@@ -500,6 +500,9 @@ class SidebarWindow(ui.Window):
 		("ekwipunek", "Dodatkowy ekwipunek", "OnClickExtraInventory", "extra_inventory"),
 		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py), the official taskbar pet button's picture.
 		("pet", "Zwierzak domowy", "OnClickPet", "new_pet"),
+		# MT2009_PLUS_REMOTE_CALL_V1: Enasir (uiremotecall.py) - the last one: left out without the exe's remoteCall (the
+		# tooltips are zipped with this tuple); GF's btn_peddler_call at the bar's size (mt2009_ui/sidebar/enasir_0x.tga).
+		("enasir", "Enasir", "OnClickEnasir", None),
 	)
 
 	def __init__(self, wndInventory):
@@ -548,12 +551,18 @@ class SidebarWindow(ui.Window):
 
 		y = self.BUTTON_GAP_Y
 		for name, text, handler, action in self.BUTTONS:
+			if name == "enasir" and not __import__("uiremotecall").IsAvailable():	# MT2009_PLUS_REMOTE_CALL_V1
+				continue
 			button = ui.Button()
 			button.SetParent(board)
 			button.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
 			button.SetOverVisual(SIDEBAR_IMAGE % (name, 2))
 			button.SetDownVisual(SIDEBAR_IMAGE % (name, 3))
-			button.SetToolTipText(text)
+			if name == "enasir":	# MT2009_PLUS_REMOTE_CALL_V1: the services and their time over the button
+				button.SetShowToolTipEvent(__import__("uiremotecall").ShowToolTip)
+				button.SetHideToolTipEvent(__import__("uiremotecall").HideToolTip)
+			else:
+				button.SetToolTipText(text)
 			# The windows behind these are built on their first click; the
 			# costume button has MSS32 crash on its click sample in that
 			# case, so these open without it too.
@@ -858,6 +867,9 @@ class SidebarWindow(ui.Window):
 
 	def OnClickPet(self):	# MT2009_PLUS_GROWTH_PET_V1
 		__import__("uipetinfo").ToggleWindow()
+
+	def OnClickEnasir(self):	# MT2009_PLUS_REMOTE_CALL_V1
+		__import__("uiremotecall").OnClick()
 
 	def OnClickExtraInventory(self):	# MT2009_PLUS_EKWIPUNEK_V1
 		__import__("uiekwipunek").ToggleWindow()
@@ -3383,6 +3395,9 @@ class InventoryWindow(ui.ScriptWindow):
 		# MT2009_PLUS_FLOWER_V1: a flower that would replace another flower's
 		# buff asks first (uiflowerevent.py, Owsap's uiinventory question).
 		if __import__("uiflowerevent").ConfirmFlowerUse(slotIndex, ItemVNum):
+			return
+		# MT2009_PLUS_REMOTE_CALL_V1: Dozorca / Handlarz Enasir ask first and stop at 1000 days (uiremotecall.py)
+		if __import__("uiremotecall").UseBagItem(slotIndex, ItemVNum):
 			return
 		item.SelectItem(ItemVNum)
 		if item.IsFlag(item.ITEM_FLAG_CONFIRM_WHEN_USE):

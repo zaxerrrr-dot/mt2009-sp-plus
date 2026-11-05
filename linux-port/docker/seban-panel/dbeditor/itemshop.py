@@ -161,6 +161,8 @@ BOOT_ONCE = {
     "konie_50901": {"adds": (50901, 50902, 50903), "note": "Zestaw Opieki nad Koniem i Pasza dla Konia (x50, x250)"},
     # MT2009_PLUS_TITLES_V2: the title certificates 57000-57008 (tytuly.sql), tab Wyposazenie
     "tytuly_certs_40": {"adds": tuple(range(40, 49)), "note": "Certyfikaty tytułów (Tytuł Heroiczny, Szczęściarz, ...)"},
+    # MT2009_PLUS_REMOTE_CALL_V1: Enasir's items 72368-72371 (remote_call.sql), tab Wyposazenie
+    "remote_call_50": {"adds": (50, 51, 52, 53), "note": "Dozorca / Handlarz Enasir (h) i x4"},
 }
 
 

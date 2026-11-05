@@ -1344,6 +1344,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvTitlePacket();
 				break;
 #endif
+#ifdef ENABLE_MT2009_REMOTE_CALL
+			case HEADER_GC_REMOTE_CALL: // MT2009_PLUS_REMOTE_CALL_V1
+				ret = RecvRemoteCallPacket();
+				break;
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();
@@ -1669,6 +1674,9 @@ void CPythonNetworkStream::SetGamePhase()
 	__RefreshStatus();
 #ifdef ENABLE_MT2009_TITLES
 	{ void Mt2009Titles_OnGamePhase(); Mt2009Titles_OnGamePhase(); } // MT2009_PLUS_TITLES_V1: the hello (CG 185 OPEN)
+#endif
+#ifdef ENABLE_MT2009_REMOTE_CALL
+	{ void Mt2009RemoteCall_OnGamePhase(); Mt2009RemoteCall_OnGamePhase(); } // MT2009_PLUS_REMOTE_CALL_V1: state cleared, the hello (CG 190 HELLO)
 #endif
 }
 

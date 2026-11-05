@@ -1,0 +1,13 @@
+{
+ "_note": "MT2009_PLUS_REMOTE_CALL_V1 - Enasir's items: the one list of names and descriptions (pl-wiki 'System Enasira' / 'Dozorca Enasir (h)') read by the client tool (patch_remotecall_client.py here) and written into the web shop's client_itemdesc.json; the server's rows: linux-port/docker/mariadb/playerbot/remote_call.sql",
+ "items": [
+  {"vnum": 72368, "name": "Storekeeper Enasir", "pl": "Dozorca Enasir", "icon": 72368, "kind": 0, "trade": false,
+   "desc": "Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni."},
+  {"vnum": 72369, "name": "Merchant Enasir", "pl": "Handlarz Enasir", "icon": 72369, "kind": 1, "trade": false,
+   "desc": "Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni."},
+  {"vnum": 72370, "name": "Storekeeper Enasir (t)", "pl": "Dozorca Enasir (h)", "icon": 72368, "kind": 0, "trade": true,
+   "desc": "Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami."},
+  {"vnum": 72371, "name": "Merchant Enasir (t)", "pl": "Handlarz Enasir (h)", "icon": 72369, "kind": 1, "trade": true,
+   "desc": "Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami."}
+ ]
+}

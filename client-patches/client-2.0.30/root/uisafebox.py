@@ -474,6 +474,14 @@ class SafeboxWindow(ui.ScriptWindow):
 		(self.xSafeBoxStart, self.ySafeBoxStart, z) = player.GetMainCharacterPosition()
 
 		self.SetTableSize(size)
+		# MT2009_PLUS_REMOTE_CALL_V1: "Magazyn Enasira" when it was asked for at Enasir (interfacemodule AskSafeboxPassword)
+		title = self.GetChild2("TitleName") if hasattr(self, "GetChild2") else None
+		if title:
+			if getattr(self, "remoteCallNext", False):
+				title.SetText(__import__("uiremotecall").TEXT_SAFEBOX_TITLE)
+			else:
+				title.SetText(uiScriptLocale.SAFE_TITLE)
+		self.remoteCallNext = False
 		self.Show()
 		eventManager.EventManager().send_event(EVENT_OPEN_SAFEBOX)
 

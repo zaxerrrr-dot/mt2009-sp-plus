@@ -5517,7 +5517,13 @@ class Interface(object):
 			return
 
 		# SAFEBOX_PASSWORD
-		self.dlgPassword.SetTitle(localeInfo.PASSWORD_TITLE)
+		# MT2009_PLUS_REMOTE_CALL_V1: the storeroom asked for at Enasir is his (the server's GC 190 SAFEBOX before it)
+		remoteCall = __import__("uiremotecall").TakeSafeboxRemote()
+		self.wndSafebox.remoteCallNext = remoteCall
+		if remoteCall:
+			self.dlgPassword.SetTitle(__import__("uiremotecall").TEXT_SAFEBOX_TITLE)
+		else:
+			self.dlgPassword.SetTitle(localeInfo.PASSWORD_TITLE)
 		self.dlgPassword.SetSendMessage("/safebox_password ")
 		# END_OF_SAFEBOX_PASSWORD
 
