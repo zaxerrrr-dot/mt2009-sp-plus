@@ -20,7 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from catalog import APP_DIRS  # noqa: E402
 
-BRAND = re.compile(r"metin\s*2|gameforge|tieru|ameria|metin2alerts", re.I)
+BRAND = re.compile(r"metin\s*2|gameforge|\btieru\b|\bameria\b|metin2alerts", re.I)
 # "official" in each language; some of these words also mean "officer" / "picture" (names are skipped)
 OFFICIAL = re.compile(r"\bofficial|oficjal|offiziell|\bofficiel|ufficial|\boficial|\bresm[iî]\b|hivatalos|oficiáln|επίσημ", re.I)
 ALLOWED = re.compile(r"Metin2Distribute\.exe|metin2sp\.pl|/opt/metin2\S*|metin2_\w+|m2", re.I)
