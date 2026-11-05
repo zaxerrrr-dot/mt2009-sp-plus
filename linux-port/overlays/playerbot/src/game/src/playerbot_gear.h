@@ -4771,25 +4771,17 @@ namespace
 	}
 
 	// What an arrow adds to a shot, as the engine counts it: value3, which
-	// both engines add to the bow's roll (wooden 3 to silver 25). -1 for an
-	// arrow that cannot hurt anything at a bow's range: mt2009's
-	// CalcArrowDamage fades a shot past value4 down to value2 per cent (twice
-	// that against a monster) at value5, and the four elemental arrows
-	// (8006-8009) carry 0 in all three there, so past point-blank they deal
-	// nothing. Worn with a quiver that never empties, one of them would be an
-	// Archer that shoots for nothing for life. r40250 fades a shot by the
-	// distance alone and reads no value2.
+	// both engines add to the bow's roll (wooden 3 to silver 25). -1 for
+	// what is no arrow.
 	int GetPlayerBotArrowGrade(LPITEM arrow)
 	{
 		if (!arrow || arrow->GetType() != ITEM_WEAPON || arrow->GetSubType() != WEAPON_ARROW)
 			return -1;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-		// DR_ARCHER_ARROW_V1 (p-lucznicy-strzaly, 28.10.2026): the fade only where CalcArrowDamage applies it
-		// (value5 > value4) - the GF values (gf_wartosci.sql) zero value2, value4 and value5 of 8000-8005, which then
-		// hit at full damage at any range, and every Archer bot stood unable to shoot.
-		if (arrow->GetValue(5) > arrow->GetValue(4) && arrow->GetValue(2) <= 0)
-			return -1;
-#endif
+		// DR_ARCHER_ARROW_V1 (p-lucznicy-strzaly, 28.10.2026) rejected an arrow whose value4 / value5 fade reached
+		// 0 per cent. MT2009_PLUS_ARROWS_GLOBAL_V2 (server-patches/strzaly): CalcArrowDamage fades every stack of
+		// arrows by the distance alone (5 per cent a metre past 5 m, as r40250 does) and never a quiver, and reads
+		// no value2 / value4 / value5 - every arrow hurts, and the best is the one with the highest value3; a quiver
+		// (IsPlayerBotQuiver) goes before any stack.
 		return std::max<int>(0, (int)arrow->GetValue(3));
 	}
 
@@ -4821,6 +4813,9 @@ namespace
 	{
 		return item && GetPlayerBotArrowGrade(item) >= 0 &&
 				item->GetCount() > 0 && item->GetLevelLimit() <= ch->GetLevel() &&
+				// MT2009_PLUS_BOT_QUIVER_STORE_V1: a quiver whose time is up shoots nothing (GetArrowAndBow) for the
+				// moment before the expiry event takes it - the next quiver or the stack goes on instead
+				!(IsPlayerBotQuiver(item) && item->GetSocket(0) > 0 && item->GetSocket(0) <= time(0)) &&
 				!IsPlayerBotSidekickHeld(ch, item); // MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: not what a companion holds for its owner
 	}
 
@@ -5568,6 +5563,96 @@ namespace
 		sys_log(0, "PLAYERBOT_GEAR: bought wooden arrows pid=%u name=%s vnum=%u count=%d price=%lld equipped=%d",
 				ch->GetPlayerID(), ch->GetName(), PLAYERBOT_WOODEN_ARROW_VNUM,
 				bundle, price, equipped ? 1 : 0);
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_QUIVER_STORE_V1 (the owner, 5 November 2026): a stack of arrows fades with the distance as on the
+	// global server (MT2009_PLUS_ARROWS_GLOBAL_V2, server-patches/strzaly) and a quiver does not, so an Archer keeps a
+	// quiver on: Handlarka (the General Store, shop 3) sells Kolczan for 7 days (8012, 550 000 Yang) and for 1 day
+	// (8011, 100 000 Yang) - the 7-day one when the purse can pay it past the reserved Yang (horse training ...), else
+	// the 1-day one, else nothing (the stack of arrows stays). A new one is bought when no quiver worn or held has an
+	// hour left, so the next waits in the bag when the worn one runs out (EnsurePlayerBotArrowsEquipped / the
+	// equipment pass nock it - a quiver before any stack). The ItemShop's 14-day Kolczan (8010, the V3 catalogue's
+	// QUIVER need) counts the same. Prices from item_proto (the shop's gold), as the merchant charges a player.
+	const DWORD PLAYERBOT_QUIVER_DAY_VNUM = 8011;
+	const DWORD PLAYERBOT_QUIVER_WEEK_VNUM = 8012;
+	const long PLAYERBOT_QUIVER_RENEW_SECONDS = 60 * 60;
+
+	// The longest time any quiver worn or in the bag has left (0: none).
+	long GetPlayerBotQuiverSecondsLeft(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		long best = 0;
+		const long now = (long)time(0);
+		LPITEM worn = ch->GetWear(WEAR_ARROW);
+		if (IsPlayerBotQuiver(worn))
+			best = std::max<long>(best, worn->GetSocket(0) - now);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (IsPlayerBotQuiver(item) && item->GetLevelLimit() <= ch->GetLevel())
+				best = std::max<long>(best, item->GetSocket(0) - now);
+		}
+		return best;
+	}
+
+	long long GetPlayerBotQuiverPrice(DWORD vnum)
+	{
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (!proto || proto->bType != ITEM_WEAPON || proto->bSubType != WEAPON_ARROW)
+			return 0;
+		return GetPlayerBotNpcPurchasePrice(proto, 1);
+	}
+
+	// The quiver this Archer's purse buys now: the week's, else the day's, else 0.
+	DWORD ChoosePlayerBotQuiverVnum(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		const long long spendable = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch);
+		const long long week = GetPlayerBotQuiverPrice(PLAYERBOT_QUIVER_WEEK_VNUM);
+		if (week > 0 && spendable >= week)
+			return PLAYERBOT_QUIVER_WEEK_VNUM;
+		const long long day = GetPlayerBotQuiverPrice(PLAYERBOT_QUIVER_DAY_VNUM);
+		if (day > 0 && spendable >= day)
+			return PLAYERBOT_QUIVER_DAY_VNUM;
+		return 0;
+	}
+
+	// An Archer with a bow, no quiver with an hour left, and the Yang for one.
+	bool NeedsPlayerBotQuiver(LPCHARACTER ch)
+	{
+		if (!ch || ch->GetJob() != JOB_ASSASSIN || ch->GetSkillGroup() != 2)
+			return false;
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		if (!weapon || weapon->GetType() != ITEM_WEAPON || weapon->GetSubType() != WEAPON_BOW)
+			return false;
+		if (GetPlayerBotQuiverSecondsLeft(ch) >= PLAYERBOT_QUIVER_RENEW_SECONDS)
+			return false;
+		return ChoosePlayerBotQuiverVnum(ch) != 0;
+	}
+
+	// At Handlarka (ManagePlayerBotMiscMerchant), after the potions.
+	bool BuyPlayerBotQuiverAtMerchant(LPCHARACTER ch)
+	{
+		if (!NeedsPlayerBotQuiver(ch))
+			return false;
+		const DWORD vnum = ChoosePlayerBotQuiverVnum(ch);
+		const long long price = GetPlayerBotQuiverPrice(vnum);
+		if (!vnum || price <= 0 || ch->GetGold() < price || ch->GetEmptyInventory(1) < 0)
+			return false;
+		LPITEM quiver = ch->AutoGiveItem(vnum, 1, -1, false);
+		if (!quiver)
+			return false;
+		PlayerBotChangeGold(ch, -price);
+		LogManager::instance().ItemLog(ch, quiver, "PLAYERBOT_NPC_BUY", quiver->GetName());
+		// on at once when the slot holds a stack or nothing; a worn quiver with time left stays, this one waits
+		EnsurePlayerBotArrowsEquipped(ch);
+		UpgradePlayerBotArrows(ch);
+		sys_log(0, "PLAYERBOT_GEAR: bought a quiver pid=%u name=%s vnum=%u price=%lld seconds=%ld equipped=%d",
+				ch->GetPlayerID(), ch->GetName(), vnum, price, (long)(quiver->GetSocket(0) - time(0)),
+				IsPlayerBotQuiver(ch->GetWear(WEAR_ARROW)) ? 1 : 0);
 		return true;
 	}
 
