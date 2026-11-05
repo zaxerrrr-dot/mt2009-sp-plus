@@ -109,14 +109,15 @@ def stats():
     return rows
 
 
-def todo(app, lang, chunk=30000, ref=None):
+def todo(app, lang, chunk=30000, ref=None, start=0):
     src = sources(app, lang)
     cat = load_catalog(app, lang)
     refcat = load_catalog(app, ref) if ref else None
     work = os.path.join(HERE, "work", app, lang)
     os.makedirs(work, exist_ok=True)
     for old in glob.glob(os.path.join(work, "todo_*.json")):
-        os.remove(old)
+        if start == 0 or int(os.path.basename(old)[5:8]) >= start:
+            os.remove(old)
     missing = [t for t in sorted(src) if not has(cat, t)]
     chunks, cur, size = [], [], 0
     for t in missing:
@@ -133,7 +134,7 @@ def todo(app, lang, chunk=30000, ref=None):
     if cur:
         chunks.append(cur)
     for i, c in enumerate(chunks):
-        with open(os.path.join(work, "todo_%03d.json" % i), "w", encoding="utf-8") as fh:
+        with open(os.path.join(work, "todo_%03d.json" % (start + i)), "w", encoding="utf-8") as fh:
             json.dump(c, fh, ensure_ascii=False, indent=0)
     print(app, lang, "missing", len(missing), "chunks", len(chunks))
 
@@ -191,7 +192,8 @@ def main(argv):
             chunk = int(rest[rest.index("--chunk") + 1])
         if "--ref" in rest:
             ref = rest[rest.index("--ref") + 1]
-        todo(argv[1], argv[2], chunk, ref)
+        start = int(rest[rest.index("--start") + 1]) if "--start" in rest else 0
+        todo(argv[1], argv[2], chunk, ref, start)
     elif argv[0] == "merge":
         merge(argv[1], argv[2])
     elif argv[0] == "sync":

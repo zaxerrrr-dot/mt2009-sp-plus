@@ -307,7 +307,7 @@ class Catalog:
             work = _STASHED.sub(lambda m: stash[int(m.group(1))], work)
         work = _HTML_LANG.sub(lambda m: m.group(1) + m.group(2) + HTML_LANG.get(code, code) + m.group(2)
                               + (' dir="rtl"' if code in RTL else ""), work, count=1)
-        if script_url:
+        if script_url and "data-m2i18n=" not in work:
             tag = '<script src="%s" data-m2i18n="%s" defer></script>' % (html.escape(script_url), html.escape(code))
             if _BODY_END.search(work):
                 work = _BODY_END.sub(lambda m: tag + m.group(0), work, count=1)

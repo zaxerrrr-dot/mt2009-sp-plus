@@ -265,7 +265,7 @@
 		} while ($out !== $before);
 		$web = array('cz' => 'cs', 'gr' => 'el', 'ae' => 'ar', 'dk' => 'da');
 		$out = preg_replace('~(<html\b[^>]*\blang=)(["\'])[\w-]*\2~i', '$1$2' . (isset($web[$code]) ? $web[$code] : $code) . '$2' . ($code == 'ae' ? ' dir="rtl"' : ''), $out, 1);
-		if ($script && stripos($out, '</body>') !== false) {
+		if ($script && stripos($out, '</body>') !== false && strpos($out, 'data-m2i18n=') === false) {
 			$v = 0;
 			foreach (array_merge(m2i18n_files($code), m2i18n_files(M2I18N_FALLBACK)) as $f)
 				$v = max($v, (int)@filemtime($f));

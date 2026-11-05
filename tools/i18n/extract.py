@@ -474,7 +474,7 @@ def app_itemshop():
     sql = re.sub(r"^--[^\n]*$", "", sql, flags=re.M)
     for m in re.finditer(r"'((?:[^'\\]|\\.|'')*)'", sql):
         val = m.group(1).replace("''", "'").replace("\\'", "'")
-        if not polish(val) or re.search(r"\b(SELECT|FROM|WHERE|CONCAT|COALESCE)\b", val):
+        if not (polish(val) or label_like(val)) or re.search(r"\b(SELECT|FROM|WHERE|CONCAT|COALESCE)\b", val):
             continue
         if re.search(r"%[-+0-9.]*[sd]", val):
             bag.add(renumber(re.sub(r"%[-+0-9.]*[sd]", "{9}", val).replace("%%", "%")), "itemshop3_schema.sql", placeholders=True)
