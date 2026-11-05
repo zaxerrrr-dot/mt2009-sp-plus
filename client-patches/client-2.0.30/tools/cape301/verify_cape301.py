@@ -157,7 +157,15 @@ for v in VNUMS:
         notes.append('race %d %s: no .msm in our listing - the base client (npc/monster packs, no listing) must have it'
                      % (v, name))
 RE_Q = re.compile(r'"([^"\r\n]+\.(?:gr2|dds|tga|mse|msa|msm|mss|wav|mp3|txt|msenv|mde|spt|mdatr))"', re.I)
-for k, b in CONTENT.items():
+# MT2009_PLUS_VERIFY_LATER_WRITERS_V1: the text files THIS batch staged (cape301_manifest.json) - on the OUT of the whole
+# chain the other packs' files (gamedata/*.msm of the costume builders, GF's own broken effect references of later map
+# batches) are their own verifiers' business; they made 15 000 false failures here
+import json  # noqa: E402
+STAGED = set(e['name'] for es in json.load(open(os.path.join(HERE, 'cape301_manifest.json'), encoding='utf-8'))['packs'].values()
+             for e in es)
+for k, b in sorted(CONTENT.items()):
+    if k not in STAGED:
+        continue
     if not k.endswith(('.msm', '.msa', '.mse', '.mss', '.prb', '.prd', '.pre', '.prt', '.msenv')) or k.startswith('property/'):
         continue
     t = b.decode('latin1')

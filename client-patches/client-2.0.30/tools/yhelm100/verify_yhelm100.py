@@ -55,10 +55,22 @@ def any_entry(name):
     return None
 
 
+# MT2009_PLUS_VERIFY_LATER_WRITERS_V1: refineglobal (a later step, the server's refine_global.sql the same) sets each
+# item's refined_vnum / refine_set (record offset 175, 6 bytes) as on the global server - compared without them
+REFINE = slice(175, 181)
+
+
+def _norefine(r):
+    return None if r is None else bytes(r[:REFINE.start]) + bytes(r[REFINE.stop:])
+
+
 d = pc.items_json()
 ver, recs = pc.records(entry('dbdata', 'gamedata/item_proto'))
+refined = 0
 for v, r in sorted(pc.want_records(recs).items()):
-    if recs.get(v) != r:
+    if recs.get(v) != r and _norefine(recs.get(v)) == _norefine(r):
+        refined += 1
+    elif recs.get(v) != r:
         fails.append('item_proto %d: not the server\'s record' % v)
 lst = entry('gamedata', 'gamedata/item_list.txt').decode('cp1250').replace('\r\n', '\n').split('\n')
 lst = dict((l.split('\t')[0].strip(), l) for l in lst if l.strip())
@@ -98,6 +110,8 @@ ix = open(os.path.join(OUT, 'Index'), 'rb').read() if os.path.exists(os.path.joi
 if os.path.exists(os.path.join(OUT, 'yhelm100.index')) and b'yhelm100' not in ix.split():
     fails.append('pack/Index: no yhelm100 line')
 print('yhelm100: %d items, Jaharr, %d problem(s)' % (len(d['items']), len(fails)))
+if refined:
+    print('  note: %d item(s) with the refine step of refineglobal (global values, a later step)' % refined)
 for f in fails:
     print('  ' + f)
 sys.exit(1 if fails else 0)

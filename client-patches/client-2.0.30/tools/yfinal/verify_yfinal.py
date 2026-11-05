@@ -111,13 +111,25 @@ for d in (BASE, OUT):
                 for e in mots:
                     outmot[e['name'].lower()] = m2pack.read_entry(dd, e).decode('latin-1')
 nmot = 0
+notes = []
 for name, text in sorted(outmot.items()):
     nmot += 1
-    for line, f in yd.motlist_missing(text, name.rsplit('/', 1)[0] + '/', lambda n: n in allnames):
+    folder = name.rsplit('/', 1)[0] + '/'
+    for line, f in yd.motlist_missing(text, folder, lambda n: n in allnames):
+        # MT2009_PLUS_VERIFY_LATER_WRITERS_V1: a line GF's own client has too, with the file missing there as well
+        # (reddragon_room_boss2 NORMAL_ATTACK normal_attack.msa) - the exe skips a motion it cannot load, as on GF
+        gfdir = yd.GF + folder[len('d:/'):]
+        gfmot = os.path.join(gfdir, 'motlist.txt')
+        if (folder.startswith('d:/') and os.path.exists(gfmot) and not os.path.exists(os.path.join(gfdir, f.lower()))
+                and line in [x.strip() for x in open(gfmot, encoding='latin-1').read().replace('\r', '').split('\n')]):
+            notes.append('%s: "%s" - no %s (GF\'s own motlist names it, GF has no such file either)' % (name, line, f))
+            continue
         fails.append('%s: "%s" - no %s' % (name, line, f))
 print('yfinal: %d motlists of OUT checked' % nmot)
 print('yfinal: %d atlas rows, %d server maps of the repo, %d monsters with an element; %d problem(s)' % (
     len(rows), nmaps, len(srv), len(fails)))
 for f in fails:
     print('  ' + f)
+for n in notes:
+    print('  note ' + n)
 sys.exit(1 if fails else 0)

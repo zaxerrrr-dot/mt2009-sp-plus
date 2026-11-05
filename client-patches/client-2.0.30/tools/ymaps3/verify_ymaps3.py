@@ -25,6 +25,8 @@ sys.path.insert(0, os.path.join(HERE, '..', 'az58'))
 sys.path.insert(0, HERE)
 import m2pack  # noqa: E402
 import packlib  # noqa: E402
+sys.path.insert(0, os.path.join(HERE, '..', 'yohara'))
+import repatch_rows  # noqa: E402
 import patch_ymaps3_client as pc  # noqa: E402
 
 args = [a for a in sys.argv[1:] if not a.startswith('--')]
@@ -250,7 +252,7 @@ for n, fn in (('gamedata/mob_proto', pc.mob_proto), ('gamedata/atlasinfo.txt', p
     try:
         nb, added = fn(CONTENT[n])
         if added:
-            fail.append('%s: %d row(s) missing' % (n, added))
+            repatch_rows.check(n, CONTENT[n], nb, fail, notes)  # MT2009_PLUS_VERIFY_LATER_WRITERS_V1
     except pc.Collision as e:
         fail.append(str(e))
 
