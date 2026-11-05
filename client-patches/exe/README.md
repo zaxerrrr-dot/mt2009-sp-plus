@@ -1159,3 +1159,34 @@ Python:
 Zbudowane `build.sh msvc --smoke` (MSVC 14.44, osobny `EXEBUILD_WORK=cache/yohara/exebuild-pety`, źródła
 `cache/yohara/exe-src16` = exe-src15 (z tytułami) + ta nakładka): `cache/yohara/exe-out16/metin2client.exe` (sha256
 `b23d3c15…b40e4fc7`), bez ostrzeżeń w zmienionych plikach, smoke do ekranu logowania (4.11.2026).
+
+## Enasir (przywoływalny dozorca / handlarz) – `MT2009_PLUS_REMOTE_CALL_V1` (`ENABLE_MT2009_REMOTE_CALL`)
+
+Z paczki „Official Remote Call” (Khaled / LungSam) – przepisane, nie skopiowane (opis, przedmioty i różnice:
+`server-patches/remotecall/README.md`). Serwer decyduje o wszystkim (buffy Dozorca / Handlarz Enasir, gdzie wolno
+przywołać, odstęp 10 s); exe tylko pamięta, co serwer ostatnio przysłał, i podaje to pythonowi. Bez listy nazw map w
+kliencie (paczka miała ją w exe) i bez `SetHandler` z mocną referencją – zdarzenia idą do okna gry. Rozmiar pakietu
+skrzyni (`TPacketGCSafeboxSize`) bez zmian – „magazyn Enasira” to osobny podpakiet, więc starszy exe działa jak dotąd.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_REMOTE_CALL` |
+| `UserInterface/Packet.h` | CG **190** `HEADER_CG_REMOTE_CALL` (2 B + bajt sekwencji: `HELLO` 0, `SUMMON` 1, `UNSUMMON` 2), GC **190** `HEADER_GC_REMOTE_CALL` (14 B, stały: `STATE` 0, `SUMMONED` 1, `GONE` 2, `MESSAGE` 3, `SAFEBOX` 4), `static_assert` rozmiarów; wolne w exe i na serwerze (paczka: GC 235 – u nas skala zwierzaka) |
+| `UserInterface/Mt2009RemoteCall.cpp` (**nowy**, + `UserInterface.vcxproj(.filters)`) | stan (końce buffów, przywołania i odstępu jako czas zegarowy), `SendRemoteCallPacket` / `RecvRemoteCallPacket`, ruch `SPAWN` Enasira po `SUMMONED`, moduł `remoteCall`, `app.MT2009_REMOTE_CALL_EXE` |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | GC 190 stały → `RecvRemoteCallPacket`; w `SetGamePhase` stan czyszczony i powitanie (CG 190 HELLO) – serwer odpowiada tylko na pakiety tego exe |
+| `UserInterface/UserInterface.cpp` | `Mt2009RemoteCall_RegisterPython()` po tytułach |
+
+GC 190: `STATE` v0 = sekundy buffa magazynu, v1 = sekundy buffa sklepu (0 brak), v2 bit0 = przywołanie dozwolone na tej
+mapie; `SUMMONED` v0 = ile sekund Enasir zostaje (180), v1 = jego VID; `GONE` v0 = sekundy odstępu (10); `MESSAGE` v0 =
+kod komunikatu (teksty w root); `SAFEBOX` = następne okno magazynu jest magazynem Enasira. Po każdym podpakiecie okno gry
+dostaje `BINARY_RemoteCall_Event(sub, v0)`.
+
+Python (`remoteCall`): `SendPacket(sub)`, `GetBuffLeft(BUFF_SAFEBOX|BUFF_SHOP)` (sekundy, 0 brak), `GetSummonLeft()`,
+`GetCoolLeft()`, `GetNpcVID()`, `IsAllowedHere()`, `IsSafeboxRemote()` / `SetSafeboxRemote(i)`, `Clear()`; stałe
+`CG_HELLO/SUMMON/UNSUMMON`, `GC_STATE/SUMMONED/GONE/MESSAGE/SAFEBOX`, `BUFF_SAFEBOX` 0, `BUFF_SHOP` 1, `MOB_VNUM` 20874,
+`SUMMON_SEC` 180, `COOLTIME_SEC` 10, `MAX_BUFF_SEC` 86400000 (1000 dni).
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44, `EXEBUILD_WORK=cache/exebuild`, źródła `cache/yohara/exe-src19` =
+exe-src18 (tytuły, zwierzaki, kolory po relogu, ruch podnoszenia) + ta nakładka, kopia na twardych linkach):
+`cache/yohara/exe-out19/metin2client.exe` (sha256 `eceb7ee6…2b561a6e9f`), bez ostrzeżeń w zmienionych plikach, smoke do
+ekranu logowania (5.11.2026).

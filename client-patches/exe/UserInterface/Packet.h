@@ -160,6 +160,9 @@ enum
 #ifdef ENABLE_MT2009_TITLES
 	HEADER_CG_TITLE								= 185,	// MT2009_PLUS_TITLES_V1 (cg header): the hello / the title window (the package's number)
 #endif
+#ifdef ENABLE_MT2009_REMOTE_CALL
+	HEADER_CG_REMOTE_CALL						= 190,	// MT2009_PLUS_REMOTE_CALL_V1 (cg header): Enasir - hello, summon, dismiss
+#endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
@@ -401,6 +404,9 @@ enum
 #endif
 #ifdef ENABLE_MT2009_TITLES
 	HEADER_GC_TITLE								= 189,	// MT2009_PLUS_TITLES_V1 (gc header): titles - dynamic (TABLE, PLAYER, EQUIPPED, NOTIFY, VISUAL)
+#endif
+#ifdef ENABLE_MT2009_REMOTE_CALL
+	HEADER_GC_REMOTE_CALL						= 190,	// MT2009_PLUS_REMOTE_CALL_V1 (gc header): Enasir - 14 B static
 #endif
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
@@ -4391,6 +4397,41 @@ typedef struct SPacketGCTitleVisual
 	DWORD	dwVID;
 	DWORD	dwTitle;
 } TPacketGCTitleVisual;
+#endif
+
+#ifdef ENABLE_MT2009_REMOTE_CALL
+// MT2009_PLUS_REMOTE_CALL_V1 (structs): Enasir - as the server's packet.h (server-patches/remotecall, remote_call.cpp).
+// CG 190 goes with the sequence byte (as CG 185). GC 190: STATE v0 storeroom buff s left, v1 shop buff s left, v2 bit0 the
+// summoning allowed on this map; SUMMONED v0 s the NPC stays, v1 its VID; GONE v0 the cooldown s; MESSAGE v0 the code;
+// SAFEBOX the next storeroom window is Enasir's.
+enum
+{
+	REMOTE_CALL_CG_HELLO = 0,
+	REMOTE_CALL_CG_SUMMON = 1,
+	REMOTE_CALL_CG_UNSUMMON = 2,
+	REMOTE_CALL_GC_STATE = 0,
+	REMOTE_CALL_GC_SUMMONED = 1,
+	REMOTE_CALL_GC_GONE = 2,
+	REMOTE_CALL_GC_MESSAGE = 3,
+	REMOTE_CALL_GC_SAFEBOX = 4,
+};
+
+typedef struct SPacketCGRemoteCall
+{
+	BYTE	bHeader;
+	BYTE	bSubHeader;
+} TPacketCGRemoteCall;
+
+typedef struct SPacketGCRemoteCall
+{
+	BYTE	bHeader;
+	BYTE	bSubHeader;
+	DWORD	dwValue0;
+	DWORD	dwValue1;
+	DWORD	dwValue2;
+} TPacketGCRemoteCall;
+
+static_assert(sizeof(TPacketCGRemoteCall) == 2 && sizeof(TPacketGCRemoteCall) == 14, "remote call packets (the server the same)");
 #endif
 
 #pragma pack(pop)
