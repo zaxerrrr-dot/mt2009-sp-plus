@@ -229,6 +229,8 @@ namespace
 			return false;
 		if (d.bKind == DGRUN_KIND_GNOLLE)
 			return IsPlayerBotGnolleFit(ch);
+		if (d.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: 120, a Champion level, gear, not at its limit's rest
+			return IsPlayerBotWiezaFit(ch);
 		if (d.bKind == DGRUN_KIND_YDG || d.bKind == DGRUN_KIND_EREBU || d.bKind == DGRUN_KIND_SZC)
 		{
 			if (GetPlayerBotChampionLevel(ch) < 1)

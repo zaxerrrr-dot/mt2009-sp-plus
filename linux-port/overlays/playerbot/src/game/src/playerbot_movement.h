@@ -1184,6 +1184,9 @@ namespace
 		// the mount it had just ridden up on ("szamanka ... mimo ze ma mounta to
 		// metina bije z buta", the owner, 5 October). A monster and a character
 		// it still fights on foot, with its skills (prodnathin, 26 September).
+		// MT2009_PLUS_BOT_WIEZA_V1: no mount in Wieza Sung Mahi (387) - its quest takes the rider down every 3 s
+		if (ch && ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && ch->GetMapIndex() / 10000 == 387)
+			return false;
 		if (HasPlayerBotStandingMount(ch))
 			return true;
 		if (target && target->IsStone())

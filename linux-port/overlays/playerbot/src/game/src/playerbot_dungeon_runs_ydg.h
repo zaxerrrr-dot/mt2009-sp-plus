@@ -955,7 +955,9 @@ namespace
 	bool IsPlayerBotYdgTrainee(DWORD pid)
 	{
 		// MT2009_PLUS_BOT_DROPKI_V1: an active Dropki is held for its dungeon as a training member (playerbot_dropki.h)
-		return (!s_setPlayerBotYdgTrainees.empty() && s_setPlayerBotYdgTrainees.count(pid) != 0) || IsPlayerBotDropkiActive(pid);
+		// MT2009_PLUS_BOT_WIEZA_V1: and a bot of the tower's training (playerbot_wieza_train)
+		return (!s_setPlayerBotYdgTrainees.empty() && s_setPlayerBotYdgTrainees.count(pid) != 0) || IsPlayerBotDropkiActive(pid) ||
+				IsPlayerBotWiezaTrainee(pid);
 	}
 
 	int GetPlayerBotYdgDgRunDef(const char* key)
@@ -1041,7 +1043,7 @@ namespace
 		{
 			const DWORD pid = it->first;
 			if (s_setPlayerBotYdgTrainees.count(pid) || IsPlayerBotYoharaHydraResident(pid) || IsPlayerBotErebuTrainee(pid) ||
-					IsPlayerBotDropkiActive(pid))	// MT2009_PLUS_BOT_DROPKI_V1
+					IsPlayerBotDropkiActive(pid) || IsPlayerBotWiezaTrainee(pid))	// MT2009_PLUS_BOT_DROPKI_V1, MT2009_PLUS_BOT_WIEZA_V1
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetLevel() < minLevel || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
