@@ -344,6 +344,53 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_BOT_YDG_TRAIN_V2: a bag cell for a run's item (a key, a cog, a stone) - the night of 5 November the
+	// Beran parties' bags were full ("PLAYERBOT_LOOT: bag full") and no Krety Klucz was ever picked up. The storage
+	// pages take something first, else the cheapest junk is sold, else the cheapest spare weapon or armour piece.
+	bool MakePlayerBotYdgRoom(LPCHARACTER ch, const char* why)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		if (ch->GetEmptyInventory(1) >= 0)
+			return true;
+		if (PlayerBotEkwMakeBagRoom(ch, 1, NULL) && ch->GetEmptyInventory(1) >= 0)
+		{
+			sys_log(0, "BOT_YDG: room made pid=%u name=%s how=storage why=%s", ch->GetPlayerID(), ch->GetName(), why);
+			return true;
+		}
+		for (int pass = 0; pass < 2; ++pass)
+		{
+			LPITEM pick = NULL;
+			long long pickValue = 0;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!item || item->GetCell() != cell || item->GetWindow() != INVENTORY || item->IsEquipped() ||
+						item->isLocked() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+					continue;
+				if (pass == 0 && !IsPlayerBotJunkItem(ch, item))
+					continue;
+				if (pass == 1 && item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR)
+					continue;
+				const long long value = pass == 0 ? GetPlayerBotJunkSalePrice(item) : (long long)item->GetShopBuyPrice() * item->GetCount();
+				if (pick && value >= pickValue)
+					continue;
+				pick = item;
+				pickValue = value;
+			}
+			if (!pick)
+				continue;
+			sys_log(0, "BOT_YDG: room made pid=%u name=%s how=%s vnum=%u count=%u gold=%lld why=%s", ch->GetPlayerID(), ch->GetName(),
+					pass == 0 ? "junk_sold" : "spare_sold", pick->GetVnum(), (unsigned int)pick->GetCount(), std::max(0LL, pickValue), why);
+			if (pickValue > 0)
+				PlayerBotChangeGold(ch, pickValue);
+			ITEM_MANAGER::instance().RemoveItem(pick, "PLAYERBOT_YDG_ROOM");
+			if (ch->GetEmptyInventory(1) >= 0)
+				return true;
+		}
+		return ch->GetEmptyInventory(1) >= 0;
+	}
+
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
@@ -446,14 +493,21 @@ namespace
 			return true;
 		}
 		// One lying about: the bot's class's, its quest's turn.
-		if (ground.m_vnums.empty() || ch->GetEmptyInventory(1) < 0)
+		if (ground.m_vnums.empty())
 			return false;
 		ch->GetSectree()->ForEachAround(ground);
 		if (!ground.m_found)
 			return false;
-		// Not away from what attacks it.
-		if (ch->GetVictim() && !ch->GetVictim()->IsDead() && ch->GetVictim()->GetVictim() == ch)
+		// Not far away from what attacks it (V2: one close by is picked up all the same - a dungeon whose monsters
+		// never stop coming, as Beran's cave, never let a key be picked up).
+		if (ground.m_iBest > 800 && ch->GetVictim() && !ch->GetVictim()->IsDead() && ch->GetVictim()->GetVictim() == ch)
 			return false;
+		if (ch->GetEmptyInventory(1) < 0 && !MakePlayerBotYdgRoom(ch, "ground"))
+		{
+			PlayerBotLogThrottled("ydg_no_room", dwNow, "BOT_YDG: no room run=%d dungeon=%s pid=%u name=%s vnum=%u", run.iId,
+					def.szKey, ch->GetPlayerID(), ch->GetName(), (unsigned int)ground.m_found->GetVnum());
+			return false;
+		}
 		LPITEM item = ground.m_found;
 		if (ground.m_iBest > PLAYERBOT_YDG_PICKUP_DISTANCE)
 		{
@@ -533,6 +587,34 @@ namespace
 		const int level = d->GetFlag("level");
 		if (y->iBoss == YDG_BERAN && level == 0)
 			s_mapPlayerBotYdgKeysReady[run.lInstance] = PoolPlayerBotYdgKeys(run, *y, false);
+		// V2: a progress line every two minutes (the flags, the keys held, where the leader stands, its target).
+		{
+			static std::map<int, DWORD> s_mapProgressAt;
+			DWORD& p = s_mapProgressAt[run.iId];
+			if (p == 0 || (int)(dwNow - p) >= 0)
+			{
+				p = dwNow + 120000;
+				int keys = 0, inside = 0, alive = 0;
+				for (size_t i = 0; i < run.members.size(); ++i)
+				{
+					LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+					if (!c || c->GetMapIndex() != run.lInstance)
+						continue;
+					++inside;
+					alive += c->IsDead() ? 0 : 1;
+					if (c->IsItemLoaded())
+						keys += (int)c->CountSpecifyItem(PlayerBotYdgVnum(*y, 31180));
+				}
+				LPCHARACTER lead = run.dwLeader ? CHARACTER_MANAGER::instance().FindByPID(run.dwLeader) : NULL;
+				LPCHARACTER tgt = lead && lead->GetVictim() ? lead->GetVictim() : NULL;
+				sys_log(0, "BOT_YDG: progress run=%d dungeon=%s stage=%d level=%d done=%d bst=%d bcnt=%d jumping=%d keys=%d inside=%d alive=%d "
+						"leader=%s(%ld,%ld) target=%u(%d%%) focus=%u", run.iId, def.szKey, run.iStage, level, d->GetFlag("done"),
+						d->GetFlag("bst"), d->GetFlag("bcnt"), d->GetFlag("jumping"), keys, inside, alive, lead ? lead->GetName() : "-",
+						lead ? lead->GetX() : 0L, lead ? lead->GetY() : 0L, tgt ? (unsigned int)tgt->GetRaceNum() : 0U,
+						tgt && tgt->GetMaxHP() > 0 ? (int)((long long)tgt->GetHP() * 100 / tgt->GetMaxHP()) : 0,
+						run.dwFocusVID);
+			}
+		}
 		DWORD& at = s_mapPlayerBotYdgNextAt[run.iId];
 		if (at != 0 && (int)(at - dwNow) > 0)
 			return;
@@ -1061,6 +1143,7 @@ namespace
 			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
 			if (!c)
 				continue;
+			MakePlayerBotYdgRoom(c, "run_start");	// V2: a cell for the run's items
 			snaps[run.members[i]] = SnapPlayerBotYdg(c);
 			int plus = 0;
 			const int gear = GetPlayerBotYdgGearLevel(c, &plus);
