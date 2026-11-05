@@ -1472,8 +1472,8 @@ class PetPotentialWindow(ui.ScriptWindow):
 				self.skillSlots[i].SetSlotCount(0, lv)
 			else:
 				self.skillSlots[i].ClearSlot(0)
-			if i >= opened:
-				self.eggSlots[i].SetSlotDiffuseColor(0, 0.4, 0.4, 0.4, 1.0) if hasattr(self.eggSlots[i], "SetSlotDiffuseColor") else None
+			# MT2009_PLUS_PET_POTENTIAL_REFRESH_V1: no dimming of a closed egg slot - the exe's SetSlotDiffuseColor takes a colour
+			# type (wndMgr.COLOR_TYPE_*), not r/g/b/a; the TypeError broke Refresh every second while the window was open.
 			self.eggSlots[i].RefreshSlot()
 			self.skillSlots[i].RefreshSlot()
 
