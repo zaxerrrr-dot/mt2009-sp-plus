@@ -546,7 +546,7 @@ namespace
 		char msg[CHAT_MAX_LEN + 1];
 		snprintf(msg, sizeof(msg), "Ide expic %s, %s idzie ze mna jako szaman.", where && *where ? where : "",
 				best->GetName());
-		ch->GetGuild()->Chat(msg);
+		ChatPlayerBotGuild(ch->GetGuild(), msg);
 		sys_log(0, "PLAYERBOT_GUILD_SHAMAN: duo formed reason=%s leader=%u name=%s level=%u shaman=%u shaman_name=%s shaman_level=%u guild=%u map=%ld from=%ld brought=%d minutes=%u",
 				need, pid, ch->GetName(), (unsigned int)ch->GetLevel(), best->GetPlayerID(), best->GetName(),
 				(unsigned int)best->GetLevel(), (unsigned int)ch->GetGuild()->GetID(), map, fromMap, bring ? 1 : 0,

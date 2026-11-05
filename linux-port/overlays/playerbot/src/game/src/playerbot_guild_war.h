@@ -1268,7 +1268,7 @@ namespace
 		{
 			bots->RequestRefuseWar(offer.dwFrom);
 			snprintf(chat, sizeof(chat), "[Wojna] Gildia botow %s odmawia: %s.", bots->GetName(), why);
-			person->Chat(chat);
+			ChatPlayerBotGuild(person, chat);
 			sys_log(0, "PLAYERBOT_GUILD: player war refused %s -> %s empire=%d online=%d why=%s",
 					person->GetName(), bots->GetName(), (int)empire, online, why);
 			return;
@@ -1295,7 +1295,7 @@ namespace
 				stamp, offer.dwTo);
 		snprintf(chat, sizeof(chat), "[Wojna] Gildia botow %s przyjmuje wyzwanie! Pole bitwy: arena wojen, kanal 1 - wejdzcie przyciskiem na tablicy wojny. Boty buffuja sie %u s przy swoim obozie i ruszaja na srodek.",
 				bots->GetName(), (unsigned int)PLAYERBOT_GUILD_WAR_MUSTER_SECONDS);
-		person->Chat(chat);
+		ChatPlayerBotGuild(person, chat);
 		sys_log(0, "PLAYERBOT_GUILD: player war accepted %s -> %s empire=%d online=%d",
 				person->GetName(), bots->GetName(), (int)empire, online);
 	}

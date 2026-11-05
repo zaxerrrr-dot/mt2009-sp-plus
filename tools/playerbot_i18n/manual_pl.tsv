@@ -1,0 +1,5 @@
+# Templates no single literal of the sources holds: lines the code puts together
+# from pieces (extract_pl.py adds them to the catalog). Slots as in the catalog.
+$X na CH$N	conv_say.h: $MAPIN of a person on another channel
+$A albo $B	lists of places: "w Czerwonym Lesie albo na Gorze Sohan"
+$A lub $B	lists

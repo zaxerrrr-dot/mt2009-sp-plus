@@ -1503,6 +1503,9 @@ namespace
 				s_mapPlayerBotConvLinks[botPID].clear();
 				s.name = bot->GetName();
 				s.askerName = person.Name();
+				// MT2009_PLUS_BOT_I18N_V1: the reply is typed in this language.
+				s.lang = person.local ? GetPlayerBotPersonLanguage(person.local)
+						: GetPlayerBotPersonLanguageByName(person.Name());
 				s.channel = g_bChannel;
 				s.askerChannel = person.Channel();
 				s.level = bot->GetLevel();
@@ -1819,8 +1822,16 @@ namespace
 
 	// -------------------------------------------------------------- timer
 
+	// MT2009_PLUS_BOT_I18N_V1: the conversation's translator (playerbot_conv_style.h).
+	bool LocalizePlayerBotConvReply(const std::string& lang, const std::string& text, std::string& out)
+	{
+		return TryLocalizePlayerBotLine(lang, text, out);
+	}
+
 	void PumpPlayerBotConversation(DWORD dwNow)
 	{
+		if (!playerbot_conv::ConvLocalizer())
+			playerbot_conv::ConvLocalizer() = &LocalizePlayerBotConvReply;
 		RefreshPlayerBotConvSwitches(dwNow);
 		s_PlayerBotConvEngine.Pump(s_PlayerBotConvHost, dwNow);
 		PrunePlayerBotSummons(dwNow);

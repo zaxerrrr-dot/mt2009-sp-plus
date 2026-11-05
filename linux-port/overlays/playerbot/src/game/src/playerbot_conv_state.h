@@ -285,6 +285,9 @@ namespace playerbot_conv
 	{
 		std::string name;
 		std::string askerName;
+		// MT2009_PLUS_BOT_I18N_V1: the language the asker reads ("pl", "en", ...),
+		// empty for Polish (playerbot_conv_style.h, Casualize).
+		std::string lang;
 		int level;
 		int job;            // 0 warrior 1 ninja 2 sura 3 shaman
 		int empire;         // 1 Shinsoo 2 Chunjo 3 Jinno

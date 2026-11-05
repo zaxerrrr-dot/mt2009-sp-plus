@@ -274,8 +274,14 @@ namespace
 	{
 		// MT2009_PLUS_SHOUTERS_V1: a shouter of the first villages whispers to
 		// nobody (playerbot_shouters.h).
-		if (!bot || IsPlayerBotShouterPID(bot->GetPlayerID()))
+		if (!bot || IsPlayerBotShouterPID(bot->GetPlayerID()) || !desc || !text)
 			return;
+		// MT2009_PLUS_BOT_I18N_V1: in the reader's language (playerbot_i18n.h).
+		const std::string localized = LocalizePlayerBotLine(relayTo ? GetPlayerBotPersonLanguageByName(relayTo)
+				: GetPlayerBotPersonLanguage(desc->GetCharacter()), text);
+		if (localized.empty())
+			return;
+		text = localized.c_str();
 		// MT2009_PLUS_BOT_WHISPER_BLOCK_V1: a person of this core who blocks whispers.
 		if (!relayTo && desc && IsPlayerBotWhisperBlocked(bot, desc->GetCharacter()))
 		{
@@ -454,6 +460,9 @@ namespace
 	{
 		if (!bot || !text || !*text)
 			return;
+		// MT2009_PLUS_BOT_I18N_V1: in the bot's public language.
+		const std::string localized = LocalizePlayerBotPublicLine(bot, text);
+		text = localized.c_str();
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		static const char* const kColour[4] = { "", "ff5959", "ffdb3b", "4590ff" };
 		const BYTE empire = bot->GetEmpire() <= 3 ? bot->GetEmpire() : 0;

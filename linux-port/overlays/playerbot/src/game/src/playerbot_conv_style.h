@@ -198,6 +198,41 @@ namespace playerbot_conv
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_I18N_V1: the reply in the asker's language. The engine
+	// side sets the translator (playerbot_i18n.h); left unset - the unit
+	// tests - every reply stays Polish. False when it has no translation.
+	typedef bool (*TConvLocalizer)(const std::string& lang, const std::string& text, std::string& out);
+	inline TConvLocalizer& ConvLocalizer()
+	{
+		static TConvLocalizer localizer = NULL;
+		return localizer;
+	}
+	// The mark of a reply already in its reader's language: the whisper's
+	// last step (playerbot_i18n.h) drops it and translates nothing.
+	const char CONV_LOCALIZED_MARK = '\x01';
+
+	// The hand on a translated reply: the small first letter and the missing
+	// full stop - no Polish slang, no typos in a language the hand is not of.
+	inline std::string CasualizeLocalized(const std::string& text, const TBotSnapshot& s, bool cold)
+	{
+		const TTypingHand hand = HandOf(s.name);
+		std::string out = text;
+		if (hand.lowerStart && out.size() >= 2 && out[0] >= 'A' && out[0] <= 'Z' && out[1] >= 'a' && out[1] <= 'z')
+		{
+			size_t end = 0;
+			while (end < out.size() && out[end] != ' ')
+				++end;
+			const std::string first = out.substr(0, end);
+			// "I" stays a capital, and so does a name.
+			if (first != "I" && first.compare(0, 2, "I'") != 0 && !SameFolded(first, s.name) &&
+					!SameFolded(first, s.askerName))
+				out[0] = (char)(out[0] - 'A' + 'a');
+		}
+		if ((hand.dropDot || cold) && out.size() >= 2 && out[out.size() - 1] == '.' && out[out.size() - 2] != '.')
+			out.erase(out.size() - 1);
+		return out;
+	}
+
 	// The whole hand put on a reply. `fix` gets "*word" when a typo is made
 	// and the bot corrects it in a line of its own.
 	inline std::string Casualize(const std::string& text, const TBotSnapshot& s, TRng& rng, std::string& fix,
@@ -206,6 +241,12 @@ namespace playerbot_conv
 		fix.clear();
 		if (text.empty())
 			return text;
+		if (!s.lang.empty() && s.lang != "pl" && ConvLocalizer())
+		{
+			std::string localized;
+			if (ConvLocalizer()(s.lang, text, localized) && !localized.empty())
+				return std::string(1, CONV_LOCALIZED_MARK) + CasualizeLocalized(localized, s, cold);
+		}
 		const TTypingHand hand = HandOf(s.name);
 		std::string out = text;
 

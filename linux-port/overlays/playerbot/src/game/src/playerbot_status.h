@@ -265,6 +265,9 @@ namespace
 	{
 		if (!ch || !szText || !szText[0] || !ch->GetSectree())
 			return;
+		// MT2009_PLUS_BOT_I18N_V1: in the bot's public language.
+		const std::string localized = LocalizePlayerBotPublicLine(ch, szText);
+		szText = localized.c_str();
 		char chatbuf[256];
 		int len = snprintf(chatbuf, sizeof(chatbuf), "%s : %s", ch->GetName(), szText);
 		if (len <= 0)
