@@ -711,11 +711,14 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy's 3rd level - a Metin out of the order (playerbot_dungeon_runs_ydg_weze.h).
+	bool IsPlayerBotWezeNoTarget(LPCHARACTER c);
+
 	bool IsPlayerBotPdgFoe(LPCHARACTER ch, LPCHARACTER c)
 	{
 		return c && !c->IsPC() && !c->IsDead() && (c->IsMonster() || c->IsStone()) &&
 				c->GetMapIndex() == ch->GetMapIndex() && !IsPlayerBotEventStone(c->GetRaceNum()) &&
-				!IsPlayerBotPdgShielded(ch, c) &&
+				!IsPlayerBotPdgShielded(ch, c) && !IsPlayerBotWezeNoTarget(c) &&
 				!IsPlayerBotBalathorNoTarget(c);	// MT2009_PLUS_BOT_YOHARA_PDG_V1: the Krypta's eggs, Hwacha, chest
 	}
 

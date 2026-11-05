@@ -815,6 +815,7 @@ quest swiatynia_wezy begin
 
 		when 6756.kill with swiatynia_wezy.inside() and d.getf("closed") == 0 begin
 			d.setf("closed", 1)
+			d.setf("won", 1) -- MT2009_PLUS_BOT_YDG_WEZE_V1: the bots' runs read it
 			d.update_ranking("swiatynia", get_global_time() - d.getf("start"))
 			for i = 1, 8 do
 				local pid = d.getf("p"..i)
@@ -838,6 +839,70 @@ quest swiatynia_wezy begin
 				d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
 				d.exit_all()
 			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_WEZE_V1: a bots' run (playerbot_dungeon_runs_ydg_weze.h): the core makes the instance, marks it
+		-- with the dungeon flag mt2009_dgrun (nothing a player can set), registers its bots in p1..p8 (the surface attack
+		-- and the reward as a person's) and asks for what the first login does through swiatynia_wezy_dgrun; the leader's
+		-- two talks - the Portal's start and the Smith's way to the 7th level - are swiatynia_wezy_dgrun_next (bot_start,
+		-- bot_level7: the same as the dialogs). The time, the levels, the orders and the end stay the players'.
+		when swiatynia_wezy_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					local c = swiatynia_wezy.cfg()
+					d.setf("init", 1)
+					d.setf("mt2009_keep_until", get_global_time() + c.keep)
+					d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+					d.spawn_mob(4022, c.portal[1], c.portal[2])
+				end
+			end
+		end
+
+		when swiatynia_wezy_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") ~= 1 or d.getf("closed") == 1 then
+				return
+			end
+			if d.getf("started") == 0 then
+				swiatynia_wezy.bot_start()
+			elseif d.getf("lvl") == 6 and d.getf("smith") == 1 then
+				swiatynia_wezy.bot_level7()
+			end
+		end
+
+		-- the Portal's "Rozpocznij walke!" (4022.chat) for a bots' run
+		function bot_start()
+			local c = swiatynia_wezy.cfg()
+			local now = get_global_time()
+			local limit = number(c.limit_min, c.limit_max)
+			d.setf("started", 1)
+			d.setf("start", now)
+			d.setf("limit_at", now + limit * 60)
+			local o = {1, 2, 3, 4}
+			for i = 4, 2, -1 do
+				local j = number(1, i)
+				o[i], o[j] = o[j], o[i]
+			end
+			for i = 1, 4 do
+				d.setf("o"..i, o[i])
+			end
+			d.setf("lvl", 2)
+			d.setf("lvl_t", now)
+			d.purge_area((c.base_x + c.portal[1] - 5) * 100, (c.base_y + c.portal[2] - 5) * 100, (c.base_x + c.portal[1] + 5) * 100, (c.base_y + c.portal[2] + 5) * 100)
+			server_timer("swiatynia_tick", 5, d.get_map_index())
+		end
+
+		-- the Smith's "Przejdz na 7. poziom" (20829.chat) for a bots' run
+		function bot_level7()
+			local c = swiatynia_wezy.cfg()
+			swiatynia_wezy.move_to(7)
+			for i = 1, 4 do
+				local x, y = swiatynia_wezy.room_xy(7, c.heads[i])
+				d.spawn_mob(c.el[i].head, x, y)
+			end
+			d.setf("turned", 0)
 		end
 	end
 end
