@@ -1849,10 +1849,12 @@ class PetInformationWindow(ui.ScriptWindow):
 			self.skillSlots[i].ClearSlot(0)
 			self.skillSlots[i].HideAllSlotButton()
 			self.skillSlots[i].SetAlwaysRenderCoverButton(0)
+			self.skillSlots[i].RefreshSlot()	# MT2009_PLUS_PET_SKILL_SLOT_DROP_V1 (see RefreshStatus)
 			self.cool[i] = None
 		for s in self.potentialSlots:
 			s.ClearSlot(0)
 			s.SetAlwaysRenderCoverButton(0)
+			s.RefreshSlot()
 		for b in self.feedButtons:
 			b.DisableFlash()
 		if self.wndFeed and self.wndFeed.IsShow():
@@ -1903,16 +1905,22 @@ class PetInformationWindow(ui.ScriptWindow):
 		for slot in xrange(SKILL_SLOTS):
 			s = self.skillSlots[slot]
 			(sk, lv, cool) = GetSkill(pet.id, slot)
+			# MT2009_PLUS_PET_SKILL_SLOT_DROP_V1: ClearSlot leaves the grid slot's centre at 0xffffffff until RefreshSlot;
+			# while an item is on the mouse the exe's CGridSlotWindow::GetPickedSlotPointer then finds no slot and
+			# CSlotWindow::OnMouseLeftButtonDown only drops the icon (DeattachIcon) - no OnSelectEmptySlot, so a book
+			# put on an empty / closed skill slot did nothing at all (the potential slots are refreshed and worked).
 			if slot >= pet.skillSlots:
 				s.ClearSlot(0)
 				s.HideAllSlotButton()
 				s.SetAlwaysRenderCoverButton(0)
+				s.RefreshSlot()
 				self.cool[slot] = None
 				continue
 			s.SetAlwaysRenderCoverButton(0, False)
 			if not sk:
 				s.ClearSlot(0)
 				s.HideAllSlotButton()
+				s.RefreshSlot()
 				self.cool[slot] = None
 				continue
 			if self.cool[slot] is None or self.cool[slot][0] != sk:
