@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 jours)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 heures)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s : niveau %(b)d.
 %d - %d obrażeń	%d - %d dégâts
 %d - rzadko 100 - jak w grze %d - czesto	%d - rare      100 - comme dans le jeu      %d - fréquent
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 %d%% Wola SungMa (WIT)	%d%% Volonté SungMa (VIT)
 %d%% na losowy bonus.	%d%% pour un bonus aléatoire.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% de chances de bloquer les dégâts d'une attaque
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% de chance de piétiner les adversaires pendant 20 s
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% de chance d'éviter la mort et de regagner 30%% de PV
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% de chance que tous les monstres alentour vous attaquent (cape de bravoure)
 %d%% Średnie Obrażenia	%d%% Dégâts moyens
 %d. miejsce	%de place
 %d. pusty	%d. vide
+%dx %s (dowolne z %d)	%dx %s (au choix parmi %d)
 %dx (po %d)	%dx (par %d)
 %s %d - zostało %d	%s %d - il en reste %d
 %s (%d szt.)	%s (%d pcs)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Niv %d) - pid %d, pos (%d, %d), empire %d
 %s (Pozostały czas: %s)	%s (Temps restant : %s)
 %s (co %d sek.)	%s (toutes les %d s)
+%s (inna mapa)	%s (autre carte)
 %s (maks. %.1f)	%s (max. %.1f)
 %s (maks. %d)	%s (max. %d)
 %s (maks.)	%s (max.)
@@ -108,19 +114,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 (Kup wszystkie przedmioty tego typu)	(Acheter tous les objets de ce type)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Sans utilité pour le moment - il arrivera avec la prochaine mise à jour de Yohara.)
 (Najedź myszką na ikonę)	(Survolez une icône)
+(brak klawisza - Esc, Skróty klawiszowe)	(aucune touche - Échap, Raccourcis clavier)
 (brak)	(aucun)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (le filtre est désactivé - vous ramassez tout actuellement)
 (na koniu: %d)	 (à cheval : %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(niveau maximum, Défense du navire, orbe d'expérience pleine).
 (nieznana)	 (inconnue)
 (od P)	 (à partir de P)
+(postac offline - brak podgladu skilli)	(personnage hors ligne - pas d'aperçu des compétences)
 (poziom %d)	 (niveau %d)
+(puste)	(vide)
 (szansa %s%%)	 (chance %s%%)
 (ten bot nic jeszcze nie powiedzial)	(ce bot n'a encore rien dit)
 (wybierz stworzenie)	(choisir une créature)
 (wybierz z listy)	(choisir dans la liste)
 (wybierz)	(choisir)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* ATTENTION * Option expérimentale ![ENTER]Le mode de mise à l'échelle de l'interface peut réduire[ENTER]la qualité de l'interface (éléments graphiques, police).[ENTER]La couleur |cff8ab98everte|r signifie que la mise à l'échelle PEUT ÊTRE la plus optimale.[ENTER]La couleur |cffe57976rouge|r signifie que la mise à l'échelle peut rendre[ENTER]le jeu non réactif.
++ Dodaj bonus	+ Ajouter un bonus
 + Dodaj przedmiot	+ Ajouter un objet
 + Pkt umiejetn.	+ Pts de compét.
 +%d Inteligencja	+%d Intelligence
@@ -152,6 +162,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 +15 wartości ataku	+15 valeur d'attaque
 +3% siły przeciwko kamieniom Metin	+3 % de force contre les pierres Metin
 +50% szansy na drop przez 2 godziny	   +50% de chance de butin pendant 2 heures
++800 PŻ	+800 PV
 , PPM: dokładny filtr	, CD : filtre détaillé
 , atak włączony	, attaque activée
 - Czekaj cierpliwie na odpowiedź.	- Attendez patiemment une réponse.
@@ -162,6 +173,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 - drugie miejsce od 31 poziomu konia	- deuxième emplacement à partir du niveau 31 du cheval
 - piętro %d	 - étage %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- emplacement libre : lisez un livre de compétence de monture
+-- Ninja Archer - skille P --	-- Ninja Archer - compétences P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - compétences P --
+-- Sura BM - skille P --	-- Sura BM - compétences P --
+-- Sura WP - skille P --	-- Sura WP - compétences P --
 -- Szaman Healer - skille P --	-- Chamane Soigneur - compétences P --
 -- Szaman Smok - skille P --	-- Chamane Dragon - compétences P --
 -- Wojownik Body - skille P --	-- Guerrier Body - compétences P --
@@ -171,17 +186,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 ... i %d więcej.	... et %d de plus.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...et encore %d - liste complète dans la fenêtre Wiki des drops (barre latérale de l'inventaire).
 / - powtarza poprzednia komende	/ - répète la commande précédente
+/a - dajemy komus dany lvl	/a - donne à quelqu'un le niveau indiqué
 /a level - Zmienia lvl gracza	/a level - Change le niveau du joueur
 /b - ogloszenie w ramce	/b - annonce dans un cadre
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - bloque le chat pendant un certain temps
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - liste des joueurs dont le chat est bloqué
 /dc - wyrzuca kogos z serwera	/dc - expulse quelqu'un du serveur
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...je ne sais pas...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...je ne sais pas...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...je ne sais pas...
 /gete - ...nie wiem...	/gete - ...je ne sais pas...
 /getq - ...nie wiem...	/getq - ...je ne sais pas...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - téléportation vers le désert
 /go s - teleport na Gore Sohan	/go s - téléportation vers le Mont Sohan
+/go t - teleport do Doliny Orkow	/go t - téléportation à la Vallée des Orcs
 /go tr - teleport do Lasu Duchow	/go tr - téléportation vers la Forêt des Esprits
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - téléportation vers la Forêt Rouge
 /go x y - przenosi do wspolrzednych x y	/go x y - téléporte aux coordonnées x y
@@ -190,13 +217,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 /horse_level - podnosi poziom konia	/horse_level - augmente le niveau du cheval
 /horse_ride - przywoluje konia	/horse_ride - invoque le cheval
 /inv - niewidzialnosc	/inv - invisibilité
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - ajoute plusieurs exemplaires d'un objet
 /item - dodaje przedmiot	/item - ajoute un objet
 /kill - zabija gracza	/kill - tue un joueur
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - change le niveau du personnage
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - invoque un monstre ou un PNJ
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - vitesse de marche
 /n - Wiadomosc na gorze ekranu	/n - Message en haut de l'écran
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Mode observation
 /open - start eventu OX	/open - démarre l'événement OX
 /p - zamiana w potwora lub npc	/p - transformation en monstre ou PNJ
@@ -214,12 +250,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - Augmente l'exp du pourcentage indiqué pour une durée déterminée
 /purge - usuwa potwory, npc itp z okolicy	/purge - supprime les monstres, PNJ, etc. des environs
 /r - przywraca wszystkie pkt energii i zycia	/r - restaure tous les points d'énergie et de vie
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...je ne sais pas...
 /reset - resetuje PZ i PE	/reset - réinitialise PV et PM
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - rang de chevalier
+/set exp - dostajemy dana ilosc expa	/set exp - on reçoit la quantité d'EXP indiquée
+/set gold - dostajemy dana ilosc Yang	/set gold - on reçoit la quantité de Yang indiquée
+/set max_hp - zwieksza punkty zycia	/set max_hp - augmente les points de vie
 /set max_sp - zwieksza punkty energii	/set max_sp - augmente les points d'énergie
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - ajoute le nombre indiqué de points de compétence
+/set_maxhp - doladowanie hp	/set_maxhp - recharge des PV
 /set_maxsp - doladowanie pe	/set_maxsp - recharge les PM
+/set_state information - ...nie wiem...	/set_state information - ...je ne sais pas...
+/set_state run - ...nie wiem...	/set_state run - ...je ne sais pas...
+/set_state start - ...nie wiem...	/set_state start - ...je ne sais pas...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Commandement P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Polymorphie P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - cheval niveau 30
@@ -233,22 +284,46 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Furie du Dieu Dragon
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Vœu du Dragon
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...je ne sais pas...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - donne à quelqu'un la compétence indiquée au niveau P
 /ski 121 - Dowodzenie	/ski 121 - Commandement
 /ski 131 - Przywolaj Konia	/ski 131 - Invoquer le Cheval
 /slow - spowalnia gracza	/slow - ralentit un joueur
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - évanouit un joueur
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - téléporte un joueur vers le MJ
+/w - ilosc osob online	/w - nombre de joueurs en ligne
 /warp - przenosi GM'a do gracza	/warp - téléporte le MJ vers un joueur
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Île enneigée (Repaire des MJ)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - téléportation à l'Arène des MJ
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - cliquez d'abord droit sur le monstre, puis saisissez la commande et le monstre n'a plus que 1 PV
+/xmas 0 - Dzien	/xmas 0 - Jour
 /xmas 1 - Noc	/xmas 1 - Nuit
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Jour
 /xmas_boom 1 - Noc	/xmas_boom 1 - Nuit
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - désactiver la neige
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - activer la neige
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - la chanson s'arrête
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Active la chanson de Noël
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - Noël OFF
 0 - nakarm peta	0 - nourrir le familier
 0 = bez granicy	0 = sans limite
 0 Sek.	0 s
 1 dzień	1 jour
+1 godz.	1 h
 1 krok	1 pas
+1* Runa Wyk. Akcesoriów	1* Rune de forge : Accessoires
+1* Runa Wyk. Ks. Um.	1* Rune de forge : Livres comp.
+1* Runa Wyk. Poz. Prz.	1* Rune de forge : Autres obj.
+1* Runa Wyk. Prz. d. Zw.	1* Rune de forge : Obj. familiers
+1* Runa Wyk. Rękawiczek	1* Rune de forge : Gants
+1* Runa Wyk. Zest. Broni	1* Rune de forge : Ens. d'armes
+1* Runa Wyk. Zest. Hełm.	1* Rune de forge : Ens. de casques
+1* Runa Wyk. Zest. Zbroi	1* Rune de forge : Ens. d'armures
+1* Runa Wykuwania Broni	1* Rune de forge : Armes
+1* Runa Wykuwania Pasów	1* Rune de forge : Ceintures
+1* Runa Wykuwania Zbroi	1* Rune de forge : Armures
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normal. Effet immédiat.
 1. Posterunek Myr	1er poste des Myr
 1. dodany bonus +%d%%	1er bonus ajouté +%d%%
@@ -260,20 +335,26 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquet de 25)
 100% szans na ulepszenie.	100% de chances de réussite de l'amélioration.
 1927 Imha (k)	1927 Imha (f)
 1927 Imha+ (k)	1927 Imha+ (f)
+2 godz.	2 h
 2-12 liter lub cyfr!	2-12 lettres ou chiffres !
 2. Posterunek Myr	2e poste des Myr
 2. dodany bonus +%d%%	2e bonus ajouté +%d%%
 25 kart królewskich dało nową Talię Królewską.	25 cartes royales ont formé un nouveau Jeu Royal.
 25% only	25% seulement
+25-40 lvl	Niv. 25-40
 2x PD	2x EXP
 3 Loch Pająków	3e Donjon des Araignées
 3 losowe bonusy podstawowe	3 bonus de base aléatoires
 3 metiny	3 Metins
 3. dodany bonus +%d%%	3e bonus ajouté +%d%%
+4 godz.	4 h
 4. dodany bonus +%d%%	4e bonus ajouté +%d%%
+5 bossow	5 boss
+5% obrażeń będzie dodanych do PŻ	5% des dégâts sont ajoutés aux PV
 5. dodany bonus +%d%%	5e bonus ajouté +%d%%
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Cailloux, Coffret Mystérieux, Bon PD (20),
 50% więcej doświadczenia	50% d'expérience en plus
+8 godz.	8 h
 < 10 sek	< 10 s
 AC Miryang (k)	AC Miryang (f)
 AC Miryang+ (k)	AC Miryang+ (f)
@@ -313,6 +394,7 @@ Ahtrin Wojownik	Guerrier Ahtrin
 Ahtrin Zwiadowca	Éclaireur Ahtrin
 Akcja	Action
 Akcja:	Action :
+Akcje botow	Actions des bots
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Les données sont en cours de chargement. Réessayez plus tard.
 Aktualny poziom: %s	Niveau actuel : %s
 Aktywna	Active
@@ -350,6 +432,8 @@ Alchemy	Alchimie
 Alchemy Grade:	Rang d'alchimie :
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Tous les objets qui ne peuvent pas être placés dans votre inventaire seront déplacés dans le coffre d'achats. Voulez-vous continuer ?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Tous les |cFFFFFF99|h{}|r seront déplacés dans l'inventaire ou le coffre d'achats. Voulez-vous continuer ?
+Alt (przytrzymaj)	Alt (maintenir)
+Alt + LPM	Alt + clic G
 Amal	Amal
 Amator Ninja	Ninja amateur
 Amator Shaman	Chamane amateur
@@ -372,6 +456,7 @@ Antymagia	Antimagie
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Annulation de polymorphie de monture
 Anulacja Transmutacji	Annulation de transmutation
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Opérations restantes annulées. Les suppressions envoyées ont pu déjà être exécutées.
 Anuluj edycje	Annuler les modifications
 Anuluj misję	Annuler la mission
 Appaloosa	Appaloosa
@@ -383,6 +468,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Trousse de soins (ST) des gar
 Apteczka strażników Zaklętego Lasu.	Trousse de secours des gardes de la Forêt enchantée.
 Arahan Zodiaku	Arahan du Zodiaque
 Arbuz	Pastèque
+Arena Pojedynków	Arène de Duels
+Arena pojedynkow	Arène de duels
 Argos (mrok)	Argos (ténèbres)
 Argos (ogień)	Argos (feu)
 Arial	Arial
@@ -407,6 +494,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Attaque à longue portée qui étour
 Atak krwawienia	Attaque de saignement
 Atak magiczny	Attaque magique
 Atak magiczny/fizyczny %	Attaque magique/physique %
+Atak na Metiny	Attaque contre les Metins
 Atak na odległość	Attaque à distance
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Attaque tournoyante avec trois chances de toucher et une chance d'empoisonner l'ennemi. 
 Atak obszarowy walki wręcz	Attaque de zone de mêlée
@@ -425,6 +513,7 @@ Atak trzema ciosami pod rząd.	Attaque avec trois coups à la suite.
 Atak umożliwiający ominięcie obrony przeciwnika.	Attaque permettant d'ignorer la défense de l'ennemi.
 Atak w kilka celów	Attaque sur plusieurs cibles
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Attaque à grande portée touchant un seul ennemi ou plusieurs ennemis côte à côte.
+Atak z wierzchowca	Attaque à cheval
 Atak zasięgowy	Attaque à distance
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Attaquez les monstres proches pendant le combat avec des éclairs dont les dégâts correspondent à ceux de l'attaque automatique (temps de recharge 15 s).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Attaquez vos ennemis avec des effigies de dragon.|Renforcé par : Intelligence (++), Dextérité (précision) (+), niveau du personnage.
@@ -432,6 +521,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Attaque les ennemis de front.|Renforcé par : Force (++), Vitalité (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Attaque les ennemis autour de vous, avec une chance d'étourdir l'ennemi.
 Atakuje wszystkich przeciwników wokół siebie.	Attaque tous les ennemis autour de vous.
+Atakujący (atak)	Attaquant (attaque)
 Atrybut Błyskawicy	Attribut Foudre
 Atrybut Błyskawicy|Efekt Omdlenia	Attribut Foudre|Effet d'évanouissement
 Atrybut Piorunu	Attribut Foudre
@@ -462,6 +552,7 @@ Auto Łowy: bojowiec wyłączony.	Chasse auto : mode cavalier de combat désacti
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Chasse auto : plus de temps. Achetez « Chasse auto (8 h) » dans l'ItemShop et utilisez-le depuis l'inventaire - le temps ne s'écoule qu'en jeu.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Chasse auto : impossible de monter sur la monture - chasse à pied. Montez vous-même (Ctrl+G) et le mode cavalier de combat reviendra.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Chasse auto : impossible de monter sur la monture - nouvelle tentative toutes les %d s, et je combats à pied en attendant.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Auto-chasse : impossible de remonter en selle après le blocage - chasse arrêtée.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Chasse auto : impossible de remonter sur la monture après le blocage.
 Auto Łowy: nie udało się zapisać ustawień.	Chasse auto : impossible d'enregistrer les paramètres.
 Auto Łowy: podnoszenie jest wyłączone.	Chasse auto : le ramassage est désactivé.
@@ -481,24 +572,33 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Le prix automatique est inactif. L
 Auto-obnizka ceny	Baisse automatique du prix
 Auto-obnizka: %s - nowa cena %s	Baisse auto : %s - nouveau prix %s
 Auto-obnizka: -%d%% co %dh, min. %s	Baisse auto : -%d%% toutes les %dh, min. %s
+Auto-obnizka: -%d%%/%dh	Baisse auto : -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Baisse auto : 1-%d%%, toutes les 1-%d heures, prix minimum d'au moins 1 Yang.
+Auto-obnizka: wyl.	Baisse auto : désact.
 Auto-obnizka: wylaczona	Baisse auto : désactivée
 Autologin: ponownie za %d s (próba %d)	Connexion automatique : nouvel essai dans %d s (essai %d)
 Automatyczne podnoszenie Yang.	Ramassage automatique des Yang.
+Automatyczne zbieranie	Ramassage automatique
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Régénère automatiquement vos PM. Capacité : 1.000.000 PM.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Régénère automatiquement vos PM. Capacité : 100.000 PM.
 Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Régénère automatiquement vos PV. Capacité : 1.000.000 PV.
 Autopodnoszenie:	Ramassage auto :
 Autopoty	Auto-potions
 Autospin - wygrane: %s	Autospin - gains : %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autospin arrêté - la Roue de la Fortune est désactivée.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autospin arrêté - pas de réponse du serveur.
+Autospin zatrzymany - obrót odrzucony.	Autospin arrêté - tour rejeté.
 Autospin zatrzymany.	Autospin arrêté.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autospin : %d tours, %d PD dépensées, récompenses principales : %d.
 Autospin: brak odpowiedzi.	Autospin : aucune réponse.
+Autospin: główna nagroda - zatrzymany.	Autospin : récompense principale - arrêté.
 Autospin: główna nagroda!	Autospin : récompense principale !
+Autospin: koniec (%d obrotów).	Autospin : terminé (%d tours).
 Autospin: koniec.	Autospin : terminé.
 Autospin: koło wyłączone.	Autospin : roue désactivée.
 Autospin: obrót odrzucony.	Autospin : tour rejeté.
 Autospin: za mało SM.	Autospin : pas assez de PD.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin : pas assez de Dragon Coins pour un autre tour.
 Autołowy	Chasse auto
 Autołowy (TEST)	Chasse auto (TEST)
 Autołowy - szybki start/stop	Chasse auto - démarrage/arrêt rapide
@@ -548,6 +648,7 @@ Best. Czl. Skor. Zodiaku	Homme-scorpion bestial du Zodiaque
 Best. Wężowy Miecznik	Épéiste serpent bestial
 Best. Wężowy Wojownik	Guerrier serpent bestial
 Best. Wężowy Łucznik	Archer serpent bestial
+Bestialski Fanatyk	Fanatique bestial
 Bez bonusów podstawowych - jadeit nic nie dodaje	Sans bonus de base - le jade n'ajoute rien
 Bez imienia (Zwój Imienia Buffi).	Sans nom (Parchemin de nom de Buffi).
 Bez koloru	Sans couleur
@@ -595,11 +696,13 @@ Biolog	Biologiste
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	Le Biologiste donne des bonus permanents, et une étape supprimée est irréversible.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	Le Biologiste n'a pas besoin de temps pour analyser un échantillon de mauvaise qualité.
 Blad danych - sprawdz ID i ilosc.	Erreur de données - vérifiez l'ID et la quantité.
+Blad danych - sprawdz PID i ilosc.	Erreur de données - vérifiez le PID et la quantité.
 Blad danych - sprawdz kwote.	Erreur de données - vérifiez le montant.
 Blad danych - sprawdz wartosc.	Erreur de données - vérifiez la valeur.
 Blad danych.	Erreur de données.
 Blad odpowiedzi serwera.	Erreur de réponse du serveur.
 Blad zapytania do bazy.	Erreur de requête à la base de données.
+Blad: %s	Erreur : %s
 Blad: nie mozna utworzyc marmuru.	Erreur : impossible de créer la bille.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Erreur : impossible d'enregistrer la demande de redémarrage.
 Blade	Lame
@@ -607,8 +710,11 @@ Blok Ataku	Blocage d'Attaque
 Blokada Konta	Blocage du compte
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	Le blocage prend effet à la PROCHAINE connexion à ce compte - pas
 Blokada konta	Bannissement du compte
+Blokada permanentna	Blocage permanent
+Blokada tymczasowa	Blocage temporaire
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	Le verrou de tri ne peut être posé que sur un objet du sac.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Bloque l'expérience gagnée, y compris les récompenses de quêtes. L'expérience obtenue pendant la durée de l'effet est définitivement perdue !
+Blokujący (czas trwania)	Bloqueur (durée)
 Bo Zodiaku	Bo du Zodiaque
 Boczuś	Porcinet
 Body	Corps
@@ -638,6 +744,7 @@ Bonus vs Bossy	Bonus vs Boss
 Bonus vs Bossy/Metiny	Bonus vs Boss/Metin
 Bonus vs Ludzie	Bonus vs Humains
 Bonus vs Metiny	Bonus vs Metin
+Bonus vs Nieumarli	Bonus vs Morts-vivants
 Bonus vs Orki	Bonus vs Orques
 Bonus vs Potwory	Bonus vs Monstres
 Bonus vs Szaman	Bonus vs Chamane
@@ -688,9 +795,12 @@ Bossy	Boss
 Bossy > Metiny > Moby	Boss > Metins > Monstres
 Bossy > Moby > Metiny	Boss > Monstres > Metins
 Bot	Bot
+Boty do spawnu	Bots à faire apparaître
 Boty gildii	Bots de guilde
 Boty nie maja jeszcze wyceny tego przedmiotu.	Les bots n'ont pas encore d'estimation pour cet objet.
+Boty pisza na czacie	Les bots écrivent dans le chat
 Boty w misji: %d / %d (od poziomu %d)	Bots en mission : %d / %d (à partir du niveau %d)
+Boty zlomiarze	Bots ferrailleurs
 Boty: %s z %s (razem %s)	Bots : %s sur %s (total %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Bots : %d (%d de la guilde, %d engagés), %d demandés
 Bow	Arc
@@ -700,6 +810,7 @@ Brak / >	Aucun / >
 Brak aktywnej misji albo limit został przekroczony.	Aucune mission active ou limite dépassée.
 Brak aktywnej sesji	Aucune session active
 Brak aktywnej sesji.	Aucune session active.
+Brak bonusu albo powyżej %d	Pas de bonus ou au-dessus de %d
 Brak danych cenowych dla tego przedmiotu.	Pas de données de prix pour cet objet.
 Brak danych do wyceny	Pas de données pour l'estimation
 Brak danych o bonusach.	Aucune donnée de bonus.
@@ -746,9 +857,11 @@ Brakuje Yang na: %s (%s).	Yang manquants pour : %s (%s).
 Brakuje ci Odłamków: %s.	Il vous manque des Éclats : %s.
 Brakuje ci Suplementów: %s.	Il vous manque des Suppléments : %s.
 Brakuje materiałów do rozwoju.	Matériaux d'évolution manquants.
+Brakuje: %s	Manque : %s
 Bransoleta z Turmalinu	Bracelet de tourmaline
 Bransolety	Bracelets
 Braz. Niedzw. Zodiaku	Ours brun du Zodiaque
+Brazowy Niedzwiedz	Ours brun
 Brillant	Brillant
 Bronie	Armes
 Browarnik	Brasseur
@@ -763,6 +876,7 @@ Brązowa Chusta	Foulard brun
 Brązowa Chusta+	Foulard brun+
 Brązowa Farba	Teinture brune
 Brązowa Rosa	Rosée brune
+Brązowa Wilcza Szata+(m)	Robe de loup brune+ (h)
 Brązowa Woda	Eau brune
 Brązowe Płyty	Plaques de bronze
 Brązowy Sok	Jus brun
@@ -799,10 +913,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Bénédiction qui régénère instantanément vos Points de vie et vos Points de mana à 100 %. Utilisable une fois toutes les 2 minutes. Partage son temps de recharge avec les Potions d'invulnérabilité et d'intouchabilité.
 Błyskaw.	Instant.
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	En un éclair, elle offre à ses ennemis le repos éternel. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
+Błyszcząca	Éclatante
 Błyszcząca Szata Aury	Robe d'aura brillante
 Błąd serwera - spróbuj ponownie.	Erreur du serveur - réessayez.
 Błąd zapytania.	Erreur de requête.
 Błędne podanie kodu może skutkować	Une saisie erronée du code peut entraîner
+C. Ratownik Plażowy+	Sauveteur de plage+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	Le mode CPU TNL peut accélérer un PC peu puissant.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Rétablir l'interface.
@@ -841,6 +957,7 @@ Charyzma Nowicjusza	Charisme du novice
 Chcesz zacząć grę?	Voulez-vous commencer la partie ?
 Chcesz zakończyć grę i otrzymać wygraną?	Voulez-vous terminer la partie et recevoir vos gains ?
 Chcesz zrealizować to pole?	Voulez-vous réclamer cette case ?
+Chciano botów: %d	Bots demandés : %d
 Chciałeś %d szt., a tyle da się kupić.	Vous en vouliez %d, mais voici la quantité achetable.
 Chegal, Goliat Cienia	Chegal, Goliath de l'ombre
 Chodząca Legenda	Légende Ambulante
@@ -855,12 +972,14 @@ Chwilę...	Un instant...
 Chwilę... spróbuj jeszcze raz.	Un instant... réessayez.
 Cicha Klątwa	Malédiction silencieuse
 Ciekawski	Curieux
+Ciemna Szata Proroka+(m)	Robe sombre du prophète+ (h)
 Ciemność	Ténèbres
 Cienie	Ombres
 Cieniolubny Liść	Feuille amie de l'ombre
 Cienka Nić	Fil mince
 Cienka Przędza	Fil fin
 Cienka Skóra	Cuir fin
+Ciepły Kaftan Zimowy+(m)	Caftan d'hiver chaud+ (h)
 Ciągliwość	Malléabilité
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Pointe lourde taillée dans une pierre résistante. Plus lente, elle assure des coups puissants et convient parfaitement pour percer les armures dures.
 Ciężkie Pasy	Sangles lourdes
@@ -884,6 +1003,9 @@ Continue	Continuer
 Costume	Costume
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Quelque chose s'est mal passé. L'objet est en sécurité chez Seon-Hae - réessayez plus tard.
 Create	Créer
+Ctrl (przytrzymaj)	Ctrl (maintenir)
+Ctrl + LPM	Ctrl + clic G
+Ctrl + PPM	Ctrl + clic D
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + CD : tout retirer, Maj : quantité
 Ctrl + klik: kilka punktów naraz	Ctrl + clic : plusieurs points à la fois
 Ctrl + klik: odepnij	Ctrl + clic : détacher
@@ -909,6 +1031,9 @@ Cyklon	Cyclone
 Cyklop Kat (BŚ)	Cyclope bourreau (BM)
 Cyklop Mag (BŚ)	Cyclope mage (BM)
 Cyklop Żołnierz (BŚ)	Cyclope soldat (BM)
+Cz. Królik K. Czarów+(m)	Lapin rouge mag.+ (h)
+Cz. Szata Faraona+ (m)	Robe pharaon rouge+ (h)
+Cz. Wojownik P.Księżyca+	Guerrier rouge Pl. Lune+
 Czapka Jokera (k)	Chapeau de Joker (f)
 Czapka Jokera (m)	Chapeau de Joker (h)
 Czapka z Pomp. (czerw.)	Bonnet à pompon (rouge)
@@ -920,15 +1045,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Le sortilège de ce sceau invoque votre monture, le majestueux Tigre du Bengale (gris).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Le sortilège de ce sceau invoque votre monture, le majestueux Tigre du Bengale (vert).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Le sortilège de ce sceau invoque votre monture, le majestueux Tigre du Bengale (doré).
+Czar. Szata Dokkaebi+(m)	Robe Dokkaebi noire+ (h)
+Czarna Lampa Lorda+	Lampe noire du Lord+
 Czarna Pantera	Panthère noire
 Czarna Stal	Acier noir
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Bonnet noir à oreilles de lapin pour lui. Vous donne au moins un bonus aléatoire.
 Czarna magia	Magie noire
 Czarnoksiężnik P. Wieży	Nécromancien de la Tour infernale
 Czarny Barwnik	Teinture noire
+Czarny Niedzwiedz	Ours noir
 Czarny Ork Zodiaku	Orc noir du Zodiaque
 Czarny Rumak	Destrier noir
 Czarny Skorpion	Scorpion noir
+Czarny jak noc Ks. Wam.+	Vampire noir comme la nuit+
 Czarodziej Gnoll	Sorcier gnoll
 Czarodziej Stylu Małp	Sorcier du style du Singe
 Czarownik Sch. Płn. W.	Sorcier du refuge du V. du Nord
@@ -990,11 +1119,14 @@ Czekoladowy Amulet	Amulette en chocolat
 Czempion	Champion
 Czempion %s	Champion de %s
 Czer. Amazonka Zodiaku	Amazone rouge du Zodiaque
+Czer. Sweter Świąt.+ (m)	Pull de Noël rouge+ (h)
 Czer. Żeń-szeń (premium)	Ginseng rouge (Premium)
 Czerw. Duch Drzewa	Arbre fantôme rouge
 Czerw. Duch Pniaka	Souche fantôme rouge
+Czerw. Galowy Strój+ (m)	Tenue de gala rouge+ (h)
 Czerw. Las Duchow	Forêt Rouge des Esprits
 Czerw. Tr. Pajak Zodiaku	Araignée venim. rouge du Zodiaque
+Czerw. Zbr. Azraela+ (m)	Armure d'Azrael rouge+ (h)
 Czerwona Mikstura (W)	Potion rouge (W)
 Czerwona Runa SungMa	Rune SungMa rouge
 Czerwona Smocza Łuska	Écaille de dragon rouge
@@ -1012,8 +1144,11 @@ Czerwony Kat Zodiaku	Bourreau rouge du Zodiaque
 Czerwony Mag Zodiaku	Mage rouge du Zodiaque
 Czerwony Monokl	Monocle rouge
 Czerwony Skorpion	Scorpion rouge
+Czerwony Smoczek	Petit dragon rouge
+Czerwony Smoczy Rycerz+	Chevalier Dragon rouge+
 Czerwony Smoczy Róg	Corne de dragon rouge
 Czerwony Sok	Jus rouge
+Czerwony Toreador+	Toréador rouge+
 Czwartek	Jeudi
 Czy chcesz cofnąć misję do poziomu 1?	Voulez-vous ramener la mission au niveau 1 ?
 Czy chcesz dokonać masowej sprzedaży?	Voulez-vous effectuer une vente en masse ?
@@ -1023,7 +1158,7 @@ Czy chcesz kupić %s %s za %s?	Voulez-vous acheter %s %s pour %s ?
 Czy chcesz kupić %s (szt. %d) za %s?	Voulez-vous acheter %s (x%d) pour %s ?
 Czy chcesz naładować %d Animosfer?	Voulez-vous charger %d Animosphères ?
 Czy chcesz odesłać Enasira?	Voulez-vous renvoyer Enasir ?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Voulez-vous payer %s Yang pour restaurer %d Esprit(s) du Dragon ?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Voulez-vous renouveler pour %s Yang %d Esprit du Dragon ?
 Czy chcesz opuścić wojnę gildii?	Voulez-vous quitter la guerre de guildes ?
 Czy chcesz otworzyć to pudło?	Voulez-vous ouvrir cette boîte ?
 Czy chcesz ożywić gracza %s?	Voulez-vous ressusciter le joueur %s ?
@@ -1061,6 +1196,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Si ce ty
 Czym jest Konto Premium?	Qu'est-ce qu'un compte Premium ?
 Czysta esencja z serca najgłębszych źródeł.	Pure essence tirée du cœur des sources les plus profondes.
 Czyste zwoje (%s) w ekwipunku: %d	Parchemins vierges (%s) dans l'inventaire : %d
+Czytanie bez opoznienia dnia	Lecture sans délai du jour
+Czyściec Ognia	Purgatoire de Feu
 Czyśćiec Ognia	Purgatoire du Feu
 Część zestawów kostiumów (%d)	Fait partie d'ensembles de costumes (%d)
 Członek gildii %s jest teraz w grze.	Le membre de guilde %s est maintenant en jeu.
@@ -1135,6 +1272,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Ajoutez une Pierre d'âme à échanger.
 Dodaj Księgę Umiejętności do wymiany.	Ajoutez un Livre de compétences à échanger.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Ajoute à la Boutique Gaya un emplacement supplémentaire pour des offres d'objets précieux, en commençant par le premier emplacement de la deuxième rangée à gauche. À utiliser dans la Boutique Gaya du Port (Statue du Guerrier au Port du Nouveau Continent).
+Dodaj do ulubionych	Ajouter aux favoris
 Dodaj przedmiot do wymiany.	Ajoutez un objet à échanger.
 Dodaj przedmioty do sklepu.	Ajoutez des objets à la boutique.
 Dodaj punkt Sung Ma	Ajouter un point Sung Ma
@@ -1159,14 +1297,19 @@ Dolina	Vallée
 Dolina Cyklopow	Vallée des Cyclopes
 Dolina Cyklopów	Vallée des Cyclopes
 Dolina Orkow	Vallée des Orcs
+Dolina Orków	Vallée des Orcs
+Dolina Orków / Ognista Ziemia	Vallée des Orcs / Terre de feu
 Dom Aukcyjny	Hôtel des ventes
 Dom Aukcyjny działa tylko w M1.	L'Hôtel des ventes ne fonctionne qu'en M1.
 Dom Aukcyjny jest wyłączony.	L'Hôtel des ventes est désactivé.
 Dom Aukcyjny moze byc wylaczony.	La Maison des Enchères peut être désactivée.
 Dom Aukcyjny: %s	Hôtel des ventes : %s
+Dom Aukcyjny: %s - %s.	Hôtel des ventes : %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Hôtel des ventes : %d bonus maximum à la fois.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Hôtel des ventes : les achats précédents sont encore en cours.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Hôtel des ventes : réessayez dans un instant.
+Dom Towarowy	Grand Magasin
+Dom Towarowy: %s	Grand Magasin : %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Grand Magasin : achat des offres sélectionnées en cours.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Grand Magasin : cochez des offres (case à côté de l'offre), puis Tout acheter.
 Domyślna	Par défaut
@@ -1216,6 +1359,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Expérience +%(v)s%% en chevauchant
 Doświadczenie +%d%%	Expérience +%d%%
 Doświadczenie Czempiona : %.2f%%	Expérience de Champion : %.2f%%
 Doświadczenie Czempiona: %s / %s	Expérience de Champion : %s / %s
+Doświadczenie łącznie	Expérience totale
 Doświadczenie: %d%%	Expérience : %d%%
 Doświadczenie: %d%% (%d / %d)	Expérience : %d%% (%d / %d)
 Doświadczenie: %s / %s	Expérience : %s / %s
@@ -1224,10 +1368,15 @@ Drewniany Klucz	Clé en bois
 Drobny Kam. Przebudzenia	Minuscule pierre d'éveil
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Précieuse monnaie de Yohara. Faites polir 30 cailloux par la Statue du Guerrier au Port du Nouveau Continent (avec une Pierre d'Esprit +0 à +3 et 15 000 Yang - 70 % de chances) pour obtenir 3 Gaya. Elle sert à payer à la Boutique Gaya du Port, chez les forgerons de panoplies, à la Statue des Serpents, à l'Autel Mystérieux et chez le Maître Chi. Elle ne peut pas être échangée avec d'autres joueurs.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Anneau précieux orné de néphrite et de turquoise. Donne : +50 % d'EXP, +30 % de force contre les monstres, +20 % de vitesse d'attaque et des sorts, +10 % de PV et PM max.
+Drop Przedmiotow:	Butin d'objets :
 Drop Yang	Drop de Yang
 Drop potwora %s:	Drop du monstre %s :
 Drop przedmiotów +%d%%	Butin d'objets +%d%%
+Drop z bossów	Butin des boss
 Dropek Metinów	Chasseur de Drops de Metin
+Dropek medali	Butin de médailles
+Dropek z M2	Butin M2
+Dropek z M3	Butin M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	Seconde moitié du réglage ci-dessus - chance distincte calculée à la destruction d'une pierre Metin, au lieu de la mort d'un monstre ordinaire.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Deuxième des trois livres de vigilance. Peut augmenter le charisme de son propriétaire. Le livre disparaît après lecture. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Deuxième des trois livres des combats en formation. Peut augmenter l'inspiration de son propriétaire. Le livre disparaît après lecture. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
@@ -1267,6 +1416,7 @@ Dusza wojownika, obdarzona mocą.	Âme de guerrier, dotée de pouvoir.
 Dusza Światła	Âme de lumière
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Les âmes sont prises automatiquement dans l'inventaire - il suffit de les avoir sur soi.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Ginseng mijoté premium - seule nourriture du Puissant Cheval de Guerre (cheval à partir du niveau 31). Faites un clic droit pour nourrir le cheval invoqué, ou donnez-le au cheval. Lâché par les monstres de Yohara.
+Duzy Lysy Ork	Gros orc chauve
 Duża	Grande
 Duży Skorpion	Gros scorpion
 Dwigant Zodiaku	Dwigant du Zodiaque
@@ -1297,14 +1447,17 @@ Dzik Zodiaku	Sanglier du Zodiaque
 Dziki General Zodiaku	Général sauvage du Zodiaque
 Dziki Lucznik Zodiaku	Archer sauvage du Zodiaque
 Dziki Moa (pieczęć)	Moa sauvage (sceau)
+Dziki Sluga	Serviteur sauvage
 Dziki Sluga Zodiaku	Serviteur sauvage du Zodiaque
 Dziki Z. Piech. Zodiaku	Fantassin sauvage du Zodiaque
+Dziki Zolnierz Piechoty	Soldat d'infanterie sauvage
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Cette potion vous fait gagner 150 % d'expérience en plus pendant 3 heures de jeu. Non échangeable.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Ce sceau vous permet d'invoquer une licorne.
 Dzięki tej pieczęci możesz przywołać marę senną.	Ce sceau vous permet d'invoquer un cauchemar.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Ce sceau vous permet d'invoquer votre compagnon.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Ce sceau fait éclore Sheldon de son œuf.
 Dziękujemy za zgłoszenie!	Merci pour votre signalement !
+Dziś	Aujourd'hui
 Dzwon Anielski	Gong angélique
 Dzwon Arkt. Króla	Gong du Roi arctique
 Dzwon Błk. Wiatru	Gong du Vent d'azur
@@ -1410,6 +1563,7 @@ Elit. Ork Zodiaku	Orc d'élite du Zodiaque
 Elit. Ork Zwiad. Zodiaku	Éclaireur orc d'élite du Zodiaque
 Elita Atlantydy	Élite d'Atlantide
 Elitarny Ezoteryczny Fanatyk	Fanatique Ésotérique d'Élite
+Elitarny Ork	Orc d'élite
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblème des maîtres du football. Pendant 6 heures, donne : +50 % EXP, +20 % vitesse d'attaque, +20 % vitesse d'incantation, +35 % attaque magique et de mêlée, +10 % PV max., +10 % PM max.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Émotes à deux (baiser, tape) sans demander l'accord.
 Emocje: nie	Émotes : non
@@ -1446,6 +1600,7 @@ Event wielkanocny	Événement de Pâques
 Event wlaczony	Événement activé
 Event wyłączony	Événement désactivé
 Eventy (bonus imperium)	Événements (bonus du royaume)
+Eventy w dniu %s:	Événements du %s :
 Eventy wylaczone	Événements désactivés
 Ewoluować szatę za %s Yang i materiał?	Faire évoluer la tenue pour %s Yang et le matériau ?
 Expimy razem	On monte en niveau ensemble
@@ -1454,6 +1609,7 @@ Ezot. Dreczyciel Zodiaku	Tourmenteur ésot. du Zodiaque
 Ezot. Fanatyk Zodiaku	Fanatique ésotérique du Zodiaque
 Ezot. Wojownik Zodiaku	Guerrier ésotérique du Zodiaque
 Ezoteryczne Drewno	Bois ésotérique
+Ezoteryczny Fanatyk	Fanatique ésotérique
 Ezoteryczny Ostrzowiec	Lame ésotérique
 FC Bakra (k)	FC Bakra (f)
 FC Bakra+ (k)	FC Bakra+ (f)
@@ -1482,6 +1638,8 @@ Fan	Éventail
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Ailes fatales de la Mort
 Filters History	Historique des filtres
+Filtr %d	Filtre %d
+Filtr (%d)	Filtre (%d)
 Filtr bonusów (prawy klik czyści)	Filtre de bonus (clic droit pour effacer)
 Filtr podnoszenia	Filtre de ramassage
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	Le filtre de ramassage est DÉSACTIVÉ (Ctrl+Z) - vous ramassez tout actuellement.
@@ -1490,7 +1648,9 @@ Filtr podnoszenia: %s	Filtre de ramassage : %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Filtre de ramassage : les types d'objets de la Chasse auto de ce personnage s'appliquent désormais à Z, à la Chasse auto et au Compagnon (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Filtre de ramassage : préréglage « %s » chargé.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Filtre de ramassage : règles du type « %s » enregistrées (%d).
+Filtr rodzaju	Filtre de type
 Filtr wyłączony - podnosisz wszystko.	Filtre désactivé - vous ramassez tout.
+Filtry (%d)	Filtres (%d)
 Filtry bonusow	Filtres de bonus
 Fioletowa	Violette
 Fioletowa Rosa	Rosée violette
@@ -1581,9 +1741,11 @@ Glodny Czarny Niedzwiedz	Ours Noir Affamé
 Glodny Dzik	Sanglier Affamé
 Glodny Niebieski Alfa Wilk	Loup Alpha Bleu Affamé
 Glodny Niebieski Wilk	Loup Bleu Affamé
+Glodny Niedzwiedz	Ours affamé
 Glodny Szary Wilk	Loup Gris Affamé
 Glodny Tygrys	Tigre Affamé
 Glodny Wilk	Loup Affamé
+Glodny Zablakany Pies	Chien errant affamé
 Gniazdo Sheldona	Nid de Sheldon
 Gniewne Serce (pieczęć)	Sceau du cœur courroucé
 Gniewny Mini Alastor	Mini Alastor en colère
@@ -1607,6 +1769,7 @@ Gotowa do ewolucji u Theowahdana	Prête à évoluer chez Theowahdan
 Gotowa za: %s	Prête dans : %s
 Gotowe! Odbierz przedmiot	Prêt ! Récupérez votre objet
 Gotowy do użycia	Prêt à l'emploi
+Gotowy. Usuwane sa cale wybrane stosy.	Prêt. Les piles sélectionnées seront supprimées en entier.
 Gourou	Gourou
 Gra	Jeu
 Gra beze mnie	Joue sans moi
@@ -1642,6 +1805,7 @@ Gruby Mini Kat (pieczęć)	Gros Mini-Bourreau (sceau)
 Grudzień	Décembre
 Grupa: %s	Groupe : %s
 Grupuj	Grouper
+Grupy (PT)	Groupes (PT)
 Gruszka	Poire
 Gwarancja Rzemiosła (Biżuteria)	Garantie d'artisan (Bijou)
 Gwarancja Rzemiosła (Broń)	Garantie d'artisan (Arme)
@@ -1649,11 +1813,13 @@ Gwarancja Rzemiosła (Zbroja)	Garantie d'artisan (Armure)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Garantie d'artisan honorée par le forgeron de chaque village. Utilisez-la sur un objet pour l'améliorer.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Garantie d'artisan honorée par le forgeron de chaque village. Utilisez-la sur un objet pour l'améliorer. Ne fonctionne pas sur les armes de niveau 30. L'objet peut être détruit.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Garantie d'artisan honorée par le forgeron de chaque village. Utilisez-la sur un objet pour l'améliorer. L'objet peut être détruit.
+Gwardia Ognistego Smoka+	Garde du Dragon de feu+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Frappe frontale violente sur une zone rectangulaire.
 Gwiazda Nocy	Étoile de la Nuit\r\n
 Gwiazda Północy (PB)	Étoile du Nord (ÉV)
 Gwiazda Północy (SZC)	Étoile du Nord (ST)
 Gwiezdny Skarb	Trésor stellaire
+Górnik	Mineur
 Górski Behemot	Béhémoth des montagnes
 Góry Gromu	Monts du Tonnerre
 Głowa Węża	Tête de serpent
@@ -1676,6 +1842,8 @@ Handlarz nie jest zainteresowany tym przedmiotem.	Le marchand n'est pas intéres
 Handluj z %s	Échanger avec %s
 Happy Hour	Happy Hour
 Helm	Casque
+Helmy - Ninja	Casques - Ninja
+Helmy - Sura	Casques - Sura
 Helmy - Szaman	Casques - Chamane
 Helmy - Wojownik	Casques - Guerrier
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1749,6 +1917,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	La Hwacha ne peut 
 Hwang	Hwang
 Hydra	Hydre
 I am the czempion! Punktacja: %d	Je suis le champion ! Score : %d
+ID Bota:	ID du bot :
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR au plus ancien personnage du compte admin.
 Ich liczba na event jest ograniczona.	Leur nombre par événement est limité.
 Id. Skrzynia Kolczyków	Coffre de boucles d'oreilles parfait
@@ -1762,6 +1931,9 @@ Ile sztuk kupic:	Combien en acheter :
 Ile sztuk kupic?	Combien en acheter ?
 Ile sztuk kupić:	Combien en acheter :
 Ile sztuk kupić?	Combien en acheter ?
+Ile? %s	Combien ? %s
+Ilosc: malejaco	Quantité : décroissante
+Ilosc: rosnaco	Quantité : croissante
 Ilość prób: - jedna, + najwięcej, ile się da.	Nombre de tentatives : - une seule, + le maximum possible.
 Ilość Ładunków: %d	Nombre de charges : %d
 Ilość śmierci	Nombre de morts
@@ -1784,6 +1956,7 @@ Info o efekt.	Infos effet
 Informacje	Informations
 Informacje o misji	Informations sur la quête
 Informacje o sklepie	Informations sur la boutique 
+Inkub Płomieni+	Incube des flammes+
 Inna Wroga Wytrzymałość	Autre endurance ennemie
 Inna postać już ma tą nazwę.	Un autre personnage porte déjà ce nom.
 Inne Mikstury	Autres potions
@@ -1840,6 +2013,7 @@ Inteligencja Sung Ma	Intelligence Sung Ma
 Inteligencja Sung Ma +%d	Intelligence Sung Ma +%d
 Item inserted into the shopping safebox.	Objet placé dans le coffre d'achats.
 ItemShop	ItemShop
+Ja (GM)	Moi (MJ)
 Jabłko	Pomme
 Jadeit	Jade
 Jadeit Dymu	Jade de fumée
@@ -1901,7 +2075,16 @@ Jazda Konna (Precyzja)	Équitation (Précision)
 Jazda Konna (Sura)	Équitation (Sura)
 Jazda Konna (Szaman)	Équitation (Chamane)
 Jazda Konna (Wojownik)	Équitation (Guerrier)
+Jazda Konna (diabły)	Équitation (démons)
+Jazda Konna (insekty)	Équitation (insectes)
 Jazda Konna (losowo)	Équitation (aléatoire)
+Jazda Konna (mistycy)	Équitation (mystiques)
+Jazda Konna (nieumarli)	Équitation (morts-vivants)
+Jazda Konna (orki)	Équitation (orcs)
+Jazda Konna (potwory)	Équitation (monstres)
+Jazda Konna (pustynia)	Équitation (désert)
+Jazda Konna (półludzie)	Équitation (demi-humains)
+Jazda Konna (zwierzęta)	Équitation (animaux)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Un des Œufs de Dragon de Balathor invoque un froid glacial ! Concentrez vos attaques sur lui.
 Jednoręczne	À une main
 Jedwab	Soie
@@ -1923,12 +2106,14 @@ Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Si 
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Si vous avez plus de 90% de PV, vous subissez x% de dégâts en moins.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Si vous avez plus de 90%% de PV, vous subissez %d%% de dégâts en moins.
 Jeśli nie, to Twoim hasłem jest: "000000".	Sinon, votre mot de passe est : "000000".
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Si la boutique ne s'affiche pas, ce client n'a pas encore
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Si vous l'utilisez, vous recevez un buff qui vous permet d'invoquer Enasir et de commercer avec lui comme avec la Marchande d'Articles Divers (il prélève 10 % du prix à la vente). Durée : 7 jours. Peut être prolongé jusqu'à 1000 jours au maximum.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Si vous l'utilisez, vous recevez un buff qui vous permet d'invoquer Enasir et de commercer avec lui comme avec la Marchande d'Articles Divers (il prélève 10 % du prix à la vente). Durée : 7 jours. Peut être prolongé jusqu'à 1000 jours au maximum. L'objet peut être échangé avec d'autres joueurs.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Si vous l'utilisez, vous recevez un buff qui vous permet d'invoquer Enasir pour accéder à votre entrepôt. Durée : 7 jours. Peut être prolongé jusqu'à 1000 jours au maximum.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Si vous l'utilisez, vous recevez un buff qui vous permet d'invoquer Enasir pour accéder à votre entrepôt. Durée : 7 jours. Peut être prolongé jusqu'à 1000 jours au maximum. L'objet peut être échangé avec d'autres joueurs.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Si vous ou le Gobelin au Trésor mourez, l'expédition échoue.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	En cas de problème graphique, choisissez 'Options système' ou 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Si la carte cachée [5] touche une carte révélée,
 Jin Bing (lód)	Jin Bing (glace)
 Jin Bing (mrok)	Jin Bing (ténèbres)
 Jin-Hee Zodiaku	Jin-Hee du Zodiaque
@@ -1941,9 +2126,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Langue
 Język / Language	Langue / Language
 Język klienta: %s	Langue du client : %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Langue du serveur : %s - le client changera de langue après le redémarrage.
 KRĘCI SIĘ...	ÇA TOURNE...
 Kaftan Wężowy	Veste Serpent
 Kaftan Wężowy (wykon.)	Veste Serpent (fabr.)
+Kalendarz eventów	Calendrier des événements
+Kalendarz eventów: %s - %d	Calendrier des événements : %s - %d
 Kam. Pieczęci Sunga Mahi	Pierre du sceau de Sung Mahi
 Kamera filmowa - obrót w lewo	Caméra cinéma - rotation à gauche
 Kamera filmowa - obrót w prawo	Caméra cinéma - rotation à droite
@@ -1954,6 +2142,7 @@ Kamera filmowa - w dół	Caméra cinéma - vers le bas
 Kamera filmowa - w górę	Caméra cinéma - vers le haut
 Kamienie	Pierres
 Kamienie Duszy (0 = puste):	Pierres d'Esprit (0 = vide) :
+Kamienie Metin	Pierres Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Pierres de téléportation : %d. Se téléporter vers : %s ?
 Kamienie dusz	Pierres d'âme
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Tablette de pierre gravée de runes anciennes. Elle émane une énergie inconnue.
@@ -1987,6 +2176,7 @@ Kamień Teleportacji	Pierre de téléportation
 Kamień Teleportacji+	Pierre de téléportation+
 Kamień Tygrysa	Pierre du Tigre
 Kamień Wzgórza	Pierre de la colline
+Kamień Węglowy	Pierre de charbon
 Kamień Wężowy	Pierre serpent
 Kamień Wężowy+	Pierre serpent+
 Kamień do Fundamentu+	Pierre de fondation+
@@ -2109,6 +2299,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Les 
 Kolejny boss za: %s	Prochain boss dans : %s
 Kolejny cel	Cible suivante
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Palier suivant : %d emplacements, %s Yang, à partir du niveau %d du personnage
+Kolekcja lochów	Collection de donjons
+Kolekcja pól	Collection de terrains
 Kolia Jadeitu Dymu	Pendentif de jade de fumée
 Kolia Jadeitu Mgły	Pendentif de jade de brume
 Kolia Jadeitu Nocy	Pendentif de jade de la nuit
@@ -2410,6 +2602,7 @@ Koło Losu jest teraz wyłączone.	La Roue de la Fortune est actuellement désac
 Koło Losu: brama otwarta - poziom %d!	Roue de la Fortune : porte ouverte - niveau %d !
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Roue de la Fortune : vous gagnez %s. La récompense vous attend dans l'entrepôt de l'ItemShop.
 Koło Losu: zdobywasz klucz (%d/%d).	Roue de la Fortune : vous obtenez une clé (%d/%d).
+Koło Płomieni Nocy	Roue des Flammes de la Nuit
 Koło Skrzydła Nocy	Roue de l'Aile de la Nuit
 Koło Słonecznego Wilka	Roue du Loup Solaire
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	La roue a 16 cases, chacune avec 1/16 de chance. Avant chaque tour, les cases sont tirées de nouveau.
@@ -2420,6 +2613,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	Le cheval a mangé %(a
 Krab Królewski	Crabe royal
 Krab Pancerny Zodiaku	Crabe cuirassé du Zodiaque
 Krab Wojow. Zodiaku	Guerrier crabe du Zodiaque
+Kradziez PM	Vol de PM
+Kradziez PZ	Vol de PV
 Kradzież PE	Vol de PM
 Kraina Gigantow	Terre des Géants
 Kraina Ognia	Terre de Feu
@@ -2456,14 +2651,18 @@ Krótki	Courte
 Krótko	Court
 Kręty Klucz (PB)	Clé tortueuse (ÉV)
 Kręty Klucz (SZC)	Clé tortueuse (ST)
+Ksiegi umiejetnosci	Livres de compétences
 Ksiegi zapomnienia	Livres d'oubli
 Ksiąg w oknie: %d (wymian: %d)	Livres dans la fenêtre : %d  (échanges : %d)
 Książ. Odłamek Broni II	Éclat d'arme princier II
 Książ. Odłamek Hełmu II	Éclat de casque princier II
 Książ. Odłamek Zbroi II	Éclat d'armure princier II
 Książka Przebudzenia	Livre de l'éveil
+Książę Atlantydy+	Prince d'Atlantide+
+Książę Orientu (brąz.)+	Prince d'Orient (bronze)+
 Książę Piekielnej Wieży	Prince de la Tour infernale
 Książę Śmierci P. Wieży	Prince de la Mort de la Tour infernale
+Książęcy	Princier
 Książęcy Efekt Zestawu	Effet de panoplie princier
 Książęcy Kowal Zestawu	Forgeron d'ensemble princier
 Księga Absorpcji Życia	Livre d'absorption de vie
@@ -2527,6 +2726,7 @@ Księga: Burza Balathora	Livre : Tempête de Balathor
 Księga: Nieugiętość Balathora	Livre : Inflexibilité de Balathor
 Księga: Wola Balathora	Livre : Volonté de Balathor
 Księgi	Livres
+Księgi Misji	Livres de quêtes
 Księgi Um. Pasywnych	Livres de comp. passives
 Księgi umiejętności	Livres de compétence
 Księgi zapomnienia	Livres de l'oubli
@@ -2542,7 +2742,10 @@ Kup część stosu	Acheter une partie du lot
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Acheter la quantité indiquée d'un même objet, en commençant par le moins cher
 Kup tę ofertę	Acheter cette offre
 Kup wiele	Acheter en lot
+Kup wiele działa dla jednego przedmiotu.	L'achat multiple ne fonctionne que pour un seul objet.
 Kup wszystkie zaznaczone oferty	Acheter toutes les offres sélectionnées
+Kup wybrane (%d	Acheter la sélection (%d
+Kup wybrane (0	Acheter la sélection (0
 Kup!	Acheter !
 Kupic %d ofert za lacznie %s?	Acheter %d offres pour un total de %s ?
 Kupione - nowa oferta za %s.	Acheté - nouvelle offre dans %s.
@@ -2552,11 +2755,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	%d offre(s) sur %d achetée(s) : %d unité
 Kupić %d szt. (ofert: %d) za %s?	Acheter %d unité(s) (offres : %d) pour %s ?
 Kupić %s za %s Gaya?	Acheter %s pour %s Gaya ?
 Kupić %s za %s?	Acheter %s pour %s ?
+Kupić zaznaczone oferty: %d?	Acheter les offres sélectionnées : %d ?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Bon PD (50), +100% de chance de butin pendant 2 heures
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	Bon d'une valeur de 20 Monnaies du Dragon. Faites un clic droit pour les ajouter à votre compte.
 Kupony	Bons
 Kupony SM	Bons SM
 Kupony SM/Premium	Bons SM/Premium
+Kupowanie mikstur	Achat de potions
 Kupuja sie po kolei; blad przerywa zakupy.	Les achats se font un par un ; une erreur interrompt les achats.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Achète avec eux dans l'Item Shop ce qu'il utilise (sans coiffures). Ne dépense pas : n'y touche pas.
 Kursor nad postaciami	Curseur sur les personnages
@@ -2567,6 +2772,7 @@ Kwitnąca Brzoskwinia	Pêcher en fleurs
 Kwitnące Kaki	Kaki en fleurs
 Kwota (yang):	Montant (Yang) :
 Kwota SM:	Montant SM :
+Kwota Yang:	Montant en Yang :
 Kwota:	Montant :
 Kłopoty na Zboczu Gautama	Ennuis sur le Versant de Gautama
 LPM: podnoszę tak / nie	CG : ramasser oui / non
@@ -2596,6 +2802,7 @@ Lekarstwo Iluzji	Remède d'illusion
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Remède contre la Gale des démons. Objet requis pour une quête.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Remède préparé à partir de feuilles de vie. Une fois pris, il régénère instantanément PV et PM.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Pas léger (vitesse de déplacement +%(v)s) pendant %(d)d s après une attaque à pied (toutes les 300 s)
+Lekki Strój Plażowy+ (m)	Tenue de plage légère+ (h)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Pointe légère et souple en bambou. Idéale pour des tirs rapides et précis, utilisée par les archers qui privilégient la mobilité et la vitesse.
 Lekkie jak Piórko	Léger comme une Plume
 Leopardzik (7 dni)	Petit léopard (7 jours)
@@ -2603,6 +2810,7 @@ Level konia:	Niveau du cheval :
 Lew	Lion
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Emplacement de gauche : l'objet qui recevra la nouvelle apparence.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Emplacement de gauche : la monture qui recevra la nouvelle apparence.
+Lewy Shift	Maj gauche
 Leśna Wróżka	Fée de la forêt
 Leże Smoka	Repaire du Dragon
 Licencja Najemnika	Licence de mercenaire
@@ -2613,18 +2821,22 @@ Liczba bonusów na kostiumie (co najmniej):	Nombre de bonus sur le costume (au m
 Liczba botów (3-16):	Nombre de bots (3-16) :
 Liczba gier:	Nombre de parties :
 Liczba online	Nombre en ligne
+Liczba sztuk	Nombre de pièces
 Liczba sztuk:	Quantité :
 Liczba w ekwipunku	Quantité dans l'inventaire
 Liczby	Nombres
 Lider grupy	Chef de groupe
 Lilia: szansa na przedmioty +%d%%	Lys : chance de butin d'objets +%d%%
 Liliowa Runa SungMa	Rune SungMa lilas
+Limit Lvl: %d do %d	Niv. limite : %d à %d
 Limit członków grupy: od %d do %d	Limite de membres du groupe : de %d à %d
 Limit zakupów na konto: %d	Limite d'achats par compte : %d
 Limit zakupów na minutę - dokończ za chwilę.	Limite d'achats par minute - terminez dans un instant.
 List Gończy	Avis de recherche
 Lista GM jest pusta: nastepny start moze nadac	La liste des GM est vide : le prochain démarrage peut accorder
 Lista jest pusta.	La liste est vide.
+Lista komend GM	Liste des commandes GM
+Lista komend GM:	Liste des commandes GM :
 Lista tytułów	Liste des titres
 Lista wyciszonych	Liste des muets
 Lista znajomych	Liste d'amis
@@ -2632,6 +2844,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Les lettres sur 
 Lizak Magii	Sucette magique
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Sucette à la composition mystérieuse, pleine de magie. Donne : +50 % d'EXP, +20 % de vitesse d'attaque, +20 % de vitesse des sorts, +30 % de dégâts magiques, +10 % de PV max., +10 % de PM max. Dure 7 jours.
 Liście Życia	Feuilles de vie
+Loch / wyprawa	Donjon / expédition
 Loch Malp (latwy)	Donjon des Singes (facile)
 Loch Malp (normalny)	Donjon des Singes (normal)
 Loch Malp (trudny)	Donjon des Singes (difficile)
@@ -2640,6 +2853,7 @@ Loch Pajakow V1	Donjon des Araignées V1
 Loch Pajakow V2	Donjon des Araignées V2
 Loch Pająków (1)	Donjon des Araignées (1)
 Loch Pająków V1	Donjon des Araignées V1
+Loch Polowy	Donjon de Champ
 Lochy Yohary	Donjons de Yohara
 Lod. Wiel. Zab. Zodiaku	Orque de glace du Zodiaque
 Lodogóry 690 10169	Monts de glace 690 10169
@@ -2733,11 +2947,13 @@ Maksimum	Maximum
 Maksymalnie	Maximum
 Maksymalny	Maximale
 Mala liczba ofert - wycena orientacyjna	Peu d'offres - estimation indicative
+Malpi Zolnierz	Soldat singe
 Maniak Cz. Wiat. Zodiaku	Maniaque du Vent noir du Zodiaque
 Mapa %d	Carte %d
 Mapa (index):	Carte (index) :
 Mapa OX	Carte OX
 Mapa teleportacji - TAB	Carte de téléportation - TAB
+Mapa Ślubna	Carte de Mariage
 Mapa świata	Carte du monde
 Mapa: %s	Carte : %s
 Mapy	Cartes
@@ -2867,14 +3083,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Matériau qui augmente les chances d'ajouter un 6e ou 7e bonus chez Seon-Hae. Niveau de l'objet : 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Matériau qui augmente les chances d'ajouter un 6e ou 7e bonus chez Seon-Hae. Niveau de l'objet : 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Matériau qui augmente les chances d'ajouter un 6e ou 7e bonus chez Seon-Hae. Niveau de l'objet : 90-104.
+Materiały	Matériaux
 Materiały Rzemieślnicze	Matériaux d'artisanat
 Materiały ulepszeń	Matériaux d'amélioration
 Matowy Lód	Glace mate
 Matowy Lód+	Glace mate+
 Max PE: +%d	PM max : +%d
+Max PM	PM max
+Max PM %	PM max %
+Max PZ	PV max
+Max PZ %	PV max %
 Max PŻ +2500 / +2000 / +1500	PV max. +2500 / +2000 / +1500
 Max PŻ: +%d	PV max : +%d
 Max wytrzymalosc	Endurance max.
+Max. PŻ +%d	PV max. +%d
 Max. poziom przedmiotu: %d	Niveau max. de l'objet : %d
 Max. ulepszenie z +%d na +%d.	Amélioration max. de +%d à +%d.
 Mała Meley	Petite Meley
@@ -2882,9 +3104,11 @@ Mała Meley (pieczęć)	Petite Meley (sceau)
 Mała Nemere	Petite Nemere
 Mała Nemere (pieczęć)	Petite Nemere (sceau)
 Małe Błogosławieństwo	Petite bénédiction
+Małpi Loch	Donjon des Singes
 Małpi Loch (trudny)	Donjon des Singes (difficile)
 Małpi Loch (łatwy)	Donjon des Singes (facile)
 Małpi Loch (średni)	Donjon des Singes (moyen)
+Małpka	Petit singe
 Mały Aamon	Petit Aamon
 Mały Aamon (pieczęć)	Petit Aamon (sceau)
 Mały Baashido	Petit Baashido
@@ -3037,7 +3261,7 @@ Min-Sun	Min-Sun
 Min. %d bonusów	Min. %d bonus
 Min. Raise	Surenchère min.
 Min. liczba bonusow:	Nb min. de bonus :
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min. : l'objet doit avoir ce bonus, au moins X. Clic : Aucun / >.\nAucun / > : ramasse un objet sans ce bonus, et avec lui seulement au-dessus de X. Clic : Min.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min. : l'objet doit avoir ce bonus, au moins X. Clic : Aucun / >.\nAucun / > : ramasse l'objet sans ce bonus, et avec lui seulement au-dessus de X. Clic : Min.
 Mineral	Minerai
 Mini Azrael	Mini Azrael
 Mini Azrael (pieczęć)	Mini Azrael (sceau)
@@ -3058,11 +3282,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lancez des forces obscures pour blesser vos ennemis.|Renforcé par : Intelligence (++), Dextérité (précision) (+), niveau du personnage.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lancez des éclairs.|Renforcé par : Intelligence (++), Dextérité (précision) (+), niveau du personnage.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lancez des talismans pour blesser vos ennemis.|Renforcé par : Intelligence (++), Dextérité (précision) (+), niveau du personnage.
+Misja %d	Quête %d
 Misja kart	Mission des cartes
 Misje Biologa	Missions du Biologiste
 Misje dzienne	Missions quotidiennes
 Misje główne	Missions principales
 Misje poboczne	Missions secondaires
+Misje polowania	Quêtes de chasse
 Misje łowieckie	Missions de chasse
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Clé finement ornée qui ouvre le coffre de la nymphe des eaux. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
 Mistrz Ahtrin	Maître Ahtrin
@@ -3076,6 +3302,8 @@ Mistrz Włóczni Ki	Maître de lance Ki
 Mistrz Włóczni Mao	Maître de lance Mao
 Mistrz ekwipunku	Maître de l'Équipement
 Mistrz przepadnie.	 Le niveau Maître sera perdu.
+Mistrz umiejętności	Maître des compétences
+Mistrzowska piłka nożna	Footballeur maître
 Mistrzowski Emblemat	Emblème de maître
 Mistyczna substancja ożywiająca florę i faunę lasu.	Substance mystique qui ranime la flore et la faune de la forêt.
 Mistykom	Mystiques
@@ -3088,6 +3316,7 @@ Mnich Milbon	Moine Milbon
 Mniej niz 1 min.	Moins d'1 min.
 Mnoznik dropu przedmiotow	Multiplicateur de drop d'objets
 Mnoznik dropu yang	Multiplicateur de drop de yang
+Moby 1 hit	Mobs en 1 coup
 Moby > Bossy > Metiny	Monstres > Boss > Metins
 Moby > Metiny > Bossy	Monstres > Metins > Boss
 Moc Błyskawic	Pouvoir de la Foudre
@@ -3114,6 +3343,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Cheveux coupés à la mode, qui permettent aux chamanes d'exprimer leur tempérament. Change définitivement la coiffure de votre personnage.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Cheveux coupés à la mode, qui permettent aux chamanes d'exprimer leur tempérament. Change définitivement la coiffure de votre personnage.
 Moj cel	Ma cible
+Moja postac	Mon personnage
 Moje miejsca	Mes lieux
 Mokre Szaty: szybkość ruchu -50	Vêtements Mouillés : vitesse de déplacement -50
 Moloch	Moloch
@@ -3128,6 +3358,7 @@ Może schwytać karty: [1]	Peut capturer les cartes : [1]
 Może schwytać karty: [1], [2]	Peut capturer les cartes : [1], [2]
 Może schwytać karty: [1], [2], [3]	Peut capturer les cartes : [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Peut capturer les cartes : [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Peut capturer les cartes : [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Peut capturer les cartes : [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Peut faire redescendre sur terre certains rêveurs. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Możesz mieć najwyżej %d własnych kategorii.	Vous pouvez avoir au maximum %d catégories personnalisées.
@@ -3160,10 +3391,12 @@ Można znać tylko jedną ripostę.	On ne peut connaître qu'une seule riposte.
 Mroczna Paproć	Fougère sombre
 Mroczna Wieża	Tour Obscure
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Sphère Obscure a %d%% de chances d'étourdir l'adversaire
+Mrocznego Uderzenia	Coup Ténébreux
 Mroczny Cierń	Épine sombre
 Mroczny Kat Zodiaku	Bourreau sombre du Zodiaque
 Mrok	Ténèbres
 Mroz. Lod. Czl. Zodiaku	Homme de glace givré du Zodiaque
+Mrozny Lodowy Czlowiek	Homme des glaces givré
 Mroźna Skrz. Balathora	Coffre de givre de Balathor
 Mroźna Skrz. Balathora+	Coffre de givre de Balathor+
 Mroźny Klucz (PB)	Clé du givre (ÉV)
@@ -3174,6 +3407,7 @@ Mroźny Rufus	Rufus glacial
 Mroźny Rufus (pieczęć)	Sceau de Rufus glacial
 Mt2009	Mt2009
 Mumia Kapłanka	Prêtresse momie
+Mundur Strażaka+(m)	Uniforme de pompier+ (h)
 Musisz go pokonać, by otrzymać nagrodę.	Vous devez le vaincre pour recevoir une récompense.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Vous devez pousser l'Œuf de Dragon de feu de l'autre côté.
 Myr Bojownik (wiatr)	Myr combattant (vent)
@@ -3189,6 +3423,7 @@ Myr Prymus (wiatr)	Myr Primus (vent)
 Myr Prymus (ziemia)	Myr Primus (terre)
 Myr Weteran (wiatr)	Myr vétéran (vent)
 Myr Weteran (ziemia)	Myr vétéran (terre)
+Mój ranking	Mon classement
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	On dit que le contenu de ce coffre est aussi précieux que le coffre lui-même.
 Młodszy Hazardzista	Joueur Novice
 Młody Moa (pieczęć)	Moa juvénile (sceau)
@@ -3234,6 +3469,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Appuyez sur une touche pour : %s
 Naczelny Hazardzista	Joueur en Chef
 Nadaj imię	Donner un nom
+Nadaj range	Donner un rang
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Accorde les buffs de niveau G1 du Chamane du Dragon avec 90 d'intelligence pendant 10 minutes.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Accorde les buffs de niveau M1 du Chamane du Dragon avec 90 d'intelligence pendant 10 minutes.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Accorde les buffs de niveau P du Chamane du Dragon avec 90 d'intelligence pendant 10 minutes.
@@ -3261,7 +3497,9 @@ Nagrody są już odkryte.	Les récompenses sont déjà révélées.
 Nagrody za tury	Récompenses de tour
 Najbliższy	Le plus proche
 Najczęściej zabijani	Les plus souvent tués
+Najdłuższa sesja	Plus longue session
 Najedź myszką na przedmiot, aby zobaczyć opis.	Survolez un objet avec la souris pour voir sa description.
+Najlepsza sesja (yang)	Meilleure session (Yang)
 Najlepszy czas: %s	Meilleur temps : %s
 Najpierw dezaktywuj Relikt Duszy.	Désactivez d'abord la Relique d'âme.
 Najpierw dodaj eliksir.	Ajoutez d'abord un élixir.
@@ -3325,6 +3563,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Coiffe de la panoplie Arezzo (Panoplie du Viking). Active pendant 30 jours après l'équipement.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Coiffe de la panoplie Arezzo (Panoplie Dorée). Active pendant 30 jours après l'équipement.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Coiffe de la panoplie Arezzo (Panoplie du Dragon d'Or). Active pendant 30 jours après l'équipement.
+Nakładka na broń	Habillage d'arme
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Skin pour arme à une main (épée) - guerrier, ninja, sura. Actif 30 jours après l'achat.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Skin d'arme de la panoplie Arezzo (Panoplie Angélique) : ninja. Actif pendant 30 jours après l'équipement.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Skin d'arme de la panoplie Arezzo (Panoplie Angélique) : chamane. Actif pendant 30 jours après l'équipement.
@@ -3468,6 +3707,7 @@ Nazwa Postaci jest niepoprawna.	Le nom du personnage est incorrect.
 Nazwa jest niewłaściwa.	Ce nom n'est pas valide.
 Nazwa postaci jest identyczna jak nazwa konta.	Le nom du personnage est identique au nom du compte.
 Nazwa pozycji (do %d znaków)	Nom de la position (jusqu'à %d caractères)
+Nazwa presetu	Nom du préréglage
 Nazwa przedmiotu	Nom de l'objet
 Nazwa reguły	Nom de la règle
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Le nom de votre personnage ne peut pas contenir de caractères spéciaux.
@@ -3490,6 +3730,7 @@ Nic tu nie ma.	Il n'y a rien ici.
 Nick:	Pseudo :
 Nick: %s (pid: |cff5af22c%d|r)	Pseudo : %s (pid : |cff5af22c%d|r)
 Nick: PLAYER_NAME	Pseudo : PLAYER_NAME
+Nie 1. atak	Pas la 1re attaque
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	N'est plus nécessaire : le Localisateur de PNJ est activé pour chaque personnage. | Sur la carte du monde, changez l'affichage avec le bouton de la barre de titre.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Elle n'est pas destinée à l'hygiène bucco-dentaire. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Nie jest składnikiem receptur ani ulepszeń.	N'entre dans aucune recette ni amélioration.
@@ -3583,6 +3824,7 @@ Nie widzisz jeszcze całej mapy.	Vous ne voyez pas encore toute la carte.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	%d objets n'ont pas été mis en vente - la boutique a été fermée.
 Nie zaznaczono żadnej misji.	Aucune quête sélectionnée.
 Nie znaleziono gracza.	Joueur introuvable.
+Nie znaleziono moba/metina o takim ID.	Aucun mob/metin trouvé avec cet ID.
 Nie znaleziono żadnych wypraw.	Aucune expédition trouvée.
 Niebiańska Tarcza	Bouclier céleste
 Niebiańska Tarcza nie może zostać nadana.	Le Bouclier céleste ne peut pas être accordé.
@@ -3590,12 +3832,15 @@ Niebieska Mikstura (W)	Potion bleue (W)
 Niebieska Runa SungMa	Rune SungMa bleue
 Niebieska Woda	Eau bleue
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Bonnet bleu à oreilles de lapin pour lui. Vous donne au moins un bonus aléatoire.
+Niebieski Alfa Wilk	Loup alpha bleu
 Niebieski Barwnik	Teinture bleue
 Niebieski Mały Smok	Petit dragon bleu
 Niebieski Mały Smok (pieczęć)	Petit Dragon bleu (sceau)
 Niebieski Skorpion	Scorpion bleu
 Niebieski Sok	Jus bleu
+Niebieski Wilk	Loup bleu
 Niebieski Wilk Zodiaku	Loup bleu du Zodiaque
+Niebieski Wzorowy Uczeń+	Élève modèle bleu+
 Niebieskie Jajo Smoka	Œuf de dragon bleu
 Niebieskie Pudło Zodiaku	Boîte bleue du Zodiaque
 Niebieskie Zioło	Herbe bleue
@@ -3622,6 +3867,7 @@ Nieprawidlowy nick	Pseudo invalide
 Nieprawidłowy kod koloru (np. #FF8800).	Code couleur invalide (p. ex. #FF8800).
 Nieprawidłowy limit czasu.	Limite de temps invalide.
 Nieprzenikniony pancerz strażnika ognia.	Armure impénétrable du gardien du feu.
+Niesmiertelnosc WYL	Immortalité DÉSACT.
 Nieudana	Échouée
 Nieugiętość Balathora	Inflexibilité de Balathor
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Inflexibilité de Balathor : résistance au repoussement et à la projection au sol %d%%
@@ -3653,6 +3899,7 @@ Nieśmiertelność	Immortalité
 Nigdy nie upadasz	Vous ne tombez jamais
 Nikt jeszcze nie ma wyniku w tym sezonie.	Personne n'a encore de score cette saison.
 Nikt jeszcze nie ukończył tury.	Personne n'a encore terminé de tour.
+Ninja (Łuk)	Ninja (Arc)
 Ninja Armor	Armure de ninja
 Ninja Ostrze	Ninja Lame
 Ninja Łuk	Ninja Arc
@@ -3664,6 +3911,7 @@ Niszczyciel En-Tai (BŚ)	Destructeur En-Tai (BM)
 Niszczyciel P. Wieży	Destructeur de la Tour infernale
 Niszczyciel Zodiaku	Destructeur du Zodiaque
 Noc trwać będzie od 22:00 do 6:00.	La nuit dure de 22:00 à 6:00.
+Noc/snieg po 22:00	Nuit/neige après 22:00
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normal
 Normalne	Normal
@@ -3711,6 +3959,7 @@ Obowiązki gildii - panel lidera	Obligations de guilde - panneau du chef
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Dég. Metin/Boss/MiniBoss +%.0f%%
 Obrazenia magiczne	Dégâts magiques
 Obrazenia magiczne vs potwory	Dégâts magiques vs monstres
+Obrazenia umiejetnosci	Dégâts de compétence
 Obraż. sztyletów w potwory +%d	Dégâts des dagues vs monstres +%d
 Obraż. umiejętności	Dégâts de compétence
 Obrażenia %s +%s%%	Dégâts %s +%s%%
@@ -3737,7 +3986,13 @@ Obrażenia przeciwko Metinom +%d%%	Dégâts contre les Metins +%d%%
 Obrażenia umiejętności	Dégâts des compétences
 Obrażenia umiejętności konnych +%(v)s%%	Dégâts des compétences de monture +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Dégâts dans la Vallée de Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Dégâts infligés aux Pierres Metin +%d%% pendant 5 s
+Obrażenia zwiększają się o %d%% na 10 sek.	Les dégâts augmentent de %d%% pendant 10 s
 Obrażenia/Obrona	Dégâts/Défense
+Obrażenie Umiejętności: 10%	Dégâts de compétence : 10%
+Obrażenie Umiejętności: 3%	Dégâts de compétence : 3%
+Obrażenie Umiejętności: 5%	Dégâts de compétence : 5%
+Obrażenie Umiejętności: 7%	Dégâts de compétence : 7%
 Obrona %	Défense %
 Obrona +%.0f	Défense +%.0f
 Obrona +12~15%	Défense +12~15%
@@ -3754,11 +4009,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Défense contre la compé
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Défense contre la compétence Tourbillon d'Épée +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Défense contre la compétence Embuscade +%.1f%%
 Obrona przed śr. obrażeniami	Défense contre les dégâts moyens
+Obrona przy Metinach	Défense près des Metins
 Obrona vs Ninja	Défense vs Ninjas
 Obrona vs Sura	Défense vs Sura
 Obrona vs Szamanom	Défense vs Chamanes
 Obrona vs Wojownikom	Défense vs Guerriers
 Obrońca	Défenseur
+Obrońca (obrona)	Défenseur (défense)
 Obrońca Chmur	Protecteur des nuages
 Obrońca Stylu Małp	Défenseur du style du Singe
 Obrót %d/%s, wydano %d SM	Tour %d/%s, %d PD dépensées
@@ -3808,6 +4065,7 @@ Odbicie Walki. Wręcz	Renvoi Corps à Corps
 Odbicie ataku fizycznego: %.0f%%	Renvoi d'attaque physique : %.0f%%
 Odbicie ciosu	Renvoi de coup
 Odbicie pocisku	Renvoi de projectile
+Odbierz GM...	Retirer MJ...
 Odbierz nagrodę	Récupérer la récompense
 Odbierz nagrodę za turę	Récupérer la récompense de tour
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Récupérez votre récompense de tour dans la fenêtre de la Chasse au trésor.
@@ -3831,6 +4089,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Confier l'objet à Seon-Hae (chance %d%
 Oddelegowany Komendant	Commandant délégué
 Odebrac range GM postaci %s?	Retirer le rang de GM du personnage %s ?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Vous ne pouvez récupérer que la récompense du tour en cours (%d).
+Odeslij boty	Renvoyer les bots
 Odkryta karta	Carte révélée
 Odnowa	Renouveau
 Odp. na Br. Dwuręczną	Rés. aux Armes à deux mains
@@ -3846,12 +4105,16 @@ Odp. na Wiatr	Rés. au Vent
 Odp. na Ziemię	Rés. à la Terre
 Odpały	Objets minutés
 Odpały (Sekundy)	Objets minutés (secondes)
+Odpoczynek w miescie	Repos en ville
 Odpornosc na omdlenia	Résist. évanouissement
 Odpornosc na spowolnienie	Résistance au ralentissement
 Odpornosc na upadek	Résistance à la chute
+Odpornosc: Ninja	Résist. : Ninja
+Odpornosc: Sura	Résist. : Sura
 Odpornosc: Szaman	Résistance : Chamane
 Odpornosc: Wojownik	Résistance : Guerrier
 Odpornosc: ataki fizyczne	Résistance : attaques physiques
+Odpornosc: blyskawice	Résist. : éclairs
 Odpornosc: bron dwureczna	Résistance : armes à deux mains
 Odpornosc: cios krytyczny	Résistance : coup critique
 Odpornosc: dzwony	Résistance : cloches
@@ -3860,8 +4123,12 @@ Odpornosc: ludzie	Résistance : humains
 Odpornosc: magia	Résistance : magie
 Odpornosc: miecze	Résistance : épées
 Odpornosc: mrok	Résistance : ténèbres
+Odpornosc: obrazenia umiejetnosci	Résist. : dégâts de compétence
+Odpornosc: ogien	Résist. : feu
 Odpornosc: potwory	Résistance : monstres
 Odpornosc: przebicie	Résistance : perforation
+Odpornosc: srednie obrazenia	Résist. : dégâts moyens
+Odpornosc: strzaly	Résist. : flèches
 Odpornosc: sztylety	Résistance : dagues
 Odpornosc: trucizny	Résistance : poisons
 Odpornosc: wachlarze	Résistance : éventails
@@ -3890,6 +4157,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Résistance aux Ténèbres (+%d%
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Résistance aux Ninjas : réduit les dégâts que vous subissez de la main des Ninjas.
 Odporność na Obrażenia Fizyczne: %d%%	Résistance aux dégâts physiques : %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Résistance au Feu (+%d%% de la valeur totale)
+Odporność na Ogień: 5%	Résistance au feu : 5%
 Odporność na Ognista Strzała	Résistance à la Flèche de Feu
 Odporność na Przywołanie Błyskawicy	Résistance à l'Appel de la Foudre
 Odporność na Strzał	Résistance aux Flèches
@@ -3912,6 +4180,7 @@ Odporność na ataki fizyczne %d%%	Résistance aux attaques physiques %d%%
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Résistance au coup critique : réduit les dégâts subis à cause d'un coup critique.
 Odporność na fizyczne obrażenia	Résistance aux dégâts physiques
 Odporność na krytyczne	Résistance aux coups critiques
+Odporność na lód +5%	Résistance à la glace +5%
 Odporność na lód, ziemię, ciemność	Résistance à la glace, la terre, les ténèbres
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Résistance aux ténèbres : réduit les dégâts infligés par certains monstres.
 Odporność na obraż. umiej.	Rés. aux dég. de comp.
@@ -3928,6 +4197,7 @@ Odporność vs Ludziom	Résistance vs Humains
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Renvoyer définitivement le compagnon ? C'est irréversible.
 Odrodz spawny	Relancer les apparitions
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Délai entre les téléportations : %d min. Hors donjons et cartes d'événement.
+Odswiez liste	Actualiser la liste
 Odważny	Courageux
 Odwołaj	Rappeler
 Odwołaj zwierzaka, zanim go zaczarujesz.	Renvoyez l'animal avant de l'enchanter.
@@ -3984,6 +4254,7 @@ Ognista Runa Aury (10)	Rune d'aura de feu (10)
 Ogniste Buty	Chaussures de feu
 Ogniste Jajo Smoka	Œuf de dragon de feu
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Frappe Ardente a %d%% de chances de rendre le coup à l'adversaire
+Ognistej Strzały	Flèche Enflammée
 Ognisty Duch Zodiaku	Esprit de feu du Zodiaque
 Ognisty Duch Żaru (BŚ)	Esprit de feu de braise (BM)
 Ognisty Golem Mag	Golem de feu mage
@@ -4010,6 +4281,7 @@ Okaz. Odłamek Hełmu I	Éclat de casque splendide I
 Okaz. Odłamek Hełmu II	Éclat de casque splendide II
 Okaz. Odłamek Zbroi I	Éclat d'armure splendide I
 Okaz. Odłamek Zbroi II	Éclat d'armure splendide II
+Okazały	Magnifique
 Okazały Efekt Zestawu	Effet de panoplie fastueux
 Okazały Kowal Zestawu	Forgeron d'ensemble somptueux
 Okienko %s - %s, bonusy %d / %d	Emplacement %s - %s, bonus %d / %d
@@ -4071,6 +4343,7 @@ Osobisty Sklepik Premium	Boutique Premium personnelle
 Ostatni boss	Dernier boss
 Ostatni drop: %s	Dernier butin : %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Le dernier achat peut encore se terminer.
+Ostatnia nagroda:	Dernière récompense :
 Ostatnia sprzedaz botow: brak danych.	Dernière vente des bots : pas de données.
 Ostatnia strona	Dernière page
 Ostatnie 7 dni	7 derniers jours
@@ -4139,6 +4412,7 @@ Otrzymujesz: %s.	Vous recevez : %s.
 Otrzymywane Obrażenia +%d%%	Dégâts subis +%d%%
 Otrzymywane obrażenia +%.0f%%	Dégâts subis +%.0f%%
 Otwarte skrzynie	Coffres ouverts
+Otwarto skrzynek: %d.	Coffres ouverts : %d.
 Otwarto: %d szt.	Ouvert : %d unité(s)
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Ouvre les portes de la gloire et de la puissance. Accorde tous les avantages du Compte Premium pendant 30 jours.|Cet objet est échangeable.
 Otwiera je ewolucja peta	Débloqué par l'évolution du familier
@@ -4157,6 +4431,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Ouvrez le lot pour voir ce
 Otwórz ponownie	Rouvrir
 Otwórz sklep	Ouvrir la boutique
 Otwórz sklep ponownie	Rouvrir la boutique
+Otwórz skrzynie	Ouvrir des coffres
 Owoc Bogów	Fruit des Dieux
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Fruit de rang : +200 Points de rang (rang ordinaire). Fonctionne de 0 à 20 000 points. Le premier rang (Vaillant) à partir de 21 000. Commande /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Fruit de rang : +200 Points de rang au-delà du rang ordinaire. Fonctionne de 20 000 (rang ordinaire complet) à 40 000 points. Commande /ranga.
@@ -4256,6 +4531,7 @@ PB: Żołnierz Setaou	ÉV : Soldat Setaou
 PD czempiona	EXP champion
 PD z potworów: %s / %s	EXP des monstres : %s / %s
 PD z przedmiotów: %s / %s	EXP des objets : %s / %s
+PID bota:	PID du bot :
 POKONAJ BOSSA ŚWIATA (raz dziennie)	BATTEZ LE BOSS DU MONDE (une fois par jour)
 PPM - następny event	CD - événement suivant
 PPM / dwuklik: wyjmij stos	CD / double clic : retirer un lot
@@ -4288,9 +4564,12 @@ Pancerne Rękawice	Gants cuirassés
 Pancerny Hełm Dragona	Casque cuirassé de Dragona
 Pancerny Hełm Smoków	Casque cuirassé des Dragons
 Pancerz Czarnego Ognia	Armure du Feu noir
+Pancerz Horroru+ (złoty)	Cuirasse d'horreur+ (or)
 Pancerz Magmy	Armure de magma
 Pancerz Zodiaku	Cuirasse du Zodiaque
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	Le panneau MJ ne s'est pas chargé dans ce client - détails dans syserr.txt
+Panel botów (GM)	Panneau des bots (MJ)
+Panel jest w wersji BETA. Jak zauwazysz bugi	Le panneau est en version BETA. Si vous remarquez des bugs
 Panterka (7 dni)	Petite panthère (7 jours)
 Partyzana	Vouge
 Pas Z Wężowej Skóry	Ceinture en peau de serpent
@@ -4303,6 +4582,7 @@ Pasywne	Passives
 Pasza dla Konia	Fourrage pour cheval
 Pasza dla Konia w ekwipunku: %d	Fourrage pour cheval dans l'inventaire : %d
 Pazury Małpy	Griffes de singe
+Październik	Octobre
 Peleryny	Capes
 Pelne PZ/PE	PV/PM au max
 Pergamin	Parchemin
@@ -4316,6 +4596,7 @@ Perły	Perles
 Pet	Familier
 Pety	Familiers
 Pewne zmiany wymagają restartu gry, kontynuować?	Certains changements nécessitent de redémarrer le jeu. Continuer ?
+Pełen werwy	Plein d'entrain
 Pełne EQ	Inventaire plein
 Pełne doświadczenie - czas na rozwój.	Expérience complète - il est temps d'évoluer.
 Pełne okno	Fenêtre sans bordure
@@ -4401,6 +4682,7 @@ Piekielny Żarłacz Dusz	Dévoreur d'âmes infernal
 Piekło	Enfer
 Piekło - wybierz respawn	Enfer - choisissez la réapparition
 Pierwsza nagroda tury jest darmowa.	La première récompense de chaque tour est gratuite.
+Pierwsza strona	Première page
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Premier des trois livres de vigilance. Peut augmenter le charisme de son propriétaire. Le livre disparaît après lecture. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Premier des trois livres des combats en formation. Peut augmenter l'inspiration de son propriétaire. Le livre disparaît après lecture. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
 Pierwszorzędne Buty	Chaussures de premier choix
@@ -4408,6 +4690,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	Le premier « + » de l'onglet
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	Le premier « + » de l'onglet Compétences vous les donne aussi.
 Pierwszy 30 poziom	Premier niveau 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	La première réinitialisation de mission en 24 heures est gratuite.
+Pierścień / amulet	Anneau / amulette
 Pierścień Dośw. (iCafe)	Anneau d'exp. (iCafe)
 Pierścień Godności	Anneau de dignité
 Pierścień Hydry	Anneau de l'Hydre
@@ -4421,6 +4704,7 @@ Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. D
 Pień+	Tronc+
 Piorunowe Zioło	Herbe de foudre
 Pirat Tanaka	Tanaka le pirate
+Pirat+ (m)	Pirate+ (h)
 Pisanie	Écriture
 Pisklę Exedyara	Oisillon d'Exedyar
 Pióro Mędrca	Plume du sage
@@ -4464,6 +4748,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Une fois utilisé, ajoute une carte de monstre à la collection (Cartes de monstres dans le menu sous Échap). Ne peut pas être échangé.
 Po zabiciu: kolejny, którego już biłeś	Après une mise à mort : le suivant que vous avez déjà frappé
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	Après le chargement de 8 flèches, la Hwacha percera les écailles de Balathor. Les Cristaux de glace ancestraux donnent des Flèches de feu. Chargées : %d
+Pobieram drop...	Récupération du butin...
 Pobieram ustawienia botow...	Récupération des paramètres des bots...
 Pobieram zawartość z serwera...	Récupération du contenu depuis le serveur...
 Pobieranie cen dla %d przedmiotow...	Récupération des prix pour %d objets...
@@ -4502,7 +4787,10 @@ Podaj wartosc.	Indiquez la valeur.
 Podaj wlasciciela i wybierz przedmiot.	Indiquez le propriétaire et choisissez un objet.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Pendant le combat, vous avez %d%% de chances d'être résistant à la chute (temps de recharge 60 s).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	Pendant le combat, les dégâts que vous infligez sont comptés.
+Podczas walki otrzymasz efekt eliksiru księżyca	Pendant le combat, vous recevez l'effet de l'élixir de la lune
+Podczas walki otrzymasz efekt eliksiru słońca	Pendant le combat, vous recevez l'effet de l'élixir du soleil
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Approchez l'ennemi par-derrière et portez un coup mortel.|Renforcé par : Force (++), Dextérité (++).
+Podglad EQ	Aperçu de l'équip.
 Podgląd niedostępny.	Aperçu indisponible.
 Podgląd skrzynki	Aperçu du coffre
 Podgląd skrzyń	Aperçu des coffres
@@ -4574,8 +4862,10 @@ Pokaż szatę aury	Afficher la tenue d'aura
 Pokaż wizerunek broni	Afficher l'apparence d'arme
 Pokaż założony tytuł	Afficher le titre équipé
 Pokaż znowu wszystkie przedmioty	Afficher de nouveau tous les objets
+Pokonaj %(n)s bossów	Vaincre %(n)s boss
 Pokonaj %(n)s x %(what)s	Battez %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Battez le Boss du monde dans la zone neutre et gagnez des récompenses !
+Pokonaj bossów	Vaincre des boss
 Pokonane bossy	Boss vaincus
 Pokonane minibossy	Mini-boss vaincus
 Pokonani gracze (przeciwne król.)	Joueurs vaincus (royaumes ennemis)
@@ -4644,6 +4934,7 @@ Portal Świątyni Węży	Portail du Temple des Serpents
 Portal: Nowy Kontynent	Portail : Nouveau Continent
 Posiada szanse na otrucie przeciwnika.	A une chance d'empoisonner l'ennemi.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	A une chance d'empoisonner l'ennemi et inclut un étourdissement.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	Vous avez %d%% de chance de ramasser automatiquement pendant 30 s les objets à proximité
 Postać ma za duży poziom.	Le niveau du personnage est trop élevé.
 Postać zostanie usunięta.	Le personnage va être supprimé.
 Posterunek Trolli	Poste des trolls
@@ -4741,7 +5032,10 @@ Poziom: %d (%s Szata Aury)	Niveau : %d (Tenue d'aura %s)
 Poziom: %s	Niveau : %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Niveau : 1-19, M1-M10, G1-G10 ou P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Niveau : nombre 1-19, M1-M10, G1-G10 ou P
+Pozostalo 23:59:59	Reste 23:59:59
 Pozostalo czasu: 30s	Temps restant : 30s
+Pozostalo prob: 3	Essais restants : 3
+Pozostalo: 45s	Reste : 45s
 Pozostaly czas: %ds	Temps restant : %ds
 Pozostałe	Restants
 Pozostałe misje	Autres missions
@@ -4763,6 +5057,7 @@ Pozwala wylosować nowe cele misji Kart Potworów.	Permet de tirer au sort de no
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Permet de réinitialiser la quête des Cartes de monstres en plus de la réinitialisation gratuite (une fois toutes les 24 heures).
 Pozwolenie na Wzmocn. Przedmiotu	Permis de renforcement d'objet
 Pozwolenie na Zaczar. Przedmiotu	Permis d'enchantement d'objet
+Pozycja niezapisana	Position non enregistrée
 Położenie	Position
 Położenie nieznane	Position inconnue
 Połyskująca Biała Perła	Perle blanche chatoyante
@@ -4848,9 +5143,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Filtre simple (avancé : Op
 Prosty rozpryskowy atak	Simple attaque de zone
 Proszę wpisać nazwę sklepu	Veuillez saisir le nom de la boutique
 Proszę wybrać czas trwania sklepu	Veuillez choisir la durée de la boutique
+Prowadza stragan: %s	Tient un stand : %s
+Prowadza stragan: -	Tient un stand : -
 Prywatność	Confidentialité
 Pryzmat Ożywienia	Prisme de résurrection
 Pryzmat Ożywienia (Q)	Prisme de résurrection (Q)
+Pryzmatyczny	Prismatique
 Przeb. Księga Zwierza	Livre éveillé de l'animal
 Przebicie	Perforation
 Przebicie bloku	Perce-blocage
@@ -4935,7 +5233,7 @@ Przeniesione z: %s	Transféré depuis : %s
 Przeniesiono część - reszta się nie zmieściła.	Une partie a été déplacée - le reste n'a pas tenu.
 Przenieś do extra EQ	Déplacer vers l'inventaire extra
 Przenieś je u Theowahdana.	Transférez-les chez Theowahdan.
-Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Déplace le fichier dans le dossier upload/ du répertoire principal du jeu.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Déplacez le fichier dans le dossier upload/ du répertoire principal du jeu.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Imprègne le corps de la magie des Vacances et confère à son porteur une puissance extraordinaire. Les échecs d'amélioration de l'Anneau chez le forgeron n'entraînent pas la perte de l'objet. Durée : 7 jours (max. 60 jours).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Imprègne le corps de la magie des Vacances et confère à son porteur une puissance extraordinaire. Les échecs d'amélioration de l'Anneau chez le forgeron n'entraînent pas la perte de l'objet. Durée max. : 60 jours.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Imprègne le corps de la magie de Pâques et confère à son porteur une puissance extraordinaire. Les échecs d'amélioration de l'Anneau chez le forgeron n'entraînent pas la perte de l'objet.
@@ -5029,8 +5327,10 @@ Próby	Essais
 Prędkość ataku	Vitesse d'attaque
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Vitesse d'attaque +%(v)s%% pendant %(d)d s après une attaque depuis la monture (toutes les 180 s)
 Prędkość czarowania	Vitesse d'incantation
+Prędkość po zsiadaniu	Vitesse après descente
 Prędkość ruchu	Vitesse de déplacement
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Vitesse de déplacement +%(v)s%% pendant %(d)d s après une attaque depuis la monture (toutes les 180 s)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	La vitesse de déplacement augmente de %d%% pendant 10 s
 Prędkość ruchu znacznie zwiększona.	Vitesse de déplacement fortement augmentée.
 Pudełko Kart Potworów Yohary	Boîte de cartes de monstre de Yohara
 Pudło wędkarskich puzzli	Boîte de puzzles de pêche
@@ -5040,6 +5340,7 @@ Punkty Doświadczenia: +%d%%	Points d'expérience : +%d%%
 Punkty Doświadczenia: +150%	Points d'expérience : +150 %
 Punkty Rangi: %d	Points de Rang : %d
 Punkty doswiadczenia %	Points d'expérience %
+Punkty doświadczenia +%d%%	Points d'expérience +%d%%
 Punkty konne:	Points d'équitation :
 Punkty miłości: %d%%	Points d'amour : %d%%
 Punkty range:	Points de rang :
@@ -5191,6 +5492,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Réinit. de la boutique Gaya
 Reset oferty	Réinitialisation de l'offre
 Reset oferty (Reset Sklepu Gaya)	Réinitialisation de l'offre (Réinitialisation de la Boutique Gaya)
+Reset umiejętności	Réinitialisation des compétences
 Resetuj	Réinitialiser
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Réinitialisez la Boutique Gaya avant l'expiration des 5 heures et découvrez de nouveaux objets précieux. À utiliser dans la Boutique Gaya du Port (Statue du Guerrier au Port du Nouveau Continent).
 Restart serwera...	Redémarrage du serveur...
@@ -5240,6 +5542,7 @@ Rozbudowa jest teraz niedostępna.	L'agrandissement n'est pas disponible pour le
 Rozdaj od nowa (raz za darmo)	Répartir à nouveau (une fois gratuit)
 Rozdane: %d	Répartis : %d
 Rozdzielczość	Résolution
+Rozkaz wysłany.	Ordre envoyé.
 Rozkazy dla botów twojej gildii	Ordres pour les bots de votre guilde
 Rozkazy wydaje mistrz gildii	Les ordres sont donnés par le maître de guilde
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Vous parlez à un |cffffb514Maître du Jeu|r.
@@ -5273,6 +5576,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Se développe avec le Livre de Précisi
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Faire évoluer l'animal au rang "%s" ? Les matériaux disparaîtront.
 Rozwiń pasek	Développer la barre
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Développer : toutes les barres d'accès rapide (4 x 8)
+Rozwój	Évolution
 Rozwój do stopnia: %s	Évolution vers le rang : %s
 Rozwój konia	Entraînement du cheval
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Entraînement du cheval : il manque du Fourrage pour cheval (%(a)d requis).
@@ -5299,6 +5603,7 @@ Ruda Turmalinu	Minerai de tourmaline
 Rudy i przetopy	Minerais et fontes
 Ruiny Atlantydy	Ruines d'Atlantide
 Ruiny Skorpiona	Ruines du Scorpion
+Rumi (Okey)	Rami (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rami (Okey) : la fenêtre du jeu arrivera avec une mise à jour du client.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Un poisson mord ! Cliquez dessus %d fois pendant qu'il nage dans le cercle (vous avez %d s).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Un poisson grillé au feu de camp, un délicieux mets fumé.
@@ -5336,6 +5641,7 @@ Rzeźnik Piekielnej Wieży	Boucher de la Tour infernale
 Rzeźnik Wężowy	Boucher serpent
 Rzuca na ciebie swoje buffy.	Lance ses buffs sur vous.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Lance sur les adversaires des projectiles emplis de la lumière des étoiles.|Renforcé par : Dextérité (++), niveau du personnage.
+Rzucam buffy	Lancement des buffs
 Rzygacz	Gargouille
 Róg Balathora	Corne de Balathor
 Róg Nemere	Corne de Nemere
@@ -5519,11 +5825,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Serveur : pas de confirmation, n
 Serwer: czekam na potwierdzenie	Serveur : en attente de confirmation
 Sesja już trwa.	Une session est déjà en cours.
 Sesja zakończona: osiągnięto limit czasu.	Session terminée : limite de temps atteinte.
+Sesje (z bieżącą)	Sessions (avec l'actuelle)
+Sezon %d	Saison %d
 Sezon %d - %s (do końca: %d dni %s)	Saison %d - %s (restant : %d jours %s)
+Sezon: Chunjo	Saison : Chunjo
+Sezon: Jinno	Saison : Jinno
+Sezon: Shinsoo	Saison : Shinsoo
 Sfera Losu Zwierzaka	Sphère du destin du familier
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Sphère du destin : révèle le type d'animal (consomme une Sphère du Destin de l'Animal)
 Shaman Armor	Armure de chamane
 Shield	Bouclier
+Shift + LPM	Maj + clic G
 Shinsoo United (k)	Shinsoo United (f)
 Shinsoo United+ (k)	Shinsoo United+ (f)
 Shoes	Chaussures
@@ -5536,6 +5848,7 @@ Shopping Safebox	Coffre d'achats
 Show Filter Informations	Afficher les infos des filtres
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Vous semez une légère brise, et vos ennemis récoltent une violente tempête. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Sierp (Pieczęć)	Sceau du croissant
+Sierpień	Août
 Silna Fala Śmierci	Vague de Mort Puissante
 Silna Tarcza Eteru	Bouclier d'Éther Puissant
 Silne Trzęsienie	Séisme Puissant
@@ -5551,6 +5864,7 @@ Silny Druid En-Tai	Druide En-Tai puissant
 Silny Dziki Piechur	Puissant Marcheur Sauvage
 Silny Dziki Sluga	Puissant Serviteur Sauvage
 Silny Kam. Przebudzenia	Forte pierre d'éveil
+Silny Malpi Zolnierz	Puissant soldat singe
 Silny Meteor	Météore Puissant
 Silny Niszczyciel En-Tai	Destructeur En-Tai puissant
 Silny Piekielny Cios	Coup Infernal Puissant
@@ -5603,25 +5917,36 @@ Silny przeciwko:	Fort contre :
 Silny.	Fort.
 Siła	Force
 Siła Ataku	Puissance d'Attaque
-Siła Ataku %.0f-%0.f	Puissance d'Attaque %.0f-%0.f
-Siła Ataku +%.0f	Puissance d'Attaque +%.0f
+Siła Ataku %.0f-%0.f	Puissance d'attaque %.0f-%0.f
+Siła Ataku +%.0f	Puissance d'attaque +%.0f
+Siła Ataku: +%.0f	Puissance d'attaque : +%.0f
+Siła Błyskawic	Force des Éclairs
 Siła Błyskawic (+%d%% łącznej wartości)	Puissance de Foudre (+%d%% de la valeur totale)
 Siła Błyskawic +%d%%	Puissance de Foudre +%d%%
+Siła Błyskawic +5%	Force des éclairs +5%
+Siła Lodu	Force de la Glace
 Siła Lodu (+%d%% łącznej wartości)	Puissance de Glace (+%d%% de la valeur totale)
 Siła Lodu +%d%%	Puissance de Glace +%d%%
+Siła Lodu +5%	Force de la glace +5%
 Siła Mroku	Puissance des Ténèbres
 Siła Mroku (+%d%% łącznej wartości)	Puissance des Ténèbres (+%d%% de la valeur totale)
 Siła Mroku +%d%%	Puissance des Ténèbres +%d%%
+Siła Mroku +5%	Force des ténèbres +5%
 Siła Obrony	Puissance de Défense
+Siła Ognia	Force du Feu
 Siła Ognia (+%d%% łącznej wartości)	Puissance de Feu (+%d%% de la valeur totale)
 Siła Ognia +%d%%	Puissance de Feu +%d%%
+Siła Ognia +5%	Force du feu +5%
 Siła Sung Ma	Force Sung Ma
 Siła Sung Ma +%d	Force Sung Ma +%d
+Siła Wiatru	Force du Vent
 Siła Wiatru (+%d%% łącznej wartości)	Puissance de Vent (+%d%% de la valeur totale)
 Siła Wiatru +%d%%	Puissance de Vent +%d%%
+Siła Wiatru +5%	Force du vent +5%
 Siła Ziemi	Puissance de la Terre
 Siła Ziemi (+%d%% łącznej wartości)	Puissance de Terre (+%d%% de la valeur totale)
 Siła Ziemi +%d%%	Puissance de Terre +%d%%
+Siła Ziemi +5%	Force de la terre +5%
 Siła ataku +%.0f-%.0f	Puissance d'attaque +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	La puissance d'attaque est supérieure si le coup est porté dans le dos
 Siła ataku wroga -%d%%	Puissance d'attaque de l'ennemi -%d%% 
@@ -5713,6 +6038,7 @@ Skorpion Lucznik Zodiaku	Scorpion archer du Zodiaque
 Skorpion Wężowy	Scorpion serpent
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Profitez des |cff2b80ffoffres éclair|r ![ENTER]Les enchères durent au plus tard jusqu'au |cff2b80ff%s|r[ENTER]ou jusqu'à épuisement des stocks.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Les Pierres d'Esprit brisées peuvent trouver un nouvel usage.
+Skrytobójca	Assassin
 Skrytobójcza Wykałaczka	Cure-dent de l'assassin
 Skrz. Ninja M. Łuku (D)	Gd coffre Ninja Arc
 Skrz. Ninja M.Ostrza (D)	Gd coffre Ninja Lame
@@ -5773,12 +6099,16 @@ Skrzynka musi być w ekwipunku.	Le coffre doit se trouver dans l'inventaire.
 Skrzynka na Zwierzaka	Boîte à familier
 Skrzynki	Coffres
 Skrócenie ładowania um. o %d%%	Temps d'incantation des comp. réduit de %d%% 
+Skróty	Raccourcis
+Skróty klawiszowe	Raccourcis clavier
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Concentrez vos attaques sur l'Œuf de Dragon gelé avant qu'il ne disparaisse dans %d s.
 Skóra Przeklętego Niedźwiedzia	Peau d'ours maudit
 Skóra Przeklętego Tygrysa	Peau de tigre maudit
 Skąd	Provenance
 Składnik do produkcji lekarstwa iluzji.	Ingrédient pour la fabrication du remède d'illusion.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingrédient pour améliorer les Pierres d'Esprit chez le forgeron (à partir de +4) : il en faut 1, 1, 2, 2, 3 pour les rangs successifs, en plus de la Poussière magique. Obtenu sur la Puissante Sorcière des glaces (Grotte des Bannis), Beran-Setaou (Antre du Dragon) et la Reine de la jungle (Jungle antique).
+Slaby Malpi Miotacz	Faible lanceur singe
+Slaby Malpi Zolnierz	Faible soldat singe
 Slot z krzyżykiem jest jeszcze zamknięty.	L'emplacement avec une croix est encore verrouillé.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Emplacement verrouillé : une Extension de la Boutique Gaya x%d le débloquera.
 Sloty umiejętności: %d	Emplacements de compétence : %d
@@ -5813,9 +6143,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Une erreur s'est produite. (Erreur générique)
 Songmin, Arktyczne Yeti	Songmin, le Yéti arctique
 Sort by price	Trier par prix
+Sortowanie autopickup	Tri autopickup
 Sortowanie i wyszukiwanie	Tri et recherche
 Sortuj po cenie całej oferty	Trier par prix de l'offre entière
 Sortuj po cenie oferty albo za sztukę	Trier par prix de l'offre ou prix à l'unité
+Sortuj po ilości	Trier par quantité
 Soul Crystal Alchemist	Alchimiste du Cristal d'âme
 Sowa Księżycowa	Chouette lunaire
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	Corruption des Ténèbres;Votre peau brûle et se fissure sous l'énergie obscure,;vous exposant à de plus gros dégâts.
@@ -5824,6 +6156,7 @@ Spalone przedmioty u Kowala	Objets brûlés chez le Forgeron
 Sparta Jungrang+ (k)	Sparta Jungrang+ (f)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (h)
 Spartaner	Spartaner
+Spawn Botow	Apparition des bots
 Specjalne	Spéciaux
 Specjalne Zioła	Herbes spéciales
 Specjalny	Spécial
@@ -5837,6 +6170,7 @@ Sportowa Fryzura(czarna)	Coiffure sportive (noire)
 Spostrzegawczość	Perspicacité
 Społeczność	Communauté
 Sprawdz konto	Vérifier le compte
+Sprawdz status	Vérifier le statut
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Vérification de la prise en charge par le serveur. Faites glisser les objets dans la corbeille.
 Sprawdzanie...	Vérification...
 Sprawdź ekwipunek	Vérifier l'inventaire
@@ -5862,6 +6196,7 @@ Srebrne Płyty	Plaques d'argent
 Srebrny Grot	Pointe en argent
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Pendentif en argent en forme de cœur, serti de joyaux magiques. Donne : +30 % d'EXP, +10 % de vitesse d'attaque, +10 % de vitesse des sorts, +10 % de force contre les monstres, +5 % de PV max., +5 % de PM max.
 Srednia: %s / szt.	Moyenne : %s / pièce
+Srednie obrazenia	Dégâts moyens
 Stabilne Sznury	Cordes solides
 Stajnia i polowanie na medale w Lochu Malp.	Écurie et chasse aux médailles dans le Donjon des Malp.
 Stal	Acier
@@ -5871,7 +6206,8 @@ Stalowy Hełm Dragona	Casque d'acier de Dragona
 Stalowy Hełm Smoków	Casque d'acier des Dragons
 Stamina / sek.: %d	Endurance / s : %d
 Stan (czat)	État (chat)
-Standardowa Muzyka Metin2	Musique Standard du Jeu
+Stan: %s	État : %s
+Standardowa Muzyka Metin2	Musique standard du jeu
 Standardowa muzyka Metin2	Musique standard du jeu
 Stanton-Płatnerz	Stanton, l'armurier
 Stara Fryzura (biała)	Coiffure d'antan (blanche)
@@ -5892,6 +6228,7 @@ Starożytny Robak	Ver antique
 Starożytny Skorpion	Scorpion antique
 Starożytny Wojownik	Guerrier antique
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Parchemin antique permettant le flux de la puissance de Woel - permet de tirer au sort de nouvelles bénédictions.
+Starszy Hazardzista	Joueur de hasard expérimenté
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Vieux parchemin portant un ordre d'exécution. Une fois utilisé, il active la quête.
 Statua Chena	Statue Chen
 Statua Chou	Statue Chou
@@ -5961,20 +6298,26 @@ Strażnik Rozpad. Dusz	Garde de la Faille des âmes
 Strażnik Ruin	Gardien des ruines
 Strażnik Smoków Dolnarr	Gardien-dragon Dolnarr
 Strażnik Smoków Jaharr	Gardien-dragon Jaharr
+Strażnik Srebr. Piasku+	Gardien sable argenté+
 Strażnik Trytonów	Garde triton
 Strażnik Wzgórza	Gardien de la colline
 Strażnik Węży	Garde des Serpents
 Strażnik z Yohara	Garde de Yohara
+Strefa Surowców	Zone de Ressources
 Strona	Page
 Strona %d / %d	Page %d / %d
 Strona %d / %d (%d)	Page %d sur %d  (%d)
 Strona %d/%d	Page %d/%d
 Strona 1	Page 1
 Strona WWW	Site web
+Strona ekwipunku I	Page d'équipement I
 Strona ekwipunku II	Page d'inventaire II
 Strona ekwipunku II (wymienna)	Page d'inventaire II (échangeable)
+Strona ekwipunku III	Page d'équipement III
 Strona ekwipunku IV	Page d'inventaire IV
 Strz. dół	Flèche bas
+Strz. góra	Flèche haut
+Strz. lewo	Flèche gauche
 Strz. prawo	Flèche droite
 Strzał Wichury	Tir de la Tempête
 Strzał Wichury (9.skill)	Tir de bourrasque (9e comp.)
@@ -5982,6 +6325,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Un ti
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Flèche pour l'arc du ninja. Dégâts complets jusqu'à 5 m de la cible (le bonus de portée de l'arc allonge cette distance), puis 5 % de moins par mètre supplémentaire. Le carquois ne perd pas de dégâts avec la distance.
 Strzały: Handlarz Bronią (cena NPC).	Flèches : Marchand d'armes (prix PNJ).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Tirez des effigies de dragon et attaquez vos ennemis.|Renforcé par : Intelligence (++), Dextérité (précision) (+), niveau du personnage.
+Strzelającego Smoka	Dragon Tireur
 Strój Czarodzieja	Costume de sorcier
 Strój Czarodzieja+	Costume de sorcier+
 Strój Zombie	Costume de zombie
@@ -6003,6 +6347,7 @@ Stwór z Głębin	Créature des profondeurs
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Créez une grande explosion du bout de vos doigts.|Renforcé par : Intelligence (++), Force (+), niveau du personnage.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Créez une puissante tornade pour vaincre plusieurs ennemis.|Renforcé par : Intelligence (++), Force (+), niveau du personnage.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Créez un nuage toxique autour des ennemis pour les empoisonner.|Renforcé par : Dextérité (++), Force (+), niveau du personnage.
+Styczeń	Janvier
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Coiffure stylée mais à l'allure gominée, coiffée vers l'arrière, les antennes en sont l'accent essentiel. Change définitivement la coiffure de votre personnage.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Coiffure élégante de chamane. Change définitivement la coiffure de votre personnage.
 Su-Sin	Su-Sin
@@ -6026,11 +6371,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Les gains totau
 Sun Herb	Herbe solaire
 Super Kamienie Metin (+%d)	Super Pierres Metin (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Supplément (jusqu'à 5 unités) : Petit +1%, Moyen +2%, Grand +4%, Puissant +10% par unité.
+Sura (Broń)	Sura (Arme)
+Sura (Czarna Magia)	Sura (Magie noire)
 Sura Armor	Armure de sura
 Sura Czarna Magia	Sura Magie noire
 Sura Mistrz Broni	Sura Armes
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Matières premières nécessaires pour fabriquer et améliorer des objets exceptionnels.
 Sutra	Soutra
+Swiat i eventy	Monde et événements
+Swiatynia Hwang	Temple de Hwang
+Swiatynia Ochao	Temple d'Ochao
 Swiatynia Zodiaku	Temple du Zodiaque
 Switchbot (zmiana bonusów)	Switchbot (changement de bonus)
 Switchbot - zmiana bonusów	Switchbot - changement de bonus
@@ -6039,10 +6389,12 @@ Sword	Épée
 Sycomor	Sycomore
 Symbol zręczności, popularny wśród złodziei.	Symbole de dextérité, populaire chez les voleurs.
 Synowie Pustyni	Fils du Désert
+Szalenie odważny	Incroyablement courageux
 Szalony Hazardzista	Joueur Fou
 Szalony Naukowiec	Savant Fou
 Szalony Wędkarz	Pêcheur Fou
 Szaman (Leczenie)	Chamane (Guérison)
+Szaman (Smok)	Chaman (Dragon)
 Szaman Leczenie	Chamane Soins
 Szaman Smok	Chamane Dragon
 Szamanka (K)	Chamane (F)
@@ -6058,6 +6410,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Chance de percer l'immunité
 Szansa na Spowolnie.	Chance de Ralentir
 Szansa na Uziemienie %.0f%%	Chance d'Immobilisation %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Chance de bloquer les coups : augmente les chances d'esquiver une attaque à courte distance.
+Szansa na cios krytyczny +2%	Chance de coup critique +2%
+Szansa na cios krytyczny +5%	Chance de coup critique +5%
+Szansa na cios krytyczny +7%	Chance de coup critique +7%
+Szansa na cios krytyczny +8%	Chance de coup critique +8%
 Szansa na cios krytyczny: +%.0f%%	Chance de coup critique : +%.0f%%
 Szansa na cios przebicia %.0f%%	Chance de coup perforant %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Chance de drop de Yang : augmente les chances d'obtenir plus de Yang.
@@ -6086,12 +6442,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Chances d'apprent
 Szansa na przebicie	Chance de perforation
 Szansa na przebicie +10%	Chances de perforation +10 %
 Szansa na przedmiot z bonusem	Chance d'objet avec bonus
+Szansa na przeszywające Uderzenie: 2%	Chance de coup perçant : 2%
+Szansa na przeszywające Uderzenie: 5%	Chance de coup perçant : 5%
+Szansa na przeszywające Uderzenie: 8%	Chance de coup perçant : 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Chance de coup perforant : augmente les chances d'infliger un coup perforant.
 Szansa na przeszywający strzał +%.0f%%	Chance de tir perforant +%.0f%%
 Szansa na spowolnienie	Chance de ralentir
 Szansa na transfer %d%% otrzymanych obrażeń do PE	%d%% de chance de transférer les dégâts reçus vers les PM
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Chance d'esquiver les flèches : augmente les chances d'esquiver une flèche ou une attaque à distance d'un monstre.
 Szansa na wydobycie rudy +%d%%	Chance d'extraire du minerai +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Chance d'obtenir un objet d'un boss +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Chances d'obtenir des objets multipliées par 1,5 pour les membres iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Chance d'obtenir des objets multipliée par %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Chance d'obtenir des Yang multipliée par %.1f
@@ -6142,12 +6502,15 @@ Szary Barwnik	Teinture grise
 Szary Lśniący Odłamek	Éclat brillant gris
 Szary Sok	Jus gris
 Szata	Tenue
+Szata Dżinna+ (m)	Robe de djinn+ (h)
 Szata Harmonii	Habit de l'Harmonie
 Szata Księżyca	Habit de la Lune
 Szata Ognia	Habit de feu
 Szata Wiary	Robe de la Foi
 Szata Zodiaku	Habit du Zodiaque
 Szata aury: ewolucja	Tenue d'aura : évolution
+Szata aury: przenieś parametry	Tenue d'aura : transférer les paramètres
+Szata aury: rozwój	Tenue d'aura : évolution
 Szczyt rodzaju - czas na ewolucję	Sommet du rang - il est temps d'évoluer
 Szczytobłysk 830 9454	Éclat-du-pic 830 9454
 Szczytomrok 3393 9454	Pic-sombre 3393 9454
@@ -6160,6 +6523,7 @@ Szkarłaczny Żądłak	Dard écarlate
 Szkat. Chegala	Coffret de Chegal
 Szkat. Olbrzym. Drzewa	Coffret de l'Arbre géant
 Szkatulka Ksiezycowa - z rozbitego Metina	Coffret Lunaire - d'un Metin détruit
+Szkatulka Ksiezycowa - z zabitego potwora	Coffret Lunaire - du monstre tué
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Coffret de Chegal, Goliath de l'ombre. Quelque chose de précieux se trouve à l'intérieur.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Coffret du Géant Esprit de l'arbre. Quelque chose de précieux se trouve à l'intérieur.
 Szkatułka Yohara	Coffret de Yohara
@@ -6179,6 +6543,7 @@ Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Du Bois noble du
 Szlachetne Drzewo (PB)	Arbre noble (ÉV)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Arbre Précieux (ÉV) du Seigneur En-Tai (ÉV). Apportez-le au Chercheur de la Forêt (ÉV).
 Szlachetny	Noble
+Szlachetny Legionista+	Légionnaire noble+
 Szmaragdowy Marmur	Bille d'émeraude
 Szpon Kruka	Serre du Corbeau
 Szpon Wężowy (wykon.)	Griffe Serpent (fabr.)
@@ -6240,7 +6605,10 @@ Szybkość Ataku +5%	Vitesse d'attaque +5 %
 Szybkość Buffi	Vitesse de Buffi
 Szybkość Ruchu +%.0f%%	Vitesse de Déplacement +%.0f%%
 Szybkość Ruchu 20%	Vitesse de déplacement 20 %
+Szybkość Zaklęcia +2%	Vitesse de sort +2%
+Szybkość Zaklęcia +5%	Vitesse de sort +5%
 Szybkość czarowania	Vitesse d'incantation
+Szybkość ruchu +%d%%	Vitesse de déplacement +%d%%
 Szybkość: %d zmian/s	Vitesse : %d changements/s
 Słaba Zbroja	Armure faible
 Słaba jakość strzału: od %.1fm	Mauvaise qualité de tir : à partir de %.1f m
@@ -6248,6 +6616,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Gentille petite vieille
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Amulette douce pour la Saint-Valentin. Donne : +50 % d'EXP, +20 % de vitesse d'attaque, +20 % de vitesse des sorts, +10 % de force contre les monstres, +10 % de PV max., +10 % de PM max. Le temps s'écoule même lorsque vous ne le portez pas.
 Słodkowodna ryba drapieżna występująca w tropikach.	Poisson d'eau douce prédateur que l'on trouve sous les tropiques.
+Słon. Szata Wukong+ (m)	Robe de Wukong sol.+ (h)
 Słonecznik: obrona +%d%%	Tournesol : défense +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Mots issus des noms d'objets (séparés par des virgules)
 Słudzy Sung Mahi	Serviteurs de Sung Mahi
@@ -6456,8 +6825,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Aujourd'hui {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Demain {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Trop d'actions en peu de temps. Veuillez patienter un moment et réessayer.
+Top przedmiotów	Top des objets
 Topaz Woli	Topaze de la volonté
 Torba towarzysza: weź do siebie	Sac du compagnon : prendre pour soi
+Towarzysz (nierozwijany)	Compagnon (non déployé)
 Towarzysz bierze tylko cały stos.	Le Compagnon ne prend qu'une pile entière.
 Towarzysz dostanie ścieżkę na 5 poziomie.	Le Compagnon obtiendra une voie au niveau 5.
 Towarzysz drużyny	Compagnon d'Équipe
@@ -6469,9 +6840,11 @@ Towarzysz zakłada grupę i cię zaprasza.	Le Compagnon forme un groupe et vous 
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	Le Compagnon consommera un Livre de l'oubli ou un Document de réinitialisation des compétences.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Le Compagnon, Cor Draconis et les quêtes de systèmes ne sont pas affichés ici.
 Towarzysze są tu wyłączeni.	Les compagnons sont désactivés ici.
+Towarzysze są wyłączeni na tym serwerze.	Les compagnons sont désactivés sur ce serveur.
 Trade Hub	Centre commercial
 Trafienia	Touches
 Transfer bonusów	Transfert de bonus
+Transfer obrazen do PM	Transfert de dégâts en PM
 Transformuj kostium	Transformer le costume
 Transporter jest pusty.	Le transporteur est vide.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Entraîne la compétence de Buffi du rang G1 à P, comme la Pierre d'Esprit pour les compétences ordinaires (points de rang, prochain essai après 12 heures, Parchemin d'exorcisme immédiatement). Lâché par les Metin et les boss à partir de la Forêt Enchantée.
@@ -6522,6 +6895,7 @@ Twierdza Czerwonego Smoka (SZC)	Forteresse du Dragon Rouge (ST)
 Twierdza Razadora	Forteresse de Razador
 Two Hand Sword	Épée à deux mains
 Twoja Gaya: %s	Vos Gaya : %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Votre défense augmente de %d%% pendant 5 s
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Votre position : affiche la carte où vous vous trouvez et y centre la vue.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Votre acier entonnera des arias de renommée mondiale sur le champ de bataille. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Twoje Smocze Monety: %d	Vos Pièces de dragon : %d
@@ -6556,6 +6930,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Votre guilde reçoit 
 Tylko BETA	BÊTA uniquement
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Seul un IMPLEMENTOR change le GM des autres personnages.
 Tylko broń, zbroje i kostiumy dla tej płci	Uniquement les armes, armures et costumes pour ce sexe
+Tylko dla mnie	Seulement pour moi
 Tylko dla mnie: cały drop jest twój.	Seulement pour moi : tout le butin est à vous.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Rares sont ceux qui comprennent cette langue ancienne dont provient le nom de cette arme. Aucun n'a toutefois osé traduire ce nom. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Tylko scal stosy	Fusionner uniquement les piles
@@ -6574,6 +6949,7 @@ Typ: -	Type : -
 Type	Type
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Bonus d'équipement courants ou tous ceux connus du client
 Tysieczny Wojow. Zodiaku	Guerrier millénaire du Zodiaque
+Tysieczny Wojownik	Guerrier millénaire
 Tytuł %s wygaśnie za niecałą godzinę.	Le titre %s expirera dans moins d'une heure.
 Tytuł Czciciel Słońca	Titre : Adorateur du Soleil
 Tytuł Czempion Nyx	Titre : Champion de Nyx
@@ -6627,12 +7003,15 @@ Udało ci się ochronić Goblina Skarbów!	Vous avez réussi à protéger le Gob
 Udało się odeprzeć lodowy chłód.	Vous avez réussi à repousser le froid glacial.
 Udało się: %s	Réussite : %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Frappez, et pour quelqu'un le glas sonnera ! Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
+Uderzenia Palcem	Coup du Doigt
 Uderzenie Pioruna	Frappe de la foudre
 Uderzenie Płonącego Palca	Frappe du Doigt Ardent
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Frappe du Doigt a %d%% de chances de rendre le coup à l'adversaire
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Part des bots qui, après leurs achats en ville, restent un moment près des étals au lieu de repartir aussitôt chasser. 100 % : une ville vivante, 0 % : tout le monde est sur le terrain.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Part des marchands qui mettent en vente leurs améliorations faibles (+0 à +3) pour trois fois rien au lieu de les vendre aux PNJ - de la ferraille à brûler chez le forgeron, comme sur les serveurs hard. Désactivé par défaut.
+Udział	Part
 Ukończ %(n)s lochów	Terminez %(n)s donjons
+Ukończ lochy	Terminer des donjons
 Ukończenia: %d	Réussites : %d
 Ukończone	Terminé
 Ukończone księgi misji	Livres de quêtes terminés
@@ -6641,6 +7020,7 @@ Ukończone wyprawy	Expéditions terminées
 Ukończone: %d / %d	Terminées : %d / %d
 Ukryj aury umiejętności	Masquer les auras de compétences
 Ukryj budynki i obiekty	Masquer les bâtiments et objets
+Ukryj cudze	Masquer les autres
 Ukryj czaszkę nad bossami	Masquer le crâne au-dessus des boss
 Ukryj drzewa	Masquer les arbres
 Ukryj efekty wzmocnień (szaman)	Masquer les effets de renfort (chaman)
@@ -6679,11 +7059,14 @@ Ulepszenie: Zasadzka	Amélioration : Embuscade
 Ulepszenie: od 0 do 9.	Amélioration : de 0 à 9.
 Ulepszona Butelka	Flacon amélioré
 Ulepszony Barwnik	Teinture améliorée
+Ulepszysz do: %s	Amélioration en : %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Vous l'améliorerez chez le Palefrenier (Entraînement du cheval).
 Ulepszyć %s do poziomu %d?	Améliorer %s au niveau %d ?
 Ultra	Ultra
 Ulubieni na górze listy	Favoris en haut de la liste
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Coiffure préférée des guerriers solitaires, magnifique quand le vent souffle. Change définitivement la coiffure de votre personnage.
+Umiejetnosci widac tylko u gracza online	Les compétences ne sont visibles que pour un joueur en ligne
+Umiejętn.	Compét.
 Umiejętności konia (miejsca: %d z 2)	Compétences du cheval (emplacements : %d sur 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	On peut enseigner des compétences à partir du rang "Héroïque".
 Umiejętności pomocnicze	Compétences de soutien
@@ -6691,6 +7074,7 @@ Umiejętności potencjału	Compétences de potentiel
 Umiejętności potencjału (tylko czempion, 2 sloty)	Compétences de potentiel (champion uniquement, 2 emplacements)
 Umiejętności potencjału (z jaj zwierzaków)	Compétences de potentiel (issues des œufs d'animaux)
 Umiejętności rozdaję sam	Je répartis moi-même les compétences
+Umiejętności towarzysza	Compétences du compagnon
 Umiejętności zwierzaka (3 sloty)	Compétences de l'animal (3 emplacements)
 Umiejętności: przeciągnij je z okna postaci do pól.	Compétences : faites-les glisser depuis la fenêtre du personnage vers les emplacements.
 Umiejętność %d	Compétence %d
@@ -6704,6 +7088,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Un uniforme ay
 Unik	Esquive
 Unik Strzały	Esquive de Flèche
 Unik: %d%%	Esquive : %d%%
+Uniknięcie śmierci	Éviter la mort
 Upiorne Echo	Écho spectral
 Upiorny Strażnik	Garde spectral
 Upiorny Wojownik	Guerrier spectral
@@ -6721,6 +7106,8 @@ Ustaw nowe hasło na stronie.	Définissez un nouveau mot de passe sur le site.
 Ustaw ten pasek jako aktywny (%d)	Définir cette barre comme active (%d)
 Ustawienia Społeczności zapisane.	Paramètres de la Communauté enregistrés.
 Ustawienia Walki	Paramètres de combat
+Usun GM	Supprimer MJ
+Usun Moby	Supprimer les mobs
 Usun potwory	Supprimer les monstres
 Usun przedmioty	Détruire les objets
 Usun wszystkie	Tout supprimer
@@ -6773,14 +7160,17 @@ Uziemienie	Immobilisation
 Ułóż i scal	Ranger et fusionner
 Użycie	Utilisation
 Użyj	Utiliser
+Użyj %(n)s przedmiotów	Utiliser %(n)s objets
 Użyj %(n)s x %(what)s	Utilisez %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Utilisez un Livre de compétence de familier depuis l'inventaire
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Utilisez-la dans le Temple des Serpents pour prolonger la durée de l'expédition d'une minute (60 minutes au maximum).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Utilisez-le pour débloquer 5 emplacements verrouillés dans votre boutique personnelle.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Utilisez l'anneau dans le Royaume des Éléments (dans l'une des neuf zones) pour être toujours téléporté sur le Plateau de la Force de la Nature. L'anneau disparaît après utilisation.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Utilisez l'anneau dans le Royaume des Éléments (dans l'une des neuf zones) pour avoir une chance (10 %) d'être téléporté sur le Plateau de la Force de la Nature. L'anneau disparaît à chaque utilisation. Il est lâché par tous les monstres et Metin du Royaume des Éléments (entrée : portail et Vieillard au Port du Nouveau Continent).
+Użyj przedmiotu	Utiliser un objet
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Utilisez pour activer ou désactiver le verrouillage de l'expérience. Sans limite de temps.
 Użyj, kiedy zablokujesz się w "teksturach".	À utiliser lorsque vous êtes coincé dans les "textures".
+Użytkowe	Utilitaires
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Les ailes du dragon Alteran permettent de sublimer un équipement.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	En utilisant cette licence, vous pouvez recruter un mercenaire. (Sans utilité pour le moment - viendra avec la prochaine mise à jour de Yohara.)
 Używalne	Consommables
@@ -6871,6 +7261,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Coup Violent a %d%% de chances
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Monnaie de Yohara (999 999 au maximum). Faites polir les cailloux à la Statue du Guerrier du Port, payez à la Boutique Gaya et lors de la fabrication.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Monnaie d'échange : 1 Won = 100 000 000 Yang.
 Wampir	Vampirisme
+Wampir+ (szary)	Vampire+ (gris)
 Warkocze Plem. (czerw.)	Tresses tribales (rouges)
 Warkocze Plem. (fiol.)	Tresses tribales (violettes)
 Warkocze Plem. (nieb.)	Tresses tribales (bleues)
@@ -6884,11 +7275,14 @@ Wartosc ataku vs potwory	Valeur d'attaque vs monstres
 Wartosc magicznego ataku	Valeur d'attaque magique
 Wartownik z Yohara	Sentinelle de Yohara
 Wartość Ataku	Valeur d'Attaque
+Wartość Ataku +30	Valeur d'attaque +30
 Wartość Ataku w potwory +%d	Valeur d'attaque contre les monstres +%d
 Wartość Ataku: +12~15%	Valeur d'attaque : +12~15%
 Wartość Magicznego Ataku: +30	Valeur d'attaque magique : +30
 Wartość ataku +75 (miejsca 1-3)	Valeur d'attaque +75 (places 1-3)
+Wartość bonusu dokładnie taka	Valeur du bonus exactement égale
 Wartość bonusu taka albo niższa	Valeur du bonus égale ou inférieure
+Wartość bonusu taka albo wyższa	Valeur du bonus égale ou supérieure
 Wartość sklepu przekracza 2 miliardy Yang.	La valeur de la boutique dépasse 2 milliards de Yang.
 Warunek: bonus o co najmniej podanej wartości	Condition : bonus d'au moins la valeur indiquée
 Warunki	Conditions
@@ -6917,6 +7311,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	Version TEST : la C
 Wersja: %d.%d.%d%s	Version : %d.%d.%d%s
 Wersja: 1.0.0	Version : 1.0.0
 Wersja: xxx	Version : xxx
+Wesoły Posłaniec Miłości	Joyeux messager de l'amour
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Une perle étincelante se cache peut-être à l'intérieur de ce magnifique coquillage.
 Wezowy Lucznik Zodiaku	Archer serpent du Zodiaque
 Wezowy Miecznik Zodiaku	Épéiste serpent du Zodiaque
@@ -6947,13 +7342,16 @@ Wielorybi Pancerz	Armure de baleine
 Wieprzowina	Viande de porc
 Wierzchowiec utknął - wsiadam ponownie	Monture coincée - je remonte
 Wieża Sung Mahi	Tour de Sung Mahi
+Wiking Światła+	Viking de lumière+
 Wilk Piekielnej Wieży	Loup de la Tour infernale
 Wilk Zodiaku	Loup du Zodiaque
+Wilki alfa	Loups alpha
 Wino Brzoskwini (W)	Vin de pêche (W)
 Wino Kwiatu Brzoskwini+	Vin de fleur de pêcher+
 Winogrono	Raisin
 Wioska Gildii	Village de guilde
 Wioska gildii 1	Village de guilde 1
+Wiru Miecza	Tourbillon de l'Épée
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Faites tournoyer votre épée pour attaquer plusieurs adversaires.|Renforcé par : Force (++), Dextérité (+), Vitalité (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Tournoyez parmi les ennemis avec votre dague.|Renforcé par : Dextérité (++), Force (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Dague Tournoyante a %d%% de chances d'étourdir l'adversaire
@@ -6974,6 +7372,7 @@ Wojna Imperiow 1	Guerre des Royaumes 1
 Wojna gildii i Krypta Balathora	Guerre de guilde et Crypte de Balathor
 Wojow. z Toporem Zodiaku	Guerrier à la hache du Zodiaque
 Wojowniczka (K)	Guerrière (F)
+Wojownik (Body)	Guerrier (Corps)
 Wojownik (Mental)	Guerrier (Mental)
 Wojownik Ciało	Guerrier Corps
 Wojownik En-Tai	Combattant En-Tai
@@ -6987,6 +7386,7 @@ Wojownik Umysł	Guerrier Esprit
 Wojownik Uruk	Guerrier Uruk
 Wojownik Zephyr	Guerrier Zephyr
 Wojskowy Koń	Cheval militaire
+Wokol mnie	Autour de moi
 Wola Balathora	Volonté de Balathor
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Volonté de Balathor : résistance à l'étourdissement, aux entraves et à la congélation %d%%
 Wola Sung Ma tej mapy	Volonté de Sung Ma de cette carte
@@ -7011,6 +7411,7 @@ Wolne punkty statusu: %d	Points de statut libres : %d
 Wolne punkty umiejętności	Points de compétence libres
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Poison à action lente a %d%% de chances de rendre le coup à l'adversaire
 Wounded Soldier	Soldat blessé
+Wołanie	Appel
 Wpisz co najmniej 2 litery nazwy.	Saisissez au moins 2 lettres du nom.
 Wpisz co najmniej 2 litery.	Saisissez au moins 2 lettres.
 Wpisz ilosc (1-%d)	Saisissez la quantité (1-%d)
@@ -7028,6 +7429,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Saisissez combien de bonus doivent 
 Wpłacało botów: %d	Bots ayant contribué : %d
 Wrist	Poignet
 Wrogi Mur	Mur ennemi
+Wrzesień	Septembre
 Wróć 11553 12697	Retour 11553 12697
 Wróć do zapisanych reguł	Revenir aux règles enregistrées
 Wróć do zwykłej mapy	Revenir à la carte normale
@@ -7061,6 +7463,7 @@ Wszystkie na P	Tout en P
 Wszystkie sloty sklepu są już odblokowane.	Tous les emplacements de la boutique sont déjà débloqués.
 Wszystkie umiej. P	Toutes compét. P
 Wszystkie warstwy	Toutes les couches
+Wszystkie żywioły	Tous les éléments
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Tout : %d tentatives (réussies : %d, échouées : %d).
 Wszystkie: tylko %s lub %s.	Tout : uniquement %s ou %s.
 Wszystko to za 50 zł na miesiąc!	Tout cela pour 50 PLN par mois !
@@ -7099,13 +7502,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	La sélection a chang
 Wyboru nie można cofnąć. Kontynuować?	Le choix est irréversible. Continuer ?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	Le rang choisi exige ce nombre d'étoiles pour chaque monstre de la panoplie.
 Wybrane bonusy i wartości	Bonus et valeurs choisis
+Wybrano: %s	Sélectionné : %s
 Wybrany NPC jest tuż obok.	Le PNJ choisi est juste à côté de vous.
 Wybrany kanał dostępny jest tylko dla kont Premium.	Le canal choisi est réservé aux comptes Premium.
 Wybrany przepis: %s	Recette choisie : %s
 Wycena czesciowa - trwa wczytywanie	Estimation partielle - chargement en cours
 Wycena wygasła - wyceń ponownie.	L'estimation a expiré - estimez à nouveau.
+Wycisz 1 dzien	Muet 1 jour
+Wycisz 1 h	Muet 1 h
+Wycisz 10 min	Muet 10 min
 Wycisz na:	Muet pendant :
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Objet retiré : le Rituel de l'Éveil n'existe plus et la pierre n'a plus aucun usage. Vous pouvez la jeter.
+Wyczysc filtry	Effacer les filtres
 Wyczyszczono wszystkie znaczniki sklepów offline.	Tous les marqueurs de boutiques hors ligne ont été effacés.
 Wyczyszczono: %s	Effacé : %s
 Wyczyść	Effacer
@@ -7124,6 +7532,7 @@ Wydarzenie Wakacyjne	Événement estival
 Wydarzenie Walentynkowe	Événement de la Saint-Valentin
 Wydarzenie Wielkanocne.	Événement de Pâques.
 Wydobądź %(n)s rudy	Extrayez %(n)s minerais
+Wydobądź rudę	Extraire du minerai
 Wydłuża czas trwania twoich umiejętności.	Prolonge la durée de vos compétences.
 Wygląd postaci	Apparence du personnage
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Elle a l'air inoffensive, mais elle est mortelle à 100 %. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
@@ -7149,6 +7558,7 @@ Wykonaj zestaw broni	Fabriquer la panoplie d'arme
 Wykonaj zestaw hełmu	Fabriquer la panoplie de casque
 Wykonaj zestaw zbroi	Fabriquer la panoplie d'armure
 Wykonane zmiany: %d	Changements effectués : %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Exécuté %s/%s. Total actifs : %s
 Wykopane rudy	Minerais extraits
 Wykorzystaj	Utiliser
 Wykorzystaj voucher	Utiliser un bon
@@ -7157,6 +7567,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	La configuration d'une 
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Un objet potentiellement précieux a été détecté. Continuer ?
 Wykryto przedmiot z bonusem, kontynuować?	Un objet avec bonus a été détecté. Continuer ?
 Wykryto wysoki poziom ulepszenia, kontynuować?	Un niveau d'amélioration élevé a été détecté. Continuer ?
+Wylacz eventy	Désactiver événements
 Wylosować nową ofertę od razu?	Tirer une nouvelle offre tout de suite ?
 Wylosuj cele od nowa	Retirer de nouveaux objectifs
 Wyląg Exedyara	Rejeton d'Exedyar
@@ -7180,6 +7591,8 @@ Wymagany poziom do zakupu: %d	Niveau requis pour l'achat : %d
 Wymagany poziom postaci: 75	Niveau de personnage requis : 75
 Wymagany poziom: %d	Niveau requis : %d
 Wymiana ksiąg umiejętności	Échange de livres de compétence
+Wymiana u: %s	Échange chez : %s
+Wymiana: %s	Échange : %s
 Wymiany	Échanges
 Wymienić %d ksiąg na %d nowych za %s Yang?	Échanger %d livres contre %d nouveaux pour %s Yang ?
 Wyniki odświeżają się co minutę.	Les résultats sont actualisés toutes les minutes.
@@ -7193,6 +7606,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Relâcher %s dans la nature
 Wypłać	Retirer
 Wypłać sztuk:	Quantité à retirer :
 Wyrok	Verdict
+Wyrzuc bota	Expulser le bot
 Wyrzuc z gry...	Expulser du jeu...
 Wyrzuc z serwera	Expulser du serveur
 Wyrzucic %s z gry?	Expulser %s du jeu ?
@@ -7210,6 +7624,7 @@ Wysuszone Oczy	Yeux séchés
 Wysyłanie do serwera...	Envoi au serveur...
 Wyszukaj biżuterię i buty.	Rechercher bijoux et chaussures.
 Wyszukaj bronie.	Rechercher des armes.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Recherchez un joueur en ligne pour voir ses compétences
 Wyszukaj przedmiot	Rechercher un objet
 Wyszukaj przedmioty z min. 1 bonusem.	Rechercher des objets avec au moins 1 bonus.
 Wyszukaj zbroje/tarcze/hełmy.	Rechercher armures/boucliers/casques.
@@ -7311,6 +7726,7 @@ Wściekły Cierń	Épine furieuse
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Furieux, hérissé de pointes et impitoyable. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y en mètres globaux. Ctrl + clic sur la carte = téléportation.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang par kill
 Yang z potworów +%d%%	Yang des monstres +%d%%
 Yang za próbę awansu	Yang par tentative de promotion
 Yesterday {:02d}:{:02d}	Hier {:02d}:{:02d}
@@ -7356,9 +7772,11 @@ Z jaja: %s	De l'œuf : %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Dans chaque emplacement, vous pouvez acheter un article par offre.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Avec un costume assorti : +800 PV, +15 valeur d'attaque
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Avec une coiffure assortie : +800 PV, +15 valeur d'attaque
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	%d%% de chance de réinitialiser le temps de recharge de vos compétences
 Z łukiem	Avec un arc
 Z. Eliksir Mocy Płn. W.	Él. doré puiss. Vent du Nord
 Z. Eliksir Odp. na Ogień	Él. doré de rés. au feu
+ZAKRĘĆ	TOURNER
 ZRĘ	DEX
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	Vous serez téléporté dans %d min. Parlez au Gardien des Dragons Dolnarr pour partir immédiatement.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	Pour l'escorte n° %d jusqu'au bon coffre, vous recevez une Clé du Gobelin !
@@ -7400,13 +7818,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Cette manche vous coûtera %s Yang e
 Za ukończone tury także otrzymujesz nagrody.	Vous recevez aussi des récompenses pour les tours terminés.
 Za wysoka wartość: %s.	Valeur trop élevée : %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	Le filtre avancé est désactivé : Options du jeu -> Supplémentaires -> Filtre de ramassage.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Filtre de ramassage avancé (clic droit dans Ctrl+Z)
+Zabic postac %s?	Tuer le personnage %s ?
 Zabici gracze	Joueurs tués
 Zabij %(n)s potworów	Tuez %(n)s monstres
+Zabij potwory	Tuer des monstres
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Tue les orcs et toutes les autres créatures monstrueuses. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Zabite potwory	Monstres tués
 Zablokowac konto %s NA ZAWSZE?	Bannir le compte %s POUR TOUJOURS ?
 Zablokowac konto %s na %s dni?	Bannir le compte %s pour %s jours ?
 Zablokowac nowe logowania (przerwa techniczna)?	Bloquer les nouvelles connexions (maintenance) ?
+Zablokowane miejsce	Emplacement verrouillé
 Zablokowani	Bloqués
 Zablokowany przy sortowaniu (Alt+LPM)	Verrouillé lors du tri (Alt+clic gauche)
 Zablokuj ekwipunek	Verrouiller l'équipement
@@ -7416,6 +7838,7 @@ Zabrakło Yang.	Yang insuffisants.
 Zabójca	Tueur
 Zabójca Króla	Tueur de rois
 Zabłąkany Dzikus	Sauvage égaré
+Zachowanie botow	Comportement des bots
 Zacny Kam. Przebudzenia	Belle pierre d'éveil
 Zacny P. Wężowy (wykon.)	Mant. Serpent noble (fabr.)
 Zacny Płaszcz Wężowy	Manteau Serpent noble
@@ -7449,6 +7872,7 @@ Zakończyć sesję farmienia?	Terminer la session de farm ?
 Zakres rysowania	Distance d'affichage
 Zakres sklepów	Portée des boutiques
 Zakres widoku	Portée de vue
+Zakresy (puste = bez limitu)	Plages (vide = sans limite)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Un [5] face cachée était à côté de la carte révélée.[ENTER]Malheureusement, vous ne recevez aucun point. Choisissez maintenant votre roi [K].
 Zakręć kołem za jedyne	Faites tourner la roue pour seulement
 Zakręć kołem.	Faire tourner la roue.
@@ -7456,6 +7880,7 @@ Zaktualizuj klienta i serwer.	Mettez à jour le client et le serveur.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Mettez le serveur à jour pour répartir les statistiques.
 Zakup raz na %s	Achat une fois tous les %s
 Zakupy przerwane.	Achats interrompus.
+Zakupy towarzysza	Achats du compagnon
 Zakupy włoży ci do torby albo do swojej.	Il rangera les achats dans votre sac ou dans le sien.
 Zamarznięta Wieża	Tour Gelée
 Zamarznięty Generał	Général gelé
@@ -7477,6 +7902,7 @@ Zapisane bonusy	Bonus enregistrés
 Zapisane miejsca	Lieux enregistrés
 Zapisane pozycje	Positions enregistrées
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Les positions enregistrées ne fonctionnent qu'avec un parchemin vierge (%s) dans l'inventaire.
+Zapisane zestawy	Jeux enregistrés
 Zapisano	Enregistré
 Zapisano (%s%%).	Enregistré (%s%%).
 Zapisano (gracz offline)	Enregistré (joueur hors ligne)
@@ -7484,10 +7910,11 @@ Zapisano preset "%s".	Préréglage « %s » enregistré.
 Zapisano.	Enregistré.
 Zapisano. Odswiezanie rang GM...	Enregistré. Actualisation des rangs de GM...
 Zapisuje miejsce %d...	Enregistrement du lieu %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Enregistrer une capture d'écran :  Impr (la capture est enregistrée dans le sous-dossier « screenshot » du jeu)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Enregistrer une capture d'écran :  Impr. écran (la capture sera enregistrée dans le sous-dossier du jeu "screenshot")
 Zapisz i wyślij	Enregistrer et envoyer
 Zapisz obecny filtr jako preset o tej nazwie	Enregistrer le filtre actuel comme préréglage portant ce nom
 Zapisz reguły i wyślij je na serwer	Enregistrer les règles et les envoyer au serveur
+Zapisz tu	Enregistrer ici
 Zaplanowana została przerwa w dostępie do usług.	Une interruption de maintenance des services a été programmée.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Empêche la perte d'endurance du cheval, idéal pour les longs voyages sans pause.
 Zapomnienie umiejętności: Stajenny (za darmo).	Oubli des compétences : Palefrenier (gratuit).
@@ -7526,6 +7953,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Contient des récompenses pour les vaillants guerriers au service de la Vallée de Seungryong.
 Zawiodłeś.	Vous avez échoué.
 Zaznacz albo odznacz całą stronę	Sélectionner ou désélectionner toute la page
+Zaznacz do "Kup wybrane"	Cocher pour "Acheter la sélection"
 Zaznacz oferty, które chcesz kupić.	Sélectionnez les offres que vous voulez acheter.
 Zaznacz wszystkie	Tout sélectionner
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Les quêtes sélectionnées disparaîtront de la liste comme si elles n'avaient jamais existé.
@@ -7544,9 +7972,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Collectez des insignes pour les échanger contre des coffres ou des matériaux d'amélioration.
 Zbieranie dla Biologa zamiast bicia poziomow.	Collecte pour le Biologiste au lieu de monter de niveau.
 Zbierz %(n)s ziół	Cueillez %(n)s herbes
+Zbierz yang	Récolter des yang
+Zbierz zioła	Cueillir des herbes
 Zbir Piekielnej Wieży	Brute de la Tour infernale
 Zbiórka na parterze wieży	Rassemblement au rez-de-chaussée de la tour
 Zbocze Gautama	Pente de Gautama
+Zbr. Mroku Księżyca+ (m)	Arm. Obscurité de Lune+ (h)
+Zbroja Ajolosa+ (m)	Armure d'Ajolos+ (h)
+Zbroja Avalonu+ (srebr.)	Armure d'Avalon+ (argent)
 Zbroja Boskiego Smoka	Armure du Dragon divin
 Zbroja Dzikiego Knura	Armure du Sanglier sauvage
 Zbroja Króla Wojowników+	Armure du Roi guerrier+
@@ -7555,8 +7988,10 @@ Zbroja Płytowa Zodiaku	Armure de plates du Zodiaque
 Zbroja Smoka Magii	Armure du Dragon de Magie
 Zbroja Smoka Mroku	Armure du Dragon des Ténèbres
 Zbroja Smoka Wiatru	Armure du Dragon du Vent
+Zbroja Szczodrego+	Armure du Généreux+
 Zbroja Tygrysa	Armure du Tigre
 Zbroja Wilka	Armure du Loup
+Zbroja Zmarłych+ (m)	Armure des morts+ (h)
 Zbroja Zodiaku	Armure du Zodiaque
 Zbroja wypełniona mocą boskiego smoka.	Armure emplie du pouvoir du dragon divin.
 Zbroja wypełniona mocą magicznego smoka.	Armure emplie du pouvoir du dragon magique.
@@ -7585,6 +8020,8 @@ Zdobyte Yang	Yang gagnés
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Vous les gagnez en tuant des monstres et en accomplissant des quêtes du Nouveau Continent.
 Zdobywasz je, chroniąc Goblina Skarbów	Vous les obtenez en protégeant le Gobelin au Trésor
 Zebrane kwiaty	Fleurs cueillies
+Zebrano %s z %s yang (%.1f%%)	Récolté %s sur %s yang (%.1f%%)
+Zebrano: %d / %d	Récolté : %d / %d
 Zegarek Kieszonkowy	Montre de poche
 Zejście Północnego Wiatru	Descente du Vent du Nord
 ZejściePłnW. 11590 12181	Descente V. Nord 11590 12181
@@ -7596,11 +8033,15 @@ Zemsta Czarnej Śmierci	Vengeance de la Mort Noire
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Boss apparus : %s/%s.
 Zestaw %d	Ensemble %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Jeu de 24 cartes Okey. Faites un clic droit pour l'ajouter - une partie d'Okey coûte 1 jeu de cartes et 30 000 Yang.
 Zestaw Opieki nad Koniem	Kit de soins pour cheval
 Zestaw kostiumów	Ensemble de costumes
 Zestaw kostiumów:	Ensemble de costumes : 
+Zestaw:	Ensemble : 
+Zestawy lochowe	Jeux de donjon
+Zestawy polowe	Jeux de terrain
 Zestawy: broń	Panoplies : armes
 Zestawy: hełmy	Panoplies : casques
 Zestawy: zbroje	Panoplies : armures
@@ -7620,6 +8061,7 @@ Zielone Zioło	Herbe verte
 Zielone, fioletowe, peleryny: z targu.	Vertes, violettes, capes : au marché.
 Zielony Lśniący Odłamek	Éclat brillant vert
 Zielony Sok	Jus vert
+Zielony Szaman+	Chaman vert+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Terre de Sung Ma;Sans Niveau Champion, vous ne blesserez pas les monstres d'ici.
 Ziemie Mrocznego Smoka	Terres du Dragon des Ténèbres
 Ziemie gildii	Terres de guilde
@@ -7636,11 +8078,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Herbe transformée par le pouvoir de Sung Mahi. Nécessaire à la préparation des élixirs de foudre. L'herboriste Huahn-So (Bokjung, Bakra, Jayang) prépare ces élixirs.
 Zjawa Żółt. Tygrysa (BŚ)	Spectre du tigre jaune (BM)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Le fourrage nécessaire pour remplir la barre sera consommé.
+Zlamanie klatwy swiatyni	Brise-malédiction du temple
 Zlamanie odpornosci: dzwony	Brise-résistance : cloches
+Zlamanie odpornosci: luki	Perce-résistance : arcs
 Zlamanie odpornosci: miecze	Brise-résistance : épées
 Zlamanie odpornosci: sztylety	Brise-résistance : dagues
 Zlamanie odpornosci: wachlarze	Brise-résistance : éventails
 Zleć zbieranie:	Ordonner une récolte :
+Zlodziej zycia	Voleur de vie
 Zly Silny Malpi Zolnierz	Soldat Singe Puissant et Mauvais
 Zly Zolnierz Czarnej Burzy	Mauvais Soldat de la Tempête Noire
 Zly format (np. 18, M5, G1, P).	Mauvais format (par ex. 18, M5, G1, P).
@@ -7660,6 +8105,8 @@ Zmianki z (B) są używane jako pierwsze	Les changeurs marqués (B) sont utilis�
 Zmiany dzialaja po kilku sekundach	Les changements prennent effet après quelques secondes
 Zmien ceny wszystkich	Changer les prix de tous
 Zmien poziom konia	Changer le niveau du cheval
+Zmien range	Changer le rang
+Zmien skille	Changer les compétences
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Modifie les bonus du Joyau du Dragon mythique dans la fenêtre d'Alchimie du Dragon (onglet de modification des bonus).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Change le nom de l'animal de compagnie (100.000 Yang).
 Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	Modifie avec une faible probabilité les 6e et 7e bonus. Faites-le glisser sur un objet : 10 % de chances de modifier les 6e et 7e bonus, les 5 premiers bonus restent inchangés. En cas d'échec, l'objet est consommé et les bonus restent tels qu'ils étaient.
@@ -7716,10 +8163,14 @@ Znak Strażnika	Marque du Gardien
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Clé magnifiquement forgée dans un cristal magique. Nécessaire pour ouvrir le coffre parfait.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Excellent ! Votre carte est plus haute.[ENTER]Révélez une autre carte.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	%d trouvé(s) - %d affiché(s), affinez votre recherche.
+Znaleziono: %d	Trouvé : %d
 Znaleziono: %d - wybierz z listy.	Trouvé : %d - choisissez dans la liste.
+Znaleziono: %s	Trouvé : %s
 Znika 15 dni po otrzymaniu.	Disparaît 15 jours après réception.
+Zniszcz %(n)s kamieni Metin	Détruire %(n)s Pierres Metin
 Zniszcz %(n)s x %(what)s	Détruisez %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Détruisez les œufs pour infliger des dégâts !
+Zniszcz kamienie Metin	Détruire des Pierres Metin
 Zniszczone Metiny	Metins détruits
 Zniszczone kamienie Metin	Pierres Metin détruites
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Un Œuf de Dragon a été détruit - le Sceau de Balathor s'est fortement affaibli.
@@ -7731,6 +8182,7 @@ Zodiak Ognia	Zodiaque du Feu
 Zodiak Wiatru	Zodiaque du Vent
 Zodiak Ziemi	Zodiaque de la Terre
 Zol. Czar. Wiat. Zodiaku	Soldat du Vent noir du Zodiaque
+Zolnierz Czarnego Wiatru	Soldat du Vent noir
 Zolnierz Gladiator Kosci	Soldat gladiateur d'os
 Zolnierz Shrimp Zodiaku	Soldat crevette du Zodiaque
 Zolnierz Spartaner	Soldat Spartaner
@@ -7752,8 +8204,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Fait 
 Zroszony Młot	Marteau de rosée
 Zrzut ekranu	Capture d'écran
 Zrzut ekranu zapisano w '%s'.	Capture d'écran enregistrée dans '%s'.
+Zrzutka yang	Collecte de yang
 Zrób miejsce w ekwipunku.	Faites de la place dans votre inventaire.
 Zręczność	Dextérité
+Zsiadam po buffy	Descente pour les buffs
 Zsiądź z konia, aby go rozwijać.	Descendez de cheval pour l'entraîner.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Soupe aux champignons
@@ -7839,6 +8293,28 @@ Zwiększa szansę na drop Yang.	Augmente les chances de drop de Yang.
 Zwiększa szansę na kradzież PE.	Augmente les chances de voler des PM.
 Zwiększa szansę na kradzież PŻ.	Augmente les chances de voler des PV.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Augmente de 10 % les chances de coup critique pendant 10 minutes.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de accessoires. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de accessoires. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de armes. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de armes. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de livres de compétence. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de livres de compétence. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de ceintures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de ceintures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de autres objets. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de autres objets. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de objets pour familiers. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de objets pour familiers. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de gants. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de gants. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de armures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de armures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de ensembles d'armes. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de ensembles d'armes. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de ensembles de casques. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de ensembles de casques. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Augmente de 1% la chance de réussite lors de la fabrication de ensembles d'armures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. Yu-Hwan transforme deux runes de ce type en une rune 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Augmente de 20% la chance de réussite lors de la fabrication de ensembles d'armures. Placez-la dans le champ "Augmenter la chance" de la fenêtre de fabrication - une rune est consommée à chaque essai. C'est le niveau maximal de la rune.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Augmente de 10 % les chances de coup perforant pendant 10 minutes.
 Zwiększa szansę na przywołanie konia.	Augmente les chances d'invoquer un cheval.
 Zwiększa szansę na spowolnienie przeciwnika.	Augmente les chances de ralentir l'adversaire.
@@ -7864,6 +8340,10 @@ Zwiększa twoją siłę obrony.	Augmente votre puissance de défense.
 Zwiększa twoją szybkość ataku o 15% na okres 30 minut. Niezdatna do handlu.	Augmente votre vitesse d'attaque de 15 % pendant 30 minutes. Non échangeable.
 Zwiększa umiejętności twojego wierzchowca	Augmente les compétences de votre monture
 Zwiększa wartość odbitych ciosów.	Augmente la valeur des coups renvoyés.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Augmente la volonté SungMa (INT) au combat de 15 pendant %d s.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Augmente la volonté SungMa (DÉF) au combat de 15 pendant %d s.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Augmente la volonté SungMa (FOR) au combat de 15 pendant %d s.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Augmente la volonté SungMa (VIT) au combat de 15 pendant %d s.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Augmente l'endurance. Connu pour ses propriétés fortifiant les muscles.
 Zwiększa wzrost doświadczenia.	Augmente le gain d'expérience.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Augmente les dégâts physiques et magiques infligés. Peut être lancé sur un autre joueur. Bonus si utilisé sur soi-même.
@@ -7888,6 +8368,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Rend les points de Champi
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Rend les points de Champion investis dans la Force Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Rend les points de Champion investis dans la Vitalité Sung Ma.
 Zwyczajna Szata Aury	Robe d'aura ordinaire
+Zwykle bicie potworow	Combat ordinaire contre les monstres
 Zwykła Skóra	Cuir ordinaire
 Zwykłe Mikstury	Potions ordinaires
 Zwykłe potwory	Monstres ordinaires
@@ -7958,8 +8439,11 @@ Złośliwa	Malveillante
 Zły Pł. Wężowy (wykon.)	Mant. Serpent mal. (fabr.)
 Zły Płaszcz Wężowy	Manteau Serpent maléfique
 Złów %(n)s ryb	Pêchez %(n)s poissons
+Złów ryby	Pêcher des poissons
 [ Założony ]	[ Équipé ]
 [%s] [Sklep] %s	[%s] [Boutique] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Bonus DOŚ]	[Bonus PX]
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Faites glisser un Livre de compétence de chaman sur une compétence de Buffi.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Cette compétence s'entraîne avec le Livre de compétence : %s (chaman).
@@ -7969,7 +8453,10 @@ Złów %(n)s ryb	Pêchez %(n)s poissons
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Fichiers client] Téléchargez les fichiers client à jour dans le panneau : Éditeur de base de données -> Appliquer -> Télécharger les fichiers client à jour (zip) et décompressez-les dans le dossier du jeu.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Chasse au trésor] Nouveau tour atteint !
 [Sklep]	[Boutique]
+[TAK]	[OUI]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Guerre] Votre guilde est en guerre - cliquez sur "Rejoindre la guerre" sur le tableau de guerre (coin inférieur gauche).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	mais en cas d'échec, l'objet sera détruit. Voulez-vous continuer ?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	mais seulement à 50 % de la durée et avec un âge remis à zéro.
 aoe_giant	aoe_giant
@@ -7978,6 +8465,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Vous attaquez directement les ennemis.|Renforcé par : Force (++), Dextérité (+), Vitalité (+).
 autotarget: no Kolejny cel row in the game options	autotarget : aucune ligne « Cible suivante » dans les options du jeu
 bez bonusu	sans bonus
+bije wszystko w pobliżu	frappe tout à proximité
 bonusów 1-5 spoza warunków	bonus 1-5 hors conditions
 brak bonusu	aucun bonus
 bush_ancientlichen	bush_ancientlichen
@@ -8016,7 +8504,15 @@ dni	jours
 do końca SM	jusqu'à épuisement des PD
 dodaje nowy crafting %d item %d	ajoute une nouvelle fabrication %d objet %d
 dodatkowo zweryfikowana po stronie serwera.	en outre vérifiée côté serveur.
+dystans %d	dystans %d
 dzień	jour
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	l'événement sur l'une des cartes : Vallée de Seungryong, Désert de Yongbi,
 gildie każdego królestwa (odbiór w tym oknie).	reçoivent des récompenses (à récupérer dans cette fenêtre).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	et un temps de recharge. Ajoutez : une Âme de l'Épée, de la Protection,
@@ -8036,11 +8532,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	aléatoire pour votre class
 ktoś był szybszy	quelqu'un a été plus rapide
 która ma już pięć bonusów.	qui ont déjà cinq bonus.
 które wypadają z ostatniego bossa.	lâchés par le dernier boss.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	bouton gauche de la souris ou %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	carte aléatoire
 ma swój ranking postaci i gildii. Na koniec sezonu	a son propre classement de personnages et de guildes. À la fin de la saison,
 maksymalne PŻ /2	PV maximum /2
 maksymalne PŻ są o połowę mniejsze	les PV maximum sont réduits de moitié
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard : erreur dans la fenêtre des cartes (%s) : %s
 myszy w ekwipunku przy otwartej zakładce).	dans l'inventaire avec l'onglet ouvert).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	sur l'Île au Trésor (Tickets au trésor issus des coffres).
@@ -8059,6 +8560,7 @@ nie udało się zapisać ustawień.	impossible d'enregistrer les paramètres.
 nie walczy wcale	ne combat pas du tout
 nie wybrano	non choisi
 nie wydaje	ne dépense pas
+nie zaczyna, broni ciebie i siebie	ne commence pas, vous défend
 nowego bossa! W przeciwnym razie nagroda przepadnie.	d'un nouveau boss ! Sinon, la récompense sera perdue.
 obnizaj cene o	baisser le prix de
 obok ciebie	à côté de vous
@@ -8066,7 +8568,9 @@ obrażenia zadawane potworom /2	dégâts infligés aux monstres /2
 obrażenia zadawane potworom są o połowę mniejsze	les dégâts infligés aux monstres sont réduits de moitié
 od +%d	à partir de +%d
 od +0 do +7 (także z bonusami),	de +0 à +7 (même avec des bonus),
+odprawa tak	odprawa tak
 oferta została już sprzedana	l'offre a déjà été vendue
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	sous un autre objet - toutes les combien de secondes il est utilisé.
 podswietl po (godzin, 0 = wyl.)	surligner après (heures, 0 = désact.)
@@ -8078,11 +8582,13 @@ poziom łupu IV - 25 Kamyków	niveau de butin IV - 25 Cailloux
 przez podany czas; każdy zostawia sobie zapas.	pendant la durée indiquée ; chacun garde une réserve pour lui.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	près du Metin de Robustesse au rez-de-chaussée de la Tour des Démons ; les places vacantes
 przy kolejnych próbach łowienia?	lors de vos prochaines tentatives de pêche ?
+przy tobie	près de toi
 przywołany	invoqué
 próby: %d	essais : %d
 prędkość ruchu /2	vitesse de déplacement /2
 prędkość ruchu jest o połowę mniejsza	la vitesse de déplacement est réduite de moitié
 puste = dowolny przedmiot	vide = n'importe quel objet
+reguła "%s"	règle "%s"
 reliktu go niszczy.	la relique la détruit.
 robi zakupy	fait des achats
 rodzaj bez filtra	type sans filtre
@@ -8094,11 +8600,16 @@ ręcznie	manuellement
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	le serveur ne répond pas (correctif autohunttest manquant) - non démarré.
 serwer nie potwierdził zakupu	le serveur n'a pas confirmé l'achat
 serwer nie pozwala teraz polować.	le serveur n'autorise pas la chasse pour le moment.
+sezon %d	saison %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	sur la même carte que le Boss du monde et infligez le minimum
 skillbook	Livre de compétence
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	la boutique peut contenir des objets incorrects. Continuer ?
 sklep odmówił sprzedaży	la boutique a refusé la vente
 start, zasięg %d m.	démarrage, portée %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	un blocage définitif du compte.
 stoi - pokonajcie go, zanim ucieknie!	est là - battez-le avant qu'il ne s'enfuie !
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	cet objet ne peut pas être utilisé ici (potion, renfort ou rosée).
@@ -8112,24 +8623,36 @@ tylko gdy gracz jest AKTUALNIE online.	seulement quand le joueur est ACTUELLEMEN
 uciekł - nikt nie dostał nagrody	s'est enfui - personne n'a reçu de récompense
 ulepszony Nóż.	Couteau amélioré.
 umiej %d	compét. %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	après le redémarrage du client.
 ustawienia zapisane.	paramètres enregistrés.
+usun	usun 
+usun %d	usun %d
+w dniach	en jours
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	valeur d'attaque +20% pendant 3 heures (à récupérer avec
 ważne	important
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	navigateur intégré (un nouveau fichier exe du client est nécessaire).
+wolna ręka	libre
 wprowadzenie aby móc kontynuować rozgrywkę.	afin de pouvoir continuer à jouer.
 wszystkie przedmioty	tous les objets
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	l'emplacement choisi (I / II) fonctionne. Après la première activation, retirer
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	déconnecte la session déjà connectée. Expulser du serveur fonctionne
 wyłączone na tym serwerze.	désactivée sur ce serveur.
 z nagrodą, przed pojawieniem się kolejnego bossa).	la récompense, avant l'apparition du boss suivant).
 zajmiesz w rankingu.	que vous occuperez au classement sera élevée.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	sont occupées par des bots engagés de votre royaume. Après quelques minutes de rassemblement,
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	arrêtée - la Chasse auto normale a démarré.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	armures et costumes entre eux, apparence d'arme avec une arme du même type.
 zeruje Twoje obrażenia.	remet vos dégâts à zéro.
 zmieniła się cena albo ilość	le prix ou la quantité a changé
 zostają, a zwierzak zachowuje 80% swojego wieku.	sont conservés, et l'animal garde 80 % de son âge.
 zostanie zresetowany.	sera réinitialisé.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 {} + {} rozdziel przedmioty.	{} + {} séparer les objets.
 {}'s Auction	Enchère de {}
@@ -8169,9 +8692,19 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dCollecte terminée - la totalité du montant a été réunie
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aLe temps de la collecte est écoulé
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aTerminez d'abord ://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aCollecte terminée par le chef
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893adisponible [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - connexion rapide.
+|cfff4f770Trwa misja	|cfff4f770Mission en cours
+|cfff4f770Trwa zrzutka	|cfff4f770Collecte en cours
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742ATTENTION !|r Contrôle de sécurité !
+Óó	Óó
+Ąą	Ąą
+ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
+ąćęłńóśźż	ąćęłńóśźż
+ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Aucun monstre ne lâche cela.
 Ładny Kam. Przebudzenia	Jolie pierre d'éveil
 Ładny Kamień Chaosu	Jolie pierre du chaos
@@ -8223,6 +8756,9 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Łuski Smoka	Écailles de dragon
 Łączenie	Connexion
 Łączne obrażenia	Dégâts totaux
+Łączny czas	Temps total
+Łł	Łł
+Ńń	Ńń
 Ściana	Mur
 Ściąga do ciebie grupy potworów z okolicy.	Attire vers vous les groupes de monstres des environs.
 Ścięgno Balathora	Tendon de Balathor
@@ -8235,12 +8771,14 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Śnieżna Czapa Leoparda+	Bonnet léopard des neiges+
 Śnieżna Czapa Zajęcza	Bonnet lapin des neiges
 Śnieżna Czapa Zajęcza+	Bonnet lapin des neiges+
+Śnieżny Bambi	Bambi des neiges
 Śnieżny Kwiat	Fleur des neiges\r\n
 Śnieżny Leonidas	Léonidas des neiges
 Śnieżny Leonidas(piecz.)	Sceau de Léonidas des neiges
 Śpiew Stali	Chant de l'Acier
 Śpiew Wiatru	Chant du Vent
 Śpiewająca Furia	Fureur chantante
+Śr. czas sesji	Durée moy. session
 Śr. obrażenia	Dégâts moyens
 Śr. yang na sesję	Yang moy. par session
 Średni	Moyenne
@@ -8249,6 +8787,7 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Średnio	Moyen
 Środa	Mercredi
 Środek Ścierny	Abrasif
+Św. Nosiciel Światła+	Porteur de lumière saint+
 Św. Odłamek Broni I	Éclat d'arme saint I
 Św. Odłamek Broni II	Éclat d'arme saint II
 Św. Odłamek Hełmu I	Éclat de casque saint I
@@ -8262,6 +8801,7 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Światło Gwiazd	Lumière des Étoiles
 Światło Gwiazd (9.skill)	Lumière stellaire (9e comp.)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Se prête à merveille à une cuisson au feu de camp.
+Świąt. Zim. Zbroja+ (m)	Armure d'hiver fêt.+ (h)
 Świąteczna Brązowa Skrzynia Okey	Coffre Okey en bronze de Noël
 Świąteczna Srebrna Skrzynia Okey	Coffre Okey argenté de Noël
 Świąteczna Złota Skrzynia Okey	Coffre Okey doré de Noël
@@ -8272,13 +8812,17 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Świątynia	Temple
 Świątynia Węży	Temple des Serpents
 Świątynia Zodiaku	Temple du Zodiaque
+Święty	Saint
 Święty Efekt Zestawu	Effet de panoplie sacré
 Święty Kowal Zestawu	Forgeron d'ensemble sacré
 Święty Miecz Bogów+	Épée sacrée des dieux+
 Święty Odłamek	Éclat de puissance sacré
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Fleur sacrée du jardin du Dieu Dragon. Sert à améliorer l'équipement.
+Śś	Śś
+şó ĹĄşę	şó ĹĄşę
 Źródła	Sources
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Source de puissance pour canne à pêche. À son contact, l'outil s'améliore et ouvre la voie à la pêche dans les eaux les plus profondes.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Aucun corbeau n'a été blessé lors de la fabrication de cette arme. Arme pour Jeunes Héros : disparaît 15 jours après réception (même équipée). Ne peut être améliorée, modifiée, recevoir de bonus, être sertie de pierres d'âme, échangée, vendue ni stockée en entrepôt.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Aucun : désactive les messages du Compagnon. Important : inventaire plein, sac à dos, objets de valeur.
 Żałobna Pieśń	Chant funèbre
@@ -8295,6 +8839,7 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Żołnierz Schron. Płn. W.	Soldat du refuge du V. du Nord
 Żołnierz Wężowy	Soldat serpent
 Żołnierze	Soldats
+Życie goblina	Vie du gobelin
 Żywe Drzewo	Bois vivant
 Żywioł potworów na tym piętrze	Élément des monstres de cet étage
 Żywioł: %s	Élément : %s
@@ -8313,3 +8858,5 @@ zwykłe Auto Łowy zatrzymane.	la Chasse auto normale est arrêtée.
 Żółty Lśniący Odłamek	Éclat brillant jaune
 Żółty Sok	Jus jaune
 Żądza Krwi +%.0f	Soif de Sang +%.0f
+Żż	Żż
+żadne	aucun

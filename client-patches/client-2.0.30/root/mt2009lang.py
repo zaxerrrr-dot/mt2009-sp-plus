@@ -29,6 +29,7 @@
 #
 # Python 2.7 as the client has it; the file is ASCII (Polish strings as CP1250 escapes).
 import app
+import re
 
 try:
 	import systemSetting
@@ -522,6 +523,27 @@ def _Lookup(text, depth=0):
 	return None
 
 
+# MT2009_PLUS_LANG_SAFETY_V1: the last resort for a Polish text no table knows (built at run time from pieces, a new
+# string not translated yet) in a language whose codepage is not 1250: its Polish letters as plain ones ("pomoca" instead
+# of the 1250 bytes shown as "pomoc\xb9" in 1252/1253/1254/1256). Only a text with a letter no translation in those
+# codepages has (a / l / A / L / Z with dot, z with acute: \xb9 \xb3 \xa5 \xa3 \xaf \x8f \x9f, or z with dot \xbf inside a
+# word - a Spanish inverted question mark starts one) counts as Polish, so a Spanish n with tilde or a French oe stays.
+_TAGS = re.compile(r"\|c[0-9a-fA-F]{8}|\|r|\|h")
+_PL_MARK = re.compile("[\xb9\xb3\xa5\xa3\xaf\x8f\x9f]|[A-Za-z]\xbf")
+_PL_ASCII = None
+
+
+def _Transliterate(text):
+	global _PL_ASCII
+	if _CodePage() == 1250 or not _PL_MARK.search(text):
+		return text
+	if _PL_ASCII is None:
+		import string
+		_PL_ASCII = string.maketrans("\xb9\xe6\xea\xb3\xf1\xf3\x9c\x9f\xbf\xa5\xc6\xca\xa3\xd1\xd3\x8c\x8f\xaf",
+			"acelnoszzACELNOSZZ")
+	return text.translate(_PL_ASCII)
+
+
 def Translate(text):
 	"""the language's text of a Polish string of the root (unchanged when there is none or the client is Polish)"""
 	if _state["lang"] == SOURCE:
@@ -545,8 +567,15 @@ def Translate(text):
 				break
 		if has_letter:
 			found = _Lookup(text)
+			if found is None and "|" in text:
+				# MT2009_PLUS_LANG_SAFETY_V1: a line coloured piecewise ("|cffffb52b15|r") - its plain text
+				plain = _TAGS.sub("", text)
+				if plain != text:
+					found = _Lookup(plain)
 			if found is not None:
 				tr = found
+			else:
+				tr = _Transliterate(text)
 	if len(cache) > CACHE_LIMIT:
 		cache.clear()
 	cache[text] = tr

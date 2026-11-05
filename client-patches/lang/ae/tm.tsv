@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 يوماً)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 ساعة)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: المستوى %(b)d.
 %d - %d obrażeń	%d - %d ضرر
 %d - rzadko 100 - jak w grze %d - czesto	%d - نادرًا      100 - كما في اللعبة      %d - كثيرًا
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 %d%% Wola SungMa (WIT)	%d%% إرادة سونغ ما (قوة الحياة)
 %d%% na losowy bonus.	%d%% لعلاوة عشوائية.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% فرصة لصد الضرر من الهجوم
+%d%% szansy na deptanie przeciwników przez 20 sek.	فرصة %d%% لدهس الخصوم لمدة 20 ثانية
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	فرصة %d%% لتجنب الموت واستعادة 30%% من نقاط الحياة
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	فرصة %d%% أن يهاجمك جميع الوحوش المحيطة (عباءة الشجاعة)
 %d%% Średnie Obrażenia	%d%% الضرر المتوسط
 %d. miejsce	المركز %d
 %d. pusty	%d. فارغ
+%dx %s (dowolne z %d)	%dx %s (أي من %d)
 %dx (po %d)	%dx (بسعر %d للواحدة)
 %s %d - zostało %d	%s %d - تبقّى %d
 %s (%d szt.)	%s (%d قطعة)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (مستوى %d) - pid %d، الموضع (%d، %d)، الإمبراطورية %d
 %s (Pozostały czas: %s)	%s (الوقت المتبقي: %s)
 %s (co %d sek.)	%s (كل %d ث)
+%s (inna mapa)	%s (خريطة أخرى)
 %s (maks. %.1f)	%s (الأقصى %.1f)
 %s (maks. %d)	%s (الأقصى %d)
 %s (maks.)	%s (الحد الأقصى)
@@ -108,19 +114,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 (Kup wszystkie przedmioty tego typu)	(شراء جميع العناصر من هذا النوع)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(غير قابلة للاستخدام حاليًا - ستأتي مع تحديث يوهارا القادم.)
 (Najedź myszką na ikonę)	(مرّر الفأرة فوق الأيقونة)
+(brak klawisza - Esc, Skróty klawiszowe)	(لا يوجد مفتاح - Esc، اختصارات لوحة المفاتيح)
 (brak)	(لا شيء)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (المرشّح معطّل - أنت تلتقط كل شيء الآن)
 (na koniu: %d)	 (على الحصان: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(أعلى مستوى، الدفاع عن السفينة، كرة خبرة كاملة).
 (nieznana)	 (غير معروفة)
 (od P)	 (من P)
+(postac offline - brak podgladu skilli)	(الشخصية غير متصلة - لا توجد معاينة للمهارات)
 (poziom %d)	 (المستوى %d)
+(puste)	(فارغ)
 (szansa %s%%)	 (النسبة %s%%)
 (ten bot nic jeszcze nie powiedzial)	(لم يقل هذا الروبوت شيئًا بعد)
 (wybierz stworzenie)	(اختر مخلوقًا)
 (wybierz z listy)	(اختر من القائمة)
 (wybierz)	(اختر)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* تنبيه * خيار تجريبي![ENTER]قد يؤدي وضع تحجيم الواجهة إلى خفض[ENTER]جودة الواجهة (العناصر الرسومية والخط).[ENTER]اللون |cff8ab98eالأخضر|r يعني أن التحجيم قد يكون الأمثل.[ENTER]اللون |cffe57976الأحمر|r يعني أن التحجيم قد يؤدي[ENTER]إلى عدم استجابة اللعبة.
++ Dodaj bonus	+ إضافة مكافأة
 + Dodaj przedmiot	+ إضافة بند
 + Pkt umiejetn.	+ نقاط المهارات
 +%d Inteligencja	+%d ذكاء
@@ -152,6 +162,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 +15 wartości ataku	+15 قيمة هجوم
 +3% siły przeciwko kamieniom Metin	+3% قوة ضد أحجار ماتين
 +50% szansy na drop przez 2 godziny	   +50% فرصة سقوط لمدة 2 ساعة
++800 PŻ	+800 نقطة حياة
 , PPM: dokładny filtr	، زر أيمن: مرشّح مفصّل
 , atak włączony	، الهجوم مفعّل
 - Czekaj cierpliwie na odpowiedź.	- انتظر الرد بصبر.
@@ -162,6 +173,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 - drugie miejsce od 31 poziomu konia	- الخانة الثانية من مستوى الحصان 31
 - piętro %d	 - الطابق %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- خانة فارغة: اقرأ كتاب مهارة الفروسية
+-- Ninja Archer - skille P --	-- نينجا قوس - مهارات P --
+-- Ninja Dagger - skille P --	-- نينجا خنجر - مهارات P --
+-- Sura BM - skille P --	-- سورا BM - مهارات P --
+-- Sura WP - skille P --	-- سورا WP - مهارات P --
 -- Szaman Healer - skille P --	-- شامان المعالج - مهارات P --
 -- Szaman Smok - skille P --	-- شامان التنين - مهارات P --
 -- Wojownik Body - skille P --	-- محارب Body - مهارات P --
@@ -171,17 +186,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 ... i %d więcej.	... و%d أخرى.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...و%d أخرى - القائمة الكاملة في نافذة إسقاط الموسوعة (الشريط الجانبي للحقيبة).
 / - powtarza poprzednia komende	/ - يكرر الأمر السابق
+/a - dajemy komus dany lvl	/a - نمنح شخصا مستوى محددا
 /a level - Zmienia lvl gracza	/a level - يغيّر مستوى اللاعب
 /b - ogloszenie w ramce	/b - إعلان في إطار
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - يحظر الدردشة لبعض الوقت
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - قائمة اللاعبين المحظورة دردشتهم
 /dc - wyrzuca kogos z serwera	/dc - يطرد أحدًا من الخادم
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...لا أعرف...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...لا أعرف...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...لا أعرف...
 /gete - ...nie wiem...	/gete - ...لا أعرف...
 /getq - ...nie wiem...	/getq - ...لا أعرف...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - انتقال فوري إلى الصحراء
 /go s - teleport na Gore Sohan	/go s - انتقال فوري إلى جبل سوهان
+/go t - teleport do Doliny Orkow	/go t - انتقال إلى وادي الأورك
 /go tr - teleport do Lasu Duchow	/go tr - انتقال فوري إلى غابة الأشباح
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - انتقال فوري إلى الغابة الحمراء
 /go x y - przenosi do wspolrzednych x y	/go x y - ينقل إلى الإحداثيات x y
@@ -190,13 +217,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 /horse_level - podnosi poziom konia	/horse_level - يرفع مستوى الحصان
 /horse_ride - przywoluje konia	/horse_ride - يستدعي الحصان
 /inv - niewidzialnosc	/inv - الاختفاء
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - يضيف عدة قطع من البند
 /item - dodaje przedmiot	/item - يضيف بندًا
 /kill - zabija gracza	/kill - يقتل اللاعب
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - تغيير مستوى الشخصية
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - يستدعي وحشًا أو شخصية غير قابلة للعب
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - سرعة المشي
 /n - Wiadomosc na gorze ekranu	/n - رسالة في أعلى الشاشة
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - وضع المراقبة
 /open - start eventu OX	/open - بدء فعالية OX
 /p - zamiana w potwora lub npc	/p - التحول إلى وحش أو شخصية غير قابلة للعب
@@ -214,12 +250,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - يزيد الخبرة بنسبة معينة لوقت محدد
 /purge - usuwa potwory, npc itp z okolicy	/purge - يزيل الوحوش والشخصيات غير القابلة للعب وغيرها من المنطقة المحيطة
 /r - przywraca wszystkie pkt energii i zycia	/r - يعيد جميع نقاط الطاقة والحياة
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...لا أعرف...
 /reset - resetuje PZ i PE	/reset - يعيد ضبط نقاط الحياة ونقاط الأسلوب
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - رتبة فارس
+/set exp - dostajemy dana ilosc expa	/set exp - نحصل على كمية محددة من الخبرة
+/set gold - dostajemy dana ilosc Yang	/set gold - نحصل على كمية محددة من اليانغ
+/set max_hp - zwieksza punkty zycia	/set max_hp - يزيد نقاط الحياة
 /set max_sp - zwieksza punkty energii	/set max_sp - يزيد نقاط الطاقة
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - يضيف عددًا معينًا من نقاط المهارة
+/set_maxhp - doladowanie hp	/set_maxhp - إعادة شحن نقاط الحياة
 /set_maxsp - doladowanie pe	/set_maxsp - إعادة شحن نقاط الأسلوب
+/set_state information - ...nie wiem...	/set_state information - ...لا أعرف...
+/set_state run - ...nie wiem...	/set_state run - ...لا أعرف...
+/set_state start - ...nie wiem...	/set_state start - ...لا أعرف...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - القيادة P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - التحول P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - المستوى 30 للحصان
@@ -233,21 +284,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - غضب إله التنانين
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - أمنية التنين
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...لا أعرف...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - نمنح شخصا مهارة محددة على P
 /ski 121 - Dowodzenie	/ski 121 - القيادة
 /ski 131 - Przywolaj Konia	/ski 131 - استدعاء الحصان
 /slow - spowalnia gracza	/slow - يبطئ اللاعب
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - يغمي على اللاعب
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - ينقل اللاعب إلى المشرف
+/w - ilosc osob online	/w - عدد الأشخاص المتصلين
 /warp - przenosi GM'a do gracza	/warp - ينقل المشرف إلى لاعب
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - جزيرة الثلج (مأوى المشرفين)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - انتقال إلى ساحة مشرفي اللعبة
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - ننقر أولًا على الوحش بزر الفأرة الأيمن، ثم نكتب الأمر فيصبح لدى الوحش 1 نقطة حياة
+/xmas 0 - Dzien	/xmas 0 - نهار
 /xmas 1 - Noc	/xmas 1 - الليل
+/xmas_boom 0 - Dzien	/xmas_boom 0 - نهار
 /xmas_boom 1 - Noc	/xmas_boom 1 - الليل
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - إيقاف الثلج
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - تشغيل الثلج
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - إيقاف الأغنية
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - تشغيل أغنية الاحتفال
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - الأعياد OFF
 0 - nakarm peta	0 - أطعم حيوانك الأليف
 0 = bez granicy	0 = بلا حد
 1 dzień	1 يوم
+1 godz.	1 ساعة
 1 krok	1 خطوة
+1* Runa Wyk. Akcesoriów	1* رونية صياغة الإكسسوارات
+1* Runa Wyk. Ks. Um.	1* رونية صياغة كتب المهارات
+1* Runa Wyk. Poz. Prz.	1* رونية صياغة البنود الأخرى
+1* Runa Wyk. Prz. d. Zw.	1* رونية صياغة بنود الحيوانات الأليفة
+1* Runa Wyk. Rękawiczek	1* رونية صياغة القفازات
+1* Runa Wyk. Zest. Broni	1* رونية صياغة أطقم الأسلحة
+1* Runa Wyk. Zest. Hełm.	1* رونية صياغة أطقم الخوذات
+1* Runa Wyk. Zest. Zbroi	1* رونية صياغة أطقم الدروع
+1* Runa Wykuwania Broni	1* رونية صياغة الأسلحة
+1* Runa Wykuwania Pasów	1* رونية صياغة الأحزمة
+1* Runa Wykuwania Zbroi	1* رونية صياغة الدروع
 1-10000, 100 = normalnie. Dziala od razu.	1-10000، 100 = عادي. يسري فوراً.
 1. Posterunek Myr	مخفر Myr رقم 1
 1. dodany bonus +%d%%	العلاوة المضافة رقم 1 +%d%%
@@ -257,15 +332,21 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (حزمة 25)
 100 Kamyków, Skrzynka Tajemnic, Zagadkowa Szkatułka,	   100 حصاة، صندوق الأسرار، الصندوق الغامض،
 100% szans na przeczytanie	فرصة قراءة 100%
 100% szans na ulepszenie.	فرصة نجاح التطوير 100%.
+2 godz.	2 ساعة
 2-12 liter lub cyfr!	من 2 إلى 12 حرفاً أو رقماً!
 25 kart królewskich dało nową Talię Królewską.	كوّنت 25 بطاقة ملكية رزمة ملكية جديدة.
 25% only	25% فقط
+25-40 lvl	المستوى 25-40
 2x PD	2x خبرة
 3 Loch Pająków	زنزانة العناكب 3
 3 losowe bonusy podstawowe	3 خصائص أساسية عشوائية
 3 metiny	3 ماتين
+4 godz.	4 ساعات
+5 bossow	5 زعماء
+5% obrażeń będzie dodanych do PŻ	تستوعب نقاط الحياة 5% من الضرر
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 حصاة، الصندوق الغامض، قسيمة عملات التنين (20)،
 50% więcej doświadczenia	خبرة أكثر بنسبة 50%
+8 godz.	8 ساعات
 < 10 sek	< 10 ثوانٍ
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	يمتص %d%% من نقاط الحياة عند استخدام مخلب العاصفة
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	يمتص %d%% من نقاط الحياة عند استخدام الضربة الروحية
@@ -302,6 +383,7 @@ Ahtrin Wielki Mistrz	المعلم الأكبر Ahtrin
 Ahtrin Wojownik	محارب Ahtrin
 Ahtrin Zwiadowca	كشاف Ahtrin
 Akcja:	الإجراء:
+Akcje botow	إجراءات البوتات
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	جارٍ تحميل البيانات حالياً. حاول مرة أخرى لاحقاً.
 Aktualny poziom: %s	المستوى الحالي: %s
 Aktywna	نشطة
@@ -338,6 +420,8 @@ Alchemy	كيمياء
 Alchemy Grade:	درجة الكيمياء:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	ستُنقل جميع العناصر التي لا يمكن وضعها في حقيبتك إلى خزنة المشتريات. هل تريد المتابعة؟
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	ستُنقل جميع |cFFFFFF99|h{}|r إلى الحقيبة أو خزنة المشتريات. هل تريد المتابعة؟
+Alt (przytrzymaj)	Alt (اضغط مطولاً)
+Alt + LPM	Alt + زر أيسر
 Amal	أمل
 Amator Ninja	نينجا مبتدئ
 Amator Shaman	شامان مبتدئ
@@ -358,6 +442,7 @@ Antymagia	مضاد السحر
 Anubis	أنوبيس
 Anulacja Polimorfii Wierzchowca	إلغاء تحول المطية
 Anulacja Transmutacji	إلغاء التحويل
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	تم إلغاء العمليات المتبقية. قد تكون عمليات الحذف المرسلة قد نُفذت بالفعل.
 Anuluj edycje	إلغاء التعديل
 Anuluj misję	إلغاء المهمة
 Appaloosa	أبالوزا
@@ -369,6 +454,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	حقيبة إسعافات (ف
 Apteczka strażników Zaklętego Lasu.	حقيبة الإسعافات الأولية لحراس الغابة المسحورة.
 Arahan Zodiaku	أراهان الأبراج
 Arbuz	بطيخ
+Arena Pojedynków	ساحة المبارزات
+Arena pojedynkow	ساحة المبارزات
 Argos (mrok)	أرغوس (ظلام)
 Argos (ogień)	أرغوس (نار)
 Arial	Arial
@@ -393,6 +480,7 @@ Atak długodystansowy, omdlewa przeciwnika.	هجوم بعيد المدى يغم�
 Atak krwawienia	هجوم النزيف
 Atak magiczny	الهجوم السحري
 Atak magiczny/fizyczny %	الهجوم السحري/الجسدي %
+Atak na Metiny	هجوم على الميتين
 Atak na odległość	هجوم من بعيد
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	هجوم دوّار بثلاث فرص للإصابة وفرصة لتسميم العدو. 
 Atak obszarowy walki wręcz	هجوم نطاقي في القتال القريب
@@ -411,6 +499,7 @@ Atak trzema ciosami pod rząd.	هجوم بثلاث ضربات متتالية.
 Atak umożliwiający ominięcie obrony przeciwnika.	هجوم يتجاوز دفاع العدو.
 Atak w kilka celów	هجوم على عدة أهداف
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	هجوم بعيد المدى واسع النطاق، يصيب عدواً واحداً أو عدة أعداء يقفون بجانب بعضهم.
+Atak z wierzchowca	هجوم من المطية
 Atak zasięgowy	هجوم نطاقي
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	هاجم الوحوش القريبة أثناء القتال ببرق يعادل ضرره ضرر الهجوم التلقائي (وقت إعادة الشحن 15 ث).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	هاجم الأعداء بصور التنين.|تتعزز بـ: الذكاء (++)، المناورة (الإصابة) (+)، مستوى الشخصية.
@@ -418,6 +507,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	تهاجم الأعداء مباشرة.|تتعزز بـ: القوة (++)، قوة الحياة (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	يهاجم الأعداء من حولك، مع فرصة لإغماء العدو.
 Atakuje wszystkich przeciwników wokół siebie.	يهاجم جميع الأعداء من حولك.
+Atakujący (atak)	المهاجم (هجوم)
 Atrybut Błyskawicy	خاصية البرق
 Atrybut Błyskawicy|Efekt Omdlenia	خاصية البرق|تأثير الإغماء
 Atrybut Piorunu	خاصية الصاعقة
@@ -448,6 +538,7 @@ Auto Łowy: bojowiec wyłączony.	الصيد التلقائي: وضع حصان �
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	الصيد التلقائي: انتهى الوقت. اشترِ "الصيد التلقائي (8 ساعات)" من متجر البنود واستخدمه من الحقيبة - الوقت يمضي أثناء اللعب فقط.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	الصيد التلقائي: لا يمكن امتطاء الحصان - الصيد مستمر سيراً. اركب بنفسك (Ctrl+G) ليعود حصان القتال.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	الصيد التلقائي: لا أستطيع امتطاء الحصان - أحاول كل %d ثانية، وأقاتل سيراً حتى ذلك الحين.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	الصيد التلقائي: تعذرت إعادة ركوب المطية بعد التعطل - تم إيقاف الصيد.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	الصيد التلقائي: تعذّر امتطاء الدابة مجدداً بعد أن علقت.
 Auto Łowy: nie udało się zapisać ustawień.	الصيد التلقائي: تعذّر حفظ الإعدادات.
 Auto Łowy: podnoszenie jest wyłączone.	الصيد التلقائي: الالتقاط معطّل.
@@ -467,24 +558,33 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	السعر التلقائي غير
 Auto-obnizka ceny	التخفيض التلقائي للسعر
 Auto-obnizka: %s - nowa cena %s	التخفيض التلقائي: %s - السعر الجديد %s
 Auto-obnizka: -%d%% co %dh, min. %s	التخفيض التلقائي: -%d%% كل %d ساعة، بحد أدنى %s
+Auto-obnizka: -%d%%/%dh	خصم تلقائي: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	التخفيض التلقائي: 1-%d%%، كل 1-%d ساعة، والسعر الأدنى 1 يانغ على الأقل.
+Auto-obnizka: wyl.	خصم تلقائي: معطّل
 Auto-obnizka: wylaczona	التخفيض التلقائي: معطّل
 Autologin: ponownie za %d s (próba %d)	الدخول التلقائي: مجددًا بعد %d ث (المحاولة %d)
 Automatyczne podnoszenie Yang.	التقاط اليانغ تلقائياً.
+Automatyczne zbieranie	الجمع التلقائي
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	يعيد مانا تلقائياً. السعة 1.000.000 نقطة مانا.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	يعيد مانا تلقائياً. السعة 100.000 نقطة مانا.
 Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	يعيد صحتك تلقائياً. السعة 1.000.000 نقطة صحة.
 Autopodnoszenie:	الالتقاط التلقائي:
 Autopoty	الجرعات التلقائية
 Autospin - wygrane: %s	الدوران التلقائي - المكاسب: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	تم إيقاف التدوير التلقائي - عجلة الحظ معطلة.
+Autospin zatrzymany - brak odpowiedzi serwera.	تم إيقاف التدوير التلقائي - لا يوجد رد من الخادم.
+Autospin zatrzymany - obrót odrzucony.	تم إيقاف التدوير التلقائي - رُفضت الدورة.
 Autospin zatrzymany.	توقف الدوران التلقائي.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	الدوران التلقائي: %d دورة، أُنفق %d من عملات التنين، المكافآت الرئيسية: %d.
 Autospin: brak odpowiedzi.	الدوران التلقائي: لا توجد استجابة.
+Autospin: główna nagroda - zatrzymany.	التدوير التلقائي: الجائزة الكبرى - تم الإيقاف.
 Autospin: główna nagroda!	الدوران التلقائي: المكافأة الرئيسية!
+Autospin: koniec (%d obrotów).	التدوير التلقائي: انتهى (%d دورات).
 Autospin: koniec.	الدوران التلقائي: انتهى.
 Autospin: koło wyłączone.	الدوران التلقائي: العجلة معطّلة.
 Autospin: obrót odrzucony.	الدوران التلقائي: رُفضت الدورة.
 Autospin: za mało SM.	الدوران التلقائي: عملات التنين غير كافية.
+Autospin: za mało Smoczych Monet na kolejny obrót.	التدوير التلقائي: عملات التنين غير كافية للدورة التالية.
 Autołowy	الصيد التلقائي
 Autołowy (TEST)	الصيد التلقائي (تجريبي)
 Autołowy - szybki start/stop	الصيد التلقائي - بدء/إيقاف سريع
@@ -532,6 +632,7 @@ Best. Czl. Skor. Zodiaku	رجل العقرب الوحشي للأبراج
 Best. Wężowy Miecznik	المبارز الأفعواني الوحشي
 Best. Wężowy Wojownik	المحارب الأفعواني الوحشي
 Best. Wężowy Łucznik	الرامي الأفعواني الوحشي
+Bestialski Fanatyk	متعصب وحشي
 Bez bonusów podstawowych - jadeit nic nie dodaje	بلا خصائص أساسية - اليشم لا يضيف شيئاً
 Bez imienia (Zwój Imienia Buffi).	بلا اسم (لفافة اسم بوفي).
 Bez koloru	بلا لون
@@ -579,11 +680,13 @@ Biolog	عالم الأحياء
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	عالم الأحياء يمنح خصائص دائمة، والخطوة المحذوفة لا يمكن استعادتها.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	لا يحتاج عالم الأحياء إلى وقت لتحليل عينة رديئة الجودة.
 Blad danych - sprawdz ID i ilosc.	خطأ في البيانات - تحقق من المعرّف والكمية.
+Blad danych - sprawdz PID i ilosc.	خطأ في البيانات - تحقق من PID والكمية.
 Blad danych - sprawdz kwote.	خطأ في البيانات - تحقق من المبلغ.
 Blad danych - sprawdz wartosc.	خطأ في البيانات - تحقق من القيمة.
 Blad danych.	خطأ في البيانات.
 Blad odpowiedzi serwera.	خطأ في رد الخادم.
 Blad zapytania do bazy.	خطأ في الاستعلام من قاعدة البيانات.
+Blad: %s	خطأ: %s
 Blad: nie mozna utworzyc marmuru.	خطأ: تعذر إنشاء الرخامة.
 Blad: nie udalo sie zapisac zgloszenia restartu.	خطأ: تعذر حفظ طلب إعادة التشغيل.
 Blade	نصل
@@ -591,8 +694,11 @@ Blok Ataku	صد الهجوم
 Blokada Konta	حظر الحساب
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	يسري الحظر من تسجيل الدخول التالي إلى هذا الحساب - وليس
 Blokada konta	حظر الحساب
+Blokada permanentna	حظر دائم
+Blokada tymczasowa	حظر مؤقت
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	يمكن وضع قفل الترتيب على بند في الحقيبة فقط.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	يحجب الخبرة المكتسبة. ينطبق ذلك أيضاً على مكافآت المهام. الخبرة المكتسبة أثناء سريان التأثير تضيع إلى الأبد!
+Blokujący (czas trwania)	المعطّل (المدة)
 Bo Zodiaku	Bo الأبراج
 Body	الجسد
 Bohat. Księga Zwierza	كتاب الحيوان البطولي
@@ -621,6 +727,7 @@ Bonus vs Bossy	مكافأة ضد الزعماء
 Bonus vs Bossy/Metiny	مكافأة ضد الزعماء/أحجار ماتين
 Bonus vs Ludzie	مكافأة ضد البشر
 Bonus vs Metiny	مكافأة ضد أحجار ماتين
+Bonus vs Nieumarli	مكافأة ضد الموتى الأحياء
 Bonus vs Orki	مكافأة ضد الأورك
 Bonus vs Potwory	مكافأة ضد الوحوش
 Bonus vs Szaman	مكافأة ضد الشامان
@@ -669,9 +776,12 @@ Bossy	الزعماء
 Bossy > Metiny > Moby	زعماء > ماتين > وحوش
 Bossy > Moby > Metiny	زعماء > وحوش > ماتين
 Bot	بوت
+Boty do spawnu	البوتات للظهور
 Boty gildii	روبوتات النقابة
 Boty nie maja jeszcze wyceny tego przedmiotu.	لا يملك الروبوتات تقييمًا لهذا البند بعد.
+Boty pisza na czacie	البوتات تكتب في الدردشة
 Boty w misji: %d / %d (od poziomu %d)	الروبوتات في المهمة: %d / %d (من المستوى %d)
+Boty zlomiarze	بوتات الخردة
 Boty: %s z %s (razem %s)	الروبوتات: %s من %s (المجموع %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	الروبوتات: %d (من النقابة %d، مستأجرة %d)، المطلوب %d
 Bow	قوس
@@ -681,6 +791,7 @@ Brak / >	بلا / >
 Brak aktywnej misji albo limit został przekroczony.	لا توجد مهمة نشطة أو تم تجاوز الحد.
 Brak aktywnej sesji	لا توجد جلسة نشطة
 Brak aktywnej sesji.	لا توجد جلسة نشطة.
+Brak bonusu albo powyżej %d	لا مكافأة أو أعلى من %d
 Brak danych cenowych dla tego przedmiotu.	لا توجد بيانات أسعار لهذا البند.
 Brak danych do wyceny	لا توجد بيانات للتقييم
 Brak danych o bonusach.	لا توجد بيانات عن المكافآت.
@@ -727,8 +838,10 @@ Brakuje Yang na: %s (%s).	ينقصك يانغ من أجل: %s (%s).
 Brakuje ci Odłamków: %s.	تنقصك الشظايا: %s.
 Brakuje ci Suplementów: %s.	تنقصك المكمّلات: %s.
 Brakuje materiałów do rozwoju.	مواد التطوير غير كافية.
+Brakuje: %s	ينقص: %s
 Bransoleta z Turmalinu	سوار التورمالين
 Braz. Niedzw. Zodiaku	الدب البني للأبراج
+Brazowy Niedzwiedz	دب بني
 Brillant	لامع
 Bronie	الأسلحة
 Browarnik	صانع الجعة
@@ -743,6 +856,7 @@ Brązowa Chusta	وشاح رأس بني
 Brązowa Chusta+	وشاح رأس بني+
 Brązowa Farba	صبغة بنية
 Brązowa Rosa	ندى بني
+Brązowa Wilcza Szata+(m)	رداء الذئب البني+(ذ)
 Brązowa Woda	ماء بني
 Brązowe Płyty	صفائح برونزية
 Brązowy Sok	عصير بني
@@ -778,10 +892,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	بركة تعيد نقاط صحتك ونقاط طاقتك فوراً إلى 100%. يمكن استخدامها مرة كل دقيقتين. تشترك في وقت التهدئة مع جرعات المناعة وعدم المساس.
 Błyskaw.	فوري
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	يمنح أعداءه الراحة الأبدية في لمح البصر. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
+Błyszcząca	لامع
 Błyszcząca Szata Aury	رداء الهالة المتلألئ
 Błąd serwera - spróbuj ponownie.	خطأ في الخادم - حاول مجدداً.
 Błąd zapytania.	خطأ في الاستعلام.
 Błędne podanie kodu może skutkować	قد يؤدي إدخال رمز خاطئ
+C. Ratownik Plażowy+	منقذ الشاطئ الأحمر+
 CPU	المعالج المركزي
 CPU TNL może ulepszyć szybkość słabszego PC.	يمكن لوضع CPU TNL تحسين سرعة الحاسوب الأضعف.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - استعادة الواجهة.
@@ -820,6 +936,7 @@ Charyzma Nowicjusza	كاريزما المبتدئ
 Chcesz zacząć grę?	هل تريد بدء اللعبة؟
 Chcesz zakończyć grę i otrzymać wygraną?	هل تريد إنهاء اللعبة واستلام ما ربحته؟
 Chcesz zrealizować to pole?	هل تريد استلام هذه الخانة؟
+Chciano botów: %d	البوتات المطلوبة: %d
 Chciałeś %d szt., a tyle da się kupić.	طلبت %d قطعة، وهذا هو العدد الممكن شراؤه.
 Chegal, Goliat Cienia	Chegal، جالوت الظل
 Chodząca Legenda	الأسطورة الماشية
@@ -834,12 +951,14 @@ Chwilę...	لحظة...
 Chwilę... spróbuj jeszcze raz.	لحظة... حاول مجدداً.
 Cicha Klątwa	اللعنة الصامتة
 Ciekawski	الفضولي
+Ciemna Szata Proroka+(m)	رداء النبي المظلم+(ذ)
 Ciemność	الظلام
 Cienie	الظلال
 Cieniolubny Liść	ورقة محبة الظل
 Cienka Nić	خيط دقيق
 Cienka Przędza	خيط رفيع
 Cienka Skóra	جلد رقيق
+Ciepły Kaftan Zimowy+(m)	قفطان الشتاء الدافئ+(ذ)
 Ciągliwość	المرونة
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	رأس سهم ثقيل مصنوع من حجر متين. رغم بطئه يوفر ضربات قوية ومناسب جداً لاختراق الدروع الصلبة.
 Ciężkie Pasy	أحزمة ثقيلة
@@ -863,6 +982,9 @@ Continue	متابعة
 Costume	زي
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	حدث خطأ ما. البند في أمان لدى سيون-هاي - حاول لاحقاً.
 Create	إنشاء
+Ctrl (przytrzymaj)	Ctrl (اضغط مطولاً)
+Ctrl + LPM	Ctrl + زر أيسر
+Ctrl + PPM	Ctrl + زر أيمن
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + زر أيمن: إخراج الكل، Shift: الكمية
 Ctrl + klik: kilka punktów naraz	Ctrl + نقرة: عدة نقاط دفعة واحدة
 Ctrl + klik: odepnij	Ctrl + نقرة: فك التثبيت
@@ -887,6 +1009,9 @@ Cyjanowy Sok	عصير سماوي
 Cyklop Kat (BŚ)	جلاد السيكلوب (زعيم عالمي)
 Cyklop Mag (BŚ)	ساحر السيكلوب (زعيم عالمي)
 Cyklop Żołnierz (BŚ)	جندي السيكلوب (زعيم عالمي)
+Cz. Królik K. Czarów+(m)	أرنب السحر الأحمر+(ذ)
+Cz. Szata Faraona+ (m)	رداء الفرعون الأحمر+ (ذ)
+Cz. Wojownik P.Księżyca+	محارب القمر الأحمر+
 Czapka Jokera (k)	قبعة الجوكر (أنثى)
 Czapka Jokera (m)	قبعة الجوكر (ذكر)
 Czapka z Pomp. (czerw.)	قبعة بكرة (أحمر)
@@ -898,15 +1023,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	تستدعي تعويذة هذا الختم مطيتك، النمر البنغالي المهيب (رمادي).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	تستدعي تعويذة هذا الختم مطيتك، النمر البنغالي المهيب (أخضر).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	تستدعي تعويذة هذا الختم مطيتك، النمر البنغالي المهيب (ذهبي).
+Czar. Szata Dokkaebi+(m)	رداء الدوكايبي الأسود+(ذ)
+Czarna Lampa Lorda+	مصباح اللورد الأسود+
 Czarna Pantera	الفهد الأسود
 Czarna Stal	الفولاذ الأسود
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	قبعة سوداء بأذني أرنب للرجال. تمنحك مكافأة عشوائية واحدة على الأقل.
 Czarna magia	السحر الأسود
 Czarnoksiężnik P. Wieży	ساحر البرج الجحيمي
 Czarny Barwnik	صبغة سوداء
+Czarny Niedzwiedz	دب أسود
 Czarny Ork Zodiaku	الأورك الأسود للأبراج
 Czarny Rumak	الجواد الأسود
 Czarny Skorpion	العقرب الأسود
+Czarny jak noc Ks. Wam.+	مصاص الدماء الأسود كالليل+
 Czarodziej Gnoll	ساحر الغنول
 Czarodziej Stylu Małp	ساحر أسلوب القرد
 Czarownik Sch. Płn. W.	ساحر ملجأ رياح الشمال
@@ -968,11 +1097,14 @@ Czekoladowy Amulet	تميمة الشوكولاتة
 Czempion	البطل
 Czempion %s	بطل %s
 Czer. Amazonka Zodiaku	الأمازونية الحمراء للأبراج
+Czer. Sweter Świąt.+ (m)	سترة الأعياد الحمراء+ (ذ)
 Czer. Żeń-szeń (premium)	الجينسنغ الأحمر (بريميوم)
 Czerw. Duch Drzewa	شجرة الأشباح الحمراء
 Czerw. Duch Pniaka	جذع الأشباح الأحمر
+Czerw. Galowy Strój+ (m)	بزة الحفل الحمراء+ (ذ)
 Czerw. Las Duchow	غابة الأشباح الحمراء
 Czerw. Tr. Pajak Zodiaku	العنكبوت السام الأحمر للأبراج
+Czerw. Zbr. Azraela+ (m)	درع عزرائيل الأحمر+ (ذ)
 Czerwona Mikstura (W)	الجرعة الحمراء (م)
 Czerwona Runa SungMa	رونية سونغما الحمراء
 Czerwona Smocza Łuska	حرشفة التنين الأحمر
@@ -990,8 +1122,11 @@ Czerwony Kat Zodiaku	الجلاد الأحمر للأبراج
 Czerwony Mag Zodiaku	الساحر الأحمر للأبراج
 Czerwony Monokl	المونوكل الأحمر
 Czerwony Skorpion	العقرب الأحمر
+Czerwony Smoczek	التنين الأحمر الصغير
+Czerwony Smoczy Rycerz+	فارس التنين الأحمر+
 Czerwony Smoczy Róg	قرن التنين الأحمر
 Czerwony Sok	عصير أحمر
+Czerwony Toreador+	المصارع الأحمر+
 Czwartek	الخميس
 Czy chcesz cofnąć misję do poziomu 1?	هل تريد إرجاع المهمة إلى المستوى 1؟
 Czy chcesz dokonać masowej sprzedaży?	هل تريد إجراء بيع جماعي؟
@@ -1001,7 +1136,7 @@ Czy chcesz kupić %s %s za %s?	هل تريد شراء %s %s مقابل %s؟
 Czy chcesz kupić %s (szt. %d) za %s?	هل تريد شراء %s (العدد %d) مقابل %s؟
 Czy chcesz naładować %d Animosfer?	هل تريد شحن %d من الأنيموسفير؟
 Czy chcesz odesłać Enasira?	هل تريد صرف إيناسير؟
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	هل تريد دفع %s يانغ لاستعادة %d من روح التنين؟
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	هل تريد التجديد مقابل %s يانغ لـ %d من روح التنين؟
 Czy chcesz opuścić wojnę gildii?	هل تريد مغادرة حرب الرابطة؟
 Czy chcesz otworzyć to pudło?	هل تريد فتح هذا الصندوق؟
 Czy chcesz ożywić gracza %s?	هل تريد إحياء اللاعب %s؟
@@ -1039,6 +1174,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	هل ي�
 Czym jest Konto Premium?	ما هو حساب بريميوم؟
 Czysta esencja z serca najgłębszych źródeł.	جوهر نقي من قلب أعمق الينابيع.
 Czyste zwoje (%s) w ekwipunku: %d	لفائف فارغة (%s) في الحقيبة: %d
+Czytanie bez opoznienia dnia	القراءة بدون تأخير اليوم
+Czyściec Ognia	مطهر النار
 Czyśćiec Ognia	مطهر النار
 Część zestawów kostiumów (%d)	جزء من أطقم الأزياء (%d)
 Członek gildii %s jest teraz w grze.	عضو النقابة %s متصل الآن باللعبة.
@@ -1112,6 +1249,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	أضف حجر روح للاستبدال.
 Dodaj Księgę Umiejętności do wymiany.	أضف كتاب مهارات للاستبدال.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	أضف إلى متجر غايا خانة أخرى لعروض البنود الثمينة، بدءًا من الخانة الأولى في الصف الثاني من اليسار. استخدمه في متجر غايا بالميناء (تمثال المحارب في ميناء القارة الجديدة).
+Dodaj do ulubionych	أضف إلى المفضلة
 Dodaj przedmiot do wymiany.	أضف عنصراً للاستبدال.
 Dodaj przedmioty do sklepu.	أضف عناصر إلى المتجر.
 Dodaj punkt Sung Ma	أضف نقطة سونغ ما
@@ -1137,14 +1275,19 @@ Dolina	الوادي
 Dolina Cyklopow	وادي العمالقة ذوي العين الواحدة
 Dolina Cyklopów	وادي السيكلوب
 Dolina Orkow	وادي الأورك
+Dolina Orków	وادي الأورك
+Dolina Orków / Ognista Ziemia	وادي الأورك / الأرض النارية
 Dom Aukcyjny	بيت المزادات
 Dom Aukcyjny działa tylko w M1.	بيت المزادات يعمل في M1 فقط.
 Dom Aukcyjny jest wyłączony.	بيت المزادات معطّل.
 Dom Aukcyjny moze byc wylaczony.	قد يكون بيت المزادات معطّلًا.
 Dom Aukcyjny: %s	بيت المزادات: %s
+Dom Aukcyjny: %s - %s.	بيت المزادات: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	بيت المزادات: %d مكافآت كحد أقصى معًا.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	دار المزادات: عمليات الشراء السابقة ما زالت جارية.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	دار المزادات: حاول مجدداً بعد قليل.
+Dom Towarowy	المتجر التجاري
+Dom Towarowy: %s	المتجر التجاري: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	المتجر الكبير: جارٍ شراء العروض المحددة.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	المتجر الكبير: حدد العروض (المربع بجانب العرض)، ثم اضغط اشترِ الكل.
 Domyślna	افتراضي
@@ -1192,6 +1335,7 @@ Doświadczenie +%(v)s%% podczas jazdy	الخبرة +%(v)s%% أثناء الرك�
 Doświadczenie +%d%%	الخبرة +%d%%
 Doświadczenie Czempiona : %.2f%%	خبرة البطل : %.2f%%
 Doświadczenie Czempiona: %s / %s	خبرة البطل: %s / %s
+Doświadczenie łącznie	إجمالي الخبرة
 Doświadczenie: %d%%	الخبرة: %d%%
 Doświadczenie: %d%% (%d / %d)	الخبرة: %d%% (%d / %d)
 Doświadczenie: %s / %s	الخبرة: %s / %s
@@ -1200,10 +1344,15 @@ Drewniany Klucz	مفتاح خشبي
 Drobny Kam. Przebudzenia	حجر يقظة دقيق
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	عملة يوهارا الثمينة. اصقل 30 حصاة عند تمثال المحارب في ميناء القارة الجديدة (بحجر شبحي من +0 إلى +3 و15 000 يانغ - فرصة 70%) لتحصل على 3 غايا. تدفعها في متجر غايا بالميناء، وعند حدادي المجموعات، وعند تمثال الأفاعي، والمذبح الغامض، والمعلم تشي. لا يمكن تبادلها مع اللاعبين الآخرين.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	خاتم ثمين مزين باليشم والفيروز. يمنح: +50% خبرة، +30% قوة ضد الوحوش، +20% سرعة الهجوم والتعويذات، +10% أقصى صحة ومانا.
+Drop Przedmiotow:	سقوط الأغراض:
 Drop Yang	إسقاط اليانغ
 Drop potwora %s:	إسقاط الوحش %s:
 Drop przedmiotów +%d%%	سقوط البنود +%d%%
+Drop z bossów	غنائم الزعماء
 Dropek Metinów	غنائم ماتين
+Dropek medali	غنائم الأوسمة
+Dropek z M2	غنائم M2
+Dropek z M3	غنائم M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	النصف الثاني من الإعداد أعلاه - فرصة منفصلة تُحسب عند تحطيم حجر ماتين بدلًا من قتل وحش عادي.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	الثاني من ثلاثة كتب اليقظة. قد يزيد كاريزما المالك. يختفي الكتاب بعد القراءة. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	الثاني من ثلاثة كتب قتال التشكيلات. قد يزيد إلهام المالك. يختفي الكتاب بعد القراءة. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
@@ -1243,6 +1392,7 @@ Dusza wojownika, obdarzona mocą.	روح محارب، مُنحت قوة.
 Dusza Światła	روح النور
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	تُؤخذ الأرواح من الحقيبة تلقائياً - يكفي أن تحملها معك.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	جينسنغ مطهو من الدرجة الممتازة - العلف الوحيد للحصان الحربي القوي (حصان من المستوى 31). انقر بزر الفأرة الأيمن لإطعام الحصان المستدعى، أو أعطه للحصان. يسقط من وحوش يوهارا.
+Duzy Lysy Ork	أورك أصلع كبير
 Duża	كبير
 Duży Skorpion	العقرب الكبير
 Dwigant Zodiaku	ثنائي العملاق للأبراج
@@ -1273,13 +1423,16 @@ Dzik Zodiaku	خنزير الأبراج البري
 Dziki General Zodiaku	القائد الهمجي للأبراج
 Dziki Lucznik Zodiaku	الرامي الهمجي للأبراج
 Dziki Moa (pieczęć)	ختم موا البري
+Dziki Sluga	خادم متوحش
 Dziki Sluga Zodiaku	التابع الهمجي للأبراج
 Dziki Z. Piech. Zodiaku	المشاة الهمجي للأبراج
+Dziki Zolnierz Piechoty	جندي مشاة متوحش
 Dzięki tej pieczęci możesz przywołać jednorożca.	بهذا الختم يمكنك استدعاء وحيد القرن.
 Dzięki tej pieczęci możesz przywołać marę senną.	بهذا الختم يمكنك استدعاء كابوس الأحلام.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	بهذا الختم يمكنك استدعاء حيوانك الأليف.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	بهذا الختم تفقس البيضة عن Sheldon.
 Dziękujemy za zgłoszenie!	شكراً لك على البلاغ!
+Dziś	اليوم
 Dzwon Anielski	جرس الملاك
 Dzwon Arkt. Króla	جرس ملك القطب
 Dzwon Błk. Wiatru	جرس الرياح الزرقاء
@@ -1385,6 +1538,7 @@ Elit. Ork Zodiaku	الأورك النخبوي للأبراج
 Elit. Ork Zwiad. Zodiaku	كشاف الأورك النخبوي للأبراج
 Elita Atlantydy	نخبة أتلانتس
 Elitarny Ezoteryczny Fanatyk	متعصب باطني نخبوي
+Elitarny Ork	أورك النخبة
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	شعار أبطال كرة القدم. يمنح لمدة 6 ساعات: +50% خبرة، +20% سرعة الهجوم، +20% سرعة التعاويذ، +35% للهجوم السحري والقتال القريب، +10% من أقصى نقاط الحياة، +10% من أقصى نقاط الأسلوب.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	تعابير الاثنين (قبلة، ربتة) دون طلب الموافقة.
 Emocje: nie	التعابير: لا
@@ -1421,6 +1575,7 @@ Event wielkanocny	فعالية عيد الفصح
 Event wlaczony	الفعالية مفعّلة
 Event wyłączony	الفعالية معطّلة
 Eventy (bonus imperium)	الفعاليات (مكافأة الممالك)
+Eventy w dniu %s:	أحداث يوم %s:
 Eventy wylaczone	الفعاليات معطّلة
 Ewoluować szatę za %s Yang i materiał?	هل تريد تطوير الرداء مقابل %s يانغ والمادة؟
 Expimy razem	لنكسب الخبرة معاً
@@ -1429,6 +1584,7 @@ Ezot. Dreczyciel Zodiaku	المعذب الباطني للأبراج
 Ezot. Fanatyk Zodiaku	المتعصب الباطني للأبراج
 Ezot. Wojownik Zodiaku	المحارب الباطني للأبراج
 Ezoteryczne Drewno	خشب باطني
+Ezoteryczny Fanatyk	متعصب باطني
 Ezoteryczny Ostrzowiec	سيّاف الباطنية
 FC Bawaria Hwang+ (k)	إف سي بافاريا هوانغ+ (أ)
 FC Bawaria Hwang+ (m)	إف سي بافاريا هوانغ+ (ذ)
@@ -1447,6 +1603,8 @@ Fan	مروحة
 Fantilla	فانتيلا
 Fatalne Skrzydla Smierci	أجنحة الموت القاتلة
 Filters History	سجل المرشحات
+Filtr %d	مرشّح %d
+Filtr (%d)	مرشح (%d)
 Filtr bonusów (prawy klik czyści)	مرشح المكافآت (النقر الأيمن يمسح)
 Filtr podnoszenia	مرشح الالتقاط
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	مرشّح الالتقاط معطّل (Ctrl+Z) - أنت تلتقط كل شيء الآن.
@@ -1455,7 +1613,9 @@ Filtr podnoszenia: %s	مرشّح الالتقاط: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	مرشّح الالتقاط: أنواع البنود من الصيد التلقائي لهذه الشخصية تسري الآن على Z والصيد التلقائي والرفيق (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	مرشّح الالتقاط: تم تحميل الإعداد المسبق "%s".
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	مرشّح الالتقاط: تم حفظ قواعد النوع "%s" (%d).
+Filtr rodzaju	مرشّح النوع
 Filtr wyłączony - podnosisz wszystko.	المرشّح معطّل - تلتقط كل شيء.
+Filtry (%d)	المرشّحات (%d)
 Filtry bonusow	مرشحات المكافآت
 Fioletowa	بنفسجية
 Fioletowa Rosa	ندى بنفسجي
@@ -1540,9 +1700,11 @@ Glodny Czarny Niedzwiedz	دب أسود جائع
 Glodny Dzik	خنزير بري جائع
 Glodny Niebieski Alfa Wilk	ذئب ألفا أزرق جائع
 Glodny Niebieski Wilk	ذئب أزرق جائع
+Glodny Niedzwiedz	دب جائع
 Glodny Szary Wilk	ذئب رمادي جائع
 Glodny Tygrys	نمر جائع
 Glodny Wilk	ذئب جائع
+Glodny Zablakany Pies	كلب ضال جائع
 Gniazdo Sheldona	عش Sheldon
 Gniewne Serce (pieczęć)	ختم القلب الغاضب
 Gniewny Mini Alastor	ألاستور المصغر الغاضب
@@ -1566,6 +1728,7 @@ Gotowa do ewolucji u Theowahdana	جاهز للتطور عند ثيواهدان
 Gotowa za: %s	جاهزة بعد: %s
 Gotowe! Odbierz przedmiot	جاهز! استلم بندك
 Gotowy do użycia	جاهز للاستخدام
+Gotowy. Usuwane sa cale wybrane stosy.	جاهز. يتم حذف الحزم المحددة بالكامل.
 Gourou	غورو
 Gra	اللعبة
 Gra beze mnie	يلعب بدوني
@@ -1601,6 +1764,7 @@ Gruby Mini Kat (pieczęć)	الجلاد الصغير السمين (ختم)
 Grudzień	ديسمبر
 Grupa: %s	المجموعة: %s
 Grupuj	تجميع
+Grupy (PT)	المجموعات (PT)
 Gruszka	كمثرى
 Gwarancja Rzemiosła (Biżuteria)	ضمان الحرفة (مجوهرات)
 Gwarancja Rzemiosła (Broń)	ضمان الحرفة (سلاح)
@@ -1608,11 +1772,13 @@ Gwarancja Rzemiosła (Zbroja)	ضمان الحرفة (درع)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	ضمان حرفي يحترمه حداد كل قرية. استخدمه على عنصر لتطويره.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	ضمان حرفي يحترمه حداد كل قرية. استخدمه على عنصر لتطويره. لا يعمل على أسلحة المستوى 30. قد يتحطم العنصر.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	ضمان حرفي يحترمه حداد كل قرية. استخدمه على عنصر لتطويره. قد يتحطم العنصر.
+Gwardia Ognistego Smoka+	حرس التنين الناري+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	ضربة أمامية عنيفة على منطقة مستطيلة.
 Gwiazda Nocy	نجمة الليل\r\n
 Gwiazda Północy (PB)	نجمة الشمال (ا.ح)
 Gwiazda Północy (SZC)	نجمة الشمال (ف.ز)
 Gwiezdny Skarb	الكنز النجمي
+Górnik	عامل منجم
 Górski Behemot	بهيموث الجبل
 Góry Gromu	جبال الرعد
 Głowa Węża	رأس الأفعى
@@ -1632,9 +1798,11 @@ Handlarz Enasir	التاجر إيناسير
 Handlarz Enasir (h)	التاجر إيناسير (قابل للتداول)
 Handlarz Zodiaku	تاجر الأبراج
 Handlarz nie jest zainteresowany tym przedmiotem.	التاجر غير مهتم بهذا العنصر.
-Handluj z %s	التداول مع %s
+Handluj z %s	تبادل مع %s
 Happy Hour	ساعة السعادة
 Helm	خوذة
+Helmy - Ninja	خوذات - نينجا
+Helmy - Sura	خوذات - سورا
 Helmy - Szaman	خوذ - الشامان
 Helmy - Wojownik	خوذ - المحارب
 Heuk-Gui-Gab	هيوك-غوي-غاب
@@ -1708,6 +1876,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	لا يمكن تح
 Hwang	هوانغ
 Hydra	الهيدرا
 I am the czempion! Punktacja: %d	أنا البطل! النتيجة: %d
+ID Bota:	معرّف البوت:
 IMPLEMENTOR najstarszej postaci konta admin.	رتبة IMPLEMENTOR لأقدم شخصية في حساب المسؤول.
 Ich liczba na event jest ograniczona.	عددها محدود لكل فعالية.
 Id. Skrzynia Kolczyków	صندوق الأقراط المثالي
@@ -1721,6 +1890,9 @@ Ile sztuk kupic:	كم قطعة تريد شراءها:
 Ile sztuk kupic?	كم قطعة تريد شراءها؟
 Ile sztuk kupić:	كم قطعة تريد شراءها:
 Ile sztuk kupić?	كم قطعة تريد شراءها؟
+Ile? %s	كم العدد؟ %s
+Ilosc: malejaco	الكمية: تنازلي
+Ilosc: rosnaco	الكمية: تصاعدي
 Ilość prób: - jedna, + najwięcej, ile się da.	عدد المحاولات: - واحدة، + أكبر عدد ممكن.
 Ilość Ładunków: %d	عدد الشحنات: %d
 Ilość śmierci	عدد مرات الموت
@@ -1743,6 +1915,7 @@ Info o efekt.	معلومات التأثير
 Informacje	معلومات
 Informacje o misji	معلومات المهمة
 Informacje o sklepie	معلومات المتجر 
+Inkub Płomieni+	إنكوبوس اللهب+
 Inna Wroga Wytrzymałość	تحمل عدو آخر
 Inna postać już ma tą nazwę.	شخصية أخرى تحمل هذا الاسم بالفعل.
 Inne Mikstury	جرعات أخرى
@@ -1797,6 +1970,7 @@ Inteligencja Sung Ma	ذكاء سونغ ما
 Inteligencja Sung Ma +%d	ذكاء سونغ ما +%d
 Item inserted into the shopping safebox.	تم وضع العنصر في خزنة المشتريات.
 ItemShop	متجر العناصر
+Ja (GM)	أنا (GM)
 Jabłko	تفاحة
 Jadeit Dymu	يشم الدخان
 Jadeit Mgły	يشم الضباب
@@ -1857,7 +2031,16 @@ Jazda Konna (Precyzja)	ركوب الخيل (دقة)
 Jazda Konna (Sura)	ركوب الخيل (سورا)
 Jazda Konna (Szaman)	ركوب الخيل (شامان)
 Jazda Konna (Wojownik)	ركوب الخيل (محارب)
+Jazda Konna (diabły)	ركوب الخيل (الشياطين)
+Jazda Konna (insekty)	ركوب الخيل (الحشرات)
 Jazda Konna (losowo)	ركوب الخيل (عشوائي)
+Jazda Konna (mistycy)	ركوب الخيل (الغامضون)
+Jazda Konna (nieumarli)	ركوب الخيل (الموتى الأحياء)
+Jazda Konna (orki)	ركوب الخيل (الأورك)
+Jazda Konna (potwory)	ركوب الخيل (الوحوش)
+Jazda Konna (pustynia)	ركوب الخيل (الصحراء)
+Jazda Konna (półludzie)	ركوب الخيل (أنصاف البشر)
+Jazda Konna (zwierzęta)	ركوب الخيل (الحيوانات)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	إحدى بيوض تنين بالاثور تستدعي برداً جليدياً! ركّزوا هجماتكم عليها.
 Jednoręczne	بيد واحدة
 Jedwab	حرير
@@ -1878,12 +2061,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	إذا ك
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	إذا كان لديك أكثر من 90% من نقاط الحياة، فإنك تتلقى ضررًا أقل بالنسبة المحددة.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	إذا كان لديك أكثر من 90% من نقاط الحياة، فإنك تتلقى ضررًا أقل بنسبة x%.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	إذا كان لديك أكثر من 90%% من نقاط الحياة، فإنك تتلقى ضررًا أقل بنسبة %d%%.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	إذا لم يظهر المتجر، فهذا العميل لا يحتوي بعد على
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	إذا استخدمته فستحصل على تعزيز يتيح لك استدعاء إيناسير والتعامل معه كما مع تاجرة المتفرقات (يقتطع 10% من السعر عند البيع). المدة: 7 أيام. يمكن تمديدها حتى 1000 يوم كحد أقصى.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	إذا استخدمته فستحصل على تعزيز يتيح لك استدعاء إيناسير والتعامل معه كما مع تاجرة المتفرقات (يقتطع 10% من السعر عند البيع). المدة: 7 أيام. يمكن تمديدها حتى 1000 يوم كحد أقصى. يمكن تبادل البند مع اللاعبين الآخرين.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	إذا استخدمته فستحصل على تعزيز يتيح لك استدعاء إيناسير للوصول إلى مخزنك. المدة: 7 أيام. يمكن تمديدها حتى 1000 يوم كحد أقصى.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	إذا استخدمته فستحصل على تعزيز يتيح لك استدعاء إيناسير للوصول إلى مخزنك. المدة: 7 أيام. يمكن تمديدها حتى 1000 يوم كحد أقصى. يمكن تبادل البند مع اللاعبين الآخرين.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	إذا متّ أنت أو غوبلن الكنوز، تفشل الرحلة.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	إذا ظهرت مشاكل في الرسوميات، فاختر 'خيارات النظام' أو 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	إذا كانت [5] المخفية مجاورة لبطاقة مكشوفة،
 Jin Bing (lód)	Jin Bing (جليد)
 Jin Bing (mrok)	Jin Bing (ظلام)
 Jin-Hee Zodiaku	Jin-Hee الأبراج
@@ -1894,9 +2079,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	اللغة
 Język / Language	اللغة / Language
 Język klienta: %s	لغة العميل: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	لغة الخادم: %s - سيغيّر العميل اللغة بعد إعادة التشغيل (Server language: after a restart).
 KRĘCI SIĘ...	تدور...
 Kaftan Wężowy	سترة الأفعى
 Kaftan Wężowy (wykon.)	سترة الأفعى (صناعة)
+Kalendarz eventów	تقويم الأحداث
+Kalendarz eventów: %s - %d	تقويم الأحداث: %s - %d
 Kam. Pieczęci Sunga Mahi	حجر ختم سونغ ماهي
 Kamera filmowa - obrót w lewo	الكاميرا السينمائية - دوران لليسار
 Kamera filmowa - obrót w prawo	الكاميرا السينمائية - دوران لليمين
@@ -1907,6 +2095,7 @@ Kamera filmowa - w dół	الكاميرا السينمائية - لأسفل
 Kamera filmowa - w górę	الكاميرا السينمائية - لأعلى
 Kamienie	الأحجار
 Kamienie Duszy (0 = puste):	الأحجار الشبحية (0 = فارغ):
+Kamienie Metin	أحجار ميتين
 Kamienie Teleportacji: %d. Teleportować do: %s?	أحجار الانتقال: %d. هل تريد الانتقال إلى: %s؟
 Kamienie dusz	أحجار الأرواح
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	لوح حجري بنقوش قديمة. يشع طاقة مجهولة.
@@ -1940,6 +2129,7 @@ Kamień Teleportacji	حجر الانتقال الفوري
 Kamień Teleportacji+	حجر الانتقال الفوري+
 Kamień Tygrysa	حجر النمر
 Kamień Wzgórza	حجر التل
+Kamień Węglowy	حجر الفحم
 Kamień Wężowy	حجر الأفعى
 Kamień Wężowy+	حجر الأفعى+
 Kamień do Fundamentu+	حجر الأساس+
@@ -2059,6 +2249,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	ال
 Kolejny boss za: %s	الزعيم التالي بعد: %s
 Kolejny cel	الهدف التالي
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	المرحلة التالية: %d خانة، %s يانغ، من مستوى الشخصية %d
+Kolekcja lochów	مجموعة الأقبية
+Kolekcja pól	مجموعة الحقول
 Kolia Jadeitu Dymu	قلادة يشم الدخان
 Kolia Jadeitu Mgły	قلادة يشم الضباب
 Kolia Jadeitu Nocy	قلادة يشم الليل
@@ -2358,6 +2550,7 @@ Koło Losu jest teraz wyłączone.	عجلة الحظ معطّلة حالياً.
 Koło Losu: brama otwarta - poziom %d!	عجلة الحظ: البوابة مفتوحة - المستوى %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	عجلة الحظ: ربحت %s. المكافأة بانتظارك في مخزن متجر البنود.
 Koło Losu: zdobywasz klucz (%d/%d).	عجلة الحظ: حصلت على مفتاح (%d/%d).
+Koło Płomieni Nocy	عجلة لهب الليل
 Koło Skrzydła Nocy	عجلة جناح الليل
 Koło Słonecznego Wilka	عجلة ذئب الشمس
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	للعجلة 16 خانة، لكل منها فرصة 1/16. قبل كل دورة تُسحب الخانات من جديد.
@@ -2368,6 +2561,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	أكل الحصان %(
 Krab Królewski	السلطعون الملكي
 Krab Pancerny Zodiaku	السلطعون المدرع للأبراج
 Krab Wojow. Zodiaku	محارب السلطعون للأبراج
+Kradziez PM	سرقة نقاط المانا
+Kradziez PZ	سرقة نقاط الحياة
 Kradzież PE	سرقة نقاط الأسلوب
 Kraina Gigantow	أرض العمالقة
 Kraina Ognia	أرض النار
@@ -2404,14 +2599,18 @@ Krótki	قصير
 Krótko	قصيرة
 Kręty Klucz (PB)	المفتاح الملتوي (ا.ح)
 Kręty Klucz (SZC)	المفتاح الملتوي (ف.ز)
+Ksiegi umiejetnosci	كتب المهارات
 Ksiegi zapomnienia	كتب النسيان
 Ksiąg w oknie: %d (wymian: %d)	الكتب في النافذة: %d  (التبديلات: %d)
 Książ. Odłamek Broni II	شظية السلاح الأميرية II
 Książ. Odłamek Hełmu II	شظية الخوذة الأميرية II
 Książ. Odłamek Zbroi II	شظية الدرع الأميرية II
 Książka Przebudzenia	كتاب اليقظة
+Książę Atlantydy+	أمير أطلنطس+
+Książę Orientu (brąz.)+	أمير الشرق (برونزي)+
 Książę Piekielnej Wieży	أمير البرج الجحيمي
 Książę Śmierci P. Wieży	أمير موت البرج الجحيمي
+Książęcy	أميري
 Książęcy Efekt Zestawu	تأثير الطقم الأميري
 Książęcy Kowal Zestawu	حداد مجموعة الأمراء
 Księga Absorpcji Życia	كتاب امتصاص الحياة
@@ -2475,6 +2674,7 @@ Księga: Burza Balathora	كتاب: عاصفة بالاثور
 Księga: Nieugiętość Balathora	كتاب: صلابة بالاثور
 Księga: Wola Balathora	كتاب: إرادة بالاثور
 Księgi	الكتب
+Księgi Misji	كتب المهام
 Księgi Um. Pasywnych	كتب المهارات السلبية
 Księgi umiejętności	كتب المهارات
 Księgi zapomnienia	كتب النسيان
@@ -2490,7 +2690,10 @@ Kup część stosu	اشترِ جزءًا من الكومة
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	اشترِ العدد المحدد من قطع بند واحد، بدءًا من الأرخص
 Kup tę ofertę	اشترِ هذا العرض
 Kup wiele	اشترِ الكثير
+Kup wiele działa dla jednego przedmiotu.	الشراء المتعدد يعمل لبند واحد فقط.
 Kup wszystkie zaznaczone oferty	اشترِ جميع العروض المحددة
+Kup wybrane (%d	اشترِ المحدد (%d
+Kup wybrane (0	اشترِ المحدد (0
 Kup!	اشترِ!
 Kupic %d ofert za lacznie %s?	هل تشتري %d عرضًا بمجموع %s؟
 Kupione - nowa oferta za %s.	تم الشراء - عرض جديد بعد %s.
@@ -2500,11 +2703,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	تم شراء %d من أصل %d عروض: 
 Kupić %d szt. (ofert: %d) za %s?	هل تريد شراء %d قطعة (العروض: %d) مقابل %s؟
 Kupić %s za %s Gaya?	هل تريد شراء %s مقابل %s غايا؟
 Kupić %s za %s?	هل تريد شراء %s مقابل %s؟
+Kupić zaznaczone oferty: %d?	شراء العروض المحددة: %d؟
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   قسيمة عملات التنين (50)، +100% فرصة سقوط لمدة 2 ساعة
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	قسيمة بقيمة 20 عملة تنين. انقر بزر الفأرة الأيمن لإضافتها إلى حسابك.
 Kupony	القسائم
 Kupony SM	قسائم SM
 Kupony SM/Premium	قسائم SM/بريميوم
+Kupowanie mikstur	شراء الجرعات
 Kupuja sie po kolei; blad przerywa zakupy.	تُشترى بالتتابع؛ يوقف أي خطأ عملية الشراء.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	يشتري بها من متجر البنود ما يستخدمه (دون تسريحات الشعر). لا ينفق: لا يمسّها.
 Kursor nad postaciami	المؤشر فوق الشخصيات
@@ -2515,6 +2720,7 @@ Kwitnąca Brzoskwinia	الخوخ المزهر
 Kwitnące Kaki	الكاكي المزهر
 Kwota (yang):	المبلغ (يانغ):
 Kwota SM:	مبلغ عملات التنين:
+Kwota Yang:	مبلغ اليانغ:
 Kwota:	المبلغ:
 Kłopoty na Zboczu Gautama	المتاعب على منحدر غوتاما
 LPM: podnoszę tak / nie	زر أيسر: ألتقط نعم / لا
@@ -2542,12 +2748,14 @@ Lekarstwo Iluzji	دواء الوهم
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	دواء لجرب الشياطين. عنصر مطلوب لمهمة.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	دواء مصنوع من أوراق الحياة. عند تناوله تُستعاد نقاط الحياة ونقاط الأسلوب فورًا.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	الخطوة الخفيفة (سرعة الحركة +%(v)s) لمدة %(d)d ث بعد الهجوم سيراً على الأقدام (كل 300 ث)
+Lekki Strój Plażowy+ (m)	زي الشاطئ الخفيف+ (ذ)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	رأس سهم خفيف ومرن مصنوع من الخيزران. مثالي للطلقات السريعة والدقيقة، يستخدمه الرماة الذين يقدّرون الحركة والسرعة.
 Lekkie jak Piórko	خفيف كالريشة
 Leopardzik (7 dni)	شبل الفهد (7 أيام)
 Level konia:	مستوى الحصان:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	الخانة اليسرى: البند الذي سيحصل على المظهر الجديد.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	الخانة اليسرى: الدابة التي ستحصل على المظهر الجديد.
+Lewy Shift	Shift الأيسر
 Leśna Wróżka	جنية الغابة
 Leże Smoka	عرين التنين
 Licencja Najemnika	رخصة المرتزق
@@ -2558,18 +2766,22 @@ Liczba bonusów na kostiumie (co najmniej):	عدد الخصائص على الز�
 Liczba botów (3-16):	عدد الروبوتات (3-16):
 Liczba gier:	عدد الألعاب:
 Liczba online	عدد المتصلين
+Liczba sztuk	عدد القطع
 Liczba sztuk:	عدد القطع:
 Liczba w ekwipunku	الكمية في الحقيبة
 Liczby	الأرقام
 Lider grupy	قائد المجموعة
 Lilia: szansa na przedmioty +%d%%	الزنبق: فرصة سقوط البنود +%d%%
 Liliowa Runa SungMa	رونية سونغما الأرجوانية
+Limit Lvl: %d do %d	حد المستوى: %d إلى %d
 Limit członków grupy: od %d do %d	حد أعضاء المجموعة: من %d إلى %d
 Limit zakupów na konto: %d	حد الشراء لكل حساب: %d
 Limit zakupów na minutę - dokończ za chwilę.	حد المشتريات في الدقيقة - أكمل بعد قليل.
 List Gończy	ملصق المطلوب
 Lista GM jest pusta: nastepny start moze nadac	قائمة المشرفين فارغة: قد يمنح التشغيل القادم
 Lista jest pusta.	القائمة فارغة.
+Lista komend GM	قائمة أوامر GM
+Lista komend GM:	قائمة أوامر GM:
 Lista tytułów	قائمة الألقاب
 Lista wyciszonych	قائمة المكتومين
 Lista znajomych	قائمة الأصدقاء
@@ -2577,6 +2789,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	تبدو الح�
 Lizak Magii	مصاصة السحر
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	مصاصة بتركيبة غامضة مليئة بالسحر. تمنح: +50% خبرة، +20% سرعة هجوم، +20% سرعة تعويذات، +30% ضرر سحري، +10% أقصى صحة، +10% أقصى مانا. تعمل 7 أيام.
 Liście Życia	أوراق الحياة
+Loch / wyprawa	قبو / رحلة
 Loch Malp (latwy)	زنزانة القرود (سهلة)
 Loch Malp (normalny)	زنزانة القرود (عادية)
 Loch Malp (trudny)	زنزانة القرود (صعبة)
@@ -2585,6 +2798,7 @@ Loch Pajakow V1	زنزانة العناكب V1
 Loch Pajakow V2	زنزانة العناكب V2
 Loch Pająków (1)	زنزانة العناكب (1)
 Loch Pająków V1	زنزانة العناكب V1
+Loch Polowy	قبو الحقول
 Lochy Yohary	زنازين يوهارا
 Lod. Wiel. Zab. Zodiaku	الحوت القاتل الجليدي للأبراج
 Lodogóry 690 10169	جبال الجليد 690 10169
@@ -2678,11 +2892,13 @@ Maksimum	الحد الأقصى
 Maksymalnie	الحد الأقصى
 Maksymalny	الأقصى
 Mala liczba ofert - wycena orientacyjna	عدد العروض قليل - تقييم تقريبي
+Malpi Zolnierz	جندي قرد
 Maniak Cz. Wiat. Zodiaku	مهووس الرياح السوداء للأبراج
 Mapa %d	الخريطة %d
 Mapa (index):	الخريطة (الفهرس):
 Mapa OX	خريطة OX
 Mapa teleportacji - TAB	خريطة الانتقال - TAB
+Mapa Ślubna	خريطة الزفاف
 Mapa świata	خريطة العالم
 Mapa: %s	الخريطة: %s
 Mapy	الخرائط
@@ -2813,14 +3029,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	مادة تزيد فرصة إضافة المكافأة السادسة أو السابعة عند Seon-Hae. مستوى العنصر: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	مادة تزيد فرصة إضافة المكافأة السادسة أو السابعة عند Seon-Hae. مستوى العنصر: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	مادة تزيد فرصة إضافة المكافأة السادسة أو السابعة عند Seon-Hae. مستوى العنصر: 90-104.
+Materiały	المواد
 Materiały Rzemieślnicze	مواد الحرفيين
 Materiały ulepszeń	مواد التطوير
 Matowy Lód	الجليد الباهت
 Matowy Lód+	الجليد الباهت+
 Max PE: +%d	أقصى نقاط الأسلوب: +%d
+Max PM	أقصى نقاط المانا
+Max PM %	أقصى نقاط المانا %
+Max PZ	أقصى نقاط الحياة
+Max PZ %	أقصى نقاط الحياة %
 Max PŻ +2500 / +2000 / +1500	الحد الأقصى لنقاط الحياة +2500 / +2000 / +1500
 Max PŻ: +%d	أقصى نقاط الحياة: +%d
 Max wytrzymalosc	أقصى تحمل
+Max. PŻ +%d	أقصى نقاط حياة +%d
 Max. poziom przedmiotu: %d	أقصى مستوى للعنصر: %d
 Max. ulepszenie z +%d na +%d.	أقصى تطوير من +%d إلى +%d.
 Mała Meley	Meley الصغيرة
@@ -2828,9 +3050,11 @@ Mała Meley (pieczęć)	ميلي الصغيرة (ختم)
 Mała Nemere	نيميري الصغيرة
 Mała Nemere (pieczęć)	نيميري الصغيرة (ختم)
 Małe Błogosławieństwo	البركة الصغيرة
+Małpi Loch	قبو القرود
 Małpi Loch (trudny)	زنزانة القرود (صعبة)
 Małpi Loch (łatwy)	زنزانة القرود (سهلة)
 Małpi Loch (średni)	زنزانة القرود (متوسطة)
+Małpka	القرد الصغير
 Mały Aamon	آمون الصغير
 Mały Aamon (pieczęć)	آمون الصغير (ختم)
 Mały Baashido	باشيدو الصغير
@@ -2982,7 +3206,7 @@ Min-Sun	مين-سون
 Min. %d bonusów	الحد الأدنى %d من الخصائص
 Min. Raise	أدنى زيادة
 Min. liczba bonusow:	الحد الأدنى لعدد المكافآت:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	الحد الأدنى: يجب أن يحمل البند هذه الخاصية، على الأقل X. انقر: بلا / >.\nبلا / >: يلتقط بنداً بدون هذه الخاصية، ومعها فقط إذا تجاوزت X. انقر: الحد الأدنى.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	الحد الأدنى: يجب أن يملك البند هذه المكافأة بقيمة X على الأقل. نقرة: بلا / >.\nبلا / >: يلتقط البند بدون هذه المكافأة، ومعها فقط إذا تجاوزت X. نقرة: الحد الأدنى
 Mineral	معدن
 Mini Azrael	عزرائيل المصغر
 Mini Azrael (pieczęć)	ميني عزرائيل (ختم)
@@ -3003,11 +3227,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	أطلق القوى المظلمة لإيذاء الأعداء.|تتعزز بـ: الذكاء (++)، المناورة (الإصابة) (+)، مستوى الشخصية.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	أطلق الصواعق.|تتعزز بـ: الذكاء (++)، المناورة (الإصابة) (+)، مستوى الشخصية.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	أطلق التمائم لإيذاء الأعداء.|تتعزز بـ: الذكاء (++)، المناورة (الإصابة) (+)، مستوى الشخصية.
+Misja %d	المهمة %d
 Misja kart	مهمة البطاقات
 Misje Biologa	مهام عالم الأحياء
 Misje dzienne	المهام اليومية
 Misje główne	المهام الرئيسية
 Misje poboczne	المهام الجانبية
+Misje polowania	مهام الصيد
 Misje łowieckie	مهام الصيد
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	مفتاح مزخرف بإتقان يفتح صندوق حورية الماء. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
 Mistrz Ahtrin	سيد Ahtrin
@@ -3021,6 +3247,8 @@ Mistrz Włóczni Ki	سيد الرمح Ki
 Mistrz Włóczni Mao	سيد الرمح Mao
 Mistrz ekwipunku	سيد العتاد
 Mistrz przepadnie.	 سيضيع مستوى الإتقان.
+Mistrz umiejętności	سيد المهارات
+Mistrzowska piłka nożna	بطل كرة القدم
 Mistrzowski Emblemat	شعار الأستاذ
 Mistyczna substancja ożywiająca florę i faunę lasu.	مادة صوفية تحيي نباتات الغابة وحيواناتها.
 Mistykom	الغامضين
@@ -3033,6 +3261,7 @@ Mnich Milbon	الراهب Milbon
 Mniej niz 1 min.	أقل من 1 دقيقة.
 Mnoznik dropu przedmiotow	مضاعف إسقاط البنود
 Mnoznik dropu yang	مضاعف إسقاط اليانغ
+Moby 1 hit	الوحوش بضربة واحدة
 Moby > Bossy > Metiny	وحوش > زعماء > ماتين
 Moby > Metiny > Bossy	وحوش > ماتين > زعماء
 Moc Błyskawic	قوة البرق
@@ -3059,6 +3288,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	شعر مقصوص على الموضة يتيح للشامان التعبير عن طباعهم. تغيّر تسريحة شخصيتك بشكل دائم.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	شعر مقصوص على الموضة يتيح للشامان التعبير عن طباعهم. تغيّر تسريحة شخصيتك بشكل دائم.
 Moj cel	هدفي
+Moja postac	شخصيتي
 Moje miejsca	أماكني
 Mokre Szaty: szybkość ruchu -50	الثياب المبللة: سرعة الحركة -50
 Moloch	مولوخ
@@ -3073,6 +3303,7 @@ Może schwytać karty: [1]	يمكنه أسر البطاقات: [1]
 Może schwytać karty: [1], [2]	يمكنه أسر البطاقات: [1]، [2]
 Może schwytać karty: [1], [2], [3]	يمكنه أسر البطاقات: [1]، [2]، [3]
 Może schwytać karty: [1], [2], [3], [4]	يمكنه أسر البطاقات: [1]، [2]، [3]، [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	يمكنه التقاط البطاقات: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	يمكنه أسر البطاقات: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	قد يُنزل بعض الحالمين إلى الأرض. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Możesz mieć najwyżej %d własnych kategorii.	يمكنك امتلاك %d فئات مخصصة كحد أقصى.
@@ -3105,10 +3336,12 @@ Można znać tylko jedną ripostę.	يمكن معرفة رد واحد فقط.
 Mroczna Paproć	السرخس المظلم
 Mroczna Wieża	البرج المظلم
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	للكرة المظلمة فرصة %d%% لصعق الخصم
+Mrocznego Uderzenia	الضربة المظلمة
 Mroczny Cierń	الشوكة المظلمة
 Mroczny Kat Zodiaku	الجلاد المظلم للأبراج
 Mrok	الظلام
 Mroz. Lod. Czl. Zodiaku	رجل الجليد المتجمد للأبراج
+Mrozny Lodowy Czlowiek	رجل جليدي متجمد
 Mroźna Skrz. Balathora	صندوق Balathor الجليدي
 Mroźna Skrz. Balathora+	صندوق Balathor الجليدي+
 Mroźny Klucz (PB)	مفتاح الصقيع (ا.ح)
@@ -3119,6 +3352,7 @@ Mroźny Rufus	Rufus المتجمد
 Mroźny Rufus (pieczęć)	ختم Rufus المتجمد
 Mt2009	Mt2009
 Mumia Kapłanka	كاهنة المومياء
+Mundur Strażaka+(m)	زي رجل الإطفاء+(ذ)
 Musisz go pokonać, by otrzymać nagrodę.	عليك هزيمته لتحصل على مكافأة.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	عليك دفع بيضة التنين الناري إلى الجانب الآخر.
 Myr Bojownik (wiatr)	مقاتل Myr (رياح)
@@ -3134,6 +3368,7 @@ Myr Prymus (wiatr)	بريموس Myr (رياح)
 Myr Prymus (ziemia)	بريموس Myr (أرض)
 Myr Weteran (wiatr)	محنك Myr (رياح)
 Myr Weteran (ziemia)	محنك Myr (أرض)
+Mój ranking	ترتيبي
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	يُقال إن محتويات هذا الصندوق ثمينة بقدر الصندوق نفسه.
 Młodszy Hazardzista	المقامر الصغير
 Młody Moa (pieczęć)	ختم موا الصغير
@@ -3179,6 +3414,7 @@ Nabira	نابيرا
 Naciśnij klawisz dla: %s	اضغط مفتاحاً لـ: %s
 Naczelny Hazardzista	كبير المقامرين
 Nadaj imię	إطلاق اسم
+Nadaj range	منح رتبة
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	يمنح تعزيزات بمستوى G1 لشامان التنين بذكاء 90 لمدة 10 دقائق.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	يمنح تعزيزات بمستوى M1 لشامان التنين بذكاء 90 لمدة 10 دقائق.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	يمنح تعزيزات بمستوى P لشامان التنين بذكاء 90 لمدة 10 دقائق.
@@ -3206,7 +3442,9 @@ Nagrody są już odkryte.	المكافآت مكشوفة بالفعل.
 Nagrody za tury	مكافآت الجولات
 Najbliższy	الأقرب
 Najczęściej zabijani	الأكثر تعرضاً للقتل
+Najdłuższa sesja	أطول جلسة
 Najedź myszką na przedmiot, aby zobaczyć opis.	مرّر الفأرة فوق العنصر لعرض وصفه.
+Najlepsza sesja (yang)	أفضل جلسة (يانغ)
 Najlepszy czas: %s	أفضل وقت: %s
 Najpierw dezaktywuj Relikt Duszy.	عطّل أثر الروح أولاً.
 Najpierw dodaj eliksir.	أضف الإكسير أولاً.
@@ -3270,6 +3508,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	غطاء رأس من مجموعة Arezzo (مجموعة الفايكنغ). يعمل 30 يوماً من الارتداء.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	غطاء رأس من مجموعة Arezzo (المجموعة المذهّبة). يعمل 30 يوماً من الارتداء.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	غطاء رأس من مجموعة أريتزو (التنين الذهبي). يدوم 30 يومًا من لحظة الارتداء.
+Nakładka na broń	غطاء السلاح
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	غطاء للسلاح ذي اليد الواحدة (سيف) - للمحارب والنينجا والسورا. يعمل 30 يوماً من الشراء.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	غطاء سلاح من مجموعة Arezzo (مجموعة الملاك): نينجا. يعمل 30 يوماً من الارتداء.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	غطاء سلاح من مجموعة Arezzo (مجموعة الملاك): شامان. يعمل 30 يوماً من الارتداء.
@@ -3413,6 +3652,7 @@ Nazwa Postaci jest niepoprawna.	اسم الشخصية غير صحيح.
 Nazwa jest niewłaściwa.	الاسم غير مناسب.
 Nazwa postaci jest identyczna jak nazwa konta.	اسم الشخصية مطابق لاسم الحساب.
 Nazwa pozycji (do %d znaków)	اسم الموقع (حتى %d حرفاً)
+Nazwa presetu	اسم الإعداد
 Nazwa przedmiotu	اسم البند
 Nazwa reguły	اسم القاعدة
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	لا يجوز أن يحتوي اسم شخصيتك على رموز خاصة.
@@ -3434,6 +3674,7 @@ Nic tu nie ma.	لا شيء هنا.
 Nick:	الاسم:
 Nick: %s (pid: |cff5af22c%d|r)	الاسم: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	الاسم: PLAYER_NAME
+Nie 1. atak	ليس الهجوم 1
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	لم يعد لازمًا: محدد مواقع الشخصيات غير القابلة للعب مفعّل لكل شخصية. | في خريطة العالم بدّل العرض بالزر الموجود في شريط العنوان.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	ليس مخصصًا لنظافة الفم. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Nie jest składnikiem receptur ani ulepszeń.	ليس من مكونات أي وصفة أو تطوير.
@@ -3527,6 +3768,7 @@ Nie widzisz jeszcze całej mapy.	لا ترى الخريطة بأكملها بع�
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	لم يُعرض %d بندًا - أُغلق المتجر.
 Nie zaznaczono żadnej misji.	لم تُحدَّد أي مهمة.
 Nie znaleziono gracza.	لم يتم العثور على اللاعب.
+Nie znaleziono moba/metina o takim ID.	لم يتم العثور على وحش/ميتين بهذا المعرّف.
 Nie znaleziono żadnych wypraw.	لم يتم العثور على أي بعثات.
 Niebiańska Tarcza	الدرع السماوي
 Niebiańska Tarcza nie może zostać nadana.	لا يمكن منح الدرع السماوي.
@@ -3534,12 +3776,15 @@ Niebieska Mikstura (W)	الجرعة الزرقاء (م)
 Niebieska Runa SungMa	رونية سونغما الزرقاء
 Niebieska Woda	ماء أزرق
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	قبعة زرقاء بأذني أرنب للرجال. تمنحك مكافأة عشوائية واحدة على الأقل.
+Niebieski Alfa Wilk	ذئب ألفا أزرق
 Niebieski Barwnik	صبغة زرقاء
 Niebieski Mały Smok	التنين الأزرق الصغير
 Niebieski Mały Smok (pieczęć)	التنين الأزرق الصغير (ختم)
 Niebieski Skorpion	العقرب الأزرق
 Niebieski Sok	عصير أزرق
+Niebieski Wilk	ذئب أزرق
 Niebieski Wilk Zodiaku	الذئب الأزرق للأبراج
+Niebieski Wzorowy Uczeń+	التلميذ النموذجي الأزرق+
 Niebieskie Jajo Smoka	بيضة التنين الأزرق
 Niebieskie Pudło Zodiaku	صندوق الأبراج الأزرق
 Niebieskie Zioło	عشبة زرقاء
@@ -3566,6 +3811,7 @@ Nieprawidlowy nick	اسم غير صالح
 Nieprawidłowy kod koloru (np. #FF8800).	رمز لون غير صالح (مثلاً #FF8800).
 Nieprawidłowy limit czasu.	حد زمني غير صالح.
 Nieprzenikniony pancerz strażnika ognia.	درع منيع لحارس النار.
+Niesmiertelnosc WYL	الخلود: معطّل
 Nieudana	فشلت
 Nieugiętość Balathora	صلابة بالاتور
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	صلابة بالاتور: مقاومة الإرجاع والإسقاط %d%%
@@ -3597,6 +3843,7 @@ Nieśmiertelność	الخلود
 Nigdy nie upadasz	لا تسقط أبدًا
 Nikt jeszcze nie ma wyniku w tym sezonie.	لا أحد لديه نتيجة بعد في هذا الموسم.
 Nikt jeszcze nie ukończył tury.	لم يُكمل أحد جولة بعد.
+Ninja (Łuk)	نينجا (قوس)
 Ninja Armor	درع النينجا
 Ninja Ostrze	نصل النينجا
 Ninja Łuk	قوس النينجا
@@ -3608,6 +3855,7 @@ Niszczyciel En-Tai (BŚ)	مدمر En-Tai (زعيم عالمي)
 Niszczyciel P. Wieży	مدمر البرج الجحيمي
 Niszczyciel Zodiaku	مدمر الأبراج
 Noc trwać będzie od 22:00 do 6:00.	يستمر الليل من 22:00 إلى 6:00.
+Noc/snieg po 22:00	ليل/ثلج بعد 22:00
 Noe-Un-Gab	نوي-أون-غاب
 Normal	عادي
 Normalny Koń	حصان عادي
@@ -3654,6 +3902,7 @@ Obowiązki gildii - panel lidera	واجبات النقابة - لوحة القا
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	ضرر أحجار ماتين/الزعماء/الزعماء الصغار +%.0f%%
 Obrazenia magiczne	الضرر السحري
 Obrazenia magiczne vs potwory	الضرر السحري ضد الوحوش
+Obrazenia umiejetnosci	ضرر المهارات
 Obraż. sztyletów w potwory +%d	ضرر الخناجر ضد الوحوش +%d
 Obraż. umiejętności	ضرر المهارات
 Obrażenia %s +%s%%	ضرر %s +%s%%
@@ -3680,7 +3929,13 @@ Obrażenia przeciwko Metinom +%d%%	الضرر ضد الميتين +%d%%
 Obrażenia umiejętności	ضرر المهارات
 Obrażenia umiejętności konnych +%(v)s%%	ضرر مهارات الفروسية +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	الضرر في وادي سيونغريونغ +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	الضرر على أحجار ميتين +%d%% لمدة 5 ثوان.
+Obrażenia zwiększają się o %d%% na 10 sek.	يزداد الضرر بنسبة %d%% لمدة 10 ثوان.
 Obrażenia/Obrona	الضرر/الدفاع
+Obrażenie Umiejętności: 10%	ضرر المهارات: 10%
+Obrażenie Umiejętności: 3%	ضرر المهارات: 3%
+Obrażenie Umiejętności: 5%	ضرر المهارات: 5%
+Obrażenie Umiejętności: 7%	ضرر المهارات: 7%
 Obrona %	الدفاع %
 Obrona +%.0f	الدفاع +%.0f
 Obrona +12~15%	الدفاع +12~15%
@@ -3697,11 +3952,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	الدفاع ضد مها�
 Obrona przed umiejętnością Wir Miecza +%.1f%%	الدفاع ضد مهارة دوامة السيف +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	الدفاع ضد مهارة الكمين +%.1f%%
 Obrona przed śr. obrażeniami	الدفاع ضد متوسط الضرر
+Obrona przy Metinach	دفاع عند الميتين
 Obrona vs Ninja	الدفاع ضد النينجا
 Obrona vs Sura	الدفاع ضد السورا
 Obrona vs Szamanom	الدفاع ضد الشامان
 Obrona vs Wojownikom	الدفاع ضد المحاربين
 Obrońca	المدافع
+Obrońca (obrona)	المدافع (دفاع)
 Obrońca Chmur	حارس السحاب
 Obrońca Stylu Małp	مدافع أسلوب القرد
 Obrót %d/%s, wydano %d SM	الدورة %d/%s، أُنفق %d من عملات التنين
@@ -3750,6 +4007,7 @@ Odbicie Walki. Wręcz	انعكاس القتال القريب
 Odbicie ataku fizycznego: %.0f%%	انعكاس الهجوم الجسدي: %.0f%%
 Odbicie ciosu	انعكاس الضربة
 Odbicie pocisku	انعكاس المقذوف
+Odbierz GM...	سحب GM...
 Odbierz nagrodę	استلم المكافأة
 Odbierz nagrodę za turę	استلم مكافأة الجولة
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	استلم مكافأة الجولة في نافذة البحث عن الكنوز.
@@ -3773,6 +4031,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	هل تسلّم البند إلى سي�
 Oddelegowany Komendant	القائد المُنتدَب
 Odebrac range GM postaci %s?	هل تريد سحب رتبة المشرف من الشخصية %s؟
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	لا يمكنك استلام إلا مكافأة الجولة الحالية (%d).
+Odeslij boty	إعادة البوتات
 Odkryta karta	بطاقة مكشوفة
 Odnowa	التجدد
 Odp. na Br. Dwuręczną	مقاومة السلاح بيدين
@@ -3788,12 +4047,16 @@ Odp. na Wiatr	مقاومة الرياح
 Odp. na Ziemię	مقاومة الأرض
 Odpały	بنود مؤقتة
 Odpały (Sekundy)	بنود مؤقتة (ثوانٍ)
+Odpoczynek w miescie	الراحة في المدينة
 Odpornosc na omdlenia	مقاومة الإغماء
 Odpornosc na spowolnienie	مقاومة الإبطاء
 Odpornosc na upadek	مقاومة السقوط
+Odpornosc: Ninja	المقاومة: نينجا
+Odpornosc: Sura	المقاومة: سورا
 Odpornosc: Szaman	المقاومة: الشامان
 Odpornosc: Wojownik	المقاومة: المحارب
 Odpornosc: ataki fizyczne	المقاومة: الهجمات الجسدية
+Odpornosc: blyskawice	المقاومة: البرق
 Odpornosc: bron dwureczna	المقاومة: السلاح بيدين
 Odpornosc: cios krytyczny	المقاومة: الضربة الحرجة
 Odpornosc: dzwony	المقاومة: الأجراس
@@ -3802,8 +4065,12 @@ Odpornosc: ludzie	المقاومة: البشر
 Odpornosc: magia	المقاومة: السحر
 Odpornosc: miecze	المقاومة: السيوف
 Odpornosc: mrok	المقاومة: الظلام
+Odpornosc: obrazenia umiejetnosci	المقاومة: ضرر المهارات
+Odpornosc: ogien	المقاومة: النار
 Odpornosc: potwory	المقاومة: الوحوش
 Odpornosc: przebicie	المقاومة: الضربة الثاقبة
+Odpornosc: srednie obrazenia	المقاومة: متوسط الضرر
+Odpornosc: strzaly	المقاومة: السهام
 Odpornosc: sztylety	المقاومة: الخناجر
 Odpornosc: trucizny	المقاومة: السموم
 Odpornosc: wachlarze	المقاومة: المراوح
@@ -3832,6 +4099,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	مقاومة الظلام (+%d%%
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	المقاومة ضد النينجا: تقلل الضرر الذي تتلقاه من أيدي النينجا.
 Odporność na Obrażenia Fizyczne: %d%%	المقاومة ضد الضرر الجسدي: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	مقاومة النار (+%d%% من القيمة الإجمالية)
+Odporność na Ogień: 5%	مقاومة النار: 5%
 Odporność na Ognista Strzała	مقاومة السهم الناري
 Odporność na Przywołanie Błyskawicy	مقاومة استدعاء البرق
 Odporność na Strzał	مقاومة الرمية
@@ -3854,6 +4122,7 @@ Odporność na ataki fizyczne %d%%	المقاومة ضد الهجمات الجس
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	مقاومة الضربة الحرجة: تقلل الضرر الذي تتلقاه بسبب الضربة الحرجة.
 Odporność na fizyczne obrażenia	مقاومة الضرر الجسدي
 Odporność na krytyczne	مقاومة الضربات الحرجة
+Odporność na lód +5%	مقاومة الجليد +5%
 Odporność na lód, ziemię, ciemność	مقاومة الجليد والأرض والظلام
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	مقاومة الظلام: تقلل الضرر الذي تلحقه وحوش معينة.
 Odporność na obraż. umiej.	مقاومة ضرر المهارات
@@ -3870,6 +4139,7 @@ Odporność vs Ludziom	المقاومة ضد البشر
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	هل تريد تسريح الرفيق نهائياً؟ لا يمكن التراجع عن ذلك.
 Odrodz spawny	إعادة ظهور الوحوش
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	الفاصل بين عمليات الانتقال: %d د. بدون زنازين وخرائط الفعاليات.
+Odswiez liste	حدّث القائمة
 Odważny	الجريء
 Odwołaj	صرف
 Odwołaj zwierzaka, zanim go zaczarujesz.	ألغِ استدعاء الحيوان الأليف قبل تسحيره.
@@ -3926,6 +4196,7 @@ Ognista Runa Aury (10)	رونية هالة النار (10)
 Ogniste Buty	أحذية النار
 Ogniste Jajo Smoka	بيضة التنين الناري
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	للضربة النارية فرصة %d%% لردّ الضرر إلى الخصم
+Ognistej Strzały	السهم الناري
 Ognisty Duch Zodiaku	شبح اللهب للأبراج
 Ognisty Duch Żaru (BŚ)	شبح اللهب الجمري (زعيم عالمي)
 Ognisty Golem Mag	لحية اللهب الجمري
@@ -3952,6 +4223,7 @@ Okaz. Odłamek Hełmu I	شظية الخوذة الفاخرة I
 Okaz. Odłamek Hełmu II	شظية الخوذة الفاخرة II
 Okaz. Odłamek Zbroi I	شظية الدرع الفاخرة I
 Okaz. Odłamek Zbroi II	شظية الدرع الفاخرة II
+Okazały	فخم
 Okazały Efekt Zestawu	تأثير الطقم المهيب
 Okazały Kowal Zestawu	حداد المجموعة الفخمة
 Okienko %s - %s, bonusy %d / %d	الخانة %s - %s، الخصائص %d / %d
@@ -4009,6 +4281,7 @@ Osobisty Sklepik Premium	المتجر المميز الشخصي
 Ostatni boss	آخر زعيم
 Ostatni drop: %s	آخر سقوط: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	قد يكتمل آخر شراء بعد.
+Ostatnia nagroda:	آخر جائزة:
 Ostatnia sprzedaz botow: brak danych.	آخر بيع للروبوتات: لا توجد بيانات.
 Ostatnia strona	الصفحة الأخيرة
 Ostatnie 7 dni	آخر 7 أيام
@@ -4077,6 +4350,7 @@ Otrzymujesz: %s.	تحصل على: %s.
 Otrzymywane Obrażenia +%d%%	الضرر المتلقى +%d%%
 Otrzymywane obrażenia +%.0f%%	الضرر المتلقى +%.0f%%
 Otwarte skrzynie	الصناديق المفتوحة
+Otwarto skrzynek: %d.	تم فتح الصناديق: %d.
 Otwarto: %d szt.	تم فتح: %d قطعة
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	يفتح أبواب المجد والقوة. يمنح جميع مزايا الحساب المميز لمدة 30 يوماً.|العنصر قابل للتبادل.
 Otwiera je ewolucja peta	يُفتح بتطور الحيوان الأليف
@@ -4095,6 +4369,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	افتح الحزمة وا
 Otwórz ponownie	إعادة الفتح
 Otwórz sklep	فتح المتجر
 Otwórz sklep ponownie	إعادة فتح المتجر
+Otwórz skrzynie	افتح الصناديق
 Owoc Bogów	ثمرة الآلهة
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	ثمرة الرتبة: +200 نقطة رتبة (الرتبة العادية). تعمل من 0 إلى 20 000 نقطة. الرتبة الأولى (شجاع) من 21 000. الأمر /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	ثمرة الرتبة: +200 نقطة رتبة فوق الرتبة العادية. تعمل من 20 000 (الرتبة العادية الكاملة) إلى 40 000 نقطة. الأمر /ranga.
@@ -4193,6 +4468,7 @@ PB: Żołnierz Setaou	ا.ح: جندي Setaou
 PD czempiona	خبرة البطل
 PD z potworów: %s / %s	خبرة من الوحوش: %s / %s
 PD z przedmiotów: %s / %s	خبرة من البنود: %s / %s
+PID bota:	PID البوت:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	اهزم زعيم العالم (مرة في اليوم)
 PPM - następny event	زر أيمن - الفعالية التالية
 PPM / dwuklik: wyjmij stos	زر أيمن / نقر مزدوج: إخراج حزمة
@@ -4225,9 +4501,12 @@ Pancerne Rękawice	قفازات مدرعة
 Pancerny Hełm Dragona	خوذة دراغون المدرعة
 Pancerny Hełm Smoków	خوذة التنانين المدرعة
 Pancerz Czarnego Ognia	درع النار السوداء
+Pancerz Horroru+ (złoty)	درع الرعب+ (ذهبي)
 Pancerz Magmy	درع الحمم
 Pancerz Zodiaku	درع صدر الأبراج
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	لم تُحمَّل لوحة المشرف في هذا العميل - التفاصيل في syserr.txt
+Panel botów (GM)	لوحة البوتات (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	اللوحة في نسخة BETA. إذا لاحظت أخطاء
 Panterka (7 dni)	النمر الصغير (7 أيام)
 Pas Z Wężowej Skóry	حزام من جلد الأفعى
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	شريط خبرة الحصان ممتلئ - جرّب الترقية.
@@ -4238,6 +4517,7 @@ Pasy	الأحزمة
 Pasza dla Konia	علف الحصان
 Pasza dla Konia w ekwipunku: %d	علف الحصان في الحقيبة: %d
 Pazury Małpy	مخالب القرد
+Październik	أكتوبر
 Peleryny	العباءات
 Pelne PZ/PE	نقاط حياة/أسلوب كاملة
 Pergamin	رق
@@ -4251,6 +4531,7 @@ Perły	اللآلئ
 Pet	حيوان أليف
 Pety	الحيوانات الأليفة
 Pewne zmiany wymagają restartu gry, kontynuować?	بعض التغييرات تتطلب إعادة تشغيل اللعبة، هل تريد المتابعة؟
+Pełen werwy	مفعم بالحيوية
 Pełne EQ	الحقيبة ممتلئة
 Pełne doświadczenie - czas na rozwój.	خبرة كاملة - حان وقت التطوير.
 Pełne okno	نافذة بلا إطار
@@ -4336,6 +4617,7 @@ Piekielny Żarłacz Dusz	ملتهم الأرواح الجحيمي
 Piekło	الجحيم
 Piekło - wybierz respawn	الجحيم - اختر نقطة الظهور
 Pierwsza nagroda tury jest darmowa.	أول مكافأة في كل جولة مجانية.
+Pierwsza strona	الصفحة الأولى
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	الأول من ثلاثة كتب اليقظة. قد يزيد كاريزما المالك. يختفي الكتاب بعد القراءة. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	الأول من ثلاثة كتب قتال التشكيلات. قد يزيد إلهام المالك. يختفي الكتاب بعد القراءة. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
 Pierwszorzędne Buty	أحذية ممتازة
@@ -4343,6 +4625,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	أول "+" في تبويب ا�
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	أول "+" في تبويب المهارات يمنحك إياها أيضاً.
 Pierwszy 30 poziom	أول مستوى 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	أول إعادة ضبط للمهمة خلال 24 ساعة مجانية.
+Pierścień / amulet	خاتم / قلادة
 Pierścień Dośw. (iCafe)	خاتم الخبرة (مقهى الإنترنت)
 Pierścień Godności	خاتم الكرامة
 Pierścień Hydry	خاتم الهيدرا
@@ -4355,6 +4638,7 @@ Pierścień Wielkanocny	خاتم عيد الفصح
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	خاتم بنقش هلالي متقن الصنع. يمنح: +50% خبرة، +20% سرعة هجوم، +20% سرعة تعويذات، +30% هجوم، +10% أقصى صحة، +10% أقصى مانا.
 Pień+	جذع+
 Piorunowe Zioło	عشبة الرعد
+Pirat+ (m)	القرصان+ (ذ)
 Pisanie	الكتابة
 Pisklę Exedyara	فرخ إكسيديار
 Pióro Mędrca	ريشة الحكيم
@@ -4398,6 +4682,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	عند الاستخدام يضيف بطاقة وحش إلى المجموعة (بطاقات الوحوش في القائمة تحت Esc). لا يمكن تبادلها.
 Po zabiciu: kolejny, którego już biłeś	بعد القتل: التالي الذي سبق أن ضربته
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	بعد تحميل 8 سهام ستخترق الهواتشا حراشف بالاثور. تمنح بلورات الجليد القديمة السهام النارية. المحمّل: %d
+Pobieram drop...	جارٍ تحميل الغنائم...
 Pobieram ustawienia botow...	جارٍ جلب إعدادات الروبوتات...
 Pobieram zawartość z serwera...	جارٍ جلب المحتويات من الخادم...
 Pobieranie cen dla %d przedmiotow...	جارٍ جلب أسعار %d بندًا...
@@ -4436,7 +4721,10 @@ Podaj wartosc.	أدخل القيمة.
 Podaj wlasciciela i wybierz przedmiot.	أدخل المالك واختر البند.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	أثناء القتال توجد احتمالية %d%% لمقاومة السقوط (وقت إعادة الشحن 60 ث).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	أثناء القتال يُحتسب الضرر الذي توجّهه.
+Podczas walki otrzymasz efekt eliksiru księżyca	ستحصل أثناء القتال على تأثير إكسير القمر
+Podczas walki otrzymasz efekt eliksiru słońca	ستحصل أثناء القتال على تأثير إكسير الشمس
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	تسلل إلى العدو من الخلف ووجّه ضربة قاتلة.|تتعزز بـ: القوة (++)، المناورة (++).
+Podglad EQ	معاينة العتاد
 Podgląd niedostępny.	المعاينة غير متاحة.
 Podgląd skrzynki	معاينة الصندوق
 Podgląd skrzyń	معاينة الصناديق
@@ -4507,8 +4795,10 @@ Pokaż szatę aury	إظهار رداء الهالة
 Pokaż wizerunek broni	إظهار مظهر السلاح
 Pokaż założony tytuł	إظهار اللقب المُجهَّز
 Pokaż znowu wszystkie przedmioty	اعرض جميع البنود مرة أخرى
+Pokonaj %(n)s bossów	اهزم %(n)s من الزعماء
 Pokonaj %(n)s x %(what)s	اهزم %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	اهزم زعيم العالم في المنطقة المحايدة واكسب المكافآت!
+Pokonaj bossów	اهزم الزعماء
 Pokonane bossy	الزعماء المهزومون
 Pokonane minibossy	الزعماء الصغار المهزومون
 Pokonani gracze (przeciwne król.)	اللاعبون المهزومون (الممالك المعادية)
@@ -4577,6 +4867,7 @@ Portal Świątyni Węży	بوابة معبد الأفاعي
 Portal: Nowy Kontynent	البوابة: القارة الجديدة
 Posiada szanse na otrucie przeciwnika.	لديه فرصة لتسميم العدو.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	لديه فرصة لتسميم العدو ويتضمن الإغماء.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	لديك فرصة %d%% لجمع الأغراض القريبة تلقائيا لمدة 30 ثانية
 Postać ma za duży poziom.	مستوى الشخصية مرتفع جداً.
 Postać zostanie usunięta.	سيتم حذف الشخصية.
 Posterunek Trolli	مخفر التروّل
@@ -4674,7 +4965,10 @@ Poziom: %d (%s Szata Aury)	المستوى: %d (رداء الهالة %s)
 Poziom: %s	المستوى: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	المستوى: 1-19 أو M1-M10 أو G1-G10 أو P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	المستوى: رقم 1-19 أو M1-M10 أو G1-G10 أو P
+Pozostalo 23:59:59	المتبقي 23:59:59
 Pozostalo czasu: 30s	الوقت المتبقي: 30ث
+Pozostalo prob: 3	المحاولات المتبقية: 3
+Pozostalo: 45s	المتبقي: 45 ث
 Pozostaly czas: %ds	الوقت المتبقي: %dث
 Pozostałe	المتبقية
 Pozostałe misje	مهام أخرى
@@ -4696,6 +4990,7 @@ Pozwala wylosować nowe cele misji Kart Potworów.	يتيح سحب أهداف ج
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	يتيح إعادة ضبط مهمة بطاقات الوحوش بما يزيد على إعادة الضبط المجانية (مرة كل 24 ساعة).
 Pozwolenie na Wzmocn. Przedmiotu	تصريح تعزيز العنصر
 Pozwolenie na Zaczar. Przedmiotu	تصريح سحر العنصر
+Pozycja niezapisana	الموضع غير محفوظ
 Położenie	الموقع
 Położenie nieznane	الموقع غير معروف
 Połyskująca Biała Perła	لؤلؤة بيضاء لامعة
@@ -4781,9 +5076,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	مرشّح بسيط (الم
 Prosty rozpryskowy atak	هجوم متناثر بسيط
 Proszę wpisać nazwę sklepu	يرجى إدخال اسم المتجر
 Proszę wybrać czas trwania sklepu	يرجى اختيار مدة المتجر
+Prowadza stragan: %s	يدير متجرا: %s
+Prowadza stragan: -	يدير متجرا: -
 Prywatność	الخصوصية
 Pryzmat Ożywienia	منشور الإحياء
 Pryzmat Ożywienia (Q)	منشور الإحياء (Q)
+Pryzmatyczny	منشوري
 Przeb. Księga Zwierza	كتاب الحيوان المستيقظ
 Przebicie	الاختراق
 Przebicie bloku	اختراق الصد
@@ -4962,8 +5260,10 @@ Próby	المحاولات
 Prędkość ataku	سرعة الهجوم
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	سرعة الهجوم +%(v)s%% لمدة %(d)d ث بعد الهجوم من على ظهر الدابة (كل 180 ث)
 Prędkość czarowania	سرعة إلقاء التعاويذ
+Prędkość po zsiadaniu	السرعة بعد النزول
 Prędkość ruchu	سرعة الحركة
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	سرعة الحركة +%(v)s%% لمدة %(d)d ث بعد الهجوم من على ظهر الدابة (كل 180 ث)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	تزداد سرعة الحركة بنسبة %d%% لمدة 10 ثوان.
 Prędkość ruchu znacznie zwiększona.	سرعة الحركة زادت بشكل كبير.
 Pudełko Kart Potworów Yohary	صندوق بطاقات وحوش Yohara
 Pudło wędkarskich puzzli	صندوق ألغاز الصيد
@@ -4971,6 +5271,7 @@ Pula... pokazuje bossow danego przedzialu	المجموعة... تعرض زعما�
 Punkty Doświadczenia: +150%	نقاط الخبرة: +150%
 Punkty Rangi: %d	نقاط الرتبة: %d
 Punkty doswiadczenia %	نقاط الخبرة %
+Punkty doświadczenia +%d%%	نقاط الخبرة +%d%%
 Punkty konne:	نقاط الفروسية:
 Punkty miłości: %d%%	نقاط الحب: %d%%
 Punkty range:	نقاط الرتبة:
@@ -5119,6 +5420,7 @@ Requiem	ريكويم
 Reset Sklepu Gaya	إعادة ضبط متجر غايا
 Reset oferty	إعادة تعيين العرض
 Reset oferty (Reset Sklepu Gaya)	إعادة تعيين العرض (إعادة تعيين متجر غايا)
+Reset umiejętności	إعادة ضبط المهارات
 Resetuj	إعادة تعيين
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	أعد ضبط متجر غايا قبل مرور 5 ساعات واكتشف بنودًا ثمينة جديدة. استخدمه في متجر غايا بالميناء (تمثال المحارب في ميناء القارة الجديدة).
 Restart serwera...	إعادة تشغيل الخادم...
@@ -5168,6 +5470,7 @@ Rozbudowa jest teraz niedostępna.	التوسيع غير متاح الآن.
 Rozdaj od nowa (raz za darmo)	إعادة التوزيع (مرة مجاناً)
 Rozdane: %d	الموزَّع: %d
 Rozdzielczość	الدقة
+Rozkaz wysłany.	تم إرسال الأمر.
 Rozkazy dla botów twojej gildii	أوامر لروبوتات نقابتك
 Rozkazy wydaje mistrz gildii	الأوامر يصدرها زعيم النقابة
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	أنت تتحدث إلى |cffffb514مشرف اللعبة|r.
@@ -5201,6 +5504,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	يُطوَّر بكتاب الدقة (�
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	هل تطوّر الحيوان الأليف إلى رتبة «%s»؟ ستختفي المواد.
 Rozwiń pasek	توسيع الشريط
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	توسيع: كل أشرطة الوصول السريع (4 x 8)
+Rozwój	التطور
 Rozwój do stopnia: %s	التطوير إلى الرتبة: %s
 Rozwój konia	تدريب الحصان
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	تدريب الحصان: علف الحصان غير كافٍ (المطلوب %(a)d).
@@ -5227,6 +5531,7 @@ Ruda Turmalinu	خام التورمالين
 Rudy i przetopy	الخامات والصهر
 Ruiny Atlantydy	أطلال أطلنتس
 Ruiny Skorpiona	أطلال العقرب
+Rumi (Okey)	رومي (أوكي)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	رومي (أوكي): ستصل نافذة اللعبة مع تحديث اللعبة.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	السمكة تعضّ! انقر عليها %d مرة وهي تسبح في الدائرة (لديك %d ثانية).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	السمك المطهو على نار المخيم وجبة مدخنة رائعة.
@@ -5263,6 +5568,7 @@ Rzeźnik Piekielnej Wieży	جزار البرج الجحيمي
 Rzeźnik Wężowy	جزار الأفعى
 Rzuca na ciebie swoje buffy.	يلقي عليك تعزيزاته.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	ترمي على الخصوم ما يمتلئ بضوء نجمة.|تتعزز بـ: المناورة (++)، مستوى الشخصية.
+Rzucam buffy	أطلق التعزيزات
 Rzygacz	الوحش الحجري
 Róg Balathora	قرن بالاثور
 Róg Nemere	قرن نيميري
@@ -5442,11 +5748,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	الخادم: لا يوجد تأ
 Serwer: czekam na potwierdzenie	الخادم: بانتظار التأكيد
 Sesja już trwa.	هناك جلسة جارية بالفعل.
 Sesja zakończona: osiągnięto limit czasu.	انتهت الجلسة: بلغت الحد الزمني.
+Sesje (z bieżącą)	الجلسات (مع الحالية)
+Sezon %d	الموسم %d
 Sezon %d - %s (do końca: %d dni %s)	الموسم %d - %s (المتبقي: %d يوماً %s)
+Sezon: Chunjo	الموسم: تشونجو
+Sezon: Jinno	الموسم: جينو
+Sezon: Shinsoo	الموسم: شينسو
 Sfera Losu Zwierzaka	كرة قدر الحيوان الأليف
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	كرة المصير: تُظهر نوع الحيوان الأليف (تستهلك كرة مصير الحيوان الأليف)
 Shaman Armor	درع الشامان
 Shield	ترس
+Shift + LPM	Shift + زر أيسر
 Shoes	أحذية
 Shop Decoration	زخرفة المتجر
 Shop Decoration n.{}	زخرفة المتجر رقم {}
@@ -5457,6 +5769,7 @@ Shopping Safebox	خزنة المشتريات
 Show Filter Informations	عرض معلومات المرشحات
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	تزرع ريحًا خفيفة، وأعداؤك يحصدون عاصفة هوجاء. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Sierp (Pieczęć)	ختم الهلال
+Sierpień	أغسطس
 Silna Fala Śmierci	موجة الموت القوية
 Silna Tarcza Eteru	درع الأثير القوي
 Silne Trzęsienie	الهزة القوية
@@ -5472,6 +5785,7 @@ Silny Druid En-Tai	درويد En-Tai القوي
 Silny Dziki Piechur	ماشٍ بري قوي
 Silny Dziki Sluga	خادم بري قوي
 Silny Kam. Przebudzenia	حجر يقظة قوي
+Silny Malpi Zolnierz	جندي قرد قوي
 Silny Meteor	النيزك القوي
 Silny Niszczyciel En-Tai	مدمر En-Tai القوي
 Silny Piekielny Cios	الضربة الجهنمية القوية
@@ -5525,23 +5839,34 @@ Silny.	قوي.
 Siła Ataku	قوة الهجوم
 Siła Ataku %.0f-%0.f	قوة الهجوم %.0f-%0.f
 Siła Ataku +%.0f	قوة الهجوم +%.0f
+Siła Ataku: +%.0f	قوة الهجوم: +%.0f
+Siła Błyskawic	قوة البرق
 Siła Błyskawic (+%d%% łącznej wartości)	قوة البرق (+%d%% من القيمة الإجمالية)
 Siła Błyskawic +%d%%	قوة البرق +%d%%
+Siła Błyskawic +5%	قوة البرق +5%
+Siła Lodu	قوة الجليد
 Siła Lodu (+%d%% łącznej wartości)	قوة الجليد (+%d%% من القيمة الإجمالية)
 Siła Lodu +%d%%	قوة الجليد +%d%%
+Siła Lodu +5%	قوة الجليد +5%
 Siła Mroku	قوة الظلام
 Siła Mroku (+%d%% łącznej wartości)	قوة الظلام (+%d%% من القيمة الإجمالية)
 Siła Mroku +%d%%	قوة الظلام +%d%%
+Siła Mroku +5%	قوة الظلام +5%
 Siła Obrony	قوة الدفاع
+Siła Ognia	قوة النار
 Siła Ognia (+%d%% łącznej wartości)	قوة النار (+%d%% من القيمة الإجمالية)
 Siła Ognia +%d%%	قوة النار +%d%%
+Siła Ognia +5%	قوة النار +5%
 Siła Sung Ma	قوة سونغ ما
 Siła Sung Ma +%d	قوة سونغ ما +%d
+Siła Wiatru	قوة الرياح
 Siła Wiatru (+%d%% łącznej wartości)	قوة الرياح (+%d%% من القيمة الإجمالية)
 Siła Wiatru +%d%%	قوة الرياح +%d%%
+Siła Wiatru +5%	قوة الرياح +5%
 Siła Ziemi	قوة الأرض
 Siła Ziemi (+%d%% łącznej wartości)	قوة الأرض (+%d%% من القيمة الإجمالية)
 Siła Ziemi +%d%%	قوة الأرض +%d%%
+Siła Ziemi +5%	قوة الأرض +5%
 Siła ataku +%.0f-%.0f	قوة الهجوم +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	قوة الهجوم أكبر إذا وُجّهت الضربة من الخلف
 Siła ataku wroga -%d%%	قوة هجوم العدو -%d%% 
@@ -5633,6 +5958,7 @@ Skorpion Lucznik Zodiaku	رامي العقرب للأبراج
 Skorpion Wężowy	عقرب الأفعى
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	استفد من |cff2b80ffالعروض الخاطفة|r![ENTER]تستمر المزادات حتى |cff2b80ff%s|r على الأكثر[ENTER]أو حتى نفاد الكمية.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	يمكن أن تجد أحجار الروح المحطمة استخداماً جديداً.
+Skrytobójca	القاتل الخفي
 Skrytobójcza Wykałaczka	خلّة الأسنان القاتلة
 Skrz. Ninja M. Łuku (D)	صندوق نينجا القوس (كبير)
 Skrz. Ninja M.Ostrza (D)	صندوق نينجا النصل (كبير)
@@ -5693,12 +6019,16 @@ Skrzynka musi być w ekwipunku.	يجب أن يكون الصندوق في الح�
 Skrzynka na Zwierzaka	صندوق الحيوان الأليف
 Skrzynki	الصناديق
 Skrócenie ładowania um. o %d%%	تقليل وقت شحن المهارة بنسبة %d%% 
+Skróty	الاختصارات
+Skróty klawiszowe	اختصارات لوحة المفاتيح
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	ركّز هجماتك على بيضة التنين المتجمدة قبل أن تختفي بعد %d ثانية.
 Skóra Przeklętego Niedźwiedzia	جلد الدب الملعون
 Skóra Przeklętego Tygrysa	جلد النمر الملعون
 Skąd	المصدر
 Składnik do produkcji lekarstwa iluzji.	مكوّن لإنتاج دواء الوهم.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	مكوّن لتطوير أحجار الروح عند الحداد (من +4): يلزم 1 و1 و2 و2 و3 قطع للدرجات التالية، إلى جانب الغبار السحري. يسقط من ساحرة الجليد القوية (كهف المنفيين) وBeran-Setaou (عرين التنين) وملكة الأدغال (الأدغال القديمة).
+Slaby Malpi Miotacz	رامي قرد ضعيف
+Slaby Malpi Zolnierz	جندي قرد ضعيف
 Slot z krzyżykiem jest jeszcze zamknięty.	الخانة التي عليها علامة × ما زالت مغلقة.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	الخانة مقفلة: ستفتحها توسعة متجر غايا x%d.
 Sloty umiejętności: %d	خانات المهارات: %d
@@ -5732,9 +6062,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	حدث خطأ ما. (خطأ عام)
 Songmin, Arktyczne Yeti	Songmin، اليتي القطبي
 Sort by price	الترتيب حسب السعر
+Sortowanie autopickup	ترتيب الالتقاط التلقائي
 Sortowanie i wyszukiwanie	الفرز والبحث
 Sortuj po cenie całej oferty	الفرز حسب سعر العرض بأكمله
 Sortuj po cenie oferty albo za sztukę	رتّب حسب سعر العرض أو سعر القطعة
+Sortuj po ilości	الترتيب حسب الكمية
 Soul Crystal Alchemist	كيميائي بلورة الروح
 Sowa Księżycowa	بومة القمر
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	فساد الظلام;يحترق جلدك ويتشقق تحت الطاقة المظلمة،;مما يعرضك لضرر أكبر.
@@ -5743,6 +6075,7 @@ Spalone przedmioty u Kowala	العناصر المحروقة عند الحداد
 Sparta Jungrang+ (k)	سبارتا جونغرانغ+ (أ)
 Sparta Jungrang+ (m)	سبارتا جونغرانغ+ (ذ)
 Spartaner	سبارتانر
+Spawn Botow	ظهور البوتات
 Specjalne	خاصة
 Specjalne Zioła	الأعشاب الخاصة
 Specjalny	الخاص
@@ -5756,6 +6089,7 @@ Sportowa Fryzura(czarna)	تسريحة رياضية (أسود)
 Spostrzegawczość	سرعة البديهة
 Społeczność	المجتمع
 Sprawdz konto	فحص الحساب
+Sprawdz status	تحقق من الحالة
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	جارٍ التحقق من دعم الخادم. اسحب البنود إلى سلة المهملات.
 Sprawdzanie...	جارٍ التحقق...
 Sprawdź ekwipunek	فحص الحقيبة
@@ -5781,6 +6115,7 @@ Srebrne Płyty	صفائح فضية
 Srebrny Grot	رأس سهم فضي
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	قلادة فضية على شكل قلب مرصعة بجواهر سحرية. تمنح: +30% خبرة، +10% سرعة هجوم، +10% سرعة تعويذات، +10% قوة ضد الوحوش، +5% أقصى صحة، +5% أقصى مانا.
 Srednia: %s / szt.	المتوسط: %s / للقطعة
+Srednie obrazenia	متوسط الضرر
 Stabilne Sznury	حبال متينة
 Stajnia i polowanie na medale w Lochu Malp.	الإسطبل وصيد الميداليات في زنزانة القرود.
 Stal	فولاذ
@@ -5790,8 +6125,9 @@ Stalowy Hełm Dragona	خوذة دراغون الفولاذية
 Stalowy Hełm Smoków	خوذة التنانين الفولاذية
 Stamina / sek.: %d	التحمل / ثانية: %d
 Stan (czat)	الحالة (دردشة)
-Standardowa Muzyka Metin2	موسيقى اللعبة الافتراضية
-Standardowa muzyka Metin2	موسيقى اللعبة الافتراضية
+Stan: %s	الحالة: %s
+Standardowa Muzyka Metin2	موسيقى اللعبة القياسية
+Standardowa muzyka Metin2	موسيقى اللعبة القياسية
 Stanton-Płatnerz	Stanton - صانع الدروع
 Stara Fryzura (biała)	تسريحة قديمة (أبيض)
 Stara Fryzura (czarna)	تسريحة قديمة (أسود)
@@ -5811,6 +6147,7 @@ Starożytny Robak	الدودة القديمة
 Starożytny Skorpion	العقرب القديم
 Starożytny Wojownik	المحارب القديم
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	لفافة قديمة تتيح تدفق قوة Woel - تسمح بسحب بركات جديدة عشوائياً.
+Starszy Hazardzista	مقامر محنك
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	رق قديم بأمر قتل، يفعّل المهام بعد استخدامه.
 Statua Chena	تمثال Chen
 Statua Chou	تمثال Chou
@@ -5880,19 +6217,25 @@ Strażnik Rozpad. Dusz	حارس صدع الأرواح
 Strażnik Ruin	حارس الأطلال
 Strażnik Smoków Dolnarr	حارس التنين Dolnarr
 Strażnik Smoków Jaharr	حارس التنين Jaharr
+Strażnik Srebr. Piasku+	حارس الرمال الفضية+
 Strażnik Trytonów	حارس التريتون
 Strażnik Wzgórza	حارس التل
 Strażnik Węży	حارس الأفاعي
 Strażnik z Yohara	الحارس من Yohara
+Strefa Surowców	منطقة الموارد
 Strona %d / %d	الصفحة %d / %d
 Strona %d / %d (%d)	صفحة %d / %d  (%d)
 Strona %d/%d	الصفحة %d/%d
 Strona 1	الصفحة 1
 Strona WWW	الموقع الإلكتروني
+Strona ekwipunku I	صفحة الجرد I
 Strona ekwipunku II	صفحة الحقيبة II
 Strona ekwipunku II (wymienna)	صفحة المخزون II (قابلة للتبادل)
+Strona ekwipunku III	صفحة الجرد III
 Strona ekwipunku IV	صفحة الحقيبة IV
 Strz. dół	سهم لأسفل
+Strz. góra	سهم لأعلى
+Strz. lewo	سهم لليسار
 Strz. prawo	سهم لليمين
 Strzał Wichury	رمية العاصفة
 Strzał Wichury (9.skill)	رمية العاصفة (المهارة 9)
@@ -5900,6 +6243,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	رم�
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	سهم لقوس النينجا. ضرر كامل حتى 5 م من الهدف (مكافأة مدى القوس تطيل هذه المسافة)، ثم ينقص 5% عن كل متر إضافي. الجعبة لا تفقد الضرر مع المسافة.
 Strzały: Handlarz Bronią (cena NPC).	السهام: تاجر الأسلحة (سعر الشخصية غير اللاعبة).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	أطلق صور التنين وهاجم الأعداء.|تتعزز بـ: الذكاء (++)، المناورة (الإصابة) (+)، مستوى الشخصية.
+Strzelającego Smoka	التنين الرامي
 Strój Czarodzieja	زي الساحر
 Strój Czarodzieja+	زي الساحر+
 Strój Zombie	زي الزومبي
@@ -5921,6 +6265,7 @@ Stwór z Głębin	مخلوق الأعماق
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	اصنع انفجارًا كبيرًا بأطراف أصابعك.|تتعزز بـ: الذكاء (++)، القوة (+)، مستوى الشخصية.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	اصنع إعصارًا قويًا لهزيمة عدة أعداء.|تتعزز بـ: الذكاء (++)، القوة (+)، مستوى الشخصية.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	اصنع سحابة سامة حول الأعداء وسممهم.|تتعزز بـ: المناورة (++)، القوة (+)، مستوى الشخصية.
+Styczeń	يناير
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	تسريحة أنيقة لكنها تبدو دهنية، مسرّحة إلى الخلف، والخصلات الشاردة هي لمستها الأساسية. تغيّر تسريحة شخصيتك بشكل دائم.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	تسريحة أنيقة للشامان. تغيّر تسريحة شخصيتك بشكل دائم.
 Su-Sin	سو-سين
@@ -5944,11 +6289,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	لا يمكن �
 Sun Herb	عشبة الشمس
 Super Kamienie Metin (+%d)	أحجار ماتين الخارقة (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	المكمّل (حتى 5 قطع): صغير +1%، متوسط +2%، كبير +4%، قوي +10% للقطعة.
+Sura (Broń)	سورا (سلاح)
+Sura (Czarna Magia)	سورا (السحر الأسود)
 Sura Armor	درع السورا
 Sura Czarna Magia	السحر الأسود للسورا
 Sura Mistrz Broni	سيد أسلحة السورا
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	مواد خام لازمة لصنع العناصر الفريدة وتطويرها.
 Sutra	السوترا
+Swiat i eventy	العالم والأحداث
+Swiatynia Hwang	معبد هوانغ
+Swiatynia Ochao	معبد الآشاو
 Swiatynia Zodiaku	معبد الأبراج
 Switchbot (zmiana bonusów)	سويتش بوت (تغيير المكافآت)
 Switchbot - zmiana bonusów	سويتش بوت - تغيير الخصائص
@@ -5956,10 +6306,12 @@ Switchbot wymaga nowego klienta (exe 3.0).	سويتش بوت يتطلب لعبة
 Sword	سيف
 Symbol zręczności, popularny wśród złodziei.	رمز البراعة، شائع بين اللصوص.
 Synowie Pustyni	أبناء الصحراء
+Szalenie odważny	شجاع للغاية
 Szalony Hazardzista	المقامر المجنون
 Szalony Naukowiec	العالم المجنون
 Szalony Wędkarz	الصياد المجنون
 Szaman (Leczenie)	الشامان (الشفاء)
+Szaman (Smok)	شامان (تنين)
 Szaman Leczenie	شفاء الشامان
 Szaman Smok	تنين الشامان
 Szamanka (K)	شامانة (أ)
@@ -5975,6 +6327,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	فرصة اختراق الم
 Szansa na Spowolnie.	فرصة الإبطاء
 Szansa na Uziemienie %.0f%%	فرصة التثبيت %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	فرصة صد الضربات: تزيد فرصة تفادي الهجوم من مسافة قصيرة.
+Szansa na cios krytyczny +2%	فرصة الضربة الحرجة +2%
+Szansa na cios krytyczny +5%	فرصة الضربة الحرجة +5%
+Szansa na cios krytyczny +7%	فرصة الضربة الحرجة +7%
+Szansa na cios krytyczny +8%	فرصة الضربة الحرجة +8%
 Szansa na cios krytyczny: +%.0f%%	فرصة الضربة الحرجة: +%.0f%%
 Szansa na cios przebicia %.0f%%	فرصة الضربة الثاقبة %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	فرصة إسقاط اليانغ: تزيد فرصة الحصول على مزيد من اليانغ.
@@ -6003,12 +6359,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	زادت فرصة
 Szansa na przebicie	فرصة الضربة الثاقبة
 Szansa na przebicie +10%	فرصة الاختراق +10%
 Szansa na przedmiot z bonusem	فرصة بند بمكافأة
+Szansa na przeszywające Uderzenie: 2%	فرصة الضربة النافذة: 2%
+Szansa na przeszywające Uderzenie: 5%	فرصة الضربة النافذة: 5%
+Szansa na przeszywające Uderzenie: 8%	فرصة الضربة النافذة: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	فرصة الضربة الثاقبة: تزيد فرصة توجيه ضربة ثاقبة.
 Szansa na przeszywający strzał +%.0f%%	فرصة الرمية الثاقبة +%.0f%%
 Szansa na spowolnienie	فرصة الإبطاء
 Szansa na transfer %d%% otrzymanych obrażeń do PE	فرصة لتحويل %d%% من الضرر المتلقى إلى نقاط الأسلوب
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	فرصة مراوغة السهم: تزيد فرصة تفادي سهم أو هجوم بعيد المدى من وحش.
 Szansa na wydobycie rudy +%d%%	فرصة استخراج الخام +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	فرصة سقوط غرض من الزعيم +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	فرصة سقوط العناصر مرفوعة 1.5 مرة لأعضاء iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	فرصة الحصول على العناصر مضروبة في %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	فرصة الحصول على يانغ مضروبة في %.1f
@@ -6059,12 +6419,15 @@ Szary Barwnik	صبغة رمادية
 Szary Lśniący Odłamek	شظية لامعة رمادية
 Szary Sok	عصير رمادي
 Szata	الرداء
+Szata Dżinna+ (m)	رداء الجني+ (ذ)
 Szata Harmonii	ثوب الانسجام
 Szata Księżyca	ثوب القمر
 Szata Ognia	ثوب النار
 Szata Wiary	رداء الإيمان
 Szata Zodiaku	ثوب الأبراج
 Szata aury: ewolucja	رداء الهالة: التطور
+Szata aury: przenieś parametry	رداء الهالة: نقل الخصائص
+Szata aury: rozwój	رداء الهالة: التطوير
 Szczyt rodzaju - czas na ewolucję	بلغ ذروة الفئة - حان وقت التطور
 Szczytobłysk 830 9454	قمة البريق 830 9454
 Szczytomrok 3393 9454	قمة الظلام 3393 9454
@@ -6077,6 +6440,7 @@ Szkarłaczny Żądłak	اللاسع القرمزي
 Szkat. Chegala	صندوق تشيغال
 Szkat. Olbrzym. Drzewa	صندوق الشجرة العملاقة
 Szkatulka Ksiezycowa - z rozbitego Metina	صندوق القمر الصغير - من حجر ماتين المحطم
+Szkatulka Ksiezycowa - z zabitego potwora	صندوق القمر - من وحش مقتول
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	صندوق صغير لـ Chegal، جالوت الظل. يوجد بداخله شيء ثمين.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	صندوق صغير لروح الشجرة العملاقة. يوجد بداخله شيء ثمين.
 Szkatułka Yohara	صندوق يوهارا الصغير
@@ -6095,6 +6459,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	خشب نبيل من سيد En-Tai. خذه إلى باحث الغابة.
 Szlachetne Drzewo (PB)	شجرة نبيلة (ا.ح)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	شجرة كريمة (ا.ح) من سيد إن-تاي (ا.ح). أحضرها إلى باحث الغابة (ا.ح).
+Szlachetny Legionista+	الفيلقي النبيل+
 Szmaragdowy Marmur	الرخام الزمردي
 Szpon Kruka	مخلب الغراب
 Szpon Wężowy (wykon.)	مخلب الأفعى (صناعة)
@@ -6156,7 +6521,10 @@ Szybkość Ataku +5%	سرعة الهجوم +5%
 Szybkość Buffi	سرعة بوفي
 Szybkość Ruchu +%.0f%%	سرعة الحركة +%.0f%%
 Szybkość Ruchu 20%	سرعة الحركة 20%
+Szybkość Zaklęcia +2%	سرعة التعويذة +2%
+Szybkość Zaklęcia +5%	سرعة التعويذة +5%
 Szybkość czarowania	سرعة إلقاء التعاويذ
+Szybkość ruchu +%d%%	سرعة الحركة +%d%%
 Szybkość: %d zmian/s	السرعة: %d تبديل/ث
 Słaba Zbroja	درع ضعيف
 Słaba jakość strzału: od %.1fm	جودة رمي ضعيفة: ابتداءً من %.1fm
@@ -6164,6 +6532,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	العجوز اللطيفة
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	تميمة حلوة لعيد الحب. تمنح: +50% خبرة، +20% سرعة هجوم، +20% سرعة تعويذات، +10% قوة ضد الوحوش، +10% أقصى صحة، +10% أقصى مانا. يمر الوقت حتى عندما لا ترتديها.
 Słodkowodna ryba drapieżna występująca w tropikach.	سمكة مفترسة من المياه العذبة تعيش في المناطق المدارية.
+Słon. Szata Wukong+ (m)	رداء ووكونغ الشمسي+ (ذ)
 Słonecznik: obrona +%d%%	عباد الشمس: الدفاع +%d%%
 Słowa z nazw przedmiotów (po przecinku)	كلمات من أسماء البنود (مفصولة بفاصلة)
 Słudzy Sung Mahi	خدم سونغ ماهي
@@ -6370,8 +6739,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	اليوم {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	غداً {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	إجراءات كثيرة في وقت قصير. يرجى الانتظار قليلاً والمحاولة مرة أخرى.
+Top przedmiotów	أفضل الأغراض
 Topaz Woli	توباز الإرادة
 Torba towarzysza: weź do siebie	حقيبة الرفيق: خذ إلى نفسك
+Towarzysz (nierozwijany)	الرفيق (غير مطوي)
 Towarzysz bierze tylko cały stos.	يأخذ الرفيق الحزمة كاملة فقط.
 Towarzysz dostanie ścieżkę na 5 poziomie.	سيحصل الرفيق على مسار عند المستوى 5.
 Towarzysz drużyny	رفيق الفريق
@@ -6383,9 +6754,11 @@ Towarzysz zakłada grupę i cię zaprasza.	يكوّن الرفيق مجموعة 
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	سيستهلك الرفيق كتاب النسيان أو وثيقة إعادة المهارات.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	الرفيق وCor Draconis ومهام الأنظمة لا تظهر هنا.
 Towarzysze są tu wyłączeni.	الرفقاء معطّلون هنا.
+Towarzysze są wyłączeni na tym serwerze.	الرفاق معطّلون على هذا الخادم.
 Trade Hub	مركز التجارة
 Trafienia	الإصابات
 Transfer bonusów	نقل المكافآت
+Transfer obrazen do PM	تحويل الضرر إلى نقاط المانا
 Transformuj kostium	تحويل الزي
 Transporter jest pusty.	المنقل فارغ.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	يدرّب مهارة بوفي من الرتبة G1 إلى P، مثل الحجر الروحي للمهارات العادية (نقاط الرتبة، المحاولة التالية بعد 12 ساعة، لفيفة طرد أرواح الشر فورًا). يسقط من أحجار ماتين والزعماء بدءًا من الغابة المسحورة فما فوق.
@@ -6435,6 +6808,7 @@ Twierdza Czerwonego Smoka (SZC)	حصن التنين الأحمر (ف.ز)
 Twierdza Razadora	حصن رازادور
 Two Hand Sword	سيف بيدين
 Twoja Gaya: %s	غايا لديك: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	يزداد دفاعك بنسبة %d%% لمدة 5 ثوان.
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	موقعك: يعرض الخريطة التي أنت فيها ويوسّط العرض عليها.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	سيعزف فولاذك أغاني العالم في ساحة المعركة. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Twoje Smocze Monety: %d	عملات التنين لديك: %d
@@ -6469,6 +6843,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	تحصل نقابتك
 Tylko BETA	تجريبي فقط
 Tylko IMPLEMENTOR zmienia GM innych postaci.	المنفّذ (IMPLEMENTOR) فقط يغيّر رتب المشرفين للشخصيات الأخرى.
 Tylko broń, zbroje i kostiumy dla tej płci	الأسلحة والدروع والأزياء لهذا الجنس فقط
+Tylko dla mnie	لي فقط
 Tylko dla mnie: cały drop jest twój.	لي وحدي: كل الغنائم لك.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	قلة فقط يفهمون هذه اللغة القديمة التي اشتُق منها اسم هذا السلاح. ومع ذلك لم يجرؤ أحد منهم على ترجمة هذا الاسم. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Tylko scal stosy	ادمج الأكوام فقط
@@ -6487,6 +6862,7 @@ Typ: -	النوع: -
 Type	النوع
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	خصائص المعدات الشائعة أو كل ما تعرفه اللعبة
 Tysieczny Wojow. Zodiaku	مقاتل الألف للأبراج
+Tysieczny Wojownik	محارب الألف
 Tytuł %s wygaśnie za niecałą godzinę.	سينتهي اللقب %s خلال أقل من ساعة.
 Tytuł Czciciel Słońca	اللقب: عابد الشمس
 Tytuł Czempion Nyx	اللقب: بطل نيكس
@@ -6540,12 +6916,15 @@ Udało ci się ochronić Goblina Skarbów!	نجحت في حماية غوبلن �
 Udało się odeprzeć lodowy chłód.	نجحت في صدّ البرد الجليدي.
 Udało się: %s	نجحت العملية: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	اضرب، وسيدق الجرس لأحدهم! سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
+Uderzenia Palcem	ضربات الإصبع
 Uderzenie Pioruna	ضربة الصاعقة
 Uderzenie Płonącego Palca	ضربة الإصبع المشتعل
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	لضربة الأصبع فرصة %d%% لردّ الضرر إلى الخصم
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	حصة الروبوتات التي تبقى قليلًا عند الأكشاك بعد التسوق في المدينة بدلًا من العودة فورًا إلى الصيد. 100% تعني مدينة نابضة بالحياة، و 0% - الجميع في الميدان.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	حصة أصحاب الأكشاك الذين يعرضون على الطاولة تطويراتهم الضعيفة (من +0 إلى +3) بسعر زهيد بدلًا من بيعها للشخصيات غير القابلة للعب - خردة للصهر عند الحداد كما في خوادم الصعوبة العالية. معطّل افتراضيًا.
+Udział	الحصة
 Ukończ %(n)s lochów	أكمل %(n)s من الزنازين
+Ukończ lochy	أكمل الأقبية
 Ukończenia: %d	مرات الإكمال: %d
 Ukończone	مكتملة
 Ukończone księgi misji	كتب المهام المكتملة
@@ -6554,6 +6933,7 @@ Ukończone wyprawy	البعثات المكتملة
 Ukończone: %d / %d	المكتمل: %d / %d
 Ukryj aury umiejętności	إخفاء هالات المهارات
 Ukryj budynki i obiekty	إخفاء المباني والأجسام
+Ukryj cudze	أخفِ الآخرين
 Ukryj czaszkę nad bossami	إخفاء الجمجمة فوق الزعماء
 Ukryj drzewa	إخفاء الأشجار
 Ukryj efekty wzmocnień (szaman)	إخفاء مؤثرات التعزيزات (شامان)
@@ -6592,11 +6972,14 @@ Ulepszenie: Zasadzka	تحسين: الكمين
 Ulepszenie: od 0 do 9.	التطوير: من 0 إلى 9.
 Ulepszona Butelka	زجاجة مطوَّرة
 Ulepszony Barwnik	صبغة محسّنة
+Ulepszysz do: %s	ستطوّر إلى: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	ستطوّرها عند مربّي الخيل (تدريب الحصان).
 Ulepszyć %s do poziomu %d?	هل تريد تطوير %s إلى المستوى %d؟
 Ultra	فائق
 Ulubieni na górze listy	المفضلون في أعلى القائمة
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	تسريحة المحاربين المنفردين المفضلة، تبدو رائعة عندما تهب الرياح. تغيّر تسريحة شخصيتك بشكل دائم.
+Umiejetnosci widac tylko u gracza online	المهارات تظهر للاعب المتصل فقط
+Umiejętn.	المهارات
 Umiejętności konia (miejsca: %d z 2)	مهارات الحصان (الخانات: %d من 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	يمكن تعليم المهارات من رتبة «البطولي».
 Umiejętności pomocnicze	المهارات المساعدة
@@ -6604,6 +6987,7 @@ Umiejętności potencjału	مهارات الإمكانات
 Umiejętności potencjału (tylko czempion, 2 sloty)	مهارات الإمكانات (للبطل فقط، الخانات: 2)
 Umiejętności potencjału (z jaj zwierzaków)	مهارات الإمكانات (من بيض الحيوانات الأليفة)
 Umiejętności rozdaję sam	أوزّع نقاط المهارات بنفسي
+Umiejętności towarzysza	مهارات الرفيق
 Umiejętności zwierzaka (3 sloty)	مهارات الحيوان الأليف (3 خانات)
 Umiejętności: przeciągnij je z okna postaci do pól.	المهارات: اسحبها من نافذة الشخصية إلى الخانات.
 Umiejętność %d	المهارة %d
@@ -6616,6 +7000,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	زي كان ي
 Unik	المراوغة
 Unik Strzały	مراوغة السهم
 Unik: %d%%	المراوغة: %d%%
+Uniknięcie śmierci	تجنب الموت
 Upiorne Echo	الصدى الشبحي
 Upiorny Strażnik	الحارس الشبحي
 Upiorny Wojownik	المحارب الشبحي
@@ -6633,6 +7018,8 @@ Ustaw nowe hasło na stronie.	عيّن كلمة مرور جديدة على ال�
 Ustaw ten pasek jako aktywny (%d)	اجعل هذا الشريط نشطاً (%d)
 Ustawienia Społeczności zapisane.	تم حفظ إعدادات المجتمع.
 Ustawienia Walki	إعدادات القتال
+Usun GM	احذف مشرف اللعبة
+Usun Moby	احذف الوحوش
 Usun potwory	إزالة الوحوش
 Usun przedmioty	حذف البنود
 Usun wszystkie	إزالة الكل
@@ -6685,14 +7072,17 @@ Uziemienie	التجذير
 Ułóż i scal	رتّب وادمج
 Użycie	الاستخدام
 Użyj	استخدم
+Użyj %(n)s przedmiotów	استخدم %(n)s أغراض
 Użyj %(n)s x %(what)s	استخدم %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	استخدم كتاب مهارة الحيوان الأليف من حقيبتك
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	استخدمه في معبد الأفاعي لتمديد وقت البعثة بدقيقة (بحد أقصى 60 دقيقة).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	استخدمه لكشف 5 أماكن مقفلة في متجرك الشخصي.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	استخدم الخاتم في مملكة العناصر (في إحدى المناطق التسع) لتنتقل دائمًا إلى هضبة قوة الطبيعة. يختفي الخاتم بعد الاستخدام.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	استخدم الخاتم في مملكة العناصر (في إحدى المناطق التسع) لتحصل على فرصة (10%) للانتقال الفوري إلى هضبة قوة الطبيعة. يختفي الخاتم عند كل استخدام. يسقط من جميع الوحوش وأحجار ماتين في مملكة العناصر (المدخل: البوابة والعجوز في ميناء القارة الجديدة).
+Użyj przedmiotu	استخدم غرضا
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	استخدمه لتفعيل قفل الخبرة أو تعطيله. بلا حد زمني.
 Użyj, kiedy zablokujesz się w "teksturach".	استخدمه عندما تعلق في "الأسطح".
+Użytkowe	قابلة للاستخدام
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	باستخدام أجنحة تنين ألتيران يمكنك تحسين قطعة العتاد.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	باستخدام هذه الرخصة يمكنك تجنيد مرتزق. (بلا استخدام حالياً - سيأتي مع تحديث Yohara القادم.)
 Używalne	قابل للاستخدام
@@ -6782,6 +7172,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	للضربة القوية فر
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	عملة يوهارا (999 999 كحد أقصى). اصقل الحصى عند تمثال المحارب في الميناء، وادفع في متجر غايا وعند الصناعة.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	عملة التبادل: 1 وون = 100 000 000 يانغ.
 Wampir	مصاص الدماء
+Wampir+ (szary)	مصاص الدماء+ (رمادي)
 Warkocze Plem. (czerw.)	ضفائر قبلية (أحمر)
 Warkocze Plem. (fiol.)	ضفائر قبلية (بنفسجي)
 Warkocze Plem. (nieb.)	ضفائر قبلية (أزرق)
@@ -6795,11 +7186,14 @@ Wartosc ataku vs potwory	قيمة الهجوم ضد الوحوش
 Wartosc magicznego ataku	قيمة الهجوم السحري
 Wartownik z Yohara	حارس Yohara
 Wartość Ataku	قيمة الهجوم
+Wartość Ataku +30	قيمة الهجوم +30
 Wartość Ataku w potwory +%d	قيمة الهجوم ضد الوحوش +%d
 Wartość Ataku: +12~15%	قيمة الهجوم: +12~15%
 Wartość Magicznego Ataku: +30	قيمة الهجوم السحري: +30
 Wartość ataku +75 (miejsca 1-3)	قيمة الهجوم +75 (المراكز 1-3)
+Wartość bonusu dokładnie taka	قيمة المكافأة مطابقة تماماً
 Wartość bonusu taka albo niższa	قيمة المكافأة هذه أو أقل
+Wartość bonusu taka albo wyższa	قيمة المكافأة مساوية أو أعلى
 Wartość sklepu przekracza 2 miliardy Yang.	قيمة المتجر تتجاوز 2 مليار يانغ.
 Warunek: bonus o co najmniej podanej wartości	الشرط: خاصية بقيمة لا تقل عن القيمة المحددة
 Warunki	الشروط
@@ -6828,6 +7222,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	نسخة تجريب
 Wersja: %d.%d.%d%s	الإصدار: %d.%d.%d%s
 Wersja: 1.0.0	الإصدار: 1.0.0
 Wersja: xxx	الإصدار: xxx
+Wesoły Posłaniec Miłości	رسول الحب المرح
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	داخل هذه المحارة الرائعة قد تختبئ لؤلؤة لامعة.
 Wezowy Lucznik Zodiaku	الرامي الأفعواني للأبراج
 Wezowy Miecznik Zodiaku	المبارز الأفعواني للأبراج
@@ -6857,13 +7252,16 @@ Wielorybi Pancerz	درع الحوت
 Wieprzowina	لحم الخنزير
 Wierzchowiec utknął - wsiadam ponownie	الدابة عالقة - أمتطيها مجدداً
 Wieża Sung Mahi	برج سونغ ماهي
+Wiking Światła+	فايكنغ النور+
 Wilk Piekielnej Wieży	ذئب البرج الجحيمي
 Wilk Zodiaku	ذئب الأبراج
+Wilki alfa	ذئاب ألفا
 Wino Brzoskwini (W)	نبيذ الخوخ (م)
 Wino Kwiatu Brzoskwini+	نبيذ زهرة الخوخ+
 Winogrono	عنب
 Wioska Gildii	قرية النقابة
 Wioska gildii 1	قرية النقابة 1
+Wiru Miecza	دوامة السيف
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	لوّح بالسيف لمهاجمة عدة خصوم.|تتعزز بـ: القوة (++)، المناورة (+)، قوة الحياة (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	دُر بين الأعداء بالخنجر.|تتعزز بـ: المناورة (++)، القوة (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	للخنجر الدوار فرصة %d%% لصعق الخصم
@@ -6884,6 +7282,7 @@ Wojna Imperiow 1	حرب الممالك 1
 Wojna gildii i Krypta Balathora	حرب النقابات وسرداب بالاتور
 Wojow. z Toporem Zodiaku	مقاتل الفأس للأبراج
 Wojowniczka (K)	محاربة (أ)
+Wojownik (Body)	محارب (قتال بالأيدي)
 Wojownik (Mental)	المحارب (العقلي)
 Wojownik Ciało	جسد المحارب
 Wojownik En-Tai	مقاتل En-Tai
@@ -6897,6 +7296,7 @@ Wojownik Umysł	عقل المحارب
 Wojownik Uruk	محارب أوروك
 Wojownik Zephyr	محارب زيفير
 Wojskowy Koń	حصان حربي
+Wokol mnie	حولي
 Wola Balathora	إرادة بالاتور
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	إرادة بالاتور: مقاومة الصعق والأغلال والتجميد %d%%
 Wola Sung Ma tej mapy	إرادة سونغ ما في هذه الخريطة
@@ -6921,6 +7321,7 @@ Wolne punkty statusu: %d	نقاط الحالة المتاحة: %d
 Wolne punkty umiejętności	نقاط المهارات المتاحة
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	للسم البطيء فرصة %d%% لردّ الضرر إلى الخصم
 Wounded Soldier	الجندي الجريح
+Wołanie	النداء
 Wpisz co najmniej 2 litery nazwy.	اكتب 2 أحرف على الأقل من الاسم.
 Wpisz co najmniej 2 litery.	اكتب 2 أحرف على الأقل.
 Wpisz ilosc (1-%d)	أدخل الكمية (1-%d)
@@ -6938,6 +7339,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	اكتب عدد الخصائص ال
 Wpłacało botów: %d	الروبوتات التي ساهمت: %d
 Wrist	معصم
 Wrogi Mur	الجدار المعادي
+Wrzesień	سبتمبر
 Wróć 11553 12697	عودة 11553 12697
 Wróć do zapisanych reguł	العودة إلى القواعد المحفوظة
 Wróć do zwykłej mapy	العودة إلى الخريطة العادية
@@ -6971,6 +7373,7 @@ Wszystkie na P	الكل إلى P
 Wszystkie sloty sklepu są już odblokowane.	جميع خانات المتجر مفتوحة بالفعل.
 Wszystkie umiej. P	كل المهارات P
 Wszystkie warstwy	كل الطبقات
+Wszystkie żywioły	جميع العناصر
 Wszystkie: %d prób (udane: %d, nieudane: %d).	الكل: %d محاولة (ناجحة: %d، فاشلة: %d).
 Wszystkie: tylko %s lub %s.	الكل: فقط %s أو %s.
 Wszystko to za 50 zł na miesiąc!	كل هذا مقابل 50 PLN شهرياً!
@@ -7009,13 +7412,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	تغيّر الاخت
 Wyboru nie można cofnąć. Kontynuować?	لا يمكن التراجع عن الاختيار. المتابعة؟
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	الرتبة المختارة تتطلب هذا العدد من النجوم لدى كل وحش في المجموعة.
 Wybrane bonusy i wartości	المكافآت والقيم المختارة
+Wybrano: %s	المحدد: %s
 Wybrany NPC jest tuż obok.	الشخصية المحددة بجوارك مباشرة.
 Wybrany kanał dostępny jest tylko dla kont Premium.	القناة المختارة متاحة لحسابات بريميوم فقط.
 Wybrany przepis: %s	الوصفة المختارة: %s
 Wycena czesciowa - trwa wczytywanie	تقييم جزئي - التحميل جارٍ
 Wycena wygasła - wyceń ponownie.	انتهى التقييم - قيّم من جديد.
+Wycisz 1 dzien	كتم يوم 1
+Wycisz 1 h	كتم ساعة 1
+Wycisz 10 min	كتم 10 دقائق
 Wycisz na:	كتم لمدة:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	عنصر مسحوب: طقس اليقظة لم يعد موجوداً، والحجر لا فائدة منه. يمكنك التخلص منه.
+Wyczysc filtry	مسح المرشحات
 Wyczyszczono wszystkie znaczniki sklepów offline.	تم مسح جميع علامات المتاجر غير المتصلة.
 Wyczyszczono: %s	تم المسح: %s
 Wyczyść	مسح
@@ -7034,6 +7442,7 @@ Wydarzenie Wakacyjne	حدث العطلة الصيفية
 Wydarzenie Walentynkowe	حدث عيد الحب
 Wydarzenie Wielkanocne.	حدث الفصح.
 Wydobądź %(n)s rudy	استخرج %(n)s من الخام
+Wydobądź rudę	استخرج الخام
 Wydłuża czas trwania twoich umiejętności.	تطيل مدة مهاراتك.
 Wygląd postaci	مظهر الشخصية
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	يبدو غير مؤذٍ، لكنه قاتل بنسبة 100%. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
@@ -7059,6 +7468,7 @@ Wykonaj zestaw broni	اصنع طقم سلاح
 Wykonaj zestaw hełmu	اصنع طقم خوذة
 Wykonaj zestaw zbroi	اصنع طقم درع
 Wykonane zmiany: %d	التبديلات المنفّذة: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	تم التنفيذ %s/%s. إجمالي النشطين: %s
 Wykopane rudy	الخامات المستخرجة
 Wykorzystaj	استخدام
 Wykorzystaj voucher	استخدام القسيمة
@@ -7067,6 +7477,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	تم اكتشاف إع�
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	تم اكتشاف عنصر قد يكون ثميناً، هل تريد المتابعة؟
 Wykryto przedmiot z bonusem, kontynuować?	تم اكتشاف عنصر بعلاوات، هل تريد المتابعة؟
 Wykryto wysoki poziom ulepszenia, kontynuować?	تم اكتشاف مستوى تطوير مرتفع، هل تريد المتابعة؟
+Wylacz eventy	تعطيل الأحداث
 Wylosować nową ofertę od razu?	هل تريد سحب عرض جديد فوراً؟
 Wylosuj cele od nowa	اسحب الأهداف من جديد
 Wyląg Exedyara	صغير Exedyar الفاقس
@@ -7090,6 +7501,8 @@ Wymagany poziom do zakupu: %d	المستوى المطلوب للشراء: %d
 Wymagany poziom postaci: 75	مستوى الشخصية المطلوب: 75
 Wymagany poziom: %d	المستوى المطلوب: %d
 Wymiana ksiąg umiejętności	تبديل كتب المهارات
+Wymiana u: %s	استبدال لدى: %s
+Wymiana: %s	استبدال: %s
 Wymiany	التبادلات
 Wymienić %d ksiąg na %d nowych za %s Yang?	هل تريد تبديل %d كتب بـ%d جديدة مقابل %s يانغ؟
 Wyniki odświeżają się co minutę.	تتحدث النتائج كل دقيقة.
@@ -7103,6 +7516,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	هل تريد إطلاق %s
 Wypłać	سحب
 Wypłać sztuk:	كمية السحب:
 Wyrok	الحكم
+Wyrzuc bota	اطرد البوت
 Wyrzuc z gry...	طرد من اللعبة...
 Wyrzuc z serwera	اطرد من الخادم
 Wyrzucic %s z gry?	هل تريد طرد %s من اللعبة؟
@@ -7120,6 +7534,7 @@ Wysuszone Oczy	عيون مجففة
 Wysyłanie do serwera...	جارٍ الإرسال إلى الخادم...
 Wyszukaj biżuterię i buty.	ابحث عن المجوهرات والأحذية.
 Wyszukaj bronie.	ابحث عن الأسلحة.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	ابحث عن لاعب متصل لعرض المهارات
 Wyszukaj przedmiot	البحث عن عنصر
 Wyszukaj przedmioty z min. 1 bonusem.	ابحث عن عناصر بحد أدنى 1 علاوة.
 Wyszukaj zbroje/tarcze/hełmy.	ابحث عن الدروع/الأتراس/الخوذات.
@@ -7218,6 +7633,7 @@ Wściekły Cierń	الشوكة الغاضبة
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	غاضب، شائك، وبلا رحمة. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y بالأمتار العامة. Ctrl + نقرة على الخريطة = انتقال فوري.
 Ya-Sang-Gab	يا-سانغ-غاب
+Yang na zabójstwo	يانغ لكل قتلة
 Yang z potworów +%d%%	اليانغ من الوحوش +%d%%
 Yang za próbę awansu	يانغ لكل محاولة ترقية
 Yesterday {:02d}:{:02d}	أمس {:02d}:{:02d}
@@ -7261,9 +7677,11 @@ Z jaja: %s	من البيضة: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	من كل خانة يمكنك شراء شيء واحد في كل عرض.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	مع زي مطابق: +800 نقطة حياة، +15 قيمة هجوم
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	مع تسريحة مطابقة: +800 نقطة حياة، +15 قيمة هجوم
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	بفرصة %d%% تتم إعادة ضبط فترة تهدئة مهاراتك
 Z łukiem	بالقوس
 Z. Eliksir Mocy Płn. W.	إكسير قوة رياح الشمال الذهبي
 Z. Eliksir Odp. na Ogień	إكسير مقاومة النار الذهبي
+ZAKRĘĆ	أدر
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	ستُنقل بعد %d دقيقة. تحدث إلى حارس التنانين دولنار للخروج فوراً.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	عن المرافقة رقم %d إلى الصندوق الصحيح تحصل على مفتاح غوبلن!
 Za 10 sekund pojawi się Jajo Smoka Balathora - wtedy możesz skupić na nim atak.	بعد 10 ثوانٍ ستظهر بيضة تنين بالاثور - عندها يمكنك تركيز هجومك عليها.
@@ -7304,13 +7722,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	ستدفع في هذه الجولة 
 Za ukończone tury także otrzymujesz nagrody.	تحصل أيضاً على مكافآت للجولات المكتملة.
 Za wysoka wartość: %s.	القيمة مرتفعة جداً: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	المرشّح المتقدم معطّل: خيارات اللعبة -> إضافي -> مرشّح الالتقاط.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	مرشح الالتقاط المتقدم (زر الفأرة الأيمن في Ctrl+Z)
+Zabic postac %s?	قتل الشخصية %s؟
 Zabici gracze	اللاعبون المقتولون
 Zabij %(n)s potworów	اقتل %(n)s وحشاً
+Zabij potwory	اقتل الوحوش
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	يقتل الأورك وكل المخلوقات البشعة الأخرى. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Zabite potwory	الوحوش المقتولة
 Zablokowac konto %s NA ZAWSZE?	هل تريد حظر الحساب %s إلى الأبد؟
 Zablokowac konto %s na %s dni?	هل تريد حظر الحساب %s لمدة %s يوماً؟
 Zablokowac nowe logowania (przerwa techniczna)?	هل تريد منع تسجيلات الدخول الجديدة (صيانة)؟
+Zablokowane miejsce	خانة مقفلة
 Zablokowani	المحظورون
 Zablokowany przy sortowaniu (Alt+LPM)	مقفل عند الترتيب (Alt+نقر أيسر)
 Zablokuj ekwipunek	قفل المعدات
@@ -7320,6 +7742,7 @@ Zabrakło Yang.	نفد اليانغ.
 Zabójca	القاتل
 Zabójca Króla	قاتل الملوك
 Zabłąkany Dzikus	الهمجي التائه
+Zachowanie botow	سلوك البوتات
 Zacny Kam. Przebudzenia	حجر يقظة فاخر
 Zacny P. Wężowy (wykon.)	عباءة الأفعى النبيلة (صناعة)
 Zacny Płaszcz Wężowy	عباءة الأفعى النبيلة
@@ -7353,6 +7776,7 @@ Zakończyć sesję farmienia?	هل تريد إنهاء جلسة التجميع؟
 Zakres rysowania	مدى الرسم
 Zakres sklepów	نطاق المتاجر
 Zakres widoku	مدى الرؤية
+Zakresy (puste = bez limitu)	النطاقات (فارغ = بلا حد)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	كانت [5] مقلوبة بجانب البطاقة المكشوفة.[ENTER]للأسف لا تحصل على أي نقاط. اختر الآن ملكك [K].
 Zakręć kołem za jedyne	أدر العجلة مقابل
 Zakręć kołem.	أدر العجلة.
@@ -7360,6 +7784,7 @@ Zaktualizuj klienta i serwer.	حدّث اللعبة والخادم.
 Zaktualizuj serwer, żeby rozdawać statystyki.	حدّث الخادم لتوزيع الإحصائيات.
 Zakup raz na %s	الشراء مرة كل %s
 Zakupy przerwane.	توقف الشراء.
+Zakupy towarzysza	مشتريات الرفيق
 Zakupy włoży ci do torby albo do swojej.	سيضع المشتريات في حقيبتك أو في حقيبته.
 Zamarznięta Wieża	البرج المتجمد
 Zamarznięty Generał	القائد المتجمد
@@ -7381,6 +7806,7 @@ Zapisane bonusy	الخصائص المحفوظة
 Zapisane miejsca	الأماكن المحفوظة
 Zapisane pozycje	المواضع المحفوظة
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	المواقع المحفوظة تعمل فقط مع لفافة فارغة (%s) في الحقيبة.
+Zapisane zestawy	المجموعات المحفوظة
 Zapisano	تم الحفظ
 Zapisano (%s%%).	تم الحفظ (%s%%).
 Zapisano (gracz offline)	تم الحفظ (اللاعب غير متصل)
@@ -7388,10 +7814,11 @@ Zapisano preset "%s".	تم حفظ الإعداد المسبق "%s".
 Zapisano.	تم الحفظ.
 Zapisano. Odswiezanie rang GM...	تم الحفظ. جارٍ تحديث رتب المشرفين...
 Zapisuje miejsce %d...	حفظ المكان %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	حفظ لقطة الشاشة:  Print (تُحفظ اللقطة في المجلد الفرعي "screenshot" الخاص باللعبة)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	حفظ لقطة الشاشة:  Print (تُحفظ اللقطة في المجلد الفرعي "screenshot" داخل مجلد اللعبة)
 Zapisz i wyślij	حفظ وإرسال
 Zapisz obecny filtr jako preset o tej nazwie	حفظ المرشّح الحالي كإعداد مسبق بهذا الاسم
 Zapisz reguły i wyślij je na serwer	احفظ القواعد وأرسلها إلى الخادم
+Zapisz tu	احفظ هنا
 Zaplanowana została przerwa w dostępie do usług.	تم جدولة انقطاع في الخدمات.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	يمنع فقدان تحمل الحصان، مثالي للرحلات الطويلة دون توقف.
 Zapomnienie umiejętności: Stajenny (za darmo).	نسيان المهارات: مربّي الخيل (مجاناً).
@@ -7430,6 +7857,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	يحتوي على مكافآت للمحاربين الشجعان الذين يخدمون في وادي Seungryong.
 Zawiodłeś.	لقد فشلت.
 Zaznacz albo odznacz całą stronę	حدد الصفحة كلها أو ألغِ تحديدها
+Zaznacz do "Kup wybrane"	حدد لـ "اشترِ المحدد"
 Zaznacz oferty, które chcesz kupić.	حدّد العروض التي تريد شراءها.
 Zaznacz wszystkie	تحديد الكل
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	ستختفي المهام المحددة من القائمة كأنها لم تكن قط.
@@ -7448,9 +7876,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	اجمع الشارات لاستبدالها بصناديق أو بمواد التطوير.
 Zbieranie dla Biologa zamiast bicia poziomow.	الجمع من أجل عالم الأحياء بدلًا من رفع المستويات.
 Zbierz %(n)s ziół	اجمع %(n)s من الأعشاب
+Zbierz yang	اجمع اليانغ
+Zbierz zioła	اجمع الأعشاب
 Zbir Piekielnej Wieży	بلطجي البرج الجحيمي
 Zbiórka na parterze wieży	التجمع في الطابق الأرضي للبرج
 Zbocze Gautama	منحدر غوتاما
+Zbr. Mroku Księżyca+ (m)	درع ظلام القمر+ (ذ)
+Zbroja Ajolosa+ (m)	درع أيولوس+ (ذ)
+Zbroja Avalonu+ (srebr.)	درع أفالون+ (فضي)
 Zbroja Boskiego Smoka	درع التنين الإلهي
 Zbroja Dzikiego Knura	درع الخنزير البري
 Zbroja Króla Wojowników+	درع ملك المحاربين+
@@ -7459,8 +7892,10 @@ Zbroja Płytowa Zodiaku	درع الأبراج الصفائحي
 Zbroja Smoka Magii	درع تنين السحر
 Zbroja Smoka Mroku	درع تنين الظلام
 Zbroja Smoka Wiatru	درع تنين الرياح
+Zbroja Szczodrego+	درع الكريم+
 Zbroja Tygrysa	درع النمر
 Zbroja Wilka	درع الذئب
+Zbroja Zmarłych+ (m)	درع الموتى+ (ذ)
 Zbroja Zodiaku	درع الأبراج
 Zbroja wypełniona mocą boskiego smoka.	درع مفعم بقوة التنين الإلهي.
 Zbroja wypełniona mocą magicznego smoka.	درع مفعم بقوة التنين السحري.
@@ -7489,6 +7924,8 @@ Zdobyte Yang	اليانغ المكتسب
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	تحصل عليها من الوحوش ومهام القارة الجديدة.
 Zdobywasz je, chroniąc Goblina Skarbów	تحصل عليها بحماية غوبلن الكنوز
 Zebrane kwiaty	الزهور المقطوفة
+Zebrano %s z %s yang (%.1f%%)	تم جمع %s من %s يانغ (%.1f%%)
+Zebrano: %d / %d	تم الجمع: %d / %d
 Zegarek Kieszonkowy	ساعة جيب
 Zejście Północnego Wiatru	منحدر الرياح الشمالية
 ZejściePłnW. 11590 12181	نزول رياح الشمال 11590 12181
@@ -7500,11 +7937,15 @@ Zemsta Czarnej Śmierci	انتقام الموت الأسود
 Zeok-Hyoun	زيوك-هيون
 Zeok-Sang-Gab	زيوك-سانغ-غاب
 Zephyr	زيفير
+Zespawnowano bossow: %s/%s.	تم استدعاء الزعماء: %s/%s.
 Zestaw %d	الطقم %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	مجموعة من 24 بطاقة Okey. انقر بزر الفأرة الأيمن لإضافتها - تكلف لعبة Okey واحدة مجموعة بطاقات و30 000 Yang.
 Zestaw Opieki nad Koniem	مجموعة العناية بالحصان
 Zestaw kostiumów	طقم أزياء
 Zestaw kostiumów:	طقم الأزياء: 
+Zestaw:	الطقم: 
+Zestawy lochowe	مجموعات الأقبية
+Zestawy polowe	مجموعات الحقول
 Zestawy: broń	الأطقم: الأسلحة
 Zestawy: hełmy	الأطقم: الخوذات
 Zestawy: zbroje	الأطقم: الدروع
@@ -7524,6 +7965,7 @@ Zielone Zioło	عشبة خضراء
 Zielone, fioletowe, peleryny: z targu.	الخضراء والبنفسجية والعباءات: من السوق.
 Zielony Lśniący Odłamek	شظية لامعة خضراء
 Zielony Sok	عصير أخضر
+Zielony Szaman+	الشامان الأخضر+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	أرض سونغ ما;من دون مستوى البطل لن تتمكن من إصابة الوحوش هنا.
 Ziemie Mrocznego Smoka	أراضي التنين المظلم
 Ziemie gildii	أراضي النقابة
@@ -7540,11 +7982,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	عشبة تغيّرت بقوة Sung Mahi. مطلوبة لتحضير إكسيرات الرعد. يحضّر الإكسيرات العشاب Huahn-So (Bokjung وBakra وJayang).
 Zjawa Żółt. Tygrysa (BŚ)	شبح النمر الأصفر (زعيم عالمي)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	سيُؤكل العلف اللازم لملء الشريط.
+Zlamanie klatwy swiatyni	كسر لعنة المعبد
 Zlamanie odpornosci: dzwony	كسر المقاومة: الأجراس
+Zlamanie odpornosci: luki	كسر المقاومة: الأقواس
 Zlamanie odpornosci: miecze	كسر المقاومة: السيوف
 Zlamanie odpornosci: sztylety	كسر المقاومة: الخناجر
 Zlamanie odpornosci: wachlarze	كسر المقاومة: المراوح
 Zleć zbieranie:	اطلب الجمع:
+Zlodziej zycia	سارق الحياة
 Zly Silny Malpi Zolnierz	جندي قرد قوي شرير
 Zly Zolnierz Czarnej Burzy	جندي العاصفة السوداء الشرير
 Zly format (np. 18, M5, G1, P).	صيغة خاطئة (مثل 18، M5، G1، P).
@@ -7564,6 +8009,8 @@ Zmianki z (B) są używane jako pierwsze	مبدّلات (B) تُستخدم أو�
 Zmiany dzialaja po kilku sekundach	تسري التغييرات بعد بضع ثوانٍ
 Zmien ceny wszystkich	غيّر أسعار الكل
 Zmien poziom konia	تغيير مستوى الحصان
+Zmien range	غيّر الرتبة
+Zmien skille	غيّر المهارات
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	يغيّر مكافآت حجر التنين الأسطوري في نافذة كيمياء التنين (تبويب تغيير المكافآت).
 Zmienia imię zwierzaka domowego (100.000 Yang).	يغيّر اسم الحيوان الأليف (100.000 Yang).
 Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	يغيّر بنسبة احتمال ضئيلة المكافأتين السادسة والسابعة. اسحبه إلى البند: لديه فرصة 10% لتغيير المكافأتين السادسة والسابعة، وتبقى المكافآت الخمس الأولى دون تغيير. عند الفشل يُستهلك البند وتبقى المكافآت كما كانت.
@@ -7620,10 +8067,14 @@ Znak Strażnika	علامة الحارس
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	مفتاح مصنوع ببراعة من بلورة سحرية. مطلوب لفتح الصندوق المثالي.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	رائع! بطاقتك أعلى.[ENTER]اكشف بطاقة أخرى.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	تم العثور على %d - المعروض %d، ضيّق نطاق البحث.
+Znaleziono: %d	تم العثور على: %d
 Znaleziono: %d - wybierz z listy.	تم العثور على: %d - اختر من القائمة.
+Znaleziono: %s	تم العثور على: %s
 Znika 15 dni po otrzymaniu.	يختفي بعد 15 يوماً من استلامه.
+Zniszcz %(n)s kamieni Metin	دمّر %(n)s من أحجار ميتين
 Zniszcz %(n)s x %(what)s	دمّر %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	دمّر البيوض لإلحاق الضرر!
+Zniszcz kamienie Metin	دمّر أحجار ميتين
 Zniszczone Metiny	الماتين المدمَّرة
 Zniszczone kamienie Metin	أحجار الميتين المدمرة
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	تم تدمير بيضة تنين - ضعف ختم بالاثور بشدة.
@@ -7635,6 +8086,7 @@ Zodiak Ognia	برج النار
 Zodiak Wiatru	برج الرياح
 Zodiak Ziemi	برج الأرض
 Zol. Czar. Wiat. Zodiaku	جندي الرياح السوداء للأبراج
+Zolnierz Czarnego Wiatru	جندي الرياح السوداء
 Zolnierz Gladiator Kosci	جندي مصارع العظام
 Zolnierz Shrimp Zodiaku	جندي الجمبري للأبراج
 Zolnierz Spartaner	جندي سبارتانر
@@ -7656,8 +8108,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	مص�
 Zroszony Młot	المطرقة المبللة بالندى
 Zrzut ekranu	لقطة شاشة
 Zrzut ekranu zapisano w '%s'.	تم حفظ لقطة الشاشة في '%s'.
+Zrzutka yang	جمع اليانغ
 Zrób miejsce w ekwipunku.	وفّر مساحة في حقيبتك.
 Zręczność	الرشاقة
+Zsiadam po buffy	أنزل لتفعيل التعزيزات
 Zsiądź z konia, aby go rozwijać.	انزل عن الحصان لتدريبه.
 Zung-Seon	زونغ-سيون
 Zupa Grzybowa	حساء الفطر
@@ -7743,6 +8197,28 @@ Zwiększa szansę na drop Yang.	تزيد فرصة إسقاط اليانغ.
 Zwiększa szansę na kradzież PE.	تزيد فرصة سرقة نقاط الأسلوب.
 Zwiększa szansę na kradzież PŻ.	تزيد فرصة سرقة نقاط الحياة.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	يزيد فرصة الضربة الحرجة بنسبة 10% لمدة 10 دقائق.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة الإكسسوارات بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة الإكسسوارات بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة الأسلحة بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة الأسلحة بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة كتب المهارات بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة كتب المهارات بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة الأحزمة بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة الأحزمة بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة البنود الأخرى بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة البنود الأخرى بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة بنود الحيوانات الأليفة بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة بنود الحيوانات الأليفة بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة القفازات بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة القفازات بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة الدروع بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة الدروع بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة أطقم الأسلحة بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة أطقم الأسلحة بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة أطقم الخوذات بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة أطقم الخوذات بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	تزيد فرصة النجاح عند صناعة أطقم الدروع بنسبة 1%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. سيحوّل يو-هوان رونيتين من هذا النوع إلى رونية 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	تزيد فرصة النجاح عند صناعة أطقم الدروع بنسبة 20%. ضعها في خانة "رفع الفرصة" في نافذة الصناعة - تُستهلك رونية واحدة عند كل محاولة. هذا هو المستوى الأقصى للرونية.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	يزيد فرصة الضربة النافذة بنسبة 10% لمدة 10 دقائق.
 Zwiększa szansę na przywołanie konia.	تزيد فرصة استدعاء الحصان.
 Zwiększa szansę na spowolnienie przeciwnika.	تزيد فرصة إبطاء الخصم.
@@ -7768,6 +8244,10 @@ Zwiększa twoją siłę obrony.	تزيد قوة دفاعك.
 Zwiększa twoją szybkość ataku o 15% na okres 30 minut. Niezdatna do handlu.	تزيد سرعة هجومك بنسبة 15% لمدة 30 دقيقة. غير قابلة للتبادل.
 Zwiększa umiejętności twojego wierzchowca	تزيد مهارات دابتك
 Zwiększa wartość odbitych ciosów.	تزيد قيمة الضربات المنعكسة.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	يزيد إرادة سونغ ما (INT) في القتال بمقدار 15 لمدة %d ثانية.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	يزيد إرادة سونغ ما (RES) في القتال بمقدار 15 لمدة %d ثانية.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	يزيد إرادة سونغ ما (STR) في القتال بمقدار 15 لمدة %d ثانية.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	يزيد إرادة سونغ ما (VIT) في القتال بمقدار 15 لمدة %d ثانية.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	تزيد التحمل. معروفة بخصائصها المقوية للعضلات.
 Zwiększa wzrost doświadczenia.	تزيد نمو الخبرة.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	يزيد الضرر الجسدي والسحري الذي تسببه. يمكن تعزيز لاعب آخر. علاوة عند الاستخدام على النفس.
@@ -7791,6 +8271,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	يعيد نقاط الب�
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	يعيد نقاط البطل الموزعة على قوة Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	يعيد نقاط البطل الموزعة على حيوية Sung Ma.
 Zwyczajna Szata Aury	رداء الهالة العادي
+Zwykle bicie potworow	قتال الوحوش العادي
 Zwykła Skóra	جلد عادي
 Zwykłe Mikstury	الجرعات العادية
 Zwykłe potwory	وحوش عادية
@@ -7857,8 +8338,11 @@ Złośliwa	خبيث
 Zły Pł. Wężowy (wykon.)	عباءة الأفعى الشريرة (صناعة)
 Zły Płaszcz Wężowy	عباءة الأفعى الشريرة
 Złów %(n)s ryb	اصطد %(n)s سمكة
+Złów ryby	اصطد الأسماك
 [ Założony ]	[ مرتدى ]
 [%s] [Sklep] %s	[%s] [المتجر] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[بوفي] اسحب كتاب مهارة الشامان إلى مهارة بوفي.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[بوفي] تُدرَّب هذه المهارة بكتاب المهارة: %s (شامان).
 [NIE]	[لا]
@@ -7867,7 +8351,10 @@ Złów %(n)s ryb	اصطد %(n)s سمكة
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[ملفات العميل] نزّل ملفات العميل الحديثة من اللوحة: محرر قاعدة البيانات -> تطبيق -> تنزيل ملفات العميل الحديثة (zip) وفك ضغطها في مجلد اللعبة.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[البحث عن الكنوز] تم بلوغ جولة جديدة!
 [Sklep]	[المتجر]
+[TAK]	[نعم]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[الحرب] نقابتك في حرب - انقر «ادخل الحرب» على لوحة الحرب (الزاوية السفلية اليسرى).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	لكن إذا فشلت فسيتم تدمير العنصر. هل تريد المتابعة؟
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	لكن حتى 50% من المدة فقط وبعمر جديد.
 aoe_giant	aoe_giant
@@ -7876,6 +8363,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	تهاجم الأعداء مباشرة.|تتعزز بـ: القوة (++)، المناورة (+)، قوة الحياة (+).
 autotarget: no Kolejny cel row in the game options	autotarget: لا يوجد صف "الهدف التالي" في خيارات اللعبة
 bez bonusu	بلا مكافأة
+bije wszystko w pobliżu	يضرب كل ما حوله
 bonusów 1-5 spoza warunków	خصائص 1-5 خارج الشروط
 brak bonusu	بلا خاصية
 bush_ancientlichen	bush_ancientlichen
@@ -7914,7 +8402,15 @@ dni	أيام
 do końca SM	حتى تنفد عملات التنين
 dodaje nowy crafting %d item %d	يضيف وصفة صنع جديدة %d بند %d
 dodatkowo zweryfikowana po stronie serwera.	يُتحقق منه أيضًا من جانب الخادم.
+dystans %d	dystans %d
 dzień	يوم
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	الفعالية على إحدى الخرائط: وادي سيونغريونغ، صحراء يونغبي،
 gildie każdego królestwa (odbiór w tym oknie).	على مكافآت (تُستلم في هذه النافذة).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	ومهلة تجدد. أضف: روحاً واحدة من كل من السيف والحماية
@@ -7934,11 +8430,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	لفئتك ومسارك. ت
 ktoś był szybszy	كان أحدهم أسرع
 która ma już pięć bonusów.	التي تحمل خمس خصائص بالفعل.
 które wypadają z ostatniego bossa.	التي تسقط من آخر زعيم.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	زر الفأرة الأيسر أو %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	خريطة عشوائية
 ma swój ranking postaci i gildii. Na koniec sezonu	تصنيفها الخاص للشخصيات والنقابات. في نهاية الموسم
 maksymalne PŻ /2	الحد الأقصى لنقاط الحياة /2
 maksymalne PŻ są o połowę mniejsze	أقصى نقاط الحياة أقل بالنصف
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: خطأ في نافذة البطاقات (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	في الحقيبة مع فتح التبويب).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	في جزيرة الكنوز (تذاكر الكنوز من الصناديق).
@@ -7957,6 +8458,7 @@ nie udało się zapisać ustawień.	تعذّر حفظ الإعدادات.
 nie walczy wcale	لا يقاتل إطلاقاً
 nie wybrano	لم يتم الاختيار
 nie wydaje	لا ينفق
+nie zaczyna, broni ciebie i siebie	لا يبدأ القتال، يدافع عنك وعن نفسه
 nowego bossa! W przeciwnym razie nagroda przepadnie.	زعيم جديد! وإلا ضاعت المكافأة.
 obnizaj cene o	اخفض السعر بمقدار
 obok ciebie	بجانبك
@@ -7964,7 +8466,9 @@ obrażenia zadawane potworom /2	الضرر الموجّه إلى الوحوش /2
 obrażenia zadawane potworom są o połowę mniejsze	الضرر الذي تلحقه بالوحوش أقل بالنصف
 od +%d	من +%d
 od +0 do +7 (także z bonusami),	من +0 إلى +7 (حتى مع الخصائص)،
+odprawa tak	odprawa tak
 oferta została już sprzedana	العرض بيع بالفعل
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	وتحت أي بند آخر - كل كم ثانية يُستخدم.
 podswietl po (godzin, 0 = wyl.)	أبرزها بعد (ساعة، 0 = إيقاف)
@@ -7976,11 +8480,13 @@ poziom łupu IV - 25 Kamyków	مستوى الغنيمة IV - 25 حصاة
 przez podany czas; każdy zostawia sobie zapas.	خلال المدة المحددة؛ ويحتفظ كلٌّ منها باحتياطي لنفسه.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	عند ماتين الصلابة في الطابق الأرضي من برج الشياطين؛ والأماكن الشاغرة
 przy kolejnych próbach łowienia?	في محاولات الصيد القادمة؟
+przy tobie	بجانبك
 przywołany	مستدعى
 próby: %d	المحاولات: %d
 prędkość ruchu /2	سرعة الحركة /2
 prędkość ruchu jest o połowę mniejsza	سرعة الحركة أقل بالنصف
 puste = dowolny przedmiot	فارغ = أي بند
+reguła "%s"	القاعدة "%s"
 reliktu go niszczy.	الأثر يدمّره.
 robi zakupy	يتسوق
 rodzaj bez filtra	النوع بلا مرشّح
@@ -7992,11 +8498,16 @@ ręcznie	يدوياً
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	الخادم لا يستجيب (تصحيح autohunttest مفقود) - لم يبدأ.
 serwer nie potwierdził zakupu	لم يؤكد الخادم الشراء
 serwer nie pozwala teraz polować.	الخادم لا يسمح بالصيد الآن.
+sezon %d	الموسم %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	على الخريطة نفسها التي فيها زعيم العالم ووجّهت الحد الأدنى
 skillbook	كتاب مهارة
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	فقد يحتوي المتجر على عناصر غير صحيحة. هل تريد المتابعة؟
 sklep odmówił sprzedaży	رفض المتجر البيع
 start, zasięg %d m.	بدأ، النطاق %d م.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	إلى حظر دائم للحساب.
 stoi - pokonajcie go, zanim ucieknie!	واقف - اهزموه قبل أن يهرب!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	لا يمكن استخدام هذا البند هنا (جرعة أو تعزيز أو ندى).
@@ -8010,24 +8521,36 @@ tylko gdy gracz jest AKTUALNIE online.	فقط عندما يكون اللاعب �
 uciekł - nikt nie dostał nagrody	هرب - لم يحصل أحد على مكافأة
 ulepszony Nóż.	خنجر مطوَّر.
 umiej %d	مهارة %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	بعد إعادة تشغيل العميل.
 ustawienia zapisane.	تم حفظ الإعدادات.
+usun	usun 
+usun %d	usun %d
+w dniach	بالأيام
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	قيمة الهجوم +20% لمدة 3 ساعات (تُستلم مع
 ważne	مهم
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	المتصفح المدمج (مطلوب ملف exe جديد للعبة).
+wolna ręka	يد حرة
 wprowadzenie aby móc kontynuować rozgrywkę.	لتتمكن من مواصلة اللعب.
 wszystkie przedmioty	جميع البنود
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	الخانة المحددة (I / II). بعد أول تفعيل، إخراج
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	يسجّل الخروج من الجلسة المسجلة بالفعل. الطرد من الخادم يعمل
 wyłączone na tym serwerze.	معطّل على هذا الخادم.
 z nagrodą, przed pojawieniem się kolejnego bossa).	المكافأة، قبل ظهور الزعيم التالي).
 zajmiesz w rankingu.	ستحتله في التصنيف.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	تملؤها روبوتات مستأجرة من مملكتك. بعد بضع دقائق من التجمع
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	توقف - بدأ الصيد التلقائي العادي.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	الدروع والأزياء فيما بينها، ومظهر السلاح مع سلاح من النوع نفسه.
 zeruje Twoje obrażenia.	تصفّر ضررك.
 zmieniła się cena albo ilość	تغيّر السعر أو الكمية
 zostają, a zwierzak zachowuje 80% swojego wieku.	ويحتفظ الحيوان الأليف بنسبة 80% من عمره.
 zostanie zresetowany.	عدّاد الضرر.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي العادي.
 {} + {} rozdziel przedmioty.	{} + {} فصل العناصر.
 {}'s Auction	مزاد {}
@@ -8067,9 +8590,19 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dاكتمل التبرع الجماعي - جُمع المبلغ بالكامل
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aانتهى وقت التبرع الجماعي
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aأكمل أولاً://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aأنهى القائد جمع التبرعات
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893aمتاح [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - تسجيل دخول سريع.
+|cfff4f770Trwa misja	|cfff4f770المهمة جارية
+|cfff4f770Trwa zrzutka	|cfff4f770جمع التبرعات جارٍ
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742تنبيه!|r فحص أمني!
+Óó	Óó
+Ąą	Ąą
+ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
+ąćęłńóśźż	ąćęłńóśźż
+ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
+Ęę	Ęę
 Ładen potwór tego nie dropi.	لا يسقط أي وحش هذا البند.
 Ładny Kam. Przebudzenia	حجر يقظة جميل
 Ładny Kamień Chaosu	حجر الفوضى الجميل
@@ -8121,6 +8654,9 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Łuski Smoka	حراشف التنين
 Łączenie	الاتصال
 Łączne obrażenia	إجمالي الضرر
+Łączny czas	الوقت الإجمالي
+Łł	Łł
+Ńń	Ńń
 Ściana	جدار
 Ściąga do ciebie grupy potworów z okolicy.	يجذب إليك مجموعات الوحوش من المنطقة.
 Ścięgno Balathora	وتر بالاثور
@@ -8133,12 +8669,14 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Śnieżna Czapa Leoparda+	قبعة الفهد الثلجي+
 Śnieżna Czapa Zajęcza	قبعة الأرنب الثلجي
 Śnieżna Czapa Zajęcza+	قبعة الأرنب الثلجي+
+Śnieżny Bambi	بامبي الثلجي
 Śnieżny Kwiat	زهرة الثلج\r\n
 Śnieżny Leonidas	Leonidas الثلجي
 Śnieżny Leonidas(piecz.)	ختم Leonidas الثلجي
 Śpiew Stali	أنشودة الفولاذ
 Śpiew Wiatru	أنشودة الرياح
 Śpiewająca Furia	الغضب المنشد
+Śr. czas sesji	متوسط وقت الجلسة
 Śr. obrażenia	متوسط الضرر
 Śr. yang na sesję	متوسط اليانغ لكل جلسة
 Średni	متوسط
@@ -8147,6 +8685,7 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Średnio	متوسطة
 Środa	الأربعاء
 Środek Ścierny	مادة كاشطة
+Św. Nosiciel Światła+	حامل النور المقدس+
 Św. Odłamek Broni I	شظية السلاح المقدسة I
 Św. Odłamek Broni II	شظية السلاح المقدسة II
 Św. Odłamek Hełmu I	شظية الخوذة المقدسة I
@@ -8160,6 +8699,7 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Światło Gwiazd	ضوء النجوم
 Światło Gwiazd (9.skill)	ضوء النجوم (المهارة 9)
 Świetnie nadaje się do upieczenia nad ogniskiem.	ممتازة للشوي على نار المخيم.
+Świąt. Zim. Zbroja+ (m)	درع شتاء الأعياد+ (ذ)
 Świąteczna Brązowa Skrzynia Okey	صندوق أوكي البرونزي للأعياد
 Świąteczna Srebrna Skrzynia Okey	صندوق أوكي الفضي للأعياد
 Świąteczna Złota Skrzynia Okey	صندوق أوكي الذهبي للأعياد
@@ -8170,13 +8710,17 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Świątynia	المعبد
 Świątynia Węży	معبد الأفاعي
 Świątynia Zodiaku	معبد الأبراج
+Święty	مقدس
 Święty Efekt Zestawu	تأثير الطقم المقدس
 Święty Kowal Zestawu	حداد المجموعة المقدسة
 Święty Miecz Bogów+	سيف الآلهة المقدس+
 Święty Odłamek	شظية القوة المقدسة
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	زهرة مقدسة من حديقة إله التنين. تُستخدم لتطوير العتاد.
+Śś	Śś
+şó ĹĄşę	şó ĹĄşę
 Źródła	المصادر
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	مصدر قوة لصنارة الصيد. لمسته تطور الأداة وتفتح الطريق للصيد في أعمق المياه.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	لم يُمَسّ غراب بسوء أثناء صنع هذا السلاح. سلاح للأبطال الشباب: يختفي بعد 15 يومًا من الحصول عليه (حتى لو كان مرتدىً). لا يمكن تطويره أو تغييره أو إضافة مكافآت إليه أو وضع أحجار شبحية فيه أو تبادله أو بيعه أو إيداعه في المخزن.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	لا شيء: يوقف رسائل الرفيق. مهم: الحقيبة الممتلئة، الحقيبة الظهرية، الأشياء الثمينة.
 Żałobna Pieśń	أنشودة الحداد
@@ -8193,6 +8737,7 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Żołnierz Schron. Płn. W.	جندي ملجأ رياح الشمال
 Żołnierz Wężowy	جندي الأفعى
 Żołnierze	الجنود
+Życie goblina	حياة الغوبلن
 Żywe Drzewo	الخشب الحي
 Żywioł potworów na tym piętrze	عنصر الوحوش في هذا الطابق
 Żywioł: %s	العنصر: %s
@@ -8211,3 +8756,5 @@ zwykłe Auto Łowy zatrzymane.	تم إيقاف الصيد التلقائي ال�
 Żółty Lśniący Odłamek	شظية لامعة صفراء
 Żółty Sok	عصير أصفر
 Żądza Krwi +%.0f	عطش الدم +%.0f
+Żż	Żż
+żadne	لا شيء

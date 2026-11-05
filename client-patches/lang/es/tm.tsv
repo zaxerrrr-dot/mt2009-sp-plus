@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 días)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 horas)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: nivel %(b)d.
 %d - %d obrażeń	%d - %d de daño
 %d - rzadko 100 - jak w grze %d - czesto	%d - poco frecuente      100 - como en el juego      %d - frecuente
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 %d%% Wola SungMa (WIT)	%d%% Voluntad de SungMa (VIT)
 %d%% na losowy bonus.	%d%% de bonus aleatorio.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% de probabilidad de bloquear el daño de los ataques
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% de probabilidad de pisotear a los enemigos durante 20 s
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% de probabilidad de evitar la muerte y recuperar un 30%% de PV
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% de probabilidad de que todos los monstruos de alrededor te ataquen (capa del valor)
 %d%% Średnie Obrażenia	%d%% Daño Medio
 %d. miejsce	Puesto %d
 %d. pusty	%d. vacía
+%dx %s (dowolne z %d)	%dx %s (cualquiera de %d)
 %dx (po %d)	%dx (%d c/u)
 %s %d - zostało %d	%s %d: faltan %d
 %s (%d szt.)	%s (%d uds.)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Nv. %d) - pid %d, pos (%d, %d), reino %d
 %s (Pozostały czas: %s)	%s (Tiempo restante: %s)
 %s (co %d sek.)	%s (cada %d s)
+%s (inna mapa)	%s (otro mapa)
 %s (maks. %.1f)	%s (máx. %.1f)
 %s (maks. %d)	%s (máx. %d)
 %s (maks.)	%s (máx.)
@@ -109,19 +115,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 (Kup wszystkie przedmioty tego typu)	(Comprar todos los objetos de este tipo)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 (Najedź myszką na ikonę)	(Pasa el ratón sobre el icono)
+(brak klawisza - Esc, Skróty klawiszowe)	(sin tecla - Esc, Atajos de teclado)
 (brak)	(ninguno)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (el filtro está desactivado: ahora recoges todo)
 (na koniu: %d)	 (a caballo: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(nivel más alto, Defensa del Barco, esfera de experiencia completa).
 (nieznana)	 (desconocida)
 (od P)	 (desde P)
+(postac offline - brak podgladu skilli)	(personaje desconectado - sin vista previa de habilidades)
 (poziom %d)	 (nivel %d)
+(puste)	(vacío)
 (szansa %s%%)	 (probabilidad %s%%)
 (ten bot nic jeszcze nie powiedzial)	(este bot aún no ha dicho nada)
 (wybierz stworzenie)	(elige una criatura)
 (wybierz z listy)	(elige de la lista)
 (wybierz)	(elegir)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* ATENCIÓN * ¡Opción experimental![ENTER]El modo de escalado de la interfaz puede reducir[ENTER]la calidad de la interfaz (elementos gráficos, fuente).[ENTER]El color |cff8ab98everde|r significa que el escalado PUEDE SER el más óptimo.[ENTER]El color |cffe57976rojo|r significa que el escalado puede provocar[ENTER]que el juego deje de responder.
++ Dodaj bonus	+ Añadir bonificación
 + Dodaj przedmiot	+ Añadir objeto
 + Pkt umiejetn.	+ Pts. habil.
 +%d Inteligencja	+%d Inteligencia
@@ -153,6 +163,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 +15 wartości ataku	+15 de valor de ataque
 +3% siły przeciwko kamieniom Metin	+3% de fuerza contra piedras Metin
 +50% szansy na drop przez 2 godziny	   +50% de probabilidad de botín durante 2 horas
++800 PŻ	+800 HP
 , PPM: dokładny filtr	, clic der.: filtro detallado
 , atak włączony	, ataque activado
 - Czekaj cierpliwie na odpowiedź.	- Espera la respuesta con paciencia.
@@ -163,6 +174,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 - drugie miejsce od 31 poziomu konia	- segunda ranura desde el nivel 31 del caballo
 - piętro %d	 - piso %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- ranura libre: lee un libro de habilidad de montura
+-- Ninja Archer - skille P --	-- Ninja Archer - habilidades P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - habilidades P --
+-- Sura BM - skille P --	-- Sura BM - habilidades P --
+-- Sura WP - skille P --	-- Sura WP - habilidades P --
 -- Szaman Healer - skille P --	-- Chamán Curandero - habilidades P --
 -- Szaman Smok - skille P --	-- Chamán Dragón - habilidades P --
 -- Wojownik Body - skille P --	-- Guerrero Cuerpo - habilidades P --
@@ -172,17 +187,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 ... i %d więcej.	... y %d más.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...y %d más: lista completa en la ventana Wiki de botín (barra lateral del inventario).
 / - powtarza poprzednia komende	/ - repite el comando anterior
+/a - dajemy komus dany lvl	/a - damos a alguien el nivel indicado
 /a level - Zmienia lvl gracza	/a level - cambia el nivel de un jugador
 /b - ogloszenie w ramce	/b - anuncio en recuadro
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - bloquea el chat durante un tiempo
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - lista de jugadores con el chat bloqueado
 /dc - wyrzuca kogos z serwera	/dc - expulsa a alguien del servidor
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...desconocido...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...desconocido...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...desconocido...
 /gete - ...nie wiem...	/gete - ...desconocido...
 /getq - ...nie wiem...	/getq - ...desconocido...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - teletransporte al desierto
 /go s - teleport na Gore Sohan	/go s - teletransporte al Monte Sohan
+/go t - teleport do Doliny Orkow	/go t - teletransporte al Valle de los Orcos
 /go tr - teleport do Lasu Duchow	/go tr - teletransporte al Bosque de los Fantasmas
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - teletransporte al Bosque Rojo
 /go x y - przenosi do wspolrzednych x y	/go x y - lleva a las coordenadas x y
@@ -191,13 +218,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 /horse_level - podnosi poziom konia	/horse_level - sube el nivel del caballo
 /horse_ride - przywoluje konia	/horse_ride - invoca al caballo
 /inv - niewidzialnosc	/inv - invisibilidad
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - añade varias unidades de un objeto
 /item - dodaje przedmiot	/item - añade un objeto
 /kill - zabija gracza	/kill - mata a un jugador
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - cambia el nivel del personaje
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - invoca a un monstruo o PNJ
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - velocidad de movimiento
 /n - Wiadomosc na gorze ekranu	/n - mensaje en la parte superior de la pantalla
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - modo observador
 /open - start eventu OX	/open - inicia el evento OX
 /p - zamiana w potwora lub npc	/p - te transforma en un monstruo o PNJ
@@ -215,12 +251,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - aumenta la EXP en el porcentaje indicado durante un tiempo determinado
 /purge - usuwa potwory, npc itp z okolicy	/purge - elimina monstruos, PNJ, etc. de la zona
 /r - przywraca wszystkie pkt energii i zycia	/r - restablece todos los puntos de SP y HP
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...desconocido...
 /reset - resetuje PZ i PE	/reset - restablece HP y SP
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - rango caballeresco
+/set exp - dostajemy dana ilosc expa	/set exp - recibimos la cantidad indicada de EXP
+/set gold - dostajemy dana ilosc Yang	/set gold - recibimos la cantidad indicada de Yang
+/set max_hp - zwieksza punkty zycia	/set max_hp - aumenta los puntos de vida
 /set max_sp - zwieksza punkty energii	/set max_sp - aumenta los puntos de energía
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - añade el número indicado de puntos de habilidad
+/set_maxhp - doladowanie hp	/set_maxhp - recarga de PV
 /set_maxsp - doladowanie pe	/set_maxsp - recarga el SP
+/set_state information - ...nie wiem...	/set_state information - ...no sé...
+/set_state run - ...nie wiem...	/set_state run - ...no sé...
+/set_state start - ...nie wiem...	/set_state start - ...no sé...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Liderazgo P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Transformación P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - nivel de caballo 30
@@ -234,21 +285,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Ira del Dios Dragón
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Deseo del Dragón
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...desconocido...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - damos a alguien la habilidad indicada a P
 /ski 121 - Dowodzenie	/ski 121 - Liderazgo
 /ski 131 - Przywolaj Konia	/ski 131 - Llamar caballo
 /slow - spowalnia gracza	/slow - ralentiza a un jugador
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - aturde a un jugador
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - lleva a un jugador junto al GM
+/w - ilosc osob online	/w - número de personas en línea
 /warp - przenosi GM'a do gracza	/warp - lleva al GM junto a un jugador
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - isla nevada (poblado de los GM)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - teletransporte a la Arena de los GM
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - primero haz clic derecho sobre el monstruo, luego escribe el comando y el monstruo queda con 1 HP
+/xmas 0 - Dzien	/xmas 0 - Día
 /xmas 1 - Noc	/xmas 1 - Noche
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Día
 /xmas_boom 1 - Noc	/xmas_boom 1 - Noche
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - desactivar nieve
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - activar nieve
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - Se apaga la canción
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - activa la canción navideña
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - Navidad OFF
 0 - nakarm peta	0 - alimentar a la mascota
 0 = bez granicy	0 = sin límite
 1 dzień	1 día
+1 godz.	1 h
 1 krok	1 paso
+1* Runa Wyk. Akcesoriów	1* Runa Forja Accesorios
+1* Runa Wyk. Ks. Um.	1* Runa Forja Libro Hab.
+1* Runa Wyk. Poz. Prz.	1* Runa Forja Otros Obj.
+1* Runa Wyk. Prz. d. Zw.	1* Runa Forja Obj. Mascota
+1* Runa Wyk. Rękawiczek	1* Runa Forja Guantes
+1* Runa Wyk. Zest. Broni	1* Runa Forja Conj. Armas
+1* Runa Wyk. Zest. Hełm.	1* Runa Forja Conj. Cascos
+1* Runa Wyk. Zest. Zbroi	1* Runa Forja Conj. Armad.
+1* Runa Wykuwania Broni	1* Runa de Forja de Armas
+1* Runa Wykuwania Pasów	1* Runa de Forja de Cinturones
+1* Runa Wykuwania Zbroi	1* Runa de Forja de Armaduras
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normal. Surte efecto de inmediato.
 1. Posterunek Myr	1.er Puesto Myr
 1. dodany bonus +%d%%	1.ª bonificación añadida +%d%%
@@ -259,16 +334,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Paquete de 25)
 100% szans na przeczytanie	100% de probabilidad de lectura
 100% szans na ulepszenie.	100% de probabilidad de mejora.
 15% or more	15% o más
+2 godz.	2 h
 2-12 liter lub cyfr!	¡2-12 letras o dígitos!
 20% or more	20% o más
 25 kart królewskich dało nową Talię Królewską.	25 cartas de rey han formado un nuevo Mazo Real.
 25% only	Solo 25%
+25-40 lvl	Nivel 25-40
 2x PD	2x EXP
 3 Loch Pająków	Mazmorra de las Arañas 3
 3 losowe bonusy podstawowe	3 bonificaciones básicas aleatorias
 3 metiny	3 Metins
+4 godz.	4 h
+5 bossow	5 jefes
+5% obrażeń będzie dodanych do PŻ	El 5% del daño se añadirá a HP
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Guijarros, Cofre Misterioso, Cupón de Dr (20),
 50% więcej doświadczenia	50% más de experiencia
+8 godz.	8 h
 < 10 sek	< 10 s
 AC Miryang (k)	AC Miryang (f)
 AC Miryang+ (k)	AC Miryang+ (f)
@@ -310,6 +391,7 @@ Ahtrin Wielki Mistrz	Gran Maestro Ahtrin
 Ahtrin Wojownik	Guerrero Ahtrin
 Ahtrin Zwiadowca	Explorador Ahtrin
 Akcja:	Acción:
+Akcje botow	Acciones de bots
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Los datos se están cargando. Inténtalo de nuevo más tarde.
 Aktualny poziom: %s	Nivel actual: %s
 Aktywna	Activa
@@ -347,6 +429,8 @@ Alchemy	Alquimia
 Alchemy Grade:	Grado de alquimia:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Todos los objetos que no quepan en tu inventario se trasladarán al Almacén de compras. ¿Quieres continuar?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Todos los |cFFFFFF99|h{}|r se trasladarán al inventario o al Almacén de compras. ¿Quieres continuar?
+Alt (przytrzymaj)	Alt (mantener)
+Alt + LPM	Alt + clic izq.
 Amal	Amal
 Amator Ninja	Ninja aficionado
 Amator Shaman	Chamán aficionado
@@ -367,6 +451,7 @@ Antymagia	Antimagia
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Anulación de Polimorfia de Montura
 Anulacja Transmutacji	Anulación de Transmutación
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Operaciones restantes canceladas. Las eliminaciones enviadas pueden haberse ejecutado ya.
 Anuluj edycje	Cancelar ediciones
 Anuluj misję	Cancelar misión
 Appaloosa	Appaloosa
@@ -378,6 +463,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Botiquín (ET) de los guardia
 Apteczka strażników Zaklętego Lasu.	Botiquín de los guardianes del Bosque Encantado.
 Arahan Zodiaku	Arahan del Zodiaco
 Arbuz	Sandía
+Arena Pojedynków	Arena de Duelos
+Arena pojedynkow	Arena de duelos
 Argos (mrok)	Argos (oscuridad)
 Argos (ogień)	Argos (fuego)
 Arial	Arial
@@ -402,6 +489,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Ataque a larga distancia que aturde 
 Atak krwawienia	Ataque de hemorragia
 Atak magiczny	Ataque mágico
 Atak magiczny/fizyczny %	Ataque mágico/físico %
+Atak na Metiny	Ataque a Metin
 Atak na odległość	Ataque a distancia
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Ataque giratorio con tres oportunidades de golpear y probabilidad de envenenar al enemigo. 
 Atak obszarowy walki wręcz	Ataque de área cuerpo a cuerpo
@@ -420,6 +508,7 @@ Atak trzema ciosami pod rząd.	Ataque con tres golpes seguidos.
 Atak umożliwiający ominięcie obrony przeciwnika.	Ataque que permite ignorar la defensa del enemigo.
 Atak w kilka celów	Ataque a varios objetivos
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Ataque a distancia de largo alcance contra un enemigo o varios que estén juntos.
+Atak z wierzchowca	Ataque a caballo
 Atak zasięgowy	Ataque de área
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Durante el combate, ataca a los monstruos cercanos con rayos que infligen un daño igual al de tu ataque automático (enfriamiento 15 s).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Ataca a los enemigos con efigies de dragón.|Potencia: Inteligencia (++), Destreza (puntería) (+), nivel del personaje.
@@ -427,6 +516,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Ataca a los enemigos de frente.|Potencia: Fuerza (++), Vitalidad (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Ataca a los enemigos a tu alrededor y tiene probabilidad de aturdirlos.
 Atakuje wszystkich przeciwników wokół siebie.	Ataca a todos los enemigos a tu alrededor.
+Atakujący (atak)	Atacante (ataque)
 Atrybut Błyskawicy	Atributo de Relámpago
 Atrybut Błyskawicy|Efekt Omdlenia	Atributo de Relámpago|Efecto de Apagón
 Atrybut Piorunu	Atributo de Rayo
@@ -457,6 +547,7 @@ Auto Łowy: bojowiec wyłączony.	Caza automática: modo caballo de batalla desa
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Caza automática: sin tiempo. Compra el billete de 8 horas en la Tienda de Objetos y úsalo desde el inventario: el tiempo solo corre mientras juegas.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Caza automática: no se puede montar el caballo; se sigue a pie. Monta tú mismo (Ctrl+G) y el caballo de batalla volverá.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Caza automática: no puedo montar el caballo; lo intento cada %d s y mientras tanto lucho a pie.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Caza automática: no se pudo volver a montar tras quedar atascado - caza detenida.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Caza automática: no se pudo volver a montar tras el atasco.
 Auto Łowy: nie udało się zapisać ustawień.	Caza automática: no se pudieron guardar los ajustes.
 Auto Łowy: podnoszenie jest wyłączone.	Caza automática: la recogida está desactivada.
@@ -476,10 +567,13 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	El precio automático está inacti
 Auto-obnizka ceny	Descuento automático de precio
 Auto-obnizka: %s - nowa cena %s	Descuento automático: %s - nuevo precio %s
 Auto-obnizka: -%d%% co %dh, min. %s	Descuento automático: -%d%% cada %d h, mín. %s
+Auto-obnizka: -%d%%/%dh	Rebaja auto: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Descuento automático: 1-%d%%, cada 1-%d horas, precio mínimo de al menos 1 Yang.
+Auto-obnizka: wyl.	Rebaja auto: desact.
 Auto-obnizka: wylaczona	Descuento automático: desactivado
 Autologin: ponownie za %d s (próba %d)	Inicio de sesión automático: de nuevo en %d s (intento %d)
 Automatyczne podnoszenie Yang.	Recogida automática de Yang.
+Automatyczne zbieranie	Recolección automática
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Regenera automáticamente tus SP. Capacidad: 1.000.000 SP.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Regenera automáticamente tus SP. Capacidad: 100.000 SP.
 Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	Regenera automáticamente tus SP. Capacidad: 300.000 SP.
@@ -491,14 +585,20 @@ Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	Regenera automát
 Autopodnoszenie:	Recogida automática:
 Autopoty	Autopociones
 Autospin - wygrane: %s	Autogiro - premios: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autogiro detenido - la Rueda de la Fortuna está desactivada.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autogiro detenido - sin respuesta del servidor.
+Autospin zatrzymany - obrót odrzucony.	Autogiro detenido - giro rechazado.
 Autospin zatrzymany.	Autogiro detenido.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autogiro: %d giros, gastadas %d Dr, recompensas principales: %d.
 Autospin: brak odpowiedzi.	Autogiro: sin respuesta.
+Autospin: główna nagroda - zatrzymany.	Autogiro: premio principal - detenido.
 Autospin: główna nagroda!	Autogiro: ¡recompensa principal!
+Autospin: koniec (%d obrotów).	Autogiro: fin (%d giros).
 Autospin: koniec.	Autogiro: terminado.
 Autospin: koło wyłączone.	Autogiro: rueda desactivada.
 Autospin: obrót odrzucony.	Autogiro: giro rechazado.
 Autospin: za mało SM.	Autogiro: no hay suficientes Dr.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autogiro: faltan Monedas Dragón para otro giro.
 Autołowy	Caza automática
 Autołowy (TEST)	Caza automática (PRUEBA)
 Autołowy - szybki start/stop	Caza automática: inicio/parada rápidos
@@ -547,6 +647,7 @@ Best. Czl. Skor. Zodiaku	Hombre Escorpión Bestial del Zodiaco
 Best. Wężowy Miecznik	Espadachín Serpiente Bestial
 Best. Wężowy Wojownik	Guerrero Serpiente Bestial
 Best. Wężowy Łucznik	Arquero Serpiente Bestial
+Bestialski Fanatyk	Fanático Bestial
 Bez bonusów podstawowych - jadeit nic nie dodaje	Sin bonificaciones básicas: el jade no añade nada
 Bez imienia (Zwój Imienia Buffi).	Sin nombre (Pergamino de Nombre de Buffi).
 Bez koloru	Sin color
@@ -594,11 +695,13 @@ Biolog	Biólogo
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	El Biólogo da bonificaciones permanentes y un paso eliminado no se puede deshacer.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	El biólogo no necesita tiempo para analizar una muestra de mala calidad.
 Blad danych - sprawdz ID i ilosc.	Error de datos: comprueba el ID y la cantidad.
+Blad danych - sprawdz PID i ilosc.	Error de datos - comprueba el PID y la cantidad.
 Blad danych - sprawdz kwote.	Error de datos: comprueba el importe.
 Blad danych - sprawdz wartosc.	Error de datos: comprueba el valor.
 Blad danych.	Error de datos.
 Blad odpowiedzi serwera.	Error en la respuesta del servidor.
 Blad zapytania do bazy.	Error en la consulta a la base de datos.
+Blad: %s	Error: %s
 Blad: nie mozna utworzyc marmuru.	Error: no se pudo crear la canica.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Error: no se pudo guardar la solicitud de reinicio.
 Blade	Hoja
@@ -606,8 +709,11 @@ Blok Ataku	Bloqueo de Ataque
 Blokada Konta	Bloqueo de cuenta
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	El bloqueo surte efecto desde el PRÓXIMO inicio de sesión en esta cuenta, no
 Blokada konta	Bloqueo de cuenta
+Blokada permanentna	Bloqueo permanente
+Blokada tymczasowa	Bloqueo temporal
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	El bloqueo de ordenación solo se puede poner en un objeto de la mochila.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Bloquea la experiencia obtenida. Esto también afecta a las recompensas de misiones. ¡La experiencia obtenida mientras dura el efecto se pierde para siempre!
+Blokujący (czas trwania)	Bloqueador (duración)
 Bo Zodiaku	Bo del Zodiaco
 Body	Cuerpo
 Bohat. Księga Zwierza	Libro de la Bestia Heroica
@@ -636,6 +742,7 @@ Bonus vs Bossy	Bonif. vs. Jefes
 Bonus vs Bossy/Metiny	Bonif. vs. Jefes/Metins
 Bonus vs Ludzie	Bonif. vs. Semihumanos
 Bonus vs Metiny	Bonif. vs. Metins
+Bonus vs Nieumarli	Bonus vs No muertos
 Bonus vs Orki	Bonif. vs. Orcos
 Bonus vs Potwory	Bonif. vs. Monstruos
 Bonus vs Szaman	Bonif. vs. Chamán
@@ -686,9 +793,12 @@ Bossy	Jefes
 Bossy > Metiny > Moby	Jefes > Metins > Monstruos
 Bossy > Moby > Metiny	Jefes > Monstruos > Metins
 Bot	Bot
+Boty do spawnu	Bots por aparecer
 Boty gildii	Bots del gremio
 Boty nie maja jeszcze wyceny tego przedmiotu.	Los bots aún no tienen valoración de este objeto.
+Boty pisza na czacie	Los bots escriben en el chat
 Boty w misji: %d / %d (od poziomu %d)	Bots en la misión: %d / %d (desde el nivel %d)
+Boty zlomiarze	Bots chatarreros
 Boty: %s z %s (razem %s)	Bots: %s de %s (total %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Bots: %d (%d del gremio, %d contratados), se pidieron %d
 Bow	Arco
@@ -698,6 +808,7 @@ Brak / >	Ninguna / >
 Brak aktywnej misji albo limit został przekroczony.	No hay misión activa o se ha superado el límite.
 Brak aktywnej sesji	No hay sesión activa
 Brak aktywnej sesji.	No hay sesión activa.
+Brak bonusu albo powyżej %d	Sin bonificación o superior a %d
 Brak danych cenowych dla tego przedmiotu.	No hay datos de precios de este objeto.
 Brak danych do wyceny	Sin datos para valorar
 Brak danych o bonusach.	No hay datos de bonificaciones.
@@ -744,8 +855,10 @@ Brakuje Yang na: %s (%s).	Te falta Yang para: %s (%s).
 Brakuje ci Odłamków: %s.	Te faltan Fragmentos de Poder: %s.
 Brakuje ci Suplementów: %s.	Te faltan Suplementos: %s.
 Brakuje materiałów do rozwoju.	Faltan materiales para evolucionar.
+Brakuje: %s	Falta: %s
 Bransoleta z Turmalinu	Brazalete de Turmalina
 Braz. Niedzw. Zodiaku	Oso Pardo del Zodiaco
+Brazowy Niedzwiedz	Oso Pardo
 Brillant	Brillante
 Bronie	Armas
 Browarnik	Cervecero
@@ -760,6 +873,7 @@ Brązowa Chusta	Pañuelo Marrón
 Brązowa Chusta+	Pañuelo Marrón+
 Brązowa Farba	Pintura Marrón
 Brązowa Rosa	Rocío Marrón
+Brązowa Wilcza Szata+(m)	Túnica de Lobo Marrón+(m)
 Brązowa Woda	Agua Marrón
 Brązowe Płyty	Placas de Bronce
 Brązowy Sok	Zumo Marrón
@@ -795,10 +909,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Una bendición que regenera al instante tus Puntos de Vida y tus Puntos de Energía al 100%. Se puede usar una vez cada 2 minutos. Comparte el tiempo de recarga con las Pociones de Invulnerabilidad e Intocabilidad.
 Błyskaw.	Rayos
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Concede a sus enemigos el descanso eterno en un instante. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
+Błyszcząca	Reluciente
 Błyszcząca Szata Aury	Túnica de Aura Brillante
 Błąd serwera - spróbuj ponownie.	Error del servidor: inténtalo de nuevo.
 Błąd zapytania.	Error de consulta.
 Błędne podanie kodu może skutkować	Introducir el código de forma errónea puede provocar
+C. Ratownik Plażowy+	Socorrista de Playa Negro+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	CPU TNL puede mejorar la velocidad en PC menos potentes.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Restaurar interfaz.
@@ -837,6 +953,7 @@ Charyzma Nowicjusza	Carisma del Novato
 Chcesz zacząć grę?	¿Quieres empezar la partida?
 Chcesz zakończyć grę i otrzymać wygraną?	¿Quieres terminar la partida y recibir tu premio?
 Chcesz zrealizować to pole?	¿Quieres canjear esta casilla?
+Chciano botów: %d	Bots solicitados: %d
 Chciałeś %d szt., a tyle da się kupić.	Querías %d uds.; esto es lo que se puede comprar.
 Chegal, Goliat Cienia	Chegal, Goliat de la Sombra
 Chodząca Legenda	Leyenda Andante
@@ -851,12 +968,14 @@ Chwilę...	Un momento...
 Chwilę... spróbuj jeszcze raz.	Un momento... inténtalo de nuevo.
 Cicha Klątwa	Maldición Silenciosa
 Ciekawski	Curioso
+Ciemna Szata Proroka+(m)	Túnica Oscura de Profeta+(m)
 Ciemność	Oscuridad
 Cienie	Sombras
 Cieniolubny Liść	Hoja Amante de las Sombras
 Cienka Nić	Hilo Delgado
 Cienka Przędza	Hilo Fino
 Cienka Skóra	Cuero Fino
+Ciepły Kaftan Zimowy+(m)	Abrigo Cálido de Invierno+(m)
 Ciągliwość	Maleabilidad
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Una punta pesada hecha de piedra resistente. Aunque es más lenta, asesta golpes potentes y es perfecta para atravesar armaduras duras.
 Ciężkie Pasy	Correas Pesadas
@@ -880,6 +999,9 @@ Continue	Continuar
 Costume	Atuendo
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Algo salió mal. El objeto está a salvo con Seon-Hae: inténtalo más tarde.
 Create	Crear
+Ctrl (przytrzymaj)	Ctrl (mantener)
+Ctrl + LPM	Ctrl + clic izq.
+Ctrl + PPM	Ctrl + clic der.
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + clic der.: sacar todo, Mayús: cantidad
 Ctrl + klik: kilka punktów naraz	Ctrl + clic: varios puntos a la vez
 Ctrl + klik: odepnij	Ctrl + clic: desanclar
@@ -904,6 +1026,9 @@ Cyjanowy Sok	Zumo Cian
 Cyklop Kat (BŚ)	Verdugo Cíclope (JM)
 Cyklop Mag (BŚ)	Mago Cíclope (JM)
 Cyklop Żołnierz (BŚ)	Soldado Cíclope (JM)
+Cz. Królik K. Czarów+(m)	Conejo Rojo Mago+(m)
+Cz. Szata Faraona+ (m)	Túnica Faraón Roja+ (m)
+Cz. Wojownik P.Księżyca+	Guerrero Luna Rojo+
 Czapka Jokera (k)	Gorro de Comodín (M)
 Czapka Jokera (m)	Gorro de Comodín (H)
 Czapka z Pomp. (czerw.)	Gorro con Pompón (rojo)
@@ -915,15 +1040,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (gris).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (verde).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (dorado).
+Czar. Szata Dokkaebi+(m)	Túnica Dokkaebi Negra+(m)
+Czarna Lampa Lorda+	Lámpara Negra del Lord+
 Czarna Pantera	Pantera Negra
 Czarna Stal	Acero Negro
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Gorro negro para hombre con orejas de conejo. Te otorga como mínimo una bonificación aleatoria.
 Czarna magia	Magia Negra
 Czarnoksiężnik P. Wieży	Hechicero de la Torre Infernal
 Czarny Barwnik	Tinte Negro
+Czarny Niedzwiedz	Oso Negro
 Czarny Ork Zodiaku	Orco Negro del Zodiaco
 Czarny Rumak	Corcel Negro
 Czarny Skorpion	Escorpión Negro
+Czarny jak noc Ks. Wam.+	Príncipe Vampiro Negro como la Noche+
 Czarodziej Gnoll	Hechicero Gnoll
 Czarodziej Stylu Małp	Hechicero del Estilo del Mono
 Czarownik Sch. Płn. W.	Hechicero del Refugio del Viento N.
@@ -984,11 +1113,14 @@ Czekoladowy Amulet	Amuleto de Chocolate
 Czempion	Campeón
 Czempion %s	Campeón %s
 Czer. Amazonka Zodiaku	Amazona Roja del Zodiaco
+Czer. Sweter Świąt.+ (m)	Suéter Navideño Rojo+ (m)
 Czer. Żeń-szeń (premium)	Ginseng Rojo (premium)
 Czerw. Duch Drzewa	Espíritu del Árbol Rojo
 Czerw. Duch Pniaka	Espíritu del Tocón Rojo
+Czerw. Galowy Strój+ (m)	Traje de Gala Rojo+ (m)
 Czerw. Las Duchow	Bosque Rojo de los Fantasmas
 Czerw. Tr. Pajak Zodiaku	Araña Venenosa Roja del Zodiaco
+Czerw. Zbr. Azraela+ (m)	Armad. Azrael Roja+ (m)
 Czerwona Mikstura (W)	Poción Roja (G)
 Czerwona Runa SungMa	Runa SungMa Roja
 Czerwona Smocza Łuska	Escama de Dragón Rojo
@@ -1006,8 +1138,11 @@ Czerwony Kat Zodiaku	Verdugo Rojo del Zodiaco
 Czerwony Mag Zodiaku	Mago Rojo del Zodiaco
 Czerwony Monokl	Monóculo Rojo
 Czerwony Skorpion	Escorpión Rojo
+Czerwony Smoczek	Dragoncito Rojo
+Czerwony Smoczy Rycerz+	Caballero del Dragón Rojo+
 Czerwony Smoczy Róg	Cuerno de Dragón Rojo
 Czerwony Sok	Zumo Rojo
+Czerwony Toreador+	Torero Rojo+
 Czwartek	Jueves
 Czy chcesz cofnąć misję do poziomu 1?	¿Quieres reiniciar la misión al nivel 1?
 Czy chcesz dokonać masowej sprzedaży?	¿Quieres realizar una venta en masa?
@@ -1055,6 +1190,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Si este 
 Czym jest Konto Premium?	¿Qué es la Cuenta Premium?
 Czysta esencja z serca najgłębszych źródeł.	Esencia pura del corazón de los manantiales más profundos.
 Czyste zwoje (%s) w ekwipunku: %d	Pergaminos en blanco (%s) en el inventario: %d
+Czytanie bez opoznienia dnia	Lectura sin retardo diurno
+Czyściec Ognia	Purgatorio de Fuego
 Czyśćiec Ognia	Purgatorio de Fuego
 Część zestawów kostiumów (%d)	Parte de conjuntos de trajes (%d)
 Członek gildii %s jest teraz w grze.	El miembro del gremio %s está ahora en el juego.
@@ -1130,6 +1267,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Añade una Piedra de Alma para intercambiar.
 Dodaj Księgę Umiejętności do wymiany.	Añade un Libro de Habilidades para intercambiar.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Añade a la Tienda de Gaya otro espacio para ofertas de objetos valiosos, empezando por el primer espacio de la segunda fila por la izquierda. Úsalo en la Tienda de Gaya del Puerto (Estatua del Guerrero del Puerto del Nuevo Continente).
+Dodaj do ulubionych	Añadir a favoritos
 Dodaj przedmiot do wymiany.	Añade un objeto para intercambiar.
 Dodaj przedmioty do sklepu.	Añade objetos a la tienda.
 Dodaj punkt Sung Ma	Añadir punto de Sung Ma
@@ -1155,14 +1293,19 @@ Dolina	Valle
 Dolina Cyklopow	Valle de los Cíclopes
 Dolina Cyklopów	Valle de los Cíclopes
 Dolina Orkow	Valle de los Orcos
+Dolina Orków	Valle de los Orcos
+Dolina Orków / Ognista Ziemia	Valle de los Orcos / Tierra de Fuego
 Dom Aukcyjny	Casa de Subastas
 Dom Aukcyjny działa tylko w M1.	La Casa de Subastas solo funciona en M1.
 Dom Aukcyjny jest wyłączony.	La Casa de Subastas está desactivada.
 Dom Aukcyjny moze byc wylaczony.	Puede que la Casa de Subastas esté desactivada.
 Dom Aukcyjny: %s	Casa de Subastas: %s
+Dom Aukcyjny: %s - %s.	Casa de Subastas: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Casa de Subastas: como máximo %d bonificaciones a la vez.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Casa de Subastas: las compras anteriores aún están en curso.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Casa de Subastas: inténtalo de nuevo en un momento.
+Dom Towarowy	Casa de Comercio
+Dom Towarowy: %s	Casa de Comercio: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Gran Almacén: comprando las ofertas seleccionadas.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Gran Almacén: marca las ofertas (casilla junto a cada oferta) y pulsa Comprar todo.
 Domyślna	Predeterminada
@@ -1212,6 +1355,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Experiencia +%(v)s%% al montar
 Doświadczenie +%d%%	Experiencia +%d%%
 Doświadczenie Czempiona : %.2f%%	Experiencia de Campeón : %.2f%%
 Doświadczenie Czempiona: %s / %s	Experiencia de Campeón: %s / %s
+Doświadczenie łącznie	Experiencia total
 Doświadczenie: %d%%	Experiencia: %d%%
 Doświadczenie: %d%% (%d / %d)	Experiencia: %d%% (%d / %d)
 Doświadczenie: %s / %s	Experiencia: %s / %s
@@ -1220,10 +1364,15 @@ Drewniany Klucz	Llave de Madera
 Drobny Kam. Przebudzenia	Piedra del Despertar Menuda
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Preciada moneda de Yohara. Pule 30 Guijarros en la Estatua del Guerrero del Puerto del Nuevo Continente (con Piedra Espíritu +0 a +3 y 15 000 Yang: probabilidad del 70%) y recibirás 3 Gaya. Se paga en la Tienda de Gaya del Puerto, con los herreros de conjuntos, en la Estatua de Serpientes, el Altar Misterioso y con Maestro Chi. No se puede intercambiar con otros jugadores.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Un valioso anillo adornado con jade y turquesa. Otorga: +50% EXP, +30% fuerza contra monstruos, +20% velocidad de ataque y de hechizo, +10% HP y SP máx.
+Drop Przedmiotow:	Botín de objetos:
 Drop Yang	Drop de Yang
 Drop potwora %s:	Botín del monstruo %s:
 Drop przedmiotów +%d%%	Botín de objetos +%d%%
+Drop z bossów	Botín de jefes
 Dropek Metinów	Botín de Metins
+Dropek medali	Botín de medallas
+Dropek z M2	Botín de M2
+Dropek z M3	Botín de M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	La segunda mitad del ajuste anterior: una probabilidad independiente que se calcula al destruir una piedra Metin, en lugar de al matar a un monstruo normal.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	El segundo de tres libros de atención plena. Puede aumentar el carisma de su dueño. El libro desaparece tras leerlo. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	El segundo de tres libros de combate en formación. Puede aumentar la inspiración de su dueño. El libro desaparece tras leerlo. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
@@ -1263,6 +1412,7 @@ Dusza wojownika, obdarzona mocą.	El alma de un guerrero, dotada de poder.
 Dusza Światła	Alma de la Luz
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Las almas se toman solas del inventario: basta con llevarlas encima.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Ginseng estofado premium: el único alimento del Poderoso Caballo de Guerra (caballo desde el nivel 31). Haz clic derecho para alimentar al caballo invocado o dáselo al caballo. Cae de los monstruos de Yohara.
+Duzy Lysy Ork	Orco Calvo Grande
 Duża	Grande
 Duży Skorpion	Escorpión Grande
 Dwigant Zodiaku	Dwigante del Zodiaco
@@ -1293,14 +1443,17 @@ Dzik Zodiaku	Jabalí del Zodiaco
 Dziki General Zodiaku	General Salvaje del Zodiaco
 Dziki Lucznik Zodiaku	Arquero Salvaje del Zodiaco
 Dziki Moa (pieczęć)	Moa Salvaje (sello)
+Dziki Sluga	Sirviente Salvaje
 Dziki Sluga Zodiaku	Esbirro Salvaje del Zodiaco
 Dziki Z. Piech. Zodiaku	Infante Salvaje del Zodiaco
+Dziki Zolnierz Piechoty	Soldado de Infantería Salvaje
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Con esta poción obtendrás un 150% más de experiencia en tres horas de juego. No comerciable.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Con este sello puedes invocar a un unicornio.
 Dzięki tej pieczęci możesz przywołać marę senną.	Con este sello puedes invocar a una yegua de pesadilla.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Con este sello puedes invocar a tu mascota.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Con este sello, Sheldon saldrá del huevo.
 Dziękujemy za zgłoszenie!	¡Gracias por tu denuncia!
+Dziś	Hoy
 Dzwon Anielski	Campana Angelical
 Dzwon Arkt. Króla	Campana del Rey Ártico
 Dzwon Błk. Wiatru	Campana del Viento Azur
@@ -1406,6 +1559,7 @@ Elit. Ork Zodiaku	Orco de Élite del Zodiaco
 Elit. Ork Zwiad. Zodiaku	Orco Explorador de Élite del Zodiaco
 Elita Atlantydy	Élite de la Atlántida
 Elitarny Ezoteryczny Fanatyk	Fanático Esotérico de Élite
+Elitarny Ork	Orco de Élite
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblema de los maestros del fútbol. Durante 6 horas otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +35% de ataque mágico y cuerpo a cuerpo, +10% HP máx., +10% SP máx.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Emociones de a dos (beso, palmada) sin pedir consentimiento.
 Emocje: nie	Emociones: no
@@ -1442,6 +1596,7 @@ Event wielkanocny	Evento de Pascua
 Event wlaczony	Evento activado
 Event wyłączony	Evento desactivado
 Eventy (bonus imperium)	Eventos (bonificación del reino)
+Eventy w dniu %s:	Eventos del día %s:
 Eventy wylaczone	Eventos desactivados
 Ewoluować szatę za %s Yang i materiał?	¿Evolucionar el atuendo por %s Yang y material?
 Expimy razem	Subamos juntos
@@ -1450,6 +1605,7 @@ Ezot. Dreczyciel Zodiaku	Atormentador Esotérico del Zodiaco
 Ezot. Fanatyk Zodiaku	Fanático Esotérico del Zodiaco
 Ezot. Wojownik Zodiaku	Guerrero Esotérico del Zodiaco
 Ezoteryczne Drewno	Madera Esotérica
+Ezoteryczny Fanatyk	Fanático Esotérico
 Ezoteryczny Ostrzowiec	Hojero Esotérico
 FC Bakra (k)	FC Bakra (f)
 FC Bakra+ (k)	FC Bakra+ (f)
@@ -1478,6 +1634,8 @@ Fan	Fan
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Alas Fatales de la Muerte
 Filters History	Historial de filtros
+Filtr %d	Filtro %d
+Filtr (%d)	Filtro (%d)
 Filtr bonusów (prawy klik czyści)	Filtro de bonificaciones (clic derecho borra)
 Filtr podnoszenia	Filtro de recogida
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	El filtro de recogida está DESACTIVADO (Ctrl+Z): ahora recoges todo.
@@ -1486,7 +1644,9 @@ Filtr podnoszenia: %s	Filtro de recogida: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Filtro de recogida: los tipos de la Caza automática de este personaje ahora se aplican a Z, Caza automática y Compañero (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Filtro de recogida: preset «%s» cargado.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Filtro de recogida: reglas del tipo «%s» guardadas (%d).
+Filtr rodzaju	Filtro de tipo
 Filtr wyłączony - podnosisz wszystko.	Filtro desactivado: recoges todo.
+Filtry (%d)	Filtros (%d)
 Filtry bonusow	Filtros de bonificaciones
 Fioletowa	Morada
 Fioletowa Rosa	Rocío Violeta
@@ -1580,9 +1740,11 @@ Glodny Czarny Niedzwiedz	Oso Negro Hambriento
 Glodny Dzik	Jabalí Hambriento
 Glodny Niebieski Alfa Wilk	Lobo Alfa Azul Hambriento
 Glodny Niebieski Wilk	Lobo Azul Hambriento
+Glodny Niedzwiedz	Oso Hambriento
 Glodny Szary Wilk	Lobo Gris Hambriento
 Glodny Tygrys	Tigre Hambriento
 Glodny Wilk	Lobo Hambriento
+Glodny Zablakany Pies	Perro Vagabundo Hambriento
 Gniazdo Sheldona	Nido de Sheldon
 Gniewne Serce (pieczęć)	Corazón Furioso (sello)
 Gniewny Mini Alastor	Mini Alastor Furioso
@@ -1606,6 +1768,7 @@ Gotowa do ewolucji u Theowahdana	Listo para evolucionar con Theowahdan
 Gotowa za: %s	Lista en: %s
 Gotowe! Odbierz przedmiot	¡Listo! Recoge tu objeto
 Gotowy do użycia	Listo para usar
+Gotowy. Usuwane sa cale wybrane stosy.	Listo. Se eliminan las pilas completas seleccionadas.
 Gourou	Gourou
 Gra	Juego
 Gra beze mnie	Juega sin mí
@@ -1641,6 +1804,7 @@ Gruby Mini Kat (pieczęć)	Mini Verdugo Gordo (sello)
 Grudzień	Diciembre
 Grupa: %s	Grupo: %s
 Grupuj	Agrupar
+Grupy (PT)	Grupos (PT)
 Gruszka	Pera
 Gwarancja Rzemiosła (Biżuteria)	Garantía de Artesanía (Joyería)
 Gwarancja Rzemiosła (Broń)	Garantía de Artesanía (Arma)
@@ -1648,11 +1812,13 @@ Gwarancja Rzemiosła (Zbroja)	Garantía de Artesanía (Armadura)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo. No funciona con armas de nivel 30. El objeto puede destruirse.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo. El objeto puede destruirse.
+Gwardia Ognistego Smoka+	Guardia del Dragón de Fuego+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Violento golpe frontal sobre un área rectangular.
 Gwiazda Nocy	Estrella de la Noche\r\n
 Gwiazda Północy (PB)	Estrella del Norte (IM)
 Gwiazda Północy (SZC)	Estrella del Norte (ET)
 Gwiezdny Skarb	Tesoro Estelar
+Górnik	Minero
 Górski Behemot	Behemot de la Montaña
 Góry Gromu	Montañas del Trueno
 Głowa Węża	Cabeza de Serpiente
@@ -1675,6 +1841,8 @@ Handlarz nie jest zainteresowany tym przedmiotem.	El comerciante no está intere
 Handluj z %s	Comerciar con %s
 Happy Hour	Happy Hour
 Helm	Casco
+Helmy - Ninja	Cascos - Ninja
+Helmy - Sura	Cascos - Sura
 Helmy - Szaman	Yelmos - Chamán
 Helmy - Wojownik	Cascos - Guerrero
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1748,6 +1916,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	No se puede cargar
 Hwang	Hwang
 Hydra	Hidra
 I am the czempion! Punktacja: %d	¡Soy el campeón! Puntuación: %d
+ID Bota:	ID del Bot:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR al personaje más antiguo de la cuenta admin.
 Ich liczba na event jest ograniczona.	Su número por evento es limitado.
 Id. Skrzynia Kolczyków	Cofre Ideal de Pendientes
@@ -1761,6 +1930,9 @@ Ile sztuk kupic:	Cuántas unidades comprar:
 Ile sztuk kupic?	¿Cuántas unidades quieres comprar?
 Ile sztuk kupić:	Cuántas unidades comprar:
 Ile sztuk kupić?	¿Cuántas unidades quieres comprar?
+Ile? %s	¿Cuánto? %s
+Ilosc: malejaco	Cantidad: descendente
+Ilosc: rosnaco	Cantidad: ascendente
 Ilość prób: - jedna, + najwięcej, ile się da.	Número de intentos: - uno, + tantos como se pueda.
 Ilość Ładunków: %d	Cantidad de cargas: %d
 Ilość śmierci	Cantidad de muertes
@@ -1783,6 +1955,7 @@ Info o efekt.	Info de efectos
 Informacje	Información
 Informacje o misji	Información de la misión
 Informacje o sklepie	Información de la tienda 
+Inkub Płomieni+	Íncubo de las Llamas+
 Inna Wroga Wytrzymałość	Otra Resistencia Enemiga
 Inna postać już ma tą nazwę.	Otro personaje ya tiene ese nombre.
 Inne Mikstury	Otras pociones
@@ -1837,6 +2010,7 @@ Inteligencja Sung Ma	Inteligencia de Sung Ma
 Inteligencja Sung Ma +%d	Inteligencia de Sung Ma +%d
 Item inserted into the shopping safebox.	Objeto añadido al Almacén de compras.
 ItemShop	ItemShop
+Ja (GM)	Yo (GM)
 Jabłko	Manzana
 Jadeit	Jade
 Jadeit Dymu	Jade del Humo
@@ -1898,7 +2072,16 @@ Jazda Konna (Precyzja)	Montura (Precisión)
 Jazda Konna (Sura)	Montura (Sura)
 Jazda Konna (Szaman)	Montura (Chamán)
 Jazda Konna (Wojownik)	Montura (Guerrero)
+Jazda Konna (diabły)	Montura (demonios)
+Jazda Konna (insekty)	Montura (insectos)
 Jazda Konna (losowo)	Montura (aleatoria)
+Jazda Konna (mistycy)	Montura (místicos)
+Jazda Konna (nieumarli)	Montura (no muertos)
+Jazda Konna (orki)	Montura (orcos)
+Jazda Konna (potwory)	Montura (monstruos)
+Jazda Konna (pustynia)	Montura (desierto)
+Jazda Konna (półludzie)	Montura (semihumanos)
+Jazda Konna (zwierzęta)	Montura (animales)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	¡Uno de los Huevos de Dragón de Balathor invoca un frío glacial! Concentrad los ataques en él.
 Jednoręczne	A una mano
 Jedwab	Seda
@@ -1919,12 +2102,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	Si tienes
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Si tienes más del 90% de HP, recibes menos daño en el porcentaje indicado.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Si tienes más del 90% de HP, recibes x% menos de daño.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Si tienes más del 90%% de HP, recibes un %d%% menos de daño.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Si la tienda no aparece, este cliente aún no tiene
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Si usas esto, recibirás un refuerzo que te permitirá invocar a Enasir y comerciar con él como con la Mercadera de Variedades (al vender cobra el 10% del precio). Duración: 7 días. Se puede prolongar hasta un máximo de 1000 días.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Si usas esto, recibirás un refuerzo que te permitirá invocar a Enasir y comerciar con él como con la Mercadera de Variedades (al vender cobra el 10% del precio). Duración: 7 días. Se puede prolongar hasta un máximo de 1000 días. El objeto se puede intercambiar con otros jugadores.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Si usas esto, recibirás un refuerzo que te permitirá invocar a Enasir para acceder a tu almacén. Duración: 7 días. Se puede prolongar hasta un máximo de 1000 días.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Si usas esto, recibirás un refuerzo que te permitirá invocar a Enasir para acceder a tu almacén. Duración: 7 días. Se puede prolongar hasta un máximo de 1000 días. El objeto se puede intercambiar con otros jugadores.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Si tú o el Goblin del Tesoro morís, la expedición fracasa.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Si tienes problemas gráficos, elige 'Opciones del sistema' o 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Si la [5] oculta es adyacente a una carta descubierta,
 Jin Bing (lód)	Jin Bing (hielo)
 Jin Bing (mrok)	Jin Bing (oscuridad)
 Jin-Hee Zodiaku	Jin-Hee del Zodiaco
@@ -1935,9 +2120,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Idioma
 Język / Language	Idioma / Language
 Język klienta: %s	Idioma del cliente: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Idioma del servidor: %s - el cliente cambiará de idioma tras reiniciar (Server language: after a restart).
 KRĘCI SIĘ...	GIRANDO...
 Kaftan Wężowy	Caftán Serpiente
 Kaftan Wężowy (wykon.)	Caftán Serpiente (elab.)
+Kalendarz eventów	Calendario de eventos
+Kalendarz eventów: %s - %d	Calendario de eventos: %s - %d
 Kam. Pieczęci Sunga Mahi	Piedra del Sello de Sunga Mahi
 Kamera filmowa - obrót w lewo	Cámara cinemática: girar a la izquierda
 Kamera filmowa - obrót w prawo	Cámara cinemática: girar a la derecha
@@ -1948,6 +2136,7 @@ Kamera filmowa - w dół	Cámara cinemática: bajar
 Kamera filmowa - w górę	Cámara cinemática: subir
 Kamienie	Piedras
 Kamienie Duszy (0 = puste):	Piedras de Espíritu (0 = vacío):
+Kamienie Metin	Piedras Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Piedras de Teletransporte: %d. ¿Teletransportar a: %s?
 Kamienie dusz	Piedras de espíritu
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Una tablilla de piedra con runas antiguas. Emana una energía desconocida.
@@ -1981,6 +2170,7 @@ Kamień Teleportacji	Piedra de Teletransporte
 Kamień Teleportacji+	Piedra de Teletransporte+
 Kamień Tygrysa	Piedra del Tigre
 Kamień Wzgórza	Piedra de la Colina
+Kamień Węglowy	Piedra de Carbón
 Kamień Wężowy	Piedra Serpiente
 Kamień Wężowy+	Piedra Serpiente+
 Kamień do Fundamentu+	Piedra de Cimiento+
@@ -2110,6 +2300,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Los 
 Kolejny boss za: %s	Siguiente jefe en: %s
 Kolejny cel	Siguiente objetivo
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Siguiente nivel: %d espacios, %s Yang, desde el nivel de personaje %d
+Kolekcja lochów	Colección de mazmorras
+Kolekcja pól	Colección de campos
 Kolia Jadeitu Dymu	Collar de Jade del Humo
 Kolia Jadeitu Mgły	Collar de Jade de la Niebla
 Kolia Jadeitu Nocy	Collar de Jade de la Noche
@@ -2410,6 +2602,7 @@ Koło Losu jest teraz wyłączone.	La Rueda de la Fortuna está desactivada por 
 Koło Losu: brama otwarta - poziom %d!	Rueda de la Fortuna: ¡puerta abierta: nivel %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Rueda de la Fortuna: ganas %s. La recompensa te espera en el almacén de la Tienda de Objetos.
 Koło Losu: zdobywasz klucz (%d/%d).	Rueda de la Fortuna: obtienes una llave (%d/%d).
+Koło Płomieni Nocy	Rueda de las Llamas de la Noche
 Koło Skrzydła Nocy	Rueda del Ala de la Noche
 Koło Słonecznego Wilka	Rueda del Lobo Solar
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	La rueda tiene 16 casillas, cada una con una probabilidad de 1/16. Antes de cada giro las casillas se sortean de nuevo.
@@ -2420,6 +2613,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	El caballo se comió %
 Krab Królewski	Cangrejo Real
 Krab Pancerny Zodiaku	Cangrejo Acorazado del Zodiaco
 Krab Wojow. Zodiaku	Cangrejo Guerrero del Zodiaco
+Kradziez PM	Robo de PM
+Kradziez PZ	Robo de PV
 Kradzież PE	Robo de SP
 Kraina Gigantow	Tierra de los Gigantes
 Kraina Ognia	Tierra de Fuego
@@ -2456,14 +2651,18 @@ Krótki	Corto
 Krótko	Corto
 Kręty Klucz (PB)	Llave Retorcida (IM)
 Kręty Klucz (SZC)	Llave Retorcida (ET)
+Ksiegi umiejetnosci	Libros de habilidad
 Ksiegi zapomnienia	Libros del olvido
 Ksiąg w oknie: %d (wymian: %d)	Libros en la ventana: %d  (intercambios: %d)
 Książ. Odłamek Broni II	Frag. Principesco de Arma II
 Książ. Odłamek Hełmu II	Frag. Principesco de Yelmo II
 Książ. Odłamek Zbroi II	Frag. Principesco de Armadura II
 Książka Przebudzenia	Libro del Despertar
+Książę Atlantydy+	Príncipe de la Atlántida+
+Książę Orientu (brąz.)+	Príncipe de Oriente (bronce)+
 Książę Piekielnej Wieży	Príncipe de la Torre Infernal
 Książę Śmierci P. Wieży	Príncipe de la Muerte de la Torre Infernal
+Książęcy	Principesco
 Książęcy Efekt Zestawu	Efecto de Conjunto Principesco
 Książęcy Kowal Zestawu	Herrero de Conjuntos Principesco
 Księga Absorpcji Życia	Libro de Absorción de Vida
@@ -2548,6 +2747,7 @@ Księga: Burza Balathora	Libro: Tormenta de Balathor
 Księga: Nieugiętość Balathora	Libro: Firmeza de Balathor
 Księga: Wola Balathora	Libro: Voluntad de Balathor
 Księgi	Libros
+Księgi Misji	Libros de Misiones
 Księgi Um. Pasywnych	Libros de Hab. Pasivas
 Księgi umiejętności	Libros de habilidad
 Księgi zapomnienia	Libros del olvido
@@ -2564,7 +2764,10 @@ Kup część stosu	Comprar parte de la pila
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Compra la cantidad indicada de un objeto, empezando por el más barato
 Kup tę ofertę	Comprar esta oferta
 Kup wiele	Comprar varios
+Kup wiele działa dla jednego przedmiotu.	Comprar varios funciona para un solo objeto.
 Kup wszystkie zaznaczone oferty	Comprar todas las ofertas marcadas
+Kup wybrane (%d	Comprar selección (%d
+Kup wybrane (0	Comprar selección (0
 Kup!	¡Comprar!
 Kupic %d ofert za lacznie %s?	¿Comprar %d ofertas por un total de %s?
 Kupione - nowa oferta za %s.	Comprado: nueva oferta en %s.
@@ -2574,12 +2777,14 @@ Kupiono %d z %d ofert: %d szt. za %s.	Se compraron %d de %d ofertas: %d uds. por
 Kupić %d szt. (ofert: %d) za %s?	¿Comprar %d uds. (ofertas: %d) por %s?
 Kupić %s za %s Gaya?	¿Comprar %s por %s Gaya?
 Kupić %s za %s?	¿Comprar %s por %s?
+Kupić zaznaczone oferty: %d?	¿Comprar las ofertas marcadas: %d?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Cupón de Dr (50), +100% de probabilidad de botín durante 2 horas
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	Cupón por valor de 20 Monedas Dragón. Haz clic derecho para añadirlas a tu cuenta.
 Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	Cupón por valor de 250 Monedas Dragón. Este objeto es comerciable.
 Kupony	Cupones
 Kupony SM	Cupones de MD
 Kupony SM/Premium	Cupones de MD/Premium
+Kupowanie mikstur	Compra de pociones
 Kupuja sie po kolei; blad przerywa zakupy.	Se compran una a una; un error interrumpe las compras.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Con ellos compra en la Tienda de Objetos lo que usa (sin peinados). No gasta: no los toca.
 Kursor nad postaciami	Cursor sobre personajes
@@ -2590,6 +2795,7 @@ Kwitnąca Brzoskwinia	Melocotonero en Flor
 Kwitnące Kaki	Caqui en Flor
 Kwota (yang):	Cantidad (Yang):
 Kwota SM:	Importe de Dr:
+Kwota Yang:	Cantidad de Yang:
 Kwota:	Importe:
 Kłopoty na Zboczu Gautama	Problemas en la Ladera de Gautama
 LPM: podnoszę tak / nie	Clic izq.: recojo sí / no
@@ -2617,12 +2823,14 @@ Lekarstwo Iluzji	Remedio de la Ilusión
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Un remedio contra la Sarna Demoníaca. Objeto necesario para una misión.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Medicina preparada con hojas de vida. Al tomarla se regeneran al instante HP y SP.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Paso Ligero (velocidad de movimiento +%(v)s) durante %(d)d s tras atacar a pie (cada 300 s)
+Lekki Strój Plażowy+ (m)	Traje de Playa Ligero+ (m)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Una punta ligera y flexible hecha de bambú. Ideal para disparos rápidos y precisos; la usan los arqueros que valoran la movilidad y la velocidad.
 Lekkie jak Piórko	Ligero como una Pluma
 Leopardzik (7 dni)	Leopardito (7 días)
 Level konia:	Nivel del caballo:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Ranura izquierda: el objeto que recibirá el nuevo aspecto.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Ranura izquierda: la montura que recibirá el nuevo aspecto.
+Lewy Shift	Shift izq.
 Leśna Wróżka	Hada del Bosque
 Leże Smoka	Guarida del Dragón
 Licencja Najemnika	Licencia de Mercenario
@@ -2633,18 +2841,22 @@ Liczba bonusów na kostiumie (co najmniej):	Número de bonificaciones del traje 
 Liczba botów (3-16):	Número de bots (3-16):
 Liczba gier:	Número de partidas:
 Liczba online	Número de conectados
+Liczba sztuk	Número de unidades
 Liczba sztuk:	Cantidad:
 Liczba w ekwipunku	Cantidad en el inventario
 Liczby	Números
 Lider grupy	Líder del grupo
 Lilia: szansa na przedmioty +%d%%	Lirio: probabilidad de botín de objetos +%d%%
 Liliowa Runa SungMa	Runa SungMa Lila
+Limit Lvl: %d do %d	Límite de nivel: %d a %d
 Limit członków grupy: od %d do %d	Límite de miembros del grupo: de %d a %d
 Limit zakupów na konto: %d	Límite de compras por cuenta: %d
 Limit zakupów na minutę - dokończ za chwilę.	Límite de compras por minuto: termina en un momento.
 List Gończy	Orden de Busca y Captura
 Lista GM jest pusta: nastepny start moze nadac	La lista de GM está vacía: el próximo inicio podría conceder
 Lista jest pusta.	La lista está vacía.
+Lista komend GM	Lista de comandos GM
+Lista komend GM:	Lista de comandos GM:
 Lista tytułów	Lista de títulos
 Lista wyciszonych	Lista de silenciados
 Lista znajomych	Lista de amigos
@@ -2652,6 +2864,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Las letras de es
 Lizak Magii	Piruleta Mágica
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Piruleta de composición misteriosa, llena de magia. Otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +30% daño mágico, +10% HP máx., +10% SP máx. Dura 7 días.
 Liście Życia	Hojas de Vida
+Loch / wyprawa	Mazmorra / expedición
 Loch Malp (latwy)	Mazmorra de los Monos (fácil)
 Loch Malp (normalny)	Mazmorra de los Monos (normal)
 Loch Malp (trudny)	Mazmorra de los Monos (difícil)
@@ -2660,6 +2873,7 @@ Loch Pajakow V1	Mazmorra de las Arañas V1
 Loch Pajakow V2	Mazmorra de las Arañas V2
 Loch Pająków (1)	Mazmorra de las Arañas (1)
 Loch Pająków V1	Mazmorra de las Arañas V1
+Loch Polowy	Mazmorra de Campo
 Lochy Yohary	Mazmorras de Yohara
 Lod. Wiel. Zab. Zodiaku	Orca de Hielo del Zodiaco
 Lodogóry 690 10169	Montehielo 690 10169
@@ -2753,11 +2967,13 @@ Maksimum	Máximo
 Maksymalnie	Máximo
 Maksymalny	Máximo
 Mala liczba ofert - wycena orientacyjna	Pocas ofertas: valoración orientativa
+Malpi Zolnierz	Soldado Mono
 Maniak Cz. Wiat. Zodiaku	Maníaco del Viento Negro del Zodiaco
 Mapa %d	Mapa %d
 Mapa (index):	Mapa (índice):
 Mapa OX	Mapa OX
 Mapa teleportacji - TAB	Mapa de teletransporte - TAB
+Mapa Ślubna	Mapa Nupcial
 Mapa świata	Mapa del mundo
 Mapa: %s	Mapa: %s
 Mapy	Mapas
@@ -2886,14 +3102,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 90-104.
+Materiały	Materiales
 Materiały Rzemieślnicze	Materiales de Artesanía
 Materiały ulepszeń	Materiales de mejora
 Matowy Lód	Hielo Mate
 Matowy Lód+	Hielo Mate+
 Max PE: +%d	SP máx.: +%d
+Max PM	PM máx.
+Max PM %	PM máx. %
+Max PZ	PV máx.
+Max PZ %	PV máx. %
 Max PŻ +2500 / +2000 / +1500	HP máx. +2500 / +2000 / +1500
 Max PŻ: +%d	HP máx.: +%d
 Max wytrzymalosc	Resistencia máx.
+Max. PŻ +%d	HP máx. +%d
 Max. poziom przedmiotu: %d	Nivel máx. del objeto: %d
 Max. ulepszenie z +%d na +%d.	Mejora máx. de +%d a +%d.
 Mała Meley	Pequeña Meley
@@ -2901,9 +3123,11 @@ Mała Meley (pieczęć)	Pequeña Meley (sello)
 Mała Nemere	Pequeña Nemere
 Mała Nemere (pieczęć)	Pequeña Nemere (sello)
 Małe Błogosławieństwo	Pequeña Bendición
+Małpi Loch	Mazmorra de los Monos
 Małpi Loch (trudny)	Mazmorra de los Monos (difícil)
 Małpi Loch (łatwy)	Mazmorra de los Monos (fácil)
 Małpi Loch (średni)	Mazmorra de los Monos (media)
+Małpka	Monito
 Mały Aamon	Pequeño Aamon
 Mały Aamon (pieczęć)	Pequeño Aamon (sello)
 Mały Baashido	Pequeño Baashido
@@ -3055,7 +3279,7 @@ Min-Sun	Min-Sun
 Min. %d bonusów	Mín. %d bonificaciones
 Min. Raise	Puja mín.
 Min. liczba bonusow:	Mín. de bonificaciones:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Mín.: el objeto debe tener esta bonificación, al menos X. Clic: Ninguna / >.\nNinguna / >: recoge un objeto sin esta bonificación, y con ella solo por encima de X. Clic: Mín.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Mín.: el objeto debe tener esta bonificación, al menos X. Clic: Ninguno / >.\nNinguno / >: sube el objeto sin esta bonificación y con ella solo por encima de X. Clic: Mín.
 Mineral	Mineral
 Minerał	Mineral
 Mini Azrael	Mini Azrael
@@ -3077,11 +3301,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lanza fuerzas oscuras para herir a los enemigos.|Potencia: Inteligencia (++), Destreza (puntería) (+), nivel del personaje.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lanza rayos.|Potencia: Inteligencia (++), Destreza (puntería) (+), nivel del personaje.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lanza talismanes para herir a los enemigos.|Potencia: Inteligencia (++), Destreza (puntería) (+), nivel del personaje.
+Misja %d	Misión %d
 Misja kart	Misión de cartas
 Misje Biologa	Misiones del Biólogo
 Misje dzienne	Misiones diarias
 Misje główne	Misiones principales
 Misje poboczne	Misiones secundarias
+Misje polowania	Misiones de caza
 Misje łowieckie	Misiones de caza
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Llave primorosamente decorada que abre el cofre de la ninfa de agua. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 Mistrz Ahtrin	Maestro Ahtrin
@@ -3095,6 +3321,8 @@ Mistrz Włóczni Ki	Maestro de Lanza Ki
 Mistrz Włóczni Mao	Maestro de Lanza Mao
 Mistrz ekwipunku	Maestro del Equipo
 Mistrz przepadnie.	 El nivel de maestro se perderá.
+Mistrz umiejętności	Maestro de habilidades
+Mistrzowska piłka nożna	Fútbol de Maestros
 Mistrzowski Emblemat	Emblema de Maestro
 Mistyczna substancja ożywiająca florę i faunę lasu.	Una sustancia mística que da vida a la flora y la fauna del bosque.
 Mistykom	Místicos
@@ -3107,6 +3335,7 @@ Mnich Milbon	Monje Milbon
 Mniej niz 1 min.	Menos de 1 min.
 Mnoznik dropu przedmiotow	Multiplicador de botín de objetos
 Mnoznik dropu yang	Multiplicador de botín de Yang
+Moby 1 hit	Mobs de 1 golpe
 Moby > Bossy > Metiny	Monstruos > Jefes > Metins
 Moby > Metiny > Bossy	Monstruos > Metins > Jefes
 Moc Błyskawic	Poder del Rayo
@@ -3133,6 +3362,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Un corte a la moda que permite a los chamanes expresar su carácter. Cambia de forma permanente el peinado de tu personaje.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Un corte a la moda que permite a los chamanes expresar su carácter. Cambia de forma permanente el peinado de tu personaje.
 Moj cel	Mi objetivo
+Moja postac	Mi personaje
 Moje miejsca	Mis ubicaciones
 Mokre Szaty: szybkość ruchu -50	Túnicas Mojadas: velocidad de movimiento -50
 Moloch	Moloch
@@ -3148,6 +3378,7 @@ Może schwytać karty: [1]	Puede capturar cartas: [1]
 Może schwytać karty: [1], [2]	Puede capturar cartas: [1], [2]
 Może schwytać karty: [1], [2], [3]	Puede capturar cartas: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Puede capturar cartas: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Puede capturar las cartas: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Puede capturar cartas: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Puede devolver a la tierra a algunos soñadores. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Możesz mieć najwyżej %d własnych kategorii.	Puedes tener como máximo %d categorías propias.
@@ -3180,10 +3411,12 @@ Można znać tylko jedną ripostę.	Solo se puede conocer una réplica.
 Mroczna Paproć	Helecho Oscuro
 Mroczna Wieża	Torre Oscura
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Esfera Oscura tiene un %d%% de probabilidad de aturdir al oponente
+Mrocznego Uderzenia	Golpe Oscuro
 Mroczny Cierń	Espina Oscura
 Mroczny Kat Zodiaku	Verdugo Oscuro del Zodiaco
 Mrok	Oscuridad
 Mroz. Lod. Czl. Zodiaku	Hombre de Hielo Gélido del Zodiaco
+Mrozny Lodowy Czlowiek	Hombre de Hielo Gélido
 Mroźna Skrz. Balathora	Cofre Helado de Balathor
 Mroźna Skrz. Balathora+	Cofre Helado de Balathor+
 Mroźny Klucz (PB)	Llave Helada (IM)
@@ -3194,6 +3427,7 @@ Mroźny Rufus	Rufus Helado
 Mroźny Rufus (pieczęć)	Rufus Helado (sello)
 Mt2009	Mt2009
 Mumia Kapłanka	Sacerdotisa Momia
+Mundur Strażaka+(m)	Uniforme de Bombero+(m)
 Musisz go pokonać, by otrzymać nagrodę.	Debes derrotarlo para recibir la recompensa.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Debes mover el Huevo de Dragón Ardiente hacia el otro lado.
 Myr Bojownik (wiatr)	Myr Luchador (viento)
@@ -3209,6 +3443,7 @@ Myr Prymus (wiatr)	Myr Primus (viento)
 Myr Prymus (ziemia)	Myr Primus (tierra)
 Myr Weteran (wiatr)	Myr Veterano (viento)
 Myr Weteran (ziemia)	Myr Veterano (tierra)
+Mój ranking	Mi clasificación
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Se dice que el contenido de este baúl es tan valioso como el propio baúl.
 Młodszy Hazardzista	Jugador Novato
 Młody Moa (pieczęć)	Moa Joven (sello)
@@ -3254,6 +3489,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Pulsa una tecla para: %s
 Naczelny Hazardzista	Jugador Principal
 Nadaj imię	Poner nombre
+Nadaj range	Asignar rango
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel G1 de un Chamán Dragón con 90 de inteligencia.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel M1 de un Chamán Dragón con 90 de inteligencia.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel P de un Chamán Dragón con 90 de inteligencia.
@@ -3282,7 +3518,9 @@ Nagrody są już odkryte.	Las recompensas ya han sido reveladas.
 Nagrody za tury	Recompensas de ronda
 Najbliższy	Más cercano
 Najczęściej zabijani	Más abatidos
+Najdłuższa sesja	Sesión más larga
 Najedź myszką na przedmiot, aby zobaczyć opis.	Pasa el ratón sobre el objeto para ver su descripción.
+Najlepsza sesja (yang)	Mejor sesión (Yang)
 Najlepszy czas: %s	Mejor tiempo: %s
 Najpierw dezaktywuj Relikt Duszy.	Primero desactiva la Reliquia del Alma.
 Najpierw dodaj eliksir.	Primero añade un elixir.
@@ -3346,6 +3584,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Tocado del conjunto Arezzo (Conjunto de Vikingo). Dura 30 días desde que se equipa.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Tocado del conjunto Arezzo (Conjunto Dorado). Dura 30 días desde que se equipa.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Tocado del conjunto Arezzo (Conjunto del Dragón Dorado). Dura 30 días desde que se equipa.
+Nakładka na broń	Recubrimiento de arma
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Aspecto para arma de una mano (espada): guerrero, ninja, sura. Dura 30 días desde la compra.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Aspecto de arma del conjunto Arezzo (Conjunto Angelical): ninja. Dura 30 días desde que se equipa.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Aspecto de arma del conjunto Arezzo (Conjunto Angelical): chamán. Dura 30 días desde que se equipa.
@@ -3489,6 +3728,7 @@ Nazwa Postaci jest niepoprawna.	El nombre del personaje no es válido.
 Nazwa jest niewłaściwa.	El nombre no es válido.
 Nazwa postaci jest identyczna jak nazwa konta.	El nombre del personaje es idéntico al nombre de la cuenta.
 Nazwa pozycji (do %d znaków)	Nombre de la ubicación (hasta %d caracteres)
+Nazwa presetu	Nombre del preset
 Nazwa przedmiotu	Nombre del objeto
 Nazwa reguły	Nombre de la regla
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	El nombre de tu personaje no puede contener caracteres especiales.
@@ -3512,6 +3752,7 @@ Nick:	Nombre:
 Nick: %s (pid: |cff5af22c%d|r)	Nombre: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Nombre: PLAYER_NAME
 Nie	No
+Nie 1. atak	No 1er ataque
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Ya no hace falta: el Localizador de PNJ está activado para cada personaje. | En el mapa del mundo, cambia la vista con el botón de la barra de título.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	No está pensada para la higiene bucal. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Nie jest składnikiem receptur ani ulepszeń.	No es ingrediente de ninguna receta ni mejora.
@@ -3605,6 +3846,7 @@ Nie widzisz jeszcze całej mapy.	Aún no ves el mapa completo.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	No se pusieron a la venta %d objetos: la tienda se ha cerrado.
 Nie zaznaczono żadnej misji.	No se ha seleccionado ninguna misión.
 Nie znaleziono gracza.	Jugador no encontrado.
+Nie znaleziono moba/metina o takim ID.	No se encontró ningún mob/metin con ese ID.
 Nie znaleziono żadnych wypraw.	No se encontró ninguna expedición.
 Niebiańska Tarcza	Escudo Celestial
 Niebiańska Tarcza nie może zostać nadana.	No se puede otorgar el Escudo Celestial.
@@ -3612,12 +3854,15 @@ Niebieska Mikstura (W)	Poción Azul (G)
 Niebieska Runa SungMa	Runa SungMa Azul
 Niebieska Woda	Agua Azul
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Gorro azul para hombre con orejas de conejo. Te otorga como mínimo una bonificación aleatoria.
+Niebieski Alfa Wilk	Lobo Alfa Azul
 Niebieski Barwnik	Tinte Azul
 Niebieski Mały Smok	Pequeño Dragón Azul
 Niebieski Mały Smok (pieczęć)	Dragoncito Azul (sello)
 Niebieski Skorpion	Escorpión Azul
 Niebieski Sok	Zumo Azul
+Niebieski Wilk	Lobo Azul
 Niebieski Wilk Zodiaku	Lobo Azul del Zodiaco
+Niebieski Wzorowy Uczeń+	Alumno Modelo Azul+
 Niebieskie Jajo Smoka	Huevo de Dragón Azul
 Niebieskie Pudło Zodiaku	Caja Azul del Zodiaco
 Niebieskie Zioło	Hierba Azul
@@ -3644,6 +3889,7 @@ Nieprawidlowy nick	Nombre no válido
 Nieprawidłowy kod koloru (np. #FF8800).	Código de color no válido (p. ej. #FF8800).
 Nieprawidłowy limit czasu.	Límite de tiempo no válido.
 Nieprzenikniony pancerz strażnika ognia.	La coraza impenetrable del guardián del fuego.
+Niesmiertelnosc WYL	Inmortalidad DESACT.
 Nieudana	Fallida
 Nieugiętość Balathora	Firmeza de Balathor
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Firmeza de Balathor: resistencia al retroceso y la caída %d%%
@@ -3675,6 +3921,7 @@ Nieśmiertelność	Inmortalidad
 Nigdy nie upadasz	Nunca caes
 Nikt jeszcze nie ma wyniku w tym sezonie.	Nadie tiene aún una puntuación en esta temporada.
 Nikt jeszcze nie ukończył tury.	Nadie ha completado aún una ronda.
+Ninja (Łuk)	Ninja (Arco)
 Ninja Armor	Armadura de ninja
 Ninja Ostrze	Ninja Hoja
 Ninja Łuk	Ninja Arco
@@ -3686,6 +3933,7 @@ Niszczyciel En-Tai (BŚ)	Destructor En-Tai (JM)
 Niszczyciel P. Wieży	Destructor de la Torre Infernal
 Niszczyciel Zodiaku	Destructor del Zodiaco
 Noc trwać będzie od 22:00 do 6:00.	La noche durará de las 22:00 a las 6:00.
+Noc/snieg po 22:00	Noche/nieve desde las 22:00
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normal
 Normalne	Normal
@@ -3734,6 +3982,7 @@ Obowiązki gildii - panel lidera	Obligaciones del gremio - panel del líder
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Daño a Metin/Jefes/MiniJefes +%.0f%%
 Obrazenia magiczne	Daño mágico
 Obrazenia magiczne vs potwory	Daño mágico vs. monstruos
+Obrazenia umiejetnosci	Daño de habilidades
 Obraż. sztyletów w potwory +%d	Daño de dagas contra monstruos +%d
 Obraż. umiejętności	Daño de habilidades
 Obrażenia %s +%s%%	Daño de %s +%s%%
@@ -3760,7 +4009,13 @@ Obrażenia przeciwko Metinom +%d%%	Daño contra Metin +%d%%
 Obrażenia umiejętności	Daño de habilidades
 Obrażenia umiejętności konnych +%(v)s%%	Daño de habilidades de montura +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Daño en el Valle de Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Daño infligido a las Piedras Metin +%d%% durante 5 s
+Obrażenia zwiększają się o %d%% na 10 sek.	El daño aumenta un %d%% durante 10 s
 Obrażenia/Obrona	Daño/Defensa
+Obrażenie Umiejętności: 10%	Daño de habilidad: 10%
+Obrażenie Umiejętności: 3%	Daño de habilidad: 3%
+Obrażenie Umiejętności: 5%	Daño de habilidad: 5%
+Obrażenie Umiejętności: 7%	Daño de habilidad: 7%
 Obrona %	Defensa %
 Obrona +%.0f	Defensa +%.0f
 Obrona +12~15%	Defensa +12~15%
@@ -3777,11 +4032,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Defensa contra la habilid
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Defensa contra la habilidad Giro de Espada +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Defensa contra la habilidad Emboscada +%.1f%%
 Obrona przed śr. obrażeniami	Resistencia al daño medio
+Obrona przy Metinach	Defensa ante Metin
 Obrona vs Ninja	Defensa vs. Ninjas
 Obrona vs Sura	Defensa vs. Suras
 Obrona vs Szamanom	Defensa vs. Chamanes
 Obrona vs Wojownikom	Defensa vs. Guerreros
 Obrońca	Defensor
+Obrońca (obrona)	Defensor (defensa)
 Obrońca Chmur	Protector de las Nubes
 Obrońca Stylu Małp	Defensor del Estilo del Mono
 Obrót %d/%s, wydano %d SM	Giro %d/%s, gastadas %d Dr
@@ -3830,6 +4087,7 @@ Odbicie Walki. Wręcz	Reflejo Cuerpo a Cuerpo
 Odbicie ataku fizycznego: %.0f%%	Reflejo de ataque físico: %.0f%%
 Odbicie ciosu	Reflejo de golpe
 Odbicie pocisku	Reflejo de proyectil
+Odbierz GM...	Quitar GM...
 Odbierz nagrodę	Reclamar recompensa
 Odbierz nagrodę za turę	Reclamar recompensa de ronda
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Reclama tu recompensa de ronda en la ventana de Búsqueda del tesoro.
@@ -3853,6 +4111,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	¿Entregar el objeto a Seon-Hae (probab
 Oddelegowany Komendant	Comandante Delegado
 Odebrac range GM postaci %s?	¿Quitar el rango GM del personaje %s?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Solo puedes reclamar la recompensa de la ronda actual (%d).
+Odeslij boty	Devolver bots
 Odkryta karta	Carta descubierta
 Odnowa	Renovación
 Odp. na Br. Dwuręczną	Res. a Arma a Dos Manos
@@ -3868,12 +4127,16 @@ Odp. na Wiatr	Res. al Viento
 Odp. na Ziemię	Res. a la Tierra
 Odpały	Objetos temporizados
 Odpały (Sekundy)	Objetos temporizados (segundos)
+Odpoczynek w miescie	Descanso en la ciudad
 Odpornosc na omdlenia	Resistencia al aturdimiento
 Odpornosc na spowolnienie	Resistencia a la ralentización
 Odpornosc na upadek	Resistencia a la caída
+Odpornosc: Ninja	Resistencia: Ninja
+Odpornosc: Sura	Resistencia: Sura
 Odpornosc: Szaman	Resistencia: Chamán
 Odpornosc: Wojownik	Resistencia: Guerrero
 Odpornosc: ataki fizyczne	Resistencia: ataques físicos
+Odpornosc: blyskawice	Resistencia: rayos
 Odpornosc: bron dwureczna	Resistencia: armas a dos manos
 Odpornosc: cios krytyczny	Resistencia: golpe crítico
 Odpornosc: dzwony	Resistencia: campanas
@@ -3882,8 +4145,12 @@ Odpornosc: ludzie	Resistencia: semihumanos
 Odpornosc: magia	Resistencia: magia
 Odpornosc: miecze	Resistencia: espadas
 Odpornosc: mrok	Resistencia: oscuridad
+Odpornosc: obrazenia umiejetnosci	Resistencia: daño de habilidades
+Odpornosc: ogien	Resistencia: fuego
 Odpornosc: potwory	Resistencia: monstruos
 Odpornosc: przebicie	Resistencia: golpe perforante
+Odpornosc: srednie obrazenia	Resistencia: daño medio
+Odpornosc: strzaly	Resistencia: flechas
 Odpornosc: sztylety	Resistencia: dagas
 Odpornosc: trucizny	Resistencia: veneno
 Odpornosc: wachlarze	Resistencia: abanicos
@@ -3912,6 +4179,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Resistencia a la Oscuridad (+%d%
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Resistencia a Ninjas: reduce el daño que recibes de los Ninjas.
 Odporność na Obrażenia Fizyczne: %d%%	Resistencia al daño físico: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Resistencia al Fuego (+%d%% del valor total)
+Odporność na Ogień: 5%	Resistencia al fuego: 5%
 Odporność na Ognista Strzała	Resistencia a Flecha de Fuego
 Odporność na Przywołanie Błyskawicy	Resistencia a Llamada del Relámpago
 Odporność na Strzał	Resistencia a la Flecha
@@ -3934,6 +4202,7 @@ Odporność na ataki fizyczne %d%%	Resistencia a ataques físicos %d%%
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Resistencia al golpe crítico: reduce el daño recibido por golpes críticos.
 Odporność na fizyczne obrażenia	Resistencia al daño físico
 Odporność na krytyczne	Resistencia al crítico
+Odporność na lód +5%	Resistencia al hielo +5%
 Odporność na lód, ziemię, ciemność	Resistencia al hielo, tierra y oscuridad
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Resistencia a la oscuridad: reduce el daño infligido por ciertos monstruos.
 Odporność na obraż. umiej.	Resistencia al daño de habil.
@@ -3950,6 +4219,7 @@ Odporność vs Ludziom	Resistencia vs. Humanos
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	¿Despedir al compañero para siempre? Esto no se puede deshacer.
 Odrodz spawny	Reaparecer spawns
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Intervalo entre teletransportes: %d min. Sin mazmorras ni mapas de eventos.
+Odswiez liste	Actualizar lista
 Odważny	Audaz
 Odwołaj	Retirar
 Odwołaj zwierzaka, zanim go zaczarujesz.	Retira a la mascota antes de encantarla.
@@ -4006,6 +4276,7 @@ Ognista Runa Aury (10)	Runa de Fuego del Aura (10)
 Ogniste Buty	Botas Ardientes
 Ogniste Jajo Smoka	Huevo de Dragón de Fuego
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Golpe de Llamas tiene un %d%% de probabilidad de devolverse al oponente
+Ognistej Strzały	Flecha de Fuego
 Ognisty Duch Zodiaku	Espíritu de Fuego del Zodiaco
 Ognisty Duch Żaru (BŚ)	Espíritu de Fuego de las Brasas (JM)
 Ognisty Golem Mag	Gólem de Fuego Mago
@@ -4032,6 +4303,7 @@ Okaz. Odłamek Hełmu I	Frag. Excelente de Yelmo I
 Okaz. Odłamek Hełmu II	Frag. Excelente de Yelmo II
 Okaz. Odłamek Zbroi I	Frag. Excelente de Armadura I
 Okaz. Odłamek Zbroi II	Frag. Excelente de Armadura II
+Okazały	Majestuoso
 Okazały Efekt Zestawu	Efecto de Conjunto Imponente
 Okazały Kowal Zestawu	Herrero de Conjuntos Suntuoso
 Okienko %s - %s, bonusy %d / %d	Ranura %s: %s, bonificaciones %d / %d
@@ -4091,6 +4363,7 @@ Osobisty Sklepik Premium	Tienda Premium Personal
 Ostatni boss	Último jefe
 Ostatni drop: %s	Último botín: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	La última compra aún podría completarse.
+Ostatnia nagroda:	Último premio:
 Ostatnia sprzedaz botow: brak danych.	Última venta de los bots: sin datos.
 Ostatnia strona	Última página
 Ostatnie 7 dni	Últimos 7 días
@@ -4159,6 +4432,7 @@ Otrzymujesz: %s.	Recibes: %s.
 Otrzymywane Obrażenia +%d%%	Daño recibido +%d%%
 Otrzymywane obrażenia +%.0f%%	Daño recibido +%.0f%%
 Otwarte skrzynie	Cofres abiertos
+Otwarto skrzynek: %d.	Cofres abiertos: %d.
 Otwarto: %d szt.	Abiertos: %d uds.
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Abre las puertas a la gloria y al poder. Otorga todas las ventajas de la Cuenta Premium durante 30 días.|Este objeto es comerciable.
 Otwiera je ewolucja peta	Se desbloquea con la evolución de la mascota
@@ -4178,6 +4452,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Abre el paquete y descubre
 Otwórz ponownie	Abrir de nuevo
 Otwórz sklep	Abrir tienda
 Otwórz sklep ponownie	Reabrir tienda
+Otwórz skrzynie	Abrir cofres
 Owoc Bogów	Fruto de los Dioses
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Fruta de rango: +200 puntos de clasificación (rango normal). Funciona de 0 a 20 000 puntos. El primer rango (Valiente) comienza en 21 000. Comando /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Fruta de rango: +200 puntos de clasificación por encima del rango normal. Funciona de 20 000 (rango normal completo) a 40 000 puntos. Comando /ranga.
@@ -4280,6 +4555,7 @@ PD z przedmiotów: %s / %s	EXP de objetos: %s / %s
 PE	SP
 PE +%d	SP +%d
 PE +%d%%	SP +%d%%
+PID bota:	PID del bot:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	DERROTA AL JEFE DEL MUNDO (una vez al día)
 PPM - następny event	Clic der. - siguiente evento
 PPM / dwuklik: wyjmij stos	Clic der. / doble clic: sacar una pila
@@ -4313,9 +4589,12 @@ Pancerne Rękawice	Guantes Blindados
 Pancerny Hełm Dragona	Yelmo Blindado de Dragón
 Pancerny Hełm Smoków	Yelmo Blindado de los Dragones
 Pancerz Czarnego Ognia	Coraza de Fuego Negro
+Pancerz Horroru+ (złoty)	Coraza del Horror+ (dorada)
 Pancerz Magmy	Coraza de Magma
 Pancerz Zodiaku	Coraza del Zodiaco
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	El panel GM no se cargó en este cliente: detalles en syserr.txt
+Panel botów (GM)	Panel de bots (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	El panel está en versión BETA. Si notas errores
 Panterka (7 dni)	Panterita (7 días)
 Pas Z Wężowej Skóry	Cinturón de Piel de Serpiente
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	La barra de experiencia del caballo está llena: intenta el ascenso.
@@ -4326,6 +4605,7 @@ Pasy	Cinturones
 Pasza dla Konia	Pienso para Caballo
 Pasza dla Konia w ekwipunku: %d	Pienso para Caballo en el inventario: %d
 Pazury Małpy	Garras de Mono
+Październik	Octubre
 Peleryny	Capas
 Pelne PZ/PE	HP/SP completos
 Pergamin	Pergamino
@@ -4339,6 +4619,7 @@ Perły	Perlas
 Pet	Mascota
 Pety	Mascotas
 Pewne zmiany wymagają restartu gry, kontynuować?	Algunos cambios requieren reiniciar el juego. ¿Continuar?
+Pełen werwy	Lleno de brío
 Pełne EQ	Inventario lleno
 Pełne doświadczenie - czas na rozwój.	Experiencia completa: es hora de evolucionar.
 Pełne okno	Ventana completa
@@ -4425,6 +4706,7 @@ Piekielny Żarłacz Dusz	Devorador de Almas Infernal
 Piekło	Infierno
 Piekło - wybierz respawn	Infierno - elige dónde reaparecer
 Pierwsza nagroda tury jest darmowa.	La primera recompensa de cada ronda es gratis.
+Pierwsza strona	Primera página
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	El primero de tres libros de atención plena. Puede aumentar el carisma de su dueño. El libro desaparece tras leerlo. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	El primero de tres libros de combate en formación. Puede aumentar la inspiración de su dueño. El libro desaparece tras leerlo. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 Pierwszorzędne Buty	Zapatos de Primera
@@ -4432,6 +4714,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	El primer «+» en la pestaña
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	El primer «+» en la pestaña Habilidades también te los da.
 Pierwszy 30 poziom	Primero en nivel 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	El primer reinicio de misión en 24 horas es gratuito.
+Pierścień / amulet	Anillo / amuleto
 Pierścień Dośw. (iCafe)	Anillo de Exp. (iCafe)
 Pierścień Godności	Anillo de la Dignidad
 Pierścień Hydry	Anillo de la Hidra
@@ -4444,6 +4727,7 @@ Pierścień Wielkanocny	Anillo de Pascua
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Un anillo con un grabado de fina artesanía en forma de media luna. Otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +30% ataque, +10% HP máx., +10% SP máx.
 Pień+	Tronco+
 Piorunowe Zioło	Hierba del Rayo
+Pirat+ (m)	Pirata+ (m)
 Pisanie	Escritura
 Pisklę Exedyara	Cría de Exedyar
 Pióro Mędrca	Pluma del Sabio
@@ -4487,6 +4771,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Al usarla, añade una carta de monstruo a tu colección (Cartas de Monstruos en el menú de Esc). No se puede comerciar.
 Po zabiciu: kolejny, którego już biłeś	Tras una muerte: el siguiente al que ya habías golpeado
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	Al cargar 8 flechas, la Hwacha atravesará las escamas de Balathor. Las Flechas Ardientes dan Cristales de Hielo Ancestrales. Cargadas: %d
+Pobieram drop...	Obteniendo botín...
 Pobieram ustawienia botow...	Obteniendo ajustes de bots...
 Pobieram zawartość z serwera...	Obteniendo el contenido del servidor...
 Pobieranie cen dla %d przedmiotow...	Obteniendo precios de %d objetos...
@@ -4525,7 +4810,10 @@ Podaj wartosc.	Indica el valor.
 Podaj wlasciciela i wybierz przedmiot.	Indica el propietario y elige un objeto.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Durante el combate hay un %d%% de probabilidad de resistir la caída (enfriamiento 60 s).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	Durante el combate se cuenta el daño que infliges.
+Podczas walki otrzymasz efekt eliksiru księżyca	Durante el combate recibirás el efecto del elixir de la luna
+Podczas walki otrzymasz efekt eliksiru słońca	Durante el combate recibirás el efecto del elixir del sol
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Acércate al enemigo por la espalda y asesta un golpe mortal.|Potencia: Fuerza (++), Destreza (++).
+Podglad EQ	Vista previa del equipo
 Podgląd niedostępny.	Vista previa no disponible.
 Podgląd skrzynki	Vista previa del cofre
 Podgląd skrzyń	Vista previa de cofres
@@ -4609,8 +4897,10 @@ Pokaż szatę aury	Mostrar atuendo de aura
 Pokaż wizerunek broni	Mostrar aspecto de arma
 Pokaż założony tytuł	Mostrar título equipado
 Pokaż znowu wszystkie przedmioty	Mostrar todos los objetos de nuevo
+Pokonaj %(n)s bossów	Derrotar %(n)s jefes
 Pokonaj %(n)s x %(what)s	Derrota %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	¡Derrota al Jefe del Mundo en la zona neutral y consigue recompensas!
+Pokonaj bossów	Derrotar jefes
 Pokonane bossy	Jefes derrotados
 Pokonane minibossy	Minijefes derrotados
 Pokonani gracze (przeciwne król.)	Jugadores derrotados (reinos rivales)
@@ -4680,6 +4970,7 @@ Portal Świątyni Węży	Portal del Templo de las Serpientes
 Portal: Nowy Kontynent	Portal: Nuevo Continente
 Posiada szanse na otrucie przeciwnika.	Tiene probabilidad de envenenar al enemigo.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Tiene probabilidad de envenenar al enemigo e incluye aturdimiento.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	Tienes un %d%% de probabilidad de recoger automáticamente durante 30 s los objetos cercanos
 Postać ma za duży poziom.	El personaje tiene un nivel demasiado alto.
 Postać zostanie usunięta.	El personaje será eliminado.
 Posterunek Trolli	Puesto de los Trols
@@ -4777,7 +5068,10 @@ Poziom: %d (%s Szata Aury)	Nivel: %d (Atuendo de Aura %s)
 Poziom: %s	Nivel: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Nivel: 1-19, M1-M10, G1-G10 o P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Nivel: número 1-19, M1-M10, G1-G10 o P
+Pozostalo 23:59:59	Quedan 23:59:59
 Pozostalo czasu: 30s	Tiempo restante: 30s
+Pozostalo prob: 3	Intentos restantes: 3
+Pozostalo: 45s	Quedan: 45s
 Pozostaly czas: %ds	Tiempo restante: %ds
 Pozostałe	Restantes
 Pozostałe misje	Otras misiones
@@ -4801,6 +5095,7 @@ Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w 
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Permite reiniciar la misión de Cartas de Monstruos además del reinicio gratuito (una vez cada 24 horas).
 Pozwolenie na Wzmocn. Przedmiotu	Permiso de Objeto de Coacción
 Pozwolenie na Zaczar. Przedmiotu	Permiso de Objeto Encantado
+Pozycja niezapisana	Posición sin guardar
 Położenie	Ubicación
 Położenie nieznane	Ubicación desconocida
 Połyskująca Biała Perła	Perla Blanca Reluciente
@@ -4886,9 +5181,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Filtro simple (avanzado: Op
 Prosty rozpryskowy atak	Ataque simple en área
 Proszę wpisać nazwę sklepu	Introduce el nombre de la tienda
 Proszę wybrać czas trwania sklepu	Elige la duración de la tienda
+Prowadza stragan: %s	Atiende un puesto: %s
+Prowadza stragan: -	Atiende un puesto: -
 Prywatność	Privacidad
 Pryzmat Ożywienia	Prisma de Resurrección
 Pryzmat Ożywienia (Q)	Prisma de Resurrección (Q)
+Pryzmatyczny	Prismático
 Przeb. Księga Zwierza	Libro de la Bestia Despertada
 Przebicie	Perforación
 Przebicie bloku	Perforación de bloqueo
@@ -5067,8 +5365,10 @@ Próby	Intentos
 Prędkość ataku	Velocidad de ataque
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Velocidad de ataque +%(v)s%% durante %(d)d s tras atacar desde la silla (cada 180 s)
 Prędkość czarowania	Velocidad de lanzamiento
+Prędkość po zsiadaniu	Velocidad al desmontar
 Prędkość ruchu	Velocidad de movimiento
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Velocidad de movimiento +%(v)s%% durante %(d)d s tras atacar desde la silla (cada 180 s)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	La velocidad de movimiento aumenta un %d%% durante 10 s
 Prędkość ruchu znacznie zwiększona.	Velocidad de movimiento muy aumentada.
 Pudełko Kart Potworów Yohary	Caja de Cartas de Monstruo de Yohara
 Pudło wędkarskich puzzli	Caja de puzles de pesca
@@ -5077,6 +5377,7 @@ Punkty Doświadczenia: +%d%%	Puntos de experiencia: +%d%%
 Punkty Doświadczenia: +150%	Puntos de Experiencia: +150%
 Punkty Rangi: %d	Puntos de Rango: %d
 Punkty doswiadczenia %	Puntos de experiencia %
+Punkty doświadczenia +%d%%	Puntos de experiencia +%d%%
 Punkty konne:	Puntos de montura:
 Punkty miłości: %d%%	Puntos de amor: %d%%
 Punkty range:	Puntos de rango:
@@ -5230,6 +5531,7 @@ Requiem	Réquiem
 Reset Sklepu Gaya	Reinicio de la Tienda de Gaya
 Reset oferty	Reinicio de oferta
 Reset oferty (Reset Sklepu Gaya)	Reinicio de oferta (Reinicio de la Tienda de Gaya)
+Reset umiejętności	Reinicio de habilidades
 Resetuj	Reiniciar
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Restablece la Tienda de Gaya antes de que pasen 5 horas y descubre nuevos objetos valiosos. Úsalo en la Tienda de Gaya del Puerto (Estatua del Guerrero del Puerto del Nuevo Continente).
 Restart serwera...	Reiniciando servidor...
@@ -5279,6 +5581,7 @@ Rozbudowa jest teraz niedostępna.	La ampliación no está disponible ahora.
 Rozdaj od nowa (raz za darmo)	Repartir de nuevo (una vez gratis)
 Rozdane: %d	Repartidos: %d
 Rozdzielczość	Resolución
+Rozkaz wysłany.	Orden enviada.
 Rozkazy dla botów twojej gildii	Órdenes para los bots de tu gremio
 Rozkazy wydaje mistrz gildii	Las órdenes las da el líder del gremio
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Estás hablando con un |cffffb514Maestro del Juego|r.
@@ -5312,6 +5615,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Se entrena con el Libro de Precisión (
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	¿Evolucionar a la mascota a la etapa «%s»? Los materiales desaparecerán.
 Rozwiń pasek	Expandir barra
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Expandir: todas las barras de acceso rápido (4 x 8)
+Rozwój	Desarrollo
 Rozwój do stopnia: %s	Evolucionar a la etapa: %s
 Rozwój konia	Entrenamiento del caballo
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Entrenamiento del caballo: falta Pienso para Caballo (se necesitan %(a)d).
@@ -5338,6 +5642,7 @@ Ruda Turmalinu	Mineral de Turmalina
 Rudy i przetopy	Minerales y fundiciones
 Ruiny Atlantydy	Ruinas de la Atlántida
 Ruiny Skorpiona	Ruinas del Escorpión
+Rumi (Okey)	Rumi (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rummy (Okey): la ventana del juego llegará con una actualización del cliente.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	¡Un pez pica! Haz clic en él %d veces mientras nada en el círculo (tienes %d s).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Un pescado preparado sobre la hoguera es un magnífico manjar ahumado.
@@ -5375,6 +5680,7 @@ Rzeźnik Piekielnej Wieży	Carnicero de la Torre Infernal
 Rzeźnik Wężowy	Carnicero Serpiente
 Rzuca na ciebie swoje buffy.	Lanza sus mejoras sobre ti.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Lanza a los oponentes proyectiles llenos de luz estelar.|Potencia: Destreza (++), nivel del personaje.
+Rzucam buffy	Lanzo buffs
 Rzygacz	Gárgola
 Róg Balathora	Cuerno de Balathor
 Róg Nemere	Cuerno de Nemere
@@ -5557,11 +5863,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Servidor: sin confirmación, rei
 Serwer: czekam na potwierdzenie	Servidor: esperando confirmación
 Sesja już trwa.	Ya hay una sesión en curso.
 Sesja zakończona: osiągnięto limit czasu.	Sesión terminada: se alcanzó el límite de tiempo.
+Sesje (z bieżącą)	Sesiones (con la actual)
+Sezon %d	Temporada %d
 Sezon %d - %s (do końca: %d dni %s)	Temporada %d - %s (quedan: %d días %s)
+Sezon: Chunjo	Temporada: Chunjo
+Sezon: Jinno	Temporada: Jinno
+Sezon: Shinsoo	Temporada: Shinsoo
 Sfera Losu Zwierzaka	Esfera del Destino de Mascota
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Esfera del Destino: muestra el tipo de la mascota (consume una Esfera del Destino de Mascota)
 Shaman Armor	Armadura de chamán
 Shield	Escudo
+Shift + LPM	Shift + clic izq.
 Shinsoo United (k)	Shinsoo United (f)
 Shinsoo United+ (k)	Shinsoo United+ (f)
 Shoes	Zapatos
@@ -5574,6 +5886,7 @@ Shopping Safebox	Almacén de compras
 Show Filter Informations	Mostrar información de filtros
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Siembras una brisa suave y tus enemigos cosechan un vendaval violento. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Sierp (Pieczęć)	Hoz (Sello)
+Sierpień	Agosto
 Silna Fala Śmierci	Ola de la Muerte Fuerte
 Silna Tarcza Eteru	Escudo de Éter Fuerte
 Silne Trzęsienie	Temblor Fuerte
@@ -5589,6 +5902,7 @@ Silny Druid En-Tai	Druida En-Tai Fuerte
 Silny Dziki Piechur	Infante Salvaje Fuerte
 Silny Dziki Sluga	Siervo Salvaje Fuerte
 Silny Kam. Przebudzenia	Piedra del Despertar Fuerte
+Silny Malpi Zolnierz	Soldado Mono Fuerte
 Silny Meteor	Meteoro Fuerte
 Silny Niszczyciel En-Tai	Destructor En-Tai Fuerte
 Silny Piekielny Cios	Golpe Infernal Fuerte
@@ -5641,25 +5955,36 @@ Silny przeciwko:	Fuerte contra:
 Silny.	Fuerte.
 Siła	FUE
 Siła Ataku	Poder de Ataque
-Siła Ataku %.0f-%0.f	Fuerza de Ataque %.0f-%0.f
-Siła Ataku +%.0f	Fuerza de Ataque +%.0f
+Siła Ataku %.0f-%0.f	Poder de ataque %.0f-%0.f
+Siła Ataku +%.0f	Poder de ataque +%.0f
+Siła Ataku: +%.0f	Poder de ataque: +%.0f
+Siła Błyskawic	Fuerza de los Rayos
 Siła Błyskawic (+%d%% łącznej wartości)	Poder del Rayo (+%d%% del valor total)
 Siła Błyskawic +%d%%	Poder del Rayo +%d%%
+Siła Błyskawic +5%	Fuerza del Rayo +5%
+Siła Lodu	Fuerza del Hielo
 Siła Lodu (+%d%% łącznej wartości)	Poder del Hielo (+%d%% del valor total)
 Siła Lodu +%d%%	Poder del Hielo +%d%%
+Siła Lodu +5%	Fuerza del Hielo +5%
 Siła Mroku	Poder de la Oscuridad
 Siła Mroku (+%d%% łącznej wartości)	Poder de la Oscuridad (+%d%% del valor total)
 Siła Mroku +%d%%	Poder de la Oscuridad +%d%%
+Siła Mroku +5%	Fuerza de la Oscuridad +5%
 Siła Obrony	Defensa
+Siła Ognia	Fuerza del Fuego
 Siła Ognia (+%d%% łącznej wartości)	Poder del Fuego (+%d%% del valor total)
 Siła Ognia +%d%%	Poder del Fuego +%d%%
+Siła Ognia +5%	Fuerza del Fuego +5%
 Siła Sung Ma	Fuerza de Sung Ma
 Siła Sung Ma +%d	Fuerza de Sung Ma +%d
+Siła Wiatru	Fuerza del Viento
 Siła Wiatru (+%d%% łącznej wartości)	Poder del Viento (+%d%% del valor total)
 Siła Wiatru +%d%%	Poder del Viento +%d%%
+Siła Wiatru +5%	Fuerza del Viento +5%
 Siła Ziemi	Poder de la Tierra
 Siła Ziemi (+%d%% łącznej wartości)	Poder de la Tierra (+%d%% del valor total)
 Siła Ziemi +%d%%	Poder de la Tierra +%d%%
+Siła Ziemi +5%	Fuerza de la Tierra +5%
 Siła ataku +%.0f-%.0f	Fuerza de ataque +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	La fuerza de ataque es mayor si el golpe se asesta por la espalda
 Siła ataku wroga -%d%%	Poder de ataque del enemigo -%d%% 
@@ -5751,6 +6076,7 @@ Skorpion Lucznik Zodiaku	Escorpión Arquero del Zodiaco
 Skorpion Wężowy	Escorpión Serpiente
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	¡Aprovecha las |cff2b80ffofertas relámpago|r![ENTER]Las subastas duran como máximo hasta el |cff2b80ff%s|r[ENTER]o hasta agotar existencias.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Las Piedras Espíritu trituradas pueden tener un nuevo uso.
+Skrytobójca	Asesino
 Skrytobójcza Wykałaczka	Palillo Asesino
 Skrz. Ninja M. Łuku (D)	Cofre Ninja M. Arco (G)
 Skrz. Ninja M.Ostrza (D)	Cofre Ninja M. Hoja (G)
@@ -5811,12 +6137,16 @@ Skrzynka musi być w ekwipunku.	El cofre debe estar en el inventario.
 Skrzynka na Zwierzaka	Caja para Mascota
 Skrzynki	Cofres
 Skrócenie ładowania um. o %d%%	Recarga de habilidades reducida un %d%% 
+Skróty	Atajos
+Skróty klawiszowe	Atajos de teclado
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Concentra los ataques en el Huevo de Dragón Congelado antes de que desaparezca en %d s.
 Skóra Przeklętego Niedźwiedzia	Piel de Oso Maldito
 Skóra Przeklętego Tygrysa	Piel de Tigre Maldito
 Skąd	Origen
 Składnik do produkcji lekarstwa iluzji.	Ingrediente para preparar la medicina de la ilusión.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingrediente para mejorar Piedras Espíritu en el Herrero (desde +4): se necesitan 1, 1, 2, 2 y 3 unidades para los grados sucesivos, junto al Polvo Mágico. Lo sueltan la Bruja de Hielo Poderosa (La Gruta del Exilio), Beran-Setaou (Guarida del Dragón) y la Reina de la Jungla (Jungla Ancestral).
+Slaby Malpi Miotacz	Lanzador Mono Débil
+Slaby Malpi Zolnierz	Soldado Mono Débil
 Slot z krzyżykiem jest jeszcze zamknięty.	Una ranura con una cruz sigue bloqueada.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Ranura bloqueada: la desbloqueará una Ampliación de la Tienda de Gaya x%d.
 Sloty umiejętności: %d	Ranuras de habilidad: %d
@@ -5850,9 +6180,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Algo ha salido mal. (Error genérico)
 Songmin, Arktyczne Yeti	Songmin, el Yeti Ártico
 Sort by price	Ordenar por precio
+Sortowanie autopickup	Orden de autorrecogida
 Sortowanie i wyszukiwanie	Ordenar y buscar
 Sortuj po cenie całej oferty	Ordenar por el precio de toda la oferta
 Sortuj po cenie oferty albo za sztukę	Ordenar por precio de la oferta o por unidad
+Sortuj po ilości	Ordenar por cantidad
 Soul Crystal Alchemist	Alquimista del Cristal de Alma
 Sowa Księżycowa	Búho Lunar
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	Corrupción de la Oscuridad;La piel te arde y se resquebraja bajo la energía oscura,;exponiéndote a un daño mayor.
@@ -5861,6 +6193,7 @@ Spalone przedmioty u Kowala	Objetos quemados en el Herrero
 Sparta Jungrang+ (k)	Spartak de Jungrang+ (f)
 Sparta Jungrang+ (m)	Spartak de Jungrang+ (m)
 Spartaner	Spartaner
+Spawn Botow	Aparición de Bots
 Specjalne	Especiales
 Specjalne Zioła	Hierbas especiales
 Specjalny	Especial
@@ -5874,6 +6207,7 @@ Sportowa Fryzura(czarna)	Peinado Deportivo (negro)
 Spostrzegawczość	Perspicacia
 Społeczność	Comunidad
 Sprawdz konto	Comprobar cuenta
+Sprawdz status	Comprobar estado
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Comprobando la compatibilidad del servidor. Arrastra objetos a la papelera.
 Sprawdzanie...	Comprobando...
 Sprawdź ekwipunek	Revisar inventario
@@ -5899,6 +6233,7 @@ Srebrne Płyty	Placas de Plata
 Srebrny Grot	Punta de Plata
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un colgante de plata en forma de corazón, engastado con gemas mágicas. Otorga: +30% EXP, +10% velocidad de ataque, +10% velocidad de hechizo, +10% fuerza contra monstruos, +5% HP máx., +5% SP máx.
 Srednia: %s / szt.	Media: %s / ud.
+Srednie obrazenia	Daño medio
 Stabilne Sznury	Cuerdas Estables
 Stajnia i polowanie na medale w Lochu Malp.	Establo y caza de medallas en la Mazmorra de los Monos.
 Stal	Acero
@@ -5908,7 +6243,8 @@ Stalowy Hełm Dragona	Yelmo de Acero de Dragón
 Stalowy Hełm Smoków	Yelmo de Acero de los Dragones
 Stamina / sek.: %d	Aguante / s: %d
 Stan (czat)	Estado (chat)
-Standardowa Muzyka Metin2	Música Estándar del Juego
+Stan: %s	Estado: %s
+Standardowa Muzyka Metin2	Música estándar del juego
 Standardowa muzyka Metin2	Música estándar del juego
 Stanton-Płatnerz	Stanton, el Armero
 Stara Fryzura (biała)	Peinado Antiguo (blanco)
@@ -5929,6 +6265,7 @@ Starożytny Robak	Gusano Antiguo
 Starożytny Skorpion	Escorpión Antiguo
 Starożytny Wojownik	Guerrero Antiguo
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Un pergamino antiguo que canaliza el poder de Weol; permite sortear nuevas bendiciones.
+Starszy Hazardzista	Jugador Veterano
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Un viejo pergamino con una orden de muerte; al usarlo activa misiones.
 Statua Chena	Estatua Chen
 Statua Chou	Estatua Chou
@@ -5998,19 +6335,25 @@ Strażnik Rozpad. Dusz	Guardia de la Grieta de las Almas
 Strażnik Ruin	Guardián de las Ruinas
 Strażnik Smoków Dolnarr	Guardián Dragón Dolnarr
 Strażnik Smoków Jaharr	Guardián Dragón Jaharr
+Strażnik Srebr. Piasku+	Guardián Arena Plata+
 Strażnik Trytonów	Guardia Tritón
 Strażnik Wzgórza	Guardián de la Colina
 Strażnik Węży	Guardia de las Serpientes
 Strażnik z Yohara	Guardia de Yohara
+Strefa Surowców	Zona de Recursos
 Strona %d / %d	Página %d / %d
 Strona %d / %d (%d)	Página %d / %d  (%d)
 Strona %d/%d	Página %d/%d
 Strona 1	Página 1
 Strona WWW	Página web
+Strona ekwipunku I	Página de equipo I
 Strona ekwipunku II	Página de equipo II
 Strona ekwipunku II (wymienna)	Página de equipo II (intercambiable)
+Strona ekwipunku III	Página de equipo III
 Strona ekwipunku IV	Página de equipo IV
 Strz. dół	Flecha abajo
+Strz. góra	Flecha arriba
+Strz. lewo	Flecha izq.
 Strz. prawo	Flecha der.
 Strzał Wichury	Disparo del Vendaval
 Strzał Wichury (9.skill)	Disparo del Vendaval (9.skill)
@@ -6018,6 +6361,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Un di
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Flecha para el arco de ninja. Daño completo hasta 5 m del objetivo (el bonus de alcance del arco amplía esta distancia); después, un 5% menos por cada metro adicional. El carcaj no pierde daño con la distancia.
 Strzały: Handlarz Bronią (cena NPC).	Flechas: Vendedor de Armas (precio de PNJ).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Dispara efigies de dragón y ataca a los enemigos.|Potencia: Inteligencia (++), Destreza (puntería) (+), nivel del personaje.
+Strzelającego Smoka	Dragón Disparador
 Strój Czarodzieja	Traje de Mago
 Strój Czarodzieja+	Traje de Mago+
 Strój Zombie	Traje de Zombi
@@ -6039,6 +6383,7 @@ Stwór z Głębin	Criatura de las Profundidades
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Crea una gran explosión con las yemas de tus dedos.|Potencia: Inteligencia (++), Fuerza (+), nivel del personaje.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Crea un poderoso tornado para derrotar a varios enemigos.|Potencia: Inteligencia (++), Fuerza (+), nivel del personaje.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Crea una nube venenosa alrededor de los enemigos y envenénalos.|Potencia: Destreza (++), Fuerza (+), nivel del personaje.
+Styczeń	Enero
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Un peinado engominado hacia atrás, con estilo aunque de aspecto grasiento; las antenas son su toque clave. Cambia de forma permanente el peinado de tu personaje.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Un peinado de Chamán con estilo. Cambia de forma permanente el peinado de tu personaje.
 Su-Sin	Su-Sin
@@ -6062,11 +6407,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Las ganancias t
 Sun Herb	Hierba del Sol
 Super Kamienie Metin (+%d)	Super Piedras Metin (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Suplemento (hasta 5 uds.): Pequeño +1%, Mediano +2%, Grande +4%, Fuerte +10% por unidad.
+Sura (Broń)	Sura (Arma)
+Sura (Czarna Magia)	Sura (Magia Negra)
 Sura Armor	Armadura de sura
 Sura Czarna Magia	Sura Magia Negra
 Sura Mistrz Broni	Sura Maestro de Armas
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Materias primas necesarias para crear y mejorar objetos excepcionales.
 Sutra	Sutra
+Swiat i eventy	Mundo y eventos
+Swiatynia Hwang	Templo Hwang
+Swiatynia Ochao	Templo Ochao
 Swiatynia Zodiaku	Templo del Zodiaco
 Switchbot (zmiana bonusów)	Switchbot (cambio de bonificaciones)
 Switchbot - zmiana bonusów	Switchbot - cambio de bonificaciones
@@ -6074,10 +6424,12 @@ Switchbot wymaga nowego klienta (exe 3.0).	El Switchbot requiere un cliente nuev
 Sword	Espada
 Symbol zręczności, popularny wśród złodziei.	Un símbolo de destreza, popular entre los ladrones.
 Synowie Pustyni	Hijos del Desierto
+Szalenie odważny	Increíblemente valiente
 Szalony Hazardzista	Jugador Loco
 Szalony Naukowiec	Científico Loco
 Szalony Wędkarz	Pescador Loco
 Szaman (Leczenie)	Chamán (Curación)
+Szaman (Smok)	Chamán (Dragón)
 Szaman Leczenie	Chamán Curación
 Szaman Smok	Chamán Dragón
 Szamanka (K)	Chamana (F)
@@ -6093,6 +6445,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Probabilidad de perforar la 
 Szansa na Spowolnie.	Prob. de Ralentizar
 Szansa na Uziemienie %.0f%%	Probabilidad de Derribo %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Probabilidad de bloquear golpes: aumenta la probabilidad de evitar un ataque cuerpo a cuerpo.
+Szansa na cios krytyczny +2%	Probabilidad de golpe crítico +2%
+Szansa na cios krytyczny +5%	Probabilidad de golpe crítico +5%
+Szansa na cios krytyczny +7%	Probabilidad de golpe crítico +7%
+Szansa na cios krytyczny +8%	Probabilidad de golpe crítico +8%
 Szansa na cios krytyczny: +%.0f%%	Probabilidad de golpe crítico: +%.0f%%
 Szansa na cios przebicia %.0f%%	Probabilidad de golpe perforante %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Probabilidad de botín de Yang: aumenta la probabilidad de obtener más Yang.
@@ -6121,12 +6477,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Probabilidad de a
 Szansa na przebicie	Prob. de golpe perforante
 Szansa na przebicie +10%	Probabilidad de golpe penetrante +10%
 Szansa na przedmiot z bonusem	Prob. de objeto con bonificación
+Szansa na przeszywające Uderzenie: 2%	Probabilidad de golpe perforante: 2%
+Szansa na przeszywające Uderzenie: 5%	Probabilidad de golpe perforante: 5%
+Szansa na przeszywające Uderzenie: 8%	Probabilidad de golpe perforante: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Probabilidad de golpe perforante: aumenta la probabilidad de asestar un golpe perforante.
 Szansa na przeszywający strzał +%.0f%%	Probabilidad de disparo perforante +%.0f%%
 Szansa na spowolnienie	Prob. de ralentizar
 Szansa na transfer %d%% otrzymanych obrażeń do PE	Probabilidad de transferir el %d%% del daño recibido a los SP
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Probabilidad de esquivar flechas: aumenta la probabilidad de esquivar una flecha o un ataque a distancia de un monstruo.
 Szansa na wydobycie rudy +%d%%	Probabilidad de extraer mineral +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Probabilidad de que un jefe suelte un objeto +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Probabilidad de que caigan objetos multiplicada por 1.5 para los miembros de iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Probabilidad de obtener objetos multiplicada por %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Probabilidad de obtener Yang multiplicada por %.1f
@@ -6177,12 +6537,15 @@ Szary Barwnik	Tinte Gris
 Szary Lśniący Odłamek	Fragmento Brillante Gris
 Szary Sok	Zumo Gris
 Szata	Atuendo
+Szata Dżinna+ (m)	Túnica de Genio+ (m)
 Szata Harmonii	Túnica de la Armonía
 Szata Księżyca	Túnica de la Luna
 Szata Ognia	Túnica de Fuego
 Szata Wiary	Túnica de la Fe
 Szata Zodiaku	Túnica del Zodiaco
 Szata aury: ewolucja	Atuendo de aura: evolución
+Szata aury: przenieś parametry	Manto de aura: transferir parámetros
+Szata aury: rozwój	Manto de aura: desarrollo
 Szczyt rodzaju - czas na ewolucję	Cima de la categoría: es hora de evolucionar
 Szczytobłysk 830 9454	Cimabrillo 830 9454
 Szczytomrok 3393 9454	Cumbresombra 3393 9454
@@ -6195,6 +6558,7 @@ Szkarłaczny Żądłak	Aguijón Escarlata
 Szkat. Chegala	Cofre de Chegal
 Szkat. Olbrzym. Drzewa	Cofre del Árbol Gigante
 Szkatulka Ksiezycowa - z rozbitego Metina	Cofre Lunar: de un Metin destruido
+Szkatulka Ksiezycowa - z zabitego potwora	Cofre Lunar - de monstruo abatido
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Cofre de Chegal, el Goliat de las Sombras. Hay algo valioso en su interior.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Cofre del Espíritu del Árbol Gigante. Hay algo valioso en su interior.
 Szkatułka Yohara	Cofre de Yohara
@@ -6214,6 +6578,7 @@ Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Madera Noble del
 Szlachetne Drzewo (PB)	Madera Noble (IM)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Madera Noble (IM) del Señor En-Tai (IM). Llévasela al Investigador del Bosque (IM).
 Szlachetny	Noble
+Szlachetny Legionista+	Legionario Noble+
 Szmaragdowy Marmur	Mármol Esmeralda
 Szpon Kruka	Garra del Cuervo
 Szpon Wężowy (wykon.)	Garra Serpiente (elab.)
@@ -6275,7 +6640,10 @@ Szybkość Ataku +5%	Velocidad de Ataque +5%
 Szybkość Buffi	Velocidad de Buffi
 Szybkość Ruchu +%.0f%%	Velocidad de Movimiento +%.0f%%
 Szybkość Ruchu 20%	Velocidad de Movimiento 20%
+Szybkość Zaklęcia +2%	Velocidad de hechizo +2%
+Szybkość Zaklęcia +5%	Velocidad de hechizo +5%
 Szybkość czarowania	Velocidad de lanzamiento
+Szybkość ruchu +%d%%	Velocidad de movimiento +%d%%
 Szybkość: %d zmian/s	Velocidad: %d cambios/s
 Słaba Zbroja	Armadura Débil
 Słaba jakość strzału: od %.1fm	Mala calidad de disparo: desde %.1fm
@@ -6283,6 +6651,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Dulce Anciana
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Dulce amuleto de San Valentín. Otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +10% fuerza contra monstruos, +10% HP máx., +10% SP máx. El tiempo también transcurre cuando no lo llevas puesto.
 Słodkowodna ryba drapieżna występująca w tropikach.	Pez depredador de agua dulce que habita en los trópicos.
+Słon. Szata Wukong+ (m)	Túnica Wukong Solar+ (m)
 Słonecznik: obrona +%d%%	Girasol: defensa +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Palabras de nombres de objetos (separadas por comas)
 Słudzy Sung Mahi	Siervos de Sung Mahi
@@ -6492,8 +6861,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Hoy {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Mañana {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Demasiadas acciones en poco tiempo. Espera un momento e inténtalo de nuevo.
+Top przedmiotów	Top de objetos
 Topaz Woli	Topacio de la Voluntad
 Torba towarzysza: weź do siebie	Bolsa del compañero: tomar para ti
+Towarzysz (nierozwijany)	Compañero (no evoluciona)
 Towarzysz bierze tylko cały stos.	El Compañero solo toma la pila completa.
 Towarzysz dostanie ścieżkę na 5 poziomie.	El Compañero recibirá un camino en el nivel 5.
 Towarzysz drużyny	Compañero de Grupo
@@ -6505,9 +6876,11 @@ Towarzysz zakłada grupę i cię zaprasza.	El Compañero funda un grupo y te inv
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	El Compañero consumirá un Libro del Olvido o un Documento de Reinicio de Habilidades.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	El Compañero, Cor Draconis y las misiones de sistemas no se muestran aquí.
 Towarzysze są tu wyłączeni.	Los Compañeros están desactivados aquí.
+Towarzysze są wyłączeni na tym serwerze.	Los compañeros están desactivados en este servidor.
 Trade Hub	Centro de comercio
 Trafienia	Aciertos
 Transfer bonusów	Transferencia de bonificaciones
+Transfer obrazen do PM	Transferencia de daño a PM
 Transformuj kostium	Transformar atuendo
 Transporter jest pusty.	El transportín está vacío.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Entrena la habilidad de Buffi del grado G1 a P, como la Piedra Espíritu con las habilidades normales (puntos de rango, siguiente intento tras 12 horas, el Pergamino de Exorcismo al instante). Cae de Metin y jefes a partir del Bosque Encantado.
@@ -6557,6 +6930,7 @@ Twierdza Czerwonego Smoka (SZC)	Fortaleza del Dragón Rojo (ET)
 Twierdza Razadora	Fortaleza de Razador
 Two Hand Sword	Espada a dos manos
 Twoja Gaya: %s	Tu Gaya: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Tu defensa aumenta un %d%% durante 5 s
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Tu posición: muestra el mapa en el que estás y centra la vista en él.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Tu acero entonará arias de renombre mundial en el campo de batalla. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Twoje Smocze Monety: %d	Tus Monedas de Dragón: %d
@@ -6591,6 +6965,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Tu gremio recibe la m
 Tylko BETA	Solo BETA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Solo un IMPLEMENTOR cambia el GM de otros personajes.
 Tylko broń, zbroje i kostiumy dla tej płci	Solo armas, armaduras y trajes para este sexo
+Tylko dla mnie	Solo para mí
 Tylko dla mnie: cały drop jest twój.	Solo para mí: todo el botín es tuyo.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Pocos entienden la antigua lengua de la que proviene el nombre de esta arma. Sin embargo, ninguno de ellos se ha atrevido a traducirlo. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Tylko scal stosy	Solo combinar pilas
@@ -6609,6 +6984,7 @@ Typ: -	Tipo: -
 Type	Tipo
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Bonificaciones habituales del equipo o todas las que conoce el cliente
 Tysieczny Wojow. Zodiaku	Guerrero de los Mil del Zodiaco
+Tysieczny Wojownik	Guerrero de los Mil
 Tytuł %s wygaśnie za niecałą godzinę.	El título %s caducará en menos de una hora.
 Tytuł Czciciel Słońca	Título Adorador del Sol
 Tytuł Czempion Nyx	Título Campeón de Nyx
@@ -6662,12 +7038,15 @@ Udało ci się ochronić Goblina Skarbów!	¡Has logrado proteger al Goblin del 
 Udało się odeprzeć lodowy chłód.	Has logrado repeler el frío glacial.
 Udało się: %s	Éxito: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	¡Golpea y a alguien le doblarán las campanas! Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
+Uderzenia Palcem	Golpe de Dedo
 Uderzenie Pioruna	Golpe de Rayo
 Uderzenie Płonącego Palca	Golpe del Dedo Ardiente
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Golpe de Dedo tiene un %d%% de probabilidad de devolverse al oponente
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Proporción de bots que, tras hacer sus compras en la ciudad, se quedan un rato junto a los puestos en lugar de volver enseguida a cazar. 100 % es una ciudad animada; 0 %, todos en el campo.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Proporción de tenderos que ponen a la venta por cuatro monedas sus mejoras débiles (+0 a +3) en lugar de vendérselas a un PNJ: chatarra para quemar en el herrero, como en los servidores difíciles. Desactivado por defecto.
+Udział	Participación
 Ukończ %(n)s lochów	Completa %(n)s mazmorras
+Ukończ lochy	Completa mazmorras
 Ukończenia: %d	Completadas: %d
 Ukończone	Completadas
 Ukończone księgi misji	Libros de misiones completados
@@ -6676,6 +7055,7 @@ Ukończone wyprawy	Expediciones completadas
 Ukończone: %d / %d	Completadas: %d / %d
 Ukryj aury umiejętności	Ocultar auras de habilidades
 Ukryj budynki i obiekty	Ocultar edificios y objetos
+Ukryj cudze	Ocultar ajenos
 Ukryj czaszkę nad bossami	Ocultar calavera sobre los jefes
 Ukryj drzewa	Ocultar árboles
 Ukryj efekty wzmocnień (szaman)	Ocultar efectos de mejoras (chamán)
@@ -6714,11 +7094,14 @@ Ulepszenie: Zasadzka	Mejora: Emboscada
 Ulepszenie: od 0 do 9.	Mejora: de 0 a 9.
 Ulepszona Butelka	Botella Mejorada
 Ulepszony Barwnik	Tinte Mejorado
+Ulepszysz do: %s	Mejoras a: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Mejórala con el Mozo de Cuadra (Entrenamiento del caballo).
 Ulepszyć %s do poziomu %d?	¿Mejorar %s al nivel %d?
 Ultra	Ultra
 Ulubieni na górze listy	Favoritos al principio de la lista
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	El peinado favorito de los guerreros solitarios; queda genial cuando sopla el viento. Cambia de forma permanente el peinado de tu personaje.
+Umiejetnosci widac tylko u gracza online	Las habilidades solo se ven en un jugador conectado
+Umiejętn.	Habilid.
 Umiejętności konia (miejsca: %d z 2)	Habilidades del caballo (ranuras: %d de 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Se pueden enseñar habilidades a partir de la etapa «Heroico».
 Umiejętności pomocnicze	Habilidades de apoyo
@@ -6726,6 +7109,7 @@ Umiejętności potencjału	Habilidades de potencial
 Umiejętności potencjału (tylko czempion, 2 sloty)	Habilidades de potencial (solo campeón, 2 ranuras)
 Umiejętności potencjału (z jaj zwierzaków)	Habilidades de potencial (de huevos de mascota)
 Umiejętności rozdaję sam	Reparto los puntos de habilidad yo mismo
+Umiejętności towarzysza	Habilidades del compañero
 Umiejętności zwierzaka (3 sloty)	Habilidades de la mascota (3 ranuras)
 Umiejętności: przeciągnij je z okna postaci do pól.	Habilidades: arrástralas desde la ventana del personaje a las ranuras.
 Umiejętność %d	Habilidad %d
@@ -6739,6 +7123,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Un uniforme qu
 Unik	Esquiva
 Unik Strzały	Esquiva de Flechas
 Unik: %d%%	Esquiva: %d%%
+Uniknięcie śmierci	Evitar la muerte
 Upiorne Echo	Eco Espectral
 Upiorny Strażnik	Guardia Espectral
 Upiorny Wojownik	Guerrero Espectral
@@ -6756,6 +7141,8 @@ Ustaw nowe hasło na stronie.	Establece una nueva contraseña en la página web.
 Ustaw ten pasek jako aktywny (%d)	Establecer esta barra como activa (%d)
 Ustawienia Społeczności zapisane.	Ajustes de Comunidad guardados.
 Ustawienia Walki	Ajustes de combate
+Usun GM	Quitar GM
+Usun Moby	Borrar Mobs
 Usun potwory	Eliminar monstruos
 Usun przedmioty	Destruir objetos
 Usun wszystkie	Eliminar todos
@@ -6808,15 +7195,18 @@ Uziemienie	Anclaje a tierra
 Ułóż i scal	Ordenar y combinar
 Użycie	Uso
 Użyj	Usar
+Użyj %(n)s przedmiotów	Usa %(n)s objetos
 Użyj %(n)s x %(what)s	Usa %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Usa un Libro de Habilidad de Mascota del inventario
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Úsalo en el Templo de las Serpientes para prolongar el tiempo de la expedición un minuto (hasta un máximo de 60 minutos).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Úsalo para desbloquear 5 casillas bloqueadas de tu tienda personal.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Usa el anillo en el Reino de los Elementos (en una de las nueve zonas) para teletransportarte siempre a la Meseta de la Fuerza de la Naturaleza. El anillo desaparece tras el uso.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Usa el anillo en el Reino de los Elementos (en una de las nueve zonas) para tener una probabilidad (10%) de teletransportarte a la Meseta de la Fuerza de la Naturaleza. El anillo desaparece con cada uso. Lo sueltan todos los monstruos y Metin del Reino de los Elementos (entrada: portal y el Anciano del Puerto del Nuevo Continente).
+Użyj przedmiotu	Usa un objeto
 Użyj, aby przyzwać Ezoterycznego Władcę blisko postaci. Bądź ostrożny! To BOSS!	Úsalo para invocar al Señor Esotérico cerca de tu personaje. ¡Ten cuidado! ¡Es un JEFE!
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Úsalo para activar o desactivar el bloqueo de experiencia. Sin límite de tiempo.
 Użyj, kiedy zablokujesz się w "teksturach".	Úsalo cuando te quedes atascado en las "texturas".
+Użytkowe	Utilitarios
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Con las alas del dragón Alteran puedes refinar una pieza de equipamiento.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Con esta licencia puedes reclutar a un mercenario. (Por ahora sin uso: llegará con la próxima actualización de Yohara.)
 Używalne	Consumibles
@@ -6907,6 +7297,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Golpetazo tiene un %d%% de pro
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Moneda de Yohara (máx. 999 999). Pule Guijarros en la Estatua del Guerrero del Puerto; paga con ella en la Tienda de Gaya y al fabricar.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Moneda de cambio: 1 Won = 100 000 000 Yang.
 Wampir	Vampiro
+Wampir+ (szary)	Vampiro+ (gris)
 Warkocze Plem. (czerw.)	Trenzas Tribales (rojas)
 Warkocze Plem. (fiol.)	Trenzas Tribales (violetas)
 Warkocze Plem. (nieb.)	Trenzas Tribales (azules)
@@ -6920,11 +7311,14 @@ Wartosc ataku vs potwory	Valor de ataque vs. monstruos
 Wartosc magicznego ataku	Valor de ataque mágico
 Wartownik z Yohara	Centinela de Yohara
 Wartość Ataku	Valor de Ataque
+Wartość Ataku +30	Valor de ataque +30
 Wartość Ataku w potwory +%d	Valor de ataque contra monstruos +%d
 Wartość Ataku: +12~15%	Valor de ataque: +12~15%
 Wartość Magicznego Ataku: +30	Valor de Ataque Mágico: +30
 Wartość ataku +75 (miejsca 1-3)	Valor de ataque +75 (puestos 1-3)
+Wartość bonusu dokładnie taka	Valor de bonificación exactamente este
 Wartość bonusu taka albo niższa	Valor de bonificación igual o inferior
+Wartość bonusu taka albo wyższa	Valor de bonificación este o superior
 Wartość sklepu przekracza 2 miliardy Yang.	El valor de la tienda supera los 2 mil millones de Yang.
 Warunek: bonus o co najmniej podanej wartości	Condición: bonificación de al menos el valor indicado
 Warunki	Condiciones
@@ -6953,6 +7347,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	Versión de PRUEBA:
 Wersja: %d.%d.%d%s	Versión: %d.%d.%d%s
 Wersja: 1.0.0	Versión: 1.0.0
 Wersja: xxx	Versión: xxx
+Wesoły Posłaniec Miłości	Alegre Mensajero del Amor
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Dentro de esta magnífica concha puede esconderse una perla reluciente.
 Wezowy Lucznik Zodiaku	Arquero Serpiente del Zodiaco
 Wezowy Miecznik Zodiaku	Espadachín Serpiente del Zodiaco
@@ -6982,13 +7377,16 @@ Wielorybi Pancerz	Coraza de Ballena
 Wieprzowina	Carne de Cerdo
 Wierzchowiec utknął - wsiadam ponownie	Montura atascada: monto de nuevo
 Wieża Sung Mahi	Torre de Sung Mahi
+Wiking Światła+	Vikingo de la Luz+
 Wilk Piekielnej Wieży	Lobo de la Torre Infernal
 Wilk Zodiaku	Lobo del Zodiaco
+Wilki alfa	Lobos alfa
 Wino Brzoskwini (W)	Vino de Melocotón (G)
 Wino Kwiatu Brzoskwini+	Vino de Flor de Melocotón+
 Winogrono	Uva
 Wioska Gildii	Aldea del Gremio
 Wioska gildii 1	Aldea del gremio 1
+Wiru Miecza	Torbellino de Espada
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Gira con la espada para atacar a varios oponentes.|Potencia: Fuerza (++), Destreza (+), Vitalidad (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Gira entre los enemigos con una daga.|Potencia: Destreza (++), Fuerza (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Daga Giratoria tiene un %d%% de probabilidad de aturdir al oponente
@@ -7009,6 +7407,7 @@ Wojna Imperiow 1	Guerra de Reinos 1
 Wojna gildii i Krypta Balathora	Guerra de gremios y Cripta de Balathor
 Wojow. z Toporem Zodiaku	Guerrero del Hacha del Zodiaco
 Wojowniczka (K)	Guerrera (F)
+Wojownik (Body)	Guerrero (Cuerpo)
 Wojownik (Mental)	Guerrero (Mental)
 Wojownik Ciało	Guerrero Cuerpo
 Wojownik En-Tai	Guerrero En-Tai
@@ -7022,6 +7421,7 @@ Wojownik Umysł	Guerrero Mente
 Wojownik Uruk	Guerrero Uruk
 Wojownik Zephyr	Guerrero Zephyr
 Wojskowy Koń	Caballo militar
+Wokol mnie	A mi alrededor
 Wola Balathora	Voluntad de Balathor
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Voluntad de Balathor: resistencia al aturdimiento, grilletes y congelación %d%%
 Wola Sung Ma tej mapy	Voluntad de Sung Ma de este mapa
@@ -7046,6 +7446,7 @@ Wolne punkty statusu: %d	Puntos de estado libres: %d
 Wolne punkty umiejętności	Puntos de habilidad libres
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Veneno Insidioso tiene un %d%% de probabilidad de devolverse al oponente
 Wounded Soldier	Soldado Herido
+Wołanie	Llamada
 Wpisz co najmniej 2 litery nazwy.	Escribe al menos 2 letras del nombre.
 Wpisz co najmniej 2 litery.	Escribe al menos 2 letras.
 Wpisz ilosc (1-%d)	Introduce la cantidad (1-%d)
@@ -7063,6 +7464,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Introduce cuántas bonificaciones d
 Wpłacało botów: %d	Bots que aportaron: %d
 Wrist	Pulsera
 Wrogi Mur	Muro Enemigo
+Wrzesień	Septiembre
 Wróć 11553 12697	Volver 11553 12697
 Wróć do zapisanych reguł	Volver a las reglas guardadas
 Wróć do zwykłej mapy	Volver al mapa normal
@@ -7096,6 +7498,7 @@ Wszystkie na P	Todas a P
 Wszystkie sloty sklepu są już odblokowane.	Todas las ranuras de la tienda ya están desbloqueadas.
 Wszystkie umiej. P	Todas las habil. P
 Wszystkie warstwy	Todas las capas
+Wszystkie żywioły	Todos los elementos
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Todas: %d intentos (con éxito: %d, fallidos: %d).
 Wszystkie: tylko %s lub %s.	Todas: solo %s o %s.
 Wszystko to za 50 zł na miesiąc!	¡Todo esto por 50 PLN al mes!
@@ -7134,13 +7537,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	La selección ha camb
 Wyboru nie można cofnąć. Kontynuować?	La elección no se puede deshacer. ¿Continuar?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	El rango seleccionado requiere esta cantidad de estrellas en cada monstruo del conjunto.
 Wybrane bonusy i wartości	Bonificaciones y valores elegidos
+Wybrano: %s	Seleccionado: %s
 Wybrany NPC jest tuż obok.	El PNJ elegido está justo a tu lado.
 Wybrany kanał dostępny jest tylko dla kont Premium.	El canal elegido solo está disponible para cuentas Premium.
 Wybrany przepis: %s	Receta elegida: %s
 Wycena czesciowa - trwa wczytywanie	Valoración parcial: aún cargando
 Wycena wygasła - wyceń ponownie.	La valoración ha caducado: solicita una nueva.
+Wycisz 1 dzien	Silenciar 1 día
+Wycisz 1 h	Silenciar 1 h
+Wycisz 10 min	Silenciar 10 min
 Wycisz na:	Silenciar durante:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Objeto retirado: el Ritual del Despertar ya no existe y la piedra no tiene ningún uso. Puedes tirarla.
+Wyczysc filtry	Borrar filtros
 Wyczyszczono wszystkie znaczniki sklepów offline.	Se han borrado todas las marcas de tiendas sin conexión.
 Wyczyszczono: %s	Borrado: %s
 Wyczyść	Borrar
@@ -7159,6 +7567,7 @@ Wydarzenie Wakacyjne	Evento de Vacaciones
 Wydarzenie Walentynkowe	Evento de San Valentín
 Wydarzenie Wielkanocne.	Evento de Pascua.
 Wydobądź %(n)s rudy	Extrae %(n)s minerales
+Wydobądź rudę	Extrae mineral
 Wydłuża czas trwania twoich umiejętności.	Prolonga la duración de tus habilidades.
 Wygląd postaci	Aspecto del personaje
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Parece inofensivo, pero es letal al 100%. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
@@ -7184,6 +7593,7 @@ Wykonaj zestaw broni	Crear conjunto de armas
 Wykonaj zestaw hełmu	Crear conjunto de yelmos
 Wykonaj zestaw zbroi	Crear conjunto de armaduras
 Wykonane zmiany: %d	Cambios realizados: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Ejecutado %s/%s. Activos en total: %s
 Wykopane rudy	Minerales extraídos
 Wykorzystaj	Canjear
 Wykorzystaj voucher	Canjear voucher
@@ -7192,6 +7602,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	Se ha detectado la conf
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Se ha detectado un objeto potencialmente valioso, ¿continuar?
 Wykryto przedmiot z bonusem, kontynuować?	Se ha detectado un objeto con bonificación, ¿continuar?
 Wykryto wysoki poziom ulepszenia, kontynuować?	Se ha detectado un nivel de mejora alto, ¿continuar?
+Wylacz eventy	Desactivar eventos
 Wylosować nową ofertę od razu?	¿Sortear una nueva oferta ahora mismo?
 Wylosuj cele od nowa	Sortear objetivos de nuevo
 Wyląg Exedyara	Cría de Exedyar
@@ -7215,6 +7626,8 @@ Wymagany poziom do zakupu: %d	Nivel necesario para comprar: %d
 Wymagany poziom postaci: 75	Nivel de personaje requerido: 75
 Wymagany poziom: %d	Nivel requerido: %d
 Wymiana ksiąg umiejętności	Intercambio de libros de habilidad
+Wymiana u: %s	Intercambio en: %s
+Wymiana: %s	Intercambio: %s
 Wymiany	Intercambios
 Wymienić %d ksiąg na %d nowych za %s Yang?	¿Intercambiar %d libros por %d nuevos por %s Yang?
 Wyniki odświeżają się co minutę.	Los resultados se actualizan cada minuto.
@@ -7228,6 +7641,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	¿Liberar a %s? Esto no se 
 Wypłać	Retirar
 Wypłać sztuk:	Retirar unidades:
 Wyrok	Sentencia
+Wyrzuc bota	Expulsar bot
 Wyrzuc z gry...	Expulsar del juego...
 Wyrzuc z serwera	Expulsar del servidor
 Wyrzucic %s z gry?	¿Expulsar a %s del juego?
@@ -7245,6 +7659,7 @@ Wysuszone Oczy	Ojos Secos
 Wysyłanie do serwera...	Enviando al servidor...
 Wyszukaj biżuterię i buty.	Busca joyas y botas.
 Wyszukaj bronie.	Busca armas.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Busca a un jugador conectado para ver sus habilidades
 Wyszukaj przedmiot	Buscar objeto
 Wyszukaj przedmioty z min. 1 bonusem.	Busca objetos con al menos 1 bonus.
 Wyszukaj zbroje/tarcze/hełmy.	Busca armaduras/escudos/cascos.
@@ -7343,6 +7758,7 @@ Wściekły Cierń	Espina Furiosa
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Furioso, espinoso e implacable. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y en metros globales. Ctrl + clic en el mapa = teletransporte.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang por baja
 Yang z potworów +%d%%	Yang de monstruos +%d%%
 Yang za próbę awansu	Yang por intento de ascenso
 Yesterday {:02d}:{:02d}	Ayer {:02d}:{:02d}
@@ -7388,9 +7804,11 @@ Z jaja: %s	Del huevo: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	De cada ranura puedes comprar una cosa por oferta.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Con un traje a juego: +800 HP, +15 de valor de ataque
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Con un peinado a juego: +800 HP, +15 de valor de ataque
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	Con un %d%% de probabilidad reinicia el tiempo de reutilización de tus habilidades
 Z łukiem	Con arco
 Z. Eliksir Mocy Płn. W.	Elixir Dorado Poder V. del N.
 Z. Eliksir Odp. na Ogień	Elixir Dorado Resist. al Fuego
+ZAKRĘĆ	GIRAR
 ZRĘ	DES
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	En %d min serás trasladado. Habla con el Guardián de Dragones Dolnarr para salir de inmediato.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	¡Por la escolta n.º %d hasta el cofre correcto recibes una Llave del Goblin!
@@ -7432,13 +7850,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Esta ronda te costará %s Yang y %d 
 Za ukończone tury także otrzymujesz nagrody.	También recibes recompensas por las rondas completadas.
 Za wysoka wartość: %s.	Valor demasiado alto: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	El filtro avanzado está desactivado: Opciones del juego -> Adicionales -> Filtro de recogida.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Filtro avanzado de recogida (clic der. en Ctrl+Z)
+Zabic postac %s?	¿Matar al personaje %s?
 Zabici gracze	Jugadores abatidos
 Zabij %(n)s potworów	Mata %(n)s monstruos
+Zabij potwory	Matar monstruos
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Mata orcos y a todas las demás criaturas. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Zabite potwory	Monstruos eliminados
 Zablokowac konto %s NA ZAWSZE?	¿Bloquear la cuenta %s PARA SIEMPRE?
 Zablokowac konto %s na %s dni?	¿Bloquear la cuenta %s durante %s días?
 Zablokowac nowe logowania (przerwa techniczna)?	¿Bloquear nuevos inicios de sesión (mantenimiento)?
+Zablokowane miejsce	Espacio bloqueado
 Zablokowani	Bloqueados
 Zablokowany przy sortowaniu (Alt+LPM)	Bloqueado al ordenar (Alt+clic izq.)
 Zablokuj ekwipunek	Bloquear equipo
@@ -7448,6 +7870,7 @@ Zabrakło Yang.	Sin Yang suficiente.
 Zabójca	Asesino
 Zabójca Króla	Matarreyes
 Zabłąkany Dzikus	Salvaje Extraviado
+Zachowanie botow	Comportamiento de los bots
 Zacny Kam. Przebudzenia	Piedra del Despertar Noble
 Zacny P. Wężowy (wykon.)	Capa Serp. Noble (elab.)
 Zacny Płaszcz Wężowy	Capa Serpiente Noble
@@ -7481,6 +7904,7 @@ Zakończyć sesję farmienia?	¿Terminar la sesión de farmeo?
 Zakres rysowania	Alcance de dibujado
 Zakres sklepów	Alcance de tiendas
 Zakres widoku	Alcance de visión
+Zakresy (puste = bez limitu)	Rangos (vacío = sin límite)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Un [5] boca abajo estaba junto a la carta descubierta.[ENTER]Por desgracia no recibes ningún punto. Ahora elige a tu rey [K].
 Zakręć kołem za jedyne	Gira la rueda por solo
 Zakręć kołem.	Gira la rueda.
@@ -7488,6 +7912,7 @@ Zaktualizuj klienta i serwer.	Actualiza el cliente y el servidor.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Actualiza el servidor para repartir estadísticas.
 Zakup raz na %s	Compra una vez cada %s
 Zakupy przerwane.	Compras interrumpidas.
+Zakupy towarzysza	Compras del compañero
 Zakupy włoży ci do torby albo do swojej.	Guardará las compras en tu bolsa o en la suya.
 Zamarznięta Wieża	Torre Helada
 Zamarznięty Generał	General Congelado
@@ -7509,6 +7934,7 @@ Zapisane bonusy	Bonificaciones guardadas
 Zapisane miejsca	Ubicaciones guardadas
 Zapisane pozycje	Posiciones guardadas
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Las ubicaciones guardadas solo funcionan con un pergamino en blanco (%s) en el inventario.
+Zapisane zestawy	Conjuntos guardados
 Zapisano	Guardado
 Zapisano (%s%%).	Guardado (%s%%).
 Zapisano (gracz offline)	Guardado (jugador desconectado)
@@ -7516,10 +7942,11 @@ Zapisano preset "%s".	Preset «%s» guardado.
 Zapisano.	Guardado.
 Zapisano. Odswiezanie rang GM...	Guardado. Actualizando rangos GM...
 Zapisuje miejsce %d...	Guardando ubicación %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Guardar captura de pantalla:  Imprimir (la captura se guarda en la subcarpeta "screenshot" del juego)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Guardar captura de pantalla:  Print (la captura se guardará en la subcarpeta del juego "screenshot")
 Zapisz i wyślij	Guardar y enviar
 Zapisz obecny filtr jako preset o tej nazwie	Guardar el filtro actual como preset con este nombre
 Zapisz reguły i wyślij je na serwer	Guarda las reglas y envíalas al servidor
+Zapisz tu	Guardar aquí
 Zaplanowana została przerwa w dostępie do usług.	Se ha programado una interrupción de los servicios.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Evita que el caballo pierda resistencia; ideal para largos viajes sin descanso.
 Zapomnienie umiejętności: Stajenny (za darmo).	Olvidar habilidades: Mozo de Cuadra (gratis).
@@ -7559,6 +7986,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Contiene recompensas para los valientes guerreros que sirven en el Valle de Seungryong.
 Zawiodłeś.	Has fallado.
 Zaznacz albo odznacz całą stronę	Marcar o desmarcar toda la página
+Zaznacz do "Kup wybrane"	Marcar para "Comprar selección"
 Zaznacz oferty, które chcesz kupić.	Marca las ofertas que quieres comprar.
 Zaznacz wszystkie	Seleccionar todas
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Las misiones seleccionadas desaparecerán de la lista como si nunca hubieran existido.
@@ -7577,9 +8005,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Reúne insignias para canjearlas por cofres o material de mejora.
 Zbieranie dla Biologa zamiast bicia poziomow.	Recolectar para el Biólogo en lugar de subir de nivel.
 Zbierz %(n)s ziół	Recolecta %(n)s hierbas
+Zbierz yang	Recoger Yang
+Zbierz zioła	Recolecta hierbas
 Zbir Piekielnej Wieży	Matón de la Torre Infernal
 Zbiórka na parterze wieży	Reunión en la planta baja de la torre
 Zbocze Gautama	Ladera de Gautama
+Zbr. Mroku Księżyca+ (m)	Armad. Oscuridad Lunar+ (m)
+Zbroja Ajolosa+ (m)	Armadura de Ajolos+ (m)
+Zbroja Avalonu+ (srebr.)	Armadura de Avalon+ (plata)
 Zbroja Boskiego Smoka	Armadura del Dragón Divino
 Zbroja Dzikiego Knura	Armadura de Jabalí Salvaje
 Zbroja Króla Wojowników+	Armadura del Rey Guerrero+
@@ -7588,8 +8021,10 @@ Zbroja Płytowa Zodiaku	Coraza de Placas del Zodiaco
 Zbroja Smoka Magii	Armadura del Dragón de la Magia
 Zbroja Smoka Mroku	Armadura del Dragón Oscuro
 Zbroja Smoka Wiatru	Armadura del Dragón del Viento
+Zbroja Szczodrego+	Armadura del Generoso+
 Zbroja Tygrysa	Armadura de Tigre
 Zbroja Wilka	Armadura de Lobo
+Zbroja Zmarłych+ (m)	Armadura de los Muertos+ (m)
 Zbroja Zodiaku	Armadura del Zodiaco
 Zbroja wypełniona mocą boskiego smoka.	Armadura llena del poder del dragón divino.
 Zbroja wypełniona mocą magicznego smoka.	Armadura llena del poder del dragón mágico.
@@ -7618,6 +8053,8 @@ Zdobyte Yang	Yang obtenidos
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Lo obtienes con los monstruos y misiones del Nuevo Continente.
 Zdobywasz je, chroniąc Goblina Skarbów	Las obtienes protegiendo al Goblin del Tesoro
 Zebrane kwiaty	Flores recogidas
+Zebrano %s z %s yang (%.1f%%)	Recaudado %s de %s Yang (%.1f%%)
+Zebrano: %d / %d	Recogido: %d / %d
 Zegarek Kieszonkowy	Reloj de Bolsillo
 Zejście Północnego Wiatru	Descenso del Viento del Norte
 ZejściePłnW. 11590 12181	DescensoVientoN 11590 12181
@@ -7629,11 +8066,15 @@ Zemsta Czarnej Śmierci	Venganza de la Muerte Negra
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Jefes generados: %s/%s.
 Zestaw %d	Conjunto %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Una baraja de 24 cartas Okey. Haz clic derecho para añadirla; una partida de Okey cuesta 1 baraja y 30 000 Yang.
 Zestaw Opieki nad Koniem	Kit de Cuidado del Caballo
 Zestaw kostiumów	Conjunto de trajes
 Zestaw kostiumów:	Conjunto de trajes: 
+Zestaw:	Conjunto: 
+Zestawy lochowe	Conjuntos de mazmorra
+Zestawy polowe	Conjuntos de campo
 Zestawy: broń	Conjuntos: armas
 Zestawy: hełmy	Conjuntos: yelmos
 Zestawy: zbroje	Conjuntos: armaduras
@@ -7653,6 +8094,7 @@ Zielone Zioło	Hierba Verde
 Zielone, fioletowe, peleryny: z targu.	Verdes, moradas, capas: del mercado.
 Zielony Lśniący Odłamek	Fragmento Brillante Verde
 Zielony Sok	Zumo Verde
+Zielony Szaman+	Chamán Verde+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Tierra de Sung Ma;Sin Nivel de Campeón no podrás herir a los monstruos de aquí.
 Ziemie Mrocznego Smoka	Tierras del Dragón Oscuro
 Ziemie gildii	Tierras del gremio
@@ -7669,11 +8111,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Hierba alterada por el poder de Sung Mahi. Necesaria para preparar elixires de rayo. Los elixires los prepara el herbolario Huahn-So (Bokjung, Bakra, Jayang).
 Zjawa Żółt. Tygrysa (BŚ)	Espectro del Tigre Amarillo (JM)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Se consumirá el pienso necesario para llenar la barra.
+Zlamanie klatwy swiatyni	Rotura de la maldición del templo
 Zlamanie odpornosci: dzwony	Anulación de resistencia: campanas
+Zlamanie odpornosci: luki	Rotura de resistencia: arcos
 Zlamanie odpornosci: miecze	Anulación de resistencia: espadas
 Zlamanie odpornosci: sztylety	Anulación de resistencia: dagas
 Zlamanie odpornosci: wachlarze	Anulación de resistencia: abanicos
 Zleć zbieranie:	Encargar recolección:
+Zlodziej zycia	Ladrón de vida
 Zly Silny Malpi Zolnierz	Soldado Simio Malvado y Fuerte
 Zly Zolnierz Czarnej Burzy	Soldado Malvado de la Tormenta Negra
 Zly format (np. 18, M5, G1, P).	Formato incorrecto (p. ej. 18, M5, G1, P).
@@ -7693,6 +8138,8 @@ Zmianki z (B) są używane jako pierwsze	Los cambiadores marcados (B) se usan pr
 Zmiany dzialaja po kilku sekundach	Los cambios surten efecto tras unos segundos
 Zmien ceny wszystkich	Cambiar precios de todo
 Zmien poziom konia	Cambiar nivel del caballo
+Zmien range	Cambiar rango
+Zmien skille	Cambiar habilidades
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Cambia las bonificaciones de una Piedra Dragón mítica en la ventana de Alquimia del Dragón (pestaña de cambio de bonificaciones).
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Cambia el nombre de la mascota activa (100.000 Yang adicionales).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Cambia el nombre de una mascota (100.000 Yang).
@@ -7750,10 +8197,14 @@ Znak Strażnika	Señal del Guardián
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Llave magníficamente forjada de cristal mágico. Necesaria para abrir el cofre perfecto.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	¡Excelente! Tu carta es mayor.[ENTER]Descubre otra carta.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Encontrados %d: se muestran %d, afina la búsqueda.
+Znaleziono: %d	Encontrado: %d
 Znaleziono: %d - wybierz z listy.	Encontrados: %d: elige de la lista.
+Znaleziono: %s	Encontrado: %s
 Znika 15 dni po otrzymaniu.	Desaparece 15 días después de recibirla.
+Zniszcz %(n)s kamieni Metin	Destruir %(n)s Piedras Metin
 Zniszcz %(n)s x %(what)s	Destruye %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	¡Destruye los huevos para infligir daño!
+Zniszcz kamienie Metin	Destruir Piedras Metin
 Zniszczone Metiny	Metins destruidos
 Zniszczone kamienie Metin	Piedras Metin destruidas
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Se ha destruido un Huevo de Dragón: el Sello de Balathor se ha debilitado mucho.
@@ -7765,6 +8216,7 @@ Zodiak Ognia	Zodiaco del Fuego
 Zodiak Wiatru	Zodiaco del Viento
 Zodiak Ziemi	Zodiaco de la Tierra
 Zol. Czar. Wiat. Zodiaku	Soldado del Viento Negro del Zodiaco
+Zolnierz Czarnego Wiatru	Soldado del Viento Negro
 Zolnierz Gladiator Kosci	Soldado Gladiador de Huesos
 Zolnierz Shrimp Zodiaku	Soldado Camarón del Zodiaco
 Zolnierz Spartaner	Soldado Spartaner
@@ -7786,8 +8238,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Hecho
 Zroszony Młot	Martillo Rociado
 Zrzut ekranu	Captura de pantalla
 Zrzut ekranu zapisano w '%s'.	Captura de pantalla guardada en '%s'.
+Zrzutka yang	Colecta de Yang
 Zrób miejsce w ekwipunku.	Haz sitio en el inventario.
 Zręczność	Destreza
+Zsiadam po buffy	Desmonto para buffs
 Zsiądź z konia, aby go rozwijać.	Desmonta para entrenar a tu caballo.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Sopa de Setas
@@ -7875,6 +8329,28 @@ Zwiększa szansę na drop Yang.	Aumenta la probabilidad de que caigan Yang.
 Zwiększa szansę na kradzież PE.	Aumenta la probabilidad de robar SP.
 Zwiększa szansę na kradzież PŻ.	Aumenta la probabilidad de robar HP.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Aumenta la probabilidad de golpe crítico un 10% durante 10 minutos.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar accesorios. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar accesorios. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar armas. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar armas. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar libros de habilidad. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar libros de habilidad. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar cinturones. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar cinturones. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar el resto de objetos. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar el resto de objetos. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar objetos de mascota. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar objetos de mascota. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar guantes. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar guantes. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar armaduras. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar armaduras. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar conjuntos de armas. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar conjuntos de armas. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar conjuntos de cascos. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar conjuntos de cascos. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Aumenta un 1% la probabilidad de éxito al fabricar conjuntos de armaduras. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Yu-Hwan convertirá dos de estas runas en una runa 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Aumenta un 20% la probabilidad de éxito al fabricar conjuntos de armaduras. Colócala en el campo "Aumentar probabilidad" de la ventana de fabricación; en cada intento se consume una runa. Es el nivel máximo de la runa.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Aumenta la probabilidad de golpe perforante un 10% durante 10 minutos.
 Zwiększa szansę na przywołanie konia.	Aumenta la probabilidad de invocar el caballo.
 Zwiększa szansę na spowolnienie przeciwnika.	Aumenta la probabilidad de ralentizar al oponente.
@@ -7901,6 +8377,10 @@ Zwiększa twoją siłę obrony.	Aumenta tu defensa.
 Zwiększa twoją szybkość ataku o 20% na okres 30 minut. Niezdatna do handlu.	Aumenta tu velocidad de ataque un 20% durante 30 minutos. No se puede comerciar.
 Zwiększa umiejętności twojego wierzchowca	Aumenta las habilidades de tu montura
 Zwiększa wartość odbitych ciosów.	Aumenta el valor de los golpes reflejados.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Aumenta la voluntad SungMa (INT) en combate en 15 durante %d s.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Aumenta la voluntad SungMa (DEF) en combate en 15 durante %d s.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Aumenta la voluntad SungMa (FUE) en combate en 15 durante %d s.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Aumenta la voluntad SungMa (VIT) en combate en 15 durante %d s.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Aumenta la resistencia. Es conocido por sus propiedades fortalecedoras de los músculos.
 Zwiększa wzrost doświadczenia.	Aumenta la ganancia de experiencia.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Aumenta el daño físico y mágico infligido. Se puede otorgar a otro jugador. Bonificación al usarlo sobre ti mismo.
@@ -7924,6 +8404,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Devuelve los puntos de Ca
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Devuelve los puntos de Campeón repartidos en Fuerza de Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Devuelve los puntos de Campeón repartidos en Vitalidad de Sung Ma.
 Zwyczajna Szata Aury	Túnica de Aura Corriente
+Zwykle bicie potworow	Matanza normal de monstruos
 Zwykła Skóra	Cuero Común
 Zwykłe Mikstury	Pociones comunes
 Zwykłe potwory	Monstruos normales
@@ -7990,8 +8471,11 @@ Złośliwa	Maliciosa
 Zły Pł. Wężowy (wykon.)	Capa Serp. Maligna (elab.)
 Zły Płaszcz Wężowy	Capa Serpiente Maligna
 Złów %(n)s ryb	Pesca %(n)s peces
+Złów ryby	Pescar peces
 [ Założony ]	[ Equipado ]
 [%s] [Sklep] %s	[%s] [Tienda] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Bonus DOŚ]	[Bonificación EXP]
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Arrastra un Libro de Habilidad de chamán sobre una habilidad de Buffi.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Esta habilidad se entrena con el Libro de Habilidad: %s (chamán).
@@ -8001,7 +8485,10 @@ Złów %(n)s ryb	Pesca %(n)s peces
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Archivos del cliente] Descarga los archivos actuales del cliente en el panel: Editor de base de datos -> Aplicar -> Descargar archivos actuales del cliente (zip) y extráelos en la carpeta del juego.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Búsqueda del tesoro] ¡Nueva ronda alcanzada!
 [Sklep]	[Tienda]
+[TAK]	[SÍ]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Guerra] Tu gremio está en guerra: haz clic en "Entrar en la guerra" en el tablón de guerra (esquina inferior izquierda).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	pero si fallas, el objeto será destruido. ¿Quieres continuar?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	pero solo hasta el 50% de la duración y con la edad reiniciada.
 aoe_giant	aoe_giant
@@ -8010,6 +8497,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Atacas directamente a los enemigos.|Potencia: Fuerza (++), Destreza (+), Vitalidad (+).
 autotarget: no Kolejny cel row in the game options	autotarget: no hay fila «Siguiente objetivo» en las opciones del juego
 bez bonusu	sin bonificación
+bije wszystko w pobliżu	ataca todo lo cercano
 bonusów 1-5 spoza warunków	bonificaciones 1-5 ajenas a las condiciones
 brak bonusu	sin bonificación
 bush_ancientlichen	bush_ancientlichen
@@ -8048,7 +8536,15 @@ dni	días
 do końca SM	hasta agotar las Dr
 dodaje nowy crafting %d item %d	añadiendo nuevo crafting %d objeto %d
 dodatkowo zweryfikowana po stronie serwera.	verifica además en el lado del servidor.
+dystans %d	dystans %d
 dzień	día
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	el evento en uno de los mapas: Valle de Seungryong, Desierto de Yongbi,
 gildie każdego królestwa (odbiór w tym oknie).	gremios de cada reino (se reclaman en esta ventana).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	y un tiempo de reutilización. Añade: un Alma de Espada, de Protección,
@@ -8069,11 +8565,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	aleatorio de tu clase y cam
 ktoś był szybszy	alguien fue más rápido
 która ma już pięć bonusów.	que ya tienen cinco bonificaciones.
 które wypadają z ostatniego bossa.	que suelta el último jefe.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	botón izquierdo del ratón o %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	mapa aleatorio
 ma swój ranking postaci i gildii. Na koniec sezonu	tiene su propia clasificación de personajes y gremios. Al final de la temporada
 maksymalne PŻ /2	HP máximos /2
 maksymalne PŻ są o połowę mniejsze	los HP máximos se reducen a la mitad
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: error en la ventana de cartas (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	sobre él en el inventario con la pestaña abierta).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	en la Isla del Tesoro (Billetes del Tesoro de los cofres).
@@ -8092,6 +8593,7 @@ nie udało się zapisać ustawień.	no se pudieron guardar los ajustes.
 nie walczy wcale	no lucha en absoluto
 nie wybrano	no seleccionado
 nie wydaje	no gasta
+nie zaczyna, broni ciebie i siebie	no empieza, te defiende a ti y a sí mismo
 nowego bossa! W przeciwnym razie nagroda przepadnie.	un nuevo jefe! De lo contrario, la recompensa se perderá.
 obnizaj cene o	bajar el precio un
 obok ciebie	a tu lado
@@ -8099,7 +8601,9 @@ obrażenia zadawane potworom /2	daño infligido a los monstruos /2
 obrażenia zadawane potworom są o połowę mniejsze	el daño infligido a los monstruos se reduce a la mitad
 od +%d	desde +%d
 od +0 do +7 (także z bonusami),	de +0 a +7 (incluso con bonificaciones),
+odprawa tak	odprawa tak
 oferta została już sprzedana	la oferta ya se ha vendido
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	bajo otro objeto, cada cuántos segundos se usa.
 podswietl po (godzin, 0 = wyl.)	resaltar tras (horas, 0 = desact.)
@@ -8111,11 +8615,13 @@ poziom łupu IV - 25 Kamyków	nivel de botín IV - 25 Guijarros
 przez podany czas; każdy zostawia sobie zapas.	durante el tiempo indicado; cada uno se guarda una reserva.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	junto al Metin de la Dureza en la planta baja de la Torre de los Demonios; los puestos vacíos
 przy kolejnych próbach łowienia?	en los próximos intentos de pesca?
+przy tobie	a tu lado
 przywołany	invocada
 próby: %d	intentos: %d
 prędkość ruchu /2	velocidad de movimiento /2
 prędkość ruchu jest o połowę mniejsza	la velocidad de movimiento se reduce a la mitad
 puste = dowolny przedmiot	vacío = cualquier objeto
+reguła "%s"	regla "%s"
 reliktu go niszczy.	la reliquia la destruye.
 robi zakupy	está de compras
 rodzaj bez filtra	tipo sin filtro
@@ -8127,11 +8633,16 @@ ręcznie	manualmente
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	el servidor no responde (falta el parche autohunttest): no se inició.
 serwer nie potwierdził zakupu	el servidor no confirmó la compra
 serwer nie pozwala teraz polować.	el servidor no permite cazar ahora mismo.
+sezon %d	temporada %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	en el mismo mapa que el Jefe del Mundo e infliges la cantidad
 skillbook	skillbook
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	la tienda puede contener objetos incorrectos. ¿Continuar?
 sklep odmówił sprzedaży	la tienda rechazó la venta
 start, zasięg %d m.	inicio, alcance %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	el bloqueo permanente de la cuenta.
 stoi - pokonajcie go, zanim ucieknie!	está en pie: ¡derrotadlo antes de que escape!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	este objeto no se puede usar aquí (poción, mejora o rocío).
@@ -8145,24 +8656,36 @@ tylko gdy gracz jest AKTUALNIE online.	solo cuando el jugador está conectado AH
 uciekł - nikt nie dostał nagrody	escapó: nadie recibió recompensa
 ulepszony Nóż.	Cuchillo mejorado.
 umiej %d	habil. %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	al reiniciar el cliente.
 ustawienia zapisane.	ajustes guardados.
+usun	usun 
+usun %d	usun %d
+w dniach	en días
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	valor de ataque +20% durante 3 horas (se reclama junto
 ważne	importantes
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	navegador integrado (se necesita un nuevo archivo exe del cliente).
+wolna ręka	libre
 wprowadzenie aby móc kontynuować rozgrywkę.	para poder continuar jugando.
 wszystkie przedmioty	todos los objetos
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	de la ranura elegida (I / II). Tras la primera activación, sacar
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	cierra la sesión ya iniciada. Expulsar del servidor funciona
 wyłączone na tym serwerze.	desactivada en este servidor.
 z nagrodą, przed pojawieniem się kolejnego bossa).	con la recompensa, antes de que aparezca el siguiente jefe).
 zajmiesz w rankingu.	que ocuparás en la clasificación.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	los ocupan bots contratados de tu reino. Tras unos minutos de reunión
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	detenida: ha arrancado la Caza automática normal.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	armaduras y trajes entre sí, aspecto de arma con armas de ese tipo.
 zeruje Twoje obrażenia.	reinicia tu daño.
 zmieniła się cena albo ilość	el precio o la cantidad han cambiado
 zostają, a zwierzak zachowuje 80% swojego wieku.	se conservan, y la mascota mantiene el 80% de su edad.
 zostanie zresetowany.	se reiniciará.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 {} + {} rozdziel przedmioty.	{} + {} dividir objetos.
 {}'s Auction	Subasta de {}
@@ -8202,10 +8725,20 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dColecta terminada: se reunió toda la cantidad
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aSe acabó el tiempo de la colecta
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aPrimero completa://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aColecta finalizada por el líder
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893adisponibles [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - inicio de sesión rápido.
+|cfff4f770Trwa misja	|cfff4f770Misión en curso
+|cfff4f770Trwa zrzutka	|cfff4f770Colecta en curso
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742¡ATENCIÓN!|r ¡Control de seguridad!
+Óó	Óó
+Ąą	Ąą
+ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
+ąćęłńóśźż	ąćęłńóśźż
+ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
 Čć»ç°©	Čć»ç°©
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Ningún monstruo suelta esto.
 Ładny Kam. Przebudzenia	Piedra del Despertar Bonita
 Ładny Kamień Chaosu	Piedra del Caos Bonita
@@ -8257,6 +8790,9 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Łuski Smoka	Escamas de Dragón
 Łączenie	Conexión
 Łączne obrażenia	Daño total
+Łączny czas	Tiempo total
+Łł	Łł
+Ńń	Ńń
 Ściana	Muro
 Ściąga do ciebie grupy potworów z okolicy.	Atrae hacia ti grupos de monstruos de los alrededores.
 Ścięgno Balathora	Tendón de Balathor
@@ -8269,12 +8805,14 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Śnieżna Czapa Leoparda+	Gorro Nevado de Leopardo+
 Śnieżna Czapa Zajęcza	Gorro Nevado de Liebre
 Śnieżna Czapa Zajęcza+	Gorro Nevado de Liebre+
+Śnieżny Bambi	Bambi de Nieve
 Śnieżny Kwiat	Flor de Nieve\r\n
 Śnieżny Leonidas	Leónidas Nevado
 Śnieżny Leonidas(piecz.)	Leónidas Nevado (sello)
 Śpiew Stali	Canto del Acero
 Śpiew Wiatru	Canto del Viento
 Śpiewająca Furia	Furia Cantarina
+Śr. czas sesji	Tiempo medio de sesión
 Śr. obrażenia	Daño medio
 Śr. yang na sesję	Yang medio por sesión
 Średni	Medio
@@ -8283,6 +8821,7 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Średnio	Medio
 Środa	Miércoles
 Środek Ścierny	Abrasivo
+Św. Nosiciel Światła+	Portador de Luz Sagrado+
 Św. Odłamek Broni I	Frag. Sagrado de Arma I
 Św. Odłamek Broni II	Frag. Sagrado de Arma II
 Św. Odłamek Hełmu I	Frag. Sagrado de Yelmo I
@@ -8296,6 +8835,7 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Światło Gwiazd	Luz de las Estrellas
 Światło Gwiazd (9.skill)	Luz de las Estrellas (9.skill)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Excelente para asar a la lumbre.
+Świąt. Zim. Zbroja+ (m)	Armad. Invierno Festiva+ (m)
 Świąteczna Brązowa Skrzynia Okey	Cofre de Bronce Navideño Okey
 Świąteczna Srebrna Skrzynia Okey	Cofre Plateado Navideño Okey
 Świąteczna Złota Skrzynia Okey	Cofre Dorado Navideño Okey
@@ -8306,13 +8846,17 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Świątynia	Templo
 Świątynia Węży	Templo de las Serpientes
 Świątynia Zodiaku	Templo del Zodiaco
+Święty	Sagrado
 Święty Efekt Zestawu	Efecto de Conjunto Sagrado
 Święty Kowal Zestawu	Herrero de Conjuntos Sagrado
 Święty Miecz Bogów+	Espada Santa de los Dioses+
 Święty Odłamek	Fragmento de Poder Sagrado
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Flor sagrada del jardín del Dios Dragón. Sirve para mejorar el equipamiento.
+Śś	Śś
+şó ĹĄşę	şó ĹĄşę
 Źródła	Orígenes
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Una fuente de poder para la caña de pescar. Su toque mejora la herramienta y abre el camino a la pesca en las aguas más profundas.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Ningún cuervo resultó dañado durante la creación de esta arma. Arma para Jóvenes Héroes: desaparece 15 días después de recibirla (también equipada). No se puede mejorar, cambiar ni añadirle bonificaciones, colocarle piedras espíritu, intercambiar, vender ni guardar en el almacén.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Ninguno: desactiva los mensajes del Compañero. Importantes: inventario lleno, mochila, objetos valiosos.
 Żałobna Pieśń	Canto Fúnebre
@@ -8329,6 +8873,7 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Żołnierz Schron. Płn. W.	Soldado del Refugio del Viento N.
 Żołnierz Wężowy	Soldado Serpiente
 Żołnierze	Soldados
+Życie goblina	Vida del goblin
 Żywe Drzewo	Árbol Vivo
 Żywioł potworów na tym piętrze	Elemento de los monstruos de este piso
 Żywioł: %s	Elemento: %s
@@ -8347,3 +8892,5 @@ zwykłe Auto Łowy zatrzymane.	la Caza automática normal se ha detenido.
 Żółty Lśniący Odłamek	Fragmento Brillante Amarillo
 Żółty Sok	Zumo Amarillo
 Żądza Krwi +%.0f	Sed de sangre +%.0f
+Żż	Żż
+żadne	ninguna

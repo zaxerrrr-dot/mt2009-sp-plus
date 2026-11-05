@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 ημέρες)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 ώρες)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: επίπεδο %(b)d.
 %d - %d obrażeń	%d - %d ζημιά
 %d - rzadko 100 - jak w grze %d - czesto	%d - σπάνια      100 - όπως στο παιχνίδι      %d - συχνά
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 %d%% Wola SungMa (WIT)	%d%% Θέληση του SungMa (ΖΩΤ)
 %d%% na losowy bonus.	%d%% για τυχαίο μπόνους.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% πιθανότητα να μπλοκάρεις ζημιά από επιθέσεις
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% πιθανότητα να ποδοπατήσεις αντιπάλους για 20 δευτ.
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% πιθανότητα αποφυγής θανάτου και ανάκτησης 30%% HP
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% πιθανότητα όλα τα τέρατα γύρω να σε επιτεθούν (μανδύας ανδρείας)
 %d%% Średnie Obrażenia	%d%% Μέση Ζημιά
 %d. miejsce	%d. θέση
 %d. pusty	%d. κενό
+%dx %s (dowolne z %d)	%dx %s (οποιοδήποτε από %d)
 %dx (po %d)	%dx (%d το καθένα)
 %s %d - zostało %d	%s %d - απομένουν %d
 %s (%d szt.)	%s (%d τεμ.)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Επ. %d) - pid %d, θέση (%d, %d), βασίλειο %d
 %s (Pozostały czas: %s)	%s (Υπολειπόμενος χρόνος: %s)
 %s (co %d sek.)	%s (κάθε %d δευτ.)
+%s (inna mapa)	%s (άλλος χάρτης)
 %s (maks. %.1f)	%s (μέγ. %.1f)
 %s (maks. %d)	%s (μέγ. %d)
 %s (maks.)	%s (μέγ.)
@@ -109,19 +115,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 (Kup wszystkie przedmioty tego typu)	(Αγορά όλων των αντικειμένων αυτού του τύπου)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Προς το παρόν δεν έχει χρήση - θα έρθει με την επόμενη ενημέρωση της Yohara.)
 (Najedź myszką na ikonę)	(Πέρασε το ποντίκι πάνω από το εικονίδιο)
+(brak klawisza - Esc, Skróty klawiszowe)	(χωρίς πλήκτρο - Esc, Συντομεύσεις πλήκτρων)
 (brak)	(κανένα)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (το φίλτρο είναι απενεργοποιημένο - τώρα συλλέγεις τα πάντα)
 (na koniu: %d)	 (έφιππος: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(ανώτατο επίπεδο, Άμυνα του Πλοίου, πλήρης σφαίρα εμπειρίας).
 (nieznana)	 (άγνωστη)
 (od P)	 (από P)
+(postac offline - brak podgladu skilli)	(ο χαρακτήρας είναι offline - δεν υπάρχει προεπισκόπηση δεξιοτήτων)
 (poziom %d)	 (επίπεδο %d)
+(puste)	(κενό)
 (szansa %s%%)	 (πιθανότητα %s%%)
 (ten bot nic jeszcze nie powiedzial)	(αυτό το bot δεν έχει πει ακόμη τίποτα)
 (wybierz stworzenie)	(επίλεξε πλάσμα)
 (wybierz z listy)	(επίλεξε από τη λίστα)
 (wybierz)	(επίλεξε)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* ΠΡΟΣΟΧΗ * Πειραματική επιλογή![ENTER]Η λειτουργία Κλιμάκωσης διεπαφής μπορεί να οδηγήσει σε μείωση[ENTER]της ποιότητας της διεπαφής (γραφικά στοιχεία, γραμματοσειρά).[ENTER]Το |cff8ab98eπράσινο|r χρώμα σημαίνει ότι η κλιμάκωση ΜΠΟΡΕΙ ΝΑ ΕΙΝΑΙ η καλύτερη.[ENTER]Το |cffe57976κόκκινο|r χρώμα σημαίνει ότι η κλιμάκωση μπορεί να οδηγήσει[ENTER]σε έλλειψη ανταπόκρισης του παιχνιδιού.
++ Dodaj bonus	+ Προσθήκη μπόνους
 + Dodaj przedmiot	+ Προσθήκη αντικειμένου
 + Pkt umiejetn.	+ Πόντοι ικαν.
 +%d Inteligencja	+%d Νοημοσύνη
@@ -153,6 +163,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 +15 wartości ataku	+15 αξία επίθεσης
 +3% siły przeciwko kamieniom Metin	+3% δύναμη εναντίον λίθων Metin
 +50% szansy na drop przez 2 godziny	   +50% πιθανότητα λείας για 2 ώρες
++800 PŻ	+800 HP
 , PPM: dokładny filtr	, Δ.Κ.: αναλυτικό φίλτρο
 , atak włączony	, επίθεση ενεργή
 - Czekaj cierpliwie na odpowiedź.	- Περίμενε υπομονετικά για απάντηση.
@@ -163,6 +174,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 - drugie miejsce od 31 poziomu konia	- δεύτερη θέση από το επίπεδο 31 του ίππου
 - piętro %d	 - όροφος %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- ελεύθερη θέση: διάβασε βιβλίο ικανότητας ίππου
+-- Ninja Archer - skille P --	-- Ninja Archer - δεξιότητες P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - δεξιότητες P --
+-- Sura BM - skille P --	-- Sura BM - δεξιότητες P --
+-- Sura WP - skille P --	-- Sura WP - δεξιότητες P --
 -- Szaman Healer - skille P --	-- Σαμάνος Θεραπευτής - δεξιότητες P --
 -- Szaman Smok - skille P --	-- Σαμάνος Δράκος - δεξιότητες P --
 -- Wojownik Body - skille P --	-- Πολεμιστής Σώμα - δεξιότητες P --
@@ -172,17 +187,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 ... i %d więcej.	... και %d ακόμη.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...και ακόμη %d - πλήρης λίστα στο παράθυρο Drop wiki (πλαϊνή γραμμή καταλόγου).
 / - powtarza poprzednia komende	/ - επαναλαμβάνει την προηγούμενη εντολή
+/a - dajemy komus dany lvl	/a - δίνουμε σε κάποιον συγκεκριμένο επίπεδο
 /a level - Zmienia lvl gracza	/a level - Αλλάζει το επίπεδο παίκτη
 /b - ogloszenie w ramce	/b - ανακοίνωση σε πλαίσιο
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - μπλοκάρει τη συνομιλία για κάποιο διάστημα
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - λίστα παικτών με φραγμένη συνομιλία
 /dc - wyrzuca kogos z serwera	/dc - διώχνει κάποιον από τον διακομιστή
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...άγνωστο...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...άγνωστο...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...άγνωστο...
 /gete - ...nie wiem...	/gete - ...άγνωστο...
 /getq - ...nie wiem...	/getq - ...άγνωστο...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - τηλεμεταφορά στην έρημο
 /go s - teleport na Gore Sohan	/go s - τηλεμεταφορά στο Όρος Sohan
+/go t - teleport do Doliny Orkow	/go t - τηλεμεταφορά στην Κοιλάδα των Orc
 /go tr - teleport do Lasu Duchow	/go tr - τηλεμεταφορά στο Δάσος των Πνευμάτων
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - τηλεμεταφορά στο Κόκκινο Δάσος
 /go x y - przenosi do wspolrzednych x y	/go x y - μεταφέρει στις συντεταγμένες x y
@@ -191,13 +218,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 /horse_level - podnosi poziom konia	/horse_level - ανεβάζει το επίπεδο του αλόγου
 /horse_ride - przywoluje konia	/horse_ride - καλεί το άλογο
 /inv - niewidzialnosc	/inv - αορατότητα
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - προσθέτει αρκετά τεμάχια αντικειμένου
 /item - dodaje przedmiot	/item - προσθέτει αντικείμενο
 /kill - zabija gracza	/kill - σκοτώνει παίκτη
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - αλλαγή επιπέδου του χαρακτήρα
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - καλεί τέρας ή NPC
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - ταχύτητα βαδίσματος
 /n - Wiadomosc na gorze ekranu	/n - Μήνυμα στο πάνω μέρος της οθόνης
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Λειτουργία παρατήρησης
 /open - start eventu OX	/open - έναρξη του event OX
 /p - zamiana w potwora lub npc	/p - μεταμορφώνει σε τέρας ή NPC
@@ -215,12 +251,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - Αυξάνει την ΕΜΠ κατά ένα δοσμένο ποσοστό για καθορισμένο χρόνο
 /purge - usuwa potwory, npc itp z okolicy	/purge - αφαιρεί τέρατα, NPC κ.λπ. από την περιοχή
 /r - przywraca wszystkie pkt energii i zycia	/r - επαναφέρει όλους τους πόντους ενέργειας και ζωής
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...άγνωστο...
 /reset - resetuje PZ i PE	/reset - μηδενίζει HP και SP
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - βαθμός ιππότη
+/set exp - dostajemy dana ilosc expa	/set exp - παίρνουμε συγκεκριμένο ποσό exp
+/set gold - dostajemy dana ilosc Yang	/set gold - παίρνουμε συγκεκριμένο ποσό Yang
+/set max_hp - zwieksza punkty zycia	/set max_hp - αυξάνει τους πόντους ζωής
 /set max_sp - zwieksza punkty energii	/set max_sp - αυξάνει τους πόντους ενέργειας
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - προσθέτει τον δοσμένο αριθμό πόντων δεξιοτήτων
+/set_maxhp - doladowanie hp	/set_maxhp - αναπλήρωση hp
 /set_maxsp - doladowanie pe	/set_maxsp - αναπλήρωση SP
+/set_state information - ...nie wiem...	/set_state information - ...δεν ξέρω...
+/set_state run - ...nie wiem...	/set_state run - ...δεν ξέρω...
+/set_state start - ...nie wiem...	/set_state start - ...δεν ξέρω...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Ηγεσία P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Μεταμόρφωση P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - επίπεδο αλόγου 30
@@ -234,21 +285,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Οργή του Θεού Δράκου
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Επιθυμία του Δράκου
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...άγνωστο...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - δίνουμε σε κάποιον δεξιότητα στο P
 /ski 121 - Dowodzenie	/ski 121 - Ηγεσία
 /ski 131 - Przywolaj Konia	/ski 131 - Κλήση Αλόγου
 /slow - spowalnia gracza	/slow - επιβραδύνει παίκτη
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - λιποθυμεί παίκτη
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - μεταφέρει παίκτη στον GM
+/w - ilosc osob online	/w - αριθμός παικτών online
 /warp - przenosi GM'a do gracza	/warp - μεταφέρει τον GM σε παίκτη
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Νησί με χιόνι (Οικισμός των GM)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - τηλεμεταφορά στην Αρένα GM
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - πρώτα κάνουμε δεξί κλικ στο τέρας, μετά γράφουμε την εντολή και το τέρας έχει 1 HP
+/xmas 0 - Dzien	/xmas 0 - Ημέρα
 /xmas 1 - Noc	/xmas 1 - Νύχτα
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Ημέρα
 /xmas_boom 1 - Noc	/xmas_boom 1 - Νύχτα
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - απενεργοποίηση χιονιού
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - ενεργοποίηση χιονιού
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - σταματά το τραγούδι
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Ενεργοποιεί το χριστουγεννιάτικο τραγούδι
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - γιορτές OFF
 0 - nakarm peta	0 - τάισε το κατοικίδιο
 0 = bez granicy	0 = χωρίς όριο
 1 dzień	1 ημέρα
+1 godz.	1 ώρα
 1 krok	1 βήμα
+1* Runa Wyk. Akcesoriów	1* Ρούνος Σφ. Αξεσουάρ
+1* Runa Wyk. Ks. Um.	1* Ρούνος Σφ. Βιβλ. Δεξ.
+1* Runa Wyk. Poz. Prz.	1* Ρούνος Σφ. Άλλων Αντικ.
+1* Runa Wyk. Prz. d. Zw.	1* Ρούνος Σφ. Αντ. Κατοικ.
+1* Runa Wyk. Rękawiczek	1* Ρούνος Σφ. Γαντιών
+1* Runa Wyk. Zest. Broni	1* Ρούνος Σφ. Σετ Όπλων
+1* Runa Wyk. Zest. Hełm.	1* Ρούνος Σφ. Σετ Κρανών
+1* Runa Wyk. Zest. Zbroi	1* Ρούνος Σφ. Σετ Πανοπλιών
+1* Runa Wykuwania Broni	1* Ρούνος Σφυρηλάτησης Όπλων
+1* Runa Wykuwania Pasów	1* Ρούνος Σφυρηλάτησης Ζωνών
+1* Runa Wykuwania Zbroi	1* Ρούνος Σφυρηλάτησης Πανοπλιών
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = κανονικά. Ισχύει αμέσως.
 1. Posterunek Myr	1ο Φυλάκιο των Myr
 1. dodany bonus +%d%%	1ο προστιθέμενο μπόνους +%d%%
@@ -258,20 +333,26 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Πακέτο 25)
 100 Kamyków, Skrzynka Tajemnic, Zagadkowa Szkatułka,	   100 Βότσαλα, Σεντούκι Μυστικών, Αινιγματικό Σεντούκι,
 100% szans na przeczytanie	100% πιθανότητα ανάγνωσης
 100% szans na ulepszenie.	100% πιθανότητα επιτυχίας αναβάθμισης.
+2 godz.	2 ώρες
 2-12 liter lub cyfr!	2-12 γράμματα ή ψηφία!
 2. Posterunek Myr	2ο Φυλάκιο των Myr
 2. dodany bonus +%d%%	2ο προστιθέμενο μπόνους +%d%%
 25 kart królewskich dało nową Talię Królewską.	25 βασιλικές κάρτες σχημάτισαν μια νέα Βασιλική Τράπουλα.
 25% only	Μόνο 25%
+25-40 lvl	25-40 επ.
 2x PD	2x ΕΜΠ
 3 Loch Pająków	Μπουντρούμι Αραχνών 3
 3 losowe bonusy podstawowe	3 τυχαία βασικά μπόνους
 3 metiny	3 Λίθοι Metin
 3. dodany bonus +%d%%	3ο προστιθέμενο μπόνους +%d%%
+4 godz.	4 ώρες
 4. dodany bonus +%d%%	4ο προστιθέμενο μπόνους +%d%%
+5 bossow	5 Boss
+5% obrażeń będzie dodanych do PŻ	Το 5% της ζημιάς θα προστεθεί στα HP
 5. dodany bonus +%d%%	5ο προστιθέμενο μπόνους +%d%%
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Βότσαλα, Αινιγματικό Σεντούκι, Κουπόνι Νομ. Δράκου (20),
 50% więcej doświadczenia	50% περισσότερη εμπειρία
+8 godz.	8 ώρες
 < 10 sek	< 10 δευτ.
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	Απορροφά %d%% HP κατά τη χρήση του Νυχιού Κεραυνού
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	Απορροφά %d%% HP κατά τη χρήση της Διάτρησης
@@ -308,6 +389,7 @@ Ahtrin Wielki Mistrz	Μέγας Δάσκαλος Ahtrin
 Ahtrin Wojownik	Πολεμιστής Ahtrin
 Ahtrin Zwiadowca	Ανιχνευτής Ahtrin
 Akcja:	Ενέργεια:
+Akcje botow	Ενέργειες bot
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Αυτή τη στιγμή γίνεται φόρτωση δεδομένων. Δοκίμασε ξανά αργότερα.
 Aktualny poziom: %s	Τρέχον επίπεδο: %s
 Aktywna	Ενεργή
@@ -344,6 +426,8 @@ Alchemy	Αλχημεία
 Alchemy Grade:	Βαθμός αλχημείας:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Όλα τα αντικείμενα που δεν χωρούν στον Εξοπλισμό σου θα μεταφερθούν στη Θυρίδα Αγορών. Θέλεις να συνεχίσεις;
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Όλα τα |cFFFFFF99|h{}|r θα μεταφερθούν στον Εξοπλισμό ή στη Θυρίδα Αγορών. Θέλεις να συνεχίσεις;
+Alt (przytrzymaj)	Alt (κράτημα)
+Alt + LPM	Alt + Αρ.Κ.
 Amal	Αμάλ
 Amator Ninja	Ερασιτέχνης Νίντζα
 Amator Shaman	Ερασιτέχνης Σαμάν
@@ -364,6 +448,7 @@ Antymagia	Αντιμαγεία
 Anubis	Ανούβις
 Anulacja Polimorfii Wierzchowca	Ακύρωση Μεταμόρφωσης Ζώου Ιππασίας
 Anulacja Transmutacji	Ακύρωση Μετατροπής
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Ακυρώθηκαν οι υπόλοιπες ενέργειες. Οι διαγραφές που στάλθηκαν μπορεί να έχουν ήδη εκτελεστεί.
 Anuluj edycje	Ακύρωση επεξεργασίας
 Anuluj misję	Ακύρωση αποστολής
 Appaloosa	Appaloosa
@@ -375,6 +460,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Φαρμακείο (ΡΧ) τ�
 Apteczka strażników Zaklętego Lasu.	Κιτ πρώτων βοηθειών των φρουρών του Μαγεμένου Δάσους.
 Arahan Zodiaku	Arahan του Ζωδιακού
 Arbuz	Καρπούζι
+Arena Pojedynków	Αρένα Μονομαχιών
+Arena pojedynkow	Αρένα μονομαχιών
 Argos (mrok)	Άργος (σκότος)
 Argos (ogień)	Άργος (φωτιά)
 Arial	Arial
@@ -399,6 +486,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Επίθεση μεγάλης από
 Atak krwawienia	Επίθεση αιμορραγίας
 Atak magiczny	Μαγική επίθεση
 Atak magiczny/fizyczny %	Μαγική/σωματική επίθεση %
+Atak na Metiny	Επίθεση στα Metin
 Atak na odległość	Επίθεση από απόσταση
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Περιστροφική επίθεση με τρεις πιθανότητες να χτυπήσει και πιθανότητα να δηλητηριάσει τον αντίπαλο. 
 Atak obszarowy walki wręcz	Επίθεση περιοχής σώμα με σώμα
@@ -417,6 +505,7 @@ Atak trzema ciosami pod rząd.	Επίθεση με τρία χτυπήματα �
 Atak umożliwiający ominięcie obrony przeciwnika.	Επίθεση που επιτρέπει την παράκαμψη της άμυνας του αντιπάλου.
 Atak w kilka celów	Επίθεση σε πολλούς στόχους
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Επίθεση από απόσταση μεγάλης εμβέλειας, χτυπά έναν αντίπαλο ή αρκετούς που στέκονται δίπλα-δίπλα.
+Atak z wierzchowca	Επίθεση από υποζύγιο
 Atak zasięgowy	Επίθεση εμβέλειας
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Επιτίθεσαι σε κοντινά τέρατα κατά τη μάχη με κεραυνούς, των οποίων η ζημιά αντιστοιχεί στη ζημιά της αυτόματης επίθεσης (χρόνος επαναφοράς 15 δευτ.).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Επίθεση στους εχθρούς με ομοιώματα δράκων.|Ενισχύεται από: Ευφυΐα (++), Ευκινησία (ακρίβεια) (+), επίπεδο χαρακτήρα.
@@ -424,6 +513,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Επιτίθεται κατά μέτωπο στους εχθρούς.|Ενισχύεται από: Δύναμη (++), Ζωτικότητα (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Επιτίθεται στους αντιπάλους γύρω σου, με πιθανότητα λιποθυμίας του αντιπάλου.
 Atakuje wszystkich przeciwników wokół siebie.	Επιτίθεται σε όλους τους αντιπάλους γύρω σου.
+Atakujący (atak)	Επιτιθέμενος (επίθεση)
 Atrybut Błyskawicy	Ιδιότητα Κεραυνού
 Atrybut Błyskawicy|Efekt Omdlenia	Ιδιότητα Κεραυνού|Αποτέλεσμα Λιποθυμίας
 Atrybut Piorunu	Ιδιότητα Κεραυνού
@@ -454,6 +544,7 @@ Auto Łowy: bojowiec wyłączony.	Αυτόματο Κυνήγι: η λειτου
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Αυτόματο Κυνήγι: δεν έχει απομείνει χρόνος. Αγόρασε το "Αυτόματο Κυνήγι (8ω)" στο ItemShop και χρησιμοποίησέ το από το απόθεμα - ο χρόνος μετράει μόνο όσο παίζεις.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Αυτόματο Κυνήγι: δεν είναι δυνατό να ανέβεις στο άλογο - κυνήγι πεζός. Ανέβα μόνος σου (Ctrl+G) και το πολεμικό άλογο επιστρέφει.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Αυτόματο Κυνήγι: δεν μπορώ να ανέβω στο άλογο - προσπαθώ κάθε %d δ, ενώ στο μεταξύ μάχομαι πεζός.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Αυτόματο Κυνήγι: αποτυχία επανεπιβίβασης στο υποζύγιο μετά από εμπλοκή - το κυνήγι σταμάτησε.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Αυτόματο Κυνήγι: δεν ήταν δυνατό να ανέβεις ξανά στο άλογο μετά το κόλλημα.
 Auto Łowy: nie udało się zapisać ustawień.	Αυτόματο Κυνήγι: δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων.
 Auto Łowy: podnoszenie jest wyłączone.	Αυτόματο Κυνήγι: η συλλογή αντικειμένων είναι απενεργοποιημένη.
@@ -473,24 +564,33 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Η αυτόματη τιμή εί�
 Auto-obnizka ceny	Αυτόματη έκπτωση τιμής
 Auto-obnizka: %s - nowa cena %s	Αυτόματη έκπτωση: %s - νέα τιμή %s
 Auto-obnizka: -%d%% co %dh, min. %s	Αυτόματη έκπτωση: -%d%% κάθε %dω, ελάχ. %s
+Auto-obnizka: -%d%%/%dh	Αυτόματη μείωση: -%d%%/%dω
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Αυτόματη έκπτωση: 1-%d%%, κάθε 1-%d ώρες, ελάχιστη τιμή τουλάχιστον 1 Yang.
+Auto-obnizka: wyl.	Αυτόματη μείωση: απεν.
 Auto-obnizka: wylaczona	Αυτόματη έκπτωση: ανενεργή
 Autologin: ponownie za %d s (próba %d)	Autologin: νέα προσπάθεια σε %d δ. (προσπάθεια %d)
 Automatyczne podnoszenie Yang.	Αυτόματη συλλογή Yang.
+Automatyczne zbieranie	Αυτόματη συλλογή
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Αναπληρώνει αυτόματα τα SP σου. Χωρητικότητα 1.000.000 SP.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Αναπληρώνει αυτόματα τα SP σου. Χωρητικότητα 100.000 SP.
 Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Αναπληρώνει αυτόματα τα HP σου. Χωρητικότητα 1.000.000 HP.
 Autopodnoszenie:	Αυτόματη συλλογή:
 Autopoty	Αυτόματα Ποτίόν
 Autospin - wygrane: %s	Αυτόματο γύρισμα - νίκες: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Το Autospin σταμάτησε - ο Τροχός της Τύχης είναι απενεργοποιημένος.
+Autospin zatrzymany - brak odpowiedzi serwera.	Το Autospin σταμάτησε - καμία απάντηση από τον διακομιστή.
+Autospin zatrzymany - obrót odrzucony.	Το Autospin σταμάτησε - η περιστροφή απορρίφθηκε.
 Autospin zatrzymany.	Το αυτόματο γύρισμα σταμάτησε.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Αυτόματο γύρισμα: %d γυρίσματα, ξοδεύτηκαν %d Νομ. Δράκου, κύριες ανταμοιβές: %d.
 Autospin: brak odpowiedzi.	Αυτόματο γύρισμα: καμία απάντηση.
+Autospin: główna nagroda - zatrzymany.	Autospin: κύριο έπαθλο - σταμάτησε.
 Autospin: główna nagroda!	Αυτόματο γύρισμα: κύρια ανταμοιβή!
+Autospin: koniec (%d obrotów).	Autospin: τέλος (%d περιστροφές).
 Autospin: koniec.	Αυτόματο γύρισμα: τέλος.
 Autospin: koło wyłączone.	Αυτόματο γύρισμα: ο τροχός είναι απενεργοποιημένος.
 Autospin: obrót odrzucony.	Αυτόματο γύρισμα: το γύρισμα απορρίφθηκε.
 Autospin: za mało SM.	Αυτόματο γύρισμα: δεν έχεις αρκετά Νομ. Δράκου.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin: δεν αρκούν τα Δρακονομίσματα για την επόμενη περιστροφή.
 Autołowy	Αυτόματο Κυνήγι
 Autołowy (TEST)	Αυτόματο Κυνήγι (TEST)
 Autołowy - szybki start/stop	Αυτόματο Κυνήγι - γρήγορη έναρξη/διακοπή
@@ -539,6 +639,7 @@ Best. Czl. Skor. Zodiaku	Κτην. Άνθρ. Σκορπιός του Ζωδια�
 Best. Wężowy Miecznik	Κτηνώδης Ξιφομάχος-Φίδι
 Best. Wężowy Wojownik	Κτηνώδης Πολεμιστής-Φίδι
 Best. Wężowy Łucznik	Κτηνώδης Τοξότης-Φίδι
+Bestialski Fanatyk	Κτηνώδης Φανατικός
 Bez bonusów podstawowych - jadeit nic nie dodaje	Χωρίς βασικά μπόνους - ο νεφρίτης δεν προσθέτει τίποτα
 Bez imienia (Zwój Imienia Buffi).	Χωρίς όνομα (Πάπυρος Ονόματος Buffi).
 Bez koloru	Χωρίς χρώμα
@@ -586,11 +687,13 @@ Biolog	Βιολόγος
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	Ο Βιολόγος δίνει μόνιμα μπόνους και ένα διαγραμμένο βήμα δεν αναιρείται.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	Ο Βιολόγος δεν χρειάζεται χρόνο για να αναλύσει δείγμα κακής ποιότητας.
 Blad danych - sprawdz ID i ilosc.	Σφάλμα δεδομένων - έλεγξε το ID και την ποσότητα.
+Blad danych - sprawdz PID i ilosc.	Σφάλμα δεδομένων - έλεγξε το PID και την ποσότητα.
 Blad danych - sprawdz kwote.	Σφάλμα δεδομένων - έλεγξε το ποσό.
 Blad danych - sprawdz wartosc.	Σφάλμα δεδομένων - έλεγξε την τιμή.
 Blad danych.	Σφάλμα δεδομένων.
 Blad odpowiedzi serwera.	Σφάλμα απάντησης διακομιστή.
 Blad zapytania do bazy.	Σφάλμα ερωτήματος στη βάση.
+Blad: %s	Σφάλμα: %s
 Blad: nie mozna utworzyc marmuru.	Σφάλμα: δεν ήταν δυνατή η δημιουργία του μαρμάρου.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Σφάλμα: δεν ήταν δυνατή η αποθήκευση του αιτήματος επανεκκίνησης.
 Blade	Λεπίδα
@@ -598,8 +701,11 @@ Blok Ataku	Μπλοκάρισμα Επίθεσης
 Blokada Konta	Αποκλεισμός Λογαριασμού
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	Ο αποκλεισμός ισχύει από την ΕΠΟΜΕΝΗ σύνδεση σε αυτόν τον λογαριασμό - όχι
 Blokada konta	Αποκλεισμός λογαριασμού
+Blokada permanentna	Μόνιμο μπλοκάρισμα
+Blokada tymczasowa	Προσωρινό μπλοκάρισμα
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	Το κλείδωμα ταξινόμησης μπορεί να μπει μόνο σε αντικείμενο του σακιδίου.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Μπλοκάρει την εμπειρία που κερδίζεις. Αυτό ισχύει και για τις ανταμοιβές αποστολών. Η εμπειρία που κερδίζεται κατά τη διάρκεια του αποτελέσματος χάνεται για πάντα!
+Blokujący (czas trwania)	Εμποδιστής (διάρκεια)
 Bo Zodiaku	Bo του Ζωδιακού
 Body	Σώμα
 Bohat. Księga Zwierza	Ηρωικό Βιβλίο Ζώου
@@ -628,6 +734,7 @@ Bonus vs Bossy	Μπόνους vs Αρχηγοί
 Bonus vs Bossy/Metiny	Μπόνους vs Αρχηγοί/Metin
 Bonus vs Ludzie	Μπόνους vs Ημιάνθρωποι
 Bonus vs Metiny	Μπόνους vs Metin
+Bonus vs Nieumarli	Μπόνους vs Αθάνατοι
 Bonus vs Orki	Μπόνους vs Ορκ
 Bonus vs Potwory	Μπόνους vs Τέρατα
 Bonus vs Szaman	Μπόνους vs Σαμάνος
@@ -676,9 +783,12 @@ Bossy	Αρχηγοί
 Bossy > Metiny > Moby	Αρχηγοί > Metin > Τέρατα
 Bossy > Moby > Metiny	Αρχηγοί > Τέρατα > Metin
 Bot	Bot
+Boty do spawnu	Bot για spawn
 Boty gildii	Bot συντεχνίας
 Boty nie maja jeszcze wyceny tego przedmiotu.	Τα bot δεν έχουν ακόμη αποτίμηση για αυτό το αντικείμενο.
+Boty pisza na czacie	Τα bot γράφουν στο chat
 Boty w misji: %d / %d (od poziomu %d)	Bot στην αποστολή: %d / %d (από επίπεδο %d)
+Boty zlomiarze	Bot παλιατζήδες
 Boty: %s z %s (razem %s)	Bot: %s από %s (σύνολο %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Bot: %d (από τη συντεχνία %d, μισθωμένα %d), ζητήθηκαν %d
 Bow	Τόξο
@@ -688,6 +798,7 @@ Brak / >	Κανένα / >
 Brak aktywnej misji albo limit został przekroczony.	Δεν υπάρχει ενεργή αποστολή ή το όριο έχει ξεπεραστεί.
 Brak aktywnej sesji	Δεν υπάρχει ενεργή συνεδρία
 Brak aktywnej sesji.	Δεν υπάρχει ενεργή συνεδρία.
+Brak bonusu albo powyżej %d	Χωρίς μπόνους ή πάνω από %d
 Brak danych cenowych dla tego przedmiotu.	Δεν υπάρχουν δεδομένα τιμών για αυτό το αντικείμενο.
 Brak danych do wyceny	Δεν υπάρχουν δεδομένα για αποτίμηση
 Brak danych o bonusach.	Δεν υπάρχουν δεδομένα για τα μπόνους.
@@ -734,8 +845,10 @@ Brakuje Yang na: %s (%s).	Λείπουν Yang για: %s (%s).
 Brakuje ci Odłamków: %s.	Σου λείπουν Θραύσματα: %s.
 Brakuje ci Suplementów: %s.	Σου λείπουν Συμπληρώματα: %s.
 Brakuje materiałów do rozwoju.	Λείπουν υλικά για την εξέλιξη.
+Brakuje: %s	Λείπει: %s
 Bransoleta z Turmalinu	Βραχιόλι από Τουρμαλίνη
 Braz. Niedzw. Zodiaku	Καφέ Αρκούδα του Ζωδιακού
+Brazowy Niedzwiedz	Καφέ Αρκούδα
 Brillant	Λαμπερό
 Bronie	Όπλα
 Browarnik	Ζυθοποιός
@@ -750,6 +863,7 @@ Brązowa Chusta	Καφέ Μαντήλι
 Brązowa Chusta+	Καφέ Μαντήλι+
 Brązowa Farba	Καφέ Χρώμα
 Brązowa Rosa	Καφέ Δροσιά
+Brązowa Wilcza Szata+(m)	Καφέ Ρόμπα Λύκου+(α)
 Brązowa Woda	Καφέ Νερό
 Brązowe Płyty	Μπρούντζινες Πλάκες
 Brązowy Sok	Καφέ Χυμός
@@ -785,10 +899,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Ευλογία που αναπληρώνει άμεσα τους Πόντους Ζωής και τους Πόντους Ενέργειας στο 100%. Μπορεί να χρησιμοποιηθεί μία φορά κάθε 2 λεπτά. Μοιράζεται τον χρόνο επαναφόρτισης με τα Φίλτρα Άτρωτου και Απρόσβλητου.
 Błyskaw.	Άμεσο
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Χαρίζει στους εχθρούς του αιώνια ανάπαυση σε μια στιγμή. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
+Błyszcząca	Λαμπερή
 Błyszcząca Szata Aury	Λαμπερή Ρόμπα Άουρας
 Błąd serwera - spróbuj ponownie.	Σφάλμα διακομιστή - δοκίμασε ξανά.
 Błąd zapytania.	Σφάλμα ερωτήματος.
 Błędne podanie kodu może skutkować	Η λανθασμένη εισαγωγή του κωδικού μπορεί να οδηγήσει
+C. Ratownik Plażowy+	Μ. Ναυαγοσώστης+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	Το CPU TNL μπορεί να βελτιώσει την ταχύτητα ενός πιο αδύναμου υπολογιστή.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Επαναφορά διεπαφής.
@@ -827,6 +943,7 @@ Charyzma Nowicjusza	Χάρισμα του Αρχάριου
 Chcesz zacząć grę?	Θέλεις να ξεκινήσεις το παιχνίδι;
 Chcesz zakończyć grę i otrzymać wygraną?	Θέλεις να τερματίσεις το παιχνίδι και να λάβεις τα κέρδη σου;
 Chcesz zrealizować to pole?	Θέλεις να εξαργυρώσεις αυτό το πεδίο;
+Chciano botów: %d	Ζητήθηκαν μποτ: %d
 Chciałeś %d szt., a tyle da się kupić.	Ήθελες %d τεμ., τόσα μπορούν να αγοραστούν.
 Chegal, Goliat Cienia	Chegal, Γολιάθ της Σκιάς
 Chodząca Legenda	Περπατώντας Θρύλος
@@ -841,12 +958,14 @@ Chwilę...	Μια στιγμή...
 Chwilę... spróbuj jeszcze raz.	Μια στιγμή... δοκίμασε ξανά.
 Cicha Klątwa	Σιωπηλή Κατάρα
 Ciekawski	Περίεργος
+Ciemna Szata Proroka+(m)	Σκούρα Ρόμπα Προφήτη+(α)
 Ciemność	Σκοτάδι
 Cienie	Σκιές
 Cieniolubny Liść	Φύλλο που Αγαπά τη Σκιά
 Cienka Nić	Λεπτή Κλωστή
 Cienka Przędza	Λεπτό Νήμα
 Cienka Skóra	Λεπτό Δέρμα
+Ciepły Kaftan Zimowy+(m)	Ζεστό Χειμ. Καφτάνι+(α)
 Ciągliwość	Ελαστικότητα
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Βαριά αιχμή φτιαγμένη από ανθεκτική πέτρα. Αν και πιο αργή, εξασφαλίζει ισχυρά χτυπήματα και είναι ιδανική για τη διάτρηση σκληρών πανοπλιών.
 Ciężkie Pasy	Βαριές Ζώνες
@@ -870,6 +989,9 @@ Continue	Συνέχεια
 Costume	Στολή
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Κάτι πήγε στραβά. Το αντικείμενο είναι ασφαλές στον Seon-Hae - δοκίμασε αργότερα.
 Create	Δημιουργία
+Ctrl (przytrzymaj)	Ctrl (κράτημα)
+Ctrl + LPM	Ctrl + Αρ.Κ.
+Ctrl + PPM	Ctrl + Δ.Κ.
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + Δ.Κ.: λήψη όλων, Shift: ποσότητα
 Ctrl + klik: kilka punktów naraz	Ctrl + κλικ: αρκετοί πόντοι ταυτόχρονα
 Ctrl + klik: odepnij	Ctrl + κλικ: ξεκαρφίτσωμα
@@ -894,6 +1016,9 @@ Cyjanowy Sok	Κυανός Χυμός
 Cyklop Kat (BŚ)	Δήμιος Κύκλωπας (Μπος Κόσμου)
 Cyklop Mag (BŚ)	Μάγος Κύκλωπας (Μπος Κόσμου)
 Cyklop Żołnierz (BŚ)	Στρατιώτης Κύκλωπας (Μπος Κόσμου)
+Cz. Królik K. Czarów+(m)	Μαύρο Κουνέλι Μαγείας+(α)
+Cz. Szata Faraona+ (m)	Μαύρη Ρόμπα Φαραώ+ (α)
+Cz. Wojownik P.Księżyca+	Μαύρος Πολεμιστής Σελήνης+
 Czapka Jokera (k)	Καπέλο Τζόκερ (γ)
 Czapka Jokera (m)	Καπέλο Τζόκερ (α)
 Czapka z Pomp. (czerw.)	Σκουφάκι με Φουντίτσα (κόκκινο)
@@ -905,15 +1030,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Το ξόρκι αυτής της σφραγίδας καλεί το άλογό σου, μια μεγαλοπρεπή Τίγρη της Βεγγάλης (γκρι).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Το ξόρκι αυτής της σφραγίδας καλεί το άλογό σου, μια μεγαλοπρεπή Τίγρη της Βεγγάλης (πράσινη).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Το ξόρκι αυτής της σφραγίδας καλεί το άλογό σου, μια μεγαλοπρεπή Τίγρη της Βεγγάλης (χρυσή).
+Czar. Szata Dokkaebi+(m)	Μαύρη Ρόμπα Dokkaebi+(α)
+Czarna Lampa Lorda+	Μαύρη Λάμπα του Λόρδου+
 Czarna Pantera	Μαύρος Πάνθηρας
 Czarna Stal	Μαύρο Ατσάλι
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Μαύρο καπέλο με αυτιά λαγού για εκείνον. Σου δίνει τουλάχιστον ένα τυχαίο μπόνους.
 Czarna magia	Μαύρη Μαγεία
 Czarnoksiężnik P. Wieży	Μάγος Κολ. Πύργου
 Czarny Barwnik	Μαύρη Βαφή
+Czarny Niedzwiedz	Μαύρη Αρκούδα
 Czarny Ork Zodiaku	Μαύρος Ορκ του Ζωδιακού
 Czarny Rumak	Μαύρο Άλογο
 Czarny Skorpion	Μαύρος Σκορπιός
+Czarny jak noc Ks. Wam.+	Μαύρος σαν νύχτα Πρ. Βαμπίρ+
 Czarodziej Gnoll	Μάγος Γκνολλ
 Czarodziej Stylu Małp	Μάγος του Στυλ της Μαϊμούς
 Czarownik Sch. Płn. W.	Μάγος Καταφυγίου Β. Ανέμου
@@ -975,11 +1104,14 @@ Czekoladowy Amulet	Σοκολατένιο Φυλαχτό
 Czempion	Πρωταθλητής
 Czempion %s	Πρωταθλητής %s
 Czer. Amazonka Zodiaku	Κόκκινη Αμαζόνα του Ζωδιακού
+Czer. Sweter Świąt.+ (m)	Κόκκ. Γιορτ. Πουλόβερ+ (α)
 Czer. Żeń-szeń (premium)	Κόκκινο Τζίνσενγκ (premium)
 Czerw. Duch Drzewa	Κόκκινο Φάντασμα Δέντρου
 Czerw. Duch Pniaka	Κόκκινο Φάντασμα Κούτσουρου
+Czerw. Galowy Strój+ (m)	Κόκκ. Στολή Gala+ (α)
 Czerw. Las Duchow	Κόκκινο Δάσος Πνευμάτων
 Czerw. Tr. Pajak Zodiaku	Κόκκινη Δηλητ. Αράχνη του Ζωδιακού
+Czerw. Zbr. Azraela+ (m)	Κόκκ. Πανοπλ. Azrael+ (α)
 Czerwona Mikstura (W)	Κόκκινο Φίλτρο (Π)
 Czerwona Runa SungMa	Κόκκινο Ρούνο SungMa
 Czerwona Smocza Łuska	Κόκκινο Λέπι Δράκου
@@ -997,8 +1129,11 @@ Czerwony Kat Zodiaku	Κόκκινος Δήμιος του Ζωδιακού
 Czerwony Mag Zodiaku	Κόκκινος Μάγος του Ζωδιακού
 Czerwony Monokl	Κόκκινος Μονόκλ
 Czerwony Skorpion	Κόκκινος Σκορπιός
+Czerwony Smoczek	Κόκκινος Δρακούλης
+Czerwony Smoczy Rycerz+	Κόκκινος Ιππότης Δράκου+
 Czerwony Smoczy Róg	Κόκκινο Κέρατο Δράκου
 Czerwony Sok	Κόκκινος Χυμός
+Czerwony Toreador+	Κόκκινος Ταυρομάχος+
 Czwartek	Πέμπτη
 Czy chcesz cofnąć misję do poziomu 1?	Θέλεις να επαναφέρεις την αποστολή στο επίπεδο 1;
 Czy chcesz dokonać masowej sprzedaży?	Θέλεις να κάνεις μαζική πώληση;
@@ -1008,7 +1143,7 @@ Czy chcesz kupić %s %s za %s?	Θέλεις να αγοράσεις %s %s με %
 Czy chcesz kupić %s (szt. %d) za %s?	Θέλεις να αγοράσεις %s (τεμ. %d) με %s;
 Czy chcesz naładować %d Animosfer?	Θέλεις να φορτίσεις %d Animosphere;
 Czy chcesz odesłać Enasira?	Θέλεις να στείλεις τον Enasir μακριά;
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Θέλεις να ανανεώσεις %d Πνεύμα Δράκου με %s Yang;
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Θέλεις να ανανεώσεις με %s Yang %d Πνεύμα Δράκου;
 Czy chcesz opuścić wojnę gildii?	Θέλεις να αποχωρήσεις από τον πόλεμο συντεχνιών;
 Czy chcesz otworzyć to pudło?	Θέλεις να ανοίξεις αυτό το κουτί;
 Czy chcesz ożywić gracza %s?	Θέλεις να αναστήσεις τον παίκτη %s;
@@ -1046,6 +1181,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Αν α�
 Czym jest Konto Premium?	Τι είναι ο Λογαριασμός Premium;
 Czysta esencja z serca najgłębszych źródeł.	Καθαρή ουσία από την καρδιά των βαθύτερων πηγών.
 Czyste zwoje (%s) w ekwipunku: %d	Λευκοί πάπυροι (%s) στο απόθεμα: %d
+Czytanie bez opoznienia dnia	Ανάγνωση χωρίς καθυστέρηση ημέρας
+Czyściec Ognia	Καθαρτήριο της Φωτιάς
 Czyśćiec Ognia	Καθαρτήριο της Φωτιάς
 Część zestawów kostiumów (%d)	Μέρος σετ κοστουμιών (%d)
 Członek gildii %s jest teraz w grze.	Το μέλος της συντεχνίας %s είναι τώρα στο παιχνίδι.
@@ -1119,6 +1256,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Πρόσθεσε Πέτρα Ψυχής για ανταλλαγή.
 Dodaj Księgę Umiejętności do wymiany.	Πρόσθεσε Βιβλίο Ικανοτήτων για ανταλλαγή.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Προσθέτει στο Κατάστημα Gaya μια ακόμη θέση για πολύτιμες προσφορές αντικειμένων, ξεκινώντας από την πρώτη θέση της δεύτερης σειράς από αριστερά. Χρησιμοποίησέ το στο Κατάστημα Gaya του Λιμανιού (Άγαλμα Πολεμιστή στο Λιμάνι της Νέας Ηπείρου).
+Dodaj do ulubionych	Προσθήκη στα αγαπημένα
 Dodaj przedmiot do wymiany.	Πρόσθεσε αντικείμενο για ανταλλαγή.
 Dodaj przedmioty do sklepu.	Πρόσθεσε αντικείμενα στο κατάστημα.
 Dodaj punkt Sung Ma	Πρόσθεσε πόντο Sung Ma
@@ -1143,14 +1281,19 @@ Dolina	Κοιλάδα
 Dolina Cyklopow	Κοιλάδα των Κυκλώπων
 Dolina Cyklopów	Κοιλάδα των Κυκλώπων
 Dolina Orkow	Κοιλάδα των Ορκ
+Dolina Orków	Κοιλάδα των Ορκ
+Dolina Orków / Ognista Ziemia	Κοιλάδα των Ορκ / Φλεγόμενη Γη
 Dom Aukcyjny	Οίκος Δημοπρασιών
 Dom Aukcyjny działa tylko w M1.	Ο Οίκος Δημοπρασιών λειτουργεί μόνο στο M1.
 Dom Aukcyjny jest wyłączony.	Ο Οίκος Δημοπρασιών είναι απενεργοποιημένος.
 Dom Aukcyjny moze byc wylaczony.	Ο Οίκος Δημοπρασιών μπορεί να είναι απενεργοποιημένος.
 Dom Aukcyjny: %s	Οίκος Δημοπρασιών: %s
+Dom Aukcyjny: %s - %s.	Οίκος Δημοπρασιών: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Οίκος Δημοπρασιών: το πολύ %d μπόνους ταυτόχρονα.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Οίκος Δημοπρασιών: οι προηγούμενες αγορές βρίσκονται ακόμη σε εξέλιξη.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Οίκος Δημοπρασιών: δοκίμασε ξανά σε λίγο.
+Dom Towarowy	Εμπορικός Οίκος
+Dom Towarowy: %s	Εμπορικός Οίκος: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Αγορά: γίνεται αγορά των επιλεγμένων προσφορών.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Αγορά: επίλεξε προσφορές (τετράγωνο δίπλα στην προσφορά) και μετά Αγόρασε όλα.
 Domyślna	Προεπιλογή
@@ -1198,6 +1341,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Εμπειρία +%(v)s%% κατά την 
 Doświadczenie +%d%%	Εμπειρία +%d%%
 Doświadczenie Czempiona : %.2f%%	Εμπειρία Πρωταθλητή : %.2f%%
 Doświadczenie Czempiona: %s / %s	Εμπειρία Πρωταθλητή: %s / %s
+Doświadczenie łącznie	Συνολική εμπειρία
 Doświadczenie: %d%%	Εμπειρία: %d%%
 Doświadczenie: %d%% (%d / %d)	Εμπειρία: %d%% (%d / %d)
 Doświadczenie: %s / %s	Εμπειρία: %s / %s
@@ -1206,10 +1350,15 @@ Drewniany Klucz	Ξύλινο Κλειδί
 Drobny Kam. Przebudzenia	Ελάχιστη Πέτρα Αφύπνισης
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Το πολύτιμο νόμισμα της Yohara. Λείανε 30 Βότσαλα στο Άγαλμα Πολεμιστή στο Λιμάνι της Νέας Ηπείρου (με Λίθο Metin +0 έως +3 και 15 000 Yang - πιθανότητα 70%) και θα λάβεις 3 Gaya. Πληρώνεις με αυτό στο Κατάστημα Gaya του Λιμανιού, στους σιδεράδες σετ, στο Άγαλμα του Φιδιού, στον Μυστηριώδη Βωμό και στον Δάσκαλο Chi. Δεν μπορεί να ανταλλαγεί με άλλους παίκτες.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Πολύτιμο δαχτυλίδι διακοσμημένο με νεφρίτη και τιρκουάζ. Δίνει: +50% EXP, +30% δύναμη κατά των τεράτων, +20% ταχύτητα επίθεσης και μαγείας, +10% μέγ. HP και SP.
+Drop Przedmiotow:	Drop αντικειμένων:
 Drop Yang	Λάφυρο Yang
 Drop potwora %s:	Drop του τέρατος %s:
 Drop przedmiotów +%d%%	Λεία αντικειμένων +%d%%
+Drop z bossów	Drop από αφεντικά
 Dropek Metinów	Κυνηγός Λαφύρων Metin
+Dropek medali	Drop μεταλλίων
+Dropek z M2	Drop από M2
+Dropek z M3	Drop από M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	Το δεύτερο μισό της παραπάνω ρύθμισης - ξεχωριστή πιθανότητα που υπολογίζεται κατά την καταστροφή λίθου Metin αντί για τον φόνο ενός κανονικού τέρατος.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Το δεύτερο από τα τρία βιβλία της επίγνωσης. Μπορεί να αυξήσει το χάρισμα του κατόχου. Μετά την ανάγνωση το βιβλίο εξαφανίζεται. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Το δεύτερο από τα τρία βιβλία των μαχών σχηματισμού. Μπορεί να αυξήσει την έμπνευση του κατόχου. Μετά την ανάγνωση το βιβλίο εξαφανίζεται. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
@@ -1249,6 +1398,7 @@ Dusza wojownika, obdarzona mocą.	Ψυχή πολεμιστή, προικισμ�
 Dusza Światła	Ψυχή του Φωτός
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Οι ψυχές λαμβάνονται αυτόματα από το απόθεμα - αρκεί να τις έχεις μαζί σου.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Μαγειρεμένο τζίνσενγκ premium - η μοναδική τροφή του Ισχυρού Πολεμικού Αλόγου (άλογο από το επίπεδο 31). Κάνε δεξί κλικ για να ταΐσεις το καλεσμένο άλογο ή δώσ' το στο άλογο. Πέφτει από τέρατα της Yohara.
+Duzy Lysy Ork	Μεγάλος Φαλακρός Orc
 Duża	Μεγάλο
 Duży Skorpion	Μεγάλος Σκορπιός
 Dwigant Zodiaku	Twiant του Ζωδιακού
@@ -1279,14 +1429,17 @@ Dzik Zodiaku	Αγριόχοιρος του Ζωδιακού
 Dziki General Zodiaku	Άγριος Στρατηγός του Ζωδιακού
 Dziki Lucznik Zodiaku	Άγριος Τοξότης του Ζωδιακού
 Dziki Moa (pieczęć)	Σφραγίδα Άγριου Moa
+Dziki Sluga	Άγριος Υπηρέτης
 Dziki Sluga Zodiaku	Άγριος Υπηρέτης του Ζωδιακού
 Dziki Z. Piech. Zodiaku	Άγριος Πεζ. του Ζωδιακού
+Dziki Zolnierz Piechoty	Άγριος Στρατιώτης Πεζικού
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Με αυτό το φίλτρο μέσα σε 3 ώρες παιχνιδιού θα συγκεντρώσεις 150% περισσότερη εμπειρία. Μη εμπορεύσιμο.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Με αυτή τη σφραγίδα μπορείς να καλέσεις έναν μονόκερο.
 Dzięki tej pieczęci możesz przywołać marę senną.	Με αυτή τη σφραγίδα μπορείς να καλέσεις έναν εφιάλτη.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Με αυτή τη σφραγίδα μπορείς να καλέσεις το κατοικίδιό σου.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Με αυτή τη σφραγίδα θα εκκολαφθεί από το αυγό ο Sheldon.
 Dziękujemy za zgłoszenie!	Ευχαριστούμε για την αναφορά!
+Dziś	Σήμερα
 Dzwon Anielski	Αγγελική Καμπάνα
 Dzwon Arkt. Króla	Καμπάνα Αρκτικού Βασιλιά
 Dzwon Błk. Wiatru	Καμπάνα Γαλάζιου Ανέμου
@@ -1392,6 +1545,7 @@ Elit. Ork Zodiaku	Επίλεκτος Ορκ του Ζωδιακού
 Elit. Ork Zwiad. Zodiaku	Επίλεκτος Ορκ Ανιχνευτής του Ζωδιακού
 Elita Atlantydy	Ελίτ της Ατλαντίδας
 Elitarny Ezoteryczny Fanatyk	Ελίτ Απόκρυφος Φανατικός
+Elitarny Ork	Ελίτ Orc
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Έμβλημα των πρωταθλητών ποδοσφαίρου. Για 6 ώρες δίνει: +50% ΕΜΠ, +20% ταχύτητα επίθεσης, +20% ταχύτητα ξορκιών, +35% μαγική επίθεση και επίθεση σώμα με σώμα, +10% μέγ. HP, +10% μέγ. SP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Εκδηλώσεις συναισθημάτων για δύο (φιλί, χτύπημα στην πλάτη) χωρίς να ζητείται συγκατάθεση.
 Emocje: nie	Εκδηλώσεις συναισθημάτων: όχι
@@ -1428,6 +1582,7 @@ Event wielkanocny	Πασχαλινή εκδήλωση
 Event wlaczony	Εκδήλωση ενεργή
 Event wyłączony	Εκδήλωση απενεργοποιημένη
 Eventy (bonus imperium)	Εκδηλώσεις (μπόνους βασιλείου)
+Eventy w dniu %s:	Εκδηλώσεις την %s:
 Eventy wylaczone	Εκδηλώσεις απενεργοποιημένες
 Ewoluować szatę za %s Yang i materiał?	Να εξελιχθεί η στολή για %s Yang και υλικό;
 Expimy razem	Φαρμάρουμε μαζί
@@ -1436,6 +1591,7 @@ Ezot. Dreczyciel Zodiaku	Σκοτεινός Βασανιστής του Ζωδι
 Ezot. Fanatyk Zodiaku	Σκοτεινός Φανατικός του Ζωδιακού
 Ezot. Wojownik Zodiaku	Εσωτ. Πολεμιστής του Ζωδιακού
 Ezoteryczne Drewno	Εσωτερικό Ξύλο
+Ezoteryczny Fanatyk	Εσωτερικός Φανατικός
 Ezoteryczny Ostrzowiec	Εσωτερικός Λεπιδοφόρος
 FC Bawaria Hwang+ (k)	FC Βαυαρία Hwang+ (Γ)
 FC Bawaria Hwang+ (m)	FC Βαυαρία Hwang+ (Α)
@@ -1454,6 +1610,8 @@ Fan	Βεντάλια
 Fantilla	Φαντίλα
 Fatalne Skrzydla Smierci	Μοιραία Φτερά του Θανάτου
 Filters History	Ιστορικό φίλτρων
+Filtr %d	Φίλτρο %d
+Filtr (%d)	Φίλτρο (%d)
 Filtr bonusów (prawy klik czyści)	Φίλτρο μπόνους (δεξί κλικ για εκκαθάριση)
 Filtr podnoszenia	Φίλτρο συλλογής
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	Το φίλτρο συλλογής είναι ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ (Ctrl+Z) - τώρα συλλέγεις τα πάντα.
@@ -1462,7 +1620,9 @@ Filtr podnoszenia: %s	Φίλτρο συλλογής: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Φίλτρο συλλογής: οι τύποι του Αυτόματου Κυνηγιού αυτού του χαρακτήρα ισχύουν πλέον για Z, Αυτόματο Κυνήγι και Σύντροφο (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Φίλτρο συλλογής: φορτώθηκε το προκαθορισμένο "%s".
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Φίλτρο συλλογής: αποθηκεύτηκαν οι κανόνες του τύπου "%s" (%d).
+Filtr rodzaju	Φίλτρο τύπου
 Filtr wyłączony - podnosisz wszystko.	Το φίλτρο είναι απενεργοποιημένο - συλλέγεις τα πάντα.
+Filtry (%d)	Φίλτρα (%d)
 Filtry bonusow	Φίλτρα μπόνους
 Fioletowa	Μοβ
 Fioletowa Rosa	Μωβ Δροσιά
@@ -1547,9 +1707,11 @@ Glodny Czarny Niedzwiedz	Πεινασμένη Μαύρη Αρκούδα
 Glodny Dzik	Πεινασμένο Αγριογούρουνο
 Glodny Niebieski Alfa Wilk	Πεινασμένος Μπλε Λύκος Άλφα
 Glodny Niebieski Wilk	Πεινασμένος Μπλε Λύκος
+Glodny Niedzwiedz	Πεινασμένη Αρκούδα
 Glodny Szary Wilk	Πεινασμένος Γκρι Λύκος
 Glodny Tygrys	Πεινασμένη Τίγρη
 Glodny Wilk	Πεινασμένος Λύκος
+Glodny Zablakany Pies	Πεινασμένος Αδέσποτος Σκύλος
 Gniazdo Sheldona	Φωλιά του Sheldon
 Gniewne Serce (pieczęć)	Σφραγίδα Οργισμένης Καρδιάς
 Gniewny Mini Alastor	Θυμωμένος Μίνι Αλάστορας
@@ -1573,6 +1735,7 @@ Gotowa do ewolucji u Theowahdana	Έτοιμη για εξέλιξη στον The
 Gotowa za: %s	Έτοιμη σε: %s
 Gotowe! Odbierz przedmiot	Έτοιμο! Παρέλαβε το αντικείμενο
 Gotowy do użycia	Έτοιμο για χρήση
+Gotowy. Usuwane sa cale wybrane stosy.	Έτοιμο. Διαγράφονται ολόκληρες οι επιλεγμένες στοίβες.
 Gourou	Gourou
 Gra	Παιχνίδι
 Gra beze mnie	Παίζει χωρίς εμένα
@@ -1608,6 +1771,7 @@ Gruby Mini Kat (pieczęć)	Χοντρός Μίνι Δήμιος (σφραγίδ�
 Grudzień	Δεκέμβριος
 Grupa: %s	Ομάδα: %s
 Grupuj	Ομαδοποίηση
+Grupy (PT)	Ομάδες (PT)
 Gruszka	Αχλάδι
 Gwarancja Rzemiosła (Biżuteria)	Εγγύηση Τεχνίτη (Κοσμήματα)
 Gwarancja Rzemiosła (Broń)	Εγγύηση Τεχνίτη (Όπλο)
@@ -1615,11 +1779,13 @@ Gwarancja Rzemiosła (Zbroja)	Εγγύηση Τεχνίτη (Πανοπλία)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Εγγύηση τεχνίτη που τιμά ο Σιδεράς κάθε χωριού. Χρησιμοποίησέ την σε ένα αντικείμενο για να το αναβαθμίσεις.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Εγγύηση τεχνίτη που τιμά ο Σιδεράς κάθε χωριού. Χρησιμοποίησέ την σε ένα αντικείμενο για να το αναβαθμίσεις. Δεν λειτουργεί σε όπλα επιπέδου 30. Το αντικείμενο μπορεί να καταστραφεί.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Εγγύηση τεχνίτη που τιμά ο Σιδεράς κάθε χωριού. Χρησιμοποίησέ την σε ένα αντικείμενο για να το αναβαθμίσεις. Το αντικείμενο μπορεί να καταστραφεί.
+Gwardia Ognistego Smoka+	Φρουρά Φλογερού Δράκου+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Βίαιο μετωπικό χτύπημα σε ορθογώνια περιοχή.
 Gwiazda Nocy	Αστέρι της Νύχτας\r\n
 Gwiazda Północy (PB)	Αστέρι του Βορρά (ΑΦ)
 Gwiazda Północy (SZC)	Αστέρι του Βορρά (ΡΧ)
 Gwiezdny Skarb	Αστρικός Θησαυρός
+Górnik	Ανθρακωρύχος
 Górski Behemot	Βουνίσιος Μπεχεμώθ
 Góry Gromu	Βουνά της Βροντής
 Głowa Węża	Κεφάλι Φιδιού
@@ -1642,6 +1808,8 @@ Handlarz nie jest zainteresowany tym przedmiotem.	Ο έμπορος δεν εν�
 Handluj z %s	Εμπόριο με %s
 Happy Hour	Happy Hour
 Helm	Κράνος
+Helmy - Ninja	Κράνη - Ninja
+Helmy - Sura	Κράνη - Sura
 Helmy - Szaman	Κράνη - Σαμάνος
 Helmy - Wojownik	Κράνη - Πολεμιστής
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1715,6 +1883,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	Το Hwacha δεν
 Hwang	Hwang
 Hydra	Ύδρα
 I am the czempion! Punktacja: %d	Είμαι ο πρωταθλητής! Βαθμολογία: %d
+ID Bota:	ID Bot:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR στον παλαιότερο χαρακτήρα του λογαριασμού admin.
 Ich liczba na event jest ograniczona.	Ο αριθμός τους ανά εκδήλωση είναι περιορισμένος.
 Id. Skrzynia Kolczyków	Τέλειο Σεντούκι Σκουλαρικιών
@@ -1728,6 +1897,9 @@ Ile sztuk kupic:	Πόσα τεμάχια θέλεις να αγοράσεις:
 Ile sztuk kupic?	Πόσα τεμάχια θέλεις να αγοράσεις;
 Ile sztuk kupić:	Πόσα τεμάχια θέλεις να αγοράσεις:
 Ile sztuk kupić?	Πόσα τεμάχια θέλεις να αγοράσεις;
+Ile? %s	Πόσα; %s
+Ilosc: malejaco	Ποσότητα: φθίνουσα
+Ilosc: rosnaco	Ποσότητα: αύξουσα
 Ilość prób: - jedna, + najwięcej, ile się da.	Αριθμός προσπαθειών: - μία, + όσες περισσότερες γίνεται.
 Ilość Ładunków: %d	Αριθμός Φορτίων: %d
 Ilość śmierci	Αριθμός θανάτων
@@ -1750,6 +1922,7 @@ Info o efekt.	Πληροφ. εφέ
 Informacje	Πληροφορίες
 Informacje o misji	Πληροφορίες Αποστολής
 Informacje o sklepie	Πληροφορίες καταστήματος 
+Inkub Płomieni+	Ίνκουβος των Φλογών+
 Inna Wroga Wytrzymałość	Άλλη Αντοχή του Εχθρού
 Inna postać już ma tą nazwę.	Ένας άλλος χαρακτήρας έχει ήδη αυτό το όνομα.
 Inne Mikstury	Άλλα Ποτίόν
@@ -1804,6 +1977,7 @@ Inteligencja Sung Ma	Ευφυΐα Sung Ma
 Inteligencja Sung Ma +%d	Ευφυΐα Sung Ma +%d
 Item inserted into the shopping safebox.	Το αντικείμενο τοποθετήθηκε στη θυρίδα αγορών.
 ItemShop	ItemShop
+Ja (GM)	Εγώ (GM)
 Jabłko	Μήλο
 Jadeit Dymu	Νεφρίτης του Καπνού
 Jadeit Mgły	Νεφρίτης της Ομίχλης
@@ -1864,7 +2038,16 @@ Jazda Konna (Precyzja)	Ιππασία (Ακρίβεια)
 Jazda Konna (Sura)	Ιππασία (Σούρα)
 Jazda Konna (Szaman)	Ιππασία (Σαμάν)
 Jazda Konna (Wojownik)	Ιππασία (Πολεμιστής)
+Jazda Konna (diabły)	Ιππασία (διάβολοι)
+Jazda Konna (insekty)	Ιππασία (έντομα)
 Jazda Konna (losowo)	Ιππασία (τυχαία)
+Jazda Konna (mistycy)	Ιππασία (μυστικιστές)
+Jazda Konna (nieumarli)	Ιππασία (νεκροζώντανοι)
+Jazda Konna (orki)	Ιππασία (ορκ)
+Jazda Konna (potwory)	Ιππασία (τέρατα)
+Jazda Konna (pustynia)	Ιππασία (έρημος)
+Jazda Konna (półludzie)	Ιππασία (ημιάνθρωποι)
+Jazda Konna (zwierzęta)	Ιππασία (ζώα)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Ένα από τα Αυγά Δράκου του Balathor καλεί παγωμένο ρίγος! Συγκεντρώστε τις επιθέσεις σας πάνω του.
 Jednoręczne	Μονόχειρα
 Jedwab	Μετάξι
@@ -1886,12 +2069,14 @@ Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Α�
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Αν έχεις πάνω από 90% HP, δέχεσαι x% λιγότερη ζημιά.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Αν έχεις πάνω από 90%% HP, δέχεσαι %d%% λιγότερη ζημιά.
 Jeśli nie, to Twoim hasłem jest: "000000".	Αν όχι, ο κωδικός σου είναι: "000000".
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Αν το κατάστημα δεν εμφανίζεται, αυτός ο client δεν έχει ακόμα
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Αν το χρησιμοποιήσεις, παίρνεις ένα buff που σου επιτρέπει να καλέσεις τον Enasir και να συναλλάσσεσαι μαζί του όπως με την Πωλήτρια Διαφόρων (κατά την πώληση κρατά το 10% της τιμής). Διάρκεια: 7 ημέρες. Μπορεί να παραταθεί έως το πολύ 1000 ημέρες.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Αν το χρησιμοποιήσεις, παίρνεις ένα buff που σου επιτρέπει να καλέσεις τον Enasir και να συναλλάσσεσαι μαζί του όπως με την Πωλήτρια Διαφόρων (κατά την πώληση κρατά το 10% της τιμής). Διάρκεια: 7 ημέρες. Μπορεί να παραταθεί έως το πολύ 1000 ημέρες. Το αντικείμενο μπορεί να ανταλλαγεί με άλλους παίκτες.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Αν το χρησιμοποιήσεις, παίρνεις ένα buff που σου επιτρέπει να καλέσεις τον Enasir για πρόσβαση στην αποθήκη σου. Διάρκεια: 7 ημέρες. Μπορεί να παραταθεί έως το πολύ 1000 ημέρες.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Αν το χρησιμοποιήσεις, παίρνεις ένα buff που σου επιτρέπει να καλέσεις τον Enasir για πρόσβαση στην αποθήκη σου. Διάρκεια: 7 ημέρες. Μπορεί να παραταθεί έως το πολύ 1000 ημέρες. Το αντικείμενο μπορεί να ανταλλαγεί με άλλους παίκτες.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Αν πεθάνεις εσύ ή ο Goblin των Θησαυρών, η αποστολή αποτυγχάνει.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Αν παρουσιαστεί πρόβλημα με τα γραφικά, επίλεξε 'Επιλογές Συστήματος' ή 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Αν η κρυμμένη [5] συνορεύει με ανοιχτή κάρτα,
 Jin Bing (lód)	Jin Bing (πάγος)
 Jin Bing (mrok)	Jin Bing (σκότος)
 Jin-Hee Zodiaku	Jin-Hee του Ζωδιακού
@@ -1902,9 +2087,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Γλώσσα
 Język / Language	Γλώσσα / Language
 Język klienta: %s	Γλώσσα πελάτη: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Γλώσσα διακομιστή: %s - ο πελάτης θα αλλάξει γλώσσα μετά από επανεκκίνηση.
 KRĘCI SIĘ...	ΓΥΡΙΖΕΙ...
 Kaftan Wężowy	Φιδίσιο Σακάκι
 Kaftan Wężowy (wykon.)	Φιδίσιο Σακάκι (κατασκ.)
+Kalendarz eventów	Ημερολόγιο εκδηλώσεων
+Kalendarz eventów: %s - %d	Ημερολόγιο εκδηλώσεων: %s - %d
 Kam. Pieczęci Sunga Mahi	Πέτρα Σφραγίδας Sung Mahi
 Kamera filmowa - obrót w lewo	Κινηματογραφική κάμερα - περιστροφή αριστερά
 Kamera filmowa - obrót w prawo	Κινηματογραφική κάμερα - περιστροφή δεξιά
@@ -1915,6 +2103,7 @@ Kamera filmowa - w dół	Κινηματογραφική κάμερα - κάτω
 Kamera filmowa - w górę	Κινηματογραφική κάμερα - πάνω
 Kamienie	Πέτρες
 Kamienie Duszy (0 = puste):	Λίθοι Ψυχής (0 = κενό):
+Kamienie Metin	Πέτρες Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Πέτρες Τηλεμεταφοράς: %d. Τηλεμεταφορά σε: %s;
 Kamienie dusz	Λίθοι Ψυχής
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Πέτρινη πλάκα με πανάρχαιους ρούνους. Εκπέμπει άγνωστη ενέργεια.
@@ -1948,6 +2137,7 @@ Kamień Teleportacji	Λίθος Τηλεμεταφοράς
 Kamień Teleportacji+	Λίθος Τηλεμεταφοράς+
 Kamień Tygrysa	Πέτρα της Τίγρης
 Kamień Wzgórza	Πέτρα του Λόφου
+Kamień Węglowy	Λίθος Άνθρακα
 Kamień Wężowy	Φιδίσια Πέτρα
 Kamień Wężowy+	Φιδίσια Πέτρα+
 Kamień do Fundamentu+	Λίθος Θεμελίων+
@@ -2069,6 +2259,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Οι
 Kolejny boss za: %s	Επόμενος αρχηγός σε: %s
 Kolejny cel	Επόμενος στόχος
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Επόμενη βαθμίδα: %d θέσεις, %s Yang, από επίπεδο χαρακτήρα %d
+Kolekcja lochów	Συλλογή μπουντρουμιών
+Kolekcja pól	Συλλογή πεδίων
 Kolia Jadeitu Dymu	Μενταγιόν Νεφρίτη του Καπνού
 Kolia Jadeitu Mgły	Μενταγιόν Νεφρίτη της Ομίχλης
 Kolia Jadeitu Nocy	Μενταγιόν Νεφρίτη της Νύχτας
@@ -2368,6 +2560,7 @@ Koło Losu jest teraz wyłączone.	Ο Τροχός της Τύχης είναι 
 Koło Losu: brama otwarta - poziom %d!	Τροχός της Τύχης: η πύλη άνοιξε - επίπεδο %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Τροχός της Τύχης: κερδίζεις %s. Η ανταμοιβή σε περιμένει στην αποθήκη του ItemShop.
 Koło Losu: zdobywasz klucz (%d/%d).	Τροχός της Τύχης: αποκτάς κλειδί (%d/%d).
+Koło Płomieni Nocy	Τροχός των Φλογών της Νύχτας
 Koło Skrzydła Nocy	Τροχός του Φτερού της Νύχτας
 Koło Słonecznego Wilka	Τροχός του Λύκου του Ήλιου
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	Ο τροχός έχει 16 πεδία, καθένα με πιθανότητα 1/16. Πριν από κάθε γύρισμα τα πεδία κληρώνονται ξανά.
@@ -2378,6 +2571,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	Ο ίππος έφαγ
 Krab Królewski	Βασιλικό Καβούρι
 Krab Pancerny Zodiaku	Θωρακισμένος Κάβουρας του Ζωδιακού
 Krab Wojow. Zodiaku	Πολεμιστής Κάβουρας του Ζωδιακού
+Kradziez PM	Κλοπή SP
+Kradziez PZ	Κλοπή HP
 Kradzież PE	Κλοπή SP
 Kraina Gigantow	Χώρα των Γιγάντων
 Kraina Ognia	Χώρα της Φωτιάς
@@ -2414,14 +2609,18 @@ Krótki	Μικρή
 Krótko	Σύντομα
 Kręty Klucz (PB)	Στρεβλό Κλειδί (ΑΦ)
 Kręty Klucz (SZC)	Στρεβλό Κλειδί (ΡΧ)
+Ksiegi umiejetnosci	Βιβλία δεξιοτήτων
 Ksiegi zapomnienia	Βιβλία Λήθης
 Ksiąg w oknie: %d (wymian: %d)	Βιβλία στο παράθυρο: %d  (ανταλλαγές: %d)
 Książ. Odłamek Broni II	Πριγκιπικό Θραύσμα Όπλου II
 Książ. Odłamek Hełmu II	Πριγκιπικό Θραύσμα Κράνους II
 Książ. Odłamek Zbroi II	Πριγκιπικό Θραύσμα Πανοπλίας II
 Książka Przebudzenia	Βιβλίο Αφύπνισης
+Książę Atlantydy+	Πρίγκιπας Ατλαντίδας+
+Książę Orientu (brąz.)+	Πρίγκιπας Ανατολής (μπρ.)+
 Książę Piekielnej Wieży	Πρίγκιπας του Κολαστήριου Πύργου
 Książę Śmierci P. Wieży	Πρίγκιπας του Θανάτου Κολ. Πύργου
+Książęcy	Πριγκιπικό
 Książęcy Efekt Zestawu	Πριγκιπικό Εφέ Σετ
 Książęcy Kowal Zestawu	Σιδεράς Σετ των Πριγκίπων
 Księga Absorpcji Życia	Βιβλίο Απορρόφησης Ζωής
@@ -2485,6 +2684,7 @@ Księga: Burza Balathora	Βιβλίο: Καταιγίδα του Balathor
 Księga: Nieugiętość Balathora	Βιβλίο: Αδιαλλαξία του Balathor
 Księga: Wola Balathora	Βιβλίο: Θέληση του Balathor
 Księgi	Βιβλία
+Księgi Misji	Βιβλία Αποστολών
 Księgi Um. Pasywnych	Βιβλία Παθ. Ικαν.
 Księgi umiejętności	Βιβλία ικανοτήτων
 Księgi zapomnienia	Βιβλία Λήθης
@@ -2500,7 +2700,10 @@ Kup część stosu	Αγόρασε μέρος της στοίβας
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Αγορά του επιλεγμένου αριθμού τεμαχίων ενός αντικειμένου, ξεκινώντας από το φθηνότερο
 Kup tę ofertę	Αγόρασε αυτή την προσφορά
 Kup wiele	Μαζική αγορά
+Kup wiele działa dla jednego przedmiotu.	Η αγορά πολλών λειτουργεί για ένα αντικείμενο.
 Kup wszystkie zaznaczone oferty	Αγορά όλων των επιλεγμένων προσφορών
+Kup wybrane (%d	Αγορά επιλεγμένων (%d
+Kup wybrane (0	Αγορά επιλεγμένων (0
 Kup!	Αγόρασε!
 Kupic %d ofert za lacznie %s?	Να αγοραστούν %d προσφορές συνολικά για %s;
 Kupione - nowa oferta za %s.	Αγοράστηκε - νέα προσφορά σε %s.
@@ -2510,11 +2713,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	Αγοράστηκαν %d από %d προ
 Kupić %d szt. (ofert: %d) za %s?	Να αγοραστούν %d τεμ. (προσφορές: %d) για %s;
 Kupić %s za %s Gaya?	Να αγοραστεί %s για %s Gaya;
 Kupić %s za %s?	Να αγοραστεί %s για %s;
+Kupić zaznaczone oferty: %d?	Να αγοραστούν οι επιλεγμένες προσφορές: %d;
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Κουπόνι Νομ. Δράκου (50), +100% πιθανότητα λείας για 2 ώρες
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	Κουπόνι αξίας 20 Δρακονομισμάτων. Κάνε δεξί κλικ για να τα προσθέσεις στον λογαριασμό σου.
 Kupony	Κουπόνια
 Kupony SM	Κουπόνια SM
 Kupony SM/Premium	Κουπόνια SM/Premium
+Kupowanie mikstur	Αγορά φίλτρων
 Kupuja sie po kolei; blad przerywa zakupy.	Αγοράζονται η μία μετά την άλλη· ένα σφάλμα διακόπτει τις αγορές.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Αγοράζει με αυτά στο Item Shop ό,τι χρησιμοποιεί (χωρίς χτενίσματα). Δεν ξοδεύει: δεν τα αγγίζει.
 Kursor nad postaciami	Κέρσορας πάνω από χαρακτήρες
@@ -2525,6 +2730,7 @@ Kwitnąca Brzoskwinia	Ανθισμένη Ροδακινιά
 Kwitnące Kaki	Ανθισμένη Λωτιά Kaki
 Kwota (yang):	Ποσό (Yang):
 Kwota SM:	Ποσό Δρακονομισμάτων:
+Kwota Yang:	Ποσό Yang:
 Kwota:	Ποσό:
 Kłopoty na Zboczu Gautama	Μπελάδες στον Βράχο του Gautama
 LPM: podnoszę tak / nie	Αρ.Κ.: συλλέγω ναι / όχι
@@ -2552,12 +2758,14 @@ Lekarstwo Iluzji	Φάρμακο της Ψευδαίσθησης
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Φάρμακο για την Ψώρα των Δαιμόνων. Αντικείμενο που απαιτείται για αποστολή.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Φάρμακο φτιαγμένο από φύλλα ζωής. Μόλις το πάρεις, οι HP και SP σου αναπληρώνονται αμέσως.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Ελαφρύ Βήμα (ταχύτητα κίνησης +%(v)s) για %(d)d δ μετά από επίθεση πεζός (κάθε 300 δ)
+Lekki Strój Plażowy+ (m)	Ελαφριά Στολή Παραλίας+ (α)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Ελαφριά και εύκαμπτη αιχμή φτιαγμένη από μπαμπού. Ιδανική για γρήγορες και ακριβείς βολές, χρησιμοποιείται από τοξότες που εκτιμούν την ευκινησία και την ταχύτητα.
 Lekkie jak Piórko	Ελαφρύ σαν Πούπουλο
 Leopardzik (7 dni)	Μικρή Λεοπάρδαλη (7 ημέρες)
 Level konia:	Επίπεδο αλόγου:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Αριστερή θέση: το αντικείμενο που θα πάρει τη νέα εμφάνιση.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Αριστερή θέση: ο ίππος που θα πάρει τη νέα εμφάνιση.
+Lewy Shift	Αριστ. Shift
 Leśna Wróżka	Νεράιδα του Δάσους
 Leże Smoka	Φωλιά του Δράκου
 Licencja Najemnika	Άδεια Μισθοφόρου
@@ -2568,18 +2776,22 @@ Liczba bonusów na kostiumie (co najmniej):	Αριθμός μπόνους στο
 Liczba botów (3-16):	Αριθμός bot (3-16):
 Liczba gier:	Αριθμός παιχνιδιών:
 Liczba online	Αριθμός συνδεδεμένων
+Liczba sztuk	Αριθμός τεμαχίων
 Liczba sztuk:	Αριθμός τεμαχίων:
 Liczba w ekwipunku	Ποσότητα στον εξοπλισμό
 Liczby	Αριθμοί
 Lider grupy	Αρχηγός ομάδας
 Lilia: szansa na przedmioty +%d%%	Κρίνος: πιθανότητα αντικειμένων +%d%%
 Liliowa Runa SungMa	Λιλά Ρούνο SungMa
+Limit Lvl: %d do %d	Όριο επιπ.: %d έως %d
 Limit członków grupy: od %d do %d	Όριο μελών ομάδας: από %d έως %d
 Limit zakupów na konto: %d	Όριο αγορών ανά λογαριασμό: %d
 Limit zakupów na minutę - dokończ za chwilę.	Όριο αγορών ανά λεπτό - ολοκλήρωσε σε λίγο.
 List Gończy	Αφίσα Καταζητούμενου
 Lista GM jest pusta: nastepny start moze nadac	Η λίστα GM είναι κενή: η επόμενη εκκίνηση μπορεί να δώσει
 Lista jest pusta.	Η λίστα είναι κενή.
+Lista komend GM	Λίστα εντολών GM
+Lista komend GM:	Λίστα εντολών GM:
 Lista tytułów	Λίστα τίτλων
 Lista wyciszonych	Λίστα σε σίγαση
 Lista znajomych	Λίστα φίλων
@@ -2587,6 +2799,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Τα γράμμ�
 Lizak Magii	Γλειφιτζούρι Μαγείας
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Γλειφιτζούρι με μυστηριώδη σύνθεση, γεμάτο μαγεία. Δίνει: +50% EXP, +20% ταχύτητα επίθεσης, +20% ταχύτητα μαγείας, +30% μαγική ζημιά, +10% μέγ. HP, +10% μέγ. SP. Ισχύει για 7 ημέρες.
 Liście Życia	Φύλλα Ζωής
+Loch / wyprawa	Μπουντρούμι / αποστολή
 Loch Malp (latwy)	Μπουντρούμι Πιθήκων (Εύκολο)
 Loch Malp (normalny)	Μπουντρούμι Πιθήκων (Κανονικό)
 Loch Malp (trudny)	Μπουντρούμι Πιθήκων (Δύσκολο)
@@ -2595,6 +2808,7 @@ Loch Pajakow V1	Μπουντρούμι Αραχνών V1
 Loch Pajakow V2	Μπουντρούμι Αραχνών V2
 Loch Pająków (1)	Μπουντρούμι Αραχνών (1)
 Loch Pająków V1	Μπουντρούμι Αραχνών V1
+Loch Polowy	Μπουντρούμι Πεδίου
 Loch_Małp 7752 4477	Μπουντρούμι_Πιθήκων 7752 4477
 Lochy Yohary	Μπουντρούμια Yohara
 Lod. Wiel. Zab. Zodiaku	Φάλαινα Φονιάς του Πάγου, Ζωδιακού
@@ -2689,11 +2903,13 @@ Maksimum	Μέγιστο
 Maksymalnie	Το πολύ
 Maksymalny	Μέγιστη
 Mala liczba ofert - wycena orientacyjna	Λίγες προσφορές - ενδεικτική αποτίμηση
+Malpi Zolnierz	Στρατιώτης Πιθήκων
 Maniak Cz. Wiat. Zodiaku	Μανιακός Μαύρου Ανέμου του Ζωδιακού
 Mapa %d	Χάρτης %d
 Mapa (index):	Χάρτης (δείκτης):
 Mapa OX	Χάρτης OX
 Mapa teleportacji - TAB	Χάρτης τηλεμεταφοράς - TAB
+Mapa Ślubna	Χάρτης Γάμου
 Mapa świata	Χάρτης κόσμου
 Mapa: %s	Χάρτης: %s
 Mapy	Χάρτες
@@ -2823,14 +3039,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Υλικό που αυξάνει την πιθανότητα προσθήκης 6ου ή 7ου μπόνους στον Seon-Hae. Επίπεδο αντικειμένου: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Υλικό που αυξάνει την πιθανότητα προσθήκης 6ου ή 7ου μπόνους στον Seon-Hae. Επίπεδο αντικειμένου: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Υλικό που αυξάνει την πιθανότητα προσθήκης 6ου ή 7ου μπόνους στον Seon-Hae. Επίπεδο αντικειμένου: 90-104.
+Materiały	Υλικά
 Materiały Rzemieślnicze	Υλικά Χειροτεχνίας
 Materiały ulepszeń	Υλικά βελτίωσης
 Matowy Lód	Θαμπός Πάγος
 Matowy Lód+	Θαμπός Πάγος+
 Max PE: +%d	Μέγ. SP: +%d
+Max PM	Μέγ. SP
+Max PM %	Μέγ. SP %
+Max PZ	Μέγ. HP
+Max PZ %	Μέγ. HP %
 Max PŻ +2500 / +2000 / +1500	Μέγ. HP +2500 / +2000 / +1500
 Max PŻ: +%d	Μέγ. HP: +%d
 Max wytrzymalosc	Μέγ. αντοχή
+Max. PŻ +%d	Μέγ. HP +%d
 Max. poziom przedmiotu: %d	Μέγ. επίπεδο αντικειμένου: %d
 Max. ulepszenie z +%d na +%d.	Μέγ. αναβάθμιση από +%d σε +%d.
 Mała Meley	Μικρή Meley
@@ -2838,9 +3060,11 @@ Mała Meley (pieczęć)	Μικρή Meley (σφραγίδα)
 Mała Nemere	Μικρή Nemere
 Mała Nemere (pieczęć)	Μικρή Nemere (σφραγίδα)
 Małe Błogosławieństwo	Μικρή Ευλογία
+Małpi Loch	Μπουντρούμι Πιθήκων
 Małpi Loch (trudny)	Μπουντρούμι Πιθήκων (δύσκολο)
 Małpi Loch (łatwy)	Μπουντρούμι Πιθήκων (εύκολο)
 Małpi Loch (średni)	Μπουντρούμι Πιθήκων (μέτριο)
+Małpka	Μαϊμουδάκι
 Mały Aamon	Μικρός Aamon
 Mały Aamon (pieczęć)	Μικρός Aamon (σφραγίδα)
 Mały Baashido	Μικρός Baashido
@@ -3013,11 +3237,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Εξαπόλυσε σκοτεινές δυνάμεις για να τραυματίσεις τους εχθρούς.|Ενισχύεται από: Ευφυΐα (++), Ευκινησία (ακρίβεια) (+), επίπεδο χαρακτήρα.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Εξαπόλυσε κεραυνούς.|Ενισχύεται από: Ευφυΐα (++), Ευκινησία (ακρίβεια) (+), επίπεδο χαρακτήρα.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Ρίξε φυλαχτά για να τραυματίσεις τους εχθρούς.|Ενισχύεται από: Ευφυΐα (++), Ευκινησία (ακρίβεια) (+), επίπεδο χαρακτήρα.
+Misja %d	Αποστολή %d
 Misja kart	Αποστολή καρτών
 Misje Biologa	Αποστολές Βιολόγου
 Misje dzienne	Ημερήσιες αποστολές
 Misje główne	Κύριες αποστολές
 Misje poboczne	Δευτερεύουσες αποστολές
+Misje polowania	Αποστολές κυνηγιού
 Misje łowieckie	Αποστολές κυνηγιού
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Περίτεχνα διακοσμημένο κλειδί που ανοίγει το σεντούκι της νύμφης του νερού. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
 Mistrz Ahtrin	Δάσκαλος Ahtrin
@@ -3031,6 +3257,8 @@ Mistrz Włóczni Ki	Δάσκαλος του Δόρατος Ki
 Mistrz Włóczni Mao	Δάσκαλος του Δόρατος Mao
 Mistrz ekwipunku	Αφέντης Εξοπλισμού
 Mistrz przepadnie.	 Το επίπεδο Μάστερ θα χαθεί.
+Mistrz umiejętności	Μάστορας δεξιοτήτων
+Mistrzowska piłka nożna	Πρωταθλητής ποδοσφαίρου
 Mistrzowski Emblemat	Έμβλημα Μάστορα
 Mistyczna substancja ożywiająca florę i faunę lasu.	Μυστική ουσία που ζωντανεύει τη χλωρίδα και την πανίδα του δάσους.
 Mistykom	Μυστικιστές
@@ -3043,6 +3271,7 @@ Mnich Milbon	Μοναχός Milbon
 Mniej niz 1 min.	Λιγότερο από 1 λεπτό.
 Mnoznik dropu przedmiotow	Πολλαπλασιαστής drop αντικειμένων
 Mnoznik dropu yang	Πολλαπλασιαστής drop Yang
+Moby 1 hit	Mob 1 hit
 Moby > Bossy > Metiny	Τέρατα > Αρχηγοί > Metin
 Moby > Metiny > Bossy	Τέρατα > Metin > Αρχηγοί
 Moc Błyskawic	Ισχύς Κεραυνού
@@ -3069,6 +3298,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Μοντέρνα κομμένα μαλλιά που δίνουν στους σαμάνους τη δυνατότητα να εκφράσουν τον χαρακτήρα τους. Αλλάζει μόνιμα το χτένισμα του χαρακτήρα σου.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Μοντέρνα κομμένα μαλλιά που δίνουν στους σαμάνους τη δυνατότητα να εκφράσουν τον χαρακτήρα τους. Αλλάζει μόνιμα το χτένισμα του χαρακτήρα σου.
 Moj cel	Ο στόχος μου
+Moja postac	Ο χαρακτήρας μου
 Moje miejsca	Οι τοποθεσίες μου
 Mokre Szaty: szybkość ruchu -50	Βρεγμένα Ρούχα: ταχύτητα κίνησης -50
 Moloch	Μόλοχ
@@ -3083,6 +3313,7 @@ Może schwytać karty: [1]	Μπορεί να αιχμαλωτίσει κάρτε
 Może schwytać karty: [1], [2]	Μπορεί να αιχμαλωτίσει κάρτες: [1], [2]
 Może schwytać karty: [1], [2], [3]	Μπορεί να αιχμαλωτίσει κάρτες: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Μπορεί να αιχμαλωτίσει κάρτες: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Μπορεί να πιάσει κάρτες: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Μπορεί να αιχμαλωτίσει κάρτες: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Μπορεί να προσγειώσει κάποιους ονειροπόλους. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Możesz mieć najwyżej %d własnych kategorii.	Μπορείς να έχεις το πολύ %d δικές σου κατηγορίες.
@@ -3115,10 +3346,12 @@ Można znać tylko jedną ripostę.	Μπορείς να γνωρίζεις μό�
 Mroczna Paproć	Σκοτεινή Φτέρη
 Mroczna Wieża	Σκοτεινός Πύργος
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Η Σκοτεινή Σφαίρα έχει %d%% πιθανότητα να ζαλίσει τον αντίπαλο
+Mrocznego Uderzenia	Σκοτεινού Χτυπήματος
 Mroczny Cierń	Σκοτεινό Αγκάθι
 Mroczny Kat Zodiaku	Σκοτεινός Δήμιος του Ζωδιακού
 Mrok	Σκοτάδι
 Mroz. Lod. Czl. Zodiaku	Παγερός Άνθρωπος του Πάγου, Ζωδιακού
+Mrozny Lodowy Czlowiek	Παγωμένος Άνθρωπος του Πάγου
 Mroźna Skrz. Balathora	Παγωμένο Σεντούκι του Balathor
 Mroźna Skrz. Balathora+	Παγωμένο Σεντούκι του Balathor+
 Mroźny Klucz (PB)	Παγερό Κλειδί (ΑΦ)
@@ -3129,6 +3362,7 @@ Mroźny Rufus	Παγωμένος Rufus
 Mroźny Rufus (pieczęć)	Σφραγίδα Παγωμένου Rufus
 Mt2009	Mt2009
 Mumia Kapłanka	Μούμια Ιέρεια
+Mundur Strażaka+(m)	Στολή Πυροσβέστη+(α)
 Musisz go pokonać, by otrzymać nagrodę.	Πρέπει να τον νικήσεις για να λάβεις ανταμοιβή.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Πρέπει να σπρώξεις το Φλογερό Αυγό Δράκου στην άλλη πλευρά.
 Myr Bojownik (wiatr)	Μαχητής Myr (άνεμος)
@@ -3144,6 +3378,7 @@ Myr Prymus (wiatr)	Πρίμους Myr (άνεμος)
 Myr Prymus (ziemia)	Πρίμους Myr (γη)
 Myr Weteran (wiatr)	Βετεράνος Myr (άνεμος)
 Myr Weteran (ziemia)	Βετεράνος Myr (γη)
+Mój ranking	Η κατάταξή μου
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Λέγεται ότι το περιεχόμενο αυτού του σεντουκιού είναι εξίσου πολύτιμο με το ίδιο το σεντούκι.
 Młodszy Hazardzista	Νεότερος Χαρτοπαίκτης
 Młody Moa (pieczęć)	Σφραγίδα Νεαρού Moa
@@ -3189,6 +3424,7 @@ Nabira	Ναμπίρα
 Naciśnij klawisz dla: %s	Πάτησε ένα πλήκτρο για: %s
 Naczelny Hazardzista	Αρχιχαρτοπαίκτης
 Nadaj imię	Δώσε όνομα
+Nadaj range	Απόδοση βαθμού
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Δίνει ενισχύσεις επιπέδου G1 του Σαμάνου του Δράκου με 90 νοημοσύνη για 10 λεπτά.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Δίνει ενισχύσεις επιπέδου M1 του Σαμάνου του Δράκου με 90 νοημοσύνη για 10 λεπτά.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Δίνει ενισχύσεις επιπέδου P του Σαμάνου του Δράκου με 90 νοημοσύνη για 10 λεπτά.
@@ -3216,7 +3452,9 @@ Nagrody są już odkryte.	Οι ανταμοιβές έχουν ήδη αποκα
 Nagrody za tury	Ανταμοιβές Γύρων
 Najbliższy	Πλησιέστερος
 Najczęściej zabijani	Συχνότερα θανατωμένα
+Najdłuższa sesja	Μακρύτερη συνεδρία
 Najedź myszką na przedmiot, aby zobaczyć opis.	Πέρασε το ποντίκι πάνω από ένα αντικείμενο για να δεις την περιγραφή.
+Najlepsza sesja (yang)	Καλύτερη συνεδρία (yang)
 Najlepszy czas: %s	Καλύτερος χρόνος: %s
 Najpierw dezaktywuj Relikt Duszy.	Απενεργοποίησε πρώτα το Λείψανο Ψυχής.
 Najpierw dodaj eliksir.	Πρόσθεσε πρώτα ελιξίριο.
@@ -3280,6 +3518,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Κάλυμμα κεφαλής από το σετ Arezzo (Σετ Βίκινγκ). Ισχύει 30 ημέρες από τη στιγμή που θα το φορέσεις.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Κάλυμμα κεφαλής από το σετ Arezzo (Επίχρυσο Σετ). Ισχύει 30 ημέρες από τη στιγμή που θα το φορέσεις.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Κάλυμμα κεφαλιού από τη συλλογή Arezzo (Σετ Χρυσού Δράκου). Ισχύει 30 ημέρες από τον εξοπλισμό.
+Nakładka na broń	Επικάλυψη όπλου
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Εμφάνιση για μονόχειρο όπλο (ξίφος) - πολεμιστής, ninja, sura. Ισχύει 30 ημέρες από την αγορά.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Εμφάνιση όπλου από το σετ Arezzo (Αγγελικό Σετ): ninja. Ισχύει 30 ημέρες από τη στιγμή που θα το φορέσεις.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Εμφάνιση όπλου από το σετ Arezzo (Αγγελικό Σετ): σαμάνος. Ισχύει 30 ημέρες από τη στιγμή που θα το φορέσεις.
@@ -3423,6 +3662,7 @@ Nazwa Postaci jest niepoprawna.	Το όνομα του χαρακτήρα δεν
 Nazwa jest niewłaściwa.	Το όνομα δεν είναι κατάλληλο.
 Nazwa postaci jest identyczna jak nazwa konta.	Το όνομα του χαρακτήρα είναι ίδιο με το όνομα του λογαριασμού.
 Nazwa pozycji (do %d znaków)	Όνομα θέσης (έως %d χαρακτήρες)
+Nazwa presetu	Όνομα προκαθορισμένου
 Nazwa przedmiotu	Όνομα αντικειμένου
 Nazwa reguły	Όνομα κανόνα
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Το όνομα του χαρακτήρα σου δεν μπορεί να περιέχει ειδικούς χαρακτήρες.
@@ -3444,6 +3684,7 @@ Nic tu nie ma.	Δεν υπάρχει τίποτα εδώ.
 Nick:	Όνομα:
 Nick: %s (pid: |cff5af22c%d|r)	Όνομα: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Όνομα: PLAYER_NAME
+Nie 1. atak	Όχι 1η επίθεση
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Δεν χρειάζεται πια: ο Εντοπιστής NPC είναι ενεργοποιημένος για κάθε χαρακτήρα. | Στον χάρτη του κόσμου άλλαξε την προβολή με το κουμπί στη γραμμή τίτλου.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Δεν προορίζεται για στοματική υγιεινή. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Nie jest składnikiem receptur ani ulepszeń.	Δεν είναι συστατικό καμίας συνταγής ή βελτίωσης.
@@ -3538,6 +3779,7 @@ Nie widzisz jeszcze całej mapy.	Δεν βλέπεις ακόμη ολόκληρ
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	Δεν εκτέθηκαν %d αντικείμενα - το κατάστημα έκλεισε.
 Nie zaznaczono żadnej misji.	Δεν επιλέχθηκε καμία αποστολή.
 Nie znaleziono gracza.	Ο παίκτης δεν βρέθηκε.
+Nie znaleziono moba/metina o takim ID.	Δεν βρέθηκε mob/metin με αυτό το ID.
 Nie znaleziono żadnych wypraw.	Δεν βρέθηκαν εξορμήσεις.
 Niebiańska Tarcza	Ουράνια Ασπίδα
 Niebiańska Tarcza nie może zostać nadana.	Η Ουράνια Ασπίδα δεν μπορεί να δοθεί.
@@ -3545,12 +3787,15 @@ Niebieska Mikstura (W)	Μπλε Φίλτρο (Π)
 Niebieska Runa SungMa	Μπλε Ρούνο SungMa
 Niebieska Woda	Μπλε Νερό
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Μπλε καπέλο με αυτιά λαγού για εκείνον. Σου δίνει τουλάχιστον ένα τυχαίο μπόνους.
+Niebieski Alfa Wilk	Μπλε Άλφα Λύκος
 Niebieski Barwnik	Μπλε Βαφή
 Niebieski Mały Smok	Μικρός Γαλάζιος Δράκος
 Niebieski Mały Smok (pieczęć)	Μικρός Μπλε Δράκος (σφραγίδα)
 Niebieski Skorpion	Γαλάζιος Σκορπιός
 Niebieski Sok	Μπλε Χυμός
+Niebieski Wilk	Μπλε Λύκος
 Niebieski Wilk Zodiaku	Γαλάζιος Λύκος του Ζωδιακού
+Niebieski Wzorowy Uczeń+	Μπλε Υποδειγματικός Μαθητής+
 Niebieskie Jajo Smoka	Μπλε Αυγό Δράκου
 Niebieskie Pudło Zodiaku	Μπλε Κουτί του Ζωδιακού
 Niebieskie Zioło	Μπλε Βότανο
@@ -3577,6 +3822,7 @@ Nieprawidlowy nick	Μη έγκυρο όνομα
 Nieprawidłowy kod koloru (np. #FF8800).	Μη έγκυρος κωδικός χρώματος (π.χ. #FF8800).
 Nieprawidłowy limit czasu.	Μη έγκυρο χρονικό όριο.
 Nieprzenikniony pancerz strażnika ognia.	Αδιαπέραστη πανοπλία του φύλακα της φωτιάς.
+Niesmiertelnosc WYL	Αθανασία ΑΠΕΝ.
 Nieudana	Απέτυχε
 Nieugiętość Balathora	Ακαμψία του Balathor
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Ακαμψία του Balathor: αντοχή στην απώθηση και στην ανατροπή %d%%
@@ -3608,6 +3854,7 @@ Nieśmiertelność	Αθανασία
 Nigdy nie upadasz	Δεν πέφτεις ποτέ
 Nikt jeszcze nie ma wyniku w tym sezonie.	Κανείς δεν έχει ακόμη αποτέλεσμα αυτή τη σεζόν.
 Nikt jeszcze nie ukończył tury.	Κανείς δεν έχει ακόμη ολοκληρώσει γύρο.
+Ninja (Łuk)	Ninja (Τόξο)
 Ninja Armor	Πανοπλία Νίντζα
 Ninja Ostrze	Νίντζα Λεπίδα
 Ninja Łuk	Νίντζα Τόξο
@@ -3619,6 +3866,7 @@ Niszczyciel En-Tai (BŚ)	Καταστροφέας En-Tai (Μπος Κόσμου)
 Niszczyciel P. Wieży	Καταστροφέας Κολ. Πύργου
 Niszczyciel Zodiaku	Καταστροφέας του Ζωδιακού
 Noc trwać będzie od 22:00 do 6:00.	Η νύχτα θα διαρκεί από τις 22:00 έως τις 6:00.
+Noc/snieg po 22:00	Νύχτα/χιόνι μετά τις 22:00
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Κανονικό
 Normalny Koń	Κανονικό Άλογο
@@ -3665,6 +3913,7 @@ Obowiązki gildii - panel lidera	Υποχρεώσεις συντεχνίας - �
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Ζημ. σε Metin/Αρχηγούς/Μίνι-Αρχηγούς +%.0f%%
 Obrazenia magiczne	Μαγική ζημιά
 Obrazenia magiczne vs potwory	Μαγική ζημιά vs τέρατα
+Obrazenia umiejetnosci	Ζημιά δεξιοτήτων
 Obraż. sztyletów w potwory +%d	Ζημ. στιλέτων σε τέρατα +%d
 Obraż. umiejętności	Ζημιά δεξιοτήτων
 Obrażenia %s +%s%%	Ζημιά %s +%s%%
@@ -3691,7 +3940,13 @@ Obrażenia przeciwko Metinom +%d%%	Ζημιά κατά των Metin +%d%%
 Obrażenia umiejętności	Ζημιά Ικανοτήτων
 Obrażenia umiejętności konnych +%(v)s%%	Ζημιά ικανοτήτων ίππου +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Ζημιά στην Κοιλάδα Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Η ζημιά στις Πέτρες Metin αυξάνεται κατά +%d%% για 5 δευτ.
+Obrażenia zwiększają się o %d%% na 10 sek.	Η ζημιά αυξάνεται κατά %d%% για 10 δευτ.
 Obrażenia/Obrona	Ζημιά/Άμυνα
+Obrażenie Umiejętności: 10%	Ζημιά Δεξιοτήτων: 10%
+Obrażenie Umiejętności: 3%	Ζημιά Δεξιοτήτων: 3%
+Obrażenie Umiejętności: 5%	Ζημιά Δεξιοτήτων: 5%
+Obrażenie Umiejętności: 7%	Ζημιά Δεξιοτήτων: 7%
 Obrona %	Άμυνα %
 Obrona +%.0f	Άμυνα +%.0f
 Obrona +12~15%	Άμυνα +12~15%
@@ -3708,11 +3963,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Άμυνα απέναντ
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Άμυνα απέναντι στη δεξιότητα Στροβιλισμός Σπαθιού +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Άμυνα απέναντι στη δεξιότητα Ενέδρα +%.1f%%
 Obrona przed śr. obrażeniami	Άμυνα σε Μέση Ζημιά
+Obrona przy Metinach	Άμυνα στα Metin
 Obrona vs Ninja	Άμυνα vs Νίντζα
 Obrona vs Sura	Άμυνα vs Sura
 Obrona vs Szamanom	Άμυνα vs Σαμάνους
 Obrona vs Wojownikom	Άμυνα vs Πολεμιστές
 Obrońca	Υπερασπιστής
+Obrońca (obrona)	Υπερασπιστής (άμυνα)
 Obrońca Chmur	Προστάτης των Σύννεφων
 Obrońca Stylu Małp	Υπερασπιστής του Στυλ της Μαϊμούς
 Obrót %d/%s, wydano %d SM	Γύρισμα %d/%s, ξοδεύτηκαν %d Νομ. Δράκου
@@ -3761,6 +4018,7 @@ Odbicie Walki. Wręcz	Ανάκλ. Σώμα με Σώμα
 Odbicie ataku fizycznego: %.0f%%	Ανάκλαση σωματικής επίθεσης: %.0f%%
 Odbicie ciosu	Ανάκλαση χτυπήματος
 Odbicie pocisku	Ανάκλαση βλήματος
+Odbierz GM...	Αφαίρεση GM...
 Odbierz nagrodę	Παραλαβή ανταμοιβής
 Odbierz nagrodę za turę	Παραλαβή ανταμοιβής γύρου
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Παρέλαβε την ανταμοιβή γύρου στο παράθυρο Αναζήτησης Θησαυρού.
@@ -3784,6 +4042,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Να παραδώσεις το αντι
 Oddelegowany Komendant	Απεσταλμένος Διοικητής
 Odebrac range GM postaci %s?	Να αφαιρεθεί ο βαθμός GM του χαρακτήρα %s;
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Μπορείς να παραλάβεις μόνο την ανταμοιβή του τρέχοντος γύρου (%d).
+Odeslij boty	Επιστροφή μποτ
 Odkryta karta	Αποκαλυμμένη κάρτα
 Odnowa	Ανανέωση
 Odp. na Br. Dwuręczną	Αντ. σε Δίχειρο Όπλο
@@ -3799,12 +4058,16 @@ Odp. na Wiatr	Αντ. σε Άνεμο
 Odp. na Ziemię	Αντ. σε Γη
 Odpały	Χρονισμένα
 Odpały (Sekundy)	Χρονισμένα (δευτερόλεπτα)
+Odpoczynek w miescie	Ξεκούραση στην πόλη
 Odpornosc na omdlenia	Αντοχή στη λιποθυμία
 Odpornosc na spowolnienie	Αντοχή στην επιβράδυνση
 Odpornosc na upadek	Αντοχή στην ανατροπή
+Odpornosc: Ninja	Αντοχή: Ninja
+Odpornosc: Sura	Αντοχή: Sura
 Odpornosc: Szaman	Αντοχή: Σαμάνος
 Odpornosc: Wojownik	Αντοχή: Πολεμιστής
 Odpornosc: ataki fizyczne	Αντοχή: σωματικές επιθέσεις
+Odpornosc: blyskawice	Αντοχή: κεραυνός
 Odpornosc: bron dwureczna	Αντοχή: δίχειρα όπλα
 Odpornosc: cios krytyczny	Αντοχή: κρίσιμο χτύπημα
 Odpornosc: dzwony	Αντοχή: καμπάνες
@@ -3813,8 +4076,12 @@ Odpornosc: ludzie	Αντοχή: ημιάνθρωποι
 Odpornosc: magia	Αντοχή: μαγεία
 Odpornosc: miecze	Αντοχή: σπαθιά
 Odpornosc: mrok	Αντοχή: σκότος
+Odpornosc: obrazenia umiejetnosci	Αντοχή: ζημιά δεξιοτήτων
+Odpornosc: ogien	Αντοχή: φωτιά
 Odpornosc: potwory	Αντοχή: τέρατα
 Odpornosc: przebicie	Αντοχή: διαπεραστικό χτύπημα
+Odpornosc: srednie obrazenia	Αντοχή: μέση ζημιά
+Odpornosc: strzaly	Αντοχή: βέλη
 Odpornosc: sztylety	Αντοχή: εγχειρίδια
 Odpornosc: trucizny	Αντοχή: δηλητήρια
 Odpornosc: wachlarze	Αντοχή: βεντάλιες
@@ -3843,6 +4110,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Αντοχή στο Σκότος
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Αντοχή σε Νίντζα: μειώνει τη ζημιά που δέχεσαι από το χέρι των Νίντζα.
 Odporność na Obrażenia Fizyczne: %d%%	Αντοχή στη Φυσική Ζημιά: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Αντοχή στη Φωτιά (+%d%% της συνολικής τιμής)
+Odporność na Ogień: 5%	Αντίσταση στη Φωτιά: 5%
 Odporność na Ognista Strzała	Αντοχή στο Φλεγόμενο Βέλος
 Odporność na Przywołanie Błyskawicy	Αντοχή στην Έκκληση Αστραπής
 Odporność na Strzał	Αντοχή σε Βέλος
@@ -3865,6 +4133,7 @@ Odporność na ataki fizyczne %d%%	Αντοχή στις φυσικές επιθ
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Αντοχή στο κρίσιμο χτύπημα: μειώνει τη ζημιά που δέχεσαι από κρίσιμα χτυπήματα.
 Odporność na fizyczne obrażenia	Αντοχή σε σωματικές ζημιές
 Odporność na krytyczne	Αντοχή σε Κρίσιμα
+Odporność na lód +5%	Αντίσταση στον πάγο +5%
 Odporność na lód, ziemię, ciemność	Αντοχή σε Πάγο, Γη, Σκοτάδι
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Αντοχή στο σκότος: μειώνει τη ζημιά που προκαλούν ορισμένα τέρατα.
 Odporność na obraż. umiej.	Αντοχή σε ζημιά δεξιοτ.
@@ -3881,6 +4150,7 @@ Odporność vs Ludziom	Αντοχή vs Ανθρώπους
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Να απολυθεί οριστικά ο σύντροφος; Αυτό δεν αναιρείται.
 Odrodz spawny	Αναγέννηση spawn
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Διάστημα μεταξύ τηλεμεταφορών: %d λεπ. Όχι σε μπουντρούμια και χάρτες εκδηλώσεων.
+Odswiez liste	Ανανέωση λίστας
 Odważny	Θαρραλέος
 Odwołaj	Ανάκληση
 Odwołaj zwierzaka, zanim go zaczarujesz.	Απομάκρυνε το κατοικίδιο πριν το μαγέψεις.
@@ -3937,6 +4207,7 @@ Ognista Runa Aury (10)	Ρούνο Άουρας της Φωτιάς (10)
 Ogniste Buty	Φλογερά Παπούτσια
 Ogniste Jajo Smoka	Φλογερό Αυγό Δράκου
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Το Φλογερό Χτύπημα έχει %d%% πιθανότητα να επιστραφεί στον αντίπαλο
+Ognistej Strzały	Φλεγόμενου Βέλους
 Ognisty Duch Zodiaku	Φλογερό Φάντασμα του Ζωδιακού
 Ognisty Duch Żaru (BŚ)	Φλογερό Φάντασμα της Θράκας (Μπος Κόσμου)
 Ognisty Golem Mag	Φλογερός Γκόλεμ Μάγος
@@ -3963,6 +4234,7 @@ Okaz. Odłamek Hełmu I	Λαμπρό Θραύσμα Κράνους I
 Okaz. Odłamek Hełmu II	Λαμπρό Θραύσμα Κράνους II
 Okaz. Odłamek Zbroi I	Λαμπρό Θραύσμα Πανοπλίας I
 Okaz. Odłamek Zbroi II	Λαμπρό Θραύσμα Πανοπλίας II
+Okazały	Μεγαλοπρεπές
 Okazały Efekt Zestawu	Μεγαλοπρεπές Εφέ Σετ
 Okazały Kowal Zestawu	Λαμπρός Σιδεράς Σετ
 Okienko %s - %s, bonusy %d / %d	Θέση %s - %s, μπόνους %d / %d
@@ -4020,6 +4292,7 @@ Osobisty Sklepik Premium	Προσωπικό Κατάστημα Premium
 Ostatni boss	Τελευταίος αρχηγός
 Ostatni drop: %s	Τελευταία λεία: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Η τελευταία αγορά μπορεί να ολοκληρωθεί ακόμη.
+Ostatnia nagroda:	Τελευταίο έπαθλο:
 Ostatnia sprzedaz botow: brak danych.	Τελευταία πώληση των bot: δεν υπάρχουν δεδομένα.
 Ostatnia strona	Τελευταία σελίδα
 Ostatnie 7 dni	Τελευταίες 7 ημέρες
@@ -4088,6 +4361,7 @@ Otrzymujesz: %s.	Λαμβάνεις: %s.
 Otrzymywane Obrażenia +%d%%	Ζημιά που δέχεσαι +%d%%
 Otrzymywane obrażenia +%.0f%%	Ληφθείσα ζημιά +%.0f%%
 Otwarte skrzynie	Ανοιγμένα σεντούκια
+Otwarto skrzynek: %d.	Ανοίχτηκαν κιβώτια: %d.
 Otwarto: %d szt.	Ανοίχτηκαν: %d τεμ.
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Ανοίγει την πόρτα προς τη δόξα και τη δύναμη. Παρέχει όλα τα προνόμια του Premium Λογαριασμού για 30 ημέρες.|Το αντικείμενο είναι εμπορεύσιμο.
 Otwiera je ewolucja peta	Ξεκλειδώνεται με την εξέλιξη του κατοικιδίου
@@ -4106,6 +4380,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Άνοιξε το πακέ
 Otwórz ponownie	Επανάνοιγμα
 Otwórz sklep	Άνοιγμα καταστήματος
 Otwórz sklep ponownie	Άνοιγμα καταστήματος ξανά
+Otwórz skrzynie	Άνοιξε σεντούκια
 Owoc Bogów	Καρπός των Θεών
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Καρπός βαθμού: +200 Πόντοι Βαθμού (κανονικός βαθμός). Λειτουργεί από 0 έως 20 000 πόντους. Ο πρώτος βαθμός (Γενναίος) από 21 000. Εντολή /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Καρπός βαθμού: +200 Πόντοι Βαθμού πέρα από τον κανονικό βαθμό. Λειτουργεί από 20 000 (πλήρης κανονικός βαθμός) έως 40 000 πόντους. Εντολή /ranga.
@@ -4207,6 +4482,7 @@ PD z przedmiotów: %s / %s	ΕΜΠ από αντικείμενα: %s / %s
 PE	SP
 PE +%d	SP +%d
 PE +%d%%	SP +%d%%
+PID bota:	PID μποτ:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	ΝΙΚΗΣΕ ΤΟΝ ΑΡΧΗΓΟ ΤΟΥ ΚΟΣΜΟΥ (μία φορά την ημέρα)
 PPM - następny event	Δ.Κ. - επόμενη εκδήλωση
 PPM / dwuklik: wyjmij stos	Δ.Κ. / διπλό κλικ: λήψη στοίβας
@@ -4239,9 +4515,12 @@ Pancerne Rękawice	Θωρακισμένα Γάντια
 Pancerny Hełm Dragona	Θωρακισμένο Κράνος του Dragon
 Pancerny Hełm Smoków	Θωρακισμένο Κράνος των Δράκων
 Pancerz Czarnego Ognia	Πανοπλία Μαύρης Φωτιάς
+Pancerz Horroru+ (złoty)	Πανοπλία Τρόμου+ (χρυσή)
 Pancerz Magmy	Πανοπλία Μάγματος
 Pancerz Zodiaku	Θώρακας του Ζωδιακού
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	Ο πίνακας GM δεν φορτώθηκε σε αυτόν τον πελάτη - λεπτομέρειες στο syserr.txt
+Panel botów (GM)	Πάνελ μποτ (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	Το πάνελ είναι σε έκδοση BETA. Αν παρατηρήσεις σφάλματα
 Panterka (7 dni)	Μικρός Πάνθηρας (7 ημέρες)
 Pas Z Wężowej Skóry	Ζώνη από Φιδίσιο Δέρμα
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	Η γραμμή εμπειρίας του ίππου είναι γεμάτη - δοκίμασε προαγωγή.
@@ -4252,6 +4531,7 @@ Pasy	Ζώνες
 Pasza dla Konia	Τροφή για Άλογο
 Pasza dla Konia w ekwipunku: %d	Τροφή Αλόγου στο απόθεμα: %d
 Pazury Małpy	Νύχια Πιθήκου
+Październik	Οκτώβριος
 Peleryny	Μανδύες
 Pelne PZ/PE	Πλήρες HP/SP
 Pergamin	Περγαμηνή
@@ -4265,6 +4545,7 @@ Perły	Μαργαριτάρια
 Pet	Κατοικίδιο
 Pety	Κατοικίδια
 Pewne zmiany wymagają restartu gry, kontynuować?	Ορισμένες αλλαγές απαιτούν επανεκκίνηση του παιχνιδιού, συνέχεια;
+Pełen werwy	Γεμάτο ζωντάνια
 Pełne EQ	Γεμάτο EQ
 Pełne doświadczenie - czas na rozwój.	Πλήρης εμπειρία - ώρα για εξέλιξη.
 Pełne okno	Παράθυρο χωρίς περιθώρια
@@ -4350,6 +4631,7 @@ Piekielny Żarłacz Dusz	Κολαστήριος Καταβροχθιστής Ψ�
 Piekło	Κόλαση
 Piekło - wybierz respawn	Κόλαση - επίλεξε σημείο αναγέννησης
 Pierwsza nagroda tury jest darmowa.	Η πρώτη ανταμοιβή κάθε γύρου είναι δωρεάν.
+Pierwsza strona	Πρώτη σελίδα
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Το πρώτο από τα τρία βιβλία της επίγνωσης. Μπορεί να αυξήσει το χάρισμα του κατόχου. Μετά την ανάγνωση το βιβλίο εξαφανίζεται. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Το πρώτο από τα τρία βιβλία των μαχών σχηματισμού. Μπορεί να αυξήσει την έμπνευση του κατόχου. Μετά την ανάγνωση το βιβλίο εξαφανίζεται. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
 Pierwszorzędne Buty	Εξαιρετικά Παπούτσια
@@ -4357,6 +4639,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	Το πρώτο "+" στην �
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	Το πρώτο "+" στην καρτέλα Ικανότητες τους δίνει και σε σένα.
 Pierwszy 30 poziom	Πρώτος στο Επίπεδο 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	Η πρώτη επαναφορά αποστολής μέσα σε 24 ώρες είναι δωρεάν.
+Pierścień / amulet	Δαχτυλίδι / φυλαχτό
 Pierścień Dośw. (iCafe)	Δαχτυλίδι Εμπειρίας (iCafe)
 Pierścień Godności	Δαχτυλίδι της Αξιοπρέπειας
 Pierścień Hydry	Δαχτυλίδι της Hydra
@@ -4369,6 +4652,7 @@ Pierścień Wielkanocny	Πασχαλινό Δαχτυλίδι
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Δαχτυλίδι με περίτεχνη γκραβούρα σε σχήμα μισοφέγγαρου. Δίνει: +50% EXP, +20% ταχύτητα επίθεσης, +20% ταχύτητα μαγείας, +30% επίθεση, +10% μέγ. HP, +10% μέγ. SP.
 Pień+	Κορμός+
 Piorunowe Zioło	Βότανο της Βροντής
+Pirat+ (m)	Πειρατής+ (α)
 Pisanie	Γραφή
 Pisklę Exedyara	Νεοσσός Exedyar
 Pióro Mędrca	Πένα του Σοφού
@@ -4412,6 +4696,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Όταν το χρησιμοποιήσεις, προσθέτει κάρτα τέρατος στη συλλογή (Κάρτες Τεράτων στο μενού κάτω από το Esc). Δεν μπορεί να ανταλλαχθεί.
 Po zabiciu: kolejny, którego już biłeś	Μετά από θανάτωση: ο επόμενος που έχεις ήδη χτυπήσει
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	Μετά τη φόρτωση 8 βελών το Hwacha θα διαπεράσει τα λέπια του Balathor. Τα Φλογερά Βέλη δίνουν Αρχαίοι Κρύσταλλοι Πάγου. Φορτωμένα: %d
+Pobieram drop...	Λήψη drop...
 Pobieram ustawienia botow...	Λήψη ρυθμίσεων bot...
 Pobieram zawartość z serwera...	Λήψη περιεχομένου από τον διακομιστή...
 Pobieranie cen dla %d przedmiotow...	Λήψη τιμών για %d αντικείμενα...
@@ -4450,7 +4735,10 @@ Podaj wartosc.	Γράψε τιμή.
 Podaj wlasciciela i wybierz przedmiot.	Γράψε τον ιδιοκτήτη και επίλεξε αντικείμενο.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Κατά τη μάχη υπάρχει %d%% πιθανότητα αντοχής στην ανατροπή (χρόνος επαναφοράς 60 δευτ.).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	Κατά τη μάχη μετράται η ζημιά που προκαλείς.
+Podczas walki otrzymasz efekt eliksiru księżyca	Κατά τη μάχη λαμβάνεις το αποτέλεσμα του ελιξιρίου του φεγγαριού
+Podczas walki otrzymasz efekt eliksiru słońca	Κατά τη μάχη λαμβάνεις το αποτέλεσμα του ελιξιρίου του ήλιου
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Πλησίασε τον εχθρό από πίσω και καταφέρε θανάσιμο χτύπημα.|Ενισχύεται από: Δύναμη (++), Ευκινησία (++).
+Podglad EQ	Προβολή εξοπλισμού
 Podgląd niedostępny.	Η προεπισκόπηση δεν είναι διαθέσιμη.
 Podgląd skrzynki	Προεπισκόπηση σεντουκιού
 Podgląd skrzyń	Προεπισκόπηση σεντουκιών
@@ -4521,8 +4809,10 @@ Pokaż szatę aury	Εμφάνιση στολής αύρας
 Pokaż wizerunek broni	Εμφάνιση εμφάνισης όπλου
 Pokaż założony tytuł	Εμφάνιση τίτλου που φοριέται
 Pokaż znowu wszystkie przedmioty	Εμφάνιση ξανά όλων των αντικειμένων
+Pokonaj %(n)s bossów	Νίκησε %(n)s Boss
 Pokonaj %(n)s x %(what)s	Νίκησε %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Νίκησε τον Αρχηγό του Κόσμου στην ουδέτερη ζώνη και κέρδισε ανταμοιβές!
+Pokonaj bossów	Νίκησε Boss
 Pokonane bossy	Νικημένοι αρχηγοί
 Pokonane minibossy	Νικημένοι μίνι αρχηγοί
 Pokonani gracze (przeciwne król.)	Νικημένοι παίκτες (εχθρικά βασίλεια)
@@ -4591,6 +4881,7 @@ Portal Świątyni Węży	Πύλη του Ναού των Φιδιών
 Portal: Nowy Kontynent	Πύλη: Νέα Ήπειρος
 Posiada szanse na otrucie przeciwnika.	Έχει πιθανότητα να δηλητηριάσει τον αντίπαλο.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Έχει πιθανότητα να δηλητηριάσει τον αντίπαλο και περιλαμβάνει λιποθυμία.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	Έχεις %d%% πιθανότητα να συλλέξεις αυτόματα αντικείμενα εκεί κοντά για 30 δευτ.
 Postać ma za duży poziom.	Το επίπεδο του χαρακτήρα είναι πολύ υψηλό.
 Postać zostanie usunięta.	Ο χαρακτήρας θα διαγραφεί.
 Posterunek Trolli	Φυλάκιο των Τρολ
@@ -4688,7 +4979,10 @@ Poziom: %d (%s Szata Aury)	Επίπεδο: %d (Στολή Αύρας %s)
 Poziom: %s	Επίπεδο: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Επίπεδο: 1-19, M1-M10, G1-G10 ή P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Επίπεδο: αριθμός 1-19, M1-M10, G1-G10 ή P
+Pozostalo 23:59:59	Απομένουν 23:59:59
 Pozostalo czasu: 30s	Υπολειπόμενος χρόνος: 30δ
+Pozostalo prob: 3	Απομένουν προσπάθειες: 3
+Pozostalo: 45s	Απομένουν: 45s
 Pozostaly czas: %ds	Υπολειπόμενος χρόνος: %dδ
 Pozostałe	Απομένουν
 Pozostałe misje	Υπόλοιπες αποστολές
@@ -4710,6 +5004,7 @@ Pozwala wylosować nowe cele misji Kart Potworów.	Επιτρέπει να κλ�
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Επιτρέπει να επαναφέρεις την αποστολή των Καρτών Τεράτων πέρα από τη δωρεάν επαναφορά (μία φορά κάθε 24 ώρες).
 Pozwolenie na Wzmocn. Przedmiotu	Άδεια Ενίσχυσης Αντικειμένου
 Pozwolenie na Zaczar. Przedmiotu	Άδεια Μαγέματος Αντικειμένου
+Pozycja niezapisana	Μη αποθηκευμένη θέση
 Położenie	Τοποθεσία
 Położenie nieznane	Άγνωστη τοποθεσία
 Połyskująca Biała Perła	Αστραφτερό Λευκό Μαργαριτάρι
@@ -4795,9 +5090,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Απλό φίλτρο (πρ
 Prosty rozpryskowy atak	Απλή επίθεση διασποράς
 Proszę wpisać nazwę sklepu	Παρακαλώ εισήγαγε όνομα καταστήματος
 Proszę wybrać czas trwania sklepu	Παρακαλώ επίλεξε διάρκεια καταστήματος
+Prowadza stragan: %s	Διατηρεί κατάστημα: %s
+Prowadza stragan: -	Διατηρεί κατάστημα: -
 Prywatność	Απόρρητο
 Pryzmat Ożywienia	Πρίσμα Ανάστασης
 Pryzmat Ożywienia (Q)	Πρίσμα Ανάστασης (Q)
+Pryzmatyczny	Πρισματικό
 Przeb. Księga Zwierza	Βιβλίο Αφυπνισμένου Ζώου
 Przebicie	Διάτρηση
 Przebicie bloku	Διάσπαση μπλοκ
@@ -4882,7 +5180,7 @@ Przeniesione z: %s	Μεταφέρθηκε από: %s
 Przeniesiono część - reszta się nie zmieściła.	Μεταφέρθηκε ένα μέρος - τα υπόλοιπα δεν χώρεσαν.
 Przenieś do extra EQ	Μετακίνηση στον extra κατάλογο
 Przenieś je u Theowahdana.	Μετάφερέ τες στον Theowahdan.
-Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Μετακίνησε το αρχείο στον φάκελο upload/ στον κύριο κατάλογο του παιχνιδιού.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Μετακίνησε το αρχείο στον φάκελο upload/ στον κεντρικό φάκελο του παιχνιδιού.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Διαπερνά το σώμα με τη μαγεία των Διακοπών, προικίζοντας τον κάτοχό του με ασυνήθιστη δύναμη. Οι αποτυχημένες προσπάθειες αναβάθμισης του Δαχτυλιδιού στον Σιδερά δεν προκαλούν απώλεια του αντικειμένου. Διάρκεια 7 ημέρες (έως 60 ημέρες).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Διαπερνά το σώμα με τη μαγεία των Διακοπών, προικίζοντας τον κάτοχό του με ασυνήθιστη δύναμη. Οι αποτυχημένες προσπάθειες αναβάθμισης του Δαχτυλιδιού στον Σιδερά δεν προκαλούν απώλεια του αντικειμένου. Μέγ. διάρκεια 60 ημέρες.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Διαπερνά το σώμα με τη μαγεία του Πάσχα, προικίζοντας τον κάτοχό του με ασυνήθιστη δύναμη. Οι αποτυχημένες προσπάθειες αναβάθμισης του Δαχτυλιδιού στον Σιδερά δεν προκαλούν απώλεια του αντικειμένου.
@@ -4976,8 +5274,10 @@ Próby	Προσπάθειες
 Prędkość ataku	Ταχύτητα επίθεσης
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Ταχύτητα επίθεσης +%(v)s%% για %(d)d δ μετά από επίθεση από την πλάτη του ίππου (κάθε 180 δ)
 Prędkość czarowania	Ταχύτητα μαγείας
+Prędkość po zsiadaniu	Ταχύτητα μετά την κατάβαση
 Prędkość ruchu	Ταχύτητα κίνησης
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Ταχύτητα κίνησης +%(v)s%% για %(d)d δ μετά από επίθεση από την πλάτη του ίππου (κάθε 180 δ)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	Η ταχύτητα κίνησης αυξάνεται κατά %d%% για 10 δευτ.
 Prędkość ruchu znacznie zwiększona.	Η ταχύτητα κίνησης αυξήθηκε σημαντικά.
 Pudełko Kart Potworów Yohary	Κουτί Καρτών Τεράτων του Yohara
 Pudło wędkarskich puzzli	Κουτί Πάζλ Ψαρέματος
@@ -4985,6 +5285,7 @@ Pula... pokazuje bossow danego przedzialu	Η δεξαμενή... δείχνει 
 Punkty Doświadczenia: +150%	Πόντοι Εμπειρίας: +150%
 Punkty Rangi: %d	Πόντοι Βαθμού: %d
 Punkty doswiadczenia %	Πόντοι εμπειρίας %
+Punkty doświadczenia +%d%%	Πόντοι εμπειρίας +%d%%
 Punkty konne:	Πόντοι ιππασίας:
 Punkty miłości: %d%%	Πόντοι αγάπης: %d%%
 Punkty range:	Πόντοι βαθμού:
@@ -5135,6 +5436,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Επαναφορά Καταστήματος Gaya
 Reset oferty	Επαναφορά προσφοράς
 Reset oferty (Reset Sklepu Gaya)	Επαναφορά προσφοράς (Επαναφορά Καταστήματος Gaya)
+Reset umiejętności	Επαναφορά δεξιοτήτων
 Resetuj	Επαναφορά
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Επανέφερε το Κατάστημα Gaya πριν περάσουν οι 5 ώρες και δες νέα πολύτιμα αντικείμενα. Χρησιμοποίησέ το στο Κατάστημα Gaya του Λιμανιού (Άγαλμα Πολεμιστή στο Λιμάνι της Νέας Ηπείρου).
 Restart serwera...	Επανεκκίνηση διακομιστή...
@@ -5184,6 +5486,7 @@ Rozbudowa jest teraz niedostępna.	Η επέκταση δεν είναι δια�
 Rozdaj od nowa (raz za darmo)	Μοίρασε από την αρχή (μία φορά δωρεάν)
 Rozdane: %d	Μοιράστηκαν: %d
 Rozdzielczość	Ανάλυση
+Rozkaz wysłany.	Η εντολή στάλθηκε.
 Rozkazy dla botów twojej gildii	Εντολές για τα bot της συντεχνίας σου
 Rozkazy wydaje mistrz gildii	Εντολές δίνει ο αρχηγός της συντεχνίας
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Μιλάς με τον |cffffb514Master του Παιχνιδιού|r.
@@ -5217,6 +5520,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Αναπτύσσεται με το Βι
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Να εξελιχθεί το κατοικίδιο στο στάδιο «%s»; Τα υλικά θα εξαφανιστούν.
 Rozwiń pasek	Ανάπτυξη γραμμής
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Ανάπτυξη: όλες οι γραμμές γρήγορης πρόσβασης (4 x 8)
+Rozwój	Εξέλιξη
 Rozwój do stopnia: %s	Εξέλιξη στο στάδιο: %s
 Rozwój konia	Εκπαίδευση ίππου
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Εκπαίδευση ίππου: λείπει Τροφή Αλόγου (χρειάζονται %(a)d).
@@ -5243,6 +5547,7 @@ Ruda Turmalinu	Μετάλλευμα Τουρμαλίνη
 Rudy i przetopy	Μεταλλεύματα και λιωμένα μεταλλεύματα
 Ruiny Atlantydy	Ερείπια της Ατλαντίδας
 Ruiny Skorpiona	Ερείπια του Σκορπιού
+Rumi (Okey)	Rumi (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Ράμι (Okey): το παράθυρο του παιχνιδιού θα εμφανιστεί με ενημέρωση του client.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Το ψάρι τσιμπά! Κάνε κλικ πάνω του %d φορές όσο κολυμπά στον κύκλο (έχεις %d δ).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Ψάρι ψημένο πάνω από τη φωτιά, ένα υπέροχο καπνιστό έδεσμα.
@@ -5280,6 +5585,7 @@ Rzeźnik Piekielnej Wieży	Χασάπης του Κολαστήριου Πύργ
 Rzeźnik Wężowy	Χασάπης-Φίδι
 Rzuca na ciebie swoje buffy.	Ρίχνει πάνω σου τις ενισχύσεις του.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Εξαπολύει στους αντιπάλους άστρα γεμάτα φως.|Ενισχύεται από: Ευκινησία (++), επίπεδο χαρακτήρα.
+Rzucam buffy	Ρίχνω buffs
 Rzygacz	Γκαργκόιλ
 Róg Balathora	Κέρατο του Balathor
 Róg Nemere	Κέρατο του Nemere
@@ -5460,11 +5766,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Διακομιστής: καμί
 Serwer: czekam na potwierdzenie	Διακομιστής: αναμονή επιβεβαίωσης
 Sesja już trwa.	Μια συνεδρία βρίσκεται ήδη σε εξέλιξη.
 Sesja zakończona: osiągnięto limit czasu.	Η συνεδρία τερματίστηκε: συμπληρώθηκε το χρονικό όριο.
+Sesje (z bieżącą)	Συνεδρίες (με την τρέχουσα)
+Sezon %d	Σεζόν %d
 Sezon %d - %s (do końca: %d dni %s)	Σεζόν %d - %s (απομένουν: %d ημέρες %s)
+Sezon: Chunjo	Σεζόν: Chunjo
+Sezon: Jinno	Σεζόν: Jinno
+Sezon: Shinsoo	Σεζόν: Shinsoo
 Sfera Losu Zwierzaka	Σφαίρα Μοίρας Κατοικιδίου
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Σφαίρα της Μοίρας: δείχνει τον τύπο του κατοικίδιου (καταναλώνει Σφαίρα της Μοίρας Κατοικίδιου)
 Shaman Armor	Πανοπλία Σαμάν
 Shield	Ασπίδα
+Shift + LPM	Shift + Αρ.Κ.
 Shoes	Παπούτσια
 Shop Decoration	Διακόσμηση Καταστήματος
 Shop Decoration n.{}	Διακόσμηση καταστήματος αρ.{}
@@ -5475,6 +5787,7 @@ Shopping Safebox	Θυρίδα Αγορών
 Show Filter Informations	Εμφάνιση πληροφοριών φίλτρων
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Σπέρνεις ένα ελαφρύ αεράκι και οι εχθροί σου θερίζουν μια λυσσασμένη θύελλα. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Sierp (Pieczęć)	Σφραγίδα Μισοφέγγαρου
+Sierpień	Αύγουστος
 Silna Fala Śmierci	Ισχυρό Κύμα Θανάτου
 Silna Tarcza Eteru	Ισχυρή Ασπίδα Αιθέρα
 Silne Trzęsienie	Ισχυρός Σεισμός
@@ -5490,6 +5803,7 @@ Silny Druid En-Tai	Ισχυρός Δρυΐδης En-Tai
 Silny Dziki Piechur	Δυνατός Άγριος Πεζικάριος
 Silny Dziki Sluga	Δυνατός Άγριος Υπηρέτης
 Silny Kam. Przebudzenia	Ισχυρή Πέτρα Αφύπνισης
+Silny Malpi Zolnierz	Ισχυρός Στρατιώτης Πιθήκων
 Silny Meteor	Ισχυρός Μετεωρίτης
 Silny Niszczyciel En-Tai	Ισχυρός Καταστροφέας En-Tai
 Silny Piekielny Cios	Ισχυρό Κολασμένο Χτύπημα
@@ -5544,23 +5858,34 @@ Siła	Δύναμη
 Siła Ataku	Δύναμη Επίθεσης
 Siła Ataku %.0f-%0.f	Αξία επίθεσης %.0f-%0.f
 Siła Ataku +%.0f	Αξία επίθεσης +%.0f
+Siła Ataku: +%.0f	Αξία επίθεσης: +%.0f
+Siła Błyskawic	Δύναμη Κεραυνών
 Siła Błyskawic (+%d%% łącznej wartości)	Δύναμη Κεραυνού (+%d%% της συνολικής τιμής)
 Siła Błyskawic +%d%%	Δύναμη Κεραυνού +%d%%
+Siła Błyskawic +5%	Δύναμη Κεραυνών +5%
+Siła Lodu	Δύναμη Πάγου
 Siła Lodu (+%d%% łącznej wartości)	Δύναμη Πάγου (+%d%% της συνολικής τιμής)
 Siła Lodu +%d%%	Δύναμη Πάγου +%d%%
+Siła Lodu +5%	Δύναμη Πάγου +5%
 Siła Mroku	Δύναμη του Σκότους
 Siła Mroku (+%d%% łącznej wartości)	Δύναμη Σκότους (+%d%% της συνολικής τιμής)
 Siła Mroku +%d%%	Δύναμη Σκότους +%d%%
+Siła Mroku +5%	Δύναμη Σκότους +5%
 Siła Obrony	Δύναμη Άμυνας
+Siła Ognia	Δύναμη Φωτιάς
 Siła Ognia (+%d%% łącznej wartości)	Δύναμη Φωτιάς (+%d%% της συνολικής τιμής)
 Siła Ognia +%d%%	Δύναμη Φωτιάς +%d%%
+Siła Ognia +5%	Δύναμη Φωτιάς +5%
 Siła Sung Ma	Δύναμη Sung Ma
 Siła Sung Ma +%d	Δύναμη Sung Ma +%d
+Siła Wiatru	Δύναμη Ανέμου
 Siła Wiatru (+%d%% łącznej wartości)	Δύναμη Ανέμου (+%d%% της συνολικής τιμής)
 Siła Wiatru +%d%%	Δύναμη Ανέμου +%d%%
+Siła Wiatru +5%	Δύναμη Ανέμου +5%
 Siła Ziemi	Δύναμη της Γης
 Siła Ziemi (+%d%% łącznej wartości)	Δύναμη Γης (+%d%% της συνολικής τιμής)
 Siła Ziemi +%d%%	Δύναμη Γης +%d%%
+Siła Ziemi +5%	Δύναμη Γης +5%
 Siła ataku +%.0f-%.0f	Δύναμη επίθεσης +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	Η δύναμη επίθεσης είναι μεγαλύτερη αν το χτύπημα δοθεί στην πλάτη
 Siła ataku wroga -%d%%	Δύναμη επίθεσης εχθρού -%d%% 
@@ -5655,6 +5980,7 @@ Skorpion Lucznik Zodiaku	Τοξότης Σκορπιός του Ζωδιακού
 Skorpion Wężowy	Σκορπιός-Φίδι
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Εκμεταλλεύσου τις |cff2b80ffάμεσες προσφορές|r![ENTER]Οι δημοπρασίες διαρκούν το αργότερο μέχρι |cff2b80ff%s|r[ENTER]ή μέχρι να εξαντληθούν τα αποθέματα.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Οι θρυμματισμένοι Λίθοι Ψυχών μπορεί να βρουν νέα χρήση.
+Skrytobójca	Δολοφόνος
 Skrytobójcza Wykałaczka	Οδοντογλυφίδα του Δολοφόνου
 Skrz. Ninja M. Łuku (D)	Σεντ. Νίντζα Τόξου (Μεγ.)
 Skrz. Ninja M.Ostrza (D)	Σεντ. Νίντζα Λεπίδας (Μεγ.)
@@ -5715,12 +6041,16 @@ Skrzynka musi być w ekwipunku.	Το σεντούκι πρέπει να βρίσ
 Skrzynka na Zwierzaka	Κουτί Κατοικιδίου
 Skrzynki	Σεντούκια
 Skrócenie ładowania um. o %d%%	Μείωση φόρτισης ικαν. κατά %d%% 
+Skróty	Συντομεύσεις
+Skróty klawiszowe	Συντομεύσεις πλήκτρων
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Συγκέντρωσε τις επιθέσεις στο Παγωμένο Αυγό Δράκου πριν εξαφανιστεί σε %d δευτ.
 Skóra Przeklętego Niedźwiedzia	Δέρμα Καταραμένης Αρκούδας
 Skóra Przeklętego Tygrysa	Δέρμα Καταραμένης Τίγρης
 Skąd	Πηγή
 Składnik do produkcji lekarstwa iluzji.	Συστατικό για την παρασκευή του φαρμάκου της ψευδαίσθησης.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Συστατικό για την αναβάθμιση Λίθων Ψυχής στον Σιδερά (από +4): χρειάζονται 1, 1, 2, 2, 3 τεμάχια για τους επόμενους βαθμούς, μαζί με Μαγική Σκόνη. Πέφτει από την Ισχυρή Μάγισσα του Πάγου (Σπήλαιο των Εξόριστων), τον Beran-Setaou (Φωλιά του Δράκου) και τη Βασίλισσα της Ζούγκλας (Αρχαία Ζούγκλα).
+Slaby Malpi Miotacz	Αδύναμος Βολέας Πιθήκων
+Slaby Malpi Zolnierz	Αδύναμος Στρατιώτης Πιθήκων
 Slot z krzyżykiem jest jeszcze zamknięty.	Η θέση με σταυρό είναι ακόμη κλειστή.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Θέση κλειδωμένη: θα την ξεκλειδώσει μια Επέκταση Καταστήματος Gaya x%d.
 Sloty umiejętności: %d	Θέσεις δεξιοτήτων: %d
@@ -5754,9 +6084,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Κάτι πήγε στραβά. (Γενικό σφάλμα)
 Songmin, Arktyczne Yeti	Songmin, το Αρκτικό Γέτι
 Sort by price	Ταξινόμηση κατά τιμή
+Sortowanie autopickup	Ταξινόμηση autopickup
 Sortowanie i wyszukiwanie	Ταξινόμηση και αναζήτηση
 Sortuj po cenie całej oferty	Ταξινόμηση κατά την τιμή ολόκληρης της προσφοράς
 Sortuj po cenie oferty albo za sztukę	Ταξινόμηση κατά τιμή προσφοράς ή κατά τιμή ανά τεμάχιο
+Sortuj po ilości	Ταξινόμηση κατά ποσότητα
 Soul Crystal Alchemist	Αλχημιστής Κρυστάλλου Ψυχής
 Sowa Księżycowa	Κουκουβάγια του Φεγγαριού
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	Διαφθορά του Σκότους;Το δέρμα καίει και σπάει από τη σκοτεινή ενέργεια,;εκθέτοντάς σε σε μεγαλύτερη ζημιά.
@@ -5765,6 +6097,7 @@ Spalone przedmioty u Kowala	Αντικείμενα που κάηκαν στον 
 Sparta Jungrang+ (k)	Sparta Jungrang+ (Γ)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (Α)
 Spartaner	Σπάρτανερ
+Spawn Botow	Spawn Bot
 Specjalne	Ειδικά
 Specjalne Zioła	Ειδικά Βότανα
 Specjalny	Ειδικός
@@ -5778,6 +6111,7 @@ Sportowa Fryzura(czarna)	Αθλητικό Χτένισμα (μαύρο)
 Spostrzegawczość	Οξυδέρκεια
 Społeczność	Κοινότητα
 Sprawdz konto	Έλεγχος λογαριασμού
+Sprawdz status	Έλεγχος κατάστασης
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Έλεγχος υποστήριξης στον διακομιστή. Σύρε αντικείμενα στον κάδο.
 Sprawdzanie...	Έλεγχος...
 Sprawdź ekwipunek	Έλεγχος αποθέματος
@@ -5803,6 +6137,7 @@ Srebrne Płyty	Ασημένιες Πλάκες
 Srebrny Grot	Ασημένια Αιχμή
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Ασημένιο μενταγιόν σε σχήμα καρδιάς, δεμένο με μαγικά πετράδια. Δίνει: +30% EXP, +10% ταχύτητα επίθεσης, +10% ταχύτητα μαγείας, +10% δύναμη κατά των τεράτων, +5% μέγ. HP, +5% μέγ. SP.
 Srednia: %s / szt.	Μέσος όρος: %s / τεμ.
+Srednie obrazenia	Μέση ζημιά
 Stabilne Sznury	Γερά Σχοινιά
 Stajnia i polowanie na medale w Lochu Malp.	Στάβλος και κυνήγι μεταλλίων στο Μπουντρούμι των Πιθήκων.
 Stal	Ατσάλι
@@ -5812,8 +6147,9 @@ Stalowy Hełm Dragona	Ατσάλινο Κράνος του Dragon
 Stalowy Hełm Smoków	Ατσάλινο Κράνος των Δράκων
 Stamina / sek.: %d	Αντοχή / δευτ.: %d
 Stan (czat)	Κατάσταση (συνομιλία)
-Standardowa Muzyka Metin2	Βασική Μουσική του Παιχνιδιού
-Standardowa muzyka Metin2	Βασική μουσική του παιχνιδιού
+Stan: %s	Κατάσταση: %s
+Standardowa Muzyka Metin2	Συνήθης Μουσική του Παιχνιδιού
+Standardowa muzyka Metin2	Συνήθης μουσική του παιχνιδιού
 Stanton-Płatnerz	Stanton-Οπλουργός
 Stara Fryzura (biała)	Παλιό Χτένισμα (λευκό)
 Stara Fryzura (czarna)	Παλιό Χτένισμα (μαύρο)
@@ -5833,6 +6169,7 @@ Starożytny Robak	Αρχαίο Σκουλήκι
 Starożytny Skorpion	Αρχαίος Σκορπιός
 Starożytny Wojownik	Αρχαίος Πολεμιστής
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Αρχαίος κύλινδρος που επιτρέπει τη ροή της δύναμης του Woel - επιτρέπει να κληρώσεις νέες ευλογίες.
+Starszy Hazardzista	Ανώτερος Τζογαδόρος
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Παλιά περγαμηνή με εντολή θανάτωσης, μετά τη χρήση ενεργοποιεί αποστολές.
 Statua Chena	Άγαλμα Chen
 Statua Chou	Άγαλμα Chou
@@ -5902,19 +6239,25 @@ Strażnik Rozpad. Dusz	Φύλακας της Ρωγμής των Ψυχών
 Strażnik Ruin	Φύλακας των Ερειπίων
 Strażnik Smoków Dolnarr	Δρακ. Φύλακας Dolnarr
 Strażnik Smoków Jaharr	Δρακ. Φύλακας Jaharr
+Strażnik Srebr. Piasku+	Φύλακας Αργ. Άμμου+
 Strażnik Trytonów	Φρουρός των Τριτώνων
 Strażnik Wzgórza	Φύλακας του Λόφου
 Strażnik Węży	Φύλακας των Φιδιών
 Strażnik z Yohara	Φύλακας του Yohara
+Strefa Surowców	Ζώνη Πρώτων Υλών
 Strona %d / %d	Σελίδα %d / %d
 Strona %d / %d (%d)	Σελίδα %d / %d  (%d)
 Strona %d/%d	Σελίδα %d/%d
 Strona 1	Σελίδα 1
 Strona WWW	Ιστοσελίδα
+Strona ekwipunku I	Σελίδα εξοπλισμού I
 Strona ekwipunku II	Σελίδα εξοπλισμού II
 Strona ekwipunku II (wymienna)	Σελίδα Εξοπλισμού ΙΙ (εμπορεύσιμη)
+Strona ekwipunku III	Σελίδα εξοπλισμού III
 Strona ekwipunku IV	Σελίδα εξοπλισμού IV
 Strz. dół	Βέλος Κάτω
+Strz. góra	Βέλ. πάνω
+Strz. lewo	Βέλ. αριστ.
 Strz. prawo	Βέλος Δεξιά
 Strzał Wichury	Βολή Θύελλας
 Strzał Wichury (9.skill)	Βολή Ανεμοθύελλας (9η ικαν.)
@@ -5922,6 +6265,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Βο�
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Βέλος για το τόξο των Νίντζα. Πλήρης ζημιά έως 5 μ. από τον στόχο (το μπόνους εμβέλειας τόξου επεκτείνει αυτή την απόσταση), μετά 5% λιγότερη για κάθε επόμενο μέτρο. Η φαρέτρα δεν χάνει ζημιά με την απόσταση.
 Strzały: Handlarz Bronią (cena NPC).	Βέλη: Έμπορος Όπλων (τιμή NPC).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Εκτόξευσε ομοιώματα δράκων και επίθεση στους εχθρούς.|Ενισχύεται από: Ευφυΐα (++), Ευκινησία (ακρίβεια) (+), επίπεδο χαρακτήρα.
+Strzelającego Smoka	Πυροβολούντος Δράκου
 Strój Czarodzieja	Στολή Μάγου
 Strój Czarodzieja+	Στολή Μάγου+
 Strój Zombie	Στολή Ζόμπι
@@ -5943,6 +6287,7 @@ Stwór z Głębin	Πλάσμα των Βαθέων
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Δημιούργησε μια μεγάλη έκρηξη με τις άκρες των δαχτύλων σου.|Ενισχύεται από: Ευφυΐα (++), Δύναμη (+), επίπεδο χαρακτήρα.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Δημιούργησε έναν ισχυρό ανεμοστρόβιλο για να νικήσεις αρκετούς εχθρούς.|Ενισχύεται από: Ευφυΐα (++), Δύναμη (+), επίπεδο χαρακτήρα.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Δημιούργησε ένα δηλητηριώδες σύννεφο γύρω από τους εχθρούς και δηλητηρίασέ τους.|Ενισχύεται από: Ευκινησία (++), Δύναμη (+), επίπεδο χαρακτήρα.
+Styczeń	Ιανουάριος
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Κομψό αλλά λιπαρό χτένισμα με τα μαλλιά χτενισμένα πίσω, οι κεραίες είναι το βασικό στοιχείο του. Αλλάζει μόνιμα το χτένισμα του χαρακτήρα σου.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Κομψό χτένισμα Σαμάνου. Αλλάζει μόνιμα το χτένισμα του χαρακτήρα σου.
 Su-Sin	Su-Sin
@@ -5966,11 +6311,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Τα συνολ
 Sun Herb	Βότανο του Ήλιου
 Super Kamienie Metin (+%d)	Super Λίθοι Metin (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Συμπλήρωμα (έως 5 τεμ.): Μικρό +1%, Μεσαίο +2%, Μεγάλο +4%, Ισχυρό +10% ανά τεμάχιο.
+Sura (Broń)	Sura (Όπλο)
+Sura (Czarna Magia)	Sura (Μαύρη Μαγεία)
 Sura Armor	Πανοπλία Σούρα
 Sura Czarna Magia	Σούρα Μαύρη Μαγεία
 Sura Mistrz Broni	Σούρα Μάστορας Όπλων
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Πρώτες ύλες που απαιτούνται για τη δημιουργία και την αναβάθμιση ξεχωριστών αντικειμένων.
 Sutra	Σούτρα
+Swiat i eventy	Κόσμος και εκδηλώσεις
+Swiatynia Hwang	Ναός Hwang
+Swiatynia Ochao	Ναός Ochao
 Swiatynia Zodiaku	Ναός του Ζωδιακού
 Switchbot (zmiana bonusów)	Switchbot (αλλαγή μπόνους)
 Switchbot - zmiana bonusów	Switchbot - αλλαγή μπόνους
@@ -5978,10 +6328,12 @@ Switchbot wymaga nowego klienta (exe 3.0).	Το Switchbot απαιτεί νέο 
 Sword	Σπαθί
 Symbol zręczności, popularny wśród złodziei.	Σύμβολο επιδεξιότητας, δημοφιλές στους κλέφτες.
 Synowie Pustyni	Γιοι της Ερήμου
+Szalenie odważny	Ασύλληπτα γενναίο
 Szalony Hazardzista	Τρελός Χαρτοπαίκτης
 Szalony Naukowiec	Τρελός Επιστήμονας
 Szalony Wędkarz	Τρελός Ψαράς
 Szaman (Leczenie)	Σαμάνος (Θεραπεία)
+Szaman (Smok)	Σαμάνος (Δράκος)
 Szaman Leczenie	Σαμάν Θεραπεία
 Szaman Smok	Σαμάν Δράκος
 Szamanka (K)	Σαμάνα (γ)
@@ -5997,6 +6349,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Πιθανότητα Διά�
 Szansa na Spowolnie.	Πιθ. Επιβράδυνσης
 Szansa na Uziemienie %.0f%%	Πιθανότητα Εδραίωσης %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Πιθανότητα μπλοκαρίσματος χτυπημάτων: αυξάνει την πιθανότητα αποφυγής επίθεσης από κοντινή απόσταση.
+Szansa na cios krytyczny +2%	Πιθανότητα κρίσιμου χτυπήματος +2%
+Szansa na cios krytyczny +5%	Πιθανότητα κρίσιμου χτυπήματος +5%
+Szansa na cios krytyczny +7%	Πιθανότητα κρίσιμου χτυπήματος +7%
+Szansa na cios krytyczny +8%	Πιθανότητα κρίσιμου χτυπήματος +8%
 Szansa na cios krytyczny: +%.0f%%	Πιθανότητα κρίσιμου χτυπήματος: +%.0f%%
 Szansa na cios przebicia %.0f%%	Πιθανότητα διαπεραστικού χτυπήματος %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Πιθανότητα drop Yang: αυξάνει την πιθανότητα απόκτησης περισσότερων Yang.
@@ -6025,12 +6381,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Η πιθανότ
 Szansa na przebicie	Πιθανότητα διαπεραστικού χτυπήματος
 Szansa na przebicie +10%	Πιθανότητα διάτρησης +10%
 Szansa na przedmiot z bonusem	Πιθανότητα αντικειμένου με μπόνους
+Szansa na przeszywające Uderzenie: 2%	Πιθανότητα διαπεραστικού χτυπήματος: 2%
+Szansa na przeszywające Uderzenie: 5%	Πιθανότητα διαπεραστικού χτυπήματος: 5%
+Szansa na przeszywające Uderzenie: 8%	Πιθανότητα διαπεραστικού χτυπήματος: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Πιθανότητα διαπεραστικού χτυπήματος: αυξάνει την πιθανότητα να καταφέρεις διαπεραστικό χτύπημα.
 Szansa na przeszywający strzał +%.0f%%	Πιθανότητα διαπεραστικού βέλους +%.0f%%
 Szansa na spowolnienie	Πιθανότητα επιβράδυνσης
 Szansa na transfer %d%% otrzymanych obrażeń do PE	Πιθανότητα μεταφοράς %d%% της ζημιάς που δέχεσαι στους SP
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Πιθανότητα αποφυγής βέλους: αυξάνει την πιθανότητα αποφυγής βέλους ή επίθεσης μεγάλης εμβέλειας ενός τέρατος.
 Szansa na wydobycie rudy +%d%%	Πιθανότητα εξόρυξης μεταλλεύματος +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Πιθανότητα drop αντικειμένου από αφεντικό +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Η πιθανότητα να πέσουν αντικείμενα αυξάνεται 1,5 φορά για τα μέλη του iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Πιθανότητα απόκτησης Αντικειμένων πολλαπλασιασμένη επί %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Πιθανότητα απόκτησης Yang πολλαπλασιασμένη επί %.1f
@@ -6081,12 +6441,15 @@ Szary Barwnik	Γκρι Βαφή
 Szary Lśniący Odłamek	Γκρι Αστραφτερό Θραύσμα
 Szary Sok	Γκρι Χυμός
 Szata	Στολή
+Szata Dżinna+ (m)	Ρόμπα Τζίνι+ (α)
 Szata Harmonii	Ρόμπα της Αρμονίας
 Szata Księżyca	Ρόμπα του Φεγγαριού
 Szata Ognia	Ρόμπα της Φωτιάς
 Szata Wiary	Ρόμπα της Πίστης
 Szata Zodiaku	Ρόμπα του Ζωδιακού
 Szata aury: ewolucja	Στολή Αύρας: εξέλιξη
+Szata aury: przenieś parametry	Ρούχο αύρας: μεταφορά παραμέτρων
+Szata aury: rozwój	Ρούχο αύρας: εξέλιξη
 Szczyt rodzaju - czas na ewolucję	Κορυφή της βαθμίδας - ώρα για εξέλιξη
 Szczytobłysk 830 9454	Κορυφολάμψη 830 9454
 Szczytomrok 3393 9454	Κορυφοσκότος 3393 9454
@@ -6099,6 +6462,7 @@ Szkarłaczny Żądłak	Άλικο Κεντρί
 Szkat. Chegala	Σεντ. του Chegal
 Szkat. Olbrzym. Drzewa	Σεντ. Γιγάντιου Δέντρου
 Szkatulka Ksiezycowa - z rozbitego Metina	Κασετίνα Σελήνης - από κατεστραμμένο Metin
+Szkatulka Ksiezycowa - z zabitego potwora	Σεληνιακό Κουτί - από νεκρό τέρας
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Κασετίνα του Chegal, Γολιάθ της Σκιάς. Κάτι πολύτιμο βρίσκεται μέσα.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Κασετίνα του Γιγάντιου Φαντάσματος του Δέντρου. Κάτι πολύτιμο βρίσκεται μέσα.
 Szkatułka Yohara	Σεντουκάκι Yohara
@@ -6117,6 +6481,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Ευγενές Ξύλο από τον Άρχοντα En-Tai. Πήγαινέ το στον Ερευνητή του Δάσους.
 Szlachetne Drzewo (PB)	Ευγενές Δέντρο (ΑΦ)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Ευγενές Δέντρο (ΑΦ) από τον Άρχοντα En-Tai (ΑΦ). Πήγαινέ το στον Ερευνητή του Δάσους (ΑΦ).
+Szlachetny Legionista+	Ευγενής Λεγεωνάριος+
 Szmaragdowy Marmur	Σμαραγδένιο Μάρμαρο
 Szpon Kruka	Νύχι του Κόρακα
 Szpon Wężowy (wykon.)	Φιδίσιο Νύχι (κατασκ.)
@@ -6178,7 +6543,10 @@ Szybkość Ataku +5%	Ταχύτητα Επίθεσης +5%
 Szybkość Buffi	Ταχύτητα της Buffi
 Szybkość Ruchu +%.0f%%	Ταχύτητα Κίνησης +%.0f%%
 Szybkość Ruchu 20%	Ταχύτητα Κίνησης 20%
+Szybkość Zaklęcia +2%	Ταχύτητα Ξορκιών +2%
+Szybkość Zaklęcia +5%	Ταχύτητα Ξορκιών +5%
 Szybkość czarowania	Ταχύτητα Μαγείας
+Szybkość ruchu +%d%%	Ταχύτητα κίνησης +%d%%
 Szybkość: %d zmian/s	Ταχύτητα: %d αλλαγές/δ
 Słaba Zbroja	Αδύναμη Πανοπλία
 Słaba jakość strzału: od %.1fm	Χαμηλή ποιότητα βολής: από %.1fm
@@ -6186,6 +6554,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Γλυκιά Γριούλα
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Γλυκό φυλαχτό για του Αγίου Βαλεντίνου. Δίνει: +50% EXP, +20% ταχύτητα επίθεσης, +20% ταχύτητα μαγείας, +10% δύναμη κατά των τεράτων, +10% μέγ. HP, +10% μέγ. SP. Ο χρόνος μετράει και όταν δεν το φοράς.
 Słodkowodna ryba drapieżna występująca w tropikach.	Αρπακτικό ψάρι του γλυκού νερού που απαντά στους τροπικούς.
+Słon. Szata Wukong+ (m)	Ηλιακή Ρόμπα Wukong+ (α)
 Słonecznik: obrona +%d%%	Ηλιοτρόπιο: άμυνα +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Λέξεις από ονόματα αντικειμένων (χωρισμένες με κόμμα)
 Słudzy Sung Mahi	Υπηρέτες του Sung Mahi
@@ -6394,8 +6763,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Σήμερα {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Αύριο {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Πολλές ενέργειες σε σύντομο χρόνο. Περίμενε λίγο και δοκίμασε ξανά.
+Top przedmiotów	Κορυφαία αντικείμενα
 Topaz Woli	Τοπάζι της Θέλησης
 Torba towarzysza: weź do siebie	Τσάντα συντρόφου: πάρε σε σένα
+Towarzysz (nierozwijany)	Σύντροφος (μη επεκτ.)
 Towarzysz bierze tylko cały stos.	Ο Σύντροφος παίρνει μόνο ολόκληρη στοίβα.
 Towarzysz dostanie ścieżkę na 5 poziomie.	Ο Σύντροφος θα πάρει μονοπάτι στο επίπεδο 5.
 Towarzysz drużyny	Σύντροφος Ομάδας
@@ -6407,9 +6778,11 @@ Towarzysz zakłada grupę i cię zaprasza.	Ο Σύντροφος φτιάχνε�
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	Ο Σύντροφος θα καταναλώσει ένα Βιβλίο Λήθης ή ένα Έγγραφο Μηδενισμού Ικανοτήτων.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Ο Σύντροφος, ο Cor Draconis και οι αποστολές συστημάτων δεν εμφανίζονται εδώ.
 Towarzysze są tu wyłączeni.	Οι Σύντροφοι είναι απενεργοποιημένοι εδώ.
+Towarzysze są wyłączeni na tym serwerze.	Οι Σύντροφοι είναι απενεργοποιημένοι σε αυτόν τον διακομιστή.
 Trade Hub	Κέντρο Εμπορίου
 Trafienia	Επιτυχίες
 Transfer bonusów	Μεταφορά μπόνους
+Transfer obrazen do PM	Μεταφορά ζημιάς σε SP
 Transformuj kostium	Μεταμόρφωση φορεσιάς
 Transporter jest pusty.	Ο μεταφορέας είναι άδειος.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Εκπαιδεύει μια δεξιότητα της Buffi από τον βαθμό G1 έως P, όπως ο Λίθος Ψυχής στις κανονικές δεξιότητες (πόντοι βαθμού, επόμενη προσπάθεια μετά από 12 ώρες, Πάπυρος Εξορκισμού για άμεση). Πέφτει από Metin και αρχηγούς από το Μαγεμένο Δάσος και πάνω.
@@ -6459,6 +6832,7 @@ Twierdza Czerwonego Smoka (SZC)	Φρούριο του Κόκκινου Δράκ�
 Twierdza Razadora	Φρούριο του Razador
 Two Hand Sword	Δίχειρο Σπαθί
 Twoja Gaya: %s	Τα Gaya σου: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Η άμυνά σου αυξάνεται κατά %d%% για 5 δευτ.
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Η θέση σου: δείχνει τον χάρτη στον οποίο βρίσκεσαι και κεντράρει την προβολή πάνω του.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Το ατσάλι σου θα τραγουδήσει άριες παγκόσμιου επιπέδου στο πεδίο της μάχης. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Twoje Smocze Monety: %d	Τα Νομίσματα Δράκου σου: %d
@@ -6493,6 +6867,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Τον ίδιο αρ�
 Tylko BETA	Μόνο BETA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Μόνο ο IMPLEMENTOR αλλάζει το GM άλλων χαρακτήρων.
 Tylko broń, zbroje i kostiumy dla tej płci	Μόνο όπλα, πανοπλίες και φορεσιές για αυτό το φύλο
+Tylko dla mnie	Μόνο για μένα
 Tylko dla mnie: cały drop jest twój.	Μόνο για μένα: όλη η λεία είναι δική σου.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Λίγοι μόνο καταλαβαίνουν την αρχαία γλώσσα από την οποία προέρχεται το όνομα αυτού του όπλου. Κανείς τους όμως δεν τόλμησε να μεταφράσει αυτό το όνομα. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Tylko scal stosy	Μόνο συγχώνευση στοιβών
@@ -6511,6 +6886,7 @@ Typ: -	Τύπος: -
 Type	Τύπος
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Τυπικά μπόνους εξοπλισμού ή όλα όσα γνωρίζει ο client
 Tysieczny Wojow. Zodiaku	Πολεμιστής των Χιλίων του Ζωδιακού
+Tysieczny Wojownik	Χιλιάρχης Πολεμιστής
 Tytuł %s wygaśnie za niecałą godzinę.	Ο τίτλος %s θα λήξει σε λιγότερο από μία ώρα.
 Tytuł Czciciel Słońca	Τίτλος Λάτρης του Ήλιου
 Tytuł Czempion Nyx	Τίτλος Πρωταθλητής Nyx
@@ -6564,12 +6940,15 @@ Udało ci się ochronić Goblina Skarbów!	Κατάφερες να προστα�
 Udało się odeprzeć lodowy chłód.	Κατάφερες να αποκρούσεις το παγωμένο ρίγος.
 Udało się: %s	Επιτυχία: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Χτύπα και η καμπάνα χτυπά για κάποιον! Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
+Uderzenia Palcem	Χτυπήματος Δαχτύλου
 Uderzenie Pioruna	Χτύπημα Κεραυνού
 Uderzenie Płonącego Palca	Χτύπημα Φλεγόμενου Δαχτύλου
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Το Χτύπημα Δαχτύλου έχει %d%% πιθανότητα να επιστραφεί στον αντίπαλο
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Ποσοστό των bot που μετά τα ψώνια στην πόλη μένουν για λίγο στους πάγκους αντί να επιστρέψουν αμέσως στο κυνήγι. 100% σημαίνει ζωντανή πόλη, 0% - όλοι στην ύπαιθρο.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Ποσοστό των πάγκων που βγάζουν στον πάγκο τις αδύναμες βελτιώσεις τους (+0 έως +3) για ψίχουλα αντί να τις πουλήσουν σε NPC - παλιοσίδερα για καύση στον σιδερά, όπως στους hard διακομιστές. Εξ ορισμού απενεργοποιημένο.
+Udział	Μερίδιο
 Ukończ %(n)s lochów	Ολοκλήρωσε %(n)s μπουντρούμια
+Ukończ lochy	Ολοκλήρωσε μπουντρούμια
 Ukończenia: %d	Ολοκληρώσεις: %d
 Ukończone	Ολοκληρωμένες
 Ukończone księgi misji	Ολοκληρωμένα βιβλία αποστολών
@@ -6578,6 +6957,7 @@ Ukończone wyprawy	Ολοκληρωμένες Εκστρατείες
 Ukończone: %d / %d	Ολοκληρώθηκαν: %d / %d
 Ukryj aury umiejętności	Απόκρυψη αυρών ικανοτήτων
 Ukryj budynki i obiekty	Απόκρυψη κτιρίων και αντικειμένων
+Ukryj cudze	Απόκρυψη ξένων
 Ukryj czaszkę nad bossami	Απόκρυψη κρανίου πάνω από τους αρχηγούς
 Ukryj drzewa	Απόκρυψη δέντρων
 Ukryj efekty wzmocnień (szaman)	Απόκρυψη εφέ ενισχύσεων (σαμάνος)
@@ -6616,11 +6996,14 @@ Ulepszenie: Zasadzka	Βελτίωση: Ενέδρα
 Ulepszenie: od 0 do 9.	Βελτίωση: από 0 έως 9.
 Ulepszona Butelka	Αναβαθμισμένο Μπουκάλι
 Ulepszony Barwnik	Βελτιωμένη Βαφή
+Ulepszysz do: %s	Αναβαθμίζεται σε: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Θα τη βελτιώσεις στον Σταβλίτη (Εκπαίδευση ίππου).
 Ulepszyć %s do poziomu %d?	Να βελτιωθεί το %s στο επίπεδο %d;
 Ultra	Ultra
 Ulubieni na górze listy	Αγαπημένοι στην κορυφή της λίστας
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Αγαπημένο χτένισμα των μοναχικών πολεμιστών, φαίνεται υπέροχο όταν φυσάει άνεμος. Αλλάζει μόνιμα το χτένισμα του χαρακτήρα σου.
+Umiejetnosci widac tylko u gracza online	Οι δεξιότητες φαίνονται μόνο σε παίκτη online
+Umiejętn.	Δεξιότ.
 Umiejętności konia (miejsca: %d z 2)	Ικανότητες ίππου (θέσεις: %d από 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Μπορείς να μάθεις δεξιότητες από το στάδιο «Ηρωικός».
 Umiejętności pomocnicze	Βοηθητικές ικανότητες
@@ -6628,6 +7011,7 @@ Umiejętności potencjału	Δεξιότητες δυναμικού
 Umiejętności potencjału (tylko czempion, 2 sloty)	Δεξιότητες δυναμικού (μόνο πρωταθλητής, 2 θέσεις)
 Umiejętności potencjału (z jaj zwierzaków)	Δεξιότητες δυναμικού (από αυγά κατοικίδιων)
 Umiejętności rozdaję sam	Μοιράζω μόνος μου τις ικανότητες
+Umiejętności towarzysza	Δεξιότητες συντρόφου
 Umiejętności zwierzaka (3 sloty)	Δεξιότητες κατοικίδιου (3 θέσεις)
 Umiejętności: przeciągnij je z okna postaci do pól.	Ικανότητες: σύρε τες από το παράθυρο χαρακτήρα στις θέσεις.
 Umiejętność %d	Ικανότητα %d
@@ -6640,6 +7024,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Στολή π�
 Unik	Αποφυγή
 Unik Strzały	Αποφυγή Βέλους
 Unik: %d%%	Αποφυγή: %d%%
+Uniknięcie śmierci	Αποφυγή θανάτου
 Upiorne Echo	Στοιχειωμένη Ηχώ
 Upiorny Strażnik	Στοιχειωμένος Φρουρός
 Upiorny Wojownik	Στοιχειωμένος Πολεμιστής
@@ -6657,6 +7042,8 @@ Ustaw nowe hasło na stronie.	Όρισε νέο κωδικό στην ιστοσ
 Ustaw ten pasek jako aktywny (%d)	Ορισμός αυτής της γραμμής ως ενεργής (%d)
 Ustawienia Społeczności zapisane.	Οι ρυθμίσεις Κοινότητας αποθηκεύτηκαν.
 Ustawienia Walki	Ρυθμίσεις μάχης
+Usun GM	Διαγραφή GM
+Usun Moby	Διαγραφή Mob
 Usun potwory	Αφαίρεση τεράτων
 Usun przedmioty	Διαγραφή αντικειμένων
 Usun wszystkie	Αφαίρεση όλων
@@ -6709,14 +7096,17 @@ Uziemienie	Ακινητοποίηση
 Ułóż i scal	Ταξινόμηση και συγχώνευση
 Użycie	Χρήση
 Użyj	Χρήση
+Użyj %(n)s przedmiotów	Χρησιμοποίησε %(n)s αντικείμενα
 Użyj %(n)s x %(what)s	Χρησιμοποίησε %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Χρησιμοποίησε Βιβλίο Ικανοτήτων Κατοικιδίου από το απόθεμά σου
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Χρησιμοποίησέ το στον Ναό των Φιδιών για να παρατείνεις τον χρόνο της αποστολής κατά ένα λεπτό (το πολύ έως 60 λεπτά).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Χρησιμοποίησέ το για να ξεκλειδώσεις 5 κλειδωμένες θέσεις στο προσωπικό σου μαγαζάκι.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Χρησιμοποίησε το δαχτυλίδι στο Βασίλειο των Στοιχείων (σε μία από τις εννέα περιοχές) για να μεταφερθείς πάντα στο Οροπέδιο της Δύναμης της Φύσης. Το δαχτυλίδι εξαφανίζεται μετά τη χρήση.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Χρησιμοποίησε το δαχτυλίδι στο Βασίλειο των Στοιχείων (σε μία από τις εννέα περιοχές) για να έχεις πιθανότητα (10%) να μεταφερθείς στο Οροπέδιο της Δύναμης της Φύσης. Το δαχτυλίδι εξαφανίζεται σε κάθε χρήση. Πέφτει από όλα τα τέρατα και τα Metin του Βασιλείου των Στοιχείων (είσοδος: πύλη και ο Γέρος στο Λιμάνι της Νέας Ηπείρου).
+Użyj przedmiotu	Χρησιμοποίησε αντικείμενο
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Χρησιμοποίησέ το για να ενεργοποιήσεις ή να απενεργοποιήσεις το κλείδωμα εμπειρίας. Χωρίς χρονικό όριο.
 Użyj, kiedy zablokujesz się w "teksturach".	Χρησιμοποίησέ το όταν κολλήσεις στα "textures".
+Użytkowe	Αναλώσιμα
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Χρησιμοποιώντας τα φτερά του δράκου Alteran μπορείς να εξευγενίσεις ένα τεμάχιο εξοπλισμού.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Με αυτή την άδεια μπορείς να στρατολογήσεις μισθοφόρο. (Προς το παρόν χωρίς χρήση - θα έρθει με την επόμενη ενημέρωση του Yohara.)
 Używalne	Αναλώσιμα
@@ -6807,6 +7197,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Το Κοπάνημα έχει
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Νόμισμα της Yohara (το πολύ 999 999). Λείανε Βότσαλα στο Άγαλμα Πολεμιστή στο Λιμάνι, πλήρωσε στο Κατάστημα Gaya και κατά την κατασκευή.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Νόμισμα ανταλλαγής: 1 Won = 100 000 000 Yang.
 Wampir	Βρικόλακας
+Wampir+ (szary)	Βρικόλακας+ (γκρι)
 Warkocze Plem. (czerw.)	Φυλετικές Πλεξούδες (κόκκινες)
 Warkocze Plem. (fiol.)	Φυλετικές Πλεξούδες (μοβ)
 Warkocze Plem. (nieb.)	Φυλετικές Πλεξούδες (μπλε)
@@ -6820,11 +7211,14 @@ Wartosc ataku vs potwory	Αξία επίθεσης vs τέρατα
 Wartosc magicznego ataku	Αξία μαγικής επίθεσης
 Wartownik z Yohara	Φρουρός του Yohara
 Wartość Ataku	Αξία Επίθεσης
+Wartość Ataku +30	Αξία επίθεσης +30
 Wartość Ataku w potwory +%d	Τιμή Επίθεσης κατά τεράτων +%d
 Wartość Ataku: +12~15%	Τιμή Επίθεσης: +12~15%
 Wartość Magicznego Ataku: +30	Αξία Μαγικής Επίθεσης: +30
 Wartość ataku +75 (miejsca 1-3)	Τιμή επίθεσης +75 (θέσεις 1-3)
+Wartość bonusu dokładnie taka	Ακριβώς αυτή η τιμή μπόνους
 Wartość bonusu taka albo niższa	Τιμή μπόνους ίση ή χαμηλότερη
+Wartość bonusu taka albo wyższa	Αυτή η τιμή μπόνους ή υψηλότερη
 Wartość sklepu przekracza 2 miliardy Yang.	Η αξία του καταστήματος ξεπερνά τα 2 δισεκατομμύρια Yang.
 Warunek: bonus o co najmniej podanej wartości	Συνθήκη: μπόνους με τουλάχιστον την δοσμένη τιμή
 Warunki	Συνθήκες
@@ -6853,6 +7247,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	Δοκιμαστι�
 Wersja: %d.%d.%d%s	Έκδοση: %d.%d.%d%s
 Wersja: 1.0.0	Έκδοση: 1.0.0
 Wersja: xxx	Έκδοση: xxx
+Wesoły Posłaniec Miłości	Χαρούμενος Αγγελιοφόρος Αγάπης
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Μέσα σε αυτό το υπέροχο όστρακο μπορεί να κρύβεται ένα λαμπερό μαργαριτάρι.
 Wezowy Lucznik Zodiaku	Τοξότης-Φίδι του Ζωδιακού
 Wezowy Miecznik Zodiaku	Ξιφομάχος-Φίδι του Ζωδιακού
@@ -6882,13 +7277,16 @@ Wielorybi Pancerz	Πανοπλία Φάλαινας
 Wieprzowina	Χοιρινό
 Wierzchowiec utknął - wsiadam ponownie	Το άλογο κόλλησε - ανεβαίνω ξανά
 Wieża Sung Mahi	Πύργος του Sung Mahi
+Wiking Światła+	Βίκινγκ του Φωτός+
 Wilk Piekielnej Wieży	Λύκος του Κολαστήριου Πύργου
 Wilk Zodiaku	Λύκος του Ζωδιακού
+Wilki alfa	Λύκοι Άλφα
 Wino Brzoskwini (W)	Κρασί Ροδάκινου (Π)
 Wino Kwiatu Brzoskwini+	Κρασί Άνθους Ροδακινιάς+
 Winogrono	Σταφύλι
 Wioska Gildii	Χωριό Συντεχνίας
 Wioska gildii 1	Χωριό Συντεχνίας 1
+Wiru Miecza	Ανεμοστρόβιλου Σπαθιού
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Στριφογύρισε το σπαθί για να χτυπήσεις πολλούς αντιπάλους.|Ενισχύεται από: Δύναμη (++), Ευκινησία (+), Ζωτικότητα (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Στριφογύρισε ανάμεσα στους εχθρούς με ένα εγχειρίδιο.|Ενισχύεται από: Ευκινησία (++), Δύναμη (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Το Στροβιλιζόμενο Εγχειρίδιο έχει %d%% πιθανότητα να ζαλίσει τον αντίπαλο
@@ -6909,6 +7307,7 @@ Wojna Imperiow 1	Πόλεμος Βασιλείων 1
 Wojna gildii i Krypta Balathora	Πόλεμος συντεχνιών και Κρύπτη του Balathor
 Wojow. z Toporem Zodiaku	Πολεμιστής με Τσεκούρι του Ζωδιακού
 Wojowniczka (K)	Πολεμίστρια (γ)
+Wojownik (Body)	Πολεμιστής (Σώμα)
 Wojownik (Mental)	Πολεμιστής (Πνεύμα)
 Wojownik Ciało	Πολεμιστής Σώμα
 Wojownik En-Tai	Πολεμιστής En-Tai
@@ -6922,6 +7321,7 @@ Wojownik Umysł	Πολεμιστής Νους
 Wojownik Uruk	Πολεμιστής Ουρούκ
 Wojownik Zephyr	Πολεμιστής Ζέφυρος
 Wojskowy Koń	Στρατιωτικό Άλογο
+Wokol mnie	Γύρω μου
 Wola Balathora	Θέληση του Balathor
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Θέληση του Balathor: αντοχή στη ζάλη, στις αλυσίδες και στο πάγωμα %d%%
 Wola Sung Ma tej mapy	Θέληση του Sung Ma αυτού του χάρτη
@@ -6946,6 +7346,7 @@ Wolne punkty statusu: %d	Ελεύθεροι πόντοι κατάστασης: %
 Wolne punkty umiejętności	Ελεύθεροι πόντοι ικανοτήτων
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Το Ύπουλο Δηλητήριο έχει %d%% πιθανότητα να επιστραφεί στον αντίπαλο
 Wounded Soldier	Τραυματισμένος Στρατιώτης
+Wołanie	Κάλεσμα
 Wpisz co najmniej 2 litery nazwy.	Γράψε τουλάχιστον 2 γράμματα του ονόματος.
 Wpisz co najmniej 2 litery.	Γράψε τουλάχιστον 2 γράμματα.
 Wpisz ilosc (1-%d)	Γράψε ποσότητα (1-%d)
@@ -6963,6 +7364,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Γράψε πόσα μπόνους 
 Wpłacało botów: %d	Bot που κατέθεσαν: %d
 Wrist	Καρπός
 Wrogi Mur	Εχθρικό Τείχος
+Wrzesień	Σεπτέμβριος
 Wróć 11553 12697	Επιστροφή 11553 12697
 Wróć do zapisanych reguł	Επιστροφή στους αποθηκευμένους κανόνες
 Wróć do zwykłej mapy	Επιστροφή στον κανονικό χάρτη
@@ -6996,6 +7398,7 @@ Wszystkie na P	Όλα σε P
 Wszystkie sloty sklepu są już odblokowane.	Όλες οι θέσεις του καταστήματος είναι ήδη ξεκλείδωτες.
 Wszystkie umiej. P	Όλες οι ικανότητες P
 Wszystkie warstwy	Όλα τα επίπεδα
+Wszystkie żywioły	Όλα τα στοιχεία
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Όλα: %d προσπάθειες (επιτυχείς: %d, αποτυχημένες: %d).
 Wszystkie: tylko %s lub %s.	Όλα: μόνο %s ή %s.
 Wszystko to za 50 zł na miesiąc!	Όλα αυτά για 50 PLN τον μήνα!
@@ -7034,13 +7437,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	Η επιλογή ά�
 Wyboru nie można cofnąć. Kontynuować?	Η επιλογή δεν μπορεί να αναιρεθεί. Συνέχεια;
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	Ο επιλεγμένος βαθμός απαιτεί τόσα αστέρια σε κάθε τέρας του σετ.
 Wybrane bonusy i wartości	Επιλεγμένα μπόνους και τιμές
+Wybrano: %s	Επιλέχθηκε: %s
 Wybrany NPC jest tuż obok.	Ο επιλεγμένος NPC είναι ακριβώς δίπλα σου.
 Wybrany kanał dostępny jest tylko dla kont Premium.	Το επιλεγμένο κανάλι είναι διαθέσιμο μόνο για λογαριασμούς Premium.
 Wybrany przepis: %s	Επιλεγμένη συνταγή: %s
 Wycena czesciowa - trwa wczytywanie	Μερική αποτίμηση - η φόρτωση συνεχίζεται
 Wycena wygasła - wyceń ponownie.	Η αποτίμηση έληξε - κάνε νέα αποτίμηση.
+Wycisz 1 dzien	Σίγαση 1 ημέρας
+Wycisz 1 h	Σίγαση 1 ώρας
+Wycisz 10 min	Σίγαση 10 λεπτ.
 Wycisz na:	Σίγαση για:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Αποσυρμένο αντικείμενο: το Τελετουργικό της Αφύπνισης δεν υπάρχει πια και η πέτρα δεν έχει καμία χρήση. Μπορείς να την πετάξεις.
+Wyczysc filtry	Καθαρισμός φίλτρων
 Wyczyszczono wszystkie znaczniki sklepów offline.	Εκκαθαρίστηκαν όλοι οι δείκτες των offline καταστημάτων.
 Wyczyszczono: %s	Εκκαθαρίστηκε: %s
 Wyczyść	Εκκαθάριση
@@ -7059,6 +7467,7 @@ Wydarzenie Wakacyjne	Καλοκαιρινό Γεγονός
 Wydarzenie Walentynkowe	Γεγονός του Αγίου Βαλεντίνου
 Wydarzenie Wielkanocne.	Πασχαλινό Γεγονός.
 Wydobądź %(n)s rudy	Εξόρυξε %(n)s μετάλλευμα
+Wydobądź rudę	Εξόρυξε μετάλλευμα
 Wydłuża czas trwania twoich umiejętności.	Παρατείνει τη διάρκεια των δεξιοτήτων σου.
 Wygląd postaci	Εμφάνιση χαρακτήρα
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Φαίνεται αθώο, αλλά είναι 100% θανατηφόρο. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
@@ -7084,6 +7493,7 @@ Wykonaj zestaw broni	Κατασκευή σετ όπλου
 Wykonaj zestaw hełmu	Κατασκευή σετ κράνους
 Wykonaj zestaw zbroi	Κατασκευή σετ πανοπλίας
 Wykonane zmiany: %d	Εκτελεσμένες αλλαγές: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Ολοκληρώθηκαν %s/%s. Ενεργά συνολικά: %s
 Wykopane rudy	Μεταλλεύματα που εξορύχθηκαν
 Wykorzystaj	Εξαργύρωση
 Wykorzystaj voucher	Εξαργύρωση κουπονιού
@@ -7092,6 +7502,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	Εντοπίστηκε 
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Εντοπίστηκε δυνητικά πολύτιμο αντικείμενο, συνέχεια;
 Wykryto przedmiot z bonusem, kontynuować?	Εντοπίστηκε αντικείμενο με μπόνους, συνέχεια;
 Wykryto wysoki poziom ulepszenia, kontynuować?	Εντοπίστηκε υψηλό επίπεδο αναβάθμισης, συνέχεια;
+Wylacz eventy	Απενεργ. εκδηλώσεων
 Wylosować nową ofertę od razu?	Να κληρωθεί νέα προσφορά αμέσως;
 Wylosuj cele od nowa	Κλήρωση στόχων από την αρχή
 Wyląg Exedyara	Νεοσσός του Exedyar
@@ -7115,6 +7526,8 @@ Wymagany poziom do zakupu: %d	Απαιτούμενο επίπεδο για αγ�
 Wymagany poziom postaci: 75	Απαιτούμενο επίπεδο χαρακτήρα: 75
 Wymagany poziom: %d	Απαιτούμενο επίπεδο: %d
 Wymiana ksiąg umiejętności	Ανταλλαγή βιβλίων ικανοτήτων
+Wymiana u: %s	Ανταλλαγή στον/στην: %s
+Wymiana: %s	Ανταλλαγή: %s
 Wymiany	Ανταλλαγές
 Wymienić %d ksiąg na %d nowych za %s Yang?	Να ανταλλαχθούν %d βιβλία με %d νέα για %s Yang;
 Wyniki odświeżają się co minutę.	Τα αποτελέσματα ανανεώνονται κάθε λεπτό.
@@ -7128,6 +7541,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Να απελευθερωθ
 Wypłać	Ανάληψη
 Wypłać sztuk:	Ανάληψη τεμαχίων:
 Wyrok	Ετυμηγορία
+Wyrzuc bota	Αποβολή bot
 Wyrzuc z gry...	Αποβολή από το παιχνίδι...
 Wyrzuc z serwera	Διώξε από τον διακομιστή
 Wyrzucic %s z gry?	Να αποβληθεί ο/η %s από το παιχνίδι;
@@ -7145,6 +7559,7 @@ Wysuszone Oczy	Αποξηραμένα Μάτια
 Wysyłanie do serwera...	Αποστολή στον διακομιστή...
 Wyszukaj biżuterię i buty.	Αναζήτηση κοσμημάτων και παπουτσιών.
 Wyszukaj bronie.	Αναζήτηση όπλων.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Αναζήτησε παίκτη online για να δεις τις δεξιότητες
 Wyszukaj przedmiot	Αναζήτηση αντικειμένου
 Wyszukaj przedmioty z min. 1 bonusem.	Αναζήτηση αντικειμένων με τουλάχιστον 1 μπόνους.
 Wyszukaj zbroje/tarcze/hełmy.	Αναζήτηση πανοπλιών/ασπίδων/κρανών.
@@ -7248,6 +7663,7 @@ Wściekły Cierń	Μαινόμενο Αγκάθι
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Μανιασμένο, αγκαθωτό και αλύπητο. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y σε παγκόσμια μέτρα. Ctrl + κλικ στον χάρτη = τηλεμεταφορά.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang ανά kill
 Yang z potworów +%d%%	Yang από τέρατα +%d%%
 Yang za próbę awansu	Yang ανά προσπάθεια προαγωγής
 Yesterday {:02d}:{:02d}	Χθες {:02d}:{:02d}
@@ -7291,9 +7707,11 @@ Z jaja: %s	Από αυγό: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Από κάθε θέση μπορείς να αγοράσεις ένα πράγμα ανά προσφορά.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Με ταιριαστό κοστούμι: +800 HP, +15 τιμή επίθεσης
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Με ταιριαστό χτένισμα: +800 HP, +15 τιμή επίθεσης
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	Με πιθανότητα %d%% μηδενίζει τον χρόνο επαναφόρτισης των δεξιοτήτων σου
 Z łukiem	Με τόξο
 Z. Eliksir Mocy Płn. W.	Χρ. Ελιξίριο Δύναμης Β. Ανέμου
 Z. Eliksir Odp. na Ogień	Χρ. Ελιξίριο Αντοχής στη Φωτιά
+ZAKRĘĆ	ΠΕΡΙΣΤΡΟΦΗ
 ZRĘ	ΕΠΙΔ
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	Σε %d λεπτά θα μεταφερθείς. Μίλησε με τον Φύλακα των Δράκων Dolnarr για να φύγεις αμέσως.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	Για τη %d. συνοδεία στο σωστό σεντούκι λαμβάνεις Κλειδί Goblin!
@@ -7335,13 +7753,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Για αυτόν τον γύρο θ
 Za ukończone tury także otrzymujesz nagrody.	Παίρνεις επίσης ανταμοιβές για τους ολοκληρωμένους γύρους.
 Za wysoka wartość: %s.	Πολύ υψηλή τιμή: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	Το προηγμένο φίλτρο είναι απενεργοποιημένο: Επιλογές Παιχνιδιού -> Πρόσθετα -> Φίλτρο συλλογής.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Προηγμένο φίλτρο συλλογής (δεξί κλικ στο Ctrl+Z)
+Zabic postac %s?	Να σκοτωθεί ο χαρακτήρας %s;
 Zabici gracze	Παίκτες που Σκοτώθηκαν
 Zabij %(n)s potworów	Σκότωσε %(n)s τέρατα
+Zabij potwory	Σκότωσε τέρατα
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Σκοτώνει ορκ και όλα τα άλλα τέρατα. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Zabite potwory	Σκοτωμένα τέρατα
 Zablokowac konto %s NA ZAWSZE?	Να αποκλειστεί ο λογαριασμός %s ΓΙΑ ΠΑΝΤΑ;
 Zablokowac konto %s na %s dni?	Να αποκλειστεί ο λογαριασμός %s για %s ημέρες;
 Zablokowac nowe logowania (przerwa techniczna)?	Να μπλοκαριστούν οι νέες συνδέσεις (τεχνική διακοπή);
+Zablokowane miejsce	Κλειδωμένη θέση
 Zablokowani	Αποκλεισμένοι
 Zablokowany przy sortowaniu (Alt+LPM)	Κλειδωμένο στην ταξινόμηση (Alt+LPM)
 Zablokuj ekwipunek	Κλείδωμα εξοπλισμού
@@ -7351,6 +7773,7 @@ Zabrakło Yang.	Τελείωσαν τα Yang.
 Zabójca	Δολοφόνος
 Zabójca Króla	Βασιλοκτόνος
 Zabłąkany Dzikus	Αδέσποτος Άγριος
+Zachowanie botow	Συμπεριφορά μποτ
 Zacny Kam. Przebudzenia	Εκλεκτή Πέτρα Αφύπνισης
 Zacny P. Wężowy (wykon.)	Ευγεν. Φιδ. Κάπα (κατασκ.)
 Zacny Płaszcz Wężowy	Ευγενική Φιδίσια Κάπα
@@ -7384,6 +7807,7 @@ Zakończyć sesję farmienia?	Να τερματιστεί η συνεδρία φ
 Zakres rysowania	Απόσταση σχεδίασης
 Zakres sklepów	Εμβέλεια καταστημάτων
 Zakres widoku	Εμβέλεια προβολής
+Zakresy (puste = bez limitu)	Εύρη (κενό = χωρίς όριο)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Μια κλειστή [5] βρισκόταν δίπλα στην αποκαλυμμένη κάρτα.[ENTER]Δυστυχώς δεν λαμβάνεις κανέναν πόντο. Τώρα επίλεξε τον βασιλιά σου [K].
 Zakręć kołem za jedyne	Γύρνα τον τροχό μόνο με
 Zakręć kołem.	Γύρνα τον τροχό.
@@ -7391,6 +7815,7 @@ Zaktualizuj klienta i serwer.	Ενημέρωσε τον client και τον δ�
 Zaktualizuj serwer, żeby rozdawać statystyki.	Ενημέρωσε τον διακομιστή για να μοιράζεις στατιστικά.
 Zakup raz na %s	Αγορά μία φορά ανά %s
 Zakupy przerwane.	Οι αγορές διακόπηκαν.
+Zakupy towarzysza	Αγορές συντρόφου
 Zakupy włoży ci do torby albo do swojej.	Τα ψώνια θα τα βάλει στην τσάντα σου ή στη δική του.
 Zamarznięta Wieża	Παγωμένος Πύργος
 Zamarznięty Generał	Παγωμένος Στρατηγός
@@ -7412,6 +7837,7 @@ Zapisane bonusy	Αποθηκευμένα μπόνους
 Zapisane miejsca	Αποθηκευμένες θέσεις
 Zapisane pozycje	Αποθηκευμένες θέσεις
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Οι αποθηκευμένες θέσεις λειτουργούν μόνο με λευκό πάπυρο (%s) στο απόθεμα.
+Zapisane zestawy	Αποθηκευμένα σετ
 Zapisano	Αποθηκεύτηκε
 Zapisano (%s%%).	Αποθηκεύτηκε (%s%%).
 Zapisano (gracz offline)	Αποθηκεύτηκε (ο παίκτης είναι εκτός σύνδεσης)
@@ -7423,6 +7849,7 @@ Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\sc
 Zapisz i wyślij	Αποθήκευση και αποστολή
 Zapisz obecny filtr jako preset o tej nazwie	Αποθήκευση του τρέχοντος φίλτρου ως προκαθορισμένο με αυτό το όνομα
 Zapisz reguły i wyślij je na serwer	Αποθήκευση των κανόνων και αποστολή τους στον διακομιστή
+Zapisz tu	Αποθήκευση εδώ
 Zaplanowana została przerwa w dostępie do usług.	Έχει προγραμματιστεί διακοπή στην πρόσβαση στις υπηρεσίες.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Αποτρέπει την απώλεια αντοχής του αλόγου, ιδανικό για μεγάλα ταξίδια χωρίς διακοπές.
 Zapomnienie umiejętności: Stajenny (za darmo).	Λήθη ικανοτήτων: Σταβλίτης (δωρεάν).
@@ -7461,6 +7888,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Περιέχει ανταμοιβές για τους γενναίους πολεμιστές που υπηρετούν στην Κοιλάδα Seungryong.
 Zawiodłeś.	Απέτυχες.
 Zaznacz albo odznacz całą stronę	Επιλογή ή αποεπιλογή ολόκληρης της σελίδας
+Zaznacz do "Kup wybrane"	Επιλογή για "Αγορά επιλεγμένων"
 Zaznacz oferty, które chcesz kupić.	Επίλεξε τις προσφορές που θέλεις να αγοράσεις.
 Zaznacz wszystkie	Επιλογή όλων
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Οι επιλεγμένες αποστολές θα εξαφανιστούν από τη λίστα σαν να μην υπήρξαν ποτέ.
@@ -7479,9 +7907,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Μάζεψε εμβλήματα για να τα ανταλλάξεις με σεντούκια ή υλικό αναβάθμισης.
 Zbieranie dla Biologa zamiast bicia poziomow.	Συλλογή για τον Βιολόγο αντί για ανέβασμα επιπέδων.
 Zbierz %(n)s ziół	Μάζεψε %(n)s βότανα
+Zbierz yang	Μάζεψε yang
+Zbierz zioła	Μάζεψε βότανα
 Zbir Piekielnej Wieży	Μπράβος του Κολαστήριου Πύργου
 Zbiórka na parterze wieży	Συγκέντρωση στο ισόγειο του πύργου
 Zbocze Gautama	Πλαγιά Γκαουτάμα
+Zbr. Mroku Księżyca+ (m)	Πανοπλία Σκότους Σελήνης+ (α)
+Zbroja Ajolosa+ (m)	Πανοπλία Ajolos+ (α)
+Zbroja Avalonu+ (srebr.)	Πανοπλία Avalon+ (αργ.)
 Zbroja Boskiego Smoka	Πανοπλία του Θεϊκού Δράκου
 Zbroja Dzikiego Knura	Πανοπλία Αγριογούρουνου
 Zbroja Króla Wojowników+	Πανοπλία του Βασιλιά των Πολεμιστών+
@@ -7490,8 +7923,10 @@ Zbroja Płytowa Zodiaku	Πλακέ Πανοπλία του Ζωδιακού
 Zbroja Smoka Magii	Πανοπλία του Δράκου της Μαγείας
 Zbroja Smoka Mroku	Πανοπλία του Δράκου του Σκότους
 Zbroja Smoka Wiatru	Πανοπλία του Δράκου του Ανέμου
+Zbroja Szczodrego+	Πανοπλία του Γενναιόδωρου+
 Zbroja Tygrysa	Πανοπλία Τίγρης
 Zbroja Wilka	Πανοπλία Λύκου
+Zbroja Zmarłych+ (m)	Πανοπλία Νεκρών+ (α)
 Zbroja Zodiaku	Πανοπλία του Ζωδιακού
 Zbroja wypełniona mocą boskiego smoka.	Πανοπλία γεμάτη με τη δύναμη του θεϊκού δράκου.
 Zbroja wypełniona mocą magicznego smoka.	Πανοπλία γεμάτη με τη δύναμη του μαγικού δράκου.
@@ -7520,6 +7955,8 @@ Zdobyte Yang	Yang που κερδήθηκαν
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Το κερδίζεις από τέρατα και αποστολές της Νέας Ηπείρου.
 Zdobywasz je, chroniąc Goblina Skarbów	Τα κερδίζεις προστατεύοντας τον Goblin των Θησαυρών
 Zebrane kwiaty	Λουλούδια που μαζεύτηκαν
+Zebrano %s z %s yang (%.1f%%)	Συγκεντρώθηκαν %s από %s yang (%.1f%%)
+Zebrano: %d / %d	Συγκεντρώθηκαν: %d / %d
 Zegarek Kieszonkowy	Ρολόι Τσέπης
 Zejście Północnego Wiatru	Κάθοδος του Βόρειου Ανέμου
 ZejściePłnW. 11590 12181	ΚατάβασηΒΑ 11590 12181
@@ -7531,11 +7968,15 @@ Zemsta Czarnej Śmierci	Εκδίκηση του Μαύρου Θανάτου
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Ζέφυρος
+Zespawnowano bossow: %s/%s.	Έγινε spawn αφεντικών: %s/%s.
 Zestaw %d	Σετ %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Σετ 24 καρτών Okey. Δεξί κλικ για να το προσθέσεις - ένα παιχνίδι Okey κοστίζει 1 σετ καρτών και 30 000 Yang.
 Zestaw Opieki nad Koniem	Κιτ Φροντίδας Αλόγου
 Zestaw kostiumów	Σετ κοστουμιών
 Zestaw kostiumów:	Σετ κοστουμιών: 
+Zestaw:	Σετ: 
+Zestawy lochowe	Σετ μπουντρουμιών
+Zestawy polowe	Σετ πεδίων
 Zestawy: broń	Σετ: όπλα
 Zestawy: hełmy	Σετ: κράνη
 Zestawy: zbroje	Σετ: πανοπλίες
@@ -7555,6 +7996,7 @@ Zielone Zioło	Πράσινο Βότανο
 Zielone, fioletowe, peleryny: z targu.	Πράσινα, μοβ, μανδύες: από το παζάρι.
 Zielony Lśniący Odłamek	Πράσινο Αστραφτερό Θραύσμα
 Zielony Sok	Πράσινος Χυμός
+Zielony Szaman+	Πράσινος Σαμάνος+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Γη του Sung Ma;Χωρίς Επίπεδο Πρωταθλητή δεν θα τραυματίσεις τα τέρατα εδώ.
 Ziemie Mrocznego Smoka	Εδάφη του Σκοτεινού Δράκου
 Ziemie gildii	Εδάφη συντεχνίας
@@ -7571,11 +8013,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Βότανο που άλλαξε από τη δύναμη του Sung Mahi. Απαιτείται για την παρασκευή ελιξιρίων της αστραπής. Τα ελιξίρια τα φτιάχνει ο βοτανολόγος Huahn-So (Bokjung, Bakra, Jayang).
 Zjawa Żółt. Tygrysa (BŚ)	Φάντασμα Κίτρινης Τίγρης (Μπος Κόσμου)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Θα καταναλωθεί η τροφή που χρειάζεται για να γεμίσει η γραμμή.
+Zlamanie klatwy swiatyni	Σπάσιμο κατάρας ναού
 Zlamanie odpornosci: dzwony	Διάσπαση αντοχής: καμπάνες
+Zlamanie odpornosci: luki	Σπάσιμο αντοχής: τόξα
 Zlamanie odpornosci: miecze	Διάσπαση αντοχής: σπαθιά
 Zlamanie odpornosci: sztylety	Διάσπαση αντοχής: εγχειρίδια
 Zlamanie odpornosci: wachlarze	Διάσπαση αντοχής: βεντάλιες
 Zleć zbieranie:	Ανάθεση συλλογής:
+Zlodziej zycia	Κλέφτης ζωής
 Zly Silny Malpi Zolnierz	Κακός Δυνατός Στρατιώτης Πιθήκων
 Zly Zolnierz Czarnej Burzy	Κακός Στρατιώτης της Μαύρης Καταιγίδας
 Zly format (np. 18, M5, G1, P).	Λάθος μορφή (π.χ. 18, M5, G1, P).
@@ -7595,6 +8040,8 @@ Zmianki z (B) są używane jako pierwsze	Τα αντικείμενα αλλαγ�
 Zmiany dzialaja po kilku sekundach	Οι αλλαγές ισχύουν έπειτα από λίγα δευτερόλεπτα
 Zmien ceny wszystkich	Αλλαγή τιμών όλων
 Zmien poziom konia	Άλλαξε επίπεδο αλόγου
+Zmien range	Αλλαγή βαθμού
+Zmien skille	Αλλαγή δεξιοτήτων
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Αλλάζει τα μπόνους ενός μυθικού Δρακόλιθου στο παράθυρο της Αλχημείας Δρακόλιθων (καρτέλα αλλαγής μπόνους).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Αλλάζει το όνομα του κατοικίδιου (100.000 Yang).
 Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	Με μικρή πιθανότητα αλλάζει το 6ο και το 7ο μπόνους. Σύρε το πάνω σε αντικείμενο: έχει 10% πιθανότητα να αλλάξει το 6ο και το 7ο μπόνους, ενώ τα πρώτα 5 μπόνους μένουν αμετάβλητα. Σε περίπτωση αποτυχίας το αντικείμενο καταναλώνεται και τα μπόνους μένουν όπως ήταν.
@@ -7651,10 +8098,14 @@ Znak Strażnika	Σημάδι του Φύλακα
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Εξαίσια σφυρηλατημένο κλειδί από μαγικό κρύσταλλο. Απαραίτητο για το άνοιγμα του τέλειου σεντουκιού.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Εξαιρετικά! Η κάρτα σου είναι υψηλότερη.[ENTER]Αποκάλυψε την επόμενη κάρτα.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Βρέθηκαν %d - εμφανίζονται %d, περιόρισε την αναζήτηση.
+Znaleziono: %d	Βρέθηκε: %d
 Znaleziono: %d - wybierz z listy.	Βρέθηκαν: %d - επίλεξε από τη λίστα.
+Znaleziono: %s	Βρέθηκε: %s
 Znika 15 dni po otrzymaniu.	Εξαφανίζεται 15 ημέρες μετά την παραλαβή.
+Zniszcz %(n)s kamieni Metin	Κατάστρεψε %(n)s λίθους Metin
 Zniszcz %(n)s x %(what)s	Κατάστρεψε %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Κατέστρεψε τα αυγά για να προκαλέσεις ζημιά!
+Zniszcz kamienie Metin	Κατάστρεψε λίθους Metin
 Zniszczone Metiny	Κατεστραμμένα Metin
 Zniszczone kamienie Metin	Κατεστραμμένες πέτρες Metin
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Το Αυγό Δράκου καταστράφηκε - η Σφραγίδα του Balathor εξασθένησε σημαντικά.
@@ -7666,6 +8117,7 @@ Zodiak Ognia	Ζωδιακός της Φωτιάς
 Zodiak Wiatru	Ζωδιακός του Ανέμου
 Zodiak Ziemi	Ζωδιακός της Γης
 Zol. Czar. Wiat. Zodiaku	Στρατ. Μαύρου Ανέμου του Ζωδιακού
+Zolnierz Czarnego Wiatru	Στρατιώτης του Μαύρου Ανέμου
 Zolnierz Gladiator Kosci	Στρατιώτης Οστέινος Μονομάχος
 Zolnierz Shrimp Zodiaku	Στρατιώτης Γαρίδα του Ζωδιακού
 Zolnierz Spartaner	Στρατιώτης Σπάρτανερ
@@ -7687,8 +8139,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Φτ�
 Zroszony Młot	Δροσερό Σφυρί
 Zrzut ekranu	Στιγμιότυπο οθόνης
 Zrzut ekranu zapisano w '%s'.	Το στιγμιότυπο οθόνης αποθηκεύτηκε στο '%s'.
+Zrzutka yang	Έρανος Yang
 Zrób miejsce w ekwipunku.	Άδειασε χώρο στο απόθεμά σου.
 Zręczność	Δεξιοτεχνία
+Zsiadam po buffy	Κατεβαίνω για buffs
 Zsiądź z konia, aby go rozwijać.	Κατέβα από τον ίππο για να τον εκπαιδεύσεις.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Μανιταρόσουπα
@@ -7774,6 +8228,28 @@ Zwiększa szansę na drop Yang.	Αυξάνει την πιθανότητα drop 
 Zwiększa szansę na kradzież PE.	Αυξάνει την πιθανότητα κλοπής SP.
 Zwiększa szansę na kradzież PŻ.	Αυξάνει την πιθανότητα κλοπής HP.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Αυξάνει την πιθανότητα κρίσιμου χτυπήματος κατά 10% για 10 λεπτά.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία αξεσουάρ κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία αξεσουάρ κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία όπλων κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία όπλων κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία βιβλίων δεξιοτήτων κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία βιβλίων δεξιοτήτων κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία ζωνών κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία ζωνών κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία άλλων αντικειμένων κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία άλλων αντικειμένων κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία αντικειμένων για κατοικίδια κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία αντικειμένων για κατοικίδια κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία γαντιών κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία γαντιών κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία πανοπλιών κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία πανοπλιών κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ όπλων κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ όπλων κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ κρανών κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ κρανών κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ πανοπλιών κατά 1%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Δύο τέτοιους ρούνους ο Yu-Hwan θα τους μετατρέψει σε ρούνο 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Αυξάνει την πιθανότητα επιτυχίας κατά τη δημιουργία σετ πανοπλιών κατά 20%. Τοποθέτησέ το στο πεδίο "Αύξηση πιθανότητας" του παραθύρου δημιουργίας - σε κάθε προσπάθεια καταναλώνεται ένας ρούνος. Αυτό είναι το μέγιστο επίπεδο του ρούνου.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Αυξάνει την πιθανότητα διατρητικού χτυπήματος κατά 10% για 10 λεπτά.
 Zwiększa szansę na przywołanie konia.	Αυξάνει την πιθανότητα κλήσης του αλόγου.
 Zwiększa szansę na spowolnienie przeciwnika.	Αυξάνει την πιθανότητα επιβράδυνσης του αντιπάλου.
@@ -7799,6 +8275,10 @@ Zwiększa twoją siłę obrony.	Αυξάνει τη δύναμη άμυνάς σ
 Zwiększa twoją szybkość ataku o 15% na okres 30 minut. Niezdatna do handlu.	Αυξάνει την ταχύτητα επίθεσής σου κατά 15% για 30 λεπτά. Μη εμπορεύσιμο.
 Zwiększa umiejętności twojego wierzchowca	Αυξάνει τις ικανότητες του ίππου σου
 Zwiększa wartość odbitych ciosów.	Αυξάνει την τιμή των ανακλώμενων χτυπημάτων.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Αυξάνει τη θέληση SungMa (INT) στη μάχη κατά 15 για %d δευτ.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Αυξάνει τη θέληση SungMa (RES) στη μάχη κατά 15 για %d δευτ.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Αυξάνει τη θέληση SungMa (STR) στη μάχη κατά 15 για %d δευτ.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Αυξάνει τη θέληση SungMa (VIT) στη μάχη κατά 15 για %d δευτ.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Αυξάνει την αντοχή. Είναι γνωστό για τις μυοενισχυτικές του ιδιότητες.
 Zwiększa wzrost doświadczenia.	Αυξάνει την αύξηση της εμπειρίας.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Αυξάνει τη φυσική και μαγική ζημιά που προκαλείς. Δυνατότητα ενίσχυσης άλλου παίκτη. Μπόνους όταν χρησιμοποιείται στον εαυτό σου.
@@ -7822,6 +8302,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Επιστρέφει το
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Επιστρέφει τους πόντους Πρωταθλητή που δόθηκαν στη Δύναμη Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Επιστρέφει τους πόντους Πρωταθλητή που δόθηκαν στη Ζωτικότητα Sung Ma.
 Zwyczajna Szata Aury	Συνηθισμένη Ρόμπα Άουρας
+Zwykle bicie potworow	Απλό χτύπημα τεράτων
 Zwykła Skóra	Απλό Δέρμα
 Zwykłe Mikstury	Κοινά Ποτίόν
 Zwykłe potwory	Κανονικά τέρατα
@@ -7888,8 +8369,11 @@ Złośliwa	Κακόβουλη
 Zły Pł. Wężowy (wykon.)	Κακιά Φιδ. Κάπα (κατασκ.)
 Zły Płaszcz Wężowy	Κακιά Φιδίσια Κάπα
 Złów %(n)s ryb	Ψάρεψε %(n)s ψάρια
+Złów ryby	Ψάρεψε
 [ Założony ]	[ Εξοπλισμένο ]
 [%s] [Sklep] %s	[%s] [Κατάστημα] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Σύρε ένα Βιβλίο Ικανοτήτων σαμάνου πάνω σε μια ικανότητα του Buffi.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Αυτή η ικανότητα εκπαιδεύεται με το Βιβλίο Ικανοτήτων: %s (σαμάνος).
 [NIE]	[ΟΧΙ]
@@ -7898,7 +8382,10 @@ Złów %(n)s ryb	Ψάρεψε %(n)s ψάρια
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Αρχεία πελάτη] Κατέβασε τα τρέχοντα αρχεία πελάτη στον πίνακα: Επεξεργαστής βάσης δεδομένων -> Εφαρμογή -> Λήψη τρεχόντων αρχείων πελάτη (zip) και αποσυμπίεσέ τα στον φάκελο του παιχνιδιού.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Αναζήτηση Θησαυρού] Έφτασες σε νέο γύρο!
 [Sklep]	[Κατάστημα]
+[TAK]	[ΝΑΙ]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Πόλεμος] Η συντεχνία σου βρίσκεται σε πόλεμο - κάνε κλικ στο «Μπες στον πόλεμο» στον πίνακα πολέμου (κάτω αριστερή γωνία).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	αλλά αν αποτύχεις, το Αντικείμενο θα καταστραφεί. Θέλεις να συνεχίσεις;
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	αλλά μόνο στο 50% της διάρκειας και με μηδενισμένη ηλικία.
 aoe_giant	aoe_giant
@@ -7907,6 +8394,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	επιτίθεσαι άμεσα στους εχθρούς.|Ενισχύεται από: Δύναμη (++), Ευκινησία (+), Ζωτικότητα (+).
 autotarget: no Kolejny cel row in the game options	autotarget: δεν υπάρχει γραμμή Επόμενος στόχος στις επιλογές παιχνιδιού
 bez bonusu	χωρίς μπόνους
+bije wszystko w pobliżu	χτυπά ό,τι βρίσκεται κοντά
 bonusów 1-5 spoza warunków	μπόνους 1-5 εκτός των συνθηκών
 brak bonusu	κανένα μπόνους
 bush_ancientlichen	bush_ancientlichen
@@ -7945,7 +8433,15 @@ dni	ημέρες
 do końca SM	μέχρι να εξαντληθούν τα Νομίσματα Δράκου
 dodaje nowy crafting %d item %d	προσθήκη νέου crafting %d αντικείμενο %d
 dodatkowo zweryfikowana po stronie serwera.	επιπλέον από την πλευρά του διακομιστή.
+dystans %d	dystans %d
 dzień	ημέρα
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	της εκδήλωσης σε έναν από τους χάρτες: Κοιλάδα Seungryong, Έρημος Yongbi,
 gildie każdego królestwa (odbiór w tym oknie).	συντεχνίες κάθε βασιλείου (παραλαβή σε αυτό το παράθυρο).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	και χρόνο επαναφόρτισης. Πρόσθεσε: από μία Ψυχή Σπαθιού, Προστασίας,
@@ -7965,11 +8461,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	βιβλίο της τάξ�
 ktoś był szybszy	κάποιος ήταν ταχύτερος
 która ma już pięć bonusów.	που έχουν ήδη πέντε μπόνους.
 które wypadają z ostatniego bossa.	που πέφτουν από τον τελευταίο αρχηγό.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	αριστερό κουμπί ποντικιού ή %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	τυχαίος χάρτης
 ma swój ranking postaci i gildii. Na koniec sezonu	έχει τη δική του κατάταξη χαρακτήρων και συντεχνιών. Στο τέλος της σεζόν
 maksymalne PŻ /2	μέγιστο HP /2
 maksymalne PŻ są o połowę mniejsze	οι μέγιστοι HP είναι μισοί
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: σφάλμα στο παράθυρο καρτών (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	στον κατάλογο με ανοιχτή την καρτέλα).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	στο Νησί των Θησαυρών (Εισιτήρια Θησαυρού από σεντούκια).
@@ -7988,6 +8489,7 @@ nie udało się zapisać ustawień.	δεν ήταν δυνατή η αποθήκ
 nie walczy wcale	δεν πολεμά καθόλου
 nie wybrano	δεν επιλέχθηκε
 nie wydaje	δεν ξοδεύει
+nie zaczyna, broni ciebie i siebie	δεν ξεκινά, υπερασπίζεται εσένα και τον εαυτό του
 nowego bossa! W przeciwnym razie nagroda przepadnie.	νέος αρχηγός! Διαφορετικά η ανταμοιβή θα χαθεί.
 obnizaj cene o	μείωσε την τιμή κατά
 obok ciebie	δίπλα σου
@@ -7995,7 +8497,9 @@ obrażenia zadawane potworom /2	ζημιά στα τέρατα /2
 obrażenia zadawane potworom są o połowę mniejsze	η ζημιά που προκαλείς σε τέρατα είναι μισή
 od +%d	από +%d
 od +0 do +7 (także z bonusami),	από +0 έως +7 (ακόμη και με μπόνους),
+odprawa tak	odprawa tak
 oferta została już sprzedana	η προσφορά έχει ήδη πουληθεί
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	κάτω από άλλο αντικείμενο - ανά πόσα δευτερόλεπτα θα το χρησιμοποιεί.
 podswietl po (godzin, 0 = wyl.)	επισήμανση μετά από (ώρες, 0 = απενεργ.)
@@ -8007,11 +8511,13 @@ poziom łupu IV - 25 Kamyków	επίπεδο λείας IV - 25 Βότσαλα
 przez podany czas; każdy zostawia sobie zapas.	μέσα στον καθορισμένο χρόνο· το καθένα κρατά ένα απόθεμα για τον εαυτό του.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	στο Metin Σκληρότητας στο ισόγειο του Πύργου των Δαιμόνων· τις κενές θέσεις
 przy kolejnych próbach łowienia?	στις επόμενες προσπάθειες ψαρέματος;
+przy tobie	κοντά σου
 przywołany	καλεσμένο
 próby: %d	προσπάθειες: %d
 prędkość ruchu /2	ταχύτητα κίνησης /2
 prędkość ruchu jest o połowę mniejsza	η ταχύτητα κίνησης είναι μισή
 puste = dowolny przedmiot	κενό = οποιοδήποτε αντικείμενο
+reguła "%s"	κανόνας "%s"
 reliktu go niszczy.	του λειψάνου το καταστρέφει.
 robi zakupy	ψωνίζει
 rodzaj bez filtra	ο τύπος χωρίς φίλτρο
@@ -8023,11 +8529,16 @@ ręcznie	χειροκίνητα
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	ο διακομιστής δεν απαντά (λείπει η διόρθωση autohunttest) - δεν ξεκίνησε.
 serwer nie potwierdził zakupu	ο διακομιστής δεν επιβεβαίωσε την αγορά
 serwer nie pozwala teraz polować.	ο διακομιστής δεν επιτρέπει το κυνήγι αυτή τη στιγμή.
+sezon %d	σεζόν %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	στον ίδιο χάρτη με τον Αρχηγό του Κόσμου και προκαλέσεις την ελάχιστη
 skillbook	Βιβλίο ικανότητας
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	το κατάστημα μπορεί να περιέχει λάθος αντικείμενα. Συνέχεια;
 sklep odmówił sprzedaży	το κατάστημα αρνήθηκε την πώληση
 start, zasięg %d m.	εκκίνηση, εμβέλεια %d μ.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	σε μόνιμο αποκλεισμό του λογαριασμού.
 stoi - pokonajcie go, zanim ucieknie!	στέκεται - νικήστε τον πριν δραπετεύσει!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	αυτό το αντικείμενο δεν μπορεί να χρησιμοποιηθεί εδώ (φίλτρο, ενίσχυση ή δροσιά).
@@ -8041,24 +8552,36 @@ tylko gdy gracz jest AKTUALNIE online.	μόνο όταν ο παίκτης εί�
 uciekł - nikt nie dostał nagrody	δραπέτευσε - κανείς δεν πήρε ανταμοιβή
 ulepszony Nóż.	αναβαθμισμένο Μαχαίρι.
 umiej %d	ικαν. %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	μετά την επανεκκίνηση του πελάτη.
 ustawienia zapisane.	οι ρυθμίσεις αποθηκεύτηκαν.
+usun	usun 
+usun %d	usun %d
+w dniach	σε ημέρες
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	τιμή επίθεσης +20% για 3 ώρες (παραλαμβάνεται μαζί
 ważne	σημαντικά
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	ενσωματωμένο πρόγραμμα περιήγησης (χρειάζεται νέο αρχείο exe του client).
+wolna ręka	ελεύθερη δράση
 wprowadzenie aby móc kontynuować rozgrywkę.	για να μπορέσεις να συνεχίσεις το παιχνίδι.
 wszystkie przedmioty	όλα τα αντικείμενα
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	της επιλεγμένης θέσης (I / II). Μετά την πρώτη ενεργοποίηση, η αφαίρεση
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	αποσυνδέει ήδη συνδεδεμένη συνεδρία. Η αποβολή από τον διακομιστή λειτουργεί
 wyłączone na tym serwerze.	απενεργοποιημένο σε αυτόν τον διακομιστή.
 z nagrodą, przed pojawieniem się kolejnego bossa).	με την ανταμοιβή, πριν εμφανιστεί ο επόμενος αρχηγός).
 zajmiesz w rankingu.	θα πάρεις στην κατάταξη.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	καλύπτουν μισθωμένα bot από το βασίλειό σου. Μετά από λίγα λεπτά συγκέντρωσης
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	σταμάτησε - ξεκίνησε το κανονικό Αυτόματο Κυνήγι.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	πανοπλίες και κοστούμια μεταξύ τους, εμφανίσεις όπλων με όπλα του ίδιου τύπου.
 zeruje Twoje obrażenia.	μηδενίζει τη ζημιά σου.
 zmieniła się cena albo ilość	άλλαξε η τιμή ή η ποσότητα
 zostają, a zwierzak zachowuje 80% swojego wieku.	διατηρούνται και το κατοικίδιο κρατά το 80% της ηλικίας του.
 zostanie zresetowany.	θα μηδενιστεί.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγι σταμάτησε.
 {} + {} rozdziel przedmioty.	{} + {} διαχωρισμός αντικειμένων.
 {}'s Auction	Δημοπρασία του {}
@@ -8098,9 +8621,19 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dΟ έρανος ολοκληρώθηκε - συγκεντρώθηκε ολόκληρο το ποσό
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aΟ χρόνος του έρανου έληξε
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aΟλοκλήρωσε πρώτα://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aΟ έρανος ολοκληρώθηκε από τον αρχηγό
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893aδιαθέσιμα [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - γρήγορη σύνδεση.
+|cfff4f770Trwa misja	|cfff4f770Η αποστολή συνεχίζεται
+|cfff4f770Trwa zrzutka	|cfff4f770Ο έρανος συνεχίζεται
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742ΠΡΟΣΟΧΗ!|r Έλεγχος ασφαλείας!
+Óó	Óó
+Ąą	Ąą
+ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
+ąćęłńóśźż	ąćęłńóśźż
+ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Κανένα τέρας δεν το ρίχνει.
 Ładny Kam. Przebudzenia	Όμορφη Πέτρα Αφύπνισης
 Ładny Kamień Chaosu	Όμορφη Πέτρα του Χάους
@@ -8152,6 +8685,9 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Łuski Smoka	Λέπια Δράκου
 Łączenie	Σύνδεση
 Łączne obrażenia	Συνολική ζημιά
+Łączny czas	Συνολικός χρόνος
+Łł	Łł
+Ńń	Ńń
 Ściana	Τείχος
 Ściąga do ciebie grupy potworów z okolicy.	Τραβά προς το μέρος σου ομάδες τεράτων της περιοχής.
 Ścięgno Balathora	Τένοντας του Balathor
@@ -8164,12 +8700,14 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Śnieżna Czapa Leoparda+	Χιονισμένο Καπέλο Λεοπάρδαλης+
 Śnieżna Czapa Zajęcza	Χιονισμένο Καπέλο Λαγού
 Śnieżna Czapa Zajęcza+	Χιονισμένο Καπέλο Λαγού+
+Śnieżny Bambi	Χιονισμένο Bambi
 Śnieżny Kwiat	Λουλούδι του Χιονιού\r\n
 Śnieżny Leonidas	Χιονισμένος Leonidas
 Śnieżny Leonidas(piecz.)	Σφραγίδα Χιονισμένου Leonidas
 Śpiew Stali	Τραγούδι του Ατσαλιού
 Śpiew Wiatru	Τραγούδι του Ανέμου
 Śpiewająca Furia	Τραγουδιστή Μανία
+Śr. czas sesji	Μ.Ο. χρόνου συνεδρίας
 Śr. obrażenia	Μέση Ζημιά
 Śr. yang na sesję	Μέσο Yang ανά συνεδρία
 Średni	Μέτρια
@@ -8178,6 +8716,7 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Średnio	Μέτρια
 Środa	Τετάρτη
 Środek Ścierny	Λειαντικό
+Św. Nosiciel Światła+	Άγ. Φορέας Φωτός+
 Św. Odłamek Broni I	Άγιο Θραύσμα Όπλου I
 Św. Odłamek Broni II	Άγιο Θραύσμα Όπλου II
 Św. Odłamek Hełmu I	Άγιο Θραύσμα Κράνους I
@@ -8191,6 +8730,7 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Światło Gwiazd	Φως των Άστρων
 Światło Gwiazd (9.skill)	Φως των Άστρων (9η ικαν.)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Ιδανικό για ψήσιμο πάνω από φωτιά κατασκήνωσης.
+Świąt. Zim. Zbroja+ (m)	Γιορτ. Χειμ. Πανοπλία+ (α)
 Świąteczna Brązowa Skrzynia Okey	Χριστουγεννιάτικο Μπρούντζινο Σεντούκι Okey
 Świąteczna Srebrna Skrzynia Okey	Χριστουγεννιάτικο Ασημένιο Σεντούκι Okey
 Świąteczna Złota Skrzynia Okey	Χριστουγεννιάτικο Χρυσό Σεντούκι Okey
@@ -8201,13 +8741,17 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Świątynia	Ναός
 Świątynia Węży	Ναός των Φιδιών
 Świątynia Zodiaku	Ναός του Ζωδιακού
+Święty	Άγιο
 Święty Efekt Zestawu	Ιερό Εφέ Σετ
 Święty Kowal Zestawu	Ιερός Σιδεράς Σετ
 Święty Miecz Bogów+	Ιερό Ξίφος των Θεών+
 Święty Odłamek	Ιερό Θραύσμα Δύναμης
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Ιερό λουλούδι από τον κήπο του Θεού Δράκου. Χρησιμεύει για τη βελτίωση εξοπλισμού.
+Śś	Śś
+şó ĹĄşę	şó ĹĄşę
 Źródła	Πηγές
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Πηγή δύναμης για καλάμι ψαρέματος. Το άγγιγμά της αναβαθμίζει το εργαλείο, ανοίγοντας τον δρόμο για ψάρεμα στα βαθύτερα νερά.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Κανένα κοράκι δεν έπαθε κακό κατά τη δημιουργία αυτού του όπλου. Όπλο για Νέους Ήρωες: εξαφανίζεται 15 ημέρες μετά την παραλαβή (ακόμη και αν είναι εξοπλισμένο). Δεν μπορεί να βελτιωθεί, να αλλάξουν ή να προστεθούν μπόνους, να τοποθετηθούν Λίθοι Ψυχής, να ανταλλαγεί, να πουληθεί ή να αποθηκευτεί στην αποθήκη.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Κανένα: απενεργοποιεί τα μηνύματα του Συντρόφου. Σημαντικά: γεμάτο EQ, σακίδιο, πολύτιμα.
 Żałobna Pieśń	Πένθιμο Τραγούδι
@@ -8224,6 +8768,7 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Żołnierz Schron. Płn. W.	Στρατιώτης Καταφυγίου Β. Ανέμου
 Żołnierz Wężowy	Στρατιώτης-Φίδι
 Żołnierze	Στρατιώτες
+Życie goblina	Ζωή γκόμπλιν
 Żywe Drzewo	Ζωντανό Ξύλο
 Żywioł potworów na tym piętrze	Στοιχείο των τεράτων σε αυτόν τον όροφο
 Żywioł: %s	Στοιχείο: %s
@@ -8242,3 +8787,5 @@ zwykłe Auto Łowy zatrzymane.	το κανονικό Αυτόματο Κυνήγ
 Żółty Lśniący Odłamek	Κίτρινο Αστραφτερό Θραύσμα
 Żółty Sok	Κίτρινος Χυμός
 Żądza Krwi +%.0f	Δίψα για Αίμα +%.0f
+Żż	Żż
+żadne	κανένα

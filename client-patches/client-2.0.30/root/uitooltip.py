@@ -1323,16 +1323,13 @@ class ItemToolTip(ToolTip):
 			self.AppendSpace(5)
 
 			if itemSubType == item.WEAPON_ARROW:
-				damage_percent = 100 - item.GetValue(2)
-				damage_percent_mob = 100 - min(item.GetValue(2) * 2, 100)
+				# MT2009_PLUS_ARROW_TOOLTIP_V1 (the owner, 5 Nov 2026): no GF distance lines - "Max. damage reduction 100%
+				# (monsters 100%)", "Optimal shot distance up to 0.0m", "Poor shot quality from 0.0m" were read from item_proto
+				# values 2/4/5 our arrows do not set and told players an arrow does no damage. The real fall-off (full up to
+				# 5 m, then 5% less per metre, a quiver none) is in the item's description; only a real damage bonus stays.
 				add_damage = item.GetValue(3)
-				min_distance = float(item.GetValue(4)) / 100
-				max_distance = float(item.GetValue(5)) / 100
-				self.AppendTextLine(localeInfo.TOOLTIP_ARROW_DAMAGE_BONUS % add_damage, self.POSITIVE_COLOR)
-				self.AppendTextLine(localeInfo.TOOLTIP_ARROW_DAMAGE_REDUCTION % (damage_percent, damage_percent_mob),
-									self.NEGATIVE_COLOR)
-				self.AppendTextLine(localeInfo.TOOLTIP_ARROW_MIN_RADIUS % min_distance, self.POSITIVE_COLOR)
-				self.AppendTextLine(localeInfo.TOOLTIP_ARROW_MAX_RADIUS % max_distance, self.POSITIVE_COLOR)
+				if add_damage > 0:
+					self.AppendTextLine(localeInfo.TOOLTIP_ARROW_DAMAGE_BONUS % add_damage, self.POSITIVE_COLOR)
 
 			elif item.WEAPON_FAN == itemSubType:
 				self.__AppendMagicAttackInfo()

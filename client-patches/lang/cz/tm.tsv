@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 dní)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 hodin)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: úroveň %(b)d.
 %d - %d obrażeń	%d - %d poškození
 %d - rzadko 100 - jak w grze %d - czesto	%d - zřídka      100 - jako ve hře      %d - často
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 %d%% Wola SungMa (WIT)	%d%% vůle SungMa (VIT)
 %d%% na losowy bonus.	%d%% na náhodný bonus.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% šance na vykrytí poškození od útoku
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% šance rozdupat protivníky po dobu 20 s.
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% šance uniknout smrti a obnovit 30%% HP
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% šance, že na tebe zaútočí všechny příšery v okolí (plášť odvahy)
 %d%% Średnie Obrażenia	%d%% průměrné poškození
 %d. miejsce	%d. místo
 %d. pusty	%d. prázdné
+%dx %s (dowolne z %d)	%dx %s (libovolné z %d)
 %dx (po %d)	%dx (po %d)
 %s %d - zostało %d	%s %d - zbývá %d
 %s (%d szt.)	%s (%d ks)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Lv %d) - pid %d, poz (%d, %d), království %d
 %s (Pozostały czas: %s)	%s (Zbývající čas: %s)
 %s (co %d sek.)	%s (každých %d s)
+%s (inna mapa)	%s (jiná mapa)
 %s (maks. %.1f)	%s (max. %.1f)
 %s (maks. %d)	%s (max. %d)
 %s (maks.)	%s (max.)
@@ -108,19 +114,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 (Kup wszystkie przedmioty tego typu)	(Koupit všechny předměty tohoto typu)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Zatím bez využití - přijde s další aktualizací Yohary.)
 (Najedź myszką na ikonę)	(Najeď myší na ikonu)
+(brak klawisza - Esc, Skróty klawiszowe)	(bez klávesy - Esc, Klávesové zkratky)
 (brak)	(žádné)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (filtr je vypnut - nyní sbíráš vše)
 (na koniu: %d)	 (na koni: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(nejvyšší úroveň, Obrana lodi, plná koule zkušeností).
 (nieznana)	 (neznámá)
 (od P)	 (od P)
+(postac offline - brak podgladu skilli)	(postava offline - bez náhledu dovedností)
 (poziom %d)	 (úroveň %d)
+(puste)	(prázdné)
 (szansa %s%%)	 (šance %s%%)
 (ten bot nic jeszcze nie powiedzial)	(tento bot zatím nic neřekl)
 (wybierz stworzenie)	(vyber stvoření)
 (wybierz z listy)	(vyber ze seznamu)
 (wybierz)	(vyber)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* POZOR * Experimentální volba![ENTER]Režim škálování rozhraní může snížit[ENTER]kvalitu rozhraní (grafické prvky, písmo).[ENTER]|cff8ab98eZelená|r barva znamená, že škálování MŮŽE být nejoptimálnější.[ENTER]|cffe57976Červená|r barva znamená, že škálování může způsobit[ENTER]nereagování hry.
++ Dodaj bonus	+ Přidat bonus
 + Dodaj przedmiot	+ Přidat předmět
 + Pkt umiejetn.	+ Body dovedností
 +%d Inteligencja	+%d inteligence
@@ -152,6 +162,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 +15 wartości ataku	+15 k hodnotě útoku
 +3% siły przeciwko kamieniom Metin	+3% síly proti kamenům Metin
 +50% szansy na drop przez 2 godziny	   +50% šance na drop po dobu 2 hodin
++800 PŻ	+800 ZB
 , PPM: dokładny filtr	, PTM: přesný filtr
 , atak włączony	, útok zapnut
 - Czekaj cierpliwie na odpowiedź.	- Čekej trpělivě na odpověď.
@@ -162,6 +173,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 - drugie miejsce od 31 poziomu konia	- druhé místo od úrovně koně 31
 - piętro %d	 - patro %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- volné místo: přečti knihu jezdecké dovednosti
+-- Ninja Archer - skille P --	-- Ninja Archer - dovednosti P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - dovednosti P --
+-- Sura BM - skille P --	-- Sura BM - dovednosti P --
+-- Sura WP - skille P --	-- Sura WP - dovednosti P --
 -- Szaman Healer - skille P --	-- Šaman Léčitel - skilly P --
 -- Szaman Smok - skille P --	-- Šaman Drak - skilly P --
 -- Wojownik Body - skille P --	-- Válečník Tělo - skilly P --
@@ -171,17 +186,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 ... i %d więcej.	... a %d dalších.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...a ještě %d - úplný seznam v okně Drop wiki (boční panel inventáře).
 / - powtarza poprzednia komende	/ - zopakuje předchozí příkaz
+/a - dajemy komus dany lvl	/a - dáme někomu danou úroveň
 /a level - Zmienia lvl gracza	/a level - změní úroveň hráče
 /b - ogloszenie w ramce	/b - oznámení v rámečku
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - zablokuje chat na určitou dobu
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - seznam hráčů se zablokovaným chatem
 /dc - wyrzuca kogos z serwera	/dc - vyhodí někoho ze serveru
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...nevím...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...nevím...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...nevím...
 /gete - ...nie wiem...	/gete - ...nevím...
 /getq - ...nie wiem...	/getq - ...nevím...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - teleport do pouště
 /go s - teleport na Gore Sohan	/go s - teleport na horu Sohan
+/go t - teleport do Doliny Orkow	/go t - teleport do Orčího údolí
 /go tr - teleport do Lasu Duchow	/go tr - teleport do Lesa duchů
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - teleport do Červeného lesa
 /go x y - przenosi do wspolrzednych x y	/go x y - přenese na souřadnice x y
@@ -190,13 +217,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 /horse_level - podnosi poziom konia	/horse_level - zvýší úroveň koně
 /horse_ride - przywoluje konia	/horse_ride - přivolá koně
 /inv - niewidzialnosc	/inv - neviditelnost
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - přidá několik kusů předmětu
 /item - dodaje przedmiot	/item - přidá předmět
 /kill - zabija gracza	/kill - zabije hráče
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - změna úrovně postavy
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - přivolá příšeru nebo NPC
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - rychlost chůze
 /n - Wiadomosc na gorze ekranu	/n - zpráva nahoře na obrazovce
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Režim pozorování
 /open - start eventu OX	/open - start události OX
 /p - zamiana w potwora lub npc	/p - proměna v příšeru nebo NPC
@@ -214,12 +250,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - zvyšuje exp o daná procenta na určitou dobu
 /purge - usuwa potwory, npc itp z okolicy	/purge - odstraní příšery, NPC apod. z okolí
 /r - przywraca wszystkie pkt energii i zycia	/r - obnoví všechny body energie a života
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...nevím...
 /reset - resetuje PZ i PE	/reset - resetuje ZB a MP
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - hodnost rytíř
+/set exp - dostajemy dana ilosc expa	/set exp - dostaneme dané množství expů
+/set gold - dostajemy dana ilosc Yang	/set gold - dostaneme dané množství Yang
+/set max_hp - zwieksza punkty zycia	/set max_hp - zvyšuje body života
 /set max_sp - zwieksza punkty energii	/set max_sp - zvýší body energie
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - přidá daný počet bodů dovedností
+/set_maxhp - doladowanie hp	/set_maxhp - doplnění HP
 /set_maxsp - doladowanie pe	/set_maxsp - dobití MP
+/set_state information - ...nie wiem...	/set_state information - ...nevím...
+/set_state run - ...nie wiem...	/set_state run - ...nevím...
+/set_state start - ...nie wiem...	/set_state start - ...nevím...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Vedení P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Polymorfie P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - úroveň koně 30
@@ -233,21 +284,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Zuřivost dračího boha
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Dračí přání
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...nevím...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - dáme někomu danou dovednost na P
 /ski 121 - Dowodzenie	/ski 121 - Vedení
 /ski 131 - Przywolaj Konia	/ski 131 - Přivolání koně
 /slow - spowalnia gracza	/slow - zpomalí hráče
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - omráčí hráče
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - přenese hráče ke GM
+/w - ilosc osob online	/w - počet osob online
 /warp - przenosi GM'a do gracza	/warp - přenese GM k hráči
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Zasněžený ostrov (Sídlo GM)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - teleport na Arénu GM
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - nejprve klikneme pravým tlačítkem na příšeru, poté zadáme příkaz a příšera má 1 ZB
+/xmas 0 - Dzien	/xmas 0 - Den
 /xmas 1 - Noc	/xmas 1 - Noc
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Den
 /xmas_boom 1 - Noc	/xmas_boom 1 - Noc
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - vypnout sníh
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - zapnout sníh
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - Vypne se písnička
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - zapne vánoční píseň
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - Vánoce OFF
 0 - nakarm peta	0 - nakrm mazlíčka
 0 = bez granicy	0 = bez hranice
 1 dzień	1 den
+1 godz.	1 hod.
 1 krok	1 krok
+1* Runa Wyk. Akcesoriów	1* Runa kov. doplňků
+1* Runa Wyk. Ks. Um.	1* Runa kov. knih dov.
+1* Runa Wyk. Poz. Prz.	1* Runa kov. ost. předm.
+1* Runa Wyk. Prz. d. Zw.	1* Runa kov. předm. pro mazl.
+1* Runa Wyk. Rękawiczek	1* Runa kov. rukavic
+1* Runa Wyk. Zest. Broni	1* Runa kov. sad zbraní
+1* Runa Wyk. Zest. Hełm.	1* Runa kov. sad přileb
+1* Runa Wyk. Zest. Zbroi	1* Runa kov. sad brnění
+1* Runa Wykuwania Broni	1* Runa kování zbraní
+1* Runa Wykuwania Pasów	1* Runa kování pásů
+1* Runa Wykuwania Zbroi	1* Runa kování brnění
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normálně. Působí okamžitě.
 1. Posterunek Myr	1. základna Myrů
 1. dodany bonus +%d%%	1. přidaný bonus +%d%%
@@ -257,15 +332,21 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Balíček 25)
 100 Kamyków, Skrzynka Tajemnic, Zagadkowa Szkatułka,	   100 Kamínků, Bedna tajemství, Záhadná šperkovnice,
 100% szans na przeczytanie	100% šance na přečtení
 100% szans na ulepszenie.	100% šance na úspěšné vylepšení.
+2 godz.	2 hod.
 2-12 liter lub cyfr!	2-12 písmen nebo číslic!
 25 kart królewskich dało nową Talię Królewską.	25 královských karet vytvořilo nový Královský balíček.
 25% only	Pouze 25%
+25-40 lvl	25-40 úr.
 2x PD	2x BZK
 3 Loch Pająków	3. pavoučí kobka
 3 losowe bonusy podstawowe	3 náhodné základní bonusy
 3 metiny	3 metiny
+4 godz.	4 hod.
+5 bossow	5 bossů
+5% obrażeń będzie dodanych do PŻ	5% poškození bude přičteno k ZB
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Kamínků, Záhadná šperkovnice, Kupón DM (20),
 50% więcej doświadczenia	O 50% více zkušeností
+8 godz.	8 hod.
 < 10 sek	< 10 s
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	Absorbuje %d%% ZB při použití bouřlivého drápu
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	Absorbuje %d%% ZB při použití duchovního úderu
@@ -302,6 +383,7 @@ Ahtrin Wielki Mistrz	Ahtrin velmistr
 Ahtrin Wojownik	Ahtrin válečník
 Ahtrin Zwiadowca	Ahtrin zvěd
 Akcja:	Akce:
+Akcje botow	Akce botů
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Právě se načítají data. Zkus to znovu později.
 Aktualny poziom: %s	Aktuální úroveň: %s
 Aktywna	Aktivní
@@ -338,6 +420,8 @@ Alchemy	Alchymie
 Alchemy Grade:	Stupeň alchymie:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Všechny předměty, které se nevejdou do tvého inventáře, budou přesunuty do nákupního trezoru. Chceš pokračovat?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Všechny |cFFFFFF99|h{}|r budou přesunuty do inventáře nebo nákupního trezoru. Chceš pokračovat?
+Alt (przytrzymaj)	Alt (podrž)
+Alt + LPM	Alt + LTM
 Amal	Amal
 Amator Ninja	Ninja začátečník
 Amator Shaman	Šaman začátečník
@@ -358,6 +442,7 @@ Antymagia	Antimagie
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Zrušení polymorfie jezdeckého zvířete
 Anulacja Transmutacji	Zrušení transmutace
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Zbývající operace zrušeny. Odeslaná odstranění již mohla být provedena.
 Anuluj edycje	Zrušit úpravy
 Anuluj misję	Zrušit misi
 Appaloosa	Appaloosa
@@ -369,6 +454,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Lékárnička (ČT) strážc�
 Apteczka strażników Zaklętego Lasu.	Lékárnička strážců Začarovaného lesa.
 Arahan Zodiaku	Arahan zvěrokruhu
 Arbuz	Meloun
+Arena Pojedynków	Aréna soubojů
+Arena pojedynkow	Aréna soubojů
 Argos (mrok)	Argos (temnota)
 Argos (ogień)	Argos (oheň)
 Arial	Arial
@@ -393,6 +480,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Útok na dálku, který nepřítele 
 Atak krwawienia	Útok krvácením
 Atak magiczny	Magický útok
 Atak magiczny/fizyczny %	Magický/fyzický útok %
+Atak na Metiny	Útok na Metiny
 Atak na odległość	Útok na dálku
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Rotační útok se třemi šancemi na zásah a šancí otrávit nepřítele. 
 Atak obszarowy walki wręcz	Plošný útok na blízko
@@ -411,6 +499,7 @@ Atak trzema ciosami pod rząd.	Útok třemi údery za sebou.
 Atak umożliwiający ominięcie obrony przeciwnika.	Útok, který obchází obranu nepřítele.
 Atak w kilka celów	Útok na více cílů
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Útok na velkou vzdálenost, zasáhne jednoho nepřítele nebo několik stojících vedle sebe.
+Atak z wierzchowca	Útok z koně
 Atak zasięgowy	Útok na dálku
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Během boje útočíš na příšery v okolí pomocí blesků, jejichž poškození odpovídá poškození automatického útoku (doba obnovy 15 s).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Útoč na nepřátele dračími podobiznami.|Posiluje: Inteligence (++), Obratnost (přesnost) (+), úroveň postavy.
@@ -418,6 +507,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Útočí přímo na nepřátele.|Posiluje: Síla (++), Vitalita (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Útočí na nepřátele kolem tebe, s šancí nepřítele omráčit.
 Atakuje wszystkich przeciwników wokół siebie.	Zaútočí na všechny nepřátele kolem tebe.
+Atakujący (atak)	Útočník (útok)
 Atrybut Błyskawicy	Atribut blesku
 Atrybut Błyskawicy|Efekt Omdlenia	Atribut blesku|Efekt omdlení
 Atrybut Piorunu	Atribut blesku
@@ -448,6 +538,7 @@ Auto Łowy: bojowiec wyłączony.	Auto lov: bojový jezdec vypnut.
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Auto lov: došel čas. Kup v ItemShopu "Auto lov (8h)" a použij ho z inventáře - čas běží jen ve hře.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Auto lov: na koně nelze nasednout - lov pokračuje pěšky. Nasedni sám (Ctrl+G) a bojový jezdec se vrátí.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Auto lov: nemohu nasednout na koně - zkouším každých %d s, mezitím bojuji pěšky.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Auto lov: po zaseknutí se nepodařilo znovu nasednout na herního miláčka - lov zastaven.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Auto lov: po uvíznutí se nepodařilo znovu nasednout na jezdecké zvíře.
 Auto Łowy: nie udało się zapisać ustawień.	Auto lov: nastavení se nepodařilo uložit.
 Auto Łowy: podnoszenie jest wyłączone.	Auto lov: sbírání je vypnuto.
@@ -467,24 +558,33 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Auto-cena je neaktivní. Ceny neby
 Auto-obnizka ceny	Auto-snížení ceny
 Auto-obnizka: %s - nowa cena %s	Auto-snížení: %s - nová cena %s
 Auto-obnizka: -%d%% co %dh, min. %s	Auto-snížení: -%d%% každé %dh, min. %s
+Auto-obnizka: -%d%%/%dh	Auto-sleva: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Auto-snížení: 1-%d%%, každých 1-%d hodin, minimální cena alespoň 1 Yang.
+Auto-obnizka: wyl.	Auto-sleva: vyp.
 Auto-obnizka: wylaczona	Auto-snížení: vypnuto
 Autologin: ponownie za %d s (próba %d)	Autologin: znovu za %d s (pokus %d)
 Automatyczne podnoszenie Yang.	Automatické sbírání Yangu.
+Automatyczne zbieranie	Automatický sběr
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Automaticky obnovuje tvé MB. Kapacita 1.000.000 MB.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Automaticky obnovuje tvé MB. Kapacita 100.000 MB.
 Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Automaticky obnovuje tvé ZB. Kapacita 1.000.000 ZB.
 Autopodnoszenie:	Automatické sbírání:
 Autopoty	Autolektvary
 Autospin - wygrane: %s	Autospin - výhry: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autospin zastaven - Kolo štěstěny je vypnuto.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autospin zastaven - server neodpovídá.
+Autospin zatrzymany - obrót odrzucony.	Autospin zastaven - otočení zamítnuto.
 Autospin zatrzymany.	Autospin zastaven.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autospin: %d otočení, utraceno %d DM, hlavní odměny: %d.
 Autospin: brak odpowiedzi.	Autospin: bez odpovědi.
+Autospin: główna nagroda - zatrzymany.	Autospin: hlavní výhra - zastaveno.
 Autospin: główna nagroda!	Autospin: hlavní odměna!
+Autospin: koniec (%d obrotów).	Autospin: konec (%d otočení).
 Autospin: koniec.	Autospin: konec.
 Autospin: koło wyłączone.	Autospin: kolo vypnuto.
 Autospin: obrót odrzucony.	Autospin: otočení odmítnuto.
 Autospin: za mało SM.	Autospin: příliš málo DM.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin: příliš málo Dračích mincí na další otočení.
 Autołowy	Auto lov
 Autołowy (TEST)	Auto lov (TEST)
 Autołowy - szybki start/stop	Auto lov - rychlý start/stop
@@ -533,6 +633,7 @@ Best. Czl. Skor. Zodiaku	Zvířecí škorpion zvěrokruhu
 Best. Wężowy Miecznik	Zvířecí hadí šermíř
 Best. Wężowy Wojownik	Zvířecí hadí válečník
 Best. Wężowy Łucznik	Zvířecí hadí lučištník
+Bestialski Fanatyk	Zvířecí fanatik
 Bez bonusów podstawowych - jadeit nic nie dodaje	Bez základních bonusů - nefrit nic nepřidává
 Bez imienia (Zwój Imienia Buffi).	Bez jména (Svitek jména Buffi).
 Bez koloru	Bez barvy
@@ -580,11 +681,13 @@ Biolog	Biolog
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	Biolog dává trvalé bonusy a smazaný krok nelze vrátit.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	Biolog nepotřebuje čas na analýzu vzorku špatné kvality.
 Blad danych - sprawdz ID i ilosc.	Chyba dat - zkontroluj ID a množství.
+Blad danych - sprawdz PID i ilosc.	Chyba dat - zkontroluj PID a množství.
 Blad danych - sprawdz kwote.	Chyba dat - zkontroluj částku.
 Blad danych - sprawdz wartosc.	Chyba dat - zkontroluj hodnotu.
 Blad danych.	Chyba dat.
 Blad odpowiedzi serwera.	Chyba odpovědi serveru.
 Blad zapytania do bazy.	Chyba dotazu do databáze.
+Blad: %s	Chyba: %s
 Blad: nie mozna utworzyc marmuru.	Chyba: nelze vytvořit mramor.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Chyba: nepodařilo se uložit žádost o restart.
 Blade	Čepel
@@ -592,8 +695,11 @@ Blok Ataku	Vykrytí útoku
 Blokada Konta	Blokace účtu
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	Blokace platí od DALŠÍHO přihlášení na tento účet - ne
 Blokada konta	Blokace účtu
+Blokada permanentna	Trvalý zákaz
+Blokada tymczasowa	Dočasný zákaz
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	Blokaci řazení lze nasadit jen na předmět v batohu.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Blokuje získávané zkušenosti. Týká se to i odměn za úkoly. Zkušenosti získané během trvání účinku navždy propadnou!
+Blokujący (czas trwania)	Blokující (doba trvání)
 Bo Zodiaku	Bo zvěrokruhu
 Boczuś	Prasátko
 Body	Tělo
@@ -623,6 +729,7 @@ Bonus vs Bossy	Bonus proti bossům
 Bonus vs Bossy/Metiny	Bonus proti bossům/Metinům
 Bonus vs Ludzie	Bonus proti lidem
 Bonus vs Metiny	Bonus proti Metinům
+Bonus vs Nieumarli	Bonus vs Nemrtví
 Bonus vs Orki	Bonus proti orkům
 Bonus vs Potwory	Bonus proti příšerám
 Bonus vs Szaman	Bonus proti Šamanům
@@ -671,9 +778,12 @@ Bossy	Bossové
 Bossy > Metiny > Moby	Bossové > Metiny > Příšery
 Bossy > Moby > Metiny	Bossové > Příšery > Metiny
 Bot	Bot
+Boty do spawnu	Boti ke spawnu
 Boty gildii	Boti cechu
 Boty nie maja jeszcze wyceny tego przedmiotu.	Boti zatím nemají ocenění tohoto předmětu.
+Boty pisza na czacie	Boti píšou do chatu
 Boty w misji: %d / %d (od poziomu %d)	Boti v misi: %d / %d (od úrovně %d)
+Boty zlomiarze	Boti sběrači šrotu
 Boty: %s z %s (razem %s)	Boti: %s z %s (celkem %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Botů: %d (z cechu %d, najatých %d), chtěno %d
 Bow	Luk
@@ -683,6 +793,7 @@ Brak / >	Žádný / >
 Brak aktywnej misji albo limit został przekroczony.	Žádný aktivní úkol nebo byl překročen limit.
 Brak aktywnej sesji	Žádná aktivní relace
 Brak aktywnej sesji.	Žádná aktivní relace.
+Brak bonusu albo powyżej %d	Bez bonusu nebo nad %d
 Brak danych cenowych dla tego przedmiotu.	Chybí cenová data pro tento předmět.
 Brak danych do wyceny	Chybí data k ocenění
 Brak danych o bonusach.	Chybí data o bonusech.
@@ -729,8 +840,10 @@ Brakuje Yang na: %s (%s).	Chybí Yangy na: %s (%s).
 Brakuje ci Odłamków: %s.	Chybí ti Úlomky: %s.
 Brakuje ci Suplementów: %s.	Chybí ti Doplňky: %s.
 Brakuje materiałów do rozwoju.	Chybí materiály k rozvoji.
+Brakuje: %s	Chybí: %s
 Bransoleta z Turmalinu	Turmalínový náramek
 Braz. Niedzw. Zodiaku	Hnědý medvěd zvěrokruhu
+Brazowy Niedzwiedz	Hnědý medvěd
 Brillant	Brilantní
 Bronie	Zbraně
 Browarnik	Pivovarník
@@ -745,6 +858,7 @@ Brązowa Chusta	Hnědý šátek
 Brązowa Chusta+	Hnědý šátek+
 Brązowa Farba	Hnědá barva
 Brązowa Rosa	Hnědá rosa
+Brązowa Wilcza Szata+(m)	Hnědý vlčí plášť+ (M)
 Brązowa Woda	Hnědá voda
 Brązowe Płyty	Bronzové pláty
 Brązowy Sok	Hnědá šťáva
@@ -780,10 +894,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Požehnání, které okamžitě obnoví tvé životy a body energie na 100%. Lze použít jednou za 2 minuty. Sdílí čas obnovy s Lektvary nezranitelnosti a nedotknutelnosti.
 Błyskaw.	Okamž.
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Bleskově zajistí svým nepřátelům věčný odpočinek. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
+Błyszcząca	Zářivá
 Błyszcząca Szata Aury	Zářivé roucho aury
 Błąd serwera - spróbuj ponownie.	Chyba serveru - zkus to znovu.
 Błąd zapytania.	Chyba dotazu.
 Błędne podanie kodu może skutkować	Chybné zadání kódu může vést
+C. Ratownik Plażowy+	Rudý plážový plavčík+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	Režim CPU TNL může zrychlit slabší počítač.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Obnovit rozhraní.
@@ -822,6 +938,7 @@ Charyzma Nowicjusza	Charisma nováčka
 Chcesz zacząć grę?	Chceš zahájit hru?
 Chcesz zakończyć grę i otrzymać wygraną?	Chceš ukončit hru a získat výhru?
 Chcesz zrealizować to pole?	Chceš uplatnit toto pole?
+Chciano botów: %d	Požadováno botů: %d
 Chciałeś %d szt., a tyle da się kupić.	Chtěl jsi %d ks, tolik jich lze koupit.
 Chegal, Goliat Cienia	Chegal, stínový goliáš
 Chodząca Legenda	Kráčející legenda
@@ -836,12 +953,14 @@ Chwilę...	Okamžik...
 Chwilę... spróbuj jeszcze raz.	Okamžik... zkus to znovu.
 Cicha Klątwa	Tichá kletba
 Ciekawski	Zvědavý
+Ciemna Szata Proroka+(m)	Tmavý plášť proroka+ (M)
 Ciemność	Temnota
 Cienie	Stíny
 Cieniolubny Liść	List milující stín
 Cienka Nić	Tenká nit
 Cienka Przędza	Jemná příze
 Cienka Skóra	Tenká kůže
+Ciepły Kaftan Zimowy+(m)	Teplý zimní kaftan+ (M)
 Ciągliwość	Tažnost
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Těžký hrot vyrobený z odolného kamene. I když je pomalejší, zajišťuje mocné zásahy a skvěle se hodí k probíjení tvrdých brnění.
 Ciężkie Pasy	Těžké popruhy
@@ -865,6 +984,9 @@ Continue	Pokračovat
 Costume	Kostým
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Něco se pokazilo. Předmět je v bezpečí u Seon-Hae - zkus to později.
 Create	Vytvořit
+Ctrl (przytrzymaj)	Ctrl (podrž)
+Ctrl + LPM	Ctrl + LTM
+Ctrl + PPM	Ctrl + PTM
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + PTM: vyjmout vše, Shift: množství
 Ctrl + klik: kilka punktów naraz	Ctrl + klik: více bodů najednou
 Ctrl + klik: odepnij	Ctrl + klik: odepnout
@@ -889,6 +1011,9 @@ Cyjanowy Sok	Azurová šťáva
 Cyklop Kat (BŚ)	Kyklop kat (SB)
 Cyklop Mag (BŚ)	Kyklop mág (SB)
 Cyklop Żołnierz (BŚ)	Kyklop voják (SB)
+Cz. Królik K. Czarów+(m)	Rudý králík kouzel+ (M)
+Cz. Szata Faraona+ (m)	Rudý plášť faraona+ (M)
+Cz. Wojownik P.Księżyca+	Rudý bojovník půlměsíce+
 Czapka Jokera (k)	Čepice Žolíka (ž)
 Czapka Jokera (m)	Čepice Žolíka (m)
 Czapka z Pomp. (czerw.)	Bambulová čepice (červ.)
@@ -900,15 +1025,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Kouzlo této pečeti přivolá tvého oře, majestátního bengálského tygra (šedý).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Kouzlo této pečeti přivolá tvého oře, majestátního bengálského tygra (zelený).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Kouzlo této pečeti přivolá tvého oře, majestátního bengálského tygra (zlatý).
+Czar. Szata Dokkaebi+(m)	Černý plášť Dokkaebi+ (M)
+Czarna Lampa Lorda+	Černá lordova lampa+
 Czarna Pantera	Černý panter
 Czarna Stal	Černá ocel
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Černá čepice se zaječíma ušima pro něj. Dává ti min. jeden náhodný bonus.
 Czarna magia	Černá magie
 Czarnoksiężnik P. Wieży	Černokněžník Pek. věže
 Czarny Barwnik	Černé barvivo
+Czarny Niedzwiedz	Černý medvěd
 Czarny Ork Zodiaku	Černý ork zvěrokruhu
 Czarny Rumak	Černý hřebec
 Czarny Skorpion	Černý škorpion
+Czarny jak noc Ks. Wam.+	Černý jako noc kn. upír+
 Czarodziej Gnoll	Gnoll čaroděj
 Czarodziej Stylu Małp	Čaroděj stylu opice
 Czarownik Sch. Płn. W.	Čaroděj úkrytu sev. větru
@@ -968,11 +1097,14 @@ Czekoladowy Amulet	Čokoládový amulet
 Czempion	Šampion
 Czempion %s	Šampion %s
 Czer. Amazonka Zodiaku	Červ. amazonka zvěrokruhu
+Czer. Sweter Świąt.+ (m)	Rudý vánoční svetr+ (M)
 Czer. Żeń-szeń (premium)	Červený ženšen (premium)
 Czerw. Duch Drzewa	Červ. strom duchů
 Czerw. Duch Pniaka	Červ. pařez duchů
+Czerw. Galowy Strój+ (m)	Rudý galaoděv+ (M)
 Czerw. Las Duchow	Červený les duchů
 Czerw. Tr. Pajak Zodiaku	Červ. jed. pavouk zvěrokruhu
+Czerw. Zbr. Azraela+ (m)	Rudé brn. Azraela+ (M)
 Czerwona Mikstura (W)	Červený lektvar (V)
 Czerwona Runa SungMa	Červená runa SungMa
 Czerwona Smocza Łuska	Červená dračí šupina
@@ -990,8 +1122,11 @@ Czerwony Kat Zodiaku	Červený kat zvěrokruhu
 Czerwony Mag Zodiaku	Červený mág zvěrokruhu
 Czerwony Monokl	Červený monokl
 Czerwony Skorpion	Červený škorpion
+Czerwony Smoczek	Rudý dráček
+Czerwony Smoczy Rycerz+	Rudý dračí rytíř+
 Czerwony Smoczy Róg	Červený dračí roh
 Czerwony Sok	Červená šťáva
+Czerwony Toreador+	Rudý toreador+
 Czwartek	Čtvrtek
 Czy chcesz cofnąć misję do poziomu 1?	Chceš vrátit úkol na úroveň 1?
 Czy chcesz dokonać masowej sprzedaży?	Chceš provést hromadný prodej?
@@ -1001,7 +1136,7 @@ Czy chcesz kupić %s %s za %s?	Chceš koupit %s %s za %s?
 Czy chcesz kupić %s (szt. %d) za %s?	Chceš koupit %s (ks %d) za %s?
 Czy chcesz naładować %d Animosfer?	Chceš nabít %d Animosfér?
 Czy chcesz odesłać Enasira?	Chceš Enasira odeslat pryč?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Chceš za %s Yang obnovit %d dračího ducha?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Chceš za %s Yangů obnovit Dračího ducha %d?
 Czy chcesz opuścić wojnę gildii?	Chceš opustit válku cechů?
 Czy chcesz otworzyć to pudło?	Chceš otevřít tuto krabici?
 Czy chcesz ożywić gracza %s?	Chceš oživit hráče %s?
@@ -1039,6 +1174,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Zda se t
 Czym jest Konto Premium?	Co je účet Premium?
 Czysta esencja z serca najgłębszych źródeł.	Čistá esence ze srdce nejhlubších pramenů.
 Czyste zwoje (%s) w ekwipunku: %d	Čisté svitky (%s) v inventáři: %d
+Czytanie bez opoznienia dnia	Čtení bez zpoždění dne
+Czyściec Ognia	Ohnivý očistec
 Czyśćiec Ognia	Očistec ohně
 Część zestawów kostiumów (%d)	Součást sad kostýmů (%d)
 Członek gildii %s jest teraz w grze.	Člen cechu %s je nyní ve hře.
@@ -1112,6 +1249,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Přidej kámen duše k výměně.
 Dodaj Księgę Umiejętności do wymiany.	Přidej knihu dovedností k výměně.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Přidej do Gayova obchodu další slot pro cenné nabídky předmětů, počínaje prvním slotem ve druhé řadě zleva. Použij v přístavním Gayově obchodě (Socha Válečníka v Přístavu Nového kontinentu).
+Dodaj do ulubionych	Přidat k oblíbeným
 Dodaj przedmiot do wymiany.	Přidej předmět k výměně.
 Dodaj przedmioty do sklepu.	Přidej do obchodu předměty.
 Dodaj punkt Sung Ma	Přidat bod Sung Ma
@@ -1136,14 +1274,19 @@ Dolina	Údolí
 Dolina Cyklopow	Údolí kyklopů
 Dolina Cyklopów	Údolí kyklopů
 Dolina Orkow	Údolí orků
+Dolina Orków	Údolí orků
+Dolina Orków / Ognista Ziemia	Údolí orků / Ohnivá země
 Dom Aukcyjny	Aukční dům
 Dom Aukcyjny działa tylko w M1.	Aukční dům funguje jen v M1.
 Dom Aukcyjny jest wyłączony.	Aukční dům je vypnutý.
 Dom Aukcyjny moze byc wylaczony.	Aukční dům může být vypnutý.
 Dom Aukcyjny: %s	Aukční dům: %s
+Dom Aukcyjny: %s - %s.	Aukční dům: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Aukční dům: nejvýše %d bonusů najednou.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Aukční dům: předchozí nákupy ještě probíhají.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Aukční dům: zkus to za chvíli znovu.
+Dom Towarowy	Obchodní dům
+Dom Towarowy: %s	Obchodní dům: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Obchodní dům: probíhá nákup označených nabídek.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Obchodní dům: označ nabídky (čtvereček u nabídky) a pak klikni na Koupit vše.
 Domyślna	Výchozí
@@ -1191,6 +1334,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Zkušenosti +%(v)s%% při jízdě
 Doświadczenie +%d%%	Zkušenosti +%d%%
 Doświadczenie Czempiona : %.2f%%	Zkušenosti šampiona : %.2f%%
 Doświadczenie Czempiona: %s / %s	Zkušenosti šampiona: %s / %s
+Doświadczenie łącznie	Zkušenosti celkem
 Doświadczenie: %d%%	Zkušenosti: %d%%
 Doświadczenie: %d%% (%d / %d)	Zkušenosti: %d%% (%d / %d)
 Doświadczenie: %s / %s	Zkušenosti: %s / %s
@@ -1199,10 +1343,15 @@ Drewniany Klucz	Dřevěný klíč
 Drobny Kam. Przebudzenia	Drobný kámen probuzení
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Vzácná měna Yohary. Vybrus 30 Oblázků u Sochy Válečníka v Přístavu Nového kontinentu (s Kamenem duše +0 až +3 a 15 000 Yang - šance 70%) a získáš 3 Gaye. Platí se jí v přístavním Gayově obchodě, u kovářů sad, u Sochy hadů, Tajemného oltáře a Mistra Chi. Nelze ji vyměňovat s jinými hráči.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Vzácný prsten ozdobený nefritem a tyrkysem. Dává: +50% zkušeností, +30% síly proti příšerám, +20% rychlosti útoku a kouzel, +10% max. ZB a MB.
+Drop Przedmiotow:	Loot předmětů:
 Drop Yang	Drop Yangů
 Drop potwora %s:	Drop příšery %s:
 Drop przedmiotów +%d%%	Drop předmětů +%d%%
+Drop z bossów	Loot z bossů
 Dropek Metinów	Dropař Metinů
+Dropek medali	Loot medailí
+Dropek z M2	Loot z M2
+Dropek z M3	Loot z M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	Druhá polovina nastavení výše - samostatná šance počítaná při rozbití kamene Metin místo při zabití běžné příšery.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Druhá ze tří knih bdělosti. Může zvýšit charisma majitele. Po přečtení kniha zmizí. (Zatím bez využití - přijde s další aktualizací Yohary.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Druhá ze tří knih bojových formací. Může zvýšit inspiraci majitele. Po přečtení kniha zmizí. (Zatím bez využití - přijde s další aktualizací Yohary.)
@@ -1242,6 +1391,7 @@ Dusza wojownika, obdarzona mocą.	Duše válečníka, obdařená mocí.
 Dusza Światła	Duše světla
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Duše se berou z inventáře samy - stačí je mít u sebe.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Dušený prémiový ženšen - jediné krmivo Mocného válečného koně (kůň od úrovně 31). Klikni pravým tlačítkem myši pro nakrmení přivolaného koně, nebo ho podej koni. Padá z příšer Yohary.
+Duzy Lysy Ork	Velký plešatý ork
 Duża	Velká
 Duży Skorpion	Velký škorpion
 Dwigant Zodiaku	Dvojobr zvěrokruhu
@@ -1272,14 +1422,17 @@ Dzik Zodiaku	Kanec zvěrokruhu
 Dziki General Zodiaku	Divoký generál zvěrokruhu
 Dziki Lucznik Zodiaku	Divoký lučištník zvěrokruhu
 Dziki Moa (pieczęć)	Divoký Moa (pečeť)
+Dziki Sluga	Divoký sluha
 Dziki Sluga Zodiaku	Divoký sluha zvěrokruhu
 Dziki Z. Piech. Zodiaku	Divoký pěšák zvěrokruhu
+Dziki Zolnierz Piechoty	Divoký pěší voják
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Díky tomuto lektvaru nasbíráš během 3 hod. hry o 150% více zkušeností. S předmětem nelze obchodovat.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Díky této pečeti můžeš přivolat jednorožce.
 Dzięki tej pieczęci możesz przywołać marę senną.	Díky této pečeti můžeš přivolat můru.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Pomocí této pečeti můžeš přivolat svého mazlíčka.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Díky této pečeti se z vejce vylíhne Sheldon.
 Dziękujemy za zgłoszenie!	Děkujeme za nahlášení!
+Dziś	Dnes
 Dzwon Anielski	Andělský zvon
 Dzwon Arkt. Króla	Zvon Arkt. krále
 Dzwon Błk. Wiatru	Zvon Azur. větru
@@ -1385,6 +1538,7 @@ Elit. Ork Zodiaku	Elitní ork zvěrokruhu
 Elit. Ork Zwiad. Zodiaku	Elitní ork zvěd zvěrokruhu
 Elita Atlantydy	Elita Atlantidy
 Elitarny Ezoteryczny Fanatyk	Elitní ezoterický fanatik
+Elitarny Ork	Elitní ork
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblém mistrů fotbalu. Na 6 hodin dává: +50% BZK, +20% rychlosti útoku, +20% rychlosti kouzel, +35% magického útoku a útoku na blízko, +10% max. ZB, +10% max. MP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Emoce ve dvou (polibek, plácnutí) bez ptaní na souhlas.
 Emocje: nie	Emoce: ne
@@ -1423,6 +1577,7 @@ Event wielkanocny	Velikonoční event
 Event wlaczony	Event zapnut
 Event wyłączony	Event vypnut
 Eventy (bonus imperium)	Eventy (bonus říše)
+Eventy w dniu %s:	Události dne %s:
 Eventy wylaczone	Eventy vypnuty
 Ewoluować szatę za %s Yang i materiał?	Vyvinout šat za %s Yang a materiál?
 Expimy razem	Expíme společně
@@ -1431,6 +1586,7 @@ Ezot. Dreczyciel Zodiaku	Esot. trýznitel zvěrokruhu
 Ezot. Fanatyk Zodiaku	Esot. fanatik zvěrokruhu
 Ezot. Wojownik Zodiaku	Esot. válečník zvěrokruhu
 Ezoteryczne Drewno	Esoterické dřevo
+Ezoteryczny Fanatyk	Esoterický fanatik
 Ezoteryczny Ostrzowiec	Esoterický čepelník
 FC Bawaria Hwang+ (k)	FC Bavorsko Hwang+ (žena)
 FC Bawaria Hwang+ (m)	FC Bavorsko Hwang+ (muž)
@@ -1449,6 +1605,8 @@ Fan	Vějíř
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Osudová křídla smrti
 Filters History	Historie filtrů
+Filtr %d	Filtr %d
+Filtr (%d)	Filtr (%d)
 Filtr bonusów (prawy klik czyści)	Filtr bonusů (pravý klik vymaže)
 Filtr podnoszenia	Filtr sbírání
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	Filtr sbírání je VYPNUT (Ctrl+Z) - nyní sbíráš vše.
@@ -1457,7 +1615,9 @@ Filtr podnoszenia: %s	Filtr sbírání: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Filtr sbírání: druhy z Auto lovu této postavy nyní platí pro Z, Auto lov a Společníka (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Filtr sbírání: načten předvolba "%s".
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Filtr sbírání: uložena pravidla druhu "%s" (%d).
+Filtr rodzaju	Filtr druhu
 Filtr wyłączony - podnosisz wszystko.	Filtr vypnut - sbíráš vše.
+Filtry (%d)	Filtry (%d)
 Filtry bonusow	Filtry bonusů
 Fioletowa	Fialová
 Fioletowa Rosa	Fialová rosa
@@ -1542,9 +1702,11 @@ Glodny Czarny Niedzwiedz	Hladový černý medvěd
 Glodny Dzik	Hladový kanec
 Glodny Niebieski Alfa Wilk	Hladový modrý alfa vlk
 Glodny Niebieski Wilk	Hladový modrý vlk
+Glodny Niedzwiedz	Hladový medvěd
 Glodny Szary Wilk	Hladový šedý vlk
 Glodny Tygrys	Hladový tygr
 Glodny Wilk	Hladový vlk
+Glodny Zablakany Pies	Hladový toulavý pes
 Gniazdo Sheldona	Sheldonovo hnízdo
 Gniewne Serce (pieczęć)	Pečeť Hněvivého srdce
 Gniewny Mini Alastor	Rozzlobený mini Alastor
@@ -1568,6 +1730,7 @@ Gotowa do ewolucji u Theowahdana	Připraveno k evoluci u Theowahdana
 Gotowa za: %s	Připravena za: %s
 Gotowe! Odbierz przedmiot	Hotovo! Vyzvedni předmět
 Gotowy do użycia	Připraveno k použití
+Gotowy. Usuwane sa cale wybrane stosy.	Hotovo. Odstraňují se celé vybrané stohy.
 Gourou	Gourou
 Gra	Hra
 Gra beze mnie	Hraje beze mě
@@ -1603,6 +1766,7 @@ Gruby Mini Kat (pieczęć)	Tlustý Mini Kat (pečeť)
 Grudzień	Prosinec
 Grupa: %s	Skupina: %s
 Grupuj	Seskupit
+Grupy (PT)	Skupiny (PT)
 Gruszka	Hruška
 Gwarancja Rzemiosła (Biżuteria)	Záruka řemeslníka (šperky)
 Gwarancja Rzemiosła (Broń)	Záruka řemeslníka (zbraň)
@@ -1610,11 +1774,13 @@ Gwarancja Rzemiosła (Zbroja)	Záruka řemeslníka (zbroj)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Záruka řemesla, kterou uznává kovář v každé vesnici. Použij na předmět, abys ho vylepšil.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Záruka řemesla, kterou uznává kovář v každé vesnici. Použij na předmět, abys ho vylepšil. Nefunguje na zbraně úrovně 30. Předmět se může zničit.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Záruka řemesla, kterou uznává kovář v každé vesnici. Použij na předmět, abys ho vylepšil. Předmět se může zničit.
+Gwardia Ognistego Smoka+	Stráž ohnivého draka+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Prudký úder před sebe do obdélníkové oblasti.
 Gwiazda Nocy	Hvězda noci\r\n
 Gwiazda Północy (PB)	Polárka (BO)
 Gwiazda Północy (SZC)	Polárka (ČT)
 Gwiezdny Skarb	Hvězdný poklad
+Górnik	Horník
 Górski Behemot	Horský behemot
 Góry Gromu	Hory hromu
 Głowa Węża	Hadí hlava
@@ -1634,9 +1800,11 @@ Handlarz Enasir	Obchodník Enasir
 Handlarz Enasir (h)	Obchodník Enasir (h)
 Handlarz Zodiaku	Obchodník zvěrokruhu
 Handlarz nie jest zainteresowany tym przedmiotem.	Obchodník o tento předmět nemá zájem.
-Handluj z %s	Obchodovat s hráčem %s
+Handluj z %s	Obchodovat s %s
 Happy Hour	Happy Hour
 Helm	Přilba
+Helmy - Ninja	Helmy - Ninja
+Helmy - Sura	Helmy - Sura
 Helmy - Szaman	Helmy - Šaman
 Helmy - Wojownik	Helmy - Válečník
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1710,6 +1878,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	Hwachu nelze nabí
 Hwang	Hwang
 Hydra	Hydra
 I am the czempion! Punktacja: %d	Jsem šampion! Skóre: %d
+ID Bota:	ID bota:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR nejstarší postavě účtu admin.
 Ich liczba na event jest ograniczona.	Jejich počet na event je omezený.
 Id. Skrzynia Kolczyków	Dok. truhla náušnic
@@ -1724,6 +1893,9 @@ Ile sztuk kupic:	Kolik kusů koupit:
 Ile sztuk kupic?	Kolik kusů koupit?
 Ile sztuk kupić:	Kolik kusů koupit:
 Ile sztuk kupić?	Kolik kusů koupit?
+Ile? %s	Kolik? %s
+Ilosc: malejaco	Množství: sestupně
+Ilosc: rosnaco	Množství: vzestupně
 Ilość prób: - jedna, + najwięcej, ile się da.	Počet pokusů: - jeden, + nejvíce, kolik jde.
 Ilość Ładunków: %d	Počet nábojů: %d
 Ilość śmierci	Počet smrtí
@@ -1746,6 +1918,7 @@ Info o efekt.	Info o efektu
 Informacje	Informace
 Informacje o misji	Informace o misi
 Informacje o sklepie	Informace o obchodu 
+Inkub Płomieni+	Inkub plamenů+
 Inna Wroga Wytrzymałość	Jiná nepřátelská odolnost
 Inna postać już ma tą nazwę.	Toto jméno už má jiná postava.
 Inne Mikstury	Ostatní lektvary
@@ -1800,6 +1973,7 @@ Inteligencja Sung Ma	Inteligence Sung Ma
 Inteligencja Sung Ma +%d	Inteligence Sung Ma +%d
 Item inserted into the shopping safebox.	Předmět byl vložen do nákupního trezoru.
 ItemShop	ItemShop
+Ja (GM)	Já (GM)
 Jabłko	Jablko
 Jadeit Dymu	Kouřový nefrit
 Jadeit Mgły	Mlžný nefrit
@@ -1860,7 +2034,16 @@ Jazda Konna (Precyzja)	Jízda na koni (přesnost)
 Jazda Konna (Sura)	Jízda na koni (sura)
 Jazda Konna (Szaman)	Jízda na koni (šaman)
 Jazda Konna (Wojownik)	Jízda na koni (válečník)
+Jazda Konna (diabły)	Jízda na koni (ďáblové)
+Jazda Konna (insekty)	Jízda na koni (hmyz)
 Jazda Konna (losowo)	Jízda na koni (náhodně)
+Jazda Konna (mistycy)	Jízda na koni (mystikové)
+Jazda Konna (nieumarli)	Jízda na koni (nemrtví)
+Jazda Konna (orki)	Jízda na koni (orkové)
+Jazda Konna (potwory)	Jízda na koni (příšery)
+Jazda Konna (pustynia)	Jízda na koni (poušť)
+Jazda Konna (półludzie)	Jízda na koni (půllidé)
+Jazda Konna (zwierzęta)	Jízda na koni (zvířata)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Jedno z Balathorových Dračích vajec vyvolává ledový chlad! Soustřeďte na něj útoky.
 Jednoręczne	Jednoruční
 Jedwab	Hedvábí
@@ -1881,12 +2064,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	Máš-li 
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Pokud máš nad 90% ZB, utrpíš o uvedené procento nižší poškození.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Pokud máš nad 90% ZB, utrpíš o x% nižší poškození.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Pokud máš nad 90%% ZB, utrpíš o %d%% nižší poškození.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Pokud se obchod nezobrazuje, tento klient ještě nemá
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Pokud toto použiješ, získáš buff, který ti umožní přivolat Enasira a obchodovat s ním jako s Obchodnicí smíšeným zbožím (při prodeji si účtuje 10% ceny). Doba trvání: 7 dní. Lze prodloužit na maximálně 1000 dní.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Pokud toto použiješ, získáš buff, který ti umožní přivolat Enasira a obchodovat s ním jako s Obchodnicí smíšeným zbožím (při prodeji si účtuje 10% ceny). Doba trvání: 7 dní. Lze prodloužit na maximálně 1000 dní. Předmět lze vyměňovat s jinými hráči.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Pokud toto použiješ, získáš buff, který ti umožní přivolat Enasira pro přístup do tvého skladu. Doba trvání: 7 dní. Lze prodloužit na maximálně 1000 dní.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Pokud toto použiješ, získáš buff, který ti umožní přivolat Enasira pro přístup do tvého skladu. Doba trvání: 7 dní. Lze prodloužit na maximálně 1000 dní. Předmět lze vyměňovat s jinými hráči.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Pokud ty nebo Goblin pokladů zemřete, výprava selže.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Máš-li potíže s grafikou, vyber 'Nastavení systému' nebo 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Pokud zakrytá [5] sousedí s odkrytou kartou,
 Jin Bing (lód)	Jin Bing (led)
 Jin Bing (mrok)	Jin Bing (temnota)
 Jin-Hee Zodiaku	Jin-Hee zvěrokruhu
@@ -1897,9 +2082,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Jazyk
 Język / Language	Jazyk / Language
 Język klienta: %s	Jazyk klienta: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Jazyk serveru: %s - klient změní jazyk po restartu (Server language: after a restart).
 KRĘCI SIĘ...	TOČÍ SE...
 Kaftan Wężowy	Hadí kabátec
 Kaftan Wężowy (wykon.)	Hadí kabátec (vyrob.)
+Kalendarz eventów	Kalendář událostí
+Kalendarz eventów: %s - %d	Kalendář událostí: %s - %d
 Kam. Pieczęci Sunga Mahi	Pečeťový kámen Sunga Mahi
 Kamera filmowa - obrót w lewo	Filmová kamera - otočení doleva
 Kamera filmowa - obrót w prawo	Filmová kamera - otočení doprava
@@ -1910,6 +2098,7 @@ Kamera filmowa - w dół	Filmová kamera - dolů
 Kamera filmowa - w górę	Filmová kamera - nahoru
 Kamienie	Kameny
 Kamienie Duszy (0 = puste):	Kameny duší (0 = prázdné):
+Kamienie Metin	Kameny Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Teleportační kameny: %d. Teleportovat do: %s?
 Kamienie dusz	Duchovní kameny
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Kamenná destička s prastarými runami. Vyzařuje neznámou energii.
@@ -1943,6 +2132,7 @@ Kamień Teleportacji	Teleportační kámen
 Kamień Teleportacji+	Teleportační kámen+
 Kamień Tygrysa	Tygří kámen
 Kamień Wzgórza	Kámen pahorku
+Kamień Węglowy	Uhelný kámen
 Kamień Wężowy	Hadí kámen
 Kamień Wężowy+	Hadí kámen+
 Kamień do Fundamentu+	Kámen do základů+
@@ -2063,6 +2253,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Dal�
 Kolejny boss za: %s	Další boss za: %s
 Kolejny cel	Další cíl
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Další úroveň: %d míst, %s Yang, od úrovně postavy %d
+Kolekcja lochów	Sbírka jeskyní
+Kolekcja pól	Sbírka polí
 Kolia Jadeitu Dymu	Přívěsek kouřového nefritu
 Kolia Jadeitu Mgły	Přívěsek mlžného nefritu
 Kolia Jadeitu Nocy	Přívěsek nočního nefritu
@@ -2362,6 +2554,7 @@ Koło Losu jest teraz wyłączone.	Kolo štěstí je nyní vypnuto.
 Koło Losu: brama otwarta - poziom %d!	Kolo štěstí: brána otevřena - úroveň %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Kolo štěstí: vyhráváš %s. Odměna čeká ve skladu ItemShopu.
 Koło Losu: zdobywasz klucz (%d/%d).	Kolo štěstí: získáváš klíč (%d/%d).
+Koło Płomieni Nocy	Kolo plamenů noci
 Koło Skrzydła Nocy	Kolo noční perutě
 Koło Słonecznego Wilka	Kolo slunečního vlka
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	Kolo má 16 polí, každé se šancí 1/16. Před každým otočením se pole losují znovu.
@@ -2372,6 +2565,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	Kůň snědl %(a)d Krm
 Krab Królewski	Královský krab
 Krab Pancerny Zodiaku	Pancéřový krab zvěrokruhu
 Krab Wojow. Zodiaku	Krab válečník zvěrokruhu
+Kradziez PM	Krádež SP
+Kradziez PZ	Krádež HP
 Kradzież PE	Krádež MP
 Kraina Gigantow	Země obrů
 Kraina Ognia	Ohnivá země
@@ -2408,14 +2603,18 @@ Krótki	Krátký
 Krótko	Krátce
 Kręty Klucz (PB)	Křivolaký klíč (BO)
 Kręty Klucz (SZC)	Křivolaký klíč (ČT)
+Ksiegi umiejetnosci	Knihy dovedností
 Ksiegi zapomnienia	Knihy zapomnění
 Ksiąg w oknie: %d (wymian: %d)	Knih v okně: %d  (výměn: %d)
 Książ. Odłamek Broni II	Knížecí úlomek zbraně II
 Książ. Odłamek Hełmu II	Knížecí úlomek přilby II
 Książ. Odłamek Zbroi II	Knížecí úlomek zbroje II
 Książka Przebudzenia	Kniha probuzení
+Książę Atlantydy+	Princ Atlantidy+
+Książę Orientu (brąz.)+	Princ Orientu (bronz.)+
 Książę Piekielnej Wieży	Princ Pekelné věže
 Książę Śmierci P. Wieży	Princ smrti Pek. věže
+Książęcy	Knížecí
 Książęcy Efekt Zestawu	Knížecí efekt sady
 Książęcy Kowal Zestawu	Knížecí kovář sad
 Księga Absorpcji Życia	Kniha absorpce života
@@ -2479,6 +2678,7 @@ Księga: Burza Balathora	Kniha: Balathorova bouře
 Księga: Nieugiętość Balathora	Kniha: Balathorova nezlomnost
 Księga: Wola Balathora	Kniha: Balathorova vůle
 Księgi	Knihy
+Księgi Misji	Knihy misí
 Księgi Um. Pasywnych	Knihy pasivních dovedností
 Księgi umiejętności	Knihy dovedností
 Księgi zapomnienia	Knihy zapomnění
@@ -2495,7 +2695,10 @@ Kup część stosu	Koupit část stohu
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Koupí zadaný počet kusů jednoho předmětu, od nejlevnějšího
 Kup tę ofertę	Koupit tuto nabídku
 Kup wiele	Koupit více
+Kup wiele działa dla jednego przedmiotu.	Hromadný nákup funguje pro jeden předmět.
 Kup wszystkie zaznaczone oferty	Koupit všechny označené nabídky
+Kup wybrane (%d	Koupit vybrané (%d
+Kup wybrane (0	Koupit vybrané (0
 Kup!	Koupit!
 Kupic %d ofert za lacznie %s?	Koupit %d nabídek za celkem %s?
 Kupione - nowa oferta za %s.	Koupeno - nová nabídka za %s.
@@ -2505,11 +2708,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	Koupeno %d z %d nabídek: %d ks za %s.
 Kupić %d szt. (ofert: %d) za %s?	Koupit %d ks (nabídek: %d) za %s?
 Kupić %s za %s Gaya?	Koupit %s za %s Gaya?
 Kupić %s za %s?	Koupit %s za %s?
+Kupić zaznaczone oferty: %d?	Koupit označené nabídky: %d?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Kupón DM (50), +100% šance na drop po dobu 2 hodin
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	Kupón v hodnotě 20 Dračích mincí. Klikni pravým tlačítkem myši a přičteš je na svůj účet.
 Kupony	Kupony
 Kupony SM	Kupony DM
 Kupony SM/Premium	Kupony DM/Premium
+Kupowanie mikstur	Nákup lektvarů
 Kupuja sie po kolei; blad przerywa zakupy.	Kupují se postupně; chyba nákupy přeruší.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Nakupuje za ně v Item Shopu to, co používá (bez účesů). Nevydává: nesahá na ně.
 Kursor nad postaciami	Kurzor nad postavami
@@ -2520,6 +2725,7 @@ Kwitnąca Brzoskwinia	Kvetoucí broskvoň
 Kwitnące Kaki	Kvetoucí kaki
 Kwota (yang):	Částka (Yang):
 Kwota SM:	Částka DM:
+Kwota Yang:	Částka Yang:
 Kwota:	Částka:
 Kłopoty na Zboczu Gautama	Potíže na svahu Gautamy
 LPM: podnoszę tak / nie	LTM: sbírám ano / ne
@@ -2547,12 +2753,14 @@ Lekarstwo Iluzji	Lék proti iluzím
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Lék na démonskou prašivinu. Předmět potřebný k úkolu.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Lék připravený z listů života. Po užití se okamžitě obnoví ZB a MP.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Lehký krok (rychlost pohybu +%(v)s) na %(d)d s po útoku pěšky (každých 300 s)
+Lekki Strój Plażowy+ (m)	Lehký plážový oděv+ (M)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Lehký a ohebný hrot vyrobený z bambusu. Ideální pro rychlé a přesné výstřely, používaný lučištníky, kteří oceňují pohyblivost a rychlost.
 Lekkie jak Piórko	Lehký jako pírko
 Leopardzik (7 dni)	Leopardík (7 dní)
 Level konia:	Úroveň koně:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Levé pole: předmět, který dostane nový vzhled.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Levé pole: jezdecké zvíře, které dostane nový vzhled.
+Lewy Shift	Levý Shift
 Leśna Wróżka	Lesní víla
 Leże Smoka	Dračí doupě
 Licencja Najemnika	Žoldnéřská licence
@@ -2563,18 +2771,22 @@ Liczba bonusów na kostiumie (co najmniej):	Počet bonusů na kostýmu (alespoň
 Liczba botów (3-16):	Počet botů (3-16):
 Liczba gier:	Počet her:
 Liczba online	Počet online
+Liczba sztuk	Počet kusů
 Liczba sztuk:	Počet kusů:
 Liczba w ekwipunku	Počet ve vybavení
 Liczby	Čísla
 Lider grupy	Vůdce skupiny
 Lilia: szansa na przedmioty +%d%%	Lilie: šance na předměty +%d%%
 Liliowa Runa SungMa	Lila runa SungMa
+Limit Lvl: %d do %d	Limit úrovně: %d až %d
 Limit członków grupy: od %d do %d	Limit členů skupiny: od %d do %d
 Limit zakupów na konto: %d	Limit nákupů na účet: %d
 Limit zakupów na minutę - dokończ za chwilę.	Limit nákupů za minutu - dokonči za chvíli.
 List Gończy	Zatykač
 Lista GM jest pusta: nastepny start moze nadac	Seznam GM je prázdný: příští start může udělit
 Lista jest pusta.	Seznam je prázdný.
+Lista komend GM	Seznam příkazů GM
+Lista komend GM:	Seznam příkazů GM:
 Lista tytułów	Seznam titulů
 Lista wyciszonych	Seznam ztlumených
 Lista znajomych	Seznam přátel
@@ -2582,6 +2794,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Písmena na tét
 Lizak Magii	Magické lízátko
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Lízátko s tajemným složením, plné magie. Dává: +50% zkušeností, +20% rychlosti útoku, +20% rychlosti kouzel, +30% magického poškození, +10% max. ZB, +10% max. MB. Působí 7 dní.
 Liście Życia	Listy života
+Loch / wyprawa	Jeskyně / výprava
 Loch Malp (latwy)	Opičí dungeon (snadný)
 Loch Malp (normalny)	Opičí dungeon (normální)
 Loch Malp (trudny)	Opičí dungeon (těžký)
@@ -2590,6 +2803,7 @@ Loch Pajakow V1	Pavoučí kobka V1
 Loch Pajakow V2	Pavoučí kobka V2
 Loch Pająków (1)	Pavoučí dungeon (1)
 Loch Pająków V1	Pavoučí dungeon V1
+Loch Polowy	Lovecká jeskyně
 Lochy Yohary	Dungeony Yohary
 Lod. Wiel. Zab. Zodiaku	Ledová kosatka zvěrokruhu
 Lodogóry 690 10169	Ledohory 690 10169
@@ -2683,12 +2897,14 @@ Maksimum	Maximálně
 Maksymalnie	Maximálně
 Maksymalny	Maximální
 Mala liczba ofert - wycena orientacyjna	Malý počet nabídek - orientační ocenění
+Malpi Zolnierz	Opičí voják
 Maniak Cz. Wiat. Zodiaku	Maniak Černého větru zvěrokruhu
 Manu	Manu
 Mapa %d	Mapa %d
 Mapa (index):	Mapa (index):
 Mapa OX	Mapa OX
 Mapa teleportacji - TAB	Teleportační mapa - TAB
+Mapa Ślubna	Svatební mapa
 Mapa świata	Mapa světa
 Mapa: %s	Mapa: %s
 Mapy	Mapy
@@ -2810,14 +3026,20 @@ Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu
 Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 30. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Materiál umožňující s určitou pravděpodobností přidat 6. nebo 7. bonus u Seon-Hae - k předmětům úrovně 30. Jeden úlomek dává 2% šance, nejvýše 10 najednou (20%).
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Materiál zvyšující šanci na přidání 6. nebo 7. bonusu u Seon-Hae. Úroveň předmětu: 0-29.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Materiál zvyšující šanci na přidání 6. nebo 7. bonusu u Seon-Hae. Úroveň předmětu: 120 a vyšší.
+Materiały	Materiály
 Materiały Rzemieślnicze	Řemeslnické materiály
 Materiały ulepszeń	Materiály vylepšení
 Matowy Lód	Matný led
 Matowy Lód+	Matný led+
 Max PE: +%d	Max MP: +%d
+Max PM	Max SP
+Max PM %	Max SP %
+Max PZ	Max HP
+Max PZ %	Max HP %
 Max PŻ +2500 / +2000 / +1500	Max HP +2500 / +2000 / +1500
 Max PŻ: +%d	Max ZB: +%d
 Max wytrzymalosc	Max. výdrž
+Max. PŻ +%d	Max. ZB +%d
 Max. poziom przedmiotu: %d	Max. úroveň předmětu: %d
 Max. ulepszenie z +%d na +%d.	Max. vylepšení z +%d na +%d.
 Mała Meley	Malá Meley
@@ -2825,9 +3047,11 @@ Mała Meley (pieczęć)	Malá Meley (pečeť)
 Mała Nemere	Malá Nemere
 Mała Nemere (pieczęć)	Malá Nemere (pečeť)
 Małe Błogosławieństwo	Malé požehnání
+Małpi Loch	Opičí jeskyně
 Małpi Loch (trudny)	Opičí kobka (těžká)
 Małpi Loch (łatwy)	Opičí kobka (lehká)
 Małpi Loch (średni)	Opičí kobka (střední)
+Małpka	Opička
 Mały Aamon	Malý Aamon
 Mały Aamon (pieczęć)	Malý Aamon (pečeť)
 Mały Baashido	Malý Baashido
@@ -2979,7 +3203,7 @@ Min-Sun	Min-Sun
 Min. %d bonusów	Min. %d bonusů
 Min. Raise	Min. příhoz
 Min. liczba bonusow:	Min. počet bonusů:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: předmět musí mít tento bonus, alespoň X. Klik: Žádný / >.\nŽádný / >: sebere předmět bez tohoto bonusu, a s ním jen nad X. Klik: Min.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: předmět musí mít tento bonus, alespoň X. Klik: Žádný / >.\nŽádný / >: zvedne předmět bez tohoto bonusu, a s ním jen nad X. Klik: Min.
 Mineral	Nerost
 Mini Azrael	Mini Azrael
 Mini Azrael (pieczęć)	Mini Azrael (pečeť)
@@ -3002,11 +3226,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Vrhej temné síly a zraňuj nepřátele.|Posiluje: Inteligence (++), Obratnost (přesnost) (+), úroveň postavy.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Vrhej blesky.|Posiluje: Inteligence (++), Obratnost (přesnost) (+), úroveň postavy.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Vrhej talismany a zraňuj nepřátele.|Posiluje: Inteligence (++), Obratnost (přesnost) (+), úroveň postavy.
+Misja %d	Mise %d
 Misja kart	Úkol karet
 Misje Biologa	Úkoly Biologa
 Misje dzienne	Denní úkoly
 Misje główne	Hlavní úkoly
 Misje poboczne	Vedlejší úkoly
+Misje polowania	Lovecké mise
 Misje łowieckie	Lovecké úkoly
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Umně zdobený klíč, který otevírá truhlu vodní nymfy. (Zatím bez využití - přijde s další aktualizací Yohary.)
 Mistrz Ahtrin	Mistr Ahtrin
@@ -3020,6 +3246,8 @@ Mistrz Włóczni Ki	Mistr kopí Ki
 Mistrz Włóczni Mao	Mistr kopí Mao
 Mistrz ekwipunku	Mistr výbavy
 Mistrz przepadnie.	 Mistr propadne.
+Mistrz umiejętności	Mistr dovedností
+Mistrzowska piłka nożna	Mistrovský fotbal
 Mistrzowski Emblemat	Mistrovský emblém
 Mistyczna substancja ożywiająca florę i faunę lasu.	Mystická látka oživující flóru a faunu lesa.
 Mistykom	Proti mystikům
@@ -3032,6 +3260,7 @@ Mnich Milbon	Mnich Milbon
 Mniej niz 1 min.	Méně než 1 min.
 Mnoznik dropu przedmiotow	Násobitel dropu předmětů
 Mnoznik dropu yang	Násobitel dropu yangů
+Moby 1 hit	Moby na 1 úder
 Moby > Bossy > Metiny	Příšery > Bossové > Metiny
 Moby > Metiny > Bossy	Příšery > Metiny > Bossové
 Moc Błyskawic	Síla blesku
@@ -3058,6 +3287,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Módně zastřižené vlasy umožňují šamanům vyjádřit svou povahu. Trvale změní účes tvé postavy.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Módně zastřižené vlasy, které šamanům umožňují vyjádřit svou povahu. Trvale změní účes tvé postavy.
 Moj cel	Můj cíl
+Moja postac	Moje postava
 Moje miejsca	Má místa
 Mokre Szaty: szybkość ruchu -50	Mokré šaty: rychlost pohybu -50
 Moloch	Moloch
@@ -3072,6 +3302,7 @@ Może schwytać karty: [1]	Může zajmout karty: [1]
 Może schwytać karty: [1], [2]	Může zajmout karty: [1], [2]
 Może schwytać karty: [1], [2], [3]	Může zajmout karty: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Může zajmout karty: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Může chytit karty: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Může zajmout karty: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Může stáhnout na zem některé snílky. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Możesz mieć najwyżej %d własnych kategorii.	Můžeš mít nejvýše %d vlastních kategorií.
@@ -3104,10 +3335,12 @@ Można znać tylko jedną ripostę.	Lze znát jen jeden protiúder.
 Mroczna Paproć	Temné kapradí
 Mroczna Wieża	Temná věž
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Temná sféra má %d%% šanci omráčit protivníka
+Mrocznego Uderzenia	Temného úderu
 Mroczny Cierń	Temný trn
 Mroczny Kat Zodiaku	Temný kat zvěrokruhu
 Mrok	Temnota
 Mroz. Lod. Czl. Zodiaku	Mrazivý ledový muž zvěrokruhu
+Mrozny Lodowy Czlowiek	Mrazivý ledový muž
 Mroźna Skrz. Balathora	Balathorova ledová truhla
 Mroźna Skrz. Balathora+	Balathorova ledová truhla+
 Mroźny Klucz (PB)	Mrazivý klíč (BO)
@@ -3118,6 +3351,7 @@ Mroźny Rufus	Mrazivý Rufus
 Mroźny Rufus (pieczęć)	Mrazivý Rufus (pečeť)
 Mt2009	Mt2009
 Mumia Kapłanka	Mumie kněžka
+Mundur Strażaka+(m)	Hasičská uniforma+ (M)
 Musisz go pokonać, by otrzymać nagrodę.	Musíš ho porazit, abys získal odměnu.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Musíš odtlačit Ohnivé dračí vejce na druhou stranu.
 Myr Bojownik (wiatr)	Myr bojovník (vítr)
@@ -3133,6 +3367,7 @@ Myr Prymus (wiatr)	Myr Primus (vítr)
 Myr Prymus (ziemia)	Myr Primus (země)
 Myr Weteran (wiatr)	Myr veterán (vítr)
 Myr Weteran (ziemia)	Myr veterán (země)
+Mój ranking	Moje pořadí
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Říká se, že obsah této truhly je stejně vzácný jako truhla samotná.
 Młodszy Hazardzista	Mladší hazardér
 Młody Moa (pieczęć)	Mladý Moa (pečeť)
@@ -3178,6 +3413,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Stiskni klávesu pro: %s
 Naczelny Hazardzista	Hlavní hazardér
 Nadaj imię	Pojmenovat
+Nadaj range	Udělit hodnost
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Uděluje buffy na úrovni G1 Dračího šamana s 90 inteligencí na 10 minut.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Uděluje buffy na úrovni M1 Dračího šamana s 90 inteligencí na 10 minut.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Uděluje buffy na úrovni P Dračího šamana s 90 inteligencí na 10 minut.
@@ -3205,7 +3441,9 @@ Nagrody są już odkryte.	Odměny jsou již odkryty.
 Nagrody za tury	Odměny za kola
 Najbliższy	Nejbližší
 Najczęściej zabijani	Nejčastěji zabíjení
+Najdłuższa sesja	Nejdelší relace
 Najedź myszką na przedmiot, aby zobaczyć opis.	Najeď myší na předmět pro zobrazení popisu.
+Najlepsza sesja (yang)	Nejlepší relace (yang)
 Najlepszy czas: %s	Nejlepší čas: %s
 Najpierw dezaktywuj Relikt Duszy.	Nejprve deaktivuj Duchovní relikvii.
 Najpierw dodaj eliksir.	Nejdřív přidej elixír.
@@ -3269,6 +3507,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Pokrývka hlavy ze sady Arezzo (Sada Vikinga). Působí 30 dní od nasazení.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Pokrývka hlavy ze sady Arezzo (Zlatavá sada). Působí 30 dní od nasazení.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Pokrývka hlavy ze sady Arezzo (Sada zlatého draka). Platí 30 dní od nasazení.
+Nakładka na broń	Návlek na zbraň
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Vzhled pro jednoruční zbraň (meč) - válečník, ninja, sura. Působí 30 dní od zakoupení.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Vzhled zbraně ze sady Arezzo (Andělská sada): ninja. Působí 30 dní od nasazení.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Vzhled zbraně ze sady Arezzo (Andělská sada): šaman. Působí 30 dní od nasazení.
@@ -3412,6 +3651,7 @@ Nazwa Postaci jest niepoprawna.	Jméno postavy je neplatné.
 Nazwa jest niewłaściwa.	Název je neplatný.
 Nazwa postaci jest identyczna jak nazwa konta.	Jméno postavy je stejné jako jméno účtu.
 Nazwa pozycji (do %d znaków)	Název pozice (do %d znaků)
+Nazwa presetu	Název předvolby
 Nazwa przedmiotu	Název předmětu
 Nazwa reguły	Název pravidla
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Jméno tvé postavy nesmí obsahovat speciální znaky.
@@ -3433,6 +3673,7 @@ Nic tu nie ma.	Nic tu není.
 Nick:	Přezdívka:
 Nick: %s (pid: |cff5af22c%d|r)	Přezdívka: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Přezdívka: PLAYER_NAME
+Nie 1. atak	Ne 1. útok
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Už není potřeba: Lokátor NPC je zapnutý pro každou postavu. | Na mapě světa přepni zobrazení tlačítkem v záhlaví okna.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Není určena k ústní hygieně. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Nie jest składnikiem receptur ani ulepszeń.	Není součástí receptů ani vylepšení.
@@ -3526,6 +3767,7 @@ Nie widzisz jeszcze całej mapy.	Zatím nevidíš celou mapu.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	Nevystaveno %d předmětů - obchod byl zavřen.
 Nie zaznaczono żadnej misji.	Není označena žádná mise.
 Nie znaleziono gracza.	Hráč nenalezen.
+Nie znaleziono moba/metina o takim ID.	Mob/metin s takovým ID nebyl nalezen.
 Nie znaleziono żadnych wypraw.	Nebyly nalezeny žádné výpravy.
 Niebiańska Tarcza	Nebeský štít
 Niebiańska Tarcza nie może zostać nadana.	Nebeský štít nelze udělit.
@@ -3533,12 +3775,15 @@ Niebieska Mikstura (W)	Modrý lektvar (V)
 Niebieska Runa SungMa	Modrá runa SungMa
 Niebieska Woda	Modrá voda
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Modrá čepice se zaječíma ušima pro něj. Dává ti min. jeden náhodný bonus.
+Niebieski Alfa Wilk	Modrý alfa vlk
 Niebieski Barwnik	Modré barvivo
 Niebieski Mały Smok	Malý modrý drak
 Niebieski Mały Smok (pieczęć)	Modrý malý drak (pečeť)
 Niebieski Skorpion	Modrý škorpion
 Niebieski Sok	Modrá šťáva
+Niebieski Wilk	Modrý vlk
 Niebieski Wilk Zodiaku	Modrý vlk zvěrokruhu
+Niebieski Wzorowy Uczeń+	Modrý vzorný žák+
 Niebieskie Jajo Smoka	Modré dračí vejce
 Niebieskie Pudło Zodiaku	Modrá krabice zvěrokruhu
 Niebieskie Zioło	Modrá bylina
@@ -3565,6 +3810,7 @@ Nieprawidlowy nick	Neplatná přezdívka
 Nieprawidłowy kod koloru (np. #FF8800).	Neplatný kód barvy (např. #FF8800).
 Nieprawidłowy limit czasu.	Neplatný časový limit.
 Nieprzenikniony pancerz strażnika ognia.	Neproniknutelné brnění strážce ohně.
+Niesmiertelnosc WYL	Nesmrtelnost VYP
 Nieudana	Nezdařilo se
 Nieugiętość Balathora	Nezlomnost Balathora
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Nezlomnost Balathora: odolnost proti odhození a povalení %d%%
@@ -3596,6 +3842,7 @@ Nieśmiertelność	Nesmrtelnost
 Nigdy nie upadasz	Nikdy nepadneš
 Nikt jeszcze nie ma wyniku w tym sezonie.	Nikdo zatím nemá v této sezóně výsledek.
 Nikt jeszcze nie ukończył tury.	Nikdo ještě nedokončil kolo.
+Ninja (Łuk)	Ninja (Luk)
 Ninja Armor	Zbroj ninji
 Ninja Ostrze	Ninja: Čepel
 Ninja Łuk	Ninja: Luk
@@ -3607,6 +3854,7 @@ Niszczyciel En-Tai (BŚ)	Ničitel En-Tai (SB)
 Niszczyciel P. Wieży	Ničitel Pek. věže
 Niszczyciel Zodiaku	Ničitel zvěrokruhu
 Noc trwać będzie od 22:00 do 6:00.	Noc potrvá od 22:00 do 6:00.
+Noc/snieg po 22:00	Noc/sníh po 22:00
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normální
 Normalny Koń	Obyčejný kůň
@@ -3653,6 +3901,7 @@ Obowiązki gildii - panel lidera	Povinnosti cechu - panel vůdce
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Pošk. Metinů/Bossů/Minibossů +%.0f%%
 Obrazenia magiczne	Magické poškození
 Obrazenia magiczne vs potwory	Magické poškození proti příšerám
+Obrazenia umiejetnosci	Poškození dovednostmi
 Obraż. sztyletów w potwory +%d	Pošk. dýkami proti příšerám +%d
 Obraż. umiejętności	Pošk. dovednostmi
 Obrażenia %s +%s%%	Poškození %s +%s%%
@@ -3679,7 +3928,13 @@ Obrażenia przeciwko Metinom +%d%%	Poškození proti Metinům +%d%%
 Obrażenia umiejętności	Poškození dovedností
 Obrażenia umiejętności konnych +%(v)s%%	Poškození jezdeckých dovedností +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Poškození v Údolí Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Poškození Kamenům Metin +%d%% na 5 s.
+Obrażenia zwiększają się o %d%% na 10 sek.	Poškození se zvýší o %d%% na 10 s.
 Obrażenia/Obrona	Poškození/Obrana
+Obrażenie Umiejętności: 10%	Poškození dovedností: 10%
+Obrażenie Umiejętności: 3%	Poškození dovedností: 3%
+Obrażenie Umiejętności: 5%	Poškození dovedností: 5%
+Obrażenie Umiejętności: 7%	Poškození dovedností: 7%
 Obrona %	Obrana %
 Obrona +%.0f	Obrana +%.0f
 Obrona +12~15%	Obrana +12~15%
@@ -3696,11 +3951,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Obrana proti dovednosti �
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Obrana proti dovednosti Vír meče +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Obrana proti dovednosti Léčka +%.1f%%
 Obrona przed śr. obrażeniami	Obrana proti prům. poškození
+Obrona przy Metinach	Obrana u Metinů
 Obrona vs Ninja	Obrana proti Ninjům
 Obrona vs Sura	Obrana proti Surám
 Obrona vs Szamanom	Obrana proti Šamanům
 Obrona vs Wojownikom	Obrana proti Válečníkům
 Obrońca	Obránce
+Obrońca (obrona)	Obránce (obrana)
 Obrońca Chmur	Ochránce mraků
 Obrońca Stylu Małp	Obránce stylu opice
 Obrót %d/%s, wydano %d SM	Otočení %d/%s, utraceno %d DM
@@ -3749,6 +4006,7 @@ Odbicie Walki. Wręcz	Odražení boje na blízko
 Odbicie ataku fizycznego: %.0f%%	Odražení fyzického útoku: %.0f%%
 Odbicie ciosu	Odražení úderu
 Odbicie pocisku	Odražení střely
+Odbierz GM...	Odebrat GM...
 Odbierz nagrodę	Vyzvednout odměnu
 Odbierz nagrodę za turę	Vyzvednout odměnu za kolo
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Vyzvedni odměnu za kolo v okně Hledání pokladů.
@@ -3772,6 +4030,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Předat předmět Seon-Hae (šance %d%%
 Oddelegowany Komendant	Pověřený velitel
 Odebrac range GM postaci %s?	Odebrat hodnost GM postavě %s?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Vyzvednout můžeš pouze odměnu za aktuální kolo (%d).
+Odeslij boty	Poslat boty zpět
 Odkryta karta	Odkrytá karta
 Odnowa	Obnova
 Odp. na Br. Dwuręczną	Odol. proti obouruč. zbrani
@@ -3787,12 +4046,16 @@ Odp. na Wiatr	Odol. proti větru
 Odp. na Ziemię	Odol. proti zemi
 Odpały	Časované předměty
 Odpały (Sekundy)	Časované předměty (sekundy)
+Odpoczynek w miescie	Odpočinek ve městě
 Odpornosc na omdlenia	Odolnost proti omdlení
 Odpornosc na spowolnienie	Odolnost proti zpomalení
 Odpornosc na upadek	Odolnost proti pádu
+Odpornosc: Ninja	Odolnost: Ninja
+Odpornosc: Sura	Odolnost: Sura
 Odpornosc: Szaman	Odolnost: Šaman
 Odpornosc: Wojownik	Odolnost: Válečník
 Odpornosc: ataki fizyczne	Odolnost: fyzické útoky
+Odpornosc: blyskawice	Odolnost: blesk
 Odpornosc: bron dwureczna	Odolnost: obouruční zbraně
 Odpornosc: cios krytyczny	Odolnost: kritický zásah
 Odpornosc: dzwony	Odolnost: zvony
@@ -3801,8 +4064,12 @@ Odpornosc: ludzie	Odolnost: lidé
 Odpornosc: magia	Odolnost: magie
 Odpornosc: miecze	Odolnost: meče
 Odpornosc: mrok	Odolnost: temnota
+Odpornosc: obrazenia umiejetnosci	Odolnost: poškození dovednostmi
+Odpornosc: ogien	Odolnost: oheň
 Odpornosc: potwory	Odolnost: příšery
 Odpornosc: przebicie	Odolnost: průraz
+Odpornosc: srednie obrazenia	Odolnost: průměrné poškození
+Odpornosc: strzaly	Odolnost: šípy
 Odpornosc: sztylety	Odolnost: dýky
 Odpornosc: trucizny	Odolnost: jedy
 Odpornosc: wachlarze	Odolnost: vějíře
@@ -3831,6 +4098,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Odolnost proti temnotě (+%d%% c
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Odolnost proti Ninjům: snižuje poškození, které utrpíš od Ninjů.
 Odporność na Obrażenia Fizyczne: %d%%	Odolnost proti fyzickému poškození: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Odolnost proti ohni (+%d%% celkové hodnoty)
+Odporność na Ogień: 5%	Odolnost vůči ohni: 5%
 Odporność na Ognista Strzała	Odolnost proti Ohnivému šípu
 Odporność na Przywołanie Błyskawicy	Odolnost proti Přivolání blesku
 Odporność na Strzał	Odolnost proti šípu
@@ -3853,6 +4121,7 @@ Odporność na ataki fizyczne %d%%	Odolnost proti fyzickým útokům %d%%
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Odolnost proti kritickému zásahu: snižuje poškození utrpěné v důsledku kritického zásahu.
 Odporność na fizyczne obrażenia	Odolnost proti fyzickému poškození
 Odporność na krytyczne	Odolnost proti kritickým
+Odporność na lód +5%	Odolnost vůči ledu +5%
 Odporność na lód, ziemię, ciemność	Odolnost proti ledu, zemi, temnotě
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Odolnost proti temnotě: snižuje poškození způsobené určitými příšerami.
 Odporność na obraż. umiej.	Odolnost proti pošk. dov.
@@ -3869,6 +4138,7 @@ Odporność vs Ludziom	Odolnost proti lidem
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Propustit společníka nadobro? Nelze vrátit zpět.
 Odrodz spawny	Obnovit spawny
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Odstup mezi teleporty: %d min. Bez dungeonů a map eventů.
+Odswiez liste	Obnovit seznam
 Odważny	Odvážný
 Odwołaj	Odvolat
 Odwołaj zwierzaka, zanim go zaczarujesz.	Odvolej mazlíčka, než ho začaruješ.
@@ -3925,6 +4195,7 @@ Ognista Runa Aury (10)	Ohnivá runa aury (10)
 Ogniste Buty	Ohnivé boty
 Ogniste Jajo Smoka	Ohnivé dračí vejce
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Ohnivý úder má %d%% šanci vrátit poškození protivníkovi
+Ognistej Strzały	Ohnivého šípu
 Ognisty Duch Zodiaku	Ohnivý duch zvěrokruhu
 Ognisty Duch Żaru (BŚ)	Ohnivý duch žáru (SB)
 Ognisty Golem Mag	Ohnivý golem mág
@@ -3951,6 +4222,7 @@ Okaz. Odłamek Hełmu I	Vynikající úlomek přilby I
 Okaz. Odłamek Hełmu II	Vynikající úlomek přilby II
 Okaz. Odłamek Zbroi I	Vynikající úlomek zbroje I
 Okaz. Odłamek Zbroi II	Vynikající úlomek zbroje II
+Okazały	Honosný
 Okazały Efekt Zestawu	Majestátní efekt sady
 Okazały Kowal Zestawu	Nádherný kovář sad
 Okienko %s - %s, bonusy %d / %d	Okénko %s - %s, bonusy %d / %d
@@ -4008,6 +4280,7 @@ Osobisty Sklepik Premium	Osobní Premium krámek
 Ostatni boss	Poslední boss
 Ostatni drop: %s	Poslední drop: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Poslední nákup se ještě může dokončit.
+Ostatnia nagroda:	Poslední výhra:
 Ostatnia sprzedaz botow: brak danych.	Poslední prodej botů: žádná data.
 Ostatnia strona	Poslední strana
 Ostatnie 7 dni	Posledních 7 dní
@@ -4076,6 +4349,7 @@ Otrzymujesz: %s.	Získáváš: %s.
 Otrzymywane Obrażenia +%d%%	Přijaté poškození +%d%%
 Otrzymywane obrażenia +%.0f%%	Obdržené poškození +%.0f%%
 Otwarte skrzynie	Otevřené truhly
+Otwarto skrzynek: %d.	Otevřeno schránek: %d.
 Otwarto: %d szt.	Otevřeno: %d ks
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Otevírá dveře ke slávě a moci. Uděluje všechny výhody Prémiového účtu na dobu 30 dní.|S předmětem lze obchodovat.
 Otwiera je ewolucja peta	Otevře je evoluce mazlíčka
@@ -4094,6 +4368,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Otevři měšec a zjisti, 
 Otwórz ponownie	Znovu otevřít
 Otwórz sklep	Otevřít obchod
 Otwórz sklep ponownie	Znovu otevřít obchod
+Otwórz skrzynie	Otevři bedny
 Owoc Bogów	Plod bohů
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Ovoce hodnosti: +200 bodů hodnosti (běžná hodnost). Funguje od 0 do 20 000 bodů. První hodnost (Statečný) od 21 000. Příkaz /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Ovoce hodnosti: +200 bodů hodnosti nad běžnou hodnost. Funguje od 20 000 (plná běžná hodnost) do 40 000 bodů. Příkaz /ranga.
@@ -4192,6 +4467,7 @@ PB: Żołnierz Setaou	BO: Voják Setaou
 PD czempiona	BZK šampiona
 PD z potworów: %s / %s	BZK z příšer: %s / %s
 PD z przedmiotów: %s / %s	BZK z předmětů: %s / %s
+PID bota:	PID bota:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	POKOŘ SVĚTOVÉHO BOSSE (jednou denně)
 PPM - następny event	PTM - další event
 PPM / dwuklik: wyjmij stos	PTM / dvojklik: vyjmout stoh
@@ -4224,9 +4500,12 @@ Pancerne Rękawice	Pancéřové rukavice
 Pancerny Hełm Dragona	Pancéřová přilba dragona
 Pancerny Hełm Smoków	Pancéřová přilba draků
 Pancerz Czarnego Ognia	Pancíř černého ohně
+Pancerz Horroru+ (złoty)	Brnění hrůzy+ (zlaté)
 Pancerz Magmy	Pancíř magmatu
 Pancerz Zodiaku	Pancíř zvěrokruhu
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	Panel GM se v tomto klientu nenačetl - podrobnosti v syserr.txt
+Panel botów (GM)	Panel botů (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	Panel je ve verzi BETA. Pokud si všimneš chyb
 Panterka (7 dni)	Pantérek (7 dní)
 Pas Z Wężowej Skóry	Pásek z hadí kůže
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	Lišta zkušeností koně je plná - zkus povýšení.
@@ -4237,6 +4516,7 @@ Pasy	Pásy
 Pasza dla Konia	Krmivo pro koně
 Pasza dla Konia w ekwipunku: %d	Krmivo pro koně v inventáři: %d
 Pazury Małpy	Opičí drápy
+Październik	Říjen
 Peleryny	Pláště
 Pelne PZ/PE	Plné HP/MP
 Pergamin	Pergamen
@@ -4250,6 +4530,7 @@ Perły	Perly
 Pet	Mazlíček
 Pety	Mazlíčci
 Pewne zmiany wymagają restartu gry, kontynuować?	Některé změny vyžadují restart hry, pokračovat?
+Pełen werwy	Plný elánu
 Pełne EQ	Plné EQ
 Pełne doświadczenie - czas na rozwój.	Plné zkušenosti - čas na rozvoj.
 Pełne okno	Okno bez okrajů
@@ -4335,6 +4616,7 @@ Piekielny Żarłacz Dusz	Pekelný požírač duší
 Piekło	Peklo
 Piekło - wybierz respawn	Peklo - vyber místo oživení
 Pierwsza nagroda tury jest darmowa.	První odměna kola je zdarma.
+Pierwsza strona	První strana
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	První ze tří knih bdělosti. Může zvýšit charisma majitele. Po přečtení kniha zmizí. (Zatím bez využití - přijde s další aktualizací Yohary.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	První ze tří knih bojových formací. Může zvýšit inspiraci majitele. Po přečtení kniha zmizí. (Zatím bez využití - přijde s další aktualizací Yohary.)
 Pierwszorzędne Buty	Prvotřídní boty
@@ -4342,6 +4624,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	První "+" na záložce Status
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	První "+" na záložce Dovednosti je dává také tobě.
 Pierwszy 30 poziom	První úroveň 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	První reset úkolu během 24 hodin je zdarma.
+Pierścień / amulet	Prsten / amulet
 Pierścień Dośw. (iCafe)	Prsten zkušeností (iCafe)
 Pierścień Godności	Prsten důstojnosti
 Pierścień Hydry	Prsten Hydry
@@ -4354,6 +4637,7 @@ Pierścień Wielkanocny	Velikonoční prsten
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Prsten s umělecky provedenou rytinou ve tvaru půlměsíce. Dává: +50% zkušeností, +20% rychlosti útoku, +20% rychlosti kouzel, +30% útoku, +10% max. ZB, +10% max. MB.
 Pień+	Pařez+
 Piorunowe Zioło	Hromová bylina
+Pirat+ (m)	Pirát+ (M)
 Pisanie	Psát
 Pisklę Exedyara	Mládě Exedyara
 Pióro Mędrca	Mudrcovo pero
@@ -4397,6 +4681,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Po použití přidá kartu příšery do sbírky (Karty příšer v menu pod Esc). S kartou nelze obchodovat.
 Po zabiciu: kolejny, którego już biłeś	Po zabití: další, kterého jsi již bil
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	Po nabití 8 šípů Hwacha prorazí Balathorovy šupiny. Ohnivé šípy získáš z Prastarých ledových krystalů. Nabito: %d
+Pobieram drop...	Stahuji loot...
 Pobieram ustawienia botow...	Načítám nastavení botů...
 Pobieram zawartość z serwera...	Stahuji obsah ze serveru...
 Pobieranie cen dla %d przedmiotow...	Stahování cen pro %d předmětů...
@@ -4435,7 +4720,10 @@ Podaj wartosc.	Zadej hodnotu.
 Podaj wlasciciela i wybierz przedmiot.	Zadej majitele a vyber předmět.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Během boje je %d%% pravděpodobnost odolnosti proti pádu (doba obnovy 60 s).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	Během boje se počítá poškození, které způsobíš.
+Podczas walki otrzymasz efekt eliksiru księżyca	Během boje získáš efekt elixíru měsíce
+Podczas walki otrzymasz efekt eliksiru słońca	Během boje získáš efekt elixíru slunce
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Připlíž se k nepříteli zezadu a zasaď smrtelnou ránu.|Posiluje: Síla (++), Obratnost (++).
+Podglad EQ	Náhled výbavy
 Podgląd niedostępny.	Náhled není dostupný.
 Podgląd skrzynki	Náhled bedny
 Podgląd skrzyń	Náhled beden
@@ -4506,8 +4794,10 @@ Pokaż szatę aury	Zobrazit šat aury
 Pokaż wizerunek broni	Zobrazit vzhled zbraně
 Pokaż założony tytuł	Zobrazit nasazený titul
 Pokaż znowu wszystkie przedmioty	Znovu zobrazit všechny předměty
+Pokonaj %(n)s bossów	Poraz bossy: %(n)s
 Pokonaj %(n)s x %(what)s	Poraz %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Poraz Světového bosse v neutrální zóně a získej odměny!
+Pokonaj bossów	Poraz bossy
 Pokonane bossy	Poražení bossové
 Pokonane minibossy	Poražení minibossové
 Pokonani gracze (przeciwne król.)	Poražení hráči (nepřátelská království)
@@ -4577,6 +4867,7 @@ Portal Świątyni Węży	Portál Chrámu hadů
 Portal: Nowy Kontynent	Portál: Nový kontinent
 Posiada szanse na otrucie przeciwnika.	Má šanci nepřítele otrávit.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Má šanci nepřítele otrávit a obsahuje omráčení.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	Máš %d%% šanci, že po dobu 30 s automaticky seber předměty v okolí
 Postać ma za duży poziom.	Postava má příliš vysokou úroveň.
 Postać zostanie usunięta.	Postava bude smazána.
 Posterunek Trolli	Základna Trollů
@@ -4674,7 +4965,10 @@ Poziom: %d (%s Szata Aury)	Úroveň: %d (%s šat aury)
 Poziom: %s	Úroveň: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Úroveň: 1-19, M1-M10, G1-G10 nebo P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Úroveň: číslo 1-19, M1-M10, G1-G10 nebo P
+Pozostalo 23:59:59	Zbývá 23:59:59
 Pozostalo czasu: 30s	Zbývající čas: 30s
+Pozostalo prob: 3	Zbývá pokusů: 3
+Pozostalo: 45s	Zbývá: 45s
 Pozostaly czas: %ds	Zbývající čas: %ds
 Pozostałe	Zbývá
 Pozostałe misje	Ostatní úkoly
@@ -4696,6 +4990,7 @@ Pozwala wylosować nowe cele misji Kart Potworów.	Umožňuje vylosovat nové c�
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Umožňuje resetovat úkol Karet příšer nad rámec bezplatného resetu (jednou za 24 hodin).
 Pozwolenie na Wzmocn. Przedmiotu	Povolení k posílení předmětu
 Pozwolenie na Zaczar. Przedmiotu	Povolení k zaklínání předmětu
+Pozycja niezapisana	Pozice neuložena
 Położenie	Poloha
 Położenie nieznane	Poloha neznámá
 Połyskująca Biała Perła	Třpytivá bílá perla
@@ -4781,9 +5076,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Jednoduchý filtr (pokroči
 Prosty rozpryskowy atak	Prostý plošný útok
 Proszę wpisać nazwę sklepu	Zadej prosím název obchodu
 Proszę wybrać czas trwania sklepu	Vyber prosím dobu trvání obchodu
+Prowadza stragan: %s	Provozuje obchod: %s
+Prowadza stragan: -	Provozuje obchod: -
 Prywatność	Soukromí
 Pryzmat Ożywienia	Hranol oživení
 Pryzmat Ożywienia (Q)	Hranol oživení (Q)
+Pryzmatyczny	Prizmatický
 Przeb. Księga Zwierza	Kniha probuzeného zvířete
 Przebicie	Průraz
 Przebicie bloku	Průraz bloku
@@ -4868,7 +5166,7 @@ Przeniesione z: %s	Přeneseno z: %s
 Przeniesiono część - reszta się nie zmieściła.	Přesunuta část - zbytek se nevešel.
 Przenieś do extra EQ	Přesunout do extra EQ
 Przenieś je u Theowahdana.	Přenes je u Theowahdana.
-Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Přesuň soubor do složky upload/ v hlavním adresáři hry.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Přesuň soubor do složky upload/ v hlavní složce hry.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Prostupuje tělo kouzlem Prázdnin a obdařuje majitele neobyčejnou silou. Neúspěšné pokusy o vylepšení Prstenu u kováře nezpůsobí ztrátu předmětu. Doba trvání 7 dní (max. 60 dní).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Prostupuje tělo kouzlem Prázdnin a obdařuje majitele neobyčejnou silou. Neúspěšné pokusy o vylepšení Prstenu u kováře nezpůsobí ztrátu předmětu. Max. doba trvání 60 dní.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Prostupuje tělo kouzlem Velikonoc a obdařuje majitele neobyčejnou silou. Neúspěšné pokusy o vylepšení Prstenu u kováře nezpůsobí ztrátu předmětu.
@@ -4962,8 +5260,10 @@ Próby	Pokusy
 Prędkość ataku	Rychlost útoku
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Rychlost útoku +%(v)s%% na %(d)d s po útoku ze hřbetu jezdeckého zvířete (každých 180 s)
 Prędkość czarowania	Rychlost sesílání
+Prędkość po zsiadaniu	Rychlost po sesednutí
 Prędkość ruchu	Rychlost pohybu
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Rychlost pohybu +%(v)s%% na %(d)d s po útoku ze hřbetu jezdeckého zvířete (každých 180 s)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	Rychlost pohybu se zvýší o %d%% na 10 s.
 Prędkość ruchu znacznie zwiększona.	Rychlost pohybu je výrazně zvýšena.
 Pudełko Kart Potworów Yohary	Krabice karet příšer Yohary
 Pudło wędkarskich puzzli	Krabice rybářských puzzle
@@ -4971,6 +5271,7 @@ Pula... pokazuje bossow danego przedzialu	Pool... zobrazí bossy daného rozmez�
 Punkty Doświadczenia: +150%	Zkušenostní body: +150%
 Punkty Rangi: %d	Body hodnosti: %d
 Punkty doswiadczenia %	Zkušenostní body %
+Punkty doświadczenia +%d%%	Zkušenostní body +%d%%
 Punkty konne:	Body jízdy:
 Punkty miłości: %d%%	Body lásky: %d%%
 Punkty range:	Body hodnosti:
@@ -5120,6 +5421,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Reset obchodu Gaya
 Reset oferty	Reset nabídky
 Reset oferty (Reset Sklepu Gaya)	Reset nabídky (Reset obchodu Gaya)
+Reset umiejętności	Reset dovedností
 Resetuj	Resetovat
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Resetuj Gayův obchod ještě před uplynutím 5 hodin a prohlédni si nové cenné předměty. Použij v přístavním Gayově obchodě (Socha Válečníka v Přístavu Nového kontinentu).
 Restart serwera...	Restart serveru...
@@ -5169,6 +5471,7 @@ Rozbudowa jest teraz niedostępna.	Rozšíření je nyní nedostupné.
 Rozdaj od nowa (raz za darmo)	Rozdat znovu (jednou zdarma)
 Rozdane: %d	Rozdáno: %d
 Rozdzielczość	Rozlišení
+Rozkaz wysłany.	Rozkaz odeslán.
 Rozkazy dla botów twojej gildii	Rozkazy pro boty tvého cechu
 Rozkazy wydaje mistrz gildii	Rozkazy vydává mistr cechu
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Mluvíš s |cffffb514Mistrem hry|r.
@@ -5202,6 +5505,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Rozvíjí se Knihou přesnosti (od 0 do
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Rozvinout mazlíčka na stupeň „%s“? Materiály zmizí.
 Rozwiń pasek	Rozbalit panel
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Rozbalit: všechny panely rychlého přístupu (4 x 8)
+Rozwój	Vývoj
 Rozwój do stopnia: %s	Rozvoj na stupeň: %s
 Rozwój konia	Rozvoj koně
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Rozvoj koně: chybí Krmivo pro koně (potřeba %(a)d).
@@ -5228,6 +5532,7 @@ Ruda Turmalinu	Ruda turmalínu
 Rudy i przetopy	Rudy a taveniny
 Ruiny Atlantydy	Ruiny Atlantidy
 Ruiny Skorpiona	Ruiny škorpiona
+Rumi (Okey)	Rummikub (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rumi (Okey): okno hry se objeví s aktualizací klienta.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Ryba bere! Klikni na ni %d krát, když plave v kruhu (máš %d s).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Ryba připravená nad ohněm je skvělá uzená pochoutka.
@@ -5264,6 +5569,7 @@ Rzeźnik Piekielnej Wieży	Řezník Pekelné věže
 Rzeźnik Wężowy	Hadí řezník
 Rzuca na ciebie swoje buffy.	Sesílá na tebe své buffy.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Hází na protivníky předměty naplněné světlem hvězdy.|Posiluje: Obratnost (++), úroveň postavy.
+Rzucam buffy	Sesílám buffy
 Rzygacz	Chrlič
 Róg Balathora	Balathorův roh
 Róg Nemere	Nemerin roh
@@ -5443,11 +5749,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Server: bez potvrzení, opakuji 
 Serwer: czekam na potwierdzenie	Server: čekám na potvrzení
 Sesja już trwa.	Relace už probíhá.
 Sesja zakończona: osiągnięto limit czasu.	Relace ukončena: dosažen časový limit.
+Sesje (z bieżącą)	Relace (s aktuální)
+Sezon %d	Sezóna %d
 Sezon %d - %s (do końca: %d dni %s)	Sezóna %d - %s (do konce: %d dní %s)
+Sezon: Chunjo	Sezóna: Chunjo
+Sezon: Jinno	Sezóna: Jinno
+Sezon: Shinsoo	Sezóna: Shinsoo
 Sfera Losu Zwierzaka	Koule osudu mazlíčka
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Sféra osudu: ukáže typ mazlíčka (spotřebuje Sféru osudu mazlíčka)
 Shaman Armor	Zbroj šamana
 Shield	Štít
+Shift + LPM	Shift + LTM
 Shoes	Boty
 Shop Decoration	Dekorace obchodu
 Shop Decoration n.{}	Dekorace obchodu č.{}
@@ -5458,6 +5770,7 @@ Shopping Safebox	Nákupní trezor
 Show Filter Informations	Zobrazit informace o filtrech
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Rozséváš lehký vánek a tvoji nepřátelé sklízejí prudkou vichřici. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Sierp (Pieczęć)	Pečeť Srpku
+Sierpień	Srpen
 Silna Fala Śmierci	Silná vlna smrti
 Silna Tarcza Eteru	Silný éterický štít
 Silne Trzęsienie	Silné zemětřesení
@@ -5473,6 +5786,7 @@ Silny Druid En-Tai	Silný druid En-Tai
 Silny Dziki Piechur	Silný divoký pěšák
 Silny Dziki Sluga	Silný divoký sluha
 Silny Kam. Przebudzenia	Silný kámen probuzení
+Silny Malpi Zolnierz	Silný opičí voják
 Silny Meteor	Silný meteor
 Silny Niszczyciel En-Tai	Silný ničitel En-Tai
 Silny Piekielny Cios	Silná pekelná rána
@@ -5526,23 +5840,34 @@ Silny.	Silný.
 Siła Ataku	Síla útoku
 Siła Ataku %.0f-%0.f	Síla útoku %.0f-%0.f
 Siła Ataku +%.0f	Síla útoku +%.0f
+Siła Ataku: +%.0f	Síla útoku: +%.0f
+Siła Błyskawic	Síla blesků
 Siła Błyskawic (+%d%% łącznej wartości)	Síla blesku (+%d%% celkové hodnoty)
 Siła Błyskawic +%d%%	Síla blesku +%d%%
+Siła Błyskawic +5%	Síla blesků +5%
+Siła Lodu	Síla ledu
 Siła Lodu (+%d%% łącznej wartości)	Síla ledu (+%d%% celkové hodnoty)
 Siła Lodu +%d%%	Síla ledu +%d%%
+Siła Lodu +5%	Síla ledu +5%
 Siła Mroku	Síla temnoty
 Siła Mroku (+%d%% łącznej wartości)	Síla temnoty (+%d%% celkové hodnoty)
 Siła Mroku +%d%%	Síla temnoty +%d%%
+Siła Mroku +5%	Síla temnoty +5%
 Siła Obrony	Síla obrany
+Siła Ognia	Síla ohně
 Siła Ognia (+%d%% łącznej wartości)	Síla ohně (+%d%% celkové hodnoty)
 Siła Ognia +%d%%	Síla ohně +%d%%
+Siła Ognia +5%	Síla ohně +5%
 Siła Sung Ma	Síla Sung Ma
 Siła Sung Ma +%d	Síla Sung Ma +%d
+Siła Wiatru	Síla větru
 Siła Wiatru (+%d%% łącznej wartości)	Síla větru (+%d%% celkové hodnoty)
 Siła Wiatru +%d%%	Síla větru +%d%%
+Siła Wiatru +5%	Síla větru +5%
 Siła Ziemi	Síla země
 Siła Ziemi (+%d%% łącznej wartości)	Síla země (+%d%% celkové hodnoty)
 Siła Ziemi +%d%%	Síla země +%d%%
+Siła Ziemi +5%	Síla země +5%
 Siła ataku +%.0f-%.0f	Síla útoku +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	Síla útoku je větší, pokud je rána zasazena do zad
 Siła ataku wroga -%d%%	Síla útoku nepřítele -%d%% 
@@ -5636,6 +5961,7 @@ Skorpion Lucznik Zodiaku	Škorpion lučištník zvěrokruhu
 Skorpion Wężowy	Hadí škorpion
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Využij |cff2b80ffbleskových nabídek|r![ENTER]Aukce trvají nejpozději do |cff2b80ff%s|r[ENTER]nebo do vyprodání zásob.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Rozdrcené Kameny duší mohou najít nové využití.
+Skrytobójca	Nájemný vrah
 Skrytobójcza Wykałaczka	Vražedné párátko
 Skrz. Ninja M. Łuku (D)	Velká truhla ninji (Luk)
 Skrz. Ninja M.Ostrza (D)	Velká truhla ninji (Čepel)
@@ -5696,12 +6022,16 @@ Skrzynka musi być w ekwipunku.	Bedna musí být v inventáři.
 Skrzynka na Zwierzaka	Bedna na mazlíčka
 Skrzynki	Bedny
 Skrócenie ładowania um. o %d%%	Zkrácení doby sesílání dovednosti o %d%% 
+Skróty	Zkratky
+Skróty klawiszowe	Klávesové zkratky
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Soustřeď útoky na Zmrzlé dračí vejce, než zmizí za %d s.
 Skóra Przeklętego Niedźwiedzia	Kůže prokletého medvěda
 Skóra Przeklętego Tygrysa	Kůže prokletého tygra
 Skąd	Odkud
 Składnik do produkcji lekarstwa iluzji.	Přísada k výrobě léku iluze.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Složka pro vylepšování Kamenů metin u kováře (od +4): na další stupně je potřeba 1, 1, 2, 2, 3 kusy, vedle Magického prachu. Padá ze Silné ledové čarodějnice (Jeskyně vyhnanců), Beran-Setaou (Dračí doupě) a Královny džungle (Prastará džungle).
+Slaby Malpi Miotacz	Slabý opičí vrhač
+Slaby Malpi Zolnierz	Slabý opičí voják
 Slot z krzyżykiem jest jeszcze zamknięty.	Slot s křížkem je ještě zavřený.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Slot zamčen: odemkne ho Rozšíření obchodu Gaya x%d.
 Sloty umiejętności: %d	Sloty dovedností: %d
@@ -5735,9 +6065,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Něco se pokazilo. (Obecná chyba)
 Songmin, Arktyczne Yeti	Songmin, arktický yeti
 Sort by price	Seřadit podle ceny
+Sortowanie autopickup	Řazení autopickup
 Sortowanie i wyszukiwanie	Řazení a hledání
 Sortuj po cenie całej oferty	Řadit podle ceny celé nabídky
 Sortuj po cenie oferty albo za sztukę	Řadit podle ceny nabídky nebo za kus
+Sortuj po ilości	Řadit podle počtu
 Soul Crystal Alchemist	Alchymista krystalu duše
 Sowa Księżycowa	Měsíční sova
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	Zkáza temnoty;Kůže pálí a praská pod vlivem temné energie,;což tě vystavuje většímu poškození.
@@ -5746,6 +6078,7 @@ Spalone przedmioty u Kowala	Spálené předměty u kováře
 Sparta Jungrang+ (k)	Sparta Jungrang+ (žena)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (muž)
 Spartaner	Spartaner
+Spawn Botow	Spawn botů
 Specjalne	Speciální
 Specjalne Zioła	Speciální byliny
 Specjalny	Výjimečný
@@ -5759,6 +6092,7 @@ Sportowa Fryzura(czarna)	Sportovní účes (černý)
 Spostrzegawczość	Pozornost
 Społeczność	Komunita
 Sprawdz konto	Zkontrolovat účet
+Sprawdz status	Zkontrolovat stav
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Kontroluji podporu na serveru. Přetáhni předměty do koše.
 Sprawdzanie...	Kontroluji...
 Sprawdź ekwipunek	Zkontrolovat inventář
@@ -5784,6 +6118,7 @@ Srebrne Płyty	Stříbrné pláty
 Srebrny Grot	Stříbrný hrot
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Stříbrný přívěsek ve tvaru srdce, osazený magickými drahokamy. Dává: +30% zkušeností, +10% rychlosti útoku, +10% rychlosti kouzel, +10% síly proti příšerám, +5% max. ZB, +5% max. MB.
 Srednia: %s / szt.	Průměr: %s / ks
+Srednie obrazenia	Průměrné poškození
 Stabilne Sznury	Pevné provazy
 Stajnia i polowanie na medale w Lochu Malp.	Stáj a lov medailí v Opičí kobce.
 Stal	Ocel
@@ -5793,8 +6128,9 @@ Stalowy Hełm Dragona	Ocelová přilba dragona
 Stalowy Hełm Smoków	Ocelová přilba draků
 Stamina / sek.: %d	Vytrvalost / s: %d
 Stan (czat)	Stav (chat)
-Standardowa Muzyka Metin2	Standardní Herní Hudba
-Standardowa muzyka Metin2	Standardní herní hudba
+Stan: %s	Stav: %s
+Standardowa Muzyka Metin2	Standardní hudba hry
+Standardowa muzyka Metin2	Standardní hudba hry
 Stanton-Płatnerz	Platnéř Stanton
 Stara Fryzura (biała)	Starý účes (bílý)
 Stara Fryzura (czarna)	Starý účes (černý)
@@ -5814,6 +6150,7 @@ Starożytny Robak	Prastarý červ
 Starożytny Skorpion	Prastarý škorpion
 Starożytny Wojownik	Prastarý válečník
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Prastarý svitek umožňující tok moci Woela - dovoluje losovat nová požehnání.
+Starszy Hazardzista	Starší hazardní hráč
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Starý pergamen s rozkazem k zabití, po použití aktivuje úkol.
 Statua Chena	Socha Chen
 Statua Chou	Socha Chou
@@ -5883,19 +6220,25 @@ Strażnik Rozpad. Dusz	Strážce Trhliny duší
 Strażnik Ruin	Strážce ruin
 Strażnik Smoków Dolnarr	Dračí strážce Dolnarr
 Strażnik Smoków Jaharr	Dračí strážce Jaharr
+Strażnik Srebr. Piasku+	Strážce stříbr. písku+
 Strażnik Trytonów	Strážce Tritonů
 Strażnik Wzgórza	Strážce pahorku
 Strażnik Węży	Hadí strážce
 Strażnik z Yohara	Strážce z Yohary
+Strefa Surowców	Zóna surovin
 Strona %d / %d	Strana %d / %d
 Strona %d / %d (%d)	Stránka %d / %d  (%d)
 Strona %d/%d	Strana %d/%d
 Strona 1	Strana 1
 Strona WWW	Webová stránka
+Strona ekwipunku I	Strana vybavení I
 Strona ekwipunku II	Strana vybavení II
 Strona ekwipunku II (wymienna)	Strana inventáře II (výměnná)
+Strona ekwipunku III	Strana vybavení III
 Strona ekwipunku IV	Stránka inventáře IV
 Strz. dół	Šipka dolů
+Strz. góra	Šíp nahoru
+Strz. lewo	Šíp doleva
 Strz. prawo	Šipka doprava
 Strzał Wichury	Výstřel Vichřice
 Strzał Wichury (9.skill)	Výstřel vichřice (9. dovednost)
@@ -5903,6 +6246,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Výst
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Šíp do luku ninji. Plné poškození do 5 m od cíle (bonus k dosahu luku tuto vzdálenost prodlužuje), poté o 5% méně za každý další metr. Toulec neztrácí poškození se vzdáleností.
 Strzały: Handlarz Bronią (cena NPC).	Šípy: Obchodník se zbraněmi (cena NPC).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Střílej dračí podobizny a útoč na nepřátele.|Posiluje: Inteligence (++), Obratnost (přesnost) (+), úroveň postavy.
+Strzelającego Smoka	Střílejícího draka
 Strój Czarodzieja	Převlek čaroděje
 Strój Czarodzieja+	Převlek čaroděje+
 Strój Zombie	Převlek zombie
@@ -5924,6 +6268,7 @@ Stwór z Głębin	Tvor z hlubin
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Vytvoř velký výbuch svými konečky prstů.|Posiluje: Inteligence (++), Síla (+), úroveň postavy.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Vytvoř mocné tornádo a poraz několik nepřátel.|Posiluje: Inteligence (++), Síla (+), úroveň postavy.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Vytvoř jedovatý oblak kolem nepřátel a otrav je.|Posiluje: Obratnost (++), Síla (+), úroveň postavy.
+Styczeń	Leden
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Stylový, ale mastně vypadající účes sčesaný dozadu, antény jsou klíčovým prvkem tohoto účesu. Trvale změní účes tvé postavy.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Stylový účes šamana. Trvale změní účes tvé postavy.
 Su-Sin	Su-Sin
@@ -5947,11 +6292,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Celkový výdě
 Sun Herb	Sluneční bylina
 Super Kamienie Metin (+%d)	Super kameny Metin (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Doplněk (až 5 ks): Malý +1%, Střední +2%, Velký +4%, Silný +10% za kus.
+Sura (Broń)	Sura (Zbraň)
+Sura (Czarna Magia)	Sura (Černá magie)
 Sura Armor	Zbroj sury
 Sura Czarna Magia	Sura: Černá magie
 Sura Mistrz Broni	Sura: Mistr zbraní
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Suroviny potřebné k tvorbě a vylepšování výjimečných předmětů.
 Sutra	Sútra
+Swiat i eventy	Svět a události
+Swiatynia Hwang	Chrám Hwang
+Swiatynia Ochao	Chrám Ochao
 Swiatynia Zodiaku	Chrám Zvěrokruhu
 Switchbot (zmiana bonusów)	Switchbot (změna bonusů)
 Switchbot - zmiana bonusów	Switchbot - změna bonusů
@@ -5960,10 +6310,12 @@ Sword	Meč
 Sycomor	Platan
 Symbol zręczności, popularny wśród złodziei.	Symbol obratnosti, oblíbený mezi zloději.
 Synowie Pustyni	Synové pouště
+Szalenie odważny	Šíleně odvážný
 Szalony Hazardzista	Šílený hazardér
 Szalony Naukowiec	Šílený vědec
 Szalony Wędkarz	Šílený rybář
 Szaman (Leczenie)	Šaman (Léčení)
+Szaman (Smok)	Šaman (Drak)
 Szaman Leczenie	Šaman: Léčení
 Szaman Smok	Šaman: Drak
 Szamanka (K)	Šamanka (Ž)
@@ -5979,6 +6331,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Šance prolomit odolnost pro
 Szansa na Spowolnie.	Šance na zpomalení
 Szansa na Uziemienie %.0f%%	Šance na povalení %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Šance na vykrytí úderů: zvyšuje šanci vyhnout se útoku z krátké vzdálenosti.
+Szansa na cios krytyczny +2%	Šance na kritický zásah +2%
+Szansa na cios krytyczny +5%	Šance na kritický zásah +5%
+Szansa na cios krytyczny +7%	Šance na kritický zásah +7%
+Szansa na cios krytyczny +8%	Šance na kritický zásah +8%
 Szansa na cios krytyczny: +%.0f%%	Šance na kritický zásah: +%.0f%%
 Szansa na cios przebicia %.0f%%	Šance na průrazný úder %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Šance na drop Yangů: zvyšuje šanci na získání více Yangů.
@@ -6007,12 +6363,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Šance na úspě�
 Szansa na przebicie	Šance na průraz
 Szansa na przebicie +10%	Šance na probití +10%
 Szansa na przedmiot z bonusem	Šance na předmět s bonusem
+Szansa na przeszywające Uderzenie: 2%	Šance na průbojný úder: 2%
+Szansa na przeszywające Uderzenie: 5%	Šance na průbojný úder: 5%
+Szansa na przeszywające Uderzenie: 8%	Šance na průbojný úder: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Šance na průrazný úder: zvyšuje šanci na zasazení průrazného úderu.
 Szansa na przeszywający strzał +%.0f%%	Šance na průbojný výstřel +%.0f%%
 Szansa na spowolnienie	Šance na zpomalení
 Szansa na transfer %d%% otrzymanych obrażeń do PE	Šance %d%% převést obdržené poškození na MB
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Šance na úhyb šípu: zvyšuje šanci vyhnout se šípu nebo útoku příšery na dálku.
 Szansa na wydobycie rudy +%d%%	Šance na vytěžení rudy +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Šance na získání předmětu z bosse +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Šance na získání předmětů zvýšená 1,5krát pro členy iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Šance na získání předmětů vynásobena %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Šance na získání Yangu vynásobena %.1f
@@ -6063,12 +6423,15 @@ Szary Barwnik	Šedé barvivo
 Szary Lśniący Odłamek	Šedý zářící úlomek
 Szary Sok	Šedá šťáva
 Szata	Šat
+Szata Dżinna+ (m)	Plášť džina+ (M)
 Szata Harmonii	Roucho harmonie
 Szata Księżyca	Měsíční roucho
 Szata Ognia	Ohnivé roucho
 Szata Wiary	Roucho víry
 Szata Zodiaku	Roucho zvěrokruhu
 Szata aury: ewolucja	Šat aury: evoluce
+Szata aury: przenieś parametry	Plášť aury: přenos parametrů
+Szata aury: rozwój	Plášť aury: vývoj
 Szczyt rodzaju - czas na ewolucję	Vrchol druhu - čas na evoluci
 Szczytobłysk 830 9454	Třpytvrch 830 9454
 Szczytomrok 3393 9454	Vrchotemno 3393 9454
@@ -6081,6 +6444,7 @@ Szkarłaczny Żądłak	Šarlatový žahavec
 Szkat. Chegala	Truhlička Chegala
 Szkat. Olbrzym. Drzewa	Truhlička obřího stromu
 Szkatulka Ksiezycowa - z rozbitego Metina	Měsíční pokladnička - z rozbitého Metinu
+Szkatulka Ksiezycowa - z zabitego potwora	Měsíční schránka - ze zabité příšery
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Schránka Chegala, stínového goliáše. Uvnitř je něco cenného.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Schránka Obřího stromového ducha. Uvnitř je něco cenného.
 Szkatułka Yohara	Yoharova skříňka
@@ -6099,6 +6463,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Ušlechtilé dřevo od Pána En-Tai. Odnes ho Badateli lesa.
 Szlachetne Drzewo (PB)	Ušlechtilý strom (BO)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Ušlechtilý strom (BO) od Vládce En-Tai (BO). Odnes ho Badateli lesa (BO).
+Szlachetny Legionista+	Ušlechtilý legionář+
 Szmaragdowy Marmur	Smaragdová kulička
 Szpon Kruka	Drápy havrana
 Szpon Wężowy (wykon.)	Hadí dráp (vyrob.)
@@ -6160,7 +6525,10 @@ Szybkość Ataku +5%	Rychlost útoku +5%
 Szybkość Buffi	Rychlost Buffi
 Szybkość Ruchu +%.0f%%	Rychlost pohybu +%.0f%%
 Szybkość Ruchu 20%	Rychlost pohybu 20%
+Szybkość Zaklęcia +2%	Rychlost kouzel +2%
+Szybkość Zaklęcia +5%	Rychlost kouzel +5%
 Szybkość czarowania	Rychlost sesílání
+Szybkość ruchu +%d%%	Rychlost pohybu +%d%%
 Szybkość: %d zmian/s	Rychlost: %d změn/s
 Słaba Zbroja	Slabá zbroj
 Słaba jakość strzału: od %.1fm	Slabá kvalita výstřelu: od %.1fm
@@ -6168,6 +6536,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Milá stařenka
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Sladký amulet na Valentýna. Dává: +50% zkušeností, +20% rychlosti útoku, +20% rychlosti kouzel, +10% síly v boji proti příšerám, +10% max. ZB, +10% max. MB. Čas ubíhá i tehdy, když ho nenosíš.
 Słodkowodna ryba drapieżna występująca w tropikach.	Sladkovodní dravá ryba vyskytující se v tropech.
+Słon. Szata Wukong+ (m)	Sluneční plášť Wukonga+ (M)
 Słonecznik: obrona +%d%%	Slunečnice: obrana +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Slova z názvů předmětů (oddělená čárkou)
 Słudzy Sung Mahi	Služebníci Sung Mahi
@@ -6375,8 +6744,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Dnes {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Zítra {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Příliš mnoho akcí za krátkou dobu. Chvíli počkej a zkus to znovu.
+Top przedmiotów	Top předmětů
 Topaz Woli	Topaz vůle
 Torba towarzysza: weź do siebie	Brašna společníka: vzít k sobě
+Towarzysz (nierozwijany)	Společník (nerozbalovaný)
 Towarzysz bierze tylko cały stos.	Společník bere jen celý stoh.
 Towarzysz dostanie ścieżkę na 5 poziomie.	Společník dostane cestu na 5. úrovni.
 Towarzysz drużyny	Společník družiny
@@ -6388,9 +6759,11 @@ Towarzysz zakłada grupę i cię zaprasza.	Společník založí skupinu a pozve 
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	Společník spotřebuje KZ nebo Svitek návratu dovedností.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Společník, Cor Draconis a mise systémů se zde nezobrazují.
 Towarzysze są tu wyłączeni.	Společníci jsou zde vypnuti.
+Towarzysze są wyłączeni na tym serwerze.	Společníci jsou na tomto serveru vypnuti.
 Trade Hub	Obchodní centrum
 Trafienia	Zásahy
 Transfer bonusów	Přenos bonusů
+Transfer obrazen do PM	Přenos poškození do SP
 Transformuj kostium	Proměnit kostým
 Transporter jest pusty.	Přepravka je prázdná.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Trénuje dovednost Buffi od stupně G1 do P, jako Kámen duše běžné dovednosti (body hodnosti, další pokus po 12 hodinách, Pergamen exorcismu ihned). Padá z Metinů a bossů od Začarovaného lesa výše.
@@ -6441,6 +6814,7 @@ Twierdza Czerwonego Smoka (SZC)	Pevnost Rudého draka (ČT)
 Twierdza Razadora	Razadorova pevnost
 Two Hand Sword	Obouruční meč
 Twoja Gaya: %s	Tvoje Gaya: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Tvá obrana se zvýší o %d%% na 5 s.
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Tvoje pozice: zobrazí mapu, na které jsi, a nastaví na ní pohled.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Tvá ocel zazpívá světové árie na bojišti. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Twoje Smocze Monety: %d	Tvé Dračí mince: %d
@@ -6475,6 +6849,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Stejný počet bodů 
 Tylko BETA	Pouze BETA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Hodnosti GM jiných postav mění pouze IMPLEMENTOR.
 Tylko broń, zbroje i kostiumy dla tej płci	Pouze zbraně, zbroje a kostýmy pro toto pohlaví
+Tylko dla mnie	Jen pro mě
 Tylko dla mnie: cały drop jest twój.	Jen pro mě: celý drop je tvůj.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Jen málokdo rozumí tomuto prastarému jazyku, od něhož pochází název této zbraně. Nikdo z nich se však neodvážil ten název přeložit. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Tylko scal stosy	Pouze sloučit stohy
@@ -6493,6 +6868,7 @@ Typ: -	Typ: -
 Type	Typ
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Typické bonusy vybavení nebo všechny známé klientovi
 Tysieczny Wojow. Zodiaku	Tisícový válečník zvěrokruhu
+Tysieczny Wojownik	Tisícový bojovník
 Tytuł %s wygaśnie za niecałą godzinę.	Titul %s vyprší za méně než hodinu.
 Tytuł Czciciel Słońca	Titul: Ctitel slunce
 Tytuł Czempion Nyx	Titul: Šampion Nyx
@@ -6546,12 +6922,15 @@ Udało ci się ochronić Goblina Skarbów!	Podařilo se ti ochránit Goblina pok
 Udało się odeprzeć lodowy chłód.	Podařilo se odrazit ledový chlad.
 Udało się: %s	Úspěch: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Udeř a někomu zvoní hrana! Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
+Uderzenia Palcem	Úderů prstem
 Uderzenie Pioruna	Úder blesku
 Uderzenie Płonącego Palca	Úder Planoucího prstu
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Úder prstem má %d%% šanci vrátit poškození protivníkovi
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Podíl botů, kteří po nákupech ve městě zůstanou chvíli u stánků místo toho, aby se hned vrátili na lov. 100% znamená živé město, 0% - všichni v terénu.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Podíl stánkařů, kteří vystavují na pult svá slabá vylepšení (+0 až +3) za pár drobných místo prodeje NPC - šrot k roztavení u kováře, jako na hard serverech. Ve výchozím stavu vypnuto.
+Udział	Podíl
 Ukończ %(n)s lochów	Dokonči %(n)s dungeonů
+Ukończ lochy	Dokonči dungeony
 Ukończenia: %d	Dokončení: %d
 Ukończone	Dokončeno
 Ukończone księgi misji	Dokončené knihy úkolů
@@ -6560,6 +6939,7 @@ Ukończone wyprawy	Dokončené výpravy
 Ukończone: %d / %d	Dokončeno: %d / %d
 Ukryj aury umiejętności	Skrýt aury dovedností
 Ukryj budynki i obiekty	Skrýt budovy a objekty
+Ukryj cudze	Skrýt cizí
 Ukryj czaszkę nad bossami	Skrýt lebku nad bossy
 Ukryj drzewa	Skrýt stromy
 Ukryj efekty wzmocnień (szaman)	Skrýt efekty posílení (šaman)
@@ -6598,11 +6978,14 @@ Ulepszenie: Zasadzka	Vylepšení: Léčka
 Ulepszenie: od 0 do 9.	Vylepšení: od 0 do 9.
 Ulepszona Butelka	Vylepšená láhev
 Ulepszony Barwnik	Vylepšené barvivo
+Ulepszysz do: %s	Vylepšíš na: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Vylepšíš ji u Stájníka (Rozvoj koně).
 Ulepszyć %s do poziomu %d?	Vylepšit %s na úroveň %d?
 Ultra	Ultra
 Ulubieni na górze listy	Oblíbení nahoře v seznamu
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Oblíbený účes osamělých válečníků, vypadá skvěle, když fouká vítr. Trvale změní účes tvé postavy.
+Umiejetnosci widac tylko u gracza online	Dovednosti jsou vidět jen u hráče online
+Umiejętn.	Dovedn.
 Umiejętności konia (miejsca: %d z 2)	Dovednosti koně (místa: %d ze 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Dovednosti lze učit od stupně „Hrdinský“.
 Umiejętności pomocnicze	Pomocné dovednosti
@@ -6610,6 +6993,7 @@ Umiejętności potencjału	Dovednosti potenciálu
 Umiejętności potencjału (tylko czempion, 2 sloty)	Dovednosti potenciálu (pouze šampion, 2 sloty)
 Umiejętności potencjału (z jaj zwierzaków)	Dovednosti potenciálu (z vajec mazlíčků)
 Umiejętności rozdaję sam	Dovednosti rozdávám sám
+Umiejętności towarzysza	Dovednosti společníka
 Umiejętności zwierzaka (3 sloty)	Dovednosti mazlíčka (3 sloty)
 Umiejętności: przeciągnij je z okna postaci do pól.	Dovednosti: přetáhni je z okna postavy do polí.
 Umiejętność %d	Dovednost %d
@@ -6622,6 +7006,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Uniforma, kter
 Unik	Úhyb
 Unik Strzały	Úhyb šípu
 Unik: %d%%	Úhyb: %d%%
+Uniknięcie śmierci	Únik smrti
 Upiorne Echo	Přízračná ozvěna
 Upiorny Strażnik	Přízračný strážce
 Upiorny Wojownik	Přízračný válečník
@@ -6639,6 +7024,8 @@ Ustaw nowe hasło na stronie.	Nastav si nové heslo na webu.
 Ustaw ten pasek jako aktywny (%d)	Nastavit tento panel jako aktivní (%d)
 Ustawienia Społeczności zapisane.	Nastavení Komunity uložena.
 Ustawienia Walki	Nastavení boje
+Usun GM	Odebrat GM
+Usun Moby	Odebrat moby
 Usun potwory	Odstranit příšery
 Usun przedmioty	Smazat předměty
 Usun wszystkie	Odstranit všechny
@@ -6691,14 +7078,17 @@ Uziemienie	Ukotvení
 Ułóż i scal	Uspořádat a sloučit
 Użycie	Použití
 Użyj	Použít
+Użyj %(n)s przedmiotów	Použij %(n)s předmětů
 Użyj %(n)s x %(what)s	Použij %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Použij Knihu dovedností mazlíčka z inventáře
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Použij ho v Chrámu hadů k prodloužení doby výpravy o minutu (nejvýše do 60 minut).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Použij ho k odhalení 5 zamčených míst ve svém osobním obchůdku.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Použij prsten v Království živlů (v jedné z devíti oblastí) a vždy se teleportuješ na Náhorní plošinu přírodních sil. Prsten se po použití ztratí.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Použij prsten v Království živlů (v jedné z devíti oblastí) a získáš šanci (10%) na teleportaci na Náhorní plošinu přírodních sil. Prsten se při každém použití ztratí. Padá ze všech příšer a Metinů Království živlů (vstup: portál a Stařec v Přístavu Nového kontinentu).
+Użyj przedmiotu	Použij předmět
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Použij pro zapnutí nebo vypnutí blokace zkušeností. Bez časového limitu.
 Użyj, kiedy zablokujesz się w "teksturach".	Použij, když uvízneš v "texturách".
+Użytkowe	Užitkové
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	S pomocí křídel draka Alterana můžeš zušlechtit předmět výbavy.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Pomocí této licence můžeš najmout žoldáka. (Zatím bez využití - přijde s další aktualizací Yohary.)
 Używalne	Použitelné
@@ -6788,6 +7178,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Praštění má %d%% šanci vr
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Měna Yohary (nejvýše 999 999). Brus Oblázky u Sochy Válečníka v Přístavu, plať v Gayově obchodě a při výrobě.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Směnná měna: 1 Won = 100 000 000 Yangů.
 Wampir	Upír
+Wampir+ (szary)	Upír+ (šedý)
 Warkocze Plem. (czerw.)	Kmenové copy (červ.)
 Warkocze Plem. (fiol.)	Kmenové copy (fial.)
 Warkocze Plem. (nieb.)	Kmenové copy (modré)
@@ -6801,11 +7192,14 @@ Wartosc ataku vs potwory	Hodnota útoku proti příšerám
 Wartosc magicznego ataku	Hodnota magického útoku
 Wartownik z Yohara	Hlídač z Yohary
 Wartość Ataku	Hodnota útoku
+Wartość Ataku +30	Hodnota útoku +30
 Wartość Ataku w potwory +%d	Hodnota útoku proti příšerám +%d
 Wartość Ataku: +12~15%	Hodnota útoku: +12~15%
 Wartość Magicznego Ataku: +30	Hodnota magického útoku: +30
 Wartość ataku +75 (miejsca 1-3)	Hodnota útoku +75 (místa 1-3)
+Wartość bonusu dokładnie taka	Hodnota bonusu přesně taková
 Wartość bonusu taka albo niższa	Hodnota bonusu taková nebo nižší
+Wartość bonusu taka albo wyższa	Hodnota bonusu taková nebo vyšší
 Wartość sklepu przekracza 2 miliardy Yang.	Hodnota obchodu přesahuje 2 miliardy Yangů.
 Warunek: bonus o co najmniej podanej wartości	Podmínka: bonus alespoň o zadané hodnotě
 Warunki	Podmínky
@@ -6834,6 +7228,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	TESTOVACÍ verze: b
 Wersja: %d.%d.%d%s	Verze: %d.%d.%d%s
 Wersja: 1.0.0	Verze: 1.0.0
 Wersja: xxx	Verze: xxx
+Wesoły Posłaniec Miłości	Veselý posel lásky
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Uvnitř této nádherné mušle se může ukrývat třpytivá perla.
 Wezowy Lucznik Zodiaku	Hadí lučištník zvěrokruhu
 Wezowy Miecznik Zodiaku	Hadí šermíř zvěrokruhu
@@ -6863,13 +7258,16 @@ Wielorybi Pancerz	Velrybí pancíř
 Wieprzowina	Vepřové maso
 Wierzchowiec utknął - wsiadam ponownie	Jezdecké zvíře uvízlo - znovu nasedám
 Wieża Sung Mahi	Věž Sung Mahi
+Wiking Światła+	Světelný viking+
 Wilk Piekielnej Wieży	Vlk Pekelné věže
 Wilk Zodiaku	Vlk zvěrokruhu
+Wilki alfa	Alfa vlci
 Wino Brzoskwini (W)	Broskvové víno (V)
 Wino Kwiatu Brzoskwini+	Víno z broskvových květů+
 Winogrono	Hroznové víno
 Wioska Gildii	Vesnice cechu
 Wioska gildii 1	Vesnice cechu 1
+Wiru Miecza	Víru meče
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Víř mečem a útoč na mnoho protivníků.|Posiluje: Síla (++), Obratnost (+), Vitalita (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Víř mezi nepřáteli s dýkou.|Posiluje: Obratnost (++), Síla (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Vířící dýka má %d%% šanci omráčit protivníka
@@ -6890,6 +7288,7 @@ Wojna Imperiow 1	Válka říší 1
 Wojna gildii i Krypta Balathora	Válka gild a Krypta Balathora
 Wojow. z Toporem Zodiaku	Válečník se sekerou zvěrokruhu
 Wojowniczka (K)	Válečnice (Ž)
+Wojownik (Body)	Válečník (Tělo)
 Wojownik (Mental)	Válečník (Mysl)
 Wojownik Ciało	Válečník: Tělo
 Wojownik En-Tai	Válečník En-Tai
@@ -6903,6 +7302,7 @@ Wojownik Umysł	Válečník: Mysl
 Wojownik Uruk	Válečník Uruk
 Wojownik Zephyr	Válečník Zephyr
 Wojskowy Koń	Válečný kůň
+Wokol mnie	Kolem mě
 Wola Balathora	Vůle Balathora
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Vůle Balathora: odolnost proti omráčení, poutům a zmrazení %d%%
 Wola Sung Ma tej mapy	Vůle Sung Ma této mapy
@@ -6927,6 +7327,7 @@ Wolne punkty statusu: %d	Volné body statusu: %d
 Wolne punkty umiejętności	Volné body dovedností
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Pomalu působící jed má %d%% šanci vrátit poškození protivníkovi
 Wounded Soldier	Raněný voják
+Wołanie	Svolání
 Wpisz co najmniej 2 litery nazwy.	Zadej alespoň 2 písmena názvu.
 Wpisz co najmniej 2 litery.	Zadej alespoň 2 písmena.
 Wpisz ilosc (1-%d)	Zadej množství (1-%d)
@@ -6944,6 +7345,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Zadej, kolik bonusů se má shodova
 Wpłacało botów: %d	Vkládalo botů: %d
 Wrist	Zápěstí
 Wrogi Mur	Nepřátelská zeď
+Wrzesień	Září
 Wróć 11553 12697	Zpět 11553 12697
 Wróć do zapisanych reguł	Vrátit se k uloženým pravidlům
 Wróć do zwykłej mapy	Zpět na běžnou mapu
@@ -6978,6 +7380,7 @@ Wszystkie na P	Všechny na P
 Wszystkie sloty sklepu są już odblokowane.	Všechny sloty obchodu jsou již odemknuty.
 Wszystkie umiej. P	Všechny dovednosti P
 Wszystkie warstwy	Všechny vrstvy
+Wszystkie żywioły	Všechny živly
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Vše: %d pokusů (úspěšné: %d, neúspěšné: %d).
 Wszystkie: tylko %s lub %s.	Vše: pouze %s nebo %s.
 Wszystko to za 50 zł na miesiąc!	To vše za 50 zł měsíčně!
@@ -7016,13 +7419,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	Výběr se změnil ne
 Wyboru nie można cofnąć. Kontynuować?	Výběr nelze vrátit zpět. Pokračovat?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	Vybraná hodnost vyžaduje tolik hvězd u každé příšery sady.
 Wybrane bonusy i wartości	Vybrané bonusy a hodnoty
+Wybrano: %s	Vybráno: %s
 Wybrany NPC jest tuż obok.	Vybrané NPC je hned vedle.
 Wybrany kanał dostępny jest tylko dla kont Premium.	Vybraný kanál je dostupný pouze pro účty Premium.
 Wybrany przepis: %s	Vybraný recept: %s
 Wycena czesciowa - trwa wczytywanie	Částečné ocenění - probíhá načítání
 Wycena wygasła - wyceń ponownie.	Ocenění vypršelo - ocen znovu.
+Wycisz 1 dzien	Ztlumit 1 den
+Wycisz 1 h	Ztlumit 1 h
+Wycisz 10 min	Ztlumit 10 min
 Wycisz na:	Ztlumit na:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Vyřazený předmět: Rituál probuzení už neexistuje a kámen nemá žádné využití. Můžeš ho zahodit.
+Wyczysc filtry	Vymazat filtry
 Wyczyszczono wszystkie znaczniki sklepów offline.	Všechny značky offline obchodů byly vymazány.
 Wyczyszczono: %s	Vymazáno: %s
 Wyczyść	Vymazat
@@ -7041,6 +7449,7 @@ Wydarzenie Wakacyjne	Prázdninová událost
 Wydarzenie Walentynkowe	Valentýnská událost
 Wydarzenie Wielkanocne.	Velikonoční událost.
 Wydobądź %(n)s rudy	Vytěž %(n)s rudy
+Wydobądź rudę	Vytěž rudu
 Wydłuża czas trwania twoich umiejętności.	Prodlužuje dobu trvání tvých dovedností.
 Wygląd postaci	Vzhled postavy
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Vypadá neškodně, ale je smrtící na 100%. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
@@ -7066,6 +7475,7 @@ Wykonaj zestaw broni	Vyrobit sadu zbraně
 Wykonaj zestaw hełmu	Vyrobit sadu helmy
 Wykonaj zestaw zbroi	Vyrobit sadu zbroje
 Wykonane zmiany: %d	Provedené změny: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Provedeno %s/%s. Aktivních celkem: %s
 Wykopane rudy	Vytěžené rudy
 Wykorzystaj	Uplatnit
 Wykorzystaj voucher	Uplatnit voucher
@@ -7074,6 +7484,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	Byla nalezena konfigura
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Byl nalezen potenciálně cenný předmět, pokračovat?
 Wykryto przedmiot z bonusem, kontynuować?	Byl nalezen předmět s bonusem, pokračovat?
 Wykryto wysoki poziom ulepszenia, kontynuować?	Byla zjištěna vysoká úroveň vylepšení, pokračovat?
+Wylacz eventy	Vypnout události
 Wylosować nową ofertę od razu?	Vylosovat novou nabídku hned?
 Wylosuj cele od nowa	Vylosovat cíle znovu
 Wyląg Exedyara	Vylíhlý Exedyar
@@ -7097,6 +7508,8 @@ Wymagany poziom do zakupu: %d	Požadovaná úroveň k nákupu: %d
 Wymagany poziom postaci: 75	Požadovaná úroveň postavy: 75
 Wymagany poziom: %d	Požadovaná úroveň: %d
 Wymiana ksiąg umiejętności	Výměna knih dovedností
+Wymiana u: %s	Výměna u: %s
+Wymiana: %s	Výměna: %s
 Wymiany	Výměny
 Wymienić %d ksiąg na %d nowych za %s Yang?	Vyměnit %d knih za %d nových za %s Yang?
 Wyniki odświeżają się co minutę.	Výsledky se obnovují každou minutu.
@@ -7110,6 +7523,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Propustit %s na svobodu? Ne
 Wypłać	Vybrat
 Wypłać sztuk:	Vybrat kusů:
 Wyrok	Rozsudek
+Wyrzuc bota	Vyhodit bota
 Wyrzuc z gry...	Vyhodit ze hry...
 Wyrzuc z serwera	Vyhodit ze serveru
 Wyrzucic %s z gry?	Vyhodit %s ze hry?
@@ -7127,6 +7541,7 @@ Wysuszone Oczy	Vysušené oči
 Wysyłanie do serwera...	Odesílání na server...
 Wyszukaj biżuterię i buty.	Hledat šperky a boty.
 Wyszukaj bronie.	Hledat zbraně.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Vyhledej hráče online, abys viděl dovednosti
 Wyszukaj przedmiot	Hledat předmět
 Wyszukaj przedmioty z min. 1 bonusem.	Hledat předměty s min. 1 bonusem.
 Wyszukaj zbroje/tarcze/hełmy.	Hledat zbroje/štíty/přilby.
@@ -7225,6 +7640,7 @@ Wściekły Cierń	Zuřivý trn
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Zuřivý, ostnatý a nelítostný. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y v globálních metrech. Ctrl + klik na mapě = teleport.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang za zabití
 Yang z potworów +%d%%	Yang z příšer +%d%%
 Yang za próbę awansu	Yang za pokus o povýšení
 Yesterday {:02d}:{:02d}	Včera {:02d}:{:02d}
@@ -7268,9 +7684,11 @@ Z jaja: %s	Z vejce: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Z každého slotu koupíš jednu věc na nabídku.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	S odpovídajícím kostýmem: +800 HP, +15 hodnoty útoku
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	S odpovídajícím účesem: +800 HP, +15 hodnoty útoku
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	Se šancí %d%% resetuje čas obnovy tvých dovedností
 Z łukiem	S lukem
 Z. Eliksir Mocy Płn. W.	Zl. elixír moci sev. větru
 Z. Eliksir Odp. na Ogień	Zl. elixír odolnosti proti ohni
+ZAKRĘĆ	ZATOČIT
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	Za %d min budeš přenesen. Promluv si s dračím strážcem Dolnarrem, abys odešel hned.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	Za %d. doprovod ke správné truhle získáš Goblinův klíč!
 Za 10 sekund pojawi się Jajo Smoka Balathora - wtedy możesz skupić na nim atak.	Za 10 sekund se objeví Balathorovo Dračí vejce - pak na něj můžeš soustředit útok.
@@ -7311,13 +7729,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Za toto kolo zaplatíš %s Yang a %d
 Za ukończone tury także otrzymujesz nagrody.	Za dokončená kola také získáš odměny.
 Za wysoka wartość: %s.	Příliš vysoká hodnota: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	Pokročilý filtr je vypnut: Možnosti hry -> Další -> Filtr sbírání.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Pokročilý filtr sbírání (PTM v Ctrl+Z)
+Zabic postac %s?	Zabít postavu %s?
 Zabici gracze	Zabití hráči
 Zabij %(n)s potworów	Zabij %(n)s příšer
+Zabij potwory	Zabij příšery
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Zabíjí orky a všechny ostatní zrůdy. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Zabite potwory	Zabité příšery
 Zablokowac konto %s NA ZAWSZE?	Zablokovat účet %s NAVŽDY?
 Zablokowac konto %s na %s dni?	Zablokovat účet %s na %s dní?
 Zablokowac nowe logowania (przerwa techniczna)?	Zablokovat nová přihlášení (technická přestávka)?
+Zablokowane miejsce	Zablokované místo
 Zablokowani	Zablokovaní
 Zablokowany przy sortowaniu (Alt+LPM)	Zablokováno při řazení (Alt+LTM)
 Zablokuj ekwipunek	Zamknout inventář
@@ -7327,6 +7749,7 @@ Zabrakło Yang.	Došly Yangy.
 Zabójca	Zabiják
 Zabójca Króla	Zabiják králů
 Zabłąkany Dzikus	Zbloudilý divoch
+Zachowanie botow	Chování botů
 Zacny Kam. Przebudzenia	Ušlechtilý kámen probuzení
 Zacny P. Wężowy (wykon.)	Ušlechtilý hadí plášť (vyrob.)
 Zacny Płaszcz Wężowy	Ušlechtilý hadí plášť
@@ -7360,6 +7783,7 @@ Zakończyć sesję farmienia?	Ukončit relaci farmení?
 Zakres rysowania	Dosah vykreslování
 Zakres sklepów	Dosah obchodů
 Zakres widoku	Dosah zobrazení
+Zakresy (puste = bez limitu)	Rozsahy (prázdné = bez limitu)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Zakrytá [5] ležela vedle odkryté karty.[ENTER]Bohužel nezískáváš žádné body. Nyní vyber svého krále [K].
 Zakręć kołem za jedyne	Zatoč kolem jen za
 Zakręć kołem.	Zatoč kolem.
@@ -7367,6 +7791,7 @@ Zaktualizuj klienta i serwer.	Aktualizuj klienta a server.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Aktualizuj server, aby šlo rozdávat statistiky.
 Zakup raz na %s	Nákup jednou za %s
 Zakupy przerwane.	Nákupy přerušeny.
+Zakupy towarzysza	Nákupy společníka
 Zakupy włoży ci do torby albo do swojej.	Nákupy ti vloží do tašky nebo do své.
 Zamarznięta Wieża	Zamrzlá věž
 Zamarznięty Generał	Zmrzlý generál
@@ -7388,6 +7813,7 @@ Zapisane bonusy	Uložené bonusy
 Zapisane miejsca	Uložená místa
 Zapisane pozycje	Uložené pozice
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Uložené pozice fungují jen s čistým svitkem (%s) v inventáři.
+Zapisane zestawy	Uložené sady
 Zapisano	Uloženo
 Zapisano (%s%%).	Uloženo (%s%%).
 Zapisano (gracz offline)	Uloženo (hráč offline)
@@ -7395,10 +7821,11 @@ Zapisano preset "%s".	Předvolba "%s" uložena.
 Zapisano.	Uloženo.
 Zapisano. Odswiezanie rang GM...	Uloženo. Obnovuji hodnosti GM...
 Zapisuje miejsce %d...	Ukládám místo %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Uložit snímek obrazovky:  Print (snímek se uloží do podsložky hry "screenshot")
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Uložit snímek obrazovky:  Print (Screen se uloží do podsložky hry "screenshot")
 Zapisz i wyślij	Uložit a odeslat
 Zapisz obecny filtr jako preset o tej nazwie	Uložit současný filtr jako předvolbu s tímto názvem
 Zapisz reguły i wyślij je na serwer	Uložit pravidla a odeslat je na server
+Zapisz tu	Ulož zde
 Zaplanowana została przerwa w dostępie do usług.	Byla naplánována odstávka služeb.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Zabraňuje ztrátě vytrvalosti koně, ideální na dlouhé cesty bez přestávek.
 Zapomnienie umiejętności: Stajenny (za darmo).	Zapomenutí dovednosti: Stájník (zdarma).
@@ -7438,6 +7865,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Obsahuje odměny pro statečné válečníky sloužící v Údolí Seungryong.
 Zawiodłeś.	Nezdařilo se.
 Zaznacz albo odznacz całą stronę	Označit nebo odznačit celou stránku
+Zaznacz do "Kup wybrane"	Označit pro "Koupit vybrané"
 Zaznacz oferty, które chcesz kupić.	Označ nabídky, které chceš koupit.
 Zaznacz wszystkie	Označit vše
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Označené mise zmizí ze seznamu, jako by nikdy neexistovaly.
@@ -7456,9 +7884,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Sbírej odznaky, abys je vyměnil za truhly nebo materiál k vylepšování.
 Zbieranie dla Biologa zamiast bicia poziomow.	Sběr pro Biologa místo nabírání úrovní.
 Zbierz %(n)s ziół	Sesbírej %(n)s bylin
+Zbierz yang	Sbírej yangy
+Zbierz zioła	Sbírej byliny
 Zbir Piekielnej Wieży	Surovec Pekelné věže
 Zbiórka na parterze wieży	Shromáždění v přízemí věže
 Zbocze Gautama	Svah Gautama
+Zbr. Mroku Księżyca+ (m)	Brn. měsíčního šera+ (M)
+Zbroja Ajolosa+ (m)	Brnění Ajolose+ (M)
+Zbroja Avalonu+ (srebr.)	Brnění Avalonu+ (stříbr.)
 Zbroja Boskiego Smoka	Zbroj božského draka
 Zbroja Dzikiego Knura	Zbroj divokého kance
 Zbroja Króla Wojowników+	Zbroj Krále válečníků+
@@ -7467,8 +7900,10 @@ Zbroja Płytowa Zodiaku	Plátová zbroj zvěrokruhu
 Zbroja Smoka Magii	Zbroj draka magie
 Zbroja Smoka Mroku	Zbroj draka temnoty
 Zbroja Smoka Wiatru	Zbroj draka větru
+Zbroja Szczodrego+	Brnění štědrosti+
 Zbroja Tygrysa	Tygří zbroj
 Zbroja Wilka	Vlčí zbroj
+Zbroja Zmarłych+ (m)	Brnění mrtvých+ (M)
 Zbroja Zodiaku	Zbroj zvěrokruhu
 Zbroja wypełniona mocą boskiego smoka.	Zbroj naplněná silou božského draka.
 Zbroja wypełniona mocą magicznego smoka.	Zbroj naplněná silou magického draka.
@@ -7497,6 +7932,8 @@ Zdobyte Yang	Získané Yangy
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Získáš je za příšery a úkoly Nového kontinentu.
 Zdobywasz je, chroniąc Goblina Skarbów	Získáváš je ochranou Goblina pokladů
 Zebrane kwiaty	Nasbírané květiny
+Zebrano %s z %s yang (%.1f%%)	Vybráno %s z %s yangů (%.1f%%)
+Zebrano: %d / %d	Nasbíráno: %d / %d
 Zegarek Kieszonkowy	Kapesní hodinky
 Zejście Północnego Wiatru	Sestup Severního větru
 ZejściePłnW. 11590 12181	SestupSevV. 11590 12181
@@ -7508,11 +7945,15 @@ Zemsta Czarnej Śmierci	Pomsta Černé smrti
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Spawnuto bossů: %s/%s.
 Zestaw %d	Sada %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Sada 24 karet Okey. Klikni pravým tlačítkem, abys ji přidal - jedna hra Okey stojí 1 sadu karet a 30 000 Yangů.
 Zestaw Opieki nad Koniem	Sada péče o koně
 Zestaw kostiumów	Sada kostýmů
 Zestaw kostiumów:	Sada kostýmů: 
+Zestaw:	Sada: 
+Zestawy lochowe	Sady z jeskyní
+Zestawy polowe	Sady z lovišť
 Zestawy: broń	Sady: zbraň
 Zestawy: hełmy	Sady: helmy
 Zestawy: zbroje	Sady: zbroje
@@ -7532,6 +7973,7 @@ Zielone Zioło	Zelená bylina
 Zielone, fioletowe, peleryny: z targu.	Zelené, fialové, pláště: z tržiště.
 Zielony Lśniący Odłamek	Zelený zářící úlomek
 Zielony Sok	Zelená šťáva
+Zielony Szaman+	Zelený šaman+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Země Sung Ma;Bez úrovně šampiona zdejší příšery nezraníš.
 Ziemie Mrocznego Smoka	Země Temného draka
 Ziemie gildii	Země cechů
@@ -7548,11 +7990,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Bylina změněná mocí Sunga Mahi. Nezbytná k přípravě hromových elixírů. Elixíry připravuje bylinkář Huahn-So (Bokjung, Bakra, Jayang).
 Zjawa Żółt. Tygrysa (BŚ)	Přízrak žlutého tygra (SB)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Sní se krmivo potřebné k plné liště.
+Zlamanie klatwy swiatyni	Prolomení kletby chrámu
 Zlamanie odpornosci: dzwony	Prolomení odolnosti: zvony
+Zlamanie odpornosci: luki	Prolomení odolnosti: luky
 Zlamanie odpornosci: miecze	Prolomení odolnosti: meče
 Zlamanie odpornosci: sztylety	Prolomení odolnosti: dýky
 Zlamanie odpornosci: wachlarze	Prolomení odolnosti: vějíře
 Zleć zbieranie:	Zadat sběr:
+Zlodziej zycia	Zloděj života
 Zly Silny Malpi Zolnierz	Zlý silný opičí voják
 Zly Zolnierz Czarnej Burzy	Zlý voják Černé bouře
 Zly format (np. 18, M5, G1, P).	Špatný formát (např. 18, M5, G1, P).
@@ -7572,6 +8017,8 @@ Zmianki z (B) są używane jako pierwsze	Změňovače s (B) se používají jako
 Zmiany dzialaja po kilku sekundach	Změny začnou působit po několika sekundách
 Zmien ceny wszystkich	Změnit ceny všech
 Zmien poziom konia	Změnit úroveň koně
+Zmien range	Změnit hodnost
+Zmien skille	Změnit dovednosti
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Změní bonusy mýtického Dračího kamene v okně Dračí alchymie (záložka změny bonusů).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Změní jméno domácího mazlíčka (100.000 Yangů).
 Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	S malou pravděpodobností změní 6. a 7. bonus. Přetáhni na předmět: má 10% šanci změnit 6. a 7. bonus, prvních 5 bonusů zůstane beze změny. Při nezdaru se předmět spotřebuje a bonusy zůstanou takové, jaké byly.
@@ -7628,10 +8075,14 @@ Znak Strażnika	Znak strážce
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Skvěle vykovaný klíč z magického krystalu. Potřebný k otevření dokonalé truhly.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Skvěle! Tvoje karta je vyšší.[ENTER]Odkryj další kartu.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Nalezeno %d - zobrazeno %d, zúži hledání.
+Znaleziono: %d	Nalezeno: %d
 Znaleziono: %d - wybierz z listy.	Nalezeno: %d - vyber ze seznamu.
+Znaleziono: %s	Nalezeno: %s
 Znika 15 dni po otrzymaniu.	Zmizí 15 dní po získání.
+Zniszcz %(n)s kamieni Metin	Znič Metin kameny: %(n)s
 Zniszcz %(n)s x %(what)s	Znič %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Znič vejce, abys způsoboval poškození!
+Zniszcz kamienie Metin	Znič Metin kameny
 Zniszczone Metiny	Zničené Metiny
 Zniszczone kamienie Metin	Zničené kameny Metin
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Dračí vejce bylo zničeno - Balathorova pečeť výrazně zeslábla.
@@ -7643,6 +8094,7 @@ Zodiak Ognia	Zvěrokruh ohně
 Zodiak Wiatru	Zvěrokruh větru
 Zodiak Ziemi	Zvěrokruh země
 Zol. Czar. Wiat. Zodiaku	Voják Černého větru zvěrokruhu
+Zolnierz Czarnego Wiatru	Voják Černého větru
 Zolnierz Gladiator Kosci	Voják kostěný gladiátor
 Zolnierz Shrimp Zodiaku	Voják Shrimp zvěrokruhu
 Zolnierz Spartaner	Voják Spartaner
@@ -7664,8 +8116,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Vyrob
 Zroszony Młot	Orosené kladivo
 Zrzut ekranu	Snímek obrazovky
 Zrzut ekranu zapisano w '%s'.	Snímek obrazovky uložen do '%s'.
+Zrzutka yang	Sbírka yangů
 Zrób miejsce w ekwipunku.	Uvolni místo v inventáři.
 Zręczność	Obratnost
+Zsiadam po buffy	Sesedám kvůli buffům
 Zsiądź z konia, aby go rozwijać.	Sesedni z koně, abys ho mohl rozvíjet.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Houbová polévka
@@ -7748,6 +8202,28 @@ Zwiększa szansę na drop Yang.	Zvyšuje šanci na drop Yangů.
 Zwiększa szansę na kradzież PE.	Zvyšuje šanci na krádež MP.
 Zwiększa szansę na kradzież PŻ.	Zvyšuje šanci na krádež ZB.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Zvyšuje šanci na kritický zásah o 10% na 10 minut.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě doplňků o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě doplňků o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě zbraní o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě zbraní o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě knih dovedností o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě knih dovedností o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě pásů o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě pásů o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě ostatních předmětů o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě ostatních předmětů o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě předmětů pro mazlíčky o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě předmětů pro mazlíčky o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě rukavic o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě rukavic o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě brnění o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě brnění o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě sad zbraní o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě sad zbraní o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě sad přileb o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě sad přileb o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zvyšuje šanci na úspěch při výrobě sad brnění o 1%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Dvě takové runy Yu-Hwan přemění na runu 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zvyšuje šanci na úspěch při výrobě sad brnění o 20%. Vlož ji do pole "Zvýšit šanci" v okně výroby - při každém pokusu se spotřebuje jedna runa. Toto je maximální úroveň runy.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Zvyšuje šanci na pronikavý zásah o 10% na 10 minut.
 Zwiększa szansę na przywołanie konia.	Zvyšuje šanci na přivolání koně.
 Zwiększa szansę na spowolnienie przeciwnika.	Zvyšuje šanci na zpomalení protivníka.
@@ -7773,6 +8249,10 @@ Zwiększa twoją siłę obrony.	Zvyšuje tvou sílu obrany.
 Zwiększa twoją szybkość ataku o 15% na okres 30 minut. Niezdatna do handlu.	Zvyšuje tvou rychlost útoku o 15% na dobu 30 minut. S předmětem nelze obchodovat.
 Zwiększa umiejętności twojego wierzchowca	Zvyšuje dovednosti tvého jezdeckého zvířete
 Zwiększa wartość odbitych ciosów.	Zvyšuje hodnotu odražených úderů.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Zvyšuje vůli SungMa (INT) v boji o 15 na %d s.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Zvyšuje vůli SungMa (OBR) v boji o 15 na %d s.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Zvyšuje vůli SungMa (SÍL) v boji o 15 na %d s.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Zvyšuje vůli SungMa (VIT) v boji o 15 na %d s.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Zvyšuje vytrvalost. Je známý svými vlastnostmi posilujícími svaly.
 Zwiększa wzrost doświadczenia.	Zvyšuje růst zkušeností.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Zvyšuje způsobené fyzické i magické poškození. Lze seslat na jiného hráče. Bonus při použití na sebe.
@@ -7796,6 +8276,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Vrací body Šampiona roz
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Vrací body Šampiona rozdané do Síly Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Vrací body Šampiona rozdané do Vitality Sung Ma.
 Zwyczajna Szata Aury	Obyčejné roucho aury
+Zwykle bicie potworow	Běžné zabíjení příšer
 Zwykła Skóra	Obyčejná kůže
 Zwykłe Mikstury	Běžné lektvary
 Zwykłe potwory	Běžné příšery
@@ -7862,8 +8343,11 @@ Złośliwa	Zlomyslná
 Zły Pł. Wężowy (wykon.)	Zlý hadí plášť (vyrob.)
 Zły Płaszcz Wężowy	Zlý hadí plášť
 Złów %(n)s ryb	Chyť %(n)s ryb
+Złów ryby	Nalov ryby
 [ Założony ]	[ Nasazeno ]
 [%s] [Sklep] %s	[%s] [Obchod] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Na dovednost Buffi přetáhni Knihu dovedností šamana.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Tuto dovednost trénuje Kniha dovedností: %s (šaman).
 [NIE]	[NE]
@@ -7872,7 +8356,9 @@ Złów %(n)s ryb	Chyť %(n)s ryb
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Soubory klienta] Stáhni aktuální soubory klienta v panelu: Editor databáze -> Použít -> Stáhnout aktuální soubory klienta (zip) a rozbal je do složky hry.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Hledání pokladů] Dosaženo nového kola!
 [Sklep]	[Obchod]
+[TAK]	[ANO]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Válka] Tvá gilda je ve válce - klikni na "Vstoupit do války" na tabuli války (levý dolní roh).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	ale pokud neuspěješ, předmět bude zničen. Chceš pokračovat?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	ale jen na 50% doby trvání a s věkem od nuly.
@@ -7882,6 +8368,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Útočíš na nepřátele přímo.|Posiluje: Síla (++), Obratnost (+), Vitalita (+).
 autotarget: no Kolejny cel row in the game options	autotarget: v nastavení hry není řádek Další cíl
 bez bonusu	bez bonusu
+bije wszystko w pobliżu	bije vše v okolí
 bonusów 1-5 spoza warunków	bonusů 1-5 mimo podmínky
 brak bonusu	žádný bonus
 bush_ancientlichen	bush_ancientlichen
@@ -7920,7 +8407,15 @@ dni	dny
 do końca SM	do konce DM
 dodaje nowy crafting %d item %d	přidává nový crafting %d item %d
 dodatkowo zweryfikowana po stronie serwera.	navíc ověřena na straně serveru.
+dystans %d	dystans %d
 dzień	den
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	eventu na jedné z map: Údolí Seungryong, Poušť Yongbi,
 gildie każdego królestwa (odbiór w tym oknie).	cechy každého království (vyzvednutí v tomto okně).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	a dobou obnovy. Přidat: po jedné Duši meče, ochrany,
@@ -7940,11 +8435,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	kniha tvé třídy a cesty.
 ktoś był szybszy	někdo byl rychlejší
 która ma już pięć bonusów.	která již mají pět bonusů.
 które wypadają z ostatniego bossa.	které padají z posledního bosse.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	levé tlačítko myši nebo %s
+lider %d	lider %d
+lista %d	seznam %d
 losowa mapa	náhodná mapa
 ma swój ranking postaci i gildii. Na koniec sezonu	má svůj žebříček postav a cechů. Na konci sezóny
 maksymalne PŻ /2	maximální HP /2
 maksymalne PŻ są o połowę mniejsze	maximální ZB jsou poloviční
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: chyba v okně karet (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	myši v inventáři při otevřené záložce).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	na Ostrově pokladů (Lístky na Ostrov pokladů z beden).
@@ -7963,6 +8463,7 @@ nie udało się zapisać ustawień.	nastavení se nepodařilo uložit.
 nie walczy wcale	vůbec nebojuje
 nie wybrano	nevybráno
 nie wydaje	nevydává
+nie zaczyna, broni ciebie i siebie	nezačíná, brání tebe i sebe
 nowego bossa! W przeciwnym razie nagroda przepadnie.	nového bosse! Jinak odměna propadne.
 obnizaj cene o	snižuj cenu o
 obok ciebie	vedle tebe
@@ -7970,7 +8471,9 @@ obrażenia zadawane potworom /2	poškození způsobené příšerám /2
 obrażenia zadawane potworom są o połowę mniejsze	poškození způsobené příšerám je poloviční
 od +%d	od +%d
 od +0 do +7 (także z bonusami),	od +0 do +7 (i s bonusy),
+odprawa tak	odprawa tak
 oferta została już sprzedana	nabídka již byla prodána
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	pod jiný předmět - po kolika sekundách ho použije.
 podswietl po (godzin, 0 = wyl.)	zvýraznit po (hodin, 0 = vyp.)
@@ -7982,11 +8485,13 @@ poziom łupu IV - 25 Kamyków	úroveň kořisti IV - 25 Kamínků
 przez podany czas; każdy zostawia sobie zapas.	po zadanou dobu; každý si nechává zásobu.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	u Metinu tvrdosti v přízemí Démonské věže; chybějící místa
 przy kolejnych próbach łowienia?	při dalších pokusech o rybaření?
+przy tobie	u tebe
 przywołany	přivolán
 próby: %d	pokusů: %d
 prędkość ruchu /2	rychlost pohybu /2
 prędkość ruchu jest o połowę mniejsza	rychlost pohybu je poloviční
 puste = dowolny przedmiot	prázdné = libovolný předmět
+reguła "%s"	pravidlo "%s"
 reliktu go niszczy.	relikvii zničí.
 robi zakupy	nakupuje
 rodzaj bez filtra	druh bez filtru
@@ -7998,11 +8503,16 @@ ręcznie	ručně
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	server neodpovídá (chybí oprava autohunttest) - nespuštěno.
 serwer nie potwierdził zakupu	server nepotvrdil nákup
 serwer nie pozwala teraz polować.	server teď lov nepovoluje.
+sezon %d	sezóna %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	na stejné mapě jako Světový boss a způsobíš minimální
 skillbook	Kniha dovedností
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	obchod může obsahovat nesprávné předměty. Pokračovat?
 sklep odmówił sprzedaży	obchod odmítl prodej
 start, zasięg %d m.	start, dosah %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	k trvalému zablokování účtu.
 stoi - pokonajcie go, zanim ucieknie!	stojí - porazte ho, než uteče!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	tento předmět zde nelze použít (lektvar, posílení nebo rosa).
@@ -8016,24 +8526,36 @@ tylko gdy gracz jest AKTUALNIE online.	jen když je hráč AKTUÁLNĚ online.
 uciekł - nikt nie dostał nagrody	utekl - nikdo nedostal odměnu
 ulepszony Nóż.	vylepšený nůž.
 umiej %d	dov. %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	po restartu klienta.
 ustawienia zapisane.	nastavení uložena.
+usun	usun 
+usun %d	usun %d
+w dniach	ve dnech
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	hodnota útoku +20% po dobu 3 hodin (k vyzvednutí spolu
 ważne	důležité
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	vestavěného prohlížeče (je potřeba nový soubor exe klienta).
+wolna ręka	volná ruka
 wprowadzenie aby móc kontynuować rozgrywkę.	abys mohl pokračovat ve hře.
 wszystkie przedmioty	všechny předměty
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	vybraného okénka (I / II). Po první aktivaci její vyjmutí
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	odhlásí již přihlášenou relaci. Vyhodit ze serveru funguje
 wyłączone na tym serwerze.	na tomto serveru vypnuto.
 z nagrodą, przed pojawieniem się kolejnego bossa).	s odměnou, před objevením dalšího bosse).
 zajmiesz w rankingu.	zaujmeš v žebříčku.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	zaplní najatí boti z tvého království. Po několika minutách shromáždění
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	zastaveno - spustil se běžný Auto lov.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	zbroje a kostýmy mezi sebou, vzhled zbraně se zbraní stejného druhu.
 zeruje Twoje obrażenia.	vynuluje tvé poškození.
 zmieniła się cena albo ilość	změnila se cena nebo množství
 zostają, a zwierzak zachowuje 80% swojego wieku.	zůstanou a mazlíček si zachová 80% svého věku.
 zostanie zresetowany.	bude vynulováno.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 {} + {} rozdziel przedmioty.	Rozdělení předmětů: {} + {}.
 {}'s Auction	Aukce hráče {}
@@ -8073,12 +8595,19 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dSbírka dokončena - vybrána celá částka
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aČas sbírky vypršel
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aNejprve dokonči://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aSbírku ukončil vůdce
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893adostupné [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - rychlé přihlášení.
+|cfff4f770Trwa misja	|cfff4f770Probíhá mise
+|cfff4f770Trwa zrzutka	|cfff4f770Probíhá sbírka
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742POZOR!|r Bezpečnostní kontrola!
+Óó	Óó
+Ąą	Ąą
 ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
 ąćęłńóśźż	ąćęłńóśźż
 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Žádná příšera to nedropí.
 Ładny Kam. Przebudzenia	Pěkný kámen probuzení
 Ładny Kamień Chaosu	Pěkný kámen chaosu
@@ -8130,6 +8659,8 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Łuski Smoka	Dračí šupiny
 Łączenie	Spojení
 Łączne obrażenia	Celkové poškození
+Łączny czas	Celkový čas
+Łł	Łł
 Ńń	Ńń
 Ściana	Stěna
 Ściąga do ciebie grupy potworów z okolicy.	Stahuje k tobě skupiny příšer z okolí.
@@ -8143,12 +8674,14 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Śnieżna Czapa Leoparda+	Sněžná leopardí čepice+
 Śnieżna Czapa Zajęcza	Sněžná zaječí čepice
 Śnieżna Czapa Zajęcza+	Sněžná zaječí čepice+
+Śnieżny Bambi	Sněžný Bambi
 Śnieżny Kwiat	Sněžný květ\r\n
 Śnieżny Leonidas	Sněžný Leonidas
 Śnieżny Leonidas(piecz.)	Sněžný Leonidas (pečeť)
 Śpiew Stali	Píseň oceli
 Śpiew Wiatru	Píseň větru
 Śpiewająca Furia	Zpívající zuřivost
+Śr. czas sesji	Prům. čas relace
 Śr. obrażenia	Prům. poškození
 Śr. yang na sesję	Prům. Yang na relaci
 Średni	Střední
@@ -8157,6 +8690,7 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Średnio	Středně
 Środa	Středa
 Środek Ścierny	Brusivo
+Św. Nosiciel Światła+	Sv. nositel světla+
 Św. Odłamek Broni I	Svatý úlomek zbraně I
 Św. Odłamek Broni II	Svatý úlomek zbraně II
 Św. Odłamek Hełmu I	Svatý úlomek přilby I
@@ -8170,6 +8704,7 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Światło Gwiazd	Světlo hvězd
 Światło Gwiazd (9.skill)	Světlo hvězd (9. dovednost)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Výborně se hodí k upečení nad ohněm.
+Świąt. Zim. Zbroja+ (m)	Vánoční zimní brnění+ (M)
 Świąteczna Brązowa Skrzynia Okey	Vánoční bronzová truhla Okey
 Świąteczna Srebrna Skrzynia Okey	Vánoční stříbrná truhla Okey
 Świąteczna Złota Skrzynia Okey	Vánoční zlatá truhla Okey
@@ -8180,15 +8715,18 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Świątynia	Chrám
 Świątynia Węży	Chrám hadů
 Świątynia Zodiaku	Chrám zvěrokruhu
+Święty	Svatý
 Święty Efekt Zestawu	Svatý efekt sady
 Święty Kowal Zestawu	Svatý kovář sad
 Święty Miecz Bogów+	Svatý meč bohů+
 Święty Mikołaj	Svatý Mikuláš
 Święty Odłamek	Svatý úlomek
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Svatý květ ze zahrady Dračího boha. Slouží k vylepšování výbavy.
+Śś	Śś
 şó ĹĄşę	şó ĹĄşę
 Źródła	Zdroje
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Zdroj síly pro rybářský prut. Jeho dotek vylepší nástroj a otevře cestu k lovu z nejhlubších vod.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Při výrobě této zbraně nebyl ublížen žádný havran. Zbraň pro mladé hrdiny: zmizí 15 dní po obdržení (i nasazená). Nelze ji vylepšovat, měnit ani přidávat bonusy, vkládat kameny duší, obchodovat, prodávat ani ukládat do skladu.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Žádné: vypne zprávy od Společníka. Důležité: plné EQ, batoh, cenné věci.
 Żałobna Pieśń	Žalozpěv
@@ -8205,6 +8743,7 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Żołnierz Schron. Płn. W.	Voják úkrytu sev. větru
 Żołnierz Wężowy	Hadí voják
 Żołnierze	Vojáci
+Życie goblina	Život goblina
 Żywe Drzewo	Živé dřevo
 Żywioł potworów na tym piętrze	Živel příšer v tomto patře
 Żywioł: %s	Živel: %s
@@ -8224,3 +8763,4 @@ zwykłe Auto Łowy zatrzymane.	běžný Auto lov zastaven.
 Żółty Sok	Žlutá šťáva
 Żądza Krwi +%.0f	Touha po krvi +%.0f
 Żż	Żż
+żadne	žádné
