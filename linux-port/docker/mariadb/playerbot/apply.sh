@@ -4484,8 +4484,6 @@ UPDATE world.item_proto SET locale_name = 'Klatka Transportowa' WHERE vnum = 550
 UPDATE world.item_proto SET locale_name = 'Karta Resetu' WHERE vnum = 72322;
 UPDATE world.item_proto SET locale_name = 'Karta Przetasowania' WHERE vnum = 72323;
 UPDATE world.item_proto SET locale_name = 'Pergamin Nazwy Zwierzaka' WHERE vnum = 55008;
-UPDATE world.item_proto SET locale_name = 'Reverti Zwierza' WHERE vnum = 55033;
-UPDATE world.item_proto SET locale_name = 'Revertus Zwierza' WHERE vnum = 55034;
 UPDATE world.item_proto SET locale_name = 'Zielona Smocza Fasola' WHERE vnum = 100300;
 UPDATE world.item_proto SET locale_name = 'Niebieska Smocza Fasola' WHERE vnum = 100400;
 UPDATE world.item_proto SET locale_name = 'Różowa Smocza Fasola' WHERE vnum = 100500;" \
