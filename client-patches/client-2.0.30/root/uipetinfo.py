@@ -1977,6 +1977,8 @@ class PetInformationWindow(ui.ScriptWindow):
 	def OnDropOnSkill(self, slot, *args):
 		attached = _AttachedAnyItem()	# MT2009_PLUS_PET_ADDEQ_DRAG_V1: books from the Ksiegi tab too
 		if not attached:
+			if mouseModule.mouseController.isAttached():
+				Chat("Przeci\xb9gnij ksi\xeag\xea umiej\xeatno\x9cci z ekwipunku na wolny slot.")
 			return
 		window, cell, vnum, count = attached
 		mouseModule.mouseController.DeattachObject()
