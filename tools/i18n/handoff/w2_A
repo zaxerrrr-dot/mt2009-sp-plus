@@ -1,0 +1,954 @@
+Q0001	    2 Ładne + Dusza = Zacny (30%)	    2 Intermediate + Soul = Fine (30%)
+Q0002	    3 Drobne + Dusza = Ładny (35%)	    3 Minor + Soul = Intermediate (35%)
+Q0003	    5 Małych + Dusza = Drobny (45%)	    5 Small + Soul = Minor (45%)
+Q0004	    Zacny + Dusza = Silny (25%)	    Fine + Soul = Strong (25%)
+Q0005	  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  Tuna for 60 minutes (rare fish, as with Fishing Book).
+Q0007	 i Kamień Księżycowy	 and Moonstone
+Q0008	%d godz.	%d h
+Q0009	%d godz. %d min	%d h %d min
+Q0010	%d godz. %d min.	%d h %d min.
+Q0011	%d godz., %d min.	%d h, %d min.
+Q0014	%d min., %d sek.	%d min., %d sec.
+Q0015	%d sek.	%d sec.
+Q0016	%d. %s - %d pkt	%d. %s - %d pts
+Q0017	%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+Q0018	%s (%s, bonusy: %d)	%s (%s, bonuses: %d)
+Q0019	%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s is looking for you. It seems they want to tell you[ENTER]something important.
+Q0020	%s jest już na stopniu P.	%s is already at grade P.
+Q0021	%s: %d. Wszystkie te punkty	%s: %d. All these points
+Q0022	%s: nie rozdano tu jeszcze punktów.	%s: no points have been distributed here yet.
+Q0023	%s: osiągnięto stopień P - najwyższy.	%s: grade P reached - the highest.
+Q0024	%s: teraz %s.	%s: now %s.
+Q0025	(15% odporności = 4,5% mniej obrażeń).	(15% of resistance = damage cut by 4.5%).
+Q0026	(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(up to M1), books (up to G1) and Spirit Stone+ (up to P).
+Q0027	(drogocenne). Pakiet może zawierać m.in.:	(precious). The package may contain, among others:
+Q0028	(klawisz P) na jej umiejętność.	(P key) on its skill.
+Q0029	(klawisz P).	(P key).
+Q0030	(kostium, fryzura albo nakladka na bron).	(costume, hairstyle or weapon skin).
+Q0031	(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(hover over the item). If it fails, the materials are lost.
+Q0032	(PB) od każdego z was.	(RX) from each of you.
+Q0033	(PB). Wróć, gdy zadanie zostanie wykonane.	(RX). Come back when the task is done.
+Q0034	(prawy klik na relikt) i dodaj mu bonusy duszami.	(right-click the relic) and add bonuses to it with souls.
+Q0035	(SZC) od każdego z was.	(TR) from each of you.
+Q0036	(SZC). Wróć, gdy zadanie zostanie wykonane.	(TR). Come back when the task is done.
+Q0037	(zależnie od kryształu) na 2 godziny gry. Pasek	(depending on the crystal) for 2 hours of play. The bar
+Q0038	+1000 PŻ (maks.)	+1000 HP (max.)
+Q0039	+1100 PŻ (maks.)	+1100 HP (max.)
+Q0040	+120 Obrony	+120 Defence
+Q0041	+140 Obrony	+140 Defence
+Q0042	+5% albo +10%. Każda maska jest inna. 	+5%, or +10%. Each mask is different. 
+Q0043	+51 Wartości Ataku	+51 Attack Value
+Q0044	+60 Wartości Ataku	+60 Attack Value
+Q0045	- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Euphoria Shoes +5..+9 - I'll make Oceanic Shoes from them.
+Q0046	- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Kingfisher Shoes +5..+9 - I'll make Fire Shoes from them,
+Q0047	- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- time runs offline too - then it disappears. It cannot be upgraded or traded.
+Q0048	- Kamyki x100,	- Glimmerstone x100,
+Q0049	- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Chop: you may find something inside (very rarely even a Carbon Fibre Fishing Rod).
+Q0050	- Relikt Duszy twojej klasy.	- Soul Relic of your class.
+Q0051	- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Use as bait: Golden Tuna Bonus for 5 minutes - stronger.
+Q0052	- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Release: you usually get soaked (Wet Clothes: -50 movement speed for 5 minutes), sometimes you get the Golden
+Q0053	- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- with an Empty Power Elixir - an elemental power elixir,
+Q0054	- z Pustym Eliksirem Odp. - eliksir odporności.	- with an Empty Resistance Elixir - a resistance elixir.
+Q0055	... Skargi przyjmuję jednak wyłącznie w formie	... I only accept complaints in the form of
+Q0056	1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	Level 1: 0.8%, M1: 8%, G1: 13.1%, P: 20%.
+Q0057	1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	Level 1: 1.2%, M1: 12%, G1: 19.7%, P: 30%.
+Q0058	1. miejsce: 10x Złote Trofeum Yutnori	1st place: 10x Golden Yut Nori Trophy
+Q0059	1. poziom Świątyni Węży	Level 1 of the Tower Temple
+Q0060	10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Dark Jadite and for weapons 5 Northwind Anvils
+Q0061	10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Anvils, 5 weapon designs, 5 Abrasives,
+Q0062	100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yang or experience,
+Q0063	120 i Championem 4, 600 pkt rankingu gildii	120 and Champion 4, 600 guild ranking points
+Q0064	2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 pieces: +500 HP, +1% strength against monsters; 3 pieces: +1500 HP, +5% strength against monsters
+Q0065	2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 pieces: +500 HP, +3% speed of movement; 3 pieces: +1500 HP, +7% speed of movement
+Q0066	2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 pieces: +500 HP, EXP +5%; 3 pieces: +1500 HP, EXP +15%
+Q0067	2. miejsce: 5x Złote Trofeum Yutnori	2nd place: 5x Golden Yut Nori Trophy
+Q0068	250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 or 500. The robe level is 1000, 2000, 4000,
+Q0069	3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yang). From 10 Knight Shards II - Moon,
+Q0070	3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 pieces: +2500 HP, +10% magic / melee, +5% speed of movement
+Q0071	3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 pieces: +3500 HP, +15% magic / melee, +7% speed of movement
+Q0072	3. miejsce: 3x Złote Trofeum Yutnori	3rd place: 3x Golden Yut Nori Trophy
+Q0073	300 - 399 punktow - srebrna	300 - 399 points - silver
+Q0074	4. - 10. miejsce: 1x Złote Trofeum Yutnori	4th - 10th place: 1x Golden Yut Nori Trophy
+Q0075	400 punktow i wiecej - zlota	400 points or more - gold
+Q0076	5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Steel, an awakening stone and 2 500 000 Yang.
+Q0077	50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yang, experience or
+Q0079	550 punktów i więcej	550 points or more
+Q0080	6. i 7. bonus (Seon-Hae)	6th and 7th bonus (Seon-Hae)
+Q0081	75. poziom przedmiotu i ulepszenie co najmniej +7.	item level 75 and an upgrade of at least +7.
+Q0082	8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 or 16000 points - depending on its type.
+Q0083	[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Gildia] %d Yang was paid from the guild treasury, %d Yang from your inventory.
+Q0087	a kto polegnie, wraca do portu.	and whoever falls returns to the port.
+Q0088	a nie każdy nadaje się do badań.	and not every one is fit for research.
+Q0089	a obecne bonusy celu zostana nadpisane.	and the target's current bonuses will be overwritten.
+Q0090	a otrzymasz lepszy kamień:	and you will get a better stone:
+Q0091	a sam WuKong czeka na śmiałków na szczycie.	and WuKong himself awaits the brave at the top.
+Q0092	a spróbuję wytworzyć Odłamek Reliktu.	and I'll try to craft a Relic Shard.
+Q0093	a te zmiany są bardzo niepokojące. Moi bracia	and these changes are very worrying. My brothers
+Q0094	A teraz odczep się i pozwól mi w spokoju	Now get lost and let me in peace
+Q0095	a zamieni się w Upiorną Skrzynię. Spróbuj! 	and it will turn into a Halloween Chest. Give it a try! 
+Q0096	Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	To finish the regeneration, you must be on the Zodiac Temple map.
+Q0097	Aby stworzyć Kryształ Energii,	To create an Energy Crystal,
+Q0098	Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, you did it! Good, now I'll make you[ENTER]a Prism of Revival from it.
+Q0101	Aktywuj misję (300 potworów)	Activate mission (300 monsters)
+Q0102	Alarm w Świątyni Zodiaku	Alarm in the Zodiac Temple
+Q0103	Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor has awakened! Flee from the ice spikes and destroy the White Dragon Eggs.
+Q0104	albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	or Red Dye (Oceanic Shoes), 5 Tough Straps
+Q0105	albo sztandar użyty w hali) zabiera jeden sztandar.	or a banner used in the hall) takes one banner.
+Q0106	albo trzy kolejne liczby daja punkty - seria	or three consecutive numbers give points - a streak
+Q0107	albo u Statuy Wojownika (z odłamków I).	or at the Warrior Statue (from shards I).
+Q0108	Alchemia to nieobliczalna nauka i każdy kolejny	Alchemy is an unpredictable science and every next
+Q0109	Alchemik w Dongan potrzebuje pomocy.	The Alchemist in Dongan needs help.
+Q0111	Appaloosa bedzie z toba o 7 dni dluzej.	Appaloosa will stay with you 7 days longer.
+Q0112	Apteczka! Podziwiam twoją odwagę - jak ci się udało	Aid Kit! I admire your courage - how did you manage
+Q0113	Apteczka! W ostatniej chwili - dziękuję.	Aid Kit! At the last moment - thank you.
+Q0114	apteczka. Podejrzewam wojowników En-Tai, bo	Aid Kit. I suspect the En-Tai warriors, because
+Q0115	apteczkę.	Aid Kit.
+Q0116	Atak powierzchniowy cię dosięgnął.	The surface attack has reached you.
+Q0117	Atakuje wszystko w poblizu	Attacks everything nearby
+Q0119	Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	Auto Hunt is disabled in this world - keep the ticket.
+Q0120	Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	Auto Hunt is now available to everyone - keep the ticket for later.
+Q0121	Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Auto Hunt: +8 h, %d h in total (only time in game counts).
+Q0122	Auto Lowy: masz juz ponad 30 dni czasu.	Auto Hunt: you already have over 30 days of time.
+Q0123	Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Auto Hunt: %d days %d h left (calendar days) - works while the ticket is in your inventory.
+Q0124	aż znajdziesz przy którymś z nich Lekarstwo.	until you find Medicine on one of them.
+Q0125	Badacz Lasu szuka kogoś odważnego. Idź do niego.	The Forest Researcher is looking for someone brave. Go to him.
+Q0126	Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	the Forest Researcher. First you will face Bagjanamu.
+Q0127	Badam klejnoty, które powstają w lodzie Groty	I study the gems that form in the ice of the Grotto
+Q0128	Badania Biologa	Biologist's Research
+Q0129	badania są ukończone. Wybierz jeden stały bonus:	the research is complete. Choose one permanent bonus:
+Q0130	badaniami. Sprawdź w Dongan, czy potrzebuje	research. Check in Dongan whether he needs
+Q0131	Badanie Seona-Pyeonga	Seon-Pyeong's Research
+Q0132	Badanie Seona-Pyeonga 2	Seon-Pyeong's Research 2
+Q0133	Badanie Seona-Pyeonga: nagroda	Seon-Pyeong's Research: reward
+Q0134	badanie, które chcesz przyśpieszyć.	the research you want to speed up.
+Q0135	Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (RX) defeated. The ground shakes - Jotun Thrym (RX) is coming!
+Q0136	Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (TR) defeated. The ground shakes - Jotun Thrym (TR) is coming!
+Q0137	Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu defeated. The ground shakes - Jotun Thrym is coming!
+Q0139	Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor won - this expedition brought no reward.
+Q0140	Balathor, Biały Smok, śpi w lodowej krypcie.	Balathor, the White Dragon, sleeps in the ice crypt.
+Q0141	Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Spider Baroness defeated in %d:%02d! The dungeon is complete.
+Q0142	Baronówny zagnieździły się między regałami i nikt	The Baroness nested between the shelves and nobody
+Q0143	barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	dye and plates matching the chosen armour, 10 000 000 Yang
+Q0145	Beran-Setaou (PB) został pokonany!	Beran-Setaou (RX) has been defeated!
+Q0146	Beran-Setaou (SZC) został pokonany!	Beran-Setaou (TR) has been defeated!
+Q0147	Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou is dead. Soon you will all return
+Q0148	Beran-Setaou został pokonany!	Beran-Setaou has been defeated!
+Q0149	BETA: czas skrocony do 10s	BETA: time shortened to 10s
+Q0150	BETA: DT jest dostepne od 2 etapu.	BETA: DT is available from stage 2.
+Q0151	Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Without an Atlantis Ticket you won't survive in the depths. Buy it from the Atlantis Mage.
+Q0152	Bez Biletu do Atlantydy:	Without an Atlantis Ticket:
+Q0153	Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	I can't do anything without a Tree Emerald. Defeat
+Q0154	Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	I can't do anything without Fine Timber. Defeat
+Q0155	Bez zmian	No change
+Q0156	Biblioteka Wiedzy	Library of Knowledge
+Q0157	Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Library of Knowledge: Time is up. The Guardian leads you out of the Library.
+Q0158	Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Library of Knowledge: Stage cleared. The next challenge in 5 seconds.
+Q0159	Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Library of Knowledge: the passage failed to open - talk to the Library Guardian.
+Q0160	Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Library of Knowledge: The Library Seal activated by itself.
+Q0161	Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Library of Knowledge: talk to the Library Guardian to open the passage.
+Q0162	Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Library of Knowledge: the passage leads through the waiting room.
+Q0163	Biblioteka Wiedzy: przejście się otwiera...	Library of Knowledge: the passage is opening...
+Q0164	Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Library of Knowledge: This expedition is already over. Talk to the guardian to set out again.
+Q0165	Biblioteka Wiedzy: Ten loch został już ukończony.	Library of Knowledge: This dungeon has already been completed.
+Q0166	Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Library of Knowledge: Welcome. In 5 seconds spiders will crawl out of the shelves.
+Q0167	biega za toba, broni cie i zbiera twoj drop.	runs after you, protects you and collects your drops.
+Q0168	Bilet do Atlantydy chroni przed wodą, ciśnieniem	The Atlantis Ticket protects against water, pressure
+Q0169	Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	You can buy the ticket from me - option: Buy Atlantis Ticket.
+Q0170	Bilet Podrozniczy	Travel Ticket
+Q0171	Bilet, mogę cię zabrać do Tajemniczej Instancji.	Ticket, I can take you to the Mysterious Instance.
+Q0172	Bio-badanie 1	Bio-research 1
+Q0173	Bio-badanie 2	Bio-research 2
+Q0174	Bio-badanie 3	Bio-research 3
+Q0175	Bio-badanie 4	Bio-research 4
+Q0176	Bio-badanie 5	Bio-research 5
+Q0177	Bio-badanie 6	Bio-research 6
+Q0178	Bio-badanie 7	Bio-research 7
+Q0179	Bio-badanie 8	Bio-research 8
+Q0180	Biolog	Biologist
+Q0181	Biorę tylko tyle run, ile trzeba.	I take only as many runes as needed.
+Q0182	Blogoslawienstwo obrony: moja obrona	Blessing of defence: my defence
+Q0183	Blogoslawienstwo odpornosci: trucizna	Blessing of resistance: poison
+Q0184	Blogoslawienstwo szybkosci: bede chodzil	Blessing of speed: I will walk
+Q0185	Blogoslawienstwo zycia: moje punkty zycia	Blessing of life: my hit points
+Q0186	bo jeszcze chwilę temu byłem na imprezie	because a moment ago I was at a party
+Q0187	bo kiedyś przypłacisz to życiem.	because one day you'll pay for it with your life.
+Q0190	Bonus eventowy PD Uriela wg przedziału poziomów	Uriel's event EXP bonus by level range
+Q0191	bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	the bonus is rolled on crafting - it stays when upgrading.
+Q0192	Bonus PD +%d%% na %s	EXP bonus +%d%% for %s
+Q0193	Bonus PD +%d%% potrwa jeszcze: %s	EXP bonus +%d%% will last another: %s
+Q0194	Bonus PD na %s według przedziału poziomów:	EXP bonus for %s by level range:
+Q0195	Bonus Złotego Tuńczyka: 5 minut.	Golden Tuna Bonus: 5 minutes.
+Q0196	Bonus Złotego Tuńczyka: 60 minut.	Golden Tuna Bonus: 60 minutes.
+Q0197	Bonusy i kamienie oddanego przedmiotu przepadaja.	The bonuses and stones of the handed-in item are lost.
+Q0198	Bonusy i kamienie oddanych butow przepadaja.	The bonuses and stones of the handed-in shoes are lost.
+Q0199	Bonusy i kamienie zostana przeniesione.	The bonuses and stones will be transferred.
+Q0200	Bonusy mozna przeniesc tylko: kostium na kostium,	Bonuses can only be transferred: costume to costume,
+Q0201	Boty z Twojej drużyny wejdą do lochu razem z Tobą.	The bots in your party will enter the dungeon with you.
+Q0202	Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	No room in your inventory for this weapon - free up space and choose again.
+Q0203	Brak otwartych misji z czasem oczekiwania.	No open missions with a waiting time.
+Q0204	Brak ustawionych przedziałów poziomów.	No level ranges set.
+Q0205	Brakuje ci materialow albo Yang.	You lack materials or Yang.
+Q0206	Brakuje ci przedmiotów.	You lack items.
+Q0207	Brakuje ci Ros En-Tai (PB). Zdobądź je od	You lack En-Tai Dew (RX). Get it from
+Q0208	Brakuje ci Ros En-Tai (SZC). Zdobądź je od	You lack En-Tai Dew (TR). Get it from
+Q0209	Brakuje jeszcze %d klejnotów.	%d more gems needed.
+Q0210	Brama już się otwiera. Poczekaj chwilę.	The gate is already opening. Wait a moment.
+Q0211	Brama nie chce się dziś otworzyć. Spróbuj ponownie	The gate won't open today. Try again
+Q0212	Brazowa skrzynia (do 299 punktow)	Bronze chest (up to 299 points)
+Q0213	Bronie dla Młodych Bohaterów	Weapons for Young Heroes
+Q0214	Bronie dla Młodych Bohaterów są wyłączone	Weapons for Young Heroes are disabled
+Q0215	Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	Weapons for Young Heroes are disabled on this server.
+Q0216	Broń przyjmie wygląd broni tego samego rodzaju albo	The weapon will take the look of a weapon of the same type or
+Q0217	Brązowy Pakiet Yutnori	Bronze Yut Nori Package
+Q0218	Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	SungMa Premium Buff: +10 SungMa Will (strength, vitality, resistance, intelligence) for another %d h.
+Q0219	Buff Premium SungMa: czas tego przedmiotu już minął.	SungMa Premium Buff: this item's time has already run out.
+Q0221	Buffi dostępna od 55 poziomu.	Buffi is available from level 55.
+Q0222	Buffi jest wyłączony na tym serwerze.	Buffi is disabled on this server.
+Q0223	by Mikstura Talentu zadziałała.	for the Talent Potion to work.
+Q0224	by o nim opowiedzieć.	to tell you about it.
+Q0225	by wejść:	to enter:
+Q0226	by złożyć z nich kryształ. Wróć, gdy będziesz	to make a crystal out of them. Come back when you are
+Q0227	Bywa też u dowódców i generałów Groty Wygnańców.	It is also carried by the captains and generals of the Exiles' Grotto.
+Q0228	Błogosławieństwa, Zaczarowanie i Wzmocnienie	Blessing, Enchant and Reinforce
+Q0229	Błogosławieństwa. Pakiet może zawierać m.in.:	Blessing. The package may contain, among others:
+Q0230	Błogosławieństwo Buffi	Buffi's Blessing
+Q0231	błyskawic	lightning
+Q0232	Błyskawica i lód (mapa 1)	Lightning and ice (map 1)
+Q0233	Błyskawicy	Lightning
+Q0234	błyskawicę, lód, wiatr, ziemię albo mrok.	lightning, ice, wind, earth or darkness.
+Q0235	Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Shining - 10x Intermediate Chaos Stone and 5 000 000 Yang,
+Q0236	Błądzić jest rzeczą ludzką - wybieraj rozważnie.	To err is human - choose wisely.
+Q0238	całą drużynę stojącą obok.	the whole party standing next to you.
+Q0239	Cel (otrzyma bonusy zrodla):	Target (will receive the source's bonuses):
+Q0240	Chaegirab ciągle jeszcze zajęty jest swoimi	Chaegirab is still busy with his
+Q0241	Chaegirab w Dongan potrzebuje pomocy.	Chaegirab in Dongan needs help.
+Q0242	Chaos w Zaklętym Lesie	Chaos in the Enchanted Forest
+Q0243	Chcesz opuścić Kryptę Balathora?	Do you want to leave Balathor's Crypt?
+Q0244	Chcesz teraz wymienić Kartę Maski Dyni	Do you want to exchange the Jack O'Lantern Mask Card now
+Q0245	Chcę zabić tego smoka!	I want to kill this dragon!
+Q0247	choć jeden, żaden cios go nie zrani.	even one, no blow will hurt it.
+Q0248	Cialo (Body)	Body
+Q0249	ciebie ekwipunek Smoka Mroku.	you the Dark Dragon equipment.
+Q0250	cię wieczne potępienie.	you eternal damnation.
+Q0251	Co mam zrobic?	What should I do?
+Q0252	co najmniej jednego towarzysza z grupy.	at least one companion from the group.
+Q0253	Co się dzieje?! Morze się wzburzyło... Czyżby	What's happening?! The sea is raging... Could it
+Q0254	Codzienna misja Świat Iluzji: Nemere pokonany.	Daily mission World of Illusion: Nemere defeated.
+Q0255	Codzienna misja Świat Iluzji: Razador pokonany.	Daily mission World of Illusion: Razador defeated.
+Q0256	Codzienna misja: Świat Iluzji	Daily mission: World of Illusion
+Q0258	Cor Draconis (zwyczajne, szlachetne), perły,	Cor Draconis (ordinary, noble), pearls,
+Q0259	Cos poszlo nie tak.	Something went wrong.
+Q0262	Czarna Magia	Black Magic
+Q0263	czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	time - from 10 to 60 minutes. Serpent Dust adds a minute.
+Q0264	Czas minął - Alastor wypędza was z Głębi.	Time is up - Alastor drives you out of the Depths.
+Q0265	Czas minął! Sung Mahi wyrzuca cię z wieży.	Time is up! Sung Mahi throws you out of the tower.
+Q0266	Czas minął. Możesz spróbować jeszcze raz.	Time is up. You can try once more.
+Q0267	Czas oczekiwania został skrócony.	The waiting time has been shortened.
+Q0268	Czas odbioru nagrod juz minal.	The time to claim rewards has already passed.
+Q0269	czeka Morkhot, władca głębin.	Morkhot, lord of the depths, awaits.
+Q0270	czeka na ciebie - on wie, gdzie szukać Władców	is waiting for you - he knows where to look for the Lords
+Q0271	czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	Nemere, lord of frost, awaits. Nobody has returned from there,
+Q0272	Czekaj na event w kalendarzu wydarzeń.	Wait for the event in the event calendar.
+Q0273	Czempion	Champion
+Q0274	Czempiona (Opcje klawiszy: Czempion).	Champion (Key options: Champion).
+Q0275	Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	Red Ginseng (Premium) is food for the Strong Military Horse (31+).
+Q0276	Czerwone Pudło Zodiaku	Red Zodiac Case
+Q0277	Czerwony Żeń-szeń 	Red Ginseng 
+Q0278	cztery fale, a skarb Hydry będzie twój.	four waves, and the Hydra's treasure will be yours.
+Q0279	Czuje sie silniejszy! Dziekuje.	I feel stronger! Thank you.
+Q0280	Czujesz tę pulsującą energię?	Do you feel this pulsing energy?
+Q0281	Czwartek (Wu-Wei)	Thursday (Wu-Wei)
+Q0282	Czy chcesz opuścić jaskinie i wrócić do Dongan?	Do you want to leave the cave and return to Dongan?
+Q0283	Czy chcesz opuścić Królestwo Żywiołów	Do you want to leave the Kingdom of Elements
+Q0284	Czy chcesz opuścić Schronienie Meley? Walka trwa	Do you want to leave Meley's Lair? The fight continues
+Q0285	Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Do you want to leave the tower? The climb will end.
+Q0286	Czy chcesz opuścić świątynię?	Do you want to leave the temple?
+Q0287	Czy chcesz podnieść kotwicę i ruszyć w drogę?	Do you want to weigh anchor and set off?
+Q0288	Czy chcesz przejść przez Gardziel Am-heha i	Do you want to go through the Am-heh Gorge and
+Q0289	Czy chcesz się teleportować?	Do you want to teleport?
+Q0290	Czy chcesz teraz wejść Świątyni Zodiaku?	Do you want to enter the Zodiac Temple now?
+Q0291	Czy chcesz teraz zejść ze statku? Wejście	Do you want to leave the ship now? Entering
+Q0292	Czy chcesz użyć Spirali Czasu?	Do you want to use a Time Spiral?
+Q0293	Czy chcesz wrócić na Przełęcz Yilad?	Do you want to return to the Yilad Pass?
+Q0294	Czy chcesz wrócić z Tajemniczej Instancji	Do you want to return from the Mysterious Instance
+Q0295	Czy chcesz zejść głębiej do jaskiń?	Do you want to go deeper into the caves?
+Q0296	Czy chcesz zejść na ląd?	Do you want to go down onto the ice?
+Q0297	Czy chcesz, abym zaprowadzil cie do Swiatyni?	Do you want me to take you to the Temple?
+Q0298	Czy jestes jednym z nich?	Are you one of them?
+Q0299	Czy jesteście gotowi stanąć przed Nemere (PB),	Are you ready to stand before Nemere (RX),
+Q0300	Czy jesteście gotowi stanąć przed Nemere (SZC),	Are you ready to stand before Nemere (TR),
+Q0301	Czy na pewno chcesz zregenerować wszystkie portale?	Are you sure you want to regenerate all portals?
+Q0302	Czy na pewno chcesz zregenerować?	Are you sure you want to regenerate?
+Q0303	Czy przypominasz sobie jeszcze Jaskinie Gnolli	Do you still remember the Gnoll Caves
+Q0304	Czy znasz legendę o Świątyni Zodiaku?	Do you know the legend of the Zodiac Temple?
+Q0305	czyste egzemplarze.	clean copies.
+Q0306	Czyściec Ognia (Razador)	Purgatory of Fire (Razador)
+Q0307	Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Purgatory of Fire: the portal failed to open - talk to Am-heh's statue.
+Q0308	Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Purgatory of Fire: talk to Am-heh's statue to open the portal.
+Q0309	Czyściec Ognia: portal się otwiera...	Purgatory of Fire: the portal is opening...
+Q0310	Czyściec Ognia: przejście prowadzi przez poczekalnię.	Purgatory of Fire: the passage leads through the waiting room.
+Q0311	części (Święty 500 000, Okazały 1 000 000, Rycerski	pieces (Holy 500 000, Grand 1 000 000, Knight
+Q0312	Członek grupy jest za daleko. Zbierzcie się przy mnie.	A party member is too far away. Gather near me.
+Q0313	Członek grupy nie posiada przedmiotu potrzebnego,	A party member does not have the item needed
+Q0314	Członkowie, posiadający za mało Animosfer:	Members with too few Animospheres:
+Q0315	członków gildii obecnych w Krypcie.	guild members present in the Crypt.
+Q0321	daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	gives 1 experience point, Fiery ones - 10, 50, 100,
+Q0322	dalej bez ciebie - możesz do niej wrócić u mnie	on without you - you can return to it through me
+Q0345	demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	demons. It's best obtained from the En-Tai Destroyers.
+Q0346	Demonów. W oknie wytwarzania zobaczysz każdy przepis:	Demons. In the crafting window you will see every recipe:
+Q0347	Dla twojego poziomu: +%d%% PD	For your level: +%d%% EXP
+Q0348	dla twojej klasy. Uda się na pewno.	for your class. It will surely succeed.
+Q0349	do Chaegiraba w Dongan po nagrodę.	to Chaegirab in Dongan for your reward.
+Q0350	Do Erebu wchodzi się tylko w grupie.	Erebus can only be entered in a group.
+Q0351	do Groty Wygnańców.	to the Exiles' Grotto.
+Q0352	Do jaskiń wpuszczam od 1. Poziomu Czempiona.	I let you into the cave from Champion Level 1.
+Q0353	Do którego obszaru chcesz się udać?	Which area do you want to go to?
+Q0354	Do lochu wchodzi najwyżej 8 osób.	At most 8 people can enter the dungeon.
+Q0355	Do Lochów Przebudzenia wchodzi się tylko w grupie.	The Awakening Dungeons can only be entered in a group.
+Q0356	do Namgan?	to Namgan?
+Q0357	do niej wejść przeze mnie.	enter it through me.
+Q0358	do P. Nie masz żadnej z nich na stopniu G1-G10.	to P. You have none of them at grade G1-G10.
+Q0359	Do Portu Nowego Kontynentu	To the New Continent Port
+Q0360	Do przeniesienia bonusow z jednego kostiumu na drugi	To transfer bonuses from one costume to another
+Q0361	Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	To Nemere's Watchtower (RX): Ninja and Shaman in the group.
+Q0362	Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	To Nemere's Watchtower (TR): Ninja and Shaman in the group.
+Q0363	Do Szczeliny Czasu wchodzi najwyżej 8 osób.	At most 8 people can enter the Time Rift.
+Q0364	Do Szczeliny Czasu wchodzi się tylko w grupie.	The Time Rift can only be entered in a group.
+Q0365	Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	Plus a Sewing Pattern, Blue Dye (Fire Shoes)
+Q0366	Do walki z Balathorem	To fight Balathor
+Q0367	do wyboru.	to choose from.
+Q0368	Do zakończenia badań potrzebuję jeszcze	To finish the research I still need
+Q0369	do ziem Yohary, gdzie rządzi wola Sung Mahi.	to the lands of Yohara, where Sung Mahi's will rules.
+Q0370	Do Świątyni Smoka wchodzi się tylko w grupie.	The Dragon Temple can only be entered in a group.
+Q0371	Do świątyni wchodzi najwyżej 8 osób.	At most 8 people can enter the temple.
+Q0372	Dobra robota. Las od razu oddycha lżej.	Good job. The forest breathes easier already.
+Q0373	Dobrze	Good
+Q0374	Dobrze! Następny Metin.	Good! Next Metin.
+Q0375	Dobrze, szanuję twoją decyzję. Wróć,	Fine, I respect your decision. Come back
+Q0376	Dobrze, w takim razie chodz za mna!	Good, then follow me!
+Q0377	Dobrze, zbadam je. Wróć po wynik za dobę.	Fine, I'll examine them. Come back for the result in a day.
+Q0378	Dodano %d Smoczych Monet do Twojego konta.	%d Dragon Coins have been added to your account.
+Q0379	dodasz Wzmocnieniem Przedmiotu.	you add with Reinforce Item.
+Q0380	Dodatkowy bonus (6. i 7.)	Extra bonus (6th and 7th)
+Q0381	Dokad chcesz sie udac?	Where do you want to go?
+Q0382	Dokąd chcesz się przenieść?	Where do you want to move?
+Q0383	Dokąd chcesz się udać?	Where do you want to go?
+Q0384	Dom Aukcyjny	Auction House
+Q0385	Dom Aukcyjny jest na tym świecie wyłączony.	The Auction House is disabled in this world.
+Q0387	Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	A booster increases the damage dealt by one skill.
+Q0388	Dopalacz: Duchowe Uderzenie	Booster: Spirit Strike
+Q0389	Dopalacz: Mroczne Uderzenie	Booster: Dark Strike
+Q0390	Dopalacz: Ognista Strzała	Booster: Fire Arrow
+Q0391	Dopalacz: Przywołanie Błyskawicy	Booster: Summon Lightning
+Q0392	Dopalacz: Strzelający Smok	Booster: Shooting Dragon
+Q0393	Dopalacz: Uderzenie Palcem	Booster: Finger Strike
+Q0394	Dopalacz: Wir Miecza	Booster: Sword Spin
+Q0395	Dopalacz: Zasadzka	Booster: Ambush
+Q0396	Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	You will learn a booster when you raise any riposte to level P.
+Q0397	dopiero początek. Teraz potrzebuję Klejnotów	only the beginning. Now I need Gems
+Q0398	Dopóki stoi choć jeden z nich, smoka nie da się zranić.	While even one of them stands, the dragon cannot be hurt.
+Q0399	Doskonały okaz! Dziękuję.	A perfect specimen! Thank you.
+Q0400	dostajesz jeden taki Łup za każdą postawioną talię.	you get one such loot for every deck you stake.
+Q0401	dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	you will get 1 Doubloon, and once we find the right
+Q0402	dostaniesz ode mnie maski! He he! 	you'll get masks from me! Heh heh! 
+Q0403	Dostarcz apteczkę Zwiadowcy	Deliver the first-aid kit to the Scout
+Q0404	doszedł na szczyt i obronił statek przed Hydrą.	reached the top and defended the ship from the Hydra.
+Q0406	Doświadczenie Czempiona dają potwory ziemi	Champion EXP is granted by earth monsters
+Q0407	doświadczeniem szata czeka na ewolucję.	experience, the robe is waiting to evolve.
+Q0408	Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (mythical, precious), pearls, earrings
+Q0409	drogę na nowy kontynent. Czy mam cię zabrać do	the way to the new continent. Shall I take you to
+Q0410	dropują, ale dają więcej PD niż zazwyczaj.	drop, but they give more EXP than usual.
+Q0411	Druga fala - i Szel (PB)!	Second wave - and Szel (RX)!
+Q0412	Druga fala - i Szel (SZC)!	Second wave - and Szel (TR)!
+Q0413	Druga wioska	Second village
+Q0414	Drugi rekonesans	Second reconnaissance
+Q0415	Drugi rekonesans: wróć do Zwiadowcy Lasu.	Second reconnaissance: return to the Scout of the Forest.
+Q0416	Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	The En-Tai Druid (RX) must be somewhere nearby. Take
+Q0417	Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	The En-Tai Druid (TR) must be somewhere nearby. Take
+Q0418	Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	The En-Tai Druid had a first-aid kit (RX). Take it to the Guardian of the Forest (RX).
+Q0419	Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	The En-Tai Druid had a first-aid kit (TR). Take it to the Guardian of the Forest (TR).
+Q0420	Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	The En-Tai Druid had a first-aid kit. Take it to the Guardian of the Forest.
+Q0421	Drużyna na tej mapie wejdzie razem z tobą.	Your group on this map will enter together with you.
+Q0422	Drużyna nie jest wymagana.	A group is not required.
+Q0423	Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	The Earth Spirit! With its help we'll understand what's happening
+Q0424	Duchowym Buffi.	Spiritual Buffi.
+Q0425	Duchowym+.	Spiritual+.
+Q0426	duchy sześciu żywiołów strzegą swoich ziem.	spirits of the six elements guard their lands.
+Q0427	Dusza Miecza	Sword Soul
+Q0428	Dusza Miecza (powtarzalna)	Sword Soul (repeatable)
+Q0429	Dusza Ochrony	Protection Soul
+Q0430	Dusza Ochrony (powtarzalna)	Protection Soul (repeatable)
+Q0431	Dusza Ozdoby	Jewellery Soul
+Q0432	Dusza Ozdoby (powtarzalna)	Jewellery Soul (repeatable)
+Q0433	Dusza Światła	Light Soul
+Q0434	Dusza Światła (powtarzalna)	Light Soul (repeatable)
+Q0435	dyniogłowym! Nazywam się Jack Pumpkin, a to jest	pumpkin head! My name is Jack Pumpkin, and this is
+Q0436	Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	A better EXP fish is already active - a weaker one won't work alongside it.
+Q0437	działają u Ciebie o połowę rzadziej.	work for you half as often.
+Q0438	Dziekuje za pomoc! Za chwile wrocisz na lad.	Thank you for your help! You'll be back on land in a moment.
+Q0439	Dziekuje! Oto twoje szkatulki.	Thank you! Here are your chests.
+Q0440	Dziekuje, ze mnie tu odprowadziles.	Thank you for escorting me here.
+Q0441	Dziesieciu graczy z najwieksza suma punktow	The ten players with the highest point total
+Q0442	Dziesięciu graczy z najwyższym łącznym wynikiem	The ten players with the highest total score
+Q0443	Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	With my power you'll enter the Redux Dungeons.
+Q0444	Dzięki temu skróci się czas oczekiwania. Wybierz	This will shorten the waiting time. Choose
+Q0445	Dzięki tobie moje badania są ukończone.	Thanks to you, my research is complete.
+Q0446	Dziękuję ci za pomoc, wojowniku.	Thank you for your help, warrior.
+Q0447	Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Thank you for your help, warrior. The forest is grateful to you.
+Q0448	Dziękuję ci. Wynagrodzę cię za pomoc.	Thank you. I'll reward you for your help.
+Q0449	Dziękuję za pomoc. Weź to w nagrodę.	Thank you for your help. Take this as a reward.
+Q0450	Dziękuję, już mi lepiej. Do uszlachetnienia	Thank you, I feel better now. For refining
+Q0451	Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Thank you. The temple is safe for now. Here is[ENTER]your gift. But the energy will rise again. Come back[ENTER]in 24 hours to lower the energy level with[ENTER]Animospheres. Of course, you'll get another[ENTER]reward for it.
+Q0452	Efekt zestawu	Set effect
+Q0453	eksperyment może się nie powieść.	the experiment may fail.
+Q0454	ekwipunek. Potrafie tez oszlifowac klejnoty	equipment. I can also cut gems
+Q0455	eliksir (szansa 90%, od 120. poziomu):	elixir (chance 90%, from level 120):
+Q0456	Eliksir daje od 8 do 20% na 1 do 10 minut -	The elixir gives 8 to 20%, for 1 to 10 minutes -
+Q0457	Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	The elixir doesn't work in Yohara missions and doesn't shorten the waiting time (that's what the Time Spiral is for).
+Q0458	Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	The Researcher's Elixir works in the Biologist's research - from level 30.
+Q0459	Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	The Researcher's Elixir is already active - it will be used on your next item hand-in for research.
+Q0460	Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	The Researcher's Elixir improved the item's quality: acceptance chance %d%%.
+Q0461	Eliksir Woli SungMa: +5 (%s) na 30 min.	Sung Ma Elixir of Will: +5 (%s) for 30 min.
+Q0462	Eliksiry Yohary	Yohara Elixirs
+Q0463	En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (RX). Find him and take the first-aid kit from him.
+Q0464	En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (TR). Kill druids until you get
+Q0465	En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	En-Tai are acting strange, to say the least. Thin them out
+Q0466	En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, because they're acting strange, to say the least.
+Q0469	Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Encyclopedia opened: 25 skill books are in your inventory.
+Q0470	Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Encyclopedia: you need %d free inventory slots.
+Q0472	energii przy pasku zadań pokaże, ile ci zostało.	energy next to the taskbar shows how much you have left.
+Q0474	Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebu (RX): Bagjanamu (RX) guards the way to Jotun Thrym!
+Q0475	Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebu (TR): Bagjanamu (TR) guards the way to Jotun Thrym!
+Q0476	Erebu jest dziś zamknięte. Wróć później.	Erebu is closed today. Come back later.
+Q0477	Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebu won't let you in now. Try again in a moment.
+Q0478	Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebu: Bagjanamu guards the way to Jotun Thrym! You have 30 minutes.
+Q0479	Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebu: time is up - you are returning to the Enchanted Forest.
+Q0480	Erebu: potrzebujesz Kamienia Driad.	Erebu: you need a Stone of the Dryads.
+Q0481	Erebu: ta wyprawa już się skończyła.	Erebu: this expedition has already ended.
+Q0482	Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Stage 2: defeat the Demonic Stone and all the monsters! The archers wake up when the stone takes a hit.
+Q0483	Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Stage 2: defeat the monsters within the time limit! Sung Mahi's curse takes more HP every 10 s - the Sung Ma Antidote removes it.
+Q0484	Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Stage 2: dodge all attacks for one minute! A hit by the circle leaves 1 HP - a second one with less than full HP kills.
+Q0485	Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Stage 2: find the stone to remove the seal! The seals open only in the right order.
+Q0486	Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Stage 2: find the right key to escape! The Mysterious Key drops from monsters.
+Q0487	Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Stage 2: find the pair of monsters that don't match each other and defeat it!
+Q0488	Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Stage 2: destroy the correct Metin Stone! You have one chance.
+Q0489	Etap ukończony - przejdź przez portal	Stage complete - go through the portal
+Q0490	Event jeszcze trwa - nagrody za ranking	The event is still running - ranking rewards
+Q0491	eventu odbiera tu po jego końcu (przez 7 dni):	of the event are collected here after it ends (for 7 days):
+Q0492	Ewolucja zawsze się udaje i daje +1 poziom,	Evolution always succeeds and gives +1 level,
+Q0493	Fabuła	Story
+Q0495	Fala Śmierci	Death Wave
+Q0499	Fragment duszy: %d / 10	Soul fragment: %d / 10
+Q0500	fryzure na fryzure, nakladke na nakladke.	hairstyle for hairstyle, overlay for overlay.
+Q0670	Gardziel Am-heha	Am-heh Gorge
+Q0671	Gaya biorę sam z twojego licznika Gaya.	I take the Gaya myself from your Gaya counter.
+Q0672	Gaya biorę z twojego licznika Gaya.	I take the Gaya from your Gaya counter.
+Q0673	Gaya biorę z twojego licznika Gaya. Kliknij przepis,	I take the Gaya from your Gaya counter. Click a recipe,
+Q0674	gdy się nie uda, hełm i materiały przepadają.	if it fails, the helmet and materials are lost.
+Q0675	gdy skończę.	when I'm done.
+Q0676	Gdy statek wypłynie, nie będzie odwrotu - Hydra	Once the ship sets sail, there's no turning back - the Hydra
+Q0677	Gdy walka się zacznie, świątynia odmierzy wam	Once the fight begins, the temple will count down
+Q0678	Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	Where is the first-aid kit? Take it from the En-Tai Druids.
+Q0679	Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	Where is the first-aid kit? Take it from the En-Tai Druid.
+Q0680	Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Where is the Tree Emerald (RX)? Defeat the Sovereign.
+Q0681	Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Where is the Tree Emerald (TR)? Defeat the Sovereign.
+Q0682	Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Where is the Fine Timber (TR)? Defeat the Sovereign.
+Q0683	Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Where is the Fine Timber (RX)? Defeat the Sovereign.
+Q0684	Gildia może wejść ponownie za %d min.	The guild can enter again in %d min.
+Q0685	Gildia musi istnieć co najmniej 24 godziny.	The guild must have existed for at least 24 hours.
+Q0686	Gildia musi mieć co najmniej %d poziom.	The guild must be at least level %d.
+Q0687	Gildia potrzebuje %d pkt rankingu gildii.	The guild needs %d guild ranking points.
+Q0688	Glos Barah Taraji	Voice of Barah Taraji
+Q0689	GM: Krypta Balathora - zeruj przerwę gildii	GM: Balathor's Crypt - reset guild cooldown
+Q0690	GM: Musisz byc na 1 lub 2 pietrze DT.	GM: You must be on floor 1 or 2 of DT.
+Q0691	GM: szanse połowu	GM: fishing chances
+Q0692	Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Alastor's Wrath! He summons servants and heals his wounds.
+Q0693	Goblin Skarbow:	Treasure Goblin:
+Q0694	Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Bitter defeat! Your climb ends here - you'll return to the hall in a moment.
+Q0698	Gotowe! Porozmawiaj ze mna jeszcze raz.	Done! Talk to me once more.
+Q0699	Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	Done! Return to Monk Milbon to collect your gift.
+Q0700	Gotowe. Bonus PD +%d%% na %s	Done. EXP bonus +%d%% for %s
+Q0701	Gotowe. Bonusy zostaly przeniesione, a przedmiot	Done. The bonuses have been transferred, and the item
+Q0702	Gotowe. Umieść Relikt w oknie Bonusu Reliktu	Done. Place the Relic in the Relic Bonus window
+Q0703	Gotowi? Balathor nie zna litości.	Ready? Balathor knows no mercy.
+Q0704	Gra kosztuje 30 000 yang i jeden zestaw kart.	The game costs 30 000 Yang and one set of cards.
+Q0705	Graj po swojemu (wolna reka)	Play your own way (free hand)
+Q0706	Gratulacje! Za miejsce w pierwszej dziesiątce	Congratulations! For a place in the top ten
+Q0707	Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	You end the game whenever you want. You get chests:
+Q0708	Gromiste Góry	Thunder Mountains
+Q0709	Grota Wygnańców (wejście)	Grotto of Exile (entrance)
+Q0710	Grota Wygnańców 2	Grotto of Exile 2
+Q0711	Grota Wygnańców 2 (PB)	Grotto of Exile 2 (RX)
+Q0712	Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Grotto of Exile 2 (RX): time is up - you are returning to the Plateau of Illusion.
+Q0713	Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Grotto of Exile 2 (RX): you have 60 minutes. Get the Twisted Keys (RX) and find the Ghost of a Sura.
+Q0714	Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Grotto of Exile 2 (RX): you need a Redux Tome.
+Q0715	Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Grotto of Exile 2 (RX): this expedition has already ended.
+Q0716	Grota Wygnańców 2 (SZC)	Grotto of Exile 2 (TR)
+Q0717	Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Grotto of Exile 2 (TR): time is up - you are returning to the Plateau of Illusion.
+Q0718	Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Grotto of Exile 2 (TR): you have 60 minutes. Get the Twisted Keys (TR) and find the Ghost of a Sura.
+Q0719	Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Grotto of Exile 2 (TR): you need a Pocket Watch.
+Q0720	Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Grotto of Exile 2 (TR): this expedition has already ended.
+Q0721	Grota Wygnańców 2 (zablokowane)	Grotto of Exile 2 (locked)
+Q0722	Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	Grotto of Exile 2 can only be reached from the Grotto of Exile.
+Q0723	Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, this is not a Metin crystal, but a piece
+Q0724	Głębie (silny)	Deeps (strong)
+Q0725	Głębie (słaby)	Deeps (weak)
+Q0726	Głębie nie przyjmą was teraz. Spróbuj za chwilę.	The Deeps won't let you in now. Try again in a moment.
+Q0727	Głębie Północnego Wiatru	Northwind Deeps
+Q0728	Głębie Północnego Wiatru (silny)	Northwind Deeps (strong)
+Q0729	Głębie Północnego Wiatru (słaby)	Northwind Deeps (weak)
+Q0730	Głębie są dziś zamknięte. Wróć później.	The Deeps are closed today. Come back later.
+Q0731	Głębie: ta wyprawa już się skończyła.	Deeps: this expedition has already ended.
+Q0732	Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Deeps: you stayed dead for too long - you are out of the expedition.
+Q0734	Halloween, nagle zawirował cały świat i w ułamku	Halloween, suddenly the whole world spun, and in a split
+Q0735	Handlarz Bronią w Dongan potrzebuje pomocy.	The Weapon Shop Dealer in Dongan needs help.
+Q0736	Handlarz Zbrojami w Dongan potrzebuje pomocy.	The Armour Dealer in Dongan needs help.
+Q0738	Hej! Wiem, że zamieniono mnie w kamień - to	Hey! I know I was turned into stone - it
+Q0739	Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Hey, you! Yes, you! You look like someone who can
+Q0740	hełm 120. poziomu dla każdej klasy. Połóż materiały	a level 120 helmet for every class. Place the materials
+Q0741	Hełmy na 100 poziom	Level 100 helmets
+Q0744	Hmm... Nie mam maski, która pasowałaby	Hmm... I don't have a mask that would suit
+Q0745	Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Hmmm, this fern is damaged, unfortunately. There's no
+Q0746	Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	The Hwacha isn't ready yet (Fire Arrows needed).
+Q0747	Hydra pokonana! Statek może teraz dopłynąć do	The Hydra is defeated! The ship can now sail to
+Q0748	i 400 000 Yang. Szansa zależy od plusa butów:	and 400 000 Yang. The chance depends on the shoes' plus:
+Q0749	i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	and 5 Northwind Whetstones, for armour 5 Serpent Silks
+Q0750	i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	and 5 Serpent Polishes. Cost: 10 000 000 Yang and 100 Gaya,
+Q0751	i ciemnością głębin. Bez niego nie zejdziesz do ruin.	and the darkness of the depths. Without it you won't descend to the ruins.
+Q0752	i co najmniej 500 000 Yang w skarbcu gildii.	and at least 500 000 Yang in the guild treasury.
+Q0753	i hełm (przykład dla twojej klasy, +7) i wszystkie	and a helmet (example for your class, +7) and all
+Q0754	i magowie strzega swiatyni dzien i noc, a po jej	and mages guard the temple day and night, and after it
+Q0755	i materiały - wszystkie przepisy zobaczysz w oknie.	and materials - you'll see all recipes in the window.
+Q0756	i moze niewlasciwie dzialac. Wlacza go wlasciciel	and may not work properly. It is enabled by the owner
+Q0757	i Podziemnych Lodowych Golemów w Grocie.	and Underworld Ice Golems in the Grotto.
+Q0758	i Starożytna Dżungla (wiatr). Odporność	and the Ancient Jungle (wind). Resistance
+Q0759	i te dodane. Im wyższy poziom szaty, tym większa	and the added ones. The higher the robe's level, the greater
+Q0760	i wrócić do Portu Nowego Kontynentu?	and return to the New Continent Port?
+Q0761	i Zaczarowanego Lasu (wiatr) oraz lochy:	and the Enchanted Forest (wind) and dungeons:
+Q0762	i zbroi poziomu 65 wykuwam nowy, potezniejszy	and level 65 armour, I forge a new, more powerful
+Q0763	ich blask zmienia się pod wpływem emocji.	their glow changes with emotions.
+Q0764	Ich strażnicy pilnują Płomiennego Feniksa,	Their guardians watch over the Fire Phoenix,
+Q0765	Idź dalej	Go on
+Q0766	Idź do Opuszczonej Twierdzy	Go to the Abandoned Fortress
+Q0767	Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Go to the teleporter and travel to the Zodiac[ENTER]Temple. Monk Milbon is already waiting for you there.
+Q0768	Idź do Świątyni Węży	Go to the Serpent Temple
+Q0769	idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	go to the En-Tai Sovereigns once more and bring me the Tree
+Q0770	Idź już i znajdź jeden %s!	Go now and find one %s!
+Q0771	Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	Ignitor (RX) is still alive. Keep fighting or
+Q0772	Ignator (PB), strażnik żaru, został pokonany.	Ignitor (RX), guardian of the embers, has been defeated.
+Q0773	Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	Ignitor (TR) is still alive. Keep fighting or
+Q0774	Ignator (SZC), strażnik żaru, został pokonany.	Ignitor (TR), guardian of the embers, has been defeated.
+Q0780	Informacja o mapie	Map information
+Q0781	innym... Czegoś takiego na pewno jeszcze nie	other... You've surely never seen anything like it
+Q0783	Inteligencja %d.	Intelligence %d.
+Q0784	Inteligencja - trucizna, ogień i krwawienie	Intelligence - poison, fire and bleeding
+Q0785	Inteligencja Sung Ma	Sung Ma Intelligence
+Q0787	ja wyrzucasz. Trzy karty o tej samej liczbie	you discard it. Three cards with the same number
+Q0789	Jak grac w Okey?	How do you play Okey?
+Q0790	Jak ma sie nazywac?	What should its name be?
+Q0791	Jak ma walczyc?	How should it fight?
+Q0792	Jak mam walczyc przy tobie?	How should I fight beside you?
+Q0793	Jak sie masz?	How are you?
+Q0794	Jaka ma byc jego klasa?	What should its class be?
+Q0795	Jaka sciezka?	Which path?
+Q0796	Jaskinie Gnolli	Gnoll Caves
+Q0797	Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	The Gnoll Caves are available from Champion Level 1. You are returning to Dongan.
+Q0799	Jazda (Bezszelest. Chód)	Riding (Feather Walk)
+Q0800	Jazda (Brak Odrzutu)	Riding (No Knockback)
+Q0801	Jazda (Gwałt. Wichura)	Riding (Raging Storm)
+Q0802	Jazda (Nieśmiertelność)	Riding (Immortal)
+Q0803	Jazda (umiej. konne)	Riding (Horse Skill)
+Q0804	Jazda (W. SungMa. INT)	Riding (Sung Ma's W INT)
+Q0805	Jazda (W. SungMa. ODP)	Riding (Sung Ma's W RES)
+Q0806	Jazda (W. SungMa. SIŁA)	Riding (Sung Ma's W STR)
+Q0807	Jazda (W. SungMa. WIT)	Riding (Sung Ma's W VIT)
+Q0808	Jazda (Zwinne Kopyta)	Riding (Swift Hooves)
+Q0809	Jazda Konna (Ninja)	Riding (vs. Ninjas)
+Q0810	Jazda Konna (PD)	Riding (EXP)
+Q0811	Jazda Konna (Precyzja)	Riding (Precision)
+Q0812	Jazda Konna (przeciw diabłom)	Riding (vs. Devils)
+Q0813	Jazda Konna (przeciw insektom)	Riding (vs. Insects)
+Q0814	Jazda Konna (przeciw mistykom)	Riding (vs. Mystics)
+Q0815	Jazda Konna (przeciw nieumarłym)	Riding (vs. Undead)
+Q0816	Jazda Konna (przeciw orkom)	Riding (vs. Orcs)
+Q0817	Jazda Konna (przeciw potworom pustyni)	Riding (vs. Desert Monsters)
+Q0818	Jazda Konna (przeciw potworom)	Riding (vs. Monsters)
+Q0819	Jazda Konna (przeciw półludziom)	Riding (vs. Half-Humans)
+Q0820	Jazda Konna (przeciw zwierzętom)	Riding (vs. Animals)
+Q0821	Jazda Konna (Sura)	Riding (vs. Suras)
+Q0822	Jazda Konna (Szaman)	Riding (vs. Shamans)
+Q0823	Jazda Konna (Wojownik)	Riding (vs. Warriors)
+Q0824	Jeden transfer zuzywa jedna sztuke.	One transfer uses up one piece.
+Q0825	Jeden z wybranych przedmiotow nie lezy juz w Twoim	One of the selected items is no longer in your
+Q0826	Jedna z twoich mocy woli SungMa zostanie	One of your Sung Ma's Will stats will be
+Q0827	jednak: tylko pierwsza próba zawsze się udaje.	however: only the first attempt always succeeds.
+Q0828	jednego jadeitu potrzebują tych samych materiałów.	one jade need the same materials.
+Q0829	jedną pełną kulę doświadczenia.	one full orb of experience.
+Q0830	Jego jad zabił już niejednego wojownika,	Its venom has already killed many a warrior,
+Q0831	Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	Its scales shine like liquid gold! What will you do with it?
+Q0832	Jej Królowa nie wypuściła jeszcze nikogo,	Its Queen has never let anyone go yet,
+Q0833	jej potomstwem, najadami i samą bestią. Wytrzymaj	her offspring, the naiads and the beast itself. Hold out
+Q0834	Jej potwory rani tylko Czempion - ten, kto	Its monsters can only be hurt by a Champion - one who
+Q0835	Jesli ja albo ty zginiemy, wyprawa przepadnie.	If either you or I die, the expedition is lost.
+Q0836	jest część parametrów, którą da (poziom 250 - 25%).	is a part of the stats it gives (level 250 - 25%).
+Q0837	Jestem Goblinem Skarbow. Od lat szukam wielkiej	I am the Treasure Goblin. For years I have sought a great
+Q0838	Jestem w trakcie dokładniejszej analizy	I am in the middle of a closer analysis
+Q0839	jesteś dość silny, by przetrwać. Naprawdę chcesz	you are strong enough to survive. Do you really want
+Q0840	Jesteś już w Porcie Nowego Kontynentu.	You are already in the New Continent Port.
+Q0841	Jeszcze chwile	Just a moment
+Q0842	jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	its Tree Emerald too, and I will give you something valuable.
+Q0843	jeszcze lepsze. Przynies mi:	even better. Bring me:
+Q0844	Jeszcze nie	Not yet
+Q0845	Jeszcze nie odpoczęli po poprzedniej wyprawie:	They have not rested yet after the last expedition:
+Q0846	Jeszcze nie skończyłem. Wróć za:	I am not finished yet. Come back in:
+Q0847	Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	You have not destroyed all %d[ENTER]Metin Stones yet. Come back to me once you have finished[ENTER]the task.
+Q0848	Jeszcze nieaktywne.	Not active yet.
+Q0849	jeszcze przez chwile. Prowadzi do Zakletego Lasu,	a little longer. It leads to the Enchanted Forest,
+Q0850	jeszcze raz do Władców En-Tai i przynieś mi Drzewny	once more to the En-Tai Sovereigns and bring me a Tree
+Q0851	jeśli się rozmyślisz.	if you change your mind.
+Q0852	Jeśli statek wciąż płynie, łódź zaraz cię do	If the ship is still sailing, a boat will take you
+Q0853	Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	If the expedition is still on, the gate will take you now.
+Q0854	Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	If the expedition is still on, the statue's power will take you now.
+Q0855	Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	If the expedition is still on, the portal will take you now.
+Q0856	Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	If the expedition is still on, the passage will take you now.
+Q0857	Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	If the expedition is still on, the current will take you now.
+Q0859	Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (RX) has arrived in Erebus!
+Q0860	Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (TR) has arrived in Erebus!
+Q0861	Jotun Thrym przybył do Erebu!	Jotun Thrym has arrived in Erebus!
+Q0862	Juz mam to blogoslawienstwo.	I already have this blessing.
+Q0863	ją pokonali.	defeated her.
+Q0864	Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Stones I will make a Mysterious Talisman. In the crafting window
+Q0865	Kamienia Dusz Beran-Setaou. Zdobędziesz go	Beran-Setaou Soul Stone. You will get it
+Q0866	Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Spirit Stone +0, +1, +2 or +3. From them I will cut
+Q0867	Kamienie leżą - smok jest bezbronny. Spieszcie się,	The stones are down - the dragon is defenceless. Hurry,
+Q0868	Kamienie Przebudzenia	Redux Stones
+Q0869	Kamienie smoka chronią Beran-Setaou. Dopóki stoi	The dragon's stones protect Beran-Setaou. While
+Q0870	Kamień decyduje o szansie: Mały 2%, Drobny 5%,	The stone sets the chance: Small 2%, Tiny 5%,
+Q0871	Kamień demonów oberwał - łucznicy atakują!	The Demon Stone took a hit - the archers attack!
+Q0872	Kamień Driad.	Stone of the Dryads.
+Q0873	Kamień Duchowy Buffi	Buffi Soul Stone
+Q0874	Kamień Duchowy Buffi trenuje umiejętności Buffi	The Buffi Soul Stone trains Buffi's skills
+Q0875	Kamień Duchowy+	Soul Stone+
+Q0876	Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	Soul Stone+ trains the ward and the boost from G1
+Q0877	Kamień Dusz Beran-Setaou	Beran-Setaou Soul Stone
+Q0878	Kamień Dusz Beran-Setaou! Dzięki niemu moje	The Beran-Setaou Soul Stone! With it my
+Q0879	Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	A Yohara Metin Stone only works on Yohara maps with Sung Ma's Will.
+Q0880	Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	A Yohara Metin Stone requires Champion Level 1.
+Q0881	kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	a Redux Stone and 2 500 000 Yang. The stone sets
+Q0882	Kamień użyty na złej steli się rozpadnie.	A stone used on the wrong stele will crumble.
+Q0883	karty Okey. 24 karty tworza zestaw kart.	Okey cards. 24 cards make a set of cards.
+Q0884	Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Devil's Catacomb: You will leave the dungeon in 1 second.
+Q0885	Każda klasa i droga ma swój dopalacz - twój to:	Every class and path has its own boost - yours is:
+Q0886	Każda mapa Sung Ma ma swoje wymagania. Gdy	Every Sung Ma map has its own requirements. When
+Q0887	Każde pełne 10% Siły daje też +1% do	Each full 10% Strength also adds +1% directly to
+Q0888	Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	Every day two different temples[ENTER]are always open.
+Q0889	Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Everyone must be level %d, Champion 4 and in the guild for 24 hours. Not meeting this:
+Q0890	Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Each warrior may choose a reward at the Golden Dragon Chest - you have one minute.
+Q0891	Klejnoty dla Seona-Pyeonga	Jewels for Seon-Pyeong
+Q0892	Klejnoty Zawiści wypadają z Podziemnych Lod.	Malevolence Jewels drop from Underworld Ice
+Q0893	Klejnoty Zawiści zdradziły mi wiele, ale to	The Malevolence Jewels told me a lot, but that
+Q0894	Klif Gautama (Zbocze Gautama)	Gautama Cliff (Gautama Slope)
+Q0895	Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Right-click the Dragonfire Ring while standing at a statue. Eggs return every 2 minutes.
+Q0896	Kliknij talie, aby dobrac karty. Lewym	Click the deck to draw cards. Left
+Q0897	Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	The Prison Key does not fit - the blacksmith is still in the cage.
+Q0898	Klucz Goblina!	Goblin Key!
+Q0899	Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	The Serpent Key crumbles - the Pillar stands unmoved.
+Q0900	Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	The Frostflower Key (RX) can only be used by a Ninja or a Shaman.
+Q0901	Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	The Frostflower Key (TR) can only be used by a Ninja or a Shaman.
+Q0902	Klątwa	Curse
+Q0903	klątwa Sung Mahi. Ale jestem szamanem i znam	Sung Mahi's curse. But I am a shaman and I know
+Q0904	Klątwa Sunga Mahi zdjęta.	Sung Mahi's curse has been lifted.
+Q0905	Kobieta	Female
+Q0906	Kobieta czy mezczyzna?	Female or male?
+Q0907	Kolejny Potężny Wojownik Wężowy (lód)!	Another Mighty Serpent Warrior (ice)!
+Q0908	kolekcjoner przedmiot	collector item
+Q0909	kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	necklaces and earrings, and from a Demon Stone - a Power Stone
+Q0910	Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	North Dragon Pillar (RX) destroyed. The group leader can talk to the Ice Lion (RX).
+Q0911	Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	North Dragon Pillar (TR) destroyed. The group leader can talk to the Ice Lion (TR).
+Q0912	komnatach krazy Straznik En-Tai, ktory co chwile	chambers roams an En-Tai Guardian, who every now and then
+Q0913	konczy ja - skrzynie dostaniesz przy	ends it - you get the chests at
+Q0914	Koniec gry daje jedna skrzynie wedlug wyniku.	The end of the game gives one chest based on your score.
+Q0915	kontynent - Yoharę. Odwiedź go w Dongan, gdy	continent - Yohara. Visit him in Dong Gwang when
+Q0916	kostiumu, wierzchowiec - wygląd innego wierzchowca.	costume, mount - the look of another mount.
+Q0917	Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Costumes, hairstyles and weapon skins -- all for 1 Yang each.
+Q0918	Koszt szkolenia:	Training cost:
+Q0919	Koszt: 100 000 000 Yang (przy odbiorze)	Cost: 100 000 000 Yang (on collection)
+Q0920	Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Cost: 50 000 000 Yang or a Transmutation Ticket,
+Q0921	Krainie, a dostaniesz Książkę.	Land, and you will get a Book.
+Q0922	krainy Jotuna Thryma za Swiatynia, albo z powrotem	Jotun Thrym's land behind the Temple, or back
+Q0923	Krypta Balathora jest teraz zamknięta.	Balathor's Crypt is now closed.
+Q0924	Krypta Balathora: wejście	Balathor's Crypt: enter
+Q0925	Krypta Balathora: zgłoszenie gildii	Balathor's Crypt: guild registration
+Q0926	Krypta jest otwarta. Członkowie gildii mogą teraz	The Crypt is open. Guild members can now
+Q0927	Krypta twojej gildii jest już zamknięta.	Your guild's Crypt is already closed.
+Q0928	Krypta twojej gildii jest na kanale %d.	Your guild's Crypt is on channel %d.
+Q0929	Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	The Northwind Crystal has shattered - the way to the Crystal Chamber lies open.
+Q0930	Kryształy Metin	Metin Crystals
+Q0931	Kryształy Metin wypadają z Metinów Szacunku,	Metin Crystals drop from Metins of Appreciation,
+Q0932	Kryształy Metin: nagroda	Metin Crystals: reward
+Q0933	kryształów Metin do moich badań!	Metin Crystals for my research!
+Q0934	Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Scorpion King defeated! Time: %d:%02d. The dungeon is complete.
+Q0935	królem mrozu i lodu?	the king of frost and ice?
+Q0936	Królestwa Żywiołów.	Elemental Realm.
+Q0937	Królestwo Żywiołów	Elemental Realm
+Q0938	Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	The Elemental Realm does not take in the defeated. You return to the port.
+Q0939	Królestwo Żywiołów to dziewięć obszarów, gdzie	The Elemental Realm is nine areas where
+Q0940	Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Jungle Queen defeated! Time: %d:%02d. The dungeon is complete.
+Q0941	Królowa Meley: Brama Schronienia zamknęła się za wami.	Queen Meley: The Refuge Gate has closed behind you.
+Q0942	Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Queen Meley: Time is up. The Refuge Gate throws you out.
+Q0943	Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Queen Meley: The pillars strike Queen Meley! Next stage in 5 seconds.
+Q0944	Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Queen Meley: The statues glow blue - use the Dragonfire Rings at the statues!
+Q0945	Królowa Meley: Tarcza statui zgasła - atakujcie!	Queen Meley: The statue's shield is down - attack!
+Q0946	Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Queen Meley: The fight starts in 10 seconds. You have one hour to destroy the four statues.
+Q0947	Królowa Smoków Meley pokonana!	Dragon Queen Meley defeated!
+Q0948	Królowa Smoków Meley została pokonana!	Dragon Queen Meley has been defeated!
+Q0949	Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Serpent Queen Nethis defeated! In 20 s you return to the Serpent Statue for your reward.
+Q0950	Królowa Węży Nethis pokonana. Oto twoja nagroda.	Serpent Queen Nethis defeated. Here is your reward.
+Q0951	Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Prince's Circle: Sung Ma's Will (STR) -32 for 7 seconds.
+Q0952	Krąg Wróżbity: jesteś ogłuszony.	Soothsayer's Circle: you are stunned.
+Q0953	Książęcy	Royal
+Q0954	Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	The book costs 100 000 000 Yang. Come back with the money.
+Q0955	Księga Misji (W.Płn.W.)	Mission book (Nor.W. C.)
+Q0956	Księga Misji (W.Płn.W.): %d / %d potworów.	Mission book (Nor.W. C.): %d / %d monsters.
+Q0957	Księgę Misji można aktywować od poziomu 120.	The Mission Book can be activated from level 120.
+Q0958	kto wszedł tam bez drużyny najlepszych wojowników.	anyone who went in without a team of the best warriors.
+Q0959	ktora jest z toba w grupie, expi z toba po rowno,	who is in your group gets equal EXP with you,
+Q0960	Ktora zbroje mam z niej zrobic?	Which armour should I make from it?
+Q0961	ktore moge przekuc. Zalozonego przedmiotu	that I can reforge. An equipped item
+Q0962	Ktory przedmiot mam przekuc? Mozesz go tez	Which item should I reforge? You can also
+Q0963	któraś statystyka jest za niska: Siła - zadajesz	one stat is too low: Strength - you deal
+Q0964	które otwierają Erebu. Przywódca Straży Lasu wpuści	that open Erebus. The Guardian of the Forest lets in
+Q0965	Które portale chcesz zregenerować?	Which portals do you want to regenerate?
+Q0966	który chcesz wykonać - obręcz, kolia i klipsy	you want to make - bracelet, necklace and earrings
+Q0967	Który Kamień Duszy oddajesz?	Which Spirit Stone are you handing over?
+Q0968	który myślał, że poradzi sobie z Razadorem.	who thought he could handle Razador.
+Q0969	Którą umiejętność Buffi chcesz trenować?	Which Buffi skill do you want to train?
+Q0970	Którą umiejętność chcesz trenować?	Which skill do you want to train?
+Q0971	Którą umiejętność udoskonalić?	Which skill should be improved?
+Q0972	którą z nich wydobyłem. Wybierz, co chcesz.	that I extracted from them. Choose what you want.
+Q0973	Kup	Buy
+Q0974	Kup bilet	Buy ticket
+Q0975	Kup Bilet do Atlantydy	Buy Atlantis Ticket
+Q0976	Kup kostiumy i nakladki	Buy costumes and skins
+Q0977	Kup materialy Alchemika	Buy Alchemist materials
+Q0978	Kup przedmioty	Buy items
+Q0979	kupisz w Sklepie Gaya.	you can buy in the Gaya Shop.
+Q0980	Kwiat Żywiołu	Elemental Bloom
+Q0981	Kwiaty Żywiołu	Elemental Blooms
+Q0982	Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	Forest (RX). Be careful not to lose anything on the way!
+Q0983	Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	Forest (TR). Be careful not to lose anything on the way!
+Q0984	Ledwo trzymam się na nogach... Energia	I can barely stand... The energy
+Q0985	Legenda głosi, że rosą En-Tai można przegnać złe	Legend says that En-Tai dew can drive away evil
+Q0986	Legendy mówią, że za tym portalem śpi Razador,	Legends say that beyond this portal sleeps Razador,
+Q0987	lekarstwa. Pokonuj Metiny Świadomość w Dongan,	medicine. Defeat Metins of Perception in Dong Gwang,
+Q0988	Lekarstwo	Medicine
+Q0989	Lekarstwo Iluzji	Illusion Medicine
+Q0990	Lekarstwo. Zanieś je: Alchemik.	Medicine. Take it to: Alchemist.
+Q0991	Lekarstwo. Zanieś je: Chaegirab.	Medicine. Take it to: Chaegirab.
+Q0992	Lekarstwo. Zanieś je: Handlarz Bronią.	Medicine. Take it to: Weapon Shop Dealer.
+Q0993	Lekarstwo. Zanieś je: Handlarz Zbrojami.	Medicine. Take it to: Armour Shop Dealer.
+Q0994	Lekarstwo. Zanieś je: Uriel.	Medicine. Take it to: Uriel.
+Q0995	Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Only the Carbon Fibre Fishing Rod is better: I'll make it from a Rod Blank, Rod Guide, Rod Grip and 3 Carbon Fibres.
+Q0996	Lew budzi się, a z mrozu wychodzą potwory...	The lion wakes, and monsters emerge from the frost...
+Q0997	Leże Smoka (Beran-Setaou)	Dragon's Lair (Beran-Setaou)
+Q0998	Leże Smoka - wyprawa	Dragon's Lair - expedition
+Q0999	Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Dragon's Lair: Time is up. Beran-Setaou throws you out of his lair.
+Q1000	Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Dragon's Lair: the stones are down - attack Beran-Setaou!
+Q1001	Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Dragon's Lair: the passage could not be opened - talk to the Ghost of a Sura.
+Q1002	Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Dragon's Lair: The last stone has fallen - Beran-Setaou is defenceless! Attack!
+Q1003	Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Dragon's Lair: talk to the Ghost of a Sura to open the passage.
+Q1004	Leże Smoka: przejście prowadzi przez poczekalnię.	Dragon's Lair: the passage leads through the waiting room.
+Q1005	Leże Smoka: przejście się otwiera...	Dragon's Lair: the passage is opening...
+Q1006	licznych walkach. Odnajdź Władcę En-Tai (SZC) i	many battles. Find the En-Tai Sovereign (TR) and
+Q1007	Liczy się łączna liczba punktów ze wszystkich gier	What counts is the total points from all games
+Q1008	Loch nie przyjmie was teraz. Spróbuj za chwilę.	The dungeon cannot take you now. Try again in a moment.
+Q1009	Loch Pająków 1 (Kuahklo Dong)	Spider Dungeon 1 (Kuahklo Dong)
+Q1010	Lochy Przebudzenia	Redux Dungeons
+Q1011	Lochy Przebudzenia wpuszczają tylko tych, którzy	The Redux Dungeons only let in those who
+Q1012	Lochy Przebudzenia, a statuy kowali wykują dla	the Redux Dungeons, and the smith statues will forge for
+Q1013	Lochy są dziś zamknięte. Wróć później.	The dungeons are closed today. Come back later.
+Q1014	Lodogóry	Ice Mountains
+Q1015	Lodowa Kraina (Nemere)	Ice Land (Nemere)
+Q1016	Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Ice Land: the passage could not be opened - talk to the Stone Lion.
+Q1017	Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Ice Land: talk to the Stone Lion to open the passage.
+Q1018	Lodowa Kraina: przejście prowadzi przez poczekalnię.	Ice Land: the passage leads through the waiting room.
+Q1019	Lodowa Kraina: przejście się otwiera...	Ice Land: the passage is opening...
+Q1020	Lodu	Ice
+Q1021	Lucznik (luk)	Archer (bow)
+Q1022	Ludzi i Podziemnych Lodowych Golemów	Men and Underworld Ice Golems
+Q1023	Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maat has triumphed over Isfet - the last Isfet Stele (RX) is destroyed.
+Q1024	Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maat has triumphed over Isfet - the last Isfet Stele (TR) is destroyed.
+Q1025	Magazyn	Storage
+Q1026	magazyn lub inne okno i sprobuj ponownie.	the storage or another window and try again.
+Q1027	Majestatyczny	Majestic
+Q1028	Mam do niej klucz, ale nie wiem, ktora z	I have a key for it, but I don't know which
+Q1029	Mam już wszystkie 20 Klejnotów Mądrości!	I already have all 20 Wisdom Jewels!
+Q1030	Mapa teleportacji jest wylaczona na tym serwerze.	The teleport map is disabled on this server.
+Q1031	Marchewka	Carrot
+Q1032	Maska dyni wytrzyma 7 dni od pierwszego	The pumpkin mask lasts 7 days from the first
+Q1033	Masz 30 minut. Powodzenia!	You have 30 minutes. Good luck!
+Q1034	Masz 60 minut, by je ukończyć. Po ukończeniu lub po	You have 60 minutes to complete it. After completing it or after
+Q1035	Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Do you have purified cores for me? Let me see...
+Q1036	Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	You already have an active mission from the Mission book (Nor.W. C.). Finish it first.
+Q1037	Masz już najwięcej Gaya, ile można mieć (999 999).	You already have the most Gaya you can hold (999 999).
+Q1038	Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	You already have the Golden Horse Book. From level 31 your horse is a Mighty Military Horse.
+Q1039	Masz Kamień Dusz Beran-Setaou. Zanieś go	You have the Beran-Setaou Soul Stone. Take it
+Q1040	Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	You have the Soul Crystal Key. Open the gate[ENTER]and move the group to level 2?
+Q1041	Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	You have the Medicine. Take it to: Alchemist (Dong Gwang).
+Q1042	Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	You have the Medicine. Take it to: Chaegirab (Dong Gwang).
+Q1043	Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	You have the Medicine. Take it to: Weapon Shop Dealer (Dong Gwang).
+Q1044	Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	You have the Medicine. Take it to: Armour Shop Dealer (Dong Gwang).
+Q1045	Masz Lekarstwo. Zanieś je: Uriel (Dongan).	You have the Medicine. Take it to: Uriel (Dong Gwang).
+Q1046	Masz za mało punktów rangi - ranga spadnie poniżej zera.	You have too few rank points - your rank would drop below zero.
+Q1047	Masz za mało Yang.	You do not have enough Yang.
+Q1048	Masz za niski poziom.	Your level is too low.
+Q1049	materialy, Yang i szanse (najedz na przedmiot).	materials, Yang and chances (hover over the item).
+Q1050	Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Materials, Yang and chances - in the window (hover over the item).
+Q1051	Materiały Balathora daje Krypta Balathora, Zroszony Młot	Balathor's materials come from Balathor's Crypt, the Dewy Hammer
+Q1052	Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	You will find the materials in the Kelpie Chest (opened with the Kelpie Key). The rod lasts 30 days
+Q1053	materiały, Yang i szansę (najedź na przedmiot).	materials, Yang and chances (hover over the item).
+Q1054	Materiały, Yang i szansę zobaczysz w oknie wytwarzania	You will see the materials, Yang and chances in the crafting window
+Q1055	materiały. Pasuje każda broń, zbroja albo hełm	materials. Any weapon, armour or helmet will do
+Q1056	Max PŻ +2000	Max HP +2000
+Q1057	Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	The Isfet Stele mechanism can only be started by a Golden Cog Wheel
+Q1058	Medal Siły Natury działa tylko w Królestwie Żywiołów.	The Medal of Primal Force only works in the Elemental Realm.
+Q1059	Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	Medal of Primal Force: for 10 minutes the Plateau does not take your HP.
+Q1061	Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin of Cold (RX) destroyed. You will be moved to the 7th floor shortly.
+Q1062	Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin of Cold (TR) destroyed. You will be moved to the 7th floor shortly.
+Q1063	Metin Purgatorium (PB) wciąż stoi - demony wracają!	The Purgatory Fire Metin (RX) still stands - the demons return!
+Q1064	Metin Purgatorium (PB) został zniszczony.	The Purgatory Fire Metin (RX) has been destroyed.
+Q1065	Metin Purgatorium (SZC) wciąż stoi - demony wracają!	The Purgatory Fire Metin (TR) still stands - the demons return!
+Q1066	Metin Purgatorium (SZC) został zniszczony.	The Purgatory Fire Metin (TR) has been destroyed.
+Q1067	Metinu Świadomość zatruła mnie i potrzebuję 	The Metin of Perception poisoned me and I need 
+Q1068	Metiny Drzewnych Stworzeń (PB)	Metins of the Tree Beings (RX)
+Q1069	Metiny Drzewnych Stworzeń (SZC)	Metins of the Tree Beings (TR)
+Q1070	Metiny Drzewnych Stworzeń budzą En-Tai do życia.	The Metins of the Tree Beings bring the En-Tai to life.
+Q1071	Metiny Drzewnych Stworzeń zatruwają ten las.	The Metins of the Tree Beings are poisoning this forest.
+Q1072	Metiny zniszczone. Las trochę się uspokoił.	Metins destroyed. The forest has calmed down a bit.
+Q1073	Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metins destroyed. Return to the Scout of the Forest (RX).
+Q1074	Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metins destroyed. Return to the Scout of the Forest (TR).
+Q1075	Mezczyzna	Male
+Q1076	mieć co najmniej %d sztuk.	have at least %d pieces.
+Q1077	mieć Książkę Przebudzenia (zabieraną przy wejściu).	have a Redux Tome (taken on entry).
+Q1078	Mikstura jeszcze nie zadziała - organizm musi odpocząć.	The potion will not work yet - your body needs to rest.
+Q1079	Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	The potion did not work this time. Try again later.
+Q1080	Mikstura Talentu	Talent Potion
+Q1081	Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	The Talent Potion improves the 9th skill from G1 to P. %s
+Q1082	Miksturę Mądrości	Potion of Wisdom
+Q1083	Misja poboczna	Side mission
+Q1084	Misja trwa. Pokonaj obu bossów i wróć do mnie:	The mission is on. Defeat both bosses and return to me:
+Q1085	Misja wykonana! Portal do następnego etapu jest otwarty.	Mission complete! The portal to the next stage is open.
+Q1086	Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Mission from the Mission book (Nor.W. C.): defeat 300 monsters in Northwind Canyon.
+Q1087	Misja: pokonaj 300 potworów w Wąwozie	Mission: defeat 300 monsters in the Northwind
+Q1089	Misji nie można przerwać. Księga zniknie.	The mission cannot be cancelled. The book will vanish.
+Q1090	Mistrz gildii może zgłosić tu swoją gildię:	The guild leader can register their guild here:
+Q1091	mniej - brazowa	less - bronze
+Q1092	Moc klejnotów jest teraz twoja na zawsze.	The power of the jewels is now yours forever.
+Q1093	Moc pierścienia wyczerpała się.	The ring's power is exhausted.
+Q1094	Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	The Dragon Eye's power is used up for today. Collect it again from the Alchemist tomorrow.
+Q1095	mogą być wyjątkowo podatne na wpływ Sunga Mahi.	may be especially vulnerable to Sung Mahi's influence.
+Q1096	Mogę cię zabrać do każdego z nich; między	I can take you to each of them; between
+Q1097	Mogę odnowić błogosławieństwo: +%d%% PD na %s	I can renew the blessing: +%d%% EXP for %s
+Q1098	Mogę przenieść na szatę aury parametry bransolety,	I can transfer bracelet stats onto the aura robe,
+Q1099	Mogę przenieść wygląd jednego przedmiotu na drugi.	I can transfer the look of one item onto another.
+Q1100	Mogę więc stworzyć z nich Kryształ Energii.	So I can make an Energy Crystal from them.
+Q1101	Moi bracia zaginęli, a z nimi apteczka. Wojownicy	My brothers are missing, and the medkit with them. Warriors
+Q1102	Moj klucz nie pasuje do tej skrzyni.	My key does not fit this chest.
+Q1103	Moj klucz pasuje! To jest wlasciwa skrzynia!	My key fits! This is the right chest!
+Q1104	Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	My power will take you to the Plateau of Illusions. There
+Q1105	Moja technika jest genialna, ale jeszcze	My technique is brilliant, but still
+Q1106	Moje badania wykazały, że potwory znajdujące	My research has shown that the monsters found
+Q1107	Moje czasy	My times
+Q1108	Mokre Szaty: -50 szybkości ruchu na 5 minut.	Wet Robes: -50 movement speed for 5 minutes.
+Q1109	Morkhot nadchodzi! Macie mało czasu.	Morkhot is coming! You don't have much time.
+Q1110	Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot defeated! Time: %d:%02d. The Atlantis Ruins are complete.
+Q1111	Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	You can also select the item or drag it onto me.
+Q1112	mozesz wybrac od razu.	you can choose right away.
+Q1113	Mozesz zabrac w droge stalego towarzysza: postac,	You can take a permanent companion along: a character,
+Q1114	Może później	Maybe later
+Q1115	może się nie udać.	may fail.
+Q1116	Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	You can enter alone or with a party; party bots enter without a ticket.
+Q1117	możesz znaleźć Kartę Maski Dyni. 	you can find a Jack O'Lantern Mask Card. 
+Q1118	Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	You can only have one ward. A Scroll of Fluid Training
+Q1119	Mroczne Paprocie	Shadowferns
+Q1120	Mroczne Paprocie: nagroda	Shadowferns: reward
+Q1121	mrocznej paproci.	of shadowfern.
+Q1122	Mroczny Cierń - mrok.	Darkthorn - darkness.
+Q1123	Mroczną Paproć znajdziesz u potworów	You will find Shadowfern on monsters
+Q1124	Mrok i ziemia (mapa 3)	Darkness and earth (map 3)
+Q1125	Mroku	Darkness
+Q1126	Mroźnego Klucza (PB) może użyć tylko Szaman.	The Frost Key (RX) can only be used by a Shaman.
+Q1127	Mroźnego Klucza (SZC) może użyć tylko Szaman.	The Frost Key (TR) can only be used by a Shaman.
+Q1128	mu apteczkę.	him the medkit.
+Q1129	musi najpierw osiągnąć stopień G1 (księgami).	must first reach grade G1 (with books).
+Q1130	Musisz dalej szukać.	You must keep searching.
+Q1131	Musisz jeszcze trochę potrenować! Wróć, gdy	You need to train a bit more! Come back when
+Q1132	Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	You must load at least 12 Animospheres to[ENTER]enter.
+Q1133	Mój przyjaciel Chaegirab bada teraz nowy	My friend Chaegirab is now researching a new
+Q1134	Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	It is said that the Iron Dragon raised the temple[ENTER]with a single fiery breath in honour of the 12[ENTER]Zodiac guardians. Fame, honour and boundless[ENTER]riches await the brave who return from the holy[ENTER]chambers of the guardians.
+Q1135	Mądrości, które noszą przy sobie wojownicy	of Wisdom, carried by the warriors
+Q1136	Mądrość przychodzi z doświadczeniem, ale dla	Wisdom comes with experience, but for
+Q1137	Mądry wybór. Teraz zniszcz następną stelę.	A wise choice. Now destroy the next stele.
+Q1138	Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	A wise choice. Now destroy the last stele, and Maat
+Q1139	Na 7. poziomie czekają Głowy Węża. Odłamki z	On level 7 the Serpent Heads await. Shards from
+Q1140	na bizuterie i splesc dla ciebie pas.	into jewellery and weave a belt for you.
+Q1141	na bron z bonusami. Zdejmij przedmiot, jesli jest	into a weapon with bonuses. Take the item off if it is
+Q1142	na Doyyumhwaji, póki nie minie godzina.	in Doyyumhwaji until the hour has passed.
+Q1143	Na graczy żywioły nie działają.	Elements have no effect on players.
+Q1144	Na które piętro chcesz wejść?	Which floor do you want to enter?
+Q1145	na Maskę Dyni? 	for the Pumpkin Mask? 
+Q1146	Na morzu za przylądkiem grasuje Hydra. Każdy	Beyond the cape, a Hydra roams the sea. Every
+Q1147	Na nagrodę jest jeszcze za wcześnie.	It is too early for the reward.
+Q1148	na niej już żadnych zarodników. Przynieś mi inną.	no more spores on it. Bring me another one.
+Q1149	na nowym kontynencie.	on the new continent.
+Q1150	Na pewno poddać wyprawę?	Really give up the expedition?
+Q1151	Na pewno? Towarzysz odejdzie, a jego postac	Are you sure? The companion will leave, and their character
+Q1152	Na pokład!	All aboard!
+Q1153	na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	at level 10, 20, 30, 40, 50, 60 and 70 - always
+Q1154	Na poziomie 49, 99, 149, 199 i 249 z pełnym	At level 49, 99, 149, 199 and 249 with a full
+Q1155	na Przyladku Smoczego Ognia.	at Cape Dragon Fire.
+Q1156	Na Przylądek Smoczego Ognia	To Cape Dragon Fire
+Q1157	na Przylądku Smoczego Ognia.	at Cape Dragon Fire.
+Q1158	na siedmiu poziomach czeka Królowa Węży Nethis.	on seven levels awaits Serpent Queen Nethis.
+Q1159	Na statek wpuszczam tylko drużyny.	I only let parties on board the ship.
+Q1160	na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	at grade G1-G10. From M1 to G1 - normal Books
+Q1161	na twoją głowę. Zachowaj kartę na lepsze czasy. 	on your head. Keep the card for better times. 
+Q1162	na tym serwerze.	on this server.
+Q1163	Na ukończenie instancji macie 60 minut. Potwory nie	You have 60 minutes to finish the instance. Monsters do not
+Q1164	Na wyprawę jest 60 minut, potem 3 godziny przerwy.	The expedition lasts 60 minutes, then a 3-hour break.
+Q1165	Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Master WuKong's monkeys have settled on the Hill.
+Q1166	na Zbocze Gautama.	to Gautama Slope.
+Q1167	na żywioł odejmuje cały swój procent	to an element subtracts its whole percentage
+Q1168	nadaje się do badań. Przynieś mi inny.	is fit for research. Bring me another one.
+Q1169	Nadam twojej broni, zbroi albo hełmowi	I will give your weapon, armour or helmet
+Q1170	nadciągał sztorm?	a storm was coming?
+Q1171	nadciągnie w czterech falach. Brońcie masztu!	will come in four waves. Defend the mast!
+Q1172	Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	It is time to deliver the medkit to the Scout
+Q1173	Nagroda (losowo jedna):	Reward (one at random):
+Q1174	Nagroda za badania	Research reward
+Q1175	Nagroda za Meley	Meley reward
+Q1176	Nagroda została już odebrana przez wszystkich	The reward has already been collected by all
+Q1177	Nagroda została już odebrana.	The reward has already been collected.
+Q1178	Nagroda: 11 650 000 PD i Kamień Driad.	Reward: 11 650 000 EXP and a Stone of the Dryads.
+Q1179	Nagroda: 11 650 000 PD.	Reward: 11 650 000 EXP.
+Q1180	Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Reward: 5 582 500 EXP and 10 Gango Roots.
+Q1181	Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Reward: 5 825 000 EXP and 5 Alpine Roses.
+Q1182	Nagroda: 7 766 000 PD i 10 Wód Young.	Reward: 7 766 000 EXP and 10 Young Waters.
+Q1183	Nagroda: 7 766 000 PD.	Reward: 7 766 000 EXP.
+Q1184	Nagroda: 776 600 PD.	Reward: 776 600 EXP.
+Q1185	Nagroda: Książka Przebudzenia. Misję można	Reward: Redux Tome. The mission can
+Q1186	Nagrody dla najlepszych	Rewards for the best
+Q1187	Nagrody w Łupach Królewskich	Rewards in the Royal Loot
+Q1188	Nagrody za grę Yut Nori	Yut Nori game rewards
+Q1189	Nagrody za pierwsze 10 miejsc	Rewards for the top 10 places
+Q1190	Nagrody za ranking	Ranking rewards
+Q1191	Nagrodę za ten event już odebrałeś.	You have already collected the reward for this event.
+Q1192	Najlepsza gra	Best game
+Q1193	Najlepsze czasy pięter w tym sezonie (min:s):	Best floor times this season (min:s):
+Q1194	Najlepszy wynik	Best score
+Q1195	najlepszych graczy. Może następnym razem!	best players. Maybe next time!
+Q1196	najpierw 9. pietro Wiezy Demonow	the 9th floor of the Demon Tower first
+Q1197	Najpierw opuść loch.	Leave the dungeon first.
+Q1198	Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	First help the Guardian and the Scout of the Forest (RX).
+Q1199	Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	First help the Guardian and the Scout of the Forest (TR).
+Q1200	Najpierw trzeba zamknąć otwartą Kryptę.	The open Crypt must be closed first.
