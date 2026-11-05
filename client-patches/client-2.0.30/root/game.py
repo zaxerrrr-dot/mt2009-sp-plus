@@ -524,6 +524,7 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uidungeoninfo").DestroyWindow()
 		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's windows (uipetinfo.py; the New Pet System's uinewpet.py is retired).
 		__import__("uipetinfo").Destroy()
+		__import__("uiremotecall").Destroy()	# MT2009_PLUS_REMOTE_CALL_V1: Enasir's tooltip and question
 		# MT2009_PLUS_YUTNORI_V1: Yut Nori's window (uiminigameyutnori.py), before the hub.
 		__import__("uiminigameyutnori").Destroy()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
@@ -4073,6 +4074,10 @@ class GameWindow(ui.ScriptWindow):
 
 	def CommandCloseSafebox(self):
 		self.interface.CommandCloseSafebox()
+
+	# MT2009_PLUS_REMOTE_CALL_V1: Enasir - the exe after every GC 190 (Mt2009RemoteCall.cpp; uiremotecall.py)
+	def BINARY_RemoteCall_Event(self, sub, value):
+		__import__("uiremotecall").OnEvent(sub, value)
 
 	# PRIVATE_SHOP_PRICE_LIST
 	def __PrivateShop_PriceList(self, itemVNum, itemPrice):
