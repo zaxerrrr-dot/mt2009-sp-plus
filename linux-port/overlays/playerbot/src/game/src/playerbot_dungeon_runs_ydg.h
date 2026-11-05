@@ -374,6 +374,35 @@ namespace
 	// MT2009_PLUS_BOT_YDG_TRAIN_V2: a bag cell for a run's item (a key, a cog, a stone) - the night of 5 November the
 	// Beran parties' bags were full ("PLAYERBOT_LOOT: bag full") and no Krety Klucz was ever picked up. The storage
 	// pages take something first, else the cheapest junk is sold, else the cheapest spare weapon or armour piece.
+	// A run's item (either twin's vnum), a ticket, a quest item: never sold for room (05:36-05:48, 5 November: the
+	// first version sold Ebola's Krety Klucz (SZC) as junk each time it picked up the next one).
+	bool IsPlayerBotYdgKeptItem(LPITEM item)
+	{
+		if (!item)
+			return true;
+		const DWORD v = item->GetVnum();
+		if (item->GetType() == ITEM_QUEST || v == PLAYERBOT_YDG_BOOK || v == 31147)
+			return true;
+		for (size_t i = 0; i < PLAYERBOT_YDG_ITEM_COUNT; ++i)
+			for (size_t k = 0; k < PLAYERBOT_YDG_DEF_COUNT; ++k)
+				if (v == PlayerBotYdgVnum(PLAYERBOT_YDG_DEFS[k], PLAYERBOT_YDG_ITEMS[i].dwPbVnum))
+					return true;
+		return false;
+	}
+
+	// A stack of this vnum in the bag with room for one more (no new cell needed).
+	bool HasPlayerBotYdgStackRoom(LPCHARACTER ch, DWORD vnum)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && item->GetVnum() == vnum && item->IsStackable() &&
+					item->GetCount() < item->GetMaxStack())
+				return true;
+		}
+		return false;
+	}
+
 	bool MakePlayerBotYdgRoom(LPCHARACTER ch, const char* why)
 	{
 		if (!ch || !ch->IsItemLoaded())
@@ -393,7 +422,7 @@ namespace
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
 				if (!item || item->GetCell() != cell || item->GetWindow() != INVENTORY || item->IsEquipped() ||
-						item->isLocked() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+						item->isLocked() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) || IsPlayerBotYdgKeptItem(item))
 					continue;
 				if (pass == 0 && !IsPlayerBotJunkItem(ch, item))
 					continue;
@@ -529,7 +558,8 @@ namespace
 		// never stop coming, as Beran's cave, never let a key be picked up).
 		if (ground.m_iBest > 800 && ch->GetVictim() && !ch->GetVictim()->IsDead() && ch->GetVictim()->GetVictim() == ch)
 			return false;
-		if (ch->GetEmptyInventory(1) < 0 && !MakePlayerBotYdgRoom(ch, "ground"))
+		if (ch->GetEmptyInventory(1) < 0 && !HasPlayerBotYdgStackRoom(ch, ground.m_found->GetVnum()) &&
+				!MakePlayerBotYdgRoom(ch, "ground"))
 		{
 			PlayerBotLogThrottled("ydg_no_room", dwNow, "BOT_YDG: no room run=%d dungeon=%s pid=%u name=%s vnum=%u", run.iId,
 					def.szKey, ch->GetPlayerID(), ch->GetName(), (unsigned int)ground.m_found->GetVnum());
