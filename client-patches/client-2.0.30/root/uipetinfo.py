@@ -375,10 +375,16 @@ def FindItemBySubtype(subtype):
 
 
 def CountItem(vnum):
+	"""The bag and the Additional Equipment windows 11-15 (MT2009_PLUS_PET_ADDEQ_COUNT_V1: the server takes the
+	evolution materials from both)."""
 	n = 0
 	for cell in xrange(BagCellCount()):
 		if player.GetItemIndex(cell) == vnum:
 			n += player.GetItemCount(cell)
+	try:
+		n += __import__("uiekwipunek").CountInStorages(vnum)
+	except Exception:
+		pass
 	return n
 
 

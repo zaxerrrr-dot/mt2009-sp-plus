@@ -171,7 +171,10 @@ BAG_VNUMS = set([31225])
 BOOK_VNUMS = set(range(50304, 50307) + range(50307, 50311) + range(50317, 50322) + [50336]
 	+ range(71088, 71091) + range(50311, 50314) + range(50314, 50317) + [71092, 50325]
 	+ range(50338, 50344) + [50514, 50515, 50052, 50053, 50060]
-	+ range(55050, 55068) + range(55010, 55032))
+	+ range(55050, 55068)
+	# MT2009_PLUS_PET_BOOKS_KSIEGI_V1 (3.0.14 item 7): the growth pet's evolution books 55003-55007, Skrzynia Ksiag
+	# Zwierza 55009 and its skill books 55010-55027 / 55034-55038; the treats 55028-55031 stay in the bag
+	+ range(55003, 55008) + [55009] + range(55010, 55028) + range(55034, 55039))
 
 _state = {
 	'window': None,
