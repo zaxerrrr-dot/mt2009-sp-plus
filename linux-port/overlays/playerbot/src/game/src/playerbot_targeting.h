@@ -23,6 +23,10 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_DROPKNOW_V1 (playerbot_dropknow.h, later in this unit): a monster that drops one of these (its whole
+	// drop, the wiki's tables) or the bot's farm order.
+	bool IsPlayerBotDropKnowWantedMob(LPCHARACTER ch, DWORD race, const std::set<DWORD>* wanted);
+
 	struct TPlayerBotPartyStrength
 	{
 		TPlayerBotPartyStrength() : iReadyMembers(0), iTotalLevels(0), iHighestLevel(0), iChallengeMaxLevel(0) {}
@@ -1275,6 +1279,9 @@ namespace
 			const DWORD drop = candidate->GetMobDropItemVnum();
 			if (drop != 0 && wantedDrops->find(drop) != wantedDrops->end())
 				context.activeMaterialTarget = true;
+			// MT2009_PLUS_BOT_DROPKNOW_V1: every drop of the monster (mob_drop_item, the groups), not only its proto's one
+			else if (IsPlayerBotDropKnowWantedMob(ch, candidate->GetRaceNum(), wantedDrops))
+				context.activeMaterialTarget = true;
 		}
 
 		if (huntM2Bestials && candidate->IsMonster() &&
@@ -1864,7 +1871,9 @@ namespace
 					}
 				}
 				const DWORD drop = mob->GetMobDropItemVnum();
-				if (drop == 0 || m_wanted.find(drop) == m_wanted.end())
+				// MT2009_PLUS_BOT_DROPKNOW_V1: or another of its drops (the drop knowledge, its farm order)
+				if ((drop == 0 || m_wanted.find(drop) == m_wanted.end()) &&
+						!IsPlayerBotDropKnowWantedMob(m_seeker, mob->GetRaceNum(), &m_wanted))
 					return;
 				// Only a carrier the fight at the end of the walk will take.
 				// The errand asked nothing of the level, and the fight's

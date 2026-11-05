@@ -4860,6 +4860,8 @@ namespace
 				(units - PLAYERBOT_FAMILY_GLUT_FREE_UNITS) * (DWORD)PLAYERBOT_FAMILY_GLUT_STEP_PERCENT);
 	}
 
+	DWORD ApplyPlayerBotDropkiPriceFloor(LPITEM item, DWORD asking, DWORD price);	// MT2009_PLUS_BOT_DROPKI_V1 (playerbot_dropki.h)
+
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
@@ -4916,6 +4918,8 @@ namespace
 					PlayerBotListingStep(per::STEP_MARKDOWN, price, glut);
 			}
 		}
+		// MT2009_PLUS_BOT_DROPKI_V1: a Dropki's line never under its floor of the asking price (playerbot_dropki.h)
+		price = ApplyPlayerBotDropkiPriceFloor(item, asking, price);
 		const int markupAsked = markup;
 		if (markup > 0)
 		{

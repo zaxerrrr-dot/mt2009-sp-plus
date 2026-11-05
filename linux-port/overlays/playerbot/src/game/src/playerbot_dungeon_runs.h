@@ -649,6 +649,15 @@ namespace
 	DWORD NotePlayerBotMeleyRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
 	void PlanPlayerBotMeleyRuns(DWORD dwNow, bool forced);
 	bool RunPlayerBotMeleyTestLine(const char* cmd, DWORD dwNow);
+	// MT2009_PLUS_BOT_DROPKNOW_V1 / MT2009_PLUS_BOT_DROPKI_V1: the drop knowledge's demand on a dungeon, the Dropki
+	// (playerbot_dropknow.h, playerbot_dropki.h - included by playerbot_manager.cpp later in this unit).
+	bool IsPlayerBotDropKnowDemander(DWORD pid, int def);
+	int CountPlayerBotDropKnowDemand(int def);
+	void ManagePlayerBotDropKnow(DWORD dwNow);
+	bool IsPlayerBotDropkiActive(DWORD pid);
+	DWORD NotePlayerBotDropkiRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
+	void ManagePlayerBotDropki(DWORD dwNow);
+	bool ManagePlayerBotDropkiResident(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 
 	// ------------------------------------------------------------ the questions others ask
 
@@ -2754,6 +2763,7 @@ namespace
 			rest = AdjustPlayerBotYdgRest(run, rest);
 		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the last share, the gain, the visitors' count
 			rest = NotePlayerBotMeleyRunEnd(run, result, entered, took / 1000, rest);
+		rest = NotePlayerBotDropkiRunEnd(run, result, entered, took / 1000, rest);	// MT2009_PLUS_BOT_DROPKI_V1: a Dropki party's short rest
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
@@ -4104,8 +4114,9 @@ namespace
 					continue;
 				if (def.bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleFit(ch))	// MT2009_PLUS_BOT_GNOLLE_V1: 120 and a Champion
 					continue;
-				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
-						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
+				// MT2009_PLUS_BOT_DROPKNOW_V1: a bot whose plans need this dungeon's drop (and no counter holds it) is drawn first
+				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(),
+						weight + (IsPlayerBotDropKnowDemander(pid, i) ? 12 : 0), ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 			}
 		}
 		if (forced == -1)
@@ -4134,7 +4145,8 @@ namespace
 					continue;
 				// V3: a starved dungeon weighs as if it had the most bots - the
 				// high ones have a handful, the Ruins and Razador a hundred.
-				const int w = IsPlayerBotDgRunStarved(i, dwNow) ? 24 : std::min(n, 24);
+				// MT2009_PLUS_BOT_DROPKNOW_V1: and a dungeon the bots' plans need weighs more (its demanders, three each)
+				const int w = (IsPlayerBotDgRunStarved(i, dwNow) ? 24 : std::min(n, 24)) + std::min(24, 3 * CountPlayerBotDropKnowDemand(i));
 				options.push_back(std::make_pair(i, e));
 				weights.push_back(w);
 				total += w;
@@ -4455,6 +4467,8 @@ namespace
 		}
 		PlanPlayerBotYdgTraining(dwNow);	// MT2009_PLUS_BOT_YDG_V1: the training parties, on their own clock
 		PlanPlayerBotMeleyRuns(dwNow, false);	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley, on its own clock
+		ManagePlayerBotDropKnow(dwNow);	// MT2009_PLUS_BOT_DROPKNOW_V1: the index, the needs' pass (its own clocks)
+		ManagePlayerBotDropki(dwNow);	// MT2009_PLUS_BOT_DROPKI_V1: the Dropki's roles, parties and calls (its own clocks)
 	}
 }
 

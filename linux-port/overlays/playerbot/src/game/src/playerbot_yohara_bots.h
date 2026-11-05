@@ -2109,6 +2109,9 @@ namespace
 		{
 			res.dwLastRun = dwNow;
 			res.dwOffRunSince = 0;
+			// MT2009_PLUS_BOT_DROPKI_V1: a Dropki between its runs takes its drop home for sale (playerbot_dropki.h)
+			if (ManagePlayerBotDropkiResident(ch, state, dwNow))
+				return 1;
 			return 0;
 		}
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma resident buys and sells at Dongan's merchants (the errand,

@@ -1003,8 +1003,16 @@
 		return best;
 	}
 
+	int ChoosePlayerBotDropkiSungmaStat(LPCHARACTER ch);	// MT2009_PLUS_BOT_DROPKI_V1 (playerbot_dropki.h)
+
 	int ChoosePlayerBotSungmaStat(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_DROPKI_V1: a Dropki's points go to its dungeon's Sung Ma ask first
+		{
+			const int dropki = ChoosePlayerBotDropkiSungmaStat(ch);
+			if (dropki >= 0)
+				return dropki;
+		}
 		{
 			const int champion = GetPlayerBotChampionLevel(ch);
 			int horizon = PLAYERBOT_SUNGMA_MAP_COUNT - 1;
