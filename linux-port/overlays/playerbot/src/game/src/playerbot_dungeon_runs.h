@@ -554,6 +554,8 @@ namespace
 			std::vector<DWORD>& out);
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y);
+	LPCHARACTER PickPlayerBotYdgRouteGoal(LPCHARACTER ch, const TPlayerBotArzDgScan& scan, const std::vector<DWORD>& goals,
+			TPlayerBotDgRunBot& rb, const TPlayerBotDgRun& run, DWORD dwNow);
 	// run -> (the objective's vid, chosen at) - MT2009_PLUS_BOT_YDG_TRAIN_V2
 	std::map<int, std::pair<DWORD, DWORD> > s_mapPlayerBotYdgSticky;
 	const DWORD PLAYERBOT_YDG_STICKY_MS = 5 * 60 * 1000;
@@ -1654,7 +1656,16 @@ namespace
 				dGoal = DISTANCE_APPROX(ch->GetX() - pf->GetX(), ch->GetY() - pf->GetY());
 			}
 			else if (goal)
-				sticky = std::make_pair((DWORD)goal->GetVID(), dwNow);
+			{
+				// V3 (the owner, 5 November morning): the nearest by the walking route, not by a straight line.
+				LPCHARACTER routed = PickPlayerBotYdgRouteGoal(ch, scan, goals, rb, run, dwNow);
+				if (routed)
+				{
+					goal = routed;
+					dGoal = DISTANCE_APPROX(ch->GetX() - goal->GetX(), ch->GetY() - goal->GetY());
+					sticky = std::make_pair((DWORD)goal->GetVID(), dwNow);
+				}
+			}
 			else
 				sticky = std::make_pair(0U, dwNow);
 		}
@@ -2953,6 +2964,84 @@ namespace
 				run.iId, def.szKey, best, c ? c->GetName() : "?", c ? (unsigned int)c->GetLevel() : 0U,
 				c ? (unsigned int)c->GetJob() : 0U, healerOnly ? 1 : 0, run.iReplacements);
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_YDG_TRAIN_V3: of the stage's objectives the one nearest by the walking route (the navigation's
+	// plan, its waypoints' length) among the few nearest by a straight line - Beran's cave bends round its walls, and
+	// the straight-line nearest was often the farthest to walk. NULL while the run's last planning is under
+	// PLAYERBOT_YDG_ROUTE_PLAN_MS old (the caller keeps the straight-line choice for that tick, unremembered).
+	const DWORD PLAYERBOT_YDG_ROUTE_PLAN_MS = 3000;
+	const size_t PLAYERBOT_YDG_ROUTE_CANDS = 5;
+	std::map<int, DWORD> s_mapPlayerBotYdgRoutePlanAt;
+
+	LPCHARACTER PickPlayerBotYdgRouteGoal(LPCHARACTER ch, const TPlayerBotArzDgScan& scan, const std::vector<DWORD>& goals,
+			TPlayerBotDgRunBot& rb, const TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		DWORD& at = s_mapPlayerBotYdgRoutePlanAt[run.iId];
+		if (at != 0 && dwNow - at < PLAYERBOT_YDG_ROUTE_PLAN_MS)
+			return NULL;
+		at = dwNow;
+		std::vector<std::pair<int, LPCHARACTER> > cands;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!IsPlayerBotPdgFoe(ch, c) || std::find(goals.begin(), goals.end(), c->GetRaceNum()) == goals.end() ||
+					IsPlayerBotDgRunUnreachable(rb, (DWORD)c->GetVID(), dwNow))
+				continue;
+			cands.push_back(std::make_pair(DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY()), c));
+		}
+		if (cands.empty())
+			return NULL;
+		std::sort(cands.begin(), cands.end(), [](const std::pair<int, LPCHARACTER>& a, const std::pair<int, LPCHARACTER>& b)
+				{ return a.first < b.first; });
+		if (cands.size() > PLAYERBOT_YDG_ROUTE_CANDS)
+			cands.resize(PLAYERBOT_YDG_ROUTE_CANDS);
+		if (cands.size() == 1 || cands[0].first <= 2500)
+			return cands[0].second;	// one, or one close by: no plan needed
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(ch->GetMapIndex());
+		if (!nav.Init(ch->GetMapIndex()))
+			return cands[0].second;
+		LPCHARACTER best = NULL;
+		long long bestLen = -1;
+		int planned = 0, unreachable = 0;
+		std::vector<PIXEL_POSITION> wps;
+		for (size_t i = 0; i < cands.size(); ++i)
+		{
+			LPCHARACTER c = cands[i].second;
+			long long len = 0;
+			const EPlayerBotNavPlanResult r = nav.FindRoute(ch->GetX(), ch->GetY(), c->GetX(), c->GetY(), ch->GetPlayerID(), dwNow,
+					4, true, wps, false);
+			if (r == PLAYERBOT_NAV_PLAN_UNREACHABLE)
+			{
+				++unreachable;
+				continue;
+			}
+			if (r == PLAYERBOT_NAV_PLAN_FOUND && !wps.empty())
+			{
+				++planned;
+				long px = ch->GetX(), py = ch->GetY();
+				for (size_t w = 0; w < wps.size(); ++w)
+				{
+					len += DISTANCE_APPROX(wps[w].x - px, wps[w].y - py);
+					px = wps[w].x;
+					py = wps[w].y;
+				}
+			}
+			else
+				len = (long long)cands[i].first * 2;	// not planned this tick: a straight line's double
+			if (bestLen < 0 || len < bestLen)
+			{
+				bestLen = len;
+				best = c;
+			}
+		}
+		if (!best)
+			best = cands[0].second;
+		PlayerBotLogThrottled("ydg_route_goal", dwNow, "BOT_YDG: route goal run=%d race=%u straight=%d route=%lld nearest_straight=%d "
+				"cands=%u planned=%d unreachable=%d", run.iId, (unsigned int)best->GetRaceNum(),
+				DISTANCE_APPROX(ch->GetX() - best->GetX(), ch->GetY() - best->GetY()), bestLen, cands[0].first,
+				(unsigned int)cands.size(), planned, unreachable);
+		return best;
 	}
 
 	// MT2009_PLUS_BOT_YDG_TRAIN_V2: true when a training party's member refusing for a fight, its health or an

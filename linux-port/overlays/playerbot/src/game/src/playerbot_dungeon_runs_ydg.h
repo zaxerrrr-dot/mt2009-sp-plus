@@ -829,6 +829,9 @@ namespace
 	time_t s_tPlayerBotYdgTrainMtime = 0;
 	bool s_bPlayerBotYdgTrainFile = false;
 	std::vector<std::string> s_vecPlayerBotYdgAutoLines;
+	// V3: the file's "cap <total> <per_dungeon>" - the training runs at once in all and in one dungeon (0: the
+	// defaults, PLAYERBOT_YDG_TRAIN_MAX_RUNS and the dungeon's clock cap + 2). The clock's own caps stay.
+	int s_iPlayerBotYdgTrainCapTotal = 0, s_iPlayerBotYdgTrainCapPerDg = 0;
 
 	bool IsPlayerBotYdgTrainee(DWORD pid)
 	{
@@ -1015,6 +1018,7 @@ namespace
 		s_vecPlayerBotYdgTrain.clear();
 		s_setPlayerBotYdgTrainees.clear();
 		s_vecPlayerBotYdgAutoPending.clear();
+		s_iPlayerBotYdgTrainCapTotal = s_iPlayerBotYdgTrainCapPerDg = 0;
 		char line[1024];
 		std::vector<std::string> autos;
 		while (fgets(line, sizeof(line), fp))
@@ -1047,6 +1051,12 @@ namespace
 				}
 				s_vecPlayerBotYdgTrain.push_back(tp);
 				sys_log(0, "BOT_YDG: train party=%d fixed members=%u dungeons=%s", tp.iId, (unsigned int)tp.pids.size(), w[1].c_str());
+			}
+			else if (w[0] == "cap" && w.size() >= 3)
+			{
+				s_iPlayerBotYdgTrainCapTotal = std::max(0, std::min(atoi(w[1].c_str()), 40));
+				s_iPlayerBotYdgTrainCapPerDg = std::max(0, std::min(atoi(w[2].c_str()), 20));
+				sys_log(0, "BOT_YDG: train cap total=%d per_dungeon=%d", s_iPlayerBotYdgTrainCapTotal, s_iPlayerBotYdgTrainCapPerDg);
 			}
 			else if (w[0] == "auto" && w.size() >= 3)
 				autos.push_back(w[1] + " " + w[2] + " " + (w.size() >= 4 ? w[3] : std::string("any")));
@@ -1091,6 +1101,19 @@ namespace
 		for (std::map<int, int>::const_iterator it = s_mapPlayerBotYdgRunParty.begin(); it != s_mapPlayerBotYdgRunParty.end(); ++it)
 			if (s_mapPlayerBotDgRuns.count(it->first))
 				++n;
+		return n;
+	}
+
+	// V3: the training runs of one dungeon under way.
+	int CountPlayerBotYdgTrainRunsOf(int def)
+	{
+		int n = 0;
+		for (std::map<int, int>::const_iterator it = s_mapPlayerBotYdgRunParty.begin(); it != s_mapPlayerBotYdgRunParty.end(); ++it)
+		{
+			std::map<int, TPlayerBotDgRun>::const_iterator r = s_mapPlayerBotDgRuns.find(it->first);
+			if (r != s_mapPlayerBotDgRuns.end() && r->second.iDef == def)
+				++n;
+		}
 		return n;
 	}
 
@@ -1145,7 +1168,8 @@ namespace
 		s_dwNextPlan = dwNow + PLAYERBOT_YDG_TRAIN_PLAN_MS;
 		if (!IsPlayerBotDgRunOn(dwNow) || quest::CQuestManager::instance().GetEventFlag("m2_bot_ydg_train_off") != 0)
 			return;
-		const int maxRuns = GetPlayerBotYdgEnv("PLAYERBOT_YDG_TRAIN_MAX_RUNS", 6, 0, 50);
+		const int maxRuns = s_iPlayerBotYdgTrainCapTotal > 0 ? s_iPlayerBotYdgTrainCapTotal :
+				GetPlayerBotYdgEnv("PLAYERBOT_YDG_TRAIN_MAX_RUNS", 6, 0, 50);
 		int running = CountPlayerBotYdgTrainRuns();
 		for (size_t i = 0; i < s_vecPlayerBotYdgTrain.size() && running < maxRuns; ++i)
 		{
@@ -1212,7 +1236,9 @@ namespace
 				const int cand = tp.defs[(tp.next + t) % tp.defs.size()];
 				const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[cand];
 				const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
-				if (!IsPlayerBotMapHostedHere(info.lMap) || !SECTREE_MANAGER::instance().GetMap(info.lMap) ||
+				if (!IsPlayerBotMapHostedHere(info.lMap) || !SECTREE_MANAGER::instance().GetMap(info.lMap))
+					continue;
+				if (s_iPlayerBotYdgTrainCapPerDg > 0 ? CountPlayerBotYdgTrainRunsOf(cand) >= s_iPlayerBotYdgTrainCapPerDg :
 						CountPlayerBotDgRuns(cand) >= GetPlayerBotDgRunDefCap(cand) + 2)
 					continue;
 				if ((int)free.size() < rule.startMin || (IsPlayerBotYdgNemere(cand) && !(ninja && shaman)))
@@ -1417,6 +1443,7 @@ namespace
 		s_mapPlayerBotYdgSnaps.erase(run.iId);
 		s_mapPlayerBotYdgNextAt.erase(run.iId);
 		s_mapPlayerBotYdgSticky.erase(run.iId);
+		s_mapPlayerBotYdgRoutePlanAt.erase(run.iId);
 		if (run.lInstance)
 		{
 			s_mapPlayerBotYdgKeysReady.erase(run.lInstance);
