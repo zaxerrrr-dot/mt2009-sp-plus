@@ -37,6 +37,15 @@ import ui
 import uiCommon
 from _weakref import proxy
 
+
+def _proxy(obj):
+	"""A weak proxy of obj - obj itself when it is one already (events called through ui.__mem_func__ hand the
+	window in as a proxy, and a proxy of a proxy raises TypeError) - MT2009_PLUS_WEAKPROXY_FIX_V1."""
+	try:
+		return proxy(obj)
+	except TypeError:
+		return obj
+
 import petdata as PD
 import petlocale as L
 
@@ -101,7 +110,7 @@ def U32(n):
 
 def _Event(obj, name, *extra):
 	"""A callable for a ui event that holds the window only weakly (no reference cycle) and adds extra args first."""
-	ref = proxy(obj)
+	ref = _proxy(obj)
 
 	def call(*args):
 		try:
@@ -1038,7 +1047,7 @@ class PetNameChangeWindow(ui.ScriptWindow):
 class PetFeedWindow(ui.ScriptWindow):
 	def __init__(self, owner):
 		ui.ScriptWindow.__init__(self)
-		self.owner = proxy(owner)
+		self.owner = _proxy(owner)
 		self.mode = FEED_NONE
 		self.cells = [-1] * FEED_SLOTS
 		self.counts = [0] * FEED_SLOTS
@@ -2259,7 +2268,7 @@ def Create(interface):
 	global _interface
 	Destroy()
 	try:
-		_interface = proxy(interface)
+		_interface = _proxy(interface)
 	except TypeError:
 		_interface = interface
 

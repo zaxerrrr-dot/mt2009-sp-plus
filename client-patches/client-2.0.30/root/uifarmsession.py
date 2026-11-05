@@ -38,6 +38,15 @@
 
 from weakref import proxy
 
+
+def _proxy(obj):
+	"""A weak proxy of obj - obj itself when it is one already (events called through ui.__mem_func__ hand the
+	window in as a proxy, and a proxy of a proxy raises TypeError) - MT2009_PLUS_WEAKPROXY_FIX_V1."""
+	try:
+		return proxy(obj)
+	except TypeError:
+		return obj
+
 import clientclock
 import file_utils
 import net
@@ -1069,7 +1078,7 @@ class _TableRow(ui.Window):
 		ui.Window.__init__(self)
 		self.AddFlag('attach')
 		self.width = width
-		self.view = proxy(view)	# the view holds its rows: a weak one back
+		self.view = _proxy(view)	# the view holds its rows: a weak one back
 		self.iconPath = ''
 		self.key = None
 		self.SetSize(width, LINE_HEIGHTS[KIND_ROW])
