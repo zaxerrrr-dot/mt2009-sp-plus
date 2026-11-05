@@ -307,6 +307,7 @@ namespace
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
+	int GetPlayerBotMeleyRunCap();	// MT2009_PLUS_BOT_MELEY_RUNS_V1: playerbot_dgrun_meley.h, at the end
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: the runs of a dungeon at once - the Time Rift's from the .env.
 	int GetPlayerBotDgRunDefCap(int i)
 	{
@@ -314,6 +315,8 @@ namespace
 			return GetPlayerBotYoharaHydraParties();
 		if (PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_EREBU && IsPlayerBotErebuTraining())	// MT2009_PLUS_BOT_EREBU_V1
 			return 0;
+		if (PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: its own planner's cap
+			return GetPlayerBotMeleyRunCap();
 		return PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_SZC ? GetPlayerBotYoharaSzcParties() : PLAYERBOT_DGRUN_DEFS[i].iCap;
 	}
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: after a Time Rift's hour the next one soon - "gdy czas minie,
@@ -610,6 +613,14 @@ namespace
 	DWORD GetPlayerBotErebuRest(const TPlayerBotDgRun& run, DWORD rest);
 	void PlanPlayerBotErebuTraining(DWORD dwNow, bool forced);
 	bool RunPlayerBotErebuTestLine(const char* cmd, const std::string& line, DWORD dwNow);
+	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley's own planner (playerbot_dgrun_meley.h, included at the end).
+	bool IsPlayerBotMeleyVisitor(DWORD pid);
+	bool IsPlayerBotMeleyRunHeld(DWORD pid);
+	void NotePlayerBotMeleyRunStart(const TPlayerBotDgRun& run);
+	void UpdatePlayerBotMeleyInside(TPlayerBotDgRun& run, DWORD dwNow);
+	DWORD NotePlayerBotMeleyRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
+	void PlanPlayerBotMeleyRuns(DWORD dwNow, bool forced);
+	bool RunPlayerBotMeleyTestLine(const char* cmd, DWORD dwNow);
 
 	// ------------------------------------------------------------ the questions others ask
 
@@ -2707,6 +2718,8 @@ namespace
 		}
 		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: a training party's short rest
 			rest = AdjustPlayerBotYdgRest(run, rest);
+		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the last share, the gain, the visitors' count
+			rest = NotePlayerBotMeleyRunEnd(run, result, entered, took / 1000, rest);
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
@@ -2941,6 +2954,8 @@ namespace
 				continue;
 			if (IsPlayerBotYdgTrainee(pid) || (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch)))	// MT2009_PLUS_BOT_YDG_V1
 				continue;
+			if (IsPlayerBotMeleyVisitor(pid) && def.bKind != DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: it came for the lair
+				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
 			if (healerOnly && !healer)
 				continue;
@@ -3080,7 +3095,7 @@ namespace
 		if (!ch || !refusal || ch->IsDead())
 			return false;
 		const DWORD pid = ch->GetPlayerID();
-		if (!IsPlayerBotYdgTrainee(pid) && !IsPlayerBotErebuTrainee(pid))
+		if (!IsPlayerBotYdgTrainee(pid) && !IsPlayerBotErebuTrainee(pid) && !IsPlayerBotMeleyRunHeld(pid))	// MT2009_PLUS_BOT_MELEY_RUNS_V1
 			return false;
 		if (!strcmp(refusal, "fight"))
 		{
@@ -3264,6 +3279,8 @@ namespace
 				NotePlayerBotErebuRunStart(run);
 			if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1
 				NotePlayerBotYdgRunStart(run);
+			if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the bonuses, a bag cell, the materials now
+				NotePlayerBotMeleyRunStart(run);
 			return true;
 		}
 		// V3: a replacement for the Shaman, or for those short of the start,
@@ -3605,6 +3622,8 @@ namespace
 			run.dwClosedSeen = dwNow;
 		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: the leader's talks (the quests' <q>_dgrun_next)
 			UpdatePlayerBotYdgInside(run, d, dwNow);
+		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the lair's materials shared, a bag cell kept
+			UpdatePlayerBotMeleyInside(run, dwNow);
 		// Razador's statue and Nemere's lion, whenever no task runs.
 		if (def.szNextTimer && !run.dwFinishedAt && !run.szResult && run.dwClosedSeen == 0 && dwNow >= run.dwNextStep &&
 				d->GetFlag("init") == 1)
@@ -3911,7 +3930,8 @@ namespace
 		// the SZC cohort to 4 parties of the 14 and sent the rest to rest for want of a party.
 		int runsNow = 0;
 		for (std::map<int, TPlayerBotDgRun>::const_iterator it = s_mapPlayerBotDgRuns.begin(); it != s_mapPlayerBotDgRuns.end(); ++it)
-			if (PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_SZC && !IsPlayerBotErebuTrainRun(it->first))	// MT2009_PLUS_BOT_EREBU_V1
+			if (PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_SZC && !IsPlayerBotErebuTrainRun(it->first) &&	// MT2009_PLUS_BOT_EREBU_V1
+					PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: its own cap
 				++runsNow;
 		runsNow += CountOwnZruns();	// MT2009_PLUS_ZODIAC_RUNS_V7
 		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
@@ -3943,6 +3963,9 @@ namespace
 				continue;
 			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's fixed parties are called by PlanPlayerBotHydraRuns.
 			if (def.bKind == DGRUN_KIND_HYDRA)
+				continue;
+			// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley is PlanPlayerBotMeleyRuns' (its band, pool and cap).
+			if (def.bKind == DGRUN_KIND_MELEY)
 				continue;
 			TPlayerBotDgRunSlot& slot = slots[i];
 			// V2: the bots' own floor for a dungeon (RUN_RULES) - a player's
@@ -4002,6 +4025,9 @@ namespace
 				continue;
 			// MT2009_PLUS_BOT_YDG_V1: a training party's member goes with its party only.
 			if (IsPlayerBotYdgTrainee(pid))
+				continue;
+			// MT2009_PLUS_BOT_MELEY_RUNS_V1: a Sung Ma visitor came for Schronienie Meley only.
+			if (IsPlayerBotMeleyVisitor(pid))
 				continue;
 			const int level = ch->GetLevel();
 			bool fits = false;
@@ -4260,6 +4286,8 @@ namespace
 				continue;
 			if (RunPlayerBotErebuTestLine(cmd, lines[l], dwNow))	// MT2009_PLUS_BOT_EREBU_V1
 				continue;
+			if (RunPlayerBotMeleyTestLine(cmd, dwNow))	// MT2009_PLUS_BOT_MELEY_RUNS_V1: meley_status
+				continue;
 			if (!strcmp(cmd, "status"))
 				LogPlayerBotDgRunStatus();
 			else if (!strcmp(cmd, "flag") && got >= 3)
@@ -4277,6 +4305,8 @@ namespace
 					PlanPlayerBotHydraRuns(dwNow, true);
 				else if (def >= 0 && PLAYERBOT_DGRUN_DEFS[def].bKind == DGRUN_KIND_EREBU && IsPlayerBotErebuTraining())	// MT2009_PLUS_BOT_EREBU_V1
 					PlanPlayerBotErebuTraining(dwNow, true);
+				else if (def >= 0 && PLAYERBOT_DGRUN_DEFS[def].bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1
+					PlanPlayerBotMeleyRuns(dwNow, true);
 				else
 					PlanPlayerBotDungeonRun(dwNow, def, "test");
 			}
@@ -4378,10 +4408,12 @@ namespace
 			LogPlayerBotDgRunStatus();
 		}
 		PlanPlayerBotYdgTraining(dwNow);	// MT2009_PLUS_BOT_YDG_V1: the training parties, on their own clock
+		PlanPlayerBotMeleyRuns(dwNow, false);	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley, on its own clock
 	}
 }
 
 #include "playerbot_dgrun_erebu.h"	// MT2009_PLUS_BOT_EREBU_V1
 #include "playerbot_dungeon_runs_ydg.h"	// MT2009_PLUS_BOT_YDG_V1
+#include "playerbot_dgrun_meley.h"	// MT2009_PLUS_BOT_MELEY_RUNS_V1
 
 #endif
