@@ -22331,6 +22331,19 @@ def account():
             return render_template_string(TPL_ACCOUNT_LOGIN)
         if row and hmac.compare_digest(row["password"], m2_hash(pw)):
             session["player"] = lg
+            # MT2009_PLUS_WEB_I18N_V1: the language the player plays in (player.player.language,
+            # set by the game client's /lang) becomes the page's, unless they chose one here
+            if not session.get("lang") and not request.cookies.get("m2lang"):
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("SELECT p.language FROM player.player p JOIN account.account a ON a.id=p.account_id "
+                                    "WHERE a.login=%s ORDER BY p.last_play DESC LIMIT 1", (lg,))
+                        found = cur.fetchone()
+                    code = str((found or {}).get("language") or "").strip().lower()
+                    if code in LANGS:
+                        session["lang"] = code
+                except Exception:
+                    pass          # a server without the column yet
         else:
             time.sleep(1.0)
             flash(t("acc_wrong"), "error")
