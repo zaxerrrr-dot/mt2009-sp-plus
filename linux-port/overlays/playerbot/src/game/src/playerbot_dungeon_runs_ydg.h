@@ -1382,6 +1382,7 @@ namespace
 		}
 		s_mapPlayerBotYdgSnaps.erase(run.iId);
 		s_mapPlayerBotYdgNextAt.erase(run.iId);
+		s_mapPlayerBotYdgSticky.erase(run.iId);
 		if (run.lInstance)
 		{
 			s_mapPlayerBotYdgKeysReady.erase(run.lInstance);

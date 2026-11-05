@@ -554,6 +554,9 @@ namespace
 			std::vector<DWORD>& out);
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y);
+	// run -> (the objective's vid, chosen at) - MT2009_PLUS_BOT_YDG_TRAIN_V2
+	std::map<int, std::pair<DWORD, DWORD> > s_mapPlayerBotYdgSticky;
+	const DWORD PLAYERBOT_YDG_STICKY_MS = 5 * 60 * 1000;
 	void UpdatePlayerBotYdgInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	long long ChargePlayerBotYdgTicket(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run);
@@ -1635,6 +1638,25 @@ namespace
 				any = c;
 				dAny = dist;
 			}
+		}
+		// MT2009_PLUS_BOT_YDG_TRAIN_V2: the objective chosen is kept (up to PLAYERBOT_YDG_STICKY_MS) while it stands and
+		// can be reached - the nearest by a straight line changed as the route went round the walls, and Beran's
+		// cave's leader went back and forth between two Yonghan groups for half an hour (05:16-05:46, 5 November).
+		if (def.bKind == DGRUN_KIND_YDG)
+		{
+			std::pair<DWORD, DWORD>& sticky = s_mapPlayerBotYdgSticky[run.iId];
+			LPCHARACTER pf = sticky.first ? CHARACTER_MANAGER::instance().Find(sticky.first) : NULL;
+			if (pf && IsPlayerBotPdgFoe(ch, pf) && pf->GetMapIndex() == ch->GetMapIndex() &&
+					std::find(goals.begin(), goals.end(), pf->GetRaceNum()) != goals.end() &&
+					!IsPlayerBotDgRunUnreachable(rb, (DWORD)pf->GetVID(), dwNow) && dwNow - sticky.second < PLAYERBOT_YDG_STICKY_MS)
+			{
+				goal = pf;
+				dGoal = DISTANCE_APPROX(ch->GetX() - pf->GetX(), ch->GetY() - pf->GetY());
+			}
+			else if (goal)
+				sticky = std::make_pair((DWORD)goal->GetVID(), dwNow);
+			else
+				sticky = std::make_pair(0U, dwNow);
 		}
 		// MT2009_PLUS_BOT_YDG_TRAIN_V2: a stage whose objective comes back at one spot (Grota Wygnancow 2 (SZC): the key's
 		// General Yonghan, 70 s after its fall) - with none up the party waits there, fighting only what comes.
