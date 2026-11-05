@@ -1,0 +1,956 @@
+# MT2009_PLUS_LANGUAGE_V1 - our quests and quest libraries (tools/i18n/data/quest_custom_pl.tsv)
+# Polish<TAB>it (by hand; UTF-8). tools/i18n/extract_server_texts.py --check it lists what is missing.
+    2 Ładne + Dusza = Zacny (30%)	    2 Belle + Anima = Pregiata (30%)
+    3 Drobne + Dusza = Ładny (35%)	    3 Sottili + Anima = Bella (35%)
+    5 Małych + Dusza = Drobny (45%)	    5 Piccole + Anima = Sottile (45%)
+    Zacny + Dusza = Silny (25%)	    Pregiata + Anima = Forte (25%)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  del Tonno per 60 minuti (pesci rari come con il Libro sulla Pesca).
+ i Kamień Księżycowy	 e Pietra lunare
+%d godz.	%d ore
+%d godz. %d min	%d ore %d min
+%d godz. %d min.	%d ore %d min.
+%d godz., %d min.	%d ore, %d min.
+%d min., %d sek.	%d min., %d sec.
+%d sek.	%d sec.
+%d. %s - %d pkt	%d. %s - %d pt
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+%s (%s, bonusy: %d)	%s (%s, bonus: %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s ti sta cercando. Sembra che voglia dirti[ENTER]qualcosa di importante.
+%s jest już na stopniu P.	%s è già al grado P.
+%s: %d. Wszystkie te punkty	%s: %d. Tutti questi punti
+%s: nie rozdano tu jeszcze punktów.	%s: qui non sono ancora stati distribuiti punti.
+%s: osiągnięto stopień P - najwyższy.	%s: raggiunto il grado P - il più alto.
+%s: teraz %s.	%s: ora %s.
+(15% odporności = 4,5% mniej obrażeń).	(15% di resistenza = 4,5% di danni in meno).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(fino a M1), libri (fino a G1) e Pietra delle Anime+ (fino a P).
+(drogocenne). Pakiet może zawierać m.in.:	(preziosi). Il pacchetto può contenere, tra l'altro:
+(klawisz P) na jej umiejętność.	(tasto P) sulla sua abilità.
+(klawisz P).	(tasto P).
+(kostium, fryzura albo nakladka na bron).	(costume, acconciatura o skin per l'arma).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(passa il mouse sull'oggetto). Se fallisce, i materiali vanno persi.
+(PB) od każdego z was.	(RSV) da ognuno di voi.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(RSV). Torna quando il compito sarà svolto.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(clic destro sulla reliquia) e aggiungile bonus con le anime.
+(SZC) od każdego z was.	(FT) da ognuno di voi.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(FT). Torna quando il compito sarà svolto.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(a seconda del cristallo) per 2 ore di gioco. La barra
++1000 PŻ (maks.)	+1000 HP (max.)
++1100 PŻ (maks.)	+1100 HP (max.)
++120 Obrony	+120 Difesa
++140 Obrony	+140 Difesa
++5% albo +10%. Każda maska jest inna. 	+5% o +10%. Ogni maschera è diversa. 
++51 Wartości Ataku	+51 Valore d'attacco
++60 Wartości Ataku	+60 Valore d'attacco
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Scarpe dell'Euforia +5..+9 - ne farò Scarpe Oceano.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Scarpe Martin Pescat. +5..+9 - ne farò Scarpe del fuoco,
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- il tempo scorre anche fuori dal gioco - poi sparisce. Non si può migliorare né cedere.
+- Kamyki x100,	- Gemma x100,
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Taglialo: forse ci troverai qualcosa (molto raramente persino una Canna in carbonio).
+- Relikt Duszy twojej klasy.	- Reliquia dell'anima della tua classe.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Usalo come esca: Bonus Tonno dorato per 5 minuti - più forte.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Liberalo: di solito ti bagni (Vestiti bagnati: -50 velocità di movimento per 5 minuti), a volte ottieni il Bonus Tonno
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- con un Elisir Forza vuoto - un elisir di forza elementale,
+- z Pustym Eliksirem Odp. - eliksir odporności.	- con un Elisir Resistenza vuoto - un elisir di resistenza.
+... Skargi przyjmuję jednak wyłącznie w formie	... Però accetto reclami solo sotto forma
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	Livello 1: 0,8%, M1: 8%, G1: 13,1%, P: 20%.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	Livello 1: 1,2%, M1: 12%, G1: 19,7%, P: 30%.
+1. miejsce: 10x Złote Trofeum Yutnori	1° posto: 10x Trofeo Yutnori dorato
+1. poziom Świątyni Węży	1° livello del Templum Serpens
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Giada Notte e per le armi 5 Incudini boreali
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Incudini, 5 progetti d'arma, 5 Abrasivi,
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yang o esperienza,
+120 i Championem 4, 600 pkt rankingu gildii	120 e Campione 4, 600 punti classifica gilda
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 pezzi: +500 HP, +1% forza contro i mostri; 3 pezzi: +1500 HP, +5% forza contro i mostri
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 pezzi: +500 HP, +3% velocità di movimento; 3 pezzi: +1500 HP, +7% velocità di movimento
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 pezzi: +500 HP, +5% EXP; 3 pezzi: +1500 HP, +15% EXP
+2. miejsce: 5x Złote Trofeum Yutnori	2° posto: 5x Trofeo Yutnori dorato
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 o 500. Il livello della veste è 1000, 2000, 4000,
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yang). Da 10 Frammenti del cavaliere II - Principesco,
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 pezzi: +2500 HP, +10% magia / corpo a corpo, +5% velocità di movimento
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 pezzi: +3500 HP, +15% magia / corpo a corpo, +7% velocità di movimento
+3. miejsce: 3x Złote Trofeum Yutnori	3° posto: 3x Trofeo Yutnori dorato
+300 - 399 punktow - srebrna	300 - 399 punti - argento
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	4° - 10° posto: 1x Trofeo Yutnori dorato
+400 punktow i wiecej - zlota	400 punti e oltre - oro
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Acciaio, una pietra del risveglio e 2 500 000 Yang.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yang, esperienza o
+550 punktów i więcej	550 punti e oltre
+6. i 7. bonus (Seon-Hae)	6° e 7° bonus (Seon-Hae)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	livello oggetto 75 e un miglioramento di almeno +7.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 o 16000 punti - a seconda del suo tipo.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Gilda] Dal tesoro della gilda sono stati pagati %d Yang, dal tuo inventario %d Yang.
+a kto polegnie, wraca do portu.	e chi cade torna al porto.
+a nie każdy nadaje się do badań.	e non tutti sono adatti alla ricerca.
+a obecne bonusy celu zostana nadpisane.	e gli attuali bonus del bersaglio saranno sovrascritti.
+a otrzymasz lepszy kamień:	e riceverai una pietra migliore:
+a sam WuKong czeka na śmiałków na szczycie.	e WuKong in persona aspetta i coraggiosi in cima.
+a spróbuję wytworzyć Odłamek Reliktu.	e proverò a creare un Frammento di reliquia.
+a te zmiany są bardzo niepokojące. Moi bracia	e questi cambiamenti sono molto preoccupanti. I miei fratelli
+A teraz odczep się i pozwól mi w spokoju	E ora sparisci e lasciami in pace
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	e si trasformerà in un Forziere di Halloween. Provaci! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	Per completare la rigenerazione devi essere sulla mappa del Tempio dello Zodiaco.
+Aby stworzyć Kryształ Energii,	Per creare un Cristallo di energia,
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, ce l'hai fatta! Bene, ora ti creerò con[ENTER]questo un Prisma del risveglio.
+Aktywuj misję (300 potworów)	Attiva missione (300 mostri)
+Alarm w Świątyni Zodiaku	Allarme nel Tempio dello Zodiaco
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor si è risvegliato! Fuggite dalle spine di ghiaccio e distruggete le Uova di drago bianco.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	o Tintura rossa (Scarpe Oceano), 5 Cinghie resistenti
+albo sztandar użyty w hali) zabiera jeden sztandar.	o uno stendardo usato nella sala) consuma uno stendardo.
+albo trzy kolejne liczby daja punkty - seria	o tre numeri consecutivi danno punti - una serie
+albo u Statuy Wojownika (z odłamków I).	o presso la Statua del guerriero (dai frammenti I).
+Alchemia to nieobliczalna nauka i każdy kolejny	L'alchimia è una scienza imprevedibile e ogni nuovo
+Alchemik w Dongan potrzebuje pomocy.	L'Alchimista nella Piana Dongan ha bisogno di aiuto.
+Appaloosa bedzie z toba o 7 dni dluzej.	Appaloosa resterà con te 7 giorni in più.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	Borsa medica! Ammiro il tuo coraggio - come sei riuscito
+Apteczka! W ostatniej chwili - dziękuję.	Borsa medica! All'ultimo momento - grazie.
+apteczka. Podejrzewam wojowników En-Tai, bo	Borsa medica. Sospetto i guerrieri En-Tai, perché
+apteczkę.	Borsa medica.
+Atak powierzchniowy cię dosięgnął.	L'attacco di superficie ti ha raggiunto.
+Atakuje wszystko w poblizu	Attacca tutto ciò che è vicino
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	La Caccia automatica è disattivata in questo mondo - tieni il biglietto.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	La Caccia automatica è ora disponibile per tutti - tieni il biglietto per dopo.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Caccia automatica: +8 h, in totale %d h (conta solo il tempo in gioco).
+Auto Lowy: masz juz ponad 30 dni czasu.	Caccia automatica: hai già più di 30 giorni di tempo.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Caccia automatica: ancora %d giorni %d h (giorni di calendario) - funziona finché il biglietto è nell'inventario.
+aż znajdziesz przy którymś z nich Lekarstwo.	finché non trovi la Medicina su uno di loro.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	Il Perlustratore d. foresta cerca qualcuno di coraggioso. Vai da lui.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	il Perlustratore d. foresta. Prima affronterete Bagjanamu.
+Badam klejnoty, które powstają w lodzie Groty	Studio le gemme che si formano nel ghiaccio della Grotta
+Badania Biologa	La ricerca del biologo
+badania są ukończone. Wybierz jeden stały bonus:	la ricerca è completata. Scegli un bonus permanente:
+badaniami. Sprawdź w Dongan, czy potrzebuje	ricerche. Controlla a Dongan se ha bisogno
+Badanie Seona-Pyeonga	La ricerca di Seon-Pyeong
+Badanie Seona-Pyeonga 2	La ricerca di Seon-Pyeong 2
+Badanie Seona-Pyeonga: nagroda	La ricerca di Seon-Pyeong: ricompensa
+badanie, które chcesz przyśpieszyć.	la ricerca che vuoi accelerare.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (RSV) sconfitto. La terra trema - Jotun Thrym (RSV) sta arrivando!
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (FT) sconfitto. La terra trema - Jotun Thrym (FT) sta arrivando!
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu sconfitto. La terra trema - Jotun Thrym sta arrivando!
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor ha vinto - questa spedizione non ha portato ricompense.
+Balathor, Biały Smok, śpi w lodowej krypcie.	Balathor, il Drago Bianco, dorme nella cripta di ghiaccio.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Baronessa Ragno sconfitta in %d:%02d! Il sotterraneo è completato.
+Baronówny zagnieździły się między regałami i nikt	Le Baronesse si sono annidate tra gli scaffali e nessuno
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	tintura e piastre in base all'armatura scelta, 10 000 000 Yang
+Beran-Setaou (PB) został pokonany!	Beran-Setaou (RSV) è stato sconfitto!
+Beran-Setaou (SZC) został pokonany!	Beran-Setaou (FT) è stato sconfitto!
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou è morto. Presto tornerete tutti
+Beran-Setaou został pokonany!	Beran-Setaou è stato sconfitto!
+BETA: czas skrocony do 10s	BETA: tempo ridotto a 10s
+BETA: DT jest dostepne od 2 etapu.	BETA: DT è disponibile dalla fase 2.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Senza Biglietto per Atlantide non sopravviverai negli abissi. Compralo dal Mago di Atlantide.
+Bez Biletu do Atlantydy:	Senza Biglietto per Atlantide:
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	Senza Smeraldo arboreo non posso fare nulla. Sconfiggi
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	Senza Legno pregiato non posso fare nulla. Sconfiggi
+Bez zmian	Nessuna modifica
+Biblioteka Wiedzy	Biblioteca del Sapere
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Biblioteca del Sapere: Tempo scaduto. Il Guardiano vi accompagna fuori dalla Biblioteca.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Biblioteca del Sapere: Fase superata. Tra 5 secondi la prossima sfida.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Biblioteca del Sapere: impossibile aprire il passaggio - parla con il Guardiano della Biblioteca.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Biblioteca del Sapere: il Sigillo della Biblioteca si è attivato da solo.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Biblioteca del Sapere: parla con il Guardiano della Biblioteca per aprire il passaggio.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Biblioteca del Sapere: il passaggio conduce attraverso la sala d'attesa.
+Biblioteka Wiedzy: przejście się otwiera...	Biblioteca del Sapere: il passaggio si sta aprendo...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Biblioteca del Sapere: Questa spedizione è già terminata. Parla con il guardiano per partire di nuovo.
+Biblioteka Wiedzy: Ten loch został już ukończony.	Biblioteca del Sapere: Questo sotterraneo è già stato completato.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Biblioteca del Sapere: Benvenuti. Tra 5 secondi dagli scaffali usciranno i ragni.
+biega za toba, broni cie i zbiera twoj drop.	ti segue, ti protegge e raccoglie il tuo bottino.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	Il Biglietto per Atlantide protegge dall'acqua, dalla pressione
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	Il biglietto lo comprate da me - opzione: Compra Biglietto per Atlantide.
+Bilet Podrozniczy	Biglietto di viaggio
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	Biglietto, posso portarti nell'Istanza Misteriosa.
+Bio-badanie 1	Bio-ricerca 1
+Bio-badanie 2	Bio-ricerca 2
+Bio-badanie 3	Bio-ricerca 3
+Bio-badanie 4	Bio-ricerca 4
+Bio-badanie 5	Bio-ricerca 5
+Bio-badanie 6	Bio-ricerca 6
+Bio-badanie 7	Bio-ricerca 7
+Bio-badanie 8	Bio-ricerca 8
+Biolog	Biologo
+Biorę tylko tyle run, ile trzeba.	Prendo solo le rune che servono.
+Blogoslawienstwo obrony: moja obrona	Benedizione della difesa: la mia difesa
+Blogoslawienstwo odpornosci: trucizna	Benedizione della resistenza: veleno
+Blogoslawienstwo szybkosci: bede chodzil	Benedizione della velocità: camminerò
+Blogoslawienstwo zycia: moje punkty zycia	Benedizione della vita: i miei punti vita
+bo jeszcze chwilę temu byłem na imprezie	perché fino a un attimo fa ero a una festa
+bo kiedyś przypłacisz to życiem.	perché un giorno lo pagherai con la vita.
+Bonus eventowy PD Uriela wg przedziału poziomów	Bonus EXP evento di Uriel per fascia di livello
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	il bonus viene estratto alla creazione - resta col miglioramento.
+Bonus PD +%d%% na %s	Bonus EXP +%d%% per %s
+Bonus PD +%d%% potrwa jeszcze: %s	Il bonus EXP +%d%% durerà ancora: %s
+Bonus PD na %s według przedziału poziomów:	Bonus EXP per %s per fascia di livello:
+Bonus Złotego Tuńczyka: 5 minut.	Bonus Tonno dorato: 5 minuti.
+Bonus Złotego Tuńczyka: 60 minut.	Bonus Tonno dorato: 60 minuti.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	I bonus e le pietre dell'oggetto consegnato vanno persi.
+Bonusy i kamienie oddanych butow przepadaja.	I bonus e le pietre delle scarpe consegnate vanno persi.
+Bonusy i kamienie zostana przeniesione.	I bonus e le pietre saranno trasferiti.
+Bonusy mozna przeniesc tylko: kostium na kostium,	I bonus si possono trasferire solo: costume su costume,
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	I bot del tuo gruppo entreranno nel sotterraneo con te.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	Non c'è spazio nell'inventario per quest'arma - libera spazio e scegli di nuovo.
+Brak otwartych misji z czasem oczekiwania.	Nessuna missione aperta con tempo d'attesa.
+Brak ustawionych przedziałów poziomów.	Nessuna fascia di livello impostata.
+Brakuje ci materialow albo Yang.	Ti mancano materiali o Yang.
+Brakuje ci przedmiotów.	Ti mancano degli oggetti.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	Ti manca Rugiada En-Tai (RSV). Ottienila da
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	Ti manca Rugiada En-Tai (FT). Ottienila da
+Brakuje jeszcze %d klejnotów.	Mancano ancora %d gemme.
+Brama już się otwiera. Poczekaj chwilę.	Il cancello si sta già aprendo. Aspetta un attimo.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	Il cancello oggi non vuole aprirsi. Riprova
+Brazowa skrzynia (do 299 punktow)	Forziere di bronzo (fino a 299 punti)
+Bronie dla Młodych Bohaterów	Armi per Giovani Eroi
+Bronie dla Młodych Bohaterów są wyłączone	Le Armi per Giovani Eroi sono disattivate
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	Le Armi per Giovani Eroi sono disattivate su questo server.
+Broń przyjmie wygląd broni tego samego rodzaju albo	L'arma prenderà l'aspetto di un'arma dello stesso tipo o
+Brązowy Pakiet Yutnori	Fagotto Yutnori bronzeo
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	Buff SungMa premium: +10 Volontà SungMa (forza, vitalità, resistenza, intelligenza) ancora per %d h.
+Buff Premium SungMa: czas tego przedmiotu już minął.	Buff SungMa premium: il tempo di questo oggetto è già scaduto.
+Buffi dostępna od 55 poziomu.	Buffi è disponibile dal livello 55.
+Buffi jest wyłączony na tym serwerze.	Buffi è disattivata su questo server.
+by Mikstura Talentu zadziałała.	perché la Pozione del talento faccia effetto.
+by o nim opowiedzieć.	per raccontarti di lui.
+by wejść:	per entrare:
+by złożyć z nich kryształ. Wróć, gdy będziesz	per farne un cristallo. Torna quando sarai
+Bywa też u dowódców i generałów Groty Wygnańców.	Lo portano anche capitani e generali della Grotta dell'Esilio.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	Benedizione, Incantesimo e Rinforzo
+Błogosławieństwa. Pakiet może zawierać m.in.:	Benedizione. Il pacchetto può contenere, tra l'altro:
+Błogosławieństwo Buffi	Benedizione di Buffi
+błyskawic	fulmini
+Błyskawica i lód (mapa 1)	Fulmine e ghiaccio (mappa 1)
+Błyskawicy	Fulmine
+błyskawicę, lód, wiatr, ziemię albo mrok.	fulmine, ghiaccio, vento, terra o oscurità.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Scintillante - 10x Pietra del caos bella e 5 000 000 Yang,
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	Errare è umano - scegli con saggezza.
+całą drużynę stojącą obok.	tutto il gruppo che ti sta accanto.
+Cel (otrzyma bonusy zrodla):	Bersaglio (riceverà i bonus della fonte):
+Chaegirab ciągle jeszcze zajęty jest swoimi	Chaegirab è ancora occupato con le sue
+Chaegirab w Dongan potrzebuje pomocy.	Chaegirab a Dongan ha bisogno di aiuto.
+Chaos w Zaklętym Lesie	Caos nella Foresta Incantata
+Chcesz opuścić Kryptę Balathora?	Vuoi lasciare la Cripta di Balathor?
+Chcesz teraz wymienić Kartę Maski Dyni	Vuoi scambiare ora la Carta Maschera zucca
+Chcę zabić tego smoka!	Voglio uccidere questo drago!
+choć jeden, żaden cios go nie zrani.	anche uno solo, nessun colpo lo ferirà.
+Cialo (Body)	Corpo (Body)
+ciebie ekwipunek Smoka Mroku.	te l'equipaggiamento del Drago scuro.
+cię wieczne potępienie.	te la dannazione eterna.
+Co mam zrobic?	Cosa devo fare?
+co najmniej jednego towarzysza z grupy.	almeno un compagno del gruppo.
+Co się dzieje?! Morze się wzburzyło... Czyżby	Cosa succede?! Il mare è in tempesta... Che sia
+Codzienna misja Świat Iluzji: Nemere pokonany.	Missione giornaliera Mondo delle Illusioni: Nemere sconfitto.
+Codzienna misja Świat Iluzji: Razador pokonany.	Missione giornaliera Mondo delle Illusioni: Razador sconfitto.
+Codzienna misja: Świat Iluzji	Missione giornaliera: Mondo delle Illusioni
+Cor Draconis (zwyczajne, szlachetne), perły,	Cor draconis (comuni, nobili), perle,
+Cos poszlo nie tak.	Qualcosa è andato storto.
+Czarna Magia	Magia Nera
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	tempo - da 10 a 60 minuti. La Polvere Serpens aggiunge un minuto.
+Czas minął - Alastor wypędza was z Głębi.	Tempo scaduto - Alastor vi caccia dagli Abissi.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	Tempo scaduto! Sung Mahi ti butta fuori dalla torre.
+Czas minął. Możesz spróbować jeszcze raz.	Tempo scaduto. Puoi riprovare.
+Czas oczekiwania został skrócony.	Il tempo d'attesa è stato ridotto.
+Czas odbioru nagrod juz minal.	Il tempo per ritirare le ricompense è già scaduto.
+czeka Morkhot, władca głębin.	ti aspetta Morkhot, signore degli abissi.
+czeka na ciebie - on wie, gdzie szukać Władców	ti aspetta - lui sa dove cercare i Signori
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	ti aspetta Nemere, signore del gelo. Nessuno è tornato da lì,
+Czekaj na event w kalendarzu wydarzeń.	Aspetta l'evento nel calendario eventi.
+Czempion	Campione
+Czempiona (Opcje klawiszy: Czempion).	Campione (Opzioni tasti: Campione).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	Ginseng rosso (premium) è cibo per il Cavallo militare potente (31+).
+Czerwone Pudło Zodiaku	Cofanetto Zodiaco rosso
+Czerwony Żeń-szeń 	Ginseng Rosso 
+cztery fale, a skarb Hydry będzie twój.	quattro ondate, e il Tesoro di Idra sarà tuo.
+Czuje sie silniejszy! Dziekuje.	Mi sento più forte! Grazie.
+Czujesz tę pulsującą energię?	Senti questa energia pulsante?
+Czwartek (Wu-Wei)	Giovedì (Wu-Wei)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	Vuoi lasciare le grotte e tornare a Dongan?
+Czy chcesz opuścić Królestwo Żywiołów	Vuoi lasciare il Mondo Elementale
+Czy chcesz opuścić Schronienie Meley? Walka trwa	Vuoi lasciare il Rifugio di Meley? La lotta continua
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Vuoi lasciare la torre? La scalata finirà.
+Czy chcesz opuścić świątynię?	Vuoi lasciare il tempio?
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	Vuoi levare l'ancora e metterti in viaggio?
+Czy chcesz przejść przez Gardziel Am-heha i	Vuoi attraversare le Fauci di Am-heh e
+Czy chcesz się teleportować?	Vuoi teletrasportarti?
+Czy chcesz teraz wejść Świątyni Zodiaku?	Vuoi entrare ora nel Tempio dello Zodiaco?
+Czy chcesz teraz zejść ze statku? Wejście	Vuoi scendere dalla nave ora? L'ingresso
+Czy chcesz użyć Spirali Czasu?	Vuoi usare una Spirale del tempo?
+Czy chcesz wrócić na Przełęcz Yilad?	Vuoi tornare al Passo Yilad?
+Czy chcesz wrócić z Tajemniczej Instancji	Vuoi tornare dall'Istanza Misteriosa
+Czy chcesz zejść głębiej do jaskiń?	Vuoi scendere più a fondo nelle grotte?
+Czy chcesz zejść na ląd?	Vuoi scendere a terra?
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	Vuoi che ti accompagni al Tempio?
+Czy jestes jednym z nich?	Sei uno di loro?
+Czy jesteście gotowi stanąć przed Nemere (PB),	Siete pronti ad affrontare Nemere (RSV),
+Czy jesteście gotowi stanąć przed Nemere (SZC),	Siete pronti ad affrontare Nemere (FT),
+Czy na pewno chcesz zregenerować wszystkie portale?	Sei sicuro di voler rigenerare tutti i portali?
+Czy na pewno chcesz zregenerować?	Sei sicuro di voler rigenerare?
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	Ti ricordi ancora delle Grotte degli Gnoll
+Czy znasz legendę o Świątyni Zodiaku?	Conosci la leggenda del Tempio dello Zodiaco?
+czyste egzemplarze.	esemplari puliti.
+Czyściec Ognia (Razador)	Purgatorio di Fuoco (Razador)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Purgatorio di Fuoco: impossibile aprire il portale - parla con la statua di Am-heh.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Purgatorio di Fuoco: parla con la statua di Am-heh per aprire il portale.
+Czyściec Ognia: portal się otwiera...	Purgatorio di Fuoco: il portale si sta aprendo...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	Purgatorio di Fuoco: il passaggio conduce attraverso la sala d'attesa.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	pezzi (Sacro 500 000, Maestoso 1 000 000, del cavaliere
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	Un membro del gruppo è troppo lontano. Radunatevi vicino a me.
+Członek grupy nie posiada przedmiotu potrzebnego,	Un membro del gruppo non ha l'oggetto necessario,
+Członkowie, posiadający za mało Animosfer:	Membri con troppe poche Animasfere:
+członków gildii obecnych w Krypcie.	membri della gilda presenti nella Cripta.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	dà 1 punto esperienza, quelle di fuoco - 10, 50, 100,
+dalej bez ciebie - możesz do niej wrócić u mnie	avanti senza di te - puoi tornarci tramite me
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	demoni. Conviene ottenerla dagli Annientatori En-Tai.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	Demoni. Nella finestra di creazione vedrai ogni ricetta:
+Dla twojego poziomu: +%d%% PD	Per il tuo livello: +%d%% EXP
+dla twojej klasy. Uda się na pewno.	per la tua classe. Riuscirà di sicuro.
+do Chaegiraba w Dongan po nagrodę.	da Chaegirab a Dongan per la ricompensa.
+Do Erebu wchodzi się tylko w grupie.	In Erebos si entra solo in gruppo.
+do Groty Wygnańców.	alla Grotta dell'Esilio.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	Faccio entrare nelle grotte dal Livello Campione 1.
+Do którego obszaru chcesz się udać?	In quale zona vuoi andare?
+Do lochu wchodzi najwyżej 8 osób.	Nel sotterraneo entrano al massimo 8 persone.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	Nei Sotterranei del Risveglio si entra solo in gruppo.
+do Namgan?	a Namgan?
+do niej wejść przeze mnie.	entrarci tramite me.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	a P. Non ne hai nessuna al grado G1-G10.
+Do Portu Nowego Kontynentu	Al Porto del Nuovo Continente
+Do przeniesienia bonusow z jednego kostiumu na drugi	Per trasferire i bonus da un costume all'altro
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	Alla Torre di Nemere (RSV): Ninja e Shamano nel gruppo.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	Alla Torre di Nemere (FT): Ninja e Shamano nel gruppo.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	Nella Frattura temporale entrano al massimo 8 persone.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	Nella Frattura temporale si entra solo in gruppo.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	Inoltre un Cartamodello, Tintura blu (Scarpe del fuoco)
+Do walki z Balathorem	Per combattere Balathor
+do wyboru.	a scelta.
+Do zakończenia badań potrzebuję jeszcze	Per completare la ricerca mi servono ancora
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	nelle terre di Yohara, dove regna la volontà di Sung Mahi.
+Do Świątyni Smoka wchodzi się tylko w grupie.	Nel Tempio del Drago si entra solo in gruppo.
+Do świątyni wchodzi najwyżej 8 osób.	Nel tempio entrano al massimo 8 persone.
+Dobra robota. Las od razu oddycha lżej.	Ottimo lavoro. La foresta respira già meglio.
+Dobrze	Bene
+Dobrze! Następny Metin.	Bene! Prossima Metin.
+Dobrze, szanuję twoją decyzję. Wróć,	Va bene, rispetto la tua decisione. Torna
+Dobrze, w takim razie chodz za mna!	Bene, allora seguimi!
+Dobrze, zbadam je. Wróć po wynik za dobę.	Va bene, li esaminerò. Torna per il risultato tra un giorno.
+Dodano %d Smoczych Monet do Twojego konta.	Sono state aggiunte %d Monete del drago al tuo account.
+dodasz Wzmocnieniem Przedmiotu.	aggiungi con Rinforza Oggetto.
+Dodatkowy bonus (6. i 7.)	Bonus extra (6° e 7°)
+Dokad chcesz sie udac?	Dove vuoi andare?
+Dokąd chcesz się przenieść?	Dove vuoi spostarti?
+Dokąd chcesz się udać?	Dove vuoi andare?
+Dom Aukcyjny	Casa d'aste
+Dom Aukcyjny jest na tym świecie wyłączony.	La Casa d'aste è disattivata in questo mondo.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	Il boost aumenta i danni inflitti da un'abilità.
+Dopalacz: Duchowe Uderzenie	Boost: Penetrazione
+Dopalacz: Mroczne Uderzenie	Boost: Colpo oscuro
+Dopalacz: Ognista Strzała	Boost: Freccia di fuoco
+Dopalacz: Przywołanie Błyskawicy	Boost: Evocare i lampi
+Dopalacz: Strzelający Smok	Boost: Tiro del drago
+Dopalacz: Uderzenie Palcem	Boost: Schiocco di dita
+Dopalacz: Wir Miecza	Boost: Vortice di spada
+Dopalacz: Zasadzka	Boost: Tranello
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	Imparerai il boost quando porterai una qualsiasi risposta al livello P.
+dopiero początek. Teraz potrzebuję Klejnotów	solo l'inizio. Ora mi servono le Gemme
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	Finché ne resta in piedi anche uno, il drago non può essere ferito.
+Doskonały okaz! Dziękuję.	Un esemplare perfetto! Grazie.
+dostajesz jeden taki Łup za każdą postawioną talię.	ricevi un bottino così per ogni mazzo che punti.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	riceverai 1 Doblone, e quando troveremo quella giusta
+dostaniesz ode mnie maski! He he! 	riceverai da me delle maschere! Eh eh! 
+Dostarcz apteczkę Zwiadowcy	Consegna la borsa medica all'Esploratore
+doszedł na szczyt i obronił statek przed Hydrą.	è arrivato in cima e ha difeso la nave dall'Idra.
+Doświadczenie Czempiona dają potwory ziemi	L'EXP Campione la danno i mostri di terra
+doświadczeniem szata czeka na ewolucję.	esperienza, la veste attende l'evoluzione.
+Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (mitici, preziosi), perle, orecchini
+drogę na nowy kontynent. Czy mam cię zabrać do	la via per il nuovo continente. Devo portarti a
+dropują, ale dają więcej PD niż zazwyczaj.	droppano, ma danno più EXP del solito.
+Druga fala - i Szel (PB)!	Seconda ondata - e Szel (RSV)!
+Druga fala - i Szel (SZC)!	Seconda ondata - e Szel (FT)!
+Druga wioska	Secondo villaggio
+Drugi rekonesans	Seconda ricognizione
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	Seconda ricognizione: torna dall'Esploratore d. foresta.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	Il Druido En-Tai (RSV) dev'essere qui vicino. Togli
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	Il Druido En-Tai (FT) dev'essere qui vicino. Togli
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	Il Druido En-Tai aveva una borsa medica (RSV). Portala al Guardiano della foresta (RSV).
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	Il Druido En-Tai aveva una borsa medica (FT). Portala al Guardiano della foresta (FT).
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	Il Druido En-Tai aveva una borsa medica. Portala al Guardiano della foresta.
+Drużyna na tej mapie wejdzie razem z tobą.	Il gruppo su questa mappa entrerà insieme a te.
+Drużyna nie jest wymagana.	Il gruppo non è necessario.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	Lo Spirito della terra! Grazie a lui capiremo cosa succede
+Duchowym Buffi.	Spirituale di Buffi.
+Duchowym+.	Spirituale+.
+duchy sześciu żywiołów strzegą swoich ziem.	gli spiriti dei sei elementi custodiscono le loro terre.
+Dusza Miecza	Anima della spada
+Dusza Miecza (powtarzalna)	Anima della spada (ripetibile)
+Dusza Ochrony	Anima della protezione
+Dusza Ochrony (powtarzalna)	Anima della protezione (ripetibile)
+Dusza Ozdoby	Anima dei gioielli
+Dusza Ozdoby (powtarzalna)	Anima dei gioielli (ripetibile)
+Dusza Światła	Anima della luce
+Dusza Światła (powtarzalna)	Anima della luce (ripetibile)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	testa di zucca! Mi chiamo Jack Pumpkin, e questo è
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	È già attivo un pesce EXP migliore - uno più debole non funzionerà insieme.
+działają u Ciebie o połowę rzadziej.	per te funzionano la metà delle volte.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	Grazie dell'aiuto! Tra poco tornerai a terra.
+Dziekuje! Oto twoje szkatulki.	Grazie! Ecco i tuoi scrigni.
+Dziekuje, ze mnie tu odprowadziles.	Grazie per avermi accompagnato fin qui.
+Dziesieciu graczy z najwieksza suma punktow	I dieci giocatori con il punteggio totale più alto
+Dziesięciu graczy z najwyższym łącznym wynikiem	I dieci giocatori con il risultato totale più alto
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	Grazie al mio potere entrerai nei Sotterranei del Risveglio.
+Dzięki temu skróci się czas oczekiwania. Wybierz	Così si accorcerà il tempo d'attesa. Scegli
+Dzięki tobie moje badania są ukończone.	Grazie a te la mia ricerca è completata.
+Dziękuję ci za pomoc, wojowniku.	Grazie per il tuo aiuto, guerriero.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Grazie per il tuo aiuto, guerriero. La foresta ti è grata.
+Dziękuję ci. Wynagrodzę cię za pomoc.	Grazie. Ti ricompenserò per l'aiuto.
+Dziękuję za pomoc. Weź to w nagrodę.	Grazie dell'aiuto. Prendi questo come ricompensa.
+Dziękuję, już mi lepiej. Do uszlachetnienia	Grazie, ora sto meglio. Per raffinare
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Grazie. Per ora il tempio è al sicuro. Ecco il[ENTER]tuo regalo. Ma l'energia crescerà di nuovo. Torna[ENTER]tra 24 ore per abbassare il livello di energia con[ENTER]le Animasfere. Ovviamente riceverai un'altra[ENTER]ricompensa.
+Efekt zestawu	Effetto set
+eksperyment może się nie powieść.	l'esperimento potrebbe fallire.
+ekwipunek. Potrafie tez oszlifowac klejnoty	equipaggiamento. So anche tagliare le gemme
+eliksir (szansa 90%, od 120. poziomu):	elisir (probabilità 90%, dal livello 120):
+Eliksir daje od 8 do 20% na 1 do 10 minut -	L'elisir dà dall'8 al 20% per 1-10 minuti -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	L'elisir non funziona nelle missioni di Yohara e non riduce il tempo d'attesa (per quello c'è la Spirale del tempo).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	L'Elisir del Ricercatore funziona nelle ricerche del Biologo - dal livello 30.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	L'Elisir del Ricercatore è già attivo - verrà usato alla prossima consegna di un oggetto per la ricerca.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	L'Elisir del Ricercatore ha migliorato la qualità dell'oggetto: probabilità di accettazione %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	Elisir Volontà SungMa: +5 (%s) per 30 min.
+Eliksiry Yohary	Elisir di Yohara
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (RSV). Trovalo e prendigli la borsa medica.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (FT). Uccidi i druidi finché non ottieni
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	Gli En-Tai si comportano in modo a dir poco strano. Sfoltiscili
+En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, perché si comportano in modo a dir poco strano.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Enciclopedia aperta: 25 libri di abilità sono nell'inventario.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Enciclopedia: ti servono %d spazi liberi nell'inventario.
+energii przy pasku zadań pokaże, ile ci zostało.	di energia vicino alla barra delle missioni mostra quanto ti resta.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebos (RSV): Bagjanamu (RSV) sorveglia la via verso Jotun Thrym!
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebos (FT): Bagjanamu (FT) sorveglia la via verso Jotun Thrym!
+Erebu jest dziś zamknięte. Wróć później.	Erebos oggi è chiuso. Torna più tardi.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebos non vi accoglie adesso. Riprova tra poco.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebos: Bagjanamu sorveglia la via verso Jotun Thrym! Avete 30 minuti.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebos: tempo scaduto - tornate alla Foresta Incantata.
+Erebu: potrzebujesz Kamienia Driad.	Erebos: ti serve una Pietra delle Driadi.
+Erebu: ta wyprawa już się skończyła.	Erebos: questa spedizione è già terminata.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Sezione 2: sconfiggi la Pietra demoniaca e tutti i mostri! Gli arcieri si svegliano quando la pietra viene colpita.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Sezione 2: sconfiggi i mostri entro il tempo limite! La maledizione di Sung Mahi ogni 10 s toglie più HP - l'Antidoto SungMa la rimuove.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Sezione 2: schiva tutti gli attacchi per un minuto! Un colpo del cerchio lascia 1 HP - il secondo con HP non pieni uccide.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Sezione 2: trova la pietra per rimuovere il sigillo! I sigilli si aprono solo nell'ordine giusto.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Sezione 2: trova la chiave giusta per fuggire! La Chiave enigmatica cade dai mostri.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Sezione 2: trova la coppia di mostri che non si abbinano e sconfiggila!
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Sezione 2: distruggi la Roccia Metin giusta! Hai una sola possibilità.
+Etap ukończony - przejdź przez portal	Fase completata - attraversa il portale
+Event jeszcze trwa - nagrody za ranking	L'evento è ancora in corso - le ricompense della classifica
+eventu odbiera tu po jego końcu (przez 7 dni):	dell'evento si ritirano qui dopo la fine (per 7 giorni):
+Ewolucja zawsze się udaje i daje +1 poziom,	L'evoluzione riesce sempre e dà +1 livello,
+Fabuła	Storia
+Fala Śmierci	Onda della Morte
+Fragment duszy: %d / 10	Frammento d'anima: %d / 10
+fryzure na fryzure, nakladke na nakladke.	acconciatura su acconciatura, skin su skin.
+Gardziel Am-heha	Fauci di Am-heh
+Gaya biorę sam z twojego licznika Gaya.	Il Gaya lo prendo io dal tuo contatore Gaya.
+Gaya biorę z twojego licznika Gaya.	Il Gaya lo prendo dal tuo contatore Gaya.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	Il Gaya lo prendo dal tuo contatore Gaya. Clicca una ricetta,
+gdy się nie uda, hełm i materiały przepadają.	se fallisce, l'elmo e i materiali vanno persi.
+gdy skończę.	quando avrò finito.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	Quando la nave salperà, non si torna indietro - l'Idra
+Gdy walka się zacznie, świątynia odmierzy wam	Quando la lotta inizierà, il tempio vi conterà
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	Dov'è la borsa medica? Prendila ai Druidi En-Tai.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	Dov'è la borsa medica? Prendila al Druido En-Tai.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Dov'è lo Smeraldo arboreo (RSV)? Sconfiggi il Sovrano.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Dov'è lo Smeraldo arboreo (FT)? Sconfiggi il Sovrano.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Dov'è il Legno pregiato (FT)? Sconfiggi il Sovrano.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Dov'è il Legno pregiato (RSV)? Sconfiggi il Sovrano.
+Gildia może wejść ponownie za %d min.	La gilda può rientrare tra %d min.
+Gildia musi istnieć co najmniej 24 godziny.	La gilda deve esistere da almeno 24 ore.
+Gildia musi mieć co najmniej %d poziom.	La gilda deve essere almeno di livello %d.
+Gildia potrzebuje %d pkt rankingu gildii.	La gilda ha bisogno di %d punti classifica gilda.
+Glos Barah Taraji	Voce di Barah Taraji
+GM: Krypta Balathora - zeruj przerwę gildii	GM: Cripta di Balathor - azzera la pausa della gilda
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM: Devi essere al piano 1 o 2 della DT.
+GM: szanse połowu	GM: probabilità di pesca
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Ira di Alastor! Evoca servitori e cura le sue ferite.
+Goblin Skarbow:	Goblin del tesoro:
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Amara sconfitta! La tua scalata finisce qui - tra poco tornerai nella sala.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	Fatto! Parlami ancora una volta.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	Fatto! Torna dal Monaco Milbon per ritirare il regalo.
+Gotowe. Bonus PD +%d%% na %s	Fatto. Bonus EXP +%d%% per %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	Fatto. I bonus sono stati trasferiti, e l'oggetto
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	Fatto. Metti la Reliquia nella finestra Bonus Reliquia
+Gotowi? Balathor nie zna litości.	Pronti? Balathor non conosce pietà.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	Il gioco costa 30 000 Yang e un set di carte.
+Graj po swojemu (wolna reka)	Gioca a modo tuo (mano libera)
+Gratulacje! Za miejsce w pierwszej dziesiątce	Congratulazioni! Per un posto tra i primi dieci
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	Finisci il gioco quando vuoi. Ricevi forzieri:
+Gromiste Góry	Monti del Tuono
+Grota Wygnańców (wejście)	Grotta dell'Esilio (ingresso)
+Grota Wygnańców 2	Grotta dell'Esilio 2
+Grota Wygnańców 2 (PB)	Grotta dell'Esilio 2 (RSV)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Grotta dell'Esilio 2 (RSV): tempo scaduto - tornate all'Altopiano delle Illusioni.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Grotta dell'Esilio 2 (RSV): hai 60 minuti. Ottenete le Chiavi spirale (RSV) e trovate lo Spirito di un Sura.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Grotta dell'Esilio 2 (RSV): ti serve un Libro del risveglio.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Grotta dell'Esilio 2 (RSV): questa spedizione è già terminata.
+Grota Wygnańców 2 (SZC)	Grotta dell'Esilio 2 (FT)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Grotta dell'Esilio 2 (FT): tempo scaduto - tornate all'Altopiano delle Illusioni.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Grotta dell'Esilio 2 (FT): hai 60 minuti. Ottenete le Chiavi spirale (FT) e trovate lo Spirito di un Sura.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Grotta dell'Esilio 2 (FT): ti serve un Orologio da tasca.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Grotta dell'Esilio 2 (FT): questa spedizione è già terminata.
+Grota Wygnańców 2 (zablokowane)	Grotta dell'Esilio 2 (bloccata)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	La Grotta dell'Esilio 2 è raggiungibile solo dalla Grotta dell'Esilio.
+Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, questo non è un cristallo Metin, ma un pezzo
+Głębie (silny)	Abissi (forte)
+Głębie (słaby)	Abissi (debole)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	Gli Abissi non vi accolgono adesso. Riprova tra poco.
+Głębie Północnego Wiatru	Abissi Boreali
+Głębie Północnego Wiatru (silny)	Abissi Boreali (forte)
+Głębie Północnego Wiatru (słaby)	Abissi Boreali (debole)
+Głębie są dziś zamknięte. Wróć później.	Gli Abissi oggi sono chiusi. Torna più tardi.
+Głębie: ta wyprawa już się skończyła.	Abissi: questa spedizione è già terminata.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Abissi: sei rimasto morto troppo a lungo - sei fuori dalla spedizione.
+Halloween, nagle zawirował cały świat i w ułamku	Halloween, all'improvviso il mondo intero ha girato e in una frazione
+Handlarz Bronią w Dongan potrzebuje pomocy.	Il Mercante d'Armi a Dongan ha bisogno di aiuto.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	Il Mercante d'Armature a Dongan ha bisogno di aiuto.
+Hej! Wiem, że zamieniono mnie w kamień - to	Ehi! So che mi hanno trasformato in pietra - questo
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Ehi, tu! Sì, tu! Sembri qualcuno che sa
+hełm 120. poziomu dla każdej klasy. Połóż materiały	un elmo di livello 120 per ogni classe. Metti i materiali
+Hełmy na 100 poziom	Elmi di livello 100
+Hmm... Nie mam maski, która pasowałaby	Mmm... Non ho una maschera che si adatti
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Mmmh, questa felce purtroppo è danneggiata. Non c'è
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	La Hwacha non è ancora pronta (servono Frecce di fuoco).
+Hydra pokonana! Statek może teraz dopłynąć do	L'Idra è sconfitta! Ora la nave può arrivare a
+i 400 000 Yang. Szansa zależy od plusa butów:	e 400 000 Yang. La probabilità dipende dal più delle scarpe:
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	e 5 Mole boreali, per l'armatura 5 Sete Serpens
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	e 5 Lucidi Serpens. Costo: 10 000 000 Yang e 100 Gaya,
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	e dall'oscurità degli abissi. Senza non scenderai alle rovine.
+i co najmniej 500 000 Yang w skarbcu gildii.	e almeno 500 000 Yang nel tesoro della gilda.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	e un elmo (esempio per la tua classe, +7) e tutti
+i magowie strzega swiatyni dzien i noc, a po jej	e i maghi sorvegliano il tempio giorno e notte, e dopo la sua
+i materiały - wszystkie przepisy zobaczysz w oknie.	e i materiali - vedrai tutte le ricette nella finestra.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	e potrebbe non funzionare bene. Lo attiva il proprietario
+i Podziemnych Lodowych Golemów w Grocie.	e Golem Ghiaccio d. Abissi nella Grotta.
+i Starożytna Dżungla (wiatr). Odporność	e Giungla Antica (vento). Resistenza
+i te dodane. Im wyższy poziom szaty, tym większa	e quelli aggiunti. Più alto è il livello della veste, maggiore
+i wrócić do Portu Nowego Kontynentu?	e tornare al Porto del Nuovo Continente?
+i Zaczarowanego Lasu (wiatr) oraz lochy:	e Foresta Incantata (vento) e i sotterranei:
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	e armatura di livello 65, forgio una nuova, più potente
+ich blask zmienia się pod wpływem emocji.	il loro bagliore cambia con le emozioni.
+Ich strażnicy pilnują Płomiennego Feniksa,	I loro guardiani vegliano sulla Fenice di fuoco,
+Idź dalej	Vai avanti
+Idź do Opuszczonej Twierdzy	Vai alla Fortezza Abbandonata
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Vai al teleporter e spostati al Tempio dello[ENTER]Zodiaco. Il Monaco Milbon ti sta già aspettando lì.
+Idź do Świątyni Węży	Vai al Templum Serpens
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	torna dai Sovrani En-Tai e portami lo Smeraldo
+Idź już i znajdź jeden %s!	Ora vai e trova un %s!
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	Ignator (RSV) è ancora vivo. Continua a combattere o
+Ignator (PB), strażnik żaru, został pokonany.	Ignator (RSV), guardiano delle braci, è stato sconfitto.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	Ignator (FT) è ancora vivo. Continua a combattere o
+Ignator (SZC), strażnik żaru, został pokonany.	Ignator (FT), guardiano delle braci, è stato sconfitto.
+Informacja o mapie	Informazioni sulla mappa
+innym... Czegoś takiego na pewno jeszcze nie	altro... Qualcosa del genere di sicuro non l'hai mai
+Inteligencja %d.	Intelligenza %d.
+Inteligencja - trucizna, ogień i krwawienie	Intelligenza - veleno, fuoco e sanguinamento
+Inteligencja Sung Ma	Intelligenza Sung Ma
+ja wyrzucasz. Trzy karty o tej samej liczbie	la scarti. Tre carte con lo stesso numero
+Jak grac w Okey?	Come si gioca a Okey?
+Jak ma sie nazywac?	Come deve chiamarsi?
+Jak ma walczyc?	Come deve combattere?
+Jak mam walczyc przy tobie?	Come devo combattere al tuo fianco?
+Jak sie masz?	Come stai?
+Jaka ma byc jego klasa?	Quale deve essere la sua classe?
+Jaka sciezka?	Quale percorso?
+Jaskinie Gnolli	Grotte degli Gnoll
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	Le Grotte degli Gnoll sono disponibili dal Livello Campione 1. Torni a Dongan.
+Jazda (Bezszelest. Chód)	Cavalca: Passo pium.
+Jazda (Brak Odrzutu)	Cavalca: no contracc.
+Jazda (Gwałt. Wichura)	Cav: Tempesta furiosa
+Jazda (Nieśmiertelność)	Cavalca: invincib.
+Jazda (umiej. konne)	Cav: abilità Cavallo
+Jazda (W. SungMa. INT)	Cav: Vol. SungMa (INT)
+Jazda (W. SungMa. ODP)	Cav: Vol. SungMa (RES)
+Jazda (W. SungMa. SIŁA)	Cav: Vol. SungMa (STR)
+Jazda (W. SungMa. WIT)	Cav: Vol. SungMa (VIT)
+Jazda (Zwinne Kopyta)	Cav: Zoccoli lesti
+Jazda Konna (Ninja)	Cav: VS ninja
+Jazda Konna (PD)	Cavalca: EXP
+Jazda Konna (Precyzja)	Cavalca: precis.
+Jazda Konna (przeciw diabłom)	Cav: VS diavoli
+Jazda Konna (przeciw insektom)	Cav: VS insetti
+Jazda Konna (przeciw mistykom)	Cav: VS mistici
+Jazda Konna (przeciw nieumarłym)	Cav: VS non morti
+Jazda Konna (przeciw orkom)	Cav: VS orchi
+Jazda Konna (przeciw potworom pustyni)	Cav: VS mostri del deserto
+Jazda Konna (przeciw potworom)	Cav: VS mostri
+Jazda Konna (przeciw półludziom)	Cav: VS mezzi uomini
+Jazda Konna (przeciw zwierzętom)	Cav: VS animali
+Jazda Konna (Sura)	Cav: VS sura
+Jazda Konna (Szaman)	Cav: VS shamani
+Jazda Konna (Wojownik)	Cav: VS guerrieri
+Jeden transfer zuzywa jedna sztuke.	Un trasferimento consuma un pezzo.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	Uno degli oggetti scelti non è più nel tuo
+Jedna z twoich mocy woli SungMa zostanie	Una delle tue statistiche di Volontà SungMa verrà
+jednak: tylko pierwsza próba zawsze się udaje.	però: solo il primo tentativo riesce sempre.
+jednego jadeitu potrzebują tych samych materiałów.	una giada richiedono gli stessi materiali.
+jedną pełną kulę doświadczenia.	una sfera di esperienza piena.
+Jego jad zabił już niejednego wojownika,	Il suo veleno ha già ucciso molti guerrieri,
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	Le sue squame brillano come oro liquido! Cosa ne farai?
+Jej Królowa nie wypuściła jeszcze nikogo,	La sua Regina non ha ancora lasciato andare nessuno,
+jej potomstwem, najadami i samą bestią. Wytrzymaj	la sua prole, le naiadi e la bestia stessa. Resisti
+Jej potwory rani tylko Czempion - ten, kto	I suoi mostri li ferisce solo un Campione - chi
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	Se io o tu moriamo, la spedizione è persa.
+jest część parametrów, którą da (poziom 250 - 25%).	è una parte delle statistiche che darà (livello 250 - 25%).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	Sono il Goblin del tesoro. Da anni cerco un grande
+Jestem w trakcie dokładniejszej analizy	Sto facendo un'analisi più approfondita
+jesteś dość silny, by przetrwać. Naprawdę chcesz	sei abbastanza forte da sopravvivere. Vuoi davvero
+Jesteś już w Porcie Nowego Kontynentu.	Sei già al Porto del Nuovo Continente.
+Jeszcze chwile	Ancora un attimo
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	anche il suo Smeraldo arboreo, e ti darò qualcosa di prezioso.
+jeszcze lepsze. Przynies mi:	ancora migliori. Portami:
+Jeszcze nie	Non ancora
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	Non si sono ancora riposati dalla spedizione precedente:
+Jeszcze nie skończyłem. Wróć za:	Non ho ancora finito. Torna tra:
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	Non sei ancora riuscito a distruggere tutte le %d[ENTER]Rocce Metin. Torna da me quando avrai svolto il[ENTER]compito.
+Jeszcze nieaktywne.	Non ancora attivo.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	ancora per un po'. Conduce alla Foresta Incantata,
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	di nuovo dai Sovrani En-Tai e portami uno Smeraldo
+jeśli się rozmyślisz.	se cambi idea.
+Jeśli statek wciąż płynie, łódź zaraz cię do	Se la nave sta ancora navigando, una barca ti porterà subito
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	Se la spedizione è ancora in corso, il cancello ti porterà subito.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	Se la spedizione è ancora in corso, il potere della statua ti porterà subito.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	Se la spedizione è ancora in corso, il portale ti porterà subito.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	Se la spedizione è ancora in corso, il passaggio ti porterà subito.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	Se la spedizione è ancora in corso, la corrente ti porterà subito.
+Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (RSV) è arrivato in Erebos!
+Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (FT) è arrivato in Erebos!
+Jotun Thrym przybył do Erebu!	Jotun Thrym è arrivato in Erebos!
+Juz mam to blogoslawienstwo.	Ho già questa benedizione.
+ją pokonali.	l'hanno sconfitta.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Pietre creerò un Talismano misterioso. Nella finestra di creazione
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	della Pietra Spirituale di Beran-Setaou. La otterrai
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Pietra delle Anime +0, +1, +2 o +3. Da queste taglierò
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	Le pietre sono cadute - il drago è indifeso. Sbrigatevi,
+Kamienie Przebudzenia	Pietre del risveglio
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	Le pietre del drago proteggono Beran-Setaou. Finché resta
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	La pietra decide la probabilità: Piccola 2%, Sottile 5%,
+Kamień demonów oberwał - łucznicy atakują!	La Pietra Demoni è stata colpita - gli arcieri attaccano!
+Kamień Driad.	Pietra delle Driadi.
+Kamień Duchowy Buffi	Pietra delle Anime di Buffi
+Kamień Duchowy Buffi trenuje umiejętności Buffi	La Pietra delle Anime di Buffi allena le abilità di Buffi
+Kamień Duchowy+	Pietra delle anime+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	La Pietra delle anime+ sviluppa la risposta e il boost dal grado G1
+Kamień Dusz Beran-Setaou	Pietra Spirituale di Beran-Setaou
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	La Pietra Spirituale di Beran-Setaou! Grazie a lei le mie
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	La Roccia Metin Yohara funziona solo sulle mappe di Yohara con la Volontà SungMa.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	La Roccia Metin Yohara richiede il Livello Campione 1.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	una pietra del risveglio e 2 500 000 Yang. La pietra decide
+Kamień użyty na złej steli się rozpadnie.	Una pietra usata sulla stele sbagliata si sgretolerà.
+karty Okey. 24 karty tworza zestaw kart.	carte Okey. 24 carte formano un set di carte.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Catacombe del Diavolo: Uscirai dal sotterraneo tra 1 secondo.
+Każda klasa i droga ma swój dopalacz - twój to:	Ogni classe e via ha il suo boost - il tuo è:
+Każda mapa Sung Ma ma swoje wymagania. Gdy	Ogni mappa Sung Ma ha i suoi requisiti. Quando
+Każde pełne 10% Siły daje też +1% do	Ogni 10% pieno di Forza dà anche +1% direttamente a
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	Ogni giorno sono sempre aperti due templi[ENTER]diversi.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Tutti devono essere di livello %d, Campione 4 e nella gilda da 24 ore. Non soddisfano:
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Ogni guerriero può scegliere una ricompensa al Baule d'oro dei draghi - avete un minuto.
+Klejnoty dla Seona-Pyeonga	Gioielli per Seon-Pyeong
+Klejnoty Zawiści wypadają z Podziemnych Lod.	I Gioielli dell'Invidia cadono dai Golem Ghiaccio
+Klejnoty Zawiści zdradziły mi wiele, ale to	I Gioielli dell'Invidia mi hanno rivelato molto, ma è
+Klif Gautama (Zbocze Gautama)	Rupe di Gautama (Pendio di Gautama)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Clicca col tasto destro l'Anello Fuoco dei draghi stando vicino a una statua. Le uova tornano ogni 2 minuti.
+Kliknij talie, aby dobrac karty. Lewym	Clicca il mazzo per pescare carte. Con il sinistro
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	La Chiave Prigione non entra - il fabbro è ancora in gabbia.
+Klucz Goblina!	Chiave Goblin!
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	La Chiave Serpens si sbriciola - la Colonna resta immobile.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	La Chiave fiore di ghiaccio (RSV) può usarla solo un Ninja o uno Shamano.
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	La Chiave fiore di ghiaccio (FT) può usarla solo un Ninja o uno Shamano.
+Klątwa	Maledizione
+klątwa Sung Mahi. Ale jestem szamanem i znam	la maledizione di Sung Mahi. Ma sono uno shamano e conosco
+Klątwa Sunga Mahi zdjęta.	La maledizione di Sung Mahi è stata rimossa.
+Kobieta	Donna
+Kobieta czy mezczyzna?	Donna o uomo?
+Kolejny Potężny Wojownik Wężowy (lód)!	Un altro Guerr. Serpens potente (ghiaccio)!
+kolekcjoner przedmiot	oggetto da collezione
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	collane e orecchini, e da una Pietra Demoni - una Pietra del potere
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	Colonna del Drago Nord (RSV) distrutta. Il capogruppo può parlare con il Leone di Ghiaccio (RSV).
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	Colonna del Drago Nord (FT) distrutta. Il capogruppo può parlare con il Leone di Ghiaccio (FT).
+komnatach krazy Straznik En-Tai, ktory co chwile	stanze si aggira un Guardiano En-Tai, che ogni tanto
+konczy ja - skrzynie dostaniesz przy	lo finisce - i forzieri li ricevi alla
+Koniec gry daje jedna skrzynie wedlug wyniku.	La fine del gioco dà un forziere in base al punteggio.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	continente - Yohara. Vai da lui a Dongan quando
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	costume, cavalcatura - l'aspetto di un'altra cavalcatura.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Costumi, acconciature e skin per armi -- tutto a 1 Yang.
+Koszt szkolenia:	Costo dell'addestramento:
+Koszt: 100 000 000 Yang (przy odbiorze)	Costo: 100 000 000 Yang (al ritiro)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Costo: 50 000 000 Yang o un Biglietto Proiezione,
+Krainie, a dostaniesz Książkę.	Terra, e riceverai un Libro.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	la terra di Jotun Thrym dietro il Tempio, o di nuovo
+Krypta Balathora jest teraz zamknięta.	La Cripta di Balathor ora è chiusa.
+Krypta Balathora: wejście	Cripta di Balathor: entra
+Krypta Balathora: zgłoszenie gildii	Cripta di Balathor: iscrizione della gilda
+Krypta jest otwarta. Członkowie gildii mogą teraz	La Cripta è aperta. I membri della gilda ora possono
+Krypta twojej gildii jest już zamknięta.	La Cripta della tua gilda è già chiusa.
+Krypta twojej gildii jest na kanale %d.	La Cripta della tua gilda è sul canale %d.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	Il Cristallo boreale si è frantumato - la via per la Camera del Cristallo è aperta.
+Kryształy Metin	Cristalli Metin
+Kryształy Metin wypadają z Metinów Szacunku,	I Cristalli Metin cadono dalle Metin della stima,
+Kryształy Metin: nagroda	Cristalli Metin: ricompensa
+kryształów Metin do moich badań!	Cristalli Metin per la mia ricerca!
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Re Scorpione sconfitto! Tempo: %d:%02d. Il sotterraneo è completato.
+królem mrozu i lodu?	il re del gelo e del ghiaccio?
+Królestwa Żywiołów.	Mondo Elementale.
+Królestwo Żywiołów	Mondo Elementale
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	Il Mondo Elementale non accoglie gli sconfitti. Torni al porto.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	Il Mondo Elementale è formato da nove zone, dove
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Regina della Giungla sconfitta! Tempo: %d:%02d. Il sotterraneo è completato.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	Regina Meley: Il Cancello del Rifugio si è chiuso dietro di voi.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Regina Meley: Tempo scaduto. Il Cancello del Rifugio vi butta fuori.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Regina Meley: Le colonne colpiscono la Regina Meley! Prossima fase tra 5 secondi.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Regina Meley: Le statue brillano di blu - usate gli Anelli Fuoco dei draghi vicino alle statue!
+Królowa Meley: Tarcza statui zgasła - atakujcie!	Regina Meley: Lo scudo della statua si è spento - attaccate!
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Regina Meley: La lotta inizia tra 10 secondi. Avete un'ora per distruggere le quattro statue.
+Królowa Smoków Meley pokonana!	Meley, Regina d. draghi sconfitta!
+Królowa Smoków Meley została pokonana!	Meley, Regina d. draghi è stata sconfitta!
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Regina Serpens Nethis sconfitta! Tra 20 s tornate alla Statua Serpens per la ricompensa.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	Regina Serpens Nethis sconfitta. Ecco la tua ricompensa.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Cerchio del Principe: Volontà SungMa (STR) -32 per 7 secondi.
+Krąg Wróżbity: jesteś ogłuszony.	Cerchio dell'Indovino: sei stordito.
+Książęcy	Principesco
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	Il libro costa 100 000 000 Yang. Torna con i soldi.
+Księga Misji (W.Płn.W.)	L. Miss. (Canyon Bor.)
+Księga Misji (W.Płn.W.): %d / %d potworów.	L. Miss. (Canyon Bor.): %d / %d mostri.
+Księgę Misji można aktywować od poziomu 120.	Il Libro delle missioni si può attivare dal livello 120.
+kto wszedł tam bez drużyny najlepszych wojowników.	chiunque sia entrato senza una squadra dei migliori guerrieri.
+ktora jest z toba w grupie, expi z toba po rowno,	che è nel tuo gruppo, fa EXP con te in parti uguali,
+Ktora zbroje mam z niej zrobic?	Quale armatura devo farne?
+ktore moge przekuc. Zalozonego przedmiotu	che posso riforgiare. Un oggetto indossato
+Ktory przedmiot mam przekuc? Mozesz go tez	Quale oggetto devo riforgiare? Puoi anche
+któraś statystyka jest za niska: Siła - zadajesz	una statistica è troppo bassa: Forza - infliggi
+które otwierają Erebu. Przywódca Straży Lasu wpuści	che aprono Erebos. Il capo dei Guardiani della foresta fa entrare
+Które portale chcesz zregenerować?	Quali portali vuoi rigenerare?
+który chcesz wykonać - obręcz, kolia i klipsy	che vuoi creare - bracciale, collana e orecchini
+Który Kamień Duszy oddajesz?	Quale Pietra delle Anime consegni?
+który myślał, że poradzi sobie z Razadorem.	che pensava di poter tenere testa a Razador.
+Którą umiejętność Buffi chcesz trenować?	Quale abilità di Buffi vuoi allenare?
+Którą umiejętność chcesz trenować?	Quale abilità vuoi allenare?
+Którą umiejętność udoskonalić?	Quale abilità migliorare?
+którą z nich wydobyłem. Wybierz, co chcesz.	che ho estratto da loro. Scegli ciò che vuoi.
+Kup	Compra
+Kup bilet	Compra biglietto
+Kup Bilet do Atlantydy	Compra Biglietto per Atlantide
+Kup kostiumy i nakladki	Compra costumi e skin
+Kup materialy Alchemika	Compra materiali dell'Alchimista
+Kup przedmioty	Compra oggetti
+kupisz w Sklepie Gaya.	li compri nel Negozio Gaya.
+Kwiat Żywiołu	Fiore elementale
+Kwiaty Żywiołu	Fiori elementali
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	foresta (RSV). Attento a non perdere nulla per strada!
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	foresta (FT). Attento a non perdere nulla per strada!
+Ledwo trzymam się na nogach... Energia	Mi reggo a malapena in piedi... L'energia
+Legenda głosi, że rosą En-Tai można przegnać złe	La leggenda dice che con la rugiada En-Tai si possono scacciare i mali
+Legendy mówią, że za tym portalem śpi Razador,	Le leggende dicono che oltre questo portale dorme Razador,
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	medicine. Sconfiggi le Metin della Percezione a Dongan,
+Lekarstwo	Medicina
+Lekarstwo Iluzji	Medicina delle illusioni
+Lekarstwo. Zanieś je: Alchemik.	Medicina. Portala a: Alchimista.
+Lekarstwo. Zanieś je: Chaegirab.	Medicina. Portala a: Chaegirab.
+Lekarstwo. Zanieś je: Handlarz Bronią.	Medicina. Portala a: Mercante d'Armi.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	Medicina. Portala a: Mercante d'Armature.
+Lekarstwo. Zanieś je: Uriel.	Medicina. Portala a: Uriel.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Meglio c'è solo la Canna in carbonio: te la faccio con Componente per canna, Anello per canna, Impugnatura per canna e 3 Fibre di carbonio.
+Lew budzi się, a z mrozu wychodzą potwory...	Il leone si sveglia, e dal gelo escono i mostri...
+Leże Smoka (Beran-Setaou)	Tana del Drago (Beran-Setaou)
+Leże Smoka - wyprawa	Tana del Drago - spedizione
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Tana del Drago: Tempo scaduto. Beran-Setaou vi butta fuori dalla sua tana.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Tana del Drago: le pietre sono cadute - attaccate Beran-Setaou!
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Tana del Drago: impossibile aprire il passaggio - parla con lo Spirito di un Sura.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Tana del Drago: L'ultima pietra è caduta - Beran-Setaou è indifeso! Attaccate!
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Tana del Drago: parla con lo Spirito di un Sura per aprire il passaggio.
+Leże Smoka: przejście prowadzi przez poczekalnię.	Tana del Drago: il passaggio conduce attraverso la sala d'attesa.
+Leże Smoka: przejście się otwiera...	Tana del Drago: il passaggio si sta aprendo...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	molte battaglie. Trova il Sovrano En-Tai (FT) e
+Liczy się łączna liczba punktów ze wszystkich gier	Conta il totale dei punti di tutte le partite
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	Il sotterraneo non vi accoglie adesso. Riprova tra poco.
+Loch Pająków 1 (Kuahklo Dong)	Sotterraneo dei Ragni 1 (Kuahklo Dong)
+Lochy Przebudzenia	Sotterranei del Risveglio
+Lochy Przebudzenia wpuszczają tylko tych, którzy	I Sotterranei del Risveglio fanno entrare solo chi
+Lochy Przebudzenia, a statuy kowali wykują dla	i Sotterranei del Risveglio, e le statue dei fabbri forgeranno per
+Lochy są dziś zamknięte. Wróć później.	I sotterranei oggi sono chiusi. Torna più tardi.
+Lodogóry	Montagne di ghiaccio
+Lodowa Kraina (Nemere)	Terra di Ghiaccio (Nemere)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Terra di Ghiaccio: impossibile aprire il passaggio - parla con il Leone di Pietra.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Terra di Ghiaccio: parla con il Leone di Pietra per aprire il passaggio.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	Terra di Ghiaccio: il passaggio conduce attraverso la sala d'attesa.
+Lodowa Kraina: przejście się otwiera...	Terra di Ghiaccio: il passaggio si sta aprendo...
+Lodu	Ghiaccio
+Lucznik (luk)	Arciere (arco)
+Ludzi i Podziemnych Lodowych Golemów	Uomini e Golem Ghiaccio d. Abissi
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maat ha trionfato su Isfet - l'ultima Stele di Isfet (RSV) è distrutta.
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maat ha trionfato su Isfet - l'ultima Stele di Isfet (FT) è distrutta.
+Magazyn	Magazzino
+magazyn lub inne okno i sprobuj ponownie.	il magazzino o un'altra finestra e riprova.
+Majestatyczny	Maestoso
+Mam do niej klucz, ale nie wiem, ktora z	Ne ho la chiave, ma non so quale
+Mam już wszystkie 20 Klejnotów Mądrości!	Ho già tutti i 20 Gioielli della saggezza!
+Mapa teleportacji jest wylaczona na tym serwerze.	La mappa di teletrasporto è disattivata su questo server.
+Marchewka	Carota
+Maska dyni wytrzyma 7 dni od pierwszego	La maschera di zucca dura 7 giorni dal primo
+Masz 30 minut. Powodzenia!	Hai 30 minuti. Buona fortuna!
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	Hai 60 minuti per completarlo. Dopo averlo completato o dopo
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Hai dei nuclei purificati per me? Fammi vedere...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	Hai già una missione attiva dal L. Miss. (Canyon Bor.). Prima completala.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Hai già il massimo di Gaya possibile (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	Hai già il Libro Cavallo dorato. Dal livello 31 il tuo cavallo è un Cavallo militare potente.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	Hai la Pietra Spirituale di Beran-Setaou. Portala
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	Hai la Chiave Crist. d. Anime. Aprire il portone[ENTER]e portare il gruppo al livello 2?
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	Hai la Medicina. Portala a: Alchimista (Dongan).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	Hai la Medicina. Portala a: Chaegirab (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	Hai la Medicina. Portala a: Mercante d'Armi (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	Hai la Medicina. Portala a: Mercante d'Armature (Dongan).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	Hai la Medicina. Portala a: Uriel (Dongan).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	Hai troppi pochi punti rango - il rango scenderebbe sotto zero.
+Masz za mało Yang.	Non hai abbastanza Yang.
+Masz za niski poziom.	Il tuo livello è troppo basso.
+materialy, Yang i szanse (najedz na przedmiot).	materiali, Yang e probabilità (passa il mouse sull'oggetto).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Materiali, Yang e probabilità - nella finestra (passa il mouse sull'oggetto).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	I materiali di Balathor li dà la Cripta di Balathor, il Martello rugiadoso
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	I materiali li trovi nello Scrigno Sirena (si apre con la Chiave Sirena). La canna dura 30 giorni
+materiały, Yang i szansę (najedź na przedmiot).	materiali, Yang e probabilità (passa il mouse sull'oggetto).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	Materiali, Yang e probabilità li vedrai nella finestra di creazione
+materiały. Pasuje każda broń, zbroja albo hełm	materiali. Va bene qualsiasi arma, armatura o elmo
+Max PŻ +2000	HP max +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	Il meccanismo della Stele di Isfet lo avvia solo una Ruota dorata
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	L'Orda Forza elementale funziona solo nel Mondo Elementale.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	Orda Forza elementale: per 10 minuti l'Altopiano non ti toglie HP.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin del Freddo (RSV) distrutta. Tra poco sarete portati al 7° piano.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin del Freddo (FT) distrutta. Tra poco sarete portati al 7° piano.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	La Metin del purgatorio (RSV) è ancora in piedi - i demoni tornano!
+Metin Purgatorium (PB) został zniszczony.	La Metin del purgatorio (RSV) è stata distrutta.
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	La Metin del purgatorio (FT) è ancora in piedi - i demoni tornano!
+Metin Purgatorium (SZC) został zniszczony.	La Metin del purgatorio (FT) è stata distrutta.
+Metinu Świadomość zatruła mnie i potrzebuję 	La Metin della percezione mi ha avvelenato e mi serve 
+Metiny Drzewnych Stworzeń (PB)	Metin Creature arboree (RSV)
+Metiny Drzewnych Stworzeń (SZC)	Metin Creature arboree (FT)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	Le Metin Creature arboree risvegliano gli En-Tai.
+Metiny Drzewnych Stworzeń zatruwają ten las.	Le Metin Creature arboree avvelenano questa foresta.
+Metiny zniszczone. Las trochę się uspokoił.	Metin distrutte. La foresta si è un po' calmata.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metin distrutte. Torna dall'Esploratore d. foresta (RSV).
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metin distrutte. Torna dall'Esploratore d. foresta (FT).
+Mezczyzna	Uomo
+mieć co najmniej %d sztuk.	averne almeno %d pezzi.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	avere un Libro del risveglio (preso all'ingresso).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	La pozione non farà ancora effetto - il corpo deve riposare.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	La pozione stavolta non ha funzionato. Riprova più tardi.
+Mikstura Talentu	Pozione del talento
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	La Pozione del talento migliora la 9ª abilità da G1 a P. %s
+Miksturę Mądrości	Pozione della saggezza
+Misja poboczna	Missione secondaria
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	La missione è in corso. Sconfiggi entrambi i boss e torna da me:
+Misja wykonana! Portal do następnego etapu jest otwarty.	Missione compiuta! Il portale per la fase successiva è aperto.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Missione dal L. Miss. (Canyon Bor.): sconfiggi 300 mostri nel Canyon Boreale.
+Misja: pokonaj 300 potworów w Wąwozie	Missione: sconfiggi 300 mostri nel Canyon
+Misji nie można przerwać. Księga zniknie.	La missione non si può interrompere. Il libro sparirà.
+Mistrz gildii może zgłosić tu swoją gildię:	Il capo della gilda può iscrivere qui la sua gilda:
+mniej - brazowa	meno - bronzo
+Moc klejnotów jest teraz twoja na zawsze.	Il potere delle gemme ora è tuo per sempre.
+Moc pierścienia wyczerpała się.	Il potere dell'anello si è esaurito.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	Il potere dell'Occhio del Drago per oggi è esaurito. Domani ritiralo di nuovo dall'Alchimista.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	potrebbero essere molto sensibili all'influsso di Sung Mahi.
+Mogę cię zabrać do każdego z nich; między	Posso portarti in ognuno di essi; tra
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	Posso rinnovare la benedizione: +%d%% EXP per %s
+Mogę przenieść na szatę aury parametry bransolety,	Posso trasferire sulla veste dell'aura le statistiche del bracciale,
+Mogę przenieść wygląd jednego przedmiotu na drugi.	Posso trasferire l'aspetto di un oggetto su un altro.
+Mogę więc stworzyć z nich Kryształ Energii.	Quindi posso crearne un Cristallo di energia.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	I miei fratelli sono scomparsi, e con loro la borsa medica. I guerrieri
+Moj klucz nie pasuje do tej skrzyni.	La mia chiave non entra in questo forziere.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	La mia chiave entra! È il forziere giusto!
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	Il mio potere ti porterà sull'Altopiano delle Illusioni. Lì
+Moja technika jest genialna, ale jeszcze	La mia tecnica è geniale, ma ancora
+Moje badania wykazały, że potwory znajdujące	Le mie ricerche hanno mostrato che i mostri che si trovano
+Moje czasy	I miei tempi
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	Vestiti bagnati: -50 velocità di movimento per 5 minuti.
+Morkhot nadchodzi! Macie mało czasu.	Morkhot sta arrivando! Avete poco tempo.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot sconfitto! Tempo: %d:%02d. Le Rovine di Atlantide sono completate.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	Puoi anche scegliere l'oggetto o trascinarlo su di me.
+mozesz wybrac od razu.	puoi scegliere subito.
+Mozesz zabrac w droge stalego towarzysza: postac,	Puoi portare con te un compagno fisso: un personaggio,
+Może później	Magari più tardi
+może się nie udać.	potrebbe fallire.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	Puoi entrare da solo o con il gruppo; i bot del gruppo entrano senza biglietto.
+możesz znaleźć Kartę Maski Dyni. 	puoi trovare una Carta Maschera zucca. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	Si può avere una sola risposta. Il Pergam. tramuta-conosc.
+Mroczne Paprocie	Felci scure
+Mroczne Paprocie: nagroda	Felci scure: ricompensa
+mrocznej paproci.	di felce scura.
+Mroczny Cierń - mrok.	Spina oscura - oscurità.
+Mroczną Paproć znajdziesz u potworów	La Felce scura la trovi sui mostri
+Mrok i ziemia (mapa 3)	Oscurità e terra (mappa 3)
+Mroku	Oscurità
+Mroźnego Klucza (PB) może użyć tylko Szaman.	La Chiave del gelo (RSV) può usarla solo uno Shamano.
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	La Chiave del gelo (FT) può usarla solo uno Shamano.
+mu apteczkę.	gli la borsa medica.
+musi najpierw osiągnąć stopień G1 (księgami).	deve prima raggiungere il grado G1 (con i libri).
+Musisz dalej szukać.	Devi continuare a cercare.
+Musisz jeszcze trochę potrenować! Wróć, gdy	Devi allenarti ancora un po'! Torna quando
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	Devi caricare almeno 12 Animasfere per[ENTER]entrare.
+Mój przyjaciel Chaegirab bada teraz nowy	Il mio amico Chaegirab ora sta studiando un nuovo
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	Si dice che il Drago di Ferro abbia eretto il tempio[ENTER]con un solo soffio di fuoco in onore dei 12 guardiani[ENTER]dello Zodiaco. Fama, onore e ricchezze immense[ENTER]attendono i coraggiosi che tornano dalle sacre[ENTER]stanze dei guardiani.
+Mądrości, które noszą przy sobie wojownicy	della saggezza, che portano con sé i guerrieri
+Mądrość przychodzi z doświadczeniem, ale dla	La saggezza viene con l'esperienza, ma per
+Mądry wybór. Teraz zniszcz następną stelę.	Scelta saggia. Ora distruggi la prossima stele.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	Scelta saggia. Ora distruggi l'ultima stele, e Maat
+Na 7. poziomie czekają Głowy Węża. Odłamki z	Al 7° livello attendono le Teste Serpens. I frammenti da
+na bizuterie i splesc dla ciebie pas.	in gioielli e intrecciare per te una cintura.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	in un'arma con bonus. Togli l'oggetto, se è
+na Doyyumhwaji, póki nie minie godzina.	a Doyyumhwaji, finché non passa un'ora.
+Na graczy żywioły nie działają.	Gli elementi non hanno effetto sui giocatori.
+Na które piętro chcesz wejść?	In quale piano vuoi entrare?
+na Maskę Dyni? 	con la Maschera zucca? 
+Na morzu za przylądkiem grasuje Hydra. Każdy	Nel mare oltre il capo si aggira un'Idra. Ogni
+Na nagrodę jest jeszcze za wcześnie.	È ancora troppo presto per la ricompensa.
+na niej już żadnych zarodników. Przynieś mi inną.	più nessuna spora. Portamene un'altra.
+na nowym kontynencie.	sul nuovo continente.
+Na pewno poddać wyprawę?	Abbandonare davvero la spedizione?
+Na pewno? Towarzysz odejdzie, a jego postac	Sei sicuro? Il compagno se ne andrà, e il suo personaggio
+Na pokład!	Tutti a bordo!
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	al livello 10, 20, 30, 40, 50, 60 e 70 - sempre
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	Al livello 49, 99, 149, 199 e 249 con una piena
+na Przyladku Smoczego Ognia.	a Capo Fuoco del Drago.
+Na Przylądek Smoczego Ognia	A Capo Fuoco del Drago
+na Przylądku Smoczego Ognia.	a Capo Fuoco del Drago.
+na siedmiu poziomach czeka Królowa Węży Nethis.	su sette livelli attende la Regina Serpens Nethis.
+Na statek wpuszczam tylko drużyny.	Sulla nave faccio salire solo i gruppi.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	al grado G1-G10. Da M1 a G1 - normali Libri
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	sulla tua testa. Conserva la carta per tempi migliori. 
+na tym serwerze.	su questo server.
+Na ukończenie instancji macie 60 minut. Potwory nie	Avete 60 minuti per completare l'istanza. I mostri non
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	La spedizione dura 60 minuti, poi 3 ore di pausa.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Sulla Collina si sono stabilite le scimmie del maestro WuKong.
+na Zbocze Gautama.	al Pendio di Gautama.
+na żywioł odejmuje cały swój procent	a un elemento sottrae tutta la sua percentuale
+nadaje się do badań. Przynieś mi inny.	è adatto alla ricerca. Portamene un altro.
+Nadam twojej broni, zbroi albo hełmowi	Darò alla tua arma, armatura o elmo
+nadciągał sztorm?	stava arrivando una tempesta?
+nadciągnie w czterech falach. Brońcie masztu!	arriverà in quattro ondate. Difendete l'albero maestro!
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	È ora di consegnare la borsa medica all'Esploratore
+Nagroda (losowo jedna):	Ricompensa (una a caso):
+Nagroda za badania	Ricompensa per la ricerca
+Nagroda za Meley	Ricompensa per Meley
+Nagroda została już odebrana przez wszystkich	La ricompensa è già stata ritirata da tutti
+Nagroda została już odebrana.	La ricompensa è già stata ritirata.
+Nagroda: 11 650 000 PD i Kamień Driad.	Ricompensa: 11 650 000 EXP e Pietra delle Driadi.
+Nagroda: 11 650 000 PD.	Ricompensa: 11 650 000 EXP.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Ricompensa: 5 582 500 EXP e 10 Radici di Gango.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Ricompensa: 5 825 000 EXP e 5 Rose alpine.
+Nagroda: 7 766 000 PD i 10 Wód Young.	Ricompensa: 7 766 000 EXP e 10 Acque Young.
+Nagroda: 7 766 000 PD.	Ricompensa: 7 766 000 EXP.
+Nagroda: 776 600 PD.	Ricompensa: 776 600 EXP.
+Nagroda: Książka Przebudzenia. Misję można	Ricompensa: Libro del risveglio. La missione si può
+Nagrody dla najlepszych	Ricompense per i migliori
+Nagrody w Łupach Królewskich	Ricompense nel Bottino reale
+Nagrody za grę Yut Nori	Ricompense del gioco Yut Nori
+Nagrody za pierwsze 10 miejsc	Ricompense per i primi 10 posti
+Nagrody za ranking	Ricompense della classifica
+Nagrodę za ten event już odebrałeś.	Hai già ritirato la ricompensa per questo evento.
+Najlepsza gra	Partita migliore
+Najlepsze czasy pięter w tym sezonie (min:s):	Tempi migliori dei piani in questa stagione (min:s):
+Najlepszy wynik	Miglior risultato
+najlepszych graczy. Może następnym razem!	migliori giocatori. Forse la prossima volta!
+najpierw 9. pietro Wiezy Demonow	prima il 9° piano della Torre dei Demoni
+Najpierw opuść loch.	Prima lascia il sotterraneo.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	Prima aiuta il Guardiano e l'Esploratore d. foresta (RSV).
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	Prima aiuta il Guardiano e l'Esploratore d. foresta (FT).
+Najpierw trzeba zamknąć otwartą Kryptę.	Prima bisogna chiudere la Cripta aperta.
