@@ -168,7 +168,14 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 		|| dwVnum == 50514 || dwVnum == 50515	// Podrecznik: Dopalacz / Riposta
 		|| dwVnum == 50052 || dwVnum == 50053 || dwVnum == 50060	// the horse books (Ksiega Opanc. / Wojskowego Konia, Instr. Jazdy Konnej)
 		|| (dwVnum >= 55050 && dwVnum <= 55067)	// Jazda ... (the horse skills' books)
-		|| (dwVnum >= 55010 && dwVnum <= 55031))	// the pet's skill books (Sztuka ...)
+		|| (dwVnum >= 55010 && dwVnum <= 55027) || (dwVnum >= 55034 && dwVnum <= 55038))	// the growth pet's skill books
+		return BOOK_INVENTORY;
+	// MT2009_PLUS_GROWTH_PET_BOOKS_V1 (the owner's Yohara list 3.0.14, item 7): the growth pet's evolution books
+	// 55003-55007 (ITEM_MATERIAL - they went with the refine materials) and Skrzynia Ksiag Zwierza 55009 (a giftbox) lie
+	// with the books too. 55028-55031 are no books since MT2009_PLUS_GROWTH_PET_V1 (Smakolyk, Reverti / Revertus Zwierza,
+	// Smakolyk+ - pet items, the bag); those stored there before stay and are dragged out. Mt2009EkwRecategorize moves
+	// the stored evolution books / chests at the next hello. Kept with root/uiekwipunek.py (BOOK_VNUMS) in step.
+	if ((dwVnum >= 55003 && dwVnum <= 55007) || dwVnum == 55009)
 		return BOOK_INVENTORY;
 
 	if (bType == ITEM_MATERIAL && bSubType == MATERIAL_LEATHER)

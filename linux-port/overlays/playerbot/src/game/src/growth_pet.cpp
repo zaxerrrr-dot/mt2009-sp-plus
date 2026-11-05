@@ -2,12 +2,12 @@
 //
 // The official growth pet as the wiki describes it (pl first, tr where pl is silent), on the layout of the Anka2
 // port (growth_pet.cpp there) but written anew for this engine and with Anka2's faults fixed (its revive trusted the
-// client's stack counts and could dereference an empty slot; eggs past its hatch table read out of bounds; its 30-day
-// age check computed a negative age and never blocked; no skill proto data). Summary:
+// client's stack counts and could dereference an empty slot; eggs past its hatch table read out of bounds; no skill
+// proto data). Summary:
 //   - an egg (55401-55414) is hatched for 100 000 Yang and a name (4-20 letters) into a seal (55701-55714); the pet's
 //     id is socket 2 of the seal (and of the Klatka Transportowa it may travel in), its row is player.growth_pet;
 //   - levels 1-105 from the owner's kill experience (the red bars, 90 %) and from items (the blue bar, 10 %), never
-//     above the owner's level; evolutions Mlody -> Dziki (40) -> Dzielny (80) -> Bohaterski (81+, 30 days old) ->
+//     above the owner's level; evolutions Mlody -> Dziki (40) -> Dzielny (80) -> Bohaterski (81+; no age needed) ->
 //     Przebudzony (105, champion level 1) -> Mocny (champion level 14 -> 15), champion levels 1-30 from champion
 //     experience on the Sung Ma maps (never above the owner's champion level);
 //   - type 1-8 (rolled 1-6 at the hatching; Zaczaruj zwierzaka 1-8, 1-6 for three species), the owner's max HP /
@@ -54,6 +54,15 @@ extern bool battle_is_attackable(LPCHARACTER ch, LPCHARACTER victim);
 namespace growth_pet
 {
 	using namespace growth_pet_data;
+
+	// libthecore's MIN / MAX / MINMAX (utils.h) take and return int: a 64-bit value given to them is cut to int first
+	// (MIN(0ULL, 0xFFFFFFFFULL) == -1 - the 4.294.967.295 exp of a new pet in 3.0.13). Every 64-bit min / max here goes
+	// through these.
+	template <typename T> inline T Min64(T a, T b) { return b < a ? b : a; }
+	template <typename T> inline T Max64(T a, T b) { return a < b ? b : a; }
+	template <typename T> inline T Clamp64(T lo, T v, T hi) { return v < lo ? lo : (hi < v ? hi : v); }
+	typedef unsigned long long U64;
+	typedef long long S64;
 
 	enum
 	{
@@ -351,11 +360,11 @@ namespace growth_pet
 					++ticks;
 			v20AtLevel = v20 - (long long)ticks * SkillUnit(t ? t : base);
 		}
-		long long v = vk * MAX(0LL, v20AtLevel) / v20;
+		long long v = vk * Max64<S64>(0, v20AtLevel) / v20;
 		const int unit = SkillUnit(t ? t : base);
 		if (unit > 1 && v20 % unit == 0)
 			v -= v % unit;
-		return (int)MAX(0LL, v);
+		return (int)Max64<S64>(0, v);
 	}
 
 	int SkillActivatePct(const Pet& p, BYTE skill, int k, int value)
@@ -409,22 +418,22 @@ namespace growth_pet
 		switch (i)
 		{
 			case POINT_UPBRINGING_PET_LEVEL: return p.d.dwLevel;
-			case POINT_UPBRINGING_PET_EXP: return (DWORD)MIN(p.d.ullExp, 0xFFFFFFFFULL);
-			case POINT_UPBRINGING_PET_ITEM_EXP: return (DWORD)MIN(p.d.ullItemExp, 0xFFFFFFFFULL);
+			case POINT_UPBRINGING_PET_EXP: return (DWORD)Min64<U64>(p.d.ullExp, 0xFFFFFFFFULL);
+			case POINT_UPBRINGING_PET_ITEM_EXP: return (DWORD)Min64<U64>(p.d.ullItemExp, 0xFFFFFFFFULL);
 			case POINT_UPBRINGING_PET_NEXT_EXP:
-				return (DWORD)MIN(NeedMobExpOf(p.d.dwLevel) + NeedItemExpOf(p.d.dwLevel), 0xFFFFFFFFULL);
+				return (DWORD)Min64<U64>(NeedMobExpOf(p.d.dwLevel) + NeedItemExpOf(p.d.dwLevel), 0xFFFFFFFFULL);
 			case POINT_UPBRINGING_PET_EVOL_LEVEL: return Stage(p);
 			case POINT_UPBRINGING_PET_HP: return p.d.dwHP;
 			case POINT_UPBRINGING_PET_DEF_GRADE: return p.d.dwDef;
 			case POINT_UPBRINGING_PET_SP: return p.d.dwSP;
-			case POINT_UPBRINGING_DURATION: return (DWORD)MAX(0LL, p.d.llEndTime);
-			case POINT_UPBRINGING_MAX_DURATION: return (DWORD)MAX(0LL, p.d.llMaxTime);
-			case POINT_UPBRINGING_BIRTHDAY: return (DWORD)MAX(0LL, p.d.llBirthday);
+			case POINT_UPBRINGING_DURATION: return (DWORD)Max64<S64>(0, p.d.llEndTime);
+			case POINT_UPBRINGING_MAX_DURATION: return (DWORD)Max64<S64>(0, p.d.llMaxTime);
+			case POINT_UPBRINGING_BIRTHDAY: return (DWORD)Max64<S64>(0, p.d.llBirthday);
 			case POINT_UPBRINGING_CHAMPION_LEVEL: return p.d.dwChampionLevel;
-			case POINT_UPBRINGING_CHAMPION_EXP: return (DWORD)MIN(p.d.ullChampionExp, 0xFFFFFFFFULL);
-			case POINT_UPBRINGING_CHAMPION_ITEM_EXP: return (DWORD)MIN(p.d.ullChampionItemExp, 0xFFFFFFFFULL);
+			case POINT_UPBRINGING_CHAMPION_EXP: return (DWORD)Min64<U64>(p.d.ullChampionExp, 0xFFFFFFFFULL);
+			case POINT_UPBRINGING_CHAMPION_ITEM_EXP: return (DWORD)Min64<U64>(p.d.ullChampionItemExp, 0xFFFFFFFFULL);
 			case POINT_UPBRINGING_CHAMPION_NEXT_EXP:
-				return (DWORD)MIN(NeedChampionExpOf(p.d.dwChampionLevel) + NeedChampionItemExpOf(p.d.dwChampionLevel), 0xFFFFFFFFULL);
+				return (DWORD)Min64<U64>(NeedChampionExpOf(p.d.dwChampionLevel) + NeedChampionItemExpOf(p.d.dwChampionLevel), 0xFFFFFFFFULL);
 			case POINT_UPBRINGING_CHAMPION_RES: return p.d.dwChampionRes;
 			case POINT_UPBRINGING_CHAMPION_BLOCK_PEN: return p.d.dwChampionBlockPen;
 			case POINT_UPBRINGING_CHAMPION_PRECISION: return p.d.dwChampionPrecision;
@@ -886,7 +895,7 @@ namespace growth_pet
 			o.invincibleUntil = 0;
 			SendSub(ch, SUBHEADER_PET_UNSUMMON);
 			if (bMessage)
-				Sayf(ch, "Tw\xf3j zwierzak %s wraca do piecz\xeaci.", p.d.szName);
+				Sayf(ch, "Tw\xf3j zwierzak %s wraca do piecz\xea" "ci.", p.d.szName);
 			ch->ComputePoints();
 		}
 		if (p.dirty)
@@ -918,7 +927,7 @@ namespace growth_pet
 		}
 		if ((int)p.d.dwLevel > ch->GetLevel())
 		{
-			Say(ch, "Poziom zwierzaka nie mo\xbfe by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\xb6" "ciciela.");
+			Say(ch, "Poziom zwierzaka nie mo\xbf" "e by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\x9c" "ciciela.");
 			return false;
 		}
 		if (ch->GetExchange() || ch->IsOpenSafebox() || ch->GetMyShop() || ch->GetShopOwner() || ch->IsCubeOpen())
@@ -961,7 +970,6 @@ namespace growth_pet
 			pack.value = p.d.dwLevel;
 			pack.amount = 0;
 			mob->PacketAround(&pack, sizeof(pack));
-			mob->EffectPacket(SE_LEVELUP_ON_14_FOR_GERMANY);
 		}
 	}
 
@@ -981,7 +989,7 @@ namespace growth_pet
 					break;
 				p.d.ullChampionExp = 0;
 				p.d.ullChampionItemExp -= ni;
-				p.d.ullChampionItemExp = MIN(p.d.ullChampionItemExp, NeedChampionItemExpOf(cl + 1));
+				p.d.ullChampionItemExp = Min64<U64>(p.d.ullChampionItemExp, NeedChampionItemExpOf(cl + 1));
 				p.d.dwChampionLevel = cl + 1;
 				AddChampionGains(p, cl + 1);
 				Sayf(ch, "Tw\xf3j zwierzak %s osi\xb9gn\xb9\xb3 poziom czempiona %d.", p.d.szName, cl + 1);
@@ -996,7 +1004,7 @@ namespace growth_pet
 					break;
 				p.d.ullExp = 0;
 				p.d.ullItemExp -= ni;
-				p.d.ullItemExp = MIN(p.d.ullItemExp, NeedItemExpOf(level + 1));	// the excess item exp is kept (en)
+				p.d.ullItemExp = Min64<U64>(p.d.ullItemExp, NeedItemExpOf(level + 1));	// the excess item exp is kept (en)
 				p.d.dwLevel = level + 1;
 				AddLevelGains(p, level + 1);
 				Sayf(ch, "Tw\xf3j zwierzak %s osi\xb9gn\xb9\xb3 poziom %d.", p.d.szName, level + 1);
@@ -1019,13 +1027,13 @@ namespace growth_pet
 		if (IsChampion(p))
 		{
 			if ((int)p.d.dwChampionLevel >= (int)ch->GetConquerorLevel())
-				Say(ch, "Poziom czempiona zwierzaka nie mo\xbfe by\xe6 wy\xbfszy ni\xbf tw\xf3j.");
+				Say(ch, "Poziom czempiona zwierzaka nie mo\xbf" "e by\xe6 wy\xbfszy ni\xbf tw\xf3j.");
 			else if ((int)p.d.dwChampionLevel >= StageCap(p))
 				Say(ch, "Zwierzak potrzebuje rozwoju, aby rosn\xb9\xe6 dalej.");
 			return;
 		}
 		if ((int)p.d.dwLevel >= ch->GetLevel())
-			Say(ch, "Poziom zwierzaka nie mo\xbfe by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\xb6" "ciciela.");
+			Say(ch, "Poziom zwierzaka nie mo\xbf" "e by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\x9c" "ciciela.");
 		else if ((int)p.d.dwLevel >= StageCap(p))
 			Say(ch, "Zwierzak potrzebuje rozwoju, aby rosn\xb9\xe6 dalej.");
 	}
@@ -1044,7 +1052,7 @@ namespace growth_pet
 			TryLevelUp(ch, p);
 			return;
 		}
-		cur = MIN(need, cur + exp);
+		cur = Min64<U64>(need, cur + exp);
 		MarkDirty(p);
 		SendPoint(ch, p, champion ? POINT_UPBRINGING_CHAMPION_EXP : POINT_UPBRINGING_PET_EXP);
 		if (cur >= need && !TryLevelUp(ch, p))
@@ -1052,7 +1060,7 @@ namespace growth_pet
 			const unsigned long long ni = champion ? NeedChampionItemExpOf(p.d.dwChampionLevel) : NeedItemExpOf(p.d.dwLevel);
 			const unsigned long long ci = champion ? p.d.ullChampionItemExp : p.d.ullItemExp;
 			if (ci < ni)
-				Say(ch, "Zwierzak potrzebuje do\xb6wiadczenia z przedmiot\xf3w (okno \x84Przedmiot EXP\x94).");
+				Say(ch, "Zwierzak potrzebuje do\x9cwiadczenia z przedmiot\xf3w (okno \x84Przedmiot EXP\x94).");
 			else
 				ExpBlockedMessage(ch, p);
 		}
@@ -1071,7 +1079,7 @@ namespace growth_pet
 		const unsigned long long cap = need + next;
 		if (cur >= cap)
 			return 0;
-		const unsigned long long add = MIN(exp, cap - cur);
+		const unsigned long long add = Min64<U64>(exp, cap - cur);
 		cur += add;
 		MarkDirty(p);
 		SendPoint(ch, p, champion ? POINT_UPBRINGING_CHAMPION_ITEM_EXP : POINT_UPBRINGING_PET_ITEM_EXP);
@@ -1108,7 +1116,7 @@ namespace growth_pet
 					p.d.ullChampionItemExp < NeedChampionItemExpOf(p.d.dwChampionLevel))
 			{
 				if (bSay)
-					Sayf(ch, "Zwierzak potrzebuje poziomu czempiona %d i pe\xb3nego do\xb6wiadczenia.", e->level);
+					Sayf(ch, "Zwierzak potrzebuje poziomu czempiona %d i pe\xb3nego do\x9cwiadczenia.", e->level);
 				return 2;
 			}
 		}
@@ -1126,26 +1134,22 @@ namespace growth_pet
 			if ((int)p.d.dwLevel < e->level || p.d.ullExp < NeedMobExpOf(p.d.dwLevel) || p.d.ullItemExp < NeedItemExpOf(p.d.dwLevel))
 			{
 				if (bSay)
-					Sayf(ch, "Zwierzak potrzebuje poziomu %d i pe\xb3nego do\xb6wiadczenia.", e->level);
+					Sayf(ch, "Zwierzak potrzebuje poziomu %d i pe\xb3nego do\x9cwiadczenia.", e->level);
 				return 2;
 			}
 		}
-		if (AgeDays(p) < e->ageDays)
-		{
-			if (bSay)
-				Sayf(ch, "Zwierzak musi mie\xe6 co najmniej %d dni.", e->ageDays);
-			return 3;
-		}
+		// (no age check: the owner's Yohara list 3.0.14, item 8 - the wiki's 30 days are old information; EVOLUTION's
+		// ageDays is 0 everywhere and no longer read)
 		if (stage + 1 <= STAGE_VALIANT && (int)p.d.dwLevel >= ch->GetLevel())
 		{
 			if (bSay)
-				Say(ch, "Poziom zwierzaka nie mo\xbfe by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\xb6" "ciciela.");
+				Say(ch, "Poziom zwierzaka nie mo\xbf" "e by\xe6 wy\xbfszy ni\xbf poziom jego w\xb3" "a\x9c" "ciciela.");
 			return 4;
 		}
 		if (stage + 1 == STAGE_MIGHTY && (int)p.d.dwChampionLevel >= (int)ch->GetConquerorLevel())
 		{
 			if (bSay)
-				Say(ch, "Poziom czempiona zwierzaka nie mo\xbfe by\xe6 wy\xbfszy ni\xbf tw\xf3j.");
+				Say(ch, "Poziom czempiona zwierzaka nie mo\xbf" "e by\xe6 wy\xbfszy ni\xbf tw\xf3j.");
 			return 4;
 		}
 		return 0;
@@ -1222,7 +1226,7 @@ namespace growth_pet
 		const long long now = Now();
 		if (premium)
 		{
-			const long long age = MAX(0LL, now - p.d.llBirthday);
+			const long long age = Max64<S64>(0, now - p.d.llBirthday);
 			p.d.llEndTime = now + p.d.llMaxTime;
 			p.d.llBirthday = now - age * 8 / 10;	// 80 % of the age kept
 		}
@@ -1346,7 +1350,7 @@ namespace growth_pet
 				break;
 			case SKILL_INVINCIBLE:
 				GetOwner(ch).invincibleUntil = (time_t)(get_dword_time() + (DWORD)value * 100);	// dword ms
-				Sayf(ch, "%s: nie\xb6miertelno\xb6\xe6 na %d.%d s.", skillName, value / 10, value % 10);
+				Sayf(ch, "%s: nie\x9cmiertelno\x9c\xe6 na %d.%d s.", skillName, value / 10, value % 10);
 				break;
 			case SKILL_REMOVAL:
 				ch->RemoveAffect(AFFECT_POISON);
@@ -1354,7 +1358,7 @@ namespace growth_pet
 #ifdef ENABLE_WOLFMAN_CHARACTER
 				ch->RemoveAffect(AFFECT_BLEEDING);
 #endif
-				Sayf(ch, "%s: z\xb3e efekty usuni\xeate.", skillName);
+				Sayf(ch, "%s: z\xb3" "e efekty usuni\xeate.", skillName);
 				break;
 			case SKILL_FEATHER:
 				p.featherUntil = now + MAX(1, SkillDuration(p, skill, k, value) / 10);
@@ -1480,7 +1484,7 @@ namespace growth_pet
 		{
 			if (p->d.aPotential[i].dwEggVnum && (time_t)p->d.aPotential[i].dwEndTime <= Now())
 			{
-				Sayf(ch, "Umiej\xeatno\xb6\xe6 potencja\xb3u zwierzaka %s wygas\xb3" "a razem z jajem.", p->d.szName);
+				Sayf(ch, "Umiej\xeatno\x9c\xe6 potencja\xb3u zwierzaka %s wygas\xb3" "a razem z jajem.", p->d.szName);
 				memset(&p->d.aPotential[i], 0, sizeof(p->d.aPotential[i]));
 				SaveNow(*p);
 				SendPotential(ch, *p);
@@ -1629,7 +1633,7 @@ namespace growth_pet
 		}
 		if ((long long)cage->GetSocket(0) < (long long)Now())
 		{
-			Say(ch, "Klatka straci\xb3" "a wa\xbfno\xb6\xe6. Przeci\xb9gnij na ni\xb9 now\xb9 Klatk\xea Transportow\xb9.");
+			Say(ch, "Klatka straci\xb3" "a wa\xbfno\x9c\xe6. Przeci\xb9gnij na ni\xb9 now\xb9 Klatk\xea Transportow\xb9.");
 			return false;
 		}
 		const int cell = ch->GetEmptyInventory(1);
@@ -1643,7 +1647,7 @@ namespace growth_pet
 			return false;
 		Finalise(*p);
 		const long long now = Now();
-		const long long packed = MAX(0LL, now - (long long)cage->GetSocket(1));
+		const long long packed = Max64<S64>(0, now - (long long)cage->GetSocket(1));
 		p->d.llBirthday += packed;				// no ageing in the cage
 		p->d.llEndTime = now + p->d.llMaxTime;	// the life refilled (tr/de)
 		p->d.bState = GROWTH_PET_STATE_UPBRINGING;
@@ -1682,11 +1686,11 @@ namespace growth_pet
 		if (IsSeal(food) && (DWORD)food->GetSocket(2) == p.d.dwID)
 			return false;
 		const long long now = Now();
-		const long long left = MAX(0LL, p.d.llEndTime - now);
+		const long long left = Max64<S64>(0, p.d.llEndTime - now);
 		if (left >= p.d.llMaxTime)
 			return false;
 		const long long add = p.d.llMaxTime * number(3, 5) / 100;
-		p.d.llEndTime = now + MIN(p.d.llMaxTime, left + add);
+		p.d.llEndTime = now + Min64<S64>(p.d.llMaxTime, left + add);
 		if (IsSeal(food))
 		{
 			const DWORD eaten = (DWORD)food->GetSocket(2);
@@ -1722,15 +1726,15 @@ namespace growth_pet
 			case ITEM_ARMOR:
 				if (item->IsEquipped())
 					return 0;
-				return (unsigned long long)MAX(0LL, (long long)item->GetShopBuyPrice()) * count / 2;
+				return (unsigned long long)Max64<S64>(0, (S64)item->GetShopBuyPrice()) * count / 2;
 			case ITEM_PET:
 				if (item->GetSubType() == PET_EXPFOOD && item->GetValue(2) == 0)
-					return (unsigned long long)MAX(0L, item->GetValue(0)) * count;	// Smakolyk: 80 000 item exp
+					return (unsigned long long)Max64<S64>(0, item->GetValue(0)) * count;	// Smakolyk: 80 000 item exp
 				if (item->GetSubType() == PET_EXPFOOD_PER)
 				{
 					const bool champion = IsChampion(p);
 					const unsigned long long need = champion ? NeedChampionItemExpOf(p.d.dwChampionLevel) : NeedItemExpOf(p.d.dwLevel);
-					return need * MAX(1L, item->GetValue(0)) / 100 * count;	// Smakolyk+: 5 % of the need
+					return need * (U64)Max64<S64>(1, item->GetValue(0)) / 100 * count;	// Smakolyk+: 5 % of the need
 				}
 				return 0;
 		}
@@ -1860,7 +1864,7 @@ namespace growth_pet
 					SendSet(ch, *p);
 				}
 				else
-					Say(ch, "Zwierzak nie chce teraz je\xb6\xe6 (czas trwania jest pe\xb3ny albo przedmiot si\xea nie nadaje).");
+					Say(ch, "Zwierzak nie chce teraz je\x9c\xe6 (czas trwania jest pe\xb3ny albo przedmiot si\xea nie nadaje).");
 				break;
 			}
 			case FEED_EXP_EVENT:
@@ -1881,7 +1885,7 @@ namespace growth_pet
 					const unsigned long long got = AddItemExp(ch, *p, exp);
 					if (!got)
 					{
-						Say(ch, "Do\xb6wiadczenie z przedmiot\xf3w jest ju\xbf pe\xb3ne.");
+						Say(ch, "Do\x9cwiadczenie z przedmiot\xf3w jest ju\xbf pe\xb3ne.");
 						break;
 					}
 					total += got;
@@ -2069,7 +2073,7 @@ namespace growth_pet
 	{
 		if (Stage(p) < SKILL_OPEN_STAGE)
 		{
-			Say(ch, "Umiej\xeatno\xb6ci zwierzak poznaje od stopnia \x84" "Bohaterski\x94.");
+			Say(ch, "Umiej\xeatno\x9c" "ci zwierzak poznaje od stopnia \x84" "Bohaterski\x94.");
 			return false;
 		}
 		if (slot < 0 || slot >= GROWTH_PET_SKILL_SLOTS || p.d.aSkill[slot].bLocked || p.d.aSkill[slot].bSkill)
@@ -2082,7 +2086,7 @@ namespace growth_pet
 		for (int i = 0; i < GROWTH_PET_SKILL_SLOTS; ++i)
 			if (p.d.aSkill[i].bSkill == skill)
 			{
-				Say(ch, "Zwierzak zna ju\xbf t\xea umiej\xeatno\xb6\xe6.");
+				Say(ch, "Zwierzak zna ju\xbf t\xea umiej\xeatno\x9c\xe6.");
 				return false;
 			}
 		p.d.aSkill[slot].bSkill = (BYTE)skill;
@@ -2095,7 +2099,7 @@ namespace growth_pet
 		SaveNow(p);
 		SendSkills(ch, p);
 		SendSet(ch, p);
-		Say(ch, "Zwierzak pozna\xb3 now\xb9 umiej\xeatno\xb6\xe6.");
+		Say(ch, "Zwierzak pozna\xb3 now\xb9 umiej\xeatno\x9c\xe6.");
 		ch->ComputePoints();
 		return true;
 	}
@@ -2106,7 +2110,7 @@ namespace growth_pet
 			return false;
 		if (p.d.aSkill[slot].bLevel >= GROWTH_PET_SKILL_LEVEL_MAX)
 		{
-			Say(ch, "Ta umiej\xeatno\xb6\xe6 ma ju\xbf najwy\xbfszy poziom.");
+			Say(ch, "Ta umiej\xeatno\x9c\xe6 ma ju\xbf najwy\xbfszy poziom.");
 			return false;
 		}
 		if ((long long)ch->GetGold() < SKILL_UPGRADE_PRICE)
@@ -2119,7 +2123,7 @@ namespace growth_pet
 		SaveNow(p);
 		SendSkills(ch, p);
 		SendSet(ch, p);
-		Sayf(ch, "Umiej\xeatno\xb6\xe6 zwierzaka ma teraz poziom %d.", p.d.aSkill[slot].bLevel);
+		Sayf(ch, "Umiej\xeatno\x9c\xe6 zwierzaka ma teraz poziom %d.", p.d.aSkill[slot].bLevel);
 		ch->ComputePoints();
 		return true;
 	}
@@ -2165,7 +2169,7 @@ namespace growth_pet
 				pool.push_back(POTENTIAL[sp->idx][i]);
 		if (pool.empty())
 		{
-			Say(ch, "To jajo nie da nowej umiej\xeatno\xb6" "ci potencja\xb3u.");
+			Say(ch, "To jajo nie da nowej umiej\xeatno\x9c" "ci potencja\xb3u.");
 			SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
 			return;
 		}
@@ -2182,7 +2186,7 @@ namespace growth_pet
 		SendPotential(ch, *p);
 		SendSub(ch, SUBHEADER_PET_POTENTIAL_SUCCESS);
 		const TGrowthPetSkillTable* t = BaseSkillProto(pot.bSkill);
-		Sayf(ch, "Nowa umiej\xeatno\xb6\xe6 potencja\xb3u: %s.", t ? t->szName : "?");
+		Sayf(ch, "Nowa umiej\xeatno\x9c\xe6 potencja\xb3u: %s.", t ? t->szName : "?");
 		ch->ComputePoints();
 	}
 
@@ -2303,7 +2307,7 @@ namespace growth_pet
 		v.championLevel = (int)p.d.dwChampionLevel;
 		v.type = p.d.bType;
 		v.alive = IsAlive(p);
-		v.lifeLeft = MAX(0LL, p.d.llEndTime - (long long)Now());
+		v.lifeLeft = Max64<S64>(0, p.d.llEndTime - (long long)Now());
 		v.lifeMax = p.d.llMaxTime;
 		v.ageDays = AgeDays(p);
 		if (IsChampion(p))
@@ -2461,7 +2465,7 @@ namespace growth_pet
 			return false;
 		}
 		const bool champion = IsChampion(*p);
-		const unsigned long long exp = (unsigned long long)MAX(0L, champion ? item->GetValue(1) : item->GetValue(0));
+		const unsigned long long exp = (unsigned long long)Max64<S64>(0, champion ? item->GetValue(1) : item->GetValue(0));
 		const unsigned long long before = champion ? p->d.ullChampionExp : p->d.ullExp;
 		const int lvBefore = champion ? (int)p->d.dwChampionLevel : (int)p->d.dwLevel;
 		AddMobExp(ch, *p, exp, champion);
@@ -2469,7 +2473,7 @@ namespace growth_pet
 		const int lvAfter = champion ? (int)p->d.dwChampionLevel : (int)p->d.dwLevel;
 		if (after == before && lvAfter == lvBefore)
 		{
-			Say(ch, "Zwierzak nie mo\xbfe teraz otrzyma\xe6 do\xb6wiadczenia.");
+			Say(ch, "Zwierzak nie mo\xbf" "e teraz otrzyma\xe6 do\x9cwiadczenia.");
 			return false;
 		}
 		if (item->GetCount() > 1)
@@ -2707,7 +2711,7 @@ namespace growth_pet
 		const bool champion = IsChampion(*p);
 		unsigned long long& cur = champion ? p->d.ullChampionExp : p->d.ullExp;
 		const unsigned long long need = champion ? NeedChampionExpOf(p->d.dwChampionLevel) : NeedMobExpOf(p->d.dwLevel);
-		const unsigned long long lost = need * (unsigned long long)MIN(loss, levelNeed) / (unsigned long long)levelNeed;
+		const unsigned long long lost = need * (unsigned long long)Min64<S64>(loss, levelNeed) / (unsigned long long)levelNeed;
 		cur = cur > lost ? cur - lost : 0;
 		MarkDirty(*p);
 		SendPoint(ch, *p, champion ? POINT_UPBRINGING_CHAMPION_EXP : POINT_UPBRINGING_PET_EXP);
@@ -2723,11 +2727,11 @@ namespace growth_pet
 		const long long sp = (long long)ch->GetRealPoint(POINT_MAX_SP) * p->d.dwSP / 100000;
 		const long long def = (long long)ch->GetPoint(POINT_DEF_GRADE) * p->d.dwDef / 100000;
 		if (hp > 0)
-			ch->PointChange(POINT_MAX_HP, (int)MIN(hp, 2000000000LL));
+			ch->PointChange(POINT_MAX_HP, (int)Min64<S64>(hp, 2000000000LL));
 		if (sp > 0)
-			ch->PointChange(POINT_MAX_SP, (int)MIN(sp, 2000000000LL));
+			ch->PointChange(POINT_MAX_SP, (int)Min64<S64>(sp, 2000000000LL));
 		if (def > 0)
-			ch->PointChange(POINT_DEF_GRADE, (int)MIN(def, 2000000000LL));
+			ch->PointChange(POINT_DEF_GRADE, (int)Min64<S64>(def, 2000000000LL));
 		if (IsChampion(*p))
 		{
 			if (p->d.dwChampionRes >= 1000)
@@ -2871,7 +2875,7 @@ namespace growth_pet
 				SendSkills(ch, *p);
 				SendSet(ch, *p);
 				ch->ComputePoints();
-				Say(ch, "Umiej\xeatno\xb6\xe6 zwierzaka zosta\xb3" "a usuni\xeata.");
+				Say(ch, "Umiej\xeatno\x9c\xe6 zwierzaka zosta\xb3" "a usuni\xeata.");
 				break;
 			}
 			case HEADER_CG_PET_DELETE_ALL_SKILL:
@@ -2895,7 +2899,7 @@ namespace growth_pet
 				SendSkills(ch, *p);
 				SendSet(ch, *p);
 				ch->ComputePoints();
-				Say(ch, "Wszystkie umiej\xeatno\xb6" "ci zwierzaka zosta\xb3y usuni\xeate.");
+				Say(ch, "Wszystkie umiej\xeatno\x9c" "ci zwierzaka zosta\xb3y usuni\xeate.");
 				break;
 			}
 			case HEADER_CG_PET_POTENTIAL:
@@ -2940,18 +2944,18 @@ namespace growth_pet
 		str_to_number(v, a2);
 		if (!strcmp(a1, "level"))
 		{
-			p->d.dwLevel = (DWORD)MINMAX(1LL, v, (long long)GROWTH_PET_MAX_LEVEL);
+			p->d.dwLevel = (DWORD)Clamp64<S64>(1, v, GROWTH_PET_MAX_LEVEL);
 			p->d.ullExp = p->d.ullItemExp = 0;
 			RecalcStats(*p);
 		}
 		else if (!strcmp(a1, "clevel"))
 		{
-			p->d.dwChampionLevel = (DWORD)MINMAX(0LL, v, (long long)GROWTH_PET_CHAMPION_MAX_LEVEL);
+			p->d.dwChampionLevel = (DWORD)Clamp64<S64>(0, v, GROWTH_PET_CHAMPION_MAX_LEVEL);
 			RecalcStats(*p);
 		}
 		else if (!strcmp(a1, "evo"))
 		{
-			p->d.bEvolution = (BYTE)MINMAX(1LL, v, (long long)STAGE_MIGHTY);
+			p->d.bEvolution = (BYTE)Clamp64<S64>(1, v, STAGE_MIGHTY);
 			if (IsChampion(*p) && !p->d.dwChampionLevel)
 			{
 				p->d.dwChampionLevel = Stage(*p) == STAGE_MIGHTY ? 15 : 1;
@@ -2961,16 +2965,16 @@ namespace growth_pet
 		}
 		else if (!strcmp(a1, "type"))
 		{
-			p->d.bType = (BYTE)MINMAX(1LL, v, 8LL);
+			p->d.bType = (BYTE)Clamp64<S64>(1, v, 8);
 			RollAppliesKeepStart(*p);
 			RecalcStats(*p);
 		}
 		else if (!strcmp(a1, "exp"))
-			AddMobExp(ch, *p, (unsigned long long)MAX(0LL, v), IsChampion(*p));
+			AddMobExp(ch, *p, (unsigned long long)Max64<S64>(0, v), IsChampion(*p));
 		else if (!strcmp(a1, "iexp"))
-			AddItemExp(ch, *p, (unsigned long long)MAX(0LL, v));
+			AddItemExp(ch, *p, (unsigned long long)Max64<S64>(0, v));
 		else if (!strcmp(a1, "cexp"))
-			AddMobExp(ch, *p, (unsigned long long)MAX(0LL, v), true);
+			AddMobExp(ch, *p, (unsigned long long)Max64<S64>(0, v), true);
 		else if (!strcmp(a1, "life"))
 			p->d.llEndTime = (long long)Now() + v;
 		else if (!strcmp(a1, "age"))
@@ -2985,7 +2989,7 @@ namespace growth_pet
 			if (slot >= 0 && slot < GROWTH_PET_SKILL_SLOTS)
 			{
 				p->d.aSkill[slot].bLocked = 0;
-				p->d.aSkill[slot].bSkill = (BYTE)MINMAX(0LL, id, (long long)SKILL_COUNT);
+				p->d.aSkill[slot].bSkill = (BYTE)Clamp64<S64>(0, id, SKILL_COUNT);
 				p->d.aSkill[slot].bLevel = (BYTE)MINMAX(1, lv, (int)GROWTH_PET_SKILL_LEVEL_MAX);
 			}
 		}
