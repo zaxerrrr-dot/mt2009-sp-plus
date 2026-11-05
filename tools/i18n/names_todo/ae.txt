@@ -1,0 +1,969 @@
+Am-heh Gorge
+Amal
+Ametyst (Blyszczacy, Najnizszy)	Amethyst (Cut, Lowest)
+Ametyst (Blyszczacy, Najwyzszy)	Amethyst (Cut, Highest)
+Ametyst (Blyszczacy, Niski)	Amethyst (Cut, Low)
+Ametyst (Blyszczacy, Sredni)	Amethyst (Cut, Medium)
+Ametyst (Blyszczacy, Wysoki)	Amethyst (Cut, High)
+Ametyst (Legendarny, Najnizszy)	Amethyst (Legendary, Lowest)
+Ametyst (Legendarny, Najwyzszy)	Amethyst (Legendary, Highest)
+Ametyst (Legendarny, Niski)	Amethyst (Legendary, Low)
+Ametyst (Legendarny, Sredni)	Amethyst (Legendary, Medium)
+Ametyst (Legendarny, Wysoki)	Amethyst (Legendary, High)
+Ametyst (Mityczny, Najnizszy)	Amethyst (Mythical, Lowest)
+Ametyst (Mityczny, Najwyzszy)	Amethyst (Mythical, Highest)
+Ametyst (Mityczny, Niski)	Amethyst (Mythical, Low)
+Ametyst (Mityczny, Sredni)	Amethyst (Mythical, Medium)
+Ametyst (Mityczny, Wysoki)	Amethyst (Mythical, High)
+Ametyst (Rzadki, Najnizszy)	Amethyst (Rare, Lowest)
+Ametyst (Rzadki, Najwyzszy)	Amethyst (Rare, Highest)
+Ametyst (Rzadki, Niski)	Amethyst (Rare, Low)
+Ametyst (Rzadki, Sredni)	Amethyst (Rare, Medium)
+Ametyst (Rzadki, Wysoki)	Amethyst (Rare, High)
+Ametyst (Starozytny, Najnizszy)	Amethyst (Antique, Lowest)
+Ametyst (Starozytny, Najwyzszy)	Amethyst (Antique, Highest)
+Ametyst (Starozytny, Niski)	Amethyst (Antique, Low)
+Ametyst (Starozytny, Sredni)	Amethyst (Antique, Medium)
+Ametyst (Starozytny, Wysoki)	Amethyst (Antique, High)
+Ametyst (Zwykly, Najnizszy)	Amethyst (Rough, Lowest)
+Ametyst (Zwykly, Najwyzszy)	Amethyst (Rough, Highest)
+Ametyst (Zwykly, Niski)	Amethyst (Rough, Low)
+Ametyst (Zwykly, Sredni)	Amethyst (Rough, Medium)
+Ametyst (Zwykly, Wysoki)	Amethyst (Rough, High)
+Amulet Karmy 2	Charm of Karma2
+Amulet Karmy 3	Charm of Karma3
+Amulet Wojownika	Warrior's Amulet
+BETA: Buff G1
+BETA: Buff M1
+BETA: Buff P
+Balathor Junior
+Bambusowy Grot	Bamboo Arrowhead
+Bezrn	Lilac
+Beżowa Rosa	Beige Dew
+Beżowa Woda	Beige Water
+Beżowy Sok	Beige Juice
+Bi-Pung
+Bi-Sang-Gab
+Biała Maska do Nur.+ (k)	White Diving Mask+ (f)
+Biała Maska do Nur.+ (m)	White Diving Mask+ (m)
+Białe Dyniowe Straszydło	White Pumpkin Bogeyman
+Biały Skaf. Nurkowy+ (k)	White Diving Suit+ (f)
+Biały Skaf. Nurkowy+ (m)	White Diving Suit+ (m)
+Bilet Do Magazynu	Storage Ticket
+Blue Dragon Bean
+Brązowa Farba	Brown Dye
+Brązowa Rosa	Brown Dew
+Brązowa Woda	Brown Water
+Brązowy Byk	Brown Bull
+Brązowy Sok	Brown Juice
+Bursztynowy Płatek	Amber Petal
+Bursztynowy Płatekrn	Amber Petal
+Burza Wukong	Wukong Storm
+Butelka Wody	Water Bottle
+Butelka Z Trucizną	Poison Bottle
+Błogosław. Przedmiotu	Bless Item
+Cerber	Cerberus
+Chegal, Goliat Cienia	Chegal, Shadow Goliath
+Chung-Hee, Opiekun Hwang	Chung-Hee, Keeper of Hwang
+Chung-Zin
+Ciemno-Nieb. Ręka Boga	Dark Blue Hand of God
+Ciemno-Ziel. Ręka Boga	Dark Green Hand of God
+Ciągliwość	Malleability
+Cor Atrum (mityczne)	Cor Atrum (Mystical)
+Cor Atrum+ (mityczne)	Cor Atrum+ (Mystical)
+Cor Diamas (mityczne)	Cor Diamas (Mystical)
+Cor Diamas+ (mityczne)	Cor Diamas+ (Mystical)
+Cor Draconis (Rough)
+Cor Draconis (drogocenne	Cor Draconis (Precious)
+Cor Draconis (legendarne	Cor Draconis (Legendary)
+Cor Draconis (mityczne)	Cor Draconis (Mystical)
+Cor Draconis (rozżarzone	Cor Draconis (Glowing)
+Cor Draconis (szlachetne	Cor Draconis (Noble)
+Cor Draconis (szlifowane	Cor Draconis (Cut)
+Cor Draconis+ (mityczne)	Cor Draconis+ (Mystical)
+Cor Draconis+ (zwyczajne	Cor Draconis+ (Normal)
+Cor Granatum (drogocenne	Cor Granatum (Precious)
+Cor Granatum (mityczne)	Cor Granatum (Mystical)
+Cor Granatum (rozżarzone	Cor Granatum (Glowing)
+Cor Granatum (szlachetne	Cor Granatum (Noble)
+Cor Granatum+ (mityczne)	Cor Granatum+ (Mystical)
+Cor Granatum+ (zwyczajne	Cor Granatum+ (Normal)
+Cor Jadeit (mityczne)	Cor Jadeit (Mystical)
+Cor Jadeit+ (mityczne)	Cor Jadeit+ (Mystical)
+Cor Rubinum (mityczne)	Cor Rubinum (Mystical)
+Cor Rubinum+ (drogocenne	Cor Rubinum+ (Precious)
+Cor Rubinum+ (mityczne)	Cor Rubinum+ (Mystical)
+Cor Rubinum+ (rozżarzone	Cor Rubinum+ (Glowing)
+Cor Rubinum+ (szlachetne	Cor Rubinum+ (Noble)
+Cor Saphirum (drogocenne	Cor Saphirum (Precious)
+Cor Saphirum (mityczne)	Cor Saphirum (Mystical)
+Cor Saphirum (rozżarzone	Cor Saphirum (Glowing)
+Cor Saphirum (szlachetne	Cor Saphirum (Noble)
+Cor Saphirum+ (mityczne)	Cor Saphirum+ (Mystical)
+Cor Saphirum+ (zwyczajne	Cor Saphirum+ (Normal)
+Cyjanowa Rosa	Cyan Dew
+Cyjanowa Woda	Cyan Water
+Cyjanowy Sok	Cyan Juice
+Czar. Hełm Sm. Ryc.+ (k)	Black Dragon Knight Helmet+ (f)
+Czar. Hełm Sm. Ryc.+ (m)	Black Dragon Knight Helmet+ (m)
+Czar. Maska Zaj. Damy+	Black Bunny Lady Mask+
+Czar. Maska Zaj. Lorda+	Black Bunny Lord Mask+
+Czar. Maska do Nur.+ (k)	Black Diving Mask+ (f)
+Czar. Maska do Nur.+ (m)	Black Diving Mask+ (m)
+Czar. Skaf. Nurkowy+ (k)	Black Diving Suit+ (f)
+Czar. Skaf. Nurkowy+ (m)	Black Diving Suit+ (m)
+Czarna Lampa Damy+	Black Lady's Lamp+
+Czarna Lampa Lorda+	Black Lord's Lamp+
+Czarna Smocza Rycerka+	Black Dragon Knight+ (f)
+Czarna Stal	Black Steel
+Czarne Dyn. Straszydło	Black Pumpkin Bogeyman
+Czarny Byk	Black Bull
+Czarny Smoczy Rycerz+	Black Dragon Knight+ (m)
+Czer. Hełm Sm. Ryc.+ (k)	Red Dragon Knight Helmet+ (f)
+Czer. Hełm Sm. Ryc.+ (m)	Red Dragon Knight Helmet+ (m)
+Czerw. Duch Drzewa	Red Ghost Tree
+Czerw. Duch Pniaka	Red Ghost Stump
+Czerw. Konar Duchodrzewa	Red Ghost Tree Branch
+Czerwona Montera (k)	Red Montera (f)
+Czerwona Montera (m)	Red Montera (m)
+Czerwona Montera+ (k)	Red Montera+ (f)
+Czerwona Montera+ (m)	Red Montera+ (m)
+Czerwona Muszla	Red Scallop
+Czerwona Smocza Rycerka+	Red Dragon Knight+ (f)
+Czerwona Toreadorka	Red Toreador (f)
+Czerwona Toreadorka+	Red Toreador+ (f)
+Czerwona Woda	Red Water
+Czerwona Święta Woda	Red Holy Water
+Czerwone Nasiono	Red Seed
+Czerwone Pióro	Red Quill
+Czerwone Zioło	Red Herb
+Czerwony Drakkar	Red Drakkar
+Czerwony Monokl	Red Monocle
+Czerwony Smoczy Rycerz+	Red Dragon Knight+ (m)
+Czerwony Sok	Red Juice
+Czerwony Toreador	Red Toreador (m)
+Czerwony Toreador+	Red Toreador+ (m)
+Czysty Papier	Blank Paper
+Dae-Ho, Duch Puszczy	Dae-Ho, Spirit of the Wild
+Dead Soldier
+Demoniczny Klucz	Demonic Key
+Destiny Lock
+Diabelskie Rogi	Devil's Horns
+Diament (Blyszczacy, Najnizszy)	Diamond (Cut, Lowest)
+Diament (Blyszczacy, Najwyzszy)	Diamond (Cut, Highest)
+Diament (Blyszczacy, Niski)	Diamond (Cut, Low)
+Diament (Blyszczacy, Sredni)	Diamond (Cut, Medium)
+Diament (Blyszczacy, Wysoki)	Diamond (Cut, High)
+Diament (Legendarny, Najnizszy)	Diamond (Legendary, Lowest)
+Diament (Legendarny, Najwyzszy)	Diamond (Legendary, Highest)
+Diament (Legendarny, Niski)	Diamond (Legendary, Low)
+Diament (Legendarny, Sredni)	Diamond (Legendary, Medium)
+Diament (Legendarny, Wysoki)	Diamond (Legendary, High)
+Diament (Mityczny, Najnizszy)	Diamond (Mythical, Lowest)
+Diament (Mityczny, Najwyzszy)	Diamond (Mythical, Highest)
+Diament (Mityczny, Niski)	Diamond (Mythical, Low)
+Diament (Mityczny, Sredni)	Diamond (Mythical, Medium)
+Diament (Mityczny, Wysoki)	Diamond (Mythical, High)
+Diament (Rzadki, Najnizszy)	Diamond (Rare, Lowest)
+Diament (Rzadki, Najwyzszy)	Diamond (Rare, Highest)
+Diament (Rzadki, Niski)	Diamond (Rare, Low)
+Diament (Rzadki, Sredni)	Diamond (Rare, Medium)
+Diament (Rzadki, Wysoki)	Diamond (Rare, High)
+Diament (Starozytny, Najnizszy)	Diamond (Antique, Lowest)
+Diament (Starozytny, Najwyzszy)	Diamond (Antique, Highest)
+Diament (Starozytny, Niski)	Diamond (Antique, Low)
+Diament (Starozytny, Sredni)	Diamond (Antique, Medium)
+Diament (Starozytny, Wysoki)	Diamond (Antique, High)
+Diament (Zwykly, Najnizszy)	Diamond (Rough, Lowest)
+Diament (Zwykly, Najwyzszy)	Diamond (Rough, Highest)
+Diament (Zwykly, Niski)	Diamond (Rough, Low)
+Diament (Zwykly, Sredni)	Diamond (Rough, Medium)
+Diament (Zwykly, Wysoki)	Diamond (Rough, High)
+Dobra Wytrzymałość	Good Endurance
+Dragon Gate
+Dragon Stone Shard
+Dragon Tongs
+Dragon Tongs+
+Drewniany Klucz	Wooden Key
+Duch Drzewa	Ghost Tree
+Duch Pniaka	Ghost Stump
+Dusza Rudy Kryształu	Soul Crystal Ore
+Dwur. Miecz Nos. Klątwy+	Curse Bearer Two-Handed Sword+
+Dzwon Smoka Północy	Northern Dragon Bell
+Dzwon Smoka Północy+	Northern Dragon Bell+
+Dzwon Zimowego Ciernia	Winter Thorn Bell
+Dzwon Zimowego Ciernia+	Winter Thorn Bell+
+Dzwonek Nos. Klątwy+	Curse Bearer Bell+
+Ember Flame
+Ember Flame Beard
+Ember Flame Chieftain
+Ember Flame General
+Ember Flame Ghost
+Ember Flame Golem
+Ember Flame King
+Ember Flame Tiger
+Ember Flame Warrior
+Esencja Natury	Essence of Nature
+Esencja Wody	Essence of Water
+Ezoteryczne Drewno	Esoteric Wood
+Ezoteryczny Ostrzowiec	Esoteric Bladesman
+Farba do Włosów (Biała)	Hair Dye (White)
+Farba do Włosów (Blond)	Hair Dye (Blonde)
+Farba do Włosów (Brąz.)	Hair Dye (Brown)
+Farba do Włosów (Czarna)	Hair Dye (Black)
+Farba do Włosów (Czerw.)	Hari Dye (Red)
+Feniks Wieczornej Zorzy	Evening Glow Phoenix
+Feniks Zmierzchu	Twilight Phoenix
+Fiol. Maska Zaj. Damy+	Purple Bunny Lady Mask+
+Fiol. Maska Zaj. Lorda+	Purple Bunny Lord Mask+
+Fioletowa Lampa Damy+	Purple Lady's Lamp+
+Fioletowa Lampa Lorda+	Purple Lord's Lamp+
+Fioletowa Rosa	Purple Dew
+Fioletowa Woda	Purple Water
+Fioletowe Zioło	Purple Herb
+Fioletowy Sok	Purple Juice
+Fireland Guard
+Frost Beard
+Frost Bug
+Frost Crystal
+Frost General
+Frost Golem
+Frost Lord
+Frost Man
+Frost Troll
+Frost Yeti
+Futro przeklętego wilka	Cursed Wolf Fur
+Gallus
+Gang-Ma
+Gang-Ryoung-Gab
+Garnet Alchemist
+Geuk-Hon-Gab
+Gourou
+Granat (Blyszczacy, Najnizszy)	Garnet (Cut, Lowest)
+Granat (Blyszczacy, Najwyzszy)	Garnet (Cut, Highest)
+Granat (Blyszczacy, Niski)	Garnet (Cut, Low)
+Granat (Blyszczacy, Sredni)	Garnet (Cut, Medium)
+Granat (Blyszczacy, Wysoki)	Garnet (Cut, High)
+Granat (Legendarny, Najnizszy)	Garnet (Legendary, Lowest)
+Granat (Legendarny, Najwyzszy)	Garnet (Legendary, Highest)
+Granat (Legendarny, Niski)	Garnet (Legendary, Low)
+Granat (Legendarny, Sredni)	Garnet (Legendary, Medium)
+Granat (Legendarny, Wysoki)	Garnet (Legendary, High)
+Granat (Mityczny, Najnizszy)	Garnet (Mythical, Lowest)
+Granat (Mityczny, Najwyzszy)	Garnet (Mythical, Highest)
+Granat (Mityczny, Niski)	Garnet (Mythical, Low)
+Granat (Mityczny, Sredni)	Garnet (Mythical, Medium)
+Granat (Mityczny, Wysoki)	Garnet (Mythical, High)
+Granat (Rzadki, Najnizszy)	Garnet (Rare, Lowest)
+Granat (Rzadki, Najwyzszy)	Garnet (Rare, Highest)
+Granat (Rzadki, Niski)	Garnet (Rare, Low)
+Granat (Rzadki, Sredni)	Garnet (Rare, Medium)
+Granat (Rzadki, Wysoki)	Garnet (Rare, High)
+Granat (Starozytny, Najnizszy)	Garnet (Antique, Lowest)
+Granat (Starozytny, Najwyzszy)	Garnet (Antique, Highest)
+Granat (Starozytny, Niski)	Garnet (Antique, Low)
+Granat (Starozytny, Sredni)	Garnet (Antique, Medium)
+Granat (Starozytny, Wysoki)	Garnet (Antique, High)
+Granat (Zwykly, Najnizszy)	Garnet (Rough, Lowest)
+Granat (Zwykly, Najwyzszy)	Garnet (Rough, Highest)
+Granat (Zwykly, Niski)	Garnet (Rough, Low)
+Granat (Zwykly, Sredni)	Garnet (Rough, Medium)
+Granat (Zwykly, Wysoki)	Garnet (Rough, High)
+Green Dragon Bean
+Gromogrzmot	Thunderclap
+Grzmot Wukong	Wukong Thunder
+Grzyb Tuern	Tue Fungus
+Gwarancja Rzemiosła (Biżuteria)	Craftsman's Guarantee (Jewellery)
+Gwarancja Rzemiosła (Broń)	Craftsman's Guarantee (Weapon)
+Gwarancja Rzemiosła (Zbroja)	Craftsman's Guarantee (Armour)
+Gwiazda Nocyrn	Night Star
+Góra_Sohan 4108 2250	Mount_Sohan 4108 2250
+Górski Behemot	Mountain Behemoth
+Ha-An-Gab
+Hati
+Helena
+Heuk-Gui-Gab
+Hełm Atlantydy+ (k)	Atlantis Helmet+ (f)
+Hełm Atlantydy+ (m)	Atlantis Helmet+ (m)
+Hełm Czerw. Piasku+ (k)	Red Sand Helmet+ (f)
+Hełm Czerw. Piasku+ (m)	Red Sand Helmet+ (m)
+Hełm Sam. Śniegu+ (k)	Snow Samurai Helmet+ (f)
+Hełm Sam. Śniegu+ (m)	Snow Samurai Helmet+ (m)
+Hełm Samuraja Cieni+ (k)	Shadow Samurai Helmet+ (f)
+Hełm Samuraja Cieni+ (m)	Shadow Samurai Helmet+ (m)
+Hełm Srebr. Piasku+ (k)	Silver Sand Helmet+ (f)
+Hełm Srebr. Piasku+ (m)	Silver Sand Helmet+ (m)
+Hełm Walkirii Nocy+	Night Valkyrie Helmet+
+Hełm Walkirii Światła+	Light Valkyrie Helmet+
+Hełm Wikinga Nocy+	Night Viking Helmet+
+Hełm Wikinga Światła+	Light Viking Helmet+
+Hełm Władcy Śmierci	Death Lord Helmet
+Ho-Gu
+Ho-Young
+Ice Land Guardian
+Ignitor
+Indiańska Bransoleta	Precious Armband
+Inkub Nocy+	Night Incubus+
+Inkub Płomieni+	Flame Incubus+
+Inna Wroga Wytrzymałość	Other Enemy Endurance
+Instr. Dwuręcz. Miecza	Two-handed Sword Manual
+Instr. Iskrzące Uderzenie	Spark Manual
+Instr. Jednoręcz. Miecza	One-handed Sword Manual
+Instr. Sztyletu	Dagger Handbook
+Instr. Walki Konno	Mounted Combat Manual
+Inteligencja	Intelligence
+Isfet Stele
+Jadeit (Blyszczacy, Najnizszy)	Jade (Cut, Lowest)
+Jadeit (Blyszczacy, Najwyzszy)	Jade (Cut, Highest)
+Jadeit (Blyszczacy, Niski)	Jade (Cut, Low)
+Jadeit (Blyszczacy, Sredni)	Jade (Cut, Medium)
+Jadeit (Blyszczacy, Wysoki)	Jade (Cut, High)
+Jadeit (Legendarny, Najnizszy)	Jade (Legendary, Lowest)
+Jadeit (Legendarny, Najwyzszy)	Jade (Legendary, Highest)
+Jadeit (Legendarny, Niski)	Jade (Legendary, Low)
+Jadeit (Legendarny, Sredni)	Jade (Legendary, Medium)
+Jadeit (Legendarny, Wysoki)	Jade (Legendary, High)
+Jadeit (Mityczny, Najnizszy)	Jade (Mythical, Lowest)
+Jadeit (Mityczny, Najwyzszy)	Jade (Mythical, Highest)
+Jadeit (Mityczny, Niski)	Jade (Mythical, Low)
+Jadeit (Mityczny, Sredni)	Jade (Mythical, Medium)
+Jadeit (Mityczny, Wysoki)	Jade (Mythical, High)
+Jadeit (Rzadki, Najnizszy)	Jade (Rare, Lowest)
+Jadeit (Rzadki, Najwyzszy)	Jade (Rare, Highest)
+Jadeit (Rzadki, Niski)	Jade (Rare, Low)
+Jadeit (Rzadki, Sredni)	Jade (Rare, Medium)
+Jadeit (Rzadki, Wysoki)	Jade (Rare, High)
+Jadeit (Starozytny, Najnizszy)	Jade (Antique, Lowest)
+Jadeit (Starozytny, Najwyzszy)	Jade (Antique, Highest)
+Jadeit (Starozytny, Niski)	Jade (Antique, Low)
+Jadeit (Starozytny, Sredni)	Jade (Antique, Medium)
+Jadeit (Starozytny, Wysoki)	Jade (Antique, High)
+Jadeit (Zwykly, Najnizszy)	Jade (Rough, Lowest)
+Jadeit (Zwykly, Najwyzszy)	Jade (Rough, Highest)
+Jadeit (Zwykly, Niski)	Jade (Rough, Low)
+Jadeit (Zwykly, Sredni)	Jade (Rough, Medium)
+Jadeit (Zwykly, Wysoki)	Jade (Rough, High)
+Jajko wielkanocne	Easter Egg
+Jaskiniowy Grzyb	Cave Mushroom
+Jaskiniowy Grzybrn	Cave Mushroom
+Jasno-Czerw. Święta Woda	Magenta Hand of God
+Jasno-Żółta Święta Woda	Dark Yellow Hand of God
+Kamienny Grot	Stone Arrowhead
+Kamień Dusz Beran-Setaou	Beran-Setaou Soul Stone
+Kamień Duszy	Spirit Stone
+Kamień Duszy Aurtumryu	Aurtumryu's Soul Stone
+Kamień Duszy Gyimok	Gyimok's Soul Stone
+Kamień Duszy Jinunggyi	Jinunggyi's Soul Stone
+Kamień Duszy Lasu	Forest Spirit Soul Stone
+Kamień Duszy Sagyi	Sagyi's Soul Stone
+Kamień Duszy Tugyi	Tugyi's Soul Stone
+Kamień Liderów	Leaders' Soul Stone
+Kamień Tygrysa	Tiger Stone
+Kamień Wodny	Water Stone
+Karmazynowa Mikstura	Crimson Potion
+Karmazynowa Rosa	Crimson Dew
+Karmazynowa Woda	Crimson Water
+Karmazynowy Sok	Crimson Juice
+Karta Wędkarska	Fishing Licence
+Klejnot	Gem
+Klejnot Wierności	Loyalty Jewel
+Kolczyki Feniksa	Phoenix Earrings
+Korona Atlantydy+ (k)	Atlantis Crown+ (f)
+Korona Atlantydy+ (m)	Atlantis Crown+ (m)
+Korzeń Czerw. Lasu	Red Forest Root
+Korzeń Czerwonego Lasu	Red Forest Root
+Korzeń Gangorn	Gango Root
+Korzeń Węża	Snake Root
+Korzeń Wężarn	Snake Root
+Kostium Władcy Śmierci (m)	Death Lord Costume (m)
+Kostium Władczyni Śmierci (k)	Death Lady Costume (f)
+Kosz. Futbol.+ ROU (k)	ROU Football Outfit+ (f)
+Kosz. Futbol.+ ROU (m)	ROU Football Outfit+ (m)
+Koszulka Futbol.+ALG (k)	ALG Football Outfit+ (f)
+Koszulka Futbol.+ALG (m)	ALG Football Outfit+ (m)
+Koszulka Futbol.+ARG (k)	ARG Football Outfit+ (f)
+Koszulka Futbol.+ARG (m)	ARG Football Outfit+ (m)
+Koszulka Futbol.+AUS (k)	AUS Football Outfit+ (f)
+Koszulka Futbol.+AUS (m)	AUS Football Outfit+ (m)
+Koszulka Futbol.+BIH (k)	BIH Football Outfit+ (f)
+Koszulka Futbol.+BIH (m)	BIH Football Outfit+ (m)
+Koszulka Futbol.+BRA (k)	BRA Football Outfit+ (f)
+Koszulka Futbol.+BRA (m)	BRA Football Outfit+ (m)
+Koszulka Futbol.+CIV (k)	CIV Football Outfit+ (f)
+Koszulka Futbol.+CIV (m)	CIV Football Outfit+ (m)
+Koszulka Futbol.+COL (k)	COL Football Outfit+ (f)
+Koszulka Futbol.+COL (m)	COL Football Outfit+ (m)
+Koszulka Futbol.+ECU (k)	ECU Football Outfit+ (f)
+Koszulka Futbol.+ECU (m)	ECU Football Outfit+ (m)
+Koszulka Futbol.+GHA (k)	GHA Football Outfit+ (f)
+Koszulka Futbol.+GHA (m)	GHA Football Outfit+ (m)
+Koszulka Futbol.+IRN (k)	IRN Football Outfit+ (f)
+Koszulka Futbol.+IRN (m)	IRN Football Outfit+ (m)
+Koszulka Futbol.+JPN (k)	JPN Football Outfit+ (f)
+Koszulka Futbol.+JPN (m)	JPN Football Outfit+ (m)
+Koszulka Futbol.+KOR (k)	KOR Football Outfit+ (f)
+Koszulka Futbol.+KOR (m)	KOR Football Outfit+ (m)
+Koszulka Futbol.+KSA (k)	KSA Football Outfit+ (f)
+Koszulka Futbol.+KSA (m)	KSA Football Outfit+ (m)
+Koszulka Futbol.+MEX (k)	MEX Football Outfit+ (f)
+Koszulka Futbol.+MEX (m)	MEX Football Outfit+ (m)
+Koszulka Futbol.+URU (k)	URU Football Outfit+ (f)
+Koszulka Futbol.+URU (m)	URU Football Outfit+ (m)
+Koszulka Futbol.+USA (k)	USA Football Outfit+ (f)
+Koszulka Futbol.+USA (m)	USA Football Outfit+ (m)
+Koszyk z jajkami	Basket with Easter Eggs
+Kronika Rzemieślników	Craftsmen's Chronicle
+Królewski Łucznik	Royal Archer
+Książę Atlantydy+	Atlantis Prince+
+Księga Erudyty	Scholar's Tome
+Księga Opatrzności	Book of Providence
+Księż. Bran. Wukong (k)	Moon Wukong Bracelet (f)
+Księż. Bran. Wukong (m)	Moon Wukong Bracelet (m)
+Księż. Bran. Wukong+ (k)	Moon Wukong Bracelet+ (f)
+Księż. Bran. Wukong+ (m)	Moon Wukong Bracelet+ (m)
+Księż. Szata Wukong (k)	Moon Wukong Robe (f)
+Księż. Szata Wukong (m)	Moon Wukong Robe (m)
+Księż. Szata Wukong+ (k)	Moon Wukong Robe+ (f)
+Księż. Szata Wukong+ (m)	Moon Wukong Robe+ (m)
+Księżniczka Atlantydy+	Atlantis Princess+
+Kupon SM (250)	DR Voucher (250)
+Kwitnąca Brzoskwinia	Blossoming Peach
+Kwitnące Kaki	Blossoming Kaki
+Lalka Bogini	Goddess' Doll
+Laska Mędrca	Wise Man's Cane
+Lilith
+List Gończy	Wanted Poster
+Lod. Skrzydło Balathora	Balathor's Ice Wing
+Lodowa_Grota 6304 10882	Ice_Grotto 6304 10882
+Lodowata Maź	Icy Slime
+Lodowe Skrzyd. Balathora	Balathor's Ice Wings
+Losowa Receptura	Random Recipe
+Ma-Ryoung-Sin-Gab
+Ma-Sin-Gab
+Magiczna Ruda	Magic Ore
+Magiczny Kamieńrn	Magic Stone
+Magiczny Przedmiot	Bewitch Item
+Magiczny Pył	Magic Dust
+Magma Manni I
+Magma Manni II
+Magma Manni III
+Maj. Nosiciel Światła+	Majestic Light Bearer+ (m)
+Maj. Nosicielka Światła+	Majestic Light Bearer+ (f)
+Majestatyczny Diadem+ (k)	Majestic Diadem+ (f)
+Majestatyczny Diadem+ (m)	Majestic Diadem+ (m)
+Marmur Błogosławieństwa	Blessing Marble
+Marmur Polimorfii	Polymorph Marble
+Marmur Rybaka	Fishing Marble
+Marmur Witalności	Vitality Marble
+Marmur Zielarza	Herbalist's Marble
+Maska Sabaha	Sabah's Mask
+Materiały Rzemieślnicze	Crafting Materials
+Matowy Lód	Ice Marble
+Matowy Lód+	Ice Marble+
+Mała Sowa Strażniczka	Little Guardian Owl
+Małe Dyniowe Straszydło	Little Pumpkin Bogeyman
+Mały Balathor	Little Balathor
+Mały Hati	Little Hati
+Mały Long	Little Long
+Mały Pavo	Little Pavo
+Mały Zimowy Skrzat	Little Winter Gnome
+Metin Szeptów	Metin of Whispers
+Miecz Dw. Zim. Ciernia+	Winter Thorn Two-Handed Sword+
+Miecz Dwur. Zim. Ciernia	Winter Thorn Two-Handed Sword
+Miecz Nosiciela Klątwy+	Curse Bearer Sword+
+Miecz Ob. Smoka Północy	Northern Dragon Two-Handed Sword
+Miecz Ob. Smoka Północy+	Northern Dragon Two-Handed Sword+
+Miecz Smoka Północy	Northern Dragon Sword
+Miecz Smoka Północy+	Northern Dragon Sword+
+Miecz Zimowego Ciernia	Winter Thorn Sword
+Miecz Zimowego Ciernia+	Winter Thorn Sword+
+Mikstura Biegacza (D)	Runner Potion (L)
+Mikstura Biegacza (Ś)	Runner Potion (M)
+Mikstura Determinacji	Determination Potion
+Mikstura Ducha (3h)	Potion of Spirit (3h)
+Mikstura Geniuszu	Genius Potion
+Mikstura Nietykalności	Invulnerability Potion
+Mikstura Niewrażliwości	Immunity Potion
+Mikstura Pogromcy (D)	Slayer Potion (L)
+Mikstura Pogromcy (M)	Slayer Potion (S)
+Mikstura Pogromcy (Ś)	Slayer Potion (M)
+Mikstura Potęgi (D)	Power Potion (L)
+Mikstura Potęgi (M)	Power Potion (S)
+Mikstura Potęgi (Ś)	Power Potion (M)
+Mikstura Regeneracji PE	MP Regeneration Potion
+Mikstura Regeneracji PŻ	HP Regeneration Potion
+Mikstura Stagnacji	Stagnation Potion
+Mikstura Szybkiej Analizy	Quick Analysis Potion
+Mikstura Trwałości (D)	Durability Potion (L)
+Mikstura Trwałości (Ś)	Durability Potion (M)
+Mikstura Zaklęcia (D)	Enchantment Potion (L)
+Mikstura Zaklęcia (Ś)	Enchantment Potion (M)
+Mikstura Łuski Smoka (D)	Dragon Scale Potion (L)
+Mikstura Łuski Smoka (M)	Dragon Scale Potion (S)
+Mikstura Łuski Smoka (Ś)	Dragon Scale Potion (M)
+Min-Sun
+Minerał	Mineral
+Minililith
+Minipebble
+Mięso Demona	Demon Meat
+Mniszek Lekarskirn	Dandelion
+Morwarn	Mulberry
+Mroczny Rumak Piekieł	Dark Hell Steed
+Mt2009
+Muffin
+Muszla	Scallop
+Naara, Strażniczka Lasu	Naara, Forest Guardian
+Nabira
+Nakładka Władcy Śmierci - Broń D	Death Lord Skin - Two-Handed Weapon
+Nakładka Władcy Śmierci - Dzwon	Death Lord Skin - Bell
+Nakładka Władcy Śmierci - Miecz	Death Lord Skin - Sword
+Nakładka Władcy Śmierci - Miecz 	Death Lord Skin - Sword
+Nakładka Władcy Śmierci - Sztyle	Death Lord Skin - Dagger
+Nakładka Władcy Śmierci - Wachla	Death Lord Skin - Fan
+Nakładka Władcy Śmierci - Łuk	Death Lord Skin - Bow
+Naszyjnik Milionera	Millionaire's Necklace
+Niebieska Montera (k)	Blue Montera (f)
+Niebieska Montera (m)	Blue Montera (m)
+Niebieska Montera+ (k)	Blue Montera+ (f)
+Niebieska Montera+ (m)	Blue Montera+ (m)
+Niebieska Muszla	Blue Scallop
+Niebieska Toreadorka	Blue Toreador (f)
+Niebieska Toreadorka+	Blue Toreador+ (f)
+Niebieska Woda	Blue Water
+Niebieska Święta Woda	Blue Holy Water
+Niebieski Drakkar	Blue Drakkar
+Niebieski Kamień Winny	Blue Tartar
+Niebieski Oldtimer	Blue Oldtimer
+Niebieski Sok	Blue Juice
+Niebieski Toreador	Blue Toreador (m)
+Niebieski Toreador+	Blue Toreador+ (m)
+Niebieski Zimowy Skrzat	Blue Winter Gnome
+Niebieskie Zioło	Blue Herb
+Niedźwiedzina	Bear Meat
+Noe-Un-Gab
+Notatka Honor. Studenta	Student's Memo
+Nugget
+O-Gyo
+Oczyszczający Amulet Wód	Water Purifying Amulet
+Ogon Małpy	Monkey Tail
+Ogro-Magus	Ogre Magus
+Ogro-Łucznik	Archie Ogre
+Okrutny Rumak Piekieł	Cruel Hell Steed
+Olbrz. Łza Bogini	Giant Goddess Tear
+Olbrzymi Duch Drzewa	Giant Ghost Tree
+Olejek Handlu	Tincture of Trade
+Olejek Kamienia Dusz	Spirit Stone Tincture
+Olimpijska Skrzynia	Olympic Chest
+Onyks (Blyszczacy, Najnizszy)	Onyx (Cut, Lowest)
+Onyks (Blyszczacy, Najwyzszy)	Onyx (Cut, Highest)
+Onyks (Blyszczacy, Niski)	Onyx (Cut, Low)
+Onyks (Blyszczacy, Sredni)	Onyx (Cut, Medium)
+Onyks (Blyszczacy, Wysoki)	Onyx (Cut, High)
+Onyks (Legendarny, Najnizszy)	Onyx (Legendary, Lowest)
+Onyks (Legendarny, Najwyzszy)	Onyx (Legendary, Highest)
+Onyks (Legendarny, Niski)	Onyx (Legendary, Low)
+Onyks (Legendarny, Sredni)	Onyx (Legendary, Medium)
+Onyks (Legendarny, Wysoki)	Onyx (Legendary, High)
+Onyks (Mityczny, Najnizszy)	Onyx (Mythical, Lowest)
+Onyks (Mityczny, Najwyzszy)	Onyx (Mythical, Highest)
+Onyks (Mityczny, Niski)	Onyx (Mythical, Low)
+Onyks (Mityczny, Sredni)	Onyx (Mythical, Medium)
+Onyks (Mityczny, Wysoki)	Onyx (Mythical, High)
+Onyks (Rzadki, Najnizszy)	Onyx (Rare, Lowest)
+Onyks (Rzadki, Najwyzszy)	Onyx (Rare, Highest)
+Onyks (Rzadki, Niski)	Onyx (Rare, Low)
+Onyks (Rzadki, Sredni)	Onyx (Rare, Medium)
+Onyks (Rzadki, Wysoki)	Onyx (Rare, High)
+Onyks (Starozytny, Najnizszy)	Onyx (Antique, Lowest)
+Onyks (Starozytny, Najwyzszy)	Onyx (Antique, Highest)
+Onyks (Starozytny, Niski)	Onyx (Antique, Low)
+Onyks (Starozytny, Sredni)	Onyx (Antique, Medium)
+Onyks (Starozytny, Wysoki)	Onyx (Antique, High)
+Onyks (Zwykly, Najnizszy)	Onyx (Rough, Lowest)
+Onyks (Zwykly, Najwyzszy)	Onyx (Rough, Highest)
+Onyks (Zwykly, Niski)	Onyx (Rough, Low)
+Onyks (Zwykly, Sredni)	Onyx (Rough, Medium)
+Onyks (Zwykly, Wysoki)	Onyx (Rough, High)
+Opiekun Testów	Test Keeper
+Orkowe Jądra	Orc Testicles
+Osetrn	Thistle
+Oswojony Byk	Tame Bull
+Ozdobny miecz Mirine	Mirine's Ornamental Sword
+Pamiątka po bracie	Brother's Keepsake
+Pavo
+Pazury Małpy	Monkey Claws
+Pebble
+Pergamin	Parchment
+Perłowe Wiechy	Pearl Panicles
+Perłowe Wiechyrn	Pearl Panicles
+Piasek Pustyni	Desert Sand
+Piaskowa Tarantula	Sand Tarantula
+Pieczona Słodka Ryba	Grilled Sweetfish
+Pieczony Gromadnik	Grilled Smelt
+Pieczony Lustrzany Karp	Grilled Mirror Carp
+Pieczony Złoty Karaś	Grilled Goldfish
+Pieczęć Dzika (żółta)	Wild Boar Seal (yellow)
+Pieczęć Lwa (żółta)	Lion Seal (yellow)
+Pieczęć Tygrysa (żółta)	Tiger Seal (yellow)
+Pieczęć Wilka (żółta)	Wolf Seal (yellow)
+Piekielny Żarłacz Dusz	Infernal Soul Devourer
+Pierwszorzędne Buty	Superior Shoes
+Pierścień Dośw. (iCafe)	Experience Ring (iCafe)
+Pierścień Godności	Dignity Ring
+Pierścień Niejawności	Ring of Concealment
+Pink Dragon Bean
+Pióro Mędrca	Sage's Quill
+Piękna Zim. Czapka+ (k)	Luxurious Winter Hat+ (f)
+Piękna Zim. Czapka+ (m)	Luxurious Winter Hat+ (m)
+Piękna Zim. Zbroja+ (k)	Luxurious Winter Armour+ (f)
+Piękna Zim. Zbroja+ (m)	Luxurious Winter Armour+ (m)
+Placeholder
+Platynowa Rosa	Platinum Dew
+Platynowa Woda	Platinum Water
+Platynowy Sok	Platinum Juice
+Pokrzywarn	Bellflower
+Pomarańczowa Woda	Orange Water
+Pomarańczowy Sok	Orange Juice
+Pozwolenie na Wzmocn. Przedmiotu	Reinforce Item Permit
+Pozwolenie na Zaczar. Przedmiotu	Enchant Item Permit
+Pośp. Królik	Hasty Rabbit
+Pośpieszny Królik	Hasty Rabbit
+Private Shop Key
+Przepustka Triumfu	Triumph Pass
+Przetopiony Kruszec	Smelted Ore
+Przewodnik Do Zbieractwa	Gathering Guide
+Przełęcz 6201 11875	Pass 6201 11875
+Przełęcz 6809 11943	Pass 6809 11943
+Przyjazna Małpa	Friendly Monkey
+Purgatory Fire Metin
+Pusta Butelka (D)	Empty Bottle (L)
+Pusta Butelka (M)	Empty Bottle (S)
+Pusta Butelka (Ś)	Empty Bottle (M)
+Pusta Butelka Na Wodę	Empty Water Bottle
+Pustynny Emir	Desert Emir
+Płaszcz Uciekiniera	Fugitive's Cape
+Płatnerz Wieży Demonów	Demon Tower Armorsmith
+Płomienny Egzekutor	Flaming Executioner
+Płomień Potępionych	Flame of the Damned
+Płonące Rogi+ (k)	Burning Horns+ (f)
+Płonące Rogi+ (m)	Burning Horns+ (m)
+Receptura Beżowy Wywar	Recipe: Beige Brew
+Receptura Brązowy Wywar	Recipe: Brown Brew
+Receptura Cyjanowy Wywar	Recipe: Cyan Brew
+Receptura Czerwona Mikstura(XL)	Recipe: Red Potion(XL)
+Receptura Czerwony Wywar	Recipe: Red Brew
+Receptura Eliksir Księżyca (D)	Recipe: Moon Elixir (L)
+Receptura Eliksir Księżyca (M)	Recipe: Moon Elixir (S)
+Receptura Eliksir Księżyca (Ś)	Recipe: Moon Elixir (M)
+Receptura Eliksir Słońca (D)	Recipe: Sun Elixir (L)
+Receptura Eliksir Słońca (M)	Recipe: Sun Elixir (S)
+Receptura Eliksir Słońca (Ś)	Recipe: Sun Elixir (M)
+Receptura Fioletowa Mikstura	Recipe: Purple Potion
+Receptura Fioletowy Wywar	Recipe: Purple Brew
+Receptura Karmazynowy Wywar	Recipe: Crimson Brew
+Receptura Miks. Szybkiej Analizy	Recipe: Quick Analysis Potion
+Receptura Mikstura Mądrości	Recipe: Wisdom Potion
+Receptura Mikstura Trwałości	Recipe: Durability Potion
+Receptura Mikstura Zaklęcia	Recipe: Enchantment Potion
+Receptura Mikstury Biegacza	Recipe: Runner Potion
+Receptura Mikstury Determinacji	Recipe: Determination Potion
+Receptura Mikstury Geniuszu	Recipe: Genius Potion
+Receptura Mikstury Nietykalności	Recipe: Invulnerability Potion
+Receptura Mikstury Pogromcy	Recipe: Slayer Potion
+Receptura Mikstury Potęgi	Recipe: Power Potion
+Receptura Mikstury Regen. PE	Recipe: MP Regeneration Potion
+Receptura Mikstury Regen. PŻ	Recipe: HP Regeneration Potion
+Receptura Mikstury Stagnacji	Recipe: Stagnation Potion
+Receptura Mikstury Łuski Smoka	Recipe: Dragon Scale Potion
+Receptura Niebieska Mikstura(XL)	Recipe: Blue Potion(XL)
+Receptura Niebieski Wywar	Recipe: Blue Brew
+Receptura Platynowy Wywar	Recipe: Platinum Brew
+Receptura Pomarańcz. Wywar	Recipe: Orange Brew
+Receptura Różowy Wywar	Recipe: Pink Brew
+Receptura Szary Wywar	Recipe: Grey Brew
+Receptura Zielona Mikstura	Recipe: Green Potion
+Receptura Zielony Wywar	Recipe: Green Brew
+Receptura Żółty Wywar	Recipe: Yellow Brew
+Rogi Skrzydła Nocy+ (k)	Nightwing Horns+ (f)
+Rogi Skrzydła Nocy+ (m)	Nightwing Horns+ (m)
+Rubin (Blyszczacy, Najnizszy)	Ruby (Cut, Lowest)
+Rubin (Blyszczacy, Najwyzszy)	Ruby (Cut, Highest)
+Rubin (Blyszczacy, Niski)	Ruby (Cut, Low)
+Rubin (Blyszczacy, Sredni)	Ruby (Cut, Medium)
+Rubin (Blyszczacy, Wysoki)	Ruby (Cut, High)
+Rubin (Legendarny, Najnizszy)	Ruby (Legendary, Lowest)
+Rubin (Legendarny, Najwyzszy)	Ruby (Legendary, Highest)
+Rubin (Legendarny, Niski)	Ruby (Legendary, Low)
+Rubin (Legendarny, Sredni)	Ruby (Legendary, Medium)
+Rubin (Legendarny, Wysoki)	Ruby (Legendary, High)
+Rubin (Mityczny, Najnizszy)	Ruby (Mythical, Lowest)
+Rubin (Mityczny, Najwyzszy)	Ruby (Mythical, Highest)
+Rubin (Mityczny, Niski)	Ruby (Mythical, Low)
+Rubin (Mityczny, Sredni)	Ruby (Mythical, Medium)
+Rubin (Mityczny, Wysoki)	Ruby (Mythical, High)
+Rubin (Rzadki, Najnizszy)	Ruby (Rare, Lowest)
+Rubin (Rzadki, Najwyzszy)	Ruby (Rare, Highest)
+Rubin (Rzadki, Niski)	Ruby (Rare, Low)
+Rubin (Rzadki, Sredni)	Ruby (Rare, Medium)
+Rubin (Rzadki, Wysoki)	Ruby (Rare, High)
+Rubin (Starozytny, Najnizszy)	Ruby (Antique, Lowest)
+Rubin (Starozytny, Najwyzszy)	Ruby (Antique, Highest)
+Rubin (Starozytny, Niski)	Ruby (Antique, Low)
+Rubin (Starozytny, Sredni)	Ruby (Antique, Medium)
+Rubin (Starozytny, Wysoki)	Ruby (Antique, High)
+Rubin (Zwykly, Najnizszy)	Ruby (Rough, Lowest)
+Rubin (Zwykly, Najwyzszy)	Ruby (Rough, Highest)
+Rubin (Zwykly, Niski)	Ruby (Rough, Low)
+Rubin (Zwykly, Sredni)	Ruby (Rough, Medium)
+Rubin (Zwykly, Wysoki)	Ruby (Rough, High)
+Rubin Alchemist
+Rzeźnik	Storekeeper
+Rzygacz	Gargoyle
+Róża Alpejskarn	Alpine Rose
+Różowa Rosa	Pink Dew
+Różowa Woda	Pink Water
+Różowy Sok	Pink Juice
+Różowy Zimowy Skrzat	Pink Winter Gnome
+Rękawica Wichru	Gale Glove
+Rękawica Złodz. (iCafe)	Thief's Glove (iCafe)
+Sakiewka Alchemika	Alchemy Pouch
+Sakiewka Kamieni Dusz	Spirit Stone Pouch
+Sakiewka Na Pieniądze	Money Pouch
+Samumu
+Samuraj Cieni+ (k)	Shadow Samurai+ (f)
+Samuraj Cieni+ (m)	Shadow Samurai+ (m)
+Samuraj Śniegu+ (k)	Snow Samurai+ (f)
+Samuraj Śniegu+ (m)	Snow Samurai+ (m)
+Sapphire Alchemist
+Search Shop Premium
+Sekr.Uderz.Nieba I Ziemi	Heaven and Earth Secret
+Sekret Bezszelest. Chodu	Feather Walk Secret
+Sekret Błogosławieństwa	Blessing Secret
+Sekret Chi	Chi Secret
+Sekret Czarowania Ostrza	Enchanted Blade Secret
+Sekret Duchowego Uderz.	Ghost Strike Secret
+Sekret Latającego Taliz.	Flying Talisman Secret
+Sekret Leczenia	Cure Secret
+Sekret Mrocznego Uderz.	Dark Strike Secret
+Sekret Pomocy Smoka	Dragon's Help Secret
+Sekret Smoczego Wiru	Dragon Swirl Secret
+Sekret Strzały	Arrow Secret
+Sekret Szybkiego Uderz.	Fast Attack Secret
+Sekret Uderz. Ataku	Attack Strike Secret
+Sekret Walnięcia	Bash Secret
+Sekret Zasadzki	Ambush Secret
+Serce Bera	Bera's Heart
+Serce Wojownika	Warrior's Heart
+Shop Decoration
+Silny Czer. Duch Wierzby	Strong Red Ghost Willow
+Silny Czerw. Duch Drzewa	Strong Red Ghost Tree
+Silny Wywar z Ziół	Strong Herbal Brew
+Skalli
+Skamieniała Krewetka	Petrified Shrimp
+Sklep Premium	Premium Shop
+Skrzydła Władcy Śmierci (dostojn	Death Lord Wings (Dignified)
+Skrzydła Władcy Śmierci (proste)	Death Lord Wings (Simple)
+Skrzydła Władcy Śmierci (unikato	Death Lord Wings (Unique)
+Skrzydła Władcy Śmierci (zacne)	Death Lord Wings (Noble)
+Skrzydło Nocy Balathora	Balathor's Night Wing
+Skrzynia Piasków	Chest of Sands
+Skrzynia z Łupem	Loot Chest
+Skubcio
+Skóra Przeklętego Niedźwiedzia	Cursed Bear Skin
+Skóra Przeklętego Tygrysa	Cursed Tiger Skin
+Smaragd Alchemist
+Sok Z Bzu	Lilac Juice
+Sok Z Daktyla	Date Extract
+Sok Z Grzyba Tue	Tue Fungal Resin
+Sok Z Mniszka Alpejsk.	Dandelion Juice
+Sok Z Morwy	Mulberry Juice
+Sok Z Ostu	Thistle Juice
+Sok Z Rośliny Sam-Zi	Juice of Sam-Zi Plant
+Sok Z Róży Alpejskiej	Alpine Rose Juice
+Songmin, Arktyczne Yeti	Songmin, the Arctic Yeti
+Soul Crystal Alchemist
+Sowa Strażn. Księżyca	Moon Guardian Owl
+Sowa Strażniczka Słońca	Sun Guardian Owl
+Srebrny Grot	Silver Arrowhead
+Srebrny Long	Silver Long
+Stalowy Grot	Steel Arrowhead
+Stanton-Płatnerz	Armoursmith, Stanton
+Starbuck-Jubiler	Acc. Designer, Starbuck
+Straż Pałacowa	Yak-Hwan
+Strażniczka Cz. Piasku+	Red Sand Guardian+ (f)
+Strażniczka Sr. Piasku+	Silver Sand Guardian+ (f)
+Strażnik Czer. Piasku+	Red Sand Guardian+ (m)
+Strażnik Srebr. Piasku+	Silver Sand Guardian+ (m)
+Strażnik Wsi	Guardian
+Su-Sin
+Sukkub Nocy+	Night Succubus+
+Sukkub Płomieni+	Flame Succubus+
+Sun Herb
+Sutra
+Szafir (Blyszczacy, Najnizszy)	Sapphire (Cut, Lowest)
+Szafir (Blyszczacy, Najwyzszy)	Sapphire (Cut, Highest)
+Szafir (Blyszczacy, Niski)	Sapphire (Cut, Low)
+Szafir (Blyszczacy, Sredni)	Sapphire (Cut, Medium)
+Szafir (Blyszczacy, Wysoki)	Sapphire (Cut, High)
+Szafir (Legendarny, Najnizszy)	Sapphire (Legendary, Lowest)
+Szafir (Legendarny, Najwyzszy)	Sapphire (Legendary, Highest)
+Szafir (Legendarny, Niski)	Sapphire (Legendary, Low)
+Szafir (Legendarny, Sredni)	Sapphire (Legendary, Medium)
+Szafir (Legendarny, Wysoki)	Sapphire (Legendary, High)
+Szafir (Mityczny, Najnizszy)	Sapphire (Mythical, Lowest)
+Szafir (Mityczny, Najwyzszy)	Sapphire (Mythical, Highest)
+Szafir (Mityczny, Niski)	Sapphire (Mythical, Low)
+Szafir (Mityczny, Sredni)	Sapphire (Mythical, Medium)
+Szafir (Mityczny, Wysoki)	Sapphire (Mythical, High)
+Szafir (Rzadki, Najnizszy)	Sapphire (Rare, Lowest)
+Szafir (Rzadki, Najwyzszy)	Sapphire (Rare, Highest)
+Szafir (Rzadki, Niski)	Sapphire (Rare, Low)
+Szafir (Rzadki, Sredni)	Sapphire (Rare, Medium)
+Szafir (Rzadki, Wysoki)	Sapphire (Rare, High)
+Szafir (Starozytny, Najnizszy)	Sapphire (Antique, Lowest)
+Szafir (Starozytny, Najwyzszy)	Sapphire (Antique, Highest)
+Szafir (Starozytny, Niski)	Sapphire (Antique, Low)
+Szafir (Starozytny, Sredni)	Sapphire (Antique, Medium)
+Szafir (Starozytny, Wysoki)	Sapphire (Antique, High)
+Szafir (Zwykly, Najnizszy)	Sapphire (Rough, Lowest)
+Szafir (Zwykly, Najwyzszy)	Sapphire (Rough, Highest)
+Szafir (Zwykly, Niski)	Sapphire (Rough, Low)
+Szafir (Zwykly, Sredni)	Sapphire (Rough, Medium)
+Szafir (Zwykly, Wysoki)	Sapphire (Rough, High)
+Szara Mikstura	Grey Potion
+Szara Woda	Grey Water
+Szary Sok	Grey Juice
+Szczypcio
+Szczęśliwa Moneta	Lucky Coin
+Szkat. Chegala	Chegal's Chest
+Szkat. Olbrzym. Drzewa	Giant Tree Chest
+Szkatułka Żołnierza	Soldier's Chest
+Szmaragdowy Marmur	Emerald Marble
+Sztylet Nos. Klątwy+	Curse Bearer Dagger+
+Sztylet Smoka Północy	Northern Dragon Dagger
+Sztylet Smoka Północy+	Northern Dragon Dagger+
+Sztylet Zim. Ciernia+	Winter Thorn Dagger+
+Sztylet Zimowego Ciernia	Winter Thorn Dagger
+Słaba Zbroja	Weak Armour
+Słon. Bran. Wukong (k)	Sun Wukong Bracelet (f)
+Słon. Bran. Wukong (m)	Sun Wukong Bracelet (m)
+Słon. Brans. Wukong+ (k)	Sun Wukong Bracelet+ (f)
+Słon. Brans. Wukong+ (m)	Sun Wukong Bracelet+ (m)
+Słon. Szata Wukong (k)	Sun Wukong Robe (f)
+Słon. Szata Wukong (m)	Sun Wukong Robe (m)
+Słon. Szata Wukong+ (k)	Sun Wukong Robe+ (f)
+Słon. Szata Wukong+ (m)	Sun Wukong Robe+ (m)
+Taj. Rubinowa Skrzynia	Mysterious Ruby Box
+Tania Szczotka	Cheap Brush
+Taramor Gravestone
+Tongs of Time
+Trutka na Żółwia	Turtle Poison
+Tygrys Dżungli	Jungle Tiger
+Tygrys Śniegu	Snow Tiger
+Ulepszona Butelka	Upgrade Bottle
+Wachlarz Nos. Klątwy+	Curse Bearer Fan+
+Wachlarz Smoka Północy	Northern Dragon Fan
+Wachlarz Smoka Północy+	Northern Dragon Fan+
+Wachlarz Zim. Ciernia	Winter Thorn Fan
+Wachlarz Zim. Ciernia+	Winter Thorn Fan+
+Waleczna Dusza	Valiant Soul
+Walkiria Nocy+	Night Valkyrie+
+Walkiria Światła+	Light Valkyrie+
+Wieprzowina	Pork
+Wiking Nocy+	Night Viking+
+Wiking Światła+	Light Viking+
+Wojowniczka Atlantydy+	Atlantis Warrior+ (f)
+Wojownik Atlantydy+	Atlantis Warrior+ (m)
+Wounded Soldier
+Wrogi Mur	Enemy Wall
+Wysuszone Oczy	Dried Eyes
+Wytrych	Lockpick
+Wytrzymałość Wroga	Endurance of Enemy
+Wywar Seungryong	Seungryong Brew
+Węglowy Bożonar. Baran	Coal Christmas Ram
+Władca Duchów Drzew	Ghost Tree Lord
+Ya-Sang-Gab
+Young-Seon
+Zabłąkany Dzikus	Stray Savage
+Zaczarowana Rękawica	Enchanted Glove
+Zaczarowany Klejnot	Enchanted Gem
+Zbroja  Dzikiego Knura	Wild Boar Armour
+Zbroja Niedźwiedzia	Bear Armour
+Zbroja Tygrysa	Tiger Armour
+Zbroja Wilka	Wolf Armour
+Zeok-Hyoun
+Zeok-Sang-Gab
+Zgniłe Mięso	Rotten Meat
+Zielona Muszla	Green Scallop
+Zielona Woda	Green Water
+Zielona Święta Woda	Green Holy Water
+Zielone Zioło	Green Herb
+Zielony Oldtimer	Green Oldtimer
+Zielony Sok	Green Juice
+Zung-Seon
+Zupa Grzybowa	Mushroom Soup
+Zwój Inkarnacji	Incarnation Scroll
+Zwój Życia	Life Scroll
+Złota Sztab.(1Mil.Yang)	Gold Bar (1Million Yang)
+Złota Sztab.(2Mil.Yang)	Gold Bar (2Million Yang)
+Złoty Long	Golden Long
+aoe_giant
+aoe_tree_big
+aoe_tree_small
+bush_ancientlichen
+bush_blacklotus
+bush_blindweed
+bush_bloodthistle
+bush_crownroyal
+bush_dreamfoil
+bush_felweed
+bush_firebloom
+bush_flamecap
+bush_gravemoss
+bush_gromsblood
+bush_khadgarswhisker
+bush_manathistle
+bush_mountainsilversage
+bush_mushroom03
+bush_netherbloom
+bush_nightmarevine
+bush_purplelotus
+bush_silverleaf
+bush_snakebloom
+bush_snakeroot
+bush_spineleaf
+bush_stardust
+bush_steelbloom
+bush_stranglekelp
+bush_sungrass
+bush_terrocone
+bush_thornroot
+skillbook
+°ĹąĚµż±Ľ2Ăţ 7040 5235
+°ĹąĚµż±Ľ3Ăţ 984 5711
+Łuk Nosiciela Klątwy+	Curse Bearer Bow+
+Łuk Smoka Północy	Northern Dragon Bow
+Łuk Smoka Północy+	Northern Dragon Bow+
+Łuk Zimowego Ciernia	Winter Thorn Bow
+Łuk Zimowego Ciernia+	Winter Thorn Bow+
+Łuski Smoka	Dragon Scales
+Śnieżny Bożonar. Baran	Snowy Christmas Ram
+Śnieżny Kwiatrn	Snow Flower
+Św. Nosiciel Światła+	Holy Light Bearer+ (m)
+Św. Nosicielka Światła+	Holy Light Bearer+ (f)
+Świetlisty Diadem+ (k)	Radiant Diadem+ (f)
+Świetlisty Diadem+ (m)	Radiant Diadem+ (m)
+Świąt. Zim. Czapka+ (k)	Festive Winter Hat+ (f)
+Świąt. Zim. Czapka+ (m)	Festive Winter Hat+ (m)
+Świąt. Zim. Zbroja+ (k)	Festive Winter Armour+ (f)
+Świąt. Zim. Zbroja+ (m)	Festive Winter Armour+ (m)
+Świątynny Kamień Duszy	Temple Soul Stone
+Żelazny Grot	Iron Arrowhead
+Żelazo	Iron
+Żołnierze	Soldiers
+Żywe Drzewo	Living Wood
+Żółta Muszla	Yellow Scallop
+Żółta Woda	Yellow Water
+Żółta Święta Woda	Yellow Holy Water
+Żółty Kamień Winny	Yellow Tartar
+Żółty Sok	Yellow Juice

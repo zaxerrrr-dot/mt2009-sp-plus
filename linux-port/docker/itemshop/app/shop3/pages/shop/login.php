@@ -25,7 +25,7 @@
                 <div class="content clearfix">
 					<div id="error" class="contrast-box">
 						<div class="dark-grey-box">
-							<h2><i class="icon-user left" style="margin-top: 5px;"></i> <?php print $lang_shop['login']; ?></h2>
+							<h2><i class="icon-user left" style="margin-top: 5px;"></i> <?php print $lang_shop['login']; ?></h2><?php print m2i18n_switch_html(); /* MT2009_PLUS_WEB_I18N_V1 */ ?>
 							<p><?php print $lang_shop['to-use-shop']; ?></p>
 
 					<?php if($error && $error==1) { ?>

@@ -8,7 +8,7 @@
 	$char_name = $shop_char ? $shop_char['name'] : $account->getAccountData('login', $_SESSION['id']);
 ?>
 <!DOCTYPE html>
-<html class="no-js" lang="pl">
+<html class="no-js" lang="<?php print htmlspecialchars($m2_lang); ?>">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -32,7 +32,7 @@
 						<a href="<?php print $shop_url; ?>"><?php print $shop_title; ?></a>
 					</h1>
 					<div class="welcome">
-						<i class="icon-user"></i><span><a class="text-link" href="<?php print $shop_url; ?>user/deposit/"> <?php print htmlspecialchars($char_name); ?></a></span><i class="icon-earth"></i><span><?php print $shop_title; ?></span>
+						<i class="icon-user"></i><span><a class="text-link" href="<?php print $shop_url; ?>user/deposit/"> <?php print htmlspecialchars($char_name); ?></a></span><i class="icon-earth"></i><span><?php print $shop_title; ?></span><?php print m2i18n_switch_html(); /* MT2009_PLUS_WEB_I18N_V1 */ ?>
 					</div>
 				</div>
 				<div class="span7 payment-block">

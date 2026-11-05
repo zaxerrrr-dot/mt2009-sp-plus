@@ -16,6 +16,7 @@ from flask.sessions import SecureCookieSessionInterface
 # put on a page without it being able to put anything ON the page.
 from markupsafe import escape, Markup
 import pymysql
+import m2i18n  # MT2009_PLUS_WEB_I18N_V1
 
 # The game stores quest states as numeric indices. 557528158 is the engine's
 # stable index for the generated ``__complete`` state (the same value is used
@@ -3641,6 +3642,15 @@ def localized_item_name(vnum, language=None):
 
 # ---- UI translations -------------------------------------------------------
 LANGS = {"pl": "Polski", "en": "English", "de": "Deutsch", "tr": "Türkçe"}
+# MT2009_PLUS_WEB_I18N_V1: the four above are written into this file's own
+# tables; any other language is a file, i18n/<code>.json (see m2i18n.py). Such a
+# page is rendered from the English and translated, its tables' English filled
+# in from the file when the panel starts (i18n_fill_tables below), and what is
+# still Polish or English on the finished page is translated in after_request.
+# English pages get the same pass for the Polish written where it stands.
+I18N = m2i18n.Catalog(os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n"),
+                      source="pl", fallback="en", builtin=LANGS)
+LANGS = dict(I18N.languages())
 T = {
  "acc_back":     {"pl":"← Wstecz","en":"← Back","de":"← Zurück","tr":"← Geri"},
  "acc_title":    {"pl":"Moje konto","en":"My account","de":"Mein Konto","tr":"Hesabım"},
@@ -5435,17 +5445,81 @@ def lang():
     remembered past the end of the browser session (see set_lang below) rather
     than being forgotten every time the window closes.
     """
+    if not has_request_context():
+        return "pl"
     chosen = session.get("lang")
     if chosen in LANGS:
         return chosen
-    if has_request_context():
-        remembered = request.cookies.get("m2lang")
-        if remembered in LANGS:
-            return remembered
-    return "pl"
+    # MT2009_PLUS_WEB_I18N_V1: the m2lang cookie (shared with the Seban panel
+    # and the ItemShop), then the browser - but only one that does not list
+    # Polish at all, so the Polish player on an English Windows above still
+    # gets Polish; a German one with a German browser gets German.
+    return I18N.pick(cookie=request.cookies.get("m2lang"),
+                     accept=request.headers.get("Accept-Language", ""), default="pl")
 
 def t(key):
     return T.get(key, {}).get(lang(), T.get(key, {}).get("en", key))
+
+
+_I18N_NAMED = re.compile(r"\{(\w*)((?:[:!][^{}]*)?)\}")
+
+
+def _i18n_value(text, code):
+    """A table's English in another language, by the file's whole-text or
+    pattern entry; None when the file does not have it. A "{n} players"
+    is looked up as "{0} players" and its names put back."""
+    if not isinstance(text, str) or not text.strip():
+        return None
+    table = I18N.tables(code)
+    names = []
+
+    def number(m):
+        names.append(m.group(0))
+        return "{%d}" % (len(names) - 1)
+    key = _I18N_NAMED.sub(number, text) if "{" in text else text
+    key = re.sub(r"\s+", " ", key).strip()
+    out = table["exact"].get(key) or (table["raw_patterns"].get(key) if names else None)
+    if not out:
+        return None
+    if names:
+        out = re.sub(r"\{(\d+)\}", lambda m: names[int(m.group(1))] if int(m.group(1)) < len(names) else m.group(0), out)
+    return out
+
+
+def _i18n_fill(obj, code, depth=0):
+    if depth > 6:
+        return
+    if isinstance(obj, dict):
+        en = obj.get("en")
+        if isinstance(en, str) and code not in obj:
+            out = _i18n_value(en, code)
+            if out:
+                obj[code] = out
+        elif isinstance(en, dict) and code not in obj and len(en) > 1:
+            copy = {}
+            for k, v in en.items():
+                copy[k] = (_i18n_value(v, code) or v) if isinstance(v, str) else v
+            obj[code] = copy
+        for v in list(obj.values()):
+            if isinstance(v, (dict, list, tuple)):
+                _i18n_fill(v, code, depth + 1)
+    elif isinstance(obj, (list, tuple)):
+        for v in obj:
+            if isinstance(v, (dict, list, tuple)):
+                _i18n_fill(v, code, depth + 1)
+
+
+def i18n_fill_tables():
+    """Every table of this file with an "en" gets each other language's text
+    from i18n/<code>.json where the file has it (and the table not); the code
+    that reads a table then finds it there, and falls back to the English as it
+    always did where it does not."""
+    for code in I18N.codes():
+        if code in ("pl", "en"):
+            continue
+        for name, value in list(globals().items()):
+            if name.isupper() and isinstance(value, dict) and name not in ("LANGS", "CONF"):
+                _i18n_fill(value, code)
 
 app = Flask(__name__)
 app.jinja_env.globals["DISCORD"] = DISCORD_URL
@@ -6834,7 +6908,7 @@ pre.cmd{padding:12px;border:1px solid var(--line);background:#131007;color:#cdc5
 <a class="btn" href="{{ COFFEE }}" target="_blank" rel="noopener noreferrer"
    style="padding:7px 12px;font-size:13px;margin-right:10px">{{t('coffee_btn')}}</a>
 <span style="font-size:13px" title="{{t('tip_lang')}}">
-{% for code, name in langs.items() %}<a href="{{url_for('setlang', code=code)}}" title="{{name}}" style="margin:0 3px;{{'font-weight:700;text-decoration:underline' if code==curlang else 'opacity:.7'}}">{{code|upper}}</a>{% endfor %}
+{% if langs|length <= 4 %}{% for code, name in langs.items() %}<a href="{{url_for('setlang', code=code)}}" title="{{name}}" style="margin:0 3px;{{'font-weight:700;text-decoration:underline' if code==curlang else 'opacity:.7'}}">{{code|upper}}</a>{% endfor %}{% else %}<select translate="no" aria-label="Language" onchange="if(this.value)location.href=this.value" style="background:transparent;color:inherit;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:3px 4px;font:inherit">{% for code, name in langs.items() %}<option value="{{url_for('setlang', code=code)}}"{% if code==curlang %} selected{% endif %} style="color:#111">🌐 {{name}}</option>{% endfor %}</select>{% endif %}
 </span>
 {% if session.get('auth') %}&nbsp;<a href="{{url_for('logout')}}" title="{{t('tip_logout')}}">{{t('logout')}} 🚪</a>{% endif %}
 {# A local install never logs in, so it never gets a logout link either -- and
@@ -22096,8 +22170,10 @@ def register_code_failed(ip):
 def reg_msg(key):
     """A message for the registration page: Polish when the supporters' page is
     on (the whole page is Polish), otherwise in the visitor's language."""
-    if register_access_code():
+    if register_access_code() and lang() == "pl":
         return REG_SUP_MSG.get(key) or T.get(key, {}).get("pl") or t(key)
+    if register_access_code() and key in REG_SUP_MSG and key not in T:
+        return REG_SUP_MSG[key]   # Polish here; the page's translation turns it
     return t(key)
 
 REG_SUP_MSG = {
@@ -22255,6 +22331,19 @@ def account():
             return render_template_string(TPL_ACCOUNT_LOGIN)
         if row and hmac.compare_digest(row["password"], m2_hash(pw)):
             session["player"] = lg
+            # MT2009_PLUS_WEB_I18N_V1: the language the player plays in (player.player.language,
+            # set by the game client's /lang) becomes the page's, unless they chose one here
+            if not session.get("lang") and not request.cookies.get("m2lang"):
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("SELECT p.language FROM player.player p JOIN account.account a ON a.id=p.account_id "
+                                    "WHERE a.login=%s ORDER BY p.last_play DESC LIMIT 1", (lg,))
+                        found = cur.fetchone()
+                    code = str((found or {}).get("language") or "").strip().lower()
+                    if code in LANGS:
+                        session["lang"] = code
+                except Exception:
+                    pass          # a server without the column yet
         else:
             time.sleep(1.0)
             flash(t("acc_wrong"), "error")
@@ -23128,6 +23217,53 @@ def set_gm():
         # difference between a known limit and a bug report.
         flash(t("gm_removed").format(name=name))
     return redirect(url_for("player", pid=pid))
+
+# ---- MT2009_PLUS_WEB_I18N_V1: the pages in every language of i18n/ -----------
+i18n_fill_tables()
+
+
+@app.after_request
+def i18n_translate_page(response):
+    """A finished page in the visitor's language: what the tables above did
+    not say in it (Polish written where it stands, English fallbacks) is
+    looked up in i18n/<code>.json. A Polish page is sent as rendered."""
+    try:
+        if not has_request_context() or response.direct_passthrough or response.content_encoding:
+            return response
+        if not (response.mimetype or "").startswith("text/html"):
+            return response
+        code = lang()
+        if code == "pl":
+            return response
+        body = I18N.html(response.get_data(as_text=True), code,
+                         script_url=url_for("i18n_watch_js", v=I18N.version(code)))
+        body = body.replace('data-m2i18n="%s"' % code, 'data-m2i18n="%s" data-src="%s"' % (
+            code, url_for("i18n_table", code=code, v=I18N.version(code))), 1)
+        response.set_data(body)
+        vary = response.headers.get("Vary", "")
+        if "Cookie" not in vary:
+            response.headers["Vary"] = (vary + ", Cookie, Accept-Language").lstrip(", ")
+    except Exception as exc:          # a translation must never cost the page
+        app.logger.warning("i18n: %s", exc)
+    return response
+
+
+@app.route("/i18n/<code>.json")
+def i18n_table(code):
+    if code not in LANGS or code == "pl":
+        return ("", 404)
+    response = app.response_class(I18N.payload(code), mimetype="application/json")
+    response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
+
+@app.route("/m2i18n-watch.js")
+def i18n_watch_js():
+    response = send_from_directory(os.path.dirname(os.path.abspath(__file__)), "m2i18n-watch.js",
+                                   mimetype="application/javascript")
+    response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
 
 if __name__ == "__main__":
     app.run(host=CONF.get("bind", "0.0.0.0"), port=CONF.get("port", 7788))

@@ -104,3 +104,8 @@ ol.mt-chest-won span.mt-chest-item img { width: auto; height: auto; max-width: 2
 ol.mt-chest-won span.mt-chest-item em { font-weight: normal; color: #777; }
 h3.mt-set-head .item_count { font-size: 11px; font-weight: normal; }
 .mt-chest-confirmation #itemConfirmation #image { height: 242px; }
+
+/* MT2009_PLUS_WEB_I18N_V1: the language switch in the header */
+.m2-lang{display:inline-block;margin-left:10px;vertical-align:middle}
+.m2-lang select{background:rgba(0,0,0,.35);color:#f1e2c0;border:1px solid rgba(241,226,192,.35);border-radius:4px;padding:1px 4px;font-size:12px;height:auto;width:auto;margin:0}
+.m2-lang select option{color:#111;background:#fff}

@@ -24,25 +24,66 @@ from flask import Flask, abort, flash, g, has_request_context, jsonify, redirect
 from markupsafe import Markup, escape
 from werkzeug.security import check_password_hash, generate_password_hash
 
-class _PolishOnly:
-    """Stand-in for the upstream translations module: this server's panel
-    stays Polish, so every translation hook returns the text unchanged."""
-    ITEM_NAMES, MOB_NAMES = {}, {}
+import m2i18n  # MT2009_PLUS_WEB_I18N_V1
+
+# MT2009_PLUS_WEB_I18N_V1: the panel in other languages. It is written in
+# Polish; a visitor who picked another language (the switch in the menu, the
+# m2lang cookie every page of this server shares, or a browser that does not
+# list Polish at all) gets each page translated by m2i18n from i18n/<code>.json
+# - see m2i18n.py. The Polish page is sent exactly as rendered.
+I18N = m2i18n.Catalog(os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n"), source="pl", fallback="en",
+                      builtin={"pl": "Polski"})
+
+
+def ui_lang():
+    """The language this request is answered in."""
+    if not has_request_context():
+        return "pl"
+    cached = getattr(g, "_m2_lang", None)
+    if cached:
+        return cached
+    try:
+        default = settings().get("ui_language", "pl")
+    except Exception:
+        default = "pl"
+    code = I18N.pick(asked=request.args.get("lang"), cookie=request.cookies.get(m2i18n.COOKIE),
+                     accept=request.headers.get("Accept-Language", ""), default=default)
+    g._m2_lang = code
+    return code
+
+
+class _Translations:
+    """What the upstream translations module answered, from m2i18n now."""
 
     @staticmethod
     def translate_html(markup, language="pl"):
-        return markup
+        return I18N.html(markup, language)
 
     @staticmethod
     def i18n_payload():
         return None
 
     @staticmethod
-    def item_vnums_named(query):
-        return []
+    def item_vnums_named(query, language=None):
+        """The vnums whose name in the visitor's language contains query
+        (the item database's search on a translated page)."""
+        language = language or ui_lang()
+        if language == "pl":
+            return []
+        needle = (query or "").strip().casefold()
+        if not needle:
+            return []
+        polish = [pl for pl, name in I18N.tables(language)["names"].items() if needle in str(name).casefold()]
+        if not polish:
+            return []
+        try:
+            found = rows("SELECT vnum FROM player.item_proto WHERE locale_name IN (" + ",".join(["%s"] * len(polish[:500])) + ")", polish[:500])
+        except Exception:
+            return []
+        return [int(r["vnum"]) for r in found]
 
 
-translations = _PolishOnly()
+translations = _Translations()
 import decisions
 import event_autogen  # MT2009_PLUS_EVENTS_AUTOGEN_V1
 import log_maintenance  # MT2009_PLUS_DB_LOG_RETENTION_V1
@@ -5025,7 +5066,7 @@ def globals_for_templates():
         if champion:
             badge += Markup(' <span class="champion-level" title="Poziom Czempiona">C %d</span>') % champion
         return badge
-    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": "pl", "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
+    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": ui_lang(), "ui_languages": I18N.languages(), "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
 
 
 @app.after_request
@@ -5065,10 +5106,45 @@ def translate_response(response):
     # Polish is untouched either way -- this only ever rewrites the body
     # when English is selected, so a Polish response is exactly what Jinja
     # produced, byte for byte.
-    if response.content_type and response.content_type.startswith("text/html"):
-        current_settings = settings()
-        if current_settings.get("ui_language", "pl") == "en":
-            response.set_data(translations.translate_html(response.get_data(as_text=True), "en"))
+    # MT2009_PLUS_WEB_I18N_V1: every language of i18n/, per visitor (ui_lang).
+    if not has_request_context() or response.direct_passthrough:
+        return response
+    asked = (request.args.get("lang") or "").strip().lower()
+    if asked and asked in I18N.codes():
+        response.set_cookie(m2i18n.COOKIE, asked, max_age=31536000, samesite="Lax")
+    if (response.content_type or "").startswith("text/html"):
+        language = ui_lang()
+        if language != "pl" and not response.content_encoding:
+            script = url_for("static", filename="m2i18n-watch.js", v=I18N.version(language))
+            body = I18N.html(response.get_data(as_text=True), language, script_url=script)
+            body = body.replace('data-m2i18n="%s"' % language, 'data-m2i18n="%s" data-src="%s"' % (
+                language, url_for("i18n_table", code=language, v=I18N.version(language))), 1)
+            response.set_data(body)
+            vary = response.headers.get("Vary", "")
+            if "Cookie" not in vary:
+                response.headers["Vary"] = (vary + ", Cookie, Accept-Language").lstrip(", ")
+    return response
+
+
+@app.route("/i18n/<code>.json")
+def i18n_table(code):
+    """The tables static/m2i18n-watch.js translates with (no login: they are
+    the panel's own words, nothing of the server's)."""
+    if code not in I18N.codes() or code == "pl":
+        abort(404)
+    response = app.response_class(I18N.payload(code), mimetype="application/json")
+    response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
+
+@app.route("/lang/<code>")
+def set_ui_language(code):
+    """The language switch: remembered for a year in the m2lang cookie, which
+    the classic panel and the ItemShop read too."""
+    target = request.referrer or url_for("dashboard")
+    response = redirect(target)
+    if code in I18N.codes():
+        response.set_cookie(m2i18n.COOKIE, code, max_age=31536000, samesite="Lax")
     return response
 
 
@@ -5081,7 +5157,7 @@ def translated_fragment(markup):
     (translations.ITEM_NAMES, MOB_NAMES) are thousands, too many to ship with
     every page, so a fragment that names items or a boss has to arrive with
     them translated. Polish is returned untouched."""
-    return translations.translate_html(markup, settings().get("ui_language", "pl"))
+    return translations.translate_html(markup, ui_lang())
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -6531,7 +6607,9 @@ def explain_shop_offer(item_id, counter_price):
         raise
     if not row:
         return None
-    lang = settings().get("ui_language", "pl")
+    # MT2009_PLUS_WEB_I18N_V1: decisions.py writes Polish or English; any
+    # other language gets the Polish, which the page's translation turns into it
+    lang = "en" if ui_lang() == "en" else "pl"
     return decisions.explain_listing(row, lang, _decision_item_name, apply_text, counter_price=counter_price)
 
 
@@ -8506,7 +8584,7 @@ def item_name_search(query):
     shares (and which therefore keeps it on the page) is found as well."""
     clause = "p.vnum=%s OR p.locale_name LIKE %s OR p.name LIKE %s"
     params = [int(query) if query.isdigit() else -1, f"%{query}%", f"%{query}%"]
-    if not query.isdigit() and settings().get("ui_language", "pl") == "en":
+    if not query.isdigit() and ui_lang() != "pl":
         vnums = translations.item_vnums_named(query)
         if vnums:
             clause += " OR p.vnum IN (" + ",".join(["%s"] * len(vnums)) + ")"
@@ -8898,7 +8976,7 @@ def api_world_feed():
 @app.route("/gm-commands")
 @login_required
 def gm_commands():
-    commands = GM_COMMANDS_EN if settings().get("ui_language") == "en" else GM_COMMANDS
+    commands = GM_COMMANDS_EN if ui_lang() != "pl" else GM_COMMANDS
     return render_template("gm_commands.html", commands=commands)
 
 

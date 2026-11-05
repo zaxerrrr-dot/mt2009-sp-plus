@@ -163,6 +163,21 @@
 		}
 		if($shop_char)
 			$shop->setWearFilter(Shop::wearNames($shop_char['job']));	// MT2009_PLUS_ITEMSHOP_V3_V4: shared with search.php
+		// MT2009_PLUS_WEB_I18N_V1: the language the player chose in the game client (player.player.language) - unless
+		// they picked one here; the shop's own texts again in it
+		if($shop_char && (!isset($GLOBALS['m2i18n_how']) || $GLOBALS['m2i18n_how'] != 'chosen'))
+		{
+			$m2_player_lang = m2i18n_player_lang($player_db->pdo, (int)$shop_char['id']);
+			if($m2_player_lang && $m2_player_lang != $m2_lang && m2i18n_set($m2_player_lang))
+			{
+				$m2_lang = $m2_player_lang;
+				include 'include/languages/pl.php';
+				if($m2_lang != 'pl')
+					foreach($lang_shop as $m2_key => $m2_text)
+						if(is_string($m2_text))
+							$lang_shop[$m2_key] = m2i18n_text($m2_text, $m2_lang);
+			}
+		}
 
 		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (cash_mark - MT2009_PLUS_SZ_UNIFIED_V1).
 		$amount_coins = $account->getCoins(1, $_SESSION['id']);
