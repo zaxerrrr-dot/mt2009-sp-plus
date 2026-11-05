@@ -35,7 +35,8 @@ Only the staging TSVs: `/opt/metin2/cache/i18n-staging/panel/<lang>/<part>_NNN.t
 ## 4. Integrator (Opus) – mechanical steps
 
 ```
-cd /opt/metin2/git/wt-y-tr-panel
+cd /opt/metin2/git/wt-yohara        # branch claude/yohara-3 (wt-y-tr-panel is the old, merged branch)
+export UPSTREAM_NAMES=<dir with item_names_en/tr.json + mob_names_en/tr.json>   # see pitfall below
 python3 tools/i18n/staging.py import                 # merges filled TSVs + any done_*.json; writes REJECTED.tsv per language
 python3 tools/i18n/staging.py export                 # fresh TSVs with only what is still missing (overwrites old ones!)
 #   ... translators fill the TSVs ...
@@ -66,6 +67,8 @@ Other commands:
 10. `names_*.tsv`: follow the existing patterns in names.json (e.g. "+N" levels kept, (m)/(k) gender markers as the game writes them in that language, dragon stones "Diament (Zwykly, Najnizszy)" → the language's stone (grade, clarity) words used for cz/hu/de).
 
 ## 6. Pitfalls
+
+- `staging.py` runs `build_names.py`; without `UPSTREAM_NAMES` (dir holding the upstream `item_names_en/tr.json`, `mob_names_en/tr.json`, e.g. unzipped from `linux-port/docker/seban-panel/static/` of `/opt/metin2/cache/tieru-releases/metin2-server-protected-update-2.2.129.zip`) en/tr `names.json` lose ~450 entries. Re-run `build_names.py --upstream <dir>` if that happened.
 
 - Polish suffix fragments (`ów`, `{0} połącze{1}`) come from templates that glue Polish endings; translate as well as possible or leave empty – a template change is the real fix.
 - `state=oczekuje … message=…` rows: keep the `state=` value, translate only the message.
