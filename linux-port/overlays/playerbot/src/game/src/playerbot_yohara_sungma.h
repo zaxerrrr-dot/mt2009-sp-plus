@@ -1737,6 +1737,13 @@
 			DWORD dwNow, int& goods)
 	{
 		goods = -1;
+		// MT2009_PLUS_BOT_MELEY_RUNS_V1 (playerbot_dgrun_meley.h): its helmet waits for Schronienie Meley's materials -
+		// home to game1 for the lair, its own gap and cap (not the trade trips').
+		if (WantsPlayerBotMeleyTrip(ch, res.dwArrived, dwNow))
+		{
+			goods = CountPlayerBotSungmaTradeGoods(ch, state);
+			return "meley";
+		}
 		std::map<DWORD, DWORD>::const_iterator last = s_mapPlayerBotSungmaTradeLast.find(ch->GetPlayerID());
 		const DWORD from = last != s_mapPlayerBotSungmaTradeLast.end() && (int)(last->second - res.dwArrived) > 0
 				? last->second : res.dwArrived;
@@ -1840,7 +1847,10 @@
 		if (!why)
 			return -1;
 		const int away = CountPlayerBotSungmaTradeAway(dwNow);
-		if (away >= cfg.sungmaTradeMax)
+		// MT2009_PLUS_BOT_MELEY_RUNS_V1: the lair's trips keep to their own cap (WantsPlayerBotMeleyTrip) and leave the
+		// trade trips' to the trade.
+		const bool meley = !strcmp(why, "meley");
+		if (!meley && away - std::min(away, CountPlayerBotMeleyTripsOut(dwNow)) >= cfg.sungmaTradeMax)
 		{
 			PlayerBotLogThrottled("sungma_trade_cap", dwNow, "PLAYERBOT_SUNGMA: trade trip waits pid=%u name=%s why=%s away=%d max=%d",
 					ch->GetPlayerID(), ch->GetName(), why, away, cfg.sungmaTradeMax);
@@ -1873,7 +1883,9 @@
 			++s_aPlayerBotSungmaStats[slot].tradeTrips;
 			--s_aiPlayerBotSungmaMapCensus[slot];	// the poll counts the rows again
 		}
-		if (!strcmp(why, "buy"))
+		if (meley)
+			NotePlayerBotMeleyTripOut(ch, dwNow);	// MT2009_PLUS_BOT_MELEY_RUNS_V1
+		else if (!strcmp(why, "buy"))
 			++s_kPlayerBotSungmaTrips.m1Buy;	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1
 		else
 			++s_kPlayerBotSungmaTrips.m1Counter;	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V2: the counter's trips
@@ -1918,6 +1930,8 @@
 		v.llGold = (long long)ch->GetGold();
 		strlcpy(v.szWhy, why && *why ? why : "-", sizeof(v.szWhy));
 		++s_uPlayerBotSungmaTradeHomeArrived;
+		if (!strcmp(v.szWhy, "meley"))	// MT2009_PLUS_BOT_MELEY_RUNS_V1: a visitor for Schronienie Meley
+			NotePlayerBotMeleyVisitorHome(ch, dwNow);
 		sys_log(0, "PLAYERBOT_SUNGMA: trade trip home pid=%u name=%s map=%ld pos=(%ld,%ld) back_to=%ld why=%s gold=%lld member=%d",
 				pid, ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(), backMap, v.szWhy, v.llGold,
 				IsPlayerBotYoharaCohortPID(pid) ? 1 : 0);
@@ -1943,6 +1957,9 @@
 			DWORD dwNow)
 	{
 		const DWORD el = dwNow - v.dwSince;
+		// MT2009_PLUS_BOT_MELEY_RUNS_V1: a visitor for Schronienie Meley stays for its run (playerbot_dgrun_meley.h).
+		if (IsPlayerBotMeleyVisitHeld(ch, dwNow))
+			return false;
 		if (el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS)
 			return true;
 		if (el < PLAYERBOT_SUNGMA_TRADE_HOME_MIN_MS || state.bVisitingShop || state.bMarketTrip)

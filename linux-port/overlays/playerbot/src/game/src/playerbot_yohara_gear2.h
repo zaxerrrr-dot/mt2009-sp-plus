@@ -347,6 +347,23 @@ namespace
 		return keep;
 	}
 
+	// MT2009_PLUS_BOT_MELEY_RUNS_V1: how many of a material the bot's targets take for one attempt (playerbot_dgrun_meley.h:
+	// a member's lack and its spare for the lair's share). 0 with the errand off.
+	int GetPlayerBotGear2MaterialNeed(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch || !vnum || IsPlayerBotGear2Off())
+			return 0;
+		const std::vector<TPlayerBotGear2Target>* targets = GetPlayerBotGear2Targets(ch);
+		if (!targets)
+			return 0;
+		int need = 0;
+		for (size_t i = 0; i < targets->size(); ++i)
+			for (int m = 0; m < 5; ++m)
+				if ((*targets)[i].adwMat[m] == vnum)
+					need += (*targets)[i].aiCount[m];
+		return need;
+	}
+
 	void CollectPlayerBotGear2Missing(LPCHARACTER ch, std::map<DWORD, int>& missing)
 	{
 		const std::vector<TPlayerBotGear2Target>* targets = GetPlayerBotGear2Targets(ch);
