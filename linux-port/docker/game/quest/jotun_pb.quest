@@ -451,6 +451,7 @@ quest jotun_pb begin
 		when 4413.kill with jotun_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
 			local c = jotun_pb.cfg()
 			d.setf("closed", 1)
+			d.setf("won", 1) -- MT2009_PLUS_BOT_YDG_V1: the bots' runs read it
 			d.update_ranking("jotun_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
 			d.notice("Pokonaliœcie Jotuna Thryma (PB)!")
@@ -463,6 +464,77 @@ quest jotun_pb begin
 				d.setf("mt2009_keep_until", 0)
 				d.exit_all()
 			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: a bots' run (playerbot_dungeon_runs_ydg.h): the core makes the instance, marks it with
+		-- the dungeon flag mt2009_dgrun (nothing a player can set) and asks for init() through this timer; the hour,
+		-- the end and the way back stay the players' (jotun_pb_tick, d.exit_all)
+		when jotun_pb_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					jotun_pb.init()
+					d.setf("bst", 1)
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: the seven tasks for a bots' run - one count for the party (d flags bst, bcnt) instead of
+		-- each player's; the same kills: 20 warriors, a kit from a druid (1 in 25), 2 Metins, 5 destroyers (their Dew),
+		-- the Lord twice (the timber, the emerald) - then the Dryad Stones and Erebu (jotun_pb_dgrun_next)
+		function bot_count(total, nxt, text)
+			local n = d.getf("bcnt") + 1
+			d.setf("bcnt", n)
+			if n >= total then
+				d.setf("bcnt", 0)
+				d.setf("bst", nxt)
+				d.notice(text)
+			end
+		end
+
+		when 4340.kill with jotun_pb.inside() and d.getf("mt2009_dgrun") == 1 and d.getf("bst") == 1 begin
+			jotun_pb.bot_count(jotun_pb.cfg().warriors, 2, "Zaklêty Las (PB): wojownicy pokonani - szukajcie apteczki u druidów.")
+		end
+
+		when 4342.kill with jotun_pb.inside() and d.getf("mt2009_dgrun") == 1 and d.getf("bst") == 2 begin
+			if number(1, jotun_pb.cfg().kit_chance) == 1 then
+				d.setf("bst", 4)
+				d.notice("Zaklêty Las (PB): apteczka dostarczona - zniszczcie Metiny Drzewnych Stworzeñ.")
+			end
+		end
+
+		when 8136.kill with jotun_pb.inside() and d.getf("mt2009_dgrun") == 1 and d.getf("bst") == 4 begin
+			jotun_pb.bot_count(jotun_pb.cfg().stones, 5, "Zaklêty Las (PB): Metiny zniszczone - zdob¹dŸcie Rosy En-Tai.")
+		end
+
+		when 4344.kill with jotun_pb.inside() and d.getf("mt2009_dgrun") == 1 and d.getf("bst") == 5 begin
+			jotun_pb.bot_count(jotun_pb.cfg().destroyers, 6, "Zaklêty Las (PB): Rosy zebrane - pokonajcie W³adcê En-Tai.")
+		end
+
+		when 4345.kill with jotun_pb.inside() and d.getf("mt2009_dgrun") == 1 and (d.getf("bst") == 6 or d.getf("bst") == 7) begin
+			if d.getf("bst") == 6 then
+				d.setf("bst", 7)
+				d.notice("Zaklêty Las (PB): Szlachetne Drzewo zdobyte - W³adca En-Tai jeszcze raz (Drzewny Szmaragd).")
+			else
+				d.setf("bst", 8)
+				d.notice("Zaklêty Las (PB): Kamienie Driad zdobyte - Przywódca Stra¿y Lasu otworzy drogê do Erebu.")
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: Przywódca Stra¿y Lasu's way into Erebu for a bots' run whose seven tasks are done
+		when jotun_pb_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 or d.getf("level") ~= 0 or d.getf("bst") ~= 8 then
+				return
+			end
+			local c = jotun_pb.cfg()
+			d.setf("level", 2)
+			d.clear_regen()
+			d.kill_all()
+			d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+			d.spawn_mob(4352, c.boss[1], c.boss[2])
+			d.notice("Erebu (PB): Bagjanamu (PB) strze¿e drogi do Jotuna Thryma!")
 		end
 	end
 end

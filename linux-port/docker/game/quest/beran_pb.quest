@@ -287,6 +287,7 @@ quest beran_pb begin
 		when 4410.kill with beran_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
 			local c = beran_pb.cfg()
 			d.setf("closed", 1)
+			d.setf("won", 1) -- MT2009_PLUS_BOT_YDG_V1: the bots' runs read it
 			d.update_ranking("beran_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
 			d.notice("Beran-Setaou (PB) zosta³ pokonany!")
@@ -298,6 +299,31 @@ quest beran_pb begin
 			if d.select(get_server_timer_arg()) then
 				d.setf("mt2009_keep_until", 0)
 				d.exit_all()
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: a bots' run (playerbot_dungeon_runs_ydg.h): the core makes the instance, marks it with
+		-- the dungeon flag mt2009_dgrun (nothing a player can set) and asks for init() through this timer; the hour,
+		-- the end and the way back stay the players' (beran_pb_tick, d.exit_all)
+		when beran_pb_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					beran_pb.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: Duch Sura's way into the temple for a bots' run: the core has taken the keys of every
+		-- member inside (each one's three, as the ghost does) and set bot_keys
+		when beran_pb_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 or d.getf("level") ~= 0 then
+				return
+			end
+			if d.getf("bot_keys") == 1 then
+				beran_pb.temple()
 			end
 		end
 	end

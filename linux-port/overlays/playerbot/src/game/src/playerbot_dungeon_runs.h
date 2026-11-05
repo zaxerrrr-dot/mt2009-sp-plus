@@ -196,7 +196,8 @@ namespace
 		DGRUN_KIND_MELEY,	// MT2009_PLUS_YOHARA_MELEY_V1: stage flag; the four statues, the eggs, Idall, the rings
 		DGRUN_KIND_SZC,		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift - only the hunt, no missions, the quest's hour
 		DGRUN_KIND_HYDRA,	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku - the mast held through four waves, the Hydra
-		DGRUN_KIND_EREBU	// MT2009_PLUS_BOT_EREBU_V1: Erebu - Bagjanamu, then Jotun Thrym (playerbot_dgrun_erebu.h)
+		DGRUN_KIND_EREBU,	// MT2009_PLUS_BOT_EREBU_V1: Erebu - Bagjanamu, then Jotun Thrym (playerbot_dgrun_erebu.h)
+		DGRUN_KIND_YDG		// MT2009_PLUS_BOT_YDG_V1: the Yohara dungeons of Plaskowyz Iluzji (playerbot_dungeon_runs_ydg.h)
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
@@ -293,6 +294,16 @@ namespace
 		// Thrym 90 s for the loot (the quest's own 3 minutes). Two clock runs at once; the training's are its own.
 		{ "erebu", DGRUN_KIND_EREBU, 353, "erebu", "erebu_dgrun", NULL, 100, 940,
 			0LL, 0, 30, 90000, 2 },
+		// MT2009_PLUS_BOT_YDG_V1: the Time Rifts' three full dungeons and the four of the Awakened Bosses on the Yohara
+		// core (playerbot_dungeon_runs_ydg.h): the quests' 60 minutes, the minute after the boss and a margin, two of each
+		// at once; the ticket (Zegarek Kieszonkowy / Ksiazka Przebudzenia) is ChargePlayerBotYdgTicket's, no day's count.
+		{ "beran_szc", DGRUN_KIND_YDG, 405, NULL, "beran_szc_dgrun", "beran_szc_dgrun_next", 877, 722, 0LL, 0, 60, 90000, 2 },
+		{ "razador_szc", DGRUN_KIND_YDG, 406, NULL, "razador_szc_dgrun", "razador_szc_dgrun_next", 342, 584, 0LL, 0, 60, 90000, 2 },
+		{ "nemere_szc", DGRUN_KIND_YDG, 407, NULL, "nemere_szc_dgrun", "nemere_szc_dgrun_next", 171, 270, 0LL, 0, 60, 90000, 2 },
+		{ "beran_pb", DGRUN_KIND_YDG, 398, NULL, "beran_pb_dgrun", "beran_pb_dgrun_next", 877, 722, 0LL, 0, 60, 90000, 2 },
+		{ "razador_pb", DGRUN_KIND_YDG, 369, NULL, "razador_pb_dgrun", "razador_pb_dgrun_next", 342, 584, 0LL, 0, 60, 90000, 2 },
+		{ "nemere_pb", DGRUN_KIND_YDG, 370, NULL, "nemere_pb_dgrun", "nemere_pb_dgrun_next", 171, 270, 0LL, 0, 60, 90000, 2 },
+		{ "jotun_pb", DGRUN_KIND_YDG, 371, NULL, "jotun_pb_dgrun", "jotun_pb_dgrun_next", 478, 970, 0LL, 0, 60, 90000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
@@ -533,6 +544,23 @@ namespace
 				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0), bHydraPairGuard(false),
 				iPairGuards(0) {}
 	};
+
+	// MT2009_PLUS_BOT_YDG_V1: playerbot_dungeon_runs_ydg.h, included at the end of this file.
+	struct TPlayerBotDgRunDef;
+	int GetPlayerBotYdgStage(const TPlayerBotDgRunDef& def, LPDUNGEON d, int previous);
+	bool IsPlayerBotYdgWon(LPDUNGEON d);
+	long long GetPlayerBotYdgSignature(LPDUNGEON d);
+	void GetPlayerBotYdgObjectives(const TPlayerBotDgRunDef& def, LPDUNGEON d, const TPlayerBotArzDgScan& scan,
+			std::vector<DWORD>& out);
+	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	void UpdatePlayerBotYdgInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	long long ChargePlayerBotYdgTicket(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
+	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run);
+	void NotePlayerBotYdgRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS);
+	DWORD AdjustPlayerBotYdgRest(const TPlayerBotDgRun& run, DWORD rest);
+	bool IsPlayerBotYdgTrainee(DWORD pid);
+	bool IsPlayerBotYdgGearOk(LPCHARACTER ch);
+	void PlanPlayerBotYdgTraining(DWORD dwNow);
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
 	std::map<DWORD, TPlayerBotDgRunBot> s_mapPlayerBotDgRunBots;
@@ -850,6 +878,8 @@ namespace
 			// MT2009_PLUS_BOT_EREBU_V1: the quest's stage flag - 1 Bagjanamu, 2 Thrym, 3 won.
 			case DGRUN_KIND_EREBU:
 				return d->GetFlag("won") == 1 ? 3 : d->GetFlag("stage");
+			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1
+				return GetPlayerBotYdgStage(def, d, previous);
 			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave (1-4), 5 won.
 			case DGRUN_KIND_HYDRA:
 			{
@@ -949,6 +979,8 @@ namespace
 				return d->GetFlag("won") == 1;
 			case DGRUN_KIND_HYDRA:	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: CShipDefense::Win sets it
 				return d->GetFlag("shipdef_won") == 1;
+			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1: the boss's kill sets it
+				return IsPlayerBotYdgWon(d);
 			default:
 				return false;
 		}
@@ -1012,6 +1044,12 @@ namespace
 		{
 			itemStep = true;
 			sig = (long long)d->GetFlag("init");
+		}
+		// MT2009_PLUS_BOT_YDG_V1: the quests' flags, and the monsters' health (keys, cogs, stones and stars drop by chance).
+		else if (def.bKind == DGRUN_KIND_YDG)
+		{
+			itemStep = true;
+			sig = GetPlayerBotYdgSignature(d);
 		}
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave and state, the Hydra's health and the deck's monsters'.
 		else if (def.bKind == DGRUN_KIND_HYDRA)
@@ -1119,6 +1157,9 @@ namespace
 			}
 			case DGRUN_KIND_EREBU:	// MT2009_PLUS_BOT_EREBU_V1: the Uzdrowiciele, then the stage's boss
 				GetPlayerBotErebuObjectives(d, scan, out);
+				break;
+			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1
+				GetPlayerBotYdgObjectives(def, d, scan, out);
 				break;
 			case DGRUN_KIND_SMOK:
 			{
@@ -1682,7 +1723,8 @@ namespace
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
-			if (pMap && def.bKind != DGRUN_KIND_RAZADOR && def.bKind != DGRUN_KIND_NEMERE)
+			if (pMap && def.bKind != DGRUN_KIND_RAZADOR && def.bKind != DGRUN_KIND_NEMERE &&
+					def.bKind != DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: rooms and floors the quests jump to
 			{
 				long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
 				long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
@@ -2346,6 +2388,8 @@ namespace
 			return true;
 		if (HealPlayerBotDgRunFellow(ch, state, run, dwNow))
 			return true;
+		if (def.bKind == DGRUN_KIND_YDG && ManagePlayerBotYdgItems(ch, state, run, d, dwNow))	// MT2009_PLUS_BOT_YDG_V1
+			return true;
 		if (ManagePlayerBotPdgItems(ch, state, rb.pdg, dwNow))
 			return true;
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship - its own roles, no fallback away from the mast.
@@ -2546,6 +2590,8 @@ namespace
 		if (def.bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			LogPlayerBotHydraRunEnd(run, result, entered, took / 1000);
 		const bool erebuTrain = def.bKind == DGRUN_KIND_EREBU && IsPlayerBotErebuTrainRun(run.iId);	// MT2009_PLUS_BOT_EREBU_V1
+		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1
+			NotePlayerBotYdgRunEnd(run, result, entered, took / 1000);
 		FILE* fp = fopen(PLAYERBOT_DGRUN_RUNS_FILE, "a");
 		if (fp)
 		{
@@ -2583,6 +2629,8 @@ namespace
 				rest = GetPlayerBotErebuRest(run, rest);
 			LogPlayerBotErebuRunEnd(run, result, entered, took / 1000);
 		}
+		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: a training party's short rest
+			rest = AdjustPlayerBotYdgRest(run, rest);
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
@@ -2661,6 +2709,8 @@ namespace
 		// MT2009_PLUS_BOT_EREBU_V1: Erebu's ticket, a Kamien Driad each.
 		if (def.bKind == DGRUN_KIND_EREBU)
 			return ChargePlayerBotErebuStone(ch);
+		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: Zegarek Kieszonkowy / Ksiazka Przebudzenia
+			return ChargePlayerBotYdgTicket(ch, def);
 		long long fee = def.llFee;
 		if (fee > 0 && (long long)ch->GetGold() >= fee * PLAYERBOT_DGRUN_FEE_RESERVE)
 			PlayerBotChangeGold(ch, -fee);
@@ -2812,6 +2862,8 @@ namespace
 			if (IsPlayerBotYoharaHydraResident(pid) || (IsPlayerBotYoharaSzcResident(pid) != (def.bKind == DGRUN_KIND_SZC)))
 				continue;
 			if (IsPlayerBotErebuTrainee(pid))	// MT2009_PLUS_BOT_EREBU_V1
+				continue;
+			if (IsPlayerBotYdgTrainee(pid) || (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch)))	// MT2009_PLUS_BOT_YDG_V1
 				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
 			if (healerOnly && !healer)
@@ -2994,6 +3046,8 @@ namespace
 				LogPlayerBotHydraRunStart(run);
 			if (def.bKind == DGRUN_KIND_EREBU)	// MT2009_PLUS_BOT_EREBU_V1
 				NotePlayerBotErebuRunStart(run);
+			if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1
+				NotePlayerBotYdgRunStart(run);
 			return true;
 		}
 		// V3: a replacement for the Shaman, or for those short of the start,
@@ -3333,6 +3387,8 @@ namespace
 		}
 		if (d->GetFlag("closed") == 1 && run.dwClosedSeen == 0)
 			run.dwClosedSeen = dwNow;
+		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: the leader's talks (the quests' <q>_dgrun_next)
+			UpdatePlayerBotYdgInside(run, d, dwNow);
 		// Razador's statue and Nemere's lion, whenever no task runs.
 		if (def.szNextTimer && !run.dwFinishedAt && !run.szResult && run.dwClosedSeen == 0 && dwNow >= run.dwNextStep &&
 				d->GetFlag("init") == 1)
@@ -3728,6 +3784,9 @@ namespace
 			// MT2009_PLUS_BOT_EREBU_V1: and Erebu's trainees for their party's.
 			if (IsPlayerBotErebuTrainee(pid))
 				continue;
+			// MT2009_PLUS_BOT_YDG_V1: a training party's member goes with its party only.
+			if (IsPlayerBotYdgTrainee(pid))
+				continue;
 			const int level = ch->GetLevel();
 			bool fits = false;
 			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT && !fits; ++i)
@@ -3754,6 +3813,8 @@ namespace
 				if (slot.panel && mt2009_dpanel::CooldownLeft(ch, *slot.panel) > 0)
 					continue;
 				if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)
+					continue;
+				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch))	// MT2009_PLUS_BOT_YDG_V1
 					continue;
 				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
 						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
@@ -4100,9 +4161,11 @@ namespace
 			s_dwNextStatus = dwNow + PLAYERBOT_DGRUN_STATUS_MS;
 			LogPlayerBotDgRunStatus();
 		}
+		PlanPlayerBotYdgTraining(dwNow);	// MT2009_PLUS_BOT_YDG_V1: the training parties, on their own clock
 	}
 }
 
 #include "playerbot_dgrun_erebu.h"	// MT2009_PLUS_BOT_EREBU_V1
+#include "playerbot_dungeon_runs_ydg.h"	// MT2009_PLUS_BOT_YDG_V1
 
 #endif
