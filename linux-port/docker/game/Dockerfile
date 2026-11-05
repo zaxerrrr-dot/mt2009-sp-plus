@@ -1256,6 +1256,11 @@ COPY costume_sets.txt /opt/metin2/share/locale/poland/costume_sets.txt
 # reads from the tables themselves.
 COPY drop_wiki.txt /opt/metin2/share/locale/poland/drop_wiki.txt
 
+# MT2009_PLUS_BOT_I18N_V1: the bots' lines in their readers' languages (playerbot_i18n.h) - chat_<lang>.tsv
+# (Polish template -> translation), input_<lang>.tsv (their words -> the bots' Polish), names/ (item and
+# monster names by vnum), config.tsv. A language is there when its chat_<lang>.tsv is; tools/playerbot_i18n.
+COPY playerbot_i18n /opt/metin2/share/locale/poland/playerbot_i18n
+
 # MT2009_PLUS_SEONPYEONG_GF_V1 (the owner, 17 October): Seon-Pyeong (20091) has no cube recipe any more - a +9
 # piece of level 65-66 (and the boots of 47..59) is dragged onto him as on the official server (item_proto
 # refine_set 501 / 530 - since MT2009_PLUS_SEONPYEONG_ELITE_V1 refine_global.sql's fixed 39900-39903, tools/refineglobal

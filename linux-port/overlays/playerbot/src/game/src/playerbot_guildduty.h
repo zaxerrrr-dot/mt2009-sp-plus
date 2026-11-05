@@ -319,7 +319,7 @@ namespace
 		at = now;
 		char line[CHAT_MAX_LEN + 1];
 		snprintf(line, sizeof(line), "%s : %s", bot->GetName(), text);
-		guild->Chat(line);
+		ChatPlayerBotGuild(guild, line);
 	}
 
 	void GuildDutyTell(CGuild* guild, DWORD pid, const char* text)
@@ -331,7 +331,7 @@ namespace
 			leader->ChatPacket(CHAT_TYPE_COMMAND, "GDUpdate");
 		}
 		else if (guild)
-			guild->Chat(text);
+			ChatPlayerBotGuild(guild, text);
 	}
 
 	// A bot that may take a duty: a guild member of this core's world, alive,
@@ -1154,7 +1154,7 @@ namespace
 		char text[200];
 		snprintf(text, sizeof(text), "Lider %s oglasza zrzutke na gildie: %s yang w %d godz. Boty wplacaja do skarbca gildii.",
 				ch->GetName(), GuildDutyMoney(amount).c_str(), hours);
-		guild->Chat(text);
+		ChatPlayerBotGuild(guild, text);
 		sys_log(0, "GUILD_DUTY: collection started guild=%s leader=%s amount=%lld hours=%d",
 				guild->GetName(), ch->GetName(), amount, hours);
 	}
@@ -1195,7 +1195,7 @@ namespace
 		char text[200];
 		snprintf(text, sizeof(text), "Lider %s zleca misje: zebrac %d x %s (boty od %d poziomu).",
 				ch->GetName(), count, GuildDutyItemName(vnum), GetGuildDutyMaterialMinLevel(vnum));
-		guild->Chat(text);
+		ChatPlayerBotGuild(guild, text);
 		sys_log(0, "GUILD_DUTY: mission started guild=%s leader=%s vnum=%u count=%d workers=%d",
 				guild->GetName(), ch->GetName(), vnum, count, workersMax);
 	}
@@ -1220,7 +1220,7 @@ namespace
 				"UPDATE player.guild_duty_bank SET return_pending = 1 WHERE mission_id = %u AND count > 0", id));
 		std::unique_ptr<SQLMsg> freed(GuildDutyQuery("DELETE FROM player.guild_duty_worker WHERE mission_id = %u", id));
 		ch->ChatPacket(CHAT_TYPE_INFO, "[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.");
-		guild->Chat("Misja na przedmioty odwolana przez lidera.");
+		ChatPlayerBotGuild(guild, "Misja na przedmioty odwolana przez lidera.");
 		sys_log(0, "GUILD_DUTY: mission %u cancelled guild=%s leader=%s", id, guild->GetName(), ch->GetName());
 		ManageGuildDutyReturns(time(0));
 	}
@@ -1310,7 +1310,7 @@ namespace
 		char text[220];
 		snprintf(text, sizeof(text), "Lider %s organizuje wyprawe na Wieze Demonow (%d osob, od %d poziomu). "
 				"Zbiorka na parterze wiezy, kanal 1.", ch->GetName(), wanted, PLAYERBOT_TOWER_MIN_LEVEL);
-		guild->Chat(text);
+		ChatPlayerBotGuild(guild, text);
 		sys_log(0, "GUILD_DUTY: tower started guild=%s leader=%s wanted=%d", guild->GetName(), ch->GetName(), wanted);
 	}
 
@@ -1323,7 +1323,7 @@ namespace
 		if (GuildDutyAffected(up))
 		{
 			ch->ChatPacket(CHAT_TYPE_INFO, "[Gildia] Wyprawa na Wieze Demonow odwolana.");
-			guild->Chat("Wyprawa na Wieze Demonow odwolana przez lidera.");
+			ChatPlayerBotGuild(guild, "Wyprawa na Wieze Demonow odwolana przez lidera.");
 		}
 		else
 			ch->ChatPacket(CHAT_TYPE_INFO, "[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).");

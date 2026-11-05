@@ -1,0 +1,633 @@
+# English -> the bots' Polish (playerbot_i18n.h, RewritePlayerBotI18nInput).
+# A person's whisper or chat line in English is read word by word: a phrase of
+# the left column (lowercase, no marks; "word*" = any word starting so) is
+# replaced by the Polish of the right column, which the bots' rules know
+# (playerbot_conv_lexicon.h, the trade, the companion's orders, the dungeon
+# calls). Longer phrases win. Anything else stays as written.
+# "#@detect" lists the words that say a line is English (DETECT 1): words a
+# Polish player would not write.
+#@detect	the you are where what how hello hey thanks thank doing is do does can want have your my i'm im u r ur wanna gonna would could should please pls plz sell selling buy buying anyone someone with from about why when who which yes yeah yep nope dont don't can't cant didn't whats what's where's wheres how's hows going lets let's need looking come follow wait stop help price much many much guys bro dude mate friend good nice cool sorry name old where's here there this that these those it's its and but or not no if then because cuz bc tho though right now today tonight later morning evening night play playing grinding farming leveling hunting fighting kill killing mobs please
+# ---- greetings, social
+good morning	dzien dobry
+good evening	dobry wieczor
+good night	dobranoc
+hello	czesc
+hey	hej
+hi there	czesc
+hiya	siema
+howdy	siema
+yo	siema
+sup	co tam
+wassup	co tam
+whats up	co tam
+what's up	co tam
+how are you	jak sie masz
+how r u	jak sie masz
+how are u	jak sie masz
+how you doing	jak leci
+how is it going	jak leci
+how's it going	jak leci
+hows it going	jak leci
+how are things	co slychac
+how's life	jak zycie
+how was your day	jak dzien
+bye	nara
+goodbye	do zobaczenia
+see you	do zobaczenia
+see ya	do zobaczenia
+cya	nara
+later	narazie
+gotta go	spadam
+take care	trzymaj sie
+thank you	dziekuje
+thanks	dzieki
+thx	dzieki
+ty	dzieki
+tyvm	wielkie dzieki
+sorry	przepraszam
+my bad	moja wina
+excuse me	przepraszam
+congrats	gratulacje
+gz	gratulacje
+grats	gratulacje
+well done	brawo
+nice one	brawo
+you are cool	fajny jestes
+you're cool	fajny jestes
+ur cool	fajny jestes
+you're nice	mily jestes
+lol	xd
+lmao	xd
+haha	haha
+really	serio
+seriously	powaznie
+no way	nie gadaj
+wow	wow
+yes	tak
+yeah	tak
+yep	tak
+yup	tak
+sure	pewnie
+of course	oczywiscie
+exactly	dokladnie
+no	nie
+nope	nope
+nah	nie
+not really	raczej nie
+okay	okej
+ok	ok
+alright	dobra
+fine	dobrze
+got it	rozumiem
+i see	aha
+cool	spoko
+nice	super
+great	super
+awesome	super
+dude	ziomek
+bro	ziomek
+mate	ziomek
+buddy	ziomek
+# ---- question words, pronouns
+what kind of	jaki
+which	ktory
+what	co
+whats	co
+what's	co
+where	gdzie
+wheres	gdzie jest
+where's	gdzie jest
+where to	dokad
+how much	ile
+how many	ile
+how long	jak dlugo
+how	jak
+who	kto
+whom	kogo
+why	dlaczego
+what for	po co
+when	kiedy
+what time	o ktorej
+ever	kiedys
+you	ty
+u	ty
+ya	ty
+your	twoj
+ur	twoj
+yours	twoj
+me	mnie
+i	ja
+my	moj
+mine	moj
+we	my
+us	nas
+they	oni
+them	ich
+this	to
+that	to
+these	te
+there	tam
+here	tu
+are you	jestes
+r u	jestes
+are u	jestes
+were you	byles
+you are	jestes
+you're	jestes
+youre	jestes
+i am	jestem
+i'm	jestem
+im	jestem
+have you	masz
+do you have	masz
+got any	masz
+you got	masz
+have	masz
+can i	moge
+can we	mozemy
+can you	mozesz
+could you	mozesz
+can	mozna
+do you want	chcesz
+you want	chcesz
+wanna	chcesz
+want	chce
+would you like	chcialbys
+and	i
+what about	a co z
+how about	a co z
+with who	z kim
+with whom	z kim
+with you	z toba
+with me	ze mna
+with us	z nami
+do you know	wiesz
+you know	wiesz
+know	wiesz
+did you hear	slyszales
+can you	umiesz
+are you playing	grasz
+do you play	grasz
+playing	grasz
+play	grac
+# ---- time
+right now	teraz
+now	teraz
+currently	aktualnie
+at the moment	w tej chwili
+rn	teraz
+later on	potem
+after that	po tym
+next	nastepne
+soon	zaraz
+tomorrow	jutro
+today	dzisiaj
+long time	od dawna
+since when	od kiedy
+what time is it	ktora godzina
+# ---- game
+doing	robisz
+up to	porabiasz
+busy	zajety
+plans	plany
+plan	plan
+goal	cel
+grinding	expisz
+grind	expic
+farming	farmisz
+farm	farmic
+leveling	expisz
+levelling	expisz
+exping	expisz
+xp	exp
+killing	bijesz
+kill	zbic
+fighting	walczysz
+fight	walka
+hunting	polowanie
+mobs	moby
+mob	mob
+monsters	potwory
+monster	potwor
+crowded	tloczno
+empty	pusto
+lots of	duzo
+lot of	duzo
+spot	spot
+map	mapa
+area	teren
+place	miejsce
+level	poziom
+lvl	lvl
+class	klasa
+warrior	wojownik
+war	wojownik
+assassin	ninja
+shaman	szaman
+kingdom	krolestwo
+empire	imperium
+name	imie
+called	nazywasz
+health	zdrowie
+yang	yang
+money	kasa
+gold	yang
+horse	kon
+inventory	plecak
+bag	plecak
+inv	eq
+free slots	wolne sloty
+slots	sloty
+full	pelny
+gear	sprzet
+equipment	sprzet
+weapon	bron
+armor	zbroja
+armour	zbroja
+sword	miecz
+bow	luk
+shield	tarcza
+helmet	helm
+boots	buty
+party	pt
+group	grupa
+team	ekipa
+leader	lider
+alone	sam
+solo	solo
+join	dolacz
+invite	zapros
+inv me	zapros mnie
+come on	chodz
+let's go	idziemy
+lets go	idziemy
+help me	pomoz mi
+will you help	pomozesz
+guild	gildia
+fishing	lowisz
+fish	ryby
+mining	kopiesz
+mine	kopalnia
+ore	ruda
+herbs	ziola
+potions	mikstury
+pots	potki
+biologist	biolog
+metin stone	metin
+metins	metiny
+metin	metin
+stones	kamienie
+demon tower	wieza demonow
+tower	wieza
+guild war	wojna gildii
+mercenary	najemnik
+contract	kontrakt
+trade	handel
+trading	handlujesz
+market	targ
+price	cena
+prices	ceny
+shop	sklep
+stall	stragan
+store	sklep
+skill book	ksiega umiejetnosci
+skills	umiejetnosci
+skill	skill
+book	ksiega
+duel	pojedynek
+travel	podroz
+going	idziesz
+heading	zmierzasz
+teleport	teleport
+rest	odpoczynek
+break	przerwa
+town	miasto
+village	wioska
+storage	magazyn
+loot	lup
+drop	drop
+dropped	dropnelo
+luck	szczescie
+lucky	fart
+unlucky	pech
+upgrade	ulepsz
+upgrading	ulepszasz
+blacksmith	kowal
+smith	kowal
+mission	misja
+quest	quest
+died	zginales
+dead	umarl
+killed	zabili
+mood	nastroj
+feel	czujesz
+how do you feel	jak sie czujesz
+did you	zrobiles
+managed	udalo
+boss	boss
+# ---- the bot, insults, threats
+are you a bot	jestes botem
+you a bot	jestes botem
+bot	bot
+human	czlowiek
+real player	prawdziwy gracz
+stupid	glupi
+idiot	idiota
+noob	noob
+loser	frajer
+shut up	zamknij sie
+you suck	ssiesz
+go away	spadaj
+get lost	spadaj
+piss off	spieprzaj
+stop writing	przestan pisac
+stop talking	przestan gadac
+stop spamming	przestan spamowac
+leave me alone	odczep sie
+dont write	nie pisz do mnie
+don't write	nie pisz do mnie
+ban	ban
+report	zglosze
+fuck	kurwa
+shit	kurde
+damn	kurde
+# ---- likes, opinions
+do you like	lubisz
+you like	lubisz
+like	lubisz
+love	kochasz
+don't like	nie lubisz
+dont like	nie lubisz
+hate	nienawidzisz
+favorite	ulubiony
+favourite	ulubiony
+prefer	wolisz
+would you	bys
+if you	gdybys
+imagine	wyobraz sobie
+dream	marzenie
+afraid	boisz
+scared	boisz sie
+annoy*	denerwuje
+happy	szczesliwy
+think	myslisz
+opinion	opinia
+or	czy
+# ---- general topics
+weather	pogoda
+cold	zimno
+snow	snieg
+warm	cieplo
+hot	goraco
+sun	slonce
+rain	deszcz
+raining	pada
+winter	zima
+summer	lato
+spring	wiosna
+autumn	jesien
+fall	jesien
+morning	rano
+evening	wieczor
+night	noc
+late	pozno
+early	wczesnie
+sleep	spac
+sleepy	senny
+tired	zmeczony
+bored	nudzi
+boring	nudno
+hobby	hobby
+hobbies	hobby
+free time	wolny czas
+food	jedzenie
+eat	jesc
+hungry	glodny
+pizza	pizza
+dinner	obiad
+breakfast	sniadanie
+coffee	kawa
+tea	herbata
+beer	piwo
+drink	pic
+holiday	wakacje
+holidays	wakacje
+vacation	wakacje
+sea	morze
+mountains	gory
+music	muzyka
+song	piosenka
+listen	sluchasz
+movie	film
+movies	filmy
+series	serial
+watch	ogladasz
+anime	anime
+games	gry
+game	gra
+other games	inne gry
+joke	kawal
+jokes	kawaly
+funny	smieszne
+friend	przyjaciel
+friends	znajomi
+lonely	samotny
+risk	ryzyko
+dangerous	niebezpiecznie
+work	praca
+job	praca
+school	szkola
+study	studia
+exam	egzamin
+meaning of life	sens zycia
+sad	smutny
+dog	pies
+cat	kot
+animals	zwierzeta
+sport	sport
+football	pilka
+soccer	pilka
+gym	silownia
+girlfriend	dziewczyna
+boyfriend	chlopak
+books	ksiazki
+nature	natura
+forest	las
+adventure	przygoda
+colour	kolor
+color	kolor
+# ---- prices, deals, the game's shorthand
+how much for	ile za
+price for	ile za
+how much is	ile kosztuje
+cost	kosztuje
+costs	kosztuje
+price check	ile stoi
+pc	ile stoi
+worth	warte
+item shop	itemshop
+itemshop	itemshop
+dragon coins	smocze monety
+dc	smocze monety
+ks	ksujesz
+kill steal*	ksujesz
+my mob	moj mob
+my mobs	moje moby
+ready	gotowy
+good luck	powodzenia
+gl	powodzenia
+brb	zaraz wracam
+be right back	zaraz wracam
+crit	krytyk
+crits	krytyki
+pierce	przeszywanie
+damage	obrazenia
+defense	obrona
+defence	obrona
+bonus	bonus
+bonuses	bonusy
+stats	staty
+average damage	srednie
+build	build
+buff	buff
+buffs	buffy
+give me	daj mi
+give	daj
+gives	daje
+come here	chodz tu
+come to me	chodz do mnie
+get over here	chodz tu
+you can go	mozesz isc
+go now	idz juz
+tell me	powiedz
+tell	powiedz
+make me laugh	rozsmiesz mnie
+real life	realu
+irl	irl
+city	miasto
+country	kraju
+where do you live	gdzie mieszkasz
+where are you from	skad jestes
+from where	skad
+how old are you	ile masz lat
+age	wiek
+boy or girl	chlopak czy dziewczyna
+are you a girl	jestes dziewczyna
+are you a boy	jestes chlopak
+lend	pozycz
+sponsor	sponsor
+gimme	daj mi
+channel	kanal
+meet	spotkajmy sie
+meet me	spotkajmy sie
+recommend	polecasz
+best	najlepiej
+worth it	oplaca sie
+one more	jeszcze jeden
+another	kolejny
+again	jeszcze raz
+how to	jak zrobic
+how do i	jak zrobic
+how do you get	jak zdobyc
+how to get	jak zdobyc
+fastest	jak najszybciej
+event	event
+still	jeszcze
+still selling	dalej sprzedajesz
+available	aktualne
+i'll take it	biore
+ill take it	biore
+deal	umowa
+agreed	zgoda
+sounds good	pasuje
+works for me	pasuje
+lag	lag
+lagging	laguje
+# ---- trade (wts/wtb, the trade chat and the shout)
+wts	sprzedam
+wtb	kupie
+wtt	wymienie
+selling	sprzedam
+sell	sprzedam
+for sale	na sprzedaz
+buying	kupie
+buy	kupie
+lf	szukam
+looking for	szukam
+anyone selling	kto sprzeda
+anyone has	kto ma
+who has	kto ma
+pm me	pw
+pm	pw
+offers	oferty
+negotiable	do negocjacji
+cheap	tanio
+expensive	drogo
+each	szt
+pcs	szt
+# ---- companion orders
+follow me	chodz za mna
+follow	za mna
+come	chodz
+come back	wracaj
+back to me	wroc do mnie
+over here	tutaj
+wait here	czekaj tutaj
+wait	czekaj
+stay	zostan
+hold on	poczekaj
+go play	graj sam
+play alone	graj sam
+play on your own	graj po swojemu
+free hand	wolna reka
+go grind	idz expic
+go shopping	na zakupy
+shopping	zakupy
+go to town	idz do miasta
+make room	zrob miejsce
+empty your bag	oproznij
+clean bag	wyczysc eq
+sell junk	sprzedaj zlom
+sell trash	sprzedaj smieci
+junk	zlom
+emotions on	emocje wlacz
+emotions off	emocje wylacz
+emotes on	emotki on
+emotes off	emotki off
+loot on	zbieraj drop
+loot off	nie zbieraj dropu
+pick up loot	zbieraj drop
+don't loot	nie zbieraj dropu
+dont loot	nie zbieraj dropu
+attack	atakuj
+don't attack first	nie atakuj pierwszy
+dont attack first	nie atakuj pierwszy
+don't fight	nie walcz
+dont fight	nie walcz
+lure	luruj
+luring	lurowanie
+stop luring	przestan lurowac
+stop	stop
+status	stan
+stats add	statystyki dodaj
+skills add	umiejetnosci dodaj
+# ---- dungeons and groups (the calls on the channels)
+anyone for	kto na
+who's up for	kto na
+whos up for	kto na
+looking for group	szukam ekipy
+lfg	szukam ekipy
+lfm	szukam ludzi
+need people	potrzebuje ludzi
+recruiting	rekrutacja
+join my guild	dolacz do gildii
+looking for guild	szukam gildii
+spider dungeon	pajaki
+dragon	smok
+library	biblioteka
+catacomb	katakumby
+i'm in	wchodze
+im in	wchodze
+count me in	pisze sie
+on my way	ide
+coming	ide

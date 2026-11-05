@@ -769,7 +769,10 @@ namespace
 			{
 				char msg[CHAT_MAX_LEN + 1];
 				snprintf(msg, sizeof(msg), "%s : %s", pick->GetName(), text.c_str());
+				// MT2009_PLUS_BOT_I18N_V1: the answer in the asker's language.
+				s_strPlayerBotI18nPublicFor = GetPlayerBotPersonLanguageByPID(q.dwAskerPID);
 				SendPlayerBotShout(msg, q.bEmpire);
+				s_strPlayerBotI18nPublicFor.clear();
 				BattlePassOnShout(pick);
 				NotePlayerBotPublicLine(pick, playerbot_conv::PL_TALK, false, text.c_str());
 				s_adwPlayerBotShoutAnswerAt[q.bEmpire] = dwNow;

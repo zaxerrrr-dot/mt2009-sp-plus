@@ -1,0 +1,71 @@
+# The bots' chat in Hungarian (playerbot_i18n.h): Polish template<TAB>translation.
+# Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py hu.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
+#@codepage	1250
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Eladó {1} - {2}, {3} - {4} | bolt {5} ch{6}
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Most: {1}. Váltás: /towarzysz walka atakuj | obrona | spokoj
+do Lochu Pajakow 2	a Pókbarlang 2-be
+do Lochu Pajakow 3	a Pókbarlang 3-ba
+do Lasu	a Szellemerdőbe
+do Doyyumhwaji	Doyyumhwajiba
+do Groty Wygnancow	a Száműzöttek Barlangjába
+do Groty Wygnancow 2	a Száműzöttek Barlangja 2-be
+do Swiatyni Ochao	Ochao Templomába
+do Doliny Cyklopow	a Küklopszok Völgyébe
+na Pustkowie Faraona	a Fáraó Pusztájára
+na Wezowe Pole	a Kígyómezőre
+do Krainy Gigantow	az Óriások Földjére
+do Zakletego Lasu	az Elvarázsolt Erdőbe
+do Szczeliny Czasu	az Idő Hasadékába
+na Hydre	a Hidrához
+na Przyladek Smoczej Glowy	a Sárkányfej-fokra
+na Zbocze Gautama	a Hajnalpára Lejtőre
+do Nefrytowej Zatoki	a Feketehomok-öbölbe
+w Gromiste Gory	a Mennydörgő Hegyekbe
+do Opuszczonej Twierdzy	az Elhagyott Erődbe
+do Dongan	Donganba
+do Seoganland	Seoganlandbe
+do Namgan	Namganba
+na Przelecz Yilad	a Yilad-hágóhoz
+do Wawozu Polnocnego Wiatru	az Északi Szél Szurdokába
+do Rozpadliny Dusz	a Lelkek Hasadékába
+do Schronienia Polnocnego Wiatru	az Északi Szél Menedékébe
+do Zejscia Polnocnego Wiatru	az Északi Szél Lejtőjére
+$A albo $B	$A vagy $B
+$A lub $B	$A vagy $B
+orki	orkok
+pajaki	pókok
+wilki	farkasok
+niedzwiedzie	medvék
+tygrysy	tigrisek
+dziki	vaddisznók
+malpy	majmok
+szkielety	csontvázak
+duchy	szellemek
+demony	démonok
+zombie	zombik
+skorpiony	skorpiók
+bestie	fenevadak
+zolnierzy	katonák
+lisy	rókák
+jelenie	szarvasok
+weze	kígyók
+zmije	viperák
+golemy	gólemek
+upiory	lidércek
+drzewce	fa-lények
+kaplanow	papok
+bandytow	banditák
+lucznikow	íjászok
+wojownikow	harcosok
+surow	surák
+nietoperze	denevérek
+wojownik	harcos
+szaman	sámán
+postac	karakter
+wojownikiem	harcos
+szamanem	sámán
+moby	mobok
+nic	semmi
+ktos	valaki
+dalej	tovább

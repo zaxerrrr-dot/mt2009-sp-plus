@@ -1,0 +1,19 @@
+# The bots' languages (playerbot_i18n.h). A name, a space or tab, a number.
+# /opt/m2spool/playerbot_i18n.tsv, when there is one, is read after this file
+# and wins; a change of either is picked up within a minute.
+#
+# ENABLED              1: lines are translated for their readers; 0: all Polish, as before
+# DETECT               1: a whisper clearly in a catalog's language is answered in it
+#                         (and noted for 30 minutes), whatever the client said
+# FALLBACK             a line the catalog cannot translate whole: 0 said in Polish, 1 not said
+# PUBLIC_FOREIGN_PCT   share of the bots (0-100) that speak another language on the
+#                         shout / trade chat / over their heads; 0 = a Polish world
+# PUBLIC_NEED_PLAYERS  1: those bots speak the languages of the players online only
+#                         (and Polish while nobody of another language plays)
+# LOG_MISSES           1: lines without a translation go to /opt/m2spool/playerbot_i18n_miss_<lang>.tsv
+ENABLED	1
+DETECT	1
+FALLBACK	0
+PUBLIC_FOREIGN_PCT	10
+PUBLIC_NEED_PLAYERS	1
+LOG_MISSES	1

@@ -890,7 +890,7 @@ namespace
 			{
 				char guildMsg[CHAT_MAX_LEN + 1];
 				snprintf(guildMsg, sizeof(guildMsg), "%s stoi! Zbieramy sie na niego.", name);
-				ch->GetGuild()->Chat(guildMsg);
+				ChatPlayerBotGuild(ch->GetGuild(), guildMsg);
 			}
 			if (fresh)
 				++s_uPlayerBotBossCallsHeld;
@@ -914,7 +914,7 @@ namespace
 		{
 			char guildMsg[CHAT_MAX_LEN + 1];
 			snprintf(guildMsg, sizeof(guildMsg), "%s stoi! Zbieramy sie na niego.", name);
-			ch->GetGuild()->Chat(guildMsg);
+			ChatPlayerBotGuild(ch->GetGuild(), guildMsg);
 		}
 		++s_uPlayerBotBossCalls;
 		sys_log(0, "PLAYERBOT_RAID: kingdom call pid=%u name=%s empire=%u guild=%u race=%u map=%ld text=\"%s\"",

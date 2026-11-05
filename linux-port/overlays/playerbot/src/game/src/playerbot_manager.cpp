@@ -105,10 +105,18 @@ extern void SendTrade(const char* szText);
 // villages count their turn by (playerbot_shouters.h).
 static unsigned int s_auPlayerBotShoutsSeen[4] = { 0, 0, 0, 0 };
 
+// MT2009_PLUS_BOT_I18N_V1: the bots' lines in their readers' languages - the
+// catalogs, the person's language, the public channels' (playerbot_i18n.h).
+// Here, above the shout, which every bot's shout goes through.
+#include "playerbot_i18n.h"
+
 static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 {
 	if (bEmpire >= 1 && bEmpire <= 3)
 		++s_auPlayerBotShoutsSeen[bEmpire];
+	// MT2009_PLUS_BOT_I18N_V1: "Name : text" in the bot's public language.
+	const std::string localized = LocalizePlayerBotShout(szText);
+	szText = localized.c_str();
 	TPacketGGShout p;
 	memset(&p, 0, sizeof(p));
 	p.bHeader = HEADER_GG_SHOUT;
@@ -9643,6 +9651,10 @@ bool CPlayerBotManager::GetAchievementWinner(int id, DWORD& dwPID, std::string& 
 
 void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 {
+	// MT2009_PLUS_BOT_I18N_V1: a line in another language read in the bots' Polish.
+	std::string i18n;
+	if (ch && !(ch->GetDesc() && ch->GetDesc()->IsBot()))
+		szText = LocalizePlayerBotInput(ch, ch->GetPlayerID(), ch->GetName(), szText, i18n);
 	// MT2009_PLUS_SHOUTERS_V1: a line of the channel for the shouters' count.
 	if (ch && ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3)
 		++s_auPlayerBotShoutsSeen[ch->GetEmpire()];
@@ -9675,6 +9687,8 @@ void CPlayerBotManager::OnPlayerTradeChat(LPCHARACTER ch, const char* szText)
 {
 	if (!ch || !szText || !*szText || (ch->GetDesc() && ch->GetDesc()->IsBot()))
 		return;
+	std::string i18n;	// MT2009_PLUS_BOT_I18N_V1
+	szText = LocalizePlayerBotInput(ch, ch->GetPlayerID(), ch->GetName(), szText, i18n);
 	// MT2009_PLUS_GUILD_LFG_V1: a guild's call for members on '@' too.
 	if (HandlePlayerBotGuildLfgCall(ch, szText, "trade"))
 		return;
@@ -9693,6 +9707,8 @@ void CPlayerBotManager::OnPlayerLocalChat(LPCHARACTER ch, const char* szText, BY
 {
 	if (!ch || !szText || !*szText || (ch->GetDesc() && ch->GetDesc()->IsBot()))
 		return;
+	std::string i18n;	// MT2009_PLUS_BOT_I18N_V1
+	szText = LocalizePlayerBotInput(ch, ch->GetPlayerID(), ch->GetName(), szText, i18n);
 	if (bType == CHAT_TYPE_TALKING)
 	{
 		if (HandlePlayerBotDuelReady(ch, szText)) return;
@@ -9739,6 +9755,12 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	// MT2009_PLUS_SHOUTERS_V1: a shouter answers no whisper.
 	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
 		return;
+	// MT2009_PLUS_BOT_I18N_V1: a whisper in another language - its writer's
+	// language noted (the answer goes in it) and its words put into the
+	// bots' Polish for every reader below.
+	std::string i18n;
+	if (from)
+		szText = LocalizePlayerBotInput(from, from->GetPlayerID(), from->GetName(), szText, i18n);
 	// A companion's owner gives its orders by whisper too (playerbot_sidekick.h).
 	if (HandlePlayerBotSidekickWhisper(from, bot, szText))
 		return;
@@ -9771,6 +9793,11 @@ void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const
 {
 	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
 		return;
+	std::string i18n;	// MT2009_PLUS_BOT_I18N_V1: as OnPlayerWhisper
+	{
+		const CCI* from = szFrom && *szFrom ? P2P_MANAGER::instance().Find(szFrom) : NULL;
+		szText = LocalizePlayerBotInput(NULL, from ? from->dwPID : 0, szFrom, szText, i18n);
+	}
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the yes to a dungeon offer from a person
 	// who has since gone to another core (the entrance's map, often).
 	if (bot && szFrom && *szFrom)

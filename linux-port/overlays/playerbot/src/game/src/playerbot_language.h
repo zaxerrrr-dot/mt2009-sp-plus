@@ -23,7 +23,10 @@ namespace
 		va_start(args, format);
 		vsnprintf(text, sizeof(text), format, args);
 		va_end(args);
-		person->ChatPacket(CHAT_TYPE_INFO, "%s", text);
+		// MT2009_PLUS_BOT_I18N_V1: in the person's language (playerbot_i18n.h).
+		const std::string localized = LocalizePlayerBotLineFor(person, text);
+		if (!localized.empty())
+			person->ChatPacket(CHAT_TYPE_INFO, "%s", localized.c_str());
 	}
 }
 

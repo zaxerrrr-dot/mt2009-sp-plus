@@ -2546,7 +2546,7 @@ namespace
 		char msg[220];
 		snprintf(msg, sizeof(msg), "Wieza Demonow! Zbiorka na parterze wiezy przy Metinie Twardosci - za %u minut rozbijamy go razem.",
 				(unsigned int)(PLAYERBOT_TOWER_GATHER_MS / 60000U));
-		e.guild->Chat(msg);
+		ChatPlayerBotGuild(e.guild, msg);
 		snprintf(msg, sizeof(msg), "Gildia %s (%s) rusza na Wieze Demonow: zbiorka na parterze wiezy, start za %u minut. Kto stoi na parterze, wchodzi razem z nimi.",
 				e.guild->GetName(), GetPlayerBotKingdomName(e.empire), (unsigned int)(PLAYERBOT_TOWER_GATHER_MS / 60000U));
 		BroadcastNotice(msg);
@@ -2674,7 +2674,7 @@ namespace
 					{
 						raid.bPhase = TOWER_PHASE_STONE;
 						raid.dwPhaseSince = dwNow;
-						g->Chat("Rozbijamy Metin Twardosci!");
+						ChatPlayerBotGuild(g, "Rozbijamy Metin Twardosci!");
 						sys_log(0, "PLAYERBOT_TOWER: raid breaking the stone guild=%s on_ground=%d of %u",
 								g->GetName(), onGround, (unsigned int)raid.members.size());
 					}

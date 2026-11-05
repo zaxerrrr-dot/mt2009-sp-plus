@@ -2224,6 +2224,11 @@ namespace
 			return;
 		if (owner && owner->GetDesc() && !owner->GetDesc()->IsBot())
 		{
+			// MT2009_PLUS_BOT_I18N_V1: in the owner's language.
+			const std::string localized = LocalizePlayerBotLineFor(owner, text);
+			if (localized.empty())
+				return;
+			text = localized.c_str();
 			const DWORD dwNow = get_dword_time();
 			if (IsPlayerBotSidekickWhisperRepeat(owner->GetPlayerID(), text, dwNow))
 				return;
