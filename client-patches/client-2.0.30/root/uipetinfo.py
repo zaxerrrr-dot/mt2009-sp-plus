@@ -101,6 +101,9 @@ def Now():
 		return 0
 
 
+BAD_U32 = 0xFFFFFFFF
+
+
 def U32(n):
 	try:
 		return int(n) & 0xFFFFFFFF
@@ -195,26 +198,43 @@ class Pet(object):
 			setattr(self, k, v)
 		for k in ("exp", "itemExp", "nextExp", "championExp", "championItemExp", "championNextExp", "lifeEnd", "birthday"):
 			setattr(self, k, U32(getattr(self, k)))
+		# MT2009_PLUS_PET_EXP_GUARD_V1: no pet needs 0xFFFFFFFF exp (the table tops at 1.2 bln) - that value is a point the
+		# server could not send (a 64-bit value squeezed through an int MIN() turns into -1): "unknown" = 0, and the need
+		# comes from the level's row of the table
+		for k in ("exp", "itemExp", "championExp", "championItemExp"):
+			if getattr(self, k) == BAD_U32:
+				setattr(self, k, 0)
+		for k in ("nextExp", "championNextExp"):
+			if getattr(self, k) == BAD_U32:
+				setattr(self, k, 0)
 
 	def IsChampion(self):
 		return self.championLevel > 0
 
+	def __Need(self, champion):
+		"""(mob exp, item exp) the current level needs: the server's table (petdata EXP / CHAMPION_EXP, the split is not
+		always 90 / 10), else the exe's total split 90 / 10."""
+		table, level, total = (getattr(PD, "CHAMPION_EXP", ()), self.championLevel, self.championNextExp) if champion else \
+			(getattr(PD, "EXP", ()), self.level, self.nextExp)
+		if 1 <= level <= len(table):
+			return table[level - 1]
+		return total * 9 / 10, total - total * 9 / 10
+
 	def MobExpMax(self, champion=False):
-		total = self.championNextExp if champion else self.nextExp
-		return total * 9 / 10
+		return self.__Need(champion)[0]
 
 	def ItemExpMax(self, champion=False):
-		total = self.championNextExp if champion else self.nextExp
-		return total - total * 9 / 10
+		return self.__Need(champion)[1]
 
 	def ExpFull(self, champion=False):
 		if champion:
 			mob, it = self.championExp, self.championItemExp
 		else:
 			mob, it = self.exp, self.itemExp
-		if (self.championNextExp if champion else self.nextExp) <= 0:
+		mobMax, itemMax = self.__Need(champion)
+		if mobMax + itemMax <= 0:
 			return True
-		return mob >= self.MobExpMax(champion) and it >= self.ItemExpMax(champion)
+		return mob >= mobMax and it >= itemMax
 
 	def LifeLeft(self):
 		return max(0, self.lifeEnd - Now())
@@ -385,7 +405,7 @@ def EvolutionCheck(pet):
 	target = stage + 1
 	if target not in PD.EVOLUTION:
 		return 0, T("EVOL_MAX")
-	level, ageDays, mats = PD.EVOLUTION[target]
+	level = PD.EVOLUTION[target][0]	# MT2009_PLUS_PET_EVOL_NO_AGE_V1: no age requirement (the old wiki's 30 days)
 	if target == 6:
 		if pet.championLevel < level:
 			return target, T("EVOL_NEED_CHAMPION") % level
@@ -396,8 +416,6 @@ def EvolutionCheck(pet):
 			return target, T("EVOL_NEED_LEVEL") % level
 		if target != 4 and not pet.ExpFull(False):
 			return target, T("EVOL_NEED_EXP")
-	if ageDays and pet.AgeSeconds() < ageDays * DAY:
-		return target, T("EVOL_NEED_AGE") % ageDays
 	return target, None
 
 
@@ -506,33 +524,43 @@ def _AttachedBagItem():
 	return cell, vnum, mouseModule.mouseController.GetAttachedItemCount()
 
 
-class TextToolTip(ui.Window):
-	"""A few lines following the mouse (the EXP balls, the mini window)."""
+class TextToolTip(object):
+	"""MT2009_PLUS_PET_EXP_TOOLTIP_V2: a few lines (the EXP balls, the book / gem icons, the mini window) in an ordinary
+	game tooltip - its dark board under the text, so it reads as any other tooltip (was bare outlined text drawn over
+	the window). Made on first use; SetLines / Show / Hide as before."""
 	def __init__(self):
-		ui.Window.__init__(self, "TOP_MOST")
-		self.lines = []
-		self.AddFlag("not_pick")
+		self.tip = None
+		self.lines = None
 
-	def __del__(self):
-		ui.Window.__del__(self)
+	def __Tip(self):
+		if self.tip is None:
+			import uiToolTip
+			self.tip = uiToolTip.ToolTip(160)
+			self.tip.HideToolTip()
+		return self.tip
 
 	def SetLines(self, lines):
-		for line in self.lines:
-			line.Hide()
-		self.lines = []
+		lines = list(lines or ())
+		if lines == self.lines:
+			return
+		self.lines = lines
+		tt = self.__Tip()
+		tt.ClearToolTip()
 		for text in lines:
-			line = ui.TextLine()
-			line.SetParent(self)
-			line.SetOutline()
-			line.SetText(text)
-			line.Show()
-			self.lines.append(line)
+			tt.AppendTextLine(text, tt.FONT_COLOR)
 
-	def OnRender(self):
-		(x, y) = wndMgr.GetMousePosition()
-		y -= 20 + 16 * len(self.lines)
-		for i, line in enumerate(self.lines):
-			line.SetPosition(x + 10, y + 16 * i)
+	def Show(self):
+		if self.lines:
+			tt = self.__Tip()
+			if not tt.IsShow():
+				tt.ShowToolTip()
+
+	def Hide(self):
+		if self.tip is not None and self.tip.IsShow():
+			self.tip.HideToolTip()
+
+	def IsShow(self):
+		return self.tip is not None and self.tip.IsShow()
 
 
 _skillToolTip = None
@@ -723,19 +751,28 @@ def _ExpLines(mobCur, mobMax, itemCur, itemMax):
 	return lines
 
 
-# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the text of the mode buttons (emblem 4..30 / 4..36 of 106) and of the tab plates
-MODE_TEXT_DX = 14
-POTENTIAL_TEXT_DX = 17
-TAB_LABEL_ON = 0xFFFEE3AE
-TAB_LABEL_OFF = 0xFFC8BCA8
+# MT2009_PLUS_PET_WINDOW_LAYOUT_V3: the window as the official one (owner's screenshot): the mode buttons are the GF
+# pictures with their emblem in the middle and no text - the open mode's button keeps its "over" picture (highlighted);
+# the tabs are the GF tab_1..3 pictures (rosettes only), their names stay tooltips
+MODE_BUTTON_IMAGE = "d:/ymir work/ui/pet/conqueror/%s_bt_%s.sub"
 
 
-def _OutlinedButtonText(button, dx):
-	text = button.ButtonText
-	if not text:
-		return
-	text.SetOutline()
-	text.SetPosition(button.GetWidth() / 2 + dx, button.GetHeight() / 2)
+def _SetModeButton(button, kind, active):
+	button.SetUpVisual(MODE_BUTTON_IMAGE % (kind, "over" if active else "default"))
+	button.SetOverVisual(MODE_BUTTON_IMAGE % (kind, "over"))
+	button.SetDownVisual(MODE_BUTTON_IMAGE % (kind, "down"))
+
+
+def _AreaHasMouse(*windows):
+	"""MT2009_PLUS_PET_EXP_TOOLTIP_V2: the mouse is over one of the windows' rectangles (their pictures / children
+	included - IsIn() is true only for the picked window itself, so over a ball it was false)."""
+	for wnd in windows:
+		try:
+			if wnd and wnd.IsShow() and wnd.IsInPosition():
+				return True
+		except Exception:
+			pass
+	return False
 
 
 def _SetGauge(gauge, cur, maxValue):
@@ -839,7 +876,7 @@ class PetMiniInformationWindow(ui.ScriptWindow):
 	def OnUpdate(self):
 		if not self.loaded:
 			return
-		if self.expBoard.IsIn():
+		if self.expLines and _AreaHasMouse(self.expBoard):	# MT2009_PLUS_PET_EXP_TOOLTIP_V2: over a ball too
 			self.tooltip.SetLines(self.expLines)
 			self.tooltip.Show()
 		elif self.overPet and self.petLine:
@@ -1504,20 +1541,7 @@ class PetInformationWindow(ui.ScriptWindow):
 				("PetReviveText", "REVIVE_TARGET"), ("PetReviveAgeText", "REVIVE_AGE"), ("PetReviveResultText", "REVIVE_RESULT"),
 				("PetReviveResultAgeText", "REVIVE_AGE"), ("PetReviveMaterialText", "REVIVE_MATERIAL")):
 			g(name).SetText(T(key))
-		# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the mode buttons' emblem is at their left end (mt2009_ui/pet/*_bt_*.tga):
-		# the text is centred on the rest; the tab plates (no emblem) carry a short label, the long name is the tooltip
-		for name, key, dx in (("NormalInfoButton", "BTN_NORMAL", MODE_TEXT_DX), ("ConquerorInfoButton", "BTN_CHAMPION", MODE_TEXT_DX),
-				("PotentialButton", "BTN_POTENTIAL", POTENTIAL_TEXT_DX)):
-			b = g(name)
-			b.SetText(T(key))
-			_OutlinedButtonText(b, dx)
-		self.tabLabels = {}
-		for key, name, label in ((WINDOW_INFO, "Tab_Button_01", "TAB_INFO_LABEL"), (WINDOW_ATTR, "Tab_Button_02", "TAB_ATTR_LABEL"),
-				(WINDOW_REVIVE, "Tab_Button_03", "TAB_REVIVE_LABEL")):
-			b = g(name)
-			b.SetText(T(label))
-			_OutlinedButtonText(b, 0)
-			self.tabLabels[key] = b
+		# MT2009_PLUS_PET_WINDOW_LAYOUT_V3: the mode buttons and the tabs carry no text (icons only, names as tooltips)
 		for name, key in (("FeedLifeTimeButton", "FEED_LIFE_BUTTON"),
 				("FeedEvolButton", "FEED_EVOL_BUTTON"), ("FeedExpButton", "FEED_EXP_BUTTON"), ("Pet_Change_Button", "ATTR_BUTTON"),
 				("Pet_OK_Button", "ATTR_CLEAR"), ("PetReviveButton", "REVIVE_BUTTON"), ("PetReviveCancelButton", "REVIVE_CANCEL")):
@@ -1553,6 +1577,7 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.lifeGauge = g("LifeGauge")
 		self.expBoard = g("UpBringing_Pet_EXP_Gauge_Board")
 		self.balls = [g("UpBringing_Pet_EXPGauge_0%d" % (i + 1)) for i in xrange(TOTAL_EXP_BALLS)]
+		self.expTitle = g("ExpTitleWindow")
 		self.expTip = TextToolTip()
 		self.expTip.Hide()
 		self.shownTip = None
@@ -1575,6 +1600,8 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.potentialSlots = []
 		for i in xrange(POTENTIAL_SLOTS):
 			s = g("potential_pet_slot_%d" % i)
+			s.SetCoverButton(0, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, False, False)
+			s.SetAlwaysRenderCoverButton(0)
 			s.SetOverInItemEvent(_Event(self, "OnOverInPotential", i))
 			s.SetOverOutItemEvent(_Event(self, "OnOverOutSkill"))
 			s.SetSelectEmptySlotEvent(_Event(self, "OnDropOnPotential", i))
@@ -1644,7 +1671,6 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.feedButtons = []
 		self.balls = []
 		self.descLines = []
-		self.tabLabels = {}
 
 	# --- showing / closing
 	def Open(self):
@@ -1698,9 +1724,6 @@ class PetInformationWindow(ui.ScriptWindow):
 				tab.Show()
 			else:
 				tab.Hide()
-		for key, button in self.tabLabels.items():	# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the open page's label gold
-			if button.ButtonText:
-				button.ButtonText.SetPackedFontColor(TAB_LABEL_ON if key == page else TAB_LABEL_OFF)
 		for key, wnd in self.pages.items():
 			if key == page:
 				wnd.Show()
@@ -1734,8 +1757,8 @@ class PetInformationWindow(ui.ScriptWindow):
 			g("HpTitle").SetText(T("RES"))
 			g("DefTitle").SetText(T("BLOCK_PEN"))
 			g("SpTitle").SetText(T("PRECISION"))
-			g("ConquerorInfoButton").Down()
-			g("NormalInfoButton").SetUp()
+			_SetModeButton(g("ConquerorInfoButton"), "conqueror", True)
+			_SetModeButton(g("NormalInfoButton"), "normal", False)
 		else:
 			g("LevelTitle").SetText(T("LEVEL"))
 			g("ExpTitle").SetText(T("EXP"))
@@ -1743,8 +1766,8 @@ class PetInformationWindow(ui.ScriptWindow):
 			g("HpTitle").SetText(T("HP"))
 			g("DefTitle").SetText(T("DEF"))
 			g("SpTitle").SetText(T("SP"))
-			g("NormalInfoButton").Down()
-			g("ConquerorInfoButton").SetUp()
+			_SetModeButton(g("NormalInfoButton"), "normal", True)
+			_SetModeButton(g("ConquerorInfoButton"), "conqueror", False)
 		self.nextRefresh = 0.0
 
 	def OnClickPotential(self):
@@ -1767,7 +1790,7 @@ class PetInformationWindow(ui.ScriptWindow):
 			self.RefreshStatus()
 		lines = None
 		if self.page == WINDOW_INFO:
-			if self.expBoard.IsIn() and self.expLines:
+			if self.expLines and _AreaHasMouse(self.expBoard, self.expTitle):	# MT2009_PLUS_PET_EXP_TOOLTIP_V2
 				lines = self.expLines
 			elif self.skillMenuIcon.IsIn():		# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: what the book / gem icons are
 				lines = [T("SKILL_MENU_TIP_1"), T("SKILL_MENU_TIP_2"), T("SKILL_MENU_TIP_3")]
@@ -1798,6 +1821,7 @@ class PetInformationWindow(ui.ScriptWindow):
 			self.cool[i] = None
 		for s in self.potentialSlots:
 			s.ClearSlot(0)
+			s.SetAlwaysRenderCoverButton(0)
 		for b in self.feedButtons:
 			b.DisableFlash()
 		if self.wndFeed and self.wndFeed.IsShow():
@@ -1813,11 +1837,11 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.sealSlot.SetItemSlot(0, pet.vnum)
 		self.sealSlot.RefreshSlot()
 		g("PetName").SetText(pet.name)
-		stage = StageName(pet.evolution)
-		g("EvolName").SetText(T("STAGE_TYPE") % (stage, TypeName(pet.type)) if pet.type else stage)
-		g("AgeValue").SetText(Days(pet.AgeSeconds(now)))
+		# MT2009_PLUS_PET_WINDOW_LAYOUT_V3: the stage alone (red), the age "14d", the life in hours "747 / 768 godz."
+		g("EvolName").SetText(StageName(pet.evolution))
+		g("AgeValue").SetText(T("AGE_SHORT") % (pet.AgeSeconds(now) / DAY))
 		left = pet.LifeLeft()
-		g("LifeTextValue").SetText(T("LIFE_VALUE") % (Duration(left), Duration(pet.maxLife)))
+		g("LifeTextValue").SetText(T("LIFE_HOURS") % (left / 3600, pet.maxLife / 3600))
 		_SetGauge(self.lifeGauge, left, pet.maxLife)
 
 		champion = self.champion and pet.IsChampion()
@@ -1877,6 +1901,8 @@ class PetInformationWindow(ui.ScriptWindow):
 		for slot in xrange(POTENTIAL_SLOTS):
 			(egg, sk, lv, end) = GetPotential(pet.id, slot) if slot < opened else (0, 0, 0, 0)
 			s = self.potentialSlots[slot]
+			# MT2009_PLUS_PET_WINDOW_LAYOUT_V3: a closed potential slot shows the crossed planks, as a closed skill slot
+			s.SetAlwaysRenderCoverButton(0, slot >= opened)
 			if sk and end > now:
 				SetSkillIcon(s, 0, sk)
 				s.SetSlotCount(0, lv)

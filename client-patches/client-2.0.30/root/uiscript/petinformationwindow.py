@@ -4,13 +4,13 @@
 # module), the life gauge an expanded image (our exe's ani_image cannot be
 # scaled), the tab buttons with tooltips (the official tab pictures are icons only). Three pages: Informacje,
 # Zmiana typu (Zaczaruj zwierzaka), Wskrzeszanie (Boska Odzywka).
-# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the mode buttons and the tab plates are our mt2009_ui/pet/ copies of the official
-# pictures (tools/pety/make_pet_ui_art.py) - the emblem moved left / taken off so their text is not drawn over it; the
-# life gauge fits the background's frame (36..188); the potential slots sit in the background's octagons like the
-# skill slots (no square slot picture over them).
+# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the life gauge fits the background's frame (36..188); the potential slots sit in
+# the background's octagons like the skill slots (no square slot picture over them).
+# MT2009_PLUS_PET_WINDOW_LAYOUT_V3 (3.0.14, the owner's screenshot of the official window): the mode buttons and the
+# tabs are the GF pictures as they are - icons only, no text (uipetinfo.py keeps the open mode's button highlighted,
+# the names are tooltips); the stage (upper bar) and the "Bonusy" header red, the other labels white.
 
 PET_UI_ROOT = "d:/ymir work/ui/pet/"
-OUR_UI_ROOT = "mt2009_ui/pet/"
 BASE_SLOT_FILE = "d:/ymir work/ui/public/Slot_Base.sub"
 PET_UI_BG_IMAGE = "d:/ymir work/ui/pet/res/pet_ui_bg.tga"
 PET_PRIMIUM_FEEFSTUFF_UI_BG_IMAGE = "d:/ymir work/ui/pet/res/pet_ui_bg3.tga"
@@ -39,6 +39,8 @@ LIFE_GAUGE_SCALE_X = float(LIFE_GAUGE_WIDTH) / 95.0
 
 GOLD_COLOR = 0xFFFEE3AE
 WHITE_COLOR = 0xFFFFFFFF
+LABEL_COLOR = 0xFFE6E1D7		# the official window's titles / button texts: white with a touch of grey
+RED_R, RED_G, RED_B = 0.93, 0.19, 0.17	# the stage and "Bonusy"
 
 PET_UI_TAB_X = 13
 PET_UI_TAB_Y = 8
@@ -77,18 +79,18 @@ def feed_button(name, y, text):
 		"default_image" : PET_UI_ROOT + "feed_button/feed_button_default.sub",
 		"over_image" : PET_UI_ROOT + "feed_button/feed_button_over.sub",
 		"down_image" : PET_UI_ROOT + "feed_button/feed_button_down.sub",
-		"text" : text, "text_color" : GOLD_COLOR,
+		"text" : text, "text_color" : LABEL_COLOR,
 	}
 
 
-def page_button(name, x, image, text):
+def page_button(name, x, image):
 	return {
 		"name" : name, "type" : "button",
 		"x" : x, "y" : 109,
-		"default_image" : OUR_UI_ROOT + image + "_bt_default.tga",
-		"over_image" : OUR_UI_ROOT + image + "_bt_over.tga",
-		"down_image" : OUR_UI_ROOT + image + "_bt_down.tga",
-		"text" : text, "text_color" : GOLD_COLOR,
+		"tooltip_text" : "",
+		"default_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_default.sub",
+		"over_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_over.sub",
+		"down_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_down.sub",
 	}
 
 
@@ -135,7 +137,7 @@ window = {
 						## stage (and type), name
 						{
 							"name" : "EvolNameWindow", "type" : "window", "x" : 65, "y" : 47, "width" : LONG_LABEL_WIDTH, "height" : LONG_LABEL_HEIGHT, "style" : ("attach",),
-							"children" : ({"name" : "EvolName", "type" : "text", "x" : 0, "y" : 0, "text" : "", "r" : 1.0, "g" : 0.85, "b" : 0.3, "a" : 1.0, "all_align" : "center"},),
+							"children" : ({"name" : "EvolName", "type" : "text", "x" : 0, "y" : 0, "text" : "", "r" : RED_R, "g" : RED_G, "b" : RED_B, "a" : 1.0, "all_align" : "center"},),
 						},
 						{
 							"name" : "NameWindow", "type" : "window", "x" : 65, "y" : 72, "width" : LONG_LABEL_WIDTH, "height" : LONG_LABEL_HEIGHT, "style" : ("attach",),
@@ -143,13 +145,13 @@ window = {
 						},
 
 						## normal / champion / potential
-						page_button("NormalInfoButton", 14, "normal", ""),
-						page_button("ConquerorInfoButton", 122, "conqueror", ""),
-						page_button("PotentialButton", 230, "potential", ""),
+						page_button("NormalInfoButton", 14, "normal"),
+						page_button("ConquerorInfoButton", 122, "conqueror"),
+						page_button("PotentialButton", 230, "potential"),
 
-						label("LevelTitle", 28, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("LevelTitle", 28, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", LABEL_COLOR),
 						label("LevelValue", 28, 158, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, ""),
-						label("ExpTitle", 131, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("ExpTitle", 131, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", LABEL_COLOR),
 						{
 							"name" : "UpBringing_Pet_EXP_Gauge_Board",
 							"type" : "window",
@@ -164,10 +166,10 @@ window = {
 								exp_ball("UpBringing_Pet_EXPGauge_05", 4, "d:/ymir work/ui/pet/exp_gauge/item_exp_on.sub"),
 							),
 						},
-						label("AgeTitle", 232, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("AgeTitle", 232, 135, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, "", LABEL_COLOR),
 						label("AgeValue", 232, 158, SHORT_LABLE_WIDTH, SHORT_LABLE_HEIGHT, ""),
 
-						label("LifeTitle", 28, 180, 168, SHORT_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("LifeTitle", 28, 180, 168, SHORT_LABLE_HEIGHT, "", LABEL_COLOR),
 						{
 							"name" : "LifeValueWindow", "type" : "window", "x" : 28, "y" : 203, "width" : 168, "height" : 20, "style" : ("attach",),
 							"children" : ({"name" : "LifeTextValue", "type" : "text", "x" : 0, "y" : 2, "text" : "", "color" : WHITE_COLOR, "all_align" : "center"},),
@@ -185,13 +187,13 @@ window = {
 
 						{
 							"name" : "AbilitiesWindow", "type" : "window", "x" : 43, "y" : 261, "width" : LONG_LABEL_WIDTH, "height" : LONG_LABEL_HEIGHT, "style" : ("attach",),
-							"children" : ({"name" : "AbilitiesName", "type" : "text", "x" : 0, "y" : 0, "text" : "", "r" : 1.0, "g" : 0.85, "b" : 0.3, "a" : 1.0, "all_align" : "center"},),
+							"children" : ({"name" : "AbilitiesName", "type" : "text", "x" : 0, "y" : 0, "text" : "", "r" : RED_R, "g" : RED_G, "b" : RED_B, "a" : 1.0, "all_align" : "center"},),
 						},
-						label("HpTitle", 20, 284, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("HpTitle", 20, 284, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", LABEL_COLOR),
 						label("HpValue", 20 + MIDDLE_LABLE_WIDTH, 284, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, ""),
-						label("DefTitle", 20, 306, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("DefTitle", 20, 306, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", LABEL_COLOR),
 						label("DefValue", 20 + MIDDLE_LABLE_WIDTH, 306, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, ""),
-						label("SpTitle", 20, 328, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", GOLD_COLOR),
+						label("SpTitle", 20, 328, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, "", LABEL_COLOR),
 						label("SpValue", 20 + MIDDLE_LABLE_WIDTH, 328, MIDDLE_LABLE_WIDTH, MIDDLE_LABLE_HEIGHT, ""),
 
 						## skills: three slots, then the two potential skills
@@ -218,9 +220,9 @@ window["children"] = window["children"] + [
 		"width" : PET_UI_BG_WIDTH, "height" : 48,
 		"children" :
 		[
-			{"name" : "Tab_01", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_1.tga"},
-			{"name" : "Tab_02", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_2.tga"},
-			{"name" : "Tab_03", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_3.tga"},
+			{"name" : "Tab_01", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_1.tga"},
+			{"name" : "Tab_02", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_2.tga"},
+			{"name" : "Tab_03", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_3.tga"},
 			{"name" : "Tab_Button_01", "type" : "button", "x" : PET_UI_TAB_X, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},
 			{"name" : "Tab_Button_02", "type" : "button", "x" : PET_UI_TAB_X + 94, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},
 			{"name" : "Tab_Button_03", "type" : "button", "x" : PET_UI_TAB_X + 94 * 2, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},

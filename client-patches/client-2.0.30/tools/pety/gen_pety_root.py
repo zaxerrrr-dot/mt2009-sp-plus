@@ -30,14 +30,10 @@ UNIT_OF = {}
 # The texts (Polish, as the players read them). Key -> text; a %-format where the code fills in values.
 TEXTS = [
     # the main window
-    ('TITLE', u'Zwierzak domowy'),
+    ('TITLE', u'Zwierzak'),
     ('TAB_INFO', u'Informacje'),
     ('TAB_ATTR', u'Zmiana typu (Zaczaruj zwierzaka)'),
     ('TAB_REVIVE', u'Wskrzeszanie (Boska Odżywka)'),
-    # MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the tab plates' own labels (77 px wide; the long names above stay the tooltips)
-    ('TAB_INFO_LABEL', u'Informacje'),
-    ('TAB_ATTR_LABEL', u'Zaczaruj'),
-    ('TAB_REVIVE_LABEL', u'Wskrześ'),
     # MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the hover lines of the skill (book) and potential (gem) icons in the bottom row
     ('SKILL_MENU_TIP_1', u'Umiejętności zwierzaka (3 sloty)'),
     ('SKILL_MENU_TIP_2', u'Księgę umiejętności przeciągnij na wolny slot.'),
@@ -54,11 +50,11 @@ TEXTS = [
     ('FEED_LIFE_BUTTON', u'Nakarm'),
     ('FEED_EVOL_BUTTON', u'Rozwój'),
     ('FEED_EXP_BUTTON', u'Przedmiot EXP'),
-    ('ABILITIES', u'Bonusy dla właściciela'),
+    ('ABILITIES', u'Bonusy'),
     ('CHAMPION_ABILITIES', u'Bonusy czempiona'),
-    ('HP', u'Maks. PŻ'),
+    ('HP', u'PŻ'),
     ('DEF', u'Obrona'),
-    ('SP', u'Maks. PE'),
+    ('SP', u'PE'),
     ('RES', u'Wola SungMa (ODP)'),
     ('BLOCK_PEN', u'Przebicie bloku'),
     ('PRECISION', u'Precyzja'),
@@ -85,6 +81,9 @@ TEXTS = [
     ('MINI_TIP_CHAMPION', u'%s - poziom %d, czempion %d (kliknij: okno zwierzaka)'),
     # durations
     ('DAYS', u'%d dni'),
+    # MT2009_PLUS_PET_WINDOW_LAYOUT_V3: the window's age and life as the official one shows them ("14d", "747 / 768 godz.")
+    ('AGE_SHORT', u'%dd'),
+    ('LIFE_HOURS', u'%d / %d godz.'),
     ('DAY_ONE', u'1 dzień'),
     ('TIME_D', u'%d d.'),
     ('TIME_H', u'%d godz.'),
@@ -115,7 +114,6 @@ TEXTS = [
     ('EVOL_MAX', u'Zwierzak osiągnął najwyższy stopień.'),
     ('EVOL_NEED_LEVEL', u'Rozwój wymaga poziomu %d i pełnego doświadczenia.'),
     ('EVOL_NEED_CHAMPION', u'Rozwój wymaga poziomu czempiona %d i pełnego doświadczenia.'),
-    ('EVOL_NEED_AGE', u'Rozwój wymaga wieku co najmniej %d dni.'),
     ('EVOL_NEED_EXP', u'Zwierzak musi mieć pełne doświadczenie (z potworów i z przedmiotów).'),
     ('EVOL_Q', u'Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.'),
     ('EVOL_OK', u'Zwierzak się rozwinął!'),
@@ -291,7 +289,7 @@ def petdata():
         L.append('\t%d: %s,' % (k, esc(D.STAGES[k])))
     L.append('}')
     L.append('')
-    L.append('# to stage -> (level needed - the champion level for stage 6, age days needed, ((vnum, count), ...))')
+    L.append('# to stage -> (level needed - the champion level for stage 6, age days (not checked by the window), ((vnum, count), ...))')
     L.append('# stage 5 (Przebudzony) needs level %d, stage 6 champion level %d; both with full EXP' % (
         D.EVOLUTION[5][0], D.EVOLUTION[6][0]))
     L.append('EVOLUTION = {')
@@ -342,6 +340,11 @@ def petdata():
     L.append('POTENTIAL_SECOND_SLOT_LEVEL = 15')
     L.append('')
     L.append('# type -> (name, description) - the Sfera Losu Zwierzaka types')
+    L.append('# MT2009_PLUS_PET_EXP_GUARD_V1: level -> (mob exp, item exp) the level needs (the server\'s table) - the window')
+    L.append('# falls back on it when the exe hands 0xFFFFFFFF for the need')
+    L.append('EXP = (%s)' % ''.join('(%d, %d), ' % (a, b) for a, b in D.EXP))
+    L.append('CHAMPION_EXP = (%s)' % ''.join('(%d, %d), ' % (a, b) for a, b in D.CHAMPION_EXP))
+    L.append('')
     L.append('TYPES = {')
     for k in sorted(TYPES):
         L.append('\t%d: (%s, %s),' % (k, esc(TYPES[k][0]), esc(TYPES[k][1])))
