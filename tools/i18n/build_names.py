@@ -208,8 +208,11 @@ def main():
         for lang in LANGS:
             have = set(item_names[lang]) | set(mob_names[lang]) | known_all.get(lang, set())
             miss = [n for n in allnames if n not in have and not LEVEL.match(n) and re.search(r"[^\W\d_]", n)]
+            en = dict(item_names["en"])
+            en.update(mob_names["en"])
             with open(os.path.join(todo, lang + ".txt"), "w", encoding="utf-8") as fh:
-                fh.write("\n".join(miss) + "\n")
+                # Polish name, then (a reference for the translator) the English one where there is one
+                fh.write("\n".join(n + ("\t" + en[n] if lang != "en" and n in en else "") for n in miss) + "\n")
     for kind, rep in (("items", item_report), ("mobs", mob_report)):
         print(kind, " ".join("%s:%s%%" % (k, v["pct"]) for k, v in rep.items()))
 

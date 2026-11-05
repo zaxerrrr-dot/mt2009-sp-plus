@@ -53,10 +53,11 @@ def load_catalog(app, lang):
         data = {}
     name, english = META.get(lang, (lang, lang))
     meta = data.get("_meta") or {}
+    data["_same_set"] = set(data.get("same") or [])
     meta.setdefault("name", name)
     meta.setdefault("english", english)
     return {"_meta": meta, "exact": data.get("exact") or {}, "patterns": data.get("patterns") or {},
-            "regex": data.get("regex") or []}
+            "regex": data.get("regex") or [], "same": data.get("same") or [], "_same_set": data["_same_set"]}
 
 
 def save_catalog(app, lang, cat):
@@ -65,6 +66,9 @@ def save_catalog(app, lang, cat):
            "patterns": dict(sorted(cat["patterns"].items()))}
     if cat.get("regex"):
         out["regex"] = cat["regex"]
+    if cat.get("same"):
+        # texts the language says the same way (or code a page shows as it is): counted, never looked up
+        out["same"] = sorted(set(cat["same"]))
     with open(path_of(app, lang), "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=1)
         fh.write("\n")
@@ -84,7 +88,7 @@ def sources(app, lang=None):
 
 
 def has(cat, text):
-    return bool(cat["exact"].get(text) or cat["patterns"].get(text))
+    return bool(cat["exact"].get(text) or cat["patterns"].get(text) or text in cat.get("_same_set", ()))
 
 
 def stats():
@@ -155,7 +159,12 @@ def merge(app, lang):
                 bad += 1
                 continue
             kind = "patterns" if PH.search(text) else "exact"
-            cat[kind][text] = val
+            if val.strip() == text:
+                cat["exact"].pop(text, None)
+                cat["patterns"].pop(text, None)
+                cat["same"].append(text)
+            else:
+                cat[kind][text] = val
             added += 1
     save_catalog(app, lang, cat)
     print(app, lang, "merged", added, "rejected", bad)
