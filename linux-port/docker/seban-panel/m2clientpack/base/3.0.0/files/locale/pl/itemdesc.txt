@@ -157,7 +157,7 @@
 27123	Zielona Mikstura (M)	Zwiêksza Twoj¹ Szybkoœæ Ataku o +10 na okres 10 minut. Niezdatna do handlu.
 27124	Opatrunek	Natychmiast zatrzymuje krwawienie.
 27600	Wysuszone Drzewo	Drzewo œciête na ognisko.
-27610	Marmur Rybaka	Ten magiczny marmur pokazuje informacje o z³owionej rybie. Zwiêksza szansê na pomyœlne wy³owienie ryby o 2%.
+27610	Kula Rybaka	Ten magiczny marmur pokazuje informacje o z³owionej rybie i zwiêksza szansê na udany po³ów o 2%.
 27620	Rybie Wnêtrznoœci	Upowa¿ania do ³owienia na królewskich ³owiskach na 1 godzinê. Znika po 24 godzinach posiadania.
 27798	Skamienia³a Krewetka	ród³o mocy dla wêdki. Jej dotyk ulepsza narzêdzie, otwieraj¹c drogê do ³owów z najg³êbszych wód.
 27799	Rybia Oœæ	Twarde oœci ryby.
@@ -212,20 +212,20 @@
 27866	Pieczony Karp	Zwiêksza Szybkoœæ Ruchu na pewien czas.
 27867	Pieczony £osoœ	Regeneruje trochê Punktów Energii.
 27868	Pieczony Amur	Zwiêksza Szybkoœæ Ataku na pewien czas.
-27869	Pieczony Pstr¹g	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
+27869	Pieczony Pstr¹g	Przywraca 600 P¯.
 27870	Pieczony Wêgorz	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
-27871	Pieczony Têczowy Pstr¹g	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
-27872	Pieczony Rzeczny Pstr¹g	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
+27871	Pieczony Têczowy Pstr¹g	Przywraca 600 PE.
+27872	Pieczony Rzeczny Pstr¹g	Natychmiast przywraca 230 PE.
 27873	Pieczona Krasnopiórka	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
 27874	Pieczony Okoñ	Usuwa truciznê.
-27875	Pieczony Tenchi	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
+27875	Pieczony Tenchi	Natychmiast przywraca 230 P¯.
 27876	Pieczony Sum	Natychmiast regeneruje trochê Punktów Energii.
 27877	Pieczony Piskorz	Stajesz siê niewidzialny na 5 minut.
 27878	Pieczona Ryba Lotosu	Natychmiast regeneruje trochê Punktów ¯ycia.
-27879	Pieczona S³odka Ryba	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
+27879	Pieczona S³odka Ryba	Zwiêksza otrzymywane doœwiadczenie o 10% na 10 minut.
 27880	Pieczony Gromadnik	Ryba przyrz¹dzona nad ogniskiem. Wspania³y wêdzony przysmak.
 27881	Pieczona Shiri	Ryba przyrz¹dzona nad ogniskiem to wspania³y wêdzony przysmak.
-27882	Pieczony Lustrzany Karp	Ryba przyrz¹dzona nad ogniskiem. Wspania³y wêdzony przysmak.
+27882	Pieczony Lustrzany Karp	Natychmiast przywraca 1000 P¯.
 27883	Pieczony Z³oty Karaœ	Ryba przyrz¹dzona nad ogniskiem. Wspania³y wêdzony przysmak.
 27987	Ma³¿	Miêczak w ³adnej muszli. W œrodku mo¿e znajdowaæ siê cenna per³a.
 27988	Mapa Skarbów	Tajemnicza mapa zawieraj¹ca po³o¿enie staro¿ytnego skarbu.
@@ -2788,59 +2788,47 @@
 30383	x	Staro¿ytny zwój umo¿liwiaj¹cy przep³yw mocy Woela - pozwala losowaæ nowe b³ogos³awieñstwa.
 30384	x	Kamieñ oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.
 30206	x	Kamienna tabliczka z pradawnymi runami. Emanuje nieznan¹ energi¹.
-55401	Jajo Ma³pki	Kliknij prawym przyciskiem, aby wykluæ peta (Ma³pka, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55402	Jajo Paj¹czka	Kliknij prawym przyciskiem, aby wykluæ peta (Paj¹czek, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55403	Jajo Mini Razadora	Kliknij prawym przyciskiem, aby wykluæ peta (Mini Razador, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55404	Jajo Mini Nemere	Kliknij prawym przyciskiem, aby wykluæ peta (Mini Nemere, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55405	Jajo Smoczka	Kliknij prawym przyciskiem, aby wykluæ peta (Smoczek, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55406	Jajo Czerwonego Smoczka	Kliknij prawym przyciskiem, aby wykluæ peta (Czerwony Smoczek, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55409	Jajo Baashido	Kliknij prawym przyciskiem, aby wykluæ peta (Ma³y Baashido, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55410	Jajo Nessie	Kliknij prawym przyciskiem, aby wykluæ peta (Nessie, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55411	Jajo Exedyara	Kliknij prawym przyciskiem, aby wykluæ peta (Pisklê Exedyara, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
-55001	Proteinowa Przek¹ska	Dodaje aktywnemu petowi 7 dni energii ¿yciowej (najwy¿ej 84). Pet bez energii nie mo¿e zostaæ przywo³any.
-55002	Klatka Transportowa	Pakuje wybranego peta (okno peta, klawisz U) do transportera, który mo¿na sprzedaæ, oddaæ w handlu albo schowaæ do magazynu. Kto u¿yje pe³nego transportera, dostaje peta z jego poziomem, ewolucj¹, bonusami i umiejêtnoœciami.
-55007	Transporter z Petem	Kliknij prawym przyciskiem, aby przyj¹æ peta z transportera (najwy¿ej 3 pety na postaæ). Nie sprzedawaj go w sklepie NPC - pet by przepad³.
-55008	Pergamin Nazwy Zwierzaka	Zmienia imiê aktywnego peta (dodatkowo 100.000 yang).
-55009	Skrzynia Ksi¹g Peta	Zawiera losow¹ ksiêgê umiejêtnoœci peta.
-55010	Sztuka £owcy Metinów	Ksiêga umiejêtnoœci peta: silny przeciwko kamieniom Metin do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55011	Sztuka £owcy Bossów	Ksiêga umiejêtnoœci peta: silny przeciwko bossom do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55012	Sztuka £owcy Nieumar³ych	Ksiêga umiejêtnoœci peta: silny przeciwko nieumar³ym i diab³om do 15%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55013	Sztuka Bogobójcy	Ksiêga umiejêtnoœci peta: silny przeciwko pó³ludziom do 5%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55014	Sztuka Najwy¿szego Mêdrca	Ksiêga umiejêtnoœci peta: szybkoœæ czarowania do 15%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55015	Sztuka £owcy Potworów	Ksiêga umiejêtnoœci peta: silny przeciwko potworom do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55016	Sztuka Si³y	Ksiêga umiejêtnoœci peta: si³a do 10. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55017	Sztuka Wiedzy	Ksiêga umiejêtnoœci peta: inteligencja do 10. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55018	Sztuka Cienia	Ksiêga umiejêtnoœci peta: zrêcznoœæ do 10. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55019	Sztuka £owcy Magii	Ksiêga umiejêtnoœci peta: obra¿enia umiejêtnoœci do 5%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55020	Sztuka £owcy Broni	Ksiêga umiejêtnoœci peta: œrednie obra¿enia do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55021	Sztuka Œwiêtej Ochrony	Ksiêga umiejêtnoœci peta: odpornoœæ na krytyczne do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55022	Sztuka Œwiêtej Zbroi	Ksiêga umiejêtnoœci peta: odpornoœæ na przeszywaj¹ce do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55023	Sztuka Bo¿ego B³ogos³awieñstwa	Ksiêga umiejêtnoœci peta: odpornoœæ na pó³ludzi do 5%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55024	Sztuka Najwy¿szego Wojownika	Ksiêga umiejêtnoœci peta: blok do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55025	Sztuka Mistrza Bossów	Ksiêga umiejêtnoœci peta: silny przeciwko bossom do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55026	Sztuka Œwiêtego ¯ywio³u	Ksiêga umiejêtnoœci peta: odpornoœæ na lód, ziemiê i ciemnoœæ do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55027	Sztuka Mistrza Broni	Ksiêga umiejêtnoœci peta: obrona przed œrednimi obra¿eniami do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55028	Sztuka Mistrza Magii	Ksiêga umiejêtnoœci peta: obrona przed umiejêtnoœciami do 5%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55029	Sztuka Mistrza £owów	Ksiêga umiejêtnoœci peta: podwójne doœwiadczenie i przedmioty do 10%, yang do 20%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55030	Sztuka Œwiêtej Wody	Ksiêga umiejêtnoœci peta: odpornoœæ na truciznê do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55031	Sztuka ¯ycia	Ksiêga umiejêtnoœci peta: witalnoœæ do 10. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
-55032	Smako³yk	Daje aktywnemu petowi 800.000 punktów doœwiadczenia.
-55033	Reverti Zwierza	Aktywny pet zapomina wszystkie umiejêtnoœci (miejsca zostaj¹ otwarte).
-55034	Revertus Zwierza	Pozwala zapomnieæ jedn¹ umiejêtnoœæ peta: kliknij j¹ prawym przyciskiem w oknie peta.
-55035	Smako³yk+	Daje aktywnemu petowi 5% doœwiadczenia potrzebnego na nastêpny poziom.
-55036	Klucz Miejsca Umiejêtnoœci	Otwiera nowe miejsce na umiejêtnoœæ heroicznego peta od 100 poziomu.
-55101	Eliksir Witalnoœci (S)	Podnosi bonus peta: maks. P¯ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).
-55102	Eliksir Witalnoœci (M)	Podnosi bonus peta: maks. P¯ (do 4000) o jeden poziom (poziomy 5-10, pet od 40 poziomu).
-55103	Eliksir Witalnoœci (L)	Podnosi bonus peta: maks. P¯ (do 4000) o jeden poziom (poziomy 10-15, pet od 75 poziomu).
-55104	Eliksir Witalnoœci (XL)	Podnosi bonus peta: maks. P¯ (do 4000) o jeden poziom (poziomy 15-20, pet od 100 poziomu).
-55108	Eliksir Walki (S)	Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).
-55109	Eliksir Walki (M)	Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).
-55110	Eliksir Walki (L)	Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).
-55111	Eliksir Walki (XL)	Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).
-55115	Eliksir Mocy (S)	Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).
-55116	Eliksir Mocy (M)	Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).
-55117	Eliksir Mocy (L)	Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).
-55118	Eliksir Mocy (XL)	Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).
+55401	Jajo Ma³piszona	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Ma³piszon” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55402	Jajo Paj¹ka	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Paj¹k” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55403	Jajo Razadora	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Razador” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55404	Jajo Nemere	Prawy przycisk myszy: wykluwa zwierzaka „Ma³a Nemere” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55405	Niebieskie Jajo Smoka	Prawy przycisk myszy: wykluwa zwierzaka „Niebieski Ma³y Smok” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55406	Czerwone Jajo Smoka	Prawy przycisk myszy: wykluwa zwierzaka „Ma³a Meley” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55409	Jajo Baashido	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Baashido” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55410	Jajo Nessie	Prawy przycisk myszy: wykluwa zwierzaka „Nessie” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55411	Jajo Exedyara	Prawy przycisk myszy: wykluwa zwierzaka „Wyl¹g Exedyara” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55001	Od¿ywka	Przeci¹gnij na pieczêæ zwierzaka: odnawia czas trwania do 100%. Martwego zwierzaka o¿ywia (50% czasu trwania, wiek od nowa). Potrzebna te¿ do rozwoju zwierzaka.
+55002	Klatka Transportowa	Przeci¹gnij pieczêæ zwierzaka na klatkê: zwierzak mo¿e zmieniæ w³aœciciela przez 30 dni i nie starzeje siê w klatce. Prawy przycisk myszy na klatce ze zwierzakiem wyjmuje go.
+55007	Przeb. Ksiêga Zwierza	Potrzebna do rozwoju zwierzaka domowego do stopnia „Mocny”.
+55008	Pergamin Nazwy Zwierzaka	Zmienia imiê zwierzaka domowego (100.000 Yang).
+55009	Skrzynia Ksi¹g Zwierza	Zawiera jedn¹ losow¹ ksiêgê umiejêtnoœci zwierzaka.
+55010	Odpornoœæ (wojownik)	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odpornoœæ (wojownik)”: Zwiêksza odpornoœæ na ataki Wojownika.
+55011	Odpornoœæ (sura)	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odpornoœæ (sura)”: Zwiêksza odpornoœæ na ataki Sury.
+55012	Odpornoœæ (ninja)	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odpornoœæ (ninja)”: Zwiêksza odpornoœæ na ataki Ninja.
+55013	Odpornoœæ (szaman)	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odpornoœæ (szaman)”: Zwiêksza odpornoœæ na ataki Szamana.
+55014	Odpornoœæ (likan)	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odpornoœæ (likan)”: Zwiêksza odpornoœæ na ataki Likana.
+55015	Ksiêga Berserka	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Berserk”: Zwiêksza magiczny i krótkodystansowy atak.
+55016	Ksiêga Antymagii	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Antymagia”: Zmniejsza obronê magiczn¹ przeciwnika.
+55017	Ksiêga Przyspieszenia	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Przyspieszenie”: Zwiêksza szybkoœæ zaklêcia.
+55018	Ksiêga Przebicia	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Przebicie”: Zwiêksza szanse na przeszywaj¹cy cios.
+55019	Ksiêga Odnowy	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Odnowa”: Regeneruje P¯, jeœli zdrowie postaci spadnie poni¿ej 20%.
+55020	Ksiêga Wampira	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Wampir”: Zwiêksza szansê na kradzie¿ P¯.
+55021	Ksiêga Ducha	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Duch”: Zwiêksza szansê na kradzie¿ PE.
+55022	Ksiêga Przeszkody	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Przeszkoda”: Zwiêksza szansê na blok ciosów.
+55023	Ksiêga Zwierciad³a	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Zwierciad³o”: Zwiêksza wartoœæ odbitych ciosów.
+55024	Ksiêga Dropu Yang	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Drop Yang”: Zwiêksza szansê na drop Yang.
+55025	Ksiêga Zasiêgu	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Zasiêg”: Zwiêksza zasiêg ataku z ³uku.
+55026	Ksiêga Nieœmiertelnoœci	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Nieœmiertelnoœæ”: Daje tymczasow¹ nieœmiertelnoœæ.
+55027	Ksiêga Uzdrowienia	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Uzdrowienie”: Usuwa negatywne efekty (otrucie, krwawienie i spowolnienie).
+55028	Smako³yk	Daje zwierzakowi 80.000 PD przedmiotu (okno „Przedmiot EXP”).
+55029	Reverti Zwierza	Usuwa wszystkie umiejêtnoœci zwierzaka (prawy przycisk myszy przy otwartym oknie zwierzaka).
+55030	Revertus Zwierza	Usuwa jedn¹ wybran¹ umiejêtnoœæ zwierzaka (przeci¹gnij na umiejêtnoœæ).
+55031	Smako³yk+	Daje zwierzakowi 5% PD przedmiotu potrzebnych do nastêpnego poziomu.
+55032	Sfera Losu Zwierzaka	Pokazuje typ zwierzaka (przycisk „Sfera losu” w oknie zwierzaka).
+55033	Zaczaruj zwierzaka	Losuje od nowa typ zwierzaka (1-8), jego czas trwania i - gdy nie zna umiejêtnoœci - liczbê miejsc na umiejêtnoœci.
+55034	Ksiêga Browarnika	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Browarnik”: Zwiêksza efektywnoœæ mikstur regeneracyjnych.
+55035	Ksiêga £owcy Potworów	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „£owca Potworów”: Zwiêksza si³ê przeciwko potworom.
+55036	Ksiêga Spostrzegawczoœci	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Spostrzegawczoœæ”: Zwiêksza iloœæ zdobywanych PD.
 30760	Lodowy Klucz	Klucz z Lodowej Krainy. U¿yj go w lochu Nemere, aby otworzyæ dalsze przejœcie.
 30761	Kryszta³ Lodu	Kryszta³ z Lodowej Krainy. Oddaj go jednej z lodowych pieczêci w lochu Nemere.
 30762	Klucz Mrozu	Klucz z Lodowej Krainy. U¿yj go w lochu Nemere, aby dotrzeæ do Lodowego Filaru.
@@ -4397,7 +4385,7 @@
 50738	Mroczny Cierñ	Zio³o zmienione przez moc Sunga Mahi. Wymagane do sporz¹dzania mrocznych eliksirów. Eliksiry sporz¹dza zielarz Huahn-So (Bokjung, Bakra, Jayang).
 50739	Pusty Eliksir Mocy	Pusta butelka, wymagana do sporz¹dzenia eliksirów mocy. Eliksiry sporz¹dza zielarz Huahn-So (Bokjung, Bakra, Jayang).
 50740	Pusty Eliksir Odp.	Pusta butelka, wymagana do sporz¹dzenia eliksirów odpornoœci. Eliksiry sporz¹dza zielarz Huahn-So (Bokjung, Bakra, Jayang).
-55003	Ksiêga M³odego Zwierza	Za pomoc¹ nastêpuj¹cych przedmiotów mo¿esz podnieœæ poziom swojego zwierzaka (dziki zwierzak): 10x Ksiêga M³odego Zwierza, 10x Worek Z Pajêczymi Jajami , 10x Bia³a Wstêga+, 10x Shuriken, 10x Ozdobna Spinka Do W³osów, 5x Czarny Uniform+, 5x Kawa³ek Lodu+. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
+55003	Ksiêga M³odego Zwierza	Potrzebna do rozwoju zwierzaka domowego do stopnia „Dziki”.
 55050	Jazda (Zwinne Kopyta)	Rozwija umiejêtnoœci konne. Kliknij prawym przyciskiem myszy, aby twój koñ (od 21 poziomu) nauczy³ siê umiejêtnoœci: zwiêksza na krótko prêdkoœæ ruchu, gdy walczysz z grzbietu wierzchowca. Jedna umiejêtnoœæ od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Dzia³a na ka¿dym wierzchowcu.
 55051	Jazda Konna (PD)	Rozwija umiejêtnoœci konne. Kliknij prawym przyciskiem myszy, aby twój koñ (od 21 poziomu) nauczy³ siê umiejêtnoœci: zwiêksza zdobywane doœwiadczenie podczas jazdy. Jedna umiejêtnoœæ od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Dzia³a na ka¿dym wierzchowcu.
 55052	Jazda (Gwa³t. Wichura)	Rozwija umiejêtnoœci konne. Kliknij prawym przyciskiem myszy, aby twój koñ (od 21 poziomu) nauczy³ siê umiejêtnoœci: zwiêksza na krótko prêdkoœæ ataku, gdy walczysz z grzbietu wierzchowca. Jedna umiejêtnoœæ od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Dzia³a na ka¿dym wierzchowcu.
@@ -5435,18 +5423,31 @@
 25046	Kamieñ Rytualny	Ten tajemniczo po³yskuj¹cy kamieñ daje doskona³¹ szansê przy ulepszaniu przedmiotów. Ulepszony w ten sposób przedmiot nie mo¿e zostaæ ani pogorszony ani zniszczony. Kamieñ ten funkcjonuje tylko dla przedmiotów powy¿ej poziomu 80. Zwiêksza szansê na ulepszenie o 15%.
 100700	Smoczy P³omieñ (B)	Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zak³adka zmiany bonusów).
 100701	Smoczy P³omieñ	Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zak³adka zmiany bonusów).
-50830	Eliksir Ognistej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy ognia. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50831	Eliksir MroŸnej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy lodu. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50832	Eliksir Piorunowej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy b³yskawicy. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50833	Eliksir Mocy P³n. Wiatru	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy wiatru. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50834	Eliksir Mocy Ziemi	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy ziemi. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50835	Eliksir Mrocznej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy mroku. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50836	Eliksir Odp. na Ogieñ	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na ogieñ. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50837	Eliksir Odp. na Lód	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na lód. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50838	Eliksir Odp. na Pioruny	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na b³yskawice. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50839	Eliksir Odp. na P³n. W.	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na wiatr. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50840	Eliksir Odp. na Ziemiê	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na ziemiê. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
-50841	Eliksir Odp. na Mrok	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na mrok. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50830	Eliksir Ognistej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy ognia. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50831	Eliksir MroŸnej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy lodu. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50832	Eliksir Piorunowej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy b³yskawicy. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50833	Eliksir Mocy P³n. Wiatru	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy wiatru. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50834	Eliksir Mocy Ziemi	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy ziemi. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50835	Eliksir Mrocznej Mocy	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% mocy mroku. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50836	Eliksir Odp. na Ogieñ	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na ogieñ. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50837	Eliksir Odp. na Lód	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na lód. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50838	Eliksir Odp. na Pioruny	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na b³yskawice. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50839	Eliksir Odp. na P³n. W.	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na wiatr. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50840	Eliksir Odp. na Ziemiê	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na ziemiê. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50841	Eliksir Odp. na Mrok	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na mrok. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+50741	Z³ote Zio³o	Niezwykle cenna roœlina potrzebna do wytwarzania wyj¹tkowo mocnych eliksirów. Rzadko znajdziesz je przy zbieraniu zió³, w skrzyniach bossów Yohary i w Skrzyni Nimfy Wodnej. Zielarz Huahn-So (Bokjung, Bakra, Jayang) sporz¹dza z niego Z³ote Eliksiry.
+50842	Z³. Eliksir Ogn. Mocy	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy ognia. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50843	Z³. Eliksir MroŸnej Mocy	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy lodu. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50844	Z³. Eliksir Piorun. Mocy	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy b³yskawicy. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50845	Z. Eliksir Mocy P³n. W.	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy wiatru. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50846	Z³oty Eliksir Mocy Ziemi	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy ziemi. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50847	Z³. Eliksir Mrocz. Mocy	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% mocy mroku. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50848	Z. Eliksir Odp. na Ogieñ	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na ogieñ. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50849	Z³. Eliksir Odp. na Lód	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na lód. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50850	Z³. El. Odp. na Pioruny	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na b³yskawice. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50851	Z³. El. Odp. na P³n. W.	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na wiatr. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50852	Z³. El. Odp. na Ziemiê	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na ziemiê. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
+50853	Z³. Eliksir Odp. na Mrok	Ten niezwykle potê¿ny eliksir obdarza tego, który go wypije +20% odpornoœci na mrok. Dzia³a zawsze 10 minut. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³, 20 pustych butelek i Z³otego Zio³a (szansa 90%, 100 000 Yang). Zastêpuje zwyk³y eliksir tego samego ¿ywio³u.
 53235	Robin (³up)	Uwaga! Nadchodzi Robin, pocieszny nietoperek! Przywo³any zwierzak co sekundê podnosi za ciebie przedmioty i yang le¿¹ce w pobli¿u (tylko to, co mo¿esz podnieœæ sam). Pieczêæ dzia³a 1 dzieñ od otrzymania.
 72351	Ma³e B³ogos³awieñstwo	Zmienia z niewielkim prawdopodobieñstwem 6. i 7. bonus. Przeci¹gnij na przedmiot: ma 10% szansy na zmianê 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot siê zu¿ywa, a bonusy zostaj¹ takie jak by³y.
 23000	Rêkawice Mocy+0	Przepe³nione wol¹ SungMa.
@@ -5674,6 +5675,28 @@
 83001	Z³. Skrzynia na Ryby (M)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 25 lub wiêcej próbach. Mo¿na otworzyæ jeden raz.
 83002	Z³. Skrzynia na Ryby (Œ)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 11-24 próbach. Mo¿na otworzyæ dwa razy.
 83003	Z³. Skrzynia na Ryby (D)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 10 lub mniej próbach. Mo¿na otworzyæ trzy razy.
+27591	Wêdka Wêglowa	Przy pomocy tej wysokiej jakoœci wêdki z w³ókna wêglowego z³apiesz wyj¹tkowo grube ryby. Jest lepsza od zwyk³ej wêdki (jak wêdka +22). Dzia³a 30 dni (czas p³ynie tak¿e poza gr¹), potem znika. Nie da siê jej ulepszyæ ani przekazaæ.
+27621	Wêdzisko	Materia³ do budowy Wêdki Wêglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.
+27622	Przelotka	Materia³ do budowy Wêdki Wêglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.
+27623	Rêkojeœæ	Materia³ do budowy Wêdki Wêglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.
+27624	W³ókno Wêglowe	Materia³ do budowy Wêdki Wêglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.
+27625	Skrzynia Nimfy Wodnej	Skrzynia z Królestwa Duchów Wodnych. Otwórz j¹ za pomoc¹ Klucza Nimfy Wodnej.
+27797	Z³oty Tuñczyk	Bardzo rzadka zdobycz. Jego ³uski b³yszcz¹ niczym p³ynne z³oto! Kliknij prawym przyciskiem: wypuœæ go, pokrój albo u¿yj jako przynêty.
+27824	Wê¿og³ów	S³odkowodna ryba drapie¿na wystêpuj¹ca w tropikach.
+27825	Skaber	Ryba wystêpuj¹ca tylko w wodach p³yn¹cych.
+27826	Krab Królewski	Ten gatunek kraba zwany jest ze wzglêdu na swój rozmiar krabem gigantem.
+27827	Rak Niebieski	Ten gatunek skorupiaka prowadzi nocny tryb ¿ycia, a dnie spêdza w swojej kryjówce.
+27854	Martwy Wê¿og³ów	Œwietnie nadaje siê do upieczenia nad ogniskiem.
+27855	Martwy Skaber	Œwietnie nadaje siê do upieczenia nad ogniskiem.
+27856	Martwy Krab Królewski	Œwietnie nadaje siê do upieczenia nad ogniskiem.
+27857	Martwy Rak Niebieski	Œwietnie nadaje siê do upieczenia nad ogniskiem.
+27884	Pieczony Wê¿og³ów	Zwiêksza twoj¹ odpornoœæ na ziemiê o 10% na 10 minut.
+27885	Pieczony Skaber	Zwiêksza twoj¹ odpornoœæ na lód o 10% na 10 minut.
+27886	Pieczony Krab Królewski	Zwiêksza twoj¹ odpornoœæ na ciemnoœæ o 10% na 10 minut.
+27887	Pieczony Rak Niebieski	Zwiêksza otrzymywane doœwiadczenie o 100% na 30 minut.
+55004	Ksiêga Dzikiego Zwierza	Potrzebna do rozwoju zwierzaka domowego do stopnia „Dzielny”.
+55005	Ksiêga Dzielnego Zwierza	Potrzebna do rozwoju zwierzaka domowego do stopnia „Bohaterski”.
+76033	Wino Kwiatu Brzoskwini+	Mikstura, która natychmiastowo regeneruje o 800 punktów twoje P¯.
 39119	Kamieñ Mocy ¯ywio³ów	Po³yskuj¹cy amulet daje ci 10% mocy wszystkich ¿ywio³ów: b³yskawic, ognia, lodu, wiatru, ziemi i mroku. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 39120	Kamieñ Ochrony ¯ywio³ów	Po³yskuj¹cy amulet daje ci +10% odpornoœci na wszystkie ¿ywio³y: b³yskawice, ogieñ, lód, wiatr, ziemiê i mrok. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 83036	Srebrne Pude³ko Kart Potwora	To srebrne pude³ko zawiera losow¹ Kartê Potwora albo 1000 Yang. Spróbuj szczêœcia! Karty pochodz¹ z poziomów misji 1-15 (bez potworów Yohary). U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J).
@@ -5775,3 +5798,37 @@
 61036	Ksiêga Buffi: Pomoc Smoka	Ksiêga wycofana - nie mo¿na jej ju¿ zdobyæ. Uczy umiejêtnoœci Buffi "Pomoc Smoka" od stopnia M1 do G1. Teraz do G1 s³u¿¹ zwyk³e Ksiêgi Umiejêtnoœci szamana przeci¹gniête w oknie Buffi (klawisz P) na jej umiejêtnoœæ.
 61037	Ksiêga Buffi: Szybkoœæ	Ksiêga wycofana - nie mo¿na jej ju¿ zdobyæ. Uczy umiejêtnoœci Buffi "Szybkoœæ" od stopnia M1 do G1. Dzia³a, gdy Buffi ma imiê. Teraz do G1 s³u¿¹ zwyk³e Ksiêgi Umiejêtnoœci szamana przeci¹gniête w oknie Buffi (klawisz P) na jej umiejêtnoœæ.
 61038	Ksiêga Buffi: Zwiêkszenie Ataku	Ksiêga wycofana - nie mo¿na jej ju¿ zdobyæ. Uczy umiejêtnoœci Buffi "Zwiêkszenie Ataku" od stopnia M1 do G1. Dzia³a, gdy Buffi ma imiê. Teraz do G1 s³u¿¹ zwyk³e Ksiêgi Umiejêtnoœci szamana przeci¹gniête w oknie Buffi (klawisz P) na jej umiejêtnoœæ.
+57000	Tytu³ Heroiczny	Natychmiast odblokowuje tytu³ „Heroiczny” dla twojej postaci. Czas trwania tytu³u: 30 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57001	Tytu³ Szczêœciarz	Natychmiast odblokowuje tytu³ „Szczêœciarz” dla twojej postaci. Czas trwania tytu³u: na sta³e. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57002	Tytu³ Czciciel S³oñca	Natychmiast odblokowuje tytu³ „Czciciel S³oñca” dla twojej postaci. Czas trwania tytu³u: 365 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57003	Tytu³ PLUS	Natychmiast odblokowuje tytu³ „PLUS” dla twojej postaci. Czas trwania tytu³u: 30 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57004	Tytu³ Legendarny	Natychmiast odblokowuje tytu³ „Legendarny” dla twojej postaci. Czas trwania tytu³u: 30 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57005	Tytu³ Mistyczny	Natychmiast odblokowuje tytu³ „Mistyczny” dla twojej postaci. Czas trwania tytu³u: 30 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57006	Tytu³ Gwiazda Polarna	Natychmiast odblokowuje tytu³ „Gwiazda Polarna” dla twojej postaci. Czas trwania tytu³u: 365 dni. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57007	Tytu³ Czempion Nyx	Natychmiast odblokowuje tytu³ „Czempion Nyx” dla twojej postaci. Czas trwania tytu³u: na sta³e. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+57008	Tytu³ Ostatni Ocala³y	Natychmiast odblokowuje tytu³ „Ostatni Ocala³y” dla twojej postaci. Czas trwania tytu³u: 3 godziny. Kolejny certyfikat przed³u¿a tytu³. Kliknij prawym przyciskiem myszy, aby go u¿yæ - tytu³ za³o¿ysz w oknie tytu³ów (kliknij portret w oknie postaci).
+55006	Bohat. Ksiêga Zwierza	Potrzebna do rozwoju zwierzaka domowego do stopnia „Przebudzony”.
+55037	Ksiêga Absorpcji ¯ycia	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Absorpcja ¯ycia”: Przywraca P¯ po zabiciu potwora.
+55038	Ksiêga Lekkie jak Piórko	Uczy zwierzaka (od stopnia „Bohaterski”) umiejêtnoœci „Lekkie jak Piórko”: Aktywuje na krótki czas „Bezszelestny chód”.
+55042	Smaczny Smako³yk	Prawy przycisk myszy: 200.000 PD dla zwierzaka (poziom 1-105) albo 1.200 PD czempiona dla zwierzaka z poziomem czempiona.
+55100	Boska Od¿ywka	O¿ywia martwego zwierzaka z pe³nym czasem trwania; zachowuje 80% wieku (zak³adka „Wskrzeszanie” okna innego, ¿ywego zwierzaka).
+55400	Skrzynka na Zwierzaka	Zawiera losowe jajo zwierzaka domowego.
+55701	Ma³y Ma³piszon (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55702	Ma³y Paj¹k (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55703	Ma³y Razador (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55704	Ma³a Nemere (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55705	Niebieski Ma³y Smok (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55706	Ma³a Meley (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55407	Jajo Mini Azraela	Prawy przycisk myszy: wykluwa zwierzaka „Mini Azrael” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55707	Mini Azrael (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55408	Jajo Grubego Mini Kata	Prawy przycisk myszy: wykluwa zwierzaka „Gruby Mini Kat” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55708	Gruby Mini Kat (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55709	Ma³y Baashido (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55710	Nessie (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55711	Wyl¹g Exedyara (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55412	Bia³e Jajo Smoka	Prawy przycisk myszy: wykluwa zwierzaka „Gniewny Mini Alastor” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55712	Gniewny Mini Alastor (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55413	Jajo Stra¿nika	Prawy przycisk myszy: wykluwa zwierzaka „Mini-Dowódca” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55713	Mini-Dowódca (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+55414	Jajo Aamona	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Aamon” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
+55714	Ma³y Aamon (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
