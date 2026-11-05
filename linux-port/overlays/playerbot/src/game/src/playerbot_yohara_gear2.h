@@ -502,7 +502,13 @@ namespace
 		if (t.llGold > 0)
 			PlayerBotChangeGold(ch, -t.llGold);
 		s_kPlayerBotGear2Stats.spentYang += t.llGold;
-		const bool success = number(1, 100) <= t.iPercent;
+		// MT2009_PLUS_BOT_RUNES_V1: Jaharr's and Kawuco's are crafting-window recipes - a Runa Wykuwania Zbroi in the
+		// slot (category 0, playerbot_runes.h); Angmur's is a quest's (always made)
+		int chance = t.iPercent;
+		if (t.bNpc == PLAYERBOT_GEAR2_NPC_JAHARR || t.bNpc == PLAYERBOT_GEAR2_NPC_KAWUCO)
+			chance = std::min(100, chance + UsePlayerBotCraftRune(ch, 0, t.iPercent,
+					t.bNpc == PLAYERBOT_GEAR2_NPC_KAWUCO ? 5 : 4, "gear2", t.dwReward));
+		const bool success = number(1, 100) <= chance;
 		DWORD made = 0;
 		if (success)
 		{

@@ -7213,6 +7213,15 @@ namespace
 	bool WantsPlayerBotGear2TradeTrip(LPCHARACTER ch);
 	bool IsPlayerBotGear2ErrandBusy(DWORD pid);
 	bool IsPlayerBotGear2CapeOn();
+	// MT2009_PLUS_BOT_RUNES_V1 (playerbot_runes.h, after playerbot_yohara_gear2.h): the Runy Wykuwania - a rune is never
+	// sold off, the crafting window's slot of the belts / Jaharr / Kawuco, its value, a 5* off a counter.
+	bool IsPlayerBotRuneVnum(DWORD vnum);
+	int UsePlayerBotCraftRune(LPCHARACTER ch, int category, int basePct, int maxGrade, const char* craft, DWORD reward);
+	int GetPlayerBotBeltRuneMaxGrade(int recipeLevel);
+	long long GetPlayerBotRuneValue(DWORD vnum);
+	bool WantsPlayerBotRuneOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForRuneOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	void NotePlayerBotRuneBought(LPCHARACTER ch, DWORD vnum, long long price);
 	bool MovePlayerBotSungmaRevived(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1 (playerbot_sungma_fight.h, before survival.h, asks playerbot_yohara_sungma.h): a
 	// map's slot in PLAYERBOT_SUNGMA_MAPS (-1 none), its band's Champion floor, its safe point, and what a resident is

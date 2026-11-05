@@ -1,0 +1,14 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BOT_RUNES_V1 (command declare)",
+  "old": "ACMD(do_remote_call)\n{\n\tRemoteCallCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_remote_call)\n{\n\tRemoteCallCommand(ch, argument);\n}\n// MT2009_PLUS_BOT_RUNES_V1 (command declare): \"/bot_runa\" - the bots' Runy Wykuwania: census, a reward to one bot or to many (playerbot_runes.h)\nvoid PlayerBotRuneCommand(LPCHARACTER ch, const char* argument);\nACMD(do_bot_runa)\n{\n\tPlayerBotRuneCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BOT_RUNES_V1 (command table)",
+  "old": "\t{ \"enasir\",\tdo_remote_call,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t}, // MT2009_PLUS_REMOTE_CALL_V1 (command table)\n",
+  "new": "\t{ \"enasir\",\tdo_remote_call,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t}, // MT2009_PLUS_REMOTE_CALL_V1 (command table)\n\t{ \"bot_runa\",\tdo_bot_runa,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_BOT_RUNES_V1 (command table)\n"
+ }
+]
