@@ -9,17 +9,17 @@
   },
   "de": {
    "vnums": 28473,
-   "named": 6740,
-   "pct": 23.7,
+   "named": 28423,
+   "pct": 99.8,
    "unique_names": 6875,
-   "unique_named": 5987
+   "unique_named": 6825
   },
   "tr": {
    "vnums": 28473,
-   "named": 7172,
-   "pct": 25.2,
+   "named": 28453,
+   "pct": 99.9,
    "unique_names": 6875,
-   "unique_named": 6385
+   "unique_named": 6855
   },
   "ro": {
    "vnums": 28473,
@@ -95,17 +95,17 @@
   },
   "de": {
    "vnums": 1680,
-   "named": 1348,
-   "pct": 80.2,
+   "named": 1557,
+   "pct": 92.7,
    "unique_names": 1294,
-   "unique_named": 1047
+   "unique_named": 1229
   },
   "tr": {
    "vnums": 1680,
-   "named": 1443,
-   "pct": 85.9,
+   "named": 1557,
+   "pct": 92.7,
    "unique_names": 1294,
-   "unique_named": 1124
+   "unique_named": 1229
   },
   "ro": {
    "vnums": 1680,
