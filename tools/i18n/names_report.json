@@ -1,0 +1,174 @@
+{
+ "items": {
+  "en": {
+   "vnums": 28473,
+   "named": 28453,
+   "pct": 99.9,
+   "unique_names": 6875,
+   "unique_named": 6855
+  },
+  "de": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "tr": {
+   "vnums": 28473,
+   "named": 7172,
+   "pct": 25.2,
+   "unique_names": 6875,
+   "unique_named": 6385
+  },
+  "ro": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "es": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "it": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "fr": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "pt": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "cz": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "hu": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "gr": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  },
+  "ae": {
+   "vnums": 28473,
+   "named": 6740,
+   "pct": 23.7,
+   "unique_names": 6875,
+   "unique_named": 5987
+  }
+ },
+ "mobs": {
+  "en": {
+   "vnums": 1680,
+   "named": 1558,
+   "pct": 92.7,
+   "unique_names": 1294,
+   "unique_named": 1230
+  },
+  "de": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "tr": {
+   "vnums": 1680,
+   "named": 1443,
+   "pct": 85.9,
+   "unique_names": 1294,
+   "unique_named": 1124
+  },
+  "ro": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "es": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "it": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "fr": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "pt": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "cz": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "hu": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "gr": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  },
+  "ae": {
+   "vnums": 1680,
+   "named": 1348,
+   "pct": 80.2,
+   "unique_names": 1294,
+   "unique_named": 1047
+  }
+ }
+}

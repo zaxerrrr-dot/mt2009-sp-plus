@@ -1,0 +1,524 @@
+Ametyst (Blyszczacy, Najnizszy)
+Ametyst (Blyszczacy, Najwyzszy)
+Ametyst (Blyszczacy, Niski)
+Ametyst (Blyszczacy, Sredni)
+Ametyst (Blyszczacy, Wysoki)
+Ametyst (Legendarny, Najnizszy)
+Ametyst (Legendarny, Najwyzszy)
+Ametyst (Legendarny, Niski)
+Ametyst (Legendarny, Sredni)
+Ametyst (Legendarny, Wysoki)
+Ametyst (Mityczny, Najnizszy)
+Ametyst (Mityczny, Najwyzszy)
+Ametyst (Mityczny, Niski)
+Ametyst (Mityczny, Sredni)
+Ametyst (Mityczny, Wysoki)
+Ametyst (Rzadki, Najnizszy)
+Ametyst (Rzadki, Najwyzszy)
+Ametyst (Rzadki, Niski)
+Ametyst (Rzadki, Sredni)
+Ametyst (Rzadki, Wysoki)
+Ametyst (Starozytny, Najnizszy)
+Ametyst (Starozytny, Najwyzszy)
+Ametyst (Starozytny, Niski)
+Ametyst (Starozytny, Sredni)
+Ametyst (Starozytny, Wysoki)
+Ametyst (Zwykly, Najnizszy)
+Ametyst (Zwykly, Najwyzszy)
+Ametyst (Zwykly, Niski)
+Ametyst (Zwykly, Sredni)
+Ametyst (Zwykly, Wysoki)
+BETA: Buff G1
+BETA: Buff M1
+BETA: Buff P
+Balathor Junior
+Bezrn
+Biała Maska do Nur.+ (k)
+Biała Maska do Nur.+ (m)
+Białe Dyniowe Straszydło
+Biały Skaf. Nurkowy+ (k)
+Biały Skaf. Nurkowy+ (m)
+Blue Dragon Bean
+Brązowy Byk
+Bursztynowy Płatekrn
+Burza Wukong
+Cerber
+Cor Draconis (Rough)
+Czar. Hełm Sm. Ryc.+ (k)
+Czar. Hełm Sm. Ryc.+ (m)
+Czar. Maska Zaj. Damy+
+Czar. Maska Zaj. Lorda+
+Czar. Maska do Nur.+ (k)
+Czar. Maska do Nur.+ (m)
+Czar. Skaf. Nurkowy+ (k)
+Czar. Skaf. Nurkowy+ (m)
+Czarna Lampa Damy+
+Czarna Lampa Lorda+
+Czarna Smocza Rycerka+
+Czarne Dyn. Straszydło
+Czarny Byk
+Czarny Smoczy Rycerz+
+Czer. Hełm Sm. Ryc.+ (k)
+Czer. Hełm Sm. Ryc.+ (m)
+Czerwona Montera (k)
+Czerwona Montera (m)
+Czerwona Montera+ (k)
+Czerwona Montera+ (m)
+Czerwona Smocza Rycerka+
+Czerwona Toreadorka
+Czerwona Toreadorka+
+Czerwony Drakkar
+Czerwony Smoczy Rycerz+
+Czerwony Toreador
+Czerwony Toreador+
+Diament (Blyszczacy, Najnizszy)
+Diament (Blyszczacy, Najwyzszy)
+Diament (Blyszczacy, Niski)
+Diament (Blyszczacy, Sredni)
+Diament (Blyszczacy, Wysoki)
+Diament (Legendarny, Najnizszy)
+Diament (Legendarny, Najwyzszy)
+Diament (Legendarny, Niski)
+Diament (Legendarny, Sredni)
+Diament (Legendarny, Wysoki)
+Diament (Mityczny, Najnizszy)
+Diament (Mityczny, Najwyzszy)
+Diament (Mityczny, Niski)
+Diament (Mityczny, Sredni)
+Diament (Mityczny, Wysoki)
+Diament (Rzadki, Najnizszy)
+Diament (Rzadki, Najwyzszy)
+Diament (Rzadki, Niski)
+Diament (Rzadki, Sredni)
+Diament (Rzadki, Wysoki)
+Diament (Starozytny, Najnizszy)
+Diament (Starozytny, Najwyzszy)
+Diament (Starozytny, Niski)
+Diament (Starozytny, Sredni)
+Diament (Starozytny, Wysoki)
+Diament (Zwykly, Najnizszy)
+Diament (Zwykly, Najwyzszy)
+Diament (Zwykly, Niski)
+Diament (Zwykly, Sredni)
+Diament (Zwykly, Wysoki)
+Dragon Stone Shard
+Dragon Tongs
+Dragon Tongs+
+Dwur. Miecz Nos. Klątwy+
+Dzwon Smoka Północy
+Dzwon Smoka Północy+
+Dzwon Zimowego Ciernia
+Dzwon Zimowego Ciernia+
+Dzwonek Nos. Klątwy+
+Feniks Wieczornej Zorzy
+Feniks Zmierzchu
+Fiol. Maska Zaj. Damy+
+Fiol. Maska Zaj. Lorda+
+Fioletowa Lampa Damy+
+Fioletowa Lampa Lorda+
+Gallus
+Granat (Blyszczacy, Najnizszy)
+Granat (Blyszczacy, Najwyzszy)
+Granat (Blyszczacy, Niski)
+Granat (Blyszczacy, Sredni)
+Granat (Blyszczacy, Wysoki)
+Granat (Legendarny, Najnizszy)
+Granat (Legendarny, Najwyzszy)
+Granat (Legendarny, Niski)
+Granat (Legendarny, Sredni)
+Granat (Legendarny, Wysoki)
+Granat (Mityczny, Najnizszy)
+Granat (Mityczny, Najwyzszy)
+Granat (Mityczny, Niski)
+Granat (Mityczny, Sredni)
+Granat (Mityczny, Wysoki)
+Granat (Rzadki, Najnizszy)
+Granat (Rzadki, Najwyzszy)
+Granat (Rzadki, Niski)
+Granat (Rzadki, Sredni)
+Granat (Rzadki, Wysoki)
+Granat (Starozytny, Najnizszy)
+Granat (Starozytny, Najwyzszy)
+Granat (Starozytny, Niski)
+Granat (Starozytny, Sredni)
+Granat (Starozytny, Wysoki)
+Granat (Zwykly, Najnizszy)
+Granat (Zwykly, Najwyzszy)
+Granat (Zwykly, Niski)
+Granat (Zwykly, Sredni)
+Granat (Zwykly, Wysoki)
+Green Dragon Bean
+Grzmot Wukong
+Grzyb Tuern
+Gwiazda Nocyrn
+Góra_Sohan 4108 2250
+Hati
+Helena
+Hełm Atlantydy+ (k)
+Hełm Atlantydy+ (m)
+Hełm Czerw. Piasku+ (k)
+Hełm Czerw. Piasku+ (m)
+Hełm Sam. Śniegu+ (k)
+Hełm Sam. Śniegu+ (m)
+Hełm Samuraja Cieni+ (k)
+Hełm Samuraja Cieni+ (m)
+Hełm Srebr. Piasku+ (k)
+Hełm Srebr. Piasku+ (m)
+Hełm Walkirii Nocy+
+Hełm Walkirii Światła+
+Hełm Wikinga Nocy+
+Hełm Wikinga Światła+
+Hełm Władcy Śmierci
+Inkub Nocy+
+Inkub Płomieni+
+Jadeit (Blyszczacy, Najnizszy)
+Jadeit (Blyszczacy, Najwyzszy)
+Jadeit (Blyszczacy, Niski)
+Jadeit (Blyszczacy, Sredni)
+Jadeit (Blyszczacy, Wysoki)
+Jadeit (Legendarny, Najnizszy)
+Jadeit (Legendarny, Najwyzszy)
+Jadeit (Legendarny, Niski)
+Jadeit (Legendarny, Sredni)
+Jadeit (Legendarny, Wysoki)
+Jadeit (Mityczny, Najnizszy)
+Jadeit (Mityczny, Najwyzszy)
+Jadeit (Mityczny, Niski)
+Jadeit (Mityczny, Sredni)
+Jadeit (Mityczny, Wysoki)
+Jadeit (Rzadki, Najnizszy)
+Jadeit (Rzadki, Najwyzszy)
+Jadeit (Rzadki, Niski)
+Jadeit (Rzadki, Sredni)
+Jadeit (Rzadki, Wysoki)
+Jadeit (Starozytny, Najnizszy)
+Jadeit (Starozytny, Najwyzszy)
+Jadeit (Starozytny, Niski)
+Jadeit (Starozytny, Sredni)
+Jadeit (Starozytny, Wysoki)
+Jadeit (Zwykly, Najnizszy)
+Jadeit (Zwykly, Najwyzszy)
+Jadeit (Zwykly, Niski)
+Jadeit (Zwykly, Sredni)
+Jadeit (Zwykly, Wysoki)
+Jaskiniowy Grzybrn
+Korona Atlantydy+ (k)
+Korona Atlantydy+ (m)
+Korzeń Gangorn
+Korzeń Wężarn
+Kostium Władcy Śmierci (m)
+Kostium Władczyni Śmierci (k)
+Kosz. Futbol.+ ROU (k)
+Kosz. Futbol.+ ROU (m)
+Koszulka Futbol.+ALG (k)
+Koszulka Futbol.+ALG (m)
+Koszulka Futbol.+ARG (k)
+Koszulka Futbol.+ARG (m)
+Koszulka Futbol.+AUS (k)
+Koszulka Futbol.+AUS (m)
+Koszulka Futbol.+BIH (k)
+Koszulka Futbol.+BIH (m)
+Koszulka Futbol.+BRA (k)
+Koszulka Futbol.+BRA (m)
+Koszulka Futbol.+CIV (k)
+Koszulka Futbol.+CIV (m)
+Koszulka Futbol.+COL (k)
+Koszulka Futbol.+COL (m)
+Koszulka Futbol.+ECU (k)
+Koszulka Futbol.+ECU (m)
+Koszulka Futbol.+GHA (k)
+Koszulka Futbol.+GHA (m)
+Koszulka Futbol.+IRN (k)
+Koszulka Futbol.+IRN (m)
+Koszulka Futbol.+JPN (k)
+Koszulka Futbol.+JPN (m)
+Koszulka Futbol.+KOR (k)
+Koszulka Futbol.+KOR (m)
+Koszulka Futbol.+KSA (k)
+Koszulka Futbol.+KSA (m)
+Koszulka Futbol.+MEX (k)
+Koszulka Futbol.+MEX (m)
+Koszulka Futbol.+URU (k)
+Koszulka Futbol.+URU (m)
+Koszulka Futbol.+USA (k)
+Koszulka Futbol.+USA (m)
+Książę Atlantydy+
+Księż. Bran. Wukong (k)
+Księż. Bran. Wukong (m)
+Księż. Bran. Wukong+ (k)
+Księż. Bran. Wukong+ (m)
+Księż. Szata Wukong (k)
+Księż. Szata Wukong (m)
+Księż. Szata Wukong+ (k)
+Księż. Szata Wukong+ (m)
+Księżniczka Atlantydy+
+Lilith
+Lod. Skrzydło Balathora
+Lodowa_Grota 6304 10882
+Lodowe Skrzyd. Balathora
+Magiczny Kamieńrn
+Magma Manni I
+Magma Manni II
+Magma Manni III
+Maj. Nosiciel Światła+
+Maj. Nosicielka Światła+
+Majestatyczny Diadem+ (k)
+Majestatyczny Diadem+ (m)
+Mała Sowa Strażniczka
+Małe Dyniowe Straszydło
+Mały Balathor
+Mały Hati
+Mały Long
+Mały Pavo
+Mały Zimowy Skrzat
+Miecz Dw. Zim. Ciernia+
+Miecz Dwur. Zim. Ciernia
+Miecz Nosiciela Klątwy+
+Miecz Ob. Smoka Północy
+Miecz Ob. Smoka Północy+
+Miecz Smoka Północy
+Miecz Smoka Północy+
+Miecz Zimowego Ciernia
+Miecz Zimowego Ciernia+
+Minililith
+Minipebble
+Mniszek Lekarskirn
+Morwarn
+Mroczny Rumak Piekieł
+Mt2009
+Muffin
+Nakładka Władcy Śmierci - Broń D
+Nakładka Władcy Śmierci - Dzwon
+Nakładka Władcy Śmierci - Miecz
+Nakładka Władcy Śmierci - Miecz 
+Nakładka Władcy Śmierci - Sztyle
+Nakładka Władcy Śmierci - Wachla
+Nakładka Władcy Śmierci - Łuk
+Niebieska Montera (k)
+Niebieska Montera (m)
+Niebieska Montera+ (k)
+Niebieska Montera+ (m)
+Niebieska Toreadorka
+Niebieska Toreadorka+
+Niebieski Drakkar
+Niebieski Oldtimer
+Niebieski Toreador
+Niebieski Toreador+
+Niebieski Zimowy Skrzat
+Nugget
+Okrutny Rumak Piekieł
+Onyks (Blyszczacy, Najnizszy)
+Onyks (Blyszczacy, Najwyzszy)
+Onyks (Blyszczacy, Niski)
+Onyks (Blyszczacy, Sredni)
+Onyks (Blyszczacy, Wysoki)
+Onyks (Legendarny, Najnizszy)
+Onyks (Legendarny, Najwyzszy)
+Onyks (Legendarny, Niski)
+Onyks (Legendarny, Sredni)
+Onyks (Legendarny, Wysoki)
+Onyks (Mityczny, Najnizszy)
+Onyks (Mityczny, Najwyzszy)
+Onyks (Mityczny, Niski)
+Onyks (Mityczny, Sredni)
+Onyks (Mityczny, Wysoki)
+Onyks (Rzadki, Najnizszy)
+Onyks (Rzadki, Najwyzszy)
+Onyks (Rzadki, Niski)
+Onyks (Rzadki, Sredni)
+Onyks (Rzadki, Wysoki)
+Onyks (Starozytny, Najnizszy)
+Onyks (Starozytny, Najwyzszy)
+Onyks (Starozytny, Niski)
+Onyks (Starozytny, Sredni)
+Onyks (Starozytny, Wysoki)
+Onyks (Zwykly, Najnizszy)
+Onyks (Zwykly, Najwyzszy)
+Onyks (Zwykly, Niski)
+Onyks (Zwykly, Sredni)
+Onyks (Zwykly, Wysoki)
+Osetrn
+Oswojony Byk
+Pavo
+Pebble
+Perłowe Wiechyrn
+Pink Dragon Bean
+Piękna Zim. Czapka+ (k)
+Piękna Zim. Czapka+ (m)
+Piękna Zim. Zbroja+ (k)
+Piękna Zim. Zbroja+ (m)
+Placeholder
+Pokrzywarn
+Pośp. Królik
+Pośpieszny Królik
+Private Shop Key
+Przełęcz 6201 11875
+Przełęcz 6809 11943
+Płonące Rogi+ (k)
+Płonące Rogi+ (m)
+Rogi Skrzydła Nocy+ (k)
+Rogi Skrzydła Nocy+ (m)
+Rubin (Blyszczacy, Najnizszy)
+Rubin (Blyszczacy, Najwyzszy)
+Rubin (Blyszczacy, Niski)
+Rubin (Blyszczacy, Sredni)
+Rubin (Blyszczacy, Wysoki)
+Rubin (Legendarny, Najnizszy)
+Rubin (Legendarny, Najwyzszy)
+Rubin (Legendarny, Niski)
+Rubin (Legendarny, Sredni)
+Rubin (Legendarny, Wysoki)
+Rubin (Mityczny, Najnizszy)
+Rubin (Mityczny, Najwyzszy)
+Rubin (Mityczny, Niski)
+Rubin (Mityczny, Sredni)
+Rubin (Mityczny, Wysoki)
+Rubin (Rzadki, Najnizszy)
+Rubin (Rzadki, Najwyzszy)
+Rubin (Rzadki, Niski)
+Rubin (Rzadki, Sredni)
+Rubin (Rzadki, Wysoki)
+Rubin (Starozytny, Najnizszy)
+Rubin (Starozytny, Najwyzszy)
+Rubin (Starozytny, Niski)
+Rubin (Starozytny, Sredni)
+Rubin (Starozytny, Wysoki)
+Rubin (Zwykly, Najnizszy)
+Rubin (Zwykly, Najwyzszy)
+Rubin (Zwykly, Niski)
+Rubin (Zwykly, Sredni)
+Rubin (Zwykly, Wysoki)
+Róża Alpejskarn
+Różowy Zimowy Skrzat
+Samuraj Cieni+ (k)
+Samuraj Cieni+ (m)
+Samuraj Śniegu+ (k)
+Samuraj Śniegu+ (m)
+Search Shop Premium
+Shop Decoration
+Skalli
+Skrzydła Władcy Śmierci (dostojn
+Skrzydła Władcy Śmierci (proste)
+Skrzydła Władcy Śmierci (unikato
+Skrzydła Władcy Śmierci (zacne)
+Skrzydło Nocy Balathora
+Skubcio
+Sowa Strażn. Księżyca
+Sowa Strażniczka Słońca
+Srebrny Long
+Strażniczka Cz. Piasku+
+Strażniczka Sr. Piasku+
+Strażnik Czer. Piasku+
+Strażnik Srebr. Piasku+
+Sukkub Nocy+
+Sukkub Płomieni+
+Szafir (Blyszczacy, Najnizszy)
+Szafir (Blyszczacy, Najwyzszy)
+Szafir (Blyszczacy, Niski)
+Szafir (Blyszczacy, Sredni)
+Szafir (Blyszczacy, Wysoki)
+Szafir (Legendarny, Najnizszy)
+Szafir (Legendarny, Najwyzszy)
+Szafir (Legendarny, Niski)
+Szafir (Legendarny, Sredni)
+Szafir (Legendarny, Wysoki)
+Szafir (Mityczny, Najnizszy)
+Szafir (Mityczny, Najwyzszy)
+Szafir (Mityczny, Niski)
+Szafir (Mityczny, Sredni)
+Szafir (Mityczny, Wysoki)
+Szafir (Rzadki, Najnizszy)
+Szafir (Rzadki, Najwyzszy)
+Szafir (Rzadki, Niski)
+Szafir (Rzadki, Sredni)
+Szafir (Rzadki, Wysoki)
+Szafir (Starozytny, Najnizszy)
+Szafir (Starozytny, Najwyzszy)
+Szafir (Starozytny, Niski)
+Szafir (Starozytny, Sredni)
+Szafir (Starozytny, Wysoki)
+Szafir (Zwykly, Najnizszy)
+Szafir (Zwykly, Najwyzszy)
+Szafir (Zwykly, Niski)
+Szafir (Zwykly, Sredni)
+Szafir (Zwykly, Wysoki)
+Szczypcio
+Sztylet Nos. Klątwy+
+Sztylet Smoka Północy
+Sztylet Smoka Północy+
+Sztylet Zim. Ciernia+
+Sztylet Zimowego Ciernia
+Słon. Bran. Wukong (k)
+Słon. Bran. Wukong (m)
+Słon. Brans. Wukong+ (k)
+Słon. Brans. Wukong+ (m)
+Słon. Szata Wukong (k)
+Słon. Szata Wukong (m)
+Słon. Szata Wukong+ (k)
+Słon. Szata Wukong+ (m)
+Tongs of Time
+Tygrys Dżungli
+Tygrys Śniegu
+Wachlarz Nos. Klątwy+
+Wachlarz Smoka Północy
+Wachlarz Smoka Północy+
+Wachlarz Zim. Ciernia
+Wachlarz Zim. Ciernia+
+Walkiria Nocy+
+Walkiria Światła+
+Wiking Nocy+
+Wiking Światła+
+Wojowniczka Atlantydy+
+Wojownik Atlantydy+
+Węglowy Bożonar. Baran
+Zielony Oldtimer
+Złoty Long
+aoe_giant
+aoe_tree_big
+aoe_tree_small
+bush_ancientlichen
+bush_blacklotus
+bush_blindweed
+bush_bloodthistle
+bush_crownroyal
+bush_dreamfoil
+bush_felweed
+bush_firebloom
+bush_flamecap
+bush_gravemoss
+bush_gromsblood
+bush_khadgarswhisker
+bush_manathistle
+bush_mountainsilversage
+bush_mushroom03
+bush_netherbloom
+bush_nightmarevine
+bush_purplelotus
+bush_silverleaf
+bush_snakebloom
+bush_snakeroot
+bush_spineleaf
+bush_stardust
+bush_steelbloom
+bush_stranglekelp
+bush_sungrass
+bush_terrocone
+bush_thornroot
+skillbook
+°ĹąĚµż±Ľ2Ăţ 7040 5235
+°ĹąĚµż±Ľ3Ăţ 984 5711
+Łuk Nosiciela Klątwy+
+Łuk Smoka Północy
+Łuk Smoka Północy+
+Łuk Zimowego Ciernia
+Łuk Zimowego Ciernia+
+Śnieżny Bożonar. Baran
+Śnieżny Kwiatrn
+Św. Nosiciel Światła+
+Św. Nosicielka Światła+
+Świetlisty Diadem+ (k)
+Świetlisty Diadem+ (m)
+Świąt. Zim. Czapka+ (k)
+Świąt. Zim. Czapka+ (m)
+Świąt. Zim. Zbroja+ (k)
+Świąt. Zim. Zbroja+ (m)
