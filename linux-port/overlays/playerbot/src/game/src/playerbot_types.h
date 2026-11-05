@@ -4437,6 +4437,21 @@ namespace
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
 		return base == 358;
 	}
+	// MT2009_PLUS_BOT_YOHARA_PDG_V1 (begin) - the Yohara dungeons a person's party bots go into with the person
+	// ("nauczmy boty korzystac z dungeonow Yohary", the owner, 5 November 2026): every one whose guard or statue opens
+	// an instance for the people of a party (d.new_jump_pids - PB 369/370/371/398 and the Time Rifts 404-407 at their
+	// statues on Plaskowyz Iluzji, Erebu's instances of 353, the Swiatynia Wezy 391, the Glebie Polnocnego Wiatru 395)
+	// and Krypta Balathora 420 for a bot of the person's guild (playerbot_balathor_bots.h). Erebu's 353 is the open
+	// Zaklety Las too - only its instances count. Not Wieza Sung Mahi (386/387: solo, the owner's rule), nor the open
+	// maps (Jaskinie Gnolli 382-384, Tajemnicza Instancja 396 - the ordinary follow), nor Labirynt 79 (no party in).
+	// A bot follows only on the core it lives on: game3 hosts all of these but 420 (game1).
+	bool IsPlayerBotYoharaPartyDungeonMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return (base >= 369 && base <= 371) || base == 398 || (base >= 404 && base <= 407) || base == 391 ||
+				base == 395 || base == 420 || (base == 353 && mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN);
+	}
+	// MT2009_PLUS_BOT_YOHARA_PDG_V1 (end)
 	bool IsPlayerBotPartyDungeonMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
@@ -4444,7 +4459,8 @@ namespace
 				base == 158 ||	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy
 				base == 358 ||	// MT2009_PLUS_ZODIAC_BOTS_V1: Swiatynia Zodiaku (its floors, playerbot_zodiac_bots.h)
 				base == 367 ||	// MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (obrona_statku.quest, d.new_jump_pids)
-				base == 356;	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (meley_dungeon.quest, d.new_jump_pids)
+				base == 356 ||	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (meley_dungeon.quest, d.new_jump_pids)
+				IsPlayerBotYoharaPartyDungeonMap(mapIndex);	// MT2009_PLUS_BOT_YOHARA_PDG_V1
 	}
 	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: both defined in playerbot_party_dungeon.h.
 	// A person (not a bot) of the bot's party online on this core - standing on

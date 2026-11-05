@@ -583,11 +583,16 @@ namespace
 	// MT2009_PLUS_ZODIAC_RUNS_V7: the bots' own (paid) Zodiac runs count against the core's cap of runs.
 	int CountOwnZruns();
 
+	// MT2009_PLUS_BOT_YOHARA_PDG_V1: the guild lair and maze runs (playerbot_balathor_bots.h, playerbot_labirynt_bots.h).
+	bool IsPlayerBotOnOwnLairRun(DWORD pid);
+
 	bool IsPlayerBotOnDungeonRun(DWORD pid)
 	{
 		if (pid == 0 || pid == s_dwPlayerBotDgRunAsking)
 			return false;
 		if (IsPlayerBotOnZodiacRun(pid))
+			return true;
+		if (IsPlayerBotOnOwnLairRun(pid))	// MT2009_PLUS_BOT_YOHARA_PDG_V1
 			return true;
 		if (s_mapPlayerBotDgRunBots.empty())
 			return false;
