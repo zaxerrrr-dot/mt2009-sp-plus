@@ -23,6 +23,11 @@ BASE = args[1] if len(args) > 1 else '/opt/metin2/cache/cY/azbase'
 ROOT_ICONS = os.path.normpath(os.path.join(HERE, '..', '..', 'root', 'icon', 'item'))
 fails = []
 
+# MT2009_PLUS_GROWTH_PET_V1: the pet system's json owns these vnums (tools/pety: build_pety_packs.py runs later and rewrites
+# their records and lines on purpose; pety/verify_pety.py checks them) - skipped here
+import json as _json  # noqa: E402
+PETY_VNUMS = set(int(i['vnum']) for i in _json.load(open(os.path.join(HERE, '..', '..', '..', '..', 'tools', 'pety', 'pety_items.json'),
+                                                           encoding='utf-8'))['items'])
 
 def pack_dir(pack):
     return OUT if os.path.exists(os.path.join(OUT, pack + '.index')) else BASE
@@ -52,6 +57,8 @@ d = pc.items_json()
 ver, recs = pc.records(entry('dbdata', 'gamedata/item_proto'))
 want = pc.want_records(recs)
 for v, r in sorted(want.items()):
+    if v in PETY_VNUMS:
+        continue
     if recs.get(v) != r:
         fails.append('item_proto %d: not the wanted record' % v)
 lst = entry('gamedata', 'gamedata/item_list.txt').decode('cp1250').replace('\r\n', '\n').split('\n')
@@ -70,6 +77,8 @@ for k, line in d['item_list'].items():
             fails.append('item_list %s: icon %s neither in root/icon/item nor in an icon pack' % (k, icon))
 for row in pc.desc_rows():
     k = row.split('\t')[0]
+    if int(k) in PETY_VNUMS:
+        continue
     if desc.get(k) != row:
         fails.append('itemdesc %s: missing or other' % k)
     for bad in ('metin2', 'gameforge', 'oficjaln'):

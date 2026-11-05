@@ -22,6 +22,11 @@ OUT = args[0]
 BASE = args[1] if len(args) > 1 else '/opt/metin2/cache/cY/azbase'
 ROOT_ICONS = os.path.normpath(os.path.join(HERE, '..', '..', 'root', 'icon', 'item'))
 fails = []
+# MT2009_PLUS_GROWTH_PET_V1: the pet system's json owns these vnums (tools/pety: build_pety_packs.py runs later and rewrites
+# their records and lines on purpose; pety/verify_pety.py checks them) - skipped here
+import json as _json  # noqa: E402
+PETY_VNUMS = set(int(i['vnum']) for i in _json.load(open(os.path.join(HERE, '..', '..', '..', '..', 'tools', 'pety', 'pety_items.json'),
+                                                           encoding='utf-8'))['items'])
 WHERE = set()
 for _d in (BASE, OUT):
 	for _f in os.listdir(_d):
@@ -60,6 +65,8 @@ for vnum, name, pl, stack, anti, flag, seconds, icon, desc in pc.ITEMS:
 	if seconds and struct.unpack_from('<Bi', r, 114) != (pc.LIMIT_REAL_TIME, seconds):
 		fails.append('item_proto %d: no real-time limit of %d s' % (vnum, seconds))
 for vnum, pl in pc.RENAMES.items():
+	if vnum in PETY_VNUMS:
+		continue
 	if vnum not in recs or pl_name(recs[vnum]) != pl:
 		fails.append('item_proto %d: name is not %s' % (vnum, pl))
 lst = entry('gamedata', 'gamedata/item_list.txt').decode('cp1250').replace('\r\n', '\n').split('\n')
@@ -76,6 +83,8 @@ for i in pc.ITEMS:
 		fails.append('itemdesc %s: missing or other' % k)
 for vnum, pl in pc.RENAMES.items():
 	line = desc.get(str(vnum))
+	if vnum in PETY_VNUMS:
+		continue
 	if line is not None and line.split('\t')[1] != pl:
 		fails.append('itemdesc %d: name is not %s' % (vnum, pl))
 print('ishop5: %d new items, %d renamed, %d problem(s)' % (len(pc.ITEMS), len(pc.RENAMES), len(fails)))
