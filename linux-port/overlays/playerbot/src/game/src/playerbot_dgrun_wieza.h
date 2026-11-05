@@ -169,10 +169,15 @@ namespace
 		return (long long)GetPlayerBotWiezaEnv("PLAYERBOT_WIEZA_BANNER_PRICE", (int)PLAYERBOT_WIEZA_BANNER_PRICE, 0, 2000000000);
 	}
 
+	// The night of 5/6 November: the ten trainees had neither a banner nor 5M (45 bots "train waits - no banner and no
+	// gold", every run "entry refused why=no_banner") - in training a bot short of both goes in let go (logged at the
+	// charge: banner=let_go), the YDG book's / Gnolli pass's rule.
+	bool IsPlayerBotWiezaTrainOn();
+
 	bool CanPlayerBotWiezaPay(LPCHARACTER ch)
 	{
 		return ch && ch->IsItemLoaded() && (ch->CountSpecifyItem(PLAYERBOT_WIEZA_BANNER) > 0 ||
-				(long long)ch->GetGold() >= GetPlayerBotWiezaBannerPrice());
+				(long long)ch->GetGold() >= GetPlayerBotWiezaBannerPrice() || IsPlayerBotWiezaTrainOn());
 	}
 
 	// Before the jump: the portal's rules (no party, no mount, no polymorph - the quest's guard() would take them
@@ -1132,6 +1137,10 @@ namespace
 		TPlayerBotWiezaTrain() : bFile(false), tMtime(0), iSolo(0), iCap(0) {}
 	};
 	TPlayerBotWiezaTrain s_kPlayerBotWiezaTrain;
+	bool IsPlayerBotWiezaTrainOn()
+	{
+		return s_kPlayerBotWiezaTrain.iSolo > 0;
+	}
 	std::set<DWORD> s_setPlayerBotWiezaTrainees;
 	std::map<DWORD, TPlayerBotWiezaTrainBot> s_mapPlayerBotWiezaTrainStats;
 	std::map<int, DWORD> s_mapPlayerBotWiezaTrainRuns;	// run -> pid
