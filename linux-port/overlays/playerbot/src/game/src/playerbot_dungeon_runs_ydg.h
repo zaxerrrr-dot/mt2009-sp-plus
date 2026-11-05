@@ -786,7 +786,17 @@ namespace
 	}
 
 	// The best bots of this core for "auto": parties of `size` in one kingdom each, a Shaman and a Ninja first.
-	void FormPlayerBotYdgAutoParties(int parties, int size, const std::vector<int>& defs, DWORD dwNow)
+	// V2: an "auto" line short of its parties (the core just started, the bots still logging in) is formed again.
+	struct TPlayerBotYdgAutoPending
+	{
+		int missing, size;
+		std::vector<int> defs;
+	};
+	std::vector<TPlayerBotYdgAutoPending> s_vecPlayerBotYdgAutoPending;
+	DWORD s_dwPlayerBotYdgAutoRetryAt = 0;
+	const DWORD PLAYERBOT_YDG_AUTO_RETRY_MS = 90 * 1000;
+
+	int FormPlayerBotYdgAutoParties(int parties, int size, const std::vector<int>& defs, DWORD dwNow)
 	{
 		std::vector<TPlayerBotYdgPick> pool[4];
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
@@ -876,6 +886,7 @@ namespace
 		if (made < parties)
 			sys_log(0, "BOT_YDG: train auto made %d of %d parties of %d (not enough free bots of %d+ in one kingdom on this core)",
 					made, parties, size, PLAYERBOT_YDG_MIN_LEVEL);
+		return made;
 	}
 
 	void LoadPlayerBotYdgTrainFile(DWORD dwNow, bool force)
@@ -888,6 +899,7 @@ namespace
 				sys_log(0, "BOT_YDG: train file gone - the training parties dissolved");
 				s_vecPlayerBotYdgTrain.clear();
 				s_setPlayerBotYdgTrainees.clear();
+				s_vecPlayerBotYdgAutoPending.clear();
 			}
 			s_bPlayerBotYdgTrainFile = false;
 			return;
@@ -902,6 +914,7 @@ namespace
 		// The runs under way finish; their parties are new ones from here.
 		s_vecPlayerBotYdgTrain.clear();
 		s_setPlayerBotYdgTrainees.clear();
+		s_vecPlayerBotYdgAutoPending.clear();
 		char line[1024];
 		std::vector<std::string> autos;
 		while (fgets(line, sizeof(line), fp))
@@ -949,8 +962,18 @@ namespace
 				continue;
 			std::vector<int> defs;
 			ParsePlayerBotYdgDungeons(spec, defs);
-			FormPlayerBotYdgAutoParties(std::max(0, std::min(parties, 40)), std::max(2, std::min(size, playerbot_dgrun::PARTY_MAX)),
-					defs, dwNow);
+			const int want = std::max(0, std::min(parties, 40));
+			const int sz = std::max(2, std::min(size, playerbot_dgrun::PARTY_MAX));
+			const int made = FormPlayerBotYdgAutoParties(want, sz, defs, dwNow);
+			if (made < want)
+			{
+				TPlayerBotYdgAutoPending pend;
+				pend.missing = want - made;
+				pend.size = sz;
+				pend.defs = defs;
+				s_vecPlayerBotYdgAutoPending.push_back(pend);
+				s_dwPlayerBotYdgAutoRetryAt = dwNow + PLAYERBOT_YDG_AUTO_RETRY_MS;
+			}
 		}
 		sys_log(0, "BOT_YDG: train file loaded parties=%u trainees=%u", (unsigned int)s_vecPlayerBotYdgTrain.size(),
 				(unsigned int)s_setPlayerBotYdgTrainees.size());
@@ -986,6 +1009,20 @@ namespace
 				s_mapPlayerBotYdgRunParty.erase(it++);
 			else
 				++it;
+		}
+		// V2: the auto lines' missing parties, again a while later (up to every PLAYERBOT_YDG_AUTO_RETRY_MS).
+		if (!s_vecPlayerBotYdgAutoPending.empty() && (int)(dwNow - s_dwPlayerBotYdgAutoRetryAt) >= 0)
+		{
+			s_dwPlayerBotYdgAutoRetryAt = dwNow + PLAYERBOT_YDG_AUTO_RETRY_MS;
+			for (size_t i = 0; i < s_vecPlayerBotYdgAutoPending.size();)
+			{
+				TPlayerBotYdgAutoPending& pend = s_vecPlayerBotYdgAutoPending[i];
+				pend.missing -= FormPlayerBotYdgAutoParties(pend.missing, pend.size, pend.defs, dwNow);
+				if (pend.missing <= 0)
+					s_vecPlayerBotYdgAutoPending.erase(s_vecPlayerBotYdgAutoPending.begin() + i);
+				else
+					++i;
+			}
 		}
 		if (s_vecPlayerBotYdgTrain.empty())
 			return;
