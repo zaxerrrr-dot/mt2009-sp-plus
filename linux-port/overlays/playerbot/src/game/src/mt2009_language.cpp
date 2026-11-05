@@ -11,6 +11,8 @@
 #include "locale_service.h"
 #include "questmanager.h"
 #include "questlua.h"
+#include "item_manager.h"
+#include "mob_manager.h"
 #include "mt2009_language.h"
 
 #include <dirent.h>
@@ -293,6 +295,7 @@ namespace mt2009_language
 
 	struct SLanguage
 	{
+		std::string code;
 		bool loaded;
 		int codePage;
 		std::string fallback;
@@ -609,6 +612,7 @@ namespace mt2009_language
 		if (lang.loaded)
 			return lang;
 		lang.loaded = true;
+		lang.code = code;
 		lang.codePage = DefaultCodePage(code);
 		lang.fallback = code == ENGLISH ? "" : ENGLISH;
 		const std::string dir = LanguageDir() + "/" + code;
@@ -762,6 +766,11 @@ namespace mt2009_language
 		return MatchRest(t, 1, text, t.src[0].size(), caps);
 	}
 
+	static const char* NameIn(const char* code, unsigned int vnum, bool items);
+
+	// An item's or a monster's Polish name (the protos') in a language, or NULL - the engine part sets it.
+	static const char* (*s_nameHook)(const std::string& code, const std::string& polish) = NULL;
+
 	static bool TryLanguage(SLanguage& lang, const std::string& text, std::string& out, bool templates)
 	{
 		std::unordered_map<std::string, SEntry>::const_iterator it = lang.exact.find(text);
@@ -793,9 +802,10 @@ namespace mt2009_language
 				out = t.dst[0];
 				for (size_t i = 0; i < caps.size(); ++i)
 				{
-					// A value that is a text of its own (an empire's, an item's name) in the language too.
+					// A value that is a text of its own (an empire's name) or an item's / a monster's name in the language too.
 					std::unordered_map<std::string, SEntry>::const_iterator v = t.conv[i] == 's' && caps[i].size() >= 2 ? lang.exact.find(caps[i]) : lang.exact.end();
-					out += v != lang.exact.end() ? v->second.text : caps[i];
+					const char* name = v == lang.exact.end() && t.conv[i] == 's' && s_nameHook && caps[i].size() >= 2 ? s_nameHook(lang.code, caps[i]) : NULL;
+					out += v != lang.exact.end() ? v->second.text : name ? std::string(name) : caps[i];
 					out += t.dst[i + 1];
 				}
 				return true;
@@ -933,6 +943,35 @@ namespace mt2009_language
 }
 
 using namespace mt2009_language;
+
+// The protos' Polish names -> (item?, vnum), made the first time a value is looked up after the protos are loaded.
+static const char* EngineNameHook(const std::string& code, const std::string& polish)
+{
+	static std::unordered_map<std::string, std::pair<bool, DWORD> > s_byName;
+	static bool s_built = false;
+	if (!s_built)
+	{
+		const std::vector<TItemTable>& items = ITEM_MANAGER::instance().GetTable();
+		if (items.empty())
+			return NULL;
+		s_built = true;
+		for (size_t i = 0; i < items.size(); ++i)
+			if (items[i].szLocaleName[0])
+				s_byName.insert(std::make_pair(std::string(items[i].szLocaleName), std::make_pair(true, items[i].dwVnum)));
+		for (CMobManager::iterator it = CMobManager::instance().begin(); it != CMobManager::instance().end(); ++it)
+			if (it->second && it->second->m_table.szLocaleName[0])
+				s_byName.insert(std::make_pair(std::string(it->second->m_table.szLocaleName), std::make_pair(false, it->first)));
+	}
+	std::unordered_map<std::string, std::pair<bool, DWORD> >::const_iterator f = s_byName.find(polish);
+	if (f == s_byName.end())
+		return NULL;
+	return NameIn(code.c_str(), f->second.second, f->second.first);
+}
+
+static struct SMt2009LanguageInit
+{
+	SMt2009LanguageInit() { s_nameHook = &EngineNameHook; }
+} s_mt2009LanguageInit;
 
 const char* GetPlayerLanguage(LPCHARACTER ch)
 {
