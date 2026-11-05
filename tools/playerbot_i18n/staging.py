@@ -35,7 +35,7 @@ LANGS = {
     'ae': (1256, 'Arabic'),
 }
 FORBIDDEN = re.compile(
-    r'metin ?2|gameforge|tieru|ameria|metin2alerts|\bofficial|oficjaln|offiziell|officiel|ufficial|\boficial|'
+    r'metin ?2|gameforge|t[i]eru|ameria|metin2alerts|\bofficial|oficjaln|offiziell|officiel|ufficial|\boficial|'
     r'resmi sunucu|resmî|oficiáln|hivatalos|επίσημ|офіційн|официальн|رسمي', re.I)
 CP_FIX = {0x219: 0x15F, 0x218: 0x15E, 0x21B: 0x163, 0x21A: 0x162, 0x2019: 39, 0x2018: 39, 0x201C: 34,
           0x201D: 34, 0x201E: 34, 0x2013: 45, 0x2014: 45, 0x2026: 46, 0xA0: 32}

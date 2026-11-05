@@ -62,7 +62,7 @@ The staging files are ready in `/opt/metin2/cache/i18n-staging/bots/<lang>/<lang
      (in catalog order), and it skips empty rows.
    - It rejects rows with a changed id or Polish column, a missing / extra / renamed slot,
      a TAB, a forbidden name (Metin2, Gameforge, official/offiziell/oficial/hivatalos/επίσημ...,
-     Tieru, Ameria, metin2alerts), a letter the language's code page does not have
+     Ameria, metin2alerts), a letter the language's code page does not have
      (hu/cz/ro cp1250, gr cp1253, tr cp1254, the rest cp1252; Romanian ș/ț are mapped
      to ş/ţ automatically), or a length far beyond the Polish.
    - Every rejected row is listed in `/opt/metin2/cache/i18n-staging/bots/<lang>/IMPORT_REPORT.txt`

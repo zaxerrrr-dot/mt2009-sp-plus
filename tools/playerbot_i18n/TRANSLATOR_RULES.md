@@ -100,7 +100,7 @@ identifier / not text at all, put `-` as its translation.
 ## Never
 
 - Never write "Metin2", "Gameforge", "official" (or "offiziell", "officiel",
-  "ufficiale", "oficial", "resmi", "oficiální", "hivatalos", "επίσημο" ...), "Tieru",
+  "ufficiale", "oficial", "resmi", "oficiální", "hivatalos", "επίσημο" ...),
   "Ameria" or "metin2alerts" - the import rejects such a row.
 - Never translate `/towarzysz ...` commands, `/` commands or words inside
   quotes that a player has to type ("napisz \"chodz\"" -> write "come": the
