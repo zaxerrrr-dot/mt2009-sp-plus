@@ -1331,6 +1331,8 @@ namespace
 	const DWORD AFFECT_PLAYERBOT_YDG_HP = 864;
 	const DWORD AFFECT_PLAYERBOT_YDG_CRIT = 865;
 	const DWORD AFFECT_PLAYERBOT_YDG_PIERCE = 866;
+	const DWORD AFFECT_PLAYERBOT_YDG_MOVE = 867;
+	const DWORD AFFECT_PLAYERBOT_YDG_ATTSPD = 868;
 
 	void BuffPlayerBotYdgMember(LPCHARACTER c)
 	{
@@ -1348,6 +1350,14 @@ namespace
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_CRIT, POINT_CRITICAL_PCT, crit, 0, dur, 0, true);
 		if (pierce > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_PIERCE, POINT_PENETRATE_PCT, pierce, 0, dur, 0, true);
+		// V3: the SZC cave's route to the key's Yonghans is ~2 400 cells of walk (the navigation's plan, 5 November) -
+		// a speed potion's and a fast weapon's worth of movement and attack speed.
+		const int move = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MOVE_SPEED", 40, 0, 100);
+		const int attspd = GetPlayerBotYdgEnv("PLAYERBOT_YDG_ATT_SPEED", 20, 0, 50);
+		if (move > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_MOVE, POINT_MOV_SPEED, move, 0, dur, 0, true);
+		if (attspd > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_ATTSPD, POINT_ATT_SPEED, attspd, 0, dur, 0, true);
 		if (poison > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_POISON, POINT_POISON_PCT, poison, 0, dur, 0, true);
 		if (bleed > 0)
@@ -1424,6 +1434,8 @@ namespace
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_HP);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_CRIT);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_PIERCE);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_MOVE);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_ATTSPD);
 			const int lv = c->GetLevel();
 			lvLow = lvLow == 0 || lv < lvLow ? lv : lvLow;
 			lvHigh = std::max(lvHigh, lv);
