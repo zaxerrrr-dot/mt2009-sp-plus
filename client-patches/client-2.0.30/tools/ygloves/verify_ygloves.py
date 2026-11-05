@@ -39,11 +39,23 @@ def entry(pack, name):
     return None
 
 
+# MT2009_PLUS_VERIFY_LATER_WRITERS_V1: refineglobal (a later step, the server's refine_global.sql the same) sets each
+# item's refined_vnum / refine_set (record offset 175, 6 bytes) as on the global server - compared without them
+REFINE = slice(175, 181)
+
+
+def _norefine(r):
+    return None if r is None else bytes(r[:REFINE.start]) + bytes(r[REFINE.stop:])
+
+
 d = pc.items_json()
 ver, recs = pc.records(entry('dbdata', 'gamedata/item_proto'))
 want = pc.want_records(recs)
+refined = 0
 for v, r in sorted(want.items()):
-    if recs.get(v) != r:
+    if recs.get(v) != r and _norefine(recs.get(v)) == _norefine(r):
+        refined += 1
+    elif recs.get(v) != r:
         fails.append('item_proto %d: not the server\'s record' % v)
 lst = entry('gamedata', 'gamedata/item_list.txt').decode('cp1250').replace('\r\n', '\n').split('\n')
 lst = dict((l.split('\t')[0].strip(), l) for l in lst if l.strip())
@@ -62,6 +74,8 @@ for k in d['itemdesc']:
     if 'Na razie bez zastosowania' in desc.get(k, ''):
         fails.append('itemdesc %s: still "Na razie bez zastosowania"' % k)
 print('ygloves: %d items, %d problem(s)' % (len(d['items']), len(fails)))
+if refined:
+    print('  note: %d item(s) with the refine step of refineglobal (global values, a later step)' % refined)
 for f in fails:
     print('  ' + f)
 sys.exit(1 if fails else 0)

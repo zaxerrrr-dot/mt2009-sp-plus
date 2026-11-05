@@ -5893,3 +5893,7 @@
 81567	Tajemniczy Talizman+7	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
 81568	Tajemniczy Talizman+8	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
 81569	Tajemniczy Talizman+9	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+72368	Dozorca Enasir	Jeœli tego u¿yjesz, otrzymasz buff, który pozwoli ci przywo³aæ Enasira, aby uzyskaæ dostêp do swojego magazynu. Czas trwania: 7 dni. Mo¿na przed³u¿yæ do maksymalnie 1000 dni.
+72369	Handlarz Enasir	Jeœli tego u¿yjesz, otrzymasz buff, który pozwoli ci przywo³aæ Enasira i handlowaæ z nim jak z Handlark¹ Ró¿noœci (przy sprzeda¿y pobiera 10% ceny). Czas trwania: 7 dni. Mo¿na przed³u¿yæ do maksymalnie 1000 dni.
+72370	Dozorca Enasir (h)	Jeœli tego u¿yjesz, otrzymasz buff, który pozwoli ci przywo³aæ Enasira, aby uzyskaæ dostêp do swojego magazynu. Czas trwania: 7 dni. Mo¿na przed³u¿yæ do maksymalnie 1000 dni. Przedmiot mo¿na wymieniaæ z innymi graczami.
+72371	Handlarz Enasir (h)	Jeœli tego u¿yjesz, otrzymasz buff, który pozwoli ci przywo³aæ Enasira i handlowaæ z nim jak z Handlark¹ Ró¿noœci (przy sprzeda¿y pobiera 10% ceny). Czas trwania: 7 dni. Mo¿na przed³u¿yæ do maksymalnie 1000 dni. Przedmiot mo¿na wymieniaæ z innymi graczami.

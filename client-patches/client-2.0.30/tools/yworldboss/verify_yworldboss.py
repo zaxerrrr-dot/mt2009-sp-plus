@@ -17,6 +17,8 @@ sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 sys.path.insert(0, HERE)
 import m2pack  # noqa: E402
 import packlib  # noqa: E402
+sys.path.insert(0, os.path.join(HERE, '..', 'yohara'))
+import repatch_rows  # noqa: E402
 import patch_yworldboss_client as pc  # noqa: E402
 
 OUT = sys.argv[1]
@@ -74,7 +76,8 @@ for m in MAN['models']:
                 unknown.add((k, full))
 if unknown:
     fail.append('names not in the client: %s' % sorted(unknown)[:20])
-# gamedata / dbdata: a second patch changes nothing
+# gamedata / dbdata: a second patch changes nothing (rows a later step rewrote are notes)
+notes = []
 for pack, files in (('gamedata', (('gamedata/mob_proto', pc.mob_proto), ('gamedata/npclist.txt', pc.npclist),
                                   ('gamedata/item_list.txt', pc.item_list))),
                     ('dbdata', (('gamedata/item_proto', pc.item_proto), ('locale/pl/itemdesc.txt', pc.itemdesc)))):
@@ -84,12 +87,14 @@ for pack, files in (('gamedata', (('gamedata/mob_proto', pc.mob_proto), ('gameda
             continue
         nb, changed = fn(CONTENT[n])
         if changed:
-            fail.append('%s: %d row(s) missing' % (n, changed))
+            repatch_rows.check(n, CONTENT[n], nb, fail, notes)  # MT2009_PLUS_VERIFY_LATER_WRITERS_V1
 npc = CONTENT.get('gamedata/npclist.txt', b'').decode('cp1250')
 for k, model in pc.data()['models'].items():
     if not re.search(r'(?m)^%s\s+%s\s*$' % (k, re.escape(model)), npc):
         fail.append('npclist: %s %s' % (k, model))
 print('yworldboss: %d staged files, %d models checked' % (len(MAN['packs']['yworldboss']), len(MAN['models'])))
+for n in notes:
+    print('  note ' + n)
 if fail:
     print('FAIL')
     for f in fail:
