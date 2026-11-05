@@ -615,3 +615,25 @@ def GetApplyString(affectType, affectValue):
 # def GetMarcin():
 # 	for i,v in AFFECT_DICT.iteritems():
 # 		print str(i) + "()" + GetApplyString(i, 12345) + "!@#$ "
+
+# MT2009_PLUS_LANG_APPLY_TEXT_V1: a bonus line in the client's language as a whole - the tooltip colours the numbers of a
+# maximal bonus (uitooltip.format_attributes: "|cffffb52b15|r") and splits long ones, after which the text sink of
+# ui.TextLine (mt2009lang, MT2009_PLUS_LANG_V1) no longer recognised the Polish line (Rekawice Weza 23000: the lightning
+# line stayed Polish in an English client). The formatted Polish line is translated here (the language's %-templates
+# fill the values back in), before anyone colours or splits it. Polish clients: unchanged.
+def _LangWrap(func):
+	def wrapped(*args, **kwargs):
+		text = func(*args, **kwargs)
+		if text.__class__ is str and text:
+			try:
+				import mt2009lang
+				return mt2009lang.Translate(text)
+			except Exception:
+				return text
+		return text
+	wrapped.__doc__ = func.__doc__
+	return wrapped
+
+GetApplyString = _LangWrap(GetApplyString)
+GetRareApplyString = _LangWrap(GetRareApplyString)
+GetDragonSoulApplyString = _LangWrap(GetDragonSoulApplyString)
