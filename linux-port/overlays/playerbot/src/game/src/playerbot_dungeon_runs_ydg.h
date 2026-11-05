@@ -608,12 +608,54 @@ namespace
 				}
 				LPCHARACTER lead = run.dwLeader ? CHARACTER_MANAGER::instance().FindByPID(run.dwLeader) : NULL;
 				LPCHARACTER tgt = lead && lead->GetVictim() ? lead->GetVictim() : NULL;
+				LPCHARACTER foc = run.dwFocusVID ? CHARACTER_MANAGER::instance().Find(run.dwFocusVID) : NULL;
+				// the stage's objectives alive on the map, the nearest to the leader; members near the leader
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+				std::vector<DWORD> goals;
+				GetPlayerBotYdgObjectives(def, d, scan, goals);
+				int goalsAlive = 0, goalNear = -1, near = 0;
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+				{
+					LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+					if (!c || c->IsDead() || std::find(goals.begin(), goals.end(), c->GetRaceNum()) == goals.end())
+						continue;
+					++goalsAlive;
+					if (lead)
+					{
+						const int dd = DISTANCE_APPROX(c->GetX() - lead->GetX(), c->GetY() - lead->GetY());
+						goalNear = goalNear < 0 || dd < goalNear ? dd : goalNear;
+					}
+				}
+				for (size_t i = 0; lead && i < run.members.size(); ++i)
+				{
+					LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+					if (c && c != lead && !c->IsDead() && c->GetMapIndex() == lead->GetMapIndex() &&
+							DISTANCE_APPROX(c->GetX() - lead->GetX(), c->GetY() - lead->GetY()) <= 1500)
+						++near;
+				}
 				sys_log(0, "BOT_YDG: progress run=%d dungeon=%s stage=%d level=%d done=%d bst=%d bcnt=%d jumping=%d keys=%d inside=%d alive=%d "
-						"leader=%s(%ld,%ld) target=%u(%d%%) focus=%u", run.iId, def.szKey, run.iStage, level, d->GetFlag("done"),
+						"leader=%s(%ld,%ld,hp%d%%) near=%d target=%u(%d%%) focus=%u(%u,%d%%,d%d) goals=%d nearest_goal=%d fallback=%d",
+						run.iId, def.szKey, run.iStage, level, d->GetFlag("done"),
 						d->GetFlag("bst"), d->GetFlag("bcnt"), d->GetFlag("jumping"), keys, inside, alive, lead ? lead->GetName() : "-",
-						lead ? lead->GetX() : 0L, lead ? lead->GetY() : 0L, tgt ? (unsigned int)tgt->GetRaceNum() : 0U,
+						lead ? lead->GetX() : 0L, lead ? lead->GetY() : 0L,
+						lead && lead->GetMaxHP() > 0 ? (int)((long long)lead->GetHP() * 100 / lead->GetMaxHP()) : 0, near,
+						tgt ? (unsigned int)tgt->GetRaceNum() : 0U,
 						tgt && tgt->GetMaxHP() > 0 ? (int)((long long)tgt->GetHP() * 100 / tgt->GetMaxHP()) : 0,
-						run.dwFocusVID);
+						run.dwFocusVID, foc ? (unsigned int)foc->GetRaceNum() : 0U,
+						foc && foc->GetMaxHP() > 0 ? (int)((long long)foc->GetHP() * 100 / foc->GetMaxHP()) : -1,
+						foc && lead ? DISTANCE_APPROX(foc->GetX() - lead->GetX(), foc->GetY() - lead->GetY()) : -1,
+						goalsAlive, goalNear, run.bFallback ? 1 : 0);
+				if (lead)
+				{
+					const TPlayerBotAIState* st = GetPlayerBotDgRunState(lead->GetPlayerID());
+					std::map<DWORD, TPlayerBotDgRunBot>::const_iterator lb = s_mapPlayerBotDgRunBots.find(lead->GetPlayerID());
+					sys_log(0, "BOT_YDG: progress2 run=%d action=%d nav=%d target_vid=%u hold_s=%u unreachable=%u moving=%d",
+							run.iId, st ? (int)st->bCurrentAction : -1, st ? (int)st->bLastNavOutcome : -1,
+							st ? (unsigned int)st->dwTargetVID : 0U,
+							lb != s_mapPlayerBotDgRunBots.end() && lb->second.dwHoldSince ? (dwNow - lb->second.dwHoldSince) / 1000 : 0U,
+							lb != s_mapPlayerBotDgRunBots.end() ? (unsigned int)lb->second.unreachable.size() : 0U,
+							lead->IsStateMove() ? 1 : 0);
+				}
 			}
 		}
 		DWORD& at = s_mapPlayerBotYdgNextAt[run.iId];
