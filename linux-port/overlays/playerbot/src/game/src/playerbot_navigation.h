@@ -383,7 +383,11 @@ namespace
 						mapIndex != PLAYERBOT_MAP_HYDRA_PORT &&
 						// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps of the Champions (game3; built where a bot stands:
 						// 374 ~18 MB, 373 ~89, 376 ~80, 377 ~36, 385 ~80, 388 ~89, 389 ~40, 393 ~160, 394 ~40 MB).
-						!IsPlayerBotSungmaBotMap(mapIndex))
+						!IsPlayerBotSungmaBotMap(mapIndex) &&
+						// MT2009_PLUS_BOT_YDG_WEZE_V1 / MT2009_PLUS_BOT_GNOLLE_V1 (night 5/6 Nov): Statua Wezy (390, the
+						// temple's gathering - "move refused ... refused=no_navigation" for every party) and Jaskinie
+						// Gnolli 1-3 (382-384, the runs' own maze walk asks for the grid) on the Yohara core.
+						mapIndex != 390 && !(mapIndex >= 382 && mapIndex <= 384))
 					return false;
 
 				if (m_initialized && m_mapIndex == mapIndex)
