@@ -15,6 +15,8 @@ mkdir -p /site/.ywc
 
 node /opt/ywc/bridge/src/index.js /tmp/bridge.json &
 BRIDGE=$!
+L="${M2_DEFAULT_LANGUAGE:-pl}"; case "$L" in pl|en|de|tr|ro|es|it|fr|pt|cz|hu|gr|ae) ;; *) L=pl ;; esac
+echo "return 302 client.html?deflang=$L;" > /tmp/ywc-root.conf
 nginx -c /etc/ywc/nginx.conf -g 'daemon off;' &
 NGINX=$!
 say "page on port ${M2_WEBCLIENT_PORT:-7792} of this server${M2_PUBLIC_ADDRESS:+ (http://$M2_PUBLIC_ADDRESS:${M2_WEBCLIENT_PORT:-7792}/)}"
