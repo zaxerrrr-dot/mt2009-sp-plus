@@ -133,7 +133,10 @@ CATEGORIES = (
 		('guild', 'Gildia', ((ALT, 'DIK_G'),), False),
 		('chat_log', 'Historia czatu', ((0, 'DIK_L'),), False),
 		('help', 'Pomoc', ((0, 'DIK_H'),), False),
-		('player_stat', 'Statystyki gracza', ((0, 'DIK_Y'),), False),
+		# MT2009_PLUS_FARM_SESSION_V1: Y opens Sesja farmienia now (uifarmsession.py) - the row keeps its id, so a key
+		# somebody saved for it opens the new window; the old stats window has a row of its own, no key by default.
+		('player_stat', 'Sesja farmienia', ((0, 'DIK_Y'),), False),
+		('player_stat_general', 'Statystyki gracza (og\xf3lne)', (), False),
 		# MT2009_PLUS_BUFFI_V1: the companion's P is Buffi's now (uibuffi.py) - the action keeps its
 		# name, so a key somebody saved for it opens Buffi too; the companion (off unless the
 		# server's .env says M2_SIDEKICK=1) has its own action without a key.

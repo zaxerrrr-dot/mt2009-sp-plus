@@ -567,6 +567,7 @@ class GameWindow(ui.ScriptWindow):
 		# opens the window without one). The keepers' Destroy did it before;
 		# a second call finds nothing left.
 		__import__("uisidekick").Destroy()
+		__import__("uifarmsession").Destroy() # MT2009_PLUS_FARM_SESSION_V1: the farming session window's waiting orders
 		__import__("uicollector").Destroy() # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		__import__("dbdatastamp").Destroy() # MT2009_PLUS_DBDATA_STAMP_V1: its popup
 
@@ -838,7 +839,10 @@ class GameWindow(ui.ScriptWindow):
 			"guild"				: (lambda : self.interface.ToggleGuildWindow(), None),
 			"chat_log"			: (lambda : self.interface.ToggleChatLogWindow(), None),
 			"help"				: (lambda : self.interface.OpenHelpWindow(), None),
-			"player_stat"		: (lambda : self.interface.wndPlayerStat.Open(), None),
+			# MT2009_PLUS_FARM_SESSION_V1 (DR_FARM_SESSION_V1): Y opens Sesja farmienia (uifarmsession.py); the old
+			# stats window (the package's "Ogolne" tab, left out of the new window) has its own row, no key by default.
+			"player_stat"		: (lambda : self.interface.wndFarmSession.Open(), None),
+			"player_stat_general"	: (lambda : self.interface.wndPlayerStat.Open(), None),
 			# MT2009_PLUS_BUFFI_V1: the companion's key (P) opens Buffi now (uibuffi.py) - the
 			# companion is off unless the server's .env says M2_SIDEKICK=1 and then has
 			# "sidekick" (no key by default) and its letter.
@@ -1196,6 +1200,81 @@ class GameWindow(ui.ScriptWindow):
 		self.__KeepSidekickWindow()
 		import uisidekick
 		uisidekick.OpenWindow()
+
+	# MT2009_PLUS_FARM_SESSION_V1 (DR_FARM_SESSION_V1): the farming session window's lines (uifarmsession.py,
+	# dr_farm_session.cpp says what each carries).
+	def __FarmWindow(self):
+		interface = getattr(self, "interface", None)
+		if not interface:
+			return None
+		return getattr(interface, "wndFarmSession", None)
+
+	def __FarmInfo(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmInfo(*args)
+
+	def __FarmItems(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmItems(*args)
+
+	def __FarmSpark(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmSpark(*args)
+
+	def __FarmDone(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmDone()
+
+	def __FarmResult(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmResult(*args)
+
+	def __FarmHist(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmHist(*args)
+
+	def __FarmHistEnd(self, *args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmHistEnd()
+
+	def __FarmStat(self, kind, args):
+		window = self.__FarmWindow()
+		if window:
+			window.OnFarmStat(kind, *args)
+
+	def __FarmStatSum(self, *args):
+		self.__FarmStat("Sum", args)
+
+	def __FarmStatPer(self, *args):
+		self.__FarmStat("Per", args)
+
+	def __FarmStatRec(self, *args):
+		self.__FarmStat("Rec", args)
+
+	def __FarmStatCat(self, *args):
+		self.__FarmStat("Cat", args)
+
+	def __FarmStatTop(self, *args):
+		self.__FarmStat("Top", args)
+
+	def __FarmStatMob(self, *args):
+		self.__FarmStat("Mob", args)
+
+	def __FarmStatMap(self, *args):
+		self.__FarmStat("Map", args)
+
+	def __FarmStatAll(self, *args):
+		self.__FarmStat("All", args)
+
+	def __FarmStatEnd(self, *args):
+		self.__FarmStat("End", args)
 
 	def __SidekickInfo(self, *args):
 		self.__KeepSidekickWindow()
@@ -3575,6 +3654,23 @@ class GameWindow(ui.ScriptWindow):
 			"SidekickWindow"				: self.__SidekickWindow,
 			# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what a "Kup" errand would cost (uisidekick.py).
 			"SidekickShopQuote"			: self.__SidekickShopQuote,
+			# MT2009_PLUS_FARM_SESSION_V1 (DR_FARM_SESSION_V1): Sesja farmienia (uifarmsession.py).
+			"FarmInfo"						: self.__FarmInfo,
+			"FarmItems"						: self.__FarmItems,
+			"FarmSpark"						: self.__FarmSpark,
+			"FarmDone"						: self.__FarmDone,
+			"FarmResult"					: self.__FarmResult,
+			"FarmHist"						: self.__FarmHist,
+			"FarmHistEnd"					: self.__FarmHistEnd,
+			"FarmStatSum"					: self.__FarmStatSum,
+			"FarmStatPer"					: self.__FarmStatPer,
+			"FarmStatRec"					: self.__FarmStatRec,
+			"FarmStatCat"					: self.__FarmStatCat,
+			"FarmStatTop"					: self.__FarmStatTop,
+			"FarmStatMob"					: self.__FarmStatMob,
+			"FarmStatMap"					: self.__FarmStatMap,
+			"FarmStatAll"					: self.__FarmStatAll,
+			"FarmStatEnd"					: self.__FarmStatEnd,
 
 			# fishing
 			"FishingGameStart": self.FishingGameStart,
