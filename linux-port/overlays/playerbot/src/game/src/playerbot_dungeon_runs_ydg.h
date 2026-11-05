@@ -1247,6 +1247,8 @@ namespace
 	const DWORD AFFECT_PLAYERBOT_YDG_BLEED = 862;
 	const DWORD AFFECT_PLAYERBOT_YDG_MONSTER = 863;
 	const DWORD AFFECT_PLAYERBOT_YDG_HP = 864;
+	const DWORD AFFECT_PLAYERBOT_YDG_CRIT = 865;
+	const DWORD AFFECT_PLAYERBOT_YDG_PIERCE = 866;
 
 	void BuffPlayerBotYdgMember(LPCHARACTER c)
 	{
@@ -1255,7 +1257,15 @@ namespace
 		const long dur = 3700;
 		const int poison = GetPlayerBotYdgEnv("PLAYERBOT_YDG_POISON_PCT", 15, 0, 50);
 		const int bleed = GetPlayerBotYdgEnv("PLAYERBOT_YDG_BLEED_PCT", 15, 0, 50);
-		const int monster = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MONSTER_PCT", 20, 0, 50);
+		const int monster = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MONSTER_PCT", 30, 0, 50);
+		// the 5 November night: one Yonghan down in 27 minutes with the first three - a gear's critical and
+		// piercing hits as well
+		const int crit = GetPlayerBotYdgEnv("PLAYERBOT_YDG_CRIT_PCT", 20, 0, 50);
+		const int pierce = GetPlayerBotYdgEnv("PLAYERBOT_YDG_PIERCE_PCT", 15, 0, 50);
+		if (crit > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_CRIT, POINT_CRITICAL_PCT, crit, 0, dur, 0, true);
+		if (pierce > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_PIERCE, POINT_PENETRATE_PCT, pierce, 0, dur, 0, true);
 		if (poison > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_POISON, POINT_POISON_PCT, poison, 0, dur, 0, true);
 		if (bleed > 0)
@@ -1330,6 +1340,8 @@ namespace
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_BLEED);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_MONSTER);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_HP);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_CRIT);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_PIERCE);
 			const int lv = c->GetLevel();
 			lvLow = lvLow == 0 || lv < lvLow ? lv : lvLow;
 			lvHigh = std::max(lvHigh, lv);
