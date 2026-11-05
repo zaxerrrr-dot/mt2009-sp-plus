@@ -8,6 +8,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 M = "MT2009_PLUS_LANGUAGE_V1"
+Q = "MT2009_PLUS_LANGUAGE_QUESTINFO_V1"
 
 EDITS = [
     ("char.cpp", "include",
@@ -71,13 +72,56 @@ EDITS = [
      "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n",
      "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n"
      "\t{ \"lang\",\tdo_mt2009_lang,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // %s (command table)\n" % M),
+    # MT2009_PLUS_LANGUAGE_QUESTINFO_V1: the quest window's texts in the reader's language when the packet is made (the
+    # quest keeps them in Polish, so "/lang" can send them again), and the code page's safety net for text packets.
+    ("questpc.cpp", "include",
+     "#include \"questevent.h\"\n",
+     "#include \"questevent.h\"\n"
+     "#include \"mt2009_language.h\" // %s (include): the quest window in the reader's language\n" % Q),
+    ("questpc.cpp", "title",
+     "\t\t\tconstexpr auto TitleSize = 30+1;\n"
+     "\t\t\tm_RunningQuestState->_title.reserve(TitleSize);\n"
+     "\t\t\tbuf.write(m_RunningQuestState->_title.c_str(), TitleSize);\n",
+     "\t\t\tconstexpr auto TitleSize = 30+1;\n"
+     "\t\t\t// %s (title): the Polish title in the reader's language, cut to the field, NUL-filled\n"
+     "\t\t\tchar title[TitleSize];\n"
+     "\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_title, title, sizeof(title));\n"
+     "\t\t\tbuf.write(title, TitleSize);\n" % Q),
+    ("questpc.cpp", "clock",
+     "\t\t\tconstexpr auto ClockSize = 16+1;\n"
+     "\t\t\tm_RunningQuestState->_clock_name.reserve(ClockSize);\n"
+     "\t\t\tbuf.write(m_RunningQuestState->_clock_name.c_str(), ClockSize);\n",
+     "\t\t\tconstexpr auto ClockSize = 16+1;\n"
+     "\t\t\t// %s (clock): the clock's name in the reader's language\n"
+     "\t\t\tchar clockName[ClockSize];\n"
+     "\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_clock_name, clockName, sizeof(clockName));\n"
+     "\t\t\tbuf.write(clockName, ClockSize);\n" % Q),
+    ("questpc.cpp", "counter",
+     "\t\t\tconstexpr auto CounterSize = 16+1;\n"
+     "\t\t\tm_RunningQuestState->_counter_name.reserve(CounterSize);\n"
+     "\t\t\tbuf.write(m_RunningQuestState->_counter_name.c_str(), CounterSize);\n",
+     "\t\t\tconstexpr auto CounterSize = 16+1;\n"
+     "\t\t\t// %s (counter): the counter's name in the reader's language\n"
+     "\t\t\tchar counterName[CounterSize];\n"
+     "\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_counter_name, counterName, sizeof(counterName));\n"
+     "\t\t\tbuf.write(counterName, CounterSize);\n" % Q),
+    ("desc.cpp", "packet",
+     "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n"
+     "\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n"
+     "\t\t}\n",
+     "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n"
+     "\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n"
+     "\t\t}\n"
+     "\t\t// %s (packet): a text packet's Polish words without diacritics for a client whose code page is not\n"
+     "\t\t// cp1250 (mt2009_language.cpp); the packet itself for anything else.\n"
+     "\t\t{ const void* Mt2009LanguagePacketOut(LPCHARACTER, const void*, int); c_pvData = Mt2009LanguagePacketOut(GetCharacter(), c_pvData, iSize); }\n" % Q),
 ]
 
 
 def main():
     edits = []
     for f, tag, old, new in EDITS:
-        marker = "%s (%s)" % (M, tag)
+        marker = "%s (%s)" % (Q if Q in new else M, tag)
         assert marker in new, marker
         edits.append({"file": f, "marker": marker, "old": old, "new": new})
     with open(os.path.join(HERE, "edits.json"), "w") as fp:

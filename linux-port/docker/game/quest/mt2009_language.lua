@@ -11,6 +11,8 @@
 -- Chat lines (syschat, chat, notice, notice_all, d.notice, ...) are not wrapped here: the engine translates every
 -- INFO / NOTICE / TALKING line for its own reader in CHARACTER::ChatPacket, so a broadcast reaches each player in his
 -- own language.
+-- A Polish text no dictionary has reaches a reader whose client does not use cp1250 without its diacritics
+-- (DESC::Packet, MT2009_PLUS_LANGUAGE_QUESTINFO_V1) - never as cp1250 bytes drawn as other letters.
 --
 -- ASCII only (the engine's Lua reads a byte over 0x7F in a string as a double-byte lead byte).
 
@@ -75,14 +77,13 @@ do
 		end
 	end
 end
--- The letters (quest buttons) and the quest's title, clock and counter in the quest list.
+-- The letters (quest buttons).
 wrap(G, "makequestbutton", { 1 })
 wrap(G, "make_quest_button_ex", { 1 })
-if type(q) == "table" then
-	wrap(q, "set_title", { 1 })
-	wrap(q, "set_clock_name", { 1 })
-	wrap(q, "set_counter_name", { 1 })
-end
+-- The quest's title, clock and counter in the quest window (q.set_title, q.set_clock_name, q.set_counter_name,
+-- send_letter) are NOT translated here (MT2009_PLUS_LANGUAGE_QUESTINFO_V1): the quest keeps them in Polish and the
+-- engine puts them into the reader's language when it makes the packet (PC::SendQuestInfoPakcet, a short form of
+-- lang/<code>/*quest_info*.tsv first), so a later "/lang" sends them again in the new language.
 
 -- Item and monster names: the reader's language's (lang/<code>/item_names.tsv, mob_names.tsv), else the proto's.
 do
