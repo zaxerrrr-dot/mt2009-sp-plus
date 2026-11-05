@@ -802,6 +802,7 @@ class _ThinScroll(ui.Window):
 		self.height = height
 		self.onScroll = onScroll
 		self.thumbHeight = height
+		self.inMove = False	# MT2009_PLUS_FARM_SCROLL_REENTRY_V1
 		self.track = _Rect(self, 0, 0, SCROLL_WIDTH, height, COLOR_SCROLL_TRACK)
 		thumb = _ThumbButton()
 		thumb.SetParent(self)
@@ -813,20 +814,45 @@ class _ThinScroll(ui.Window):
 
 	def SetPage(self, fraction):
 		self.thumbHeight = max(16, min(self.height, int(self.height * fraction)))
-		self.thumb.SetThumbHeight(self.thumbHeight)
-		self.thumb.SetRestrictMovementArea(0, 0, SCROLL_WIDTH, self.height)
+		self._Quiet(self.thumb.SetThumbHeight, self.thumbHeight)
+		self._Quiet(self.thumb.SetRestrictMovementArea, 0, 0, SCROLL_WIDTH, self.height)
+
+	def _Quiet(self, func, *args):
+		# MT2009_PLUS_FARM_SCROLL_REENTRY_V1: moving the thumb from code fires its move event (the exe calls OnMove on
+		# SetPosition) - _OnMove -> SetPosition -> OnMove ... recursed without end (owner's log, 3.0.12). Every move made
+		# here runs with the thumb's callback off and the re-entry flag up; the flag is restored, not cleared, so a
+		# nested call (onScroll -> _Draw -> _FixOffset -> SetPos) leaves the outer guard in place.
+		prev = self.inMove
+		callback = getattr(self.thumb, "callbackEnable", True)
+		self.inMove = True
+		self.thumb.TurnOffCallBack()
+		try:
+			return func(*args)
+		finally:
+			if callback:
+				self.thumb.TurnOnCallBack()
+			self.inMove = prev
 
 	def SetPos(self, pos):
 		room = self.height - self.thumbHeight
-		self.thumb.SetPosition(0, int(round(max(0.0, min(1.0, pos)) * room)))
+		self._Quiet(self.thumb.SetPosition, 0, int(round(max(0.0, min(1.0, pos)) * room)))
 
 	def _OnMove(self):
+		if self.inMove:	# MT2009_PLUS_FARM_SCROLL_REENTRY_V1
+			return
 		room = self.height - self.thumbHeight
 		if room <= 0:
 			return
 		x, y = self.thumb.GetLocalPosition()
-		self.thumb.SetPosition(0, max(0, min(room, y)))
-		self.onScroll(float(max(0, min(room, y))) / room)
+		clamped = max(0, min(room, y))
+		if clamped != y or x != 0:
+			self._Quiet(self.thumb.SetPosition, 0, clamped)
+		prev = self.inMove
+		self.inMove = True
+		try:
+			self.onScroll(float(clamped) / room)
+		finally:
+			self.inMove = prev
 
 	def OnMouseLeftButtonDown(self):
 		room = self.height - self.thumbHeight
@@ -835,7 +861,12 @@ class _ThinScroll(ui.Window):
 		x, y = self.GetMouseLocalPosition()
 		pos = float(max(0, min(room, y - self.thumbHeight // 2))) / room
 		self.SetPos(pos)
-		self.onScroll(pos)
+		prev = self.inMove
+		self.inMove = True
+		try:
+			self.onScroll(pos)
+		finally:
+			self.inMove = prev
 		return True
 
 
