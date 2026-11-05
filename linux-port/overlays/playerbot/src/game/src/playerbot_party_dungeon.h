@@ -715,12 +715,39 @@ namespace
 	bool IsPlayerBotWezeNoTarget(LPCHARACTER c);
 	bool IsPlayerBotWiezaNoTarget(LPCHARACTER c);	// MT2009_PLUS_BOT_WIEZA_V1 (playerbot_dgrun_wieza.h)
 
+	// MT2009_PLUS_BOT_MELEY_RUNS_V1 (the night of 5/6 November): a Smocza Statua (6118) of Schronienie Meley locked at its
+	// stage's threshold (the quest's lock<i>) is no foe - the parties hit the first statue past 75% to its fall again
+	// and again ("statues=-1L,100,100,100" after 15 min) and never touched the other three (the race shield of
+	// IsPlayerBotPdgShielded is not there for them).
+	bool IsPlayerBotMeleyNoTarget(LPCHARACTER c)
+	{
+		if (!c || c->GetRaceNum() != 6118 || c->GetMapIndex() / 10000 != 356)
+			return false;
+		LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(c->GetMapIndex());
+		if (!d)
+			return false;
+		const int s = d->GetFlag("stage");
+		if (s < 1 || s > 3)
+			return true;	// between the stages and in the 4th (the rings) no statue is struck
+		for (int i = 1; i <= 4; ++i)
+		{
+			char key[16];
+			snprintf(key, sizeof(key), "stone%d", i);
+			if (d->GetUniqueVid(key) != (DWORD)c->GetVID())
+				continue;
+			snprintf(key, sizeof(key), "lock%d", i);
+			return d->GetFlag(key) == 1;
+		}
+		return false;
+	}
+
 	bool IsPlayerBotPdgFoe(LPCHARACTER ch, LPCHARACTER c)
 	{
 		return c && !c->IsPC() && !c->IsDead() && (c->IsMonster() || c->IsStone()) &&
 				c->GetMapIndex() == ch->GetMapIndex() && !IsPlayerBotEventStone(c->GetRaceNum()) &&
 				!IsPlayerBotPdgShielded(ch, c) && !IsPlayerBotWezeNoTarget(c) && !IsPlayerBotWiezaNoTarget(c) &&
-				!IsPlayerBotBalathorNoTarget(c);	// MT2009_PLUS_BOT_YOHARA_PDG_V1: the Krypta's eggs, Hwacha, chest
+				!IsPlayerBotBalathorNoTarget(c) &&	// MT2009_PLUS_BOT_YOHARA_PDG_V1: the Krypta's eggs, Hwacha, chest
+				!IsPlayerBotMeleyNoTarget(c);
 	}
 
 	// What attacks the bot or the person, what the person hits, the stones,
