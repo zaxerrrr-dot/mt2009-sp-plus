@@ -204,10 +204,14 @@ namespace
 				if (level == 0)
 				{
 					std::map<long, bool>::const_iterator k = s_mapPlayerBotYdgKeysReady.find(d->GetMapIndex());
-					// V2: in the SZC cave only General Yonghan (SZC) 4210 leaves a key (beran_szc.quest) - the others
-					// (4207 -> 4209, no key) only cost the party; the PB one's every Yonghan does.
+					// V2: in the SZC cave only General Yonghan (SZC) 4210 leaves a key (beran_szc.quest), and Captain
+					// 4208's fall brings one where it fell - the others (4207 -> 4209, no key) only cost the party;
+					// the PB one's every Yonghan does. (The night's party found the loop at 4208's spot: a key a minute.)
 					if ((k == s_mapPlayerBotYdgKeysReady.end() || !k->second) && y->bSzc)
+					{
 						out.push_back(PlayerBotYdgVnum(*y, 4290));
+						out.push_back(PlayerBotYdgVnum(*y, 4288));
+					}
 					else if (k == s_mapPlayerBotYdgKeysReady.end() || !k->second)
 						for (DWORD v = 4287; v <= 4290; ++v)
 							out.push_back(PlayerBotYdgVnum(*y, v));
@@ -247,8 +251,8 @@ namespace
 		}
 	}
 
-	// V2: where the stage's objective comes back (cells of the dungeon's map; regen.txt) - the SZC cave's General
-	// Yonghan (SZC) 4210, the key's one, at (709, 237).
+	// V2: where the stage's objective comes back (cells of the dungeon's map; regen.txt) - the SZC cave's Captain
+	// Yonghan (SZC) 4208 at (1092, 152): back 70 s after its fall, and its fall brings the key's General 4210 there.
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y)
 	{
 		const TPlayerBotYdgDef* yd = FindPlayerBotYdgDef(def.szKey);
@@ -260,8 +264,8 @@ namespace
 		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
 		if (!pMap)
 			return false;
-		x = pMap->m_setting.iBaseX + 709 * 100;
-		y = pMap->m_setting.iBaseY + 237 * 100;
+		x = pMap->m_setting.iBaseX + 1092 * 100;
+		y = pMap->m_setting.iBaseY + 152 * 100;
 		return true;
 	}
 
