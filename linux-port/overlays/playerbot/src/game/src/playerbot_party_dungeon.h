@@ -93,7 +93,9 @@ namespace
 	// killer) and Nemere's two keys (dropped for the killer).
 	// MT2009_PLUS_YOHARA_MELEY_V1: Pierscien Smoczego Ognia (30340) - the quest puts a bot's ring on a statue
 	// that has none in the lair's fourth stage and keeps it before (meley_dungeon.quest, 30340.use).
-	const DWORD PLAYERBOT_PDG_USE_ITEMS[] = { 30765, 30766, 30767, 30768, 30760, 30762, 30340 };
+	// MT2009_PLUS_BOT_YOHARA_PDG_V1: Ognista Strzala (30395) - Krypta Balathora's arrow, loaded into the Hwacha by its
+	// use (CBalathor::UseItem); the regen monsters drop it for anyone.
+	const DWORD PLAYERBOT_PDG_USE_ITEMS[] = { 30765, 30766, 30767, 30768, 30760, 30762, 30340, 30395 };
 	// The items a bot hands to a dungeon's NPC: Razador's Golden Cog and Maat
 	// stones to the Steles of Isfet, Nemere's Ice Crystals to the seals.
 	struct TPlayerBotPdgGive
@@ -129,6 +131,20 @@ namespace
 		{ 358, 358, 3332, 14310 },		// zodiac_temples (MT2009_PLUS_ZODIAC_BOTS_V1: the temple's courtyard, its own way out)
 		{ 367, 301, 10240 + 840, 16640 + 1190 },	// obrona_statku (MT2009_PLUS_SHIP_DEFENSE_V1: the Fisherman on Przyladek Smoczego Ognia)
 		{ 356, 62, 5888 + 84, 6144 + 853 },	// meley_dungeon (MT2009_PLUS_YOHARA_MELEY_V1: Straznik Smokow Dolnarr on Doyyumhwaji)
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1 (begin): the Yohara dungeons (game3 but 420) - the quests' ways back.
+		{ 369, 397, 3072 + 150, 17920 + 95 },	// przebudzeni_bossowie: beside Statua Przebudzenia (Plaskowyz Iluzji)
+		{ 370, 397, 3072 + 150, 17920 + 95 },
+		{ 371, 397, 3072 + 150, 17920 + 95 },
+		{ 398, 397, 3072 + 150, 17920 + 95 },
+		{ 404, 397, 3072 + 106, 17920 + 96 },	// szczelina_czasu: beside Statua Szczeliny Czasu
+		{ 405, 397, 3072 + 106, 17920 + 96 },
+		{ 406, 397, 3072 + 106, 17920 + 96 },
+		{ 407, 397, 3072 + 106, 17920 + 96 },
+		{ 353, 353, 7680 + 611, 14080 + 107 },	// erebu: cfg().out on the open Zaklety Las
+		{ 391, 390, 0 + 400, 16384 + 360 },	// swiatynia_wezy: beside Statua Wezy
+		{ 395, 394, 11520 + 379, 12032 + 612 },	// ymaps3_glebie: beside Upiorny Straznik
+		{ 420, 61, 3584 + 668, 1536 + 96 },	// krypta_balathora: Straznik Smokow Dolnarr on Gora Sohan (balathor.json)
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1 (end)
 	};
 
 	struct TPlayerBotPdgBot
@@ -202,14 +218,27 @@ namespace
 		return FindPlayerBotPartyPersonWhere(ch, 0, true);
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_PDG_V1: playerbot_balathor_bots.h / playerbot_labirynt_bots.h, later.
+	bool IsPlayerBotOwnLairRunMove(LPCHARACTER ch, long targetMap);
+	bool IsPlayerBotBalathorPartyFit(LPCHARACTER ch, long targetMap);
+	bool IsPlayerBotBalathorInstance(long mapIndex);
+	bool IsPlayerBotBalathorNoTarget(LPCHARACTER c);
+
 	bool IsPlayerBotDungeonPartyMove(LPCHARACTER ch, long targetMap, const char* reason)
 	{
 		if (!ch)
 			return false;
-		// MT2009_PLUS_BALATHOR_V1: Krypta Balathora (420 and its copies) is a guild's lair for people only - no bot
-		// follows a person of its party in (IsPlayerBotOffLimitsMap keeps a bot on its own out).
-		if ((targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap) == 420)
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1 (begin): the bots' own guild lair and maze runs (playerbot_balathor_bots.h,
+		// playerbot_labirynt_bots.h) - into their instance and out.
+		if (IsPlayerBotOwnLairRunMove(ch, targetMap))
+			return true;
+		// MT2009_PLUS_BALATHOR_V1: Krypta Balathora (420 and its copies) is a guild's lair - a bot follows a person of
+		// its party in only as a member of that guild, by the Krypta's own entry rule (level, Champion 4;
+		// IsPlayerBotBalathorPartyFit). IsPlayerBotOffLimitsMap keeps a bot on its own out.
+		if ((targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap) == 420 &&
+				ch->GetMapIndex() != targetMap && !IsPlayerBotBalathorPartyFit(ch, targetMap))
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1 (end)
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own runs - to the
 		// gathering, into the run's instance and home again.
 		if (IsPlayerBotDungeonRunMove(ch, targetMap, reason))
@@ -294,8 +323,12 @@ namespace
 			return false;
 		const long target = person->GetMapIndex();
 		// MT2009_PLUS_ZODIAC_BOTS_V1: a temple floor is a CZodiac's, not a CDungeon's.
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1: a Krypta Balathora is the module's private map (CBalathorManager), not a CDungeon;
+		// only a bot of the person's guild fit for it goes in.
 		if (!IsPlayerBotMapHostedHere(target) || (!CDungeonManager::instance().FindByMapIndex(target) &&
-				!IsPlayerBotZodiacLive(target)))
+				!IsPlayerBotZodiacLive(target) && !IsPlayerBotBalathorInstance(target)))
+			return false;
+		if (target / 10000 == 420 && !IsPlayerBotBalathorPartyFit(ch, target))
 			return false;
 		b.dwNextFollow = dwNow + PLAYERBOT_PDG_FOLLOW_RETRY_MS;
 		const long from = ch->GetMapIndex();
@@ -682,7 +715,8 @@ namespace
 	{
 		return c && !c->IsPC() && !c->IsDead() && (c->IsMonster() || c->IsStone()) &&
 				c->GetMapIndex() == ch->GetMapIndex() && !IsPlayerBotEventStone(c->GetRaceNum()) &&
-				!IsPlayerBotPdgShielded(ch, c);
+				!IsPlayerBotPdgShielded(ch, c) &&
+				!IsPlayerBotBalathorNoTarget(c);	// MT2009_PLUS_BOT_YOHARA_PDG_V1: the Krypta's eggs, Hwacha, chest
 	}
 
 	// What attacks the bot or the person, what the person hits, the stones,

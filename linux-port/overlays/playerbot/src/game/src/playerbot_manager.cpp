@@ -389,6 +389,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_ZODIAC_RUNS_V1 (include): the bots' own runs of the Swiatynia Zodiaku (the operator's
 // playerbot_zodiac_test). After the dungeon runs and the party dungeon pass, whose fight it borrows.
 #include "playerbot_zodiac_runs.h"
+// MT2009_PLUS_BOT_YOHARA_PDG_V1 (include): the bots in Labirynt (79) and the bot guilds in Krypta Balathora (420) -
+// after the dungeon runs, whose switch, refusal and fights they use (MT2009_PLUS_BOT_LABIRYNT_V1, MT2009_PLUS_BOT_BALATHOR_V1).
+#include "playerbot_labirynt_bots.h"
+#include "playerbot_balathor_bots.h"
 // MT2009_PLUS_GM_DUNGEON_RESET_V1 (include): a GM's "/dungeon_reset <name> [dungeon|all]"
 // ("/resetdungi") - after the bots' dungeon runs, whose rest it clears too.
 #include "playerbot_dungeon_reset.h"
@@ -7192,6 +7196,8 @@ void CPlayerBotManager::Update()
 	// and their ends (playerbot_dungeon_runs.h).
 	ManagePlayerBotDungeonRuns(dwNow);
 	ManagePlayerBotZodiacRuns(dwNow);	// MT2009_PLUS_ZODIAC_RUNS_V1
+	ManagePlayerBotLabiryntRuns(dwNow);	// MT2009_PLUS_BOT_LABIRYNT_V1
+	ManagePlayerBotBalathorRuns(dwNow);	// MT2009_PLUS_BOT_BALATHOR_V1
 	// MT2009_PLUS_BOT_REPRICE_NOW_V1 (pass): every keeper's counter repriced
 	// at once, a few keepers a second (playerbot_reprice_now.h).
 	ManagePlayerBotRepriceNow(dwNow);
@@ -7465,6 +7471,13 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_ZODIAC_RUNS_V1 (tick): a bot of a Zodiac Temple run - at the portal or
 		// inside - does nothing else (playerbot_zodiac_runs.h).
 		if (ManagePlayerBotZodiacRun(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_YOHARA_PDG_V1 (tick): Krypta Balathora's player list kept for every bot standing in one, and a
+		// bot guild's run there (playerbot_balathor_bots.h); a bot's way through Labirynt (playerbot_labirynt_bots.h).
+		if (ManagePlayerBotBalathorBot(ch, state, dwNow))
+			continue;
+		if (ManagePlayerBotLabiryntBot(ch, state, dwNow))
 			continue;
 
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (tick): a bot whose person (its party's
