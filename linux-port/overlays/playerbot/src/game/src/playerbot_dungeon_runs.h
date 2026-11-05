@@ -553,6 +553,7 @@ namespace
 	void GetPlayerBotYdgObjectives(const TPlayerBotDgRunDef& def, LPDUNGEON d, const TPlayerBotArzDgScan& scan,
 			std::vector<DWORD>& out);
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y);
 	void UpdatePlayerBotYdgInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	long long ChargePlayerBotYdgTicket(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run);
@@ -1633,6 +1634,37 @@ namespace
 			{
 				any = c;
 				dAny = dist;
+			}
+		}
+		// MT2009_PLUS_BOT_YDG_TRAIN_V2: a stage whose objective comes back at one spot (Grota Wygnancow 2 (SZC): the key's
+		// General Yonghan, 70 s after its fall) - with none up the party waits there, fighting only what comes.
+		{
+			long campX = 0, campY = 0;
+			if (def.bKind == DGRUN_KIND_YDG && !threat && !goal && GetPlayerBotYdgCamp(def, d, campX, campY))
+			{
+				if (any && DISTANCE_APPROX(any->GetX() - campX, any->GetY() - campY) > 1500)
+					any = NULL;
+				if (!any)
+				{
+					state.dwTargetVID = 0;
+					ch->SetVictim(NULL);
+					if (DISTANCE_APPROX(ch->GetX() - campX, ch->GetY() - campY) > 500)
+					{
+						SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+						if (dwNow >= state.dwNextTowerMoveTime)
+						{
+							state.dwNextTowerMoveTime = dwNow + 1000;
+							MovePlayerBot(ch, campX, campY, dwNow, 8, true, false);
+						}
+					}
+					else
+					{
+						if (ch->IsStateMove())
+							ch->Stop();
+						SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+					}
+					return true;
+				}
 			}
 		}
 		// The target in hand is kept while it is the same kind of choice.

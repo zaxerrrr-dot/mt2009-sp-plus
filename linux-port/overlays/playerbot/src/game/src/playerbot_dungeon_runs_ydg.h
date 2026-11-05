@@ -204,7 +204,11 @@ namespace
 				if (level == 0)
 				{
 					std::map<long, bool>::const_iterator k = s_mapPlayerBotYdgKeysReady.find(d->GetMapIndex());
-					if (k == s_mapPlayerBotYdgKeysReady.end() || !k->second)
+					// V2: in the SZC cave only General Yonghan (SZC) 4210 leaves a key (beran_szc.quest) - the others
+					// (4207 -> 4209, no key) only cost the party; the PB one's every Yonghan does.
+					if ((k == s_mapPlayerBotYdgKeysReady.end() || !k->second) && y->bSzc)
+						out.push_back(PlayerBotYdgVnum(*y, 4290));
+					else if (k == s_mapPlayerBotYdgKeysReady.end() || !k->second)
 						for (DWORD v = 4287; v <= 4290; ++v)
 							out.push_back(PlayerBotYdgVnum(*y, v));
 				}
@@ -241,6 +245,24 @@ namespace
 			default:
 				break;
 		}
+	}
+
+	// V2: where the stage's objective comes back (cells of the dungeon's map; regen.txt) - the SZC cave's General
+	// Yonghan (SZC) 4210, the key's one, at (709, 237).
+	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y)
+	{
+		const TPlayerBotYdgDef* yd = FindPlayerBotYdgDef(def.szKey);
+		if (!yd || !d || !yd->bSzc || yd->iBoss != YDG_BERAN || d->GetFlag("level") != 0)
+			return false;
+		std::map<long, bool>::const_iterator k = s_mapPlayerBotYdgKeysReady.find(d->GetMapIndex());
+		if (k != s_mapPlayerBotYdgKeysReady.end() && k->second)
+			return false;
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
+		if (!pMap)
+			return false;
+		x = pMap->m_setting.iBaseX + 709 * 100;
+		y = pMap->m_setting.iBaseY + 237 * 100;
+		return true;
 	}
 
 	// ------------------------------------------------------------ the items
