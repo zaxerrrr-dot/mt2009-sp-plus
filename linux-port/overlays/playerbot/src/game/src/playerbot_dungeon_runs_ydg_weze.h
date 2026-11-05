@@ -151,6 +151,31 @@ namespace
 		return sig;
 	}
 
+	// The night of 5/6 November (the first runs): the 4th level's Warrior waits for d.count_monster() == 0 and the 6th
+	// level's Smith too, but the levels are rooms apart (391's grid: 6 parts) - a group of the 3rd (5th) level still
+	// alive when the last Metin falls (the 6th Kolumna opens) stays in the old room for good and the temple stalls
+	// ("tm=6 warrior=0" for 10+ minutes, the foes 250 cells away in room 3). A party of people clears the room before
+	// the last blow; the bots too: the living monsters of the instance (not the Metins, the Kolumny, the cages).
+	int CountPlayerBotWezeAdds(long instance)
+	{
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(instance, get_dword_time());
+		int n = 0;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			const DWORD r = scan.foes[i].dwRace;
+			if ((r > PLAYERBOT_WEZE_METIN_BASE && r <= PLAYERBOT_WEZE_TIME_METIN) || r == PLAYERBOT_WEZE_COLUMN || r == PLAYERBOT_WEZE_CAGED)
+				continue;
+			++n;
+		}
+		return n;
+	}
+
+	// The 3rd level's last Metin (next 4) left at a sliver while a group lives: the group first.
+	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
+	{
+		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && CountPlayerBotWezeAdds(instance) > 0;
+	}
+
 	void GetPlayerBotWezeObjectives(LPDUNGEON d, std::vector<DWORD>& out)
 	{
 		if (!d || d->GetFlag("started") != 1)
@@ -161,7 +186,13 @@ namespace
 			{
 				const int e = GetPlayerBotWezeOrder(d, d->GetFlag("next"));
 				if (e)
-					out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
+				{
+					char key[8];
+					snprintf(key, sizeof(key), "tw3_%d", e);
+					const int pct = d->IsUniqueDead(key) ? 100 : (int)d->GetUniqueHpPerc(key);
+					if (!IsPlayerBotWezeHoldLastMetin(d, d->GetMapIndex(), pct))
+						out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
+				}
 				break;
 			}
 			case 4:
@@ -190,6 +221,8 @@ namespace
 		if (!d || d->GetFlag("lvl") != 3)
 			return false;
 		const int e = GetPlayerBotWezeOrder(d, d->GetFlag("next"));
+		if (e != 0 && race == PLAYERBOT_WEZE_METIN_BASE + e && c->GetMaxHP() > 0)
+			return IsPlayerBotWezeHoldLastMetin(d, c->GetMapIndex(), (int)((long long)c->GetHP() * 100 / c->GetMaxHP()));
 		return e != 0 && race != PLAYERBOT_WEZE_METIN_BASE + e;
 	}
 
@@ -473,7 +506,13 @@ namespace
 			if (six >= 1 && six <= 6 && GetPlayerBotWezeSpot(run.lInstance, 5, six, x, y))
 			{
 				LPCHARACTER col = FindPlayerBotWezeNpc(ch, PLAYERBOT_WEZE_COLUMN, x, y, PLAYERBOT_WEZE_COLUMN_RANGE);
-				if (GivePlayerBotWezeItem(ch, state, run, d, col, PLAYERBOT_WEZE_KEY, next, dwNow, "column"))
+				// the 6th Kolumna (the way to the 6th level) only with the room clear - the Smith's count_monster
+				const int adds = d->GetFlag("opened") == 5 ? CountPlayerBotWezeAdds(run.lInstance) : 0;
+				const bool walk = col && DISTANCE_APPROX(col->GetX() - ch->GetX(), col->GetY() - ch->GetY()) > PLAYERBOT_YDG_GIVE_DISTANCE;
+				if (adds > 0)
+					PlayerBotLogThrottled("weze_hold6", dwNow, "BOT_YDG: weze last column held run=%d name=%s adds=%d", run.iId,
+							ch->GetName(), adds);
+				if ((adds == 0 || walk) && GivePlayerBotWezeItem(ch, state, run, d, col, PLAYERBOT_WEZE_KEY, next, dwNow, "column"))
 					return true;
 			}
 		}
