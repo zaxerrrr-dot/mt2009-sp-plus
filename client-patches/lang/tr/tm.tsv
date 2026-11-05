@@ -1,11 +1,267 @@
 # OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
 # Polish text	translation
+Aktywny pet zapomina wszystkie umiejętności (miejsca zostają otwarte).	Aktif pet tüm becerilerini unutur (yuvalar açık kalır).
+Amulet wzmacniający odwagę noszącego.	Taşıyanın cesaretini artıran bir muska.
+Aromatyczna zupa grzybowa, przywraca siły zmęczonym wędrowcom.	Yorgun gezginlerin gücünü geri getiren, mis kokulu bir mantar çorbası.
+Artefakt wzmacniający czarną magię, zdobywany z piekielnych otchłani.	Cehennem uçurumlarından elde edilen, kara büyüyü güçlendiren bir eser.
+Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Kazanılan tecrübeyi engeller. Bu, görev ödüllerini de kapsar. Etki süresince kazanılan tecrübe sonsuza dek kaybolur!
+Bąk miotający iskry.	Kıvılcım saçan bir topaç.
+Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Erkekler için tavşan kulaklı siyah şapka. Sana en az bir rastgele efsun verir.
+Czysta esencja z serca najgłębszych źródeł.	En derin kaynakların kalbinden gelen saf öz.
+Daje aktywnemu petowi 5% doświadczenia potrzebnego na następny poziom.	Aktif pete bir sonraki seviye için gereken tecrübenin %5'ini verir.
+Daje aktywnemu petowi 800.000 punktów doświadczenia.	Aktif pete 800.000 tecrübe puanı verir.
+Dodaje aktywnemu petowi 7 dni energii życiowej (najwyżej 84). Pet bez energii nie może zostać przywołany.	Aktif pete 7 günlük yaşam enerjisi ekler (en fazla 84). Enerjisi olmayan pet çağrılamaz.
+Dowód na ujarzmienie siły trzech dusz – niezbędny do przebudzenia mocy Elitarnych Kamieni Duszy.	Üç ruhun gücünü dizginlemenin kanıtı – Elit Ruh Taşlarının gücünü uyandırmak için gereklidir.
+Dusza wojownika, obdarzona mocą.	Güçle donatılmış bir savaşçının ruhu.
+Działają kojąco na skórę. Stosowane w leczeniu oparzeń i podrażnień	Cildi yatıştırır. Yanık ve tahrişlerin tedavisinde kullanılır
+Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Bu mühür sayesinde petini çağırabilirsin.
+Dzięki tej pieczęci z jaja wykluje się Sheldon.	Bu mühür sayesinde yumurtadan Sheldon çıkar.
+Efekt nie jest do końca znany, może wywoływać halucynacje.	Etkisi tam olarak bilinmiyor, halüsinasyonlara yol açabilir.
+Egzotyczne mięso, znane ze swojego smaku.	Lezzetiyle bilinen egzotik bir et.
+Gałąź wciąż bijąca życiem, tętniąca energią.	Hâlâ hayatla atan, enerjiyle dolu bir dal.
+Gorące wino z przyprawami, które przez 30 minut obdarzy cię następującymi bonusami: +10% szybkości, +5% obrażeń i +10% doświadczenia.	30 dakika boyunca sana şu efsunları veren baharatlı sıcak şarap: +%10 hız, +%5 hasar ve +%10 tecrübe.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan. 30. seviye silahlarda işe yaramaz. Nesne yok olabilir.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan. Nesne yok olabilir.
 Język	Dil
 Język / Language	Dil / Language
 Język klienta: %s	İstemci dili: %s
+Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Kadim rünler taşıyan taş bir tablet. Bilinmeyen bir enerji yayar.
+Kamień oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.	Her türlü kusurdan arındırılmış bir taş - Ruh Taşlarının arındırılma sürecinde kilit öneme sahiptir.
+Kamień z mocą tygrysa, klucz do rytuałów i ochrony. Przedmiot z misji.	Kaplan gücü taşıyan bir taş; ritüellerin ve korumanın anahtarı. Görev eşyası.
+Kamień z serca ziemi.	Toprağın kalbinden bir taş.
+Kiepsko wyglądający pierścień noszony przez starożytnych bohaterów. Zdobywasz więcej punktów doświadczenia przez godzinę. | Nie może być zdjęty.	Kadim kahramanların taktığı, pek de gösterişli olmayan bir yüzük. Bir saat boyunca daha fazla tecrübe puanı kazanırsın. | Çıkarılamaz.
+Kliknij prawym przyciskiem, aby przyjąć peta z transportera (najwyżej 3 pety na postać). Nie sprzedawaj go w sklepie NPC - pet by przepadł.	Taşıyıcıdaki peti almak için sağ tıkla (karakter başına en fazla 3 pet). NPC dükkanına satma - pet kaybolur.
+Kliknij prawym przyciskiem, aby wykluć peta (Czerwony Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Kızıl Ejderha Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Małpka, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Maymun Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Mały Baashido, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Baashido Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Nemere, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Mini Nemere, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Razador, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Mini Razadör, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Nessie, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Nessie, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Pajączek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Örümcek Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Pisklę Exedyara, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Exedyar Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Kliknij prawym przyciskiem, aby wykluć peta (Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Kuluçkadan pet çıkarmak için sağ tıkla (Ejderha Yavrusu, 100.000 Yang). Nesne Market petinin yanında çağrılan pet seninle birlikte tecrübe kazanır, evrimleşir ve sana efsunlar verir. Pet penceresi: /newpet ya da çubuktaki buton.
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	Buz Diyarı'ndan bir anahtar. Buz Sütunu'na ulaşmak için Nemere zindanında kullan.
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	Buz Diyarı'ndan bir anahtar. Bir sonraki geçidi açmak için Nemere zindanında kullan.
+Klucz z runami demonów, pozwala wejść do Wieży Demonów po osiągnięciu dziennego limitu wejść. Znika po 48 godzinach od zakupu.	İblis rünleri taşıyan bir anahtar; günlük giriş sınırına ulaştıktan sonra Şeytan Kulesi'ne girmeni sağlar. Satın alındıktan 48 saat sonra kaybolur.
+Kobieca spinka do włosów. Przedmiot pochodzi z misji.	Bir kadın saç tokası. Görevden elde edilen eşya.
+Kolorowe jajko wielkanocne	Renkli bir Paskalya yumurtası
+Komplet Piłkarski w kolorze biało-czarnym dla niego. Daje ci min. jeden losowy bonus.	Erkekler için beyaz-siyah renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze biało-czarnym dla niej. Daje ci min. jeden losowy bonus.	Kadınlar için beyaz-siyah renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niego. Daje ci min. jeden losowy bonus.	Erkekler için siyah-turuncu renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niej. Daje ci min. jeden losowy bonus.	Kadınlar için siyah-turuncu renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze czerwono-złotym dla niego. Daje ci min. jeden losowy bonus.	Erkekler için kırmızı-altın renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze czerwono-złotym dla niej. Daje ci min. jeden losowy bonus.	Kadınlar için kırmızı-altın renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze granatowym dla niego. Daje ci min. jeden losowy bonus.	Erkekler için lacivert renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze granatowym dla niej. Daje ci min. jeden losowy bonus.	Kadınlar için lacivert renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niego. Daje ci min. jeden losowy bonus.	Erkekler için sarı-mavi renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niej. Daje ci min. jeden losowy bonus.	Kadınlar için sarı-mavi renkli Futbol Takımı. Sana en az bir rastgele efsun verir.
+Kostium z czarnego pluszu dla niego. Daje ci min. jeden losowy bonus.	Erkekler için siyah peluş kostüm. Sana en az bir rastgele efsun verir.
+Kostium z niebieskiego pluszu dla niego. Daje ci min. jeden losowy bonus.	Erkekler için mavi peluş kostüm. Sana en az bir rastgele efsun verir.
+Koszulka MŚ w barwach narodowych Chorwacji. Daje przynajmniej jeden losowy bonus.	Hırvatistan milli renklerinde Dünya Kupası forması. En az bir rastgele efsun verir.
+Koszyk napełniony jajkami wielkanocnymi.	Paskalya yumurtalarıyla dolu bir sepet.
+Kryształ z Lodowej Krainy. Oddaj go jednej z lodowych pieczęci w lochu Nemere.	Buz Diyarı'ndan bir kristal. Nemere zindanındaki buz mühürlerinden birine teslim et.
+Królewska zbroja wojownika. Kostium tylko dla wojownika (postać męska). Działa 30 dni od zakupu.	Savaşçının kraliyet zırhı. Yalnızca savaşçı için kostüm (erkek karakter). Satın alındıktan sonra 30 gün geçerlidir.
+Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: blok, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: zekâ, 10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: obrażenia umiejętności do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: beceri hasarı, %5'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: obrona przed umiejętnościami do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: beceri hasarına karşı savunma, %5'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: obrona przed średnimi obrażeniami do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: ortalama zarara karşı savunma, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: odporność na krytyczne do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: kritik vuruş direnci, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: odporność na lód, ziemię i ciemność do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: buz, toprak ve karanlık direnci, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: odporność na przeszywające do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: delici vuruş direnci, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: odporność na półludzi do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: yarı insanlara karşı direnç, %5'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: odporność na truciznę do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: zehir direnci, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: podwójne doświadczenie i przedmioty do 10%, yang do 20%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: iki kat tecrübe ve eşya %10'a kadar, Yang %20'ye kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: silny przeciwko bossom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: patronlara karşı güçlü, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: silny przeciwko kamieniom Metin do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: Metin taşlarına karşı güçlü, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: silny przeciwko nieumarłym i diabłom do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: ölümsüzlere ve şeytanlara karşı güçlü, %15'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: silny przeciwko potworom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: canavarlara karşı güçlü, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: silny przeciwko półludziom do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: yarı insanlara karşı güçlü, %5'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: siła do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: güç, 10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: szybkość czarowania do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: büyü hızı, %15'e kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: witalność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: canlılık, 10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: zręczność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: çeviklik, 10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga umiejętności peta: średnie obrażenia do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet beceri kitabı: ortalama zarar, %10'a kadar. İlk kitap beceriyi öğretir (seviye 1), sonraki her kitap seviyesini yükseltir (en fazla 20). Yeni beceri yuvalarını petin evrimi açar.
+Księga zawiera duszę starego kowala. Jeśli jej użyjesz, zwiększy to szansę na pomyślne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom.	Bu kitap yaşlı bir demircinin ruhunu taşır. Kullanırsan nesne yükseltme şansı %15 artar. Yükseltme başarısız olursa nesne yok olmaz. Başarısızlık durumunda nesnenin seviyesi 1 düşer.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Normalnym Lochu Małp.	Efsanevi Ot; Normal Maymun Zindanı'nda maymunların lanetinden korunmak için ye.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Trudnym Lochu Małp.	Efsanevi Ot; Zor Maymun Zindanı'nda maymunların lanetinden korunmak için ye.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Łatwym Lochu Małp.	Efsanevi Ot; Kolay Maymun Zindanı'nda maymunların lanetinden korunmak için ye.
+Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Şeytan Uyuzu için ilaç. Görev için gerekli eşya.
+Magiczny amulet, który przywraca czystość skażonym wodom.	Kirlenmiş sulara saflığını geri veren büyülü bir muska.
+Marmur regenerujący trochę Punktów Życia.	Bir miktar HP yenileyen mermer.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 0-29.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 105-119.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 120 ve üzeri.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 30-39.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 40-49.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 40-49.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 50-59.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 50-59.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 60-74.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 75-89.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 90-104.
+Mikstura sporządzona z Soku Z Pokrzywy i Bzu. Zwiększa szansę na zadanie krytycznego ciosu o 10% na 3 minuty.	Isırgan Otu ve Mürver Suyu'ndan hazırlanmış iksir. 3 dakika boyunca kritik vuruş şansını %10 artırır.
+Mini-wersja Generała Huashina daje ci o 5% wyższe szanse na zadanie przeszywającego ciosu i podwyższa twoje PŻ o 1500.	General Huashin'in mini versiyonu sana %5 daha yüksek delici vuruş şansı verir ve HP'ni 1500 artırır.
+Mistyczna substancja ożywiająca florę i faunę lasu.	Ormanın bitki ve hayvanlarına can veren mistik bir madde.
+Mięso niedźwiedzia, popularne w wioskach myśliwych.	Avcı köylerinde sevilen ayı eti.
+Mięso w stanie rozkładu, unikać kontaktu.	Çürümekte olan et, temas etmekten kaçın.
+Może być uszlachetniona do Niebiańskich Łez używając pieca gildii.	Lonca ocağı kullanılarak Cennetin Gözyaşı'na arındırılabilir.
+Może być uszlachetniony do Bursztynu używając pieca gildii bursztynu.	Kehribar lonca ocağı kullanılarak Kehribar'a arındırılabilir.
+Może być uszlachetniony do Diamentu używając pieca gildii.	Lonca ocağı kullanılarak Elmas'a arındırılabilir.
+Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Bu sandığın içindekilerin de sandığın kendisi kadar değerli olduğu söylenir.
+Nagroda za grę Złap Króla z wynikiem 550 punktów lub więcej i za miejsce w pierwszej dziesiątce rankingu. Kliknij prawym przyciskiem, aby otworzyć.	Kralı Yakala oyununda 550 veya daha fazla puan ve sıralamada ilk on içinde yer almanın ödülü. Açmak için sağ tıkla.
+Nagroda za grę Złap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Kralı Yakala oyununda 10 ile 399 arası puanın ödülü. Açmak için sağ tıkla.
+Nagroda za grę Złap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Kralı Yakala oyununda 400 ile 549 arası puanın ödülü. Açmak için sağ tıkla.
+Nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	300-399 puanla biten Okey oyunu için ödül. Açmak için sağ tıkla.
+Nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	400 veya daha fazla puanla biten Okey oyunu için ödül. Açmak için sağ tıkla.
+Nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	300 puanın altında biten Okey oyunu için ödül. Açmak için sağ tıkla.
+Nagroda za pokonanie Baronówny Pająków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyć.	Bilgi Kütüphanesi'nde Örümcek Barones'i yenmenin ödülü. Açmak için sağ tıkla.
+Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyć.	Akrep Harabeleri'nde Kral Akrep'i yenmenin ödülü. Açmak için sağ tıkla.
+Nagroda za pokonanie Królowej Dżungli w Starożytnej Dżungli. Kliknij prawym przyciskiem, aby otworzyć.	Kadim Orman'da Orman Kraliçesi'ni yenmenin ödülü. Açmak için sağ tıkla.
+Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyć.	Wukong Tepesi'nde WuKong'u yenmenin ödülü. Açmak için sağ tıkla.
+Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Tek elli silah (kılıç) görünümü - savaşçı, ninja, sura. Satın alındıktan sonra 30 gün geçerlidir.
+Nasiono o niezbadanych właściwościach.	Özellikleri henüz keşfedilmemiş bir tohum.
 Nazwy, opisy i okna zmienią język po ponownym	İsimler, açıklamalar ve pencereler dili
+Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Erkekler için tavşan kulaklı mavi şapka. Sana en az bir rastgele efsun verir.
+Nieprzenikniony pancerz strażnika ognia.	Ateş muhafızının aşılamaz zırhı.
+Niezbędna do wytwarzania dużych mikstur.	Büyük boy iksirler üretmek için gereklidir.
+Niezbędna do wytwarzania średnich mikstur.	Orta boy iksirler üretmek için gereklidir.
+Oczy potwora, używane w czarnoksięskich rytuałach.	Kara büyü ritüellerinde kullanılan canavar gözleri.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Arttırma Kağıdı üretmeye yetki veren belge.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Arttırma Kağıdı üretmeye yetki veren belge. Bu eşya ticarete uygundur.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Efsun Nesnesi üretmeye yetki veren belge.
+Okrycie na głowę z czarnej tkaniny dla mężczyzn. Daje ci min. jeden losowy bonus.	Erkekler için siyah kumaştan başlık. Sana en az bir rastgele efsun verir.
+Osadzony na pierścieniu niewidoczny klejnot o mocy ukrywania. Gdy znajdzie się na twojej dłoni, twoja istota zatraci się w cieniu, ukrywając swój poziom przed ciekawskimi oczami świata.	Yüzüğe yerleştirilmiş, gizleme gücüne sahip görünmez bir mücevher. Elinde olduğunda varlığın gölgelere karışır ve seviyeni dünyanın meraklı gözlerinden saklar.
+Ostre pazury, używane w obrzędach i czarach.	Ayinlerde ve büyülerde kullanılan keskin pençeler.
+Otrzymasz 1 Punkt Umiejętności Jeździectwa kiedy ją przeczytasz. Znika po przeczytaniu.	Okuduğunda 1 Binicilik Beceri Puanı kazanırsın. Okunduktan sonra kaybolur.
+Otwiera nawet najtrudniejsze zamki z lekkością.	En zor kilitleri bile kolayca açar.
+Otwiera nowe miejsce na umiejętność heroicznego peta od 100 poziomu.	100. seviyeden itibaren kahraman pet için yeni bir beceri yuvası açar.
+Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	Bir zamanlar Mirine'ye ait olan süslü, yaldızlı bir kılıç. Artık savaşa uygun değil, ama çok değerli görünüyor.
+Pakuje wybranego peta (okno peta, klawisz U) do transportera, który można sprzedać, oddać w handlu albo schować do magazynu. Kto użyje pełnego transportera, dostaje peta z jego poziomem, ewolucją, bonusami i umiejętnościami.	Seçili peti (pet penceresi, U tuşu) satılabilen, ticarette verilebilen ya da depoya konabilen bir taşıyıcıya paketler. Dolu taşıyıcıyı kullanan, peti seviyesi, evrimi, efsunları ve becerileriyle birlikte alır.
+Pieczęć strażnika Biblioteki Wiedzy. Użyj jej w lochu, aby przyzwać kolejną falę pająków.	Bilgi Kütüphanesi muhafızının mührü. Yeni bir örümcek dalgası çağırmak için zindanda kullan.
+Pieczęć strażnika Ruin Skorpiona. Użyj jej w lochu, aby przyzwać kolejną falę skorpionów.	Akrep Harabeleri muhafızının mührü. Yeni bir akrep dalgası çağırmak için zindanda kullan.
+Pieczęć strażnika Starożytnej Dżungli. Użyj jej w lochu, aby przyzwać kolejną falę stworzeń.	Kadim Orman muhafızının mührü. Yeni bir yaratık dalgası çağırmak için zindanda kullan.
+Pieczęć strażnika Wzgórza Wukonga. Użyj jej w lochu, aby przyzwać kolejną falę małp.	Wukong Tepesi muhafızının mührü. Yeni bir maymun dalgası çağırmak için zindanda kullan.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% siły przeciwko potworom.	Bu mühür Genç Ejderciği çağırır. Savaş eğitimini tamamladıktan sonra sahibine canavarlara karşı %5'e kadar güç kazandırır.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% więcej doświadczenia.	Bu mühür Genç Ejderciği çağırır. Savaş eğitimini tamamladıktan sonra sahibine %5'e kadar daha fazla tecrübe kazandırır.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on atak swojego właściciela o maks. 100.	Bu mühür Genç Ejderciği çağırır. Savaş eğitimini tamamladıktan sonra sahibinin saldırısını en fazla 100 artırır.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on obronę swojego właściciela o maks. 150.	Bu mühür Genç Ejderciği çağırır. Savaş eğitimini tamamladıktan sonra sahibinin savunmasını en fazla 150 artırır.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego zwiększa on PŻ swojego właściciela o maks. 500.	Bu mühür Genç Ejderciği çağırır. Savaş eğitimini tamamladıktan sonra sahibinin HP'sini en fazla 500 artırır.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Bu mühür Genç Ren Geyiği (e) çağırır; savaş eğitimini tamamladıktan sonra binicisine canavarlara karşı en fazla %5 güç kazandırır.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	Bu mühür Genç Ren Geyiği (e) çağırır; savaş eğitimini tamamladıktan sonra binicisine en fazla %5 ek EXP kazandırır.
+Pieczęć ta przywołuje Młodego Renifera (ż), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Bu mühür Genç Ren Geyiği (d) çağırır; savaş eğitimini tamamladıktan sonra binicisine canavarlara karşı en fazla %5 güç kazandırır.
+Pieczęć ta przywołuje czarną małą panterkę.	Bu mühür küçük kara bir panter çağırır.
+Pieczęć ta przywołuje grubiutkiego kata w czarnej zbroi.	Bu mühür kara zırhlı tombul bir cellat çağırır.
+Pieczęć ta przywołuje grubiutkiego kata w złotej zbroi.	Bu mühür altın zırhlı tombul bir cellat çağırır.
+Pieczęć ta przywołuje słodkiego małego leoparda.	Bu mühür tatlı, küçük bir leopar çağırır.
+Pieczęć ta przywołuje twojego kościanego pupila Kostka.	Bu mühür iskelet dostun Boney'i çağırır.
+Po okazaniu tego biletu Stajennemu, będziesz mógł jeździć konno przez określony czas.	Bu bileti Seyis'e gösterdiğinde belirli bir süre ata binebileceksin.
 Po ponownym uruchomieniu: %s	Yeniden başlatmadan sonra: %s
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	Kullanıldığında koleksiyonuna bir canavar kartı ekler (Esc menüsündeki Canavar Kartları). Ticareti yapılabilir.
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Kullanıldığında koleksiyonuna bir canavar kartı ekler (Esc menüsündeki Canavar Kartları). Ticareti yapılamaz.
+Podkręć piłkę jak Baljit-Elvedin!	Topu Baljit-Elvedin gibi falsolu vur!
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Petin efsununu yükseltir: maks. HP (4000'e kadar) bir seviye (seviye 0-5, pet 1. seviyeden itibaren).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Petin efsununu yükseltir: maks. HP (4000'e kadar) bir seviye (seviye 10-15, pet 75. seviyeden itibaren).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Petin efsununu yükseltir: maks. HP (4000'e kadar) bir seviye (seviye 15-20, pet 100. seviyeden itibaren).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Petin efsununu yükseltir: maks. HP (4000'e kadar) bir seviye (seviye 5-10, pet 40. seviyeden itibaren).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Petin efsununu yükseltir: canavarlara karşı güçlü (%20'ye kadar) bir seviye (seviye 0-5, pet 1. seviyeden itibaren).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Petin efsununu yükseltir: canavarlara karşı güçlü (%20'ye kadar) bir seviye (seviye 10-15, pet 75. seviyeden itibaren).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Petin efsununu yükseltir: canavarlara karşı güçlü (%20'ye kadar) bir seviye (seviye 15-20, pet 100. seviyeden itibaren).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Petin efsununu yükseltir: canavarlara karşı güçlü (%20'ye kadar) bir seviye (seviye 5-10, pet 40. seviyeden itibaren).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Petin efsununu yükseltir: kritik vuruş şansı (%10'a kadar) bir seviye (seviye 0-5, pet 1. seviyeden itibaren).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Petin efsununu yükseltir: kritik vuruş şansı (%10'a kadar) bir seviye (seviye 10-15, pet 75. seviyeden itibaren).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Petin efsununu yükseltir: kritik vuruş şansı (%10'a kadar) bir seviye (seviye 15-20, pet 100. seviyeden itibaren).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Petin efsununu yükseltir: kritik vuruş şansı (%10'a kadar) bir seviye (seviye 5-10, pet 40. seviyeden itibaren).
+Podnosi szansę pomyślnej nauki o mnożnik 1,75.	Başarılı öğrenme şansını 1,75 katına çıkarır.
+Potężne pióro, które przyspiesza analizę, rozwija intelekt i wspomaga szybką naukę.	Analizi hızlandıran, zekâyı geliştiren ve hızlı öğrenmeyi destekleyen güçlü bir tüy kalem.
+Powszechne mięso, cenione za smak.	Lezzeti nedeniyle değer verilen yaygın bir et.
+Pozwala na przeczytanie następnej księgi w przypadku niepomyślnej nauki.	Başarısız bir öğrenme durumunda bir sonraki kitabı okumana izin verir.
+Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Petin bir becerisini unutturur: pet penceresinde beceriye sağ tıkla.
+Prastary korzeń z głębi Czerwonego Lasu.	Kırmızı Orman'ın derinliklerinden kadim bir kök.
+Przedmiot potrzebny w zadaniu Uriela.	Uriel'in görevi için gereken eşya.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Kullanım eşyası. Deneme başarısız olabilir. Başarılı olursa 12 saat boyunca iki kat tecrübe şansı verir. Etki, yeni nergislerle 5. seviyeye kadar yükseltilebilir. Çiçek Çocuklar etkinliği süresince çalışır.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Kullanım eşyası. Deneme başarısız olabilir. Başarılı olursa 12 saat boyunca savunmayı artırır. Etki, yeni ayçiçekleriyle 5. seviyeye kadar yükseltilebilir. Çiçek Çocuklar etkinliği süresince çalışır.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin siłę ataku. Efekt można podnieść do poziomu 5 kolejnymi konwaliami. Działa w czasie eventu Dzieci Kwiaty.	Kullanım eşyası. Deneme başarısız olabilir. Başarılı olursa 12 saat boyunca saldırı gücünü artırır. Etki, yeni müge çiçekleriyle 5. seviyeye kadar yükseltilebilir. Çiçek Çocuklar etkinliği süresince çalışır.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Kullanım eşyası. Deneme başarısız olabilir. Başarılı olursa 12 saat boyunca kritik vuruş şansını artırır. Etki, yeni kasımpatılarla 5. seviyeye kadar yükseltilebilir. Çiçek Çocuklar etkinliği süresince çalışır.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Kullanım eşyası. Deneme başarısız olabilir. Başarılı olursa 12 saat boyunca eşya düşme şansını artırır. Etki, yeni zambaklarla 5. seviyeye kadar yükseltilebilir. Çiçek Çocuklar etkinliği süresince çalışır.
+Przedmiot wymagany do misji.	Görev için gerekli eşya.
+Przetopiona moc minerałów, kryjąca tajemniczą energię alchemiczną.	Gizemli bir simya enerjisi barındıran, eritilmiş mineral gücü.
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury.	Bu eşya ile belirli bir iksirin tarifi hakkındaki bilgini geliştirebilirsin.
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury. Przedmiot otrzymany z misji.	Bu eşya ile belirli bir iksirin tarifi hakkındaki bilgini geliştirebilirsin. Görevden elde edilen eşya.
+Pusty koszyk, do którego możesz wkładać jajka wielkanocne	Paskalya yumurtalarını koyabileceğin boş bir sepet
+Romantyczny kwiat okazujący zauroczenie.	Hoşlandığını gösteren romantik bir çiçek.
+Roślina wspomaga trawienie. Pomaga również w łagodzeniu bólów brzucha.	Bu bitki sindirime yardımcı olur. Ayrıca karın ağrılarını hafifletir.
+Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Kamp ateşinde pişirilmiş balık, harika bir tütsülenmiş lezzet.
+Ryba przyrządzona nad ogniskiem. Wspaniały wędzony przysmak.	Kamp ateşinde pişirilmiş balık. Harika bir tütsülenmiş lezzet.
+Rytualny składnik, symbol siły i odwagi.	Güç ve cesaret sembolü olan bir ritüel malzemesi.
+Rzadki kamień z bossów. U Kowala przemienia broń 75. poziomu +9 w broń przebudzoną +0, zachowując bonusy i kamienie (koszt: 200 000 000 Yang).	Patronlardan düşen nadir bir taş. Demircide 75. seviye +9 bir silahı, efsunlarını ve taşlarını koruyarak +0 uyanmış silaha dönüştürür (maliyet: 200 000 000 Yang).
+Rzadki metal, wchłaniający energię magiczną, idealny do potężnych broni i pancerzy.	Büyülü enerjiyi emen nadir bir metal; güçlü silahlar ve zırhlar için ideal.
+Rzadki minerał o ogromnej mocy, niezbędny do tworzenia potężnych przedmiotów alchemicznych.	Güçlü simya eşyaları üretmek için vazgeçilmez, muazzam güce sahip nadir bir mineral.
+Rzadkie drewno, pulsujące magiczną energią.	Büyülü enerjiyle titreşen nadir bir odun.
+Serce upadłego bohatera, symbol siły.	Düşmüş bir kahramanın kalbi, gücün sembolü.
+Skamieniały fragment ognia Piekła, w którym uwięzione są płomienie potępionych.	Lanetlilerin alevlerinin hapsedildiği, Cehennem ateşinin taşlaşmış bir parçası.
+Skoncentrowany wywar z rzadkich ziół, dodaje energii i wzmacnia ciało.	Nadir otlardan yapılmış yoğun bir iksir; enerji verir ve bedeni güçlendirir.
+Skondensowana forma czystej magii - pulsuje energią, której nie sposób okiełznać.	Saf büyünün yoğunlaştırılmış hali - dizginlenemeyen bir enerjiyle titreşir.
+Skondensowana magia w iskrzącym klejnocie.	Işıldayan bir mücevherde yoğunlaşmış büyü.
+Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Parçalanmış Ruh Taşları yeni bir kullanım alanı bulabilir.
+Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	Her hareketinde ince çöl kumu döken eski, tozlu bir sandık.
+Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	Okunması bilgiyi ve becerileri önemli ölçüde artıran kadim bir kitap.
+Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Weol'ün gücünün akmasını sağlayan kadim bir parşömen - yeni kutsamalar çekmeni sağlar.
+Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Öldürme emri içeren eski bir parşömen; kullanıldığında görevleri etkinleştirir.
+Strój na mundial reprezentacji Anglii - daje ci min. jeden losowy bonus.	İngiltere milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Belgii - daje ci min. jeden losowy bonus.	Belçika milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Francji - daje ci min. jeden losowy bonus.	Fransa milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Hiszpanii - daje ci min. jeden losowy bonus.	İspanya milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Holandii - daje ci min. jeden losowy bonus.	Hollanda milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Niemiec - daje ci min. jeden losowy bonus.	Almanya milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Portugalii - daje ci min. jeden losowy bonus.	Portekiz milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Rosji - daje ci min. jeden losowy bonus.	Rusya milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Szwajcarii - daje ci min. jeden losowy bonus.	İsviçre milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Strój na mundial reprezentacji Włoch - daje ci min. jeden losowy bonus.	İtalya milli takımının Dünya Kupası forması - sana en az bir rastgele efsun verir.
+Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Eşsiz eşyalar üretmek ve yükseltmek için gereken hammaddeler.
+Symbol zręczności, popularny wśród złodziei.	Hırsızlar arasında sevilen bir çeviklik sembolü.
+Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Gölge Goliath'ı Chegal'in sandığı. İçinde değerli bir şey var.
+Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Dev Ağaç Ruhu'nun sandığı. İçinde değerli bir şey var.
+Ta pieczęć przywołuje uroczego Feniksa Jadeitu.	Bu mühür sevimli Yeşim Anka'yı çağırır.
+Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	Bu sandık Razadör'ün inini olan Ateş Arafı'ndan çıkarıldı. İçinde gerçek bir kraliyet hazinesi var.
+Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	Bu sandık Nemere'nin ini olan Buz Diyarı'ndan çıkarıldı. İçinde gerçek bir kraliyet hazinesi var.
 Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Bu istemci sürümünde dillerin yalnızca bir kısmı var - istemciyi güncelle.
+Tajemnicza księga od Płatnerza z 6. piętra Wieży Demonów, pełna zapomnianych sekretów rzemiosła.	Şeytan Kulesi'nin 6. katındaki Zırhçıdan gelen, unutulmuş zanaat sırlarıyla dolu gizemli bir kitap.
+Ten magiczny marmur daje szansę na zerwanie dodatkowych kwiatów na 1 godzinę.	Bu sihirli mermer 1 saat boyunca ek çiçek toplama şansı verir.
+Ten magiczny marmur pokazuje informacje o złowionej rybie. Zwiększa szansę na pomyślne wyłowienie ryby o 2%.	Bu sihirli mermer yakalanan balık hakkında bilgi gösterir. Balık yakalama şansını %2 artırır.
+Ten rożek na lody posiada wyjątkowe działanie, a przede wszystkim daje zastrzyk energii! Cudowne latem.	Bu dondurma külahının eşsiz bir etkisi var ve her şeyden önce enerji aşılıyor! Yazın harika.
+Uniform, który niegdyś należał do martwego już brata Mirine.	Bir zamanlar Mirine'nin artık hayatta olmayan erkek kardeşine ait olan üniforma.
+Upoważania do łowienia na królewskich łowiskach na 1 godzinę. Znika po 24 godzinach posiadania.	Kraliyet balık avlama alanlarında 1 saat boyunca balık tutma izni verir. Sahip olunduktan 24 saat sonra kaybolur.
 Uruchom klienta ponownie (Restart the client).	İstemciyi yeniden başlat.
 Uruchom ponownie	Yeniden başlat
+Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Kişisel pazarındaki 5 kilitli yuvayı açmak için kullan.
+W przypadku oddania uszkodzonego przedmiotu do analizy Biologa, będziesz mógł oddać następny bez potrzeby odczekania czasu.	Biyolog'a analiz için hasarlı bir eşya teslim ettiğinde, beklemeden bir sonrakini teslim edebileceksin.
+Wojenna szata w kolorze czarnym dla mężczyzn. Daje ci min. jeden losowy bonus.	Erkekler için siyah renkli savaş giysisi. Sana en az bir rastgele efsun verir.
+Współdzieli czas ładowania z Błogosławieństwami Życia, Magii i Smoka.	Hayat, Büyü ve Ejderha Kutsamaları ile aynı bekleme süresini paylaşır.
+Wyjątkowo trwały pergamin, pełen zapomnianej wiedzy.	Unutulmuş bilgilerle dolu, son derece dayanıklı bir parşömen.
+Wężowa Szkatułka. Coś cennego znajduje się w środku.	Yılan Sandığı. İçinde değerli bir şey var.
+Za pomocą tej pieczęci możesz przywołać lwa Leonidasa.	Bu mühürle aslan Leonidas'ı çağırabilirsin.
+Za pomocą tej pieczęci możesz przywołać renifera Bambi.	Bu mühürle ren geyiği Bambi'yi çağırabilirsin.
+Za pomocą tej pieczęci możesz przywołać tygrysa Khana.	Bu mühürle kaplan Khan'ı çağırabilirsin.
+Za pomocą tej pieczęci możesz przywołać warchlaka Boczusia.	Bu mühürle yaban domuzu yavrusu Porki'yi çağırabilirsin.
+Za pomocą tej pieczęci możesz przywołać ślicznego polarnego niedźwiadka.	Bu mühürle sevimli bir kutup ayısı yavrusunu çağırabilirsin.
+Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Bu mühürle çok sevimli bir pandayı çağırabilirsin.
+Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Bu mühürle Öfkeli Kalp'i çağırırsın. Sana %5 daha yüksek kritik vuruş şansı verir ve HP'ni 1500 puan artırır.
+Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Bu mühürle kişisel şans tılsımını çağırırsın. Sana %5 daha yüksek delici vuruş şansı verir ve HP'ni 1500 puan artırır.
+Zawiera losową księgę umiejętności peta.	Rastgele bir pet beceri kitabı içerir.
+Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Seungryong Vadisi'nde hizmet eden cesur savaşçılar için ödüller içerir.
+Zbieraj Gałki Lodów dla Summer.	Summer için Buz Topu topla.
+Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Aktif petin adını değiştirir (ayrıca 100.000 Yang).
+Zmrożone czarne mięso o niezwykłej mocy.	Olağanüstü güce sahip donmuş kara et.
+Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Kakao, süt, tereyağı ve şekerden yapılmıştır. Hoşlandığını göstermek için verilir.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.	Savaş sırasında verdiğin hasarı 30 dakika boyunca %12-15 artırır. Bu eşya ticarete uygundur.
+Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Dayanıklılığı artırır. Kasları güçlendiren özellikleriyle bilinir.
+Zwój pozwala Ci wydobyć Kamień Duszy z broni albo zbroi. Zostawia znak wydobycia. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Bu parşömenle bir silah ya da zırhtan Ruh Taşı çıkarabilirsin. Geriye bir çıkarma izi kalır. +5 Ruh Taşı çıkarma sırasında yok olur.
+Zwój pozwala zapisać obecną pozycję, aby potem powrócić do obecnej lokalizacji. Można użyć co 15 minut.	Bu parşömen mevcut konumunu kaydeder, böylece daha sonra bu konuma geri dönebilirsin. 15 dakikada bir kullanılabilir.
+Zwój pozwalający Ci teleportować się do miasta pierwszego Twojego królestwa. Można użyć co 15 minut.	Seni krallığının ilk şehrine ışınlayan parşömen. 15 dakikada bir kullanılabilir.
+Złocisty piasek, nasycony magią i tajemnicą.	Büyü ve gizemle dolu altın renkli kum.
 uruchomieniu klienta (Language: after a restart).	istemci yeniden başlatılınca değiştirir.
+Śluz zamrożonych istot, chłodny w dotyku.	 Donmuş yaratıkların balçığı, dokununca soğuktur.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	300-399 puanla biten Okey oyunu için Noel ödülü. Açmak için sağ tıkla.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	400 veya daha fazla puanla biten Okey oyunu için Noel ödülü. Açmak için sağ tıkla.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	300 puanın altında biten Okey oyunu için Noel ödülü. Açmak için sağ tıkla.
+Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Olta için bir güç kaynağı. Dokunuşu aleti geliştirerek en derin sulardan balık tutmanın yolunu açar.

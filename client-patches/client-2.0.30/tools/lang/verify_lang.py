@@ -9,7 +9,8 @@
 #   - no forbidden name (Metin2, Gameforge, "official" ...) a Polish text does not have itself;
 #   - the "locale" pack has no locale/en/* any more (the old partial English).
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/lang/verify_lang.py \
-#     <BASE pack dir> <OUT pack dir>
+#     <OUT pack dir> <BASE pack dir>
+# clientY.sh verify loop: lang/verify_lang.py with A="$C/azbase" (the loop passes $C/out/pack first).
 import os
 import sys
 
@@ -24,7 +25,7 @@ NEED = ('locale_game.txt', 'locale_interface.txt', 'item_names.txt', 'mob_names.
 
 def main():
     import m2pack
-    base, out = sys.argv[1:3]
+    out, base = sys.argv[1:3]
     idx = os.path.join(out, B.PACK + '.index')
     if not os.path.exists(idx):
         raise SystemExit('no %s pack in %s' % (B.PACK, out))

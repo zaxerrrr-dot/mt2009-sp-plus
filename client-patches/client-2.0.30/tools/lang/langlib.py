@@ -103,8 +103,9 @@ def read_cfg(path):
     return cfg
 
 
-def languages(lang_dir=LANG_DIR):
+def languages(lang_dir=None):
     """[(code, cfg)] of every client-patches/lang/<code>/language.cfg, by ORDER then code"""
+    lang_dir = lang_dir or LANG_DIR
     out = []
     if not os.path.isdir(lang_dir):
         return out
@@ -217,9 +218,9 @@ FORBIDDEN = re.compile(r'metin\s*2|gameforge|oficjaln|official|offiziell|ufficia
 class Store(object):
     """one language's tables"""
 
-    def __init__(self, code, lang_dir=LANG_DIR):
+    def __init__(self, code, lang_dir=None):
         self.code = code
-        self.dir = os.path.join(lang_dir, code)
+        self.dir = os.path.join(lang_dir or LANG_DIR, code)
         self.cfg = read_cfg(os.path.join(self.dir, 'language.cfg'))
         self.keyed = {}
         self.tm = {}
@@ -274,7 +275,7 @@ class Store(object):
 class Resolver(object):
     """the lookup chain of a language: its own tables -> English -> folded Polish"""
 
-    def __init__(self, code, lang_dir=LANG_DIR, en=None):
+    def __init__(self, code, lang_dir=None, en=None):
         self.code = code
         self.own = Store(code, lang_dir)
         self.en = None if code == 'en' else (en or Store('en', lang_dir))

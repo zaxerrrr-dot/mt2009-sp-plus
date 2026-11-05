@@ -23,7 +23,8 @@
 #
 # clientY.sh: LAST pack step (it reads the final locale/pl, item_proto, mob_proto and root python of the build):
 #   S_lang_packs() { docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/lang/build_lang_packs.py \
-#     $C/azbase $C/out/pack --report $C/lang_report.json; }; step lang_packs $C/lang.json S_lang_packs
+#     $C/azbase $C/out/pack --lang-dir /opt/metin2/git/wt-yohara/client-patches/lang --report $C/lang_report.json; }
+#   step lang_packs $C/lang.json S_lang_packs
 # and lang/verify_lang.py <BASE> <OUT> in the verify loop. Every entry written is read back. Idempotent.
 import json
 import os
@@ -39,6 +40,7 @@ sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 import langlib as L  # noqa: E402
 
 PACK = 'lang'
+ROOT_PACK = 'root'  # read: the python strings of the root pack (clientY's step cache keys on this name)
 ZIP_LIMIT = 29 * 1024 * 1024
 ITEM_KEY = (173217, 72619434, 408587239, 27973291)
 MOB_KEY = (4813894, 18955, 552631, 6822045)
@@ -434,7 +436,7 @@ def main():
     i = 0
     while i < len(args):
         a = args[i]
-        if a in ('--report', '--missing', '--dump', '--only', '--files'):
+        if a in ('--report', '--missing', '--dump', '--only', '--files', '--lang-dir'):
             opts[a] = args[i + 1]
             i += 2
             continue
@@ -445,9 +447,12 @@ def main():
         i += 1
     if len(pos) != 2:
         raise SystemExit('usage: build_lang_packs.py <BASE pack dir> <OUT pack dir> [--check] [--report json] '
-                         '[--missing dir] [--dump catalog.json] [--only code,code]')
+                         '[--missing dir] [--dump catalog.json] [--only code,code] [--files dir] [--lang-dir dir]')
     base, out = pos
     check = '--check' in opts
+    if '--lang-dir' in opts:
+        # the tables of the build's checkout (clientY.sh names it, so its step cache sees a change of a table)
+        L.LANG_DIR = os.path.abspath(opts['--lang-dir'])
     packs = Packs(base, out)
     cat = make_catalog(packs)
     if '--dump' in opts:
