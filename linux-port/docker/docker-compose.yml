@@ -628,7 +628,8 @@ services:
       PLAYERBOTS_STATUS_GLOB: "/opt/metin2/var/channel*/*/playerbot_status.tsv"
       # Opened by the visitor's browser, so the address the classic panel is
       # reachable at from outside - not a container name.
-      TIERU_PANEL_URL: "${M2_SEBAN_TIERU_PANEL_URL:-http://127.0.0.1:${M2_PANEL_PUBLIC_PORT:-7788}}"
+      # MT2009_PLUS_PANEL_URL_RENAME_V1: M2_SEBAN_PANEL_URL; an install that set the older name keeps it working
+      PANEL_URL: "${M2_SEBAN_PANEL_URL:-${M2_SEBAN_TIERU_PANEL_URL:-http://127.0.0.1:${M2_PANEL_PUBLIC_PORT:-7788}}}"
       # Its own secret when .env has one; otherwise the admin-page secret
       # every .env already carries, so no install runs on the upstream default.
       SEBAN_SESSION_SECRET: "${M2_SEBAN_SESSION_SECRET:-${M2_ADMINPAGE_PASSWORD:-change-this-before-public-use}}"

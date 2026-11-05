@@ -4988,7 +4988,8 @@ def champion_columns_exist():
 
 @app.context_processor
 def globals_for_templates():
-    classic_panel_url = os.environ.get("TIERU_PANEL_URL", "http://127.0.0.1:7788")
+    # MT2009_PLUS_PANEL_URL_RENAME_V1: PANEL_URL; the older TIERU_PANEL_URL of an existing install still counts
+    classic_panel_url = os.environ.get("PANEL_URL") or os.environ.get("TIERU_PANEL_URL") or "http://127.0.0.1:7788"
     item_icon = item_icon_url
     current_settings = settings()
     ui_language = current_settings.get("ui_language", "pl")

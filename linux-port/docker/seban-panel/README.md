@@ -68,7 +68,7 @@ tamtym pliku):
 | `PLAYERBOTS_LOGIN_PORT`, `PLAYERBOTS_WORLD_PORT` | Porty rdzenia gry — kontrola etapu restartu. |
 | `PLAYERBOTS_STATUS_GLOB` | Ścieżka do plików `playerbot_status.tsv`. |
 | `PLAYERBOTS_VERSION` | Wersja Playerbots wyświetlana na dashboardzie. |
-| `TIERU_PANEL_URL` | Publiczny adres klasycznego panelu (link w menu). |
+| `PANEL_URL` | Publiczny adres klasycznego panelu (link w menu). Starsza nazwa zmiennej z dawnych instalacji nadal działa. |
 | `SEBAN_SESSION_SECRET` | Sekret sesji Flask. Nigdy nie publikuj wartości. |
 | `SEBAN_COLLECTOR_INTERVAL` | Interwał kolektora w sekundach (domyślnie `300`). |
 | `SEBAN_M2_ROOT` | Ścieżka do katalogu serwera na hoście — używana przez `seban-collector` do jednorazowego wczytania puli nicków botów. |
