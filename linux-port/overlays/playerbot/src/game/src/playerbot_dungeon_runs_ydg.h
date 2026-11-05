@@ -251,22 +251,72 @@ namespace
 		}
 	}
 
-	// V2: where the stage's objective comes back (cells of the dungeon's map; regen.txt) - the SZC cave's Captain
-	// Yonghan (SZC) 4208 at (1092, 152): back 70 s after its fall, and its fall brings the key's General 4210 there.
-	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y)
+	// V3: the SZC cave's two key spots (regen.txt 'm' lines, cells): Captain 4208 at (1092, 152) - its fall brings the
+	// key's General 4210 there - and a General 4210 of its own at (709, 237); both back 70 s after their fall. They are
+	// ~2 500 cells of walk apart (the navigation's plan) and the parties went from one to the other and back, a key in
+	// 20 minutes. The first one the leader reaches is the run's spot: it waits there (GetPlayerBotYdgCamp) and the
+	// Yonghans far from it are no objective (IsPlayerBotYdgGoalAway).
+	const long PLAYERBOT_YDG_SZC_SPOTS[2][2] = { { 1092, 152 }, { 709, 237 } };
+	const int PLAYERBOT_YDG_SZC_SPOT_REACHED = 3000;
+	const int PLAYERBOT_YDG_SZC_SPOT_RANGE = 8000;
+	std::map<long, int> s_mapPlayerBotYdgSzcSpot;	// instance -> spot + 1
+
+	bool GetPlayerBotYdgSzcSpotXY(long instance, int spot, long& x, long& y)
+	{
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(instance);
+		if (!pMap || spot < 0 || spot > 1)
+			return false;
+		x = pMap->m_setting.iBaseX + PLAYERBOT_YDG_SZC_SPOTS[spot][0] * 100;
+		y = pMap->m_setting.iBaseY + PLAYERBOT_YDG_SZC_SPOTS[spot][1] * 100;
+		return true;
+	}
+
+	bool IsPlayerBotYdgSzcKeysStage(const TPlayerBotDgRunDef& def, LPDUNGEON d)
 	{
 		const TPlayerBotYdgDef* yd = FindPlayerBotYdgDef(def.szKey);
 		if (!yd || !d || !yd->bSzc || yd->iBoss != YDG_BERAN || d->GetFlag("level") != 0)
 			return false;
 		std::map<long, bool>::const_iterator k = s_mapPlayerBotYdgKeysReady.find(d->GetMapIndex());
-		if (k != s_mapPlayerBotYdgKeysReady.end() && k->second)
+		return k == s_mapPlayerBotYdgKeysReady.end() || !k->second;
+	}
+
+	void UpdatePlayerBotYdgSzcSpot(const TPlayerBotDgRunDef& def, LPDUNGEON d, LPCHARACTER leader)
+	{
+		if (!leader || !IsPlayerBotYdgSzcKeysStage(def, d) || s_mapPlayerBotYdgSzcSpot.count(d->GetMapIndex()))
+			return;
+		for (int i = 0; i < 2; ++i)
+		{
+			long x = 0, y = 0;
+			if (GetPlayerBotYdgSzcSpotXY(d->GetMapIndex(), i, x, y) &&
+					DISTANCE_APPROX(leader->GetX() - x, leader->GetY() - y) <= PLAYERBOT_YDG_SZC_SPOT_REACHED)
+			{
+				s_mapPlayerBotYdgSzcSpot[d->GetMapIndex()] = i + 1;
+				sys_log(0, "BOT_YDG: szc key spot instance=%ld spot=%d (%ld,%ld) leader=%s", d->GetMapIndex(), i,
+						PLAYERBOT_YDG_SZC_SPOTS[i][0], PLAYERBOT_YDG_SZC_SPOTS[i][1], leader->GetName());
+				return;
+			}
+		}
+	}
+
+	bool IsPlayerBotYdgGoalAway(long instance, LPCHARACTER c)
+	{
+		std::map<long, int>::const_iterator it = s_mapPlayerBotYdgSzcSpot.find(instance);
+		if (!c || it == s_mapPlayerBotYdgSzcSpot.end())
 			return false;
-		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
-		if (!pMap)
+		long x = 0, y = 0;
+		if (!GetPlayerBotYdgSzcSpotXY(instance, it->second - 1, x, y))
 			return false;
-		x = pMap->m_setting.iBaseX + 1092 * 100;
-		y = pMap->m_setting.iBaseY + 152 * 100;
-		return true;
+		return DISTANCE_APPROX(c->GetX() - x, c->GetY() - y) > PLAYERBOT_YDG_SZC_SPOT_RANGE;
+	}
+
+	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y)
+	{
+		if (!IsPlayerBotYdgSzcKeysStage(def, d))
+			return false;
+		std::map<long, int>::const_iterator it = s_mapPlayerBotYdgSzcSpot.find(d->GetMapIndex());
+		if (it == s_mapPlayerBotYdgSzcSpot.end())
+			return false;	// not reached yet: the route-nearest objective leads there
+		return GetPlayerBotYdgSzcSpotXY(d->GetMapIndex(), it->second - 1, x, y);
 	}
 
 	// ------------------------------------------------------------ the items
@@ -1352,7 +1402,7 @@ namespace
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_PIERCE, POINT_PENETRATE_PCT, pierce, 0, dur, 0, true);
 		// V3: the SZC cave's route to the key's Yonghans is ~2 400 cells of walk (the navigation's plan, 5 November) -
 		// a speed potion's and a fast weapon's worth of movement and attack speed.
-		const int move = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MOVE_SPEED", 40, 0, 100);
+		const int move = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MOVE_SPEED", 80, 0, 100);
 		const int attspd = GetPlayerBotYdgEnv("PLAYERBOT_YDG_ATT_SPEED", 30, 0, 50);
 		if (move > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_MOVE, POINT_MOV_SPEED, move, 0, dur, 0, true);
@@ -1459,6 +1509,7 @@ namespace
 		if (run.lInstance)
 		{
 			s_mapPlayerBotYdgKeysReady.erase(run.lInstance);
+			s_mapPlayerBotYdgSzcSpot.erase(run.lInstance);
 			for (std::map<std::pair<long, int>, std::set<DWORD> >::iterator w = s_mapPlayerBotYdgWrong.begin(); w != s_mapPlayerBotYdgWrong.end();)
 			{
 				if (w->first.first == run.lInstance)

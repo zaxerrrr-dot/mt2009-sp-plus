@@ -555,6 +555,8 @@ namespace
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y);
 	int GetPlayerBotYdgTrainParty(int runId);
+	void UpdatePlayerBotYdgSzcSpot(const TPlayerBotDgRunDef& def, LPDUNGEON d, LPCHARACTER leader);
+	bool IsPlayerBotYdgGoalAway(long instance, LPCHARACTER c);
 	LPCHARACTER PickPlayerBotYdgRouteGoal(LPCHARACTER ch, const TPlayerBotArzDgScan& scan, const std::vector<DWORD>& goals,
 			TPlayerBotDgRunBot& rb, const TPlayerBotDgRun& run, DWORD dwNow);
 	// run -> (the objective's vid, chosen at) - MT2009_PLUS_BOT_YDG_TRAIN_V2
@@ -1597,6 +1599,8 @@ namespace
 		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
 		std::vector<DWORD> goals;
 		GetPlayerBotDgRunObjectives(def, d, scan, goals);
+		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_TRAIN_V3: the SZC cave's key spot, once reached
+			UpdatePlayerBotYdgSzcSpot(def, d, ch);
 		bool dragonShielded = false;
 		if (def.bKind == DGRUN_KIND_SMOK)
 			for (size_t i = 0; i < scan.foes.size() && !dragonShielded; ++i)
@@ -1611,7 +1615,8 @@ namespace
 			const DWORD race = c->GetRaceNum();
 			if (dragonShielded && race == PLAYERBOT_PDG_BLUE_DRAGON)
 				continue;
-			const bool isGoal = std::find(goals.begin(), goals.end(), race) != goals.end();
+			const bool isGoal = std::find(goals.begin(), goals.end(), race) != goals.end() &&
+					!(def.bKind == DGRUN_KIND_YDG && IsPlayerBotYdgGoalAway(run.lInstance, c));
 			// The dungeons' NPC-like pieces (a seal, a door, a lion) are no foe
 			// unless the stage names them.
 			if (!isGoal && race >= 20000)
@@ -1651,7 +1656,8 @@ namespace
 			LPCHARACTER pf = sticky.first ? CHARACTER_MANAGER::instance().Find(sticky.first) : NULL;
 			if (pf && IsPlayerBotPdgFoe(ch, pf) && pf->GetMapIndex() == ch->GetMapIndex() &&
 					std::find(goals.begin(), goals.end(), pf->GetRaceNum()) != goals.end() &&
-					!IsPlayerBotDgRunUnreachable(rb, (DWORD)pf->GetVID(), dwNow) && dwNow - sticky.second < PLAYERBOT_YDG_STICKY_MS)
+					!IsPlayerBotDgRunUnreachable(rb, (DWORD)pf->GetVID(), dwNow) && dwNow - sticky.second < PLAYERBOT_YDG_STICKY_MS &&
+					!IsPlayerBotYdgGoalAway(run.lInstance, pf))
 			{
 				goal = pf;
 				dGoal = DISTANCE_APPROX(ch->GetX() - pf->GetX(), ch->GetY() - pf->GetY());
@@ -2987,7 +2993,7 @@ namespace
 		{
 			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
 			if (!IsPlayerBotPdgFoe(ch, c) || std::find(goals.begin(), goals.end(), c->GetRaceNum()) == goals.end() ||
-					IsPlayerBotDgRunUnreachable(rb, (DWORD)c->GetVID(), dwNow))
+					IsPlayerBotDgRunUnreachable(rb, (DWORD)c->GetVID(), dwNow) || IsPlayerBotYdgGoalAway(run.lInstance, c))
 				continue;
 			cands.push_back(std::make_pair(DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY()), c));
 		}
