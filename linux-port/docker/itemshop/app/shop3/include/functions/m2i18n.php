@@ -10,7 +10,8 @@
 	//
 	// The language, first that says one: ?lang=xx (remembered), the m2lang cookie (shared with the panels),
 	// the language the player chose in the game client (player.player.language, sent by the client as /lang),
-	// the browser's - only one that does not list Polish at all - and Polish.
+	// the server's default language (M2_DEFAULT_LANGUAGE, MT2009_PLUS_LANGUAGE_DEFAULT_V1), and only without one the
+	// browser's - only one that does not list Polish at all - and Polish.
 
 	define('M2I18N_DIR', realpath(__DIR__ . '/../../../i18n') ?: (__DIR__ . '/../../../i18n'));
 	define('M2I18N_SOURCE', 'pl');
@@ -312,6 +313,16 @@
 		return m2i18n_html($buffer, $code, stripos($buffer, '</body>') !== false);
 	}
 
+	// MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language (M2_DEFAULT_LANGUAGE in .env) when the shop has it
+	function m2i18n_server_default() {
+		$code = strtolower(trim((string)getenv('M2_DEFAULT_LANGUAGE')));
+		$alias = array('cs' => 'cz', 'el' => 'gr', 'ar' => 'ae');
+		if (isset($alias[$code]))
+			$code = $alias[$code];
+		$langs = m2i18n_languages();
+		return ($code !== '' && isset($langs[$code])) ? $code : null;
+	}
+
 	function m2i18n_accept($accept) {
 		$wanted = array();
 		foreach (explode(',', (string)$accept) as $part) {
@@ -376,6 +387,11 @@
 			$code = $_COOKIE['m2lang'];
 		} elseif (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['m2_lang']) && isset($langs[$_SESSION['m2_lang']])) {
 			$code = $_SESSION['m2_lang'];
+		} elseif (($code = m2i18n_server_default()) !== null) {
+			// the server's default; the player's own game language (header.php) still comes before it
+			$GLOBALS['m2i18n_how'] = 'server';
+			$GLOBALS['m2i18n_lang'] = $code;
+			return $code;
 		} else {
 			$code = m2i18n_accept(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '');
 		}

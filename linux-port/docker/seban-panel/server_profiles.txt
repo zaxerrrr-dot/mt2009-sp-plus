@@ -230,6 +230,6 @@ link = events | Otwórz Planer eventów
 link = worldboss | Boss Świata: tryb, czasy, przywołanie
 
 [group serwer]
-title = Nazwa, adres i strefa czasowa
-desc = Adres, z którym łączy się klient gracza (publiczny IP serwera albo domena), nazwa i strefa czasowa. Zmiana adresu wymaga potwierdzenia.
-keys = M2_PUBLIC_ADDRESS M2_BRAND M2_CLIENT_SERVER_NAME M2_TZ M2_DEFAULT_GAME_LANGUAGE
+title = Nazwa, adres, strefa czasowa i język
+desc = Adres, z którym łączy się klient gracza (publiczny IP serwera albo domena), nazwa, strefa czasowa i domyślny język serwera (gracze bez własnego wyboru w ustawieniach klienta). Zmiana adresu wymaga potwierdzenia.
+keys = M2_PUBLIC_ADDRESS M2_BRAND M2_CLIENT_SERVER_NAME M2_TZ M2_DEFAULT_LANGUAGE M2_DEFAULT_GAME_LANGUAGE

@@ -290,6 +290,98 @@ function Get-M2ClientFolder {
     return ''
 }
 
+# MT2009_PLUS_LANGUAGE_DEFAULT_V1 (the owner, 5 November 2026): the server's
+# default language, M2_DEFAULT_LANGUAGE in .env - what every player reads until
+# he picks his own in the client's settings, the bots' shout and trade chat,
+# and the panels' language for a visitor who has not picked one. The launcher
+# asks for it before the first start and in the difficulty window, and gives
+# the local client the same language unless its user chose one himself.
+$script:M2ServerLanguages = @(
+    @('pl', 'Polski'), @('en', 'English'), @('de', 'Deutsch'), @('tr', 'Türkçe'),
+    @('ro', 'Română'), @('es', 'Español'), @('it', 'Italiano'), @('fr', 'Français'),
+    @('pt', 'Português'), @('cz', 'Čeština'), @('hu', 'Magyar'), @('gr', 'Ελληνικά'),
+    @('ae', 'العربية'))
+
+function Get-M2ServerLanguages {
+    # [pscustomobject]@{ Code; Name } of every language a server can default to, Polish first.
+    foreach ($pair in $script:M2ServerLanguages) { [pscustomobject]@{ Code = $pair[0]; Name = $pair[1] } }
+}
+
+function ConvertTo-M2ServerLanguage {
+    # A code as .env keeps it (cs -> cz, el -> gr, ar -> ae), '' for anything unknown.
+    param([AllowEmptyString()][string]$Code)
+    $value = "$Code".Trim().ToLowerInvariant()
+    switch ($value) { 'cs' { $value = 'cz' } 'el' { $value = 'gr' } 'ar' { $value = 'ae' } }
+    foreach ($pair in $script:M2ServerLanguages) { if ($pair[0] -eq $value) { return $value } }
+    return ''
+}
+
+function Get-M2ClientLanguageOrigin {
+    # Who set the client's language (game1.cfg LANGUAGE): 'user' (its login
+    # screen or Options), 'server' (a server's default or this launcher), or ''
+    # (nobody yet). The client keeps it in mt2009_language.cfg ("user <code>" /
+    # "server <code>", mt2009lang.py); a client without that file whose
+    # game1.cfg names a language other than Polish was set by somebody.
+    param([Parameter(Mandatory = $true)][string]$ClientRoot)
+    $origin = Join-Path $ClientRoot 'mt2009_language.cfg'
+    if (Test-Path -LiteralPath $origin -PathType Leaf) {
+        $words = @(([IO.File]::ReadAllText($origin)).Trim() -split '\s+')
+        if ($words.Count -ge 2 -and $words[0] -in @('user', 'server')) { return $words[0] }
+    }
+    $cfg = Join-Path $ClientRoot 'game1.cfg'
+    if (Test-Path -LiteralPath $cfg -PathType Leaf) {
+        foreach ($line in [IO.File]::ReadAllLines($cfg, [Text.Encoding]::Default)) {
+            $parts = @($line.Trim() -split '\s+', 2)
+            if ($parts.Count -eq 2 -and $parts[0] -ieq 'LANGUAGE') {
+                $code = $parts[1].Trim().ToLowerInvariant()
+                if ($code -and $code -ne 'pl') { return 'user' }
+            }
+        }
+    }
+    return ''
+}
+
+function Set-M2ClientDefaultLanguage {
+    # The server's default language for the local client: game1.cfg LANGUAGE
+    # (read by the client at its next start) and mt2009_language.cfg "server
+    # <code>". Never over the user's own choice, never while the client runs
+    # (it writes game1.cfg back when it closes). Returns 'set', 'same', 'user',
+    # 'running' or 'noclient'.
+    param(
+        [AllowEmptyString()][string]$ClientRoot,
+        [Parameter(Mandatory = $true)][string]$Language
+    )
+    $code = ConvertTo-M2ServerLanguage $Language
+    if (-not $code) { throw "Nieznany język: '$Language'." }
+    if (-not $ClientRoot -or -not (Test-Path -LiteralPath $ClientRoot -PathType Container)) { return 'noclient' }
+    if ((Get-M2ClientLanguageOrigin -ClientRoot $ClientRoot) -eq 'user') { return 'user' }
+    if (@(Get-M2FolderProcesses -Root $ClientRoot).Count -gt 0) { return 'running' }
+    $cfg = Join-Path $ClientRoot 'game1.cfg'
+    $lines = New-Object 'System.Collections.Generic.List[string]'
+    $written = $false
+    $same = $false
+    if (Test-Path -LiteralPath $cfg -PathType Leaf) {
+        foreach ($line in [IO.File]::ReadAllLines($cfg, [Text.Encoding]::Default)) {
+            $parts = @($line.Trim() -split '\s+', 2)
+            if ($parts[0] -ieq 'LANGUAGE') {
+                if (-not $written) {
+                    $same = ($parts.Count -eq 2 -and $parts[1].Trim().ToLowerInvariant() -eq $code)
+                    $lines.Add("LANGUAGE`t`t`t`t$code"); $written = $true
+                }
+                continue
+            }
+            $lines.Add($line)
+        }
+    }
+    # A client that has never run has no file; one line is enough, the client
+    # fills in the rest with its defaults and writes the whole file on exit.
+    if (-not $written) { $lines.Add("LANGUAGE`t`t`t`t$code") }
+    if (-not $same) { [IO.File]::WriteAllText($cfg, (($lines -join "`r`n") + "`r`n"), [Text.Encoding]::Default) }
+    [IO.File]::WriteAllText((Join-Path $ClientRoot 'mt2009_language.cfg'), "server $code`n", [Text.Encoding]::ASCII)
+    if ($same) { return 'same' }
+    return 'set'
+}
+
 function Get-M2ClientPatcher {
     # The full path of MT2009-Patcher.exe in the client folder (the name in any
     # letter case), or '' when the folder has none.
@@ -3440,6 +3532,10 @@ Export-ModuleMember -Function @(
     'Get-M2ClientExeComponent',
     'Repair-M2ClientExecutables',
     'Get-M2ClientFolder',
+    'Get-M2ServerLanguages',
+    'ConvertTo-M2ServerLanguage',
+    'Get-M2ClientLanguageOrigin',
+    'Set-M2ClientDefaultLanguage',
     'Get-M2ClientPatcher',
     'Start-M2ClientPatcher',
     'Compare-M2Version',

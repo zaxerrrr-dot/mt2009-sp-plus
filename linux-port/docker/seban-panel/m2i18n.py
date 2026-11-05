@@ -57,6 +57,15 @@ def _norm(text):
     return _WS.sub(" ", text).strip()
 
 
+def server_default():
+    """MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language
+    (M2_DEFAULT_LANGUAGE in .env, the one the game gives every player who has
+    not chosen his own), or None when the environment names none."""
+    code = (os.environ.get("M2_DEFAULT_LANGUAGE") or "").strip().lower()
+    code = {"cs": "cz", "el": "gr", "ar": "ae"}.get(code, code)
+    return code or None
+
+
 def _compile_pattern(source, target):
     """A {0}-style pattern as an anchored regex and its target."""
     parts = _PH.split(source)
@@ -370,14 +379,19 @@ class Catalog:
     def pick(self, asked=None, cookie=None, accept=None, default=None, browser=True):
         """The visitor's language: what they asked for now (?lang=), what
         they chose before (the m2lang cookie, shared by every page of the
-        server), then the browser's - only when it does not list Polish at
-        all, so a Polish player on an English Windows still gets Polish -
-        and then the app's own default."""
+        server), then the server's default language (M2_DEFAULT_LANGUAGE,
+        MT2009_PLUS_LANGUAGE_DEFAULT_V1 - the owner's choice for the whole
+        server comes before the browser's); without one the browser's - only
+        when it does not list Polish at all, so a Polish player on an English
+        Windows still gets Polish - and then the app's own default."""
         codes = self.codes()
         for value in (asked, cookie):
             value = (value or "").strip().lower()
             if value in codes:
                 return value
+        server = server_default()
+        if server in codes:
+            return server
         if browser and accept:
             wanted = []
             for part in accept.split(","):

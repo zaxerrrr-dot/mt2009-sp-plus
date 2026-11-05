@@ -34,7 +34,9 @@
 //     (GetPlayerLanguage, mt2009_language.h) - or the language the reader
 //     has just written in, when DETECT is on and the whisper says so clearly;
 //   - the shout, the '@' trade chat, the line over a bot's head, the guild's
-//     chat: many readers, one line. The world stays Polish; with
+//     chat: many readers, one line. The world speaks the server's default
+//     language (M2_DEFAULT_LANGUAGE, Polish when not set -
+//     MT2009_PLUS_LANGUAGE_DEFAULT_V1); with
 //     PUBLIC_FOREIGN_PCT > 0 that share of the bots speaks one of the other
 //     languages of the players online (PUBLIC_NEED_PLAYERS 1: only while such
 //     players are online), weighted by how many play in each. An answer on
@@ -1403,7 +1405,7 @@ namespace
 	// ------------------------------------------------------------ public channels
 
 	DWORD s_dwPlayerBotI18nCensus = 0;
-	std::map<std::string, int> s_mapPlayerBotI18nOnline;   // the languages of the players online, not Polish
+	std::map<std::string, int> s_mapPlayerBotI18nOnline;   // the languages of the players online, not the world's
 	int s_iPlayerBotI18nOnlineForeign = 0;
 
 	void CensusPlayerBotI18nLanguages()
@@ -1414,6 +1416,7 @@ namespace
 		s_dwPlayerBotI18nCensus = now;
 		s_mapPlayerBotI18nOnline.clear();
 		s_iPlayerBotI18nOnlineForeign = 0;
+		const std::string world = Mt2009DefaultLanguage();
 		const DESC_MANAGER::DESC_SET& set = DESC_MANAGER::instance().GetClientSet();
 		for (DESC_MANAGER::DESC_SET::const_iterator it = set.begin(); it != set.end(); ++it)
 		{
@@ -1421,25 +1424,28 @@ namespace
 			if (!d || d->IsBot() || !d->GetCharacter())
 				continue;
 			const std::string lang = GetPlayerBotPersonLanguage(d->GetCharacter());
-			if (lang == "pl" || s_mapPlayerBotI18n.find(lang) == s_mapPlayerBotI18n.end())
+			if (lang == world || (lang != "pl" && s_mapPlayerBotI18n.find(lang) == s_mapPlayerBotI18n.end()))
 				continue;
 			++s_mapPlayerBotI18nOnline[lang];
 			++s_iPlayerBotI18nOnlineForeign;
 		}
 	}
 
-	// The language a bot speaks on the public channels now.
+	// The language a bot speaks on the public channels now: the world's (the
+	// server's default language, MT2009_PLUS_LANGUAGE_DEFAULT_V1), or for
+	// PUBLIC_FOREIGN_PCT of the bots one of the others.
 	std::string GetPlayerBotPublicLanguage(LPCHARACTER bot)
 	{
 		RefreshPlayerBotI18n();
 		const TPlayerBotI18nConfig& c = s_PlayerBotI18nConfig;
+		const std::string world = Mt2009DefaultLanguage();
 		if (!bot || !c.enabled || c.publicPct <= 0 || s_mapPlayerBotI18n.empty())
-			return "pl";
+			return world;
 		// The same bots every time: a bot does not change its tongue mid-sentence.
 		const DWORD pid = bot->GetPlayerID();
 		const DWORD h = (pid * 2654435761u) ^ 0x5bd1e995u;
 		if ((int)(h % 100u) >= c.publicPct)
-			return "pl";
+			return world;
 		CensusPlayerBotI18nLanguages();
 		const DWORD pick = (h / 100u) * 2246822519u;
 		if (s_iPlayerBotI18nOnlineForeign > 0)
@@ -1454,13 +1460,18 @@ namespace
 			}
 		}
 		if (c.publicNeedPlayers)
-			return "pl";
-		int n = (int)(pick % (DWORD)s_mapPlayerBotI18n.size());
+			return world;
+		// Any other language of the catalogs - Polish (no catalog, the bots' own) among them when the world's is not.
+		std::vector<std::string> others;
+		if (world != "pl")
+			others.push_back("pl");
 		for (std::map<std::string, TPlayerBotI18nLang>::const_iterator it = s_mapPlayerBotI18n.begin();
-				it != s_mapPlayerBotI18n.end(); ++it, --n)
-			if (n == 0)
-				return it->first;
-		return "pl";
+				it != s_mapPlayerBotI18n.end(); ++it)
+			if (it->first != world)
+				others.push_back(it->first);
+		if (others.empty())
+			return world;
+		return others[pick % (DWORD)others.size()];
 	}
 
 	// Who a public line answers, while it is being said: the line is in that
@@ -1502,14 +1513,16 @@ namespace
 		return name + " : " + LocalizePlayerBotPublicLine(bot, sep + 3);
 	}
 
-	// A guild's chat: the language most of its players online read.
+	// A guild's chat: the language most of its players online read (the
+	// world's - the server's default - when none is online).
 	std::string GetPlayerBotGuildLanguage(CGuild* guild)
 	{
+		const std::string world = Mt2009DefaultLanguage();
 		if (!guild)
-			return "pl";
+			return world;
 		RefreshPlayerBotI18n();
 		if (!s_PlayerBotI18nConfig.enabled || s_mapPlayerBotI18n.empty())
-			return "pl";
+			return world;
 		std::map<std::string, int> count;
 		const DESC_MANAGER::DESC_SET& set = DESC_MANAGER::instance().GetClientSet();
 		for (DESC_MANAGER::DESC_SET::const_iterator it = set.begin(); it != set.end(); ++it)
@@ -1519,8 +1532,8 @@ namespace
 				continue;
 			++count[GetPlayerBotPersonLanguage(d->GetCharacter())];
 		}
-		std::string best = "pl";
-		int most = count["pl"];
+		std::string best = world;
+		int most = count[world];
 		for (std::map<std::string, int>::const_iterator it = count.begin(); it != count.end(); ++it)
 			if (it->second > most)
 			{

@@ -55,6 +55,10 @@ param(
     # And the starter kit its new characters and new bots start in: default,
     # medium or easy; '' leaves .env as it is.
     [string]$StarterKit = '',
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language
+    # (M2_DEFAULT_LANGUAGE: pl en de tr ro es it fr pt cz hu gr ae) for Start,
+    # SetDifficulty, ResetWorld and VpsInstall; '' leaves .env as it is.
+    [string]$ServerLanguage = '',
     [string]$ImportSource = '',
     [string]$RestoreSource = '',
     # COOP (experimental): the friend's name for CoopAddFriend, a friend's
@@ -360,6 +364,16 @@ function Start-Server {
     }
     $script = Join-Path $serverRoot 'start-server.ps1'
     if (-not (Test-Path -LiteralPath $script -PathType Leaf)) { throw 'Brakuje start-server.ps1.' }
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's language chosen before the
+    # first start (the window's question) goes into .env before the stack comes
+    # up - on a first start start-server.ps1 writes the .env first.
+    if ("$ServerLanguage".Trim()) {
+        if (-not (Test-Path -LiteralPath (Get-PlayerbotEnvPath) -PathType Leaf)) {
+            & $script -IdentityOnly
+            if ($LASTEXITCODE -ne 0) { throw "Przygotowanie pliku .env zakonczylo sie kodem $LASTEXITCODE." }
+        }
+        Set-ServerLanguageSetting -Language $ServerLanguage
+    }
     & $script
     if ($LASTEXITCODE -ne 0) { throw "Uruchamianie serwera zakończyło się kodem $LASTEXITCODE." }
     Write-Phase 'Serwer uruchomiony'
@@ -1560,6 +1574,54 @@ function ConvertTo-MonsterHpSetting {
     throw "Życie potworów: podaj default, easy albo procent od 10 do 300, nie '$Text'."
 }
 
+# MT2009_PLUS_LANGUAGE_DEFAULT_V1 (the owner, 5 November 2026: "domyslny jezyk
+# dla calego serwera" - chosen in the launcher first, then each player may pick
+# his own in the client's settings): M2_DEFAULT_LANGUAGE in .env, read by the
+# game core, the panels and the ItemShop at their start, and the same language
+# for the local client unless its user chose one himself.
+function Get-ServerLanguageText {
+    param([string]$Code)
+    foreach ($language in @(Get-M2ServerLanguages)) { if ($language.Code -eq $Code) { return ('{0} ({1})' -f $language.Name, $Code) } }
+    return $Code
+}
+
+function Read-ServerLanguageAnswer {
+    # The console's question; Enter keeps $Current.
+    param([string]$Current = 'pl')
+    $codes = (@(Get-M2ServerLanguages) | ForEach-Object { $_.Code }) -join ' '
+    while ($true) {
+        $answer = Read-Host "Domyślny język serwera / server language ($codes; Enter = $Current)"
+        if (-not "$answer".Trim()) { return $Current }
+        $code = ConvertTo-M2ServerLanguage $answer
+        if ($code) { return $code }
+        Write-Host "Nieznany język: '$answer'. Wpisz jeden z kodów: $codes" -ForegroundColor Yellow
+    }
+}
+
+function Set-ServerLanguageSetting {
+    param([Parameter(Mandatory = $true)][string]$Language)
+    $code = ConvertTo-M2ServerLanguage $Language
+    if (-not $code) {
+        throw ("Język serwera: podaj jeden z kodów {0}, nie '{1}'." -f ((@(Get-M2ServerLanguages) | ForEach-Object { $_.Code }) -join ', '), $Language)
+    }
+    $before = ConvertTo-M2ServerLanguage (Get-DotEnvValue -Key 'M2_DEFAULT_LANGUAGE' -Default 'pl')
+    Set-DotEnvValue -Key 'M2_DEFAULT_LANGUAGE' -Value $code
+    if ($before -ne $code) {
+        Write-Host ('Zapisano: domyślny język serwera {0} (gracze, którzy sami nie wybrali języka, i boty na krzyku).' -f (Get-ServerLanguageText $code)) -ForegroundColor Green
+    }
+    # The local client: the same language from its next start, unless its user chose one.
+    $clientRoot = ''
+    try { $clientRoot = Get-M2ClientFolder -Config (Get-Config) } catch { $clientRoot = '' }
+    $outcome = 'noclient'
+    try { $outcome = Set-M2ClientDefaultLanguage -ClientRoot $clientRoot -Language $code }
+    catch { Write-Host "Nie udało się ustawić języka klienta: $($_.Exception.Message)" -ForegroundColor Yellow }
+    switch ($outcome) {
+        'set' { Write-Host ('Klient gry ({0}) uruchomi się w języku: {1}.' -f $clientRoot, (Get-ServerLanguageText $code)) -ForegroundColor Green }
+        'user' { Write-Host 'Klient gry zostaje przy języku wybranym w jego ustawieniach.' -ForegroundColor Gray }
+        'running' { Write-Host 'Klient gry jest uruchomiony - przejmie język serwera przy następnym wejściu do gry.' -ForegroundColor Gray }
+    }
+}
+
 function Set-DifficultyAction {
     $current = Get-DotEnvValue -Key 'M2_DIFFICULTY' -Default 'easy'
     $currentBio = Get-DotEnvValue -Key 'M2_BIOLOGIST_WAIT_HOURS' -Default '0'
@@ -1580,6 +1642,9 @@ function Set-DifficultyAction {
     Write-Host "Aktualny poziom trudności: $current (przy 'custom': Biolog $currentBio h, Stajenny $currentHorse h, księgi: gracze $currentBook h, boty $currentBotBook h)." -ForegroundColor Gray
     Write-Host "Auto Łowy: $(if ($currentAutoHunt) { 'włączone' } else { 'wyłączone' }) ($(if ($currentAutoHuntItem) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($currentSidekick) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($currentStarter) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($currentFlea) { 'włączony' } else { 'wyłączony' }); Moduł Arezzo: $(if ($currentArezzo) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Gray
     Write-Host "Życie potworów, bossów i Metinów: $currentMonsterPct% (100% = jak w grze)." -ForegroundColor Gray
+    $currentLanguage = ConvertTo-M2ServerLanguage (Get-DotEnvValue -Key 'M2_DEFAULT_LANGUAGE' -Default 'pl')
+    if (-not $currentLanguage) { $currentLanguage = 'pl' }
+    Write-Host "Domyślny język serwera: $(Get-ServerLanguageText $currentLanguage)." -ForegroundColor Gray
 
     # -Difficulty passed (from the GUI or scripting) is non-interactive, like
     # -BotCount: never Read-Host, restart only with -Yes.
@@ -1619,6 +1684,7 @@ function Set-DifficultyAction {
     $fleaOn = $currentFlea
     $arezzoOn = $currentArezzo
     $monsterSetting = $currentMonsterHp
+    $languageSetting = $currentLanguage
     if ($interactive) {
         $answer = Read-Host "Auto Łowy (automatyczne polowanie w kliencie, klawisz K) włączone? (T/n, Enter = $(if ($currentAutoHunt) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $autoHuntOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
@@ -1640,6 +1706,7 @@ function Set-DifficultyAction {
         $answer = Read-Host "Życie potworów, bossów i Metinów: 1 = jak w grze (100%), 2 = łatwiej (80%) (Enter = $currentMonsterPct%)"
         if ("$answer".Trim() -eq '1') { $monsterSetting = 'default' }
         elseif ("$answer".Trim() -eq '2') { $monsterSetting = 'easy' }
+        $languageSetting = Read-ServerLanguageAnswer -Current $currentLanguage
     }
     else {
         if ($AutoHunt -ge 0) { $autoHuntOn = ($AutoHunt -ne 0) }
@@ -1650,6 +1717,10 @@ function Set-DifficultyAction {
         if ($Arezzo -ge 0) { $arezzoOn = ($Arezzo -ne 0) }
         # Read before anything is written, so a value it refuses leaves .env as it was.
         if ("$MonsterHp".Trim()) { $monsterSetting = ConvertTo-MonsterHpSetting $MonsterHp }
+        if ("$ServerLanguage".Trim()) {
+            $languageSetting = ConvertTo-M2ServerLanguage $ServerLanguage
+            if (-not $languageSetting) { throw "Język serwera: nieznany kod '$ServerLanguage'." }
+        }
     }
     if ($level -notin @('easy', 'medium', 'hard', 'custom')) {
         throw "Nieznany poziom trudności: '$level'. Dozwolone: easy, medium, hard, custom."
@@ -1683,6 +1754,7 @@ function Set-DifficultyAction {
     Set-DotEnvValue -Key 'M2_FLEA_MARKET' -Value $(if ($fleaOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_AREZZO' -Value $(if ($arezzoOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_MONSTER_HP' -Value $monsterSetting
+    if ($languageSetting -ne $currentLanguage -or "$ServerLanguage".Trim()) { Set-ServerLanguageSetting -Language $languageSetting }
     $chances = Get-ExchangeChances -Level $level
     Write-Host "Zapisano: poziom trudności $level (Biolog $bio h, Stajenny $horse h, księgi: gracze $book h, boty $botBook h; wymiana u NPC: Magiczny Pył $($chances[0])%, Pergamin $($chances[1])%, Materiały $($chances[2])%)." -ForegroundColor Green
     Write-Host "Auto Łowy: $(if ($autoHuntOn) { 'włączone' } else { 'wyłączone' }) ($(if ($autoHuntItemOn) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($sidekickOn) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($starterOn) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($fleaOn) { 'włączony' } else { 'wyłączony' }); Moduł Arezzo: $(if ($arezzoOn) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Green
@@ -1920,7 +1992,8 @@ function Set-FreshWorldSettings {
     $hold = $HoldBots
     $starter = $StarterChest
     $kit = "$StarterKit".Trim().ToLowerInvariant()
-    $interactive = (-not $Yes) -and $exp -lt 0 -and $drop -lt 0 -and $yang -lt 0 -and $hold -lt 0 -and $starter -lt 0 -and -not $kit
+    $language = "$ServerLanguage".Trim()
+    $interactive = (-not $Yes) -and $exp -lt 0 -and $drop -lt 0 -and $yang -lt 0 -and $hold -lt 0 -and $starter -lt 0 -and -not $kit -and -not $language
     if ($interactive) {
         Write-Host ''
         Write-Host "Ustawienia $Reason - wchodzą w życie, zanim pojawi się pierwszy bot:" -ForegroundColor Cyan
@@ -1973,6 +2046,15 @@ function Set-FreshWorldSettings {
             '3' { $kit = 'easy' }
             default { $kit = '' }
         }
+        Write-Host ''
+        Write-Host 'Domyślny język serwera - gracze grają w nim, dopóki sami nie wybiorą innego w ustawieniach klienta:' -ForegroundColor Cyan
+        $languageNow = ConvertTo-M2ServerLanguage (Get-DotEnvValue -Key 'M2_DEFAULT_LANGUAGE' -Default 'pl')
+        if (-not $languageNow) { $languageNow = 'pl' }
+        $language = Read-ServerLanguageAnswer -Current $languageNow
+        if ($language -eq $languageNow) { $language = '' }
+    }
+    if ($language -and -not (ConvertTo-M2ServerLanguage $language)) {
+        throw "Język serwera: nieznany kod '$language'."
     }
 
     $written = @()
@@ -2016,6 +2098,7 @@ function Set-FreshWorldSettings {
     if ($written.Count -gt 0) {
         Write-Host ('Zapisano: ' + ($written -join ', ') + '.') -ForegroundColor Green
     }
+    if ($language) { Set-ServerLanguageSetting -Language $language }
 }
 
 function Reset-WorldAction {
@@ -2880,7 +2963,17 @@ function Install-VpsAction {
     $state = Get-VpsStateForAction
     if (-not (Confirm-Operation ('Zainstalować ten świat na VPS {0}? Folder serwera pójdzie na VPS (około 100 MB), a pierwsza budowa trwa tam 15-40 minut.' -f $state.host))) { return }
     Write-Phase 'instalacja na VPS'
-    $final = Install-M2Vps -State $state -ServerRoot $serverRoot
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the VPS world's default language - the
+    # window's choice (-ServerLanguage), or asked here in the console (this
+    # computer's server's language offered); without either the VPS keeps the
+    # language its .env has (pl for a new one).
+    $language = ConvertTo-M2ServerLanguage $ServerLanguage
+    if ("$ServerLanguage".Trim() -and -not $language) { throw "Język serwera: nieznany kod '$ServerLanguage'." }
+    if (-not $language -and -not $Yes) {
+        $local = ConvertTo-M2ServerLanguage (Get-DotEnvValue -Key 'M2_DEFAULT_LANGUAGE' -Default 'pl')
+        $language = Read-ServerLanguageAnswer -Current $(if ($local) { $local } else { 'pl' })
+    }
+    $final = Install-M2Vps -State $state -ServerRoot $serverRoot -Language $language
     Write-VpsOutcome -Status $final -State $state
 }
 
