@@ -1,2 +1,412 @@
 # MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
 # Polish<TAB>tr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check tr lists what is missing.
+  %u %s - jeszcze %u min	  %u %s - %u dk daha
+  %u %s - na stałe	  %u %s - kalıcı
+ (bot, także odpoczynek)	 (bot, dinlenme dahil)
+ i premie do dropu	 ve düşme bonusları
+ Nagroda trafila do ekwipunku.	 Ödül envantere eklendi.
+%s (offline): zapis do player.quest się nie udał.	%s (çevrimdışı): player.quest kaydı başarısız oldu.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s onu çağıran birine gidiyor ve şu an düello kabul etmeyecek.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s baskında ve şu an düello kabul etmeyecek.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s birinin yoldaşı ve düellolara katılmıyor.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s birinin yoldaşı ve grubuna katılmayacak.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s başka bir çekirdekte (kanal %u) ve player.web_admin_queue kuyruğu isteği kabul etmedi.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s kanal %u üzerinde - sıfırlama (%s) istendi; orada birkaç saniye içinde yapılacak.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s maden kazıyor ve şu an düello kabul etmeyecek.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s balık tutuyor ve şu an düello kabul etmeyecek.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s elinde silah tutmuyor ve düello kabul etmeyecek.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s %d. seviyenin altında düello kabul etmez.
+%s nie walczy w strefie bezpiecznej.	%s güvenli bölgede savaşmaz.
+%s odrzuca zaproszenie do znajomych.	%s arkadaşlık davetini reddediyor.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s Balathor'un Hazinesi'ni açtı - ödülün envantere eklendi.
+%s posiada teraz żywioł: %s!	%s artık şu elemente sahip: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s, %s loncasının davetini kabul ediyor.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma zaten en yüksek değerde (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 parça - set etkisi aktif
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s günlük sınırı yok (dinlenme yalnızca oyundaki botlar için).
+%s: efekt ma juz najwyzszy poziom (%d).	%s: etki zaten en yüksek seviyede (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: bu lonca becerisi zaten en yüksek seviyede.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: bu oyuncu engellenenler listende.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: bu oyuncu senden davet kabul etmiyor.
+%s: tytułów %u, założony %u	%s: unvan %u, takılı %u
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Buffi %d. seviyeden itibaren kullanılabilir.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Buffi'nin bu yuvası yalnızca şunları kabul eder: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Bu beceriyi Beceri Kitabı geliştirir: %s (şaman).
+[Gildia] %s	[Lonca] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Lonca] Botlar yalnızca inşaat malzemesi toplar: Gövde, Temel Taşı, Kontrplak.
+[Gildia] Brak miejsca w ekwipunku.	[Lonca] Envanterde yer yok.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Lonca] Bina lonca arazisine sığmıyor. Onu arazinin ortasına yaklaştır.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Lonca] Miktar: 1 ile %d adet arası.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Lonca] Bir eşya görevi zaten sürüyor - yenisini vermek için onu iptal et.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Lonca] Bir bağış toplama zaten sürüyor - bitmesini bekle ya da iptal et.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Lonca] Görev iptal edildi - bankadaki eşyalar onları getiren botlara geri dönüyor.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Lonca] Süren bir eşya görevi yok.
+[Gildia] Nie ma trwajacej zrzutki.	[Lonca] Süren bir bağış toplama yok.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Lonca] İptal edilecek sefer yok (kulede artık iptal edilemez).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Lonca] Lonca görevleri şu an kullanılamıyor.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Lonca] Lonca görevlerini yalnızca lonca lideri verebilir.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Lonca] Binanın duracağı yerde duruyorsun. Biraz uzaklaş ya da binayı kaydır.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Lonca] Binanın duracağı yerde %s duruyor. Gitmesini bekle ya da binayı kaydır.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Lonca] Bu beceri yalnızca lonca savaşında ya da Balathor Mahzeni'nde kullanılabilir.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Lonca] Lonca bankasında bu eşya yok.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Lonca] Bu yerde zaten başka bir bina var. Yeni binayı kaydır ya da döndür.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Lonca] Lonca bankasından çekildi: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Lonca] Şeytan Kulesi seferi zaten düzenlendi.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Lonca] Şeytan Kulesi seferi iptal edildi.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Lonca] Lonca hazinesindeki Yang yalnızca lonca için harcanabilir: arazi alımı ve binalar. Çekilemez.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Lonca] Lonca hazinesinden %lld Yang, envanterinden %lld Yang ödendi.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Lonca] Bağış toplama bitti. Yatırılan Yang lonca hazinesinde kalır.
+[Gildia] Zrzutka: od %s do %s yang.	[Lonca] Bağış toplama: %s ile %s Yang arası.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Ateşkes] Bir bota saldırıldı - botlarla ateşkes bozuldu.
+[Towarzysz] %s	[Yoldaş] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Savaş] Bu savaşın arenası hala hazırlanıyor - birkaç saniye sonra dene.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Savaş] Savaş arenası başka bir çekirdekte - krallığının M1 haritasına gir ve tekrar tıkla.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Savaş] Botlar lonca savaşlarında yalnızca kanal 1'de savaşır - kanalı değiştir ve tekrar tıkla.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Savaş] %s loncası şu an başka bir savaşta.
+[Wojna] Jestes juz na polu wojny.	[Savaş] Zaten savaş alanındasın.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Savaş] Kazanılan savaşın ödülü: %d x Ayışığı Define Sandığı (öldürmelerin: %d).
+[Wojna] Nie nalezysz do gildii.	[Savaş] Bir loncaya üye değilsin.
+[Wojna] Nie znam areny tej wojny.	[Savaş] Bu savaşın arenasını bilmiyorum.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Savaş] Seni savaş arenasındaki loncanın kampına taşıyorum.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Savaş] Şu an taşınamazsın - birazdan dene.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Savaş] Bu bir alan savaşı: karşılaştığınız yerde savaşırsınız.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Savaş] Loncan şu an savaşta değil.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Savaş] %s loncasına savaş zaten ilan edildi - botlar lonca sohbetinde cevap verecek.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Savaş] Bot loncalarıyla savaşlar sunucu panelinde kapalı.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Savaş] %s bot loncasına savaş ilan edildi. Botlarla savaş arenasında (kanal 1) savaşılır. Cevap birkaç saniye içinde lonca sohbetine gelecek.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Savaş] %s loncasıyla zaten bir savaş ya da savaş bitişi sürüyor.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Kralı Yakala] 25 kral kartı yeni bir Kral destesi verdi (sende %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Kralı Yakala] Yarıda kalan oyundan ödülün seni bekliyor - envanterde yer aç ve yeniden giriş yap.
+[Zlap Krola] Event teraz nie trwa.	[Kralı Yakala] Etkinlik şu an sürmüyor.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Kralı Yakala] Zaten en fazla Kral destesine sahipsin (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Kralı Yakala] Yeterli Kral destesi ya da Yang yok (oyun başına %d deste ve %d Yang).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Kralı Yakala] Bu yalnızca etkinlik sırasında kullanılabilir.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Kralı Yakala] Ödülü almak için envanterde yer aç.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Otomatik indirim: %%1 ile %%%d arası, her 1-%d saatte bir.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor yenildi! Ardında hazinesini bıraktı - ödülü alın. Mahzenden çıkış: %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: atlanacak aşama yok (yalnızca Mahzende, baskın sırasında)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor kaçtı ama ardında hazinesini bıraktı - ödülü alın. Mahzenden çıkış: %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor kazandı - sefer başarısız, ödül yok. Mahzenden çıkış: %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: tekrarlanabilir görev tamamlandı (%u. kez)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: görev tamamlandı!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: görevler yeniden yüklendi (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: bu sezonun son ödülü zaten alındı.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: önce sezonun tüm görevlerini tamamla.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: sezonun tüm görevleri tamamlandı - son ödülü al!
+Bonus zestawu kostiumow (%s): %ld czesci.	Kostüm seti bonusu (%s): %ld parça.
+Boss Swiata jest chwilowo niedostepny.	Dünya Patronu şu an kullanılamıyor.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Dünya Patronu: %d. sıra, ganimet seviyesi %s (%lld hasar, +%d rütbe puanı). Sıradaki patron çıkmadan önce ödülü Dünya Patronu penceresinden al.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Dünya Patronu: envanterde yer yok (%d boş alan gerekli) - yer aç ve tekrar tıkla.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Dünya Patronu: ödüllerin bir kısmı alındı; kalanı için envanterde yer yok (%d boş alan gerekli) - yer aç ve tekrar tıkla.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Dünya Patronu: loncanın %u. sezondaki %d. sırası için ödül.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Dünya Patronu: karakter sıralamasında %u. sezondaki %d. sıra için ödül.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Dünya Patronu: ödül zaten alındı ya da süresi geçti.
+Boss Swiata: nie masz nagrody do odebrania.	Dünya Patronu: alınacak ödülün yok.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Dünya Patronu: %d. sıra ödülü alındı (ganimet seviyesi %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Dünya Patronu: görev bonusu - saldırı değeri +%%%d, %d sa. boyunca.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Dünya Patronu: %lld hasar verdin - ödül için yetersiz (gereken %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Dünya Patronu: ödülü almadan önce diğer pencereleri kapat (ticaret, dükkan, depo).
+Boty opuszczaja Wieze Demonow.	Botlar Şeytan Kulesi'nden ayrılıyor.
+Brak miejsca w kategorii: %s.	Kategoride yer yok: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Genç Kahramanların Silahı yükseltilemez ve değiştirilemez.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: bilinmeyen komut ya da yanlış argümanlar (%s) - hiçbir şey değişmedi
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: karakter başka bir çekirdekte (kanal %d) - komut gönderildi
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: karakter çevrimdışı - değişiklik (%s) kaydedildi, bir sonraki girişinde uygulanacak
+champion: nie ma postaci %s	champion: %s karakteri yok
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: bilinmeyen komut ya da yanlış argümanlar (%s) - hiçbir şey değişmedi
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Süre doldu - Balathor kazandı. Mahzenden çıkış: %s.
+Czas przejecia bota minal - postac wraca do bota.	Bot devralma süresi doldu - karakter bota geri dönüyor.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	Eski pet sisteminin yerini Evcil Hayvan Sistemi aldı - hayvan penceresini U tuşu açar.
+Do ewolucji tej szaty potrzeba: %s x%d.	Bu cübbenin evrimi için gereken: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Eldivenlere yalnızca Şeytanların taşı uyar.
+Dom Aukcyjny jest dostepny tylko w M1.	Müzayede Evi yalnızca M1'de kullanılabilir.
+Dom Aukcyjny jest wylaczony na tym swiecie.	Müzayede Evi bu dünyada kapalı.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Mükemmel! Şeytanların güç taşı iki kat değer verdi.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u eşya, %u canavar.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Çiçek Çocukları: etkinlik ve takas süresi zaten bitti.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Çiçek Çocukları: ödül şu an kullanılamıyor - bunu yönetime bildir.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Çiçek Çocukları: takas etmeden önce diğer pencereleri kapat (ticaret, dükkan, depo).
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Çiçek Çocukları: Çiçek tohumları kazanıyorsun (sende %d).
+dziś nie było wypraw	bugün sefer yapılmadı
+Efekt zestawu nadany: %s.	Set etkisi verildi: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Envanter dolu - satın alınan yığının bir kısmı ayaklarının dibinde.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Elendiniz! Bir dakika içinde kimse dirilmezse zindandaki süreniz sona erer.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir 3 dakika boyunca yanında olacak. Uzaklaşırsan ya da harita değiştirirsen kaybolur.
+Enasir odszedł.	Enasir gitti.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir hizmet ücreti aldı: %lld Yang (%%10).
+Enasir: %s - pozostały czas %s.	Enasir: %s - kalan süre %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Depo %s, Dükkan %s, çağrıldı: %s, burada izin var: %s.
+Enasir: usługi zabrane.	Enasir: hizmetler kaldırıldı.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	Çiçek Çocukları etkinliği bitti - bu çiçek artık kullanılamaz.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Balıkçılık Etkinliği - Yapboz şu an sürmüyor - kutuları bir sonraki etkinlikte açabilirsin.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Evrim ancak %d. seviyede %%100 tecrübe ile mümkün.
+Ewolucja udana: %s, poziom %d.	Evrim başarılı: %s, seviye %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Gaya artık bir para birimi: %d Gaya, Gaya sayacına eklendi (envanterde Yang'ın yanında).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Gaya pencereye konmaz - demirci onu kendisi envanterden alır.
+Gildia nauczyła się: %s (poziom %d/%d).	Lonca şunu öğrendi: %s (seviye %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	Loncanın dağıtılmış beceri puanı yok.
+Gildia odzyskała punkty umiejętności: %d.	Lonca beceri puanlarını geri aldı: %d.
+GM zresetował Twój limit dziennych dungeonów.	GM günlük zindan sınırını sıfırladı.
+Gracz %s nie ma tytułu %s.	%s oyuncusunun %s unvanı yok.
+Gracza %s nie ma na tym kanale (albo to bot).	%s oyuncusu bu kanalda değil (ya da bir bot).
+Gratulacje - %d. poziom!	Tebrikler - %d. seviye!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Ejderha Yumurtalarından biri buz gibi soğuk çağırıyor! Durdurmak için saldırılarınızı ona yöneltin.
+Kamien Demonow osadzony.	Şeytanların taşı yerleştirildi.
+Kamien Demonow pasuje tylko do rekawic.	Şeytanların taşı yalnızca eldivenlere uyar.
+Kamien Demonow pekl przy osadzaniu.	Şeytanların taşı yerleştirilirken kırıldı.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	Ölüm Taşları yedinci katı koruyor. Dördünü de kırın!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	Ritüel Taşı yalnızca 80. seviyenin üstündeki eşyalarda çalışır.
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Bu kitabı her okuma denemesi %u Şampiyon EXP'si tutar - yeterince yok.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Sung Mahi'nin Laneti becerilerini engelliyor.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Bu çekirdekte etkinlik listeli istemciler: %u, lider: %s.
+Kod zrealizowany: %s.	Kod kullanıldı: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Şans Çarkı (eski): %ux %s alıyorsun.
+Kolo Fortuny: %s	Şans Çarkı: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Şans Çarkı: yer yok - %u ödül bekliyor. Yer aç ve çarkı yeniden aç.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Şans Çarkı: envanterde yer aç - ödül bekliyor.
+Kolo Losu: %s	Kader Çarkı: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Kader Çarkı: veriler yeniden yüklendi (%u çark, %u eşya), aktif çark %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	Binek becerisinin rengi, beceriyi bildiğinde değiştirilebilir.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	Beceri rengi, becerinin P seviyesinden itibaren değiştirilebilir.
+kostium (strój)	kostüm (kıyafet)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	Silah kostümü bu sayfanın silahına uymuyor - envantere çıkarıldı.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	Silah kostümü bu sayfanın silahına uymuyor ve onu çıkarmak için envanterde yer yok.
+kostium broni szamana	şaman silah kostümü
+kostium fryzury	saç kostümü
+Krwawisz! (%d sek.)	Kanıyorsun! (%d sn.)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Balathor Mahzeni bu çekirdekte açılamaz.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	Tamlığın kitabını 1. Şampiyon Seviyesinden itibaren okuyabilirsin.
+Księgi się zmieniły - ułóż je od nowa.	Kitaplar değişti - onları yeniden diz.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Zindanlar: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (yalnızca bot dinlenmesi); zindan yoksa ya da all - hepsi.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	NPC Bulucu her karakter için açık - bu eşyaya artık gerek yok.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	Küçük Kutsama işe yaramadı - 6. ve 7. bonus değişmedi.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Sahip olunabilecek en fazla Gaya'ya zaten sahipsin (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Envanterin 4 sayfasının hepsini zaten açtın.
+Masz już ten tytuł.	Bu unvana zaten sahipsin.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Yeni bir Sung Ma statü puanın var (boş: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Üzerinde sınırdan (100 milyar) fazla Yang var. Ticaret yapamazsın.
+Masz za mało Gaya (potrzeba %d).	Yeterli Gaya yok (gereken %d).
+Masz za mało materiału (potrzeba %d).	Yeterli malzeme yok (gereken %d).
+Masz za mało Yang (potrzeba %d).	Yeterli Yang yok (gereken %d).
+Masz za mało Yang.	Yeterli Yang yok.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Arezzo yerleri bu sunucuda kapalı - şehre dönüyorsun.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	"Dünya Patronunu Yen" görevi tamamlandı - +%%%d saldırı değeri bonusu (%d sa.) Dünya Patronu penceresinde bekliyor.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Aynı anda yalnızca bir Element Taşı takabilirsin (Koruma ya da Güç). Önce taktığını çıkar.
+Możesz łowić ryby od 30 poziomu.	30. seviyeden itibaren balık tutabilirsin.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Envanter sayfasını değiştirmek için yerinde durmalısın.
+na stałe	kalıcı
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Bu beceriye beceri puanı harcanmadı - El Kitabı'ndan ve kitaplardan gelen seviye geri alınamaz. Tüm karşı saldırıyı ve güçlendirmeyi Eğitim Dönüşüm Parşömeni siler.
+Na tym kanale magazyn jest niedostępny.	Bu kanalda depo kullanılamıyor.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Binekteyken Binek Dönüşümü İptali'ni kullan.
+Nadano tytuł %s graczowi %s.	%s unvanı %s oyuncusuna verildi.
+Nadano tytuł %s.	%s unvanı verildi.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	Mahzen ödülünü loncadan %d karakter aldı.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Önce güçlendirmeyi öğren - Ders Kitabı Güçlendirme kullan.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Önce ek bir envanter sayfası aç ("Envanter sayfası II" eşyası).
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Önce Ejderha Simyasını aç - taş onun penceresine gider.
+Najpierw wybierz drogę umiejętności.	Önce beceri yolunu seç.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Önce bir karşı saldırı seç - Ders Kitabı Misilleme kullan.
+Najpierw wyjmij przedmiot ze Switchbota.	Önce eşyayı Switchbot'tan çıkar.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Önce yeni görünüm alacak eşyayı koy.
+Najpierw włóż szatę aury.	Önce aura cübbesini koy.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Önce diğer pencereleri kapat (ticaret, dükkan, depo).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Önce diğer pencereleri kapat (ticaret, dükkan, depo, kuşaklar).
+Najpierw zamknij okno szaty aury.	Önce aura cübbesi penceresini kapat.
+Najwyżej 1000 dni.	En fazla 1000 gün.
+Nie ma postaci %s.	%s karakteri yok.
+Nie ma takiego tytułu (/tytul lista).	Böyle bir unvan yok (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Envanterinde en az +7'ye yükseltilmiş 75. seviye ve üstü silah, zırh ya da kask yok (bu demircinin set etkisi olmadan). Eşyayı parçacıklar ve Set Tasarımı ile birlikte pencereye koy.
+Nie masz wolnych punktow Sung Ma.	Boş Sung Ma puanın yok.
+Nie mozesz przywolac kamienia Metin w lochu.	Zindanda Metin taşı çağıramazsın.
+Nie mozesz przywolac zyly w lochu.	Zindanda maden damarı çağıramazsın.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Satamazsın - üzerindeki 100 milyar Yang sınırını aşarsın.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Kuşanılmış eşya Switchbot'a taşınamaz.
+Nie możesz się teleportować z lochu.	Zindandan ışınlanamazsın.
+Nie możesz teraz zmienić strony ekwipunku.	Şu an envanter sayfasını değiştiremezsin.
+Nie możesz tutaj użyć tego przedmiotu.	Bu eşyayı burada kullanamazsın.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	%s eşyasını %s envanter sayfasından kuşanamazsın - sayfa değişmedi.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Bu eşya şu an yok edilemez - diğer pencereleri kapat ve tekrar dene.
+Nie nadano tytułu %s (gracz ma go już na stałe).	%s unvanı verilmedi (oyuncuda zaten kalıcı olarak var).
+Nie nadano tytułu %s.	%s unvanı verilmedi.
+Nie należysz do gildii.	Bir loncaya üye değilsin.
+Nie przeniesiono bota %s: %s.	%s botu taşınmadı: %s.
+nie trwa	sürmüyor
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Set etkisi verilemedi. Eşya olduğu gibi kaldı.
+Nie udało się otworzyć Krypty Balathora.	Balathor Mahzeni açılamadı.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Başarısız oldu. Malzemeler ve Yang kayboldu, eşya pencerede kaldı.
+Nie znasz tej umiejetnosci.	Bu beceriyi bilmiyorsun.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Bilinmeyen zindan "%s". Zindanlar: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby ya da all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Botlardan hiçbiri 75. seviyede değil - Kule altıncı katta bitiyor.
+Od 1 do %d wymian naraz.	Tek seferde 1 ile %d arası takas.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	G1'den P'ye kadar karşı saldırıyı ve güçlendirmeyi Ruh Taşı+ geliştirir.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Envanter sayfası %s açıldı (sayfa: %d/4). Sayfaları envanter penceresindeki sekmelerle ya da "Envanter sayfası değiştir" becerisiyle (yardımcı beceriler) değiştirirsin.
+Ogniste Strzały załadowane do Hwachy: %u.	Hwacha'ya yüklenen Ateşli Oklar: %u.
+Osiagnieto limit zakupu tego przedmiotu.	Bu eşyanın satın alma sınırına ulaşıldı.
+Otrzymujesz %d Gaya.	%d Gaya alıyorsun.
+Otrzymujesz kartę Okey (%d/%d).	Bir Okey kartı alıyorsun (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Bir Okey kart seti alıyorsun (sende %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Balathor'un Hazinesi'ni açtın - ödül envanterine eklendi.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Değerler yalnızca bilezik, kolye, küpe ya da kalkandan aktarılabilir.
+Parametry przeniesione na szatę aury.	Değerler aura cübbesine aktarıldı.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Aura cübbesinin değerleri silindi - yenilerini aktarabilirsin.
+Poczekaj 10 sekund po walce.	Savaştan sonra 10 saniye bekle.
+Poczekaj 3 sekundy przed kolejną zmianą.	Bir sonraki değişiklikten önce 3 saniye bekle.
+Poczekaj chwile przed kolejna zmiana opisu.	Açıklamayı yeniden değiştirmeden önce biraz bekle.
+Poczekaj chwile przed kolejna zmiana stanu.	Durumu yeniden değiştirmeden önce biraz bekle.
+Poczekaj chwile przed kolejnym zaproszeniem.	Yeni davetten önce biraz bekle.
+Podaj gracza.	Bir oyuncu belirt.
+Podejdź do Seon-Hae.	Seon-Hae'ye yaklaş.
+Pojawiło się Ogniste Jajo Smoka.	Ateşli Ejderha Yumurtası belirdi.
+Pokonajcie wszystkie pobliskie potwory.	Yakındaki tüm canavarları yenin.
+Polimorfia działa tylko na wierzchowcach.	Dönüşüm yalnızca bineklerde çalışır.
+Polimorfia wierzchowca zakończona.	Binek dönüşümü sona erdi.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Başarısız! %s etkisi açılmadı - çiçek soldu.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Başarısız! %s etkisi %d. seviyeye yükseltilemedi - çiçek soldu.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Başarısız! Etki %s olarak değiştirilemedi - çiçek soldu, önceki etki kalıyor.
+Potrzeba %lld ksiąg (w oknie: %lld).	%lld kitap gerekli (pencerede: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Güçlü Savaş Atı yalnızca Kırmızı Ginseng (premium) yer.
+Poziom Czempiona: %d.	Şampiyon Seviyesi: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Pencereye en az +7'ye yükseltilmiş 75. seviye ve üstü silah, zırh ya da kask koy.
+Precyzja: poziom %s, bonus Precyzji +%d.	Tamlık: seviye %s, Tamlık bonusu +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Günlük hediye: %lld Yang ve %d adet iksir (D). Sonraki 24 saat sonra.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Kaplamayı envanterdeki kuşağın üzerine sürükle (kuşak çıkarılmış olmalı).
+Przeci±gnij zwój na broń w ekwipunku.	Parşömeni envanterdeki silahın üzerine sürükle.
+Przeciągnij Anulację na przedmiot z transmutacją.	İptal'i dönüşüm uygulanmış eşyanın üzerine sürükle.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Aura Sertifikası+'yı aura cübbesinin üzerine sürükle.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	%s eşyası şu an çıkarılamaz - envanter sayfası değişmedi.
+Przeniesiono bota %s do Ciebie.	%s botu yanına taşındı.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Ek envantere taşındı: %d (yığınlara eklenen: %d).
+Przenosić można raz na 3 sekundy.	Taşıma 3 saniyede bir yapılabilir.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	Bir sonraki saldırıda daha fazla hasar gerekecek.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Enasir çağırma düğmesi istemcinin yeni sürümünü gerektiriyor - oyunu güncelle.
+Przywolana zyla zniknie po 15 minutach.	Çağrılan maden damarı 15 dakika sonra kaybolur.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	Çağrılan Metin taşı, yok etmezsen 15 dakika sonra kaybolur.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	Sorunun süresi doldu - eşyayı bir kez daha çıkarmayı dene.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Sıralama: %u. sezon şimdi bitiyor (özet yaklaşık 2 dakika sonra).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Sıralama: %u. sezon, %s, unvan sahipleri: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Eldivenler: bu becerinin bir sonraki bekleme süresi 5 sn daha kısa.
+Rekrutacja potworow jest wylaczona.	Canavar toplama kapalı.
+Relikt Duszy: nowy bonus - %s (%d).	Ruh kalıntısı: yeni bonus - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	M1 derecesinden itibaren karşı saldırı ve güçlendirme geri alınamaz.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Gelişim başarılı. Artık cübbe evrimi mümkün (Aura cübbesi: evrim).
+Rozwój udany: poziom %d.	Gelişim başarılı: seviye %d.
+Ryba się zerwała z haczyka.	Balık oltadan kurtuldu.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae'de senin yolun için kitap yok.
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: süre sıfırlandı.
+Silniejszy efekt tego rodzaju już działa.	Bu türden daha güçlü bir etki zaten aktif.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	Dükkan kapalı - süresini uzatmak yerine onu yeniden aç.
+Sklep ma juz maksymalny czas (%d dni).	Dükkan zaten en uzun sürede (%d gün).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Dükkan %u saat uzatıldı (kalan yaklaşık %u sa. %u dk.).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Kaybolmadan önce Donmuş Ejderha Yumurtasına odaklanın (%d sn).
+Sortowac mozna raz na 3 sekundy.	Sıralama 3 saniyede bir yapılabilir.
+Statystyki Sung Ma ma tylko Czempion.	Sung Ma statülerine yalnızca Şampiyon sahiptir.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	Envanter sayfası %s hala kilitli - onu bir sonraki "Envanter sayfası II" eşyası açar.
+Strona ekwipunku: %s.	Envanter sayfası: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	Envanter sayfası 5 saniyede bir değiştirilebilir.
+Sukces! Efekt %s jest aktywny (poziom 1).	Başarılı! %s etkisi aktif (seviye 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Başarılı! %s etkisi %d. seviyeye yükseldi.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot durdu. Kostüm Büyüleme eşyası yok.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot durdu. Eşya Efsunu yok.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: bu kostümün bonusları değiştirilemedi.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: bu eşya efsunlanamaz (bonus yok).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Şans %%%d arttı (1 eşya kullanıldı).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	Kuşağın görünümü yeni (bonuslar ve emilim değişmedi).
+Ta Anulacja działa tylko na wierzchowcach.	Bu İptal yalnızca bineklerde çalışır.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Bu kitap Şampiyonlar için: onu 1. Şampiyon Seviyesinden itibaren okuyabilirsin.
+Ta szarfa ma juz te nakladke.	Bu kuşakta zaten bu kaplama var.
+Ta szata aury ma już najwyższy poziom.	Bu aura cübbesi zaten en yüksek seviyede.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Bu cübbe kendi türünün zirvesinde - şimdi evrim (Aura cübbesi: evrim).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Bu cübbeye zaten değerler aktarılmış. Onu Aura Sertifikası+ ile temizle.
+Ta szata nie ma przeniesionych parametrów.	Bu cübbeye aktarılmış değer yok.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Bu Sütuna yalnızca Ninja ya da Şaman zarar verebilir.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Bu eşya yalnızca Sung Mahi'nin Cehennem Kulesi'nde kullanılabilir.
+Tego przedmiotu nie mozna dodac do Switchbota.	Bu eşya Switchbot'a eklenemez.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Bu eşya şu an kullanılamaz (kuşanılmış, ticarette ya da kilitli).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Bu eşya hayvan penceresinde kullanılır (U tuşu).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Bu yığın bu fiyatla bölünemez - tüm yığını satın al.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	Girişe ışınlanma %lld Yang tutar - üzerinde o kadar yok.
+Teleport pod wejście: zapłacono %lld Yang.	Girişe ışınlanma: %lld Yang ödendi.
+Ten certyfikat nie nadaje żadnego tytułu.	Bu sertifika hiçbir unvan vermez.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Bu güçlendirme senin sınıfın ve beceri yolun için değil.
+Ten efekt już działa i potrwa dłużej niż nowy.	Bu etki zaten aktif ve yenisinden daha uzun sürecek.
+Ten element nie pasuje w tym miejscu.	Bu parça bu yere uymuyor.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Bu oyuncu o kadar Yang taşıyamaz (üzerinde 100 milyar sınırı).
+Ten loch jest dla poziomów %d - %d.	Bu zindan %d - %d seviyeleri için.
+Ten Metin moze zranic tylko Szaman.	Bu Metine yalnızca Şaman zarar verebilir.
+Ten opis zawiera niedozwolone slowo.	Bu açıklama yasaklı bir kelime içeriyor.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Bu canavar geçiş biletiyle girilen bir haritada yaşıyor - orada kartla ışınlanma kullanılamaz.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Bu eşya yalnızca Arezzo modülü açıkken kullanılabilir.
+Ten przedmiot jest juz w Switchbocie.	Bu eşya zaten Switchbot'ta.
+Ten przedmiot ma już ten efekt zestawu.	Bu eşyada zaten bu set etkisi var.
+Ten przedmiot nie ma transmutacji.	Bu eşyada dönüşüm yok.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Bu eşya ek envanterin hiçbir kategorisine ait değil.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Bu eşya ek envanterin bu kategorisine uymuyor.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Bu eşya üretim şansını artırmaz.
+Ten wygląd nie pasuje do tego przedmiotu.	Bu görünüm bu eşyaya uymuyor.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Bu parşömeni yalnızca en az %d. seviyedeki lonca üyelerine satarım.
+To nie jest bilet do tej przemiany.	Bu, bu dönüşümün bileti değil.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	Burası Sung Ma toprağı: Şampiyon Seviyesi olmadan buradaki canavarlara zarar veremezsin.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Dönüşüm kaldırıldı - eşya yine kendi görünümünde.
+Transmutacja zakończona.	Dönüşüm tamamlandı.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Dönüşüme yalnızca silahlar, zırhlar, kostümler ve silah görünümleri tabidir.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Buraya yalnızca Buz ya da Ateş Aura Rünü konabilir.
+Tu można włożyć tylko szatę aury.	Buraya yalnızca aura cübbesi konabilir.
+Twoja gildia ma już otwartą Kryptę Balathora.	Loncanın zaten açık bir Balathor Mahzeni var.
+Twoja gildia nie ma otwartej Krypty Balathora.	Loncanın açık bir Balathor Mahzeni yok.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Tamlığın zaten en yüksek seviyede (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Şampiyon Seviyen bu eşyayı kullanmak için çok düşük (gereken: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Şampiyon Seviyen bu eşyayı kuşanmak için çok düşük (gereken: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Unvanlar istemcinin yeni sürümünü gerektiriyor - oyunu güncelle.
+Tę księgę może przeczytać tylko lider gildii.	Bu kitabı yalnızca lonca lideri okuyabilir.
+Udało się odeprzeć lodowe zimno.	Buz gibi soğuk püskürtüldü.
+Użycie: /kod MT2009-PLUS-XXXX	Kullanım: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	Envanterde ek envantere ait eşya yok.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Tek bir ticarette en fazla 10 milyar Yang verilebilir.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	Sung Mahi'nin Cehennem Kulesi'nde yalnızca Satıcı'dan alınan kule iksirleri (W) çalışır.
+W tych rekawicach nie ma wolnego miejsca na kamien.	Bu eldivenlerde taş için boş yer yok.
+W tym stosie nie ma juz tylu sztuk.	Bu yığında artık o kadar adet yok.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	Dükkanın değeri ve Yang'ın 100 milyar Yang sınırını aşar.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	Bu eşyanın görünümü sınıfına uymuyor.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	Bu eşyanın görünümü cinsiyetine uymuyor.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Sefer yarıda kaldı - Gizli Balathor kaçtı ama hazinesini bıraktı. Mahzenden çıkış: %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Sefer yarıda kaldı. Mahzenden çıkış: %s.
+Wyspa Skarbow: %s (flaga %s).	Hazine Adası: %s (bayrak %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	Balıkçılık Yapbozu istemcinin yeni sürümünü gerektiriyor - oyunu güncelle.
+Włóż bilet w okno transmutacji u Teowadena.	Bileti Teowaden'deki dönüşüm penceresine koy.
+Włóż oba przedmioty.	İki eşyayı da koy.
+Yut Nori: event sie nie odbywa.	Yut Nori: etkinlik yapılmıyor.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: etkinlik şimdi başlıyor, birazdan dene.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: kayın kütükleri yalnızca etkinlik sırasında eklenebilir.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: %d x Yut Nori tahtası ve %d Yang gerekli.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: ödülü almak için envanterde yer aç.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	10 saniye sonra Donmuş Ejderha Yumurtası belirecek - o zaman ona birlikte vurun.
+Za mało Yang (potrzeba %lld).	Yetersiz Yang (gereken %lld).
+Zabrano tytuł %s graczowi %s.	%s unvanı %s oyuncusundan alındı.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	Element efsunu başarısız oldu! Silah değişmedi.
+Zaczarowanie żywiołu powiodło się! %s.	Element efsunu başarılı oldu! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Diğer pencereleri kapat (ticaret, dükkan, depo).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Diğer pencereleri kapat (ticaret, dükkan, depo, zar) ve tekrar dene.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Ek envanteri sıralamak için diğer pencereleri kapat.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Ek envanterde yığınları birleştirmek için diğer pencereleri kapat.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Eşyaları ek envantere taşımak için diğer pencereleri kapat.
+Zamknij inne okna, aby użyć tego przedmiotu.	Bu eşyayı kullanmak için diğer pencereleri kapat.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Envanter sayfasını değiştirmek için diğer pencereleri kapat.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Gruba yalnızca aynı haritadaki ve aynı kanaldaki oyuncu davet edilebilir.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Kostümü gizlemek ya da göstermek için dur.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Eşyayı çıkar ve envantere al.
+Zdejmij szatę i weź ją do ekwipunku.	Cübbeyi çıkar ve envantere al.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Kostüm seti eksik - set bonusu kayboldu.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Kostüm seti: +%ld HP ve +%ld saldırı değeri.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Sung Ma toprağı şunları gerektirir: Güç %d, Canlılık %d, Direnç %d, Zeka %d - eksik olursa gücün yarıya düşer.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Zaten başka bir karşı saldırı biliyorsun - yalnızca bir tane olabilir. Bu kitap onu geliştirmez.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Donmuş Ejderha Yumurtalarını koruyan Devasa Buz[ENTER]Duvarı'nı yok edin!
+Zniszczono: %s.	Yok edildi: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Element efsunu seviyesi düşürüldü: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Element efsunu seviyesi düşürüldü: silahın artık elementi yok (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Envanterde kalan: %d - kategoride yer yok: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	%s günlük sınırı, %s karakteri için sıfırlandı (çevrimdışı): %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	%s günlük sınırı, %s%s karakteri için sıfırlandı: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Envanterde yer aç (%d boş alan gerekli).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Envanterde yer aç - envanter sayfaları deposundaki eşya boş alan bekliyor.
+Zwój albo broń nie leży już w ekwipunku.	Parşömen ya da silah artık envanterde değil.
+Łączyć stosy można raz na 3 sekundy.	Yığınlar 3 saniyede bir birleştirilebilir.
