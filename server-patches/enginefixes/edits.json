@@ -712,5 +712,11 @@
   "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance)",
   "old": "\tbool\t\tm_bBestBlocked = false;\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n",
   "new": "\tbool\t\tm_bBestBlocked = false;\n\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance): the straight distance between two\n\t// characters, rounded down.\n\tstatic int Mt2009PlusDistance(LPCHARACTER a, LPCHARACTER b)\n\t{\n\t\tconst double dx = (double) (b->GetX() - a->GetX());\n\t\tconst double dy = (double) (b->GetY() - a->GetY());\n\t\treturn (int) sqrt(dx * dx + dy * dy);\n\t}\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GOLD_CHANGE_FIX_V1 (gm panel)",
+  "old": "\t\ttch->PointChange(POINT_GOLD, amount, true);\n",
+  "new": "\t\t// MT2009_PLUS_GOLD_CHANGE_FIX_V1 (gm panel) (server-patches/enginefixes): PointChange refuses POINT_GOLD\n\t\t// (\"unknown point change type 11\") - the 64-bit purse changes through ChangeGold only.\n\t\ttch->ChangeGold((YANG)amount);\n"
  }
 ]

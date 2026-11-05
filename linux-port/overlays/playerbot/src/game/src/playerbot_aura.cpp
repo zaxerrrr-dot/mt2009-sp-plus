@@ -35,6 +35,7 @@
 #include "constants.h"
 #include "config.h"
 #include "char.h"
+#include "playerbot_engine_compat.h"	// PlayerBotChangeGold (MT2009_PLUS_GOLD_CHANGE_FIX_V1)
 #include "char_manager.h"
 #include "desc.h"
 #include "item.h"
@@ -497,7 +498,7 @@ namespace aura
 		next.exp = 0;
 		item->SetSocket(SOCKET_LEVEL, Encode(next));
 
-		ch->PointChange(POINT_GOLD, -g.gold);
+		PlayerBotChangeGold(ch, -(long long)g.gold);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 		ch->RemoveSpecifyItem(g.material, g.materialCount);
 
 		char hint[96];

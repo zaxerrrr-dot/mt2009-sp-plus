@@ -432,6 +432,18 @@ def MissingMaterials(target):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+def _SkillSlotCover(s, closed):
+	"""MT2009_PLUS_PET_SLOT_COVER_V1: the crossed planks (cover button) only on a closed slot - the exe shows a slot's cover
+	button whenever an item / skill is set in it, so an open slot with a learned skill showed the planks over its icon.
+	An open slot loses the button, a closed one gets it back (SetCoverButton creates it when missing)."""
+	if closed:
+		s.SetCoverButton(0, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, SKILL_SLOT_ENABLE, False, False)
+		s.SetAlwaysRenderCoverButton(0, True)
+	else:
+		s.SetAlwaysRenderCoverButton(0, False)
+		s.DeleteCoverButton(0)
+
+
 # the windows' shared state: the interface, the bag slots locked while an item sits in a pet window
 _interface = None
 _wnd = None			# PetInformationWindow
@@ -1848,7 +1860,7 @@ class PetInformationWindow(ui.ScriptWindow):
 		for i in xrange(SKILL_SLOTS):
 			self.skillSlots[i].ClearSlot(0)
 			self.skillSlots[i].HideAllSlotButton()
-			self.skillSlots[i].SetAlwaysRenderCoverButton(0)
+			_SkillSlotCover(self.skillSlots[i], True)
 			self.skillSlots[i].RefreshSlot()	# MT2009_PLUS_PET_SKILL_SLOT_DROP_V1 (see RefreshStatus)
 			self.cool[i] = None
 		for s in self.potentialSlots:
@@ -1912,11 +1924,11 @@ class PetInformationWindow(ui.ScriptWindow):
 			if slot >= pet.skillSlots:
 				s.ClearSlot(0)
 				s.HideAllSlotButton()
-				s.SetAlwaysRenderCoverButton(0)
+				_SkillSlotCover(s, True)
 				s.RefreshSlot()
 				self.cool[slot] = None
 				continue
-			s.SetAlwaysRenderCoverButton(0, False)
+			_SkillSlotCover(s, False)
 			if not sk:
 				s.ClearSlot(0)
 				s.HideAllSlotButton()
@@ -1941,7 +1953,7 @@ class PetInformationWindow(ui.ScriptWindow):
 			(egg, sk, lv, end) = GetPotential(pet.id, slot) if slot < opened else (0, 0, 0, 0)
 			s = self.potentialSlots[slot]
 			# MT2009_PLUS_PET_WINDOW_LAYOUT_V3: a closed potential slot shows the crossed planks, as a closed skill slot
-			s.SetAlwaysRenderCoverButton(0, slot >= opened)
+			_SkillSlotCover(s, slot >= opened)
 			if sk and end > now:
 				SetSkillIcon(s, 0, sk)
 				s.SetSlotCount(0, lv)

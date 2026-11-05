@@ -17,6 +17,7 @@
 #include "constants.h"
 #include "config.h"
 #include "char.h"
+#include "playerbot_engine_compat.h"	// PlayerBotChangeGold (MT2009_PLUS_GOLD_CHANGE_FIX_V1)
 #include "char_manager.h"
 #include "desc.h"
 #include "item.h"
@@ -323,7 +324,7 @@ namespace changelook
 			return;
 		}
 		if (price > 0)
-			ch->PointChange(POINT_GOLD, -price);
+			PlayerBotChangeGold(ch, -(long long)price);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 
 		char hint[96];
 		snprintf(hint, sizeof(hint), "look %u (%s) was %u price %d pass %u", right->GetVnum(), right->GetName(),

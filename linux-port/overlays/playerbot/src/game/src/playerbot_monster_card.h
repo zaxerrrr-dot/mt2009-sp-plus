@@ -748,7 +748,7 @@ namespace mt2009_mcard
 	{
 		if (box->GetVnum() == BOX_SILVER && number(1, 100) > SILVER_CARD_PERCENT)
 		{
-			ch->PointChange(POINT_GOLD, SILVER_YANG, true);
+			PlayerBotChangeGold(ch, (long long)SILVER_YANG);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 			ch->ChatPacket(CHAT_TYPE_INFO, MSG_BOX_YANG, SILVER_YANG);
 			return true;
 		}

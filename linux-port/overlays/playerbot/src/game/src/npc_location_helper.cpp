@@ -524,7 +524,7 @@ void CNpcLocationHelperManager::WarpToNPC(CHARACTER* ch, const TPacketCGNPCLocat
 	}
 
 	if (mapInfo->warpNeedYang > 0)
-		ch->PointChange(POINT_GOLD, -static_cast<int>(mapInfo->warpNeedYang));
+		ch->ChangeGold(-(YANG)mapInfo->warpNeedYang);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 	if (mapInfo->warpNeedItemVnum > 0 && mapInfo->warpNeedItemCount > 0)
 		ch->RemoveSpecifyItem(mapInfo->warpNeedItemVnum, mapInfo->warpNeedItemCount);
 	ConsumeWarpStones(ch, stoneCost);

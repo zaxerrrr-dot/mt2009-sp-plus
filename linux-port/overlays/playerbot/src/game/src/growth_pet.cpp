@@ -1796,7 +1796,7 @@ namespace growth_pet
 		LPITEM seal = ITEM_MANAGER::instance().CreateItem(sp->seal, 1);
 		if (!seal)
 			return false;
-		ch->PointChange(POINT_GOLD, -price);
+		ch->ChangeGold(-(YANG)price);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 		if (egg->GetCount() > 1)
 			egg->SetCount(egg->GetCount() - 1);
 		else
@@ -2053,7 +2053,7 @@ namespace growth_pet
 			ch->GetDesc()->Packet(&res, sizeof(res));
 			return;
 		}
-		ch->PointChange(POINT_GOLD, -RENAME_PRICE);
+		ch->ChangeGold(-(YANG)RENAME_PRICE);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 		if (scroll->GetCount() > 1)
 			scroll->SetCount(scroll->GetCount() - 1);
 		else
@@ -2118,7 +2118,7 @@ namespace growth_pet
 			Say(ch, "Nie masz wystarczaj\xb9" "co du\xbfo Yang (2.000.000).");
 			return false;
 		}
-		ch->PointChange(POINT_GOLD, -SKILL_UPGRADE_PRICE);
+		ch->ChangeGold(-(YANG)SKILL_UPGRADE_PRICE);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 		p.d.aSkill[slot].bLevel += 1;
 		SaveNow(p);
 		SendSkills(ch, p);

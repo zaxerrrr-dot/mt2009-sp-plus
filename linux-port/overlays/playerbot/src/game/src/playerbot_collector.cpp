@@ -42,6 +42,7 @@
 #include "utils.h"
 #include "config.h"
 #include "char.h"
+#include "playerbot_engine_compat.h"	// PlayerBotChangeGold (MT2009_PLUS_GOLD_CHANGE_FIX_V1)
 #include "char_manager.h"
 #include "item.h"
 #include "item_manager.h"
@@ -739,7 +740,7 @@ void Expand(LPCHARACTER ch, TSession& s, DWORD op)
 		SendRes(ch, op, RESULT_GOLD, 0);
 		return;
 	}
-	ch->PointChange(POINT_GOLD, -(int)TIER_PRICE[next], true);
+	PlayerBotChangeGold(ch, -(long long)TIER_PRICE[next]);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 	s.tier = next;
 	DBManager::instance().Query("INSERT INTO player.collector_storage (account_id, tier) VALUES (%u, %d) "
 			"ON DUPLICATE KEY UPDATE tier=GREATEST(tier, VALUES(tier))", s.account, next);

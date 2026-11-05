@@ -1013,7 +1013,7 @@ namespace
 				return;
 			}
 			mind->AddToCharacter(ch, TItemPos(INVENTORY, cell));
-			ch->PointChange(POINT_GOLD, -PLAYERBOT_FISH_MIND_PRICE);
+			PlayerBotChangeGold(ch, -(long long)PLAYERBOT_FISH_MIND_PRICE);	// MT2009_PLUS_GOLD_CHANGE_FIX_V1
 			bought = true;
 		}
 		if (PlayerBotEquipItem(ch, mind) && mind->IsEquipped())
