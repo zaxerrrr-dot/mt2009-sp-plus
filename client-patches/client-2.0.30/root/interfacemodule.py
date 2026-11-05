@@ -4417,7 +4417,9 @@ class Interface(object):
 
 		self.wndEnergyBar = None
 		import app
-		if app.ENABLE_ENERGY_SYSTEM:
+		# MT2009_PLUS_ENERGY_V1: the energy bar of System Energii (Krysztal Energii 51002, server-patches/energia) always -
+		# the exe reports ENABLE_ENERGY_SYSTEM 0, but it fills player.ENERGY / ENERGY_END_TIME without the define
+		if True:
 			wndEnergyBar = uiTaskBar.EnergyBar()
 			wndEnergyBar.LoadWindow()
 			self.wndEnergyBar = wndEnergyBar

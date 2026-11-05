@@ -203,9 +203,26 @@ class EnergyBar(ui.ScriptWindow):
 		else:
 			self.energyFull.Show()
 
-		self.tooltipEnergy.SetText("%s" % (localeInfo.TOOLTIP_ENERGY(point)))
+		# MT2009_PLUS_ENERGY_V1: what the energy gives and how long it lasts (2 hours of play from a Krysztal Energii)
+		if point > 0 and leftTime > 0:
+			hours = leftTime / 3600
+			minutes = (leftTime % 3600) / 60
+			if hours > 0:
+				left = "%d godz. %d min" % (hours, minutes)
+			elif minutes > 0:
+				left = "%d min" % minutes
+			else:
+				left = "%d s" % leftTime
+			self.tooltipEnergy.SetText("Energia: bonusy ekwipunku +%d%% (pozosta\xb3o %s)" % (point, left))
+		else:
+			self.tooltipEnergy.SetText("Energia: brak (u\xbfyj Kryszta\xb3u Energii)")
 
 	def OnUpdate(self):
+		# MT2009_PLUS_ENERGY_V1: the gauge's colour follows the time left (below 15 % yellow) once a second
+		now = app.GetTime()
+		if now >= getattr(self, "mt2009EnergyNext", 0):
+			self.mt2009EnergyNext = now + 1.0
+			self.RefreshStatus()
 		if True == self.energyGaugeToolTip.IsIn():
 			self.RefreshStatus()
 			self.tooltipEnergy.Show()
