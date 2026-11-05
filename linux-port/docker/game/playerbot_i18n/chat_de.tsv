@@ -1,6 +1,6 @@
 # The bots' chat in German (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py de.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1252
 an arrival radius below the navigation's own strands the bot short of it	ein Ankunftsradius unter dem der Navigation lässt den Bot davor hängen
 FAIL (-10% points)	FAIL (-10% Punkte)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	auf M1, weiter weg vom Dorf
 na M2	auf M2
 na wyspach w Dolinie Orkow	auf den Inseln im Orktal
 na M1	auf M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	VK {1} - {2}, {3} - {4} | Shop {5} CH{6}
 S> {1} - {2}, stragan {3} ch{4}	S> {1} - {2}, Shop {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	vk {1} für {2}, steht in {3} auf ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	S> {1} {2}, komm im Shop vorbei {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	Wenn du am Sterben bist, zieh ich
 Nie bede sciagac z ciebie potworow.	Ich zieh keine Monster von dir ab.
 Bede cie buffowac (jesli umiem).	Ich buffe dich (wenn ich's kann).
 Nie bede cie buffowac.	Ich buffe dich nicht.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Jetzt: {1}. Ändern: /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	Sicher? Gib ein: /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Danke! Ich behalt's, und was besser ist als meins, leg ich gleich an.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	Dein Inventar ist voll - {1} heb ich in meinem Rucksack für dich auf (Begleiter-Fenster, Rechtsklick gibt's zurück).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	sa
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiak {1}, {2} freie plätze, wer hat animasphären?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	grp für zodiak {1}, kommt zum portal im innenhof
 zrun_{1}	-
-$X na CH$N	$X auf CH$N
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	VK {1} - {2}, {3} - {4} | Shop {5} CH{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Jetzt: {1}. Ändern: /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	ins Spinnendungeon 2
 do Lochu Pajakow 3	ins Spinnendungeon 3
 do Lasu	in den Geisterwald
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	in die Nordwindschlucht
 do Rozpadliny Dusz	in den Seelenspalt
 do Schronienia Polnocnego Wiatru	zum Nordwind-Unterschlupf
 do Zejscia Polnocnego Wiatru	zum Nordwind-Abstieg
+$X na CH$N	$X auf CH$N
 $A albo $B	$A oder $B
 $A lub $B	$A oder $B
 orki	Orks

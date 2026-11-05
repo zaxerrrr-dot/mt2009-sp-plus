@@ -1,6 +1,6 @@
 # The bots' chat in Italian (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py it.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1252
 an arrival radius below the navigation's own strands the bot short of it	un raggio di arrivo sotto quello della navigazione lascia il bot bloccato prima
 FAIL (-10% points)	FALLITO (-10% punti)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	in M1, più lontano dal villaggio
 na M2	in M2
 na wyspach w Dolinie Orkow	sulle isole nella Valle degli Orchi
 na M1	in M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Vendo {1} - {2}, {3} - {4} | negozio {5} ch{6}
 S> {1} - {2}, stragan {3} ch{4}	V> {1} - {2}, negozio {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	Vendo {1} a {2}, sta a {3} su ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	V> {1} {2}, passa al negozio {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	Quando starai morendo, attirerò 
 Nie bede sciagac z ciebie potworow.	Non tirerò via i mostri da te.
 Bede cie buffowac (jesli umiem).	Ti buffo (se so farlo).
 Nie bede cie buffowac.	Non ti buffo.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Ora: {1}. Cambia: /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	Sicuro? Scrivi: /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Grazie! Lo tengo, e quello che è meglio del mio lo indosso subito.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	Hai l'inventario pieno - {1} lo tengo per te nel mio zaino (finestra Compagno, clic destro per restituirlo).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	fa
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiaco {1}, {2} posti liberi, chi ha le animasfere?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	pt per lo zodiaco {1}, venite al portale nel cortile
 zrun_{1}	-
-$X na CH$N	$X su CH$N
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Vendo {1} - {2}, {3} - {4} | negozio {5} ch{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Ora: {1}. Cambia: /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	al Dungeon dei Ragni 2
 do Lochu Pajakow 3	al Dungeon dei Ragni 3
 do Lasu	alla Foresta dei Fantasmi
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	alla Gola del Vento del Nord
 do Rozpadliny Dusz	alla Faglia delle Anime
 do Schronienia Polnocnego Wiatru	al Rifugio del Vento del Nord
 do Zejscia Polnocnego Wiatru	alla Discesa del Vento del Nord
+$X na CH$N	$X su CH$N
 $A albo $B	$A o $B
 $A lub $B	$A o $B
 orki	orchi

@@ -1,6 +1,6 @@
 # The bots' chat in English (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py en.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1252
 an arrival radius below the navigation's own strands the bot short of it	an arrival radius below the navigation's own strands the bot short of it
 FAIL (-10% points)	FAIL (-10% points)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	on M1, further from the village
 na M2	on M2
 na wyspach w Dolinie Orkow	on the islands in Orc Valley
 na M1	on M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	WTS {1} - {2}, {3} - {4} | shop {5} ch{6}
 S> {1} - {2}, stragan {3} ch{4}	S> {1} - {2}, shop {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	WTS {1} for {2}, it's in {3} on ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	S> {1} {2}, drop by my shop {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	When you're dying, I'll pull the 
 Nie bede sciagac z ciebie potworow.	I won't pull monsters off you.
 Bede cie buffowac (jesli umiem).	I'll buff you (if I can).
 Nie bede cie buffowac.	I won't buff you.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Now: {1}. Change: /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	Are you sure? Type: /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Thanks! I'll keep it, and whatever's better than mine I'll put on right away.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	Your inventory is full - I'm keeping {1} for you in my bag (Companion window, right-click gives it back).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	ga
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiac {1}, {2} spots left, who has animaspheres?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	party for zodiac {1}, come to the portal in the courtyard
 zrun_{1}	zrun_{1}
-$X na CH$N	$X on CH$N
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	WTS {1} - {2}, {3} - {4} | shop {5} ch{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Now: {1}. Change: /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	to the Spider Dungeon 2
 do Lochu Pajakow 3	to the Spider Dungeon 3
 do Lasu	to the Ghost Wood
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	to the North Wind Gorge
 do Rozpadliny Dusz	to the Soul Rift
 do Schronienia Polnocnego Wiatru	to the North Wind Shelter
 do Zejscia Polnocnego Wiatru	to the North Wind Descent
+$X na CH$N	$X on CH$N
 $A albo $B	$A or $B
 $A lub $B	$A or $B
 orki	orcs

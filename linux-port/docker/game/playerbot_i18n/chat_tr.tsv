@@ -1,6 +1,6 @@
 # The bots' chat in Turkish (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py tr.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1254
 an arrival radius below the navigation's own strands the bot short of it	varış yarıçapı navigasyonun kendi mesafesinden küçük olunca bot hedefin gerisinde kalıyor
 FAIL (-10% points)	BAŞARISIZ (-%10 puan)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	M1 de, koyden biraz uzakta
 na M2	M2 de
 na wyspach w Dolinie Orkow	Ork Vadisi adalarinda
 na M1	M1 de
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Satilik {1} - {2}, {3} - {4} | pazar {5} ch{6}
 S> {1} - {2}, stragan {3} ch{4}	S> {1} - {2}, pazar {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	{1} satilik, {2}, {3} icinde ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	S> {1} {2}, pazara ugra {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	Ölmek üzereyken canavarları ü
 Nie bede sciagac z ciebie potworow.	Canavarları senden çekmeyeceğim.
 Bede cie buffowac (jesli umiem).	Sana buff veririm (biliyorsam).
 Nie bede cie buffowac.	Sana buff vermeyeceğim.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Şimdi: {1}. Değiştir: /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	Emin misin? Yaz: /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Teşekkürler! Saklarım, benimkinden iyiyse hemen giyerim.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	Envanterin dolu - {1} senin için çantamda duruyor (Yoldaş penceresi, sağ tık geri verir).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	zo
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodyak {1}, {2} bos yer, kimde animasfer var?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	zodyak pt {1}, avludaki portalin onune gelin
 zrun_{1}	zrun_{1}
-$X na CH$N	$X CH$N kanalinda
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Satilik {1} - {2}, {3} - {4} | pazar {5} ch{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Şimdi: {1}. Değiştir: /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	Örümcek Zindanı 2'ye
 do Lochu Pajakow 3	Örümcek Zindanı 3'e
 do Lasu	Hayalet Ormanı'na
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	Kuzey Rüzgarı Boğazı'na
 do Rozpadliny Dusz	Ruhlar Yarığı'na
 do Schronienia Polnocnego Wiatru	Kuzey Rüzgarı Sığınağı'na
 do Zejscia Polnocnego Wiatru	Kuzey Rüzgarı İnişi'ne
+$X na CH$N	$X CH$N kanalinda
 $A albo $B	$A ya da $B
 $A lub $B	$A ya da $B
 orki	orklar

@@ -1,0 +1,1117 @@
+# The bots' chat in Portuguese (playerbot_i18n.h): Polish template<TAB>translation.
+# Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py pt.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
+#@codepage	1252
+an arrival radius below the navigation's own strands the bot short of it	um raio de chegada abaixo da distância própria da navegação deixa o bot antes do destino
+FAIL (-10% points)	FALHA (-10% pontos)
+threw away	deitou fora
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Trégua] Um bot foi atacado - a trégua com os bots foi quebrada.
+[Rozejm] Boty odpuszczaja ci na {1} minut. Rozejm skonczy sie, jesli zaatakujesz ktoregos z nich.	[Trégua] Os bots deixam-te em paz durante {1} minutos. A trégua acaba se atacares algum deles.
+Dobra, odpuszczamy. Przez {1} minut zaden bot cie nie zaczepi - chyba ze zaatakujesz ktoregos z nas.	Está bem, deixamos estar. Durante {1} minutos nenhum bot te chateia - a não ser que ataques um de nós.
+Rozejm trwa jeszcze {1} min. Nikt cie nie ruszy, dopoki nie zaatakujesz ktoregos z nas.	A trégua dura mais {1} min. Ninguém te toca enquanto não atacares um de nós.
+Rozejm zostal przed chwila zerwany. Pogadamy za {1} min.	A trégua acabou de ser quebrada. Falamos daqui a {1} min.
+[Gildia] {1} z twojej gildii rusza ci na pomoc.	[Guilda] {1} da tua guilda vai ajudar-te.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Os locais de Arezzo estão desativados neste servidor - voltas para a cidade.
+Dolina Cyklopow	Vale dos Ciclopes
+Pustkowie Faraona	Ermo do Faraó
+Wzgorze Wukonga	Colina de Wukong
+Ruiny Skorpiona	Ruínas do Escorpião
+Starozytna Dzungla	Selva Antiga
+{1}({2},{3})	{1}({2},{3})
+{1}{2}@({3},{4})hp{5}	{1}{2}@({3},{4})hp{5}
+mt2009_dgbot	-
+an add stone	pedra de adicionar bónus
+a change stone	pedra de trocar bónus
+{1}:away	{1}:away
+{1} stoi! Zbieramy sie na niego.	{1} apareceu! Juntamo-nos nele.
+{1} stoi! Chodzcie {2}, zbieramy sie na niego - potrzebuje pomocy!	{1} apareceu! Venham {2}, juntamo-nos nele - preciso de ajuda!
+{1} stoi! Zbieramy sie na niego - potrzebuje pomocy!	{1} apareceu! Juntamo-nos nele - preciso de ajuda!
+Boty trzech krolestw pokonaly: {1} ({2} min).	Os bots dos três reinos derrotaram: {1} ({2} min).
+Boty z krolestwa {1} pokonaly: {2} ({3} min).	Os bots do reino {1} derrotaram: {2} ({3} min).
+Jasne, dodaje cie do znajomych!	Claro, adiciono-te aos amigos!
+Pewnie, mozemy byc znajomymi. Pisz smialo.	Claro, podemos ser amigos. Escreve à vontade.
+Przyjete! Daj znac, jak bedziesz czegos potrzebowal.	Aceite! Avisa se precisares de alguma coisa.
+Ok, jestes na mojej liscie znajomych.	Ok, estás na minha lista de amigos.
+Z kims z wrogiego krolestwa sie nie kumpluje. Bez urazy.	Não faço amizade com alguém do reino inimigo. Sem ofensa.
+Mam juz pelna liste znajomych, sorki.	Já tenho a lista de amigos cheia, desculpa.
+{1} odrzuca zaproszenie do znajomych.	{1} recusa o pedido de amizade.
+Dolinie Orkow	Vale dos Orcs
+Lochu Pajakow	Masmorra das Aranhas
+Lochu Pajakow 3	Masmorra das Aranhas 3
+Lesie Duchow	Floresta dos Fantasmas
+Czerwonym Lesie	Floresta Vermelha
+Wiezy Demonow	Torre dos Demónios
+robie bp, ile wam zostalo?	a fazer bp, quanto vos falta?
+kto jeszcze robi battle passa?	quem mais faz o battle pass?
+bp idzie powoli, ale idzie	o bp vai devagar, mas vai
+ostatnie misje bp, ktos pomoze?	últimas missões do bp, alguém ajuda?
+nagroda z bp warta zachodu?	a recompensa do bp vale a pena?
+znowu misja na krzyki w bp xd	outra vez missão de gritar no bp xD
+bp w tym miesiacu latwy czy mi sie wydaje?	o bp este mês está fácil ou é impressão minha?
+!bp ktos?	!bp alguém?
+ile macie misji bp zrobionych?	quantas missões do bp já fizeram?
+Kupie {1}, pw	Compro {1}, pm
+Kupie {1}, place dobrze	Compro {1}, pago bem
+Ktos ma {1}? kupie	Alguém tem {1}? compro
+Szukam {1}, oferty na pw	Procuro {1}, ofertas por pm
+Sprzedam {1} tanio, jestem w {2}	Vendo {1} barato, estou em {2}
+Sprzedam {1}, pw	Vendo {1}, pm
+{1} na sprzedaz, oferty pw	{1} à venda, ofertas pm
+Oddam {1} za rozsadna cene	Dou {1} a preço justo
+PT na {1}, brakuje {2} osob, {3}+ lvl, wbijac	PT para {1}, faltam {2}, {3}+ lvl, entrem
+Zbieram pt na {1}, wszystkie klasy, {2}+ lvl	Faço pt para {1}, todas as classes, {2}+ lvl
+pt {1}, jeszcze {2} miejsc, pw	pt {1}, ainda {2} vagas, pm
+kto do pt? {1}, od {2} lvl, szaman mile widziany	quem vem para a pt? {1}, a partir de {2} lvl, xamã bem-vindo
+Szukam PT na {1}, {2} lvl {3}	Procuro PT para {1}, {2} lvl {3}
+Kto da PT? {1}, {2} lvl, {3}	Quem me dá PT? {1}, {2} lvl, {3}
+{1} - ktos expi? {2} lvl {3}, dolacze	{1} - alguém a upar? {2} lvl {3}, junto-me
+szukam pt na {1}, {2} {3}	procuro pt para {1}, {2} {3}
+wezmie ktos do pt? {1}, {2} lvl {3}	alguém me leva na pt? {1}, {2} lvl {3}
+pt {1}? {2} lvl, {3}, pw	pt {1}? {2} lvl, {3}, pm
+Bije metiny {1} lvl w {2}, kto dolaczy?	Bato metins de {1} lvl em {2}, quem vem?
+Ktos widzial metina {1} lvl w {2}?	Alguém viu um metin de {1} lvl em {2}?
+Robie metiny {1} lvl do BP, {2}, pomoze ktos?	Faço metins de {1} lvl para o BP, {2}, alguém ajuda?
+Kto na metiny w {1}?	Quem vem aos metins em {1}?
+Zbijam metiny w {1}, kto chetny?	Parto metins em {1}, quem quer?
+Ile metinow stoi teraz w {1}?	Quantos metins há agora em {1}?
+metki w {1}, ktos idzie?	metins em {1}, alguém vai?
+kto ksuje metiny w {1}? nieladnie	quem anda a roubar metins em {1}? feio
+metin padl w {1}, nastepny gdzie?	caiu um metin em {1}, onde está o próximo?
+ide na metki w {1}, kto dolaczy?	vou aos metins em {1}, quem vem?
+Kto idzie na bossa? robie misje BP	Quem vai ao boss? estou a fazer missão do BP
+Ktos zna respa bossa?	Alguém sabe o respawn do boss?
+Zbieram ekipe na bossa, pw	Junto equipa para o boss, pm
+Boss padl? kto bil?	O boss caiu? quem bateu?
+kto na bossa? brakuje mi dps xd	quem vem ao boss? falta-me dps xD
+ostatni boss padl w 2 min, mocna ekipa byla	o último boss caiu em 2 min, equipa forte
+boss jeszcze stoi? ide	o boss ainda está? vou
+Mam {1}, ile to warte?	Tenho {1}, quanto vale?
+Ulepszac {1} dalej czy nie ryzykowac?	Continuo a subir {1} ou não arrisco?
+Ktos da cos za {1}?	Alguém dá alguma coisa por {1}?
+{1}, kowal znowu mnie oskubal	{1}, o ferreiro depenou-me outra vez
+{1}, pchac dalej czy stop?	{1}, continuo ou paro?
+wbilem {1}, nastepny + czy odpuscic?	saiu {1}, mais um + ou deixo?
+{1}, wreszcie koniec ulepszania	{1}, finalmente acabei de subir
+wbilem {1}, wiecej sie nie da	saiu {1}, mais não dá
+{1}, kowal tym razem laskawy	{1}, o ferreiro desta vez foi generoso
+gdzie najlepiej expic na {1} lvl?	onde é melhor upar a {1} lvl?
+co polecacie na {1} lvl?	o que recomendam a {1} lvl?
+gdzie sa metki na {1}?	onde há metins para {1}?
+ktos wie gdzie metiny {1} lvl?	alguém sabe onde estão os metins de {1} lvl?
+zwoj blogoslawienstwa	pergaminho de bênção
+kamien duszy	pedra de alma
+ile teraz stoja {1}?	a quanto está agora {1}?
+po ile {1} na straganach?	a quanto anda {1} nas lojas?
+kto jeszcze nie spi? xd	quem ainda não dorme? xD
+nocna zmiana melduje sie	o turno da noite apresenta-se
+dobranoc wszystkim, jeszcze jeden lvl i ide	boa noite a todos, mais um lvl e vou
+nocny exp najlepszy, nikt nie ksuje	upar de noite é o melhor, ninguém rouba
+dzien dobry ekipa	bom dia equipa
+kawa i expik, idealnie	café e exp, perfeito
+rano a tu juz tlok xd	de manhã e já está cheio xD
+wojek z dwureczna to jest cos	guerreiro com espada de duas mãos é outra coisa
+jakie bonusy na wojka?	que bónus para guerreiro?
+body czy mental na woja?	body ou mental para guerreiro?
+archer czy dagger, co lepsze?	arqueiro ou adagas, o que é melhor?
+ninja to najlepsza klasa i tyle	ninja é a melhor classe e pronto
+strzaly mi sie koncza xd	estão a acabar-me as flechas xD
+kto gra sura? xD	quem joga sura? xD
+sura bm czy wp?	sura bm ou wp?
+sura to najlepszy dps, nie dyskutuje	sura é o melhor dps, não discuto
+szaman szuka pt, buffy gratis	xamã procura pt, buffs grátis
+kto chce buffa? stoje przy wiosce	quem quer buff? estou ao pé da aldeia
+smok czy heal na start?	dragão ou cura para começar?
+siema wszystkim	olá a todos
+jaki dzis drop?	como está o drop hoje?
+ktos cos dropnal ciekawego?	alguém dropou algo interessante?
+nudy dzis	que seca hoje
+kto gra wieczorem?	quem joga à noite?
+lag czy tylko u mnie?	lag ou é só comigo?
+kowal dzis zly jak nigdy	o ferreiro hoje está pior que nunca
+jak tam expienie?	como vai o up?
+ile jeszcze do konca BP?	quanto falta para acabar o BP?
+kto robi BP?	quem faz BP?
+pozdro dla ekipy	abraço para a equipa
+ale dzis tlok na mapie	tanta gente no mapa hoje
+kto na wojne?	quem vem à guerra?
+sprzedam wszystko xd	vendo tudo xD
+ktos ma wolny slot w gildii?	alguém tem vaga na guilda?
+szukam gildii, {1} lvl	procuro guilda, {1} lvl
+dzieki za pomoc przy metinie	obrigado pela ajuda no metin
+kto mi pomoze z misja?	quem me ajuda numa missão?
+ladnie ladnie	boa boa
+kto lubi pustynie? nikt? tak myslalem	quem gosta do deserto? ninguém? bem me parecia
+ile jeszcze do 99? wieki xd	quanto falta para o 99? uma eternidade xD
+spalilem +8, nie pytajcie	queimei um +8, não perguntem
+biolog znowu nie przyjal xd	o biólogo outra vez não aceitou xD
+pajaki w lochu to zlo	as aranhas da masmorra são o mal
+kto byl w wiezy demonow? jak bylo?	alguém já foi à torre dos demónios? como foi?
+dolina orkow znowu pelna	o vale dos orcs outra vez cheio
+M1 dzis pelne ludzi	M1 hoje cheio de gente
+warto robic biologa?	vale a pena fazer o biólogo?
+kiedy jakis event?	quando há algum evento?
+{1} lvl i dalej bez konia xd	{1} lvl e ainda sem cavalo xD
+kto tez nie ma potek? xd	a quem mais acabaram as poções? xD
+kupilem pd, exp leci	comprei o anel de exp, a exp voa
+ktos widzial ladny drop z metina?	alguém viu um drop bonito de metin?
+ide na metki, kto chetny?	vou aos metins, quem vem?
+gratki dla wszystkich co dzis wbili lvl	parabéns a todos os que subiram de lvl hoje
+co tak cicho na czacie?	porque é que o chat está tão calado?
+gram od rana i dalej {1} lvl xd	jogo desde manhã e ainda {1} lvl xD
+jak ja nie lubie tych pajakow	como eu odeio estas aranhas
+dzis szczescie mi sprzyja	hoje a sorte está do meu lado
+dzis pech, trzeci raz padlem	hoje azar, morri pela terceira vez
+a ja dalej na m1 xd	e eu ainda no m1 xD
+event na expa trwa, kto expi?	há evento de exp, quem está a upar?
+exp event, lece na dolinie	evento de exp, vou para o vale
+ale exp dzis leci, event robi robote	que exp hoje, o evento está a fazer o trabalho
+event na drop, lecimy na metki!	evento de drop, vamos aos metins!
+drop event, ktos juz cos wydropil?	evento de drop, alguém já dropou algo?
+dropi dzis lepiej, idziemy na bossy	hoje dropa melhor, vamos aos bosses
+event yangowy, biore wszystko xd	evento de yang, levo tudo xD
+yang leci jak szalony, event trwa	o yang cai como louco, há evento
+skrzynie dropia, ktos juz cos wylowil?	caem baús, alguém já tirou alguma coisa?
+otworzylem skrzynke i nic xd	abri um baú e nada xD
+skrzynki event, kto ma szczescie?	evento de baús, quem tem sorte?
+Tanaka znowu na mapie, kto idzie?	Tanaka outra vez no mapa, quem vai?
+kto bije piratow? dawac	quem bate nos piratas? bora
+event z bossem trwa, ide	há evento de boss, vou
+kto szuka skarbow? goblin dzis hojny	quem procura tesouros? o goblin hoje está generoso
+skarby event, mapa w reke i lecimy	evento de tesouros, mapa na mão e bora
+ktos gra w minigierki? :D	alguém joga os minijogos? :D
+rumi trwa, kto gra?	há rumi, quem joga?
+przegralem w karty, znowu xd	perdi outra vez às cartas xD
+halloween trwa, dynie leca z mobow	há halloween, caem abóboras dos mobs
+ktos juz ma maske dyni?	alguém já tem a máscara de abóbora?
+Jack Pumpkin stoi w miescie, widzieliscie?	O Jack Pumpkin está na cidade, viram?
+super kamienie trwaja, metiny stoja po kilka naraz	há super pedras, aparecem vários metins de uma vez
+bije metina a obok jeszcze trzy xd	bato num metin e ao lado há mais três xD
+event na kamienie, kto idzie bic?	evento de pedras, quem vem bater?
+event rybacki trwa, ktos lowi?	há evento de pesca, alguém pesca?
+ile prob wam wyszlo w puzzlach?	quantas tentativas vos levou o puzzle?
+z wedka nad wode, puzzle same sie nie ulozo xd	cana na mão e para a água, o puzzle não se faz sozinho xD
+bylem u Uriela, bonus PD wziety	fui ao Uriel, bónus de exp apanhado
+potega madrosci trwa, idzcie do Uriela	há poder da sabedoria, vão ao Uriel
+z bonusem od Uriela leci szybciej xd	com o bónus do Uriel vai mais rápido xD
+event trwa, zbieram co sie da	há evento, apanho o que posso
+kwiaty dzis wszedzie xd	hoje há flores por todo o lado xD
+kto robi event? ile macie?	quem faz o evento? quantas têm?
+wojna {1} vs {2}! kto wygra?	guerra {1} vs {2}! quem ganha?
+{1} na {2}, ide popatrzec	{1} contra {2}, vou ver
+stawiam na {1}, {2} nie ma szans xd	aposto no {1}, {2} não tem hipótese xD
+{1} i {2} znowu sie leja, popcorn gotowy	{1} e {2} outra vez à porrada, pipocas prontas
+skrzynie z Ksiezycowego Swiatla	baús da Luz da Lua
+event na expa	evento de exp
+event na drop	evento de drop
+event na yang	evento de yang
+piraci Tanaki	piratas do Tanaka
+deszcz metinow	chuva de metins
+lepszy drop z bossow	melhor drop dos bosses
+lepszy drop z metinow	melhor drop dos metins
+poszukiwanie skarbow	caça ao tesouro
+Catch the King	Apanha o Rei
+Yut Nori	Yut Nori
+Dzieci Kwiaty	Crianças Flor
+event wielkanocny	evento de Páscoa
+skrzynki z mobow	baús dos mobs
+Halloween (dynie z mobow)	Halloween (abóboras dos mobs)
+super kamienie	super pedras
+potega madrosci u Uriela	poder da sabedoria do Uriel
+puzzle rybackie	puzzles de pesca
+a summon's walk must end inside the distance that counts as beside the person	a caminhada de um companheiro invocado tem de acabar dentro da distância que conta como ao lado da pessoa
+the walk resumes past the stop distance, or it starts and stops on one step	a caminhada retoma depois da distância de paragem, senão começa e para num só passo
+[Gildia] {1} nie moze do ciebie dojsc.	[Guilda] {1} não consegue chegar até ti.
+[Gildia] {1} musi odejsc - ma pilniejsza sprawe.	[Guilda] {1} tem de sair - surgiu-lhe algo mais urgente.
+[Gildia] Boty gildii wracaja do swoich spraw.	[Guilda] Os bots da guilda voltam às suas coisas.
+Dobra, musze wracac do swoich spraw. Na razie!	Bem, tenho de voltar às minhas coisas. Até já!
+Nie moge do ciebie dojsc, sorki. Wracam do swoich spraw.	Não consigo chegar até ti, desculpa. Volto às minhas coisas.
+Musze isc, cos mi wypadlo.	Tenho de ir, surgiu-me uma coisa.
+Poszedles gdzies, to wracam do swoich spraw.	Foste para algum lado, por isso volto às minhas coisas.
+a player	um jogador
+{1}Pomagam {2}	{1}A ajudar {2}
+{1}Ide na pomoc {2}	{1}Vou ajudar {2}
+{1}Expie z {2}	{1}A upar com {2}
+{1}Ide expic z {2}	{1}Vou upar com {2}
+{1}Ide do {2}	{1}Vou ter com {2}
+{1}Going to {2}	{1}Vou ter com {2}
+{1}Stoje przy {2}	{1}Ao pé de {2}
+{1}Staying with {2}	{1}Ao pé de {2}
+(na sobie)	(equipado)
+Tego raczej nie szukam.	Isso não é bem o que procuro.
+Mam tego na razie dosc.	Por agora já chega disso.
+O, {1} mi sie przyda. Wystaw na straganie, na pewno zajrze.	Oh, {1} dava-me jeito. Põe na loja, de certeza que vou ver.
+Sorki, ekipa wola mnie na rajd. Odezwe sie jak wroce, to sie umowimy.	Desculpa, a equipa chama-me para uma raid. Escrevo-te quando voltar e combinamos.
+Nie moge cie znalezc. Napisz gdzie jestes, to sie umowimy jeszcze raz.	Não te encontro. Diz-me onde estás e combinamos outra vez.
+Nie doczekalem sie, wracam do swoich spraw. Jak bedziesz chcial handlowac, napisz.	Cansei-me de esperar, volto às minhas coisas. Se quiseres negociar, escreve.
+Stalem {1} {2} minut i nic. Ide dalej, napisz jak bedziesz mial czas.	Estive {1} {2} minutos e nada. Vou andando, escreve quando tiveres tempo.
+Dluzej nie czekam, sorki. Odezwij sie jak bedziesz gotowy.	Não espero mais, desculpa. Escreve quando estiveres pronto.
+przy straganie	ao pé da loja
+przy kowalu	ao pé do ferreiro
+Musialem odejsc, sorki. Napisz jak bedziesz chcial jeszcze handlowac.	Tive de sair, desculpa. Escreve se ainda quiseres negociar.
+Cos mnie zatrzymalo, nie dojde teraz. Sorki, sprobujmy pozniej.	Algo me atrasou, agora não chego. Desculpa, tentamos mais tarde.
+przy moim straganie	ao pé da minha loja
+Jestem juz {1} w {2} na CH{3}, czekam.	Já estou {1} em {2} no CH{3}, à espera.
+Stoje {1} w {2} (CH{3}). Czekam na ciebie.	Estou {1} em {2} (CH{3}). À tua espera.
+Jestem juz {1} w {2}, czekam.	Já estou {1} em {2}, à espera.
+Stoje {1} w {2}, czekam na ciebie.	Estou {1} em {2}, à tua espera.
+Doszedlem, jestem {1} w {2}.	Cheguei, estou {1} em {2}.
+Za dlugo to trwa, zamykam. Daj wymiane jeszcze raz jak bedziesz gotowy.	Está a demorar demasiado, fecho. Abre a troca outra vez quando estiveres pronto.
+Zmieniles ilosc po tym jak dalem yang (bylo {1} szt, jest {2}). Daj wymiane jeszcze raz.	Mudaste a quantidade depois de eu pôr o yang (eram {1} un, agora {2}). Abre a troca outra vez.
+Po moim yang zmienila sie ilosc - {1} szt, teraz {2}. Zamykam, daj wymiane od nowa.	Depois do meu yang a quantidade mudou - {1} un, agora {2}. Fecho, abre a troca de novo.
+Daj tylko {1}, reszte zabierz.	Põe só {1}, tira o resto.
+Kupuje tylko {1} - inne rzeczy zabierz z okna.	Só compro {1} - tira as outras coisas da janela.
+Umawialismy sie na {1} szt, a dales {2} - daj dokladnie {3}.	Combinámos {1} un e puseste {2} - põe exatamente {3}.
+Mialo byc {1} szt, w oknie jest {2}. Zostaw dokladnie {3}, reszte zabierz.	Eram para ser {1} un, na janela estão {2}. Deixa exatamente {3}, tira o resto.
+Biore {1} szt, nie {2}. Podziel stack i daj {3}.	Levo {1} un, não {2}. Divide o stack e põe {3}.
+Umawialismy sie na {1} szt, a dales {2} - doloz jeszcze {3}. Jak wiecej nie masz, zostaw tak, zaplace za {4}.	Combinámos {1} un e puseste {2} - põe mais {3}. Se não tens mais, deixa assim, pago por {4}.
+Mialo byc {1} szt, dales {2}. Doloz {3} albo zostaw zaakceptowane, to wezme {4}.	Eram para ser {1} un, puseste {2}. Põe mais {3} ou deixa aceite e levo {4}.
+Sorki, nie mam teraz tyle yang.	Desculpa, agora não tenho tanto yang.
+Ups, juz tego nie mam. Sorki.	Ups, já não tenho isso. Desculpa.
+Mialo byc {1} yang, doloz brakujace.	Eram para ser {1} yang, põe o que falta.
+Dales za duzo yang - mialo byc {1}. Popraw kwote.	Puseste yang a mais - eram para ser {1}. Corrige o valor.
+Daj tylko yang, przedmioty zabierz.	Põe só yang, tira os itens.
+Dzieki, dobry handel!	Obrigado, boa troca!
+Dzieki, polecam sie na przyszlosc :)	Obrigado, cá estou para a próxima :)
+Gitara, dzieki!	Fixe, obrigado!
+Dzieki, milo sie handlowalo.	Obrigado, foi um prazer negociar.
+ffdb3b	-
+[|cff{1}|Hmsg:{2},{3}|h{4}|h|r]: {5}	[|cff{1}|Hmsg:{2},{3}|h{4}|h|r]: {5}
+Sprzedam {1} - stragan w {2}	Vendo {1} - loja em {2}
+S> {1}, stragan {2} ch{3}	V> {1}, loja {2} ch{3}
+Kupie {1} - kto ma, niech wystawi w {2}	Compro {1} - quem tiver, que ponha na loja em {2}
+K> {1}, place {2}/szt, wystaw w {3} albo pw	C> {1}, pago {2}/un, põe na loja em {3} ou pm
+K> {1}, kto ma niech wystawi w {2} albo pw	C> {1}, quem tiver ponha na loja em {2} ou pm
+Instr.	Instr.
+na placu przy strazniku	na praça ao pé do guarda
+na placu kolo straznika	na praça perto do guarda
+kolo kowala	perto do ferreiro
+przy magazynierze	ao pé do armazenista
+kolo magazyniera	perto do armazenista
+przy sprzedawcy broni	ao pé do vendedor de armas
+kolo sprzedawcy broni	perto do vendedor de armas
+przy sprzedawcy zbroi	ao pé do vendedor de armaduras
+kolo sprzedawcy zbroi	perto do vendedor de armaduras
+przy sklepie z miksami	ao pé da loja de poções
+kolo sklepu z miksami	perto da loja de poções
+przy stajennym	ao pé do tratador de cavalos
+kolo stajennego	perto do tratador de cavalos
+przy starej kobiecie	ao pé da velhota
+kolo starej kobiety	perto da velhota
+przy teleporterze	ao pé do teletransportador
+kolo teleportera	perto do teletransportador
+ksiega zapomnienia	livro do esquecimento
+ksiege zapomnienia	livro do esquecimento
+ksiegi zapomnienia	livros do esquecimento
+kto sprzeda	quem vende
+ktos sprzeda	alguém vende
+sprzeda ktos	vende alguém
+ma ktos	tem alguém
+ktos ma	alguém tem
+kto ma	quem tem
+kto kupi	quem compra
+ktos kupi	alguém compra
+kupi ktos	compra alguém
+Mam {1} x{2} na straganie w {3}, {4} yang za calosc	Tenho {1} x{2} na loja em {3}, {4} yang por tudo
+Mam {1} na straganie w {2}, {3} yang	Tenho {1} na loja em {2}, {3} yang
+Kupie KU {1} - wystaw na straganie w Joan albo Bokjung, boty tam kupuja	Compro Livro de Habilidade {1} - põe na loja em Joan ou Bokjung, os bots compram lá
+Kupie {1} - wystaw na straganie w Joan albo Bokjung, boty tam kupuja	Compro {1} - põe na loja em Joan ou Bokjung, os bots compram lá
+Nie luruje dla ciebie	Não puxo mobs para ti
+Dobra, koncze lurowanie	Ok, paro de puxar mobs
+Nie stoje na twojej mapie	Não estou no teu mapa
+Najpierw zapros mnie do druzyny	Convida-me primeiro para o grupo
+Nie jestem lucznikiem - lurowanie robie z luku	Não sou arqueiro - puxo mobs com o arco
+Nie mam teraz luku w rece	Agora não tenho arco na mão
+Jestesmy w strefie bezpieczenstwa - wyjdz na lowisko i powtorz	Estamos na zona segura - sai para a zona de caça e repete
+Juz dla ciebie luruje	Já estou a puxar mobs para ti
+Jasne. Stoj w miejscu, przyprowadze je na ciebie. Koniec: napisz "przestan lurowac"	Claro. Fica parado, trago-tos. Para parar: escreve "para de puxar"
+moge dolaczyc	posso entrar
+moge do	posso ir
+mozna dolaczyc	dá para entrar
+mozna do	dá para ir
+chce dolaczyc	quero entrar
+chce do	quero ir
+chcialbym dolaczyc	gostava de entrar
+chcialabym dolaczyc	gostava de entrar
+chcialbym do	gostava de ir
+chcialabym do	gostava de ir
+do twojej	para a tua
+do waszej	para a vossa
+jest miejsce	há vaga
+macie miejsce	têm vaga
+masz miejsce	tens vaga
+Nie mam gildii	Não tenho guilda
+Liderem jest {1}, to on dodaje	O líder é o {1}, é ele que adiciona
+Nie ja tu dodaje, napisz do lidera	Não sou eu que adiciono, escreve ao líder
+Przeciez juz jestes w mojej gildii	Mas tu já estás na minha guilda
+Najpierw wyjdz ze swojej gildii	Primeiro sai da tua guilda
+Nie przyjmuje nowych	Não aceito gente nova
+Jestes z innego krolestwa, nie moge	És de outro reino, não posso
+Mamy teraz wojne, napisz pozniej	Estamos em guerra agora, escreve depois
+Nie mam juz miejsca w gildii	Já não tenho vaga na guilda
+Niedawno odszedles z gildii, jeszcze nie moge cie dodac	Saíste de uma guilda há pouco, ainda não te posso adicionar
+Nie, nie dodam cie, musisz miec {1} lvl	Não, não te adiciono, precisas de {1} lvl
+Jasne, juz cie dodaje	Claro, adiciono-te já
+do mnie	a mim
+do mojej	para a minha
+do nas	para nós
+moze do	talvez para
+Najpierw zaloz gildie	Primeiro cria uma guilda
+Przeciez juz jestem w twojej gildii	Mas eu já estou na tua guilda
+Jestem z innego krolestwa, nie moge	Sou de outro reino, não posso
+Nie mozesz zapraszac do tej gildii	Não podes convidar para esta guilda
+Twoja gildia jest pelna	A tua guilda está cheia
+Mam swoja gildie, jestem liderem	Tenho a minha guilda, sou o líder
+Jestem juz w gildii, zostaje w niej	Já estou numa guilda, fico nela
+Sorry, moja gildia jest lepsza	Desculpa, a minha guilda é melhor
+Moja gildia jest teraz na wojnie, napisz pozniej	A minha guilda está em guerra agora, escreve depois
+Dobrze, dodawaj mnie	Ok, adiciona-me
+Mam stragan w {1}, na nim: {2}	Tenho loja em {1}, nela: {2}
+Wlasnie ide na targ w {1}	Estou mesmo a ir ao mercado em {1}
+Nie rozumiem. Zapytaj mnie, co robie, gdzie expie albo co mam na straganie.	Não percebo. Pergunta-me o que faço, onde upo ou o que tenho na loja.
+na M1, przy samej wiosce	no M1, mesmo ao pé da aldeia
+na M1, dalej od wioski	no M1, mais longe da aldeia
+na M2	no M2
+na wyspach w Dolinie Orkow	nas ilhas do Vale dos Orcs
+na M1	no M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Vendo {1} - {2}, {3} - {4} | loja {5} ch{6}
+S> {1} - {2}, stragan {3} ch{4}	V> {1} - {2}, loja {3} ch{4}
+Sprzedam {1} za {2}, stoi w {3} na ch{4}	Vendo {1} por {2}, está em {3} no ch{4}
+S> {1} {2}, wpadaj na stragan {3} ch{4}	V> {1} {2}, passa pela loja {3} ch{4}
+S> {1}, cena {2}, stragan w {3} (ch{4}) albo pw	V> {1}, preço {2}, loja em {3} (ch{4}) ou pm
+S> {1} - {2}, pw	V> {1} - {2}, pm
+Sprzedam {1}, {2}, pisz pw	Vendo {1}, {2}, mandem pm
+S> {1} {2} do negocjacji, pw	V> {1} {2} negociável, pm
+Mam na sprzedaz {1}, {2}, jestem w {3}	Tenho à venda {1}, {2}, estou em {3}
+K> {1}{2}, place {3}/szt, pw	C> {1}{2}, pago {3}/un, pm
+B> {1}{2}, daje {3} za sztuke	C> {1}{2}, dou {3} por unidade
+Kupie {1}{2} po {3}, pw	Compro {1}{2} a {3}, pm
+K> {1}{2} - {3}/szt, kto ma?	C> {1}{2} - {3}/un, quem tem?
+K> {1}{2}, oferty pw	C> {1}{2}, ofertas pm
+Kupie {1}{2}, dobrze place, pw	Compro {1}{2}, pago bem, pm
+B> {1}{2}, kto ma? pw	C> {1}{2}, quem tem? pm
+K> {1}, dam do {2}, pw	C> {1}, dou até {2}, pm
+Kupie {1}, mam {2}, kto sprzeda?	Compro {1}, tenho {2}, quem vende?
+B> {1} za {2}, moze byc z plusem	C> {1} por {2}, pode ser com plus
+skupuje {1}, {2}/szt, pw	compro {1}, {2}/un, pm
+kupie {1} kazda ilosc po {2}, pisac	compro {1} qualquer quantidade a {2}, escrevam
+K> {1} hurt, {2} za sztuke	C> {1} por atacado, {2} por unidade
+ktos ma {1}? dam {2}/szt	alguém tem {1}? dou {2}/un
+{1} metki na {2} masz {3}	{1} metins para {2} tens {3}
+{1}, na {2} lvl metiny stoja {3}	{1}, a {2} lvl os metins estão {3}
+{1} {2}, tam sie respia na {3}	{1} {2}, aparecem {3}
+{1} na {2} najlepiej {3}	{1} a {2} o melhor é {3}
+{1}, ja na {2} expilem {3}	{1}, eu a {2} upei {3}
+{1} {2} lvl? {3}	{1} {2} lvl? {3}
+{1} {2} chodzi ok {3}	{1} {2} anda por uns {3}
+{1}, {2} stoi teraz po {3}	{1}, {2} está agora a {3}
+{1} na straganach {2} jest po {3}	{1} nas lojas {2} está a {3}
+siema {1}	olá {1}
+elo {1}	boas {1}
+hej {1} :)	olá {1} :)
+witam witam	olá olá
+{1}Najemnik: przerwa w kontrakcie, wroce do {2}	{1}Mercenário: contrato em pausa, volto em breve para {2}
+{1}Mercenary: contract paused, back to {2} soon	{1}Mercenário: contrato em pausa, volto em breve para {2}
+the client	o cliente
+{1}Najemnik: chronie {2} (jeszcze {3} min)	{1}Mercenário: protejo {2} (faltam {3} min)
+{1}Mercenary: protecting {2} ({3} min left)	{1}Mercenário: protejo {2} (faltam {3} min)
+{1}Czekam na najemnika {2}	{1}À espera do meu mercenário {2}
+{1}Waiting for my mercenary {2}	{1}À espera do meu mercenário {2}
+{1}Wynajalem najemnika {2} (jeszcze {3} min)	{1}Contratei o mercenário {2} (faltam {3} min)
+{1}Hired the mercenary {2} ({3} min left)	{1}Contratei o mercenário {2} (faltam {3} min)
+{1}Ide zaoferowac pomoc {2} ({3} yang za godzine)	{1}Vou oferecer ajuda a {2} ({3} yang por hora)
+{1}Going to offer {2} my help ({3} yang an hour)	{1}Vou oferecer ajuda a {2} ({3} yang por hora)
+{1}:{2}	{1}:{2}
+przychodzi gracz do kowala: +9 prosze. kowal: a mial pan kiedys +9? gracz: nie. kowal: no i nie bedzie xd	chega um jogador ao ferreiro: +9 por favor. ferreiro: alguma vez teve um +9? jogador: não. ferreiro: pois também não vai ter xD
+czemu metin nie chodzi na imprezy? bo i tak wszyscy go tam bija :D	porque é que o metin não vai a festas? porque lá também toda a gente lhe bate :D
+ilu ninja trzeba, zeby wkrecic zarowke? nie wiadomo, nikt ich nigdy nie widzial :P	quantos ninjas são precisos para trocar uma lâmpada? ninguém sabe, nunca ninguém os viu :P
+kowal do gracza: mam dobra i zla wiadomosc. dobra - bron ci zelzala. zla - bo jej juz nie ma xd	o ferreiro para o jogador: tenho uma boa e uma má notícia. a boa - a tua arma ficou mais leve. a má - porque já não existe xD
+jak sie nazywa wojownik bez potek? swietej pamieci wojownik :D	como se chama um guerreiro sem poções? o falecido guerreiro :D
+spotyka sie dwoch ninja. jeden: widziales mnie wczoraj? drugi: nie. pierwszy: no i o to chodzi xd	encontram-se dois ninjas. um: viste-me ontem? o outro: não. o primeiro: pois é essa a ideia xD
+przychodzi gracz do sklepu: poprosze mikstury. ile? wszystkie, ide na pustynie xd	entra um jogador na loja: poções, por favor. quantas? todas, vou para o deserto xD
+co mowi zero do osemki? fajny pasek :D	o que disse o zero ao oito? que cinto bonito :D
+pacjent do lekarza: panie doktorze, wszyscy mnie ignoruja. lekarz: nastepny prosze! :D	paciente para o médico: senhor doutor, toda a gente me ignora. médico: o seguinte! :D
+wchodzi kon do baru. barman: czemu taka dluga mina? :D	entra um cavalo num bar. o empregado: porquê essa cara tão comprida? :D
+ile graczy trzeba, zeby zbic metina? dwoch. jeden bije, drugi ksuje xd	quantos jogadores são precisos para partir um metin? dois. um bate, o outro rouba xD
+zona do meza: albo ja, albo metin. maz: kochanie, a ktory metin? :P	a mulher para o marido: ou eu ou o metin. o marido: querida, qual metin? :P
+najkrotszy kawal swiata: kowal dal +9 za pierwszym razem xd	a anedota mais curta do mundo: o ferreiro deu +9 à primeira xD
+skad wiesz, ze ktos gra wojem? spokojnie, sam ci powie :D	como sabes que alguém joga guerreiro? calma, ele próprio te diz :D
+sprzedam miecz +0, prawie nowy, nigdy nie byl u kowala, wiec jeszcze istnieje xd	vendo espada +0, quase nova, nunca foi ao ferreiro, por isso ainda existe xD
+pajak do pajaka w lochu: ale dzis tlok, nawet nie ma gdzie pajeczyny powiesic xd	uma aranha para outra na masmorra: tanta gente hoje, nem há onde pendurar a teia xD
+czemu szaman ma tylu znajomych? bo kazdego zbuffuje za darmo :D	porque é que o xamã tem tantos amigos? porque dá buff grátis a toda a gente :D
+idzie dwoch mysliwych przez las. jeden: o, slady niedzwiedzia. drugi: to ty zobacz dokad poszedl, a ja sprawdze skad przyszedl xd	dois caçadores na floresta. um: olha, pegadas de urso. o outro: tu vês para onde foi, eu vejo de onde veio xD
+mama pyta jasia: czemu masz jedynke z matmy? bo pani pytala ile to 2+2, a ja ze +9 to i tak sie spali :D	a mãe pergunta ao joãozinho: porque tiveste negativa a matemática? a stôra perguntou quanto é 2+2 e eu disse que o +9 queima na mesma :D
+przychodzi sura do lekarza. lekarz: co panu dolega? sura: nic, wpadlem tylko troche hp pozyczyc :P	vai um sura ao médico. médico: o que se passa? sura: nada, só vim pedir emprestado um bocado de hp :P
+jak sie nazywa kon, ktory nie umie ustac? kon-sternacja :D	como se chama um cavalo que não se aguenta de pé? um cavalo des-equilibrado :D
+czemu orki w dolinie sa takie zle? bo od lat nikt im nie powiedzial ze maja ladne kly xd	porque é que os orcs do vale estão tão zangados? porque há anos que ninguém lhes diz que têm presas bonitas xD
+wiesz czemu biolog jest zawsze spokojny? bo wie, ze i tak dropnie dopiero za 50 razem xd	sabes porque é que o biólogo está sempre calmo? porque sabe que de qualquer maneira só dropa à 50.ª tentativa xD
+przychodzi baba do lekarza, a lekarz tez baba. no i obie stoja :D	vão dois e cai o do meio :D
+co robi kowal na wakacjach? odpoczywa od twoich lez :P	o que faz o ferreiro de férias? descansa das tuas lágrimas :P
+czemu ninja nie placi podatkow? bo urzad skarbowy go nie widzi xd	porque é que o ninja não paga impostos? porque as finanças não o veem xD
+gracz pyta wrozke: czy wydropie dzis cos dobrego? wrozka: tak. gracz: co? wrozka: zmeczenie :D	o jogador pergunta à vidente: vou dropar algo bom hoje? ela: sim. jogador: o quê? ela: cansaço :D
+co ma wspolnego metin i moj portfel? oba sie rozpadaja jak sie w nie mocno uderzy xd	o que têm em comum um metin e a minha carteira? os dois desfazem-se se lhes bateres com força xD
+ojciec do syna: jak bedziesz duzy, to bedziesz lekarzem? syn: nie tato, bede expil po nocach. ojciec: no to tez bez snu, gratuluje :P	o pai para o filho: quando fores grande vais ser médico? filho: não, pai, vou upar de noite. pai: sem dormir na mesma, parabéns :P
+czemu szkielety w lochu nie walcza ze soba? bo nie maja do tego serca :D	porque é que os esqueletos da masmorra não lutam entre si? porque não têm estômago para isso :D
+jak sie nazywa mob, ktory ucieka? lur w odwrotna strone xd	como se chama um mob que foge? um puxão ao contrário xD
+dlaczego szaman nie gra w chowanego? bo zawsze leczy sie w krzakach i swieci na pol mapy :D	porque é que o xamã não joga às escondidas? cura-se sempre nos arbustos e brilha em meio mapa :D
+z Krakowa	de Lisboa
+z Warszawy	do Porto
+spod Poznania	de perto de Braga
+z Wroclawia	de Coimbra
+z Gdanska	de Faro
+z Lodzi	de Aveiro
+z malej wiochy pod Lublinem	de uma aldeia perto de Viseu
+z Katowic	de Setúbal
+ze Szczecina	do Funchal
+z Bialegostoku	de Évora
+z Rzeszowa	de Leiria
+z Torunia	de Guimarães
+z Opola	de Viana do Castelo
+z okolic Kielc	de perto de Santarém
+z Bydgoszczy	de Ponta Delgada
+z Olsztyna	de Bragança
+z Radomia	da Guarda
+z Czestochowy	de Castelo Branco
+ze Slaska, z Gliwic	do Minho, de Barcelos
+z Gdyni	de Beja
+z Plocka	de Portimão
+z Zielonej Gory	de Sintra
+z Koszalina	de Cascais
+z Tarnowa	de Vila Real
+z Legnicy	da Covilhã
+z Kalisza	de Almada
+z Nowego Sacza	da Póvoa de Varzim
+spod Zakopanego	de uma aldeia na Serra da Estrela
+z Anglii, ale jestem polakiem	de Portugal, mas vivo em França
+z Niemiec, ale z polski pochodze	da Suíça, mas sou português de origem
+na M1, wokol wioski	no M1, à volta da aldeia
+na M1 i M2, przy drogach	no M1 e no M2, ao pé dos caminhos
+na M2, troche dalej od wioski	no M2, um pouco mais longe da aldeia
+w Dolinie Orkow i na Pustyni	no Vale dos Orcs e no Deserto
+na Pustyni Yongbi i w Dolinie	no Deserto de Yongbi e no Vale
+na Sohanie i w Hwangu	no Sohan e no Hwang
+na Sohanie i na Ognistej Ziemi	no Sohan e na Terra do Fogo
+w Lesie Duchow	na Floresta dos Fantasmas
+w Czerwonym Lesie	na Floresta Vermelha
+na M1, wilki i dziki obok wioski	no M1, lobos e javalis ao pé da aldeia
+na M1, dalej od wioski, a potem M2	no M1, longe da aldeia, e depois M2
+na wyspach w Dolinie Orkow albo na Pustyni	nas ilhas do Vale dos Orcs ou no Deserto
+w Dolinie Orkow albo na Pustyni	no Vale dos Orcs ou no Deserto
+w Lochu Pajakow albo na Sohanie	na Masmorra das Aranhas ou no Sohan
+w Hwangu albo w Lochu Pajakow II	no Hwang ou na Masmorra das Aranhas II
+na Ognistej Ziemi albo w Czerwonym Lesie	na Terra do Fogo ou na Floresta Vermelha
+w Czerwonym Lesie albo w Grocie	na Floresta Vermelha ou na Gruta
+Spokojnie, nie nadazam pisac :D	Calma, não consigo escrever tão rápido :D
+Po kolei, po kolei :)	Um de cada vez, um de cada vez :)
+Wolniej troche :D	Mais devagar :D
+Spoko.	Ok.
+Przeciez pisalem :)	Mas eu já escrevi :)
+Jak mowilem,	Como dizia,
+Wracajac do tego,	Voltando a isso,
+A wracajac do gry,	E voltando ao jogo,
+Wracajac do tematu -	Voltando ao assunto -
+Swoja droga, dzis jakis pech mnie trzyma.	Já agora, hoje persegue-me o azar.
+Dzis jakos slabo mi idzie, swoja droga.	Hoje não me está a correr bem, já agora.
+Humor mi dzis dopisuje!	Hoje estou bem-disposto!
+Wbilem $LVL!	Subi para $LVL!
+O, $LVL poziom wpadl!	Oh, caiu o nível $LVL!
+Chyba zaraz bede wracal do miasta, EQ mam pelne.	Acho que daqui a pouco volto à cidade, tenho o inventário cheio.
+EQ pelne, lece zaraz sprzedac drop.	Inventário cheio, vou vender o drop.
+Musialem sie wycofac, prawie mnie ubili.	Tive de recuar, quase me mataram.
+$PLAYER, idziesz na exp?	$PLAYER, vais upar?
+$PLAYER, moze razem pobijemy?	$PLAYER, batemos juntos?
+Ej $PLAYER, a ty dalej lubisz $LIKES?	Ei $PLAYER, ainda gostas de $LIKES?
+$PLAYER, znalazles cos ciekawego?	$PLAYER, encontraste algo interessante?
+$PLAYER, jak tam drop?	$PLAYER, como está o drop?
+Ale dzis leci drop!	Que drop hoje!
+ej spokojnie, nie nadazam pisac :D daj mi chwile	ei calma, não consigo escrever tão rápido :D dá-me um segundo
+wolniej troche, ja tu jeszcze expie	mais devagar, ainda estou a upar
+dobra, za duzo tego, odpisze pozniej	ok, é muita coisa, respondo depois
+ej nie spamuj, zaraz ci odpisze	ei não faças spam, já te respondo
+chwila chwila, nie ogarniam tylu wiadomosci xd	espera espera, não consigo acompanhar tantas mensagens xD
+No, pogoda dzis jakas dziwna.	Pois, tempo estranho hoje.
+Tez to zauwazylem.	Também reparei.
+Pogoda robi swoje, a my swoje.	O tempo faz a sua parte e nós a nossa.
+Mhm, dzien jak dzien.	Hmm, um dia como outro qualquer.
+Lubie, jak jest spokojnie i sucho.	Gosto quando está calmo e seco.
+Taka pogoda mi pasuje.	Este tempo dá-me jeito.
+Nie przepadam za taka pogoda.	Não gosto muito deste tempo.
+Wolalbym cos cieplejszego.	Preferia algo mais quente.
+Byle nie padalo na expie.	Desde que não chova enquanto upo.
+Lubie, jak jest ladnie i mozna sie powloczyc.	Gosto quando está bom e dá para passear.
+Kazda pogoda dobra, jak idzie handel.	Qualquer tempo é bom se o negócio corre bem.
+Pogoda mi nie przeszkadza, gorzej z mobami.	O tempo não me incomoda, pior são os mobs.
+Najlepiej jak jest ladnie i ludzie wychodza razem.	O melhor é quando está bom e as pessoas saem juntas.
+A u ciebie jak pogoda?	E aí, como está o tempo?
+U ciebie tez tak?	Aí também está assim?
+Po prostu wtedy lepiej sie gra.	Simplesmente joga-se melhor assim.
+Jakos tak mam od zawsze.	Sempre fui assim.
+Kazda pora roku ma cos w sobie.	Cada estação tem o seu encanto.
+No, pory roku lataja szybko.	Pois, as estações passam a voar.
+Lubie, ma swoj klimat.	Gosto, tem o seu ambiente.
+Tak, calkiem lubie.	Sim, até gosto.
+Raczej nie, wole cieplejsze miesiace.	Nem por isso, prefiro os meses mais quentes.
+Niezbyt, za zimno jak na moj gust.	Nem por isso, demasiado frio para o meu gosto.
+Wole lato, dluzej jasno.	Prefiro o verão, há luz mais tempo.
+Jesien jest fajna, wszystko inaczej wyglada.	O outono é fixe, tudo parece diferente.
+Latem wiecej ludzi na targu.	No verão há mais gente no mercado.
+Zima jest dobra, mniej ludzi na spotach.	O inverno é bom, há menos gente nos spots.
+Lato, bo wtedy wszyscy maja czas grac.	O verão, porque toda a gente tem tempo para jogar.
+A ty jaka pore roku lubisz?	E tu, de que estação gostas?
+A ty wolisz zime czy lato?	Preferes o inverno ou o verão?
+Jakos lepiej sie wtedy czuje.	Sinto-me melhor nessa altura, sei lá.
+Po prostu mniej narzekam wtedy na pogode.	Simplesmente queixo-me menos do tempo.
+Czas leci jak szalony.	O tempo voa.
+No, pora jak kazda inna na granie.	Pois, uma hora como outra qualquer para jogar.
+Lubie te pore.	Gosto desta hora.
+Ta pora jest spoko.	Esta hora está boa.
+Nie przepadam za ta pora.	Não gosto muito desta hora.
+Wolalbym, zeby bylo inaczej.	Preferia que fosse diferente.
+Najlepiej gra mi sie wieczorem.	Jogo melhor à noite.
+Noca jest spokojniej, lubie to.	À noite está mais calmo, gosto disso.
+Rano ruch na targu jest najmniejszy.	De manhã é quando há menos movimento no mercado.
+Noca moby jakby wredniejsze.	À noite os mobs parecem mais maus.
+Wieczorem jest najwiecej ludzi, wiec lubie.	À noite é quando há mais gente, por isso gosto.
+A ty dlugo jeszcze siedzisz?	Ainda vais ficar muito tempo?
+U ciebie ktora godzina?	Que horas são aí?
+Bo wtedy jest spokoj.	Porque nessa altura há sossego.
+Tak mi pasuje.	Assim dá-me jeito.
+Sen to podstawa, trzeba sie wyspac.	Dormir é essencial, é preciso descansar.
+No, spanie to wazna sprawa.	Pois, dormir é importante.
+Mnie tez by sie przydalo sie przespac.	Também me dava jeito dormir.
+Lubie sie wyspac, jak tylko moge.	Gosto de dormir bem sempre que posso.
+Spac to ja lubie.	Dormir é comigo.
+Szkoda mi czasu na spanie.	Tenho pena do tempo perdido a dormir.
+Jakos malo spie.	Durmo pouco, sei lá.
+Spanie to strata czasu na expa.	Dormir é tempo perdido para a exp.
+Lubie sie wyspac, potem lepiej sie gra.	Gosto de dormir bem, depois jogo melhor.
+Jak sie wyspie, lepiej mi sie liczy yang.	Quando durmo bem, conto melhor o yang.
+Po dobrej walce spi sie najlepiej.	Depois de uma boa luta dorme-se melhor.
+Najlepiej sie spi, jak wie sie, ze jutro znowu razem gramy.	Dorme-se melhor a saber que amanhã jogamos outra vez juntos.
+Ty sie wysypiasz?	Dormes bem?
+Dlugo spisz?	Dormes muito?
+Bez snu nic sie nie chce.	Sem dormir não apetece nada.
+Po prostu tak mam.	Sou assim.
+To odpocznij troche, gra nie ucieknie.	Então descansa um bocado, o jogo não foge.
+Znam to. Przerwa dobrze robi.	Conheço isso. Uma pausa faz bem.
+Moze pora na chwile przerwy?	Se calhar está na hora de uma pausa?
+Troche tak, ale jeszcze pociagne.	Um bocado, mas ainda aguento.
+Jestem troche zmeczony, ale da sie zyc.	Estou um bocado cansado, mas vive-se.
+Zmeczony? Troche, ale interes sie kreci.	Cansado? Um bocado, mas o negócio corre.
+Troche jestem, ale walka mnie budzi.	Um bocado, mas a luta acorda-me.
+Troche tak, ale w dobrym towarzystwie mniej czuc.	Um bocado, mas em boa companhia nota-se menos.
+Dlugo juz grasz?	Já jogas há muito?
+Ty tez juz padasz?	Também estás a cair de sono?
+Bo siedze juz dluzsza chwile.	Porque já estou aqui há um bom bocado.
+Za duzo biegania dzisiaj.	Corri demasiado hoje.
+Nuda to najgorsze. Trzeba cos wymyslic.	O tédio é o pior. É preciso inventar alguma coisa.
+To moze pobijemy cos razem?	Então batemos alguma coisa juntos?
+Znam to uczucie.	Conheço a sensação.
+Troche, ale exp sam sie nie zrobi.	Um bocado, mas a exp não se faz sozinha.
+Czasem sie nudze, wtedy ide gdzies bez celu.	Às vezes aborreço-me, então ando sem rumo.
+Stanie przy straganie potrafi nudzic.	Estar ao pé da loja pode ser aborrecido.
+Jak nie ma z kim walczyc, to tak.	Quando não há com quem lutar, sim.
+Samemu sie czasem nudze, w grupie nigdy.	Sozinho às vezes aborreço-me, em grupo nunca.
+A ty sie nudzisz?	E tu, estás aborrecido?
+Masz jakis pomysl, co porobic?	Tens alguma ideia do que fazer?
+Bo to w kolko to samo.	Porque é sempre a mesma coisa.
+Jak nic sie nie dzieje, to tak jest.	Quando não acontece nada, é assim.
+Fajnie miec jakies zajecie poza gra.	É fixe ter alguma coisa para fazer fora do jogo.
+O, ciekawe hobby.	Oh, hobby interessante.
+Kazdy powinien miec cos swojego.	Toda a gente devia ter algo seu.
+Lubie, jasne.	Gosto, claro.
+Tak, to fajne zajecie.	Sim, é uma atividade fixe.
+To raczej nie dla mnie.	Isso não é muito para mim.
+Nie bardzo, nie mam do tego cierpliwosci.	Nem por isso, não tenho paciência para isso.
+Jak mam chwile, to po prostu expie. Takie hobby.	Quando tenho tempo, upo. Esse é o meu hobby.
+Jak mam spokoj, lubie pochodzic gdzies bez celu i pozwiedzac.	Quando está sossegado, gosto de andar sem rumo e explorar.
+Lubie liczyc zyski i szukac okazji na targu.	Gosto de contar lucros e procurar pechinchas no mercado.
+Lubie dobra walke. Reszta to dodatki.	Gosto de uma boa luta. O resto são extras.
+Najbardziej lubie grac z kims, samemu to nie to samo.	O que mais gosto é de jogar com alguém, sozinho não é o mesmo.
+A ty co lubisz robic?	E tu, o que gostas de fazer?
+A ty masz jakies hobby?	Tens algum hobby?
+Bo to mnie odpreza.	Porque me relaxa.
+Tak jakos zawsze mnie ciagnelo.	Sempre me puxou, sei lá.
+Ale teraz zglodnialem.	Mas agora fiquei com fome.
+O, smacznego.	Oh, bom apetite.
+Jedzenie to podstawa.	A comida é essencial.
+Brzmi dobrze.	Parece bom.
+Tak, to jest dobre.	Sim, isso é bom.
+Niezbyt, nie moj smak.	Nem por isso, não é o meu gosto.
+Raczej nie przepadam.	Não sou grande fã.
+Zjem cokolwiek, byle szybko i z powrotem na exp.	Como qualquer coisa, desde que seja rápido e de volta ao up.
+Lubie probowac nowych rzeczy.	Gosto de experimentar coisas novas.
+Zjem to, co tanie i dobre.	Como o que for barato e bom.
+Po walce zjadlbym konia z kopytami.	Depois de uma luta comia um cavalo.
+Najlepiej je sie w towarzystwie.	Come-se melhor em companhia.
+A ty co lubisz jesc?	E tu, o que gostas de comer?
+Jadles juz cos dzisiaj?	Já comeste alguma coisa hoje?
+Bo jest smaczne i sycace.	Porque é saboroso e enche.
+Tak mnie wychowali.	Fui criado assim.
+Cos do picia zawsze sie przyda.	Algo para beber dá sempre jeito.
+Na zdrowie.	Saúde.
+Lubie, czemu nie.	Gosto, porque não.
+Tak, dobre to jest.	Sim, é bom.
+Nie bardzo za tym przepadam.	Não sou muito disso.
+Raczej nie.	Nem por isso.
+Kawa, zeby dalej expic.	Café, para continuar a upar.
+Herbata i spokojny wieczor.	Chá e uma noite calma.
+Pije to, co tanie.	Bebo o que for barato.
+Cos mocnego po wygranej walce.	Algo forte depois de uma luta ganha.
+Cokolwiek, byle w dobrym gronie.	Qualquer coisa, desde que seja em boa companhia.
+A ty co pijesz?	E tu, o que bebes?
+Kawa czy herbata?	Café ou chá?
+Bo stawia na nogi.	Porque me põe de pé.
+Tak juz mam.	Sou assim.
+kawa|herbata|kompot|woda|sok jablkowy	café|chá|sumo|água|sumo de maçã
+Podroze to fajna sprawa.	Viajar é fixe.
+O, zazdroszcze.	Oh, que inveja.
+Chcialbym kiedys gdzies tak pojechac.	Gostava de ir a um sítio assim um dia.
+Lubie, bardzo.	Gosto, muito.
+Tak, to jest cos.	Sim, isso é outra coisa.
+Nie za bardzo, wole znane katy.	Nem por isso, prefiro sítios conhecidos.
+Raczej nie, szkoda mi czasu na droge.	Nem por isso, tenho pena do tempo de viagem.
+Podrozuje glownie miedzy spotami.	Viajo sobretudo entre spots.
+Lubie odkrywac nowe miejsca, nawet jak nic tam nie ma.	Gosto de descobrir sítios novos, mesmo que não haja nada lá.
+Najbardziej ciekawia mnie miasta i ich targi.	O que mais me interessa são as cidades e os seus mercados.
+Pojechalbym tam, gdzie sa mocne potwory.	Ia para onde estão os monstros fortes.
+Z dobra ekipa pojechalbym wszedzie.	Com uma boa equipa ia a qualquer lado.
+A ty gdzie bys pojechal?	E tu, para onde irias?
+Byles gdzies ciekawym?	Já estiveste em algum sítio interessante?
+Bo lubie zobaczyc cos nowego.	Porque gosto de ver algo novo.
+Bo w jednym miejscu sie nudze.	Porque num só sítio aborreço-me.
+Muzyka to dobra sprawa.	A música é uma coisa boa.
+O, niezle.	Oh, nada mal.
+Bez muzyki ciezko sie gra.	Sem música custa jogar.
+Lubie, czasem slucham.	Gosto, às vezes ouço.
+Tak, to mi siedzi.	Sim, isso é comigo.
+Nie moja bajka.	Não é a minha cena.
+Slucham czegokolwiek, co nie przeszkadza w expie.	Ouço qualquer coisa que não me distraia do up.
+Lubie spokojna muzyke, jak gdzies wedruje.	Gosto de música calma quando ando por aí.
+Lubie muzyke z tawerny, kojarzy mi sie z targiem.	Gosto de música de taberna, lembra-me o mercado.
+Cos ciezszego, pod walke.	Algo mais pesado, para lutar.
+To, co akurat puszcza ekipa.	O que a equipa puser.
+A ty czego sluchasz?	E tu, o que ouves?
+Masz jakis ulubiony kawalek?	Tens alguma música favorita?
+Bo dodaje energii.	Porque me dá energia.
+Bo mnie uspokaja.	Porque me acalma.
+Dobry film to podstawa wieczoru.	Um bom filme é a base da noite.
+O, slyszalem cos o tym. Chyba.	Oh, ouvi falar disso. Acho eu.
+Filmy to dobra odskocznia.	Os filmes são uma boa fuga.
+Lubie, jak jest ciekawa fabula.	Gosto quando a história é interessante.
+Tak, czasem cos obejrze.	Sim, às vezes vejo alguma coisa.
+Nie bardzo, szybko sie nudze.	Nem por isso, aborreço-me depressa.
+Raczej nie, wole grac.	Nem por isso, prefiro jogar.
+Rzadko ogladam, szkoda czasu.	Vejo pouco, tenho pena do tempo.
+Lubie filmy o podrozach i przygodach.	Gosto de filmes de viagens e aventuras.
+Lubie filmy o ludziach, co doszli do fortuny.	Gosto de filmes sobre pessoas que fizeram fortuna.
+Cos z walka, zeby sie dzialo.	Algo com luta, para acontecerem coisas.
+Najlepiej oglada sie z kims.	Vê-se melhor com alguém.
+A ty co ostatnio ogladales?	E tu, o que viste ultimamente?
+Jaki film polecasz?	Que filme recomendas?
+Bo lubie, jak sie cos dzieje.	Porque gosto quando acontecem coisas.
+Bo mozna sie oderwac.	Porque dá para desligar.
+Gry to jest to.	Os jogos são o que é.
+Kazda gra ma cos w sobie.	Cada jogo tem o seu encanto.
+Tak, czasem pogram.	Sim, às vezes jogo.
+Nie bardzo, to nie dla mnie.	Nem por isso, não é para mim.
+Wole jedna gre i rozwijac postac.	Prefiro um só jogo e evoluir a personagem.
+Lubie gry, gdzie mozna duzo zwiedzac.	Gosto de jogos onde se pode explorar muito.
+Lubie gry z handlem i ekonomia.	Gosto de jogos com comércio e economia.
+Cos, gdzie trzeba sie bic.	Algo onde seja preciso lutar.
+Lubie gry, gdzie gra sie z innymi.	Gosto de jogos onde se joga com outros.
+A ty w co jeszcze grasz?	E tu, a que mais jogas?
+Grasz w cos poza tym?	Jogas mais alguma coisa além disto?
+Bo lubie rozwijac postac.	Porque gosto de evoluir a personagem.
+Bo mozna sie odprezyc.	Porque dá para relaxar.
+Haha, dobre.	Haha, boa.
+Niezle, usmialem sie.	Nada mal, ri-me.
+Hehe, ale z ciebie zartownis.	Hehe, que brincalhão.
+Lubie sie posmiac.	Gosto de me rir.
+Dobry zart zawsze na plus.	Uma boa piada é sempre um plus.
+Nie jestem dzis w nastroju do zartow.	Hoje não estou para piadas.
+Nie bardzo mnie to bawi.	Não me faz grande graça.
+Najsmieszniej jest, jak ktos ginie na mobie o 10 lvl nizej.	O mais engraçado é quando alguém morre num mob 10 lvl abaixo.
+Smieje sie z roznych dziwnych sytuacji w podrozy.	Rio-me de todo o tipo de situações estranhas pelo caminho.
+Najlepszy zart to ceny niektorych straganow.	A melhor piada são os preços de algumas lojas.
+Smieszy mnie, jak ktos ucieka przed Metinem.	Acho piada quando alguém foge de um Metin.
+Najlepiej smiac sie w grupie.	Rir é melhor em grupo.
+Znasz jakis dobry kawal?	Sabes alguma boa anedota?
+Masz cos smiesznego?	Tens algo engraçado?
+Bo trzeba miec dystans.	Porque é preciso levar as coisas com distância.
+Bez smiechu byloby smutno.	Sem rir seria triste.
+Szczescie sprzyja odwaznym.	A sorte protege os audazes.
+Raz lepiej, raz gorzej.	Às vezes melhor, às vezes pior.
+Trzeba miec troche farta.	É preciso ter um pouco de sorte.
+Szczescie trzeba sobie wyexpic.	A sorte também se farma.
+Wierze, ze szczescie sie odwraca.	Acho que a sorte muda.
+Szczescie to dobra cena w odpowiednim momencie.	Sorte é um bom preço no momento certo.
+Szczescie to jak Metin dropi cos dobrego.	Sorte é quando um Metin dropa algo bom.
+Szczescie to dobra ekipa.	Sorte é uma boa equipa.
+A ty masz dzis farta?	Tens sorte hoje?
+Tobie dzis dopisuje szczescie?	A sorte está contigo hoje?
+Bo tak to juz jest.	Porque é assim.
+Taka jest gra.	O jogo é assim.
+Przyjaciele to podstawa.	Os amigos são essenciais.
+Dobrych ludzi warto trzymac blisko.	Vale a pena ter boa gente por perto.
+Zgadzam sie.	Concordo.
+Mam kilku znajomych, z ktorymi czasem expie.	Tenho alguns amigos com quem às vezes upo.
+Poznaje ludzi po drodze, niektorzy zostaja.	Conheço pessoas pelo caminho, algumas ficam.
+Mam znajomych, ale interesy to interesy.	Tenho amigos, mas negócios são negócios.
+Ufam tym, z ktorymi walczylem.	Confio naqueles com quem lutei.
+Dla mnie znajomi to najwazniejsze w tej grze.	Para mim os amigos são o mais importante neste jogo.
+A ty masz tu znajomych?	Tens amigos aqui?
+Grasz z kims na stale?	Jogas com alguém fixo?
+Bo samemu jest trudniej.	Porque sozinho é mais difícil.
+Bo razem jest weselej.	Porque juntos é mais divertido.
+Razem zawsze lepiej.	Juntos é sempre melhor.
+Wspolpraca to podstawa.	A cooperação é essencial.
+Dobrze zgrana ekipa robi robote.	Uma equipa bem afinada faz o trabalho.
+Z dobra ekipa exp leci szybciej.	Com uma boa equipa a exp vai mais rápido.
+Lubie grac z innymi, choc czasem wole sam.	Gosto de jogar com outros, embora às vezes prefira sozinho.
+Wspolpraca sie oplaca, doslownie.	Cooperar compensa, literalmente.
+W grupie mozna bic mocniejsze rzeczy.	Em grupo dá para bater em coisas mais fortes.
+Najbardziej lubie grac w grupie.	O que mais gosto é de jogar em grupo.
+Wolisz grac sam czy z kims?	Preferes jogar sozinho ou com alguém?
+Masz stala ekipe?	Tens equipa fixa?
+Bo razem idzie szybciej.	Porque juntos vai mais rápido.
+Bo samemu nie wszystko sie da.	Porque sozinho não se faz tudo.
+Hej, nie jestes sam. Mozemy pogadac.	Ei, não estás sozinho. Podemos falar.
+Znam to uczucie. Trzeba wyjsc do ludzi.	Conheço a sensação. É preciso sair para o meio das pessoas.
+Czasem kazdy sie tak czuje.	Toda a gente se sente assim às vezes.
+Czasem gram sam, ale mi to nie przeszkadza.	Às vezes jogo sozinho, mas não me importo.
+Czasem czuje sie samotnie w podrozy, ale mija.	Às vezes sinto-me sozinho na estrada, mas passa.
+Samotnosc? Na targu zawsze ktos jest.	Solidão? No mercado há sempre alguém.
+Samemu tez da sie walczyc.	Sozinho também se luta.
+Nie lubie byc sam, dlatego szukam ekipy.	Não gosto de estar sozinho, por isso procuro equipa.
+Grasz sam czesto?	Jogas sozinho muitas vezes?
+Chcesz pogadac?	Queres falar?
+Bo tak czasem wychodzi.	Porque às vezes calha assim.
+Nie zawsze jest z kim grac.	Nem sempre há com quem jogar.
+Ryzyko to czesc zabawy.	O risco faz parte da diversão.
+Czasem trzeba zaryzykowac.	Às vezes é preciso arriscar.
+Ostroznie z tym.	Cuidado com isso.
+Lubie troche ryzyka.	Gosto de um pouco de risco.
+Jak nie ma ryzyka, to nudno.	Sem risco é aborrecido.
+Wole nie ryzykowac bez potrzeby.	Prefiro não arriscar sem necessidade.
+Raczej gram ostroznie.	Prefiro jogar com cuidado.
+Ryzykuje tylko, jak sie oplaca w expie.	Só arrisco quando compensa em exp.
+Czasem ryzykuje, zeby zobaczyc cos nowego.	Às vezes arrisco para ver algo novo.
+Ryzykuje tylko wtedy, kiedy sie to zwroci.	Só arrisco quando dá retorno.
+Lubie ryzyko. Bez niego nie ma dobrej walki.	Gosto de risco. Sem ele não há boa luta.
+W grupie ryzyko jest mniejsze.	Em grupo o risco é menor.
+A ty lubisz ryzyko?	E tu, gostas de risco?
+Ryzykujesz czasem?	Arriscas às vezes?
+Bo bez ryzyka nie ma nagrody.	Porque sem risco não há recompensa.
+Bo raz juz sie przejechalem.	Porque já me lixei uma vez.
+Pieniadze szczescia nie daja, ale pomagaja.	O dinheiro não traz felicidade, mas ajuda.
+Kasa zawsze sie przyda.	O dinheiro dá sempre jeito.
+No, bez kasy ciezko.	Pois, sem dinheiro custa.
+Kasa jest potrzebna, ale wazniejszy jest exp.	O dinheiro é preciso, mas a exp é mais importante.
+Pieniadze to nie wszystko.	O dinheiro não é tudo.
+Pieniadz robi pieniadz, jak sie wie jak.	Dinheiro faz dinheiro, se souberes como.
+Kasa na lepszy sprzet i tyle.	Dinheiro para melhor equipamento e pronto.
+Kasa jest spoko, ale ludzie wazniejsi.	O dinheiro é fixe, mas as pessoas importam mais.
+A ty oszczedzasz czy wydajesz?	Tu poupas ou gastas?
+Duzo wydajesz na sprzet?	Gastas muito em equipamento?
+Bo za wszystko trzeba placic.	Porque tudo se paga.
+Bo tak dziala swiat.	Porque o mundo funciona assim.
+Praca to praca, trzeba jakos zyc.	Trabalho é trabalho, é preciso viver de alguma coisa.
+Oj, znam to.	Ui, conheço isso.
+Wspolczuje, jak meczaca.	Coitado, que cansativo.
+Moja praca to expienie.	O meu trabalho é upar.
+Nie wyobrazam sobie siedziec w jednym miejscu caly dzien.	Não me imagino num sítio o dia todo.
+Handel to moja praca.	O comércio é o meu trabalho.
+Walka to moja robota.	A luta é o meu trabalho.
+Najlepiej pracuje sie z fajnymi ludzmi.	Trabalha-se melhor com gente fixe.
+A ty pracujesz?	E tu, trabalhas?
+Meczaca ta twoja robota?	O teu trabalho é cansativo?
+Bo trzeba z czegos zyc.	Porque é preciso viver de alguma coisa.
+Tak wyszlo.	Calhou assim.
+Nauka sie przydaje, nawet jak nie chce sie wierzyc.	Estudar dá jeito, mesmo que não queiras acreditar.
+Powodzenia z nauka.	Boa sorte com os estudos.
+Oj, szkola to temat.	Ui, a escola é todo um assunto.
+Lubilem sie uczyc nowych rzeczy.	Gostava de aprender coisas novas.
+Nauka jest spoko, jak jest ciekawa.	Estudar é fixe quando é interessante.
+Nigdy nie lubilem siedziec w lawce.	Nunca gostei de estar sentado na carteira.
+Szkola to nie moj temat.	A escola não é a minha cena.
+Ucze sie glownie nowych skilli.	Aprendo sobretudo habilidades novas.
+Lubie sie uczyc nowych rzeczy po drodze.	Gosto de aprender coisas novas pelo caminho.
+Najwiecej nauczyl mnie targ.	Quem mais me ensinou foi o mercado.
+Najlepsza nauka to walka.	A melhor escola é a luta.
+Najwiecej nauczylem sie od innych graczy.	Aprendi mais com outros jogadores.
+Uczysz sie jeszcze?	Ainda estudas?
+Jak ci idzie nauka?	Como vão os estudos?
+Bo wiedza sie przydaje.	Porque o saber dá jeito.
+Bo to sie oplaca.	Porque compensa.
+Zycie to ciekawa sprawa.	A vida é uma coisa interessante.
+Gleboka mysl jak na szept.	Pensamento profundo para um sussurro.
+Kazdy ma swoja droge.	Cada um tem o seu caminho.
+Dla mnie sens to isc do przodu, poziom po poziomie.	Para mim o sentido é seguir em frente, nível a nível.
+Zycie to podroz, liczy sie droga.	A vida é uma viagem, o que conta é o caminho.
+Zycie to dobre inwestycje i spokoj na starosc.	A vida são bons investimentos e sossego na velhice.
+Zycie to walka, trzeba byc gotowym.	A vida é uma luta, é preciso estar preparado.
+Zycie to ludzie, z ktorymi je dzielisz.	A vida são as pessoas com quem a partilhas.
+A ty jak myslisz?	E tu, o que achas?
+A dla ciebie co jest wazne?	E para ti, o que é importante?
+Tak to czuje.	É o que sinto.
+Tak mnie nauczylo zycie.	Foi o que a vida me ensinou.
+Marzenia sa wazne.	Os sonhos são importantes.
+Oby sie spelnilo.	Que se realize.
+Ladne marzenie.	Bonito sonho.
+A ty o czym marzysz?	E tu, com que sonhas?
+A ty masz jakies marzenie?	E tu, tens algum sonho?
+Bo tak czuje.	Porque é o que sinto.
+Bo to by duzo zmienilo.	Porque mudaria muita coisa.
+Kazdy sie czegos boi.	Toda a gente tem medo de alguma coisa.
+Rozumiem, to straszne.	Percebo, é assustador.
+Nie ma sie czego wstydzic.	Não há do que ter vergonha.
+A ty czego sie boisz?	E tu, de que tens medo?
+A ciebie co przeraza?	E a ti, o que te assusta?
+Bo tak juz mam.	Sou assim.
+Raz sie przejechalem.	Já me lixei uma vez.
+Tez mnie to wkurza.	A mim também me irrita.
+Rozumiem, to potrafi zdenerwowac.	Percebo, isso pode enervar.
+A ciebie co denerwuje?	E a ti, o que te irrita?
+Ciebie tez to wkurza?	A ti também te irrita?
+Bo to strata czasu.	Porque é perder tempo.
+Bo tak nie powinno byc.	Porque não devia ser assim.
+To fajnie, ciesze sie.	Que fixe, fico contente.
+Super, tak trzymaj.	Boa, continua assim.
+Dobrze to slyszec.	Bom saber.
+A ciebie co cieszy?	E a ti, o que te alegra?
+Co ci dzis poprawilo humor?	O que te alegrou o dia hoje?
+Bo wtedy wiem, ze bylo warto.	Porque aí sei que valeu a pena.
+Bo takie chwile sie pamieta.	Porque esses momentos ficam na memória.
+Rozumiem.	Percebo.
+Trzymaj sie.	Força.
+Bywa i tak.	Acontece.
+U mnie bez wiekszych emocji, robie swoje.	Por aqui sem grandes emoções, faço o meu.
+Czasem jestem wesoly, czasem mniej, jak kazdy.	Às vezes estou alegre, às vezes menos, como toda a gente.
+Humor mi sie zmienia z cenami.	O humor muda-me com os preços.
+Emocje zostawiam na walke.	As emoções guardo-as para a luta.
+Lepiej sie czuje, jak mam z kim pogadac.	Sinto-me melhor quando tenho com quem falar.
+A ty jak sie dzis czujesz?	E tu, como te sentes hoje?
+Co u ciebie tak naprawde?	Como estás mesmo?
+Tak po prostu jest.	Simplesmente é assim.
+Bywa roznie.	Depende.
+Zwierzaki sa super.	Os animais de estimação são o máximo.
+O, fajnie.	Oh, fixe.
+Lubie zwierzeta.	Gosto de animais.
+Tak, sa fajne.	Sim, são fixes.
+Nie przepadam.	Não sou grande fã.
+Raczej nie, wole z daleka.	Nem por isso, prefiro à distância.
+Najbardziej lubie swojego konia, bo szybko biega.	O que mais gosto é do meu cavalo, corre rápido.
+Lubie obserwowac zwierzaki w podrozy.	Gosto de ver animais pelo caminho.
+Zwierzaki sa fajne, byle nie drogie w utrzymaniu.	Os animais são fixes, desde que não sejam caros de manter.
+Szanuje zwierzeta, ktore potrafia walczyc.	Respeito os animais que sabem lutar.
+Zwierzaki to najlepsze towarzystwo.	Os animais são a melhor companhia.
+Masz jakiegos zwierzaka?	Tens algum animal?
+Psy czy koty?	Cães ou gatos?
+Bo sa wierne.	Porque são fiéis.
+Bo sa szczere.	Porque são sinceros.
+Sport to zdrowie.	Desporto é saúde.
+O, szacun.	Oh, respeito.
+Ruch jest wazny.	O movimento é importante.
+Lubie, czasem cos porobie.	Gosto, às vezes faço alguma coisa.
+Tak, sport jest spoko.	Sim, o desporto é fixe.
+Niezbyt, wole grac.	Nem por isso, prefiro jogar.
+Raczej nie jestem sportowcem.	Não sou muito desportista.
+Moj sport to bieganie od moba do moba.	O meu desporto é correr de mob em mob.
+Lubie dlugie spacery.	Gosto de passeios longos.
+Sport? Tylko jak mozna na nim zarobic.	Desporto? Só se der para ganhar alguma coisa.
+Walka to moj sport.	A luta é o meu desporto.
+Lubie sporty druzynowe.	Gosto de desportos de equipa.
+Uprawiasz cos?	Praticas algum desporto?
+Ogladasz mecze?	Vês jogos?
+Bo trzeba sie ruszac.	Porque é preciso mexer-se.
+Bo daje energie.	Porque dá energia.
+Milosc to piekna sprawa.	O amor é uma coisa bonita.
+Oj, sprawy sercowe.	Ui, coisas do coração.
+Powodzenia w tych sprawach.	Boa sorte com isso.
+Na razie mam czas tylko na expa.	Por agora só tenho tempo para a exp.
+Moze kiedys kogos spotkam w podrozy.	Talvez um dia conheça alguém pelo caminho.
+Na razie zakochany jestem w dobrych cenach.	Por agora estou apaixonado pelos bons preços.
+Na razie moja milosc to moj miecz.	Por agora o meu amor é a minha espada.
+Kto wie, moze kiedys.	Quem sabe, talvez um dia.
+A ty masz kogos?	E tu, tens alguém?
+Spotykasz sie z kims?	Andas com alguém?
+Bo tak wyszlo.	Calhou assim.
+Na razie inne rzeczy sa wazniejsze.	Por agora há coisas mais importantes.
+Czytanie to dobra rzecz.	Ler é uma coisa boa.
+O, ciekawie brzmi.	Oh, parece interessante.
+Lubie, jak mam czas.	Gosto, quando tenho tempo.
+Tak, czasem cos poczytam.	Sim, às vezes leio alguma coisa.
+Nie bardzo, szybko zasypiam.	Nem por isso, adormeço depressa.
+Raczej nie czytam.	Não leio muito.
+Czytam glownie ksiegi umiejetnosci.	Leio sobretudo livros de habilidade.
+Lubie historie o podrozach.	Gosto de histórias de viagens.
+Czytam tylko cenniki.	Só leio listas de preços.
+Czytam o slawnych bitwach.	Leio sobre batalhas famosas.
+Wole jak ktos mi opowie.	Prefiro que alguém me conte.
+A ty czytasz cos?	E tu, lês alguma coisa?
+Polecisz cos?	Recomendas alguma coisa?
+Bo mozna sie czegos nauczyc.	Porque se pode aprender alguma coisa.
+Bo odpreza.	Porque relaxa.
+fantastyka|ksiazki przygodowe|historie o podrozach|kryminaly	fantasia|livros de aventuras|histórias de viagens|policiais
+Natura jest piekna.	A natureza é bonita.
+Tez lubie takie miejsca.	Também gosto desses sítios.
+Brzmi spokojnie.	Parece tranquilo.
+Lubie, spokoj i cisza.	Gosto, paz e sossego.
+Tak, bardzo.	Sim, muito.
+Nie bardzo, wole miasto.	Nem por isso, prefiro a cidade.
+Raczej wole miejsca z ludzmi.	Prefiro sítios com gente.
+Las jest spoko, byle byly moby.	A floresta é fixe, desde que haja mobs.
+Kocham lasy i gory, moglbym tam siedziec godzinami.	Adoro florestas e montanhas, podia ficar lá horas.
+Natura jest ladna, ale na targu wiecej sie dzieje.	A natureza é bonita, mas no mercado acontece mais.
+W lesie jest najwiecej zwierzyny do bicia.	Na floresta há mais caça para bater.
+Najlepiej na lonie natury z kims.	O melhor é na natureza com alguém.
+Lubisz chodzic po lesie?	Gostas de passear na floresta?
+Wolisz gory czy morze?	Montanha ou mar?
+Bo tam jest spokoj.	Porque lá há sossego.
+Bo mozna odpoczac od halasu.	Porque dá para descansar do barulho.
+Przygoda to jest to!	A aventura é o que é!
+Brzmi jak niezla przygoda.	Parece uma senhora aventura.
+Lubie przygody.	Gosto de aventuras.
+Tak, zawsze.	Sim, sempre.
+Wole spokoj.	Prefiro o sossego.
+Raczej nie szukam przygod.	Não ando muito à procura de aventuras.
+Przygoda jest fajna, jak daje expa.	A aventura é fixe quando dá exp.
+Zyje dla przygod.	Vivo para a aventura.
+Przygoda to dobra okazja na zysk.	A aventura é uma boa oportunidade de lucro.
+Kazda walka to przygoda.	Cada luta é uma aventura.
+Przygody najlepiej przezywac z kims.	As aventuras vivem-se melhor com alguém.
+Miales ostatnio jakas przygode?	Tiveste alguma aventura ultimamente?
+Szukasz przygod?	Procuras aventuras?
+Bo zycie bez nich jest nudne.	Porque a vida sem elas é aborrecida.
+Bo zawsze cos sie dzieje.	Porque acontece sempre alguma coisa.
+Ladny kolor.	Bonita cor.
+Gust to gust.	Gostos não se discutem.
+Lubie ten kolor.	Gosto dessa cor.
+Tak, ladny.	Sim, é bonita.
+Nie moj kolor.	Não é a minha cor.
+Kolor mi obojetny, byle item mial dobre bonusy.	A cor tanto me faz, desde que o item tenha bons bónus.
+Lubie kolory natury.	Gosto das cores da natureza.
+Zloty, jak yang.	Dourado, como o yang.
+Czerwony, jak krew na polu bitwy.	Vermelho, como o sangue no campo de batalha.
+Kazdy kolor jest ok.	Qualquer cor serve.
+A ty jaki kolor lubisz?	E tu, de que cor gostas?
+Masz ulubiony kolor?	Tens uma cor favorita?
+Tak mi sie podoba.	Simplesmente gosto.
+Kojarzy mi sie dobrze.	Traz-me boas recordações.
+Wbic maksymalny poziom. Proste.	Chegar ao nível máximo. Simples.
+Zeby kiedys byc najmocniejszy na serwerze.	Ser um dia o mais forte do servidor.
+Miec full set +9. To jest marzenie.	Ter o set completo +9. Esse é o sonho.
+Moze kiedys znalezc miejsce, gdzie nie trzeba caly czas walczyc.	Talvez um dia encontrar um sítio onde não seja preciso lutar o tempo todo.
+Zobaczyc kazdy zakatek tego swiata.	Ver cada canto deste mundo.
+Miec wlasny domek gdzies w gorach.	Ter a minha casinha algures na serra.
+Miec najwiekszy stragan w miescie.	Ter a maior loja da cidade.
+Zarobic tyle, zeby juz nie liczyc.	Ganhar tanto que deixe de contar.
+Kupic cos, na co wszyscy patrza z zazdroscia.	Comprar algo que toda a gente olhe com inveja.
+Pokonac cos, czego nikt jeszcze nie pokonal.	Derrotar algo que ninguém derrotou ainda.
+Rozwalic tysiac Metinow.	Partir mil Metins.
+Wygrac wielka wojne gildii.	Ganhar uma grande guerra de guildas.
+Miec stala ekipe, na ktora zawsze mozna liczyc.	Ter uma equipa fixa com que se possa sempre contar.
+Zeby wszyscy znajomi byli razem online.	Que todos os amigos estejam online ao mesmo tempo.
+Zalozyc gildie z fajnymi ludzmi.	Criar uma guilda com gente fixe.
+Teraz to marze glownie o odpoczynku.	Agora sonho sobretudo com descanso.
+Straty expa po smierci. Serio.	Perder exp ao morrer. A sério.
+Tego, ze utkne na jednym poziomie.	Ficar preso num nível.
+Niczego szczegolnego. Moze tylko spalenia broni.	Nada em especial. Talvez só queimar a arma.
+Chyba tego, ze kiedys zobacze juz wszystko.	Se calhar que um dia já tenha visto tudo.
+Ciemnych lochow bez wyjscia.	Masmorras escuras sem saída.
+Samotnosci w dalekiej podrozy.	A solidão numa viagem longa.
+Krachu cen na targu.	Uma queda de preços no mercado.
+Ze ktos mnie oszuka na handlu.	Que alguém me engane numa troca.
+Pustego straganu.	Uma loja vazia.
+Niczego. No, moze nudy.	Nada. Bem, talvez do tédio.
+Tego, ze trafie na kogos mocniejszego.	Dar com alguém mais forte.
+Zeby nie zginac glupio na slabym mobie.	Morrer estupidamente num mob fraco.
+Ze zostane sam.	Ficar sozinho.
+Ze znajomi przestana grac.	Que os amigos deixem de jogar.
+Ze zawiode ekipe w waznej chwili.	Falhar à equipa num momento importante.
+Teraz to boje sie glownie tego moba obok, mam malo HP.	Agora tenho medo sobretudo do mob aqui ao lado, tenho pouco HP.
+Jak ktos kradnie mi moby.	Quando alguém me rouba os mobs.
+Jak exp stoi w miejscu.	Quando a exp não mexe.
+Jak bron sie spali przy ulepszaniu.	Quando a arma queima ao subir.
+Jak ktos sie spieszy i nie ma czasu pogadac.	Quando alguém tem pressa e não tem tempo para falar.
+Zgubienie drogi.	Perder-me.
+Halas w miastach.	O barulho nas cidades.
+Ludzie, co zbijaja ceny.	As pessoas que baixam os preços.
+Jak ktos targuje sie o grosze.	Quando alguém regateia por tostões.
+Pusty rynek.	Um mercado vazio.
+Uciekajacy przeciwnicy.	Inimigos que fogem.
+Jak Metin znika mi sprzed nosa.	Quando um Metin desaparece debaixo do meu nariz.
+Jak nie ma z kim sie zmierzyc.	Quando não há com quem me medir.
+Jak ktos znika z PT bez slowa.	Quando alguém sai da pt sem dizer nada.
+Klotnie w grupie.	Discussões no grupo.
+Jak ktos jest niemily bez powodu.	Quando alguém é mal-educado sem razão.
+I pech w dropie, jak dzisiaj.	E o azar no drop, como hoje.
+Nowy poziom. Zawsze.	Um nível novo. Sempre.
+Jak exp leci szybko.	Quando a exp voa.
+Udane ulepszenie.	Uma subida bem-sucedida.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Agora: {1}. Mudar: /towarzysz walka atakuj | obrona | spokoj
+do Lochu Pajakow 2	para a Masmorra das Aranhas 2
+do Lochu Pajakow 3	para a Masmorra das Aranhas 3
+do Lasu	para a Floresta Fantasma
+do Doyyumhwaji	para Doyyumhwaji
+do Groty Wygnancow	para a Gruta do Exílio
+do Groty Wygnancow 2	para a Gruta do Exílio 2
+do Swiatyni Ochao	para o Templo de Ochao
+do Doliny Cyklopow	para o Vale dos Ciclopes
+na Pustkowie Faraona	para o Ermo do Faraó
+na Wezowe Pole	para o Campo das Serpentes
+do Krainy Gigantow	para a Terra dos Gigantes
+do Zakletego Lasu	para a Floresta Encantada
+do Szczeliny Czasu	para a Fenda do Tempo
+na Hydre	para a Hidra
+na Przyladek Smoczej Glowy	para o Cabo Cabeça de Dragão
+na Zbocze Gautama	para a Encosta da Aurora
+do Nefrytowej Zatoki	para a Baía da Areia Negra
+w Gromiste Gory	para as Montanhas do Trovão
+do Opuszczonej Twierdzy	para a Fortaleza Abandonada
+do Dongan	para Dongan
+do Seoganland	para Seoganland
+do Namgan	para Namgan
+na Przelecz Yilad	para o Desfiladeiro de Yilad
+do Wawozu Polnocnego Wiatru	para a Garganta do Vento Norte
+do Rozpadliny Dusz	para a Fenda das Almas
+do Schronienia Polnocnego Wiatru	para o Refúgio do Vento Norte
+do Zejscia Polnocnego Wiatru	para a Descida do Vento Norte
+$A albo $B	$A ou $B
+$A lub $B	$A ou $B
+orki	orcs
+pajaki	aranhas
+wilki	lobos
+niedzwiedzie	ursos
+tygrysy	tigres
+dziki	javalis
+malpy	macacos
+szkielety	esqueletos
+duchy	fantasmas
+demony	demónios
+zombie	zombies
+skorpiony	escorpiões
+bestie	bestas
+zolnierzy	soldados
+lisy	raposas
+jelenie	veados
+weze	serpentes
+zmije	víboras
+golemy	golems
+upiory	espectros
+drzewce	homens-árvore
+kaplanow	sacerdotes
+bandytow	bandidos
+lucznikow	arqueiros
+wojownikow	guerreiros
+surow	suras
+nietoperze	morcegos
+wojownik	guerreiro
+szaman	xamã
+postac	personagem
+wojownikiem	guerreiro
+szamanem	xamã
+moby	mobs
+nic	nada
+ktos	alguém
+dalej	mais à frente

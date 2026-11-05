@@ -1,6 +1,6 @@
 # The bots' chat in Romanian (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py ro.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1250
 an arrival radius below the navigation's own strands the bot short of it	o rază de sosire sub distanța proprie a navigației lasă botul înainte de țintă
 FAIL (-10% points)	EȘEC (-10% puncte)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	pe M1, mai departe de sat
 na M2	pe M2
 na wyspach w Dolinie Orkow	pe insulele din Valea Orcilor
 na M1	pe M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Vând {1} - {2}, {3} - {4} | shop {5} ch{6}
 S> {1} - {2}, stragan {3} ch{4}	V> {1} - {2}, shop {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	Vând {1} cu {2}, e în {3} pe ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	V> {1} {2}, treci pe la shop {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	Când o să mori, trag monștrii 
 Nie bede sciagac z ciebie potworow.	Nu o să trag monștrii de pe tine.
 Bede cie buffowac (jesli umiem).	O să-ți dau buff (dacă știu).
 Nie bede cie buffowac.	Nu o să-ți dau buff.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Acum: {1}. Schimbă: /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	Sigur? Scrie: /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Mersi! Îl păstrez, iar ce e mai bun decât al meu pun imediat.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	Ai inventarul plin - țin {1} pentru tine în rucsacul meu (fereastra Însoțitorului, click dreapta îl dă înapoi).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	fa
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiac {1}, {2} locuri libere, cine are animasfere?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	pt la zodiac {1}, veniți la portalul din curte
 zrun_{1}	zrun_{1}
-$X na CH$N	$X pe CH$N
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	Vând {1} - {2}, {3} - {4} | shop {5} ch{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Acum: {1}. Schimbă: /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	la Temnița Păianjenilor 2
 do Lochu Pajakow 3	la Temnița Păianjenilor 3
 do Lasu	în Pădurea Fantomelor
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	în Defileul Vântului de Nord
 do Rozpadliny Dusz	în Falia Sufletelor
 do Schronienia Polnocnego Wiatru	la Adăpostul Vântului de Nord
 do Zejscia Polnocnego Wiatru	la Coborârea Vântului de Nord
+$X na CH$N	$X pe CH$N
 $A albo $B	$A sau $B
 $A lub $B	$A sau $B
 orki	orci

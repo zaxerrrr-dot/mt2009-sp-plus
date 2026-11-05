@@ -1,6 +1,6 @@
 # The bots' chat in French (playerbot_i18n.h): Polish template<TAB>translation.
 # Keys: catalog_pl.tsv (tools/playerbot_i18n/extract_pl.py); check with tools/playerbot_i18n/check_catalog.py fr.
-# "-" = not text. Slots $NAME / {n} as in the Polish.
+# "-" = not text. Slots $NAME / {n} as in the Polish. Merged by tools/playerbot_i18n/staging.py import.
 #@codepage	1252
 an arrival radius below the navigation's own strands the bot short of it	un rayon d'arrivée sous celui de la navigation laisse le bot bloqué avant
 FAIL (-10% points)	ÉCHEC (-10% de points)
@@ -373,6 +373,7 @@ na M1, dalej od wioski	en M1, plus loin du village
 na M2	en M2
 na wyspach w Dolinie Orkow	sur les îles de la Vallée des Orcs
 na M1	en M1
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	VDS {1} - {2}, {3} - {4} | shop {5} ch{6}
 S> {1} - {2}, stragan {3} ch{4}	V> {1} - {2}, boutique {3} ch{4}
 Sprzedam {1} za {2}, stoi w {3} na ch{4}	Vends {1} pour {2}, en boutique à {3} sur ch{4}
 S> {1} {2}, wpadaj na stragan {3} ch{4}	V> {1} {2}, passe à la boutique {3} ch{4}
@@ -3678,6 +3679,7 @@ Gdy bedziesz ginac, sciagne na siebie potwory.	Quand tu seras en train de mourir
 Nie bede sciagac z ciebie potworow.	J'attirerai pas les monstres loin de toi.
 Bede cie buffowac (jesli umiem).	Je te bufferai (si je sais).
 Nie bede cie buffowac.	Je te bufferai pas.
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Maintenant : {1}. Changer : /towarzysz walka atakuj | obrona | spokoj
 Na pewno? Wpisz: /towarzysz odprawa tak	T'es sûr ? Tape : /towarzysz odprawa tak
 Dzieki! Zachowam to, a co lepsze od mojego, zaraz zaloze.	Merci ! Je le garde, et ce qui est mieux que le mien, je l'équipe tout de suite.
 Masz pelny ekwipunek - {1} trzymam dla ciebie w swoim plecaku (okno Towarzysza, prawy klik oddaje).	T'as l'inventaire plein - {1} je le garde pour toi dans mon sac (fenêtre Compagnon, clic droit pour le rendre).
@@ -4009,9 +4011,6 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	je
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiaque {1}, {2} places libres, qui a des animasphères ?
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	grp pour le zodiaque {1}, venez au portail dans la cour
 zrun_{1}	-
-$X na CH$N	$X sur CH$N
-S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	VDS {1} - {2}, {3} - {4} | shop {5} ch{6}
-Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Maintenant : {1}. Changer : /towarzysz walka atakuj | obrona | spokoj
 do Lochu Pajakow 2	au Donjon des Araignées 2
 do Lochu Pajakow 3	au Donjon des Araignées 3
 do Lasu	à la Forêt des Fantômes
@@ -4039,6 +4038,7 @@ do Wawozu Polnocnego Wiatru	aux Gorges du Vent du Nord
 do Rozpadliny Dusz	à la Faille des Âmes
 do Schronienia Polnocnego Wiatru	au Refuge du Vent du Nord
 do Zejscia Polnocnego Wiatru	à la Descente du Vent du Nord
+$X na CH$N	$X sur CH$N
 $A albo $B	$A ou $B
 $A lub $B	$A ou $B
 orki	orcs
