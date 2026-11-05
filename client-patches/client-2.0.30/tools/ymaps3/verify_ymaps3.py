@@ -223,6 +223,24 @@ for k in ('d:/ymir work/effect/monster2/whitedragon_ground_ice.mse', 'd:/ymir wo
         fail.append('ground zone effect %s: in no pack' % k)
 
 # 7) gamedata/dbdata: every row and item of this batch (a second patch must change nothing)
+# MT2009_PLUS_BRAKI_WIKI_V1: tools/brakiwiki owns 81560 (Tajemniczy Talizman+0 gets its use, record, item_list line and
+# itemdesc) - build_brakiwiki_packs.py runs after this batch and rewrites them on purpose; brakiwiki/verify_brakiwiki.py
+# checks them, so this batch's check leaves out every vnum of brakiwiki_items.json
+_BRAKI = json.load(open(os.path.join(HERE, '..', '..', '..', '..', 'tools', 'brakiwiki', 'brakiwiki_items.json'), encoding='utf-8'))
+_BRAKI_VNUMS = set(int(w['vnum']) for w in _BRAKI['items']) | set(int(k) for k in _BRAKI['itemdesc'])
+_items_json_all = pc.items_json
+
+
+def _items_json_wo_braki():
+    d = dict(_items_json_all())
+    d['items'] = [w for w in d['items'] if int(w['vnum']) not in _BRAKI_VNUMS]
+    for k in ('item_list', 'itemdesc', 'itemdesc_replace'):
+        if k in d:
+            d[k] = dict((v, r) for v, r in d[k].items() if int(v) not in _BRAKI_VNUMS)
+    return d
+
+
+pc.items_json = _items_json_wo_braki
 for n, fn in (('gamedata/mob_proto', pc.mob_proto), ('gamedata/atlasinfo.txt', pc.atlasinfo),
               ('gamedata/npclist.txt', pc.npclist), ('gamedata/item_list.txt', pc.item_list),
               ('gamedata/item_proto', pc.item_proto), ('locale/pl/itemdesc.txt', pc.itemdesc)):

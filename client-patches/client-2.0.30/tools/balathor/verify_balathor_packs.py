@@ -180,13 +180,21 @@ b = read('gamedata/item_proto')
 ver, stride, icnt, size = struct.unpack_from('<IIII', b, 4)
 iraw = m2pack.mcoz_decode(b[20:], pc.base.ITEM_KEY)
 recs = dict((struct.unpack_from('<I', iraw, i * stride)[0], iraw[i * stride:(i + 1) * stride]) for i in range(icnt))
+# MT2009_PLUS_ARROWS_GLOBAL_V1: tools/strzaly owns Plonaca Strzala 30395 (record, new name and text) - build_strzaly_packs.py
+# runs later and rewrites it on purpose; strzaly/verify_strzaly.py checks it
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'strzaly'))
+import patch_strzaly_client as _strzaly  # noqa: E402
 for vnum in D['items']:
+    if int(vnum) in _strzaly.ALL:
+        continue
     w = pc.sql_item(vnum)
     if recs.get(vnum) != pc.py.yitem_record(recs[pc.py.YITEM_TEMPLATE.get(w['type'], pc.py.TEMPLATE)], w):
         fails.append('item_proto %d: not the SQL\'s record' % vnum)
 desc = dict((l.split('\t')[0].strip(), l) for l in (read('locale/pl/itemdesc.txt') or b'').decode('cp1250')
             .replace('\r', '').split('\n') if l.strip())
 for k, line in D['itemdesc'].items():
+    if int(k) in _strzaly.ALL:
+        continue
     if desc.get(k) != line:
         fails.append('itemdesc %s: missing or other' % k)
 
