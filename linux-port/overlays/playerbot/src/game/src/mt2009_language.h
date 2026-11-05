@@ -59,6 +59,11 @@ void Mt2009QuestInfoText(LPCHARACTER ch, const std::string& polish, char* out, s
 // The titles / clock and counter names of every quest in the quest window again, in the reader's current language
 // (after "/lang").
 void Mt2009ResendQuestInfo(LPCHARACTER ch);
+// MT2009_PLUS_LANGUAGE_QUESTINFO_V2: the quests the client has in its window (PC::SendQuestInfoPakcet and the quest
+// removal note every packet; a new session forgets them), "/lang quests" (list + send again, logged).
+void Mt2009QuestInfoSentNote(LPCHARACTER ch, unsigned int index, int flag, bool begin);
+void Mt2009QuestInfoForget(unsigned int pid);
+int Mt2009ResendQuestInfoCount(LPCHARACTER ch, bool list);
 // DESC::Packet: a text packet (chat but the client's commands, whisper, quest script, quest confirm) for the reader
 // with its Polish words without diacritics when his client's code page is not cp1250 - a copy, or data itself.
 const void* Mt2009LanguagePacketOut(LPCHARACTER ch, const void* data, int size);

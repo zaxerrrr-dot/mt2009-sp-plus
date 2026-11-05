@@ -70,5 +70,17 @@
   "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (packet)",
   "old": "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n\t\t}\n",
   "new": "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n\t\t}\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (packet): a text packet's Polish words without diacritics for a client whose code page is not\n\t\t// cp1250 (mt2009_language.cpp); the packet itself for anything else.\n\t\t{ const void* Mt2009LanguagePacketOut(LPCHARACTER, const void*, int); c_pvData = Mt2009LanguagePacketOut(GetCharacter(), c_pvData, iSize); }\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note)",
+  "old": "\t\tCQuestManager::instance().GetCurrentCharacterPtr()->GetDesc()->Packet(buf.read_peek(), buf.size());\n",
+  "new": "\t\tCQuestManager::instance().GetCurrentCharacterPtr()->GetDesc()->Packet(buf.read_peek(), buf.size());\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note): the client's quest list as this packet leaves it (mt2009_language.cpp)\n\t\tMt2009QuestInfoSentNote(CQuestManager::instance().GetCurrentCharacterPtr(), qi.index, m_iSendToClient, m_RunningQuestState->bStart);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note)",
+  "old": "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n",
+  "new": "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note): the quest left the client's window\n\t\t{ void Mt2009QuestInfoSentNote(LPCHARACTER, unsigned int, int, bool); Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false); }\n"
  }
 ]

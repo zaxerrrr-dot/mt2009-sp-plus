@@ -25,6 +25,7 @@
 #include <cstddef>
 #include <string>
 #include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -1055,7 +1056,10 @@ void SetPlayerLanguage(LPCHARACTER ch, const char* code)
 	// language read until now (the login quests run before the client's "/lang" may arrive) - again in the new one.
 	const std::string before = GetPlayerLanguage(ch);
 	SetPlayerLanguageStored(ch, code);
-	if (before != GetPlayerLanguage(ch))
+	const std::string after = GetPlayerLanguage(ch);
+	sys_log(0, "MT2009_LANGUAGE: %s (pid %u) /lang %s: %s -> %s", ch->GetName(), ch->GetPlayerID(), code ? code : "(null)",
+			before.c_str(), after.c_str());
+	if (before != after)
 		Mt2009ResendQuestInfo(ch);
 }
 
@@ -1090,12 +1094,16 @@ void Mt2009LanguageOnEnterGame(LPCHARACTER ch)
 	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
 		return;
 	const DWORD pid = ch->GetPlayerID();
+	// MT2009_PLUS_LANGUAGE_QUESTINFO_V2: a new session - the client has no quest yet (the login quests send them).
+	Mt2009QuestInfoForget(pid);
 	std::string lang;
 	if (s_dbColumn)
 	{
 		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery("SELECT language FROM player%s WHERE id = %u", get_table_postfix(), pid));
 		if (!msg || msg->uiSQLErrno != 0)
 		{
+			sys_err("MT2009_LANGUAGE: enter %s (pid %u): player.language not read (sql error %u)", ch->GetName(), pid,
+					msg ? (unsigned) msg->uiSQLErrno : 0u);
 			if (msg && msg->uiSQLErrno == 1054)
 			{
 				// The migration (language.sql) has not run: the server's default for all, no more questions.
@@ -1125,6 +1133,8 @@ void Mt2009LanguageOnEnterGame(LPCHARACTER ch)
 	// a client whose user never picked a language takes it for its own texts too (mt2009lang.OnServerLanguage in the
 	// client; an older client has no handler and ignores the command).
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "MT2009LANG %s %s", DefaultLanguage().c_str(), lang.empty() ? "-" : lang.c_str());
+	sys_log(0, "MT2009_LANGUAGE: enter %s (pid %u): player.language '%s' - reads %s", ch->GetName(), pid,
+			lang.empty() ? "NULL" : lang.c_str(), GetPlayerLanguage(ch));
 }
 
 const char* Mt2009Translate(const char* lang, const char* polish)
@@ -1451,58 +1461,126 @@ void Mt2009QuestInfoText(LPCHARACTER ch, const std::string& polish, char* out, s
 	}
 	FitQuestField(s, size - 1);
 	memcpy(out, s.data(), MIN(s.size(), size - 1));
+	// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (log): every quest window text sent to a reader of another language.
+	if (!IsPolish(lang) && !polish.empty())
+		sys_log(0, "MT2009_LANGUAGE: questinfo %s (pid %u) %s: '%s' -> '%s'", ch ? ch->GetName() : "-", ch ? ch->GetPlayerID() : 0,
+				lang, polish.c_str(), out);
+}
+
+// MT2009_PLUS_LANGUAGE_QUESTINFO_V2: the quests the client has in its quest window, as the packets told it (BEGIN /
+// UPDATE add, END removes; PC::SendQuestInfoPakcet and pc's quest removal note them) - the quest's own bStart is
+// cleared by every later run of the quest, so it does not say what the client shows.
+static std::unordered_map<DWORD, std::set<DWORD> > s_clientQuests;
+
+void Mt2009QuestInfoForget(DWORD pid)
+{
+	s_clientQuests.erase(pid);
+}
+
+void Mt2009QuestInfoSentNote(LPCHARACTER ch, DWORD index, int flag, bool begin)
+{
+	if (!ch || !ch->IsPC() || !index)
+		return;
+	std::set<DWORD>& q = s_clientQuests[ch->GetPlayerID()];
+	if ((flag & quest::PC::QUEST_SEND_ISBEGIN) && !begin)
+		q.erase(index);
+	else
+		q.insert(index);
+}
+
+// The title / clock / counter of one quest the client has, in the reader's language (an UPDATE packet).
+static bool SendQuestTexts(LPCHARACTER ch, DWORD index, const quest::QuestState& qs)
+{
+	BYTE flag = 0;
+	TEMP_BUFFER buf;
+	if (!qs._title.empty())
+	{
+		char t[30 + 1];
+		Mt2009QuestInfoText(ch, qs._title, t, sizeof(t));
+		buf.write(t, sizeof(t));
+		flag |= quest::PC::QUEST_SEND_TITLE;
+	}
+	if (!qs._clock_name.empty())
+	{
+		char t[16 + 1];
+		Mt2009QuestInfoText(ch, qs._clock_name, t, sizeof(t));
+		buf.write(t, sizeof(t));
+		flag |= quest::PC::QUEST_SEND_CLOCK_NAME;
+	}
+	if (!qs._counter_name.empty())
+	{
+		char t[16 + 1];
+		Mt2009QuestInfoText(ch, qs._counter_name, t, sizeof(t));
+		buf.write(t, sizeof(t));
+		flag |= quest::PC::QUEST_SEND_COUNTER_NAME;
+	}
+	if (!flag)
+		return false;
+	packet_quest_info qi;
+	qi.header = HEADER_GC_QUEST_INFO;
+	qi.size = sizeof(struct packet_quest_info) + buf.size();
+	qi.index = index;
+#ifdef ENABLE_QUEST_CATEGORY
+	qi.c_index = quest::CQuestManager::instance().ReadQuestCategoryFile(qi.index);
+#endif
+	qi.flag = flag;
+	ch->GetDesc()->BufferedPacket(&qi, sizeof(qi));
+	ch->GetDesc()->Packet(buf.read_peek(), buf.size());
+	return true;
+}
+
+// The quest state of a quest index the client has (the PC's states are keyed by the quest's index).
+static const quest::QuestState* ClientQuestState(quest::PC* pPC, DWORD index)
+{
+	quest::PC::QuestInfoIterator it = pPC->quest_find(index);
+	if (it != pPC->quest_end())
+		return &it->second;
+	for (it = pPC->quest_begin(); it != pPC->quest_end(); ++it)
+		if ((DWORD) it->second.iIndex == index)
+			return &it->second;
+	return NULL;
+}
+
+int Mt2009ResendQuestInfoCount(LPCHARACTER ch, bool list)
+{
+	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
+		return 0;
+	quest::PC* pPC = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
+	if (!pPC || !pPC->IsLoaded())
+	{
+		sys_log(0, "MT2009_LANGUAGE: resend %s: quests not loaded yet", ch->GetName());
+		return 0;
+	}
+	std::set<DWORD> indices = s_clientQuests[ch->GetPlayerID()];
+	// A session older than the note (or none noted): the letters the quests themselves mark as shown.
+	if (indices.empty())
+		for (quest::PC::QuestInfoIterator it = pPC->quest_begin(); it != pPC->quest_end(); ++it)
+			if (it->second.bStart && it->second.iIndex)
+				indices.insert(it->second.iIndex);
+	int sent = 0;
+	for (std::set<DWORD>::const_iterator i = indices.begin(); i != indices.end(); ++i)
+	{
+		const quest::QuestState* qs = ClientQuestState(pPC, *i);
+		if (!qs)
+			continue;
+		if (list)
+		{
+			char t[30 + 1];
+			Mt2009QuestInfoText(ch, qs->_title, t, sizeof(t));
+			ch->ChatPacket(CHAT_TYPE_INFO, "lang quest %u %s: %s", (unsigned) *i,
+					quest::CQuestManager::instance().GetQuestNameByIndex(*i).c_str(), t);
+		}
+		if (SendQuestTexts(ch, *i, *qs))
+			++sent;
+	}
+	sys_log(0, "MT2009_LANGUAGE: resend %s (pid %u, %s): %d of %u quest(s) in the window", ch->GetName(), ch->GetPlayerID(),
+			GetPlayerLanguage(ch), sent, (unsigned) indices.size());
+	return sent;
 }
 
 void Mt2009ResendQuestInfo(LPCHARACTER ch)
 {
-	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
-		return;
-	quest::PC* pPC = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
-	if (!pPC || !pPC->IsLoaded())
-		return;
-	for (quest::PC::QuestInfoIterator it = pPC->quest_begin(); it != pPC->quest_end(); ++it)
-	{
-		const quest::QuestState& qs = it->second;
-		// Only a quest whose letter is on the client (q.start / send_letter): an update of another index would make
-		// the client an empty quest.
-		if (!qs.bStart || !qs.iIndex)
-			continue;
-		BYTE flag = 0;
-		TEMP_BUFFER buf;
-		if (!qs._title.empty())
-		{
-			char t[30 + 1];
-			Mt2009QuestInfoText(ch, qs._title, t, sizeof(t));
-			buf.write(t, sizeof(t));
-			flag |= quest::PC::QUEST_SEND_TITLE;
-		}
-		if (!qs._clock_name.empty())
-		{
-			char t[16 + 1];
-			Mt2009QuestInfoText(ch, qs._clock_name, t, sizeof(t));
-			buf.write(t, sizeof(t));
-			flag |= quest::PC::QUEST_SEND_CLOCK_NAME;
-		}
-		if (!qs._counter_name.empty())
-		{
-			char t[16 + 1];
-			Mt2009QuestInfoText(ch, qs._counter_name, t, sizeof(t));
-			buf.write(t, sizeof(t));
-			flag |= quest::PC::QUEST_SEND_COUNTER_NAME;
-		}
-		if (!flag)
-			continue;
-		packet_quest_info qi;
-		qi.header = HEADER_GC_QUEST_INFO;
-		qi.size = sizeof(struct packet_quest_info) + buf.size();
-		qi.index = qs.iIndex;
-#ifdef ENABLE_QUEST_CATEGORY
-		qi.c_index = quest::CQuestManager::instance().ReadQuestCategoryFile(qi.index);
-#endif
-		qi.flag = flag;
-		ch->GetDesc()->BufferedPacket(&qi, sizeof(qi));
-		ch->GetDesc()->Packet(buf.read_peek(), buf.size());
-	}
+	Mt2009ResendQuestInfoCount(ch, false);
 }
 
 const void* Mt2009LanguagePacketOut(LPCHARACTER ch, const void* data, int size)
@@ -1540,6 +1618,57 @@ const void* Mt2009LanguagePacketOut(LPCHARACTER ch, const void* data, int size)
 			from = sizeof(struct packet_script);
 			to = MIN((size_t) ((const struct packet_script*) data)->size, (size_t) size);
 			break;
+		}
+		case HEADER_GC_QUEST_INFO:
+		{
+			// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (packet): the quest window's fields (the header and its data arrive
+			// here as one buffer - BufferedPacket + Packet); Mt2009QuestInfoText already made them, this is the net.
+			if (size < (int) sizeof(struct packet_quest_info))
+				return data;
+			const struct packet_quest_info* p = (const struct packet_quest_info*) data;
+			const size_t total = MIN((size_t) p->size, (size_t) size);
+			const char* lang = GetPlayerLanguage(ch);
+			if (IsPolish(lang))
+				return data;
+			const int cp = CodePageOf(lang);
+			if (cp == 1250)
+				return data;
+			struct { int flag; size_t len; bool text; } fields[] = {
+				{ quest::PC::QUEST_SEND_ISBEGIN, 1, false }, { quest::PC::QUEST_SEND_TITLE, 30 + 1, true },
+				{ quest::PC::QUEST_SEND_CLOCK_NAME, 16 + 1, true }, { quest::PC::QUEST_SEND_CLOCK_VALUE, sizeof(int), false },
+				{ quest::PC::QUEST_SEND_COUNTER_NAME, 16 + 1, true }, { quest::PC::QUEST_SEND_COUNTER_VALUE, sizeof(int), false },
+				{ quest::PC::QUEST_SEND_ICON_FILE, 24 + 1, false },
+			};
+			static std::vector<char> s_info;
+			bool copied = false, changed = false;
+			size_t off = sizeof(struct packet_quest_info);
+			for (size_t f = 0; f < sizeof(fields) / sizeof(fields[0]); ++f)
+			{
+				if (!(p->flag & fields[f].flag))
+					continue;
+				if (off + fields[f].len > total)
+					break;
+				if (fields[f].text)
+				{
+					bool any = false;
+					for (size_t i = off; i < off + fields[f].len && !any; ++i)
+						any = PolishLetter(((const unsigned char*) data)[i]) != 0;
+					if (any)
+					{
+						if (!copied)
+						{
+							s_info.assign((const char*) data, (const char*) data + size);
+							copied = true;
+						}
+						if (TransliterateWords(lang, cp, &s_info[off], fields[f].len))
+							changed = true;
+					}
+				}
+				off += fields[f].len;
+			}
+			if (changed)
+				sys_log(0, "MT2009_LANGUAGE: questinfo net %s (%s): Polish letters reached the packet", ch->GetName(), lang);
+			return changed ? (const void*) &s_info[0] : data;
 		}
 		case HEADER_GC_QUEST_CONFIRM:
 		{
@@ -1584,6 +1713,14 @@ void Mt2009LanguageCommand(LPCHARACTER ch, const char* argument)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, "lang: %s%s, default %s (%s)", GetPlayerLanguage(ch),
 				Mt2009PlayerChoseLanguage(ch) ? "" : " (default)", DefaultLanguage().c_str(), AvailableList().c_str());
+		return;
+	}
+	// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (check): "/lang quests" - the quest window's titles as this reader gets them,
+	// sent again (and logged).
+	if (!strcmp(arg, "quests"))
+	{
+		const int n = Mt2009ResendQuestInfoCount(ch, true);
+		ch->ChatPacket(CHAT_TYPE_INFO, "lang: %s, %d quest(s) sent again", GetPlayerLanguage(ch), n);
 		return;
 	}
 	if (!strcmp(arg, "reload") && ch->GetGMLevel() >= GM_IMPLEMENTOR)

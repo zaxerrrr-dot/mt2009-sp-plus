@@ -9,6 +9,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 M = "MT2009_PLUS_LANGUAGE_V1"
 Q = "MT2009_PLUS_LANGUAGE_QUESTINFO_V1"
+Q2 = "MT2009_PLUS_LANGUAGE_QUESTINFO_V2"
 
 EDITS = [
     ("char.cpp", "include",
@@ -115,13 +116,25 @@ EDITS = [
      "\t\t// %s (packet): a text packet's Polish words without diacritics for a client whose code page is not\n"
      "\t\t// cp1250 (mt2009_language.cpp); the packet itself for anything else.\n"
      "\t\t{ const void* Mt2009LanguagePacketOut(LPCHARACTER, const void*, int); c_pvData = Mt2009LanguagePacketOut(GetCharacter(), c_pvData, iSize); }\n" % Q),
+    # MT2009_PLUS_LANGUAGE_QUESTINFO_V2: which quests the client has (BEGIN / UPDATE / END), so "/lang" sends the
+    # window's texts of exactly those again (a quest's bStart is cleared by its every later run).
+    ("questpc.cpp", "note",
+     "\t\tCQuestManager::instance().GetCurrentCharacterPtr()->GetDesc()->Packet(buf.read_peek(), buf.size());\n",
+     "\t\tCQuestManager::instance().GetCurrentCharacterPtr()->GetDesc()->Packet(buf.read_peek(), buf.size());\n"
+     "\t\t// %s (note): the client's quest list as this packet leaves it (mt2009_language.cpp)\n"
+     "\t\tMt2009QuestInfoSentNote(CQuestManager::instance().GetCurrentCharacterPtr(), qi.index, m_iSendToClient, m_RunningQuestState->bStart);\n" % Q2),
+    ("questlua_pc.cpp", "note",
+     "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n",
+     "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n"
+     "\t\t// %s (note): the quest left the client's window\n"
+     "\t\t{ void Mt2009QuestInfoSentNote(LPCHARACTER, unsigned int, int, bool); Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false); }\n" % Q2),
 ]
 
 
 def main():
     edits = []
     for f, tag, old, new in EDITS:
-        marker = "%s (%s)" % (Q if Q in new else M, tag)
+        marker = "%s (%s)" % (Q2 if Q2 in new else Q if Q in new else M, tag)
         assert marker in new, marker
         edits.append({"file": f, "marker": marker, "old": old, "new": new})
     with open(os.path.join(HERE, "edits.json"), "w") as fp:
