@@ -771,7 +771,7 @@ namespace mt2009_language
 	// An item's or a monster's Polish name (the protos') in a language, or NULL - the engine part sets it.
 	static const char* (*s_nameHook)(const std::string& code, const std::string& polish) = NULL;
 
-	static bool TryLanguage(SLanguage& lang, const std::string& text, std::string& out, bool templates)
+	static bool TryLanguage(SLanguage& lang, const std::string& text, std::string& out, bool templates, int depth = 0)
 	{
 		std::unordered_map<std::string, SEntry>::const_iterator it = lang.exact.find(text);
 		if (it != lang.exact.end())
@@ -805,7 +805,11 @@ namespace mt2009_language
 					// A value that is a text of its own (an empire's name) or an item's / a monster's name in the language too.
 					std::unordered_map<std::string, SEntry>::const_iterator v = t.conv[i] == 's' && caps[i].size() >= 2 ? lang.exact.find(caps[i]) : lang.exact.end();
 					const char* name = v == lang.exact.end() && t.conv[i] == 's' && s_nameHook && caps[i].size() >= 2 ? s_nameHook(lang.code, caps[i]) : NULL;
-					out += v != lang.exact.end() ? v->second.text : name ? std::string(name) : caps[i];
+					// A glued line inside a glued line ("Biblioteka Wiedzy: " .. "Za 5 sekund ...") - its own template.
+					std::string inner;
+					const bool nested = v == lang.exact.end() && !name && t.conv[i] == 's' && depth < 2 && caps[i].size() >= 4
+						&& TryLanguage(lang, caps[i], inner, true, depth + 1);
+					out += v != lang.exact.end() ? v->second.text : name ? std::string(name) : nested ? inner : caps[i];
 					out += t.dst[i + 1];
 				}
 				return true;

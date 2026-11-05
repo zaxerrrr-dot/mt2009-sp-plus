@@ -115,6 +115,11 @@ def lua_strings(src):
             tokens.append(("s", "".join(buf), line))
             i = j + 1
             continue
+        m = re.match(r"(?:0x[0-9a-fA-F]+|\d+(?:\.\d+)?)", src[i:])
+        if m:
+            tokens.append(("d", m.group(0), line))
+            i += len(m.group(0))
+            continue
         m = re.match(r"[A-Za-z_][A-Za-z0-9_]*(?:\s*[.:]\s*[A-Za-z_][A-Za-z0-9_]*)*", src[i:])
         if m:
             tokens.append(("n", re.sub(r"\s+", "", m.group(0)), line))
@@ -129,7 +134,9 @@ def lua_strings(src):
         i += 1
     # The call each string is an argument of: the name before the nearest unclosed '('.
     stack = []
+    calls = []
     for k, (kind, val, ln) in enumerate(tokens):
+        calls.append(stack[-1] if stack else "")
         if kind == "o" and val == "(":
             prev = tokens[k - 1] if k else None
             stack.append(prev[1] if prev and prev[0] == "n" else "")
@@ -139,6 +146,101 @@ def lua_strings(src):
         elif kind == "s":
             concat = (k > 0 and tokens[k - 1][1] == "..") or (k + 1 < len(tokens) and tokens[k + 1][1] == "..")
             out.append((val, ln, stack[-1] if stack else "", concat))
+    lua_strings.templates = concat_templates(tokens, calls)
+    return out
+
+
+KEYWORDS = {"and", "or", "not", "then", "do", "end", "return", "local", "if", "elseif", "else", "function", "while",
+            "for", "in", "repeat", "until", "begin", "when", "with", "break"}
+
+
+def _match(tokens, i, open_, close):
+    depth = 0
+    while i < len(tokens):
+        v = tokens[i][1] if tokens[i][0] == "o" else None
+        if v == open_:
+            depth += 1
+        elif v == close:
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    return len(tokens) - 1
+
+
+def _operand(tokens, i):
+    """The end (exclusive) of the operand starting at i (arithmetic included, '..' not), or -1."""
+    n = len(tokens)
+    while i < n and ((tokens[i][0] == "o" and tokens[i][1] in ("-", "#")) or (tokens[i][0] == "n" and tokens[i][1] == "not")):
+        i += 1
+    if i >= n:
+        return -1
+    kind, val = tokens[i][0], tokens[i][1]
+    if kind in ("s", "d") or (kind == "n" and val not in KEYWORDS):
+        i += 1
+    elif kind == "o" and val == "(":
+        i = _match(tokens, i, "(", ")") + 1
+    elif kind == "o" and val == "{":
+        i = _match(tokens, i, "{", "}") + 1
+    else:
+        return -1
+    while i < n and tokens[i][0] == "o" and tokens[i][1] in ("(", "["):
+        i = _match(tokens, i, tokens[i][1], ")" if tokens[i][1] == "(" else "]") + 1
+    while i < n and tokens[i][0] == "o" and tokens[i][1] in ("+", "-", "*", "/", "%", "^"):
+        j = _operand(tokens, i + 1)
+        if j < 0:
+            return -1
+        i = j
+    return i
+
+
+def concat_templates(tokens, calls):
+    """(template, line, call) of every concatenation with a text literal: the literals as they are (% as %%), every
+    other operand %s - "Za "..n.." sekund." is "Za %s sekund." - the runtime finds the glued line by it."""
+    out = []
+    used = set()
+    for k, t in enumerate(tokens):
+        if t[0] != "o" or t[1] != ".." or k in used:
+            continue
+        start = -1
+        for j in range(k - 1, max(-1, k - 60), -1):
+            if _operand(tokens, j) == k:
+                prev = tokens[j - 1] if j > 0 else None
+                if prev is None or (prev[0] == "o" and prev[1] in (",", "(", "{", "=", "[", ";")) or (prev[0] == "n" and prev[1] in KEYWORDS) or prev[0] in ("s", "d", "n"):
+                    if prev is not None and prev[0] in ("s", "d", "n") and prev[1] not in KEYWORDS and prev[2] == tokens[j][2]:
+                        continue	# the middle of something
+                    start = j
+        if start < 0:
+            continue
+        parts = []
+        i = start
+        while True:
+            e = _operand(tokens, i)
+            if e < 0:
+                parts = []
+                break
+            if e == i + 1 and tokens[i][0] == "s":
+                parts.append(("s", tokens[i][1]))
+            else:
+                parts.append(("v", None))
+            if e < len(tokens) and tokens[e][0] == "o" and tokens[e][1] == "..":
+                used.add(e)
+                i = e + 1
+                continue
+            break
+        if len(parts) < 2:
+            continue
+        lits = "".join(p[1] for p in parts if p[0] == "s")
+        if not any(p[0] == "v" for p in parts):
+            continue
+        visible = re.sub(r"\[[A-Z_]+[^\]]*\]", "", lits)
+        if len(re.findall(r"[A-Za-z\u0080-\uffff]", visible)) < 4:
+            continue
+        tpl = "".join(p[1].replace("%", "%%") if p[0] == "s" else "%s" for p in parts)
+        tpl = re.sub(r"(%s){2,}", "%s", tpl)	# two values side by side are one
+        if " " not in tpl.strip() and not re.search(r"[\u0080-\uffff]", tpl):
+            continue	# a file name, a flag
+        out.append((tpl, tokens[start][2], calls[start]))
     return out
 
 
@@ -238,10 +340,14 @@ def quest_sources():
 
 
 def extract():
-    quest, concat = {}, {}
+    quest, concat, templates = {}, {}, {}
     for f in quest_sources():
         rel = os.path.relpath(f, REPO)
-        for text, line, call, cat in lua_strings(decode(f)):
+        strings = lua_strings(decode(f))
+        for tpl, line, call in lua_strings.templates:
+            if call not in SKIP_CALLS:
+                add(templates, tpl, "%s:%d" % (rel, line))
+        for text, line, call, cat in strings:
             if call in SKIP_CALLS or not is_text(text):
                 continue
             # A literal glued to something ("Koszt: " .. n) is a fragment unless it is also said alone somewhere.
@@ -266,6 +372,7 @@ def extract():
             for text, line in c_strings(new):
                 if is_text(text) and " " in text.strip():
                     add(server, text, "%s (%s)" % (rel, e.get("marker", "")))
+    extract.templates = templates
     return quest, server, concat
 
 
@@ -296,7 +403,9 @@ def main():
         stock = load_hand(lang, "10_quest_stock.tsv")
         stock.update(load_hand(lang, "20_server_locale.tsv"))
         concat = {k: v for k, v in concat.items() if k not in quest}
-        for name, table, hand in (("quest", quest, "30_quest_custom.tsv"), ("fragments", concat, "35_quest_fragments.tsv"),
+        templates = {k: v for k, v in extract.templates.items() if k not in quest}
+        for name, table, hand in (("quest", quest, "30_quest_custom.tsv"), ("templates", templates, "32_quest_templates.tsv"),
+                                  ("fragments", concat, "35_quest_fragments.tsv"),
                                   ("server", server, "40_server_custom.tsv")):
             have = load_hand(lang, hand)
             missing = [k for k in table if k not in have and k not in stock]
@@ -306,6 +415,9 @@ def main():
     write(os.path.join(DATA, "server_custom_pl.tsv"), server)
     concat = {k: v for k, v in concat.items() if k not in quest}
     write(os.path.join(DATA, "quest_fragments_pl.tsv"), concat)
+    templates = {k: v for k, v in extract.templates.items() if k not in quest}
+    write(os.path.join(DATA, "quest_templates_pl.tsv"), templates)
+    print("glued lines as templates %d" % len(templates))
     print("quest texts %d, fragments (glued pieces) %d, server texts %d" % (len(quest), len(concat), len(server)))
 
 

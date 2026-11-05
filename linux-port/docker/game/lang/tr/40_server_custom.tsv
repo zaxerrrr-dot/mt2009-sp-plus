@@ -1,0 +1,2 @@
+# MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
+# Polish<TAB>tr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check tr lists what is missing.

@@ -1,0 +1,956 @@
+# MT2009_PLUS_LANGUAGE_V1 - our quests and quest libraries (tools/i18n/data/quest_custom_pl.tsv)
+# Polish<TAB>tr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check tr lists what is missing.
+    2 Ładne + Dusza = Zacny (30%)	    2 Orta + Ruh = İyi (%30)
+    3 Drobne + Dusza = Ładny (35%)	    3 Ufak + Ruh = Orta (%35)
+    5 Małych + Dusza = Drobny (45%)	    5 Küçük + Ruh = Ufak (%45)
+    Zacny + Dusza = Silny (25%)	    İyi + Ruh = Güçlü (%25)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  60 dakika ton balığı (Balıkçılık Sırları gibi nadir balıklar).
+ i Kamień Księżycowy	 ve Ay Taşı
+%d godz.	%d sa.
+%d godz. %d min	%d sa. %d dk
+%d godz. %d min.	%d sa. %d dk.
+%d godz., %d min.	%d sa., %d dk.
+%d min., %d sek.	%d dk., %d sn.
+%d sek.	%d sn.
+%d. %s - %d pkt	%d. %s - %d puan
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+%s (%s, bonusy: %d)	%s (%s, bonuslar: %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s seni arıyor. Sana önemli bir şey[ENTER]söylemek istiyor gibi.
+%s jest już na stopniu P.	%s zaten P derecesinde.
+%s: %d. Wszystkie te punkty	%s: %d. Tüm bu puanlar
+%s: nie rozdano tu jeszcze punktów.	%s: burada henüz puan dağıtılmadı.
+%s: osiągnięto stopień P - najwyższy.	%s: P derecesine ulaşıldı - en yüksek derece.
+%s: teraz %s.	%s: şimdi %s.
+(15% odporności = 4,5% mniej obrażeń).	(%15 direnç = %4,5 daha az hasar).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(M1'e kadar), kitaplarla (G1'e kadar) ve Ruh Taşı+ ile (P'ye kadar).
+(drogocenne). Pakiet może zawierać m.in.:	(değerli). Paket şunları içerebilir:
+(klawisz P) na jej umiejętność.	(P tuşu) yeteneğine.
+(klawisz P).	(P tuşu).
+(kostium, fryzura albo nakladka na bron).	(kostüm, saç modeli ya da silah görünümü).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(eşyanın üzerine gel). Başarısız olursa malzemeler yok olur.
+(PB) od każdego z was.	(TS) her birinizden.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(TS). Görev bitince geri gel.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(rölik üzerine sağ tık) ve ruhlarla ona bonus ekle.
+(SZC) od każdego z was.	(ZÇ) her birinizden.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(ZÇ). Görev bitince geri gel.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(kristale göre) 2 saatlik oyun süresi için. Çubuk
++1000 PŻ (maks.)	+1000 HP (maks.)
++1100 PŻ (maks.)	+1100 HP (maks.)
++120 Obrony	+120 Savunma
++140 Obrony	+140 Savunma
++5% albo +10%. Każda maska jest inna. 	+%5 ya da +%10. Her maske farklıdır. 
++51 Wartości Ataku	+51 Saldırı Değeri
++60 Wartości Ataku	+60 Saldırı Değeri
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Coşku Ayakkabısı +5..+9 - onlardan Okyanus Ayakkabısı yaparım.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Yalıçapkını Ayakkabısı +5..+9 - onlardan Ateş Ayakkabısı yaparım,
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- süre oyun dışında da işler - sonra yok olur. Geliştirilemez ve devredilemez.
+- Kamyki x100,	- Süs Taşı x100,
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Doğra: içinde bir şey bulabilirsin (çok nadiren Karbon olta bile).
+- Relikt Duszy twojej klasy.	- Sınıfına ait Ruh Röliği.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Yem olarak kullan: 5 dakikalık Altın ton balığı bonusu - daha güçlü.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Serbest bırak: genelde ıslanırsın (Islak Kıyafet: 5 dakika -50 hareket hızı), bazen Altın
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- Boş güç özütü ile - element gücü iksiri,
+- z Pustym Eliksirem Odp. - eliksir odporności.	- Boş direnç özütü ile - direnç iksiri.
+... Skargi przyjmuję jednak wyłącznie w formie	... Ama şikayetleri yalnızca şu şekilde kabul ederim:
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	1. seviye: %0,8, M1: %8, G1: %13,1, P: %20.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	1. seviye: %1,2, M1: %12, G1: %19,7, P: %30.
+1. miejsce: 10x Złote Trofeum Yutnori	1. sıra: 10x Altın Yutnori kupası
+1. poziom Świątyni Węży	Yılan Tapınağı'nın 1. katı
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Gece jediti ve silah için 5 Kuzey Rüzgarı Örsü
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Örs, 5 silah planı, 5 Aşındırıcı,
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yang ya da tecrübe,
+120 i Championem 4, 600 pkt rankingu gildii	120 ve Şampiyon 4, 600 lonca sıralama puanı
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 parça: +500 HP, canavarlara karşı +%1 güç; 3 parça: +1500 HP, canavarlara karşı +%5 güç
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 parça: +500 HP, +%3 hareket hızı; 3 parça: +1500 HP, +%7 hareket hızı
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 parça: +500 HP, +%5 EXP; 3 parça: +1500 HP, +%15 EXP
+2. miejsce: 5x Złote Trofeum Yutnori	2. sıra: 5x Altın Yutnori kupası
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 ya da 500. Elbise seviyesi 1000, 2000, 4000,
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yang). 10 Şövalye Parçacığı II'den - Prens,
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 parça: +2500 HP, +%10 büyü / yakın dövüş, +%5 hareket hızı
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 parça: +3500 HP, +%15 büyü / yakın dövüş, +%7 hareket hızı
+3. miejsce: 3x Złote Trofeum Yutnori	3. sıra: 3x Altın Yutnori kupası
+300 - 399 punktow - srebrna	300 - 399 puan - gümüş
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	4. - 10. sıra: 1x Altın Yutnori kupası
+400 punktow i wiecej - zlota	400 puan ve üstü - altın
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Çelik, bir uyanış taşı ve 2 500 000 Yang.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yang, tecrübe ya da
+550 punktów i więcej	550 puan ve üstü
+6. i 7. bonus (Seon-Hae)	6. ve 7. bonus (Seon-Hae)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	75. eşya seviyesi ve en az +7 geliştirme.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 ya da 16000 puan - türüne bağlı olarak.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Lonca] Lonca hazinesinden %d Yang, envanterinden %d Yang ödendi.
+a kto polegnie, wraca do portu.	ve düşen limana geri döner.
+a nie każdy nadaje się do badań.	ve her biri araştırmaya uygun değil.
+a obecne bonusy celu zostana nadpisane.	ve hedefin mevcut bonuslarının üzerine yazılır.
+a otrzymasz lepszy kamień:	ve daha iyi bir taş alırsın:
+a sam WuKong czeka na śmiałków na szczycie.	ve WuKong'un kendisi zirvede cesurları bekliyor.
+a spróbuję wytworzyć Odłamek Reliktu.	ve bir Rölik Parçacığı yapmayı denerim.
+a te zmiany są bardzo niepokojące. Moi bracia	ve bu değişiklikler çok endişe verici. Kardeşlerim
+A teraz odczep się i pozwól mi w spokoju	Şimdi git başımdan ve beni rahat bırak
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	ve Cadılar Bayramı Sandığı'na dönüşür. Dene bakalım! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	Yenilenmeyi bitirmek için Zodyak Tapınağı haritasında olmalısın.
+Aby stworzyć Kryształ Energii,	Bir Enerji Kristali oluşturmak için,
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, başardın! Güzel, şimdi bundan sana[ENTER]bir Uyanış Prizması yapacağım.
+Aktywuj misję (300 potworów)	Görevi etkinleştir (300 canavar)
+Alarm w Świątyni Zodiaku	Zodyak Tapınağı'nda alarm
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor uyandı! Buz dikenlerinden kaçın ve Beyaz Ejderha Yumurtalarını yok edin.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	ya da kırmızı boya (Okyanus Ayakkabısı), 5 Ağır Kemer
+albo sztandar użyty w hali) zabiera jeden sztandar.	ya da salonda kullanılan sancak) bir sancak götürür.
+albo trzy kolejne liczby daja punkty - seria	ya da art arda üç sayı puan verir - seri
+albo u Statuy Wojownika (z odłamków I).	ya da Savaşçı heykelinde (I parçacıklarından).
+Alchemia to nieobliczalna nauka i każdy kolejny	Simya öngörülemez bir bilimdir ve her yeni
+Alchemik w Dongan potrzebuje pomocy.	Dongan'daki Simyacının yardıma ihtiyacı var.
+Appaloosa bedzie z toba o 7 dni dluzej.	Appaloosa seninle 7 gün daha uzun kalacak.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	İlaç Çantası! Cesaretine hayranım - nasıl başardın
+Apteczka! W ostatniej chwili - dziękuję.	İlaç Çantası! Son anda - teşekkürler.
+apteczka. Podejrzewam wojowników En-Tai, bo	İlaç Çantası. En-Tai savaşçılarından şüpheleniyorum, çünkü
+apteczkę.	İlaç Çantası.
+Atak powierzchniowy cię dosięgnął.	Alan saldırısı sana ulaştı.
+Atakuje wszystko w poblizu	Yakındaki her şeye saldırır
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	Otomatik Av bu dünyada kapalı - bileti sakla.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	Otomatik Av artık herkese açık - bileti sonraya sakla.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Otomatik Av: +8 sa, toplam %d sa (yalnızca oyundaki süre sayılır).
+Auto Lowy: masz juz ponad 30 dni czasu.	Otomatik Av: zaten 30 günden fazla süren var.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Otomatik Av: %d gün %d sa kaldı (takvim günü) - bilet envanterde olduğu sürece çalışır.
+aż znajdziesz przy którymś z nich Lekarstwo.	ta ki birinde İlaç bulana kadar.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	Orman Kaşifi cesur birini arıyor. Ona git.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	Orman Kaşifi. Önce Bagjanamu ile karşılaşacaksınız.
+Badam klejnoty, które powstają w lodzie Groty	Mağaranın buzunda oluşan mücevherleri inceliyorum
+Badania Biologa	Biyoloğun Araştırması
+badania są ukończone. Wybierz jeden stały bonus:	araştırma tamamlandı. Kalıcı bir bonus seç:
+badaniami. Sprawdź w Dongan, czy potrzebuje	araştırmalar. Dongan'da yardıma ihtiyacı var mı bak
+Badanie Seona-Pyeonga	Seon-Pyeong'un Araştırması
+Badanie Seona-Pyeonga 2	Seon-Pyeong'un Araştırması 2
+Badanie Seona-Pyeonga: nagroda	Seon-Pyeong'un Araştırması: ödül
+badanie, które chcesz przyśpieszyć.	hızlandırmak istediğin araştırmayı.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (TS) yenildi. Yer sarsılıyor - Jotun Thrym (TS) geliyor!
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (ZÇ) yenildi. Yer sarsılıyor - Jotun Thrym (ZÇ) geliyor!
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu yenildi. Yer sarsılıyor - Jotun Thrym geliyor!
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor kazandı - bu sefer ödül getirmedi.
+Balathor, Biały Smok, śpi w lodowej krypcie.	Beyaz Ejderha Balathor buz mahzeninde uyuyor.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Örümcek Barones %d:%02d sürede yenildi! Zindan tamamlandı.
+Baronówny zagnieździły się między regałami i nikt	Baronesler raflar arasına yuva yaptı ve kimse
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	seçilen zırha göre boya ve plakalar, 10 000 000 Yang
+Beran-Setaou (PB) został pokonany!	Beran-Setaou (TS) yenildi!
+Beran-Setaou (SZC) został pokonany!	Beran-Setaou (ZÇ) yenildi!
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou öldü. Yakında hepiniz geri
+Beran-Setaou został pokonany!	Beran-Setaou yenildi!
+BETA: czas skrocony do 10s	BETA: süre 10 sn'ye kısaltıldı
+BETA: DT jest dostepne od 2 etapu.	BETA: DT 2. aşamadan itibaren kullanılabilir.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Atlantis Bileti olmadan derinliklerde hayatta kalamazsın. Onu Atlantis Büyücüsünden al.
+Bez Biletu do Atlantydy:	Atlantis Bileti olmadan:
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	Ağaç Zümrütü olmadan hiçbir şey yapamam. Yen
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	Değerli Tahta olmadan hiçbir şey yapamam. Yen
+Bez zmian	Değişiklik yok
+Biblioteka Wiedzy	Bilgi Kütüphanesi
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Bilgi Kütüphanesi: Süre doldu. Bekçi sizi Kütüphaneden çıkarıyor.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Bilgi Kütüphanesi: Aşama tamamlandı. 5 saniye sonra sıradaki görev.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Bilgi Kütüphanesi: geçit açılamadı - Kütüphane Bekçisiyle konuş.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Bilgi Kütüphanesi: Kütüphane Mührü kendiliğinden çalıştı.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Bilgi Kütüphanesi: geçidi açmak için Kütüphane Bekçisiyle konuş.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Bilgi Kütüphanesi: geçit bekleme odasından geçiyor.
+Biblioteka Wiedzy: przejście się otwiera...	Bilgi Kütüphanesi: geçit açılıyor...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Bilgi Kütüphanesi: Bu sefer zaten bitti. Yeni bir sefere çıkmak için bekçiyle konuş.
+Biblioteka Wiedzy: Ten loch został już ukończony.	Bilgi Kütüphanesi: Bu zindan zaten tamamlandı.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Bilgi Kütüphanesi: Hoş geldiniz. 5 saniye sonra raflardan örümcekler çıkacak.
+biega za toba, broni cie i zbiera twoj drop.	peşinden koşar, seni korur ve düşen eşyalarını toplar.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	Atlantis Bileti suya, basınca karşı korur
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	Bileti benden alabilirsiniz - seçenek: Atlantis Bileti Satın Al.
+Bilet Podrozniczy	Seyahat Bileti
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	Bilet, seni Gizemli Bölüme götürebilirim.
+Bio-badanie 1	Biyo-araştırma 1
+Bio-badanie 2	Biyo-araştırma 2
+Bio-badanie 3	Biyo-araştırma 3
+Bio-badanie 4	Biyo-araştırma 4
+Bio-badanie 5	Biyo-araştırma 5
+Bio-badanie 6	Biyo-araştırma 6
+Bio-badanie 7	Biyo-araştırma 7
+Bio-badanie 8	Biyo-araştırma 8
+Biolog	Biyolog
+Biorę tylko tyle run, ile trzeba.	Sadece gerektiği kadar rün alırım.
+Blogoslawienstwo obrony: moja obrona	Savunma kutsaması: savunmam
+Blogoslawienstwo odpornosci: trucizna	Direnç kutsaması: zehir
+Blogoslawienstwo szybkosci: bede chodzil	Hız kutsaması: yürüyeceğim
+Blogoslawienstwo zycia: moje punkty zycia	Hayat kutsaması: hayat puanlarım
+bo jeszcze chwilę temu byłem na imprezie	çünkü az önce bir partideydim
+bo kiedyś przypłacisz to życiem.	çünkü bir gün bunu canınla ödersin.
+Bonus eventowy PD Uriela wg przedziału poziomów	Uriel'in seviye aralığına göre etkinlik EXP bonusu
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	bonus üretimde belirlenir - geliştirmede kalır.
+Bonus PD +%d%% na %s	EXP bonusu +%d%%, süre: %s
+Bonus PD +%d%% potrwa jeszcze: %s	EXP bonusu +%d%% kalan süre: %s
+Bonus PD na %s według przedziału poziomów:	Seviye aralığına göre %s için EXP bonusu:
+Bonus Złotego Tuńczyka: 5 minut.	Altın ton balığı bonusu: 5 dakika.
+Bonus Złotego Tuńczyka: 60 minut.	Altın ton balığı bonusu: 60 dakika.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	Teslim edilen eşyanın bonusları ve taşları yok olur.
+Bonusy i kamienie oddanych butow przepadaja.	Teslim edilen ayakkabıların bonusları ve taşları yok olur.
+Bonusy i kamienie zostana przeniesione.	Bonuslar ve taşlar aktarılacak.
+Bonusy mozna przeniesc tylko: kostium na kostium,	Bonuslar yalnızca şöyle aktarılabilir: kostümden kostüme,
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	Gruptaki botlar seninle birlikte zindana girecek.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	Envanterde bu silah için yer yok - yer aç ve yeniden seç.
+Brak otwartych misji z czasem oczekiwania.	Bekleme süreli açık görev yok.
+Brak ustawionych przedziałów poziomów.	Ayarlanmış seviye aralığı yok.
+Brakuje ci materialow albo Yang.	Malzemen ya da Yang'ın eksik.
+Brakuje ci przedmiotów.	Eşyaların eksik.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	En Tai Şebnemi (TS) eksik. Onu şuradan al:
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	En Tai Şebnemi (ZÇ) eksik. Onu şuradan al:
+Brakuje jeszcze %d klejnotów.	%d mücevher daha gerekiyor.
+Brama już się otwiera. Poczekaj chwilę.	Kapı zaten açılıyor. Biraz bekle.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	Kapı bugün açılmak istemiyor. Daha sonra tekrar
+Brazowa skrzynia (do 299 punktow)	Bronz sandık (299 puana kadar)
+Bronie dla Młodych Bohaterów	Genç Kahramanlar için Silahlar
+Bronie dla Młodych Bohaterów są wyłączone	Genç Kahramanlar için Silahlar kapalı
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	Genç Kahramanlar için Silahlar bu sunucuda kapalı.
+Broń przyjmie wygląd broni tego samego rodzaju albo	Silah aynı türden bir silahın görünümünü alır ya da
+Brązowy Pakiet Yutnori	Bronz Yutnori Paketi
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	SungMa Premium Buff: SungMa İradesine +10 (güç, canlılık, direnç, zeka) %d sa daha.
+Buff Premium SungMa: czas tego przedmiotu już minął.	SungMa Premium Buff: bu eşyanın süresi zaten doldu.
+Buffi dostępna od 55 poziomu.	Buffi 55. seviyeden itibaren kullanılabilir.
+Buffi jest wyłączony na tym serwerze.	Buffi bu sunucuda kapalı.
+by Mikstura Talentu zadziałała.	Yetenek iksirinin işe yaraması için.
+by o nim opowiedzieć.	sana bundan bahsetmek için.
+by wejść:	girmek için:
+by złożyć z nich kryształ. Wróć, gdy będziesz	onlardan bir kristal yapmak için. Hazır olunca
+Bywa też u dowódców i generałów Groty Wygnańców.	Sürgün Mağarası'nın komutan ve generallerinde de bulunur.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	Kutsama, Efsun ve Arttırma
+Błogosławieństwa. Pakiet może zawierać m.in.:	Kutsama. Paket şunları içerebilir:
+Błogosławieństwo Buffi	Buffi'nin Kutsaması
+błyskawic	şimşek
+Błyskawica i lód (mapa 1)	Şimşek ve buz (harita 1)
+Błyskawicy	Şimşek
+błyskawicę, lód, wiatr, ziemię albo mrok.	şimşek, buz, rüzgar, toprak ya da karanlık.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Parlak - 10x Güzel kaos taşı ve 5 000 000 Yang,
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	Hata yapmak insanidir - akıllıca seç.
+całą drużynę stojącą obok.	yanında duran tüm grubu.
+Cel (otrzyma bonusy zrodla):	Hedef (kaynağın bonuslarını alır):
+Chaegirab ciągle jeszcze zajęty jest swoimi	Chaegirab hala kendi
+Chaegirab w Dongan potrzebuje pomocy.	Dongan'daki Chaegirab'ın yardıma ihtiyacı var.
+Chaos w Zaklętym Lesie	Büyülü Ormanda Kaos
+Chcesz opuścić Kryptę Balathora?	Balathor'un Mahzeninden çıkmak istiyor musun?
+Chcesz teraz wymienić Kartę Maski Dyni	J. Pumpkin Maskesi Kartını şimdi değiştirmek
+Chcę zabić tego smoka!	Bu ejderhayı öldürmek istiyorum!
+choć jeden, żaden cios go nie zrani.	bir tane bile olsa, hiçbir darbe ona işlemez.
+Cialo (Body)	Gövde (Body)
+ciebie ekwipunek Smoka Mroku.	sana Karanlık Ejderha teçhizatı.
+cię wieczne potępienie.	sana sonsuz lanet.
+Co mam zrobic?	Ne yapmalıyım?
+co najmniej jednego towarzysza z grupy.	gruptan en az bir arkadaş.
+Co się dzieje?! Morze się wzburzyło... Czyżby	Neler oluyor?! Deniz kabardı... Yoksa
+Codzienna misja Świat Iluzji: Nemere pokonany.	Günlük görev İllüzyon Dünyası: Nemere yenildi.
+Codzienna misja Świat Iluzji: Razador pokonany.	Günlük görev İllüzyon Dünyası: Razadör yenildi.
+Codzienna misja: Świat Iluzji	Günlük görev: İllüzyon Dünyası
+Cor Draconis (zwyczajne, szlachetne), perły,	Cor Draconis (sıradan, asil), inciler,
+Cos poszlo nie tak.	Bir şeyler ters gitti.
+Czarna Magia	Kara Büyü
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	süre - 10 ile 60 dakika arası. Yılan tozu bir dakika ekler.
+Czas minął - Alastor wypędza was z Głębi.	Süre doldu - Alastor sizi Derinliklerden kovuyor.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	Süre doldu! Sung Mahi seni kuleden atıyor.
+Czas minął. Możesz spróbować jeszcze raz.	Süre doldu. Bir kez daha deneyebilirsin.
+Czas oczekiwania został skrócony.	Bekleme süresi kısaltıldı.
+Czas odbioru nagrod juz minal.	Ödül alma süresi zaten geçti.
+czeka Morkhot, władca głębin.	derinliklerin efendisi Morkhot bekliyor.
+czeka na ciebie - on wie, gdzie szukać Władców	seni bekliyor - Efendileri nerede arayacağını biliyor
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	ayazın efendisi Nemere bekliyor. Oradan kimse dönmedi,
+Czekaj na event w kalendarzu wydarzeń.	Etkinlik takviminde etkinliği bekle.
+Czempion	Şampiyon
+Czempiona (Opcje klawiszy: Czempion).	Şampiyon (Tuş seçenekleri: Şampiyon).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	Kırmızı ginseng (Prem.), Güçlü Savaş Atının (31+) yemidir.
+Czerwone Pudło Zodiaku	Kırmızı Zodyak Sandukası
+Czerwony Żeń-szeń 	Kırmızı Ginseng 
+cztery fale, a skarb Hydry będzie twój.	dört dalga, ve Hidra'nın hazinesi senin olacak.
+Czuje sie silniejszy! Dziekuje.	Kendimi daha güçlü hissediyorum! Teşekkürler.
+Czujesz tę pulsującą energię?	Bu zonklayan enerjiyi hissediyor musun?
+Czwartek (Wu-Wei)	Perşembe (Wu-Wei)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	Mağaradan çıkıp Dongan'a dönmek istiyor musun?
+Czy chcesz opuścić Królestwo Żywiołów	Elementer dünyasından çıkmak istiyor musun
+Czy chcesz opuścić Schronienie Meley? Walka trwa	Meley'in İnini terk etmek istiyor musun? Savaş sürüyor
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Kuleden çıkmak istiyor musun? Tırmanış sona erecek.
+Czy chcesz opuścić świątynię?	Tapınaktan çıkmak istiyor musun?
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	Demir alıp yola çıkmak istiyor musun?
+Czy chcesz przejść przez Gardziel Am-heha i	Am-heh Yutağı'ndan geçip
+Czy chcesz się teleportować?	Işınlanmak istiyor musun?
+Czy chcesz teraz wejść Świątyni Zodiaku?	Zodyak Tapınağı'na şimdi girmek istiyor musun?
+Czy chcesz teraz zejść ze statku? Wejście	Şimdi gemiden inmek istiyor musun? Giriş
+Czy chcesz użyć Spirali Czasu?	Bir Zaman Sarmalı kullanmak istiyor musun?
+Czy chcesz wrócić na Przełęcz Yilad?	Yilad Geçidi'ne dönmek istiyor musun?
+Czy chcesz wrócić z Tajemniczej Instancji	Gizemli Bölümden dönmek istiyor musun
+Czy chcesz zejść głębiej do jaskiń?	Mağaraların daha derinine inmek istiyor musun?
+Czy chcesz zejść na ląd?	Karaya inmek istiyor musun?
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	Seni Tapınağa götürmemi ister misin?
+Czy jestes jednym z nich?	Sen de onlardan biri misin?
+Czy jesteście gotowi stanąć przed Nemere (PB),	Nemere (TS) karşısına çıkmaya hazır mısınız,
+Czy jesteście gotowi stanąć przed Nemere (SZC),	Nemere (ZÇ) karşısına çıkmaya hazır mısınız,
+Czy na pewno chcesz zregenerować wszystkie portale?	Tüm portalları yenilemek istediğine emin misin?
+Czy na pewno chcesz zregenerować?	Yenilemek istediğine emin misin?
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	Gnoll Mağaralarını hala hatırlıyor musun
+Czy znasz legendę o Świątyni Zodiaku?	Zodyak Tapınağı efsanesini biliyor musun?
+czyste egzemplarze.	temiz kopyalar.
+Czyściec Ognia (Razador)	Ateş Arafı (Razadör)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Ateş Arafı: portal açılamadı - Am-heh heykeliyle konuş.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Ateş Arafı: portalı açmak için Am-heh heykeliyle konuş.
+Czyściec Ognia: portal się otwiera...	Ateş Arafı: portal açılıyor...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	Ateş Arafı: geçit bekleme odasından geçiyor.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	parçalar (Kutsal 500 000, Görkemli 1 000 000, Şövalye
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	Bir grup üyesi çok uzakta. Yanımda toplanın.
+Członek grupy nie posiada przedmiotu potrzebnego,	Bir grup üyesinde gerekli eşya yok,
+Członkowie, posiadający za mało Animosfer:	Yeterli Animosferi olmayan üyeler:
+członków gildii obecnych w Krypcie.	Mahzende bulunan lonca üyeleri.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	1 tecrübe puanı verir, Ateşliler - 10, 50, 100,
+dalej bez ciebie - możesz do niej wrócić u mnie	sensiz devam eder - bana gelip geri dönebilirsin
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	iblisler. En iyisi onu En-Tai Yokedicilerinden almak.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	İblisler. Üretim penceresinde her tarifi görürsün:
+Dla twojego poziomu: +%d%% PD	Seviyen için: +%d%% EXP
+dla twojej klasy. Uda się na pewno.	sınıfın için. Kesinlikle başarılı olur.
+do Chaegiraba w Dongan po nagrodę.	ödülün için Dongan'daki Chaegirab'a.
+Do Erebu wchodzi się tylko w grupie.	Erebos'a yalnızca grupla girilir.
+do Groty Wygnańców.	Sürgün Mağarası'na.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	Mağaraya 1. Şampiyon Seviyesinden itibaren alıyorum.
+Do którego obszaru chcesz się udać?	Hangi bölgeye gitmek istiyorsun?
+Do lochu wchodzi najwyżej 8 osób.	Zindana en fazla 8 kişi girebilir.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	Uyanış Zindanlarına yalnızca grupla girilir.
+do Namgan?	Namgan'a?
+do niej wejść przeze mnie.	benim aracılığımla girebilirsin.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	P'ye. Hiçbirini G1-G10 derecesinde bulundurmuyorsun.
+Do Portu Nowego Kontynentu	Yeni Kıta Limanına
+Do przeniesienia bonusow z jednego kostiumu na drugi	Bir kostümden diğerine bonus aktarmak için
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	Nemere'nin Gözetleme Kulesi'ne (TS): grupta Ninja ve Şaman.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	Nemere'nin Gözetleme Kulesi'ne (ZÇ): grupta Ninja ve Şaman.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	Zaman Yarığı'na en fazla 8 kişi girebilir.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	Zaman Yarığı'na yalnızca grupla girilir.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	Ayrıca Kesim Örneği, mavi boya (Ateş Ayakkabısı)
+Do walki z Balathorem	Balathor ile savaşmak için
+do wyboru.	seçmen için.
+Do zakończenia badań potrzebuję jeszcze	Araştırmayı bitirmek için hala ihtiyacım var:
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	Sung Mahi'nin iradesinin hüküm sürdüğü Yohara topraklarına.
+Do Świątyni Smoka wchodzi się tylko w grupie.	Ejderha Tapınağı'na yalnızca grupla girilir.
+Do świątyni wchodzi najwyżej 8 osób.	Tapınağa en fazla 8 kişi girebilir.
+Dobra robota. Las od razu oddycha lżej.	İyi iş. Orman şimdiden rahat nefes alıyor.
+Dobrze	Tamam
+Dobrze! Następny Metin.	Güzel! Sıradaki Metin.
+Dobrze, szanuję twoją decyzję. Wróć,	Peki, kararına saygı duyuyorum. Geri gel,
+Dobrze, w takim razie chodz za mna!	Peki, o zaman beni takip et!
+Dobrze, zbadam je. Wróć po wynik za dobę.	Peki, inceleyeceğim. Sonuç için bir gün sonra gel.
+Dodano %d Smoczych Monet do Twojego konta.	Hesabına %d Ejderha Parası eklendi.
+dodasz Wzmocnieniem Przedmiotu.	Arttırma Kağıdı ile eklersin.
+Dodatkowy bonus (6. i 7.)	Ek bonus (6. ve 7.)
+Dokad chcesz sie udac?	Nereye gitmek istiyorsun?
+Dokąd chcesz się przenieść?	Nereye geçmek istiyorsun?
+Dokąd chcesz się udać?	Nereye gitmek istiyorsun?
+Dom Aukcyjny	Müzayede Evi
+Dom Aukcyjny jest na tym świecie wyłączony.	Müzayede Evi bu dünyada kapalı.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	Güçlendirme, tek bir becerinin verdiği hasarı artırır.
+Dopalacz: Duchowe Uderzenie	Güçlendirme: Ruh Vuruşu
+Dopalacz: Mroczne Uderzenie	Güçlendirme: Karanlık Vuruş
+Dopalacz: Ognista Strzała	Güçlendirme: Ateşli Ok
+Dopalacz: Przywołanie Błyskawicy	Güçlendirme: Şimşek Çağırma
+Dopalacz: Strzelający Smok	Güçlendirme: Ejderha Darbesi
+Dopalacz: Uderzenie Palcem	Güçlendirme: Parmak Darbesi
+Dopalacz: Wir Miecza	Güçlendirme: Kılıç Çevirme
+Dopalacz: Zasadzka	Güçlendirme: Suikast
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	Herhangi bir karşı saldırıyı P seviyesine çıkarınca güçlendirmeyi öğrenirsin.
+dopiero początek. Teraz potrzebuję Klejnotów	sadece başlangıç. Şimdi Mücevherlere ihtiyacım var
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	Onlardan biri bile ayakta olduğu sürece ejderhaya zarar verilemez.
+Doskonały okaz! Dziękuję.	Mükemmel bir örnek! Teşekkürler.
+dostajesz jeden taki Łup za każdą postawioną talię.	ortaya koyduğun her deste için böyle bir ganimet alırsın.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	1 Dublon alırsın, doğru olanı bulduğumuzda
+dostaniesz ode mnie maski! He he! 	benden maskeler alacaksın! He he! 
+Dostarcz apteczkę Zwiadowcy	İlaç Çantasını Casusa götür
+doszedł na szczyt i obronił statek przed Hydrą.	zirveye ulaştı ve gemiyi Hidra'dan korudu.
+Doświadczenie Czempiona dają potwory ziemi	Şampiyon tecrübesini toprak canavarları verir
+doświadczeniem szata czeka na ewolucję.	tecrübe, elbise evrimleşmeyi bekliyor.
+Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (efsanevi, değerli), inciler, küpeler
+drogę na nowy kontynent. Czy mam cię zabrać do	yeni kıtaya giden yolu. Seni oraya götüreyim mi
+dropują, ale dają więcej PD niż zazwyczaj.	düşürür, ama normalden fazla EXP verir.
+Druga fala - i Szel (PB)!	İkinci dalga - ve Szel (TS)!
+Druga fala - i Szel (SZC)!	İkinci dalga - ve Szel (ZÇ)!
+Druga wioska	İkinci köy
+Drugi rekonesans	İkinci keşif
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	İkinci keşif: Orman Casusuna geri dön.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	En Tai Rahibi (TS) yakınlarda bir yerde olmalı. Al
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	En Tai Rahibi (ZÇ) yakınlarda bir yerde olmalı. Al
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	En Tai Rahibinde bir İlaç çantası (TS) vardı. Onu Orman Bekçisine (TS) götür.
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	En Tai Rahibinde bir İlaç çantası (ZÇ) vardı. Onu Orman Bekçisine (ZÇ) götür.
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	En Tai Rahibinde bir İlaç Çantası vardı. Onu Orman Bekçisine götür.
+Drużyna na tej mapie wejdzie razem z tobą.	Bu haritadaki grubun seninle birlikte girer.
+Drużyna nie jest wymagana.	Grup gerekli değil.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	Toprak Hayaleti! Onun sayesinde neler olduğunu anlayacağız
+Duchowym Buffi.	Ruhani Buffi.
+Duchowym+.	Ruhani+.
+duchy sześciu żywiołów strzegą swoich ziem.	altı elementin ruhları topraklarını koruyor.
+Dusza Miecza	Kılıç ruhu
+Dusza Miecza (powtarzalna)	Kılıç ruhu (tekrarlanabilir)
+Dusza Ochrony	Koruyucu ruh
+Dusza Ochrony (powtarzalna)	Koruyucu ruh (tekrarlanabilir)
+Dusza Ozdoby	Takı ruhu
+Dusza Ozdoby (powtarzalna)	Takı ruhu (tekrarlanabilir)
+Dusza Światła	Işık ruhu
+Dusza Światła (powtarzalna)	Işık ruhu (tekrarlanabilir)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	balkabağı kafa! Benim adım Jack Pumpkin, ve bu
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	Daha iyi bir EXP balığı zaten etkin - daha zayıfı onunla birlikte çalışmaz.
+działają u Ciebie o połowę rzadziej.	sende yarı yarıya daha seyrek çalışır.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	Yardımın için teşekkürler! Birazdan karaya döneceksin.
+Dziekuje! Oto twoje szkatulki.	Teşekkürler! İşte sandıkçıkların.
+Dziekuje, ze mnie tu odprowadziles.	Beni buraya kadar getirdiğin için teşekkürler.
+Dziesieciu graczy z najwieksza suma punktow	En yüksek toplam puana sahip on oyuncu
+Dziesięciu graczy z najwyższym łącznym wynikiem	En yüksek toplam skora sahip on oyuncu
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	Benim gücüm sayesinde Uyanış Zindanlarına girersin.
+Dzięki temu skróci się czas oczekiwania. Wybierz	Böylece bekleme süresi kısalır. Seç
+Dzięki tobie moje badania są ukończone.	Senin sayende araştırmalarım tamamlandı.
+Dziękuję ci za pomoc, wojowniku.	Yardımın için teşekkürler, savaşçı.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Yardımın için teşekkürler, savaşçı. Orman sana minnettar.
+Dziękuję ci. Wynagrodzę cię za pomoc.	Teşekkürler. Yardımını ödüllendireceğim.
+Dziękuję za pomoc. Weź to w nagrodę.	Yardımın için teşekkürler. Bunu ödül olarak al.
+Dziękuję, już mi lepiej. Do uszlachetnienia	Teşekkürler, artık daha iyiyim. Arındırma için
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Teşekkürler. Tapınak şimdilik güvende. İşte[ENTER]hediyen. Ama enerji yeniden yükselecek. 24 saat[ENTER]sonra gel ve Animosferlerle enerji seviyesini[ENTER]düşür. Elbette bunun için de yeni bir[ENTER]ödül alacaksın.
+Efekt zestawu	Set etkisi
+eksperyment może się nie powieść.	deney başarısız olabilir.
+ekwipunek. Potrafie tez oszlifowac klejnoty	teçhizat. Mücevherleri de kesebilirim
+eliksir (szansa 90%, od 120. poziomu):	iksir (şans %90, 120. seviyeden itibaren):
+Eliksir daje od 8 do 20% na 1 do 10 minut -	İksir %8 ile %20 arası, 1 ile 10 dakika verir -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	İksir Yohara görevlerinde çalışmaz ve bekleme süresini kısaltmaz (bunun için Zaman Sarmalı var).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	Araştırmacının Özütü Biyoloğun araştırmalarında çalışır - 30. seviyeden itibaren.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	Araştırmacının Özütü zaten etkin - araştırma için bir sonraki eşya tesliminde kullanılacak.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	Araştırmacının Özütü eşyanın kalitesini artırdı: kabul şansı %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	SungMa İrade İksiri: 30 dk boyunca +5 (%s).
+Eliksiry Yohary	Yohara İksirleri
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (TS). Onu bul ve İlaç Çantasını ondan al.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (ZÇ). Rahipleri öldür, ta ki şunu elde edene kadar:
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	En-Tai en hafif deyimle tuhaf davranıyor. Sayılarını azalt
+En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, çünkü en hafif deyimle tuhaf davranıyorlar.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Ansiklopedi açıldı: 25 beceri kitabı envanterinde.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Ansiklopedi: envanterde %d boş yere ihtiyacın var.
+energii przy pasku zadań pokaże, ile ci zostało.	görev çubuğunun yanındaki enerji ne kadar kaldığını gösterir.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebos (TS): Bagjanamu (TS) Jotun Thrym'e giden yolu koruyor!
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebos (ZÇ): Bagjanamu (ZÇ) Jotun Thrym'e giden yolu koruyor!
+Erebu jest dziś zamknięte. Wróć później.	Erebos bugün kapalı. Daha sonra gel.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebos sizi şimdi içeri almıyor. Birazdan tekrar dene.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebos: Bagjanamu Jotun Thrym'e giden yolu koruyor! 30 dakikanız var.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebos: süre doldu - Büyülü Ormana dönüyorsunuz.
+Erebu: potrzebujesz Kamienia Driad.	Erebos: Orman Perisi Taşı gerekiyor.
+Erebu: ta wyprawa już się skończyła.	Erebos: bu sefer zaten sona erdi.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Aşama 2: Şeytani Taşı ve tüm canavarları yen! Taş darbe alınca okçular uyanır.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Aşama 2: canavarları süre dolmadan yen! Sung Mahi'nin laneti her 10 sn'de daha çok HP alır - SungMa panzehri onu kaldırır.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Aşama 2: bir dakika boyunca tüm saldırılardan kaç! Halka isabeti 1 HP bırakır - HP tam değilken ikincisi öldürür.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Aşama 2: mührü kaldırmak için taşı bul! Mühürler yalnızca doğru sırayla açılır.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Aşama 2: kaçmak için doğru anahtarı bul! Gizemli anahtar canavarlardan düşer.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Aşama 2: birbirine uymayan canavar çiftini bul ve onu yen!
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Aşama 2: doğru Metin Taşını yok et! Tek şansın var.
+Etap ukończony - przejdź przez portal	Aşama tamamlandı - portaldan geç
+Event jeszcze trwa - nagrody za ranking	Etkinlik hala sürüyor - sıralama ödüllerini
+eventu odbiera tu po jego końcu (przez 7 dni):	etkinliğin sonunda burada alır (7 gün boyunca):
+Ewolucja zawsze się udaje i daje +1 poziom,	Evrim her zaman başarılı olur ve +1 seviye verir,
+Fabuła	Hikaye
+Fala Śmierci	Ölüm Dalgası
+Fragment duszy: %d / 10	Ruh parçası: %d / 10
+fryzure na fryzure, nakladke na nakladke.	saç modeline saç modeli, görünüme görünüm.
+Gardziel Am-heha	Am-heh Yutağı
+Gaya biorę sam z twojego licznika Gaya.	Gaya'yı Gaya sayacından kendim alırım.
+Gaya biorę z twojego licznika Gaya.	Gaya'yı Gaya sayacından alırım.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	Gaya'yı Gaya sayacından alırım. Bir tarife tıkla,
+gdy się nie uda, hełm i materiały przepadają.	başarısız olursa kask ve malzemeler yok olur.
+gdy skończę.	bitirdiğimde.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	Gemi yola çıkınca geri dönüş yok - Hidra
+Gdy walka się zacznie, świątynia odmierzy wam	Savaş başlayınca tapınak size geri sayım
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	İlaç Çantası nerede? Onu En Tai Rahiplerinden al.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	İlaç Çantası nerede? Onu En Tai Rahibinden al.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Ağaç zümrütü (TS) nerede? Hükümdarı yen.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Ağaç zümrütü (ZÇ) nerede? Hükümdarı yen.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Değerli tahta (ZÇ) nerede? Hükümdarı yen.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Değerli tahta (TS) nerede? Hükümdarı yen.
+Gildia może wejść ponownie za %d min.	Lonca %d dk sonra tekrar girebilir.
+Gildia musi istnieć co najmniej 24 godziny.	Lonca en az 24 saattir var olmalı.
+Gildia musi mieć co najmniej %d poziom.	Lonca en az %d. seviye olmalı.
+Gildia potrzebuje %d pkt rankingu gildii.	Loncanın %d lonca sıralama puanına ihtiyacı var.
+Glos Barah Taraji	Barah Taraji'nin Sesi
+GM: Krypta Balathora - zeruj przerwę gildii	GM: Balathor'un Mahzeni - lonca bekleme süresini sıfırla
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM: DT'nin 1. ya da 2. katında olmalısın.
+GM: szanse połowu	GM: balık tutma şansları
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Alastor'un Gazabı! Hizmetkarlarını çağırıyor ve yaralarını iyileştiriyor.
+Goblin Skarbow:	Hazine Goblini:
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Acı bir yenilgi! Tırmanışın burada bitiyor - birazdan salona döneceksin.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	Hazır! Benimle bir kez daha konuş.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	Hazır! Hediyeni almak için Keşiş Milbon'a dön.
+Gotowe. Bonus PD +%d%% na %s	Hazır. EXP bonusu +%d%%, süre: %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	Hazır. Bonuslar aktarıldı, ve eşya
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	Hazır. Röliği Rölik Bonusu penceresine koy
+Gotowi? Balathor nie zna litości.	Hazır mısınız? Balathor acıma nedir bilmez.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	Oyun 30 000 Yang ve bir kart destesi tutar.
+Graj po swojemu (wolna reka)	Kendi tarzınla oyna (serbest el)
+Gratulacje! Za miejsce w pierwszej dziesiątce	Tebrikler! İlk ondaki yerin için
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	Oyunu istediğin zaman bitirirsin. Sandık alırsın:
+Gromiste Góry	Yıldırım Dağları
+Grota Wygnańców (wejście)	Sürgün Mağarası (giriş)
+Grota Wygnańców 2	Sürgün Mağarası 2
+Grota Wygnańców 2 (PB)	Sürgün Mağarası 2 (TS)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Sürgün Mağarası 2 (TS): süre doldu - İllüzyon Platosuna dönüyorsunuz.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Sürgün Mağarası 2 (TS): 60 dakikan var. Kıvrık Anahtarları (TS) toplayın ve Sura Ruhunu bulun.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Sürgün Mağarası 2 (TS): Uyanış kitabı gerekiyor.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Sürgün Mağarası 2 (TS): bu sefer zaten sona erdi.
+Grota Wygnańców 2 (SZC)	Sürgün Mağarası 2 (ZÇ)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Sürgün Mağarası 2 (ZÇ): süre doldu - İllüzyon Platosuna dönüyorsunuz.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Sürgün Mağarası 2 (ZÇ): 60 dakikan var. Kıvrık Anahtarları (ZÇ) toplayın ve Sura Ruhunu bulun.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Sürgün Mağarası 2 (ZÇ): Cep saati gerekiyor.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Sürgün Mağarası 2 (ZÇ): bu sefer zaten sona erdi.
+Grota Wygnańców 2 (zablokowane)	Sürgün Mağarası 2 (kilitli)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	Sürgün Mağarası 2'ye yalnızca Sürgün Mağarası'ndan gidilebilir.
+Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, bu bir Metin kristali değil, bir parça
+Głębie (silny)	Derinlikler (güçlü)
+Głębie (słaby)	Derinlikler (zayıf)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	Derinlikler sizi şimdi içeri almıyor. Birazdan tekrar dene.
+Głębie Północnego Wiatru	Kuzey Rüzgarı Derinlikleri
+Głębie Północnego Wiatru (silny)	Kuzey Rüzgarı Derinlikleri (güçlü)
+Głębie Północnego Wiatru (słaby)	Kuzey Rüzgarı Derinlikleri (zayıf)
+Głębie są dziś zamknięte. Wróć później.	Derinlikler bugün kapalı. Daha sonra gel.
+Głębie: ta wyprawa już się skończyła.	Derinlikler: bu sefer zaten sona erdi.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Derinlikler: çok uzun süre ölü kaldın - seferden çıkarıldın.
+Halloween, nagle zawirował cały świat i w ułamku	Cadılar Bayramı, birden bütün dünya döndü ve bir
+Handlarz Bronią w Dongan potrzebuje pomocy.	Dongan'daki Silah Satıcısının yardıma ihtiyacı var.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	Dongan'daki Zırh Satıcısının yardıma ihtiyacı var.
+Hej! Wiem, że zamieniono mnie w kamień - to	Hey! Taşa dönüştürüldüğümü biliyorum - bu
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Hey, sen! Evet, sen! Bir şeyler yapabilen birine
+hełm 120. poziomu dla każdej klasy. Połóż materiały	her sınıf için 120. seviye kask. Malzemeleri koy
+Hełmy na 100 poziom	100. seviye kasklar
+Hmm... Nie mam maski, która pasowałaby	Hmm... Sana uyacak bir maskem
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Hmmm, bu eğrelti otu ne yazık ki hasarlı. Hiç
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	Hwacha henüz hazır değil (Ateşli Ok gerekiyor).
+Hydra pokonana! Statek może teraz dopłynąć do	Hidra yenildi! Gemi artık şuraya gidebilir:
+i 400 000 Yang. Szansa zależy od plusa butów:	ve 400 000 Yang. Şans ayakkabının artısına bağlı:
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	ve 5 Kuzey Rüzgarı çarkı, zırh için 5 Yılan ipeği
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	ve 5 Yılan Cilası. Bedel: 10 000 000 Yang ve 100 Gaya,
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	ve derinliklerin karanlığına karşı. Onsuz harabelere inemezsin.
+i co najmniej 500 000 Yang w skarbcu gildii.	ve lonca hazinesinde en az 500 000 Yang.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	ve bir kask (sınıfın için örnek, +7) ve tüm
+i magowie strzega swiatyni dzien i noc, a po jej	ve büyücüler tapınağı gece gündüz korur, ve onun
+i materiały - wszystkie przepisy zobaczysz w oknie.	ve malzemeler - tüm tarifleri pencerede görürsün.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	ve düzgün çalışmayabilir. Onu sahibi açar
+i Podziemnych Lodowych Golemów w Grocie.	ve Mağaradaki Yeraltı Buz Golemleri.
+i Starożytna Dżungla (wiatr). Odporność	ve Antik Orman (rüzgar). Direnç
+i te dodane. Im wyższy poziom szaty, tym większa	ve eklenenler. Elbisenin seviyesi ne kadar yüksekse, o kadar büyük
+i wrócić do Portu Nowego Kontynentu?	ve Yeni Kıta Limanına dönmek istiyor musun?
+i Zaczarowanego Lasu (wiatr) oraz lochy:	ve Büyülü Orman (rüzgar) ile zindanlar:
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	ve 65. seviye zırhtan yeni, daha güçlü
+ich blask zmienia się pod wpływem emocji.	parıltıları duygulara göre değişir.
+Ich strażnicy pilnują Płomiennego Feniksa,	Muhafızları Ateş Ankasını koruyor,
+Idź dalej	Devam et
+Idź do Opuszczonej Twierdzy	Terk Edilmiş Kaleye git
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Işınlayıcıya git ve Zodyak Tapınağına[ENTER]geç. Keşiş Milbon seni orada bekliyor.
+Idź do Świątyni Węży	Yılan Tapınağına git
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	En-Tai Hükümdarlarına bir kez daha git ve bana Ağaç
+Idź już i znajdź jeden %s!	Haydi git ve bir %s bul!
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	İgnatör (TS) hala hayatta. Savaşmaya devam et ya da
+Ignator (PB), strażnik żaru, został pokonany.	Közlerin bekçisi İgnatör (TS) yenildi.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	İgnatör (ZÇ) hala hayatta. Savaşmaya devam et ya da
+Ignator (SZC), strażnik żaru, został pokonany.	Közlerin bekçisi İgnatör (ZÇ) yenildi.
+Informacja o mapie	Harita bilgisi
+innym... Czegoś takiego na pewno jeszcze nie	başka... Böyle bir şeyi kesinlikle daha önce
+Inteligencja %d.	Zeka %d.
+Inteligencja - trucizna, ogień i krwawienie	Zeka - zehir, ateş ve kanama
+Inteligencja Sung Ma	Sung Ma Zekası
+ja wyrzucasz. Trzy karty o tej samej liczbie	onu atarsın. Aynı sayıda üç kart
+Jak grac w Okey?	Okey nasıl oynanır?
+Jak ma sie nazywac?	Adı ne olsun?
+Jak ma walczyc?	Nasıl savaşsın?
+Jak mam walczyc przy tobie?	Yanında nasıl savaşayım?
+Jak sie masz?	Nasılsın?
+Jaka ma byc jego klasa?	Sınıfı ne olsun?
+Jaka sciezka?	Hangi yol?
+Jaskinie Gnolli	Gnoll Mağaraları
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	Gnoll Mağaraları 1. Şampiyon Seviyesinden itibaren açık. Dongan'a dönüyorsun.
+Jazda (Bezszelest. Chód)	Binicilik (Hafif adım)
+Jazda (Brak Odrzutu)	Binicilik (Geri tp. yok)
+Jazda (Gwałt. Wichura)	Binicilik (Öfk. fırtına)
+Jazda (Nieśmiertelność)	Binicilik (Yenilmezlik)
+Jazda (umiej. konne)	Binicilik (At becerisi)
+Jazda (W. SungMa. INT)	Binicilik (SM. i. INT)
+Jazda (W. SungMa. ODP)	Binicilik (SM. i. RES)
+Jazda (W. SungMa. SIŁA)	Binicilik (SM. i. STR)
+Jazda (W. SungMa. WIT)	Binicilik (SM. i. VIT)
+Jazda (Zwinne Kopyta)	Binicilik (Çevik toynak)
+Jazda Konna (Ninja)	Binicilik (Ninjalara k.)
+Jazda Konna (PD)	Binicilik (EXP)
+Jazda Konna (Precyzja)	Binicilik (Tamlık)
+Jazda Konna (przeciw diabłom)	Binicilik (Şeytanlara k.)
+Jazda Konna (przeciw insektom)	Binicilik (Böceklere k.)
+Jazda Konna (przeciw mistykom)	Binicilik (Mistiklere k.)
+Jazda Konna (przeciw nieumarłym)	Binicilik (Ölümsüzlere k.)
+Jazda Konna (przeciw orkom)	Binicilik (Orklara k.)
+Jazda Konna (przeciw potworom pustyni)	Binicilik (Çöl canavarlarına k.)
+Jazda Konna (przeciw potworom)	Binicilik (Canavarlara k.)
+Jazda Konna (przeciw półludziom)	Binicilik (Yarı insanlara k.)
+Jazda Konna (przeciw zwierzętom)	Binicilik (Hayvanlara k.)
+Jazda Konna (Sura)	Binicilik (Suralara k.)
+Jazda Konna (Szaman)	Binicilik (Şamanlara k.)
+Jazda Konna (Wojownik)	Binicilik (Savaşçlr. k.)
+Jeden transfer zuzywa jedna sztuke.	Bir aktarım bir adet harcar.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	Seçilen eşyalardan biri artık senin
+Jedna z twoich mocy woli SungMa zostanie	SungMa iradesi güçlerinden biri
+jednak: tylko pierwsza próba zawsze się udaje.	ancak: yalnızca ilk deneme her zaman başarılı olur.
+jednego jadeitu potrzebują tych samych materiałów.	bir yeşim için aynı malzemeler gerekir.
+jedną pełną kulę doświadczenia.	bir dolu tecrübe küresi.
+Jego jad zabił już niejednego wojownika,	Zehri şimdiden nice savaşçıyı öldürdü,
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	Pulları sıvı altın gibi parlıyor! Onunla ne yapacaksın?
+Jej Królowa nie wypuściła jeszcze nikogo,	Kraliçesi henüz kimseyi bırakmadı,
+jej potomstwem, najadami i samą bestią. Wytrzymaj	yavruları, nayadlar ve canavarın kendisi. Dayan
+Jej potwory rani tylko Czempion - ten, kto	Canavarlarına yalnızca Şampiyon zarar verebilir - yani
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	Ben ya da sen ölürsek, sefer kaybedilir.
+jest część parametrów, którą da (poziom 250 - 25%).	verdiği değerlerin bir kısmıdır (seviye 250 - %25).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	Ben Hazine Goblini'yim. Yıllardır büyük bir
+Jestem w trakcie dokładniejszej analizy	Daha ayrıntılı bir analizin ortasındayım
+jesteś dość silny, by przetrwać. Naprawdę chcesz	hayatta kalacak kadar güçlüsün. Gerçekten istiyor musun
+Jesteś już w Porcie Nowego Kontynentu.	Zaten Yeni Kıta Limanındasın.
+Jeszcze chwile	Bir dakika
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	onun Ağaç Zümrütünü de getir, sana değerli bir şey vereyim.
+jeszcze lepsze. Przynies mi:	daha da iyisini. Bana getir:
+Jeszcze nie	Henüz değil
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	Önceki seferden sonra henüz dinlenmediler:
+Jeszcze nie skończyłem. Wróć za:	Henüz bitirmedim. Şu süre sonra gel:
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	Henüz %d Metin Taşının hepsini yok[ENTER]edemedin. Görevi tamamladığında bana[ENTER]geri gel.
+Jeszcze nieaktywne.	Henüz etkin değil.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	biraz daha. Büyülü Ormana çıkıyor,
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	En-Tai Hükümdarlarına bir kez daha git ve bana Ağaç
+jeśli się rozmyślisz.	fikrini değiştirirsen.
+Jeśli statek wciąż płynie, łódź zaraz cię do	Gemi hala seyrediyorsa, bir kayık seni hemen
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	Sefer hala sürüyorsa, kapı seni hemen götürür.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	Sefer hala sürüyorsa, heykelin gücü seni hemen götürür.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	Sefer hala sürüyorsa, portal seni hemen götürür.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	Sefer hala sürüyorsa, geçit seni hemen götürür.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	Sefer hala sürüyorsa, akıntı seni hemen götürür.
+Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (TS) Erebos'a geldi!
+Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (ZÇ) Erebos'a geldi!
+Jotun Thrym przybył do Erebu!	Jotun Thrym Erebos'a geldi!
+Juz mam to blogoslawienstwo.	Bu kutsamaya zaten sahibim.
+ją pokonali.	onu yendi.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Taştan bir Gizemli tılsım yaparım. Üretim penceresinde
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	Beran-Setaou Ruh Taşı. Onu şuradan alırsın:
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Ruh Taşı +0, +1, +2 ya da +3. Onlardan keserim
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	Taşlar düştü - ejderha savunmasız. Acele edin,
+Kamienie Przebudzenia	Uyanış Taşları
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	Ejderhanın taşları Beran-Setaou'yu koruyor. Ayakta
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	Şansı taş belirler: Küçük %2, Ufak %5,
+Kamień demonów oberwał - łucznicy atakują!	Şeytan taşı darbe aldı - okçular saldırıyor!
+Kamień Driad.	Orman Perisi Taşı.
+Kamień Duchowy Buffi	Buffi Ruh Taşı
+Kamień Duchowy Buffi trenuje umiejętności Buffi	Buffi Ruh Taşı, Buffi'nin becerilerini geliştirir
+Kamień Duchowy+	Ruh Taşı+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	Ruh Taşı+ karşı saldırıyı ve güçlendirmeyi G1'den geliştirir
+Kamień Dusz Beran-Setaou	Beran-Setaou Ruh Taşı
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	Beran-Setaou Ruh Taşı! Onun sayesinde benim
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	Yohara Metin taşı yalnızca SungMa İradeli Yohara haritalarında çalışır.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	Yohara Metin taşı 1. Şampiyon Seviyesi gerektirir.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	bir uyanış taşı ve 2 500 000 Yang. Taş belirler
+Kamień użyty na złej steli się rozpadnie.	Yanlış stelde kullanılan taş parçalanır.
+karty Okey. 24 karty tworza zestaw kart.	Okey kartları. 24 kart bir kart destesi oluşturur.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Şeytan Katakombu: 1 saniye sonra zindandan çıkacaksın.
+Każda klasa i droga ma swój dopalacz - twój to:	Her sınıfın ve yolun kendi güçlendirmesi var - seninki:
+Każda mapa Sung Ma ma swoje wymagania. Gdy	Her Sung Ma haritasının kendi şartları var. Eğer
+Każde pełne 10% Siły daje też +1% do	Her tam %10 Güç ayrıca doğrudan +%1 ekler:
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	Her gün her zaman iki farklı tapınak[ENTER]açılır.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Herkes %d. seviye, Şampiyon 4 olmalı ve 24 saattir loncada bulunmalı. Şartı karşılamayanlar:
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Her savaşçı Altın Ejderha Kutusundan bir ödül seçebilir - bunun için bir dakikanız var.
+Klejnoty dla Seona-Pyeonga	Seon-Pyeong için Mücevherler
+Klejnoty Zawiści wypadają z Podziemnych Lod.	Kin Mücevherleri Yeraltı Buz Golemlerinden
+Klejnoty Zawiści zdradziły mi wiele, ale to	Kin Mücevherleri bana çok şey anlattı, ama bu
+Klif Gautama (Zbocze Gautama)	Gautama Uçurumu (Gautama Yamacı)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Bir heykelin yanında durup Ejderha Ateşi Yüzüğüne sağ tıkla. Yumurtalar 2 dakikada bir geri gelir.
+Kliknij talie, aby dobrac karty. Lewym	Kart çekmek için desteye tıkla. Sol
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	Cezaevi anahtarı uymuyor - demirci hala kafeste.
+Klucz Goblina!	Goblin anahtarı!
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	Yılan anahtarı ufalanıyor - Sütun yerinden kıpırdamıyor.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	Buzçiçeği Anahtarı (TS) yalnızca Ninja ya da Şaman kullanabilir.
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	Buzçiçeği Anahtarı (ZÇ) yalnızca Ninja ya da Şaman kullanabilir.
+Klątwa	Lanet
+klątwa Sung Mahi. Ale jestem szamanem i znam	Sung Mahi'nin laneti. Ama ben bir şamanım ve biliyorum
+Klątwa Sunga Mahi zdjęta.	Sung Mahi'nin laneti kaldırıldı.
+Kobieta	Kadın
+Kobieta czy mezczyzna?	Kadın mı erkek mi?
+Kolejny Potężny Wojownik Wężowy (lód)!	Bir Güçlü Yılan savaşçısı daha (buz)!
+kolekcjoner przedmiot	koleksiyon eşyası
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	kolyeler ve küpeler, Şeytanların taşından da - Güç Taşı
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	Kuzeyli Ejderha Sütunu (TS) yok edildi. Grup lideri Buz Arslanı (TS) ile konuşabilir.
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	Kuzeyli Ejderha Sütunu (ZÇ) yok edildi. Grup lideri Buz Arslanı (ZÇ) ile konuşabilir.
+komnatach krazy Straznik En-Tai, ktory co chwile	odalarda bir En Tai Bekçisi dolaşıyor, ve arada bir
+konczy ja - skrzynie dostaniesz przy	bitirir - sandıkları şurada alırsın:
+Koniec gry daje jedna skrzynie wedlug wyniku.	Oyunun sonu skora göre bir sandık verir.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	kıta - Yohara. Onu Dongan'da ziyaret et,
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	kostüm, binek - başka bir bineğin görünümü.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Kostümler, saç modelleri ve silah görünümleri -- hepsi 1'er Yang.
+Koszt szkolenia:	Eğitim bedeli:
+Koszt: 100 000 000 Yang (przy odbiorze)	Bedel: 100 000 000 Yang (teslim alırken)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Bedel: 50 000 000 Yang ya da bir Yansıtma Bileti,
+Krainie, a dostaniesz Książkę.	Diyarı, ve bir Kitap alırsın.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	Tapınağın arkasındaki Jotun Thrym diyarı, ya da geri
+Krypta Balathora jest teraz zamknięta.	Balathor'un Mahzeni şu an kapalı.
+Krypta Balathora: wejście	Balathor'un Mahzeni: giriş
+Krypta Balathora: zgłoszenie gildii	Balathor'un Mahzeni: lonca kaydı
+Krypta jest otwarta. Członkowie gildii mogą teraz	Mahzen açık. Lonca üyeleri artık
+Krypta twojej gildii jest już zamknięta.	Loncanın Mahzeni zaten kapandı.
+Krypta twojej gildii jest na kanale %d.	Loncanın Mahzeni %d. kanalda.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	Kuzey Rüzgarı kristali kırıldı - Kristal Odasına giden yol açık.
+Kryształy Metin	Metin Kristalleri
+Kryształy Metin wypadają z Metinów Szacunku,	Metin Kristalleri Saygı Metinlerinden düşer,
+Kryształy Metin: nagroda	Metin Kristalleri: ödül
+kryształów Metin do moich badań!	araştırmam için Metin kristalleri!
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Kral Akrep yenildi! Süre: %d:%02d. Zindan tamamlandı.
+królem mrozu i lodu?	ayazın ve buzun kralı ile?
+Królestwa Żywiołów.	Elementer dünyası.
+Królestwo Żywiołów	Elementer dünyası
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	Elementer dünyası yenilenleri kabul etmez. Limana dönüyorsun.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	Elementer dünyası dokuz bölgeden oluşur, burada
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Orman Kraliçesi yenildi! Süre: %d:%02d. Zindan tamamlandı.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	Kraliçe Meley: Sığınağın Kapısı arkanızdan kapandı.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Kraliçe Meley: Süre doldu. Sığınağın Kapısı sizi dışarı atıyor.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Kraliçe Meley: Sütunlar Kraliçe Meley'e darbe vuruyor! 5 saniye sonra sıradaki aşama.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Kraliçe Meley: Heykeller mavi parlıyor - heykellerde Ejderha Ateşi Yüzüklerini kullanın!
+Królowa Meley: Tarcza statui zgasła - atakujcie!	Kraliçe Meley: Heykelin kalkanı söndü - saldırın!
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Kraliçe Meley: Savaş 10 saniye sonra başlıyor. Dört heykeli yok etmek için bir saatiniz var.
+Królowa Smoków Meley pokonana!	Ejderha Kraliçesi Meley yenildi!
+Królowa Smoków Meley została pokonana!	Ejderha Kraliçesi Meley yenildi!
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Yılan kraliçesi Nethis yenildi! 20 sn sonra ödül için Yılan heykeline dönüyorsunuz.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	Yılan kraliçesi Nethis yenildi. İşte ödülün.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Prens Halkası: SungMa İradesi (STR) 7 saniye boyunca -32.
+Krąg Wróżbity: jesteś ogłuszony.	Kahin Halkası: sersemledin.
+Książęcy	Prens
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	Kitap 100 000 000 Yang tutar. Parayla geri gel.
+Księga Misji (W.Płn.W.)	Görev kitabı (K. R. Uç.)
+Księga Misji (W.Płn.W.): %d / %d potworów.	Görev kitabı (K. R. Uç.): %d / %d canavar.
+Księgę Misji można aktywować od poziomu 120.	Görev kitabı 120. seviyeden itibaren etkinleştirilebilir.
+kto wszedł tam bez drużyny najlepszych wojowników.	en iyi savaşçılardan oluşan bir grup olmadan oraya giren.
+ktora jest z toba w grupie, expi z toba po rowno,	seninle grupta olan, seninle eşit EXP alır,
+Ktora zbroje mam z niej zrobic?	Ondan hangi zırhı yapayım?
+ktore moge przekuc. Zalozonego przedmiotu	yeniden dövebileceğim. Kuşanılmış eşya
+Ktory przedmiot mam przekuc? Mozesz go tez	Hangi eşyayı yeniden döveyim? Onu ayrıca
+któraś statystyka jest za niska: Siła - zadajesz	bir değer çok düşük: Güç - verdiğin
+które otwierają Erebu. Przywódca Straży Lasu wpuści	Erebos'u açan. Orman Bekçisi içeri alır
+Które portale chcesz zregenerować?	Hangi portalları yenilemek istiyorsun?
+który chcesz wykonać - obręcz, kolia i klipsy	yapmak istediğin - bilezik, kolye ve küpeler
+Który Kamień Duszy oddajesz?	Hangi Ruh Taşını veriyorsun?
+który myślał, że poradzi sobie z Razadorem.	Razadör ile başa çıkabileceğini sanan.
+Którą umiejętność Buffi chcesz trenować?	Buffi'nin hangi becerisini geliştirmek istiyorsun?
+Którą umiejętność chcesz trenować?	Hangi beceriyi geliştirmek istiyorsun?
+Którą umiejętność udoskonalić?	Hangi beceri iyileştirilsin?
+którą z nich wydobyłem. Wybierz, co chcesz.	onlardan çıkardığım. İstediğini seç.
+Kup	Satın al
+Kup bilet	Bilet satın al
+Kup Bilet do Atlantydy	Atlantis Bileti Satın Al
+Kup kostiumy i nakladki	Kostüm ve görünüm satın al
+Kup materialy Alchemika	Simyacı malzemesi satın al
+Kup przedmioty	Eşya satın al
+kupisz w Sklepie Gaya.	Gaya Mağazasından alabilirsin.
+Kwiat Żywiołu	Element Çiçeği
+Kwiaty Żywiołu	Element Çiçekleri
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	Ormanı (TS). Yolda hiçbir şey kaybetmemeye dikkat et!
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	Ormanı (ZÇ). Yolda hiçbir şey kaybetmemeye dikkat et!
+Ledwo trzymam się na nogach... Energia	Ayakta zor duruyorum... Enerji
+Legenda głosi, że rosą En-Tai można przegnać złe	Efsaneye göre En Tai Şebnemi kötü ruhları
+Legendy mówią, że za tym portalem śpi Razador,	Efsanelere göre bu portalın ardında Razadör uyuyor,
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	ilaç. Dongan'da Algı Metinlerini yen,
+Lekarstwo	İlaç
+Lekarstwo Iluzji	Yanılsama ilacı
+Lekarstwo. Zanieś je: Alchemik.	İlaç. Şuna götür: Simyacı.
+Lekarstwo. Zanieś je: Chaegirab.	İlaç. Şuna götür: Chaegirab.
+Lekarstwo. Zanieś je: Handlarz Bronią.	İlaç. Şuna götür: Silah Satıcısı.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	İlaç. Şuna götür: Zırh Satıcısı.
+Lekarstwo. Zanieś je: Uriel.	İlaç. Şuna götür: Uriel.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Yalnızca Karbon olta daha iyi: onu İşlenmemiş olta, Olta halkası, Olta sapı ve 3 Karbon fiberden yaparım.
+Lew budzi się, a z mrozu wychodzą potwory...	Aslan uyanıyor, ve ayazdan canavarlar çıkıyor...
+Leże Smoka (Beran-Setaou)	Ejderha İni (Beran-Setaou)
+Leże Smoka - wyprawa	Ejderha İni - sefer
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Ejderha İni: Süre doldu. Beran-Setaou sizi ininden atıyor.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Ejderha İni: taşlar düştü - Beran-Setaou'ya saldırın!
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Ejderha İni: geçit açılamadı - Sura Ruhu ile konuş.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Ejderha İni: Son taş düştü - Beran-Setaou savunmasız! Saldırın!
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Ejderha İni: geçidi açmak için Sura Ruhu ile konuş.
+Leże Smoka: przejście prowadzi przez poczekalnię.	Ejderha İni: geçit bekleme odasından geçiyor.
+Leże Smoka: przejście się otwiera...	Ejderha İni: geçit açılıyor...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	sayısız savaş. En Tai Hükümdarını (ZÇ) bul ve
+Liczy się łączna liczba punktów ze wszystkich gier	Tüm oyunlardaki toplam puan sayılır
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	Zindan sizi şimdi alamıyor. Birazdan tekrar dene.
+Loch Pająków 1 (Kuahklo Dong)	Örümcek Zindanı 1 (Kuahklo Dong)
+Lochy Przebudzenia	Uyanış Zindanları
+Lochy Przebudzenia wpuszczają tylko tych, którzy	Uyanış Zindanları yalnızca şunları içeri alır:
+Lochy Przebudzenia, a statuy kowali wykują dla	Uyanış Zindanları, ve demirci heykelleri senin için dövecek
+Lochy są dziś zamknięte. Wróć później.	Zindanlar bugün kapalı. Daha sonra gel.
+Lodogóry	Buz Dağları
+Lodowa Kraina (Nemere)	Buz Diyarı (Nemere)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Buz Diyarı: geçit açılamadı - Taş Aslan ile konuş.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Buz Diyarı: geçidi açmak için Taş Aslan ile konuş.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	Buz Diyarı: geçit bekleme odasından geçiyor.
+Lodowa Kraina: przejście się otwiera...	Buz Diyarı: geçit açılıyor...
+Lodu	Buz
+Lucznik (luk)	Okçu (yay)
+Ludzi i Podziemnych Lodowych Golemów	İnsanlar ve Yeraltı Buz Golemleri
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maat, Isfet'e galip geldi - son İsfet Steli (TS) yok edildi.
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maat, Isfet'e galip geldi - son İsfet Steli (ZÇ) yok edildi.
+Magazyn	Depo
+magazyn lub inne okno i sprobuj ponownie.	depoyu ya da başka bir pencereyi ve tekrar dene.
+Majestatyczny	Görkemli
+Mam do niej klucz, ale nie wiem, ktora z	Onun anahtarı bende, ama hangisi olduğunu bilmiyorum
+Mam już wszystkie 20 Klejnotów Mądrości!	20 Bilgelik Mücevherinin hepsi zaten bende!
+Mapa teleportacji jest wylaczona na tym serwerze.	Işınlanma haritası bu sunucuda kapalı.
+Marchewka	Havuç
+Maska dyni wytrzyma 7 dni od pierwszego	Balkabağı maskesi ilk andan itibaren 7 gün dayanır
+Masz 30 minut. Powodzenia!	30 dakikan var. Bol şans!
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	Tamamlamak için 60 dakikan var. Tamamladıktan ya da
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Bana arındırılmış çekirdekler mi getirdin? Bir bakayım...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	Görev kitabından (K. R. Uç.) zaten etkin bir görevin var. Önce onu bitir.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Zaten olabilecek en fazla Gaya'ya sahipsin (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	Altın at kitabına zaten sahipsin. 31. seviyeden itibaren atın bir Güçlü Savaş Atı.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	Beran-Setaou Ruh Taşı sende. Onu götür
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	Ruh Kristali Anahtarı sende. Kapıyı açıp[ENTER]grubu 2. kata taşıyalım mı?
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	İlaç sende. Şuna götür: Simyacı (Dongan).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	İlaç sende. Şuna götür: Chaegirab (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	İlaç sende. Şuna götür: Silah Satıcısı (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	İlaç sende. Şuna götür: Zırh Satıcısı (Dongan).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	İlaç sende. Şuna götür: Uriel (Dongan).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	Rütbe puanın çok az - rütben sıfırın altına düşer.
+Masz za mało Yang.	Yeterli Yang'ın yok.
+Masz za niski poziom.	Seviyen çok düşük.
+materialy, Yang i szanse (najedz na przedmiot).	malzemeler, Yang ve şanslar (eşyanın üzerine gel).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Malzemeler, Yang ve şanslar - pencerede (eşyanın üzerine gel).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	Balathor'un malzemelerini Balathor'un Mahzeni verir, Çiyli Çekiç
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	Malzemeleri Deniz kızı sandığında bulursun (Deniz kızı anahtarı açar). Olta 30 gün dayanır
+materiały, Yang i szansę (najedź na przedmiot).	malzemeler, Yang ve şanslar (eşyanın üzerine gel).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	Malzemeleri, Yang'ı ve şansları üretim penceresinde görürsün
+materiały. Pasuje każda broń, zbroja albo hełm	malzemeler. Her silah, zırh ya da kask uyar
+Max PŻ +2000	Maks. HP +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	İsfet Steli mekanizmasını yalnızca Altın Dişli Çark çalıştırır
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	İlkel Kuvvet Klanı yalnızca Elementer dünyasında çalışır.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	İlkel Kuvvet Klanı: 10 dakika boyunca Plato HP'ni almaz.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Ayaz Metini (TS) yok edildi. Birazdan 7. kata taşınacaksınız.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Ayaz Metini (ZÇ) yok edildi. Birazdan 7. kata taşınacaksınız.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	Cehennem Ateşi Metini (TS) hala ayakta - iblisler geri dönüyor!
+Metin Purgatorium (PB) został zniszczony.	Cehennem Ateşi Metini (TS) yok edildi.
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	Cehennem Ateşi Metini (ZÇ) hala ayakta - iblisler geri dönüyor!
+Metin Purgatorium (SZC) został zniszczony.	Cehennem Ateşi Metini (ZÇ) yok edildi.
+Metinu Świadomość zatruła mnie i potrzebuję 	Farklandırma Metini beni zehirledi ve ihtiyacım var 
+Metiny Drzewnych Stworzeń (PB)	Ağaç Varlıkları Metinleri (TS)
+Metiny Drzewnych Stworzeń (SZC)	Ağaç Varlıkları Metinleri (ZÇ)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	Ağaç Varlıkları Metinleri En-Tai'yi canlandırıyor.
+Metiny Drzewnych Stworzeń zatruwają ten las.	Ağaç Varlıkları Metinleri bu ormanı zehirliyor.
+Metiny zniszczone. Las trochę się uspokoił.	Metinler yok edildi. Orman biraz sakinleşti.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metinler yok edildi. Orman Casusuna (TS) dön.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metinler yok edildi. Orman Casusuna (ZÇ) dön.
+Mezczyzna	Erkek
+mieć co najmniej %d sztuk.	en az %d adet olmalı.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	Uyanış kitabı olmalı (girişte alınır).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	İksir henüz işe yaramaz - vücudunun dinlenmesi gerek.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	İksir bu sefer işe yaramadı. Daha sonra tekrar dene.
+Mikstura Talentu	Yetenek iksiri
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	Yetenek iksiri 9. beceriyi G1'den P'ye geliştirir. %s
+Miksturę Mądrości	Bilgelik İksiri
+Misja poboczna	Yan görev
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	Görev sürüyor. İki patronu da yen ve bana dön:
+Misja wykonana! Portal do następnego etapu jest otwarty.	Görev tamamlandı! Sıradaki aşamanın portalı açık.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Görev kitabı (K. R. Uç.) görevi: Kuzey Rüzgarı Uçurumunda 300 canavar yen.
+Misja: pokonaj 300 potworów w Wąwozie	Görev: Kuzey Rüzgarı Uçurumunda 300 canavar
+Misji nie można przerwać. Księga zniknie.	Görev iptal edilemez. Kitap yok olur.
+Mistrz gildii może zgłosić tu swoją gildię:	Lonca lideri loncasını buraya kaydettirebilir:
+mniej - brazowa	daha az - bronz
+Moc klejnotów jest teraz twoja na zawsze.	Mücevherlerin gücü artık sonsuza dek senin.
+Moc pierścienia wyczerpała się.	Yüzüğün gücü tükendi.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	Ejderha Gözünün gücü bugünlük tükendi. Yarın Simyacıdan yeniden al.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	Sung Mahi'nin etkisine özellikle açık olabilir.
+Mogę cię zabrać do każdego z nich; między	Seni her birine götürebilirim; aralarında
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	Kutsamayı yenileyebilirim: +%d%% EXP, süre: %s
+Mogę przenieść na szatę aury parametry bransolety,	Bileziğin değerlerini aura elbisesine aktarabilirim,
+Mogę przenieść wygląd jednego przedmiotu na drugi.	Bir eşyanın görünümünü diğerine aktarabilirim.
+Mogę więc stworzyć z nich Kryształ Energii.	Yani onlardan bir Enerji Kristali yapabilirim.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	Kardeşlerim kayboldu, ve ilaç çantası da onlarla. Savaşçılar
+Moj klucz nie pasuje do tej skrzyni.	Anahtarım bu sandığa uymuyor.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	Anahtarım uyuyor! Doğru sandık bu!
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	Gücüm seni İllüzyon Platosuna götürür. Orada
+Moja technika jest genialna, ale jeszcze	Tekniğim muhteşem, ama yine de
+Moje badania wykazały, że potwory znajdujące	Araştırmalarım gösterdi ki, bulunan canavarlar
+Moje czasy	Sürelerim
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	Islak Kıyafet: 5 dakika boyunca -50 hareket hızı.
+Morkhot nadchodzi! Macie mało czasu.	Morkhot geliyor! Fazla vaktiniz yok.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot yenildi! Süre: %d:%02d. Atlantis Harabeleri tamamlandı.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	Eşyayı seçebilir ya da üzerime sürükleyebilirsin.
+mozesz wybrac od razu.	hemen seçebilirsin.
+Mozesz zabrac w droge stalego towarzysza: postac,	Yola kalıcı bir yoldaş alabilirsin: bir karakter,
+Może później	Belki sonra
+może się nie udać.	başarısız olabilir.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	Yalnız ya da grupla girebilirsin; gruptaki botlar biletsiz girer.
+możesz znaleźć Kartę Maski Dyni. 	J. Pumpkin Maskesi Kartı bulabilirsin. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	Yalnızca bir karşı saldırın olabilir. Eğitim Dönüşüm Parşömeni
+Mroczne Paprocie	Gölge Eğreltileri
+Mroczne Paprocie: nagroda	Gölge Eğreltileri: ödül
+mrocznej paproci.	gölge eğreltisi.
+Mroczny Cierń - mrok.	Kara diken - karanlık.
+Mroczną Paproć znajdziesz u potworów	Gölge Eğreltisini şu canavarlarda bulursun:
+Mrok i ziemia (mapa 3)	Karanlık ve toprak (harita 3)
+Mroku	Karanlık
+Mroźnego Klucza (PB) może użyć tylko Szaman.	Buz Anahtarını (TS) yalnızca Şaman kullanabilir.
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	Buz Anahtarını (ZÇ) yalnızca Şaman kullanabilir.
+mu apteczkę.	ona ilaç çantasını.
+musi najpierw osiągnąć stopień G1 (księgami).	önce G1 derecesine ulaşmalı (kitaplarla).
+Musisz dalej szukać.	Aramaya devam etmelisin.
+Musisz jeszcze trochę potrenować! Wróć, gdy	Biraz daha antrenman yapmalısın! Geri gel,
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	Girmek için en az 12 Animosfer[ENTER]yüklemelisin.
+Mój przyjaciel Chaegirab bada teraz nowy	Dostum Chaegirab şimdi yeni bir şey araştırıyor
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	Demir Ejderhanın tapınağı tek bir ateşli[ENTER]nefesle 12 Zodyak bekçisinin onuruna[ENTER]yükselttiği söylenir. Bekçilerin kutsal[ENTER]odalarından dönen cesurları ün, onur ve[ENTER]sonsuz zenginlikler bekler.
+Mądrości, które noszą przy sobie wojownicy	Bilgelik, savaşçıların yanlarında taşıdığı
+Mądrość przychodzi z doświadczeniem, ale dla	Bilgelik tecrübeyle gelir, ama
+Mądry wybór. Teraz zniszcz następną stelę.	Akıllıca bir seçim. Şimdi sıradaki steli yok et.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	Akıllıca bir seçim. Şimdi son steli yok et, ve Maat
+Na 7. poziomie czekają Głowy Węża. Odłamki z	7. katta Yılan başları bekliyor. Parçacıklar
+na bizuterie i splesc dla ciebie pas.	takıya ve senin için bir kemer öreyim.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	bonuslu bir silaha. Eşyayı kuşanmışsan çıkar
+na Doyyumhwaji, póki nie minie godzina.	Doyyumhwaji'de, bir saat geçene kadar.
+Na graczy żywioły nie działają.	Elementler oyunculara etki etmez.
+Na które piętro chcesz wejść?	Hangi kata girmek istiyorsun?
+na Maskę Dyni? 	Balkabağı Maskesine? 
+Na morzu za przylądkiem grasuje Hydra. Każdy	Burnun ötesindeki denizde bir Hidra dolaşıyor. Her
+Na nagrodę jest jeszcze za wcześnie.	Ödül için henüz çok erken.
+na niej już żadnych zarodników. Przynieś mi inną.	üzerinde hiç spor kalmamış. Bana başkasını getir.
+na nowym kontynencie.	yeni kıtada.
+Na pewno poddać wyprawę?	Seferden gerçekten vazgeçilsin mi?
+Na pewno? Towarzysz odejdzie, a jego postac	Emin misin? Yoldaş ayrılacak, ve karakteri
+Na pokład!	Herkes gemiye!
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	10, 20, 30, 40, 50, 60 ve 70. seviyede - her zaman
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	49, 99, 149, 199 ve 249. seviyede tam bir
+na Przyladku Smoczego Ognia.	Ejderha Ateşi Burnunda.
+Na Przylądek Smoczego Ognia	Ejderha Ateşi Burnuna
+na Przylądku Smoczego Ognia.	Ejderha Ateşi Burnunda.
+na siedmiu poziomach czeka Królowa Węży Nethis.	yedi katta Yılan kraliçesi Nethis bekliyor.
+Na statek wpuszczam tylko drużyny.	Gemiye yalnızca grupları alıyorum.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	G1-G10 derecesinde. M1'den G1'e - normal Kitaplar
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	başına. Kartı daha iyi günler için sakla. 
+na tym serwerze.	bu sunucuda.
+Na ukończenie instancji macie 60 minut. Potwory nie	Bölümü bitirmek için 60 dakikanız var. Canavarlar
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	Sefer 60 dakika sürer, sonra 3 saat ara.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Tepeye usta WuKong'un maymunları yerleşti.
+na Zbocze Gautama.	Gautama Yamacına.
+na żywioł odejmuje cały swój procent	bir elemente karşı tüm yüzdesini düşer
+nadaje się do badań. Przynieś mi inny.	araştırmaya uygun. Bana başkasını getir.
+Nadam twojej broni, zbroi albo hełmowi	Silahına, zırhına ya da kaskına vereceğim
+nadciągał sztorm?	fırtına mı geliyordu?
+nadciągnie w czterech falach. Brońcie masztu!	dört dalga halinde gelecek. Direği koruyun!
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	İlaç çantasını Casusa götürme zamanı geldi
+Nagroda (losowo jedna):	Ödül (rastgele biri):
+Nagroda za badania	Araştırma ödülü
+Nagroda za Meley	Meley ödülü
+Nagroda została już odebrana przez wszystkich	Ödül zaten herkes tarafından alındı:
+Nagroda została już odebrana.	Ödül zaten alındı.
+Nagroda: 11 650 000 PD i Kamień Driad.	Ödül: 11 650 000 EXP ve Orman Perisi Taşı.
+Nagroda: 11 650 000 PD.	Ödül: 11 650 000 EXP.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Ödül: 5 582 500 EXP ve 10 Gango Kökü.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Ödül: 5 825 000 EXP ve 5 Alp Gülü.
+Nagroda: 7 766 000 PD i 10 Wód Young.	Ödül: 7 766 000 EXP ve 10 Yöng Suyu.
+Nagroda: 7 766 000 PD.	Ödül: 7 766 000 EXP.
+Nagroda: 776 600 PD.	Ödül: 776 600 EXP.
+Nagroda: Książka Przebudzenia. Misję można	Ödül: Uyanış kitabı. Görev
+Nagrody dla najlepszych	En iyilere ödüller
+Nagrody w Łupach Królewskich	Kraliyet Ganimetindeki ödüller
+Nagrody za grę Yut Nori	Yut Nori oyunu ödülleri
+Nagrody za pierwsze 10 miejsc	İlk 10 sıranın ödülleri
+Nagrody za ranking	Sıralama ödülleri
+Nagrodę za ten event już odebrałeś.	Bu etkinliğin ödülünü zaten aldın.
+Najlepsza gra	En iyi oyun
+Najlepsze czasy pięter w tym sezonie (min:s):	Bu sezonun en iyi kat süreleri (dk:sn):
+Najlepszy wynik	En iyi skor
+najlepszych graczy. Może następnym razem!	en iyi oyuncular. Belki bir dahaki sefere!
+najpierw 9. pietro Wiezy Demonow	önce Şeytan Kulesinin 9. katı
+Najpierw opuść loch.	Önce zindandan çık.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	Önce Orman Bekçisine ve Casusuna (TS) yardım et.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	Önce Orman Bekçisine ve Casusuna (ZÇ) yardım et.
+Najpierw trzeba zamknąć otwartą Kryptę.	Önce açık Mahzenin kapatılması gerek.
