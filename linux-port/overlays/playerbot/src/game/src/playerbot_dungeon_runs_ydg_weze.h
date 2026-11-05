@@ -176,9 +176,11 @@ namespace
 	const DWORD PLAYERBOT_WEZE_HOLD_MAX_S = 180;
 	std::map<long, DWORD> s_mapPlayerBotWezeHoldSince;	// instance -> get_global_time() the hold began
 
-	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
+	// V3 (00:20): the parties hit only the turn's Metin and the 3rd level's groups (one every 40 s) piled up to 10-20
+	// at 100% by the last Metin - the groups first on the 3rd level too (the Metin's turn kept), the same time limit.
+	bool IsPlayerBotWezeAddsFirst(LPDUNGEON d, long instance)
 	{
-		if (!d || d->GetFlag("lvl") != 3 || d->GetFlag("next") != 4 || hpPct > 15)
+		if (!d || d->GetFlag("lvl") != 3)
 			return false;
 		const int adds = CountPlayerBotWezeAdds(instance);
 		DWORD& since = s_mapPlayerBotWezeHoldSince[instance];
@@ -193,11 +195,31 @@ namespace
 		if (now - since > PLAYERBOT_WEZE_HOLD_MAX_S)
 		{
 			if (since != 1)
-				sys_log(0, "BOT_YDG: weze hold over instance=%ld adds=%d after_s=%u - the last Metin falls", instance, adds, now - since);
+				sys_log(0, "BOT_YDG: weze adds-first over instance=%ld adds=%d after_s=%u - the Metin of the turn again", instance, adds, now - since);
 			since = 1;	// over for this instance's level 3
 			return false;
 		}
 		return true;
+	}
+
+	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
+	{
+		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && IsPlayerBotWezeAddsFirst(d, instance);
+	}
+
+	// The living monsters' races (not the Metins, the Kolumny, the cages) as objectives.
+	void AddPlayerBotWezeAddRaces(long instance, std::vector<DWORD>& out)
+	{
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(instance, get_dword_time());
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			const DWORD r = scan.foes[i].dwRace;
+			if ((r > PLAYERBOT_WEZE_METIN_BASE && r <= PLAYERBOT_WEZE_TIME_METIN) || r == PLAYERBOT_WEZE_COLUMN || r == PLAYERBOT_WEZE_CAGED ||
+					r >= 20000)
+				continue;
+			if (std::find(out.begin(), out.end(), r) == out.end())
+				out.push_back(r);
+		}
 	}
 
 	// The living monsters of the instance for the progress line (race@cell hp%), at most six.
@@ -235,17 +257,14 @@ namespace
 			case 3:
 			{
 				const int e = GetPlayerBotWezeOrder(d, d->GetFlag("next"));
-				if (e)
-				{
-					char key[8];
-					snprintf(key, sizeof(key), "tw3_%d", e);
-					const int pct = d->IsUniqueDead(key) ? 100 : (int)d->GetUniqueHpPerc(key);
-					if (!IsPlayerBotWezeHoldLastMetin(d, d->GetMapIndex(), pct))
-						out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
-				}
+				if (IsPlayerBotWezeAddsFirst(d, d->GetMapIndex()))
+					AddPlayerBotWezeAddRaces(d->GetMapIndex(), out);
+				else if (e)
+					out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
 				break;
 			}
-			case 4:
+			case 4:	// everything of the room dies before the Warrior comes (d.count_monster() == 0)
+				AddPlayerBotWezeAddRaces(d->GetMapIndex(), out);
 				out.push_back(PLAYERBOT_WEZE_TIME_METIN);
 				out.push_back(PLAYERBOT_WEZE_WARRIOR_EARTH);
 				out.push_back(PLAYERBOT_WEZE_WARRIOR_ICE);
