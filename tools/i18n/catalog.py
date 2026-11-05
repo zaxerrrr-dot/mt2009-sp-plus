@@ -60,8 +60,15 @@ def load_catalog(app, lang):
             "regex": data.get("regex") or [], "same": data.get("same") or [], "_same_set": data["_same_set"]}
 
 
+RO_LETTERS = str.maketrans({"ş": "ș", "ţ": "ț", "Ş": "Ș", "Ţ": "Ț"})
+
+
 def save_catalog(app, lang, cat):
     os.makedirs(APP_DIRS[app], exist_ok=True)
+    if lang == "ro":
+        # one Romanian spelling for the pages: the comma-below letters
+        for kind in ("exact", "patterns"):
+            cat[kind] = {k: v.translate(RO_LETTERS) for k, v in cat[kind].items()}
     out = {"_meta": cat["_meta"], "exact": dict(sorted(cat["exact"].items())),
            "patterns": dict(sorted(cat["patterns"].items()))}
     if cat.get("regex"):
