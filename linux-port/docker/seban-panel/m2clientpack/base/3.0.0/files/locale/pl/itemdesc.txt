@@ -2890,7 +2890,7 @@
 50969	Srebrny £up Królewski	Nagroda za grê Z³ap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
 50970	Br¹zowy £up Królewski	Nagroda za grê Z³ap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
 30670	Kamieñ Przebudzenia	Wycofany przedmiot: Rytua³u Przebudzenia ju¿ nie ma, a kamieñ nie ma ¿adnego zastosowania. Mo¿esz go wyrzuciæ.
-8010	Ko³czan	Ko³czan pe³en strza³, które nigdy siê nie koñcz¹. Za³ó¿ go w miejsce strza³: ³uk ninja strzela bez zu¿ywania strza³ (obra¿enia jak ze Srebrnej Strza³y). Dzia³a 14 dni od zakupu.
+8010	Ko³czan	Ko³czan pe³en strza³, które nigdy siê nie koñcz¹. Za³ó¿ go w miejsce strza³: ³uk ninja strzela bez zu¿ywania strza³, a obra¿enia nie malej¹ wraz z odleg³oœci¹. Dzia³a 14 dni od zakupu.
 41986	Zbroja Króla Wojowników+	Królewska zbroja wojownika. Kostium tylko dla wojownika (postaæ mêska). Dzia³a 30 dni od zakupu.
 40233	Œwiêty Miecz Bogów+	Nak³adka na broñ jednorêczn¹ (miecz) - wojownik, ninja, sura. Dzia³a 30 dni od zakupu.
 50283	Karta Potwora	Po u¿yciu dodaje kartê potwora do kolekcji (Karty Potworów w menu pod Esc). Nie mo¿na ni¹ handlowaæ.
@@ -4313,7 +4313,7 @@
 31241	Po³yskuj¹ca Krwawa Per³a	Wspania³y skarb z wnêtrza po³yskuj¹cej muszli.
 31242	Kamieñ Broni P³n. Wiatru	Materia³ do ulepszania broni wê¿owej.
 31243	Kamieñ Broni P³n. W+	Materia³ do ulepszania broni wê¿owej.
-31244	Kamieñ Rêkawic P³n. W.	Materia³ do ulepszania rêkawic wê¿owych. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
+31244	Kamieñ Rêkawic P³n. W.	Materia³ do ulepszania Rêkawic Wê¿a.
 31245	Twarda Skóra	Materia³ do produkcji rêkawic
 31246	Wzór Rêkawicy	Materia³ do produkcji rêkawic
 31247	Czerwona Runa SungMa	Materia³ do produkcji rêkawic mocy
@@ -4337,7 +4337,7 @@
 50323	Skrzynia Ksi¹g: Riposta	Skrzynia ta zawiera losow¹ ksiêgê umiejêtnoœci do nauki riposty.
 50324	Skrzynia Ksi¹g: Dopalacz	Skrzynia ta zawiera losow¹ ksiêgê umiejêtnoœci do nauki dopalacza.
 50325	Ksiêga Precyzji	Przeczytanie ksiêgi umo¿liwi ci zwiêkszenie precyzji. Znika po przeczytaniu. Wymaga co najmniej 1. Poziomu Czempiona.
-50336	Ksiêga Misji (W.P³n.W.)	Zawiera misjê w W¹wozie Pó³nocnego Wiatru, za któr¹ otrzymasz nagrodê, jeœli j¹ pomyœlnie ukoñczysz. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
+50336	Ksiêga Misji (W.P³n.W.)	Zawiera misjê w W¹wozie Pó³nocnego Wiatru, za któr¹ otrzymasz nagrodê, jeœli j¹ pomyœlnie ukoñczysz. Od poziomu: 120.
 50338	Charyzma Nowicjusza	Pierwsza z trzech ksi¹g uwa¿noœci. Mo¿e zwiêkszyæ charyzmê w³aœciciela. Po przeczytaniu ksiêga znika. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
 50339	Charyzma Adepta	Druga z trzech ksi¹g uwa¿noœci. Mo¿e zwiêkszyæ charyzmê w³aœciciela. Po przeczytaniu ksiêga znika. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
 50340	Charyzma Eksperta	Trzecia z trzech ksi¹g uwa¿noœci. Mo¿e zwiêkszyæ charyzmê w³aœciciela. Po przeczytaniu ksiêga znika. (Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
@@ -4768,7 +4768,7 @@
 70427	Klucz do Wiêzienia	Wydaje siê, ¿e klucz ten mo¿e otworzyæ wiêzienie.
 70429	Skarb Wê¿y	Skarb, który zosta³ wydarty z g³êbin Œwi¹tyni Wê¿y.
 70430	Wejœcie do Œwi¹tyni Wê¿y	Zresetuj swoje wejœcia do Œwi¹tyni Wê¿y na 5.
-81560	Tajemniczy Talizman+0	(Na razie bez zastosowania - przyjdzie z kolejn¹ aktualizacj¹ Yohary.)
+81560	Tajemniczy Talizman+0	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
 83051	Id. Skrzynia Talizmanu	Ta mocno zamkniêta skrzynia zawiera talizman. Aby j¹ otworzyæ, potrzebny jest idealny klucz.
 83052	Id. Skrzynia Naszyjniku	Ta mocno zamkniêta skrzynia zawiera naszyjnik. Aby j¹ otworzyæ, potrzebny jest idealny klucz.
 83053	Id. Skrzynia Kolczyków	Ta mocno zamkniêta skrzynia zawiera kolczyki. Aby j¹ otworzyæ, potrzebny jest idealny klucz.
@@ -5785,7 +5785,7 @@
 30282	Od³amek Reliktu Sury	S³u¿y do wytworzenia Reliktu Duszy u Biologa Chaegiraba w Dongan.
 30283	Od³amek Reliktu Szamana	S³u¿y do wytworzenia Reliktu Duszy u Biologa Chaegiraba w Dongan.
 30284	Od³amek Reliktu Likana	S³u¿y do wytworzenia Reliktu Duszy u Biologa Chaegiraba w Dongan.
-30395	Ognista Strza³a	Przeci¹gnij strza³ê na Hwachê w Krypcie Balathora, aby j¹ za³adowaæ. Strza³y daj¹ Pradawne Kryszta³y Lodu.
+30395	P³on¹ca Strza³a	Przeci¹gnij jedn¹ z tych strza³ na Hwachê w Krypcie Balathora, aby j¹ na³adowaæ. S³u¿y do zniszczenia tarczy Zamro¿onego Jaja Smoka. Strza³y daj¹ Pradawne Kryszta³y Lodu.
 83075	MroŸna Skrz. Balathora	Skrzynia z ³upami z Krypty Balathora.
 83076	MroŸna Skrz. Balathora+	Skrzynia z ³upami z Krypty Balathora+ - kilka losowych nagród.
 30625	Padparad¿a	Kryszta³y padparad¿y to rzadkie i niezwykle wykwintne czerwone szafiry. S³u¿¹ do ulepszania ekwipunku.
@@ -5832,3 +5832,64 @@
 55713	Mini-Dowódca (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
 55414	Jajo Aamona	Prawy przycisk myszy: wykluwa zwierzaka „Ma³y Aamon” (100.000 Yang i imiê). Jajo mo¿na te¿ daæ zwierzakowi do jedzenia albo w³o¿yæ w miejsce potencja³u zwierzaka czempiona.
 55714	Ma³y Aamon (pieczêæ)	Prawy przycisk myszy: przywo³uje albo odwo³uje zwierzaka.
+8000	Drewniana Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8001	Bambusowa Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8002	Kamienna Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8003	¯elazna Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8004	Stalowa Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8005	Srebrna Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8006	Ognista Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8007	Truj¹ca Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8008	Lodowa Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8009	Przeklêta Strza³a	Strza³a do ³uku ninja. Pe³ne obra¿enia do 5 m od celu (premia do zasiêgu ³uku wyd³u¿a ten dystans), potem o 5% mniej za ka¿dy kolejny metr. Ko³czan nie traci obra¿eñ z odleg³oœci¹.
+8011	Ko³czan	Ko³czan pe³en strza³, które nigdy siê nie koñcz¹. Za³ó¿ go w miejsce strza³: ³uk ninja strzela bez zu¿ywania strza³, a obra¿enia nie malej¹ wraz z odleg³oœci¹. Dzia³a 1 dzieñ od zakupu.
+8012	Ko³czan	Ko³czan pe³en strza³, które nigdy siê nie koñcz¹. Za³ó¿ go w miejsce strza³: ³uk ninja strzela bez zu¿ywania strza³, a obra¿enia nie malej¹ wraz z odleg³oœci¹. Dzia³a 7 dni od zakupu.
+23050	Rêkawice Wê¿a (SI£A)+0	Przepe³nione wol¹ SungMa.
+23051	Rêkawice Wê¿a (SI£A)+1	Przepe³nione wol¹ SungMa.
+23052	Rêkawice Wê¿a (SI£A)+2	Przepe³nione wol¹ SungMa.
+23053	Rêkawice Wê¿a (SI£A)+3	Przepe³nione wol¹ SungMa.
+23054	Rêkawice Wê¿a (SI£A)+4	Przepe³nione wol¹ SungMa.
+23055	Rêkawice Wê¿a (SI£A)+5	Przepe³nione wol¹ SungMa.
+23056	Rêkawice Wê¿a (SI£A)+6	Przepe³nione wol¹ SungMa.
+23057	Rêkawice Wê¿a (SI£A)+7	Przepe³nione wol¹ SungMa.
+23058	Rêkawice Wê¿a (SI£A)+8	Przepe³nione wol¹ SungMa.
+23059	Rêkawice Wê¿a (SI£A)+9	Przepe³nione wol¹ SungMa.
+23060	Rêkawice Wê¿a (ODP)+0	Przepe³nione wol¹ SungMa.
+23061	Rêkawice Wê¿a (ODP)+1	Przepe³nione wol¹ SungMa.
+23062	Rêkawice Wê¿a (ODP)+2	Przepe³nione wol¹ SungMa.
+23063	Rêkawice Wê¿a (ODP)+3	Przepe³nione wol¹ SungMa.
+23064	Rêkawice Wê¿a (ODP)+4	Przepe³nione wol¹ SungMa.
+23065	Rêkawice Wê¿a (ODP)+5	Przepe³nione wol¹ SungMa.
+23066	Rêkawice Wê¿a (ODP)+6	Przepe³nione wol¹ SungMa.
+23067	Rêkawice Wê¿a (ODP)+7	Przepe³nione wol¹ SungMa.
+23068	Rêkawice Wê¿a (ODP)+8	Przepe³nione wol¹ SungMa.
+23069	Rêkawice Wê¿a (ODP)+9	Przepe³nione wol¹ SungMa.
+23070	Rêkawice Wê¿a (WIT)+0	Przepe³nione wol¹ SungMa.
+23071	Rêkawice Wê¿a (WIT)+1	Przepe³nione wol¹ SungMa.
+23072	Rêkawice Wê¿a (WIT)+2	Przepe³nione wol¹ SungMa.
+23073	Rêkawice Wê¿a (WIT)+3	Przepe³nione wol¹ SungMa.
+23074	Rêkawice Wê¿a (WIT)+4	Przepe³nione wol¹ SungMa.
+23075	Rêkawice Wê¿a (WIT)+5	Przepe³nione wol¹ SungMa.
+23076	Rêkawice Wê¿a (WIT)+6	Przepe³nione wol¹ SungMa.
+23077	Rêkawice Wê¿a (WIT)+7	Przepe³nione wol¹ SungMa.
+23078	Rêkawice Wê¿a (WIT)+8	Przepe³nione wol¹ SungMa.
+23079	Rêkawice Wê¿a (WIT)+9	Przepe³nione wol¹ SungMa.
+23080	Rêkawice Wê¿a (INT)+0	Przepe³nione wol¹ SungMa.
+23081	Rêkawice Wê¿a (INT)+1	Przepe³nione wol¹ SungMa.
+23082	Rêkawice Wê¿a (INT)+2	Przepe³nione wol¹ SungMa.
+23083	Rêkawice Wê¿a (INT)+3	Przepe³nione wol¹ SungMa.
+23084	Rêkawice Wê¿a (INT)+4	Przepe³nione wol¹ SungMa.
+23085	Rêkawice Wê¿a (INT)+5	Przepe³nione wol¹ SungMa.
+23086	Rêkawice Wê¿a (INT)+6	Przepe³nione wol¹ SungMa.
+23087	Rêkawice Wê¿a (INT)+7	Przepe³nione wol¹ SungMa.
+23088	Rêkawice Wê¿a (INT)+8	Przepe³nione wol¹ SungMa.
+23089	Rêkawice Wê¿a (INT)+9	Przepe³nione wol¹ SungMa.
+81561	Tajemniczy Talizman+1	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81562	Tajemniczy Talizman+2	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81563	Tajemniczy Talizman+3	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81564	Tajemniczy Talizman+4	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81565	Tajemniczy Talizman+5	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81566	Tajemniczy Talizman+6	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81567	Tajemniczy Talizman+7	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81568	Tajemniczy Talizman+8	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
+81569	Tajemniczy Talizman+9	Przepe³niony wol¹ SungMa. Mo¿e mieæ losow¹ Wolê SungMa i moc losowego ¿ywio³u; brakuj¹ce bonusy podstawowe mog¹ pojawiæ siê przy ulepszaniu.
