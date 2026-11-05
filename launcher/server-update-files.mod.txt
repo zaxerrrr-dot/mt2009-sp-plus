@@ -735,3 +735,24 @@ linux-port/docker/game/lowienie/*
 # engine file pair with the overlay (char_item.cpp / input_main.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/irremovable_delete.cpp
 linux-port/docker/game/src/server/game/src/irremovable_delete.cpp
+# MT2009_PLUS_LANGUAGE_V1 (server-patches/language): the game in the language each player reads - the engine file pair
+# with the overlay mt2009_language.{h,cpp} (char.cpp, input_login.cpp, questlua.cpp, cmd.cpp above), the column
+# player.language language.sql (apply.sh), the dictionaries lang/<code>/* and quest/mt2009_language.lua (game/Dockerfile;
+# quest/* above).
+linux-port/overlays/playerbot/src/game/src/mt2009_language.h
+linux-port/docker/game/src/server/game/src/mt2009_language.h
+linux-port/overlays/playerbot/src/game/src/mt2009_language.cpp
+linux-port/docker/game/src/server/game/src/mt2009_language.cpp
+linux-port/docker/mariadb/playerbot/language.sql
+linux-port/docker/game/lang/en/*
+linux-port/docker/game/lang/de/*
+linux-port/docker/game/lang/tr/*
+linux-port/docker/game/lang/ro/*
+linux-port/docker/game/lang/es/*
+linux-port/docker/game/lang/it/*
+linux-port/docker/game/lang/fr/*
+linux-port/docker/game/lang/pt/*
+linux-port/docker/game/lang/cz/*
+linux-port/docker/game/lang/hu/*
+linux-port/docker/game/lang/gr/*
+linux-port/docker/game/lang/ae/*

@@ -958,6 +958,18 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
 
+# MT2009_PLUS_LANGUAGE_V1 (server-patches/language/README.md): the game in the language each player reads. The
+# dictionaries lang/<code>/*.tsv (Polish<TAB>translation, UTF-8; tools/i18n/build_server_lang.py makes 10_/20_ and the
+# names, 30_/35_/40_ are by hand) go to share/locale/poland/lang - a language is a folder, read when its first reader
+# comes; quest/mt2009_language.lua (the engine loads it after locale.lua) hands the quest window's texts to mt2009_tr().
+COPY quest/mt2009_language.lua /opt/metin2/share/locale/poland/quest/mt2009_language.lua
+COPY lang/ /opt/metin2/share/locale/poland/lang/
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && test -s "$L/quest/mt2009_language.lua" \
+ && test -s "$L/lang/en/10_quest_stock.tsv" \
+ && ! LC_ALL=C grep -q -P '[\x80-\xff]' "$L/quest/mt2009_language.lua" \
+ && echo "share: languages $(ls "$L/lang" | tr '\n' ' ')"
+
 # MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026; server-patches/mikstury/README.md): m2_mikstury_limity.lua is
 # dofile'd after m2_difficulty.lua and before m2_mikstury.lua (the step below wraps what it sets) and replaces
 # potion_system.use_potion - the herbal potions and the grilled fish (item type 36) with no group limit, no block by an
