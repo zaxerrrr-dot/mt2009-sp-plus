@@ -56,3 +56,11 @@ MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (the owner, 15 October 2026, fix 6) - `item_
 (`GetDropPct`, wherever they die - their dungeon or a GM's `/m`) and no `level_limit` of a limit group (the drop, the
 drop wiki and the preview). Their dungeon chests and Razador's / Nemere's extra drop come from the quests
 (`razador_dungeon`, `nemere_dungeon`, `blue_dragon_lair` - also when the boss dies outside the dungeon).
+
+
+MT2009_PLUS_BOT_DROPKNOW_V1 (the owner, night of 5/6 November 2026: "naucz boty co z czego dropi") - `item_manager.h`
+(`TDropKnowSource`, `TDropKnowPlace`, `TDropKnowExport`, the macro `MT2009_PLUS_BOT_DROPKNOW_V1`) and `cmd_general.cpp`
+(`DropWikiExportForBots`): the wiki's tables handed to the bots' drop knowledge (playerbot overlay,
+`playerbot_dropknow.h`) - every source of every item (monsters per kill, chests per opening, recipes and exchanges,
+NPC shops, refine steps) and where every monster lives, built as for a person's question (`DropWikiBuild`) and copied
+out once (the bots rebuild their index every 6 h). Nothing a player sees changes.

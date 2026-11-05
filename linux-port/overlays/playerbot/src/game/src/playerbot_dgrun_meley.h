@@ -231,7 +231,8 @@ namespace
 
 	bool IsPlayerBotMeleyNeeder(LPCHARACTER ch)
 	{
-		return GetPlayerBotMeleyLack(ch) > 0;
+		// MT2009_PLUS_BOT_DROPKNOW_V1: or the drop knowledge sends it here for another item of its plans (no counter holds it)
+		return GetPlayerBotMeleyLack(ch) > 0 || (ch && IsPlayerBotDropKnowDemander(ch->GetPlayerID(), FindPlayerBotMeleyDef()));
 	}
 
 	// The players' gates for a run now: the day's five, and (not in training) the bots' 3 h of the panel.

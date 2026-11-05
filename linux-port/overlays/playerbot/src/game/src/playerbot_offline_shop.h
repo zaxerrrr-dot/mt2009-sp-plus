@@ -1944,8 +1944,11 @@ namespace {
     // the counter shows already - an item on "stall" as much as any. The line
     // chosen before the board opens and the add itself ask this one question,
     // or a line cut for the add would stand in the bag unadded.
+    bool IsPlayerBotDropkiFloodHeld(LPCHARACTER owner, LPITEM item);   // MT2009_PLUS_BOT_DROPKI_V1 (playerbot_dropki.h)
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
+        // MT2009_PLUS_BOT_DROPKI_V1: a Dropki's dungeon drop the world's counters hold enough of stays off its counter
+        if (IsPlayerBotDropkiFloodHeld(item->GetOwner(), item)) return true;
         // MT2009_PLUS_BOT_SHOP_MGMT_V1: nothing but the goods it keeps
         // (IsPlayerBotShopMgmtKept) over the fill target, and a stack kind
         // (point 4) goes up as a new line only once every line of it on the

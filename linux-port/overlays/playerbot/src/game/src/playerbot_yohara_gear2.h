@@ -400,13 +400,15 @@ namespace
 		return it != missing.end() && (int)offer->GetCount() <= std::max(it->second * 2, 1);
 	}
 
+	int GetPlayerBotDropkiPursePercent(LPCHARACTER ch, int base);	// MT2009_PLUS_BOT_DROPKI_V1 (playerbot_dropki.h): a Dropki spends more on its build
+
 	bool CanPlayerBotPayForGear2Offer(LPCHARACTER ch, LPITEM offer, long long price)
 	{
 		if (!ch || !offer || price <= 0)
 			return false;
 		const long long fair = (long long)GetPlayerBotShopAskingPrice(offer);
 		return (fair <= 0 || price * 100 <= fair * PLAYERBOT_GEAR2_BUY_OVER_PERCENT) &&
-				price <= GetPlayerBotGear2Spare(ch) * PLAYERBOT_GEAR2_BUY_PURSE_PERCENT / 100;
+				price <= GetPlayerBotGear2Spare(ch) * GetPlayerBotDropkiPursePercent(ch, PLAYERBOT_GEAR2_BUY_PURSE_PERCENT) / 100;	// MT2009_PLUS_BOT_DROPKI_V1
 	}
 
 	void NotePlayerBotGear2Bought(LPCHARACTER ch, DWORD vnum, long long price)

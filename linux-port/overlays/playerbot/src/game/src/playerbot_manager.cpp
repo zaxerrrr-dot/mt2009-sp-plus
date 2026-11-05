@@ -478,6 +478,11 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM off the counters for a need's ItemShop purchase short of Smocze Monety -
 // after the pool, the voucher pass, the goals and the market's picks it hooks into
 #include "playerbot_sm_coupons.h"
+// MT2009_PLUS_BOT_DROPKNOW_V1: what drops from what (the drop wiki's tables), the bots' needs to their sources - after the
+// market, the crafts, GEAR2 and the dungeon runs it asks
+#include "playerbot_dropknow.h"
+// MT2009_PLUS_BOT_DROPKI_V1: the Dropki, the Yohara dungeons' drop farmers - after the drop knowledge
+#include "playerbot_dropki.h"
 
 namespace
 {
