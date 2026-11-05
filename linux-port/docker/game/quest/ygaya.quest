@@ -35,7 +35,9 @@ quest ygaya begin
 		-- Rozszerzenie Ekwipunku, Karta Resetu, Szpula Kaszmiru, Œwiadectwo Zmiany, Torba Emocji,
 		-- Modlitwa Egzorcyzmu, Skrzyneczki Losu, Szk³o Handlu, Buty Wiatru (1d), Lizak Potêgi,
 		-- Karta Przetasowania, Anulacja Transmutacji, Zaczarowanie Przedmiotu+, Smoczy P³omieñ, Runy Wykuwania,
-		-- Zaczaruj zwierzaka, Zielona Smocza Fasola
+		-- Zielona Smocza Fasola
+		-- Zaczaruj zwierzaka (55033, 2000 Gaya in row III as the wiki) came with the growth pets
+		-- (MT2009_PLUS_GROWTH_PET_SOURCES_V1, Yohara list 3.0.14 item 9), appended the same way
 		-- Skrzyd³a Smoka (30630, 26 Gaya in rows I and II as the wiki) came with the level-100 helmets
 		-- (MT2009_PLUS_HELM100_V1), appended at each pool's end so a stored offer index keeps its item
 		-- Zroszony M³ot (31265, 52 Gaya in rows I, II and III as the wiki) came with Wê¿owy Czepiec
@@ -69,6 +71,7 @@ quest ygaya begin
 				{76024, 1, 1067}, {71108, 10, 890}, {76019, 1, 137}, {39015, 1, 1721}, {85001, 1, 1097},
 				{76013, 1, 1963}, {76014, 1, 1263}, {76010, 1, 171}, {39068, 1, 172},
 				{31265, 1, 52},     -- Zroszony M³ot (MT2009_PLUS_SERPENT_HOOD_V1)
+				{55033, 1, 2000},   -- Zaczaruj zwierzaka (MT2009_PLUS_GROWTH_PET_SOURCES_V1)
 			}
 		end
 

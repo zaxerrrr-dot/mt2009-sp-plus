@@ -737,16 +737,16 @@
    "vnum": 55038
   },
   {
-   "antiflag": 49536,
+   "antiflag": 16768,
    "desc": "Daje zwierzakowi 80.000 PD przedmiotu (okno „Przedmiot EXP”).",
-   "flag": 0,
+   "flag": 4,
    "gold": 0,
    "icon": "icon/item/55028.tga",
    "limittype0": 0,
    "limitvalue0": 0,
    "name": "Smakołyk",
    "shop_buy_price": 0,
-   "stack": 1,
+   "stack": 200,
    "subtype": 7,
    "type": 37,
    "values": [
@@ -806,16 +806,16 @@
    "vnum": 55030
   },
   {
-   "antiflag": 49536,
+   "antiflag": 16768,
    "desc": "Daje zwierzakowi 5% PD przedmiotu potrzebnych do następnego poziomu.",
-   "flag": 0,
+   "flag": 4,
    "gold": 0,
    "icon": "icon/item/55031.tga",
    "limittype0": 0,
    "limitvalue0": 0,
    "name": "Smakołyk+",
    "shop_buy_price": 0,
-   "stack": 1,
+   "stack": 200,
    "subtype": 9,
    "type": 37,
    "values": [
