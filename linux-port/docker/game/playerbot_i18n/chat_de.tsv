@@ -4010,3 +4010,70 @@ zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiak {1}, {2} freie plätze
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	grp für zodiak {1}, kommt zum portal im innenhof
 zrun_{1}	-
 $X na CH$N	$X auf CH$N
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	VK {1} - {2}, {3} - {4} | Shop {5} CH{6}
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Jetzt: {1}. Ändern: /towarzysz walka atakuj | obrona | spokoj
+do Lochu Pajakow 2	ins Spinnendungeon 2
+do Lochu Pajakow 3	ins Spinnendungeon 3
+do Lasu	in den Geisterwald
+do Doyyumhwaji	nach Doyyumhwaji
+do Groty Wygnancow	in die Grotte der Verbannung
+do Groty Wygnancow 2	in die Grotte der Verbannung 2
+do Swiatyni Ochao	zum Tempel von Ochao
+do Doliny Cyklopow	ins Zyklopental
+na Pustkowie Faraona	in die Pharaonen-Ödnis
+na Wezowe Pole	aufs Schlangenfeld
+do Krainy Gigantow	ins Land der Riesen
+do Zakletego Lasu	in den Verzauberten Wald
+do Szczeliny Czasu	in den Zeitriss
+na Hydre	zur Hydra
+na Przyladek Smoczej Glowy	zum Drachenkopf-Kap
+na Zbocze Gautama	zum Morgennebel-Hang
+do Nefrytowej Zatoki	in die Bucht des schwarzen Sandes
+w Gromiste Gory	ins Donnergebirge
+do Opuszczonej Twierdzy	zur Verlassenen Festung
+do Dongan	nach Dongan
+do Seoganland	nach Seoganland
+do Namgan	nach Namgan
+na Przelecz Yilad	zum Yilad-Pass
+do Wawozu Polnocnego Wiatru	in die Nordwindschlucht
+do Rozpadliny Dusz	in den Seelenspalt
+do Schronienia Polnocnego Wiatru	zum Nordwind-Unterschlupf
+do Zejscia Polnocnego Wiatru	zum Nordwind-Abstieg
+$A albo $B	$A oder $B
+$A lub $B	$A oder $B
+orki	Orks
+pajaki	Spinnen
+wilki	Wölfe
+niedzwiedzie	Bären
+tygrysy	Tiger
+dziki	Wildschweine
+malpy	Affen
+szkielety	Skelette
+duchy	Geister
+demony	Dämonen
+zombie	Zombies
+skorpiony	Skorpione
+bestie	Bestien
+zolnierzy	Soldaten
+lisy	Füchse
+jelenie	Hirsche
+weze	Schlangen
+zmije	Vipern
+golemy	Golems
+upiory	Gespenster
+drzewce	Baumwesen
+kaplanow	Priester
+bandytow	Banditen
+lucznikow	Bogenschützen
+wojownikow	Krieger
+surow	Suras
+nietoperze	Fledermäuse
+wojownik	Krieger
+szaman	Schamane
+postac	Charakter
+wojownikiem	Krieger
+szamanem	Schamane
+moby	Mobs
+nic	nichts
+ktos	jemand
+dalej	weiter
