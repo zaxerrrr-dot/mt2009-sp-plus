@@ -515,6 +515,31 @@ def _ApplyLocks():
 	_appliedPage = page
 
 
+def _AttachedAnyItem():
+	"""MT2009_PLUS_PET_ADDEQ_DRAG_V1: (window, cell, vnum, count) of the item on the mouse - from the bag or from an
+	Additional Equipment tab (books now live in Ksiegi: they were ignored when dragged onto a skill slot) - or None."""
+	if not mouseModule.mouseController.isAttached():
+		return None
+	slotType = mouseModule.mouseController.GetAttachedType()
+	cell = mouseModule.mouseController.GetAttachedSlotNumber()
+	if slotType == player.SLOT_TYPE_INVENTORY:
+		r = _AttachedBagItem()
+		return (player.INVENTORY,) + r if r else None
+	try:
+		import uiekwipunek
+		if not uiekwipunek.IsEkwSlotType(slotType):
+			return None
+		window = uiekwipunek.WindowOfSlotType(slotType)
+	except Exception:
+		return None
+	if window is None or window < 0 or cell < 0:
+		return None
+	vnum = player.GetItemIndex(window, cell)
+	if not vnum:
+		return None
+	return window, cell, vnum, mouseModule.mouseController.GetAttachedItemCount()
+
+
 def _AttachedBagItem():
 	"""(cell, vnum, count) of the bag item on the mouse, or None."""
 	if not mouseModule.mouseController.isAttached():
@@ -1950,10 +1975,10 @@ class PetInformationWindow(ui.ScriptWindow):
 		InsertPotentialEgg(slot, attached[0])
 
 	def OnDropOnSkill(self, slot, *args):
-		attached = _AttachedBagItem()
+		attached = _AttachedAnyItem()	# MT2009_PLUS_PET_ADDEQ_DRAG_V1: books from the Ksiegi tab too
 		if not attached:
 			return
-		cell, vnum, count = attached
+		window, cell, vnum, count = attached
 		mouseModule.mouseController.DeattachObject()
 		pet = ActivePet()
 		if not pet:
@@ -1971,11 +1996,12 @@ class PetInformationWindow(ui.ScriptWindow):
 			if not sk:
 				_Popup(T("SKILL_DEL_EMPTY"))
 				return
-			SetLocks("skill", [cell])
-			_Question(T("SKILL_DEL_Q1") % SkillInfo(sk)[0], lambda: (net.SendPetDeleteSkill(slot, player.INVENTORY, cell), SetLocks("skill", [])),
+			SetLocks("skill", [cell] if window == player.INVENTORY else [])
+			_Question(T("SKILL_DEL_Q1") % SkillInfo(sk)[0], lambda: (net.SendPetDeleteSkill(slot, window, cell), SetLocks("skill", [])),
 				lambda: SetLocks("skill", []), T("SKILL_DEL_Q2"))
 			return
 		if sk:
+			_Popup("Ten slot ma ju\xbf umiej\xeatno\x9c\xe6.")
 			return
 		if pet.evolution < PD.SKILL_OPEN_STAGE:
 			_Popup(T("SKILL_NEED_STAGE"))
@@ -1986,8 +2012,8 @@ class PetInformationWindow(ui.ScriptWindow):
 			if newSkill and GetSkill(pet.id, other)[0] == newSkill:
 				_Popup(T("SKILL_KNOWN"))
 				return
-		SetLocks("skill", [cell])
-		_Question(T("SKILL_LEARN_Q") % SkillInfo(newSkill)[0], lambda: (net.SendPetLearnSkill(slot, player.INVENTORY, cell), SetLocks("skill", [])),
+		SetLocks("skill", [cell] if window == player.INVENTORY else [])
+		_Question(T("SKILL_LEARN_Q") % SkillInfo(newSkill)[0], lambda: (net.SendPetLearnSkill(slot, window, cell), SetLocks("skill", [])),
 			lambda: SetLocks("skill", []))
 
 	def OnClickSkillUpgrade(self, slot, *args):
