@@ -354,6 +354,8 @@ RUN set -eux; \
     # mikstury_okno (MT2009_PLUS_WIKI_NPC_RECIPES_V1: the windows of Rybak, Baek-Go, Yu-Hwan, Huahn-So; pasy is no longer
     # compiled - the belts only at Yu-Hwan and Jae-Seon Kim, as on the wiki) and energia_alchemik (the Alchemist
     # dismantles items of level 35+ into Odlamki Energii; the belt system, MT2009_PLUS_BELTS_V1, Autor: Digi Rasta).
+    # energia_krysztal: the Alchemist makes Krysztal Energii (51002) of 30 shards + 1 000 Yang, the first always, then 30 %
+    # (MT2009_PLUS_ENERGY_V1, the pl-wiki "System Energii"; server-patches/energia).
     # zywioly (Mistrz 20082: the Kwiat Zywiolu shop and the elements' explanation) is the
     # elements and talismans (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta).
     # mapa_tab is the teleport map under TAB: "/tabteleport <key>" from the client's window
@@ -434,7 +436,7 @@ RUN set -eux; \
     # training_grandmaster_skill is the package's Soul Stone (50513) with the other specialisation's skills on G1-G10 in
     # its list while the event flag m2_skill_hack is on (MT2009_PLUS_SKILL_HACK_V1, server-patches/skillhack) - its
     # objects replace the stock ones.
-    for q in web_admin speed_boost starter_chest starter_kit konie gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv80 collect_quest_lv90 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie skrzynie_klas spirala_czasu potega_madrosci eliksir_poszukiwacza training_grandmaster_skill; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv80 collect_quest_lv90 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik energia_krysztal zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie skrzynie_klas spirala_czasu potega_madrosci eliksir_poszukiwacza training_grandmaster_skill; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1844,6 +1846,24 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; B=$L/blend.txt; A
  && test "$(grep -c -E '^[[:blank:]]*item_vnum[[:blank:]]+508(3[0-9]|4[0-9]|5[0-3])[[:space:]]*$' "$B")" -eq 24 \
  && rm -rf "$A" \
  && echo "share: Huahn-So's elixirs of Yohara - $n recipes, 24 blend rows, the dews' apply types as points (MT2009_PLUS_YELIXIRS_V1, MT2009_PLUS_MIKSTURY_V1)"
+
+# MT2009_PLUS_ENERGY_V1 (share; the owner, 5 November 2026 - "1:1 jak na Wiki"): Krysztal Energii (51002) as on the pl-wiki
+# "System Energii" - the equipment's bonuses +1/3/5/7/10 % for 2 hours of play. Its blend.txt section had apply_type
+# "ENERGY" (blend_item.cpp reads a number: 0, no point) and 1800 s; now POINT_ENERGY (128) and 7200 s for every value
+# (the values 1 3 5 7 10 and their odds stay the package's). The engine (server-patches/energia, energia.cpp) gives the
+# energy to the worn items' bonuses; the crystal is made at the Alchemist (quest energia_krysztal).
+RUN set -eu; B=/opt/metin2/share/locale/poland/blend.txt \
+ && test "$(grep -c -E '^[[:blank:]]*item_vnum[[:blank:]]+51002[[:space:]]*$' "$B")" = 1 \
+ && awk '/^[ \t]*item_vnum[ \t]+51002[ \t\r]*$/ { e = 1 } \
+      e && /^[ \t]*apply_type[ \t]/ { $0 = "\tapply_type\t128\r" } \
+      e && /^[ \t]*apply_duration[ \t]/ { $0 = "\tapply_duration\t7200\t7200\t7200\t7200\t7200\r" } \
+      /^end/ { e = 0 } { print }' "$B" > "$B.energia" \
+ && mv "$B.energia" "$B" \
+ && test "$(grep -c -E '^section' "$B")" -ge 7 \
+ && sed -n '/item_vnum[[:blank:]]*51002/,/^end/p' "$B" | tr -d '\r' | grep -q -x -P '\tapply_type\t128' \
+ && sed -n '/item_vnum[[:blank:]]*51002/,/^end/p' "$B" | tr -d '\r' | grep -q -x -P '\tapply_value\t1\t3\t5\t7\t10' \
+ && sed -n '/item_vnum[[:blank:]]*51002/,/^end/p' "$B" | tr -d '\r' | grep -q -x -P '\tapply_duration\t7200\t7200\t7200\t7200\t7200' \
+ && echo "share: Krysztal Energii (51002) - POINT_ENERGY 128, 2 hours (MT2009_PLUS_ENERGY_V1)"
 
 # MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
 # quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia

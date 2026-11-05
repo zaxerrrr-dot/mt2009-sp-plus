@@ -1,0 +1,25 @@
+{
+ "files": {
+  "d:/ymir work/ui/pattern/energygauge/energygauge_base.tga": {
+   "ctype": 1,
+   "sha256": "4f892a5b2e3ff5d134d4c3749ef09a32e6009df775d31623427e716f14e6cbd2",
+   "size": 9189
+  },
+  "d:/ymir work/ui/pattern/energygauge/gauge_empty.tga": {
+   "ctype": 1,
+   "sha256": "cda603822b03ddf3d8c6e87e2d29e56785179930f9c0098a55bcd54f9daa63f7",
+   "size": 3181
+  },
+  "d:/ymir work/ui/pattern/energygauge/gauge_full.tga": {
+   "ctype": 1,
+   "sha256": "2285ba67a3bc147453376731a9ec62d61177234d2cea957de68cbd99fd76bca2",
+   "size": 3187
+  },
+  "d:/ymir work/ui/pattern/energygauge/gauge_hungry.tga": {
+   "ctype": 1,
+   "sha256": "37f66659030448b111d9fe6976a0e857d6c34defbf4594142ad6b76fd787dc13",
+   "size": 3187
+  }
+ },
+ "source": "GF client 26.1.11, d_/ymir work/ui/pattern/energygauge (unchanged bytes; the same bytes as the owner's energy package)"
+}

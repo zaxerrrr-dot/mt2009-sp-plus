@@ -1609,6 +1609,9 @@ class ItemToolTip(ToolTip):
 				time = metinSlot[2]
 				self.AppendSpace(5)
 				affectText = localeInfo.GetApplyString(affectType, affectValue)
+				# MT2009_PLUS_ENERGY_V1: Krysztal Energii (51002) - the energy raises the equipment's bonuses
+				if affectType == getattr(player, "POINT_ENERGY", 128):
+					affectText = "Bonusy ekwipunku +%d%%" % affectValue
 
 				self.AppendTextLine(affectText, self.NORMAL_COLOR)
 

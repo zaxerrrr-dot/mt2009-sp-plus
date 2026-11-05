@@ -2211,4 +2211,17 @@ if ((Test-Path -LiteralPath $sesjaApply -PathType Leaf) -and
     }
 }
 
+# System Energii (server-patches/energia, MT2009_PLUS_ENERGY_V1; the owner, 5 November 2026 - "1:1 jak na Wiki"): Krysztal
+# Energii (51002) puts POINT_ENERGY on - the worn items' bonuses +1/3/5/7/10 % for 2 hours (energia.cpp in the overlay).
+# Its anchors are the patched files as they stand after yohara sets (item.cpp) and mikstury (char_item.cpp): after sesja.
+$energiaApply = Join-Path $repo 'server-patches/energia/Apply-EnergiaPatch.ps1'
+if ((Test-Path -LiteralPath $energiaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $energiaResult = & $energiaApply -SourceDir $engineGameSource
+    if ($energiaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} energy edit(s).' -f $energiaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

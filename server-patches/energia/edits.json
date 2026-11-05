@@ -1,0 +1,38 @@
+[
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ENERGY_V1 (member)",
+  "old": "\t\ttypedef std::map <BYTE, CBuffOnAttributes*> TMapBuffOnAttrs;\n\t\tTMapBuffOnAttrs m_map_buff_on_attrs;\n",
+  "new": "\t\ttypedef std::map <BYTE, CBuffOnAttributes*> TMapBuffOnAttrs;\n\t\tTMapBuffOnAttrs m_map_buff_on_attrs;\n\t\t// MT2009_PLUS_ENERGY_V1 (member): what the energy of a Krysztal Energii gave on top of the worn items' bonuses\n\t\t// (point -> value; energia.cpp, Mt2009EnergyRefresh takes it back before it gives the new share)\n\t\tstd::map<WORD, int> m_mapMt2009EnergyApplied;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ENERGY_V1 (compute)",
+  "old": "\tmemset(m_pointsInstant.points, 0, sizeof(m_pointsInstant.points));\n\tm_SkillDamageBonus.clear();\n",
+  "new": "\tmemset(m_pointsInstant.points, 0, sizeof(m_pointsInstant.points));\n\tm_SkillDamageBonus.clear();\n\t// MT2009_PLUS_ENERGY_V1 (compute): every point is zero again, so is the energy's share (energia.cpp); the\n\t// RefreshAffect below gives it again after the worn items\n\tm_mapMt2009EnergyApplied.clear();\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ENERGY_V1 (point change)",
+  "old": "\t\tcase POINT_MOUNT:\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n\t\t\tval = GetPoint(type);\n\t\t\tMountVnum(val);\n\t\t\tbreak;\n",
+  "new": "\t\t// MT2009_PLUS_ENERGY_V1 (point change): the energy of a Krysztal Energii (the affect's 1-10 %) - kept, sent to the\n\t\t// client's energy bar, and the worn items' bonuses raised by it (energia.cpp; it was an unknown point before)\n\t\tcase POINT_ENERGY:\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n\t\t\tval = GetPoint(type);\n\t\t\t{ void Mt2009EnergyRefresh(LPCHARACTER ch); Mt2009EnergyRefresh(this); }\n\t\t\tbreak;\n\n\t\tcase POINT_MOUNT:\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n\t\t\tval = GetPoint(type);\n\t\t\tMountVnum(val);\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ENERGY_V1 (equip)",
+  "old": "\tMt2009YSetsRefresh(m_pOwner); // MT2009_PLUS_YOHARA_SETS_V1 (equip): the worn set's bonus\n",
+  "new": "\tMt2009YSetsRefresh(m_pOwner); // MT2009_PLUS_YOHARA_SETS_V1 (equip): the worn set's bonus\n\t{ void Mt2009EnergyRefresh(LPCHARACTER ch); Mt2009EnergyRefresh(m_pOwner); } // MT2009_PLUS_ENERGY_V1 (equip): the energy on the item's bonuses\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ENERGY_V1 (unequip)",
+  "old": "\tMt2009YSetsRefresh(m_pOwner); // MT2009_PLUS_YOHARA_SETS_V1 (unequip): the worn set's bonus\n",
+  "new": "\tMt2009YSetsRefresh(m_pOwner); // MT2009_PLUS_YOHARA_SETS_V1 (unequip): the worn set's bonus\n\t{ void Mt2009EnergyRefresh(LPCHARACTER ch); Mt2009EnergyRefresh(m_pOwner); } // MT2009_PLUS_ENERGY_V1 (unequip): the energy without the item\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ENERGY_V1 (crystal)",
+  "old": "\t\t\t\tint\t\tapply_type\t\t= item->GetSocket(0);\n\t\t\t\tint\t\tapply_value\t\t= item->GetSocket(1);\n\t\t\t\tint\t\tapply_duration\t= item->GetSocket(2);\n",
+  "new": "\t\t\t\tint\t\tapply_type\t\t= item->GetSocket(0);\n\t\t\t\tint\t\tapply_value\t\t= item->GetSocket(1);\n\t\t\t\tint\t\tapply_duration\t= item->GetSocket(2);\n\n\t\t\t\t// MT2009_PLUS_ENERGY_V1 (crystal): Krysztal Energii is always the energy for 2 hours (the pl-wiki); blend.txt had\n\t\t\t\t// \"ENERGY\" (read as 0, no point) and 1800 s - a crystal made before the fix works the same\n\t\t\t\tif (item->GetVnum() == 51002)\n\t\t\t\t{\n\t\t\t\t\tapply_type = POINT_ENERGY;\n\t\t\t\t\tapply_duration = 7200;\n\t\t\t\t\tif (apply_value <= 0 || apply_value > 10)\n\t\t\t\t\t\tapply_value = 1;\n\t\t\t\t}\n"
+ }
+]

@@ -1,0 +1,96 @@
+-- MT2009_PLUS_ENERGY_V1 - Kryszta³ Energii (51002) at the Alchemist (20001), as on the pl-wiki "System Energii" (the owner,
+-- 5 November 2026: "WprowadŸ aby by³o 1:1 jak na Wiki"). cp1250; no string ends with a Polish letter (qc).
+-- The official energy_system.quest's crystal part (quest/_unused of the package; the shard part is energia_alchemik,
+-- unchanged): 30 Od³amków Energii (51001) + 1 000 Yang, from level 35; a character's first crystal always succeeds,
+-- every next one 30 %. A failed try takes the shards and the Yang too (the wiki). The crystal's value (1/3/5/7/10 %)
+-- comes from blend.txt when it is made; its use is the engine's (server-patches/energia).
+quest energia_krysztal begin
+	state start begin
+		function how_to_use()
+			say("")
+			say_reward("U¿yj kryszta³u (prawy przycisk myszy), a bonusy")
+			say_reward("twojego ekwipunku wzrosn¹ o 1, 3, 5, 7 lub 10 proc.")
+			say_reward("(zale¿nie od kryszta³u) na 2 godziny gry. Pasek")
+			say_reward("energii przy pasku zadañ poka¿e, ile ci zosta³o.")
+		end
+
+		when 20001.chat."Z³ó¿ Kryszta³ Energii" begin
+			local need = 30
+			local charge = 1000
+			say_title(mob_name(20001))
+			say("Powoli opadasz z si³, co? Nie pracuj tak ciê¿ko,")
+			say("bo kiedyœ przyp³acisz to ¿yciem.")
+			say("Aby stworzyæ Kryszta³ Energii,")
+			say(string.format("potrzebujê %d Od³amków Energii.", need))
+			wait()
+			if pc.get_level() < 35 then
+				say_title(mob_name(20001))
+				say("Musisz jeszcze trochê potrenowaæ! Wróæ, gdy")
+				say("osi¹gniesz co najmniej poziom 35.")
+				return
+			end
+			if pc.count_item(51001) < need then
+				say_title(mob_name(20001))
+				say("Nie masz jeszcze doœæ Od³amków Energii,")
+				say("by z³o¿yæ z nich kryszta³. Wróæ, gdy bêdziesz")
+				say(string.format("mieæ co najmniej %d sztuk.", need))
+				say_item_vnum(51001)
+				return
+			end
+			say_title(mob_name(20001))
+			say(string.format("Œwietnie, masz ju¿ %d Od³amków Energii.", pc.count_item(51001)))
+			say("Mogê wiêc stworzyæ z nich Kryszta³ Energii.")
+			say("Zaczekaj chwilkê. Spróbujê, ale nie gwarantujê,")
+			say("¿e siê uda.")
+			wait()
+			say_title(mob_name(20001))
+			say("Wszystko gotowe, mo¿emy przetopiæ od³amki")
+			say("w kryszta³. Ale ja te¿ muszê z czegoœ ¿yæ, prawda?")
+			say(string.format("Ten zabieg kosztuje %d Yang. Zap³acisz?", charge))
+			local s = select("Oczywiœcie.", "Nie, nie teraz.")
+			if s == 2 then
+				say_title(mob_name(20001))
+				say("Dobrze, szanujê twoj¹ decyzjê. Wróæ,")
+				say("jeœli siê rozmyœlisz.")
+				return
+			end
+			if pc.get_gold() < charge then
+				say_title(mob_name(20001))
+				say("Przykro mi, najpierw musisz zap³aciæ. Nie")
+				say("prowadzê dzia³alnoœci charytatywnej - interes")
+				say("to interes.")
+				return
+			end
+			if pc.count_item(51001) < need then
+				return
+			end
+			pc.change_gold(-charge)
+			pc.remove_item(51001, need)
+			if pc.getqf("pierwszy") == 0 then
+				pc.setqf("pierwszy", 1)
+				pc.give_item2(51002, 1)
+				say_title(mob_name(20001))
+				say("Proszê, oto twój Kryszta³ Energii. Pamiêtaj")
+				say("jednak: tylko pierwsza próba zawsze siê udaje.")
+				say("Alchemia to nieobliczalna nauka i ka¿dy kolejny")
+				say("eksperyment mo¿e siê nie powieœæ.")
+				energia_krysztal.how_to_use()
+				return
+			end
+			if number(1, 100) > 30 then
+				say_title(mob_name(20001))
+				say("Niestety, tym razem kryszta³ nie powsta³.")
+				say("Moja technika jest genialna, ale jeszcze")
+				say("niedopracowana. Tak to ju¿ bywa z alchemi¹.")
+				say("Nastêpnym razem na pewno siê uda!")
+				return
+			end
+			pc.give_item2(51002, 1)
+			say_title(mob_name(20001))
+			say("Wiedzia³em! Moja technika jest genialna!")
+			say("Oto twój Kryszta³ Energii. Niez³e cacko, co?")
+			say("Czujesz tê pulsuj¹c¹ energiê?")
+			energia_krysztal.how_to_use()
+		end
+	end
+end
