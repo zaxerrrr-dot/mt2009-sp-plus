@@ -199,7 +199,9 @@ def same_placeholders(pl, tr):
     return a2 == b2
 
 
-_NUM = re.compile(r'(?<![%.\w])\d+(?:[.,]\d+)?')
+# a number right after a literal '%' counts too (Turkish "%100", "%%10"), but not the width of a %-placeholder
+# ("%10d", "%2$s", "%.2f")
+_NUM = re.compile(r'(?<![%.\w])\d+(?:[.,]\d+)?|(?<=%)\d+(?:[.,]\d+)?(?![\d.]*[sdifxXcurgeEGo$])')
 
 
 def numbers(s):
@@ -223,7 +225,7 @@ def split_refine(name):
 
 # never in a translation (the owner's rule for player-facing text in any language); the project's own domain metin2sp.pl
 # is not the game's name. A Polish source with one of them gets a translation without it (or none).
-FORBIDDEN = re.compile(r'metin\w{0,3}\s*2(?![0-9]|sp)|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|\bresm[iî]\b|t[i]eru|'
+FORBIDDEN = re.compile(r'metin\w{0,3}\s*2(?![0-9]|sp\.pl|client\.exe)|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|\bresm[iî]\b|t[i]eru|'
                        r'ameria|metin2alerts|επίσημ|رسمي', re.I)
 
 # ---------------------------------------------------------------- translation store

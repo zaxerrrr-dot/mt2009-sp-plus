@@ -304,6 +304,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 100% szans na przeczytanie	100% chance of successful reading
 100% szans na ulepszenie.	100% success chance on upgrade.
 2-12 liter lub cyfr!	2-12 letters or digits!
+2. Posterunek Myr	2. Myr Guard Post
 25 kart królewskich dało nową Talię Królewską.	25 King Cards have formed a new King Deck.
 2x PD	2x EXP
 3 Loch Pająków	Spider Dungeon 3
@@ -392,10 +393,10 @@ Anuluj edycje	Cancel editing
 Anuluj misję	Cancel Mission
 Appaloosa	Appaloosa
 Apteczka	First-Aid Kit
-Apteczka (PB)	First-Aid Kit (PB)
-Apteczka (PB) strażników Zaklętego Lasu (PB).	First-aid kit (PB) of the Enchanted Forest (PB) guards.
-Apteczka (SZC)	First-Aid Kit (SZC)
-Apteczka (SZC) strażników Zaklętego Lasu (SZC).	First-aid kit (SZC) of the Enchanted Forest (SZC) guards.
+Apteczka (PB)	First-Aid Kit (RX)
+Apteczka (PB) strażników Zaklętego Lasu (PB).	First-aid kit (RX) of the Enchanted Forest (RX) guards.
+Apteczka (SZC)	First-Aid Kit (TR)
+Apteczka (SZC) strażników Zaklętego Lasu (SZC).	First-aid kit (TR) of the Enchanted Forest (TR) guards.
 Apteczka strażników Zaklętego Lasu.	First-aid kit of the Enchanted Forest guards.
 Arahan Zodiaku	Zodiac Arahan
 Arbuz	Watermelon
@@ -468,7 +469,7 @@ Autołowy	Auto Hunt
 Autołowy (TEST)	Auto Hunt (TEST)
 Autołowy - szybki start/stop	Auto Hunt - quick start/stop
 Awans konia się nie udał. Następna próba kosztuje dodatkowo %(b)d Gaya i się uda.	The horse promotion failed. The next attempt costs an extra %(b)d Gaya and will succeed.
-Azrael (BŚ)	Azrael (BŚ)
+Azrael (BŚ)	Azrael (WB)
 B. Smocza Skrz. (ciężka)	Blue Dragon Chest (Heavy)
 B. Smocza Skrz. (lekka)	Blue Dragon Chest (Light)
 BETA: Buff G1	BETA: Buff G1
@@ -478,7 +479,7 @@ BUSY	BUSY
 Badacz Lasu	Forest Researcher
 Badania Biologa	Biologist's Research
 Bagjanamu	Bagjanamu
-Bagjanamu (BŚ)	Bagjanamu (BŚ)
+Bagjanamu (BŚ)	Bagjanamu (WB)
 Balathor	Balathor
 Balathor stracił z oczu swoje Jaja Smoka. Wpada w szał!	Balathor has lost sight of his Dragon Eggs. He flies into a rage!
 Balathor ucieka i zostawia swój skarb.	Balathor flees and leaves his treasure behind.
@@ -560,7 +561,7 @@ Bo Zodiaku	Zodiac Bo
 Bohat. Księga Zwierza	Heroic Pet Book
 Bohaterski	Heroic
 Bojownik En-Tai	En-Tai Warrior
-Bojownik En-Tai (BŚ)	En-Tai Warrior (BŚ)
+Bojownik En-Tai (BŚ)	En-Tai Warrior (WB)
 Bonus Magicznych obrażeń +%d%%	Magic Damage Bonus +%d%% 
 Bonus Reliktu	Relic Bonus
 Bonus Złotego Tuńczyka: rzadkie ryby, większa szansa na branie	Golden Tuna bonus: rare fish, higher chance of a bite
@@ -808,9 +809,9 @@ Cyjanitowy Miecz	Cyanite Sword
 Cyjanitowy Sztylet	Cyanite Dagger
 Cyjanitowy Wachlarz	Cyanite Fan
 Cyjanitowy Łuk	Cyanite Bow
-Cyklop Kat (BŚ)	Cyclops Executioner (BŚ)
-Cyklop Mag (BŚ)	Cyclops Magician (BŚ)
-Cyklop Żołnierz (BŚ)	Cyclops Soldier (BŚ)
+Cyklop Kat (BŚ)	Cyclops Executioner (WB)
+Cyklop Mag (BŚ)	Cyclops Magician (WB)
+Cyklop Żołnierz (BŚ)	Cyclops Soldier (WB)
 Czapka Jokera (k)	Joker Cap (f)
 Czapka Jokera (m)	Joker Cap (m)
 Czapka z Pomp. (czerw.)	Bobble Hat (red)
@@ -875,6 +876,8 @@ Czekaj tu	Wait Here
 Czekam na odpowiedź serwera...	Waiting for the server's response...
 Czekam na serwer...	Waiting for the server...
 Czekanie nie jest Waszą mocną stroną? Dzięki Spirali Czasu zaoszczędzicie drogocenny czas. Skraca o 10% pozostały czas oczekiwania wybranej misji: badań Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badań reliktów. Można używać spirala po spirali. Nie dotyczy ksiąg umiejętności.	Waiting is not your strong suit? With the Time Spiral you will save precious time. Shortens the remaining waiting time of a chosen quest by 10%: Biologist research, the stable boy and horse, the 6th and 7th bonus at Seon-Hae, and relic research. Can be used spiral after spiral. Does not apply to skill books.
+Czekanie nie jest Waszą mocną stroną? Dzięki Spirali Czasu zaoszczędzicie drogocenny czas. Skraca o 20% pozostały czas oczekiwania wybranej misji: badań Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badań reliktów. Można używać spirala po spirali. Nie dotyczy ksiąg umiejętności.	Waiting isn't your strong suit? Thanks to the Time Spiral, you'll save precious time. Reduces the remaining time for your chosen task by 20%: Biologist's research, Stable Boy research and horse, 6th and 7th Seon-Hae bonus, and Relic research. Can be used one Spiral after another. Does not apply to Skill Books.
+Czekanie nie jest Waszą mocną stroną? Dzięki Spirali Czasu zaoszczędzicie drogocenny czas. Skraca o 30% pozostały czas oczekiwania wybranej misji: badań Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badań reliktów. Można używać spirala po spirali. Nie dotyczy ksiąg umiejętności.	Waiting isn't your strong suit? Thanks to the Time Spiral, you'll save precious time. Reduces the remaining time for your chosen task by 30%: Biologist's research, Stable Boy research and horse, 6th and 7th Seon-Hae bonus, and Relic research. Can be used one Spiral after another. Does not apply to Skill Books.
 Czekoladowy Amulet	Chocolate Amulet
 Czempion	Champion
 Czempion %s	Champion %s
@@ -1021,6 +1024,9 @@ Dodatkowy EQ	Extra EQ
 Dodatkowy ekwipunek	Extra inventory
 Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0).	The extra inventory requires a new client (exe 3.0).
 Dodać nowy losowy bonus? Zużyje po jednej duszy każdego rodzaju.	Add a new random bonus? It will use one soul of each kind.
+Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	A sealed document that permits crafting Reinforce Item.
+Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	A sealed document that permits crafting Reinforce Item. This item can be traded.
+Dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	A sealed document that permits crafting Enchant Item.
 Dokładny filtr...	Detailed filter...
 Dolina	Valley
 Dolina Cyklopow	Cyclops Valley
@@ -1070,6 +1076,7 @@ Dowód na ujarzmienie siły trzech dusz – niezbędny do przebudzenia mocy Elit
 Doyyumhwan albo Góra Sohan (komunikat powie, gdzie).	Doyyumhwan or Mount Sohan (an announcement will say where).
 Dozorca Enasir	Warden Enasir
 Dozorca Enasir (h)	Warden Enasir (h)
+Doładować relikt? Zużyje po jednej duszy każdego rodzaju.	Charge the Relic? It will consume one Soul of each type.
 Doładuj	Recharge
 Doładuj SM!	Top up DC!
 Doładuj: te same dusze - pełny czas reliktu (1-12 godz.).	Recharge: the same souls - full relic time (1-12 hrs).
@@ -1095,15 +1102,15 @@ Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia M
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Druid En-Tai	En-Tai Druid
-Druid En-Tai (BŚ)	En-Tai Druid (BŚ)
+Druid En-Tai (BŚ)	En-Tai Druid (WB)
 Drzewny Szmaragd	Tree Emerald
-Drzewny Szmaragd (PB)	Tree Emerald (PB)
-Drzewny Szmaragd (PB) od Władcy En-Tai (PB). Zanieś go Badaczowi Lasu (PB).	Tree Emerald (PB) from the En-Tai Lord (PB). Take it to the Forest Researcher (PB).
-Drzewny Szmaragd (SZC)	Tree Emerald (SZC)
-Drzewny Szmaragd (SZC) od Władcy En-Tai (SZC). Zanieś go Badaczowi Lasu (SZC).	Tree Emerald (SZC) from the En-Tai Lord (SZC). Take it to the Forest Researcher (SZC).
+Drzewny Szmaragd (PB)	Tree Emerald (RX)
+Drzewny Szmaragd (PB) od Władcy En-Tai (PB). Zanieś go Badaczowi Lasu (PB).	Tree Emerald (RX) from the En-Tai Lord (RX). Take it to the Forest Researcher (RX).
+Drzewny Szmaragd (SZC)	Tree Emerald (TR)
+Drzewny Szmaragd (SZC) od Władcy En-Tai (SZC). Zanieś go Badaczowi Lasu (SZC).	Tree Emerald (TR) from the En-Tai Lord (TR). Take it to the Forest Researcher (TR).
 Drzewny Szmaragd od Władcy En-Tai. Zanieś go Badaczowi Lasu - da ci Kamień Driad.	Tree Emerald from the En-Tai Lord. Take it to the Forest Researcher - he will give you a Dryad Stone.
-Drzewny Żabi Przyw. (BŚ)	Tree Frog Leader (BŚ)
-Drzewny Żabi Żoł. (BŚ)	Tree Frog Soldier (BŚ)
+Drzewny Żabi Przyw. (BŚ)	Tree Frog Leader (WB)
+Drzewny Żabi Żoł. (BŚ)	Tree Frog Soldier (WB)
 Dręczony Duch	Tormented Spirit
 Duch	Ghost
 Duch Elektro	Electro Spirit
@@ -1113,8 +1120,8 @@ Duch Powietrza	Air Spirit
 Duch Półmroku	Twilight Spirit
 Duch Płn. Wiatru	North Wind Spirit
 Duch Ziemi	Earth Spirit
-Duch Ziemi (PB)	Earth Spirit (PB)
-Duch Ziemi (PB) - zapiski strażników Zaklętego Lasu (PB).	Earth Spirit (PB) - notes of the Enchanted Forest (PB) guards.
+Duch Ziemi (PB)	Earth Spirit (RX)
+Duch Ziemi (PB) - zapiski strażników Zaklętego Lasu (PB).	Earth Spirit (RX) - notes of the Enchanted Forest (RX) guards.
 Duch Ziemi od Strażnika Świątyni. Zanieś go Strażnikowi Lasu w Zaklętym Lesie.	Earth Spirit from the Temple Guardian. Take it to the Forest Guardian in the Enchanted Forest.
 Duch Żaru	Ember Spirit
 Duchowe uderzenie ma %d%% szans na ogłuszenie przeciwnika	Spirit Strike has a %d%% chance to stun the opponent
@@ -1136,6 +1143,7 @@ Dwutlenek Tytanu	Titanium Dioxide
 Dykta+	Plywood+
 Dyniowa Maska Zombie	Zombie Pumpkin Mask
 Dyniowa Maska Zombie+	Zombie Pumpkin Mask+
+Dystans: nie	Distance: No
 Dystans: tak	Ranged: yes
 Dziala natychmiast (bez restartu serwera) - odswieza liste GM	Takes effect immediately (no server restart) - refreshes the GM list
 Dzialo	Cannon
@@ -1263,6 +1271,7 @@ Elita Atlantydy	Atlantis Elite
 Elitarny Ezoteryczny Fanatyk	Elite Esoteric Fanatic
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblem of the football champions. For 6 hours it gives: +50% EXP, +20% attack speed, +20% casting speed, +35% magic and melee attack, +10% max. HP, +10% max. SP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Emotes for two (kiss, pat) without asking for consent.
+Emocje: nie	Emotions: No
 Emocje: tak	Emotes: yes
 Enasir	Enasir
 Enasir jest przy tobie (pozostały czas: %s).	Enasir is with you (time remaining: %s).
@@ -1371,8 +1380,8 @@ General Yu	Yu General
 General Zi	Zi General
 Generalowa Zephyr	Zephyr General
 Generał Kohan	General Kohan
-Generał Ogg (BŚ)	General Ogg (BŚ)
-Generał Outis (BŚ)	General Outis (BŚ)
+Generał Ogg (BŚ)	General Ogg (WB)
+Generał Outis (BŚ)	General Outis (WB)
 Generał Schron. Płn. W.	N. Wind Shelter General
 Generałowie Sung Mahi	Generals of Sung Mahi
 Gigant Oprawca Zodiaku	Zodiac Gigantic Slaughterer
@@ -1395,7 +1404,7 @@ Gnoll Kapitan	Gnoll Captain
 Gnoll Marszałek	Gnoll Marshal
 Gnoll Szpieg	Gnoll Spy
 Gnoll Zwiadowca	Gnoll Scout
-Gnoll Łucznik (BŚ)	Gnoll Archer (BŚ)
+Gnoll Łucznik (BŚ)	Gnoll Archer (WB)
 Gnoll Żołnierz	Gnoll Soldier
 Goblin Skarbów	Treasure Goblin
 Godzin:	Hours:
@@ -1433,8 +1442,8 @@ Gromiste Gory	Thunder Mountains
 Grota Wygnania 1	Grotto of Exile 1
 Grota Wygnańców (1)	Grotto of Exile (1)
 Grota Wygnańców 1	Grotto of Exile 1
-Grota Wygnańców 2 (PB)	Grotto of Exile 2 (PB)
-Grota Wygnańców 2 (SZC)	Grotto of Exile 2 (SZC)
+Grota Wygnańców 2 (PB)	Grotto of Exile 2 (RX)
+Grota Wygnańców 2 (SZC)	Grotto of Exile 2 (TR)
 Gruba Nić	Thick Thread
 Gruby Mini Kat	Fat Mini Executioner
 Gruby Mini Kat (pieczęć)	Fat Mini Executioner (Seal)
@@ -1443,8 +1452,8 @@ Grupa: %s	Group: %s
 Grupuj	Group
 Gruszka	Pear
 Gwałtowne frontalne uderzenie w prostokątny obszar.	A violent frontal strike on a rectangular area.
-Gwiazda Północy (PB)	North Star (PB)
-Gwiazda Północy (SZC)	North Star (SZC)
+Gwiazda Północy (PB)	North Star (RX)
+Gwiazda Północy (SZC)	North Star (TR)
 Gwiezdny Skarb	Starry Treasure
 Góra Grzmotów	Thunder Mountains
 Góra_Sohan 4108 2250	Mount_Sohan 4108 2250
@@ -1724,16 +1733,16 @@ Kamień Broni Płn. W+	North Wind Weapon Stone+
 Kamień Broni Płn. Wiatru	North Wind Weapon Stone
 Kamień Demonów	Demon Stone
 Kamień Driad	Dryad Stone
-Kamień Driad (PB)	Dryad Stone (PB)
-Kamień Driad (SZC)	Dryad Stone (SZC)
+Kamień Driad (PB)	Dryad Stone (RX)
+Kamień Driad (SZC)	Dryad Stone (TR)
 Kamień Duchowy Buffi	Buffi Soul Stone
 Kamień Duchowy P. Wieży	Hellish Tower Soul Stone
 Kamień Duchowy Płn. W.	North Wind Spirit Stone
 Kamień Duchowy+	Soul Stone+
 Kamień Duszy Antymagii	Stone of Anti-Magic
 Kamień Księżycowy	Moonstone
-Kamień Maat (PB)	Maat Stone (PB)
-Kamień Maat (SZC)	Maat Stone (SZC)
+Kamień Maat (PB)	Maat Stone (RX)
+Kamień Maat (SZC)	Maat Stone (TR)
 Kamień Metin z Yohara	Yohara Metin Stone
 Kamień Mocy Demonów	Demon Power Stone
 Kamień Mocy Żywiołów	Elemental Power Stone
@@ -1778,7 +1787,7 @@ Karty Potworów	Monster Cards
 Karty Potworów są wyłączone na tym serwerze.	Monster Cards are disabled on this server.
 Katakumby Diabla	Devil's Catacomb
 Katakumby Diabła	Devil's Catacomb
-Katogr (BŚ)	Hangork (BŚ)
+Katogr (BŚ)	Hangork (WB)
 Kawuco	Kawuco
 Każda postać może otrzymać każde błogosławieństwo tylko raz na event.	Each character can receive each blessing only once per event.
 Każda wyprawa z listy po lewej pokazuje	Each dungeon in the list on the left shows
@@ -1841,8 +1850,8 @@ Klipsy Jadeitu Mgły	Mist Jade Ear Clips
 Klipsy Jadeitu Nocy	Night Jade Ear Clips
 Klipsy Jadeitu Słońca	Sun Jade Ear Clips
 Klucz Atlantydy	Atlantis Key
-Klucz Lod. Kwiatu (PB)	Ice Flower Key (PB)
-Klucz Lod. Kwiatu (SZC)	Ice Flower Key (SZC)
+Klucz Lod. Kwiatu (PB)	Ice Flower Key (RX)
+Klucz Lod. Kwiatu (SZC)	Ice Flower Key (TR)
 Klucz Miejsca Umiejętności	Skill Slot Key
 Klucz Mrozu	Frost Key
 Klucz Nimfy Wodnej	Water Nymph Key
@@ -2187,8 +2196,8 @@ Królowa Węży Nethis	Serpent Queen Nethis
 Królowie	Kings
 Krótki	Short
 Krótko	Short
-Kręty Klucz (PB)	Twisted Key (PB)
-Kręty Klucz (SZC)	Twisted Key (SZC)
+Kręty Klucz (PB)	Twisted Key (RX)
+Kręty Klucz (SZC)	Twisted Key (TR)
 Ksiegi zapomnienia	Books of Forgetfulness
 Ksiąg w oknie: %d (wymian: %d)	Books in the window: %d  (exchanges: %d)
 Książ. Odłamek Broni II	Princely Weapon Shard II
@@ -2435,7 +2444,7 @@ Magiczny/krótkodystansowy atak +5%	Magic/close-combat attack +5%
 Magmowy Golem	Magma Golem
 Magmowy Insekt	Magma Insect
 Magmowy Kryształ	Magma Crystal
-Magmowy Kryształ (BŚ)	Magma Crystal (BŚ)
+Magmowy Kryształ (BŚ)	Magma Crystal (WB)
 Magmowy Wiwern	Magma Wyvern
 Magmowy Yeti	Magma Yeti
 Mahon Zodiaku	Zodiac Mahon
@@ -2566,6 +2575,7 @@ Materiał potrzebny, by u kowala zestawów móc dodać do zbroi święty efekt z
 Materiał ulepszania (%s)	Upgrade material (%s)
 Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 105. poziom (Zodiaku, biżuteria 105, Talizmany Woli), broni, zbroi i hełmów na 96. poziom (Smoka Mroku) oraz talizmanów. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Material that gives a chance to add a 6th or 7th bonus at Seon-Hae - to items for level 105 (Zodiac, level 105 jewellery, Talismans of Will), weapons, armour and helmets for level 96 (Dark Dragon) and talismans. One shard gives a 2% chance, at most 10 at once (20%).
 Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 30. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Material that gives a chance to add a 6th or 7th bonus at Seon-Hae - to items for level 30. One shard gives a 2% chance, at most 10 at once (20%).
+Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 75. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Material that allows adding a 6th or 7th bonus from Seon-Hae with some probability - for items at level 75. One fragment gives 2% chance, maximum 10 at a time (20%).
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 0-29.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 105-119.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 120 and above.
@@ -2814,8 +2824,8 @@ Mrok	Darkness
 Mroz. Lod. Czl. Zodiaku	Zodiac Frosty Ice Man
 Mroźna Skrz. Balathora	Balathor's Frost Chest
 Mroźna Skrz. Balathora+	Balathor's Frost Chest+
-Mroźny Klucz (PB)	Frost Key (PB)
-Mroźny Klucz (SZC)	Frost Key (SZC)
+Mroźny Klucz (PB)	Frost Key (RX)
+Mroźny Klucz (SZC)	Frost Key (TR)
 Mroźny Korzonek	Frost Rootlet
 Mroźny Rufus	Frost Rufus
 Mroźny Rufus (pieczęć)	Frost Rufus Seal
@@ -3276,7 +3286,7 @@ Niski ranking powoduje zwiększenie zadawanych obrażeń	A low ranking increases
 Niski ranking powoduje zwiększenie zadawanych obrażeń: Agresywny +1%, Nieuczciwy +2%, Złośliwy +3%, Okrutny +5% (broń i hełm razem: x2).	A low ranking increases the damage you deal: Aggressive +1%, Fraudulent +2%, Malicious +3%, Cruel +5% (weapon and helmet together: x2).
 Niszcz Pradawne Kryształy Lodu, aby zdobyć Ogniste Strzały.	Destroy the Ancient Ice Crystals to obtain Fire Arrows.
 Niszczyciel En-Tai	En-Tai Destroyer
-Niszczyciel En-Tai (BŚ)	En-Tai Destroyer (BŚ)
+Niszczyciel En-Tai (BŚ)	En-Tai Destroyer (WB)
 Niszczyciel P. Wieży	Hellish Tower Destroyer
 Niszczyciel Zodiaku	Zodiac Destroyer
 Noc trwać będzie od 22:00 do 6:00.	Night lasts from 22:00 to 6:00.
@@ -3565,9 +3575,6 @@ Oficer Xu	Xu Officer
 Oficer Yin	Yin Officer
 Oficer Yu	Yu Officer
 Oficer Zi	Zi Officer
-Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	A sealed document that permits crafting Reinforce Item.
-Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	A sealed document that permits crafting Reinforce Item. This item can be traded.
-Dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	A sealed document that permits crafting Enchant Item.
 Ogien Zodiaku	Zodiac Flame
 Ogień	Fire
 Ogloszenie	Announcement
@@ -3578,20 +3585,20 @@ Ogniste Buty	Fire Shoes
 Ogniste Jajo Smoka	Fire Dragon Egg
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Flame Strike has a %d%% chance to be reflected onto the opponent
 Ognisty Duch Zodiaku	Zodiac Flame Ghost
-Ognisty Duch Żaru (BŚ)	Ember Flame Ghost (BŚ)
+Ognisty Duch Żaru (BŚ)	Ember Flame Ghost (WB)
 Ognisty Krol Zodiaku	Zodiac Flame King
 Ognisty Liść	Fire Leaf
-Ognisty Tygrys Żaru (BŚ)	Ember Fire Tiger (BŚ)
+Ognisty Tygrys Żaru (BŚ)	Ember Fire Tiger (WB)
 Ognisty Wojownik Zodiaku	Zodiac Flame Warrior
-Ognisty Wojownik Ż. (BŚ)	Ember Flame Warrior (BŚ)
-Ogr Bojowy (BŚ)	Brawl Ogre (BŚ)
+Ognisty Wojownik Ż. (BŚ)	Ember Flame Warrior (WB)
+Ogr Bojowy (BŚ)	Brawl Ogre (WB)
 Ogr Bojowy Zodiaku	Zodiac Brawl Ogre
 Ogr Kat Zodiaku	Zodiac Ogre Executioner
 Ogr Lucznik Zodiaku	Zodiac Ogre Archer
-Ogr Mag (BŚ)	Ogre Magus (BŚ)
+Ogr Mag (BŚ)	Ogre Magus (WB)
 Ogr Mag Zodiaku	Zodiac Ogre Magus
-Ogr Maximus (BŚ)	The Great Ogre (BŚ)
-Ogr Łucznik (BŚ)	Ogre Archer (BŚ)
+Ogr Maximus (BŚ)	The Great Ogre (WB)
+Ogr Łucznik (BŚ)	Ogre Archer (WB)
 Ogólne	General
 Okaz. Odłamek Broni I	Splendid Weapon Shard I
 Okaz. Odłamek Broni II	Splendid Weapon Shard II
@@ -3738,82 +3745,82 @@ P. Księżniczka (biała)	Desert Princess (white)
 P. Księżniczka (brąz.)	Desert Princess (brown)
 P. Księżniczka+ (biała)	Desert Princess+ (white)
 P. Księżniczka+ (brąz.)	Desert Princess+ (brown)
-PB: Arktyczna Kostka	PB: Arctic Cube
-PB: Badacz Lasu	PB: Forest Researcher
-PB: Bagjanamu	PB: Bagjanamu
-PB: Beran-Setaou	PB: Beran-Setaou
-PB: Bojownik En-Tai	PB: En-Tai Warrior
-PB: Druid En-Tai	PB: En-Tai Druid
-PB: Duch Sura	PB: Sura Spirit
-PB: Gardziel Am-heha	PB: Am-heh Gorge
-PB: Generał Yonghan	PB: General Yonghan
-PB: Ignator	PB: Ignator
-PB: Jotun Thrym	PB: Jotun Thrym
-PB: Kapitan Yonghan	PB: Captain Yonghan
-PB: Kolumna Smoka Płn.	PB: North Dragon Column
-PB: Komendant Setaou	PB: Setaou Commander
-PB: Kryształ Mrozu	PB: Frost Crystal
-PB: Lodowy Lew	PB: Ice Lion
-PB: Magistrat Setaou	PB: Setaou Magistrate
-PB: Metin Chłodu	PB: Metin of Cold
-PB: Metin Drz. Stworzeń	PB: Metin of the Tree Creatures
-PB: Metin Góry	PB: Metin of the Mountain
-PB: Metin Lasu	PB: Metin of the Forest
-PB: Metin Purgatorium	PB: Metin of Purgatory
-PB: Metin Pychy	PB: Metin of Pride
-PB: Metin Samotności	PB: Metin of Solitude
-PB: Metin Zemsty	PB: Metin of Vengeance
-PB: Mistyk Setaou	PB: Setaou Mystic
-PB: Mroźna Broda	PB: Frostbeard
-PB: Mroźny Człowiek	PB: Frost Man
-PB: Mroźny Generał	PB: Frost General
-PB: Mroźny Golem	PB: Frost Golem
-PB: Mroźny Książę	PB: Frost Prince
-PB: Mroźny Robak	PB: Frost Worm
-PB: Mroźny Troll	PB: Frost Troll
-PB: Mroźny Yeti	PB: Frost Yeti
-PB: Nagrobek Taramora	PB: Taramor Gravestone
-PB: Nemere	PB: Nemere
-PB: Niszczyciel En-Tai	PB: En-Tai Destroyer
-PB: Og. Generał Żaru	PB: Ember Fire General
-PB: Og. Wojownik Żaru	PB: Ember Flame Warrior
-PB: Ognista Broda Żaru	PB: Ember Firebeard
-PB: Ognisty Duch Żaru	PB: Ember Flame Ghost
-PB: Ognisty Król Żaru	PB: Ember Flame King
-PB: Ognisty Książę Żaru	PB: Ember Fire Prince
-PB: Ognisty Troll Żaru	PB: Ember Fire Troll
-PB: Ognisty Tygrys Żaru	PB: Ember Fire Tiger
-PB: Plan Brzeszczota	PB: Broadsword Plan
-PB: Plan Dzwonu	PB: Bell Plan
-PB: Plan Hełmu Ninja	PB: Ninja Helmet Plan
-PB: Plan Hełmu Sura	PB: Sura Helmet Plan
-PB: Plan Hełmu Szamana	PB: Shaman Helmet Plan
-PB: Plan Hełmu Wojownika	PB: Warrior Helmet Plan
-PB: Plan Miecza	PB: Sword Plan
-PB: Plan Ostrza	PB: Blade Plan
-PB: Plan Sztyletu	PB: Dagger Plan
-PB: Plan Wachlarza	PB: Fan Plan
-PB: Plan Zbroi Ninja	PB: Ninja Armour Plan
-PB: Plan Zbroi Sura	PB: Sura Armour Plan
-PB: Plan Zbroi Szamana	PB: Shaman Armour Plan
-PB: Plan Zbroi Wojownika	PB: Warrior Armour Plan
-PB: Plan Łuku	PB: Bow Plan
-PB: Przywódca St. Lasu	PB: Forest Guard Leader
-PB: Płomień Żaru	PB: Ember Flame
-PB: Razador	PB: Razador
-PB: Smocza Brama	PB: Dragon Gate
-PB: Stela Isfet	PB: Isfet Stele
-PB: Strażnik Lasu	PB: Forest Guard
-PB: Szel	PB: Szel
-PB: Uzdrowiciel En-Tai	PB: En-Tai Healer
-PB: Wojownik En-Tai	PB: En-Tai Fighter
-PB: Wojownik Setaou	PB: Setaou Fighter
-PB: Władca En-Tai	PB: En-Tai Lord
-PB: Zamek Losu	PB: Lock of Fate
-PB: Zwiadowca Lasu	PB: Forest Scout
-PB: Łowca Setaou	PB: Setaou Hunter
-PB: Łucznik Setaou	PB: Setaou Archer
-PB: Żołnierz Setaou	PB: Setaou Soldier
+PB: Arktyczna Kostka	RX: Arctic Cube
+PB: Badacz Lasu	RX: Forest Researcher
+PB: Bagjanamu	RX: Bagjanamu
+PB: Beran-Setaou	RX: Beran-Setaou
+PB: Bojownik En-Tai	RX: En-Tai Warrior
+PB: Druid En-Tai	RX: En-Tai Druid
+PB: Duch Sura	RX: Sura Spirit
+PB: Gardziel Am-heha	RX: Am-heh Gorge
+PB: Generał Yonghan	RX: General Yonghan
+PB: Ignator	RX: Ignator
+PB: Jotun Thrym	RX: Jotun Thrym
+PB: Kapitan Yonghan	RX: Captain Yonghan
+PB: Kolumna Smoka Płn.	RX: North Dragon Column
+PB: Komendant Setaou	RX: Setaou Commander
+PB: Kryształ Mrozu	RX: Frost Crystal
+PB: Lodowy Lew	RX: Ice Lion
+PB: Magistrat Setaou	RX: Setaou Magistrate
+PB: Metin Chłodu	RX: Metin of Cold
+PB: Metin Drz. Stworzeń	RX: Metin of the Tree Creatures
+PB: Metin Góry	RX: Metin of the Mountain
+PB: Metin Lasu	RX: Metin of the Forest
+PB: Metin Purgatorium	RX: Metin of Purgatory
+PB: Metin Pychy	RX: Metin of Pride
+PB: Metin Samotności	RX: Metin of Solitude
+PB: Metin Zemsty	RX: Metin of Vengeance
+PB: Mistyk Setaou	RX: Setaou Mystic
+PB: Mroźna Broda	RX: Frostbeard
+PB: Mroźny Człowiek	RX: Frost Man
+PB: Mroźny Generał	RX: Frost General
+PB: Mroźny Golem	RX: Frost Golem
+PB: Mroźny Książę	RX: Frost Prince
+PB: Mroźny Robak	RX: Frost Worm
+PB: Mroźny Troll	RX: Frost Troll
+PB: Mroźny Yeti	RX: Frost Yeti
+PB: Nagrobek Taramora	RX: Taramor Gravestone
+PB: Nemere	RX: Nemere
+PB: Niszczyciel En-Tai	RX: En-Tai Destroyer
+PB: Og. Generał Żaru	RX: Ember Fire General
+PB: Og. Wojownik Żaru	RX: Ember Flame Warrior
+PB: Ognista Broda Żaru	RX: Ember Firebeard
+PB: Ognisty Duch Żaru	RX: Ember Flame Ghost
+PB: Ognisty Król Żaru	RX: Ember Flame King
+PB: Ognisty Książę Żaru	RX: Ember Fire Prince
+PB: Ognisty Troll Żaru	RX: Ember Fire Troll
+PB: Ognisty Tygrys Żaru	RX: Ember Fire Tiger
+PB: Plan Brzeszczota	RX: Broadsword Plan
+PB: Plan Dzwonu	RX: Bell Plan
+PB: Plan Hełmu Ninja	RX: Ninja Helmet Plan
+PB: Plan Hełmu Sura	RX: Sura Helmet Plan
+PB: Plan Hełmu Szamana	RX: Shaman Helmet Plan
+PB: Plan Hełmu Wojownika	RX: Warrior Helmet Plan
+PB: Plan Miecza	RX: Sword Plan
+PB: Plan Ostrza	RX: Blade Plan
+PB: Plan Sztyletu	RX: Dagger Plan
+PB: Plan Wachlarza	RX: Fan Plan
+PB: Plan Zbroi Ninja	RX: Ninja Armour Plan
+PB: Plan Zbroi Sura	RX: Sura Armour Plan
+PB: Plan Zbroi Szamana	RX: Shaman Armour Plan
+PB: Plan Zbroi Wojownika	RX: Warrior Armour Plan
+PB: Plan Łuku	RX: Bow Plan
+PB: Przywódca St. Lasu	RX: Forest Guard Leader
+PB: Płomień Żaru	RX: Ember Flame
+PB: Razador	RX: Razador
+PB: Smocza Brama	RX: Dragon Gate
+PB: Stela Isfet	RX: Isfet Stele
+PB: Strażnik Lasu	RX: Forest Guard
+PB: Szel	RX: Szel
+PB: Uzdrowiciel En-Tai	RX: En-Tai Healer
+PB: Wojownik En-Tai	RX: En-Tai Fighter
+PB: Wojownik Setaou	RX: Setaou Fighter
+PB: Władca En-Tai	RX: En-Tai Lord
+PB: Zamek Losu	RX: Lock of Fate
+PB: Zwiadowca Lasu	RX: Forest Scout
+PB: Łowca Setaou	RX: Setaou Hunter
+PB: Łucznik Setaou	RX: Setaou Archer
+PB: Żołnierz Setaou	RX: Setaou Soldier
 PD czempiona	Champion EXP
 PD z potworów: %s / %s	EXP from monsters: %s / %s
 PD z przedmiotów: %s / %s	EXP from items: %s / %s
@@ -3922,14 +3929,14 @@ Piek. Wieża Sunga Mahi	Sung Mahi's Hellish Tower
 Piekielna Wieża Sunga Mahi	Sung Mahi's Hellish Tower
 Piekielny Cios	Hellish Blow
 Piekielny Cios (9.skill)	Hellish Blow (9th Skill)
-Piekielny Generał (BŚ)	Hell General (BŚ)
-Piekielny Kapłan (BŚ)	Hell Priest (BŚ)
-Piekielny Major (BŚ)	Hell Major (BŚ)
+Piekielny Generał (BŚ)	Hell General (WB)
+Piekielny Kapłan (BŚ)	Hell Priest (WB)
+Piekielny Major (BŚ)	Hell Major (WB)
 Piekielny Pancerz	Hellish Armour
 Piekielny Pies (mrok)	Hell Hound (Darkness)
 Piekielny Pies (ogień)	Hell Hound (Fire)
-Piekielny Strzelec (BŚ)	Hell Archer (BŚ)
-Piekielny Włócznik (BŚ)	Hell Spearman (BŚ)
+Piekielny Strzelec (BŚ)	Hell Archer (WB)
+Piekielny Włócznik (BŚ)	Hell Spearman (WB)
 Piekło	Hell
 Piekło - wybierz respawn	Hell - choose respawn
 Pierwsza nagroda tury jest darmowa.	The first reward of each round is free.
@@ -4114,7 +4121,7 @@ Pole %d: zatrzymano - otwarte inne okno albo postać nie może teraz używać pr
 Pole %d: zmiana bonusów zatrzymana (zmian: %d).	Slot %d: bonus switching stopped (switches: %d).
 Polecane	Featured
 Policz potwory	Count monsters
-Polifem (BŚ)	Polyphemos (BŚ)
+Polifem (BŚ)	Polyphemos (WB)
 Polimorfia (vnum):	Polymorph (vnum):
 Polimorfia wierzchowca	Mount Polymorph
 Politura Wężowa	Serpent Polish
@@ -4564,7 +4571,7 @@ Płaszcz Wężowy (wykon.)	Serpent Cloak (Craft)
 Płatkowa Pieczęć	Snowflake Seal
 Płeć:	Gender:
 Płomienny Feniks	Flaming Phoenix
-Płomień Żaru (BŚ)	Ember Flame (BŚ)
+Płomień Żaru (BŚ)	Ember Flame (WB)
 Płonąca Wieża	Burning Tower
 Płyta z Surowego Metalu	Raw Metal Plate
 Płyta ze Stali Kuźniczej	Forged Steel Plate
@@ -4572,6 +4579,7 @@ Płyta ze Stali Ozdobnej	Ornamental Steel Plate
 Płótno	Linen
 RANKING SEZONU (8 tygodni)	SEASON RANKING (8 weeks)
 Rak Niebieski	Blue Crayfish
+Ramka zalegajacych (wszystkie przedmioty):	Pending Items (all items):
 Ranga GM	GM rank
 Ranga potwora: %s	Monster rank: %s
 Ranga zapisana	Rank saved
@@ -4657,12 +4665,12 @@ Rola Blokującego:	Blocker role:
 Rola Mistrza Um.:	Skill Master role:
 Rola Obrońcy:	Defender role:
 Rola Walczącego w Zwarciu:	Blade Fighter role:
-Ropuszy Generał (BŚ)	Bullfrog General (BŚ)
+Ropuszy Generał (BŚ)	Bullfrog General (WB)
 Rosa En-Tai	En-Tai Dew
-Rosa En-Tai (PB)	En-Tai Dew (PB)
-Rosa En-Tai (PB) od Niszczycieli En-Tai (PB). Zanieś ją Zwiadowcy Lasu (PB).	En-Tai Dew (PB) from the En-Tai Destroyers (PB). Take it to the Forest Scout (PB).
-Rosa En-Tai (SZC)	En-Tai Dew (SZC)
-Rosa En-Tai (SZC) od Niszczycieli En-Tai (SZC). Zanieś ją Zwiadowcy Lasu (SZC).	En-Tai Dew (SZC) from the En-Tai Destroyers (SZC). Take it to the Forest Scout (SZC).
+Rosa En-Tai (PB)	En-Tai Dew (RX)
+Rosa En-Tai (PB) od Niszczycieli En-Tai (PB). Zanieś ją Zwiadowcy Lasu (PB).	En-Tai Dew (RX) from the En-Tai Destroyers (RX). Take it to the Forest Scout (RX).
+Rosa En-Tai (SZC)	En-Tai Dew (TR)
+Rosa En-Tai (SZC) od Niszczycieli En-Tai (SZC). Zanieś ją Zwiadowcy Lasu (SZC).	En-Tai Dew (TR) from the En-Tai Destroyers (TR). Take it to the Forest Scout (TR).
 Rosa En-Tai od Niszczycieli En-Tai. Zanieś pięć Zwiadowcy Lasu.	En-Tai Dew from the En-Tai Destroyers. Take five to the Forest Scout.
 Rosy Defensywne	Defensive Dews
 Rosy Ofensywne	Offensive Dews
@@ -4773,67 +4781,67 @@ Rękawice Węża (WIT)	Serpent Gloves (VIT)
 Rękojeść	Handle
 SIL %s WIT %s ZR %s INT %s	STR %s  VIT %s  DEX %s  INT %s
 SUNGMA_%s_IMG	SUNGMA_%s_IMG
-SZC: Arktyczna Kostka	SZC: Arctic Cube
-SZC: Badacz Lasu	SZC: Forest Researcher
-SZC: Bagjanamu	SZC: Bagjanamu
-SZC: Beran-Setaou	SZC: Beran-Setaou
-SZC: Bojownik En-Tai	SZC: En-Tai Warrior
-SZC: Druid En-Tai	SZC: En-Tai Druid
-SZC: Duch Sura	SZC: Sura Spirit
-SZC: Gardziel Am-heha	SZC: Am-heh Gorge
-SZC: Generał Yonghan	SZC: General Yonghan
-SZC: Ignator	SZC: Ignator
-SZC: Jotun Thrym	SZC: Jotun Thrym
-SZC: Kapitan Yonghan	SZC: Captain Yonghan
-SZC: Kolumna Smoka Płn.	SZC: North Dragon Column
-SZC: Komendant Setaou	SZC: Setaou Commander
-SZC: Kryształ Mrozu	SZC: Frost Crystal
-SZC: Lodowy Lew	SZC: Ice Lion
-SZC: Magistrat Setaou	SZC: Setaou Magistrate
-SZC: Metin Chłodu	SZC: Metin of Cold
-SZC: Metin Drz. Stworzeń	SZC: Metin of the Tree Creatures
-SZC: Metin Góry	SZC: Metin of the Mountain
-SZC: Metin Lasu	SZC: Metin of the Forest
-SZC: Metin Purgatorium	SZC: Metin of Purgatory
-SZC: Metin Pychy	SZC: Metin of Pride
-SZC: Metin Samotności	SZC: Metin of Solitude
-SZC: Metin Zemsty	SZC: Metin of Vengeance
-SZC: Mistyk Setaou	SZC: Setaou Mystic
-SZC: Mroźna Broda	SZC: Frostbeard
-SZC: Mroźny Człowiek	SZC: Frost Man
-SZC: Mroźny Generał	SZC: Frost General
-SZC: Mroźny Golem	SZC: Frost Golem
-SZC: Mroźny Książę	SZC: Frost Prince
-SZC: Mroźny Robak	SZC: Frost Worm
-SZC: Mroźny Troll	SZC: Frost Troll
-SZC: Mroźny Yeti	SZC: Frost Yeti
-SZC: Nagrobek Taramora	SZC: Taramor Gravestone
-SZC: Nemere	SZC: Nemere
-SZC: Niszczyciel En-Tai	SZC: En-Tai Destroyer
-SZC: Og. Generał Żaru	SZC: Ember Fire General
-SZC: Og. Wojownik Żaru	SZC: Ember Flame Warrior
-SZC: Ognista Broda Żaru	SZC: Ember Firebeard
-SZC: Ognisty Duch Żaru	SZC: Ember Flame Ghost
-SZC: Ognisty Król Żaru	SZC: Ember Flame King
-SZC: Ognisty Książę Żaru	SZC: Ember Fire Prince
-SZC: Ognisty Troll Żaru	SZC: Ember Fire Troll
-SZC: Ognisty Tygrys Żaru	SZC: Ember Fire Tiger
-SZC: Przywódca St. Lasu	SZC: Forest Guard Leader
-SZC: Płomień Żaru	SZC: Ember Flame
-SZC: Razador	SZC: Razador
-SZC: Smocza Brama	SZC: Dragon Gate
-SZC: Stela Isfet	SZC: Isfet Stele
-SZC: Strażnik Lasu	SZC: Forest Guard
-SZC: Szel	SZC: Szel
-SZC: Uzdrowiciel En-Tai	SZC: En-Tai Healer
-SZC: Wojownik En-Tai	SZC: En-Tai Fighter
-SZC: Wojownik Setaou	SZC: Setaou Fighter
-SZC: Władca En-Tai	SZC: En-Tai Lord
-SZC: Zamek Losu	SZC: Lock of Fate
-SZC: Zwiadowca Lasu	SZC: Forest Scout
-SZC: Łowca Setaou	SZC: Setaou Hunter
-SZC: Łucznik Setaou	SZC: Setaou Archer
-SZC: Żołnierz Setaou	SZC: Setaou Soldier
+SZC: Arktyczna Kostka	TR: Arctic Cube
+SZC: Badacz Lasu	TR: Forest Researcher
+SZC: Bagjanamu	TR: Bagjanamu
+SZC: Beran-Setaou	TR: Beran-Setaou
+SZC: Bojownik En-Tai	TR: En-Tai Warrior
+SZC: Druid En-Tai	TR: En-Tai Druid
+SZC: Duch Sura	TR: Sura Spirit
+SZC: Gardziel Am-heha	TR: Am-heh Gorge
+SZC: Generał Yonghan	TR: General Yonghan
+SZC: Ignator	TR: Ignator
+SZC: Jotun Thrym	TR: Jotun Thrym
+SZC: Kapitan Yonghan	TR: Captain Yonghan
+SZC: Kolumna Smoka Płn.	TR: North Dragon Column
+SZC: Komendant Setaou	TR: Setaou Commander
+SZC: Kryształ Mrozu	TR: Frost Crystal
+SZC: Lodowy Lew	TR: Ice Lion
+SZC: Magistrat Setaou	TR: Setaou Magistrate
+SZC: Metin Chłodu	TR: Metin of Cold
+SZC: Metin Drz. Stworzeń	TR: Metin of the Tree Creatures
+SZC: Metin Góry	TR: Metin of the Mountain
+SZC: Metin Lasu	TR: Metin of the Forest
+SZC: Metin Purgatorium	TR: Metin of Purgatory
+SZC: Metin Pychy	TR: Metin of Pride
+SZC: Metin Samotności	TR: Metin of Solitude
+SZC: Metin Zemsty	TR: Metin of Vengeance
+SZC: Mistyk Setaou	TR: Setaou Mystic
+SZC: Mroźna Broda	TR: Frostbeard
+SZC: Mroźny Człowiek	TR: Frost Man
+SZC: Mroźny Generał	TR: Frost General
+SZC: Mroźny Golem	TR: Frost Golem
+SZC: Mroźny Książę	TR: Frost Prince
+SZC: Mroźny Robak	TR: Frost Worm
+SZC: Mroźny Troll	TR: Frost Troll
+SZC: Mroźny Yeti	TR: Frost Yeti
+SZC: Nagrobek Taramora	TR: Taramor Gravestone
+SZC: Nemere	TR: Nemere
+SZC: Niszczyciel En-Tai	TR: En-Tai Destroyer
+SZC: Og. Generał Żaru	TR: Ember Fire General
+SZC: Og. Wojownik Żaru	TR: Ember Flame Warrior
+SZC: Ognista Broda Żaru	TR: Ember Firebeard
+SZC: Ognisty Duch Żaru	TR: Ember Flame Ghost
+SZC: Ognisty Król Żaru	TR: Ember Flame King
+SZC: Ognisty Książę Żaru	TR: Ember Fire Prince
+SZC: Ognisty Troll Żaru	TR: Ember Fire Troll
+SZC: Ognisty Tygrys Żaru	TR: Ember Fire Tiger
+SZC: Przywódca St. Lasu	TR: Forest Guard Leader
+SZC: Płomień Żaru	TR: Ember Flame
+SZC: Razador	TR: Razador
+SZC: Smocza Brama	TR: Dragon Gate
+SZC: Stela Isfet	TR: Isfet Stele
+SZC: Strażnik Lasu	TR: Forest Guard
+SZC: Szel	TR: Szel
+SZC: Uzdrowiciel En-Tai	TR: En-Tai Healer
+SZC: Wojownik En-Tai	TR: En-Tai Fighter
+SZC: Wojownik Setaou	TR: Setaou Fighter
+SZC: Władca En-Tai	TR: En-Tai Lord
+SZC: Zamek Losu	TR: Lock of Fate
+SZC: Zwiadowca Lasu	TR: Forest Scout
+SZC: Łowca Setaou	TR: Setaou Hunter
+SZC: Łucznik Setaou	TR: Setaou Archer
+SZC: Żołnierz Setaou	TR: Setaou Soldier
 Sam otwiera skrzynie z plecaka. Wyłączone: zostawia je tobie.	Opens chests from its backpack by itself. Off: leaves them to you.
 SchronPłnW. 11323 13499	NWindShelter 11323 13499
 Schronienie Meley	Meley's Lair
@@ -5074,10 +5082,10 @@ Skrzynia Likanów (d)	Large Lycan Chest
 Skrzynia Likanów (m)	Small Lycan Chest
 Skrzynia Mistrza Ahtrina	Master Ahtrin's Chest
 Skrzynia Mistrza Gnolli	Gnoll Master's Chest
-Skrzynia Nemere (PB)	Nemere's Chest (PB)
+Skrzynia Nemere (PB)	Nemere's Chest (RX)
 Skrzynia Nimfy Wodnej	Water Nymph Chest
 Skrzynia Przebudzenia	Awakening Chest
-Skrzynia Razadora (PB)	Razador's Chest (PB)
+Skrzynia Razadora (PB)	Razador's Chest (RX)
 Skrzynia Sierpu	Crescent Moon Chest
 Skrzynia Skorpiona	Scorpion Chest
 Skrzynia Sm. Strażników	Dragon Guardians' Chest
@@ -5109,7 +5117,7 @@ Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztu
 Slot z krzyżykiem jest jeszcze zamknięty.	A slot with a cross is still locked.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Slot locked: a Gaya Shop Extension x%d will unlock it.
 Sloty umiejętności: %d	Skill slots: %d
-Sm. Strażnik Idall (BŚ)	Dragon Guardian Idall (BŚ)
+Sm. Strażnik Idall (BŚ)	Dragon Guardian Idall (WB)
 Smaczny Smakołyk	Delicious Treat
 Smocza Alchemia	Dragon Stone Alchemy
 Smocza Dusza Albira	Albir's Dragon Soul
@@ -5246,7 +5254,7 @@ Stopien absorpcji: %d%% - %d%%	Absorption rate: %d%% - %d%%
 Stopień absorpcji: %.1f%%	Absorption rate: %.1f%%
 Stopień: %s	Stage: %s
 Straszydlo Zodiaku	Zodiac Bogeyman
-Straszydło (BŚ)	Bogeyman (BŚ)
+Straszydło (BŚ)	Bogeyman (WB)
 Strazniczka Mao	Mao Guard
 Strazniczka Si	Si Guard
 Straznik Chen	Chen Guard
@@ -5259,8 +5267,8 @@ Straznik Xu	Xu Guard
 Straznik Yin	Yin Guard
 Straznik Yu	Yu Guard
 Straznik Zi	Zi Guard
-Strażnica Nemere (PB)	Nemere's Watchtower (PB)
-Strażnica Nemere (SZC)	Nemere's Watchtower (SZC)
+Strażnica Nemere (PB)	Nemere's Watchtower (RX)
+Strażnica Nemere (SZC)	Nemere's Watchtower (TR)
 Strażnicy Lasu	Guardians of the Forest
 Strażnicy Równin	Guardians of the Plains
 Strażnik Atlantydy	Atlantis Guard
@@ -5446,11 +5454,11 @@ Szkło Handlu	Trade Glass
 Szlachetna Szata Aury	Noble Aura Robe
 Szlachetna Trawa	Noble Grass
 Szlachetne Drewno	Noble Wood
-Szlachetne Drewno (SZC)	Noble Wood (SZC)
-Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC).	Noble Wood (SZC) from the En-Tai Lord (SZC). Take it to the Forest Researcher (SZC).
+Szlachetne Drewno (SZC)	Noble Wood (TR)
+Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC).	Noble Wood (TR) from the En-Tai Lord (TR). Take it to the Forest Researcher (TR).
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Noble Wood from the En-Tai Lord. Take it to the Forest Researcher.
-Szlachetne Drzewo (PB)	Noble Tree (PB)
-Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Noble Tree (PB) from the En-Tai Lord (PB). Take it to the Forest Researcher (PB).
+Szlachetne Drzewo (PB)	Noble Tree (RX)
+Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Noble Tree (RX) from the En-Tai Lord (RX). Take it to the Forest Researcher (RX).
 Szpon Kruka	Raven's Talon
 Szpon Wężowy (wykon.)	Serpent Claw (Craft)
 Szpon Zodiaku	Zodiac Claw
@@ -5637,7 +5645,7 @@ Ten gatunek skorupiaka prowadzi nocny tryb życia, a dnie spędza w swojej kryj�
 Ten gracz jest offline.	This player is offline.
 Ten kolor jest za ciemny - efekt byłby niewidoczny.	This colour is too dark - the effect would be invisible.
 Ten legendarny kamień służy do ulepszenia mistrzowskich umiejętności dopalaczy i ripost. Kamień zniknie po użyciu.	This legendary stone is used to improve master boosters and ripostes. The stone disappears after use.
-Ten magiczny klucz aktywuje portal do Świątyni Smoka (SZC). Zostawia go Generał Yonghan (SZC), który pojawia się po Kapitanie Yonghanie (SZC-110). Duch Sura (SZC) chce trzech od każdego.	This magic key activates the portal to the Dragon's Temple (SZC). It is left by General Yonghan (SZC), who appears after Captain Yonghan (SZC-110). The Sura Spirit (SZC) wants three from each player.
+Ten magiczny klucz aktywuje portal do Świątyni Smoka (SZC). Zostawia go Generał Yonghan (SZC), który pojawia się po Kapitanie Yonghanie (SZC-110). Duch Sura (SZC) chce trzech od każdego.	This magic key activates the portal to the Dragon's Temple (TR). It is left by General Yonghan (TR), who appears after Captain Yonghan (TR-110). The Sura Spirit (TR) wants three from each player.
 Ten materiał jest potrzebny do ulepszania Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora+.	This material is needed to upgrade the Serpent Cap. You can find it in Balathor's Frost Chest+.
 Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora.	This material is required to craft the Serpent Cap. You can find it in Balathor's Frost Chest.
 Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz otrzymać go w Sklepie Gaya.	This material is required to craft the Serpent Cap. You can get it in the Gaya Shop.
@@ -5778,8 +5786,8 @@ Turniobłysk 451 9492	Craggleam 451 9492
 Turniomrok 2710 9616	Craggloom 2710 9616
 Tutaj nie można zmienić widoku mapy.	The map view cannot be changed here.
 Twarda Skóra	Hard Leather
-Twierdza Czerwonego Smoka (PB)	Red Dragon Fortress (PB)
-Twierdza Czerwonego Smoka (SZC)	Red Dragon Fortress (SZC)
+Twierdza Czerwonego Smoka (PB)	Red Dragon Fortress (RX)
+Twierdza Czerwonego Smoka (SZC)	Red Dragon Fortress (TR)
 Twierdza Razadora	Razador's Fortress
 Twoja Gaya: %s	Your Gaya: %s
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Your position: shows the map you are on and centres the view on it.
@@ -5797,6 +5805,7 @@ Twoje tytuły:	Your titles:
 Twoje zarobione Yangi z sklepu.	Your Yang earned from the shop.
 Tworzenie sklepu	Create Shop
 Twój atak jest szybki jak pocisk.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	You attack as fast as a bullet!|Boosted by: Strength (++), Dexterity (+), Vitality (+).
+Twój drop	Your Loot
 Twój drop - trzyma go dla ciebie	Your drop - it keeps it for you
 Twój koń osiągnął %(a)d poziom!	Your horse has reached level %(a)d!
 Twój koń osiągnął najwyższy poziom.	Your horse has reached the highest level.
@@ -6010,7 +6019,7 @@ Uwalnia cię od klątwy złego ducha, jeśli nauka się nie powiedzie. Za pomoc�
 Uwięziony Kowal	Imprisoned Smith
 Uzbrojenie	Equipment
 Uzdrowiciel En-Tai	En-Tai Healer
-Uzdrowiciel En-Tai (BŚ)	En-Tai Healer (BŚ)
+Uzdrowiciel En-Tai (BŚ)	En-Tai Healer (WB)
 Uzdrowiciel Ochao	Ochao Healer
 Uziemienie	Root
 Ułóż i scal	Sort and merge
@@ -6204,7 +6213,7 @@ Wojownik (M)	Warrior (M)
 Wojownik (Mental)	Warrior (Mental)
 Wojownik Ciało	Warrior Body
 Wojownik En-Tai	En-Tai Fighter
-Wojownik En-Tai (BŚ)	En-Tai Fighter (BŚ)
+Wojownik En-Tai (BŚ)	En-Tai Fighter (WB)
 Wojownik Fantilla	Fantilla Warrior
 Wojownik Kentauros	Kentauros Warrior
 Wojownik Moloch	Moloch Warrior
@@ -6596,8 +6605,8 @@ Zagubiony Zwiadowca	Lost Scout
 Zajęcza Klatka	Rabbit Cage
 Zakazana Tablica	Forbidden Tablet
 Zaklęty Las	Enchanted Forest
-Zaklęty Las (PB)	Enchanted Forest (PB)
-Zaklęty Las (SZC)	Enchanted Forest (SZC)
+Zaklęty Las (PB)	Enchanted Forest (RX)
+Zaklęty Las (SZC)	Enchanted Forest (TR)
 Zakończona	Finished
 Zakończone	Finished
 Zakończyć sesję farmienia?	End the farming session?
@@ -6768,7 +6777,7 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania mrocznych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania mroźnych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing frost elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing fire elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing thunder elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
-Zjawa Żółt. Tygrysa (BŚ)	Yellow Tiger Ghost (BŚ)
+Zjawa Żółt. Tygrysa (BŚ)	Yellow Tiger Ghost (WB)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	The feed needed for a full bar will be eaten.
 Zlamanie odpornosci: bron 2-r.	Defence break: 2-h weapons
 Zlamanie odpornosci: dzwony	Defence break: bells
@@ -7048,7 +7057,7 @@ Zł. Eliksir Piorun. Mocy	Golden Elixir of Lightning Power
 Zł. Skrzynia na Ryby (D)	Golden Fish Chest (L)
 Zł. Skrzynia na Ryby (M)	Golden Fish Chest (S)
 Zł. Skrzynia na Ryby (Ś)	Golden Fish Chest (M)
-Zła Zjawa Ż. Tygr. (BŚ)	Evil Yellow Tiger Ghost (BŚ)
+Zła Zjawa Ż. Tygr. (BŚ)	Evil Yellow Tiger Ghost (WB)
 Złamanie Odporności na Broń Dwuręczną +%d%%	Two-Handed Weapon Defence Break +%d%%
 Złamanie Odporności na Miecze +%d%%	Sword Defence Break +%d%%
 Złamanie Odporności na Sztylety +%d%%	Dagger Defence Break +%d%%
@@ -7060,8 +7069,8 @@ Złota Księga Konia	Golden Horse Book
 Złota Piłka	Golden Ball
 Złota Skrzynia Zodiaku	Golden Zodiac Chest
 Złota Smocza Skrzynia	Golden Dragon Chest
-Złota Zębatka (PB)	Golden Cog Wheel (PB)
-Złota Zębatka (SZC)	Golden Cog Wheel (SZC)
+Złota Zębatka (PB)	Golden Cog Wheel (RX)
+Złota Zębatka (SZC)	Golden Cog Wheel (TR)
 Złote Pudełko Kart Potwora	Golden Monster Card Box
 Złote Płyty	Gold Plates
 Złote Zioło	Golden Herb
