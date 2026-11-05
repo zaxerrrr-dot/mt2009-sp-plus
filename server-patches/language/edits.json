@@ -81,6 +81,12 @@
   "file": "questlua_pc.cpp",
   "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note)",
   "old": "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n",
-  "new": "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note): the quest left the client's window\n\t\t{ void Mt2009QuestInfoSentNote(LPCHARACTER, unsigned int, int, bool); Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false); }\n"
+  "new": "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (note): the quest left the client's window\n\t\t::Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (include)",
+  "old": "#include \"target.h\" // MT2009_PLUS_CLEAR_MISSIONS_V1 (include): pc.clear_quest_letter\n",
+  "new": "#include \"target.h\" // MT2009_PLUS_CLEAR_MISSIONS_V1 (include): pc.clear_quest_letter\n#include \"mt2009_language.h\" // MT2009_PLUS_LANGUAGE_QUESTINFO_V2 (include): Mt2009QuestInfoSentNote\n"
  }
 ]

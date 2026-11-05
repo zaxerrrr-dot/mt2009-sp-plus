@@ -127,7 +127,12 @@ EDITS = [
      "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n",
      "\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n"
      "\t\t// %s (note): the quest left the client's window\n"
-     "\t\t{ void Mt2009QuestInfoSentNote(LPCHARACTER, unsigned int, int, bool); Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false); }\n" % Q2),
+     "\t\t::Mt2009QuestInfoSentNote(ch, dwIndex, PC::QUEST_SEND_ISBEGIN, false);\n" % Q2),
+    # the declaration at file scope (a block-scope one inside namespace quest names quest::Mt2009QuestInfoSentNote)
+    ("questlua_pc.cpp", "include",
+     "#include \"target.h\" // MT2009_PLUS_CLEAR_MISSIONS_V1 (include): pc.clear_quest_letter\n",
+     "#include \"target.h\" // MT2009_PLUS_CLEAR_MISSIONS_V1 (include): pc.clear_quest_letter\n"
+     "#include \"mt2009_language.h\" // %s (include): Mt2009QuestInfoSentNote\n" % Q2),
 ]
 
 
