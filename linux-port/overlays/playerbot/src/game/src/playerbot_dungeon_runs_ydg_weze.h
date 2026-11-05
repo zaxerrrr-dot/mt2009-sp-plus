@@ -171,9 +171,59 @@ namespace
 	}
 
 	// The 3rd level's last Metin (next 4) left at a sliver while a group lives: the group first.
+	// V2 (23:50): ten runs held for 10+ minutes by a Kappa Czarodziej (6747) the parties did not bring down - the hold
+	// lasts PLAYERBOT_WEZE_HOLD_MAX_S at most, then the Metin falls whatever lives (logged).
+	const DWORD PLAYERBOT_WEZE_HOLD_MAX_S = 180;
+	std::map<long, DWORD> s_mapPlayerBotWezeHoldSince;	// instance -> get_global_time() the hold began
+
 	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
 	{
-		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && CountPlayerBotWezeAdds(instance) > 0;
+		if (!d || d->GetFlag("lvl") != 3 || d->GetFlag("next") != 4 || hpPct > 15)
+			return false;
+		const int adds = CountPlayerBotWezeAdds(instance);
+		DWORD& since = s_mapPlayerBotWezeHoldSince[instance];
+		if (adds <= 0)
+		{
+			since = 0;
+			return false;
+		}
+		const DWORD now = get_global_time();
+		if (since == 0)
+			since = now;
+		if (now - since > PLAYERBOT_WEZE_HOLD_MAX_S)
+		{
+			if (since != 1)
+				sys_log(0, "BOT_YDG: weze hold over instance=%ld adds=%d after_s=%u - the last Metin falls", instance, adds, now - since);
+			since = 1;	// over for this instance's level 3
+			return false;
+		}
+		return true;
+	}
+
+	// The living monsters of the instance for the progress line (race@cell hp%), at most six.
+	std::string DescribePlayerBotWezeAdds(long instance)
+	{
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(instance, get_dword_time());
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(instance);
+		std::string out;
+		int n = 0;
+		for (size_t i = 0; i < scan.foes.size() && pMap; ++i)
+		{
+			const DWORD r = scan.foes[i].dwRace;
+			if ((r > PLAYERBOT_WEZE_METIN_BASE && r <= PLAYERBOT_WEZE_TIME_METIN) || r == PLAYERBOT_WEZE_COLUMN || r == PLAYERBOT_WEZE_CAGED)
+				continue;
+			if (++n > 6)
+				continue;
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			char buf[48];
+			snprintf(buf, sizeof(buf), "%s%u@(%ld,%ld)%d", out.empty() ? "" : ",", (unsigned int)r,
+					(scan.foes[i].lX - pMap->m_setting.iBaseX) / 100, (scan.foes[i].lY - pMap->m_setting.iBaseY) / 100,
+					c && c->GetMaxHP() > 0 ? (int)((long long)c->GetHP() * 100 / c->GetMaxHP()) : -1);
+			out += buf;
+		}
+		if (n > 6)
+			out += ",+" + std::to_string(n - 6);
+		return out.empty() ? "-" : out;
 	}
 
 	void GetPlayerBotWezeObjectives(LPDUNGEON d, std::vector<DWORD>& out)
@@ -410,11 +460,11 @@ namespace
 		const int left = d->GetFlag("started") == 1 ? d->GetFlag("limit_at") - (int)get_global_time() : -1;
 		sys_log(0, "BOT_YDG: weze progress run=%d instance=%ld started=%d lvl=%d left_s=%d order=%d%d%d%d next=%d tm=%d warrior=%d extra=%d "
 				"opened=%d freed=%d g6=%d smith=%d turned=%d want_head=%d nethis=%d keys=%d prison_keys=%d shards=%d/%d/%d/%d dust=%d "
-				"dust_used=%d", run.iId, run.lInstance, d->GetFlag("started"), d->GetFlag("lvl"), left, d->GetFlag("o1"), d->GetFlag("o2"),
+				"dust_used=%d adds=%s", run.iId, run.lInstance, d->GetFlag("started"), d->GetFlag("lvl"), left, d->GetFlag("o1"), d->GetFlag("o2"),
 				d->GetFlag("o3"), d->GetFlag("o4"), d->GetFlag("next"), d->GetFlag("tm"), d->GetFlag("warrior"), d->GetFlag("extra"),
 				d->GetFlag("opened"), d->GetFlag("freed"), d->GetFlag("g6"), d->GetFlag("smith"), d->GetFlag("turned"),
 				GetPlayerBotWezeHeadWanted(d), d->GetFlag("nethis"), keys, prison, shards[1], shards[2], shards[3], shards[4], dust,
-				w.iDustUsed);
+				w.iDustUsed, DescribePlayerBotWezeAdds(run.lInstance).c_str());
 	}
 
 	// ------------------------------------------------------------ the items

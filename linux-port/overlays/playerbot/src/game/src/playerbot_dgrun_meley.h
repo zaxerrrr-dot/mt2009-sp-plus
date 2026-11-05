@@ -484,6 +484,47 @@ namespace
 			// a run called by the test file or a recruit of the clock's (not this planner's): its record now
 			mr = s_mapPlayerBotMeleyRuns.insert(std::make_pair(run.iId, TPlayerBotMeleyRun())).first;
 		}
+		// the night of 5/6 November: a progress line every 2 minutes (the stage, the statues' health and locks, the eggs)
+		{
+			static std::map<int, DWORD> s_next;
+			DWORD& at = s_next[run.iId];
+			LPDUNGEON d = run.lInstance ? CDungeonManager::instance().FindByMapIndex(run.lInstance) : NULL;
+			if (d && (at == 0 || (int)(dwNow - at) >= 0))
+			{
+				at = dwNow + 120 * 1000;
+				std::string st;
+				for (int i = 1; i <= 4; ++i)
+				{
+					char key[16], buf[32];
+					snprintf(key, sizeof(key), "stone%d", i);
+					const int pct = d->IsUniqueDead(key) ? -1 : (int)d->GetUniqueHpPerc(key);
+					snprintf(key, sizeof(key), "lock%d", i);
+					snprintf(buf, sizeof(buf), "%s%d%s", st.empty() ? "" : ",", pct, d->GetFlag(key) == 1 ? "L" : "");
+					st += buf;
+				}
+				int alive = 0, inside = 0;
+				for (size_t i = 0; i < run.members.size(); ++i)
+				{
+					LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+					if (c && c->GetMapIndex() == run.lInstance)
+					{
+						++inside;
+						alive += c->IsDead() ? 0 : 1;
+					}
+				}
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+				int eggs = 0, idall = 0, others = 0;
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+				{
+					const DWORD r = scan.foes[i].dwRace;
+					eggs += r == 20422 ? 1 : 0;
+					idall += r == 6116 ? 1 : 0;
+					others += (r != 20422 && r != 6116 && r != 6118) ? 1 : 0;
+				}
+				sys_log(0, "BOT_MELEY: progress run=%d stage=%d statues=%s eggs=%d idall=%d others=%d inside=%d alive=%d deaths=%d",
+						run.iId, d->GetFlag("stage"), st.c_str(), eggs, idall, others, inside, alive, run.iDeaths);
+			}
+		}
 		if (mr->second.dwNextShare != 0 && (int)(dwNow - mr->second.dwNextShare) < 0)
 			return;
 		mr->second.dwNextShare = dwNow + PLAYERBOT_MELEY_SHARE_MS;

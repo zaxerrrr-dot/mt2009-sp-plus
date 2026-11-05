@@ -319,6 +319,36 @@ namespace
 		}
 	}
 
+	// The night of 5/6 November (the owner: "Labirynt - 10 at once"): the file playerbot_labirynt_train in the core's
+	// directory, "max <n>" (1-20) - n bots in the maze at once, a call every PLAYERBOT_LABIRYNT_TRAIN_PLAN_MS without the
+	// draw; no file (or max 0): PLAYERBOT_LABIRYNT_MAX as before. Read every 30 s.
+	const DWORD PLAYERBOT_LABIRYNT_TRAIN_PLAN_MS = 20 * 1000;
+	int GetPlayerBotLabiryntTrainMax(DWORD dwNow)
+	{
+		static DWORD s_dwAt = 0;
+		static int s_iMax = -1;
+		if (s_dwAt != 0 && dwNow - s_dwAt < 30 * 1000)
+			return std::max(0, s_iMax);
+		s_dwAt = dwNow ? dwNow : 1;
+		int n = 0;
+		FILE* fp = fopen("playerbot_labirynt_train", "r");
+		if (fp)
+		{
+			char line[128];
+			while (fgets(line, sizeof(line), fp))
+			{
+				int v = 0;
+				if (sscanf(line, "max %d", &v) == 1)
+					n = std::max(0, std::min(v, 20));
+			}
+			fclose(fp);
+		}
+		if (n != s_iMax)
+			sys_log(0, "PLAYERBOT_LABIRYNT: train max=%d (file playerbot_labirynt_train)", n);
+		s_iMax = n;
+		return n;
+	}
+
 	// The calls, the census - from CPlayerBotManager's update.
 	void ManagePlayerBotLabiryntRuns(DWORD dwNow)
 	{
@@ -346,16 +376,17 @@ namespace
 		const bool plan = (int)(dwNow - s_dwNextPlan) >= 0;
 		if (!census && !plan)
 			return;
+		const int trainMax = GetPlayerBotLabiryntTrainMax(dwNow);
 		if (plan)
-			s_dwNextPlan = dwNow + PLAYERBOT_LABIRYNT_PLAN_MS;
+			s_dwNextPlan = dwNow + (trainMax > 0 ? PLAYERBOT_LABIRYNT_TRAIN_PLAN_MS : PLAYERBOT_LABIRYNT_PLAN_MS);
 		if (census)
 			s_dwNextCensus = dwNow + PLAYERBOT_LABIRYNT_CENSUS_MS;
 		if (!IsPlayerBotMapHostedHere(PLAYERBOT_LABIRYNT_MAP) || !IsPlayerBotMapHostedHere(PLAYERBOT_LABIRYNT_DESERT) ||
 				!SECTREE_MANAGER::instance().GetMap(PLAYERBOT_LABIRYNT_MAP))
 			return;
 		const bool on = IsPlayerBotDgRunOn(dwNow);
-		const bool call = plan && on && (int)s_mapPlayerBotLabirynt.size() < PLAYERBOT_LABIRYNT_MAX &&
-				number(1, 100) <= PLAYERBOT_LABIRYNT_PLAN_CHANCE;
+		const bool call = plan && on && (int)s_mapPlayerBotLabirynt.size() < (trainMax > 0 ? trainMax : PLAYERBOT_LABIRYNT_MAX) &&
+				(trainMax > 0 || number(1, 100) <= PLAYERBOT_LABIRYNT_PLAN_CHANCE);
 		if (!call && !census)
 			return;
 		std::vector<DWORD> candidates;
