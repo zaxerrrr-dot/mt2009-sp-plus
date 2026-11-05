@@ -1542,7 +1542,18 @@ namespace
 				champion::MapRequirement(lMap) : NULL;
 		if (!req)
 			return "";
-		const int want[4] = { req->str, req->hp, req->move, req->immune };
+		int want[4] = { req->str, req->hp, req->move, req->immune };
+		// Jaskinie Gnolli: the run walks 382 -> 383 -> 384 (25/15/20/25 .. 75/60/65/65) - the deepest maze's Will
+		for (long m = lMap + 1; lMap == 382 && m <= 384; ++m)
+		{
+			const champion::SungmaRequirement* r = champion::MapRequirement(m);
+			if (!r)
+				continue;
+			want[0] = std::max(want[0], (int)r->str);
+			want[1] = std::max(want[1], (int)r->hp);
+			want[2] = std::max(want[2], (int)r->move);
+			want[3] = std::max(want[3], (int)r->immune);
+		}
 		std::string added;
 		for (int k = 0; k < 4; ++k)
 		{
