@@ -25,7 +25,7 @@ do już załatanego drzewa): `common/growth_pet_types.h`, `db/src/growth_pet_db.
 - **Poziomy 1–105**: czerwone kule = PD z zabójstw właściciela (z jego bonusami PD, przed jego limitami; właścicielowi
   nic nie ubywa), niebieska = PD przedmiotów (broń/zbroja: cena sprzedaży u NPC / 2, Smakołyk 80 000, Smakołyk+ 5 %),
   nadwyżka niebieskiej przechodzi na następny poziom; tabela PD z wiki (dodatek A). Poziom ≤ poziom właściciela.
-- **Ewolucje**: Młody → Dziki (40, pełne PD) → Dzielny (80) → Bohaterski (81+, 30 dni) → Przebudzony (105, pełne PD,
+- **Ewolucje**: Młody → Dziki (40, pełne PD) → Dzielny (80) → Bohaterski (81+) → Przebudzony (105, pełne PD,
   czempion 1) → Mocny (czempion 14, pełne PD → 15); materiały z wiki (wszystkie z ekwipunku, także magazynów kategorii).
 - **Typ 1–8** (wyklucie 1–6; Zaczaruj zwierzaka 1–8, Małpiszon/Pająk/Azrael 1–6), statystyki właściciela PŻ/Obrona/PE
   w 0,001 % (start 0,1–2,0 %, przyrosty co X poziomów wg typu, typy parzyste stałe, nieparzyste losowe) + premia wieku
@@ -49,7 +49,7 @@ do już załatanego drzewa): `common/growth_pet_types.h`, `db/src/growth_pet_db.
 
 ## Poziomy czempiona zwierzaka (projekt wg wiki)
 
-Wiki (tr/en/de) daje: odblokowanie Bohaterski 105 + pełne PD (+30 dni), materiały ewolucji Przebudzony/Mocny, poziomy
+Wiki (tr/en/de) daje: odblokowanie Bohaterski 105 + pełne PD (wiek 30 dni – u nas bez wieku, 3.0.14), materiały ewolucji Przebudzony/Mocny, poziomy
 czempiona 1–30 (druga ewolucja przy 14), osobne PD czempiona i PD przedmiotu czempiona (tabela), „zwierzaki czempiona
 rosną tylko w regionach Yohary”, Smaczny Smakołyk (200 000 PD albo 1 200 PD czempiona), nowe statystyki Wola SungMa
 (ODP) / Przebicie bloku / Precyzja (start 0,1–0,5 %, przyrosty wg typu co X poziomów czempiona), 2 miejsca potencjału
@@ -91,7 +91,7 @@ klatek, które postać ma (logowanie, magazyn, przedmiot, który przyszedł, otw
 po id (`growth_pet_db.cpp`). Dzięki temu nie ma kolizji id konta z id postaci (błąd Anka2 w magazynie), klatka działa
 każdą drogą handlu, a pakiet magazynu się nie zmienia. Tabela umiejętności idzie osobnym DG 186 po pakiecie startu (jak
 tabela sklepów Ikarusa), bez zmiany samego pakietu startu. Poprawione błędy Anka2: wskrzeszenie liczy prawdziwe stosy
-(bez NULL), jaja poza tabelą gatunków, wiek 30 dni naprawdę blokuje, brakujące dane umiejętności, `FindByVID` z id
+(bez NULL), jaja poza tabelą gatunków, brakujące dane umiejętności, `FindByVID` z id
 przedmiotu, podwójna analiza ActivatePct, wyrzucenie przedmiotu-pieczęci przez klienta.
 
 ## Baza
@@ -162,3 +162,28 @@ okna petów) i przycisk w pasku bocznym. Brama wersji: `M2_CLIENT_MIN_VERSION` 1
   między poziomem 81 a 105) – nie ma ich na wiki.
 - `tools/yohara_prices/gen_yohara_prices.py` wciąż zna 95737 (ponowne uruchomienie przywróci tę linię zamiast 55007).
 - Po wdrożeniu: `gen_bot_catalogue.py --docker` (nowe linie ItemShopu).
+
+## Poprawki 3.0.14 (lista właściciela z 5.11.2026, `cache/yohara/poprawki-3.0.14.md`)
+
+- **PD 4.294.967.295 u nowego zwierzaka (pkt 1)**: `MIN` / `MAX` / `MINMAX` z libthecore (`utils.h`) biorą i oddają
+  `int` – `MIN(0ULL, 0xFFFFFFFFULL)` to `MIN(0, -1)` = -1, więc punkty PD / PD przedmiotu / potrzebne PD (i czempiona)
+  szły do klienta jako 0xFFFFFFFF. Wszystkie 64-bitowe min / max w `growth_pet.cpp` idą teraz przez `Min64` / `Max64` /
+  `Clamp64` (szablony w pliku). Dla świeżego zwierzaka (poziom 1, exp 0) klient dostaje: `PET_EXP` 0, `PET_ITEM_EXP` 0,
+  `PET_NEXT_EXP` 150 (135 + 15).
+- **Niemiecka plansza przy awansie (pkt 4)**: `SendLevelUp` wysyłał `SE_LEVELUP_ON_14_FOR_GERMANY` (w exe:
+  `season1/effect/paymessage_warning.mse` – reklama z napisem). Usunięte – pakiet `POINT_LEVEL` do widzów zwierzaka sam
+  daje zwykły efekt awansu (`ShowPointEffect` → `LevelUp`).
+- **Polskie litery (pkt 5)**: escape `\xbf` + litera szesnastkowa (np. `"mo\xbfe"`) był jednym znakiem – rozdzielone
+  (`"mo\xbf" "e"`); ś zapisane jako ISO-8859-2 `\xb6` → CP1250 `\x9c`. Strażnik: `tools/pety/check_cp1250.py`
+  (kod zwierzaka, `edits.json`, `files/`, `pety.sql`) – kończy się błędem na obu wzorcach.
+- **Smakołyki w stosach (pkt 3)**: Smakołyk 55028 i Smakołyk+ 55031 – stos 200 (prośba właściciela; pl-wiki ma
+  „Łączenie = Nie”, właściciel chce jak inne). Istniejący świat raz znacznikiem `pety:stack_v2`.
+- **Dodatkowy EQ (pkt 6, 7)**: rozwój, karmienie (Przedmiot EXP, Nakarm), wskrzeszanie, księgi i przedmioty na pieczęć
+  już brały z okien 11–15 (`CountSpecifyItem` / `RemoveSpecifyItem` z łatki `ekwipunek`, `FindHeldItemByPos`); blokował
+  klient (`uipetinfo.CountItem` liczy tylko torbę). Księgi ewolucji 55003–55007, Skrzynia Ksiąg Zwierza 55009 i księgi
+  umiejętności 55010–55027 / 55034–55038 należą do zakładki Księgi (`Mt2009EkwCategoryOf`,
+  `MT2009_PLUS_GROWTH_PET_BOOKS_V1`); 55028–55031 (Smakołyki, Reverti/Revertus) to nie księgi – zostają w torbie.
+- **Bez wieku przy rozwoju (pkt 8)**: `EVOLUTION` ma wiek 0, `EvolveBlock` nie sprawdza wieku.
+- **Zaczaruj zwierzaka 55033 (pkt 9)**: ItemShop (linia 40938, 49 SM do zatwierdzenia – w grze i na WWW), Portowy Sklep
+  Gaya (rząd III, 2000 Gaya jak wiki, `ygaya.quest`), Battle Pass (trzecia nagroda misji 6 / 9 / 12, jeśli wolna – raz,
+  znacznik `pety:bp_enchant_v1`), Koło Losu (`kola-src`). Stos 200 i handel – już były.

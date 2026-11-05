@@ -285,21 +285,22 @@ assert len(CHAMPION_EXP) == 30
 # EVOLUTION below (filled by gen_pety_sql.py checks against item_proto).
 STAGES = {1: u"Młody", 2: u"Dziki", 3: u"Dzielny", 4: u"Bohaterski", 5: u"Przebudzony", 6: u"Mocny"}
 EVOLUTION = {
-    # to stage: (needed level or champion level, needed age days, [(vnum, count, pl name)])
+    # to stage: (needed level or champion level, needed age days, [(vnum, count, pl name)]). No age is needed any more
+    # (the owner, Yohara list 3.0.14 item 8: the wiki's 30 days are old information) - the field stays, always 0.
     2: (40, 0, [(55003, 10, u"Księga Młodego Zwierza"), (30017, 10, u"Ozdobna Spinka Do Włosów"),
                 (30088, 5, u"Kawałek Lodu +"), (30074, 5, u"Czarny Uniform +"), (30073, 10, u"Biała Wstęga +"),
                 (30058, 10, u"Worek Z Pajęczymi Jajami"), (30041, 10, u"Shuriken")]),
     3: (80, 0, [(55004, 10, u"Księga Dzikiego Zwierza"), (27994, 2, u"Krwawa Perła"), (30031, 10, u"Ornament"),
                 (30035, 10, u"Krem Do Twarzy"), (30089, 10, u"Futro Yeti +"), (30011, 10, u"Kłąb"),
                 (30080, 5, u"Księga Klątw +")]),
-    4: (81, 30, [(55005, 10, u"Księga Dzielnego Zwierza"), (30083, 10, u"Nieznane Lekarstwo +"),
+    4: (81, 0, [(55005, 10, u"Księga Dzielnego Zwierza"), (30083, 10, u"Nieznane Lekarstwo +"),
                  (30077, 10, u"Ząb Orka +"), (30086, 10, u"Pamiątka Po Demonie +"), (27992, 2, u"Biała Perła"),
                  (27993, 2, u"Niebieska Perła"), (30550, 5, u"Niebieski Rzemyk")]),
-    5: (105, 30, [(55006, 10, u"Bohat. Księga Zwierza"), (31139, 2, u"Skrzynia Berana-Setaou (PB)"),
+    5: (105, 0, [(55006, 10, u"Bohat. Księga Zwierza"), (31139, 2, u"Skrzynia Berana-Setaou (PB)"),
                   (31141, 2, u"Skrzynia Razadora (PB)"), (31140, 2, u"Skrzynia Jotuna Thryma (PB)"),
                   (31142, 2, u"Skrzynia Nemere (PB)"), (31143, 5, u"Skrzynia Przebudzenia"),
                   (30602, 5, u"Niebieski Barwnik"), (30617, 10, u"Agat"), (55001, 20, u"Odżywka")]),
-    6: (14, 30, [(55007, 10, u"Przeb. Księga Zwierza"), (30616, 10, u"Dwutlenek Tytanu"),
+    6: (14, 0, [(55007, 10, u"Przeb. Księga Zwierza"), (30616, 10, u"Dwutlenek Tytanu"),
                  (31253, 5, u"Skrzynia Mistrza Gnolli"), (31254, 5, u"Skrzynia Mistrza Ahtrina"),
                  (70429, 5, u"Skarb Węży"), (31255, 5, u"Skrzynia Zdobiona Złotem"),
                  (70411, 3, u"B. Smocza Skrz. (lekka)"), (70412, 3, u"B. Smocza Skrz. (ciężka)"),

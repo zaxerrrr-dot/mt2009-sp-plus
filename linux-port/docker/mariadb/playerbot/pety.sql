@@ -234,10 +234,10 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (55036,'Ksiega Spostrzegawczosci',_cp1250 X'4B7369EA67612053706F7374727A65676177637A6F9C6369',37,4,1,0,1,32768,0,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,21,0,0,0,0,0,0,0,0,0,0,0),
 (55037,'Ksiega Absorpcji Zycia',_cp1250 X'4B7369EA6761204162736F7270636A6920AF79636961',37,4,1,0,1,32768,0,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,0,0,0),
 (55038,'Ksiega Lekkie jak Piorko',_cp1250 X'4B7369EA6761204C656B6B6965206A616B205069F3726B6F',37,4,1,0,1,32768,0,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,23,0,0,0,0,0,0,0,0,0,0,0),
-(55028,'Smakolyk',_cp1250 X'536D616B6FB3796B',37,7,1,0,1,49536,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,80000,0,0,0,0,0,0,0,0,0,0,0),
+(55028,'Smakolyk',_cp1250 X'536D616B6FB3796B',37,7,200,0,1,16768,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,80000,0,0,0,0,0,0,0,0,0,0,0),
 (55029,'Reverti Zwierza',_cp1250 X'52657665727469205A776965727A61',37,8,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55030,'Revertus Zwierza',_cp1250 X'5265766572747573205A776965727A61',37,5,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-(55031,'Smakolyk+',_cp1250 X'536D616B6FB3796B2B',37,9,1,0,1,49536,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0),
+(55031,'Smakolyk+',_cp1250 X'536D616B6FB3796B2B',37,9,200,0,1,16768,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0),
 (55032,'Sfera Losu Zwierzaka',_cp1250 X'5366657261204C6F7375205A776965727A616B61',37,10,200,0,1,0,4,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55033,'Zaczaruj zwierzaka',_cp1250 X'5A61637A6172756A207A776965727A616B61',37,11,200,0,1,16512,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55042,'Smaczny Smakolyk',_cp1250 X'536D61637A6E7920536D616B6FB3796B',37,7,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,200000,1200,1,0,0,0,0,0,0,0,0,0),
@@ -349,6 +349,30 @@ BEGIN NOT ATOMIC
 		UPDATE world.item_proto SET name = 'Jajo Aamona', locale_name = _cp1250 X'4A616A6F2041616D6F6E61' WHERE vnum = 55414;
 		UPDATE world.item_proto SET name = 'Maly Aamon (pieczec)', locale_name = _cp1250 X'4D61B3792041616D6F6E2028706965637AEAE629' WHERE vnum = 55714;
 		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:names_v1', NOW());
+	END IF;
+END//
+DELIMITER ;
+
+-- ---- The treats stack to 200 (the owner's Yohara list 3.0.14, item 3), once on a world that has the rows: pety:stack_v2 ------
+DELIMITER //
+BEGIN NOT ATOMIC
+	IF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pety:stack_v2') = 0 THEN
+		UPDATE world.item_proto SET stack = 200, antiflag = antiflag & ~32768, flag = flag | 4 WHERE vnum = 55028;
+		UPDATE world.item_proto SET stack = 200, antiflag = antiflag & ~32768, flag = flag | 4 WHERE vnum = 55031;
+		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:stack_v2', NOW());
+	END IF;
+END//
+DELIMITER ;
+
+-- ---- Zaczaruj zwierzaka 55033 in the Battle Pass (item 9 of the 3.0.14 list; pl-wiki: battle pass), once: pety:bp_enchant_v1. The
+-- table is the game core's (playerbot_battlepass.h creates and seeds it); before it exists nothing happens and the
+-- marker waits. Only a free third reward of missions 6, 9, 12 - an operator's own reward is kept.
+DELIMITER //
+BEGIN NOT ATOMIC
+	IF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pety:bp_enchant_v1') = 0 AND (SELECT COUNT(*) FROM
+			information_schema.TABLES WHERE TABLE_SCHEMA = 'player' AND TABLE_NAME = 'battlepass_mission') > 0 THEN
+		UPDATE player.battlepass_mission SET reward3_vnum = 55033, reward3_count = 1 WHERE id IN (6, 9, 12) AND reward3_vnum = 0;
+		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:bp_enchant_v1', NOW());
 	END IF;
 END//
 DELIMITER ;

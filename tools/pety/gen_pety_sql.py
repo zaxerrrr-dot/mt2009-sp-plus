@@ -27,6 +27,14 @@ LIMIT_REAL_TIME = 7
 
 MIGRATED_ID_BASE = 0xF0000000   # pet ids of the old system's pets (never an item id)
 NAMES_MARKER = 'pety:names_v1'  # the items' names (pl-wiki) put on an existing world once; bump on a rename
+# The owner's Yohara list 3.0.14, item 3: the treats stack to 200 like the other pet consumables (Smakolyk 55028,
+# Smakolyk+ 55031; Smaczny Smakolyk 55042 already did). A world that wrote pety:items_v1 gets the new stack / flags once.
+STACK_MARKER = 'pety:stack_v2'
+STACK_VNUMS = (55028, 55031)
+# Item 9: Zaczaruj zwierzaka 55033 as a Battle Pass reward (pl-wiki: "System przepustki bojowej") - the third reward of
+# the last mission of the seeded Metin / monster / fish chains (6, 9, 12), once and only where that reward is free.
+BP_MARKER = 'pety:bp_enchant_v1'
+BP_MISSIONS = (6, 9, 12)
 
 
 def item(vnum, name, desc, type_, subtype, stack=200, antiflag=0, gold=0, sell=0, limit=(0, 0), values=(0,) * 6,
@@ -68,13 +76,13 @@ def items():
                         ITEM_PET, PET_SKILL, stack=1, values=(sid,), gold=10000, sell=1000,
                         icon='icon/item/%d.tga' % (55011 if s[2] == D.AUTO else 55012)))
     out.append(item(55028, u"Smakołyk", u"Daje zwierzakowi 80.000 PD przedmiotu (okno „Przedmiot EXP”).",
-                    ITEM_PET, PET_EXPFOOD, stack=1, antiflag=A_SELL | A_DROP | A_PKDROP, values=(80000,)))
+                    ITEM_PET, PET_EXPFOOD, antiflag=A_SELL | A_DROP | A_PKDROP, values=(80000,)))
     out.append(item(55029, u"Reverti Zwierza", u"Usuwa wszystkie umiejętności zwierzaka (prawy przycisk myszy przy "
                     u"otwartym oknie zwierzaka).", ITEM_PET, PET_SKILL_ALL_DEL_BOOK))
     out.append(item(55030, u"Revertus Zwierza", u"Usuwa jedną wybraną umiejętność zwierzaka (przeciągnij na "
                     u"umiejętność).", ITEM_PET, PET_SKILL_DEL_BOOK))
     out.append(item(55031, u"Smakołyk+", u"Daje zwierzakowi 5% PD przedmiotu potrzebnych do następnego poziomu.",
-                    ITEM_PET, PET_EXPFOOD_PER, stack=1, antiflag=A_SELL | A_DROP | A_PKDROP, values=(5,)))
+                    ITEM_PET, PET_EXPFOOD_PER, antiflag=A_SELL | A_DROP | A_PKDROP, values=(5,)))
     out.append(item(55032, u"Sfera Losu Zwierzaka", u"Pokazuje typ zwierzaka (przycisk „Sfera losu” w oknie "
                     u"zwierzaka).", ITEM_PET, PET_ATTR_DETERMINE, gold=10000, sell=1000, icon='icon/item/55033.tga'))
     out.append(item(55033, u"Zaczaruj zwierzaka", u"Losuje od nowa typ zwierzaka (1-8), jego czas trwania i - gdy "
@@ -282,6 +290,38 @@ def gen_sql():
         w("\t\tUPDATE world.item_proto SET name = '%s', locale_name = %s WHERE vnum = %d;"
           % (ascii_name(it['name']), cp1250_hex(it['name']), it['vnum']))
     w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % NAMES_MARKER)
+    w("\tEND IF;")
+    w("END//")
+    w("DELIMITER ;")
+    w("")
+    # ---- stack (3.0.14) ----
+    w("-- ---- The treats stack to 200 (the owner's Yohara list 3.0.14, item 3), once on a world that has the rows: %s ------"
+      % STACK_MARKER)
+    w("DELIMITER //")
+    w("BEGIN NOT ATOMIC")
+    w("\tIF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '%s') = 0 THEN" % STACK_MARKER)
+    for it in its:
+        if it['vnum'] in STACK_VNUMS:
+            assert it['stack'] == 200 and not it['antiflag'] & A_STACK, it['vnum']
+            w("\t\tUPDATE world.item_proto SET stack = %d, antiflag = antiflag & ~%d, flag = flag | %d WHERE vnum = %d;"
+              % (it['stack'], A_STACK, F_STACK, it['vnum']))
+    w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % STACK_MARKER)
+    w("\tEND IF;")
+    w("END//")
+    w("DELIMITER ;")
+    w("")
+    # ---- battle pass (3.0.14) ----
+    w("-- ---- Zaczaruj zwierzaka 55033 in the Battle Pass (item 9 of the 3.0.14 list; pl-wiki: battle pass), once: %s. The"
+      % BP_MARKER)
+    w("-- table is the game core's (playerbot_battlepass.h creates and seeds it); before it exists nothing happens and the")
+    w("-- marker waits. Only a free third reward of missions %s - an operator's own reward is kept." % ', '.join(map(str, BP_MISSIONS)))
+    w("DELIMITER //")
+    w("BEGIN NOT ATOMIC")
+    w("\tIF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '%s') = 0 AND (SELECT COUNT(*) FROM" % BP_MARKER)
+    w("\t\t\tinformation_schema.TABLES WHERE TABLE_SCHEMA = 'player' AND TABLE_NAME = 'battlepass_mission') > 0 THEN")
+    w("\t\tUPDATE player.battlepass_mission SET reward3_vnum = 55033, reward3_count = 1 WHERE id IN (%s) AND reward3_vnum = 0;"
+      % ', '.join(map(str, BP_MISSIONS)))
+    w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % BP_MARKER)
     w("\tEND IF;")
     w("END//")
     w("DELIMITER ;")
