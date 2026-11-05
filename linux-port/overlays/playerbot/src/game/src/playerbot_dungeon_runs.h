@@ -2901,6 +2901,41 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_YDG_TRAIN_V2: true when a training party's member refusing for a fight, its health or an
+	// afk moment is held for the run (the fight dropped, a potion drunk) within the gathering's first minute.
+	bool HoldPlayerBotDgRunTrainee(LPCHARACTER ch, TPlayerBotAIState& state, const char* refusal, const TPlayerBotDgRun& run,
+			DWORD dwNow)
+	{
+		if (!ch || !refusal || ch->IsDead())
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		if (!IsPlayerBotYdgTrainee(pid) && !IsPlayerBotErebuTrainee(pid))
+			return false;
+		if (dwNow - run.dwCalledAt > 60000)
+			return false;
+		if (!strcmp(refusal, "fight"))
+		{
+			if (state.dwGuildWarEnemyGID != 0 || playerbot_pvp::IsInDuel(pid, dwNow) || state.bRecoveringAfterDeath)
+				return true;	// it waits for those to end
+			state.bMultiPullActive = false;
+			state.bTacticalRetreat = false;
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+		}
+		else if (!strcmp(refusal, "hurt"))
+		{
+			if (ch->GetMaxHP() > ch->GetHP())
+				ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
+		}
+		else if (!strcmp(refusal, "afk"))
+			state.persona.dwAfkUntil = 0;
+		else
+			return false;
+		PlayerBotLogThrottled("dgrun_trainee_hold", dwNow, "BOT_DGRUN: trainee held pid=%u name=%s run=%d why=%s", pid,
+				ch->GetName(), run.iId, refusal);
+		return true;
+	}
+
 	// The call answered, the party on its way and gathering: false when the
 	// run is over (closed here) and can be forgotten.
 	bool UpdatePlayerBotDgRunGather(TPlayerBotDgRun& run, DWORD dwNow)
@@ -2933,6 +2968,16 @@ namespace
 				}
 				// Looked at again as it answers: whatever claimed it since keeps it.
 				const char* refusal = GetPlayerBotDgRunRefusal(ch, *state, dwNow);
+				// MT2009_PLUS_BOT_YDG_TRAIN_V2: a training party's member (YDG, Erebu) caught in a fight, hurt or afk
+				// as its party is called breaks that off and answers a moment later - the night of 5 November lost
+				// whole parties (their Shaman first) to "why=fight" in the first minute.
+				if (refusal && HoldPlayerBotDgRunTrainee(ch, *state, refusal, run, dwNow))
+				{
+					rb.dwAnswerAt = dwNow + 2000;
+					++pending;
+					healerPending = healerPending || (ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0);
+					continue;
+				}
 				if (refusal)
 				{
 					DropPlayerBotDgRunMember(run, pid, dwNow, PLAYERBOT_DGRUN_REST_REFUSED_MS, refusal);
