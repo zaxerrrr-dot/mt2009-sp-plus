@@ -410,5 +410,12 @@
 #ifdef ENABLE_GROWTH_PET_SYSTEM
 #define ENABLE_UPBRINGING_PET_CONQUEROR_LEVEL
 #endif
+// MT2009_PLUS_LANG_V1 (the client's languages, client-patches/lang + tools/lang/build_lang_packs.py): the text codepage
+// follows the language of game1.cfg (LANGUAGE): CODEPAGE of the pack file locale/<language>/language.cfg, else a built-in
+// table, else 1250 - set once at start (a language change needs a restart; app.Mt2009Restart() starts the client again).
+// A language whose locale/<language>/skilldesc.txt is in no pack falls back to "pl" (it stopped the client before), and
+// LoadLocaleData reads locale/pl/skilldesc.txt when the language has none. Root: mt2009lang.py
+// (app.MT2009_LANG_CODEPAGE says this exe switches the codepage).
+#define ENABLE_MT2009_LANG_CODEPAGE
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

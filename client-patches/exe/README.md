@@ -1190,3 +1190,21 @@ Zbudowane `build.sh msvc --smoke` (MSVC 14.44, `EXEBUILD_WORK=cache/exebuild`, �
 exe-src18 (tytuły, zwierzaki, kolory po relogu, ruch podnoszenia) + ta nakładka, kopia na twardych linkach):
 `cache/yohara/exe-out19/metin2client.exe` (sha256 `eceb7ee6…2b561a6e9f`), bez ostrzeżeń w zmienionych plikach, smoke do
 ekranu logowania (5.11.2026).
+
+## Języki klienta – `MT2009_PLUS_LANG_V1` (`ENABLE_MT2009_LANG_CODEPAGE`; `client-patches/lang`, `tools/lang`)
+
+Stary system języków (nakładka `locale/<język>/` na polski, `LANGUAGE` w `game1.cfg`) działał tylko dla angielskiego:
+strona kodowa była na sztywno 1250, a język bez własnego `skilldesc.txt` zatrzymywał klienta (`RegisterSkillDesc`).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_LANG_CODEPAGE` |
+| `UserInterface/UserInterface.cpp` | `Mt2009Lang_ApplyCodePage()` zaraz po `new CPythonApplication` (game1.cfg wczytany, paczki otwarte): `CODEPAGE` z `locale/<język>/language.cfg` w paczkach (paczka `lang` z buildu), inaczej wbudowana tabela (pl/cz/hu/ro 1250, en/de/es/fr/it/pt 1252, gr 1253, tr 1254, ae 1256), inaczej 1250 → `MULTI_LOCALE_CODE` + `SetDefaultCodePage`; język bez `locale/<język>/skilldesc.txt` w paczkach wraca na `pl` |
+| `UserInterface/PythonApplication.cpp` | `LoadLocaleData`: brak `skilldesc.txt` języka → `locale/pl/skilldesc.txt` zamiast błędu |
+| `UserInterface/PythonApplicationModule.cpp` | `app.MT2009_LANG_CODEPAGE` (root `mt2009lang.py`: ten exe pokazuje każdy język) i `app.Mt2009Restart()` (ten sam exe, ta sama linia poleceń i katalog, potem `Exit`) |
+
+Zmiana języka działa od następnego startu klienta (exe czyta nazwy, opisy i stronę kodową przy starcie). Bez tego exe
+(exe-src20 i starsze) root oferuje tylko języki czytelne w 1250 (pl, en, de, ro, cz, hu – lista `works_on_1250_exe` w
+`locale/common/mt2009_languages.txt`). Sprawdzone `clang-cl /Zs` trzech plików na kopii źródeł exe-src20 z tą nakładką
+(5.11.2026, z wymuszonym `ENABLE_MT2009_LANG_CODEPAGE`). Kopia źródeł do budowy: `cache/yohara/exe-src21` (= exe-src20 na
+twardych linkach + te cztery pliki); NIE zbudowane.

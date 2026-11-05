@@ -479,6 +479,35 @@ PyObject* appExit(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+// MT2009_PLUS_LANG_V1: app.Mt2009Restart() - start this exe again (same command line and folder) and quit; a new language
+// (its codepage, its texts) needs a fresh client. Returns 1 when the new client was started (this one then exits), else 0.
+PyObject* appMt2009Restart(PyObject* poSelf, PyObject* poArgs)
+{
+	char szExe[MAX_PATH] = {};
+	char szDir[MAX_PATH] = {};
+	if (!GetModuleFileNameA(NULL, szExe, sizeof(szExe)) || !GetCurrentDirectoryA(sizeof(szDir), szDir))
+		return Py_BuildValue("i", 0);
+	std::string stCmd = GetCommandLineA();
+	std::vector<char> vecCmd(stCmd.begin(), stCmd.end());
+	vecCmd.push_back('\0');
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcessA(szExe, &vecCmd[0], NULL, NULL, FALSE, 0, NULL, szDir, &si, &pi))
+	{
+		TraceError("app.Mt2009Restart: CreateProcess failed (%lu)", GetLastError());
+		return Py_BuildValue("i", 0);
+	}
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+	CPythonApplication::Instance().Exit();
+	return Py_BuildValue("i", 1);
+}
+#endif
+
 PyObject * appSetCamera(PyObject * poSelf, PyObject * poArgs)
 {
 	float Distance;
@@ -1515,6 +1544,9 @@ void initapp()
 		{ "Create",						appCreate,						METH_VARARGS },
 		{ "Process",					appProcess,						METH_VARARGS },
 		{ "Exit",						appExit,						METH_VARARGS },
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+		{ "Mt2009Restart",				appMt2009Restart,				METH_VARARGS }, // MT2009_PLUS_LANG_V1
+#endif
 		{ "Abort",						appAbort,						METH_VARARGS },
 		{ "SetMouseHandler",			appSetMouseHandler,				METH_VARARGS },
 		{ "IsExistFile",				appIsExistFile,					METH_VARARGS },
@@ -1643,6 +1675,10 @@ void initapp()
 
 	// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 feature flags
 	PyModule_AddIntConstant(poModule, "MT2009_MINIGAMES", 1);
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+	// MT2009_PLUS_LANG_V1: the text codepage follows the language (root mt2009lang.py offers every language then)
+	PyModule_AddIntConstant(poModule, "MT2009_LANG_CODEPAGE", 1);
+#endif
 	// MT2009_PLUS_FISH_PUZZLE_V2: the fish puzzle (root/uiminigame.py, uiminigamefishevent.py); WJ_ENABLE_TRADABLE_ICON is not in
 	// this exe (the package's python asks it)
 #ifdef ENABLE_MINI_GAME

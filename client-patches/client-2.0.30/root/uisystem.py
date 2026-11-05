@@ -222,6 +222,9 @@ class SystemDialog(ui.ScriptWindow):
 			return self.extraOptionDlg
 		if key == "keybind":
 			return __import__("uikeybind").GetWindow()
+		if key == "lang":
+			# MT2009_PLUS_LANG_V1: the client's language
+			return __import__("uilanguage").GetWindow()
 		return None
 
 	if app.ENABLE_MOVE_CHANNEL:

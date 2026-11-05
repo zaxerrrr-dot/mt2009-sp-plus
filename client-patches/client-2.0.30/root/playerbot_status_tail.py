@@ -194,8 +194,11 @@ PERSONALITY_TITLES = {
 
 # Iwakura's names are Polish, and the English client shows English ones.
 import systemSetting
-if systemSetting.GetLanguage() == "en":
-	PERSONALITY_TITLES.update({0: 'Persistent Explorer', 1: 'Metin Slayer', 2: 'Team Player', 3: 'Equipment Master', 4: 'Careful Gatherer', 5: 'Trader', 6: 'Wanderer', 7: 'Metin Farmer', 8: 'M3 Farmer', 9: 'M2 Farmer', 10: 'Medal Farmer', 100: 'Grinder', 101: 'Conqueror', 102: 'Trader', 103: 'Gambler', 104: 'Perfectionist', 105: 'Metin Slayer', 106: 'Miner', 107: 'Fisher', 108: 'Mercenary', 109: 'Companion', 110: 'Metinologist', 111: 'Addict', 112: 'Mad Scientist', 113: 'Executioner', 114: 'Mad Angler', 115: 'Junior Gambler', 116: 'Senior Gambler', 117: 'Chief Gambler', 118: 'Mad Gambler', 119: 'Herbalist'})
+# MT2009_PLUS_LANG_V1: every language but Polish - its own text of the Polish title (mt2009lang), else English
+_PERSONALITY_TITLES_EN = ({0: 'Persistent Explorer', 1: 'Metin Slayer', 2: 'Team Player', 3: 'Equipment Master', 4: 'Careful Gatherer', 5: 'Trader', 6: 'Wanderer', 7: 'Metin Farmer', 8: 'M3 Farmer', 9: 'M2 Farmer', 10: 'Medal Farmer', 100: 'Grinder', 101: 'Conqueror', 102: 'Trader', 103: 'Gambler', 104: 'Perfectionist', 105: 'Metin Slayer', 106: 'Miner', 107: 'Fisher', 108: 'Mercenary', 109: 'Companion', 110: 'Metinologist', 111: 'Addict', 112: 'Mad Scientist', 113: 'Executioner', 114: 'Mad Angler', 115: 'Junior Gambler', 116: 'Senior Gambler', 117: 'Chief Gambler', 118: 'Mad Gambler', 119: 'Herbalist'})
+if systemSetting.GetLanguage() != "pl":
+	for _k, _en in _PERSONALITY_TITLES_EN.items():
+		PERSONALITY_TITLES[_k] = __import__("mt2009lang").T(PERSONALITY_TITLES.get(_k, _en), _en)
 
 PERSONALITY_COLOURS = {
 	0: (0.75, 0.85, 1.0),
@@ -246,9 +249,11 @@ LEGEND_TITLES = {
 }
 LEGEND_CHAMPION_TITLE = "Czempion %s"
 LEGEND_KINGDOMS = {1: "Shinsoo", 2: "Chunjo", 3: "Jinno"}
-if systemSetting.GetLanguage() == "en":
-	LEGEND_TITLES.update({1: "Distinguished", 2: "Special", 3: "Walking Legend"})
-	LEGEND_CHAMPION_TITLE = "Champion of %s"
+if systemSetting.GetLanguage() != "pl":
+	# MT2009_PLUS_LANG_V1: the language's text of the Polish one, else English
+	for _k, _en in {1: "Distinguished", 2: "Special", 3: "Walking Legend"}.items():
+		LEGEND_TITLES[_k] = __import__("mt2009lang").T(LEGEND_TITLES.get(_k, _en), _en)
+	LEGEND_CHAMPION_TITLE = __import__("mt2009lang").T(LEGEND_CHAMPION_TITLE, "Champion of %s")
 LEGEND_COLOURS = {
 	1: (0.55, 0.85, 1.0),
 	2: (0.8, 0.5, 1.0),

@@ -149,7 +149,7 @@ MSG_TOOLTIP_SCORE4 = "Wszystkie karty w rz\xeadzie lub kolumnie: +10 punkt\xf3w.
 
 
 def DescFile():
-	return app.GetLocalePath() + "/catchking_event_desc.txt"
+	return __import__("mt2009lang").LocalePath(app.GetLocalePath() + "/catchking_event_desc.txt")  # MT2009_PLUS_LANG_V1
 
 
 def LoadScript(self, fileName):

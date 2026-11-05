@@ -1,0 +1,18 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Idioma
+Język / Language	Idioma / Language
+Język klienta: %s	Idioma do cliente: %s
+Nazwy, opisy i okna zmienią język po ponownym	Nomes, descrições e janelas mudam de idioma
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Um documento selado que permite fabricar Reforço para Itens.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Um documento selado que permite fabricar Reforço para Itens. Este item pode ser negociado.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Um documento selado que permite fabricar Feitiço para Itens.
+Po ponownym uruchomieniu: %s	Após reiniciar: %s
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Move o ficheiro para a pasta upload/ no diretório principal do jogo.
+Standardowa Muzyka Metin2	Música Padrão do Jogo
+Standardowa muzyka Metin2	Música padrão do jogo
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Esta versão do cliente tem apenas alguns idiomas - atualiza o cliente.
+Uruchom klienta ponownie (Restart the client).	Reinicia o cliente.
+Uruchom ponownie	Reiniciar
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Guardar captura de ecrã:  Print (a captura é guardada na subpasta "screenshot" do jogo)
+uruchomieniu klienta (Language: after a restart).	após reiniciar o cliente.

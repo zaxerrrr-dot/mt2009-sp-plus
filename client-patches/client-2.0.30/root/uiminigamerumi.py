@@ -161,7 +161,7 @@ for _key, _val in (('MINI_GAME_RUMI_TITLE', TITLE), ('MINI_GAME_RUMI_START_TEXT'
 
 
 def DescFile():
-	return "%s/mini_game_okey_desc.txt" % app.GetLocalePath()
+	return __import__("mt2009lang").LocalePath("%s/mini_game_okey_desc.txt" % app.GetLocalePath())  # MT2009_PLUS_LANG_V1
 
 
 def HasExe():

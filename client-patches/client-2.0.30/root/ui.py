@@ -20,6 +20,11 @@ import colorInfo
 import math
 
 from ui_event import MakeEvent, Event, MakeCallback
+# MT2009_PLUS_LANG_V1: the client's language - every TextLine text (labels, buttons, tooltips, dialogs, titles, uiscript
+# "text") and the python's chat lines pass through mt2009lang.Translate (a Polish string of the root -> the language's)
+import mt2009lang
+mt2009lang.Install()
+_Translate = mt2009lang.Translate
 
 EmptyFunction = lambda *args, **kwargs : None
 
@@ -855,7 +860,7 @@ class TextLine(Window):
 		self.SetPackedFontColor(colorInfo.GetColorFromColorTuple(color_tuple))
 
 	def SetText(self, text):
-		wndMgr.SetText(self.hWnd, text)
+		wndMgr.SetText(self.hWnd, _Translate(text))
 
 	def GetText(self):
 		return wndMgr.GetText(self.hWnd)

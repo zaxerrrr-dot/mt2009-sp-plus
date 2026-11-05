@@ -1,0 +1,896 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+(Auction)	(Subasta)
+10% or more	10% o más
+100% szans na przeczytanie	100% de probabilidad de lectura
+15% or more	15% o más
+20% or more	20% o más
+25% only	Solo 25%
+AC Miryang (k)	AC Miryang (f)
+AC Miryang+ (k)	AC Miryang+ (f)
+AFC Jayang (m)	AFC Yayang (m)
+AFC Yayang (k)	AFC Yayang (f)
+AFC Yayang+ (k)	AFC Yayang+ (f)
+Accept	Aceptar
+Aktywny pet zapomina wszystkie umiejętności (miejsca zostają otwarte).	La mascota activa olvida todas sus habilidades (las casillas siguen abiertas).
+Alchemy	Alquimia
+Alchemy Grade:	Grado de alquimia:
+All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Todos los objetos que no quepan en tu inventario se trasladarán al Almacén de compras. ¿Quieres continuar?
+All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Todos los |cFFFFFF99|h{}|r se trasladarán al inventario o al Almacén de compras. ¿Quieres continuar?
+Amulet Wojownika	Amuleto del Guerrero
+Amulet wzmacniający odwagę noszącego.	Un amuleto que refuerza el valor de quien lo lleva.
+Ancient	Antiguo
+Armor	Armadura
+Aromatyczna zupa grzybowa, przywraca siły zmęczonym wędrowcom.	Una aromática sopa de setas que devuelve las fuerzas a los viajeros cansados.
+Artefakt wzmacniający czarną magię, zdobywany z piekielnych otchłani.	Un artefacto que potencia la magia negra, obtenido de los abismos infernales.
+Auction	Subasta
+Auction List	Lista de subastas
+Auctions	Subastas
+Auto Łowy (8h)	Caza Automática (8h)
+Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Regenera automáticamente tus SP. Capacidad: 1.000.000 SP.
+Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Regenera automáticamente tus SP. Capacidad: 100.000 SP.
+Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	Regenera automáticamente tus SP. Capacidad: 300.000 SP.
+Automatycznie regeneruje twoje PE. Objętość 700.000 PE.	Regenera automáticamente tus SP. Capacidad: 700.000 SP.
+Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Regenera automáticamente tus HP. Capacidad: 1.000.000 HP.
+Automatycznie regeneruje twoje PŻ. Objętość 10.000.000 PŻ.	Regenera automáticamente tus HP. Capacidad: 10.000.000 HP.
+Automatycznie regeneruje twoje PŻ. Objętość 3.000.000 PŻ.	Regenera automáticamente tus HP. Capacidad: 3.000.000 HP.
+Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	Regenera automáticamente tus HP. Capacidad: 7.000.000 HP.
+Average Price: |cFF99FF99|hRequesting...|r	Precio medio: |cFF99FF99|hSolicitando...|r
+Average Price: |cFFFF9999|hNot available|r	Precio medio: |cFFFF9999|hNo disponible|r
+Average Price: |cFFFFFF99|h{}|r	Precio medio: |cFFFFFF99|h{}|r
+Bardzo naturalna fryzura z włosami do ramion. Na stałe zmienia fryzurę Twojej postaci.	Un peinado muy natural con el pelo por los hombros. Cambia de forma permanente el peinado de tu personaje.
+Bell	Campana
+Bezcenna peleryna używana przez wielu uciekinierów. Gdy ją założysz, twoja ranga zostanie ukryta.	Una capa de valor incalculable usada por muchos fugitivos. Cuando te la pongas, tu rango quedará oculto.
+Bi-Pung	Bi-Pung
+Bi-Sang-Gab	Bi-Sang-Gab
+Bilet na jeden obrót Kołem Fortuny (F12). Kupisz go w ItemShopie za Smocze Monety.	Un billete para un giro de la Rueda de la Fortuna (F12). Se compra en la Tienda de objetos con Monedas Dragón.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków, jak również w Twierdzy Czerwonego Smoka. Wystarczy pokazać go odpowiedniemu strażnikowi. Przedmiot ten jest niezdatny do handlu.	Este billete te permite acceder a un nuevo nivel de la Mazmorra de Arañas y también de la Fortaleza del Dragón Rojo. Basta con mostrárselo al guardia correspondiente. Este objeto no es comerciable.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków.	Este billete te permite acceder a un nuevo nivel de la Mazmorra de Arañas.
+Blade	Hoja
+Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Bloquea la experiencia obtenida. Esto también afecta a las recompensas de misiones. ¡La experiencia obtenida mientras dura el efecto se pierde para siempre!
+Body	Cuerpo
+Book	Libro
+Borussia Chunjo (k)	Borussia Chunjo (f)
+Borussia Chunjo+ (k)	Borussia Chunjo+ (f)
+Bow	Arco
+Brillant	Brillante
+Buy	Comprar
+By accepting the offer you will receive the price offered in exchange for the item. Do you want to accept the offer?	Si aceptas la oferta, recibirás el precio ofrecido a cambio del objeto. ¿Quieres aceptar la oferta?
+Bąk miotający iskry.	Una peonza que lanza chispas.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Una bendición que regenera al instante tus Puntos de Vida al 100%. Se puede usar una vez cada 2 minutos. Comparte el tiempo de recarga con las Pociones de Invulnerabilidad e Intocabilidad.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Una bendición que regenera al instante tus Puntos de Vida y tus Puntos de Energía al 100%. Se puede usar una vez cada 2 minutos. Comparte el tiempo de recarga con las Pociones de Invulnerabilidad e Intocabilidad.
+Cancel	Cancelar
+Cancel Filters	Quitar filtros
+Cancel Shop	Cerrar tienda
+Cannot make private offers for item that costs less than 10.000 yangs.	No se pueden hacer ofertas privadas por objetos que cuesten menos de 10.000 Yang.
+Certyfikat Duszy	Certificado del Alma
+Chung-Zin	Chung-Zin
+Ciągliwość	Maleabilidad
+Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Una punta pesada hecha de piedra resistente. Aunque es más lenta, asesta golpes potentes y es perfecta para atravesar armaduras duras.
+Claim Items	Recoger objetos
+Claim Money	Recoger dinero
+Claw	Garra
+Continue	Continuar
+Costume	Atuendo
+Create	Crear
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (biały).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (blanco).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (czerwony).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (rojo).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (niebieski).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (azul).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (gris).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (verde).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	El hechizo de este sello invoca a tu montura, el majestuoso Tigre Real (dorado).
+Czarna Stal	Acero Negro
+Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Gorro negro para hombre con orejas de conejo. Te otorga como mínimo una bonificación aleatoria.
+Czerwone Nasiono	Semilla Roja
+Czysta esencja z serca najgłębszych źródeł.	Esencia pura del corazón de los manantiales más profundos.
+Dagger	Daga
+Daje aktywnemu petowi 5% doświadczenia potrzebnego na następny poziom.	Otorga a la mascota activa el 5% de la experiencia necesaria para el siguiente nivel.
+Daje aktywnemu petowi 800.000 punktów doświadczenia.	Otorga 800.000 puntos de experiencia a la mascota activa.
+Daje: +30% PD, +20% obrony przed surami, +20% obrony przed szamanami, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Otorga: +30% EXP, +20% defensa contra suras, +20% defensa contra chamanes, +30% fuerza contra monstruos, +10% HP máx., +10% SP máx.
+Daje: +30% PD, +20% obrony przed wojownikami, +20% obrony przed ninja, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Otorga: +30% EXP, +20% defensa contra guerreros, +20% defensa contra ninjas, +30% fuerza contra monstruos, +10% HP máx., +10% SP máx.
+Daje: +50% PD, +30% ataku, +20% szybkości ataku, +20% szybkości zaklęć, +10% maks. PŻ, +10% maks. PE.	Otorga: +50% EXP, +30% ataque, +20% velocidad de ataque, +20% velocidad de hechizo, +10% HP máx., +10% SP máx.
+Demoniczny Klucz	Llave Demoníaca
+Deny	Rechazar
+Diabelskie Rogi	Cuernos Diabólicos
+Do you want to buy all |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	¿Quieres comprar todos los |cFFFFFF99|h{}|r vendidos a |cFFFFFF99|h{}|r?
+Do you want to buy |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	¿Quieres comprar |cFFFFFF99|h{}|r vendido a |cFFFFFF99|h{}|r?
+Do you want to move the shop to your current location? The operation will cost |cFFFFFF99|h{}|r.	¿Quieres trasladar la tienda a tu posición actual? La operación costará |cFFFFFF99|h{}|r.
+Do you want to transfer all items to your inventory?	¿Quieres trasladar todos los objetos a tu inventario?
+Dobra Wytrzymałość	Buena Resistencia
+Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twojej postaci.	Un peinado muy conocido de los guerreros de antaño. Cambia de forma permanente el peinado de tu personaje.
+Dodaje aktywnemu petowi 7 dni energii życiowej (najwyżej 84). Pet bez energii nie może zostać przywołany.	Añade 7 días de energía vital a la mascota activa (máximo 84). Una mascota sin energía no puede ser invocada.
+Dowód na ujarzmienie siły trzech dusz – niezbędny do przebudzenia mocy Elitarnych Kamieni Duszy.	Prueba de haber sometido la fuerza de tres almas; imprescindible para despertar el poder de las Piedras Espíritu de Élite.
+Doyyumhwan CF (k)	Doyyumhwan CF (f)
+Doyyumhwan CF+ (k)	Doyyumhwan CF+ (f)
+Drewniany Klucz	Llave de Madera
+Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Un valioso anillo adornado con jade y turquesa. Otorga: +50% EXP, +30% fuerza contra monstruos, +20% velocidad de ataque y de hechizo, +10% HP y SP máx.
+Dusza wojownika, obdarzona mocą.	El alma de un guerrero, dotada de poder.
+Działają kojąco na skórę. Stosowane w leczeniu oparzeń i podrażnień	Calman la piel. Se usan para tratar quemaduras e irritaciones
+Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Con esta poción obtendrás un 150% más de experiencia en tres horas de juego. No comerciable.
+Dzięki tej pieczęci możesz przywołać jednorożca.	Con este sello puedes invocar a un unicornio.
+Dzięki tej pieczęci możesz przywołać marę senną.	Con este sello puedes invocar a una yegua de pesadilla.
+Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Con este sello puedes invocar a tu mascota.
+Dzięki tej pieczęci z jaja wykluje się Sheldon.	Con este sello, Sheldon saldrá del huevo.
+Długie blond włosy. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y rubio. Cambia de forma permanente el peinado de tu personaje.
+Długie włosy, tradycjonalna fryzura. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo, un peinado tradicional. Cambia de forma permanente el peinado de tu personaje.
+Długie, brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y castaño. Cambia de forma permanente el peinado de tu personaje.
+Długie, czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y negro. Cambia de forma permanente el peinado de tu personaje.
+Długie, czerwone włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y rojo con un estilo extravagante. Cambia de forma permanente el peinado de tu personaje.
+Długie, fioletowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y violeta con un estilo extravagante. Cambia de forma permanente el peinado de tu personaje.
+Długie, fioletowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo y violeta. Cambia de forma permanente el peinado de tu personaje.
+Długie, hebanowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo de color ébano con un estilo extravagante. Cambia de forma permanente el peinado de tu personaje.
+Długie, nieskazitelnie białe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Cabello largo de un blanco inmaculado con un estilo extravagante. Cambia de forma permanente el peinado de tu personaje.
+Earrings	Pendientes
+Efekt nie jest do końca znany, może wywoływać halucynacje.	Su efecto no se conoce del todo; puede provocar alucinaciones.
+Efekt nie łączy się z bonusami Konta Premium. Nie jest to przedmiot, po zakupie pakiet jest nadany na konto.	El efecto no se acumula con las bonificaciones de la Cuenta Premium. No es un objeto: tras la compra, el paquete se asigna a la cuenta.
+Eggs	Huevos
+Egzotyczne mięso, znane ze swojego smaku.	Carne exótica, conocida por su sabor.
+Ekstrawagancka fryzura - typowa dla kobiet sura. Na stałe zmienia fryzurę Twojej postaci.	Un peinado extravagante, típico de las mujeres sura. Cambia de forma permanente el peinado de tu personaje.
+Elegancka, gładka fryzura. Na stałe zmienia fryzurę Twojej postaci.	Un peinado elegante y liso. Cambia de forma permanente el peinado de tu personaje.
+Esencja Magii	Esencia de Magia
+Esencja Natury	Esencia de la Naturaleza
+Esencja Wody	Esencia del Agua
+Ezoteryczne Drewno	Madera Esotérica
+FC Bakra (k)	FC Bakra (f)
+FC Bakra+ (k)	FC Bakra+ (f)
+FC Bawaria Hwang+ (k)	FC Hwang Baviera+ (f)
+FC Bawaria Hwang+ (m)	FC Hwang Baviera+ (m)
+FC Bokjung (k)	FC Bokjung (f)
+FC Bokjung+ (k)	FC Bokjung+ (f)
+FC Bokjung+ (m)	FC Bokjung+ (m)
+FC Gumsan (k)	FC Gumsan (f)
+FC Gumsan+ (k)	FC Gumsan+ (f)
+FC Jinno 04 (k)	FC Jinno 04 (f)
+FC Jinno 04+ (k)	FC Jinno 04+ (f)
+FC Ognista Ziemia+ (k)	FC Tierra de Fuego+ (f)
+FC Ognista Ziemia+ (m)	FC Tierra de Fuego+ (m)
+FC Sangsun Dong (k)	FC Sangsun Dong (f)
+FC Sangsun Dong+ (k)	FC Sangsun Dong+ (f)
+FC Sangsun Dong+ (m)	FC Sangsun Dong+ (m)
+FC St. Seungryong (k)	FC St. Seungryong (f)
+FC St. Seungryong+ (k)	FC St. Seungryong+ (f)
+Fan	Fan
+Filters History	Historial de filtros
+Fish	Pez
+Fryzura nadająca Ci mroczny wygląd. Na stałe zmienia fryzurę Twojej postaci.	Un peinado que te da un aspecto sombrío. Cambia de forma permanente el peinado de tu personaje.
+Fryzura układana warstwami. Na stałe zmienia fryzurę Twojej postaci.	Un peinado a capas. Cambia de forma permanente el peinado de tu personaje.
+Fryzura wyglądająca jak ogonek kucyka. Na stałe zmienia fryzurę Twojej postaci.	Un peinado que parece una cola de poni. Cambia de forma permanente el peinado de tu personaje.
+Fryzura z długim kucykiem. Na stałe zmienia fryzurę Twojej postaci.	Un peinado con una larga cola de caballo. Cambia de forma permanente el peinado de tu personaje.
+Fryzura z kucykiem. Na stałe zmienia fryzurę Twojej postaci.	Un peinado con coleta. Cambia de forma permanente el peinado de tu personaje.
+Futro przeklętego wilka	Pelaje de Lobo Maldito
+GNK Kuahlo Dong (k)	GNK Kuahlo Dong (f)
+GNK Kuahlo Dong+ (k)	GNK Kuahlo Dong+ (f)
+Galawaryong (k)	Galawaryong (f)
+Galawaryong+ (k)	Galawaryong+ (f)
+Gang-Ma	Gang-Ma
+Gang-Ryoung-Gab	Gang-Ryoung-Gab
+Gałąź wciąż bijąca życiem, tętniąca energią.	Una rama que aún late con vida y rebosa energía.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa nawet gdy jesteś wylogowany.	Mientras estén equipados, aumentan tu velocidad de movimiento en 30. El tiempo corre incluso cuando no estás conectado.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa tylko kiedy buty są założone.	Mientras estén equipados, aumentan tu velocidad de movimiento en 30. El tiempo solo corre mientras llevas puestos los zapatos.
+Geuk-Hon-Gab	Geuk-Hon-Gab
+Gorące wino z przyprawami, które przez 30 minut obdarzy cię następującymi bonusami: +10% szybkości, +5% obrażeń i +10% doświadczenia.	Vino caliente con especias que durante 30 minutos te otorga las siguientes bonificaciones: +10% de velocidad, +5% de daño y +10% de experiencia.
+Gourou	Gourou
+Grawerunek na pierścieniu głosi: "Niech błogosławi Cię Bóg Smoków". Pierścień ten obniża ryzyku utracenia przedmiotu w walce.	El grabado del anillo dice: «Que el Dios Dragón te bendiga». Este anillo reduce el riesgo de perder objetos en combate.
+Grot z czystego srebra, znany ze swojej skuteczności przeciwko istotom magicznym. Łucznicy używają go, aby zmierzyć się z najpotężniejszymi przeciwnikami.	Una punta de plata pura, conocida por su eficacia contra los seres mágicos. Los arqueros la usan para enfrentarse a los enemigos más poderosos.
+Gwarancja Rzemiosła (Biżuteria)	Garantía de Artesanía (Joyería)
+Gwarancja Rzemiosła (Broń)	Garantía de Artesanía (Arma)
+Gwarancja Rzemiosła (Zbroja)	Garantía de Artesanía (Armadura)
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo. No funciona con armas de nivel 30. El objeto puede destruirse.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Una garantía de artesanía que respeta el Herrero de cada pueblo. Úsala sobre un objeto para mejorarlo. El objeto puede destruirse.
+Ha-An-Gab	Ha-An-Gab
+Hairs	Peinados
+Helm	Casco
+Heuk-Gui-Gab	Heuk-Gui-Gab
+History	Historial
+Ho-Gu	Ho-Gu
+Ho-Young	Ho-Young
+Inna Wroga Wytrzymałość	Otra Resistencia Enemiga
+Insert Price	Introducir precio
+Inserted an invalid price.	Has introducido un precio no válido.
+Item inserted into the shopping safebox.	Objeto añadido al Almacén de compras.
+Jest to lizak o tajemniczym składzie. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Una piruleta de composición misteriosa. Otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +30% ataque, +10% HP máx., +10% SP máx.
+Jewel	Joya
+Język	Idioma
+Język / Language	Idioma / Language
+Język klienta: %s	Idioma del cliente: %s
+Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Una tablilla de piedra con runas antiguas. Emana una energía desconocida.
+Kamień Przebudzenia	Piedra del Despertar
+Kamień Tygrysa	Piedra del Tigre
+Kamień oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.	Una piedra libre de toda impureza; clave en el proceso de refinamiento de las Piedras Espíritu.
+Kamień z mocą tygrysa, klucz do rytuałów i ochrony. Przedmiot z misji.	Una piedra con el poder del tigre, clave para rituales y protección. Objeto de misión.
+Kamień z serca ziemi.	Una piedra del corazón de la tierra.
+Karta Wędkarska	Licencia de Pesca
+Karta do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich kart - 25 kart tworzy Talię Królewską. Karty i talie przepadają, gdy zacznie się następny event.	Una carta del juego Atrapa al rey. Haz clic derecho durante el evento para añadirla a tus cartas; 25 cartas forman una Baraja del rey. Las cartas y barajas se pierden cuando empieza el siguiente evento.
+Karta do gry w Okey. Kliknij prawym przyciskiem w czasie eventu Okey, aby dodać ją do kart (24 karty tworzą zestaw kart).	Una carta del juego Okey. Haz clic derecho durante el evento Okey para añadirla a tus cartas (24 cartas forman una baraja).
+Kiedyś ta brązowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Antaño, este recogido castaño era el peinado tradicional de los guerreros. Cambia de forma permanente el peinado de tu personaje.
+Kiedyś ta czerwona wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Antaño, este recogido rojo era el peinado tradicional de los guerreros. Cambia de forma permanente el peinado de tu personaje.
+Kiedyś ta fioletowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Antaño, este recogido violeta era el peinado tradicional de los guerreros. Cambia de forma permanente el peinado de tu personaje.
+Kiedyś ta jasna wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Antaño, este recogido claro era el peinado tradicional de los guerreros. Cambia de forma permanente el peinado de tu personaje.
+Kiepsko wyglądający pierścień noszony przez starożytnych bohaterów. Zdobywasz więcej punktów doświadczenia przez godzinę. | Nie może być zdjęty.	Un anillo de aspecto humilde que llevaban los héroes de antaño. Obtienes más puntos de experiencia durante una hora. | No se puede quitar.
+Kliknij prawym przyciskiem, aby dodać pień do gry Yutnori. 28 pni łączy się w planszę do Yutnori. Działa tylko w czasie eventu.	Haz clic derecho para añadir un palo al juego Iutnori. 28 palos se combinan en un tablero de Iutnori. Solo funciona durante el evento.
+Kliknij prawym przyciskiem, aby dodać planszę do gry Yutnori (okno wydarzeń lub Stół do Yutnori). Jedna gra kosztuje planszę i 30 000 Yang.	Haz clic derecho para añadir un tablero al juego Iutnori (ventana de eventos o Mesa de Iutnori). Una partida cuesta un tablero y 30 000 Yang.
+Kliknij prawym przyciskiem, aby przyjąć peta z transportera (najwyżej 3 pety na postać). Nie sprzedawaj go w sklepie NPC - pet by przepadł.	Haz clic derecho para recibir la mascota del transportador (máximo 3 mascotas por personaje). No lo vendas en una tienda de PNJ: la mascota se perdería.
+Kliknij prawym przyciskiem, aby wykluć peta (Czerwony Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Dragoncito Rojo, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Małpka, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Monito, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Mały Baashido, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Pequeño Baashido, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Nemere, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Mini Nemere, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Razador, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Mini Arrador, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Nessie, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Nessie, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Pajączek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Arañita, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Pisklę Exedyara, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Polluelo de Exedyar, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Kliknij prawym przyciskiem, aby wykluć peta (Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Haz clic derecho para incubar la mascota (Dragoncito, 100.000 Yang). La mascota invocada junto a una mascota de la Tienda de objetos gana experiencia contigo, evoluciona y te otorga bonificaciones. Ventana de mascota: /newpet o el botón de la barra.
+Klucz Mrozu	Llave de Escarcha
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	Una llave de la Tierra Helada. Úsala en la mazmorra de Nemere para llegar al Pilar de Hielo.
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	Una llave de la Tierra Helada. Úsala en la mazmorra de Nemere para abrir el siguiente paso.
+Klucz z runami demonów, pozwala wejść do Wieży Demonów po osiągnięciu dziennego limitu wejść. Znika po 48 godzinach od zakupu.	Una llave con runas demoníacas que permite entrar en la Torre Demoníaca tras alcanzar el límite diario de entradas. Desaparece 48 horas después de la compra.
+Kobieca spinka do włosów. Przedmiot pochodzi z misji.	Una horquilla de mujer. Objeto procedente de una misión.
+Kolorowe jajko wielkanocne	Un colorido huevo de Pascua
+Komplet Piłkarski w kolorze biało-czarnym dla niego. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para hombres en blanco y negro. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze biało-czarnym dla niej. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para mujeres en blanco y negro. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niego. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para hombres en negro y naranja. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niej. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para mujeres en negro y naranja. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze czerwono-złotym dla niego. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para hombres en rojo y dorado. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze czerwono-złotym dla niej. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para mujeres en rojo y dorado. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze granatowym dla niego. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para hombres en azul marino. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze granatowym dla niej. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para mujeres en azul marino. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niego. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para hombres en amarillo y azul. Te otorga como mínimo una bonificación aleatoria.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niej. Daje ci min. jeden losowy bonus.	Equipamiento futbolístico para mujeres en amarillo y azul. Te otorga como mínimo una bonificación aleatoria.
+Korzeń Czerwonego Lasu	Raíz del Bosque Rojo
+Kostium z czarnego pluszu dla niego. Daje ci min. jeden losowy bonus.	Disfraz de peluche negro para hombre. Te otorga como mínimo una bonificación aleatoria.
+Kostium z niebieskiego pluszu dla niego. Daje ci min. jeden losowy bonus.	Disfraz de peluche azul para hombre. Te otorga como mínimo una bonificación aleatoria.
+Koszul. MŚ ALG (k/bonus)	Camiseta Mundial ALG (f, bonif.)
+Koszul. MŚ ALG (m/bonus)	Camiseta Mundial ALG (m, bonif.)
+Koszul. MŚ ARG (k/bonus)	Camiseta Mundial ARG (f, bonif.)
+Koszul. MŚ ARG (m/bonus)	Camiseta Mundial ARG (m, bonif.)
+Koszul. MŚ AUS (k/bonus)	Camiseta Mundial AUS (f, bonif.)
+Koszul. MŚ AUS (m/bonus)	Camiseta Mundial AUS (m, bonif.)
+Koszul. MŚ BEL (k/bonus)	Camiseta Mundial BEL (f, bonif.)
+Koszul. MŚ BEL (m/bonus)	Camiseta Mundial BEL (m, bonif.)
+Koszul. MŚ BIH (k/bonus)	Camiseta Mundial BIH (f, bonif.)
+Koszul. MŚ BIH (m/bonus)	Camiseta Mundial BIH (m, bonif.)
+Koszul. MŚ BRA (k/bonus)	Camiseta Mundial BRA (f, bonif.)
+Koszul. MŚ BRA (m/bonus)	Camiseta Mundial BRA (m, bonif.)
+Koszul. MŚ CHI (k/bonus)	Camiseta Mundial CHI (f, bonif.)
+Koszul. MŚ CHI (m/bonus)	Camiseta Mundial CHI (m, bonif.)
+Koszul. MŚ CIV (k/bonus)	Camiseta Mundial CIV (f, bonif.)
+Koszul. MŚ CIV (m/bonus)	Camiseta Mundial CIV (m, bonif.)
+Koszul. MŚ CMR (k/bonus)	Camiseta Mundial CMR (f, bonif.)
+Koszul. MŚ CMR (m/bonus)	Camiseta Mundial CMR (m, bonif.)
+Koszul. MŚ COL (m/bonus)	Camiseta Mundial COL (m, bonif.)
+Koszul. MŚ CRC (k/bonus)	Camiseta Mundial CRC (f, bonif.)
+Koszul. MŚ CRC (m/bonus)	Camiseta Mundial CRC (m, bonif.)
+Koszul. MŚ CRO (k/bonus)	Camiseta Mundial CRO (f, bonif.)
+Koszul. MŚ CRO (m/bonus)	Camiseta Mundial CRO (m, bonif.)
+Koszul. MŚ ECU (m/bonus)	Camiseta Mundial ECU (m, bonif.)
+Koszulka MŚ ALG (k)	Camiseta Mundial ALG (f)
+Koszulka MŚ ALG (m)	Camiseta Mundial ALG (m)
+Koszulka MŚ ARG (k)	Camiseta Mundial ARG (f)
+Koszulka MŚ ARG (m)	Camiseta Mundial ARG (m)
+Koszulka MŚ AUS (k)	Camiseta Mundial AUS (f)
+Koszulka MŚ AUS (m)	Camiseta Mundial AUS (m)
+Koszulka MŚ BEL (k)	Camiseta Mundial BEL (f)
+Koszulka MŚ BEL (m)	Camiseta Mundial BEL (m)
+Koszulka MŚ BIH (k)	Camiseta Mundial BIH (f)
+Koszulka MŚ BIH (m)	Camiseta Mundial BIH (m)
+Koszulka MŚ BRA (k)	Camiseta Mundial BRA (f)
+Koszulka MŚ BRA (m)	Camiseta Mundial BRA (m)
+Koszulka MŚ CHI (k)	Camiseta Mundial CHI (f)
+Koszulka MŚ CHI (m)	Camiseta Mundial CHI (m)
+Koszulka MŚ CIV (k)	Camiseta Mundial CIV (f)
+Koszulka MŚ CIV (m)	Camiseta Mundial CIV (m)
+Koszulka MŚ CMR (k)	Camiseta Mundial CMR (f)
+Koszulka MŚ CMR (m)	Camiseta Mundial CMR (m)
+Koszulka MŚ COL (k)	Camiseta Mundial COL (f)
+Koszulka MŚ COL (m)	Camiseta Mundial COL (m)
+Koszulka MŚ CRC (k)	Camiseta Mundial CRC (f)
+Koszulka MŚ CRC (m)	Camiseta Mundial CRC (m)
+Koszulka MŚ CRO (k)	Camiseta Mundial CRO (f)
+Koszulka MŚ CRO (m)	Camiseta Mundial CRO (m)
+Koszulka MŚ ECU (k)	Camiseta Mundial ECU (f)
+Koszulka MŚ ECU (m)	Camiseta Mundial ECU (m)
+Koszulka MŚ ENG (k)	Camiseta Mundial ENG (f)
+Koszulka MŚ ENG (m)	Camiseta Mundial ENG (m)
+Koszulka MŚ ESP (k)	Camiseta Mundial ESP (f)
+Koszulka MŚ ESP (m)	Camiseta Mundial ESP (m)
+Koszulka MŚ FRA (k)	Camiseta Mundial FRA (f)
+Koszulka MŚ FRA (m)	Camiseta Mundial FRA (m)
+Koszulka MŚ GER (k)	Camiseta Mundial GER (f)
+Koszulka MŚ GER (m)	Camiseta Mundial GER (m)
+Koszulka MŚ GHA (k)	Camiseta Mundial GHA (f)
+Koszulka MŚ GHA (m)	Camiseta Mundial GHA (m)
+Koszulka MŚ GRE (k)	Camiseta Mundial GRE (f)
+Koszulka MŚ GRE (m)	Camiseta Mundial GRE (m)
+Koszulka MŚ HON (k)	Camiseta Mundial HON (f)
+Koszulka MŚ HON (m)	Camiseta Mundial HON (m)
+Koszulka MŚ IRN (k)	Camiseta Mundial IRN (f)
+Koszulka MŚ IRN (m)	Camiseta Mundial IRN (m)
+Koszulka MŚ ITA (k)	Camiseta Mundial ITA (f)
+Koszulka MŚ ITA (m)	Camiseta Mundial ITA (m)
+Koszulka MŚ JPN (k)	Camiseta Mundial JPN (f)
+Koszulka MŚ JPN (m)	Camiseta Mundial JPN (m)
+Koszulka MŚ KOR (k)	Camiseta Mundial KOR (f)
+Koszulka MŚ KOR (m)	Camiseta Mundial KOR (m)
+Koszulka MŚ MEX (k)	Camiseta Mundial MEX (f)
+Koszulka MŚ MEX (m)	Camiseta Mundial MEX (m)
+Koszulka MŚ NED (k)	Camiseta Mundial NED (f)
+Koszulka MŚ NED (m)	Camiseta Mundial NED (m)
+Koszulka MŚ NGA (k)	Camiseta Mundial NGA (f)
+Koszulka MŚ NGA (m)	Camiseta Mundial NGA (m)
+Koszulka MŚ POR (k)	Camiseta Mundial POR (f)
+Koszulka MŚ POR (m)	Camiseta Mundial POR (m)
+Koszulka MŚ RUS (k)	Camiseta Mundial RUS (f)
+Koszulka MŚ RUS (m)	Camiseta Mundial RUS (m)
+Koszulka MŚ SUI (k)	Camiseta Mundial SUI (f)
+Koszulka MŚ SUI (m)	Camiseta Mundial SUI (m)
+Koszulka MŚ URU (k)	Camiseta Mundial URU (f)
+Koszulka MŚ URU (m)	Camiseta Mundial URU (m)
+Koszulka MŚ USA (k)	Camiseta Mundial USA (f)
+Koszulka MŚ USA (m)	Camiseta Mundial USA (m)
+Koszulka MŚ w barwach narodowych Chorwacji. Daje przynajmniej jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Croacia. Otorga al menos una bonificación aleatoria.
+Koszyk napełniony jajkami wielkanocnymi.	Una cesta llena de huevos de Pascua.
+Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał (obrażenia jak ze Srebrnej Strzały). Działa 14 dni od zakupu.	Un carcaj lleno de flechas que nunca se acaban. Equípalo en lugar de las flechas: el arco del ninja dispara sin gastar flechas (daño como con la Flecha de plata). Dura 14 días desde la compra.
+Kronika Rzemieślników	Crónica de los Artesanos
+Kryształ Lodu	Cristal de Hielo
+Kryształ z Lodowej Krainy. Oddaj go jednej z lodowych pieczęci w lochu Nemere.	Un cristal de la Tierra Helada. Entrégalo a uno de los sellos de hielo de la mazmorra de Nemere.
+Kryształowy pucharek pozwoli ci w kreatywny sposób zaprezentować lody. Pozwala przedłużyć Pierścień Wakacyjny o dodatkowy 1 dzień.|Istnieje szansa na niepowodzenie.	Esta copa de cristal te permite presentar el helado de forma creativa. Permite prolongar el Anillo de Vacaciones 1 día más.|Existe la posibilidad de que falle.
+Królewska zbroja wojownika. Kostium tylko dla wojownika (postać męska). Działa 30 dni od zakupu.	Armadura real de guerrero. Disfraz solo para guerreros (personaje masculino). Dura 30 días desde la compra.
+Krótka fryzura noszona w większości przez atletów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado corto que llevan sobre todo los atletas. Cambia de forma permanente el peinado de tu personaje.
+Księga Erudyty	Libro del Erudito
+Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: bloqueo hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: inteligencia hasta 10. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: obrażenia umiejętności do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: daño de habilidad hasta un 5%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: obrona przed umiejętnościami do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: defensa contra habilidades hasta un 5%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: obrona przed średnimi obrażeniami do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: defensa contra daño medio hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: odporność na krytyczne do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: resistencia a golpes críticos hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: odporność na lód, ziemię i ciemność do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: resistencia al hielo, la tierra y la oscuridad hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: odporność na przeszywające do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: resistencia a golpes penetrantes hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: odporność na półludzi do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: resistencia contra semihumanos hasta un 5%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: odporność na truciznę do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: resistencia al veneno hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: podwójne doświadczenie i przedmioty do 10%, yang do 20%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: experiencia y objetos dobles hasta un 10%, Yang hasta un 20%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: silny przeciwko bossom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza contra jefes hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: silny przeciwko kamieniom Metin do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza contra piedras Metin hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: silny przeciwko nieumarłym i diabłom do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza contra no muertos y demonios hasta un 15%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: silny przeciwko potworom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza contra monstruos hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: silny przeciwko półludziom do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza contra semihumanos hasta un 5%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: siła do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: fuerza hasta 10. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: szybkość czarowania do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: velocidad de hechizo hasta un 15%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: witalność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: vitalidad hasta 10. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: zręczność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: destreza hasta 10. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga umiejętności peta: średnie obrażenia do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Libro de habilidad de mascota: daño medio hasta un 10%. La primera lectura enseña la habilidad (nivel 1) y cada lectura posterior sube su nivel (hasta 20). La evolución de la mascota desbloquea nuevas casillas de habilidad.
+Księga zawiera duszę starego kowala. Jeśli jej użyjesz, zwiększy to szansę na pomyślne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom.	Este libro contiene el alma de un viejo herrero. Si lo usas, aumentará en un 15% la probabilidad de mejorar un objeto con éxito. El objeto no se destruye si la mejora falla. En caso de fallo, el grado del objeto se reduce en 1 nivel.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana nawet przez niedoświadczonego wojownika.	Un libro atado con una correa de cuero marrón. Contiene una misión que puede cumplir incluso un guerrero sin experiencia.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczone osoby.	Un libro atado con una correa de cuero marrón. Contiene una misión que solo pueden cumplir personas experimentadas.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczonych wojowników.	Un libro atado con una correa de cuero marrón. Contiene una misión que solo pueden cumplir guerreros experimentados.
+Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	Cupón por valor de 250 Monedas Dragón. Este objeto es comerciable.
+Legendarna książka, która usuwa z pamięci nauczoną umiejętność całkowicie. Możesz przenieść jeden punkt umiejętności.	Un libro legendario que borra por completo de la memoria una habilidad aprendida. Puedes trasladar un punto de habilidad.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Normalnym Lochu Małp.	Hierba Legendaria: cómela para protegerte de la maldición de los monos en la Mazmorra de los Monos (normal).
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Trudnym Lochu Małp.	Hierba Legendaria: cómela para protegerte de la maldición de los monos en la Mazmorra de los Monos (difícil).
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Łatwym Lochu Małp.	Hierba Legendaria: cómela para protegerte de la maldición de los monos en la Mazmorra de los Monos (fácil).
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut.	Un mármol legendario y bendito. Si el objeto tiene 4 atributos, añade otro atributo más.
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut. Przedmiot niezdatny do handlu.	Un mármol legendario y bendito. Si el objeto tiene 4 atributos, añade otro atributo más. Este objeto no es comerciable.
+Legendary	Legendario
+Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Un remedio contra la Sarna Demoníaca. Objeto necesario para una misión.
+Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Una punta ligera y flexible hecha de bambú. Ideal para disparos rápidos y precisos; la usan los arqueros que valoran la movilidad y la velocidad.
+List Gończy	Orden de Busca y Captura
+Lodowata Maź	Baba Helada
+Lodowy Klucz	Llave de Hielo
+Lv. Max:	Nv. máx.:
+Lv. Min:	Nv. mín.:
+Ma-Ryoung-Sin-Gab	Ma-Ryoung-Sin-Gab
+Ma-Sin-Gab	Ma-Sin-Gab
+Magiczna Ruda	Mineral Mágico
+Magiczny Pył	Polvo Mágico
+Magiczny amulet, który przywraca czystość skażonym wodom.	Un amuleto mágico que devuelve la pureza a las aguas contaminadas.
+Marmur regenerujący trochę Punktów Życia.	Un mármol que regenera algunos Puntos de Vida.
+Maska Ezoteryka jest mistycznym artefaktem, który od wieków noszony był przez adeptów tajemnych sztuk związanych z kultem Boga Tygrysa Sabaha. Ręcznie malowane wzory, inspirowane duchowymi wizjami ezoteryków, symbolizują połączenie ze światem duchów i zrozumienie mistycznych sił.	La Máscara del Esotérico es un artefacto místico que durante siglos llevaron los adeptos de las artes ocultas vinculadas al culto del Dios Tigre Sabah. Sus motivos pintados a mano, inspirados en las visiones espirituales de los esotéricos, simbolizan la unión con el mundo de los espíritus y la comprensión de las fuerzas místicas.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 0-29.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 105-119.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 120 o superior.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 30-39.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 40-49.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 40-49.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 50-59.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 50-59.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 60-74.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 75-89.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Material que aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae. Nivel del objeto: 90-104.
+Materiały Rzemieślnicze	Materiales de Artesanía
+Matowy Lód	Hielo Mate
+Matowy Lód+	Hielo Mate+
+Mikstura sporządzona z Soku Z Pokrzywy i Bzu. Zwiększa szansę na zadanie krytycznego ciosu o 10% na 3 minuty.	Una poción elaborada con Jugo Harebell y saúco. Aumenta en un 10% la probabilidad de asestar un golpe crítico durante 3 minutos.
+Min. Raise	Puja mín.
+Mineral	Mineral
+Mini-wersja Generała Huashina daje ci o 5% wyższe szanse na zadanie przeszywającego ciosu i podwyższa twoje PŻ o 1500.	La versión en miniatura del General Huashin te otorga un 5% más de probabilidad de asestar un golpe penetrante y aumenta tus HP en 1500.
+Mistyczna substancja ożywiająca florę i faunę lasu.	Una sustancia mística que da vida a la flora y la fauna del bosque.
+Mięso Demona	Carne de Demonio
+Mięso niedźwiedzia, popularne w wioskach myśliwych.	Carne de oso, popular en las aldeas de cazadores.
+Mięso w stanie rozkładu, unikać kontaktu.	Carne en descomposición; evita el contacto.
+Modna brązowa fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Un peinado castaño a la moda con un bonito lazo. Cambia de forma permanente el peinado de tu personaje.
+Modna czerwona fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Un peinado rojo a la moda con un bonito lazo. Cambia de forma permanente el peinado de tu personaje.
+Modna jasna fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Un peinado claro a la moda con un bonito lazo. Cambia de forma permanente el peinado de tu personaje.
+Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Un peinado azul a la moda con un bonito lazo. Cambia de forma permanente el peinado de tu personaje.
+Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Un corte a la moda que permite a los chamanes expresar su carácter. Cambia de forma permanente el peinado de tu personaje.
+Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Un corte a la moda que permite a los chamanes expresar su carácter. Cambia de forma permanente el peinado de tu personaje.
+Może być uszlachetniona do Niebiańskich Łez używając pieca gildii.	Puede refinarse en Lágrima de Cielo usando el horno del gremio.
+Może być uszlachetniony do Bursztynu używając pieca gildii bursztynu.	Puede refinarse en Ámbar usando el horno de ámbar del gremio.
+Może być uszlachetniony do Diamentu używając pieca gildii.	Puede refinarse en Diamante usando el horno del gremio.
+Możesz zamienić się w potwora ukrytego w marmurze.	Puedes transformarte en el monstruo oculto en el mármol.
+Możesz zamienić się w potwora używając marmuru.	Puedes transformarte en un monstruo usando el mármol.
+Mt2009	Mt2009
+Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Se dice que el contenido de este baúl es tan valioso como el propio baúl.
+Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel G1 de un Chamán Dragón con 90 de inteligencia.
+Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel M1 de un Chamán Dragón con 90 de inteligencia.
+Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Otorga durante 10 minutos los potenciadores de nivel P de un Chamán Dragón con 90 de inteligencia.
+Nagroda za grę Złap Króla z wynikiem 550 punktów lub więcej i za miejsce w pierwszej dziesiątce rankingu. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Atrapa al rey con 550 puntos o más y por un puesto entre los diez primeros del ranking. Haz clic derecho para abrirla.
+Nagroda za grę Złap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Atrapa al rey con 10 a 399 puntos. Haz clic derecho para abrirla.
+Nagroda za grę Złap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Atrapa al rey con 400 a 549 puntos. Haz clic derecho para abrirla.
+Nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Okey terminada con 300-399 puntos. Haz clic derecho para abrirla.
+Nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Okey terminada con 400 puntos o más. Haz clic derecho para abrirla.
+Nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por una partida de Okey terminada con menos de 300 puntos. Haz clic derecho para abrirla.
+Nagroda za grę w Yutnori z co najmniej 220 punktami. Zawiera Złoty Pakiet Yutnori i Cor Draconis (drogocenne).	Recompensa por una partida de Iutnori con al menos 220 puntos. Contiene un Paquete Iutnori de oro y Cor Draconis (valiosos).
+Nagroda za grę w Yutnori ze 150-219 punktami. Zawiera Srebrny Pakiet Yutnori, czasem Zwój Błogosławieństwa.	Recompensa por una partida de Iutnori con 150-219 puntos. Contiene un Paquete Iutnori de plata y, a veces, un Pergamino Bendición.
+Nagroda za pokonanie Baronówny Pająków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por derrotar a la Baronesa Araña en la Biblioteca del Saber. Haz clic derecho para abrirla.
+Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por derrotar al Rey Escorpión en las Ruinas del Escorpión. Haz clic derecho para abrirla.
+Nagroda za pokonanie Królowej Dżungli w Starożytnej Dżungli. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por derrotar a la Reina de la Jungla en la Jungla Ancestral. Haz clic derecho para abrirla.
+Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa por derrotar a WuKong en la Colina de Wukong. Haz clic derecho para abrirla.
+Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Aspecto para arma de una mano (espada): guerrero, ninja, sura. Dura 30 días desde la compra.
+Nasiono o niezbadanych właściwościach.	Una semilla de propiedades desconocidas.
+Natychmiastowo odnawia wszystkie Punkty Energii. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Restaura al instante todos los Puntos de Energía. Se puede usar una vez cada 2 minutos. Comparte el tiempo de recarga con las Pociones de Invulnerabilidad e Intocabilidad.
+Nazwy, opisy i okna zmienią język po ponownym	Los nombres, descripciones y ventanas cambian de idioma
+Necklace	Collar
+Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Gorro azul para hombre con orejas de conejo. Te otorga como mínimo una bonificación aleatoria.
+Niedźwiedzina	Carne de Oso
+Nieprzenikniony pancerz strażnika ognia.	La coraza impenetrable del guardián del fuego.
+Niezbędna do wytwarzania dużych mikstur.	Imprescindible para elaborar pociones grandes.
+Niezbędna do wytwarzania średnich mikstur.	Imprescindible para elaborar pociones medianas.
+Nieznany Kamień	Piedra Desconocida
+Ninja Armor	Armadura de ninja
+Noe-Un-Gab	Noe-Un-Gab
+Normal	Normal
+Notatka Kowala pokazująca jak ulepszać bronie.	Una nota del Herrero que muestra cómo mejorar armas.
+Notifications	Notificaciones
+Nożyk Zielarza	Cuchillo de Herbolario
+O-Gyo	O-Gyo
+Oczy potwora, używane w czarnoksięskich rytuałach.	Ojos de monstruo, usados en rituales de brujería.
+Oczyszczający Amulet Wód	Amuleto Purificador de Aguas
+Oczyszczony Kamień Duszy	Piedra Espíritu Purificada
+Odłamek	Fragmento
+Offer	Ofertar
+Offer List	Lista de ofertas
+Offer successfully created.	Oferta creada con éxito.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un documento sellado que permite fabricar un Objeto de Coacción.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un documento sellado que permite fabricar un Objeto de Coacción. Este objeto se puede comerciar.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un documento sellado que permite fabricar un Objeto Encantado.
+Ogon Małpy	Cola de Mono
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Domar a los Espíritus Animales malignos requiere una gran maestría mágica. El resultado es igual de asombroso.
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Zmienia wygląd Twojego konia, jeżeli założysz przed przywołaniem.	Domar a los Espíritus Animales malignos requiere una gran maestría mágica. Cambia el aspecto de tu caballo si te lo equipas antes de invocarlo.
+Okrycie na głowę z czarnej tkaniny dla mężczyzn. Daje ci min. jeden losowy bonus.	Tocado de tela negra para hombre. Te otorga como mínimo una bonificación aleatoria.
+Opatrunek	Vendaje
+Open Auction	Abrir subasta
+Open Auction Board	Abrir panel de subastas
+Open Notification Board	Abrir panel de notificaciones
+Open Private Offers Board	Abrir panel de ofertas privadas
+Open Safebox Board	Abrir panel del almacén
+Open Search Shop (|Eshortcut/ctrl.tga|e + S)	Abrir búsqueda de tiendas (|Eshortcut/ctrl.tga|e + S)
+Open Shop	Abrir tienda
+Orkowe Jądra	Testículos de Orco
+Osadzony na pierścieniu niewidoczny klejnot o mocy ukrywania. Gdy znajdzie się na twojej dłoni, twoja istota zatraci się w cieniu, ukrywając swój poziom przed ciekawskimi oczami świata.	Una gema invisible engastada en un anillo, con el poder de ocultar. Cuando la lleves en la mano, tu ser se perderá entre las sombras y ocultará tu nivel a los ojos curiosos del mundo.
+Ostre pazury, używane w obrzędach i czarach.	Garras afiladas, usadas en ritos y hechizos.
+Otrzymasz 1 Punkt Umiejętności Jeździectwa kiedy ją przeczytasz. Znika po przeczytaniu.	Al leerlo recibirás 1 punto de habilidad de monta. Desaparece una vez leído.
+Otrzymujesz w walce 50% więcej Punktów Doświadczenia.	Obtienes en combate un 50% más de puntos de experiencia.
+Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Abre las puertas a la gloria y al poder. Otorga todas las ventajas de la Cuenta Premium durante 30 días.|Este objeto es comerciable.
+Otwiera nawet najtrudniejsze zamki z lekkością.	Abre con facilidad hasta las cerraduras más difíciles.
+Otwiera nowe miejsce na umiejętność heroicznego peta od 100 poziomu.	Abre una nueva casilla de habilidad para una mascota heroica a partir del nivel 100.
+Otwiera okno Kolekcjonera z dowolnego miejsca.	Abre la ventana del Recolector desde cualquier lugar.
+Otwórz pakiet i sprawdź, co udało ci się wygrać.	Abre el paquete y descubre qué has ganado.
+Ozdobny miecz Mirine	Espada Ornamental de Mirine
+Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	Una espada ornamental dorada que perteneció a Mirine. Ya no sirve para luchar, pero parece muy valiosa.
+Pakuje wybranego peta (okno peta, klawisz U) do transportera, który można sprzedać, oddać w handlu albo schować do magazynu. Kto użyje pełnego transportera, dostaje peta z jego poziomem, ewolucją, bonusami i umiejętnościami.	Guarda la mascota elegida (ventana de mascota, tecla U) en un transportador que se puede vender, comerciar o guardar en el almacén. Quien use el transportador lleno recibe la mascota con su nivel, evolución, bonificaciones y habilidades.
+Pamiątka po bracie	Recuerdo del Hermano
+Pas Z Wężowej Skóry	Cinturón de Piel de Serpiente
+Pazury Małpy	Garras de Mono
+Pergamin	Pergamino
+Pet	Mascota
+Piasek Pustyni	Arena del Desierto
+Pieczony Gromadnik	Eperlano Asado
+Pieczęć Biblioteki	Sello de la Biblioteca
+Pieczęć Dżungli	Sello de la Jungla
+Pieczęć Rufusa	Sello de Rufus
+Pieczęć Ruin	Sello de las Ruinas
+Pieczęć Wzgórza	Sello de la Colina
+Pieczęć dla Szlachetnego Czarnego Konia.	Sello del Noble Caballo Negro.
+Pieczęć do jednego z pięknych i nadzwyczaj rzadkich purpurowych koni.	Sello de uno de los hermosos y extraordinariamente raros caballos púrpura.
+Pieczęć strażnika Biblioteki Wiedzy. Użyj jej w lochu, aby przyzwać kolejną falę pająków.	El sello del guardián de la Biblioteca del Saber. Úsalo en la mazmorra para invocar la siguiente oleada de arañas.
+Pieczęć strażnika Ruin Skorpiona. Użyj jej w lochu, aby przyzwać kolejną falę skorpionów.	El sello del guardián de las Ruinas del Escorpión. Úsalo en la mazmorra para invocar la siguiente oleada de escorpiones.
+Pieczęć strażnika Starożytnej Dżungli. Użyj jej w lochu, aby przyzwać kolejną falę stworzeń.	El sello del guardián de la Jungla Ancestral. Úsalo en la mazmorra para invocar la siguiente oleada de criaturas.
+Pieczęć strażnika Wzgórza Wukonga. Użyj jej w lochu, aby przyzwać kolejną falę małp.	El sello del guardián de la Colina de Wukong. Úsalo en la mazmorra para invocar la siguiente oleada de monos.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% siły przeciwko potworom.	Este sello invoca a un Dragor joven. Tras completar el entrenamiento de combate, otorga a su dueño hasta un 5% de fuerza contra monstruos.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% więcej doświadczenia.	Este sello invoca a un Dragor joven. Tras completar el entrenamiento de combate, otorga a su dueño hasta un 5% más de experiencia.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on atak swojego właściciela o maks. 100.	Este sello invoca a un Dragor joven. Tras completar el entrenamiento de combate, aumenta el ataque de su dueño hasta en 100.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on obronę swojego właściciela o maks. 150.	Este sello invoca a un Dragor joven. Tras completar el entrenamiento de combate, aumenta la defensa de su dueño hasta en 150.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego zwiększa on PŻ swojego właściciela o maks. 500.	Este sello invoca a un Dragor joven. Tras completar el entrenamiento de combate, aumenta los HP de su dueño hasta en 500.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Este sello invoca a un Reno joven (m) que, tras completar el entrenamiento de combate, otorga a su jinete hasta un 5% de fuerza contra monstruos.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	Este sello invoca a un Reno joven (m) que, tras completar el entrenamiento de combate, otorga a su jinete hasta un 5% de EXP adicional.
+Pieczęć ta przywołuje Młodego Renifera (ż), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Este sello invoca a un Reno joven (f) que, tras completar el entrenamiento de combate, otorga a su jinete hasta un 5% de fuerza contra monstruos.
+Pieczęć ta przywołuje czarną małą panterkę.	Este sello invoca a una pequeña pantera negra.
+Pieczęć ta przywołuje dzielnego leoparda.	Este sello invoca a un valiente leopardo.
+Pieczęć ta przywołuje grubiutkiego kata w czarnej zbroi.	Este sello invoca a un verdugo regordete con armadura negra.
+Pieczęć ta przywołuje grubiutkiego kata w złotej zbroi.	Este sello invoca a un verdugo regordete con armadura dorada.
+Pieczęć ta przywołuje słodkiego małego leoparda.	Este sello invoca a un pequeño y dulce leopardo.
+Pieczęć ta przywołuje tajemniczą czarną panterę.	Este sello invoca a una misteriosa pantera negra.
+Pieczęć ta przywołuje twojego kościanego pupila Kostka.	Este sello invoca a tu mascota esquelética Huesines.
+Pierwszorzędne Buty	Zapatos de Primera
+Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Un anillo con un grabado de fina artesanía en forma de media luna. Otorga: +50% EXP, +20% velocidad de ataque, +20% velocidad de hechizo, +30% ataque, +10% HP máx., +10% SP máx.
+Pióro Mędrca	Pluma del Sabio
+Po okazaniu tego biletu Stajennemu, będziesz mógł jeździć konno przez określony czas.	Si muestras este billete al Chico del Establo, podrás montar a caballo durante un tiempo determinado.
+Po ponownym uruchomieniu: %s	Tras reiniciar: %s
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	Al usarla, añade una carta de monstruo a tu colección (Cartas de Monstruos en el menú de Esc). Se puede comerciar.
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Al usarla, añade una carta de monstruo a tu colección (Cartas de Monstruos en el menú de Esc). No se puede comerciar.
+Podkręć piłkę jak Baljit-Elvedin!	¡Dale efecto al balón como Baljit-Elvedin!
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Sube un nivel la bonificación de mascota: HP máx. (hasta 4000) (niveles 0-5, mascota desde el nivel 1).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Sube un nivel la bonificación de mascota: HP máx. (hasta 4000) (niveles 10-15, mascota desde el nivel 75).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Sube un nivel la bonificación de mascota: HP máx. (hasta 4000) (niveles 15-20, mascota desde el nivel 100).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Sube un nivel la bonificación de mascota: HP máx. (hasta 4000) (niveles 5-10, mascota desde el nivel 40).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Sube un nivel la bonificación de mascota: fuerza contra monstruos (hasta 20%) (niveles 0-5, mascota desde el nivel 1).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Sube un nivel la bonificación de mascota: fuerza contra monstruos (hasta 20%) (niveles 10-15, mascota desde el nivel 75).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Sube un nivel la bonificación de mascota: fuerza contra monstruos (hasta 20%) (niveles 15-20, mascota desde el nivel 100).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Sube un nivel la bonificación de mascota: fuerza contra monstruos (hasta 20%) (niveles 5-10, mascota desde el nivel 40).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Sube un nivel la bonificación de mascota: probabilidad de golpe crítico (hasta 10%) (niveles 0-5, mascota desde el nivel 1).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Sube un nivel la bonificación de mascota: probabilidad de golpe crítico (hasta 10%) (niveles 10-15, mascota desde el nivel 75).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Sube un nivel la bonificación de mascota: probabilidad de golpe crítico (hasta 10%) (niveles 15-20, mascota desde el nivel 100).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Sube un nivel la bonificación de mascota: probabilidad de golpe crítico (hasta 10%) (niveles 5-10, mascota desde el nivel 40).
+Podnosi szansę na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut.	Aumenta en un 20% la probabilidad de asestar un golpe crítico en combate durante 10 minutos.
+Podnosi szansę na zadanie przeszywającego uderzenia podczas walki o 20% przez 10 minut.	Aumenta en un 20% la probabilidad de asestar un golpe penetrante en combate durante 10 minutos.
+Podnosi szansę pomyślnej nauki o mnożnik 1,75.	Multiplica por 1,75 la probabilidad de aprender con éxito.
+Podnosi szansę pomyślnej nauki umiejętności w następnej książce o mnożnik 2,5.	Multiplica por 2,5 la probabilidad de aprender con éxito la habilidad del siguiente libro.
+Podwaja szansę na wypadnięcie przedmiotu na 2 godziny. Zdjęcie rękawicy jest niemożliwe.	Duplica durante 2 horas la probabilidad de que caigan objetos. Es imposible quitarse el guante.
+Podwaja szansę na zdobycie Yang. | Czas trwania 30 minut. (Brak możliwości przekazywania!)	Duplica la probabilidad de obtener Yang. | Duración: 30 minutos. (¡No se puede transferir!)
+Podwaja szansę na zdobycie przedmiotu na 10 godzin.	Duplica durante 10 horas la probabilidad de obtener objetos.
+Podwaja szansę na zdobycie przedmiotu na godzinę. Zdjęcie rękawicy jest niemożliwe.	Duplica durante una hora la probabilidad de obtener objetos. Es imposible quitarse el guante.
+Podwaja szansę na zdobycie przedmiotu z 30 Kamieni Metin, Bossów lub Minibossów. Zużywa się przy śmierci potwora.	Duplica la probabilidad de obtener objetos de 30 piedras Metin, jefes o minijefes. Se gasta cuando muere el monstruo.
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Przedmiot ten jest niezdatny do handlu.	Mejora la calidad de los objetos destinados a la investigación, lo que aumenta la probabilidad de que sean aceptados. Este objeto no es comerciable.
+Potężne pióro, które przyspiesza analizę, rozwija intelekt i wspomaga szybką naukę.	Una pluma poderosa que acelera el análisis, desarrolla el intelecto y favorece el aprendizaje rápido.
+Powszechne mięso, cenione za smak.	Carne común, apreciada por su sabor.
+Pozwala Ci na pokazanie przedmiotu z twojego ekwipunku na czacie.	Te permite mostrar en el chat un objeto de tu inventario.
+Pozwala na przeczytanie następnej księgi w przypadku niepomyślnej nauki.	Permite leer el siguiente libro si el aprendizaje ha fallado.
+Pozwala przedłużyć Pierścień Wielkanocny o dodatkowy 1 dzień. Istnieje szansa na niepowodzenie.	Permite prolongar el Anillo de Pascua 1 día más. Existe la posibilidad de que falle.
+Pozwala wylosować nowe cele misji Kart Potworów.	Permite sortear nuevos objetivos para la misión de Cartas de Monstruos.
+Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Permite olvidar una habilidad de la mascota: haz clic derecho sobre ella en la ventana de mascota.
+Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Permite reiniciar la misión de Cartas de Monstruos además del reinicio gratuito (una vez cada 24 horas).
+Pozwolenie na Wzmocn. Przedmiotu	Permiso de Objeto de Coacción
+Pozwolenie na Zaczar. Przedmiotu	Permiso de Objeto Encantado
+Praktyczna krótka fryzura emanująca złowrogą aurą. Na stałe zmienia fryzurę Twojej postaci.	Un peinado corto y práctico que emana un aura siniestra. Cambia de forma permanente el peinado de tu personaje.
+Prastary korzeń z głębi Czerwonego Lasu.	Una raíz ancestral de las profundidades del Bosque Rojo.
+Precyzyjnie wyciąga pęknięty kamień, pozostawiając resztę nienaruszoną.	Extrae con precisión la piedra agrietada y deja el resto intacto.
+Price Max:	Precio máx.:
+Price Min:	Precio mín.:
+Przedmiot potrzebny w zadaniu Uriela.	Objeto necesario para la misión de Uriel.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, otorga durante 12 horas la probabilidad de obtener experiencia doble. El efecto puede subirse hasta el nivel 5 con más Narcisos. Funciona durante el evento Flores de Colores.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas la defensa. El efecto puede subirse hasta el nivel 5 con más Girasoles. Funciona durante el evento Flores de Colores.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin siłę ataku. Efekt można podnieść do poziomu 5 kolejnymi konwaliami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas el valor de ataque. El efecto puede subirse hasta el nivel 5 con más Lirios de los valles. Funciona durante el evento Flores de Colores.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas la probabilidad de golpe crítico. El efecto puede subirse hasta el nivel 5 con más Crisantemos. Funciona durante el evento Flores de Colores.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas la probabilidad de obtener objetos. El efecto puede subirse hasta el nivel 5 con más Azucenas. Funciona durante el evento Flores de Colores.
+Przedmiot wymagany do misji.	Objeto necesario para una misión.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Mueve el archivo a la carpeta upload/ del directorio principal del juego.
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Impregna el cuerpo con la magia de las Vacaciones y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto. Duración: 7 días (máx. 60 días).
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Impregna el cuerpo con la magia de las Vacaciones y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto. Duración máx.: 60 días.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Impregna el cuerpo con la magia de la Pascua y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni.	Impregna el cuerpo con la magia de la Pascua y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto. Duración: 7 días.
+Przepustka ta umożliwia dostanie się na nowy poziom w Lochu Pająków.	Este pase te permite acceder a un nuevo nivel de la Mazmorra de Arañas.
+Przetopiona moc minerałów, kryjąca tajemniczą energię alchemiczną.	El poder fundido de los minerales, que oculta una misteriosa energía alquímica.
+Przetopiony Kruszec	Mineral Fundido
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury.	Con este objeto puedes entrenar el conocimiento de la receta para preparar una poción concreta.
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury. Przedmiot otrzymany z misji.	Con este objeto puedes entrenar el conocimiento de la receta para preparar una poción concreta. Objeto obtenido en una misión.
+Pusty koszyk, do którego możesz wkładać jajka wielkanocne	Una cesta vacía en la que puedes meter huevos de Pascua
+Pyungmoo Saint Hwang+(k)	Pyungmoo SaintHwang+ (f)
+Pyungmoo Saint Hwang+(m)	Pyungmoo SaintHwang+ (m)
+Płomień Potępionych	Llama de los Condenados
+Raise	Pujar
+Rare	Raro
+Real Sohan (k)	Real Sohan (f)
+Real Sohan+ (k)	Real Sohan+ (f)
+Restore Duration	Renovar duración
+Romantyczny kwiat okazujący zauroczenie.	Una flor romántica que expresa enamoramiento.
+Roślina wspomaga trawienie. Pomaga również w łagodzeniu bólów brzucha.	Una planta que favorece la digestión. También ayuda a aliviar el dolor de estómago.
+Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Un pescado preparado sobre la hoguera es un magnífico manjar ahumado.
+Ryba przyrządzona nad ogniskiem. Wspaniały wędzony przysmak.	Pescado preparado sobre la hoguera. Un magnífico manjar ahumado.
+Rytualny składnik, symbol siły i odwagi.	Un ingrediente ritual, símbolo de fuerza y valor.
+Rzadki kamień z bossów. U Kowala przemienia broń 75. poziomu +9 w broń przebudzoną +0, zachowując bonusy i kamienie (koszt: 200 000 000 Yang).	Una piedra rara de los jefes. En el Herrero transforma un arma de nivel 75 +9 en un arma despertada +0, conservando las bonificaciones y las piedras (coste: 200 000 000 Yang).
+Rzadki metal, wchłaniający energię magiczną, idealny do potężnych broni i pancerzy.	Un metal raro que absorbe la energía mágica, ideal para armas y armaduras poderosas.
+Rzadki minerał o ogromnej mocy, niezbędny do tworzenia potężnych przedmiotów alchemicznych.	Un mineral raro de enorme poder, imprescindible para crear poderosos objetos alquímicos.
+Rzadkie drewno, pulsujące magiczną energią.	Una madera rara que palpita con energía mágica.
+Ręka podnosi upuszczone pieniądze automatycznie przez 15 minut.	La mano recoge automáticamente el dinero que cae durante 15 minutos.
+Ręka podnosi upuszczone pieniądze automatycznie przez 3 godziny.	La mano recoge automáticamente el dinero que cae durante 3 horas.
+Ręka podnosi upuszczone pieniądze automatycznie przez 30 minut.	La mano recoge automáticamente el dinero que cae durante 30 minutos.
+SC Doyyum+ (k)	SC Doyum+ (f)
+SC Doyyum+ (m)	SC Doyum+ (m)
+SL Jungsun Dong (k)	SL Jungsun Dong (f)
+SL Jungsun Dong (m)	SL Jungsun Dong (m)
+SL Jungsun Dong+ (k)	SL Jungsun Dong+ (f)
+Sash	Estola
+Sash Abs.:	Absorción estola:
+Schludna fryzura z białą opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado pulcro con una cinta blanca para el pelo. Cambia de forma permanente el peinado de tu personaje.
+Schludna fryzura z czerwoną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado pulcro con una cinta roja para el pelo. Cambia de forma permanente el peinado de tu personaje.
+Schludna fryzura z jasną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado pulcro con una cinta clara para el pelo. Cambia de forma permanente el peinado de tu personaje.
+Schludna fryzura z zieloną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado pulcro con una cinta verde para el pelo. Cambia de forma permanente el peinado de tu personaje.
+Schludna fryzura zrobiona przy użyciu chusty do włosów. Na stałe zmienia fryzurę Twojej postaci.	Un peinado pulcro hecho con un pañuelo para el pelo. Cambia de forma permanente el peinado de tu personaje.
+Seal	Sello
+Search	Buscar
+Search Shop	Buscar tiendas
+Search Shop Premium	Búsqueda de tiendas Premium
+Search Shop Premium is already active.	La Búsqueda de tiendas Premium ya está activa.
+Searched Name : |cFFFFFF99|h{}|r (found {} items)	Nombre buscado: |cFFFFFF99|h{}|r ({} objetos encontrados)
+Select Item	Seleccionar objeto
+Select...	Seleccionar...
+Serce Wojownika	Corazón del Guerrero
+Serce upadłego bohatera, symbol siły.	El corazón de un héroe caído, símbolo de fuerza.
+Shaman Armor	Armadura de chamán
+Shield	Escudo
+Shinsoo United (k)	Shinsoo United (f)
+Shinsoo United+ (k)	Shinsoo United+ (f)
+Shoes	Zapatos
+Shop Decoration n.{}	Decoración de tienda n.º {}
+Shop Decorations	Decoraciones de tienda
+Shop Repositioning	Reubicar tienda
+Shop view	Vista de la tienda
+Shopping Safebox	Almacén de compras
+Show Filter Informations	Mostrar información de filtros
+Silny Wywar z Ziół	Infusión Fuerte de Hierbas
+Skamieniała Krewetka	Gamba Petrificada
+Skamieniały fragment ognia Piekła, w którym uwięzione są płomienie potępionych.	Un fragmento petrificado del fuego del Infierno, en el que están atrapadas las llamas de los condenados.
+Sklep został zamknięty!	¡La tienda se ha cerrado!
+Skoncentrowany wywar z rzadkich ziół, dodaje energii i wzmacnia ciało.	Un concentrado de hierbas raras que da energía y fortalece el cuerpo.
+Skondensowana forma czystej magii - pulsuje energią, której nie sposób okiełznać.	Una forma condensada de magia pura: palpita con una energía imposible de domar.
+Skondensowana magia w iskrzącym klejnocie.	Magia condensada en una gema chispeante.
+Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Las Piedras Espíritu trituradas pueden tener un nuevo uso.
+Skrzynia Biblioteki	Baúl de la Biblioteca
+Skrzynia Dżungli	Baúl de la Jungla
+Skrzynia Likanów (d)	Baúl de Licántropos (grande)
+Skrzynia Likanów (m)	Baúl de Licántropos (pequeño)
+Skrzynia Skorpiona	Baúl del Escorpión
+Skrzynia Wukonga	Baúl de Wukong
+Skóra Przeklętego Niedźwiedzia	Piel de Oso Maldito
+Skóra Przeklętego Tygrysa	Piel de Tigre Maldito
+Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingrediente para mejorar Piedras Espíritu en el Herrero (desde +4): se necesitan 1, 1, 2, 2 y 3 unidades para los grados sucesivos, junto al Polvo Mágico. Lo sueltan la Bruja de Hielo Poderosa (La Gruta del Exilio), Beran-Setaou (Guarida del Dragón) y la Reina de la Jungla (Jungla Ancestral).
+Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersalnym wyborem dla łuczników szukających równowagi między szybkością a siłą uderzenia.	Una punta sólida de hierro que combina buen peso y durabilidad. Es una elección versátil para los arqueros que buscan el equilibrio entre velocidad y fuerza de impacto.
+Something went wrong. (Generic error)	Algo ha salido mal. (Error genérico)
+Sort by price	Ordenar por precio
+Sparta Jungrang+ (k)	Spartak de Jungrang+ (f)
+Sparta Jungrang+ (m)	Spartak de Jungrang+ (m)
+Spięta u góry fryzura wykorzystująca spinkę w kształcie motyla. Na stałe zmienia fryzurę Twojej postaci.	Un recogido en lo alto sujeto con una horquilla en forma de mariposa. Cambia de forma permanente el peinado de tu personaje.
+Sprzedałeś |cFFFFFF99|h{}|r za |cFFFFFF99|h{}|r.	Has vendido |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r.
+Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un colgante de plata en forma de corazón, engastado con gemas mágicas. Otorga: +30% EXP, +10% velocidad de ataque, +10% velocidad de hechizo, +10% fuerza contra monstruos, +5% HP máx., +5% SP máx.
+Standardowa Muzyka Metin2	Música Estándar del Juego
+Standardowa muzyka Metin2	Música estándar del juego
+Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	Un cofre viejo y polvoriento del que, a cada movimiento, cae fina arena del desierto.
+Starożytna fryzura okazująca silny indywidualny charakter. Na stałe zmienia fryzurę Twojej postaci.	Un peinado antiguo que muestra un fuerte carácter individual. Cambia de forma permanente el peinado de tu personaje.
+Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	Un libro antiguo cuya lectura aumenta notablemente el conocimiento y las habilidades.
+Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Un pergamino antiguo que canaliza el poder de Weol; permite sortear nuevas bendiciones.
+Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Un viejo pergamino con una orden de muerte; al usarlo activa misiones.
+Stone	Piedra
+Strój na mundial reprezentacji Anglii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Inglaterra. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Belgii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Bélgica. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Francji - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Francia. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Hiszpanii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de España. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Holandii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Holanda. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Niemiec - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Alemania. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Portugalii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Portugal. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Rosji - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Rusia. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Szwajcarii - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Suiza. Te otorga como mínimo una bonificación aleatoria.
+Strój na mundial reprezentacji Włoch - daje ci min. jeden losowy bonus.	La camiseta del mundial de la selección de fútbol de Italia. Te otorga como mínimo una bonificación aleatoria.
+Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Un peinado engominado hacia atrás, con estilo aunque de aspecto grasiento; las antenas son su toque clave. Cambia de forma permanente el peinado de tu personaje.
+Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Un peinado de Chamán con estilo. Cambia de forma permanente el peinado de tu personaje.
+Su-Sin	Su-Sin
+Sub-type	Subtipo
+Sura Armor	Armadura de sura
+Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Materias primas necesarias para crear y mejorar objetos excepcionales.
+Sword	Espada
+Symbol zręczności, popularny wśród złodziei.	Un símbolo de destreza, popular entre los ladrones.
+Szansa na przebicie +10%	Probabilidad de golpe penetrante +10%
+Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Probabilidad de que caigan objetos multiplicada por 1.5 para los miembros de iCafe.
+Szansa na złapanie rzadkiej ryby podwaja się. (Brak możliwości przekazywania!)	Duplica la probabilidad de pescar un pez raro. (¡No se puede transferir!)
+Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Cofre de Chegal, el Goliat de las Sombras. Hay algo valioso en su interior.
+Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Cofre del Espíritu del Árbol Gigante. Hay algo valioso en su interior.
+Szmaragdowy Marmur	Mármol Esmeralda
+Słaba Zbroja	Armadura Débil
+Ta magiczna rękawica zwiększa zręczność użytkownika, pozwalając na podnoszenie przedmiotów z ziemi o 500% szybciej.	Este guante mágico aumenta la destreza de quien lo lleva y le permite recoger objetos del suelo un 500% más rápido.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut.	Esta poción aumenta la velocidad de regeneración de hechizos en un 20 por ciento durante 30 minutos.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut. Niezdatna do handlu.	Esta poción aumenta la velocidad de regeneración de hechizos en un 20 por ciento durante 30 minutos. No comerciable.
+Ta pieczęć przywołuje uroczego Feniksa Jadeitu.	Este sello invoca al encantador Fénix de Jade.
+Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	Este baúl se sacó del Purgatorio de Fuego, la guarida de Arrador. Contiene un auténtico tesoro real.
+Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	Este baúl se sacó de la Tierra Helada, la guarida de Nemere. Contiene un auténtico tesoro real.
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Esta versión del cliente solo tiene algunos idiomas: actualiza el cliente.
+Tajemnicza księga od Płatnerza z 6. piętra Wieży Demonów, pełna zapomnianych sekretów rzemiosła.	Un libro misterioso del Armero de la 6.ª planta de la Torre Demoníaca, lleno de secretos olvidados de la artesanía.
+Tajemnicza substancja, która osłabia twardą skorupę Olbrzymiego Żółwia na 10 minut, czyniąc go podatnym na ataki każdą bronią.	Una sustancia misteriosa que debilita durante 10 minutos el duro caparazón de la Tortuga Gigante y la hace vulnerable a los ataques de cualquier arma.
+Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	Una baraja del juego Atrapa al rey. Haz clic derecho durante el evento para añadirla a tus barajas; la partida se inicia en la ventana del evento (botón junto al minimapa). Las cartas y barajas se pierden cuando empieza el siguiente evento.
+Ten magiczny marmur daje szansę na zerwanie dodatkowych kwiatów na 1 godzinę.	Este mármol mágico da la posibilidad de recoger flores adicionales durante 1 hora.
+Ten magiczny marmur pokazuje informacje o złowionej rybie. Zwiększa szansę na pomyślne wyłowienie ryby o 2%.	Este mármol mágico muestra información sobre el pez capturado. Aumenta en un 2% la probabilidad de pescar con éxito.
+Ten rożek na lody posiada wyjątkowe działanie, a przede wszystkim daje zastrzyk energii! Cudowne latem.	Este cucurucho de helado tiene un efecto especial y, sobre todo, ¡te da una inyección de energía! Maravilloso en verano.
+The Search Shop Premium is required to use this feature.	Se necesita la Búsqueda de tiendas Premium para usar esta función.
+The bid cannot be lower than |cFFFFFF99|h{}%|r of the sale price.	La puja no puede ser inferior al |cFFFFFF99|h{}%|r del precio de venta.
+The bid must be lower than the sale price.	La puja debe ser inferior al precio de venta.
+The item will be transferred to the Shopping Safebox. Are you sure you want to close the auction?	El objeto se trasladará al Almacén de compras. ¿Seguro que quieres cerrar la subasta?
+The list is Empty.	La lista está vacía.
+The offer for |cFFFFFF99|h{}|r was cancelled by the bidder.	El ofertante ha cancelado la oferta por |cFFFFFF99|h{}|r.
+The offer will be deleted. Do you want to continue?	La oferta se eliminará. ¿Quieres continuar?
+The operation will cost |cFFFFFF99|h{}|r. Do you want to continue?	La operación costará |cFFFFFF99|h{}|r. ¿Quieres continuar?
+The price has been changed, please check the new price and try again.	El precio ha cambiado; comprueba el nuevo precio e inténtalo de nuevo.
+The shop is no longer available.	La tienda ya no está disponible.
+The store is closed. You cannot sell items.	La tienda está cerrada. No puedes vender objetos.
+This item is not available for sale at this time.	Este objeto no está disponible para la venta en este momento.
+Today {:02d}:{:02d}	Hoy {:02d}:{:02d}
+Tomorrow {:02d}:{:02d}	Mañana {:02d}:{:02d}
+Too many actions in a short time. Please wait a while and try again.	Demasiadas acciones en poco tiempo. Espera un momento e inténtalo de nuevo.
+Trade Hub	Centro de comercio
+Two Hand Sword	Espada a dos manos
+Tylko BETA	Solo BETA
+Tym kluczem zdobędziesz więcej nagród w Poszukiwaniu skarbów.	Con esta llave obtendrás más recompensas en la Búsqueda de tesoros.
+Type	Tipo
+Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	El peinado favorito de los guerreros solitarios; queda genial cuando sopla el viento. Cambia de forma permanente el peinado de tu personaje.
+Uniform, który niegdyś należał do martwego już brata Mirine.	Un uniforme que perteneció al difunto hermano de Mirine.
+Upoważania do łowienia na królewskich łowiskach na 1 godzinę. Znika po 24 godzinach posiadania.	Permite pescar en los caladeros reales durante 1 hora. Desaparece 24 horas después de obtenerlo.
+Uruchom klienta ponownie (Restart the client).	Reinicia el cliente.
+Uruchom ponownie	Reiniciar
+Use at least one filter to start the search.	Usa al menos un filtro para iniciar la búsqueda.
+Using it the item will be destroyed and change the appearance of your shop for 15 days. Do you want to continue?	Al usarlo, el objeto se destruirá y cambiará el aspecto de tu tienda durante 15 días. ¿Quieres continuar?
+Usuwa wszystkie bonusy z twojego jednego przedmiotu, po czym dodaje nowe - losowe. Ilość bonusów nie ulega zmianie.	Elimina todas las bonificaciones de uno de tus objetos y añade otras nuevas aleatorias. El número de bonificaciones no cambia.
+Uwalnia Cię od klątwy złego ducha.	Te libera de la maldición del espíritu maligno.
+Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Úsalo para desbloquear 5 casillas bloqueadas de tu tienda personal.
+Użyj, aby przyzwać Ezoterycznego Władcę blisko postaci. Bądź ostrożny! To BOSS!	Úsalo para invocar al Señor Esotérico cerca de tu personaje. ¡Ten cuidado! ¡Es un JEFE!
+W przypadku oddania uszkodzonego przedmiotu do analizy Biologa, będziesz mógł oddać następny bez potrzeby odczekania czasu.	Si entregas un objeto dañado al Biólogo para su análisis, podrás entregar el siguiente sin tener que esperar.
+Wait 10 seconds between one offer created and another.	Espera 10 segundos entre una oferta y la siguiente.
+Wait 5 seconds between searches.	Espera 5 segundos entre búsquedas.
+Waleczna Dusza	Alma Valerosa
+Warrior Armor	Armadura de guerrero
+Weapon	Arma
+Wieprzowina	Carne de Cerdo
+Wodna Szata	Túnica de Agua
+Wojenna szata w kolorze czarnym dla mężczyzn. Daje ci min. jeden losowy bonus.	Traje de guerra negro para hombre. Te otorga como mínimo una bonificación aleatoria.
+Wolfman Armor	Armadura de licántropo
+Wrist	Pulsera
+Wrogi Mur	Muro Enemigo
+Wspaniałe brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Un magnífico cabello castaño. Cambia de forma permanente el peinado de tu personaje.
+Wspaniałe czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Un magnífico cabello negro. Cambia de forma permanente el peinado de tu personaje.
+Wspaniałe czerwone włosy. Na stałe zmienia fryzurę Twojej postaci.	Un magnífico cabello rojo. Cambia de forma permanente el peinado de tu personaje.
+Wspaniałe zielone włosy. Na stałe zmienia fryzurę Twojej postaci.	Un magnífico cabello verde. Cambia de forma permanente el peinado de tu personaje.
+Współdzieli czas ładowania z Błogosławieństwami Życia, Magii i Smoka.	Comparte el tiempo de recarga con las Bendiciones de la Vida, de la Magia y del Dragón.
+Wydarzenie Wakacyjne	Evento de Vacaciones
+Wydarzenie Walentynkowe	Evento de San Valentín
+Wydarzenie Wielkanocne.	Evento de Pascua.
+Wyjątkowo trwały pergamin, pełen zapomnianej wiedzy.	Un pergamino excepcionalmente duradero, lleno de saberes olvidados.
+Wyjątkowo wytrzymały grot ze stali. Zapewnia doskonałą penetrację i jest niezawodny w bitwach wymagających maksymalnej skuteczności.	Una punta de acero excepcionalmente resistente. Ofrece una penetración excelente y es fiable en las batallas que exigen la máxima eficacia.
+Wymaga przelogowania po zakupie.	Requiere volver a iniciar sesión tras la compra.
+Wysuszone Oczy	Ojos Secos
+Wytrych	Ganzúa
+Wytrzymałość Wroga	Resistencia del Enemigo
+Wężowa Szkatułka. Coś cennego znajduje się w środku.	Cofre de la Serpiente. Hay algo valioso en su interior.
+Ya-Sang-Gab	Ya-Sang-Gab
+Yesterday {:02d}:{:02d}	Ayer {:02d}:{:02d}
+Yongan FC (k)	Yongan FC (f)
+Yongan FC+ (k)	Yongan FC+ (f)
+You are already the highest bidder in this auction.	Ya eres el mejor postor de esta subasta.
+You cannot cancel the auction if it has received bids.	No puedes cancelar la subasta si ya ha recibido pujas.
+You cannot create a shop in this place.	No puedes crear una tienda en este lugar.
+You cannot create an auction in this place.	No puedes crear una subasta en este lugar.
+You cannot move a closed shop.	No puedes mover una tienda cerrada.
+You cannot offer less than the min. raise.	No puedes ofrecer menos que la puja mínima.
+You cannot perform this operation right now.	No puedes realizar esta operación ahora mismo.
+You cannot sell this item.	No puedes vender este objeto.
+You do not have enough money to offer this amount.	No tienes suficiente dinero para ofrecer esta cantidad.
+You do not have enough space to collect the item.	No tienes espacio suficiente para recoger el objeto.
+You do not have enough yang to complete the purchase.	No tienes suficiente Yang para completar la compra.
+You do not own any auctions. Would you like to create an Auction now?	No tienes ninguna subasta. ¿Quieres crear una subasta ahora?
+You don't have enough money to complete the request.	No tienes suficiente dinero para completar la solicitud.
+You don't have enough money.	No tienes suficiente dinero.
+You entered an invalid price.	Has introducido un precio no válido.
+You have already made an offer for this item.	Ya has hecho una oferta por este objeto.
+You have already unlocked all the slots in the shop.	Ya has desbloqueado todas las casillas de la tienda.
+You have reached the limit of pending private offers.	Has alcanzado el límite de ofertas privadas pendientes.
+You have received an offer for |cFFFFFF99|h{}|r.	Has recibido una oferta por |cFFFFFF99|h{}|r.
+You have run out of available space. Unable to sell the item.	No te queda espacio disponible. No se puede vender el objeto.
+You won the auction of |cFFFFFF99|h{}|r by paying |cFFFFFF99|h{}|r.	Has ganado la subasta de |cFFFFFF99|h{}|r pagando |cFFFFFF99|h{}|r.
+Young-Seon	Young-Seon
+Your auction of |cFFFFFF99|h{}|r has expired.	Tu subasta de |cFFFFFF99|h{}|r ha caducado.
+Your auction of |cFFFFFF99|h{}|r has received a new bid.	Tu subasta de |cFFFFFF99|h{}|r ha recibido una nueva puja.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been accepted.	Tu oferta de |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r ha sido aceptada.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been canceled.	Tu oferta de |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r ha sido cancelada.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r was rejected by the seller.	Tu oferta de |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r ha sido rechazada por el vendedor.
+Your shopping safebox is too full. To proceed you must first lighten it.	Tu Almacén de compras está demasiado lleno. Para continuar, primero debes vaciarlo un poco.
+Your |cFFFFFF99|hShop Decoration|r is expired.	Tu |cFFFFFF99|hDecoración de tienda|r ha caducado.
+Your |cFFFFFF99|h{}|r auction has ended. |cFFFFFF99|h{}|r purchased the item for |cFFFFFF99|h{}|r yangs.	Tu subasta de |cFFFFFF99|h{}|r ha terminado. |cFFFFFF99|h{}|r ha comprado el objeto por |cFFFFFF99|h{}|r Yang.
+Your |cFFFFFF99|h{}|r has expired and has been removed from your shop.	Tu |cFFFFFF99|h{}|r ha caducado y se ha retirado de tu tienda.
+Za pomocą tej mikstury zdobywasz 50% więcej doświadczenia podczas godziny grania.	Con esta poción obtienes un 50% más de experiencia durante una hora de juego.
+Za pomocą tej pieczęci możesz przywołać lwa Leonidasa.	Con este sello puedes invocar al león Leónidas.
+Za pomocą tej pieczęci możesz przywołać pancerną pandę.	Con este sello puedes invocar a un panda acorazado.
+Za pomocą tej pieczęci możesz przywołać renifera Bambi.	Con este sello puedes invocar al reno Bambi.
+Za pomocą tej pieczęci możesz przywołać renifera Kometka.	Con este sello puedes invocar al reno Cometa.
+Za pomocą tej pieczęci możesz przywołać tygrysa Khana.	Con este sello puedes invocar al tigre Khan.
+Za pomocą tej pieczęci możesz przywołać warchlaka Boczusia.	Con este sello puedes invocar al jabato Porkie.
+Za pomocą tej pieczęci możesz przywołać ślicznego polarnego niedźwiadka.	Con este sello puedes invocar a un precioso osito polar.
+Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Con este sello puedes invocar a un panda adorable.
+Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Con este sello invocas al Corazón Iracundo. Te otorga un 5% más de probabilidad de golpes críticos y aumenta tus HP en 1500 puntos.
+Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Con este sello invocas a tu amuleto de la suerte personal. Te otorga un 5% más de probabilidad de golpes penetrantes y aumenta tus HP en 1500 puntos.
+Zaczarowany Klejnot	Gema Encantada
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Guardar captura de pantalla:  Imprimir (la captura se guarda en la subcarpeta "screenshot" del juego)
+Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Evita que el caballo pierda resistencia; ideal para largos viajes sin descanso.
+Zawiera 8 Kluczy Goblina.	Contiene 8 Llaves goblin.
+Zawiera losową księgę umiejętności peta.	Contiene un libro de habilidad de mascota aleatorio.
+Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Contiene recompensas para los valientes guerreros que sirven en el Valle de Seungryong.
+Zbieraj Gałki Lodów dla Summer.	Reúne Bolas de Helado para Summer.
+Zbroja Dzikiego Knura	Armadura de Jabalí Salvaje
+Zbroja Niedźwiedzia	Armadura de Oso
+Zbroja Tygrysa	Armadura de Tigre
+Zbroja Wilka	Armadura de Lobo
+Zeok-Hyoun	Zeok-Hyoun
+Zeok-Sang-Gab	Zeok-Sang-Gab
+Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Una baraja de 24 cartas Okey. Haz clic derecho para añadirla; una partida de Okey cuesta 1 baraja y 30 000 Yang.
+Zgniłe Mięso	Carne Podrida
+Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Cambia el nombre de la mascota activa (100.000 Yang adicionales).
+Zmierzwiona fryzura z opaską na czoło. Na stałe zmienia fryzurę Twojej postaci.	Un peinado alborotado con una cinta en la frente. Cambia de forma permanente el peinado de tu personaje.
+Zmniejsza obrażenia jakie otrzymujesz podczas walki o 12-15% przez 30 min.	Reduce el daño que recibes en combate en un 12-15% durante 30 min.
+Zmniejsza zużycie Staminy o połowę.	Reduce a la mitad el consumo de resistencia.
+Zmrożone czarne mięso o niezwykłej mocy.	Carne negra congelada de un poder extraordinario.
+Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Hecho de cacao, leche, mantequilla y azúcar. Se regala para expresar enamoramiento.
+Zung-Seon	Zung-Seon
+Zupa Grzybowa	Sopa de Setas
+Zwierzęta o białym futrze są rzadkością i wiele kultur przypisuje im nadzwyczajne siły.	Los animales de pelaje blanco son una rareza, y muchas culturas les atribuyen poderes extraordinarios.
+Zwiększa Szybkość Ruchu o 30 na 30 minut. Efekt utrzymuje się po śmierci.	Aumenta la velocidad de movimiento en 30 durante 30 minutos. El efecto se mantiene tras la muerte.
+Zwiększa Twoją Szybkość Ataku o 10% na okres 30 minut. Niezdatna do handlu.	Aumenta tu velocidad de ataque en un 10% durante 30 minutos. No comerciable.
+Zwiększa Twoją Szybkość Ataku o 15% na okres 30 minut. Niezdatna do handlu.	Aumenta tu velocidad de ataque en un 15% durante 30 minutos. No comerciable.
+Zwiększa ilość Punktów Energii o 20% przez 30 min.	Incrementa el máximo SP en un 20% durante 30 min.
+Zwiększa ilość Punktów Życia o 20% na okres 30 minut.	Incrementa tu HP en un 20% durante 30 minutos.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min.	Aumenta el daño que infliges en combate en un 12-15% durante 30 min.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.	Aumenta el daño que infliges en combate en un 12-15% durante 30 min. Este objeto es comerciable.
+Zwiększa otrzymywane Punkty Doświadczenia o 20% dla członków iCafe.	Aumenta en un 20% los puntos de experiencia obtenidos para los miembros de iCafe.
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +10% przy 5 Suplementach i 10 Odłamkach).	Aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae (hasta +10% con 5 Ampliaciones y 10 Fragmentos).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +20% przy 5 Suplementach i 10 Odłamkach).	Aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae (hasta +20% con 5 Ampliaciones y 10 Fragmentos).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +5% przy 5 Suplementach i 10 Odłamkach).	Aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae (hasta +5% con 5 Ampliaciones y 10 Fragmentos).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +50% przy 5 Suplementach i 10 Odłamkach).	Aumenta la probabilidad de añadir la 6.ª o 7.ª bonificación con Seon-Hae (hasta +50% con 5 Ampliaciones y 10 Fragmentos).
+Zwiększa szansę na wypadnięcie przedmiotu z bonusem na godzinę. Zdjęcie rękawicy jest niemożliwe.	Aumenta durante una hora la probabilidad de que caigan objetos con bonificación. Es imposible quitarse el guante.
+Zwiększa szansę na złapanie rzadkiej ryby przez 15 minut.	Aumenta la probabilidad de pescar un pez raro durante 15 minutos.
+Zwiększa szansę na złapanie rzadkiej ryby przez 3 godziny.	Aumenta la probabilidad de pescar un pez raro durante 3 horas.
+Zwiększa szansę na złapanie rzadkiej ryby przez 30 minut.	Aumenta la probabilidad de pescar un pez raro durante 30 minutos.
+Zwiększa twoją Szybkość Ataku o 10% na okres 30 minut.	Aumenta tu velocidad de ataque en un 10% durante 30 minutos.
+Zwiększa twoją Szybkość Ataku o 15% na okres 30 minut. Efekt utrzymuje się po śmierci.	Aumenta tu velocidad de ataque en un 15% durante 30 minutos. El efecto se mantiene tras la muerte.
+Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Aumenta la resistencia. Es conocido por sus propiedades fortalecedoras de los músculos.
+Zwiększa zadawane obrażenia o 12% do 15% gdy atakujesz. Działa przez 30 minut.	Aumenta el daño infligido entre un 12% y un 15% al atacar. Dura 30 minutos.
+Zwój Inkarnacji	Pergamino de Encarnación
+Zwój Nasycenia	Pergamino de Saturación
+Zwój pozwala Ci wydobyć Kamień Duszy z broni albo zbroi. Zostawia znak wydobycia. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Este pergamino te permite extraer la Piedra Espíritu de un arma o armadura. Deja una marca de extracción. Las Piedras Espíritu +5 se eliminan al extraerlas.
+Zwój pozwala zapisać obecną pozycję, aby potem powrócić do obecnej lokalizacji. Można użyć co 15 minut.	Este pergamino te permite guardar tu posición actual para regresar después a ese lugar. Se puede usar cada 15 minutos.
+Zwój pozwalający Ci teleportować się do miasta pierwszego Twojego królestwa. Można użyć co 15 minut.	Este pergamino te permite teletransportarte a la primera ciudad de tu reino. Se puede usar cada 15 minutos.
+Zwój ten umożliwia usunięcie ostatnio pomyślnie dodanego Kamienia Duszy ze wskazanego przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Este pergamino te permite extraer de un objeto la última Piedra Espíritu añadida con éxito. Las Piedras Espíritu +5 se eliminan al extraerlas.
+Zwój ten umożliwia usunięcie wskazanego Kamienia Duszy z przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Este pergamino te permite extraer de un objeto la Piedra Espíritu que elijas. Las Piedras Espíritu +5 se eliminan al extraerlas.
+Zwój Życia	Pergamino de la Vida
+Złocisty piasek, nasycony magią i tajemnicą.	Arena dorada, impregnada de magia y misterio.
+uruchomieniu klienta (Language: after a restart).	al reiniciar el cliente.
+{}'s Auction	Subasta de {}
+{}'s Shop	Tienda de {}
+|Eikashop/ultimate/average.png|e |cFFFF9999|hUnknown|r	|Eikashop/ultimate/average.png|e |cFFFF9999|hDesconocido|r
+|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r	|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r
+|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Buy all those at this price	|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Comprar todos a este precio
+|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Edit Price of all similar Items.	|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Editar el precio de todos los objetos similares.
+|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Edit Price	|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Editar precio
+|Eshortcut/mleft.tga|e Buy	|Eshortcut/mleft.tga|e Comprar
+|Eshortcut/mleft.tga|e Claim Item	|Eshortcut/mleft.tga|e Recoger objeto
+|Eshortcut/mleft.tga|e Remove Item	|Eshortcut/mleft.tga|e Quitar objeto
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Remove all similar Items	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Quitar todos los objetos similares
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Use x10	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Usar x10
+|Eshortcut/mright.tga|e Remove Item	|Eshortcut/mright.tga|e Quitar objeto
+|Eshortcut/mright.tga|e Sell Item	|Eshortcut/mright.tga|e Vender objeto
+|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Private Offer	|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Oferta privada
+|cFFFF9999|hExhausted duration|r	|cFFFF9999|hDuración agotada|r
+|cFFFFFF88Three Days|h|r	|cFFFFFF88Tres días|h|r
+|cFFFFFF99|h{}|r has outbid you for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r ha superado tu puja por |cFFFFFF99|h{}|r.
+|cFFFFFF99|h{}|r won the auction of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r ha ganado la subasta de |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r.
+Čć»ç°©	Čć»ç°©
+Łuski Smoka	Escamas de Dragón
+Śluz zamrożonych istot, chłodny w dotyku.	 Baba de criaturas congeladas, fría al tacto.
+Świadectwo Zmiany+	Título de retroceso+
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa navideña por una partida de Okey terminada con 300-399 puntos. Haz clic derecho para abrirla.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa navideña por una partida de Okey terminada con 400 puntos o más. Haz clic derecho para abrirla.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensa navideña por una partida de Okey terminada con menos de 300 puntos. Haz clic derecho para abrirla.
+Święty Miecz Bogów+	Espada Santa de los Dioses+
+Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Una fuente de poder para la caña de pescar. Su toque mejora la herramienta y abre el camino a la pesca en las aguas más profundas.
+Żelazo	Hierro
+Żołnierze	Soldados
+Żywe Drzewo	Árbol Vivo

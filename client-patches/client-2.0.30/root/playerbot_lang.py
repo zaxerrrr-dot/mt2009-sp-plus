@@ -29,7 +29,15 @@ def IsEnglish():
 
 def T(pl, en):
 	"""The Polish text, or its English twin for a client that is not Polish.
-	The two of a pair take the same %-arguments."""
+	The two of a pair take the same %-arguments.
+	MT2009_PLUS_LANG_V1: any other language reads its own text of the Polish
+	one (mt2009lang, the build's locale/<code>/mt2009_texts.txt), English when
+	it has none."""
+	try:
+		import mt2009lang
+		return mt2009lang.T(pl, en)
+	except Exception:
+		pass
 	if IsEnglish():
 		return en
 	return pl
