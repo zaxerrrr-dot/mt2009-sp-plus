@@ -4,8 +4,15 @@ Język	Nyelv
 Język / Language	Nyelv / Language
 Język klienta: %s	A kliens nyelve: %s
 Nazwy, opisy i okna zmienią język po ponownym	A nevek, leírások és ablakok nyelve
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Lepecsételt dokumentum, amely feljogosít Tárgy-megerősítő készítésére.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Lepecsételt dokumentum, amely feljogosít Tárgy-megerősítő készítésére. Ez a tárgy kereskedhető.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Lepecsételt dokumentum, amely feljogosít Megbűvölő tárgy készítésére.
 Po ponownym uruchomieniu: %s	Újraindítás után: %s
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Helyezd át a fájlt a játék fő könyvtárában lévő upload/ mappába.
+Standardowa Muzyka Metin2	A Játék Alapzenéje
+Standardowa muzyka Metin2	A játék alapzenéje
 Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Ez a kliensverzió csak a nyelvek egy részét ismeri - frissítsd a klienst.
 Uruchom klienta ponownie (Restart the client).	Indítsd újra a klienst.
 Uruchom ponownie	Újraindítás
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Képernyőkép mentése:  Print (a képernyőkép a játék "screenshot" almappájába kerül)
 uruchomieniu klienta (Language: after a restart).	a kliens újraindítása után változik.

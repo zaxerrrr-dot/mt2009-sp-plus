@@ -917,9 +917,9 @@ Oferty Błyskawiczne	Flaş Teklifler
 Offer	Teklif
 Offer List	Teklif Listesi
 Offer successfully created.	Teklif başarıyla oluşturuldu.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Arttırma Kağıdı üretmeye yetki veren belge.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Arttırma Kağıdı üretmeye yetki veren belge. Bu eşya ticarete uygundur.
-Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Efsun Nesnesi üretmeye yetki veren belge.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Arttırma Kağıdı üretme hakkı veren mühürlü bir belge.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Arttırma Kağıdı üretme hakkı veren mühürlü bir belge. Bu eşya takas edilebilir.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Efsun Nesnesi üretme hakkı veren mühürlü bir belge.
 Ogon Małpy	Maymun Kuyruğu
 Ogłoszenia	Duyurular
 Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Kötü Hayvan Ruhlarını evcilleştirmek büyük bir büyü ustalığı gerektirir. Sonuç da bir o kadar şaşırtıcıdır.
@@ -1141,6 +1141,7 @@ Przedmiot z Bonusem	Efsunlu Eşya
 Przedmioty Konne	At Eşyaları
 Przedmioty zostały przywrócone dla tego konta.	Bu hesabın eşyaları geri yüklendi.
 Przekierowuje obrażenia z PŻ na PE.	Hasarı HP'den SP'ye yönlendirir.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Dosyayı oyunun ana dizinindeki upload/ klasörüne taşı.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Bedene Tatil büyüsü işler ve sahibine olağanüstü bir güç verir. Demircide Yüzük yükseltmesi başarısız olsa da eşya kaybolmaz. Süre: 7 gün (maks. 60 gün).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Bedene Tatil büyüsü işler ve sahibine olağanüstü bir güç verir. Demircide Yüzük yükseltmesi başarısız olsa da eşya kaybolmaz. Maks. süre: 60 gün.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Bedene Paskalya büyüsü işler ve sahibine olağanüstü bir güç verir. Demircide Yüzük yükseltmesi başarısız olsa da eşya kaybolmaz.
@@ -1375,6 +1376,8 @@ Srebrny Grot	Gümüş Ok Ucu
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Büyülü mücevherlerle süslenmiş, kalp şeklinde gümüş bir kolye. Verir: +%30 EXP, +%10 saldırı hızı, +%10 büyü hızı, +%10 canavarlara karşı güç, +%5 maks. HP, +%5 maks. SP.
 Stalowy Grot	Çelik Ok Ucu
 Stamina / sek.: %d	Dayanıklılık / sn.: %d
+Standardowa Muzyka Metin2	Standart Oyun Müziği
+Standardowa muzyka Metin2	Standart oyun müziği
 Stara Fryzura (biała)	Eski Saç Modeli (beyaz)
 Stara Fryzura (czarna)	Eski Saç Modeli (siyah)
 Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	Her hareketinde ince çöl kumu döken eski, tozlu bir sandık.
@@ -1705,6 +1708,7 @@ Zaczaruj kostium	Kostümü Efsunla
 Zaczyna się za %s	%s içinde başlıyor
 Zajęcza Klatka	Tavşan Kafesi
 Zakup raz na %s	%s içinde bir kez satın alınabilir
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Ekran görüntüsü kaydet:  Print (ekran görüntüsü oyunun "screenshot" alt klasörüne kaydedilir)
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Atının dayanıklılık kaybetmesini önler; molasız uzun yolculuklar için idealdir.
 Zaprzysiężone	Yeminli
 Zasięg Łuku +%dm	Yay Menzili +%dm

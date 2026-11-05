@@ -457,9 +457,9 @@ Odłamek	Fragmento
 Offer	Ofertar
 Offer List	Lista de ofertas
 Offer successfully created.	Oferta creada con éxito.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un documento sellado que autoriza a fabricar un Objeto de Coacción.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un documento sellado que autoriza a fabricar un Objeto de Coacción. Este objeto se puede comerciar.
-Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un documento sellado que autoriza a fabricar un Objeto Encantado.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un documento sellado que permite fabricar un Objeto de Coacción.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un documento sellado que permite fabricar un Objeto de Coacción. Este objeto se puede comerciar.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un documento sellado que permite fabricar un Objeto Encantado.
 Ogon Małpy	Cola de Mono
 Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Domar a los Espíritus Animales malignos requiere una gran maestría mágica. El resultado es igual de asombroso.
 Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Zmienia wygląd Twojego konia, jeżeli założysz przed przywołaniem.	Domar a los Espíritus Animales malignos requiere una gran maestría mágica. Cambia el aspecto de tu caballo si te lo equipas antes de invocarlo.
@@ -570,6 +570,7 @@ Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas la probabilidad de golpe crítico. El efecto puede subirse hasta el nivel 5 con más Crisantemos. Funciona durante el evento Flores de Colores.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Objeto consumible. El intento puede fallar. Si tiene éxito, aumenta durante 12 horas la probabilidad de obtener objetos. El efecto puede subirse hasta el nivel 5 con más Azucenas. Funciona durante el evento Flores de Colores.
 Przedmiot wymagany do misji.	Objeto necesario para una misión.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Mueve el archivo a la carpeta upload/ del directorio principal del juego.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Impregna el cuerpo con la magia de las Vacaciones y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto. Duración: 7 días (máx. 60 días).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Impregna el cuerpo con la magia de las Vacaciones y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto. Duración máx.: 60 días.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Impregna el cuerpo con la magia de la Pascua y otorga a su portador un poder extraordinario. Los intentos fallidos de mejorar el Anillo en el Herrero no provocan la pérdida del objeto.
@@ -658,6 +659,8 @@ Sparta Jungrang+ (m)	Spartak de Jungrang+ (m)
 Spięta u góry fryzura wykorzystująca spinkę w kształcie motyla. Na stałe zmienia fryzurę Twojej postaci.	Un recogido en lo alto sujeto con una horquilla en forma de mariposa. Cambia de forma permanente el peinado de tu personaje.
 Sprzedałeś |cFFFFFF99|h{}|r za |cFFFFFF99|h{}|r.	Has vendido |cFFFFFF99|h{}|r por |cFFFFFF99|h{}|r.
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un colgante de plata en forma de corazón, engastado con gemas mágicas. Otorga: +30% EXP, +10% velocidad de ataque, +10% velocidad de hechizo, +10% fuerza contra monstruos, +5% HP máx., +5% SP máx.
+Standardowa Muzyka Metin2	Música Estándar del Juego
+Standardowa muzyka Metin2	Música estándar del juego
 Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	Un cofre viejo y polvoriento del que, a cada movimiento, cae fina arena del desierto.
 Starożytna fryzura okazująca silny indywidualny charakter. Na stałe zmienia fryzurę Twojej postaci.	Un peinado antiguo que muestra un fuerte carácter individual. Cambia de forma permanente el peinado de tu personaje.
 Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	Un libro antiguo cuya lectura aumenta notablemente el conocimiento y las habilidades.
@@ -807,6 +810,7 @@ Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Con este sell
 Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Con este sello invocas al Corazón Iracundo. Te otorga un 5% más de probabilidad de golpes críticos y aumenta tus HP en 1500 puntos.
 Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Con este sello invocas a tu amuleto de la suerte personal. Te otorga un 5% más de probabilidad de golpes penetrantes y aumenta tus HP en 1500 puntos.
 Zaczarowany Klejnot	Gema Encantada
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Guardar captura de pantalla:  Imprimir (la captura se guarda en la subcarpeta "screenshot" del juego)
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Evita que el caballo pierda resistencia; ideal para largos viajes sin descanso.
 Zawiera 8 Kluczy Goblina.	Contiene 8 Llaves goblin.
 Zawiera losową księgę umiejętności peta.	Contiene un libro de habilidad de mascota aleatorio.

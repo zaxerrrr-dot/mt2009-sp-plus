@@ -470,9 +470,9 @@ Odłamek	Fragment
 Offer	Ofertă
 Offer List	Lista ofertelor
 Offer successfully created.	Oferta a fost creată cu succes.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un document care îți dă dreptul să creezi o Îmbunătățire a Obiectului.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un document care îți dă dreptul să creezi o Îmbunătățire a Obiectului. Obiectul poate fi negociat.
-Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un document care îți dă dreptul să creezi o Vrăjire a Obiectului.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un document sigilat care permite crearea obiectului Îmbunătățirea Obiectului.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un document sigilat care permite crearea obiectului Îmbunătățirea Obiectului. Acest obiect poate fi comercializat.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un document sigilat care permite crearea obiectului Vrăjește Obiectul.
 Ogon Małpy	Coadă de Maimuță
 Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Îmblânzirea Spiritelor Animalelor rele cere o mare măiestrie magică. Rezultatul este pe măsură de uimitor.
 Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Zmienia wygląd Twojego konia, jeżeli założysz przed przywołaniem.	Îmblânzirea Spiritelor Animalelor rele cere o mare măiestrie magică. Schimbă înfățișarea calului tău dacă o echipezi înainte de a-l chema.
@@ -583,6 +583,7 @@ Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore șansa de lovitură critică. Efectul poate fi ridicat până la nivelul 5 cu alte Crizanteme. Funcționează în timpul evenimentului Copiii Florilor.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore șansa de a obține obiecte. Efectul poate fi ridicat până la nivelul 5 cu alți Crini. Funcționează în timpul evenimentului Copiii Florilor.
 Przedmiot wymagany do misji.	Obiect necesar pentru o misiune.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Mută fișierul în folderul upload/ din directorul principal al jocului.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Pătrunde trupul cu magia Vacanței, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului. Durată: 7 zile (max. 60 de zile).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Pătrunde trupul cu magia Vacanței, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului. Durată max.: 60 de zile.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Pătrunde trupul cu magia Paștelui, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului.
@@ -682,6 +683,8 @@ Sparta Jungrang+ (m)	Sparta Jungrang+ (m)
 Spięta u góry fryzura wykorzystująca spinkę w kształcie motyla. Na stałe zmienia fryzurę Twojej postaci.	O coafură prinsă sus cu o agrafă în formă de fluture. Schimbă definitiv coafura caracterului tău.
 Sprzedałeś |cFFFFFF99|h{}|r za |cFFFFFF99|h{}|r.	Ai vândut |cFFFFFF99|h{}|r pentru |cFFFFFF99|h{}|r.
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un pandantiv de argint în formă de inimă, încrustat cu bijuterii magice. Oferă: +30% EXP, +10% viteză de atac, +10% viteză de vrăjire, +10% putere împotriva monștrilor, +5% PV max., +5% PM max.
+Standardowa Muzyka Metin2	Muzica Standard a Jocului
+Standardowa muzyka Metin2	Muzica standard a jocului
 Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	O cutie veche și prăfuită din care, la fiecare mișcare, se scurge nisip fin de deșert.
 Starożytna fryzura okazująca silny indywidualny charakter. Na stałe zmienia fryzurę Twojej postaci.	O coafură străveche ce arată un caracter puternic și independent. Schimbă definitiv coafura caracterului tău.
 Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	O carte străveche a cărei lectură sporește considerabil cunoștințele și abilitățile.
@@ -830,6 +833,7 @@ Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Cu ajutorul a
 Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Cu acest sigiliu chemi Inima Mâniei. Îți oferă cu 5% mai multă șansă de lovituri critice și îți crește PV-ul cu 1500.
 Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Cu acest sigiliu îți chemi talismanul personal de noroc. Îți oferă cu 5% mai multă șansă de lovituri pătrunzătoare și îți crește PV-ul cu 1500.
 Zaczarowany Klejnot	Bijuterie Fermecată
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Salvează captura de ecran:  Print (captura de ecran se salvează în subfolderul "screenshot" al jocului)
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Împiedică pierderea rezistenței calului, ideal pentru călătorii lungi fără pauze.
 Zawiera 8 Kluczy Goblina.	Conține 8 Chei Goblin.
 Zawiera losową księgę umiejętności peta.	Conține o carte de abilitate aleatorie pentru însoțitor.

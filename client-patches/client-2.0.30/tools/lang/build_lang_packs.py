@@ -26,6 +26,12 @@
 #     $C/azbase $C/out/pack --lang-dir /opt/metin2/git/wt-yohara/client-patches/lang --report $C/lang_report.json; }
 #   step lang_packs $C/lang.json S_lang_packs
 # and lang/verify_lang.py <BASE> <OUT> in the verify loop. Every entry written is read back. Idempotent.
+#
+# A NEW LANGUAGE = new files only: client-patches/lang/<code>/language.cfg (NAME, NATIVE, CODEPAGE, ORDER) and its tables
+# (import_originals.py <BASE> <OUT> <code> fills keyed_orig.tsv / tm_orig.tsv when Owsap has the language; our own texts
+# go to tm.tsv / keyed.tsv - merge_translations.py takes a --missing batch and its translation). The next build makes
+# locale/<code>/, the list file offers it, the exe-src21 reads its CODEPAGE from language.cfg, and the client sends
+# "/lang <code>" to the server. A language without a table entry for a text shows the English one, then folded Polish.
 import json
 import os
 import struct

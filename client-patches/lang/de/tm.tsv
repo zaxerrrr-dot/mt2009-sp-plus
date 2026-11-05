@@ -1884,9 +1884,9 @@ Oferty Błyskawiczne	Blitzangebote
 Offer	Angebot
 Offer List	Angebotsliste
 Offer successfully created.	Angebot erfolgreich erstellt.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt.
-Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt. Dieser Gegenstand ist handelbar.
-Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verzaubern“ berechtigt.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Ein gesiegeltes Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Ein gesiegeltes Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt. Dieser Gegenstand ist handelbar.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Ein gesiegeltes Dokument, das zur Herstellung von „Gegenstand verzaubern“ berechtigt.
 Ognisty Golem Mag	Feuergolem-Magier
 Ognisty atak|Powala potwory na ziemie|Szansa na Omdlenie Potwora	Feuerangriff|Wirft Monster zu Boden|Chance, ein Monster in Ohnmacht zu versetzen
 Ogon Małpy	Affenschwanz
@@ -2315,6 +2315,7 @@ Przekierowuje obrażenia z PŻ na PE.	Leitet Schaden von den TP auf die MP um.
 Przemiana w %s	Verwandlung in %s
 Przemień	Verwandeln
 Przeniesiono część - reszta się nie zmieściła.	Teilweise verschoben – der Rest passte nicht.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Verschiebe die Datei in den Ordner upload/ im Hauptverzeichnis des Spiels.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Durchdringt den Körper mit der Magie der Ferien und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht. Dauer: 7 Tage (max. 60 Tage).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Durchdringt den Körper mit der Magie der Ferien und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht. Max. Dauer: 60 Tage.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Durchdringt den Körper mit der Magie von Ostern und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht.
@@ -2694,6 +2695,8 @@ Srednia: %s / szt.	Durchschnitt: %s / Stk.
 Stajnia i polowanie na medale w Lochu Malp.	Stall und Medaillenjagd im Affendungeon.
 Stalowy Grot	Stahlpfeilspitze
 Stamina / sek.: %d	Ausdauer / Sek.: %d
+Standardowa Muzyka Metin2	Standard-Spielmusik
+Standardowa muzyka Metin2	Standard-Spielmusik
 Stanton-Płatnerz	Rüstungsschmied Stanton
 Stara Fryzura (biała)	Alte Haartracht (weiß)
 Stara Fryzura (czarna)	Alte Haartracht (schwarz)
@@ -3427,6 +3430,7 @@ Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Gespeichert
 Zapisano (%s%%).	Gespeichert (%s%%).
 Zapisano.	Gespeichert.
 Zapisuje miejsce %d...	Speichere Ort %d...
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Screenshot speichern:  Druck (der Screenshot wird im Unterordner "screenshot" des Spiels gespeichert)
 Zaplanowana została przerwa w dostępie do usług.	Eine Wartungspause der Dienste wurde geplant.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Verhindert, dass dein Pferd Ausdauer verliert – ideal für lange Reisen ohne Pausen.
 Zapomnieć %s? (zużywa Pet Revertus)	%s vergessen? (verbraucht Pet Revertus)
