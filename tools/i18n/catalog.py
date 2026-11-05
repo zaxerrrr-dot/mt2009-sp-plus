@@ -78,10 +78,11 @@ def sources(app, lang=None):
     """{text: kind} the language needs. The classic panel's English needs
     only its Polish leftovers - the rest of it is English already."""
     data = json.load(open(os.path.join(HERE, "source", app + ".json"), encoding="utf-8"))
+    english = set(data.get("english") or [])
     out = {}
     for kind in ("exact", "patterns"):
         for text in data[kind]:
-            if app == "panel" and lang == "en" and not PL_CHARS.search(text):
+            if app == "panel" and lang == "en" and text in english:
                 continue
             out[text] = kind
     return out

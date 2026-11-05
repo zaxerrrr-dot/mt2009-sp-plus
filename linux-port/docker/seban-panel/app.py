@@ -31,7 +31,8 @@ import m2i18n  # MT2009_PLUS_WEB_I18N_V1
 # m2lang cookie every page of this server shares, or a browser that does not
 # list Polish at all) gets each page translated by m2i18n from i18n/<code>.json
 # - see m2i18n.py. The Polish page is sent exactly as rendered.
-I18N = m2i18n.Catalog(os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n"), source="pl", fallback="en")
+I18N = m2i18n.Catalog(os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n"), source="pl", fallback="en",
+                      builtin={"pl": "Polski"})
 
 
 def ui_lang():

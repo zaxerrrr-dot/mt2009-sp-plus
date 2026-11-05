@@ -18,7 +18,7 @@
   var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, PRE: 1, CODE: 1 };
   var LEADING = /^([^\w(„"'«À-ɏͰ-ϿЀ-ӿ]+)(?=[\w(„"'«À-ɏͰ-ϿЀ-ӿ])/;
   var TRAILING = /(\s*(?:[:：…*!?.]|\.\.\.|\s[→↗›»]|\s\(\?\))+\s*)$/;
-  var SPLIT = /(\s+[·|—–\/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)/;
+  var SPLIT = /((?<=[.!?…])\s+|\s+[·|—–\/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)/;
   var LETTER = /[A-Za-zÀ-ɏͰ-ϿЀ-ӿ؀-ۿ]/;
   var exact = {}, patterns = [], regex = [], cache = Object.create(null), ready = false;
 

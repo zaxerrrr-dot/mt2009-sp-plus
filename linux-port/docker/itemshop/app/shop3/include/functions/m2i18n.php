@@ -169,7 +169,7 @@
 			if ($out !== $head)
 				return $out . $m[1];
 		}
-		$split = '/(\s+[·|—–\/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)/u';
+		$split = '/((?<=[.!?…])\s+|\s+[·|—–\/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)/u';
 		if ($depth < 2 && preg_match($split, $core)) {
 			$pieces = preg_split($split, $core, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$changed = false;
@@ -263,7 +263,8 @@
 			$before = $out;
 			$out = preg_replace_callback("~<!--\x00M2(\d+)\x00-->~", function ($m) use ($stash) { return $stash[(int)$m[1]]; }, $out);
 		} while ($out !== $before);
-		$out = preg_replace('~(<html\b[^>]*\blang=)(["\'])[\w-]*\2~i', '$1$2' . $code . '$2', $out, 1);
+		$web = array('cz' => 'cs', 'gr' => 'el', 'ae' => 'ar', 'dk' => 'da');
+		$out = preg_replace('~(<html\b[^>]*\blang=)(["\'])[\w-]*\2~i', '$1$2' . (isset($web[$code]) ? $web[$code] : $code) . '$2' . ($code == 'ae' ? ' dir="rtl"' : ''), $out, 1);
 		if ($script && stripos($out, '</body>') !== false) {
 			$v = 0;
 			foreach (array_merge(m2i18n_files($code), m2i18n_files(M2I18N_FALLBACK)) as $f)

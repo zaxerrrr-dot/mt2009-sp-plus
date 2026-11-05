@@ -34,11 +34,14 @@ import threading
 
 PREFERRED_ORDER = ["pl", "en", "de", "tr", "ro", "es", "it", "fr", "pt", "cz", "hu", "gr", "ae", "uk"]
 COOKIE = "m2lang"
+# the game's language codes are not all the web's: <html lang> gets the web's
+HTML_LANG = {"cz": "cs", "gr": "el", "ae": "ar", "dk": "da"}
+RTL = {"ae"}
 _PH = re.compile(r"\{(\d+)\}")
 _WS = re.compile(r"\s+")
 _LEADING = re.compile(r"^([^\w(„\"'«]+)(?=\w|[(„\"'«])", re.U)
 _TRAILING = re.compile(r"(\s*(?:[:：…*!?.]|\.\.\.|\s[→↗›»]|\s\(\?\))+\s*)$", re.U)
-_SPLIT = re.compile(r"(\s+[·|—–/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)")
+_SPLIT = re.compile(r"((?<=[.!?…])\s+|\s+[·|—–/•]\s+|:\s+|,\s+|\s+\(|\)\s+|\s*[\[\]]\s*)")
 _SKIP_BLOCKS = re.compile(r"(<(script|style|textarea|pre|code)\b[^>]*>.*?</\2\s*>)", re.I | re.S)
 _NO_TRANSLATE = re.compile(r"(<([a-zA-Z][\w-]*)\b[^>]*\btranslate=[\"']no[\"'][^>]*>.*?</\2\s*>)", re.I | re.S)
 _STASHED = re.compile(r"<!--\x00M2(\d+)\x00-->")
@@ -302,7 +305,8 @@ class Catalog:
         while previous != work:
             previous = work
             work = _STASHED.sub(lambda m: stash[int(m.group(1))], work)
-        work = _HTML_LANG.sub(lambda m: m.group(1) + m.group(2) + code + m.group(2), work, count=1)
+        work = _HTML_LANG.sub(lambda m: m.group(1) + m.group(2) + HTML_LANG.get(code, code) + m.group(2)
+                              + (' dir="rtl"' if code in RTL else ""), work, count=1)
         if script_url:
             tag = '<script src="%s" data-m2i18n="%s" defer></script>' % (html.escape(script_url), html.escape(code))
             if _BODY_END.search(work):

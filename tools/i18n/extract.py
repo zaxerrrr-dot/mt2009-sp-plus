@@ -55,6 +55,14 @@ def polish(text):
     return hits >= 2 or (hits >= 1 and len(words) <= 4 and words[0] in PL_WORDS)
 
 
+LABEL = re.compile(r"[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+(?: [a-ząćęłńóśźżA-Z0-9+]+){0,3}")
+
+
+def label_like(text):
+    """'Bransolety', 'Silny na orki': a short label with no Polish letters."""
+    return bool(LABEL.fullmatch(text.strip())) and len(text.strip()) >= 3
+
+
 def human(text):
     """Text a person reads, not code: letters, and not an identifier, a path,
     a CSS value or a URL."""
@@ -89,6 +97,8 @@ class Bag:
     def __init__(self):
         self.exact = {}
         self.patterns = {}
+        self.english = set()     # the classic panel's English (its tables' "en")
+        self.mode = None
 
     def add(self, text, origin, placeholders=False):
         t = norm(html.unescape(text))
@@ -101,6 +111,8 @@ class Bag:
             self.patterns.setdefault(t, origin)
         else:
             self.exact.setdefault(t, origin)
+        if self.mode == "en":
+            self.english.add(t)
 
 
 # ---------------------------------------------------------------- Jinja/HTML
@@ -122,7 +134,7 @@ def template_text(seg, bag, origin, expr_re):
         # string literals inside the expression are texts of their own
         for q in QUOTED.finditer(m.group(0)):
             s = q.group(1) if q.group(1) is not None else q.group(2)
-            if s and (polish(s) or (" " in s and human(s))):
+            if s and (polish(s) or (human(s) and re.search(r"[a-z]", s) and not re.fullmatch(r"[a-z_]+", s))):
                 bag.add(s, origin)
         k = n[0]
         n[0] += 1
@@ -148,7 +160,7 @@ def scan_markup(src, bag, origin, kind="jinja"):
         for m in stmt_re.finditer(src):
             for q in QUOTED.finditer(m.group(0)):
                 s = q.group(1) if q.group(1) is not None else q.group(2)
-                if s and (polish(s) or (" " in s and human(s) and re.search(r"[a-z]", s))):
+                if s and (polish(s) or (human(s) and re.search(r"[a-z]", s) and not re.fullmatch(r"[a-z_]+", s))):
                     bag.add(s, origin)
         src = stmt_re.sub(" <x> ", src)
     else:
@@ -217,7 +229,7 @@ def scan_js(src, bag, origin):
                 if polish(piece):
                     bag.add(js_unescape(piece), origin)
             continue
-        if polish(s):
+        if polish(s) or label_like(s):
             bag.add(js_unescape(s), origin)
 
 
@@ -295,6 +307,13 @@ class PyScan(ast.NodeVisitor):
             self.visit(v)
 
     def _english(self, v):
+        self.bag.mode = "en"
+        try:
+            self._english_walk(v)
+        finally:
+            self.bag.mode = None
+
+    def _english_walk(self, v):
         for sub in ast.walk(v):
             if isinstance(sub, ast.Constant) and isinstance(sub.value, str):
                 s = sub.value
@@ -332,7 +351,7 @@ class PyScan(ast.NodeVisitor):
         if "<" in s and ">" in s and re.search(r"</?[a-z]", s):
             scan_markup(s, self.bag, self.origin, kind="jinja")
             return
-        if polish(s):
+        if polish(s) or label_like(s):
             if re.search(r"\{\w*(?:[:!][^}]*)?\}", s) and not re.search(r"\{\{", s):
                 # "...{n}..." for .format()
                 s2 = renumber(re.sub(r"\{\w*(?:[:!][^}]*)?\}", "{9}", s))
@@ -487,6 +506,8 @@ def main(argv):
     for name in (argv or list(APPS)):
         bag = APPS[name]()
         data = {"exact": dict(sorted(bag.exact.items())), "patterns": dict(sorted(bag.patterns.items()))}
+        if bag.english:
+            data["english"] = sorted(bag.english)
         with open(os.path.join(OUT, name + ".json"), "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=0, sort_keys=True)
             f.write("\n")
