@@ -1,13 +1,13 @@
 -- MT2009_PLUS_REMOTE_CALL_V1 - Enasir (20874), the summoned storeroom keeper / merchant (the owner, 5 November 2026:
 -- "Dodaj jeszcze to"; pl-wiki "System Enasira"). cp1250; no string ends with a Polish letter (qc).
 -- Only his owner sees him (remote_call.cpp); the texts are the official Polish client's (pl-wiki screenshots).
--- remote_call.* is the engine's (remote_call.cpp): is_owner, has_safebox, has_shop, open_safebox, open_shop,
+-- enasir.* (NOT remote_call.*: the quest named remote_call owns that Lua table) is the engine's (remote_call.cpp): is_owner, has_safebox, has_shop, open_safebox, open_shop,
 -- unsummon, time_left.
 quest remote_call begin
 	state start begin
-		when 20874.click with remote_call.is_owner() begin
-			local has_safebox = remote_call.has_safebox()
-			local has_shop = remote_call.has_shop()
+		when 20874.click with enasir.is_owner() begin
+			local has_safebox = enasir.has_safebox()
+			local has_shop = enasir.has_shop()
 			say_title("Enasir")
 			say("Nie bêdziesz ¿a³owaæ, ¿e zosta³em przez ciebie")
 			say("wezwany! Chêtnie zaoferujê ci swoje us³ugi.")
@@ -41,17 +41,17 @@ quest remote_call begin
 			local action = actions[select_table(labels)]
 			if action == "safebox" then
 				setskin(NOWINDOW)
-				if not remote_call.open_safebox() then
+				if not enasir.open_safebox() then
 					syschat("Nie mo¿esz teraz otworzyæ magazynu.")
 				end
 			elseif action == "shop" then
 				setskin(NOWINDOW)
-				if not remote_call.open_shop() then
+				if not enasir.open_shop() then
 					syschat("Nie mo¿esz teraz otworzyæ sklepu.")
 				end
 			elseif action == "unsummon" then
 				setskin(NOWINDOW)
-				remote_call.unsummon()
+				enasir.unsummon()
 			end
 		end
 	end

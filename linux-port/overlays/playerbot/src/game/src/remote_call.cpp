@@ -549,21 +549,21 @@ void RemoteCallCommand(LPCHARACTER ch, const char* argument)
 
 namespace quest
 {
-	// remote_call.* - quest remote_call (Enasir's click); for the quest's character and the clicked NPC.
+	// enasir.* (not remote_call.*: the quest of that name owns the Lua table remote_call) - quest remote_call (Enasir's click); for the quest's character and the clicked NPC.
 	static LPCHARACTER remote_call_npc()
 	{
 		CQuestManager& q = CQuestManager::instance();
 		return remote_call::OwnNpc(q.GetCurrentCharacterPtr(), q.GetCurrentNPCCharacterPtr());
 	}
 
-	// remote_call.is_owner() -> the clicked Enasir is the character's
+	// enasir.is_owner() -> the clicked Enasir is the character's
 	static int remote_call_is_owner(lua_State* L)
 	{
 		lua_pushboolean(L, remote_call_npc() != NULL);
 		return 1;
 	}
 
-	// remote_call.has_safebox() / has_shop() -> the service is on
+	// enasir.has_safebox() / has_shop() -> the service is on
 	static int remote_call_has_safebox(lua_State* L)
 	{
 		lua_pushboolean(L, remote_call::BuffLeft(CQuestManager::instance().GetCurrentCharacterPtr(), remote_call::BUFF_SAFEBOX) > 0);
@@ -576,7 +576,7 @@ namespace quest
 		return 1;
 	}
 
-	// remote_call.open_safebox() -> the storeroom's password dialog (Enasir's); false when he cannot
+	// enasir.open_safebox() -> the storeroom's password dialog (Enasir's); false when he cannot
 	static int remote_call_open_safebox(lua_State* L)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
@@ -601,7 +601,7 @@ namespace quest
 		return 1;
 	}
 
-	// remote_call.open_shop() -> the General Store's shop at Enasir; false when he cannot
+	// enasir.open_shop() -> the General Store's shop at Enasir; false when he cannot
 	static int remote_call_open_shop(lua_State* L)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
@@ -616,7 +616,7 @@ namespace quest
 		return 1;
 	}
 
-	// remote_call.unsummon() -> Enasir sent away
+	// enasir.unsummon() -> Enasir sent away
 	static int remote_call_unsummon(lua_State* L)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
@@ -626,7 +626,7 @@ namespace quest
 		return 0;
 	}
 
-	// remote_call.time_left() -> the seconds he stays
+	// enasir.time_left() -> the seconds he stays
 	static int remote_call_time_left(lua_State* L)
 	{
 		remote_call::SState* st = remote_call::StateOf(CQuestManager::instance().GetCurrentCharacterPtr(), false);
@@ -650,6 +650,6 @@ namespace quest
 			{ "time_left",		remote_call_time_left		},
 			{ NULL,				NULL						}
 		};
-		CQuestManager::instance().AddLuaFunctionTable("remote_call", remote_call_functions);
+		CQuestManager::instance().AddLuaFunctionTable("enasir", remote_call_functions);
 	}
 }
