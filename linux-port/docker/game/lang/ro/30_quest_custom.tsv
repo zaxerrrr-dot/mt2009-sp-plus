@@ -1,0 +1,955 @@
+# MT2009_PLUS_LANGUAGE_V1 - our quests and quest libraries (tools/i18n/data/quest_custom_pl.tsv)
+# Polish<TAB>ro (by hand; UTF-8). tools/i18n/extract_server_texts.py --check ro lists what is missing.
+    2 Ładne + Dusza = Zacny (30%)	    2 Intermediare + Suflet = Fin (30%)
+    3 Drobne + Dusza = Ładny (35%)	    3 Minore + Suflet = Intermediar (35%)
+    5 Małych + Dusza = Drobny (45%)	    5 Mici + Suflet = Minor (45%)
+    Zacny + Dusza = Silny (25%)	    Fin + Suflet = Puternic (25%)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  Auriu pentru 60 de minute (peşti rari, ca la Cartea pescuitului).
+ i Kamień Księżycowy	 şi Piatra Lunii
+%d godz.	%d h
+%d godz. %d min	%d h %d min
+%d godz. %d min.	%d h %d min.
+%d godz., %d min.	%d h, %d min.
+%d min., %d sek.	%d min., %d sec.
+%d sek.	%d sec.
+%d. %s - %d pkt	%d. %s - %d pct.
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+%s (%s, bonusy: %d)	%s (%s, bonusuri: %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s te caută. Se pare că vrea să-ţi spună[ENTER]ceva important.
+%s jest już na stopniu P.	%s este deja la nivelul P.
+%s: %d. Wszystkie te punkty	%s: %d. Toate aceste puncte
+%s: nie rozdano tu jeszcze punktów.	%s: încă nu s-au distribuit puncte aici.
+%s: osiągnięto stopień P - najwyższy.	%s: s-a atins nivelul P - cel mai înalt.
+%s: teraz %s.	%s: acum %s.
+(15% odporności = 4,5% mniej obrażeń).	(15% rezistenţă = 4,5% daune mai puţine).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(până la M1), cărţi (până la G1) şi Piatra Sufletului+ (până la P).
+(drogocenne). Pakiet może zawierać m.in.:	(preţioase). Pachetul poate conţine printre altele:
+(klawisz P) na jej umiejętność.	(tasta P) pe abilitatea ei.
+(klawisz P).	(tasta P).
+(kostium, fryzura albo nakladka na bron).	(costum, coafură sau aspect de armă).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(treci cu mouse-ul peste obiect). Dacă eşuează, materialele se pierd.
+(PB) od każdego z was.	(RX) de la fiecare dintre voi.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(RX). Întoarce-te când misiunea va fi îndeplinită.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(click dreapta pe relicvă) şi adaugă-i bonusuri cu suflete.
+(SZC) od każdego z was.	(TR) de la fiecare dintre voi.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(TR). Întoarce-te când misiunea va fi îndeplinită.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(în funcţie de cristal) pentru 2 ore de joc. Bara
++1000 PŻ (maks.)	+1000 PV (max.)
++1100 PŻ (maks.)	+1100 PV (max.)
++120 Obrony	+120 Apărare
++140 Obrony	+140 Apărare
++5% albo +10%. Każda maska jest inna. 	+5% sau +10%. Fiecare mască este diferită. 
++51 Wartości Ataku	+51 Valoare Atac
++60 Wartości Ataku	+60 Valoare Atac
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Pantofi Euforici +5..+9 - fac din ei Papuci de Apă.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Pantofi Regele pescar +5..+9 - fac din ei Papuci de Foc,
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- timpul curge şi în afara jocului - apoi dispare. Nu poate fi îmbunătăţit sau dat altcuiva.
+- Kamyki x100,	- Pietre Lucioase x100,
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Taie-l: poate găseşti ceva în el (foarte rar chiar şi o Undiţă Fibră Carbon).
+- Relikt Duszy twojej klasy.	- Spirit Relicvă al clasei tale.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Foloseşte ca momeală: Bonus Ton Auriu pentru 5 minute - mai puternic.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Eliberează-l: de obicei te uzi (Haine Ude: -50 viteză de mişcare pentru 5 minute), uneori primeşti Bonus Ton
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- cu Elixir Putere Gol - elixir de putere elementală,
+- z Pustym Eliksirem Odp. - eliksir odporności.	- cu Elixir Rezistenţă Gol - elixir de rezistenţă.
+... Skargi przyjmuję jednak wyłącznie w formie	... Totuşi, plângerile le primesc doar sub formă
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	Nivel 1: 0,8%, M1: 8%, G1: 13,1%, P: 20%.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	Nivel 1: 1,2%, M1: 12%, G1: 19,7%, P: 30%.
+1. miejsce: 10x Złote Trofeum Yutnori	Locul 1: 10x Trofeu Yut Nori Aur
+1. poziom Świątyni Węży	Nivelul 1 al Templului Şarpelui
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Beril Obscur şi pentru armă 5 Nicovale Nordice
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Nicovale, 5 planuri de armă, 5 Abrazive,
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yang sau experienţă,
+120 i Championem 4, 600 pkt rankingu gildii	120 şi Campion 4, 600 pct. în clasamentul breslei
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 piese: +500 PV, +1% putere contra monştrilor; 3 piese: +1500 PV, +5% putere contra monştrilor
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 piese: +500 PV, +3% viteză de mişcare; 3 piese: +1500 PV, +7% viteză de mişcare
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 piese: +500 PV, +5% EXP; 3 piese: +1500 PV, +15% EXP
+2. miejsce: 5x Złote Trofeum Yutnori	Locul 2: 5x Trofeu Yut Nori Aur
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 sau 500. Nivelul costumului e 1000, 2000, 4000,
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yang). Din 10 cioburi de Cavaler II - Regal,
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 piese: +2500 PV, +10% magie / luptă corp la corp, +5% viteză de mişcare
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 piese: +3500 PV, +15% magie / luptă corp la corp, +7% viteză de mişcare
+3. miejsce: 3x Złote Trofeum Yutnori	Locul 3: 3x Trofeu Yut Nori Aur
+300 - 399 punktow - srebrna	300 - 399 puncte - argint
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	Locurile 4 - 10: 1x Trofeu Yut Nori Aur
+400 punktow i wiecej - zlota	400 puncte şi mai mult - aur
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Oţel, piatră de trezire şi 2 500 000 Yang.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yang, experienţă sau
+550 punktów i więcej	550 puncte şi mai mult
+6. i 7. bonus (Seon-Hae)	Bonusul 6 şi 7 (Seon-Hae)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	Nivelul obiectului 75 şi îmbunătăţire minim +7.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 sau 16000 puncte - în funcţie de tipul ei.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Breaslă] Din tezaurul breslei s-au plătit %d Yang, din inventarul tău %d Yang.
+a kto polegnie, wraca do portu.	iar cine cade se întoarce în port.
+a nie każdy nadaje się do badań.	şi nu oricine e bun pentru cercetări.
+a obecne bonusy celu zostana nadpisane.	iar bonusurile actuale ale ţintei vor fi suprascrise.
+a otrzymasz lepszy kamień:	şi primeşti o piatră mai bună:
+a sam WuKong czeka na śmiałków na szczycie.	iar WuKong însuşi îi aşteaptă pe curajoşi pe vârf.
+a spróbuję wytworzyć Odłamek Reliktu.	şi voi încerca să creez un Ciob Relicvă.
+a te zmiany są bardzo niepokojące. Moi bracia	iar aceste schimbări sunt foarte îngrijorătoare. Fraţii mei
+A teraz odczep się i pozwól mi w spokoju	Iar acum lasă-mă în pace şi lasă-mă liniştit
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	şi se va transforma într-un Cufăr de Halloween. Încearcă! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	Pentru a termina regenerarea, trebuie să fii pe harta Templului Zodiacului.
+Aby stworzyć Kryształ Energii,	Pentru a crea un Cristal de Energie,
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, ai reuşit! Bine, acum îţi fac din[ENTER]asta o Prismă a Reînvierii.
+Aktywuj misję (300 potworów)	Activează misiunea (300 de monştri)
+Alarm w Świątyni Zodiaku	Alarmă în Templul Zodiacului
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor s-a trezit! Fugiţi de ţepii de gheaţă şi distrugeţi Ouăle Dragon Alb.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	sau Vopsea Roşie (Papuci de Apă), 5 Curele Grele
+albo sztandar użyty w hali) zabiera jeden sztandar.	sau steagul folosit în sală) consumă un steag.
+albo trzy kolejne liczby daja punkty - seria	sau trei numere consecutive dau puncte - serie
+albo u Statuy Wojownika (z odłamków I).	sau la Statuia Războinicului (din cioburi I).
+Alchemia to nieobliczalna nauka i każdy kolejny	Alchimia e o ştiinţă imprevizibilă şi fiecare
+Alchemik w Dongan potrzebuje pomocy.	Alchimistul din Dongan are nevoie de ajutor.
+Appaloosa bedzie z toba o 7 dni dluzej.	Appaloosa va fi cu tine încă 7 zile.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	Trusa de prim ajutor! Îţi admir curajul - cum ai reuşit
+Apteczka! W ostatniej chwili - dziękuję.	Trusa de prim ajutor! În ultima clipă - mulţumesc.
+apteczka. Podejrzewam wojowników En-Tai, bo	trusa de prim ajutor. Îi bănuiesc pe războinicii En-Tai, pentru că
+apteczkę.	trusa de prim ajutor.
+Atak powierzchniowy cię dosięgnął.	Atacul de suprafaţă te-a lovit.
+Atakuje wszystko w poblizu	Atacă totul din jur
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	Vânătoarea Automată e dezactivată pe această lume - păstrează biletul.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	Vânătoarea Automată e acum disponibilă pentru toţi - păstrează biletul pentru mai târziu.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Vânătoare Automată: +8 h, în total %d h (contează doar timpul în joc).
+Auto Lowy: masz juz ponad 30 dni czasu.	Vânătoare Automată: ai deja peste 30 de zile.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Vânătoare Automată: încă %d zile %d h (zile calendaristice) - funcţionează cât timp biletul e în inventar.
+aż znajdziesz przy którymś z nich Lekarstwo.	până găseşti la unul dintre ei Medicamentul.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	Cercetătorul Pădurii caută pe cineva curajos. Mergi la el.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	Cercetătorul Pădurii. Mai întâi vă veţi lupta cu Bagjanamu.
+Badam klejnoty, które powstają w lodzie Groty	Studiez nestematele care se formează în gheaţa Peşterii
+Badania Biologa	Cercetările biologului
+badania są ukończone. Wybierz jeden stały bonus:	cercetările sunt gata. Alege un bonus permanent:
+badaniami. Sprawdź w Dongan, czy potrzebuje	cercetările. Verifică în Dongan dacă are nevoie
+Badanie Seona-Pyeonga	Cercetarea lui Seon-Pyeong
+Badanie Seona-Pyeonga 2	Cercetarea lui Seon-Pyeong 2
+Badanie Seona-Pyeonga: nagroda	Cercetarea lui Seon-Pyeong: recompensă
+badanie, które chcesz przyśpieszyć.	cercetarea pe care vrei s-o grăbeşti.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (RX) a fost învins. Pământul se cutremură - vine Jotun Thrym (RX)!
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (TR) a fost învins. Pământul se cutremură - vine Jotun Thrym (TR)!
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu a fost învins. Pământul se cutremură - vine Jotun Thrym!
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor a învins - această expediţie nu a adus nicio recompensă.
+Balathor, Biały Smok, śpi w lodowej krypcie.	Balathor, Dragonul Alb, doarme în cripta de gheaţă.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Baroneasa Păianjen învinsă în %d:%02d! Temniţa a fost terminată.
+Baronówny zagnieździły się między regałami i nikt	Baronesele şi-au făcut cuib printre rafturi şi nimeni
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	vopsea şi plăci după armura aleasă, 10 000 000 Yang
+Beran-Setaou (PB) został pokonany!	Beran-Setaou (RX) a fost învins!
+Beran-Setaou (SZC) został pokonany!	Beran-Setaou (TR) a fost învins!
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou a murit. În curând vă veţi întoarce toţi
+Beran-Setaou został pokonany!	Beran-Setaou a fost învins!
+BETA: czas skrocony do 10s	BETA: timp scurtat la 10s
+BETA: DT jest dostepne od 2 etapu.	BETA: DT e disponibil de la etapa 2.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Fără Bilet spre Atlantida nu supravieţuieşti în adâncuri. Cumpără-l de la Magul Atlantidei.
+Bez Biletu do Atlantydy:	Fără Bilet spre Atlantida:
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	Fără Copac Emerald nu pot face nimic. Învinge
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	Fără Cherestea Fină nu pot face nimic. Învinge
+Bez zmian	Fără schimbări
+Biblioteka Wiedzy	Biblioteca Cunoaşterii
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Biblioteca Cunoaşterii: Timpul a expirat. Gardianul vă scoate din Bibliotecă.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Biblioteca Cunoaşterii: Etapă terminată. În 5 secunde urmează provocarea următoare.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Biblioteca Cunoaşterii: trecerea nu s-a putut deschide - vorbeşte cu Gardianul Bibliotecii.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Biblioteca Cunoaşterii: Sigiliul Bibliotecii s-a activat singur.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Biblioteca Cunoaşterii: vorbeşte cu Gardianul Bibliotecii ca să deschizi trecerea.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Biblioteca Cunoaşterii: trecerea duce prin sala de aşteptare.
+Biblioteka Wiedzy: przejście się otwiera...	Biblioteca Cunoaşterii: trecerea se deschide...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Biblioteca Cunoaşterii: Această expediţie s-a încheiat deja. Vorbeşte cu gardianul ca să porneşti una nouă.
+Biblioteka Wiedzy: Ten loch został już ukończony.	Biblioteca Cunoaşterii: Această temniţă a fost deja terminată.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Biblioteca Cunoaşterii: Bun venit. În 5 secunde păianjenii vor ieşi de pe rafturi.
+biega za toba, broni cie i zbiera twoj drop.	aleargă după tine, te apără şi îţi strânge dropul.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	Biletul spre Atlantida protejează de apă, presiune
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	Biletul îl cumpăraţi de la mine - opţiunea: Cumpără Bilet spre Atlantida.
+Bilet Podrozniczy	Tichet de Turism
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	Bilet, te pot duce în Instanţa Misterioasă.
+Bio-badanie 1	Bio-cercetarea 1
+Bio-badanie 2	Bio-cercetarea 2
+Bio-badanie 3	Bio-cercetarea 3
+Bio-badanie 4	Bio-cercetarea 4
+Bio-badanie 5	Bio-cercetarea 5
+Bio-badanie 6	Bio-cercetarea 6
+Bio-badanie 7	Bio-cercetarea 7
+Bio-badanie 8	Bio-cercetarea 8
+Biorę tylko tyle run, ile trzeba.	Iau doar atâtea rune câte trebuie.
+Blogoslawienstwo obrony: moja obrona	Binecuvântarea apărării: apărarea mea
+Blogoslawienstwo odpornosci: trucizna	Binecuvântarea rezistenţei: otravă
+Blogoslawienstwo szybkosci: bede chodzil	Binecuvântarea vitezei: voi merge
+Blogoslawienstwo zycia: moje punkty zycia	Binecuvântarea vieţii: punctele mele de viaţă
+bo jeszcze chwilę temu byłem na imprezie	pentru că până adineauri am fost la o petrecere
+bo kiedyś przypłacisz to życiem.	pentru că într-o zi vei plăti cu viaţa.
+Bonus eventowy PD Uriela wg przedziału poziomów	Bonus eveniment EXP al lui Uriel pe intervale de nivel
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	bonusul îl aleg la creare - rămâne la îmbunătăţire.
+Bonus PD +%d%% na %s	Bonus EXP +%d%% pe %s
+Bonus PD +%d%% potrwa jeszcze: %s	Bonus EXP +%d%% mai durează: %s
+Bonus PD na %s według przedziału poziomów:	Bonus EXP pe %s pe intervale de nivel:
+Bonus Złotego Tuńczyka: 5 minut.	Bonus Ton Auriu: 5 minute.
+Bonus Złotego Tuńczyka: 60 minut.	Bonus Ton Auriu: 60 de minute.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	Bonusurile şi pietrele obiectului predat se pierd.
+Bonusy i kamienie oddanych butow przepadaja.	Bonusurile şi pietrele pantofilor predaţi se pierd.
+Bonusy i kamienie zostana przeniesione.	Bonusurile şi pietrele vor fi transferate.
+Bonusy mozna przeniesc tylko: kostium na kostium,	Bonusurile se pot transfera doar: costum pe costum,
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	Boţii din grupul tău vor intra în temniţă împreună cu tine.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	Nu ai loc în inventar pentru această armă - fă loc şi alege din nou.
+Brak otwartych misji z czasem oczekiwania.	Nu există misiuni deschise cu timp de aşteptare.
+Brak ustawionych przedziałów poziomów.	Nu sunt setate intervale de nivel.
+Brakuje ci materialow albo Yang.	Îţi lipsesc materiale sau Yang.
+Brakuje ci przedmiotów.	Îţi lipsesc obiecte.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	Îţi lipseşte Roua En-Tai (RX). Obţine-o de la
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	Îţi lipseşte Roua En-Tai (TR). Obţine-o de la
+Brakuje jeszcze %d klejnotów.	Mai lipsesc %d nestemate.
+Brama już się otwiera. Poczekaj chwilę.	Poarta se deschide deja. Aşteaptă puţin.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	Poarta nu vrea să se deschidă azi. Încearcă din nou
+Brazowa skrzynia (do 299 punktow)	Cufăr de bronz (până la 299 puncte)
+Bronie dla Młodych Bohaterów	Arme pentru Tinerii Eroi
+Bronie dla Młodych Bohaterów są wyłączone	Armele pentru Tinerii Eroi sunt dezactivate
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	Armele pentru Tinerii Eroi sunt dezactivate pe acest server.
+Broń przyjmie wygląd broni tego samego rodzaju albo	Arma va lua aspectul unei arme de acelaşi tip sau
+Brązowy Pakiet Yutnori	Mănunchi Yut Nori Bronz
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	Buff Premium SungMa: +10 la Voinţa SungMa (putere, vitalitate, rezistenţă, inteligenţă) încă %d h.
+Buff Premium SungMa: czas tego przedmiotu już minął.	Buff Premium SungMa: timpul acestui obiect a expirat deja.
+Buffi dostępna od 55 poziomu.	Buffi e disponibilă de la nivelul 55.
+Buffi jest wyłączony na tym serwerze.	Buffi este dezactivat pe acest server.
+by Mikstura Talentu zadziałała.	ca Licoarea Talentului să aibă efect.
+by o nim opowiedzieć.	ca să povestească despre el.
+by wejść:	ca să intri:
+by złożyć z nich kryształ. Wróć, gdy będziesz	ca să fac din ele un cristal. Întoarce-te când vei
+Bywa też u dowódców i generałów Groty Wygnańców.	Se găseşte şi la comandanţii şi generalii Peşterii Exilului.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	Binecuvântări, Vrăjire şi Întărire
+Błogosławieństwa. Pakiet może zawierać m.in.:	Binecuvântări. Pachetul poate conţine printre altele:
+Błogosławieństwo Buffi	Binecuvântarea Buffi
+błyskawic	fulgere
+Błyskawica i lód (mapa 1)	Fulger şi gheaţă (harta 1)
+Błyskawicy	Fulgerului
+błyskawicę, lód, wiatr, ziemię albo mrok.	fulger, gheaţă, vânt, pământ sau întuneric.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Strălucitoare - 10x Piatră Intermediară Haos şi 5 000 000 Yang,
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	A greşi e omeneşte - alege cu grijă.
+całą drużynę stojącą obok.	tot grupul care stă alături.
+Cel (otrzyma bonusy zrodla):	Ţinta (va primi bonusurile sursei):
+Chaegirab ciągle jeszcze zajęty jest swoimi	Chaegirab este încă ocupat cu ale sale
+Chaegirab w Dongan potrzebuje pomocy.	Chaegirab din Dongan are nevoie de ajutor.
+Chaos w Zaklętym Lesie	Haos în Pădurea Fermecată
+Chcesz opuścić Kryptę Balathora?	Vrei să părăseşti Cripta lui Balathor?
+Chcesz teraz wymienić Kartę Maski Dyni	Vrei să schimbi acum Tichetul Jack O`Lantern
+Chcę zabić tego smoka!	Vreau să omor acest dragon!
+choć jeden, żaden cios go nie zrani.	măcar unul, nicio lovitură nu-l va răni.
+Cialo (Body)	Corp (Body)
+ciebie ekwipunek Smoka Mroku.	ţie echipamentul Dragonului Întunericului.
+cię wieczne potępienie.	osânda veşnică asupra ta.
+Co mam zrobic?	Ce trebuie să fac?
+co najmniej jednego towarzysza z grupy.	cel puţin un însoţitor din grup.
+Co się dzieje?! Morze się wzburzyło... Czyżby	Ce se întâmplă?! Marea s-a agitat... Oare
+Codzienna misja Świat Iluzji: Nemere pokonany.	Misiune zilnică Lumea Iluziei: Nemere învins.
+Codzienna misja Świat Iluzji: Razador pokonany.	Misiune zilnică Lumea Iluziei: Razador învins.
+Codzienna misja: Świat Iluzji	Misiune zilnică: Lumea Iluziei
+Cor Draconis (zwyczajne, szlachetne), perły,	Cor Draconis (obişnuite, nobile), perle,
+Cos poszlo nie tak.	Ceva n-a mers bine.
+Czarna Magia	Magie Neagră
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	timpul - de la 10 la 60 de minute. Praful de Şarpe adaugă un minut.
+Czas minął - Alastor wypędza was z Głębi.	Timpul a expirat - Alastor vă alungă din Adâncuri.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	Timpul a expirat! Sung Mahi te aruncă afară din turn.
+Czas minął. Możesz spróbować jeszcze raz.	Timpul a expirat. Poţi încerca încă o dată.
+Czas oczekiwania został skrócony.	Timpul de aşteptare a fost scurtat.
+Czas odbioru nagrod juz minal.	Timpul de ridicare a recompenselor a expirat deja.
+czeka Morkhot, władca głębin.	aşteaptă Morkhot, stăpânul adâncurilor.
+czeka na ciebie - on wie, gdzie szukać Władców	te aşteaptă - el ştie unde să caute Suveranii
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	aşteaptă Nemere, stăpânul gerului. Nimeni nu s-a întors de acolo,
+Czekaj na event w kalendarzu wydarzeń.	Aşteaptă evenimentul în calendarul evenimentelor.
+Czempion	Campion
+Czempiona (Opcje klawiszy: Czempion).	Campionului (Opţiuni taste: Campion).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	Ginseng Roşu (Premium) e hrana Calului Militar Puternic (31+).
+Czerwone Pudło Zodiaku	Cutie Roşie Zodiac
+Czerwony Żeń-szeń 	Ginseng roşu 
+cztery fale, a skarb Hydry będzie twój.	patru valuri, iar comoara Hidrei va fi a ta.
+Czuje sie silniejszy! Dziekuje.	Mă simt mai puternic! Mulţumesc.
+Czujesz tę pulsującą energię?	Simţi această energie care pulsează?
+Czwartek (Wu-Wei)	Joi (Wu-Wei)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	Vrei să părăseşti peşterile şi să te întorci în Dongan?
+Czy chcesz opuścić Królestwo Żywiołów	Vrei să părăseşti Regatul Elementelor
+Czy chcesz opuścić Schronienie Meley? Walka trwa	Vrei să părăseşti Refugiul lui Meley? Lupta continuă
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Vrei să părăseşti turnul? Escaladarea se va termina.
+Czy chcesz opuścić świątynię?	Vrei să părăseşti templul?
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	Vrei să ridici ancora şi să porneşti la drum?
+Czy chcesz przejść przez Gardziel Am-heha i	Vrei să treci prin Gâtlejul lui Am-heh şi
+Czy chcesz się teleportować?	Vrei să te teleportezi?
+Czy chcesz teraz wejść Świątyni Zodiaku?	Vrei să intri acum în Templul Zodiacului?
+Czy chcesz teraz zejść ze statku? Wejście	Vrei să cobori acum de pe navă? Intrarea
+Czy chcesz użyć Spirali Czasu?	Vrei să foloseşti Spirala Timpului?
+Czy chcesz wrócić na Przełęcz Yilad?	Vrei să te întorci la Trecătoarea Yilad?
+Czy chcesz wrócić z Tajemniczej Instancji	Vrei să te întorci din Instanţa Misterioasă
+Czy chcesz zejść głębiej do jaskiń?	Vrei să cobori mai adânc în peşteri?
+Czy chcesz zejść na ląd?	Vrei să cobori pe uscat?
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	Vrei să te conduc la Templu?
+Czy jestes jednym z nich?	Eşti unul dintre ei?
+Czy jesteście gotowi stanąć przed Nemere (PB),	Sunteţi gata să înfruntaţi Nemere (RX),
+Czy jesteście gotowi stanąć przed Nemere (SZC),	Sunteţi gata să înfruntaţi Nemere (TR),
+Czy na pewno chcesz zregenerować wszystkie portale?	Sigur vrei să regenerezi toate portalurile?
+Czy na pewno chcesz zregenerować?	Sigur vrei să regenerezi?
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	Îţi mai aminteşti de Peşterile Gnollilor
+Czy znasz legendę o Świątyni Zodiaku?	Cunoşti legenda Templului Zodiacului?
+czyste egzemplarze.	exemplare curate.
+Czyściec Ognia (Razador)	Purgatoriul de Foc (Razador)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Purgatoriul de Foc: portalul nu s-a putut deschide - vorbeşte cu statuia lui Am-heh.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Purgatoriul de Foc: vorbeşte cu statuia lui Am-heh ca să deschizi portalul.
+Czyściec Ognia: portal się otwiera...	Purgatoriul de Foc: portalul se deschide...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	Purgatoriul de Foc: trecerea duce prin sala de aşteptare.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	piese (Sfânt 500 000, Măreţ 1 000 000, Cavaler
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	Un membru al grupului e prea departe. Adunaţi-vă lângă mine.
+Członek grupy nie posiada przedmiotu potrzebnego,	Un membru al grupului nu are obiectul necesar,
+Członkowie, posiadający za mało Animosfer:	Membrii care au prea puţine Animosfere:
+członków gildii obecnych w Krypcie.	membri ai breslei prezenţi în Criptă.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	dă 1 punct de experienţă, cele de Foc - 10, 50, 100,
+dalej bez ciebie - możesz do niej wrócić u mnie	mai departe fără tine - te poţi întoarce la ea prin mine
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	demonii. Cel mai bine o obţii de la Distrugătorii En-Tai.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	Demonilor. În fereastra de creare vei vedea fiecare reţetă:
+Dla twojego poziomu: +%d%% PD	Pentru nivelul tău: +%d%% EXP
+dla twojej klasy. Uda się na pewno.	pentru clasa ta. Va reuşi sigur.
+do Chaegiraba w Dongan po nagrodę.	la Chaegirab în Dongan pentru recompensă.
+Do Erebu wchodzi się tylko w grupie.	În Erebu se intră doar în grup.
+do Groty Wygnańców.	în Peştera Exilului.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	În peşteri las să intre de la Nivelul 1 de Campion.
+Do którego obszaru chcesz się udać?	În ce zonă vrei să mergi?
+Do lochu wchodzi najwyżej 8 osób.	În temniţă intră maxim 8 persoane.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	În Temniţele Trezirii se intră doar în grup.
+do Namgan?	la Namgan?
+do niej wejść przeze mnie.	să intri în ea prin mine.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	până la P. Nu ai niciuna dintre ele la nivelul G1-G10.
+Do Portu Nowego Kontynentu	Spre Portul Noului Continent
+Do przeniesienia bonusow z jednego kostiumu na drugi	Pentru a transfera bonusuri de pe un costum pe altul
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	Spre Paza lui Nemere (RX): Ninja şi Şaman în grup.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	Spre Paza lui Nemere (TR): Ninja şi Şaman în grup.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	În Falia Timpului intră maxim 8 persoane.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	În Falia Timpului se intră doar în grup.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	Plus Model Cusut, Vopsea Albastră (Papuci de Foc)
+Do walki z Balathorem	Pentru lupta cu Balathor
+do wyboru.	la alegere.
+Do zakończenia badań potrzebuję jeszcze	Pentru a termina cercetările mai am nevoie de
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	spre ţinuturile Yoharei, unde domneşte voinţa lui Sung Mahi.
+Do Świątyni Smoka wchodzi się tylko w grupie.	În Templul Dragonului se intră doar în grup.
+Do świątyni wchodzi najwyżej 8 osób.	În templu intră maxim 8 persoane.
+Dobra robota. Las od razu oddycha lżej.	Bună treabă. Pădurea respiră imediat mai uşor.
+Dobrze	Bine
+Dobrze! Następny Metin.	Bine! Următorul Metin.
+Dobrze, szanuję twoją decyzję. Wróć,	Bine, îţi respect decizia. Întoarce-te
+Dobrze, w takim razie chodz za mna!	Bine, atunci vino după mine!
+Dobrze, zbadam je. Wróć po wynik za dobę.	Bine, le voi studia. Întoarce-te după rezultat peste o zi.
+Dodano %d Smoczych Monet do Twojego konta.	S-au adăugat %d Monede Dragon în contul tău.
+dodasz Wzmocnieniem Przedmiotu.	adaugi cu Întărirea Obiectului.
+Dodatkowy bonus (6. i 7.)	Bonus suplimentar (al 6-lea şi al 7-lea)
+Dokad chcesz sie udac?	Unde vrei să mergi?
+Dokąd chcesz się przenieść?	Unde vrei să te muţi?
+Dokąd chcesz się udać?	Unde vrei să mergi?
+Dom Aukcyjny	Casa de Licitaţii
+Dom Aukcyjny jest na tym świecie wyłączony.	Casa de Licitaţii e dezactivată pe această lume.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	Amplificatorul măreşte daunele unei singure abilităţi.
+Dopalacz: Duchowe Uderzenie	Amplificator: Lovitura Spirituală
+Dopalacz: Mroczne Uderzenie	Amplificator: Lovitura Întunecată
+Dopalacz: Ognista Strzała	Amplificator: Săgeata de Foc
+Dopalacz: Przywołanie Błyskawicy	Amplificator: Chemarea Fulgerului
+Dopalacz: Strzelający Smok	Amplificator: Dragonul Zburător
+Dopalacz: Uderzenie Palcem	Amplificator: Lovitura cu Degetul
+Dopalacz: Wir Miecza	Amplificator: Vârtejul Sabiei
+Dopalacz: Zasadzka	Amplificator: Ambuscada
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	Amplificatorul îl înveţi când ridici orice ripostă la nivelul P.
+dopiero początek. Teraz potrzebuję Klejnotów	doar începutul. Acum am nevoie de Nestematele
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	Cât timp stă în picioare măcar unul, dragonul nu poate fi rănit.
+Doskonały okaz! Dziękuję.	Exemplar perfect! Mulţumesc.
+dostajesz jeden taki Łup za każdą postawioną talię.	primeşti o astfel de Pradă pentru fiecare pachet pus.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	primeşti 1 Dublon, iar când găsim perechea
+dostaniesz ode mnie maski! He he! 	vei primi măşti de la mine! He he! 
+Dostarcz apteczkę Zwiadowcy	Du trusa de prim ajutor Cercetaşului
+doszedł na szczyt i obronił statek przed Hydrą.	a ajuns pe vârf şi a apărat nava de Hidră.
+Doświadczenie Czempiona dają potwory ziemi	Experienţa de Campion o dau monştrii de pe ţinuturile
+doświadczeniem szata czeka na ewolucję.	experienţă costumul aşteaptă evoluţia.
+Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (mitice, preţioase), perle, cercei
+drogę na nowy kontynent. Czy mam cię zabrać do	drumul spre noul continent. Să te duc la
+dropują, ale dają więcej PD niż zazwyczaj.	dau drop, dar dau mai mult EXP decât de obicei.
+Druga fala - i Szel (PB)!	Al doilea val - şi Szel (RX)!
+Druga fala - i Szel (SZC)!	Al doilea val - şi Szel (TR)!
+Druga wioska	Al doilea sat
+Drugi rekonesans	A doua recunoaştere
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	A doua recunoaştere: întoarce-te la Cercetaşul Pădurii.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	Druidul En-Tai (RX) trebuie să fie pe undeva aproape. Ia-i
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	Druidul En-Tai (TR) trebuie să fie pe undeva aproape. Ia-i
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	Druidul En-Tai avea la el trusa de prim ajutor (RX). Du-o Gardianului Pădurii (RX).
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	Druidul En-Tai avea la el trusa de prim ajutor (TR). Du-o Gardianului Pădurii (TR).
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	Druidul En-Tai avea la el trusa de prim ajutor. Du-o Gardianului Pădurii.
+Drużyna na tej mapie wejdzie razem z tobą.	Grupul de pe această hartă va intra împreună cu tine.
+Drużyna nie jest wymagana.	Nu e nevoie de grup.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	Spiritul Pământului! Datorită lui vom înţelege ce se întâmplă
+Duchowym Buffi.	Sufletului Buffi.
+Duchowym+.	Sufletului+.
+duchy sześciu żywiołów strzegą swoich ziem.	spiritele celor şase elemente îşi păzesc ţinuturile.
+Dusza Miecza	Sufletul Sabiei
+Dusza Miecza (powtarzalna)	Sufletul Sabiei (repetabilă)
+Dusza Ochrony	Sufletul Protecţiei
+Dusza Ochrony (powtarzalna)	Sufletul Protecţiei (repetabilă)
+Dusza Ozdoby	Sufletul Podoabei
+Dusza Ozdoby (powtarzalna)	Sufletul Podoabei (repetabilă)
+Dusza Światła	Sufletul Luminii
+Dusza Światła (powtarzalna)	Sufletul Luminii (repetabilă)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	cap-de-dovleac! Mă numesc Jack Pumpkin, iar acesta este
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	Acţionează deja un peşte de experienţă mai bun - cel mai slab nu va merge împreună cu el.
+działają u Ciebie o połowę rzadziej.	acţionează la tine de două ori mai rar.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	Mulţumesc pentru ajutor! Imediat te vei întoarce pe uscat.
+Dziekuje! Oto twoje szkatulki.	Mulţumesc! Iată cutiuţele tale.
+Dziekuje, ze mnie tu odprowadziles.	Mulţumesc că m-ai însoţit până aici.
+Dziesieciu graczy z najwieksza suma punktow	Cei zece jucători cu cea mai mare sumă de puncte
+Dziesięciu graczy z najwyższym łącznym wynikiem	Cei zece jucători cu cel mai mare scor total
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	Datorită puterii mele vei intra în Temniţele Trezirii.
+Dzięki temu skróci się czas oczekiwania. Wybierz	Astfel se scurtează timpul de aşteptare. Alege
+Dzięki tobie moje badania są ukończone.	Datorită ţie cercetările mele sunt gata.
+Dziękuję ci za pomoc, wojowniku.	Îţi mulţumesc pentru ajutor, războinicule.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Îţi mulţumesc pentru ajutor, războinicule. Pădurea îţi e recunoscătoare.
+Dziękuję ci. Wynagrodzę cię za pomoc.	Îţi mulţumesc. Te voi răsplăti pentru ajutor.
+Dziękuję za pomoc. Weź to w nagrodę.	Mulţumesc pentru ajutor. Ia asta drept recompensă.
+Dziękuję, już mi lepiej. Do uszlachetnienia	Mulţumesc, mi-e deja mai bine. Pentru rafinare
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Mulţumesc. Deocamdată templul e în siguranţă. Iată[ENTER]cadoul tău. Totuşi energia va creşte din nou. Revino[ENTER]după 24 de ore ca să scazi nivelul energiei cu[ENTER]Animosfere. Bineînţeles că vei primi pentru asta[ENTER]încă o recompensă.
+Efekt zestawu	Efect de set
+eksperyment może się nie powieść.	experimentul poate să nu reuşească.
+ekwipunek. Potrafie tez oszlifowac klejnoty	echipamentul. Ştiu şi să şlefuiesc nestemate
+eliksir (szansa 90%, od 120. poziomu):	elixir (şansă 90%, de la nivelul 120):
+Eliksir daje od 8 do 20% na 1 do 10 minut -	Elixirul dă între 8 şi 20% pentru 1 până la 10 minute -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	Elixirul nu merge în misiunile din Yohara şi nu scurtează timpul de aşteptare (pentru asta e Spirala Timpului).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	Elixirul Explorării merge la cercetările Biologului - de la nivelul 30.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	Elixirul Explorării e deja activ - va fi consumat la următoarea predare a unui obiect pentru cercetare.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	Elixirul Explorării a îmbunătăţit calitatea obiectului: şansă de acceptare %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	Elixirul Voinţei SungMa: +5 (%s) pentru 30 min.
+Eliksiry Yohary	Elixirele Yoharei
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (RX). Găseşte-l şi ia-i trusa de prim ajutor.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (TR). Ucide druizi până obţii
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	En-Tai se poartă cel puţin ciudat. Răreşte-le
+En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, pentru că se poartă cel puţin ciudat.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Enciclopedie deschisă: 25 de instrucţiuni de abilităţi sunt în inventar.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Enciclopedie: ai nevoie de %d locuri libere în inventar.
+energii przy pasku zadań pokaże, ile ci zostało.	energiei de lângă bara de misiuni îţi arată cât ţi-a rămas.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebu (RX): Bagjanamu (RX) păzeşte drumul spre Jotun Thrym!
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebu (TR): Bagjanamu (TR) păzeşte drumul spre Jotun Thrym!
+Erebu jest dziś zamknięte. Wróć później.	Erebu e închis azi. Revino mai târziu.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebu nu vă primeşte acum. Încearcă puţin mai târziu.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebu: Bagjanamu păzeşte drumul spre Jotun Thrym! Aveţi 30 de minute.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebu: timpul a expirat - vă întoarceţi în Pădurea Fermecată.
+Erebu: potrzebujesz Kamienia Driad.	Erebu: ai nevoie de Piatra Driadelor.
+Erebu: ta wyprawa już się skończyła.	Erebu: această expediţie s-a terminat deja.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Etapa 2: învinge Piatra Demonică şi toţi monştrii! Arcaşii se trezesc când piatra încasează lovituri.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Etapa 2: învinge monştrii în limita de timp! Blestemul lui Sung Mahi ia la fiecare 10 s mai multe PV - Antidotul Sung Ma îl înlătură.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Etapa 2: evită toate atacurile timp de un minut! O lovitură de cerc îţi lasă 1 PV - a doua, cu PV incomplet, te ucide.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Etapa 2: găseşte piatra care înlătură sigiliul! Sigiliile se deschid doar în ordinea corectă.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Etapa 2: găseşte cheia potrivită ca să scapi! Cheia Misterioasă cade de la monştri.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Etapa 2: găseşte perechea de monştri care nu se potrivesc şi înving-o!
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Etapa 2: distruge piatra metin corectă! Ai o singură şansă.
+Etap ukończony - przejdź przez portal	Etapă terminată - treci prin portal
+Event jeszcze trwa - nagrody za ranking	Evenimentul încă durează - recompensele pentru clasament
+eventu odbiera tu po jego końcu (przez 7 dni):	evenimentului se ridică aici după încheierea lui (timp de 7 zile):
+Ewolucja zawsze się udaje i daje +1 poziom,	Evoluţia reuşeşte mereu şi dă +1 nivel,
+Fabuła	Poveste
+Fala Śmierci	Valul Morţii
+Fragment duszy: %d / 10	Fragment de suflet: %d / 10
+fryzure na fryzure, nakladke na nakladke.	coafură pe coafură, aspect pe aspect.
+Gardziel Am-heha	Gâtlejul lui Am-heh
+Gaya biorę sam z twojego licznika Gaya.	Gaya iau singur din contorul tău de Gaya.
+Gaya biorę z twojego licznika Gaya.	Gaya iau din contorul tău de Gaya.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	Gaya iau din contorul tău de Gaya. Dă click pe reţetă,
+gdy się nie uda, hełm i materiały przepadają.	dacă eşuează, coiful şi materialele se pierd.
+gdy skończę.	când termin.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	Când nava porneşte, nu mai e cale de întoarcere - Hidra
+Gdy walka się zacznie, świątynia odmierzy wam	Când începe lupta, templul vă va măsura
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	Unde e trusa de prim ajutor? Ia-o de la Druizii En-Tai.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	Unde e trusa de prim ajutor? Ia-o de la Druidul En-Tai.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Unde e Copac Emerald (RX)? Învinge-l pe Suveran.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Unde e Copac Emerald (TR)? Învinge-l pe Suveran.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Unde e Cherestea Fină (TR)? Învinge-l pe Suveran.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Unde e Cherestea Fină (RX)? Învinge-l pe Suveran.
+Gildia może wejść ponownie za %d min.	Breasla poate intra din nou peste %d min.
+Gildia musi istnieć co najmniej 24 godziny.	Breasla trebuie să existe de cel puţin 24 de ore.
+Gildia musi mieć co najmniej %d poziom.	Breasla trebuie să aibă cel puţin nivelul %d.
+Gildia potrzebuje %d pkt rankingu gildii.	Breasla are nevoie de %d pct. în clasamentul breslei.
+Glos Barah Taraji	Vocea lui Barah Taraji
+GM: Krypta Balathora - zeruj przerwę gildii	GM: Cripta lui Balathor - resetează pauza breslei
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM: Trebuie să fii la etajul 1 sau 2 din DT.
+GM: szanse połowu	GM: şanse de pescuit
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Furia lui Alastor! Îşi cheamă slujitorii şi îşi vindecă rănile.
+Goblin Skarbow:	Spiriduş Comori:
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Înfrângere amară! Escaladarea ta se termină aici - imediat te întorci în sală.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	Gata! Mai vorbeşte o dată cu mine.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	Gata! Întoarce-te la Călugărul Milbon ca să-ţi iei cadoul.
+Gotowe. Bonus PD +%d%% na %s	Gata. Bonus EXP +%d%% pe %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	Gata. Bonusurile au fost transferate, iar obiectul
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	Gata. Pune Relicva în fereastra Bonusului Relicvei
+Gotowi? Balathor nie zna litości.	Gata? Balathor nu cunoaşte mila.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	Jocul costă 30 000 Yang şi un set de cărţi.
+Graj po swojemu (wolna reka)	Joacă în felul tău (mână liberă)
+Gratulacje! Za miejsce w pierwszej dziesiątce	Felicitări! Pentru un loc în primii zece
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	Termini jocul când vrei. Primeşti cufere:
+Gromiste Góry	Munţii Tunetului
+Grota Wygnańców (wejście)	Peştera Exilului (intrare)
+Grota Wygnańców 2	Peştera Exilului 2
+Grota Wygnańców 2 (PB)	Peştera Exilului 2 (RX)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Peştera Exilului 2 (RX): timpul a expirat - vă întoarceţi pe Platoul Iluziei.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Peştera Exilului 2 (RX): ai 60 de minute. Obţineţi Chei Răsucite (RX) şi găsiţi Fantoma unui Sura.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Peştera Exilului 2 (RX): ai nevoie de Volum Redux.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Peştera Exilului 2 (RX): această expediţie s-a terminat deja.
+Grota Wygnańców 2 (SZC)	Peştera Exilului 2 (TR)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Peştera Exilului 2 (TR): timpul a expirat - vă întoarceţi pe Platoul Iluziei.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Peştera Exilului 2 (TR): ai 60 de minute. Obţineţi Chei Răsucite (TR) şi găsiţi Fantoma unui Sura.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Peştera Exilului 2 (TR): ai nevoie de Ceas de Buzunar.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Peştera Exilului 2 (TR): această expediţie s-a terminat deja.
+Grota Wygnańców 2 (zablokowane)	Peştera Exilului 2 (blocată)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	Peştera Exilului 2 e accesibilă doar din Peştera Exilului.
+Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, acesta nu e un cristal Metin, ci o bucată
+Głębie (silny)	Adâncurile (greu)
+Głębie (słaby)	Adâncurile (uşor)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	Adâncurile nu vă primesc acum. Încearcă puţin mai târziu.
+Głębie Północnego Wiatru	Adâncurile Vântului de Nord
+Głębie Północnego Wiatru (silny)	Adâncurile Vântului de Nord (greu)
+Głębie Północnego Wiatru (słaby)	Adâncurile Vântului de Nord (uşor)
+Głębie są dziś zamknięte. Wróć później.	Adâncurile sunt închise azi. Revino mai târziu.
+Głębie: ta wyprawa już się skończyła.	Adâncurile: această expediţie s-a terminat deja.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Adâncurile: ai stat mort prea mult - ieşi din expediţie.
+Halloween, nagle zawirował cały świat i w ułamku	Halloween, deodată toată lumea s-a învârtit şi într-o fracţiune
+Handlarz Bronią w Dongan potrzebuje pomocy.	Negustorul de Arme din Dongan are nevoie de ajutor.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	Negustorul de Armuri din Dongan are nevoie de ajutor.
+Hej! Wiem, że zamieniono mnie w kamień - to	Hei! Ştiu că am fost transformat în piatră - asta
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Hei, tu! Da, tu! Arăţi a cineva care ştie
+hełm 120. poziomu dla każdej klasy. Połóż materiały	coif de nivel 120 pentru fiecare clasă. Pune materialele
+Hełmy na 100 poziom	Coifuri de nivel 100
+Hmm... Nie mam maski, która pasowałaby	Hmm... Nu am nicio mască potrivită
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Hmmm, feriga asta e din păcate deteriorată. Nu are
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	Hwacha nu e încă gata (e nevoie de Săgeţi de Foc).
+Hydra pokonana! Statek może teraz dopłynąć do	Hidra a fost învinsă! Nava poate acum să ajungă la
+i 400 000 Yang. Szansa zależy od plusa butów:	şi 400 000 Yang. Şansa depinde de plusul pantofilor:
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	şi 5 Tocile Nordice, pentru armură 5 Mătase Şarpe
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	şi 5 Lustru Şarpe. Cost: 10 000 000 Yang şi 100 Gaya,
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	şi întunericul adâncurilor. Fără el nu cobori în ruine.
+i co najmniej 500 000 Yang w skarbcu gildii.	şi cel puţin 500 000 Yang în tezaurul breslei.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	şi coiful (exemplu pentru clasa ta, +7) şi toate
+i magowie strzega swiatyni dzien i noc, a po jej	şi magii păzesc templul zi şi noapte, iar după
+i materiały - wszystkie przepisy zobaczysz w oknie.	şi materialele - toate reţetele le vezi în fereastră.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	şi poate funcţiona greşit. Îl porneşte proprietarul
+i Podziemnych Lodowych Golemów w Grocie.	şi Golemii de Gheaţă Subterani din Peşteră.
+i Starożytna Dżungla (wiatr). Odporność	şi Jungla Străveche (vânt). Rezistenţa
+i te dodane. Im wyższy poziom szaty, tym większa	şi cele adăugate. Cu cât nivelul costumului e mai mare, cu atât
+i wrócić do Portu Nowego Kontynentu?	şi să te întorci în Portul Noului Continent?
+i Zaczarowanego Lasu (wiatr) oraz lochy:	şi Pădurea Fermecată (vânt), plus temniţele:
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	şi armură de nivel 65 forjez un nou, mai puternic
+ich blask zmienia się pod wpływem emocji.	strălucirea lor se schimbă sub influenţa emoţiilor.
+Ich strażnicy pilnują Płomiennego Feniksa,	Gardienii lor păzesc Phoenixul de Flăcări,
+Idź dalej	Mergi mai departe
+Idź do Opuszczonej Twierdzy	Mergi la Fortăreaţa Părăsită
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Mergi la teleportor şi mută-te în Templul[ENTER]Zodiacului. Călugărul Milbon te aşteaptă deja acolo.
+Idź do Świątyni Węży	Mergi la Templul Şarpelui
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	mergi încă o dată la Suveranii En-Tai şi adu-mi Copac
+Idź już i znajdź jeden %s!	Du-te şi găseşte un %s!
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	Ignitor (RX) încă trăieşte. Luptă mai departe sau vă aşteaptă
+Ignator (PB), strażnik żaru, został pokonany.	Ignitor (RX), paznicul jarului, a fost învins.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	Ignitor (TR) încă trăieşte. Luptă mai departe sau vă aşteaptă
+Ignator (SZC), strażnik żaru, został pokonany.	Ignitor (TR), paznicul jarului, a fost învins.
+Informacja o mapie	Informaţii despre hartă
+innym... Czegoś takiego na pewno jeszcze nie	altora... Ceva de genul ăsta sigur încă n-ai
+Inteligencja %d.	Inteligenţă %d.
+Inteligencja - trucizna, ogień i krwawienie	Inteligenţă - otravă, foc şi sângerare
+Inteligencja Sung Ma	Inteligenţa Sung Ma
+ja wyrzucasz. Trzy karty o tej samej liczbie	o arunci. Trei cărţi cu acelaşi număr
+Jak grac w Okey?	Cum se joacă Okey?
+Jak ma sie nazywac?	Cum să se numească?
+Jak ma walczyc?	Cum să lupte?
+Jak mam walczyc przy tobie?	Cum să lupt lângă tine?
+Jak sie masz?	Ce mai faci?
+Jaka ma byc jego klasa?	Ce clasă să aibă?
+Jaka sciezka?	Ce cale?
+Jaskinie Gnolli	Peşterile Gnollilor
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	Peşterile Gnollilor sunt accesibile de la Nivelul 1 de Campion. Te întorci în Dongan.
+Jazda (Bezszelest. Chód)	Călărie (Mers de Fulg)
+Jazda (Brak Odrzutu)	Călărie (Fără Aruncare)
+Jazda (Gwałt. Wichura)	Călărie (Furtună Iute)
+Jazda (Nieśmiertelność)	Călărie (Nemuritor)
+Jazda (umiej. konne)	Călărie (Abilitate Cal)
+Jazda (W. SungMa. INT)	Călărie (V. Sung Ma INT)
+Jazda (W. SungMa. ODP)	Călărie (V. Sung Ma RES)
+Jazda (W. SungMa. SIŁA)	Călărie (V. Sung Ma STR)
+Jazda (W. SungMa. WIT)	Călărie (V. Sung Ma VIT)
+Jazda (Zwinne Kopyta)	Călărie (Copite Rapide)
+Jazda Konna (Ninja)	Călărie (vs. Ninja)
+Jazda Konna (PD)	Călărie (EXP)
+Jazda Konna (Precyzja)	Călărie (Precizie)
+Jazda Konna (przeciw diabłom)	Călărie (vs. Diavoli)
+Jazda Konna (przeciw insektom)	Călărie (vs. Insecte)
+Jazda Konna (przeciw mistykom)	Călărie (vs. Mistici)
+Jazda Konna (przeciw nieumarłym)	Călărie (vs. Morţi-vii)
+Jazda Konna (przeciw orkom)	Călărie (vs. Orci)
+Jazda Konna (przeciw potworom pustyni)	Călărie (vs. Monştri Deşert)
+Jazda Konna (przeciw potworom)	Călărie (vs. Monştri)
+Jazda Konna (przeciw półludziom)	Călărie (vs. Semi-oameni)
+Jazda Konna (przeciw zwierzętom)	Călărie (vs. Animale)
+Jazda Konna (Sura)	Călărie ( vs Sura)
+Jazda Konna (Szaman)	Călărie (vs. Şamani)
+Jazda Konna (Wojownik)	Călărie (vs. Războinici)
+Jeden transfer zuzywa jedna sztuke.	Un transfer consumă o bucată.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	Unul dintre obiectele alese nu mai e în
+Jedna z twoich mocy woli SungMa zostanie	Una dintre puterile tale de voinţă SungMa va fi
+jednak: tylko pierwsza próba zawsze się udaje.	totuşi: doar prima încercare reuşeşte mereu.
+jednego jadeitu potrzebują tych samych materiałów.	unui jad au nevoie de aceleaşi materiale.
+jedną pełną kulę doświadczenia.	o bilă plină de experienţă.
+Jego jad zabił już niejednego wojownika,	Veninul lui a ucis deja mulţi războinici,
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	Solzii lui strălucesc ca aurul lichid! Ce faci cu el?
+Jej Królowa nie wypuściła jeszcze nikogo,	Regina ei n-a lăsat încă pe nimeni să plece,
+jej potomstwem, najadami i samą bestią. Wytrzymaj	puii ei, naiadele şi bestia însăşi. Rezistă
+Jej potwory rani tylko Czempion - ten, kto	Monştrii ei îi răneşte doar un Campion - cel care
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	Dacă eu sau tu murim, expediţia se pierde.
+jest część parametrów, którą da (poziom 250 - 25%).	este partea din parametri pe care o va da (nivel 250 - 25%).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	Sunt Spiriduşul Comorilor. De ani buni caut o mare
+Jestem w trakcie dokładniejszej analizy	Fac o analiză mai amănunţită
+jesteś dość silny, by przetrwać. Naprawdę chcesz	eşti destul de puternic ca să supravieţuieşti. Chiar vrei
+Jesteś już w Porcie Nowego Kontynentu.	Eşti deja în Portul Noului Continent.
+Jeszcze chwile	Încă puţin
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	încă un Copac Emerald al lui, şi îţi dau ceva preţios.
+jeszcze lepsze. Przynies mi:	şi mai bune. Adu-mi:
+Jeszcze nie	Încă nu
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	Încă nu s-au odihnit după expediţia anterioară:
+Jeszcze nie skończyłem. Wróć za:	Încă n-am terminat. Revino peste:
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	Încă n-ai reuşit să distrugi toate cele %d[ENTER]pietre Metin. Întoarce-te la mine când ai terminat[ENTER]misiunea.
+Jeszcze nieaktywne.	Încă inactiv.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	încă puţin timp. Duce în Pădurea Fermecată,
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	încă o dată la Suveranii En-Tai şi adu-mi Copac
+jeśli się rozmyślisz.	dacă te răzgândeşti.
+Jeśli statek wciąż płynie, łódź zaraz cię do	Dacă nava încă navighează, barca te duce imediat
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	Dacă expediţia încă durează, poarta te va lua imediat.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	Dacă expediţia încă durează, puterea statuii te va lua imediat.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	Dacă expediţia încă durează, portalul te va lua imediat.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	Dacă expediţia încă durează, trecerea te va lua imediat.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	Dacă expediţia încă durează, curentul te va lua imediat.
+Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (RX) a sosit în Erebu!
+Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (TR) a sosit în Erebu!
+Jotun Thrym przybył do Erebu!	Jotun Thrym a sosit în Erebu!
+Juz mam to blogoslawienstwo.	Am deja această binecuvântare.
+ją pokonali.	au învins-o.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Pietre îţi creez un Talisman Misterios. În fereastra de creare
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	P. Suflet Beran-Setaou. O vei obţine
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Pietrei Sufletului +0, +1, +2 sau +3. Din ele şlefuiesc
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	Pietrele sunt la pământ - dragonul e fără apărare. Grăbiţi-vă,
+Kamienie Przebudzenia	Pietre Redux
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	Pietrele dragonului îl protejează pe Beran-Setaou. Cât timp stă
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	Piatra decide şansa: Mică 2%, Rafinată 5%,
+Kamień demonów oberwał - łucznicy atakują!	Piatra demonilor a încasat lovituri - arcaşii atacă!
+Kamień Driad.	Piatra Driadelor.
+Kamień Duchowy Buffi	Piatra Sufletului Buffi
+Kamień Duchowy Buffi trenuje umiejętności Buffi	Piatra Sufletului Buffi antrenează abilităţile Buffi
+Kamień Duchowy+	Piatra Sufletului+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	Piatra Sufletului+ dezvoltă riposta şi amplificatorul de la nivelul G1
+Kamień Dusz Beran-Setaou	P. Suflet Beran-Setaou
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	P. Suflet Beran-Setaou! Datorită ei, ale mele
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	Piatra Metin din Yohara merge doar pe hărţile Yoharei cu Voinţa SungMa.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	Piatra Metin din Yohara cere Nivelul 1 de Campion.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	piatră de trezire şi 2 500 000 Yang. Piatra decide
+Kamień użyty na złej steli się rozpadnie.	Piatra folosită pe o stelă greşită se va sfărâma.
+karty Okey. 24 karty tworza zestaw kart.	cărţi Okey. 24 de cărţi formează un set de cărţi.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Catacomba Diavolului: Vei ieşi din temniţă într-o secundă.
+Każda klasa i droga ma swój dopalacz - twój to:	Fiecare clasă şi cale are amplificatorul ei - al tău e:
+Każda mapa Sung Ma ma swoje wymagania. Gdy	Fiecare hartă Sung Ma are cerinţele ei. Când
+Każde pełne 10% Siły daje też +1% do	Fiecare 10% întreg de Putere dă şi +1% la
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	În fiecare zi se deschid mereu două temple[ENTER]diferite.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Toţi trebuie să aibă nivelul %d, Champion 4 şi să fie în breaslă de 24 de ore. Nu îndeplinesc:
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Fiecare războinic poate alege o recompensă la Cufărul Dragonului de Aur - aveţi un minut pentru asta.
+Klejnoty dla Seona-Pyeonga	Nestemate pentru Seon-Pyeong
+Klejnoty Zawiści wypadają z Podziemnych Lod.	Bijuteriile Rea Voinţă cad de la Golemii de Gheaţă
+Klejnoty Zawiści zdradziły mi wiele, ale to	Bijuteriile Rea Voinţă mi-au dezvăluit multe, dar asta
+Klif Gautama (Zbocze Gautama)	Stânca lui Gautama (Panta lui Gautama)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Click dreapta pe Inel Focul Dragonului lângă statuie. Ouăle revin la fiecare 2 minute.
+Kliknij talie, aby dobrac karty. Lewym	Dă click pe pachet ca să tragi cărţi. Cu stânga
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	Cheia Închisorii nu se potriveşte - fierarul e încă în cuşcă.
+Klucz Goblina!	Cheie Goblin!
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	Cheia Şarpe se sfărâmă - Coloana rămâne neclintită.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	Cheie Floare Gheaţă (RX) poate folosi doar Ninja sau Şaman.
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	Cheie Floare Gheaţă (TR) poate folosi doar Ninja sau Şaman.
+Klątwa	Blestem
+klątwa Sung Mahi. Ale jestem szamanem i znam	blestemul lui Sung Mahi. Dar sunt şaman şi ştiu
+Klątwa Sunga Mahi zdjęta.	Blestemul lui Sung Mahi a fost înlăturat.
+Kobieta	Femeie
+Kobieta czy mezczyzna?	Femeie sau bărbat?
+Kolejny Potężny Wojownik Wężowy (lód)!	Încă un Războinic Puternic Şarpe (gheaţă)!
+kolekcjoner przedmiot	obiect de colecţie
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	coliere şi clipsuri, iar din Piatră Demon - Piatră Dură Demon
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	Coloana Dragonului Nordului (RX) distrusă. Liderul grupului poate vorbi cu Leul de Gheaţă (RX).
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	Coloana Dragonului Nordului (TR) distrusă. Liderul grupului poate vorbi cu Leul de Gheaţă (TR).
+komnatach krazy Straznik En-Tai, ktory co chwile	camere se plimbă un Gardian En-Tai, care mereu
+konczy ja - skrzynie dostaniesz przy	o termină - cuferele le primeşti la
+Koniec gry daje jedna skrzynie wedlug wyniku.	Sfârşitul jocului dă un cufăr după rezultat.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	continent - Yohara. Vizitează-l în Dongan când
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	costumului, montura - aspectul altei monturi.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Costume, coafuri şi aspecte de armă -- totul la 1 Yang.
+Koszt szkolenia:	Cost antrenament:
+Koszt: 100 000 000 Yang (przy odbiorze)	Cost: 100 000 000 Yang (la ridicare)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Cost: 50 000 000 Yang sau Tichet Transformare,
+Krainie, a dostaniesz Książkę.	Ţinut, şi primeşti o Carte.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	ţinutul lui Jotun Thrym din spatele Templului, sau înapoi
+Krypta Balathora jest teraz zamknięta.	Cripta lui Balathor e acum închisă.
+Krypta Balathora: wejście	Cripta lui Balathor: intrare
+Krypta Balathora: zgłoszenie gildii	Cripta lui Balathor: înscrierea breslei
+Krypta jest otwarta. Członkowie gildii mogą teraz	Cripta e deschisă. Membrii breslei pot acum
+Krypta twojej gildii jest już zamknięta.	Cripta breslei tale e deja închisă.
+Krypta twojej gildii jest na kanale %d.	Cripta breslei tale e pe canalul %d.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	Cristalul Vântului de Nord s-a spart - drumul spre Camera Cristalului e deschis.
+Kryształy Metin	Metine de Cristal
+Kryształy Metin wypadają z Metinów Szacunku,	Metinele de Cristal cad din Metinul Aprecierii,
+Kryształy Metin: nagroda	Metine de Cristal: recompensă
+kryształów Metin do moich badań!	Metine de Cristal pentru cercetările mele!
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Regele Scorpionilor învins! Timp: %d:%02d. Temniţa a fost terminată.
+królem mrozu i lodu?	regele gerului şi al gheţii?
+Królestwa Żywiołów.	Regatului Elementelor.
+Królestwo Żywiołów	Regatul Elementelor
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	Regatul Elementelor nu-i primeşte pe cei învinşi. Te întorci în port.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	Regatul Elementelor înseamnă nouă zone unde
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Regina Junglei învinsă! Timp: %d:%02d. Temniţa a fost terminată.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	Regina Meley: Poarta Refugiului s-a închis în urma voastră.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Regina Meley: Timpul a expirat. Poarta Refugiului vă aruncă afară.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Regina Meley: Coloanele o lovesc pe Regina Meley! Etapa următoare în 5 secunde.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Regina Meley: Statuile strălucesc albastru - folosiţi Inelele Focul Dragonului lângă statui!
+Królowa Meley: Tarcza statui zgasła - atakujcie!	Regina Meley: Scutul statuii s-a stins - atacaţi!
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Regina Meley: Lupta începe în 10 secunde. Aveţi o oră să distrugeţi cele patru statui.
+Królowa Smoków Meley pokonana!	Meley Regina Dragon învinsă!
+Królowa Smoków Meley została pokonana!	Meley Regina Dragon a fost învinsă!
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Regina Şarpe Nethis învinsă! În 20 s vă întoarceţi la Statuia Şarpelui pentru recompensă.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	Regina Şarpe Nethis învinsă. Iată recompensa ta.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Cercul Prinţului: Voinţa SungMa (STR) -32 pentru 7 secunde.
+Krąg Wróżbity: jesteś ogłuszony.	Cercul Ghicitorului: eşti ameţit.
+Książęcy	Regal
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	Cartea costă 100 000 000 Yang. Revino cu banii.
+Księga Misji (W.Płn.W.)	Cartea Misiunii (Can N)
+Księga Misji (W.Płn.W.): %d / %d potworów.	Cartea Misiunii (Can N): %d / %d monştri.
+Księgę Misji można aktywować od poziomu 120.	Cartea Misiunii se poate activa de la nivelul 120.
+kto wszedł tam bez drużyny najlepszych wojowników.	cine a intrat acolo fără un grup cu cei mai buni războinici.
+ktora jest z toba w grupie, expi z toba po rowno,	care e cu tine în grup, primeşte EXP egal cu tine,
+Ktora zbroje mam z niej zrobic?	Ce armură să fac din ea?
+ktore moge przekuc. Zalozonego przedmiotu	pe care le pot reforja. Obiectul purtat
+Ktory przedmiot mam przekuc? Mozesz go tez	Ce obiect să reforjez? Îl poţi şi
+któraś statystyka jest za niska: Siła - zadajesz	o statistică e prea mică: Putere - provoci
+które otwierają Erebu. Przywódca Straży Lasu wpuści	care deschid Erebu. Liderul Gărzii Pădurii lasă
+Które portale chcesz zregenerować?	Ce portaluri vrei să regenerezi?
+który chcesz wykonać - obręcz, kolia i klipsy	pe care vrei să-l faci - cerc, colier şi clipsuri
+Który Kamień Duszy oddajesz?	Ce Piatră a Sufletului predai?
+który myślał, że poradzi sobie z Razadorem.	care credea că se descurcă cu Razador.
+Którą umiejętność Buffi chcesz trenować?	Ce abilitate Buffi vrei să antrenezi?
+Którą umiejętność chcesz trenować?	Ce abilitate vrei să antrenezi?
+Którą umiejętność udoskonalić?	Ce abilitate să perfecţionez?
+którą z nich wydobyłem. Wybierz, co chcesz.	pe care am extras-o din ele. Alege ce vrei.
+Kup	Cumpără
+Kup bilet	Cumpără bilet
+Kup Bilet do Atlantydy	Cumpără Bilet spre Atlantida
+Kup kostiumy i nakladki	Cumpără costume şi aspecte
+Kup materialy Alchemika	Cumpără materiale de Alchimist
+Kup przedmioty	Cumpără obiecte
+kupisz w Sklepie Gaya.	cumperi din Magazinul Gaya.
+Kwiat Żywiołu	Floare elementală
+Kwiaty Żywiołu	Flori elementale
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	Pădurii (RX). Ai grijă să nu pierzi nimic pe drum!
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	Pădurii (TR). Ai grijă să nu pierzi nimic pe drum!
+Ledwo trzymam się na nogach... Energia	Abia mă mai ţin pe picioare... Energia
+Legenda głosi, że rosą En-Tai można przegnać złe	Legenda spune că roua En-Tai poate alunga răul
+Legendy mówią, że za tym portalem śpi Razador,	Legendele spun că după acest portal doarme Razador,
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	medicamente. Învinge Metinul Intuiţiei din Dongan,
+Lekarstwo	Medicament
+Lekarstwo Iluzji	Medicament Iluzii
+Lekarstwo. Zanieś je: Alchemik.	Medicament. Du-l la: Alchimist.
+Lekarstwo. Zanieś je: Chaegirab.	Medicament. Du-l la: Chaegirab.
+Lekarstwo. Zanieś je: Handlarz Bronią.	Medicament. Du-l la: Negustorul de Arme.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	Medicament. Du-l la: Negustorul de Armuri.
+Lekarstwo. Zanieś je: Uriel.	Medicament. Du-l la: Uriel.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Mai bună e doar Undiţa Fibră Carbon: ţi-o fac din Tijă Goală, Element Filare, Element Prindere şi 3 Fibre Carbon.
+Lew budzi się, a z mrozu wychodzą potwory...	Leul se trezeşte, iar din ger ies monştri...
+Leże Smoka (Beran-Setaou)	Bârlogul Dragonului (Beran-Setaou)
+Leże Smoka - wyprawa	Bârlogul Dragonului - expediţie
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Bârlogul Dragonului: Timpul a expirat. Beran-Setaou vă aruncă din bârlogul lui.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Bârlogul Dragonului: pietrele sunt la pământ - atacaţi-l pe Beran-Setaou!
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Bârlogul Dragonului: trecerea nu s-a putut deschide - vorbeşte cu Spiritul Sura.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Bârlogul Dragonului: Ultima piatră a căzut - Beran-Setaou e fără apărare! Atacaţi!
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Bârlogul Dragonului: vorbeşte cu Spiritul Sura ca să deschizi trecerea.
+Leże Smoka: przejście prowadzi przez poczekalnię.	Bârlogul Dragonului: trecerea duce prin sala de aşteptare.
+Leże Smoka: przejście się otwiera...	Bârlogul Dragonului: trecerea se deschide...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	numeroase lupte. Găseşte Suveranul En-Tai (TR) şi
+Liczy się łączna liczba punktów ze wszystkich gier	Contează suma punctelor din toate jocurile
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	Temniţa nu vă primeşte acum. Încearcă puţin mai târziu.
+Loch Pająków 1 (Kuahklo Dong)	Temniţa Păianjenilor 1 (Kuahklo Dong)
+Lochy Przebudzenia	Temniţele Trezirii
+Lochy Przebudzenia wpuszczają tylko tych, którzy	Temniţele Trezirii îi lasă să intre doar pe cei care
+Lochy Przebudzenia, a statuy kowali wykują dla	Temniţele Trezirii, iar statuile fierarilor vor forja pentru
+Lochy są dziś zamknięte. Wróć później.	Temniţele sunt închise azi. Revino mai târziu.
+Lodogóry	Munţii de Gheaţă
+Lodowa Kraina (Nemere)	Ţinutul de Gheaţă (Nemere)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Ţinutul de Gheaţă: trecerea nu s-a putut deschide - vorbeşte cu Leul de Piatră.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Ţinutul de Gheaţă: vorbeşte cu Leul de Piatră ca să deschizi trecerea.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	Ţinutul de Gheaţă: trecerea duce prin sala de aşteptare.
+Lodowa Kraina: przejście się otwiera...	Ţinutul de Gheaţă: trecerea se deschide...
+Lodu	Gheţii
+Lucznik (luk)	Arcaş (arc)
+Ludzi i Podziemnych Lodowych Golemów	Oamenilor şi Golemii de Gheaţă Subterani
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maat a învins Isfet - ultima Stele din Isfet (RX) distrusă.
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maat a învins Isfet - ultima Stele din Isfet (TR) distrusă.
+Magazyn	Depozit
+magazyn lub inne okno i sprobuj ponownie.	depozitul sau altă fereastră şi încearcă din nou.
+Majestatyczny	Maiestuos
+Mam do niej klucz, ale nie wiem, ktora z	Am cheia de la ea, dar nu ştiu care dintre
+Mam już wszystkie 20 Klejnotów Mądrości!	Am deja toate cele 20 de Bijuterii Înţelepciune!
+Mapa teleportacji jest wylaczona na tym serwerze.	Harta de teleportare e dezactivată pe acest server.
+Marchewka	Morcov
+Maska dyni wytrzyma 7 dni od pierwszego	Masca de dovleac rezistă 7 zile de la prima
+Masz 30 minut. Powodzenia!	Ai 30 de minute. Mult noroc!
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	Ai 60 de minute să le termini. După terminare sau după
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Ai pentru mine nucleele purificate? Să mă uit...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	Ai deja o misiune activă din Cartea Misiunii (Can N). Termin-o mai întâi.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Ai deja cel mai mult Gaya posibil (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	Ai deja Cartea Cal de Aur. De la nivelul 31 calul tău e un Cal Militar Puternic.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	Ai P. Suflet Beran-Setaou. Du-o
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	Ai Cheia Suflet Cristalizat. Deschizi poarta[ENTER]şi muţi grupul la nivelul 2?
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	Ai Medicamentul. Du-l la: Alchimist (Dongan).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	Ai Medicamentul. Du-l la: Chaegirab (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	Ai Medicamentul. Du-l la: Negustorul de Arme (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	Ai Medicamentul. Du-l la: Negustorul de Armuri (Dongan).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	Ai Medicamentul. Du-l la: Uriel (Dongan).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	Ai prea puţine puncte de rang - rangul ar scădea sub zero.
+Masz za mało Yang.	Ai prea puţin Yang.
+Masz za niski poziom.	Ai nivelul prea mic.
+materialy, Yang i szanse (najedz na przedmiot).	materiale, Yang şi şanse (treci cu mouse-ul peste obiect).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Materiale, Yang şi şanse - în fereastră (treci cu mouse-ul peste obiect).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	Materialele lui Balathor le dă Cripta lui Balathor, Ciocanul Rourat
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	Materialele le găseşti în Cufăr Kelpie (îl deschide Cheie Kelpie). Undiţa merge 30 de zile
+materiały, Yang i szansę (najedź na przedmiot).	materialele, Yang şi şansa (treci cu mouse-ul peste obiect).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	Materialele, Yang şi şansa le vezi în fereastra de creare
+materiały. Pasuje każda broń, zbroja albo hełm	materialele. Merge orice armă, armură sau coif
+Max PŻ +2000	Max PV +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	Mecanismul Stelei din Isfet îl porneşte doar Roata Zimţată de Aur
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	Medalie Forţă Primară merge doar în Regatul Elementelor.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	Medalie Forţă Primară: timp de 10 minute Platoul nu-ţi ia PV.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metinul Răcelii (RX) distrus. Imediat veţi fi mutaţi la etajul 7.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metinul Răcelii (TR) distrus. Imediat veţi fi mutaţi la etajul 7.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	Metin Focul Iadului (RX) încă stă în picioare - demonii revin!
+Metin Purgatorium (PB) został zniszczony.	Metin Focul Iadului (RX) a fost distrus.
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	Metin Focul Iadului (TR) încă stă în picioare - demonii revin!
+Metin Purgatorium (SZC) został zniszczony.	Metin Focul Iadului (TR) a fost distrus.
+Metinu Świadomość zatruła mnie i potrzebuję 	Metinul Intuiţiei m-a otrăvit şi am nevoie de 
+Metiny Drzewnych Stworzeń (PB)	Metinul Copacului Om (RX)
+Metiny Drzewnych Stworzeń (SZC)	Metinul Copacului Om (TR)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	Metinul Copacului Om îi trezeşte la viaţă pe En-Tai.
+Metiny Drzewnych Stworzeń zatruwają ten las.	Metinul Copacului Om otrăveşte această pădure.
+Metiny zniszczone. Las trochę się uspokoił.	Metine distruse. Pădurea s-a mai liniştit puţin.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metine distruse. Întoarce-te la Cercetaşul Pădurii (RX).
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metine distruse. Întoarce-te la Cercetaşul Pădurii (TR).
+Mezczyzna	Bărbat
+mieć co najmniej %d sztuk.	să ai cel puţin %d bucăţi.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	să ai Volum Redux (se ia la intrare).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	Licoarea încă nu va avea efect - organismul trebuie să se odihnească.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	Licoarea nu a avut efect de data asta. Încearcă din nou mai târziu.
+Mikstura Talentu	Licoarea Talentului
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	Licoarea Talentului perfecţionează abilitatea 9 de la G1 la P. %s
+Miksturę Mądrości	Licoarea Inţelepciunii
+Misja poboczna	Misiune secundară
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	Misiunea e în curs. Învinge ambii boşi şi întoarce-te la mine:
+Misja wykonana! Portal do następnego etapu jest otwarty.	Misiune îndeplinită! Portalul spre etapa următoare e deschis.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Misiune din Cartea Misiunii (Can N): învinge 300 de monştri în Defileul Vântului de Nord.
+Misja: pokonaj 300 potworów w Wąwozie	Misiune: învinge 300 de monştri în Defileul
+Misji nie można przerwać. Księga zniknie.	Misiunea nu poate fi întreruptă. Cartea va dispărea.
+Mistrz gildii może zgłosić tu swoją gildię:	Maestrul breslei îşi poate înscrie aici breasla:
+mniej - brazowa	mai puţin - bronz
+Moc klejnotów jest teraz twoja na zawsze.	Puterea nestematelor e acum a ta pentru totdeauna.
+Moc pierścienia wyczerpała się.	Puterea inelului s-a epuizat.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	Puterea Ochiului Dragon s-a epuizat pe azi. Mâine ia-o din nou de la Alchimist.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	pot fi extrem de sensibili la influenţa lui Sung Mahi.
+Mogę cię zabrać do każdego z nich; między	Te pot duce la oricare dintre ele; între
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	Pot reînnoi binecuvântarea: +%d%% EXP pe %s
+Mogę przenieść na szatę aury parametry bransolety,	Pot transfera pe costumul aurei parametrii brăţării,
+Mogę przenieść wygląd jednego przedmiotu na drugi.	Pot transfera aspectul unui obiect pe altul.
+Mogę więc stworzyć z nich Kryształ Energii.	Aşa că pot crea din ele un Cristal de Energie.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	Fraţii mei au dispărut, iar cu ei trusa de prim ajutor. Războinicii
+Moj klucz nie pasuje do tej skrzyni.	Cheia mea nu se potriveşte la acest cufăr.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	Cheia mea se potriveşte! Acesta e cufărul corect!
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	Puterea mea te va duce pe Platoul Iluziei. Acolo
+Moja technika jest genialna, ale jeszcze	Tehnica mea e genială, dar încă
+Moje badania wykazały, że potwory znajdujące	Cercetările mele au arătat că monştrii care se află
+Moje czasy	Timpii mei
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	Haine Ude: -50 viteză de mişcare pentru 5 minute.
+Morkhot nadchodzi! Macie mało czasu.	Vine Morkhot! Aveţi puţin timp.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot învins! Timp: %d:%02d. Ruinele Atlantidei au fost terminate.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	Poţi şi să alegi obiectul sau să-l tragi pe mine.
+mozesz wybrac od razu.	poţi alege imediat.
+Mozesz zabrac w droge stalego towarzysza: postac,	Poţi lua la drum un însoţitor permanent: un personaj,
+Może później	Poate mai târziu
+może się nie udać.	s-ar putea să nu reuşească.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	Poţi intra singur sau cu grupul; boţii din grup intră fără bilet.
+możesz znaleźć Kartę Maski Dyni. 	poţi găsi un Tichet Jack O`Lantern. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	Poţi avea doar o ripostă. Pergamentul Deştept
+Mroczne Paprocie	Vatir Împletit
+Mroczne Paprocie: nagroda	Vatir Împletit: recompensă
+mrocznej paproci.	de Vatir Împletit.
+Mroczny Cierń - mrok.	Ghimpe Negru - întuneric.
+Mroczną Paproć znajdziesz u potworów	Vatir Împletit găseşti la monştrii
+Mrok i ziemia (mapa 3)	Întuneric şi pământ (harta 3)
+Mroku	Întunericului
+Mroźnego Klucza (PB) może użyć tylko Szaman.	Cheie de Gheaţă (RX) poate folosi doar Şamanul.
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	Cheie de Gheaţă (TR) poate folosi doar Şamanul.
+mu apteczkę.	trusa de prim ajutor.
+musi najpierw osiągnąć stopień G1 (księgami).	trebuie mai întâi să atingă nivelul G1 (cu cărţi).
+Musisz dalej szukać.	Trebuie să cauţi mai departe.
+Musisz jeszcze trochę potrenować! Wróć, gdy	Mai trebuie să te antrenezi puţin! Revino când
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	Trebuie să încarci cel puţin 12 Animosfere ca să[ENTER]intri.
+Mój przyjaciel Chaegirab bada teraz nowy	Prietenul meu Chaegirab studiază acum un nou
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	Se spune că Dragonul de Fier a ridicat templul[ENTER]dintr-o singură suflare de foc în onoarea celor 12[ENTER]gardieni ai Zodiacului. Pe curajoşii care se întorc[ENTER]din camerele sfinte ale gardienilor îi aşteaptă[ENTER]gloria, onoarea şi bogăţii nemăsurate.
+Mądrości, które noszą przy sobie wojownicy	Înţelepciunii, pe care războinicii le poartă cu ei
+Mądrość przychodzi z doświadczeniem, ale dla	Înţelepciunea vine cu experienţa, dar pentru
+Mądry wybór. Teraz zniszcz następną stelę.	Alegere înţeleaptă. Acum distruge următoarea stelă.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	Alegere înţeleaptă. Acum distruge ultima stelă, iar Maat
+Na 7. poziomie czekają Głowy Węża. Odłamki z	La nivelul 7 aşteaptă Capetele Şarpelui. Cioburile din
+na bizuterie i splesc dla ciebie pas.	pe bijuterii şi îţi împletesc o curea.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	pe armă cu bonusuri. Scoate obiectul dacă e
+na Doyyumhwaji, póki nie minie godzina.	pe Doyyumhwaji, până trece o oră.
+Na graczy żywioły nie działają.	Elementele nu au efect asupra jucătorilor.
+Na które piętro chcesz wejść?	La ce etaj vrei să intri?
+na Maskę Dyni? 	pe Masca de Dovleac? 
+Na morzu za przylądkiem grasuje Hydra. Każdy	Pe mare, după promontoriu, bântuie Hidra. Fiecare
+Na nagrodę jest jeszcze za wcześnie.	E încă prea devreme pentru recompensă.
+na niej już żadnych zarodników. Przynieś mi inną.	pe ea nu mai sunt spori. Adu-mi alta.
+na nowym kontynencie.	pe noul continent.
+Na pewno poddać wyprawę?	Sigur renunţi la expediţie?
+Na pewno? Towarzysz odejdzie, a jego postac	Sigur? Însoţitorul va pleca, iar personajul lui
+Na pokład!	La bord!
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	la nivelul 10, 20, 30, 40, 50, 60 şi 70 - mereu
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	La nivelul 49, 99, 149, 199 şi 249 cu toată
+na Przyladku Smoczego Ognia.	pe Promontoriul Focului Dragonului.
+Na Przylądek Smoczego Ognia	Spre Promontoriul Focului Dragonului
+na Przylądku Smoczego Ognia.	pe Promontoriul Focului Dragonului.
+na siedmiu poziomach czeka Królowa Węży Nethis.	pe şapte niveluri aşteaptă Regina Şarpe Nethis.
+Na statek wpuszczam tylko drużyny.	Pe navă las să urce doar grupuri.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	la nivelul G1-G10. De la M1 la G1 - Cărţi obişnuite
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	pe capul tău. Păstrează tichetul pentru vremuri mai bune. 
+na tym serwerze.	pe acest server.
+Na ukończenie instancji macie 60 minut. Potwory nie	Pentru terminarea instanţei aveţi 60 de minute. Monştrii nu
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	Expediţia are 60 de minute, apoi 3 ore pauză.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Pe Deal s-au aşezat maimuţele maestrului WuKong.
+na Zbocze Gautama.	pe Panta lui Gautama.
+na żywioł odejmuje cały swój procent	la element scade tot procentul ei
+nadaje się do badań. Przynieś mi inny.	e bun pentru cercetări. Adu-mi altul.
+Nadam twojej broni, zbroi albo hełmowi	Voi da armei, armurii sau coifului tău
+nadciągał sztorm?	se apropia o furtună?
+nadciągnie w czterech falach. Brońcie masztu!	va veni în patru valuri. Apăraţi catargul!
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	A venit timpul să duci trusa de prim ajutor Cercetaşului
+Nagroda (losowo jedna):	Recompensă (una aleatorie):
+Nagroda za badania	Recompensă pentru cercetări
+Nagroda za Meley	Recompensă pentru Meley
+Nagroda została już odebrana przez wszystkich	Recompensa a fost deja ridicată de toţi
+Nagroda została już odebrana.	Recompensa a fost deja ridicată.
+Nagroda: 11 650 000 PD i Kamień Driad.	Recompensă: 11 650 000 EXP şi Piatra Driadelor.
+Nagroda: 11 650 000 PD.	Recompensă: 11 650 000 EXP.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Recompensă: 5 582 500 EXP şi 10 Rădăcini de Gango.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Recompensă: 5 825 000 EXP şi 5 Trandafiri alpini.
+Nagroda: 7 766 000 PD i 10 Wód Young.	Recompensă: 7 766 000 EXP şi 10 Apă Young.
+Nagroda: 7 766 000 PD.	Recompensă: 7 766 000 EXP.
+Nagroda: 776 600 PD.	Recompensă: 776 600 EXP.
+Nagroda: Książka Przebudzenia. Misję można	Recompensă: Volum Redux. Misiunea se poate
+Nagrody dla najlepszych	Recompense pentru cei mai buni
+Nagrody w Łupach Królewskich	Recompense în Prada Regelui
+Nagrody za grę Yut Nori	Recompense pentru jocul Yut Nori
+Nagrody za pierwsze 10 miejsc	Recompense pentru primele 10 locuri
+Nagrody za ranking	Recompense pentru clasament
+Nagrodę za ten event już odebrałeś.	Ai ridicat deja recompensa pentru acest eveniment.
+Najlepsza gra	Cel mai bun joc
+Najlepsze czasy pięter w tym sezonie (min:s):	Cei mai buni timpi pe etaje în acest sezon (min:s):
+Najlepszy wynik	Cel mai bun rezultat
+najlepszych graczy. Może następnym razem!	cei mai buni jucători. Poate data viitoare!
+najpierw 9. pietro Wiezy Demonow	întâi etajul 9 din Turnul Demonilor
+Najpierw opuść loch.	Mai întâi părăseşte temniţa.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	Mai întâi ajută-i pe Gardianul şi Cercetaşul Pădurii (RX).
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	Mai întâi ajută-i pe Gardianul şi Cercetaşul Pădurii (TR).
+Najpierw trzeba zamknąć otwartą Kryptę.	Mai întâi trebuie închisă Cripta deschisă.

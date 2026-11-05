@@ -1,0 +1,2 @@
+# MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
+# Polish<TAB>ro (by hand; UTF-8). tools/i18n/extract_server_texts.py --check ro lists what is missing.

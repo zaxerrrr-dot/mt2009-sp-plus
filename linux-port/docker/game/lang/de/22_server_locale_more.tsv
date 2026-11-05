@@ -1,0 +1,299 @@
+# MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
+# Polish<TAB>de (by hand; UTF-8). tools/i18n/extract_server_texts.py --check de lists what is missing.
+%d dni %d godzin	%d Tage %d Stunden
+%d dni %d godzin i %d minut	%d Tage %d Stunden und %d Minuten
+%d godzin i %d minut	%d Stunden und %d Minuten
+%d minut	%d Minuten
+%d sekund do wyjścia z mapy.	%d Sekunden bis zum Verlassen der Karte.
+%d sekund do zmiany kanału.	%d Sekunden bis zum Kanalwechsel.
+%s jest blisko Ciebie.	%s ist in deiner Nähe.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s ist auf Kanal %d verbunden. (aktueller Kanal: %d)
+%s rzucił %d. (%d-%d)	%s hat %d gewürfelt. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s hat gewürfelt und %d erhalten. (%d-%d)
+%s[%d]s Attack Position: %d %d	%s[%d]s Angriffsposition: %d %d
+30 minut minęło. Ogniska zgasły.	30 Minuten sind vorbei. Die Leuchtfeuer sind verschwunden.
+<Gildia> Wskazany gracz jest zajęty.	<Gilde> Der Spieler ist beschäftigt.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Gruppe> Die Gruppe kann niemanden einladen, wenn Mitglieder in einem Dungeon sind.
+<Grupa> Lider grupy jest w lochu.	<Gruppe> Der Gruppenleiter ist in einem Dungeon.
+<Guild> %d Skills used (%d, %d) to %u	<Gilde> %d Fertigkeiten benutzt (%d, %d) bis %u
+[1106-??]No puedes unir esto.	[1106-??] Das kannst du nicht verbinden.
+[Gildia] Gildia jest w trakcie wojny.	[Gilde] Die Gilde befindet sich im Krieg.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Gilde] Die Gilde hat ihr Einladungslimit erreicht.
+[Gildia] Gildia osiągnęła maksymalny poziom.	<Gilde> Die Gilde hat bereits die maximale Stufe erreicht.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Gilde] %d Einheiten Drachengeist wurden aufgeladen.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Gilde] Während eines Kriegs kannst du kein Gildenmitglied entfernen.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Gilde] Gildenfertigkeiten kannst du nur in der Gildenkriegsarena benutzen.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	<Gilde> Neue Mitgliedschaften sind derzeit eingeschränkt.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	<Gilde> Während eines Gildenkriegs kannst du keine Gildenmitglieder hinauswerfen.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Gilde] Die eingeladene Person ist gerade beschäftigt.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	<Gruppe> Die Gruppe kann nicht aufgelöst werden, weil Mitglieder im Dungeon sind.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	<Lager> Gegenstände im Lager können nicht verschoben werden.
+Aby otworzyć sklep potrzebujesz Tobół.	Du brauchst ein Bündel, um einen Laden zu öffnen.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Dein Charakter muss mindestens Level %u sein, um diesen Gegenstand zu kaufen.
+Atakują nas morskie potwory! Do broni!	Schiffsverteidigung: Seemonster greifen uns an! Macht euch kampfbereit!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Der Verbesserungsbonus kann nur bei Gegenständen bis Level %d benutzt werden.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Der Verbesserungsbonus kann nur bei Gegenständen bis höchstens +%d benutzt werden.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Der Verbesserungsbonus kann nur bei Schmuck benutzt werden.
+Bonus na ulepszenie może być użyty tylko na bronie.	Der Verbesserungsbonus kann nur bei Waffen benutzt werden.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Der Verbesserungsbonus kann nur bei Rüstungen, Helmen und Schilden benutzt werden.
+Brak danych. Skontaktuj się z administratorem.	Fehlende Daten. Bitte wende dich an einen Administrator.
+Brak kamienia do wyjęcia.	Kein Metinstein zum Herausnehmen.
+Brak miejsca w ekwipunku.	Nicht genug Platz im Inventar.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Zu wenig Steuern. Aktuelles Kapital: %u Benötigtes Kapital: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Beim Öffnen des Ladens ist ein Gegenstandsfehler aufgetreten.
+Cena przedmiotu zmieniła się.	Der Gegenstandspreis hat sich geändert.
+Cena przedmiotu została zmieniona.	Gegenstandspreis erfolgreich geändert.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Etwas hat angebissen, aber du kannst nicht sehen, was es ist.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	Der Rote Wald birgt viele Geheimnisse, von denen du nie wusstest.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Der Detektor wurde aktiviert, aber es wurden keine Geiststeine gefunden.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	VIP-Effekte sind mit einem Premium-Abo nicht kombinierbar. Du kannst diesen Kauf nicht tätigen.
+Eliksir jest pusty. Napełnij go u Alchemika.	Das Elixier ist leer. Lass es beim Alchemisten auffüllen.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Emotionen sind nur für Premium-Abonnenten verfügbar.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Schiffsverteidigung: Welle %d - schützt den Mast und besiegt die Hydra.
+Fala %d: brońcie masztu przez %d sek.	Schiffsverteidigung: Welle %d - schützt den Mast %d Sek. lang.
+Funkcja tymczasowo niedostępna.	Diese Funktion ist vorerst nicht verfügbar.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	Die Gilde hat die höchste Stufe erreicht, nimmt dein Geschenk aber an.
+Gracz %s został dodany do listy zablokowanych.	Spieler %s wurde deiner Blockierliste hinzugefügt.
+Gracz %s został usunięty z listy zablokowanych.	Spieler %s wurde von deiner Blockierliste entfernt.
+Ja ci pokazać, że mi nie przeszkadzać!	Ich zeig dir, dass man mich nicht stört!
+Jajo Hydry pękło - potwory idą na dno!	Schiffsverteidigung: Das Hydra-Ei ist geplatzt - die Monster versinken!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Einer der Gegenstände hat einen unzulässigen Preis (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Einer der Gegenstände liegt an einem unzulässigen Platz.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Einer der Hochzeitsaufträge ist noch nicht bereit, die Hochzeit zu verlassen.
+Jesteś już przyjacielem gracza %s.	Du bist bereits mit %s befreundet.
+Jesteś za daleko od Kowala.	Du bist zu weit vom Schmied entfernt.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Wenn du diesen Bedingungen nicht zustimmst
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Geiststeine +3 können mit diesem Gegenstand nicht verbessert werden.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	Der Geiststein kann mit diesem Gegenstand nicht verbessert werden.
+Kilof może zostać ulepszony tylko u Deokbae.	Eine Spitzhacke kann nur Deokbae verbessern.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Jemand hat %dx %s für %d Yang in deinem Laden gekauft.
+Masz za mało Animosfer.	Du hast nicht genug Animasphären.
+Maszt naprawiony: %d%% PŻ.	Schiffsverteidigung: Der Mast wurde repariert - %d%% TP.
+Maszt ocalał. Przygotujcie się na następną falę!	Schiffsverteidigung: Ihr habt den Mast geschützt. Macht euch bereit für die nächste Welle!
+Maszt: zostało %d%% PŻ!	Schiffsverteidigung: Der Mast hat noch %d%% TP!
+Możesz używać Białej Flagi co %d minut.	Du kannst die Weiße Flagge alle %d Minuten benutzen.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Diese Fertigkeit kannst du nur in deinem Land benutzen.
+Możesz wyrzucić przedmioty co %d sekund.	Du kannst Gegenstände nur einmal alle %d Sekunden fallen lassen.
+Możesz wyrzucić Yang co 10 sekund.	Du kannst Yang nur einmal alle 10 Sekunden fallen lassen.
+Możesz łowić tylko w M1.	Du kannst nur in M1 angeln.
+Możliwość pisania została zablokowana przez siły wyższe!	Dein Chat wurde von einem GM gesperrt.
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Du brauchst mindestens Level %d, um dieses Buch zu verstehen.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Du brauchst mindestens Level %d, um diesen Gegenstand zu kaufen.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Du musst ein Hochzeitskleid tragen, um einen Brautstrauß anzulegen.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Du musst %d Minuten warten, um diese Option erneut zu benutzen.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Du musst nach dem Kampf eine Weile warten, bevor du diese Option benutzt.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Du musst ein paar Sekunden warten, bevor du die Karte verlässt.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Du musst ein paar Sekunden warten, bevor du den Kanal wechselst.
+Musisz posiadać cel.	Du brauchst ein Ziel.
+Musisz stać obok sklepu.	Du musst neben dem Laden stehen.
+Musisz zaczekać %d min. przed ponownym użyciem.	Du musst %d Min. warten, bevor du es wieder benutzt.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Du musst %d Sek. warten, bevor du es wieder benutzt.
+Musisz zdjąć bukiet.	Du musst zuerst den Brautstrauß ablegen.
+Musisz znajdować się na tej samej mapie co sklep.	Du musst auf derselben Karte wie der Laden sein.
+Musisz znajdować się na tym samym kanale co sklep.	Du musst auf demselben Kanal wie der Laden sein.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Auf dieser Karte kann es zu erzwungenen Kämpfen kommen.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Auf diesem Kanal gibt es zu viele Läden. Über das freie Limit hinaus braucht man einen Premium-Laden.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Dieser Kanal hat sein Limit an Offline-Läden erreicht. Du kannst keinen Laden öffnen.
+Następna fala za %d sek.	Schiffsverteidigung: Die nächste Welle beginnt in %d Sek.
+Naładowany na %d sekund.	%d Sekunden aufgeladen
+Nie jesteś zablokowany.	Du steckst nicht fest.
+Nie ma kogo ożywić.	Es gibt niemanden zum Wiederbeleben.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Du hast keinen Platz im Inventar. Der Gegenstand wurde in dein Item-Shop-Lager geschickt.
+Nie masz sklepu na tej mapie.	Du hast keinen Laden auf dieser Karte.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Du hast keinen Laden auf diesem Kanal. (Gefunden auf Kanal %d.)
+Nie możesz czytać ksiąg będąć przemieniony.	Du kannst während einer Verwandlung keine Bücher lesen.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Du kannst diese Fertigkeit nicht weiter verbessern. Benutze eine Fertigkeits-Reset-Schriftrolle oder ein Band des Vergessens.
+Nie możesz dodać więcej bonusów.	Du kannst keine weiteren Boni hinzufügen.
+Nie możesz jeździć konno podczas łowienia.	Du kannst beim Angeln nicht reiten.
+Nie możesz jeździć konno, gdy jesteś powalony.	Du kannst während des Fallens nicht reiten.
+Nie możesz jeździć nosząc przedmiot.	Du kannst nicht reiten, während du einen Gegenstand trägst.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Du kannst nicht fortfahren, solange ein anderes Fenster geöffnet ist.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Du kannst nicht fortfahren: Dein Yang würde das Limit von 2 Milliarden überschreiten.
+Nie możesz kupować od samego siebie.	Du kannst nicht bei dir selbst kaufen.
+Nie możesz mieć więcej niż %d przyjaciół.	Du kannst nicht mehr als %d Freunde haben.
+Nie możesz nosić Smokingu na koniu.	Du kannst den Smoking nicht auf dem Pferd tragen.
+Nie możesz nosić tego przedmiotu konno.	Du kannst diesen Gegenstand nicht auf dem Pferd tragen.
+Nie możesz otworzyć pustego sklepu.	Du kannst keinen leeren Laden öffnen.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Du kannst hier keinen Offline-Laden öffnen.
+Nie możesz otworzyć sklepu w tym miejscu.	Du kannst hier keinen Laden öffnen.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Du kannst diesen Laden nicht öffnen. Hol zuerst alle seine Gegenstände ab.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Du kannst hier keinen Laden öffnen. Du bist zu nah an einem anderen Laden.
+Nie możesz otworzyć więcej sklepów.	Du kannst keine weiteren Läden öffnen.
+Nie możesz ożywić kogoś, kto żyje.	Du kannst niemanden wiederbeleben, der lebt.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Du kannst diesen Gegenstand nicht aufheben, während du Aufträge benutzt.
+Nie możesz przenieść się do tego obszaru.	Du kannst dich nicht in dieses Gebiet bewegen.
+Nie możesz przenieść się do tej osoby.	Du kannst dich nicht zu dieser Person teleportieren.
+Nie możesz przywołać do tego obszaru.	Du kannst nicht in dieses Gebiet rufen.
+Nie możesz przywołać konia w tym miejscu.	Du kannst das Pferd hier nicht rufen.
+Nie możesz się teraz teleportować.	Du kannst dich gerade nicht teleportieren.
+Nie możesz sprintować będąc spowolnionym.	Du kannst nicht sprinten, solange du verlangsamt bist.
+Nie możesz sprintować nosząc przedmiot.	Du kannst nicht sprinten, während du einen Gegenstand trägst.
+Nie możesz sprzedawać noszonych przedmiotów.	Du kannst angelegte Gegenstände nicht verkaufen.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Du kannst gesperrte Gegenstände nicht verkaufen.
+Nie możesz sprzedać przedmiotów, które nosisz.	Du kannst angelegte Gegenstände nicht verkaufen.
+Nie możesz sprzedać założonego przedmiotu.	Du kannst einen getragenen Gegenstand nicht verkaufen.
+Nie możesz tego teraz użyć.	Du kannst es jetzt nicht benutzen.
+Nie możesz tego użyć, gdy masz otwarte okno.	Du kannst das nicht benutzen, solange ein Fenster geöffnet ist.
+Nie możesz tego zrobić na kanale specjalnym.	Das kannst du auf einem Sonderkanal nicht tun.
+Nie możesz teleportować się nosząc przedmiot.	Du kannst dich nicht teleportieren, während du einen Gegenstand trägst.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Die Effekte sind noch nicht geladen!
+Nie możesz teraz podnosić przedmiotów.	Du kannst keine Gegenstände aufheben, während du beschäftigt bist.
+Nie możesz teraz wykonać tej operacji.	Du kannst diese Aktion gerade nicht ausführen.
+Nie możesz teraz zejść z wierzchowca.	Du kannst gerade nicht absteigen.
+Nie możesz tutaj otworzyć depozytu.	In diesem Gebiet kannst du kein Lager öffnen.
+Nie możesz uczyć się będąc przemienionym.	Du kannst während einer Verwandlung nicht lernen.
+Nie możesz ulepszyć tego przedmiotu.	Du kannst diesen Gegenstand nicht verbessern.
+Nie możesz użyć tego na wojnie.	Das kannst du auf einer Kriegskarte nicht benutzen.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Du kannst diesen Gegenstand nicht benutzen, während du Aufträge benutzt.
+Nie możesz użyć tego przedmiotu konno.	Du kannst diesen Gegenstand nicht auf dem Pferd benutzen.
+Nie możesz wyjąć umieszczonego kamienia.	Du kannst den eingesetzten Stein nicht herausnehmen.
+Nie możesz wykonać tej akcji będąc martwy.	Das kannst du nicht tun, solange du tot bist.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Du kannst keine Gegenstände aus dem Pferdeinventar in einen normalen Laden legen.
+Nie możesz zablokować więcej niż %d osób.	Du kannst nicht mehr als %d Personen blockieren.
+Nie możesz zapisać pozycji w tym miejscu.	Hier kannst du keine Position speichern.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Du kannst keinen Ort im gegnerischen Reich speichern.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Du kannst keine blockierte Person zu deinen Freunden hinzufügen.
+Nie możesz zmienić bonusów.	Du kannst die Boni nicht ändern.
+Nie możesz zmienić trybu PvP na wojnie.	Im Krieg kannst du den PvP-Modus nicht ändern.
+Nie można użyć na innym graczu.	Das kann nicht an einem anderen Spieler benutzt werden.
+Nie można ładować.	Aufladen nicht möglich.
+Nie posiadasz otwartego sklepu.	Du hast keinen offenen Laden.
+Nie posiadasz sklepu premium.	Du hast keinen Premium-Laden.
+Nie posiadasz sklepu.	Du hast keinen Laden.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Du brauchst bestimmte Gegenstände, um diesen Gegenstand zu kaufen.
+Nie posiadasz wystarczająco dużo reputacji.	Du hast nicht genug Ansehen.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Du erfüllst nicht die Voraussetzungen, um einen eigenen Laden zu öffnen.
+Nie udało się wytworzyć.	Herstellung fehlgeschlagen.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Du hast keine Gegenstände fallen gelassen, da dich der Drachengott beschützt.
+Nie znaleziono gracza o podanej nazwie.	Kein Spieler mit diesem Namen gefunden.
+Niedostępne.	Nicht verfügbar.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Einige Gegenstände im Laden überlappen sich.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Einige Gegenstände im Laden liegen auf gesperrten Plätzen.
+Niewystarczająca ilość Smoczych Monet.	Du hast nicht genug Drachenmünzen.
+Niewystarczająca ilość Smoczych Znaków.	Du hast nicht genug Drachenmarken.
+Nikt nie wypłynął - statek zostaje w porcie.	Schiffsverteidigung: Niemand ist in See gestochen - das Schiff bleibt im Hafen.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Ein Kräutermesser kann nur der Kräuterkundige verbessern.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Der Empfänger kann keine Freundschaftsanfragen erhalten.
+Odczekaj chwilę po zakończeniu handlu.	Warte nach einem Handel einen Moment.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Warte noch %s bis zum nächsten Training.
+Odczekaj jeszcze %s przed zakupem.	Warte noch %s, bevor du kaufst.
+Odczekaj przed następnym ulepszeniem.	Warte einen Moment vor der nächsten Verbesserung.
+Oferta sklepu zmieniła się.	Das Angebot des Ladens hat sich geändert.
+Okno zarządzania sklepem musi być otwarte.	Das Verwaltungsfenster des Ladens muss geöffnet sein.
+Osiągnięto limit zakupu tego przedmiotu.	Das Kauflimit für diesen Gegenstand wurde erreicht.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Dieses Konto hat diesen Gegenstand so oft gekauft wie erlaubt.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Die Person, die du wiederbeleben willst, ist kein Mensch.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Du hast %d Ansehen erhalten (Königliche Garde)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Du hast %d Ansehen erhalten (Söhne der Wüste)
+Otrzymałeś %s (Juki Konne)	%s erhalten (Pferdeinventar)
+Otrzymałeś %s (szt. %d)	%s %d erhalten
+Otrzymałeś %s (szt. %d) (Juki Konne)	%s %d erhalten (Pferdeinventar)
+OX-Question: 	OX-Frage: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Denk daran, dass auf dieser Karte kein Offline-Laden aufgestellt werden kann.
+Podana kwota jest większa niż zarobione Yang.	Der Betrag ist höher als das verdiente Yang.
+Podana kwota jest za mała.	Der Betrag ist zu klein.
+Podana osoba jest na liście Twoich przyjaciół.	Diese Person ist auf deiner Freundesliste.
+Podatek od sprzedaży: %d%% (%lld Yang).	Dieser Verkauf wird mit %d%% besteuert (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Schiffsverteidigung: Ein Hydra-Ei ist erschienen! Zerstört es, um die Monster zu versenken.
+Pomimo treningu nie czujesz się zmęczony.	Trotz des Trainings fühlst du dich nicht müde.
+Pomyślnie dodano bonus.	Neuer Bonus erfolgreich hinzugefügt.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Das Yang wurde aus dem Depot des Ladens abgehoben.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Du hast bereits einen offenen Laden, oder im Depot deines Ladens liegen Gegenstände.
+Pospieszcie się, macie %d min., by przejść przez portal.	Schiffsverteidigung: Beeilt euch, ihr habt %d Min., um durch das Portal zu gehen.
+Potomstwo Hydry trafiło maszt laserem!	Schiffsverteidigung: Die Brut der Hydra hat den Mast mit einem Laser getroffen!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Du brauchst %lld Yang, um diese Art Laden zu öffnen
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Du brauchst Platz für einen Gegenstand mit mindestens 3 Feldern, um die Kiste zu öffnen.
+Pozostały czas %d sekund.	Verbleibende Zeit %d Sekunden.
+Pozostały czas: %.1f sek.	Verbleibende Zeit: %.1f
+Pozostały czas: %.2f sek.	Verbleibende Zeit: %.2f
+Pozycja sklepu została oznaczona strzałką.	Die Position deines Ladens ist mit einem Pfeil markiert.
+Prosimy o powrót do pierwotnej lokalizacji.	Bitte kehre zu deiner ursprünglichen Gestalt und deinem ursprünglichen Ort zurück.
+Prośba o wezwanie została wysłana.	Die Rufanfrage wurde gesendet.
+Przechwyciłeś laser Potomstwa Hydry.	Schiffsverteidigung: Ihr habt den Laser der Hydra-Brut abgefangen.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Dieser Gegenstand kann nur bei Waffen oder Rüstungen bis Level 40 benutzt werden.
+Przedmiot nie może być użyty na akcesoriach.	Dieser Gegenstand kann nicht bei Accessoires benutzt werden.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	Es sind keine Seelensteine zum Extrahieren verfügbar.
+Przedmiot zniknie za %d minut.	Der Gegenstand verschwindet in %d Minuten.
+Przedmiot został dodany do twojego ekwipunku	Der Gegenstand wurde deinem Inventar hinzugefügt
+Przedmioty zostały dodane do twojego ekwipunku	Die Gegenstände wurden deinem Inventar hinzugefügt
+Przedmioty zostały pomyśnie zaktualizowane.	Die Gegenstände wurden aktualisiert.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Benutzte Gegenstände können nicht in deinem privaten Laden verkauft werden.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Logg dich erneut ein, damit der VIP-Effekt richtig angewendet wird.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Ruf dein Pferd, um auf das Pferdeinventar zuzugreifen.
+Rejs trwał za długo - statek zawraca.	Schiffsverteidigung: Die Reise hat zu lange gedauert - das Schiff kehrt um.
+Rzuciłeś %d. (%d-%d)	Du hast %d gewürfelt. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Du hast gewürfelt und %d erhalten. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Der Server wird in 10 Minuten wegen Wartungsarbeiten geschlossen.
+Sklep #PLAYER_NAME#	Laden von #PLAYER_NAME#
+Sklep - %s	Laden - %s
+Sklep jest otwarty.	Der Laden ist geöffnet.
+Sklep jest w trybie edycji.	Der Laden ist im Bearbeitungsmodus.
+Sklep jest zamknięty.	Der Laden ist geschlossen.
+Sklep nie jest w trybie edycji.	Der Laden ist nicht im Bearbeitungsmodus.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Der Laden wurde kürzlich vom Besitzer bearbeitet. Bitte warte eine Weile.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Der Laden wurde geschlossen; die übrigen Gegenstände und das verdiente Yang liegen in seinem Depot.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Die Drachenseelenstein-Box ist nicht aktiviert.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	Schiffsverteidigung: SOS! Der Mast ist zerschmettert und das Schiff sinkt. Ihr werdet an Land gebracht.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Bei deinem Bewegungstempo (>= %d) kannst du zu Fuß nicht sprinten
+Szkolona umiejętność posiada już maksymalny poziom (%d).	Diese Fertigkeit hat bereits ihre höchste Stufe (%d).
+Ta aukcja nie jest już dostępna.	Diese Auktion ist nicht mehr verfügbar.
+Ta opcja jest tymczasowo niedostępna.	Diese Funktion ist vorübergehend nicht verfügbar.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Diese Gewässer sind sehr arm, hier gibt es kaum Fische. Sprich mit dem Fischer.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Der Spieler hat mehr als 2 Milliarden Yang. Du kannst nicht mit ihm handeln.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Dieser Kauf würde das Kauflimit eines Kontos überschreiten. Kauf weniger.
+To miejsce jest wolne od plagi Kamieni Metin.	Dieser Ort ist frei von der Plage der Metinsteine.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Ich war es nicht... aber sie haben dich gewählt. Wir sehen uns wieder, früher als du denkst.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Das Gift kann nur bei der Riesenschildkröte benutzt werden.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Deine Gruppe besteht aus allen Klassen, dafür erhältst du einen Erfahrungsbonus.
+Twoja postać nie żyje, nie możesz tego zrobić.	Dein Charakter ist tot und kann das nicht tun.
+Twoja ranga nie może już wzrosnąć.	Dein Rang kann nicht weiter steigen.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	Das Öffnen von Läden wurde für deinen Rang gesperrt!
+Tworzenie sklepów jest tymczasowo wyłączone	Das Öffnen von Läden ist vorerst abgeschaltet
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Dein Pferd ist am Verhungern und kann sich in diesem Zustand nicht anstrengen.
+Tylko GM ma dostęp do tej komendy.	Nur GMs haben Zugriff auf diesen Befehl
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Diese Aktion ist nur im Zodiaktempel möglich.
+Udało ci się pokonać smoka w %d sekund!	Du hast den Drachen in %d Sekunden besiegt!
+Upuszczone Yang zniknie za %d sekund.	Fallen gelassenes Yang verschwindet nach %d Sekunden.
+Upuszczony przedmiot zniknie za %d minut.	Der fallen gelassene Gegenstand verschwindet in %d Minuten.
+Usuniecie przedmiotu	Gegenstand entfernt
+Uwolniłeś się!	Du hast dich erfolgreich befreit.
+W depozycie sklepu offline zalegają przedmioty.	Im Depot deines Offline-Ladens liegen noch Gegenstände.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Ein unheilvolles Rascheln erfüllt den Wald... der Geisterbaumfürst erwacht aus seinem Schlaf!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Der Wert des Ladens und dein Yang zusammen sind mehr als erlaubt (2 Milliarden).
+Wesele dalej trwa!	Die Hochzeit läuft noch!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	Der Krieg zwischen %s und %s beginnt in %d Minuten!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Dieser Kanal ist nur für Premium-Konten offen.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Ausgeschieden! Eure Zeit im Dungeon endet, wenn niemand innerhalb einer Minute wiederbelebt wird.
+Wszystkie potwory na mapach zostały zabite!	Alle Monster auf den Karten wurden getötet!
+Wygląda na to, że na haczyku jest %s.	Sieht aus, als hätte %s angebissen.
+Wyglądało na to, że %s wisi na haku.	Es sah aus, als hinge %s am Haken.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Du hast das Duell mit %d/%d (%d%%) TP gewonnen!
+Wyjście z mapy zostało przerwane.	Das Verlassen der Karte wurde unterbrochen.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Dieses Konto hat seine Käufe dieser Auktion aufgebraucht (höchstens %d).
+Wymagane %d Staminy	%d Ausdauer benötigt
+Wymagane %s.	%s benötigt.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Du brauchst ein Glas der Einsicht oder ein aktives Premium-Abo.
+Wystapił błąd	Ein Fehler ist aufgetreten
+Wystąpił błąd. (Kod błędu: %s)	Ein Fehler ist aufgetreten. Code %s
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Suche beendet. %d Läden gefunden.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Die Suche wurde gestoppt. Über %d Läden mit dem gesuchten Gegenstand gefunden.
+Wyłowiłeś %s!	Du hast %s gefangen!
+Wędka może zostać ulepszona tylko u Rybaka.	Eine Angel kann nur der Fischer verbessern.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Der Besitzer hat zu viele Gegenstände im Inventar.
+Za 5 min zostanie wykonany automatyczny reset spotów!	In 5 Minuten werden die Spots automatisch zurückgesetzt!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Warte %d Sekunden, bevor du diesen Gegenstand benutzt.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Warte %d Sekunden vor der nächsten Änderung am Laden.
+Zaczekaj %d sekund, przed kolejną akcją.	Warte %d Sekunden vor deiner nächsten Aktion.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Warte %s, bevor du die Schriftrolle erneut benutzt.
+Zaczekaj chwilę, przed kolejną akcją.	Warte einen Moment vor deiner nächsten Aktion.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Bitte warte einen Moment. Die Karte wird verlassen.
+Zakup wymaga odpowiedniej reputacji.	Für diesen Kauf brauchst du mehr Ansehen.
+Zamkniecie sklepu	Laden geschlossen
+Zaproszony gracz jest w tym momencie zajęty.	Der eingeladene Spieler ist gerade beschäftigt.
+Zdobyłeś %s!	Du hast %s erhalten!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Schiffsverteidigung: Land in Sicht! Ihr habt das Schiff beschützt - geht durch das Portal.
+Zmiana kanału została przerwana.	Der Kanalwechsel wurde unterbrochen.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Du kannst gerade nicht auf diesen Kanal wechseln.
+Znowu atakują! Do broni!	Schiffsverteidigung: Sie greifen wieder an! Waffen bereit!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Es bleibt noch etwas, das ich richten muss... etwas, das nie hätte geschehen dürfen.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	Der Tod ist nicht das Ende, sondern der Anfang eines neuen Weges.
