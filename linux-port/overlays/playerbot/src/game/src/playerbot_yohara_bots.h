@@ -2103,6 +2103,14 @@ namespace
 			return SendPlayerBotYoharaHome(ch, state, dwNow, "yohara_switched_off") ? 1 : 0;
 		if (ch->IsDead() || state.bRecoveringAfterDeath)
 			return -1;
+		// MT2009_PLUS_BOT_YDG_V1: a training party's member (playerbot_dungeon_runs_ydg.h) stays on this core for its
+		// runs - no stay, idle or band sends it home; between two runs it waits where it is (the next call fetches it).
+		if (IsPlayerBotYdgTrainee(pid))
+		{
+			res.dwLastRun = dwNow;
+			res.dwOffRunSince = 0;
+			return 0;
+		}
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma resident buys and sells at Dongan's merchants (the errand,
 		// playerbot_yohara_sungma.h) - the belt kept full where it stands only when the errand cannot be made.
 		if (res.iPurpose != YOHARA_PURPOSE_SUNGMA)

@@ -109,6 +109,15 @@ namespace playerbot_dgrun
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_YDG_V1: a Ninja among them.
+	inline bool HasNinja(const std::vector<TCand>& v)
+	{
+		for (size_t i = 0; i < v.size(); ++i)
+			if ((v[i].job & 3) == 1)
+				return true;
+		return false;
+	}
+
 	// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: what a dungeon asks of a bots' run
 	// beyond the dungeon panel's own levels and party limits - data, one row a
 	// dungeon; a dungeon without a row keeps the figures above.
@@ -120,6 +129,7 @@ namespace playerbot_dgrun
 		int preferMin;		// a call asks for at least this many
 		int startMin;		// and goes in with at least this many at the entrance
 		bool needHealer;	// a Shaman with a skill group in it, or no call and no start
+		bool needNinja;		// MT2009_PLUS_BOT_YDG_V1: a Ninja in it as well (the Nemere watchtowers' keys and Pillar)
 	};
 
 	const TRunRule DEFAULT_RULE = { "", 0, CALL_MIN, PREFER_MIN, START_MIN, false };
@@ -170,6 +180,15 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the owner, 22 October (later): "Zmniejsz party do dwoch osob ... Party =
 		// jeden ninja + inna postac" - a fixed pair, both of it to call, to ask for and to go in.
 		{ "hydra", 110, 2, 2, 2, false },
+		// MT2009_PLUS_BOT_YDG_V1: the Yohara dungeons of Plaskowyz Iluzji (playerbot_dungeon_runs_ydg.h) - the statues'
+		// 110 and 2-8, the bosses of 122-135: five called, four to go in, a Shaman always; the Nemere ones a Ninja too.
+		{ "beran_szc", 110, 5, 5, 4, true },
+		{ "razador_szc", 110, 5, 5, 4, true },
+		{ "nemere_szc", 110, 5, 5, 4, true, true },
+		{ "beran_pb", 110, 5, 5, 4, true },
+		{ "razador_pb", 110, 5, 5, 4, true },
+		{ "nemere_pb", 110, 5, 5, 4, true, true },
+		{ "jotun_pb", 110, 5, 5, 4, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
@@ -190,7 +209,7 @@ namespace playerbot_dgrun
 	// A dungeon and a kingdom can be called with these candidates.
 	inline bool CanCall(const std::vector<TCand>& bucket, const TRunRule& r)
 	{
-		return (int)bucket.size() >= r.callMin && (!r.needHealer || HasHealer(bucket));
+		return (int)bucket.size() >= r.callMin && (!r.needHealer || HasHealer(bucket)) && (!r.needNinja || HasNinja(bucket));
 	}
 
 	// The drawn party is worth the shout.
@@ -199,7 +218,7 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a rule that calls with fewer than CALL_MIN (the Time Rift's two)
 		// is satisfied by its own number; every other rule as before.
 		const int least = r.callMin < CALL_MIN ? r.preferMin : std::max(r.preferMin, CALL_MIN);
-		return (int)picked.size() >= least && (!r.needHealer || HasHealer(picked));
+		return (int)picked.size() >= least && (!r.needHealer || HasHealer(picked)) && (!r.needNinja || HasNinja(picked));
 	}
 
 	// The gathered party goes in.

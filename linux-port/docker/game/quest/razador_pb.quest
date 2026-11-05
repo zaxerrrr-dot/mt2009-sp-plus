@@ -89,33 +89,46 @@ quest razador_pb begin
 			server_timer("razador_pb_tick", 60, d.get_map_index())
 		end
 
-		function start_task(lv)
+		-- MT2009_PLUS_BOT_YDG_V1: the dialog lines only for a person (a bots' run starts its tasks from a timer)
+		function talk(bot, text)
+			if not bot then
+				say(text)
+			end
+		end
+
+		function talk_title(bot, text)
+			if not bot then
+				say_title(text)
+			end
+		end
+
+		function start_task(lv, bot)
 			local c = razador_pb.cfg()
-			say_title(mob_name(20531)..":")
+			razador_pb.talk_title(bot, mob_name(20531)..":")
 			if lv == 1 or lv == 3 then
 				local t = "Zadanie: zabij wszystkie potwory na platformie."
-				say(t)
+				razador_pb.talk(bot, t)
 				d.notice(t)
 				d.setf("level", 10 + lv)
 				d.regen_file(c.path..(lv == 1 and "fd_a.txt" or "fd_c.txt"))
 				server_timer("razador_pb_kills", 12, d.get_map_index())
 			elseif lv == 2 then
-				say("Zadanie: zdob¹dŸ Z³ot¹ Zêbatkê (PB) i uruchom")
-				say("ni¹ ukryty mechanizm Steli Isfet (PB). Zêbatkê nosz¹ demony.")
+				razador_pb.talk(bot, "Zadanie: zdob¹dŸ Z³ot¹ Zêbatkê (PB) i uruchom")
+				razador_pb.talk(bot, "ni¹ ukryty mechanizm Steli Isfet (PB). Zêbatkê nosz¹ demony.")
 				d.notice("Zadanie: zdob¹dŸ Z³ot¹ Zêbatkê (PB) i przeci¹gnij j¹ na Stelê Isfet (PB).")
 				d.setf("level", 12)
 				d.spawn_mob(20533, c.stone2[1], c.stone2[2])
 				d.set_regen_file(c.path.."fd_b.txt")
 			elseif lv == 4 then
-				say("Zadanie: pokonaj Ignatora (PB), stra¿nika ¿aru.")
+				razador_pb.talk(bot, "Zadanie: pokonaj Ignatora (PB), stra¿nika ¿aru.")
 				d.notice("Zadanie: znajdŸ i zabij Ignatora (PB).")
 				d.setf("level", 14)
 				razador_pb.watch_target(4309, c.ignator[1], c.ignator[2]) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.set_regen_file(c.path.."fd_d.txt")
 			elseif lv == 5 then
-				say("Zadanie: zdob¹dŸ Kamienie Maat (PB) i umieœæ je na")
-				say("siedmiu Stelach Isfet (PB) we w³aœciwej kolejnoœci.")
-				say("Kamieñ u¿yty na z³ej steli siê rozpadnie.")
+				razador_pb.talk(bot, "Zadanie: zdob¹dŸ Kamienie Maat (PB) i umieœæ je na")
+				razador_pb.talk(bot, "siedmiu Stelach Isfet (PB) we w³aœciwej kolejnoœci.")
+				razador_pb.talk(bot, "Kamieñ u¿yty na z³ej steli siê rozpadnie.")
 				d.notice("Zadanie: Kamienie Maat (PB) na siedem Stel Isfet (PB), we w³aœciwej kolejnoœci.")
 				d.setf("level", 15)
 				d.setf("maat_next", 1)
@@ -131,8 +144,8 @@ quest razador_pb begin
 					d.set_unique("stone5_"..k, d.spawn_mob(20533, p[1], p[2]))
 				end
 			elseif lv == 6 then
-				say("Zadanie: tylko ci, którzy nie boj¹ siê ¿aru,")
-				say("zniszcz¹ Metin Purgatorium (PB).")
+				razador_pb.talk(bot, "Zadanie: tylko ci, którzy nie boj¹ siê ¿aru,")
+				razador_pb.talk(bot, "zniszcz¹ Metin Purgatorium (PB).")
 				d.notice("Zadanie: zniszcz Metin Purgatorium (PB).")
 				d.setf("level", 16)
 				d.set_regen_file(c.path.."fd_f.txt")
@@ -391,6 +404,7 @@ quest razador_pb begin
 		when 4411.kill with razador_pb.inside() and d.getf("level") == 17 and d.getf("closed") == 0 begin
 			local c = razador_pb.cfg()
 			d.setf("closed", 1)
+			d.setf("won", 1) -- MT2009_PLUS_BOT_YDG_V1: the bots' runs read it
 			d.update_ranking("razador_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
 			d.notice("Razador (PB) zosta³ pokonany!")
@@ -403,6 +417,51 @@ quest razador_pb begin
 				d.setf("mt2009_keep_until", 0)
 				d.exit_all()
 			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: a bots' run (playerbot_dungeon_runs_ydg.h): the core makes the instance, marks it with
+		-- the dungeon flag mt2009_dgrun (nothing a player can set) and asks for init() through this timer; the hour,
+		-- the end and the way back stay the players' (razador_pb_tick, d.exit_all)
+		when razador_pb_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					razador_pb.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: what the leader's talk with Gardziel Am-heha does, for a bots' run with no task running
+		-- (the core asks every few seconds): the next lock of those still shut, at random; after the sixth the boss hall
+		when razador_pb_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 or d.getf("level") ~= 0 then
+				return
+			end
+			local c = razador_pb.cfg()
+			if d.getf("done") >= 6 then
+				d.setf("level", 17)
+				d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+				d.set_regen_file(c.path.."fd_fild_boss.txt")
+				d.set_unique("boss", d.spawn_mob(4411, c.boss[1], c.boss[2]))
+				d.notice("Twierdza Czerwonego Smoka (PB): piekielny w³adca Razador (PB) czeka!")
+				return
+			end
+			local open = {}
+			for i = 1, 6 do
+				if d.getf("task"..i) == 0 then
+					table.insert(open, i)
+				end
+			end
+			if table.getn(open) == 0 then
+				return
+			end
+			local lv = open[number(1, table.getn(open))]
+			d.setf("task"..lv, 1)
+			d.setf("done", d.getf("done") + 1)
+			razador_pb.remove_door(lv)
+			razador_pb.start_task(lv, true)
 		end
 	end
 end

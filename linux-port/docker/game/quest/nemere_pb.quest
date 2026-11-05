@@ -401,7 +401,7 @@ quest nemere_pb begin
 			local c = nemere_pb.cfg()
 			d.setf("pillar", 1)
 			nemere_pb.clear_level()
-			d.spawn_mob(20536, c.lion10[1], c.lion10[2])
+			d.set_unique("lion10", d.spawn_mob(20536, c.lion10[1], c.lion10[2])) -- MT2009_PLUS_BOT_YDG_V1: purged by a bots' run
 			d.notice("Kolumna Smoka Pó³nocy (PB) zniszczona. Przywódca grupy mo¿e porozmawiaæ z Lodowym Lwem (PB).")
 		end
 
@@ -412,6 +412,7 @@ quest nemere_pb begin
 		when 4412.kill with nemere_pb.inside() and d.getf("level") == 10 and d.getf("closed") == 0 begin
 			local c = nemere_pb.cfg()
 			d.setf("closed", 1)
+			d.setf("won", 1) -- MT2009_PLUS_BOT_YDG_V1: the bots' runs read it
 			d.update_ranking("nemere_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
 			d.notice("Nemere (PB) zosta³ pokonany!")
@@ -423,6 +424,39 @@ quest nemere_pb begin
 			if d.select(get_server_timer_arg()) then
 				d.setf("mt2009_keep_until", 0)
 				d.exit_all()
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: a bots' run (playerbot_dungeon_runs_ydg.h): the core makes the instance, marks it with
+		-- the dungeon flag mt2009_dgrun (nothing a player can set) and asks for init() through this timer; the hour,
+		-- the end and the way back stay the players' (nemere_pb_tick, d.exit_all)
+		when nemere_pb_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					nemere_pb.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YDG_V1: the leader's two talks with Lodowy Lew (PB) for a bots' run (the core asks every few
+		-- seconds): the start of floor 1, and after the Pillar the way to Nemere's throne room
+		when nemere_pb_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 or d.getf("jumping") == 1 then
+				return
+			end
+			local c = nemere_pb.cfg()
+			local lv = d.getf("level")
+			if lv == 0 then
+				d.setf("level", 1)
+				d.regen_file(c.path.."sd_1.txt")
+				d.notice("Pokonaj wszystkich wrogów!")
+				server_timer("nemere_pb_check", c.check_sec, d.get_map_index())
+			elseif lv == 9 and d.getf("pillar") == 1 then
+				d.purge_unique("lion10")
+				nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni do sali tronowej Nemere.")
 			end
 		end
 	end
