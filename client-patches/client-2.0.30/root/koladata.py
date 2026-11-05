@@ -57,6 +57,15 @@ WHEELS = {
 			3: ('mt2009_ui/kola/f/b0cba1a10b55.png', 'mt2009_ui/kola/f/4b78603e90b4.png', 'mt2009_ui/kola/f/e7053e50a9dc.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/a913ea8a0f71.png', 'mt2009_ui/kola/f/a41e4c69d95c.png', 'mt2009_ui/kola/f/674a244ec73a.png', 'mt2009_ui/kola/f/53cfc88b645d.png', 'mt2009_ui/kola/f/33699fc44a1e.png', 'mt2009_ui/kola/f/db3461f88ed7.png', 'mt2009_ui/kola/f/2d70720510c7.png', 'mt2009_ui/kola/f/72dd5128e685.png', 'mt2009_ui/kola/f/974a25d9974c.png', 'mt2009_ui/kola/f/f70c01e4bcf8.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/37986ae9bd00.png'),
 		},
 	},
+	246: {
+		'name': 'Ko\xb3o P\xb3omieni Nocy',
+		'bg': 'mt2009_ui/kola/bg_246.jpg',
+		'fields': {
+			1: ('mt2009_ui/kola/f/c6b75df5ca7d.png', 'mt2009_ui/kola/f/53cfc88b645d.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/5c6d6f3f0f27.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/a6442e0e1d04.png', 'mt2009_ui/kola/f/e7053e50a9dc.png', 'mt2009_ui/kola/f/4b78603e90b4.png', 'mt2009_ui/kola/f/2d70720510c7.png', 'mt2009_ui/kola/f/674a244ec73a.png', 'mt2009_ui/kola/f/0c8d4598e81b.png', 'mt2009_ui/kola/f/3226a8b54eb1.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/db3461f88ed7.png', 'mt2009_ui/kola/f/a41e4c69d95c.png', 'mt2009_ui/kola/f/674a244ec73a.png'),
+			2: ('mt2009_ui/kola/f/512cb191ea07.png', 'mt2009_ui/kola/f/974a25d9974c.png', 'mt2009_ui/kola/f/f70c01e4bcf8.png', 'mt2009_ui/kola/f/a41e4c69d95c.png', 'mt2009_ui/kola/f/0c8d4598e81b.png', 'mt2009_ui/kola/f/3ee6f1aae57b.png', 'mt2009_ui/kola/f/a6442e0e1d04.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/4b78603e90b4.png', 'mt2009_ui/kola/f/f70c01e4bcf8.png', 'mt2009_ui/kola/f/72dd5128e685.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/e7053e50a9dc.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/4b78603e90b4.png'),
+			3: ('mt2009_ui/kola/f/ae4401a938af.png', 'mt2009_ui/kola/f/a30121817cc0.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/9780e4a9bed4.png', 'mt2009_ui/kola/f/4b78603e90b4.png', 'mt2009_ui/kola/f/674a244ec73a.png', 'mt2009_ui/kola/f/5c6d6f3f0f27.png', 'mt2009_ui/kola/f/53cfc88b645d.png', 'mt2009_ui/kola/f/e7053e50a9dc.png', 'mt2009_ui/kola/f/33699fc44a1e.png', 'mt2009_ui/kola/f/efea816d9940.png', 'mt2009_ui/kola/f/24318a85a060.png', 'mt2009_ui/kola/f/a6442e0e1d04.png', 'mt2009_ui/kola/f/a30121817cc0.png', 'mt2009_ui/kola/f/974a25d9974c.png', 'mt2009_ui/kola/f/9780e4a9bed4.png'),
+		},
+	},
 }
 
 # (x, y) of field 1..16 (index 0..15), clockwise from the top

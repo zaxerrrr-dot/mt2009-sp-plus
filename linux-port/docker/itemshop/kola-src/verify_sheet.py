@@ -7,6 +7,9 @@
 #   - the mechanics constants (930 s per higher tier, 4 keys, key fields 3/7/11/15)
 #   - every source id has our vnum; with --db also that the vnum is in world.item_proto
 # and lists the stand-ins (status zamiennik) - the sheet's items we still do not have.
+# Wheels added later have their own sheet (EXTRA: one xlsx per wheel with the sheets Poziomy, Nagrody wg puli,
+# Szanse na obrot, plus the simulator's config/<id>.json for the field pictures) - checked the same way, and the
+# per-spin win chance of every prize recomputed from our pools against the sheet's "Wygrana / obrot".
 #   python3 linux-port/docker/itemshop/kola-src/verify_sheet.py [sheet.xlsx] [--db mt2009plustest-db]
 # Exit code 0 = everything as the sheet; the key-field chance (ours 40%, panel setting) is reported, not failed.
 import json, os, re, subprocess, sys, zipfile
@@ -17,6 +20,11 @@ CFG = os.path.join(HERE, '..', 'app', 'itemshop', 'kola', 'kola.json')
 MAP = os.path.join(HERE, 'przedmioty.json')
 SQL = os.path.join(HERE, '..', '..', 'mariadb', 'playerbot', 'itemshop_schema.sql')
 DEFAULT_XLSX = '/opt/metin2/cache/yohara/kola-losu-arkusz-2026-11-05.xlsx'
+# wheel id -> (its sheet, the simulator's config) - MT2009_PLUS_KOLA_V1 wheel 246 (the owner, 5 Nov 2026)
+EXTRA = {
+    '246': ('/opt/metin2/cache/yohara/kolo246/kolo246.xlsx',
+            '/opt/metin2/cache/yohara/kolo246/symulator/wheel-kit/config/246.json'),
+}
 NS = {'m': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
       'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
 
@@ -68,6 +76,112 @@ def num(x):
     return int(f) if f == int(f) else f
 
 
+def tier_rows(rows):
+    # the per-wheel sheets have notes under their tables
+    return [r for r in table(rows, 'Poziom') if r['Poziom'].isdigit()]
+
+
+def ints(text):
+    return [int(x) for x in re.findall(r'\d+', text or '')]
+
+
+def check_wheel_sheet(wid, xlsx, kit, cfg, errors):
+    """One later wheel against its own sheet; returns {(tier, pool): [(src, count, weight)]}."""
+    if not os.path.exists(xlsx) or not os.path.exists(kit):
+        errors.append('wheel %s: sheet %s or simulator config %s is missing' % (wid, xlsx, kit))
+        return {}
+    sh = read_xlsx(xlsx)
+    ours = cfg['wheels'].get(wid)
+    if not ours:
+        errors.append('wheel %s is not in kola.json' % wid)
+        return {}
+    title = sh['Poziomy'][0][0]
+    name, _, sid = title.rpartition(' · ')
+    if sid.strip() != wid or name.strip() != ours['name']:
+        errors.append('wheel %s: sheet title %r, ours %s %r' % (wid, title, wid, ours['name']))
+    if int(wid) not in cfg['rotation']['order']:
+        errors.append('wheel %s is not in the rotation' % wid)
+    tiers = tier_rows(sh['Poziomy'])
+    max_tier = max(int(r['Poziom']) for r in tiers)
+    for r in tiers:
+        t = r['Poziom']
+        if int(num(r['Koszt SM'])) != int(ours['costs'].get(t, -1)):
+            errors.append('cost %s/%s: sheet %s, ours %s' % (wid, t, r['Koszt SM'], ours['costs'].get(t)))
+        if int(num(r['Pól razem'])) != 16:
+            errors.append('fields %s/%s: sheet %s, ours 16' % (wid, t, r['Pól razem']))
+        if ints(r['Pola główne']) != cfg['special_fields'].get(t):
+            errors.append('main fields %s/%s: sheet %s, ours %s' % (wid, t, r['Pola główne'], cfg['special_fields'].get(t)))
+        keys = ints(r['Pola kluczy'])
+        if int(t) < max_tier:
+            if keys != cfg['key_fields'] or int(num(r['Trafień do awansu'])) != int(cfg['keys_needed']):
+                errors.append('keys %s/%s: sheet %s / %s, ours %s / %s' % (wid, t, keys, r['Trafień do awansu'],
+                                                                           cfg['key_fields'], cfg['keys_needed']))
+        elif keys:
+            errors.append('keys %s/%s: the top tier has key fields in the sheet' % (wid, t))
+        if r['Limit (s)'] not in ('', '0') and int(num(r['Limit (s)'])) != int(cfg['tier_seconds']):
+            errors.append('tier seconds %s/%s: sheet %s, ours %s' % (wid, t, r['Limit (s)'], cfg['tier_seconds']))
+    if sorted(ours['costs'], key=int) != [r['Poziom'] for r in sorted(tiers, key=lambda r: int(r['Poziom']))]:
+        errors.append('tiers %s: sheet %s, ours %s' % (wid, [r['Poziom'] for r in tiers], sorted(ours['costs'])))
+
+    # Nagrody wg puli: every pool 1:1 in order (the sheet's chance in the pool x 100 = the source weight)
+    pools = {}
+    for r in tier_rows(sh['Nagrody wg puli']):
+        pool = {'Główna': 'special', 'Zwykła': 'standard'}[r['Pula']]
+        pools.setdefault((r['Poziom'], pool), []).append(
+            (r['ID Item Shop'], int(num(r['Ilość'])), num(round(float(r['Szansa w puli']) * 100, 6))))
+    for (t, pool), entries in sorted(pools.items()):
+        mine = [(str(a), int(b), num(c)) for a, b, c in ours['prizes'].get(t, {}).get(pool, [])]
+        if mine != entries:
+            errors.append('pool %s/%s/%s differs: sheet %d entries, ours %d' % (wid, t, pool, len(entries), len(mine)))
+    for t, p in ours['prizes'].items():
+        for pool in ('special', 'standard'):
+            if p[pool] and (t, pool) not in pools:
+                errors.append('pool %s/%s/%s is not in the sheet' % (wid, t, pool))
+
+    # Szanse na obrot: the win chance per spin from our pools (field share x weight share), per prize variant
+    won = {}
+    for t, p in ours['prizes'].items():
+        n_special = len(cfg['special_fields'][t])
+        for pool, share in (('special', n_special / 16.0), ('standard', (16 - n_special) / 16.0)):
+            total = sum(float(e[2]) for e in p[pool])
+            for src, count, weight in p[pool]:
+                k = (t, str(src), int(count))
+                won[k] = won.get(k, 0.0) + share * float(weight) / total
+    sheet_won = {}
+    for r in tier_rows(sh['Szanse na obrót']):
+        k = (r['Poziom'], r['ID Item Shop'], int(num(r['Ilość'])))
+        sheet_won[k] = sheet_won.get(k, 0.0) + float(r['Wygrana / obrót'])
+    for k in sorted(set(won) | set(sheet_won)):
+        if abs(won.get(k, 0.0) - sheet_won.get(k, 0.0)) > 1e-9:
+            errors.append('win chance %s/%s source %s x%d: sheet %.6f, ours %.6f' % (
+                wid, k[0], k[1], k[2], sheet_won.get(k, 0.0), won.get(k, 0.0)))
+
+    # field pictures and the background: the simulator's config (the sheet has none)
+    sim = json.load(open(kit, encoding='utf-8'))
+    for tier in sim['tiers']:
+        t = str(tier['level'])
+        want = ['i_' + x.rsplit('.', 1)[0] + '.png' for x in tier['previewIcons']]
+        if ours['fields'].get(t) != want:
+            errors.append('field pictures %s/%s differ from the simulator' % (wid, t))
+        if tier['specialPositions'] != cfg['special_fields'].get(t):
+            errors.append('main fields %s/%s: simulator %s, ours %s' % (wid, t, tier['specialPositions'], cfg['special_fields'].get(t)))
+    img = os.path.join(os.path.dirname(CFG), 'img')
+    for t, names in ours['fields'].items():
+        for n in names + [ours['bg']]:
+            if not os.path.exists(os.path.join(img, n)):
+                errors.append('wheel %s: picture img/%s is missing' % (wid, n))
+    for p in ours['prizes'].values():
+        for pool in p.values():
+            for src, _, _ in pool:
+                im = (cfg['src_items'].get(str(src)) or {}).get('img')
+                if not im or not os.path.exists(os.path.join(img, im)):
+                    errors.append('wheel %s: source item %s has no picture' % (wid, src))
+    print('wheel %s %s: %d tiers, costs %s, %d prize entries (sheet %s)' % (
+        wid, ours['name'], len(tiers), '/'.join(str(ours['costs'][t]) for t in sorted(ours['costs'], key=int)),
+        sum(len(v) for v in pools.values()), os.path.basename(xlsx)))
+    return pools
+
+
 def main():
     args = [a for a in sys.argv[1:]]
     db = None
@@ -94,8 +208,8 @@ def main():
         keys = [int(x) for x in r['Pozycje kluczy (1–16)'].split(',')]
         if keys != cfg['key_fields']:
             errors.append('key fields %s/%s: sheet %s, ours %s' % (r['ID koła'], r['Poziom'], keys, cfg['key_fields']))
-    if set(sheet_wheels) != set(cfg['wheels']):
-        errors.append('wheels: sheet %s, ours %s' % (sorted(sheet_wheels), sorted(cfg['wheels'])))
+    if set(sheet_wheels) | set(EXTRA) != set(cfg['wheels']):
+        errors.append('wheels: sheets %s, ours %s' % (sorted(set(sheet_wheels) | set(EXTRA)), sorted(cfg['wheels'])))
     for wid, w in sheet_wheels.items():
         ours = cfg['wheels'].get(wid)
         if not ours:
@@ -117,6 +231,8 @@ def main():
         if ours != entries:
             errors.append('pool %s/%s/%s differs: sheet %d entries, ours %d' % (wid, t, pool, len(entries), len(ours)))
     for wid, w in cfg['wheels'].items():
+        if wid in EXTRA:
+            continue
         for t, p in w['prizes'].items():
             for pool in ('special', 'standard'):
                 if p[pool] and (wid, t, pool) not in pools:
@@ -136,6 +252,12 @@ def main():
         for p in sorted(f):
             if len(pics) < p or f[p][2] not in pics[p - 1]:
                 errors.append('field picture %s/%s/%d differs' % (wid, t, p))
+
+    # the wheels with their own sheet
+    for wid, (xlsx_w, kit) in sorted(EXTRA.items()):
+        for (t, pool), entries in check_wheel_sheet(wid, xlsx_w, kit, cfg, errors).items():
+            pools[(wid, t, pool)] = entries
+    n_entries = sum(len(v) for v in pools.values())
 
     # przedmioty.json: our vnum for every source id
     srcs = sorted({e[0] for v in pools.values() for e in v})
@@ -160,7 +282,7 @@ def main():
     if rows != n_entries:
         errors.append('seed has %d pool rows, the sheet %d - run gen_kola_sql.py' % (rows, n_entries))
 
-    print('sheet: %d wheels, %d tiers, %d prize entries, %d source items' % (len(sheet_wheels), len(lv), n_entries, len(srcs)))
+    print('sheets: %d + %d wheels, %d prize entries, %d source items' % (len(sheet_wheels), len(EXTRA), n_entries, len(srcs)))
     for line in [x for x in table(sh['Mechanika'], 'Koło / zakres') if x['Parametr / reguła'] == 'Klucze i awans']:
         print('key-field chance: sheet 4/16 = 25%, ours the panel setting key_chance (default 40, MT2009_PLUS_KOLA_KEYS_V1)')
     stand = {}

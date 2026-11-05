@@ -71,7 +71,7 @@
 
 	function kola_settings($db) {
 		$s = array('enabled' => '1', 'override_wheel' => '0', 'rotation_anchor' => '1792360800',
-			'rotation_days' => '14', 'rotation_order' => '243,162,238,239,240,241',
+			'rotation_days' => '14', 'rotation_order' => '243,162,238,239,240,241,246',
 			'tier_seconds' => '930', 'keys_needed' => '4', 'key_chance' => '40');
 		$r = kola_try_q($db, "SELECT name, value FROM itemshop.kola_settings");
 		if ($r) {
