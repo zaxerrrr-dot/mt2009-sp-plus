@@ -1,0 +1,375 @@
+# MT2009_PLUS_LANGUAGE_V1 - pieces our quests glue to values (tools/i18n/data/quest_fragments_pl.tsv) - replaced inside a line
+# Polish<TAB>ro (by hand; UTF-8). tools/i18n/extract_server_texts.py --check ro lists what is missing.
+ (Czyściec Ognia)	 (Purgatoriul de Foc)
+ (dzisiejsze wejścia)	 (intrările de azi)
+ (Kamień Driad)	 (Piatra Driadelor)
+ (Książka Przebudzenia)	 (Volum Redux)
+ (Lodowa Kraina)	 (Ţinutul de Gheaţă)
+ (min:s). Możesz na nie wrócić portalem w hali.	 (min:s). Te poţi întoarce la el prin portalul din sală.
+ (następne)	 (următoarele)
+ (odpoczynek: 	 (odihnă: 
+ (podział łupu: 	 (împărţirea prăzii: 
+ (poz. 	 (nv. 
+ (poziom / Czempion)	 (nivel / Campion)
+ (poziom 1).	 (nivelul 1).
+ (poziom)	 (nivel)
+ (słaby: 	 (slab: 
+ (Zamarznięte Klucze)	 (Chei Îngheţate)
+ (Zegarek Kieszonkowy)	 (Ceas de Buzunar)
+ (żywioł 	 (element 
+ - mniej czasu na Morkhota.	 - mai puţin timp pentru Morkhot.
+ - nowe	 - nou
+ - poziom 	 - nivel 
+ - ukończone	 - terminat
+ drogocenne Gaya.	 preţioasă Gaya.
+ dziennie):	 pe zi):
+ Efekt Zestawu. Wymagany jest	 Efect de Set. E nevoie de
+ i 1. Poziomu Czempiona.	 şi Nivelul 1 de Campion.
+ jest odblokowany na stałe.	 este deblocat permanent.
+ juz idzie do ciebie.	 vine deja la tine.
+ Kamyków i 	 Pietre Lucioase şi 
+ Kamyków, 	 Pietre Lucioase, 
+ Kamyków, Kamienia Duszy (+0 do +3)	 Pietre Lucioase, o Piatră a Spiritului (+0 până la +3)
+ ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	 are Cheia Atlantidei. Daţi-o Coloanei de Scoici potrivite!
+ Metiny Drzewnych Stworzeń (PB).	 Metine ale Creaturilor Copac (RX).
+ Metinów Drzewnych Stworzeń (SZC).	 Metine ale Creaturilor Copac (TR).
+ min. Po czasie grupa wróci do Zaklętego Lasu.	 min. Apoi grupul se întoarce în Pădurea Fermecată.
+ min. Po czasie grupa wróci na Płaskowyż Iluzji.	 min. Apoi grupul se întoarce pe Platoul Iluziei.
+ min. Zapamiętajcie żywioły pierwszych czterech grup.	 min. Ţineţi minte elementele primelor patru grupuri.
+ minut, bez czekania między wyprawami.	 minute, fără aşteptare între expediţii.
+ odłamków II tej samej części, Projekt	 cioburi II ale aceleiaşi piese, Proiect
+ osób	 persoane
+ osób, 30 minut;	 persoane, 30 de minute;
+ osób, poziom 	 persoane, nivel 
+ osób.	 persoane.
+ pająków, a potem użyjcie Pieczęci Biblioteki (	 păianjeni, apoi folosiţi Sigiliul Bibliotecii (
+ PD.	 EXP.
+ potworów głębin.	 monştri ai adâncurilor.
+ powstaje na nowo - Beran-Setaou znów jest nietykalny!	 renaşte - Beran-Setaou e din nou invulnerabil!
+ Ros En-Tai (PB).	 Roua En-Tai (RX).
+ Ros En-Tai (SZC).	 Roua En-Tai (TR).
+ s wracacie do Upiornego Strażnika po nagrodę.	 s vă întoarceţi la Gardianul Fantomatic pentru recompensă.
+ sekund zostaniesz przeniesiony na Doyyumhwaji.	 secunde vei fi mutat la Doyyumhwaji.
+ sekund zostaniesz teleportowany do Doliny Orków.	 secunde vei fi teleportat în Valea Orcilor.
+ sekund zostaniesz teleportowany do Groty Wygnańców.	 secunde vei fi teleportat în Peştera Exilului.
+ sekund zostaniesz teleportowany do miasta.	 secunde vei fi teleportat în oraş.
+ sekund zostaniesz teleportowany do Świątyni Hwang.	 secunde vei fi teleportat la Templul Hwang.
+ sekund zostaniesz teleportowany do Świątyni Ochao.	 secunde vei fi teleportat la Templul Ochao.
+ sekund zostaniesz teleportowany na Górę Sohan.	 secunde vei fi teleportat pe Muntele Sohan.
+ sekund zostaniesz teleportowany na Ognistą Ziemię.	 secunde vei fi teleportat în Ţara de Foc.
+ sekundy zostaniesz przeniesiony na Doyyumhwaji.	 secunde vei fi mutat la Doyyumhwaji.
+ sekundy zostaniesz teleportowany do Doliny Orków.	 secunde vei fi teleportat în Valea Orcilor.
+ sekundy zostaniesz teleportowany do Groty Wygnańców.	 secunde vei fi teleportat în Peştera Exilului.
+ sekundy zostaniesz teleportowany do miasta.	 secunde vei fi teleportat în oraş.
+ sekundy zostaniesz teleportowany do Świątyni Hwang.	 secunde vei fi teleportat la Templul Hwang.
+ sekundy zostaniesz teleportowany do Świątyni Ochao.	 secunde vei fi teleportat la Templul Ochao.
+ sekundy zostaniesz teleportowany na Górę Sohan.	 secunde vei fi teleportat pe Muntele Sohan.
+ sekundy zostaniesz teleportowany na Ognistą Ziemię.	 secunde vei fi teleportat în Ţara de Foc.
+ Serca Atlantydy.	 Inimi ale Atlantidei.
+ skorpionów, a potem użyjcie Pieczęci Ruin (	 scorpioni, apoi folosiţi Sigiliul Ruinelor (
+ strażników ruin.	 gardieni ai ruinelor.
+ sztuki).	 buc.).
+ szykuje potężny atak w linii - uciekaj w bok!	 pregăteşte un atac puternic în linie - fugi într-o parte!
+ tys. Yang	 mii Yang
+ ukończonych słabych. 30 minut na Alastora.	 slabe terminate. 30 de minute pentru Alastor.
+ w oknie = hełm Dragona, bez nich - hełm Smoków.	 în fereastră = Coif Dragoneer, fără ele - Coif Dragon.
+ wejść dziennie (dziś: 	 intrări pe zi (azi: 
+ Wojowników En-Tai (PB) i wróć do mnie.	 Războinici En-Tai (RX) şi întoarce-te la mine.
+ Wojowników En-Tai (SZC) i wróć do mnie.	 Războinici En-Tai (TR) şi întoarce-te la mine.
+ wypraw dziennie (dziś: 	 expediţii pe zi (azi: 
+ Yang - nie masz tyle przy sobie.	 Yang - nu ai atât la tine.
+ Yang - za mało przy sobie:	 Yang - prea puţin la tine:
+ Yang oraz	 Yang şi
+ Yang oszlifuję 	 Yang îţi şlefuiesc 
+ Yang za bilet.	 Yang pentru un bilet.
+ Yang. Dzisiejsza wyprawa 	 Yang. Expediţia de azi 
+ Yang. Najwyżej 	 Yang. Cel mult 
+ Zamarznięte Klucze.	 Chei Îngheţate.
+ zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	 obţine Sigiliul Bibliotecii. Foloseşte-l ca să chemi următorul val.
+ zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	 obţine Sigiliul Junglei. Foloseşte-l ca să chemi următorul val.
+ zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	 obţine Sigiliul Ruinelor. Foloseşte-l ca să chemi următorul val.
+ zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	 obţine Sigiliul Dealului. Foloseşte-l ca să chemi următorul val.
+ znalazł odpowiedni klucz!	 a găsit cheia potrivită!
+ zniszczony. Pozostało kamieni: 	 distrus. Pietre rămase: 
+ zostało).	 rămase).
+ złamana. Nadchodzi następna fala!	 spart. Vine următorul val!
+ śmiałków - ma 	 curajoşi - are 
+! Pokonaj ich, by zdobyć piętro.	! Învinge-i ca să cucereşti etajul.
+! Schody prowadzą na następne piętro.	! Scările duc la etajul următor.
+% PŻ). Antidotum SungMa ją zdejmuje.	% PV). Antidotul Sung Ma îl înlătură.
+% więcej życia.	% mai multă viaţă.
+%. Kontynuować?	%. Continui?
+%. Możesz też przeciągnąć Kamyki na mnie.	%. Poţi trage şi Pietrele Lucioase pe mine.
+(stojących obok). Teraz: 	(care stau alături). Acum: 
+) chronią statuy. Zniszczcie je.	) protejează statuile. Distrugeţi-le.
+), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	), Beran-Setaou e invulnerabil. Distrugeţi pietrele!
+), etap 1: pokonaj wszystkie potwory w limicie czasu!	), etapa 1: învinge toţi monştrii în limita de timp!
+). Wróć jutro.	). Revino mâine.
+). Zgłoś to administratorowi serwera.	). Raportează asta administratorului serverului.
+, 1 000 000 Yang. Szansa 30% (+5) do 70% (+9),	, 1 000 000 Yang. Şansă 30% (+5) până la 70% (+9),
+, 200 Gaya i 20 000 000 Yang.	, 200 Gaya şi 20 000 000 Yang.
+, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	, etapa 3: învinge valurile de monştri până apar boşii!
+, grupa od 	, grup de la 
+, tylko w grupie. Każdy musi	, doar în grup. Fiecare trebuie
+, tylko w grupie. Po ukończeniu lub	, doar în grup. După terminare sau
+. Bez czekania między wyprawami.	. Fără aşteptare între expediţii.
+. Broń zniknie za 15 dni (także założona).	. Arma dispare după 15 zile (şi dacă e echipată).
+. Doświadczenie z tamtych	. Experienţa de pe acele
+. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	. etaj nu a putut fi salvată acum - o primeşti data viitoare când termini acest etaj.
+. piętro ukończone w 	. etaj terminat în 
+. piętro w tym sezonie czeka w Magazynie ItemShop.	. etaj din acest sezon te aşteaptă în Depozitul ItemShop.
+. piętro w tym sezonie.	. etaj în acest sezon.
+. piętro zdobyte w 	. etaj cucerit în 
+. piętro.	. etaj.
+. piętrze zaczyna się za 10 sekund.	. etaj începe în 10 secunde.
+. Sam albo z drużyną.	. Singur sau cu echipa.
+. Wracasz do Portu Nowego Kontynentu.	. Te întorci în Portul Noului Continent.
+. Wracasz do portu.	. Te întorci în port.
+. Wstęp: 	. Intrare: 
+. Łódź zabiera cię z powrotem na Przylądek.	. Barca te duce înapoi pe Promontoriu.
+/12) - omijajcie białe kręgi!	/12) - evitaţi cercurile albe!
+/3) - zniszczcie Białe Jaja Smoka!	/3) - distrugeţi Ouăle Dragon Alb!
+/4. Ulepszyłbym ci	/4. Ţi-aş îmbunătăţi
+1. miejsce: 	Locul 1: 
+1. miejsce: 10x 	Locul 1: 10x 
+1. Poziom Czempiona, każdy oddaje 	Nivelul 1 de Campion, fiecare predă 
+100 000 000 Yang i 500 Gaya. Szansa: 	100 000 000 Yang şi 500 Gaya. Şansă: 
+2. miejsce: 	Locul 2: 
+2. miejsce: 5x 	Locul 2: 5x 
+3. miejsce: 	Locul 3: 
+3. miejsce: 3x 	Locul 3: 3x 
+4. - 10. miejsce: 	Locurile 4 - 10: 
+4.-10. miejsce: 1x 	Locurile 4-10: 1x 
+: przywódca budzi Alastora, dotykając Białego Jaja Smoka. 30 minut od wejścia.	: liderul îl trezeşte pe Alastor atingând Oul Dragon Alb. 30 de minute de la intrare.
+<< Piętra 	<< Etajele 
+Alastor pokonany! Za 	Alastor învins! Peste 
+Alastor wpada w szał (	Alastor se înfurie (
+Biblioteka Wiedzy (	Biblioteca Cunoaşterii (
+Biblioteka Wiedzy: 	Biblioteca Cunoaşterii: 
+Biblioteka Wiedzy: Baronówna wyczuwa 	Biblioteca Cunoaşterii: Baroneasa simte 
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x	Biblioteca Cunoaşterii: Primeşti: Cufărul Bibliotecii x
+Biblioteka Wiedzy: Pieczęć 	Biblioteca Cunoaşterii: Sigiliul 
+Biblioteka Wiedzy: Pokonane pająki: 	Biblioteca Cunoaşterii: Păianjeni învinşi: 
+Biblioteka Wiedzy: Pozostałe królowe: 	Biblioteca Cunoaşterii: Regine rămase: 
+Biblioteka Wiedzy: Pozostałe Metiny: 	Biblioteca Cunoaşterii: Metine rămase: 
+Biblioteka Wiedzy: Pozostało 	Biblioteca Cunoaşterii: Au rămas 
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: 	Biblioteca Cunoaşterii: de data asta fără cufăr (împărţirea prăzii: 
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (	Biblioteca Cunoaşterii: Ţintele dispărute ale etapei apar din nou (
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa 	Biletul spre Atlantida a fost folosit. Expediţia de azi 
+Bron 65 > 80: 2x 	Armă 65 > 80: 2x 
+Bron 80 > 87: 3x 	Armă 80 > 87: 3x 
+Bron 87 > Cyjanit: 3x 	Armă 87 > Cianit: 3x 
+Cena: 	Preţ: 
+Do Erebu wchodzi najwyżej 	În Erebu intră cel mult 
+Do Erebu wejdzie tylko grupa co najmniej 	În Erebu intră doar un grup de cel puţin 
+Do Głębi wchodzi drużyna od 	În Adâncuri intră o echipă de la 
+dopiero od poziomu 	abia de la nivelul 
+Doświadczenie: 	Experienţă: 
+Drużyna od 	O echipă de la 
+Dzisiejsze wyprawy do ruin już wykorzystane (	Expediţiile de azi în ruine au fost deja folosite (
+Dzisiejsze wyprawy do Schronienia już wykorzystane (	Expediţiile de azi în Refugiu au fost deja folosite (
+Dzisiejsze wyprawy do tego lochu już wykorzystane (	Expediţiile de azi în această temniţă au fost deja folosite (
+Dzisiejsze wyprawy na statek już wykorzystane (	Expediţiile de azi pe navă au fost deja folosite (
+Dziś już dostałeś paszę. Wróć za 	Azi ai primit deja furaj. Revino peste 
+Erebu: zostało 	Erebu: au rămas 
+Gotowe - oto 	Gata - iată 
+Gotowe! Teraz otwórz pieczęć numer 	Gata! Acum deschide sigiliul numărul 
+Grota Wygnańców 2 (PB): zostało 	Peştera Exilului 2 (RX): au rămas 
+Grota Wygnańców 2 (SZC): zostało 	Peştera Exilului 2 (TR): au rămas 
+Głowa Węża obrócona (	Cap de Şarpe întors (
+Głębie: brakuje ci Zamarzniętych Kluczy (	Adâncuri: îţi lipsesc Chei Îngheţate (
+Głębie: pozostało 	Adâncuri: au rămas 
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom 	Adâncurile te vor strivi. Revino când ajungi la nivelul 
+hełm 80. poziomu ulepszony na +5 do +9 (	un coif de nivel 80 îmbunătăţit de la +5 la +9 (
+Hełm Dragona (obrona): 5x 	Coif Dragoneer (apărare): 5x 
+Hełm Smoków (atak): 5x 	Coif Dragon (atac): 5x 
+ich: 	din ele: 
+Jesteś za słaby. Wróć, gdy osiągniesz poziom 	Eşti prea slab. Revino când ajungi la nivelul 
+Kamienie smoka: 	Pietre de dragon: 
+Kamień Duszy 	Piatra Spiritului 
+Katakumby Diabła: Wyjdziesz z lochu za 	Catacomba Diavolului: Vei ieşi din temniţă peste 
+Klątwa Sunga Mahi: stopień 	Blestemul lui Sung Mahi: gradul 
+Kolejne zadanie (	Misiunea următoare (
+Kolumna Węży otwarta (	Coloana Şarpelui deschisă (
+Koszt: 	Cost: 
+Kowal Świątyni Węży czeka. Uwolnieni kowale: 	Fierarul Templului Şarpelui aşteaptă. Fierari eliberaţi: 
+Królestwo Żywiołów jest dostępne od poziomu 	Regatul Elementelor e accesibil de la nivelul 
+Królowa Meley: 	Regina Meley: 
+Królowa Meley: ETAP 	Regina Meley: ETAPA 
+Królowa Meley: ETAP 4 - 	Regina Meley: ETAPA 4 - 
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (	Regina Meley: Inelul Focul Dragonului arde pe statuie (
+Królowa Meley: Pozostało 	Regina Meley: Au rămas 
+Królowa Meley: Smocze Jaja (	Regina Meley: Ouăle de Dragon (
+Królowa Meley: Statua zmienia kolor (	Regina Meley: Statuia îşi schimbă culoarea (
+Księga nie jest jeszcze gotowa. Wróć za 	Cartea nu e încă gata. Revino peste 
+Leże Smoka: 	Bârlogul Dragonului: 
+Leże Smoka: dopóki stoi choć jeden kamień smoka (	Bârlogul Dragonului: cât timp stă măcar o piatră de dragon (
+Leże Smoka: Pozostało 	Bârlogul Dragonului: Au rămas 
+Masz 	Ai 
+Masz za mało Gaya (potrzeba 	Ai prea puţină Gaya (e nevoie de 
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba 	Ai prea puţine Extinde Piaţă Gaya (e nevoie de 
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z 	Un Metin a căzut. Beran-Setaou (RX) încă îşi trage puterea din 
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z 	Un Metin a căzut. Beran-Setaou (TR) încă îşi trage puterea din 
+Misja ukończona. Nagroda: 	Misiune terminată. Recompensă: 
+Misję możesz powtórzyć za 	Poţi repeta misiunea peste 
+Mogę wytworzyć dla ciebie 	Pot crea pentru tine 
+Mój wynik: 	Scorul meu: 
+Nadciąga grupa żywiołu 	Se apropie un grup al elementului 
+Najpierw ukończ 	Mai întâi termină 
+Najwyżej 	Cel mult 
+Nemere: Pieczęć złamana. Pozostało: 	Nemere: Sigiliu spart. Au rămas: 
+Nemere: Pozostało 	Nemere: Au rămas 
+Nemere: Szel pokonany (	Nemere: Szel învins (
+Nemere: Zaginione cele etapu pojawiają się ponownie (	Nemere: Ţintele dispărute ale etapei apar din nou (
+Nie masz przy sobie 	Nu ai la tine: 
+Nie udało się wydać broni (kod 	Arma nu a putut fi dată (cod 
+Od poziomu 	De la nivelul 
+Oddaj uszy: 	Predă urechi: 
+Opłata za wejście: 	Taxă de intrare: 
+Otrzymujesz skrzynie z przerwanej gry w Okey: 	Primeşti cuferele dintr-un joc de Okey întrerupt: 
+Otrzymujesz: 	Primeşti: 
+otrzymujesz: 	primeşti: 
+Pasza dla konia: 	Furaj pentru cal: 
+Pieczęć zdjęta (	Sigiliu scos (
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za 	Inelul trebuie să se odihnească după ultima teleportare. Următorul va fi gata peste 
+Pierścień odzyska moc za 	Inelul îşi recapătă puterea peste 
+Piętra 	Etajele 
+Piętro 	Etajul 
+Pojawiają się bossowie piętra: 	Apar boşii etajului: 
+Pokonajcie 	Învingeţi 
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (	Învingeţi 40 de creaturi ale junglei, apoi folosiţi Sigiliul Junglei (
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (	Învingeţi 60 de maimuţe, apoi folosiţi Sigiliul Dealului (
+Pokonane potwory: 	Monştri învinşi: 
+Pokonane: 	Învinse: 
+Pokonani: 	Învinşi: 
+Port Nowego Kontynentu jest dostępny od poziomu 	Portul Noului Continent e accesibil de la nivelul 
+Portowy Sklep Gaya - kupiono: 	Piaţa Gaya din Port - cumpărat: 
+Portowy Sklep Gaya: slot 	Piaţa Gaya din Port: slotul 
+Potrzebujesz przedmiotu: 	Ai nevoie de obiectul: 
+Potrzebuję 	Am nevoie de 
+Poziom konia: 	Nivelul calului: 
+Pozostalo podrozy: 	Călătorii rămase: 
+Pozostałe stele: 	Stele rămase: 
+Pozostałe teleporty: 	Teleportări rămase: 
+Pozostało: 	Au rămas: 
+Przy Strazniku zostaja: 	La Gardian rămân: 
+Pył Wężowy: +1 minuta. Zostało 	Praf de Şarpe: +1 minut. Au rămas 
+Płaskowyż Iluzji przyjmuje wojowników od poziomu 	Platoul Iluziei primeşte războinici de la nivelul 
+Razador: Pozostało 	Razador: Au rămas 
+Razador: Stela zgaszona. Pozostało: 	Razador: Stelă stinsă. Au rămas: 
+Razador: Zaginione cele etapu pojawiają się ponownie (	Razador: Ţintele dispărute ale etapei apar din nou (
+Rosy En-Tai (PB): 	Roua En-Tai (RX): 
+Rosy En-Tai (SZC): 	Roua En-Tai (TR): 
+Ruiny Atlantydy (	Ruinele Atlantidei (
+Ruiny Atlantydy: 	Ruinele Atlantidei: 
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x	Ruinele Atlantidei: Primeşti: Cufărul Atlantidei x
+Ruiny Atlantydy: Pokonane potwory: 	Ruinele Atlantidei: Monştri învinşi: 
+Ruiny Atlantydy: Pozostało 	Ruinele Atlantidei: Au rămas 
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: 	Ruinele Atlantidei: Gardian învins. Coloane rămase: 
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: 	Ruinele Atlantidei: A fost doar o iluzie! Puncte de penalizare: 
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: 	Ruinele Atlantidei: de data asta fără cufăr (împărţirea prăzii: 
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (	Ruinele Atlantidei: Ţintele dispărute ale etapei apar din nou (
+Ruiny Atlantydy: Zostało Serc Atlantydy: 	Ruinele Atlantidei: Inimi ale Atlantidei rămase: 
+Ruiny Skorpiona (	Ruinele Scorpionului (
+Ruiny Skorpiona: 	Ruinele Scorpionului: 
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x	Ruinele Scorpionului: Primeşti: Cufărul Scorpionului x
+Ruiny Skorpiona: Pieczęć Ruin 	Ruinele Scorpionului: Sigiliul Ruinelor 
+Ruiny Skorpiona: Pokonane potwory: 	Ruinele Scorpionului: Monştri învinşi: 
+Ruiny Skorpiona: Pozostało 	Ruinele Scorpionului: Au rămas 
+Ruiny Skorpiona: Pozostało: 	Ruinele Scorpionului: Au rămas: 
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: 	Ruinele Scorpionului: de data asta fără cufăr (împărţirea prăzii: 
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (	Ruinele Scorpionului: Ţintele dispărute ale etapei apar din nou (
+Schody prowadzą na 	Scările duc la 
+Schronienie Meley: 	Refugiul lui Meley: 
+Silny: po 	Puternic: după 
+Skraca czas oczekiwania o 	Scurtează timpul de aşteptare cu 
+Sloty odblokowuje się po kolei: najpierw slot 	Sloturile se deblochează pe rând: mai întâi slotul 
+Starożytna Dżungla (	Jungla Străveche (
+Starożytna Dżungla: 	Jungla Străveche: 
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x	Jungla Străveche: Primeşti: Cufărul Junglei x
+Starożytna Dżungla: Pieczęć Dżungli 	Jungla Străveche: Sigiliul Junglei 
+Starożytna Dżungla: Pokonane potwory: 	Jungla Străveche: Monştri învinşi: 
+Starożytna Dżungla: Pozostało 	Jungla Străveche: Au rămas 
+Starożytna Dżungla: Pozostało: 	Jungla Străveche: Au rămas: 
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: 	Jungla Străveche: de data asta fără cufăr (împărţirea prăzii: 
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (	Jungla Străveche: Ţintele dispărute ale etapei apar din nou (
+Stały bonus: 	Bonus permanent: 
+Straznik Katakumb nie wpuszcza cie z grupa: 	Gardianul Catacombei nu te lasă să intri cu grupul: 
+Strażnica Nemere (PB): zostało 	Avanpostul lui Nemere (RX): au rămas 
+Strażnica Nemere (SZC): zostało 	Avanpostul lui Nemere (TR): au rămas 
+Szansa powodzenia: 	Şansă de reuşită: 
+Szansa: 	Şansă: 
+Twierdza Czerwonego Smoka (PB): zostało 	Fortăreaţa Dragonului Roşu (RX): au rămas 
+Twierdza Czerwonego Smoka (SZC): zostało 	Fortăreaţa Dragonului Roşu (TR): au rămas 
+Twoj wynik: 	Scorul tău: 
+Twój koń nauczył się: 	Calul tău a învăţat: 
+Twój koń osiągnął 	Calul tău a atins 
+Ty możesz wejść za 	Tu poţi intra peste 
+Udało się! Otrzymujesz 	Ai reuşit! Primeşti 
+Ukończone w tym sezonie: 	Terminate în acest sezon: 
+umiejętność 	abilitatea 
+Uwięziony Kowal jest wolny (	Fierarul Întemniţat e liber (
+Uwolnieni kowale: 	Fierari eliberaţi: 
+Wejście kosztuje 	Intrarea costă 
+Wejście od poziomu 	Intrare de la nivelul 
+Wejście: 	Intrare: 
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie 	Intrare: Bilet spre Atlantida - unul pentru fiecare persoană (eu am 
+Wieża Demonów: Wyjdziesz z lochu za 	Turnul Demonilor: Vei ieşi din temniţă peste 
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (	Turnul Demonilor: Metinele dispărute ale etajului apar din nou (
+Wieża Sung Mahi - 	Turnul lui Sung Mahi - 
+Wieża Sung Mahi: 	Turnul lui Sung Mahi: 
+Wieża Sung Mahi: nagroda za 	Turnul lui Sung Mahi: recompensa pentru 
+Wieża Sung Mahi: nagrody za 	Turnul lui Sung Mahi: recompensele pentru 
+Wieża Sung Mahi: walka na 	Turnul lui Sung Mahi: lupta la 
+Wioska I (	Satul I (
+Wioska II (	Satul II (
+Wróć, gdy osiągniesz poziom 	Revino când ajungi la nivelul 
+Wspinaczka: 1 Sztandar Czaszki (masz: 	Escaladare: 1 Banner Craniu (ai: 
+Wstęp kosztuje 	Intrarea costă 
+Wstęp: 	Intrare: 
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (	Ai folosit deja expediţiile de azi în Refugiul lui Meley (
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (	Ai folosit deja expediţiile de azi în această temniţă (
+Wykorzystałeś już dzisiejsze wyprawy na statek (	Ai folosit deja expediţiile de azi pe navă (
+Wymagany poziom: 	Nivel necesar: 
+Wzgórze Wukonga (	Dealul lui Wukong (
+Wzgórze Wukonga: 	Dealul lui Wukong: 
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x	Dealul lui Wukong: Primeşti: Cufărul lui Wukong x
+Wzgórze Wukonga: Pieczęć Wzgórza 	Dealul lui Wukong: Sigiliul Dealului 
+Wzgórze Wukonga: Pokonane potwory: 	Dealul lui Wukong: Monştri învinşi: 
+Wzgórze Wukonga: Pozostało 	Dealul lui Wukong: Au rămas 
+Wzgórze Wukonga: Pozostało: 	Dealul lui Wukong: Au rămas: 
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: 	Dealul lui Wukong: de data asta fără cufăr (împărţirea prăzii: 
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (	Dealul lui Wukong: Ţintele dispărute ale etapei apar din nou (
+x Materiały Rzemieślnicze 	x Materiale de Meşteşug 
+x Medal Konny	x Medalie de cal
+Z tej zbroi zrobie: 	Din această armură fac: 
+Z łusek i rogów Balathora zrobię 	Din solzii şi coarnele lui Balathor fac 
+Za 	Pentru 
+Za chwilę zostaniecie przeniesieni na 	Imediat veţi fi mutaţi la 
+Za grę, w której zdobędziesz 	Pentru un joc în care obţii 
+Za słabi na głębiny (poziom 	Prea slabi pentru adâncuri (nivelul 
+Za słabi, by wejść (poziom 	Prea slabi ca să intraţi (nivelul 
+Za słabi, by wejść na pokład (poziom 	Prea slabi ca să urcaţi la bord (nivelul 
+Zabij 	Ucide 
+Zaginione Metiny pojawiają się ponownie (	Metinele dispărute apar din nou (
+Zaklęty Las (PB): zostało 	Pădurea Fermecată (RX): au rămas 
+Zaklęty Las (SZC): zostało 	Pădurea Fermecată (TR): au rămas 
+Zapomnieć 	Uită 
+Zbierz więcej Kamyków - potrzebuję 	Adună mai multe Pietre Lucioase - am nevoie de 
+Zbroja i buty > 80: 3x 	Armură şi pantofi > 80: 3x 
+Zdobyte: 	Obţinute: 
+Zdobądź 	Obţine 
+Zebrana pasza: 	Furaj adunat: 
+Zestawu tej części	Setului pentru această piesă
+Ziemie Yohary są dostępne od poziomu 	Ţinuturile Yoharei sunt accesibile de la nivelul 
+Zniszcz 	Distruge 
+Zniszczcie 	Distrugeţi 
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (	Distrugeţi Scoica Adâncurilor şi daţi Cheia Atlantidei Coloanei de Scoici potrivite (
+Zniszczone Metiny: 	Metine distruse: 
+Zniszczone: 	Distruse: 
+Złota Księga Konia: 	Cartea Cal de Aur: 
+Śmiertelny Chłód Alastora skuwa ziemię (	Frigul Mortal al lui Alastor îngheaţă pământul (
+Świetnie! Oto twoja pasza: 	Excelent! Iată furajul tău: 
+Świątynia Węży: walka się zaczęła! Czas: 	Templul Şarpelui: lupta a început! Timp: 
+Świątynia Węży: zostało 	Templul Şarpelui: au rămas 
+żywioł 	elementul 

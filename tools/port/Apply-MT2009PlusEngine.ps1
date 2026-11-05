@@ -2264,4 +2264,18 @@ if ((Test-Path -LiteralPath $runyBotyApply -PathType Leaf) -and
     }
 }
 
+# The server's language core (server-patches/language, MT2009_PLUS_LANGUAGE_V1; the owner, 5 November 2026): every
+# player reads the language his client names ("/lang <code>", player.player.language - language.sql): CHARACTER::ChatPacket
+# in the reader's language, pc.get_language() / mt2009_tr() for quest/mt2009_language.lua, the dictionaries
+# share/locale/<locale>/lang/<code>/*.tsv. Its anchors include remote call's Lua line: after it.
+$languageApply = Join-Path $repo 'server-patches/language/Apply-LanguagePatch.ps1'
+if ((Test-Path -LiteralPath $languageApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua.cpp') -PathType Leaf)) {
+    $languageResult = & $languageApply -SourceDir $engineGameSource
+    if ($languageResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} language edit(s).' -f $languageResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

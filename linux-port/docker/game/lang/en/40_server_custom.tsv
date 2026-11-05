@@ -1,0 +1,423 @@
+# MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
+# Polish<TAB>en (by hand; UTF-8). tools/i18n/extract_server_texts.py --check en lists what is missing.
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, cooldown %d s: %s
+  %u %s - jeszcze %u min	  %u %s - %u min left
+  %u %s - na stałe	  %u %s - permanent
+ (bot, także odpoczynek)	 (bot, rest included)
+ i premie do dropu	 and drop bonuses
+ Nagroda trafila do ekwipunku.	 The reward went to your inventory.
+%s (offline): zapis do player.quest się nie udał.	%s (offline): saving to player.quest failed.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s is going to someone who summoned them and won't accept a duel now.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s is on a raid and won't accept a duel now.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s is someone's companion and doesn't take part in duels.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s is someone's companion and won't join your group.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s is on another core (channel %u), and the player.web_admin_queue did not accept the order.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s is on channel %u - reset (%s) ordered; it will run there within a few seconds.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s is mining ore and won't accept a duel now.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s is fishing and won't accept a duel now.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s has no weapon in hand and won't accept a duel.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s won't accept a duel below level %d.
+%s nie walczy w strefie bezpiecznej.	%s doesn't fight in a safe zone.
+%s odrzuca zaproszenie do znajomych.	%s declines the friend request.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s opened Balathor's Treasure - your reward went to your inventory.
+%s posiada teraz żywioł: %s!	%s now has the element: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s accepts the invitation to guild %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma is already at its highest value (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 parts - set effect active
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s has no daily limit (rest applies only to bots in the game).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, ends in %ld min, rewards for %ld more min, value %d, flag %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: the effect is already at its highest level (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: this guild skill is already at its highest level.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: this player is on your block list.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: this player does not accept invitations from you.
+%s: tytułów %u, założony %u	%s: titles %u, worn %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - resets the character's daily dungeon run limit.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (Ship Defence, map %ld; ships here: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Buffi is available from level %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] This Buffi slot only accepts: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] This skill is trained with the Skill Book: %s (shaman).
+[Gildia] %s	[Guild] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Guild] Bots only collect building materials: Log, Coal Stone, Plywood.
+[Gildia] Brak miejsca w ekwipunku.	[Guild] Not enough space in your inventory.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Guild] The building doesn't fit on the guild land. Move it closer to the centre of the land.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Guild] Amount: from 1 to %d pieces.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Guild] An item mission is already running - cancel it to order a new one.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Guild] A fundraiser is already running - wait until it ends or cancel it.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Guild] Mission cancelled - items from the bank go back to the bots that brought them.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Guild] There is no item mission running.
+[Gildia] Nie ma trwajacej zrzutki.	[Guild] There is no fundraiser running.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Guild] There is no expedition to call off (it can't be called off once in the tower).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Guild] Guild duties are unavailable at the moment.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Guild] Only the guild leader can assign guild duties.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Guild] You are standing where the building should go. Step aside or move the building.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Guild] %s is standing where the building should go. Wait until they leave or move the building.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Guild] This skill can only be used during a guild war or in Balathor's Crypt.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Guild] This item is not in the guild bank.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Guild] Another building already stands here. Move the new building or rotate it.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Guild] Withdrawn from the guild bank: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Guild] An expedition to the Demon Tower is already organised.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Guild] The expedition to the Demon Tower has been called off.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Guild] Yang from the guild treasury can only be spent on the guild: land and buildings. It can't be withdrawn.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Guild] Paid %lld Yang from the guild treasury and %lld Yang from your inventory.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Guild] Fundraiser finished. The Yang paid in stays in the guild treasury.
+[Gildia] Zrzutka: od %s do %s yang.	[Guild] Fundraiser: from %s to %s Yang.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Truce] A bot was attacked - the truce with the bots is broken.
+[Towarzysz] %s	[Companion] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[War] The arena of this war is still being prepared - try again in a few seconds.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[War] The war arena is on another core - go to your kingdom's M1 map and click again.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[War] Bots fight in guild wars only on channel 1 - change channel and click again.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[War] Guild %s is fighting in another war right now.
+[Wojna] Jestes juz na polu wojny.	[War] You are already on the battlefield.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[War] Reward for winning the war: %d x Moonlight Treasure Chest (your kills: %d).
+[Wojna] Nie nalezysz do gildii.	[War] You are not in a guild.
+[Wojna] Nie znam areny tej wojny.	[War] I don't know the arena of this war.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[War] Moving you to your guild's camp in the war arena.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[War] You can't be moved right now - try again in a moment.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[War] This is a field war: you fight wherever you meet.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[War] Your guild is not at war right now.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[War] War on guild %s has already been declared - the bots will answer in guild chat.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[War] Wars against bot guilds are disabled in the server panel.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[War] War declared on the bot guild %s. Bots are fought in the war arena (channel 1). The answer will come in guild chat in a few seconds.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[War] A war with guild %s is already running or ending.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Catch the King] 25 king cards made a new King Deck (you have %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Catch the King] A reward from an interrupted game is waiting - make room in your inventory and log in again.
+[Zlap Krola] Event teraz nie trwa.	[Catch the King] The event is not running right now.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Catch the King] You already have the maximum number of King Decks (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Catch the King] You don't have enough King Decks or Yang (%d decks and %d Yang per game).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Catch the King] This can only be used during the event.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Catch the King] Make room in your inventory to collect the reward.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Auto price cut: from 1 to %d%% every 1-%d hours.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor defeated! He left his treasure behind - collect your reward. Leaving the crypt in %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: no stage to skip (only in the Crypt, during a raid)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor fled, but left his treasure behind - collect your reward. Leaving the crypt in %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor won - the expedition failed, no reward. Leaving the crypt in %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: repeatable mission completed (%u. time)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: mission completed!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: missions reloaded (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: the final reward of this season has already been collected.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: complete all the season's missions first.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: all season missions completed - collect the final reward!
+Bonus zestawu kostiumow (%s): %ld czesci.	Costume set bonus (%s): %ld parts.
+Boss Swiata jest chwilowo niedostepny.	The World Boss is unavailable at the moment.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	World Boss: place %d, loot tier %s (%lld damage, +%d rank pts). Collect the reward in the World Boss window before the next boss appears.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	World Boss: not enough inventory space (%d free slots needed) - free up space and click again.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	World Boss: some rewards collected; no inventory space for the rest (%d free slots needed) - free up space and click again.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	World Boss: season %u reward for place %d of your guild.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	World Boss: season %u reward for place %d in the character ranking.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	World Boss: the reward has already been collected or has expired.
+Boss Swiata: nie masz nagrody do odebrania.	World Boss: you have no reward to collect.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	World Boss: reward for place %d collected (loot tier %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	World Boss: mission bonus - attack value +%d%% for %d h.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	World Boss: you dealt %lld damage - not enough for a reward (%u needed).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	World Boss: close other windows (trade, shop, storeroom) before collecting the reward.
+Boty opuszczaja Wieze Demonow.	The bots are leaving the Demon Tower.
+Brak miejsca w kategorii: %s.	No space in category: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Weapons for Young Heroes can't be upgraded or changed.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: unknown command or wrong arguments (%s) - nothing changed
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: character on another core (channel %d) - command sent
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: character offline - change (%s) saved, applied when they next enter the game
+champion: nie ma postaci %s	champion: no character %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: unknown command or wrong arguments (%s) - nothing changed
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Time's up - Balathor won. Leaving the crypt in %s.
+Czas przejecia bota minal - postac wraca do bota.	The bot takeover time is over - the character returns to the bot.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	The old pet system has been replaced by the Pet System - press U to open the pet window.
+Do ewolucji tej szaty potrzeba: %s x%d.	Evolving this outfit requires: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Only Demon Stones fit into gloves.
+Dom Aukcyjny jest dostepny tylko w M1.	The Auction House is only available in M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	The Auction House is disabled in this world.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Excellent! The Mighty Demon Stone gave double the value.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u items, %u monsters.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Flower Children: the event and the exchange time are over.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Flower Children: the reward is unavailable at the moment - report it to the staff.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Flower Children: close other windows (trade, shop, storeroom) before exchanging.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Flower Children: you get Flower Seeds (you have %d).
+dziś nie było wypraw	no runs today
+Efekt zestawu nadany: %s.	Set effect applied: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Your inventory is full - the bought part of the stack lies at your feet.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Eliminated! Your time in the dungeon ends if nobody revives within one minute.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir will stay with you for 3 minutes. He disappears if you move away or change maps.
+Enasir odszedł.	Enasir has left.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir took a service fee: %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - time left %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Storeroom %s, Shop %s, summoned: %s, allowed here: %s.
+Enasir: usługi zabrane.	Enasir: services removed.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	The Flower Children event is over - this flower can no longer be used.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	The Fishing Event - Puzzle is not running now - you can open the boxes during the next event.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Evolution is only possible at level %d with 100%% experience.
+Ewolucja udana: %s, poziom %d.	Evolution successful: %s, level %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Gaya is now a currency: %d Gaya went to your Gaya counter (next to Yang in the inventory).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Gaya is not placed in the window - the blacksmith takes it from your inventory himself.
+Gildia nauczyła się: %s (poziom %d/%d).	The guild learned: %s (level %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	The guild has no skill points spent.
+Gildia odzyskała punkty umiejętności: %d.	The guild regained skill points: %d.
+GM zresetował Twój limit dziennych dungeonów.	A GM reset your daily dungeon limit.
+Gracz %s nie ma tytułu %s.	Player %s doesn't have the title %s.
+Gracza %s nie ma na tym kanale (albo to bot).	Player %s is not on this channel (or is a bot).
+Gratulacje - %d. poziom!	Congratulations - level %d!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	One of the Dragon Eggs summons icy cold! Focus your attacks on it to stop it.
+Kamien Demonow osadzony.	Demon Stone inserted.
+Kamien Demonow pasuje tylko do rekawic.	The Demon Stone only fits gloves.
+Kamien Demonow pekl przy osadzaniu.	The Demon Stone cracked while being inserted.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	The Death Stones guard the seventh floor. Smash all four of them!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	The Ritual Stone only works on items above level 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	cards: account %u, level %d, goals %u/%u/%u, killed %d, monsters %d, sets worn %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Each attempt to read this book costs %u Champion EXP - you don't have enough.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Sung Mahi's curse blocks your skills.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Clients with the event list on this core: %u, leader: %s.
+Kod zrealizowany: %s.	Code redeemed: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Wheel of Fortune (old): you receive %ux %s.
+Kolo Fortuny: %s	Wheel of Fortune: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Wheel of Fortune: no space - %u rewards waiting. Make room and open the wheel again.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Wheel of Fortune: make room in your inventory - a reward is waiting.
+Kolo Losu: %s	Wheel of Destiny: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Wheel of Destiny: data reloaded (%u wheels, %u items), active wheel %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	You can change the colour of a horse skill once you know it.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	The skill colour can be changed from skill level P.
+kostium (strój)	costume (outfit)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	The weapon costume doesn't match the weapon on this page - moved to the inventory.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	The weapon costume doesn't match the weapon on this page, and there is no inventory space to take it off.
+kostium broni szamana	shaman weapon costume
+kostium fryzury	hairstyle costume
+Krwawisz! (%d sek.)	You are bleeding! (%d sec.)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Balathor's Crypt can't be opened on this core.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	You can read the Book of Precision from Champion Level 1.
+Księgi się zmieniły - ułóż je od nowa.	The books have changed - arrange them again.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Dungeons: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (bot rest only); no dungeon or all - all of them.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	The NPC Locator is enabled for every character - this item is no longer needed.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	The Small Orison didn't work - the 6th and 7th bonus are unchanged.
+Masz już najwięcej Gaya, ile można mieć (999 999).	You already have the most Gaya you can hold (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	You have already unlocked all 4 inventory pages.
+Masz już ten tytuł.	You already have this title.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	You have a new Sung Ma stat point (free: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	You carry more Yang than the limit allows (100 bln). You can't trade.
+Masz za mało Gaya (potrzeba %d).	You don't have enough Gaya (%d needed).
+Masz za mało materiału (potrzeba %d).	You don't have enough material (%d needed).
+Masz za mało Yang (potrzeba %d).	You don't have enough Yang (%d needed).
+Masz za mało Yang.	You don't have enough Yang.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Arezzo places are disabled on this server - you are returning to town.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Mission "Defeat the World Boss" done - a +%d%% attack value bonus for %d h awaits in the World Boss window.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	You can only wear one Elemental Stone at a time (Protection or Power). Take off the one you are wearing first.
+Możesz łowić ryby od 30 poziomu.	You can fish from level 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	You must stand still to change the inventory page.
+na stałe	permanent
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	No skill points were spent on this skill - levels from the Manual and books can't be undone. The Scroll of Fluid Training removes the whole ward and boost.
+Na tym kanale magazyn jest niedostępny.	The storeroom is unavailable on this channel.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	While mounted, use the Mount Polymorph Reversal.
+Nadano tytuł %s graczowi %s.	Title %s granted to player %s.
+Nadano tytuł %s.	Title %s granted.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	%d guild characters received the Crypt reward.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Learn the boost first - use the Boost Manual.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Unlock an extra inventory page first (item "Inventory Page II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Unlock the Dragon Stone Alchemy first - the stone goes to its window.
+Najpierw wybierz drogę umiejętności.	Choose a skill path first.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Choose the ward first - use the Ward Manual.
+Najpierw wyjmij przedmiot ze Switchbota.	Take the item out of the Switchbot first.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	First insert the item that should get the new look.
+Najpierw włóż szatę aury.	Insert the aura outfit first.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Close other windows first (trade, shop, storeroom).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Close other windows first (trade, shop, storeroom, sashes).
+Najpierw zamknij okno szaty aury.	Close the aura outfit window first.
+Najwyżej 1000 dni.	At most 1000 days.
+Nie ma postaci %s.	There is no character %s.
+Nie ma takiego tytułu (/tytul lista).	There is no such title (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	You have no weapon, armour or helmet from level 75 upgraded to at least +7 in your inventory (without this blacksmith's set effect). Place the item in the window with the shards and a Set Design.
+Nie masz wolnych punktow Sung Ma.	You have no free Sung Ma points.
+Nie mozesz przywolac kamienia Metin w lochu.	You can't summon a Metin Stone in a dungeon.
+Nie mozesz przywolac zyly w lochu.	You can't summon a vein in a dungeon.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	You can't sell - you would exceed the 100 bln Yang carry limit.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	An equipped item can't be moved to the Switchbot.
+Nie możesz się teleportować z lochu.	You can't teleport out of a dungeon.
+Nie możesz teraz zmienić strony ekwipunku.	You can't change the inventory page right now.
+Nie możesz tutaj użyć tego przedmiotu.	You can't use this item here.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	You can't equip item %s from inventory page %s - page unchanged.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	This item can't be destroyed right now - close other windows and try again.
+Nie nadano tytułu %s (gracz ma go już na stałe).	Title %s not granted (the player already has it permanently).
+Nie nadano tytułu %s.	Title %s not granted.
+Nie należysz do gildii.	You are not in a guild.
+Nie przeniesiono bota %s: %s.	Bot %s was not moved: %s.
+nie trwa	not running
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Failed to apply the set effect. The item remains untouched.
+Nie udało się otworzyć Krypty Balathora.	Failed to open Balathor's Crypt.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Failed. The materials and Yang are lost, the item stays in the window.
+Nie znasz tej umiejetnosci.	You don't know this skill.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Unknown dungeon "%s". Dungeons: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby or all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	None of the bots is level 75 - the Tower ends on the sixth floor.
+Od 1 do %d wymian naraz.	From 1 to %d exchanges at once.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	From grade G1 to P, the ward and boost are developed with the Soul Stone+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Inventory page %s unlocked (pages: %d/4). Switch between them with the tabs in the inventory window or with the "Inventory Page Change" skill (support skills).
+Ogniste Strzały załadowane do Hwachy: %u.	Fire Arrows loaded into the Hwacha: %u.
+Osiagnieto limit zakupu tego przedmiotu.	The purchase limit for this item has been reached.
+Otrzymujesz %d Gaya.	You receive %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	You receive an Okey card (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	You receive an Okey Card Set (you have %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	You opened Balathor's Treasure - the reward went to your inventory.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Bonuses can only be transferred from a bracelet, necklace, earrings or shield.
+Parametry przeniesione na szatę aury.	Bonuses transferred to the aura outfit.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Aura outfit bonuses removed - you can transfer new ones.
+Poczekaj 10 sekund po walce.	Wait 10 seconds after combat.
+Poczekaj 3 sekundy przed kolejną zmianą.	Wait 3 seconds before the next change.
+Poczekaj chwile przed kolejna zmiana opisu.	Wait a moment before changing the description again.
+Poczekaj chwile przed kolejna zmiana stanu.	Wait a moment before changing the status again.
+Poczekaj chwile przed kolejnym zaproszeniem.	Wait a moment before the next invitation.
+Podaj gracza.	Specify a player.
+Podejdź do Seon-Hae.	Go to Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	A Fiery Dragon Egg has appeared.
+Pokonajcie wszystkie pobliskie potwory.	Defeat all nearby monsters.
+Polimorfia działa tylko na wierzchowcach.	Polymorph only works on mounts.
+Polimorfia wierzchowca zakończona.	Mount polymorph ended.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Failure! The effect %s didn't activate - the flower withered.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Failure! The effect %s couldn't be raised to level %d - the flower withered.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Failure! The effect couldn't be changed to %s - the flower withered, the previous effect stays.
+Potrzeba %lld ksiąg (w oknie: %lld).	%lld books needed (in the window: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	The Mighty War Horse only eats Red Ginseng (Premium).
+Poziom Czempiona: %d.	Champion Level: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Place a weapon, armour or helmet from level 75, upgraded to at least +7, in the window.
+Precyzja: poziom %s, bonus Precyzji +%d.	Precision: level %s, Precision bonus +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Daily gift: %lld Yang and %d potions (D) each. The next one in 24 hours.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Drag the overlay onto a sash in your inventory (sash taken off).
+Przeci±gnij zwój na broń w ekwipunku.	Drag the scroll onto a weapon in your inventory.
+Przeciągnij Anulację na przedmiot z transmutacją.	Drag the Reversal onto an item with a transmutation.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Drag the Aura Certificate+ onto the aura outfit.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	Item %s can't be taken off right now - inventory page unchanged.
+Przeniesiono bota %s do Ciebie.	Bot %s was moved to you.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Moved to the extra inventory: %d (added to stacks: %d).
+Przenosić można raz na 3 sekundy.	You can move items once every 3 seconds.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	The next attack will need more damage.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	The Enasir summon button needs a new client version - update the game.
+Przywolana zyla zniknie po 15 minutach.	The summoned vein disappears after 15 minutes.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	The summoned Metin Stone disappears after 15 minutes if you don't destroy it.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	The question expired - try taking the item off again.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Ranking: season %u is ending now (summary in about 2 minutes).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Ranking: season %u, %s, title holders: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Gloves: the next cooldown of this skill is 5 sec. shorter.
+Rekrutacja potworow jest wylaczona.	Monster recruitment is disabled.
+Relikt debug: odnowienia wyzerowane.	Relic debug: cooldowns reset.
+Relikt debug: okienko %s puste.	Relic debug: slot %s empty.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relic debug: slot %s, %s (%u), flags %ld, time %ld / %ld s, active: %s, tick: %s, combat: %d s
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relic debug: HP %d / %d, MP %d / %d, mount: %s
+Relikt Duszy: nowy bonus - %s (%d).	Soul Relic: new bonus - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	The ward and boost from grade M1 can't be undone.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Development successful. The outfit can now evolve (Aura outfit: evolution).
+Rozwój udany: poziom %d.	Development successful: level %d.
+Ryba się zerwała z haczyka.	The fish slipped off the hook.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae has no books for your path.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, time %d min, held item %d, score %d, chance %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: time set to zero.
+Silniejszy efekt tego rodzaju już działa.	A stronger effect of this kind is already active.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	The shop is closed - reopen it instead of extending it.
+Sklep ma juz maksymalny czas (%d dni).	The shop already has the maximum time (%d days).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Shop extended by %u h (about %u h %u min left).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Focus on the Frozen Dragon Egg before it disappears (%d s).
+Sortowac mozna raz na 3 sekundy.	You can sort once every 3 seconds.
+Statystyki Sung Ma ma tylko Czempion.	Only a Champion has Sung Ma stats.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	Inventory page %s is still locked - another "Inventory Page II" item unlocks it.
+Strona ekwipunku: %s.	Inventory page: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	The inventory page can be changed once every 5 seconds.
+Sukces! Efekt %s jest aktywny (poziom 1).	Success! The effect %s is active (level 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Success! The effect %s rose to level %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot stopped. No Enchant Costume item.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot stopped. No Enchant Item.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: failed to change the bonuses of this costume.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: this item can't be enchanted (no bonuses).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Chance increased by %d%% (1 item used).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	The sash has a new look (bonuses and absorption unchanged).
+Ta Anulacja działa tylko na wierzchowcach.	This Reversal only works on mounts.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	This book is for Champions: you can read it from Champion Level 1.
+Ta szarfa ma juz te nakladke.	This sash already has this overlay.
+Ta szata aury ma już najwyższy poziom.	This aura outfit is already at the highest level.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	This outfit is at the top of its kind - now evolve it (Aura Outfit: evolution).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	This outfit already has transferred stats. Clear it with an Aura Certificate+.
+Ta szata nie ma przeniesionych parametrów.	This outfit has no transferred stats.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Only a Ninja or a Shaman can damage this Column.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	This item can only be used in Sung Mahi's Hell Tower.
+Tego przedmiotu nie mozna dodac do Switchbota.	This item cannot be added to the Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	This item cannot be used right now (equipped, in a trade or locked).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	This item is used in the pet window (key U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	This stack cannot be split at this price - buy the whole stack.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	The teleport to the entrance costs %lld Yang - you do not have that much on you.
+Teleport pod wejście: zapłacono %lld Yang.	Teleport to the entrance: paid %lld Yang.
+Ten certyfikat nie nadaje żadnego tytułu.	This certificate does not grant any title.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	This booster is not for your class and skill path.
+Ten efekt już działa i potrwa dłużej niż nowy.	This effect is already active and will last longer than the new one.
+Ten element nie pasuje w tym miejscu.	This piece does not fit here.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	This player cannot hold that much Yang (limit: 100 billion on hand).
+Ten loch jest dla poziomów %d - %d.	This dungeon is for levels %d - %d.
+Ten Metin moze zranic tylko Szaman.	Only a Shaman can damage this Metin.
+Ten opis zawiera niedozwolone slowo.	This description contains a forbidden word.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	This monster lives on a map you enter with a pass - teleporting there by card is not available.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	This item is only available with the Arezzo module enabled.
+Ten przedmiot jest juz w Switchbocie.	This item is already in the Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	This item already has this set effect.
+Ten przedmiot nie ma transmutacji.	This item has no transmutation.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	This item does not belong to any additional equipment category.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	This item does not fit this additional equipment category.
+Ten przedmiot nie zwiększa szansy wytwarzania.	This item does not increase the crafting chance.
+Ten wygląd nie pasuje do tego przedmiotu.	This look does not fit this item.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	I sell this scroll only to members of guilds of at least level %d.
+To nie jest bilet do tej przemiany.	This is not the ticket for this transformation.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	This is Sung Ma land: without a Champion Level you cannot hurt the monsters here.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Transmutation removed - the item has its own look again.
+Transmutacja zakończona.	Transmutation completed.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Only weapons, armour, costumes and weapon skins can be transmuted.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Only an Ice or a Fire Aura Rune can be placed here.
+Tu można włożyć tylko szatę aury.	Only an aura outfit can be placed here.
+Twoja gildia ma już otwartą Kryptę Balathora.	Your guild already has an open Balathor's Crypt.
+Twoja gildia nie ma otwartej Krypty Balathora.	Your guild has no open Balathor's Crypt.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Your Precision is already at the highest level (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Your Champion Level is too low to use this item (required: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Your Champion Level is too low to equip this item (required: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Titles need a newer client - please update the game.
+Tę księgę może przeczytać tylko lider gildii.	Only the guild leader can read this book.
+Udało się odeprzeć lodowe zimno.	You fought off the icy cold.
+Użycie: /kod MT2009-PLUS-XXXX	Usage: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	There are no items for the additional equipment in your inventory.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	You can give at most 10 billion Yang in one trade.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	In Sung Mahi's Hell Tower only the tower potions (W) from the Merchant work.
+W tych rekawicach nie ma wolnego miejsca na kamien.	There is no free slot for a stone in these gloves.
+W tym stosie nie ma juz tylu sztuk.	This stack no longer has that many pieces.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	The shop's value and your Yang would exceed the limit of 100 billion Yang.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	The look of this item does not fit your class.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	The look of this item does not fit your gender.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Expedition aborted - the Hidden Balathor fled but left his treasure behind. Leaving the crypt in %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Expedition aborted. Leaving the crypt in %s.
+Wyspa Skarbow: %s (flaga %s).	Treasure Island: %s (flag %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	The Fishing Puzzle needs a newer client - please update the game.
+Włóż bilet w okno transmutacji u Teowadena.	Place the ticket in Teowaden's transmutation window.
+Włóż oba przedmioty.	Place both items.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: event %s, season %u (closed %d), games on this core %u, boards %d, logs %d, reward waiting %d
+Yut Nori: event sie nie odbywa.	Yut Nori: the event is not running.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: the event is just starting, try again in a moment.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: birch logs can only be added during the event.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: you need %d x Yut Nori board and %d Yang.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: free some inventory space to collect the reward.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	In 10 seconds the Frozen Dragon Egg will appear - then strike it together.
+Za mało Yang (potrzeba %lld).	Not enough Yang (%lld needed).
+Zabrano tytuł %s graczowi %s.	Title %s taken from player %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	The element enchantment failed! The weapon stayed unchanged.
+Zaczarowanie żywiołu powiodło się! %s.	The element enchantment succeeded! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Close the other windows (trade, shop, storeroom).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Close the other windows (trade, shop, storeroom, dice) and try again.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Close the other windows to sort the additional equipment.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Close the other windows to merge stacks in the additional equipment.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Close the other windows to move items to the additional equipment.
+Zamknij inne okna, aby użyć tego przedmiotu.	Close the other windows to use this item.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Close the other windows to change the inventory page.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	You can only invite a player on the same map and the same channel to a group.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Stand still to hide or show the costume.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Take the item off and put it in your inventory.
+Zdejmij szatę i weź ją do ekwipunku.	Take the outfit off and put it in your inventory.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Costume set incomplete - the set bonus is gone.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Costume set: +%ld HP and +%ld attack value.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Sung Ma land requires: Strength %d, Vitality %d, Resistance %d, Intelligence %d - if you fall short, your power is halved.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	You already know another riposte - you can only have one. This book does not develop it.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Destroy the Massive Ice Wall that protects[ENTER]the Frozen Dragon Eggs!
+Zniszczono: %s.	Destroyed: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	The element enchantment level was lowered: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	The element enchantment level was lowered: the weapon no longer has an element (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Left in the inventory: %d - no room in the category: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Daily limit (%s) of character %s (offline) reset: %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Daily limit (%s) of character %s%s reset: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Make room in your inventory (%d free slots needed).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Make room in your inventory - an item from the inventory pages' storeroom is waiting for a free slot.
+Zwój albo broń nie leży już w ekwipunku.	The scroll or the weapon is no longer in your inventory.
+Łączyć stosy można raz na 3 sekundy.	Stacks can be merged once every 3 seconds.

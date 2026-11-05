@@ -1,0 +1,2 @@
+# MT2009_PLUS_LANGUAGE_V1 - pieces our quests glue to values (tools/i18n/data/quest_fragments_pl.tsv) - replaced inside a line
+# Polish<TAB>pt (by hand; UTF-8). tools/i18n/extract_server_texts.py --check pt lists what is missing.

@@ -1,0 +1,332 @@
+# MT2009_PLUS_LANGUAGE_V1 - the lines our quests glue together, as formats (tools/i18n/data/quest_templates_pl.tsv)
+# Polish<TAB>es (by hand; UTF-8). tools/i18n/extract_server_texts.py --check es lists what is missing.
+  %sx Materiały Rzemieślnicze 	  %sx Materiales de Artesanía 
+  %sx Medal Konny	  %sx Medalla de Caballo
+%s (Czyściec Ognia)	%s (Purgatorio de Fuego)
+%s (dzisiejsze wejścia)	%s (entradas de hoy)
+%s (Kamień Driad)	%s (Piedra de las Dríades)
+%s (Książka Przebudzenia)	%s (Tomo del Despertar)
+%s (Lodowa Kraina)	%s (Tierra de Hielo)
+%s (odpoczynek: %s min)	%s (descanso: %s min)
+%s (poziom / Czempion)	%s (nivel / Campeón)
+%s (poziom)	%s (nivel)
+%s (słaby: %s/%s)	%s (débil: %s/%s)
+%s (Zamarznięte Klucze)	%s (Llaves heladas)
+%s (Zegarek Kieszonkowy)	%s (Reloj de Bolsillo)
+%s (żywioł %s)	%s (elemento %s)
+%s drogocenne Gaya.	%s valiosos Gaya.
+%s Efekt Zestawu. Wymagany jest	%s Efecto de conjunto. Se requiere
+%s juz idzie do ciebie.	%s ya va hacia ti.
+%s odłamków II tej samej części, Projekt	%s fragmentos II de la misma pieza, Plano
+%s razy.	%s veces.
+%s szykuje potężny atak w linii - uciekaj w bok!	%s prepara un potente ataque en línea - ¡apártate a un lado!
+%s tys. Yang	%s mil Yang
+%s w oknie = hełm Dragona, bez nich - hełm Smoków.	%s en la ventana = Casco de Dragón, sin ellas - Casco de los Dragones.
+%s znalazł odpowiedni klucz!	¡%s ha encontrado la llave correcta!
+%s, %s albo %s)	%s, %s o %s)
+%s. piętro zdobyte w %s! Schody prowadzą na następne piętro.	¡%s.º piso conquistado en %s! Las escaleras llevan al siguiente piso.
+(stojących obok). Teraz: %s.	(que están cerca). Ahora: %s.
+1. %s - poziom %s	1. %s - nivel %s
+1. miejsce: %s x 10	1.er puesto: %s x 10
+1. miejsce: 10x %s	1.er puesto: 10x %s
+1. Poziom Czempiona, każdy oddaje %s Zamarznięte Klucze.	Nivel de Campeón 1, cada uno entrega %s Llaves heladas.
+100 000 000 Yang i 500 Gaya. Szansa: %s%%.	100 000 000 Yang y 500 Gaya. Probabilidad: %s%%.
+10x %s, 1 000 000 Yang. Szansa 30%% (+5) do 70%% (+9),	10x %s, 1 000 000 Yang. Probabilidad del 30%% (+5) al 70%% (+9),
+2. %s - poziom %s	2. %s - nivel %s
+2. miejsce: %s x 5	2.º puesto: %s x 5
+2. miejsce: 5x %s	2.º puesto: 5x %s
+3. miejsce: %s x 3	3.er puesto: %s x 3
+3. miejsce: 3x %s	3.er puesto: 3x %s
+4. - 10. miejsce: %s x 1	4.º - 10.º puesto: %s x 1
+4.-10. miejsce: 1x %s	4.º-10.º puesto: 1x %s
+40x %s, 200 Gaya i 20 000 000 Yang.	40x %s, 200 Gaya y 20 000 000 Yang.
+<< Piętra %s - %s	<< Pisos %s - %s
+Alastor pokonany! Za %s s wracacie do Upiornego Strażnika po nagrodę.	¡Alastor derrotado! En %s s volvéis con el Guardián Fantasmal a por la recompensa.
+Alastor wpada w szał (%s/3) - zniszczcie Białe Jaja Smoka!	Alastor se enfurece (%s/3) - ¡destruid los Huevos de Dragón Blancos!
+Biblioteka Wiedzy (%s/5): %s	Biblioteca del Saber (%s/5): %s
+Biblioteka Wiedzy: %s	Biblioteca del Saber: %s
+Biblioteka Wiedzy: %s zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	Biblioteca del Saber: %s obtiene el Sello de la Biblioteca. Úsalo para invocar la siguiente oleada.
+Biblioteka Wiedzy: Baronówna wyczuwa %s śmiałków - ma %s%% więcej życia.	Biblioteca del Saber: La Baronesa percibe %s valientes - tiene un %s%% más de vida.
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x%s (podział łupu: %s na %s).	Biblioteca del Saber: Recibes: Cofre de la Biblioteca x%s (reparto del botín: %s de %s).
+Biblioteka Wiedzy: Pieczęć %s/%s złamana. Nadchodzi następna fala!	Biblioteca del Saber: Sello %s/%s roto. ¡Llega la siguiente oleada!
+Biblioteka Wiedzy: Pokonane pająki: %s / %s	Biblioteca del Saber: Arañas derrotadas: %s / %s
+Biblioteka Wiedzy: Pozostałe królowe: %s	Biblioteca del Saber: Reinas restantes: %s
+Biblioteka Wiedzy: Pozostałe Metiny: %s	Biblioteca del Saber: Metin restantes: %s
+Biblioteka Wiedzy: Pozostało %s min.	Biblioteca del Saber: Quedan %s min.
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: %s na %s).	Biblioteca del Saber: esta vez sin cofre (reparto del botín: %s de %s).
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (%s).	Biblioteca del Saber: Los objetivos perdidos de la etapa reaparecen (%s).
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa %s/%s.	Billete a Atlantis usado. La expedición de hoy %s/%s.
+Bron 65 > 80: 2x %s,	Arma 65 > 80: 2x %s,
+Bron 80 > 87: 3x %s,	Arma 80 > 87: 3x %s,
+Bron 87 > Cyjanit: 3x %s,	Arma 87 > Cianita: 3x %s,
+Cena: %s Yang za bilet.	Precio: %s Yang por billete.
+Do Erebu wchodzi najwyżej %s osób.	En Erebu entran como máximo %s personas.
+Do Erebu wejdzie tylko grupa co najmniej %s osób.	En Erebu solo entra un grupo de al menos %s personas.
+Do Głębi wchodzi drużyna od %s do %s osób	En las Profundidades entra un grupo de %s a %s personas
+dopiero od poziomu %s.	solo desde el nivel %s.
+Doświadczenie: %s	Experiencia: %s
+Drużyna od %s do %s osób, poziom %s+,	Un grupo de %s a %s personas, nivel %s+,
+Dzisiejsze wyprawy do ruin już wykorzystane (%s dziennie):	Las expediciones de hoy a las ruinas ya se han gastado (%s al día):
+Dzisiejsze wyprawy do Schronienia już wykorzystane (%s dziennie):	Las expediciones de hoy al Refugio ya se han gastado (%s al día):
+Dzisiejsze wyprawy do tego lochu już wykorzystane (%s dziennie):	Las expediciones de hoy a esta mazmorra ya se han gastado (%s al día):
+Dzisiejsze wyprawy na statek już wykorzystane (%s dziennie):	Las expediciones de hoy al barco ya se han gastado (%s al día):
+Dziś już dostałeś paszę. Wróć za %s h.	Hoy ya has recibido forraje. Vuelve en %s h.
+Erebu: zostało %s min. Po czasie grupa wróci do Zaklętego Lasu.	Erebu: quedan %s min. Después el grupo vuelve al Bosque Encantado.
+Gotowe - oto %s.	Hecho - aquí tienes %s.
+Gotowe! Teraz otwórz pieczęć numer %s.	¡Hecho! Ahora abre el sello número %s.
+Grota Wygnańców 2 (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Gruta del Exilio 2 (IM): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Grota Wygnańców 2 (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Gruta del Exilio 2 (ET): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Głowa Węża obrócona (%s/4).	Cabeza de Serpiente girada (%s/4).
+Głębie: brakuje ci Zamarzniętych Kluczy (%s sztuki).	Profundidades: te faltan Llaves heladas (%s uds.).
+Głębie: pozostało %s min.	Profundidades: quedan %s min.
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom %s.	Las profundidades te aplastarán. Vuelve cuando alcances el nivel %s.
+hełm 80. poziomu ulepszony na +5 do +9 (%s,	un casco de nivel 80 mejorado de +5 a +9 (%s,
+Hełm Dragona (obrona): 5x %s, 5x %s,	Casco de Dragón (defensa): 5x %s, 5x %s,
+Hełm Smoków (atak): 5x %s, 5x %s,	Casco de los Dragones (ataque): 5x %s, 5x %s,
+i %s Yang oszlifuję %s drogocenne Gaya.	y %s Yang puliré %s valiosos Gaya.
+Jesteś za słaby. Wróć, gdy osiągniesz poziom %s.	Eres demasiado débil. Vuelve cuando alcances el nivel %s.
+Kamienie smoka: %s / %s	Piedras de dragón: %s / %s
+Kamień Duszy %s	Piedra Espiritual %s
+Katakumby Diabła: Wyjdziesz z lochu za %s sekund.	Catacumba del Diablo: Saldrás de la mazmorra en %s segundos.
+Katakumby Diabła: Wyjdziesz z lochu za %s sekundy.	Catacumba del Diablo: Saldrás de la mazmorra en %s segundos.
+Klątwa Sunga Mahi: stopień %s (%s%% PŻ). Antidotum SungMa ją zdejmuje.	Maldición de Sung Mahi: grado %s (%s%% PV). El Antídoto SungMa la elimina.
+Kolejne zadanie (%s/6):	Siguiente misión (%s/6):
+Kolumna Węży otwarta (%s/6).	Columna de la Serpiente abierta (%s/6).
+Koszt: %s yang.	Coste: %s Yang.
+Kowal Świątyni Węży czeka. Uwolnieni kowale: %s/4.	El Herrero del Templo de la Serpiente espera. Herreros liberados: %s/4.
+Królestwo Żywiołów jest dostępne od poziomu %s. Wracasz do portu.	El Reino de los Elementos está disponible desde el nivel %s. Vuelves al puerto.
+Królowa Meley: %s	Reina Meley: %s
+Królowa Meley: ETAP %s - %s	Reina Meley: ETAPA %s - %s
+Królowa Meley: ETAP 4 - %s	Reina Meley: ETAPA 4 - %s
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (%s/4).	Reina Meley: El Anillo de Fuego de Dragón arde en la estatua (%s/4).
+Królowa Meley: Pozostało %s min.	Reina Meley: Quedan %s min.
+Królowa Meley: Smocze Jaja (%s) chronią statuy. Zniszczcie je.	Reina Meley: Los Huevos de Dragón (%s) protegen las estatuas. Destruidlos.
+Królowa Meley: Statua zmienia kolor (%s/4).	Reina Meley: La estatua cambia de color (%s/4).
+Księga nie jest jeszcze gotowa. Wróć za %s h.	El libro aún no está listo. Vuelve en %s h.
+Leże Smoka: %s	Guarida del Dragón: %s
+Leże Smoka: %s powstaje na nowo - Beran-Setaou znów jest nietykalny!	Guarida del Dragón: %s se alza de nuevo - ¡Beran-Setaou vuelve a ser invulnerable!
+Leże Smoka: %s zniszczony. Pozostało kamieni: %s.	Guarida del Dragón: %s destruido. Piedras restantes: %s.
+Leże Smoka: dopóki stoi choć jeden kamień smoka (%s), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	Guarida del Dragón: mientras quede en pie una piedra de dragón (%s), Beran-Setaou es invulnerable. ¡Destruid las piedras!
+Leże Smoka: Pozostało %s min.	Guarida del Dragón: Quedan %s min.
+Masz %s Kamyków i %s Gaya.	Tienes %s Piedras Centelleantes y %s Gaya.
+Masz za mało Gaya (potrzeba %s).	No tienes suficientes Gaya (necesitas %s).
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba %s).	No tienes suficientes Ampliaciones Mercado Gaya (necesitas %s).
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z %s.	Ha caído un Metin. Beran-Setaou (IM) aún obtiene poder de %s.
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z %s.	Ha caído un Metin. Beran-Setaou (ET) aún obtiene poder de %s.
+Misja ukończona. Nagroda: %s x100.	Misión completada. Recompensa: %s x100.
+Misja ukończona. Nagroda: %s.	Misión completada. Recompensa: %s.
+Misję możesz powtórzyć za %s h %s min.	Puedes repetir la misión en %s h %s min.
+Mogę wytworzyć dla ciebie %s.	Puedo fabricar para ti %s.
+Mój wynik: %s	Mi resultado: %s
+Nadciąga grupa żywiołu %s.	Se acerca un grupo de elemento %s.
+nagroda %s	recompensa %s
+Nagroda: %s PD.	Recompensa: %s EXP.
+Najpierw ukończ %s. piętro w tym sezonie.	Primero completa el %s.º piso en esta temporada.
+Najwyżej %s wejść dziennie (dziś: %s/%s).	Como máximo %s entradas al día (hoy: %s/%s).
+Najwyżej %s wypraw dziennie (dziś: %s/%s).	Como máximo %s expediciones al día (hoy: %s/%s).
+Nemere: Pieczęć złamana. Pozostało: %s	Nemere: Sello roto. Quedan: %s
+Nemere: Pozostało %s min.	Nemere: Quedan %s min.
+Nemere: Szel pokonany (%s/4).	Nemere: Szel derrotado (%s/4).
+Nemere: Zaginione cele etapu pojawiają się ponownie (%s).	Nemere: Los objetivos perdidos de la etapa reaparecen (%s).
+Nie masz przy sobie %s Yang.	No llevas encima %s Yang.
+Nie udało się wydać broni (kod %s). Zgłoś to administratorowi serwera.	No se pudo entregar el arma (código %s). Informa de ello al administrador del servidor.
+Od poziomu %s i 1. Poziomu Czempiona.	Desde el nivel %s y el Nivel de Campeón 1.
+Od poziomu %s, grupa od %s osób, 30 minut;	Desde el nivel %s, grupo de %s personas, 30 minutos;
+Od poziomu %s, tylko w grupie. Każdy musi	Desde el nivel %s, solo en grupo. Todos deben
+Od poziomu %s, tylko w grupie. Po ukończeniu lub	Desde el nivel %s, solo en grupo. Tras completar o
+Od poziomu %s. Sam albo z drużyną.	Desde el nivel %s. Solo o con un grupo.
+Od poziomu %s. Wstęp: %s Yang.	Desde el nivel %s. Entrada: %s Yang.
+Oddaj uszy: %s	Entrega orejas: %s
+Opłata za wejście: %s Yang.	Tasa de entrada: %s Yang.
+Opłata za wejście: %s Yang. Dzisiejsza wyprawa %s/%s.	Tasa de entrada: %s Yang. La expedición de hoy %s/%s.
+Otrzymujesz skrzynie z przerwanej gry w Okey: %s	Recibes cofres de una partida de Okey interrumpida: %s
+Otrzymujesz: %s x %s	Recibes: %s x %s
+Otrzymujesz: %s. Broń zniknie za 15 dni (także założona).	Recibes: %s. El arma desaparece a los 15 días (también equipada).
+otrzymujesz: %sx %s	recibes: %sx %s
+Pasza dla konia: %s/30	Forraje para el caballo: %s/30
+Pieczęć zdjęta (%s/7).	Sello retirado (%s/7).
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za %s.	El anillo debe descansar tras el último teletransporte. El siguiente estará listo en %s.
+Pierścień odzyska moc za %s min.	El anillo recuperará su poder en %s min.
+Piętra %s - %s	Pisos %s - %s
+Piętra %s - %s >>	Pisos %s - %s >>
+Piętro %s	Piso %s
+Piętro %s (%s), etap 1: pokonaj wszystkie potwory w limicie czasu!	Piso %s (%s), etapa 1: ¡derrota a todos los monstruos dentro del límite de tiempo!
+Piętro %s (następne)	Piso %s (siguiente)
+Piętro %s - nowe	Piso %s - nuevo
+Piętro %s - ukończone	Piso %s - completado
+Piętro %s, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	Piso %s, etapa 3: ¡derrota oleadas de monstruos hasta que aparezcan los jefes!
+Pojawiają się bossowie piętra: %s! Pokonaj ich, by zdobyć piętro.	Aparecen los jefes del piso: ¡%s! Derrótalos para conquistar el piso.
+Pokonajcie %s pająków, a potem użyjcie Pieczęci Biblioteki (%s/%s).	Derrotad a %s arañas y luego usad el Sello de la Biblioteca (%s/%s).
+Pokonajcie %s potworów głębin.	Derrotad a %s monstruos de las profundidades.
+Pokonajcie %s skorpionów, a potem użyjcie Pieczęci Ruin (%s/%s).	Derrotad a %s escorpiones y luego usad el Sello de las Ruinas (%s/%s).
+Pokonajcie %s strażników ruin.	Derrotad a %s guardianes de las ruinas.
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (%s/%s).	Derrotad a 40 criaturas de la jungla y luego usad el Sello de la Jungla (%s/%s).
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (%s/%s).	Derrotad a 60 monos y luego usad el Sello de la Colina (%s/%s).
+Pokonane potwory: %s/100	Monstruos derrotados: %s/100
+Pokonane: %s / %s	Derrotados: %s / %s
+Pokonani: %s / 50	Derrotados: %s / 50
+Port Nowego Kontynentu jest dostępny od poziomu %s. Łódź zabiera cię z powrotem na Przylądek.	El Puerto del Nuevo Continente está disponible desde el nivel %s. El bote te lleva de vuelta al Cabo.
+Portowy Sklep Gaya - kupiono: %s.	Mercado Gaya del Puerto - comprado: %s.
+Portowy Sklep Gaya: slot %s jest odblokowany na stałe.	Mercado Gaya del Puerto: la ranura %s está desbloqueada para siempre.
+Potrzebujesz przedmiotu: %s.	Necesitas el objeto: %s.
+Potrzebuję %s Kamyków, %s Yang oraz	Necesito %s Piedras Centelleantes, %s Yang y
+poziom %s	nivel %s
+Poziom konia: %s -> %s	Nivel del caballo: %s -> %s
+poziomu %s.	nivel %s.
+Pozostalo podrozy: %s	Viajes restantes: %s
+Pozostałe stele: %s	Estelas restantes: %s
+Pozostałe teleporty: %s z %s.	Teletransportes restantes: %s de %s.
+Pozostało: %s	Quedan: %s
+Pozostały czas: %s min	Tiempo restante: %s min
+Pozostały czas: %s min.	Tiempo restante: %s min.
+Przy Strazniku zostaja: %s	Se quedan con el Guardián: %s
+Pył Wężowy: +1 minuta. Zostało %s min.	Polvo de serpiente: +1 minuto. Quedan %s min.
+Płaskowyż Iluzji przyjmuje wojowników od poziomu %s.	La Meseta de la Ilusión acoge a guerreros desde el nivel %s.
+Razador: Pozostało %s min.	Razador: Quedan %s min.
+Razador: Stela zgaszona. Pozostało: %s	Razador: Estela apagada. Quedan: %s
+Razador: Zaginione cele etapu pojawiają się ponownie (%s).	Razador: Los objetivos perdidos de la etapa reaparecen (%s).
+Rosy En-Tai (PB): %s / %s.	Rocío En-Tai (IM): %s / %s.
+Rosy En-Tai (SZC): %s / %s.	Rocío En-Tai (ET): %s / %s.
+Ruiny Atlantydy (%s/6): %s	Ruinas de Atlantis (%s/6): %s
+Ruiny Atlantydy: %s	Ruinas de Atlantis: %s
+Ruiny Atlantydy: %s ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	Ruinas de Atlantis: %s tiene la Llave de Atlantis. ¡Entregádsela a la Columna de Concha correcta!
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x%s (podział łupu: %s na %s).	Ruinas de Atlantis: Recibes: Cofre de Atlantis x%s (reparto del botín: %s de %s).
+Ruiny Atlantydy: Pokonane potwory: %s / %s	Ruinas de Atlantis: Monstruos derrotados: %s / %s
+Ruiny Atlantydy: Pozostało %s min.	Ruinas de Atlantis: Quedan %s min.
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: %s.	Ruinas de Atlantis: Guardián derrotado. Columnas restantes: %s.
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: %s - mniej czasu na Morkhota.	Ruinas de Atlantis: ¡Solo era una ilusión! Puntos de penalización: %s - menos tiempo para Morkhot.
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: %s na %s).	Ruinas de Atlantis: esta vez sin cofre (reparto del botín: %s de %s).
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (%s).	Ruinas de Atlantis: Los objetivos perdidos de la etapa reaparecen (%s).
+Ruiny Atlantydy: Zostało Serc Atlantydy: %s	Ruinas de Atlantis: Corazones de Atlantis restantes: %s
+Ruiny Skorpiona (%s/5): %s	Ruinas del Escorpión (%s/5): %s
+Ruiny Skorpiona: %s	Ruinas del Escorpión: %s
+Ruiny Skorpiona: %s zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	Ruinas del Escorpión: %s obtiene el Sello de las Ruinas. Úsalo para invocar la siguiente oleada.
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x%s (podział łupu: %s na %s).	Ruinas del Escorpión: Recibes: Cofre del Escorpión x%s (reparto del botín: %s de %s).
+Ruiny Skorpiona: Pieczęć Ruin %s/%s złamana. Nadchodzi następna fala!	Ruinas del Escorpión: Sello de las Ruinas %s/%s roto. ¡Llega la siguiente oleada!
+Ruiny Skorpiona: Pokonane potwory: %s / %s	Ruinas del Escorpión: Monstruos derrotados: %s / %s
+Ruiny Skorpiona: Pozostało %s min.	Ruinas del Escorpión: Quedan %s min.
+Ruiny Skorpiona: Pozostało: %s	Ruinas del Escorpión: Quedan: %s
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: %s na %s).	Ruinas del Escorpión: esta vez sin cofre (reparto del botín: %s de %s).
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (%s).	Ruinas del Escorpión: Los objetivos perdidos de la etapa reaparecen (%s).
+Schody prowadzą na %s. piętro.	Las escaleras llevan al %s.º piso.
+Schronienie Meley: %s	Guarida de Meley: %s
+Silny: po %s ukończonych słabych. 30 minut na Alastora.	Fuerte: tras %s débiles completadas. 30 minutos para Alastor.
+Skraca czas oczekiwania o %s%%	Reduce el tiempo de espera en un %s%%
+Sloty odblokowuje się po kolei: najpierw slot %s.	Las ranuras se desbloquean en orden: primero la ranura %s.
+Starożytna Dżungla (%s/6): %s	Jungla Antigua (%s/6): %s
+Starożytna Dżungla: %s	Jungla Antigua: %s
+Starożytna Dżungla: %s zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	Jungla Antigua: %s obtiene el Sello de la Jungla. Úsalo para invocar la siguiente oleada.
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x%s (podział łupu: %s na %s).	Jungla Antigua: Recibes: Cofre de la Jungla x%s (reparto del botín: %s de %s).
+Starożytna Dżungla: Pieczęć Dżungli %s/%s złamana. Nadchodzi następna fala!	Jungla Antigua: Sello de la Jungla %s/%s roto. ¡Llega la siguiente oleada!
+Starożytna Dżungla: Pokonane potwory: %s / %s	Jungla Antigua: Monstruos derrotados: %s / %s
+Starożytna Dżungla: Pozostało %s min.	Jungla Antigua: Quedan %s min.
+Starożytna Dżungla: Pozostało: %s	Jungla Antigua: Quedan: %s
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: %s na %s).	Jungla Antigua: esta vez sin cofre (reparto del botín: %s de %s).
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (%s).	Jungla Antigua: Los objetivos perdidos de la etapa reaparecen (%s).
+Stały bonus: %s	Bonificación permanente: %s
+Stały bonus: %s +5	Bonificación permanente: %s +5
+Straznik Katakumb nie wpuszcza cie z grupa: %s	El Guardián de la Catacumba no te deja entrar con el grupo: %s
+Strażnica Nemere (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Atalaya de Nemere (IM): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Strażnica Nemere (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Atalaya de Nemere (ET): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Szansa powodzenia: %s%%. Kontynuować?	Probabilidad de éxito: %s%%. ¿Continuar?
+Szansa: %s%%. Możesz też przeciągnąć Kamyki na mnie.	Probabilidad: %s%%. También puedes arrastrar las Piedras Centelleantes sobre mí.
+Twierdza Czerwonego Smoka (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Fortaleza del Dragón Rojo (IM): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Twierdza Czerwonego Smoka (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Fortaleza del Dragón Rojo (ET): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Twoj wynik: %s	Tu resultado: %s
+Twój koń nauczył się: %s (poziom 1).	Tu caballo ha aprendido: %s (nivel 1).
+Twój koń osiągnął %s poziom.	Tu caballo ha alcanzado el nivel %s.
+Ty możesz wejść za %s min.	Tú podrás entrar en %s min.
+Udało się! Otrzymujesz %s Gaya.	¡Lo lograste! Recibes %s Gaya.
+Ukończone w tym sezonie: %s / %s.	Completados esta temporada: %s / %s.
+Ukończone w tym sezonie: %s.	Completados esta temporada: %s.
+umiejętność %s	habilidad %s
+Uwięziony Kowal jest wolny (%s/4)!	¡El Herrero Prisionero está libre (%s/4)!
+Uwolnieni kowale: %s/4. Ulepszyłbym ci	Herreros liberados: %s/4. Te mejoraría
+Wejście kosztuje %s Yang - nie masz tyle przy sobie.	La entrada cuesta %s Yang - no llevas tanto encima.
+Wejście kosztuje %s Yang - za mało przy sobie:	La entrada cuesta %s Yang - no llevas suficiente encima:
+Wejście od poziomu %s.	Entrada desde el nivel %s.
+Wejście od poziomu %s. Doświadczenie z tamtych	Entrada desde el nivel %s. La experiencia de aquellos
+Wejście: %s Yang.	Entrada: %s Yang.
+Wejście: %s Yang. Najwyżej %s wypraw dziennie (dziś: %s/%s).	Entrada: %s Yang. Como máximo %s expediciones al día (hoy: %s/%s).
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie %s Yang).	Entrada: Billete a Atlantis - uno por persona (te lo vendo por %s Yang).
+Wieża Demonów: Wyjdziesz z lochu za %s sekund.	Torre Demoníaca: Saldrás de la mazmorra en %s segundos.
+Wieża Demonów: Wyjdziesz z lochu za %s sekundy.	Torre Demoníaca: Saldrás de la mazmorra en %s segundos.
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (%s).	Torre Demoníaca: Los Metin perdidos del piso reaparecen (%s).
+Wieża Sung Mahi - %s: %s	Torre de Sung Mahi - %s: %s
+Wieża Sung Mahi: %s	Torre de Sung Mahi: %s
+Wieża Sung Mahi: %s. piętro ukończone w %s (min:s). Możesz na nie wrócić portalem w hali.	Torre de Sung Mahi: %s.º piso completado en %s (min:s). Puedes volver a él con el portal de la sala.
+Wieża Sung Mahi: nagroda za %s. piętro w tym sezonie czeka w Magazynie ItemShop.	Torre de Sung Mahi: la recompensa por el %s.º piso de esta temporada te espera en el Almacén de la Item Shop.
+Wieża Sung Mahi: nagrody za %s. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	Torre de Sung Mahi: la recompensa por el %s.º piso no se pudo guardar ahora - la recibirás la próxima vez que completes este piso.
+Wieża Sung Mahi: walka na %s. piętrze zaczyna się za 10 sekund.	Torre de Sung Mahi: la lucha en el %s.º piso empieza en 10 segundos.
+Wioska I (%s)	Aldea I (%s)
+Wioska II (%s)	Aldea II (%s)
+Wróć, gdy osiągniesz poziom %s.	Vuelve cuando alcances el nivel %s.
+Wspinaczka: 1 Sztandar Czaszki (masz: %s).	Escalada: 1 Estandarte calavera (tienes: %s).
+Wstęp kosztuje %s Yang.	La entrada cuesta %s Yang.
+Wstęp: %s Yang.	Entrada: %s Yang.
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (%s). Wróć jutro.	Ya has gastado las expediciones de hoy a la Guarida de Meley (%s). Vuelve mañana.
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (%s). Wróć jutro.	Ya has gastado las expediciones de hoy a esta mazmorra (%s). Vuelve mañana.
+Wykorzystałeś już dzisiejsze wyprawy na statek (%s). Wróć jutro.	Ya has gastado las expediciones de hoy al barco (%s). Vuelve mañana.
+Wymagany poziom: %s. Bez czekania między wyprawami.	Nivel requerido: %s. Sin espera entre expediciones.
+Wymagany poziom: %s. Limit %s minut, bez czekania między wyprawami.	Nivel requerido: %s. Límite de %s minutos, sin espera entre expediciones.
+Wzgórze Wukonga (%s/6): %s	Colina de Wukong (%s/6): %s
+Wzgórze Wukonga: %s	Colina de Wukong: %s
+Wzgórze Wukonga: %s zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	Colina de Wukong: %s obtiene el Sello de la Colina. Úsalo para invocar la siguiente oleada.
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x%s (podział łupu: %s na %s).	Colina de Wukong: Recibes: Cofre de Wukong x%s (reparto del botín: %s de %s).
+Wzgórze Wukonga: Pieczęć Wzgórza %s/%s złamana. Nadchodzi następna fala!	Colina de Wukong: Sello de la Colina %s/%s roto. ¡Llega la siguiente oleada!
+Wzgórze Wukonga: Pokonane potwory: %s / %s	Colina de Wukong: Monstruos derrotados: %s / %s
+Wzgórze Wukonga: Pozostało %s min.	Colina de Wukong: Quedan %s min.
+Wzgórze Wukonga: Pozostało: %s	Colina de Wukong: Quedan: %s
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: %s na %s).	Colina de Wukong: esta vez sin cofre (reparto del botín: %s de %s).
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (%s).	Colina de Wukong: Los objetivos perdidos de la etapa reaparecen (%s).
+Z %s Kamyków, Kamienia Duszy (+0 do +3)	Con %s Piedras Centelleantes, una Piedra Espiritual (+0 a +3)
+Z tej zbroi zrobie: %s	Con esta armadura haré: %s
+Z łusek i rogów Balathora zrobię %s,	Con escamas y cuernos de Balathor haré %s,
+Za %s sekund zostaniesz przeniesiony na Doyyumhwaji.	En %s segundos serás trasladado a Doyyumhwaji.
+Za %s sekund zostaniesz teleportowany do Doliny Orków.	En %s segundos serás teletransportado al Valle de los Orcos.
+Za %s sekund zostaniesz teleportowany do Groty Wygnańców.	En %s segundos serás teletransportado a la Gruta del Exilio.
+Za %s sekund zostaniesz teleportowany do miasta.	En %s segundos serás teletransportado a la ciudad.
+Za %s sekund zostaniesz teleportowany do Świątyni Hwang.	En %s segundos serás teletransportado al Templo Hwang.
+Za %s sekund zostaniesz teleportowany do Świątyni Ochao.	En %s segundos serás teletransportado al Templo Ochao.
+Za %s sekund zostaniesz teleportowany na Górę Sohan.	En %s segundos serás teletransportado a la Montaña Sohan.
+Za %s sekund zostaniesz teleportowany na Ognistą Ziemię.	En %s segundos serás teletransportado a la Tierra de Fuego.
+Za %s sekundy zostaniesz przeniesiony na Doyyumhwaji.	En %s segundos serás trasladado a Doyyumhwaji.
+Za %s sekundy zostaniesz teleportowany do Doliny Orków.	En %s segundos serás teletransportado al Valle de los Orcos.
+Za %s sekundy zostaniesz teleportowany do Groty Wygnańców.	En %s segundos serás teletransportado a la Gruta del Exilio.
+Za %s sekundy zostaniesz teleportowany do miasta.	En %s segundos serás teletransportado a la ciudad.
+Za %s sekundy zostaniesz teleportowany do Świątyni Hwang.	En %s segundos serás teletransportado al Templo Hwang.
+Za %s sekundy zostaniesz teleportowany do Świątyni Ochao.	En %s segundos serás teletransportado al Templo Ochao.
+Za %s sekundy zostaniesz teleportowany na Górę Sohan.	En %s segundos serás teletransportado a la Montaña Sohan.
+Za %s sekundy zostaniesz teleportowany na Ognistą Ziemię.	En %s segundos serás teletransportado a la Tierra de Fuego.
+Za chwilę zostaniecie przeniesieni na %s. piętro.	En breve seréis trasladados al %s.º piso.
+Za grę, w której zdobędziesz %s,	Por una partida en la que consigas %s,
+Za słabi na głębiny (poziom %s+):	Demasiado débiles para las profundidades (nivel %s+):
+Za słabi, by wejść (poziom %s+):	Demasiado débiles para entrar (nivel %s+):
+Za słabi, by wejść na pokład (poziom %s+):	Demasiado débiles para subir a bordo (nivel %s+):
+Zabij %s Wojowników En-Tai (PB) i wróć do mnie.	Mata a %s Guerreros En-Tai (IM) y vuelve conmigo.
+Zabij %s Wojowników En-Tai (SZC) i wróć do mnie.	Mata a %s Guerreros En-Tai (ET) y vuelve conmigo.
+Zaginione Metiny pojawiają się ponownie (%s).	Los Metin perdidos reaparecen (%s).
+Zaklęty Las (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Bosque Encantado (IM): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+Zaklęty Las (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Bosque Encantado (ET): quedan %s min. Después el grupo vuelve a la Meseta de la Ilusión.
+zapomniana %s	%s olvidada
+Zapomnieć %s?	¿Olvidar %s?
+Zbierz więcej Kamyków - potrzebuję %s.	Reúne más Piedras Centelleantes - necesito %s.
+Zbroja i buty > 80: 3x %s,	Armadura y zapatos > 80: 3x %s,
+Zdobyte: %s / 5	Conseguidos: %s / 5
+Zdobądź %s Ros En-Tai (PB).	Consigue %s Rocíos En-Tai (IM).
+Zdobądź %s Ros En-Tai (SZC).	Consigue %s Rocíos En-Tai (ET).
+Zebrana pasza: %s/30	Forraje reunido: %s/30
+Zestawu tej części%s,	de conjunto de esta pieza%s,
+Ziemie Yohary są dostępne od poziomu %s. Wracasz do Portu Nowego Kontynentu.	Las tierras de Yohara están disponibles desde el nivel %s. Vuelves al Puerto del Nuevo Continente.
+Zniszcz %s Metiny Drzewnych Stworzeń (PB).	Destruye %s Metin de las Criaturas Arbóreas (IM).
+Zniszcz %s Metinów Drzewnych Stworzeń (SZC).	Destruye %s Metin de las Criaturas Arbóreas (ET).
+Zniszczcie %s Serca Atlantydy.	Destruid %s Corazones de Atlantis.
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (%s zostało).	Destruid la Concha de las Profundidades y entregad la Llave de Atlantis a la Columna de Concha correcta (quedan %s).
+Zniszczone Metiny: %s / %s.	Metin destruidos: %s / %s.
+Zniszczone: %s / 5	Destruidos: %s / 5
+Złota Księga Konia: %s/100	Manual de hípica dorado: %s/100
+Śmiertelny Chłód Alastora skuwa ziemię (%s/12) - omijajcie białe kręgi!	El Frío Mortal de Alastor congela el suelo (%s/12) - ¡evitad los círculos blancos!
+Świetnie! Oto twoja pasza: %s sztuk.	¡Genial! Aquí tienes tu forraje: %s unidades.
+Świątynia Węży: walka się zaczęła! Czas: %s min. Zapamiętajcie żywioły pierwszych czterech grup.	Templo de la Serpiente: ¡la lucha ha empezado! Tiempo: %s min. Recordad los elementos de los cuatro primeros grupos.
+Świątynia Węży: zostało %s min.	Templo de la Serpiente: quedan %s min.
+żywioł %s	elemento %s

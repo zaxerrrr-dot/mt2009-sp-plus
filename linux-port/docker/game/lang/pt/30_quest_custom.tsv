@@ -1,0 +1,956 @@
+# MT2009_PLUS_LANGUAGE_V1 - our quests and quest libraries (tools/i18n/data/quest_custom_pl.tsv)
+# Polish<TAB>pt (by hand; UTF-8). tools/i18n/extract_server_texts.py --check pt lists what is missing.
+    2 Ładne + Dusza = Zacny (30%)	    2 Intermédias + Alma = Boa (30%)
+    3 Drobne + Dusza = Ładny (35%)	    3 Menores + Alma = Intermédia (35%)
+    5 Małych + Dusza = Drobny (45%)	    5 Pequenas + Alma = Menor (45%)
+    Zacny + Dusza = Silny (25%)	    Boa + Alma = Forte (25%)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  de Ouro durante 60 minutos (peixes raros, como com o Livro de Pesca).
+ i Kamień Księżycowy	 e Pedra Lunar
+%d godz.	%d h
+%d godz. %d min	%d h %d min
+%d godz. %d min.	%d h %d min.
+%d godz., %d min.	%d h, %d min.
+%d min., %d sek.	%d min., %d seg.
+%d sek.	%d seg.
+%d. %s - %d pkt	%d. %s - %d pts
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+%s (%s, bonusy: %d)	%s (%s, bónus: %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s está à tua procura. Parece que te quer dizer[ENTER]algo importante.
+%s jest już na stopniu P.	%s já está no grau P.
+%s: %d. Wszystkie te punkty	%s: %d. Todos estes pontos
+%s: nie rozdano tu jeszcze punktów.	%s: ainda não foram distribuídos pontos aqui.
+%s: osiągnięto stopień P - najwyższy.	%s: grau P alcançado - o mais alto.
+%s: teraz %s.	%s: agora %s.
+(15% odporności = 4,5% mniej obrażeń).	(15% de resistência = 4,5% menos dano).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(até M1), livros (até G1) e Pedra da Alma+ (até P).
+(drogocenne). Pakiet może zawierać m.in.:	(preciosas). O pacote pode conter, entre outros:
+(klawisz P) na jej umiejętność.	(tecla P) na sua habilidade.
+(klawisz P).	(tecla P).
+(kostium, fryzura albo nakladka na bron).	(traje, penteado ou visual de arma).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(passa o rato pelo item). Se falhar, os materiais perdem-se.
+(PB) od każdego z was.	(DT) de cada um de vós.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(DT). Volta quando a tarefa estiver feita.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(clique direito na relíquia) e adiciona-lhe bónus com almas.
+(SZC) od każdego z was.	(FT) de cada um de vós.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(FT). Volta quando a tarefa estiver feita.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(conforme o cristal) durante 2 horas de jogo. A barra
++1000 PŻ (maks.)	+1000 PV (máx.)
++1100 PŻ (maks.)	+1100 PV (máx.)
++120 Obrony	+120 Defesa
++140 Obrony	+140 Defesa
++5% albo +10%. Każda maska jest inna. 	+5% ou +10%. Cada máscara é diferente. 
++51 Wartości Ataku	+51 Valor de Ataque
++60 Wartości Ataku	+60 Valor de Ataque
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Sapatos da Euforia +5..+9 - faço deles Sapatos Oceânicos.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Sapatos do Imoogi +5..+9 - faço deles Sapatos de Fogo,
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- o tempo conta também fora do jogo - depois desaparece. Não pode ser melhorada nem trocada.
+- Kamyki x100,	- Pedra Reluzente x100,
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Cortar: talvez encontres algo lá dentro (muito raramente até uma Cana de Pesca de Carbono).
+- Relikt Duszy twojej klasy.	- Relíquia da Alma da tua classe.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Usar como isco: Bónus do Atum de Ouro durante 5 minutos - mais forte.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Libertar: normalmente ficas encharcado (Roupa Molhada: -50 velocidade de movimento durante 5 minutos), às vezes recebes o Bónus do Atum
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- com um Elixir do Poder Vazio - um elixir de poder elemental,
+- z Pustym Eliksirem Odp. - eliksir odporności.	- com um Elixir Resistência Vazio - um elixir de resistência.
+... Skargi przyjmuję jednak wyłącznie w formie	... Mas só aceito reclamações sob a forma
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	Nível 1: 0,8%, M1: 8%, G1: 13,1%, P: 20%.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	Nível 1: 1,2%, M1: 12%, G1: 19,7%, P: 30%.
+1. miejsce: 10x Złote Trofeum Yutnori	1.º lugar: 10x Troféu Yut Nori Ouro
+1. poziom Świątyni Węży	1.º nível do Templo da Serpente
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Jadite Negra e para armas 5 Bigornas Vento do Norte
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Bigornas, 5 designs de armas, 5 Abrasivos,
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yang ou experiência,
+120 i Championem 4, 600 pkt rankingu gildii	120 e Campeão 4, 600 pts de ranking de Guild
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 peças: +500 PV, +1% força contra monstros; 3 peças: +1500 PV, +5% força contra monstros
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 peças: +500 PV, +3% velocidade de movimento; 3 peças: +1500 PV, +7% velocidade de movimento
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 peças: +500 PV, +5% EXP; 3 peças: +1500 PV, +15% EXP
+2. miejsce: 5x Złote Trofeum Yutnori	2.º lugar: 5x Troféu Yut Nori Ouro
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 ou 500. O nível da veste é 1000, 2000, 4000,
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yang). De 10 Lascas de Cavaleiro II - Real,
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 peças: +2500 PV, +10% magia / corpo a corpo, +5% velocidade de movimento
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 peças: +3500 PV, +15% magia / corpo a corpo, +7% velocidade de movimento
+3. miejsce: 3x Złote Trofeum Yutnori	3.º lugar: 3x Troféu Yut Nori Ouro
+300 - 399 punktow - srebrna	300 - 399 pontos - prata
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	4.º - 10.º lugar: 1x Troféu Yut Nori Ouro
+400 punktow i wiecej - zlota	400 pontos ou mais - ouro
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Aço, uma pedra do despertar e 2 500 000 Yang.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yang, experiência ou
+550 punktów i więcej	550 pontos ou mais
+6. i 7. bonus (Seon-Hae)	6.º e 7.º bónus (Seon-Hae)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	nível do item 75 e melhoria de pelo menos +7.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 ou 16000 pontos - conforme o seu tipo.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Guild] Foram pagos %d Yang do tesouro da Guild e %d Yang do teu inventário.
+a kto polegnie, wraca do portu.	e quem cair volta ao porto.
+a nie każdy nadaje się do badań.	e nem todas servem para investigação.
+a obecne bonusy celu zostana nadpisane.	e os bónus atuais do alvo serão substituídos.
+a otrzymasz lepszy kamień:	e recebes uma pedra melhor:
+a sam WuKong czeka na śmiałków na szczycie.	e o próprio WuKong espera os corajosos no topo.
+a spróbuję wytworzyć Odłamek Reliktu.	e vou tentar criar uma Lasca de Relíquia.
+a te zmiany są bardzo niepokojące. Moi bracia	e estas mudanças são muito preocupantes. Os meus irmãos
+A teraz odczep się i pozwól mi w spokoju	E agora desaparece e deixa-me em paz
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	e transforma-se num Cofre de Halloween. Experimenta! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	Para terminar a regeneração, tens de estar no mapa do Templo do Zodíaco.
+Aby stworzyć Kryształ Energii,	Para criar um Cristal de Energia,
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, conseguiste! Bem, agora vou fazer-te[ENTER]um Prisma Ressuscitador com isto.
+Aktywuj misję (300 potworów)	Ativar missão (300 monstros)
+Alarm w Świątyni Zodiaku	Alarme no Templo do Zodíaco
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor despertou! Foge dos espinhos de gelo e destrói os Ovos do Dragão Branco.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	ou Tinta Vermelha (Sapatos Oceânicos), 5 Correias Fortes
+albo sztandar użyty w hali) zabiera jeden sztandar.	ou estandarte usado no salão) gasta um estandarte.
+albo trzy kolejne liczby daja punkty - seria	ou três números seguidos dão pontos - uma série
+albo u Statuy Wojownika (z odłamków I).	ou na Estátua de Guerreiro (das lascas I).
+Alchemia to nieobliczalna nauka i każdy kolejny	A alquimia é uma ciência imprevisível e cada
+Alchemik w Dongan potrzebuje pomocy.	O Alquimista em Dongan precisa de ajuda.
+Appaloosa bedzie z toba o 7 dni dluzej.	O Appaloosa fica contigo mais 7 dias.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	Kit de Ajuda! Admiro a tua coragem - como conseguiste
+Apteczka! W ostatniej chwili - dziękuję.	Kit de Ajuda! Mesmo a tempo - obrigado.
+apteczka. Podejrzewam wojowników En-Tai, bo	Kit de Ajuda. Suspeito dos guerreiros En-Tai, porque
+apteczkę.	Kit de Ajuda.
+Atak powierzchniowy cię dosięgnął.	O ataque de área atingiu-te.
+Atakuje wszystko w poblizu	Ataca tudo à volta
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	A Caça Automática está desativada neste mundo - guarda o bilhete.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	A Caça Automática está agora disponível para todos - guarda o bilhete para mais tarde.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Caça Automática: +8 h, total %d h (só conta o tempo no jogo).
+Auto Lowy: masz juz ponad 30 dni czasu.	Caça Automática: já tens mais de 30 dias de tempo.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Caça Automática: faltam %d dias %d h (dias de calendário) - funciona enquanto o bilhete estiver no inventário.
+aż znajdziesz przy którymś z nich Lekarstwo.	até encontrares Remédio num deles.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	O Batedor da Floresta procura alguém corajoso. Vai ter com ele.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	o Batedor da Floresta. Primeiro vão enfrentar o Bagjanamu.
+Badam klejnoty, które powstają w lodzie Groty	Estudo as joias que se formam no gelo da Gruta
+Badania Biologa	A Investigação do Biólogo
+badania są ukończone. Wybierz jeden stały bonus:	a investigação está concluída. Escolhe um bónus permanente:
+badaniami. Sprawdź w Dongan, czy potrzebuje	investigações. Vê em Dongan se ele precisa
+Badanie Seona-Pyeonga	Investigação de Seon-Pyeong
+Badanie Seona-Pyeonga 2	Investigação de Seon-Pyeong 2
+Badanie Seona-Pyeonga: nagroda	Investigação de Seon-Pyeong: recompensa
+badanie, które chcesz przyśpieszyć.	a investigação que queres acelerar.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (DT) derrotado. A terra treme - Jotun Thrym (DT) aproxima-se!
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (FT) derrotado. A terra treme - Jotun Thrym (FT) aproxima-se!
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu derrotado. A terra treme - Jotun Thrym aproxima-se!
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor venceu - esta expedição não trouxe recompensa.
+Balathor, Biały Smok, śpi w lodowej krypcie.	Balathor, o Dragão Branco, dorme na cripta de gelo.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Aranha Baronesa derrotada em %d:%02d! A masmorra foi concluída.
+Baronówny zagnieździły się między regałami i nikt	As Baronesas fizeram ninho entre as estantes e ninguém
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	tinta e placas conforme a armadura escolhida, 10 000 000 Yang
+Beran-Setaou (PB) został pokonany!	Beran-Setaou (DT) foi derrotado!
+Beran-Setaou (SZC) został pokonany!	Beran-Setaou (FT) foi derrotado!
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou está morto. Em breve vão todos voltar
+Beran-Setaou został pokonany!	Beran-Setaou foi derrotado!
+BETA: czas skrocony do 10s	BETA: tempo reduzido para 10s
+BETA: DT jest dostepne od 2 etapu.	BETA: DT disponível a partir da fase 2.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Sem um Bilhete para Atlântida não sobrevives nas profundezas. Compra-o ao Mago de Atlântida.
+Bez Biletu do Atlantydy:	Sem Bilhete para Atlântida:
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	Sem a Esmeralda Arbórea não posso fazer nada. Derrota
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	Sem a Madeira Fina não posso fazer nada. Derrota
+Bez zmian	Sem alterações
+Biblioteka Wiedzy	Biblioteca do Conhecimento
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Biblioteca do Conhecimento: O tempo acabou. O Guardião leva-vos para fora da Biblioteca.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Biblioteca do Conhecimento: Fase concluída. Próximo desafio em 5 segundos.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Biblioteca do Conhecimento: não foi possível abrir a passagem - fala com o Guardião da Biblioteca.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Biblioteca do Conhecimento: O Selo da Biblioteca ativou-se sozinho.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Biblioteca do Conhecimento: fala com o Guardião da Biblioteca para abrir a passagem.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Biblioteca do Conhecimento: a passagem atravessa a sala de espera.
+Biblioteka Wiedzy: przejście się otwiera...	Biblioteca do Conhecimento: a passagem está a abrir...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Biblioteca do Conhecimento: Esta expedição já terminou. Fala com o guardião para partir numa nova.
+Biblioteka Wiedzy: Ten loch został już ukończony.	Biblioteca do Conhecimento: Esta masmorra já foi concluída.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Biblioteca do Conhecimento: Bem-vindos. Dentro de 5 segundos saem aranhas das estantes.
+biega za toba, broni cie i zbiera twoj drop.	corre atrás de ti, protege-te e apanha o teu drop.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	O Bilhete para Atlântida protege da água, da pressão
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	Podem comprar o bilhete comigo - opção: Comprar Bilhete para Atlântida.
+Bilet Podrozniczy	Bilhete de Viagem
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	Bilhete, posso levar-te à Instância Misteriosa.
+Bio-badanie 1	Bio-investigação 1
+Bio-badanie 2	Bio-investigação 2
+Bio-badanie 3	Bio-investigação 3
+Bio-badanie 4	Bio-investigação 4
+Bio-badanie 5	Bio-investigação 5
+Bio-badanie 6	Bio-investigação 6
+Bio-badanie 7	Bio-investigação 7
+Bio-badanie 8	Bio-investigação 8
+Biolog	Biólogo
+Biorę tylko tyle run, ile trzeba.	Só levo as runas necessárias.
+Blogoslawienstwo obrony: moja obrona	Bênção da defesa: a minha defesa
+Blogoslawienstwo odpornosci: trucizna	Bênção da resistência: veneno
+Blogoslawienstwo szybkosci: bede chodzil	Bênção da velocidade: vou andar
+Blogoslawienstwo zycia: moje punkty zycia	Bênção da vida: os meus pontos de vida
+bo jeszcze chwilę temu byłem na imprezie	porque ainda há pouco estava numa festa
+bo kiedyś przypłacisz to życiem.	porque um dia vais pagar isso com a vida.
+Bonus eventowy PD Uriela wg przedziału poziomów	Bónus de EXP de evento do Uriel por intervalo de níveis
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	o bónus é sorteado ao criar - mantém-se ao melhorar.
+Bonus PD +%d%% na %s	Bónus de EXP +%d%% durante %s
+Bonus PD +%d%% potrwa jeszcze: %s	O bónus de EXP +%d%% dura ainda: %s
+Bonus PD na %s według przedziału poziomów:	Bónus de EXP durante %s por intervalo de níveis:
+Bonus Złotego Tuńczyka: 5 minut.	Bónus do Atum de Ouro: 5 minutos.
+Bonus Złotego Tuńczyka: 60 minut.	Bónus do Atum de Ouro: 60 minutos.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	Os bónus e pedras do item entregue perdem-se.
+Bonusy i kamienie oddanych butow przepadaja.	Os bónus e pedras dos sapatos entregues perdem-se.
+Bonusy i kamienie zostana przeniesione.	Os bónus e pedras serão transferidos.
+Bonusy mozna przeniesc tylko: kostium na kostium,	Os bónus só podem ser transferidos: traje para traje,
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	Os bots do teu grupo entram na masmorra contigo.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	Não há espaço no inventário para esta arma - liberta espaço e escolhe outra vez.
+Brak otwartych misji z czasem oczekiwania.	Não há missões abertas com tempo de espera.
+Brak ustawionych przedziałów poziomów.	Não há intervalos de níveis definidos.
+Brakuje ci materialow albo Yang.	Faltam-te materiais ou Yang.
+Brakuje ci przedmiotów.	Faltam-te itens.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	Falta-te Orvalho En-Tai (DT). Obtém-no dos
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	Falta-te Orvalho En-Tai (FT). Obtém-no dos
+Brakuje jeszcze %d klejnotów.	Faltam ainda %d joias.
+Brama już się otwiera. Poczekaj chwilę.	O portão já está a abrir. Espera um momento.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	O portão não quer abrir hoje. Tenta outra vez
+Brazowa skrzynia (do 299 punktow)	Cofre de bronze (até 299 pontos)
+Bronie dla Młodych Bohaterów	Armas para Jovens Heróis
+Bronie dla Młodych Bohaterów są wyłączone	As Armas para Jovens Heróis estão desativadas
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	As Armas para Jovens Heróis estão desativadas neste servidor.
+Broń przyjmie wygląd broni tego samego rodzaju albo	A arma assume o visual de uma arma do mesmo tipo ou
+Brązowy Pakiet Yutnori	Pacote Yut Nori Bronze
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	Buff Premium SungMa: +10 à Vontade SungMa (força, vitalidade, resistência, inteligência) durante mais %d h.
+Buff Premium SungMa: czas tego przedmiotu już minął.	Buff Premium SungMa: o tempo deste item já acabou.
+Buffi dostępna od 55 poziomu.	A Buffi está disponível a partir do nível 55.
+Buffi jest wyłączony na tym serwerze.	A Buffi está desativada neste servidor.
+by Mikstura Talentu zadziałała.	para a Poção do Talento fazer efeito.
+by o nim opowiedzieć.	para te falar dele.
+by wejść:	para entrar:
+by złożyć z nich kryształ. Wróć, gdy będziesz	para fazer um cristal com elas. Volta quando estiveres
+Bywa też u dowódców i generałów Groty Wygnańców.	Também o têm os capitães e generais da Gruta das Almas.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	Bênção, Encantamento e Reforço
+Błogosławieństwa. Pakiet może zawierać m.in.:	Bênção. O pacote pode conter, entre outros:
+Błogosławieństwo Buffi	Bênção da Buffi
+błyskawic	relâmpagos
+Błyskawica i lód (mapa 1)	Relâmpago e gelo (mapa 1)
+Błyskawicy	Relâmpago
+błyskawicę, lód, wiatr, ziemię albo mrok.	relâmpago, gelo, vento, terra ou trevas.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Brilhante - 10x Pedra do Caos Intermédia e 5 000 000 Yang,
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	Errar é humano - escolhe com cuidado.
+całą drużynę stojącą obok.	todo o grupo que está ao teu lado.
+Cel (otrzyma bonusy zrodla):	Alvo (recebe os bónus da origem):
+Chaegirab ciągle jeszcze zajęty jest swoimi	O Chaegirab ainda está ocupado com as suas
+Chaegirab w Dongan potrzebuje pomocy.	O Chaegirab em Dongan precisa de ajuda.
+Chaos w Zaklętym Lesie	Caos na Floresta Encantada
+Chcesz opuścić Kryptę Balathora?	Queres sair da Cripta de Balathor?
+Chcesz teraz wymienić Kartę Maski Dyni	Queres trocar agora o Cupão para Máscara
+Chcę zabić tego smoka!	Quero matar este dragão!
+choć jeden, żaden cios go nie zrani.	nem que seja um, nenhum golpe o fere.
+Cialo (Body)	Corpo (Body)
+ciebie ekwipunek Smoka Mroku.	a ti o equipamento do Dragão das Trevas.
+cię wieczne potępienie.	a ti a condenação eterna.
+Co mam zrobic?	O que devo fazer?
+co najmniej jednego towarzysza z grupy.	pelo menos um companheiro do grupo.
+Co się dzieje?! Morze się wzburzyło... Czyżby	O que se passa?! O mar está agitado... Será
+Codzienna misja Świat Iluzji: Nemere pokonany.	Missão diária Mundo da Ilusão: Nemere derrotado.
+Codzienna misja Świat Iluzji: Razador pokonany.	Missão diária Mundo da Ilusão: Razador derrotado.
+Codzienna misja: Świat Iluzji	Missão diária: Mundo da Ilusão
+Cor Draconis (zwyczajne, szlachetne), perły,	Cor Draconis (normais, nobres), pérolas,
+Cos poszlo nie tak.	Algo correu mal.
+Czarna Magia	Magia Negra
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	tempo - de 10 a 60 minutos. A Poeira da Serpente dá um minuto.
+Czas minął - Alastor wypędza was z Głębi.	O tempo acabou - Alastor expulsa-vos das Profundezas.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	O tempo acabou! Sung Mahi atira-te para fora da torre.
+Czas minął. Możesz spróbować jeszcze raz.	O tempo acabou. Podes tentar mais uma vez.
+Czas oczekiwania został skrócony.	O tempo de espera foi reduzido.
+Czas odbioru nagrod juz minal.	O prazo para receber as recompensas já passou.
+czeka Morkhot, władca głębin.	espera Morkhot, senhor das profundezas.
+czeka na ciebie - on wie, gdzie szukać Władców	está à tua espera - ele sabe onde procurar os Senhores
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	espera Nemere, senhor da geada. Ninguém voltou de lá,
+Czekaj na event w kalendarzu wydarzeń.	Espera pelo evento no calendário de eventos.
+Czempion	Campeão
+Czempiona (Opcje klawiszy: Czempion).	de Campeão (Opções de teclas: Campeão).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	O Ginseng Verm. (Premium) é comida para o Cavalo Militar Forte (31+).
+Czerwone Pudło Zodiaku	Caixa Zodíaco Vermelha
+Czerwony Żeń-szeń 	Ginseng Vermelho 
+cztery fale, a skarb Hydry będzie twój.	quatro vagas, e o tesouro da Hidra será teu.
+Czuje sie silniejszy! Dziekuje.	Sinto-me mais forte! Obrigado.
+Czujesz tę pulsującą energię?	Sentes esta energia a pulsar?
+Czwartek (Wu-Wei)	Quinta-feira (Wu-Wei)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	Queres sair das cavernas e voltar a Dongan?
+Czy chcesz opuścić Królestwo Żywiołów	Queres sair do Reino dos Elementos
+Czy chcesz opuścić Schronienie Meley? Walka trwa	Queres sair do Covil de Meley? A luta continua
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Queres sair da torre? A escalada termina.
+Czy chcesz opuścić świątynię?	Queres sair do templo?
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	Queres levantar âncora e partir?
+Czy chcesz przejść przez Gardziel Am-heha i	Queres atravessar o Desfiladeiro Am-heh e
+Czy chcesz się teleportować?	Queres teletransportar-te?
+Czy chcesz teraz wejść Świątyni Zodiaku?	Queres entrar agora no Templo do Zodíaco?
+Czy chcesz teraz zejść ze statku? Wejście	Queres sair do navio agora? Entrar
+Czy chcesz użyć Spirali Czasu?	Queres usar uma Espiral do Tempo?
+Czy chcesz wrócić na Przełęcz Yilad?	Queres voltar ao Desfiladeiro Yilad?
+Czy chcesz wrócić z Tajemniczej Instancji	Queres voltar da Instância Misteriosa
+Czy chcesz zejść głębiej do jaskiń?	Queres descer mais fundo nas cavernas?
+Czy chcesz zejść na ląd?	Queres descer para terra?
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	Queres que te leve ao Templo?
+Czy jestes jednym z nich?	És um deles?
+Czy jesteście gotowi stanąć przed Nemere (PB),	Estão prontos para enfrentar Nemere (DT),
+Czy jesteście gotowi stanąć przed Nemere (SZC),	Estão prontos para enfrentar Nemere (FT),
+Czy na pewno chcesz zregenerować wszystkie portale?	Tens a certeza de que queres regenerar todos os portais?
+Czy na pewno chcesz zregenerować?	Tens a certeza de que queres regenerar?
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	Ainda te lembras das Cavernas dos Gnolls
+Czy znasz legendę o Świątyni Zodiaku?	Conheces a lenda do Templo do Zodíaco?
+czyste egzemplarze.	exemplares limpos.
+Czyściec Ognia (Razador)	Purgatório de Fogo (Razador)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Purgatório de Fogo: não foi possível abrir o portal - fala com a estátua de Am-heh.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Purgatório de Fogo: fala com a estátua de Am-heh para abrir o portal.
+Czyściec Ognia: portal się otwiera...	Purgatório de Fogo: o portal está a abrir...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	Purgatório de Fogo: a passagem atravessa a sala de espera.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	peças (Sagrado 500 000, Glorioso 1 000 000, Cavaleiro
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	Um membro do grupo está demasiado longe. Juntem-se perto de mim.
+Członek grupy nie posiada przedmiotu potrzebnego,	Um membro do grupo não tem o item necessário,
+Członkowie, posiadający za mało Animosfer:	Membros com poucas Animosferas:
+członków gildii obecnych w Krypcie.	membros da Guild presentes na Cripta.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	dá 1 ponto de experiência, as Ardentes - 10, 50, 100,
+dalej bez ciebie - możesz do niej wrócić u mnie	sem ti - podes voltar a ela através de mim
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	demónios. O melhor é obtê-la dos Destruidores En-Tai.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	Demónios. Na janela de criação vês cada receita:
+Dla twojego poziomu: +%d%% PD	Para o teu nível: +%d%% EXP
+dla twojej klasy. Uda się na pewno.	para a tua classe. Vai resultar de certeza.
+do Chaegiraba w Dongan po nagrodę.	ao Chaegirab em Dongan pela recompensa.
+Do Erebu wchodzi się tylko w grupie.	Em Erebu só se entra em grupo.
+do Groty Wygnańców.	à Gruta das Almas.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	Deixo-te entrar nas cavernas a partir do Nível de Campeão 1.
+Do którego obszaru chcesz się udać?	Para que zona queres ir?
+Do lochu wchodzi najwyżej 8 osób.	Na masmorra entram no máximo 8 pessoas.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	Nas Masmorras do Despertar só se entra em grupo.
+do Namgan?	para Namgan?
+do niej wejść przeze mnie.	entrar nela através de mim.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	até P. Não tens nenhuma delas no grau G1-G10.
+Do Portu Nowego Kontynentu	Para o Porto do Novo Continente
+Do przeniesienia bonusow z jednego kostiumu na drugi	Para transferir bónus de um traje para outro
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	Para a Torre de Vigia de Nemere (DT): Ninja e Xamã no grupo.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	Para a Torre de Vigia de Nemere (FT): Ninja e Xamã no grupo.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	Na Fenda do Tempo entram no máximo 8 pessoas.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	Na Fenda do Tempo só se entra em grupo.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	Além disso, Padrão de Costura, Tinta Azul (Sapatos de Fogo)
+Do walki z Balathorem	Para lutar contra Balathor
+do wyboru.	à escolha.
+Do zakończenia badań potrzebuję jeszcze	Para terminar a investigação ainda preciso de
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	às terras de Yohara, onde reina a vontade de Sung Mahi.
+Do Świątyni Smoka wchodzi się tylko w grupie.	No Templo do Dragão só se entra em grupo.
+Do świątyni wchodzi najwyżej 8 osób.	No templo entram no máximo 8 pessoas.
+Dobra robota. Las od razu oddycha lżej.	Bom trabalho. A floresta já respira melhor.
+Dobrze	Bem
+Dobrze! Następny Metin.	Bem! Próximo Metin.
+Dobrze, szanuję twoją decyzję. Wróć,	Está bem, respeito a tua decisão. Volta
+Dobrze, w takim razie chodz za mna!	Bem, então segue-me!
+Dobrze, zbadam je. Wróć po wynik za dobę.	Está bem, vou examiná-las. Volta daqui a um dia.
+Dodano %d Smoczych Monet do Twojego konta.	Foram creditadas na tua conta %d Moedas Dragão.
+dodasz Wzmocnieniem Przedmiotu.	adicionas com Reforço de Item.
+Dodatkowy bonus (6. i 7.)	Bónus extra (6.º e 7.º)
+Dokad chcesz sie udac?	Para onde queres ir?
+Dokąd chcesz się przenieść?	Para onde te queres mudar?
+Dokąd chcesz się udać?	Para onde queres ir?
+Dom Aukcyjny	Casa de Leilões
+Dom Aukcyjny jest na tym świecie wyłączony.	A Casa de Leilões está desativada neste mundo.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	O potenciador aumenta o dano de uma habilidade.
+Dopalacz: Duchowe Uderzenie	Potenciador: Golpe Espiritual
+Dopalacz: Mroczne Uderzenie	Potenciador: Golpe Sombrio
+Dopalacz: Ognista Strzała	Potenciador: Flecha de Fogo
+Dopalacz: Przywołanie Błyskawicy	Potenciador: Invocar Relâmpago
+Dopalacz: Strzelający Smok	Potenciador: Dragão Atirador
+Dopalacz: Uderzenie Palcem	Potenciador: Golpe de Dedo
+Dopalacz: Wir Miecza	Potenciador: Rodopio da Espada
+Dopalacz: Zasadzka	Potenciador: Emboscada
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	Aprendes um potenciador quando evoluíres qualquer guarda até ao nível P.
+dopiero początek. Teraz potrzebuję Klejnotów	apenas o início. Agora preciso de Joias
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	Enquanto um deles estiver de pé, o dragão não pode ser ferido.
+Doskonały okaz! Dziękuję.	Um exemplar perfeito! Obrigado.
+dostajesz jeden taki Łup za każdą postawioną talię.	recebes um destes Saques por cada baralho apostado.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	recebes 1 Dobrão e, quando encontrarmos a certa,
+dostaniesz ode mnie maski! He he! 	recebes máscaras de mim! Eh eh! 
+Dostarcz apteczkę Zwiadowcy	Entrega o Kit de Ajuda à Sentinela
+doszedł na szczyt i obronił statek przed Hydrą.	chegou ao topo e defendeu o navio da Hidra.
+Doświadczenie Czempiona dają potwory ziemi	A EXP de Campeão vem dos monstros de terra
+doświadczeniem szata czeka na ewolucję.	de experiência, a veste espera pela evolução.
+Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (míticas, preciosas), pérolas, brincos
+drogę na nowy kontynent. Czy mam cię zabrać do	o caminho para o novo continente. Queres que te leve ao
+dropują, ale dają więcej PD niż zazwyczaj.	dropam, mas dão mais EXP do que o normal.
+Druga fala - i Szel (PB)!	Segunda vaga - e o Szel (DT)!
+Druga fala - i Szel (SZC)!	Segunda vaga - e o Szel (FT)!
+Druga wioska	Segunda vila
+Drugi rekonesans	Segundo reconhecimento
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	Segundo reconhecimento: volta à Sentinela da Floresta.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	O Druida En-Tai (DT) deve estar por perto. Tira-lhe
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	O Druida En-Tai (FT) deve estar por perto. Tira-lhe
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	O Druida En-Tai tinha um Kit de Ajuda (DT). Leva-o ao Guardião da Floresta (DT).
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	O Druida En-Tai tinha um Kit de Ajuda (FT). Leva-o ao Guardião da Floresta (FT).
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	O Druida En-Tai tinha um Kit de Ajuda. Leva-o ao Guardião da Floresta.
+Drużyna na tej mapie wejdzie razem z tobą.	O teu grupo neste mapa entra contigo.
+Drużyna nie jest wymagana.	Não é preciso grupo.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	O Espírito da Terra! Com ele vamos perceber o que se passa
+Duchowym Buffi.	da Alma da Buffi.
+Duchowym+.	da Alma+.
+duchy sześciu żywiołów strzegą swoich ziem.	os espíritos dos seis elementos guardam as suas terras.
+Dusza Miecza	Alma da Espada
+Dusza Miecza (powtarzalna)	Alma da Espada (repetível)
+Dusza Ochrony	Alma da Proteção
+Dusza Ochrony (powtarzalna)	Alma da Proteção (repetível)
+Dusza Ozdoby	Alma das Joias
+Dusza Ozdoby (powtarzalna)	Alma das Joias (repetível)
+Dusza Światła	Alma da Luz
+Dusza Światła (powtarzalna)	Alma da Luz (repetível)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	cabeça de abóbora! Chamo-me Jack Cabeça de Abóbora, e isto é
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	Já está ativo um peixe de EXP melhor - um mais fraco não funciona com ele.
+działają u Ciebie o połowę rzadziej.	funcionam contigo metade das vezes.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	Obrigado pela ajuda! Daqui a pouco voltas a terra.
+Dziekuje! Oto twoje szkatulki.	Obrigado! Aqui tens os teus cofres.
+Dziekuje, ze mnie tu odprowadziles.	Obrigado por me teres acompanhado até aqui.
+Dziesieciu graczy z najwieksza suma punktow	Os dez jogadores com mais pontos
+Dziesięciu graczy z najwyższym łącznym wynikiem	Os dez jogadores com a maior pontuação total
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	Com o meu poder entras nas Masmorras do Despertar.
+Dzięki temu skróci się czas oczekiwania. Wybierz	Assim o tempo de espera fica mais curto. Escolhe
+Dzięki tobie moje badania są ukończone.	Graças a ti, a minha investigação está concluída.
+Dziękuję ci za pomoc, wojowniku.	Obrigado pela ajuda, guerreiro.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Obrigado pela ajuda, guerreiro. A floresta está-te grata.
+Dziękuję ci. Wynagrodzę cię za pomoc.	Obrigado. Vou recompensar-te pela ajuda.
+Dziękuję za pomoc. Weź to w nagrodę.	Obrigado pela ajuda. Toma isto como recompensa.
+Dziękuję, już mi lepiej. Do uszlachetnienia	Obrigado, já me sinto melhor. Para refinar
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Obrigado. Por agora o templo está seguro. Aqui[ENTER]tens o teu presente. Mas a energia vai subir. Volta[ENTER]daqui a 24 horas para baixar o nível de energia com[ENTER]Animosferas. Claro que vais receber outra[ENTER]recompensa por isso.
+Efekt zestawu	Efeito do conjunto
+eksperyment może się nie powieść.	a experiência pode falhar.
+ekwipunek. Potrafie tez oszlifowac klejnoty	equipamento. Também sei lapidar joias
+eliksir (szansa 90%, od 120. poziomu):	elixir (90% de hipótese, a partir do nível 120):
+Eliksir daje od 8 do 20% na 1 do 10 minut -	O elixir dá de 8 a 20% durante 1 a 10 minutos -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	O elixir não funciona nas missões de Yohara e não reduz o tempo de espera (para isso há a Espiral do Tempo).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	O Elixir do Investigador funciona nas investigações do Biólogo - a partir do nível 30.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	O Elixir do Investigador já está ativo - será gasto na próxima entrega de item para investigação.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	O Elixir do Investigador melhorou a qualidade do item: hipótese de aceitação %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	Elixir da Vontade SungMa: +5 (%s) durante 30 min.
+Eliksiry Yohary	Elixires de Yohara
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (DT). Encontra-o e tira-lhe o Kit de Ajuda.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (FT). Mata druidas até conseguires
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	Os En-Tai andam no mínimo estranhos. Reduz-lhes
+En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, porque andam no mínimo estranhos.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Enciclopédia aberta: 25 livros de habilidade estão no inventário.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Enciclopédia: precisas de %d espaços livres no inventário.
+energii przy pasku zadań pokaże, ile ci zostało.	de energia junto à barra de tarefas mostra quanto te resta.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebu (DT): Bagjanamu (DT) guarda o caminho para Jotun Thrym!
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebu (FT): Bagjanamu (FT) guarda o caminho para Jotun Thrym!
+Erebu jest dziś zamknięte. Wróć później.	Erebu está hoje fechado. Volta mais tarde.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebu não vos deixa entrar agora. Tenta daqui a pouco.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebu: Bagjanamu guarda o caminho para Jotun Thrym! Têm 30 minutos.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebu: o tempo acabou - voltam à Floresta Encantada.
+Erebu: potrzebujesz Kamienia Driad.	Erebu: precisas de uma Pedra das Dríades.
+Erebu: ta wyprawa już się skończyła.	Erebu: esta expedição já terminou.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Fase 2: derrota a Pedra Demoníaca e todos os monstros! Os arqueiros acordam quando a pedra é atingida.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Fase 2: derrota os monstros dentro do tempo! A maldição de Sung Mahi tira mais PV a cada 10 s - o Antídoto de Sung Ma remove-a.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Fase 2: evita todos os ataques durante um minuto! Um golpe do círculo deixa 1 PV - um segundo sem PV cheios mata.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Fase 2: encontra a pedra para remover o selo! Os selos só abrem pela ordem certa.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Fase 2: encontra a chave certa para fugir! A Chave Misteriosa cai dos monstros.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Fase 2: encontra o par de monstros que não combinam e derrota-o!
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Fase 2: destrói a Pedra Metin certa! Só tens uma hipótese.
+Etap ukończony - przejdź przez portal	Fase concluída - passa pelo portal
+Event jeszcze trwa - nagrody za ranking	O evento ainda decorre - as recompensas do ranking
+eventu odbiera tu po jego końcu (przez 7 dni):	do evento recebem-se aqui depois do fim (durante 7 dias):
+Ewolucja zawsze się udaje i daje +1 poziom,	A evolução resulta sempre e dá +1 nível,
+Fabuła	História
+Fala Śmierci	Onda da Morte
+Fragment duszy: %d / 10	Fragmento de alma: %d / 10
+fryzure na fryzure, nakladke na nakladke.	penteado para penteado, visual para visual.
+Gardziel Am-heha	Desfiladeiro Am-heh
+Gaya biorę sam z twojego licznika Gaya.	O Gaya tiro-o eu do teu contador de Gaya.
+Gaya biorę z twojego licznika Gaya.	O Gaya tiro-o do teu contador de Gaya.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	O Gaya tiro-o do teu contador de Gaya. Clica na receita,
+gdy się nie uda, hełm i materiały przepadają.	se falhar, o elmo e os materiais perdem-se.
+gdy skończę.	quando eu acabar.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	Quando o navio partir, não há volta - a Hidra
+Gdy walka się zacznie, świątynia odmierzy wam	Quando a luta começar, o templo vai contar-vos
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	Onde está o Kit de Ajuda? Tira-o aos Druidas En-Tai.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	Onde está o Kit de Ajuda? Tira-o ao Druida En-Tai.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Onde está a Esmeralda Arbórea (DT)? Derrota o Soberano.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Onde está a Esmeralda Arbórea (FT)? Derrota o Soberano.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Onde está a Madeira Fina (FT)? Derrota o Soberano.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Onde está a Madeira Fina (DT)? Derrota o Soberano.
+Gildia może wejść ponownie za %d min.	A Guild pode voltar a entrar daqui a %d min.
+Gildia musi istnieć co najmniej 24 godziny.	A Guild tem de existir há pelo menos 24 horas.
+Gildia musi mieć co najmniej %d poziom.	A Guild tem de ter pelo menos nível %d.
+Gildia potrzebuje %d pkt rankingu gildii.	A Guild precisa de %d pts de ranking de Guild.
+Glos Barah Taraji	Voz de Barah Taraji
+GM: Krypta Balathora - zeruj przerwę gildii	GM: Cripta de Balathor - repor pausa da Guild
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM: Tens de estar no piso 1 ou 2 da DT.
+GM: szanse połowu	GM: hipóteses de pesca
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Fúria de Alastor! Invoca servos e cura as suas feridas.
+Goblin Skarbow:	Duende do Tesouro:
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Derrota amarga! A tua escalada acaba aqui - daqui a pouco voltas ao salão.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	Pronto! Fala comigo outra vez.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	Pronto! Volta ao Monge Milbon para receberes o presente.
+Gotowe. Bonus PD +%d%% na %s	Pronto. Bónus de EXP +%d%% durante %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	Pronto. Os bónus foram transferidos e o item
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	Pronto. Coloca a Relíquia na janela de Bónus da Relíquia
+Gotowi? Balathor nie zna litości.	Prontos? Balathor não conhece piedade.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	O jogo custa 30 000 Yang e um conjunto de cartas.
+Graj po swojemu (wolna reka)	Joga à tua maneira (mão livre)
+Gratulacje! Za miejsce w pierwszej dziesiątce	Parabéns! Por um lugar no top 10
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	Acabas o jogo quando quiseres. Recebes cofres:
+Gromiste Góry	Montanhas do Trovão
+Grota Wygnańców (wejście)	Gruta das Almas (entrada)
+Grota Wygnańców 2	Gruta das Almas 2
+Grota Wygnańców 2 (PB)	Gruta das Almas 2 (DT)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Gruta das Almas 2 (DT): o tempo acabou - voltam ao Planalto da Ilusão.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Gruta das Almas 2 (DT): tens 60 minutos. Obtenham as Chaves Torcidas (DT) e encontrem o Fantasma de um Sura.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Gruta das Almas 2 (DT): precisas de um Tomo do Despertar.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Gruta das Almas 2 (DT): esta expedição já terminou.
+Grota Wygnańców 2 (SZC)	Gruta das Almas 2 (FT)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Gruta das Almas 2 (FT): o tempo acabou - voltam ao Planalto da Ilusão.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Gruta das Almas 2 (FT): tens 60 minutos. Obtenham as Chaves Torcidas (FT) e encontrem o Fantasma de um Sura.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Gruta das Almas 2 (FT): precisas de um Relógio de Bolso.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Gruta das Almas 2 (FT): esta expedição já terminou.
+Grota Wygnańców 2 (zablokowane)	Gruta das Almas 2 (bloqueada)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	A Gruta das Almas 2 só é acessível a partir da Gruta das Almas.
+Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, isto não é um cristal Metin, mas um pedaço
+Głębie (silny)	Profundezas (forte)
+Głębie (słaby)	Profundezas (fraco)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	As Profundezas não vos deixam entrar agora. Tenta daqui a pouco.
+Głębie Północnego Wiatru	Profundezas do Vento Norte
+Głębie Północnego Wiatru (silny)	Profundezas do Vento Norte (forte)
+Głębie Północnego Wiatru (słaby)	Profundezas do Vento Norte (fraco)
+Głębie są dziś zamknięte. Wróć później.	As Profundezas estão hoje fechadas. Volta mais tarde.
+Głębie: ta wyprawa już się skończyła.	Profundezas: esta expedição já terminou.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Profundezas: ficaste morto tempo demais - estás fora da expedição.
+Halloween, nagle zawirował cały świat i w ułamku	Halloween, de repente o mundo inteiro girou e numa
+Handlarz Bronią w Dongan potrzebuje pomocy.	O Vendedor de Armas em Dongan precisa de ajuda.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	O Vendedor de Armaduras em Dongan precisa de ajuda.
+Hej! Wiem, że zamieniono mnie w kamień - to	Ei! Sei que me transformaram em pedra - isso
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Ei, tu! Sim, tu! Pareces alguém que sabe
+hełm 120. poziomu dla każdej klasy. Połóż materiały	elmo de nível 120 para cada classe. Coloca os materiais
+Hełmy na 100 poziom	Elmos de nível 100
+Hmm... Nie mam maski, która pasowałaby	Hmm... Não tenho nenhuma máscara que combine
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Hmmm, infelizmente este feto está danificado. Não há
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	A Hwacha ainda não está pronta (faltam Flechas de Fogo).
+Hydra pokonana! Statek może teraz dopłynąć do	Hidra derrotada! O navio já pode navegar até
+i 400 000 Yang. Szansa zależy od plusa butów:	e 400 000 Yang. A hipótese depende do plus dos sapatos:
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	e 5 Pedras Amolar Vento Norte, para armadura 5 Sedas da Serpente
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	e 5 Polimentos da Serpente. Custo: 10 000 000 Yang e 100 Gaya,
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	e da escuridão das profundezas. Sem ele não desces às ruínas.
+i co najmniej 500 000 Yang w skarbcu gildii.	e pelo menos 500 000 Yang no tesouro da Guild.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	e um elmo (exemplo para a tua classe, +7) e todos
+i magowie strzega swiatyni dzien i noc, a po jej	e magos guardam o templo dia e noite, e depois da sua
+i materiały - wszystkie przepisy zobaczysz w oknie.	e materiais - vês todas as receitas na janela.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	e pode não funcionar bem. É ativado pelo dono
+i Podziemnych Lodowych Golemów w Grocie.	e Golems de Gelo Negro na Gruta.
+i Starożytna Dżungla (wiatr). Odporność	e a Selva Antiga (vento). Resistência
+i te dodane. Im wyższy poziom szaty, tym większa	e os adicionados. Quanto maior o nível da veste, maior
+i wrócić do Portu Nowego Kontynentu?	e voltar ao Porto do Novo Continente?
+i Zaczarowanego Lasu (wiatr) oraz lochy:	e da Floresta Encantada (vento) e masmorras:
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	e armadura de nível 65, forjo um novo, mais poderoso
+ich blask zmienia się pod wpływem emocji.	o seu brilho muda com as emoções.
+Ich strażnicy pilnują Płomiennego Feniksa,	Os seus guardiões vigiam a Fénix de Fogo,
+Idź dalej	Continuar
+Idź do Opuszczonej Twierdzy	Vai à Fortaleza Abandonada
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Vai ao teletransportador e viaja até ao Templo do[ENTER]Zodíaco. O Monge Milbon já está lá à tua espera.
+Idź do Świątyni Węży	Vai ao Templo da Serpente
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	vai outra vez aos Soberanos En-Tai e traz-me a Esmeralda
+Idź już i znajdź jeden %s!	Vai já e encontra um %s!
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	Incendiário (DT) ainda está vivo. Continua a lutar ou espera
+Ignator (PB), strażnik żaru, został pokonany.	Incendiário (DT), guardião das brasas, foi derrotado.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	Incendiário (FT) ainda está vivo. Continua a lutar ou espera
+Ignator (SZC), strażnik żaru, został pokonany.	Incendiário (FT), guardião das brasas, foi derrotado.
+Informacja o mapie	Informação do mapa
+innym... Czegoś takiego na pewno jeszcze nie	outro... De certeza que nunca viste nada assim
+Inteligencja %d.	Inteligência %d.
+Inteligencja - trucizna, ogień i krwawienie	Inteligência - veneno, fogo e sangramento
+Inteligencja Sung Ma	Inteligência Sung Ma
+ja wyrzucasz. Trzy karty o tej samej liczbie	descartas. Três cartas com o mesmo número
+Jak grac w Okey?	Como se joga Okey?
+Jak ma sie nazywac?	Como se vai chamar?
+Jak ma walczyc?	Como deve lutar?
+Jak mam walczyc przy tobie?	Como devo lutar ao teu lado?
+Jak sie masz?	Como estás?
+Jaka ma byc jego klasa?	Qual deve ser a classe?
+Jaka sciezka?	Que caminho?
+Jaskinie Gnolli	Cavernas dos Gnolls
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	As Cavernas dos Gnolls estão disponíveis a partir do Nível de Campeão 1. Voltas a Dongan.
+Jazda (Bezszelest. Chód)	Montar (Passo Leve)
+Jazda (Brak Odrzutu)	Montar (Sem Recuo)
+Jazda (Gwałt. Wichura)	Montar (Tempestade Furiosa)
+Jazda (Nieśmiertelność)	Montar (Imortalidade)
+Jazda (umiej. konne)	Montar (hab. de cavalo)
+Jazda (W. SungMa. INT)	Montar (V. SungMa INT)
+Jazda (W. SungMa. ODP)	Montar (V. SungMa RES)
+Jazda (W. SungMa. SIŁA)	Montar (V. SungMa FOR)
+Jazda (W. SungMa. WIT)	Montar (V. SungMa VIT)
+Jazda (Zwinne Kopyta)	Montar (Cascos Ágeis)
+Jazda Konna (Ninja)	Montar (Ninja)
+Jazda Konna (PD)	Montar (EXP)
+Jazda Konna (Precyzja)	Montar (Precisão)
+Jazda Konna (przeciw diabłom)	Montar (contra demónios)
+Jazda Konna (przeciw insektom)	Montar (contra insetos)
+Jazda Konna (przeciw mistykom)	Montar (contra místicos)
+Jazda Konna (przeciw nieumarłym)	Montar (contra mortos-vivos)
+Jazda Konna (przeciw orkom)	Montar (contra orcs)
+Jazda Konna (przeciw potworom pustyni)	Montar (contra monstros do deserto)
+Jazda Konna (przeciw potworom)	Montar (contra monstros)
+Jazda Konna (przeciw półludziom)	Montar (contra meio-humanos)
+Jazda Konna (przeciw zwierzętom)	Montar (contra animais)
+Jazda Konna (Sura)	Montar (Sura)
+Jazda Konna (Szaman)	Montar (Xamã)
+Jazda Konna (Wojownik)	Montar (Guerreiro)
+Jeden transfer zuzywa jedna sztuke.	Uma transferência gasta uma unidade.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	Um dos itens escolhidos já não está no teu
+Jedna z twoich mocy woli SungMa zostanie	Um dos teus atributos da Vontade SungMa será
+jednak: tylko pierwsza próba zawsze się udaje.	porém: só a primeira tentativa resulta sempre.
+jednego jadeitu potrzebują tych samych materiałów.	uma jade precisam dos mesmos materiais.
+jedną pełną kulę doświadczenia.	uma esfera de experiência cheia.
+Jego jad zabił już niejednego wojownika,	O seu veneno já matou muitos guerreiros,
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	As suas escamas brilham como ouro líquido! O que vais fazer com ele?
+Jej Królowa nie wypuściła jeszcze nikogo,	A sua Rainha ainda não deixou ninguém sair,
+jej potomstwem, najadami i samą bestią. Wytrzymaj	as suas crias, as náiades e a própria besta. Aguenta
+Jej potwory rani tylko Czempion - ten, kto	Os seus monstros só podem ser feridos por um Campeão - quem
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	Se eu ou tu morrermos, a expedição perde-se.
+jest część parametrów, którą da (poziom 250 - 25%).	é a parte dos atributos que dá (nível 250 - 25%).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	Sou o Duende do Tesouro. Há anos que procuro um grande
+Jestem w trakcie dokładniejszej analizy	Estou a meio de uma análise mais detalhada
+jesteś dość silny, by przetrwać. Naprawdę chcesz	és forte o suficiente para sobreviver. Queres mesmo
+Jesteś już w Porcie Nowego Kontynentu.	Já estás no Porto do Novo Continente.
+Jeszcze chwile	Só um momento
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	também a sua Esmeralda Arbórea, e dou-te algo valioso.
+jeszcze lepsze. Przynies mi:	ainda melhor. Traz-me:
+Jeszcze nie	Ainda não
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	Ainda não descansaram da última expedição:
+Jeszcze nie skończyłem. Wróć za:	Ainda não acabei. Volta daqui a:
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	Ainda não destruíste todas as %d[ENTER]Pedras Metin. Volta a falar comigo quando[ENTER]terminares a tarefa.
+Jeszcze nieaktywne.	Ainda não ativo.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	mais um pouco. Leva à Floresta Encantada,
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	outra vez aos Soberanos En-Tai e traz-me uma Esmeralda
+jeśli się rozmyślisz.	se mudares de ideias.
+Jeśli statek wciąż płynie, łódź zaraz cię do	Se o navio ainda navegar, um barco leva-te já
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	Se a expedição ainda decorrer, o portão leva-te já.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	Se a expedição ainda decorrer, o poder da estátua leva-te já.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	Se a expedição ainda decorrer, o portal leva-te já.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	Se a expedição ainda decorrer, a passagem leva-te já.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	Se a expedição ainda decorrer, a corrente leva-te já.
+Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (DT) chegou a Erebu!
+Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (FT) chegou a Erebu!
+Jotun Thrym przybył do Erebu!	Jotun Thrym chegou a Erebu!
+Juz mam to blogoslawienstwo.	Já tenho esta bênção.
+ją pokonali.	a derrotaram.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Pedras crio um Talismã Misterioso. Na janela de criação
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	Pedra das Almas de Beran-Setaou. Obtém-na
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Pedra Espiritual +0, +1, +2 ou +3. Com elas lapido
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	As pedras caíram - o dragão está indefeso. Depressa,
+Kamienie Przebudzenia	Pedras do Despertar
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	As pedras do dragão protegem Beran-Setaou. Enquanto
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	A pedra define a hipótese: Pequena 2%, Refinada 5%,
+Kamień demonów oberwał - łucznicy atakują!	A Pedra Demoníaca foi atingida - os arqueiros atacam!
+Kamień Driad.	Pedra das Dríades.
+Kamień Duchowy Buffi	Pedra da Alma da Buffi
+Kamień Duchowy Buffi trenuje umiejętności Buffi	A Pedra da Alma da Buffi treina as habilidades da Buffi
+Kamień Duchowy+	Pedra da Alma+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	A Pedra da Alma+ evolui a guarda e o potenciador a partir do grau G1
+Kamień Dusz Beran-Setaou	Pedra das Almas de Beran-Setaou
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	A Pedra das Almas de Beran-Setaou! Com ela as minhas
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	A Pedra Metin de Yohara só funciona nos mapas de Yohara com Vontade SungMa.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	A Pedra Metin de Yohara exige o Nível de Campeão 1.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	pedra do despertar e 2 500 000 Yang. A pedra define
+Kamień użyty na złej steli się rozpadnie.	Uma pedra usada na estela errada desfaz-se.
+karty Okey. 24 karty tworza zestaw kart.	cartas Okey. 24 cartas formam um conjunto de cartas.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Catacumba do Diabo: Sais da masmorra dentro de 1 segundo.
+Każda klasa i droga ma swój dopalacz - twój to:	Cada classe e caminho tem o seu potenciador - o teu é:
+Każda mapa Sung Ma ma swoje wymagania. Gdy	Cada mapa Sung Ma tem os seus requisitos. Quando
+Każde pełne 10% Siły daje też +1% do	Cada 10% completos de Força dão também +1% ao
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	Todos os dias abrem sempre dois templos[ENTER]diferentes.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Todos têm de ter nível %d, Campeão 4 e estar na Guild há 24 horas. Não cumprem:
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Cada guerreiro pode escolher uma recompensa no Cofre do Dragão Dourado - têm um minuto.
+Klejnoty dla Seona-Pyeonga	Joias para Seon-Pyeong
+Klejnoty Zawiści wypadają z Podziemnych Lod.	As Jóias da Malevolência caem dos Golems de Gelo
+Klejnoty Zawiści zdradziły mi wiele, ale to	As Jóias da Malevolência revelaram-me muito, mas isso
+Klif Gautama (Zbocze Gautama)	Penhasco de Gautama (Encosta de Gautama)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Clica com o botão direito no Anel Fogo do Dragão junto a uma estátua. Os ovos voltam a cada 2 minutos.
+Kliknij talie, aby dobrac karty. Lewym	Clica no baralho para tirar cartas. Com o botão
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	A Chave da Prisão não serve - o ferreiro continua na jaula.
+Klucz Goblina!	Chave do Duende!
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	A Chave da Serpente desfaz-se - o Pilar continua inabalável.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	A Chave Flor da Geada (DT) só pode ser usada por um Ninja ou um Xamã.
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	A Chave Flor da Geada (FT) só pode ser usada por um Ninja ou um Xamã.
+Klątwa	Maldição
+klątwa Sung Mahi. Ale jestem szamanem i znam	a maldição de Sung Mahi. Mas sou xamã e conheço
+Klątwa Sunga Mahi zdjęta.	A maldição de Sung Mahi foi removida.
+Kobieta	Mulher
+Kobieta czy mezczyzna?	Mulher ou homem?
+Kolejny Potężny Wojownik Wężowy (lód)!	Mais um Serpente Guerr. Poderoso (gelo)!
+kolekcjoner przedmiot	item de colecionador
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	colares e brincos, e da Pedra Demoníaca - a Pedra do Poder
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	Pilar do Dragão do Norte (DT) destruído. O líder do grupo pode falar com o Leão de Gelo (DT).
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	Pilar do Dragão do Norte (FT) destruído. O líder do grupo pode falar com o Leão de Gelo (FT).
+komnatach krazy Straznik En-Tai, ktory co chwile	câmaras anda o Guardião En-Tai, que de vez em quando
+konczy ja - skrzynie dostaniesz przy	terminá-lo - recebes os cofres ao
+Koniec gry daje jedna skrzynie wedlug wyniku.	O fim do jogo dá um cofre conforme o resultado.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	continente - Yohara. Visita-o em Dongan quando
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	traje, montada - o visual de outra montada.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Trajes, penteados e visuais de arma -- tudo a 1 Yang.
+Koszt szkolenia:	Custo do treino:
+Koszt: 100 000 000 Yang (przy odbiorze)	Custo: 100 000 000 Yang (ao levantar)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Custo: 50 000 000 Yang ou um Bilhete de Transmutação,
+Krainie, a dostaniesz Książkę.	Terra, e recebes um Livro.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	terra de Jotun Thrym atrás do Templo, ou de volta
+Krypta Balathora jest teraz zamknięta.	A Cripta de Balathor está agora fechada.
+Krypta Balathora: wejście	Cripta de Balathor: entrar
+Krypta Balathora: zgłoszenie gildii	Cripta de Balathor: inscrição da Guild
+Krypta jest otwarta. Członkowie gildii mogą teraz	A Cripta está aberta. Os membros da Guild podem agora
+Krypta twojej gildii jest już zamknięta.	A Cripta da tua Guild já está fechada.
+Krypta twojej gildii jest na kanale %d.	A Cripta da tua Guild está no canal %d.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	O Cristal do Vento Norte partiu-se - o caminho para a Câmara do Cristal está aberto.
+Kryształy Metin	Cristais Metin
+Kryształy Metin wypadają z Metinów Szacunku,	Os Cristais Metin caem dos Metins da Apreciação,
+Kryształy Metin: nagroda	Cristais Metin: recompensa
+kryształów Metin do moich badań!	cristais Metin para a minha investigação!
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Rei Escorpião derrotado! Tempo: %d:%02d. A masmorra foi concluída.
+królem mrozu i lodu?	o rei da geada e do gelo?
+Królestwa Żywiołów.	do Reino dos Elementos.
+Królestwo Żywiołów	Reino dos Elementos
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	O Reino dos Elementos não aceita os vencidos. Voltas ao porto.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	O Reino dos Elementos são nove zonas onde
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Rainha da Selva derrotada! Tempo: %d:%02d. A masmorra foi concluída.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	Rainha Meley: O Portão do Covil fechou-se atrás de vós.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Rainha Meley: O tempo acabou. O Portão do Covil atira-vos para fora.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Rainha Meley: Os pilares atingem a Rainha Meley! Próxima fase em 5 segundos.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Rainha Meley: As estátuas brilham a azul - usem os Anéis Fogo do Dragão junto às estátuas!
+Królowa Meley: Tarcza statui zgasła - atakujcie!	Rainha Meley: O escudo da estátua apagou-se - ataquem!
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Rainha Meley: A luta começa em 10 segundos. Têm uma hora para destruir as quatro estátuas.
+Królowa Smoków Meley pokonana!	Rainha dos Dragões Meley derrotada!
+Królowa Smoków Meley została pokonana!	A Rainha dos Dragões Meley foi derrotada!
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Rainha Serpente Nethis derrotada! Em 20 s voltam à Estátua da Serpente pela recompensa.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	Rainha Serpente Nethis derrotada. Aqui tens a tua recompensa.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Círculo do Príncipe: Vontade SungMa (FOR) -32 durante 7 segundos.
+Krąg Wróżbity: jesteś ogłuszony.	Círculo do Adivinho: estás atordoado.
+Książęcy	Real
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	O livro custa 100 000 000 Yang. Volta com o dinheiro.
+Księga Misji (W.Płn.W.)	Livro Missão (Rav. V.N.)
+Księga Misji (W.Płn.W.): %d / %d potworów.	Livro Missão (Rav. V.N.): %d / %d monstros.
+Księgę Misji można aktywować od poziomu 120.	O Livro de Missão pode ser ativado a partir do nível 120.
+kto wszedł tam bez drużyny najlepszych wojowników.	quem lá entrou sem uma equipa dos melhores guerreiros.
+ktora jest z toba w grupie, expi z toba po rowno,	que está no teu grupo, ganha EXP contigo por igual,
+Ktora zbroje mam z niej zrobic?	Que armadura devo fazer com isto?
+ktore moge przekuc. Zalozonego przedmiotu	que posso reforjar. Um item equipado
+Ktory przedmiot mam przekuc? Mozesz go tez	Que item devo reforjar? Também o podes
+któraś statystyka jest za niska: Siła - zadajesz	algum atributo está demasiado baixo: Força - causas
+które otwierają Erebu. Przywódca Straży Lasu wpuści	que abrem Erebu. O Guarda-Mor da Floresta deixa entrar
+Które portale chcesz zregenerować?	Que portais queres regenerar?
+który chcesz wykonać - obręcz, kolia i klipsy	que queres fazer - pulseira, colar e brincos
+Który Kamień Duszy oddajesz?	Que Pedra Espiritual entregas?
+który myślał, że poradzi sobie z Razadorem.	que achou que conseguia lidar com o Razador.
+Którą umiejętność Buffi chcesz trenować?	Que habilidade da Buffi queres treinar?
+Którą umiejętność chcesz trenować?	Que habilidade queres treinar?
+Którą umiejętność udoskonalić?	Que habilidade queres aperfeiçoar?
+którą z nich wydobyłem. Wybierz, co chcesz.	que extraí delas. Escolhe o que quiseres.
+Kup	Comprar
+Kup bilet	Comprar bilhete
+Kup Bilet do Atlantydy	Comprar Bilhete para Atlântida
+Kup kostiumy i nakladki	Comprar trajes e visuais
+Kup materialy Alchemika	Comprar materiais do Alquimista
+Kup przedmioty	Comprar itens
+kupisz w Sklepie Gaya.	compras na Loja Gaya.
+Kwiat Żywiołu	Flor Elemental
+Kwiaty Żywiołu	Flores Elementais
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	Floresta (DT). Cuidado para não perderes nada pelo caminho!
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	Floresta (FT). Cuidado para não perderes nada pelo caminho!
+Ledwo trzymam się na nogach... Energia	Mal me aguento de pé... A energia
+Legenda głosi, że rosą En-Tai można przegnać złe	Diz a lenda que o orvalho En-Tai afasta os maus
+Legendy mówią, że za tym portalem śpi Razador,	As lendas dizem que além deste portal dorme Razador,
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	remédio. Derrota os Metins da Perceção em Dongan,
+Lekarstwo	Remédio
+Lekarstwo Iluzji	Remédio da Ilusão
+Lekarstwo. Zanieś je: Alchemik.	Remédio. Leva-o a: Alquimista.
+Lekarstwo. Zanieś je: Chaegirab.	Remédio. Leva-o a: Chaegirab.
+Lekarstwo. Zanieś je: Handlarz Bronią.	Remédio. Leva-o a: Vendedor de Armas.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	Remédio. Leva-o a: Vendedor de Armaduras.
+Lekarstwo. Zanieś je: Uriel.	Remédio. Leva-o a: Uriel.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Só a Cana de Pesca de Carbono é melhor: faço-a com Vara de Cana, Guia de Linha, Cabo de Cana e 3 Fibras de Carbono.
+Lew budzi się, a z mrozu wychodzą potwory...	O leão acorda, e da geada saem monstros...
+Leże Smoka (Beran-Setaou)	Covil do Dragão (Beran-Setaou)
+Leże Smoka - wyprawa	Covil do Dragão - expedição
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Covil do Dragão: O tempo acabou. Beran-Setaou expulsa-vos do seu covil.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Covil do Dragão: as pedras caíram - ataquem Beran-Setaou!
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Covil do Dragão: não foi possível abrir a passagem - fala com o Fantasma de um Sura.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Covil do Dragão: A última pedra caiu - Beran-Setaou está indefeso! Ataquem!
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Covil do Dragão: fala com o Fantasma de um Sura para abrir a passagem.
+Leże Smoka: przejście prowadzi przez poczekalnię.	Covil do Dragão: a passagem atravessa a sala de espera.
+Leże Smoka: przejście się otwiera...	Covil do Dragão: a passagem está a abrir...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	muitas batalhas. Encontra o Soberano En-Tai (FT) e
+Liczy się łączna liczba punktów ze wszystkich gier	Conta o total de pontos de todos os jogos
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	A masmorra não vos aceita agora. Tenta daqui a pouco.
+Loch Pająków 1 (Kuahklo Dong)	Caverna das Aranhas 1 (Kuahklo Dong)
+Lochy Przebudzenia	Masmorras do Despertar
+Lochy Przebudzenia wpuszczają tylko tych, którzy	As Masmorras do Despertar só deixam entrar quem
+Lochy Przebudzenia, a statuy kowali wykują dla	as Masmorras do Despertar, e as estátuas dos ferreiros forjam para
+Lochy są dziś zamknięte. Wróć później.	As masmorras estão hoje fechadas. Volta mais tarde.
+Lodogóry	Montanhas de Gelo
+Lodowa Kraina (Nemere)	Terra de Gelo (Nemere)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Terra de Gelo: não foi possível abrir a passagem - fala com o Leão de Pedra.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Terra de Gelo: fala com o Leão de Pedra para abrir a passagem.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	Terra de Gelo: a passagem atravessa a sala de espera.
+Lodowa Kraina: przejście się otwiera...	Terra de Gelo: a passagem está a abrir...
+Lodu	Gelo
+Lucznik (luk)	Arqueiro (arco)
+Ludzi i Podziemnych Lodowych Golemów	da Geada e Golems de Gelo Negro
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maat triunfou sobre Isfet - a última Estela de Isfet (DT) foi destruída.
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maat triunfou sobre Isfet - a última Estela de Isfet (FT) foi destruída.
+Magazyn	Armazém
+magazyn lub inne okno i sprobuj ponownie.	o armazém ou outra janela e tenta outra vez.
+Majestatyczny	Majestoso
+Mam do niej klucz, ale nie wiem, ktora z	Tenho a chave, mas não sei qual
+Mam już wszystkie 20 Klejnotów Mądrości!	Já tenho todas as 20 Jóias da Sabedoria!
+Mapa teleportacji jest wylaczona na tym serwerze.	O mapa de teletransporte está desativado neste servidor.
+Marchewka	Cenoura
+Maska dyni wytrzyma 7 dni od pierwszego	A máscara de abóbora dura 7 dias a partir do primeiro
+Masz 30 minut. Powodzenia!	Tens 30 minutos. Boa sorte!
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	Tens 60 minutos para a concluir. Depois de concluíres ou depois de
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Tens núcleos purificados para mim? Deixa-me ver...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	Já tens uma missão ativa do Livro Missão (Rav. V.N.). Termina-a primeiro.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Já tens o máximo de Gaya possível (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	Já tens o Livro do Cavalo Dourado. A partir do nível 31 o teu cavalo é um Cavalo Militar Forte.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	Tens a Pedra das Almas de Beran-Setaou. Leva-a
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	Tens a Chave de Azurite. Abrir o portão[ENTER]e levar o grupo ao 2.º nível?
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	Tens o Remédio. Leva-o a: Alquimista (Dongan).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	Tens o Remédio. Leva-o a: Chaegirab (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	Tens o Remédio. Leva-o a: Vendedor de Armas (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	Tens o Remédio. Leva-o a: Vendedor de Armaduras (Dongan).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	Tens o Remédio. Leva-o a: Uriel (Dongan).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	Tens poucos pontos de posto - o posto ficaria abaixo de zero.
+Masz za mało Yang.	Não tens Yang suficiente.
+Masz za niski poziom.	O teu nível é demasiado baixo.
+materialy, Yang i szanse (najedz na przedmiot).	materiais, Yang e hipóteses (passa o rato pelo item).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Materiais, Yang e hipóteses - na janela (passa o rato pelo item).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	Os materiais de Balathor vêm da Cripta de Balathor, o Martelo Orvalhado
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	Encontras os materiais no Cofre das Algas (abre-se com a Chave das Algas). A cana dura 30 dias
+materiały, Yang i szansę (najedź na przedmiot).	materiais, Yang e hipóteses (passa o rato pelo item).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	Vês os materiais, Yang e hipóteses na janela de criação
+materiały. Pasuje każda broń, zbroja albo hełm	materiais. Serve qualquer arma, armadura ou elmo
+Max PŻ +2000	PV Máx. +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	O mecanismo da Estela de Isfet só arranca com uma Roda Dentada Dourada
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	A Medalha da Força Antiga só funciona no Reino dos Elementos.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	Medalha da Força Antiga: durante 10 minutos o Planalto não te tira PV.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin do Frio (DT) destruído. Daqui a pouco vão ser levados para o 7.º piso.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin do Frio (FT) destruído. Daqui a pouco vão ser levados para o 7.º piso.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	O Metin do Fogo do Purgatório (DT) continua de pé - os demónios voltam!
+Metin Purgatorium (PB) został zniszczony.	O Metin do Fogo do Purgatório (DT) foi destruído.
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	O Metin do Fogo do Purgatório (FT) continua de pé - os demónios voltam!
+Metin Purgatorium (SZC) został zniszczony.	O Metin do Fogo do Purgatório (FT) foi destruído.
+Metinu Świadomość zatruła mnie i potrzebuję 	O Metin da Perceção envenenou-me e preciso de 
+Metiny Drzewnych Stworzeń (PB)	Metins dos Seres-Árvore (DT)
+Metiny Drzewnych Stworzeń (SZC)	Metins dos Seres-Árvore (FT)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	Os Metins dos Seres-Árvore dão vida aos En-Tai.
+Metiny Drzewnych Stworzeń zatruwają ten las.	Os Metins dos Seres-Árvore envenenam esta floresta.
+Metiny zniszczone. Las trochę się uspokoił.	Metins destruídos. A floresta acalmou um pouco.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metins destruídos. Volta à Sentinela da Floresta (DT).
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metins destruídos. Volta à Sentinela da Floresta (FT).
+Mezczyzna	Homem
+mieć co najmniej %d sztuk.	ter pelo menos %d unidades.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	ter um Tomo do Despertar (retirado à entrada).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	A poção ainda não faz efeito - o corpo precisa de descansar.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	Desta vez a poção não fez efeito. Tenta mais tarde.
+Mikstura Talentu	Poção do Talento
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	A Poção do Talento aperfeiçoa a 9.ª habilidade de G1 a P. %s
+Miksturę Mądrości	Poção da Sabedoria
+Misja poboczna	Missão secundária
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	A missão decorre. Derrota os dois bosses e volta a mim:
+Misja wykonana! Portal do następnego etapu jest otwarty.	Missão cumprida! O portal para a próxima fase está aberto.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Missão do Livro Missão (Rav. V.N.): derrota 300 monstros na Ravina do Vento Norte.
+Misja: pokonaj 300 potworów w Wąwozie	Missão: derrota 300 monstros na Ravina
+Misji nie można przerwać. Księga zniknie.	A missão não pode ser cancelada. O livro desaparece.
+Mistrz gildii może zgłosić tu swoją gildię:	O líder da Guild pode inscrever aqui a sua Guild:
+mniej - brazowa	menos - bronze
+Moc klejnotów jest teraz twoja na zawsze.	O poder das joias é agora teu para sempre.
+Moc pierścienia wyczerpała się.	O poder do anel esgotou-se.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	O poder do Olho do Dragão esgotou-se por hoje. Recebe-o outra vez do Alquimista amanhã.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	podem ser muito vulneráveis à influência de Sung Mahi.
+Mogę cię zabrać do każdego z nich; między	Posso levar-te a cada um deles; entre
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	Posso renovar a bênção: +%d%% EXP durante %s
+Mogę przenieść na szatę aury parametry bransolety,	Posso transferir para a veste de aura os atributos da pulseira,
+Mogę przenieść wygląd jednego przedmiotu na drugi.	Posso transferir o visual de um item para outro.
+Mogę więc stworzyć z nich Kryształ Energii.	Então posso fazer delas um Cristal de Energia.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	Os meus irmãos desapareceram, e com eles o Kit de Ajuda. Os guerreiros
+Moj klucz nie pasuje do tej skrzyni.	A minha chave não serve neste cofre.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	A minha chave serve! Este é o cofre certo!
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	O meu poder leva-te ao Planalto da Ilusão. Lá
+Moja technika jest genialna, ale jeszcze	A minha técnica é genial, mas ainda
+Moje badania wykazały, że potwory znajdujące	A minha investigação mostrou que os monstros que
+Moje czasy	Os meus tempos
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	Roupa Molhada: -50 velocidade de movimento durante 5 minutos.
+Morkhot nadchodzi! Macie mało czasu.	Morkhot aproxima-se! Têm pouco tempo.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot derrotado! Tempo: %d:%02d. As Ruínas de Atlântida foram concluídas.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	Também podes escolher o item ou arrastá-lo para mim.
+mozesz wybrac od razu.	podes escolher já.
+Mozesz zabrac w droge stalego towarzysza: postac,	Podes levar contigo um companheiro fixo: uma personagem,
+Może później	Talvez mais tarde
+może się nie udać.	pode falhar.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	Podes entrar sozinho ou com o grupo; os bots do grupo entram sem bilhete.
+możesz znaleźć Kartę Maski Dyni. 	podes encontrar um Cupão para Máscara. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	Só podes ter uma guarda. O Pergaminho do Treino
+Mroczne Paprocie	Fetos das Sombras
+Mroczne Paprocie: nagroda	Fetos das Sombras: recompensa
+mrocznej paproci.	de feto das sombras.
+Mroczny Cierń - mrok.	Espinho Negro - trevas.
+Mroczną Paproć znajdziesz u potworów	Encontras o Feto das Sombras nos monstros
+Mrok i ziemia (mapa 3)	Trevas e terra (mapa 3)
+Mroku	Trevas
+Mroźnego Klucza (PB) może użyć tylko Szaman.	A Chave da Geada (DT) só pode ser usada por um Xamã.
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	A Chave da Geada (FT) só pode ser usada por um Xamã.
+mu apteczkę.	o Kit de Ajuda.
+musi najpierw osiągnąć stopień G1 (księgami).	tem primeiro de chegar ao grau G1 (com livros).
+Musisz dalej szukać.	Tens de continuar a procurar.
+Musisz jeszcze trochę potrenować! Wróć, gdy	Ainda tens de treinar um pouco! Volta quando
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	Tens de carregar pelo menos 12 Animosferas para[ENTER]entrar.
+Mój przyjaciel Chaegirab bada teraz nowy	O meu amigo Chaegirab está a investigar um novo
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	Diz-se que o Dragão de Ferro ergueu o templo[ENTER]com um único sopro de fogo em honra dos 12[ENTER]guardiões do Zodíaco. Fama, honra e riquezas[ENTER]sem fim esperam os corajosos que voltem das[ENTER]câmaras sagradas dos guardiões.
+Mądrości, które noszą przy sobie wojownicy	da Sabedoria, que os guerreiros trazem consigo
+Mądrość przychodzi z doświadczeniem, ale dla	A sabedoria vem com a experiência, mas para
+Mądry wybór. Teraz zniszcz następną stelę.	Boa escolha. Agora destrói a próxima estela.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	Boa escolha. Agora destrói a última estela, e Maat
+Na 7. poziomie czekają Głowy Węża. Odłamki z	No 7.º nível esperam as Cabeças da Serpente. As lascas de
+na bizuterie i splesc dla ciebie pas.	em joias e entrançar-te um cinto.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	numa arma com bónus. Tira o item se o tiveres
+na Doyyumhwaji, póki nie minie godzina.	em Doyyumhwaji, até passar a hora.
+Na graczy żywioły nie działają.	Os elementos não afetam os jogadores.
+Na które piętro chcesz wejść?	Em que piso queres entrar?
+na Maskę Dyni? 	pela Máscara de Abóbora? 
+Na morzu za przylądkiem grasuje Hydra. Każdy	No mar, para lá do cabo, anda a Hidra. Cada
+Na nagrodę jest jeszcze za wcześnie.	Ainda é cedo para a recompensa.
+na niej już żadnych zarodników. Przynieś mi inną.	já não tem esporos. Traz-me outro.
+na nowym kontynencie.	no novo continente.
+Na pewno poddać wyprawę?	Desistir mesmo da expedição?
+Na pewno? Towarzysz odejdzie, a jego postac	Tens a certeza? O companheiro vai embora e a sua personagem
+Na pokład!	Todos a bordo!
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	nos níveis 10, 20, 30, 40, 50, 60 e 70 - sempre
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	Nos níveis 49, 99, 149, 199 e 249 com a barra
+na Przyladku Smoczego Ognia.	no Cabo Fogo do Dragão.
+Na Przylądek Smoczego Ognia	Para o Cabo Fogo do Dragão
+na Przylądku Smoczego Ognia.	no Cabo Fogo do Dragão.
+na siedmiu poziomach czeka Królowa Węży Nethis.	em sete níveis espera a Rainha Serpente Nethis.
+Na statek wpuszczam tylko drużyny.	No navio só deixo entrar grupos.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	no grau G1-G10. De M1 a G1 - Livros normais
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	na tua cabeça. Guarda o cupão para melhores dias. 
+na tym serwerze.	neste servidor.
+Na ukończenie instancji macie 60 minut. Potwory nie	Têm 60 minutos para concluir a instância. Os monstros não
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	A expedição dura 60 minutos, depois 3 horas de pausa.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Os macacos do mestre WuKong instalaram-se na Colina.
+na Zbocze Gautama.	para a Encosta de Gautama.
+na żywioł odejmuje cały swój procent	a um elemento subtrai toda a sua percentagem
+nadaje się do badań. Przynieś mi inny.	serve para investigação. Traz-me outro.
+Nadam twojej broni, zbroi albo hełmowi	Dou à tua arma, armadura ou elmo
+nadciągał sztorm?	vinha aí uma tempestade?
+nadciągnie w czterech falach. Brońcie masztu!	vem em quatro vagas. Defendam o mastro!
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	Chegou a hora de entregar o Kit de Ajuda à Sentinela
+Nagroda (losowo jedna):	Recompensa (uma ao acaso):
+Nagroda za badania	Recompensa da investigação
+Nagroda za Meley	Recompensa de Meley
+Nagroda została już odebrana przez wszystkich	A recompensa já foi recebida por todos
+Nagroda została już odebrana.	A recompensa já foi recebida.
+Nagroda: 11 650 000 PD i Kamień Driad.	Recompensa: 11 650 000 EXP e uma Pedra das Dríades.
+Nagroda: 11 650 000 PD.	Recompensa: 11 650 000 EXP.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Recompensa: 5 582 500 EXP e 10 Raízes de Gango.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Recompensa: 5 825 000 EXP e 5 Rosas Alpinas.
+Nagroda: 7 766 000 PD i 10 Wód Young.	Recompensa: 7 766 000 EXP e 10 Águas Young.
+Nagroda: 7 766 000 PD.	Recompensa: 7 766 000 EXP.
+Nagroda: 776 600 PD.	Recompensa: 776 600 EXP.
+Nagroda: Książka Przebudzenia. Misję można	Recompensa: Tomo do Despertar. A missão pode
+Nagrody dla najlepszych	Recompensas para os melhores
+Nagrody w Łupach Królewskich	Recompensas nos Espólios do Rei
+Nagrody za grę Yut Nori	Recompensas do jogo Yut Nori
+Nagrody za pierwsze 10 miejsc	Recompensas para os 10 primeiros lugares
+Nagrody za ranking	Recompensas do ranking
+Nagrodę za ten event już odebrałeś.	Já recebeste a recompensa deste evento.
+Najlepsza gra	Melhor jogo
+Najlepsze czasy pięter w tym sezonie (min:s):	Melhores tempos dos pisos nesta temporada (min:s):
+Najlepszy wynik	Melhor resultado
+najlepszych graczy. Może następnym razem!	melhores jogadores. Talvez para a próxima!
+najpierw 9. pietro Wiezy Demonow	primeiro o 9.º piso da Torre dos Demónios
+Najpierw opuść loch.	Primeiro sai da masmorra.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	Primeiro ajuda o Guardião e a Sentinela da Floresta (DT).
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	Primeiro ajuda o Guardião e a Sentinela da Floresta (FT).
+Najpierw trzeba zamknąć otwartą Kryptę.	Primeiro é preciso fechar a Cripta aberta.

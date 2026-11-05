@@ -1,0 +1,44 @@
+[
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (include)",
+  "old": "#include \"char.h\"\n",
+  "new": "#include \"char.h\"\n#include \"mt2009_language.h\" // MT2009_PLUS_LANGUAGE_V1 (include): the reader's language (mt2009_language.cpp)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (chat)",
+  "old": "void CHARACTER::ChatPacket(BYTE type, const char * format, ...)\n{\n\tLPDESC d = GetDesc();\n\n\tif (!d || !format)\n\t\treturn;\n\n\tchar chatbuf[CHAT_MAX_LEN + 1];\n\tva_list args;\n\n\tva_start(args, format);\n\tint len = vsnprintf(chatbuf, sizeof(chatbuf), format, args);\n\tva_end(args);\n",
+  "new": "void CHARACTER::ChatPacket(BYTE type, const char * format, ...)\n{\n\tLPDESC d = GetDesc();\n\n\tif (!d || !format)\n\t\treturn;\n\n\tchar chatbuf[CHAT_MAX_LEN + 1];\n\tva_list args;\n\n\t// MT2009_PLUS_LANGUAGE_V1 (chat): a line in the reader's language - the Polish format's translation (the same conversions), else\n\t// the whole line looked up (a notice, a quest's syschat); never the client's commands, never players' chat.\n\tconst char* langFormat = Mt2009LanguageChatFormat(this, type, format);\n\tva_start(args, format);\n\tint len = vsnprintf(chatbuf, sizeof(chatbuf), langFormat, args);\n\tva_end(args);\n\tlen = Mt2009LanguageChatResult(this, type, langFormat != format, chatbuf, sizeof(chatbuf), len);\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (enter)",
+  "old": "\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter)",
+  "new": "\t{ void Mt2009LanguageOnEnterGame(LPCHARACTER); Mt2009LanguageOnEnterGame(ch); } // MT2009_PLUS_LANGUAGE_V1 (enter): player.language,\n\t// before the login quests run (mt2009_language.cpp)\n\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter)"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (lua)",
+  "old": "\t\t{ void RegisterRemoteCallFunctionTable(); RegisterRemoteCallFunctionTable(); }\n",
+  "new": "\t\t{ void RegisterRemoteCallFunctionTable(); RegisterRemoteCallFunctionTable(); }\n\t\t// MT2009_PLUS_LANGUAGE_V1 (lua): pc.get_language / set_language, mt2009_tr, mt2009_item_name, mt2009_mob_name, mt2009_languages\n\t\t// (mt2009_language.cpp, defined in namespace quest).\n\t\t{ void RegisterMt2009LanguageFunctions(); RegisterMt2009LanguageFunctions(); }\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (lua load)",
+  "old": "\t\t// END_OF_LUA_INIT_ERROR_MESSAGE\n",
+  "new": "\t\t// MT2009_PLUS_LANGUAGE_V1 (lua load): quest/mt2009_language.lua - the quests' texts in the reader's language; not fatal\n\t\t{ void LoadMt2009LanguageLua(lua_State*); LoadMt2009LanguageLua(L); }\n\t\t// END_OF_LUA_INIT_ERROR_MESSAGE\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (command declare)",
+  "old": "ACMD(do_title_system)\n{\n\tTitleSystemCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_title_system)\n{\n\tTitleSystemCommand(ch, argument);\n}\n// MT2009_PLUS_LANGUAGE_V1 (command declare): \"/lang <code>\" - the client names its language (mt2009_language.cpp)\nvoid Mt2009LanguageCommand(LPCHARACTER ch, const char* argument);\nACMD(do_mt2009_lang)\n{\n\tMt2009LanguageCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_V1 (command table)",
+  "old": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n",
+  "new": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n\t{ \"lang\",\tdo_mt2009_lang,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_LANGUAGE_V1 (command table)\n"
+ }
+]

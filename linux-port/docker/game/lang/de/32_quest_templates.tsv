@@ -1,0 +1,333 @@
+# MT2009_PLUS_LANGUAGE_V1 - the lines our quests glue together, as formats (tools/i18n/data/quest_templates_pl.tsv)
+# Polish<TAB>de (by hand; UTF-8). tools/i18n/extract_server_texts.py --check de lists what is missing.
+  %sx Materiały Rzemieślnicze 	  %sx Handwerksmaterialien 
+  %sx Medal Konny	  %sx Reitmedaille
+%s (Czyściec Ognia)	%s (Fegefeuer)
+%s (dzisiejsze wejścia)	%s (heutige Eintritte)
+%s (Kamień Driad)	%s (Stein der Dryaden)
+%s (Książka Przebudzenia)	%s (Buch der Erweckung)
+%s (Lodowa Kraina)	%s (Eisland)
+%s (odpoczynek: %s min)	%s (Erholung: %s Min.)
+%s (poziom / Czempion)	%s (Level / Champion)
+%s (poziom)	%s (Level)
+%s (słaby: %s/%s)	%s (schwach: %s/%s)
+%s (Zamarznięte Klucze)	%s (Gefrorene Schlüssel)
+%s (Zegarek Kieszonkowy)	%s (Taschenuhr)
+%s (żywioł %s)	%s (Element %s)
+%s drogocenne Gaya.	%s kostbare Gaya.
+%s Efekt Zestawu. Wymagany jest	%s Set-Effekt. Erforderlich ist
+%s juz idzie do ciebie.	%s ist schon auf dem Weg zu dir.
+%s kk Yang	%s Mio. Yang
+%s odłamków II tej samej części, Projekt	%s Splitter II desselben Teils, Entwurf
+%s razy.	%s Mal.
+%s szykuje potężny atak w linii - uciekaj w bok!	%s bereitet einen mächtigen Angriff in einer Linie vor - weich zur Seite aus!
+%s tys. Yang	%s Tsd. Yang
+%s w oknie = hełm Dragona, bez nich - hełm Smoków.	%s im Fenster = Dragon-Helm, ohne sie - Drachenhelm.
+%s znalazł odpowiedni klucz!	%s hat den richtigen Schlüssel gefunden!
+%s, %s albo %s)	%s, %s oder %s)
+%s. piętro zdobyte w %s! Schody prowadzą na następne piętro.	Etage %s erobert in %s! Die Treppe führt in die nächste Etage.
+(stojących obok). Teraz: %s.	(daneben stehend). Jetzt: %s.
+1. %s - poziom %s	1. %s - Stufe %s
+1. miejsce: %s x 10	1. Platz: %s x 10
+1. miejsce: 10x %s	1. Platz: 10x %s
+1. Poziom Czempiona, każdy oddaje %s Zamarznięte Klucze.	Champion-Level 1, jeder gibt %s Gefrorene Schlüssel ab.
+100 000 000 Yang i 500 Gaya. Szansa: %s%%.	100 000 000 Yang und 500 Gaya. Chance: %s%%.
+10x %s, 1 000 000 Yang. Szansa 30%% (+5) do 70%% (+9),	10x %s, 1 000 000 Yang. Chance 30%% (+5) bis 70%% (+9),
+2. %s - poziom %s	2. %s - Stufe %s
+2. miejsce: %s x 5	2. Platz: %s x 5
+2. miejsce: 5x %s	2. Platz: 5x %s
+3. miejsce: %s x 3	3. Platz: %s x 3
+3. miejsce: 3x %s	3. Platz: 3x %s
+4. - 10. miejsce: %s x 1	4. - 10. Platz: %s x 1
+4.-10. miejsce: 1x %s	4.-10. Platz: 1x %s
+40x %s, 200 Gaya i 20 000 000 Yang.	40x %s, 200 Gaya und 20 000 000 Yang.
+<< Piętra %s - %s	<< Etagen %s - %s
+Alastor pokonany! Za %s s wracacie do Upiornego Strażnika po nagrodę.	Alastor besiegt! In %s s kehrt ihr für die Belohnung zum Geisterhaften Wächter zurück.
+Alastor wpada w szał (%s/3) - zniszczcie Białe Jaja Smoka!	Alastor gerät in Raserei (%s/3) - zerstört die Weißen Dracheneier!
+Biblioteka Wiedzy (%s/5): %s	Bibliothek des Wissens (%s/5): %s
+Biblioteka Wiedzy: %s	Bibliothek des Wissens: %s
+Biblioteka Wiedzy: %s zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	Bibliothek des Wissens: %s erhält das Siegel der Bibliothek. Benutze es, um die nächste Welle zu rufen.
+Biblioteka Wiedzy: Baronówna wyczuwa %s śmiałków - ma %s%% więcej życia.	Bibliothek des Wissens: Die Baronin spürt %s Wagemutige - sie hat %s%% mehr Leben.
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x%s (podział łupu: %s na %s).	Bibliothek des Wissens: Du erhältst: Bibliothekstruhe x%s (Beuteteilung: %s auf %s).
+Biblioteka Wiedzy: Pieczęć %s/%s złamana. Nadchodzi następna fala!	Bibliothek des Wissens: Siegel %s/%s gebrochen. Die nächste Welle kommt!
+Biblioteka Wiedzy: Pokonane pająki: %s / %s	Bibliothek des Wissens: Besiegte Spinnen: %s / %s
+Biblioteka Wiedzy: Pozostałe królowe: %s	Bibliothek des Wissens: Verbleibende Königinnen: %s
+Biblioteka Wiedzy: Pozostałe Metiny: %s	Bibliothek des Wissens: Verbleibende Metins: %s
+Biblioteka Wiedzy: Pozostało %s min.	Bibliothek des Wissens: Noch %s Min.
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: %s na %s).	Bibliothek des Wissens: diesmal ohne Truhe (Beuteteilung: %s auf %s).
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (%s).	Bibliothek des Wissens: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa %s/%s.	Ticket nach Atlantis verbraucht. Heutige Expedition %s/%s.
+Bron 65 > 80: 2x %s,	Waffe 65 > 80: 2x %s,
+Bron 80 > 87: 3x %s,	Waffe 80 > 87: 3x %s,
+Bron 87 > Cyjanit: 3x %s,	Waffe 87 > Cyanit: 3x %s,
+Cena: %s Yang za bilet.	Preis: %s Yang pro Ticket.
+Do Erebu wchodzi najwyżej %s osób.	Nach Erebu dürfen höchstens %s Personen.
+Do Erebu wejdzie tylko grupa co najmniej %s osób.	Nach Erebu kommt nur eine Gruppe von mindestens %s Personen.
+Do Głębi wchodzi drużyna od %s do %s osób	In die Tiefen geht eine Gruppe von %s bis %s Personen
+dopiero od poziomu %s.	erst ab Level %s.
+Doświadczenie: %s	Erfahrung: %s
+Drużyna od %s do %s osób, poziom %s+,	Gruppe von %s bis %s Personen, Level %s+,
+Dzisiejsze wyprawy do ruin już wykorzystane (%s dziennie):	Die heutigen Expeditionen in die Ruinen sind verbraucht (%s täglich):
+Dzisiejsze wyprawy do Schronienia już wykorzystane (%s dziennie):	Die heutigen Expeditionen in den Unterschlupf sind verbraucht (%s täglich):
+Dzisiejsze wyprawy do tego lochu już wykorzystane (%s dziennie):	Die heutigen Expeditionen in diesen Dungeon sind verbraucht (%s täglich):
+Dzisiejsze wyprawy na statek już wykorzystane (%s dziennie):	Die heutigen Expeditionen auf das Schiff sind verbraucht (%s täglich):
+Dziś już dostałeś paszę. Wróć za %s h.	Du hast heute schon Futter bekommen. Komm in %s h wieder.
+Erebu: zostało %s min. Po czasie grupa wróci do Zaklętego Lasu.	Erebu: noch %s Min. Danach kehrt die Gruppe in den Verzauberten Wald zurück.
+Gotowe - oto %s.	Fertig - hier ist %s.
+Gotowe! Teraz otwórz pieczęć numer %s.	Fertig! Öffne jetzt Siegel Nummer %s.
+Grota Wygnańców 2 (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Grotte der Verbannung 2 (EW): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Grota Wygnańców 2 (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Grotte der Verbannung 2 (ZR): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Głowa Węża obrócona (%s/4).	Schlangenkopf gedreht (%s/4).
+Głębie: brakuje ci Zamarzniętych Kluczy (%s sztuki).	Tiefen: Dir fehlen Gefrorene Schlüssel (%s Stück).
+Głębie: pozostało %s min.	Tiefen: noch %s Min.
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom %s.	Die Tiefen zerquetschen dich. Komm wieder, wenn du Level %s erreichst.
+hełm 80. poziomu ulepszony na +5 do +9 (%s,	Helm der Stufe 80, verbessert auf +5 bis +9 (%s,
+Hełm Dragona (obrona): 5x %s, 5x %s,	Dragon-Helm (Verteidigung): 5x %s, 5x %s,
+Hełm Smoków (atak): 5x %s, 5x %s,	Drachenhelm (Angriff): 5x %s, 5x %s,
+i %s Yang oszlifuję %s drogocenne Gaya.	und %s Yang schleife ich %s kostbare Gaya.
+Jesteś za słaby. Wróć, gdy osiągniesz poziom %s.	Du bist zu schwach. Komm wieder, wenn du Level %s erreichst.
+Kamienie smoka: %s / %s	Drachensteine: %s / %s
+Kamień Duszy %s	Seelenstein %s
+Katakumby Diabła: Wyjdziesz z lochu za %s sekund.	Teufelskatakombe: Du verlässt den Dungeon in %s Sekunden.
+Katakumby Diabła: Wyjdziesz z lochu za %s sekundy.	Teufelskatakombe: Du verlässt den Dungeon in %s Sekunden.
+Klątwa Sunga Mahi: stopień %s (%s%% PŻ). Antidotum SungMa ją zdejmuje.	Fluch von Sung Mahi: Stufe %s (%s%% TP). Das SungMa-Gegengift hebt ihn auf.
+Kolejne zadanie (%s/6):	Nächste Aufgabe (%s/6):
+Kolumna Węży otwarta (%s/6).	Schlangensäule geöffnet (%s/6).
+Koszt: %s yang.	Kosten: %s Yang.
+Kowal Świątyni Węży czeka. Uwolnieni kowale: %s/4.	Der Schmied des Schlangentempels wartet. Befreite Schmiede: %s/4.
+Królestwo Żywiołów jest dostępne od poziomu %s. Wracasz do portu.	Das Reich der Elemente ist ab Level %s verfügbar. Du kehrst zum Hafen zurück.
+Królowa Meley: %s	Königin Meley: %s
+Królowa Meley: ETAP %s - %s	Königin Meley: ETAPPE %s - %s
+Królowa Meley: ETAP 4 - %s	Königin Meley: ETAPPE 4 - %s
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (%s/4).	Königin Meley: Der Ring des Drachenfeuers brennt auf der Statue (%s/4).
+Królowa Meley: Pozostało %s min.	Königin Meley: Noch %s Min.
+Królowa Meley: Smocze Jaja (%s) chronią statuy. Zniszczcie je.	Königin Meley: Dracheneier (%s) schützen die Statuen. Zerstört sie.
+Królowa Meley: Statua zmienia kolor (%s/4).	Königin Meley: Die Statue wechselt die Farbe (%s/4).
+Księga nie jest jeszcze gotowa. Wróć za %s h.	Das Buch ist noch nicht fertig. Komm in %s h wieder.
+Leże Smoka: %s	Drachenhort: %s
+Leże Smoka: %s powstaje na nowo - Beran-Setaou znów jest nietykalny!	Drachenhort: %s ersteht neu - Beran-Setaou ist wieder unverwundbar!
+Leże Smoka: %s zniszczony. Pozostało kamieni: %s.	Drachenhort: %s zerstört. Verbleibende Steine: %s.
+Leże Smoka: dopóki stoi choć jeden kamień smoka (%s), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	Drachenhort: Solange noch ein Drachenstein steht (%s), ist Beran-Setaou unverwundbar. Zerstört die Steine!
+Leże Smoka: Pozostało %s min.	Drachenhort: Noch %s Min.
+Masz %s Kamyków i %s Gaya.	Du hast %s Kiesel und %s Gaya.
+Masz za mało Gaya (potrzeba %s).	Du hast zu wenig Gaya (benötigt: %s).
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba %s).	Du hast zu wenige Gaya-Ladenerweiterungen (benötigt: %s).
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z %s.	Ein Metin ist gefallen. Beran-Setaou (EW) schöpft noch Kraft aus %s.
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z %s.	Ein Metin ist gefallen. Beran-Setaou (ZR) schöpft noch Kraft aus %s.
+Misja ukończona. Nagroda: %s x100.	Mission abgeschlossen. Belohnung: %s x100.
+Misja ukończona. Nagroda: %s.	Mission abgeschlossen. Belohnung: %s.
+Misję możesz powtórzyć za %s h %s min.	Du kannst die Mission in %s h %s Min. wiederholen.
+Mogę wytworzyć dla ciebie %s.	Ich kann für dich %s herstellen.
+Mój wynik: %s	Mein Ergebnis: %s
+Nadciąga grupa żywiołu %s.	Es naht eine Elementgruppe: %s.
+nagroda %s	Belohnung %s
+Nagroda: %s PD.	Belohnung: %s EXP.
+Najpierw ukończ %s. piętro w tym sezonie.	Schließe zuerst Etage %s in dieser Saison ab.
+Najwyżej %s wejść dziennie (dziś: %s/%s).	Höchstens %s Eintritte täglich (heute: %s/%s).
+Najwyżej %s wypraw dziennie (dziś: %s/%s).	Höchstens %s Expeditionen täglich (heute: %s/%s).
+Nemere: Pieczęć złamana. Pozostało: %s	Nemere: Siegel gebrochen. Übrig: %s
+Nemere: Pozostało %s min.	Nemere: Noch %s Min.
+Nemere: Szel pokonany (%s/4).	Nemere: Szel besiegt (%s/4).
+Nemere: Zaginione cele etapu pojawiają się ponownie (%s).	Nemere: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Nie masz przy sobie %s Yang.	Du hast keine %s Yang dabei.
+Nie udało się wydać broni (kod %s). Zgłoś to administratorowi serwera.	Die Waffe konnte nicht ausgegeben werden (Code %s). Melde das dem Serveradministrator.
+Od poziomu %s i 1. Poziomu Czempiona.	Ab Level %s und Champion-Level 1.
+Od poziomu %s, grupa od %s osób, 30 minut;	Ab Level %s, Gruppe ab %s Personen, 30 Minuten;
+Od poziomu %s, tylko w grupie. Każdy musi	Ab Level %s, nur in der Gruppe. Jeder muss
+Od poziomu %s, tylko w grupie. Po ukończeniu lub	Ab Level %s, nur in der Gruppe. Nach Abschluss oder
+Od poziomu %s. Sam albo z drużyną.	Ab Level %s. Allein oder mit der Gruppe.
+Od poziomu %s. Wstęp: %s Yang.	Ab Level %s. Eintritt: %s Yang.
+Oddaj uszy: %s	Ohren abgeben: %s
+Opłata za wejście: %s Yang.	Eintrittsgebühr: %s Yang.
+Opłata za wejście: %s Yang. Dzisiejsza wyprawa %s/%s.	Eintrittsgebühr: %s Yang. Heutige Expedition %s/%s.
+Otrzymujesz skrzynie z przerwanej gry w Okey: %s	Du erhältst die Truhen aus der abgebrochenen Okey-Partie: %s
+Otrzymujesz: %s x %s	Du erhältst: %s x %s
+Otrzymujesz: %s. Broń zniknie za 15 dni (także założona).	Du erhältst: %s. Die Waffe verschwindet nach 15 Tagen (auch angelegt).
+otrzymujesz: %sx %s	du erhältst: %sx %s
+Pasza dla konia: %s/30	Pferdefutter: %s/30
+Pieczęć zdjęta (%s/7).	Siegel entfernt (%s/7).
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za %s.	Der Ring muss sich nach der letzten Teleportation erholen. Der nächste ist bereit in %s.
+Pierścień odzyska moc za %s min.	Der Ring gewinnt seine Kraft in %s Min. zurück.
+Piętra %s - %s	Etagen %s - %s
+Piętra %s - %s >>	Etagen %s - %s >>
+Piętro %s	Etage %s
+Piętro %s (%s), etap 1: pokonaj wszystkie potwory w limicie czasu!	Etage %s (%s), Etappe 1: Besiege alle Monster innerhalb des Zeitlimits!
+Piętro %s (następne)	Etage %s (nächste)
+Piętro %s - nowe	Etage %s - neu
+Piętro %s - ukończone	Etage %s - abgeschlossen
+Piętro %s, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	Etage %s, Etappe 3: Besiege die Monsterwellen, bis die Bosse erscheinen!
+Pojawiają się bossowie piętra: %s! Pokonaj ich, by zdobyć piętro.	Die Etagenbosse erscheinen: %s! Besiege sie, um die Etage zu erobern.
+Pokonajcie %s pająków, a potem użyjcie Pieczęci Biblioteki (%s/%s).	Besiegt %s Spinnen, dann benutzt das Siegel der Bibliothek (%s/%s).
+Pokonajcie %s potworów głębin.	Besiegt %s Monster der Tiefe.
+Pokonajcie %s skorpionów, a potem użyjcie Pieczęci Ruin (%s/%s).	Besiegt %s Skorpione, dann benutzt das Siegel der Ruinen (%s/%s).
+Pokonajcie %s strażników ruin.	Besiegt %s Wächter der Ruinen.
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (%s/%s).	Besiegt 40 Dschungelwesen, dann benutzt das Siegel des Dschungels (%s/%s).
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (%s/%s).	Besiegt 60 Affen, dann benutzt das Siegel des Hügels (%s/%s).
+Pokonane potwory: %s/100	Besiegte Monster: %s/100
+Pokonane: %s / %s	Besiegt: %s / %s
+Pokonani: %s / 50	Besiegt: %s / 50
+Port Nowego Kontynentu jest dostępny od poziomu %s. Łódź zabiera cię z powrotem na Przylądek.	Der Hafen des Neuen Kontinents ist ab Level %s verfügbar. Das Boot bringt dich zurück zum Kap.
+Portowy Sklep Gaya - kupiono: %s.	Gaya-Hafenladen - gekauft: %s.
+Portowy Sklep Gaya: slot %s jest odblokowany na stałe.	Gaya-Hafenladen: Slot %s ist dauerhaft freigeschaltet.
+Potrzebujesz przedmiotu: %s.	Du brauchst den Gegenstand: %s.
+Potrzebuję %s Kamyków, %s Yang oraz	Ich brauche %s Kiesel, %s Yang und
+poziom %s	Stufe %s
+Poziom konia: %s -> %s	Pferdelevel: %s -> %s
+poziomu %s.	Level %s.
+Pozostalo podrozy: %s	Verbleibende Reisen: %s
+Pozostałe stele: %s	Verbleibende Stelen: %s
+Pozostałe teleporty: %s z %s.	Verbleibende Teleports: %s von %s.
+Pozostało: %s	Übrig: %s
+Pozostały czas: %s min	Verbleibende Zeit: %s Min.
+Pozostały czas: %s min.	Verbleibende Zeit: %s Min.
+Przy Strazniku zostaja: %s	Beim Wächter bleiben: %s
+Pył Wężowy: +1 minuta. Zostało %s min.	Schlangenstaub: +1 Minute. Noch %s Min.
+Płaskowyż Iluzji przyjmuje wojowników od poziomu %s.	Das Plateau der Illusionen nimmt Krieger ab Level %s auf.
+Razador: Pozostało %s min.	Razador: Noch %s Min.
+Razador: Stela zgaszona. Pozostało: %s	Razador: Stele erloschen. Übrig: %s
+Razador: Zaginione cele etapu pojawiają się ponownie (%s).	Razador: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Rosy En-Tai (PB): %s / %s.	Tau der En-Tai (EW): %s / %s.
+Rosy En-Tai (SZC): %s / %s.	Tau der En-Tai (ZR): %s / %s.
+Ruiny Atlantydy (%s/6): %s	Ruinen von Atlantis (%s/6): %s
+Ruiny Atlantydy: %s	Ruinen von Atlantis: %s
+Ruiny Atlantydy: %s ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	Ruinen von Atlantis: %s hat den Schlüssel von Atlantis. Gebt ihn der richtigen Muschelsäule!
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x%s (podział łupu: %s na %s).	Ruinen von Atlantis: Du erhältst: Atlantis-Truhe x%s (Beuteteilung: %s auf %s).
+Ruiny Atlantydy: Pokonane potwory: %s / %s	Ruinen von Atlantis: Besiegte Monster: %s / %s
+Ruiny Atlantydy: Pozostało %s min.	Ruinen von Atlantis: Noch %s Min.
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: %s.	Ruinen von Atlantis: Wächter besiegt. Verbleibende Säulen: %s.
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: %s - mniej czasu na Morkhota.	Ruinen von Atlantis: Das war nur eine Illusion! Strafpunkte: %s - weniger Zeit für Morkhot.
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: %s na %s).	Ruinen von Atlantis: diesmal ohne Truhe (Beuteteilung: %s auf %s).
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (%s).	Ruinen von Atlantis: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Ruiny Atlantydy: Zostało Serc Atlantydy: %s	Ruinen von Atlantis: Verbleibende Herzen von Atlantis: %s
+Ruiny Skorpiona (%s/5): %s	Skorpionruinen (%s/5): %s
+Ruiny Skorpiona: %s	Skorpionruinen: %s
+Ruiny Skorpiona: %s zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	Skorpionruinen: %s erhält das Siegel der Ruinen. Benutze es, um die nächste Welle zu rufen.
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x%s (podział łupu: %s na %s).	Skorpionruinen: Du erhältst: Skorpion-Truhe x%s (Beuteteilung: %s auf %s).
+Ruiny Skorpiona: Pieczęć Ruin %s/%s złamana. Nadchodzi następna fala!	Skorpionruinen: Siegel der Ruinen %s/%s gebrochen. Die nächste Welle kommt!
+Ruiny Skorpiona: Pokonane potwory: %s / %s	Skorpionruinen: Besiegte Monster: %s / %s
+Ruiny Skorpiona: Pozostało %s min.	Skorpionruinen: Noch %s Min.
+Ruiny Skorpiona: Pozostało: %s	Skorpionruinen: Übrig: %s
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: %s na %s).	Skorpionruinen: diesmal ohne Truhe (Beuteteilung: %s auf %s).
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (%s).	Skorpionruinen: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Schody prowadzą na %s. piętro.	Die Treppe führt in Etage %s.
+Schronienie Meley: %s	Meleys Unterschlupf: %s
+Silny: po %s ukończonych słabych. 30 minut na Alastora.	Stark: nach %s abgeschlossenen schwachen. 30 Minuten für Alastor.
+Skraca czas oczekiwania o %s%%	Verkürzt die Wartezeit um %s%%
+Sloty odblokowuje się po kolei: najpierw slot %s.	Slots werden der Reihe nach freigeschaltet: zuerst Slot %s.
+Starożytna Dżungla (%s/6): %s	Uralter Dschungel (%s/6): %s
+Starożytna Dżungla: %s	Uralter Dschungel: %s
+Starożytna Dżungla: %s zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	Uralter Dschungel: %s erhält das Siegel des Dschungels. Benutze es, um die nächste Welle zu rufen.
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x%s (podział łupu: %s na %s).	Uralter Dschungel: Du erhältst: Dschungeltruhe x%s (Beuteteilung: %s auf %s).
+Starożytna Dżungla: Pieczęć Dżungli %s/%s złamana. Nadchodzi następna fala!	Uralter Dschungel: Siegel des Dschungels %s/%s gebrochen. Die nächste Welle kommt!
+Starożytna Dżungla: Pokonane potwory: %s / %s	Uralter Dschungel: Besiegte Monster: %s / %s
+Starożytna Dżungla: Pozostało %s min.	Uralter Dschungel: Noch %s Min.
+Starożytna Dżungla: Pozostało: %s	Uralter Dschungel: Übrig: %s
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: %s na %s).	Uralter Dschungel: diesmal ohne Truhe (Beuteteilung: %s auf %s).
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (%s).	Uralter Dschungel: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Stały bonus: %s	Dauerhafter Bonus: %s
+Stały bonus: %s +5	Dauerhafter Bonus: %s +5
+Straznik Katakumb nie wpuszcza cie z grupa: %s	Der Wächter der Katakomben lässt dich nicht mit der Gruppe hinein: %s
+Strażnica Nemere (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Nemeres Wachturm (EW): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Strażnica Nemere (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Nemeres Wachturm (ZR): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Szansa powodzenia: %s%%. Kontynuować?	Erfolgschance: %s%%. Fortfahren?
+Szansa: %s%%. Możesz też przeciągnąć Kamyki na mnie.	Chance: %s%%. Du kannst die Kiesel auch auf mich ziehen.
+Twierdza Czerwonego Smoka (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Festung des Roten Drachen (EW): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Twierdza Czerwonego Smoka (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Festung des Roten Drachen (ZR): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Twoj wynik: %s	Dein Ergebnis: %s
+Twój koń nauczył się: %s (poziom 1).	Dein Pferd hat gelernt: %s (Stufe 1).
+Twój koń osiągnął %s poziom.	Dein Pferd hat Stufe %s erreicht.
+Ty możesz wejść za %s min.	Du kannst in %s Min. hinein.
+Udało się! Otrzymujesz %s Gaya.	Geschafft! Du erhältst %s Gaya.
+Ukończone w tym sezonie: %s / %s.	In dieser Saison abgeschlossen: %s / %s.
+Ukończone w tym sezonie: %s.	In dieser Saison abgeschlossen: %s.
+umiejętność %s	Fertigkeit %s
+Uwięziony Kowal jest wolny (%s/4)!	Der gefangene Schmied ist frei (%s/4)!
+Uwolnieni kowale: %s/4. Ulepszyłbym ci	Befreite Schmiede: %s/4. Ich würde dir verbessern
+Wejście kosztuje %s Yang - nie masz tyle przy sobie.	Der Eintritt kostet %s Yang - so viel hast du nicht dabei.
+Wejście kosztuje %s Yang - za mało przy sobie:	Der Eintritt kostet %s Yang - zu wenig dabei:
+Wejście od poziomu %s.	Eintritt ab Level %s.
+Wejście od poziomu %s. Doświadczenie z tamtych	Eintritt ab Level %s. Erfahrung aus jenen
+Wejście: %s Yang.	Eintritt: %s Yang.
+Wejście: %s Yang. Najwyżej %s wypraw dziennie (dziś: %s/%s).	Eintritt: %s Yang. Höchstens %s Expeditionen täglich (heute: %s/%s).
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie %s Yang).	Eintritt: Ticket nach Atlantis - eins pro Person (bei mir %s Yang).
+Wieża Demonów: Wyjdziesz z lochu za %s sekund.	Dämonenturm: Du verlässt den Dungeon in %s Sekunden.
+Wieża Demonów: Wyjdziesz z lochu za %s sekundy.	Dämonenturm: Du verlässt den Dungeon in %s Sekunden.
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (%s).	Dämonenturm: Die vermissten Metins der Etage erscheinen wieder (%s).
+Wieża Sung Mahi - %s: %s	Sung Mahis Turm - %s: %s
+Wieża Sung Mahi: %s	Sung Mahis Turm: %s
+Wieża Sung Mahi: %s. piętro ukończone w %s (min:s). Możesz na nie wrócić portalem w hali.	Sung Mahis Turm: Etage %s abgeschlossen in %s (min:s). Du kannst über das Portal in der Halle dorthin zurückkehren.
+Wieża Sung Mahi: nagroda za %s. piętro w tym sezonie czeka w Magazynie ItemShop.	Sung Mahis Turm: Die Belohnung für Etage %s in dieser Saison wartet im Item-Shop-Lager.
+Wieża Sung Mahi: nagrody za %s. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	Sung Mahis Turm: Die Belohnung für Etage %s konnte gerade nicht gespeichert werden - du bekommst sie beim nächsten Abschluss dieser Etage.
+Wieża Sung Mahi: walka na %s. piętrze zaczyna się za 10 sekund.	Sung Mahis Turm: Der Kampf in Etage %s beginnt in 10 Sekunden.
+Wioska I (%s)	Dorf I (%s)
+Wioska II (%s)	Dorf II (%s)
+Wróć, gdy osiągniesz poziom %s.	Komm wieder, wenn du Level %s erreichst.
+Wspinaczka: 1 Sztandar Czaszki (masz: %s).	Aufstieg: 1 Totenkopfbanner (du hast: %s).
+Wstęp kosztuje %s Yang.	Der Eintritt kostet %s Yang.
+Wstęp: %s Yang.	Eintritt: %s Yang.
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (%s). Wróć jutro.	Du hast die heutigen Expeditionen in Meleys Unterschlupf bereits verbraucht (%s). Komm morgen wieder.
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (%s). Wróć jutro.	Du hast die heutigen Expeditionen in diesen Dungeon bereits verbraucht (%s). Komm morgen wieder.
+Wykorzystałeś już dzisiejsze wyprawy na statek (%s). Wróć jutro.	Du hast die heutigen Expeditionen auf das Schiff bereits verbraucht (%s). Komm morgen wieder.
+Wymagany poziom: %s. Bez czekania między wyprawami.	Benötigtes Level: %s. Ohne Wartezeit zwischen den Expeditionen.
+Wymagany poziom: %s. Limit %s minut, bez czekania między wyprawami.	Benötigtes Level: %s. Limit %s Minuten, ohne Wartezeit zwischen den Expeditionen.
+Wzgórze Wukonga (%s/6): %s	Wukongs Hügel (%s/6): %s
+Wzgórze Wukonga: %s	Wukongs Hügel: %s
+Wzgórze Wukonga: %s zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	Wukongs Hügel: %s erhält das Siegel des Hügels. Benutze es, um die nächste Welle zu rufen.
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x%s (podział łupu: %s na %s).	Wukongs Hügel: Du erhältst: Wukong-Truhe x%s (Beuteteilung: %s auf %s).
+Wzgórze Wukonga: Pieczęć Wzgórza %s/%s złamana. Nadchodzi następna fala!	Wukongs Hügel: Siegel des Hügels %s/%s gebrochen. Die nächste Welle kommt!
+Wzgórze Wukonga: Pokonane potwory: %s / %s	Wukongs Hügel: Besiegte Monster: %s / %s
+Wzgórze Wukonga: Pozostało %s min.	Wukongs Hügel: Noch %s Min.
+Wzgórze Wukonga: Pozostało: %s	Wukongs Hügel: Übrig: %s
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: %s na %s).	Wukongs Hügel: diesmal ohne Truhe (Beuteteilung: %s auf %s).
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (%s).	Wukongs Hügel: Die vermissten Ziele der Etappe erscheinen wieder (%s).
+Z %s Kamyków, Kamienia Duszy (+0 do +3)	Aus %s Kieseln einen Seelenstein (+0 bis +3)
+Z tej zbroi zrobie: %s	Aus dieser Rüstung mache ich: %s
+Z łusek i rogów Balathora zrobię %s,	Aus Balathors Schuppen und Hörnern mache ich %s,
+Za %s sekund zostaniesz przeniesiony na Doyyumhwaji.	In %s Sekunden wirst du nach Doyyumhwaji gebracht.
+Za %s sekund zostaniesz teleportowany do Doliny Orków.	In %s Sekunden wirst du ins Orktal teleportiert.
+Za %s sekund zostaniesz teleportowany do Groty Wygnańców.	In %s Sekunden wirst du in die Grotte der Verbannung teleportiert.
+Za %s sekund zostaniesz teleportowany do miasta.	In %s Sekunden wirst du in die Stadt teleportiert.
+Za %s sekund zostaniesz teleportowany do Świątyni Hwang.	In %s Sekunden wirst du zum Hwang-Tempel teleportiert.
+Za %s sekund zostaniesz teleportowany do Świątyni Ochao.	In %s Sekunden wirst du zum Ochao-Tempel teleportiert.
+Za %s sekund zostaniesz teleportowany na Górę Sohan.	In %s Sekunden wirst du zum Berg Sohan teleportiert.
+Za %s sekund zostaniesz teleportowany na Ognistą Ziemię.	In %s Sekunden wirst du ins Feuerland teleportiert.
+Za %s sekundy zostaniesz przeniesiony na Doyyumhwaji.	In %s Sekunden wirst du nach Doyyumhwaji gebracht.
+Za %s sekundy zostaniesz teleportowany do Doliny Orków.	In %s Sekunden wirst du ins Orktal teleportiert.
+Za %s sekundy zostaniesz teleportowany do Groty Wygnańców.	In %s Sekunden wirst du in die Grotte der Verbannung teleportiert.
+Za %s sekundy zostaniesz teleportowany do miasta.	In %s Sekunden wirst du in die Stadt teleportiert.
+Za %s sekundy zostaniesz teleportowany do Świątyni Hwang.	In %s Sekunden wirst du zum Hwang-Tempel teleportiert.
+Za %s sekundy zostaniesz teleportowany do Świątyni Ochao.	In %s Sekunden wirst du zum Ochao-Tempel teleportiert.
+Za %s sekundy zostaniesz teleportowany na Górę Sohan.	In %s Sekunden wirst du zum Berg Sohan teleportiert.
+Za %s sekundy zostaniesz teleportowany na Ognistą Ziemię.	In %s Sekunden wirst du ins Feuerland teleportiert.
+Za chwilę zostaniecie przeniesieni na %s. piętro.	Gleich werdet ihr in Etage %s gebracht.
+Za grę, w której zdobędziesz %s,	Für ein Spiel, in dem du %s erreichst,
+Za słabi na głębiny (poziom %s+):	Zu schwach für die Tiefen (Level %s+):
+Za słabi, by wejść (poziom %s+):	Zu schwach zum Eintreten (Level %s+):
+Za słabi, by wejść na pokład (poziom %s+):	Zu schwach, um an Bord zu gehen (Level %s+):
+Zabij %s Wojowników En-Tai (PB) i wróć do mnie.	Töte %s En-Tai-Krieger (EW) und komm zu mir zurück.
+Zabij %s Wojowników En-Tai (SZC) i wróć do mnie.	Töte %s En-Tai-Krieger (ZR) und komm zu mir zurück.
+Zaginione Metiny pojawiają się ponownie (%s).	Die vermissten Metins erscheinen wieder (%s).
+Zaklęty Las (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Verzauberter Wald (EW): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+Zaklęty Las (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Verzauberter Wald (ZR): noch %s Min. Danach kehrt die Gruppe zum Plateau der Illusionen zurück.
+zapomniana %s	vergessen: %s
+Zapomnieć %s?	%s vergessen?
+Zbierz więcej Kamyków - potrzebuję %s.	Sammle mehr Kiesel - ich brauche %s.
+Zbroja i buty > 80: 3x %s,	Rüstung und Stiefel > 80: 3x %s,
+Zdobyte: %s / 5	Erlangt: %s / 5
+Zdobądź %s Ros En-Tai (PB).	Besorge %s Tau der En-Tai (EW).
+Zdobądź %s Ros En-Tai (SZC).	Besorge %s Tau der En-Tai (ZR).
+Zebrana pasza: %s/30	Gesammeltes Futter: %s/30
+Zestawu tej części%s,	des Sets dieses Teils%s,
+Ziemie Yohary są dostępne od poziomu %s. Wracasz do Portu Nowego Kontynentu.	Die Länder Yoharas sind ab Level %s verfügbar. Du kehrst zum Hafen des Neuen Kontinents zurück.
+Zniszcz %s Metiny Drzewnych Stworzeń (PB).	Zerstöre %s Metins der Baumwesen (EW).
+Zniszcz %s Metinów Drzewnych Stworzeń (SZC).	Zerstöre %s Metins der Baumwesen (ZR).
+Zniszczcie %s Serca Atlantydy.	Zerstört %s Herzen von Atlantis.
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (%s zostało).	Zerstört die Tiefenmuschel und gebt den Schlüssel von Atlantis der richtigen Muschelsäule (%s übrig).
+Zniszczone Metiny: %s / %s.	Zerstörte Metins: %s / %s.
+Zniszczone: %s / 5	Zerstört: %s / 5
+Złota Księga Konia: %s/100	Goldenes Pferdebuch: %s/100
+Śmiertelny Chłód Alastora skuwa ziemię (%s/12) - omijajcie białe kręgi!	Alastors Tödliche Kälte fesselt den Boden (%s/12) - meidet die weißen Kreise!
+Świetnie! Oto twoja pasza: %s sztuk.	Prima! Hier ist dein Futter: %s Stück.
+Świątynia Węży: walka się zaczęła! Czas: %s min. Zapamiętajcie żywioły pierwszych czterech grup.	Schlangentempel: Der Kampf hat begonnen! Zeit: %s Min. Merkt euch die Elemente der ersten vier Gruppen.
+Świątynia Węży: zostało %s min.	Schlangentempel: noch %s Min.
+żywioł %s	Element %s

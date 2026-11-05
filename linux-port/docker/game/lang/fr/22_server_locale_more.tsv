@@ -1,0 +1,297 @@
+# MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
+# Polish<TAB>fr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check fr lists what is missing.
+%d dni %d godzin	%d jours %d heures
+%d dni %d godzin i %d minut	%d jours %d heures et %d minutes
+%d godzin i %d minut	%d heures et %d minutes
+%d minut	%d minutes
+%d sekund do wyjścia z mapy.	%d secondes avant de quitter la carte.
+%d sekund do zmiany kanału.	%d secondes avant le changement de canal.
+%s jest blisko Ciebie.	%s est près de vous.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s est connecté sur le canal %d. (canal actuel : %d)
+%s rzucił %d. (%d-%d)	%s a lancé %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s a lancé le dé et obtenu %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	30 minutes sont passées. Les feux de camp se sont éteints.
+<Gildia> Wskazany gracz jest zajęty.	<Guilde> Ce joueur est occupé.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Groupe> Le groupe ne peut pas inviter quand des membres sont dans un donjon.
+<Grupa> Lider grupy jest w lochu.	<Groupe> Le chef du groupe est dans un donjon.
+[1106-??]No puedes unir esto.	[1106-??]Vous ne pouvez pas combiner ceci.
+[Gildia] Gildia jest w trakcie wojny.	[Guilde] La guilde est en guerre.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Guilde] La guilde a atteint sa limite d'invitations.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Guilde] La guilde a atteint le niveau maximal.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Guilde] %d Énergie de l'Esprit du Dragon chargée.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Guilde] Impossible de renvoyer un membre de la guilde pendant une guerre.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Guilde] Impossible d'utiliser les compétences de guilde hors de l'arène.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Guilde] Les nouvelles adhésions sont actuellement limitées.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Guilde] Pendant une guerre de guilde, impossible de renvoyer un membre.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Guilde] La personne invitée est occupée pour le moment.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Groupe] Impossible de dissoudre le groupe, car des membres sont dans le donjon.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Entrepôt] Impossible de déplacer des objets dans l'entrepôt.
+Aby otworzyć sklep potrzebujesz Tobół.	Il vous faut un Paquet pour ouvrir une boutique.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Votre personnage doit être au moins niveau %u pour acheter cet objet.
+Atakują nas morskie potwory! Do broni!	Des monstres marins nous attaquent ! Aux armes !
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Le bonus d'amélioration ne s'utilise que sur un objet de niveau %d max.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Le bonus d'amélioration ne s'utilise que sur un objet amélioré à +%d max.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Le bonus d'amélioration ne s'utilise que sur des bijoux.
+Bonus na ulepszenie może być użyty tylko na bronie.	Le bonus d'amélioration ne s'utilise que sur des armes.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Le bonus d'amélioration ne s'utilise que sur des armures, casques et boucliers.
+Brak danych. Skontaktuj się z administratorem.	Données manquantes. Contactez un administrateur.
+Brak kamienia do wyjęcia.	Aucune pierre à retirer.
+Brak miejsca w ekwipunku.	Pas assez de place dans l'inventaire.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Pas assez d'impôts. Capital actuel : %u Capital requis : %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Erreur d'objet à l'ouverture de la boutique.
+Cena przedmiotu zmieniła się.	Le prix de l'objet a changé.
+Cena przedmiotu została zmieniona.	Le prix de l'objet a été modifié.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Quelque chose a mordu à l'hameçon, mais vous ne voyez pas ce que c'est.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	La Forêt rouge cache bien des secrets que vous ignoriez.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Le détecteur a été activé, mais aucune pierre d'âme n'a été détectée.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Les effets VIP ne se cumulent pas avec l'Abonnement Premium. Achat impossible.
+Eliksir jest pusty. Napełnij go u Alchemika.	L'élixir est vide. Faites-le remplir chez l'Alchimiste.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Les émotions sont réservées aux abonnés Premium.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Vague %d : défendez le mât et battez l'Hydre.
+Fala %d: brońcie masztu przez %d sek.	Vague %d : défendez le mât pendant %d s.
+Funkcja tymczasowo niedostępna.	Fonction momentanément indisponible.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	La guilde est au niveau maximal, mais elle accepte votre cadeau.
+Gracz %s został dodany do listy zablokowanych.	Le joueur %s a été ajouté à votre liste de blocage.
+Gracz %s został usunięty z listy zablokowanych.	Le joueur %s a été retiré de votre liste de blocage.
+Ja ci pokazać, że mi nie przeszkadzać!	Moi te montrer qu'il faut pas me déranger !
+Jajo Hydry pękło - potwory idą na dno!	L'Œuf de l'hydre a éclaté - les monstres coulent !
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	L'un des objets a un prix non autorisé (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	L'un des objets se trouve à une position non autorisée.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	L'un des invités du mariage est occupé ou vient de terminer un échange.
+Jesteś już przyjacielem gracza %s.	Vous êtes déjà ami avec %s.
+Jesteś za daleko od Kowala.	Vous êtes trop loin du Forgeron.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Si vous n'acceptez pas ces conditions
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Les Pierres d'âme +3 ne peuvent pas être améliorées avec cet objet.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	La Pierre d'âme ne peut pas être améliorée avec cet objet.
+Kilof może zostać ulepszony tylko u Deokbae.	Une Pioche ne peut être améliorée que chez Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Quelqu'un a acheté %dx %s dans votre boutique pour %d Yang.
+Masz za mało Animosfer.	Vous n'avez pas assez d'Animasphères.
+Maszt naprawiony: %d%% PŻ.	Mât réparé : %d%% PV.
+Maszt ocalał. Przygotujcie się na następną falę!	Le mât a tenu. Préparez-vous pour la vague suivante !
+Maszt: zostało %d%% PŻ!	Mât : il reste %d%% PV !
+Możesz używać Białej Flagi co %d minut.	Vous pouvez utiliser le Drapeau blanc toutes les %d minutes.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Vous ne pouvez utiliser cette compétence que dans votre royaume.
+Możesz wyrzucić przedmioty co %d sekund.	Vous pouvez jeter des objets toutes les %d secondes.
+Możesz wyrzucić Yang co 10 sekund.	Vous pouvez jeter des Yang toutes les 10 secondes.
+Możesz łowić tylko w M1.	Vous ne pouvez pêcher qu'en M1.
+Możliwość pisania została zablokowana przez siły wyższe!	Votre chat a été bloqué par une puissance supérieure !
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Il faut être niveau %d pour comprendre ce livre.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Il faut être au moins niveau %d pour acheter cet objet.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Vous devez porter une robe de mariée pour équiper un bouquet.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Vous devez attendre %d min avant de réutiliser cette option.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Vous devez attendre un peu après un combat avant d'utiliser cette option.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Vous devez attendre quelques secondes avant de quitter la carte.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Vous devez attendre quelques secondes avant de changer de canal.
+Musisz posiadać cel.	Il vous faut une cible.
+Musisz stać obok sklepu.	Vous devez être à côté de la boutique.
+Musisz zaczekać %d min. przed ponownym użyciem.	Vous devez attendre %d min avant de réutiliser.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Vous devez attendre %d s avant de réutiliser.
+Musisz zdjąć bukiet.	Vous devez retirer le bouquet.
+Musisz znajdować się na tej samej mapie co sklep.	Vous devez être sur la même carte que la boutique.
+Musisz znajdować się na tym samym kanale co sklep.	Vous devez être sur le même canal que la boutique.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Des combats forcés peuvent avoir lieu sur cette carte.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Trop de boutiques sur ce canal. Une boutique premium est requise pour dépasser la limite gratuite.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	La limite de boutiques hors ligne est atteinte sur ce canal. Impossible d'ouvrir une boutique.
+Następna fala za %d sek.	Prochaine vague dans %d s.
+Naładowany na %d sekund.	Chargé pour %d secondes.
+Nie jesteś zablokowany.	Vous n'êtes pas bloqué.
+Nie ma kogo ożywić.	Personne à ranimer.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Pas de place dans l'inventaire. L'objet a été envoyé dans l'entrepôt de l'ItemShop.
+Nie masz sklepu na tej mapie.	Vous n'avez pas de boutique sur cette carte.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Vous n'avez pas de boutique sur ce canal. (Trouvée sur le canal %d.)
+Nie możesz czytać ksiąg będąć przemieniony.	Impossible de lire des livres en étant transformé.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Impossible de développer davantage cette compétence. Utilisez un Parchemin de compétence ou un Livre de l'oubli.
+Nie możesz dodać więcej bonusów.	Impossible d'ajouter plus de bonus.
+Nie możesz jeździć konno podczas łowienia.	Impossible de monter à cheval en pêchant.
+Nie możesz jeździć konno, gdy jesteś powalony.	Impossible de monter à cheval quand vous êtes à terre.
+Nie możesz jeździć nosząc przedmiot.	Impossible de monter en portant un objet.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Impossible de continuer tant qu'une autre fenêtre est ouverte.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Impossible de continuer : vos Yang dépasseraient la limite de 2 milliards.
+Nie możesz kupować od samego siebie.	Vous ne pouvez pas acheter à vous-même.
+Nie możesz mieć więcej niż %d przyjaciół.	Vous ne pouvez pas avoir plus de %d amis.
+Nie możesz nosić Smokingu na koniu.	Impossible de porter le Smoking à cheval.
+Nie możesz nosić tego przedmiotu konno.	Impossible de porter cet objet à cheval.
+Nie możesz otworzyć pustego sklepu.	Impossible d'ouvrir une boutique vide.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Impossible d'ouvrir une boutique hors ligne à cet endroit.
+Nie możesz otworzyć sklepu w tym miejscu.	Impossible d'ouvrir une boutique à cet endroit.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Impossible d'ouvrir cette boutique. Récupérez d'abord tous les objets.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Impossible d'ouvrir une boutique ici. Vous êtes trop près d'une autre boutique.
+Nie możesz otworzyć więcej sklepów.	Vous ne pouvez plus ouvrir de boutiques.
+Nie możesz ożywić kogoś, kto żyje.	Impossible de ranimer quelqu'un de vivant.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Impossible de ramasser des objets avec la fenêtre de mission ouverte.
+Nie możesz przenieść się do tego obszaru.	Impossible de vous rendre dans cette zone.
+Nie możesz przenieść się do tej osoby.	Impossible de vous téléporter vers cette personne.
+Nie możesz przywołać do tego obszaru.	Impossible d'invoquer dans cette zone.
+Nie możesz przywołać konia w tym miejscu.	Impossible d'appeler votre cheval ici.
+Nie możesz się teraz teleportować.	Impossible de vous téléporter maintenant.
+Nie możesz sprintować będąc spowolnionym.	Impossible de sprinter en étant ralenti.
+Nie możesz sprintować nosząc przedmiot.	Impossible de sprinter en portant un objet.
+Nie możesz sprzedawać noszonych przedmiotów.	Impossible de vendre des objets portés.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Impossible de vendre des objets verrouillés.
+Nie możesz sprzedać przedmiotów, które nosisz.	Impossible de vendre les objets que vous portez.
+Nie możesz sprzedać założonego przedmiotu.	Impossible de vendre un objet équipé.
+Nie możesz tego teraz użyć.	Impossible de l'utiliser maintenant.
+Nie możesz tego użyć, gdy masz otwarte okno.	Impossible de l'utiliser avec une fenêtre ouverte.
+Nie możesz tego zrobić na kanale specjalnym.	Impossible de faire cela sur un canal spécial.
+Nie możesz teleportować się nosząc przedmiot.	Impossible de vous téléporter en portant un objet.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Impossible d'appliquer l'effet maintenant, attendez un instant.
+Nie możesz teraz podnosić przedmiotów.	Impossible de ramasser des objets maintenant.
+Nie możesz teraz wykonać tej operacji.	Impossible d'effectuer cette opération maintenant.
+Nie możesz teraz zejść z wierzchowca.	Impossible de descendre de votre monture maintenant.
+Nie możesz tutaj otworzyć depozytu.	Impossible d'ouvrir l'entrepôt ici.
+Nie możesz uczyć się będąc przemienionym.	Impossible d'apprendre en étant transformé.
+Nie możesz ulepszyć tego przedmiotu.	Impossible d'améliorer cet objet.
+Nie możesz użyć tego na wojnie.	Impossible d'utiliser ceci en guerre.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Impossible d'utiliser cet objet avec la fenêtre de mission ouverte.
+Nie możesz użyć tego przedmiotu konno.	Impossible d'utiliser cet objet à cheval.
+Nie możesz wyjąć umieszczonego kamienia.	Impossible de retirer une pierre sertie.
+Nie możesz wykonać tej akcji będąc martwy.	Impossible de faire cela en étant mort.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Impossible de mettre des objets des sacoches du cheval dans une boutique normale.
+Nie możesz zablokować więcej niż %d osób.	Vous ne pouvez pas bloquer plus de %d personnes.
+Nie możesz zapisać pozycji w tym miejscu.	Impossible d'enregistrer la position ici.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Impossible d'enregistrer une position dans un royaume ennemi.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Impossible d'inviter en ami une personne bloquée.
+Nie możesz zmienić bonusów.	Impossible de changer les bonus.
+Nie możesz zmienić trybu PvP na wojnie.	Impossible de changer de mode PvP en guerre.
+Nie można użyć na innym graczu.	Inutilisable sur un autre joueur.
+Nie można ładować.	Chargement impossible.
+Nie posiadasz otwartego sklepu.	Vous n'avez pas de boutique ouverte.
+Nie posiadasz sklepu premium.	Vous n'avez pas de boutique premium.
+Nie posiadasz sklepu.	Vous n'avez pas de boutique.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Vous n'avez pas les objets requis pour cet achat.
+Nie posiadasz wystarczająco dużo reputacji.	Vous n'avez pas assez de réputation.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Vous ne remplissez pas les conditions pour ouvrir votre propre boutique.
+Nie udało się wytworzyć.	La fabrication a échoué.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Vous n'avez perdu aucun objet, car vous êtes protégé par le Dieu Dragon.
+Nie znaleziono gracza o podanej nazwie.	Aucun joueur de ce nom n'a été trouvé.
+Niedostępne.	Indisponible.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Certains objets de la boutique se chevauchent.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Certains objets de la boutique sont sur des emplacements verrouillés.
+Niewystarczająca ilość Smoczych Monet.	Pas assez de Pièces du Dragon.
+Niewystarczająca ilość Smoczych Znaków.	Pas assez de Marques du Dragon.
+Nikt nie wypłynął - statek zostaje w porcie.	Personne n'a embarqué - le navire reste au port.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Le Couteau d'herboriste ne peut être amélioré que chez l'Herboriste.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Le destinataire ne peut pas recevoir de demande d'ami.
+Odczekaj chwilę po zakończeniu handlu.	Attendez un instant après un échange.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Attendez encore %s avant le prochain entraînement.
+Odczekaj jeszcze %s przed zakupem.	Attendez encore %s avant d'acheter.
+Odczekaj przed następnym ulepszeniem.	Attendez avant la prochaine amélioration.
+Oferta sklepu zmieniła się.	L'offre de la boutique a changé.
+Okno zarządzania sklepem musi być otwarte.	La fenêtre de gestion de la boutique doit être ouverte.
+Osiągnięto limit zakupu tego przedmiotu.	La limite d'achat de cet objet est atteinte.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Ce compte a atteint le nombre maximal d'achats de cet objet.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	La personne que vous essayez de ranimer n'est pas humaine.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Vous avez reçu %d de réputation (Garde royale)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Vous avez reçu %d de réputation (Fils du Désert)
+Otrzymałeś %s (Juki Konne)	Vous avez reçu %s (Sacoches du cheval)
+Otrzymałeś %s (szt. %d)	Vous avez reçu %s (%d pcs)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Vous avez reçu %s (%d pcs) (Sacoches du cheval)
+OX-Question: 	Question OX : 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	N'oubliez pas qu'on ne peut pas installer de boutique hors ligne sur cette carte.
+Podana kwota jest większa niż zarobione Yang.	Le montant est supérieur aux Yang gagnés.
+Podana kwota jest za mała.	Le montant est trop faible.
+Podana osoba jest na liście Twoich przyjaciół.	Cette personne est dans votre liste d'amis.
+Podatek od sprzedaży: %d%% (%lld Yang).	Taxe sur la vente : %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Un Œuf de l'hydre est apparu ! Brisez-le et les monstres couleront.
+Pomimo treningu nie czujesz się zmęczony.	Malgré l'entraînement, vous ne vous sentez pas fatigué.
+Pomyślnie dodano bonus.	Bonus ajouté avec succès.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Les Yang ont été retirés du dépôt de la boutique.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Vous avez une boutique ouverte ou le dépôt de la boutique contient des objets.
+Pospieszcie się, macie %d min., by przejść przez portal.	Dépêchez-vous, vous avez %d min pour passer le portail.
+Potomstwo Hydry trafiło maszt laserem!	La progéniture de l'Hydre a frappé le mât d'un laser !
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Il vous faut %lld Yang pour ouvrir ce type de boutique
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Il vous faut de la place pour un objet d'au moins 3 cases pour ouvrir le coffre.
+Pozostały czas %d sekund.	Temps restant %d secondes.
+Pozostały czas: %.1f sek.	Temps restant : %.1f s.
+Pozostały czas: %.2f sek.	Temps restant : %.2f s.
+Pozycja sklepu została oznaczona strzałką.	La position de votre boutique est marquée d'une flèche.
+Prosimy o powrót do pierwotnej lokalizacji.	Veuillez revenir à votre emplacement d'origine.
+Prośba o wezwanie została wysłana.	La demande d'invocation a été envoyée.
+Przechwyciłeś laser Potomstwa Hydry.	Vous avez intercepté le laser de la progéniture de l'Hydre.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Cet objet ne s'utilise que sur des armes et armures jusqu'au niveau 40.
+Przedmiot nie może być użyty na akcesoriach.	Cet objet ne s'utilise pas sur les accessoires.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	L'objet n'a pas de Pierre d'âme à retirer.
+Przedmiot zniknie za %d minut.	L'objet disparaîtra dans %d minutes.
+Przedmiot został dodany do twojego ekwipunku	L'objet a été ajouté à votre inventaire
+Przedmioty zostały dodane do twojego ekwipunku	Les objets ont été ajoutés à votre inventaire
+Przedmioty zostały pomyśnie zaktualizowane.	Les objets ont été mis à jour.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Les objets que vous utilisez ne peuvent pas être vendus dans votre boutique personnelle.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Reconnectez-vous pour que l'effet VIP soit bien appliqué.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Appelez votre cheval pour accéder aux objets des sacoches.
+Rejs trwał za długo - statek zawraca.	La traversée a duré trop longtemps - le navire fait demi-tour.
+Rzuciłeś %d. (%d-%d)	Vous avez lancé %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Vous avez lancé le dé et obtenu %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Le serveur fermera dans 10 minutes pour maintenance.
+Sklep #PLAYER_NAME#	Boutique de #PLAYER_NAME#
+Sklep - %s	Boutique - %s
+Sklep jest otwarty.	La boutique est ouverte.
+Sklep jest w trybie edycji.	La boutique est en mode édition.
+Sklep jest zamknięty.	La boutique est fermée.
+Sklep nie jest w trybie edycji.	La boutique n'est pas en mode édition.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	La boutique vient d'être modifiée par son propriétaire. Attendez un instant avant d'acheter.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	La boutique a été fermée, les objets restants et les Yang gagnés sont dans le dépôt.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Le coffre de Pierres d'âme de dragon n'est pas activé.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS ! Le mât est brisé, le navire coule. Vous allez bientôt regagner la terre.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Impossible de sprinter à pied avec votre vitesse de déplacement (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	La compétence entraînée est déjà au niveau maximal (%d).
+Ta aukcja nie jest już dostępna.	Cette enchère n'est plus disponible.
+Ta opcja jest tymczasowo niedostępna.	Cette option est momentanément indisponible.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Ces eaux sont très pauvres, il n'y a presque pas de poissons ici. Parlez au Pêcheur.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Ce joueur a plus de 2 milliards de Yang. Échange impossible.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Cet achat dépasserait la limite d'achats par compte. Achetez-en moins.
+To miejsce jest wolne od plagi Kamieni Metin.	Cet endroit est libéré du fléau des pierres Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Ce n'est pas moi... mais ils vous ont choisis. Nous nous reverrons, plus tôt que vous ne le pensez.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Le poison ne s'utilise que sur la Tortue des sables Géante.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Votre groupe compte toutes les classes, vous recevez donc un bonus d'expérience.
+Twoja postać nie żyje, nie możesz tego zrobić.	Votre personnage est mort, impossible de faire cela.
+Twoja ranga nie może już wzrosnąć.	Votre rang ne peut plus augmenter.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	L'ouverture de boutiques est bloquée pour votre rang !
+Tworzenie sklepów jest tymczasowo wyłączone	L'ouverture de boutiques est momentanément désactivée
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Votre Cheval est affamé, il ne peut pas se fatiguer dans cet état.
+Tylko GM ma dostęp do tej komendy.	Seul un MJ a accès à cette commande.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Cette action n'est possible que dans le Temple du Zodiaque.
+Udało ci się pokonać smoka w %d sekund!	Vous avez vaincu le dragon en %d secondes !
+Upuszczone Yang zniknie za %d sekund.	Les Yang jetés disparaîtront dans %d secondes.
+Upuszczony przedmiot zniknie za %d minut.	L'objet jeté disparaîtra dans %d minutes.
+Usuniecie przedmiotu	Objet supprimé
+Uwolniłeś się!	Vous vous êtes libéré !
+W depozycie sklepu offline zalegają przedmioty.	Il reste des objets dans le dépôt de votre boutique hors ligne.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Un bruissement sinistre emplit la forêt... le Seigneur Esprit d'arbre se réveille !
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	La valeur de la boutique et vos Yang dépassent la quantité de Yang autorisée (2 milliards).
+Wesele dalej trwa!	Le mariage continue !
+Wojna pomiędzy %s a %s zacznie się za %d minut!	La guerre entre %s et %s commencera dans %d minutes !
+Wskazany kanał dostępny jest tylko dla kont Premium.	Ce canal est réservé aux comptes Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Tous sont tombés ! Votre temps dans le Temple prendra fin si personne n'est ressuscité dans la minute.
+Wszystkie potwory na mapach zostały zabite!	Tous les monstres des cartes ont été tués !
+Wygląda na to, że na haczyku jest %s.	On dirait que %s est à l'hameçon.
+Wyglądało na to, że %s wisi na haku.	On aurait dit que %s pendait à l'hameçon.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Vous avez gagné le duel avec %d/%d (%d%%) PV !
+Wyjście z mapy zostało przerwane.	La sortie de la carte a été interrompue.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Ce compte a atteint la limite d'achats de cette enchère (%d max).
+Wymagane %d Staminy	%d d'Endurance requis
+Wymagane %s.	%s requis.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Il faut une Loupe magique ou un Abonnement Premium actif.
+Wystapił błąd	Une erreur est survenue
+Wystąpił błąd. (Kod błędu: %s)	Une erreur est survenue. (Code d'erreur : %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Recherche terminée. %d boutiques trouvées.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Recherche arrêtée. Plus de %d boutiques trouvées avec cet objet.
+Wyłowiłeś %s!	Vous avez pêché %s !
+Wędka może zostać ulepszona tylko u Rybaka.	La Canne à pêche ne peut être améliorée que chez le Pêcheur.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Le propriétaire de l'objet a trop d'objets dans son inventaire.
+Za 5 min zostanie wykonany automatyczny reset spotów!	Les spots seront réinitialisés automatiquement dans 5 min !
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Attendez %d secondes avant d'utiliser cet objet.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Attendez %d secondes avant de modifier à nouveau la boutique.
+Zaczekaj %d sekund, przed kolejną akcją.	Attendez %d secondes avant la prochaine action.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Attendez %s avant de réutiliser le parchemin.
+Zaczekaj chwilę, przed kolejną akcją.	Attendez un instant avant la prochaine action.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Patientez un instant. Sortie de la carte en cours.
+Zakup wymaga odpowiedniej reputacji.	Cet achat requiert une réputation suffisante.
+Zamkniecie sklepu	Fermeture de la boutique
+Zaproszony gracz jest w tym momencie zajęty.	Le joueur invité est occupé pour le moment.
+Zdobyłeś %s!	Vous avez obtenu %s !
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Terre en vue ! Le navire est sauvé - passez le portail.
+Zmiana kanału została przerwana.	Le changement de canal a été interrompu.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Impossible de passer sur ce canal pour le moment.
+Znowu atakują! Do broni!	Ils attaquent encore ! Aux armes !
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Il reste quelque chose que je dois réparer... quelque chose qui n'aurait jamais dû arriver.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	La mort n'est pas une fin, mais plutôt le début d'une nouvelle voie.

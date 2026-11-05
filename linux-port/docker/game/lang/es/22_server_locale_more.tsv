@@ -1,0 +1,296 @@
+# MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
+# Polish<TAB>es (by hand; UTF-8). tools/i18n/extract_server_texts.py --check es lists what is missing.
+%d dni %d godzin	%d días %d horas
+%d dni %d godzin i %d minut	%d días %d horas y %d minutos
+%d godzin i %d minut	%d horas y %d minutos
+%d minut	%d minutos
+%d sekund do wyjścia z mapy.	%d segundos para salir del mapa.
+%d sekund do zmiany kanału.	%d segundos para cambiar de canal.
+%s jest blisko Ciebie.	%s está cerca de ti.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s está conectado en el canal %d. (canal actual: %d)
+%s rzucił %d. (%d-%d)	%s ha sacado %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s ha tirado el dado y ha sacado %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	Han pasado 30 minutos. Las hogueras se han apagado.
+<Gildia> Wskazany gracz jest zajęty.	<Gremio> El jugador indicado está ocupado.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Grupo> El grupo no puede aceptar a otros mientras sus miembros están en una mazmorra.
+<Grupa> Lider grupy jest w lochu.	<Grupo> El líder del grupo está en una mazmorra.
+[Gildia] Gildia jest w trakcie wojny.	[Gremio] El gremio está en guerra.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Gremio] El gremio ha alcanzado el límite de invitaciones.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Gremio] El gremio ha alcanzado el nivel máximo.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Gremio] Se han cargado %d de Energía del Espíritu del Dragón.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Gremio] No puedes expulsar a un miembro del gremio durante una guerra.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Gremio] No puedes usar habilidades de gremio fuera de la arena.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Gremio] Los nuevos miembros están limitados actualmente.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Gremio] Durante una guerra de gremios no puedes expulsar a un miembro del gremio.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Gremio] La persona invitada está ocupada en este momento.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Grupo] El grupo no se puede disolver porque hay miembros en una mazmorra.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Almacén] No puedes mover objetos en el almacén.
+Aby otworzyć sklep potrzebujesz Tobół.	Para abrir una tienda necesitas un Hatillo.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Para comprar este objeto, el personaje debe tener al menos el nivel %u.
+Atakują nas morskie potwory! Do broni!	¡Nos atacan monstruos marinos! ¡A las armas!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	La bonificación de mejora se puede usar en objetos hasta el nivel %d como máximo.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	La bonificación de mejora se puede usar en objetos con un grado de mejora máximo de +%d.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	La bonificación de mejora solo se puede usar en joyas.
+Bonus na ulepszenie może być użyty tylko na bronie.	La bonificación de mejora solo se puede usar en armas.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	La bonificación de mejora solo se puede usar en armaduras, cascos y escudos.
+Brak danych. Skontaktuj się z administratorem.	No hay datos. Ponte en contacto con el administrador.
+Brak kamienia do wyjęcia.	No hay ninguna piedra que extraer.
+Brak miejsca w ekwipunku.	No hay espacio en el inventario.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	No hay impuestos. Capital actual: %u Capital necesario: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Error del objeto al intentar abrir la tienda.
+Cena przedmiotu zmieniła się.	El precio del objeto ha cambiado.
+Cena przedmiotu została zmieniona.	El precio del objeto se ha modificado.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Algo ha picado en el anzuelo, pero no ves qué es.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	El Bosque Rojo esconde muchos secretos que desconocíais.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	El detector se ha activado, pero no ha detectado ninguna piedra espiritual.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Los efectos VIP no se combinan con la Suscripción Premium. No puedes realizar la compra.
+Eliksir jest pusty. Napełnij go u Alchemika.	El elixir está vacío. Rellénalo con el Alquimista.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Los emoticonos solo están disponibles para Suscriptores Premium.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Oleada %d: defended el mástil y derrotad a la Hidra.
+Fala %d: brońcie masztu przez %d sek.	Oleada %d: defended el mástil durante %d s.
+Funkcja tymczasowo niedostępna.	Función no disponible temporalmente.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	El gremio está en el nivel máximo, pero aceptará tu regalo.
+Gracz %s został dodany do listy zablokowanych.	El jugador %s ha sido añadido a la lista de bloqueados.
+Gracz %s został usunięty z listy zablokowanych.	El jugador %s ha sido eliminado de la lista de bloqueados.
+Ja ci pokazać, że mi nie przeszkadzać!	¡Yo enseñar a ti que no molestar a mí!
+Jajo Hydry pękło - potwory idą na dno!	El Huevo de Hidra se ha roto - ¡los monstruos se hunden!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Uno de los objetos tiene un precio no permitido (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Uno de los objetos está en una posición no permitida.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Uno de los invitados a la boda está ocupado o ha terminado un comercio hace poco.
+Jesteś już przyjacielem gracza %s.	Ya eres amigo del jugador %s.
+Jesteś za daleko od Kowala.	Estás demasiado lejos del Herrero.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Si no estás de acuerdo con estas condiciones
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Las Piedras Espirituales +3 no se pueden mejorar con este objeto.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	La Piedra Espiritual no se puede mejorar con este objeto.
+Kilof może zostać ulepszony tylko u Deokbae.	El pico solo lo puede mejorar Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Alguien ha comprado %dx %s de tu tienda por %d Yang.
+Masz za mało Animosfer.	No tienes suficientes Animosferas.
+Maszt naprawiony: %d%% PŻ.	Mástil reparado: %d%% PV.
+Maszt ocalał. Przygotujcie się na następną falę!	El mástil ha resistido. ¡Preparaos para la siguiente oleada!
+Maszt: zostało %d%% PŻ!	Mástil: ¡quedan %d%% PV!
+Możesz używać Białej Flagi co %d minut.	Puedes usar la Bandera Blanca cada %d minutos.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Solo puedes usar esta habilidad en tu propio Reino.
+Możesz wyrzucić przedmioty co %d sekund.	Puedes tirar objetos cada %d segundos.
+Możesz wyrzucić Yang co 10 sekund.	Puedes tirar Yang cada 10 segundos.
+Możesz łowić tylko w M1.	Solo puedes pescar en M1.
+Możliwość pisania została zablokowana przez siły wyższe!	¡Unas fuerzas superiores te han bloqueado la escritura!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Debes tener el nivel %d para entender este Libro.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Debes tener al menos el nivel %d para comprar este objeto.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Debes llevar el vestido de novia para equiparte el ramo.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Debes esperar %d min. antes de volver a usar esta opción.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Debes esperar un momento tras el combate antes de usar esta opción.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Debes esperar unos segundos antes de salir del mapa.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Debes esperar unos segundos antes de cambiar de canal.
+Musisz posiadać cel.	Debes tener un objetivo.
+Musisz stać obok sklepu.	Debes estar junto a la tienda.
+Musisz zaczekać %d min. przed ponownym użyciem.	Debes esperar %d min. antes de volver a usarlo.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Debes esperar %d s antes de volver a usarlo.
+Musisz zdjąć bukiet.	Debes quitarte el ramo.
+Musisz znajdować się na tej samej mapie co sklep.	Debes estar en el mismo mapa que la tienda.
+Musisz znajdować się na tym samym kanale co sklep.	Debes estar en el mismo canal que la tienda.
+Na tej mapie mogą odbywać się wymuszone bitwy.	En este mapa puede haber batallas forzadas.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	En este canal hay demasiadas tiendas. Para superar el límite gratuito se necesita una tienda premium.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	En este canal se ha alcanzado el límite máximo de tiendas offline. No puedes abrir una tienda.
+Następna fala za %d sek.	Siguiente oleada en %d s.
+Naładowany na %d sekund.	Cargado durante %d segundos.
+Nie jesteś zablokowany.	No estás bloqueado.
+Nie ma kogo ożywić.	No hay nadie a quien revivir.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	No tienes espacio en el inventario. El objeto se ha enviado al almacén de la Item Shop.
+Nie masz sklepu na tej mapie.	No tienes una tienda en este mapa.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	No tienes una tienda en este canal. (Encontrada en el canal %d).
+Nie możesz czytać ksiąg będąć przemieniony.	No puedes leer libros mientras estás transformado.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	No puedes seguir desarrollando esta habilidad. Usa un Reseteo de Habilidades o un Libro del olvido.
+Nie możesz dodać więcej bonusów.	No puedes añadir más bonificaciones.
+Nie możesz jeździć konno podczas łowienia.	No puedes montar a caballo mientras pescas.
+Nie możesz jeździć konno, gdy jesteś powalony.	No puedes montar a caballo mientras estás derribado.
+Nie możesz jeździć nosząc przedmiot.	No puedes montar llevando este objeto.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	No puedes continuar mientras otra ventana esté activa.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	No puedes continuar porque el Yang superaría el límite permitido de 2000 millones.
+Nie możesz kupować od samego siebie.	No puedes comprarte a ti mismo.
+Nie możesz mieć więcej niż %d przyjaciół.	No puedes tener más de %d amigos.
+Nie możesz nosić Smokingu na koniu.	No puedes llevar el Esmoquin a caballo.
+Nie możesz nosić tego przedmiotu konno.	No puedes llevar este objeto a caballo.
+Nie możesz otworzyć pustego sklepu.	No puedes abrir una tienda vacía.
+Nie możesz otworzyć sklepu offline w tym miejscu.	No puedes abrir una tienda offline en este lugar.
+Nie możesz otworzyć sklepu w tym miejscu.	No puedes abrir una tienda en este lugar.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	No puedes abrir esta tienda. Recoge todos los objetos.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	No puedes abrir una tienda aquí. Estás demasiado cerca de otra tienda.
+Nie możesz otworzyć więcej sklepów.	No puedes abrir más tiendas.
+Nie możesz ożywić kogoś, kto żyje.	No puedes revivir a alguien que está vivo.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	No puedes recoger objetos mientras estás en la ventana de misión.
+Nie możesz przenieść się do tego obszaru.	No puedes trasladarte a esta zona.
+Nie możesz przenieść się do tej osoby.	No puedes trasladarte hasta esta persona.
+Nie możesz przywołać do tego obszaru.	No puedes invocar a esta zona.
+Nie możesz przywołać konia w tym miejscu.	No puedes invocar al caballo en este lugar.
+Nie możesz się teraz teleportować.	Ahora no puedes teletransportarte.
+Nie możesz sprintować będąc spowolnionym.	No puedes esprintar mientras estás ralentizado.
+Nie możesz sprintować nosząc przedmiot.	No puedes esprintar llevando este objeto.
+Nie możesz sprzedawać noszonych przedmiotów.	No puedes vender objetos equipados.
+Nie możesz sprzedawać zablokowanych przedmiotów.	No puedes vender objetos bloqueados.
+Nie możesz sprzedać przedmiotów, które nosisz.	No puedes vender objetos que llevas puestos.
+Nie możesz sprzedać założonego przedmiotu.	No puedes vender un objeto equipado.
+Nie możesz tego teraz użyć.	Ahora no puedes usar esto.
+Nie możesz tego użyć, gdy masz otwarte okno.	No puedes usar esto mientras tengas una ventana abierta.
+Nie możesz tego zrobić na kanale specjalnym.	No puedes hacer esto en un canal especial.
+Nie możesz teleportować się nosząc przedmiot.	No puedes teletransportarte llevando este objeto.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Ahora no puedes otorgar el efecto, espera un momento.
+Nie możesz teraz podnosić przedmiotów.	Ahora no puedes recoger objetos.
+Nie możesz teraz wykonać tej operacji.	Ahora no puedes realizar esta operación.
+Nie możesz teraz zejść z wierzchowca.	Ahora no puedes bajarte de la montura.
+Nie możesz tutaj otworzyć depozytu.	No puedes abrir el depósito aquí.
+Nie możesz uczyć się będąc przemienionym.	No puedes aprender mientras estás transformado.
+Nie możesz ulepszyć tego przedmiotu.	No puedes mejorar este objeto.
+Nie możesz użyć tego na wojnie.	No puedes usar esto en una guerra.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	No puedes usar este objeto mientras la ventana de misión esté activa.
+Nie możesz użyć tego przedmiotu konno.	No puedes usar este objeto a caballo.
+Nie możesz wyjąć umieszczonego kamienia.	No puedes extraer la piedra engarzada.
+Nie możesz wykonać tej akcji będąc martwy.	No puedes realizar esta acción estando muerto.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	No puedes poner objetos de las alforjas en una tienda normal.
+Nie możesz zablokować więcej niż %d osób.	No puedes bloquear a más de %d personas.
+Nie możesz zapisać pozycji w tym miejscu.	No puedes guardar la posición en este lugar.
+Nie możesz zapisać pozycji wrogiego Królestwa.	No puedes guardar una posición en un Reino enemigo.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	No puedes invitar como amigo a una persona bloqueada.
+Nie możesz zmienić bonusów.	No puedes cambiar las bonificaciones.
+Nie możesz zmienić trybu PvP na wojnie.	No puedes cambiar el modo JcJ durante una guerra.
+Nie można użyć na innym graczu.	No se puede usar sobre otro jugador.
+Nie można ładować.	No se puede cargar.
+Nie posiadasz otwartego sklepu.	No tienes ninguna tienda abierta.
+Nie posiadasz sklepu premium.	No tienes una tienda premium.
+Nie posiadasz sklepu.	No tienes una tienda.
+Nie posiadasz wymaganych przedmiotów do zakupu.	No tienes los objetos necesarios para la compra.
+Nie posiadasz wystarczająco dużo reputacji.	No tienes suficiente reputación.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	No cumples los requisitos para abrir tu propia tienda.
+Nie udało się wytworzyć.	No se ha podido fabricar.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	No has soltado ningún objeto porque te protege el Dios Dragón.
+Nie znaleziono gracza o podanej nazwie.	No se ha encontrado ningún jugador con ese nombre.
+Niedostępne.	No disponible.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Algunos objetos de la tienda se solapan.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Algunos objetos de la tienda están en un lugar bloqueado.
+Niewystarczająca ilość Smoczych Monet.	No tienes suficientes Monedas Dragón.
+Niewystarczająca ilość Smoczych Znaków.	No tienes suficientes Marcas Dragón.
+Nikt nie wypłynął - statek zostaje w porcie.	Nadie ha zarpado - el barco se queda en el puerto.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	El cuchillo de herbolario solo lo puede mejorar el Herbolario.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	El destinatario no puede recibir solicitudes de amistad.
+Odczekaj chwilę po zakończeniu handlu.	Espera un momento después de terminar el comercio.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Espera aún %s antes del siguiente entrenamiento.
+Odczekaj jeszcze %s przed zakupem.	Espera aún %s antes de comprar.
+Odczekaj przed następnym ulepszeniem.	Espera antes de la siguiente mejora.
+Oferta sklepu zmieniła się.	La oferta de la tienda ha cambiado.
+Okno zarządzania sklepem musi być otwarte.	La ventana de gestión de la tienda debe estar abierta.
+Osiągnięto limit zakupu tego przedmiotu.	Se ha alcanzado el límite de compra de este objeto.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Se ha alcanzado el número máximo de compras de este objeto en esta cuenta.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	La persona que intentas revivir no es humana.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Has recibido %d de reputación (Guardia Real)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Has recibido %d de reputación (Hijos del Desierto)
+Otrzymałeś %s (Juki Konne)	Has recibido %s (Alforjas)
+Otrzymałeś %s (szt. %d)	Has recibido %s (%d uds.)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Has recibido %s (%d uds.) (Alforjas)
+OX-Question: 	Pregunta OX: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Recuerda que en este mapa no se puede poner una tienda offline.
+Podana kwota jest większa niż zarobione Yang.	La cantidad indicada es mayor que el Yang ganado.
+Podana kwota jest za mała.	La cantidad indicada es demasiado pequeña.
+Podana osoba jest na liście Twoich przyjaciół.	Esa persona está en tu lista de amigos.
+Podatek od sprzedaży: %d%% (%lld Yang).	Impuesto de venta: %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	¡Ha aparecido un Huevo de Hidra! Rómpelo y los monstruos se hundirán.
+Pomimo treningu nie czujesz się zmęczony.	A pesar del entrenamiento no te sientes cansado.
+Pomyślnie dodano bonus.	Bonificación añadida con éxito.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Yang retirado con éxito del depósito de la tienda.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Tienes una tienda abierta o el depósito de la tienda contiene objetos.
+Pospieszcie się, macie %d min., by przejść przez portal.	Daos prisa, tenéis %d min. para cruzar el portal.
+Potomstwo Hydry trafiło maszt laserem!	¡La Prole de la Hidra ha alcanzado el mástil con un láser!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Necesitas %lld Yang para abrir este tipo de tienda
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Necesitas espacio para un objeto de al menos 3 casillas para abrir el cofre.
+Pozostały czas %d sekund.	Tiempo restante: %d segundos.
+Pozostały czas: %.1f sek.	Tiempo restante: %.1f s.
+Pozostały czas: %.2f sek.	Tiempo restante: %.2f s.
+Pozycja sklepu została oznaczona strzałką.	La posición de la tienda se ha marcado con una flecha.
+Prosimy o powrót do pierwotnej lokalizacji.	Por favor, vuelve a la ubicación original.
+Prośba o wezwanie została wysłana.	La solicitud de invocación se ha enviado.
+Przechwyciłeś laser Potomstwa Hydry.	Has interceptado el láser de la Prole de la Hidra.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	El objeto solo se puede usar en armas y armaduras hasta el nivel 40.
+Przedmiot nie może być użyty na akcesoriach.	El objeto no se puede usar en accesorios.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	El objeto no tiene ninguna Piedra Espiritual que extraer.
+Przedmiot zniknie za %d minut.	El objeto desaparecerá en %d minutos.
+Przedmiot został dodany do twojego ekwipunku	El objeto se ha añadido a tu inventario
+Przedmioty zostały dodane do twojego ekwipunku	Los objetos se han añadido a tu inventario
+Przedmioty zostały pomyśnie zaktualizowane.	Los objetos se han actualizado con éxito.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Los objetos que estás usando no se pueden vender en tu tienda personal.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Vuelve a conectarte para que el efecto VIP se aplique correctamente.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Invoca al caballo para acceder a los objetos de las alforjas.
+Rejs trwał za długo - statek zawraca.	La travesía ha durado demasiado - el barco da la vuelta.
+Rzuciłeś %d. (%d-%d)	Has sacado %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Has tirado el dado y has sacado %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	El servidor se cerrará en 10 minutos por mantenimiento.
+Sklep #PLAYER_NAME#	Tienda #PLAYER_NAME#
+Sklep - %s	Tienda - %s
+Sklep jest otwarty.	La tienda está abierta.
+Sklep jest w trybie edycji.	La tienda está en modo edición.
+Sklep jest zamknięty.	La tienda está cerrada.
+Sklep nie jest w trybie edycji.	La tienda no está en modo edición.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	El propietario ha editado la tienda hace poco. Espera un momento antes de comprar.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	La tienda se ha cerrado; los objetos restantes y el Yang ganado se han añadido al depósito.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	El cofre de Piedras del Alma de Dragón no está activado.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	¡SOS! El mástil está destrozado, el barco se hunde. En breve volveréis a tierra.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	No es posible esprintar a pie con tu velocidad de movimiento actual (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	La habilidad entrenada ya tiene el nivel máximo (%d).
+Ta aukcja nie jest już dostępna.	Esta subasta ya no está disponible.
+Ta opcja jest tymczasowo niedostępna.	Esta opción no está disponible temporalmente.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Estas aguas son de muy mala calidad, casi no hay peces aquí; habla con el Pescador.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Este jugador tiene más de 2000 millones de Yang. No puedes comerciar con él.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Esta compra superaría el límite de compras permitido por cuenta. Compra menos unidades.
+To miejsce jest wolne od plagi Kamieni Metin.	Este lugar está libre de la plaga de Piedras Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	No fui yo... pero ellos te eligieron. Nos veremos de nuevo, antes de lo que creéis.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	El veneno solo se puede usar en la Tortuga Gigante.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Tu grupo tiene todas las clases, por lo que recibes una bonificación de experiencia.
+Twoja postać nie żyje, nie możesz tego zrobić.	Tu personaje está muerto, no puedes hacer esto.
+Twoja ranga nie może już wzrosnąć.	Tu rango ya no puede subir más.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	¡La creación de tiendas para tu cargo ha sido bloqueada!
+Tworzenie sklepów jest tymczasowo wyłączone	La creación de tiendas está desactivada temporalmente
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Tu Caballo está hambriento, en este estado no puede esforzarse.
+Tylko GM ma dostęp do tej komendy.	Solo un GM tiene acceso a este comando.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Esta acción solo se puede realizar en el Templo del Zodiaco.
+Udało ci się pokonać smoka w %d sekund!	¡Has logrado derrotar al dragón en %d segundos!
+Upuszczone Yang zniknie za %d sekund.	El Yang soltado desaparecerá en %d segundos.
+Upuszczony przedmiot zniknie za %d minut.	El objeto soltado desaparecerá en %d minutos.
+Usuniecie przedmiotu	Eliminación del objeto
+Uwolniłeś się!	¡Te has liberado!
+W depozycie sklepu offline zalegają przedmioty.	En el depósito de la tienda offline quedan objetos.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Se oye un rumor siniestro en el bosque... ¡El Señor de los Espíritus de los Árboles despierta!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	El valor de la tienda y tu Yang supera la cantidad de Yang permitida (2000 millones).
+Wesele dalej trwa!	¡La boda continúa!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	¡La guerra entre %s y %s empezará en %d minutos!
+Wskazany kanał dostępny jest tylko dla kont Premium.	El canal indicado solo está disponible para cuentas Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	¡Todos han caído! Vuestro tiempo en el Templo terminará si nadie es revivido en un minuto.
+Wszystkie potwory na mapach zostały zabite!	¡Todos los monstruos de los mapas han sido eliminados!
+Wygląda na to, że na haczyku jest %s.	Parece que en el anzuelo hay %s.
+Wyglądało na to, że %s wisi na haku.	Parecía que %s colgaba del anzuelo.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	¡Has ganado el duelo con %d/%d (%d%%) PV!
+Wyjście z mapy zostało przerwane.	La salida del mapa se ha interrumpido.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Se ha agotado el límite de compras en subastas de esta cuenta (máx. %d compras).
+Wymagane %d Staminy	Se requieren %d de Aguante
+Wymagane %s.	Se requiere %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Se requiere un Cristal de entendimiento o una Suscripción Premium activa.
+Wystapił błąd	Se ha producido un error
+Wystąpił błąd. (Kod błędu: %s)	Se ha producido un error. (Código de error: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Búsqueda terminada. Se han encontrado %d tiendas.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Búsqueda detenida. Se han encontrado más de %d tiendas con ese objeto.
+Wyłowiłeś %s!	¡Has pescado %s!
+Wędka może zostać ulepszona tylko u Rybaka.	La caña solo la puede mejorar el Pescador.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	El propietario del objeto tiene demasiados objetos en el inventario.
+Za 5 min zostanie wykonany automatyczny reset spotów!	¡En 5 min se realizará un reinicio automático de los spots!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Espera %d segundos antes de usar este objeto.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Espera %d segundos para hacer otro cambio en la tienda.
+Zaczekaj %d sekund, przed kolejną akcją.	Espera %d segundos antes de la siguiente acción.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Espera %s antes de volver a usar el pergamino.
+Zaczekaj chwilę, przed kolejną akcją.	Espera un momento antes de la siguiente acción.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Espera un momento. Saliendo del mapa.
+Zakup wymaga odpowiedniej reputacji.	La compra requiere la reputación adecuada.
+Zamkniecie sklepu	Cierre de la tienda
+Zaproszony gracz jest w tym momencie zajęty.	El jugador invitado está ocupado en este momento.
+Zdobyłeś %s!	¡Has conseguido %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	¡Tierra a la vista! El barco se ha salvado - cruzad el portal.
+Zmiana kanału została przerwana.	El cambio de canal se ha interrumpido.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Ahora no es posible cambiar al canal indicado.
+Znowu atakują! Do broni!	¡Atacan de nuevo! ¡A las armas!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Queda algo que debo arreglar... algo que nunca debió ocurrir.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	La muerte no es el final, sino más bien el comienzo de un nuevo camino.

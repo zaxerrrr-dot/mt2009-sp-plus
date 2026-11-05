@@ -1,0 +1,423 @@
+# MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
+# Polish<TAB>fr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check fr lists what is missing.
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, recharge %d s : %s
+  %u %s - jeszcze %u min	  %u %s - encore %u min
+  %u %s - na stałe	  %u %s - permanent
+ (bot, także odpoczynek)	 (bot, repos compris)
+ i premie do dropu	 et bonus de drop
+ Nagroda trafila do ekwipunku.	 La récompense est dans votre inventaire.
+%s (offline): zapis do player.quest się nie udał.	%s (hors ligne) : l'écriture dans player.quest a échoué.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s se rend auprès de quelqu'un qui l'a appelé et n'accepte pas de duel maintenant.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s part en raid et n'accepte pas de duel maintenant.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s est le compagnon de quelqu'un et ne participe pas aux duels.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s est le compagnon de quelqu'un et ne rejoindra pas votre groupe.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s est sur un autre cœur (canal %u), et la file player.web_admin_queue n'a pas accepté l'ordre.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s est sur le canal %u - réinitialisation (%s) ordonnée ; elle s'y fera en quelques secondes.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s extrait du minerai et n'accepte pas de duel maintenant.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s pêche et n'accepte pas de duel maintenant.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s n'a pas d'arme en main et n'accepte pas de duel.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s n'accepte pas de duel en dessous du niveau %d.
+%s nie walczy w strefie bezpiecznej.	%s ne combat pas en zone sûre.
+%s odrzuca zaproszenie do znajomych.	%s refuse la demande d'ami.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s a ouvert le Trésor de Balathor - votre récompense est dans votre inventaire.
+%s posiada teraz żywioł: %s!	%s possède maintenant l'élément : %s !
+%s przyjmuje zaproszenie do gildii %s.	%s accepte l'invitation dans la guilde %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma est déjà à sa valeur maximale (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s : %d/3 pièces - effet de set actif
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s : %s n'a pas de limite quotidienne (le repos ne concerne que les bots en jeu).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s : %s, fin dans %ld min, récompenses encore %ld min, valeur %d, drapeau %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s : l'effet est déjà au niveau maximal (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s : cette compétence de guilde est déjà au niveau maximal.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s : ce joueur est sur votre liste de blocage.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s : ce joueur n'accepte pas vos invitations.
+%s: tytułów %u, założony %u	%s : titres %u, porté %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - remet à zéro la limite quotidienne de donjons du personnage.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (Défense du navire, map %ld; ships here: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Buffi est disponible à partir du niveau %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Cet emplacement de Buffi n'accepte que : %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Cette compétence s'entraîne avec le Livre de compétence : %s (chamane).
+[Gildia] %s	[Guilde] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Guilde] Les bots ne récoltent que des matériaux de construction : Rondin, Pierre de charbon, Contreplaqué.
+[Gildia] Brak miejsca w ekwipunku.	[Guilde] Pas assez de place dans l'inventaire.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Guilde] Le bâtiment ne tient pas sur le terrain de la guilde. Rapprochez-le du centre du terrain.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Guilde] Quantité : de 1 à %d pièces.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Guilde] Une mission d'objets est déjà en cours - annulez-la pour en lancer une nouvelle.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Guilde] Une collecte est déjà en cours - attendez qu'elle se termine ou annulez-la.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Guilde] Mission annulée - les objets de la banque retournent aux bots qui les ont apportés.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Guilde] Aucune mission d'objets en cours.
+[Gildia] Nie ma trwajacej zrzutki.	[Guilde] Aucune collecte en cours.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Guilde] Aucune expédition à annuler (impossible de l'annuler une fois dans la tour).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Guilde] Les tâches de guilde sont momentanément indisponibles.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Guilde] Seul le chef de guilde peut confier les tâches de guilde.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Guilde] Vous êtes là où doit se trouver le bâtiment. Écartez-vous ou déplacez le bâtiment.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Guilde] %s se trouve là où doit être le bâtiment. Attendez qu'il parte ou déplacez le bâtiment.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Guilde] Cette compétence ne s'utilise que pendant une guerre de guilde ou dans la Crypte de Balathor.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Guilde] Cet objet n'est pas dans la banque de guilde.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Guilde] Un autre bâtiment se trouve déjà ici. Déplacez le nouveau bâtiment ou tournez-le.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Guilde] Retiré de la banque de guilde : %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Guilde] Une expédition à la Tour des Démons est déjà organisée.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Guilde] L'expédition à la Tour des Démons est annulée.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Guilde] Les Yang du trésor de guilde ne servent qu'à la guilde : terrain et bâtiments. Impossible de les retirer.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Guilde] Payé %lld Yang du trésor de guilde et %lld Yang de votre inventaire.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Guilde] Collecte terminée. Les Yang versés restent dans le trésor de guilde.
+[Gildia] Zrzutka: od %s do %s yang.	[Guilde] Collecte : de %s à %s Yang.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Trêve] Un bot a été attaqué - la trêve avec les bots est rompue.
+[Towarzysz] %s	[Compagnon] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Guerre] L'arène de cette guerre est encore en préparation - réessayez dans quelques secondes.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Guerre] L'arène des guerres est sur un autre cœur - allez sur la carte M1 de votre royaume et cliquez à nouveau.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Guerre] Les bots ne combattent en guerre de guilde que sur le canal 1 - changez de canal et cliquez à nouveau.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Guerre] La guilde %s mène actuellement une autre guerre.
+[Wojna] Jestes juz na polu wojny.	[Guerre] Vous êtes déjà sur le champ de bataille.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Guerre] Récompense pour la guerre gagnée : %d x Coffre de rayon de Lune (vos victimes : %d).
+[Wojna] Nie nalezysz do gildii.	[Guerre] Vous n'êtes pas dans une guilde.
+[Wojna] Nie znam areny tej wojny.	[Guerre] Je ne connais pas l'arène de cette guerre.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Guerre] Je vous transporte au camp de votre guilde dans l'arène des guerres.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Guerre] Impossible de vous transporter maintenant - réessayez dans un instant.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Guerre] C'est une guerre en plein champ : vous combattez là où vous vous rencontrez.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Guerre] Votre guilde n'est pas en guerre actuellement.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Guerre] La guerre contre la guilde %s est déjà déclarée - les bots répondront dans le chat de guilde.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Guerre] Les guerres contre les guildes de bots sont désactivées dans le panneau du serveur.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Guerre] Guerre déclarée à la guilde de bots %s. On combat les bots dans l'arène des guerres (canal 1). La réponse arrivera dans le chat de guilde dans quelques secondes.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Guerre] Une guerre avec la guilde %s est déjà en cours ou en train de finir.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Attrape le Roi] 25 cartes royales ont donné un nouveau Jeu royal (vous en avez %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Attrape le Roi] Une récompense d'une partie interrompue vous attend - faites de la place dans l'inventaire et reconnectez-vous.
+[Zlap Krola] Event teraz nie trwa.	[Attrape le Roi] L'événement n'est pas en cours.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Attrape le Roi] Vous avez déjà le maximum de Jeux royaux (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Attrape le Roi] Pas assez de Jeux royaux ou de Yang (%d jeux et %d Yang par partie).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Attrape le Roi] Utilisable seulement pendant l'événement.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Attrape le Roi] Faites de la place dans l'inventaire pour récupérer la récompense.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Baisse auto : de 1 à %d%% toutes les 1-%d heures.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor vaincu ! Il a laissé son trésor - récupérez votre récompense. Sortie de la crypte dans %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip : aucune étape à passer (seulement dans la Crypte, pendant un raid)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor s'est enfui, mais a laissé son trésor - récupérez votre récompense. Sortie de la crypte dans %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor a gagné - expédition ratée, pas de récompense. Sortie de la crypte dans %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass : mission répétable accomplie (%ue fois) !%s
+Battle Pass: misja ukonczona!%s	Battle Pass : mission accomplie !%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass : missions rechargées (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass : la récompense finale de cette saison a déjà été récupérée.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass : terminez d'abord toutes les missions de la saison.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass : toutes les missions de la saison sont accomplies - récupérez la récompense finale !
+Bonus zestawu kostiumow (%s): %ld czesci.	Bonus de set de costumes (%s) : %ld pièces.
+Boss Swiata jest chwilowo niedostepny.	Le Boss mondial est momentanément indisponible.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Boss mondial : %de place, rang de butin %s (%lld dégâts, +%d pts de rang). Récupérez la récompense dans la fenêtre du Boss mondial avant l'arrivée du prochain boss.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss mondial : pas assez de place dans l'inventaire (%d emplacements libres requis) - libérez de la place et cliquez à nouveau.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss mondial : une partie des récompenses récupérée ; pas de place pour le reste (%d emplacements libres requis) - libérez de la place et cliquez à nouveau.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Boss mondial : récompense de la saison %u pour la %de place de votre guilde.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Boss mondial : récompense de la saison %u pour la %de place au classement des personnages.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Boss mondial : la récompense a déjà été récupérée ou a expiré.
+Boss Swiata: nie masz nagrody do odebrania.	Boss mondial : vous n'avez aucune récompense à récupérer.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Boss mondial : récompense de la %de place récupérée (rang de butin %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Boss mondial : bonus de mission - valeur d'attaque +%d%% pendant %d h.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Boss mondial : vous avez infligé %lld dégâts - pas assez pour une récompense (il faut %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Boss mondial : fermez les autres fenêtres (échange, boutique, entrepôt) avant de récupérer la récompense.
+Boty opuszczaja Wieze Demonow.	Les bots quittent la Tour des Démons.
+Brak miejsca w kategorii: %s.	Pas de place dans la catégorie : %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Les armes des Jeunes Héros ne peuvent être ni améliorées ni modifiées.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s : commande inconnue ou mauvais arguments (%s) - rien n'a changé
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s : personnage sur un autre cœur (canal %d) - commande envoyée
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s : personnage hors ligne - changement (%s) enregistré, appliqué à sa prochaine connexion
+champion: nie ma postaci %s	champion : aucun personnage %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion : commande inconnue ou mauvais arguments (%s) - rien n'a changé
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Le temps est écoulé - Balathor a gagné. Sortie de la crypte dans %s.
+Czas przejecia bota minal - postac wraca do bota.	Le temps de prise de contrôle du bot est écoulé - le personnage retourne au bot.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	L'ancien système de familiers a été remplacé par le Système d'animaux - la touche U ouvre la fenêtre du familier.
+Do ewolucji tej szaty potrzeba: %s x%d.	Pour faire évoluer cette tenue, il faut : %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Seules les Pierres démoniaques vont dans les gants.
+Dom Aukcyjny jest dostepny tylko w M1.	La Maison des ventes n'est disponible qu'en M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	La Maison des ventes est désactivée dans ce monde.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Excellent ! La Pierre de force démon. a donné une valeur double.
+Drop wiki: %u przedmiotów, %u potworów.	Wiki des drops : %u objets, %u monstres.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Enfants Fleurs : l'événement et le temps d'échange sont terminés.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Enfants Fleurs : la récompense est momentanément indisponible - signalez-le à l'équipe.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Enfants Fleurs : fermez les autres fenêtres (échange, boutique, entrepôt) avant d'échanger.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Enfants Fleurs : vous obtenez des Graines de fleurs (vous en avez %d).
+dziś nie było wypraw	aucune expédition aujourd'hui
+Efekt zestawu nadany: %s.	Effet de set appliqué : %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Inventaire plein - la partie achetée de la pile est à vos pieds.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Éliminés ! Votre temps dans le donjon se termine si personne ne ressuscite dans la minute.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir restera près de vous pendant 3 minutes. Il disparaît si vous vous éloignez ou changez de carte.
+Enasir odszedł.	Enasir est parti.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir a prélevé des frais de service : %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir : %s - temps restant %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir : Entrepôt %s, Boutique %s, invoqué : %s, autorisé ici : %s.
+Enasir: usługi zabrane.	Enasir : services retirés.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	L'événement Enfants Fleurs est terminé - cette fleur ne peut plus être utilisée.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	L'Événement de pêche - Puzzle n'est pas en cours - vous ouvrirez les boîtes au prochain événement.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	L'évolution n'est possible qu'au niveau %d avec 100%% d'expérience.
+Ewolucja udana: %s, poziom %d.	Évolution réussie : %s, niveau %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Le Gaya est maintenant une monnaie : %d Gaya ont été ajoutés à votre compteur de Gaya (à côté des Yang dans l'inventaire).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Le Gaya ne se place pas dans la fenêtre - le forgeron le prend lui-même dans l'inventaire.
+Gildia nauczyła się: %s (poziom %d/%d).	La guilde a appris : %s (niveau %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	La guilde n'a aucun point de compétence dépensé.
+Gildia odzyskała punkty umiejętności: %d.	La guilde a récupéré des points de compétence : %d.
+GM zresetował Twój limit dziennych dungeonów.	Un MJ a réinitialisé votre limite quotidienne de donjons.
+Gracz %s nie ma tytułu %s.	Le joueur %s n'a pas le titre %s.
+Gracza %s nie ma na tym kanale (albo to bot).	Le joueur %s n'est pas sur ce canal (ou c'est un bot).
+Gratulacje - %d. poziom!	Félicitations - niveau %d !
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	L'un des Œufs de dragon invoque un froid glacial ! Concentrez vos attaques sur lui pour l'arrêter.
+Kamien Demonow osadzony.	Pierre démoniaque sertie.
+Kamien Demonow pasuje tylko do rekawic.	La Pierre démoniaque ne va que dans les gants.
+Kamien Demonow pekl przy osadzaniu.	La Pierre démoniaque s'est brisée lors du sertissage.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	Les Pierres de la mort gardent le septième étage. Brisez-les toutes les quatre !
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	La Pierre rituelle ne marche que sur les objets au-dessus du niveau 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	cartes : compte %u, niveau %d, objectifs %u/%u/%u, tués %d, monstres %d, sets portés %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Chaque tentative de lecture de ce livre coûte %u EXP de Champion - vous n'en avez pas assez.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	La malédiction de Sung Mahi bloque vos compétences.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Clients avec la liste d'événements sur ce cœur : %u, chef : %s.
+Kod zrealizowany: %s.	Code utilisé : %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Roue de la Fortune (ancienne) : vous recevez %ux %s.
+Kolo Fortuny: %s	Roue de la Fortune : %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Roue de la Fortune : pas de place - %u récompenses en attente. Faites de la place et rouvrez la roue.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Roue de la Fortune : faites de la place dans l'inventaire - une récompense attend.
+Kolo Losu: %s	Roue du Destin : %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Roue du Destin : données rechargées (%u roues, %u objets), roue active %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	La couleur d'une compétence équestre peut être changée une fois apprise.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	La couleur d'une compétence peut être changée à partir du niveau P de celle-ci.
+kostium (strój)	costume (tenue)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	Le costume d'arme ne correspond pas à l'arme de cette page - remis dans l'inventaire.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	Le costume d'arme ne correspond pas à l'arme de cette page, et l'inventaire n'a pas de place pour le retirer.
+kostium broni szamana	costume d'arme de chamane
+kostium fryzury	costume de coiffure
+Krwawisz! (%d sek.)	Vous saignez ! (%d s)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	La Crypte de Balathor ne peut pas être ouverte sur ce cœur.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	Vous pourrez lire le Livre de précision à partir du niveau de Champion 1.
+Księgi się zmieniły - ułóż je od nowa.	Les livres ont changé - rangez-les à nouveau.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Donjons : biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (repos des bots seulement) ; sans donjon ou all - tous.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	Le Localisateur de PNJ est activé pour chaque personnage - cet objet n'est plus nécessaire.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	La Bénédiction mineure n'a pas marché - les 6e et 7e bonus sont inchangés.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Vous avez déjà le maximum de Gaya possible (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Vous avez déjà débloqué les 4 pages d'inventaire.
+Masz już ten tytuł.	Vous avez déjà ce titre.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Vous avez un nouveau point de stats Sung Ma (libres : %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Vous portez plus de Yang que la limite (100 mrd). Échange impossible.
+Masz za mało Gaya (potrzeba %d).	Pas assez de Gaya (il faut %d).
+Masz za mało materiału (potrzeba %d).	Pas assez de matériau (il faut %d).
+Masz za mało Yang (potrzeba %d).	Pas assez de Yang (il faut %d).
+Masz za mało Yang.	Pas assez de Yang.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Les lieux d'Arezzo sont désactivés sur ce serveur - vous retournez en ville.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Mission "Battre le Boss mondial" accomplie - un bonus de +%d%% de valeur d'attaque pendant %d h attend dans la fenêtre du Boss mondial.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Vous ne pouvez porter qu'une Pierre élémentaire à la fois (Protection ou Puissance). Retirez d'abord celle que vous portez.
+Możesz łowić ryby od 30 poziomu.	Vous pouvez pêcher à partir du niveau 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Vous devez rester immobile pour changer de page d'inventaire.
+na stałe	permanent
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Aucun point de compétence n'a été dépensé pour cette compétence - les niveaux du Livre et des livres ne s'annulent pas. Le Parch. de modif. d'entr. retire toute la riposte et le boost.
+Na tym kanale magazyn jest niedostępny.	L'entrepôt est indisponible sur ce canal.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Sur une monture, utilisez l'Annulation de polymorphie de monture.
+Nadano tytuł %s graczowi %s.	Titre %s accordé au joueur %s.
+Nadano tytuł %s.	Titre %s accordé.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	%d personnages de la guilde ont reçu la récompense de la Crypte.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Apprenez d'abord le boost - utilisez le Livre de bonus.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Débloquez d'abord une page d'inventaire supplémentaire (objet "Page d'inventaire II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Débloquez d'abord l'Alchimie des dragons - la pierre va dans sa fenêtre.
+Najpierw wybierz drogę umiejętności.	Choisissez d'abord une voie de compétences.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Choisissez d'abord la riposte - utilisez le Livre de parade.
+Najpierw wyjmij przedmiot ze Switchbota.	Retirez d'abord l'objet du Switchbot.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Placez d'abord l'objet qui doit recevoir la nouvelle apparence.
+Najpierw włóż szatę aury.	Placez d'abord la tenue d'aura.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Fermez d'abord les autres fenêtres (échange, boutique, entrepôt).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Fermez d'abord les autres fenêtres (échange, boutique, entrepôt, écharpes).
+Najpierw zamknij okno szaty aury.	Fermez d'abord la fenêtre de la tenue d'aura.
+Najwyżej 1000 dni.	1000 jours au maximum.
+Nie ma postaci %s.	Aucun personnage %s.
+Nie ma takiego tytułu (/tytul lista).	Ce titre n'existe pas (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Vous n'avez dans l'inventaire aucune arme, armure ou casque dès le niveau 75 amélioré au moins à +7 (sans l'effet de set de ce forgeron). Placez l'objet dans la fenêtre avec les éclats et un Plan de set.
+Nie masz wolnych punktow Sung Ma.	Vous n'avez aucun point Sung Ma libre.
+Nie mozesz przywolac kamienia Metin w lochu.	Impossible d'invoquer une pierre Metin dans un donjon.
+Nie mozesz przywolac zyly w lochu.	Impossible d'invoquer un filon dans un donjon.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Vente impossible - vous dépasseriez la limite de 100 mrd de Yang sur vous.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Un objet équipé ne peut pas être placé dans le Switchbot.
+Nie możesz się teleportować z lochu.	Impossible de se téléporter hors d'un donjon.
+Nie możesz teraz zmienić strony ekwipunku.	Impossible de changer de page d'inventaire maintenant.
+Nie możesz tutaj użyć tego przedmiotu.	Vous ne pouvez pas utiliser cet objet ici.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	Impossible d'équiper l'objet %s depuis la page d'inventaire %s - page inchangée.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Impossible de détruire cet objet maintenant - fermez les autres fenêtres et réessayez.
+Nie nadano tytułu %s (gracz ma go już na stałe).	Titre %s non accordé (le joueur l'a déjà de façon permanente).
+Nie nadano tytułu %s.	Titre %s non accordé.
+Nie należysz do gildii.	Vous n'êtes pas dans une guilde.
+Nie przeniesiono bota %s: %s.	Bot %s non déplacé : %s.
+nie trwa	pas en cours
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Impossible d'appliquer l'effet de set. L'objet est resté intact.
+Nie udało się otworzyć Krypty Balathora.	Impossible d'ouvrir la Crypte de Balathor.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Échec. Les matériaux et les Yang sont perdus, l'objet reste dans la fenêtre.
+Nie znasz tej umiejetnosci.	Vous ne connaissez pas cette compétence.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Donjon inconnu "%s". Donjons : biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby ou all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Aucun bot n'est de niveau 75 - la Tour s'arrête au sixième étage.
+Od 1 do %d wymian naraz.	De 1 à %d échanges à la fois.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	Du rang G1 à P, la riposte et le boost se développent avec la Pierre d'âme+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Page d'inventaire %s débloquée (pages : %d/4). Passez de l'une à l'autre avec les onglets de la fenêtre d'inventaire ou la compétence "Changement de page d'inventaire" (compétences de soutien).
+Ogniste Strzały załadowane do Hwachy: %u.	Flèches de feu chargées dans le Hwacha : %u.
+Osiagnieto limit zakupu tego przedmiotu.	La limite d'achat de cet objet est atteinte.
+Otrzymujesz %d Gaya.	Vous recevez %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	Vous recevez une carte Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Vous recevez un Set de cartes Okey (vous en avez %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Vous avez ouvert le Trésor de Balathor - la récompense est dans votre inventaire.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Les bonus ne peuvent être transférés que depuis un bracelet, un collier, des boucles d'oreilles ou un bouclier.
+Parametry przeniesione na szatę aury.	Bonus transférés sur la tenue d'aura.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Bonus de la tenue d'aura supprimés - vous pouvez en transférer de nouveaux.
+Poczekaj 10 sekund po walce.	Attendez 10 secondes après le combat.
+Poczekaj 3 sekundy przed kolejną zmianą.	Attendez 3 secondes avant le prochain changement.
+Poczekaj chwile przed kolejna zmiana opisu.	Attendez un instant avant de changer à nouveau la description.
+Poczekaj chwile przed kolejna zmiana stanu.	Attendez un instant avant de changer à nouveau de statut.
+Poczekaj chwile przed kolejnym zaproszeniem.	Attendez un instant avant la prochaine invitation.
+Podaj gracza.	Indiquez un joueur.
+Podejdź do Seon-Hae.	Approchez-vous de Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	Un Œuf de dragon de feu est apparu.
+Pokonajcie wszystkie pobliskie potwory.	Battez tous les monstres proches.
+Polimorfia działa tylko na wierzchowcach.	La polymorphie ne marche que sur les montures.
+Polimorfia wierzchowca zakończona.	Polymorphie de la monture terminée.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Échec ! L'effet %s ne s'est pas activé - la fleur s'est fanée.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Échec ! Impossible d'élever l'effet %s au niveau %d - la fleur s'est fanée.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Échec ! Impossible de changer l'effet en %s - la fleur s'est fanée, l'effet précédent reste.
+Potrzeba %lld ksiąg (w oknie: %lld).	Il faut %lld livres (dans la fenêtre : %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Le Destrier fort ne mange que du Ginseng rouge (premium).
+Poziom Czempiona: %d.	Niveau de Champion : %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Placez dans la fenêtre une arme, une armure ou un casque dès le niveau 75, amélioré au moins à +7.
+Precyzja: poziom %s, bonus Precyzji +%d.	Précision : niveau %s, bonus de Précision +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Cadeau du jour : %lld Yang et %d potions (D) de chaque. Le prochain dans 24 heures.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Faites glisser l'apparence sur une écharpe de l'inventaire (écharpe retirée).
+Przeci±gnij zwój na broń w ekwipunku.	Faites glisser le parchemin sur une arme de l'inventaire.
+Przeciągnij Anulację na przedmiot z transmutacją.	Faites glisser l'Annulation sur un objet transmuté.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Faites glisser le Certificat d'aura+ sur la tenue d'aura.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	L'objet %s ne peut pas être retiré maintenant - page d'inventaire inchangée.
+Przeniesiono bota %s do Ciebie.	Bot %s déplacé vers vous.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Déplacé vers l'inventaire supplémentaire : %d (ajouté aux piles : %d).
+Przenosić można raz na 3 sekundy.	Déplacement possible une fois toutes les 3 secondes.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	La prochaine attaque demandera plus de dégâts.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Le bouton d'invocation d'Enasir nécessite une nouvelle version du client - mettez le jeu à jour.
+Przywolana zyla zniknie po 15 minutach.	Le filon invoqué disparaît après 15 minutes.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	La pierre Metin invoquée disparaît après 15 minutes si vous ne la détruisez pas.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	La question a expiré - essayez de retirer l'objet encore une fois.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Classement : la saison %u se termine maintenant (résumé dans 2 minutes env.).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Classement : saison %u, %s, détenteurs de titres : %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Gants : la prochaine recharge de cette compétence est réduite de 5 s.
+Rekrutacja potworow jest wylaczona.	Le recrutement de monstres est désactivé.
+Relikt debug: odnowienia wyzerowane.	Relique debug : recharges remises à zéro.
+Relikt debug: okienko %s puste.	Relique debug : emplacement %s vide.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relique debug : emplacement %s, %s (%u), drapeaux %ld, temps %ld / %ld s, actif : %s, tick : %s, combat : %d s
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relique debug : PV %d / %d, PM %d / %d, monture : %s
+Relikt Duszy: nowy bonus - %s (%d).	Relique d'âme : nouveau bonus - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	La riposte et le boost à partir du rang M1 ne peuvent pas être annulés.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Développement réussi. La tenue peut maintenant évoluer (Tenue d'aura : évolution).
+Rozwój udany: poziom %d.	Développement réussi : niveau %d.
+Ryba się zerwała z haczyka.	Le poisson s'est décroché de l'hameçon.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae n'a pas de livres pour votre voie.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae : %s, temps %d min, objet tenu %d, score %d, chance %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae : temps remis à zéro.
+Silniejszy efekt tego rodzaju już działa.	Un effet plus fort de ce type est déjà actif.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	La boutique est fermée - rouvrez-la au lieu de la prolonger.
+Sklep ma juz maksymalny czas (%d dni).	La boutique a déjà la durée maximale (%d jours).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Boutique prolongée de %u h (reste env. %u h %u min).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Concentrez-vous sur l'Œuf de dragon gelé avant qu'il ne disparaisse (%d s).
+Sortowac mozna raz na 3 sekundy.	Tri possible une fois toutes les 3 secondes.
+Statystyki Sung Ma ma tylko Czempion.	Seul un Champion a des stats Sung Ma.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	La page d'inventaire %s est encore verrouillée - un autre objet "Page d'inventaire II" la débloque.
+Strona ekwipunku: %s.	Page d'inventaire : %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	La page d'inventaire peut être changée une fois toutes les 5 secondes.
+Sukces! Efekt %s jest aktywny (poziom 1).	Réussi ! L'effet %s est actif (niveau 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Réussi ! L'effet %s est passé au niveau %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot arrêté. Plus d'objet Enchanter le costume.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot arrêté. Plus d'Objet enchanté.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot : impossible de changer les bonus de ce costume.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot : cet objet ne peut pas être enchanté (aucun bonus).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Chance augmentée de %d%% (1 objet utilisé).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	L'écharpe a une nouvelle apparence (bonus et absorption inchangés).
+Ta Anulacja działa tylko na wierzchowcach.	Cette Annulation ne marche que sur les montures.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Ce livre est pour les Champions : vous pourrez le lire dès le niveau de Champion 1.
+Ta szarfa ma juz te nakladke.	Cette écharpe a déjà cette apparence.
+Ta szata aury ma już najwyższy poziom.	Cette tenue d'aura est déjà au niveau maximal.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Cette tenue est au sommet de son type - place à l'évolution (Tenue d'aura : évolution).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Cette tenue a déjà des bonus transférés. Videz-la avec un Certificat d'aura+.
+Ta szata nie ma przeniesionych parametrów.	Cette tenue n'a pas de bonus transférés.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Seuls un Ninja ou un Chamane peuvent blesser ce Pilier.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Cet objet ne s'utilise que dans la Tour infernale de Sung Mahi.
+Tego przedmiotu nie mozna dodac do Switchbota.	Cet objet ne peut pas être ajouté au Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Cet objet ne peut pas être utilisé maintenant (équipé, en échange ou verrouillé).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Cet objet s'utilise dans la fenêtre du familier (touche U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Cette pile ne peut pas être divisée à ce prix - achetez la pile entière.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	La téléportation à l'entrée coûte %lld Yang - vous n'en avez pas autant sur vous.
+Teleport pod wejście: zapłacono %lld Yang.	Téléportation à l'entrée : %lld Yang payés.
+Ten certyfikat nie nadaje żadnego tytułu.	Ce certificat n'accorde aucun titre.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Ce boost n'est pas pour votre classe et votre voie de compétences.
+Ten efekt już działa i potrwa dłużej niż nowy.	Cet effet est déjà actif et durera plus longtemps que le nouveau.
+Ten element nie pasuje w tym miejscu.	Cette pièce ne va pas à cet endroit.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Ce joueur ne peut pas porter autant de Yang (limite de 100 mrd sur soi).
+Ten loch jest dla poziomów %d - %d.	Ce donjon est pour les niveaux %d - %d.
+Ten Metin moze zranic tylko Szaman.	Seul un Chamane peut blesser ce Metin.
+Ten opis zawiera niedozwolone slowo.	Cette description contient un mot interdit.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Ce monstre vit sur une carte accessible avec un laissez-passer - la téléportation par carte n'y est pas possible.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Cet objet n'est disponible qu'avec le module Arezzo activé.
+Ten przedmiot jest juz w Switchbocie.	Cet objet est déjà dans le Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	Cet objet a déjà cet effet de set.
+Ten przedmiot nie ma transmutacji.	Cet objet n'a pas de transmutation.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Cet objet n'appartient à aucune catégorie de l'inventaire supplémentaire.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Cet objet ne va pas dans cette catégorie de l'inventaire supplémentaire.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Cet objet n'augmente pas la chance de fabrication.
+Ten wygląd nie pasuje do tego przedmiotu.	Cette apparence ne va pas avec cet objet.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Je ne vends ce parchemin qu'aux membres de guildes d'au moins niveau %d.
+To nie jest bilet do tej przemiany.	Ce n'est pas le ticket pour cette transformation.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	C'est la terre de Sung Ma : sans niveau de Champion, vous ne blesserez pas les monstres d'ici.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Transmutation retirée - l'objet a retrouvé son apparence.
+Transmutacja zakończona.	Transmutation terminée.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Seuls les armes, armures, costumes et apparences d'armes peuvent être transmutés.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Seule une Rune d'aura de glace ou de feu peut être placée ici.
+Tu można włożyć tylko szatę aury.	Seule une tenue d'aura peut être placée ici.
+Twoja gildia ma już otwartą Kryptę Balathora.	Votre guilde a déjà une Crypte de Balathor ouverte.
+Twoja gildia nie ma otwartej Krypty Balathora.	Votre guilde n'a pas de Crypte de Balathor ouverte.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Votre Précision est déjà au niveau maximal (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Votre niveau de Champion est trop bas pour utiliser cet objet (requis : %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Votre niveau de Champion est trop bas pour équiper cet objet (requis : %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Les titres nécessitent une nouvelle version du client - mettez le jeu à jour.
+Tę księgę może przeczytać tylko lider gildii.	Seul le chef de guilde peut lire ce livre.
+Udało się odeprzeć lodowe zimno.	Vous avez repoussé le froid glacial.
+Użycie: /kod MT2009-PLUS-XXXX	Utilisation : /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	Aucun objet pour l'inventaire supplémentaire dans votre inventaire.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Un échange peut contenir au maximum 10 mrd de Yang.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	Dans la Tour infernale de Sung Mahi, seules les potions de tour (W) de la Marchande fonctionnent.
+W tych rekawicach nie ma wolnego miejsca na kamien.	Ces gants n'ont plus d'emplacement libre pour une pierre.
+W tym stosie nie ma juz tylu sztuk.	Cette pile ne contient plus autant de pièces.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	La valeur de la boutique et vos Yang dépasseraient la limite de 100 mrd de Yang.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	L'apparence de cet objet ne correspond pas à votre classe.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	L'apparence de cet objet ne correspond pas à votre sexe.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Expédition interrompue - Balathor caché s'est enfui, mais a laissé son trésor. Sortie de la crypte dans %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Expédition interrompue. Sortie de la crypte dans %s.
+Wyspa Skarbow: %s (flaga %s).	Île au Trésor : %s (drapeau %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	Le Puzzle de pêche nécessite une nouvelle version du client - mettez le jeu à jour.
+Włóż bilet w okno transmutacji u Teowadena.	Placez le ticket dans la fenêtre de transmutation de Teowaden.
+Włóż oba przedmioty.	Placez les deux objets.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori : événement %s, saison %u (fermée %d), parties sur ce cœur %u, plateaux %d, rondins %d, récompense en attente %d
+Yut Nori: event sie nie odbywa.	Yut Nori : l'événement n'a pas lieu.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori : l'événement commence à l'instant, réessayez dans un moment.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori : les rondins de bouleau ne s'ajoutent que pendant l'événement.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori : il vous faut %d x plateau de Yut Nori et %d Yang.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori : libérez de la place dans l'inventaire pour récupérer la récompense.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	Dans 10 secondes, l'Œuf de dragon gelé apparaîtra - frappez-le alors ensemble.
+Za mało Yang (potrzeba %lld).	Pas assez de Yang (il faut %lld).
+Zabrano tytuł %s graczowi %s.	Titre %s retiré au joueur %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	L'enchantement élémentaire a échoué ! L'arme reste inchangée.
+Zaczarowanie żywiołu powiodło się! %s.	L'enchantement élémentaire a réussi ! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Fermez les autres fenêtres (échange, boutique, entrepôt).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Fermez les autres fenêtres (échange, boutique, entrepôt, dé) et réessayez.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Fermez les autres fenêtres pour trier l'inventaire supplémentaire.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Fermez les autres fenêtres pour regrouper les piles de l'inventaire supplémentaire.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Fermez les autres fenêtres pour déplacer des objets vers l'inventaire supplémentaire.
+Zamknij inne okna, aby użyć tego przedmiotu.	Fermez les autres fenêtres pour utiliser cet objet.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Fermez les autres fenêtres pour changer de page d'inventaire.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	On ne peut inviter dans un groupe qu'un joueur sur la même carte et le même canal.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Arrêtez-vous pour cacher ou afficher le costume.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Retirez l'objet et mettez-le dans l'inventaire.
+Zdejmij szatę i weź ją do ekwipunku.	Retirez la tenue et mettez-la dans l'inventaire.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Set de costumes incomplet - le bonus de set a disparu.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Set de costumes : +%ld PV et +%ld de valeur d'attaque.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	La terre de Sung Ma exige : Force %d, Vitalité %d, Résistance %d, Intelligence %d - sinon votre puissance est réduite de moitié.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Vous connaissez déjà une autre riposte - on ne peut en avoir qu'une. Ce livre ne la développe pas.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Détruisez le Mur de glace massif qui protège[ENTER]les Œufs de dragon gelés !
+Zniszczono: %s.	Détruit : %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Le niveau d'enchantement élémentaire a baissé : %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Le niveau d'enchantement élémentaire a baissé : l'arme n'a plus d'élément (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Resté dans l'inventaire : %d - pas de place dans la catégorie : %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Limite quotidienne (%s) du personnage %s (hors ligne) réinitialisée : %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Limite quotidienne (%s) du personnage %s%s réinitialisée : %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Faites de la place dans l'inventaire (%d emplacements libres requis).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Faites de la place dans l'inventaire - un objet de l'entrepôt des pages d'inventaire attend un emplacement libre.
+Zwój albo broń nie leży już w ekwipunku.	Le parchemin ou l'arme n'est plus dans l'inventaire.
+Łączyć stosy można raz na 3 sekundy.	Regroupement des piles possible une fois toutes les 3 secondes.

@@ -1,0 +1,375 @@
+# MT2009_PLUS_LANGUAGE_V1 - pieces our quests glue to values (tools/i18n/data/quest_fragments_pl.tsv) - replaced inside a line
+# Polish<TAB>fr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check fr lists what is missing.
+ (Czyściec Ognia)	 (Purgatoire du Feu)
+ (dzisiejsze wejścia)	 (entrées du jour)
+ (Kamień Driad)	 (Pierre des dryades)
+ (Książka Przebudzenia)	 (Livre de l'éveil)
+ (Lodowa Kraina)	 (Terre Glaciaire)
+ (min:s). Możesz na nie wrócić portalem w hali.	 (min:s). Vous pouvez y retourner par le portail du hall.
+ (następne)	 (suivant)
+ (odpoczynek: 	 (repos : 
+ (podział łupu: 	 (partage du butin : 
+ (poz. 	 (niv. 
+ (poziom / Czempion)	 (niveau / Champion)
+ (poziom 1).	 (niveau 1).
+ (poziom)	 (niveau)
+ (słaby: 	 (faible : 
+ (Zamarznięte Klucze)	 (Clés gelées)
+ (Zegarek Kieszonkowy)	 (Montre de poche)
+ (żywioł 	 (élément 
+ - mniej czasu na Morkhota.	 - moins de temps pour Morkhot.
+ - nowe	 - nouveau
+ - poziom 	 - niveau 
+ - ukończone	 - terminé
+ drogocenne Gaya.	 de précieux Gaya.
+ dziennie):	 par jour) :
+ Efekt Zestawu. Wymagany jest	 Effet de set. Il faut
+ i 1. Poziomu Czempiona.	 et le niveau de Champion 1.
+ jest odblokowany na stałe.	 est débloqué pour toujours.
+ juz idzie do ciebie.	 arrive vers vous.
+ Kamyków i 	 Gemmes précieuses et 
+ Kamyków, 	 Gemmes précieuses, 
+ Kamyków, Kamienia Duszy (+0 do +3)	 Gemmes précieuses, une Pierre d'âme (+0 à +3)
+ ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	 a la Clé d'Atlantide. Donnez-la au bon Pilier de coquillages !
+ Metiny Drzewnych Stworzeń (PB).	 Metins des Créatures des arbres (ÉV).
+ Metinów Drzewnych Stworzeń (SZC).	 Metins des Créatures des arbres (ST).
+ min. Po czasie grupa wróci do Zaklętego Lasu.	 min. Ensuite, le groupe retourne à la Forêt enchantée.
+ min. Po czasie grupa wróci na Płaskowyż Iluzji.	 min. Ensuite, le groupe retourne au Plateau de l'Illusion.
+ min. Zapamiętajcie żywioły pierwszych czterech grup.	 min. Retenez les éléments des quatre premiers groupes.
+ minut, bez czekania między wyprawami.	 minutes, sans attente entre les expéditions.
+ odłamków II tej samej części, Projekt	 éclats II de la même pièce, Plan
+ osób	 personnes
+ osób, 30 minut;	 personnes, 30 minutes ;
+ osób, poziom 	 personnes, niveau 
+ osób.	 personnes.
+ pająków, a potem użyjcie Pieczęci Biblioteki (	 araignées, puis utilisez le Sceau de la Bibliothèque (
+ PD.	 EXP.
+ potworów głębin.	 monstres des profondeurs.
+ powstaje na nowo - Beran-Setaou znów jest nietykalny!	 renaît - Beran-Setaou est de nouveau invulnérable !
+ Ros En-Tai (PB).	 Rosées En-Tai (ÉV).
+ Ros En-Tai (SZC).	 Rosées En-Tai (ST).
+ s wracacie do Upiornego Strażnika po nagrodę.	 s vous retournez voir le Gardien fantôme pour la récompense.
+ sekund zostaniesz przeniesiony na Doyyumhwaji.	 secondes vous serez transporté à Doyyumhwaji.
+ sekund zostaniesz teleportowany do Doliny Orków.	 secondes vous serez téléporté dans la Vallée des Orcs.
+ sekund zostaniesz teleportowany do Groty Wygnańców.	 secondes vous serez téléporté dans la Grotte de l'Exil.
+ sekund zostaniesz teleportowany do miasta.	 secondes vous serez téléporté en ville.
+ sekund zostaniesz teleportowany do Świątyni Hwang.	 secondes vous serez téléporté au Temple de Hwang.
+ sekund zostaniesz teleportowany do Świątyni Ochao.	 secondes vous serez téléporté au Temple Ochao.
+ sekund zostaniesz teleportowany na Górę Sohan.	 secondes vous serez téléporté au Mont Sohan.
+ sekund zostaniesz teleportowany na Ognistą Ziemię.	 secondes vous serez téléporté sur la Terre de Feu.
+ sekundy zostaniesz przeniesiony na Doyyumhwaji.	 secondes vous serez transporté à Doyyumhwaji.
+ sekundy zostaniesz teleportowany do Doliny Orków.	 secondes vous serez téléporté dans la Vallée des Orcs.
+ sekundy zostaniesz teleportowany do Groty Wygnańców.	 secondes vous serez téléporté dans la Grotte de l'Exil.
+ sekundy zostaniesz teleportowany do miasta.	 secondes vous serez téléporté en ville.
+ sekundy zostaniesz teleportowany do Świątyni Hwang.	 secondes vous serez téléporté au Temple de Hwang.
+ sekundy zostaniesz teleportowany do Świątyni Ochao.	 secondes vous serez téléporté au Temple Ochao.
+ sekundy zostaniesz teleportowany na Górę Sohan.	 secondes vous serez téléporté au Mont Sohan.
+ sekundy zostaniesz teleportowany na Ognistą Ziemię.	 secondes vous serez téléporté sur la Terre de Feu.
+ Serca Atlantydy.	 Cœurs d'Atlantide.
+ skorpionów, a potem użyjcie Pieczęci Ruin (	 scorpions, puis utilisez le Sceau des Ruines (
+ strażników ruin.	 gardiens des ruines.
+ sztuki).	 pièces).
+ szykuje potężny atak w linii - uciekaj w bok!	 prépare une puissante attaque en ligne - esquivez sur le côté !
+ tys. Yang	 k Yang
+ ukończonych słabych. 30 minut na Alastora.	 faibles terminés. 30 minutes pour Alastor.
+ w oknie = hełm Dragona, bez nich - hełm Smoków.	 dans la fenêtre = casque Dragon, sans eux - casque des Dragons.
+ wejść dziennie (dziś: 	 entrées par jour (aujourd'hui : 
+ Wojowników En-Tai (PB) i wróć do mnie.	 Guerriers En-Tai (ÉV) et revenez me voir.
+ Wojowników En-Tai (SZC) i wróć do mnie.	 Guerriers En-Tai (ST) et revenez me voir.
+ wypraw dziennie (dziś: 	 expéditions par jour (aujourd'hui : 
+ Yang - nie masz tyle przy sobie.	 Yang - vous n'en avez pas autant sur vous.
+ Yang - za mało przy sobie:	 Yang - pas assez sur vous :
+ Yang oraz	 Yang et
+ Yang oszlifuję 	 Yang, je polis 
+ Yang za bilet.	 Yang pour un ticket.
+ Yang. Dzisiejsza wyprawa 	 Yang. L'expédition du jour 
+ Yang. Najwyżej 	 Yang. Au maximum 
+ Zamarznięte Klucze.	 Clés gelées.
+ zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	 obtient le Sceau de la Bibliothèque. Utilisez-le pour invoquer la vague suivante.
+ zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	 obtient le Sceau de la Jungle. Utilisez-le pour invoquer la vague suivante.
+ zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	 obtient le Sceau des Ruines. Utilisez-le pour invoquer la vague suivante.
+ zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	 obtient le Sceau de la Colline. Utilisez-le pour invoquer la vague suivante.
+ znalazł odpowiedni klucz!	 a trouvé la bonne clé !
+ zniszczony. Pozostało kamieni: 	 détruit. Pierres restantes : 
+ zostało).	 restants).
+ złamana. Nadchodzi następna fala!	 brisé. La vague suivante arrive !
+ śmiałków - ma 	 aventuriers - a 
+! Pokonaj ich, by zdobyć piętro.	! Battez-les pour prendre l'étage.
+! Schody prowadzą na następne piętro.	! L'escalier mène à l'étage suivant.
+% PŻ). Antidotum SungMa ją zdejmuje.	% PV). L'Antidote SungMa la retire.
+% więcej życia.	% de vie en plus.
+%. Kontynuować?	%. Continuer ?
+%. Możesz też przeciągnąć Kamyki na mnie.	%. Vous pouvez aussi glisser les Gemmes précieuses sur moi.
+(stojących obok). Teraz: 	(qui sont à côté). Maintenant : 
+) chronią statuy. Zniszczcie je.	) protègent les statues. Détruisez-les.
+), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	), Beran-Setaou est invulnérable. Détruisez les pierres !
+), etap 1: pokonaj wszystkie potwory w limicie czasu!	), étape 1 : battez tous les monstres dans le temps imparti !
+). Wróć jutro.	). Revenez demain.
+). Zgłoś to administratorowi serwera.	). Signalez-le à l'administrateur du serveur.
+, 1 000 000 Yang. Szansa 30% (+5) do 70% (+9),	, 1 000 000 Yang. Chance de 30% (+5) à 70% (+9),
+, 200 Gaya i 20 000 000 Yang.	, 200 Gaya et 20 000 000 Yang.
+, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	, étape 3 : battez les vagues de monstres jusqu'à l'arrivée des boss !
+, grupa od 	, groupe de 
+, tylko w grupie. Każdy musi	, en groupe seulement. Chacun doit
+, tylko w grupie. Po ukończeniu lub	, en groupe seulement. Après avoir terminé ou
+. Bez czekania między wyprawami.	. Sans attente entre les expéditions.
+. Broń zniknie za 15 dni (także założona).	. L'arme disparaît après 15 jours (même équipée).
+. Doświadczenie z tamtych	. L'expérience de ces
+. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	e étage n'a pas pu être enregistrée - vous l'aurez la prochaine fois que vous terminerez cet étage.
+. piętro ukończone w 	e étage terminé en 
+. piętro w tym sezonie czeka w Magazynie ItemShop.	e étage de cette saison vous attend dans l'Entrepôt de l'ItemShop.
+. piętro w tym sezonie.	e étage de cette saison.
+. piętro zdobyte w 	e étage conquis en 
+. piętro.	e étage.
+. piętrze zaczyna się za 10 sekund.	e étage commence dans 10 secondes.
+. Sam albo z drużyną.	. Seul ou en groupe.
+. Wracasz do Portu Nowego Kontynentu.	. Vous retournez au Port du Nouveau Continent.
+. Wracasz do portu.	. Vous retournez au port.
+. Wstęp: 	. Entrée : 
+. Łódź zabiera cię z powrotem na Przylądek.	. Le bateau vous ramène au Cap.
+/12) - omijajcie białe kręgi!	/12) - évitez les cercles blancs !
+/3) - zniszczcie Białe Jaja Smoka!	/3) - détruisez les Œufs de dragon blanc !
+/4. Ulepszyłbym ci	/4. J'améliorerais votre
+1. miejsce: 	1re place : 
+1. miejsce: 10x 	1re place : 10x 
+1. Poziom Czempiona, każdy oddaje 	Niveau de Champion 1, chacun remet 
+100 000 000 Yang i 500 Gaya. Szansa: 	100 000 000 Yang et 500 Gaya. Chance : 
+2. miejsce: 	2e place : 
+2. miejsce: 5x 	2e place : 5x 
+3. miejsce: 	3e place : 
+3. miejsce: 3x 	3e place : 3x 
+4. - 10. miejsce: 	4e - 10e place : 
+4.-10. miejsce: 1x 	4e-10e place : 1x 
+: przywódca budzi Alastora, dotykając Białego Jaja Smoka. 30 minut od wejścia.	: le chef réveille Alastor en touchant l'Œuf de dragon blanc. 30 minutes après l'entrée.
+<< Piętra 	<< Étages 
+Alastor pokonany! Za 	Alastor vaincu ! Dans 
+Alastor wpada w szał (	Alastor entre en furie (
+Biblioteka Wiedzy (	Bibliothèque du Savoir (
+Biblioteka Wiedzy: 	Bibliothèque du Savoir : 
+Biblioteka Wiedzy: Baronówna wyczuwa 	Bibliothèque du Savoir : la Baronne sent 
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x	Bibliothèque du Savoir : vous recevez : Coffre de la Bibliothèque x
+Biblioteka Wiedzy: Pieczęć 	Bibliothèque du Savoir : Sceau 
+Biblioteka Wiedzy: Pokonane pająki: 	Bibliothèque du Savoir : araignées vaincues : 
+Biblioteka Wiedzy: Pozostałe królowe: 	Bibliothèque du Savoir : reines restantes : 
+Biblioteka Wiedzy: Pozostałe Metiny: 	Bibliothèque du Savoir : Metins restants : 
+Biblioteka Wiedzy: Pozostało 	Bibliothèque du Savoir : il reste 
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: 	Bibliothèque du Savoir : pas de coffre cette fois (partage du butin : 
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (	Bibliothèque du Savoir : les cibles disparues de l'étape réapparaissent (
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa 	Ticket pour l'Atlantide utilisé. L'expédition du jour 
+Bron 65 > 80: 2x 	Arme 65 > 80 : 2x 
+Bron 80 > 87: 3x 	Arme 80 > 87 : 3x 
+Bron 87 > Cyjanit: 3x 	Arme 87 > Kyanite : 3x 
+Cena: 	Prix : 
+Do Erebu wchodzi najwyżej 	Érèbe n'admet au maximum que 
+Do Erebu wejdzie tylko grupa co najmniej 	Seul un groupe d'au moins ce nombre entre en Érèbe : 
+Do Głębi wchodzi drużyna od 	Les Profondeurs admettent un groupe de 
+dopiero od poziomu 	seulement à partir du niveau 
+Doświadczenie: 	Expérience : 
+Drużyna od 	Un groupe de 
+Dzisiejsze wyprawy do ruin już wykorzystane (	Expéditions du jour aux ruines déjà utilisées (
+Dzisiejsze wyprawy do Schronienia już wykorzystane (	Expéditions du jour au Refuge déjà utilisées (
+Dzisiejsze wyprawy do tego lochu już wykorzystane (	Expéditions du jour dans ce donjon déjà utilisées (
+Dzisiejsze wyprawy na statek już wykorzystane (	Expéditions du jour sur le navire déjà utilisées (
+Dziś już dostałeś paszę. Wróć za 	Vous avez déjà reçu de l'avoine aujourd'hui. Revenez dans 
+Erebu: zostało 	Érèbe : il reste 
+Gotowe - oto 	C'est prêt - voici 
+Gotowe! Teraz otwórz pieczęć numer 	C'est fait ! Ouvrez maintenant le sceau numéro 
+Grota Wygnańców 2 (PB): zostało 	Grotte de l'Exil 2 (ÉV) : il reste 
+Grota Wygnańców 2 (SZC): zostało 	Grotte de l'Exil 2 (ST) : il reste 
+Głowa Węża obrócona (	Tête de serpent tournée (
+Głębie: brakuje ci Zamarzniętych Kluczy (	Profondeurs : il vous manque des Clés gelées (
+Głębie: pozostało 	Profondeurs : il reste 
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom 	Les profondeurs vous écraseront. Revenez quand vous aurez le niveau 
+hełm 80. poziomu ulepszony na +5 do +9 (	un casque de niveau 80 amélioré de +5 à +9 (
+Hełm Dragona (obrona): 5x 	Casque Dragon (défense) : 5x 
+Hełm Smoków (atak): 5x 	Casque des Dragons (attaque) : 5x 
+ich: 	d'entre eux : 
+Jesteś za słaby. Wróć, gdy osiągniesz poziom 	Vous êtes trop faible. Revenez quand vous aurez le niveau 
+Kamienie smoka: 	Pierres de dragon : 
+Kamień Duszy 	Pierre d'âme 
+Katakumby Diabła: Wyjdziesz z lochu za 	Catacombes du Diable : vous quitterez le donjon dans 
+Klątwa Sunga Mahi: stopień 	Malédiction de Sung Mahi : degré 
+Kolejne zadanie (	Mission suivante (
+Kolumna Węży otwarta (	Pilier serpent ouvert (
+Koszt: 	Coût : 
+Kowal Świątyni Węży czeka. Uwolnieni kowale: 	Le Forgeron du Temple des Serpents attend. Forgerons libérés : 
+Królestwo Żywiołów jest dostępne od poziomu 	Le Monde élémentaire est accessible à partir du niveau 
+Królowa Meley: 	Reine Meley : 
+Królowa Meley: ETAP 	Reine Meley : ÉTAPE 
+Królowa Meley: ETAP 4 - 	Reine Meley : ÉTAPE 4 - 
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (	Reine Meley : l'Anneau de feu du dragon brûle sur la statue (
+Królowa Meley: Pozostało 	Reine Meley : il reste 
+Królowa Meley: Smocze Jaja (	Reine Meley : Œufs de dragon (
+Królowa Meley: Statua zmienia kolor (	Reine Meley : la statue change de couleur (
+Księga nie jest jeszcze gotowa. Wróć za 	Le livre n'est pas encore prêt. Revenez dans 
+Leże Smoka: 	Antre du Dragon : 
+Leże Smoka: dopóki stoi choć jeden kamień smoka (	Antre du Dragon : tant qu'il reste une seule pierre de dragon (
+Leże Smoka: Pozostało 	Antre du Dragon : il reste 
+Masz 	Vous avez 
+Masz za mało Gaya (potrzeba 	Vous n'avez pas assez de Gaya (il faut 
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba 	Vous n'avez pas assez d'Extensions de boutique Gaya (il faut 
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z 	Un Metin est tombé. Beran-Setaou (ÉV) puise encore sa force dans 
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z 	Un Metin est tombé. Beran-Setaou (ST) puise encore sa force dans 
+Misja ukończona. Nagroda: 	Mission accomplie. Récompense : 
+Misję możesz powtórzyć za 	Vous pourrez refaire la mission dans 
+Mogę wytworzyć dla ciebie 	Je peux fabriquer pour vous 
+Mój wynik: 	Mon score : 
+Nadciąga grupa żywiołu 	Un groupe élémentaire approche : 
+Najpierw ukończ 	Terminez d'abord 
+Najwyżej 	Au maximum 
+Nemere: Pieczęć złamana. Pozostało: 	Nemere : sceau brisé. Il reste : 
+Nemere: Pozostało 	Nemere : il reste 
+Nemere: Szel pokonany (	Nemere : Szel vaincu (
+Nemere: Zaginione cele etapu pojawiają się ponownie (	Nemere : les cibles disparues de l'étape réapparaissent (
+Nie masz przy sobie 	Vous n'avez pas sur vous : 
+Nie udało się wydać broni (kod 	Impossible de remettre l'arme (code 
+Od poziomu 	À partir du niveau 
+Oddaj uszy: 	Remettre des oreilles : 
+Opłata za wejście: 	Droit d'entrée : 
+Otrzymujesz skrzynie z przerwanej gry w Okey: 	Vous recevez les coffres d'une partie d'Okey interrompue : 
+Otrzymujesz: 	Vous recevez : 
+otrzymujesz: 	vous recevez : 
+Pasza dla konia: 	Avoine pour le cheval : 
+Pieczęć zdjęta (	Sceau retiré (
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za 	L'anneau doit se reposer après la dernière téléportation. Le prochain sera prêt dans 
+Pierścień odzyska moc za 	L'anneau retrouvera son pouvoir dans 
+Piętra 	Étages 
+Piętro 	Étage 
+Pojawiają się bossowie piętra: 	Les boss de l'étage apparaissent : 
+Pokonajcie 	Battez 
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (	Battez 40 créatures de la jungle, puis utilisez le Sceau de la Jungle (
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (	Battez 60 singes, puis utilisez le Sceau de la Colline (
+Pokonane potwory: 	Monstres vaincus : 
+Pokonane: 	Vaincus : 
+Pokonani: 	Vaincus : 
+Port Nowego Kontynentu jest dostępny od poziomu 	Le Port du Nouveau Continent est accessible à partir du niveau 
+Portowy Sklep Gaya - kupiono: 	Boutique Gaya du port - acheté : 
+Portowy Sklep Gaya: slot 	Boutique Gaya du port : emplacement 
+Potrzebujesz przedmiotu: 	Il vous faut l'objet : 
+Potrzebuję 	Il me faut 
+Poziom konia: 	Niveau du cheval : 
+Pozostalo podrozy: 	Voyages restants : 
+Pozostałe stele: 	Stèles restantes : 
+Pozostałe teleporty: 	Téléportations restantes : 
+Pozostało: 	Il reste : 
+Przy Strazniku zostaja: 	Restent avec le Gardien : 
+Pył Wężowy: +1 minuta. Zostało 	Poussière de serpent : +1 minute. Il reste 
+Płaskowyż Iluzji przyjmuje wojowników od poziomu 	Le Plateau de l'Illusion accueille les guerriers à partir du niveau 
+Razador: Pozostało 	Razador : il reste 
+Razador: Stela zgaszona. Pozostało: 	Razador : stèle éteinte. Il reste : 
+Razador: Zaginione cele etapu pojawiają się ponownie (	Razador : les cibles disparues de l'étape réapparaissent (
+Rosy En-Tai (PB): 	Rosées En-Tai (ÉV) : 
+Rosy En-Tai (SZC): 	Rosées En-Tai (ST) : 
+Ruiny Atlantydy (	Ruines d'Atlantide (
+Ruiny Atlantydy: 	Ruines d'Atlantide : 
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x	Ruines d'Atlantide : vous recevez : Coffre d'Atlantide x
+Ruiny Atlantydy: Pokonane potwory: 	Ruines d'Atlantide : monstres vaincus : 
+Ruiny Atlantydy: Pozostało 	Ruines d'Atlantide : il reste 
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: 	Ruines d'Atlantide : gardien vaincu. Piliers restants : 
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: 	Ruines d'Atlantide : ce n'était qu'une illusion ! Points de pénalité : 
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: 	Ruines d'Atlantide : pas de coffre cette fois (partage du butin : 
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (	Ruines d'Atlantide : les cibles disparues de l'étape réapparaissent (
+Ruiny Atlantydy: Zostało Serc Atlantydy: 	Ruines d'Atlantide : Cœurs d'Atlantide restants : 
+Ruiny Skorpiona (	Ruines du Scorpion (
+Ruiny Skorpiona: 	Ruines du Scorpion : 
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x	Ruines du Scorpion : vous recevez : Coffre du Scorpion x
+Ruiny Skorpiona: Pieczęć Ruin 	Ruines du Scorpion : Sceau des Ruines 
+Ruiny Skorpiona: Pokonane potwory: 	Ruines du Scorpion : monstres vaincus : 
+Ruiny Skorpiona: Pozostało 	Ruines du Scorpion : il reste 
+Ruiny Skorpiona: Pozostało: 	Ruines du Scorpion : il reste : 
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: 	Ruines du Scorpion : pas de coffre cette fois (partage du butin : 
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (	Ruines du Scorpion : les cibles disparues de l'étape réapparaissent (
+Schody prowadzą na 	L'escalier mène au 
+Schronienie Meley: 	Refuge de Meley : 
+Silny: po 	Fort : après 
+Skraca czas oczekiwania o 	Réduit le temps d'attente de 
+Sloty odblokowuje się po kolei: najpierw slot 	Les emplacements se débloquent dans l'ordre : d'abord l'emplacement 
+Starożytna Dżungla (	Jungle ancienne (
+Starożytna Dżungla: 	Jungle ancienne : 
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x	Jungle ancienne : vous recevez : Coffre de la Jungle x
+Starożytna Dżungla: Pieczęć Dżungli 	Jungle ancienne : Sceau de la Jungle 
+Starożytna Dżungla: Pokonane potwory: 	Jungle ancienne : monstres vaincus : 
+Starożytna Dżungla: Pozostało 	Jungle ancienne : il reste 
+Starożytna Dżungla: Pozostało: 	Jungle ancienne : il reste : 
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: 	Jungle ancienne : pas de coffre cette fois (partage du butin : 
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (	Jungle ancienne : les cibles disparues de l'étape réapparaissent (
+Stały bonus: 	Bonus permanent : 
+Straznik Katakumb nie wpuszcza cie z grupa: 	Le Gardien des Catacombes ne vous laisse pas entrer avec le groupe : 
+Strażnica Nemere (PB): zostało 	Tour de guet de Nemere (ÉV) : il reste 
+Strażnica Nemere (SZC): zostało 	Tour de guet de Nemere (ST) : il reste 
+Szansa powodzenia: 	Chance de réussite : 
+Szansa: 	Chance : 
+Twierdza Czerwonego Smoka (PB): zostało 	Forteresse du Dragon rouge (ÉV) : il reste 
+Twierdza Czerwonego Smoka (SZC): zostało 	Forteresse du Dragon rouge (ST) : il reste 
+Twoj wynik: 	Votre score : 
+Twój koń nauczył się: 	Votre cheval a appris : 
+Twój koń osiągnął 	Votre cheval a atteint 
+Ty możesz wejść za 	Vous pourrez entrer dans 
+Udało się! Otrzymujesz 	Réussi ! Vous recevez 
+Ukończone w tym sezonie: 	Terminés cette saison : 
+umiejętność 	compétence 
+Uwięziony Kowal jest wolny (	Le Forgeron emprisonné est libre (
+Uwolnieni kowale: 	Forgerons libérés : 
+Wejście kosztuje 	L'entrée coûte 
+Wejście od poziomu 	Entrée à partir du niveau 
+Wejście: 	Entrée : 
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie 	Entrée : Ticket pour l'Atlantide - un par personne (j'en ai 
+Wieża Demonów: Wyjdziesz z lochu za 	Tour des Démons : vous quitterez le donjon dans 
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (	Tour des Démons : les Metins disparus de l'étage réapparaissent (
+Wieża Sung Mahi - 	Tour de Sung Mahi - 
+Wieża Sung Mahi: 	Tour de Sung Mahi : 
+Wieża Sung Mahi: nagroda za 	Tour de Sung Mahi : récompense pour 
+Wieża Sung Mahi: nagrody za 	Tour de Sung Mahi : récompenses pour 
+Wieża Sung Mahi: walka na 	Tour de Sung Mahi : combat au 
+Wioska I (	Village I (
+Wioska II (	Village II (
+Wróć, gdy osiągniesz poziom 	Revenez quand vous aurez le niveau 
+Wspinaczka: 1 Sztandar Czaszki (masz: 	Ascension : 1 Bannière du crâne (vous avez : 
+Wstęp kosztuje 	L'entrée coûte 
+Wstęp: 	Entrée : 
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (	Vous avez déjà utilisé les expéditions du jour au Refuge de Meley (
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (	Vous avez déjà utilisé les expéditions du jour dans ce donjon (
+Wykorzystałeś już dzisiejsze wyprawy na statek (	Vous avez déjà utilisé les expéditions du jour sur le navire (
+Wymagany poziom: 	Niveau requis : 
+Wzgórze Wukonga (	Colline de Wukong (
+Wzgórze Wukonga: 	Colline de Wukong : 
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x	Colline de Wukong : vous recevez : Coffre de Wukong x
+Wzgórze Wukonga: Pieczęć Wzgórza 	Colline de Wukong : Sceau de la Colline 
+Wzgórze Wukonga: Pokonane potwory: 	Colline de Wukong : monstres vaincus : 
+Wzgórze Wukonga: Pozostało 	Colline de Wukong : il reste 
+Wzgórze Wukonga: Pozostało: 	Colline de Wukong : il reste : 
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: 	Colline de Wukong : pas de coffre cette fois (partage du butin : 
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (	Colline de Wukong : les cibles disparues de l'étape réapparaissent (
+x Materiały Rzemieślnicze 	x Matériaux d'artisan 
+x Medal Konny	x Médaille équestre
+Z tej zbroi zrobie: 	Avec cette armure je ferai : 
+Z łusek i rogów Balathora zrobię 	Avec les écailles et les cornes de Balathor, je ferai 
+Za 	Pour 
+Za chwilę zostaniecie przeniesieni na 	Dans un instant, vous serez transportés au 
+Za grę, w której zdobędziesz 	Pour une partie où vous marquez 
+Za słabi na głębiny (poziom 	Trop faibles pour les profondeurs (niveau 
+Za słabi, by wejść (poziom 	Trop faibles pour entrer (niveau 
+Za słabi, by wejść na pokład (poziom 	Trop faibles pour monter à bord (niveau 
+Zabij 	Tuez 
+Zaginione Metiny pojawiają się ponownie (	Les Metins disparus réapparaissent (
+Zaklęty Las (PB): zostało 	Forêt enchantée (ÉV) : il reste 
+Zaklęty Las (SZC): zostało 	Forêt enchantée (ST) : il reste 
+Zapomnieć 	Oublier 
+Zbierz więcej Kamyków - potrzebuję 	Récoltez plus de Gemmes précieuses - il me faut 
+Zbroja i buty > 80: 3x 	Armure et chaussures > 80 : 3x 
+Zdobyte: 	Obtenus : 
+Zdobądź 	Obtenez 
+Zebrana pasza: 	Avoine récoltée : 
+Zestawu tej części	du set de cette pièce
+Ziemie Yohary są dostępne od poziomu 	Les terres de Yohara sont accessibles à partir du niveau 
+Zniszcz 	Détruisez 
+Zniszczcie 	Détruisez 
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (	Détruisez la Coquille des profondeurs et apportez la Clé d'Atlantide au bon Pilier de coquillages (
+Zniszczone Metiny: 	Metins détruits : 
+Zniszczone: 	Détruits : 
+Złota Księga Konia: 	Livre chevalin d'or : 
+Śmiertelny Chłód Alastora skuwa ziemię (	Le Froid mortel d'Alastor gèle le sol (
+Świetnie! Oto twoja pasza: 	Parfait ! Voici votre avoine : 
+Świątynia Węży: walka się zaczęła! Czas: 	Temple des Serpents : le combat a commencé ! Temps : 
+Świątynia Węży: zostało 	Temple des Serpents : il reste 
+żywioł 	élément 
