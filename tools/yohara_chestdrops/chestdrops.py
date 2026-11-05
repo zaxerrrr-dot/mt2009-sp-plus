@@ -129,6 +129,13 @@ EXTRA = {54700: [
 ]}
 EXTRA_NOTE = {54700: ('MT2009_PLUS_BERAN_CHEST_V1', 'the pl-wiki\'s list, no rate - the owner, 15 October 2026')}
 
+# MT2009_PLUS_BRAKI_WIKI_V1 (the owner, 5 November 2026: "Dodaj zgodnie z Wiki Global"): Skrzynia Jotuna Thryma (50266) -
+# the pl-wiki's "Skrzynia Jotuna Thryma", "Srebrne Plyty" and "Stalowe Plyty" list both plates, the sheet has neither;
+# each at the sheet's dye / pearl rows' 1.961% (the wiki gives no rate), the sheet's rows scaled to what is left.
+EXTRA.setdefault(50266, []).extend([(30606, 1, 0.01961, 'Srebrne Plyty - wiki, no rate - owner 5.11'),
+                                    (30608, 1, 0.01961, 'Stalowe Plyty - wiki, no rate - owner 5.11')])
+EXTRA_NOTE[50266] = ('MT2009_PLUS_BRAKI_WIKI_V1', 'the pl-wiki\'s plates, no rate - the owner, 5 November 2026')
+
 # MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026, M3): Zlote Ziolo (50741, the golden elixirs' herb) rarely from the
 # Yohara bosses' chests - the four of Jaskinie Gnolli / Wieza Sung Mahi (Gnoll Kapitan, Ahtrin Kapitan, Ahtrin Wielki
 # Mistrz); 1% an opening (the wiki gives no rate; the Water Nymph chest's ~1%), the sheet's rows scaled to what is left.

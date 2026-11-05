@@ -45,6 +45,20 @@ ID_MAX = 49999
 # the sheet's vnum -> ours: the same item under another vnum here (tools/wikinowe, Autor: Digi Rasta)
 MATERIAL_VNUM = {30612: 95601,     # Stabilne Sznury
                  30611: 95603}     # Ciezkie Pasy
+# MT2009_PLUS_BRAKI_WIKI_V1 (the owner, 5 November 2026: "Dodaj zgodnie z Wiki Global"): where the pl-wiki's tables
+# differ from the sheet, the wiki's materials - {step's item: {the sheet's materials: the wiki's}}:
+#   Tajemniczy Talizman +1..+8 (81561-81568): the sheet (and Owsap's refine_proto 762-769) take a second talisman of
+#     the step's level (+4 from +4 on), the wiki's "Talizmany" table "1x +0 Tajemniczy Talizman" at every step - a
+#     second one of +0 (81560; the +0 -> +1 step already takes it);
+#   Rekawice Weza +7 (23057/23067/23077/23087): the wiki's "Rekawice Weza (...)" pages 200 Kamien Rekawic Pln. W. for
+#     +8 (the sheet and Owsap 100).
+_TT = dict((src, {((31261, a), (b, c), (t, 1), (31270, e)): [(31261, a), (b, c), (81560, 1), (31270, e)]})
+           for src, a, b, c, t, e in ((81561, 40, 72353, 10, 81561, 2), (81562, 50, 72353, 10, 81562, 3),
+                                      (81563, 60, 72353, 10, 81563, 4), (81564, 60, 72353, 10, 81564, 5),
+                                      (81565, 60, 72353, 10, 81564, 6), (81566, 100, 31239, 1, 81564, 7),
+                                      (81567, 100, 31240, 1, 81564, 8), (81568, 200, 31241, 1, 81564, 9)))
+WIKI_MATS = dict(_TT)
+WIKI_MATS.update((g + 7, {((31244, 100), (31241, 1)): [(31244, 200), (31241, 1)]}) for g in (23050, 23060, 23070, 23080))
 # MT2009_PLUS_SEONPYEONG_ELITE_V1: Seon-Pyeong's steps (the pl-wiki "Wytwarzanie Broni / Zbroi / Butow", the
 # owner's package of 21 October 2026): (fixed id, what, the sheet's +9 steps by their item, steps the sheet lacks
 # (item, result) - they take the group's recipe). Every sheet step of a group must have the same recipe (checked).
@@ -111,6 +125,7 @@ def load():
             nochance += 1
             continue
         mats = [(MATERIAL_VNUM.get(v, v), c) for v, c in s['mats']]
+        mats = WIKI_MATS.get(s['src'], {}).get(tuple(mats), mats)     # MT2009_PLUS_BRAKI_WIKI_V1
         assert len(mats) <= 5, s
         key = (s['cost'], s['prob'], tuple(mats))
         if key not in ids:
