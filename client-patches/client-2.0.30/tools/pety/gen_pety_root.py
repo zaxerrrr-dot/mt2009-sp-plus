@@ -34,6 +34,16 @@ TEXTS = [
     ('TAB_INFO', u'Informacje'),
     ('TAB_ATTR', u'Zmiana typu (Zaczaruj zwierzaka)'),
     ('TAB_REVIVE', u'Wskrzeszanie (Boska Odżywka)'),
+    # MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the tab plates' own labels (77 px wide; the long names above stay the tooltips)
+    ('TAB_INFO_LABEL', u'Informacje'),
+    ('TAB_ATTR_LABEL', u'Zaczaruj'),
+    ('TAB_REVIVE_LABEL', u'Wskrześ'),
+    # MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the hover lines of the skill (book) and potential (gem) icons in the bottom row
+    ('SKILL_MENU_TIP_1', u'Umiejętności zwierzaka (3 sloty)'),
+    ('SKILL_MENU_TIP_2', u'Księgę umiejętności przeciągnij na wolny slot.'),
+    ('SKILL_MENU_TIP_3', u'Slot z krzyżykiem jest jeszcze zamknięty.'),
+    ('POTENTIAL_MENU_TIP_1', u'Umiejętności potencjału (tylko czempion, 2 sloty)'),
+    ('POTENTIAL_MENU_TIP_2', u'Jajo zwierzaka przeciągnij na slot albo kliknij „Potencjał”.'),
     ('CLOSE', u'Zamknij'),
     ('LEVEL', u'Poziom'),
     ('CHAMPION_LEVEL', u'Poz. czempiona'),

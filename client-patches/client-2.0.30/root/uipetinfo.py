@@ -723,6 +723,21 @@ def _ExpLines(mobCur, mobMax, itemCur, itemMax):
 	return lines
 
 
+# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the text of the mode buttons (emblem 4..30 / 4..36 of 106) and of the tab plates
+MODE_TEXT_DX = 14
+POTENTIAL_TEXT_DX = 17
+TAB_LABEL_ON = 0xFFFEE3AE
+TAB_LABEL_OFF = 0xFFC8BCA8
+
+
+def _OutlinedButtonText(button, dx):
+	text = button.ButtonText
+	if not text:
+		return
+	text.SetOutline()
+	text.SetPosition(button.GetWidth() / 2 + dx, button.GetHeight() / 2)
+
+
 def _SetGauge(gauge, cur, maxValue):
 	if maxValue > 0:
 		gauge.SetRenderingRect(0.0, 0.0, -1.0 + min(1.0, float(max(0, cur)) / float(maxValue)), 0.0)
@@ -1489,8 +1504,21 @@ class PetInformationWindow(ui.ScriptWindow):
 				("PetReviveText", "REVIVE_TARGET"), ("PetReviveAgeText", "REVIVE_AGE"), ("PetReviveResultText", "REVIVE_RESULT"),
 				("PetReviveResultAgeText", "REVIVE_AGE"), ("PetReviveMaterialText", "REVIVE_MATERIAL")):
 			g(name).SetText(T(key))
-		for name, key in (("NormalInfoButton", "BTN_NORMAL"), ("ConquerorInfoButton", "BTN_CHAMPION"),
-				("PotentialButton", "BTN_POTENTIAL"), ("FeedLifeTimeButton", "FEED_LIFE_BUTTON"),
+		# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the mode buttons' emblem is at their left end (mt2009_ui/pet/*_bt_*.tga):
+		# the text is centred on the rest; the tab plates (no emblem) carry a short label, the long name is the tooltip
+		for name, key, dx in (("NormalInfoButton", "BTN_NORMAL", MODE_TEXT_DX), ("ConquerorInfoButton", "BTN_CHAMPION", MODE_TEXT_DX),
+				("PotentialButton", "BTN_POTENTIAL", POTENTIAL_TEXT_DX)):
+			b = g(name)
+			b.SetText(T(key))
+			_OutlinedButtonText(b, dx)
+		self.tabLabels = {}
+		for key, name, label in ((WINDOW_INFO, "Tab_Button_01", "TAB_INFO_LABEL"), (WINDOW_ATTR, "Tab_Button_02", "TAB_ATTR_LABEL"),
+				(WINDOW_REVIVE, "Tab_Button_03", "TAB_REVIVE_LABEL")):
+			b = g(name)
+			b.SetText(T(label))
+			_OutlinedButtonText(b, 0)
+			self.tabLabels[key] = b
+		for name, key in (("FeedLifeTimeButton", "FEED_LIFE_BUTTON"),
 				("FeedEvolButton", "FEED_EVOL_BUTTON"), ("FeedExpButton", "FEED_EXP_BUTTON"), ("Pet_Change_Button", "ATTR_BUTTON"),
 				("Pet_OK_Button", "ATTR_CLEAR"), ("PetReviveButton", "REVIVE_BUTTON"), ("PetReviveCancelButton", "REVIVE_CANCEL")):
 			g(name).SetText(T(key))
@@ -1527,6 +1555,9 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.balls = [g("UpBringing_Pet_EXPGauge_0%d" % (i + 1)) for i in xrange(TOTAL_EXP_BALLS)]
 		self.expTip = TextToolTip()
 		self.expTip.Hide()
+		self.shownTip = None
+		self.skillMenuIcon = g("PetSkillMenuIcon")
+		self.potentialMenuIcon = g("PetPotentialMenuIcon")
 		self.expLines = []
 
 		self.skillSlots = []
@@ -1613,6 +1644,7 @@ class PetInformationWindow(ui.ScriptWindow):
 		self.feedButtons = []
 		self.balls = []
 		self.descLines = []
+		self.tabLabels = {}
 
 	# --- showing / closing
 	def Open(self):
@@ -1666,6 +1698,9 @@ class PetInformationWindow(ui.ScriptWindow):
 				tab.Show()
 			else:
 				tab.Hide()
+		for key, button in self.tabLabels.items():	# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the open page's label gold
+			if button.ButtonText:
+				button.ButtonText.SetPackedFontColor(TAB_LABEL_ON if key == page else TAB_LABEL_OFF)
 		for key, wnd in self.pages.items():
 			if key == page:
 				wnd.Show()
@@ -1730,11 +1765,22 @@ class PetInformationWindow(ui.ScriptWindow):
 		if app.GetTime() >= self.nextRefresh:
 			self.nextRefresh = app.GetTime() + REFRESH_SECONDS
 			self.RefreshStatus()
-		if self.expBoard.IsIn() and self.expLines and self.page == WINDOW_INFO:
-			self.expTip.SetLines(self.expLines)
+		lines = None
+		if self.page == WINDOW_INFO:
+			if self.expBoard.IsIn() and self.expLines:
+				lines = self.expLines
+			elif self.skillMenuIcon.IsIn():		# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: what the book / gem icons are
+				lines = [T("SKILL_MENU_TIP_1"), T("SKILL_MENU_TIP_2"), T("SKILL_MENU_TIP_3")]
+			elif self.potentialMenuIcon.IsIn():
+				lines = [T("POTENTIAL_MENU_TIP_1"), T("POTENTIAL_MENU_TIP_2")]
+		if lines:
+			if lines != self.shownTip:
+				self.expTip.SetLines(lines)
+				self.shownTip = lines
 			self.expTip.Show()
 		else:
 			self.expTip.Hide()
+			self.shownTip = None
 
 	def ClearStatus(self):
 		g = self.GetChild

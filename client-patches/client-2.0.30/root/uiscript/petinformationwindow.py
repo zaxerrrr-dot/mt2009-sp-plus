@@ -4,8 +4,13 @@
 # module), the life gauge an expanded image (our exe's ani_image cannot be
 # scaled), the tab buttons with tooltips (the official tab pictures are icons only). Three pages: Informacje,
 # Zmiana typu (Zaczaruj zwierzaka), Wskrzeszanie (Boska Odzywka).
+# MT2009_PLUS_PET_WINDOW_LAYOUT_V2: the mode buttons and the tab plates are our mt2009_ui/pet/ copies of the official
+# pictures (tools/pety/make_pet_ui_art.py) - the emblem moved left / taken off so their text is not drawn over it; the
+# life gauge fits the background's frame (36..188); the potential slots sit in the background's octagons like the
+# skill slots (no square slot picture over them).
 
 PET_UI_ROOT = "d:/ymir work/ui/pet/"
+OUR_UI_ROOT = "mt2009_ui/pet/"
 BASE_SLOT_FILE = "d:/ymir work/ui/public/Slot_Base.sub"
 PET_UI_BG_IMAGE = "d:/ymir work/ui/pet/res/pet_ui_bg.tga"
 PET_PRIMIUM_FEEFSTUFF_UI_BG_IMAGE = "d:/ymir work/ui/pet/res/pet_ui_bg3.tga"
@@ -29,7 +34,8 @@ EXP_IMG_WIDTH = 16
 EXP_IMG_HEIGHT = 16
 
 LIFE_GAUGE_IMAGE = "d:/ymir work/ui/pattern/hpgauge/01.tga"	# 95 x 11
-LIFE_GAUGE_SCALE_X = 179.0 / 95.0
+LIFE_GAUGE_WIDTH = 153	# the frame in pet_ui_bg.tga: x 35..189, y 226..238
+LIFE_GAUGE_SCALE_X = float(LIFE_GAUGE_WIDTH) / 95.0
 
 GOLD_COLOR = 0xFFFEE3AE
 WHITE_COLOR = 0xFFFFFFFF
@@ -79,9 +85,9 @@ def page_button(name, x, image, text):
 	return {
 		"name" : name, "type" : "button",
 		"x" : x, "y" : 109,
-		"default_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_default.sub",
-		"over_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_over.sub",
-		"down_image" : PET_UI_ROOT + "conqueror/" + image + "_bt_down.sub",
+		"default_image" : OUR_UI_ROOT + image + "_bt_default.tga",
+		"over_image" : OUR_UI_ROOT + image + "_bt_over.tga",
+		"down_image" : OUR_UI_ROOT + image + "_bt_down.tga",
 		"text" : text, "text_color" : GOLD_COLOR,
 	}
 
@@ -163,11 +169,11 @@ window = {
 
 						label("LifeTitle", 28, 180, 168, SHORT_LABLE_HEIGHT, "", GOLD_COLOR),
 						{
-							"name" : "LifeValueWindow", "type" : "window", "x" : 28, "y" : 203, "width" : 190, "height" : 20, "style" : ("attach",),
+							"name" : "LifeValueWindow", "type" : "window", "x" : 28, "y" : 203, "width" : 168, "height" : 20, "style" : ("attach",),
 							"children" : ({"name" : "LifeTextValue", "type" : "text", "x" : 0, "y" : 2, "text" : "", "color" : WHITE_COLOR, "all_align" : "center"},),
 						},
 						{
-							"name" : "LifeGaugeWindow", "type" : "window", "x" : 36, "y" : 227, "width" : 179, "height" : 12, "style" : ("attach",),
+							"name" : "LifeGaugeWindow", "type" : "window", "x" : 36, "y" : 227, "width" : LIFE_GAUGE_WIDTH, "height" : 11, "style" : ("attach",),
 							"children" : (
 								{"name" : "LifeGauge", "type" : "expanded_image", "x" : 0, "y" : 0, "x_scale" : LIFE_GAUGE_SCALE_X, "y_scale" : 1.0, "image" : LIFE_GAUGE_IMAGE},
 							),
@@ -194,14 +200,8 @@ window = {
 						one_slot_grid("PetSkillSlot1", 101, 365),
 						one_slot_grid("PetSkillSlot2", 137, 365),
 						{"name" : "PetPotentialMenuIcon", "type" : "image", "x" : 180, "y" : 362, "image" : PET_UI_ROOT + "conqueror/potential_menu_icon_bg.sub"},
-						{
-							"name" : "potential_skill_slot_bg_0", "type" : "image", "x" : 225, "y" : 365, "image" : BASE_SLOT_FILE,
-							"children" : (one_slot_grid("potential_pet_slot_0", 0, 0),),
-						},
-						{
-							"name" : "potential_skill_slot_bg_1", "type" : "image", "x" : 261, "y" : 365, "image" : BASE_SLOT_FILE,
-							"children" : (one_slot_grid("potential_pet_slot_1", 0, 0),),
-						},
+						one_slot_grid("potential_pet_slot_0", 225, 365),
+						one_slot_grid("potential_pet_slot_1", 261, 365),
 					],
 				},
 			],
@@ -218,9 +218,9 @@ window["children"] = window["children"] + [
 		"width" : PET_UI_BG_WIDTH, "height" : 48,
 		"children" :
 		[
-			{"name" : "Tab_01", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_1.tga"},
-			{"name" : "Tab_02", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_2.tga"},
-			{"name" : "Tab_03", "type" : "image", "x" : 0, "y" : 0, "image" : PET_UI_ROOT + "res/tab_3.tga"},
+			{"name" : "Tab_01", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_1.tga"},
+			{"name" : "Tab_02", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_2.tga"},
+			{"name" : "Tab_03", "type" : "image", "x" : 0, "y" : 0, "image" : OUR_UI_ROOT + "tab_3.tga"},
 			{"name" : "Tab_Button_01", "type" : "button", "x" : PET_UI_TAB_X, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},
 			{"name" : "Tab_Button_02", "type" : "button", "x" : PET_UI_TAB_X + 94, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},
 			{"name" : "Tab_Button_03", "type" : "button", "x" : PET_UI_TAB_X + 94 * 2, "y" : PET_UI_TAB_Y, "width" : PET_UI_TAB_WIDTH, "height" : PET_UI_TAB_HEIGHT, "tooltip_text" : ""},
