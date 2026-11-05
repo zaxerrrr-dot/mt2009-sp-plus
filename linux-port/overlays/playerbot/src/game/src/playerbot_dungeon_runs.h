@@ -198,7 +198,8 @@ namespace
 		DGRUN_KIND_HYDRA,	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku - the mast held through four waves, the Hydra
 		DGRUN_KIND_EREBU,	// MT2009_PLUS_BOT_EREBU_V1: Erebu - Bagjanamu, then Jotun Thrym (playerbot_dgrun_erebu.h)
 		DGRUN_KIND_YDG,		// MT2009_PLUS_BOT_YDG_V1: the Yohara dungeons of Plaskowyz Iluzji (playerbot_dungeon_runs_ydg.h)
-		DGRUN_KIND_GNOLLE	// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3, three open maps (playerbot_dgrun_gnolle.h)
+		DGRUN_KIND_GNOLLE,	// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3, three open maps (playerbot_dgrun_gnolle.h)
+		DGRUN_KIND_WIEZA	// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi, one bot's solo climb (playerbot_dgrun_wieza.h)
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
@@ -320,6 +321,11 @@ namespace
 		// Halabardnik's Przepustka (ChargePlayerBotGnolleTicket), level 1's way in (213,110), the three levels and out
 		// within 60 minutes (the bots' own limit - the caves have none), two at once; no day's count (the quest has none).
 		{ "gnolle", DGRUN_KIND_GNOLLE, 382, NULL, NULL, NULL, 213, 110, 0LL, 0, 60, 30000, 2 },
+		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi (387, wieza_sung_mahi.quest) - ONE bot (the tower's solo rule), gathered at
+		// the panel's entrance (Wejscie Piekielnej Wiezy, Seoganland), in at room A (402,463); a Sztandar Czaszki a climb
+		// (ChargePlayerBotWiezaBanner), no day's count; the climb lasts while the bot lives (6 h the bots' own limit), 20 s
+		// after the 50th floor. Never the clock's - the training (playerbot_wieza_train) and the Dropki only.
+		{ "wieza_smh", DGRUN_KIND_WIEZA, 387, NULL, "wieza_sung_mahi_dgrun", "wieza_sung_mahi_dgrun_next", 402, 463, 0LL, 0, 360, 30000, 10 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
@@ -641,6 +647,22 @@ namespace
 	bool ManagePlayerBotGnolleInside(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotDgRunBot& rb,
 			DWORD dwNow);
 	void NotePlayerBotGnolleRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS);
+	// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi's own (playerbot_dgrun_wieza.h, included at the end of this file).
+	bool IsPlayerBotWiezaFit(LPCHARACTER ch);
+	bool PreparePlayerBotWiezaEntrant(LPCHARACTER ch, const TPlayerBotDgRun& run);
+	void SetPlayerBotWiezaInstance(LPDUNGEON d, LPCHARACTER ch);
+	long long ChargePlayerBotWiezaBanner(LPCHARACTER ch);
+	void NotePlayerBotWiezaRunStart(const TPlayerBotDgRun& run);
+	void UpdatePlayerBotWiezaInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	bool ManagePlayerBotWiezaInside(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotDgRunBot& rb,
+			DWORD dwNow);
+	DWORD NotePlayerBotWiezaRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
+	int GetPlayerBotWiezaStage(LPDUNGEON d, int previous);
+	bool IsPlayerBotWiezaWon(LPDUNGEON d);
+	long long GetPlayerBotWiezaSignature(LPDUNGEON d);
+	void PlanPlayerBotWiezaTraining(DWORD dwNow, bool forced);
+	bool IsPlayerBotWiezaTrainee(DWORD pid);
+	bool RunPlayerBotWiezaTestLine(const char* cmd, DWORD dwNow);
 	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley's own planner (playerbot_dgrun_meley.h, included at the end).
 	bool IsPlayerBotMeleyVisitor(DWORD pid);
 	bool IsPlayerBotMeleyRunHeld(DWORD pid);
@@ -937,6 +959,8 @@ namespace
 				return d->GetFlag("won") == 1 ? 3 : d->GetFlag("stage");
 			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1
 				return GetPlayerBotYdgStage(def, d, previous);
+			case DGRUN_KIND_WIEZA:	// MT2009_PLUS_BOT_WIEZA_V1: floor * 10 + room (4: the stairs)
+				return GetPlayerBotWiezaStage(d, previous);
 			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave (1-4), 5 won.
 			case DGRUN_KIND_HYDRA:
 			{
@@ -1038,6 +1062,8 @@ namespace
 				return d->GetFlag("shipdef_won") == 1;
 			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1: the boss's kill sets it
 				return IsPlayerBotYdgWon(d);
+			case DGRUN_KIND_WIEZA:	// MT2009_PLUS_BOT_WIEZA_V1: the 50th floor's bosses down
+				return IsPlayerBotWiezaWon(d);
 			default:
 				return false;
 		}
@@ -1107,6 +1133,12 @@ namespace
 		{
 			itemStep = true;
 			sig = GetPlayerBotYdgSignature(d);
+		}
+		// MT2009_PLUS_BOT_WIEZA_V1: the tower's flags (floor, room, waves, seals, the dodge's count) and the monsters' health.
+		else if (def.bKind == DGRUN_KIND_WIEZA)
+		{
+			itemStep = true;
+			sig = GetPlayerBotWiezaSignature(d);
 		}
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave and state, the Hydra's health and the deck's monsters'.
 		else if (def.bKind == DGRUN_KIND_HYDRA)
@@ -2589,6 +2621,8 @@ namespace
 				}
 				if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1
 					return ManagePlayerBotGnolleInside(ch, state, run, rb, dwNow);
+				if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the solo climb
+					return ManagePlayerBotWiezaInside(ch, state, run, rb, dwNow);
 				return ManagePlayerBotDgRunInside(ch, state, run, rb, dwNow);
 			default:
 				return false;
@@ -2732,7 +2766,7 @@ namespace
 			fclose(fp);
 		}
 		// The leader's word on the kingdom's shout, now and then.
-		if (leader && entered && number(1, 100) <= 40)
+		if (leader && entered && def.bKind != DGRUN_KIND_WIEZA && number(1, 100) <= 40)	// MT2009_PLUS_BOT_WIEZA_V1: no party to tell
 		{
 			playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 			playerbot_dgrun::TLine l = MakePlayerBotDgRunLine(leader, run);
@@ -2763,6 +2797,8 @@ namespace
 			rest = AdjustPlayerBotYdgRest(run, rest);
 		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the last share, the gain, the visitors' count
 			rest = NotePlayerBotMeleyRunEnd(run, result, entered, took / 1000, rest);
+		if (def.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the climb's line and row, the limit, out of the hall
+			rest = NotePlayerBotWiezaRunEnd(run, result, entered, took / 1000, rest);
 		rest = NotePlayerBotDropkiRunEnd(run, result, entered, took / 1000, rest);	// MT2009_PLUS_BOT_DROPKI_V1: a Dropki party's short rest
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
@@ -2846,6 +2882,8 @@ namespace
 			return ChargePlayerBotYdgTicket(ch, def);
 		if (def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1: Halabardnik's Przepustka
 			return ChargePlayerBotGnolleTicket(ch);
+		if (def.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: a Sztandar Czaszki
+			return ChargePlayerBotWiezaBanner(ch);
 		long long fee = def.llFee;
 		if (fee > 0 && (long long)ch->GetGold() >= fee * PLAYERBOT_DGRUN_FEE_RESERVE)
 			PlayerBotChangeGold(ch, -fee);
@@ -2885,6 +2923,12 @@ namespace
 				DropPlayerBotDgRunMember(run, members[i], dwNow, PLAYERBOT_DGRUN_REST_REFUSED_MS, "not_ready");
 				continue;
 			}
+			// MT2009_PLUS_BOT_WIEZA_V1: the hall portal's rules (level, Champion, banner; out of the party, off the mount)
+			if (def.bKind == DGRUN_KIND_WIEZA && !PreparePlayerBotWiezaEntrant(ch, run))
+			{
+				DropPlayerBotDgRunMember(run, members[i], dwNow, PLAYERBOT_DGRUN_REST_REFUSED_MS, "wieza_refused");
+				continue;
+			}
 			// The way out: the gathering spot (d.exit_all reads it; the quests
 			// that name their own exit set theirs at the end).
 			ch->SetWarpLocation(run.place.map, run.place.x / 100, run.place.y / 100);
@@ -2905,6 +2949,8 @@ namespace
 			}
 			s_szPlayerBotTransitionRefusal = NULL;
 			run.llFees += ChargePlayerBotDgRunEntry(ch, def);
+			if (def.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the climb's player p1
+				SetPlayerBotWiezaInstance(d, ch);
 			in.push_back(members[i]);
 		}
 		if (in.empty())
@@ -2921,6 +2967,8 @@ namespace
 
 	void UpdatePlayerBotDgRunParty(TPlayerBotDgRun& run)
 	{
+		if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: solo - no party
+			return;
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(run.dwLeader);
 		if (!leader)
 			return;
@@ -3283,7 +3331,7 @@ namespace
 			if (std::find(run.members.begin(), run.members.end(), run.dwLeader) == run.members.end())
 				return true;	// the next second picks a leader among those there
 			UpdatePlayerBotDgRunParty(run);
-			if (number(1, 100) <= 35)
+			if (def.bKind != DGRUN_KIND_WIEZA && number(1, 100) <= 35)	// MT2009_PLUS_BOT_WIEZA_V1: solo - no "wchodzimy"
 			{
 				playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 				ShoutPlayerBotDgRun(leader, playerbot_dgrun::StartLine(rng, MakePlayerBotDgRunLine(leader, run)), "start");
@@ -3330,6 +3378,8 @@ namespace
 				NotePlayerBotYdgRunStart(run);
 			if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the bonuses, a bag cell, the materials now
 				NotePlayerBotMeleyRunStart(run);
+			if (def.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the potions, the bonuses, the start line
+				NotePlayerBotWiezaRunStart(run);
 			return true;
 		}
 		// V3: a replacement for the Shaman, or for those short of the start,
@@ -3353,7 +3403,7 @@ namespace
 		const bool noHealer = rule.needHealer && !healerAnswered && !healerPending;
 		if ((late && !startOk) || (pending == 0 && answered < rule.startMin) || noHealer || run.members.empty() || !leader)
 		{
-			if (leader && answered > 0)
+			if (leader && answered > 0 && def.bKind != DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: solo
 			{
 				playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 				ShoutPlayerBotDgRun(leader, playerbot_dgrun::DisbandLine(rng, MakePlayerBotDgRunLine(leader, run)), "disband");
@@ -3642,7 +3692,8 @@ namespace
 		}
 		// MT2009_PLUS_BOT_EREBU_V1: never in Erebu - the owner: the dungeon as it is, only the bots stronger.
 		// MT2009_PLUS_BOT_GLEBIE_V1: nor in Glebie (Alastor's regeneration, the Wraths' and the berserks' heals are the quest's).
-		if (def.bKind != DGRUN_KIND_EREBU && !GetPlayerBotGlebieKind(def))
+		// MT2009_PLUS_BOT_WIEZA_V1: nor in the tower (the owner: the same rules as a person's).
+		if (def.bKind != DGRUN_KIND_EREBU && def.bKind != DGRUN_KIND_WIEZA && !GetPlayerBotGlebieKind(def))
 			HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
 		// MT2009_PLUS_DG_STAGE_WATCH_V1 (playerbot_arezzo_dungeon_bots.h): the
 		// quests with a stage flag - the objectives known for the Arezzo three.
@@ -3674,6 +3725,8 @@ namespace
 			UpdatePlayerBotYdgInside(run, d, dwNow);
 		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: the lair's materials shared, a bag cell kept
 			UpdatePlayerBotMeleyInside(run, dwNow);
+		if (def.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the floors, rooms, deaths and task fails logged
+			UpdatePlayerBotWiezaInside(run, d, dwNow);
 		// Razador's statue and Nemere's lion, whenever no task runs.
 		if (def.szNextTimer && !run.dwFinishedAt && !run.szResult && run.dwClosedSeen == 0 && dwNow >= run.dwNextStep &&
 				d->GetFlag("init") == 1)
@@ -3948,7 +4001,8 @@ namespace
 		playerbot_dgrun::TLine line = MakePlayerBotDgRunLine(leader, run);
 		line.need = (int)picked.size() - 1;
 		line.wantShaman = !shaman;
-		ShoutPlayerBotDgRun(leader, playerbot_dgrun::CallLine(rng, line), "call");
+		if (info.bKind != DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: a solo climb calls nobody
+			ShoutPlayerBotDgRun(leader, playerbot_dgrun::CallLine(rng, line), "call");
 		s_adwPlayerBotDgRunShoutAt[empire] = dwNow;
 		s_adwPlayerBotDgRunLastCall[def] = dwNow ? dwNow : 1;
 		++s_aPlayerBotDgRunStats[def].dwCalled;
@@ -4018,6 +4072,9 @@ namespace
 				continue;
 			// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley is PlanPlayerBotMeleyRuns' (its band, pool and cap).
 			if (def.bKind == DGRUN_KIND_MELEY)
+				continue;
+			// MT2009_PLUS_BOT_WIEZA_V1: the tower's solo climbs are the training's and the Dropki's.
+			if (def.bKind == DGRUN_KIND_WIEZA)
 				continue;
 			TPlayerBotDgRunSlot& slot = slots[i];
 			// V2: the bots' own floor for a dungeon (RUN_RULES) - a player's
@@ -4346,6 +4403,8 @@ namespace
 				continue;
 			if (RunPlayerBotMeleyTestLine(cmd, dwNow))	// MT2009_PLUS_BOT_MELEY_RUNS_V1: meley_status
 				continue;
+			if (RunPlayerBotWiezaTestLine(cmd, dwNow))	// MT2009_PLUS_BOT_WIEZA_V1: wieza_status
+				continue;
 			if (!strcmp(cmd, "status"))
 				LogPlayerBotDgRunStatus();
 			else if (!strcmp(cmd, "flag") && got >= 3)
@@ -4365,6 +4424,8 @@ namespace
 					PlanPlayerBotErebuTraining(dwNow, true);
 				else if (def >= 0 && PLAYERBOT_DGRUN_DEFS[def].bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1
 					PlanPlayerBotMeleyRuns(dwNow, true);
+				else if (def >= 0 && PLAYERBOT_DGRUN_DEFS[def].bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: the training now
+					PlanPlayerBotWiezaTraining(dwNow, true);
 				else
 					PlanPlayerBotDungeonRun(dwNow, def, "test");
 			}
@@ -4467,6 +4528,7 @@ namespace
 		}
 		PlanPlayerBotYdgTraining(dwNow);	// MT2009_PLUS_BOT_YDG_V1: the training parties, on their own clock
 		PlanPlayerBotMeleyRuns(dwNow, false);	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley, on its own clock
+		PlanPlayerBotWiezaTraining(dwNow, false);	// MT2009_PLUS_BOT_WIEZA_V1: the tower's solo climbs (playerbot_wieza_train)
 		ManagePlayerBotDropKnow(dwNow);	// MT2009_PLUS_BOT_DROPKNOW_V1: the index, the needs' pass (its own clocks)
 		ManagePlayerBotDropki(dwNow);	// MT2009_PLUS_BOT_DROPKI_V1: the Dropki's roles, parties and calls (its own clocks)
 	}
@@ -4478,5 +4540,6 @@ namespace
 #include "playerbot_dungeon_runs_ydg_glebie.h"	// MT2009_PLUS_BOT_GLEBIE_V1
 #include "playerbot_dgrun_gnolle.h"	// MT2009_PLUS_BOT_GNOLLE_V1
 #include "playerbot_dgrun_meley.h"	// MT2009_PLUS_BOT_MELEY_RUNS_V1
+#include "playerbot_dgrun_wieza.h"	// MT2009_PLUS_BOT_WIEZA_V1
 
 #endif

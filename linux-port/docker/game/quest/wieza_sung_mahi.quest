@@ -40,6 +40,14 @@
 -- B³ogos³awieñstwo, Akcja Piekielnej Wie¿y; zamêt to og³uszenie (afekt 1850 z flag¹ AFF_STUN, 2 s) -
 -- silnik nie ma losowego ruchu postaci; bossowie rzucaj¹ krêgi wokó³ gracza (quest nie zna pozycji bossa bez zmiany
 -- silnika). Krêgi przez d.zone_attack / d.zone_hurt (server-patches/strefy), znacznik 3975.
+-- MT2009_PLUS_BOT_WIEZA_V1 (wlasciciel, noc 5/6 listopada 2026: "boty maja tez robic Wieze Sung Mahi - solo ... wpusc je,
+-- reszta zasad jak dla graczy"): bot wchodzi tylko przebiegiem rdzenia (playerbot_dgrun_wieza.h) - te same warunki co
+-- gracz (120. poziom, 1. Poziom Czempiona, bez druzyny, wierzchowca i przemiany, Sztandar Czaszki za wspinaczke, pietro
+-- najwyzej o jedno nad ukonczonym w sezonie) sprawdza rdzen; instancja z flaga mt2009_dgrun (gracz jej nie ustawi), p1 =
+-- bot. wieza_sung_mahi_dgrun robi to co pierwsze logowanie (begin_climb), wieza_sung_mahi_dgrun_next to "Dalej" portalu
+-- (te same warunki co rozmowa). Pietra, etapy, misje, kregi, czasy i smierc - bez zmian. Nagroda pietra bota trafia od razu
+-- do jego ekwipunku (bot nie otwiera Magazynu ItemShop); ranking pieter i Skrzynie Triumfu - bot tylko przy fladze
+-- zdarzenia wieza_smh_bot_rank 1 (domyslnie boty nie zabieraja graczom miejsc).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest wieza_sung_mahi begin
 	state start begin
@@ -947,8 +955,15 @@ quest wieza_sung_mahi begin
 							pc.setf(qn, "ts"..f, season)
 							pc.setf(qn, "t"..f, secs)
 						end
-						wieza_sung_mahi.rank_write(pid, season, f, secs)
-						if pc.getf(qn, "r"..f) ~= season then
+						local bot = pc.is_playerbot()
+						if not bot or game.get_event_flag("wieza_smh_bot_rank") == 1 then
+							wieza_sung_mahi.rank_write(pid, season, f, secs)
+						end
+						if pc.getf(qn, "r"..f) ~= season and bot then
+							-- MT2009_PLUS_BOT_WIEZA_V1
+							wieza_sung_mahi.deliver_bot(f)
+							pc.setf(qn, "r"..f, season)
+						elseif pc.getf(qn, "r"..f) ~= season then
 							-- MT2009_PLUS_SMH_TOWER_V3: do Magazynu ItemShop; flaga sezonu dopiero po udanym zapisie
 							if wieza_sung_mahi.deliver(pid, season, f) then
 								pc.setf(qn, "r"..f, season)
@@ -1100,9 +1115,6 @@ quest wieza_sung_mahi begin
 			end
 			if f > top then
 				return "Najpierw ukoñcz "..(f - 1)..". piêtro w tym sezonie."
-			end
-			if pc.is_playerbot() then
-				return "Wie¿a nie przyjmuje botów."
 			end
 			if not pc.is_gm() and (pc.get_level() < c.min_level or pc.get_conqueror_level() < 1) then
 				return "Wie¿a przyjmuje od 1. Poziomu Czempiona."
@@ -1302,8 +1314,8 @@ quest wieza_sung_mahi begin
 			local now = get_global_time()
 			pc.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
 			d.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
-			if pc.is_playerbot() then
-				-- MT2009_PLUS_SMH_TOWER_V3: wie¿a w pojedynkê - bot tu nie wchodzi
+			if pc.is_playerbot() and d.getf("mt2009_dgrun") ~= 1 then
+				-- MT2009_PLUS_SMH_TOWER_V3 / MT2009_PLUS_BOT_WIEZA_V1: bot tylko w swojej wspinaczce (przebieg rdzenia)
 				wieza_sung_mahi.to_hall()
 				return
 			end
@@ -1324,28 +1336,7 @@ quest wieza_sung_mahi begin
 			if d.getf("init") == 0 then
 				-- MT2009_PLUS_SMH_TOWER_V3: start z w³asnych danych wchodz¹cego (dawniej flaga "leader", której nic
 				-- nie ustawia³o - dru¿yna mog³a zacz¹æ od piêtra innej osoby)
-				local f = pc.getqf("start_floor")
-				if f < 1 or f > c.max_floor then
-					f = 1
-				end
-				d.setf("init", 1)
-				d.setf("owner", me)
-				-- MT2009_PLUS_SMH_TOWER_FIX_V1: worek misji 2. etapu (pick_task)
-				local used, last = pc.getqf("tk_used"), pc.getqf("tk_last")
-				if used < 0 or used > 127 then
-					used = 0
-				end
-				if last < 0 or last > 7 then
-					last = 0
-				end
-				d.setf("tk_used", used)
-				d.setf("tk_last", last)
-				d.setf("start", now)
-				d.setf("floor", f - 1)
-				d.setf("mt2009_keep_until", now + 3 * 3600)
-				d.setf("countdown", now + 10)
-				d.notice("Wie¿a Sung Mahi: walka na "..f..". piêtrze zaczyna siê za 10 sekund.")
-				server_timer("wsm_tick", 1, d.get_map_index()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
+				wieza_sung_mahi.begin_climb(me, pc.getqf("start_floor"), pc.getqf("tk_used"), pc.getqf("tk_last"))
 			else
 				-- MT2009_PLUS_SMH_TOWER_V3: ponowne zalogowanie - bonus albo kl¹twa etapu wraca
 				wieza_sung_mahi.reapply_effect()
@@ -1353,6 +1344,94 @@ quest wieza_sung_mahi begin
 			-- numer questa dla przycisku X tablicy (zdarzenie "button"), potem tablica
 			cmdchat("WSM qid "..q.getcurrentquestindex())
 			wieza_sung_mahi.board_lines()
+		end
+
+		-- MT2009_PLUS_BOT_WIEZA_V1: pocz¹tek wspinaczki (pierwsze logowanie gracza albo zegar przebiegu bota) - dane
+		-- wchodz¹cego: piêtro startu i worek misji
+		function begin_climb(me, f, used, last)
+			local c = wieza_sung_mahi.cfg()
+			local now = get_global_time()
+			if f < 1 or f > c.max_floor then
+				f = 1
+			end
+			d.setf("init", 1)
+			d.setf("owner", me)
+			-- MT2009_PLUS_SMH_TOWER_FIX_V1: worek misji 2. etapu (pick_task)
+			if used < 0 or used > 127 then
+				used = 0
+			end
+			if last < 0 or last > 7 then
+				last = 0
+			end
+			d.setf("tk_used", used)
+			d.setf("tk_last", last)
+			d.setf("start", now)
+			d.setf("floor", f - 1)
+			d.setf("mt2009_keep_until", now + 3 * 3600)
+			d.setf("countdown", now + 10)
+			d.notice("Wie¿a Sung Mahi: walka na "..f..". piêtrze zaczyna siê za 10 sekund.")
+			server_timer("wsm_tick", 1, d.get_map_index()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
+		end
+
+		-- MT2009_PLUS_BOT_WIEZA_V1: przebieg bota (playerbot_dgrun_wieza.h) - rdzeñ zrobi³ instancjê z flag¹ mt2009_dgrun,
+		-- wpisa³ bota jako p1, sprawdzi³ warunki wejœcia i zabra³ sztandar; tu to, co robi pierwsze logowanie
+		when wieza_sung_mahi_dgrun.server_timer begin
+			local c = wieza_sung_mahi.cfg()
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") ~= 0 or d.getf("closed") == 1 then
+				return
+			end
+			local pid = d.getf("p1")
+			if pid == 0 then
+				return
+			end
+			local qn = "wieza_sung_mahi"
+			local ok, f, used, last = false, 1, 0, 0
+			q.begin_other_pc_block(pid)
+			if pc.get_player_id() == pid and wieza_sung_mahi.inside() and not pc.is_dead() then
+				ok = true
+				f, used, last = pc.getf(qn, "start_floor"), pc.getf(qn, "tk_used"), pc.getf(qn, "tk_last")
+				pc.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
+				wieza_sung_mahi.guard()
+			end
+			q.end_other_pc_block()
+			if not ok then
+				return
+			end
+			d.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
+			wieza_sung_mahi.begin_climb(pid, f, used, last)
+		end
+
+		-- MT2009_PLUS_BOT_WIEZA_V1: "Dalej" portalu (4020) dla bota stoj¹cego przy nim - to samo co rozmowa
+		when wieza_sung_mahi_dgrun_next.server_timer begin
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") ~= 1 or d.getf("closed") == 1 then
+				return
+			end
+			if d.getf("phase") ~= 1 or d.getf("countdown") > 0 then
+				return
+			end
+			local room = d.getf("room")
+			if room == 4 then
+				wieza_sung_mahi.next_floor()
+			elseif room == 1 then
+				wieza_sung_mahi.start_room(2)
+			elseif room == 2 then
+				wieza_sung_mahi.start_room(3)
+			end
+		end
+
+		-- MT2009_PLUS_BOT_WIEZA_V1: nagroda piêtra bota - od razu do ekwipunku (bot nie otwiera Magazynu ItemShop)
+		function deliver_bot(f)
+			local r = wieza_sung_mahi.rewards(f)
+			for k = 1, table.getn(r) do
+				pc.give_item2(r[k][1], r[k][2])
+			end
+			return true
 		end
 
 		-- efekty etapu nie wychodz¹ z wie¿y

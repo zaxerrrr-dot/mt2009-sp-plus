@@ -202,6 +202,8 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3 - the quest's 120 and a Champion level (the panel's 1-8): the clock's
 		// call wants four and a healing Shaman, goes in with three (a YDG training party without one - the run's bonuses).
 		{ "gnolle", 120, 4, 4, 3, true },
+		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (the quest's rule): one bot of 120 with a Champion level.
+		{ "wieza_smh", 120, 1, 1, 1, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

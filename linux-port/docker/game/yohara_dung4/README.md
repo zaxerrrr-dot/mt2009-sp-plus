@@ -49,7 +49,8 @@ mapę po bazie. Wieża stoi na **998400 614400** (wolne w każdej naszej mapie, 
 - Nagrody pięter z tabeli wiki raz na sezon (miesiąc); odblokowanie i czasy – też na sezon. Potwory wieży nie dają
   doświadczenia czempiona (wiki: 0). Panel lochów: `wieza_smh`.
 - `MT2009_PLUS_SMH_TOWER_V3` (właściciel 28.10.2026, wg pakietu wieży i poradnika „YOHARA GUIDE #4”):
-  - **tylko w pojedynkę** – bez drużyny, wierzchowca i przemiany (wejście; w wieży co 3 s zdejmowane), bot nie wchodzi;
+  - **tylko w pojedynkę** – bez drużyny, wierzchowca i przemiany (wejście; w wieży co 3 s zdejmowane); bot tylko własną wspinaczką rdzenia (`MT2009_PLUS_BOT_WIEZA_V1`,
+    `playerbot_dgrun_wieza.h`: te same warunki, timery `wieza_sung_mahi_dgrun` / `_dgrun_next`);
     wspinaczka należy do gracza, który ją zaczął (flaga `owner`); start z jego własnego piętra (`start_floor`);
   - **śmierć = koniec wspinaczki**: `when die` – okno porażki w kliencie, po 3 s powrót do hali (`d.kick_dead`);
   - **okno wieży** przy portalu (klient `uiwiezasm.py`, uiscripty GF `sungmaheetowerenter` /

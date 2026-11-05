@@ -10,9 +10,9 @@
 //
 // The rows (PLAYERBOT_DROPKI_DGS): Erebu, Zaklety Las (SZC), Grota Wygnancow 2 / Twierdza Czerwonego Smoka / Straznica
 // Nemere (SZC), the Awakened Bosses (Beran, Razador, Nemere, Jotun), Swiatynia Wezy, Glebie Polnocnego Wiatru (weak,
-// strong), Jaskinie Gnolli and Schronienie Meley (game1, the helmets' materials). Not here: Wieza Sung Mahi - its quest
-// lets no bot in and the tower is a person's solo climb (MT2009_PLUS_SMH_TOWER_V3, server-patches/wiezasm), so its row
-// takes no Dropki until a bot runner of the tower exists (the row stays, "wieza_smh", logged as refused); Krypta Balathora
+// strong), Jaskinie Gnolli and Schronienie Meley (game1, the helmets' materials), and Wieza Sung Mahi ("wieza_smh", solo -
+// a "party" of one: MT2009_PLUS_BOT_WIEZA_V1, playerbot_dgrun_wieza.h - the quest lets a bot's own climb in now; the file
+// takes "wieza" for it as well). Not here: Krypta Balathora
 // - a guild's registered lair (playerbot_balathor_bots.h, the bot guilds go); Labirynt - once a character; Obrona Statku -
 // the Hydra cohort's fixed parties.
 //
@@ -103,8 +103,8 @@ namespace
 		{ 12, "glebie_silny", 10, 5, 26, "glebie_slaby" },
 		{ 13, "gnolle", 10, 5, 16, NULL },
 		{ 14, "meley", 10, 6, 0, NULL },
-		// Wieza Sung Mahi: a person's solo climb, no bot in (the quest) - no runner, no Dropki (see the head)
-		{ 15, "wieza_smh", 0, 1, 20, NULL },
+		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (size 1), the bots' runner playerbot_dgrun_wieza.h
+		{ 15, "wieza_smh", 10, 1, 20, NULL },
 	};
 	const int PLAYERBOT_DROPKI_DG_COUNT = (int)(sizeof(PLAYERBOT_DROPKI_DGS) / sizeof(PLAYERBOT_DROPKI_DGS[0]));
 
@@ -219,6 +219,8 @@ namespace
 
 	int FindPlayerBotDropkiDg(const char* key)
 	{
+		if (key && !strcmp(key, "wieza"))	// MT2009_PLUS_BOT_WIEZA_V1: the operator's short name of Wieza Sung Mahi
+			key = "wieza_smh";
 		for (int i = 0; i < PLAYERBOT_DROPKI_DG_COUNT; ++i)
 			if (!strcmp(PLAYERBOT_DROPKI_DGS[i].szKey, key))
 				return i;
@@ -313,8 +315,7 @@ namespace
 					}
 					if (GetPlayerBotDropkiDef(dg) < 0 && a > 0)
 					{
-						sys_log(0, "BOT_DROPKI: file line refused: %s has no bot runner (Wieza Sung Mahi: the quest lets no bot in, "
-								"a person's solo climb)", cmd);
+						sys_log(0, "BOT_DROPKI: file line refused: %s has no bot runner here", cmd);
 						a = 0;
 					}
 					c.count[dg] = std::max(0, std::min(a, 80));
@@ -624,7 +625,7 @@ namespace
 		if (!ch || !ch->GetDesc() || !ch->GetDesc()->IsBot() || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
 			return false;
 		if (IsPlayerBotSidekickPID(pid) || s_setPlayerBotYdgTrainees.count(pid) || IsPlayerBotYoharaHydraResident(pid) ||
-				IsPlayerBotErebuTrainee(pid) || IsPlayerBotMeleyVisitor(pid))
+				IsPlayerBotErebuTrainee(pid) || IsPlayerBotMeleyVisitor(pid) || IsPlayerBotWiezaTrainee(pid))	// MT2009_PLUS_BOT_WIEZA_V1
 			return false;
 		const int def = GetPlayerBotDropkiDef(dg);
 		if (def < 0)
