@@ -197,7 +197,8 @@ namespace
 		DGRUN_KIND_SZC,		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift - only the hunt, no missions, the quest's hour
 		DGRUN_KIND_HYDRA,	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku - the mast held through four waves, the Hydra
 		DGRUN_KIND_EREBU,	// MT2009_PLUS_BOT_EREBU_V1: Erebu - Bagjanamu, then Jotun Thrym (playerbot_dgrun_erebu.h)
-		DGRUN_KIND_YDG		// MT2009_PLUS_BOT_YDG_V1: the Yohara dungeons of Plaskowyz Iluzji (playerbot_dungeon_runs_ydg.h)
+		DGRUN_KIND_YDG,		// MT2009_PLUS_BOT_YDG_V1: the Yohara dungeons of Plaskowyz Iluzji (playerbot_dungeon_runs_ydg.h)
+		DGRUN_KIND_GNOLLE	// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3, three open maps (playerbot_dgrun_gnolle.h)
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
@@ -304,6 +305,10 @@ namespace
 		{ "razador_pb", DGRUN_KIND_YDG, 369, NULL, "razador_pb_dgrun", "razador_pb_dgrun_next", 342, 584, 0LL, 0, 60, 90000, 2 },
 		{ "nemere_pb", DGRUN_KIND_YDG, 370, NULL, "nemere_pb_dgrun", "nemere_pb_dgrun_next", 171, 270, 0LL, 0, 60, 90000, 2 },
 		{ "jotun_pb", DGRUN_KIND_YDG, 371, NULL, "jotun_pb_dgrun", "jotun_pb_dgrun_next", 478, 970, 0LL, 0, 60, 90000, 2 },
+		// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli (382-384, jaskinie_gnolli.quest) on the Yohara core - no instance:
+		// Halabardnik's Przepustka (ChargePlayerBotGnolleTicket), level 1's way in (213,110), the three levels and out
+		// within 60 minutes (the bots' own limit - the caves have none), two at once; no day's count (the quest has none).
+		{ "gnolle", DGRUN_KIND_GNOLLE, 382, NULL, NULL, NULL, 213, 110, 0LL, 0, 60, 30000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
@@ -610,6 +615,14 @@ namespace
 	DWORD GetPlayerBotErebuRest(const TPlayerBotDgRun& run, DWORD rest);
 	void PlanPlayerBotErebuTraining(DWORD dwNow, bool forced);
 	bool RunPlayerBotErebuTestLine(const char* cmd, const std::string& line, DWORD dwNow);
+	// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli's own (playerbot_dgrun_gnolle.h, included at the end of this file).
+	bool IsPlayerBotGnolleFit(LPCHARACTER ch);
+	long long ChargePlayerBotGnolleTicket(LPCHARACTER ch);
+	bool StartPlayerBotGnolleRun(TPlayerBotDgRun& run, DWORD dwNow);
+	bool UpdatePlayerBotGnolleRun(TPlayerBotDgRun& run, DWORD dwNow);
+	bool ManagePlayerBotGnolleInside(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotDgRunBot& rb,
+			DWORD dwNow);
+	void NotePlayerBotGnolleRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS);
 
 	// ------------------------------------------------------------ the questions others ask
 
@@ -2537,6 +2550,8 @@ namespace
 						ch->Stop();
 					return true;
 				}
+				if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1
+					return ManagePlayerBotGnolleInside(ch, state, run, rb, dwNow);
 				return ManagePlayerBotDgRunInside(ch, state, run, rb, dwNow);
 			default:
 				return false;
@@ -2666,8 +2681,10 @@ namespace
 		if (def.bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			LogPlayerBotHydraRunEnd(run, result, entered, took / 1000);
 		const bool erebuTrain = def.bKind == DGRUN_KIND_EREBU && IsPlayerBotErebuTrainRun(run.iId);	// MT2009_PLUS_BOT_EREBU_V1
-		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1
+		if (def.bKind == DGRUN_KIND_YDG || def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_YDG_V1 (MT2009_PLUS_BOT_GNOLLE_V1)
 			NotePlayerBotYdgRunEnd(run, result, entered, took / 1000);
+		if (def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1: its line and row
+			NotePlayerBotGnolleRunEnd(run, result, entered, took / 1000);
 		FILE* fp = fopen(PLAYERBOT_DGRUN_RUNS_FILE, "a");
 		if (fp)
 		{
@@ -2705,13 +2722,13 @@ namespace
 				rest = GetPlayerBotErebuRest(run, rest);
 			LogPlayerBotErebuRunEnd(run, result, entered, took / 1000);
 		}
-		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: a training party's short rest
+		if (def.bKind == DGRUN_KIND_YDG || def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_YDG_V1: a training party's short rest
 			rest = AdjustPlayerBotYdgRest(run, rest);
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
 		run.members.clear();
-		if (run.lInstance != 0 && def.bKind != DGRUN_KIND_TOWER)
+		if (run.lInstance != 0 && def.bKind != DGRUN_KIND_TOWER && def.bKind != DGRUN_KIND_GNOLLE)	// GNOLLE: open maps
 		{
 			s_mapPlayerBotArzDgScan.erase(run.lInstance);
 			s_mapPlayerBotArzDgFocus.erase(run.lInstance);
@@ -2787,6 +2804,8 @@ namespace
 			return ChargePlayerBotErebuStone(ch);
 		if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: Zegarek Kieszonkowy / Ksiazka Przebudzenia
 			return ChargePlayerBotYdgTicket(ch, def);
+		if (def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1: Halabardnik's Przepustka
+			return ChargePlayerBotGnolleTicket(ch);
 		long long fee = def.llFee;
 		if (fee > 0 && (long long)ch->GetGold() >= fee * PLAYERBOT_DGRUN_FEE_RESERVE)
 			PlayerBotChangeGold(ch, -fee);
@@ -3111,7 +3130,7 @@ namespace
 		playerbot_dgrun::TRunRule rule = playerbot_dgrun::RuleFor(def.szKey);
 		// MT2009_PLUS_BOT_YDG_TRAIN_V3: a YDG training party goes without a healing Shaman when it has none (the run's
 		// bonuses stand for it) - 10 Beran parties a dungeon left some with none, disbanded in a second, again and again.
-		if (def.bKind == DGRUN_KIND_YDG && GetPlayerBotYdgTrainParty(run.iId) != 0)
+		if ((def.bKind == DGRUN_KIND_YDG || def.bKind == DGRUN_KIND_GNOLLE) && GetPlayerBotYdgTrainParty(run.iId) != 0)
 			rule.needHealer = false;
 		int answered = 0, pending = 0, arrived = 0;
 		// V2: a Shaman that can heal among those on their way, among those there.
@@ -3233,7 +3252,8 @@ namespace
 						(unsigned int)run.members.size());
 				return true;
 			}
-			if (!StartPlayerBotDgRunInstance(run, dwNow))
+			if (def.bKind == DGRUN_KIND_GNOLLE ? !StartPlayerBotGnolleRun(run, dwNow)	// MT2009_PLUS_BOT_GNOLLE_V1: no instance
+					: !StartPlayerBotDgRunInstance(run, dwNow))
 			{
 				ClosePlayerBotDgRun(run, "lost", dwNow);
 				return false;
@@ -3262,7 +3282,7 @@ namespace
 				LogPlayerBotHydraRunStart(run);
 			if (def.bKind == DGRUN_KIND_EREBU)	// MT2009_PLUS_BOT_EREBU_V1
 				NotePlayerBotErebuRunStart(run);
-			if (def.bKind == DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1
+			if (def.bKind == DGRUN_KIND_YDG || def.bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_YDG_V1 (the bonuses, the gains)
 				NotePlayerBotYdgRunStart(run);
 			return true;
 		}
@@ -3732,6 +3752,8 @@ namespace
 				UpdatePlayerBotDgRunParty(run);
 			return UpdatePlayerBotDgRunTower(run, dwNow);
 		}
+		if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_GNOLLE)	// MT2009_PLUS_BOT_GNOLLE_V1: open maps, its own monitor
+			return UpdatePlayerBotGnolleRun(run, dwNow);
 		return UpdatePlayerBotDgRunInside(run, dwNow);
 	}
 
@@ -4031,6 +4053,8 @@ namespace
 				if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)
 					continue;
 				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch))	// MT2009_PLUS_BOT_YDG_V1
+					continue;
+				if (def.bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleFit(ch))	// MT2009_PLUS_BOT_GNOLLE_V1: 120 and a Champion
 					continue;
 				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
 						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
@@ -4383,5 +4407,6 @@ namespace
 
 #include "playerbot_dgrun_erebu.h"	// MT2009_PLUS_BOT_EREBU_V1
 #include "playerbot_dungeon_runs_ydg.h"	// MT2009_PLUS_BOT_YDG_V1
+#include "playerbot_dgrun_gnolle.h"	// MT2009_PLUS_BOT_GNOLLE_V1
 
 #endif

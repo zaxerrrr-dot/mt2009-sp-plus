@@ -917,6 +917,11 @@ namespace
 						out.push_back(def);
 				}
 			}
+			// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli by its key only ("any" stays the seven of the plateau).
+			if (k == "gnolle")
+				for (int d = 0; d < PLAYERBOT_DGRUN_DEF_COUNT; ++d)
+					if (PLAYERBOT_DGRUN_DEFS[d].bKind == DGRUN_KIND_GNOLLE && std::find(out.begin(), out.end(), d) == out.end())
+						out.push_back(d);
 			s = e + 1;
 		}
 	}
@@ -952,6 +957,9 @@ namespace
 	int FormPlayerBotYdgAutoParties(int parties, int size, const std::vector<int>& defs, DWORD dwNow)
 	{
 		std::vector<TPlayerBotYdgPick> pool[4];
+		bool gnolleOnly = false;	// MT2009_PLUS_BOT_GNOLLE_V1: a line with Jaskinie Gnolli among its dungeons
+		for (size_t i = 0; i < defs.size(); ++i)
+			gnolleOnly = gnolleOnly || PLAYERBOT_DGRUN_DEFS[defs[i]].bKind == DGRUN_KIND_GNOLLE;
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
@@ -959,6 +967,9 @@ namespace
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetLevel() < PLAYERBOT_YDG_MIN_LEVEL || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+				continue;
+			// MT2009_PLUS_BOT_GNOLLE_V1: a party for Jaskinie Gnolli only of those Halabardnik lets in (120, a Champion).
+			if (gnolleOnly && !IsPlayerBotGnolleFit(ch))
 				continue;
 			const char* refusal = GetPlayerBotDgRunRefusal(ch, it->second, dwNow);
 			if (refusal && strcmp(refusal, "dungeon_run"))
