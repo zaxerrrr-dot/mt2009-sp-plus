@@ -1,2 +1,296 @@
 # MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
 # Polish<TAB>it (by hand; UTF-8). tools/i18n/extract_server_texts.py --check it lists what is missing.
+%d dni %d godzin	%d giorni %d ore
+%d dni %d godzin i %d minut	%d giorni %d ore e %d minuti
+%d godzin i %d minut	%d ore e %d minuti
+%d minut	%d minuti
+%d sekund do wyjścia z mapy.	%d secondi all'uscita dalla mappa.
+%d sekund do zmiany kanału.	%d secondi al cambio di canale.
+%s jest blisko Ciebie.	%s è vicino a te.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s è connesso sul canale %d. (canale attuale: %d)
+%s rzucił %d. (%d-%d)	%s ha tirato %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s ha tirato il dado e ha ottenuto %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	Sono passati 30 minuti. I falò si sono spenti.
+<Gildia> Wskazany gracz jest zajęty.	<Gilda> Il giocatore indicato è occupato.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Gruppo> Il gruppo non può accettare altri mentre dei membri sono in un dungeon.
+<Grupa> Lider grupy jest w lochu.	<Gruppo> Il capogruppo è in un dungeon.
+[Gildia] Gildia jest w trakcie wojny.	[Gilda] La gilda è in guerra.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Gilda] La gilda ha raggiunto il limite di inviti.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Gilda] La gilda ha raggiunto il livello massimo.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Gilda] Caricate %d unità di Energia Spirito del Drago.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Gilda] Non puoi espellere un membro della gilda durante una guerra.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Gilda] Non puoi usare le abilità di gilda fuori dall'arena.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Gilda] I nuovi membri sono attualmente limitati.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Gilda] Durante una guerra di gilda non puoi espellere un membro della gilda.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Gilda] La persona invitata è occupata in questo momento.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Gruppo] Il gruppo non può essere sciolto perché alcuni membri sono nel dungeon.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Magazzino] Non puoi spostare oggetti nel magazzino.
+Aby otworzyć sklep potrzebujesz Tobół.	Per aprire un negozio ti serve un Fagotto.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Per acquistare questo oggetto il personaggio deve essere almeno di livello %u.
+Atakują nas morskie potwory! Do broni!	Mostri marini ci attaccano! Alle armi!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Il bonus di miglioramento si può usare su un oggetto fino al livello %d.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Il bonus di miglioramento si può usare su un oggetto migliorato al massimo a +%d.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Il bonus di miglioramento si può usare solo sui gioielli.
+Bonus na ulepszenie może być użyty tylko na bronie.	Il bonus di miglioramento si può usare solo sulle armi.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Il bonus di miglioramento si può usare solo su armature, elmi e scudi.
+Brak danych. Skontaktuj się z administratorem.	Dati mancanti. Contatta un amministratore.
+Brak kamienia do wyjęcia.	Nessuna pietra da estrarre.
+Brak miejsca w ekwipunku.	Spazio insufficiente nell'inventario.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Tasse insufficienti. Capitale attuale: %u Capitale necessario: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Errore di un oggetto durante l'apertura del negozio.
+Cena przedmiotu zmieniła się.	Il prezzo dell'oggetto è cambiato.
+Cena przedmiotu została zmieniona.	Il prezzo dell'oggetto è stato modificato.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Qualcosa ha abboccato, ma non vedi cosa sia.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	La Foresta Rossa nasconde molti segreti che non conoscevate.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Il rilevatore è stato attivato, ma non ha trovato pietre spirituali.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Gli effetti VIP non si cumulano con l'Abbonamento Premium. Non puoi effettuare l'acquisto.
+Eliksir jest pusty. Napełnij go u Alchemika.	L'elisir è vuoto. Fallo riempire dall'Alchimista.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Le emozioni sono disponibili solo per gli Abbonati Premium.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Ondata %d: difendete l'albero maestro e sconfiggete l'Idra.
+Fala %d: brońcie masztu przez %d sek.	Ondata %d: difendete l'albero maestro per %d sec.
+Funkcja tymczasowo niedostępna.	Funzione momentaneamente non disponibile.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	La gilda è al livello massimo, ma accetterà il tuo dono.
+Gracz %s został dodany do listy zablokowanych.	Il giocatore %s è stato aggiunto alla lista dei bloccati.
+Gracz %s został usunięty z listy zablokowanych.	Il giocatore %s è stato rimosso dalla lista dei bloccati.
+Ja ci pokazać, że mi nie przeszkadzać!	Io mostrare te che non devi disturbare me!
+Jajo Hydry pękło - potwory idą na dno!	L'Uovo di Idra si è rotto - i mostri affondano!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Uno degli oggetti ha un prezzo non consentito (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Uno degli oggetti si trova in una posizione non consentita.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Uno degli invitati al matrimonio è occupato o ha appena concluso uno scambio.
+Jesteś już przyjacielem gracza %s.	Sei già amico di %s.
+Jesteś za daleko od Kowala.	Sei troppo lontano dal Fabbro.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Se non accetti queste condizioni
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Le Pietre Spirituali +3 non possono essere migliorate con questo oggetto.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	La Pietra Spirituale non può essere migliorata con questo oggetto.
+Kilof może zostać ulepszony tylko u Deokbae.	Il Piccone può essere migliorato solo da Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Qualcuno ha acquistato %dx %s dal tuo negozio per %d Yang.
+Masz za mało Animosfer.	Non hai abbastanza Animasfere.
+Maszt naprawiony: %d%% PŻ.	Albero maestro riparato: %d%% PV.
+Maszt ocalał. Przygotujcie się na następną falę!	L'albero maestro si è salvato. Preparatevi alla prossima ondata!
+Maszt: zostało %d%% PŻ!	Albero maestro: restano %d%% PV!
+Możesz używać Białej Flagi co %d minut.	Puoi usare la Bandiera Bianca ogni %d minuti.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Puoi usare questa abilità solo nel tuo regno.
+Możesz wyrzucić przedmioty co %d sekund.	Puoi gettare oggetti ogni %d secondi.
+Możesz wyrzucić Yang co 10 sekund.	Puoi gettare Yang ogni 10 secondi.
+Możesz łowić tylko w M1.	Puoi pescare solo in M1.
+Możliwość pisania została zablokowana przez siły wyższe!	La tua chat è stata bloccata da forze superiori!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Devi essere di livello %d per comprendere questo libro.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Devi essere almeno di livello %d per comprare questo oggetto.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Devi indossare un abito da sposa per equipaggiare un bouquet.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Devi aspettare %d min. prima di usare di nuovo questa opzione.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Dopo il combattimento devi aspettare un attimo prima di usare questa opzione.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Devi aspettare qualche secondo prima di uscire dalla mappa.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Devi aspettare qualche secondo prima di cambiare canale.
+Musisz posiadać cel.	Ti serve un bersaglio.
+Musisz stać obok sklepu.	Devi stare accanto al negozio.
+Musisz zaczekać %d min. przed ponownym użyciem.	Devi aspettare %d min. prima di riutilizzarlo.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Devi aspettare %d sec. prima di riutilizzarlo.
+Musisz zdjąć bukiet.	Devi togliere il bouquet.
+Musisz znajdować się na tej samej mapie co sklep.	Devi trovarti sulla stessa mappa del negozio.
+Musisz znajdować się na tym samym kanale co sklep.	Devi trovarti sullo stesso canale del negozio.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Su questa mappa possono svolgersi battaglie forzate.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Su questo canale ci sono troppi negozi. Per superare il limite gratuito serve un negozio premium.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Questo canale ha raggiunto il limite massimo di negozi offline. Non puoi aprire un negozio.
+Następna fala za %d sek.	Prossima ondata tra %d sec.
+Naładowany na %d sekund.	Caricato per %d secondi.
+Nie jesteś zablokowany.	Non sei bloccato.
+Nie ma kogo ożywić.	Non c'è nessuno da rianimare.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Non hai spazio nell'inventario. L'oggetto è stato inviato al magazzino Item Shop.
+Nie masz sklepu na tej mapie.	Non hai un negozio su questa mappa.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Non hai un negozio su questo canale. (Trovato sul canale %d).
+Nie możesz czytać ksiąg będąć przemieniony.	Non puoi leggere libri mentre sei trasformato.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Non puoi sviluppare oltre questa abilità. Usa la Ridistribuzione Abilità o il Libro dell'Amnesia.
+Nie możesz dodać więcej bonusów.	Non puoi aggiungere altri bonus.
+Nie możesz jeździć konno podczas łowienia.	Non puoi cavalcare mentre peschi.
+Nie możesz jeździć konno, gdy jesteś powalony.	Non puoi cavalcare mentre sei a terra.
+Nie możesz jeździć nosząc przedmiot.	Non puoi cavalcare mentre trasporti un oggetto.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Non puoi continuare mentre un'altra finestra è attiva.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Non puoi continuare: i tuoi Yang supererebbero il limite di 2 miliardi.
+Nie możesz kupować od samego siebie.	Non puoi comprare da te stesso.
+Nie możesz mieć więcej niż %d przyjaciół.	Non puoi avere più di %d amici.
+Nie możesz nosić Smokingu na koniu.	Non puoi indossare lo Smoking a cavallo.
+Nie możesz nosić tego przedmiotu konno.	Non puoi indossare questo oggetto a cavallo.
+Nie możesz otworzyć pustego sklepu.	Non puoi aprire un negozio vuoto.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Non puoi aprire un negozio offline in questo luogo.
+Nie możesz otworzyć sklepu w tym miejscu.	Non puoi aprire un negozio in questo luogo.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Non puoi aprire questo negozio. Ritira prima tutti gli oggetti.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Non puoi aprire un negozio qui. Sei troppo vicino a un altro negozio.
+Nie możesz otworzyć więcej sklepów.	Non puoi aprire altri negozi.
+Nie możesz ożywić kogoś, kto żyje.	Non puoi rianimare qualcuno che è vivo.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Non puoi raccogliere oggetti mentre sei nella finestra delle missioni.
+Nie możesz przenieść się do tego obszaru.	Non puoi spostarti in quest'area.
+Nie możesz przenieść się do tej osoby.	Non puoi teletrasportarti da questa persona.
+Nie możesz przywołać do tego obszaru.	Non puoi evocare in quest'area.
+Nie możesz przywołać konia w tym miejscu.	Non puoi evocare il cavallo in questo luogo.
+Nie możesz się teraz teleportować.	Ora non puoi teletrasportarti.
+Nie możesz sprintować będąc spowolnionym.	Non puoi correre mentre sei rallentato.
+Nie możesz sprintować nosząc przedmiot.	Non puoi correre mentre trasporti un oggetto.
+Nie możesz sprzedawać noszonych przedmiotów.	Non puoi vendere oggetti indossati.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Non puoi vendere oggetti bloccati.
+Nie możesz sprzedać przedmiotów, które nosisz.	Non puoi vendere gli oggetti che indossi.
+Nie możesz sprzedać założonego przedmiotu.	Non puoi vendere un oggetto indossato.
+Nie możesz tego teraz użyć.	Ora non puoi usarlo.
+Nie możesz tego użyć, gdy masz otwarte okno.	Non puoi usarlo mentre hai una finestra aperta.
+Nie możesz tego zrobić na kanale specjalnym.	Non puoi farlo su un canale speciale.
+Nie możesz teleportować się nosząc przedmiot.	Non puoi teletrasportarti mentre trasporti un oggetto.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Ora non puoi applicare l'effetto, aspetta un attimo.
+Nie możesz teraz podnosić przedmiotów.	Ora non puoi raccogliere oggetti.
+Nie możesz teraz wykonać tej operacji.	Ora non puoi eseguire questa operazione.
+Nie możesz teraz zejść z wierzchowca.	Ora non puoi scendere dalla cavalcatura.
+Nie możesz tutaj otworzyć depozytu.	Qui non puoi aprire il deposito.
+Nie możesz uczyć się będąc przemienionym.	Non puoi imparare mentre sei trasformato.
+Nie możesz ulepszyć tego przedmiotu.	Non puoi migliorare questo oggetto.
+Nie możesz użyć tego na wojnie.	Non puoi usarlo in guerra.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Non puoi usare questo oggetto mentre la finestra delle missioni è attiva.
+Nie możesz użyć tego przedmiotu konno.	Non puoi usare questo oggetto a cavallo.
+Nie możesz wyjąć umieszczonego kamienia.	Non puoi rimuovere la pietra incastonata.
+Nie możesz wykonać tej akcji będąc martwy.	Non puoi farlo mentre sei morto.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Non puoi mettere oggetti dalle bisacce del cavallo in un negozio normale.
+Nie możesz zablokować więcej niż %d osób.	Non puoi bloccare più di %d persone.
+Nie możesz zapisać pozycji w tym miejscu.	Non puoi salvare la posizione in questo luogo.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Non puoi salvare una posizione nel regno nemico.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Non puoi invitare tra gli amici una persona bloccata.
+Nie możesz zmienić bonusów.	Non puoi cambiare i bonus.
+Nie możesz zmienić trybu PvP na wojnie.	Non puoi cambiare la modalità PvP in guerra.
+Nie można użyć na innym graczu.	Non si può usare su un altro giocatore.
+Nie można ładować.	Impossibile caricare.
+Nie posiadasz otwartego sklepu.	Non hai un negozio aperto.
+Nie posiadasz sklepu premium.	Non hai un negozio premium.
+Nie posiadasz sklepu.	Non hai un negozio.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Non hai gli oggetti richiesti per l'acquisto.
+Nie posiadasz wystarczająco dużo reputacji.	Non hai abbastanza reputazione.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Non soddisfi i requisiti per aprire un negozio tuo.
+Nie udało się wytworzyć.	Creazione fallita.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Non hai perso alcun oggetto, perché sei protetto dal Dio Drago.
+Nie znaleziono gracza o podanej nazwie.	Nessun giocatore trovato con questo nome.
+Niedostępne.	Non disponibile.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Alcuni oggetti nel negozio si sovrappongono.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Alcuni oggetti nel negozio sono in slot bloccati.
+Niewystarczająca ilość Smoczych Monet.	Monete del Drago insufficienti.
+Niewystarczająca ilość Smoczych Znaków.	Marchi del Drago insufficienti.
+Nikt nie wypłynął - statek zostaje w porcie.	Nessuno è salpato - la nave resta in porto.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Il Coltello da Erborista può essere migliorato solo dall'Erborista.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Il destinatario non può ricevere richieste di amicizia.
+Odczekaj chwilę po zakończeniu handlu.	Aspetta un attimo dopo la fine dello scambio.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Aspetta ancora %s prima del prossimo allenamento.
+Odczekaj jeszcze %s przed zakupem.	Aspetta ancora %s prima dell'acquisto.
+Odczekaj przed następnym ulepszeniem.	Aspetta prima del prossimo miglioramento.
+Oferta sklepu zmieniła się.	L'offerta del negozio è cambiata.
+Okno zarządzania sklepem musi być otwarte.	La finestra di gestione del negozio deve essere aperta.
+Osiągnięto limit zakupu tego przedmiotu.	Limite d'acquisto di questo oggetto raggiunto.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Questo account ha raggiunto il numero massimo di acquisti di questo oggetto.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	La persona che cerchi di rianimare non è umana.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Hai ricevuto %d reputazione (Guardia Reale)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Hai ricevuto %d reputazione (Figli del Deserto)
+Otrzymałeś %s (Juki Konne)	Hai ricevuto %s (Bisacce del cavallo)
+Otrzymałeś %s (szt. %d)	Hai ricevuto %s (pz. %d)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Hai ricevuto %s (pz. %d) (Bisacce del cavallo)
+OX-Question: 	Domanda OX: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Ricorda che su questa mappa non si può aprire un negozio offline.
+Podana kwota jest większa niż zarobione Yang.	L'importo indicato supera gli Yang guadagnati.
+Podana kwota jest za mała.	L'importo indicato è troppo basso.
+Podana osoba jest na liście Twoich przyjaciół.	Questa persona è nella tua lista amici.
+Podatek od sprzedaży: %d%% (%lld Yang).	Tassa sulla vendita: %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	È comparso un Uovo di Idra! Distruggilo e i mostri affonderanno.
+Pomimo treningu nie czujesz się zmęczony.	Nonostante l'allenamento non ti senti stanco.
+Pomyślnie dodano bonus.	Bonus aggiunto con successo.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Yang prelevati con successo dal deposito del negozio.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Hai un negozio aperto o il deposito del negozio contiene oggetti.
+Pospieszcie się, macie %d min., by przejść przez portal.	Sbrigatevi, avete %d min. per attraversare il portale.
+Potomstwo Hydry trafiło maszt laserem!	La progenie dell'Idra ha colpito l'albero maestro con un laser!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Ti servono %lld Yang per aprire questo tipo di negozio
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Per aprire il forziere ti serve spazio per un oggetto da almeno 3 slot.
+Pozostały czas %d sekund.	Tempo rimanente %d secondi.
+Pozostały czas: %.1f sek.	Tempo rimanente: %.1f sec.
+Pozostały czas: %.2f sek.	Tempo rimanente: %.2f sec.
+Pozycja sklepu została oznaczona strzałką.	La posizione del negozio è stata segnata con una freccia.
+Prosimy o powrót do pierwotnej lokalizacji.	Torna alla posizione originale.
+Prośba o wezwanie została wysłana.	Richiesta di evocazione inviata.
+Przechwyciłeś laser Potomstwa Hydry.	Hai intercettato il laser della progenie dell'Idra.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	L'oggetto si può usare solo su armi e armature fino al livello 40.
+Przedmiot nie może być użyty na akcesoriach.	L'oggetto non si può usare sugli accessori.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	L'oggetto non ha Pietre Spirituali da estrarre.
+Przedmiot zniknie za %d minut.	L'oggetto sparirà tra %d minuti.
+Przedmiot został dodany do twojego ekwipunku	L'oggetto è stato aggiunto al tuo inventario
+Przedmioty zostały dodane do twojego ekwipunku	Gli oggetti sono stati aggiunti al tuo inventario
+Przedmioty zostały pomyśnie zaktualizowane.	Gli oggetti sono stati aggiornati.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Gli oggetti che usi non si possono vendere nel tuo negozio personale.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Rientra nel gioco perché l'effetto VIP venga applicato correttamente.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Evoca il cavallo per accedere agli oggetti nelle bisacce.
+Rejs trwał za długo - statek zawraca.	La traversata è durata troppo - la nave torna indietro.
+Rzuciłeś %d. (%d-%d)	Hai tirato %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Hai tirato il dado e hai ottenuto %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Il server verrà chiuso tra 10 minuti per manutenzione.
+Sklep #PLAYER_NAME#	Negozio di #PLAYER_NAME#
+Sklep - %s	Negozio - %s
+Sklep jest otwarty.	Il negozio è aperto.
+Sklep jest w trybie edycji.	Il negozio è in modalità modifica.
+Sklep jest zamknięty.	Il negozio è chiuso.
+Sklep nie jest w trybie edycji.	Il negozio non è in modalità modifica.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Il negozio è stato modificato da poco dal proprietario. Aspetta un attimo prima di comprare.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Il negozio è stato chiuso, gli oggetti rimasti e gli Yang guadagnati sono stati aggiunti al deposito.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Il forziere con le Pietre dell'Anima del Drago non è attivato.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS! L'albero maestro è distrutto, la nave affonda. Tra poco tornerete a terra.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Non puoi correre a piedi con la tua velocità di movimento (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	L'abilità allenata è già al livello massimo (%d).
+Ta aukcja nie jest już dostępna.	Quest'asta non è più disponibile.
+Ta opcja jest tymczasowo niedostępna.	Questa opzione è momentaneamente non disponibile.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Queste acque sono molto povere, qui non ci sono quasi pesci, parla con il Pescatore.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Questo giocatore ha più di 2 miliardi di Yang. Non puoi commerciare con lui.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Questo acquisto supererebbe il limite di acquisti per account. Compra meno pezzi.
+To miejsce jest wolne od plagi Kamieni Metin.	Questo luogo è libero dalla piaga delle Rocce Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Non sono stato io... ma loro hanno scelto te. Ci rivedremo, prima di quanto pensiate.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Il veleno si può usare solo sulla Tartaruga Deserto Grande.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Il tuo gruppo comprende ogni classe, perciò ricevi un bonus d'esperienza.
+Twoja postać nie żyje, nie możesz tego zrobić.	Il tuo personaggio è morto, non puoi farlo.
+Twoja ranga nie może już wzrosnąć.	Il tuo grado non può più salire.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	L'apertura di negozi è stata bloccata per il tuo grado!
+Tworzenie sklepów jest tymczasowo wyłączone	L'apertura di negozi è momentaneamente disattivata
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Il tuo Cavallo è affamato, in questo stato non può affaticarsi.
+Tylko GM ma dostęp do tej komendy.	Solo un GM ha accesso a questo comando.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Questa azione si può fare solo nel Tempio dello Zodiaco.
+Udało ci się pokonać smoka w %d sekund!	Sei riuscito a sconfiggere il drago in %d secondi!
+Upuszczone Yang zniknie za %d sekund.	Gli Yang gettati spariranno tra %d secondi.
+Upuszczony przedmiot zniknie za %d minut.	L'oggetto gettato sparirà tra %d minuti.
+Usuniecie przedmiotu	Oggetto rimosso
+Uwolniłeś się!	Ti sei liberato!
+W depozycie sklepu offline zalegają przedmioty.	Nel deposito del negozio offline ci sono ancora oggetti.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Un sinistro fruscio riempie la foresta... il Lord Albero Fantasma si risveglia!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Il valore del negozio e i tuoi Yang superano la quantità di Yang consentita (2 miliardi).
+Wesele dalej trwa!	Il matrimonio è ancora in corso!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	La guerra tra %s e %s inizierà tra %d minuti!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Il canale indicato è disponibile solo per gli account Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Tutti caduti! Il vostro tempo nel Tempio finirà se nessuno viene rianimato entro un minuto.
+Wszystkie potwory na mapach zostały zabite!	Tutti i mostri sulle mappe sono stati uccisi!
+Wygląda na to, że na haczyku jest %s.	Sembra che all'amo ci sia %s.
+Wyglądało na to, że %s wisi na haku.	Sembrava che %s fosse appeso all'amo.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Hai vinto il duello con %d/%d (%d%%) PV!
+Wyjście z mapy zostało przerwane.	L'uscita dalla mappa è stata interrotta.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Questo account ha esaurito gli acquisti di quest'asta (max %d acquisti).
+Wymagane %d Staminy	Richiesti %d di Stamina
+Wymagane %s.	Richiesto: %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Serve una Lente della Previdenza o un Abbonamento Premium attivo.
+Wystapił błąd	Si è verificato un errore
+Wystąpił błąd. (Kod błędu: %s)	Si è verificato un errore. (Codice errore: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Ricerca terminata. Trovati %d negozi.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Ricerca interrotta. Trovati oltre %d negozi con l'oggetto indicato.
+Wyłowiłeś %s!	Hai pescato %s!
+Wędka może zostać ulepszona tylko u Rybaka.	La Canna da Pesca può essere migliorata solo dal Pescatore.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Il proprietario dell'oggetto ha troppi oggetti nell'inventario.
+Za 5 min zostanie wykonany automatyczny reset spotów!	Tra 5 min verrà eseguito il reset automatico degli spot!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Aspetta %d secondi prima di usare questo oggetto.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Aspetta %d secondi prima della prossima modifica al negozio.
+Zaczekaj %d sekund, przed kolejną akcją.	Aspetta %d secondi prima della prossima azione.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Aspetta %s prima di usare di nuovo la pergamena.
+Zaczekaj chwilę, przed kolejną akcją.	Aspetta un attimo prima della prossima azione.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Aspetta un attimo. Uscita dalla mappa in corso.
+Zakup wymaga odpowiedniej reputacji.	L'acquisto richiede una reputazione adeguata.
+Zamkniecie sklepu	Chiusura del negozio
+Zaproszony gracz jest w tym momencie zajęty.	Il giocatore invitato è occupato in questo momento.
+Zdobyłeś %s!	Hai ottenuto %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Terra all'orizzonte! La nave si è salvata - attraversate il portale.
+Zmiana kanału została przerwana.	Il cambio di canale è stato interrotto.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Al momento non è possibile passare al canale indicato.
+Znowu atakują! Do broni!	Attaccano di nuovo! Alle armi!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Resta qualcosa che devo riparare... qualcosa che non sarebbe mai dovuto accadere.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	La morte non è la fine, ma piuttosto l'inizio di un nuovo cammino.
