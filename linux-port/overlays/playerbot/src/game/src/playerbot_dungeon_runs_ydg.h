@@ -1194,6 +1194,31 @@ namespace
 		return it != s_mapPlayerBotYdgRunParty.end() ? it->second : 0;
 	}
 
+	// MT2009_PLUS_BOT_YDG_TRAIN_V2: the bots stronger, not the dungeons weaker (the owner, 5 November: better gear,
+	// bonuses, potions for these bots). The Yonghans of Beran's cave (600-800 thousand health, REVIVE) win back 2-4.5%
+	// of it every second - the night's parties held a Captain at 100% for minutes. A poisoned or bleeding monster does
+	// not regenerate (recovery_event), so each member gets for the run what a player's 6/7 bonuses and weapon give:
+	// poison and bleeding chances and strength against monsters (affects of their own, for the run's hour).
+	const DWORD AFFECT_PLAYERBOT_YDG_POISON = 861;
+	const DWORD AFFECT_PLAYERBOT_YDG_BLEED = 862;
+	const DWORD AFFECT_PLAYERBOT_YDG_MONSTER = 863;
+
+	void BuffPlayerBotYdgMember(LPCHARACTER c)
+	{
+		if (!c)
+			return;
+		const long dur = 3700;
+		const int poison = GetPlayerBotYdgEnv("PLAYERBOT_YDG_POISON_PCT", 15, 0, 50);
+		const int bleed = GetPlayerBotYdgEnv("PLAYERBOT_YDG_BLEED_PCT", 15, 0, 50);
+		const int monster = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MONSTER_PCT", 20, 0, 50);
+		if (poison > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_POISON, POINT_POISON_PCT, poison, 0, dur, 0, true);
+		if (bleed > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_BLEED, POINT_BLEEDING_PCT, bleed, 0, dur, 0, true);
+		if (monster > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_MONSTER, POINT_ATTBONUS_MONSTER, monster, 0, dur, 0, true);
+	}
+
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
@@ -1208,6 +1233,7 @@ namespace
 			if (!c)
 				continue;
 			MakePlayerBotYdgRoom(c, "run_start");	// V2: a cell for the run's items
+			BuffPlayerBotYdgMember(c);
 			snaps[run.members[i]] = SnapPlayerBotYdg(c);
 			int plus = 0;
 			const int gear = GetPlayerBotYdgGearLevel(c, &plus);
@@ -1252,6 +1278,9 @@ namespace
 				continue;
 			if (y)
 				DropPlayerBotYdgItems(c, *y);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_POISON);	// V2: the run's bonuses end with it
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_BLEED);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_MONSTER);
 			const int lv = c->GetLevel();
 			lvLow = lvLow == 0 || lv < lvLow ? lv : lvLow;
 			lvHigh = std::max(lvHigh, lv);
