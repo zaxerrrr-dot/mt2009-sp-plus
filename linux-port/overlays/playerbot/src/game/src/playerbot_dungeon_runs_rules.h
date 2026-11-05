@@ -192,6 +192,10 @@ namespace playerbot_dgrun
 		{ "razador_pb", 110, 5, 5, 4, true },
 		{ "nemere_pb", 110, 5, 5, 4, true, true },
 		{ "jotun_pb", 110, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_GLEBIE_V1: Glebie Polnocnego Wiatru (395) - the quest's 120 and a Champion level (1-8 people),
+		// Alastor of 135 with 22.5 million health: five called, four to go in, a Shaman always.
+		{ "glebie_slaby", 120, 5, 5, 4, true },
+		{ "glebie_silny", 120, 5, 5, 4, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

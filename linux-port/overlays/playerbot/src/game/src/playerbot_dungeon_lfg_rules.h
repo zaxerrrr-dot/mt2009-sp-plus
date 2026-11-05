@@ -150,6 +150,9 @@ namespace playerbot_lfg
 			{ "hydra", { "hydr`e", "statek", "hydr`e" }, { "hydry", "statku" } },
 			// MT2009_PLUS_BOT_EREBU_V1
 			{ "erebu", { "erebu", "jotuna", "thryma" }, { "erebu", "erebu" } },
+			// MT2009_PLUS_BOT_GLEBIE_V1
+			{ "glebie_slaby", { "g`l`ebie", "alastora", "s`labego alastora" }, { "g`l`ebi", "alastora" } },
+			{ "glebie_silny", { "silnego alastora", "g`l`ebie silne", "alastora" }, { "g`l`ebi", "alastora" } },
 			{ "malpy1", { "ma`lpy", "`latwe ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy2", { "`srednie ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy3", { "trudne ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },

@@ -963,6 +963,10 @@
 		const long base = targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap;
 		if (IsPlayerBotSungmaMapOn(base))
 			return true;
+		// MT2009_PLUS_BOT_GLEBIE_V1: a bots' dungeon run on a Sung Ma map (Glebie 395 and its gathering in Zejscie 394) -
+		// to the gathering, into the run's instance, out again.
+		if (IsPlayerBotDungeonRunMove(ch, targetMap, reason))
+			return true;
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 		if (IsPlayerBotYoharaLochEntry(ch, base))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Loch, by its altar and ticket
 			return true;

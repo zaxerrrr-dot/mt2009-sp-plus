@@ -304,6 +304,11 @@ namespace
 		{ "razador_pb", DGRUN_KIND_YDG, 369, NULL, "razador_pb_dgrun", "razador_pb_dgrun_next", 342, 584, 0LL, 0, 60, 90000, 2 },
 		{ "nemere_pb", DGRUN_KIND_YDG, 370, NULL, "nemere_pb_dgrun", "nemere_pb_dgrun_next", 171, 270, 0LL, 0, 60, 90000, 2 },
 		{ "jotun_pb", DGRUN_KIND_YDG, 371, NULL, "jotun_pb_dgrun", "jotun_pb_dgrun_next", 478, 970, 0LL, 0, 60, 90000, 2 },
+		// MT2009_PLUS_BOT_GLEBIE_V1: Glebie Polnocnego Wiatru (395, ymaps3_glebie.quest) - Alastor weak / strong, gathered at
+		// Upiorny Straznik in Zejscie (394): three Zamarzniete Klucze each (ChargePlayerBotGlebieKeys), no day's count, the
+		// quest's 30 minutes, 10 s after Alastor and a margin (playerbot_dungeon_runs_ydg_glebie.h).
+		{ "glebie_slaby", DGRUN_KIND_YDG, 395, NULL, "ymaps3_glebie_dgrun", "ymaps3_glebie_dgrun_next", 135, 190, 0LL, 0, 30, 40000, 2 },
+		{ "glebie_silny", DGRUN_KIND_YDG, 395, NULL, "ymaps3_glebie_dgrun", "ymaps3_glebie_dgrun_next", 135, 190, 0LL, 0, 30, 40000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
@@ -570,6 +575,10 @@ namespace
 	bool IsPlayerBotYdgTrainee(DWORD pid);
 	bool IsPlayerBotYdgGearOk(LPCHARACTER ch);
 	void PlanPlayerBotYdgTraining(DWORD dwNow);
+	// MT2009_PLUS_BOT_GLEBIE_V1: playerbot_dungeon_runs_ydg_glebie.h, included at the end of this file.
+	bool DodgePlayerBotGlebieZones(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow);
+	bool IsPlayerBotGlebieEntryOk(const TPlayerBotDgRunDef& def, LPCHARACTER ch);
+	int GetPlayerBotGlebieKind(const TPlayerBotDgRunDef& def);
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
 	std::map<DWORD, TPlayerBotDgRunBot> s_mapPlayerBotDgRunBots;
@@ -2460,6 +2469,8 @@ namespace
 		}
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: alive first, the Shaman's Cure, and
 		// the fallback to the camp.
+		if (def.bKind == DGRUN_KIND_YDG && DodgePlayerBotGlebieZones(ch, state, run, dwNow))	// MT2009_PLUS_BOT_GLEBIE_V1: ice circles
+			return true;
 		if (KeepPlayerBotDgRunAlive(ch, state, run, dwNow))
 			return true;
 		if (HealPlayerBotDgRunFellow(ch, state, run, dwNow))
@@ -2940,6 +2951,8 @@ namespace
 			if (IsPlayerBotErebuTrainee(pid))	// MT2009_PLUS_BOT_EREBU_V1
 				continue;
 			if (IsPlayerBotYdgTrainee(pid) || (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch)))	// MT2009_PLUS_BOT_YDG_V1
+				continue;
+			if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotGlebieEntryOk(def, ch))	// MT2009_PLUS_BOT_GLEBIE_V1
 				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
 			if (healerOnly && !healer)
@@ -3575,7 +3588,8 @@ namespace
 			run.bStallLogged = false;
 		}
 		// MT2009_PLUS_BOT_EREBU_V1: never in Erebu - the owner: the dungeon as it is, only the bots stronger.
-		if (def.bKind != DGRUN_KIND_EREBU)
+		// MT2009_PLUS_BOT_GLEBIE_V1: nor in Glebie (Alastor's regeneration, the Wraths' and the berserks' heals are the quest's).
+		if (def.bKind != DGRUN_KIND_EREBU && !GetPlayerBotGlebieKind(def))
 			HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
 		// MT2009_PLUS_DG_STAGE_WATCH_V1 (playerbot_arezzo_dungeon_bots.h): the
 		// quests with a stage flag - the objectives known for the Arezzo three.
@@ -4032,6 +4046,8 @@ namespace
 					continue;
 				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch))	// MT2009_PLUS_BOT_YDG_V1
 					continue;
+				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotGlebieEntryOk(def, ch))	// MT2009_PLUS_BOT_GLEBIE_V1
+					continue;
 				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
 						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 			}
@@ -4383,5 +4399,6 @@ namespace
 
 #include "playerbot_dgrun_erebu.h"	// MT2009_PLUS_BOT_EREBU_V1
 #include "playerbot_dungeon_runs_ydg.h"	// MT2009_PLUS_BOT_YDG_V1
+#include "playerbot_dungeon_runs_ydg_glebie.h"	// MT2009_PLUS_BOT_GLEBIE_V1
 
 #endif
