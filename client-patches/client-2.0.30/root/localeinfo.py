@@ -197,23 +197,31 @@ def LoadLocaleFile(srcFileName, localeDict):
 all = ["locale","error"]
 FN_GM_MARK = "%s/effect/gm.mse"	% app.GetLocalePath()
 
+# MT2009_PLUS_LANG_V1: the language of this run (mt2009lang.Language: game1.cfg, back to Polish when the packs or this
+# exe cannot show it - before app.LoadLocaleData reads the names / descriptions of that language). Its locale_game.txt
+# is complete (the build's lang pack), the Polish one is read first all the same.
+import mt2009lang
+_LANGUAGE = mt2009lang.Language()
 DEFAULT_LOCALE_FILE_NAME = "locale/%s/locale_game.txt" % "pl"
 LoadLocaleFile(DEFAULT_LOCALE_FILE_NAME, locals())
-if systemSetting.GetLanguage() != "pl":
-	LOCALE_FILE_NAME = "locale/%s/locale_game.txt" % systemSetting.GetLanguage()
+if _LANGUAGE != "pl":
+	LOCALE_FILE_NAME = "locale/%s/locale_game.txt" % _LANGUAGE
 	LoadLocaleFile(LOCALE_FILE_NAME, locals())
+	# the language's guild building list (the names translated, the rest the same)
+	if pack.Exist("locale/%s/guildbuildinglist.txt" % _LANGUAGE):
+		GUILD_BUILDING_LIST_TXT = "locale/%s/guildbuildinglist.txt" % _LANGUAGE
 
 # MT2009_PLUS_HP_REGEN_LABEL_V1 (poprawki 3.0.8 #1): the pl locale_game.txt names the HP / SP regeneration bonus
 # (POINT_HP_REGEN 32 / POINT_SP_REGEN 33 - item bonuses, ysets, the switchbot, the bonus window's tooltips) "Regeneracja
 # Mikstur PZ/PE", which reads like the potion bonus (POINT_POTION_BONUS); the bonus is the HP / SP regeneration.
-if systemSetting.GetLanguage() == "pl":
+if _LANGUAGE == "pl":
 	TOOLTIP_HP_REGEN = SA("Regeneracja P\xaf: +%d%%")
 	TOOLTIP_SP_REGEN = SA("Regeneracja PE: +%d%%")
 
 # MT2009_PLUS_ZODIAC_SCROLL_USE_V1 (the owner, 3 November 2026): the pl locale_game.txt asks "Wymagane Animosfery: %d.
 # Chcesz kontynuowac?" when Pergamin Sfer (72327 / 72329) is used - it reads like a cost; the scroll loads 30 of them
 # (pl-wiki: "Naladuj 30 Animosfer, aby otrzymac wstep do Swiatyni Zodiaku").
-if systemSetting.GetLanguage() == "pl":
+if _LANGUAGE == "pl":
 	CHARGE_BEAD_QUESTION = "Czy chcesz na\xb3adowa\xe6 %d Animosfer?"
 
 if app.ENABLE_LOCALE_COMMON:
@@ -224,6 +232,9 @@ if app.ENABLE_LOCALE_COMMON:
 	# TryLoadLocaleFile("%s/locale_game_ex.txt" % app.GetLocalePath())
 	if app.ENABLE_IKASHOP_RENEWAL:
 		TryLoadLocaleFile("locale/common/locale_game_ikashop.txt")
+		# MT2009_PLUS_LANG_V1: the offline shop's texts (English in common) in the language
+		if _LANGUAGE not in ("pl", "en"):
+			TryLoadLocaleFile("locale/%s/locale_game_ikashop.txt" % _LANGUAGE)
 
 
 

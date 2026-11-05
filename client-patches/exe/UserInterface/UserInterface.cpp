@@ -242,6 +242,72 @@ void StartAntiCheat() {
 
 extern bool SetDefaultCodePage(DWORD codePage);
 
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+// MT2009_PLUS_LANG_V1: the codepage of the client's language (Locale_inc.h). MULTI_LOCALE_CODE is Locale.cpp's
+// (LocaleService_GetCodePage, app.GetDefaultCodePage).
+extern int MULTI_LOCALE_CODE;
+
+static unsigned int Mt2009Lang_BuiltinCodePage(const std::string& lang)
+{
+	static const struct { const char* code; unsigned int codePage; } s_table[] =
+	{
+		{ "pl", 1250 }, { "cz", 1250 }, { "hu", 1250 }, { "ro", 1250 }, { "sk", 1250 }, { "hr", 1250 }, { "si", 1250 },
+		{ "en", 1252 }, { "de", 1252 }, { "es", 1252 }, { "fr", 1252 }, { "it", 1252 }, { "pt", 1252 }, { "nl", 1252 },
+		{ "dk", 1252 }, { "br", 1252 }, { "gr", 1253 }, { "tr", 1254 }, { "ru", 1251 }, { "uk", 1251 }, { "bg", 1251 },
+		{ "ae", 1256 },
+	};
+	for (size_t i = 0; i < sizeof(s_table) / sizeof(s_table[0]); ++i)
+		if (lang == s_table[i].code)
+			return s_table[i].codePage;
+	return 0;
+}
+
+static void Mt2009Lang_ApplyCodePage()
+{
+	CPythonSystem& rkSystem = CPythonSystem::Instance();
+	std::string lang = rkSystem.GetLanguage();
+	for (size_t i = 0; i < lang.size(); ++i)
+		lang[i] = (char)tolower((unsigned char)lang[i]);
+	if (lang.empty())
+		lang = "pl";
+
+	char szPath[256];
+	if (lang != "pl")
+	{
+		snprintf(szPath, sizeof(szPath), "locale/%s/skilldesc.txt", lang.c_str());
+		if (!CEterPackManager::Instance().isExist(szPath))
+		{
+			TraceError("MT2009_PLUS_LANG_V1: %s is in no pack - the language \"%s\" falls back to pl", szPath, lang.c_str());
+			lang = "pl";
+		}
+	}
+	if (lang != rkSystem.GetLanguage())
+		rkSystem.SetLanguage(lang.c_str());
+
+	unsigned int codePage = 0;
+	if (lang != "pl")
+	{
+		snprintf(szPath, sizeof(szPath), "locale/%s/language.cfg", lang.c_str());
+		CMappedFile kFile;
+		LPCVOID pvData = NULL;
+		if (CEterPackManager::Instance().Get(kFile, szPath, &pvData) && pvData && kFile.Size() > 0)
+		{
+			std::string text((const char*)pvData, kFile.Size());
+			size_t pos = text.find("CODEPAGE");
+			if (pos != std::string::npos)
+				codePage = strtoul(text.c_str() + pos + 8, NULL, 10);
+		}
+	}
+	if (!codePage)
+		codePage = Mt2009Lang_BuiltinCodePage(lang);
+	if (!codePage || !IsValidCodePage(codePage))
+		codePage = 1250;
+	MULTI_LOCALE_CODE = (int)codePage;
+	SetDefaultCodePage(codePage);
+	Tracenf("MT2009_PLUS_LANG_V1: language %s, codepage %u", lang.c_str(), codePage);
+}
+#endif
+
 static const char * sc_apszPythonLibraryFilenames[] =
 {
 	"UserDict.py",
@@ -1060,6 +1126,11 @@ bool Main(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return false;
 #endif
 	CPythonApplication * app = new CPythonApplication;
+
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+	// MT2009_PLUS_LANG_V1: game1.cfg is read (CPythonSystem in the application) and the packs are open
+	Mt2009Lang_ApplyCodePage();
+#endif
 
 	EterPackManager.SetTextureViewType(CPythonSystem::instance().GetTextureViewType());
 

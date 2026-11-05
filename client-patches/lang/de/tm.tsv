@@ -1,0 +1,874 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+(Auction)	(Auktion)
+10% or more	10% oder mehr
+100% szans na przeczytanie	100% Chance zum Lesen
+15% or more	15% oder mehr
+20% or more	20% oder mehr
+25% only	Nur 25%
+Accept	Annehmen
+Aktywny pet zapomina wszystkie umiejętności (miejsca zostają otwarte).	Das aktive Pet vergisst alle Fertigkeiten (die Plätze bleiben freigeschaltet).
+Alchemy	Alchemie
+Alchemy Grade:	Alchemie-Stufe:
+All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Alle Gegenstände, die nicht in dein Inventar passen, werden in die Handelstruhe verschoben. Möchtest du fortfahren?
+All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Alle |cFFFFFF99|h{}|r werden in dein Inventar oder die Handelstruhe verschoben. Möchtest du fortfahren?
+Amulet Wojownika	Amulett des Kriegers
+Amulet wzmacniający odwagę noszącego.	Ein Amulett, das den Mut seines Trägers stärkt.
+Ancient	Antik
+Armor	Rüstung
+Aromatyczna zupa grzybowa, przywraca siły zmęczonym wędrowcom.	Eine aromatische Pilzsuppe, die müden Wanderern neue Kraft gibt.
+Artefakt wzmacniający czarną magię, zdobywany z piekielnych otchłani.	Ein Artefakt, das schwarze Magie verstärkt, gewonnen aus den Abgründen der Hölle.
+Auction	Auktion
+Auction List	Auktionsliste
+Auctions	Auktionen
+Auto Łowy (8h)	Auto-Jagd (8 Std.)
+Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Regeneriert automatisch deine MP. Inhalt: 1.000.000 MP.
+Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Regeneriert automatisch deine MP. Inhalt: 100.000 MP.
+Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	Regeneriert automatisch deine MP. Inhalt: 300.000 MP.
+Automatycznie regeneruje twoje PE. Objętość 700.000 PE.	Regeneriert automatisch deine MP. Inhalt: 700.000 MP.
+Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Regeneriert automatisch deine TP. Inhalt: 1.000.000 TP.
+Automatycznie regeneruje twoje PŻ. Objętość 10.000.000 PŻ.	Regeneriert automatisch deine TP. Inhalt: 10.000.000 TP.
+Automatycznie regeneruje twoje PŻ. Objętość 3.000.000 PŻ.	Regeneriert automatisch deine TP. Inhalt: 3.000.000 TP.
+Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	Regeneriert automatisch deine TP. Inhalt: 7.000.000 TP.
+Average Price: |cFF99FF99|hRequesting...|r	Durchschnittspreis: |cFF99FF99|hWird abgefragt...|r
+Average Price: |cFFFF9999|hNot available|r	Durchschnittspreis: |cFFFF9999|hNicht verfügbar|r
+Average Price: |cFFFFFF99|h{}|r	Durchschnittspreis: |cFFFFFF99|h{}|r
+Bardzo naturalna fryzura z włosami do ramion. Na stałe zmienia fryzurę Twojej postaci.	Eine sehr natürliche, schulterlange Frisur. Ändert die Frisur deines Charakters dauerhaft.
+Bell	Glocke
+Bezcenna peleryna używana przez wielu uciekinierów. Gdy ją założysz, twoja ranga zostanie ukryta.	Ein unbezahlbarer Umhang, den viele Flüchtige tragen. Legst du ihn an, wird dein Rang verborgen.
+Bi-Pung	Bi-Pung
+Bi-Sang-Gab	Bi-Sang-Gab
+Bilet na jeden obrót Kołem Fortuny (F12). Kupisz go w ItemShopie za Smocze Monety.	Ein Ticket für eine Drehung am Glücksrad (F12). Erhältlich im ItemShop für Drachenmünzen.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków, jak również w Twierdzy Czerwonego Smoka. Wystarczy pokazać go odpowiedniemu strażnikowi. Przedmiot ten jest niezdatny do handlu.	Mit diesem Ticket gelangst du in eine neue Ebene des Spinnendungeons sowie der Rotdrachenfestung. Zeige es einfach dem zuständigen Wächter. Nicht handelbar.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków.	Mit diesem Ticket gelangst du in eine neue Ebene des Spinnendungeons.
+Blade	Klinge
+Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Blockiert die gesammelte Erfahrung. Das gilt auch für Questbelohnungen. Erfahrung, die während der Wirkung gesammelt wird, geht für immer verloren!
+Body	Körper
+Book	Buch
+Bow	Bogen
+Brillant	Brillant
+Buy	Kaufen
+By accepting the offer you will receive the price offered in exchange for the item. Do you want to accept the offer?	Wenn du das Angebot annimmst, erhältst du den gebotenen Preis im Austausch für den Gegenstand. Möchtest du das Angebot annehmen?
+Bąk miotający iskry.	Ein Feuerwerkskreisel, der Funken sprüht.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Ein Segen, der deine TP augenblicklich auf 100% regeneriert. Einmal alle 2 Minuten verwendbar. Teilt sich die Abklingzeit mit den Tränken der Unverwundbarkeit und Unantastbarkeit.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Ein Segen, der deine TP und MP augenblicklich auf 100% regeneriert. Einmal alle 2 Minuten verwendbar. Teilt sich die Abklingzeit mit den Tränken der Unverwundbarkeit und Unantastbarkeit.
+Cancel	Abbrechen
+Cancel Filters	Filter zurücksetzen
+Cancel Shop	Laden schließen
+Cannot make private offers for item that costs less than 10.000 yangs.	Für Gegenstände, die weniger als 10.000 Yang kosten, sind keine privaten Angebote möglich.
+Certyfikat Duszy	Seelenzertifikat
+Chung-Zin	Chung-Zin
+Ciągliwość	Formbarkeit
+Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Eine schwere Pfeilspitze aus widerstandsfähigem Stein. Langsamer, aber sie trifft mit großer Wucht und eignet sich hervorragend, um harte Rüstungen zu durchschlagen.
+Claim Items	Gegenstände abholen
+Claim Money	Yang abholen
+Claw	Kralle
+Continue	Fortfahren
+Costume	Kostüm
+Create	Erstellen
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (biały).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (weiß).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (czerwony).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (rot).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (niebieski).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (blau).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (grau).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (grün).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Die Magie dieses Siegels ruft dein Reittier herbei, den majestätischen Königstiger (golden).
+Czarna Stal	Schwarzer Stahl
+Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Schwarze Mütze mit Hasenohren für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Czerwone Nasiono	Roter Samen
+Czysta esencja z serca najgłębszych źródeł.	Reine Essenz aus dem Herzen der tiefsten Quellen.
+Dagger	Dolch
+Daje aktywnemu petowi 5% doświadczenia potrzebnego na następny poziom.	Gibt dem aktiven Pet 5% der Erfahrung, die für die nächste Stufe benötigt wird.
+Daje aktywnemu petowi 800.000 punktów doświadczenia.	Gibt dem aktiven Pet 800.000 Erfahrungspunkte.
+Daje: +30% PD, +20% obrony przed surami, +20% obrony przed szamanami, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Verleiht: +30% EXP, +20% Abwehr gegen Suras, +20% Abwehr gegen Schamanen, +30% Stark gegen Monster, +10% max. TP, +10% max. MP.
+Daje: +30% PD, +20% obrony przed wojownikami, +20% obrony przed ninja, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Verleiht: +30% EXP, +20% Abwehr gegen Krieger, +20% Abwehr gegen Ninjas, +30% Stark gegen Monster, +10% max. TP, +10% max. MP.
+Daje: +50% PD, +30% ataku, +20% szybkości ataku, +20% szybkości zaklęć, +10% maks. PŻ, +10% maks. PE.	Verleiht: +50% EXP, +30% Angriff, +20% Angriffsgeschwindigkeit, +20% Zaubergeschwindigkeit, +10% max. TP, +10% max. MP.
+Demoniczny Klucz	Dämonischer Schlüssel
+Deny	Ablehnen
+Diabelskie Rogi	Teufelshörner
+Do you want to buy all |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	Möchtest du alle |cFFFFFF99|h{}|r zum Preis von |cFFFFFF99|h{}|r kaufen?
+Do you want to buy |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	Möchtest du |cFFFFFF99|h{}|r zum Preis von |cFFFFFF99|h{}|r kaufen?
+Do you want to move the shop to your current location? The operation will cost |cFFFFFF99|h{}|r.	Möchtest du den Laden an deinen aktuellen Standort versetzen? Der Vorgang kostet |cFFFFFF99|h{}|r.
+Do you want to transfer all items to your inventory?	Möchtest du alle Gegenstände in dein Inventar verschieben?
+Dobra Wytrzymałość	Gute Ausdauer
+Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twojej postaci.	Eine bekannte Frisur der alten Krieger. Ändert die Frisur deines Charakters dauerhaft.
+Dodaje aktywnemu petowi 7 dni energii życiowej (najwyżej 84). Pet bez energii nie może zostać przywołany.	Gibt dem aktiven Pet 7 Tage Lebensenergie (höchstens 84). Ein Pet ohne Energie kann nicht gerufen werden.
+Dokument zawierający misję wojskową.	Ein Dokument mit einem militärischen Auftrag.
+Dowód na ujarzmienie siły trzech dusz – niezbędny do przebudzenia mocy Elitarnych Kamieni Duszy.	Der Beweis, die Kraft dreier Seelen bezwungen zu haben – unverzichtbar, um die Kraft der Elite-Geiststeine zu erwecken.
+Drewniany Klucz	Holzschlüssel
+Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Ein kostbarer Ring, verziert mit Jade und Türkis. Verleiht: +50% EXP, +30% Stark gegen Monster, +20% Angriffs- und Zaubergeschwindigkeit, +10% max. TP und MP.
+Dusza wojownika, obdarzona mocą.	Die Seele eines Kriegers, erfüllt von Kraft.
+Działają kojąco na skórę. Stosowane w leczeniu oparzeń i podrażnień	Sie wirken beruhigend auf die Haut. Werden zur Behandlung von Verbrennungen und Reizungen verwendet
+Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Mit diesem Trank erhältst du 3 Spielstunden lang 150% mehr Erfahrung. Nicht handelbar.
+Dzięki tej pieczęci możesz przywołać jednorożca.	Mit diesem Siegel kannst du das Einhorn herbeirufen.
+Dzięki tej pieczęci możesz przywołać marę senną.	Mit diesem Siegel kannst du den Nachtmahr herbeirufen.
+Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Mit diesem Siegel kannst du dein Haustier herbeirufen.
+Dzięki tej pieczęci z jaja wykluje się Sheldon.	Durch dieses Siegel schlüpft Sheldon aus seinem Ei.
+Długie blond włosy. Na stałe zmienia fryzurę Twojej postaci.	Langes, blondes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Długie włosy, tradycjonalna fryzura. Na stałe zmienia fryzurę Twojej postaci.	Langes Haar, traditionell frisiert. Ändert die Frisur deines Charakters dauerhaft.
+Długie, brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Langes, braunes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Długie, czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Langes, schwarzes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Długie, czerwone włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Langes, rotes Haar in extravagantem Stil. Ändert die Frisur deines Charakters dauerhaft.
+Długie, fioletowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Langes, violettes Haar in extravagantem Stil. Ändert die Frisur deines Charakters dauerhaft.
+Długie, fioletowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Langes, violettes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Długie, hebanowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Langes, ebenholzschwarzes Haar in extravagantem Stil. Ändert die Frisur deines Charakters dauerhaft.
+Długie, nieskazitelnie białe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Langes, makellos weißes Haar in extravagantem Stil. Ändert die Frisur deines Charakters dauerhaft.
+Earrings	Ohrringe
+Efekt nie jest do końca znany, może wywoływać halucynacje.	Die Wirkung ist nicht ganz bekannt, es kann Halluzinationen hervorrufen.
+Efekt nie łączy się z bonusami Konta Premium. Nie jest to przedmiot, po zakupie pakiet jest nadany na konto.	Der Effekt ist nicht mit den Boni des Premium-Kontos kombinierbar. Dies ist kein Gegenstand: Nach dem Kauf wird das Paket deinem Konto gutgeschrieben.
+Eggs	Eier
+Egzotyczne mięso, znane ze swojego smaku.	Exotisches Fleisch, bekannt für seinen Geschmack.
+Ekstrawagancka fryzura - typowa dla kobiet sura. Na stałe zmienia fryzurę Twojej postaci.	Eine extravagante Frisur – typisch für Sura-Frauen. Ändert die Frisur deines Charakters dauerhaft.
+Elegancka, gładka fryzura. Na stałe zmienia fryzurę Twojej postaci.	Eine elegante, glatte Frisur. Ändert die Frisur deines Charakters dauerhaft.
+Esencja Magii	Magische Essenz
+Esencja Natury	Essenz der Natur
+Esencja Wody	Essenz des Wassers
+Ezoteryczne Drewno	Esoterisches Holz
+FC Bawaria Hwang (m)	FC Bayern Hwang (m)
+FC Bawaria Hwang+ (k)	FC Bayern Hwang+ (w)
+FC Bawaria Hwang+ (m)	FC Bayern Hwang+ (m)
+FC Bokjung+ (k)	FC Bokjung+ (w)
+FC Bokjung+ (m)	FC Bokjung+ (m)
+FC Ognista Ziemia+ (k)	FC Feuerland+ (w)
+FC Ognista Ziemia+ (m)	FC Feuerland+ (m)
+FC Sangsun Dong+ (k)	FC Sangsun Dong+ (w)
+FC Sangsun Dong+ (m)	FC Sangsun Dong+ (m)
+Fan	Fächer
+Filters History	Filterverlauf
+Fish	Fisch
+Fryzura nadająca Ci mroczny wygląd. Na stałe zmienia fryzurę Twojej postaci.	Eine Frisur, die dir ein finsteres Aussehen verleiht. Ändert die Frisur deines Charakters dauerhaft.
+Fryzura układana warstwami. Na stałe zmienia fryzurę Twojej postaci.	Eine stufig geschnittene Frisur. Ändert die Frisur deines Charakters dauerhaft.
+Fryzura wyglądająca jak ogonek kucyka. Na stałe zmienia fryzurę Twojej postaci.	Eine Frisur, die wie ein Pferdeschwanz aussieht. Ändert die Frisur deines Charakters dauerhaft.
+Fryzura z długim kucykiem. Na stałe zmienia fryzurę Twojej postaci.	Eine Frisur mit langem Pferdeschwanz. Ändert die Frisur deines Charakters dauerhaft.
+Fryzura z kucykiem. Na stałe zmienia fryzurę Twojej postaci.	Eine Frisur mit Pferdeschwanz. Ändert die Frisur deines Charakters dauerhaft.
+Futro przeklętego wilka	Fell des Verfluchten Wolfs
+Gang-Ma	Gang-Ma
+Gang-Ryoung-Gab	Gang-Ryoung-Gab
+Gałąź wciąż bijąca życiem, tętniąca energią.	Ein Zweig, der noch vor Leben pulsiert und vor Energie bebt.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa nawet gdy jesteś wylogowany.	Solange du sie trägst, ist die Bewegungsgeschwindigkeit deines Charakters um 30 erhöht. Die Zeit läuft auch ab, wenn du ausgeloggt bist.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa tylko kiedy buty są założone.	Solange du sie trägst, ist die Bewegungsgeschwindigkeit deines Charakters um 30 erhöht. Die Zeit läuft nur ab, wenn die Schuhe angelegt sind.
+Geuk-Hon-Gab	Geuk-Hon-Gab
+Gorące wino z przyprawami, które przez 30 minut obdarzy cię następującymi bonusami: +10% szybkości, +5% obrażeń i +10% doświadczenia.	Heißer Wein mit Gewürzen, der dir 30 Minuten lang folgende Boni gewährt: +10% Geschwindigkeit, +5% Schaden und +10% Erfahrung.
+Gourou	Gourou
+Grawerunek na pierścieniu głosi: "Niech błogosławi Cię Bóg Smoków". Pierścień ten obniża ryzyku utracenia przedmiotu w walce.	Die Gravur auf dem Ring lautet: „Möge der Drachengott dich segnen.“ Dieser Ring verringert das Risiko, im Kampf Gegenstände zu verlieren.
+Grot z czystego srebra, znany ze swojej skuteczności przeciwko istotom magicznym. Łucznicy używają go, aby zmierzyć się z najpotężniejszymi przeciwnikami.	Eine Pfeilspitze aus reinem Silber, bekannt für ihre Wirkung gegen magische Wesen. Bogenschützen nutzen sie, um sich den mächtigsten Gegnern zu stellen.
+Gwarancja Rzemiosła (Biżuteria)	Handwerksgarantie (Schmuck)
+Gwarancja Rzemiosła (Broń)	Handwerksgarantie (Waffe)
+Gwarancja Rzemiosła (Zbroja)	Handwerksgarantie (Rüstung)
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Eine Handwerksgarantie, die der Schmied jedes Dorfes anerkennt. Benutze sie auf einen Gegenstand, um ihn zu verbessern.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Eine Handwerksgarantie, die der Schmied jedes Dorfes anerkennt. Benutze sie auf einen Gegenstand, um ihn zu verbessern. Wirkt nicht auf Waffen der Stufe 30. Der Gegenstand kann zerstört werden.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Eine Handwerksgarantie, die der Schmied jedes Dorfes anerkennt. Benutze sie auf einen Gegenstand, um ihn zu verbessern. Der Gegenstand kann zerstört werden.
+Ha-An-Gab	Ha-An-Gab
+Hairs	Frisuren
+Helm	Helm
+Heuk-Gui-Gab	Heuk-Gui-Gab
+History	Verlauf
+Ho-Gu	Ho-Gu
+Ho-Young	Ho-Young
+Inna Wroga Wytrzymałość	Andere feindliche Ausdauer
+Insert Price	Preis eingeben
+Inserted an invalid price.	Ungültiger Preis eingegeben.
+Item inserted into the shopping safebox.	Gegenstand wurde in die Handelstruhe gelegt.
+Jest to lizak o tajemniczym składzie. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Ein Lutscher mit geheimnisvoller Zusammensetzung. Verleiht: +50% EXP, +20% Angriffsgeschwindigkeit, +20% Zaubergeschwindigkeit, +30% Angriff, +10% max. TP, +10% max. MP.
+Jewel	Schmuck
+Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Eine Steintafel mit uralten Runen. Sie strahlt eine unbekannte Energie aus.
+Kamień Przebudzenia	Stein des Erwachens
+Kamień Tygrysa	Tigerstein
+Kamień oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.	Ein von jedem Makel gereinigter Stein – entscheidend für die Veredelung von Geiststeinen.
+Kamień z mocą tygrysa, klucz do rytuałów i ochrony. Przedmiot z misji.	Ein Stein mit der Kraft eines Tigers, Schlüssel zu Ritualen und Schutz. Gegenstand aus einer Quest.
+Kamień z serca ziemi.	Ein Stein aus dem Herzen der Erde.
+Karta Wędkarska	Angelschein
+Karta do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich kart - 25 kart tworzy Talię Królewską. Karty i talie przepadają, gdy zacznie się następny event.	Eine Karte für Schnapp den König. Klicke während des Events mit der rechten Maustaste darauf, um sie deinen Karten hinzuzufügen – 25 Karten ergeben ein Königsdeck. Karten und Decks verfallen, wenn das nächste Event beginnt.
+Karta do gry w Okey. Kliknij prawym przyciskiem w czasie eventu Okey, aby dodać ją do kart (24 karty tworzą zestaw kart).	Eine Okey-Spielkarte. Klicke während des Okey-Events mit der rechten Maustaste darauf, um sie deinen Karten hinzuzufügen (24 Karten ergeben ein Kartenset).
+Kiedyś ta brązowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Diese braune, gebundene Frisur war einst die traditionelle Haartracht der Krieger. Ändert die Frisur deines Charakters dauerhaft.
+Kiedyś ta czerwona wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Diese rote, gebundene Frisur war einst die traditionelle Haartracht der Krieger. Ändert die Frisur deines Charakters dauerhaft.
+Kiedyś ta fioletowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Diese violette, gebundene Frisur war einst die traditionelle Haartracht der Krieger. Ändert die Frisur deines Charakters dauerhaft.
+Kiedyś ta jasna wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Diese helle, gebundene Frisur war einst die traditionelle Haartracht der Krieger. Ändert die Frisur deines Charakters dauerhaft.
+Kiepsko wyglądający pierścień noszony przez starożytnych bohaterów. Zdobywasz więcej punktów doświadczenia przez godzinę. | Nie może być zdjęty.	Ein unscheinbarer Ring, den einst uralte Helden trugen. Du sammelst eine Stunde lang mehr Erfahrungspunkte. | Kann nicht abgelegt werden.
+Kliknij prawym przyciskiem, aby dodać pień do gry Yutnori. 28 pni łączy się w planszę do Yutnori. Działa tylko w czasie eventu.	Rechtsklick, um das Stäbchen deinem Yutnori-Spiel hinzuzufügen. 28 Stäbchen ergeben ein Yutnori-Spielbrett. Funktioniert nur während des Events.
+Kliknij prawym przyciskiem, aby dodać planszę do gry Yutnori (okno wydarzeń lub Stół do Yutnori). Jedna gra kosztuje planszę i 30 000 Yang.	Rechtsklick, um ein Yutnori-Spielbrett hinzuzufügen (Eventfenster oder Yutnori-Tisch). Ein Spiel kostet ein Spielbrett und 30.000 Yang.
+Kliknij prawym przyciskiem, aby przyjąć peta z transportera (najwyżej 3 pety na postać). Nie sprzedawaj go w sklepie NPC - pet by przepadł.	Rechtsklick, um das Pet aus der Transportbox zu nehmen (höchstens 3 Pets pro Charakter). Verkaufe sie nicht in einem NPC-Laden – das Pet ginge verloren.
+Kliknij prawym przyciskiem, aby wykluć peta (Czerwony Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Rotes Drachenjunges, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Małpka, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Äffchen, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Mały Baashido, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Baby-Baashido, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Nemere, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Mini-Nemere, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Razador, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Mini-Razador, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Nessie, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Nessie, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Pajączek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Spinnchen, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Pisklę Exedyara, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Exedyar-Küken, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Kliknij prawym przyciskiem, aby wykluć peta (Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Rechtsklick, um das Pet auszubrüten (Blaues Drachenjunges, 100.000 Yang). Ein Pet, das neben dem Pet aus dem ItemShop gerufen wird, sammelt mit dir Erfahrung, entwickelt sich weiter und gewährt dir Boni. Pet-Fenster: /newpet oder die Schaltfläche in der Leiste.
+Klucz Mrozu	Frostschlüssel
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	Ein Schlüssel aus dem Eisland. Benutze ihn in Nemeres Dungeon, um zur Eissäule zu gelangen.
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	Ein Schlüssel aus dem Eisland. Benutze ihn in Nemeres Dungeon, um den weiteren Durchgang zu öffnen.
+Klucz z runami demonów, pozwala wejść do Wieży Demonów po osiągnięciu dziennego limitu wejść. Znika po 48 godzinach od zakupu.	Ein Schlüssel mit Dämonenrunen. Er gewährt Zutritt zum Dämonenturm, nachdem das tägliche Eintrittslimit erreicht wurde. Verschwindet 48 Stunden nach dem Kauf.
+Kobieca spinka do włosów. Przedmiot pochodzi z misji.	Eine Haarspange für Frauen. Gegenstand aus einer Quest.
+Kolorowe jajko wielkanocne	Ein buntes Osterei
+Komplet Piłkarski w kolorze biało-czarnym dla niego. Daje ci min. jeden losowy bonus.	Weiß-schwarzes Fußballtrikot für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze biało-czarnym dla niej. Daje ci min. jeden losowy bonus.	Weiß-schwarzes Fußballtrikot für sie. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niego. Daje ci min. jeden losowy bonus.	Schwarz-oranges Fußballtrikot für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niej. Daje ci min. jeden losowy bonus.	Schwarz-oranges Fußballtrikot für sie. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze czerwono-złotym dla niego. Daje ci min. jeden losowy bonus.	Rot-goldenes Fußballtrikot für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze czerwono-złotym dla niej. Daje ci min. jeden losowy bonus.	Rot-goldenes Fußballtrikot für sie. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze granatowym dla niego. Daje ci min. jeden losowy bonus.	Dunkelblaues Fußballtrikot für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze granatowym dla niej. Daje ci min. jeden losowy bonus.	Dunkelblaues Fußballtrikot für sie. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niego. Daje ci min. jeden losowy bonus.	Gelb-blaues Fußballtrikot für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niej. Daje ci min. jeden losowy bonus.	Gelb-blaues Fußballtrikot für sie. Verleiht dir mindestens einen zufälligen Bonus.
+Korzeń Czerwonego Lasu	Wurzel des Roten Waldes
+Kostium z czarnego pluszu dla niego. Daje ci min. jeden losowy bonus.	Kostüm aus schwarzem Plüsch für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Kostium z niebieskiego pluszu dla niego. Daje ci min. jeden losowy bonus.	Kostüm aus blauem Plüsch für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Koszul. MŚ ALG (k/bonus)	WM-Trikot ALG (w, Bonus)
+Koszul. MŚ ALG (m/bonus)	WM-Trikot ALG (m, Bonus)
+Koszul. MŚ ARG (k/bonus)	WM-Trikot ARG (w, Bonus)
+Koszul. MŚ ARG (m/bonus)	WM-Trikot ARG (m, Bonus)
+Koszul. MŚ AUS (k/bonus)	WM-Trikot AUS (w, Bonus)
+Koszul. MŚ AUS (m/bonus)	WM-Trikot AUS (m, Bonus)
+Koszul. MŚ BEL (k/bonus)	WM-Trikot BEL (w, Bonus)
+Koszul. MŚ BEL (m/bonus)	WM-Trikot BEL (m, Bonus)
+Koszul. MŚ BIH (k/bonus)	WM-Trikot BIH (w, Bonus)
+Koszul. MŚ BIH (m/bonus)	WM-Trikot BIH (m, Bonus)
+Koszul. MŚ BRA (k/bonus)	WM-Trikot BRA (w, Bonus)
+Koszul. MŚ BRA (m/bonus)	WM-Trikot BRA (m, Bonus)
+Koszul. MŚ CHI (k/bonus)	WM-Trikot CHI (w, Bonus)
+Koszul. MŚ CHI (m/bonus)	WM-Trikot CHI (m, Bonus)
+Koszul. MŚ CIV (k/bonus)	WM-Trikot CIV (w, Bonus)
+Koszul. MŚ CIV (m/bonus)	WM-Trikot CIV (m, Bonus)
+Koszul. MŚ CMR (k/bonus)	WM-Trikot CMR (w, Bonus)
+Koszul. MŚ CMR (m/bonus)	WM-Trikot CMR (m, Bonus)
+Koszul. MŚ COL (m/bonus)	WM-Trikot COL (m, Bonus)
+Koszul. MŚ CRC (k/bonus)	WM-Trikot CRC (w, Bonus)
+Koszul. MŚ CRC (m/bonus)	WM-Trikot CRC (m, Bonus)
+Koszul. MŚ CRO (k/bonus)	WM-Trikot CRO (w, Bonus)
+Koszul. MŚ CRO (m/bonus)	WM-Trikot CRO (m, Bonus)
+Koszul. MŚ ECU (k/bonus)	WM-Trikot ECU (w, Bonus)
+Koszul. MŚ ECU (m/bonus)	WM-Trikot ECU (m, Bonus)
+Koszul. MŚ ENG (k/bonus)	WM-Trikot ENG (w, Bonus)
+Koszul. MŚ ENG (m/bonus)	WM-Trikot ENG (m, Bonus)
+Koszul. MŚ FRA (k/bonus)	WM-Trikot FRA (w, Bonus)
+Koszul. MŚ FRA (m/bonus)	WM-Trikot FRA (m, Bonus)
+Koszul. MŚ GER (k/bonus)	WM-Trikot GER (w, Bonus)
+Koszul. MŚ GER (m/bonus)	WM-Trikot GER (m, Bonus)
+Koszul. MŚ GHA (k/bonus)	WM-Trikot GHA (w, Bonus)
+Koszul. MŚ GHA (m/bonus)	WM-Trikot GHA (m, Bonus)
+Koszul. MŚ GRE (k/bonus)	WM-Trikot GRE (w, Bonus)
+Koszul. MŚ GRE (m/bonus)	WM-Trikot GRE (m, Bonus)
+Koszul. MŚ HON (k/bonus)	WM-Trikot HON (w, Bonus)
+Koszul. MŚ HON (m/bonus)	WM-Trikot HON (m, Bonus)
+Koszul. MŚ IRN (k/bonus)	WM-Trikot IRN (w, Bonus)
+Koszul. MŚ IRN (m/bonus)	WM-Trikot IRN (m, Bonus)
+Koszul. MŚ ITA (k/bonus)	WM-Trikot ITA (w, Bonus)
+Koszul. MŚ ITA (m/bonus)	WM-Trikot ITA (m, Bonus)
+Koszul. MŚ JPN (k/bonus)	WM-Trikot JPN (w, Bonus)
+Koszul. MŚ JPN (m/bonus)	WM-Trikot JPN (m, Bonus)
+Koszulka MŚ ALG (k)	WM-Trikot ALG (w)
+Koszulka MŚ ALG (m)	WM-Trikot ALG (m)
+Koszulka MŚ ARG (k)	WM-Trikot ARG (w)
+Koszulka MŚ ARG (m)	WM-Trikot ARG (m)
+Koszulka MŚ AUS (k)	WM-Trikot AUS (w)
+Koszulka MŚ AUS (m)	WM-Trikot AUS (m)
+Koszulka MŚ BEL (k)	WM-Trikot BEL (w)
+Koszulka MŚ BEL (m)	WM-Trikot BEL (m)
+Koszulka MŚ BIH (k)	WM-Trikot BIH (w)
+Koszulka MŚ BIH (m)	WM-Trikot BIH (m)
+Koszulka MŚ BRA (k)	WM-Trikot BRA (w)
+Koszulka MŚ BRA (m)	WM-Trikot BRA (m)
+Koszulka MŚ CHI (k)	WM-Trikot CHI (w)
+Koszulka MŚ CHI (m)	WM-Trikot CHI (m)
+Koszulka MŚ CIV (k)	WM-Trikot CIV (w)
+Koszulka MŚ CIV (m)	WM-Trikot CIV (m)
+Koszulka MŚ CMR (k)	WM-Trikot CMR (w)
+Koszulka MŚ CMR (m)	WM-Trikot CMR (m)
+Koszulka MŚ COL (k)	WM-Trikot COL (w)
+Koszulka MŚ COL (m)	WM-Trikot COL (m)
+Koszulka MŚ CRC (k)	WM-Trikot CRC (w)
+Koszulka MŚ CRC (m)	WM-Trikot CRC (m)
+Koszulka MŚ CRO (k)	WM-Trikot CRO (w)
+Koszulka MŚ CRO (m)	WM-Trikot CRO (m)
+Koszulka MŚ ECU (k)	WM-Trikot ECU (w)
+Koszulka MŚ ECU (m)	WM-Trikot ECU (m)
+Koszulka MŚ ENG (k)	WM-Trikot ENG (w)
+Koszulka MŚ ENG (m)	WM-Trikot ENG (m)
+Koszulka MŚ ESP (k)	WM-Trikot ESP (w)
+Koszulka MŚ ESP (m)	WM-Trikot ESP (m)
+Koszulka MŚ FRA (k)	WM-Trikot FRA (w)
+Koszulka MŚ FRA (m)	WM-Trikot FRA (m)
+Koszulka MŚ GER (k)	WM-Trikot GER (w)
+Koszulka MŚ GER (m)	WM-Trikot GER (m)
+Koszulka MŚ GHA (k)	WM-Trikot GHA (w)
+Koszulka MŚ GHA (m)	WM-Trikot GHA (m)
+Koszulka MŚ GRE (k)	WM-Trikot GRE (w)
+Koszulka MŚ GRE (m)	WM-Trikot GRE (m)
+Koszulka MŚ HON (k)	WM-Trikot HON (w)
+Koszulka MŚ HON (m)	WM-Trikot HON (m)
+Koszulka MŚ IRN (k)	WM-Trikot IRN (w)
+Koszulka MŚ IRN (m)	WM-Trikot IRN (m)
+Koszulka MŚ ITA (k)	WM-Trikot ITA (w)
+Koszulka MŚ ITA (m)	WM-Trikot ITA (m)
+Koszulka MŚ JPN (k)	WM-Trikot JPN (w)
+Koszulka MŚ JPN (m)	WM-Trikot JPN (m)
+Koszulka MŚ KOR (k)	WM-Trikot KOR (w)
+Koszulka MŚ KOR (m)	WM-Trikot KOR (m)
+Koszulka MŚ MEX (k)	WM-Trikot MEX (w)
+Koszulka MŚ MEX (m)	WM-Trikot MEX (m)
+Koszulka MŚ NED (k)	WM-Trikot NED (w)
+Koszulka MŚ NED (m)	WM-Trikot NED (m)
+Koszulka MŚ NGA (k)	WM-Trikot NGA (w)
+Koszulka MŚ NGA (m)	WM-Trikot NGA (m)
+Koszulka MŚ POR (k)	WM-Trikot POR (w)
+Koszulka MŚ POR (m)	WM-Trikot POR (m)
+Koszulka MŚ RUS (k)	WM-Trikot RUS (w)
+Koszulka MŚ RUS (m)	WM-Trikot RUS (m)
+Koszulka MŚ SUI (k)	WM-Trikot SUI (w)
+Koszulka MŚ SUI (m)	WM-Trikot SUI (m)
+Koszulka MŚ URU (k)	WM-Trikot URU (w)
+Koszulka MŚ URU (m)	WM-Trikot URU (m)
+Koszulka MŚ USA (k)	WM-Trikot USA (w)
+Koszulka MŚ USA (m)	WM-Trikot USA (m)
+Koszulka MŚ w barwach narodowych Chorwacji. Daje przynajmniej jeden losowy bonus.	WM-Trikot in den Nationalfarben Kroatiens. Verleiht mindestens einen zufälligen Bonus.
+Koszyk napełniony jajkami wielkanocnymi.	Ein mit Ostereiern gefüllter Korb.
+Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał (obrażenia jak ze Srebrnej Strzały). Działa 14 dni od zakupu.	Ein Köcher voller Pfeile, die nie ausgehen. Lege ihn anstelle von Pfeilen an: Der Bogen des Ninjas schießt, ohne Pfeile zu verbrauchen (Schaden wie mit dem Silberpfeil). Hält 14 Tage ab dem Kauf.
+Kronika Rzemieślników	Chronik der Handwerker
+Kryształ Lodu	Eiskristall
+Kryształ z Lodowej Krainy. Oddaj go jednej z lodowych pieczęci w lochu Nemere.	Ein Kristall aus dem Eisland. Übergib ihn einem der Eissiegel in Nemeres Dungeon.
+Kryształowy pucharek pozwoli ci w kreatywny sposób zaprezentować lody. Pozwala przedłużyć Pierścień Wakacyjny o dodatkowy 1 dzień.|Istnieje szansa na niepowodzenie.	Mit einem Kristallpokal kannst du Eis auf kreative Weise präsentieren. Verlängert den Ferienring um 1 weiteren Tag.|Es besteht die Chance, dass es fehlschlägt.
+Królewska zbroja wojownika. Kostium tylko dla wojownika (postać męska). Działa 30 dni od zakupu.	Königliche Kriegerrüstung. Kostüm nur für Krieger (männlicher Charakter). Gilt 30 Tage ab dem Kauf.
+Krótka fryzura noszona w większości przez atletów. Na stałe zmienia fryzurę Twojej postaci.	Eine Kurzhaarfrisur, die vor allem von Athleten getragen wird. Ändert die Frisur deines Charakters dauerhaft.
+Księga Erudyty	Foliant des Gelehrten
+Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Abblocken bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Intelligenz bis zu 10. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: obrażenia umiejętności do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Fertigkeitsschaden bis zu 5%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: obrona przed umiejętnościami do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Widerstand gegen Fertigkeitsschaden bis zu 5%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: obrona przed średnimi obrażeniami do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Widerstand gegen Durchschnittsschaden bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: odporność na krytyczne do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Widerstand gegen kritische Treffer bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: odporność na lód, ziemię i ciemność do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Eis-, Erd- und Dunkelheitswiderstand bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: odporność na przeszywające do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Widerstand gegen durchbohrende Treffer bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: odporność na półludzi do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Widerstand gegen Halbmenschen bis zu 5%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: odporność na truciznę do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Giftwiderstand bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: podwójne doświadczenie i przedmioty do 10%, yang do 20%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: doppelte Erfahrung und Gegenstände bis zu 10%, Yang bis zu 20%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: silny przeciwko bossom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stark gegen Bosse bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: silny przeciwko kamieniom Metin do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stark gegen Metinsteine bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: silny przeciwko nieumarłym i diabłom do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stark gegen Untote und Teufel bis zu 15%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: silny przeciwko potworom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stark gegen Monster bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: silny przeciwko półludziom do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stark gegen Halbmenschen bis zu 5%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: siła do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Stärke bis zu 10. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: szybkość czarowania do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Zaubergeschwindigkeit bis zu 15%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: witalność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Vitalität bis zu 10. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: zręczność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Beweglichkeit bis zu 10. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga umiejętności peta: średnie obrażenia do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet-Fertigkeitsbuch: Durchschnittsschaden bis zu 10%. Das erste Buch lehrt die Fertigkeit (Stufe 1), jedes weitere erhöht ihre Stufe (max. 20). Neue Fertigkeitsplätze werden durch die Evolution des Pets freigeschaltet.
+Księga zawiera duszę starego kowala. Jeśli jej użyjesz, zwiększy to szansę na pomyślne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom.	Dieses Buch enthält die Seele eines alten Schmieds. Wenn du es benutzt, erhöht sich die Chance auf eine erfolgreiche Verbesserung des Gegenstands um 15%. Der Gegenstand wird nicht zerstört, wenn die Verbesserung fehlschlägt. Bei einem Fehlschlag sinkt die Stufe des Gegenstands um 1.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana nawet przez niedoświadczonego wojownika.	Ein in braunes Leder gebundenes Buch. Es enthält eine Mission, die selbst ein unerfahrener Krieger erfüllen kann.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczone osoby.	Ein in braunes Leder gebundenes Buch. Es enthält eine Mission, die nur erfahrene Kämpfer erfüllen können.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczonych wojowników.	Ein in braunes Leder gebundenes Buch. Es enthält eine Mission, die nur wirklich erfahrene Krieger erfüllen können.
+Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	Gutschein im Wert von 250 Drachenmünzen. Item ist handelbar.
+Legendarna książka, która usuwa z pamięci nauczoną umiejętność całkowicie. Możesz przenieść jeden punkt umiejętności.	Ein legendäres Buch, das eine erlernte Fertigkeit vollständig aus dem Gedächtnis löscht. Du kannst einen Fertigkeitspunkt verschieben.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Normalnym Lochu Małp.	Ein legendäres Kraut. Iss es, um dich vor dem Fluch der Affen im Normalen Affendungeon zu schützen.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Trudnym Lochu Małp.	Ein legendäres Kraut. Iss es, um dich vor dem Fluch der Affen im Schweren Affendungeon zu schützen.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Łatwym Lochu Małp.	Ein legendäres Kraut. Iss es, um dich vor dem Fluch der Affen im Leichten Affendungeon zu schützen.
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut.	Eine legendäre, gesegnete Kugel. Hat ein Gegenstand 4 Attribute, fügt sie ein weiteres Attribut hinzu.
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut. Przedmiot niezdatny do handlu.	Eine legendäre, gesegnete Kugel. Hat ein Gegenstand 4 Attribute, fügt sie ein weiteres Attribut hinzu. Nicht handelbar.
+Legendary	Legendär
+Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Ein Heilmittel gegen die Dämonenkrätze. Ein Gegenstand, der für eine Quest benötigt wird.
+Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Eine leichte, biegsame Pfeilspitze aus Bambus. Ideal für schnelle und präzise Schüsse, beliebt bei Bogenschützen, die Beweglichkeit und Tempo schätzen.
+List Gończy	Steckbrief
+Lodowata Maź	Eisiger Schleim
+Lodowy Klucz	Eisschlüssel
+Lv. Max:	Lv. max.:
+Lv. Min:	Lv. min.:
+Ma-Ryoung-Sin-Gab	Ma-Ryoung-Sin-Gab
+Ma-Sin-Gab	Ma-Sin-Gab
+Magiczna Ruda	Magisches Erz
+Magiczny Pył	Zauberstaub
+Magiczny amulet, który przywraca czystość skażonym wodom.	Ein magisches Amulett, das verunreinigten Gewässern ihre Reinheit zurückgibt.
+Marmur regenerujący trochę Punktów Życia.	Eine Kugel, die ein wenig Lebenspunkte wiederherstellt.
+Maska Ezoteryka jest mistycznym artefaktem, który od wieków noszony był przez adeptów tajemnych sztuk związanych z kultem Boga Tygrysa Sabaha. Ręcznie malowane wzory, inspirowane duchowymi wizjami ezoteryków, symbolizują połączenie ze światem duchów i zrozumienie mistycznych sił.	Die Maske des Esoterikers ist ein mystisches Artefakt, das seit Jahrhunderten von Adepten der geheimen Künste des Kults um den Tigergott Sabah getragen wird. Die handgemalten Muster, inspiriert von den spirituellen Visionen der Esoteriker, symbolisieren die Verbindung zur Geisterwelt und das Verständnis mystischer Kräfte.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 0-29.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 105-119.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 120 und höher.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 30-39.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 40-49.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 40-49.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 50-59.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 50-59.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 60-74.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 75-89.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Ein Material, das bei Seon-Hae die Chance erhöht, einen 6. oder 7. Bonus hinzuzufügen. Gegenstandsstufe: 90-104.
+Materiały Rzemieślnicze	Handwerksmaterialien
+Matowy Lód	Mattes Eis
+Matowy Lód+	Mattes Eis+
+Mikstura sporządzona z Soku Z Pokrzywy i Bzu. Zwiększa szansę na zadanie krytycznego ciosu o 10% na 3 minuty.	Ein Trank aus Brennnesselsaft und Flieder. Erhöht die Chance auf kritische Treffer 3 Minuten lang um 10%.
+Min. Raise	Min. Erhöhung
+Mineral	Mineral
+Mini-wersja Generała Huashina daje ci o 5% wyższe szanse na zadanie przeszywającego ciosu i podwyższa twoje PŻ o 1500.	Die Mini-Version des Generals Huashin verleiht dir eine um 5% höhere Chance auf durchbohrende Treffer und erhöht deine LP um 1500.
+Mistyczna substancja ożywiająca florę i faunę lasu.	Eine mystische Substanz, die Pflanzen und Tiere des Waldes belebt.
+Mięso Demona	Dämonenfleisch
+Mięso niedźwiedzia, popularne w wioskach myśliwych.	Bärenfleisch, beliebt in den Jägerdörfern.
+Mięso w stanie rozkładu, unikać kontaktu.	Verwesendes Fleisch – Kontakt vermeiden.
+Modna brązowa fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Eine modische braune Frisur mit einer hübschen Schleife. Ändert die Frisur deines Charakters dauerhaft.
+Modna czerwona fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Eine modische rote Frisur mit einer hübschen Schleife. Ändert die Frisur deines Charakters dauerhaft.
+Modna jasna fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Eine modische helle Frisur mit einer hübschen Schleife. Ändert die Frisur deines Charakters dauerhaft.
+Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	Eine modische blaue Frisur mit einer hübschen Schleife. Ändert die Frisur deines Charakters dauerhaft.
+Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Modisch geschnittenes Haar lässt Schamanen ihr Wesen zum Ausdruck bringen. Ändert die Frisur deines Charakters dauerhaft.
+Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Modisch geschnittenes Haar, mit dem Schamanen ihr Wesen zum Ausdruck bringen können. Ändert die Frisur deines Charakters dauerhaft.
+Może być uszlachetniona do Niebiańskich Łez używając pieca gildii.	Kann im Schmelzofen der Gilde zu Himmelstränen veredelt werden.
+Może być uszlachetniony do Bursztynu używając pieca gildii bursztynu.	Kann im Bernsteinofen der Gilde zu Bernstein veredelt werden.
+Może być uszlachetniony do Diamentu używając pieca gildii.	Kann im Diamantofen der Gilde zu einem Diamanten veredelt werden.
+Możesz zamienić się w potwora ukrytego w marmurze.	Du kannst dich in das Monster verwandeln, das in der Kugel verborgen ist.
+Możesz zamienić się w potwora używając marmuru.	Mit dieser Kugel kannst du dich in ein Monster verwandeln.
+Mt2009	Mt2009
+Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Man sagt, der Inhalt dieser Truhe sei ebenso kostbar wie die Truhe selbst.
+Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Verleiht 10 Minuten lang die Buffs eines Drachenschamanen auf Stufe G1 mit 90 Intelligenz.
+Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Verleiht 10 Minuten lang die Buffs eines Drachenschamanen auf Stufe M1 mit 90 Intelligenz.
+Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Verleiht 10 Minuten lang die Buffs eines Drachenschamanen auf Stufe P mit 90 Intelligenz.
+Nagroda za grę Złap Króla z wynikiem 550 punktów lub więcej i za miejsce w pierwszej dziesiątce rankingu. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Schnapp den König mit 550 Punkten oder mehr und für einen Platz unter den ersten Zehn der Rangliste. Zum Öffnen rechtsklicken.
+Nagroda za grę Złap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Schnapp den König mit 10 bis 399 Punkten. Zum Öffnen rechtsklicken.
+Nagroda za grę Złap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Schnapp den König mit 400 bis 549 Punkten. Zum Öffnen rechtsklicken.
+Nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Okey mit 300-399 Punkten. Zum Öffnen rechtsklicken.
+Nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Okey mit 400 Punkten oder mehr. Zum Öffnen rechtsklicken.
+Nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für eine Runde Okey mit weniger als 300 Punkten. Zum Öffnen rechtsklicken.
+Nagroda za grę w Yutnori z co najmniej 220 punktami. Zawiera Złoty Pakiet Yutnori i Cor Draconis (drogocenne).	Belohnung für ein Yutnori-Spiel mit mindestens 220 Punkten. Enthält ein Goldenes Yutnori-Bündel und Cor Draconis (wertvoll).
+Nagroda za grę w Yutnori ze 150-219 punktami. Zawiera Srebrny Pakiet Yutnori, czasem Zwój Błogosławieństwa.	Belohnung für ein Yutnori-Spiel mit 150-219 Punkten. Enthält ein Silbernes Yutnori-Bündel, manchmal eine Segensschriftrolle.
+Nagroda za pokonanie Baronówny Pająków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für den Sieg über die Spinnenbaroness in der Bibliothek des Wissens. Zum Öffnen rechtsklicken.
+Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für den Sieg über den Königsskorpion in den Skorpionruinen. Zum Öffnen rechtsklicken.
+Nagroda za pokonanie Królowej Dżungli w Starożytnej Dżungli. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für den Sieg über die Dschungelkönigin im Uralten Dschungel. Zum Öffnen rechtsklicken.
+Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyć.	Belohnung für den Sieg über WuKong auf Wukongs Hügel. Zum Öffnen rechtsklicken.
+Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Skin für eine Einhandwaffe (Schwert) – Krieger, Ninja, Sura. Gilt 30 Tage ab dem Kauf.
+Nasiono o niezbadanych właściwościach.	Ein Samen mit unerforschten Eigenschaften.
+Natychmiastowo odnawia wszystkie Punkty Energii. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Regeneriert augenblicklich alle MP. Einmal alle 2 Minuten verwendbar. Teilt sich die Abklingzeit mit den Tränken der Unverwundbarkeit und Unantastbarkeit.
+Necklace	Halskette
+Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Blaue Mütze mit Hasenohren für ihn. Verleiht dir mindestens einen zufälligen Bonus.
+Niedźwiedzina	Bärenfleisch
+Nieprzenikniony pancerz strażnika ognia.	Der undurchdringliche Panzer des Feuerwächters.
+Niezbędna do wytwarzania dużych mikstur.	Unverzichtbar für die Herstellung großer Tränke.
+Niezbędna do wytwarzania średnich mikstur.	Unverzichtbar für die Herstellung mittlerer Tränke.
+Nieznany Kamień	Unbekannter Stein
+Ninja Armor	Ninja-Rüstung
+Noe-Un-Gab	Noe-Un-Gab
+Normal	Normal
+Notatka Kowala pokazująca jak ulepszać bronie.	Eine Notiz des Schmieds, die zeigt, wie man Waffen verbessert.
+Notifications	Benachrichtigungen
+Nożyk Zielarza	Kräutermesser
+O-Gyo	O-Gyo
+Oczy potwora, używane w czarnoksięskich rytuałach.	Die Augen eines Monsters, verwendet bei Hexenmeister-Ritualen.
+Oczyszczający Amulet Wód	Reinigendes Wasseramulett
+Oczyszczony Kamień Duszy	Gereinigter Geiststein
+Odłamek	Fragment
+Offer	Angebot
+Offer List	Angebotsliste
+Offer successfully created.	Angebot erfolgreich erstellt.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verstärken“ berechtigt. Dieser Gegenstand ist handelbar.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Ein amtliches Dokument, das zur Herstellung von „Gegenstand verzaubern“ berechtigt.
+Ogon Małpy	Affenschwanz
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Böse Tiergeister zu bändigen, bedarf erheblicher magischer Künste. Entsprechend beeindruckend ist das Ergebnis.
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Zmienia wygląd Twojego konia, jeżeli założysz przed przywołaniem.	Böse Tiergeister zu bändigen, bedarf erheblicher magischer Künste. Verändert das Aussehen deines Pferdes, wenn du es vor dem Herbeirufen anlegst.
+Okrycie na głowę z czarnej tkaniny dla mężczyzn. Daje ci min. jeden losowy bonus.	Kopfbedeckung aus schwarzem Stoff für Männer. Verleiht dir mindestens einen zufälligen Bonus.
+Opatrunek	Verband
+Open Auction	Auktion öffnen
+Open Auction Board	Auktionsübersicht öffnen
+Open Notification Board	Benachrichtigungen öffnen
+Open Private Offers Board	Private Angebote öffnen
+Open Safebox Board	Handelstruhe öffnen
+Open Search Shop (|Eshortcut/ctrl.tga|e + S)	Ladensuche öffnen (|Eshortcut/ctrl.tga|e + S)
+Open Shop	Laden öffnen
+Orkowe Jądra	Orkhoden
+Osadzony na pierścieniu niewidoczny klejnot o mocy ukrywania. Gdy znajdzie się na twojej dłoni, twoja istota zatraci się w cieniu, ukrywając swój poziom przed ciekawskimi oczami świata.	In diesen Ring ist ein unsichtbarer Edelstein mit der Macht der Verhüllung eingefasst. Sobald er an deiner Hand steckt, verliert sich dein Wesen in den Schatten und verbirgt deine Stufe vor den neugierigen Blicken der Welt.
+Ostre pazury, używane w obrzędach i czarach.	Scharfe Klauen, verwendet bei Riten und Zaubern.
+Otrzymasz 1 Punkt Umiejętności Jeździectwa kiedy ją przeczytasz. Znika po przeczytaniu.	Du erhältst 1 Fertigkeitspunkt für Reiten, wenn du es liest. Verschwindet nach dem Lesen.
+Otrzymujesz w walce 50% więcej Punktów Doświadczenia.	Du erhältst im Kampf 50% mehr Erfahrungspunkte.
+Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Öffnet die Tür zu Ruhm und Macht. Gewährt 30 Tage lang alle Vorteile eines Premium-Kontos.|Dieses Item ist handelbar.
+Otwiera nawet najtrudniejsze zamki z lekkością.	Öffnet selbst die schwierigsten Schlösser mit Leichtigkeit.
+Otwiera nowe miejsce na umiejętność heroicznego peta od 100 poziomu.	Schaltet einen neuen Fertigkeitsplatz für ein heroisches Pet ab Stufe 100 frei.
+Otwiera okno Kolekcjonera z dowolnego miejsca.	Öffnet das Fenster des Sammlers von überall aus.
+Otwórz pakiet i sprawdź, co udało ci się wygrać.	Öffne das Bündel und finde heraus, was du gewonnen hast.
+Ozdobny miecz Mirine	Mirines Zierschwert
+Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	Ein verziertes, vergoldetes Schwert, das einst Mirine gehörte. Für den Kampf taugt es nicht mehr, aber es sieht sehr wertvoll aus.
+Pakuje wybranego peta (okno peta, klawisz U) do transportera, który można sprzedać, oddać w handlu albo schować do magazynu. Kto użyje pełnego transportera, dostaje peta z jego poziomem, ewolucją, bonusami i umiejętnościami.	Verpackt das ausgewählte Pet (Pet-Fenster, Taste U) in eine Transportbox, die verkauft, gehandelt oder im Lager verstaut werden kann. Wer die volle Transportbox benutzt, erhält das Pet mit seiner Stufe, Evolution, seinen Boni und Fertigkeiten.
+Pamiątka po bracie	Andenken an den Bruder
+Papka	Brei
+Pas Z Wężowej Skóry	Schlangenledergürtel
+Pazury Małpy	Affenkrallen
+Pergamin	Pergament
+Pet	Haustier
+Piasek Pustyni	Wüstensand
+Pieczony Gromadnik	Gegrillter Stint
+Pieczęć Biblioteki	Bibliothekssiegel
+Pieczęć Dżungli	Dschungelsiegel
+Pieczęć Rufusa	Rufus-Siegel
+Pieczęć Ruin	Ruinensiegel
+Pieczęć Wzgórza	Hügelsiegel
+Pieczęć dla Szlachetnego Czarnego Konia.	Siegel für das Edle Schwarze Pferd.
+Pieczęć do jednego z pięknych i nadzwyczaj rzadkich purpurowych koni.	Siegel für eines der wunderschönen und äußerst seltenen purpurnen Pferde.
+Pieczęć strażnika Biblioteki Wiedzy. Użyj jej w lochu, aby przyzwać kolejną falę pająków.	Siegel des Wächters der Bibliothek des Wissens. Benutze es im Dungeon, um die nächste Welle Spinnen herbeizurufen.
+Pieczęć strażnika Ruin Skorpiona. Użyj jej w lochu, aby przyzwać kolejną falę skorpionów.	Siegel des Wächters der Skorpionruinen. Benutze es im Dungeon, um die nächste Welle Skorpione herbeizurufen.
+Pieczęć strażnika Starożytnej Dżungli. Użyj jej w lochu, aby przyzwać kolejną falę stworzeń.	Siegel des Wächters des Uralten Dschungels. Benutze es im Dungeon, um die nächste Welle Kreaturen herbeizurufen.
+Pieczęć strażnika Wzgórza Wukonga. Użyj jej w lochu, aby przyzwać kolejną falę małp.	Siegel des Wächters von Wukongs Hügel. Benutze es im Dungeon, um die nächste Welle Affen herbeizurufen.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% siły przeciwko potworom.	Dieses Siegel ruft einen Jungen Dragor herbei. Nach dem Kampftraining verleiht er seinem Besitzer bis zu 5% Stärke gegen Monster.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% więcej doświadczenia.	Dieses Siegel ruft einen Jungen Dragor herbei. Nach dem Kampftraining verleiht er seinem Besitzer bis zu 5% mehr Erfahrung.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on atak swojego właściciela o maks. 100.	Dieses Siegel ruft einen Jungen Dragor herbei. Nach dem Kampftraining erhöht er den Angriff seines Besitzers um bis zu 100.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on obronę swojego właściciela o maks. 150.	Dieses Siegel ruft einen Jungen Dragor herbei. Nach dem Kampftraining erhöht er die Verteidigung seines Besitzers um bis zu 150.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego zwiększa on PŻ swojego właściciela o maks. 500.	Dieses Siegel ruft einen Jungen Dragor herbei. Nach dem Kampftraining erhöht er die LP seines Besitzers um bis zu 500.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Dieses Siegel ruft ein Junges Rentier (m) herbei, das seinem Reiter nach dem Kampftraining bis zu 5% Stärke im Kampf gegen Monster verleiht.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	Dieses Siegel ruft ein Junges Rentier (m) herbei, das seinem Reiter nach dem Kampftraining bis zu 5% zusätzliche EP bringt.
+Pieczęć ta przywołuje Młodego Renifera (ż), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Dieses Siegel ruft ein Junges Rentier (w) herbei, das seinem Reiter nach dem Kampftraining bis zu 5% Stärke im Kampf gegen Monster verleiht.
+Pieczęć ta przywołuje czarną małą panterkę.	Dieses Siegel ruft ein kleines schwarzes Pantherjunges herbei.
+Pieczęć ta przywołuje dzielnego leoparda.	Dieses Siegel ruft den tapferen Leoparden herbei.
+Pieczęć ta przywołuje grubiutkiego kata w czarnej zbroi.	Dieses Siegel ruft ein pummeliges Henkerchen in schwarzer Rüstung herbei.
+Pieczęć ta przywołuje grubiutkiego kata w złotej zbroi.	Dieses Siegel ruft ein pummeliges Henkerchen in goldener Rüstung herbei.
+Pieczęć ta przywołuje słodkiego małego leoparda.	Dieses Siegel ruft ein süßes kleines Leopardenjunges herbei.
+Pieczęć ta przywołuje tajemniczą czarną panterę.	Dieses Siegel ruft den geheimnisvollen Schwarzen Panther herbei.
+Pieczęć ta przywołuje twojego kościanego pupila Kostka.	Dieses Siegel ruft deinen knöchernen Begleiter Boney herbei.
+Pierwszorzędne Buty	Erstklassige Schuhe
+Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Ein Ring mit einer kunstvoll gearbeiteten Gravur in Form eines Halbmonds. Verleiht: +50% EXP, +20% Angriffsgeschwindigkeit, +20% Zaubergeschwindigkeit, +30% Angriff, +10% max. TP, +10% max. MP.
+Pióro Mędrca	Feder des Weisen
+Po okazaniu tego biletu Stajennemu, będziesz mógł jeździć konno przez określony czas.	Wenn du diese Karte dem Stallburschen zeigst, kannst du eine bestimmte Zeit lang reiten.
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	Fügt bei Benutzung eine Monsterkarte zu deiner Sammlung hinzu (Monsterkarten im Esc-Menü). Handelbar.
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Fügt bei Benutzung eine Monsterkarte zu deiner Sammlung hinzu (Monsterkarten im Esc-Menü). Nicht handelbar.
+Podkręć piłkę jak Baljit-Elvedin!	Schieß eine Bananenflanke wie Baljit-Elvedin!
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Erhöht den Pet-Bonus Max. LP (bis 4000) um eine Stufe (Stufen 0-5, Pet ab Stufe 1).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Erhöht den Pet-Bonus Max. LP (bis 4000) um eine Stufe (Stufen 10-15, Pet ab Stufe 75).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Erhöht den Pet-Bonus Max. LP (bis 4000) um eine Stufe (Stufen 15-20, Pet ab Stufe 100).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Erhöht den Pet-Bonus Max. LP (bis 4000) um eine Stufe (Stufen 5-10, Pet ab Stufe 40).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Erhöht den Pet-Bonus Stark gegen Monster (bis 20%) um eine Stufe (Stufen 0-5, Pet ab Stufe 1).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Erhöht den Pet-Bonus Stark gegen Monster (bis 20%) um eine Stufe (Stufen 10-15, Pet ab Stufe 75).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Erhöht den Pet-Bonus Stark gegen Monster (bis 20%) um eine Stufe (Stufen 15-20, Pet ab Stufe 100).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Erhöht den Pet-Bonus Stark gegen Monster (bis 20%) um eine Stufe (Stufen 5-10, Pet ab Stufe 40).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Erhöht den Pet-Bonus Chance auf kritischen Treffer (bis 10%) um eine Stufe (Stufen 0-5, Pet ab Stufe 1).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Erhöht den Pet-Bonus Chance auf kritischen Treffer (bis 10%) um eine Stufe (Stufen 10-15, Pet ab Stufe 75).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Erhöht den Pet-Bonus Chance auf kritischen Treffer (bis 10%) um eine Stufe (Stufen 15-20, Pet ab Stufe 100).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Erhöht den Pet-Bonus Chance auf kritischen Treffer (bis 10%) um eine Stufe (Stufen 5-10, Pet ab Stufe 40).
+Podnosi szansę na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut.	Erhöht die Chance auf kritische Treffer im Kampf 10 Minuten lang um 20%.
+Podnosi szansę na zadanie przeszywającego uderzenia podczas walki o 20% przez 10 minut.	Erhöht die Chance auf durchbohrende Treffer im Kampf 10 Minuten lang um 20%.
+Podnosi szansę pomyślnej nauki o mnożnik 1,75.	Erhöht die Chance auf erfolgreiches Lernen um den Faktor 1,75.
+Podnosi szansę pomyślnej nauki umiejętności w następnej książce o mnożnik 2,5.	Erhöht beim Lesen des nächsten Buches die Chance, eine Fertigkeit erfolgreich zu erlernen, um das 2,5-Fache.
+Podwaja szansę na wypadnięcie przedmiotu na 2 godziny. Zdjęcie rękawicy jest niemożliwe.	Verdoppelt 2 Stunden lang die Chance auf Gegenstandsdrops. Der Handschuh kann nicht abgelegt werden.
+Podwaja szansę na zdobycie Yang. | Czas trwania 30 minut. (Brak możliwości przekazywania!)	Verdoppelt die Chance, Yang zu erhalten. | Dauer: 30 Minuten. (Nicht übertragbar!)
+Podwaja szansę na zdobycie przedmiotu na 10 godzin.	Verdoppelt 10 Stunden lang die Chance auf Gegenstandsdrops.
+Podwaja szansę na zdobycie przedmiotu na godzinę. Zdjęcie rękawicy jest niemożliwe.	Verdoppelt eine Stunde lang die Chance auf Gegenstandsdrops. Der Handschuh kann nicht abgelegt werden.
+Podwaja szansę na zdobycie przedmiotu z 30 Kamieni Metin, Bossów lub Minibossów. Zużywa się przy śmierci potwora.	Verdoppelt die Chance auf Gegenstandsdrops von 30 Metinsteinen, Bossen oder Minibossen. Wird beim Tod des Monsters verbraucht.
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Przedmiot ten jest niezdatny do handlu.	Verbessert die Qualität der Forschungsobjekte und erhöht so die Chance, dass sie angenommen werden. Nicht handelbar.
+Potężne pióro, które przyspiesza analizę, rozwija intelekt i wspomaga szybką naukę.	Eine mächtige Feder, die das Analysieren beschleunigt, den Intellekt schärft und schnelles Lernen fördert.
+Powszechne mięso, cenione za smak.	Gewöhnliches Fleisch, geschätzt für seinen Geschmack.
+Pozwala Ci na pokazanie przedmiotu z twojego ekwipunku na czacie.	Ermöglicht es dir, einen Gegenstand aus deinem Inventar im Chat zu zeigen.
+Pozwala na przeczytanie następnej księgi w przypadku niepomyślnej nauki.	Ermöglicht das Lesen des nächsten Buches, wenn das Lernen fehlschlägt.
+Pozwala przedłużyć Pierścień Wielkanocny o dodatkowy 1 dzień. Istnieje szansa na niepowodzenie.	Verlängert den Osterring um 1 weiteren Tag. Es besteht die Chance, dass es fehlschlägt.
+Pozwala wylosować nowe cele misji Kart Potworów.	Ermöglicht es, neue Ziele für die Monsterkarten-Mission auszulosen.
+Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Lässt das Pet eine Fertigkeit vergessen: Klicke sie im Pet-Fenster mit der rechten Maustaste an.
+Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Ermöglicht es, die Monsterkarten-Mission über den kostenlosen Reset hinaus zurückzusetzen (einmal alle 24 Stunden).
+Pozwolenie na Wzmocn. Przedmiotu	Verstärkungserlaubnis
+Pozwolenie na Zaczar. Przedmiotu	Verzauberungserlaubnis
+Praktyczna krótka fryzura emanująca złowrogą aurą. Na stałe zmienia fryzurę Twojej postaci.	Eine praktische Kurzhaarfrisur mit einer bedrohlichen Ausstrahlung. Ändert die Frisur deines Charakters dauerhaft.
+Prastary korzeń z głębi Czerwonego Lasu.	Eine uralte Wurzel aus den Tiefen des Roten Waldes.
+Precyzyjnie wyciąga pęknięty kamień, pozostawiając resztę nienaruszoną.	Entfernt präzise einen gesprungenen Stein und lässt den Rest unberührt.
+Price Max:	Preis max.:
+Price Min:	Preis min.:
+Przedmiot potrzebny w zadaniu Uriela.	Ein Gegenstand, der für Uriels Quest benötigt wird.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Verbrauchsgegenstand. Der Versuch kann fehlschlagen. Bei Erfolg gewährt er 12 Stunden lang eine Chance auf doppelte Erfahrung. Der Effekt lässt sich mit weiteren Narzissen bis auf Stufe 5 steigern. Wirkt während des Events Blumenkinder.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Verbrauchsgegenstand. Der Versuch kann fehlschlagen. Bei Erfolg erhöht er 12 Stunden lang die Verteidigung. Der Effekt lässt sich mit weiteren Sonnenblumen bis auf Stufe 5 steigern. Wirkt während des Events Blumenkinder.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin siłę ataku. Efekt można podnieść do poziomu 5 kolejnymi konwaliami. Działa w czasie eventu Dzieci Kwiaty.	Verbrauchsgegenstand. Der Versuch kann fehlschlagen. Bei Erfolg erhöht er 12 Stunden lang den Angriffswert. Der Effekt lässt sich mit weiteren Maiglöckchen bis auf Stufe 5 steigern. Wirkt während des Events Blumenkinder.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Verbrauchsgegenstand. Der Versuch kann fehlschlagen. Bei Erfolg erhöht er 12 Stunden lang die Chance auf kritische Treffer. Der Effekt lässt sich mit weiteren Chrysanthemen bis auf Stufe 5 steigern. Wirkt während des Events Blumenkinder.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Verbrauchsgegenstand. Der Versuch kann fehlschlagen. Bei Erfolg erhöht er 12 Stunden lang die Chance auf Gegenstände. Der Effekt lässt sich mit weiteren Lilien bis auf Stufe 5 steigern. Wirkt während des Events Blumenkinder.
+Przedmiot wymagany do misji.	Ein Gegenstand, der für eine Quest benötigt wird.
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Durchdringt den Körper mit der Magie der Ferien und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht. Dauer: 7 Tage (max. 60 Tage).
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Durchdringt den Körper mit der Magie der Ferien und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht. Max. Dauer: 60 Tage.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Durchdringt den Körper mit der Magie von Ostern und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni.	Durchdringt den Körper mit der Magie von Ostern und verleiht seinem Träger außergewöhnliche Kraft. Misslungene Verbesserungsversuche am Ring beim Schmied zerstören den Gegenstand nicht. Dauer: 7 Tage.
+Przepustka ta umożliwia dostanie się na nowy poziom w Lochu Pająków.	Mit diesem Passierschein gelangst du in eine neue Ebene des Spinnendungeons.
+Przetopiona moc minerałów, kryjąca tajemniczą energię alchemiczną.	Die geschmolzene Kraft von Mineralien, in der eine geheimnisvolle alchemistische Energie verborgen ist.
+Przetopiony Kruszec	Geschmolzenes Erz
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury.	Mit diesem Gegenstand kannst du deine Kenntnis des Rezepts für den jeweiligen Trank üben.
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury. Przedmiot otrzymany z misji.	Mit diesem Gegenstand kannst du deine Kenntnis des Rezepts für den jeweiligen Trank üben. Gegenstand aus einer Quest.
+Pusty koszyk, do którego możesz wkładać jajka wielkanocne	Ein leerer Korb, in den du Ostereier legen kannst
+Pyungmoo Saint Hwang+(k)	Pyungmoo Saint Hwang+ (w)
+Pyungmoo Saint Hwang+(m)	Pyungmoo Saint Hwang+ (m)
+Płomień Potępionych	Flamme der Verdammten
+Raise	Erhöhen
+Rare	Selten
+Restore Duration	Dauer erneuern
+Romantyczny kwiat okazujący zauroczenie.	Eine romantische Blume, mit der man Zuneigung zeigt.
+Roślina wspomaga trawienie. Pomaga również w łagodzeniu bólów brzucha.	Diese Pflanze fördert die Verdauung. Sie hilft auch, Bauchschmerzen zu lindern.
+Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Ein über dem Lagerfeuer zubereiteter Fisch ist eine herrliche geräucherte Delikatesse.
+Ryba przyrządzona nad ogniskiem. Wspaniały wędzony przysmak.	Ein über dem Lagerfeuer zubereiteter Fisch. Eine herrliche geräucherte Delikatesse.
+Rytualny składnik, symbol siły i odwagi.	Eine rituelle Zutat, ein Symbol für Stärke und Mut.
+Rzadki kamień z bossów. U Kowala przemienia broń 75. poziomu +9 w broń przebudzoną +0, zachowując bonusy i kamienie (koszt: 200 000 000 Yang).	Ein seltener Stein von Bossen. Beim Schmied verwandelt er eine Waffe der Stufe 75 +9 in eine erweckte Waffe +0 und behält dabei Boni und Steine (Kosten: 200 000 000 Yang).
+Rzadki metal, wchłaniający energię magiczną, idealny do potężnych broni i pancerzy.	Ein seltenes Metall, das magische Energie aufnimmt – ideal für mächtige Waffen und Rüstungen.
+Rzadki minerał o ogromnej mocy, niezbędny do tworzenia potężnych przedmiotów alchemicznych.	Ein seltenes Mineral von gewaltiger Kraft, unverzichtbar für die Herstellung mächtiger alchemistischer Gegenstände.
+Rzadkie drewno, pulsujące magiczną energią.	Seltenes Holz, das vor magischer Energie pulsiert.
+Ręka podnosi upuszczone pieniądze automatycznie przez 15 minut.	Eine Hand, die 15 Minuten lang fallen gelassenes Yang automatisch aufhebt.
+Ręka podnosi upuszczone pieniądze automatycznie przez 3 godziny.	Eine Hand, die 3 Stunden lang fallen gelassenes Yang automatisch aufhebt.
+Ręka podnosi upuszczone pieniądze automatycznie przez 30 minut.	Eine Hand, die 30 Minuten lang fallen gelassenes Yang automatisch aufhebt.
+SC Doyyum+ (k)	SC Doyyum+ (w)
+SC Doyyum+ (m)	SC Doyyum+ (m)
+SL Jungsun Dong (k)	SL Jungsun Dong (w)
+SL Jungsun Dong (m)	SL Jungsun Dong (m)
+Sash	Schärpe
+Sash Abs.:	Schärpe Abs.:
+Schludna fryzura z białą opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Eine ordentliche Frisur mit weißem Haarband. Ändert die Frisur deines Charakters dauerhaft.
+Schludna fryzura z czerwoną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Eine ordentliche Frisur mit rotem Haarband. Ändert die Frisur deines Charakters dauerhaft.
+Schludna fryzura z jasną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Eine ordentliche Frisur mit hellem Haarband. Ändert die Frisur deines Charakters dauerhaft.
+Schludna fryzura z zieloną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	Eine ordentliche Frisur mit grünem Haarband. Ändert die Frisur deines Charakters dauerhaft.
+Schludna fryzura zrobiona przy użyciu chusty do włosów. Na stałe zmienia fryzurę Twojej postaci.	Eine ordentliche Frisur, gebändigt mit einem Haartuch. Ändert die Frisur deines Charakters dauerhaft.
+Seal	Siegel
+Search	Suchen
+Search Shop	Ladensuche
+Search Shop Premium	Ladensuche Premium
+Search Shop Premium is already active.	Ladensuche Premium ist bereits aktiv.
+Searched Name : |cFFFFFF99|h{}|r (found {} items)	Gesuchter Name: |cFFFFFF99|h{}|r ({} Gegenstände gefunden)
+Select Item	Gegenstand wählen
+Select...	Auswählen...
+Serce Wojownika	Herz des Kriegers
+Serce upadłego bohatera, symbol siły.	Das Herz eines gefallenen Helden, ein Symbol der Stärke.
+Shaman Armor	Schamanen-Rüstung
+Shield	Schild
+Shoes	Schuhe
+Shop Decoration n.{}	Ladendekoration Nr. {}
+Shop Decorations	Ladendekorationen
+Shop Repositioning	Laden versetzen
+Shop view	Ladenansicht
+Shopping Safebox	Handelstruhe
+Show Filter Informations	Filterinfos anzeigen
+Silny Wywar z Ziół	Starker Kräutersud
+Skamieniała Krewetka	Versteinerte Garnele
+Skamieniały fragment ognia Piekła, w którym uwięzione są płomienie potępionych.	Ein versteinertes Fragment des Höllenfeuers, in dem die Flammen der Verdammten gefangen sind.
+Sklep został zamknięty!	Der Laden wurde geschlossen!
+Skoncentrowany wywar z rzadkich ziół, dodaje energii i wzmacnia ciało.	Ein konzentrierter Sud aus seltenen Kräutern, der Energie spendet und den Körper stärkt.
+Skondensowana forma czystej magii - pulsuje energią, której nie sposób okiełznać.	Eine verdichtete Form reiner Magie – sie pulsiert vor Energie, die sich nicht bändigen lässt.
+Skondensowana magia w iskrzącym klejnocie.	Verdichtete Magie in einem funkelnden Edelstein.
+Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Zerkleinerte Geiststeine können eine neue Verwendung finden.
+Skrzynia Biblioteki	Bibliothekstruhe
+Skrzynia Dżungli	Dschungeltruhe
+Skrzynia Likanów (d)	Große Lykaner-Truhe
+Skrzynia Likanów (m)	Kleine Lykaner-Truhe
+Skrzynia Skorpiona	Skorpion-Truhe
+Skrzynia Wukonga	Wukong-Truhe
+Skóra Przeklętego Niedźwiedzia	Haut des Verfluchten Bären
+Skóra Przeklętego Tygrysa	Haut des Verfluchten Tigers
+Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Zutat zum Verbessern von Geiststeinen beim Schmied (ab +4): Für die folgenden Stufen werden 1, 1, 2, 2 und 3 Stück benötigt, zusätzlich zu Zauberstaub. Wird von der Großen Eishexe (Grotte der Verbannung), Beran-Setaou (Drachenhort) und der Dschungelkönigin (Uralter Dschungel) fallen gelassen.
+Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersalnym wyborem dla łuczników szukających równowagi między szybkością a siłą uderzenia.	Eine solide Pfeilspitze aus Eisen, die gutes Gewicht mit Haltbarkeit verbindet. Eine vielseitige Wahl für Bogenschützen, die ein Gleichgewicht zwischen Tempo und Schlagkraft suchen.
+Something went wrong. (Generic error)	Etwas ist schiefgelaufen. (Allgemeiner Fehler)
+Sort by price	Nach Preis sortieren
+Sparta Jungrang+ (k)	Sparta Jungrang+ (w)
+Sparta Jungrang+ (m)	Sparta Jungrang+ (m)
+Spięta u góry fryzura wykorzystująca spinkę w kształcie motyla. Na stałe zmienia fryzurę Twojej postaci.	Eine hochgesteckte Frisur mit einer Haarspange in Schmetterlingsform. Ändert die Frisur deines Charakters dauerhaft.
+Sprzedałeś |cFFFFFF99|h{}|r za |cFFFFFF99|h{}|r.	Du hast |cFFFFFF99|h{}|r für |cFFFFFF99|h{}|r verkauft.
+Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Ein herzförmiger Silberanhänger, besetzt mit magischen Edelsteinen. Verleiht: +30% EXP, +10% Angriffsgeschwindigkeit, +10% Zaubergeschwindigkeit, +10% Stark gegen Monster, +5% max. TP, +5% max. MP.
+Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	Eine alte, verstaubte Kiste, aus der bei jeder Bewegung feiner Wüstensand rieselt.
+Starożytna fryzura okazująca silny indywidualny charakter. Na stałe zmienia fryzurę Twojej postaci.	Eine altertümliche Frisur, die einen starken, eigenwilligen Charakter zeigt. Ändert die Frisur deines Charakters dauerhaft.
+Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	Ein uraltes Buch, dessen Lektüre Wissen und Fähigkeiten deutlich erweitert.
+Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Eine uralte Schriftrolle, die Weols Kraft fließen lässt – mit ihr kannst du neue Segen auswürfeln.
+Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Ein altes Pergament mit einem Tötungsbefehl; bei Benutzung startet eine Quest.
+Stone	Stein
+Strój na mundial reprezentacji Anglii - daje ci min. jeden losowy bonus.	WM-Trikot der englischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Belgii - daje ci min. jeden losowy bonus.	WM-Trikot der belgischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Francji - daje ci min. jeden losowy bonus.	WM-Trikot der französischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Hiszpanii - daje ci min. jeden losowy bonus.	WM-Trikot der spanischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Holandii - daje ci min. jeden losowy bonus.	WM-Trikot der niederländischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Niemiec - daje ci min. jeden losowy bonus.	WM-Trikot der deutschen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Portugalii - daje ci min. jeden losowy bonus.	WM-Trikot der portugiesischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Rosji - daje ci min. jeden losowy bonus.	WM-Trikot der russischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Szwajcarii - daje ci min. jeden losowy bonus.	WM-Trikot der Schweizer Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Strój na mundial reprezentacji Włoch - daje ci min. jeden losowy bonus.	WM-Trikot der italienischen Nationalmannschaft – verleiht dir mindestens einen zufälligen Bonus.
+Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Eine stilvolle, aber fettig wirkende, nach hinten gekämmte Frisur – die Fühler sind ihr wichtigstes Detail. Ändert die Frisur deines Charakters dauerhaft.
+Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Eine stilvolle Schamanenfrisur. Ändert die Frisur deines Charakters dauerhaft.
+Su-Sin	Su-Sin
+Sub-type	Untertyp
+Sura Armor	Sura-Rüstung
+Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Rohstoffe, die zur Herstellung und Verbesserung außergewöhnlicher Gegenstände benötigt werden.
+Sword	Schwert
+Symbol zręczności, popularny wśród złodziei.	Ein Symbol der Geschicklichkeit, beliebt bei Dieben.
+Szansa na przebicie +10%	Chance auf durchbohrenden Treffer +10%
+Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Die Chance auf Gegenstandsdrops ist für iCafe-Mitglieder um das 1,5-Fache erhöht.
+Szansa na złapanie rzadkiej ryby podwaja się. (Brak możliwości przekazywania!)	Die Chance, einen seltenen Fisch zu fangen, verdoppelt sich. (Nicht übertragbar!)
+Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Die Schatulle von Chegal, dem Schattengoliath. Darin befindet sich etwas Wertvolles.
+Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Die Schatulle des Riesigen Baumgeistes. Darin befindet sich etwas Wertvolles.
+Szmaragdowy Marmur	Smaragdmarmor
+Słaba Zbroja	Schwache Rüstung
+Ta magiczna rękawica zwiększa zręczność użytkownika, pozwalając na podnoszenie przedmiotów z ziemi o 500% szybciej.	Dieser magische Handschuh erhöht die Geschicklichkeit seines Trägers, sodass du Gegenstände 500% schneller vom Boden aufheben kannst.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut.	Dieser Trank verkürzt 30 Minuten lang die Abklingzeit von Zaubern um 20 Prozent.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut. Niezdatna do handlu.	Dieser Trank verkürzt 30 Minuten lang die Abklingzeit von Zaubern um 20 Prozent. Nicht handelbar.
+Ta pieczęć przywołuje uroczego Feniksa Jadeitu.	Dieses Siegel ruft den reizenden Jadephönix herbei.
+Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	Diese Truhe wurde aus dem Fegefeuer geborgen, Razadors Hort. In ihr liegt ein wahrhaft königlicher Schatz.
+Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	Diese Truhe wurde aus dem Eisland geborgen, Nemeres Hort. In ihr liegt ein wahrhaft königlicher Schatz.
+Tajemnicza księga od Płatnerza z 6. piętra Wieży Demonów, pełna zapomnianych sekretów rzemiosła.	Ein geheimnisvolles Buch vom Waffenschmied im 6. Stock des Dämonenturms, voller vergessener Geheimnisse des Handwerks.
+Tajemnicza substancja, która osłabia twardą skorupę Olbrzymiego Żółwia na 10 minut, czyniąc go podatnym na ataki każdą bronią.	Eine geheimnisvolle Substanz, die den harten Panzer der Großen Wüstenschildkröte 10 Minuten lang schwächt und sie für Angriffe mit jeder Waffe verwundbar macht.
+Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	Ein Deck für Schnapp den König. Klicke während des Events mit der rechten Maustaste darauf, um es deinen Decks hinzuzufügen; das Spiel startest du im Eventfenster (Schaltfläche an der Minikarte). Karten und Decks verfallen, wenn das nächste Event beginnt.
+Ten magiczny marmur daje szansę na zerwanie dodatkowych kwiatów na 1 godzinę.	Diese magische Kugel gewährt 1 Stunde lang die Chance, zusätzliche Blumen zu pflücken.
+Ten magiczny marmur pokazuje informacje o złowionej rybie. Zwiększa szansę na pomyślne wyłowienie ryby o 2%.	Diese magische Kugel zeigt Informationen über den gefangenen Fisch an. Erhöht die Chance, einen Fisch erfolgreich zu fangen, um 2%.
+Ten rożek na lody posiada wyjątkowe działanie, a przede wszystkim daje zastrzyk energii! Cudowne latem.	Diese Eistüte hat eine besondere Wirkung und gibt dir vor allem einen Energieschub! Herrlich im Sommer.
+The Search Shop Premium is required to use this feature.	Für diese Funktion wird Ladensuche Premium benötigt.
+The bid cannot be lower than |cFFFFFF99|h{}%|r of the sale price.	Das Gebot darf nicht unter |cFFFFFF99|h{}%|r des Verkaufspreises liegen.
+The bid must be lower than the sale price.	Das Gebot muss unter dem Verkaufspreis liegen.
+The item will be transferred to the Shopping Safebox. Are you sure you want to close the auction?	Der Gegenstand wird in die Handelstruhe verschoben. Möchtest du die Auktion wirklich beenden?
+The list is Empty.	Die Liste ist leer.
+The offer for |cFFFFFF99|h{}|r was cancelled by the bidder.	Das Angebot für |cFFFFFF99|h{}|r wurde vom Bieter zurückgezogen.
+The offer will be deleted. Do you want to continue?	Das Angebot wird gelöscht. Möchtest du fortfahren?
+The operation will cost |cFFFFFF99|h{}|r. Do you want to continue?	Der Vorgang kostet |cFFFFFF99|h{}|r. Möchtest du fortfahren?
+The price has been changed, please check the new price and try again.	Der Preis wurde geändert. Bitte prüfe den neuen Preis und versuche es erneut.
+The shop is no longer available.	Der Laden ist nicht mehr verfügbar.
+The store is closed. You cannot sell items.	Der Laden ist geschlossen. Du kannst keine Gegenstände verkaufen.
+This item is not available for sale at this time.	Dieser Gegenstand kann derzeit nicht verkauft werden.
+Today {:02d}:{:02d}	Heute {:02d}:{:02d}
+Tomorrow {:02d}:{:02d}	Morgen {:02d}:{:02d}
+Too many actions in a short time. Please wait a while and try again.	Zu viele Aktionen in kurzer Zeit. Bitte warte einen Moment und versuche es erneut.
+Trade Hub	Handelszentrum
+Two Hand Sword	Zweihänder
+Tylko BETA	Nur BETA
+Tym kluczem zdobędziesz więcej nagród w Poszukiwaniu skarbów.	Mit diesem Schlüssel erhältst du bei der Schatzsuche mehr Belohnungen.
+Type	Typ
+Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Die Lieblingsfrisur einsamer Krieger, sieht im Wind großartig aus. Ändert die Frisur deines Charakters dauerhaft.
+Uniform, który niegdyś należał do martwego już brata Mirine.	Eine Uniform, die einst Mirines verstorbenem Bruder gehörte.
+Upoważania do łowienia na królewskich łowiskach na 1 godzinę. Znika po 24 godzinach posiadania.	Berechtigt 1 Stunde lang zum Angeln in den königlichen Fischgründen. Verschwindet 24 Stunden nach Erhalt.
+Use at least one filter to start the search.	Verwende mindestens einen Filter, um die Suche zu starten.
+Using it the item will be destroyed and change the appearance of your shop for 15 days. Do you want to continue?	Bei der Verwendung wird der Gegenstand verbraucht und das Aussehen deines Ladens für 15 Tage geändert. Möchtest du fortfahren?
+Usuwa wszystkie bonusy z twojego jednego przedmiotu, po czym dodaje nowe - losowe. Ilość bonusów nie ulega zmianie.	Entfernt alle Boni von einem deiner Gegenstände und fügt neue, zufällige hinzu. Die Anzahl der Boni bleibt gleich.
+Uwalnia Cię od klątwy złego ducha.	Befreit dich vom Fluch des bösen Geistes.
+Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Benutze ihn, um 5 gesperrte Plätze in deinem privaten Laden freizuschalten.
+W przypadku oddania uszkodzonego przedmiotu do analizy Biologa, będziesz mógł oddać następny bez potrzeby odczekania czasu.	Wenn du dem Biologen einen beschädigten Gegenstand zur Analyse übergibst, kannst du den nächsten ohne Wartezeit abgeben.
+Wait 10 seconds between one offer created and another.	Warte 10 Sekunden zwischen zwei Angeboten.
+Wait 5 seconds between searches.	Warte 5 Sekunden zwischen zwei Suchen.
+Waleczna Dusza	Tapfere Seele
+Warrior Armor	Krieger-Rüstung
+Weapon	Waffe
+Wieprzowina	Schweinefleisch
+Wodna Szata	Wassergewand
+Wojenna szata w kolorze czarnym dla mężczyzn. Daje ci min. jeden losowy bonus.	Schwarzes Kampfgewand für Männer. Verleiht dir mindestens einen zufälligen Bonus.
+Wolfman Armor	Lykaner-Rüstung
+Wrist	Armband
+Wrogi Mur	Feindliche Mauer
+Wspaniałe brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Prächtiges braunes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Wspaniałe czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Prächtiges schwarzes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Wspaniałe czerwone włosy. Na stałe zmienia fryzurę Twojej postaci.	Prächtiges rotes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Wspaniałe zielone włosy. Na stałe zmienia fryzurę Twojej postaci.	Prächtiges grünes Haar. Ändert die Frisur deines Charakters dauerhaft.
+Współdzieli czas ładowania z Błogosławieństwami Życia, Magii i Smoka.	Teilt die Abklingzeit mit dem Segen des Lebens, dem Segen der Magie und dem Segen des Drachen.
+Wydarzenie Wakacyjne	Sommer-Event
+Wydarzenie Walentynkowe	Valentinstag-Event
+Wydarzenie Wielkanocne.	Oster-Event.
+Wyjątkowo trwały pergamin, pełen zapomnianej wiedzy.	Ein außergewöhnlich haltbares Pergament voller vergessenen Wissens.
+Wyjątkowo wytrzymały grot ze stali. Zapewnia doskonałą penetrację i jest niezawodny w bitwach wymagających maksymalnej skuteczności.	Eine außergewöhnlich robuste Pfeilspitze aus Stahl. Sie durchdringt hervorragend und ist zuverlässig in Schlachten, die höchste Wirksamkeit verlangen.
+Wymaga przelogowania po zakupie.	Nach dem Kauf neu einloggen.
+Wysuszone Oczy	Getrocknete Augen
+Wytrych	Dietrich
+Wytrzymałość Wroga	Ausdauer des Feindes
+Wężowa Szkatułka. Coś cennego znajduje się w środku.	Schlangenschatulle. Darin befindet sich etwas Wertvolles.
+Ya-Sang-Gab	Ya-Sang-Gab
+Yesterday {:02d}:{:02d}	Gestern {:02d}:{:02d}
+You are already the highest bidder in this auction.	Du bist bereits der Höchstbietende in dieser Auktion.
+You cannot cancel the auction if it has received bids.	Du kannst die Auktion nicht abbrechen, wenn bereits Gebote eingegangen sind.
+You cannot create a shop in this place.	An diesem Ort kannst du keinen Laden erstellen.
+You cannot create an auction in this place.	An diesem Ort kannst du keine Auktion erstellen.
+You cannot move a closed shop.	Du kannst einen geschlossenen Laden nicht versetzen.
+You cannot offer less than the min. raise.	Du kannst nicht weniger als die Mindesterhöhung bieten.
+You cannot perform this operation right now.	Du kannst diesen Vorgang gerade nicht ausführen.
+You cannot sell this item.	Du kannst diesen Gegenstand nicht verkaufen.
+You do not have enough money to offer this amount.	Du hast nicht genug Yang, um diesen Betrag zu bieten.
+You do not have enough space to collect the item.	Du hast nicht genug Platz, um den Gegenstand abzuholen.
+You do not have enough yang to complete the purchase.	Du hast nicht genug Yang, um den Kauf abzuschließen.
+You do not own any auctions. Would you like to create an Auction now?	Du hast keine Auktionen. Möchtest du jetzt eine Auktion erstellen?
+You don't have enough money to complete the request.	Du hast nicht genug Yang, um die Anfrage abzuschließen.
+You don't have enough money.	Du hast nicht genug Yang.
+You entered an invalid price.	Du hast einen ungültigen Preis eingegeben.
+You have already made an offer for this item.	Du hast für diesen Gegenstand bereits ein Angebot abgegeben.
+You have already unlocked all the slots in the shop.	Du hast bereits alle Plätze im Laden freigeschaltet.
+You have reached the limit of pending private offers.	Du hast das Limit an offenen privaten Angeboten erreicht.
+You have received an offer for |cFFFFFF99|h{}|r.	Du hast ein Angebot für |cFFFFFF99|h{}|r erhalten.
+You have run out of available space. Unable to sell the item.	Du hast keinen freien Platz mehr. Der Gegenstand kann nicht verkauft werden.
+You won the auction of |cFFFFFF99|h{}|r by paying |cFFFFFF99|h{}|r.	Du hast die Auktion für |cFFFFFF99|h{}|r gewonnen und |cFFFFFF99|h{}|r bezahlt.
+Young-Seon	Young-Seon
+Your auction of |cFFFFFF99|h{}|r has expired.	Deine Auktion für |cFFFFFF99|h{}|r ist abgelaufen.
+Your auction of |cFFFFFF99|h{}|r has received a new bid.	Deine Auktion für |cFFFFFF99|h{}|r hat ein neues Gebot erhalten.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been accepted.	Dein Angebot von |cFFFFFF99|h{}|r für |cFFFFFF99|h{}|r wurde angenommen.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been canceled.	Dein Angebot von |cFFFFFF99|h{}|r für |cFFFFFF99|h{}|r wurde storniert.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r was rejected by the seller.	Dein Angebot von |cFFFFFF99|h{}|r für |cFFFFFF99|h{}|r wurde vom Verkäufer abgelehnt.
+Your shopping safebox is too full. To proceed you must first lighten it.	Deine Handelstruhe ist zu voll. Leere sie zuerst, um fortzufahren.
+Your |cFFFFFF99|hShop Decoration|r is expired.	Deine |cFFFFFF99|hLadendekoration|r ist abgelaufen.
+Your |cFFFFFF99|h{}|r auction has ended. |cFFFFFF99|h{}|r purchased the item for |cFFFFFF99|h{}|r yangs.	Deine Auktion für |cFFFFFF99|h{}|r ist beendet. |cFFFFFF99|h{}|r hat den Gegenstand für |cFFFFFF99|h{}|r Yang gekauft.
+Your |cFFFFFF99|h{}|r has expired and has been removed from your shop.	Dein |cFFFFFF99|h{}|r ist abgelaufen und wurde aus deinem Laden entfernt.
+Za pomocą tej mikstury zdobywasz 50% więcej doświadczenia podczas godziny grania.	Mit diesem Trank erhältst du eine Spielstunde lang 50% mehr Erfahrung.
+Za pomocą tej pieczęci możesz przywołać lwa Leonidasa.	Mit diesem Siegel kannst du den Löwen Leonidas herbeirufen.
+Za pomocą tej pieczęci możesz przywołać pancerną pandę.	Mit diesem Siegel kannst du den Panzerpanda herbeirufen.
+Za pomocą tej pieczęci możesz przywołać renifera Bambi.	Mit diesem Siegel kannst du das Rentier Bambi herbeirufen.
+Za pomocą tej pieczęci możesz przywołać renifera Kometka.	Mit diesem Siegel kannst du das Rentier Komet herbeirufen.
+Za pomocą tej pieczęci możesz przywołać tygrysa Khana.	Mit diesem Siegel kannst du den Tiger Khan herbeirufen.
+Za pomocą tej pieczęci możesz przywołać warchlaka Boczusia.	Mit diesem Siegel kannst du den Frischling Porky herbeirufen.
+Za pomocą tej pieczęci możesz przywołać ślicznego polarnego niedźwiadka.	Mit diesem Siegel kannst du ein niedliches Eisbärjunges herbeirufen.
+Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Mit diesem Siegel kannst du einen zuckersüßen Panda herbeirufen.
+Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Mit diesem Siegel rufst du das Zornige Herz herbei. Es verleiht dir eine um 5% höhere Chance auf kritische Treffer und erhöht deine LP um 1500.
+Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Mit diesem Siegel rufst du deinen persönlichen Glücksbringer herbei. Er verleiht dir eine um 5% höhere Chance auf durchbohrende Treffer und erhöht deine LP um 1500.
+Zaczarowany Klejnot	Verzauberter Edelstein
+Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Verhindert, dass dein Pferd Ausdauer verliert – ideal für lange Reisen ohne Pausen.
+Zawiera 8 Kluczy Goblina.	Enthält 8 Goblin-Schlüssel.
+Zawiera losową księgę umiejętności peta.	Enthält ein zufälliges Pet-Fertigkeitsbuch.
+Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Enthält Belohnungen für tapfere Krieger, die im Tal von Seungryong dienen.
+Zbieraj Gałki Lodów dla Summer.	Sammle Eiskugeln für den Sommer.
+Zbroja Dzikiego Knura	Wildschweinrüstung
+Zbroja Niedźwiedzia	Bärenrüstung
+Zbroja Tygrysa	Tigerrüstung
+Zbroja Wilka	Wolfsrüstung
+Zeok-Hyoun	Zeok-Hyoun
+Zeok-Sang-Gab	Zeok-Sang-Gab
+Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Ein Set aus 24 Okey-Karten. Rechtsklick zum Hinzufügen – ein Okey-Spiel kostet 1 Kartenset und 30.000 Yang.
+Zgniłe Mięso	Verfaultes Fleisch
+Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Ändert den Namen des aktiven Pets (zusätzlich 100.000 Yang).
+Zmierzwiona fryzura z opaską na czoło. Na stałe zmienia fryzurę Twojej postaci.	Zerzaustes Haar mit Stirnband. Ändert die Frisur deines Charakters dauerhaft.
+Zmniejsza obrażenia jakie otrzymujesz podczas walki o 12-15% przez 30 min.	Verringert den Schaden, den du im Kampf erleidest, 30 Min. lang um 12-15%.
+Zmniejsza zużycie Staminy o połowę.	Halbiert den Ausdauerverbrauch.
+Zmrożone czarne mięso o niezwykłej mocy.	Gefrorenes schwarzes Fleisch von außergewöhnlicher Kraft.
+Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Hergestellt aus Kakao, Milch, Butter und Zucker. Wird verschenkt, um Zuneigung zu zeigen.
+Zung-Seon	Zung-Seon
+Zupa Grzybowa	Pilzsuppe
+Zwierzęta o białym futrze są rzadkością i wiele kultur przypisuje im nadzwyczajne siły.	Tiere mit weißem Fell sind selten, und viele Kulturen schreiben ihnen außergewöhnliche Kräfte zu.
+Zwiększa Szybkość Ruchu o 30 na 30 minut. Efekt utrzymuje się po śmierci.	Erhöht deine Bewegungsgeschwindigkeit 30 Minuten lang um 30. Der Effekt bleibt nach dem Tod erhalten.
+Zwiększa Twoją Szybkość Ataku o 10% na okres 30 minut. Niezdatna do handlu.	Erhöht deine Angriffsgeschwindigkeit 30 Minuten lang um 10%. Nicht handelbar.
+Zwiększa Twoją Szybkość Ataku o 15% na okres 30 minut. Niezdatna do handlu.	Erhöht deine Angriffsgeschwindigkeit 30 Minuten lang um 15%. Nicht handelbar.
+Zwiększa ilość Punktów Energii o 20% przez 30 min.	Erhöht deine MP 30 Min. lang um 20%.
+Zwiększa ilość Punktów Życia o 20% na okres 30 minut.	Erhöht deine TP 30 Minuten lang um 20%.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min.	Erhöht den Schaden, den du im Kampf verursachst, 30 Min. lang um 12-15%.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.	Erhöht den Schaden, den du im Kampf verursachst, 30 Min. lang um 12-15%. Dieser Gegenstand ist handelbar.
+Zwiększa otrzymywane Punkty Doświadczenia o 20% dla członków iCafe.	Erhöht die erhaltenen Erfahrungspunkte für iCafe-Mitglieder um 20%.
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +10% przy 5 Suplementach i 10 Odłamkach).	Erhöht die Chance, bei Seon-Hae einen 6. oder 7. Bonus hinzuzufügen (bis zu +10% mit 5 Ergänzungen und 10 Fragmenten).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +20% przy 5 Suplementach i 10 Odłamkach).	Erhöht die Chance, bei Seon-Hae einen 6. oder 7. Bonus hinzuzufügen (bis zu +20% mit 5 Ergänzungen und 10 Fragmenten).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +5% przy 5 Suplementach i 10 Odłamkach).	Erhöht die Chance, bei Seon-Hae einen 6. oder 7. Bonus hinzuzufügen (bis zu +5% mit 5 Ergänzungen und 10 Fragmenten).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +50% przy 5 Suplementach i 10 Odłamkach).	Erhöht die Chance, bei Seon-Hae einen 6. oder 7. Bonus hinzuzufügen (bis zu +50% mit 5 Ergänzungen und 10 Fragmenten).
+Zwiększa szansę na wypadnięcie przedmiotu z bonusem na godzinę. Zdjęcie rękawicy jest niemożliwe.	Erhöht eine Stunde lang die Chance, dass Gegenstände mit Bonus fallen. Der Handschuh kann nicht abgelegt werden.
+Zwiększa szansę na złapanie rzadkiej ryby przez 15 minut.	Erhöht 15 Minuten lang die Chance, einen seltenen Fisch zu fangen.
+Zwiększa szansę na złapanie rzadkiej ryby przez 3 godziny.	Erhöht 3 Stunden lang die Chance, einen seltenen Fisch zu fangen.
+Zwiększa szansę na złapanie rzadkiej ryby przez 30 minut.	Erhöht 30 Minuten lang die Chance, einen seltenen Fisch zu fangen.
+Zwiększa twoją Szybkość Ataku o 10% na okres 30 minut.	Erhöht deine Angriffsgeschwindigkeit 30 Minuten lang um 10%.
+Zwiększa twoją Szybkość Ataku o 15% na okres 30 minut. Efekt utrzymuje się po śmierci.	Erhöht deine Angriffsgeschwindigkeit 30 Minuten lang um 15%. Der Effekt bleibt nach dem Tod erhalten.
+Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Erhöht die Ausdauer. Bekannt für seine muskelstärkenden Eigenschaften.
+Zwiększa zadawane obrażenia o 12% do 15% gdy atakujesz. Działa przez 30 minut.	Erhöht deinen verursachten Schaden beim Angreifen um 12% bis 15%. Wirkt 30 Minuten lang.
+Zwój Inkarnacji	Schriftrolle der Inkarnation
+Zwój Nasycenia	Schriftrolle der Sättigung
+Zwój pozwala Ci wydobyć Kamień Duszy z broni albo zbroi. Zostawia znak wydobycia. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Mit dieser Schriftrolle kannst du einen Geiststein aus einer Waffe oder Rüstung entfernen. Sie hinterlässt eine Entnahmemarkierung. Ein Geiststein +5 wird beim Entfernen zerstört.
+Zwój pozwala zapisać obecną pozycję, aby potem powrócić do obecnej lokalizacji. Można użyć co 15 minut.	Mit dieser Schriftrolle speicherst du deine aktuelle Position, um später an diesen Ort zurückzukehren. Kann alle 15 Minuten benutzt werden.
+Zwój pozwalający Ci teleportować się do miasta pierwszego Twojego królestwa. Można użyć co 15 minut.	Mit dieser Schriftrolle kannst du dich in die erste Stadt deines Reiches teleportieren. Kann alle 15 Minuten benutzt werden.
+Zwój ten umożliwia usunięcie ostatnio pomyślnie dodanego Kamienia Duszy ze wskazanego przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Mit dieser Schriftrolle kannst du den zuletzt erfolgreich eingesetzten Geiststein aus einem Gegenstand entfernen. Ein Geiststein +5 wird beim Entfernen zerstört.
+Zwój ten umożliwia usunięcie wskazanego Kamienia Duszy z przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Mit dieser Schriftrolle kannst du einen ausgewählten Geiststein aus einem Gegenstand entfernen. Ein Geiststein +5 wird beim Entfernen zerstört.
+Zwój Życia	Schriftrolle des Lebens
+Złocisty piasek, nasycony magią i tajemnicą.	Goldener Sand, durchdrungen von Magie und Geheimnis.
+{}'s Auction	Auktion von {}
+{}'s Shop	Laden von {}
+|Eikashop/ultimate/average.png|e |cFFFF9999|hUnknown|r	|Eikashop/ultimate/average.png|e |cFFFF9999|hUnbekannt|r
+|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r	|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r
+|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Buy all those at this price	|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Alle zu diesem Preis kaufen
+|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Edit Price of all similar Items.	|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Preis aller gleichen Gegenstände ändern.
+|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Edit Price	|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Preis ändern
+|Eshortcut/mleft.tga|e Buy	|Eshortcut/mleft.tga|e Kaufen
+|Eshortcut/mleft.tga|e Claim Item	|Eshortcut/mleft.tga|e Gegenstand abholen
+|Eshortcut/mleft.tga|e Remove Item	|Eshortcut/mleft.tga|e Gegenstand entfernen
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Remove all similar Items	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Alle gleichen Gegenstände entfernen
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Use x10	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e x10 verwenden
+|Eshortcut/mright.tga|e Remove Item	|Eshortcut/mright.tga|e Gegenstand entfernen
+|Eshortcut/mright.tga|e Sell Item	|Eshortcut/mright.tga|e Gegenstand verkaufen
+|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Private Offer	|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Privates Angebot
+|cFFFF9999|hExhausted duration|r	|cFFFF9999|hDauer abgelaufen|r
+|cFFFFFF88Three Days|h|r	|cFFFFFF88Drei Tage|h|r
+|cFFFFFF99|h{}|r has outbid you for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r hat dich bei |cFFFFFF99|h{}|r überboten.
+|cFFFFFF99|h{}|r won the auction of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r hat die Auktion für |cFFFFFF99|h{}|r mit |cFFFFFF99|h{}|r gewonnen.
+Čć»ç°©	Čć»ç°©
+Łuski Smoka	Drachenschuppen
+Śluz zamrożonych istot, chłodny w dotyku.	 Schleim gefrorener Wesen, kühl bei Berührung.
+Świadectwo Zmiany+	Urkunde der Umkehr+
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Festliche Belohnung für eine Runde Okey mit 300-399 Punkten. Zum Öffnen rechtsklicken.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Festliche Belohnung für eine Runde Okey mit 400 Punkten oder mehr. Zum Öffnen rechtsklicken.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Festliche Belohnung für eine Runde Okey mit weniger als 300 Punkten. Zum Öffnen rechtsklicken.
+Święty Miecz Bogów+	Heiliges Schwert der Götter+
+Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Eine Kraftquelle für die Angel. Ihre Berührung verbessert das Werkzeug und ebnet den Weg zum Fischen in den tiefsten Gewässern.
+Żelazo	Eisen
+Żołnierze	Soldaten
+Żywe Drzewo	Lebendes Holz

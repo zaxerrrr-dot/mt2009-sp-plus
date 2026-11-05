@@ -5,6 +5,7 @@
 #   System     - Opcje Systemowe (uisystemoption.py)
 #   Dodatkowe  - Opcje dodatkowe (uiopcjedodatkowe.py, Autor: Digi Rasta)
 #   Skroty     - Skroty klawiszowe (uikeybind.py, Autor: Vekirion)
+#   Jezyk      - the client's language (uilanguage.py, MT2009_PLUS_LANG_V1)
 #
 # Only the look changes (the owner, 5 October): every tab is the window it was,
 # with its settings, saving and behaviour. The tab row is a small window of its
@@ -34,6 +35,8 @@ PAGES = (
 	("system", "System"),
 	("extra", "Dodatkowe"),
 	("keybind", "Skr\xf3ty"),
+	# MT2009_PLUS_LANG_V1: the client's language (uilanguage.py)
+	("lang", "J\xeazyk"),
 )
 
 # The last tab and place for the client's whole run (a new character too).
@@ -125,7 +128,7 @@ class OptionsTabs(ui.Window):
 		# Each page opened as its old Esc menu button did.
 		if key == "keybind" and key in self.opened and hasattr(page, "Resume"):
 			page.Resume()
-		elif key in ("keybind", "extra"):
+		elif key in ("keybind", "extra", "lang"):
 			page.Open()
 		else:
 			page.Show()

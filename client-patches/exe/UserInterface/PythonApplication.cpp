@@ -970,8 +970,14 @@ bool LoadLocaleData(const char* localePath)
 
 	if (!rkSkillMgr.RegisterSkillDesc(szSkillDescFileName))
 	{
+#ifdef ENABLE_MT2009_LANG_CODEPAGE
+		// MT2009_PLUS_LANG_V1: a language without its own skilldesc.txt reads the Polish one (it stopped the client)
+		if (currentLanguage == "pl" || !rkSkillMgr.RegisterSkillDesc("locale/pl/skilldesc.txt"))
+#endif
+		{
 		TraceError("LoadLocaleData - RegisterSkillDesc(%s) Error", szSkillDescFileName); //@warme670
 		return false;
+		}
 	}
 
 	if (!rkSkillMgr.RegisterSkillTable(szSkillTableFileName))

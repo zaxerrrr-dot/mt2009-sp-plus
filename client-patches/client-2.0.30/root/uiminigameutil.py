@@ -219,7 +219,8 @@ class DescriptionText(ui.Window):
 		self.__Refresh()
 
 	def LoadLocaleFile(self, name):
-		self.LoadFile("%s/%s" % (app.GetLocalePath(), name))
+		# MT2009_PLUS_LANG_V1: the language's description file when the build made one
+		self.LoadFile(__import__("mt2009lang").LocalePath("%s/%s" % (app.GetLocalePath(), name)))
 
 	def HasMorePages(self):
 		return len(self.lines) > self.line_count

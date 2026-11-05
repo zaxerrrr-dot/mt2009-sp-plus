@@ -2884,6 +2884,9 @@ class GameWindow(ui.ScriptWindow):
 			if self.__gmCheckFrames > 300:
 				self.__gmCheckSent = True
 				net.SendChatPacket("/gmpanel_check_gm")
+				# MT2009_PLUS_LANG_V1: the player's language to the server ("/lang <code>", at every entry into the
+				# game - the server's texts, bots and quests follow it; mt2009lang.py)
+				__import__("mt2009lang").SendToServer()
 				# The event calendar's mini icon and its schedule (uieventcalendar.py).
 				__import__("uieventcalendar").Start()
 				# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub and the hello
