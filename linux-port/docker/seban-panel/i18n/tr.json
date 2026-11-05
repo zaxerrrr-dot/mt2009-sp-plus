@@ -6129,7 +6129,22 @@
   "🪙 ItemShop w grze": "🪙 Oyundaki Nesne Marketi",
   "🪙 Smocze Monety i ItemShop": "🪙 Ejderha Parası ve ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Windows üzerinde sunucu (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Ad ve yetkiler"
+  "🪪 Nick i uprawnienia": "🪪 Ad ve yetkiler",
+  "Graj w przeglądarce ↗": "Tarayıcıda oyna ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Oyun web tarayıcısında (bilgisayar ve telefon), paneller gibi kendi portunda: açma/kapama, port, adres, dosyalarının nereden alınacağı.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Açık: oyuncular tarayıcıda (bilgisayar ve telefon) http://sunucu-adresi:port/ adresinde oynayabilir – paneller “Tarayıcıda oyna” bağlantısını gösterir. İlk başlatma tarayıcı oyun dosyalarını indirir (yaklaşık 2 GB, bir kez). İndirilen istemcideki hesapların aynısı.",
+  "Port gry w przeglądarce": "Tarayıcı oyunu portu",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Oyun sayfasının portu (http://adres:7792/). VPS'te oyun portları gibi sağlayıcının güvenlik duvarında aç.",
+  "Adres nasłuchu gry w przeglądarce": "Tarayıcı oyununun dinleme adresi",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Boş = oyun portları gibi. Oyuncuların sayfasıdır (ItemShop gibi), bu yüzden sunucuda dışarıdan erişilebilir olmalı.",
+  "Własny adres gry w przeglądarce": "Tarayıcı oyununun kendi adresi",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Yalnızca kendi HTTPS alan adının arkasına koyduğunda (ör. https://gra.example.pl/). Boş = http://sunucu-adresi:port/.",
+  "Dodatkowe dozwolone strony": "Ek izinli sayfalar",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Oyuna bağlanmasına izin verilen diğer sayfalar (virgülle ayrılmış, http(s)://host[:port]). Genelde boş – sunucu adresi ve sunucuyu gösteren bir alan adı kendiliğinden çalışır.",
+  "Skąd pobierać pliki gry w przeglądarce": "Tarayıcı oyunu dosyalarının indirileceği yer",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Tarayıcı oyunu dosyalarını içeren güncelleme sunucusu. Her dosya sürümün SHA-256 toplamlarıyla kontrol edilir, bu yüzden başka bir sunucu hiçbir şeyi değiştiremez. Böyle bırak.",
+  "Folder z plikami gry w przeglądarce": "Tarayıcı oyunu dosyalarının klasörü",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "İndirme yerine yayımlanmış dosyaları içeren bu bilgisayardaki bir klasör (internetsiz kurulum). Boş = indirme."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(rastgele saç boyası). Olta +1…+20, Karbon Olta = {0}. Tür:",

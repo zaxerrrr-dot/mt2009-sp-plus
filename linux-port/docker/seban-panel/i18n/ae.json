@@ -6170,7 +6170,22 @@
   "🪙 ItemShop w grze": "🪙 متجر العناصر داخل اللعبة",
   "🪙 Smocze Monety i ItemShop": "🪙 عملات التنين ومتجر العناصر",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 الخادم على Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 اسم الشخصية والصلاحيات"
+  "🪪 Nick i uprawnienia": "🪪 اسم الشخصية والصلاحيات",
+  "Graj w przeglądarce ↗": "العب في المتصفح ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "اللعبة في متصفح الويب (الحاسوب والهاتف) على منفذ خاص بها مثل اللوحات: التشغيل، المنفذ، العنوان، ومن أين تُجلب ملفاتها.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "مفعّل: يمكن للاعبين اللعب في المتصفح (الحاسوب والهاتف) على http://عنوان-الخادم:المنفذ/ – تعرض اللوحات رابط «العب في المتصفح». أول تشغيل ينزّل ملفات اللعبة للمتصفح (نحو 2 GB، مرة واحدة). الحسابات نفسها كما في العميل المنزّل.",
+  "Port gry w przeglądarce": "منفذ اللعبة في المتصفح",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "منفذ صفحة اللعبة (http://العنوان:7792/). على VPS افتحه في جدار حماية المزوّد مثل منافذ اللعبة.",
+  "Adres nasłuchu gry w przeglądarce": "عنوان استماع اللعبة في المتصفح",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "فارغ = مثل منافذ اللعبة. إنها صفحة اللاعبين (مثل ItemShop)، لذا يجب أن تكون متاحة من الخارج على الخادم.",
+  "Własny adres gry w przeglądarce": "العنوان الخاص للعبة في المتصفح",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "فقط عندما تضعها خلف نطاقك الخاص مع HTTPS (مثل https://gra.example.pl/). فارغ = http://عنوان-الخادم:المنفذ/.",
+  "Dodatkowe dozwolone strony": "صفحات مسموح بها إضافية",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "صفحات أخرى يُسمح لها بالاتصال باللعبة (مفصولة بفواصل، http(s)://host[:port]). عادةً فارغ – عنوان الخادم ونطاق يشير إلى الخادم يعملان تلقائيًا.",
+  "Skąd pobierać pliki gry w przeglądarce": "من أين تُنزَّل ملفات اللعبة في المتصفح",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "خادم التحديثات الذي يحمل ملفات اللعبة في المتصفح. يُفحص كل ملف بمجاميع SHA-256 الخاصة بالإصدار، فلا يستطيع خادم آخر تبديل أي شيء. اتركه كما هو.",
+  "Folder z plikami gry w przeglądarce": "مجلد ملفات اللعبة في المتصفح",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "مجلد على هذا الحاسوب يحوي الملفات المنشورة بدل التنزيل (تثبيت دون إنترنت). فارغ = تنزيل."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(صبغة شعر عشوائية). صنارة الصيد +1…+20، صنارة الصيد الكربونية = {0}. النوع:",

@@ -106,6 +106,11 @@ i na niej zostają. Ich historia jest w tym repozytorium.
 - **Tyrion**: wyszukiwanie konkretnego przedmiotu w sklepach offline.
 - **Kenny, Pabloo, Mur4s**: poprawki podnoszenia przedmiotów w drużynie, zadań
   botów w drużynie gracza, questu niedźwiedzi i Pierścienia Teleportacji.
+- **nairoad**: zestaw klienta w przeglądarce (Metin2-WebClient,
+  https://github.com/nairoad/Metin2-WebClient), na którym stoi gra
+  w przeglądarce (usługa `webclient`, `linux-port/docker/webclient`). Licencja
+  **GPL-2.0**; obowiązuje ona także nasze zmiany w nim
+  (`linux-port/docker/webclient/NOTICE.md`).
 
 ## Czego żadna z tych licencji nie obejmuje
 
@@ -212,6 +217,11 @@ this repository.
 - **Tyrion**: searching the offline shops for one particular item.
 - **Kenny, Pabloo, Mur4s**: fixes to party pickups, to bots' errands in a
   player's party, to the bear quest and to the Teleport Ring.
+- **nairoad**: the browser client kit (Metin2-WebClient,
+  https://github.com/nairoad/Metin2-WebClient) the browser game is built on
+  (the `webclient` service, `linux-port/docker/webclient`). Licensed under the
+  **GPL-2.0**, which also covers our changes to it
+  (`linux-port/docker/webclient/NOTICE.md`).
 
 ### What none of these licences cover
 

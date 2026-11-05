@@ -2830,8 +2830,42 @@ def browser_root():
         pass
     return BROWSER_DIR
 
+# MT2009_PLUS_WEBCLIENT_SERVICE_V1: the browser game of the stack's own webclient
+# service (linux-port/docker/webclient), on its own port like the panels. When it is
+# on, it is what every "Graj w przeglądarce" of this panel opens - the older
+# arrangement above (a client on this panel's volume and the wsbridge profile) only
+# applies with it off.
+WEBCLIENT_ON = os.environ.get("M2PANEL_WEBCLIENT_ON", "0").strip() == "1"
+try:
+    WEBCLIENT_PORT = int(os.environ.get("M2PANEL_WEBCLIENT_PORT", "7792"))
+except ValueError:
+    WEBCLIENT_PORT = 7792
+if not 0 < WEBCLIENT_PORT < 65536:
+    WEBCLIENT_PORT = 7792
+WEBCLIENT_URL = _clean_client_url(os.environ.get("M2PANEL_WEBCLIENT_URL", ""))
+
+def webclient_url():
+    """http://<the address the visitor reached us on>:<port>/ - or, when that is
+    this machine or a private address, the server's public address (a VPS owner
+    on an SSH tunnel); M2_WEBCLIENT_PUBLIC_URL when the owner set one."""
+    if WEBCLIENT_URL:
+        return WEBCLIENT_URL
+    host = (request.host or "").strip()
+    if host.startswith("["):
+        host = host[1:].split("]", 1)[0]
+    elif host.count(":") == 1:
+        host = host.rsplit(":", 1)[0]
+    conf = os.environ.get("M2PANEL_GAME_ADDRESS", "").strip()
+    if not _is_public_host(host) and conf:
+        host = conf
+    if not re.fullmatch(r"[A-Za-z0-9.-]{1,253}", host or ""):
+        host = "127.0.0.1"
+    return "http://%s:%d/" % (host, WEBCLIENT_PORT)
+
 def browser_client_ready():
     """Is there a browser client on the volume to serve?"""
+    if WEBCLIENT_ON:
+        return True
     if not BROWSER_PLAY:
         return False
     try:
@@ -2876,6 +2910,8 @@ def browser_play_ready():
     and should never be asked for. So the bridge is probed too, and the answer
     is cached for 30 seconds like every other live check on the front page.
     """
+    if WEBCLIENT_ON:
+        return True
     return browser_client_ready() and bridge_ports() is not None
 
 def behind_proxy():
@@ -2923,6 +2959,8 @@ def play_url():
     straight into the game (shell.html), which is what a player arriving from
     this panel should get -- they have already chosen a server by being here.
     """
+    if WEBCLIENT_ON:
+        return webclient_url()
     host, port, tls = bridge_endpoint()
     url = "/play/?serverHost=%s&serverPort=%d" % (urllib.parse.quote(host, safe=""), port)
     if tls:
@@ -21982,6 +22020,8 @@ def play_redirect():
 
 @app.route("/play/")
 def play():
+    if WEBCLIENT_ON:
+        return redirect(webclient_url())
     if not browser_client_ready():
         flash(t("play_not_set"), "error")
         return redirect(url_for("login"))

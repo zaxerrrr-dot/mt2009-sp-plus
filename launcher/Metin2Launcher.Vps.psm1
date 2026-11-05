@@ -753,6 +753,10 @@ function ConvertFrom-M2VpsStatus {
         GamePortRange = (& $get 'game_port_range' '13000-13003'); Ch2 = ((& $get 'ch2') -eq '1')
         PanelPort = (& $number 'panel_port' 7788); SebanPanelPort = (& $number 'seban_panel_port' 7790)
         ItemShopPort = (& $number 'itemshop_port' 7791); PanelBind = (& $get 'panel_bind'); HostBind = (& $get 'host_bind')
+        # The web client (compose service webclient): published for the players, not tunneled.
+        # A VPS whose vps-install.sh predates it prints no webclient_on line - nothing to show there.
+        WebClientOn = ($v.Contains('webclient_on') -and (& $get 'webclient_on' '1') -ne '0'); WebClientPort = (& $number 'webclient_port' 7792)
+        WebClientUrl = (& $get 'webclient_url')
         Bots = (& $get 'bots'); AccountsFile = ((& $get 'accounts_file') -eq '1')
         LogText = $log.ToString().TrimEnd(); PsText = $ps.ToString().TrimEnd()
     }
@@ -911,12 +915,12 @@ function Get-M2VpsLocalServerPorts {
     if (-not (Test-Path -LiteralPath $envPath -PathType Leaf)) { return @() }
     $values = @{}
     foreach ($line in @(Get-Content -LiteralPath $envPath -ErrorAction SilentlyContinue)) {
-        if ([string]$line -match '^\s*(M2_PANEL_PUBLIC_PORT|M2_SEBAN_PANEL_PORT|M2_ITEMSHOP_PUBLIC_PORT)\s*=\s*(\d+)\s*$') {
+        if ([string]$line -match '^\s*(M2_PANEL_PUBLIC_PORT|M2_SEBAN_PANEL_PORT|M2_ITEMSHOP_PUBLIC_PORT|M2_WEBCLIENT_PORT)\s*=\s*(\d+)\s*$') {
             $values[$Matches[1]] = [int]$Matches[2]
         }
     }
     $ports = @()
-    foreach ($entry in @(@('M2_PANEL_PUBLIC_PORT', 7788), @('M2_SEBAN_PANEL_PORT', 7790), @('M2_ITEMSHOP_PUBLIC_PORT', 7791))) {
+    foreach ($entry in @(@('M2_PANEL_PUBLIC_PORT', 7788), @('M2_SEBAN_PANEL_PORT', 7790), @('M2_ITEMSHOP_PUBLIC_PORT', 7791), @('M2_WEBCLIENT_PORT', 7792))) {
         $ports += $(if ($values.ContainsKey($entry[0])) { $values[$entry[0]] } else { [int]$entry[1] })
     }
     return $ports
@@ -1028,6 +1032,13 @@ function Open-M2VpsPanel {
     $panel = 7788; $seban = 7790; $shop = 7791
     if ($status) { $panel = [int]$status.PanelPort; $seban = [int]$status.SebanPanelPort; $shop = [int]$status.ItemShopPort }
     $addresses = Get-M2VpsPanelAddresses -Plan $plan -PanelPort $panel -SebanPort $seban -ItemShopPort $shop
+    # The web client is the players' page on the VPS's own address, not through the tunnel.
+    $webUrl = ''
+    if ($status -and $status.WebClientOn) {
+        $webUrl = [string]$status.WebClientUrl
+        if (-not $webUrl) { $webUrl = ('http://{0}:{1}/' -f (Get-M2VpsWorldAddress -State $State -Status $status), [int]$status.WebClientPort) }
+    }
+    $addresses | Add-Member -NotePropertyName WebClientUrl -NotePropertyValue $webUrl
     $addresses | Add-Member -NotePropertyName Pid -NotePropertyValue $process.Id
     $addresses | Add-Member -NotePropertyName Plan -NotePropertyValue $plan
     return $addresses

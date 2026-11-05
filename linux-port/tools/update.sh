@@ -23,7 +23,10 @@
 #     fallback server), checks its SHA-256,
 #  3. unpacks it over this folder (files the zip carries are replaced; .env,
 #     docker-compose.override.yml and everything else stay as they are),
-#  4. runs `docker compose up -d --build' in linux-port/docker.
+#  4. runs `docker compose up -d --build' in linux-port/docker. The web client
+#     (service webclient) is rebuilt with the release's webclient/site-release.json
+#     and fetches the browser game files of that client patch - only the changed
+#     ones, each checked against the pinned SHA-256 index (MT2009_PLUS_WEBCLIENT_SERVICE_V1).
 #
 #  Nothing here removes a volume: the database, characters, items and guilds
 #  are in volumes, and `down' does not appear in this file in any form.

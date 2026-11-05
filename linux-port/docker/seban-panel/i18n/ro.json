@@ -6064,7 +6064,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop în joc",
   "🪙 Smocze Monety i ItemShop": "🪙 Monede Dragon și ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server pe Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Nick și drepturi"
+  "🪪 Nick i uprawnienia": "🪪 Nick și drepturi",
+  "Graj w przeglądarce ↗": "Joacă în browser ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Jocul în browser (calculator și telefon) pe propriul port, ca panourile: pornire, port, adresă, de unde se descarcă fișierele.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Pornit: jucătorii pot juca în browser (calculator și telefon) la http://adresa-serverului:port/ – panourile arată linkul „Joacă în browser”. Prima pornire descarcă fișierele jocului pentru browser (circa 2 GB, o singură dată). Aceleași conturi ca în clientul descărcat.",
+  "Port gry w przeglądarce": "Portul jocului în browser",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Portul paginii jocului (http://adresa:7792/). Pe un VPS deschide-l în firewall-ul furnizorului, ca porturile jocului.",
+  "Adres nasłuchu gry w przeglądarce": "Adresa de ascultare a jocului în browser",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Gol = ca porturile jocului. Este pagina jucătorilor (ca ItemShop), deci pe un server trebuie să fie accesibilă din exterior.",
+  "Własny adres gry w przeglądarce": "Adresa proprie a jocului în browser",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Doar când îl pui în spatele propriului domeniu cu HTTPS (ex. https://gra.example.pl/). Gol = http://adresa-serverului:port/.",
+  "Dodatkowe dozwolone strony": "Pagini permise suplimentare",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Alte pagini din care se poate conecta la joc (separate prin virgulă, http(s)://host[:port]). De obicei gol – adresa serverului și un domeniu care indică serverul funcționează singure.",
+  "Skąd pobierać pliki gry w przeglądarce": "De unde se descarcă fișierele jocului în browser",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Serverul de actualizări cu fișierele jocului în browser. Fiecare fișier este verificat cu sumele SHA-256 ale versiunii, deci alt server nu poate înlocui nimic. Lasă așa.",
+  "Folder z plikami gry w przeglądarce": "Folderul cu fișierele jocului în browser",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Un folder pe acest calculator cu fișierele publicate în loc de descărcare (instalare fără internet). Gol = descărcare."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(vopsea de păr aleatorie). Undiță +1…+20, Undiță de Cărbune = {0}. Tip:",

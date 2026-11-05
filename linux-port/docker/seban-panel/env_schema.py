@@ -51,7 +51,8 @@ import re
 # 8: M2_SEBAN_SNAPSHOT_HEAVY_HOURS (MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1).
 # 9: M2_SKILL_HACK (MT2009_PLUS_SKILL_HACK_V1, the other specialisation's skills).
 # 10: M2_DEFAULT_LANGUAGE (MT2009_PLUS_LANGUAGE_DEFAULT_V1, the server's default language).
-SCHEMA_VERSION = 10
+# 11: M2_WEBCLIENT_* (MT2009_PLUS_WEBCLIENT_SERVICE_V1, the webclient service).
+SCHEMA_VERSION = 11
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -66,6 +67,8 @@ SECTIONS = [
      "desc": "Hasła i dostęp do paneli, nazwa serwera, rejestracja, adresy między panelami."},
     {"id": "klient", "label": "Klient gry", "icon": "💾",
      "desc": "Klient do pobrania: nazwa, adres wpisany w klienta, paczka źródłowa."},
+    {"id": "webklient", "label": "Gra w przeglądarce", "icon": "🕹",
+     "desc": "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki."},
     # Hidden from the page (the owner, 6 October: "Całą sekcję gra w przeglądarce usuń"); its keys
     # stay described for the schema test and are never written from the panel.
     {"id": "przegladarka", "label": "Gra w przeglądarce", "icon": "🕸", "hidden": True,
@@ -88,6 +91,7 @@ SERVICE_LABELS = {
     "seban-item-grants": "Nadawanie przedmiotów",
     "itemshop": "ItemShop",
     "updater": "Aktualizator",
+    "webclient": "Gra w przeglądarce",
 }
 
 GAME = ["game", "playerbot-migrate"]
@@ -449,10 +453,10 @@ SCHEMA = [
     _e("M2_PUBLIC_ADDRESS", "Publiczny adres serwera",
        "Adres, który gracze wpisują w kliencie: publiczne IP VPS albo domena. Na własnym komputerze puste (127.0.0.1). "
        "Zły adres = gracze zawisają na „łączenie z serwerem”.",
-       "siec", "host", "", ["game", "panel"], allow_empty=True, dangerous=True),
+       "siec", "host", "", ["game", "panel", "webclient"] + SEBAN, allow_empty=True, dangerous=True),
     _e("M2_HOST_BIND_ADDRESS", "Adres nasłuchu portów gry",
        "Na jakim adresie komputera wystawić porty gry. 127.0.0.1 = tylko ten komputer, 0.0.0.0 = także gracze z sieci.",
-       "siec", "address", "0.0.0.0", ["game", "itemshop", "panel", "seban-panel"], dangerous=True,
+       "siec", "address", "0.0.0.0", ["game", "itemshop", "panel", "seban-panel", "webclient"], dangerous=True,
        suggestions=["0.0.0.0", "127.0.0.1"]),
     _e("M2_PANEL_BIND_ADDRESS", "Adres nasłuchu paneli",
        "To samo dla paneli. 127.0.0.1 trzyma panele przy tym komputerze (dostęp np. przez tunel SSH).",
@@ -474,10 +478,10 @@ SCHEMA = [
        "siec", "portrange", "13000-13003", ["game", "panel"], dangerous=True),
     _e("M2_GAME_CONTAINER_PORT_RANGE", "Zakres portów gry (kontener)",
        "To samo po stronie kontenera – musi mieć tę samą długość co zakres hosta. Zwykle ustawiane automatycznie.",
-       "siec", "portrange", "13000-13003", ["game"], dangerous=True),
+       "siec", "portrange", "13000-13003", ["game", "webclient"], dangerous=True),
     _e("M2_GAME_PORT_BASE", "Pierwszy port kanałów w kontenerze",
        "Port, od którego rdzenie gry liczą porty kanałów wewnątrz kontenera. 13000, chyba że na tym samym komputerze stoi drugi serwer.",
-       "siec", "port", "13000", ["game"], dangerous=True),
+       "siec", "port", "13000", ["game", "webclient"], dangerous=True),
     _e("M2_PANEL_PUBLIC_PORT", "Port panelu klasycznego", "Port panelu klasycznego (http://adres:7788). Tylko cyfry.",
        "siec", "port", "7788", ["game", "panel"] + SEBAN, dangerous=True),
     _e("M2_SEBAN_PANEL_PORT", "Port panelu zaawansowanego",
@@ -602,6 +606,33 @@ SCHEMA = [
     _e("M2_BROWSER_CACHE_MB", "Pamięć gry w przeglądarce (MB)", "Ile MB danych gry strona trzyma w pamięci. Decyduje o płynności; 0 = domyślne strony (96).",
        "przegladarka", "int", "768", ["panel"], min=0, max=4096, step=64),
 
+    # ------------------------------------------------------------------ Gra w przeglądarce
+    # MT2009_PLUS_WEBCLIENT_SERVICE_V1: the webclient service (linux-port/docker/webclient).
+    _e("M2_WEBCLIENT_ON", "Gra w przeglądarce",
+       "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. "
+       "Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.",
+       "webklient", "bool", "1", ["webclient", "panel"] + SEBAN, featured=True),
+    _e("M2_WEBCLIENT_PORT", "Port gry w przeglądarce",
+       "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.",
+       "webklient", "port", "7792", ["webclient", "panel"] + SEBAN, dangerous=True),
+    _e("M2_WEBCLIENT_BIND_ADDRESS", "Adres nasłuchu gry w przeglądarce",
+       "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.",
+       "webklient", "address", "", ["webclient"], allow_empty=True, dangerous=True,
+       suggestions=["", "0.0.0.0", "127.0.0.1"]),
+    _e("M2_WEBCLIENT_PUBLIC_URL", "Własny adres gry w przeglądarce",
+       "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.",
+       "webklient", "url", "", ["webclient", "panel"] + SEBAN, allow_empty=True),
+    _e("M2_WEBCLIENT_ORIGINS", "Dodatkowe dozwolone strony",
+       "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.",
+       "webklient", "string", "", ["webclient"], allow_empty=True, pattern=_URL + r"(," + _URL + r")*", hint="np. https://gra.example.pl"),
+    _e("M2_WEBCLIENT_SOURCE", "Skąd pobierać pliki gry w przeglądarce",
+       "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.",
+       "webklient", "string", "http://141.94.100.53/aktualizacje/webklient-yohara/", ["webclient"],
+       pattern=_URL + r"( " + _URL + r")*", hint="adres http(s)://…/ (kilka po spacji)"),
+    _e("M2_WEBCLIENT_SOURCE_DIR", "Folder z plikami gry w przeglądarce",
+       "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.",
+       "webklient", "path", "", ["webclient"], allow_empty=True, dangerous=True),
+
     # ------------------------------------------------------------------ Baza
     _e("M2_DB_ROOT_PASSWORD", "Hasło administratora bazy",
        "Hasło konta root bazy danych.", "baza", "string", "", ["game", "mariadb", "playerbot-migrate"], secret=True, readonly=True,
@@ -690,7 +721,7 @@ SCHEMA = [
 
     # ------------------------------------------------------------------ Zaawansowane
     _e("M2_TZ", "Strefa czasowa", "Strefa czasowa kontenerów, np. Europe/Warsaw. Ustawia godziny w logach, w panelach i porę nocy botów.",
-       "zaawansowane", "string", "UTC", ["game", "itemshop", "mariadb", "panel", "updater"] + SEBAN,
+       "zaawansowane", "string", "UTC", ["game", "itemshop", "mariadb", "panel", "updater", "webclient"] + SEBAN,
        pattern=r"UTC|[A-Za-z_]+(/[A-Za-z0-9_+-]+){1,2}", hint="np. Europe/Warsaw", suggestions=["Europe/Warsaw", "UTC", "Europe/London", "Europe/Berlin"],
        note="Odtwarza wszystkie kontenery, także bazę danych (gracze zostaną rozłączeni)."),
     _e("M2_LOG_KEEP_HOURS", "Ile godzin trzymać logi serwera",
@@ -720,7 +751,7 @@ SCHEMA = [
        "zaawansowane", "string", "", [], readonly=True,
        readonly_reason="Zmiana nazwy projektu odcina serwer od jego wolumenów, czyli od całego świata i bazy."),
     _e("M2_CONTAINER_PREFIX", "Przedrostek nazw kontenerów", "Przedrostek nazw kontenerów (ustawia launcher/instalator).",
-       "zaawansowane", "string", "", ALL_DB + ["updater"], readonly=True,
+       "zaawansowane", "string", "", ALL_DB + ["updater", "webclient"], readonly=True,
        readonly_reason="Zmiana tworzy kontenery o nowych nazwach obok starych – dwa serwery walczyłyby o te same porty."),
     _e("PLAYERBOT_RETIRE_COUNT", "Emerytury z .env: liczba botów", "Starszy sposób uruchamiania emerytur botów z .env. Zamiast tego użyj strony „Emerytury botów”.",
        "zaawansowane", "int", "0", ["game"], min=0, max=2500),

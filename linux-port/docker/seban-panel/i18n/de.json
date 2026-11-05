@@ -6066,7 +6066,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop im Spiel",
   "🪙 Smocze Monety i ItemShop": "🪙 Drachenmünzen und ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server unter Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Name und Berechtigungen"
+  "🪪 Nick i uprawnienia": "🪪 Name und Berechtigungen",
+  "Graj w przeglądarce ↗": "Im Browser spielen ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Das Spiel im Webbrowser (Computer und Handy) auf einem eigenen Port, wie die Panels: an/aus, Port, Adresse, woher seine Dateien kommen.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "An: Spieler können im Browser spielen (Computer und Handy) unter http://server-adresse:port/ – die Panels zeigen den Link „Im Browser spielen“. Der erste Start lädt die Spieldateien für den Browser herunter (ca. 2 GB, einmalig). Dieselben Konten wie im heruntergeladenen Client.",
+  "Port gry w przeglądarce": "Port des Browserspiels",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Port der Spielseite (http://adresse:7792/). Auf einem VPS in der Firewall des Anbieters öffnen, wie die Spielports.",
+  "Adres nasłuchu gry w przeglądarce": "Lauschadresse des Browserspiels",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Leer = wie die Spielports. Es ist die Seite für Spieler (wie der ItemShop), also muss sie auf einem Server von außen erreichbar sein.",
+  "Własny adres gry w przeglądarce": "Eigene Adresse des Browserspiels",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Nur wenn du es hinter eine eigene HTTPS-Domain stellst (z. B. https://gra.example.pl/). Leer = http://server-adresse:port/.",
+  "Dodatkowe dozwolone strony": "Zusätzlich erlaubte Seiten",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Andere Seiten, die sich mit dem Spiel verbinden dürfen (durch Komma getrennt, http(s)://host[:port]). Meist leer – die Serveradresse und eine auf den Server zeigende Domain funktionieren von selbst.",
+  "Skąd pobierać pliki gry w przeglądarce": "Woher die Dateien des Browserspiels geladen werden",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Update-Server mit den Dateien des Browserspiels. Jede Datei wird mit den SHA-256-Summen des Releases geprüft, ein anderer Server kann also nichts austauschen. Lass es so.",
+  "Folder z plikami gry w przeglądarce": "Ordner mit den Dateien des Browserspiels",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Ein Ordner auf diesem Computer mit den veröffentlichten Dateien statt Download (Installation ohne Internet). Leer = Download."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(zufällige Haarfarbe). Angelrute +1…+20, Kohle-Angelrute = {0}. Art:",

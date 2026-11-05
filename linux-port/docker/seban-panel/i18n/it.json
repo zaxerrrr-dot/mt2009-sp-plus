@@ -6083,7 +6083,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop nel gioco",
   "🪙 Smocze Monety i ItemShop": "🪙 Monete del Drago e ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server su Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Nick e permessi"
+  "🪪 Nick i uprawnienia": "🪪 Nick e permessi",
+  "Graj w przeglądarce ↗": "Gioca nel browser ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Il gioco nel browser (computer e telefono) su una porta propria, come i pannelli: attivazione, porta, indirizzo, da dove prendere i file.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Attivo: i giocatori possono giocare nel browser (computer e telefono) su http://indirizzo-server:porta/ – i pannelli mostrano il link «Gioca nel browser». Il primo avvio scarica i file del gioco per il browser (circa 2 GB, una volta). Gli stessi account del client scaricato.",
+  "Port gry w przeglądarce": "Porta del gioco nel browser",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Porta della pagina del gioco (http://indirizzo:7792/). Su un VPS aprila nel firewall del fornitore, come le porte del gioco.",
+  "Adres nasłuchu gry w przeglądarce": "Indirizzo di ascolto del gioco nel browser",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Vuoto = come le porte del gioco. È la pagina dei giocatori (come l'ItemShop), quindi su un server deve essere raggiungibile dall'esterno.",
+  "Własny adres gry w przeglądarce": "Indirizzo proprio del gioco nel browser",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Solo se lo metti dietro un tuo dominio con HTTPS (es. https://gra.example.pl/). Vuoto = http://indirizzo-server:porta/.",
+  "Dodatkowe dozwolone strony": "Pagine consentite aggiuntive",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Altre pagine da cui è consentito collegarsi al gioco (separate da virgola, http(s)://host[:porta]). Di solito vuoto: l'indirizzo del server e un dominio che punta al server funzionano da soli.",
+  "Skąd pobierać pliki gry w przeglądarce": "Da dove scaricare i file del gioco nel browser",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Server degli aggiornamenti con i file del gioco nel browser. Ogni file viene verificato con le somme SHA-256 della versione, quindi un altro server non può sostituire nulla. Lascialo così.",
+  "Folder z plikami gry w przeglądarce": "Cartella con i file del gioco nel browser",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Una cartella su questo computer con i file pubblicati al posto del download (installazione senza internet). Vuoto = download."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(tinta per capelli casuale). Canna da pesca +1…+20, Canna da pesca in carbonio = {0}. Tipo:",

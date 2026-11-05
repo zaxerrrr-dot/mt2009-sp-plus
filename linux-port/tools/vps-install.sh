@@ -839,6 +839,25 @@ print_accounts() {
         }' "$ACCOUNTS"
 }
 
+# The web client (compose service webclient): on unless M2_WEBCLIENT_ON=0,
+# published for the players like the ItemShop (not through the SSH tunnel).
+# An empty key means the compose default (1 / 7792).
+webclient_on() {
+    [ "$(env_get M2_WEBCLIENT_ON)" = 0 ] && echo 0 || echo 1
+}
+webclient_port() {
+    _p=$(env_get M2_WEBCLIENT_PORT)
+    is_number "$_p" && echo "$_p" || echo 7792
+}
+webclient_url() {
+    [ "$(webclient_on)" = 1 ] || return 0
+    _u=$(env_get M2_WEBCLIENT_PUBLIC_URL)
+    if [ -n "$_u" ]; then echo "$_u"; return 0; fi
+    _a=$(env_get M2_PUBLIC_ADDRESS)
+    [ -n "$_a" ] || _a=127.0.0.1
+    echo "http://$_a:$(webclient_port)/"
+}
+
 # ---- commands --------------------------------------------------------------------
 cmd_install() {
     check_tree
@@ -862,7 +881,12 @@ cmd_install() {
     _from=$(log_lines)
     start_job install
     say ""
-    say "Gracze lacza sie z adresem $(env_get M2_PUBLIC_ADDRESS), porty 11000, $(env_get M2_GAME_PORT_RANGE) i ItemShop $(env_get M2_ITEMSHOP_PUBLIC_PORT) (TCP) - jesli dostawca VPS ma wlasna zapore, otworz je tam."
+    if [ "$(webclient_on)" = 1 ]; then
+        say "Gracze lacza sie z adresem $(env_get M2_PUBLIC_ADDRESS), porty 11000, $(env_get M2_GAME_PORT_RANGE), ItemShop $(env_get M2_ITEMSHOP_PUBLIC_PORT) i gra w przegladarce $(webclient_port) (TCP) - jesli dostawca VPS ma wlasna zapore, otworz je tam."
+        say "Gra w przegladarce: $(webclient_url) (pierwszy start pobiera dane klienta, okolo 2 GB - kilka minut)"
+    else
+        say "Gracze lacza sie z adresem $(env_get M2_PUBLIC_ADDRESS), porty 11000, $(env_get M2_GAME_PORT_RANGE) i ItemShop $(env_get M2_ITEMSHOP_PUBLIC_PORT) (TCP) - jesli dostawca VPS ma wlasna zapore, otworz je tam."
+    fi
     say "Panele (7788, 7790) sluchaja tylko na tym serwerze: otwiera je launcher (tunel SSH) albo:"
     say "    ssh -L 7788:127.0.0.1:7788 -L 7790:127.0.0.1:7790 uzytkownik@$(env_get M2_PUBLIC_ADDRESS)"
     say "Stan budowy:  sh $SELF status"
@@ -910,6 +934,9 @@ cmd_status() {
         printf 'panel_port=%s\n' "$(env_get M2_PANEL_PUBLIC_PORT)"
         printf 'seban_panel_port=%s\n' "$(env_get M2_SEBAN_PANEL_PORT)"
         printf 'itemshop_port=%s\n' "$(env_get M2_ITEMSHOP_PUBLIC_PORT)"
+        printf 'webclient_on=%s\n' "$(webclient_on)"
+        printf 'webclient_port=%s\n' "$(webclient_port)"
+        printf 'webclient_url=%s\n' "$(webclient_url)"
         printf 'panel_bind=%s\n' "$(env_get M2_PANEL_BIND_ADDRESS)"
         printf 'host_bind=%s\n' "$(env_get M2_HOST_BIND_ADDRESS)"
         printf 'bots=%s\n' "$(env_get PLAYERBOT_AUTOSPAWN_COUNT)"

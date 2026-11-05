@@ -6100,7 +6100,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop a játékban",
   "🪙 Smocze Monety i ItemShop": "🪙 Sárkányérmék és ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Szerver Windowson (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Név és jogosultságok"
+  "🪪 Nick i uprawnienia": "🪪 Név és jogosultságok",
+  "Graj w przeglądarce ↗": "Játék a böngészőben ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "A játék böngészőben (számítógépen és telefonon), saját porton, mint a panelek: be/ki, port, cím, honnan jönnek a fájljai.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Bekapcsolva: a játékosok böngészőben játszhatnak (számítógépen és telefonon) a http://szerver-cím:port/ címen – a panelek mutatják a „Játék a böngészőben” linket. Az első indítás letölti a böngészős játék fájljait (kb. 2 GB, egyszer). Ugyanazok a fiókok, mint a letöltött kliensben.",
+  "Port gry w przeglądarce": "A böngészős játék portja",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "A játékoldal portja (http://cím:7792/). VPS-en nyisd meg a szolgáltató tűzfalában, mint a játék portjait.",
+  "Adres nasłuchu gry w przeglądarce": "A böngészős játék figyelési címe",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Üres = mint a játék portjai. Ez a játékosok oldala (mint az ItemShop), ezért szerveren kívülről is elérhetőnek kell lennie.",
+  "Własny adres gry w przeglądarce": "A böngészős játék saját címe",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Csak ha saját HTTPS-es domain mögé teszed (pl. https://gra.example.pl/). Üres = http://szerver-cím:port/.",
+  "Dodatkowe dozwolone strony": "További engedélyezett oldalak",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Más oldalak, amelyekről csatlakozni lehet a játékhoz (vesszővel elválasztva, http(s)://host[:port]). Általában üres – a szerver címe és a szerverre mutató domain magától működik.",
+  "Skąd pobierać pliki gry w przeglądarce": "Honnan töltse le a böngészős játék fájljait",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Frissítési szerver a böngészős játék fájljaival. Minden fájlt a kiadás SHA-256 összegeivel ellenőriz, így egy másik szerver semmit sem cserélhet ki. Hagyd így.",
+  "Folder z plikami gry w przeglądarce": "A böngészős játék fájljainak mappája",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Egy mappa ezen a gépen a közzétett fájlokkal letöltés helyett (internet nélküli telepítés). Üres = letöltés."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(véletlen hajfesték). Horgászbot +1…+20, Szénhorgászbot = {0}. Fajta:",

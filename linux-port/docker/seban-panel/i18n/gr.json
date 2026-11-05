@@ -6111,7 +6111,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop στο παιχνίδι",
   "🪙 Smocze Monety i ItemShop": "🪙 Δρακονομίσματα και ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server σε Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Όνομα και δικαιώματα"
+  "🪪 Nick i uprawnienia": "🪪 Όνομα και δικαιώματα",
+  "Graj w przeglądarce ↗": "Παίξε στον browser ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Το παιχνίδι στον browser (υπολογιστής και κινητό) σε δική του θύρα, όπως τα πάνελ: ενεργοποίηση, θύρα, διεύθυνση, από πού έρχονται τα αρχεία του.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Ενεργό: οι παίκτες μπορούν να παίξουν στον browser (υπολογιστής και κινητό) στο http://διεύθυνση-διακομιστή:θύρα/ – τα πάνελ δείχνουν τον σύνδεσμο «Παίξε στον browser». Η πρώτη εκκίνηση κατεβάζει τα αρχεία του παιχνιδιού για τον browser (περίπου 2 GB, μία φορά). Οι ίδιοι λογαριασμοί όπως στο κατεβασμένο πρόγραμμα.",
+  "Port gry w przeglądarce": "Θύρα του παιχνιδιού στον browser",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Θύρα της σελίδας του παιχνιδιού (http://διεύθυνση:7792/). Σε VPS άνοιξέ τη στο τείχος προστασίας του παρόχου, όπως τις θύρες του παιχνιδιού.",
+  "Adres nasłuchu gry w przeglądarce": "Διεύθυνση ακρόασης του παιχνιδιού στον browser",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Κενό = όπως οι θύρες του παιχνιδιού. Είναι η σελίδα των παικτών (όπως το ItemShop), άρα σε διακομιστή πρέπει να είναι προσβάσιμη απ' έξω.",
+  "Własny adres gry w przeglądarce": "Δική σου διεύθυνση του παιχνιδιού στον browser",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Μόνο όταν το βάζεις πίσω από δικό σου domain με HTTPS (π.χ. https://gra.example.pl/). Κενό = http://διεύθυνση-διακομιστή:θύρα/.",
+  "Dodatkowe dozwolone strony": "Επιπλέον επιτρεπόμενες σελίδες",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Άλλες σελίδες που επιτρέπεται να συνδεθούν στο παιχνίδι (χωρισμένες με κόμμα, http(s)://host[:θύρα]). Συνήθως κενό – η διεύθυνση του διακομιστή και ένα domain που δείχνει σε αυτόν λειτουργούν μόνα τους.",
+  "Skąd pobierać pliki gry w przeglądarce": "Από πού κατεβαίνουν τα αρχεία του παιχνιδιού στον browser",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Διακομιστής ενημερώσεων με τα αρχεία του παιχνιδιού στον browser. Κάθε αρχείο ελέγχεται με τα αθροίσματα SHA-256 της έκδοσης, οπότε άλλος διακομιστής δεν μπορεί να αλλάξει τίποτα. Άφησέ το.",
+  "Folder z plikami gry w przeglądarce": "Φάκελος με τα αρχεία του παιχνιδιού στον browser",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Ένας φάκελος σε αυτόν τον υπολογιστή με τα δημοσιευμένα αρχεία αντί για λήψη (εγκατάσταση χωρίς internet). Κενό = λήψη."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(τυχαία βαφή μαλλιών). Καλάμι ψαρέματος +1…+20, Καλάμι Άνθρακα = {0}. Είδος:",

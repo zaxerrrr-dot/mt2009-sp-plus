@@ -2436,7 +2436,7 @@ function Show-CoopCheckAction {
                 'launcher wykryje VPN i użyje go zamiast routera.') -ForegroundColor Yellow
         }
     }
-    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot
+    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot -WithWebClient
     if ($report.Verdict -eq 'no-wan') {
         $vpns = @($report.Vpns)
         if ($vpns.Count -gt 0) { Write-Host ("Masz {0} - hostuj przez niego (HOSTUJ ŚWIAT wybierze go sam, gdy router nie otworzy portów)." -f $vpns[0].Name) -ForegroundColor Yellow }
@@ -2573,7 +2573,11 @@ function Invoke-CoopGameRecreate {
                 Write-Host ("docker compose up game zakończył się kodem {0} - ponawiam za 5 s (próba {1} z 3)." -f $exit, $attempt) -ForegroundColor Yellow
                 Start-Sleep -Seconds 5
             }
-            docker compose --project-directory $composeDir -f $composeFile up -d --no-deps game
+            # The web client (compose service webclient) follows: it publishes on
+            # M2_HOST_BIND_ADDRESS and lets pages of M2_PUBLIC_ADDRESS use its bridge.
+            $services = @('game')
+            if ((Get-DotEnvValue -Key 'M2_WEBCLIENT_ON' -Default '1') -ne '0') { $services += 'webclient' }
+            docker compose --project-directory $composeDir -f $composeFile up -d --no-deps @services
             $exit = $LASTEXITCODE
             if ($exit -eq 0) { break }
         }
@@ -2645,7 +2649,7 @@ function Start-CoopHostingAction {
     if ($defaults.Count -gt 0) {
         throw ("Konta {0} mają hasła z paczki - każdy w internecie mógłby się na nie zalogować. Najpierw 'Zabezpiecz konta'." -f ($defaults -join ', '))
     }
-    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot
+    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot -WithWebClient
     # The address the friends get, and the one the cores have to name in every
     # warp (PROXY_IP): the client follows the warp's address, not the one it
     # logged in through. Settled after the router (Resolve-M2CoopAdvertisedAddress);
@@ -2800,6 +2804,10 @@ function Start-CoopHostingAction {
     if ($report.LanAddress) {
         Write-Host ("W tej samej sieci domowej (drugi komputer, laptop na tym samym Wi-Fi) gra łączy się przez {0}, bez routera: kod zaproszenia ma też ten adres, a Dolacz.bat i launcher same go wybiorą." -f $report.LanAddress)
     }
+    $webPort = Get-M2CoopWebClientPort -ServerRoot $serverRoot
+    if ($webPort -gt 0) {
+        Write-Host ("Gra w przeglądarce dla znajomych: http://{0}:{1}/ (bez instalowania klienta; login i hasło z kodu zaproszenia)." -f $(if ($friendAddress -match ':') { "[$friendAddress]" } else { $friendAddress }), $webPort) -ForegroundColor Cyan
+    }
     Write-Host 'Ty grasz dalej na serwerze 1 (Metin2 SinglePlayer). Kody zaproszeń dla znajomych są w oknie COOP.'
     if (@($state.friends).Count -eq 0) { Write-Host 'Nie masz jeszcze znajomych - dodaj ich w oknie COOP.' -ForegroundColor Yellow }
     if ($mapped.Count -gt 0 -and $mapped.Count -lt $ports.Count) {
@@ -2810,7 +2818,7 @@ function Start-CoopHostingAction {
 function Stop-CoopHostingAction {
     Assert-CoopModule
     $state = Read-M2CoopState -ServerRoot $serverRoot
-    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot
+    $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot -WithWebClient
     $lan = Get-M2CoopLanAddress
     if ($lan) {
         $gateway = Find-M2CoopGateway -LanAddress $lan.Address
@@ -2858,7 +2866,7 @@ function Update-CoopHostingLease {
     $gateway = Find-M2CoopGateway -LanAddress $lan.Address
     if (-not $gateway) { return }
     $ok = 0
-    foreach ($port in @(Get-M2CoopGamePorts -ServerRoot $serverRoot)) {
+    foreach ($port in @(Get-M2CoopGamePorts -ServerRoot $serverRoot -WithWebClient)) {
         if ((Add-M2CoopPortMapping -Gateway $gateway -Port $port -LanAddress $lan.Address).Ok) { $ok++ }
     }
     Write-Host ("COOP: przekierowania w routerze odnowione ({0})." -f $ok)
@@ -2956,6 +2964,10 @@ function Write-VpsOutcome {
     }
     Write-Host ('Serwer działa na VPS, wersja {0}.' -f $Status.Version) -ForegroundColor Green
     Write-Host ('Gracze łączą się z {0} (porty TCP {1} i {2}; jeśli dostawca VPS ma własną zaporę, otwórz je tam).' -f (Get-M2VpsWorldAddress -State $State -Status $Status), $Status.AuthPort, $Status.GamePortRange)
+    if ($Status.WebClientOn) {
+        $webUrl = $(if ([string]$Status.WebClientUrl) { [string]$Status.WebClientUrl } else { 'http://{0}:{1}/' -f (Get-M2VpsWorldAddress -State $State -Status $Status), $Status.WebClientPort })
+        Write-Host ('Gra w przeglądarce: {0} (port TCP {1} - też do otwarcia w zaporze dostawcy; pierwszy start pobiera dane klienta, kilka minut).' -f $webUrl, $Status.WebClientPort) -ForegroundColor Cyan
+    }
     Write-Host 'Panele słuchają tylko na VPS: otwiera je OTWÓRZ PANEL (tunel SSH). Hasła kont admin i test pokazuje HASŁA KONT - w tym logu ich nie ma.'
 }
 
@@ -2993,6 +3005,10 @@ function Show-VpsStatusAction {
     Write-Host ('VPS {0}: wersja {1}, zadanie "{2}": {3}' -f $state.host, $status.Version, $status.Kind, $said)
     if ($status.Message) { Write-Host ('  {0} (etap {1}, od {2}{3})' -f $status.Message, $status.Phase, $status.Started, $(if ($status.Finished) { ' do ' + $status.Finished } else { '' })) }
     Write-Host ('Adres dla graczy: {0}, porty {1} i {2}; panele na {3}, gra na {4}; botów: {5}' -f $status.PublicAddress, $status.AuthPort, $status.GamePortRange, $status.PanelBind, $status.HostBind, $status.Bots)
+    if ($status.WebClientOn) {
+        $webUrl = $(if ([string]$status.WebClientUrl) { [string]$status.WebClientUrl } else { 'http://{0}:{1}/' -f (Get-M2VpsWorldAddress -State $state -Status $status), $status.WebClientPort })
+        Write-Host ('Gra w przeglądarce: {0}' -f $webUrl)
+    }
     if ($status.LogText) { Write-Host '--- koniec logu instalacji ---'; Write-Host $status.LogText }
     if ($status.PsText) { Write-Host '--- kontenery ---'; Write-Host $status.PsText }
 }
@@ -3001,6 +3017,7 @@ function Open-VpsPanelAction {
     $state = Get-VpsStateForAction
     $addresses = Open-M2VpsPanel -State $state -ServerRoot $serverRoot
     Write-Host ('Tunel do paneli VPS działa: panel {0}, panel zaawansowany {1}, ItemShop {2}.' -f $addresses.ClassicUrl, $addresses.SebanUrl, $addresses.ItemShopUrl) -ForegroundColor Green
+    if ($addresses.WebClientUrl) { Write-Host ('Gra w przeglądarce (bez tunelu, adres dla graczy): {0}' -f $addresses.WebClientUrl) -ForegroundColor Cyan }
     Write-Host 'Działa po zamknięciu launchera; kończy go ZAMKNIJ TUNEL albo zerwane połączenie.'
     Start-Process $addresses.ClassicUrl
 }

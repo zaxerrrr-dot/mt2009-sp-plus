@@ -338,6 +338,7 @@ $script:Strings = @{
         panelClassic = "Oryginalny panel`r`nmapa i sterowanie"
         panelSeban   = "Zaawansowany panel seban latino`r`nprofile, rankingi, gospodarka, obciazenie"
         panelPw      = 'Nie moge sie zalogowac (haslo do panelu)'
+        panelWeb     = 'Graj w przeglądarce'
         importDialog = 'Importuj baze z innej instalacji'
         importInfo   = 'Wybierz zrodlowa instalacje. Jej swiat (postacie, poziomy, ekwipunek) zostanie skopiowany do biezacej instalacji.'
         importOk     = 'Importuj'
@@ -418,6 +419,7 @@ $script:Strings = @{
         panelClassic = "Original panel`r`nmap and controls"
         panelSeban   = "Advanced panel by seban latino`r`nprofiles, rankings, economy, load"
         panelPw      = 'I cannot log in (panel password)'
+        panelWeb     = 'Play in the browser'
         importDialog = 'Import a database from another installation'
         importInfo   = 'Pick the source installation. Its world - characters, levels, equipment - is copied into this one.'
         importOk     = 'Import'
@@ -3143,18 +3145,25 @@ function Get-M2PanelAddresses {
 
     $classic = 7788
     $seban = 7790
+    $web = 7792
+    $webOn = $true
     $envPath = Join-Path $ServerRoot 'linux-port\docker\.env'
     if (Test-Path -LiteralPath $envPath -PathType Leaf) {
         $match = Select-String -LiteralPath $envPath -Pattern '^M2_PANEL_PUBLIC_PORT=(\d+)$' | Select-Object -First 1
         if ($match) { $classic = [int]$match.Matches[0].Groups[1].Value }
         $match = Select-String -LiteralPath $envPath -Pattern '^M2_SEBAN_PANEL_PORT=(\d+)$' | Select-Object -First 1
         if ($match) { $seban = [int]$match.Matches[0].Groups[1].Value }
+        # The web client (compose service webclient): on unless M2_WEBCLIENT_ON=0.
+        $match = Select-String -LiteralPath $envPath -Pattern '^M2_WEBCLIENT_PORT=(\d+)$' | Select-Object -First 1
+        if ($match) { $web = [int]$match.Matches[0].Groups[1].Value }
+        if (Select-String -LiteralPath $envPath -Pattern '^M2_WEBCLIENT_ON=0\s*$' | Select-Object -First 1) { $webOn = $false }
     }
     return [pscustomobject]@{
         ClassicUrl = "http://127.0.0.1:$classic/map"
         SebanUrl   = "http://127.0.0.1:$seban/"
         ClassicPort = $classic
         SebanPort   = $seban
+        WebClientUrl = $(if ($webOn) { "http://127.0.0.1:$web/" } else { '' })
     }
 }
 
@@ -4054,16 +4063,32 @@ function Show-PanelChoiceDialog {
     # The third thing somebody pressing this button may actually want.
     # "podajcie te kody do gm bo ja nie moge na www wejsc", "ja nie mam zadnego
     # hasla nawet w panelu klasycznym" - it is one line in .env and nothing showed it.
+    # The web client - the players' page, so on a VPS its public address (not
+    # the tunnel); absent when M2_WEBCLIENT_ON=0.
+    $webUrl = ''
+    if ($Addresses.PSObject.Properties['WebClientUrl']) { $webUrl = [string]$Addresses.WebClientUrl }
+    $bottom = 174
+    if ($webUrl) {
+        $webButton = [Windows.Forms.Button]::new()
+        $webButton.Text = ("{0}  -  {1}" -f (T 'panelWeb'), $webUrl)
+        $webButton.Location = [Drawing.Point]::new(16, 174)
+        $webButton.Size = [Drawing.Size]::new(480, 34)
+        $webButton.DialogResult = [Windows.Forms.DialogResult]::Ignore
+        $dialog.Controls.Add($webButton)
+        $bottom = 216
+        $dialog.Size = [Drawing.Size]::new(520, 292)
+    }
+
     $passwordButton = [Windows.Forms.Button]::new()
     $passwordButton.Text = (T 'panelPw')
-    $passwordButton.Location = [Drawing.Point]::new(16, 174)
+    $passwordButton.Location = [Drawing.Point]::new(16, $bottom)
     $passwordButton.Size = [Drawing.Size]::new(370, 30)
     $passwordButton.DialogResult = [Windows.Forms.DialogResult]::Retry
     $dialog.Controls.Add($passwordButton)
 
     $cancelButton = [Windows.Forms.Button]::new()
     $cancelButton.Text = (T 'cancel')
-    $cancelButton.Location = [Drawing.Point]::new(396, 174)
+    $cancelButton.Location = [Drawing.Point]::new(396, $bottom)
     $cancelButton.Size = [Drawing.Size]::new(100, 30)
     $cancelButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($cancelButton)
@@ -4075,6 +4100,7 @@ function Show-PanelChoiceDialog {
     switch ($answer) {
         ([Windows.Forms.DialogResult]::Yes) { return $Addresses.ClassicUrl }
         ([Windows.Forms.DialogResult]::No)  { return $Addresses.SebanUrl }
+        ([Windows.Forms.DialogResult]::Ignore) { return $webUrl }
         ([Windows.Forms.DialogResult]::Retry) { return 'panel-password' }
         default { return $null }
     }

@@ -1663,7 +1663,7 @@ try {
     $wantedPorts = @()
     foreach ($pair in @(@('M2_PANEL_PUBLIC_PORT', 7788), @('M2_SEBAN_PANEL_PORT', 7790),
                         @('M2_ITEMSHOP_PUBLIC_PORT', 7791), @('M2_AUTH_PORT', 11000),
-                        @('M2_DB_PUBLISH_PORT', 3306))) {
+                        @('M2_DB_PUBLISH_PORT', 3306), @('M2_WEBCLIENT_PORT', 7792))) {
         $raw = [string]$portValues[$pair[0]]
         if ($raw -match '^\d+$') { $wantedPorts += [int]$raw } else { $wantedPorts += [int]$pair[1] }
     }
@@ -1777,5 +1777,20 @@ finally {
 }
 
 Write-Host 'Metin2 server startup completed.' -ForegroundColor Green
+# The web client (compose service webclient): on unless M2_WEBCLIENT_ON=0.
+try {
+    $webEnv = @{}
+    $webEnvPath = Join-Path $composeDirectory '.env'
+    if (Test-Path -LiteralPath $webEnvPath -PathType Leaf) {
+        foreach ($line in @([IO.File]::ReadAllLines($webEnvPath))) {
+            if ("$line" -match '^\s*(M2_WEBCLIENT_ON|M2_WEBCLIENT_PORT)\s*=(.*)$') { $webEnv[$Matches[1]] = $Matches[2].Trim().Trim('"') }
+        }
+    }
+    if ([string]$webEnv['M2_WEBCLIENT_ON'] -ne '0') {
+        $webPort = $(if ([string]$webEnv['M2_WEBCLIENT_PORT'] -match '^\d+$') { [int]$webEnv['M2_WEBCLIENT_PORT'] } else { 7792 })
+        Write-Host ("Gra w przegladarce: http://127.0.0.1:{0}/ (pierwszy start pobiera dane klienta, kilka minut)" -f $webPort) -ForegroundColor Cyan
+    }
+}
+catch { }
 # MT2009_PLUS_UPDATER_AUTOSTART_V1: after the server is up, never fatal.
 Start-M2Updater -ServerRoot $PSScriptRoot -ComposeDirectory $composeDirectory | Out-Null

@@ -6028,7 +6028,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop ve hře",
   "🪙 Smocze Monety i ItemShop": "🪙 Dračí mince a ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server na Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Přezdívka a oprávnění"
+  "🪪 Nick i uprawnienia": "🪪 Přezdívka a oprávnění",
+  "Graj w przeglądarce ↗": "Hrát v prohlížeči ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Hra ve webovém prohlížeči (počítač i telefon) na vlastním portu, jako panely: zapnutí, port, adresa, odkud brát její soubory.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Zapnuto: hráči mohou hrát v prohlížeči (počítač i telefon) na http://adresa-serveru:port/ – panely ukazují odkaz „Hrát v prohlížeči“. První spuštění stáhne soubory hry pro prohlížeč (asi 2 GB, jednou). Stejné účty jako ve staženém klientovi.",
+  "Port gry w przeglądarce": "Port hry v prohlížeči",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Port stránky se hrou (http://adresa:7792/). Na VPS jej otevři ve firewallu poskytovatele, stejně jako porty hry.",
+  "Adres nasłuchu gry w przeglądarce": "Adresa naslouchání hry v prohlížeči",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Prázdné = jako porty hry. Je to stránka pro hráče (jako ItemShop), takže na serveru musí být dostupná zvenku.",
+  "Własny adres gry w przeglądarce": "Vlastní adresa hry v prohlížeči",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Jen když ji dáš za vlastní doménu s HTTPS (např. https://gra.example.pl/). Prázdné = http://adresa-serveru:port/.",
+  "Dodatkowe dozwolone strony": "Další povolené stránky",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Jiné stránky, ze kterých se lze připojit ke hře (oddělené čárkou, http(s)://host[:port]). Obvykle prázdné – adresa serveru a doména mířící na server fungují samy.",
+  "Skąd pobierać pliki gry w przeglądarce": "Odkud stahovat soubory hry v prohlížeči",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Aktualizační server se soubory hry v prohlížeči. Každý soubor se kontroluje součty SHA-256 z vydání, takže jiný server nic nepodstrčí. Nech být.",
+  "Folder z plikami gry w przeglądarce": "Složka se soubory hry v prohlížeči",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Složka na tomto počítači s publikovanými soubory místo stahování (instalace bez internetu). Prázdné = stahování."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(náhodná barva na vlasy). Rybářský prut +1…+20, Uhlíkový rybářský prut = {0}. Druh:",

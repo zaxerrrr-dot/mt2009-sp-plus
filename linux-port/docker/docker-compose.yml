@@ -509,6 +509,12 @@ services:
       # decides whether the game stutters -- see admin_panel.py, where the
       # number is explained. 0 leaves the page's own default (96) alone.
       M2PANEL_BROWSER_CACHE_MB: "${M2_BROWSER_CACHE_MB:-768}"
+      # MT2009_PLUS_WEBCLIENT_SERVICE_V1: the browser game of the webclient service
+      # below - "Graj w przeglądarce" links to http://<this server>:<port>/ (or
+      # M2_WEBCLIENT_PUBLIC_URL) when it is on.
+      M2PANEL_WEBCLIENT_ON: "${M2_WEBCLIENT_ON:-1}"
+      M2PANEL_WEBCLIENT_PORT: "${M2_WEBCLIENT_PORT:-7792}"
+      M2PANEL_WEBCLIENT_URL: "${M2_WEBCLIENT_PUBLIC_URL:-}"
 
       # Server rates. The panel runs M2PANEL_RATES_SCRIPT when somebody saves
       # the rates page and reads M2PANEL_RATES_STATUS back to report how it
@@ -664,6 +670,11 @@ services:
       M2_UPDATE_CHECK: "${M2_UPDATE_CHECK:-1}"
       # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the panel's language for a visitor who has not picked one (m2lang cookie).
       M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
+      # MT2009_PLUS_WEBCLIENT_SERVICE_V1: the "Graj w przeglądarce" link (webclient service).
+      M2_WEBCLIENT_ON: "${M2_WEBCLIENT_ON:-1}"
+      M2_WEBCLIENT_PORT: "${M2_WEBCLIENT_PORT:-7792}"
+      M2_WEBCLIENT_PUBLIC_URL: "${M2_WEBCLIENT_PUBLIC_URL:-}"
+      M2_WEBCLIENT_ADDRESS: "${M2_PUBLIC_ADDRESS:-}"
       TZ: "${M2_TZ:-UTC}"
     ports:
       # 7790 outside: 7789 is the browser bridge's port in this stack.
@@ -712,6 +723,58 @@ services:
       # admin panels' 127.0.0.1 of a VPS install - there the players' clients could not reach it at all
       # ("Nawigacja do strony sieci Web zostala anulowana"). It has no admin page.
       - "${M2_ITEMSHOP_BIND_ADDRESS:-${M2_HOST_BIND_ADDRESS:-0.0.0.0}}:${M2_ITEMSHOP_PUBLIC_PORT:-7791}:80/tcp"
+    networks: [backend]
+
+  # MT2009_PLUS_WEBCLIENT_SERVICE_V1: the game in a web browser (computer and phone),
+  # on its own port like the panels: http://<M2_PUBLIC_ADDRESS>:<M2_WEBCLIENT_PORT>/
+  # (http://127.0.0.1:7792/ on a local install). One container: nginx serving the
+  # page, the WebSocket -> TCP bridge to the game container (/to/), and the
+  # download of the site (~2 GB, once; a client patch brings only its new files)
+  # into the webclient-site volume.
+  #
+  #   * the bridge reaches exactly this stack's login and game cores - the ones the
+  #     page's server list names, mapped onto M2_GAME_PORT_BASE /
+  #     M2_GAME_CONTAINER_PORT_RANGE - and nothing else; pages of other sites are
+  #     refused (allowed: this address and port, M2_WEBCLIENT_PUBLIC_URL,
+  #     M2_WEBCLIENT_ORIGINS);
+  #   * the site is the release webclient/site-release.json pins (every server
+  #     update carries the pin of its client patch, so `up -d --build` after an
+  #     update brings the matching web client), downloaded from
+  #     M2_WEBCLIENT_SOURCE and checked file by file against the pinned SHA-256
+  #     index; M2_WEBCLIENT_SOURCE_DIR serves the same from a folder (offline);
+  #   * players' page like the ItemShop: published with the game's ports
+  #     (M2_HOST_BIND_ADDRESS), not on the panels' 127.0.0.1 of a VPS install;
+  #   * M2_WEBCLIENT_ON=0: the container idles, nothing is downloaded or served.
+  # The web client kit is GPL-2.0 (nairoad) - webclient/NOTICE.md.
+  webclient:
+    build:
+      context: ./webclient
+      dockerfile: Dockerfile
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-webclient:3.0.0-test"
+    container_name: "${M2_CONTAINER_PREFIX:-metin2}-webclient"
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - game
+    environment:
+      M2_WEBCLIENT_ON: "${M2_WEBCLIENT_ON:-1}"
+      M2_WEBCLIENT_PORT: "${M2_WEBCLIENT_PORT:-7792}"
+      M2_WEBCLIENT_ORIGINS: "${M2_WEBCLIENT_ORIGINS:-}"
+      M2_WEBCLIENT_PUBLIC_URL: "${M2_WEBCLIENT_PUBLIC_URL:-}"
+      M2_WEBCLIENT_SOURCE: "${M2_WEBCLIENT_SOURCE:-http://141.94.100.53/aktualizacje/webklient-yohara/}"
+      M2_PUBLIC_ADDRESS: "${M2_PUBLIC_ADDRESS:-}"
+      M2_GAME_CONTAINER_PORT_RANGE: "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13003}"
+      M2_GAME_PORT_BASE: "${M2_GAME_PORT_BASE:-13000}"
+      TZ: "${M2_TZ:-UTC}"
+    ports:
+      - "${M2_WEBCLIENT_BIND_ADDRESS:-${M2_HOST_BIND_ADDRESS:-0.0.0.0}}:${M2_WEBCLIENT_PORT:-7792}:8080/tcp"
+    volumes:
+      - webclient-site:/site
+      - "${M2_WEBCLIENT_SOURCE_DIR:-./webclient/no-local-source}:/websrc:ro"
+    ulimits:
+      nofile:
+        soft: 16384
+        hard: 16384
     networks: [backend]
 
   # The panel's two helpers run the image the seban-panel service builds.
@@ -809,6 +872,7 @@ services:
 
 volumes:
   db-data:
+  webclient-site:
   update-spool:
   panel-data:
   panel-conf:

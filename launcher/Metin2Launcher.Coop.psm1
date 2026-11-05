@@ -90,7 +90,10 @@ function Get-M2CoopContainerPrefix {
 # says nothing: a rule made for CH1 alone let a friend reach auth and CH1 and
 # no other channel.
 function Get-M2CoopGamePorts {
-    param([Parameter(Mandatory = $true)][string]$ServerRoot)
+    # -WithWebClient: plus the web client's port (compose service webclient,
+    # M2_WEBCLIENT_PORT) when it is on - for the firewall rule and the router,
+    # not for "does every core answer".
+    param([Parameter(Mandatory = $true)][string]$ServerRoot, [switch]$WithWebClient)
     $auth = [int](Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_AUTH_PORT' -Default '11000')
     $base = 13000
     $baseText = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_BASE' -Default '13000'
@@ -128,7 +131,21 @@ function Get-M2CoopGamePorts {
         $p = $first + 3 + $ch
         if (-not $ports.Contains($p)) { $ports.Add($p) }
     }
+    if ($WithWebClient) {
+        $web = Get-M2CoopWebClientPort -ServerRoot $ServerRoot
+        if ($web -gt 0 -and -not $ports.Contains($web)) { $ports.Add($web) }
+    }
     return @($ports)
+}
+
+# The web client's port on this PC (compose service webclient), 0 when
+# M2_WEBCLIENT_ON=0 switches it off.
+function Get-M2CoopWebClientPort {
+    param([Parameter(Mandatory = $true)][string]$ServerRoot)
+    if ((Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_WEBCLIENT_ON' -Default '1') -eq '0') { return 0 }
+    $text = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_WEBCLIENT_PORT' -Default '7792'
+    if ($text -match '^\s*(\d+)\s*$' -and [int]$Matches[1] -ge 1 -and [int]$Matches[1] -le 65535) { return [int]$Matches[1] }
+    return 7792
 }
 
 # ---------------------------------------------------------------- network
@@ -1204,7 +1221,7 @@ function Write-M2CoopClientConfig {
 }
 
 Export-ModuleMember -Function Get-M2CoopStatePath, Read-M2CoopState, Save-M2CoopState, Get-M2CoopEnvValue, Get-M2CoopContainerPrefix,
-    Get-M2CoopGamePorts, Get-M2CoopLanAddress, Get-M2CoopPublicAddress, Test-M2CoopPrivateAddress, Test-M2CoopCgnatAddress,
+    Get-M2CoopGamePorts, Get-M2CoopWebClientPort, Get-M2CoopLanAddress, Get-M2CoopPublicAddress, Test-M2CoopPrivateAddress, Test-M2CoopCgnatAddress,
     Find-M2CoopGateway, Invoke-M2CoopUpnp, Get-M2CoopExternalAddress, Get-M2CoopPortMapping, Add-M2CoopPortMapping,
     Remove-M2CoopPortMapping, Get-M2CoopNetworkReport, Test-M2CoopFirewallRule, Add-M2CoopFirewallRule, Remove-M2CoopFirewallRule,
     Invoke-M2CoopSql, Get-M2CoopHashExpression, New-M2CoopSecret, Get-M2CoopDefaultPasswordAccounts, Set-M2CoopAccountPassword,

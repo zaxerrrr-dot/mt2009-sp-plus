@@ -694,6 +694,7 @@ function Get-M2StackHostPorts {
             @{ Key = 'M2_PANEL_PUBLIC_PORT'; Default = 7788; Name = 'panel WWW'; ClientFixed = $false },
             @{ Key = 'M2_SEBAN_PANEL_PORT'; Default = 7790; Name = 'panel zaawansowany'; ClientFixed = $false },
             @{ Key = 'M2_ITEMSHOP_PUBLIC_PORT'; Default = 7791; Name = 'ItemShop'; ClientFixed = $false },
+            @{ Key = 'M2_WEBCLIENT_PORT'; Default = 7792; Name = 'gra w przegladarce'; ClientFixed = $false },
             @{ Key = 'M2_AUTH_PORT'; Default = 11000; Name = 'serwer logowania'; ClientFixed = $true },
             @{ Key = 'M2_DB_PUBLISH_PORT'; Default = 3306; Name = 'baza danych'; ClientFixed = $false })) {
         $value = [string]$values[$entry.Key]

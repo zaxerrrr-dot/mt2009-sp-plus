@@ -4986,6 +4986,42 @@ def champion_columns_exist():
     return cache["value"]
 
 
+def webclient_url():
+    """MT2009_PLUS_WEBCLIENT_SERVICE_V1: the stack's browser game (webclient service), or
+    "" when it is off. http://<address this panel was reached on>:<port>/ - the server's
+    public address instead when that is this machine or a private one (an SSH tunnel)."""
+    if os.environ.get("M2_WEBCLIENT_ON", "0").strip() != "1":
+        return ""
+    explicit = os.environ.get("M2_WEBCLIENT_PUBLIC_URL", "").strip()
+    if re.fullmatch(r"https?://[^\s\"'<>]{1,300}", explicit):
+        return explicit
+    try:
+        port = int(os.environ.get("M2_WEBCLIENT_PORT", "7792"))
+    except ValueError:
+        port = 7792
+    if not 0 < port < 65536:
+        port = 7792
+    host = ""
+    if has_request_context():
+        host = (request.host or "").strip()
+        if host.startswith("["):
+            host = host[1:].split("]", 1)[0]
+        elif host.count(":") == 1:
+            host = host.rsplit(":", 1)[0]
+    public = os.environ.get("M2_WEBCLIENT_ADDRESS", "").strip()
+    try:
+        import ipaddress
+        ip = ipaddress.ip_address(host)
+        local = ip.is_loopback or ip.is_private or ip.is_link_local or ip.is_unspecified
+    except ValueError:
+        local = host in ("", "localhost")
+    if local and public:
+        host = public
+    if not re.fullmatch(r"[A-Za-z0-9.-]{1,253}", host or ""):
+        host = "127.0.0.1"
+    return "http://%s:%d/" % (host, port)
+
+
 @app.context_processor
 def globals_for_templates():
     # MT2009_PLUS_PANEL_URL_RENAME_V1: PANEL_URL; the older TIERU_PANEL_URL of an existing install still counts
@@ -5028,7 +5064,7 @@ def globals_for_templates():
         if champion:
             badge += Markup(' <span class="champion-level" title="Poziom Czempiona">C %d</span>') % champion
         return badge
-    return {"classic_panel_url": classic_panel_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": ui_lang(), "ui_languages": I18N.languages(), "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
+    return {"classic_panel_url": classic_panel_url, "webclient_url": webclient_url(), "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": ui_lang(), "ui_languages": I18N.languages(), "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
 
 
 @app.after_request

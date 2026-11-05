@@ -6101,7 +6101,22 @@
   "🪙 ItemShop w grze": "🪙 ItemShop en jeu",
   "🪙 Smocze Monety i ItemShop": "🪙 Pièces Dragon et ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Serveur sous Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Pseudo et droits"
+  "🪪 Nick i uprawnienia": "🪪 Pseudo et droits",
+  "Graj w przeglądarce ↗": "Jouer dans le navigateur ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "Le jeu dans le navigateur (ordinateur et téléphone) sur son propre port, comme les panneaux : activation, port, adresse, d'où viennent ses fichiers.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "Activé : les joueurs peuvent jouer dans le navigateur (ordinateur et téléphone) à http://adresse-serveur:port/ – les panneaux affichent le lien « Jouer dans le navigateur ». Le premier démarrage télécharge les fichiers du jeu pour le navigateur (environ 2 Go, une fois). Les mêmes comptes que dans le client téléchargé.",
+  "Port gry w przeglądarce": "Port du jeu dans le navigateur",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Port de la page du jeu (http://adresse:7792/). Sur un VPS, ouvre-le dans le pare-feu de l'hébergeur, comme les ports du jeu.",
+  "Adres nasłuchu gry w przeglądarce": "Adresse d'écoute du jeu dans le navigateur",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Vide = comme les ports du jeu. C'est la page des joueurs (comme l'ItemShop), donc sur un serveur elle doit être accessible de l'extérieur.",
+  "Własny adres gry w przeglądarce": "Adresse propre du jeu dans le navigateur",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Seulement si tu le places derrière ton propre domaine en HTTPS (ex. https://gra.example.pl/). Vide = http://adresse-serveur:port/.",
+  "Dodatkowe dozwolone strony": "Pages autorisées supplémentaires",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Autres pages autorisées à se connecter au jeu (séparées par des virgules, http(s)://hôte[:port]). Généralement vide : l'adresse du serveur et un domaine pointant vers le serveur fonctionnent d'eux-mêmes.",
+  "Skąd pobierać pliki gry w przeglądarce": "D'où télécharger les fichiers du jeu dans le navigateur",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Serveur de mises à jour avec les fichiers du jeu dans le navigateur. Chaque fichier est vérifié avec les sommes SHA-256 de la version, un autre serveur ne peut donc rien remplacer. Laisse tel quel.",
+  "Folder z plikami gry w przeglądarce": "Dossier des fichiers du jeu dans le navigateur",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "Un dossier sur cet ordinateur avec les fichiers publiés au lieu du téléchargement (installation hors ligne). Vide = téléchargement."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(teinture pour cheveux aléatoire). Canne à pêche +1…+20, Canne à pêche en carbone = {0}. Type :",

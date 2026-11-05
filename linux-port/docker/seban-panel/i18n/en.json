@@ -6068,7 +6068,22 @@
   "🪙 ItemShop w grze": "🪙 In-game ItemShop",
   "🪙 Smocze Monety i ItemShop": "🪙 Dragon Coins & ItemShop",
   "🪟 Serwer na Windows (localhost, Docker Desktop)": "🪟 Server on Windows (localhost, Docker Desktop)",
-  "🪪 Nick i uprawnienia": "🪪 Nick and permissions"
+  "🪪 Nick i uprawnienia": "🪪 Nick and permissions",
+  "Graj w przeglądarce ↗": "Play in the browser ↗",
+  "Gra w przeglądarce (komputer i telefon) na własnym porcie, jak panele: włączenie, port, adres, skąd pobierać jej pliki.": "The game in a web browser (computer and phone) on its own port, like the panels: on/off, port, address, where its files come from.",
+  "Włączone: gracze mogą grać w przeglądarce (komputer i telefon) pod http://adres-serwera:port/ – panele pokazują link „Graj w przeglądarce”. Pierwsze uruchomienie pobiera pliki gry dla przeglądarki (ok. 2 GB, raz). Te same konta co w pobranym kliencie.": "On: players can play in the browser (computer and phone) at http://server-address:port/ - the panels show a “Play in the browser” link. The first start downloads the browser game files (about 2 GB, once). Same accounts as in the downloaded client.",
+  "Port gry w przeglądarce": "Browser game port",
+  "Port strony z grą (http://adres:7792/). Na VPS otwórz go w zaporze dostawcy, tak jak porty gry.": "Port of the game page (http://address:7792/). On a VPS open it in the provider's firewall, like the game ports.",
+  "Adres nasłuchu gry w przeglądarce": "Browser game listen address",
+  "Puste = tak jak porty gry. To strona dla graczy (jak ItemShop), więc na serwerze musi być dostępna z zewnątrz.": "Empty = like the game ports. It is the players' page (like the ItemShop), so on a server it must be reachable from outside.",
+  "Własny adres gry w przeglądarce": "Own address of the browser game",
+  "Tylko gdy stawiasz ją za własną domeną z HTTPS (np. https://gra.example.pl/). Puste = http://adres-serwera:port/.": "Only when you put it behind your own HTTPS domain (e.g. https://gra.example.pl/). Empty = http://server-address:port/.",
+  "Dodatkowe dozwolone strony": "Additional allowed pages",
+  "Inne strony, z których wolno łączyć się z grą (po przecinku, http(s)://host[:port]). Zwykle puste – adres serwera i domena wskazująca na serwer działają same.": "Other pages allowed to connect to the game (comma separated, http(s)://host[:port]). Usually empty - the server address and a domain pointing at the server work by themselves.",
+  "Skąd pobierać pliki gry w przeglądarce": "Where to download the browser game files from",
+  "Serwer aktualizacji z plikami gry w przeglądarce. Każdy plik jest sprawdzany sumą SHA-256 z wydania, więc inny serwer niczego nie podmieni. Zostaw.": "Update server with the browser game files. Every file is checked against the release's SHA-256 sums, so another server cannot swap anything. Leave it.",
+  "Folder z plikami gry w przeglądarce": "Folder with the browser game files",
+  "Folder na tym komputerze z opublikowanymi plikami zamiast pobierania (instalacja bez internetu). Puste = pobieranie.": "A folder on this computer with the published files instead of downloading (offline install). Empty = download."
  },
  "patterns": {
   "(losowa farba do włosów). Wędka +1…+20, Wędka Węglowa = {0}. Rodzaj:": "(random hair dye). Fishing rod +1…+20, Carbon Fishing Rod = {0}. Type:",
