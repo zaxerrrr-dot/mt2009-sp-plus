@@ -304,6 +304,12 @@ namespace
 		{ "razador_pb", DGRUN_KIND_YDG, 369, NULL, "razador_pb_dgrun", "razador_pb_dgrun_next", 342, 584, 0LL, 0, 60, 90000, 2 },
 		{ "nemere_pb", DGRUN_KIND_YDG, 370, NULL, "nemere_pb_dgrun", "nemere_pb_dgrun_next", 171, 270, 0LL, 0, 60, 90000, 2 },
 		{ "jotun_pb", DGRUN_KIND_YDG, 371, NULL, "jotun_pb_dgrun", "jotun_pb_dgrun_next", 478, 970, 0LL, 0, 60, 90000, 2 },
+		// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391, swiatynia_wezy.quest) - gathered at Statua Wezy (390, the panel's
+		// row "swiatynia"), in at the quest's town (127,31); no fee, the quest's five a day (swiatynia_wezy.day/runs - over
+		// them a Wejscie do Swiatyni Wezy, ChargePlayerBotWezeEntry); 10-60 minutes drawn at the Portal (the dust adds,
+		// up to 60); 20 s after Nethis everybody out, and a margin. playerbot_dungeon_runs_ydg_weze.h.
+		{ "swiatynia", DGRUN_KIND_YDG, 391, "swiatynia_wezy", "swiatynia_wezy_dgrun", "swiatynia_wezy_dgrun_next", 127, 31,
+			0LL, 5, 60, 60000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	bool IsPlayerBotErebuTraining();	// MT2009_PLUS_BOT_EREBU_V1: playerbot_dgrun_erebu.h, at the end
@@ -4383,5 +4389,6 @@ namespace
 
 #include "playerbot_dgrun_erebu.h"	// MT2009_PLUS_BOT_EREBU_V1
 #include "playerbot_dungeon_runs_ydg.h"	// MT2009_PLUS_BOT_YDG_V1
+#include "playerbot_dungeon_runs_ydg_weze.h"	// MT2009_PLUS_BOT_YDG_WEZE_V1
 
 #endif

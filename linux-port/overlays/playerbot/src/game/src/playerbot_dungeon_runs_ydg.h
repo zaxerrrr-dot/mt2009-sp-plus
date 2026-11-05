@@ -52,7 +52,8 @@ namespace
 		YDG_RAZADOR = 1,
 		YDG_NEMERE,
 		YDG_BERAN,
-		YDG_JOTUN
+		YDG_JOTUN,
+		YDG_WEZE	// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391) - playerbot_dungeon_runs_ydg_weze.h
 	};
 
 	struct TPlayerBotYdgDef
@@ -70,6 +71,7 @@ namespace
 		{ "razador_pb", YDG_RAZADOR, false },
 		{ "nemere_pb", YDG_NEMERE, false },
 		{ "jotun_pb", YDG_JOTUN, false },
+		{ "swiatynia", YDG_WEZE, false },	// MT2009_PLUS_BOT_YDG_WEZE_V1
 	};
 	const size_t PLAYERBOT_YDG_DEF_COUNT = sizeof(PLAYERBOT_YDG_DEFS) / sizeof(PLAYERBOT_YDG_DEFS[0]);
 
@@ -127,6 +129,19 @@ namespace
 		return ReadPlayerBotYoharaEnvInt(name, def, lo, hi);
 	}
 
+	// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy's own (playerbot_dungeon_runs_ydg_weze.h, included after this file).
+	int GetPlayerBotWezeStage(LPDUNGEON d);
+	long long GetPlayerBotWezeSignature(LPDUNGEON d);
+	void GetPlayerBotWezeObjectives(LPDUNGEON d, std::vector<DWORD>& out);
+	bool IsPlayerBotWezeItem(DWORD vnum);
+	bool ManagePlayerBotWezeItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	void UpdatePlayerBotWezeInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	bool IsPlayerBotWezeNextWanted(LPDUNGEON d);
+	long long ChargePlayerBotWezeEntry(LPCHARACTER ch);
+	void FinishPlayerBotWezeMember(LPCHARACTER ch, int runId);
+	void ForgetPlayerBotWeze(long instance);
+	int GetPlayerBotYdgDefMinLevel(int def);
+
 	// ------------------------------------------------------------ the quests' flags
 
 	int GetPlayerBotYdgStage(const TPlayerBotDgRunDef& def, LPDUNGEON d, int previous)
@@ -145,6 +160,8 @@ namespace
 				return level == 2 ? (d->GetFlag("shield_off") == 1 ? 3 : 2) : 1;
 			case YDG_JOTUN:		// 1-8 the forest's tasks, 9 Erebu
 				return level == 2 ? 9 : std::max(1, d->GetFlag("bst"));
+			case YDG_WEZE:		// MT2009_PLUS_BOT_YDG_WEZE_V1: 1 the Portal, 2-7 the temple's levels, 8 Nethis
+				return GetPlayerBotWezeStage(d);
 			default:
 				return previous;
 		}
@@ -165,6 +182,7 @@ namespace
 		long long sig = 0;
 		for (size_t i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i)
 			sig = sig * 31LL + d->GetFlag(flags[i]);
+		sig = sig * 31LL + GetPlayerBotWezeSignature(d);	// MT2009_PLUS_BOT_YDG_WEZE_V1 (0 off its map)
 		return sig;
 	}
 
@@ -245,6 +263,9 @@ namespace
 					case 7: out.push_back(4345); break;
 					default: break;
 				}
+				break;
+			case YDG_WEZE:	// MT2009_PLUS_BOT_YDG_WEZE_V1
+				GetPlayerBotWezeObjectives(d, out);
 				break;
 			default:
 				break;
@@ -433,6 +454,8 @@ namespace
 		const DWORD v = item->GetVnum();
 		if (item->GetType() == ITEM_QUEST || v == PLAYERBOT_YDG_BOOK || v == 31147)
 			return true;
+		if (IsPlayerBotWezeItem(v))	// MT2009_PLUS_BOT_YDG_WEZE_V1: its keys, shards, dust and entry
+			return true;
 		for (size_t i = 0; i < PLAYERBOT_YDG_ITEM_COUNT; ++i)
 			for (size_t k = 0; k < PLAYERBOT_YDG_DEF_COUNT; ++k)
 				if (v == PlayerBotYdgVnum(PLAYERBOT_YDG_DEFS[k], PLAYERBOT_YDG_ITEMS[i].dwPbVnum))
@@ -503,6 +526,8 @@ namespace
 		const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(def.szKey);
 		if (!y || !d || ch->IsDead() || state.bRecoveringAfterDeath || !ch->IsItemLoaded() || !ch->GetSectree())
 			return false;
+		if (y->iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: the keys, the cages, the heads (their orders)
+			return ManagePlayerBotWezeItems(ch, state, run, d, dwNow);
 		DWORD& next = s_mapPlayerBotYdgItemAt[ch->GetPlayerID()];
 		if (next != 0 && (int)(next - dwNow) > 0)
 			return false;
@@ -637,6 +662,11 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return;
+		if (y.iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: the statue's reward, the temple's keys and shards out
+		{
+			FinishPlayerBotWezeMember(ch, 0);
+			return;
+		}
 		for (size_t i = 0; i < PLAYERBOT_YDG_ITEM_COUNT; ++i)
 		{
 			if (PLAYERBOT_YDG_ITEMS[i].iBoss != y.iBoss)
@@ -694,6 +724,8 @@ namespace
 		const int level = d->GetFlag("level");
 		if (y->iBoss == YDG_BERAN && level == 0)
 			s_mapPlayerBotYdgKeysReady[run.lInstance] = PoolPlayerBotYdgKeys(run, *y, false);
+		if (y->iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: the members registered, the dust, its progress line
+			UpdatePlayerBotWezeInside(run, d, dwNow);
 		// V2: a progress line every two minutes (the flags, the keys held, where the leader stands, its target).
 		{
 			static std::map<int, DWORD> s_mapProgressAt;
@@ -785,6 +817,9 @@ namespace
 			case YDG_JOTUN:
 				ask = level == 0 && d->GetFlag("bst") == 8;
 				break;
+			case YDG_WEZE:	// MT2009_PLUS_BOT_YDG_WEZE_V1: the Portal's start, the Smith's way to the 7th level
+				ask = IsPlayerBotWezeNextWanted(d);
+				break;
 			default:
 				break;
 		}
@@ -802,6 +837,8 @@ namespace
 		const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(def.szKey);
 		if (!y || !ch)
 			return 0;
+		if (y->iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: no ticket - the day's five (Wejscie do Swiatyni Wezy)
+			return ChargePlayerBotWezeEntry(ch);
 		if (y->bSzc)
 			return ChargePlayerBotYoharaSzcWatch(ch);
 		if (ch->CountSpecifyItem(PLAYERBOT_YDG_BOOK) > 0)
@@ -910,7 +947,9 @@ namespace
 			for (size_t i = 0; i < PLAYERBOT_YDG_DEF_COUNT; ++i)
 			{
 				const TPlayerBotYdgDef& y = PLAYERBOT_YDG_DEFS[i];
-				if (k == "any" || (k == "pb" && !y.bSzc) || (k == "szc" && y.bSzc) || k == y.szKey)
+				// MT2009_PLUS_BOT_YDG_WEZE_V1: "any" and "pb" stay the seven of Plaskowyz Iluzji - the temple by its key
+				const bool plateau = y.iBoss <= YDG_JOTUN;
+				if ((k == "any" && plateau) || (k == "pb" && !y.bSzc && plateau) || (k == "szc" && y.bSzc) || k == y.szKey)
 				{
 					const int def = GetPlayerBotYdgDgRunDef(y.szKey);
 					if (def >= 0 && std::find(out.begin(), out.end(), def) == out.end())
@@ -952,13 +991,18 @@ namespace
 	int FormPlayerBotYdgAutoParties(int parties, int size, const std::vector<int>& defs, DWORD dwNow)
 	{
 		std::vector<TPlayerBotYdgPick> pool[4];
+		// MT2009_PLUS_BOT_YDG_WEZE_V1: the lowest level of the line's dungeons (Swiatynia Wezy: 120)
+		int minLevel = 0;
+		for (size_t i = 0; i < defs.size(); ++i)
+			minLevel = minLevel == 0 ? GetPlayerBotYdgDefMinLevel(defs[i]) : std::min(minLevel, GetPlayerBotYdgDefMinLevel(defs[i]));
+		minLevel = std::max(minLevel, PLAYERBOT_YDG_MIN_LEVEL);
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
 			if (s_setPlayerBotYdgTrainees.count(pid) || IsPlayerBotYoharaHydraResident(pid) || IsPlayerBotErebuTrainee(pid))
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
-			if (!ch || ch->GetLevel() < PLAYERBOT_YDG_MIN_LEVEL || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+			if (!ch || ch->GetLevel() < minLevel || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
 				continue;
 			const char* refusal = GetPlayerBotDgRunRefusal(ch, it->second, dwNow);
 			if (refusal && strcmp(refusal, "dungeon_run"))
@@ -1038,7 +1082,7 @@ namespace
 		}
 		if (made < parties)
 			sys_log(0, "BOT_YDG: train auto made %d of %d parties of %d (not enough free bots of %d+ in one kingdom on this core)",
-					made, parties, size, PLAYERBOT_YDG_MIN_LEVEL);
+					made, parties, size, minLevel);
 		return made;
 	}
 
@@ -1293,6 +1337,14 @@ namespace
 					continue;
 				if ((int)free.size() < rule.startMin || (IsPlayerBotYdgNemere(cand) && !(ninja && shaman)))
 					continue;
+				// MT2009_PLUS_BOT_YDG_WEZE_V1: a dungeon of a higher level (the temple's 120) - enough members of it
+				{
+					int ofLevel = 0;
+					for (size_t f = 0; f < free.size(); ++f)
+						ofLevel += free[f].level >= GetPlayerBotYdgDefMinLevel(cand) ? 1 : 0;
+					if (ofLevel < rule.startMin)
+						continue;
+				}
 				def = cand;
 				tp.next = (tp.next + t + 1) % tp.defs.size();
 			}
@@ -1303,8 +1355,20 @@ namespace
 				continue;
 			}
 			const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
+			// MT2009_PLUS_BOT_YDG_WEZE_V1: the members under the dungeon's level stay out (the statue's rule)
+			const int defMinLevel = GetPlayerBotYdgDefMinLevel(def);
+			for (size_t f = 0; f < free.size();)
+			{
+				if (free[f].level < defMinLevel)
+				{
+					why += std::string(why.empty() ? "" : ",") + "pid" + std::to_string(free[f].pid) + ":level";
+					free.erase(free.begin() + f);
+				}
+				else
+					++f;
+			}
 			TPlayerBotDgRunSlot slot;
-			slot.lvMin = PLAYERBOT_YDG_MIN_LEVEL;
+			slot.lvMin = defMinLevel;
 			slot.lvMax = gPlayerMaxLevel;
 			slot.partyMin = 2;
 			slot.partyMax = playerbot_dgrun::PARTY_MAX;
@@ -1506,6 +1570,8 @@ namespace
 		s_mapPlayerBotYdgNextAt.erase(run.iId);
 		s_mapPlayerBotYdgSticky.erase(run.iId);
 		s_mapPlayerBotYdgRoutePlanAt.erase(run.iId);
+		if (run.lInstance)
+			ForgetPlayerBotWeze(run.lInstance);	// MT2009_PLUS_BOT_YDG_WEZE_V1
 		if (run.lInstance)
 		{
 			s_mapPlayerBotYdgKeysReady.erase(run.lInstance);

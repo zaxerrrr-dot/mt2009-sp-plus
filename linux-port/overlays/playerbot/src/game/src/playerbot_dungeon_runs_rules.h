@@ -192,6 +192,9 @@ namespace playerbot_dgrun
 		{ "razador_pb", 110, 5, 5, 4, true },
 		{ "nemere_pb", 110, 5, 5, 4, true, true },
 		{ "jotun_pb", 110, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391) - the statue's 120 and 1-8, monsters of 123-129 (150-190
+		// thousand HP), Metins of 8.5 million, Nethis 23 million: five called, four to go in, a Shaman always.
+		{ "swiatynia", 120, 5, 5, 4, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
