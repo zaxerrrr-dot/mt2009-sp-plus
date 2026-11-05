@@ -2237,4 +2237,19 @@ if ((Test-Path -LiteralPath $energiaApply -PathType Leaf) -and
     }
 }
 
+# Enasir - remote call (server-patches/remotecall, MT2009_PLUS_REMOTE_CALL_V1; the owner, 5 November 2026): Dozorca /
+# Handlarz Enasir 72368-72371 (real-time services, up to 1000 days), Enasir (20874) summoned by the button by the
+# inventory for 3 minutes and seen by his owner only - the storeroom and the General Store's shop (10 % fee on a sale);
+# packets CG 190 / GC 190 (only to a client that said hello), /enasir, the quests' remote_call.*. Its anchors are the
+# titles' lines and the files as they stand after the other patches: the last.
+$remoteCallApply = Join-Path $repo 'server-patches/remotecall/Apply-RemoteCallPatch.ps1'
+if ((Test-Path -LiteralPath $remoteCallApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'shop_manager.cpp') -PathType Leaf)) {
+    $remoteCallResult = & $remoteCallApply -SourceDir $engineGameSource
+    if ($remoteCallResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} remote call edit(s).' -f $remoteCallResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

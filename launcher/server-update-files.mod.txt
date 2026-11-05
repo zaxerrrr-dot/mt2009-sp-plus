@@ -709,6 +709,12 @@ linux-port/docker/game/special_item_group.fishpuzzle.txt
 # it changes are above (packet.h, packet_info.cpp, input_main.cpp, input_login.cpp, char.cpp, char_item.cpp, cmd.cpp,
 # questlua.cpp), the table and the certificates tytuly.sql (apply.sh).
 linux-port/docker/mariadb/playerbot/tytuly.sql
+# MT2009_PLUS_REMOTE_CALL_V1 (server-patches/remotecall): Enasir - remote_call.cpp (the engine file pair with the
+# overlay), the engine files it changes are above (packet.h, packet_info.cpp, input_main.cpp, char.cpp, char_item.cpp,
+# shop_manager.cpp, cmd.cpp, questlua.cpp), the items and the NPC remote_call.sql (apply.sh), the quest in quest/* above.
+linux-port/overlays/playerbot/src/game/src/remote_call.cpp
+linux-port/docker/game/src/server/game/src/remote_call.cpp
+linux-port/docker/mariadb/playerbot/remote_call.sql
 # MT2009_PLUS_FISHING_RENEWAL_V1 (server-patches/fishren): the new fishing minigame - the engine file pair with the
 # overlay (char.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/fish_renewal.cpp

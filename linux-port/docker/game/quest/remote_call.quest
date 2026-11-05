@@ -1,0 +1,58 @@
+-- MT2009_PLUS_REMOTE_CALL_V1 - Enasir (20874), the summoned storeroom keeper / merchant (the owner, 5 November 2026:
+-- "Dodaj jeszcze to"; pl-wiki "System Enasira"). cp1250; no string ends with a Polish letter (qc).
+-- Only his owner sees him (remote_call.cpp); the texts are the official Polish client's (pl-wiki screenshots).
+-- remote_call.* is the engine's (remote_call.cpp): is_owner, has_safebox, has_shop, open_safebox, open_shop,
+-- unsummon, time_left.
+quest remote_call begin
+	state start begin
+		when 20874.click with remote_call.is_owner() begin
+			local has_safebox = remote_call.has_safebox()
+			local has_shop = remote_call.has_shop()
+			say_title("Enasir")
+			say("Nie bêdziesz ¿a³owaæ, ¿e zosta³em przez ciebie")
+			say("wezwany! Chêtnie zaoferujê ci swoje us³ugi.")
+			say("... Skargi przyjmujê jednak wy³¹cznie w formie")
+			say("ustnej.")
+			if not has_safebox and not has_shop then
+				say("Nie masz ¿adnych buffów Enasira.")
+				return
+			end
+			say("Posiadasz nastêpuj¹ce buffy:")
+			if has_safebox then
+				say_reward("Magazyn")
+			end
+			if has_shop then
+				say_reward("Sklep")
+			end
+			local labels = {}
+			local actions = {}
+			if has_safebox then
+				table.insert(labels, "Otwórz Magazyn")
+				table.insert(actions, "safebox")
+			end
+			if has_shop then
+				table.insert(labels, "Otwórz sklep")
+				table.insert(actions, "shop")
+			end
+			table.insert(labels, "Odeœlij Enasira")
+			table.insert(actions, "unsummon")
+			table.insert(labels, "Anuluj")
+			table.insert(actions, "cancel")
+			local action = actions[select_table(labels)]
+			if action == "safebox" then
+				setskin(NOWINDOW)
+				if not remote_call.open_safebox() then
+					syschat("Nie mo¿esz teraz otworzyæ magazynu.")
+				end
+			elseif action == "shop" then
+				setskin(NOWINDOW)
+				if not remote_call.open_shop() then
+					syschat("Nie mo¿esz teraz otworzyæ sklepu.")
+				end
+			elseif action == "unsummon" then
+				setskin(NOWINDOW)
+				remote_call.unsummon()
+			end
+		end
+	end
+end

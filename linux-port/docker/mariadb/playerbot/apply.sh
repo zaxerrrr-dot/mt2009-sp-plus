@@ -5352,6 +5352,29 @@ ishop_once tytuly_certs_40 "INSERT IGNORE INTO common.itemshop_items (\`index\`,
 (48, 57008, 1, 9, 'DRAGON_COIN', 0);" "could not add the title certificates to the ItemShop (MT2009_PLUS_TITLES_V2)"
 fi
 
+# MT2009_PLUS_REMOTE_CALL_V1 (the owner, 5 November 2026: "Dodaj jeszcze to"): remote_call.sql - Enasir: the items
+# 72368-72371 (Dozorca / Handlarz Enasir and their tradeable "(h)" twins, 7 days each) and Enasir himself (mob 20874);
+# the engine part server-patches/remotecall + remote_call.cpp, quest remote_call. Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/remote_call.sql ]; then
+    if db < /opt/playerbot/remote_call.sql; then
+        echo "[playerbot-migrate] Enasir: remote_call.sql applied"
+    else
+        fail_step "Enasir: remote_call.sql failed (MT2009_PLUS_REMOTE_CALL_V1)" >&2
+    fi
+fi
+# MT2009_PLUS_REMOTE_CALL_V1: pl-wiki "System Enasira" - the items come from the ItemShop (also Aukcje Blyskawiczne and
+# "Karta Magazynu Enasira", which we do not have): the in-game ItemShop's "Wyposazenie" (50-53) and through its view
+# itemshop3.shop the second one (V3, /shop3/). Prices - the proposal of 5 November (the wiki names none; GF sells a
+# 15-day item): the tradeable (h) items one by one (7 days) 19 SM, the bound ones by four (28 days) 59 SM. Once per
+# install (the Seban panel's BOOT_ONCE: remote_call_50); bots never buy them (gen_bot_catalogue.py NEVER).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum BETWEEN 72368 AND 72371;" 2>/dev/null || echo x)" = "4" ]; then
+ishop_once remote_call_50 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(50, 72370, 1, 19, 'DRAGON_COIN', 0),
+(51, 72371, 1, 19, 'DRAGON_COIN', 0),
+(52, 72368, 4, 59, 'DRAGON_COIN', 0),
+(53, 72369, 4, 59, 'DRAGON_COIN', 0);" "could not add Enasir's items to the ItemShop (MT2009_PLUS_REMOTE_CALL_V1)"
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

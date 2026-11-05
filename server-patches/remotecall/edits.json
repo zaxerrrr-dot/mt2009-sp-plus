@@ -1,0 +1,80 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (cg header)",
+  "old": "\tHEADER_CG_TITLE\t\t\t\t\t= 185,\n",
+  "new": "\tHEADER_CG_TITLE\t\t\t\t\t= 185,\n\t// MT2009_PLUS_REMOTE_CALL_V1 (cg header): Enasir - the client's hello, summon, send away (remote_call.cpp)\n\tHEADER_CG_REMOTE_CALL\t\t\t= 190,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (gc header)",
+  "old": "\tHEADER_GC_TITLE\t\t\t\t\t\t\t= 189,\n",
+  "new": "\tHEADER_GC_TITLE\t\t\t\t\t\t\t= 189,\n\t// MT2009_PLUS_REMOTE_CALL_V1 (gc header): Enasir - the services' times, summoned, gone, a message, Enasir's storeroom\n\tHEADER_GC_REMOTE_CALL\t\t\t\t\t= 190,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (structs)",
+  "old": "\t\"title packets (exe the same)\");\n",
+  "new": "\t\"title packets (exe the same)\");\n\n// MT2009_PLUS_REMOTE_CALL_V1 (structs): Enasir (server-patches/remotecall/README.md). CG 190: a sub-header (0 HELLO - the state, at every\n// game phase; 1 SUMMON; 2 UNSUMMON). GC 190 (static): 0 STATE (value0/1 the storeroom / shop service's seconds left,\n// value2 bit0 summoning allowed here), 1 SUMMONED (seconds he stays, his VID), 2 GONE (the cool-down's seconds),\n// 3 MESSAGE (a code), 4 SAFEBOX (the next storeroom is Enasir's). The exe has the same (client-patches/exe Packet.h).\ntypedef struct SPacketCGRemoteCall\n{\n\tBYTE\tbHeader;\n\tBYTE\tbSubHeader;\n} TPacketCGRemoteCall;\n\ntypedef struct SPacketGCRemoteCall\n{\n\tBYTE\tbHeader;\n\tBYTE\tbSubHeader;\n\tDWORD\tdwValue0;\n\tDWORD\tdwValue1;\n\tDWORD\tdwValue2;\n} TPacketGCRemoteCall;\n\nstatic_assert(sizeof(TPacketCGRemoteCall) == 2 && sizeof(TPacketGCRemoteCall) == 14, \"remote call packets (exe the same)\");\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (size)",
+  "old": "\tSet(HEADER_CG_TITLE, sizeof(TPacketCGTitle), \"Title\", true);\t// MT2009_PLUS_TITLES_V1 (size): 6 bytes\n",
+  "new": "\tSet(HEADER_CG_TITLE, sizeof(TPacketCGTitle), \"Title\", true);\t// MT2009_PLUS_TITLES_V1 (size): 6 bytes\n\tSet(HEADER_CG_REMOTE_CALL, sizeof(TPacketCGRemoteCall), \"RemoteCall\", true);\t// MT2009_PLUS_REMOTE_CALL_V1 (size): 2 bytes\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (packet)",
+  "old": "\t\t\t\tvoid TitleSystemPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tTitleSystemPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n",
+  "new": "\t\t\t\tvoid TitleSystemPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tTitleSystemPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_REMOTE_CALL_V1 (packet): Enasir - hello, summon, send away (remote_call.cpp)\n\t\tcase HEADER_CG_REMOTE_CALL:\n\t\t\t{\n\t\t\t\tvoid RemoteCallPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tRemoteCallPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (insert)",
+  "old": "\tif (d != GetDesc() && ch && !ch->IsGM() && !IsEntityViewSendable())\n\t\treturn;\n",
+  "new": "\tif (d != GetDesc() && ch && !ch->IsGM() && !IsEntityViewSendable())\n\t\treturn;\n\t// MT2009_PLUS_REMOTE_CALL_V1 (insert): a summoned Enasir is seen by his owner only (remote_call.cpp)\n\tif (d != GetDesc() && !IsPC() && GetRaceNum() == 20874)\n\t{\n\t\tbool RemoteCallVisibleTo(LPCHARACTER npc, LPCHARACTER viewer);\n\t\tif (!RemoteCallVisibleTo(this, ch))\n\t\t\treturn;\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (destroy)",
+  "old": "\t{ void TitleSystemOnDestroy(LPCHARACTER); TitleSystemOnDestroy(this); }\t// MT2009_PLUS_TITLES_V1 (destroy)\n",
+  "new": "\t{ void TitleSystemOnDestroy(LPCHARACTER); TitleSystemOnDestroy(this); }\t// MT2009_PLUS_TITLES_V1 (destroy)\n\t{ void RemoteCallOnDestroy(LPCHARACTER); RemoteCallOnDestroy(this); }\t// MT2009_PLUS_REMOTE_CALL_V1 (destroy)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (safebox close)",
+  "old": "\tChatPacket(CHAT_TYPE_COMMAND, \"CloseSafebox\");\n",
+  "new": "\tChatPacket(CHAT_TYPE_COMMAND, \"CloseSafebox\");\n\t{ void RemoteCallOnSafeboxClose(LPCHARACTER); RemoteCallOnSafeboxClose(this); }\t// MT2009_PLUS_REMOTE_CALL_V1 (safebox close)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (use)",
+  "old": "\t\tif (iTitleUse >= 0)\n\t\t\treturn iTitleUse != 0;\n\t}\n",
+  "new": "\t\tif (iTitleUse >= 0)\n\t\t\treturn iTitleUse != 0;\n\t}\n\t// MT2009_PLUS_REMOTE_CALL_V1 (use): Dozorca / Handlarz Enasir 72368-72371 - the service's time (remote_call.cpp)\n\t{\n\t\tint RemoteCallUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iRemoteCallUse = RemoteCallUseItem(this, item);\n\t\tif (iRemoteCallUse >= 0)\n\t\t\treturn iRemoteCallUse != 0;\n\t}\n"
+ },
+ {
+  "file": "shop_manager.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (sell fee)",
+  "old": "\tdwTax = dwPrice * iVal/100;\n\tdwPrice -= dwTax;\n",
+  "new": "\tdwTax = dwPrice * iVal/100;\n\tdwPrice -= dwTax;\n\t// MT2009_PLUS_REMOTE_CALL_V1 (sell fee): a sale at a summoned Enasir leaves him 10 % (pl-wiki; remote_call.cpp)\n\t{ YANG RemoteCallSellFee(LPCHARACTER ch, YANG price); dwPrice -= RemoteCallSellFee(ch, dwPrice); }\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (lua)",
+  "old": "\t\t{ void RegisterTitleFunctionTable(); RegisterTitleFunctionTable(); }\n",
+  "new": "\t\t{ void RegisterTitleFunctionTable(); RegisterTitleFunctionTable(); }\n\t\t// MT2009_PLUS_REMOTE_CALL_V1 (lua): remote_call.* - Enasir's quest (remote_call.cpp, defined in namespace quest).\n\t\t{ void RegisterRemoteCallFunctionTable(); RegisterRemoteCallFunctionTable(); }\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (command declare)",
+  "old": "ACMD(do_title_system)\n{\n\tTitleSystemCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_title_system)\n{\n\tTitleSystemCommand(ch, argument);\n}\n// MT2009_PLUS_REMOTE_CALL_V1 (command declare): \"/enasir\" - Enasir's services for a GM's own character (remote_call.cpp)\nvoid RemoteCallCommand(LPCHARACTER ch, const char* argument);\nACMD(do_remote_call)\n{\n\tRemoteCallCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_REMOTE_CALL_V1 (command table)",
+  "old": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n",
+  "new": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n\t{ \"enasir\",\tdo_remote_call,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t}, // MT2009_PLUS_REMOTE_CALL_V1 (command table)\n"
+ }
+]
