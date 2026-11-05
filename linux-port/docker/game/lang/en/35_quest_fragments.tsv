@@ -1,0 +1,375 @@
+# MT2009_PLUS_LANGUAGE_V1 - pieces our quests glue to values (tools/i18n/data/quest_fragments_pl.tsv) - replaced inside a line
+# Polish<TAB>en (by hand; UTF-8). tools/i18n/extract_server_texts.py --check en lists what is missing.
+ (Czyściec Ognia)	 (Purgatory of Fire)
+ (dzisiejsze wejścia)	 (today's entries)
+ (Kamień Driad)	 (Stone of the Dryads)
+ (Książka Przebudzenia)	 (Redux Tome)
+ (Lodowa Kraina)	 (Ice Land)
+ (min:s). Możesz na nie wrócić portalem w hali.	 (min:s). You can return to it via the portal in the hall.
+ (następne)	 (next)
+ (odpoczynek: 	 (rest: 
+ (podział łupu: 	 (loot share: 
+ (poz. 	 (lv. 
+ (poziom / Czempion)	 (level / Champion)
+ (poziom 1).	 (level 1).
+ (poziom)	 (level)
+ (słaby: 	 (weak: 
+ (Zamarznięte Klucze)	 (Frozen Keys)
+ (Zegarek Kieszonkowy)	 (Pocket Watch)
+ (żywioł 	 (element 
+ - mniej czasu na Morkhota.	 - less time for Morkhot.
+ - nowe	 - new
+ - poziom 	 - level 
+ - ukończone	 - completed
+ drogocenne Gaya.	 precious Gaya.
+ dziennie):	 per day):
+ Efekt Zestawu. Wymagany jest	 Set Effect. It requires
+ i 1. Poziomu Czempiona.	 and Champion Level 1.
+ jest odblokowany na stałe.	 is unlocked permanently.
+ juz idzie do ciebie.	 is coming to you.
+ Kamyków i 	 Pebbles and 
+ Kamyków, 	 Pebbles, 
+ Kamyków, Kamienia Duszy (+0 do +3)	 Pebbles, a Spirit Stone (+0 to +3)
+ ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	 has the Atlantis Key. Give it to the right Shell Pillar!
+ Metiny Drzewnych Stworzeń (PB).	 Tree Creature Metins (RX).
+ Metinów Drzewnych Stworzeń (SZC).	 Tree Creature Metins (TR).
+ min. Po czasie grupa wróci do Zaklętego Lasu.	 min. Then the group returns to the Enchanted Forest.
+ min. Po czasie grupa wróci na Płaskowyż Iluzji.	 min. Then the group returns to the Plateau of Illusion.
+ min. Zapamiętajcie żywioły pierwszych czterech grup.	 min. Remember the elements of the first four groups.
+ minut, bez czekania między wyprawami.	 minutes, no waiting between expeditions.
+ odłamków II tej samej części, Projekt	 shards II of the same part, Blueprint
+ osób	 people
+ osób, 30 minut;	 people, 30 minutes;
+ osób, poziom 	 people, level 
+ osób.	 people.
+ pająków, a potem użyjcie Pieczęci Biblioteki (	 spiders, then use the Library Seal (
+ PD.	 EXP.
+ potworów głębin.	 monsters of the deep.
+ powstaje na nowo - Beran-Setaou znów jest nietykalny!	 rises again - Beran-Setaou is invulnerable again!
+ Ros En-Tai (PB).	 En-Tai Dew (RX).
+ Ros En-Tai (SZC).	 En-Tai Dew (TR).
+ s wracacie do Upiornego Strażnika po nagrodę.	 s you return to the Ghostly Guardian for a reward.
+ sekund zostaniesz przeniesiony na Doyyumhwaji.	 seconds you will be moved to Doyyumhwaji.
+ sekund zostaniesz teleportowany do Doliny Orków.	 seconds you will be teleported to the Orc Valley.
+ sekund zostaniesz teleportowany do Groty Wygnańców.	 seconds you will be teleported to the Grotto of Exile.
+ sekund zostaniesz teleportowany do miasta.	 seconds you will be teleported to the city.
+ sekund zostaniesz teleportowany do Świątyni Hwang.	 seconds you will be teleported to Hwang Temple.
+ sekund zostaniesz teleportowany do Świątyni Ochao.	 seconds you will be teleported to the Temple of the Ochao.
+ sekund zostaniesz teleportowany na Górę Sohan.	 seconds you will be teleported to Mount Sohan.
+ sekund zostaniesz teleportowany na Ognistą Ziemię.	 seconds you will be teleported to the Fireland.
+ sekundy zostaniesz przeniesiony na Doyyumhwaji.	 seconds you will be moved to Doyyumhwaji.
+ sekundy zostaniesz teleportowany do Doliny Orków.	 seconds you will be teleported to the Orc Valley.
+ sekundy zostaniesz teleportowany do Groty Wygnańców.	 seconds you will be teleported to the Grotto of Exile.
+ sekundy zostaniesz teleportowany do miasta.	 seconds you will be teleported to the city.
+ sekundy zostaniesz teleportowany do Świątyni Hwang.	 seconds you will be teleported to Hwang Temple.
+ sekundy zostaniesz teleportowany do Świątyni Ochao.	 seconds you will be teleported to the Temple of the Ochao.
+ sekundy zostaniesz teleportowany na Górę Sohan.	 seconds you will be teleported to Mount Sohan.
+ sekundy zostaniesz teleportowany na Ognistą Ziemię.	 seconds you will be teleported to the Fireland.
+ Serca Atlantydy.	 Hearts of Atlantis.
+ skorpionów, a potem użyjcie Pieczęci Ruin (	 scorpions, then use the Ruins Seal (
+ strażników ruin.	 ruin guardians.
+ sztuki).	 pcs).
+ szykuje potężny atak w linii - uciekaj w bok!	 is preparing a powerful line attack - dodge sideways!
+ tys. Yang	 k Yang
+ ukończonych słabych. 30 minut na Alastora.	 weak ones completed. 30 minutes for Alastor.
+ w oknie = hełm Dragona, bez nich - hełm Smoków.	 in the window = Dragon Helmet, without them - Helmet of Dragons.
+ wejść dziennie (dziś: 	 entries per day (today: 
+ Wojowników En-Tai (PB) i wróć do mnie.	 En-Tai Warriors (RX) and come back to me.
+ Wojowników En-Tai (SZC) i wróć do mnie.	 En-Tai Warriors (TR) and come back to me.
+ wypraw dziennie (dziś: 	 expeditions per day (today: 
+ Yang - nie masz tyle przy sobie.	 Yang - you don't have that much on you.
+ Yang - za mało przy sobie:	 Yang - not enough on you:
+ Yang oraz	 Yang and
+ Yang oszlifuję 	 Yang I'll polish 
+ Yang za bilet.	 Yang for a ticket.
+ Yang. Dzisiejsza wyprawa 	 Yang. Today's expedition 
+ Yang. Najwyżej 	 Yang. At most 
+ Zamarznięte Klucze.	 Frozen Keys.
+ zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	 obtains the Library Seal. Use it to summon the next wave.
+ zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	 obtains the Jungle Seal. Use it to summon the next wave.
+ zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	 obtains the Ruins Seal. Use it to summon the next wave.
+ zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	 obtains the Hill Seal. Use it to summon the next wave.
+ znalazł odpowiedni klucz!	 found the right key!
+ zniszczony. Pozostało kamieni: 	 destroyed. Stones left: 
+ zostało).	 left).
+ złamana. Nadchodzi następna fala!	 broken. The next wave is coming!
+ śmiałków - ma 	 adventurers - has 
+! Pokonaj ich, by zdobyć piętro.	! Defeat them to claim the floor.
+! Schody prowadzą na następne piętro.	! The stairs lead to the next floor.
+% PŻ). Antidotum SungMa ją zdejmuje.	% HP). Sung Ma Antidote removes it.
+% więcej życia.	% more HP.
+%. Kontynuować?	%. Continue?
+%. Możesz też przeciągnąć Kamyki na mnie.	%. You can also drag the Pebbles onto me.
+(stojących obok). Teraz: 	(standing nearby). Now: 
+) chronią statuy. Zniszczcie je.	) protect the statues. Destroy them.
+), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	), Beran-Setaou is invulnerable. Destroy the stones!
+), etap 1: pokonaj wszystkie potwory w limicie czasu!	), stage 1: defeat all monsters within the time limit!
+). Wróć jutro.	). Come back tomorrow.
+). Zgłoś to administratorowi serwera.	). Report this to the server administrator.
+, 1 000 000 Yang. Szansa 30% (+5) do 70% (+9),	, 1 000 000 Yang. Chance 30% (+5) to 70% (+9),
+, 200 Gaya i 20 000 000 Yang.	, 200 Gaya and 20 000 000 Yang.
+, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	, stage 3: defeat waves of monsters until the bosses appear!
+, grupa od 	, group of 
+, tylko w grupie. Każdy musi	, group only. Everyone must
+, tylko w grupie. Po ukończeniu lub	, group only. After completing or
+. Bez czekania między wyprawami.	. No waiting between expeditions.
+. Broń zniknie za 15 dni (także założona).	. The weapon vanishes after 15 days (even when equipped).
+. Doświadczenie z tamtych	. Experience from those
+. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	. floor could not be saved now - you'll get it next time you complete this floor.
+. piętro ukończone w 	. floor completed in 
+. piętro w tym sezonie czeka w Magazynie ItemShop.	. floor this season is waiting in the Item Shop Storage.
+. piętro w tym sezonie.	. floor this season.
+. piętro zdobyte w 	. floor claimed in 
+. piętro.	. floor.
+. piętrze zaczyna się za 10 sekund.	. floor starts in 10 seconds.
+. Sam albo z drużyną.	. Solo or with a party.
+. Wracasz do Portu Nowego Kontynentu.	. You return to the New Continent Port.
+. Wracasz do portu.	. You return to the port.
+. Wstęp: 	. Entry: 
+. Łódź zabiera cię z powrotem na Przylądek.	. The boat takes you back to the Cape.
+/12) - omijajcie białe kręgi!	/12) - avoid the white circles!
+/3) - zniszczcie Białe Jaja Smoka!	/3) - destroy the White Dragon Eggs!
+/4. Ulepszyłbym ci	/4. I'd upgrade your
+1. miejsce: 	1st place: 
+1. miejsce: 10x 	1st place: 10x 
+1. Poziom Czempiona, każdy oddaje 	Champion Level 1, each hands in 
+100 000 000 Yang i 500 Gaya. Szansa: 	100 000 000 Yang and 500 Gaya. Chance: 
+2. miejsce: 	2nd place: 
+2. miejsce: 5x 	2nd place: 5x 
+3. miejsce: 	3rd place: 
+3. miejsce: 3x 	3rd place: 3x 
+4. - 10. miejsce: 	4th - 10th place: 
+4.-10. miejsce: 1x 	4th-10th place: 1x 
+: przywódca budzi Alastora, dotykając Białego Jaja Smoka. 30 minut od wejścia.	: the leader wakes Alastor by touching the White Dragon Egg. 30 minutes from entry.
+<< Piętra 	<< Floors 
+Alastor pokonany! Za 	Alastor defeated! In 
+Alastor wpada w szał (	Alastor goes berserk (
+Biblioteka Wiedzy (	Library of Knowledge (
+Biblioteka Wiedzy: 	Library of Knowledge: 
+Biblioteka Wiedzy: Baronówna wyczuwa 	Library of Knowledge: The Baroness senses 
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x	Library of Knowledge: You receive: Library Chest x
+Biblioteka Wiedzy: Pieczęć 	Library of Knowledge: Seal 
+Biblioteka Wiedzy: Pokonane pająki: 	Library of Knowledge: Spiders defeated: 
+Biblioteka Wiedzy: Pozostałe królowe: 	Library of Knowledge: Queens left: 
+Biblioteka Wiedzy: Pozostałe Metiny: 	Library of Knowledge: Metins left: 
+Biblioteka Wiedzy: Pozostało 	Library of Knowledge: Remaining 
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: 	Library of Knowledge: no chest this time (loot share: 
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (	Library of Knowledge: Missing stage targets reappear (
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa 	Atlantis Ticket used. Today's expedition 
+Bron 65 > 80: 2x 	Weapon 65 > 80: 2x 
+Bron 80 > 87: 3x 	Weapon 80 > 87: 3x 
+Bron 87 > Cyjanit: 3x 	Weapon 87 > Kyanite: 3x 
+Cena: 	Price: 
+Do Erebu wchodzi najwyżej 	Erebos admits at most 
+Do Erebu wejdzie tylko grupa co najmniej 	Only a group of at least this many enters Erebos: 
+Do Głębi wchodzi drużyna od 	The Deeps admit a party of 
+dopiero od poziomu 	only from level 
+Doświadczenie: 	Experience: 
+Drużyna od 	A party of 
+Dzisiejsze wyprawy do ruin już wykorzystane (	Today's ruin expeditions already used (
+Dzisiejsze wyprawy do Schronienia już wykorzystane (	Today's Refuge expeditions already used (
+Dzisiejsze wyprawy do tego lochu już wykorzystane (	Today's expeditions to this dungeon already used (
+Dzisiejsze wyprawy na statek już wykorzystane (	Today's ship expeditions already used (
+Dziś już dostałeś paszę. Wróć za 	You've already got fodder today. Come back in 
+Erebu: zostało 	Erebos: remaining 
+Gotowe - oto 	Done - here is 
+Gotowe! Teraz otwórz pieczęć numer 	Done! Now open seal number 
+Grota Wygnańców 2 (PB): zostało 	Grotto of Exile 2 (RX): remaining 
+Grota Wygnańców 2 (SZC): zostało 	Grotto of Exile 2 (TR): remaining 
+Głowa Węża obrócona (	Serpent Head turned (
+Głębie: brakuje ci Zamarzniętych Kluczy (	Deeps: you're missing Frozen Keys (
+Głębie: pozostało 	Deeps: remaining 
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom 	The deep will crush you. Come back when you reach level 
+hełm 80. poziomu ulepszony na +5 do +9 (	a level 80 helmet upgraded to +5 to +9 (
+Hełm Dragona (obrona): 5x 	Dragon Helmet (defence): 5x 
+Hełm Smoków (atak): 5x 	Helmet of Dragons (attack): 5x 
+ich: 	of them: 
+Jesteś za słaby. Wróć, gdy osiągniesz poziom 	You're too weak. Come back when you reach level 
+Kamienie smoka: 	Dragon stones: 
+Kamień Duszy 	Spirit Stone 
+Katakumby Diabła: Wyjdziesz z lochu za 	Devil's Catacomb: You will leave the dungeon in 
+Klątwa Sunga Mahi: stopień 	Curse of Sung Mahi: grade 
+Kolejne zadanie (	Next quest (
+Kolumna Węży otwarta (	Serpent Pillar opened (
+Koszt: 	Cost: 
+Kowal Świątyni Węży czeka. Uwolnieni kowale: 	The Serpent Temple Blacksmith is waiting. Blacksmiths freed: 
+Królestwo Żywiołów jest dostępne od poziomu 	The Elemental Realm is available from level 
+Królowa Meley: 	Queen Meley: 
+Królowa Meley: ETAP 	Queen Meley: STAGE 
+Królowa Meley: ETAP 4 - 	Queen Meley: STAGE 4 - 
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (	Queen Meley: The Dragonfire Ring burns on the statue (
+Królowa Meley: Pozostało 	Queen Meley: Remaining 
+Królowa Meley: Smocze Jaja (	Queen Meley: Dragon Eggs (
+Królowa Meley: Statua zmienia kolor (	Queen Meley: The statue changes colour (
+Księga nie jest jeszcze gotowa. Wróć za 	The book isn't ready yet. Come back in 
+Leże Smoka: 	Dragon's Lair: 
+Leże Smoka: dopóki stoi choć jeden kamień smoka (	Dragon's Lair: as long as even one dragon stone stands (
+Leże Smoka: Pozostało 	Dragon's Lair: Remaining 
+Masz 	You have 
+Masz za mało Gaya (potrzeba 	You don't have enough Gaya (you need 
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba 	You don't have enough Gaya Shop Extensions (you need 
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z 	A Metin has fallen. Beran-Setaou (RX) still draws power from 
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z 	A Metin has fallen. Beran-Setaou (TR) still draws power from 
+Misja ukończona. Nagroda: 	Mission completed. Reward: 
+Misję możesz powtórzyć za 	You can repeat the mission in 
+Mogę wytworzyć dla ciebie 	I can craft for you 
+Mój wynik: 	My score: 
+Nadciąga grupa żywiołu 	An elemental group approaches: 
+Najpierw ukończ 	First complete 
+Najwyżej 	At most 
+Nemere: Pieczęć złamana. Pozostało: 	Nemere: Seal broken. Remaining: 
+Nemere: Pozostało 	Nemere: Remaining 
+Nemere: Szel pokonany (	Nemere: Szel defeated (
+Nemere: Zaginione cele etapu pojawiają się ponownie (	Nemere: Missing stage targets reappear (
+Nie masz przy sobie 	You don't have on you: 
+Nie udało się wydać broni (kod 	Failed to give the weapon (code 
+Od poziomu 	From level 
+Oddaj uszy: 	Hand in ears: 
+Opłata za wejście: 	Entry fee: 
+Otrzymujesz skrzynie z przerwanej gry w Okey: 	You receive chests from an interrupted Okey game: 
+Otrzymujesz: 	You receive: 
+otrzymujesz: 	you receive: 
+Pasza dla konia: 	Horse fodder: 
+Pieczęć zdjęta (	Seal removed (
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za 	The ring must rest after the last teleport. The next one will be ready in 
+Pierścień odzyska moc za 	The ring will regain its power in 
+Piętra 	Floors 
+Piętro 	Floor 
+Pojawiają się bossowie piętra: 	The floor bosses appear: 
+Pokonajcie 	Defeat 
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (	Defeat 40 jungle creatures, then use the Jungle Seal (
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (	Defeat 60 monkeys, then use the Hill Seal (
+Pokonane potwory: 	Monsters defeated: 
+Pokonane: 	Defeated: 
+Pokonani: 	Defeated: 
+Port Nowego Kontynentu jest dostępny od poziomu 	The New Continent Port is available from level 
+Portowy Sklep Gaya - kupiono: 	Port Gaya Shop - bought: 
+Portowy Sklep Gaya: slot 	Port Gaya Shop: slot 
+Potrzebujesz przedmiotu: 	You need the item: 
+Potrzebuję 	I need 
+Poziom konia: 	Horse level: 
+Pozostalo podrozy: 	Journeys left: 
+Pozostałe stele: 	Steles left: 
+Pozostałe teleporty: 	Teleports left: 
+Pozostało: 	Remaining: 
+Przy Strazniku zostaja: 	Staying with the Guardian: 
+Pył Wężowy: +1 minuta. Zostało 	Serpent Dust: +1 minute. Remaining 
+Płaskowyż Iluzji przyjmuje wojowników od poziomu 	The Plateau of Illusion accepts warriors from level 
+Razador: Pozostało 	Razador: Remaining 
+Razador: Stela zgaszona. Pozostało: 	Razador: Stele extinguished. Remaining: 
+Razador: Zaginione cele etapu pojawiają się ponownie (	Razador: Missing stage targets reappear (
+Rosy En-Tai (PB): 	En-Tai Dew (RX): 
+Rosy En-Tai (SZC): 	En-Tai Dew (TR): 
+Ruiny Atlantydy (	Ruins of Atlantis (
+Ruiny Atlantydy: 	Ruins of Atlantis: 
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x	Ruins of Atlantis: You receive: Atlantis Chest x
+Ruiny Atlantydy: Pokonane potwory: 	Ruins of Atlantis: Monsters defeated: 
+Ruiny Atlantydy: Pozostało 	Ruins of Atlantis: Remaining 
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: 	Ruins of Atlantis: Guardian defeated. Pillars left: 
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: 	Ruins of Atlantis: It was just an illusion! Penalty points: 
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: 	Ruins of Atlantis: no chest this time (loot share: 
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (	Ruins of Atlantis: Missing stage targets reappear (
+Ruiny Atlantydy: Zostało Serc Atlantydy: 	Ruins of Atlantis: Hearts of Atlantis left: 
+Ruiny Skorpiona (	Scorpion Ruins (
+Ruiny Skorpiona: 	Scorpion Ruins: 
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x	Scorpion Ruins: You receive: Scorpion Chest x
+Ruiny Skorpiona: Pieczęć Ruin 	Scorpion Ruins: Ruins Seal 
+Ruiny Skorpiona: Pokonane potwory: 	Scorpion Ruins: Monsters defeated: 
+Ruiny Skorpiona: Pozostało 	Scorpion Ruins: Remaining 
+Ruiny Skorpiona: Pozostało: 	Scorpion Ruins: Remaining: 
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: 	Scorpion Ruins: no chest this time (loot share: 
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (	Scorpion Ruins: Missing stage targets reappear (
+Schody prowadzą na 	The stairs lead to 
+Schronienie Meley: 	Meley's Refuge: 
+Silny: po 	Strong: after 
+Skraca czas oczekiwania o 	Shortens the waiting time by 
+Sloty odblokowuje się po kolei: najpierw slot 	Slots unlock in order: first slot 
+Starożytna Dżungla (	Ancient Jungle (
+Starożytna Dżungla: 	Ancient Jungle: 
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x	Ancient Jungle: You receive: Jungle Chest x
+Starożytna Dżungla: Pieczęć Dżungli 	Ancient Jungle: Jungle Seal 
+Starożytna Dżungla: Pokonane potwory: 	Ancient Jungle: Monsters defeated: 
+Starożytna Dżungla: Pozostało 	Ancient Jungle: Remaining 
+Starożytna Dżungla: Pozostało: 	Ancient Jungle: Remaining: 
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: 	Ancient Jungle: no chest this time (loot share: 
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (	Ancient Jungle: Missing stage targets reappear (
+Stały bonus: 	Permanent bonus: 
+Straznik Katakumb nie wpuszcza cie z grupa: 	The Catacomb Guardian won't let you in with the group: 
+Strażnica Nemere (PB): zostało 	Nemere's Watchtower (RX): remaining 
+Strażnica Nemere (SZC): zostało 	Nemere's Watchtower (TR): remaining 
+Szansa powodzenia: 	Success chance: 
+Szansa: 	Chance: 
+Twierdza Czerwonego Smoka (PB): zostało 	Red Dragon Fortress (RX): remaining 
+Twierdza Czerwonego Smoka (SZC): zostało 	Red Dragon Fortress (TR): remaining 
+Twoj wynik: 	Your score: 
+Twój koń nauczył się: 	Your horse has learned: 
+Twój koń osiągnął 	Your horse has reached 
+Ty możesz wejść za 	You can enter in 
+Udało się! Otrzymujesz 	Success! You receive 
+Ukończone w tym sezonie: 	Completed this season: 
+umiejętność 	skill 
+Uwięziony Kowal jest wolny (	The Imprisoned Blacksmith is free (
+Uwolnieni kowale: 	Blacksmiths freed: 
+Wejście kosztuje 	Entry costs 
+Wejście od poziomu 	Entry from level 
+Wejście: 	Entry: 
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie 	Entry: Atlantis Ticket - one per person (I have 
+Wieża Demonów: Wyjdziesz z lochu za 	Demon Tower: You will leave the dungeon in 
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (	Demon Tower: Missing floor Metins reappear (
+Wieża Sung Mahi - 	Sung Mahi Tower - 
+Wieża Sung Mahi: 	Sung Mahi Tower: 
+Wieża Sung Mahi: nagroda za 	Sung Mahi Tower: reward for 
+Wieża Sung Mahi: nagrody za 	Sung Mahi Tower: rewards for 
+Wieża Sung Mahi: walka na 	Sung Mahi Tower: fight on 
+Wioska I (	Village I (
+Wioska II (	Village II (
+Wróć, gdy osiągniesz poziom 	Come back when you reach level 
+Wspinaczka: 1 Sztandar Czaszki (masz: 	Climb: 1 Skull Banner (you have: 
+Wstęp kosztuje 	Admission costs 
+Wstęp: 	Admission: 
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (	You've already used today's expeditions to Meley's Refuge (
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (	You've already used today's expeditions to this dungeon (
+Wykorzystałeś już dzisiejsze wyprawy na statek (	You've already used today's ship expeditions (
+Wymagany poziom: 	Required level: 
+Wzgórze Wukonga (	Wukong Hill (
+Wzgórze Wukonga: 	Wukong Hill: 
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x	Wukong Hill: You receive: Wukong Chest x
+Wzgórze Wukonga: Pieczęć Wzgórza 	Wukong Hill: Hill Seal 
+Wzgórze Wukonga: Pokonane potwory: 	Wukong Hill: Monsters defeated: 
+Wzgórze Wukonga: Pozostało 	Wukong Hill: Remaining 
+Wzgórze Wukonga: Pozostało: 	Wukong Hill: Remaining: 
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: 	Wukong Hill: no chest this time (loot share: 
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (	Wukong Hill: Missing stage targets reappear (
+x Materiały Rzemieślnicze 	x Crafting Materials 
+x Medal Konny	x Horse Medal
+Z tej zbroi zrobie: 	From this armour I'll make: 
+Z łusek i rogów Balathora zrobię 	From Balathor's scales and horns I will make 
+Za 	For 
+Za chwilę zostaniecie przeniesieni na 	In a moment you will be moved to 
+Za grę, w której zdobędziesz 	For a game in which you score 
+Za słabi na głębiny (poziom 	Too weak for the depths (level 
+Za słabi, by wejść (poziom 	Too weak to enter (level 
+Za słabi, by wejść na pokład (poziom 	Too weak to board (level 
+Zabij 	Kill 
+Zaginione Metiny pojawiają się ponownie (	The Lost Metins are reappearing (
+Zaklęty Las (PB): zostało 	Enchanted Forest (PB): remaining 
+Zaklęty Las (SZC): zostało 	Enchanted Forest (SZC): remaining 
+Zapomnieć 	Forget 
+Zbierz więcej Kamyków - potrzebuję 	Collect more Glimmerstones - I need 
+Zbroja i buty > 80: 3x 	Armour and shoes > 80: 3x 
+Zdobyte: 	Obtained: 
+Zdobądź 	Get 
+Zebrana pasza: 	Fodder collected: 
+Zestawu tej części	Set for this part
+Ziemie Yohary są dostępne od poziomu 	The lands of Yohara are open from level 
+Zniszcz 	Destroy 
+Zniszczcie 	Destroy 
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (	Destroy the Deep Sea Shell and bring the Atlantis Key to the right Shell Pillar (
+Zniszczone Metiny: 	Metins destroyed: 
+Zniszczone: 	Destroyed: 
+Złota Księga Konia: 	Golden Horse Book: 
+Śmiertelny Chłód Alastora skuwa ziemię (	Alastor's Deadly Chill freezes the ground (
+Świetnie! Oto twoja pasza: 	Great! Here is your fodder: 
+Świątynia Węży: walka się zaczęła! Czas: 	Serpent Temple: the battle has begun! Time: 
+Świątynia Węży: zostało 	Serpent Temple: remaining 
+żywioł 	element 

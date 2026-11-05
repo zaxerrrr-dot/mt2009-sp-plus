@@ -248,7 +248,7 @@ def names(lang, kind, ours, owsap_pl):
         v = int(p[0])
         if v not in ours or v not in owsap_pl:
             continue
-        if norm(ours[v]).lower() != norm(owsap_pl[v]).lower():
+        if "".join(ours[v].split()).lower() != "".join(owsap_pl[v].split()).lower():
             continue
         if FORBIDDEN.search(p[1]):
             continue
