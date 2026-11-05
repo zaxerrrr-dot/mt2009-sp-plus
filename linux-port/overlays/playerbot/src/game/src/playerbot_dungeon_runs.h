@@ -2903,15 +2903,30 @@ namespace
 
 	// MT2009_PLUS_BOT_YDG_TRAIN_V2: true when a training party's member refusing for a fight, its health or an
 	// afk moment is held for the run (the fight dropped, a potion drunk) within the gathering's first minute.
+	bool BreakOffPlayerBotDgRunTrainee(LPCHARACTER ch, TPlayerBotAIState& state, const char* refusal, DWORD dwNow);
+
 	bool HoldPlayerBotDgRunTrainee(LPCHARACTER ch, TPlayerBotAIState& state, const char* refusal, const TPlayerBotDgRun& run,
 			DWORD dwNow)
 	{
 		if (!ch || !refusal || ch->IsDead())
 			return false;
+		if (dwNow - run.dwCalledAt > 60000)
+			return false;
+		if (!BreakOffPlayerBotDgRunTrainee(ch, state, refusal, dwNow))
+			return false;
+		PlayerBotLogThrottled("dgrun_trainee_hold", dwNow, "BOT_DGRUN: trainee held pid=%u name=%s run=%d why=%s", ch->GetPlayerID(),
+				ch->GetName(), run.iId, refusal);
+		return true;
+	}
+
+	// A training party's member (YDG, Erebu) out of what keeps it from its party's call: the fight dropped, a potion
+	// drunk, the afk moment over. True when the refusal is one of those (it may take a moment).
+	bool BreakOffPlayerBotDgRunTrainee(LPCHARACTER ch, TPlayerBotAIState& state, const char* refusal, DWORD dwNow)
+	{
+		if (!ch || !refusal || ch->IsDead())
+			return false;
 		const DWORD pid = ch->GetPlayerID();
 		if (!IsPlayerBotYdgTrainee(pid) && !IsPlayerBotErebuTrainee(pid))
-			return false;
-		if (dwNow - run.dwCalledAt > 60000)
 			return false;
 		if (!strcmp(refusal, "fight"))
 		{
@@ -2931,8 +2946,6 @@ namespace
 			state.persona.dwAfkUntil = 0;
 		else
 			return false;
-		PlayerBotLogThrottled("dgrun_trainee_hold", dwNow, "BOT_DGRUN: trainee held pid=%u name=%s run=%d why=%s", pid,
-				ch->GetName(), run.iId, refusal);
 		return true;
 	}
 

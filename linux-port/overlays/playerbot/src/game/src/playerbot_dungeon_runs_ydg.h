@@ -87,6 +87,7 @@ namespace
 	const DWORD PLAYERBOT_YDG_TRAIN_REST_MIN_MS = 60 * 1000;
 	const DWORD PLAYERBOT_YDG_TRAIN_REST_SPREAD_MS = 60 * 1000;
 	const DWORD PLAYERBOT_YDG_STATUS_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_YDG_TRAIN_WAIT_MS = 3 * 60 * 1000;
 	const int PLAYERBOT_YDG_MIN_LEVEL = 110;
 	const char* const PLAYERBOT_YDG_TRAIN_FILE = "playerbot_ydg_train";
 	const char* const PLAYERBOT_YDG_RUNS_FILE = "playerbot_ydg_runs.tsv";
@@ -720,7 +721,8 @@ namespace
 		DWORD dwRestUntil;
 		unsigned int runs, wins;
 		std::string last;
-		TPlayerBotYdgTrainParty() : iId(0), next(0), iRun(0), dwRestUntil(0), runs(0), wins(0) {}
+		DWORD dwWaitSince;	// V2: waiting for its members since (0: not)
+		TPlayerBotYdgTrainParty() : iId(0), next(0), iRun(0), dwRestUntil(0), runs(0), wins(0), dwWaitSince(0) {}
 	};
 
 	std::vector<TPlayerBotYdgTrainParty> s_vecPlayerBotYdgTrain;
@@ -1020,6 +1022,7 @@ namespace
 			BYTE empire = 0;
 			bool ninja = false, shaman = false;
 			int away = 0;
+			std::string why;
 			for (size_t k = 0; k < tp.pids.size(); ++k)
 			{
 				const DWORD pid = tp.pids[k];
@@ -1030,8 +1033,18 @@ namespace
 					++away;
 					continue;
 				}
-				if (s_mapPlayerBotDgRunBots.count(pid) || ch->IsDead() || GetPlayerBotDgRunRefusal(ch, *state, dwNow))
+				if (s_mapPlayerBotDgRunBots.count(pid) || ch->IsDead())
+				{
+					why += std::string(why.empty() ? "" : ",") + ch->GetName() + (ch->IsDead() ? ":dead" : ":in_run");
 					continue;
+				}
+				if (const char* refusal = GetPlayerBotDgRunRefusal(ch, *state, dwNow))
+				{
+					// V2: a fight, its health, an afk moment - broken off for the party (free at the next look).
+					const bool broke = BreakOffPlayerBotDgRunTrainee(ch, *state, refusal, dwNow);
+					why += std::string(why.empty() ? "" : ",") + ch->GetName() + ":" + refusal + (broke ? "(broken_off)" : "");
+					continue;
+				}
 				if (empire == 0)
 					empire = ch->GetEmpire();
 				if (ch->GetEmpire() != empire)
@@ -1043,6 +1056,18 @@ namespace
 			}
 			if (empire < 1 || empire > 3)
 				continue;
+			// V2: the whole party, not those free at the first look - up to PLAYERBOT_YDG_TRAIN_WAIT_MS for the others.
+			if ((int)free.size() + away < (int)tp.pids.size())
+			{
+				if (tp.dwWaitSince == 0)
+					tp.dwWaitSince = dwNow;
+				if (dwNow - tp.dwWaitSince < PLAYERBOT_YDG_TRAIN_WAIT_MS)
+				{
+					PlayerBotLogThrottled("ydg_train_short", dwNow, "BOT_YDG: train party=%d waits for its members free=%u of %u away=%d not_free=%s",
+							tp.iId, (unsigned int)free.size(), (unsigned int)tp.pids.size(), away, why.c_str());
+					continue;
+				}
+			}
 			// The next dungeon of its turn that this party can go to now.
 			int def = -1;
 			for (size_t t = 0; t < tp.defs.size() && def < 0; ++t)
@@ -1082,10 +1107,12 @@ namespace
 			if (id == 0)
 				continue;
 			tp.iRun = id;
+			tp.dwWaitSince = 0;
 			s_mapPlayerBotYdgRunParty[id] = tp.iId;
 			++running;
-			sys_log(0, "BOT_YDG: train party=%d called run=%d dungeon=%s members=%u of %u away=%d running=%d/%d", tp.iId, id,
-					info.szKey, (unsigned int)free.size(), (unsigned int)tp.pids.size(), away, running, maxRuns);
+			sys_log(0, "BOT_YDG: train party=%d called run=%d dungeon=%s members=%u of %u away=%d running=%d/%d not_free=%s", tp.iId, id,
+					info.szKey, (unsigned int)free.size(), (unsigned int)tp.pids.size(), away, running, maxRuns,
+					why.empty() ? "-" : why.c_str());
 		}
 	}
 
