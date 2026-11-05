@@ -225,6 +225,22 @@ def coverage(lang):
         low = tr.lower()
         if 'metin2' in low or 'gameforge' in low:
             bad.append((pl, tr))
+    page = 1252
+    for line in open(os.path.join(DIR, 'chat_%s.tsv' % lang), encoding='utf-8'):
+        if line.startswith('#@codepage\t'):
+            page = int(line.split('\t')[1])
+    lossy = 0
+    for pl, tr in rows.items():
+        t = tr.translate({0x219: 0x15F, 0x218: 0x15E, 0x21B: 0x163, 0x21A: 0x162, 0x2019: 39, 0x2018: 39,
+                          0x201C: 34, 0x201D: 34, 0x201E: 34, 0x2013: 45, 0x2014: 45, 0x2026: 46, 0xA0: 32})
+        try:
+            t.encode('cp%d' % page)
+        except UnicodeEncodeError:
+            lossy += 1
+            if lossy <= 5:
+                print('    not in cp%d:' % page, tr)
+    if lossy:
+        print('   ', lossy, 'translations with letters code page', page, 'has not got (sent as ?)')
     print('%s: %d/%d templates (%.1f%%), %d with slot or name problems' % (
         lang, done, len(keys), 100.0 * done / max(1, len(keys)), len(bad)))
     for pl, tr in bad[:20]:

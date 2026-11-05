@@ -203,6 +203,12 @@ namespace
 				out += (char)cp;
 				continue;
 			}
+			// Romanian s and t with a comma below are written with the cedilla
+			// in the Windows page (the letters the client's font has).
+			if (cp == 0x0219) cp = 0x015F;
+			else if (cp == 0x0218) cp = 0x015E;
+			else if (cp == 0x021B) cp = 0x0163;
+			else if (cp == 0x021A) cp = 0x0162;
 			char b = '?';
 			if (page)
 				for (int k = 0; k < 128; ++k)
