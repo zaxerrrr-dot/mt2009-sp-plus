@@ -52,7 +52,7 @@ namespace
 	const int PLAYERBOT_SHOUTER_LINE_COUNT =
 			(int)(sizeof(PLAYERBOT_SHOUTER_LINES) / sizeof(PLAYERBOT_SHOUTER_LINES[0]));
 
-	// MT2009_PLUS_MEDAL_SHOUTERS_V1: what Tieru, Tiieru and Tiiieru - the
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: what the three medal shouters - the
 	// medal droppers among the krzykacze (playerbot_shouters.h) - call out on
 	// the shout channel. Dopisuje sie tak samo jak wyzej.
 	const char* const PLAYERBOT_MEDAL_SHOUTER_LINES[] =

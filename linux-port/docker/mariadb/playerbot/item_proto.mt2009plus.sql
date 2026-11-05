@@ -1,5 +1,5 @@
 -- MT2009 Plus: every item of the mod's world (world.item_proto) for a world
--- whose dump lacks some (a Tieru dump, a world made anew). Rows already
+-- whose dump lacks some (a base-release dump, a world made anew). Rows already
 -- there are never changed (INSERT IGNORE). Run by apply.sh at every start.
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES

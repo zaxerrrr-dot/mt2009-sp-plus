@@ -7,7 +7,7 @@
 #   Owsap v6.2.6 client locale/<lang>/ (itemdesc, skilldesc, pet_skill, locale_game / locale_interface and their new_
 #   files, description files, guildbuildinglist) and Tools/Dump Proto/share/<lang>/item_names.txt / mob_names.txt -
 #   aligned with Owsap's own Polish files by vnum / key: a pair "Owsap Polish -> Owsap <lang>";
-#   the upstream release's English layer (tieru x2.2.87 client locale/en next to its locale/pl), English only;
+#   the upstream release's English layer (x2.2.87 client locale/en next to its locale/pl), English only;
 #   our item_proto "name" column where it is plain English (custom items), English only;
 #   the T('pl', 'en') pairs of our root python, English only.
 # A pair goes to keyed_orig.tsv when OUR Polish text of that vnum / key is the same or close to Owsap's Polish
@@ -28,7 +28,7 @@ import build_lang_packs as B  # noqa: E402
 
 OWSAP = '/opt/metin2/cache/owsap/Client/Client/pack/locale/locale/'
 OWSAP_NAMES = '/opt/metin2/cache/owsap/Tools/Tools/Dump Proto/share/'
-TIERU = '/opt/metin2/cache/tieru-releases/x2.2.87/client_unpacked/locale/locale/'
+UPSTREAM = '/opt/metin2/cache/tieru-releases/x2.2.87/client_unpacked/locale/locale/'
 OWSAP_CP = {'pl': 1250, 'cz': 1250, 'hu': 1250, 'ro': 1250, 'tr': 1254, 'gr': 1253, 'ae': 1256}
 
 
@@ -175,9 +175,9 @@ def main():
         sides = []
         if os.path.isdir(OWSAP + code):
             sides.append(('owsap', o_pl, Side(OWSAP, OWSAP_NAMES, code, OWSAP_CP.get(code, 1252))))
-        if code == 'en' and os.path.isdir(TIERU + 'en'):
-            t_pl = Side(TIERU, None, 'pl', 1250)
-            t_en = Side(TIERU, None, 'en', 1252)
+        if code == 'en' and os.path.isdir(UPSTREAM + 'en'):
+            t_pl = Side(UPSTREAM, None, 'pl', 1250)
+            t_en = Side(UPSTREAM, None, 'en', 1252)
             # the upstream's item / mob names in English by vnum: their Polish is our item_proto's (same base)
             for v, t in cat.items.items():
                 t_pl.item.setdefault(v, t)

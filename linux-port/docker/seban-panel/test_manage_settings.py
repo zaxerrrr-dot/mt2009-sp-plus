@@ -95,7 +95,7 @@ with tempfile.TemporaryDirectory() as tmp, patch.object(panel,'RATES_SPOOL',Path
     saved=weights_file.read_text()
     assert 'BOOKS\t1' in saved and 'CHEST\t11' in saved and 'CHEST_STONE\t301' in saved and 'FUTURE_KEY\t77' in saved
     assert panel.SKILLS[(0,1)][3] == (4, 'Aura Miecza') and len(panel.SKILLS[(0,1)]) == 5
-    # Tieru ships master icons as *_m.png for M/G/P; *_p.png does not exist.
+    # The base package ships master icons as *_m.png for M/G/P; *_p.png does not exist.
     skill_bytes=bytes(24) + bytes([3, 35])
     assert panel.parse_skills(skill_bytes, 0, 1)[0]['icon_suffix'] == '_m'
     assert panel.MAP_NAMES[61] == 'Góra Sohan' and panel.MAP_NAMES[104] == 'Loch Pająków V1'
@@ -130,7 +130,7 @@ with tempfile.TemporaryDirectory() as tmp, patch.object(panel,'RATES_SPOOL',Path
     update_spool=Path(tmp)/'update-spool'; update_spool.mkdir(); (update_spool/'watcher').touch()
     with patch.dict(panel.os.environ, {'PLAYERBOTS_VERSION':'1.30.12'}, clear=False), \
             patch.object(panel, 'baked_playerbots_version', return_value=None):
-        panel.queue_tieru_update()
+        panel.queue_base_update()
     update_request=(update_spool/'request').read_text()
     assert 'id=seban-' in update_request and 'version=1.30.12' in update_request
     update_state=panel.update_status()

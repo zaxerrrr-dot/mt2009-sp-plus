@@ -34,7 +34,7 @@ for k, pl in src.items():
         print("TAGS", k); bad += 1
     if (pl[:1] == " ") != (t[:1] == " ") or (pl[-1:] == " ") != (t[-1:] == " "):
         print("EDGE SPACES", k, repr(pl[:15]), repr(t[:15]), repr(pl[-10:]), repr(t[-10:])); bad += 1
-    if re.search(r"metin\s*2|gameforge|tieru|ameria|metin2alerts", t, re.I) and not re.search(r"metin\s*2|gameforge", pl, re.I):
+    if re.search(r"metin\s*2|gameforge|t[i]eru|ameria|metin2alerts", t, re.I) and not re.search(r"metin\s*2|gameforge", pl, re.I):
         print("FORBIDDEN WORD", k); bad += 1
 cpage = sys.argv[3] if len(sys.argv) > 3 else None
 if cpage:

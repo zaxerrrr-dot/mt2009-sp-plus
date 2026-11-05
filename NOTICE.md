@@ -1,14 +1,10 @@
 # MT2009 PLUS – licencja i atrybucja
 
 **MT2009 PLUS** (ZAXEP/SIZOWSKI, https://github.com/zaxerrrr-dot/mt2009-sp-plus)
-jest przeróbką projektu **Metin2 Playerbots** autorstwa Tieru i – zgodnie z jego
+jest przeróbką projektu **Metin2 Playerbots** poprzedniego autora i – zgodnie z jego
 licencją – jest udostępniany na tej samej licencji **CC BY-NC-SA 4.0**
-([LICENSE](LICENSE)). Wersje MT2009 PLUS oparte na Tieru do 2.2.16 zostały
+([LICENSE](LICENSE)). Wersje MT2009 PLUS oparte na poprzedniej wersji bazowej do 2.2.16 zostały
 wydane na MIT i na niej zostają ([LICENSE-MIT.txt](LICENSE-MIT.txt)).
-
-Atrybucja projektu oryginalnego:
-
-`Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0`
 
 Co zmienia MT2009 PLUS: kostiumy, fryzury, nakładki, szarfy, wierzchowce, pety
 i alchemia z tysiącami nowych przedmiotów, ItemShop, boty w strojach
@@ -50,8 +46,7 @@ W skrócie:
   a przeróbkę udostępnić na tej samej licencji;
 - **nie wolno** wykorzystywać go do celów komercyjnych.
 
-Jak podać autora:
-`Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0`
+Jak podać autora: nazwa projektu i link do jego repozytorium, wraz z oznaczeniem licencji CC BY-NC-SA 4.0.
 
 Kod źródłowy nowych wersji nie jest publikowany w repozytorium. Repozytorium
 zawiera wydania z paczkami, listę zmian i pliki, z których korzystają launcher
@@ -154,8 +149,7 @@ In short:
   changed, and share a modified version under the same licence;
 - **you may not** use it for commercial purposes.
 
-How to credit:
-`Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0`
+How to credit: the project name and a link to its repository, with the CC BY-NC-SA 4.0 licence mark.
 
 The source code of new versions is not published in the repository. The
 repository holds the releases with their packages, the changelog and the files

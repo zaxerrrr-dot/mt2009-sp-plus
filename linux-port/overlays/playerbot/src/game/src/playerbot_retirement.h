@@ -1129,7 +1129,7 @@ bool IsPlayerBotRetirementCandidateInner(LPCHARACTER ch, BYTE bLevelLo, BYTE bLe
 	if (ch->GetLevel() < bLevelLo || ch->GetLevel() > bLevelHi)
 		return false;
 	// MT2009_PLUS_MEDAL_SHOUTERS_V1: a krzykacz keeps its name and its life -
-	// apka2009's three and Tieru's.
+	// apka2009's three and the medal shouters'.
 	if (IsPlayerBotShouterPID(ch->GetPlayerID()) || IsPlayerBotMedalShouterPID(ch->GetPlayerID()))
 		return false;
 	// MT2009_PLUS_LEGEND_NAMES_V1: nor one of the 27 Legends.

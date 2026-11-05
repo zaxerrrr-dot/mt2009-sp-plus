@@ -564,8 +564,7 @@ namespace
 
 	// A bot climbing the Demon Tower with a player: in the player's party, the
 	// player on the same map. For such a bot the tower's stones are the floor's
-	// objective - "takie metiny sie zbija, by zaliczyc kolejne pietra" (Tieru,
-	// 16 September) - and no level band applies; for a bot on its own they stay
+	// objective - "takie metiny sie zbija, by zaliczyc kolejne pietra" (// 16 September) - and no level band applies; for a bot on its own they stay
 	// what IsPlayerBotDungeonTriggerStone says, a warp sprung on strangers.
 	// The dungeon's floor counter: mt2009's CDungeon carries one (the quests'
 	// d.get_level and d.advance_level), r40250's does not.
@@ -1169,7 +1168,7 @@ namespace
 	{
 		// A Metin is broken from the battle horse by whoever owns one, whatever
 		// its class and whatever its skills: "kazdy kamien metin powinien byc
-		// bity na koniu bojowym" (Tieru, 24 September). 2.2.6 had it the other
+		// bity na koniu bojowym" (24 September). 2.2.6 had it the other
 		// way round on a misreading - "do zbijania metinow nikt nie uzywa
 		// bojowca" was prodnathin's complaint that no bot did, "nikt nie
 		// przywolywal konia nawet na dt". The skill rule below is for monsters;
@@ -1180,7 +1179,7 @@ namespace
 		// tower_stone), and a missing buff still takes the rider down for a
 		// moment and puts it back (ManagePlayerBotCombatBuffs).
 		// MT2009_PLUS_SIDEKICK_METIN_SKILLS_V1: a player's companion too. Since
-		// Tieru 2.2.22 ("the companion on foot") it climbed down for a stone as
+		// Upstream 2.2.22 ("the companion on foot") it climbed down for a stone as
 		// for a monster, and its owner watched it break Metins on foot beside
 		// the mount it had just ridden up on ("szamanka ... mimo ze ma mounta to
 		// metina bije z buta", the owner, 5 October). A monster and a character
@@ -1300,7 +1299,7 @@ namespace
 		// A rider keeps the saddle to the end of the leg, and on a leg that does
 		// not ask for the horse. Nothing a bot does at the end of one wants the
 		// ground on either engine: an NPC, a counter, the anvil, a chest, a book,
-		// the gear and a portal all answer a rider (Tieru, 15 September: "Nie
+		// the gear and a portal all answer a rider (15 September: "Nie
 		// trzeba schodzic z konia by przeczytac ksiazke, sciagnac eq, ubrac eq,
 		// otworzyc jakies skrzynki, porozmawiac z npc, przejsc przez portal"). The
 		// two climb-downs that stood here, near_destination and on_foot_action,

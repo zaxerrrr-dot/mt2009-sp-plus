@@ -11,7 +11,7 @@
 // drop by M2_DRAGON_COIN_*_PERMILLE), and until 2.0.60 a bot kept every one
 // in its bag for good: ninety-seven of them on the test world after three
 // days, and not one coin on any account. "Uzywanie wydropionych kuponow SM i
-// przeznaczanie na potrzebne zakupy w itemshop" (Tieru, 16 September).
+// przeznaczanie na potrzebne zakupy w itemshop" (16 September).
 //
 // What a bot does with the shop is what a careful player does with a small
 // allowance. A voucher is cashed the moment it is found - the same charge the
@@ -33,7 +33,7 @@
 // costume, a hairstyle, a weapon skin for its weapon and a pet (no mount),
 // wears them (the pet is summoned from its seal), and buys a piece again
 // when its time runs out and the slot is empty.
-// Tieru 2.2.20 (26 September) added the Exorcism Scroll, Kamien Duchowy and
+// Upstream 2.2.20 (26 September) added the Exorcism Scroll, Kamien Duchowy and
 // the single change stone to what a bot buys; see the wishes below.
 // Nothing timed: every bot already holds the premium subscription for five
 // years (SpawnBot, the operator's rule), so the VIP rings and the Przepustka

@@ -216,7 +216,7 @@ try {
         }
     }
 
-    # MT2009 Plus ships its engine changes the way Tieru ships his: patched
+    # MT2009 Plus ships its engine changes the way the base release ships its own: patched
     # once, at release time (tools\port\Apply-MT2009PlusEngine.ps1), and
     # carried in the zip - a player's start-server.ps1 no longer patches
     # anything. An engine file listed here without its marks would take the

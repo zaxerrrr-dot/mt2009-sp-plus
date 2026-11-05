@@ -1,5 +1,5 @@
-# Metin2 server files are NOT kept in this repository (same as upstream
-# TieruYT/metin2-playerbots): engine source, libraries, game data, SQL dumps
+# Metin2 server files are NOT kept in this repository (same as the base
+# release): engine source, libraries, game data, SQL dumps
 # and item icons ship only in the release zips.
 /linux-port/docker/game/src/server/
 /linux-port/docker/game/src/extern/

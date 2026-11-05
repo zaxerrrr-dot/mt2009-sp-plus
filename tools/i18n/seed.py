@@ -2,8 +2,7 @@
 """Fill the web pages' language files from translations that already exist
 (MT2009_PLUS_WEB_I18N_V1), before anything is translated by hand:
 
-  seban-panel  the upstream panel's English and Turkish tables (Tieru
-               translations.py EXACT, static/i18n_tr.json "exact"): Polish
+  seban-panel  the upstream panel's English and Turkish tables (translations.py EXACT, static/i18n_tr.json "exact"): Polish
                text -> English/Turkish, where our panel prints the same text
   panel        the classic panel's own tables in admin_panel.py: every dict
                that has "en" next to "de"/"tr" gives English -> German/
@@ -12,7 +11,7 @@
 
 Only adds; a translation already in a file is never replaced.
 
-    python3 tools/i18n/seed.py --tieru <dir with seban-panel/translations.py>
+    python3 tools/i18n/seed.py --upstream <dir with seban-panel/translations.py>
 """
 import argparse
 import ast
@@ -33,15 +32,15 @@ def norm(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
-def tieru_tables(tieru):
-    path = os.path.join(tieru, "translations.py")
-    spec = importlib.util.spec_from_file_location("tieru_translations", path)
+def upstream_tables(upstream):
+    path = os.path.join(upstream, "translations.py")
+    spec = importlib.util.spec_from_file_location("upstream_translations", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     en = {norm(k): v for k, v in mod.EXACT.items()}
     tr = {}
     try:
-        tr = {norm(k): v for k, v in json.load(open(os.path.join(tieru, "static", "i18n_tr.json"), encoding="utf-8"))["exact"].items()}
+        tr = {norm(k): v for k, v in json.load(open(os.path.join(upstream, "static", "i18n_tr.json"), encoding="utf-8"))["exact"].items()}
     except (OSError, ValueError, KeyError):
         pass
     return {"en": en, "tr": tr}
@@ -82,10 +81,10 @@ def panel_pairs():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tieru", required=True)
+    ap.add_argument("--upstream", required=True)
     args = ap.parse_args()
     src_seban = json.load(open(os.path.join(HERE, "source", "seban.json"), encoding="utf-8"))
-    tables = tieru_tables(args.tieru)
+    tables = upstream_tables(args.upstream)
     for lang, table in tables.items():
         cat = load_catalog("seban", lang)
         added = 0

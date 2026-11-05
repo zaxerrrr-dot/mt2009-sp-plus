@@ -11,7 +11,7 @@ Writes, for every language of LANGS, into linux-port/docker/game/lang/<code>/ (U
 The hand-made files (30_quest_custom.tsv, 40_server_custom.tsv, zz_*.tsv) are never touched.
 
 Sources (read only; see SOURCES below): the test tree's share (the Polish), Owsap's client locale_quest.txt /
-locale_string.txt per language (GF's official texts by id) and Dump Proto item / mob names, Tieru's quest_texts_en/tr.lua
+locale_string.txt per language (GF's official texts by id) and Dump Proto item / mob names, the upstream quest_texts_en/tr.lua
 and locale_string_en.tsv (signature-checked English / Turkish of the same Polish), the Vegas package's German
 translate.lua / locale_string.txt (data only), the test database's item_proto / mob_proto Polish names
 (--items/--mobs TSV dumps: vnum<TAB>locale_name).
@@ -40,7 +40,7 @@ SOURCES = {
     "share": "/opt/metin2/mt2009plustest/linux-port/docker/game/src/serverfiles/share/locale/poland",
     "owsap_client": "/opt/metin2/cache/owsap/Client/Client/pack/locale/locale",
     "owsap_names": "/opt/metin2/cache/owsap/Tools/Tools/Dump Proto/share",
-    "tieru": "/opt/metin2/cache/tieru-releases/metin2-server-protected-update-2.2.129.zip",
+    "upstream": "/opt/metin2/cache/tieru-releases/metin2-server-protected-update-2.2.129.zip",
     "vegas": SCRATCH + "/tr-up/vegas/Multilanguage/Multilanguage/Multilanguage System V1.0/Server/locale/your service like germany/translate",
 }
 
@@ -117,10 +117,10 @@ def mysql_password(b):
     return hashlib.sha1(hashlib.sha1(b).digest()).hexdigest().upper()
 
 
-def tieru(tmp, name, table, enc, polish):
-    """path -> text of Tieru's quest_texts_<lang>.lua, only where its signature names our Polish."""
+def upstream(tmp, name, table, enc, polish):
+    """path -> text of the upstream quest_texts_<lang>.lua, only where its signature names our Polish."""
     import zipfile
-    z = zipfile.ZipFile(SOURCES["tieru"])
+    z = zipfile.ZipFile(SOURCES["upstream"])
     src = os.path.join(tmp, name)
     open(src, "wb").write(z.read("linux-port/docker/game/quest/" + name))
     out = src + ".tsv"
@@ -139,13 +139,13 @@ def tieru(tmp, name, table, enc, polish):
             stale += 1
             continue
         res[path] = unesc(r[3])
-    print("tieru %s: %d texts, %d stale" % (name, len(res), stale))
+    print("upstream %s: %d texts, %d stale" % (name, len(res), stale))
     return res
 
 
-def tieru_locale_string_en():
+def upstream_locale_string_en():
     import zipfile
-    z = zipfile.ZipFile(SOURCES["tieru"])
+    z = zipfile.ZipFile(SOURCES["upstream"])
     data = z.read("linux-port/docker/game/share-add/locale_string_en.tsv").decode("utf-8", errors="replace")
     res = {}
     for line in data.split("\n"):
@@ -299,8 +299,8 @@ def main():
     gf_values = set(gameforge.values())
     stock = {k: v for k, v in polish.items()
              if k.startswith("gameforge.") or k.startswith("translate.") or v not in gf_values}
-    t_en = tieru(args.tmp, "quest_texts_en.lua", "quest_texts_en", "cp1252", polish)
-    t_tr = tieru(args.tmp, "quest_texts_tr.lua", "quest_texts_tr", "cp1254", polish)
+    t_en = upstream(args.tmp, "quest_texts_en.lua", "quest_texts_en", "cp1252", polish)
+    t_tr = upstream(args.tmp, "quest_texts_tr.lua", "quest_texts_tr", "cp1254", polish)
     v_de, v_de_ls = vegas_de(args.tmp)
 
     lq = {l: owsap_table(l, "locale_quest.txt") for l in ["pl"] + LANGS}
@@ -326,11 +326,11 @@ def main():
         for l in LANGS:
             cand = []
             if l == "en":
-                cand.append(("tieru", en_verified))
+                cand.append(("upstream", en_verified))
             if qid is not None:
                 cand.append(("owsap", lq[l].get(qid)))
             if l == "tr":
-                cand.append(("tieru", t_tr.get(path)))
+                cand.append(("upstream", t_tr.get(path)))
             if l == "de" and path.startswith("gameforge."):
                 cand.append(("vegas", v_de.get(path)))
             for src, t in cand:
@@ -357,7 +357,7 @@ def main():
     lc = {}
     for k, v in share_ls:
         lc.setdefault(k, v)
-    t_ls_en = tieru_locale_string_en()
+    t_ls_en = upstream_locale_string_en()
     server = {l: {} for l in LANGS}
     prose = re.compile(r"^[\x20-\x7e]+$")
     for key, pl in lc.items():
@@ -372,7 +372,7 @@ def main():
         for l in LANGS:
             cand = []
             if l == "en":
-                cand.append(("tieru", en))
+                cand.append(("upstream", en))
             if sid is not None:
                 cand.append(("owsap", ls[l].get(sid)))
             if l == "de":

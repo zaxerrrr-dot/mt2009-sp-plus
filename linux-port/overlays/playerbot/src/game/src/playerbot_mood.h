@@ -53,7 +53,7 @@ namespace
 
 	// A boss's casket: a giftbox the bot opens itself, and never counter
 	// goods while it can (IsPlayerBotSurplusChest) - "niech je otwieraja"
-	// (Tieru, 26 September). The list above is also the chest pass's.
+	// (26 September). The list above is also the chest pass's.
 	bool IsPlayerBotBossCasketVnum(DWORD vnum)
 	{
 		for (size_t i = 0; i < sizeof(PLAYERBOT_MOOD_BOSS_CASKET_VNUMS) / sizeof(PLAYERBOT_MOOD_BOSS_CASKET_VNUMS[0]); ++i)

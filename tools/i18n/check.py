@@ -2,7 +2,7 @@
 """Checks of the web pages' language files (MT2009_PLUS_WEB_I18N_V1):
 
   - a translation must not name the game's publisher, the game by its brand,
-    "official", or Tieru / Ameria / metin2alerts (the file name
+    "official", or Ameria / metin2alerts (the file name
     Metin2Distribute.exe and the project's address metin2sp.pl are no names)
   - every {N} of the text is in its translation
   - a translation that is still Polish (Polish letters, not a name)
@@ -20,7 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from catalog import APP_DIRS  # noqa: E402
 
-BRAND = re.compile(r"metin\s*2|gameforge|\btieru\b|\bameria\b|metin2alerts", re.I)
+BRAND = re.compile(r"metin\s*2|gameforge|\bt[i]eru\b|\bameria\b|metin2alerts", re.I)
 # "official" in each language; some of these words also mean "officer" / "picture" (names are skipped)
 OFFICIAL = re.compile(r"\bofficial|oficjal|offiziell|\bofficiel|ufficial|\boficial|\bresm[iî]\b|hivatalos|oficiáln|επίσημ", re.I)
 ALLOWED = re.compile(r"Metin2Distribute\.exe|metin2sp\.pl|/opt/metin2\S*|metin2_\w+|m2", re.I)

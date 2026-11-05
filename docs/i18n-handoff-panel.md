@@ -61,7 +61,7 @@ Other commands:
 5. Tone: plain UI language, informal "you" (de du, cz ty, hu te, gr εσύ, tr sen, ro tu, es tú, it tu, pt você, fr vous, ae neutral MSA).
 6. Game words: use the game's own term. Look it up (grep) in `tools/i18n/glossary/<lang>.tsv` (Polish → official term) and `linux-port/docker/seban-panel/i18n/<lang>/names.json` (item/monster names). Keep proper names: MT2009 PLUS, Seban, Discord, Playerbots, Yang, Shinsoo/Chunjo/Jinno, Docker, VPS, map/village names (Joan, Bokjung…), Metin (stone).
 7. Currencies (keep consistent with the existing `<lang>.json`): Smocze Monety (SM) = Dragon Coins, Smocze Znaki (SZ) = Dragon Marks. Already used: cz Dračí mince (DM) / Dračí známky (DZ); hu Sárkányérme (SÉ) / Sárkányjel (SJ); gr Δρακονομίσματα / Δρακοσήματα; HP/SP/EXP as in the glossary (cz ZB/MB/BZK, hu TP/MP).
-8. NEVER write: the game's brand name (Metin2), its publisher (Gameforge), the word "official" in any language, Tieru, Ameria, metin2alerts. Rephrase ("the game", "the original game", drop the name). Exceptions only inside a file name/URL/path that must work: `Metin2Distribute.exe`, `metin2sp.pl`, `/opt/metin2`.
+8. NEVER write: the game's brand name (Metin2), its publisher (Gameforge), the word "official" in any language, Ameria, metin2alerts. Rephrase ("the game", "the original game", drop the name). Exceptions only inside a file name/URL/path that must work: `Metin2Distribute.exe`, `metin2sp.pl`, `/opt/metin2`.
 9. If the row is code (CSS, JS fragment, regex, shell command, identifier, `class="…"`), or already correct in the target language, copy column 2 into column 4 unchanged.
 10. `names_*.tsv`: follow the existing patterns in names.json (e.g. "+N" levels kept, (m)/(k) gender markers as the game writes them in that language, dragon stones "Diament (Zwykly, Najnizszy)" → the language's stone (grade, clarity) words used for cz/hu/de).
 
@@ -71,7 +71,7 @@ Other commands:
 - `state=oczekuje … message=…` rows: keep the `state=` value, translate only the message.
 - `names.json` maps "Rybie Wnętrzności" to "Fishing Book" (that is the original game's mapping); several agents used "fish entrails" in UI texts – harmless.
 - Romanian: `catalog.py` normalises ş/ţ to ș/ț in the UI files; names keep the game's letters.
-- Pre-existing texts in `admin_panel.py` T (pl/en/de/tr, landing page "About") name the game's brand, Tieru and "official"; they are the owner's and are shown natively for pl/en/de/tr (my catalogs cannot override built-in languages). Other languages use neutral wording. Owner/coordinator decision.
+- Pre-existing texts in `admin_panel.py` T (pl/en/de/tr, landing page "About") name the game's brand and "official"; they are the owner's and are shown natively for pl/en/de/tr (my catalogs cannot override built-in languages). Other languages use neutral wording. Owner/coordinator decision.
 - `check.py` false positives: "officer" words in item names (es/pt/it/fr), Turkish "resmi" = picture, Romanian "Bijutierul"/"tierurile".
 - `tools/i18n/work/` is not in git; catalogs (`i18n/*.json`) are the source of truth. Never run `catalog.py merge` on a language whose done files you deleted and expect them back – merging only adds.
 - Server hook not deployed: the ItemShop reads `player.player.language` (quest branch column) and silently ignores it while the column is missing.

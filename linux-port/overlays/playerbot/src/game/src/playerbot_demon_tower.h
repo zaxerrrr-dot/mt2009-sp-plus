@@ -846,7 +846,7 @@ namespace
 	// a monster and never away from the pack: a monster that has the Archer's
 	// aggro keeps coming whatever it does, and an Archer that stepped back
 	// from it every time would spend the fight running instead of shooting
-	// (Tieru, 24 September: "moze byc tak, ze ninja ciagle bedzie uciekala
+	// (24 September: "moze byc tak, ze ninja ciagle bedzie uciekala
 	// przed mobem"). With the pack beside it or ahead of it, or the same
 	// monster at its side again, it stands and shoots; a step the ground
 	// refuses leaves it shooting where it stands.
@@ -1527,7 +1527,7 @@ namespace
 #endif
 	}
 
-	// The piece this bot gives him. Never one it wears (Tieru, 23 September:
+	// The piece this bot gives him. Never one it wears (23 September:
 	// "nie swoj noszony, a jakis zarobkowy albo zapasowy, np. +6 i podejma
 	// probe na +7, bo kowal w DT nie wymaga ulepszaczy"): he waives the
 	// materials, so the step worth a burn is on something in the bag - a spare
@@ -1728,7 +1728,7 @@ namespace
 		// Said in the ordinary chat of the people on the floor, not shouted to
 		// the kingdom ("info na chacie po spaleniu/ulepszeniu w dt przez
 		// czlonka gildii, wystarczy na zwyklym chacie - nie na wolaj",
-		// prodnathin; Tieru: "niech pisze normalnie"). Every attempt, both ways.
+		// prodnathin; "niech pisze normalnie"). Every attempt, both ways.
 		char line[CHAT_MAX_LEN + 1];
 		if (success)
 			snprintf(line, sizeof(line), "Kowal w Wiezy: udalo sie! %s z +%u na +%u",
@@ -2011,7 +2011,7 @@ namespace
 		// such a bystander out ("przeszkadzaja w rajdzie", prodnathin,
 		// 24 September), and the raids came in at half their size and died on
 		// the eighth floor for want of numbers; since 27 September every
-		// kingdom's bots may be in the tower - "maja prawo tam byc" (Tieru) -
+		// kingdom's bots may be in the tower - "maja prawo tam byc" -
 		// and two bots never fight each other on its maps (playerbotify's
 		// apply_tower_bots_at_peace refuses the blow in battle_is_attackable,
 		// which CanPlayerBotStrikeCharacter asks for every foe).

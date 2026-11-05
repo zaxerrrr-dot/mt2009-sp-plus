@@ -8,9 +8,9 @@
 [![Wesprzyj projekt](https://img.shields.io/badge/Wesprzyj_projekt_–_postaw_kawkę-1E88E5?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buycoffee.to/mt2009plus)
 
 Lokalny świat Metin2 singleplayer z autonomicznymi postaciami (Playerbots),
-oparty na oficjalnym wydaniu **Metin2 Playerbots** (pliki
-serwerowe mt2009) — **rozszerzony o systemy, których oficjalne
-wydanie nie ma**: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety, nowe mapy, dungeonony i alchemię (Smocze Kamienie), razem ponad 3 200 nowych przedmiotów.
+oparty na wydaniu bazowym **Metin2 Playerbots** (pliki
+serwerowe mt2009) — **rozszerzony o systemy, których wydanie
+bazowe nie ma**: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety, nowe mapy, dungeonony i alchemię (Smocze Kamienie), razem ponad 3 200 nowych przedmiotów.
 
 Boty zdobywają poziomy, walczą
 solo i w party, zbierają łup, ulepszają ekwipunek u Kowala, polują na Metiny
@@ -26,7 +26,7 @@ i systemy oraz kilka poprawek botów.
 
 > [!IMPORTANT]
 > Do gry potrzebny jest **klient z tej paczki** (z nowymi kostiumami,
-> mountami, petami i przedmiotami). Oficjalny klient Tieru nie pokaże nowych
+> mountami, petami i przedmiotami). Klient wydania bazowego nie pokaże nowych
 > przedmiotów. Repozytorium nie zawiera plików gry — potrzebna jest pełna
 > paczka (klient + serwer) z Discorda projektu: **[metin2sp.pl/discord](https://metin2sp.pl/discord)**, patrz [SERWER_PL.md](SERWER_PL.md). W zakładce
 > **Releases** są tylko paczki aktualizacji (`metin2-*-update-*.zip`): launcher
@@ -91,14 +91,14 @@ Liczby poniżej pochodzą z ofert ItemShopu dołączonych do paczki
 
 ### ⚙️ Inne
 - Serwer wpuszcza klienta bez względu na jego wersję.
-- Aktualizacje przychodzą z **tego repozytorium**, nigdy z oficjalnego —
-  oficjalna paczka nadpisałaby modyfikacje ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
+- Aktualizacje przychodzą z **tego repozytorium**, nigdy z innego źródła —
+  obca paczka nadpisałaby modyfikacje ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
 
 Pełna lista zmian: [MODS_PL.md](MODS_PL.md).
 
 ---
 
-## 🌟 Możliwości botów (z oficjalnego wydania)
+## 🌟 Możliwości botów (z wydania bazowego)
 
 Boty są **pełnoprawnymi postaciami sterowanymi przez AI wewnątrz silnika
 serwera** — gracz widzi ich naturalny ruch, animacje ataków, skille
@@ -219,4 +219,3 @@ Szczególne podziękowania dla współautorów wydania mt2009 plus
 - **Digi Rasta** — Rytuał Przebudzenia u Kowala i bronie przebudzone +0…+9, kamienie duchowe do +9 oraz koń do 30 poziomu z płatnym szkoleniem u Stajennego, Próbą Czarnego Rumaka i jukami do 30 poziomu; Karty Potworów (misje kart, kolekcja potworów z gwiazdkami i ich funkcjami, bonusy zestawów – jego port paczki „Official-Monster-Card-System” Best Studio, `server-patches/monstercard`).
 - **Vekirion** — wikipedia dropu, keybindy, ulepszanie alchemii, powtarzalne misje Battle Pass
 - **blaki** — autor ulepszonego systemu autołowów
-- **Podstawowy projekt PlayerBots (Licencja MIT) (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)

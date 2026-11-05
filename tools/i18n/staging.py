@@ -16,7 +16,7 @@ in the file may change. Sources never contain tabs or newlines.
 import reads every filled row back, checks it and merges the good ones:
   - target must keep every {0}/{1}.., %d/%s/%.1f/%%, and every <tag> of the source
   - valid UTF-8, no U+FFFD, no control characters, no mojibake (Ã, Å, Ä followed by a byte char)
-  - no forbidden names (the game's brand, its publisher, "official" in any language, Tieru,
+  - no forbidden names (the game's brand, its publisher, "official" in any language,
     Ameria, metin2alerts) - the file name Metin2Distribute.exe and metin2sp.pl excepted
   - a target equal to its source is accepted (a name/code that stays the same)
 and writes the rejects to <out>/<lang>/REJECTED.tsv (reason in a 5th column).
@@ -39,10 +39,10 @@ import catalog  # noqa: E402
 DEFAULT_OUT = "/opt/metin2/cache/i18n-staging/panel"
 LANGS = ["de", "tr", "ro", "es", "it", "fr", "pt", "cz", "hu", "gr", "ae"]
 PARTS = ["seban", "panel", "itemshop"]
-TIERU = os.environ.get("TIERU_NAMES", "/tmp/claude-0/-root/9f475014-d1bc-4cf4-a3e1-da3c380fc52c/scratchpad/tieru-panel/linux-port/docker/seban-panel/static")
+UPSTREAM = os.environ.get("UPSTREAM_NAMES", "")
 
 HOLDERS = re.compile(r"\{\d+\}|\{\w+\}|%\.?\d*[sdf]|%%|</?[a-zA-Z][^>]*>")
-BRAND = re.compile(r"metin\s*2|gameforge|\btieru\b|\bameria\b|metin2alerts", re.I)
+BRAND = re.compile(r"metin\s*2|gameforge|\bt[i]eru\b|\bameria\b|metin2alerts", re.I)
 OFFICIAL = re.compile(r"\bofficial|oficjal|offiziell|\bofficiel|ufficial|\boficial|\bresm[iî]\b|hivatalos|oficiáln|επίσημ|رسمي", re.I)
 ALLOWED = re.compile(r"Metin2Distribute\.exe|metin2sp\.pl|/opt/metin2\S*|\bmetin2\b(?= *$)", re.I)
 MOJIBAKE = re.compile(r"Ã.|Å.|Ä.|Å‚|â€|Ĺ.|Ă.")
@@ -73,7 +73,7 @@ def names_todo(lang):
 
 def export(out, langs, lines):
     # names_todo from the current tables (rebuilds the per-language names)
-    subprocess.run([sys.executable, os.path.join(HERE, "build_names.py"), "--tieru", TIERU, "--todo"], check=False,
+    subprocess.run([sys.executable, os.path.join(HERE, "build_names.py"), "--upstream", UPSTREAM, "--todo"], check=False,
                    stdout=subprocess.DEVNULL)
     for lang in langs:
         d = os.path.join(out, lang)
@@ -193,7 +193,7 @@ def do_import(out, langs):
                 fh.write("\t".join(clean(x) for x in r) + "\n")
         print(lang, "filled", seen, "accepted", seen - len([r for r in rejected if r[3]]), "rejected", len(rejected),
               "(see %s)" % os.path.join(d, "REJECTED.tsv"))
-    subprocess.run([sys.executable, os.path.join(HERE, "build_names.py"), "--tieru", TIERU], check=False)
+    subprocess.run([sys.executable, os.path.join(HERE, "build_names.py"), "--upstream", UPSTREAM], check=False)
 
 
 def main(argv):

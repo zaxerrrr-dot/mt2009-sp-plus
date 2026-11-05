@@ -21,7 +21,7 @@ ALLOW_MOONLIGHT_CHEST=$(setting allow_moonlight_chest 0)
 ALLOW_ALCHEMY=$(setting allow_alchemy 1)
 ALLOW_SASHES=$(setting allow_sashes 1)
 KEEP_DEMO_CHARACTERS=$(setting keep_demo_characters 0)
-# The freshly unpacked Tieru package is the canonical enabled quest. Keep its
+# The freshly unpacked base package is the canonical enabled quest. Keep its
 # newest copy before replacing it with the disabled Seban variant.
 if [ -s "$QUEST" ] && ! grep -q 'Seban local override' "$QUEST"; then cp "$QUEST" "$ORIGINAL_QUEST"; fi
 if [ "$ALLOW_MOONLIGHT_CHEST" = 1 ]; then

@@ -1,6 +1,6 @@
 # The companion's window ("Towarzysz", playerbot_sidekick.h on the server):
 # what it is doing and has on it, and the orders a player gives it, on the P
-# key and from the Towarzysz letter - Tieru's request of 25 September, "GUI na
+# key and from the Towarzysz letter - the upstream request of 25 September, "GUI na
 # podstawie AutoLowow, ale do sterowania towarzyszem".
 #
 # The server answers "/towarzysz okno" (and "okno 1" for the whole gear, which

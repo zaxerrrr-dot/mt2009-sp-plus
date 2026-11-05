@@ -4,7 +4,7 @@ param(
     [Parameter(Mandatory = $true)][string]$ServerRoot
 )
 
-# MT2009 Plus engine changes, applied the way Tieru's port/playerbotify.py
+# MT2009 Plus engine changes, applied the way the upstream port/playerbotify.py
 # applies his: ONCE, on the developer's full server folder, while a release
 # is prepared. The patched engine files (listed in
 # launcher\server-update-files.mod.txt) then travel in the update zip, and a
@@ -13,7 +13,7 @@ param(
 # expected code is missing throws.
 #
 # Auto Lowy need nothing here: the engine files of the package already carry
-# Tieru's do_autohunt_target/do_autohunt_loot (Auto Lowy 2.0), which answer
+# the upstream do_autohunt_target/do_autohunt_loot (Auto Lowy 2.0), which answer
 # the MT2009 Plus client's window too.
 #
 #   shop search        ikarus_shop_manager.cpp   (MT2009_PLUS_SHOP_SEARCH_ITEM_V1)
@@ -1532,7 +1532,7 @@ if ((Test-Path -LiteralPath $szczelinaApply -PathType Leaf) -and
     }
 }
 # M2_BONUS_MODE (server-patches/bonusyglobal, MT2009_PLUS_GLOBAL_BONUS_V1): mt2009 or the global server's bonuses
-# (Tieru's 2.2.31) - the double-item chance line in the drop (item_manager.cpp) and a talisman's own resistance
+# (2.2.31) - the double-item chance line in the drop (item_manager.cpp) and a talisman's own resistance
 # values (item_attribute.cpp, CItem::AddAttr); the work is the overlay's playerbot_bonus_mode.cpp (event flag
 # m2_bonus_global), the element resistance at 30% is playerbot_elements.cpp. After zywioly and szczelina.
 $bonusyGlobalApply = Join-Path $repo 'server-patches/bonusyglobal/Apply-BonusyGlobalPatch.ps1'

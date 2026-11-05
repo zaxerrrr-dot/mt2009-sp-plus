@@ -1,5 +1,5 @@
 (() => {
-  // Port of Tieru's 7788 heatmap. The backend groups real game-log
+  // Port of the upstream 7788 heatmap. The backend groups real game-log
   // coordinates into a 72x72 grid; the frontend only visualises those cells.
   function render(container, cells, peak, kind) {
     clear(container);

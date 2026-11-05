@@ -6,7 +6,7 @@
 // Derpsonkowy95, 28 September: "Wyobrazmy sobie, ze potrzebujemy pomocy jako
 // gracz przy zadymie/expie. Bot moglby reagowac na kluczowe slowa ... i przy
 // podaniu lokalizacji (mapa + kordy) bot moglby tam przyjsc"; the operator,
-// Tieru: "jestem na tak, ale ... warto zrobic to w GUI jako komendy gildyjne".
+// upstream: "jestem na tak, ale ... warto zrobic to w GUI jako komendy gildyjne".
 // So it is three buttons in the guild window (uiguildbots.py in the client
 // root) and one command, "/gildia_boty pomoc|exp|wracajcie" (playerbotify's
 // apply_guild_bot_orders hands it to CPlayerBotManager::OnGuildBotOrder), and

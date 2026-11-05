@@ -26,7 +26,7 @@ Rules:
    SZC / Szczelina = Rift (keep the abbreviation "SZC" if it stands alone), Boss Świata = World Boss, ItemShop = Item Shop.
    Proper names (NPCs, places like Yohara, Seon-Hae, Chaegirab, Jaharr, Enasir, Balathor, Sung Mahi) stay as they are.
    Polish without diacritics ("Twoj wynik") is still Polish - translate it.
-4. Never write "Metin2", "Gameforge", "official server", "Tieru", "Ameria", "metin2alerts". If the Polish has one,
+4. Never write "Metin2", "Gameforge", "official server", "Ameria", "metin2alerts". If the Polish has one,
    leave that word out or use a neutral word ("the game").
 5. A line that is not player text (a technical identifier, SQL, a GM command's syntax line like `/goblin gm ...`, a
    debug line full of `%u` codes, or a text already in English): output `ID<TAB>` followed by the source unchanged.

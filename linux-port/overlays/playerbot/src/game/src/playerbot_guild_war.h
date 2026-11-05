@@ -23,7 +23,7 @@
 // clock ends it), and a break with everybody at the camps comes before the
 // next round (playerbot_war_rules.h, "the rounds"). "Potem
 // stworzymy wojny gildii, gdzie beda chodzic na specjalna mape i walczyc jak
-// gracze miedzy soba" (Tieru, 16 September).
+// gracze miedzy soba" (16 September).
 //
 // A player's guild takes on a bot guild of its own kingdom by the master's
 // ordinary declaration (the guild window, or /war). The engine refuses a
@@ -2802,7 +2802,7 @@ namespace
 		// A transport horse comes off for the fight, as in a duel.
 		// On foot, every rider, and the horse sent away rather than left to
 		// trot behind the fight: the operator's rule for a war ("niech boty
-		// odwoluja konie i walcza tylko na pieszo", Tieru, 17 September),
+		// odwoluja konie i walcza tylko na pieszo", 17 September),
 		// which the battle horse's own fitness to fight used to exempt.
 		// MT2009_PLUS_BOT_WAR_MOUNT_V1: a standing mount (the surfboard, the
 		// Wukong clouds, the drakkars) is no horse - its rider casts every

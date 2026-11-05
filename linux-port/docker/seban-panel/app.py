@@ -94,7 +94,7 @@ app.secret_key = os.environ.get("SEBAN_SESSION_SECRET", "change-this-before-publ
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
     # Cookies are scoped to the host, not the port. A dedicated name prevents
-    # the classic Tieru panel on :7788 from overwriting this panel on :7789.
+    # the classic panel on :7788 from overwriting this panel on :7789.
     SESSION_COOKIE_NAME=os.environ.get("SEBAN_SESSION_COOKIE_NAME", "seban_panel_session"),
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
     # The database editor saves whole tables in one form (the ItemShop's Pets tab: 199 rows x 7
@@ -141,7 +141,7 @@ MAP_BOUNDS = {
     # Chunjo M1's already-correct (0,102400,102400,128000) from its own
     # MapSize 4x5 / BasePosition 0,102400) -- the original values here were
     # wrong on all three axes for at least one of the three maps each,
-    # flagged by Tieru testing the exported panel.
+    # flagged while testing the exported panel.
     67: (281600, 0, 51200, 51200), 68: (1049600, 0, 76800, 76800),
     66: (128000, 793600, 76800, 76800),
     72: (0, 1203200, 153600, 153600), 73: (153600, 1203200, 153600, 153600),
@@ -194,7 +194,7 @@ GUILD_TIERS = {0: "Elitarna", 1: "Silna", 2: "Średnia", 3: "Zwykła"}
 def discovered_channels():
     """Sorted channel numbers with a live /opt/metin2/var/channelN directory --
     scales past CH2 automatically if the engine ever ships CH3+, instead of the
-    CH1-only paths Tieru's own stock panel still hardcodes."""
+    CH1-only paths the upstream stock panel still hardcodes."""
     found = []
     try:
         for path in CHANNEL_VAR_ROOT.glob("channel*"):
@@ -267,7 +267,7 @@ AI_WEIGHTS_FILE = RATES_SPOOL / "playerbot_weights.tsv"
 CHEST_SWITCH_FILE = RATES_SPOOL / "playerbot_chest_switch.tsv"
 CHANNELS_WISH_FILE = RATES_SPOOL / "channels.wanted"
 CHANNELS_EFFECTIVE_FILE = CHANNEL_VAR_ROOT / "channels.effective"
-# Ported from Tieru's classic panel (admin_panel.py's /ai/items) -- confirmed
+# Ported from the upstream classic panel (admin_panel.py's /ai/items) -- confirmed
 # the engine itself reads this exact path live, like the weights file
 # (playerbot_config.h's PLAYERBOT_ITEM_POLICY_PATH), 2026-09-26 audit.
 AI_ITEM_POLICY_FILE = RATES_SPOOL / "playerbot_item_policy.tsv"
@@ -410,7 +410,7 @@ PLAYER_ADMIN_WARPS = (
     ("❄️ Góra Sohan", 375200, 174900), ("🔥 Ognista Ziemia", 597800, 622200),
     ("🧊 Grota Wygnańców", 10000, 1207800),
 )
-# Tieru 1.29.10 adds the Orc Tooth task after the six classic Biologist
+# Upstream 1.29.10 adds the Orc Tooth task after the six classic Biologist
 # missions. The database lookup below also discovers future missions as soon
 # as the game has created their quest rows, while this list keeps the complete
 # progress scale correct before anyone has started a new task.
@@ -427,7 +427,7 @@ BIOLOGIST_FALLBACK_MISSIONS = (
 PANEL_VERSION_FILE = Path(__file__).parent / "VERSION"
 GM_JOB_OPTIONS = ((0, "Wojownik"), (1, "Ninja"), (2, "Sura"), (3, "Szaman"))
 # Nadawanie/odbieranie rangi GM istniejącej postaci z jej karty -- dotąd
-# szło tylko przy zakładaniu konta. Audyt vs panel Tieru (/gm na 7788).
+# szło tylko przy zakładaniu konta. Audyt vs panel klasyczny (/gm na 7788).
 GM_RANK_OPTIONS = (("", "Gracz (brak rangi)"), ("LOW_WIZARD", "Pomocnik"), ("GOD", "GM"),
                     ("HIGH_WIZARD", "Wyższy GM"), ("IMPLEMENTOR", "Właściciel"))
 GM_RANK_SET = frozenset(rank for rank, _ in GM_RANK_OPTIONS if rank)
@@ -489,9 +489,9 @@ BOT_PERSONALITY_COLORS = {0: "#69a6ff", 1: "#ff6b6b", 2: "#79e3af", 3: "#f2c34d"
                            5: "#4dd0e1", 6: "#ffa94d", 7: "#ff8fa3", 8: "#a3e635", 9: "#38bdf8", 10: "#fbbf24"}
 BOT_AMBITIONS = {0: "Poziom", 1: "Ekwipunek", 2: "Metiny", 3: "Koń", 4: "Biolog", 5: "Umiejętności", 6: "Handel"}
 BOT_GOALS = {0: "Zdobywanie poziomu", 1: "Przetrwanie", 2: "Wybór profesji", 3: "Zdobycie ekwipunku", 4: "Uzupełnienie zapasów", 5: "Ulepszanie EQ", 6: "Rozwój umiejętności", 7: "Polowanie na Metiny", 8: "Silne cele w PT", 9: "Misja Biologa", 10: "Misja Polowania", 11: "Rozwój konia"}
-# 18 (Kopie rudę) byla dopisana do playerbot_types.h u Tieru, ale nie tutaj -
+# 18 (Kopie rudę) byla dopisana do playerbot_types.h w wydaniu bazowym, ale nie tutaj -
 # boty kopiące rudę pokazywały gołe "#18" zamiast etykiety (audyt vs panel
-# Tieru na 7788, 2026-09-14).
+# klasyczny na 7788, 2026-09-14).
 BOT_ACTIONS = {0: "Planuje następny ruch", 1: "Podróżuje", 2: "Walczy", 3: "Podnosi łup", 4: "Regeneruje się", 5: "Wybiera profesję", 6: "Handluje", 7: "Ulepsza EQ", 8: "Czyta KU", 9: "Wkłada KD", 10: "Organizuje PT", 11: "Robi Biologa", 12: "Odwiedza Stajennego", 13: "Prowadzi stragan", 14: "Łowi ryby", 15: "Przegląda stragany", 16: "Wabi potwory", 17: "Odpoczywa w mieście", 18: "Kopie rudę", 19: "Zbiera zioła"}  # 19: MT2009_PLUS_BOT_HERBALIST_FIX_V1
 # Akcje, w których bot stoi w miejscu z własnej woli: stragan, wędka, przegląd
 # straganów, lada NPC, kowal, trener, odpoczynek, kopanie rudy. Bez tego każdy
@@ -503,7 +503,7 @@ STATIONARY_ACTIONS = {5, 6, 7, 13, 14, 15, 17, 18, 19}
 # -- włączany/wyłączany globalnie przełącznikiem PERSONA w wagach AI. Pod
 # kątem statusu bota to zupełnie osobna, dodatkowa etykieta (perona) plus
 # nastrój (mood) i ewentualna blokada nastroju (mood_lock). 255 w pliku
-# statusu = "PERSONA wyłączone", nie osobny typ. Audyt vs panel Tieru
+# statusu = "PERSONA wyłączone", nie osobny typ. Audyt vs panel klasyczny
 # (admin_panel.py, 7788), 2026-09-21.
 PLAYERBOT_PERSONA_NONE = 255
 BOT_PERSONAS = {0: "Grinder", 1: "Zdobywca", 2: "Handlarz", 3: "Hazardzista", 4: "Perfekcjonista",
@@ -531,10 +531,10 @@ ITEM_TYPE_NAMES = (
 # reported as swapped bonus text on real equipped items ([GA]Seban's
 # Kolczyki Z Niebiań.Łez+9 showing "Odporność na dzwony/miecze" and "Silny
 # przeciw mistykom" for what the in-game tooltip calls wachlarze/broń
-# dwuręczną/Nieumarłym). Re-keyed against Tieru's own APPLY_META table
+# dwuręczną/Nieumarłym). Re-keyed against the upstream APPLY_META table
 # (admin_panel.py, 7788) entry by entry -- POINT_TO_APPLY below already
-# matched Tieru's exactly, so only the label side was wrong. Gaps at
-# 51/57/77/83 are Tieru's too (no player-visible text for those points).
+# matched the upstream exactly, so only the label side was wrong. Gaps at
+# 51/57/77/83 are the upstream too (no player-visible text for those points).
 APPLY_LABELS = {
     1: ("Maks. PŻ", ""), 2: ("Maks. PM", ""), 3: ("Witalność", ""), 4: ("Inteligencja", ""), 5: ("Siła", ""), 6: ("Zręczność", ""), 7: ("Szybkość ataku", "%"), 8: ("Szybkość ruchu", "%"), 9: ("Szybkość zaklęcia", "%"), 10: ("Regeneracja PŻ", "%"), 11: ("Regeneracja PM", "%"), 12: ("Szansa na otrucie", "%"), 13: ("Szansa na omdlenie", "%"), 14: ("Szansa na spowolnienie", "%"), 15: ("Szansa na cios krytyczny", "%"), 16: ("Szansa na przeszywający", "%"), 17: ("Silny przeciw ludziom", "%"), 18: ("Silny przeciw zwierzętom", "%"), 19: ("Silny przeciw orkom", "%"), 20: ("Silny przeciw mistykom", "%"), 21: ("Silny przeciw nieumarłym", "%"), 22: ("Silny przeciw diabłom", "%"), 23: ("Kradzież PŻ", "%"), 24: ("Kradzież PM", "%"), 25: ("Szansa na kradzież PM", "%"), 26: ("Odzyskanie PM po obrażeniach", "%"), 27: ("Szansa na blok", "%"), 28: ("Szansa na unik strzał", "%"), 29: ("Odporność na miecze", "%"), 30: ("Odporność na broń dwuręczną", "%"), 31: ("Odporność na sztylety", "%"), 32: ("Odporność na dzwony", "%"), 33: ("Odporność na wachlarze", "%"), 34: ("Odporność na strzały", "%"), 35: ("Odporność na ogień", "%"), 36: ("Odporność na błyskawice", "%"), 37: ("Odporność na magię", "%"), 38: ("Odporność na wiatr", "%"), 39: ("Odbicie obrażeń fizycznych", "%"), 40: ("Odbicie klątwy", "%"), 41: ("Odporność na trucizny", "%"), 42: ("Odzyskanie PM po zabiciu", "%"), 43: ("Bonus doświadczenia", "%"), 44: ("Bonus Yang", "%"), 45: ("Bonus dropu przedmiotów", "%"), 46: ("Bonus mikstur", "%"), 47: ("Odzyskanie PŻ po zabiciu", "%"), 48: ("Odporność na omdlenie", ""), 49: ("Odporność na spowolnienie", ""), 50: ("Odporność na przewrócenie", ""), 52: ("Zasięg łuku", "m"), 53: ("Wartość ataku", ""), 54: ("Wartość obrony", ""), 55: ("Wartość magicznego ataku", ""), 56: ("Magiczna wartość obrony", ""), 58: ("Maks. wytrzymałość", ""), 59: ("Silny przeciw wojownikom", "%"), 60: ("Silny przeciw ninja", "%"), 61: ("Silny przeciw surom", "%"), 62: ("Silny przeciw szamanom", "%"), 63: ("Silny przeciw potworom", "%"), 64: ("Wartość ataku", "%"), 65: ("Wartość obrony", "%"), 66: ("Bonus doświadczenia", "%"), 67: ("Szansa na zdobycie przedmiotów", ""), 68: ("Szansa na zdobycie Yang", ""), 69: ("Maks. PŻ", "%"), 70: ("Maks. PM", "%"), 71: ("Obrażenia umiejętności", "%"), 72: ("Średnie obrażenia", "%"), 73: ("Odporność na obrażenia umiejętności", "%"), 74: ("Odporność na średnie obrażenia", "%"), 75: ("Bonus doświadczenia (iCafe)", "%"), 76: ("Bonus dropu przedmiotów (iCafe)", "%"), 78: ("Odporność na wojowników", "%"), 79: ("Odporność na ninja", "%"), 80: ("Odporność na sury", "%"), 81: ("Odporność na szamanów", "%"), 82: ("Energia", ""), 84: ("Bonus kostiumu", "%"), 85: ("Magiczny atak", "%"), 86: ("Magiczny/fizyczny atak", "%"), 87: ("Odporność na lód", "%"), 88: ("Odporność na ziemię", "%"), 89: ("Odporność na mrok", "%"), 90: ("Odporność na cios krytyczny", "%"), 91: ("Odporność na przeszywający", "%"), 1138: ("Terror", "%"), 1139: ("Regeneracja wytrzymałości", "%"), 1140: ("Atak sztyletem przeciw potworom", ""), 1141: ("Wartość ataku przeciw potworom", ""), 1142: ("Odporność na potwory", "‰"), 1143: ("Pochłanianie obrażeń", "%"), 1144: ("Pochłanianie obrażeń od potworów", "%"), 1145: ("Przełamanie odporności na ogłuszenie", ""), 1146: ("Przełamanie klątwy świątyni", ""), 1147: ("Czas trwania umiejętności", "%"), 1148: ("Silny przeciw potworom z Doliny Orków", "%"), 1149: ("Silny przeciw Metinom", "%"), 1150: ("Silny przeciw bossom", "%"), 1151: ("Magiczny atak przeciw potworom", "%"), 1152: ("Przełamanie odporności na miecz", "%"), 1153: ("Przełamanie odporności na broń dwuręczną", "%"), 1154: ("Przełamanie odporności na sztylet", "%"), 1155: ("Przełamanie odporności na dzwonek", "%"), 1156: ("Przełamanie odporności na wachlarz", "%"), 1157: ("Przełamanie odporności na łuk", "%"), 1158: ("Szansa na zbieranie", "%"), 1159: ("Szansa na naukę", "%"), 1160: ("Odporność na ludzi", "%"), 1161: ("Magiczny atak", ""), 1162: ("Szansa na podpalenie", "%"), 1163: ("Zamiana obrażeń na PE", "%"), 1164: ("Szansa na rzadki łup", "%"), 1165: ("Magiczna wartość ataku przeciw potworom", ""), 1166: ("Szansa na unieruchomienie", "%"), 1167: ("Atak specjalny", ""), 1168: ("Kara za śmierć", "%")}
 # 71 i 72 są w tablicy powyżej, we właściwej kolejności: common/length.h
@@ -558,7 +558,7 @@ ENGINE_MT2009 = PANEL_ENGINE == "mt2009"
 # would silently do nothing there: e.g. a queued NOTICE command would sit
 # as "pending" forever with nothing compiled in to pick it up.
 # Off by default (public release); this VPS's own .env turns it on since
-# the patches are actually applied here. First three flagged by Tieru
+# the patches are actually applied here. First three flagged in
 # testing the exported zip on a clean install, 2026-09-15; +9 announcements
 # added same day and gated the same way from the start.
 CUSTOM_PATCHES_ENABLED = os.environ.get("M2_PANEL_CUSTOM_PATCHES", "0").strip().lower() in ("1", "true", "yes", "on")
@@ -611,7 +611,7 @@ SKILL_PATH_NAMES = {
     (3, 1): "Szaman Smok", (3, 2): "Szaman Leczenie",
 }
 SKILLS = {
-    # Exact vnum/name pairs from Tieru's current panel. The old mapping put
+    # Exact vnum/name pairs from the upstream current panel. The old mapping put
     # display names next to the wrong VNUMs, hence correct icons looked wrong.
     (0, 1): ((1, "Trzystronne Cięcie"), (2, "Wir Miecza"), (3, "Berserk"), (4, "Aura Miecza"), (5, "Szarża")),
     (0, 2): ((16, "Duchowe Uderzenie"), (17, "Tąpnięcie"), (18, "Uderzenie Miecza"), (19, "Silne Ciało"), (20, "Walnięcie")),
@@ -910,7 +910,7 @@ def queue_game_admin_command(command, arg1, wait=12.0):
 
 
 def queue_player_admin_command(player_name, command, arg1="", arg2="", wait=8.0):
-    """Execute the live ITEM/GOLD/LEVEL/WARP/SPEED interface shipped by Tieru."""
+    """Execute the live ITEM/GOLD/LEVEL/WARP/SPEED interface shipped with the classic panel."""
     with db() as con, con.cursor() as cur:
         cur.execute("INSERT INTO player.web_admin_queue (player_name,cmd,arg1,arg2) VALUES (%s,%s,%s,%s)",
                     (player_name, command, str(arg1), str(arg2)))
@@ -1095,9 +1095,9 @@ def local_panel_changelog_entries():
             # "![via Claude by Seban](https://img.shields.io/badge/via-...)"
             # -- shows as an actual badge on GitHub, and as a small local
             # chip here (no outbound request from the panel itself, see
-            # CSS .changelog-via/.via-claude/.via-codex/.via-tieru). Split on
+            # CSS .changelog-via/.via-claude/.via-codex/.via-upstream). Split on
             # " by " so "Seban" gets its own rainbow/star treatment in the
-            # template -- a plain "Tieru" entry (his own code, merged in
+            # template -- a plain upstream entry (code merged in
             # directly, not AI-assisted) has no author half at all.
             match = via_pattern.match(line.strip())
             if match:
@@ -1108,45 +1108,6 @@ def local_panel_changelog_entries():
     if current:
         entries.append(current)
     return entries
-
-
-TIERU_CHANGELOG_URL = "https://raw.githubusercontent.com/TieruYT/metin2-playerbots/main/CHANGELOG.md"
-TIERU_CHANGELOG_CACHE_SECONDS = 3600
-_tieru_changelog_cache = {"checked_at": 0.0, "entries": [], "error": None}
-
-
-def tieru_changelog_entries(limit=25):
-    """Tieru's own engine changelog, fetched straight from GitHub (operator's
-    ask, 2026-09-26) and cached for an hour -- it's a 300+ release, 800KB
-    file, nobody needs it re-fetched on every /changelog view. Heading
-    format is "## VERSION — DATE" (em dash), unlike our own "## DATE ·
-    VERSION" -- a separate parser, not a shared one, because the two
-    files don't otherwise agree on anything (this one has ### subsections
-    and prose, ours is a flat bullet list)."""
-    now = time.time()
-    if now - _tieru_changelog_cache["checked_at"] < TIERU_CHANGELOG_CACHE_SECONDS and _tieru_changelog_cache["entries"]:
-        return _tieru_changelog_cache["entries"][:limit], _tieru_changelog_cache["error"]
-    entries, error = [], None
-    try:
-        request_github = Request(TIERU_CHANGELOG_URL, headers={"User-Agent": "Metin2-Singleplayer-Panel"})
-        with urlopen(request_github, timeout=8) as response:
-            text = response.read().decode("utf-8", errors="replace")
-        sections = re.split(r"(?m)^## ", text)[1:]  # drop the file's own intro before the first release
-        for section in sections[:limit]:
-            heading, _, body = section.partition("\n")
-            version, separator, date = heading.partition(" — ")
-            entries.append({
-                "version": version.strip() if separator else heading.strip(),
-                "date": date.strip() if separator else "",
-                "html": markdown.markdown(body.strip(), extensions=["fenced_code"]),
-            })
-    except (OSError, ValueError, HTTPError, URLError) as exc:
-        error = str(exc)[:160] or "Nie udało się pobrać changelogu Tieru."
-    if entries:
-        _tieru_changelog_cache.update({"checked_at": now, "entries": entries, "error": None})
-    elif error:
-        _tieru_changelog_cache["error"] = error
-    return entries[:limit] if entries else _tieru_changelog_cache["entries"][:limit], error or _tieru_changelog_cache["error"]
 
 
 def settings():
@@ -1176,7 +1137,7 @@ def write_settings(values):
 def panel_feature_enabled(name, current=None):
     if name not in PANEL_FEATURES:
         return True
-    # On MT2009 the student chest is Tieru's own world-wide flag, which his
+    # On MT2009 the student chest is the upstream world-wide flag, which his
     # quest, seed and cores read: nothing of the integration is needed.
     if name == "student_chest" and ENGINE_MT2009:
         return True
@@ -1309,7 +1270,7 @@ def item_base_stats(vnum):
     """Client-side item properties displayed by the in-game tooltip.
     value1-4 alone are the item's +0 base -- refine level adds value5, once
     for a weapon's attack/magic-attack range and twice for Body/Shield (per
-    Tieru's own tooltip JS, admin_panel.py 7788). Missing this made every
+    the upstream tooltip JS, admin_panel.py 7788). Missing this made every
     refined weapon/armor show its +0 numbers: Różowa Szata+9 read 29
     defense here vs. 83 in the live client (29 + 27*2); Antyczny Dzwon+9
     read 50-70/35-60 here vs. 120-140/105-130 live (both +70). Reported by
@@ -1417,7 +1378,7 @@ def parse_skills(raw, job, group):
     return result
 
 
-# The client stores support skills alongside class skills. Tieru's panel does
+# The client stores support skills alongside class skills. the upstream panel does
 # not ship their artwork, which made this section fall back to text only.
 PASSIVE_SKILLS = {
     121: "Dowodzenie", 122: "Combo", 123: "Wędkarstwo", 124: "Górnictwo", 125: "Kowalstwo",
@@ -1855,7 +1816,7 @@ def news_feed_history(before=None, limit=40, days=14):
     """Full paginated history for /world-feed -- reads the same fast local
     cache table sync_news_events() keeps caught up with log.log, so this
     page load never has to pay that scan's cost itself."""
-    # This pass also stores Tieru's structured raid notices in the same
+    # This pass also stores the upstream structured raid notices in the same
     # time-indexed cache used by the world feed.
     scan_bot_chat_logs()
     sync_news_events()
@@ -1899,7 +1860,7 @@ def live_statuses():
     "pid\\t"), a nie na sztywno -- od "systemu osobowości v2.0" (Iwakura)
     rdzeń dopisuje persona/mood/mood_lock/lock_level przed status, więc stary
     podział na 14 sztywnych kolumn wcinał te cztery pola w tekst statusu
-    zamiast je odczytać (naprawione 2026-09-21, audyt vs panel Tieru na 7788
+    zamiast je odczytać (naprawione 2026-09-21, audyt vs panel klasyczny na 7788
     -- do tego dnia status wyświetlał się z doklejonymi cyframi z przodu).
     Rdzeń sprzed Iwakury pisze starych czternaście bez nagłówka wcale --
     wtedy używamy PLAYERBOT_STATUS_LEGACY_COLUMNS jako fallbacku.
@@ -2424,7 +2385,7 @@ def read_spool_values(path):
 
 
 def update_status():
-    """State exposed by Tieru's isolated updater through its tiny spool."""
+    """State exposed by the upstream isolated updater through its tiny spool."""
     result = read_spool_values(UPDATE_SPOOL / "update.status")
     try:
         age = max(0, int(time.time() - (UPDATE_SPOOL / "watcher").stat().st_mtime))
@@ -2558,7 +2519,7 @@ def update_csrf_token():
     return token
 
 
-def queue_tieru_update(update_seban_panel=False):
+def queue_base_update(update_seban_panel=False):
     """Request only the updater's fixed sequence; no command, URL or path crosses this boundary."""
     current = update_status()
     if not current["watcher_ready"]:
@@ -3547,7 +3508,7 @@ def check_all_notifications():
 
 
 def read_ai_weights():
-    """Read Tieru's live Playerbots goal weights; absent entries are neutral."""
+    """Read the upstream live Playerbots goal weights; absent entries are neutral."""
     values = {key: AI_WEIGHT_NEUTRAL for key, _, _ in AI_WEIGHT_KEYS}
     values.update(AI_LIVE_DEFAULTS)
     try:
@@ -3946,7 +3907,7 @@ def read_bot_count():
 
     PLAYERBOT_AUTOSPAWN_COUNT is read once, at core boot, only when
     CPlayerBotManager::GetCount()==0 (game/src/input_db.cpp) -- there is no
-    live/hot-reload path for it, matching Tieru's own launcher slider
+    live/hot-reload path for it, matching the upstream launcher slider
     ("Zmiana suwaka działa dopiero po restarcie serwera", panel CHANGELOG
     1.33.2). A change therefore needs a real container recreate of `game`,
     exactly like the spawn-plan feature already does -- so this reads/writes
@@ -3985,7 +3946,7 @@ def read_student_chest_disabled():
     """Whether a new character (bot or player), of any class, is denied its
     starter chest (50187 warrior/sura, 50212 assassin, 50213 shaman).
 
-    On MT2009 this is Tieru's event flag m2_starter_chest_off, the one switch
+    On MT2009 this is the upstream event flag m2_starter_chest_off, the one switch
     his whole world reads: starter_chest.quest at a player's first login, his
     seed at a bot's creation, and the cores for the bots already in the world
     (off, they keep and open none of the chain). His migrator writes it from
@@ -4002,7 +3963,7 @@ def read_student_chest_disabled():
     "not disabled", matching the chest's original always-on behaviour.
     """
     if ENGINE_MT2009:
-        return bool(read_global_quest_flags(("m2_starter_chest_off",))["m2_starter_chest_off"])
+        return bool(read_global_quest_flags(("m2_starter_chest_off"))["m2_starter_chest_off"])
     try:
         row = one("SELECT value FROM common.m2_switches WHERE name='disable_student_chest'")
     except pymysql.MySQLError:
@@ -4023,7 +3984,7 @@ def write_student_chest_disabled(disabled):
     host reboot) will reset this row back to whatever .env still says. Keep
     both in sync there if the choice should survive that.
 
-    On MT2009: Tieru's flag (see read_student_chest_disabled), written for the
+    On MT2009: the upstream flag (see read_student_chest_disabled), written for the
     next start and set live through web_admin.quest's STARTER_CHEST - the same
     queue as the difficulty and the auto hunt. Returns the queue's answer.
     """
@@ -4037,7 +3998,7 @@ def write_student_chest_disabled(disabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('disable_student_chest', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if disabled else "0",),
+        ("1" if disabled else "0"),
     )
     return "done"
 
@@ -4392,7 +4353,7 @@ def write_include_real_players_in_rankings(enabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('include_real_players_in_rankings', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if enabled else "0",),
+        ("1" if enabled else "0"),
     )
 
 
@@ -4413,7 +4374,7 @@ def write_announce_plus9_refines(enabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('announce_plus9_refines', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if enabled else "0",),
+        ("1" if enabled else "0"),
     )
 
 
@@ -4456,7 +4417,7 @@ def logstat_marks():
         return _logstat_cache["marks"]
     marks = {}
     try:
-        for row in rows("SELECT name,value FROM player.web_seban_settings WHERE name LIKE %s", ("logstat_wm:%",)):
+        for row in rows("SELECT name,value FROM player.web_seban_settings WHERE name LIKE %s", ("logstat_wm:%")):
             try:
                 marks[row["name"].split(":", 1)[1]] = datetime.strptime(row["value"], "%Y-%m-%d %H:%M:%S")
             except (ValueError, IndexError):
@@ -4504,7 +4465,7 @@ def ranking_scope_sql(alias="p", people_only=False):
     have hidden a player who happened to be called Test. people_only narrows
     it to people's characters ("Tylko gracze")."""
     ref = (alias + ".") if alias else ""
-    # Tieru's permanent companions are ordinary playerbot identities, but the
+    # the upstream permanent companions are ordinary playerbot identities, but the
     # engine records their stable role in player.playerbot_sidekick. They must
     # remain visible on their own profile and in the player list; rankings are
     # the one place where counting them as independent competitors is wrong.
@@ -4967,7 +4928,7 @@ def full_plus9_badges_enabled():
 
 def write_full_plus9_badges_enabled(enabled):
     rows("""INSERT INTO common.m2_switches (name,value) VALUES ('full_plus9_badges_enabled',%s)
-        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
+        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0"))
 
 
 def shop_explain_enabled():
@@ -4988,7 +4949,7 @@ def shop_explain_enabled():
 
 def write_shop_explain_enabled(enabled):
     rows("""INSERT INTO common.m2_switches (name,value) VALUES ('shop_explain_enabled',%s)
-        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
+        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0"))
 
 
 # MT2009_PLUS_CHAMPION_PANEL_V1: Poziom Czempiona (player.conqueror_level, czempion.sql / MT2009_PLUS_CHAMPION_V1).
@@ -5027,7 +4988,7 @@ def champion_columns_exist():
 
 @app.context_processor
 def globals_for_templates():
-    tieru_url = os.environ.get("TIERU_PANEL_URL", "http://127.0.0.1:7788")
+    classic_panel_url = os.environ.get("TIERU_PANEL_URL", "http://127.0.0.1:7788")
     item_icon = item_icon_url
     current_settings = settings()
     ui_language = current_settings.get("ui_language", "pl")
@@ -5066,7 +5027,7 @@ def globals_for_templates():
         if champion:
             badge += Markup(' <span class="champion-level" title="Poziom Czempiona">C %d</span>') % champion
         return badge
-    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": ui_lang(), "ui_languages": I18N.languages(), "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
+    return {"classic_panel_url": classic_panel_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": ui_lang(), "ui_languages": I18N.languages(), "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
 
 
 @app.after_request
@@ -6427,7 +6388,7 @@ def character_stat_summary(pid):
 # Curated subset of log.log's `how` values that make an "equipment history"
 # instead of noise: log.log holds thousands of GET/SET_SOCKET/GET_GOLD rows
 # per bot, which drowned out the handful of equipment/trade events an
-# operator actually wants -- matches Tieru's own /api/bot_gear_history on
+# operator actually wants -- matches the upstream /api/bot_gear_history on
 # 7788 (audit, 2026-09-14), translated to Polish only (this panel has no
 # language switcher).
 GEAR_HISTORY_HOWS = {
@@ -6473,7 +6434,7 @@ def gear_history_tab(how):
 # Word-boundary match: a name is bounded by space, "=", ":", "[", a bracket
 # or line end, never by a letter/digit of its own -- bot names are numbered
 # suffixes of a shared stem ("botgrom" must not match "botgrom2"). Ported
-# from Tieru's classic panel (admin_panel.py's api_bot_logs), which the
+# from the upstream classic panel (admin_panel.py's api_bot_logs), which the
 # operator asked to compare our panel against, 2026-09-26.
 def bot_debug_logs(name, limit=60, scan_lines=800):
     """Recent syslog lines mentioning this bot's name, across every core.
@@ -6669,7 +6630,7 @@ def bot_offline_shop(pid):
 def bot_live_logs(name, limit=80):
     """Tail of the live game core's own syslogs, filtered to lines naming
     this bot -- same source (channelN/*/syslog, across every known channel)
-    and word-boundary matching as Tieru's own /api/bot_logs on 7788, so a
+    and word-boundary matching as the upstream /api/bot_logs on 7788, so a
     short name doesn't also match a longer sibling's (botgrom vs botgrom2)."""
     if not name:
         return []
@@ -6709,7 +6670,7 @@ def api_bot_logs(pid):
 def api_admin_teleport_me():
     """Moves whichever GM/human character is actually online right now to a
     bot's current position -- same one-click 'teleport me' the operator uses
-    on Tieru's panel (7788), reusing the exact queue our own web_admin.quest
+    on the upstream panel (7788), reusing the exact queue our own web_admin.quest
     already polls for item/gold grants (see item_grants.py). The panel
     cannot ask the database who is online (last_play only updates on save,
     minutes later), so every recently-active human character gets a queued
@@ -7219,7 +7180,7 @@ def plus9_vnums():
     (it changes only with a database editor apply)."""
     if time.time() - _plus9_vnum_cache["at"] < 600 and _plus9_vnum_cache["vnums"]:
         return _plus9_vnum_cache["vnums"]
-    found = rows("SELECT vnum, HEX(locale_name) AS name_hex FROM player.item_proto WHERE locale_name LIKE %s", ("%+9",))
+    found = rows("SELECT vnum, HEX(locale_name) AS name_hex FROM player.item_proto WHERE locale_name LIKE %s", ("%+9"))
     vnums = frozenset(int(row["vnum"]) for row in found
                       if re.search(r"\+9\s*$", cp1250_hex_text(row.get("name_hex")) or ""))
     _plus9_vnum_cache.update(at=time.time(), vnums=vnums)
@@ -7691,7 +7652,7 @@ def manage_bulk_vip():
             affected = cur.rowcount
     label = dict(PREMIUM_TYPES).get(premium_type, column)
     rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_VIP_GRANT_BULK',%s)",
-         (f"{label} +{days}d, all playerbot accounts",))
+         (f"{label} +{days}d, all playerbot accounts"))
     flash(f"Nadano {label} (+{days} dni) wszystkim botom ({affected} kont).")
     return redirect(url_for("manage"))
 
@@ -7752,7 +7713,7 @@ def queue_gm_command(cmd):
 
     Ask an online IMPLEMENTOR to run /reload a for us, so a GM grant/removal
     takes effect immediately instead of waiting for the character's next
-    login. Same trick Tieru's own classic panel (7788) uses: this engine has
+    login. Same trick the upstream classic panel (7788) uses: this engine has
     no admin socket, so nothing can push HEADER_GD_RELOAD_ADMIN to the db
     core directly -- only an in-game /reload a can, and interpret_command()
     runs a queued command as the player who owns it, so only a character
@@ -7794,7 +7755,7 @@ def player_action_gm_rank(pid):
     common.gmlist to jedyne źródło prawdy: silnik czyta stamtąd listę GM-ów,
     więc ten wiersz JEST nadaniem rangi. Rdzeń re-czyta listę przy starcie
     oraz przy /reload a -- queue_gm_reload() poniżej prosi o to online
-    IMPLEMENTORA automatycznie (ten sam trik co panel Tieru na 7788), więc
+    IMPLEMENTORA automatycznie (ten sam trik co panel klasyczny na 7788), więc
     zwykle działa od razu; jeśli akurat nikt z tą rangą nie jest zalogowany,
     zmiana i tak zacznie działać przy najbliższym logowaniu tej postaci.
     """
@@ -8678,7 +8639,7 @@ LEGENDARY_NOTICE_PATTERNS = (
 
 
 def legendary_announcement_from_syslog(line, year=None):
-    """Rebuild a gold notice from Tieru's structured raid syslog line."""
+    """Rebuild a gold notice from the upstream structured raid syslog line."""
     stamped = STAMPED_SYSLOG_RE.match(line)
     if not stamped:
         return None
@@ -9292,7 +9253,7 @@ def api_character_creator_accounts():
     q = request.args.get("q", "").strip()[:60]
     where, params = "", ()
     if q:
-        where, params = " WHERE a.login LIKE %s", (f"%{q}%",)
+        where, params = " WHERE a.login LIKE %s", (f"%{q}%")
     accounts = rows(
         "SELECT a.id,a.login,pi.empire,"
         "(pi.pid1<>0)+(pi.pid2<>0)+(pi.pid3<>0)+(pi.pid4<>0) AS used_slots "
@@ -9569,9 +9530,8 @@ def maps():
 def changelog():
     # One changelog here: the project's own (changelog.html has no second tab).
     source = "seban"
-    tieru_entries, tieru_error = ([], None) if source != "tieru" else tieru_changelog_entries()
     return render_template("changelog.html", entries=changelog_entries(), panel_version=PANEL_VERSION,
-                            source=source, tieru_entries=tieru_entries, tieru_error=tieru_error)
+                            source=source)
 
 
 @app.route("/accounts/<int:aid>/characters")
@@ -9641,7 +9601,7 @@ def rankings():
         # Bez "Polowanie": na tej linii silnika levelup.quest lezy w
         # quest/_unused, zaden hook zabicia nie strzela i licznik stoi na zero
         # dla kazdego bota - ranking miał wiec 100 pozycji z "Ukonczone do Lv 0"
-        # (Tieru, 13 wrzesnia).
+        # (13 wrzesnia).
         "gold": "Yang", "items": "Przedmioty", "horse": "Koń", "biologist": "Biolog",
         "shops": "Sprzedaże na sklepie Offline", "skills": "Umiejętności", "plus9": "Przedmiot +9", "playtime": "Czas gry", "bosses": "Bossy", "refine": "Pomyślne ulepszenia", "refine_rate": "Skuteczność ulepszeń", "fish": "Wyłowione ryby",
         "damage_max": "Rekord obrażeń (zwykłe)", "damage_max_horse": "Rekord obrażeń (konno)", "damage_max_skill": "Rekord obrażeń (umiejętność)",
@@ -10212,7 +10172,7 @@ def battlepass():
                         next_id += 1
                         added += 1
                 rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_BATTLEPASS',%s)",
-                     (f"saved {saved}, added {added}, removed {removed}",))
+                     (f"saved {saved}, added {added}, removed {removed}"))
                 flash(f"Misje zapisane (zmienione: {saved}, nowe: {added}, usunięte: {removed}). "
                       "Gra wczyta je w ciągu 30 sekund.", "success")
         except ValueError as error:
@@ -10323,7 +10283,7 @@ def wheel():
         rows("REPLACE INTO itemshop.kola_settings (name, value) VALUES ('override_wheel', %s), ('enabled', %s), ('key_chance', %s)",
              (str(override), enabled, str(key_chance)))
         rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_KOLA',%s)",
-             (f"override={override} enabled={enabled} key_chance={key_chance}",))
+             (f"override={override} enabled={enabled} key_chance={key_chance}"))
         flash("Zapisane. Sklep stosuje to od razu, okno F12 w grze w ciągu 30 sekund. Gracze z innym kołem "
               "wracają przy następnym obrocie na poziom 1 nowego koła.", "success")
         return redirect(url_for("wheel"))
@@ -10962,7 +10922,7 @@ def manage_update():
     if not expected or not hmac.compare_digest(supplied, expected):
         abort(403)
     try:
-        queue_tieru_update(current.get("update_seban_panel") == "1")
+        queue_base_update(current.get("update_seban_panel") == "1")
     except (OSError, RuntimeError) as exc:
         flash(str(exc), "error")
     else:
@@ -11411,7 +11371,7 @@ def manage_behavior():
 @app.post("/manage/item-policy")
 @login_required
 def manage_item_policy():
-    """Per-item keep/stall/merchant/drop rules -- ported from Tieru's classic
+    """Per-item keep/stall/merchant/drop rules -- ported from the upstream classic
     panel (2026-09-26 audit), confirmed the engine reads this exact file
     live (playerbot_config.h), same as the behaviour weights above."""
     text = request.form.get("policy", "")

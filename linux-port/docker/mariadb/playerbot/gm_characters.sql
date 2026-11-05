@@ -22,8 +22,8 @@
 -- Runs on a fresh world from initdb.d (10-import-dumps.sh) and on every
 -- start from apply.sh. Until 2.0.8 it did nothing unless the admin account
 -- had no character at all, so the operator who had made his own character
--- on it before the four existed never got them ("na moim koncie admin nie
--- ma postaci GM, tylko moja Tieru"). Now it fills the account's free slots
+-- on it before the four existed never got them (he had no GM character,
+-- only his own). Now it fills the account's free slots
 -- (an account holds four characters) with the classes the account does
 -- not have yet, in the order above; a class somebody already plays there
 -- is skipped, and an account with four characters gets nothing. Whatever

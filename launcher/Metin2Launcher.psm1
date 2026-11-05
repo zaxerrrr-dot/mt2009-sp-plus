@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 $script:M2_DEFAULT_SUPPORT_CONTACT = 'https://metin2sp.pl/discord'
 
 # MT2009 Plus: updates come from the mod's own repository, never from
-# upstream (TieruYT/metin2-playerbots) - an upstream package unpacked over the
+# the base release's repository - an upstream package unpacked over the
 # mod would overwrite its changes. The raw URL is also read through the GitHub
 # contents API first (see Get-M2UpdateManifest).
 $script:M2_MOD_REPOSITORY = 'zaxerrrr-dot/mt2009-sp-plus'
@@ -109,7 +109,7 @@ function Test-M2ForeignManifestUrl {
     # 1.x channel file this repository does not publish.
     param([AllowEmptyString()][string]$Url)
     if ([string]::IsNullOrWhiteSpace($Url)) { return $true }
-    if ($Url -match '(?i)TieruYT/metin2-playerbots') { return $true }
+    if ($Url -match '(?i)github\.com/[^/]+/metin2-playerbots') { return $true }
     return ($Url -match '(?i)zaxerrrr-dot/mt2009-sp-plus/.*/update-manifest\.json$')
 }
 
@@ -654,7 +654,7 @@ function Get-M2UpdateManifest {
         throw 'Brak adresu kanału aktualizacji (manifestUrl) w konfiguracji launchera.'
     }
     if (Test-M2ForeignManifestUrl -Url $Source) {
-        throw 'To nie jest kanał MT2009 Plus. Ta paczka aktualizuje się tylko z repozytorium zaxerrrr-dot/mt2009-sp-plus - oficjalna aktualizacja Tieru nadpisałaby zmiany moda.'
+        throw 'To nie jest kanał MT2009 Plus. Ta paczka aktualizuje się tylko z repozytorium zaxerrrr-dot/mt2009-sp-plus - aktualizacja z innego kanału nadpisałaby zmiany moda.'
     }
     if (Test-Path -LiteralPath $Source -PathType Leaf) {
         $text = Get-Content -LiteralPath $Source -Raw -Encoding UTF8

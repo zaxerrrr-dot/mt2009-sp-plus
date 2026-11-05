@@ -30,7 +30,7 @@
 // bot kept it, so a shaman of forty that never gambled filled its whole box
 // with body armour of 34 to 66 of four classes, which the merchant pays for
 // in any case ("czemu oni tam chomikuja takie zbroje w calym magazynie? te
-// zbroje nadaja sie do handlarza", Tieru; "dalem to tylko na HAZARDZISTE",
+// zbroje nadaja sie do handlarza"; "dalem to tylko na HAZARDZISTE",
 // Iwakura, 23 September). A bot that is not a gambler by nature
 // (IsPlayerBotGamblerByNature) keeps none of the list's gear: the ordinary
 // rules sell it, and what an older version put in its box comes back out,
@@ -46,7 +46,7 @@
 // a box with no room: to the merchant by the ordinary rules, where the
 // list's other surplus goes to the counter. 2.2.7 let every plain piece go
 // ("zbroje na 34 czy 42 lv tez sa malo warte jesli nie sa ulepszone ... to
-// juz lepiej jak laduja u handlarza", Tieru), and since only a gambler
+// juz lepiej jak laduja u handlarza"), and since only a gambler
 // keeps the list, that took the gamblers' stock and nobody else's: "czesc
 // musi zostac (po 2 sztuki danego typu) pod Hazardziste" (Iwakura, 24
 // September).

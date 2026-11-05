@@ -211,7 +211,7 @@ services:
         # edit. Set M2_APT_MIRROR to another mirror for another country.
         APT_MIRROR: "${M2_APT_MIRROR:-http://ubuntu.task.gda.pl/ubuntu/}"
     # MT2009_PLUS_YOHARA_IMAGES_V1 (the owner's fix in the 3.0.0-test package, 21 Oct 2026): every Yohara installation
-    # gets its own images. The 2.x/Tieru package uses metin2/game:mt2009; sharing that tag made a fresh Yohara world
+    # gets its own images. The 2.x package uses metin2/game:mt2009; sharing that tag made a fresh Yohara world
     # start the already-built 2.x engine without compiling this package. The tag stays 3.0.0-test (the owner, 21 Oct:
     # a Yohara update reuses the Yohara images; the launcher's rebuild marker rebuilds them under the same names).
     image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-game:3.0.0-test"

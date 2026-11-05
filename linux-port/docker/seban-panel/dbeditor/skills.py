@@ -36,7 +36,7 @@ from dbeditor import common_items as common
 
 TABLE = "world.skill_proto"
 
-# Polish names, the same pairs as app.py SKILLS (Tieru's panel).
+# Polish names, the same pairs as app.py SKILLS (panel).
 SKILL_NAMES_PL = {
     1: "Trzystronne Cięcie", 2: "Wir Miecza", 3: "Berserk", 4: "Aura Miecza", 5: "Szarża",
     16: "Duchowe Uderzenie", 17: "Tąpnięcie", 18: "Uderzenie Miecza", 19: "Silne Ciało", 20: "Walnięcie",

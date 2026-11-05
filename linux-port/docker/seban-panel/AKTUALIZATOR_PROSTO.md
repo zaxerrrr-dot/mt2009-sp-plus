@@ -1,8 +1,8 @@
-# Aktualizator Tieru — instrukcja krok po kroku
+# Aktualizator wydania bazowego — instrukcja krok po kroku
 
 To wykonujesz **raz na VPS**. Potem aktualizacja odbywa się przyciskiem w panelu.
 
-1. Zaloguj się przez SSH i przejdź do katalogu instalacji Tieru:
+1. Zaloguj się przez SSH i przejdź do katalogu instalacji upstream:
 
 ```bash
 cd /opt/metin2-playerbots/upstream-1.29.10/linux-port/docker
@@ -30,7 +30,7 @@ cd /opt/seban-panel
 docker compose --env-file seban-panel.env up -d --build seban-panel
 ```
 
-4. Otwórz `/manage`, włącz ochronę hasłem panelu i zaloguj się. W sekcji **Aktualizator Tieru** kliknij **Pobierz i zainstaluj aktualizację Tieru**. Obserwuj postęp oraz log na tej samej stronie.
+4. Otwórz `/manage`, włącz ochronę hasłem panelu i zaloguj się. W sekcji **Aktualizator wydania bazowego** kliknij **Pobierz i zainstaluj aktualizację wydania bazowego**. Obserwuj postęp oraz log na tej samej stronie.
 
 ## Jeżeli selftest zgłasza brak `Reference_Server.zip`
 
