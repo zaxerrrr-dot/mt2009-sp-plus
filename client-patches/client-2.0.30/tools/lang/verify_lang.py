@@ -96,6 +96,8 @@ def main():
             if not t or n == 'mt2009_texts.txt':
                 continue
             for line in t.split('\r\n'):
+                if n not in L.DESC_FILES and '\t' in line:
+                    line = line.split('\t', 1)[1]  # the value, not the key / vnum
                 if L.FORBIDDEN.search(line):
                     bad.append('%s: forbidden name in %r' % (n, line[:80]))
                     break

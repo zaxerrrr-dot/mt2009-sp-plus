@@ -197,6 +197,8 @@ Alchemia jest wyłączona na tym serwerze.	Alchemy is disabled on this server.
 Alchemia legendarna	Legendary Alchemy
 Alchemia mityczna	Mythical Alchemy
 Alchemia towarzysza	Companion's Alchemy
+Amulet chroniący przed złym spojrzeniem. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń, +10% siły w walce z potworami. Czas upływa także, gdy go nie nosisz.	An amulet protecting against the evil eye. Gives: +50% EXP, +20% attack speed, +20% casting speed, +30% damage, +10% strength against monsters. Time also runs out while you are not wearing it.
+Amulet z Koła Strażników. Daje: +50% PD, +5% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z kamieniami Metin, +40% obrażeń umiejętności. Czas upływa także, gdy go nie nosisz.	An amulet from the Guardians' Circle. Gives: +50% EXP, +5% attack speed, +20% casting speed, +10% strength against Metin stones, +40% skill damage. Time also runs out while you are not wearing it.
 Antyczne: te nagrody odblokujesz po 5 turach.	Antique: you unlock these rewards after 5 rounds.
 Anubis	Anubis
 Anuluj edycje	Cancel editing
@@ -232,6 +234,7 @@ Atakuje wszystkich przeciwników wokół siebie.	Attacks all enemies around you.
 Atrybuty	Attributes
 Aukcja zakończona	Auction ended
 Auto	Auto
+Auto Łowy przez 7 dni kalendarzowych od zakupu - działają, dopóki bilet jest w ekwipunku.	Auto Hunt for 7 calendar days from purchase - works as long as the ticket is in your inventory.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Auto Hunt: could not get back on the mount after getting stuck.
 Auto Łowy;Czas leci tylko w grze.	Auto Hunt;Time only passes while in game.
 Autologin: ponownie za %d s (próba %d)	Autologin: retrying in %d s (attempt %d)
@@ -368,6 +371,7 @@ Cena: %s %s	Price: %s %s
 Cena: %s reputacji	Price: %s reputation
 Cena: malejaco	Price: descending
 Cena: rosnaco	Price: ascending
+Cenna skrzynia skarbów. Aby ją otworzyć, potrzebujesz platynowego klucza do skrzyni.	A valuable treasure chest. To open it, you need a platinum chest key.
 Certyfikat Duszy	Soul Certificate
 Chaegirab na pewno się tym interesuje.	Chaegirab will surely be interested in this.
 Chcesz zacząć grę?	Do you want to start the game?
@@ -391,6 +395,9 @@ Ctrl + klik: kilka punktów naraz	Ctrl + click: several points at once
 Ctrl + prawy klik: wszystkie księgi z torby.	Ctrl + right-click: all books from your bag.
 Ctrl/Shift/Alt + klawisz = kombinacja, sam Shift też. Esc - anuluj, Backspace / PPM - wyczyść.	Ctrl/Shift/Alt + key = combination, Shift alone too. Esc - cancel, Backspace / RMB - clear.
 Cupido (pieczęć)	Cupido Seal
+Cyjanitowa Płyta	Cyanite Plate
+Cyjanitowa Zbroja	Cyanite Armour
+Cyjanitowe Ubranie	Cyanite Clothing
 Czapka z Pomp. (czerw.)	Bobble Hat (red)
 Czapka z Pomp.+ (biała)	Bobble Hat+ (white)
 Czapka z Pomp.+ (czerw.)	Bobble Hat+ (red)
@@ -414,6 +421,7 @@ Czat handlowy posiada ograniczenie 30 sekund od poprzedniej wiadomości.	The tra
 Czcionka	Font
 Czekaj tu	Wait Here
 Czekam na odpowiedź serwera...	Waiting for the server's response...
+Czekanie nie jest Waszą mocną stroną? Dzięki Spirali Czasu zaoszczędzicie drogocenny czas. Skraca o 10% pozostały czas oczekiwania wybranej misji: badań Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badań reliktów. Można używać spirala po spirali. Nie dotyczy ksiąg umiejętności.	Waiting is not your strong suit? With the Time Spiral you will save precious time. Shortens the remaining waiting time of a chosen quest by 10%: Biologist research, the stable boy and horse, the 6th and 7th bonus at Seon-Hae, and relic research. Can be used spiral after spiral. Does not apply to skill books.
 Czerw. Las Duchow	Red Ghost Forest
 Czerwone, niebieskie: Handlarka (cena NPC).	Red, blue: General Store Saleswoman (NPC price).
 Czerwony Skorpion	Red Scorpion
@@ -458,6 +466,8 @@ Daj to Yu-Hwan'owi	Give this to Yu-Hwan
 Daj yang towarzyszowi	Give Yang to the Companion
 Daje aktywnemu petowi 5% doświadczenia potrzebnego na następny poziom.	Gives the active pet 5% of the experience needed for the next level.
 Daje aktywnemu petowi 800.000 punktów doświadczenia.	Gives the active pet 800.000 experience points.
+Daje zwierzakowi 5% PD przedmiotu potrzebnych do następnego poziomu.	Gives the pet 5% of the item EXP needed for the next level.
+Daje zwierzakowi 80.000 PD przedmiotu (okno „Przedmiot EXP”).	Gives the pet 80.000 item EXP (“Item EXP” window).
 Daje: +30% PD, +20% obrony przed surami, +20% obrony przed szamanami, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Grants: +30% EXP, +20% defence against suras, +20% defence against shamans, +30% strength against monsters, +10% max. HP, +10% max. SP.
 Daje: +30% PD, +20% obrony przed wojownikami, +20% obrony przed ninja, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Grants: +30% EXP, +20% defence against warriors, +20% defence against ninjas, +30% strength against monsters, +10% max. HP, +10% max. SP.
 Daje: +50% PD, +30% ataku, +20% szybkości ataku, +20% szybkości zaklęć, +10% maks. PŻ, +10% maks. PE.	Grants: +50% EXP, +30% attack, +20% attack speed, +20% casting speed, +10% max. HP, +10% max. SP.
@@ -502,6 +512,7 @@ Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Marke
 Domyślna	Default
 Domyślne	Default
 Domyślny	Default
+Dopóki masz je w ekwipunku, Dom Aukcyjny działa na każdej mapie. Użyj, aby otworzyć Dom Aukcyjny.	As long as you have it in your inventory, the Auction House works on every map. Use it to open the Auction House.
 Dostęp do kanału Premium[ENTER]Możliwe jest teleportowanie małżonka na kanał Premium.	Access to the Premium channel[ENTER]You can teleport your spouse to the Premium channel.
 Dostępne profesje	Available classes
 Dostępne tylko dla Premium	Available for Premium only
@@ -514,6 +525,7 @@ Dołącza do twojej grupy, także prowadzonej przez kogoś innego.	Joins your gr
 Dośw.	EXP
 Doświadczenie +%d%%	Experience +%d%%
 Doświadczenie: %s / %s (%.2f%%)	Experience: %s / %s (%.2f%%)
+Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	The precious currency of Yohara. Cut 30 Pebbles at the Warrior Statue in the Port of the New Continent (with a Soul Stone +0 to +3 and 15 000 Yang - 70% chance) and you receive 3 Gaya. You pay with it in the Port Gaya Shop, at the set blacksmiths, at the Serpent Statue, the Mysterious Altar and Master Chi. It cannot be traded with other players.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	A precious ring adorned with jade and turquoise. Grants: +50% EXP, +30% strength against monsters, +20% attack and casting speed, +10% max. HP and SP.
 Drop potwora %s:	Drops of monster %s:
 Drop przedmiotów +%d%%	Item drop +%d%%
@@ -540,6 +552,7 @@ Dzielenie przerwane, podzielono: %d paczek po %d szt.	Splitting stopped, split: 
 Dzielenie: %d paczek po %d szt.	Splitting: %d packs of %d pcs.
 Dziki Moa (pieczęć)	Wild Moa Seal
 Dziękujemy za zgłoszenie!	Thank you for your report!
+Dzwon wypełniony mocą mrocznego smoka.	A bell filled with the power of the dark dragon.
 Dzwoneczkowa Pieczęć	Little Bell Seal
 Długi	Long
 Długi Kucyk (różowy)	Long Ponytail (pink)
@@ -581,6 +594,7 @@ Eliksir Witalności (S)	Elixir of Vitality (S)
 Eliksir Witalności (XL)	Elixir of Vitality (XL)
 Eliksir jest pusty,|udaj się do Alchemika.	The elixir is empty,|visit the Alchemist.
 Elitarny Ezoteryczny Fanatyk	Elite Esoteric Fanatic
+Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblem of the football champions. For 6 hours it gives: +50% EXP, +20% attack speed, +20% casting speed, +35% magic and melee attack, +10% max. HP, +10% max. SP.
 Encyklopedia Księżyca(d)	Moon Encyclopaedia (L)
 Encyklopedia Księżyca(m)	Moon Encyclopaedia (S)
 Energia życiowa	Life Energy
@@ -716,6 +730,10 @@ Jest to sposób na regularne wspieranie projektu, a także najlepszy pakiet dla 
 Jesteś połączony z kanałem specjalnym.	You are connected to the special channel.
 Jesteś za daleko od Seon-Hae. Porozmawiaj z nim jeszcze raz.	You are too far away from Seon-Hae. Talk to him again.
 Jeszcze nikt	Nobody yet
+Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	If you use this, you receive a buff that lets you summon Enasir and trade with him as with the General Store Saleswoman (he takes 10% of the price when you sell). Duration: 7 days. Can be extended to a maximum of 1000 days.
+Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	If you use this, you receive a buff that lets you summon Enasir and trade with him as with the General Store Saleswoman (he takes 10% of the price when you sell). Duration: 7 days. Can be extended to a maximum of 1000 days. The item can be traded with other players.
+Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	If you use this, you receive a buff that lets you summon Enasir to access your storeroom. Duration: 7 days. Can be extended to a maximum of 1000 days.
+Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	If you use this, you receive a buff that lets you summon Enasir to access your storeroom. Duration: 7 days. Can be extended to a maximum of 1000 days. The item can be traded with other players.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	If you or the Treasure Goblin die, the expedition fails.
 Ji Jin	Ji Jin
 Juki Konne	Horse Saddlebags
@@ -759,6 +777,7 @@ Klatka Dyniowej Główki	Pumpkin Head Cage
 Klawisz %d	Key %d
 Klawisz 1	Key 1
 Klawisz 2	Key 2
+Klejnot w kształcie kwiatu do ulepszenia talizmanów żywiołowych.	A flower-shaped gem for upgrading elemental talismans.
 Kliknij jajko prawym przyciskiem	Right-click the egg
 Kliknij klawisz, by go zmienić.	Click a key to change it.
 Kliknij prawym przyciskiem, aby dodać pień do gry Yutnori. 28 pni łączy się w planszę do Yutnori. Działa tylko w czasie eventu.	Right-click to add the stick to your Yut Nori game. 28 sticks combine into a Yut Nori board. Only works during the event.
@@ -781,6 +800,8 @@ Kliknij: następny pet (%d/%d)	Click: next pet (%d/%d)
 Klucz Miejsca Umiejętności	Skill Slot Key
 Klucz Mrozu	Frost Key
 Klucz jest zimny jak lód. Otwiera dostęp na trzecie piętro Strażnicy Nemere. Mogą go użyć tylko szamani.	The key is as cold as ice. It opens access to the third floor of Nemere's Watchtower. Only Shamans can use it.
+Klucz potrzebny do odblokowania kolumny Węża.	A key needed to unlock the Serpent column.
+Klucz wymagany, by wejść do Głębi Północnego Wiatru.	A key required to enter the Depths of the North Wind.
 Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	A key from the Frozen Land. Use it in Nemere's dungeon to reach the Ice Pillar.
 Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	A key from the Frozen Land. Use it in Nemere's dungeon to open the way further.
 Klątwa Świątyni;Twój umysł jest otępiony przez co;znacznie tracisz zdolności bojowe.	Temple Curse;Your mind is dulled, so;your combat abilities are greatly weakened.
@@ -976,6 +997,8 @@ Koszulka MŚ URU (m)	World Cup Shirt URU (m)
 Koszulka MŚ USA (k)	World Cup Shirt USA (f)
 Koszulka MŚ USA (m)	World Cup Shirt USA (m)
 Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał (obrażenia jak ze Srebrnej Strzały). Działa 14 dni od zakupu.	A quiver full of arrows that never run out. Equip it in place of arrows: a ninja's bow fires without using up arrows (damage as with the Silver Arrow). Lasts 14 days from purchase.
+Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał, a obrażenia nie maleją wraz z odległością. Działa 1 dzień od zakupu.	A quiver full of arrows that never run out. Equip it in place of arrows: the ninja bow shoots without using up arrows, and damage does not decrease with distance. Lasts 1 day from purchase.
+Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał, a obrażenia nie maleją wraz z odległością. Działa 14 dni od zakupu.	A quiver full of arrows that never run out. Equip it in place of arrows: the ninja bow shoots without using up arrows, and damage does not decrease with distance. Lasts 14 days from purchase.
 Koło Fortuny	Wheel of Fortune
 Koło Fortuny jest teraz wyłączone.	The Wheel of Fortune is currently disabled.
 Koło Fortuny: otrzymujesz %s.	Wheel of Fortune: you receive %s.
@@ -995,6 +1018,22 @@ Krótki	Short
 Krótko	Short
 Ksiegi zapomnienia	Books of Forgetfulness
 Ksiąg w oknie: %d (wymian: %d)	Books in the window: %d  (exchanges: %d)
+Księga ta uczy cię umiejętności redukującej obrażenia od Duchowego Uderzenia.	This book teaches you a skill that reduces damage from Spirit Strike.
+Księga ta uczy cię umiejętności redukującej obrażenia od Mrocznego Uderzenia.	This book teaches you a skill that reduces damage from Dark Strike.
+Księga ta uczy cię umiejętności redukującej obrażenia od Ognistej Strzały.	This book teaches you a skill that reduces damage from Fire Arrow.
+Księga ta uczy cię umiejętności redukującej obrażenia od Przywołania Błyskawicy.	This book teaches you a skill that reduces damage from Summon Lightning.
+Księga ta uczy cię umiejętności redukującej obrażenia od Strzelającego Smoka.	This book teaches you a skill that reduces damage from Shooting Dragon.
+Księga ta uczy cię umiejętności redukującej obrażenia od Uderzenia Palcem.	This book teaches you a skill that reduces damage from Finger Strike.
+Księga ta uczy cię umiejętności redukującej obrażenia od Wiru Miecza.	This book teaches you a skill that reduces damage from Sword Spin.
+Księga ta uczy cię umiejętności redukującej obrażenia od Zasadzki.	This book teaches you a skill that reduces damage from Ambush.
+Księga ta uczy cię umiejętności wzmacniającej Duchowe Uderzenie.	This book teaches you a skill that strengthens Spirit Strike.
+Księga ta uczy cię umiejętności wzmacniającej Mroczne Uderzenie.	This book teaches you a skill that strengthens Dark Strike.
+Księga ta uczy cię umiejętności wzmacniającej Ognistą Strzałę.	This book teaches you a skill that strengthens Fire Arrow.
+Księga ta uczy cię umiejętności wzmacniającej Przywołanie Błyskawicy.	This book teaches you a skill that strengthens Summon Lightning.
+Księga ta uczy cię umiejętności wzmacniającej Strzelającego Smoka.	This book teaches you a skill that strengthens Shooting Dragon.
+Księga ta uczy cię umiejętności wzmacniającej Uderzenie Palcem.	This book teaches you a skill that strengthens Finger Strike.
+Księga ta uczy cię umiejętności wzmacniającej Wir Miecza.	This book teaches you a skill that strengthens Sword Spin.
+Księga ta uczy cię umiejętności wzmacniającej Zasadzkę.	This book teaches you a skill that strengthens Ambush.
 Księga ta umożliwia ci wybór jednej z ośmiu ripost i naukę jej 1. poziomu. Można znać tylko jedną ripostę - wybieraj mądrze! Wymaga 5. poziomu i wybranej drogi umiejętności.	This book lets you choose one of eight ripostes and learn its level 1. You can only know one riposte - choose wisely! Requires level 5 and a chosen skill path.
 Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: block up to 10%. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
 Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: intelligence up to 10. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
@@ -1017,6 +1056,10 @@ Księga umiejętności peta: szybkość czarowania do 15%. Pierwsza księga uczy
 Księga umiejętności peta: witalność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: vitality up to 10. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
 Księga umiejętności peta: zręczność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: dexterity up to 10. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
 Księga umiejętności peta: średnie obrażenia do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: average damage up to 10%. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
+Księga wycofana - nie można jej już zdobyć. Uczy umiejętności Buffi "Błogosławieństwo" od stopnia M1 do G1. Teraz do G1 służą zwykłe Księgi Umiejętności szamana przeciągnięte w oknie Buffi (klawisz P) na jej umiejętność.	Discontinued book - it can no longer be obtained. Teaches Buffi the skill "Blessing" from grade M1 to G1. Now normal Shaman Skill Books, dragged onto her skill in the Buffi window (P key), are used up to G1.
+Księga wycofana - nie można jej już zdobyć. Uczy umiejętności Buffi "Pomoc Smoka" od stopnia M1 do G1. Teraz do G1 służą zwykłe Księgi Umiejętności szamana przeciągnięte w oknie Buffi (klawisz P) na jej umiejętność.	Discontinued book - it can no longer be obtained. Teaches Buffi the skill "Dragon's Aid" from grade M1 to G1. Now normal Shaman Skill Books, dragged onto her skill in the Buffi window (P key), are used up to G1.
+Księga wycofana - nie można jej już zdobyć. Uczy umiejętności Buffi "Szybkość" od stopnia M1 do G1. Działa, gdy Buffi ma imię. Teraz do G1 służą zwykłe Księgi Umiejętności szamana przeciągnięte w oknie Buffi (klawisz P) na jej umiejętność.	Discontinued book - it can no longer be obtained. Teaches Buffi the skill "Swiftness" from grade M1 to G1. Works when Buffi has a name. Now normal Shaman Skill Books, dragged onto her skill in the Buffi window (P key), are used up to G1.
+Księga wycofana - nie można jej już zdobyć. Uczy umiejętności Buffi "Zwiększenie Ataku" od stopnia M1 do G1. Działa, gdy Buffi ma imię. Teraz do G1 służą zwykłe Księgi Umiejętności szamana przeciągnięte w oknie Buffi (klawisz P) na jej umiejętność.	Discontinued book - it can no longer be obtained. Teaches Buffi the skill "Attack Up" from grade M1 to G1. Works when Buffi has a name. Now normal Shaman Skill Books, dragged onto her skill in the Buffi window (P key), are used up to G1.
 Księgi Um. Pasywnych	Passive Skill Books
 Kto idzie, powie ci czat.	The chat will tell you who is coming.
 Ktoś połączył się z Twoim kontem.	Someone has connected to your account.
@@ -1034,6 +1077,7 @@ Kup...	Buy...
 Kupic %d ofert za lacznie %s?	Buy %d offers for a total of %s?
 Kupic %s za %s?	Buy %s for %s?
 Kupiono %d z %d ofert za %s.	Bought %d of %d offers for %s.
+Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	A voucher worth 20 Dragon Coins. Right-click to add them to your account.
 Kupony	Vouchers
 Kupony SM	DC Vouchers
 Kupony SM/Premium	DC/Premium Vouchers
@@ -1068,6 +1112,7 @@ Limit zakupów na konto: %d	Purchase limit per account: %d
 Lista komend GM	GM command list
 Lista komend GM:	GM command list:
 Litery na tej potężnej cegle wydają się emanować blaskiem.	The letters on this mighty brick seem to radiate light.
+Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	A lollipop of mysterious ingredients, full of magic. Gives: +50% EXP, +20% attack speed, +20% casting speed, +30% magic damage, +10% max. HP, +10% max. SP. Lasts 7 days.
 Loch Pajakow V1	Spider Dungeon V1
 Loch Pajakow V2	Spider Dungeon V2
 Lodowa Kraina	Ice Land
@@ -1078,6 +1123,7 @@ Lodowy Klucz	Ice Key
 Lodowy klucz otwiera dostęp na dziewiąte piętro Strażnicy Nemere.	The ice key opens access to the ninth floor of Nemere's Watchtower.
 Login: %s (aid: |cfffffb24%d|r)	Login: %s (aid: |cfffffb24%d|r)
 Losowanie nie wyszło - bonusy wróciły, przedmiot nie został zużyty.	The roll failed - the bonuses were restored and the item was not used up.
+Losuje od nowa typ zwierzaka (1-8), jego czas trwania i - gdy nie zna umiejętności - liczbę miejsc na umiejętności.	Rerolls the pet's type (1-8), its duration and - if it knows no skills - its number of skill slots.
 Ludziom	Half-Humans
 Magazyn jest już uporządkowany.	The storeroom is already sorted.
 Magazyn jest w nieoczekiwanym stanie - nic nie zmieniono. Zgłoś to na Discordzie.	The storeroom is in an unexpected state - nothing was changed. Please report it on Discord.
@@ -1107,7 +1153,12 @@ Masz za mało Doblonów (potrzeba %d).	You do not have enough Doubloons (%d need
 Masz za mało Talii Królewskich lub Yang, aby grać.	You do not have enough King Decks or Yang to play.
 Masz za mało Yang na to uszlachetnianie.	You don't have enough Yang for this refinement.
 Masz za mało latorośli tego kwiatu.	You don't have enough shoots of this flower.
+Materiał budowlany do budowy budynku gildii (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Building material for constructing a guild building (No use yet - it will come with the next Yohara update.)
 Materiał do budowy Wędki Węglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.	Material for building the Carbon Fishing Pole (at the Fisherman). From the Water Nymph Chest.
+Materiał do produkcji biżuterii z Jadeitu Dymu - Mistrz Chi w Dongan potrzebuje 10 sztuk do Obręczy, Kolii lub Klipsów. Włożony do gniazda takiej biżuterii (gniazdo robi Diament) zwiększa jej Precyzję i Wolę SungMa (SIŁA); najwyżej 3 sztuki, znikają po 24, 12 i 6 godz.	Material for crafting Smoke Jade jewellery - Master Chi in Dongan needs 10 pieces for a Bangle, Necklace or Earrings. Placed in a socket of such jewellery (a Diamond makes the socket), it increases its Precision and SungMa Will (STR); 3 pieces at most, they disappear after 24, 12 and 6 hours.
+Materiał do produkcji biżuterii z Jadeitu Mgły - Mistrz Chi w Dongan potrzebuje 10 sztuk do Obręczy, Kolii lub Klipsów. Włożony do gniazda takiej biżuterii (gniazdo robi Diament) zwiększa jej Precyzję i Wolę SungMa (ODP); najwyżej 3 sztuki, znikają po 24, 12 i 6 godz.	Material for crafting Mist Jade jewellery - Master Chi in Dongan needs 10 pieces for a Bangle, Necklace or Earrings. Placed in a socket of such jewellery (a Diamond makes the socket), it increases its Precision and SungMa Will (RES); 3 pieces at most, they disappear after 24, 12 and 6 hours.
+Materiał do produkcji biżuterii z Jadeitu Nocy - Mistrz Chi w Dongan potrzebuje 10 sztuk do Obręczy, Kolii lub Klipsów. Włożony do gniazda takiej biżuterii (gniazdo robi Diament) zwiększa jej Precyzję i Wolę SungMa (WIT); najwyżej 3 sztuki, znikają po 24, 12 i 6 godz.	Material for crafting Night Jade jewellery - Master Chi in Dongan needs 10 pieces for a Bangle, Necklace or Earrings. Placed in a socket of such jewellery (a Diamond makes the socket), it increases its Precision and SungMa Will (VIT); 3 pieces at most, they disappear after 24, 12 and 6 hours.
+Materiał do produkcji biżuterii z Jadeitu Słońca - Mistrz Chi w Dongan potrzebuje 10 sztuk do Obręczy, Kolii lub Klipsów. Włożony do gniazda takiej biżuterii (gniazdo robi Diament) zwiększa jej Precyzję i Wolę SungMa (INT); najwyżej 3 sztuki, znikają po 24, 12 i 6 godz.	Material for crafting Sun Jade jewellery - Master Chi in Dongan needs 10 pieces for a Bangle, Necklace or Earrings. Placed in a socket of such jewellery (a Diamond makes the socket), it increases its Precision and SungMa Will (INT); 3 pieces at most, they disappear after 24, 12 and 6 hours.
 Materiał do produkcji ochronnych rękawic	Material for making protective gloves
 Materiał do produkcji pancernych rękawic	Material for making armoured gloves
 Materiał do produkcji rękawic	Material for making gloves
@@ -1125,14 +1176,18 @@ Materiał do ulepszania szaty aury. Udaj się do Theowahdana, aby ulepszyć swoj
 Materiał do ulepszania tajemniczego talizmanu.	Material for upgrading the mysterious talisman.
 Materiał do ulepszania zbroi wężowej.	Material for upgrading serpent armour.
 Materiał do ulepszenia broni Zodiaku.	Material for upgrading Zodiac weapons.
+Materiał do ulepszenia talizmanu woli	Material for upgrading a Talisman of Will
 Materiał do ulepszenia wyposażenia Zodiaku.	Material for upgrading Zodiac equipment.
 Materiał do uszlachetnienia	Refinement material
+Materiał do wykonania dzwona wężowego dla Szamana.	Material for making a serpent bell for the Shaman.
 Materiał do wykonania kaftana wężowego dla Ninja.	Material for crafting the Serpent Jacket for Ninjas.
 Materiał do wykonania miecza wężowego dla Wojowników, Ninja lub Sura.	Material for crafting the Serpent Sword for Warriors, Ninjas or Suras.
 Materiał do wykonania niebiańskiego płaszcza wężowego dla Likanów. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Material for crafting the Celestial Serpent Cloak for Lycans. (No use yet - it will come with the next Yohara update.)
 Materiał do wykonania ostrza wężowego dla Sura.	Material for crafting the Serpent Blade for Suras.
 Materiał do wykonania płaszcza wężowego dla Wojowników.	Material for crafting the Serpent Cloak for Warriors.
+Materiał do wykonania szpona wężowego dla Likan. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Material for making a serpent claw for the Lycan. (No use yet - it will come with the next Yohara update.)
 Materiał do wykonania sztyletu wężowego dla Ninja.	Material for crafting the Serpent Dagger for Ninjas.
+Materiał do wykonania wachlarza wężowego dla Szamanów.	Material for making a serpent fan for Shamans.
 Materiał do wykonania wielkiego miecza wężowego dla Wojowników.	Material for crafting the Great Serpent Sword for Warriors.
 Materiał do wykonania zacnego płaszcza wężowego dla Szamanów.	Material for crafting the Noble Serpent Cloak for Shamans.
 Materiał do wykonania złego płaszcza wężowego dla Sura.	Material for crafting the Evil Serpent Cloak for Suras.
@@ -1217,8 +1272,10 @@ Mikstura Zręczności	Dexterity Potion
 Mikstura sporządzona z Soku Z Kwiatu Brzoskwini i Bzu. Zwiększa szansę na zadanie Przeszywającego Ciosu o 10% na 3 minuty.	A potion made from Peach Blossom Juice and Lilac. Increases your chance of a Piercing Hit by 10% for 3 minutes.
 Mikstura sporządzona z Soku Z Pokrzywy i Bzu. Zwiększa szansę na zadanie krytycznego ciosu o 10% na 3 minuty.	A potion made from Bellflower Juice and Lilac. Increases your chance of a critical hit by 10% for 3 minutes.
 Mikstura sporządzona z Wody Bo i Morwy. Zwiększa twoją Obronę Magiczną o 10% na 3 minuty.	A potion made from Bo Water and Mulberries. Increases your Magic Defence by 10% for 3 minutes.
+Mikstura wycofana - nie działa. Można ją sprzedać w sklepie NPC.	Discontinued potion - it has no effect. It can be sold in an NPC shop.
 Mikstura Łuski Smoka	Dragon Scale Potion
 Mikstura Życia	Life Potion
+Mikstura, która natychmiastowo regeneruje o 800 punktów twoje PŻ.	A potion that instantly restores 800 points of your HP.
 Mikstury: %d czerw. / %d nieb.	Potions: %d red / %d blue
 Min. bonusów: %d	Min. bonuses: %d
 Min. liczba bonusow:	Min. number of bonuses:
@@ -1254,7 +1311,12 @@ Możesz w szybki sposób wyszukać wszystkie[ENTER]kupony SM na rynku sklepów g
 Możliwe do włączenia	Can be activated
 Możliwość korzystania z Emocji	Access to Emotions
 Możliwość wysyłania podglądu przedmiotów na czacie.	Ability to share item previews in chat.
+Można przerobić na obszarze gildii na jadeit dymu.	Can be processed into Smoke Jade in the guild area.
+Można przerobić na obszarze gildii na jadeit mgły.	Can be processed into Mist Jade in the guild area.
+Można przerobić na obszarze gildii na jadeit nocy.	Can be processed into Night Jade in the guild area.
+Można przerobić na obszarze gildii na jadeit słońca.	Can be processed into Sun Jade in the guild area.
 Można usłyszeć złowieszcze słowa, gdy naciągasz cięciwę i wypuszczasz strzałę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	You can hear ominous words as you draw the bowstring and loose an arrow. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Można użyć tylko w Piekielnej Wieży Sunga Mahi.	Can only be used in Sung Mahi's Hellish Tower.
 Mroźny Rufus	Frost Rufus
 Mroźny Rufus (pieczęć)	Frost Rufus Seal
 Mumia Kapłanka	Mummy Priestess
@@ -1272,6 +1334,7 @@ Na sobie	Worn
 Na zakupy	Go Shopping
 Naciśnij klawisz dla: %s	Press a key for: %s
 Naczelny Hazardzista	Chief Gambler
+Nadaje imię przywołanej Buffi (imię zostaje przy jej pieczęci). Buffi z imieniem rzuca też Szybkość i Zwiększenie Ataku, a ty dostajesz +10% silny przeciwko bossom na 7 dni. Nowe imię - dopiero gdy ten bonus minie.	Gives a name to the summoned Buffi (the name stays with her seal). A named Buffi also casts Swiftness and Attack Up, and you get +10% Strong against bosses for 7 days. A new name only once this bonus has expired.
 Nadpisać pozycję %d (%s) obecnym miejscem?	Overwrite location %d (%s) with your current position?
 Nagroda jest w ekwipunku.	The reward is in your inventory.
 Nagroda specjalna	Special Reward
@@ -1414,6 +1477,23 @@ Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): ninja. Działa 30 dn
 Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Shaman. Lasts 30 days from equipping.
 Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
 Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Warrior. Lasts 30 days from equipping.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Anielski). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Angel Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Arktycznego Krola). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Arctic King Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Blekitnego Wiatru). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Azure Wind Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Chwaly). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Glory Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Cienia). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Shadow Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Druida). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Druid Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Krola Lodu). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Ice King Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Ksiezycowy). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Moon Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Lesnego Ksiecia). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Forest Prince Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Letniej Chwaly). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Summer Glory Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Mroku). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Darkness Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Mroznego Rycerza). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Frost Knight Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Ognistego Rycerza). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Fire Knight Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Plagi). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Plague Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Emerald Lord Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Upiornej Nocy). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Phantom Night Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
+Nakładka na szarfę z zestawu Arezzo (Zestaw Wikinga). Przeciągnij ją na szarfę w ekwipunku: szarfa wygląda jak ta nakładka, jej stopień, pochłanianie i bonusy zostają. Poprzednia nakładka wraca do ekwipunku.	Sash skin from the Arezzo collection (Viking Set). Drag it onto a sash in your inventory: the sash looks like this skin, its grade, absorption and bonuses remain. The previous skin returns to your inventory.
 Nakładki na broń	Weapon Skins
 Napis nad glowa bota (poluje, idzie do kowala, lowi). Wylacz dla graczy, ktorym to przeszkadza. Wolanie na czacie swiata o ulepszeniu na +7/+8/+9 zostaje niezaleznie od tego.	Text above the bot's head (hunting, going to the blacksmith, fishing). Turn it off for players who find it distracting. The world chat shout about upgrading to +7/+8/+9 stays regardless.
 Napisz %(n)s razy na wołaj	Write %(n)s times in Shout chat
@@ -1424,6 +1504,15 @@ Następna strona	Next page
 Następne Szybkie Pole Dostępu [Alt]	Next Quickslot Bar [Alt]
 Następne ulepszenie ma o %d%% większą szansę. (Raz na event)	Your next upgrade has a %d%% higher chance of success. (Once per event)
 Następne ulepszenie nie zużyje materiałów. (Raz na event)	Your next upgrade will not use up any materials. (Once per event)
+Natychmiast odblokowuje tytuł „Czciciel Słońca” dla twojej postaci. Czas trwania tytułu: 365 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Sun Worshipper” for your character. Title duration: 365 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Czempion Nyx” dla twojej postaci. Czas trwania tytułu: na stałe. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Nyx Champion” for your character. Title duration: permanent. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Gwiazda Polarna” dla twojej postaci. Czas trwania tytułu: 365 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Pole Star” for your character. Title duration: 365 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Heroiczny” dla twojej postaci. Czas trwania tytułu: 30 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Heroic” for your character. Title duration: 30 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Legendarny” dla twojej postaci. Czas trwania tytułu: 30 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Legendary” for your character. Title duration: 30 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Mistyczny” dla twojej postaci. Czas trwania tytułu: 30 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Mystic” for your character. Title duration: 30 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Ostatni Ocalały” dla twojej postaci. Czas trwania tytułu: 3 godziny. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Last Survivor” for your character. Title duration: 3 hours. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „PLUS” dla twojej postaci. Czas trwania tytułu: 30 dni. Kolejny certyfikat przedłuża tytuł. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “PLUS” for your character. Title duration: 30 days. Another certificate extends the title. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
+Natychmiast odblokowuje tytuł „Szczęściarz” dla twojej postaci. Czas trwania tytułu: na stałe. Kliknij prawym przyciskiem myszy, aby go użyć - tytuł założysz w oknie tytułów (kliknij portret w oknie postaci).	Instantly unlocks the title “Lucky One” for your character. Title duration: permanent. Right-click to use it - you can equip the title in the titles window (click the portrait in the character window).
 Natychmiast przywraca 230 PE.	Instantly restores 230 SP.
 Natychmiast przywraca 230 PŻ.	Instantly restores 230 HP.
 Natychmiast regeneruje Punkty Życia. Szansa na usunięcie negatywnych efektów. Absorpcja obrażeń od potworów. Możliwość użycia na innym graczu.	Instantly restores HP. Chance to remove negative effects. Absorbs damage from monsters. Can be used on another player.
@@ -1437,6 +1526,8 @@ Nazwa:	Name:
 Nazwa: -	Name: -
 Nazwy graczy i przedmiotów	Player and item names
 Nazwy, opisy i okna zmienią język po ponownym	Names, descriptions and windows change language
+Naładuj 30 Animosfer, aby otrzymać wstęp do Świątyni Zodiaku.	Charge 30 Animaspheres to gain entry to the Zodiac Temple.
+Naładuj 30 Animosfer, aby otrzymać wstęp do Świątyni Zodiaku. Przedmiot zdatny do handlu.	Charge 30 Animaspheres to gain entry to the Zodiac Temple. This item is tradeable.
 Naładuj eliksir	Recharge elixir
 Nałogowiec	Addict
 NewPet	NewPet
@@ -1447,6 +1538,7 @@ Nick:	Name:
 Nick: %s (pid: |cff5af22c%d|r)	Name: %s (pid: |cff5af22c%d|r)
 Nick: NAZWA_GRACZA (pid: |cff5af22c99999|r)	Name: NAZWA_GRACZA (pid: |cff5af22c99999|r)
 Nick: PLAYER_NAME	Name: PLAYER_NAME
+Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	No longer needed: the NPC Locator is enabled for every character. | On the world map, switch the view with the button in the title bar.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It is not intended for oral hygiene. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Nie ma już tej skrzynki w tym miejscu ekwipunku.	This chest is no longer in this inventory slot.
 Nie ma stosów do połączenia.	There are no stacks to merge.
@@ -1526,6 +1618,7 @@ Nieznane	Unknown
 Nieznane stworzenie.	Unknown creature.
 Nieznany Kamień	Unknown Stone
 Nieznany skill.	Unknown skill.
+Niezwykle cenna roślina potrzebna do wytwarzania wyjątkowo mocnych eliksirów. Rzadko znajdziesz je przy zbieraniu ziół, w skrzyniach bossów Yohary i w Skrzyni Nimfy Wodnej. Zielarz Huahn-So (Bokjung, Bakra, Jayang) sporządza z niego Złote Eliksiry.	An extremely valuable plant needed to make exceptionally strong elixirs. You will rarely find it when gathering herbs, in the chests of Yohara bosses and in the Water Nymph Chest. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews Golden Elixirs from it.
 Nikt jeszcze nie ma wyniku w tym sezonie.	Nobody has a score yet this season.
 Nikt jeszcze nie ukończył tury.	Nobody has completed a round yet.
 Ninja Ostrze	Ninja Blade
@@ -1602,6 +1695,7 @@ Odbierz przedmioty z depozytu sklepu.	Collect the items from your shop deposit.
 Odbierz wszystkie przedmioty	Collect all items
 Odbija ataki fizyczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Reflects physical attacks. Can be cast on another player. Bonus when used on yourself.
 Odbiór nagród: jeszcze %s	Claiming rewards: %s left
+Odblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać. Można nim handlować.	Unlocks another equipment page (II, then III and IV): up to four sets of items (armour, helmet, shoes, bracelet, weapon, necklace, earrings, arrows, shield, talisman, gloves) switched with one click - tabs I-IV in the equipment window or the skill “Switch Equipment Page” (support skills). Only the equipped page gives bonuses; rings, costumes and the belt are shared. One use - one page, at most three per character. It can be traded.
 Odblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać. Nie można nim handlować.	Unlocks another equipment page (II, then III and IV): up to four item sets (armour, helmet, shoes, bracelet, weapon, necklace, earrings, arrows, shield, talisman, gloves) switched with one click - tabs I-IV in the equipment window or the skill “Change Equipment Page” (support skills). Only the equipped page gives bonuses; rings, costumes and the belt are shared. One use - one page, at most three per character. It cannot be traded.
 Odczekaj	Wait
 Odczekaj chwilę przed kolejnym porządkowaniem.	Wait a moment before sorting again.
@@ -1706,8 +1800,13 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Open the bundle and see wh
 Otwórz ponownie	Reopen
 Otwórz sklep	Open shop
 Otwórz sklep ponownie	Reopen shop
+Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Rank fruit: +200 Rank Points (normal rank). Works from 0 to 20 000 points. The first rank (Valiant) from 21 000. Command /ranga.
+Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Rank fruit: +200 Rank Points beyond the normal rank. Works from 20 000 (full normal rank) to 40 000 points. Command /ranga.
+Owoc rangi: +400 Punktów Rangi. Działa od 120 000 do 200 000 punktów (maksimum). Komenda /ranga.	Rank fruit: +400 Rank Points. Works from 120 000 to 200 000 points (maximum). Command /ranga.
+Owoc rangi: +400 Punktów Rangi. Działa od 40 000 do 80 000 punktów. Komenda /ranga.	Rank fruit: +400 Rank Points. Works from 40 000 to 80 000 points. Command /ranga.
 Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	An ornate, gilded sword that once belonged to Mirine. It is no longer fit for battle, but it looks very valuable.
 Ożyw ponownie siebie lub jednego z graczy w Świątynia Zodiaku.	Revive yourself or another player in the Zodiac Temple.
+Ożywia martwego zwierzaka z pełnym czasem trwania; zachowuje 80% wieku (zakładka „Wskrzeszanie” okna innego, żywego zwierzaka).	Revives a dead pet with its full duration; keeps 80% of its age (“Revive” tab in the window of another, living pet).
 P. Książę+ (biały)	Desert Prince+ (white)
 P. Książę+ (brąz.)	Desert Prince+ (brown)
 P. Księżniczka (biała)	Desert Princess (white)
@@ -1718,6 +1817,14 @@ PPM - następny event	RMB - next event
 Paczka musi być mniejsza niż cały stos (%d szt.).	The pack must be smaller than the whole stack (%d pcs.).
 Paczki po:	Packs of:
 Pajączek	Little Spider
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Ninja Mocy Ostrza.	A package containing 25 randomly chosen skill manuals for Blade-Fight Ninjas.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Ninja Mocy Łuku.	A package containing 25 randomly chosen skill manuals for Archery Ninjas.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Sury Broni.	A package containing 25 randomly chosen skill manuals for Weaponry Suras.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Sury Magii.	A package containing 25 randomly chosen skill manuals for Black Magic Suras.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Szamanów Mocy Leczenia.	A package containing 25 randomly chosen skill manuals for Healing Force Shamans.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Szamanów Mocy Smoka.	A package containing 25 randomly chosen skill manuals for Dragon Force Shamans.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Wojowników Mocy Ciała.	A package containing 25 randomly chosen skill manuals for Bodily Warriors.
+Pakiet zawierający 25 losowo wybranych ksiąg z instrukcjami umiejętności dla Wojowników Mocy Duchowej.	A package containing 25 randomly chosen skill manuals for Mental Warriors.
 Pakuje wybranego peta (okno peta, klawisz U) do transportera, który można sprzedać, oddać w handlu albo schować do magazynu. Kto użyje pełnego transportera, dostaje peta z jego poziomem, ewolucją, bonusami i umiejętnościami.	Packs the selected pet (pet window, U key) into a transport box that can be sold, traded or stored in the storeroom. Whoever uses the full transport box receives the pet with its level, evolution, bonuses and skills.
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	The GM panel failed to load in this client - details in syserr.txt
 Panterka (120 dni)	Little Panther (120 days)
@@ -1768,6 +1875,7 @@ Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia 
 Pieczęć ta przywołuje Młodego Renifera (ż), który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	This seal summons a Young Reindeer (f) which, after completing its battle training, gives its rider up to 5% extra EXP.
 Pieczęć ta przywołuje Młodego Tygrysa, który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	This seal summons a Young Tiger which, after completing its battle training, gives its rider up to 5% extra EXP.
 Pieczęć ta przywołuje Młodego Wilka, który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	This seal summons a Young Wolf which, after completing its battle training, gives its rider up to 5% extra EXP.
+Pieczęć ta przywołuje twojego łagodnego kucyka Appaloosa. Obdarza swoich jeźdźców +10 szybkością ruchu.	This seal summons your gentle Appaloosa pony. It grants its riders +10 movement speed.
 Pieczęć ta przywołuje Śmiałego Dragora. Dodaje on swojemu właścicielowi +5% do siły przeciwko potworom.	This seal summons a Bold Dragor. It gives its owner +5% strength against monsters.
 Pieczęć ta przywołuje Śmiałego Dragora. Dodaje on swojemu właścicielowi +5% do zebranego doświadczenia.	This seal summons a Bold Dragor. It gives its owner +5% more experience gained.
 Pieczęć z czystego lodu. Otwiera dostęp na szóste piętro Strażnicy Nemere.	A seal of pure ice. It opens access to the sixth floor of Nemere's Watchtower.
@@ -1799,8 +1907,12 @@ Plan wykonania zbroi sura.	A plan for making Sura armour.
 Plan wykonania zbroi szamana.	A plan for making Shaman armour.
 Plan wykonania zbroi wojownika.	A plan for making Warrior armour.
 Plan wykonania łuku.	A plan for making a bow.
+Platynowe pudełko zawsze zawiera jedną losową Kartę Potwora spośród wszystkich kart - z każdego z 18 poziomów misji, także potworów Yohary. Użyj karty, by dodać ją do swojej kolekcji (okno Kart Potworów, klawisz J). Nie można nim handlować ani go przechować w magazynie.	The platinum box always contains one random Monster Card out of all cards - from each of the 18 quest levels, Yohara monsters included. Use the card to add it to your collection (Monster Cards window, J key). It cannot be traded or kept in the storeroom.
+Po osiągnięciu poziomu czempiona, używając tego zwoju możesz przenieść się w tajne miejsce. Pamiętaj, że po dotarciu do Świątyni Enigma masz 1 min. na przygotowanie się do rozpoczęcia rundy. Następnie masz do dyspozycji 4 min., by rozpocząć walkę, zanim zostaniesz teleportowany ze świątyni. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Once you have reached champion level, you can use this scroll to travel to a secret place. Remember that after arriving at the Enigma Temple you have 1 min. to prepare for the start of the round. After that you have 4 min. to start the fight before you are teleported out of the temple. (No use yet - it will come with the next Yohara update.)
+Po otwarciu daje jeden losowy Kamień Duszy (od +0 do +4).	When opened, gives one random Soul Stone (from +0 to +4).
 Po ponownym uruchomieniu: %s	After a restart: %s
 Po prawej są twoje wyniki	On the right you see your results
+Po użyciu daje +10 do wszystkich czterech statystyk Woli SungMa (siła, witalność, odporność, inteligencja) na czas przedmiotu.	When used, gives +10 to all four SungMa Will stats (strength, vitality, resistance, intelligence) for the item's duration.
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Can be traded.
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Cannot be traded.
 Po zabiciu: kolejny, którego już biłeś	After a kill: next one you have already hit
@@ -1813,6 +1925,7 @@ Pobłogosławiony przez boga, ale nikt nie wie jakiego. Broń dla Młodych Bohat
 Pochyl w dół	Tilt down
 Pochyl w górę	Tilt up
 Pochłania nie tylko światło księżyca, ale również sporo krwi. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It drinks in not only the moonlight, but plenty of blood as well. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Pod tym sztandarem możesz wejść do Piekielnej Wieży Sunga Mahi - każda wspinaczka (portal w hali wieży) zabiera jeden sztandar. Użyj go, aby przenieść się do hali wieży (od 120. poziomu i 1. Poziomu Czempiona).	Under this banner you can enter Sung Mahi's Hellish Tower - each climb (the portal in the tower hall) uses up one banner. Use it to move to the tower hall (from level 120 and Champion Level 1).
 Podaj ID i ilosc.	Enter the ID and amount.
 Podaj Kod:	Enter Code:
 Podaj PID i ilosc.	Enter the PID and amount.
@@ -1852,6 +1965,7 @@ Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (pozio
 Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Raises the pet bonus Critical Hit Chance (up to 10%) by one level (levels 10-15, pet level 75+).
 Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Raises the pet bonus Critical Hit Chance (up to 10%) by one level (levels 15-20, pet level 100+).
 Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Raises the pet bonus Critical Hit Chance (up to 10%) by one level (levels 5-10, pet level 40+).
+Podnosi szansę na pomyślne przeczytanie następnej Księgi Umiejętności (lub Kamienia Duchowego). Niezdatna do handlu.	Raises the chance of successfully reading the next Skill Book (or Soul Stone). Not tradeable.
 Podnosi szansę na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut.	Increases your chance of landing a critical hit in combat by 20% for 10 minutes.
 Podnosi szansę na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut. Przedmiot ten jest zdatny do handlu.	Increases your chance of landing a critical hit in combat by 20% for 10 minutes. This item is tradeable.
 Podnosi szansę na zadanie przeszywającego uderzenia podczas walki o 20% przez 10 minut.	Increases your chance of landing a piercing hit in combat by 20% for 10 minutes.
@@ -1860,6 +1974,7 @@ Podnoszenie przedmiotów z ziemii szybsze o 500%.	Picking up items from the grou
 Podnoszę:	I pick up:
 Podróżnik	Traveller
 Podstawowe Zioła	Basic Herbs
+Podwaja szansę na zdobycie Yang. Czas trwania: 7 dni. Niezdatny do handlu.	Doubles the chance of obtaining Yang. Duration: 7 days. Not tradeable.
 Podwojona regeneracja punktów miłości.	Double love point regeneration.
 Podwojona szansa na drop Yang.	Double Yang drop chance.
 Podwojona szansa na drop przedmiotów	Double item drop chance
@@ -1872,6 +1987,8 @@ Pogromca Metinów	Metin Slayer
 Pojawia się na mapie:	Appears on the map:
 Pojawiły się kolejne misje (np. następna część łańcucha):	More quests have appeared (e.g. the next part of a chain):
 Pokazano %d ofert (limit) - zawez wyszukiwanie, zeby zobaczyc reszte.	Showing %d offers (limit) - narrow the search to see the rest.
+Pokazuje typ zwierzaka (przycisk „Sfera losu” w oknie zwierzaka).	Shows the pet's type (“Sphere of Fate” button in the pet window).
+Pokaż go Tajemniczemu Ołtarzowi w Namgan, aby wejść do Tajemniczej Instancji.	Show it to the Mysterious Altar in Namgan to enter the Mysterious Instance.
 Pokaż kostiumy	Show costumes
 Pokaż obraz	Show image
 Pokaż stan	Show status
@@ -1892,11 +2009,20 @@ Polowanie na metiny zamiast na zwykle potwory.	Hunting Metins instead of normal 
 Pomiń animację	Skip Animation
 Pomocy!	Help!
 Pomocy: walczą z tym, co cię atakuje.	Help: they fight whatever is attacking you.
+Pomyślne przeczytanie tej księgi uczy Ninja Mocy Ostrza tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Blade-Fight Ninjas the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Ninja Mocy Łuku tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Archery Ninjas the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Sura Broni tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Weaponry Suras the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Sura Magii tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Black Magic Suras the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Szamanów Mocy Leczenia tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Healing Force Shamans the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Szamanów Mocy Smoka tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Dragon Force Shamans the secrets of the 9th skill. Disappears after reading.
+Pomyślne przeczytanie tej księgi uczy Wojowników tajemnic 9. umiejętności. Znika po przeczytaniu.	Successfully reading this book teaches Warriors the secrets of the 9th skill. Disappears after reading.
 Pomyślne ulepszenia	Successful upgrades
 Pomyślnie wykorzystano kupon!	Voucher redeemed successfully!
 Ponad %d godz.	Over %d hrs
 Poniżej %d godz.	Under %d hrs
 Ponowne użycie po %s	Can be used again in %s
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Następny przedmiot oddany do badań Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjęcie zamiast 60%. Nie dotyczy misji na Yohara.	Improves the quality of items intended for research, increasing the chance of them being accepted. The next item handed in for research to Biologist Chaegirab or Seon-Pyeong has a 90% chance of being accepted instead of 60%. Does not apply to Yohara quests.
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Następny przedmiot oddany do badań Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjęcie zamiast 60%. Nie dotyczy misji na Yohara. Przedmiot ten jest niezdatny do handlu.	Improves the quality of items intended for research, increasing the chance of them being accepted. The next item handed in for research to Biologist Chaegirab or Seon-Pyeong has a 90% chance of being accepted instead of 60%. Does not apply to Yohara quests. This item is not tradeable.
 Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Następny przedmiot oddany do badań Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjęcie zamiast 60%. Nie dotyczy misji na Yohara. Przedmiot ten jest zdatny do handlu.	Improves the quality of items intended for research, which increases the chance of them being accepted. The next item handed in for research to Biologist Chaegirab or Seon-Pyeong has a 90% chance of being accepted instead of 60%. Does not apply to Yohara quests. This item can be traded.
 Poprawnie podany kod. Zajelo to %d sekund.	Code entered correctly. It took %d seconds.
 Poproś o nowy kod (max 2 razy)	Request a new code (max. 2 times)
@@ -1916,6 +2042,12 @@ Poszukiwanie skarbów zakończyło się.	The treasure hunt has ended.
 Potrafi strzelać w kilka celów jednocześnie.	Can shoot at several targets at once.
 Potrzeba %d ksiąg (w oknie: %d).	%d books needed (in the window: %d).
 Potrzebna do rozwoju konia od 21 poziomu: karmisz nią konia w oknie rozwoju u Stajennego (doświadczenie konia), a próba awansu zjada 50 sztuk. Otrzymasz ją u Stajennego (codziennie, "Pasza dla konia").	Needed for horse training from level 21: you feed it to your horse in the training window at the Stable Boy (horse experience), and a promotion attempt uses up 50 pieces. You get it from the Stable Boy (daily, "Horse Feed").
+Potrzebna do rozwoju zwierzaka domowego do stopnia „Bohaterski”.	Needed to evolve a pet to the “Heroic” stage.
+Potrzebna do rozwoju zwierzaka domowego do stopnia „Dzielny”.	Needed to evolve a pet to the “Valiant” stage.
+Potrzebna do rozwoju zwierzaka domowego do stopnia „Dziki”.	Needed to evolve a pet to the “Wild” stage.
+Potrzebna do rozwoju zwierzaka domowego do stopnia „Mocny”.	Needed to evolve a pet to the “Strong” stage.
+Potrzebna do rozwoju zwierzaka domowego do stopnia „Przebudzony”.	Needed to evolve a pet to the “Awakened” stage.
+Potrzebna, by udoskonalić 9. umiejętność od G1 do P - każdy stopień wymaga jednej udanej próby (szansa ok. 30%, Rada Pustelnika ją zwiększa). Zużywa punkty rangi (nieudana próba mniej), nie działa przy randze -19 000 i niższej. Można jej używać co 8-12 godzin (Zwój Egzorcyzmu skraca czas oczekiwania).	Needed to improve the 9th skill from G1 to P - each grade requires one successful attempt (approx. 30% chance, Concentrated Reading increases it). Uses up rank points (fewer on a failed attempt) and does not work at rank -19 000 or lower. Can be used every 8-12 hours (an Exorcism Scroll shortens the waiting time).
 Potrzebna, by wejść do lochu Przebudzenia.	Required to enter the Awakening dungeon.
 Potrzebny, by wejść do lochu Szczeliny Czasu (Statua Szczeliny Czasu na Płaskowyżu Iluzji). Każdy członek grupy musi go mieć - znika przy wejściu.	Required to enter the Time Rift dungeon (Time Rift Statue on the Plateau of Illusion). Every group member must have one - it disappears on entry.
 Potrzebujesz %d Kart Nowego Początku.	You need %d New Start Cards.
@@ -1967,6 +2099,22 @@ Prawy klik: zdejmij	Right-click: remove
 Prawy klik: zdejmij (jak u ciebie - może pęknąć)	Right-click: remove (as with yours - it may break)
 Prawy klik: zdejmij. Do swojej torby: weź.	Right-click: remove. To your bag: take.
 Prawy klik: zeruj	Right-click: reset
+Prawy przycisk myszy: 200.000 PD dla zwierzaka (poziom 1-105) albo 1.200 PD czempiona dla zwierzaka z poziomem czempiona.	Right-click: 200.000 EXP for the pet (level 1-105) or 1.200 champion EXP for a pet with a champion level.
+Prawy przycisk myszy: przywołuje albo odwołuje zwierzaka.	Right-click: summons or dismisses the pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Gniewny Mini Alastor” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Wrathful Mini Alastor” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Gruby Mini Kat” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Chubby Mini-Executor” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mała Meley” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Meley” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mała Nemere” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Nemere” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mały Aamon” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Aamon” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mały Baashido” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Baashido” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mały Małpiszon” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Monkey” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mały Pająk” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Spider” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mały Razador” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Baby Razador” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mini Azrael” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Mini Azrael” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Mini-Dowódca” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Mini Commander” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Nessie” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Nessie” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Niebieski Mały Smok” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Blue Baby Dragon” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
+Prawy przycisk myszy: wykluwa zwierzaka „Wyląg Exedyara” (100.000 Yang i imię). Jajo można też dać zwierzakowi do jedzenia albo włożyć w miejsce potencjału zwierzaka czempiona.	Right-click: hatches the pet “Exedyar Hatchling” (100.000 Yang and a name). The egg can also be fed to a pet or placed in the potential slot of a champion pet.
 Premia od użycia um. buffujących na samego siebie.	Bonus for using buff skills on yourself.
 Prezent od ciebie	A gift from you
 Private Shop Key	Private Shop Key
@@ -1976,10 +2124,23 @@ Proszę wpisać nazwę sklepu	Please enter a shop name
 Proszę wybrać czas trwania sklepu	Please select a shop duration
 Proteinowa Przekąska	Protein Snack
 Przebicie odpornosci na omdlenie	Stun resistance break
+Przebudzona księga pełna wiedzy o zwierzętach. Otwórz ją, aby otrzymać losową Księgę Zwierza (jak ze Skrzyni Ksiąg Peta).	An awakened book full of knowledge about animals. Open it to receive a random Beast Book (as from the Pet Book Chest).
 Przeciągnij broń, zbroję lub kostium do jednego z pól u góry.	Drag a weapon, armour or costume into one of the slots at the top.
 Przeciągnij jedną z tych strzał na Hwachę w Krypcie Balathora, aby ją naładować. Służy do zniszczenia tarczy Zamrożonego Jaja Smoka. Strzały dają Pradawne Kryształy Lodu.	Drag one of these arrows onto the Hwacha in Balathor's Crypt to load it. Used to destroy the shield of the Frozen Dragon Egg. The arrows give Ancient Ice Crystals.
 Przeciągnij ją na maszt statku, aby go naprawić. Ważna 5 minut.	Drag it onto the ship's mast to repair it. Valid for 5 minutes.
 Przeciągnij kamień ze swojej alchemii na zestaw.	Drag a stone from your alchemy onto the set.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Błyskawicy albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Błyskawicy i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Lightning Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Lightning Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Lodu albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Lodu i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Ice Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Ice Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Mroku albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Mroku i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Darkness Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Darkness Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Ognia albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Ognia i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Fire Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Fire Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Wiatru albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Wiatru i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Wind Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Wind Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń ulepszoną co najmniej do +7, aby nadać jej Żywioł Ziemi albo podnieść jego poziom (najwyżej +3; tylko zwojem tego samego żywiołu). Każdy poziom dodaje losową Siłę Ziemi i Wartość Ataku. Opłata w oknie: 3 000 000 Yang za próbę. Próba może się nie powieść - broń zostaje nienaruszona.	Drag onto a weapon upgraded to at least +7 to give it the Earth Element or raise its level (at most +3; only with a scroll of the same element). Each level adds random Earth Power and Attack Value. Fee in the window: 3 000 000 Yang per attempt. The attempt may fail - the weapon stays intact.
+Przeciągnij na broń z Zaczarowaniem Żywiołu, aby obniżyć jego poziom o 1 (z +1 żywioł znika razem z jego bonusami). Zawsze się udaje.	Drag onto a weapon with an Elemental Enchantment to lower its level by 1 (at +1 the element disappears together with its bonuses). Always succeeds.
+Przeciągnij na broń z Zaczarowaniem Żywiołu, aby zmienić żywioł na inny. Poziom i wartości bonusów zostają. Opłata w oknie: 10 000 000 Yang. Zawsze się udaje.	Drag onto a weapon with an Elemental Enchantment to change the element to another one. The level and bonus values remain. Fee in the window: 10 000 000 Yang. Always succeeds.
+Przeciągnij na pieczęć zwierzaka: odnawia czas trwania do 100%. Martwego zwierzaka ożywia (50% czasu trwania, wiek od nowa). Potrzebna też do rozwoju zwierzaka.	Drag onto a pet seal: restores its duration to 100%. Revives a dead pet (50% duration, age reset). Also needed for pet evolution.
+Przeciągnij na przedmiot z transmutacją (w ekwipunku, nie założony), aby przywrócić mu jego własny wygląd.	Drag onto an item with a transmutation (in the inventory, not equipped) to restore its own appearance.
+Przeciągnij na wierzchowca z polimorfią (w ekwipunku), aby przywrócić mu jego własny wygląd.	Drag onto a mount with a polymorph (in the inventory) to restore its own appearance.
+Przeciągnij pieczęć zwierzaka na klatkę: zwierzak może zmienić właściciela przez 30 dni i nie starzeje się w klatce. Prawy przycisk myszy na klatce ze zwierzakiem wyjmuje go.	Drag a pet seal onto the cage: the pet can change owner for 30 days and does not age inside the cage. Right-click on a cage with a pet to take it out.
 Przeciągnij skrzynkę z ekwipunku.	Drag a chest from the inventory.
 Przeciągnij tu skrzynkę z ekwipunku	Drag a chest here from the inventory
 Przeczytanie księgi umożliwi ci zwiększenie precyzji. Znika po przeczytaniu. Wymaga co najmniej 1. Poziomu Czempiona.	Reading this book lets you increase your precision. Disappears after reading. Requires at least Champion Level 1.
@@ -1991,6 +2152,7 @@ Przedmiot ma już wybrane bonusy.	The item already has the chosen bonuses.
 Przedmiot musi mieć pięć bonusów.	The item must have five bonuses.
 Przedmiot musi posiadać od 1 do 3 bonusów.	The item must have 1 to 3 bonuses.
 Przedmiot służy do ulepszania Twojej zbroi.	This item is used to upgrade your armour.
+Przedmiot ten usuwa wszystkie riposty i dopalacze (7. i 8. umiejętność), a wydane na nie punkty umiejętności wracają. Potem możesz nauczyć się ich ponownie z podręczników.	This item removes all ripostes and boosters (7th and 8th skill), and the skill points spent on them are returned. Afterwards you can learn them again from manuals.
 Przedmiot utworzony.	Item created.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Consumable. The attempt may fail. On success, grants a chance of double experience for 12 hours. The effect can be raised up to level 5 with further Daffodils. Works during the Flower Power event.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Consumable. The attempt may fail. On success, increases your defence for 12 hours. The effect can be raised up to level 5 with further Sunflowers. Works during the Flower Power event.
@@ -2015,6 +2177,14 @@ Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mo
 Przepala się przez wnętrzności twojego przeciwnika jak rozpalony nóż przez masło. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Burns through your opponent's guts like a hot knife through butter. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Przepełniona wolą SungMa.	Filled with the will of SungMa.
 Przepełnione wolą SungMa.	Filled with the will of SungMa.
+Przepełniony pradawną mocą błyskawicy, talizman ten roznieci w tobie nadzwyczajną moc! Siła Błyskawicy +0%.	Filled with the ancient power of lightning, this talisman will kindle extraordinary power in you! Lightning Power +0%.
+Przepełniony pradawną mocą lodu, talizman ten roznieci w tobie nadzwyczajną moc! Siła Lodu +0%.	Filled with the ancient power of ice, this talisman will kindle extraordinary power in you! Ice Power +0%.
+Przepełniony pradawną mocą mroku, talizman ten roznieci w tobie nadzwyczajną moc! Siła Mroku +0%.	Filled with the ancient power of darkness, this talisman will kindle extraordinary power in you! Darkness Power +0%.
+Przepełniony pradawną mocą ognia, talizman ten roznieci w tobie nadzwyczajną moc! Siła Ognia +0%.	Filled with the ancient power of fire, this talisman will kindle extraordinary power in you! Fire Power +0%.
+Przepełniony pradawną mocą wiatru, talizman ten roznieci w tobie nadzwyczajną moc! Siła Wiatru +0%.	Filled with the ancient power of wind, this talisman will kindle extraordinary power in you! Wind Power +0%.
+Przepełniony pradawną mocą ziemi, talizman ten roznieci w tobie nadzwyczajną moc! Siła Ziemi +0%.	Filled with the ancient power of earth, this talisman will kindle extraordinary power in you! Earth Power +0%.
+Przepełniony wolą SungMa.	Filled with the will of SungMa.
+Przepełniony wolą SungMa. Może mieć losową Wolę SungMa i moc losowego żywiołu; brakujące bonusy podstawowe mogą pojawić się przy ulepszaniu.	Filled with the will of SungMa. May have a random SungMa Will and the power of a random element; missing basic bonuses may appear when upgrading.
 Przepraszamy za wszelkie niedogodności.	We apologise for any inconvenience.
 Przerwij (%d)	Stop (%d)
 Przesądziło już o niejednym losie. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It has already decided many a fate. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
@@ -2027,10 +2197,13 @@ Przełęcz 6201 11875	Pass 6201 11875
 Przełęcz 6809 11943	Pass 6809 11943
 Przełęcz 6846 11841	Pass 6846 11841
 Przy dźwiękach tego dzwonu skazywani byli na śmierć wrodzy królowie i koronowani nowi władcy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	At the sound of this bell, enemy kings were sentenced to death and new rulers were crowned. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Przy odrobinie szczęścia otwiera wejście. Można użyć tylko w Piekielnej Wieży Sunga Mahi.	With a little luck it opens the entrance. Can only be used in Sung Mahi's Hellish Tower.
 Przy pomocy tej wysokiej jakości wędki z włókna węglowego złapiesz wyjątkowo grube ryby. Jest lepsza od zwykłej wędki (jak wędka +22). Działa 30 dni (czas płynie także poza grą), potem znika. Nie da się jej ulepszyć ani przekazać.	With this high-quality carbon-fibre fishing pole you will catch exceptionally big fish. It is better than a normal fishing pole (like a +22 pole). Lasts 30 days (time also runs while offline), then disappears. It cannot be upgraded or traded.
 Przy twoim pełnym EQ zbiera twój drop i trzyma go dla ciebie.	When your inventory is full, it collects your drops and keeps them for you.
 Przynęta: %s	Bait: %s
 Przywołany potwór już nie żyje.	The summoned monster is already dead.
+Przywołuje Buffi - szamankę, która chodzi za tobą i co 3 sekundy rzuca na ciebie brakujące wzmocnienie: Błogosławieństwo i Pomoc Smoka, a gdy ma imię (Zwój Imienia Buffi) także Szybkość i Zwiększenie Ataku. Użyj ponownie, aby ją odwołać. Okno Buffi: klawisz P. Buffi dostępna od 55 poziomu postaci.	Summons Buffi - a shaman who follows you and every 3 seconds casts any missing buff on you: Blessing and Dragon's Aid, and once she has a name (Buffi Name Scroll) also Swiftness and Attack Up. Use again to dismiss her. Buffi window: P key. Buffi is available from character level 55.
+Przywołuje Buffi - szamankę, która chodzi za tobą i co 3 sekundy rzuca na ciebie brakujące wzmocnienie: Błogosławieństwo i Pomoc Smoka, a gdy ma imię (Zwój Imienia Buffi) także Szybkość i Zwiększenie Ataku. Użyj ponownie, aby ją odwołać. Okno Buffi: klawisz P. Buffi dostępna od 55 poziomu postaci. Ważna 7 dni.	Summons Buffi - a shaman who follows you and every 3 seconds casts any missing buff on you: Blessing and Dragon's Aid, and once she has a name (Buffi Name Scroll) also Swiftness and Attack Up. Use again to dismiss her. Buffi window: P key. Buffi is available from character level 55. Valid for 7 days.
 Przywołuje Potężnego Konia Wojskowego (koń od 31 poziomu). Potrzebujesz 300 PE, by jej użyć. Otrzymasz ją u Stajennego po zadaniu "Złota Księga Konia".	Summons the Mighty War Horse (horse from level 31). You need 300 SP to use it. You receive it from the Stable Boy after the quest "Golden Horse Book".
 Przywraca 600 PE.	Restores 600 SP.
 Przywraca 600 PŻ.	Restores 600 HP.
@@ -2049,6 +2222,8 @@ Punkty statusu:	Status points:
 Punkty statystyk rozdaje SI towarzysza.	The Companion's AI distributes the stat points.
 Punkty umiej. (dod.):	Skill points (extra):
 Punkty umiej.:	Skill points:
+Pusta butelka, wymagana do sporządzenia eliksirów mocy. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	An empty bottle, required for brewing power elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Pusta butelka, wymagana do sporządzenia eliksirów odporności. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	An empty bottle, required for brewing resistance elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
 Pustynia I	Desert I
 Pustynia II	Desert II
 Pustynny Książę (biały)	Desert Prince (white)
@@ -2092,6 +2267,24 @@ Rozmawiasz z |cffffb514Mistrzem Gry|r.	You are talking to a |cffffb514Game Maste
 Rozpoczeto z kodem |cffffa826%s|r	Started with code |cffffa826%s|r
 Rozpocznij	Start
 Rozważny zbieracz	Prudent Gatherer
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: daje na krótko Lekki Krok, gdy walczysz pieszo. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly grants Light Step when you fight on foot. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: losowa: silny przeciwko półludziom, zwierzętom, orkom, mistykom, nieumarłym, diabłom, potworom pustyni, insektom albo wszystkim potworom. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: random: strong against half-humans, animals, orcs, mystics, undead, devils, desert monsters, insects or all monsters. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: na kilka sekund chroni przed obrażeniami, gdy PŻ jeźdźca spadną poniżej 30%. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: protects from damage for a few seconds when the rider's HP drops below 30%. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: z szansą 1% przy ataku chroni na kilkanaście sekund przed odrzuceniem. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: with a 1% chance on attack, protects from knockback for over ten seconds. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko Wolę SungMa (INT), gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases SungMa Will (INT) when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko Wolę SungMa (ODP), gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases SungMa Will (RES) when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko Wolę SungMa (SIŁA), gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases SungMa Will (STR) when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko Wolę SungMa (WIT), gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases SungMa Will (VIT) when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko prędkość ataku, gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases attack speed when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa na krótko prędkość ruchu, gdy walczysz z grzbietu wierzchowca. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: briefly increases movement speed when you fight from the saddle. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia umiejętności konnych. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases the damage of horse skills. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia zadawane likanom (w tym świecie nie ma Likanów - nie można się jej nauczyć). Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases damage dealt to Lycans (there are no Lycans in this world - it cannot be learnt). One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia zadawane ninja podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases damage dealt to Ninjas while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia zadawane surom podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases damage dealt to Suras while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia zadawane szamanom podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases damage dealt to Shamans while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa obrażenia zadawane wojownikom podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases damage dealt to Warriors while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa precyzję podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases precision while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
+Rozwija umiejętności konne. Kliknij prawym przyciskiem myszy, aby twój koń (od 21 poziomu) nauczył się umiejętności: zwiększa zdobywane doświadczenie podczas jazdy. Jedna umiejętność od 21 poziomu konia, druga od 31; poziom 1-20 w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom), zapomnienie za darmo u Stajennego. Działa na każdym wierzchowcu.	Develops horse skills. Right-click to have your horse (from level 21) learn the skill: increases the experience gained while riding. One skill from horse level 21, a second from 31; level 1-20 in the horse training window (1000 Gaya and 20 000 000 Yang per level), forgetting is free at the Stable Boy. Works on every mount.
 Rozwiń pasek	Expand Bar
 Ruch do przodu	Move forward
 Ruch do tyłu	Move backward
@@ -2162,6 +2355,8 @@ Siła Ataku: +%.0f	Attack Value: +%.0f
 Siła ataku wroga -%d%%	Enemy attack power -%d%% 
 Skaluj	Scale
 Skaluj Interfejs	Scale Interface
+Skarb pokonanej Hydry. Można ją otworzyć 3 razy - za każdym razem daje jeden przedmiot.	The treasure of the defeated Hydra. It can be opened 3 times - it gives one item every time.
+Skarb, który został wydarty z głębin Świątyni Węży.	A treasure torn from the depths of the Serpent Temple.
 Skarbiec gildii: %s yang	Guild treasury: %s Yang
 Sklep - %s	Shop - %s
 Sklep Gracza %s	%s's Shop
@@ -2181,9 +2376,12 @@ Skrzynia Likanów (m)	Small Lycan Chest
 Skrzynia Sierpu	Crescent Moon Chest
 Skrzynia Skorpiona	Scorpion Chest
 Skrzynia Wukonga	Wukong Chest
+Skrzynia ta zawiera kilka rzadkich, zaginionych od wieków skarbów licznych smoczych strażników. Przedmiot ten jest zdatny do handlu.	This chest contains several rare treasures of the many dragon guardians, lost for centuries. This item is tradeable.
 Skrzynia ta zawiera losową księgę umiejętności do nauki dopalacza.	This chest contains a random skill book for learning a booster.
 Skrzynia ta zawiera losową księgę umiejętności do nauki riposty.	This chest contains a random skill book for learning a riposte.
 Skrzynia z Królestwa Duchów Wodnych. Otwórz ją za pomocą Klucza Nimfy Wodnej.	A chest from the Kingdom of Water Spirits. Open it with a Water Nymph Key.
+Skrzynia z łupami z Krypty Balathora+ - kilka losowych nagród.	A chest with loot from Balathor's Crypt+ - several random rewards.
+Skrzynia z łupami z Krypty Balathora.	A chest with loot from Balathor's Crypt.
 Skrzynie i klucze	Chests and keys
 Skrzynka	Chest
 Skrzynka Dzwoneczka	Little Bell Box
@@ -2198,6 +2396,8 @@ Smocze Znaki	Dragon Marks
 Smocze kamienie towarzysza: daj, załóż, zdejmij, weź.	The Companion's dragon stones: give, equip, remove, take.
 Smocze rogi wykonane są z najtrwalszego surowca.	Dragon horns are made of the most durable material.
 Smoczy Gniew	Dragon's Wrath
+Smoczy Płomień	Dragon Flame
+Smoczy Płomień (B)	Dragon Flame (B)
 Sohan	Sohan
 Sojusznik	Ally
 Soki Defensywne	Defensive Juices
@@ -2219,6 +2419,7 @@ Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Checking serve
 Sprawdzanie...	Checking...
 Sprawdź ofertę |cffffb62ekonta premium|r,[ENTER]to najlepszy wybór dla większości graczy.	Check out the |cffffb62ePremium account|r offer,[ENTER]the best choice for most players.
 Sprawdź umiejętność Sprintu!	Try out the Sprint skill!
+Sprawia, że obok ciebie pojawia się losowa Żyła Jadeitu (Słońca, Nocy, Dymu lub Mgły), z której kilofem wydobędziesz Rudę Jadeitu. Żyła znika po kilku minutach. Przedmiot jednorazowy; nie działa w lochach.	Makes a random Jade Vein (Sun, Night, Smoke or Mist) appear next to you, from which you can mine Jade Ore with a pickaxe. The vein disappears after a few minutes. Single-use item; does not work in dungeons.
 Sprint (włącz/wyłącz)	Sprint (on/off)
 Sprzedaj złom	Sell Junk
 Sprzedając wszystkie przedmioty w sklepie zapłacisz %s podatku.	By selling all items in the shop you will pay %s in tax.
@@ -2271,6 +2472,7 @@ Strona %d/%d	Page %d/%d
 Strona WWW	Website
 Strz. dół	Down Arrow
 Strz. prawo	Right Arrow
+Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	An arrow for the ninja bow. Full damage up to 5 m from the target (a bow range bonus extends this distance), then 5% less for every further metre. A quiver does not lose damage with distance.
 Strzały: Handlarz Bronią (cena NPC).	Arrows: Weapon Dealer (NPC price).
 Strój Czarodzieja	Warlock Outfit
 Strój Czarodzieja+	Warlock Outfit+
@@ -2329,6 +2531,7 @@ Szansa od jednego zabójstwa, dla gracza na poziomie potwora (bez premium i even
 Szansa powodzenia: %d%%	Success chance: %d%%
 Szanse na nagrody	Reward Chances
 Szarfa 2 zostanie zniszczona, jesli laczenie sie nie powiedzie.	Sash 2 will be destroyed if the combination fails.
+Szarfa walentynkowa w kształcie skrzydeł serca. Pochłania 11-25% bonusów broni lub zbroi (łączenie u Theowahdana).	A Valentine's sash shaped like heart wings. Absorbs 11-25% of weapon or armour bonuses (combining at Theowahdan).
 Szarfy dostojne	Noble Sashes
 Szarfy proste	Simple Sashes
 Szarfy unikatowe	Unique Sashes
@@ -2338,6 +2541,7 @@ Szept do %s: %s	Whisper to %s: %s
 Szeptotruj	Venomwhisper
 Szkarłaczny Żądłak	Scarlet Stinger
 Szkatulka Ksiezycowa - z rozbitego Metina	Moon Casket - from a destroyed Metin
+Szkatułka wyrwana ze szponów Alastora.	A casket snatched from Alastor's claws.
 Szkatułka z Kluczami Goblina	Goblin Key Box
 Szkatułki Blasku Księżyca	Moonlight Treasure Chests
 Szkatułki i Klucze	Chests and Keys
@@ -2369,6 +2573,8 @@ Sztuka Świętej Ochrony	Art of Holy Protection
 Sztuka Świętej Wody	Art of Holy Water
 Sztuka Świętej Zbroi	Art of the Holy Armour
 Sztuka Życia	Art of Life
+Sztylet Smoka Mroku	Dark Dragon Dagger
+Sztylet Zodiaku	Zodiac Dagger
 Sztylet wypełniony mocą mrocznego smoka.	A dagger filled with the power of the dark dragon.
 Szukaj przedmiotu w całym sklepie	Search for an item in the whole shop
 Szukaj skarbu	Search for Treasure
@@ -2384,6 +2590,7 @@ Szybkość czarowania	Casting Speed
 Szybkość: %d zmian/s	Speed: %d switches/s
 Słaba jakość strzału: od %.1fm	Poor shot quality: from %.1fm
 Słodka Staruszka	Sweet Old Lady
+Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	A sweet Valentine's amulet. Gives: +50% EXP, +20% attack speed, +20% casting speed, +10% strength against monsters, +10% max. HP, +10% max. SP. Time also runs out while you are not wearing it.
 Słodkowodna ryba drapieżna występująca w tropikach.	A predatory freshwater fish found in the tropics.
 Słonecznik: obrona +%d%%	Sunflower: defence +%d%%
 Służy do wytworzenia Reliktu Duszy u Biologa Chaegiraba w Dongan.	Used to craft a Soul Relic at Biologist Chaegirab in Dongan.
@@ -2394,13 +2601,20 @@ Ta dobra dusza jest na wieki uwięziona w szklanej kuli.	This good soul is trapp
 Ta funkcja wymaga co najmniej %d gwiazdek.	This feature requires at least %d stars.
 Ta księga umiejętności uczy cię dopalacza twojej klasy i drogi umiejętności (1. poziom). Wymaga riposty rozwiniętej do poziomu P.	This skill book teaches you the booster of your class and skill path (level 1). Requires the riposte to be trained to level P.
 Ta magiczna rękawica zwiększa zręczność użytkownika, pozwalając na podnoszenie przedmiotów z ziemi o 500% szybciej.	This magic glove increases the wearer's dexterity, letting them pick up items from the ground 500% faster.
+Ta mocno zamknięta skrzynia zawiera bransoletkę. Aby ją otworzyć, potrzebny jest idealny klucz.	This tightly locked chest contains a bracelet. To open it, you need a perfect key.
+Ta mocno zamknięta skrzynia zawiera kolczyki. Aby ją otworzyć, potrzebny jest idealny klucz.	This tightly locked chest contains earrings. To open it, you need a perfect key.
+Ta mocno zamknięta skrzynia zawiera naszyjnik. Aby ją otworzyć, potrzebny jest idealny klucz.	This tightly locked chest contains a necklace. To open it, you need a perfect key.
+Ta mocno zamknięta skrzynia zawiera talizman. Aby ją otworzyć, potrzebny jest idealny klucz.	This tightly locked chest contains a talisman. To open it, you need a perfect key.
 Ta opcja jest dostępna od 2. gwiazdki.	This option is available from the 2nd star.
 Ta opcja jest dostępna od 3. gwiazdki.	This option is available from the 3rd star.
 Ta opcja jest dostępna od 4. gwiazdki.	This option is available from the 4th star.
 Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from the Purgatory of Fire, Razador's lair. It holds a true royal treasure.
 Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.	This chest was recovered from the Fire Purgatory, Razador's lair. It holds a true royal treasure. It can be opened 3 times - it gives something every time.
+Ta skrzynia została wydobyta z Erebu. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from Erebos. It holds a true royal treasure.
+Ta skrzynia została wydobyta z Groty Wygnańców. Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 2 razy - za każdym razem coś daje.	This chest was recovered from the Grotto of Exile. It holds a true royal treasure. It can be opened 2 times - it gives something every time.
 Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from the Frozen Land, Nemere's lair. It holds a true royal treasure.
 Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.	This chest was recovered from the Ice Land, Nemere's lair. It holds a true royal treasure. It can be opened 3 times - it gives something every time.
+Ta skrzynia została wydobyta ze Schronienia Królowej Smoków Meley. Znajduje się w niej prawdziwy królewski skarb. Przedmiot ten jest zdatny do handlu.	This chest was recovered from the Dragon Queen Meley's Lair. It holds a true royal treasure. This item is tradeable.
 Ta skrzynka nic nie wydaje.	This chest gives nothing.
 Ta tura jest już pełna - odbierz nagrodę za turę.	This round is already complete - claim your round reward.
 Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	This client version has only some of the languages - update the client.
@@ -2411,6 +2625,7 @@ Tajemnicza skrzynia Nemere może zawierać materiały do uszlachetnienia oraz ka
 Tajemnicza skrzynia Przebudzenia może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	The mysterious Awakening chest may contain refinement materials and Awakening stones.
 Tajemnicza skrzynia Razadora może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	Razador's mysterious chest may contain refinement materials and Awakening stones.
 Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	A Catch the King deck. Right-click it during the event to add it to your decks; start the game in the event window (button next to the minimap). Cards and decks are lost when the next event begins.
+Talizman ten daje ci na trzy godziny dostęp do Świątyni Zodiaku, bez zużycia Animosfer.	This talisman gives you access to the Zodiac Temple for three hours without using up Animaspheres.
 Tam gdzie spadnie jego strzała, zaczyna się gwałtowna burza. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Wherever its arrow falls, a violent storm begins. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Tam nic nie ma.	There is nothing there.
 Tańczy jak zjawa śmierci poprzez szeregi wrogiej armii. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Dances like a spectre of death through the ranks of the enemy army. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
@@ -2428,15 +2643,44 @@ Teleport zużywa 1 czysty zwój (bez zapisanej w nim pozycji).	A teleport uses u
 Teleportacja za: %d:%02d	Teleport in: %d:%02d
 Teleportować się do: %s?	Teleport to: %s?
 Teleportuj pod wejście	Teleport to entrance
+Teleportuje do NPC wybranego w Lokalizatorze NPC. | Ta sama mapa: 1 kamień, ten sam region: 2, inna mapa: 3.	Teleports to the NPC selected in the NPC Locator. | Same map: 1 stone, same region: 2, another map: 3.
+Teleportuje do NPC wybranego w Lokalizatorze NPC. | Ta sama mapa: 1 kamień, ten sam region: 2, inna mapa: 3. | Można nim handlować.	Teleports to the NPC selected in the NPC Locator. | Same map: 1 stone, same region: 2, another map: 3. | It can be traded.
 Teleportuje do: %s	Teleporting to: %s
+Ten delikatny kluczy otwiera platynową skrzynię skarbów.	This delicate key opens a platinum treasure chest.
 Ten dwuręczny miecz położy kres twoim wrogom - a może nawet całemu światu? Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	This two-handed sword will put an end to your enemies - and perhaps even to the whole world? Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Ten gatunek kraba zwany jest ze względu na swój rozmiar krabem gigantem.	Because of its size, this species of crab is called the giant crab.
 Ten gatunek skorupiaka prowadzi nocny tryb życia, a dnie spędza w swojej kryjówce.	This species of crustacean is nocturnal and spends its days in its hiding place.
+Ten legendarny kamień służy do ulepszenia mistrzowskich umiejętności dopalaczy i ripost. Kamień zniknie po użyciu.	This legendary stone is used to improve master boosters and ripostes. The stone disappears after use.
 Ten magiczny klucz aktywuje portal do Świątyni Smoka (SZC). Zostawia go Generał Yonghan (SZC), który pojawia się po Kapitanie Yonghanie (SZC-110). Duch Sura (SZC) chce trzech od każdego.	This magic key activates the portal to the Dragon's Temple (SZC). It is left by General Yonghan (SZC), who appears after Captain Yonghan (SZC-110). The Sura Spirit (SZC) wants three from each player.
 Ten materiał jest potrzebny do ulepszania Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora+.	This material is needed to upgrade the Serpent Cap. You can find it in Balathor's Frost Chest+.
 Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora.	This material is required to craft the Serpent Cap. You can find it in Balathor's Frost Chest.
 Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz otrzymać go w Sklepie Gaya.	This material is required to craft the Serpent Cap. You can get it in the Gaya Shop.
 Ten niebieskawy klejnot został wydobyty w kopalniach Góry Sohan.	This bluish gem was mined in the mines of Mount Sohan.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy błyskawicy. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% lightning power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy lodu. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% ice power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy mroku. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% darkness power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy ognia. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% fire power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy wiatru. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% wind power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% mocy ziemi. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% earth power. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na błyskawice. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% lightning resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na lód. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% ice resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na mrok. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% darkness resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na ogień. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% fire resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na wiatr. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% wind resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten niezwykle potężny eliksir obdarza tego, który go wypije +20% odporności na ziemię. Działa zawsze 10 minut. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół, 20 pustych butelek i Złotego Zioła (szansa 90%, 100 000 Yang). Zastępuje zwykły eliksir tego samego żywiołu.	This extremely powerful elixir grants whoever drinks it +20% earth resistance. Always lasts 10 minutes. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs, 20 empty bottles and a Golden Herb (90% chance, 100 000 Yang). Replaces a normal elixir of the same element.
+Ten pierścień upuściła Hydra, konając. Zaprowadzi cię na nowy kontynent: 3 teleporty do Portu Nowego Kontynentu.	The Hydra dropped this ring as it died. It will lead you to the new continent: 3 teleports to the Port of the New Continent.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy błyskawicy. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% lightning power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy lodu. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% ice power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy mroku. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% darkness power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy ognia. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% fire power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy wiatru. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% wind power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% mocy ziemi. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% earth power. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na błyskawice. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% lightning resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na lód. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% ice resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na mrok. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% darkness resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na ogień. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% fire resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na wiatr. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% wind resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
+Ten potężny eliksir obdarza tego, który go wypije + 8-20% odporności na ziemię. Sporządza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 ziół i 20 pustych butelek (szansa 90%, 50 000 Yang). Wartość i czas działania są losowane przy sporządzaniu; widać je w opisie eliksiru.	This powerful elixir grants whoever drinks it + 8-20% earth resistance. Brewed by the herbalist Huahn-So (Bokjung, Bakra, Jayang) from 10 herbs and 20 empty bottles (90% chance, 50 000 Yang). The value and duration are rolled when it is brewed; they are shown in the elixir's description.
 Ten praktyczny pakiet zawiera mnóstwo dusz, dzięki którym możesz doładować swoje relikty duszy i korzystać z potężnych bonusów reliktu. Zawartość pakietu: Dusza Miecza, Dusza Ochrony, Dusza Ozdoby, Dusza Światła.	This handy package contains lots of souls with which you can recharge your soul relics and enjoy powerful relic bonuses. Package contents: Soul of the Sword, Soul of Protection, Soul of Ornament, Soul of Light.
 Ten pryzmatyczny kryształ służy do uszlachetnienia przedmiotu wyposażenia.	This prismatic crystal is used to refine a piece of equipment.
 Ten przedmiot jest używany do wyrobu hełmów.	This item is used to make helmets.
@@ -2450,6 +2694,8 @@ Ten szlachetny kamień w kształcie łzy zawiera w sobie iskierkę światła ksi
 Ten słodki owoc pochodzi z ogrodu Boga Smoków.	This sweet fruit comes from the garden of the Dragon God.
 Ten tajemniczo połyskujący kamień daje doskonałą szansę przy ulepszaniu przedmiotów. Ulepszony w ten sposób przedmiot nie może zostać ani pogorszony ani zniszczony. Kamień ten funkcjonuje tylko dla przedmiotów powyżej poziomu 80. Zwiększa szansę na ulepszenie o 15%.	This mysteriously shimmering stone gives an excellent chance when upgrading items. An item upgraded this way can be neither downgraded nor destroyed. This stone only works on items above level 80. Increases the upgrade chance by 15%.
 Ten tajemniczo połyskujący kamyk służy do uszlachetnienia przedmiotu wyposażenia.	This mysteriously shimmering pebble is used to refine a piece of equipment.
+Ten tajemniczy klucz zamienia się przy zastosowaniu w inny klucz do skrzyni skarbów! Wcześniej nie można jednak rozpoznać, w jaki klucz się zamieni.	When used, this mysterious key turns into another treasure chest key! However, you cannot tell beforehand which key it will turn into.
+Ten zestaw zawiera wszystko, czego potrzebuje troskliwy właściciel konia: 50 Paszy dla Konia, 5 Czer. Żeń-szeni (premium) i Szlachetną Trawę na wypadek, gdyby twój rumak poległ na polu bitwy. Kliknij prawym przyciskiem myszy, aby otworzyć.	This set contains everything a caring horse owner needs: 50 Horse Feed, 5 Red Ginseng (premium) and Noble Grass in case your steed falls on the battlefield. Right-click to open.
 Teraz nie możesz zgłosić bonusu zestawu.	You cannot claim a set bonus right now.
 Teraz nie możesz zmienić się w potwora.	You cannot transform into a monster right now.
 Teraz: %s	Now: %s
@@ -2460,8 +2706,11 @@ Teren, Gracz i NPC	Terrain, Player and NPC
 To nie jest Suplement albo nie można go teraz użyć.	This is not an Additive or it cannot be used right now.
 To nie jest księga umiejętności.	This is not a skill book.
 To nie jest skrzynka.	This is not a chest.
+To pudełko zawsze zawiera jedną losową Kartę Potwora Yohary - z poziomów misji 16-18. Użyj karty, by dodać ją do swojej kolekcji (okno Kart Potworów, klawisz J). Nie można nim handlować ani go przechować w magazynie.	This box always contains one random Yohara Monster Card - from quest levels 16-18. Use the card to add it to your collection (Monster Cards window, J key). It cannot be traded or kept in the storeroom.
 To samo co Podnoszenie w Auto Łowach.	Same as Pick-up in Auto Hunt.
+To srebrne pudełko zawiera losową Kartę Potwora albo 1000 Yang. Spróbuj szczęścia! Karty pochodzą z poziomów misji 1-15 (bez potworów Yohary). Użyj karty, by dodać ją do swojej kolekcji (okno Kart Potworów, klawisz J).	This silver box contains a random Monster Card or 1000 Yang. Try your luck! The cards come from quest levels 1-15 (no Yohara monsters). Use the card to add it to your collection (Monster Cards window, J key).
 To zła skrzynia skarbów. Odprowadź Goblina Skarbów jeszcze raz!	This is the wrong treasure chest. Escort the Treasure Goblin again!
+To złote pudełko zawsze zawiera jedną losową Kartę Potwora z poziomów misji 1-15 (bez potworów Yohary). Użyj karty, by dodać ją do swojej kolekcji (okno Kart Potworów, klawisz J).	This golden box always contains one random Monster Card from quest levels 1-15 (no Yohara monsters). Use the card to add it to your collection (Monster Cards window, J key).
 To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja.	What the bot does when nothing else demands its attention. Raise it and errands lose out.
 Torba towarzysza: weź do siebie	Companion bag: take to yourself
 Towarzysz	Companion
@@ -2480,6 +2729,7 @@ Transfer bonusów	Bonus Transfer
 Transformuj kostium	Transform Costume
 Transporter jest pusty.	The transporter is empty.
 Transporter z Petem	Transport Box (with Pet)
+Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Trains a Buffi skill from grade G1 to P, like a Soul Stone does for normal skills (rank points, next attempt after 12 hours, Exorcism Scroll for an immediate one). Dropped by Metins and bosses from the Enchanted Forest upwards.
 Trudny loch malp	Hard Monkey Dungeon
 Trwa akcja	Action in progress
 Trwale usunac %d stosow?	Permanently destroy %d stacks?
@@ -2517,6 +2767,29 @@ Uczony Stylu Małp	Monkey Style Scholar
 Uczy gildię umiejętności Burza Balathora (+1 poziom, najwyżej 10). | Odporność na omdlenie i spowolnienie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Storm (+1 level, max. 10). | Resistance to fainting and slowing. | Only the guild leader can read it.
 Uczy gildię umiejętności Nieugiętość Balathora (+1 poziom, najwyżej 10). | Odporność na odrzucenie i powalenie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Steadfastness (+1 level, max. 10). | Resistance to knockback and knockdown. | Only the guild leader can read it.
 Uczy gildię umiejętności Wola Balathora (+1 poziom, najwyżej 10). | Odporność na ogłuszenie, kajdany i zamrożenie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Will (+1 level, max. 10). | Resistance to stun, shackles and freezing. | Only the guild leader can read it.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Absorpcja Życia”: Przywraca PŻ po zabiciu potwora.	Teaches the pet (from the “Heroic” stage) the skill “Life Absorption”: Restores HP after killing a monster.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Antymagia”: Zmniejsza obronę magiczną przeciwnika.	Teaches the pet (from the “Heroic” stage) the skill “Anti-Magic”: Reduces the opponent's magic defence.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Berserk”: Zwiększa magiczny i krótkodystansowy atak.	Teaches the pet (from the “Heroic” stage) the skill “Berserk”: Increases magic and close-combat attack.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Browarnik”: Zwiększa efektywność mikstur regeneracyjnych.	Teaches the pet (from the “Heroic” stage) the skill “Brewer”: Increases the effectiveness of regeneration potions.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Drop Yang”: Zwiększa szansę na drop Yang.	Teaches the pet (from the “Heroic” stage) the skill “Yang Drop”: Increases the Yang drop chance.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Duch”: Zwiększa szansę na kradzież PE.	Teaches the pet (from the “Heroic” stage) the skill “Ghost”: Increases the chance of stealing SP.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Lekkie jak Piórko”: Aktywuje na krótki czas „Bezszelestny chód”.	Teaches the pet (from the “Heroic” stage) the skill “Light as a Feather”: Briefly activates “Feather Walk”.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Nieśmiertelność”: Daje tymczasową nieśmiertelność.	Teaches the pet (from the “Heroic” stage) the skill “Immortality”: Grants temporary immortality.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odnowa”: Regeneruje PŻ, jeśli zdrowie postaci spadnie poniżej 20%.	Teaches the pet (from the “Heroic” stage) the skill “Renewal”: Regenerates HP if the character's health drops below 20%.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (likan)”: Zwiększa odporność na ataki Likana.	Teaches the pet (from the “Heroic” stage) the skill “Resistance (Lycan)”: Increases resistance to Lycan attacks.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (ninja)”: Zwiększa odporność na ataki Ninja.	Teaches the pet (from the “Heroic” stage) the skill “Resistance (Ninja)”: Increases resistance to Ninja attacks.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (sura)”: Zwiększa odporność na ataki Sury.	Teaches the pet (from the “Heroic” stage) the skill “Resistance (Sura)”: Increases resistance to Sura attacks.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (szaman)”: Zwiększa odporność na ataki Szamana.	Teaches the pet (from the “Heroic” stage) the skill “Resistance (Shaman)”: Increases resistance to Shaman attacks.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Odporność (wojownik)”: Zwiększa odporność na ataki Wojownika.	Teaches the pet (from the “Heroic” stage) the skill “Resistance (Warrior)”: Increases resistance to Warrior attacks.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przebicie”: Zwiększa szanse na przeszywający cios.	Teaches the pet (from the “Heroic” stage) the skill “Piercing”: Increases the chance of a piercing hit.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przeszkoda”: Zwiększa szansę na blok ciosów.	Teaches the pet (from the “Heroic” stage) the skill “Obstacle”: Increases the chance of blocking hits.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Przyspieszenie”: Zwiększa szybkość zaklęcia.	Teaches the pet (from the “Heroic” stage) the skill “Haste”: Increases casting speed.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Spostrzegawczość”: Zwiększa ilość zdobywanych PD.	Teaches the pet (from the “Heroic” stage) the skill “Perception”: Increases the amount of EXP gained.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Uzdrowienie”: Usuwa negatywne efekty (otrucie, krwawienie i spowolnienie).	Teaches the pet (from the “Heroic” stage) the skill “Healing”: Removes negative effects (poison, bleeding and slow).
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Wampir”: Zwiększa szansę na kradzież PŻ.	Teaches the pet (from the “Heroic” stage) the skill “Vampire”: Increases the chance of stealing HP.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Zasięg”: Zwiększa zasięg ataku z łuku.	Teaches the pet (from the “Heroic” stage) the skill “Range”: Increases bow attack range.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Zwierciadło”: Zwiększa wartość odbitych ciosów.	Teaches the pet (from the “Heroic” stage) the skill “Mirror”: Increases the value of reflected hits.
+Uczy zwierzaka (od stopnia „Bohaterski”) umiejętności „Łowca Potworów”: Zwiększa siłę przeciwko potworom.	Teaches the pet (from the “Heroic” stage) the skill “Monster Hunter”: Increases strength against monsters.
 Udane ulepszenia	Successful Upgrades
 Udało ci się ochronić Goblina Skarbów!	You have protected the Treasure Goblin!
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Strike, and the bell tolls for someone! Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
@@ -2558,7 +2831,10 @@ Ustaw nowe hasło na stronie.	Set a new password on the website.
 Usun przedmioty	Destroy Items
 Usunąć pozycję %d (%s)?	Delete location %d (%s)?
 Usunąć zaznaczone misje (%d)?	Delete the selected quests (%d)?
+Usuwa jedną wybraną umiejętność zwierzaka (przeciągnij na umiejętność).	Removes one selected pet skill (drag onto the skill).
+Usuwa pieczęć Piekielnej Wieży w Piekielnej Wieży Sunga Mahi. Można użyć tylko w Piekielnej Wieży Sunga Mahi.	Removes the Hellish Tower seal in Sung Mahi's Hellish Tower. Can only be used in Sung Mahi's Hellish Tower.
 Usuwa wszystkie umiejętności wspomagające przeciwnika.	Removes all of the enemy's supporting skills.
+Usuwa wszystkie umiejętności zwierzaka (prawy przycisk myszy przy otwartym oknie zwierzaka).	Removes all of the pet's skills (right-click while the pet window is open).
 Usuwanie...	Destroying...
 Usuń misje	Delete Quests
 Usuń zaznaczone	Delete Selected
@@ -2569,18 +2845,23 @@ Uszy Zająca (szare)	Rabbit Ears (grey)
 Uszy Zająca+ (brązowe)	Rabbit Ears+ (brown)
 Uszy Zająca+ (szare)	Rabbit Ears+ (grey)
 Utworz Przedmiot	Create Item
+Uwaga! Nadchodzi Robin, pocieszny nietoperek! Przywołany zwierzak co sekundę podnosi za ciebie przedmioty i yang leżące w pobliżu (tylko to, co możesz podnieść sam). Pieczęć działa 1 dzień od otrzymania.	Watch out! Here comes Robin, the funny little bat! Once summoned, the pet picks up nearby items and Yang for you every second (only what you could pick up yourself). The seal lasts 1 day from receipt.
 Uwaga![ENTER]Cena wytworzenia zmianek jest zmienna.[ENTER]Jej cena zależy od obecnego stanu gospodarki[ENTER]i jest stale monitorowana przez administrację.	Note![ENTER]The crafting price of switchers varies.[ENTER]It depends on the current state of the economy[ENTER]and is constantly monitored by the administration.
 Uwaga: Jeżeli zmieniły się pozycje przedmiotów w ekwipunku,	Note: If item positions in your inventory have changed,
+Uwalnia cię od klątwy złego ducha, jeśli nauka się nie powiedzie. Za pomocą tego zwoju możesz przeczytać w ciągu jednego dnia kolejny dokument umiejętności. Niezdatny do handlu.	Frees you from the evil spirit's curse if learning fails. With this scroll you can read another skill document within one day. Not tradeable.
 Uzbrojenie	Equipment
 Uziemienie	Root
 Ułóż i scal	Sort and merge
 Użyj %(n)s x %(what)s	Use %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Use a Pet Skill Book from your inventory
+Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Use it in the Serpent Temple to extend the expedition time by one minute (up to 60 minutes at most).
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Use the ring in the Elemental Kingdom (in one of the nine areas) to always teleport to the Plateau of Natural Forces. The ring disappears after use.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Use the ring in the Elemental Kingdom (in one of the nine areas) for a chance (10%) to teleport to the Plateau of Natural Forces. The ring disappears with each use. Dropped by all monsters and Metins of the Elemental Kingdom (entrance: portal and the Old Man in the New Continent Harbour).
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Use to turn the experience lock on or off. No time limit.
 Użyj, kiedy zablokujesz się w "teksturach".	Use when you get stuck in "textures".
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Using the wings of the dragon Alteran, you can refine a piece of equipment.
+Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	With this licence you can recruit a mercenary. (No use yet - it will come with the next Yohara update.)
+Używanie tego poza granicami Yohara miałoby z pewnością negatywne skutki. Może być używane przez postacie na poziomie czempiona. Działa na mapach Yohary z Wolą SungMa.	Using this outside the borders of Yohara would certainly have negative consequences. Can be used by characters at champion level. Works on Yohara maps with SungMa Will.
 VIPy	VIP
 W błyszczącej złotej szkatułce mogą znajdować się talizmany żywiołowe, broń lub szarfy Zodiaku.	The shiny golden box may contain elemental talismans, Zodiac weapons or sashes.
 W jaskrawo zielonej szkatułce mogą znajdować się broń, szarfy lub insygnia Zodiaku.	The bright green box may contain Zodiac weapons, sashes or insignia.
@@ -2588,9 +2869,13 @@ W magazynie nie ma stosów do połączenia.	There are no stacks to merge in the 
 W pobliżu jest zakryta [5].	There is a face-down [5] nearby.
 W przypadku śmierci na ujemnej randze;nie ryzykujesz utratą przedmiotu.;Efekt znika w przypadku ochrony;potencjalnej utraty przedmiotu.	If you die with a negative rank,;you do not risk losing an item.;The effect disappears when it protects you;from a potential item loss.
 W skrzyni był Bilet Skarbów!	There was a Treasure Ticket in the chest!
+W skrzyni znajduje się cenna nagroda dla ciebie. Nagroda za ułożenie wędkarskich puzzli w 10 lub mniej próbach. Można otworzyć trzy razy.	The chest holds a valuable reward for you. A reward for completing the fishing puzzle in 10 or fewer attempts. Can be opened three times.
+W skrzyni znajduje się cenna nagroda dla ciebie. Nagroda za ułożenie wędkarskich puzzli w 11-24 próbach. Można otworzyć dwa razy.	The chest holds a valuable reward for you. A reward for completing the fishing puzzle in 11-24 attempts. Can be opened twice.
+W skrzyni znajduje się cenna nagroda dla ciebie. Nagroda za ułożenie wędkarskich puzzli w 25 lub więcej próbach. Można otworzyć jeden raz.	The chest holds a valuable reward for you. A reward for completing the fishing puzzle in 25 or more attempts. Can be opened once.
 W sprzedaży są cenne przedmioty (%d), kontynuować?	Valuable items are up for sale (%d), continue?
 W stacku jest: %d szt.	In the stack: %d pcs
 W tajemniczej skrzyni mogą znajdować się broń, wyposażenie i szarfy Zodiaku.	The mysterious chest may contain Zodiac weapons, equipment and sashes.
+W tej tajemniczej skrzyni skrywa się jeszcze jedna szkatułka! Z zewnątrz nie można jednak rozpoznać, jaka to jest szkatułka.	Another casket is hidden inside this mysterious chest! However, you cannot tell from the outside what kind of casket it is.
 W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklop. Jupitera (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Jupiter Encyclopaedia (L).
 W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklop. Merkurego (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Mercury Encyclopaedia (L).
 W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Marsa (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Mars Encyclopaedia (L).
@@ -2604,6 +2889,7 @@ W tym tajemniczym zielonkawym kamieniu jest zamknięta dusza driady, drzewnego d
 W tym tajemniczym zielonkawym kamieniu jest zamknięta dusza driady, drzewnego duszka. Driada zna zaklęte słowa, które otwierają wstęp do Erebu - Przywódca Straży Lasu wpuszcza grupę, której każdy członek go ma (znika przy wejściu).	The soul of a dryad, a tree spirit, is trapped inside this mysterious greenish stone. The dryad knows the magic words that open the way to Erebos - the Forest Guard Leader lets in a group in which every member has one (it disappears on entry).
 W wieży	In the tower
 W złocistej szkatułce mogą znajdować się zbroja, szarfy lub insygnia Zodiaku.	The golden box may contain Zodiac armour, sashes or insignia.
+Wachlarz wypełniony mocą mrocznego smoka.	A fan filled with the power of the dark dragon.
 Walczy w imieniu upadłych aniołów. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Fights in the name of the fallen angels. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Walczący w zwarciu (maks. PŻ)	Melee Fighter (max. HP)
 Walka	Combat
@@ -2670,6 +2956,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Enter how many bonuses must match (
 Wpłacało botów: %d	Bots that contributed: %d
 Wsiądź/zsiądź (koń, wierzchowiec)	Mount/dismount (horse, mount)
 Wskazany kanał dostępny jest tylko dla kont Premium.	The selected channel is only available for Premium accounts.
+Wspaniała szkatułka wyrwana ze szponów Alastora.	A magnificent casket snatched from Alastor's claws.
 Wspaniały skarb z wnętrza połyskującej muszli.	A magnificent treasure from inside a shimmering shell.
 Wszystkie	All
 Wszystkie karty w rzędzie lub kolumnie: +10 punktów.	All cards in a row or column: +10 points.
@@ -2700,6 +2987,11 @@ Wyczyszczono wszystkie znaczniki sklepów offline.	All offline shop markers have
 Wyczyszczono: %s	Cleared: %s
 Wyczyść	Clear
 Wyczyść historię.	Clear history.
+Wydaje się, że klucz ten może otworzyć więzienie.	It seems this key can open the prison.
+Wydaje się, że to pasuje do głowy węża lodu.	This seems to fit the head of the ice serpent.
+Wydaje się, że to pasuje do głowy węża ognia.	This seems to fit the head of the fire serpent.
+Wydaje się, że to pasuje do głowy węża wiatru.	This seems to fit the head of the wind serpent.
+Wydaje się, że to pasuje do głowy węża ziemi.	This seems to fit the head of the earth serpent.
 Wydarzenia w grze	In-game Events
 Wydarzenie Wakacyjne	Summer Event
 Wydarzenie Walentynkowe	Valentine's Event
@@ -2776,6 +3068,10 @@ Wyślij boty	Send Bots
 Wzgórze Wukonga	Wukong's Hill
 Wzmacnia losową wolę SungMa.	Strengthens a random will of SungMa.
 Wzmacnia losową wolę SungMa. Przy dodaniu istnieje szansa na podwójny bonus.	Strengthens a random will of SungMa. When adding, there is a chance of a double bonus.
+Wzmacnia twoją Wolę SungMa (INT) o +5 na 30 min.	Strengthens your SungMa Will (INT) by +5 for 30 min.
+Wzmacnia twoją Wolę SungMa (ODP) o +5 na 30 min.	Strengthens your SungMa Will (RES) by +5 for 30 min.
+Wzmacnia twoją Wolę SungMa (SIŁA) o +5 na 30 min.	Strengthens your SungMa Will (STR) by +5 for 30 min.
+Wzmacnia twoją Wolę SungMa (WIT) o +5 na 30 min.	Strengthens your SungMa Will (VIT) by +5 for 30 min.
 Wzmacniające	Boosting
 Wzmocnienie (max. 5)	Boost (max. 5)
 Wzmocnienie Obrony +%d%%	Defence Boost +%d%%
@@ -2796,6 +3092,9 @@ Włosy Półdługie (białe)	Medium-Length Hair (white)
 Włosy Półdługie (ciemne)	Medium-Length Hair (dark)
 Włosy do Ramion (czarne)	Shoulder-Length Hair (black)
 Włosy do Ramion (wodne)	Shoulder-Length Hair (aqua)
+Włóż do okna polimorfii wierzchowca u Teowadena zamiast 30 000 000 Yang.	Place it in the mount polymorph window at Theowahdan instead of 30 000 000 Yang.
+Włóż do okna transmutacji u Teowadena zamiast 50 000 000 Yang.	Place it in the transmutation window at Theowahdan instead of 50 000 000 Yang.
+Włóż do okna transmutacji u Teowadena zamiast 50 000 000 Yang. Można nim handlować.	Place it in the transmutation window at Theowahdan instead of 50 000 000 Yang. It can be traded.
 Włącza je właściciel serwera w launcherze.	The server owner enables them in the launcher.
 Włącza tryb nocy na większości map.	Enables night mode on most maps.
 Włączono tryb edycji sklepu.	Shop edit mode enabled.
@@ -2819,6 +3118,8 @@ Za mało kart do wymiany.	Not enough cards to exchange.
 Za mało kart, by awansować potwora.	Not enough cards to promote the monster.
 Za mało zebranych kart.	Not enough cards collected.
 Za mały poziom!	Level too low!
+Za pomocą tego przedmiotu możesz usunąć wszystkie zarejestrowane wartości szaty aury. Przeciągnij na szatę aury w ekwipunku (nie założoną) - poziom szaty zostaje.	With this item you can remove all recorded values of the aura outfit. Drag onto an aura outfit in your inventory (not equipped) - the outfit's level remains.
+Za pomocą tej pieczęci możesz przywołać Nuggeta, strasznego bojowego kurczaczka. Załóż ją w slot wierzchowca. Szybkość ruchu +20, doświadczenie +30%. Czas: 8 godzin od pierwszego użycia.	With this seal you can summon Nugget, the fearsome battle chick. Put it in the mount slot. Movement speed +20, experience +30%. Duration: 8 hours from first use.
 Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	With this seal you summon the Wrathful Heart. It grants you a 5% higher chance of critical hits and raises your HP by 1500.
 Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	With this seal you summon your personal lucky charm. It grants you a 5% higher chance of piercing hits and raises your HP by 1500.
 Za tę rundę zapłacisz %s Yang i %d x %s.	This round will cost you %s Yang and %d x %s.
@@ -2869,8 +3170,12 @@ Zarzadzanie Botami [GM]	Bot Management [GM]
 Zarządzaj sklepem	Manage shop
 Zawiera 8 Kluczy Goblina.	Contains 8 Goblin Keys.
 Zawiera duży kawałek układanki do udziału w Evencie Rybackim (element 3 x 2). Kliknij prawym przyciskiem myszy, aby otworzyć okno puzzli.	Contains a large puzzle piece for taking part in the Fishing Event (3 x 2 piece). Right-click to open the puzzle window.
+Zawiera jedną losową księgę umiejętności zwierzaka.	Contains one random pet skill book.
 Zawiera księgę umiejętności lub przy odrobinie szczęścia odłamek w losowym kolorze. Szansa na odłamek jest większa niż w zwyczajnej skrzyni z odłamkiem.	Contains a skill book or, with a bit of luck, a shard in a random colour. The chance of a shard is higher than in a normal shard chest.
+Zawiera losowe jajo zwierzaka domowego.	Contains a random pet egg.
 Zawiera losowy element puzzli do zabawy w wędkarskie puzzle. Kliknij prawym przyciskiem myszy, aby otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.	Contains a random puzzle piece for the fishing puzzle game. Right-click to open the puzzle window - there you open the box and place the piece.
+Zawiera losowy przedmiot.	Contains a random item.
+Zawiera losowy przedmiot. Może zawierać księgę do nauki 9. umiejętności.	Contains a random item. May contain a book for learning the 9th skill.
 Zawiera losowy rzadki przedmiot. Nagroda za pokonanie Bossa Świata.	Contains a random rare item. A reward for defeating the World Boss.
 Zawiera losową księgę umiejętności peta.	Contains a random pet skill book.
 Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, jeśli ją pomyślnie ukończysz. Od poziomu: 120.	Contains a quest in the North Wind Gorge, for which you receive a reward if you complete it successfully. From level: 120.
@@ -2879,6 +3184,7 @@ Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	The selected qu
 Zaznaczone: %d z %d	Selected: %d of %d
 Założone przez ciebie - towarzysz tego nie zdejmie	Equipped by you - the Companion will not remove it
 Zaśpiewa ci pieśń o śmierci. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It will sing you a song of death. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w drogocenne Gaya (30 Kamyków, Kamień Duszy +0 do +3 i 15 000 Yang - szansa 70%, 3 Gaya).	Collect Pebbles and have them cut at the Warrior Statue in the Port of the New Continent into precious Gaya (30 Pebbles, a Soul Stone +0 to +3 and 15 000 Yang - 70% chance, 3 Gaya).
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Collect insignia to exchange them for chests or upgrade material.
 Zbieranie dla Biologa zamiast bicia poziomow.	Collecting for the Biologist instead of levelling.
 Zbierz %(n)s yang	Collect %(n)s Yang
@@ -2898,6 +3204,7 @@ Zbroje - Wojownik	Armour - Warrior
 Zbyt duży poziom!	Level too high!
 Zdejmij go najpierw do torby.	Remove it to your bag first.
 Zdejmij pieczęć wierzchowca	Remove mount seal
+Zdejmuje z ciebie klątwę Sunga Mahi. Można użyć tylko w Piekielnej Wieży Sunga Mahi.	Lifts Sung Mahi's curse from you. Can only be used in Sung Mahi's Hellish Tower.
 Zdjęcie tego przedmiotu spowoduje jego usunięcie.	Unequipping this item will delete it.
 Zdjęte przez ciebie - towarzysz sam tego nie założy	Removed by you - the Companion will not equip it by itself
 Zdjęto blokadę - sortowanie może znowu przesunąć ten przedmiot.	Lock removed - sorting can move this item again.
@@ -2918,6 +3225,12 @@ Zielarstwo	Herbalism
 Zielone Kły	Green Fangs
 Zielone, fioletowe, peleryny: z targu.	Green, purple, capes: from the market.
 Zioła	Herbs
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania eliksirów północnego wiatru. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing north wind elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania eliksirów ziemi. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing earth elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania mrocznych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing dark elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania mroźnych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing frost elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing fire elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
+Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing thunder elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
 Zlamanie odpornosci: bron 2-r.	Defence break: 2-h weapons
 Zlamanie odpornosci: dzwony	Defence break: bells
 Zlamanie odpornosci: miecze	Defence break: swords
@@ -2939,6 +3252,8 @@ Zmianki z (B) są używane jako pierwsze	Switchers marked (B) are used first
 Zmien poziom konia	Change horse level
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Changes the bonuses of a mythical Dragon Stone in the Dragon Stone Alchemy window (bonus change tab).
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Changes the name of the active pet (costs an additional 100.000 Yang).
+Zmienia imię zwierzaka domowego (100.000 Yang).	Changes a pet's name (100.000 Yang).
+Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	Changes the 6th and 7th bonus with a small probability. Drag onto an item: it has a 10% chance of changing the 6th and 7th bonus, the first 5 bonuses stay unchanged. On failure the item is used up and the bonuses stay as they were.
 Zmienić bonusy tego przedmiotu jeden raz?	Switch the bonuses of this item once?
 Zmień cenę	Change price
 Zmień kanał	Change channel
@@ -2952,6 +3267,7 @@ Zmniejsza obrażenia jakie otrzymujesz podczas walki o 12-15% przez 30 min. Prze
 Zmniejszenie przekierowanych Obrażeń %.1f%%	Redirected Damage Reduction %.1f%%
 Znajdź Kupony SM!	Find DC Vouchers!
 Znajdź sklep	Find shop
+Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	An excellently forged key made of magic crystal. Needed to open a perfect chest.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Excellent! Your card is higher.[ENTER]Reveal another card.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Found %d - showing %d, narrow your search.
 Znaleziono: %d - wybierz z listy.	Found: %d - choose from the list.
@@ -2963,6 +3279,7 @@ Zostanie zużytych %d kart z kolekcji. Kontynuować?	%d cards from the collectio
 Zostawia +8/+9, rzeczy założone	It keeps +8/+9, equipped
 Zostałeś zablokowany przez gracza do którego chcesz szeptać.	You have been blocked by the player you want to whisper to.
 Zrecznosc	Dexterity
+Zresetuj swoje wejścia do Świątyni Węży na 5.	Resets your Serpent Temple entries to 5.
 Zrestartuj serwer	Restart server
 Zrzut ekranu	Screenshot
 Zrzutka	Collection
@@ -2982,6 +3299,7 @@ Zwiększa ilość Punktów Życia o 20% na 30 minut.	Increases your Hit Points b
 Zwiększa ilość Punktów Życia o 20% na okres 30 minut.	Increases your Hit Points by 20% for 30 minutes.
 Zwiększa ilość Punktów Życia o 20% na okres 30 minut. Przedmiot ten jest zdatny do handlu.	Increases your Hit Points by 20% for 30 minutes. This item is tradeable.
 Zwiększa ilość otrzymywanych Punktów Doświadczenia małżeństwa na 3 godziny maksymalnie o 20%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.	Increases the Experience Points the married couple receives by up to 20% for 3 hours when worn by one of the partners. The item's effect depends on the percentage of Love Points. If the couple has e.g. 50% Love Points, the maximum effect is halved.
+Zwiększa maksymalną ilość PŻ o 20% na 30 minut. Niezdatne do handlu.	Increases max. HP by 20% for 30 minutes. Not tradeable.
 Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min.	Increases the damage you deal in combat by 12-15% for 30 min.
 Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.	Increases the damage you deal in combat by 12-15% for 30 min. This item is tradeable.
 Zwiększa obronę oraz posiada szansę na odbicie ciosu fizycznego.	Increases defence and gives a chance to reflect physical blows.
@@ -3001,6 +3319,8 @@ Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +10% przy 5 Supleme
 Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +20% przy 5 Suplementach i 10 Odłamkach).	Increases the chance of adding a 6th or 7th bonus at Seon-Hae (up to +20% with 5 Supplements and 10 Shards).
 Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +5% przy 5 Suplementach i 10 Odłamkach).	Increases the chance of adding a 6th or 7th bonus at Seon-Hae (up to +5% with 5 Supplements and 10 Shards).
 Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +50% przy 5 Suplementach i 10 Odłamkach).	Increases the chance of adding a 6th or 7th bonus at Seon-Hae (up to +50% with 5 Supplements and 10 Shards).
+Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Increases the chance of a critical hit by 10% for 10 minutes.
+Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Increases the chance of a piercing hit by 10% for 10 minutes.
 Zwiększa szansę na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom.	Increases the chance of a successful upgrade by 10%, and the item is not destroyed if the upgrade fails. On failure, the item's grade is reduced by 1 level.
 Zwiększa szansę na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom. Niezdatny do handlu.	Increases the chance of a successful upgrade by 10%, and the item is not destroyed if the upgrade fails. On failure, the item's grade is reduced by 1 level. Not tradeable.
 Zwiększa szansę na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom. Przedmiot ten jest zdatny do handlu.	Increases the chance of a successful upgrade by 10%, and the item is not destroyed if the upgrade fails. On failure, the item's grade is reduced by 1 level. This item is tradeable.
@@ -3012,21 +3332,28 @@ Zwiększa twoją Szybkość Ataku o 15% na okres 30 minut. Efekt utrzymuje się 
 Zwiększa twoją odporność na ciemność o 10% na 10 minut.	Increases your darkness resistance by 10% for 10 minutes.
 Zwiększa twoją odporność na lód o 10% na 10 minut.	Increases your ice resistance by 10% for 10 minutes.
 Zwiększa twoją odporność na ziemię o 10% na 10 minut.	Increases your earth resistance by 10% for 10 minutes.
+Zwiększa twoją siłę ataku o 20% na 30 minut. Niezdatny do handlu.	Increases your attack power by 20% for 30 minutes. Not tradeable.
 Zwiększa wartość magicznego ataku na małżeństwo przez 3 godziny maksymalnie o 10%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.	Increases the married couple's magic attack value by up to 10% for 3 hours when worn by one of the partners. The item's effect depends on the percentage of Love Points. If the couple has e.g. 50% Love Points, the maximum effect is halved.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Increases physical and magic damage dealt. Can be cast on another player. Bonus when used on yourself.
 Zwiększa zadawane obrażenia fizyczne oraz kradnie PŻ od przeciwnika.	Increases physical damage dealt and steals HP from the enemy. 
 Zwiększa zadawane obrażenia o 12% do 15% gdy atakujesz. Działa przez 30 minut.	Increases the damage you deal by 12% to 15% when attacking. Lasts 30 minutes.
+Zwiększają o 50% twoją szansę na zdobycie przedmiotów. Po aktywowaniu nie można już zdezaktywować ich działania. Czas trwania: 7 dni. Niezdatne do handlu.	Increases your chance of obtaining items by 50%. Once activated, the effect cannot be deactivated. Duration: 7 days. Not tradeable.
 Zwiększają szansę małżeństwa na zadanie Krytycznego i Przeszywającego Uderzenia maksymalnie o 5% na 3 godziny, gdy są noszone przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.	Increases the married couple's chance of landing Critical and Piercing Hits by up to 5% for 3 hours when worn by one of the partners. The item's effect depends on the percentage of Love Points. If the couple has e.g. 50% Love Points, the maximum effect is halved.
 Zwiń pasek	Collapse Bar
 Zwoje i Marmury	Scrolls and Marbles
 Zwoje i bonusy	Scrolls and bonuses
 Zwoje i księgi	Scrolls & Books
 Zwraca gildii wszystkie punkty rozdane na jej umiejętności (bez umiejętności Balathora). | Czyta tylko lider gildii.	Refunds to the guild all points spent on its skills (except Balathor skills). | Only the guild leader can read it.
+Zwraca punkty Czempiona rozdane w Inteligencję Sung Ma.	Returns the Champion points spent on Sung Ma Intelligence.
+Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Returns the Champion points spent on Sung Ma Resistance.
+Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Returns the Champion points spent on Sung Ma Strength.
+Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Returns the Champion points spent on Sung Ma Vitality.
 Zwykłe Mikstury	Regular Potions
 Zwykły sklep	Regular shop
 Zwykły sklep | %s	Regular shop | %s
 Zwój Imienia Peta	Pet Name Scroll
 Zwój Nasycenia	Scroll of Saturation
+Zwój teleportuje cię tam i z powrotem między dwoma wioskami twojego królestwa. Można go użyć 5 razy i jest dostępny od poziomu 10.	This scroll teleports you back and forth between two villages of your kingdom. It can be used 5 times and is available from level 10.
 Zwój ten umożliwia usunięcie wskazanego Kamienia Duszy z przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	This scroll lets you remove a chosen Soul Stone from an item. A +5 Soul Stone is removed during extraction.
 Złamanie Odporności na Broń Dwuręczną +%d%%	Two-Handed Weapon Defence Break +%d%%
 Złamanie Odporności na Miecze +%d%%	Sword Defence Break +%d%%
