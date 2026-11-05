@@ -2252,4 +2252,16 @@ if ((Test-Path -LiteralPath $remoteCallApply -PathType Leaf) -and
     }
 }
 
+# The bots' Runy Wykuwania (server-patches/runyboty, MT2009_PLUS_BOT_RUNES_V1): "/bot_runa" (GM) - the census, runes for a
+# bot or for many (playerbot_runes.h). Its anchors are remote call's command lines - after it.
+$runyBotyApply = Join-Path $repo 'server-patches/runyboty/Apply-RunyBotyPatch.ps1'
+if ((Test-Path -LiteralPath $runyBotyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $runyBotyResult = & $runyBotyApply -SourceDir $engineGameSource
+    if ($runyBotyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bot rune edit(s).' -f $runyBotyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

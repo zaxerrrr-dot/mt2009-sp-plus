@@ -355,7 +355,10 @@ namespace
 				ch->RemoveSpecifyItem(r.mats[m].vnum, (ITEM_COUNT)r.mats[m].count);
 		if (r.gold > 0)
 			PlayerBotChangeGold(ch, -r.gold);
-		const bool success = number(1, 100) <= r.percent;
+		// MT2009_PLUS_BOT_RUNES_V1: a Runa Wykuwania Pasow in the window's slot (category 3, playerbot_runes.h)
+		const int chance = std::min(100, r.percent + UsePlayerBotCraftRune(ch, 3, r.percent,
+				GetPlayerBotBeltRuneMaxGrade(r.level), "belt", r.reward));
+		const bool success = number(1, 100) <= chance;
 		LPITEM made = success ? ch->AutoGiveItem(r.reward, 1, -1, false) : NULL;
 		LogManager::instance().CubeLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(), r.reward,
 				made ? made->GetID() : 0, made ? 1 : 0, made ? 1 : 0);
@@ -364,7 +367,7 @@ namespace
 		else
 			++s_kPlayerBotBeltStats.craftFails;
 		sys_log(0, "PLAYERBOT_BELT: craft %s pid=%u name=%s lv=%d reward=%u chance=%d gold=%lld",
-				made ? "SUCCESS" : "FAILED", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), r.reward, r.percent,
+				made ? "SUCCESS" : "FAILED", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), r.reward, chance,
 				(long long)ch->GetGold());
 		ForgetPlayerBotBeltPlan(ch);
 		return true;

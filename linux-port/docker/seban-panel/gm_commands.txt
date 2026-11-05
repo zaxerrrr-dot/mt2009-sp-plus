@@ -75,6 +75,13 @@ albo gracz offline: wtedy zmiana czeka i wchodzi przy jego następnym wejściu d
 /champion [<nick>] reset - zeruje Poziom Czempiona, exp, punkty i statystyki Sung Ma
 /champion reload - wczytuje ponownie dane Sung Ma (sungma_table.txt, sungma_mob_exp.txt)
 
+Runy Wykuwania botów (/bot_runa, Wysoki GM; boty tego rdzenia)
+/bot_runa - stan: boty z runami, runy wg gwiazdek, użycia, ulepszenia u Yu-Hwana, wymiany, nagrody, flagi
+/bot_runa daj <bot|pid> <runa> [ile] - runy dla jednego bota
+/bot_runa wszystkim <runa> [ile] [lv_min] [lv_max] [imperium 1-3, 0 - wszystkie] [limit] - runy dla wielu botów
+<runa>: vnum 79605-79659, <rodzaj>:<1-5> (pasy bron zbroja pozostale akcesoria ksiegi zestbron zesthelm zestzbroja rekawice zwierzaki) albo auto:<1-5> - rodzaj, którego bot sam używa
+Flagi (/e): m2_bot_runes_off 1 - boty nie używają/ulepszają run; m2_bot_rune_rewards_on 1 - nagrody z wyzwań; m2_bot_rune_exchange_on 1 - wymiana botów u Yu-Hwana
+
 /setsk <ID-skilla> 59 - ustawiamy skill na P
 
 Sura BM - skille P
@@ -439,6 +446,7 @@ Niektóre polecenia są techniczne, deweloperskie albo zależą od włączonej f
 /book  — do_book
 /bot_despawn  — do_playerbot_despawn
 /bot_despawn_many  — do_playerbot_despawn_many
+/bot_runa  — do_bot_runa
 /bot_spawn  — do_playerbot_spawn
 /bot_spawn_many  — do_playerbot_spawn_many
 /botadmin_achievements  — do_botadmin_achievements

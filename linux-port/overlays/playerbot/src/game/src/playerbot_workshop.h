@@ -115,6 +115,9 @@ namespace
 			return false;
 		if (IsPlayerBotKeptTalisman(ch, item))
 			return true;
+		// MT2009_PLUS_BOT_RUNES_V1: a Runa Wykuwania - every one is kept (playerbot_runes.h)
+		if (IsPlayerBotRuneVnum(item->GetVnum()))
+			return true;
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's world set and jade, its Yohara elixirs and the exchange's materials
 		// (playerbot_yohara_shop.h).
 		if (IsPlayerBotYoharaShopKept(ch, item))
@@ -137,6 +140,8 @@ namespace
 		if (WantsPlayerBotSecondSetOffer(ch, offer))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a piece of the element set
 			return true;
 #endif
+		if (WantsPlayerBotRuneOffer(ch, offer))	// MT2009_PLUS_BOT_RUNES_V1: a 5* of a kind it crafts with
+			return true;
 		if (IsPlayerBotWorkshopOff())
 			return false;
 		return WantsPlayerBotBeltOffer(ch, offer) || WantsPlayerBotTalismanOffer(ch, offer) ||
@@ -151,6 +156,8 @@ namespace
 		if (WantsPlayerBotSecondSetOffer(ch, offer))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 			return CanPlayerBotPayForSecondSetOffer(ch, offer, price);
 #endif
+		if (WantsPlayerBotRuneOffer(ch, offer))	// MT2009_PLUS_BOT_RUNES_V1
+			return CanPlayerBotPayForRuneOffer(ch, offer, price);
 		if (WantsPlayerBotBeltOffer(ch, offer) && CanPlayerBotPayForBeltOffer(ch, offer, price))
 			return true;
 		if (WantsPlayerBotTalismanOffer(ch, offer) && CanPlayerBotPayForTalismanOffer(ch, offer, price))
@@ -199,6 +206,7 @@ namespace
 		NotePlayerBotTalismanBought(ch, vnum, price);
 		NotePlayerBotChiBought(ch, vnum, price);	// MT2009_PLUS_BOT_YOHARA_CHI_V1
 		NotePlayerBotGear2Bought(ch, vnum, price);	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
+		NotePlayerBotRuneBought(ch, vnum, price);	// MT2009_PLUS_BOT_RUNES_V1
 #ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 		NotePlayerBotSecondSetBought(ch, vnum, price);	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 #endif

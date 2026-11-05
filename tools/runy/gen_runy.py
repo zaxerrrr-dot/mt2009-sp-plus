@@ -17,6 +17,7 @@ MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (server-patches/gaya: "cube improve", locale/cub
   2*..5*     Yu-Hwan (20017) - two runes of the grade below + 2 / 4 / 6 / 10 Gaya + 200 000 / 400 000 / 600 000 /
              1 000 000 Yang, 40% (cube.runy.txt, his crafting window - quest mikstury_okno)
   5*         also Kolo Losu (Pasow, Broni, Zbroi, Akcesoriow, Rekawiczek - the wheels' sheet; kola-src/przedmioty.json)
+  NPC price  item_proto gold = shop_buy_price by grade (SELL below, V2) - the wiki gives none
   flags      1*-4*: sold to an NPC, no trade, no private shop, no drop, no storeroom, stack; 5*: trade, private shop,
              storeroom too, no drop (the wiki's table on every page; the one 1* Zbroi page that says "Tak" everywhere
              is the odd one out - its four siblings of 1* and its own 2*..4* say "Nie")
@@ -65,6 +66,17 @@ BONUS = (1, 2, 5, 10, 20)                       # % - "Zwieksza szanse na powodz
 UP_GAYA = {2: 2, 3: 4, 4: 6, 5: 10}             # KosztGaya of the 2*..5* pages
 UP_YANG = {2: 200000, 3: 400000, 4: 600000, 5: 1000000}
 UP_PCT = 40                                     # SzansaNaWytworzenie
+# MT2009_PLUS_RUNY_WYKUWANIA_V2 (the owner's decision, 5 November 2026: the runes sold to an NPC for 0 Yang - the wiki
+# gives no price - get a sensible price by grade, well below anything Yang could buy): item_proto gold = shop_buy_price; an NPC pays a fifth of it less the sale tax
+# (shop_manager.cpp: 3 / 5 / 8 / 10 / 20 %). The kinds whose 1* is 30 Gaya (Zest. Broni, Zest. Zbroi, Prz. d. Zw.) three
+# times the 1* and twice the 2*..5* - their runes cost about that much more to make. The scale is what one costs to make
+# with the Gaya at the bots' grinding rate (GAYA_YANG, playerbot_yohara_chi.h) and Yu-Hwan's 40 %: 250 000 / 1.9 mln /
+# 10.6 mln / 55 mln / 278 mln Yang; a sale gives about 2 % of it (at most SALE_MAX_PCT, checked below) and never more
+# than a tenth of the Yang alone that grade asks at Yu-Hwan - a rune made to be sold always loses (no Gaya to Yang).
+SELL = {1: 25000, 2: 125000, 3: 500000, 4: 2000000, 5: 10000000}     # shop_buy_price of a 10-Gaya kind
+SELL_30_GAYA = {1: 3, 2: 2, 3: 2, 4: 2, 5: 2}                         # x for the 30-Gaya kinds
+GAYA_YANG = 25000
+SALE_MAX_PCT = 3
 STACK = 200
 # (the wiki's name after "N* ", the noun of its description, the window's category (cube.cpp: 0 armour 1 weapon
 #  2 accessory 3 belt 5 other 7 weapon set 8 armour set 9 helmet set 10 pet 11 skill book 12 glove), 1* price in Gaya)
@@ -112,10 +124,27 @@ def runes():
     return out
 
 
+def sell_price(kind, grade):
+    return SELL[grade] * (SELL_30_GAYA[grade] if KINDS[kind][3] == 30 else 1)
+
+
+def check_prices():
+    """every grade sells for at most SALE_MAX_PCT % of what it costs to make and a tenth of its Yang alone"""
+    for k in range(len(KINDS)):
+        cost, yang = KINDS[k][3] * GAYA_YANG, 0
+        for g in range(1, GRADES + 1):
+            if g > 1:
+                cost = (2 * cost + UP_GAYA[g] * GAYA_YANG + UP_YANG[g]) * 100 // UP_PCT
+                yang = (2 * yang + UP_YANG[g]) * 100 // UP_PCT
+            sale = sell_price(k, g) // 5
+            assert sale * 100 <= cost * SALE_MAX_PCT, (KINDS[k][0], g, sale, cost)
+            assert g == 1 or sale * 10 <= yang, (KINDS[k][0], g, sale, yang)
+
+
 def proto(r):
     d = dict(vnum=r['vnum'], name=r['name'], locale_name=r['locale_name'], type=Y.TYPES['ITEM_QUEST'], subtype=0,
              stack=STACK, weight=0, size=1, antiflag=FREE if r['grade'] == GRADES else BOUND, flag=F['ITEM_STACKABLE'],
-             wearflag=0, gold=0, shop_buy_price=0, refined_vnum=0, refine_set=0, magic_pct=0, specular=0, socket_pct=0,
+             wearflag=0, gold=sell_price(r['kind'], r['grade']), shop_buy_price=sell_price(r['kind'], r['grade']), refined_vnum=0, refine_set=0, magic_pct=0, specular=0, socket_pct=0,
              addon_type=0, limittype0=0, limitvalue0=0, limittype1=0, limitvalue1=0, applytype0=0, applyvalue0=0,
              applytype1=0, applyvalue1=0, applytype2=0, applyvalue2=0, value0=0, value1=0, value2=0, value3=0, value4=0, value5=0)
     return d
@@ -131,7 +160,13 @@ def write_sql(rs):
          '-- the bonus and category are cube_improve.txt\'s (the core reads it), not the row\'s values.',
          'SET NAMES utf8mb4;',
          'INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in Y.COLS),
-         ',\n'.join(Y.sqlrow(proto(r)) for r in rs) + ';']
+         ',\n'.join(Y.sqlrow(proto(r)) for r in rs) + ';',
+         '-- MT2009_PLUS_RUNY_WYKUWANIA_V2: the NPC price on a world whose rows came with 0 (the first version): only a row',
+         '-- still at 0 / 0 - a price the operator set stays.']
+    for r in rs:
+        price = sell_price(r['kind'], r['grade'])
+        L.append('UPDATE world.item_proto SET gold = %d, shop_buy_price = %d WHERE vnum = %d AND gold = 0 AND '
+                 'shop_buy_price = 0;' % (price, price, r['vnum']))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 
@@ -248,6 +283,7 @@ def main():
     ap.add_argument('--gf', default='/opt/metin2/cache/gf/Gameforge_26.1.11/_client')
     a = ap.parse_args()
     rs = runes()
+    check_prices()
     write_sql(rs)
     n = write_cube(rs)
     write_improve(rs)

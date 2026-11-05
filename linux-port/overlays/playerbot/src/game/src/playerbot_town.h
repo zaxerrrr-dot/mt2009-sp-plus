@@ -4196,6 +4196,14 @@ namespace
 			return coupon;
 		}
 #endif
+		// MT2009_PLUS_BOT_RUNES_V1: a Runa Wykuwania at its value - what it costs to make (playerbot_runes.h).
+		if (IsPlayerBotRuneVnum(item->GetVnum()))
+		{
+			const long long unit = GetPlayerBotRuneValue(item->GetVnum());
+			const DWORD rune = (DWORD)std::min<long long>(0xFFFFFFFELL, std::max(1LL, unit * std::max<long long>(1, (long long)item->GetCount())));
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, rune, (DWORD)std::min<long long>(0xFFFFFFFELL, unit));
+			return rune;
+		}
 		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
 		// (playerbot_craft_exchange.h).
 		// MT2009_PLUS_OWNER_PRICES_V2: on the curve above.

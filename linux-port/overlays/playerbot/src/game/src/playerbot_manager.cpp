@@ -444,6 +444,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 helmets (Jaharr), the body armours 90-115 (Kawuco, Angmur) and the
 // cyanite step (Seon-Pyeong) - the recipes kept, hunted, bought and crafted
 #include "playerbot_yohara_gear2.h"
+// MT2009_PLUS_BOT_RUNES_V1: the Runy Wykuwania - kept, used in the crafting window's slot, upgraded at Yu-Hwan, valued; the
+// challenge reward, the bots' exchange (off) and /bot_runa - after the gear2 errand whose crafts and bots it reads
+#include "playerbot_runes.h"
 // MT2009_PLUS_ELEMENT_STONES_V1: every Yohara bot wears Kamien Ochrony Zywiolow (39120) and gets a new one when it ends -
 // after the cohort (playerbot_yohara_bots.h), the ItemShop (playerbot_itemshop.h) and the unique slots
 #include "playerbot_element_stones.h"
@@ -8273,6 +8276,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// and for its reason.
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotGear2(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_RUNES_V1: Yu-Hwan in the second village - the runes upgraded, the exchange (playerbot_runes.h).
+		// Beside the gear2 errand and for its reason.
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotRunes(ch, state, dwNow))
 			continue;
 		// MT2009_PLUS_RELIC_V1: the relic of a level-120 bot - the dailies, Chaegirab's relic, bonuses, activation,
 		// charging (playerbot_relikty.cpp; its own 5-minute clock, never an errand).
