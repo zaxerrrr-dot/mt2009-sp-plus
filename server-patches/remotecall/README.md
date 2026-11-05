@@ -70,10 +70,10 @@ GF sprzedaje wariant 15-dniowy. Ceny – propozycja (wiki nie podaje):
 
 | Linia | Przedmiot | Ilość | Cena |
 |---|---|---|---|
-| 50 | 72370 Dozorca Enasir (h) | 1 (7 dni) | 19 SM |
-| 51 | 72371 Handlarz Enasir (h) | 1 (7 dni) | 19 SM |
-| 52 | 72368 Dozorca Enasir | 4 (28 dni) | 59 SM |
-| 53 | 72369 Handlarz Enasir | 4 (28 dni) | 59 SM |
+| 50 | 72370 Dozorca Enasir (h) | 1 (7 dni) | 49 SM |
+| 51 | 72371 Handlarz Enasir (h) | 1 (7 dni) | 49 SM |
+| 52 | 72368 Dozorca Enasir | 4 (28 dni) | 149 SM |
+| 53 | 72369 Handlarz Enasir | 4 (28 dni) | 149 SM |
 
 Ceny zmienia się w panelu Seban → Edytor bazy danych → ItemShop.
 

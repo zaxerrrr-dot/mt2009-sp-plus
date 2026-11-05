@@ -163,6 +163,7 @@ BOOT_ONCE = {
     "tytuly_certs_40": {"adds": tuple(range(40, 49)), "note": "Certyfikaty tytułów (Tytuł Heroiczny, Szczęściarz, ...)"},
     # MT2009_PLUS_REMOTE_CALL_V1: Enasir's items 72368-72371 (remote_call.sql), tab Wyposazenie
     "remote_call_50": {"adds": (50, 51, 52, 53), "note": "Dozorca / Handlarz Enasir (h) i x4"},
+    "remote_call_50_prices": {"adds": (), "note": "Ceny Enasira: 7 dni 49 SM, 28 dni 149 SM"},
 }
 
 

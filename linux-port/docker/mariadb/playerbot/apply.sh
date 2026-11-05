@@ -5373,10 +5373,14 @@ fi
 # install (the Seban panel's BOOT_ONCE: remote_call_50); bots never buy them (gen_bot_catalogue.py NEVER).
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum BETWEEN 72368 AND 72371;" 2>/dev/null || echo x)" = "4" ]; then
 ishop_once remote_call_50 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
-(50, 72370, 1, 19, 'DRAGON_COIN', 0),
-(51, 72371, 1, 19, 'DRAGON_COIN', 0),
-(52, 72368, 4, 59, 'DRAGON_COIN', 0),
-(53, 72369, 4, 59, 'DRAGON_COIN', 0);" "could not add Enasir's items to the ItemShop (MT2009_PLUS_REMOTE_CALL_V1)"
+(50, 72370, 1, 49, 'DRAGON_COIN', 0),
+(51, 72371, 1, 49, 'DRAGON_COIN', 0),
+(52, 72368, 4, 149, 'DRAGON_COIN', 0),
+(53, 72369, 4, 149, 'DRAGON_COIN', 0);" "could not add Enasir's items to the ItemShop (MT2009_PLUS_REMOTE_CALL_V1)"
+# MT2009_PLUS_REMOTE_CALL_V1 (prices): the owner's prices (5 November 2026) - 7 days 49 SM, 28 days 149 SM; a world that got
+# the first proposal (19 / 59) once, a price changed in the panel since stays.
+ishop_once remote_call_50_prices "UPDATE common.itemshop_items SET price = 49 WHERE \`index\` IN (50, 51) AND vnum IN (72370, 72371) AND price = 19;
+UPDATE common.itemshop_items SET price = 149 WHERE \`index\` IN (52, 53) AND vnum IN (72368, 72369) AND price = 59;" "could not set Enasir's ItemShop prices (MT2009_PLUS_REMOTE_CALL_V1)"
 fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
