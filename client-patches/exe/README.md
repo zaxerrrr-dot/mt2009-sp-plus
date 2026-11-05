@@ -1207,4 +1207,11 @@ Zmiana języka działa od następnego startu klienta (exe czyta nazwy, opisy i s
 (exe-src20 i starsze) root oferuje tylko języki czytelne w 1250 (pl, en, de, ro, cz, hu – lista `works_on_1250_exe` w
 `locale/common/mt2009_languages.txt`). Sprawdzone `clang-cl /Zs` trzech plików na kopii źródeł exe-src20 z tą nakładką
 (5.11.2026, z wymuszonym `ENABLE_MT2009_LANG_CODEPAGE`). Kopia źródeł do budowy: `cache/yohara/exe-src21` (= exe-src20 na
-twardych linkach + te cztery pliki); NIE zbudowane.
+twardych linkach + te cztery pliki + `UserInterface/PythonSkill.cpp`, patrz niżej).
+
+`UserInterface/PythonSkill.cpp` (`MT2009_PLUS_PY_NONE_FIX_V1`): `skill.GetSkillConditionDescription` dla indeksu poza
+listą zwracało `Py_BuildValue("None")` – format `N` bierze `PyObject*`, którego nikt nie podał (śmieć ze stosu, potem
+zwolniony przez Pythona → uszkodzenie sterty); teraz `Py_BuildNone()`. Innych takich wywołań w źródłach nie ma.
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44) do `cache/yohara/exe-out21` (exe, map, pdb, zrzut smoke) dla łatki
+klienta testowego 3.0.16.
