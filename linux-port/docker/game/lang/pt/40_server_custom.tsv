@@ -1,2 +1,421 @@
-# MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
-# Polish<TAB>pt (by hand; UTF-8). tools/i18n/extract_server_texts.py --check pt lists what is missing.
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>pt (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, renovação %d s: %s
+  %u %s - jeszcze %u min	  %u %s - ainda %u min
+  %u %s - na stałe	  %u %s - permanente
+ (bot, także odpoczynek)	 (bot, também descanso)
+ i premie do dropu	 e bónus de drop
+ Nagroda trafila do ekwipunku.	 A recompensa foi para o inventário.
+%s (offline): zapis do player.quest się nie udał.	%s (offline): a gravação em player.quest falhou.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s vai ter com quem o chamou e não aceita agora um duelo.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s vai com o raide e não aceita agora um duelo.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s é companheiro de alguém e não participa em duelos.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s é companheiro de alguém e não se juntará ao teu grupo.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s está noutro núcleo (canal %u), e a fila player.web_admin_queue não aceitou o pedido.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s está no canal %u - reset (%s) pedido; será executado lá dentro de alguns segundos.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s está a escavar minério e não aceita agora um duelo.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s está a pescar e não aceita agora um duelo.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s não tem arma na mão e não aceita o duelo.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s não aceita duelos abaixo do nível %d.
+%s nie walczy w strefie bezpiecznej.	%s não luta numa zona segura.
+%s odrzuca zaproszenie do znajomych.	%s recusa o convite de amizade.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s abriu o Tesouro de Balathor - a tua recompensa foi para o inventário.
+%s posiada teraz żywioł: %s!	%s possui agora o elemento: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s aceita o convite para a Guild %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma já tem o valor máximo (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 peças - efeito de conjunto ativo
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s não tem limite diário (o descanso é só para bots em jogo).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, termina em %ld min, recompensas ainda %ld min, valor %d, flag %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: o efeito já tem o nível máximo (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: esta habilidade de Guild já tem o nível máximo.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: este jogador está na tua lista de bloqueados.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: este jogador não aceita convites teus.
+%s: tytułów %u, założony %u	%s: títulos %u, criado %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - repõe o limite de expedições de hoje da personagem.
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] O Buffi está disponível a partir do nível %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Este lugar do Buffi aceita apenas: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Esta habilidade é treinada pelo Livro de Habilidades: %s (xamã).
+[Gildia] %s	[Guild] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Guild] Os bots só recolhem materiais de construção: Tronco, Pedra de Carvão, Tábua.
+[Gildia] Brak miejsca w ekwipunku.	[Guild] Sem espaço no inventário.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Guild] O edifício não cabe no terreno da Guild. Aproxima-o do centro do terreno.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Guild] Quantidade: de 1 a %d unidades.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Guild] Já está em curso uma missão de itens - cancela-a para encomendar uma nova.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Guild] Já está em curso uma vaquinha - espera que termine ou cancela-a.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Guild] Missão cancelada - os itens do banco voltam aos bots que os trouxeram.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Guild] Não há nenhuma missão de itens em curso.
+[Gildia] Nie ma trwajacej zrzutki.	[Guild] Não há nenhuma vaquinha em curso.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Guild] Não há expedição para cancelar (na torre já não se pode cancelar).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Guild] As obrigações da Guild estão temporariamente indisponíveis.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Guild] As obrigações da Guild só as encomenda o líder da Guild.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Guild] Estás onde o edifício deve ficar. Afasta-te um pouco ou desloca o edifício.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Guild] Onde o edifício deve ficar está %s. Espera que se afaste ou desloca o edifício.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Guild] Esta habilidade só pode ser usada durante uma guerra de Guilds ou na Cripta de Balathor.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Guild] O banco da Guild não tem este item.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Guild] Aqui já está outro edifício. Desloca o novo edifício ou roda-o.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Guild] Levantado do banco da Guild: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Guild] A expedição à Torre dos Demónios já está organizada.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Guild] Expedição à Torre dos Demónios cancelada.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Guild] O Yang do cofre da Guild só pode ser gasto na Guild: compra de terreno e edifícios. Não pode ser levantado.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Guild] Do cofre da Guild foram pagos %lld Yang, do teu inventário %lld Yang.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Guild] Vaquinha terminada. O yang depositado fica no cofre da Guild.
+[Gildia] Zrzutka: od %s do %s yang.	[Guild] Vaquinha: de %s a %s yang.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Trégua] Um bot foi atacado - trégua com os bots quebrada.
+[Towarzysz] %s	[Companheiro] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Guerra] A arena desta guerra ainda se está a preparar - tenta daqui a alguns segundos.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Guerra] A arena de guerras está noutro núcleo - vai ao mapa do teu reino M1 e clica outra vez.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Guerra] Os bots só lutam em guerras de Guild no canal 1 - muda de canal e clica outra vez.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Guerra] A Guild %s está agora a lutar noutra guerra.
+[Wojna] Jestes juz na polu wojny.	[Guerra] Já estás no campo de guerra.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Guerra] Recompensa por guerra ganha: %d x Caixinha de Brilho da Lua (as tuas mortes: %d).
+[Wojna] Nie nalezysz do gildii.	[Guerra] Não pertences a nenhuma Guild.
+[Wojna] Nie znam areny tej wojny.	[Guerra] Não conheço a arena desta guerra.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Guerra] A transportar-te para o acampamento da tua Guild na arena de guerras.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Guerra] Agora não te podes mudar - tenta daqui a pouco.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Guerra] Esta é uma guerra em campo aberto: lutam onde se encontrarem.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Guerra] A tua Guild não está agora em guerra.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Guerra] A guerra da Guild %s já foi declarada - os bots responderão no chat da Guild.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Guerra] As guerras com Guilds de bots estão desativadas no painel do servidor.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Guerra] Foi declarada guerra à Guild de bots %s. Luta-se com os bots na arena de guerras (canal 1). A resposta chegará dentro de alguns segundos no chat da Guild.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Guerra] Com a Guild %s já decorre uma guerra ou o seu encerramento.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Apanhar o Rei] 25 cartas reais deram um novo Deck do Rei (tens %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Apanhar o Rei] Espera-te uma recompensa de um jogo interrompido - faz espaço no inventário e inicia sessão novamente.
+[Zlap Krola] Event teraz nie trwa.	[Apanhar o Rei] O evento não está a decorrer.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Apanhar o Rei] Já tens o máximo de decks do rei (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Apanhar o Rei] Não tens Decks do Rei suficientes ou yang (%d decks e %d yang por jogo).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Apanhar o Rei] Isto só pode ser usado durante o evento.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Apanhar o Rei] Faz espaço no inventário para receber a recompensa.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Redução automática: de 1 a %d%% a cada 1-%d horas.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor derrotado! Deixou o seu tesouro - recolham a recompensa. Saída da cripta dentro de %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: não há fase para saltar (só na Cripta, durante um raide)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor fugiu, mas deixou o seu tesouro - recolham a recompensa. Saída da cripta dentro de %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor venceu - expedição falhada, sem recompensa. Saída da cripta dentro de %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: missão repetível concluída (%u.ª vez)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: missão concluída!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: missões recarregadas (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: a recompensa final desta temporada já foi recolhida.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: primeiro conclui todas as missões da temporada.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: todas as missões da temporada concluídas - recolhe a recompensa final!
+Bonus zestawu kostiumow (%s): %ld czesci.	Bónus do conjunto de disfarces (%s): %ld peças.
+Boss Swiata jest chwilowo niedostepny.	O Boss do Mundo está temporariamente indisponível.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Boss do Mundo: %d.º lugar, nível de saque %s (%lld de dano, +%d pts de classificação). Recolhe a recompensa na janela do Boss do Mundo antes de aparecer o próximo boss.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss do Mundo: sem espaço no inventário (são precisas %d casas livres) - liberta espaço e clica novamente.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss do Mundo: parte das recompensas recolhida; para o resto não há espaço no inventário (são precisas %d casas livres) - liberta espaço e clica novamente.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Boss do Mundo: recompensa da temporada %u pelo %d.º lugar da tua Guild.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Boss do Mundo: recompensa da temporada %u pelo %d.º lugar no ranking de personagens.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Boss do Mundo: a recompensa já foi recolhida ou perdeu-se.
+Boss Swiata: nie masz nagrody do odebrania.	Boss do Mundo: não tens recompensa para recolher.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Boss do Mundo: recolhida a recompensa pelo %d.º lugar (nível de saque %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Boss do Mundo: bónus de missão - valor de ataque +%d%% durante %d h.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Boss do Mundo: causaste %lld de dano - pouco para a recompensa (são precisos %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Boss do Mundo: fecha as outras janelas (troca, loja, armazém) antes de recolher a recompensa.
+Boty opuszczaja Wieze Demonow.	Os bots saem da Torre dos Demónios.
+Brak miejsca w kategorii: %s.	Sem espaço na categoria: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	As armas para Jovens Heróis não podem ser melhoradas nem alteradas.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: comando desconhecido ou argumentos errados (%s) - nada foi alterado
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: personagem noutro núcleo (canal %d) - comando enviado
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: personagem offline - alteração (%s) guardada, entrará na próxima entrada dela no jogo
+champion: nie ma postaci %s	champion: não existe a personagem %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: comando desconhecido ou argumentos errados (%s) - nada foi alterado
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	O tempo acabou - Balathor venceu. Saída da cripta dentro de %s.
+Czas przejecia bota minal - postac wraca do bota.	O tempo de controlo do bot acabou - a personagem volta a ser bot.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	O antigo sistema de pets foi substituído pelo Sistema de Animais de Estimação - a janela do animal abre com a tecla U.
+Do ewolucji tej szaty potrzeba: %s x%d.	Para a evolução desta roupa são precisos: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Para as luvas só servem Pedras Demoníacas.
+Dom Aukcyjny jest dostepny tylko w M1.	A Casa de Leilões só está disponível em M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	A Casa de Leilões está desativada neste mundo.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Perfeito! A Pedra Demoníaca Poder deu o valor duplo.
+Drop wiki: %u przedmiotów, %u potworów.	Drop da wiki: %u itens, %u monstros.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Crianças Flores: o evento e o tempo para troca já terminaram.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Crianças Flores: a recompensa está temporariamente indisponível - comunica à administração.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Crianças Flores: fecha as outras janelas (troca, loja, armazém) antes de trocar.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Crianças Flores: obténs Sementes de Flor (tens %d).
+dziś nie było wypraw	hoje não houve expedições
+Efekt zestawu nadany: %s.	Efeito de conjunto atribuído: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	O inventário está cheio - a parte comprada da pilha está aos teus pés.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Eliminados! O vosso tempo na masmorra termina se ninguém reviver no prazo de um minuto.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir ficará contigo durante 3 minutos. Desaparece se te afastares ou mudares de mapa.
+Enasir odszedł.	Enasir foi-se embora.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir cobrou pelo serviço: %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - tempo restante %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Armazém %s, Loja %s, invocado: %s, aqui é permitido: %s.
+Enasir: usługi zabrane.	Enasir: serviços retirados.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	O evento Crianças Flores terminou - esta flor já não pode ser usada.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Evento de Pesca - Puzzle não está a decorrer - as caixas abres durante o próximo evento.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	A evolução só é possível no nível %d com 100%% de experiência.
+Ewolucja udana: %s, poziom %d.	Evolução bem-sucedida: %s, nível %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Gaya é agora uma moeda: %d Gaya foram para o teu contador de Gaya (ao lado do Yang no inventário).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Gaya não se coloca na janela - o ferreiro tira-a sozinho do inventário.
+Gildia nauczyła się: %s (poziom %d/%d).	A Guild aprendeu: %s (nível %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	A Guild não tem pontos de habilidade distribuídos.
+Gildia odzyskała punkty umiejętności: %d.	A Guild recuperou pontos de habilidade: %d.
+GM zresetował Twój limit dziennych dungeonów.	O GM repôs o teu limite diário de masmorras.
+Gracz %s nie ma tytułu %s.	O jogador %s não tem o título %s.
+Gracza %s nie ma na tym kanale (albo to bot).	O jogador %s não está neste canal (ou é um bot).
+Gratulacje - %d. poziom!	Parabéns - nível %d!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Um dos Ovos do Dragão invoca um frio gélido! Concentrem os ataques nele para o travar.
+Kamien Demonow osadzony.	Pedra Demoníaca encaixada.
+Kamien Demonow pasuje tylko do rekawic.	A Pedra Demoníaca só serve para luvas.
+Kamien Demonow pekl przy osadzaniu.	A Pedra Demoníaca rachou ao encaixar.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	As Pedras da Morte guardam o sétimo andar. Quebrem as quatro!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	A Pedra do Ritual só funciona em itens acima do nível 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	cartas: conta %u, nível %d, alvos %u/%u/%u, mortos %d, monstros %d, conjuntos equipados %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Cada tentativa de ler este livro custa %u PE de Campeão - tens poucos.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	A Maldição de Sung Mahi bloqueia as tuas habilidades.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Clientes com lista de eventos neste núcleo: %u, líder: %s.
+Kod zrealizowany: %s.	Código resgatado: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Roda da Fortuna (antiga): recebes %ux %s.
+Kolo Fortuny: %s	Roda da Fortuna: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Roda da Fortuna: sem espaço - %u recompensas à espera. Faz espaço e abre a roda novamente.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Roda da Fortuna: faz espaço no inventário - a recompensa espera.
+Kolo Losu: %s	Roda do Destino: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Roda do Destino: dados recarregados (%u rodas, %u itens), roda ativa %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	A cor da habilidade equestre pode ser alterada quando a conheces.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	A cor da habilidade pode ser alterada a partir do nível P desta habilidade.
+kostium (strój)	disfarce (roupa)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	O disfarce de arma não combina com a arma deste lado - foi retirado para o inventário.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	O disfarce de arma não combina com a arma deste lado, e não há espaço no inventário para o retirar.
+kostium broni szamana	disfarce de arma de xamã
+kostium fryzury	disfarce de penteado
+Krwawisz! (%d sek.)	Estás a sangrar! (%d seg.)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	A Cripta de Balathor não pode ser aberta neste núcleo.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	O Livro da Precisão lês a partir do Nível de Campeão 1.
+Księgi się zmieniły - ułóż je od nowa.	Os livros mudaram - arruma-os de novo.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Masmorras: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (só descanso do bot); sem masmorra ou all - todas.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	O Localizador de NPC está ativo para todas as personagens - este item já não é necessário.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	A Pequena Bênção não funcionou - 6.º e 7.º bónus sem alterações.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Já tens o máximo de Gaya que se pode ter (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Já tens desbloqueadas todas as 4 páginas do inventário.
+Masz już ten tytuł.	Já tens este título.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Tens um novo ponto de estatísticas de Sung Ma (livres: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Tens contigo mais Yang do que o limite permite (100 mil milhões). Não podes trocar.
+Masz za mało Gaya (potrzeba %d).	Tens poucos Gaya (são precisos %d).
+Masz za mało materiału (potrzeba %d).	Tens pouco material (são precisos %d).
+Masz za mało Yang (potrzeba %d).	Tens pouco Yang (são precisos %d).
+Masz za mało Yang.	Tens pouco Yang.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Os locais de Arezzo estão desativados neste servidor - voltas à cidade.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Missão "Derrota o Boss do Mundo" concluída - bónus de +%d%% de valor de ataque durante %d h à espera na janela do Boss do Mundo.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Só podes usar uma Pedra dos Elementos de cada vez (de Proteção ou de Poder). Primeiro tira a que usas.
+Możesz łowić ryby od 30 poziomu.	Podes pescar a partir do nível 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Tens de estar parado para mudar a página do inventário.
+na stałe	permanente
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Nesta habilidade não foram gastos pontos de habilidade - o nível do Manual e dos livros não pode ser revertido. Toda a resposta e impulso são removidos pelo Pergaminho do Treino.
+Na tym kanale magazyn jest niedostępny.	Neste canal o armazém não está disponível.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Na montada usa a Reversão de Polimorfia da Montada.
+Nadano tytuł %s graczowi %s.	Foi atribuído o título %s ao jogador %s.
+Nadano tytuł %s.	Foi atribuído o título %s.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	%d personagens da Guild receberam a recompensa da Cripta.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Primeiro aprende o impulso - usa o Manual: Impulso.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Primeiro desbloqueia a página adicional do inventário (item "Página do Inventário II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Primeiro desbloqueia a Alquimia do Dragão - a pedra vai para a janela dela.
+Najpierw wybierz drogę umiejętności.	Primeiro escolhe o teu caminho de habilidades.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Primeiro escolhe a resposta - usa o Manual: Resposta.
+Najpierw wyjmij przedmiot ze Switchbota.	Primeiro retira o item do Switchbot.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Primeiro coloca o item que vai receber a nova aparência.
+Najpierw włóż szatę aury.	Primeiro coloca a roupa da aura.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Primeiro fecha as outras janelas (troca, loja, armazém).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Primeiro fecha as outras janelas (troca, loja, armazém, faixas).
+Najpierw zamknij okno szaty aury.	Primeiro fecha a janela da roupa da aura.
+Najwyżej 1000 dni.	No máximo 1000 dias.
+Nie ma postaci %s.	Não existe a personagem %s.
+Nie ma takiego tytułu (/tytul lista).	Esse título não existe (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Não tens no inventário arma, armadura nem elmo de nível 75 ou superior melhorados pelo menos até +7 (sem o efeito de conjunto deste ferreiro). Coloca o item na janela junto com os fragmentos e o Design do Conjunto.
+Nie masz wolnych punktow Sung Ma.	Não tens pontos de Sung Ma livres.
+Nie mozesz przywolac kamienia Metin w lochu.	Não podes invocar uma pedra Metin na masmorra.
+Nie mozesz przywolac zyly w lochu.	Não podes invocar um filão na masmorra.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Não podes vender - excederias o limite de 100 mil milhões de Yang contigo.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Não é possível mover um item equipado para o Switchbot.
+Nie możesz się teleportować z lochu.	Não te podes teletransportar da masmorra.
+Nie możesz teraz zmienić strony ekwipunku.	Agora não podes mudar a página do inventário.
+Nie możesz tutaj użyć tego przedmiotu.	Não podes usar este item aqui.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	Não podes equipar o item %s da página do inventário %s - página sem alterações.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Não é possível destruir este item agora - fecha as outras janelas e tenta novamente.
+Nie nadano tytułu %s (gracz ma go już na stałe).	O título %s não foi atribuído (o jogador já o tem para sempre).
+Nie nadano tytułu %s.	O título %s não foi atribuído.
+Nie należysz do gildii.	Não pertences a nenhuma Guild.
+Nie przeniesiono bota %s: %s.	O bot %s não foi movido: %s.
+nie trwa	não está a decorrer
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Não foi possível atribuir o efeito de conjunto. O item ficou intacto.
+Nie udało się otworzyć Krypty Balathora.	Não foi possível abrir a Cripta de Balathor.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Falhou. Os materiais e o Yang perderam-se, o item ficou na janela.
+Nie znasz tej umiejetnosci.	Não conheces esta habilidade.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Masmorra desconhecida "%s". Masmorras: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby ou all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Nenhum dos bots tem o nível 75 - a Torre acaba no sexto andar.
+Od 1 do %d wymian naraz.	De 1 a %d trocas de cada vez.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	Do grau G1 a P a resposta e o impulso são desenvolvidos pela Pedra da Alma+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Página do inventário %s desbloqueada (páginas: %d/4). Alternas entre elas com os separadores na janela do inventário ou com a habilidade "Mudar página do inventário" (habilidades auxiliares).
+Ogniste Strzały załadowane do Hwachy: %u.	Flechas de Fogo carregadas na Hwacha: %u.
+Osiagnieto limit zakupu tego przedmiotu.	Foi atingido o limite de compra deste item.
+Otrzymujesz %d Gaya.	Recebes %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	Recebes uma carta Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Recebes um conjunto de cartas Okey (tens %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Abriste o Tesouro de Balathor - a recompensa foi para o teu inventário.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Os parâmetros só podem ser transferidos de pulseira, colar, brincos ou escudo.
+Parametry przeniesione na szatę aury.	Parâmetros transferidos para a roupa da aura.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Parâmetros da roupa da aura removidos - podes transferir novos.
+Poczekaj 10 sekund po walce.	Espera 10 segundos depois do combate.
+Poczekaj 3 sekundy przed kolejną zmianą.	Espera 3 segundos antes da próxima alteração.
+Poczekaj chwile przed kolejna zmiana opisu.	Espera um momento antes da próxima alteração da descrição.
+Poczekaj chwile przed kolejna zmiana stanu.	Espera um momento antes da próxima alteração do estado.
+Poczekaj chwile przed kolejnym zaproszeniem.	Espera um momento antes do próximo convite.
+Podaj gracza.	Indica o jogador.
+Podejdź do Seon-Hae.	Aproxima-te de Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	Apareceu o Ovo do Dragão de Fogo.
+Pokonajcie wszystkie pobliskie potwory.	Derrotem todos os monstros próximos.
+Polimorfia działa tylko na wierzchowcach.	A Polimorfia só funciona em montadas.
+Polimorfia wierzchowca zakończona.	A Polimorfia da montada terminou.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Falhou! O efeito %s não ficou ativo - a flor murchou.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Falhou! Não foi possível subir o efeito %s para o nível %d - a flor murchou.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Falhou! Não foi possível trocar o efeito para %s - a flor murchou, o efeito anterior fica.
+Potrzeba %lld ksiąg (w oknie: %lld).	São precisos %lld livros (na janela: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	O Poderoso Cavalo de Guerra só come Ginseng Verm. (Premium).
+Poziom Czempiona: %d.	Nível de Campeão: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Coloca na janela uma arma, armadura ou elmo de nível 75 ou superior, melhorado pelo menos até +7.
+Precyzja: poziom %s, bonus Precyzji +%d.	Precisão: nível %s, bónus de Precisão +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Presente diário: %lld Yang e %d poções (G) cada. O próximo dentro de 24 horas.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Arrasta a cobertura para a faixa no inventário (faixa retirada).
+Przeci±gnij zwój na broń w ekwipunku.	Arrasta o pergaminho para a arma no inventário.
+Przeciągnij Anulację na przedmiot z transmutacją.	Arrasta a Reversão para um item com transmutação.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Arrasta o Certificado da Aura+ para a roupa da aura.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	O item %s não pode ser retirado agora - página do inventário sem alterações.
+Przeniesiono bota %s do Ciebie.	O bot %s foi movido para ti.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Movidos para o inventário adicional: %d (juntos a pilhas: %d).
+Przenosić można raz na 3 sekundy.	Só podes mover uma vez a cada 3 segundos.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	No próximo ataque será necessário mais dano.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	O botão de invocação de Enasir requer uma nova versão do cliente - atualiza o jogo.
+Przywolana zyla zniknie po 15 minutach.	O filão invocado desaparece ao fim de 15 minutos.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	A pedra Metin invocada desaparece ao fim de 15 minutos se não a destruíres.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	A pergunta expirou - tenta retirar o item outra vez.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Ranking: a temporada %u termina agora (resumo dentro de cerca de 2 minutos).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Ranking: temporada %u, %s, detentores de títulos: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Luvas: o próximo tempo de recarga desta habilidade é 5 seg. mais curto.
+Rekrutacja potworow jest wylaczona.	O recrutamento de monstros está desativado.
+Relikt debug: odnowienia wyzerowane.	Relíquia debug: recargas repostas a zero.
+Relikt debug: okienko %s puste.	Relíquia debug: a ranhura %s está vazia.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relíquia debug: ranhura %s, %s (%u), flags %ld, tempo %ld / %ld s, ativa: %s, tique: %s, combate: %d s
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relíquia debug: PV %d / %d, PE %d / %d, montada: %s
+Relikt Duszy: nowy bonus - %s (%d).	Relíquia da Alma: novo bónus - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	A resposta e o impulso a partir do grau M1 não podem ser revertidos.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Desenvolvimento bem-sucedido. Agora é possível a evolução da roupa (Roupa da aura: evolução).
+Rozwój udany: poziom %d.	Desenvolvimento bem-sucedido: nível %d.
+Ryba się zerwała z haczyka.	O peixe soltou-se do anzol.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae não tem livros para o teu caminho.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, tempo %d min, item na mão %d, resultado %d, hipótese %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: tempo posto a zero.
+Silniejszy efekt tego rodzaju już działa.	Um efeito mais forte deste tipo já está ativo.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	A loja está fechada - abre-a novamente em vez de prolongar.
+Sklep ma juz maksymalny czas (%d dni).	A loja já tem o tempo máximo (%d dias).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Loja prolongada em %u h (restam cerca de %u h %u min).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Concentrem-se no Ovo do Dragão Congelado antes que desapareça (%d s).
+Sortowac mozna raz na 3 sekundy.	Só podes ordenar uma vez a cada 3 segundos.
+Statystyki Sung Ma ma tylko Czempion.	Só um Campeão tem as estatísticas de Sung Ma.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	A página do inventário %s ainda está bloqueada - desbloqueia-a o próximo item "Página do Inventário II".
+Strona ekwipunku: %s.	Página do inventário: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	A página do inventário só pode ser mudada uma vez a cada 5 segundos.
+Sukces! Efekt %s jest aktywny (poziom 1).	Sucesso! O efeito %s está ativo (nível 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Sucesso! O efeito %s subiu para o nível %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot parado. Falta o item Encantar Disfarce.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot parado. Faltam Feitiços para Itens.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: não foi possível alterar os bónus deste disfarce.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: este item não pode ser encantado (sem bónus).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Hipótese aumentada em %d%% (gasto 1 item).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	A faixa tem um novo aspeto (bónus e absorção sem alterações).
+Ta Anulacja działa tylko na wierzchowcach.	Esta Reversão só funciona em montadas.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Este livro é para Campeões: lês a partir do Nível de Campeão 1.
+Ta szarfa ma juz te nakladke.	Esta faixa já tem esta cobertura.
+Ta szata aury ma już najwyższy poziom.	Esta roupa da aura já tem o nível máximo.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Esta roupa está no topo do seu tipo - agora a evolução (Roupa da aura: evolução).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Esta roupa já tem parâmetros transferidos. Limpa-a com o Certificado da Aura+.
+Ta szata nie ma przeniesionych parametrów.	Esta roupa não tem parâmetros transferidos.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Esta Coluna só pode ser ferida por um Ninja ou Xamã.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Este item só pode ser usado na Torre Infernal de Sung Mahi.
+Tego przedmiotu nie mozna dodac do Switchbota.	Este item não pode ser adicionado ao Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Este item não pode ser usado agora (equipado, em troca ou bloqueado).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Este item usa-se na janela do animal (tecla U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Esta pilha não se pode dividir a este preço - compra a pilha toda.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	O teletransporte para a entrada custa %lld Yang - não tens tanto contigo.
+Teleport pod wejście: zapłacono %lld Yang.	Teletransporte para a entrada: pagos %lld Yang.
+Ten certyfikat nie nadaje żadnego tytułu.	Este certificado não atribui nenhum título.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Este impulso não é para a tua classe e caminho de habilidades.
+Ten efekt już działa i potrwa dłużej niż nowy.	Este efeito já está ativo e durará mais do que o novo.
+Ten element nie pasuje w tym miejscu.	Este elemento não encaixa aqui.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Este jogador não comporta tanto Yang (limite de 100 mil milhões contigo).
+Ten loch jest dla poziomów %d - %d.	Esta masmorra é para os níveis %d - %d.
+Ten Metin moze zranic tylko Szaman.	Este Metin só pode ser ferido por um Xamã.
+Ten opis zawiera niedozwolone slowo.	Esta descrição contém uma palavra não permitida.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Este monstro vive num mapa onde se entra com passe - o teletransporte por cartão não está disponível aí.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Este item só está disponível com o módulo Arezzo ativo.
+Ten przedmiot jest juz w Switchbocie.	Este item já está no Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	Este item já tem este efeito de conjunto.
+Ten przedmiot nie ma transmutacji.	Este item não tem transmutação.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Este item não pertence a nenhuma categoria do inventário adicional.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Este item não encaixa nesta categoria do inventário adicional.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Este item não aumenta a hipótese de criação.
+Ten wygląd nie pasuje do tego przedmiotu.	Esta aparência não combina com este item.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Este pergaminho só o vendo a membros da Guild com pelo menos o nível %d.
+To nie jest bilet do tej przemiany.	Isto não é um bilhete para esta transformação.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	Esta é a terra de Sung Ma: sem Nível de Campeão não feres os monstros daqui.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Transmutação removida - o item volta a ter o seu aspeto.
+Transmutacja zakończona.	Transmutação concluída.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Só estão sujeitas a transmutação armas, armaduras, disfarces e aparências de arma.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Aqui só podes colocar a Runa Gelo ou Fogo da Aura.
+Tu można włożyć tylko szatę aury.	Aqui só podes colocar a roupa da aura.
+Twoja gildia ma już otwartą Kryptę Balathora.	A tua Guild já tem aberta a Cripta de Balathor.
+Twoja gildia nie ma otwartej Krypty Balathora.	A tua Guild não tem aberta a Cripta de Balathor.
+Twoja Precyzja ma juz najwyzszy poziom (P).	A tua Precisão já tem o nível máximo (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	O teu Nível de Campeão é demasiado baixo para usar este item (necessário: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	O teu Nível de Campeão é demasiado baixo para equipar este item (necessário: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Os títulos requerem uma nova versão do cliente - atualiza o jogo.
+Tę księgę może przeczytać tylko lider gildii.	Este livro só pode ser lido pelo líder da Guild.
+Udało się odeprzeć lodowe zimno.	Conseguiste repelir o frio gélido.
+Użycie: /kod MT2009-PLUS-XXXX	Uso: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	No inventário não há itens para o inventário adicional.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Numa troca só podes dar no máximo 10 mil milhões de Yang.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	Na Torre Infernal de Sung Mahi só funcionam poções da torre (W) da Vendedora.
+W tych rekawicach nie ma wolnego miejsca na kamien.	Nestas luvas não há espaço livre para uma pedra.
+W tym stosie nie ma juz tylu sztuk.	Nesta pilha já não há tantas unidades.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	O valor da loja e o teu Yang excederiam o limite de 100 mil milhões de Yang.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	A aparência deste item não combina com a tua classe.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	A aparência deste item não combina com o teu género.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Expedição interrompida - o Balathor Oculto fugiu, mas deixou o seu tesouro. Saída da cripta dentro de %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Expedição interrompida. Saída da cripta dentro de %s.
+Wyspa Skarbow: %s (flaga %s).	Ilha do Tesouro: %s (flag %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	O Puzzle de Pesca requer uma nova versão do cliente - atualiza o jogo.
+Włóż bilet w okno transmutacji u Teowadena.	Coloca o bilhete na janela de transmutação de Theowahdan.
+Włóż oba przedmioty.	Coloca os dois itens.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: evento %s, temporada %u (fechada %d), jogos neste núcleo %u, tabuleiros %d, troncos %d, recompensa à espera %d
+Yut Nori: event sie nie odbywa.	Yut Nori: o evento não está a decorrer.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: o evento está mesmo a começar, tenta daqui a pouco.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: os troncos de bétula só podem ser adicionados durante o evento.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: precisas de %d x Tabuleiro de Yut Nori e %d yang.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: liberta espaço no inventário para receber a recompensa.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	Dentro de 10 segundos aparece o Ovo do Dragão Congelado - então ataquem-no todos juntos.
+Za mało Yang (potrzeba %lld).	Yang insuficiente (são precisos %lld).
+Zabrano tytuł %s graczowi %s.	Foi retirado o título %s ao jogador %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	O encantamento do elemento falhou! A arma ficou sem alterações.
+Zaczarowanie żywiołu powiodło się! %s.	O encantamento do elemento teve sucesso! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Fecha as outras janelas (troca, loja, armazém).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Fecha as outras janelas (troca, loja, armazém, cubo) e tenta outra vez.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Fecha as outras janelas para ordenar o inventário adicional.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Fecha as outras janelas para juntar pilhas no inventário adicional.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Fecha as outras janelas para mover itens para o inventário adicional.
+Zamknij inne okna, aby użyć tego przedmiotu.	Fecha as outras janelas para usar este item.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Fecha as outras janelas para mudar a página do inventário.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Só podes convidar para o grupo um jogador no mesmo mapa e no mesmo canal.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Pára para esconder ou mostrar o disfarce.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Tira o item e leva-o para o inventário.
+Zdejmij szatę i weź ją do ekwipunku.	Tira a roupa e leva-a para o inventário.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Conjunto de disfarces incompleto - o bónus do conjunto desapareceu.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Conjunto de disfarces: +%ld PV e +%ld de valor de ataque.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	A terra de Sung Ma exige: Força %d, Vitalidade %d, Resistência %d, Inteligência %d - se faltar, a tua força enfraquece para metade.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Já conheces outra resposta - só se pode ter uma. Este livro não a desenvolve.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Destruam a Maciça Parede de Gelo que protege[ENTER]os Ovos do Dragão Congelados!
+Zniszczono: %s.	Destruído: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	O nível de encantamento do elemento foi reduzido: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	O nível de encantamento do elemento foi reduzido: a arma já não tem elemento (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Restam no inventário: %d - sem espaço na categoria: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Limite diário reposto (%s) da personagem %s (offline): %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Limite diário reposto (%s) da personagem %s%s: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Faz espaço no inventário (são precisas %d casas livres).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Faz espaço no inventário - o item do armazém de páginas do inventário espera por uma casa livre.
+Zwój albo broń nie leży już w ekwipunku.	O pergaminho ou a arma já não está no inventário.
+Łączyć stosy można raz na 3 sekundy.	Só podes juntar pilhas uma vez a cada 3 segundos.

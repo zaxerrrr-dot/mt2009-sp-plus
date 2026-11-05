@@ -30,7 +30,7 @@ files exist and pass the check, merge them first (step 0) – then export again.
 ## Step 0 (integrator, optional) – merge the scratchpad results that finished
 
 ```sh
-cd /opt/metin2/git/wt-y-tr-quest/tools/i18n/handoff
+cd /opt/metin2/git/wt-yohara/tools/i18n/handoff
 T=/tmp/claude-0/-root/9f475014-d1bc-4cf4-a3e1-da3c380fc52c/scratchpad/tw
 for g in A B CTL; do for x in fr:cp1252 pt:cp1252; do l=${x%%:*}; c=${x#*:}
   [ -s $T/w2_$g.$l ] && python3 check_tr2.py w2_$g $T/w2_$g.$l $c && python3 merge.py $l $T/w2_$g.$l
@@ -41,8 +41,8 @@ done; done
 ## Step 1 – export (already run once; re-run after any merge)
 
 ```sh
-python3 /opt/metin2/git/wt-y-tr-quest/tools/i18n/handoff/export_staging.py            # fr pt cz hu gr ae
-python3 /opt/metin2/git/wt-y-tr-quest/tools/i18n/handoff/export_staging.py fr         # one language
+python3 /opt/metin2/git/wt-yohara/tools/i18n/handoff/export_staging.py            # fr pt cz hu gr ae
+python3 /opt/metin2/git/wt-yohara/tools/i18n/handoff/export_staging.py fr         # one language
 ```
 Writes `/opt/metin2/cache/i18n-staging/quest/<lang>/001.tsv …` (~300 lines each):
 `id<TAB>Polish source<TAB>English reference<TAB>` (4th column empty = the target). Re-running deletes and rewrites the
@@ -76,7 +76,7 @@ Quick self-check a translator can run on its file (prints nothing bad when OK):
 ## Step 3 – import (integrator, Opus)
 
 ```sh
-cd /opt/metin2/git/wt-y-tr-quest
+cd /opt/metin2/git/wt-yohara
 python3 tools/i18n/handoff/import_staging.py fr --dry-run      # report only
 python3 tools/i18n/handoff/import_staging.py fr                # validate + merge all staging/fr/*.tsv
 python3 tools/i18n/extract_server_texts.py --check fr          # what is still missing

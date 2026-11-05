@@ -1,2 +1,374 @@
-# MT2009_PLUS_LANGUAGE_V1 - pieces our quests glue to values (tools/i18n/data/quest_fragments_pl.tsv) - replaced inside a line
-# Polish<TAB>pt (by hand; UTF-8). tools/i18n/extract_server_texts.py --check pt lists what is missing.
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>pt (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+ (Czyściec Ognia)	 (Purgatório de Fogo)
+ (dzisiejsze wejścia)	 (entradas de hoje)
+ (Kamień Driad)	 (Pedra das Dríades)
+ (Książka Przebudzenia)	 (Tomo do Despertar)
+ (Lodowa Kraina)	 (Terra de Gelo)
+ (min:s). Możesz na nie wrócić portalem w hali.	 (min:s). Podes voltar a elas pelo portal no salão.
+ (następne)	 (seguintes)
+ (odpoczynek: 	 (descanso: 
+ (podział łupu: 	 (divisão do saque: 
+ (poz. 	 (nív. 
+ (poziom / Czempion)	 (nível / Campeão)
+ (poziom 1).	 (nível 1).
+ (poziom)	 (nível)
+ (słaby: 	 (fraco: 
+ (Zamarznięte Klucze)	 (Chaves Congeladas)
+ (Zegarek Kieszonkowy)	 (Relógio de Bolso)
+ (żywioł 	 (elemento 
+ - mniej czasu na Morkhota.	 - menos tempo para Morkhot.
+ - nowe	 - novos
+ - poziom 	 - nível 
+ - ukończone	 - concluídos
+ drogocenne Gaya.	 Gaya preciosos.
+ dziennie):	 por dia):
+ Efekt Zestawu. Wymagany jest	 Efeito de Conjunto. É necessário
+ i 1. Poziomu Czempiona.	 e Nível de Campeão 1.
+ jest odblokowany na stałe.	 está desbloqueado para sempre.
+ juz idzie do ciebie.	 já vai ter contigo.
+ Kamyków i 	 Pedras Reluzentes e 
+ Kamyków, 	 Pedras Reluzentes, 
+ Kamyków, Kamienia Duszy (+0 do +3)	 Pedras Reluzentes, Pedra da Alma (+0 a +3)
+ ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	 tem a Chave de Atlântida. Entreguem-na à Coluna de Conchas certa!
+ Metiny Drzewnych Stworzeń (PB).	 Metins dos Seres-Árvore (DT).
+ Metinów Drzewnych Stworzeń (SZC).	 Metins dos Seres-Árvore (FT).
+ min. Po czasie grupa wróci do Zaklętego Lasu.	 min. Passado esse tempo o grupo volta à Floresta Encantada.
+ min. Po czasie grupa wróci na Płaskowyż Iluzji.	 min. Passado esse tempo o grupo volta ao Planalto da Ilusão.
+ min. Zapamiętajcie żywioły pierwszych czterech grup.	 min. Memorizem os elementos dos primeiros quatro grupos.
+ minut, bez czekania między wyprawami.	 minutos, sem espera entre expedições.
+ odłamków II tej samej części, Projekt	 fragmentos II da mesma peça, Design
+ osób	 pessoas
+ osób, 30 minut;	 pessoas, 30 minutos;
+ osób, poziom 	 pessoas, nível 
+ osób.	 pessoas.
+ pająków, a potem użyjcie Pieczęci Biblioteki (	 aranhas, e depois usem o Selo da Biblioteca (
+ PD.	 PE.
+ potworów głębin.	 monstros das profundezas.
+ powstaje na nowo - Beran-Setaou znów jest nietykalny!	 forma-se de novo - Beran-Setaou volta a ser intocável!
+ Ros En-Tai (PB).	 Orvalhos En-Tai (DT).
+ Ros En-Tai (SZC).	 Orvalhos En-Tai (FT).
+ s wracacie do Upiornego Strażnika po nagrodę.	 s voltam ao Guarda Fantasmagórico para a recompensa.
+ sekund zostaniesz przeniesiony na Doyyumhwaji.	 segundos serás transportado para Doyyumhwaji.
+ sekund zostaniesz teleportowany do Doliny Orków.	 segundos serás teletransportado para o Vale dos Orcs.
+ sekund zostaniesz teleportowany do Groty Wygnańców.	 segundos serás teletransportado para a Gruta dos Exilados.
+ sekund zostaniesz teleportowany do miasta.	 segundos serás teletransportado para a cidade.
+ sekund zostaniesz teleportowany do Świątyni Hwang.	 segundos serás teletransportado para o Templo de Hwang.
+ sekund zostaniesz teleportowany do Świątyni Ochao.	 segundos serás teletransportado para o Templo de Ochao.
+ sekund zostaniesz teleportowany na Górę Sohan.	 segundos serás teletransportado para a Montanha Sohan.
+ sekund zostaniesz teleportowany na Ognistą Ziemię.	 segundos serás teletransportado para a Terra do Fogo.
+ sekundy zostaniesz przeniesiony na Doyyumhwaji.	 segundos serás transportado para Doyyumhwaji.
+ sekundy zostaniesz teleportowany do Doliny Orków.	 segundos serás teletransportado para o Vale dos Orcs.
+ sekundy zostaniesz teleportowany do Groty Wygnańców.	 segundos serás teletransportado para a Gruta dos Exilados.
+ sekundy zostaniesz teleportowany do miasta.	 segundos serás teletransportado para a cidade.
+ sekundy zostaniesz teleportowany do Świątyni Hwang.	 segundos serás teletransportado para o Templo de Hwang.
+ sekundy zostaniesz teleportowany do Świątyni Ochao.	 segundos serás teletransportado para o Templo de Ochao.
+ sekundy zostaniesz teleportowany na Górę Sohan.	 segundos serás teletransportado para a Montanha Sohan.
+ sekundy zostaniesz teleportowany na Ognistą Ziemię.	 segundos serás teletransportado para a Terra do Fogo.
+ Serca Atlantydy.	 Corações de Atlântida.
+ skorpionów, a potem użyjcie Pieczęci Ruin (	 escorpiões, e depois usem o Selo das Ruínas (
+ strażników ruin.	 guardiões das ruínas.
+ sztuki).	 unidades).
+ szykuje potężny atak w linii - uciekaj w bok!	 prepara um poderoso ataque em linha - foge para o lado!
+ tys. Yang	 mil Yang
+ ukończonych słabych. 30 minut na Alastora.	 fracos concluídos. 30 minutos para Alastor.
+ w oknie = hełm Dragona, bez nich - hełm Smoków.	 na janela = elmo Dragontino, sem eles - elmo do Dragão.
+ wejść dziennie (dziś: 	 entradas por dia (hoje: 
+ Wojowników En-Tai (PB) i wróć do mnie.	 Guerreiros En-Tai (DT) e volta a falar comigo.
+ Wojowników En-Tai (SZC) i wróć do mnie.	 Guerreiros En-Tai (FT) e volta a falar comigo.
+ wypraw dziennie (dziś: 	 expedições por dia (hoje: 
+ Yang - nie masz tyle przy sobie.	 Yang - não tens tanto contigo.
+ Yang - za mało przy sobie:	 Yang - tens pouco contigo:
+ Yang oraz	 Yang e
+ Yang oszlifuję 	 Yang polirei 
+ Yang za bilet.	 Yang pelo bilhete.
+ Yang. Dzisiejsza wyprawa 	 Yang. A expedição de hoje 
+ Yang. Najwyżej 	 Yang. No máximo 
+ Zamarznięte Klucze.	 Chaves Congeladas.
+ zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	 obtém o Selo da Biblioteca. Usa-o para invocar a vaga seguinte.
+ zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	 obtém o Selo da Selva. Usa-o para invocar a vaga seguinte.
+ zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	 obtém o Selo das Ruínas. Usa-o para invocar a vaga seguinte.
+ zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	 obtém o Selo da Colina. Usa-o para invocar a vaga seguinte.
+ znalazł odpowiedni klucz!	 encontrou a chave certa!
+ zniszczony. Pozostało kamieni: 	 destruída. Pedras restantes: 
+ zostało).	 restam).
+ złamana. Nadchodzi następna fala!	 quebrado. Vem aí a vaga seguinte!
+ śmiałków - ma 	 aventureiros - tem 
+! Pokonaj ich, by zdobyć piętro.	! Derrota-os para conquistar o andar.
+! Schody prowadzą na następne piętro.	! As escadas levam ao andar seguinte.
+% PŻ). Antidotum SungMa ją zdejmuje.	% PV). O Antídoto de Sung Ma remove-a.
+% więcej życia.	% mais vida.
+%. Kontynuować?	%. Continuar?
+%. Możesz też przeciągnąć Kamyki na mnie.	%. Também podes arrastar as Pedras Reluzentes para cima de mim.
+(stojących obok). Teraz: 	(ao lado). Agora: 
+) chronią statuy. Zniszczcie je.	) protegem as estátuas. Destruam-nas.
+), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	), Beran-Setaou é intocável. Destruam as pedras!
+), etap 1: pokonaj wszystkie potwory w limicie czasu!	), fase 1: derrota todos os monstros dentro do limite de tempo!
+). Wróć jutro.	). Volta amanhã.
+). Zgłoś to administratorowi serwera.	). Comunica isto ao administrador do servidor.
+, 1 000 000 Yang. Szansa 30% (+5) do 70% (+9),	, 1 000 000 Yang. Hipótese 30% (+5) a 70% (+9),
+, 200 Gaya i 20 000 000 Yang.	, 200 Gaya e 20 000 000 Yang.
+, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	, fase 3: derrota vagas de monstros até aparecerem os chefes!
+, grupa od 	, grupo a partir de 
+, tylko w grupie. Każdy musi	, só em grupo. Cada um tem de
+, tylko w grupie. Po ukończeniu lub	, só em grupo. Depois de concluir ou
+. Bez czekania między wyprawami.	. Sem espera entre expedições.
+. Broń zniknie za 15 dni (także założona).	. A arma desaparece em 15 dias (mesmo equipada).
+. Doświadczenie z tamtych	. A experiência desses
+. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	.º andar não foi possível guardar agora - receberás na próxima vez que concluíres este andar.
+. piętro ukończone w 	.º andar concluído em 
+. piętro w tym sezonie czeka w Magazynie ItemShop.	.º andar nesta temporada espera no Armazém ItemShop.
+. piętro w tym sezonie.	.º andar nesta temporada.
+. piętro zdobyte w 	.º andar conquistado em 
+. piętro.	.º andar.
+. piętrze zaczyna się za 10 sekund.	.º andar começa dentro de 10 segundos.
+. Sam albo z drużyną.	. Sozinho ou em grupo.
+. Wracasz do Portu Nowego Kontynentu.	. Regressas ao Porto do Novo Continente.
+. Wracasz do portu.	. Regressas ao porto.
+. Wstęp: 	. Entrada: 
+. Łódź zabiera cię z powrotem na Przylądek.	. O barco leva-te de volta ao Cabo.
+/12) - omijajcie białe kręgi!	/12) - evitem os círculos brancos!
+/3) - zniszczcie Białe Jaja Smoka!	/3) - destruam os Ovos do Dragão Branco!
+/4. Ulepszyłbym ci	/4. Melhorava-te
+1. miejsce: 	1.º lugar: 
+1. miejsce: 10x 	1.º lugar: 10x 
+1. Poziom Czempiona, każdy oddaje 	Nível de Campeão 1, cada um entrega 
+100 000 000 Yang i 500 Gaya. Szansa: 	100 000 000 Yang e 500 Gaya. Hipótese: 
+2. miejsce: 	2.º lugar: 
+2. miejsce: 5x 	2.º lugar: 5x 
+3. miejsce: 	3.º lugar: 
+3. miejsce: 3x 	3.º lugar: 3x 
+4. - 10. miejsce: 	4.º - 10.º lugar: 
+4.-10. miejsce: 1x 	4.º-10.º lugar: 1x 
+: przywódca budzi Alastora, dotykając Białego Jaja Smoka. 30 minut od wejścia.	: o líder desperta Alastor tocando num Ovo do Dragão Branco. 30 minutos desde a entrada.
+<< Piętra 	<< Andares 
+Alastor pokonany! Za 	Alastor derrotado! Dentro de 
+Alastor wpada w szał (	Alastor entra em fúria (
+Biblioteka Wiedzy (	Biblioteca do Saber (
+Biblioteka Wiedzy: 	Biblioteca do Saber: 
+Biblioteka Wiedzy: Baronówna wyczuwa 	Biblioteca do Saber: a Baronesa pressente 
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x	Biblioteca do Saber: Recebes: Cofre da Biblioteca x
+Biblioteka Wiedzy: Pieczęć 	Biblioteca do Saber: Selo 
+Biblioteka Wiedzy: Pokonane pająki: 	Biblioteca do Saber: Aranhas derrotadas: 
+Biblioteka Wiedzy: Pozostałe królowe: 	Biblioteca do Saber: Rainhas restantes: 
+Biblioteka Wiedzy: Pozostałe Metiny: 	Biblioteca do Saber: Metins restantes: 
+Biblioteka Wiedzy: Pozostało 	Biblioteca do Saber: Restam 
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: 	Biblioteca do Saber: desta vez sem cofre (divisão do saque: 
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (	Biblioteca do Saber: Os alvos da fase desaparecidos reaparecem (
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa 	Bilhete para Atlântida gasto. A expedição de hoje 
+Bron 65 > 80: 2x 	Arma 65 > 80: 2x 
+Bron 80 > 87: 3x 	Arma 80 > 87: 3x 
+Bron 87 > Cyjanit: 3x 	Arma 87 > Kyanite: 3x 
+Cena: 	Preço: 
+Do Erebu wchodzi najwyżej 	Em Erebus entram no máximo 
+Do Erebu wejdzie tylko grupa co najmniej 	Em Erebus só entra um grupo de pelo menos 
+Do Głębi wchodzi drużyna od 	Nas Profundezas entra um grupo a partir de 
+dopiero od poziomu 	só a partir do nível 
+Doświadczenie: 	Experiência: 
+Drużyna od 	Grupo a partir de 
+Dzisiejsze wyprawy do ruin już wykorzystane (	As expedições de hoje às ruínas já foram usadas (
+Dzisiejsze wyprawy do Schronienia już wykorzystane (	As expedições de hoje ao Refúgio já foram usadas (
+Dzisiejsze wyprawy do tego lochu już wykorzystane (	As expedições de hoje a esta masmorra já foram usadas (
+Dzisiejsze wyprawy na statek już wykorzystane (	As expedições de hoje ao navio já foram usadas (
+Dziś już dostałeś paszę. Wróć za 	Hoje já recebeste forragem. Volta dentro de 
+Erebu: zostało 	Erebus: restam 
+Gotowe - oto 	Pronto - aqui está 
+Gotowe! Teraz otwórz pieczęć numer 	Pronto! Agora abre o selo número 
+Grota Wygnańców 2 (PB): zostało 	Gruta dos Exilados 2 (DT): restam 
+Grota Wygnańców 2 (SZC): zostało 	Gruta dos Exilados 2 (FT): restam 
+Głowa Węża obrócona (	Cabeça da Serpente girada (
+Głębie: brakuje ci Zamarzniętych Kluczy (	Profundezas: faltam-te Chaves Congeladas (
+Głębie: pozostało 	Profundezas: restam 
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom 	As profundezas esmagar-te-ão. Volta quando alcançares o nível 
+hełm 80. poziomu ulepszony na +5 do +9 (	elmo de nível 80 melhorado de +5 a +9 (
+Hełm Dragona (obrona): 5x 	Elmo Dragontino (defesa): 5x 
+Hełm Smoków (atak): 5x 	Elmo do Dragão (ataque): 5x 
+ich: 	deles: 
+Jesteś za słaby. Wróć, gdy osiągniesz poziom 	És demasiado fraco. Volta quando alcançares o nível 
+Kamienie smoka: 	Pedras do dragão: 
+Kamień Duszy 	Pedra da Alma 
+Katakumby Diabła: Wyjdziesz z lochu za 	Catacumbas do Diabo: Sais da masmorra dentro de 
+Klątwa Sunga Mahi: stopień 	Maldição de Sung Mahi: grau 
+Kolejne zadanie (	Próxima tarefa (
+Kolumna Węży otwarta (	Coluna das Serpentes aberta (
+Koszt: 	Custo: 
+Kowal Świątyni Węży czeka. Uwolnieni kowale: 	O Ferreiro do Templo das Serpentes espera. Ferreiros libertados: 
+Królestwo Żywiołów jest dostępne od poziomu 	O Reino dos Elementos está disponível a partir do nível 
+Królowa Meley: 	Rainha Meley: 
+Królowa Meley: ETAP 	Rainha Meley: FASE 
+Królowa Meley: ETAP 4 - 	Rainha Meley: FASE 4 - 
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (	Rainha Meley: o Anel Fogo do Dragão arde na estátua (
+Królowa Meley: Pozostało 	Rainha Meley: Restam 
+Królowa Meley: Smocze Jaja (	Rainha Meley: Ovos de Dragão (
+Królowa Meley: Statua zmienia kolor (	Rainha Meley: A estátua muda de cor (
+Księga nie jest jeszcze gotowa. Wróć za 	O livro ainda não está pronto. Volta dentro de 
+Leże Smoka: 	Covil do Dragão: 
+Leże Smoka: dopóki stoi choć jeden kamień smoka (	Covil do Dragão: enquanto restar uma pedra do dragão (
+Leże Smoka: Pozostało 	Covil do Dragão: Restam 
+Masz 	Tens 
+Masz za mało Gaya (potrzeba 	Tens poucos Gaya (são precisos 
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba 	Tens poucas Expansões da Loja de Gaya (são precisas 
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z 	O Metin caiu. Beran-Setaou (DT) ainda retira poder de 
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z 	O Metin caiu. Beran-Setaou (FT) ainda retira poder de 
+Misja ukończona. Nagroda: 	Missão concluída. Recompensa: 
+Misję możesz powtórzyć za 	Podes repetir a missão dentro de 
+Mogę wytworzyć dla ciebie 	Posso criar para ti 
+Mój wynik: 	O meu resultado: 
+Nadciąga grupa żywiołu 	Aproxima-se um grupo do elemento 
+Najpierw ukończ 	Primeiro conclui 
+Najwyżej 	No máximo 
+Nemere: Pieczęć złamana. Pozostało: 	Nemere: Selo quebrado. Restam: 
+Nemere: Pozostało 	Nemere: Restam 
+Nemere: Szel pokonany (	Nemere: Szel derrotado (
+Nemere: Zaginione cele etapu pojawiają się ponownie (	Nemere: Os alvos da fase desaparecidos reaparecem (
+Nie masz przy sobie 	Não tens contigo 
+Nie udało się wydać broni (kod 	Não foi possível entregar a arma (código 
+Od poziomu 	A partir do nível 
+Oddaj uszy: 	Entrega as orelhas: 
+Opłata za wejście: 	Taxa de entrada: 
+Otrzymujesz skrzynie z przerwanej gry w Okey: 	Recebes os baús de um jogo de Okey interrompido: 
+Otrzymujesz: 	Recebes: 
+otrzymujesz: 	recebes: 
+Pasza dla konia: 	Forragem para o cavalo: 
+Pieczęć zdjęta (	Selo removido (
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za 	O anel precisa de descansar depois do último teletransporte. O próximo estará pronto dentro de 
+Pierścień odzyska moc za 	O anel recupera o poder dentro de 
+Piętra 	Andares 
+Piętro 	Andar 
+Pojawiają się bossowie piętra: 	Aparecem os chefes do andar: 
+Pokonajcie 	Derrotem 
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (	Derrotem 40 criaturas da selva, e depois usem o Selo da Selva (
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (	Derrotem 60 macacos, e depois usem o Selo da Colina (
+Pokonane potwory: 	Monstros derrotados: 
+Pokonane: 	Derrotados: 
+Pokonani: 	Derrotados: 
+Port Nowego Kontynentu jest dostępny od poziomu 	O Porto do Novo Continente está disponível a partir do nível 
+Portowy Sklep Gaya - kupiono: 	Loja de Gaya do Porto - comprado: 
+Portowy Sklep Gaya: slot 	Loja de Gaya do Porto: posição 
+Potrzebujesz przedmiotu: 	Precisas do item: 
+Potrzebuję 	Preciso de 
+Poziom konia: 	Nível do cavalo: 
+Pozostalo podrozy: 	Viagens restantes: 
+Pozostałe stele: 	Estelas restantes: 
+Pozostałe teleporty: 	Teletransportes restantes: 
+Pozostało: 	Restam: 
+Przy Strazniku zostaja: 	Ficam com o Guarda: 
+Pył Wężowy: +1 minuta. Zostało 	Poeira da Serpente: +1 minuto. Restam 
+Płaskowyż Iluzji przyjmuje wojowników od poziomu 	O Planalto da Ilusão aceita guerreiros a partir do nível 
+Razador: Pozostało 	Razador: Restam 
+Razador: Stela zgaszona. Pozostało: 	Razador: Estela apagada. Restam: 
+Razador: Zaginione cele etapu pojawiają się ponownie (	Razador: Os alvos da fase desaparecidos reaparecem (
+Rosy En-Tai (PB): 	Orvalhos En-Tai (DT): 
+Rosy En-Tai (SZC): 	Orvalhos En-Tai (FT): 
+Ruiny Atlantydy (	Ruínas de Atlântida (
+Ruiny Atlantydy: 	Ruínas de Atlântida: 
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x	Ruínas de Atlântida: Recebes: Cofre de Atlântida x
+Ruiny Atlantydy: Pokonane potwory: 	Ruínas de Atlântida: Monstros derrotados: 
+Ruiny Atlantydy: Pozostało 	Ruínas de Atlântida: Restam 
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: 	Ruínas de Atlântida: Guardião derrotado. Colunas restantes: 
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: 	Ruínas de Atlântida: Era só uma ilusão! Pontos de penalização: 
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: 	Ruínas de Atlântida: desta vez sem cofre (divisão do saque: 
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (	Ruínas de Atlântida: Os alvos da fase desaparecidos reaparecem (
+Ruiny Atlantydy: Zostało Serc Atlantydy: 	Ruínas de Atlântida: Corações de Atlântida restantes: 
+Ruiny Skorpiona (	Ruínas do Escorpião (
+Ruiny Skorpiona: 	Ruínas do Escorpião: 
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x	Ruínas do Escorpião: Recebes: Cofre do Escorpião x
+Ruiny Skorpiona: Pieczęć Ruin 	Ruínas do Escorpião: Selo das Ruínas 
+Ruiny Skorpiona: Pokonane potwory: 	Ruínas do Escorpião: Monstros derrotados: 
+Ruiny Skorpiona: Pozostało 	Ruínas do Escorpião: Restam 
+Ruiny Skorpiona: Pozostało: 	Ruínas do Escorpião: Restam: 
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: 	Ruínas do Escorpião: desta vez sem cofre (divisão do saque: 
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (	Ruínas do Escorpião: Os alvos da fase desaparecidos reaparecem (
+Schody prowadzą na 	As escadas levam ao 
+Schronienie Meley: 	Refúgio de Meley: 
+Silny: po 	Forte: cada 
+Skraca czas oczekiwania o 	Reduz o tempo de espera em 
+Sloty odblokowuje się po kolei: najpierw slot 	As posições desbloqueiam-se por ordem: primeiro a posição 
+Starożytna Dżungla (	Selva Antiga (
+Starożytna Dżungla: 	Selva Antiga: 
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x	Selva Antiga: Recebes: Cofre da Selva x
+Starożytna Dżungla: Pieczęć Dżungli 	Selva Antiga: Selo da Selva 
+Starożytna Dżungla: Pokonane potwory: 	Selva Antiga: Monstros derrotados: 
+Starożytna Dżungla: Pozostało 	Selva Antiga: Restam 
+Starożytna Dżungla: Pozostało: 	Selva Antiga: Restam: 
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: 	Selva Antiga: desta vez sem cofre (divisão do saque: 
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (	Selva Antiga: Os alvos da fase desaparecidos reaparecem (
+Stały bonus: 	Bónus permanente: 
+Straznik Katakumb nie wpuszcza cie z grupa: 	O Guarda das Catacumbas não te deixa entrar com o grupo: 
+Strażnica Nemere (PB): zostało 	Fortaleza de Nemere (DT): restam 
+Strażnica Nemere (SZC): zostało 	Fortaleza de Nemere (FT): restam 
+Szansa powodzenia: 	Hipótese de sucesso: 
+Szansa: 	Hipótese: 
+Twierdza Czerwonego Smoka (PB): zostało 	Fortaleza do Dragão Vermelho (DT): restam 
+Twierdza Czerwonego Smoka (SZC): zostało 	Fortaleza do Dragão Vermelho (FT): restam 
+Twoj wynik: 	O teu resultado: 
+Twój koń nauczył się: 	O teu cavalo aprendeu: 
+Twój koń osiągnął 	O teu cavalo atingiu 
+Ty możesz wejść za 	Tu podes entrar dentro de 
+Udało się! Otrzymujesz 	Conseguiste! Recebes 
+Ukończone w tym sezonie: 	Concluídos nesta temporada: 
+umiejętność 	habilidade 
+Uwięziony Kowal jest wolny (	O Ferreiro Aprisionado está livre (
+Uwolnieni kowale: 	Ferreiros libertados: 
+Wejście kosztuje 	A entrada custa 
+Wejście od poziomu 	Entrada a partir do nível 
+Wejście: 	Entrada: 
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie 	Entrada: Bilhete para Atlântida - um por cada pessoa (comigo 
+Wieża Demonów: Wyjdziesz z lochu za 	Torre dos Demónios: Sais da masmorra dentro de 
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (	Torre dos Demónios: Os Metins do andar desaparecidos reaparecem (
+Wieża Sung Mahi - 	Torre de Sung Mahi - 
+Wieża Sung Mahi: 	Torre de Sung Mahi: 
+Wieża Sung Mahi: nagroda za 	Torre de Sung Mahi: recompensa por 
+Wieża Sung Mahi: nagrody za 	Torre de Sung Mahi: recompensas por 
+Wieża Sung Mahi: walka na 	Torre de Sung Mahi: combate no 
+Wioska I (	Aldeia I (
+Wioska II (	Aldeia II (
+Wróć, gdy osiągniesz poziom 	Volta quando alcançares o nível 
+Wspinaczka: 1 Sztandar Czaszki (masz: 	Subida: 1 Estandarte da Caveira (tens: 
+Wstęp kosztuje 	A entrada custa 
+Wstęp: 	Entrada: 
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (	Já usaste as expedições de hoje ao Refúgio de Meley (
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (	Já usaste as expedições de hoje a esta masmorra (
+Wykorzystałeś już dzisiejsze wyprawy na statek (	Já usaste as expedições de hoje ao navio (
+Wymagany poziom: 	Nível necessário: 
+Wzgórze Wukonga (	Colina de Wukong (
+Wzgórze Wukonga: 	Colina de Wukong: 
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x	Colina de Wukong: Recebes: Cofre de Wukong x
+Wzgórze Wukonga: Pieczęć Wzgórza 	Colina de Wukong: Selo da Colina 
+Wzgórze Wukonga: Pokonane potwory: 	Colina de Wukong: Monstros derrotados: 
+Wzgórze Wukonga: Pozostało 	Colina de Wukong: Restam 
+Wzgórze Wukonga: Pozostało: 	Colina de Wukong: Restam: 
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: 	Colina de Wukong: desta vez sem cofre (divisão do saque: 
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (	Colina de Wukong: Os alvos da fase desaparecidos reaparecem (
+x Materiały Rzemieślnicze 	x Materiais de Artesanato 
+x Medal Konny	x Medalha de Equitação
+Z tej zbroi zrobie: 	Desta armadura farei: 
+Z łusek i rogów Balathora zrobię 	De escamas e cornos de Balathor farei 
+Za 	Por 
+Za chwilę zostaniecie przeniesieni na 	Dentro de momentos serão transportados para 
+Za grę, w której zdobędziesz 	Por um jogo em que obtenhas 
+Za słabi na głębiny (poziom 	Demasiado fracos para as profundezas (nível 
+Za słabi, by wejść (poziom 	Demasiado fracos para entrar (nível 
+Za słabi, by wejść na pokład (poziom 	Demasiado fracos para subir a bordo (nível 
+Zabij 	Mata 
+Zaginione Metiny pojawiają się ponownie (	Os Metins desaparecidos reaparecem (
+Zaklęty Las (PB): zostało 	Floresta Encantada (DT): restam 
+Zaklęty Las (SZC): zostało 	Floresta Encantada (FT): restam 
+Zapomnieć 	Esquecer 
+Zbierz więcej Kamyków - potrzebuję 	Junta mais Pedras Reluzentes - preciso de 
+Zbroja i buty > 80: 3x 	Armadura e botas > 80: 3x 
+Zdobyte: 	Obtidos: 
+Zdobądź 	Obtém 
+Zebrana pasza: 	Forragem recolhida: 
+Zestawu tej części	do conjunto desta peça
+Ziemie Yohary są dostępne od poziomu 	As terras de Yohara estão disponíveis a partir do nível 
+Zniszcz 	Destrói 
+Zniszczcie 	Destruam 
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (	Destruam a Concha das Profundezas e entreguem a Chave de Atlântida à Coluna de Conchas certa (
+Zniszczone Metiny: 	Metins destruídos: 
+Zniszczone: 	Destruídos: 
+Złota Księga Konia: 	Livro do Cavalo Dourado: 
+Śmiertelny Chłód Alastora skuwa ziemię (	O Frio Mortal de Alastor congela o chão (
+Świetnie! Oto twoja pasza: 	Ótimo! Aqui está a tua forragem: 
+Świątynia Węży: walka się zaczęła! Czas: 	Templo das Serpentes: o combate começou! Tempo: 
+Świątynia Węży: zostało 	Templo das Serpentes: restam 
+żywioł 	elemento 

@@ -1,0 +1,332 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>cz (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  %sx Materiały Rzemieślnicze 	  %sx Řemeslné materiály 
+  %sx Medal Konny	  %sx Koňská medaile
+%s (Czyściec Ognia)	%s (Očistec ohně)
+%s (dzisiejsze wejścia)	%s (dnešní vstupy)
+%s (Kamień Driad)	%s (Kámen Dryád)
+%s (Książka Przebudzenia)	%s (Svitek oživení)
+%s (Lodowa Kraina)	%s (Ledová země)
+%s (odpoczynek: %s min)	%s (odpočinek: %s min)
+%s (poziom / Czempion)	%s (úroveň / Šampion)
+%s (poziom)	%s (úroveň)
+%s (słaby: %s/%s)	%s (lehký: %s/%s)
+%s (Zamarznięte Klucze)	%s (Zmrzlé klíče)
+%s (Zegarek Kieszonkowy)	%s (Kapesní hodinky)
+%s (żywioł %s)	%s (živel %s)
+%s drogocenne Gaya.	%s vzácné Gaya.
+%s Efekt Zestawu. Wymagany jest	%s Efekt sady. Vyžadován je
+%s juz idzie do ciebie.	%s už jde k tobě.
+%s kk Yang	%s mil. Yangů
+%s odłamków II tej samej części, Projekt	%s střepů II téhož dílu, Design
+%s razy.	%s krát.
+%s szykuje potężny atak w linii - uciekaj w bok!	%s chystá mocný útok v přímce - uhni stranou!
+%s tys. Yang	%s tis. Yangů
+%s w oknie = hełm Dragona, bez nich - hełm Smoków.	%s v okně = Dragonova helma, bez nich - Dračí helma.
+%s znalazł odpowiedni klucz!	%s našel správný klíč!
+%s, %s albo %s)	%s, %s nebo %s)
+%s. piętro zdobyte w %s! Schody prowadzą na następne piętro.	%s. patro dobyto za %s! Schody vedou do dalšího patra.
+(stojących obok). Teraz: %s.	(stojících vedle). Nyní: %s.
+1. %s - poziom %s	1. %s - úroveň %s
+1. miejsce: %s x 10	1. místo: %s x 10
+1. miejsce: 10x %s	1. místo: 10x %s
+1. Poziom Czempiona, każdy oddaje %s Zamarznięte Klucze.	1. úroveň Šampiona, každý odevzdá %s Zmrzlých klíčů.
+100 000 000 Yang i 500 Gaya. Szansa: %s%%.	100 000 000 Yangů a 500 Gaya. Šance: %s%%.
+10x %s, 1 000 000 Yang. Szansa 30%% (+5) do 70%% (+9),	10x %s, 1 000 000 Yangů. Šance 30%% (+5) až 70%% (+9),
+2. %s - poziom %s	2. %s - úroveň %s
+2. miejsce: %s x 5	2. místo: %s x 5
+2. miejsce: 5x %s	2. místo: 5x %s
+3. miejsce: %s x 3	3. místo: %s x 3
+3. miejsce: 3x %s	3. místo: 3x %s
+4. - 10. miejsce: %s x 1	4. - 10. místo: %s x 1
+4.-10. miejsce: 1x %s	4.-10. místo: 1x %s
+40x %s, 200 Gaya i 20 000 000 Yang.	40x %s, 200 Gaya a 20 000 000 Yangů.
+<< Piętra %s - %s	<< Patra %s - %s
+Alastor pokonany! Za %s s wracacie do Upiornego Strażnika po nagrodę.	Alastor poražen! Za %s s se vracíte k Přízračnému strážci pro odměnu.
+Alastor wpada w szał (%s/3) - zniszczcie Białe Jaja Smoka!	Alastor zuří (%s/3) - zničte Vejce bílého draka!
+Biblioteka Wiedzy (%s/5): %s	Knihovna vědomostí (%s/5): %s
+Biblioteka Wiedzy: %s	Knihovna vědomostí: %s
+Biblioteka Wiedzy: %s zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	Knihovna vědomostí: %s získává Pečeť knihovny. Použij ji k přivolání další vlny.
+Biblioteka Wiedzy: Baronówna wyczuwa %s śmiałków - ma %s%% więcej życia.	Knihovna vědomostí: Baronka cítí %s smělců - má o %s%% více života.
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x%s (podział łupu: %s na %s).	Knihovna vědomostí: Získáváš: Truhla knihovny x%s (rozdělení kořisti: %s na %s).
+Biblioteka Wiedzy: Pieczęć %s/%s złamana. Nadchodzi następna fala!	Knihovna vědomostí: Pečeť %s/%s prolomena. Přichází další vlna!
+Biblioteka Wiedzy: Pokonane pająki: %s / %s	Knihovna vědomostí: Poražení pavouci: %s / %s
+Biblioteka Wiedzy: Pozostałe królowe: %s	Knihovna vědomostí: Zbývající královny: %s
+Biblioteka Wiedzy: Pozostałe Metiny: %s	Knihovna vědomostí: Zbývající Metiny: %s
+Biblioteka Wiedzy: Pozostało %s min.	Knihovna vědomostí: Zbývá %s min.
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: %s na %s).	Knihovna vědomostí: tentokrát bez truhly (rozdělení kořisti: %s na %s).
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (%s).	Knihovna vědomostí: Ztracené cíle etapy se objeví znovu (%s).
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa %s/%s.	Vstupenka do Atlantidy spotřebována. Dnešní výprava %s/%s.
+Bron 65 > 80: 2x %s,	Zbraň 65 > 80: 2x %s,
+Bron 80 > 87: 3x %s,	Zbraň 80 > 87: 3x %s,
+Bron 87 > Cyjanit: 3x %s,	Zbraň 87 > Kyanit: 3x %s,
+Cena: %s Yang za bilet.	Cena: %s Yangů za vstupenku.
+Do Erebu wchodzi najwyżej %s osób.	Do Erebu vstoupí nejvýše %s osob.
+Do Erebu wejdzie tylko grupa co najmniej %s osób.	Do Erebu vstoupí jen skupina alespoň %s osob.
+Do Głębi wchodzi drużyna od %s do %s osób	Do Hlubin vstupuje družina od %s do %s osob
+dopiero od poziomu %s.	teprve od úrovně %s.
+Doświadczenie: %s	Zkušenosti: %s
+Drużyna od %s do %s osób, poziom %s+,	Družina od %s do %s osob, úroveň %s+,
+Dzisiejsze wyprawy do ruin już wykorzystane (%s dziennie):	Dnešní výpravy do ruin už byly využity (%s denně):
+Dzisiejsze wyprawy do Schronienia już wykorzystane (%s dziennie):	Dnešní výpravy do Útočiště už byly využity (%s denně):
+Dzisiejsze wyprawy do tego lochu już wykorzystane (%s dziennie):	Dnešní výpravy do tohoto dungeonu už byly využity (%s denně):
+Dzisiejsze wyprawy na statek już wykorzystane (%s dziennie):	Dnešní výpravy na loď už byly využity (%s denně):
+Dziś już dostałeś paszę. Wróć za %s h.	Dnes už jsi krmivo dostal. Vrať se za %s h.
+Erebu: zostało %s min. Po czasie grupa wróci do Zaklętego Lasu.	Erebu: zbývá %s min. Po uplynutí času se skupina vrátí do Začarovaného lesa.
+Gotowe - oto %s.	Hotovo - tady je %s.
+Gotowe! Teraz otwórz pieczęć numer %s.	Hotovo! Teď otevři pečeť číslo %s.
+Grota Wygnańców 2 (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Jeskyně vyhnanců 2 (BO): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Grota Wygnańców 2 (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Jeskyně vyhnanců 2 (ČT): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Głowa Węża obrócona (%s/4).	Hlava hada otočena (%s/4).
+Głębie: brakuje ci Zamarzniętych Kluczy (%s sztuki).	Hlubiny: chybí ti Zmrzlé klíče (%s ks).
+Głębie: pozostało %s min.	Hlubiny: zbývá %s min.
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom %s.	Hlubiny tě rozdrtí. Vrať se, až dosáhneš úrovně %s.
+hełm 80. poziomu ulepszony na +5 do +9 (%s,	helma 80. úrovně vylepšená na +5 až +9 (%s,
+Hełm Dragona (obrona): 5x %s, 5x %s,	Dragonova helma (obrana): 5x %s, 5x %s,
+Hełm Smoków (atak): 5x %s, 5x %s,	Dračí helma (útok): 5x %s, 5x %s,
+i %s Yang oszlifuję %s drogocenne Gaya.	a %s Yangů obrousím %s vzácné Gaya.
+Jesteś za słaby. Wróć, gdy osiągniesz poziom %s.	Jsi příliš slabý. Vrať se, až dosáhneš úrovně %s.
+Kamienie smoka: %s / %s	Dračí kameny: %s / %s
+Kamień Duszy %s	Kámen duše %s
+Katakumby Diabła: Wyjdziesz z lochu za %s sekund.	Ďáblovy katakomby: Z dungeonu odejdeš za %s sekund.
+Katakumby Diabła: Wyjdziesz z lochu za %s sekundy.	Ďáblovy katakomby: Z dungeonu odejdeš za %s sekundy.
+Klątwa Sunga Mahi: stopień %s (%s%% PŻ). Antidotum SungMa ją zdejmuje.	Prokletí Sunga Mahi: stupeň %s (%s%% HP). Protijed Sung Ma ho odstraní.
+Kolejne zadanie (%s/6):	Další úkol (%s/6):
+Kolumna Węży otwarta (%s/6).	Hadí sloup otevřen (%s/6).
+Koszt: %s yang.	Cena: %s yangů.
+Kowal Świątyni Węży czeka. Uwolnieni kowale: %s/4.	Kovář Hadího chrámu čeká. Osvobození kováři: %s/4.
+Królestwo Żywiołów jest dostępne od poziomu %s. Wracasz do portu.	Říše elementálů je přístupná od úrovně %s. Vracíš se do přístavu.
+Królowa Meley: %s	Dračí královna Meley: %s
+Królowa Meley: ETAP %s - %s	Dračí královna Meley: ETAPA %s - %s
+Królowa Meley: ETAP 4 - %s	Dračí královna Meley: ETAPA 4 - %s
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (%s/4).	Dračí královna Meley: Prsten dračího ohně hoří na soše (%s/4).
+Królowa Meley: Pozostało %s min.	Dračí královna Meley: Zbývá %s min.
+Królowa Meley: Smocze Jaja (%s) chronią statuy. Zniszczcie je.	Dračí královna Meley: Dračí vejce (%s) chrání sochy. Zničte je.
+Królowa Meley: Statua zmienia kolor (%s/4).	Dračí královna Meley: Socha mění barvu (%s/4).
+Księga nie jest jeszcze gotowa. Wróć za %s h.	Kniha ještě není hotová. Vrať se za %s h.
+Leże Smoka: %s	Dračí doupě: %s
+Leże Smoka: %s powstaje na nowo - Beran-Setaou znów jest nietykalny!	Dračí doupě: %s vzniká znovu - Beran-Setaou je opět nedotknutelný!
+Leże Smoka: %s zniszczony. Pozostało kamieni: %s.	Dračí doupě: %s zničen. Zbývá kamenů: %s.
+Leże Smoka: dopóki stoi choć jeden kamień smoka (%s), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	Dračí doupě: dokud stojí alespoň jeden dračí kámen (%s), Beran-Setaou je nedotknutelný. Zničte kameny!
+Leże Smoka: Pozostało %s min.	Dračí doupě: Zbývá %s min.
+Masz %s Kamyków i %s Gaya.	Máš %s Blýskavých kamenů a %s Gaya.
+Masz za mało Gaya (potrzeba %s).	Máš málo Gaya (potřeba %s).
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba %s).	Máš málo Rozšíření Gaya tržiště (potřeba %s).
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z %s.	Metin padl. Beran-Setaou (BO) stále čerpá sílu z %s.
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z %s.	Metin padl. Beran-Setaou (ČT) stále čerpá sílu z %s.
+Misja ukończona. Nagroda: %s x100.	Mise dokončena. Odměna: %s x100.
+Misja ukończona. Nagroda: %s.	Mise dokončena. Odměna: %s.
+Misję możesz powtórzyć za %s h %s min.	Misi můžeš opakovat za %s h %s min.
+Mogę wytworzyć dla ciebie %s.	Mohu pro tebe vyrobit %s.
+Mój wynik: %s	Můj výsledek: %s
+Nadciąga grupa żywiołu %s.	Přichází skupina elementu %s.
+nagroda %s	odměna %s
+Nagroda: %s PD.	Odměna: %s EXP.
+Najpierw ukończ %s. piętro w tym sezonie.	Nejdřív dokonči %s. patro v této sezóně.
+Najwyżej %s wejść dziennie (dziś: %s/%s).	Nejvýše %s vstupů denně (dnes: %s/%s).
+Najwyżej %s wypraw dziennie (dziś: %s/%s).	Nejvýše %s výprav denně (dnes: %s/%s).
+Nemere: Pieczęć złamana. Pozostało: %s	Nemere: Pečeť prolomena. Zbývá: %s
+Nemere: Pozostało %s min.	Nemere: Zbývá %s min.
+Nemere: Szel pokonany (%s/4).	Nemere: Szel poražen (%s/4).
+Nemere: Zaginione cele etapu pojawiają się ponownie (%s).	Nemere: Ztracené cíle etapy se objeví znovu (%s).
+Nie masz przy sobie %s Yang.	Nemáš u sebe %s Yangů.
+Nie udało się wydać broni (kod %s). Zgłoś to administratorowi serwera.	Nepodařilo se vydat zbraň (kód %s). Nahlaš to správci serveru.
+Od poziomu %s i 1. Poziomu Czempiona.	Od úrovně %s a 1. úrovně Šampiona.
+Od poziomu %s, grupa od %s osób, 30 minut;	Od úrovně %s, skupina od %s osob, 30 minut;
+Od poziomu %s, tylko w grupie. Każdy musi	Od úrovně %s, jen ve skupině. Každý musí
+Od poziomu %s, tylko w grupie. Po ukończeniu lub	Od úrovně %s, jen ve skupině. Po dokončení nebo
+Od poziomu %s. Sam albo z drużyną.	Od úrovně %s. Sám nebo s družinou.
+Od poziomu %s. Wstęp: %s Yang.	Od úrovně %s. Vstup: %s Yangů.
+Oddaj uszy: %s	Odevzdej uši: %s
+Opłata za wejście: %s Yang.	Poplatek za vstup: %s Yangů.
+Opłata za wejście: %s Yang. Dzisiejsza wyprawa %s/%s.	Poplatek za vstup: %s Yangů. Dnešní výprava %s/%s.
+Otrzymujesz skrzynie z przerwanej gry w Okey: %s	Získáváš truhly z přerušené hry Okey: %s
+Otrzymujesz: %s x %s	Získáváš: %s x %s
+Otrzymujesz: %s. Broń zniknie za 15 dni (także założona).	Získáváš: %s. Zbraň zmizí za 15 dní (i nasazená).
+otrzymujesz: %sx %s	získáváš: %sx %s
+Pasza dla konia: %s/30	Krmivo pro koně: %s/30
+Pieczęć zdjęta (%s/7).	Pečeť sejmuta (%s/7).
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za %s.	Prsten si musí po poslední teleportaci odpočinout. Nejbližší bude připraven za %s.
+Pierścień odzyska moc za %s min.	Prsten obnoví sílu za %s min.
+Piętra %s - %s	Patra %s - %s
+Piętra %s - %s >>	Patra %s - %s >>
+Piętro %s	Patro %s
+Piętro %s (%s), etap 1: pokonaj wszystkie potwory w limicie czasu!	Patro %s (%s), etapa 1: poraz všechna monstra v časovém limitu!
+Piętro %s (następne)	Patro %s (další)
+Piętro %s - nowe	Patro %s - nové
+Piętro %s - ukończone	Patro %s - dokončeno
+Piętro %s, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	Patro %s, etapa 3: poraz vlny monster, dokud se neobjeví bossové!
+Pojawiają się bossowie piętra: %s! Pokonaj ich, by zdobyć piętro.	Objevují se bossové patra: %s! Poraz je, abys dobyl patro.
+Pokonajcie %s pająków, a potem użyjcie Pieczęci Biblioteki (%s/%s).	Poražte %s pavouků a poté použijte Pečeť knihovny (%s/%s).
+Pokonajcie %s potworów głębin.	Poražte %s monster hlubin.
+Pokonajcie %s skorpionów, a potem użyjcie Pieczęci Ruin (%s/%s).	Poražte %s štírů a poté použijte Pečeť ruin (%s/%s).
+Pokonajcie %s strażników ruin.	Poražte %s strážců ruin.
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (%s/%s).	Poražte 40 stvoření džungle a poté použijte Pečeť džungle (%s/%s).
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (%s/%s).	Poražte 60 opic a poté použijte Pečeť vrchu (%s/%s).
+Pokonane potwory: %s/100	Poražená monstra: %s/100
+Pokonane: %s / %s	Poraženo: %s / %s
+Pokonani: %s / 50	Poraženo: %s / 50
+Port Nowego Kontynentu jest dostępny od poziomu %s. Łódź zabiera cię z powrotem na Przylądek.	Přístav nového kontinentu je přístupný od úrovně %s. Loď tě odveze zpět na Mys.
+Portowy Sklep Gaya - kupiono: %s.	Přístavní Gaya tržiště - zakoupeno: %s.
+Portowy Sklep Gaya: slot %s jest odblokowany na stałe.	Přístavní Gaya tržiště: slot %s je trvale odemčen.
+Potrzebujesz przedmiotu: %s.	Potřebuješ předmět: %s.
+Potrzebuję %s Kamyków, %s Yang oraz	Potřebuji %s Blýskavých kamenů, %s Yangů a
+poziom %s	úroveň %s
+Poziom konia: %s -> %s	Úroveň koně: %s -> %s
+poziomu %s.	úrovně %s.
+Pozostalo podrozy: %s	Zbývá cest: %s
+Pozostałe stele: %s	Zbývající náhrobky: %s
+Pozostałe teleporty: %s z %s.	Zbývající teleporty: %s z %s.
+Pozostało: %s	Zbývá: %s
+Pozostały czas: %s min	Zbývající čas: %s min
+Pozostały czas: %s min.	Zbývající čas: %s min.
+Przy Strazniku zostaja: %s	U Strážce zůstává: %s
+Pył Wężowy: +1 minuta. Zostało %s min.	Hadí prach: +1 minuta. Zbývá %s min.
+Płaskowyż Iluzji przyjmuje wojowników od poziomu %s.	Plošina iluzí přijímá bojovníky od úrovně %s.
+Razador: Pozostało %s min.	Razador: Zbývá %s min.
+Razador: Stela zgaszona. Pozostało: %s	Razador: Náhrobek zhasnut. Zbývá: %s
+Razador: Zaginione cele etapu pojawiają się ponownie (%s).	Razador: Ztracené cíle etapy se objeví znovu (%s).
+Rosy En-Tai (PB): %s / %s.	Rosy En-Tai (BO): %s / %s.
+Rosy En-Tai (SZC): %s / %s.	Rosy En-Tai (ČT): %s / %s.
+Ruiny Atlantydy (%s/6): %s	Ruiny Atlantidy (%s/6): %s
+Ruiny Atlantydy: %s	Ruiny Atlantidy: %s
+Ruiny Atlantydy: %s ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	Ruiny Atlantidy: %s má Klíč Atlantidy. Odevzdejte ho správnému Sloupu z mušle!
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x%s (podział łupu: %s na %s).	Ruiny Atlantidy: Získáváš: Truhla Atlantidy x%s (rozdělení kořisti: %s na %s).
+Ruiny Atlantydy: Pokonane potwory: %s / %s	Ruiny Atlantidy: Poražená monstra: %s / %s
+Ruiny Atlantydy: Pozostało %s min.	Ruiny Atlantidy: Zbývá %s min.
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: %s.	Ruiny Atlantidy: Strážce poražen. Zbývá sloupů: %s.
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: %s - mniej czasu na Morkhota.	Ruiny Atlantidy: To byla jen iluze! Trestné body: %s - méně času na Morkhota.
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: %s na %s).	Ruiny Atlantidy: tentokrát bez truhly (rozdělení kořisti: %s na %s).
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (%s).	Ruiny Atlantidy: Ztracené cíle etapy se objeví znovu (%s).
+Ruiny Atlantydy: Zostało Serc Atlantydy: %s	Ruiny Atlantidy: Zbývá Srdcí Atlantidy: %s
+Ruiny Skorpiona (%s/5): %s	Ruiny štíra (%s/5): %s
+Ruiny Skorpiona: %s	Ruiny štíra: %s
+Ruiny Skorpiona: %s zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	Ruiny štíra: %s získává Pečeť ruin. Použij ji k přivolání další vlny.
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x%s (podział łupu: %s na %s).	Ruiny štíra: Získáváš: Truhla štíra x%s (rozdělení kořisti: %s na %s).
+Ruiny Skorpiona: Pieczęć Ruin %s/%s złamana. Nadchodzi następna fala!	Ruiny štíra: Pečeť ruin %s/%s prolomena. Přichází další vlna!
+Ruiny Skorpiona: Pokonane potwory: %s / %s	Ruiny štíra: Poražená monstra: %s / %s
+Ruiny Skorpiona: Pozostało %s min.	Ruiny štíra: Zbývá %s min.
+Ruiny Skorpiona: Pozostało: %s	Ruiny štíra: Zbývá: %s
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: %s na %s).	Ruiny štíra: tentokrát bez truhly (rozdělení kořisti: %s na %s).
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (%s).	Ruiny štíra: Ztracené cíle etapy se objeví znovu (%s).
+Schody prowadzą na %s. piętro.	Schody vedou do %s. patra.
+Schronienie Meley: %s	Útočiště Meley: %s
+Silny: po %s ukończonych słabych. 30 minut na Alastora.	Silný: po %s dokončených lehkých. 30 minut na Alastora.
+Skraca czas oczekiwania o %s%%	Zkracuje čekací dobu o %s%%
+Sloty odblokowuje się po kolei: najpierw slot %s.	Sloty se odemykají postupně: nejdřív slot %s.
+Starożytna Dżungla (%s/6): %s	Prastarý prales (%s/6): %s
+Starożytna Dżungla: %s	Prastarý prales: %s
+Starożytna Dżungla: %s zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	Prastarý prales: %s získává Pečeť džungle. Použij ji k přivolání další vlny.
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x%s (podział łupu: %s na %s).	Prastarý prales: Získáváš: Truhla pralesa x%s (rozdělení kořisti: %s na %s).
+Starożytna Dżungla: Pieczęć Dżungli %s/%s złamana. Nadchodzi następna fala!	Prastarý prales: Pečeť džungle %s/%s prolomena. Přichází další vlna!
+Starożytna Dżungla: Pokonane potwory: %s / %s	Prastarý prales: Poražená monstra: %s / %s
+Starożytna Dżungla: Pozostało %s min.	Prastarý prales: Zbývá %s min.
+Starożytna Dżungla: Pozostało: %s	Prastarý prales: Zbývá: %s
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: %s na %s).	Prastarý prales: tentokrát bez truhly (rozdělení kořisti: %s na %s).
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (%s).	Prastarý prales: Ztracené cíle etapy se objeví znovu (%s).
+Stały bonus: %s	Stálý bonus: %s
+Stały bonus: %s +5	Stálý bonus: %s +5
+Straznik Katakumb nie wpuszcza cie z grupa: %s	Strážce katakomb tě s touto skupinou nepustí: %s
+Strażnica Nemere (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Strážní věž Nemere (BO): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Strażnica Nemere (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Strážní věž Nemere (ČT): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Szansa powodzenia: %s%%. Kontynuować?	Šance na úspěch: %s%%. Pokračovat?
+Szansa: %s%%. Możesz też przeciągnąć Kamyki na mnie.	Šance: %s%%. Můžeš také přetáhnout Blýskavé kameny na mě.
+Twierdza Czerwonego Smoka (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Pevnost Rudého draka (BO): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Twierdza Czerwonego Smoka (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Pevnost Rudého draka (ČT): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Twoj wynik: %s	Tvůj výsledek: %s
+Twój koń nauczył się: %s (poziom 1).	Tvůj kůň se naučil: %s (úroveň 1).
+Twój koń osiągnął %s poziom.	Tvůj kůň dosáhl %s. úrovně.
+Ty możesz wejść za %s min.	Ty můžeš vstoupit za %s min.
+Udało się! Otrzymujesz %s Gaya.	Podařilo se! Získáváš %s Gaya.
+Ukończone w tym sezonie: %s / %s.	Dokončeno v této sezóně: %s / %s.
+Ukończone w tym sezonie: %s.	Dokončeno v této sezóně: %s.
+umiejętność %s	schopnost %s
+Uwięziony Kowal jest wolny (%s/4)!	Uvězněný kovář je volný (%s/4)!
+Uwolnieni kowale: %s/4. Ulepszyłbym ci	Osvobození kováři: %s/4. Vylepšil bych ti
+Wejście kosztuje %s Yang - nie masz tyle przy sobie.	Vstup stojí %s Yangů - tolik u sebe nemáš.
+Wejście kosztuje %s Yang - za mało przy sobie:	Vstup stojí %s Yangů - u sebe máš málo:
+Wejście od poziomu %s.	Vstup od úrovně %s.
+Wejście od poziomu %s. Doświadczenie z tamtych	Vstup od úrovně %s. Zkušenosti z oněch
+Wejście: %s Yang.	Vstup: %s Yangů.
+Wejście: %s Yang. Najwyżej %s wypraw dziennie (dziś: %s/%s).	Vstup: %s Yangů. Nejvýše %s výprav denně (dnes: %s/%s).
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie %s Yang).	Vstup: Vstupenka do Atlantidy - jedna za každou osobu (u mě %s Yangů).
+Wieża Demonów: Wyjdziesz z lochu za %s sekund.	Věž démonů: Z dungeonu odejdeš za %s sekund.
+Wieża Demonów: Wyjdziesz z lochu za %s sekundy.	Věž démonů: Z dungeonu odejdeš za %s sekundy.
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (%s).	Věž démonů: Ztracené Metiny patra se objeví znovu (%s).
+Wieża Sung Mahi - %s: %s	Věž Sung Mahi - %s: %s
+Wieża Sung Mahi: %s	Věž Sung Mahi: %s
+Wieża Sung Mahi: %s. piętro ukończone w %s (min:s). Możesz na nie wrócić portalem w hali.	Věž Sung Mahi: %s. patro dokončeno za %s (min:s). Můžeš se vrátit portálem v síni.
+Wieża Sung Mahi: nagroda za %s. piętro w tym sezonie czeka w Magazynie ItemShop.	Věž Sung Mahi: odměna za %s. patro v této sezóně čeká ve Skladu ItemShop.
+Wieża Sung Mahi: nagrody za %s. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	Věž Sung Mahi: odměny za %s. patro se nepodařilo teď uložit - dostaneš ji při dalším dokončení tohoto patra.
+Wieża Sung Mahi: walka na %s. piętrze zaczyna się za 10 sekund.	Věž Sung Mahi: boj na %s. patře začíná za 10 sekund.
+Wioska I (%s)	Vesnice I (%s)
+Wioska II (%s)	Vesnice II (%s)
+Wróć, gdy osiągniesz poziom %s.	Vrať se, až dosáhneš úrovně %s.
+Wspinaczka: 1 Sztandar Czaszki (masz: %s).	Výstup: 1 Vlajka s lebkou (máš: %s).
+Wstęp kosztuje %s Yang.	Vstup stojí %s Yangů.
+Wstęp: %s Yang.	Vstup: %s Yangů.
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (%s). Wróć jutro.	Dnešní výpravy do Útočiště Meley jsi už využil (%s). Vrať se zítra.
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (%s). Wróć jutro.	Dnešní výpravy do tohoto dungeonu jsi už využil (%s). Vrať se zítra.
+Wykorzystałeś już dzisiejsze wyprawy na statek (%s). Wróć jutro.	Dnešní výpravy na loď jsi už využil (%s). Vrať se zítra.
+Wymagany poziom: %s. Bez czekania między wyprawami.	Požadovaná úroveň: %s. Bez čekání mezi výpravami.
+Wymagany poziom: %s. Limit %s minut, bez czekania między wyprawami.	Požadovaná úroveň: %s. Limit %s minut, bez čekání mezi výpravami.
+Wzgórze Wukonga (%s/6): %s	Wukongův vrch (%s/6): %s
+Wzgórze Wukonga: %s	Wukongův vrch: %s
+Wzgórze Wukonga: %s zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	Wukongův vrch: %s získává Pečeť vrchu. Použij ji k přivolání další vlny.
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x%s (podział łupu: %s na %s).	Wukongův vrch: Získáváš: Truhla Wukonga x%s (rozdělení kořisti: %s na %s).
+Wzgórze Wukonga: Pieczęć Wzgórza %s/%s złamana. Nadchodzi następna fala!	Wukongův vrch: Pečeť vrchu %s/%s prolomena. Přichází další vlna!
+Wzgórze Wukonga: Pokonane potwory: %s / %s	Wukongův vrch: Poražená monstra: %s / %s
+Wzgórze Wukonga: Pozostało %s min.	Wukongův vrch: Zbývá %s min.
+Wzgórze Wukonga: Pozostało: %s	Wukongův vrch: Zbývá: %s
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: %s na %s).	Wukongův vrch: tentokrát bez truhly (rozdělení kořisti: %s na %s).
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (%s).	Wukongův vrch: Ztracené cíle etapy se objeví znovu (%s).
+Z %s Kamyków, Kamienia Duszy (+0 do +3)	Z %s Blýskavých kamenů, Kamene duše (+0 až +3)
+Z tej zbroi zrobie: %s	Z této zbroje vyrobím: %s
+Z łusek i rogów Balathora zrobię %s,	Z šupin a rohů Balathora vyrobím %s,
+Za %s sekund zostaniesz przeniesiony na Doyyumhwaji.	Za %s sekund budeš přenesen na Doyyumhwaji.
+Za %s sekund zostaniesz teleportowany do Doliny Orków.	Za %s sekund budeš teleportován do Orčího údolí.
+Za %s sekund zostaniesz teleportowany do Groty Wygnańców.	Za %s sekund budeš teleportován do Jeskyně vyhnanců.
+Za %s sekund zostaniesz teleportowany do miasta.	Za %s sekund budeš teleportován do města.
+Za %s sekund zostaniesz teleportowany do Świątyni Hwang.	Za %s sekund budeš teleportován do Chrámu Hwang.
+Za %s sekund zostaniesz teleportowany do Świątyni Ochao.	Za %s sekund budeš teleportován do Chrámu Ochao.
+Za %s sekund zostaniesz teleportowany na Górę Sohan.	Za %s sekund budeš teleportován na Horu Sohan.
+Za %s sekund zostaniesz teleportowany na Ognistą Ziemię.	Za %s sekund budeš teleportován do Ohnivé země.
+Za %s sekundy zostaniesz przeniesiony na Doyyumhwaji.	Za %s sekundy budeš přenesen na Doyyumhwaji.
+Za %s sekundy zostaniesz teleportowany do Doliny Orków.	Za %s sekundy budeš teleportován do Orčího údolí.
+Za %s sekundy zostaniesz teleportowany do Groty Wygnańców.	Za %s sekundy budeš teleportován do Jeskyně vyhnanců.
+Za %s sekundy zostaniesz teleportowany do miasta.	Za %s sekundy budeš teleportován do města.
+Za %s sekundy zostaniesz teleportowany do Świątyni Hwang.	Za %s sekundy budeš teleportován do Chrámu Hwang.
+Za %s sekundy zostaniesz teleportowany do Świątyni Ochao.	Za %s sekundy budeš teleportován do Chrámu Ochao.
+Za %s sekundy zostaniesz teleportowany na Górę Sohan.	Za %s sekundy budeš teleportován na Horu Sohan.
+Za %s sekundy zostaniesz teleportowany na Ognistą Ziemię.	Za %s sekundy budeš teleportován do Ohnivé země.
+Za chwilę zostaniecie przeniesieni na %s. piętro.	Za chvíli budete přeneseni do %s. patra.
+Za grę, w której zdobędziesz %s,	Za hru, v níž získáš %s,
+Za słabi na głębiny (poziom %s+):	Příliš slabí na hlubiny (úroveň %s+):
+Za słabi, by wejść (poziom %s+):	Příliš slabí na vstup (úroveň %s+):
+Za słabi, by wejść na pokład (poziom %s+):	Příliš slabí na vstup na palubu (úroveň %s+):
+Zabij %s Wojowników En-Tai (PB) i wróć do mnie.	Zab %s Vojáků En-Tai (BO) a vrať se ke mně.
+Zabij %s Wojowników En-Tai (SZC) i wróć do mnie.	Zab %s Vojáků En-Tai (ČT) a vrať se ke mně.
+Zaginione Metiny pojawiają się ponownie (%s).	Ztracené Metiny se objeví znovu (%s).
+Zaklęty Las (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Začarovaný les (BO): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+Zaklęty Las (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Začarovaný les (ČT): zbývá %s min. Po uplynutí času se skupina vrátí na Plošinu iluzí.
+zapomniana %s	zapomenutá %s
+Zapomnieć %s?	Zapomenout %s?
+Zbierz więcej Kamyków - potrzebuję %s.	Sesbírej více Blýskavých kamenů - potřebuji %s.
+Zbroja i buty > 80: 3x %s,	Zbroj a boty > 80: 3x %s,
+Zdobyte: %s / 5	Získáno: %s / 5
+Zdobądź %s Ros En-Tai (PB).	Získej %s Ros En-Tai (BO).
+Zdobądź %s Ros En-Tai (SZC).	Získej %s Ros En-Tai (ČT).
+Zebrana pasza: %s/30	Sebrané krmivo: %s/30
+Zestawu tej części%s,	sady této části%s,
+Ziemie Yohary są dostępne od poziomu %s. Wracasz do Portu Nowego Kontynentu.	Země Yohary jsou přístupné od úrovně %s. Vracíš se do Přístavu nového kontinentu.
+Zniszcz %s Metiny Drzewnych Stworzeń (PB).	Znič %s Metiny Stromových stvoření (BO).
+Zniszcz %s Metinów Drzewnych Stworzeń (SZC).	Znič %s Metinů Stromových stvoření (ČT).
+Zniszczcie %s Serca Atlantydy.	Zničte %s Srdce Atlantidy.
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (%s zostało).	Zničte Hlubinnou mušli a odevzdejte Klíč Atlantidy správnému Sloupu z mušle (zbývá %s).
+Zniszczone Metiny: %s / %s.	Zničené Metiny: %s / %s.
+Zniszczone: %s / 5	Zničeno: %s / 5
+Złota Księga Konia: %s/100	Zlatá kniha koní: %s/100
+Śmiertelny Chłód Alastora skuwa ziemię (%s/12) - omijajcie białe kręgi!	Smrtelný chlad Alastora svazuje zem (%s/12) - vyhýbejte se bílým kruhům!
+Świetnie! Oto twoja pasza: %s sztuk.	Skvělé! Tady je tvé krmivo: %s kusů.
+Świątynia Węży: walka się zaczęła! Czas: %s min. Zapamiętajcie żywioły pierwszych czterech grup.	Hadí chrám: boj začal! Čas: %s min. Zapamatujte si elementy prvních čtyř skupin.
+Świątynia Węży: zostało %s min.	Hadí chrám: zbývá %s min.
+żywioł %s	živel %s

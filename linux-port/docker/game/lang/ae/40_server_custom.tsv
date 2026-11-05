@@ -1,0 +1,422 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>ae (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d، التجدد %d ث: %s
+  %u %s - jeszcze %u min	  %u %s - متبقٍ %u دقيقة
+  %u %s - na stałe	  %u %s - بشكل دائم
+ (bot, także odpoczynek)	 (بوت، مع الراحة أيضاً)
+ i premie do dropu	 وعلاوات الغنيمة
+ Nagroda trafila do ekwipunku.	 وصلت المكافأة إلى الحقيبة.
+%s (offline): zapis do player.quest się nie udał.	%s (غير متصل): فشل الحفظ في player.quest.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s ذاهب إلى من استدعاه ولن يقبل مبارزة الآن.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s في غارة ولن يقبل مبارزة الآن.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s هو رفيق شخص ما ولا يشارك في المبارزات.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s هو رفيق شخص ما ولن ينضم إلى مجموعتك.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s على نواة أخرى (القناة %u)، وقائمة player.web_admin_queue لم تقبل الطلب.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s على القناة %u - تم طلب إعادة الضبط (%s)؛ سيُنفَّذ هناك خلال بضع ثوانٍ.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s يحفر الخام ولن يقبل مبارزة الآن.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s يصطاد السمك ولن يقبل مبارزة الآن.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s ليس في يده سلاح ولن يقبل المبارزة.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s لن يقبل مبارزة أقل من المستوى %d.
+%s nie walczy w strefie bezpiecznej.	%s لا يقاتل في المنطقة الآمنة.
+%s odrzuca zaproszenie do znajomych.	%s يرفض طلب الصداقة.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s فتح كنز بالاتور - وصلت مكافأتك إلى الحقيبة.
+%s posiada teraz żywioł: %s!	%s يمتلك الآن العنصر: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s يقبل دعوة الانضمام إلى الرابطة %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s سونغ ما بلغ أعلى قيمة بالفعل (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 أجزاء - تأثير الطقم مفعّل
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s ليس له حد يومي (الراحة للبوتات فقط في اللعبة).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s، ينتهي بعد %ld دقيقة، المكافآت لمدة %ld دقيقة أخرى، القيمة %d، العلم %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: التأثير بلغ أعلى مستوى بالفعل (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: مهارة الرابطة هذه بلغت أعلى مستوى بالفعل.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: هذا اللاعب في قائمة المحظورين لديك.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: هذا اللاعب لا يقبل دعوات منك.
+%s: tytułów %u, założony %u	%s: الألقاب %u، المرتدى %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - يصفّر الحد اليومي لرحلات الشخصية.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (الدفاع عن السفينة، الخريطة %ld؛ السفن هنا: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[بوفي] بوفي متاحة من المستوى %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[بوفي] خانة بوفي هذه تقبل فقط: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[بوفي] هذه المهارة يدرّبها كتاب المهارة: %s (شامان).
+[Gildia] %s	[الرابطة] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[الرابطة] البوتات تجمع فقط مواد البناء: الجذع، حجر الفحم، الخشب الرقائقي.
+[Gildia] Brak miejsca w ekwipunku.	[الرابطة] لا يوجد مكان في الحقيبة.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[الرابطة] المبنى لا يتسع في أرض الرابطة. حرّكه أقرب إلى منتصف الأرض.
+[Gildia] Ilosc: od 1 do %d sztuk.	[الرابطة] الكمية: من 1 إلى %d قطعة.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[الرابطة] مهمة أشياء واحدة جارية بالفعل - ألغها لتطلب مهمة جديدة.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[الرابطة] حملة تبرعات واحدة جارية بالفعل - انتظر حتى تنتهي أو ألغها.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[الرابطة] أُلغيت المهمة - تعود الأشياء من البنك إلى البوتات التي أحضرتها.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[الرابطة] لا توجد مهمة أشياء جارية.
+[Gildia] Nie ma trwajacej zrzutki.	[الرابطة] لا توجد حملة تبرعات جارية.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[الرابطة] لا توجد رحلة لإلغائها (لا يمكن إلغاؤها بعد دخول البرج).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[الرابطة] واجبات الرابطة غير متاحة مؤقتاً.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[الرابطة] واجبات الرابطة يكلّف بها قائد الرابطة فقط.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[الرابطة] أنت تقف حيث سيوضع المبنى. ابتعد قليلاً أو حرّك المبنى.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[الرابطة] %s يقف حيث سيوضع المبنى. انتظر حتى يبتعد أو حرّك المبنى.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[الرابطة] لا يمكن استخدام هذه المهارة إلا أثناء حرب الروابط أو في سرداب بالاتور.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[الرابطة] هذا الشيء غير موجود في بنك الرابطة.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[الرابطة] يوجد مبنى آخر في هذا المكان. حرّك المبنى الجديد أو أدِره.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[الرابطة] تم السحب من بنك الرابطة: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[الرابطة] الرحلة إلى برج الشياطين منظَّمة بالفعل.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[الرابطة] أُلغيت الرحلة إلى برج الشياطين.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[الرابطة] يانغ خزينة الرابطة يمكن إنفاقه على الرابطة فقط: شراء الأرض والمباني. لا يمكن سحبه.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[الرابطة] تم دفع %lld يانغ من خزينة الرابطة و%lld يانغ من حقيبتك.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[الرابطة] انتهت حملة التبرعات. اليانغ المدفوع يبقى في خزينة الرابطة.
+[Gildia] Zrzutka: od %s do %s yang.	[الرابطة] حملة التبرعات: من %s إلى %s يانغ.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[الهدنة] تم الهجوم على بوت - انتهت الهدنة مع البوتات.
+[Towarzysz] %s	[الرفيق] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[الحرب] ساحة هذه الحرب ما زالت قيد التجهيز - حاول بعد بضع ثوانٍ.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[الحرب] ساحة الحروب على نواة أخرى - اذهب إلى خريطة مملكتك M1 وانقر مرة أخرى.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[الحرب] البوتات تقاتل في حروب الروابط على القناة 1 فقط - غيّر القناة وانقر مرة أخرى.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[الحرب] الرابطة %s تقاتل الآن في حرب أخرى.
+[Wojna] Jestes juz na polu wojny.	[الحرب] أنت بالفعل في ساحة الحرب.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[الحرب] مكافأة الفوز بالحرب: %d x صندوق ضوء القمر (قتلاك: %d).
+[Wojna] Nie nalezysz do gildii.	[الحرب] أنت لست في رابطة.
+[Wojna] Nie znam areny tej wojny.	[الحرب] لا أعرف ساحة هذه الحرب.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[الحرب] أنقلك إلى معسكر رابطتك في ساحة الحروب.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[الحرب] لا يمكنك الانتقال الآن - حاول بعد قليل.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[الحرب] هذه حرب ميدانية: تقاتلون حيث تلتقون.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[الحرب] رابطتك ليست في حرب الآن.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[الحرب] الحرب على الرابطة %s معلنة بالفعل - سترد البوتات في دردشة الرابطة.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[الحرب] الحروب ضد روابط البوتات معطلة في لوحة الخادم.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[الحرب] أُعلنت الحرب على رابطة البوتات %s. تُقاتل البوتات في ساحة الحروب (القناة 1). سيصل الرد خلال بضع ثوانٍ في دردشة الرابطة.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[الحرب] هناك حرب جارية مع الرابطة %s أو هي في طور الإنهاء.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[اصطد الملك] 25 بطاقة ملكية منحت مجموعة ملكية جديدة (لديك %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[اصطد الملك] مكافأة من لعبة مقطوعة تنتظرك - أخلِ مكاناً في الحقيبة وسجّل الدخول مرة أخرى.
+[Zlap Krola] Event teraz nie trwa.	[اصطد الملك] الحدث غير جارٍ الآن.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[اصطد الملك] لديك بالفعل أقصى عدد من المجموعات الملكية (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[اصطد الملك] ليس لديك ما يكفي من المجموعات الملكية أو اليانغ (%d مجموعة و%d يانغ للعبة).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[اصطد الملك] لا يمكن استخدام هذا إلا أثناء الحدث.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[اصطد الملك] أخلِ مكاناً في الحقيبة لاستلام المكافأة.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	خفض السعر التلقائي: من 1 إلى %d%% كل 1-%d ساعات.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	تم هزيمة بالاتور! ترك كنزه خلفه - استلموا المكافأة. الخروج من السرداب بعد %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: لا توجد مرحلة لتخطيها (فقط في السرداب، أثناء الغارة)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	هرب بالاتور، لكنه ترك كنزه خلفه - استلموا المكافأة. الخروج من السرداب بعد %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	انتصر بالاتور - فشلت الرحلة، بلا مكافأة. الخروج من السرداب بعد %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: اكتملت مهمة متكررة (المرة %u)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: اكتملت المهمة!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: أُعيد تحميل المهام (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: تم استلام المكافأة النهائية لهذا الموسم بالفعل.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: أكمل أولاً جميع مهام الموسم.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: اكتملت جميع مهام الموسم - استلم المكافأة النهائية!
+Bonus zestawu kostiumow (%s): %ld czesci.	علاوة طقم الأزياء (%s): %ld أجزاء.
+Boss Swiata jest chwilowo niedostepny.	زعيم العالم غير متاح مؤقتاً.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	زعيم العالم: المركز %d، درجة الغنيمة %s (%lld ضرر، +%d نقطة رتبة). استلم المكافأة في نافذة زعيم العالم قبل ظهور الزعيم التالي.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	زعيم العالم: لا يوجد مكان في الحقيبة (تحتاج %d خانات فارغة) - أخلِ مكاناً وانقر مرة أخرى.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	زعيم العالم: تم استلام جزء من المكافآت؛ لا يوجد مكان للباقي في الحقيبة (تحتاج %d خانات فارغة) - أخلِ مكاناً وانقر مرة أخرى.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	زعيم العالم: مكافأة الموسم %u عن المركز %d لرابطتك.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	زعيم العالم: مكافأة الموسم %u عن المركز %d في ترتيب الشخصيات.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	زعيم العالم: تم استلام المكافأة بالفعل أو ضاعت.
+Boss Swiata: nie masz nagrody do odebrania.	زعيم العالم: ليس لديك مكافأة لاستلامها.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	زعيم العالم: تم استلام مكافأة المركز %d (درجة الغنيمة %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	زعيم العالم: علاوة المهمة - قيمة الهجوم +%d%% لمدة %d ساعة.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	زعيم العالم: ألحقت %lld ضرراً - لا يكفي للمكافأة (المطلوب %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	زعيم العالم: أغلق النوافذ الأخرى (التجارة، المتجر، المخزن) قبل استلام المكافأة.
+Boty opuszczaja Wieze Demonow.	البوتات تغادر برج الشياطين.
+Brak miejsca w kategorii: %s.	لا يوجد مكان في الفئة: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	لا يمكن تحسين أسلحة الأبطال الصغار أو تغييرها.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: أمر غير معروف أو وسائط خاطئة (%s) - لم يتغير شيء
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: الشخصية على نواة أخرى (القناة %d) - تم إرسال الأمر
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: الشخصية غير متصلة - تم حفظ التغيير (%s)، وسيُطبَّق عند دخولها اللعبة في المرة القادمة
+champion: nie ma postaci %s	champion: لا توجد شخصية %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: أمر غير معروف أو وسائط خاطئة (%s) - لم يتغير شيء
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	انتهى الوقت - انتصر بالاتور. الخروج من السرداب بعد %s.
+Czas przejecia bota minal - postac wraca do bota.	انتهى وقت السيطرة على البوت - تعود الشخصية إلى البوت.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	حلّ نظام الحيوانات الأليفة محل نظام الحيوانات القديم - افتح نافذة الحيوان بمفتاح U.
+Do ewolucji tej szaty potrzeba: %s x%d.	لتطوير هذا الزي يلزم: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	القفازات تناسبها أحجار الشياطين فقط.
+Dom Aukcyjny jest dostepny tylko w M1.	دار المزاد متاحة فقط في M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	دار المزاد معطلة في هذا العالم.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	ممتاز! حجر الشياطين العظيم أعطى القيمة مضاعفة.
+Drop wiki: %u przedmiotów, %u potworów.	ويكي الغنائم: %u شيئاً، %u وحشاً.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	أطفال الزهور: انتهى الحدث ووقت التبديل.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	أطفال الزهور: المكافأة غير متاحة مؤقتاً - بلّغ الإدارة.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	أطفال الزهور: أغلق النوافذ الأخرى (التجارة، المتجر، المخزن) قبل التبديل.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	أطفال الزهور: تحصل على بذور الزهور (لديك %d).
+dziś nie było wypraw	لم تكن هناك رحلات اليوم
+Efekt zestawu nadany: %s.	تم منح تأثير الطقم: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	الحقيبة ممتلئة - الجزء المشترى من الكومة موجود عند قدميك.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	تمت الإطاحة بكم! ينتهي وقتكم في الزنزانة إذا لم ينهض أحد خلال دقيقة واحدة.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	سيبقى إيناسير معك 3 دقائق. سيختفي إذا ابتعدت أو غيّرت الخريطة.
+Enasir odszedł.	غادر إيناسير.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	أخذ إيناسير رسوم الخدمة: %lld يانغ (10%%).
+Enasir: %s - pozostały czas %s.	إيناسير: %s - الوقت المتبقي %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	إيناسير: المخزن %s، المتجر %s، مستدعى: %s، مسموح هنا: %s.
+Enasir: usługi zabrane.	إيناسير: أُزيلت الخدمات.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	انتهى حدث أطفال الزهور - لم يعد بالإمكان استخدام هذه الزهرة.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	حدث الصيد - الأحجية غير جارٍ الآن - يمكنك فتح الصناديق خلال الحدث القادم.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	التطوير ممكن فقط عند المستوى %d مع 100%% من الخبرة.
+Ewolucja udana: %s, poziom %d.	نجح التطوير: %s، المستوى %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	غايا أصبحت الآن عملة: %d غايا ذهبت إلى عدّاد غايا لديك (بجانب اليانغ في الحقيبة).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	لا تُوضع غايا في النافذة - يأخذها الحداد بنفسه من حقيبتك.
+Gildia nauczyła się: %s (poziom %d/%d).	تعلّمت الرابطة: %s (المستوى %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	الرابطة لم توزّع نقاط مهارات.
+Gildia odzyskała punkty umiejętności: %d.	استعادت الرابطة نقاط المهارات: %d.
+GM zresetował Twój limit dziennych dungeonów.	أعاد مشرف اللعبة ضبط حد الزنزانات اليومي لديك.
+Gracz %s nie ma tytułu %s.	اللاعب %s ليس لديه اللقب %s.
+Gracza %s nie ma na tym kanale (albo to bot).	اللاعب %s ليس على هذه القناة (أو هو بوت).
+Gratulacje - %d. poziom!	تهانينا - المستوى %d!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	إحدى بيضات التنين تستدعي برداً جليدياً! ركّزوا هجماتكم عليها لإيقافه.
+Kamien Demonow osadzony.	تم تركيب حجر الشياطين.
+Kamien Demonow pasuje tylko do rekawic.	حجر الشياطين يناسب القفازات فقط.
+Kamien Demonow pekl przy osadzaniu.	تشقق حجر الشياطين أثناء التركيب.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	أحجار الموت تحرس الطابق السابع. حطّموا الأربعة جميعاً!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	حجر الطقوس يعمل فقط على الأشياء فوق المستوى 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	بطاقات: الحساب %u، المستوى %d، الأهداف %u/%u/%u، المقتولون %d، الوحوش %d، الأطقم المرتداة %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	كل محاولة لقراءة هذا الكتاب تكلّف %u خبرة بطل - ليس لديك ما يكفي.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	لعنة سونغ ماهي تعطّل مهاراتك.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	العملاء الذين لديهم قائمة الأحداث على هذه النواة: %u، القائد: %s.
+Kod zrealizowany: %s.	تم استرداد الرمز: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	عجلة الحظ (القديمة): تحصل على %ux %s.
+Kolo Fortuny: %s	عجلة الحظ: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	عجلة الحظ: لا يوجد مكان - %u مكافآت تنتظر. أخلِ مكاناً وافتح العجلة مرة أخرى.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	عجلة الحظ: أخلِ مكاناً في الحقيبة - مكافأة تنتظر.
+Kolo Losu: %s	عجلة القدر: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	عجلة القدر: أُعيد تحميل البيانات (%u عجلة، %u شيئاً)، العجلة النشطة %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	يمكن تغيير لون مهارة الركوب عندما تعرفها.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	يمكن تغيير لون المهارة من المستوى P لهذه المهارة.
+kostium (strój)	زي (ملابس)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	زي السلاح لا يناسب سلاح هذه الصفحة - تم نقله إلى الحقيبة.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	زي السلاح لا يناسب سلاح هذه الصفحة، ولا يوجد مكان في الحقيبة لخلعه.
+kostium broni szamana	زي سلاح الشامان
+kostium fryzury	زي تسريحة الشعر
+Krwawisz! (%d sek.)	أنت تنزف! (%d ث)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	لا يمكن فتح سرداب بالاتور على هذه النواة.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	يمكنك قراءة كتاب الدقة من المستوى 1 للبطل.
+Księgi się zmieniły - ułóż je od nowa.	تغيّرت الكتب - رتّبها من جديد.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	الزنزانات: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (راحة البوت فقط)؛ بدون زنزانة أو all - جميعها.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	محدد مواقع الشخصيات مفعّل لكل شخصية - لم تعد بحاجة إلى هذا الشيء.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	لم تنجح البركة الصغيرة - العلاوتان السادسة والسابعة دون تغيير.
+Masz już najwięcej Gaya, ile można mieć (999 999).	لديك بالفعل أقصى ما يمكن حمله من غايا (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	لقد فتحت بالفعل جميع صفحات الحقيبة الأربع.
+Masz już ten tytuł.	لديك هذا اللقب بالفعل.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	لديك نقطة إحصاء سونغ ما جديدة (المتاحة: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	معك يانغ أكثر مما يسمح به الحد (100 مليار). لا يمكنك التجارة.
+Masz za mało Gaya (potrzeba %d).	ليس لديك ما يكفي من غايا (تحتاج %d).
+Masz za mało materiału (potrzeba %d).	ليس لديك ما يكفي من المواد (تحتاج %d).
+Masz za mało Yang (potrzeba %d).	ليس لديك ما يكفي من اليانغ (تحتاج %d).
+Masz za mało Yang.	ليس لديك ما يكفي من اليانغ.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	أماكن أريزو معطلة على هذا الخادم - تعود إلى المدينة.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	أُنجزت مهمة "اهزم زعيم العالم" - علاوة +%d%% من قيمة الهجوم لمدة %d ساعة تنتظرك في نافذة زعيم العالم.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	يمكنك ارتداء حجر عناصر واحد فقط في الوقت نفسه (الحماية أو القوة). اخلع أولاً الذي ترتديه.
+Możesz łowić ryby od 30 poziomu.	يمكنك صيد السمك من المستوى 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	يجب أن تقف ساكناً لتغيير صفحة الحقيبة.
+na stałe	بشكل دائم
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	لم تُنفق نقاط مهارات على هذه المهارة - لا يمكن التراجع عن المستويات من الدليل والكتب. لفيفة تحويل التدريب تزيل كل الصد والدفع.
+Na tym kanale magazyn jest niedostępny.	المخزن غير متاح على هذه القناة.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	وأنت على الحصان استخدم إلغاء تحويل الحصان.
+Nadano tytuł %s graczowi %s.	تم منح اللقب %s للاعب %s.
+Nadano tytuł %s.	تم منح اللقب %s.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	استلمت %d شخصيات من الرابطة مكافأة السرداب.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	تعلّم الدفع أولاً - استخدم كتاب: الدفع.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	افتح أولاً صفحة حقيبة إضافية (الشيء "صفحة الحقيبة II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	افتح أولاً كيمياء حجر التنين - يذهب الحجر إلى نافذتها.
+Najpierw wybierz drogę umiejętności.	اختر أولاً مسار المهارة.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	اختر أولاً الصد - استخدم كتاب: الصد.
+Najpierw wyjmij przedmiot ze Switchbota.	أخرج الشيء من Switchbot أولاً.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	ضع أولاً الشيء الذي يجب أن يحصل على المظهر الجديد.
+Najpierw włóż szatę aury.	ضع أولاً زي الهالة.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	أغلق النوافذ الأخرى أولاً (التجارة، المتجر، المخزن).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	أغلق النوافذ الأخرى أولاً (التجارة، المتجر، المخزن، الأوشحة).
+Najpierw zamknij okno szaty aury.	أغلق نافذة زي الهالة أولاً.
+Najwyżej 1000 dni.	1000 يوم على الأكثر.
+Nie ma postaci %s.	لا توجد شخصية %s.
+Nie ma takiego tytułu (/tytul lista).	لا يوجد لقب كهذا (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	ليس في حقيبتك سلاح أو درع أو خوذة من المستوى 75 محسّنة إلى +7 على الأقل (بدون تأثير طقم هذا الحداد). ضع الشيء في النافذة مع الشظايا وقالب الطقم.
+Nie masz wolnych punktow Sung Ma.	ليس لديك نقاط سونغ ما حرة.
+Nie mozesz przywolac kamienia Metin w lochu.	لا يمكنك استدعاء حجر ماتين في الزنزانة.
+Nie mozesz przywolac zyly w lochu.	لا يمكنك استدعاء عرق خام في الزنزانة.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	لا يمكنك البيع - ستتجاوز حد 100 مليار يانغ معك.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	لا يمكن نقل شيء مرتدى إلى Switchbot.
+Nie możesz się teleportować z lochu.	لا يمكنك الانتقال الفوري من الزنزانة.
+Nie możesz teraz zmienić strony ekwipunku.	لا يمكنك تغيير صفحة الحقيبة الآن.
+Nie możesz tutaj użyć tego przedmiotu.	لا يمكنك استخدام هذا الشيء هنا.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	لا يمكنك ارتداء الشيء %s من صفحة الحقيبة %s - الصفحة دون تغيير.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	لا يمكن تدمير هذا الشيء الآن - أغلق النوافذ الأخرى وحاول مرة أخرى.
+Nie nadano tytułu %s (gracz ma go już na stałe).	لم يُمنح اللقب %s (اللاعب يملكه بشكل دائم بالفعل).
+Nie nadano tytułu %s.	لم يُمنح اللقب %s.
+Nie należysz do gildii.	أنت لست في رابطة.
+Nie przeniesiono bota %s: %s.	لم يُنقل البوت %s: %s.
+nie trwa	غير جارٍ
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	تعذر منح تأثير الطقم. بقي الشيء سليماً.
+Nie udało się otworzyć Krypty Balathora.	تعذر فتح سرداب بالاتور.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	فشلت العملية. ضاعت المواد واليانغ، وبقي الشيء في النافذة.
+Nie znasz tej umiejetnosci.	أنت لا تعرف هذه المهارة.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	زنزانة غير معروفة "%s". الزنزانات: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby أو all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	لا أحد من البوتات في المستوى 75 - ينتهي البرج عند الطابق السادس.
+Od 1 do %d wymian naraz.	من 1 إلى %d عمليات تبديل دفعة واحدة.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	من الدرجة G1 إلى P يطوّر حجر الروح+ الصد والدفع.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	تم فتح صفحة الحقيبة %s (الصفحات: %d/4). بدّل بينها بالألسنة في نافذة الحقيبة أو بمهارة "تغيير صفحة الحقيبة" (المهارات المساعدة).
+Ogniste Strzały załadowane do Hwachy: %u.	السهام النارية المحمّلة في الهواتشا: %u.
+Osiagnieto limit zakupu tego przedmiotu.	تم بلوغ حد شراء هذا الشيء.
+Otrzymujesz %d Gaya.	تحصل على %d غايا.
+Otrzymujesz kartę Okey (%d/%d).	تحصل على بطاقة Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	تحصل على مجموعة بطاقات Okey (لديك %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	فتحت كنز بالاتور - وصلت المكافأة إلى حقيبتك.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	يمكن نقل الخصائص فقط من سوار أو قلادة أو أقراط أو درع.
+Parametry przeniesione na szatę aury.	تم نقل الخصائص إلى زي الهالة.
+Parametry szaty aury usunięte - możesz przenieść nowe.	تمت إزالة خصائص زي الهالة - يمكنك نقل خصائص جديدة.
+Poczekaj 10 sekund po walce.	انتظر 10 ثوانٍ بعد القتال.
+Poczekaj 3 sekundy przed kolejną zmianą.	انتظر 3 ثوانٍ قبل التغيير التالي.
+Poczekaj chwile przed kolejna zmiana opisu.	انتظر قليلاً قبل تغيير الوصف مرة أخرى.
+Poczekaj chwile przed kolejna zmiana stanu.	انتظر قليلاً قبل تغيير الحالة مرة أخرى.
+Poczekaj chwile przed kolejnym zaproszeniem.	انتظر قليلاً قبل الدعوة التالية.
+Podaj gracza.	حدد لاعباً.
+Podejdź do Seon-Hae.	اقترب من سيون-هاي.
+Pojawiło się Ogniste Jajo Smoka.	ظهرت بيضة التنين الناري.
+Pokonajcie wszystkie pobliskie potwory.	اهزموا جميع الوحوش القريبة.
+Polimorfia działa tylko na wierzchowcach.	التحويل يعمل فقط على الخيول.
+Polimorfia wierzchowca zakończona.	انتهى تحويل الحصان.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	فشل! لم يتفعل التأثير %s - ذبلت الزهرة.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	فشل! تعذر رفع التأثير %s إلى المستوى %d - ذبلت الزهرة.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	فشل! تعذر تغيير التأثير إلى %s - ذبلت الزهرة، ويبقى التأثير السابق.
+Potrzeba %lld ksiąg (w oknie: %lld).	يلزم %lld كتاباً (في النافذة: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	حصان الحرب القوي يأكل الجنسنغ الأحمر (مميز) فقط.
+Poziom Czempiona: %d.	مستوى البطل: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	ضع في النافذة سلاحاً أو درعاً أو خوذة من المستوى 75، محسّناً إلى +7 على الأقل.
+Precyzja: poziom %s, bonus Precyzji +%d.	الدقة: المستوى %s، علاوة الدقة +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	هدية يومية: %lld يانغ و%d جرعات (ك) لكل نوع. التالية بعد 24 ساعة.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	اسحب الغطاء إلى وشاح في حقيبتك (تم خلع الوشاح).
+Przeci±gnij zwój na broń w ekwipunku.	اسحب اللفيفة إلى سلاح في حقيبتك.
+Przeciągnij Anulację na przedmiot z transmutacją.	اسحب الإلغاء إلى شيء عليه تشكيل.
+Przeciągnij Świadectwo Aury+ na szatę aury.	اسحب شهادة الهالة+ إلى زي الهالة.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	لا يمكن خلع الشيء %s الآن - صفحة الحقيبة دون تغيير.
+Przeniesiono bota %s do Ciebie.	تم نقل البوت %s إليك.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	تم النقل إلى الحقيبة الإضافية: %d (أُضيف إلى الأكوام: %d).
+Przenosić można raz na 3 sekundy.	يمكن النقل مرة كل 3 ثوانٍ.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	ستحتاج الضربة التالية إلى ضرر أكبر.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	زر استدعاء إيناسير يتطلب إصداراً جديداً من العميل - حدّث اللعبة.
+Przywolana zyla zniknie po 15 minutach.	العرق المستدعى سيختفي بعد 15 دقيقة.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	حجر الماتين المستدعى سيختفي بعد 15 دقيقة إذا لم تدمّره.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	انتهت صلاحية السؤال - حاول خلع الشيء مرة أخرى.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	الترتيب: الموسم %u ينتهي الآن (الملخص بعد حوالي دقيقتين).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	الترتيب: الموسم %u، %s، حاملو الألقاب: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	القفازات: وقت التجدد التالي لهذه المهارة أقصر بمقدار 5 ث.
+Rekrutacja potworow jest wylaczona.	تجنيد الوحوش معطل.
+Relikt debug: odnowienia wyzerowane.	تصحيح الأثر: تم تصفير أوقات التجدد.
+Relikt debug: okienko %s puste.	تصحيح الأثر: الخانة %s فارغة.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	تصحيح الأثر: الخانة %s، %s (%u)، الأعلام %ld، الوقت %ld / %ld ث، يعمل: %s، النبضة: %s، القتال: %d ث
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	تصحيح الأثر: نقاط الحياة %d / %d، نقاط الطاقة %d / %d، الحصان: %s
+Relikt Duszy: nowy bonus - %s (%d).	أثر الروح: علاوة جديدة - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	لا يمكن التراجع عن الصد والدفع من الدرجة M1.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	نجح التطوير. يمكن الآن تطوير الزي (زي الهالة: التطور).
+Rozwój udany: poziom %d.	نجح التطوير: المستوى %d.
+Ryba się zerwała z haczyka.	انفلتت السمكة من السنارة.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	ليس لدى سيون-هاي كتب لمسارك.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	سيون-هاي: %s، الوقت %d دقيقة، الشيء المحمول %d، النتيجة %d، الفرصة %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	سيون-هاي: تم ضبط الوقت على صفر.
+Silniejszy efekt tego rodzaju już działa.	تأثير أقوى من هذا النوع يعمل بالفعل.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	المتجر مغلق - افتحه من جديد بدلاً من تمديده.
+Sklep ma juz maksymalny czas (%d dni).	المتجر بلغ أقصى مدة بالفعل (%d أيام).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	تم تمديد المتجر بمقدار %u ساعة (متبقٍ حوالي %u ساعة %u دقيقة).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	ركّزوا على بيضة التنين المتجمدة قبل أن تختفي (%d ث).
+Sortowac mozna raz na 3 sekundy.	يمكن الفرز مرة كل 3 ثوانٍ.
+Statystyki Sung Ma ma tylko Czempion.	إحصاءات سونغ ما للبطل فقط.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	صفحة الحقيبة %s ما زالت مقفلة - يفتحها شيء آخر "صفحة الحقيبة II".
+Strona ekwipunku: %s.	صفحة الحقيبة: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	يمكن تغيير صفحة الحقيبة مرة كل 5 ثوانٍ.
+Sukces! Efekt %s jest aktywny (poziom 1).	نجحت! التأثير %s مفعّل (المستوى 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	نجحت! ارتفع التأثير %s إلى المستوى %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	توقف Switchbot. لا يوجد شيء سحر الزي.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	توقف Switchbot. لا يوجد سحر الشيء.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: تعذر تغيير علاوات هذا الزي.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: لا يمكن سحر هذا الشيء (لا توجد علاوات).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	ارتفعت الفرصة بنسبة %d%% (تم استهلاك شيء واحد).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	أصبح للوشاح مظهر جديد (العلاوات والامتصاص دون تغيير).
+Ta Anulacja działa tylko na wierzchowcach.	هذا الإلغاء يعمل فقط على الخيول.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	هذا الكتاب للأبطال: يمكنك قراءته من المستوى 1 للبطل.
+Ta szarfa ma juz te nakladke.	هذا الوشاح لديه هذا الغطاء بالفعل.
+Ta szata aury ma już najwyższy poziom.	زي الهالة هذا بلغ أعلى مستوى بالفعل.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	هذا الزي في قمة نوعه - الآن التطور (زي الهالة: التطور).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	هذا الزي لديه خصائص منقولة بالفعل. امسحها بشهادة الهالة+.
+Ta szata nie ma przeniesionych parametrów.	هذا الزي ليس لديه خصائص منقولة.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	هذا العمود لا يستطيع إيذاءه إلا النينجا أو الشامان.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	لا يمكن استخدام هذا الشيء إلا في برج جحيم سونغ ماهي.
+Tego przedmiotu nie mozna dodac do Switchbota.	لا يمكن إضافة هذا الشيء إلى Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	لا يمكن استخدام هذا الشيء الآن (مرتدى أو في تجارة أو مقفل).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	يُستخدم هذا الشيء في نافذة الحيوان (المفتاح U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	لا يمكن تقسيم هذا الكوم بهذا السعر - اشتر الكوم كاملاً.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	الانتقال الفوري إلى المدخل يكلّف %lld يانغ - ليس معك هذا المبلغ.
+Teleport pod wejście: zapłacono %lld Yang.	الانتقال الفوري إلى المدخل: تم دفع %lld يانغ.
+Ten certyfikat nie nadaje żadnego tytułu.	هذه الشهادة لا تمنح أي لقب.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	هذا الدفع ليس لفئتك ومسار مهاراتك.
+Ten efekt już działa i potrwa dłużej niż nowy.	هذا التأثير يعمل بالفعل وسيدوم أطول من الجديد.
+Ten element nie pasuje w tym miejscu.	هذا العنصر لا يناسب هذا المكان.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	هذا اللاعب لا يتسع لهذا القدر من اليانغ (الحد 100 مليار معه).
+Ten loch jest dla poziomów %d - %d.	هذه الزنزانة للمستويات %d - %d.
+Ten Metin moze zranic tylko Szaman.	هذا الماتين لا يستطيع إيذاءه إلا الشامان.
+Ten opis zawiera niedozwolone slowo.	هذا الوصف يحتوي على كلمة غير مسموحة.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	هذا الوحش يعيش على خريطة يُدخل إليها بتصريح - الانتقال الفوري بالبطاقة غير متاح هناك.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	هذا الشيء متاح فقط مع تفعيل وحدة أريزو.
+Ten przedmiot jest juz w Switchbocie.	هذا الشيء موجود بالفعل في Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	هذا الشيء لديه تأثير الطقم هذا بالفعل.
+Ten przedmiot nie ma transmutacji.	هذا الشيء ليس عليه تشكيل.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	هذا الشيء لا ينتمي إلى أي فئة من فئات العتاد الإضافي.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	هذا الشيء لا يناسب فئة العتاد الإضافي هذه.
+Ten przedmiot nie zwiększa szansy wytwarzania.	هذا الشيء لا يزيد فرصة الصناعة.
+Ten wygląd nie pasuje do tego przedmiotu.	هذا المظهر لا يناسب هذا الشيء.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	أبيع هذه اللفيفة فقط لأعضاء الروابط من المستوى %d على الأقل.
+To nie jest bilet do tej przemiany.	هذه ليست تذكرة هذا التحول.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	هذه أرض سونغ ما: بدون مستوى البطل لن تتمكن من إيذاء الوحوش هنا.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	أُزيل التشكيل - عاد للشيء مظهره الأصلي.
+Transmutacja zakończona.	اكتمل التشكيل.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	يخضع للتشكيل فقط الأسلحة والدروع والأزياء ومظاهر الأسلحة.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	يمكن وضع حجر الهالة الجليدي أو الناري فقط هنا.
+Tu można włożyć tylko szatę aury.	يمكن وضع زي الهالة فقط هنا.
+Twoja gildia ma już otwartą Kryptę Balathora.	رابطتك لديها سرداب بالاتور مفتوح بالفعل.
+Twoja gildia nie ma otwartej Krypty Balathora.	رابطتك ليس لديها سرداب بالاتور مفتوح.
+Twoja Precyzja ma juz najwyzszy poziom (P).	دقتك بلغت أعلى مستوى بالفعل (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	مستوى البطل لديك منخفض جداً لاستخدام هذا الشيء (المطلوب: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	مستوى البطل لديك منخفض جداً لارتداء هذا الشيء (المطلوب: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	الألقاب تتطلب إصداراً أحدث من العميل - حدّث اللعبة.
+Tę księgę może przeczytać tylko lider gildii.	يمكن لقائد الرابطة فقط قراءة هذا الكتاب.
+Udało się odeprzeć lodowe zimno.	نجحت في صدّ البرد الجليدي.
+Użycie: /kod MT2009-PLUS-XXXX	الاستخدام: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	لا توجد في حقيبتك أشياء للعتاد الإضافي.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	في تجارة واحدة يمكن إعطاء 10 مليار يانغ على الأكثر.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	في برج جحيم سونغ ماهي تعمل فقط جرعات البرج (W) من التاجرة.
+W tych rekawicach nie ma wolnego miejsca na kamien.	لا توجد خانة فارغة لحجر في هذه القفازات.
+W tym stosie nie ma juz tylu sztuk.	لم يعد في هذا الكوم هذا العدد من القطع.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	قيمة المتجر ويانغ لديك سيتجاوزان حد 100 مليار يانغ.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	مظهر هذا الشيء لا يناسب فئتك.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	مظهر هذا الشيء لا يناسب جنسك.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	أُلغيت الرحلة - هرب بالاتور الخفي لكنه ترك كنزه. الخروج من السرداب بعد %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	أُلغيت الرحلة. الخروج من السرداب بعد %s.
+Wyspa Skarbow: %s (flaga %s).	جزيرة الكنوز: %s (العلم %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	أحجية الصيد تتطلب إصداراً أحدث من العميل - حدّث اللعبة.
+Włóż bilet w okno transmutacji u Teowadena.	ضع التذكرة في نافذة التشكيل عند تيوادن.
+Włóż oba przedmioty.	ضع الشيئين معاً.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: الحدث %s، الموسم %u (مغلق %d)، الألعاب على هذه النواة %u، اللوحات %d، الجذوع %d، مكافأة تنتظر %d
+Yut Nori: event sie nie odbywa.	Yut Nori: الحدث غير جارٍ.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: الحدث يبدأ للتو، حاول بعد قليل.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: يمكن إضافة جذوع البتولا فقط أثناء الحدث.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: تحتاج إلى %d x لوحة Yut Nori و%d يانغ.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: أخلِ مكاناً في الحقيبة لاستلام المكافأة.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	بعد 10 ثوانٍ ستظهر بيضة التنين المتجمدة - عندها اضربوها معاً.
+Za mało Yang (potrzeba %lld).	اليانغ غير كافٍ (تحتاج %lld).
+Zabrano tytuł %s graczowi %s.	تم سحب اللقب %s من اللاعب %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	فشل سحر العنصر! بقي السلاح دون تغيير.
+Zaczarowanie żywiołu powiodło się! %s.	نجح سحر العنصر! %s.
+Zamknij inne okna (handel, sklep, magazyn).	أغلق النوافذ الأخرى (التجارة، المتجر، المخزن).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	أغلق النوافذ الأخرى (التجارة، المتجر، المخزن، النرد) وحاول مرة أخرى.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	أغلق النوافذ الأخرى لفرز العتاد الإضافي.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	أغلق النوافذ الأخرى لدمج الأكوام في العتاد الإضافي.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	أغلق النوافذ الأخرى لنقل الأشياء إلى العتاد الإضافي.
+Zamknij inne okna, aby użyć tego przedmiotu.	أغلق النوافذ الأخرى لاستخدام هذا الشيء.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	أغلق النوافذ الأخرى لتغيير صفحة الحقيبة.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	يمكن دعوة لاعب إلى المجموعة فقط إذا كان على الخريطة نفسها والقناة نفسها.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	قف ساكناً لإخفاء الزي أو إظهاره.
+Zdejmij przedmiot i weĽ go do ekwipunku.	اخلع الشيء وضعه في الحقيبة.
+Zdejmij szatę i weź ją do ekwipunku.	اخلع الزي وضعه في الحقيبة.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	طقم الأزياء غير مكتمل - اختفت علاوة الطقم.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	طقم الأزياء: +%ld نقطة حياة و+%ld قيمة هجوم.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	أرض سونغ ما تتطلب: القوة %d، الحيوية %d، المقاومة %d، الذكاء %d - عند النقص تضعف قوتك للنصف.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	أنت تعرف صداً آخر بالفعل - يمكن امتلاك واحد فقط. هذا الكتاب لا يطوّره.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	دمّروا جدار الجليد الضخم الذي يحمي[ENTER]بيض التنين المتجمد!
+Zniszczono: %s.	تم تدمير: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	انخفض مستوى سحر العنصر: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	انخفض مستوى سحر العنصر: لم يعد للسلاح عنصر (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	المتبقي في الحقيبة: %d - لا يوجد مكان في الفئة: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	تم تصفير الحد اليومي (%s) للشخصية %s (غير متصلة): %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	تم تصفير الحد اليومي (%s) للشخصية %s%s: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	أخلِ مكاناً في الحقيبة (تحتاج %d خانات فارغة).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	أخلِ مكاناً في الحقيبة - شيء من مخزن صفحات الحقيبة ينتظر خانة فارغة.
+Zwój albo broń nie leży już w ekwipunku.	اللفيفة أو السلاح لم يعد في الحقيبة.
+Łączyć stosy można raz na 3 sekundy.	يمكن دمج الأكوام مرة كل 3 ثوانٍ.

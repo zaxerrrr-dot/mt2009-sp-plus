@@ -1,0 +1,2546 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>ae (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+    2 Ładne + Dusza = Zacny (30%)	    2 متوسط + روح = رفيع (30%)
+    3 Drobne + Dusza = Ładny (35%)	    3 صغير + روح = متوسط (35%)
+    5 Małych + Dusza = Drobny (45%)	    5 ضئيل + روح = صغير (45%)
+    Zacny + Dusza = Silny (25%)	    رفيع + روح = قوي (25%)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  تونة لمدة 60 دقيقة (أسماك نادرة كما مع أحشاء الأسماك).
+ i Kamień Księżycowy	 و حجر القمر
+%d godz.	%d ساعة
+%d godz. %d min	%d ساعة %d دقيقة
+%d godz. %d min.	%d ساعة %d دقيقة.
+%d godz., %d min.	%d ساعة، %d دقيقة.
+%d min., %d sek.	%d دقيقة، %d ثانية.
+%d sek.	%d ثانية
+%d. %s - %d pkt	%d. %s - %d نقطة
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% خبرة
+%s (%s, bonusy: %d)	%s (%s، المكافآت: %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s يبحث عنك. يبدو أنه يريد أن يخبرك[ENTER]بشيء مهم.
+%s jest już na stopniu P.	%s وصل بالفعل إلى الدرجة P.
+%s: %d. Wszystkie te punkty	%s: %d. كل هذه النقاط
+%s: nie rozdano tu jeszcze punktów.	%s: لم يتم توزيع أي نقاط هنا بعد.
+%s: osiągnięto stopień P - najwyższy.	%s: تم بلوغ الدرجة P - الأعلى.
+%s: teraz %s.	%s: الآن %s.
+(15% odporności = 4,5% mniej obrażeń).	(15% من المقاومة = ضرر أقل بنسبة 4,5%).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(حتى M1) والكتب (حتى G1) والحجر الروحي+ (حتى P).
+(drogocenne). Pakiet może zawierać m.in.:	(ثمينة). قد تحتوي الحزمة على ما يلي، من بين أمور أخرى:
+(klawisz P) na jej umiejętność.	(مفتاح P) على مهارتها.
+(klawisz P).	(مفتاح P).
+(kostium, fryzura albo nakladka na bron).	(زي أو تسريحة شعر أو غلاف للسلاح).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(مرّر المؤشر على العتاد). إن فشلت العملية تضيع المواد.
+(PB) od każdego z was.	(ا.ح) من كل واحد منكم.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(ا.ح). عد عندما تُنجز المهمة.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(انقر بالزر الأيمن على الأثر) وأضف له مكافآت بالأرواح.
+(SZC) od każdego z was.	(ف.ز) من كل واحد منكم.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(ف.ز). عد عندما تُنجز المهمة.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(حسب البلورة) لمدة ساعتين من اللعب. الشريط
++1000 PŻ (maks.)	+1000 ن.ح (حد أقصى)
++1100 PŻ (maks.)	+1100 ن.ح (حد أقصى)
++120 Obrony	+120 دفاع
++140 Obrony	+140 دفاع
++5% albo +10%. Każda maska jest inna. 	+5% أو +10%. كل قناع مختلف. 
++51 Wartości Ataku	+51 قيمة الهجوم
++60 Wartości Ataku	+60 قيمة الهجوم
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- حذاء الخفة +5..+9 - سأصنع منه حذاء المحيط.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- حذاء طائر الجليد +5..+9 - سأصنع منه حذاء ناري،
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- الوقت يمضي حتى خارج اللعبة - ثم تختفي. لا يمكن تطويرها أو تسليمها.
+- Kamyki x100,	- أحجار كريمة x100،
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- قطّعها: ربما تجد فيها شيئاً (نادراً جداً حتى سنّارة فحمية).
+- Relikt Duszy twojej klasy.	- بقايا الروح الخاصة بفئتك.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- استخدمه كطُعم: مكافأة التونة الذهبية لمدة 5 دقائق - أقوى.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- أطلقها: غالباً ستبتل (ثياب مبللة: -50 سرعة الحركة لمدة 5 دقائق)، وأحياناً تحصل على مكافأة التونة الذهبية
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- مع إكسير القوة الفارغ - إكسير قوة العنصر،
+- z Pustym Eliksirem Odp. - eliksir odporności.	- مع إكسير المقاومة الفارغ - إكسير المقاومة.
+... Skargi przyjmuję jednak wyłącznie w formie	... لكنني لا أقبل الشكاوى إلا بصيغة
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	المستوى 1: 0,8%، M1: 8%، G1: 13,1%، P: 20%.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	المستوى 1: 1,2%، M1: 12%، G1: 19,7%، P: 30%.
+1. miejsce: 10x Złote Trofeum Yutnori	المركز الأول: 10x كأس يوتنوري الذهبي
+1. poziom Świątyni Węży	المستوى الأول من معبد الأفاعي
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 يشم ظلامي، وللسلاح 5 سنادين رياح الشمال
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 سنادين، 5 مخططات أسلحة، 5 كاشطات،
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 يانغ أو خبرة،
+120 i Championem 4, 600 pkt rankingu gildii	120 ومستوى البطل 4، 600 نقطة من ترتيب الرابطة
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	قطعتان: +500 ن.ح، +1% قوة ضد الوحوش؛ 3 قطع: +1500 ن.ح، +5% قوة ضد الوحوش
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	قطعتان: +500 ن.ح، +3% سرعة الحركة؛ 3 قطع: +1500 ن.ح، +7% سرعة الحركة
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	قطعتان: +500 ن.ح، +5% خبرة؛ 3 قطع: +1500 ن.ح، +15% خبرة
+2. miejsce: 5x Złote Trofeum Yutnori	المركز الثاني: 5x كأس يوتنوري الذهبي
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 أو 500. مستوى الرداء 1000 و2000 و4000،
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 يانغ). ومن 10 شظايا فارسية II - الأميري،
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 قطع: +2500 ن.ح، +10% سحر / قتال قريب، +5% سرعة الحركة
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 قطع: +3500 ن.ح، +15% سحر / قتال قريب، +7% سرعة الحركة
+3. miejsce: 3x Złote Trofeum Yutnori	المركز الثالث: 3x كأس يوتنوري الذهبي
+300 - 399 punktow - srebrna	300 - 399 نقطة - فضية
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	المركز 4 - 10: 1x كأس يوتنوري الذهبي
+400 punktow i wiecej - zlota	400 نقطة فأكثر - ذهبية
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 فولاذ، حجر الإحياء و2 500 000 يانغ.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 يانغ، خبرة أو
+550 punktów i więcej	550 نقطة فأكثر
+6. i 7. bonus (Seon-Hae)	المكافأة السادسة والسابعة (سيون-هاي)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	مستوى العتاد 75 وتطوير +7 على الأقل.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 أو 16000 نقطة - حسب نوعها.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[الرابطة] تم دفع %d يانغ من خزانة الرابطة، و%d يانغ من حقيبتك.
+a kto polegnie, wraca do portu.	ومن يسقط يعود إلى الميناء.
+a nie każdy nadaje się do badań.	وليس كل أحد يصلح للأبحاث.
+a obecne bonusy celu zostana nadpisane.	وستُستبدل مكافآت الهدف الحالية.
+a otrzymasz lepszy kamień:	وستحصل على حجر أفضل:
+a sam WuKong czeka na śmiałków na szczycie.	ووكونغ نفسه ينتظر الشجعان على القمة.
+a spróbuję wytworzyć Odłamek Reliktu.	وسأحاول صنع شظية بقايا.
+a te zmiany są bardzo niepokojące. Moi bracia	وهذه التغييرات مقلقة جداً. إخوتي
+A teraz odczep się i pozwól mi w spokoju	والآن ابتعد ودعني في سلام
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	وسيتحول إلى صندوق الهالوين. جرّب! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	لإكمال التجدد، يجب أن تكون على خريطة معبد زودياك.
+Aby stworzyć Kryształ Energii,	لصنع بلور الطاقة،
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	آه، لقد نجحت! جيد، سأصنع لك من[ENTER]هذا منشور الإحياء.
+Aktywuj misję (300 potworów)	فعّل المهمة (300 وحش)
+Alarm w Świątyni Zodiaku	إنذار في معبد زودياك
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	استيقظ آلاستور! اهربوا من أشواك الجليد ودمّروا بيض التنين الأبيض.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	أو صباغة حمراء (حذاء المحيط)، 5 أحزمة ثقيلة
+albo sztandar użyty w hali) zabiera jeden sztandar.	أو الراية المستخدمة في القاعة) تأخذ راية واحدة.
+albo trzy kolejne liczby daja punkty - seria	أو ثلاثة أرقام متتالية تمنح نقاطاً - سلسلة
+albo u Statuy Wojownika (z odłamków I).	أو عند تمثال المحارب (من الشظايا I).
+Alchemia to nieobliczalna nauka i każdy kolejny	الكيمياء علم لا يمكن التنبؤ به وكل
+Alchemik w Dongan potrzebuje pomocy.	يحتاج الكيميائي في دونغان إلى المساعدة.
+Appaloosa bedzie z toba o 7 dni dluzej.	ستبقى أبالوزا معك 7 أيام أطول.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	حقيبة إسعاف! أُعجب بشجاعتك - كيف نجحت
+Apteczka! W ostatniej chwili - dziękuję.	حقيبة إسعاف! في اللحظة الأخيرة - شكراً.
+apteczka. Podejrzewam wojowników En-Tai, bo	حقيبة إسعاف. أشتبه بمحاربي إن-تاي، لأن
+apteczkę.	حقيبة إسعاف.
+Atak powierzchniowy cię dosięgnął.	طالتك هجمة المساحة.
+Atakuje wszystko w poblizu	يهاجم كل ما حوله
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	الصيد التلقائي معطّل في هذا العالم - احتفظ بالتذكرة.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	الصيد التلقائي متاح الآن للجميع - احتفظ بالتذكرة لوقت لاحق.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	الصيد التلقائي: +8 ساعات، المجموع %d ساعة (يُحتسب وقت اللعب فقط).
+Auto Lowy: masz juz ponad 30 dni czasu.	الصيد التلقائي: لديك بالفعل أكثر من 30 يوماً.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	الصيد التلقائي: متبقٍ %d يوم و%d ساعة (أيام تقويمية) - يعمل ما دامت التذكرة في حقيبتك.
+aż znajdziesz przy którymś z nich Lekarstwo.	حتى تجد عند أحدهم الدواء.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	باحث الغابة يبحث عن شخص شجاع. اذهب إليه.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	باحث الغابة. أولاً ستواجهون باغجانمو.
+Badam klejnoty, które powstają w lodzie Groty	أدرس الجواهر التي تتكوّن في جليد الكهف
+Badania Biologa	أبحاث عالم الأحياء
+badania są ukończone. Wybierz jeden stały bonus:	اكتملت الأبحاث. اختر مكافأة دائمة واحدة:
+badaniami. Sprawdź w Dongan, czy potrzebuje	بالأبحاث. تحقق في دونغان إن كان بحاجة
+Badanie Seona-Pyeonga	بحث سيون-بيونغ
+Badanie Seona-Pyeonga 2	بحث سيون-بيونغ 2
+Badanie Seona-Pyeonga: nagroda	بحث سيون-بيونغ: المكافأة
+badanie, które chcesz przyśpieszyć.	البحث الذي تريد تسريعه.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	تم هزيمة باغجانمو (ا.ح)! الأرض ترتجف - جاتون تيرم (ا.ح) قادم!
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	تم هزيمة باغجانمو (ف.ز)! الأرض ترتجف - جاتون تيرم (ف.ز) قادم!
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	تم هزيمة باغجانمو! الأرض ترتجف - جاتون تيرم قادم!
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	انتصر بالاثور - لم تأتِ هذه الحملة بمكافأة.
+Balathor, Biały Smok, śpi w lodowej krypcie.	بالاثور، التنين الأبيض، نائم في سرداب جليدي.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	تم هزيمة بارونة العناكب في %d:%02d! اكتملت الزنزانة.
+Baronówny zagnieździły się między regałami i nikt	عششت البارونات بين الرفوف ولا أحد
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	الصباغ والألواح حسب الدرع المختار، 10 000 000 يانغ
+Beran-Setaou (PB) został pokonany!	تم هزيمة بيران-سيتاو (ا.ح)!
+Beran-Setaou (SZC) został pokonany!	تم هزيمة بيران-سيتاو (ف.ز)!
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	بيران-سيتاو ميت. قريباً ستعودون جميعاً
+Beran-Setaou został pokonany!	تم هزيمة بيران-سيتاو!
+BETA: czas skrocony do 10s	تجريبي: تم تقصير الوقت إلى 10 ثوانٍ
+BETA: DT jest dostepne od 2 etapu.	تجريبي: DT متاح من المرحلة 2.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	بدون تذكرة أتلانتس لن تصمد في الأعماق. اشترها من ساحر أتلانتس.
+Bez Biletu do Atlantydy:	بدون تذكرة أتلانتس:
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	بدون زمرد الشجرة لن أفعل شيئاً. اهزم
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	بدون الخشب النبيل لن أفعل شيئاً. اهزم
+Bez zmian	بلا تغيير
+Biblioteka Wiedzy	مكتبة المعرفة
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	مكتبة المعرفة: انتهى الوقت. يخرجكم الحارس من المكتبة.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	مكتبة المعرفة: تم اجتياز المرحلة. بعد 5 ثوانٍ التحدي التالي.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	مكتبة المعرفة: تعذّر فتح الممر - تحدث إلى حارس المكتبة.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	مكتبة المعرفة: ختم المكتبة عمل من تلقاء نفسه.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	مكتبة المعرفة: تحدث إلى حارس المكتبة لفتح الممر.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	مكتبة المعرفة: الممر يمر عبر غرفة الانتظار.
+Biblioteka Wiedzy: przejście się otwiera...	مكتبة المعرفة: الممر يُفتح...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	مكتبة المعرفة: انتهت هذه الحملة بالفعل. تحدث إلى الحارس للانطلاق في حملة جديدة.
+Biblioteka Wiedzy: Ten loch został już ukończony.	مكتبة المعرفة: اكتملت هذه الزنزانة بالفعل.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	مكتبة المعرفة: أهلاً بكم. بعد 5 ثوانٍ ستزحف العناكب من الرفوف.
+biega za toba, broni cie i zbiera twoj drop.	يركض خلفك ويحميك ويجمع غنائمك.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	تذكرة أتلانتس تحميك من الماء والضغط
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	التذكرة تشترونها مني - الخيار: شراء تذكرة أتلانتس.
+Bilet Podrozniczy	تذكرة السفر
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	التذكرة، يمكنني اصطحابك إلى الحالة الغامضة.
+Bio-badanie 1	بحث أحيائي 1
+Bio-badanie 2	بحث أحيائي 2
+Bio-badanie 3	بحث أحيائي 3
+Bio-badanie 4	بحث أحيائي 4
+Bio-badanie 5	بحث أحيائي 5
+Bio-badanie 6	بحث أحيائي 6
+Bio-badanie 7	بحث أحيائي 7
+Bio-badanie 8	بحث أحيائي 8
+Biolog	عالم الأحياء
+Biorę tylko tyle run, ile trzeba.	آخذ فقط العدد اللازم من الرونات.
+Blogoslawienstwo obrony: moja obrona	بركة الدفاع: دفاعي
+Blogoslawienstwo odpornosci: trucizna	بركة المقاومة: السم
+Blogoslawienstwo szybkosci: bede chodzil	بركة السرعة: سأمشي
+Blogoslawienstwo zycia: moje punkty zycia	بركة الحياة: نقاط حياتي
+bo jeszcze chwilę temu byłem na imprezie	لأنني كنت قبل قليل في حفلة
+bo kiedyś przypłacisz to życiem.	لأنك ستدفع ثمن ذلك يوماً بحياتك.
+Bonus eventowy PD Uriela wg przedziału poziomów	مكافأة خبرة حدث أوريل حسب نطاق المستويات
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	أسحب المكافأة عند الصنع - وتبقى عند التطوير.
+Bonus PD +%d%% na %s	مكافأة خبرة +%d%% لمدة %s
+Bonus PD +%d%% potrwa jeszcze: %s	ستستمر مكافأة الخبرة +%d%% لمدة: %s
+Bonus PD na %s według przedziału poziomów:	مكافأة الخبرة لمدة %s حسب نطاق المستويات:
+Bonus Złotego Tuńczyka: 5 minut.	مكافأة التونة الذهبية: 5 دقائق.
+Bonus Złotego Tuńczyka: 60 minut.	مكافأة التونة الذهبية: 60 دقيقة.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	مكافآت وأحجار العتاد المُسلَّم تضيع.
+Bonusy i kamienie oddanych butow przepadaja.	مكافآت وأحجار الحذاء المُسلَّم تضيع.
+Bonusy i kamienie zostana przeniesione.	سيتم نقل المكافآت والأحجار.
+Bonusy mozna przeniesc tylko: kostium na kostium,	يمكن نقل المكافآت فقط: من زي إلى زي،
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	سيدخل رفاقك الآليون في فريقك الزنزانة معك.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	لا توجد مساحة في الحقيبة لهذا السلاح - حرّر مكاناً واختر مرة أخرى.
+Brak otwartych misji z czasem oczekiwania.	لا توجد مهام مفتوحة بوقت انتظار.
+Brak ustawionych przedziałów poziomów.	لم يتم تعيين نطاقات المستويات.
+Brakuje ci materialow albo Yang.	تنقصك المواد أو اليانغ.
+Brakuje ci przedmiotów.	تنقصك بعض العتاد.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	تنقصك ندى الإنتاي (ا.ح). احصل عليه من
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	تنقصك ندى الإنتاي (ف.ز). احصل عليه من
+Brakuje jeszcze %d klejnotów.	لا يزال ينقصك %d جواهر.
+Brama już się otwiera. Poczekaj chwilę.	البوابة تُفتح بالفعل. انتظر قليلاً.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	البوابة لا تريد أن تُفتح اليوم. حاول مجدداً
+Brazowa skrzynia (do 299 punktow)	صندوق برونزي (حتى 299 نقطة)
+Bronie dla Młodych Bohaterów	أسلحة للأبطال الشباب
+Bronie dla Młodych Bohaterów są wyłączone	أسلحة الأبطال الشباب معطّلة
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	أسلحة الأبطال الشباب معطّلة على هذا الخادم.
+Broń przyjmie wygląd broni tego samego rodzaju albo	سيتخذ السلاح مظهر سلاح من النوع نفسه أو
+Brązowy Pakiet Yutnori	حزمة يوتنوري البرونزية
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	علاوة سونغ ماهي المميزة: +10 إلى إرادة سونغ ماهي (القوة والحيوية والمقاومة والذكاء) لمدة %d ساعة أخرى.
+Buff Premium SungMa: czas tego przedmiotu już minął.	علاوة سونغ ماهي المميزة: انتهت مدة هذا العتاد.
+Buffi dostępna od 55 poziomu.	بوفي متاح من المستوى 55.
+Buffi jest wyłączony na tym serwerze.	بوفي معطّل على هذا الخادم.
+by Mikstura Talentu zadziałała.	حتى تعمل جرعة الموهبة.
+by o nim opowiedzieć.	لأتحدث عنه.
+by wejść:	للدخول:
+by złożyć z nich kryształ. Wróć, gdy będziesz	لتجمع منها بلورة. عد عندما تكون
+Bywa też u dowódców i generałów Groty Wygnańców.	يظهر أيضاً عند القادة والجنرالات في كهف المنفيين.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	البركات والسحر والتعزيز
+Błogosławieństwa. Pakiet może zawierać m.in.:	البركات. قد تحتوي الحزمة على ما يلي، من بين أمور أخرى:
+Błogosławieństwo Buffi	بركة بوفي
+błyskawic	البرق
+Błyskawica i lód (mapa 1)	البرق والجليد (الخريطة 1)
+Błyskawicy	البرق
+błyskawicę, lód, wiatr, ziemię albo mrok.	البرق أو الجليد أو الرياح أو الأرض أو الظلام.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	لامعة - 10x حجر فوضى عادي و5 000 000 يانغ،
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	الخطأ من طبيعة البشر - اختر بحكمة.
+całą drużynę stojącą obok.	الفريق كله الواقف بجانبك.
+Cel (otrzyma bonusy zrodla):	الهدف (سيحصل على مكافآت المصدر):
+Chaegirab ciągle jeszcze zajęty jest swoimi	لا يزال تشيغيراب مشغولاً بـ
+Chaegirab w Dongan potrzebuje pomocy.	تشيغيراب في دونغان يحتاج إلى المساعدة.
+Chaos w Zaklętym Lesie	الفوضى في الغابة المسحورة
+Chcesz opuścić Kryptę Balathora?	هل تريد مغادرة سرداب بالاثور؟
+Chcesz teraz wymienić Kartę Maski Dyni	هل تريد الآن استبدال بطاقة أقنعة الهالوين
+Chcę zabić tego smoka!	أريد قتل هذا التنين!
+choć jeden, żaden cios go nie zrani.	ولو واحداً، فلن تجرحه أي ضربة.
+Cialo (Body)	الجسد (Body)
+ciebie ekwipunek Smoka Mroku.	عتاد تنين الظلام لك.
+cię wieczne potępienie.	لعنة أبدية.
+Co mam zrobic?	ماذا يجب أن أفعل؟
+co najmniej jednego towarzysza z grupy.	رفيق واحد على الأقل من المجموعة.
+Co się dzieje?! Morze się wzburzyło... Czyżby	ما الذي يحدث؟! البحر هائج... هل
+Codzienna misja Świat Iluzji: Nemere pokonany.	المهمة اليومية عالم الأوهام: تم هزيمة نمير.
+Codzienna misja Świat Iluzji: Razador pokonany.	المهمة اليومية عالم الأوهام: تم هزيمة رازادور.
+Codzienna misja: Świat Iluzji	المهمة اليومية: عالم الأوهام
+Cor Draconis (zwyczajne, szlachetne), perły,	كور دراكونيس (عادي، نبيل)، لآلئ،
+Cos poszlo nie tak.	حدث خطأ ما.
+Czarna Magia	السحر الأسود
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	الوقت - من 10 إلى 60 دقيقة. غبار الأفعى يضيف دقيقة.
+Czas minął - Alastor wypędza was z Głębi.	انتهى الوقت - آلاستور يطردكم من الأعماق.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	انتهى الوقت! سونغ ماهي يطردك من البرج.
+Czas minął. Możesz spróbować jeszcze raz.	انتهى الوقت. يمكنك المحاولة مرة أخرى.
+Czas oczekiwania został skrócony.	تم تقصير وقت الانتظار.
+Czas odbioru nagrod juz minal.	انتهى وقت استلام الجوائز.
+czeka Morkhot, władca głębin.	يتربص مورخوت، سيد الأعماق.
+czeka na ciebie - on wie, gdzie szukać Władców	ينتظرك - فهو يعرف أين يبحث عن سادة
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	ينتظر نمير، سيد الصقيع. لم يعد أحد من هناك،
+Czekaj na event w kalendarzu wydarzeń.	انتظر الحدث في تقويم الأحداث.
+Czempion	البطل
+Czempiona (Opcje klawiszy: Czempion).	البطل (خيارات المفاتيح: البطل).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	الجنكة الحمراء (فاخرة) هي علف الحصان الحربي القوي (31+).
+Czerwone Pudło Zodiaku	صندوق زودياك الأحمر
+Czerwony Żeń-szeń 	جنكة حمراء 
+cztery fale, a skarb Hydry będzie twój.	أربع موجات، وسيكون كنز هيدرا لك.
+Czuje sie silniejszy! Dziekuje.	أشعر أنني أقوى! شكراً.
+Czujesz tę pulsującą energię?	هل تشعر بهذه الطاقة النابضة؟
+Czwartek (Wu-Wei)	الخميس (وو-وي)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	هل تريد مغادرة الكهوف والعودة إلى دونغان؟
+Czy chcesz opuścić Królestwo Żywiołów	هل تريد مغادرة مملكة العناصر
+Czy chcesz opuścić Schronienie Meley? Walka trwa	هل تريد مغادرة ملجأ ميلي؟ القتال مستمر
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	هل تريد مغادرة البرج؟ سينتهي التسلق.
+Czy chcesz opuścić świątynię?	هل تريد مغادرة المعبد؟
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	هل تريد رفع المرساة والانطلاق؟
+Czy chcesz przejść przez Gardziel Am-heha i	هل تريد عبور مضيق آم-هيه و
+Czy chcesz się teleportować?	هل تريد الانتقال الفوري؟
+Czy chcesz teraz wejść Świątyni Zodiaku?	هل تريد الآن دخول معبد زودياك؟
+Czy chcesz teraz zejść ze statku? Wejście	هل تريد الآن النزول من السفينة؟ الدخول
+Czy chcesz użyć Spirali Czasu?	هل تريد استخدام حلزون الزمن؟
+Czy chcesz wrócić na Przełęcz Yilad?	هل تريد العودة إلى ممر ييلاد؟
+Czy chcesz wrócić z Tajemniczej Instancji	هل تريد العودة من الحالة الغامضة
+Czy chcesz zejść głębiej do jaskiń?	هل تريد النزول أعمق في الكهوف؟
+Czy chcesz zejść na ląd?	هل تريد النزول إلى البر؟
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	هل تريد أن آخذك إلى المعبد؟
+Czy jestes jednym z nich?	هل أنت واحد منهم؟
+Czy jesteście gotowi stanąć przed Nemere (PB),	هل أنتم مستعدون للوقوف أمام نمير (ا.ح)،
+Czy jesteście gotowi stanąć przed Nemere (SZC),	هل أنتم مستعدون للوقوف أمام نمير (ف.ز)،
+Czy na pewno chcesz zregenerować wszystkie portale?	هل أنت متأكد أنك تريد تجديد كل البوابات؟
+Czy na pewno chcesz zregenerować?	هل أنت متأكد أنك تريد التجديد؟
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	هل تتذكر كهوف الغنيز
+Czy znasz legendę o Świątyni Zodiaku?	هل تعرف أسطورة معبد زودياك؟
+czyste egzemplarze.	نسخ نقية.
+Czyściec Ognia (Razador)	مطهر النار (رازادور)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	مطهر النار: تعذّر فتح البوابة - تحدث إلى تمثال آم-هيه.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	مطهر النار: تحدث إلى تمثال آم-هيه لفتح البوابة.
+Czyściec Ognia: portal się otwiera...	مطهر النار: البوابة تُفتح...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	مطهر النار: الممر يمر عبر غرفة الانتظار.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	قطع (مقدس 500 000، فاخر 1 000 000، فارسي
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	أحد أعضاء المجموعة بعيد جداً. اجتمعوا عندي.
+Członek grupy nie posiada przedmiotu potrzebnego,	عضو المجموعة لا يملك العتاد المطلوب،
+Członkowie, posiadający za mało Animosfer:	الأعضاء الذين لديهم عدد قليل جداً من كرات الحياة:
+członków gildii obecnych w Krypcie.	أعضاء الرابطة الموجودون في السرداب.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	يمنح نقطة خبرة واحدة، والناري - 10 و50 و100،
+dalej bez ciebie - możesz do niej wrócić u mnie	بدونك - يمكنك العودة إليها عندي
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	الشياطين. الأفضل الحصول عليها من مدمّري إنتاي.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	الشياطين. في نافذة الصنع سترى كل وصفة:
+Dla twojego poziomu: +%d%% PD	لمستواك: +%d%% خبرة
+dla twojej klasy. Uda się na pewno.	لفئتك. سينجح الأمر بالتأكيد.
+do Chaegiraba w Dongan po nagrodę.	إلى تشيغيراب في دونغان لاستلام المكافأة.
+Do Erebu wchodzi się tylko w grupie.	يُدخل إلى إريبو فقط ضمن مجموعة.
+do Groty Wygnańców.	إلى كهف المنفيين.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	أُدخل الكهوف ابتداءً من المستوى الأول للبطل.
+Do którego obszaru chcesz się udać?	إلى أي منطقة تريد الذهاب؟
+Do lochu wchodzi najwyżej 8 osób.	يدخل الزنزانة 8 أشخاص على الأكثر.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	يُدخل إلى زنازين البعث فقط ضمن مجموعة.
+do Namgan?	إلى نام جوانج؟
+do niej wejść przeze mnie.	الدخول إليها عن طريقي.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	إلى P. ليس لديك أي منها في الدرجة G1-G10.
+Do Portu Nowego Kontynentu	إلى ميناء القارة الجديدة
+Do przeniesienia bonusow z jednego kostiumu na drugi	لنقل المكافآت من زي إلى آخر
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	إلى حصن نمير (ا.ح): النينجا والشامان ضمن المجموعة.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	إلى حصن نمير (ف.ز): النينجا والشامان ضمن المجموعة.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	يدخل فاصل الزمن 8 أشخاص على الأكثر.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	يُدخل إلى فاصل الزمن فقط ضمن مجموعة.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	إضافة إلى ذلك شكل المظهر وصباغة زرقاء (حذاء ناري)
+Do walki z Balathorem	لمحاربة بالاثور
+do wyboru.	للاختيار.
+Do zakończenia badań potrzebuję jeszcze	لإنهاء الأبحاث أحتاج أيضاً إلى
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	إلى أراضي يوهارا، حيث تحكم إرادة سونغ ماهي.
+Do Świątyni Smoka wchodzi się tylko w grupie.	يُدخل إلى معبد التنين فقط ضمن مجموعة.
+Do świątyni wchodzi najwyżej 8 osób.	يدخل المعبد 8 أشخاص على الأكثر.
+Dobra robota. Las od razu oddycha lżej.	عمل جيد. الغابة تتنفس الآن بارتياح.
+Dobrze	حسناً
+Dobrze! Następny Metin.	حسناً! ماتين التالي.
+Dobrze, szanuję twoją decyzję. Wróć,	حسناً، أحترم قرارك. عد،
+Dobrze, w takim razie chodz za mna!	حسناً، إذن اتبعني!
+Dobrze, zbadam je. Wróć po wynik za dobę.	حسناً، سأفحصها. عد للنتيجة بعد يوم.
+Dodano %d Smoczych Monet do Twojego konta.	تمت إضافة %d عملة تنين إلى حسابك.
+dodasz Wzmocnieniem Przedmiotu.	ستضيفه بتعزيز العتاد.
+Dodatkowy bonus (6. i 7.)	مكافأة إضافية (السادسة والسابعة)
+Dokad chcesz sie udac?	إلى أين تريد الذهاب؟
+Dokąd chcesz się przenieść?	إلى أين تريد الانتقال؟
+Dokąd chcesz się udać?	إلى أين تريد الذهاب؟
+Dom Aukcyjny	دار المزادات
+Dom Aukcyjny jest na tym świecie wyłączony.	دار المزادات معطّلة في هذا العالم.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	الدفعة تزيد الضرر الذي تُلحقه مهارة واحدة.
+Dopalacz: Duchowe Uderzenie	دفعة: الهجوم الاختراقي
+Dopalacz: Mroczne Uderzenie	دفعة: الضربة الشريرة
+Dopalacz: Ognista Strzała	دفعة: السهم الناري
+Dopalacz: Przywołanie Błyskawicy	دفعة: استدعاء البرق
+Dopalacz: Strzelający Smok	دفعة: التنين الرامي
+Dopalacz: Uderzenie Palcem	دفعة: ضربة الإصبع
+Dopalacz: Wir Miecza	دفعة: دوامة السيف
+Dopalacz: Zasadzka	دفعة: الكمين
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	ستتعلم الدفعة عندما تطوّر أي صدّ إلى المستوى P.
+dopiero początek. Teraz potrzebuję Klejnotów	مجرد بداية. الآن أحتاج إلى جواهر
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	ما دام واحد منهم قائماً، لا يمكن جرح التنين.
+Doskonały okaz! Dziękuję.	عينة ممتازة! شكراً.
+dostajesz jeden taki Łup za każdą postawioną talię.	تحصل على غنيمة واحدة كهذه عن كل رزمة أوراق توضع.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	ستحصل على دوبلون واحد، وعندما نجد الصحيح
+dostaniesz ode mnie maski! He he! 	ستحصل مني على الأقنعة! هي هي! 
+Dostarcz apteczkę Zwiadowcy	سلّم حقيبة إسعاف الكشاف
+doszedł na szczyt i obronił statek przed Hydrą.	بلغ القمة وحمى السفينة من هيدرا.
+Doświadczenie Czempiona dają potwory ziemi	خبرة البطل تمنحها وحوش الأرض
+doświadczeniem szata czeka na ewolucję.	بالخبرة يبقى الرداء ينتظر التطور.
+Draconis (mityczne, drogocenne), perły, kolczyki	دراكونيس (أسطوري، ثمين)، لآلئ، أقراط
+drogę na nowy kontynent. Czy mam cię zabrać do	الطريق إلى القارة الجديدة. هل آخذك إلى
+dropują, ale dają więcej PD niż zazwyczaj.	تُسقط الغنائم، لكنها تمنح خبرة أكثر من المعتاد.
+Druga fala - i Szel (PB)!	الموجة الثانية - وسُزيْل (ا.ح)!
+Druga fala - i Szel (SZC)!	الموجة الثانية - وسُزيْل (ف.ز)!
+Druga wioska	القرية الثانية
+Drugi rekonesans	الاستطلاع الثاني
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	الاستطلاع الثاني: عد إلى كشاف الغابة.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	كاهن الإنتاي (ا.ح) لا بد أنه في مكان قريب. خذ
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	كاهن الإنتاي (ف.ز) لا بد أنه في مكان قريب. خذ
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	كان مع كاهن الإنتاي حقيبة إسعاف (ا.ح). أوصلها إلى حارس الغابة (ا.ح).
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	كان مع كاهن الإنتاي حقيبة إسعاف (ف.ز). أوصلها إلى حارس الغابة (ف.ز).
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	كان مع كاهن الإنتاي حقيبة إسعاف. أوصلها إلى حارس الغابة.
+Drużyna na tej mapie wejdzie razem z tobą.	سيدخل الفريق هذه الخريطة معك.
+Drużyna nie jest wymagana.	لا يلزم وجود فريق.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	روح الأرض! بفضله سنفهم ما يحدث
+Duchowym Buffi.	بحجر بوفي الروحي.
+Duchowym+.	بالروحي+.
+duchy sześciu żywiołów strzegą swoich ziem.	أرواح العناصر الستة تحرس أراضيها.
+Dusza Miecza	روح السيف
+Dusza Miecza (powtarzalna)	روح السيف (قابلة للتكرار)
+Dusza Ochrony	روح الحماية
+Dusza Ochrony (powtarzalna)	روح الحماية (قابلة للتكرار)
+Dusza Ozdoby	روح الزينة
+Dusza Ozdoby (powtarzalna)	روح الزينة (قابلة للتكرار)
+Dusza Światła	روح النور
+Dusza Światła (powtarzalna)	روح النور (قابلة للتكرار)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	ذو رأس القرع! اسمي جاك بامبكين، وهذا
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	تعمل الآن سمكة الخبرة الأفضل - الأضعف لن تعمل معها.
+działają u Ciebie o połowę rzadziej.	تعمل عندك بنصف التكرار.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	شكراً على المساعدة! بعد قليل ستعود إلى اليابسة.
+Dziekuje! Oto twoje szkatulki.	شكراً! هذه صناديقك الصغيرة.
+Dziekuje, ze mnie tu odprowadziles.	شكراً لأنك رافقتني إلى هنا.
+Dziesieciu graczy z najwieksza suma punktow	عشرة لاعبين بأكبر مجموع نقاط
+Dziesięciu graczy z najwyższym łącznym wynikiem	عشرة لاعبين بأعلى نتيجة إجمالية
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	بفضل قوتي ستدخل زنازين البعث.
+Dzięki temu skróci się czas oczekiwania. Wybierz	بذلك سيقصر وقت الانتظار. اختر
+Dzięki tobie moje badania są ukończone.	بفضلك اكتملت أبحاثي.
+Dziękuję ci za pomoc, wojowniku.	أشكرك على المساعدة أيها المحارب.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	أشكرك على المساعدة أيها المحارب. الغابة ممتنة لك.
+Dziękuję ci. Wynagrodzę cię za pomoc.	أشكرك. سأكافئك على مساعدتك.
+Dziękuję za pomoc. Weź to w nagrodę.	شكراً على المساعدة. خذ هذا مكافأة.
+Dziękuję, już mi lepiej. Do uszlachetnienia	شكراً، أشعر بتحسن الآن. للتهذيب
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	شكراً. المعبد آمن في الوقت الحالي. هذه[ENTER]هديتك. لكن الطاقة سترتفع من جديد. عد[ENTER]بعد 24 ساعة لتخفض مستوى الطاقة[ENTER]بواسطة كرات الحياة. بالطبع ستحصل على[ENTER]مكافأة أخرى مقابل ذلك.
+Efekt zestawu	تأثير المجموعة
+eksperyment może się nie powieść.	قد تفشل التجربة.
+ekwipunek. Potrafie tez oszlifowac klejnoty	العتاد. أستطيع أيضاً صقل الجواهر
+eliksir (szansa 90%, od 120. poziomu):	الإكسير (فرصة 90%، من المستوى 120):
+Eliksir daje od 8 do 20% na 1 do 10 minut -	يمنح الإكسير من 8 إلى 20% لمدة 1 إلى 10 دقائق -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	الإكسير لا يعمل في مهام يوهارا ولا يقصّر وقت الانتظار (لهذا هناك حلزون الزمن).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	إكسير العالم يعمل في أبحاث عالم الأحياء - من المستوى 30.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	إكسير العالم يعمل الآن - سيُستهلك عند التسليم التالي للعتاد للأبحاث.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	إكسير العالم حسّن جودة العتاد: فرصة القبول %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	إكسير إرادة سونغ ماهي: +5 (%s) لمدة 30 دقيقة.
+Eliksiry Yohary	إكسيرات يوهارا
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	الإنتاي (ا.ح). جده وخذ منه حقيبة الإسعاف.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	الإنتاي (ف.ز). اقتل الكهنة حتى تحصل على
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	الإنتاي يتصرفون بغرابة على الأقل. قلّص عددهم
+En-Tai, bo zachowują się co najmniej dziwnie.	الإنتاي، لأنهم يتصرفون بغرابة على الأقل.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	الموسوعة مفتوحة: 25 تعليمات مهارة في حقيبتك.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	الموسوعة: تحتاج إلى %d أماكن فارغة في الحقيبة.
+energii przy pasku zadań pokaże, ile ci zostało.	الطاقة عند شريط المهام ستُظهر كم بقي لك.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	إريبو (ا.ح): باغجانمو (ا.ح) يحرس الطريق إلى جاتون تيرم!
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	إريبو (ف.ز): باغجانمو (ف.ز) يحرس الطريق إلى جاتون تيرم!
+Erebu jest dziś zamknięte. Wróć później.	إريبو مغلق اليوم. عد لاحقاً.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	إريبو لن يستقبلكم الآن. حاول بعد قليل.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	إريبو: باغجانمو يحرس الطريق إلى جاتون تيرم! أمامكم 30 دقيقة.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	إريبو: انتهى الوقت - تعودون إلى الغابة المسحورة.
+Erebu: potrzebujesz Kamienia Driad.	إريبو: تحتاج إلى حجر الدرياد.
+Erebu: ta wyprawa już się skończyła.	إريبو: انتهت هذه الحملة بالفعل.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	المرحلة 2: اهزم الحجر الشيطاني وكل الوحوش! يستيقظ الرماة عندما يُصاب الحجر.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	المرحلة 2: اهزم الوحوش ضمن الوقت المحدد! لعنة سونغ ماهي تسحب كل 10 ثوانٍ مزيداً من ن.ح - وترياق سونغ ماهي يزيلها.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	المرحلة 2: تجنّب كل الهجمات لمدة دقيقة! الإصابة بالدائرة تترك 1 ن.ح - والثانية عند ن.ح غير كامل تقتل.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	المرحلة 2: اعثر على الحجر لإزالة الختم! تُفتح الأختام فقط بالترتيب الصحيح.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	المرحلة 2: اعثر على المفتاح المناسب للهروب! المفتاح الغامض يسقط من الوحوش.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	المرحلة 2: اعثر على زوج الوحوش غير المتطابقين واهزمهما!
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	المرحلة 2: دمّر حجر الماتين الصحيح! لديك فرصة واحدة.
+Etap ukończony - przejdź przez portal	اكتملت المرحلة - اعبر البوابة
+Event jeszcze trwa - nagrody za ranking	الحدث لا يزال مستمراً - جوائز الترتيب
+eventu odbiera tu po jego końcu (przez 7 dni):	الحدث يُستلم هنا بعد انتهائه (لمدة 7 أيام):
+Ewolucja zawsze się udaje i daje +1 poziom,	التطور ينجح دائماً ويمنح +1 مستوى،
+Fabuła	القصة
+Fala Śmierci	موجة الموت
+Fragment duszy: %d / 10	شظية الروح: %d / 10
+fryzure na fryzure, nakladke na nakladke.	تسريحة على تسريحة، وغلاف على غلاف.
+Gardziel Am-heha	مضيق آم-هيه
+Gaya biorę sam z twojego licznika Gaya.	آخذ الغايا بنفسي من عدّاد الغايا لديك.
+Gaya biorę z twojego licznika Gaya.	آخذ الغايا من عدّاد الغايا لديك.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	آخذ الغايا من عدّاد الغايا لديك. انقر على الوصفة،
+gdy się nie uda, hełm i materiały przepadają.	إن فشلت العملية تضيع الخوذة والمواد.
+gdy skończę.	عندما أنتهي.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	عندما تبحر السفينة لن يكون هناك رجوع - هيدرا
+Gdy walka się zacznie, świątynia odmierzy wam	عندما يبدأ القتال سيعدّ المعبد لكم
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	أين حقيبة الإسعاف؟ خذها من كهنة الإنتاي.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	أين حقيبة الإسعاف؟ خذها من كاهن الإنتاي.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	أين زمرد الشجر (ا.ح)؟ اهزم السيد.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	أين زمرد الشجر (ف.ز)؟ اهزم السيد.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	أين الخشب الرفيع (ف.ز)؟ اهزم السيد.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	أين الخشب الرفيع (ا.ح)؟ اهزم السيد.
+Gildia może wejść ponownie za %d min.	يمكن للرابطة الدخول مجدداً بعد %d دقيقة.
+Gildia musi istnieć co najmniej 24 godziny.	يجب أن تكون الرابطة موجودة 24 ساعة على الأقل.
+Gildia musi mieć co najmniej %d poziom.	يجب أن يكون مستوى الرابطة %d على الأقل.
+Gildia potrzebuje %d pkt rankingu gildii.	تحتاج الرابطة إلى %d نقطة من ترتيب الرابطة.
+Glos Barah Taraji	صوت باراه تاراج
+GM: Krypta Balathora - zeruj przerwę gildii	GM: سرداب بالاثور - تصفير فترة انتظار الرابطة
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM: يجب أن تكون في الطابق 1 أو 2 من DT.
+GM: szanse połowu	GM: فرص الصيد
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	غضب آلاستور! يستدعي الخدم ويشفي جراحه.
+Goblin Skarbow:	عفريت الكنوز:
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	هزيمة مريرة! ينتهي تسلقك هنا - بعد قليل تعود إلى القاعة.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	تم! تحدث إليّ مرة أخرى.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	تم! عد إلى الراهب ميلبون لاستلام الهدية.
+Gotowe. Bonus PD +%d%% na %s	تم. مكافأة الخبرة +%d%% لمدة %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	تم. نُقلت المكافآت، والعتاد
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	تم. ضع الأثر في نافذة مكافأة الأثر
+Gotowi? Balathor nie zna litości.	مستعدون؟ بالاثور لا يعرف الرحمة.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	تكلفة اللعبة 30 000 يانغ ومجموعة أوراق واحدة.
+Graj po swojemu (wolna reka)	العب على طريقتك (يد حرة)
+Gratulacje! Za miejsce w pierwszej dziesiątce	تهانينا! على مركز ضمن العشرة الأوائل
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	تنهي اللعبة متى شئت. تحصل على صندوق:
+Gromiste Góry	جبال الرعد
+Grota Wygnańców (wejście)	كهف المنفيين (المدخل)
+Grota Wygnańców 2	كهف المنفيين 2
+Grota Wygnańców 2 (PB)	كهف المنفيين 2 (ا.ح)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	كهف المنفيين 2 (ا.ح): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	كهف المنفيين 2 (ا.ح): لديك 60 دقيقة. اجمعوا المفاتيح الملتوية (ا.ح) وابحثوا عن شبح سورا.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	كهف المنفيين 2 (ا.ح): تحتاج إلى كتاب الإحياء.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	كهف المنفيين 2 (ا.ح): انتهت هذه الحملة بالفعل.
+Grota Wygnańców 2 (SZC)	كهف المنفيين 2 (ف.ز)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	كهف المنفيين 2 (ف.ز): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	كهف المنفيين 2 (ف.ز): لديك 60 دقيقة. اجمعوا المفاتيح الملتوية (ف.ز) وابحثوا عن شبح سورا.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	كهف المنفيين 2 (ف.ز): تحتاج إلى ساعة جيب.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	كهف المنفيين 2 (ف.ز): انتهت هذه الحملة بالفعل.
+Grota Wygnańców 2 (zablokowane)	كهف المنفيين 2 (مقفل)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	كهف المنفيين 2 متاح فقط من كهف المنفيين.
+Grrr, to nie jest kryształ Metin, lecz kawałek	غررر، هذه ليست بلورة ماتين، بل قطعة
+Głębie (silny)	الأعماق (قوي)
+Głębie (słaby)	الأعماق (ضعيف)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	الأعماق لن تستقبلكم الآن. حاول بعد قليل.
+Głębie Północnego Wiatru	أعماق رياح الشمال
+Głębie Północnego Wiatru (silny)	أعماق رياح الشمال (قوي)
+Głębie Północnego Wiatru (słaby)	أعماق رياح الشمال (ضعيف)
+Głębie są dziś zamknięte. Wróć później.	الأعماق مغلقة اليوم. عد لاحقاً.
+Głębie: ta wyprawa już się skończyła.	الأعماق: انتهت هذه الحملة بالفعل.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	الأعماق: بقيت ميتاً طويلاً جداً - تُستبعد من الحملة.
+Halloween, nagle zawirował cały świat i w ułamku	الهالوين، فجأة دار العالم كله وفي جزء من
+Handlarz Bronią w Dongan potrzebuje pomocy.	بائع الأسلحة في دونغان يحتاج إلى المساعدة.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	بائع الدروع في دونغان يحتاج إلى المساعدة.
+Hej! Wiem, że zamieniono mnie w kamień - to	مهلاً! أعرف أنهم حوّلوني إلى حجر - هذا
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	هي، أنت! نعم، أنت! تبدو كمن يعرف
+hełm 120. poziomu dla każdej klasy. Połóż materiały	خوذة المستوى 120 لكل فئة. ضع المواد
+Hełmy na 100 poziom	خوذ للمستوى 100
+Hmm... Nie mam maski, która pasowałaby	همم... ليس لدي قناع يناسب
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	هممم، هذه السرخسية تالفة للأسف. لا
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	الهواتشا ليست جاهزة بعد (تلزم سهام نارية).
+Hydra pokonana! Statek może teraz dopłynąć do	تم هزيمة هيدرا! يمكن للسفينة الآن الوصول إلى
+i 400 000 Yang. Szansa zależy od plusa butów:	و400 000 يانغ. الفرصة تعتمد على زيادة الحذاء:
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	و5 مشحذات رياح الشمال، وللدرع 5 حرير الأفعى
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	و5 ملمّعات الأفعى. التكلفة: 10 000 000 يانغ و100 غايا،
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	وظلمة الأعماق. بدونه لن تنزل إلى الأطلال.
+i co najmniej 500 000 Yang w skarbcu gildii.	و500 000 يانغ على الأقل في خزانة الرابطة.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	وخوذة (مثال لفئتك، +7) وكل
+i magowie strzega swiatyni dzien i noc, a po jej	والسحرة يحرسون المعبد ليلاً ونهاراً، وبعد
+i materiały - wszystkie przepisy zobaczysz w oknie.	والمواد - سترى كل الوصفات في النافذة.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	وقد يعمل بشكل خاطئ. يشغّله صاحب
+i Podziemnych Lodowych Golemów w Grocie.	وتماثيل الجليد الجوفية في الكهف.
+i Starożytna Dżungla (wiatr). Odporność	والأدغال القديمة (الرياح). المقاومة
+i te dodane. Im wyższy poziom szaty, tym większa	وتلك المضافة. كلما ارتفع مستوى الرداء زاد
+i wrócić do Portu Nowego Kontynentu?	والعودة إلى ميناء القارة الجديدة؟
+i Zaczarowanego Lasu (wiatr) oraz lochy:	والغابة المسحورة (الرياح) وكذلك الزنازين:
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	ودرع المستوى 65 أصنع جديداً أقوى
+ich blask zmienia się pod wpływem emocji.	يتغير بريقها بتأثير المشاعر.
+Ich strażnicy pilnują Płomiennego Feniksa,	حراسهم يحرسون العنقاء اللهيبية،
+Idź dalej	تابع الطريق
+Idź do Opuszczonej Twierdzy	اذهب إلى الحصن المهجور
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	اذهب إلى جهاز الانتقال وانتقل إلى معبد[ENTER]زودياك. الراهب ميلبون ينتظرك هناك بالفعل.
+Idź do Świątyni Węży	اذهب إلى معبد الأفاعي
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	اذهب مرة أخرى إلى سادة الإنتاي وأحضر لي زمرد
+Idź już i znajdź jeden %s!	اذهب الآن وجد واحداً من %s!
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	نارمر (ا.ح) لا يزال حياً. واصل القتال أو ينتظر
+Ignator (PB), strażnik żaru, został pokonany.	تم هزيمة نارمر (ا.ح)، حارس الجمر.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	نارمر (ف.ز) لا يزال حياً. واصل القتال أو ينتظر
+Ignator (SZC), strażnik żaru, został pokonany.	تم هزيمة نارمر (ف.ز)، حارس الجمر.
+Informacja o mapie	معلومات الخريطة
+innym... Czegoś takiego na pewno jeszcze nie	آخرين... شيئاً كهذا بالتأكيد لم
+Inteligencja %d.	الذكاء %d.
+Inteligencja - trucizna, ogień i krwawienie	الذكاء - السم والنار والنزيف
+Inteligencja Sung Ma	ذكاء سونغ ماهي
+ja wyrzucasz. Trzy karty o tej samej liczbie	ترميها. ثلاث أوراق بالرقم نفسه
+Jak grac w Okey?	كيف تلعب Okey؟
+Jak ma sie nazywac?	ماذا سيكون اسمه؟
+Jak ma walczyc?	كيف سيقاتل؟
+Jak mam walczyc przy tobie?	كيف أقاتل بجانبك؟
+Jak sie masz?	كيف حالك؟
+Jaka ma byc jego klasa?	ما هي فئته؟
+Jaka sciezka?	أي طريق؟
+Jaskinie Gnolli	كهوف الغنيز
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	كهوف الغنيز متاحة من المستوى الأول للبطل. تعود إلى دونغان.
+Jazda (Bezszelest. Chód)	ركوب (المشي بخفة)
+Jazda (Brak Odrzutu)	ركوب (لا سقوط)
+Jazda (Gwałt. Wichura)	ركوب (عاصفة غاضبة)
+Jazda (Nieśmiertelność)	ركوب (مناعة)
+Jazda (umiej. konne)	ركوب (مهارة الفروسية)
+Jazda (W. SungMa. INT)	ركوب (إرادة سونغ ماهي: ذكاء)
+Jazda (W. SungMa. ODP)	ركوب (إرادة سونغ ماهي: مقاومة)
+Jazda (W. SungMa. SIŁA)	ركوب (إرادة سونغ ماهي: قوة)
+Jazda (W. SungMa. WIT)	ركوب (إرادة سونغ ماهي: حيوية)
+Jazda (Zwinne Kopyta)	ركوب (حوافر ذكية)
+Jazda Konna (Ninja)	ركوب الخيل (النينجا)
+Jazda Konna (PD)	ركوب الخيل (الخبرة)
+Jazda Konna (Precyzja)	ركوب الخيل (الدقة)
+Jazda Konna (przeciw diabłom)	ركوب الخيل (ضد الشياطين)
+Jazda Konna (przeciw insektom)	ركوب الخيل (ضد الحشرات)
+Jazda Konna (przeciw mistykom)	ركوب الخيل (ضد الغامضين)
+Jazda Konna (przeciw nieumarłym)	ركوب الخيل (ضد الموتى الأحياء)
+Jazda Konna (przeciw orkom)	ركوب الخيل (ضد الغيلان)
+Jazda Konna (przeciw potworom pustyni)	ركوب الخيل (ضد وحوش الصحراء)
+Jazda Konna (przeciw potworom)	ركوب الخيل (ضد الوحوش)
+Jazda Konna (przeciw półludziom)	ركوب الخيل (ضد أنصاف البشر)
+Jazda Konna (przeciw zwierzętom)	ركوب الخيل (ضد الحيوانات)
+Jazda Konna (Sura)	ركوب الخيل (السورا)
+Jazda Konna (Szaman)	ركوب الخيل (الشامان)
+Jazda Konna (Wojownik)	ركوب الخيل (المحارب)
+Jeden transfer zuzywa jedna sztuke.	كل عملية نقل تستهلك قطعة واحدة.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	أحد العتاد المختار لم يعد في
+Jedna z twoich mocy woli SungMa zostanie	إحدى قوى إرادة سونغ ماهي لديك ستُ
+jednak: tylko pierwsza próba zawsze się udaje.	لكن: المحاولة الأولى فقط تنجح دائماً.
+jednego jadeitu potrzebują tych samych materiałów.	يحتاج يشم واحد إلى المواد نفسها.
+jedną pełną kulę doświadczenia.	كرة خبرة كاملة واحدة.
+Jego jad zabił już niejednego wojownika,	سمّه قتل أكثر من محارب،
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	قشوره تلمع كالذهب السائل! ماذا ستفعل به؟
+Jej Królowa nie wypuściła jeszcze nikogo,	ملكتها لم تُخرج منها أحداً بعد،
+jej potomstwem, najadami i samą bestią. Wytrzymaj	نسلها وحوريات الماء والوحش نفسه. اصمد
+Jej potwory rani tylko Czempion - ten, kto	وحوشها لا يجرحها إلا البطل - من
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	إن متُّ أنا أو أنت، تضيع الحملة.
+jest część parametrów, którą da (poziom 250 - 25%).	جزء من الإحصاءات التي ستمنحها (المستوى 250 - 25%).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	أنا عفريت الكنوز. أبحث منذ سنوات عن عظيم
+Jestem w trakcie dokładniejszej analizy	أنا في خضم تحليل أدق
+jesteś dość silny, by przetrwać. Naprawdę chcesz	أنت قوي بما يكفي لتنجو. هل تريد حقاً
+Jesteś już w Porcie Nowego Kontynentu.	أنت بالفعل في ميناء القارة الجديدة.
+Jeszcze chwile	لحظة بعد
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	وزمرد الشجر الخاص به، وسأعطيك شيئاً ثميناً.
+jeszcze lepsze. Przynies mi:	أفضل بعد. أحضر لي:
+Jeszcze nie	ليس بعد
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	لم يرتاحوا بعد من الحملة السابقة:
+Jeszcze nie skończyłem. Wróć za:	لم أنتهِ بعد. عد بعد:
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	لم تنجح بعد في تدمير كل حجارة الماتين الـ %d.[ENTER]عد إليّ عندما تنجز[ENTER]هذه المهمة.
+Jeszcze nieaktywne.	غير مفعّل بعد.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	لبعض الوقت بعد. يؤدي إلى الغابة المسحورة،
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	مرة أخرى إلى سادة الإنتاي وأحضر لي زمرد
+jeśli się rozmyślisz.	إن غيّرت رأيك.
+Jeśli statek wciąż płynie, łódź zaraz cię do	إن كانت السفينة لا تزال تبحر، فسيأخذك القارب إلى
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	إن كانت الحملة لا تزال مستمرة، فستأخذك البوابة بعد قليل.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	إن كانت الحملة لا تزال مستمرة، فستأخذك قوة التماثيل بعد قليل.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	إن كانت الحملة لا تزال مستمرة، فسيأخذك المدخل بعد قليل.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	إن كانت الحملة لا تزال مستمرة، فسيأخذك الممر بعد قليل.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	إن كانت الحملة لا تزال مستمرة، فسيأخذك التيار بعد قليل.
+Jotun Thrym (PB) przybył do Erebu!	وصل جاتون تيرم (ا.ح) إلى إريبو!
+Jotun Thrym (SZC) przybył do Erebu!	وصل جاتون تيرم (ف.ز) إلى إريبو!
+Jotun Thrym przybył do Erebu!	وصل جاتون تيرم إلى إريبو!
+Juz mam to blogoslawienstwo.	لدي هذه البركة بالفعل.
+ją pokonali.	هزموها.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	الأحجار سأصنع تعويذة غامضة. في نافذة الصنع
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	حجر أرواح بيران-سيتاو. ستحصل عليه
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	حجر الروح +0 أو +1 أو +2 أو +3. سأصقل منها
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	الأحجار ساقطة - التنين أعزل. أسرعوا،
+Kamienie Przebudzenia	أحجار الإحياء
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	أحجار التنين تحمي بيران-سيتاو. ما دام واحد
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	الحجر يحدد الفرصة: صغير 2%، ضئيل 5%،
+Kamień demonów oberwał - łucznicy atakują!	أُصيب حجر الشياطين - الرماة يهاجمون!
+Kamień Driad.	حجر الدرياد.
+Kamień Duchowy Buffi	حجر بوفي الروحي
+Kamień Duchowy Buffi trenuje umiejętności Buffi	حجر بوفي الروحي يدرّب مهارات بوفي
+Kamień Duchowy+	الحجر الروحي+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	الحجر الروحي+ يطوّر الصدّ والدفعة ابتداءً من الدرجة G1
+Kamień Dusz Beran-Setaou	حجر أرواح بيران-سيتاو
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	حجر أرواح بيران-سيتاو! بفضله أبحاثي
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	حجر ماتين من يوهارا يعمل فقط في خرائط يوهارا مع إرادة سونغ ماهي.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	حجر ماتين من يوهارا يتطلب المستوى الأول للبطل.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	حجر الإحياء و2 500 000 يانغ. الحجر يحدد
+Kamień użyty na złej steli się rozpadnie.	الحجر المستخدم على النصب الخطأ سيتفتت.
+karty Okey. 24 karty tworza zestaw kart.	أوراق Okey. 24 ورقة تشكل مجموعة أوراق.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	سراديب الشيطان: ستخرج من الزنزانة بعد ثانية واحدة.
+Każda klasa i droga ma swój dopalacz - twój to:	لكل فئة ولكل طريق دفعتها - دفعتك هي:
+Każda mapa Sung Ma ma swoje wymagania. Gdy	لكل خريطة من خرائط سونغ ما متطلباتها. عندما
+Każde pełne 10% Siły daje też +1% do	كل 10% كاملة من القوة تمنح أيضاً +1% إلى
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	كل يوم يُفتح دائماً معبدان[ENTER]مختلفان.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	على كل واحد أن يكون بالمستوى %d، والبطل 4، وفي الرابطة منذ 24 ساعة. لا يستوفي الشروط:
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	يمكن لكل محارب اختيار جائزته من صندوق التنين الذهبي - أمامكم دقيقة.
+Klejnoty dla Seona-Pyeonga	جواهر لسيون-بيونغ
+Klejnoty Zawiści wypadają z Podziemnych Lod.	تسقط جواهر الخبث من تماثيل الجليد الجوفية.
+Klejnoty Zawiści zdradziły mi wiele, ale to	جواهر الخبث كشفت لي الكثير، لكن هذا
+Klif Gautama (Zbocze Gautama)	جرف غواتاما (منحدر غواتاما)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	انقر بالزر الأيمن على خاتم لهب التنين وأنت بجانب التمثال. تعود البيضات كل دقيقتين.
+Kliknij talie, aby dobrac karty. Lewym	انقر على الرزم لسحب الأوراق. بالزر الأيسر
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	مفتاح السجن لا يناسب - الحداد لا يزال في القفص.
+Klucz Goblina!	مفتاح العفريت!
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	مفتاح الأفعى يتفتت - والعمود يبقى ثابتاً.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	مفتاح وردة الثلج (ا.ح) لا يستطيع استخدامه إلا النينجا أو الشامان.
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	مفتاح وردة الثلج (ف.ز) لا يستطيع استخدامه إلا النينجا أو الشامان.
+Klątwa	اللعنة
+klątwa Sung Mahi. Ale jestem szamanem i znam	لعنة سونغ ماهي. لكنني شامان وأعرف
+Klątwa Sunga Mahi zdjęta.	أُزيلت لعنة سونغ ماهي.
+Kobieta	أنثى
+Kobieta czy mezczyzna?	أنثى أم ذكر؟
+Kolejny Potężny Wojownik Wężowy (lód)!	محارب أفعى قوي آخر (جليد)!
+kolekcjoner przedmiot	عتاد جامع
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	قلائد وأقراط، ومن حجر الشياطين - حجر القوة
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	دُمّر عمود التنين الشمالي (ا.ح). يمكن لقائد المجموعة التحدث إلى أسد الجليد (ا.ح).
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	دُمّر عمود التنين الشمالي (ف.ز). يمكن لقائد المجموعة التحدث إلى أسد الجليد (ف.ز).
+komnatach krazy Straznik En-Tai, ktory co chwile	في الغرف يتربص حارس الإنتاي الذي كل لحظة
+konczy ja - skrzynie dostaniesz przy	ينهيها - تحصل على الصناديق عند
+Koniec gry daje jedna skrzynie wedlug wyniku.	نهاية اللعبة تمنح صندوقاً واحداً حسب النتيجة.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	القارة - يوهارا. زره في دونغان عندما
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	الزي، والمطية - مظهر مطية أخرى.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	الأزياء والتسريحات وأغلفة الأسلحة -- كلها بيانغ واحد.
+Koszt szkolenia:	تكلفة التدريب:
+Koszt: 100 000 000 Yang (przy odbiorze)	التكلفة: 100 000 000 يانغ (عند الاستلام)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	التكلفة: 50 000 000 يانغ أو تذكرة التشكيل،
+Krainie, a dostaniesz Książkę.	الأرض، وستحصل على الكتاب.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	أرض جاتون تيرم خلف المعبد، أو عودة
+Krypta Balathora jest teraz zamknięta.	سرداب بالاثور مغلق الآن.
+Krypta Balathora: wejście	سرداب بالاثور: الدخول
+Krypta Balathora: zgłoszenie gildii	سرداب بالاثور: تسجيل الرابطة
+Krypta jest otwarta. Członkowie gildii mogą teraz	السرداب مفتوح. يمكن لأعضاء الرابطة الآن
+Krypta twojej gildii jest już zamknięta.	سرداب رابطتك مغلق بالفعل.
+Krypta twojej gildii jest na kanale %d.	سرداب رابطتك على القناة %d.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	تحطمت بلورة رياح الشمال - الطريق إلى غرفة البلورة مفتوح.
+Kryształy Metin	بلورات ماتين
+Kryształy Metin wypadają z Metinów Szacunku,	تسقط بلورات ماتين من ماتين التقدير،
+Kryształy Metin: nagroda	بلورات ماتين: المكافأة
+kryształów Metin do moich badań!	بلورات ماتين لأبحاثي!
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	تم هزيمة ملك العقارب! الوقت: %d:%02d. اكتملت الزنزانة.
+królem mrozu i lodu?	بملك الصقيع والجليد؟
+Królestwa Żywiołów.	مملكة العناصر.
+Królestwo Żywiołów	مملكة العناصر
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	مملكة العناصر لا تقبل المهزومين. تعودون إلى الميناء.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	مملكة العناصر هي تسع مناطق حيث
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	تم هزيمة ملكة الأدغال! الوقت: %d:%02d. اكتملت الزنزانة.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	الملكة ميلي: أُغلقت بوابة الملجأ خلفكم.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	الملكة ميلي: انتهى الوقت. بوابة الملجأ تطردكم إلى الخارج.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	الملكة ميلي: الأعمدة توجّه ضربة إلى الملكة ميلي! المرحلة التالية بعد 5 ثوانٍ.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	الملكة ميلي: التماثيل تتوهج بالأزرق - استخدموا خواتم لهب التنين عند التماثيل!
+Królowa Meley: Tarcza statui zgasła - atakujcie!	الملكة ميلي: انطفأ درع التمثال - هاجموا!
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	الملكة ميلي: سيبدأ القتال بعد 10 ثوانٍ. أمامكم ساعة لتدمير أربعة تماثيل.
+Królowa Smoków Meley pokonana!	تم هزيمة ميلي ملكة التنانين!
+Królowa Smoków Meley została pokonana!	تم هزيمة ميلي ملكة التنانين!
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	تم هزيمة نيثس ملكة الأفاعي! بعد 20 ثانية تعودون إلى تمثال الأفاعي لاستلام الجائزة.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	تم هزيمة نيثس ملكة الأفاعي. هذه جائزتك.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	دائرة الأمير: إرادة سونغ ماهي (قوة) -32 لمدة 7 ثوانٍ.
+Krąg Wróżbity: jesteś ogłuszony.	دائرة العرّاف: أنت مصعوق.
+Książęcy	أميري
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	الكتاب يكلف 100 000 000 يانغ. عد ومعك المال.
+Księga Misji (W.Płn.W.)	كتاب المهمات (رياح الشمال)
+Księga Misji (W.Płn.W.): %d / %d potworów.	كتاب المهمات (رياح الشمال): %d / %d وحشاً.
+Księgę Misji można aktywować od poziomu 120.	يمكن تفعيل كتاب المهمات من المستوى 120.
+kto wszedł tam bez drużyny najlepszych wojowników.	من دخل إلى هناك دون فريق من أفضل المحاربين.
+ktora jest z toba w grupie, expi z toba po rowno,	التي معك في المجموعة، تكتسب الخبرة معك بالتساوي،
+Ktora zbroje mam z niej zrobic?	أي درع أصنع منه؟
+ktore moge przekuc. Zalozonego przedmiotu	التي يمكنني إعادة صياغتها. العتاد المرتدى
+Ktory przedmiot mam przekuc? Mozesz go tez	أي عتاد أعيد صياغته؟ يمكنك أيضاً
+któraś statystyka jest za niska: Siła - zadajesz	إحدى الإحصاءات منخفضة جداً: القوة - تُلحق
+które otwierają Erebu. Przywódca Straży Lasu wpuści	التي تفتح إريبو. قائد حراس الغابة سيُدخل
+Które portale chcesz zregenerować?	أي بوابات تريد تجديدها؟
+który chcesz wykonać - obręcz, kolia i klipsy	الذي تريد صنعه - طوق وقلادة وأقراط
+Który Kamień Duszy oddajesz?	أي حجر روح تسلّم؟
+który myślał, że poradzi sobie z Razadorem.	الذي ظن أنه سيتغلب على رازادور.
+Którą umiejętność Buffi chcesz trenować?	أي مهارة من مهارات بوفي تريد تدريبها؟
+Którą umiejętność chcesz trenować?	أي مهارة تريد تدريبها؟
+Którą umiejętność udoskonalić?	أي مهارة تريد تحسينها؟
+którą z nich wydobyłem. Wybierz, co chcesz.	التي استخرجتها. اختر ما تريد.
+Kup	شراء
+Kup bilet	شراء تذكرة
+Kup Bilet do Atlantydy	شراء تذكرة أتلانتس
+Kup kostiumy i nakladki	شراء الأزياء والأغلفة
+Kup materialy Alchemika	شراء مواد الكيميائي
+Kup przedmioty	شراء العتاد
+kupisz w Sklepie Gaya.	تشتريه من متجر الغايا.
+Kwiat Żywiołu	زهرة العناصر
+Kwiaty Żywiołu	زهور العناصر
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	الغابة (ا.ح). احرص ألا تفقد شيئاً في الطريق!
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	الغابة (ف.ز). احرص ألا تفقد شيئاً في الطريق!
+Ledwo trzymam się na nogach... Energia	بالكاد أقف على قدمي... الطاقة
+Legenda głosi, że rosą En-Tai można przegnać złe	تقول الأسطورة إن ندى الإنتاي يطرد الشر
+Legendy mówią, że za tym portalem śpi Razador,	تقول الأساطير إن رازادور ينام خلف هذه البوابة،
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	دواء. اهزم ماتين الوعي في دونغان،
+Lekarstwo	دواء
+Lekarstwo Iluzji	دواء الأوهام
+Lekarstwo. Zanieś je: Alchemik.	دواء. أوصله إلى: الكيميائي.
+Lekarstwo. Zanieś je: Chaegirab.	دواء. أوصله إلى: تشيغيراب.
+Lekarstwo. Zanieś je: Handlarz Bronią.	دواء. أوصله إلى: بائع الأسلحة.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	دواء. أوصله إلى: بائع الدروع.
+Lekarstwo. Zanieś je: Uriel.	دواء. أوصله إلى: أوريل.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	الأفضل منها فقط صنارة صيد كربونية: سأصنعها لك من عيدان فارغة وحلقة وقبضة و3 ألياف كربونية.
+Lew budzi się, a z mrozu wychodzą potwory...	الأسد يستيقظ، ومن الصقيع تخرج الوحوش...
+Leże Smoka (Beran-Setaou)	وكر التنين (بيران-سيتاو)
+Leże Smoka - wyprawa	وكر التنين - الحملة
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	وكر التنين: انتهى الوقت. بيران-سيتاو يطردكم من وكره.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	وكر التنين: الأحجار ساقطة - هاجموا بيران-سيتاو!
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	وكر التنين: تعذّر فتح الممر - تحدث إلى شبح سورا.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	وكر التنين: سقط الحجر الأخير - بيران-سيتاو أعزل! هاجموا!
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	وكر التنين: تحدث إلى شبح سورا لفتح الممر.
+Leże Smoka: przejście prowadzi przez poczekalnię.	وكر التنين: الممر يمر عبر غرفة الانتظار.
+Leże Smoka: przejście się otwiera...	وكر التنين: الممر يُفتح...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	في معارك عديدة. اعثر على سيد الإنتاي (ف.ز) و
+Liczy się łączna liczba punktów ze wszystkich gier	يُحتسب مجموع النقاط من كل الألعاب
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	الزنزانة لن تستقبلكم الآن. حاول بعد قليل.
+Loch Pająków 1 (Kuahklo Dong)	زنزانة العناكب 1 (كواهكلو دونغ)
+Lochy Przebudzenia	زنازين البعث
+Lochy Przebudzenia wpuszczają tylko tych, którzy	زنازين البعث لا تُدخل إلا من
+Lochy Przebudzenia, a statuy kowali wykują dla	زنازين البعث، وتماثيل الحدادين ستصنع لك
+Lochy są dziś zamknięte. Wróć później.	الزنازين مغلقة اليوم. عد لاحقاً.
+Lodogóry	جبال-الجليد
+Lodowa Kraina (Nemere)	أرض الجليد (نمير)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	أرض الجليد: تعذّر فتح الممر - تحدث إلى الأسد الحجري.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	أرض الجليد: تحدث إلى الأسد الحجري لفتح الممر.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	أرض الجليد: الممر يمر عبر غرفة الانتظار.
+Lodowa Kraina: przejście się otwiera...	أرض الجليد: الممر يُفتح...
+Lodu	الجليد
+Lucznik (luk)	رامٍ (قوس)
+Ludzi i Podziemnych Lodowych Golemów	البشر وتماثيل الجليد الجوفية
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	انتصرت المعات على الزفت - دُمّر آخر لوح زفت (ا.ح).
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	انتصرت المعات على الزفت - دُمّر آخر لوح زفت (ف.ز).
+Magazyn	المخزن
+magazyn lub inne okno i sprobuj ponownie.	المخزن أو نافذة أخرى وحاول مرة أخرى.
+Majestatyczny	مهيب
+Mam do niej klucz, ale nie wiem, ktora z	لدي مفتاحها، لكنني لا أعرف أي من
+Mam już wszystkie 20 Klejnotów Mądrości!	لدي بالفعل كل جواهر الحكمة العشرين!
+Mapa teleportacji jest wylaczona na tym serwerze.	خريطة الانتقال الفوري معطّلة على هذا الخادم.
+Marchewka	جزرة
+Maska dyni wytrzyma 7 dni od pierwszego	يصمد قناع القرع 7 أيام منذ أول
+Masz 30 minut. Powodzenia!	لديك 30 دقيقة. بالتوفيق!
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	لديك 60 دقيقة لإنهائها. بعد الإنهاء أو بعد
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	هل معك نوى منقّاة لي؟ دعني أرى...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	لديك بالفعل مهمة نشطة من كتاب المهمات (رياح الشمال). أنهها أولاً.
+Masz już najwięcej Gaya, ile można mieć (999 999).	لديك بالفعل أقصى عدد ممكن من الغايا (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	لديك بالفعل كتاب الحصان الذهبي. من المستوى 31 يصبح حصانك حصاناً حربياً قوياً.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	معك حجر أرواح بيران-سيتاو. أوصله
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	معك مفتاح بلور الروح. هل أفتح البوابة[ENTER]وأنقل المجموعة إلى المستوى الثاني؟
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	معك دواء. أوصله إلى: الكيميائي (دونغان).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	معك دواء. أوصله إلى: تشيغيراب (دونغان).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	معك دواء. أوصله إلى: بائع الأسلحة (دونغان).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	معك دواء. أوصله إلى: بائع الدروع (دونغان).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	معك دواء. أوصله إلى: أوريل (دونغان).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	نقاط رتبتك قليلة جداً - ستنخفض الرتبة إلى ما دون الصفر.
+Masz za mało Yang.	ليس لديك يانغ كافٍ.
+Masz za niski poziom.	مستواك منخفض جداً.
+materialy, Yang i szanse (najedz na przedmiot).	المواد واليانغ والفرص (مرّر المؤشر على العتاد).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	المواد واليانغ والفرص - في النافذة (مرّر المؤشر على العتاد).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	مواد بالاثور يمنحها سرداب بالاثور، المطرقة المبللة
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	ستجد المواد في صندوق حورية الماء (يفتحه مفتاح حورية الماء). تعمل الصنارة 30 يوماً
+materiały, Yang i szansę (najedź na przedmiot).	المواد واليانغ والفرصة (مرّر المؤشر على العتاد).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	المواد واليانغ والفرصة سترى في نافذة الصنع
+materiały. Pasuje każda broń, zbroja albo hełm	المواد. يصلح أي سلاح أو درع أو خوذة
+Max PŻ +2000	الحد الأقصى ن.ح +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	آلية ألواح الزفت لا تشغّلها إلا العجلة المسننة الذهبية
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	ميدالية القوى البدائية تعمل فقط في مملكة العناصر.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	ميدالية القوى البدائية: لمدة 10 دقائق لا تسحب الهضبة ن.ح منك.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	دُمّر ماتين الثلج (ا.ح). بعد قليل سيتم نقلكم إلى الطابق السابع.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	دُمّر ماتين الثلج (ف.ز). بعد قليل سيتم نقلكم إلى الطابق السابع.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	ماتين الجحيم (ا.ح) لا يزال قائماً - الشياطين تعود!
+Metin Purgatorium (PB) został zniszczony.	دُمّر ماتين الجحيم (ا.ح).
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	ماتين الجحيم (ف.ز) لا يزال قائماً - الشياطين تعود!
+Metin Purgatorium (SZC) został zniszczony.	دُمّر ماتين الجحيم (ف.ز).
+Metinu Świadomość zatruła mnie i potrzebuję 	ماتين الوعي سمّمني وأحتاج 
+Metiny Drzewnych Stworzeń (PB)	ماتين مخلوقات الأشجار (ا.ح)
+Metiny Drzewnych Stworzeń (SZC)	ماتين مخلوقات الأشجار (ف.ز)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	ماتين مخلوقات الأشجار توقظ الإنتاي إلى الحياة.
+Metiny Drzewnych Stworzeń zatruwają ten las.	ماتين مخلوقات الأشجار تسمّم هذه الغابة.
+Metiny zniszczone. Las trochę się uspokoił.	دُمّرت الماتين. هدأت الغابة قليلاً.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	دُمّرت الماتين. عد إلى كشاف الغابة (ا.ح).
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	دُمّرت الماتين. عد إلى كشاف الغابة (ف.ز).
+Mezczyzna	ذكر
+mieć co najmniej %d sztuk.	امتلاك %d قطعة على الأقل.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	امتلاك كتاب الإحياء (يُؤخذ عند الدخول).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	الجرعة لن تعمل بعد - يجب أن يرتاح الجسم.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	لم تعمل الجرعة هذه المرة. حاول مجدداً لاحقاً.
+Mikstura Talentu	جرعة الموهبة
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	جرعة الموهبة تطوّر المهارة التاسعة من G1 إلى P. %s
+Miksturę Mądrości	جرعة الحكمة
+Misja poboczna	مهمة جانبية
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	المهمة جارية. اهزم الزعيمين وعد إليّ:
+Misja wykonana! Portal do następnego etapu jest otwarty.	تمت المهمة! بوابة المرحلة التالية مفتوحة.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	مهمة من كتاب المهمات (رياح الشمال): اهزم 300 وحش في مضيق رياح الشمال.
+Misja: pokonaj 300 potworów w Wąwozie	المهمة: اهزم 300 وحش في المضيق
+Misji nie można przerwać. Księga zniknie.	لا يمكن مقاطعة المهمة. سيختفي الكتاب.
+Mistrz gildii może zgłosić tu swoją gildię:	يمكن لزعيم الرابطة تسجيل رابطته هنا:
+mniej - brazowa	أقل - برونزية
+Moc klejnotów jest teraz twoja na zawsze.	قوة الجواهر صارت لك إلى الأبد.
+Moc pierścienia wyczerpała się.	نفدت قوة الخاتم.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	نفدت قوة عين التنين لهذا اليوم. استلمها مجدداً غداً من الكيميائي.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	قد يكونون شديدي التأثر بنفوذ سونغ ماهي.
+Mogę cię zabrać do każdego z nich; między	أستطيع اصطحابك إلى كل منها؛ بين
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	أستطيع تجديد البركة: +%d%% خبرة لمدة %s
+Mogę przenieść na szatę aury parametry bransolety,	أستطيع نقل إحصاءات السوار إلى رداء الهالة،
+Mogę przenieść wygląd jednego przedmiotu na drugi.	أستطيع نقل مظهر عتاد إلى آخر.
+Mogę więc stworzyć z nich Kryształ Energii.	إذن أستطيع أن أصنع منها بلور الطاقة.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	اختفى إخوتي، ومعهم حقيبة الإسعاف. المحاربون
+Moj klucz nie pasuje do tej skrzyni.	مفتاحي لا يناسب هذا الصندوق.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	مفتاحي يناسب! هذا هو الصندوق الصحيح!
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	قوتي ستنقلك إلى هضبة الأوهام. هناك
+Moja technika jest genialna, ale jeszcze	أسلوبي عبقري، لكن لا يزال
+Moje badania wykazały, że potwory znajdujące	أظهرت أبحاثي أن الوحوش الموجودة
+Moje czasy	أوقاتي
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	ثياب مبللة: -50 سرعة الحركة لمدة 5 دقائق.
+Morkhot nadchodzi! Macie mało czasu.	مورخوت قادم! الوقت قليل.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	تم هزيمة مورخوت! الوقت: %d:%02d. اكتملت أطلال أتلانتس.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	يمكنك أيضاً اختيار العتاد أو سحبه إليّ.
+mozesz wybrac od razu.	يمكنك الاختيار فوراً.
+Mozesz zabrac w droge stalego towarzysza: postac,	يمكنك أن تأخذ معك في الطريق رفيقاً دائماً: شخصية،
+Może później	ربما لاحقاً
+może się nie udać.	قد لا ينجح الأمر.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	يمكنك الدخول وحدك أو مع فريق؛ الرفاق الآليون في الفريق يدخلون دون تذكرة.
+możesz znaleźć Kartę Maski Dyni. 	قد تجد بطاقة أقنعة الهالوين. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	يمكن امتلاك صدّ واحد فقط. لفيفة تحويل التدريب
+Mroczne Paprocie	السرخس الظلامي
+Mroczne Paprocie: nagroda	السرخس الظلامي: المكافأة
+mrocznej paproci.	السرخس الظلامي.
+Mroczny Cierń - mrok.	شوكة الظلام - الظلام.
+Mroczną Paproć znajdziesz u potworów	السرخس الظلامي تجده عند الوحوش
+Mrok i ziemia (mapa 3)	الظلام والأرض (الخريطة 3)
+Mroku	الظلام
+Mroźnego Klucza (PB) może użyć tylko Szaman.	مفتاح الصقيع (ا.ح) لا يستطيع استخدامه إلا الشامان.
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	مفتاح الصقيع (ف.ز) لا يستطيع استخدامه إلا الشامان.
+mu apteczkę.	منه حقيبة الإسعاف.
+musi najpierw osiągnąć stopień G1 (księgami).	عليه أولاً بلوغ الدرجة G1 (بالكتب).
+Musisz dalej szukać.	عليك مواصلة البحث.
+Musisz jeszcze trochę potrenować! Wróć, gdy	عليك أن تتدرب قليلاً بعد! عد عندما
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	يجب أن تحمّل 12 كرة حياة على الأقل[ENTER]لتدخل.
+Mój przyjaciel Chaegirab bada teraz nowy	صديقي تشيغيراب يدرس الآن
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	يقال إن التنين الحديدي شيّد المعبد[ENTER]بنفَس ناري واحد تكريماً للحراس الاثني عشر[ENTER]لزودياك. الشجعان الذين يعودون من غرف الحراس[ENTER]المقدسة ينتظرهم المجد والشرف[ENTER]وثروات لا تُحصى.
+Mądrości, które noszą przy sobie wojownicy	الحكمة، التي يحملها المحاربون معهم
+Mądrość przychodzi z doświadczeniem, ale dla	الحكمة تأتي مع الخبرة، لكن من أجل
+Mądry wybór. Teraz zniszcz następną stelę.	اختيار حكيم. الآن دمّر اللوح التالي.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	اختيار حكيم. الآن دمّر اللوح الأخير، وستنتصر المعات
+Na 7. poziomie czekają Głowy Węża. Odłamki z	في المستوى السابع تنتظر رؤوس الأفاعي. الشظايا من
+na bizuterie i splesc dla ciebie pas.	للمجوهرات وأضفر لك حزاماً.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	للسلاح بالمكافآت. انزع العتاد إن كان
+na Doyyumhwaji, póki nie minie godzina.	على دويومهواجي حتى تمر ساعة.
+Na graczy żywioły nie działają.	العناصر لا تؤثر في اللاعبين.
+Na które piętro chcesz wejść?	إلى أي طابق تريد الدخول؟
+na Maskę Dyni? 	لقناع القرع؟ 
+Na morzu za przylądkiem grasuje Hydra. Każdy	في البحر خلف الرأس تتربص هيدرا. كل
+Na nagrodę jest jeszcze za wcześnie.	لا يزال الوقت مبكراً للجائزة.
+na niej już żadnych zarodników. Przynieś mi inną.	لا توجد عليها أي بذور بعد. أحضر لي واحدة أخرى.
+na nowym kontynencie.	في القارة الجديدة.
+Na pewno poddać wyprawę?	هل أنت متأكد من التخلي عن الحملة؟
+Na pewno? Towarzysz odejdzie, a jego postac	متأكد؟ سيرحل الرفيق وشخصيته
+Na pokład!	إلى السطح!
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	عند المستوى 10 و20 و30 و40 و50 و60 و70 - دائماً
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	عند المستوى 49 و99 و149 و199 و249 مع كامل
+na Przyladku Smoczego Ognia.	في رأس لهب التنين.
+Na Przylądek Smoczego Ognia	إلى رأس لهب التنين
+na Przylądku Smoczego Ognia.	في رأس لهب التنين.
+na siedmiu poziomach czeka Królowa Węży Nethis.	في سبعة مستويات تنتظر نيثس ملكة الأفاعي.
+Na statek wpuszczam tylko drużyny.	لا أُدخل إلى السفينة إلا الفرق.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	في الدرجة G1-G10. من M1 إلى G1 - كتب عادية
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	على رأسك. احتفظ بالبطاقة لأوقات أفضل. 
+na tym serwerze.	على هذا الخادم.
+Na ukończenie instancji macie 60 minut. Potwory nie	لديكم 60 دقيقة لإنهاء الحالة. الوحوش لا
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	للحملة 60 دقيقة، ثم استراحة 3 ساعات.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	على التل استقرت قرود المعلم ووكونغ.
+na Zbocze Gautama.	إلى منحدر غواتاما.
+na żywioł odejmuje cały swój procent	على العنصر يطرح كامل نسبته
+nadaje się do badań. Przynieś mi inny.	صالح للأبحاث. أحضر لي آخر.
+Nadam twojej broni, zbroi albo hełmowi	سأمنح سلاحك أو درعك أو خوذتك
+nadciągał sztorm?	كانت العاصفة قادمة؟
+nadciągnie w czterech falach. Brońcie masztu!	ستأتي في أربع موجات. دافعوا عن الصاري!
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	حان وقت تسليم حقيبة الإسعاف إلى الكشاف
+Nagroda (losowo jedna):	الجائزة (واحدة عشوائياً):
+Nagroda za badania	جائزة الأبحاث
+Nagroda za Meley	جائزة ميلي
+Nagroda została już odebrana przez wszystkich	تم استلام الجائزة بالفعل من قبل الجميع
+Nagroda została już odebrana.	تم استلام الجائزة بالفعل.
+Nagroda: 11 650 000 PD i Kamień Driad.	الجائزة: 11 650 000 خبرة وحجر الدرياد.
+Nagroda: 11 650 000 PD.	الجائزة: 11 650 000 خبرة.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	الجائزة: 5 582 500 خبرة و10 جذور غانغو.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	الجائزة: 5 825 000 خبرة و5 وردات جبال الألب.
+Nagroda: 7 766 000 PD i 10 Wód Young.	الجائزة: 7 766 000 خبرة و10 مياه يونغ.
+Nagroda: 7 766 000 PD.	الجائزة: 7 766 000 خبرة.
+Nagroda: 776 600 PD.	الجائزة: 776 600 خبرة.
+Nagroda: Książka Przebudzenia. Misję można	الجائزة: كتاب الإحياء. يمكن إنجاز المهمة
+Nagrody dla najlepszych	جوائز الأفضل
+Nagrody w Łupach Królewskich	جوائز في الغنائم الملكية
+Nagrody za grę Yut Nori	جوائز لعبة يوت نوري
+Nagrody za pierwsze 10 miejsc	جوائز أول 10 مراكز
+Nagrody za ranking	جوائز الترتيب
+Nagrodę za ten event już odebrałeś.	لقد استلمت بالفعل جائزة هذا الحدث.
+Najlepsza gra	أفضل لعبة
+Najlepsze czasy pięter w tym sezonie (min:s):	أفضل أوقات الطوابق في هذا الموسم (دقيقة:ثانية):
+Najlepszy wynik	أفضل نتيجة
+najlepszych graczy. Może następnym razem!	أفضل اللاعبين. ربما في المرة القادمة!
+najpierw 9. pietro Wiezy Demonow	أولاً الطابق التاسع من برج الشياطين
+Najpierw opuść loch.	اترك الزنزانة أولاً.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	ساعد أولاً الحارس وكشاف الغابة (ا.ح).
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	ساعد أولاً الحارس وكشاف الغابة (ف.ز).
+Najpierw trzeba zamknąć otwartą Kryptę.	يجب أولاً إغلاق السرداب المفتوح.
+Najpierw ukończ zadanie Stajennego (Złota Księga Konia).	أنهِ أولاً مهمة صبي الإسطبل (كتاب الحصان الذهبي).
+Najpierw wybierz drogę umiejętności (Szkolenie).	اختر أولاً طريق المهارة (التدريب).
+Najpierw wybierz drogę umiejętności.	اختر أولاً طريق المهارة.
+Najpierw zdobądź Poziom Czempiona.	احصل أولاً على مستوى البطل.
+Najpierw zostań Czempionem (1. Poziom Czempiona).	كن أولاً بطلاً (المستوى الأول للبطل).
+Najpierw zrob miejsce w ekwipunku.	أفسح أولاً مكاناً في الحقيبة.
+najwyższy poziom (Rybak na Przylądku).	أعلى مستوى (الصياد في الرأس).
+naklada na bron	يوضع على السلاح
+Napraw Hwachę teraz	أصلح الهواتشا الآن
+Nastepna strona	الصفحة التالية
+nastepnym logowaniu.	عند تسجيل الدخول التالي.
+Następna próba możliwa po 12 godzinach.	المحاولة التالية ممكنة بعد 12 ساعة.
+Następna próba możliwa po 8-12 godzinach.	المحاولة التالية ممكنة بعد 8-12 ساعة.
+Następna próba za: %s.	المحاولة التالية بعد: %s.
+Następna teleportacja za %d min %d s.	الانتقال الفوري التالي بعد %d دقيقة و%d ثانية.
+Następnym razem na pewno się uda!	في المرة القادمة سينجح الأمر بالتأكيد!
+Nasza wyprawa sie skonczyla.	انتهت حملتنا.
+naszyjnika, kolczyków albo tarczy - te podstawowe	القلادة أو الأقراط أو الدرع - تلك الأساسية
+Natury W Królestwie - daje szansę na przeniesienie.	الطبيعة في المملكة - يمنح فرصة النقل.
+Naucz się teraz	تعلّم الآن
+nauczyć się ich ponownie z podręczników.	تعلّمها مجدداً من الكتب.
+Nauczyłeś się dopalacza (poziom 1).	لقد تعلمت الدفعة (المستوى 1).
+Nauczyłeś się riposty (poziom 1).	لقد تعلمت الصدّ (المستوى 1).
+Nawet w trudnych warunkach muszę dalej	حتى في الظروف الصعبة عليّ أن أواصل
+Nazwa mapy: Świątynia Zodiaku[ENTER]Poziom: %d[ENTER]Koszt: %d	اسم الخريطة: معبد زودياك[ENTER]المستوى: %d[ENTER]التكلفة: %d
+Nefrytowa Zatoka	خليج اليشم
+Nemere (lód), Leże Smoka (błyskawica)	نمير (جليد)، وكر التنين (برق)
+Nemere (PB) został pokonany!	تم هزيمة نمير (ا.ح)!
+Nemere (SZC) został pokonany!	تم هزيمة نمير (ف.ز)!
+Nemere został pokonany!	تم هزيمة نمير!
+Nemere: Brakujące potwory komnaty pojawiają się ponownie.	نمير: الوحوش المفقودة في الغرفة تظهر من جديد.
+Nemere: Czas minął. Mróz wyrzuca was z Lodowej Krainy.	نمير: انتهى الوقت. الصقيع يطردكم من أرض الجليد.
+Nemere: Etap zaliczony. Za 5 sekund przejdziecie dalej.	نمير: تم اجتياز المرحلة. بعد 5 ثوانٍ ستنتقلون إلى التالية.
+Nemere: Klucz Mrozu otworzył przejście.	نمير: مفتاح الصقيع فتح الممر.
+Nemere: Lodowy Klucz otworzył przejście.	نمير: مفتاح الجليد فتح الممر.
+Nemere: Porozmawiaj z Kamiennym Lwem, aby rozpocząć wyprawę.	نمير: تحدث إلى الأسد الحجري لبدء الحملة.
+Nic	لا شيء
+Nie atakuje pierwszy	لا يهاجم أولاً
+nie bedzie mi szkodzic.	لن يضرني.
+Nie będziesz żałować, że zostałem przez ciebie	لن تندم على أنني بسببك
+Nie ciąży na tobie klątwa.	لا لعنة عليك.
+Nie działają tam zwoje ani pierścienie powrotu,	لا تعمل هناك اللفائف ولا خواتم العودة،
+Nie giń tam. Kto padnie, wraca do Dongan.	لا تمت هناك. من يسقط يعود إلى دونغان.
+Nie ma takiego piętra.	لا يوجد طابق كهذا.
+Nie masz Appaloosa, ktorego mozna nakarmic.	ليس لديك أبالوزا يمكن إطعامه.
+Nie masz jeszcze dość Odłamków Energii,	ليس لديك بعد ما يكفي من شظايا الطاقة،
+Nie masz juz przedmiotu Transfer bonusow.	لم يعد لديك عتاد تحويل المكافآت.
+Nie masz już gotowego pierścienia.	لم يعد لديك خاتم جاهز.
+Nie masz Kamienia Duszy +0, +1, +2 ani +3.	ليس لديك حجر روح +0 أو +1 أو +2 أو +3.
+Nie masz Karty Maski Dyni? W takim razie nie	ليس لديك بطاقة أقنعة الهالوين؟ إذن لن
+Nie masz przy sobie Kamienia Dusz Beran-Setaou.	ليس معك حجر أرواح بيران-سيتاو.
+Nie masz przy sobie Klejnotu Mądrości.	ليس معك جوهرة الحكمة.
+Nie masz przy sobie Klejnotu Zawiści.	ليس معك جوهرة الخبث.
+Nie masz przy sobie Kryształu Metin.	ليس معك بلورة ماتين.
+Nie masz przy sobie Mrocznej Paproci.	ليس معك السرخس الظلامي.
+Nie masz przy sobie Oczyszczonego Rdzenia.	ليس معك نواة نقية.
+Nie masz przy sobie Odłamka Reliktu swojej klasy.	ليس معك شظية أثر فئتك.
+Nie masz teraz broni do odebrania. Kolejna czeka	ليس لديك الآن سلاح لاستلامه. التالي ينتظر
+Nie masz tyle yang.	ليس لديك هذا القدر من اليانغ.
+Nie masz w ekwipunku kostiumu, fryzury ani nakladki	ليس في حقيبتك زي أو تسريحة أو غلاف
+Nie masz w plecaku broni, zbroi ani butow +9,	ليس في حقيبتك سلاح أو درع أو حذاء +9،
+Nie masz w plecaku drugiego przedmiotu tego samego rodzaju (%s).	ليس في حقيبتك عتاد ثانٍ من النوع نفسه (%s).
+Nie masz żadnych buffów Enasira.	ليس لديك أي تعزيزات من إيناسير.
+nie minelo 30 minut od ostatniego wyjscia	لم تمر 30 دقيقة منذ آخر خروج
+Nie moge teraz pracowac - zamknij handel, sklep,	لا أستطيع العمل الآن - أغلق التبادل والمتجر،
+Nie mogę teraz ulepszyć tej wędki. Zdejmij ją z ręki i przynieś jeszcze raz.	لا أستطيع الآن تطوير هذه الصنارة. اخلعها من يدك وأحضرها مرة أخرى.
+Nie mozesz sie teleportowac w trakcie pojedynku.	لا يمكنك الانتقال الفوري أثناء المبارزة.
+Nie mozesz sie teleportowac w trakcie wojny gildii.	لا يمكنك الانتقال الفوري أثناء حرب الرابطة.
+Nie mozesz sie teraz teleportowac.	لا يمكنك الانتقال الفوري الآن.
+nie może dostać się do ksiąg.	لا يستطيع الوصول إلى الكتب.
+Nie możesz jednocześnie używać Złotego Karasia i Krabu Królewskiego.	لا يمكنك استخدام السمك الذهبي والسلطعون الملك معاً.
+Nie możesz się teleportować w trakcie pojedynku.	لا يمكنك الانتقال الفوري أثناء المبارزة.
+Nie możesz się teleportować w trakcie wojny gildii.	لا يمكنك الانتقال الفوري أثناء حرب الرابطة.
+Nie możesz teraz otworzyć magazynu.	لا يمكنك فتح المخزن الآن.
+Nie możesz teraz otworzyć sklepu.	لا يمكنك فتح المتجر الآن.
+Nie możesz teraz zapisać pozycji.	لا يمكنك حفظ الموقع الآن.
+Nie możesz teraz zostać Czempionem.	لا يمكنك أن تصبح بطلاً الآن.
+Nie możesz więcej skrócić czasu oczekiwania.	لا يمكنك تقصير وقت الانتظار أكثر.
+Nie można jej ulepszać, zmieniać bonusów, wymieniać ani sprzedawać.	لا يمكن تطويرها أو تغيير مكافآتها أو استبدالها أو بيعها.
+Nie należysz do gildii.	أنت لست في رابطة.
+Nie posiadasz wystarczającej ilości kluczy! Aby	ليس لديك عدد كافٍ من المفاتيح! لكي
+nie przyjme - zdejmij go najpierw.	لن أقبله - اخلعه أولاً.
+Nie spełniają warunków:	لا يستوفون الشروط:
+Nie spełniasz już warunków.	لم تعد تستوفي الشروط.
+Nie teraz	ليس الآن
+Nie udało ci się jeszcze? Na co czekasz? Ruszaj w[ENTER]drogę i oczyść 1. poziom.	لم تنجح بعد؟ ماذا تنتظر؟ انطلق في[ENTER]الطريق ونظّف المستوى الأول.
+Nie udało się - spróbuj ponownie.	فشلت العملية - حاول مرة أخرى.
+Nie udało się otworzyć przejścia. Spróbuj ponownie za chwilę.	تعذّر فتح الممر. حاول مجدداً بعد قليل.
+Nie udało się przywołać konia. Spróbuj jeszcze raz.	تعذّر استدعاء الحصان. حاول مرة أخرى.
+Nie udało się...	فشلت...
+Nie usunięto żadnej misji.	لم تُحذف أي مهمة.
+Nie walcze, tylko sie bronie	لا أقاتل، بل أدافع فقط
+Nie wszystkie demony zostały pokonane.	لم تُهزم كل الشياطين.
+Nie wszystkie potwory tolerują zarodniki tej	ليست كل الوحوش تتحمل بذور هذه
+Nie wystarczy ci to? No, no mój przyjacielu. Nie[ENTER]mam już mocy. Dopiero jutro mogę ci znowu pomóc.	ألا يكفيك هذا؟ مهلاً يا صديقي.[ENTER]لم تعد لدي قوة. يمكنني مساعدتك مجدداً غداً فقط.
+Nie zawsze się to udaje.	لا ينجح هذا دائماً.
+Nie znasz żadnej riposty ani dopalacza.	أنت لا تعرف أي صدّ أو دفعة.
+nie zyjesz	أنت ميت
+Nie, dzisiaj nie.	لا، ليس اليوم.
+Nie, lepiej później.	لا، الأفضل لاحقاً.
+Nie, nie teraz.	لا، ليس الآن.
+Nie, zostanę tutaj.	لا، سأبقى هنا.
+niebezpieczne dla mieszkańców wioski.	خطيرة على سكان القرية.
+niebezpiecznie. Ale jeśli masz Przepustkę, pewnie	خطير. لكن إن كان معك بطاقة مرور فربما
+niebezpiecznie. Jeśli jesteś gotów, przeprowadzę cię.	خطير. إن كنت مستعداً فسأرافقك.
+Niebieskie Pudło Zodiaku	صندوق زودياك الأزرق
+Niech ci %s wyjaśni, jak stworzyć pryzmat[ENTER]ożywienia.	دع %s يشرح لك كيف تصنع منشور[ENTER]الإحياء.
+Niech moje błogosławieństwo ci w tym pomoże.	لتساعدك بركتي في ذلك.
+niedopracowana. Tak to już bywa z alchemią.	غير مكتمل. هذا هو حال الكيمياء.
+Niedziela (WSZYSTKIE)	الأحد (الجميع)
+niego wrócić?	العودة إليه؟
+niego zabierze.	سيأخذك.
+Niektóre mroźne potwory niosą Mroźne Klucze (PB) - znajdź prawdziwy. Użyć go może tylko Szaman.	بعض وحوش الصقيع تحمل مفاتيح الصقيع (ا.ح) - اعثر على الحقيقي. لا يستطيع استخدامه إلا الشامان.
+Niektóre mroźne potwory niosą Mroźne Klucze (SZC) - znajdź prawdziwy. Użyć go może tylko Szaman.	بعض وحوش الصقيع تحمل مفاتيح الصقيع (ف.ز) - اعثر على الحقيقي. لا يستطيع استخدامه إلا الشامان.
+Niektóre potwory mają żywioł: ogień,	بعض الوحوش لها عنصر: النار،
+Niestety nie udało ci się uplasować na liście	للأسف لم تنجح في دخول قائمة
+Niestety rdzeń jest lekko zanieczyszczony.	للأسف النواة ملوثة قليلاً.
+Niestety, nie ma cie w pierwszej dziesiatce	للأسف لست ضمن العشرة الأوائل
+Niestety, nie ma cię w pierwszej dziesiątce rankingu.	للأسف لست ضمن العشرة الأوائل في الترتيب.
+Niestety, ten klejnot jest zmętniały - nie	للأسف هذه الجوهرة معكرة - لا
+Niestety, tym razem kryształ nie powstał.	للأسف لم تتكون البلورة هذه المرة.
+Niestety, tym razem się nie udało. Spróbuj	للأسف لم ينجح الأمر هذه المرة. حاول
+Niestety, tym razem się nie udało. Wędka straciła 10% punktów - łów dalej i spróbuj ponownie.	للأسف لم ينجح الأمر هذه المرة. فقدت الصنارة 10% من نقاطها - واصل الصيد وحاول مجدداً.
+Niestety, z tych fragmentów nie udało się 	للأسف لم ينجح الأمر من هذه الشظايا 
+Nieudana próba zabiera materiały, nie przedmiot.	المحاولة الفاشلة تأخذ المواد، لا العتاد.
+Nieudana próba zabiera od 1/3 do 1/2 tych punktów.	المحاولة الفاشلة تأخذ من 1/3 إلى 1/2 من هذه النقاط.
+Nieudana próba zabiera wszystkie materiały.	المحاولة الفاشلة تأخذ كل المواد.
+nieudana: od -%d do -%d punktów rangi.	فاشلة: من -%d إلى -%d نقطة رتبة.
+Nikogo nie wpuszczam lekkomyślnie - tam jest	لا أُدخل أحداً باستهتار - هناك
+Nikt jeszcze nie zagral w tym sezonie.	لم يلعب أحد بعد في هذا الموسم.
+Nikt jeszcze nie zagrał w tym evencie.	لم يلعب أحد بعد في هذا الحدث.
+niosą Książkę Przebudzenia. Udowodnij swoją siłę:	يحملون كتاب الإحياء. أثبت قوتك:
+Niszczyciele En-Tai noszą Rosę En-Tai - z niej	مدمّرو الإنتاي يحملون ندى الإنتاي - منه
+Niszczycieli En-Tai.	مدمّري الإنتاي.
+nią ukryty mechanizm Steli Isfet (PB). Zębatkę noszą demony.	بها آلية ألواح الزفت (ا.ح) الخفية. العجلة يحملها الشياطين.
+nią ukryty mechanizm Steli Isfet (SZC). Zębatkę noszą demony.	بها آلية ألواح الزفت (ف.ز) الخفية. العجلة يحملها الشياطين.
+Nowa wyprawa	حملة جديدة
+Nowego Kontynentu.	القارة الجديدة.
+Nowy hełm jest +0, bonusy i kamienie starego przepadają.	الخوذة الجديدة +0، ومكافآت وأحجار القديمة تضيع.
+nowy sezon - piętra, nagrody i czasy od nowa.	موسم جديد - الطوابق والجوائز والأوقات من جديد.
+o 100 szybciej.	أسرع بـ 100.
+o szansie: Mały 2%, Drobny 5%, Ładny 10%, Zacny 15%,	عن الفرصة: صغير 2%، ضئيل 5%، عادي 10%، فاخر 15%،
+Oba przedmioty musza byc tego samego rodzaju	يجب أن يكون العتادان من النوع نفسه
+Obecne potrwa jeszcze: %s	الحالي سيستمر: %s
+Obok ciebie pojawił się Metin z Yohary. Zniknie po 15 minutach, jeśli go nie zniszczysz.	ظهر بجانبك ماتين من يوهارا. سيختفي بعد 15 دقيقة إن لم تدمره.
+Obok ciebie pojawiła się Żyła Jadeitu. Wydobądź z niej rudę kilofem - zniknie po 15 minutach.	ظهر بجانبك عرق يشم. استخرج منه الخام بالمعول - سيختفي بعد 15 دقيقة.
+obrażeń od jego potworów (do 80%).	من الضرر الذي تلحقه وحوشه (حتى 80%).
+obrażeń przeciw wszystkim (do +20%).	من الضرر ضد الجميع (حتى +20%).
+Obrona +100	دفاع +100
+Obrona -100	دفاع -100
+Obrona już się rozpoczęła.	بدأ الدفاع بالفعل.
+Obrona Statku (Hydra)	الدفاع عن السفينة (هيدرا)
+Obrona Statku: naprawiasz maszt.	الدفاع عن السفينة: تصلح الصاري.
+Obrona Statku: porozmawiaj ze Sterem, aby rozpocząć obronę masztu.	الدفاع عن السفينة: تحدث إلى الدفة لبدء الدفاع عن الصاري.
+Obrona Statku: ten statek już zawinął do portu.	الدفاع عن السفينة: رست هذه السفينة بالفعل في الميناء.
+Obrona Statku: łódź nie dopłynęła do statku - porozmawiaj z Rybakiem ponownie.	الدفاع عن السفينة: لم يصل القارب إلى السفينة - تحدث إلى الصياد مرة أخرى.
+Obroniłeś już statek przed Hydrą, więc znasz	لقد دافعت بالفعل عن السفينة ضد هيدرا، لذلك تعرف
+Obroń najpierw statek przed Hydrą, mając	دافع أولاً عن السفينة ضد هيدرا، وأنت تملك
+Obróć go w popiół i wróć.	حوّله إلى رماد وعد.
+obszarami prowadzą też portale na miejscu.	بين المناطق تؤدي أيضاً بوابات في الموقع.
+Obudź wąwóz Am-heh i pokonaj Razadora.	أيقظ مضيق آم-هيه واهزم رازادور.
+Och! Bez Tajemniczego Biletu nie mogę cię wpuścić.	آه! بدون التذكرة الغامضة لا أستطيع إدخالك.
+Oczyszczone Rdzenie	النوى النقية
+Oczyszczone Rdzenie znajdziesz u potworów	النوى النقية تجدها عند الوحوش
+Oczyszczone Rdzenie: nagroda	النوى النقية: المكافأة
+Oczywiście	بالطبع
+Oczywiście.	بالطبع.
+od 10 do 399 punktów	من 10 إلى 399 نقطة
+Od 21 poziomu koń rośnie od Paszy dla Konia. Karm go, aż pasek doświadczenia się wypełni, i spróbuj awansu: 50 paszy i Yang. Nieudana próba zostawia pasek - następna kosztuje dodatkowo Gaya i się uda.	من المستوى 21 ينمو الحصان بعلف الحصان. أطعمه حتى يمتلئ شريط الخبرة وجرّب الترقية: 50 علفاً ويانغ. المحاولة الفاشلة تُبقي الشريط - التالية تكلف غايا إضافياً وتنجح.
+Od 3 do 16 liter i cyfr, bez spacji.	من 3 إلى 16 حرفاً ورقماً، بدون مسافات.
+Od 30 poziomu konia: Poziom Czempiona 1	من مستوى الحصان 30: المستوى الأول للبطل
+Od 31 poziomu twój koń będzie Potężnym Koniem Wojskowym. Przywołasz go tą księgą (300 PE).	من المستوى 31 سيصبح حصانك حصاناً حربياً قوياً. تستدعيه بهذا الكتاب (300 ن.م).
+od 4 do 16 członków obok mnie, każdy z poziomem	من 4 إلى 16 عضواً بجانبي، كل واحد بمستوى
+od 400 do 549 punktów	من 400 إلى 549 نقطة
+od 75. poziomu, +7 i wyżej - połóż swój przedmiot w oknie.	من المستوى 75، +7 فما فوق - ضع عتادك في النافذة.
+Od dziś jesteś Czempionem (poziom 1).	من اليوم أنت بطل (المستوى 1).
+od jego potworów o 30% swojej wartości	من وحوشه بنسبة 30% من قيمته
+od potworow, a ja sam nie dam im rady.	من الوحوش، وأنا بنفسي لا أستطيع التغلب عليها.
+od razu przywraca 500 PŻ i 500 PE.	يستعيد فوراً 500 ن.ح و500 ن.م.
+od stopnia G1 do P. Żadna z nich nie jest teraz	من الدرجة G1 إلى P. لا واحدة منها الآن
+odbierają główne nagrody! Czy jesteś jednym z nich?	يستلمون الجوائز الرئيسية! هل أنت واحد منهم؟
+Odbierz nagrode za ranking	استلم جائزة الترتيب
+Odbierz nagrodę gildii	استلم جائزة الرابطة
+Odbierz nagrodę z rankingu	استلم جائزة من الترتيب
+Odbierz nagrodę za ranking	استلم جائزة الترتيب
+Odbierz nagrodę!	استلم الجائزة!
+Odbierz od niego nagrodę - jeden stały bonus	استلم منه الجائزة - مكافأة دائمة واحدة
+odbierzesz nagrodę tutaj, przy stole:	ستستلم الجائزة هنا، عند الطاولة:
+odbierzesz po jego zakończeniu.	ستستلمها بعد انتهائه.
+odczekaj chwile po handlu, sklepie, magazynie lub ulepszaniu	انتظر قليلاً بعد التبادل أو المتجر أو المخزن أو التطوير
+Oddaj fragmenty duszy	سلّم شظايا الروح
+Oddaj Klejnot Mądrości	سلّم جوهرة الحكمة
+Oddaj Klejnot Zawiści	سلّم جوهرة الخبث
+Oddaj kryształ do zbadania	سلّم البلورة للفحص
+Oddaj paproć do zbadania	سلّم السرخس للفحص
+Oddaj popioły	سلّم الرماد
+Oddaj rdzeń do zbadania	سلّم النواة للفحص
+Odebrales juz swoja nagrode w tym sezonie.	لقد استلمت جائزتك في هذا الموسم بالفعل.
+Odejdz na dobre	ارحل نهائياً
+Odeślij Enasira	أعد إيناسير
+Odnów błogosławieństwo	جدّد البركة
+ODP	مقاومة
+Odpornosc na trucizne (500 000 yang)	مقاومة السم (500 000 يانغ)
+Odporność - chodzisz o połowę wolniej,	المقاومة - تمشي أبطأ بمقدار النصف،
+Odporność na Omdlenia i Spowolnienia	المقاومة للإغماء والإبطاء
+Odporność na Trucizny i Krwawienie	المقاومة للسم والنزيف
+Odporność na żywioł zmniejsza obrażenia	مقاومة العنصر تقلل الضرر
+Odporność Sung Ma	مقاومة سونغ ما
+Odprowadz mnie do skrzyn. Za kazdego potwora	رافقني إلى الصناديق. عن كل وحش
+Odprowadziles mnie do wlasciwej skrzyni juz	لقد رافقتني إلى الصندوق الصحيح بالفعل
+Odwiedź Gardziel Am-heha (PB), by otworzyć kolejny Zamek Losu.	زر مضيق آم-هيه (ا.ح) لفتح قفل أقدار آخر.
+Odwiedź Gardziel Am-heha (SZC), by otworzyć kolejny Zamek Losu.	زر مضيق آم-هيه (ف.ز) لفتح قفل أقدار آخر.
+Odwiedź mnie jutro, po tym jak zniszczysz %s.	زرني غداً، بعد أن تدمر %s.
+Odłamek rozsypuje się - Głowa Węża ani drgnie.	الشظية تتفتت - ورأس الأفعى لا يتحرك.
+Odłamek Smoczego Kamienia?!	شظية حجر التنين؟!
+odłamka potrzebuję jeszcze 10 popiołów. Zbierz je	للشظية أحتاج إلى 10 رماد أخرى. اجمعها
+Ogień i wiatr (mapa 2)	النار والرياح (الخريطة 2)
+Ognia	النار
+Ognioszczyt	قمة-النار
+Ognioturnia	عرف-النار
+Ogniste Buty i Buty Oceanu szyje Kawuco	حذاء ناري وحذاء المحيط يخيطهما كلاشكوف
+Ognisty Liść - ogień, Mroźny Korzonek - lód,	ورقة اللهب - النار، جذر الصقيع - الجليد،
+Okazały	فاخر
+Okno towarzysza (klawisz P)	نافذة الرفيق (مفتاح P)
+Okno towarzysza otwiera klawisz P. Mozesz tez mu	نافذة الرفيق يفتحها مفتاح P. يمكنك أيضاً
+Okno wytwarzania	نافذة الصنع
+Opusc Swiatynie	غادر المعبد
+Opuszczona Twierdza	الحصن المهجور
+Opuść Leże Smoka	غادر وكر التنين
+Opuść Schronienie	غادر الملجأ
+Ornament i drugi Talizman +0 tego	حِلي منقوش وتعويذة ثانية +0 من هذا
+osiągniesz co najmniej poziom 35.	ستبلغ المستوى 35 على الأقل.
+Ostatni Metin padł - Beran-Setaou (PB) stracił swoją tarczę!	سقط آخر ماتين - فقد بيران-سيتاو (ا.ح) درعه!
+Ostatni Metin padł - Beran-Setaou (SZC) stracił swoją tarczę!	سقط آخر ماتين - فقد بيران-سيتاو (ف.ز) درعه!
+Ostrze (Weaponry)	النصل (Weaponry)
+Oto moj sklep z materialami do Alchemii Smoczych Kamieni.	هذا متجر موادي لكيمياء أحجار التنين.
+Oto nowa Złota Księga Konia.	هذا كتاب الحصان الذهبي الجديد.
+Oto on! Weź ten Kamień Driad (PB) - driada zna	ها هو! خذ حجر الدرياد (ا.ح) هذا - الحورية تعرف
+Oto on! Weź ten Kamień Driad (SZC) - driada zna	ها هو! خذ حجر الدرياد (ف.ز) هذا - الحورية تعرف
+Oto twoja nagroda: 100 Doblonow!	هذه جائزتك: 100 دوبلون!
+Oto twój Kryształ Energii. Niezłe cacko, co?	هذا بلور الطاقة خاصتك. تحفة، أليس كذلك؟
+otrzymał swoją nagrodę do ekwipunku.	استلم جائزته في الحقيبة.
+Otrzymujesz Buffi (na zawsze) i Zwój Imienia Buffi za 55 poziom. Okno Buffi otwiera klawisz P.	تحصل على بوفي (للأبد) ولفيفة اسم بوفي عند المستوى 55. نافذة بوفي يفتحها مفتاح P.
+Otrzymujesz czerwone pudła Zodiaku: %d	تحصل على صناديق زودياك الحمراء: %d
+Otrzymujesz kwiaty żywiołu: %d	تحصل على زهور العناصر: %d
+Otrzymujesz niebieskie pudła Zodiaku: %d	تحصل على صناديق زودياك الزرقاء: %d
+Otrzymujesz Złotą Księgę Konia!	تحصل على كتاب الحصان الذهبي!
+Otrzymujesz: %dx Złote Trofeum Yutnori	تحصل على: %dx كأس يوتنوري الذهبي
+Otworz okno ulepszania	افتح نافذة التطوير
+Otworz okno wytwarzania	افتح نافذة الصنع
+Otworz skrzynie	افتح الصندوق
+Otwórz Bibliotekę Wiedzy	افتح مكتبة المعرفة
+Otwórz Leże Smoka	افتح وكر التنين
+Otwórz Magazyn	افتح المخزن
+Otwórz okno	افتح النافذة
+Otwórz okno kowala	افتح نافذة الحداد
+Otwórz okno wytwarzania	افتح نافذة الصنع
+Otwórz okno zielarstwa	افتح نافذة الأعشاب
+Otwórz pieczęcie Arktycznych Kostek (PB) we właściwej kolejności Gwiazdami Północy (PB) z potworów.	افتح أختام نرْد آركتوس (ا.ح) بالترتيب الصحيح بنجوم شمالية (ا.ح) من الوحوش.
+Otwórz pieczęcie Arktycznych Kostek (SZC) we właściwej kolejności Gwiazdami Północy (SZC) z potworów.	افتح أختام نرْد آركتوس (ف.ز) بالترتيب الصحيح بنجوم شمالية (ف.ز) من الوحوش.
+Otwórz portal Czyśćca Ognia	افتح بوابة مطهر النار
+Otwórz przejście	افتح الممر
+Otwórz przejście do Lodowej Krainy	افتح الممر إلى أرض الجليد
+Otwórz sklep	افتح المتجر
+ożyły - wojownicy En-Tai napadają na strażników lasu.	دبّت فيها الحياة - محاربو الإنتاي يهاجمون حراس الغابة.
+Panel wypraw pokaże ci ranking każdego lochu.	ستُظهر لك لوحة الحملات ترتيب كل زنزانة.
+Pasza dla konia	علف الحصان
+Pasza dla konia: 30/30 - wróć do Stajennego.	علف الحصان: 30/30 - عد إلى صبي الإسطبل.
+pewne ciekawe miejsce... Jeśli masz Tajemniczy	مكان مثير للاهتمام... إذا كان معك الغامض
+Pieczęci Biblioteki można użyć tylko w Bibliotece Wiedzy, po pokonaniu fali pająków.	يمكن استخدام ختم المكتبة فقط في مكتبة المعرفة، بعد هزيمة موجة العناكب.
+Pieczęcie złamane. Wąwóz Am-heh budzi się...	تحطمت الأختام. مضيق آم-هيه يستيقظ...
+Pieczęć Dżungli można użyć tylko w lochu, po pokonaniu fali potworów.	يمكن استخدام ختم الأدغال فقط في الزنزانة، بعد هزيمة موجة الوحوش.
+Pieczęć przyjmie tylko Kryształ Lodu.	الختم لن يقبل إلا بلورة الجليد.
+Pieczęć Ruin można użyć tylko w lochu, po pokonaniu fali potworów.	يمكن استخدام ختم الأطلال فقط في الزنزانة، بعد هزيمة موجة الوحوش.
+Pieczęć Wzgórza można użyć tylko w lochu, po pokonaniu fali potworów.	يمكن استخدام ختم التل فقط في الزنزانة، بعد هزيمة موجة الوحوش.
+Piekielny Cios	ضربة جهنمية
+Pierscien Anty-Exp: doswiadczenie znowu wlaczone.	خاتم منع الخبرة: الخبرة مفعّلة من جديد.
+Pierscien Anty-Exp: nie dostajesz doswiadczenia (uzyj ponownie, by wlaczyc).	خاتم منع الخبرة: لا تحصل على خبرة (استخدمه مجدداً للتفعيل).
+pierwotnych kamieni. Przynieś mi po prostu	الأحجار الأصلية. فقط أحضر لي
+Pierwsza wioska	القرية الأولى
+pierwszy 1% to +18% obrażeń przeciw jego	أول 1% هو +18% من الضرر ضد
+Pierwszy rekonesans	الاستطلاع الأول
+Pierwszy rekonesans: wróć do Strażnika Lasu.	الاستطلاع الأول: عد إلى حارس الغابة.
+pierwszym poziomie roi się od Kapp i skażonych	في المستوى الأول تعجّ كابّات ومخلوقات فاسدة
+Pierścienia możesz używać od %d poziomu.	يمكنك استخدام الخاتم من المستوى %d.
+Pierścienia Siły Natury można użyć tylko w Królestwie Żywiołów.	خاتم القوى البدائية لا يُستخدم إلا في مملكة العناصر.
+Pierścień jest gotowy.	الخاتم جاهز.
+Pierścień Siły Natury rozsypał się w pył - tym razem bez skutku.	تحول خاتم القوى البدائية إلى غبار - هذه المرة دون أثر.
+Pierścień wypada ze wszystkich potworów i Metinów	يسقط الخاتم من كل الوحوش وماتين
+Pierścień zadziała dopiero wtedy, gdy statuy zaświecą na niebiesko (etap 4).	لن يعمل الخاتم إلا عندما تتوهج التماثيل بالأزرق (المرحلة 4).
+Pierścień zaprowadzi cię na nowy kontynent	سيأخذك الخاتم إلى القارة الجديدة
+Pilnuj, zeby potwory mnie nie dopadly.	احرص على ألا تصل الوحوش إليّ.
+Pilnuję wejścia do Schronienia Północnego Wiatru.	أحرس مدخل ملجأ رياح الشمال.
+Piorunowe Zioło - błyskawica, Kwiat Północnego	عشبة الرعد - البرق، زهرة رياح الشمال
+Pirat Tanaka to zmora naszych brzegow.	القرصان تاناكا بلاء سواحلنا.
+Piątek (Shen-Yu)	الجمعة (شن-يو)
+pięknie lśniące odłamki, dobrze?	شظايا جميلة اللمعان، حسناً؟
+Piętra odblokowujesz po kolei; nowy miesiąc to	تُفتح الطوابق بالتتابع؛ والشهر الجديد هو
+Pięć Ros En-Tai - wystarczy dla wszystkich rannych.	خمس ندى الإنتاي - تكفي كل الجرحى.
+pięćdziesiąt pięter jego najlepszych wojowników.	خمسون طابقاً من أفضل محاربيه.
+Pięćdziesiąt pięter, każde z trzech etapów.	خمسون طابقاً، في كل منها ثلاث مراحل.
+Planszę do Yutnori	لوحة لعب يوتنوري
+Planszę do Yutnori, Kamień Kowala, Zwój	لوحة لعب يوتنوري، حجر الحداد، لفيفة
+Planszę do Yutnori, Zwój Błogosławieństwa,	لوحة لعب يوتنوري، لفيفة البركة،
+plecaku (zostal zalozony, przeniesiony lub wymieniony).	الحقيبة (تم ارتداؤه أو نقله أو استبداله).
+po czasie wrócicie na Płaskowyż Iluzji.	بعد انتهاء الوقت ستعودون إلى هضبة الأوهام.
+po jednym. Wypadają z Podziemnych Lod. Ludzi	واحدة تلو الأخرى. تسقط من تماثيل الجليد الجوفية. البشر
+po jednym. Wypadają z Łuczników i Komendantów	واحدة تلو الأخرى. تسقط من الرماة والقادة
+po prostu mój kostium. Jestem nieco rozkojarzony,	مجرد زيّي. أنا مشتت قليلاً،
+po prostu przeciagnac na mnie.	فقط اسحبه إليّ.
+Poczekaj chwilę po handlu lub rozmowie i spróbuj ponownie.	انتظر قليلاً بعد التبادل أو الحديث وحاول مرة أخرى.
+Poczekaj chwilę po handlu lub rozmowie.	انتظر قليلاً بعد التبادل أو الحديث.
+Poczekaj tu na niego - zabierze całą drużynę.	انتظر هنا - سيأخذ الفريق كله.
+Pod falami śpią ruiny Atlantydy. Ich strażnicy	تحت الأمواج تنام أطلال أتلانتس. حراسها
+Pod tym sztandarem możesz wejść do Piekielnej Wieży	تحت هذه الراية يمكنك دخول برج الجحيم
+Poddaj	استسلم
+Poddaj wyprawę gildii	استسلام حملة الرابطة
+Poddać wyprawę może tylko mistrz gildii.	لا يستطيع التخلي عن الحملة إلا زعيم الرابطة.
+Podejdz blizej i sprobuj jeszcze raz.	اقترب أكثر وحاول مرة أخرى.
+Podejdź bliżej do Smoczej Statui, która jeszcze nie płonie.	اقترب من تمثال التنين الذي لم يشتعل بعد.
+Podróże po Yoharze	رحلات في يوهارا
+Podręcznik: Dopalacz	كتاب: الدفعة
+Podręcznik: Riposta	كتاب: الصدّ
+Pojawił się Metin Chłodu (PB)! Zranić go może tylko Szaman.	ظهر ماتين الثلج (ا.ح)! لا يستطيع إيذاءه إلا الشامان.
+Pojawił się Metin Chłodu (SZC)! Zranić go może tylko Szaman.	ظهر ماتين الثلج (ف.ز)! لا يستطيع إيذاءه إلا الشامان.
+pojedynczo - każdy muszę dokładnie zbadać,	واحداً تلو الآخر - كل واحد يجب أن أفحصه بدقة،
+Pokaz nagrody	اعرض الجائزة
+Pokaż mi go...	أرني إياه...
+Pokaż mi go... Zobaczmy, co skrywa ten blask.	أرني إياه... لنرَ ما يخفيه هذا البريق.
+Pokaż ranking	اعرض الترتيب
+Pokonaj 300 potworów w Wąwozie	اهزم 300 وحش في المضيق
+Pokonaj 50 Wojowników En-Tai w Zaklętym Lesie.	اهزم 50 محارباً من الإنتاي في الغابة المسحورة.
+Pokonaj bossów piętra i unikaj kręgów	اهزم زعماء الطابق وتجنب الدوائر
+Pokonaj czterech Szelów.	اهزم أربعة سُزيْل.
+Pokonaj fale potworów, aż pojawią się bossowie	اهزم موجات الوحوش حتى يظهر الزعماء
+Pokonaj Nemere (PB), króla mrozu i lodu!	اهزم نمير (ا.ح)، ملك الصقيع والجليد!
+Pokonaj Nemere (SZC), króla mrozu i lodu!	اهزم نمير (ف.ز)، ملك الصقيع والجليد!
+Pokonaj Nemere!	اهزم نمير!
+pokonaj Razadora w Czyśćcu Ognia i Nemere w Lodowej	اهزم رازادور في مطهر النار ونمير في أرض
+Pokonaj wszystkich wrogów!	اهزم كل الأعداء!
+Pokonaj wszystkich wrogów, a błogosławieństwo doda ci	اهزم كل الأعداء، وستمنحك البركة
+Pokonaj wszystkie mroźne potwory, a potem zniszcz Metin Chłodu (PB) - zranić go może tylko Szaman.	اهزم كل وحوش الصقيع، ثم دمّر ماتين الثلج (ا.ح) - لا يستطيع إيذاءه إلا الشامان.
+Pokonaj wszystkie mroźne potwory, a potem zniszcz Metin Chłodu (SZC) - zranić go może tylko Szaman.	اهزم كل وحوش الصقيع، ثم دمّر ماتين الثلج (ف.ز) - لا يستطيع إيذاءه إلا الشامان.
+Pokonaj wszystkie potwory	اهزم كل الوحوش
+Pokonaj wszystkie potwory na tym piętrze.	اهزم كل الوحوش في هذا الطابق.
+Pokonaj wszystkie potwory w otwartej komnacie.	اهزم كل الوحوش في الغرفة المفتوحة.
+Pokonaj Władcę En-Tai i zdobądź Drzewny Szmaragd.	اهزم سيد الإنتاي واحصل على زمرد الشجر.
+Pokonaj Władcę En-Tai i zdobądź Szlachetne Drewno.	اهزم سيد الإنتاي واحصل على الخشب الرفيع.
+Pokonajcie 3 Czerwone Skorpiony.	اهزموا 3 عقارب حمراء.
+Pokonajcie 3 Faethorny.	اهزموا 3 من فايثورن.
+Pokonajcie 3 Królowe Pająków.	اهزموا 3 ملكات عناكب.
+Pokonajcie 3 Obrońców Chmur.	اهزموا 3 من حماة الغيوم.
+Pokonajcie Baronównę Pająków!	اهزموا بارونة العناكب!
+Pokonajcie Króla Skorpionów!	اهزموا ملك العقارب!
+Pokonajcie Królewską Sowę!	اهزموا البومة الملكية!
+Pokonajcie Królową Dżungli!	اهزموا ملكة الأدغال!
+Pokonajcie Płomiennego Feniksa!	اهزموا العنقاء اللهيبية!
+Pokonajcie WuKonga!	اهزموا ووكونغ!
+Pokonaliście Alastora. Oto wasza nagroda.	لقد هزمتم آلاستور. هذه جائزتكم.
+Pokonaliście Jotuna Thryma (PB)!	لقد هزمتم جاتون تيرم (ا.ح)!
+Pokonaliście Jotuna Thryma (SZC)!	لقد هزمتم جاتون تيرم (ف.ز)!
+Pokonaliście Jotuna Thryma!	لقد هزمتم جاتون تيرم!
+Pokonałeś Razadora i Nemere. Oto twoja nagroda:	لقد هزمت رازادور ونمير. هذه جائزتك:
+Pokonałeś Wojowników En-Tai, ale apteczki nie mieli.	لقد هزمت محاربي الإنتاي، لكن لم يكن معهم حقيبة إسعاف.
+Pokonuj Druidów En-Tai, aż znajdziesz apteczkę.	اهزم كهنة الإنتاي حتى تجد حقيبة الإسعاف.
+Pokonuj Metiny Świadomość w Dongan, aż zdobędziesz	اهزم ماتين الوعي في دونغان حتى تحصل على
+Pokonuj mroźne potwory i zdobądź Klucz Lod. Kwiatu (PB) - wypada tylko, gdy zabija Ninja.	اهزم وحوش الصقيع واحصل على مفتاح وردة الثلج (ا.ح) - يسقط فقط عندما يقتل النينجا.
+Pokonuj mroźne potwory i zdobądź Klucz Lod. Kwiatu (SZC) - wypada tylko, gdy zabija Ninja.	اهزم وحوش الصقيع واحصل على مفتاح وردة الثلج (ف.ز) - يسقط فقط عندما يقتل النينجا.
+Pokonuj potwory - co jakiś czas znajdziesz przy nich paszę.	اهزم الوحوش - من حين لآخر ستجد عندها علفاً.
+Pokonuj potwory na tym poziomie - czasem wypada[ENTER]z nich Klucz Kryształu Duszy. Z kluczem w[ENTER]ekwipunku porozmawiaj ze statuą albo przeciągnij[ENTER]go na nią.	اهزم الوحوش في هذا المستوى - أحياناً يسقط[ENTER]منها مفتاح بلور الروح. ومعك المفتاح في[ENTER]الحقيبة تحدث إلى التمثال أو اسحبه[ENTER]عليه.
+Pokonuj potwory w czasie eventu, aby zbierac	اهزم الوحوش أثناء الحدث لتجمع
+Pokrój	قطّع
+Polacz Szarfy	اربط الأوشحة
+Polimorfia wierzchowca	تحوّل المطية
+Pomieszczenie bossa	غرفة الزعيم
+Pomoc Smoka Buffi	مساعدة تنين بوفي
+pomocniczych (ostatnie pole).	المساعدة (الخانة الأخيرة).
+Pomoge ci	سأساعدك
+Poniedziałek (Zi-Chou)	الاثنين (زي-تشو)
+ponownie 2 godziny po zakończeniu.	مجدداً بعد ساعتين من الانتهاء.
+ponownie jutro.	مجدداً غداً.
+Popioły	الرماد
+Popiół: %d / 10	الرماد: %d / 10
+Poprzednia ryba na doświadczenie przestała działać - zastąpiła ją lepsza.	توقفت سمكة الخبرة السابقة عن العمل - حلّت محلها أفضل منها.
+Poprzednia strona	الصفحة السابقة
+poprzedniej próbki. Wróć do mnie trochę później!	العينة السابقة. عد إليّ بعد قليل!
+Porozmawiaj z %s w Świątyni Zodiaku.	تحدث إلى %s في معبد زودياك.
+Porozmawiaj z %s.	تحدث إلى %s.
+Porozmawiaj z Badaczem Lasu.	تحدث إلى باحث الغابة.
+Porozmawiaj z nim (od poziomu 120).	تحدث إليه (من المستوى 120).
+Porozmawiaj z nim przy wejściu do Groty	تحدث إليه عند مدخل الكهف
+Porozmawiaj z nim.	تحدث إليه.
+Porozmawiaj ze mną: Nagroda za badania	تحدث إليّ: جائزة الأبحاث
+Porozmawiaj ze Zwiadowcą Lasu.	تحدث إلى كشاف الغابة.
+Port Nowego Kontynentu	ميناء القارة الجديدة
+Portal do Świątyni Smoka otworzą trzy Kręte Klucze	بوابة معبد التنين ستفتحها ثلاثة مفاتيح ملتوية
+Portal pozostawiony przez Straznika En-Tai drga	البوابة التي تركها حارس الإنتاي ترتجف
+Portal prowadzi do następnego etapu.	البوابة تؤدي إلى المرحلة التالية.
+Portowy Sklep Gaya	متجر غايا في الميناء
+Portowy Sklep Gaya: nowa oferta jest gotowa.	متجر غايا في الميناء: العرض الجديد جاهز.
+Portu Nowego Kontynentu. Dokąd chcesz płynąć?	ميناء القارة الجديدة. إلى أين تريد الإبحار؟
+portu?	الميناء؟
+Porzuć misję teraz	تخلَّ عن المهمة الآن
+Posiadasz następujące buffy:	لديك التعزيزات التالية:
+Postęp: %d / %d.	التقدم: %d / %d.
+Potrzebne: część (wykon.), 10 Wzorów Wężowych,	المطلوب: قطعة (صناعة)، 10 أنماط أفعى،
+potrzebny 75. poziom	مطلوب المستوى 75
+potrzebuje Zegarka Kieszonkowego od Handlarki Iluzji.	يحتاج إلى ساعة جيب من تاجرة الأوهام.
+Potrzebujesz %d poziomu i Championa 4.	تحتاج إلى المستوى %d والبطل 4.
+Potrzebujesz 300 PE.	تحتاج إلى 300 ن.م.
+potrzebujesz przedmiotu:	تحتاج إلى عتاد:
+Potrzebujesz Przepustki.	تحتاج إلى بطاقة مرور.
+Potrzebujesz Sztandaru Czaszki (Gnoll Kapitan, Ahtrin Kapitan, Wódz Wojenny Schronienia, ItemShop).	تحتاج إلى راية الجمجمة (زعيم الغنيز، زعيم الآثرن، قائد حرب الملجأ، متجر العناصر).
+Potrzebujesz Upiornej Dyni, aby użyć Czarodziejskiej Różdżki. 	تحتاج إلى قرع الهالوين لاستخدام العصا السحرية. 
+potrzebuję %d Odłamków Energii.	أحتاج إلى %d من شظايا الطاقة.
+Potrzebuję 30 porcji paszy. Pokonuj potwory - przy niektórych ją znajdziesz. Za pomoc dostaniesz 22-27 Paszy dla Konia.	أحتاج إلى 30 حصة علف. اهزم الوحوش - ستجده عند بعضها. مقابل المساعدة ستحصل على 22-27 علف حصان.
+Potrzebuję do moich badań oczyszczonych rdzeni.	أحتاج إلى نوى منقّاة لأبحاثي.
+potrzebuję. I to zawdzięczam tylko tobie.	أحتاج. وأدين بهذا لك وحدك.
+potworom, każdy kolejny +0,5% (do 80%).	الوحوش، وكل 1% إضافي +0,5% (حتى 80%).
+potworom, Wojownikom, Ninja, Surom albo Szamanom,	الوحوش، المحاربين، النينجا، السورا أو الشامان،
+Potwory nadciągają szybciej!	الوحوش تتقدم أسرع!
+Potwory Szczeliny Czasu nie dają dropu, ale dają więcej PD.	وحوش فاصل الزمن لا تُسقط غنائم، لكنها تمنح خبرة أكثر.
+potworów obracają je - w dobrej kolejności.	الوحوش يديرونها - بالترتيب الصحيح.
+potworów zdobędzie tylko Czempion.	الوحوش لا يحصل عليها إلا البطل.
+Potęga mądrości	قوة الحكمة
+Potęga mądrości już jest z tobą.	قوة الحكمة معك بالفعل.
+Potęga Sung Mahi wyrzuca pokonanych z jaskiń. Wracasz do Dongan.	قوة سونغ ماهي تطرد المهزومين من الكهوف. تعود إلى دونغان.
+Potężny Wojownik Wężowy (ziemia) wkracza do sali!	محارب أفعى قوي (أرض) يدخل القاعة!
+Potężny Wojownik Wężowy odradza się w lodzie!	محارب أفعى قوي يولد من جديد في الجليد!
+Powodzenia!	بالتوفيق!
+Powoli opadasz z sił, co? Nie pracuj tak ciężko,	قواك تخور تدريجياً، أليس كذلك؟ لا تعمل بجهد كبير،
+powtarzać co 24 godziny.	كرّر كل 24 ساعة.
+Poziom	المستوى
+Poziom Czempiona	مستوى البطل
+Poziom Czempiona: %d, doświadczenie %d / %d.	مستوى البطل: %d، الخبرة %d / %d.
+poziomu): 10 Zwykłych Skór, 5 planów, 5 Cienkich	المستوى): 10 جلود عادية، 5 مخططات، 5 رقيقة
+Pozniej	لاحقاً
+pozwala zapomnieć ją i wybrać nową.	يسمح بنسيانها واختيار جديدة.
+Pozycje w obcym królestwie są niedostępne.	المراكز في المملكة الأجنبية غير متاحة.
+połowę obrażeń, Witalność - masz połowę PŻ,	نصف الضرر، والحيوية - لديك نصف ن.ح،
+Połóż liście w oknie wytwarzania.	ضع الأوراق في نافذة الصنع.
+Połóż przedmiot w oknie razem z materiałami:	ضع العتاد في النافذة مع المواد:
+Połącz kamienie przebudzenia z Duszą Przebudzenia,	اجمع أحجار الإحياء مع روح الإحياء،
+Prawdziwy Kamień Metin został zniszczony. Za chwilę zejdziecie do Tartara!	دُمّر حجر الماتين الحقيقي. بعد قليل ستنزلون إلى تارثاروس!
+Precyzja -10	الدقة -10
+proba zaliczona	نجحت المحاولة
+Projekty Zestawu i odłamki I wypadają w Królestwie	مخططات الأطقم والشظايا I تسقط في مملكة
+Promienista - 20x Wspaniały Kamień Chaosu i 10 000 000 Yang.	مشعّة - 20x حجر فوضى عظيم و10 000 000 يانغ.
+Prosta - 10x Agat i 5 000 000 Yang,	بسيطة - 10x آغات و5 000 000 يانغ،
+Proszę, oto ona. Załóż ją w oknie kostiumów -	تفضل، ها هي. ارتدها في نافذة الأزياء -
+Proszę, oto twój Kryształ Energii. Pamiętaj	تفضل، هذا بلور الطاقة خاصتك. تذكّر
+Proszę. Niech głębiny będą dla ciebie łaskawe.	تفضل. لتكن الأعماق رحيمة بك.
+prowadzi portal Strażnika En-Tai w Świątyni Ochao.	تؤدي إليه بوابة حارس الإنتاي في معبد الآشاو.
+prowadzić badania. Pracuję nad czymś zupełnie	إجراء الأبحاث. أعمل على شيء مختلف تماماً
+prowadzę działalności charytatywnej - interes	لا أمارس العمل الخيري - الأعمال
+Prowadź mnie	قُدني
+Pryzmat Ożywienia	منشور الإحياء
+przebywa ich król. Przynieś mi Drzewny Szmaragd.	يقيم ملكهم. أحضر لي زمرد الشجر.
+Przechwyc bonus do Szarfy	التقاط مكافأة الوشاح
+przed Hydrą, i wszystkich innych śmiałków.	من هيدرا، ومن كل الشجعان الآخرين.
+Przedmiot zrodlowy nie ma juz zadnych bonusow.	العتاد المصدر لم يعد فيه أي مكافآت.
+Przedmiot, którego wygląd weźmiesz, zniknie.	العتاد الذي ستأخذ مظهره سيختفي.
+Przedmiot, z którego przeniesiesz parametry, zniknie.	العتاد الذي ستنقل منه الإحصاءات سيختفي.
+Przedmiotu, Buty Wiatru, Lizak Potęgi, Cor	العتاد، حذاء الريح، مصاصة القوة، كور
+przedniej zabawy życzę! 	أتمنى لك وقتاً ممتعاً! 
+Przejdź do Czyśćca Ognia	انتقل إلى مطهر النار
+Przejdź do Leża Smoka	انتقل إلى وكر التنين
+Przejdź do Lodowej Krainy	انتقل إلى أرض الجليد
+Przejdź na 7. poziom	انتقل إلى المستوى 7
+Przejście jest jeszcze zamknięte. Wróć później.	الممر لا يزال مغلقاً. عد لاحقاً.
+Przejście już się otwiera. Poczekaj chwilę.	الممر يُفتح بالفعل. انتظر قليلاً.
+Przekuj przedmiot +9	أعد صياغة عتاد +9
+Przekuj zbroje	أعد صياغة الدرع
+Przekuwam bron, zbroje i buty ulepszone na +9	أعيد صياغة الأسلحة والدروع والأحذية المطوّرة إلى +9
+Przekuwanie zbroi	إعادة صياغة الدرع
+przeniesione parametry zostają.	الإحصاءات المنقولة تبقى.
+Przenieś mnie	انقلني
+Przenieś mnie do hali wieży	انقلني إلى قاعة البرج
+Przenieś mnie do Razadora	انقلني إلى رازادور
+Przenosi ona parametry biżuterii, a u Theowahdana	تنقل هي إحصاءات المجوهرات، وعند علي وحدان
+Przenoszę tylko wygląd: statystyki i bonusy zostają.	أنقل المظهر فقط: الإحصاءات والمكافآت تبقى.
+Przenośnej Żyły Jadeitu nie użyjesz w lochu.	لا يمكنك استخدام عرق اليشم المحمول في الزنزانة.
+przepadły.	ضاعت.
+Przepisy	الوصفات
+Przerwa gildii wyzerowana.	تم تصفير فترة انتظار الرابطة.
+Przetrwaj klątwę - zdejmuje ją Antidotum SungMa	اصمد أمام اللعنة - يزيلها ترياق سونغ ماهي
+przez 7 dni po koncu eventu:	لمدة 7 أيام بعد انتهاء الحدث:
+Przełęcz Yilad	ممر ييلاد
+przy brzegu przez cały dzień.	قرب الشاطئ طوال اليوم.
+Przy mnie musi stać od %d do %d członków gildii (teraz: %d).	يجب أن يقف بجانبي من %d إلى %d من أعضاء الرابطة (الآن: %d).
+Przy odrobinie szczęścia w Upiornej Skrzyni	بقليل من الحظ في صندوق الهالوين
+Przy ujemnej randze koszt jest podwójny.	عند الرتبة السالبة تكون التكلفة مضاعفة.
+Przy ujemnej randze trening kosztuje %d punktów rangi.	عند الرتبة السالبة يكلف التدريب %d نقطة رتبة.
+przyciskiem kladziesz karte na stol, prawym	بالزر تضع الورقة على الطاولة، وبالأيمن
+Przyjmij misję teraz	اقبل المهمة الآن
+Przyjęte klejnoty: %d / 10	الجواهر المقبولة: %d / 10
+Przyjęte klejnoty: %d / 20	الجواهر المقبولة: %d / 20
+Przyjęte: %d / 10	المقبول: %d / 10
+Przykro mi, najpierw musisz zapłacić. Nie	آسف، عليك أن تدفع أولاً. لا
+Przylądek Smoczego Ognia	رأس لهب التنين
+Przynies dwie Szarfy tego samego stopnia, a polacze je w jedna, silniejsza.	أحضر وشاحين من الدرجة نفسها وسأدمجهما في وشاح واحد أقوى.
+Przynies przedmiot, materialy i Yang - przepisy	أحضر العتاد والمواد واليانغ - الوصفات
+Przynies Szarfe oraz przedmiot, z ktorego chcesz przechwycic bonus.	أحضر وشاحاً والعتاد الذي تريد التقاط المكافأة منه.
+Przynieś mi 10 fragmentów duszy miecza.	أحضر لي 10 شظايا من روح السيف.
+Przynieś mi 10 fragmentów duszy ochrony.	أحضر لي 10 شظايا من روح الحماية.
+Przynieś mi 10 fragmentów duszy ozdoby.	أحضر لي 10 شظايا من روح الزينة.
+Przynieś mi 10 fragmentów duszy światła.	أحضر لي 10 شظايا من روح النور.
+Przynieś mi 10 Klejnotów Zawiści. Przynoś je	أحضر لي 10 جواهر خبث. أحضرها
+Przynieś mi 10 popiołów z potworów w Dongan,	أحضر لي 10 رماد من الوحوش في دونغان،
+Przynieś mi 20 Klejnotów Mądrości, po jednym.	أحضر لي 20 جوهرة حكمة، واحدة تلو الأخرى.
+przynieś mi jego szlachetne drewno.	أحضر لي خشبه الرفيع.
+Przynieś mi jeszcze %d szt.	أحضر لي %d قطعة أخرى.
+Przynieś mi kryształy Metin - małe odłamki	أحضر لي بلورات ماتين - شظايا صغيرة
+Przynieś mi wędkę, a zobaczę, czy da się ją ulepszyć.	أحضر لي الصنارة وسأرى إن كان يمكن تطويرها.
+Przynieś Seon-Pyeongowi 10 Klejnotów Zawiści,	أحضر لسيون-بيونغ 10 جواهر خبث،
+Przynieś Seon-Pyeongowi 20 Klejnotów Mądrości,	أحضر لسيون-بيونغ 20 جوهرة حكمة،
+Przywolaj do mnie	استدعِه إليّ
+Przywołaj konia, aby go nakarmić.	استدعِ الحصان لإطعامه.
+Przywołaj konia, aby go szkolić.	استدعِ الحصان لتدريبه.
+Przywódca Straży Lasu (PB) cię tam zaprowadzi.	قائد حراس الغابة (ا.ح) سيرافقك إلى هناك.
+Przywódca Straży Lasu (PB) zaprowadzi was do Erebu.	قائد حراس الغابة (ا.ح) سيرافقكم إلى إريبو.
+Przywódca Straży Lasu (SZC) cię tam zaprowadzi.	قائد حراس الغابة (ف.ز) سيرافقك إلى هناك.
+Przywódca Straży Lasu (SZC) zaprowadzi was do Erebu.	قائد حراس الغابة (ف.ز) سيرافقكم إلى إريبو.
+Przędz, 5 Oznak Sławy (zbroja) albo 5 Stali (hełm),	خيوط، 5 شارات مجد (للدرع) أو 5 فولاذ (للخوذة)،
+Próba Czarnego Rumaka	اختبار الجواد الأسود
+Próby Czarnego Rumaka już nie ma - porozmawiaj ze mną o rozwoju konia.	لم يعد اختبار الجواد الأسود موجوداً - تحدث إليّ عن تطوير الحصان.
+Prąd zabierze cię tam, gdzie walczy twoja drużyna.	التيار سيأخذك إلى حيث يقاتل فريقك.
+Punkty jednej statystyki odda Nowa Wola.	نقاط إحصاء واحد ستعيدها الإرادة الجديدة.
+Punkty umiejętności wydane na nie wrócą. Potem możesz	نقاط المهارة المنفقة عليها ستعود. بعدها يمكنك
+Punkty wróciły do puli.	عادت النقاط إلى المخزون.
+Pył Wężowy: czas nie może przekroczyć 60 minut.	غبار الأفعى: لا يمكن أن يتجاوز الوقت 60 دقيقة.
+Północnego Wiatru.	رياح الشمال.
+Płacisz tylko za siebie - boty z drużyny i towarzysz wchodzą bez opłaty.	تدفع عن نفسك فقط - الرفاق الآليون في الفريق والرفيق يدخلون مجاناً.
+Płaskowyż Iluzji	هضبة الأوهام
+Płaskowyż Iluzji otwiera się przed wojownikami od	تنفتح هضبة الأوهام أمام المحاربين من
+Płaskowyż Sił Natury: twoje PŻ będą stale spadać. Medal Siły Natury chroni przez 10 minut.	هضبة قوى الطبيعة: ستتناقص ن.ح لديك باستمرار. ميدالية القوى البدائية تحمي لمدة 10 دقائق.
+Płaskowyż Sił Natury: użyj Pierścienia Siły	هضبة قوى الطبيعة: استخدم خاتم القوى
+Płyń do portu	أبحر إلى الميناء
+Płyń na Przylądek	أبحر إلى الرأس
+Raczej nie	على الأرجح لا
+Ranking lochów	ترتيب الزنازين
+Ranking nie jest jeszcze zamknięty.	الترتيب لم يُغلق بعد.
+Ranking Okey	ترتيب أوكي
+rankingu calkowitych punktow.	ترتيب مجموع النقاط.
+rankingu i odbiora najwieksze nagrody!	الترتيب وتستلم أكبر الجوائز!
+Razador (PB) został pokonany!	تم هزيمة رازادور (ا.ح)!
+Razador (SZC) został pokonany!	تم هزيمة رازادور (ف.ز)!
+Razador został pokonany!	تم هزيمة رازادور!
+Razador: Brakujące potwory komnaty pojawiają się ponownie.	رازادور: الوحوش المفقودة في الغرفة تظهر من جديد.
+Razador: Czas minął. Portal wyrzuca was z Czyśćca Ognia.	رازادور: انتهى الوقت. البوابة تطردكم من مطهر النار.
+Razador: Pokonajcie Razadora!	رازادور: اهزموا رازادور!
+Razador: Porozmawiaj z posągiem Am-heh, aby otrzymać zadanie.	رازادور: تحدث إلى تمثال آم-هيه لتحصل على المهمة.
+Razador: Wszystkie pieczęcie złamane. Wróć do posągu Am-heh, aby obudzić wąwóz.	رازادور: تحطمت كل الأختام. عد إلى تمثال آم-هيه لإيقاظ المضيق.
+Razador: Wąwóz Am-heh budzi się! Za chwilę staniecie przed Razadorem.	رازادور: مضيق آم-هيه يستيقظ! بعد قليل ستقفون أمام رازادور.
+Razador: Zadanie wykonane. Wróć do posągu Am-heh po następne.	رازادور: أُنجزت المهمة. عد إلى تمثال آم-هيه للحصول على التالية.
+Regeneracja PE +30%	تجدد ن.م +30%
+Regeneracja PE -30%	تجدد ن.م -30%
+Regeneracja PŻ +30%	تجدد ن.ح +30%
+Regeneracja PŻ -30%	تجدد ن.ح -30%
+Regeneracja zakończona	اكتمل التجدد
+Reguły świątyni	قواعد المعبد
+Rekonesans Przebudzenia	استطلاع البعث
+Rekonesans Szczeliny Czasu	استطلاع فاصل الزمن
+Relikt Duszy	أثر الروح
+Relikt Duszy (powtarzalna)	أثر الروح (قابل للتكرار)
+Riposta zmniejsza obrażenia, które otrzymujesz od jednej	الصدّ يقلل الضرر الذي تتلقاه من واحدة
+Riposta: Duchowe Uderzenie	صدّ: الهجوم الاختراقي
+Riposta: Mroczne Uderzenie	صدّ: الضربة الشريرة
+Riposta: Ognista Strzała	صدّ: السهم الناري
+Riposta: Przywołanie Błyskawicy	صدّ: استدعاء البرق
+Riposta: Strzelający Smok	صدّ: التنين الرامي
+Riposta: Uderzenie Palcem	صدّ: ضربة الإصبع
+Riposta: Wir Miecza	صدّ: دوامة السيف
+Riposta: Zasadzka	صدّ: الكمين
+Robie soki, ksiegi Eksperta, Lekarstwo Iluzji i Szate Aury.	أصنع العصائر وكتب الخبير ودواء الأوهام ورداء الهالة.
+Robie soki, wody i rosy.	أصنع العصائر والمياه والندى.
+Robie soki, wody, pasy i Runy Wykuwania (z dwoch run - runa o gwiazdke wyzsza).	أصنع العصائر والمياه والأحزمة وأحجار الصقل (من حجرين - حجر أعلى بنجمة).
+Rosy En-Tai	ندى الإنتاي
+Rosy En-Tai (PB)	ندى الإنتاي (ا.ح)
+Rosy En-Tai (SZC)	ندى الإنتاي (ف.ز)
+Rozpocznij obronę masztu	ابدأ الدفاع عن الصاري
+Rozpocznij walkę!	ابدأ القتال!
+Rozpocznij wyprawę na Nemere	ابدأ حملة نمير
+Rozpocznij zadanie	ابدأ المهمة
+Rozwijasz ją punktami umiejętności lub księgami riposty	تطوّرها بنقاط المهارة أو بكتب الصدّ
+rozwiniesz ją aż do poziomu 250.	ستطوّرها حتى المستوى 250.
+Rozwój konia (21-40)	تطوير الحصان (21-40)
+rośliny mrocznej paproci! Zasłużyłeś na nagrodę!	نباتات السرخس الظلامي! تستحق الجائزة!
+rośliny. Przynieś mi nieuszkodzone sadzonki	النباتات. أحضر لي شتلات سليمة
+Ruiny Atlantydy	أطلال أتلانتس
+Ruiny Atlantydy: Czas minął. Prąd wynosi was z ruin.	أطلال أتلانتس: انتهى الوقت. التيار يحملكم خارج الأطلال.
+Ruiny Atlantydy: Etap zaliczony. Za 5 sekund następne wyzwanie.	أطلال أتلانتس: تم اجتياز المرحلة. بعد 5 ثوانٍ التحدي التالي.
+Ruiny Atlantydy: Głębinowa Muszla zniknęła. Pojawia się nowa.	أطلال أتلانتس: اختفت محارة الأعماق. تظهر واحدة جديدة.
+Ruiny Atlantydy: Klucz przepadł w głębinach. Pojawia się nowa Głębinowa Muszla.	أطلال أتلانتس: ضاع المفتاح في الأعماق. تظهر محارة أعماق جديدة.
+Ruiny Atlantydy: Kolumna się otwiera! Pokonajcie Strażnika Atlantydy.	أطلال أتلانتس: العمود يُفتح! اهزموا حارس أتلانتس.
+Ruiny Atlantydy: Macie %d s, by pokonać Morkhota (punkty karne: %d).	أطلال أتلانتس: لديكم %d ثانية لهزيمة مورخوت (نقاط الجزاء: %d).
+Ruiny Atlantydy: Morkhot skrył się w głębinach! Zniszczcie Pradawne Serce Atlantydy, by go przywołać.	أطلال أتلانتس: اختبأ مورخوت في الأعماق! دمّروا قلب أتلانتس القديم لاستدعائه.
+Ruiny Atlantydy: Najpierw pokonajcie Strażnika Atlantydy.	أطلال أتلانتس: اهزموا حارس أتلانتس أولاً.
+Ruiny Atlantydy: nie udało się otworzyć przejścia - porozmawiaj z Magiem Atlantydy.	أطلال أتلانتس: تعذّر فتح الممر - تحدث إلى ساحر أتلانتس.
+Ruiny Atlantydy: Pokonajcie Morkhota!	أطلال أتلانتس: اهزموا مورخوت!
+Ruiny Atlantydy: porozmawiaj z Magiem Atlantydy, aby otworzyć przejście.	أطلال أتلانتس: تحدث إلى ساحر أتلانتس لفتح الممر.
+Ruiny Atlantydy: przejście prowadzi przez poczekalnię.	أطلال أتلانتس: الممر يمر عبر غرفة الانتظار.
+Ruiny Atlantydy: przejście się otwiera...	أطلال أتلانتس: الممر يُفتح...
+Ruiny Atlantydy: Serca Atlantydy zniszczone. Morkhot się budzi!	أطلال أتلانتس: دُمّرت قلوب أتلانتس. مورخوت يستيقظ!
+Ruiny Atlantydy: Strażnik Atlantydy pojawia się ponownie.	أطلال أتلانتس: حارس أتلانتس يظهر من جديد.
+Ruiny Atlantydy: Ta wyprawa już się zakończyła. Porozmawiaj z Magiem Atlantydy, aby wyruszyć na nową.	أطلال أتلانتس: انتهت هذه الحملة بالفعل. تحدث إلى ساحر أتلانتس للانطلاق في حملة جديدة.
+Ruiny Atlantydy: Ten loch został już ukończony.	أطلال أتلانتس: اكتملت هذه الزنزانة بالفعل.
+Ruiny Atlantydy: To była prawdziwa Elita Atlantydy! Złudzenia rozpływają się w wodzie.	أطلال أتلانتس: كانت هذه نخبة أتلانتس الحقيقية! الأوهام تذوب في الماء.
+Ruiny Atlantydy: To nie ta kolumna. Klucz rozpadł się - pojawia się nowa Głębinowa Muszla.	أطلال أتلانتس: ليس هذا العمود. تفتت المفتاح - تظهر محارة أعماق جديدة.
+Ruiny Atlantydy: Witajcie w głębinach. Za 5 sekund obudzą się strażnicy ruin.	أطلال أتلانتس: أهلاً بكم في الأعماق. بعد 5 ثوانٍ يستيقظ حراس الأطلال.
+Ruiny Atlantydy: Wszystkie kolumny otwarte. Za 5 sekund prąd zabierze was w głąb ruin.	أطلال أتلانتس: فُتحت كل الأعمدة. بعد 5 ثوانٍ سيأخذكم التيار إلى عمق الأطلال.
+Ruiny Skorpiona	أطلال العقرب
+Ruiny Skorpiona: Czas minął. Strażnik wyprowadza was z lochu.	أطلال العقرب: انتهى الوقت. الحارس يخرجكم من الزنزانة.
+Ruiny Skorpiona: Etap zaliczony. Za 5 sekund następne wyzwanie.	أطلال العقرب: تم اجتياز المرحلة. بعد 5 ثوانٍ التحدي التالي.
+Ruiny Skorpiona: nie udało się otworzyć przejścia - porozmawiaj ze strażnikiem.	أطلال العقرب: تعذّر فتح الممر - تحدث إلى الحارس.
+Ruiny Skorpiona: Pieczęć Ruin zadziałała sama.	أطلال العقرب: ختم الأطلال عمل من تلقاء نفسه.
+Ruiny Skorpiona: porozmawiaj ze strażnikiem, aby otworzyć przejście.	أطلال العقرب: تحدث إلى الحارس لفتح الممر.
+Ruiny Skorpiona: przejście prowadzi przez poczekalnię.	أطلال العقرب: الممر يمر عبر غرفة الانتظار.
+Ruiny Skorpiona: przejście się otwiera...	أطلال العقرب: الممر يُفتح...
+Ruiny Skorpiona: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	أطلال العقرب: انتهت هذه الحملة بالفعل. تحدث إلى الحارس للانطلاق في حملة جديدة.
+Ruiny Skorpiona: Ten loch został już ukończony.	أطلال العقرب: اكتملت هذه الزنزانة بالفعل.
+Ruiny Skorpiona: Witajcie. Za 5 sekund z piasku wyjdą skorpiony.	أطلال العقرب: أهلاً بكم. بعد 5 ثوانٍ ستخرج العقارب من الرمال.
+Runy aury podnoszą poziom szaty: Lodowa Runa Aury	أحجار الهالة ترفع مستوى الرداء: حجر هالة الجليد
+Ruszajmy w droge!	هيا بنا ننطلق!
+Rycerski	فارسي
+Różdżki z kamieni Metin. Dotknij dyni różdżką,	عصي من أحجار ماتين. المس القرع بالعصا،
+rękawic Sung Ma.	قفازات سونغ ما.
+rękawice bez ulepszaczy... ale nie widzę u ciebie	قفازات بلا محسّنات... لكنني لا أرى عندك
+Sala tronowa Nemere	قاعة عرش نمير
+Sam albo z drużyną (do 8). Boty z drużyny wejdą razem z Tobą.	وحدك أو مع فريق (حتى 8). الرفاق الآليون في الفريق سيدخلون معك.
+Sam albo z drużyną. Boty z drużyny wchodzą razem z Tobą.	وحدك أو مع فريق. الرفاق الآليون في الفريق يدخلون معك.
+Sam bym tego dokonał, ale mój miecz stępił się w	كنت سأفعل ذلك بنفسي، لكن سيفي تثلّم في
+Sam bym tego dokonał, ale mój miecz stępił się,	كنت سأفعل ذلك بنفسي، لكن سيفي تثلّم،
+Sam nie przetrwasz w Szczelinie Czasu - potrzebujesz	لن تصمد وحدك في فاصل الزمن - تحتاج
+Sam nie przetrwasz w tym lochu - potrzebujesz	لن تصمد وحدك في هذه الزنزانة - تحتاج
+samego żywiołu. Własne bonusy talizmanu	العنصر نفسه. مكافآت التعويذة الخاصة
+Schody prowadzą na następne piętro	الدرج يؤدي إلى الطابق التالي
+Schronienie jest jeszcze zamknięte. Wróć później.	الملجأ لا يزال مغلقاً. عد لاحقاً.
+Schronienie Meley	ملجأ ميلي
+Schronienie Meley: brama się nie otworzyła - porozmawiaj ze Strażnikiem Smoków ponownie.	ملجأ ميلي: لم تُفتح البوابة - تحدث إلى حارس التنين مرة أخرى.
+Schronienie Meley: nie wybrałeś nagrody - otrzymujesz Skrzynię Królowej Meley.	ملجأ ميلي: لم تختر جائزة - تحصل على صندوق الملكة ميلي.
+Schronienie Północnego Wiatru	ملجأ رياح الشمال
+sekundy znalazłem się właśnie tutaj... 	ثوانٍ وجدت نفسي هنا... 
+Seon-Pyeong ma już wszystkie Klejnoty Zawiści.	لدى سيون-بيونغ بالفعل كل جواهر الخبث.
+Seon-Pyeong prowadzi dalej swoje badania.	سيون-بيونغ يواصل أبحاثه.
+Seon-Pyeong, badacz przy wejściu do Groty	سيون-بيونغ، الباحث عند مدخل الكهف
+Seon-Pyeongowi.	لسيون-بيونغ.
+serwera (M2_SIDEKICK=1). Zamiast niego jest Buffi	الخادم (M2_SIDEKICK=1). وبدلاً منه هناك بوفي
+Setaou (oraz ze Skrzyni Hydry).	سيتاو (وكذلك من صندوق هيدرا).
+Setaou w Grocie Wygnańców.	سيتاو في كهف المنفيين.
+Siano	تبن
+sie poslugiwac bronia.	استخدام السلاح.
+sie w tym miejscu portal.	في هذا المكان بوابة.
+siedmiu Stelach Isfet (PB) we właściwej kolejności.	سبعة ألواح زفت (ا.ح) بالترتيب الصحيح.
+siedmiu Stelach Isfet (SZC) we właściwej kolejności.	سبعة ألواح زفت (ف.ز) بالترتيب الصحيح.
+Silniejszy efekt tego rodzaju już działa.	تأثير أقوى من هذا النوع يعمل بالفعل.
+silniejszą bestię.	وحشاً أقوى.
+Silny 25%.	قوي 25%.
+się w pobliżu reagują na kamienie Metin.	القريبة تستجيب لأحجار ماتين.
+sił na kolejne fale.	القوة للموجات التالية.
+SIŁA	قوة
+Siła %d, Witalność %d, Odporność %d,	القوة %d، الحيوية %d، المقاومة %d،
+Siła natury porywa cię na Płaskowyż Sił Natury!	قوة الطبيعة تخطفك إلى هضبة قوى الطبيعة!
+Siła Sung Ma	قوة سونغ ما
+Siły żywiołowe	القوى العنصرية
+Skarb Królowej Meley należy do tych, którzy	كنز الملكة ميلي لمن
+Skarb otwarty! Każdy członek gildii obecny w Krypcie	الكنز مفتوح! كل عضو في الرابطة موجود في السرداب
+Skarbiec gildii musi mieć co najmniej 500 000 Yang.	يجب أن يكون في خزانة الرابطة 500 000 يانغ على الأقل.
+Sklep	المتجر
+Sklep Gaya otworzysz przy Statui Wojownika w Porcie Nowego Kontynentu.	تفتح متجر الغايا عند تمثال المحارب في ميناء القارة الجديدة.
+Skrytobojca (sztylety)	القاتل الخفي (خناجر)
+skrywają wielką siłę. Przynieś mi 10 ziół jednego	تخفي قوة عظيمة. أحضر لي 10 أعشاب من نوع واحد
+skrzyni skarbow ukrytej na tej wyspie.	صندوق الكنز المخبأ في هذه الجزيرة.
+Skrzynia Królowej Meley	صندوق الملكة ميلي
+Skrzynia otwarta: mikstury, zwoje, rady, pierscienie i encyklopedia sa w ekwipunku.	الصندوق مفتوح: الجرعات واللفائف والنصائح والخواتم والموسوعة في حقيبتك.
+Skrzynia Sm. Strażników	صندوق حارس التنين
+Skrzynia: potrzebujesz 9 wolnych miejsc w ekwipunku.	الصندوق: تحتاج إلى 9 أماكن فارغة في الحقيبة.
+skrzynie - 100 Doblonow.	الصناديق - 100 دوبلون.
+Smocze Jaja wciąż chronią statuy - najpierw je zniszczcie.	بيض التنين لا يزال محمياً بالتماثيل - دمّروها أولاً.
+Smocze Statuy chronią jej leże - zniszczcie je	تماثيل التنين تحمي وكرها - دمّروها
+Smok (Dragon)	التنين (Dragon)
+Sobota (Xu-Hai)	السبت (شو-هاي)
+Sobowtór Szela (PB) rozpływa się w mroźnym powietrzu.	شبيه سُزيْل (ا.ح) يذوب في الهواء المتجمد.
+Sobowtór Szela (SZC) rozpływa się w mroźnym powietrzu.	شبيه سُزيْل (ف.ز) يذوب في الهواء المتجمد.
+Spełniasz wszystkie warunki. Czy chcesz	أنت تستوفي كل الشروط. هل تريد
+Spirala Czasu (10%)	مسرع (10%)
+Spirala Czasu (20%)	مسرع (20%)
+Spirala Czasu (30%)	مسرع (30%)
+Spirala Czasu może skrócić czas oczekiwania.	المسرع يمكنه تقصير وقت الانتظار.
+Spróbuj ponownie później.	حاول مرة أخرى لاحقاً.
+Spytaj go o nią w pierwszej wiosce.	اسأله عنها في القرية الأولى.
+Srebrna skrzynia (300 - 399 punktow)	صندوق فضي (300 - 399 نقطة)
+Srebrne Trofeum Yutnori	كأس يوتنوري الفضي
+Stajenny	صبي الإسطبل
+Stajenny - pasza dla konia	صبي الإسطبل - علف الحصان
+Stajenny - rozwój konia	صبي الإسطبل - تطوير الحصان
+Stajenny - szkolenie konia	صبي الإسطبل - تدريب الحصان
+Stajenny - umiejętności konia	صبي الإسطبل - مهارات الحصان
+Stajenny - Złota Księga Konia	صبي الإسطبل - كتاب الحصان الذهبي
+Stajenny: awans konia (11)	صبي الإسطبل: ترقية الحصان (11)
+Stajenny: awans konia (21)	صبي الإسطبل: ترقية الحصان (21)
+Stajenny: pierwszy koń (kucyk)	صبي الإسطبل: الحصان الأول (مهر)
+stają się tam agresywniejsze. A to jest	تصبح هناك أكثر عدوانية. وهذا
+stanąć twarzą w twarz ze swoim przeznaczeniem?	أن تواجه مصيرك وجهاً لوجه؟
+Starożytna Dżungla	الأدغال القديمة
+Starożytna Dżungla: Czas minął. Strażnik wyprowadza was z lochu.	الأدغال القديمة: انتهى الوقت. الحارس يخرجكم من الزنزانة.
+Starożytna Dżungla: Etap zaliczony. Za 5 sekund następne wyzwanie.	الأدغال القديمة: تم اجتياز المرحلة. بعد 5 ثوانٍ التحدي التالي.
+Starożytna Dżungla: nie udało się otworzyć przejścia - porozmawiaj ze strażnikiem.	الأدغال القديمة: تعذّر فتح الممر - تحدث إلى الحارس.
+Starożytna Dżungla: Pieczęć Dżungli zadziałała sama.	الأدغال القديمة: ختم الأدغال عمل من تلقاء نفسه.
+Starożytna Dżungla: porozmawiaj ze strażnikiem, aby otworzyć przejście.	الأدغال القديمة: تحدث إلى الحارس لفتح الممر.
+Starożytna Dżungla: przejście prowadzi przez poczekalnię.	الأدغال القديمة: الممر يمر عبر غرفة الانتظار.
+Starożytna Dżungla: przejście się otwiera...	الأدغال القديمة: الممر يُفتح...
+Starożytna Dżungla: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	الأدغال القديمة: انتهت هذه الحملة بالفعل. تحدث إلى الحارس للانطلاق في حملة جديدة.
+Starożytna Dżungla: Ten loch został już ukończony.	الأدغال القديمة: اكتملت هذه الزنزانة بالفعل.
+Starożytna Dżungla: Witajcie. Za 5 sekund dżungla się przebudzi.	الأدغال القديمة: أهلاً بكم. بعد 5 ثوانٍ ستستيقظ الأدغال.
+Statek nie może dziś wypłynąć. Spróbuj ponownie	لا تستطيع السفينة الإبحار اليوم. حاول مجدداً
+Statek stoi dziś w porcie. Wróć później.	السفينة راسية اليوم في الميناء. عد لاحقاً.
+statek, który wypływa, musi bronić masztu przed	السفينة المبحرة يجب أن تدافع عن الصاري من
+Statua Kuda	تمثال الكود
+Statua Kuda strzeże wejścia na 2. poziom[ENTER]Diabelskich Katakumb.	تمثال الكود يحرس مدخل المستوى الثاني[ENTER]من سراديب الشيطان.
+Statua Przebudzenia otworzy przed twoją grupą,	تمثال الإحياء سيفتح لمجموعتك،
+Statua Węży prowadzi do wnętrza świątyni, gdzie	تمثال الأفعى يؤدي إلى داخل المعبد حيث
+statystyk Sung Ma - rozdasz go w oknie	إحصاءات سونغ ما - توزعها في نافذة
+Stały bonus czepca to atak magiczny i w zwarciu. Drugi	المكافأة الدائمة للقبعة هي الهجوم السحري والقتال القريب. الثانية
+Stały bonus konia (Potwory / Bossy / Metiny) został zniesiony - koń rośnie teraz do 40 poziomu.	أُلغيت المكافأة الدائمة للحصان (وحوش / زعماء / ماتين) - ينمو الحصان الآن حتى المستوى 40.
+Stań przy mnie - przywódca zabierze	قف بجانبي - القائد سيأخذ
+Stań przy mnie - przywódca zabierze drużynę stojącą obok.	قف بجانبي - القائد سيأخذ الفريق الواقف بجانبه.
+Stela Isfet (PB) została zniszczona.	دُمّر لوح الزفت (ا.ح).
+Stela Isfet (SZC) została zniszczona.	دُمّر لوح الزفت (ف.ز).
+Stela nie przyjmuje tego przedmiotu.	اللوح لا يقبل هذا العتاد.
+Stol Okey:	طاولة Okey:
+Strażnica Nemere (PB)	حصن نمير (ا.ح)
+Strażnica Nemere (PB) ma limit czasu - godzinę.	حصن نمير (ا.ح) له حد زمني - ساعة.
+Strażnica Nemere (PB): czas minął - wracacie na Płaskowyż Iluzji.	حصن نمير (ا.ح): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Strażnica Nemere (PB): masz 60 minut. Przywódca grupy zaczyna u Lodowego Lwa (PB).	حصن نمير (ا.ح): لديك 60 دقيقة. قائد المجموعة يبدأ عند أسد الجليد (ا.ح).
+Strażnica Nemere (PB): potrzebujesz Książki Przebudzenia.	حصن نمير (ا.ح): تحتاج إلى كتاب الإحياء.
+Strażnica Nemere (PB): ta wyprawa już się skończyła.	حصن نمير (ا.ح): انتهت هذه الحملة بالفعل.
+Strażnica Nemere (SZC)	حصن نمير (ف.ز)
+Strażnica Nemere (SZC) ma limit czasu - godzinę.	حصن نمير (ف.ز) له حد زمني - ساعة.
+Strażnica Nemere (SZC): czas minął - wracacie na Płaskowyż Iluzji.	حصن نمير (ف.ز): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Strażnica Nemere (SZC): masz 60 minut. Przywódca grupy zaczyna u Lodowego Lwa (SZC).	حصن نمير (ف.ز): لديك 60 دقيقة. قائد المجموعة يبدأ عند أسد الجليد (ف.ز).
+Strażnica Nemere (SZC): potrzebujesz Zegarka Kieszonkowego.	حصن نمير (ف.ز): تحتاج إلى ساعة جيب.
+Strażnica Nemere (SZC): ta wyprawa już się skończyła.	حصن نمير (ف.ز): انتهت هذه الحملة بالفعل.
+Strażnik Lasu (PB) potrzebuje twojej pomocy.	حارس الغابة (ا.ح) يحتاج إلى مساعدتك.
+Strażnik Lasu (SZC) potrzebuje twojej pomocy.	حارس الغابة (ف.ز) يحتاج إلى مساعدتك.
+Strażnik Lasu czeka na Ducha Ziemi.	حارس الغابة ينتظر روح الأرض.
+Strażnik Lasu da ci kolejne zadania - po następny	حارس الغابة سيعطيك مهام أخرى - للتالية
+Strażnik Lasu miał mi przysłać apteczkę - wróć po nią.	كان على حارس الغابة أن يرسل لي حقيبة إسعاف - عد لتأخذها.
+Strażnik Lasu miał mi przysłać apteczkę.	كان على حارس الغابة أن يرسل لي حقيبة إسعاف.
+Strażnik Lasu potrzebuje twojej pomocy.	حارس الغابة يحتاج إلى مساعدتك.
+Strażnik Świątyni miał mi coś przesłać. Wróć z tym.	كان على حارس المعبد أن يرسل لي شيئاً. عد به.
+Strażnik Świątyni na Zboczu Gautama ma wieści z	حارس المعبد في منحدر غواتاما لديه أخبار من
+Strona %d z %d	الصفحة %d من %d
+Strzał Wichury	طلقة العاصفة
+Strzałka nad NPC oznacza, że chce on z tobą[ENTER]porozmawiać. Jeśli nie zobaczysz NPC na swoim[ENTER]ekranie, podążaj za migającym punktem na[ENTER]mini-mapie.	السهم فوق الشخصية يعني أنها تريد[ENTER]التحدث إليك. إن لم تر الشخصية على[ENTER]شاشتك، فاتبع النقطة الوامضة على[ENTER]الخريطة المصغرة.
+strzegą go przed każdym ciosem - najpierw	يحمونه من كل ضربة - أولاً
+Strzelaj	أطلق النار
+Stół do Yutnori	طاولة يوتنوري
+Suma punktow	مجموع النقاط
+Sung Ma. Co ćwierć paska dostajesz punkt	سونغ ما. عند كل ربع شريط تحصل على نقطة
+Sunga Mahi. Każda wspinaczka (portal w hali wieży	سونغ ماهي. كل تسلق (بوابة في قاعة البرج
+Swiatynia Ochao	معبد الآشاو
+Swoją nagrodę już wybrałeś.	لقد اخترت جائزتك بالفعل.
+System towarzysza nie jest dalej rozwijany	نظام الرفيق لم يعد قيد التطوير
+Szaman	الشامان
+Szaman - bez nich nie przejdziecie Strażnicy Nemere.	الشامان - بدونهم لن تعبروا حصن نمير.
+Szansa 10% (+5) do 50% (+9), gdy się nie uda, hełm zostaje.	فرصة 10% (+5) إلى 50% (+9)، إن فشلت تبقى الخوذة.
+Szansa 50%, gdy się nie uda, materiały przepadają.	فرصة 50%، إن فشلت تضيع المواد.
+szansa 50%.	فرصة 50%.
+Szansa powodzenia: %d%%. Jeśli się nie uda, wędka zostanie, ale straci 10%% punktów.	فرصة النجاح: %d%%. إن فشلت تبقى الصنارة لكنها تفقد 10%% من نقاطها.
+Szansa: %d%%. Udana próba: -%d punktów rangi,	الفرصة: %d%%. المحاولة الناجحة: -%d نقطة رتبة،
+Szansa: 70%.	الفرصة: 70%.
+Szata Aury	رداء الهالة
+Szata aury: ewolucja	رداء الهالة: التطور
+Szata aury: przenieś parametry	رداء الهالة: نقل الإحصاءات
+Szata aury: rozwój	رداء الهالة: التطوير
+Szata nie może mieć już przeniesionych parametrów -	لا يمكن أن يحمل الرداء إحصاءات منقولة بعد الآن -
+Szatę ze szczytu jej rodzaju zmienię w następną:	رداء من قمة نوعه سأحوّله إلى التالي:
+szczególnie wysokoenergetyczne. Niektóre z nich	عالية الطاقة بشكل خاص. بعضها
+Szczelina Czasu	فاصل الزمن
+Szczelina Czasu jest dziś zamknięta. Wróć później.	فاصل الزمن مغلق اليوم. عد لاحقاً.
+Szczelina Czasu nie przyjmie was teraz. Spróbuj za chwilę.	فاصل الزمن لن يستقبلكم الآن. حاول بعد قليل.
+Szczeliny Czasu. Musicie być w grupie, a każdy z was	فاصل الزمن. يجب أن تكونوا في مجموعة، وكل واحد منكم
+Szczytobłysk	قمة-البرق
+Szczytomrok	قمة-الظلام
+Szel (PB) pokonany. Za chwilę zostaniecie przeniesieni na 8. piętro.	تم هزيمة سُزيْل (ا.ح). بعد قليل سيتم نقلكم إلى الطابق الثامن.
+Szel (SZC) pokonany. Za chwilę zostaniecie przeniesieni na 8. piętro.	تم هزيمة سُزيْل (ف.ز). بعد قليل سيتم نقلكم إلى الطابق الثامن.
+szepnac: chodz, graj sam, czekaj, zakupy, stan.	اهمس: تعال، العب وحدك، انتظر، تسوق، الحالة.
+Szeptem tez zrozumiem: chodz, graj sam, czekaj,	أفهم أيضاً الهمس: تعال، العب وحدك، انتظر،
+szeregi - pokonaj 50 Wojowników En-Tai.	الصفوف - اهزم 50 محارباً من الإنتاي.
+Szkatulke.	الصندوق الصغير.
+Szkoda... Porozmawiaj ze mna, gdy bedziesz gotowy.	يا للأسف... تحدث إليّ عندما تكون جاهزاً.
+Szkol konia	درّب الحصان
+Szkolenie konia	تدريب الحصان
+Szlachetna - 10x Prosty Kamień Chaosu i 5 000 000 Yang,	نبيلة - 10x حجر فوضى بسيط و5 000 000 يانغ،
+Szlachetna Trawa wskrzesza Potężnego Konia Wojskowego (31+).	العشبة النبيلة تُحيي الحصان الحربي القوي (31+).
+Szlachetne Drewno - tylko on je ma.	الخشب الرفيع - هو وحده يملكه.
+szlachetne drewno.	الخشب الرفيع.
+Szlifowanie Kamyków	صقل الأحجار الكريمة
+Szlifowanie się nie udało. Kamyki i Kamień Duszy	فشل الصقل. الأحجار الكريمة وحجر الروح
+Szlifuj	اصقل
+Szmaragd (PB).	الزمرد (ا.ح).
+Szmaragd (SZC).	الزمرد (ف.ز).
+Szukał cię Mnich Milbon. Chce ci coś podarować i[ENTER]czeka na ciebie w Świątyni Zodiaku. Przeniesie[ENTER]cię tam teleporter.	كان الراهب ميلبون يبحث عنك. يريد أن يمنحك شيئاً و[ENTER]ينتظرك في معبد زودياك. جهاز الانتقال[ENTER]سينقلك إلى هناك.
+Szybko! Chron mnie przed potworami!	بسرعة! احمني من الوحوش!
+Szybkość Ataku +20%	سرعة الهجوم +20%
+Szybkość Ataku -20%	سرعة الهجوم -20%
+Szybkość Buffi	سرعة بوفي
+Szybkość Ruchu +20%	سرعة الحركة +20%
+Szybkość Zaklęcia +20%	سرعة التعويذة +20%
+Szybkość Zaklęcia -20%	سرعة التعويذة -20%
+są bardzo niepokojące. Moi bracia zaginęli, a z nimi	مقلقة جداً. إخوتي اختفوا، ومعهم
+Są one bardzo rzadkie. Często po dokładniejszym	إنها نادرة جداً. غالباً بعد فحص أدق
+służą żołnierze Setaou. Cztery kamienie smoka	يخدم جنود سيتاو. أربعة أحجار تنين
+Ta funkcja jest chwilowo niedostepna.	هذه الميزة غير متاحة مؤقتاً.
+Ta mapa jest teraz zamknieta.	هذه الخريطة مغلقة الآن.
+Ta mapa jest teraz zamknięta.	هذه الخريطة مغلقة الآن.
+Ta mapa wymaga %d poziomu.	هذه الخريطة تتطلب المستوى %d.
+Ta mikstura została wycofana i nie działa. Możesz ją sprzedać w sklepie NPC.	هذه الجرعة سُحبت ولا تعمل. يمكنك بيعها في متجر الشخصيات.
+Ta mroczna paproć idealnie nadaje się do moich badań.	هذا السرخس الظلامي مثالي لأبحاثي.
+Ta oferta jest już nieaktualna - otwórz list jeszcze raz.	هذا العرض لم يعد صالحاً - افتح الرسالة مرة أخرى.
+Ta para pasowała! Teraz pokonaj wszystkie potwory na szachownicy.	هذا الزوج تطابق! الآن اهزم كل الوحوش على رقعة الشطرنج.
+Ta pozycja jest pusta.	هذا الموضع فارغ.
+Ta pozycja jest uszkodzona - zapisz ją ponownie.	هذا الموضع تالف - احفظه مرة أخرى.
+Ta riposta zmniejszy obrażenia od tej umiejętności:	هذا الصدّ سيقلل الضرر من هذه المهارة:
+Ta wyprawa została już ukończona.	اكتملت هذه الحملة بالفعل.
+Ta Złota Zębatka (PB) była zepsuta i rozpadła się.	هذه العجلة المسننة الذهبية (ا.ح) كانت معطلة وتفتتت.
+Ta Złota Zębatka (SZC) była zepsuta i rozpadła się.	هذه العجلة المسننة الذهبية (ف.ز) كانت معطلة وتفتتت.
+Tajemnicza Instancja	الحالة الغامضة
+Tajemnicza Instancja wymaga 1. Poziomu Czempiona.	الحالة الغامضة تتطلب المستوى الأول للبطل.
+Tak, natychmiast!	نعم، فوراً!
+Tak, oczywiście!	نعم، بالطبع!
+Tak, odejdz	نعم، ارحل
+Tak, prowadz	نعم، قُد
+Tak, przenies bonusy	نعم، انقل المكافآت
+Tak, tak uczyń.	نعم، افعل ذلك.
+Tak, zostanę Czempionem	نعم، سأصبح بطلاً
+takie jak w oryginalnej grze.	مثل تلك في اللعبة الأصلية.
+taką upiorną maskę. Chcesz? 	قناع شبحي كهذا. هل تريد؟ 
+Talizman żywiołu daje Siłę tego żywiołu:	تعويذة العنصر تمنح قوة هذا العنصر:
+Talizmany wypadają z bossów swojego	التعويذات تسقط من زعماء
+Tamta wyprawa już się skończyła.	تلك الحملة انتهت بالفعل.
+Tarcza Eteru	جناح الأثير
+Tego przedmiotu może użyć tylko Czempion.	هذا العتاد لا يستخدمه إلا البطل.
+Tego przedmiotu teraz nie przekuje.	لن أعيد صياغة هذا العتاد الآن.
+Tej mapy nie ma w zapisanych pozycjach (lochy, eventy i mapy specjalne są wyłączone).	هذه الخريطة ليست في المواضع المحفوظة (الزنازين والأحداث والخرائط الخاصة معطّلة).
+Tej umiejętności nie możesz się nauczyć.	لا يمكنك تعلّم هذه المهارة.
+Tej umiejętności nie można się nauczyć.	لا يمكن تعلّم هذه المهارة.
+Teleportacja nie powiodła się - zwój wrócił do ekwipunku.	فشل الانتقال الفوري - عادت اللفيفة إلى الحقيبة.
+Teleportacja wymaga czystego Zwoju Powrotu w ekwipunku.	يتطلب الانتقال الفوري لفيفة المكان نقية في الحقيبة.
+Teleportacja: %s (zużyto 1 zwój).	الانتقال الفوري: %s (استُهلكت لفيفة واحدة).
+Teleportuj do portu	انتقل فورياً إلى الميناء
+Ten efekt już działa i potrwa dłużej niż nowy.	هذا التأثير يعمل بالفعل وسيستمر أطول من الجديد.
+Ten klucz nie pasuje teraz do niczego.	هذا المفتاح لا يناسب شيئاً الآن.
+Ten kolor... ten oddźwięk mocy... wspaniale.	هذا اللون... هذا الصدى للقوة... رائع.
+Ten list zostaje: to menu twojego towarzysza.	تبقى هذه الرسالة: إنها قائمة رفيقك.
+Ten loch został już ukończony.	اكتملت هذه الزنزانة بالفعل.
+Ten pierścień odpoczywa - użyjesz innego, gotowego.	هذا الخاتم يستريح - ستستخدم آخر جاهزاً.
+Ten pierścień upuściła Hydra, konając.	أسقطت هيدرا هذا الخاتم وهي تحتضر.
+Ten slot już kupiono - poczekaj na nową ofertę.	هذه الخانة اشتُريت بالفعل - انتظر العرض الجديد.
+Ten zabieg kosztuje %d Yang. Zapłacisz?	هذه العملية تكلف %d يانغ. هل ستدفع؟
+Teraz nie ma nagród do odebrania.	لا توجد الآن جوائز للاستلام.
+To był zły klucz. Znajdź właściwy!	كان هذا مفتاحاً خاطئاً. اعثر على الصحيح!
+To Druidzi En-Tai za tym stoją. Odbierz im apteczkę.	كهنة الإنتاي وراء هذا. خذ منهم حقيبة الإسعاف.
+To dziwna kreatura jest wszystkiemu winna - Druid	هذا المخلوق الغريب هو المسؤول عن كل شيء - كاهن
+To fascynujące! Kamienie Metin są tutaj	هذا مذهل! أحجار ماتين هنا
+to interes.	عمل تجاري.
+To nie jest przedmiot, którego potrzebuję... Wróć,	هذا ليس العتاد الذي أحتاجه... عد،
+To nie ta! Wracamy na poczatek i szukamy	ليس هذه! نعود إلى البداية ونبحث
+To Wędka+20 - lepszej zwykłej wędki nie zrobię.	هذه صنارة+20 - لا أستطيع صنع صنارة عادية أفضل منها.
+Towarzysz	الرفيق
+Towarzysze sa wylaczeni na tym serwerze.	الرفاق معطّلون على هذا الخادم.
+Trafił cię krąg! Zostaje ci 1 PŻ - kolejne trafienie przy niepełnym PŻ zabija.	أصابتك دائرة! تبقى لك 1 ن.ح - الإصابة التالية عند ن.ح غير كامل تقتل.
+Transfer bonusow kostiumu	نقل مكافآت الزي
+Transfer sie nie udal - nic nie zostalo zniszczone.	فشل النقل - لم يُدمَّر شيء.
+Transmutacja	التشكيل
+Transmutacja przedmiotu	تشكيل العتاد
+Trening kosztuje %d punktów rangi.	يكلف التدريب %d نقطة رتبة.
+Trening się nie udał...	فشل التدريب...
+Trening się udał!	نجح التدريب!
+Trenuj	درّب
+trzeba je zniszczyć.	يجب تدميرها.
+trzech skrzyn jest ta wlasciwa. Wyspa roi sie	ثلاثة صناديق هو الصحيح. الجزيرة تعجّ
+Trzy Elity Atlantydy - tylko jedna jest prawdziwa. Zabicie złudzenia to punkt karny.	ثلاث نخب من أتلانتس - واحدة فقط حقيقية. قتل الوهم يعني نقطة جزاء.
+Trzymam mieszkańców z dala od jaskiń - tam jest	أبعد السكان عن الكهوف - هناك
+Trzęsienie	الزلزال
+Tu spisano imiona tych, którzy obronili statek	هنا دُوّنت أسماء من دافعوا عن السفينة
+Turniobłysk	عرف-البرق
+Turniomrok	عرف-الظلام
+tutaj dotrzeć?	الوصول إلى هنا؟
+tutaj dotrzeć? Weź te Korzenie Gango.	الوصول إلى هنا؟ خذ جذور الغانغو هذه.
+Tutaj moc pierścienia nie działa. Najpierw	قوة الخاتم لا تعمل هنا. أولاً
+Tutaj nie da się przywołać Metina. Spróbuj w innym miejscu.	لا يمكن استدعاء ماتين هنا. جرّب في مكان آخر.
+Tutaj pierścień nie działa.	الخاتم لا يعمل هنا.
+Tutaj żyła się nie pojawi. Spróbuj w innym miejscu.	لن يظهر العرق هنا. جرّب في مكان آخر.
+Tuńczyk odpłynął, a na pożegnanie obdarzył cię swoim blaskiem.	ابتعدت التونة، وأهدتك عند الوداع بريقها.
+Tuńczyk szarpnął się i ochlapał cię od stóp do głów.	انتفضت التونة ورشّتك من رأسك إلى قدميك.
+Twierdza Czerwonego Smoka (PB)	حصن التنين الأحمر (ا.ح)
+Twierdza Czerwonego Smoka (PB): czas minął - wracacie na Płaskowyż Iluzji.	حصن التنين الأحمر (ا.ح): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Twierdza Czerwonego Smoka (PB): masz 60 minut. Porozmawiaj z Gardzielą Am-heha.	حصن التنين الأحمر (ا.ح): لديك 60 دقيقة. تحدث إلى مضيق آم-هيه.
+Twierdza Czerwonego Smoka (PB): piekielny władca Razador (PB) czeka!	حصن التنين الأحمر (ا.ح): سيد الجحيم رازادور (ا.ح) ينتظر!
+Twierdza Czerwonego Smoka (PB): potrzebujesz Książki Przebudzenia.	حصن التنين الأحمر (ا.ح): تحتاج إلى كتاب الإحياء.
+Twierdza Czerwonego Smoka (PB): ta wyprawa już się skończyła.	حصن التنين الأحمر (ا.ح): انتهت هذه الحملة بالفعل.
+Twierdza Czerwonego Smoka (SZC)	حصن التنين الأحمر (ف.ز)
+Twierdza Czerwonego Smoka (SZC): czas minął - wracacie na Płaskowyż Iluzji.	حصن التنين الأحمر (ف.ز): انتهى الوقت - تعودون إلى هضبة الأوهام.
+Twierdza Czerwonego Smoka (SZC): masz 60 minut. Porozmawiaj z Gardzielą Am-heha.	حصن التنين الأحمر (ف.ز): لديك 60 دقيقة. تحدث إلى مضيق آم-هيه.
+Twierdza Czerwonego Smoka (SZC): piekielny władca Razador (SZC) czeka!	حصن التنين الأحمر (ف.ز): سيد الجحيم رازادور (ف.ز) ينتظر!
+Twierdza Czerwonego Smoka (SZC): potrzebujesz Zegarka Kieszonkowego.	حصن التنين الأحمر (ف.ز): تحتاج إلى ساعة جيب.
+Twierdza Czerwonego Smoka (SZC): ta wyprawa już się skończyła.	حصن التنين الأحمر (ف.ز): انتهت هذه الحملة بالفعل.
+Twoja %s ma %d z %d punktów.	%s لديك فيه %d من %d نقطة.
+Twoja %s ma wszystkie punkty (%d/%d). Ulepszę ją za darmo na %s.	%s لديك فيه كل النقاط (%d/%d). سأطوّره مجاناً إلى %s.
+Twoja drużyna wciąż walczy w Głębiach.	فريقك لا يزال يقاتل في الأعماق.
+Twoja gildia ma już otwartą Kryptę Balathora.	رابطتك فتحت بالفعل سرداب بالاثور.
+Twoja mądrość urosła od naszej ostatniej rozmowy.	حكمتك نمت منذ حديثنا الأخير.
+Twoja ranga jest zbyt niska (-19 000 lub mniej),	رتبتك منخفضة جداً (-19 000 أو أقل)،
+Twoja ranga jest zbyt niska, by trenować z Kamieniem	رتبتك منخفضة جداً للتدريب بحجر
+Twoja wyprawa wciąż trwa.	حملتك لا تزال مستمرة.
+Twoja wyprawa wciąż trwa. Czy chcesz do niej wrócić?	حملتك لا تزال مستمرة. هل تريد العودة إليها؟
+Twoje riposty i dopalacze zostały zapomniane.	نُسيت الصدّات والدفعات لديك.
+twojego ekwipunku wzrosną o 1, 3, 5, 7 lub 10 proc.	عتادك سترتفع بنسبة 1 أو 3 أو 5 أو 7 أو 10 بالمئة.
+twojego poziomu nie mam teraz błogosławieństwa.	لمستواك ليس لدي بركة الآن.
+twoją grupę, gdy każdy z was będzie miał taki kamień.	مجموعتك، عندما يملك كل واحد منكم حجراً كهذا.
+Twój bonus potrwa jeszcze: %s	ستستمر مكافأتك: %s
+Twój duch musi jeszcze odpocząć po ostatnim treningu.	روحك يجب أن ترتاح بعد آخر تدريب.
+Twój koń jest gotów na próbę awansu. Porozmawiaj ze mną o awansie konia.	حصانك جاهز لمحاولة الترقية. تحدث إليّ عن ترقية الحصان.
+Twój koń jest już przywołany.	حصانك مستدعى بالفعل.
+Twój koń nie ma wolnego miejsca (od 21 poziomu jedno, od 31 dwa). Stajenny pomoże zapomnieć.	حصانك ليس لديه خانة فارغة (واحدة من المستوى 21، واثنتان من 31). صبي الإسطبل سيساعد على النسيان.
+Twój koń nie zna żadnej umiejętności. Przeczytaj księgę umiejętności konnej (od 21 poziomu konia jedna, od 31 dwie).	حصانك لا يعرف أي مهارة. اقرأ كتاب مهارة الفروسية (واحدة من مستوى الحصان 21، واثنتان من 31).
+Twój koń nie żyje - wskrzesi go Szlachetna Trawa.	حصانك ميت - ستُحييه العشبة النبيلة.
+Twój koń osiągnął najwyższy, 40 poziom.	حصانك بلغ أعلى مستوى، المستوى 40.
+Twój koń wrócił do życia. Przywołaj go ponownie.	عاد حصانك إلى الحياة. استدعِه مجدداً.
+Twój koń zapomniał tę umiejętność.	نسي حصانك هذه المهارة.
+Twój koń zna już tę umiejętność.	حصانك يعرف هذه المهارة بالفعل.
+Twój koń żyje.	حصانك حي.
+Twój poziom nie mieści się w żadnym przedziale.	مستواك لا يقع في أي نطاق.
+Twój statek może jeszcze płynąć. Czy chcesz na	سفينتك لا تزال قادرة على الإبحار. هل تريد
+Twój wynik: %d pkt	نتيجتك: %d نقطة
+Tylko mistrz gildii może zgłosić gildię do Krypty.	فقط زعيم الرابطة يمكنه تسجيل الرابطة في السرداب.
+Tylko najlepsi utrzymaja sie na szczycie	الأفضل فقط يبقون في القمة
+Tylko najlepsi zostają na szczycie rankingu i	الأفضل فقط يبقون على رأس الترتيب و
+Tylko przywódca drużyny może dać sygnał do	قائد الفريق وحده يمكنه إعطاء الإشارة لـ
+Tylko przywódca drużyny może obudzić Alastora.	قائد الفريق وحده يمكنه إيقاظ آلاستور.
+Tylko przywódca drużyny może otworzyć bramę.	قائد الفريق وحده يمكنه فتح البوابة.
+Tylko przywódca drużyny może otworzyć Głębie.	قائد الفريق وحده يمكنه فتح الأعماق.
+Tylko przywódca drużyny może otworzyć przejście.	قائد الفريق وحده يمكنه فتح الممر.
+Tylko przywódca drużyny może otworzyć świątynię.	قائد الفريق وحده يمكنه فتح المعبد.
+Tylko przywódca drużyny może rozpocząć walkę.	قائد الفريق وحده يمكنه بدء القتال.
+Tylko przywódca drużyny może wynająć statek.	قائد الفريق وحده يمكنه استئجار السفينة.
+Tylko przywódca grupy może otworzyć loch.	قائد المجموعة وحده يمكنه فتح الزنزانة.
+Tylko przywódca grupy może otworzyć portal.	قائد المجموعة وحده يمكنه فتح البوابة.
+Tylko przywódca grupy może otworzyć Szczelinę Czasu.	قائد المجموعة وحده يمكنه فتح فاصل الزمن.
+Tylko przywódca grupy może poprowadzić was dalej.	قائد المجموعة وحده يمكنه أن يقودكم إلى الأمام.
+Tylko przywódca grupy może poprowadzić was do Erebu.	قائد المجموعة وحده يمكنه أن يقودكم إلى إريبو.
+Tylko przywódca grupy może przyjąć zadanie.	قائد المجموعة وحده يمكنه قبول المهمة.
+Tylko przywódca grupy może zacząć wyprawę.	قائد المجموعة وحده يمكنه بدء الحملة.
+Tylko przywódca wyprawy może obudzić lwa.	قائد الحملة وحده يمكنه إيقاظ الأسد.
+Tylko przywódca wyprawy może obudzić posąg.	قائد الحملة وحده يمكنه إيقاظ التمثال.
+Tylko z drużyną. Boty z drużyny wchodzą razem z Tobą.	مع فريق فقط. الرفاق الآليون في الفريق يدخلون معك.
+tylko z progu twojego obecnego poziomu.	فقط من عتبة مستواك الحالي.
+uaktywnić portal, potrzebuję 3x	لتفعيل البوابة، أحتاج إلى 3x
+udaje, kamienie i bonusy zostaja.	ينجح، الأحجار والمكافآت تبقى.
+Udało ci się pokonać Wojowników En-Tai (PB). Wróć do Strażnika Lasu (PB).	نجحت في هزيمة محاربي الإنتاي (ا.ح). عد إلى حارس الغابة (ا.ح).
+Udało ci się pokonać Wojowników En-Tai (SZC). Wróć do Strażnika Lasu (SZC).	نجحت في هزيمة محاربي الإنتاي (ف.ز). عد إلى حارس الغابة (ف.ز).
+Udało ci się zdobyć Rosy En-Tai (PB). Zanieś je Zwiadowcy Lasu (PB).	نجحت في الحصول على ندى الإنتاي (ا.ح). أوصله إلى كشاف الغابة (ا.ح).
+Udało ci się zdobyć Rosy En-Tai (SZC). Zanieś je Zwiadowcy Lasu (SZC).	نجحت في الحصول على ندى الإنتاي (ف.ز). أوصله إلى كشاف الغابة (ف.ز).
+Udało ci się zebrać dla mnie wszystkie	نجحت في جمع كل ما طلبته
+Udało ci się zebrać wszystko. Wróć szybko	نجحت في جمع كل شيء. عد بسرعة
+Udało ci się znaleźć kryształ Metin? Zerknę na niego.	هل وجدت بلورة ماتين؟ سألقي نظرة عليها.
+Udało ci się znaleźć paproć? Daj, sprawdzę szybko...	هل وجدت السرخس؟ أعطني، سأفحصه بسرعة...
+Udało się!	نجحت!
+Udało się! Masz teraz %s.	نجحت! لديك الآن %s.
+Udało się! Oto Odłamek Reliktu twojej klasy.	نجحت! هذه شظية أثر فئتك.
+Udało się! Weź tę duszę.	نجحت! خذ هذه الروح.
+Ulepsz rękawice	طوّر القفازات
+Ulepsz wędkę za darmo	طوّر الصنارة مجاناً
+ulepsza je do +200: 10 Kwiatów Żywiołu,	يطوّرها حتى +200: 10 زهور عناصر،
+Ulepszenie przedmiotu usuwa transmutację.	تطوير العتاد يزيل التشكيل.
+ulepszona: SIŁA, ODP, WIT lub INT.	مطوّرة: قوة أو مقاومة أو حيوية أو ذكاء.
+Ulepszysz je w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom). Zapomnienie jest darmowe.	ستطوّرها في نافذة تطوير الحصان (1000 غايا و20 000 000 يانغ لكل مستوى). النسيان مجاني.
+Umiejętności konia	مهارات الحصان
+Umiejętności konne zna dopiero koń od 21 poziomu.	مهارات الفروسية يعرفها فقط حصان من المستوى 21.
+umiejętności przeciwnika. Możesz znać tylko jedną ripostę -	مهارة الخصم. يمكنك معرفة صدّ واحد فقط -
+Umiejętności szamana przeciągnięte w oknie Buffi	مهارات الشامان المسحوبة في نافذة بوفي
+Umiejętności są zablokowane	المهارات مقفلة
+Umysl (Mental)	العقل (Mental)
+Unikaj kręgów przez 60 sekund	تجنّب الدوائر لمدة 60 ثانية
+Upiorne Dynie wypadają z potworów, a Czarodziejskie	قرع الهالوين يسقط من الوحوش، والعصي السحرية
+upływie czasu wrócisz na Płaskowyż Iluzji - innego	بعد انقضاء الوقت ستعود إلى هضبة الأوهام - لا شيء آخر
+Uratuj Alchemika	أنقذ الكيميائي
+Uratuj Chaegiraba	أنقذ تشيغيراب
+Uratuj Handlarza Bronią 	أنقذ بائع الأسلحة 
+Uratuj Handlarza Zbrojami	أنقذ بائع الدروع
+Uratuj Uriela	أنقذ أوريل
+Uriel dzieli się teraz potęgą mądrości.	أوريل يشارك الآن قوة الحكمة.
+Uriel nie dzieli się teraz potęgą mądrości.	أوريل لا يشارك الآن قوة الحكمة.
+Uriel w Dongan potrzebuje pomocy.	أوريل في دونغان يحتاج إلى المساعدة.
+Usunięto misje: %d (bez nagród).	تم حذف مهام: %d (بدون جوائز).
+Usunięto pozycję %d.	تم حذف الموضع %d.
+usuwa je Świadectwo Aury+.	تزيلها شهادة الهالة+.
+usuwam?	أحذف؟
+Usuwanie misji jest teraz wyłączone.	حذف المهام معطّل الآن.
+Uszlachetnianie odłamków zestawu	تهذيب شظايا الطقم
+Uszlachetnij	هذّب
+Uszlachetnij Odłamek Reliktu	هذّب شظية الأثر
+Uszy Pirata Tanaki	أذنا القرصان تاناكا
+Uszyję ci rękawice SungMa, z jadeitu zrobię obręcze,	سأخيط لك قفازات سونغ ماهي، ومن اليشم أصنع الأطواق،
+UWAGA: przedmiot zrodlowy przepadnie bezpowrotnie,	تنبيه: العتاد المصدر سيضيع بلا رجعة،
+Uważaj na kolejność! Spróbuj innej kostki.	انتبه للترتيب! جرّب نرداً آخر.
+Uważaj na swoje słowa! Nie jestem żadnym	انتبه لكلامك! لست
+Uważności, Jin i Świadomości na Yoharze.	اليقظة وجين والوعي في يوهارا.
+Uzdrowienie (Heal)	الشفاء (Heal)
+Użyj	استخدم
+Użyj Animosfer, by obniżyć mroczną energię w[ENTER]Świątyni Zodiaku zanim będzie za późno. Wchodząc[ENTER]do świątyni, zużywasz automatycznie Animosfery.[ENTER]Uwaga: nie możesz ukończyć misji, jeśli masz[ENTER]aktywowany znak strażnika.	استخدم كرات الحياة لخفض الطاقة المظلمة في[ENTER]معبد زودياك قبل فوات الأوان. عند دخول[ENTER]المعبد تُستهلك كرات الحياة تلقائياً.[ENTER]تنبيه: لا يمكنك إنهاء المهمة إن كانت[ENTER]علامة الحارس مفعّلة.
+Użyj go w Portowym Sklepie Gaya - Statua Wojownika w Porcie Nowego Kontynentu.	استخدمه في متجر غايا في الميناء - تمثال المحارب في ميناء القارة الجديدة.
+Użyj jako przynęty	استخدمه كطُعم
+Użyj kryształu (prawy przycisk myszy), a bonusy	استخدم البلورة (بالزر الأيمن للفأرة)، والمكافآت
+Użyj ponownie	استخدم مجدداً
+Użyj zwoju	استخدم اللفيفة
+Użyjcie Pierścienia Smoczego Ognia przy każdej z czterech statui.	استخدموا خاتم لهب التنين عند كل واحد من التماثيل الأربعة.
+w ciągu godziny, a jej skarb będzie wasz.	خلال ساعة، وسيكون كنزها لكم.
+w Grocie Wygnańców (oraz ze Skrzyni Hydry).	في كهف المنفيين (وكذلك من صندوق هيدرا).
+W grupie musi być co najmniej jeden Ninja i jeden	يجب أن يكون في المجموعة نينجا واحد على الأقل وواحد
+W Głębiach śpi Alastor, biały smok Północnego	في الأعماق ينام آلاستور، التنين الأبيض لرياح
+w hełm godny 100. poziomu. Połóż w oknie wytwarzania	إلى خوذة تليق بالمستوى 100. ضع في نافذة الصنع
+w Jaskiniach Gnolli.	في كهوف الغنيز.
+w jednym kolorze daje ich wiecej.	بلون واحد يمنح المزيد منها.
+W końcu mam wystarczającą ilość doskonałych	أخيراً لدي ما يكفي من النوى الممتازة
+w kryształ. Ale ja też muszę z czegoś żyć, prawda?	إلى بلورة. لكن عليّ أيضاً أن أعيش من شيء، أليس كذلك؟
+w legendarny ekwipunek. Ulepszenie zawsze sie	إلى عتاد أسطوري. التطوير ينجح دائماً
+W lochu nie można zapisać pozycji.	لا يمكن حفظ الموضع في الزنزانة.
+W niedziele otwarte są wszystkie świątynie.	أيام الأحد تكون كل المعابد مفتوحة.
+W oknie są zawsze wszystkie moje przepisy: broń, zbroja	في النافذة توجد دائماً كل وصفاتي: السلاح والدرع
+W oknie wytwarzania zobaczysz wszystkie przepisy:	في نافذة الصنع سترى كل الوصفات:
+w oknie wytwarzania:	في نافذة الصنع:
+W ruinach za pustynią gnieździ się Król Skorpionów.	في الأطلال خلف الصحراء يعشش ملك العقارب.
+w sezonie odbierze tu dodatkowe nagrody	في الموسم يستلم هنا جوائز إضافية
+W skrzyni moze byc:	في الصندوق قد يوجد:
+w tym evencie. Przez 7 dni po jego zakończeniu	في هذا الحدث. لمدة 7 أيام بعد انتهائه
+W tym kamieniu zamknąłem duszę driady. Zna słowa,	في هذا الحجر حبست روح حورية الشجر. تعرف الكلمات،
+W tym miejscu nie można zapisać pozycji.	لا يمكن حفظ الموضع في هذا المكان.
+W tym sezonie nie ukończyłeś jeszcze piętra.	لم تُنهِ بعد أي طابق في هذا الموسم.
+W tym świecie nie ma Likanów - tej umiejętności nie można się nauczyć.	لا يوجد في هذا العالم ليكانر - لا يمكن تعلّم هذه المهارة.
+W tym świecie potwory mają żywioły	في هذا العالم للوحوش عناصر
+w zbroje 105. poziomu. Przeciagnij zbroje na mnie.	إلى درع المستوى 105. اسحب الدرع إليّ.
+w zbroje 90. poziomu, a zbroje 90. poziomu +9	إلى درع المستوى 90، ودرع المستوى 90 +9
+W środku nie było nic ciekawego.	لم يكن في الداخل شيء مثير.
+W środku znalazłeś:	وجدت في الداخل:
+W środku: Srebrny Pakiet Yutnori, czasem Zwój	في الداخل: حزمة يوتنوري الفضية، وأحياناً لفيفة
+W środku: Złoty Pakiet Yutnori i Cor Draconis	في الداخل: حزمة يوتنوري الذهبية وكور دراكونيس
+Walczymy dalej	نواصل القتال
+Walkę zaczyna mistrz gildii.	يبدأ القتال زعيم الرابطة.
+warp na %d	انتقال إلى %d
+Wartość Ataku +200	قيمة الهجوم +200
+Wartość Ataku -1600	قيمة الهجوم -1600
+wartość i czas losuję przy sporządzaniu.	القيمة والوقت أسحبهما عند التحضير.
+Wciąż badam poprzedni klejnot. Wróć,	ما زلت أفحص الجوهرة السابقة. عد،
+wciąż bronią skarbów zatopionego miasta, a w głębi	لا يزالون يحرسون كنوز المدينة الغارقة، وفي العمق
+Wejdz bez gildii	ادخل بدون رابطة
+Wejdz solo (tylko ty)	ادخل منفرداً (أنت فقط)
+Wejdz z gildia	ادخل مع الرابطة
+Wejdź do Biblioteki Wiedzy	ادخل مكتبة المعرفة
+Wejdź do Erebu	ادخل إريبو
+Wejdź do hali wieży	ادخل قاعة البرج
+Wejdź do Krypty	ادخل السرداب
+Wejdź do lochu	ادخل الزنزانة
+Wejdź do ruin	ادخل الأطلال
+Wejdź do sali	ادخل القاعة
+Wejdź do Schronienia	ادخل الملجأ
+Wejdź do Schronienia Meley	ادخل ملجأ ميلي
+Wejdź do świątyni	ادخل المعبد
+Wejście Do Świątyni Węży: dzisiejsze wejścia odnowione.	دخول معبد الأفاعي: تجددت مرات الدخول لهذا اليوم.
+Wejście Do Świątyni Węży: masz jeszcze wszystkie dzisiejsze wejścia.	دخول معبد الأفاعي: لا تزال لديك كل مرات الدخول لهذا اليوم.
+Wejście od 1. Poziomu Czempiona, za Przepustkę.	الدخول من المستوى الأول للبطل، ببطاقة مرور.
+Wejść do Krypty Balathora?	هل تدخل سرداب بالاثور؟
+wejść do środka?	الدخول إلى الداخل؟
+Wejść można tylko w grupie: statua przenosi[ENTER]wszystkich jej członków, którzy są na tym poziomie.	الدخول ممكن ضمن مجموعة فقط: التمثال ينقل[ENTER]كل أعضائها الموجودين في هذا المستوى.
+wezwany! Chętnie zaoferuję ci swoje usługi.	استُدعيت! يسعدني أن أعرض عليك خدماتي.
+Wiatru	الرياح
+Wiatru - wiatr, Ziemne Pnącze - ziemia,	الرياح - الرياح، محلاق الأرض - الأرض،
+Wiatru. Mogę otworzyć wam drogę - słabszą albo	الرياح. أستطيع فتح الطريق لكم - الأضعف أو
+widziałeś na oczy.	رأيته بعينيك.
+Widzisz tę niewielką kulkę na górze po lewej[ENTER]stronie minimapy? Tam właśnie liczone są[ENTER]Animosfery. Pamiętaj, że bez tej skoncentrowanej[ENTER]energii życia nie możesz przejść przez bramy[ENTER]strażników. Otarło mi się o uszy, że potrzeba 12[ENTER]Animosfer do Świątyni Zodiaku. Czy chcesz stawić[ENTER]czoło temu wyzwaniu?	هل ترى تلك الكرة الصغيرة في أعلى يسار[ENTER]الخريطة المصغرة؟ هناك تُحتسب[ENTER]كرات الحياة. تذكّر أنك بدون هذه الطاقة[ENTER]الحيوية المركّزة لا تستطيع عبور بوابات[ENTER]الحراس. سمعت أنه يلزم 12[ENTER]كرة حياة لمعبد زودياك. هل تريد مواجهة[ENTER]هذا التحدي؟
+wie, gdzie szukać Władców En-Tai.	يعرف أين يبحث عن سادة الإنتاي.
+Wiecej obrony (500 000 yang)	دفاع أكثر (500 000 يانغ)
+Wiecej zycia (500 000 yang)	حياة أكثر (500 000 يانغ)
+Wiedza to potęga, która rośnie z każdą walką.	المعرفة قوة تنمو مع كل معركة.
+Wiedziałem! Moja technika jest genialna!	كنت أعلم! أسلوبي عبقري!
+Wieksza szybkosc (1 500 000 yang)	سرعة أكبر (1 500 000 يانغ)
+Wierzchowce zostają na lądzie. Niech zsiądą:	المطايا تبقى على اليابسة. ليترجلوا:
+wierzchowiec: 30 000 000 Yang albo Bilet Polimorfii.	المطية: 30 000 000 يانغ أو تذكرة التحويل.
+Wieża Demonów: Wyjdziesz z lochu za 1 sekundę.	برج الشياطين: ستخرج من الزنزانة بعد ثانية واحدة.
+Wieża nie przyjmie cię teraz. Spróbuj za chwilę.	البرج لن يستقبلك الآن. حاول بعد قليل.
+Wieża nie przyjmuje botów.	البرج لا يقبل الرفاق الآليين.
+Wieża przyjmuje od 1. Poziomu Czempiona.	البرج يقبل من المستوى الأول للبطل.
+Wieża przyjmuje tylko w pojedynkę.	البرج يقبل المنفردين فقط.
+Wieża Sung Mahi	برج سونغ ماهي
+Wieża Sung Mahi (rozmowa)	برج سونغ ماهي (حديث)
+Wieża Sung Mahi przyjmuje od 1. Poziomu Czempiona. Wracasz do Seoganland.	برج سونغ ماهي يقبل من المستوى الأول للبطل. تعود إلى سيوغان.
+Wieża Sung Mahi to wyzwanie dla jednej osoby - opuść drużynę, by wejść.	برج سونغ ماهي تحدٍّ لشخص واحد - اترك الفريق للدخول.
+Wieża Sung Mahi to wyzwanie dla jednej osoby.	برج سونغ ماهي تحدٍّ لشخص واحد.
+Wieża Sung Mahi: klucz nie pasuje. Znajdź inny i spróbuj jeszcze raz.	برج سونغ ماهي: المفتاح لا يناسب. اعثر على آخر وحاول مرة أخرى.
+Wieża Sung Mahi: przemiana nie działa w wieży.	برج سونغ ماهي: التحوّل لا يعمل في البرج.
+Wieża Sung Mahi: ta pieczęć jeszcze się nie poddaje - najpierw inna.	برج سونغ ماهي: هذا الختم لا يستسلم بعد - أولاً آخر.
+Wieża Sung Mahi: ta wspinaczka już się skończyła.	برج سونغ ماهي: انتهى هذا التسلق بالفعل.
+Wieża Sung Mahi: wierzchowce nie wchodzą do wieży.	برج سونغ ماهي: المطايا لا تدخل البرج.
+WIT	حيوية
+Witaj, wedrowcze! Z dobrych butow potrafie uszyc	مرحباً أيها المسافر! من الأحذية الجيدة أستطيع أن أخيط
+Witaj, wojowniku! Z dobrze ulepszonej broni	مرحباً أيها المحارب! من سلاح مطوّر جيداً
+Witaj. Jak widzę z pierwszym poziomem nie było[ENTER]problemów.	مرحباً. كما أرى لم تكن هناك[ENTER]مشاكل مع المستوى الأول.
+Witalność Sung Ma	حيوية سونغ ما
+Witam! Czy chcesz dowiedzieć się czegoś więcej o[ENTER]pryzmacie ożywienia?	مرحباً! هل تريد معرفة المزيد عن[ENTER]منشور الإحياء؟
+Witam! Dobrze, że jesteś.	مرحباً! من الجيد أنك هنا.
+Witam! Mam dla ciebie prezent, ale najpierw muszę[ENTER]poprosić cię o przysługę. W Świątyni Zodiaku[ENTER]gwałtownie wzrosła moc mrocznej energii. Na[ENTER]szczęście można ją absorbować za pomocą[ENTER]Animosfer. Udaj się do świątyni i użyj 24[ENTER]Animosfer, by ponownie obniżyć poziom energii.[ENTER]Uwaga: nie możesz ukończyć misji, jeśli masz[ENTER]aktywowany znak strażnika.	مرحباً! لدي هدية لك، لكن عليّ أولاً أن[ENTER]أطلب منك معروفاً. في معبد زودياك[ENTER]ارتفعت قوة الطاقة المظلمة بشدة.[ENTER]لحسن الحظ يمكن امتصاصها بواسطة[ENTER]كرات الحياة. اذهب إلى المعبد واستخدم 24[ENTER]كرة حياة لخفض مستوى الطاقة من جديد.[ENTER]تنبيه: لا يمكنك إنهاء المهمة إن كانت[ENTER]علامة الحارس مفعّلة.
+wizerunku broni, zbroja i kostium - wygląd zbroi albo	مظهر السلاح، والدرع والزي - مظهر الدرع أو
+Wojownicy En-Tai	محاربو الإنتاي
+Wojownicy En-Tai (PB)	محاربو الإنتاي (ا.ح)
+Wojownicy En-Tai (PB) wciąż krążą po lesie. Pokonaj	محاربو الإنتاي (ا.ح) لا يزالون يجوبون الغابة. اهزم
+Wojownicy En-Tai (SZC)	محاربو الإنتاي (ف.ز)
+Wojownicy En-Tai (SZC) wciąż krążą po lesie. Pokonaj	محاربو الإنتاي (ف.ز) لا يزالون يجوبون الغابة. اهزم
+Wojownik	المحارب
+Wola SungMa (INT)	إرادة سونغ ماهي (ذكاء)
+Wola SungMa (ODP)	إرادة سونغ ماهي (مقاومة)
+Wola SungMa (ODP) -20	إرادة سونغ ماهي (مقاومة) -20
+Wola SungMa (SIŁA)	إرادة سونغ ماهي (قوة)
+Wola SungMa (SIŁA) -10	إرادة سونغ ماهي (قوة) -10
+Wola SungMa (WIT)	إرادة سونغ ماهي (حيوية)
+Wolne punkty Sung Ma: %d.	نقاط سونغ ما الحرة: %d.
+Wow, co za doskonały rdzeń. Świetnie!	واو، يا لها من نواة ممتازة. رائع!
+Wpuszczam tylko wojownikow od %d poziomu.	لا أُدخل إلا المحاربين من المستوى %d.
+Wpuszczę grupę, jeśli każdy z was ma Kamień Driad od	سأُدخل المجموعة إذا كان لدى كل واحد منكم حجر الدرياد من
+Wreszcie mam tyle oczyszczonych rdzeni, ile	أخيراً لدي من النوى المنقّاة ما
+Wroc	عد
+Wroc, gdy bedziesz silniejszy.	عد عندما تصبح أقوى.
+wroci do swiata jako zwykly bot. Nowego	سيعود إلى العالم كرفيق آلي عادي. جديد
+wrócą do puli i rozdasz je od nowa.	ستعود إلى المخزون وستوزعها من جديد.
+Wróć do Erebu	عد إلى إريبو
+Wróć do lochu	عد إلى الزنزانة
+Wróć do mnie później. Następna próba za:	عد إليّ لاحقاً. المحاولة التالية بعد:
+Wróć do Namgan	عد إلى نام جوانج
+Wróć do portu	عد إلى الميناء
+Wróć do ruin	عد إلى الأطلال
+Wróć do Strażnika Lasu.	عد إلى حارس الغابة.
+Wróć do swojej postaci (przemiana), by wejść.	عد إلى شخصيتك (التحوّل) للدخول.
+Wróć do wioski	عد إلى القرية
+Wróć do Zwiadowcy Lasu.	عد إلى كشاف الغابة.
+Wróć jutro po następną.	عد غداً للحصول على التالية.
+Wróć jutro, gdy ponownie zbierzesz 24 Animosfery.	عُد غداً عندما تجمع 24 كرة أنيما مرة أخرى.
+Wróć na 1. poziom Świątyni	عُد إلى الطابق الأول من المعبد
+Wróć na Przełęcz Yilad	عُد إلى ممر ييلاد
+Wróć na Przylądek Smoczego Ognia	عُد إلى رأس نار التنين
+Wróć, gdy będziesz miał co najmniej 24 Animosfery.	عُد عندما يكون لديك 24 كرة أنيما على الأقل.
+Wróć, gdy osiągniesz 75 poziom.	عُد عندما تبلغ المستوى 75.
+Wróć, gdy osiągniesz najwyższy poziom.	عُد عندما تبلغ أعلى مستوى.
+Wróć, gdy przeminie.	عُد عندما ينتهي.
+Wróć, gdy wszystkie Stele Isfet zostaną odblokowane.	عُد عندما تُفتح جميع ألواح الزفت.
+wskutek licznych walk. Odnajdź Władcę En-Tai (PB) i	في معارك لا تُحصى. جد حاكم الإنتاي (ا.ح) و
+Wspaniale! Badacz Lasu (PB) czeka na ciebie - on	رائع! كشّاف الغابة (ا.ح) ينتظرك - هو
+Wspaniale! Mam już wszystkie 10 Klejnotów	رائع! لدي الآن كل الجواهر العشر
+Wspaniale! Weź tę Wodę Young. Badacz Lasu (SZC)	رائع! خذ ماء يونغ هذا. كشّاف الغابة (ف.ز)
+Wspinaczka już trwa - sztandar powiewa nad tobą.	التسلق جارٍ بالفعل - الراية ترفرف فوقك.
+Wspinaczka zakończona - wracasz do hali.	انتهى التسلق - تعود إلى القاعة.
+Wspinaczka zakończona.	انتهى التسلق.
+Wstecz	رجوع
+Wszyscy wojownicy wrócą na Płaskowyż Iluzji za minutę.	سيعود جميع المحاربين إلى هضبة الوهم بعد دقيقة.
+Wszystkie 50 pięter Wieży Sung Mahi zdobyte! Za 20 s wracasz do hali.	تم فتح كل الطوابق الخمسين في برج سونغ ماهي! ستعود إلى القاعة بعد 20 ثانية.
+Wszystkie demony zostały pokonane.	تم هزيمة جميع الشياطين.
+Wszystkie Głowy Węża obrócone - nadchodzi Królowa Węży Nethis!	دارت كل رؤوس الأفعى - نيثس ملكة الأفاعي قادمة!
+Wszystkie pieczęcie otwarte. Za chwilę zostaniecie przeniesieni na 6. piętro.	جميع الأختام مفتوحة. ستُنقلون إلى الطابق السادس بعد قليل.
+Wszystkie przepisy zobaczysz w oknie wytwarzania.	ستجد كل الوصفات في نافذة الصناعة.
+wszystkie żywioły	كل العناصر
+Wszystko gotowe, możemy przetopić odłamki	كل شيء جاهز، يمكننا صهر الشظايا
+Wszystko jasne.	كل شيء واضح.
+Wszystko w niej jest. Odpocznij chwilę - zaraz	كل شيء موجود فيها. استرح قليلاً - بعد لحظة
+Wtorek (Yin-Mao)	الثلاثاء (يين-ماو)
+WuKong pokonany! Czas: %d:%02d. Loch został ukończony.	تم هزيمة ووكونغ! الوقت: %d:%02d. اكتمل الزنزانة.
+wybieraj mądrze.	اختر بحكمة.
+Wybierz dziesiątkę pięter:	اختر مجموعة من عشرة طوابق:
+Wybierz jeden stały bonus:	اختر علاوة دائمة واحدة:
+Wybierz jedną z dwóch skrzyń:	اختر أحد الصندوقين:
+Wybierz piętro	اختر طابقاً
+Wybierz przedmiot DOCELOWY.[ENTER]Zachowasz go, a jego obecne bonusy zostana zastapione bonusami zrodla.	اختر الشيء الهدف.[ENTER]ستحتفظ به وستُستبدل علاواته الحالية بعلاوات المصدر.
+Wybierz przedmiot ZRODLOWY.[ENTER]Ten przedmiot zostanie ZNISZCZONY, a jego bonusy przejda na drugi.	اختر الشيء المصدر.[ENTER]سيتم تدمير هذا الشيء وستنتقل علاواته إلى الآخر.
+Wybiorę później	سأختار لاحقاً
+Wydaje mi się, że to zarodniki mrocznej paproci.	يبدو لي أنها بذور سرخس مظلم.
+wydobędę Esencję Talizmanu, a z Esencji i Tajemniczych	سأستخلص جوهر التعويذة، ومن الجوهر ومن
+Wygnańców (błyskawica), Świątyni Ochao	المنفيين (البرق)، معبد الآشاو
+Wygnańców w Dolinie Orków, szuka pomocy.	المنفيين في وادي الغيلان، يبحث عن المساعدة.
+Wygnańców.	المنفيين.
+Wygnańców. Najciekawsze są Klejnoty Zawiści -	المنفيين. الأكثر إثارة هي جواهر الخبث -
+Wyjdź 	اخرج 
+Wyjdź teraz	اخرج الآن
+Wyjdź z Krypty	اخرج من السرداب
+Wyjdź z lochu	اخرج من الزنزانة
+wyjdź z lochu.	اخرج من الزنزانة.
+Wyjdź z wieży	اخرج من البرج
+wyjścia nie ma.	لا يوجد مخرج.
+Wykuję dla ciebie broń Smoka Mroku (od 96 poziomu):	سأصنع لك سلاح التنين المظلم (من المستوى 96):
+Wykuję dla ciebie zbroję albo hełm smoka (od 96	سأصنع لك درع تنين أو خوذة (من المستوى 96
+Wylogowanie albo zmiana mapy w trakcie gry	تسجيل الخروج أو تغيير الخريطة أثناء اللعب
+Wymagany 1. Poziom Czempiona i Tajemniczy Bilet.	يلزم مستوى البطل 1 وتذكرة غامضة.
+Wymagany jest co najmniej 5. poziom postaci.	يلزم أن يكون مستوى الشخصية 5 على الأقل.
+Wymagany Poziom Czempiona: 1	مستوى البطل المطلوب: 1
+Wymagany poziom postaci: 75	مستوى الشخصية المطلوب: 75
+Wymiana ksiąg umiejętności	استبدال كتب المهارات
+Wymień insygnia na skarby Aureolin, Aventurin[ENTER]oraz Gwiezdny Skarb pod 'Zrealizuj szkatułkę'.[ENTER]Przeciągnij insygnia bezpośrednio na mnie, to[ENTER]wymienię każde 10 insygniów jednego rodzaju na[ENTER]czerwone pudło Zodiaku lub kwiat żywiołu (insygnia[ENTER]Zodiaku także na niebieskie pudło Zodiaku). Za[ENTER]pomocą kwiatów żywiołu możesz ulepszać talizmany[ENTER]żywiołowe! Za 10 insygniów dam ci jeden kwiat.	بدّل الأوسمة بكنوز أوريولين وأفنتورين[ENTER]وكنز نجمي تحت 'تحقيق الصندوق'.[ENTER]اسحب الأوسمة مباشرة إليّ، وسأبدل كل[ENTER]10 أوسمة من نوع واحد بصندوق زودياك[ENTER]أحمر أو زهرة عنصر (أوسمة زودياك أيضاً[ENTER]بصندوق زودياك أزرق). بزهور العناصر[ENTER]يمكنك تحسين تعويذات العناصر! مقابل 10[ENTER]أوسمة أعطيك زهرة واحدة.
+Wynagrodzę cię za pomoc.	سأكافئك على مساعدتك.
+Wynik badań 	نتيجة البحث 
+Wynik badań będzie gotowy za:	ستكون نتيجة البحث جاهزة بعد:
+Wynik badań jest gotowy. Wróć: Alchemik.	نتيجة البحث جاهزة. عُد إلى: الكيميائي.
+Wynik badań jest gotowy. Wróć: Handlarz Bronią.	نتيجة البحث جاهزة. عُد إلى: تاجر أسلحة.
+Wynik badań jest gotowy. Wróć: Handlarz Zbrojami.	نتيجة البحث جاهزة. عُد إلى: بائع الدروع.
+Wynik badań jest gotowy. Wróć: Uriel.	نتيجة البحث جاهزة. عُد إلى: أوريل.
+Wypadają z Łuczników Setaou i Komendantów	تسقط من رماة سيتاو والقادة
+Wypij	اشرب
+Wypiłeś Eliksir Poszukiwacza: następny przedmiot oddany do badań Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjęcie (zamiast 60%).	شربت إكسير العالم: الشيء التالي الذي تسلمه للبحث إلى شايغراب البيولوجي أو سيون-بيونغ لديه فرصة 90% ليُقبل (بدلاً من 60%).
+Wypuść	أطلق
+wypłynięcia.	الإبحار.
+Wypływamy!	نبحر!
+Wyspowiatr	جزيرة-الرياح
+Wystapil blad (fishing_drop_success).	حدث خطأ (fishing_drop_success).
+Wystapil blad (kod bledu: fish_no_pool_found)	حدث خطأ (رمز الخطأ: fish_no_pool_found)
+Wystapil blad (kod: fishing_predict).	حدث خطأ (الرمز: fishing_predict).
+Wytwarzanie broni	صناعة الأسلحة
+Wytwarzanie Butow	صناعة الأحذية
+Wytwarzanie Ekwipunku	صناعة العتاد
+Wytwarzanie mikstur	صناعة الجرعات
+Wytwarzanie wężowego ekwipunku	صناعة عتاد الأفعى
+Wytwarzanie zbroi i hełmów	صناعة الدروع والخوذات
+Wytworna - 10x Wspaniały Kamień Chaosu i 8 000 000 Yang,	رائع - 10x حجر فوضى عظيم و8 000 000 يانغ،
+wytworzyć duszy. Spróbuj ponownie.	صناعة الروح. حاول مرة أخرى.
+Wzgórze Wukonga	تل ووكونغ
+Wzgórze Wukonga: Czas minął. Strażnik wyprowadza was z lochu.	تل ووكونغ: انتهى الوقت. يخرجكم الحارس من الزنزانة.
+Wzgórze Wukonga: Etap zaliczony. Za 5 sekund następne wyzwanie.	تل ووكونغ: تم اجتياز المرحلة. التحدي التالي بعد 5 ثوانٍ.
+Wzgórze Wukonga: nie udało się otworzyć przejścia - porozmawiaj ze strażnikiem.	تل ووكونغ: تعذر فتح الممر - تحدث إلى الحارس.
+Wzgórze Wukonga: Obrońcy Chmur wracają na swoje miejsca.	تل ووكونغ: مدافعو السحاب يعودون إلى أماكنهم.
+Wzgórze Wukonga: Pieczęć Wzgórza zadziałała sama.	تل ووكونغ: ختم التل عمل من تلقاء نفسه.
+Wzgórze Wukonga: porozmawiaj ze strażnikiem, aby otworzyć przejście.	تل ووكونغ: تحدث إلى الحارس لفتح الممر.
+Wzgórze Wukonga: przejście prowadzi przez poczekalnię.	تل ووكونغ: الممر يمر عبر غرفة الانتظار.
+Wzgórze Wukonga: przejście się otwiera...	تل ووكونغ: الممر يُفتح...
+Wzgórze Wukonga: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	تل ووكونغ: انتهت هذه الرحلة بالفعل. تحدث إلى الحارس لتنطلق في رحلة جديدة.
+Wzgórze Wukonga: Ten loch został już ukończony.	تل ووكونغ: اكتملت هذه الزنزانة بالفعل.
+Wzgórze Wukonga: Witajcie. Za 5 sekund małpy ruszą do ataku.	تل ووكونغ: مرحباً بكم. ستهاجم القرود بعد 5 ثوانٍ.
+Wzgórze Wukonga: Zaginiony Obrońca Chmur wraca na swoje miejsce.	تل ووكونغ: مدافع السحاب المفقود يعود إلى مكانه.
+Wzmocnij goblina	قوِّ العفريت
+wzrosna o 20% (do 225 000).	سترتفع بنسبة 20% (إلى 225 000).
+wzrosnie o 50.	سترتفع بمقدار 50.
+Wąwóz Am-heh jest już otwarty.	وادي آم-حح مفتوح الآن.
+Wędka %d, rzadkie x%d, tuńczyk %s, suma wag %d	صنارة %d، نادر x%d، تونة %s، مجموع الأوزان %d
+Wędka musi być w ekwipunku (nie w ręku).	يجب أن تكون الصنارة في الحقيبة (وليس في اليد).
+Wędka Węglowa	صنارة صيد كربونية
+Wędka Węglowa to najlepsza wędka, jaką znam - łowi jak wędka +22 i daje 12% więcej brań.	الصنارة الكربونية هي أفضل صنارة أعرفها - تصطاد كصنارة +22 وتمنح 12% لدغات أكثر.
+Wędki Węglowej nie da się ulepszyć - lepszej wędki nie znam.	لا يمكن تحسين الصنارة الكربونية - لا أعرف صنارة أفضل منها.
+Wężowy Czepiec	قلنسوة الأفعى
+Władca En-Tai (PB) pokonany. Wróć do Badacza Lasu (PB).	تم هزيمة حاكم الإنتاي (ا.ح). عُد إلى كشّاف الغابة (ا.ح).
+Władca En-Tai (PB) wciąż żyje. Przynieś mi jego	حاكم الإنتاي (ا.ح) ما زال حياً. أحضر لي
+Władca En-Tai (SZC) pokonany. Wróć do Badacza Lasu (SZC).	تم هزيمة حاكم الإنتاي (ف.ز). عُد إلى كشّاف الغابة (ف.ز).
+Władca En-Tai (SZC) wciąż żyje. Przynieś mi jego	حاكم الإنتاي (ف.ز) ما زال حياً. أحضر لي
+Władca En-Tai pokonany. Zanieś Drzewny Szmaragd Badaczowi Lasu.	تم هزيمة حاكم الإنتاي. خذ زمرد الشجر إلى كشّاف الغابة.
+Władca En-Tai pokonany. Zanieś Szlachetne Drewno Badaczowi Lasu.	تم هزيمة حاكم الإنتاي. خذ الخشب الرفيع إلى كشّاف الغابة.
+Władca En-Tai rządzi tym lasem. Pokonaj go i przynieś mi	حاكم الإنتاي يحكم هذه الغابة. اهزمه وأحضر لي
+władca ognia. Nikt, kto tam wszedł, nie wrócił,	سيد النار. لم يعد أحد ممن دخلوا إلى هناك،
+Władcy En-Tai (PB) nie zdradzą nam łatwo, gdzie	حكام الإنتاي (ا.ح) لن يخبرونا بسهولة أين
+Władcy En-Tai (SZC) nie zdradzą nam łatwo, gdzie	حكام الإنتاي (ف.ز) لن يخبرونا بسهولة أين
+Władcę En-Tai jeszcze raz.	حاكم الإنتاي مرة أخرى.
+Właściwy klucz! Za chwilę zostaniecie przeniesieni na 3. piętro.	المفتاح الصحيح! ستُنقلون إلى الطابق الثالث بعد قليل.
+Wśród potworów czeka Ignitor. Pokonaj go.	بين الوحوش ينتظر إغنيتور. اهزمه.
+Wśród ziół znaleziono Złote Zioło!	وُجدت عشبة ذهبية بين الأعشاب!
+z 10 Książęcych - Majestatyczny (5 000 000 Yang).	من 10 ملكية - مهيب (5 000 000 يانغ).
+Z 2. poziomu nie ma już powrotu na 1. poziom.	من الطابق الثاني لا عودة إلى الطابق الأول.
+Z 20 Liści Życia przygotuję ci Lekarstwo Iluzji -	من 20 ورقة حياة سأحضّر لك دواء الأوهام -
+Z 200 odłamków I zrobię jeden odłamek II tej samej	من 200 شظية I سأصنع شظية II واحدة من النوع نفسه
+Z 3. poziomu nie ma już powrotu na 2. poziom.	من الطابق الثالث لا عودة إلى الطابق الثاني.
+Z 30 Wzorów albo 30 Jedwabi Wężowych zrobię Pył Wężowy.	من 30 تصميماً أو 30 حريراً ثعبانياً سأصنع غبار الأفعى.
+z Beran-Setaou albo z Generała Huashin.	من بيران-سيتاو أو من الجنرال هواشين.
+z Beran-Setaou i Generała Huashin.	من بيران-سيتاو والجنرال هواشين.
+Z czterech Talizmanów Woli (SIŁA, WIT, ODP, INT)	من تعويذات الإرادة الأربع (القوة، الحيوية، الدفاع، الذكاء)
+Z części do wykonania wykuję wężową broń albo zbroję (+0).	من الأجزاء المصنوعة سأطرق سلاحاً أو درعاً ثعبانياً (+0).
+z kości tygrysa i smoka, Miksturę Mądrości	من عظام النمر والتنين، جرعة الحكمة
+Z kwiatow i ziol zrobie ci soki.	من الزهور والأعشاب سأصنع لك عصائر.
+z potworów w Dongan.	من الوحوش في دونج_جوانج.
+Z tego miejsca nie mozna sie teleportowac.	لا يمكن الانتقال الفوري من هذا المكان.
+Z tego miejsca nie można się teleportować.	لا يمكن الانتقال الفوري من هذا المكان.
+Z tego odłamka mogę uszlachetnić Relikt Duszy	من هذه الشظية يمكنني تنقية أثر الروح
+z tym lasem. Zostań z nami - przyda się każda pomoc.	مع هذه الغابة. ابقَ معنا - كل مساعدة مفيدة.
+z was potrzebuje Kamienia Driad (PB) od Badacza Lasu.	منكم يحتاج إلى حجر الدرياد (ا.ح) من كشّاف الغابة.
+z was potrzebuje Kamienia Driad (SZC) od Badacza Lasu.	منكم يحتاج إلى حجر الدرياد (ف.ز) من كشّاف الغابة.
+Z Zaklętego Lasu dochodzą straszne krzyki. Drzewa	صرخات مرعبة تأتي من الغابة المسحورة. الأشجار
+Za 1 sekundę zostaniesz przeniesiony na Doyyumhwaji.	بعد ثانية واحدة ستُنقل إلى دويومهواجي.
+Za 1 sekundę zostaniesz teleportowany do Doliny Orków.	بعد ثانية واحدة ستُنقل فوراً إلى وادي الغيلان.
+Za 1 sekundę zostaniesz teleportowany do Groty Wygnańców.	بعد ثانية واحدة ستُنقل فوراً إلى كهف_اللعنة.
+Za 1 sekundę zostaniesz teleportowany do miasta.	بعد ثانية واحدة ستُنقل فوراً إلى المدينة.
+Za 1 sekundę zostaniesz teleportowany do Świątyni Hwang.	بعد ثانية واحدة ستُنقل فوراً إلى معبد هوانغ.
+Za 1 sekundę zostaniesz teleportowany do Świątyni Ochao.	بعد ثانية واحدة ستُنقل فوراً إلى معبد الآشاو.
+Za 1 sekundę zostaniesz teleportowany na Górę Sohan.	بعد ثانية واحدة ستُنقل فوراً إلى جبل_سوهان.
+Za 1 sekundę zostaniesz teleportowany na Ognistą Ziemię.	بعد ثانية واحدة ستُنقل فوراً إلى أرض النار.
+Za 3 minuty wszyscy wrócą do Zaklętego Lasu.	بعد 3 دقائق سيعود الجميع إلى الغابة المسحورة.
+Za chwile odesle cie z wyspy. Do zobaczenia!	بعد قليل سأرسلك من الجزيرة. إلى اللقاء!
+Za chwilę zaczyna się walka	بعد قليل يبدأ القتال
+Za chwilę zostaniecie przeniesieni do sali tronowej Nemere.	ستُنقلون بعد قليل إلى قاعة عرش النمير.
+Za chwilę zostaniecie przeniesieni na 5. piętro.	ستُنقلون إلى الطابق الخامس بعد قليل.
+Za chwilę zostaniecie przeniesieni na 9. piętro.	ستُنقلون إلى الطابق التاسع بعد قليل.
+za chwilę.	بعد قليل.
+Za grę z wynikiem co najmniej 220 punktów.	للعبة بنتيجة 220 نقطة على الأقل.
+Za grę z wynikiem od 150 do 219 punktów.	للعبة بنتيجة من 150 إلى 219 نقطة.
+Za grę z wynikiem poniżej 150 punktów.	للعبة بنتيجة أقل من 150 نقطة.
+Za kazde jego ucho dam ci Fioletowa Hebanowa	مقابل كل أذن منه سأعطيك آبنوس بنفسجي
+Za kazde piec wypraw dostajesz ode mnie	مقابل كل خمس رحلات تحصل مني على
+Za mną leży Erebu - kraina Jotuna Thryma.	خلفي تقع إريبو - أرض جاتون تيرم.
+Za mną zaczyna się Świątynia Węży. Na jej	خلفي يبدأ معبد الأفاعي. وعلى
+Za mną śpi Beran-Setaou, smok, któremu	خلفي ينام بيران-سيتاو، التنين الذي
+Za morzem leży Yohara, ziemia Sung Ma.	وراء البحر تقع يوهارا، أرض سونغ ما.
+Za pomocą mojej mocy dostaniecie się do instancji	بقوتي ستصلون إلى الزنزانة المنفصلة
+Za pomocą tego potężnego kryształu możesz ożywić[ENTER]w Świątyni Zodiaku innego gracza lub samego[ENTER]siebie. %s posiada magiczną duszę, przy pomocy[ENTER]której można stworzyć pryzmat ożywienia. W[ENTER]jednym%s znajdziesz wystarczająco dużo materiału[ENTER]do stworzenia dwóch pryzmatów.	بهذه البلورة القوية يمكنك إحياء لاعب آخر أو نفسك[ENTER]في معبد زودياك[ENTER]. يحتوي %s على روح سحرية، يمكن بها[ENTER]صنع منشور الإحياء. في[ENTER]واحد%s ستجد مواد كافية[ENTER]لصنع منشورين.
+Za pomocą tej karty możesz otrzymać właśnie	بهذه البطاقة يمكنك الحصول على
+Za portem leży Opuszczona Twierdza - brama	خلف الميناء تقع القلعة المهجورة - البوابة
+Za troche yang bede silniejszy w drodze.	مقابل بعض اليانغ سأكون أقوى في الطريق.
+Za tym przejściem leży Biblioteka Wiedzy. Pająki	خلف هذا الممر تقع مكتبة المعرفة. العناكب
+Za tym przejściem leży Lodowa Kraina, w której	خلف هذا الممر تقع الأرض الجليدية، حيث
+Za tym przejściem stoi Piekielna Wieża Sunga Mahi -	خلف هذا الممر يقف برج جحيم سونغ ماهي -
+Za tymi gorami lezy Swiatynia Ochao. Jej wojownicy	خلف هذه الجبال يقع معبد الآشاو. محاربوه
+Za tą bramą leży Erebu - kraina Jotuna Thryma. Każdy	خلف هذه البوابة تقع إريبو - أرض جاتون تيرم. كل
+Za tą bramą śpi Królowa Smoków Meley. Cztery	خلف هذه البوابة تنام ميلي ملكة التنانين. أربعة
+Za Świątynią Ochao rośnie Starożytna Dżungla.	خلف معبد الآشاو تنمو الأدغال القديمة.
+Zabierz mnie	خذني
+Zabierz to w nagrodę za swoje czyny. Mam[ENTER]nadzieję, że to ci się naprawdę przyda.	خذ هذا مكافأة على أفعالك.[ENTER]آمل أن يفيدك حقاً.
+Zabij władcę En-Tai	اقتل حاكم الإنتاي
+zachowują się co najmniej dziwnie.	يتصرفون بغرابة على الأقل.
+Zaczarowanie i Wzmocnienie Przedmiotu, Buty Wiatru,	سحر الشيء وتقويته، حذاء الريح،
+Zaczekaj chwilkę. Spróbuję, ale nie gwarantuję,	انتظر قليلاً. سأحاول، لكنني لا أضمن،
+Zaczynamy	هيا نبدأ
+Zadanie Am-heh	مهمة آم-حح
+Zadanie wciąż trwa:	المهمة ما زالت جارية:
+Zadanie wykonane. Porozmawiaj ze mną jeszcze raz.	تمت المهمة. تحدث إليّ مرة أخرى.
+Zadanie wykonane. Przygotuję księgę - wróć za 24 h.	تمت المهمة. سأجهز الكتاب - عُد بعد 24 ساعة.
+Zadanie: Kamienie Maat (PB) na siedem Stel Isfet (PB), we właściwej kolejności.	المهمة: حجر المعات (ا.ح) على ألواح الزفت السبعة (ا.ح)، بالترتيب الصحيح.
+Zadanie: Kamienie Maat (SZC) na siedem Stel Isfet (SZC), we właściwej kolejności.	المهمة: حجر المعات (ف.ز) على ألواح الزفت السبعة (ف.ز)، بالترتيب الصحيح.
+Zadanie: pokonaj Ignatora (PB), strażnika żaru.	المهمة: اهزم نارمر (ا.ح)، حارس الجمر.
+Zadanie: pokonaj Ignatora (SZC), strażnika żaru.	المهمة: اهزم نارمر (ف.ز)، حارس الجمر.
+Zadanie: tylko ci, którzy nie boją się żaru,	المهمة: فقط من لا يخشون الجمر،
+Zadanie: zabij wszystkie potwory na platformie.	المهمة: اقتل جميع الوحوش على المنصة.
+Zadanie: zdobądź Kamienie Maat (PB) i umieść je na	المهمة: احصل على حجر المعات (ا.ح) وضعه على
+Zadanie: zdobądź Kamienie Maat (SZC) i umieść je na	المهمة: احصل على حجر المعات (ف.ز) وضعه على
+Zadanie: zdobądź Złotą Zębatkę (PB) i przeciągnij ją na Stelę Isfet (PB).	المهمة: احصل على العجلة المُسنّنة الذهبية (ا.ح) واسحبها إلى لوح الزفت (ا.ح).
+Zadanie: zdobądź Złotą Zębatkę (PB) i uruchom	المهمة: احصل على العجلة المُسنّنة الذهبية (ا.ح) وشغّل
+Zadanie: zdobądź Złotą Zębatkę (SZC) i przeciągnij ją na Stelę Isfet (SZC).	المهمة: احصل على العجلة المُسنّنة الذهبية (ف.ز) واسحبها إلى لوح الزفت (ف.ز).
+Zadanie: zdobądź Złotą Zębatkę (SZC) i uruchom	المهمة: احصل على العجلة المُسنّنة الذهبية (ف.ز) وشغّل
+Zadanie: znajdź i zabij Ignatora (PB).	المهمة: جد نارمر (ا.ح) واقتله.
+Zadanie: znajdź i zabij Ignatora (SZC).	المهمة: جد نارمر (ف.ز) واقتله.
+Zadanie: zniszcz Metin Purgatorium (PB).	المهمة: دمّر ماتين الجحيم (ا.ح).
+Zadanie: zniszcz Metin Purgatorium (SZC).	المهمة: دمّر ماتين الجحيم (ف.ز).
+Zagadaj do NPC ze strzałką nad głową. Migający[ENTER]punkt na minimapie pokaże ci, gdzie go możesz[ENTER]znaleźć.	تحدث إلى الشخصية التي فوق رأسها سهم. النقطة[ENTER]الوامضة على الخريطة المصغرة ستُظهر لك[ENTER]أين تجدها.
+Zagadkowego Klucza można użyć tylko w Wieży Sung Mahi.	لا يمكن استخدام المفتاح الغامض إلا في برج سونغ ماهي.
+Zaginiona Kolumna Smoka Północy (PB) pojawia się ponownie.	عمود تنين الشمال المفقود (ا.ح) يظهر مرة أخرى.
+Zaginiona Kolumna Smoka Północy (SZC) pojawia się ponownie.	عمود تنين الشمال المفقود (ف.ز) يظهر مرة أخرى.
+Zaginiony boss piętra pojawia się ponownie.	زعيم الطابق المفقود يظهر مرة أخرى.
+Zaginiony cel zadania pojawia się ponownie.	هدف المهمة المفقود يظهر مرة أخرى.
+Zaginiony Kamień Metin pojawia się ponownie.	حجر ماتين المفقود يظهر مرة أخرى.
+Zaginiony kamień metin pojawia się ponownie.	حجر ماتين المفقود يظهر مرة أخرى.
+Zaginiony Metin Chłodu (PB) pojawia się ponownie.	ماتين البرد المفقود (ا.ح) يظهر مرة أخرى.
+Zaginiony Metin Chłodu (SZC) pojawia się ponownie.	ماتين البرد المفقود (ف.ز) يظهر مرة أخرى.
+Zaginiony Metin Wężowy pojawia się ponownie.	ماتين الأفعى المفقود يظهر مرة أخرى.
+Zaginiony potwór szachownicy pojawia się ponownie.	وحش رقعة الشطرنج المفقود يظهر مرة أخرى.
+Zaginiony Potężny Wojownik Wężowy pojawia się ponownie.	محارب الأفعى القوي المفقود يظهر مرة أخرى.
+zaginęli, a z nimi apteczka. Podejrzewam wojowników	اختفوا، ومعهم حقيبة الإسعاف. أشك في المحاربين
+Zagraj w Okey	العب أوكي
+Zagraj w Yut Nori	العب يوت نوري
+Zająłeś %d. miejsce w rankingu!	احتللت المركز %d في الترتيب!
+Zaklety Las	الغابة المسحورة
+zaklęte słowa, które otworzą ci drogę do Erebu.	كلمات مسحورة ستفتح لك الطريق إلى إريبو.
+Zaklętego Lasu za Świątynią Ochao. Porozmawiaj z nim.	الغابة المسحورة خلف معبد الآشاو. تحدث إليه.
+Zaklęty Las (PB)	الغابة المسحورة (ا.ح)
+Zaklęty Las (PB): apteczka dostarczona - zniszczcie Metiny Drzewnych Stworzeń.	الغابة المسحورة (ا.ح): تم تسليم حقيبة الإسعاف - دمّروا ماتين مخلوقات الأشجار.
+Zaklęty Las (PB): czas minął - wracacie na Płaskowyż Iluzji.	الغابة المسحورة (ا.ح): انتهى الوقت - تعودون إلى هضبة الوهم.
+Zaklęty Las (PB): Kamienie Driad zdobyte - Przywódca Straży Lasu otworzy drogę do Erebu.	الغابة المسحورة (ا.ح): تم الحصول على أحجار الدرياد - قائد حرس الغابة سيفتح الطريق إلى إريبو.
+Zaklęty Las (PB): masz 60 minut. Strażnik Lasu (PB) czeka na ciebie.	الغابة المسحورة (ا.ح): لديك 60 دقيقة. حارس الغابة (ا.ح) ينتظرك.
+Zaklęty Las (PB): Metiny zniszczone - zdobądźcie Rosy En-Tai.	الغابة المسحورة (ا.ح): تم تدمير الماتين - احصلوا على ندى الإنتاي.
+Zaklęty Las (PB): potrzebujesz Książki Przebudzenia.	الغابة المسحورة (ا.ح): تحتاج إلى كتاب الصحوة.
+Zaklęty Las (PB): Rosy zebrane - pokonajcie Władcę En-Tai.	الغابة المسحورة (ا.ح): تم جمع الندى - اهزموا حاكم الإنتاي.
+Zaklęty Las (PB): Szlachetne Drzewo zdobyte - Władca En-Tai jeszcze raz (Drzewny Szmaragd).	الغابة المسحورة (ا.ح): تم الحصول على الخشب الرفيع - حاكم الإنتاي مرة أخرى (زمرد الشجر).
+Zaklęty Las (PB): ta wyprawa już się skończyła.	الغابة المسحورة (ا.ح): انتهت هذه الرحلة بالفعل.
+Zaklęty Las (PB): wojownicy pokonani - szukajcie apteczki u druidów.	الغابة المسحورة (ا.ح): تم هزيمة المحاربين - ابحثوا عن حقيبة الإسعاف عند الدرويديين.
+Zaklęty Las (SZC)	الغابة المسحورة (ف.ز)
+Zaklęty Las (SZC): czas minął - wracacie na Płaskowyż Iluzji.	الغابة المسحورة (ف.ز): انتهى الوقت - تعودون إلى هضبة الوهم.
+Zaklęty Las (SZC): masz 60 minut. Strażnik Lasu (SZC) czeka na ciebie.	الغابة المسحورة (ف.ز): لديك 60 دقيقة. حارس الغابة (ف.ز) ينتظرك.
+Zaklęty Las (SZC): potrzebujesz Zegarka Kieszonkowego.	الغابة المسحورة (ف.ز): تحتاج إلى ساعة جيب.
+Zaklęty Las (SZC): ta wyprawa już się skończyła.	الغابة المسحورة (ف.ز): انتهت هذه الرحلة بالفعل.
+Zaklęty Las w Szczelinie Czasu zmienił swe oblicze,	الغابة المسحورة في شق الزمن غيّرت وجهها،
+Zaklęty Las Świtu zmienił swe oblicze, a te zmiany	غابة الفجر المسحورة غيّرت وجهها، وهذه التغييرات
+Zaklęty Las: byłeś za długo nieobecny - wracasz przed Świątynię Ochao.	الغابة المسحورة: غبت طويلاً - تعود أمام معبد الآشاو.
+Zakoncz najpierw handel i odczekaj chwile.	أنهِ التجارة أولاً وانتظر قليلاً.
+zakupy, stan, atakuj, nie atakuj pierwszy, nie walcz.	شراء، حالة، هاجم، لا تهاجم أولاً، لا تقاتل.
+zalozony - przenosze tylko z rzeczy lezacych w plecaku.	مُجهّز - أنقل فقط من الأشياء الموجودة في الحقيبة.
+Zamień Kartę Maski Dyni 	بدّل بطاقة قناع القرع 
+Zamknij handel, sklep i magazyn, odczekaj chwilę i spróbuj ponownie.	أغلق التجارة والمتجر والمخزن، انتظر قليلاً وحاول مرة أخرى.
+Zamknij handel, sklep i magazyn; odczekaj chwile.	أغلق التجارة والمتجر والمخزن؛ انتظر قليلاً.
+Zamknij handel, sklep, magazyn i okna ulepszania, a potem wybierz jeszcze raz.	أغلق التجارة والمتجر والمخزن ونوافذ التحسين، ثم اختر مرة أخرى.
+Zamęt! Przez chwilę nie panujesz nad postacią.	فوضى! لا تتحكم بشخصيتك للحظة.
+zanieczyszczonych. Przynieś mi tylko całkowicie	الملوثة. أحضر لي فقط النقي تماماً
+zaniesiesz ją moim braciom.	ستأخذها إلى إخوتي.
+Zanieś apteczkę (PB) Zwiadowcy Lasu (PB).	خذ حقيبة الإسعاف (ا.ح) إلى جاسوس الغابة (ا.ح).
+Zanieś apteczkę (SZC) Zwiadowcy Lasu (SZC).	خذ حقيبة الإسعاف (ف.ز) إلى جاسوس الغابة (ف.ز).
+Zanieś apteczkę Strażnikowi Lasu.	خذ حقيبة الإسعاف إلى حارس الغابة.
+Zanieś apteczkę Zwiadowcy Lasu.	خذ حقيبة الإسعاف إلى جاسوس الغابة.
+Zanieś Drzewny Szmaragd Badaczowi Lasu.	خذ زمرد الشجر إلى كشّاف الغابة.
+Zanieś Ducha Ziemi Strażnikowi Lasu w Zaklętym Lesie.	خذ شبح الأرض إلى حارس الغابة في الغابة المسحورة.
+Zanieś Rosy En-Tai Zwiadowcy Lasu.	خذ ندى الإنتاي إلى جاسوس الغابة.
+Zanieś Strażnikowi Lasu tego Ducha Ziemi. Do lasu	خذ شبح الأرض هذا إلى حارس الغابة. إلى الغابة
+Zanieś Szlachetne Drewno Badaczowi Lasu.	خذ الخشب الرفيع إلى كشّاف الغابة.
+zanim któryś z nich powstanie na nowo.	قبل أن ينهض أحدهم من جديد.
+Zanim ruszymy, mozesz mnie poblogoslawic.	قبل أن ننطلق، يمكنك أن تباركني.
+Zapisane pozycje działają tylko z czystym Zwojem Powrotu w ekwipunku.	المواضع المحفوظة تعمل فقط مع لفيفة مكان نظيفة في الحقيبة.
+Zapisane pozycje są teraz wyłączone.	المواضع المحفوظة معطلة الآن.
+Zapisano pozycję %d: %s.	تم حفظ الموضع %d: %s.
+Zapomnij umiejętność 1	انسَ المهارة 1
+Zapomnij umiejętność 2	انسَ المهارة 2
+Zaprowadzi cię na nowy kontynent - do Portu	سيأخذك إلى قارة جديدة - إلى ميناء
+Zawiści. W nagrodę przekażę ci część mocy,	الخبث. كمكافأة سأعطيك جزءاً من القوة،
+Zawsze sie udaje, bonusy i kamienie zostaja.	ينجح دائماً، العلاوات والأحجار تبقى.
+założenia. Jej atrybut jest losowy: silny przeciw	الافتراضات. صفتها عشوائية: قوية ضد
+Zbadam je przez dobę - wytworzenie duszy	سأفحصها لمدة يوم - صناعة الروح
+zbadaniu znajduje się wśród nich sporo	الفحص يوجد بينها الكثير من
+Zbieram paszę dla konia	أجمع علفاً للحصان
+Zbierz 10 fragmentów duszy miecza.	اجمع 10 أجزاء من روح السيف.
+Zbierz 10 fragmentów duszy ochrony.	اجمع 10 أجزاء من روح الحماية.
+Zbierz 10 fragmentów duszy ozdoby.	اجمع 10 أجزاء من روح الزينة.
+Zbierz 10 fragmentów duszy światła.	اجمع 10 أجزاء من روح النور.
+Zbierz 10 popiołów z potworów w Dongan.	اجمع 10 رماد من الوحوش في دونج_جوانج.
+Zbierz 10 popiołów.	اجمع 10 رماد.
+Zbierz dla Chaegiraba 10 sztuk:	اجمع لشايغراب 10 قطع من:
+Zbierz Kamienie Maat z potworów i oddaj po jednym każdej z siedmiu stel.	اجمع أحجار المعات من الوحوش وسلّم واحداً لكل لوح من الألواح السبعة.
+Zbierz na najwyższym poziomie co najmniej	اجمع في أعلى مستوى ما لا يقل عن
+Zbijcie wszystkie cztery Smocze Statuy do 75% życia.	أنزلوا جميع تماثيل التنين الأربعة إلى 75% من الحياة.
+Zbocze Gautama	سفح غواتاما
+Zbroja 105 > Cyjanit: to samo co bron 87	درع 105 > كيانيت: نفس سلاح 87
+Zbroja nie lezy juz tam, gdzie byla.	الدرع لم يعد حيث كان.
+Zbroje 66. poziomu ulepszone na +9 przekuje	الدروع من المستوى 66 المحسنة إلى +9 سأعيد صياغتها
+Zdejmij pieczęcie Kamieniem Pieczęci we właściwej kolejności	أزل الأختام بحجر الختم بالترتيب الصحيح
+Zdobądź 5 Ros En-Tai od Niszczycieli En-Tai.	احصل على 5 ندى الإنتاي من مدمّري الإنتاي.
+Zdobądź Kamień Dusz Beran-Setaou: wypada	احصل على حجر روح بيران-سيتاو: يسقط
+Zdobądź Klucz Mrozu z potworów i użyj go.	احصل على مفتاح الصقيع من الوحوش واستخدمه.
+Zdobądź Kryształy Lodu z potworów i oddaj po jednym każdej z pięciu pieczęci.	احصل على بلورات الجليد من الوحوش وسلّم واحدة لكل من الأختام الخمسة.
+Zdobądź Lodowy Klucz z potworów i użyj go.	احصل على المفتاح الجليدي من الوحوش واستخدمه.
+Zdobądź Rosy En-Tai	احصل على ندى الإنتاي
+Zdobądź Rosy En-Tai: zanieś je Zwiadowcy Lasu.	احصل على ندى الإنتاي: خذه إلى جاسوس الغابة.
+Zdobądź Złotą Zębatkę z potworów i oddaj ją Steli Isfet.	احصل على العجلة المُسنّنة الذهبية من الوحوش وسلّمها للوح الزفت.
+Ze skarbca gildii (%d Yang) zapłacisz %d Yang, resztę z własnego ekwipunku.	من خزينة الرابطة (%d يانغ) ستدفع %d يانغ، والباقي من حقيبتك.
+ze skrzyń Razadora i Nemere. Kowal	من صناديق رازادور والنمير. الحداد
+Ze smoczych łusek i rogów przekuję twój hełm	من حراشف التنين وقرونه سأعيد صياغة خوذتك
+Zebrane: %d / 10	تم جمع: %d / 10
+Zejdź na drugie piętro	انزل إلى الطابق الثاني
+Zejdź ze statku	انزل من السفينة
+Zgubiłeś Ducha Ziemi? Masz drugiego.	أضعت شبح الأرض؟ لديك واحد آخر.
+Zgłoś gildię teraz	بلّغ عن الرابطة الآن
+Ziemi	الأرض
+Ziemia pod tobą pęka - uciekaj!	الأرض تحتك تتشقق - اهرب!
+Ziemiopust	صحراء-الأرض
+Zioła Baek-Go	أعشاب باك-غو
+Zioła Yohary, zmienione przez moc Sunga Mahi,	أعشاب يوهارا، التي غيّرتها قوة سونغ ماهي،
+Zlota skrzynia (400 punktow i wiecej)	صندوق ذهبي (400 نقطة وأكثر)
+Zmiana wlasciwosci dziala tylko na Duszach Smoka stopnia Mitycznego.	تغيير الخصائص يعمل فقط على أرواح التنين من الدرجة الأسطورية.
+Zmien wlasciwosci Duszy Smoka	غيّر خصائص روح التنين
+zmienia miejsce. Pokonaj go, a na chwile otworzy	يغيّر مكانه. اهزمه وسيفتح لوقت قصير
+znajdujące się w pobliżu? Ostatnio potwory	الموجودة بالقرب؟ في الآونة الأخيرة الوحوش
+Znajdziesz go w oknie umiejętności, w umiejętnościach	ستجدها في نافذة المهارات، ضمن المهارات
+Znajdziesz je u potworów na nowym kontynencie.	ستجدها عند الوحوش في القارة الجديدة.
+Znajdziesz ją w oknie umiejętności, obok 9. umiejętności.	ستجدها في نافذة المهارات، بجانب المهارة التاسعة.
+Znajdź apteczkę strażników	جد حقيبة إسعاف الحراس
+Znajdź i pokonaj parę potworów, która do siebie nie pasuje	جد الوحشين اللذين لا يناسبان بعضهما واهزمهما
+Znajdź i pokonaj Szela (PB), władcę lodu i zimna - trzy z czterech to sobowtóry.	جد شيل (ا.ح) سيد الجليد والبرد واهزمه - ثلاثة من أربعة منهم نسخ مزيفة.
+Znajdź i pokonaj Szela (SZC), władcę lodu i zimna - trzy z czterech to sobowtóry.	جد شيل (ف.ز) سيد الجليد والبرد واهزمه - ثلاثة من أربعة منهم نسخ مزيفة.
+Znajdź odpowiedni Zagadkowy Klucz	جد المفتاح الغامض المناسب
+Znajdź prawdziwą.	جد الحقيقية.
+Znak żywiołu widać przy pasku życia celu.	تظهر علامة العنصر بجانب شريط حياة الهدف.
+Znalazłeś Lekarstwo. Wróć do: Alchemik.	وجدت الدواء. عُد إلى: الكيميائي.
+Znalazłeś Lekarstwo. Wróć do: Chaegirab.	وجدت الدواء. عُد إلى: شايغراب.
+Znalazłeś Lekarstwo. Wróć do: Handlarz Bronią.	وجدت الدواء. عُد إلى: تاجر أسلحة.
+Znalazłeś Lekarstwo. Wróć do: Handlarz Zbrojami.	وجدت الدواء. عُد إلى: بائع الدروع.
+Znalazłeś Lekarstwo. Wróć do: Uriel.	وجدت الدواء. عُد إلى: أوريل.
+Znasz już dopalacz: %s (%s).	أنت تعرف الدفع بالفعل: %s (%s).
+Znasz już ripostę: %s (%s).	أنت تعرف الصد بالفعل: %s (%s).
+Znasz już tę umiejętność - wystarczy ją rozwijać.	أنت تعرف هذه المهارة بالفعل - يكفي أن تطورها.
+Zniszcz %s-razy %d w Świątyni Zodiaku.	دمّر %s-مرة %d في معبد زودياك.
+Zniszcz 5 Metinów Drzewnych Stworzeń.	دمّر 5 ماتين من مخلوقات الأشجار.
+Zniszcz Demoniczny Kamień i wszystkich łuczników	دمّر حجر الشياطين وجميع الرماة
+Zniszcz Kolumnę Smoka Północy (PB) - zranić ją może tylko Ninja albo Szaman.	دمّر عمود تنين الشمال (ا.ح) - لا يستطيع إيذاءه إلا النينجا أو الشامان.
+Zniszcz Kolumnę Smoka Północy (SZC) - zranić ją może tylko Ninja albo Szaman.	دمّر عمود تنين الشمال (ف.ز) - لا يستطيع إيذاءه إلا النينجا أو الشامان.
+Zniszcz Lodowy Filar.	دمّر عمود الجليد.
+Zniszcz Metin Czyśćca.	دمّر ماتين المطهر.
+Zniszcz Metin Mrozu.	دمّر ماتين الصقيع.
+Zniszcz pięć z nich.	دمّر خمسة منها.
+Zniszcz prawidłowy kamień metin (jedna szansa)	دمّر حجر الماتين الصحيح (فرصة واحدة)
+Zniszczcie 4 Jaja Feniksa.	دمّروا 4 بيضات عنقاء.
+Zniszczcie 4 Metiny Skorpiona.	دمّروا 4 ماتين عقرب.
+Zniszczcie 4 Metiny.	دمّروا 4 ماتين.
+Zniszczcie 4 Pradawne Kamienie.	دمّروا 4 أحجار عتيقة.
+Zniszczcie 5 Metinów.	دمّروا 5 ماتين.
+Zniszczcie 6 Kamieni Wzgórza.	دمّروا 6 أحجار التل.
+Zniszczcie 6 Metinów Skorpiona.	دمّروا 6 ماتين عقرب.
+Zniszczcie 6 Starożytnych Kamieni.	دمّروا 6 أحجار قديمة.
+Zniszczcie jaja i czterech Smoczych Strażników Idallów, potem zbijcie statuy do końca.	دمّروا البيض وحراس التنين الأربعة إيدال، ثم أنزلوا التماثيل حتى النهاية.
+Zniszczcie Smocze Jaja i zbijcie statuy do 50% życia.	دمّروا بيض التنين وأنزلوا التماثيل إلى 50% من الحياة.
+Zniszczone Metiny	الماتين المدمّرة
+zniszczą Metin Purgatorium (PB).	سيدمّرون ماتين الجحيم (ا.ح).
+zniszczą Metin Purgatorium (SZC).	سيدمّرون ماتين الجحيم (ف.ز).
+Znowu ty? Słuchaj, zdradzę ci pewną tajemnicę.	أنت مجدداً؟ اسمع، سأكشف لك سراً.
+zobaczysz materiały, Yang i szansę (najedź na przedmiot).	سترى المواد واليانغ والفرصة (مرر المؤشر على الشيء).
+zobaczysz w oknie wytwarzania.	سترى في نافذة الصناعة.
+Zostan w Swiatyni	ابقَ في المعبد
+zostaniesz Czempionem.	ستصبح بطلاً.
+zostać Czempionem?	تصبح بطلاً؟
+Zostań Czempionem	كن بطلاً
+Zostań na statku	ابقَ على السفينة
+Zostań tutaj	ابقَ هنا
+Zostań w porcie	ابقَ في الميناء
+Zrealizuj szkatułkę 	حقّق الصندوق 
+Zregeneruj portale	جدّد البوابات
+Zregeneruj portale:	جدّد البوابات:
+Zrob miejsce w ekwipunku i wroc do mnie.	أخلِ مكاناً في الحقيبة وعُد إليّ.
+zrobimy lekarstwo dla rannych. Przynieś mi pięć.	سنصنع دواءً للجرحى. أحضر لي خمسة.
+Zrobię ci ją z: Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych (szansa 100%, bez Yang).	سأصنعها لك من: القضيب والحلقة والمقبض و3 ألياف كربون (فرصة 100%، بدون يانغ).
+Zrodlo (zostanie zniszczone):	المصدر (سيتم تدميره):
+zrodlowy i jeden Transfer bonusow zostaly zuzyte.	المصدر وتحويل علاوة واحد تم استهلاكهما.
+Zrób miejsce w ekwipunku i wróć.	أخلِ مكاناً في الحقيبة وعُد.
+Zrób miejsce w ekwipunku.	أخلِ مكاناً في الحقيبة.
+Zsiądź z wierzchowca, by wejść.	انزل عن الحصان لتدخل.
+Zuzyjesz 1x Transfer bonusow.	ستستهلك 1x تحويل علاوة الزّي.
+Zużyto %d punktów rangi.	تم استهلاك %d نقطة رتبة.
+Zwiadowca Lasu czeka na apteczkę. Pospiesz się!	جاسوس الغابة ينتظر حقيبة الإسعاف. أسرع!
+Zwiększenie Ataku Buffi	زيادة هجوم بوفي
+Zwolnij miejsce w ekwipunku i spróbuj ponownie.	أخلِ مكاناً في الحقيبة وحاول مرة أخرى.
+zwycięży nad Isfet.	سينتصر على الزفت.
+zwykłego kamienia... Przynieś mi prawdziwy.	حجر عادي... أحضر لي الحقيقي.
+Zwój Egzorcyzmu pozwala spróbować od razu.	لفيفة طرد أرواح الشر تتيح لك المحاولة فوراً.
+Zwój usunie wszystkie twoje riposty i dopalacze:	ستمحو اللفيفة جميع حالات الصد والدفع:
+Zwój Zmiany Treningu	لفيفة تحويل التدريب
+Zła kolejność. Kamień Maat (PB) rozpadł się.	ترتيب خاطئ. تحطم حجر المعات (ا.ح).
+Zła kolejność. Kamień Maat (SZC) rozpadł się.	ترتيب خاطئ. تحطم حجر المعات (ف.ز).
+Złap Króla	اصطد الملك
+Złota Księga Konia	كتاب الحصان الذهبي
+Złota Księga Konia przywołuje konia od 31 poziomu.	كتاب الحصان الذهبي يستدعي حصاناً من المستوى 31.
+Złota Księga Konia przywołuje Potężnego Konia Wojskowego. Pokonaj 100 potworów w Jaskiniach Gnolli (pierwszy poziom) w ciągu 30 minut.	كتاب الحصان الذهبي يستدعي حصان الحرب القوي. اهزم 100 وحش في كهوف الغنول (المستوى الأول) خلال 30 دقيقة.
+Złota Księga Konia: 100/100 - wróć do Stajennego.	كتاب الحصان الذهبي: 100/100 - عُد إلى مربّي الخيل.
+Złote Trofeum Yutnori	كأس يوتنوري الذهبي
+Złoty Tuńczyk	التونا الذهبية
+Złoty Tuńczyk na haczyku przyciągnie rzadkie ryby.	التونا الذهبية على السنارة تجذب الأسماك النادرة.
+Złoty Tuńczyk zerwał się z haczyka.	انفلتت التونا الذهبية من السنارة.
+Złowiłeś Złotego Tuńczyka! Kliknij go prawym przyciskiem myszy: wypuść go, pokrój albo użyj jako przynęty.	اصطدت التونا الذهبية! انقر عليها بالزر الأيمن: أطلقها أو قطّعها أو استخدمها كطُعم.
+Zły kamień! Pokonaj wszystkie kamienie i potwory.	حجر خاطئ! اهزم جميع الأحجار والوحوش.
+Zły Metin! Zniszczone Metiny Wężowe powracają.	ماتين خاطئ! ماتين الأفعى المدمّرة تعود.
+Złóż Kryształ Energii	ركّب بلورة الطاقة
+Ładny 10%, Zacny 15%, Silny 25%.	جميل 10%، فاخر 15%، قوي 25%.
+Łup daje jedną z tych rzeczy:	الغنيمة تعطي أحد هذه الأشياء:
+Łódź do Portu Nowego Kontynentu czeka	القارب إلى ميناء القارة الجديدة ينتظر
+Łódź już odpływa. Poczekaj chwilę.	القارب يغادر بالفعل. انتظر قليلاً.
+Łódź zabierze cię z powrotem do Rybaka	سيعيدك القارب إلى الصياد
+Łów dalej - gdy zbierzesz wszystkie punkty, ulepszę ją za darmo.	واصل الصيد - عندما تجمع كل النقاط، سأحسّنها مجاناً.
+Łączna liczba punktów	إجمالي النقاط
+Łączny wynik	النتيجة الإجمالية
+Środa (Chen-Si)	الأربعاء (تشن-سي)
+Świat Iluzji otwiera się przed wojownikami od	عالم الوهم ينفتح أمام المحاربين من
+Światło Gwiazd	ضوء النجوم
+Świetnie! Władca En-Tai się odrodzi - przynieś mi	ممتاز! حاكم الإنتاي سيُبعث من جديد - أحضر لي
+Świetnie, masz już %d Odłamków Energii.	ممتاز، لديك الآن %d شظايا طاقة.
+Świątynia jest dziś zamknięta. Wróć później.	المعبد مغلق اليوم. عُد لاحقاً.
+Świątynia każdego ze strażników otwiera swoje[ENTER]podwoje tylko w określonych dniach. Nie zapominaj[ENTER]o tym.	معبد كل حارس يفتح[ENTER]أبوابه فقط في أيام محددة. لا تنسَ[ENTER]ذلك.
+Świątynia nie przyjmie was teraz. Spróbuj za chwilę.	المعبد لن يستقبلكم الآن. حاول بعد قليل.
+Świątynia Ochao	معبد الآشاو
+Świątynia Smoka (PB): Beran-Setaou (PB) czerpie moc z czterech Metinów.	معبد التنين (ا.ح): بيران-سيتاو (ا.ح) يستمد قوته من أربعة ماتين.
+Świątynia Smoka (SZC): Beran-Setaou (SZC) czerpie moc z czterech Metinów.	معبد التنين (ف.ز): بيران-سيتاو (ف.ز) يستمد قوته من أربعة ماتين.
+Świątynia Węży	معبد الأفاعي
+Świątynia Węży: 3. poziom - zniszczcie Metiny Wężowe w kolejności żywiołów.	معبد الأفاعي: المستوى 3 - دمّروا ماتين الأفعى بترتيب العناصر.
+Świątynia Węży: 4. poziom - zapamiętajcie, gdzie pojawiają się Metiny Wężowe Czasu.	معبد الأفاعي: المستوى 4 - تذكروا أين تظهر ماتين الأفعى الزمني.
+Świątynia Węży: 5. poziom - otwórzcie Kolumny Węży Kluczami Wężowymi.	معبد الأفاعي: المستوى 5 - افتحوا أعمدة الأفاعي بمفاتيح الأفعى.
+Świątynia Węży: 6. poziom - uwolnijcie kowali Kluczami do Więzienia.	معبد الأفاعي: المستوى 6 - حرّروا الحدادين بمفاتيح السجن.
+Świątynia Węży: 7. poziom - obróćcie Głowy Węża Odłamkami Węża.	معبد الأفاعي: المستوى 7 - أدِيروا رؤوس الأفعى بشظايا الأفعى.
+Świątynia Węży: czas minął - świątynia was wypędza.	معبد الأفاعي: انتهى الوقت - المعبد يطردكم.
+Świątynia Węży: kliknij Portal Świątyni Węży i rozpocznij walkę.	معبد الأفاعي: انقر على بوابة معبد الأفاعي وابدأ القتال.
+Świątynia Węży: przekroczyłeś limit ożywień - wypadasz z wyprawy.	معبد الأفاعي: تجاوزت حد الإحياء - تخرج من الرحلة.
+Świątynia Węży: rozłączenie trwało ponad minutę - wypadasz z wyprawy.	معبد الأفاعي: دام الانقطاع أكثر من دقيقة - تخرج من الرحلة.
+Świątynia Węży: ta wyprawa już się skończyła.	معبد الأفاعي: انتهت هذه الرحلة بالفعل.
+Świątynia Węży: wykorzystałeś dzisiejsze wejścia.	معبد الأفاعي: استنفدت مرات الدخول اليوم.
+Świątynia Zodiaku	معبد زودياك
+świętować Halloween! 	للاحتفال بالهالوين! 
+Święty	مقدّس
+że się uda.	أنه سينجح.
+żołnierzy, a Statua Węży prowadzi głębiej.	الجنود، وتمثال الأفعى يقود إلى أعمق.
+Żywioł mają bossowie, potwory Groty	العنصر لدى الزعماء، وحوش الكهف
+żywiołu i 20 pustych butelek, a sporządzę z nich	العنصر و20 زجاجة فارغة، وسأحضّر منها
+żywiołu, a Talizman Ognia i Lodu także	العنصر، وتعويذة النار والجليد أيضاً
+Żywioły i talizmany	العناصر والتعويذات
+Żywiołów, odłamki II na Płaskowyżu Sił Natury	العناصر، شظايا II في هضبة قوى الطبيعة

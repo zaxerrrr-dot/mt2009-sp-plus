@@ -1,0 +1,297 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>gr (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+%d dni %d godzin	%d ημέρες %d ώρες
+%d dni %d godzin i %d minut	%d ημέρες %d ώρες και %d λεπτά
+%d godzin i %d minut	%d ώρες και %d λεπτά
+%d minut	%d λεπτά
+%d sekund do wyjścia z mapy.	%d δευτερόλεπτα μέχρι την έξοδο από τον χάρτη.
+%d sekund do zmiany kanału.	%d δευτερόλεπτα μέχρι την αλλαγή καναλιού.
+%s jest blisko Ciebie.	Ο/Η %s είναι κοντά σου.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	Ο/Η %s είναι συνδεδεμένος/η στο κανάλι %d. (τρέχον κανάλι: %d)
+%s rzucił %d. (%d-%d)	Ο/Η %s έριξε %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	Ο/Η %s έριξε ζάρι και έφερε %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	Πέρασαν 30 λεπτά. Οι φωτιές έσβησαν.
+<Gildia> Wskazany gracz jest zajęty.	<Συντεχνία> Ο συγκεκριμένος παίκτης είναι απασχολημένος.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Ομάδα> Η ομάδα δεν μπορεί να δεχτεί άλλους όταν μέλη βρίσκονται σε δοκιμασία.
+<Grupa> Lider grupy jest w lochu.	<Ομάδα> Ο αρχηγός της ομάδας βρίσκεται σε δοκιμασία.
+[1106-??]No puedes unir esto.	[1106-??]Δεν μπορείς να το συνδυάσεις αυτό.
+[Gildia] Gildia jest w trakcie wojny.	[Συντεχνία] Η συντεχνία βρίσκεται σε πόλεμο.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Συντεχνία] Η συντεχνία έφτασε το όριο προσκλήσεων.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Συντεχνία] Η συντεχνία έχει ήδη φτάσει το ανώτατο επίπεδο.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Συντεχνία] Φορτίστηκαν %d μονάδες Πνεύματος του Δράκου.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Συντεχνία] Δεν μπορείς να αφαιρέσεις μέλος της συντεχνίας κατά τη διάρκεια πολέμου.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Συντεχνία] Δεν μπορείς να χρησιμοποιήσεις ικανότητες συντεχνίας εκτός αρένας.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Συντεχνία] Τα νέα μέλη είναι προς το παρόν περιορισμένα.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Συντεχνία] Κατά τη διάρκεια πολέμου συντεχνιών δεν μπορείς να αφαιρέσεις μέλος της συντεχνίας.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Συντεχνία] Το άτομο που προσκάλεσες είναι αυτή τη στιγμή απασχολημένο.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Ομάδα] Η ομάδα δεν μπορεί να διαλυθεί, επειδή μέλη της ομάδας βρίσκονται σε δοκιμασία.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Αποθήκη] Δεν μπορείς να μετακινείς αντικείμενα στην αποθήκη.
+Aby otworzyć sklep potrzebujesz Tobół.	Για να ανοίξεις κατάστημα χρειάζεσαι Δέμα.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Για να αγοράσεις αυτό το αντικείμενο, ο χαρακτήρας πρέπει να είναι τουλάχιστον επιπέδου %u.
+Atakują nas morskie potwory! Do broni!	Μας επιτίθενται θαλάσσια τέρατα! Στα όπλα!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Το μπόνους βελτίωσης μπορεί να χρησιμοποιηθεί σε αντικείμενο έως επιπέδου %d.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Το μπόνους βελτίωσης μπορεί να χρησιμοποιηθεί σε αντικείμενο με το πολύ βαθμό βελτίωσης +%d.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Το μπόνους βελτίωσης μπορεί να χρησιμοποιηθεί μόνο σε κοσμήματα.
+Bonus na ulepszenie może być użyty tylko na bronie.	Το μπόνους βελτίωσης μπορεί να χρησιμοποιηθεί μόνο σε όπλα.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Το μπόνους βελτίωσης μπορεί να χρησιμοποιηθεί μόνο σε πανοπλίες, κράνη και ασπίδες.
+Brak danych. Skontaktuj się z administratorem.	Λείπουν δεδομένα. Επικοινώνησε με τον διαχειριστή.
+Brak kamienia do wyjęcia.	Δεν υπάρχει πέτρα για αφαίρεση.
+Brak miejsca w ekwipunku.	Δεν υπάρχει χώρος στο ιματιοφυλάκιο.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Έλλειψη φόρων. Τρέχον κεφάλαιο: %u Απαιτούμενο κεφάλαιο: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Σφάλμα αντικειμένου κατά την προσπάθεια ανοίγματος του καταστήματος.
+Cena przedmiotu zmieniła się.	Η τιμή του αντικειμένου άλλαξε.
+Cena przedmiotu została zmieniona.	Η τιμή του αντικειμένου άλλαξε.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Κάτι έπιασε το αγκίστρι, αλλά δεν βλέπεις τι είναι.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	Το Κόκκινο Δάσος κρύβει πολλά μυστικά που δεν γνωρίζατε.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Ο ανιχνευτής ενεργοποιήθηκε, αλλά δεν εντοπίστηκε καμία πέτρα ψυχής.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Τα εφέ VIP δεν συνδυάζονται με τη Συνδρομή Premium. Δεν μπορείς να κάνεις αυτή την αγορά.
+Eliksir jest pusty. Napełnij go u Alchemika.	Το ελιξίριο είναι άδειο. Ξαναγέμισέ το στον Αλχημιστή.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Τα συναισθήματα είναι διαθέσιμα μόνο για Συνδρομητές Premium.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Κύμα %d: υπερασπιστείτε τον ιστό και νικήστε την Ύδρα.
+Fala %d: brońcie masztu przez %d sek.	Κύμα %d: υπερασπιστείτε τον ιστό για %d δευτ.
+Funkcja tymczasowo niedostępna.	Η λειτουργία δεν είναι προσωρινά διαθέσιμη.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	Η συντεχνία είναι στο ανώτατο επίπεδο, αλλά θα δεχτεί το δώρο σου.
+Gracz %s został dodany do listy zablokowanych.	Ο παίκτης %s προστέθηκε στη λίστα αποκλεισμένων.
+Gracz %s został usunięty z listy zablokowanych.	Ο παίκτης %s αφαιρέθηκε από τη λίστα αποκλεισμένων.
+Ja ci pokazać, że mi nie przeszkadzać!	Εγώ δείχνω σε σένα να μην ενοχλείς εμένα!
+Jajo Hydry pękło - potwory idą na dno!	Το Αυγό της Ύδρας έσπασε - τα τέρατα πηγαίνουν στον πάτο!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Ένα από τα αντικείμενα έχει μη επιτρεπτή τιμή (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Ένα από τα αντικείμενα βρίσκεται σε μη επιτρεπτή θέση.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Ένας από τους συμμετέχοντες στον γάμο είναι απασχολημένος ή τελείωσε πρόσφατα μια συναλλαγή.
+Jesteś już przyjacielem gracza %s.	Είστε ήδη φίλοι με τον/την %s.
+Jesteś za daleko od Kowala.	Είσαι πολύ μακριά από τον Σιδερά.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Αν δεν συμφωνείς με αυτούς τους όρους
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Οι Πέτρες Ψυχής +3 δεν μπορούν να βελτιωθούν με αυτό το αντικείμενο.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	Η Πέτρα Ψυχής δεν μπορεί να βελτιωθεί με αυτό το αντικείμενο.
+Kilof może zostać ulepszony tylko u Deokbae.	Ο Κασμάς μπορεί να βελτιωθεί μόνο από τον Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Κάποιος αγόρασε %dx %s από το μαγαζάκι σου για %d Yang.
+Masz za mało Animosfer.	Δεν έχεις αρκετές Ανιμόσφαιρες.
+Maszt naprawiony: %d%% PŻ.	Ο ιστός επισκευάστηκε: %d%% ΖΩΗ.
+Maszt ocalał. Przygotujcie się na następną falę!	Ο ιστός σώθηκε. Ετοιμαστείτε για το επόμενο κύμα!
+Maszt: zostało %d%% PŻ!	Ιστός: απομένει %d%% ΖΩΗ!
+Możesz używać Białej Flagi co %d minut.	Μπορείς να χρησιμοποιείς τη Λευκή Σημαία κάθε %d λεπτά.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Μπορείς να χρησιμοποιήσεις αυτή την ικανότητα μόνο στο Βασίλειό σου.
+Możesz wyrzucić przedmioty co %d sekund.	Μπορείς να πετάς αντικείμενα μία φορά ανά %d δευτερόλεπτα.
+Możesz wyrzucić Yang co 10 sekund.	Μπορείς να πετάς Yang μία φορά ανά 10 δευτερόλεπτα.
+Możesz łowić tylko w M1.	Μπορείς να ψαρεύεις μόνο στο M1.
+Możliwość pisania została zablokowana przez siły wyższe!	Η δυνατότητα γραφής αποκλείστηκε από ανώτερες δυνάμεις!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Πρέπει να είσαι επιπέδου %d για να καταλάβεις αυτό το Βιβλίο.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Πρέπει να είσαι τουλάχιστον επιπέδου %d για να αγοράσεις αυτό το αντικείμενο.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Πρέπει να φοράς νυφικό για να φορέσεις μπουκέτο.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Πρέπει να περιμένεις %d λεπ. πριν χρησιμοποιήσεις ξανά αυτή την επιλογή.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Πρέπει να περιμένεις λίγο μετά τη μάχη πριν χρησιμοποιήσεις αυτή την επιλογή.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Πρέπει να περιμένεις μερικά δευτερόλεπτα πριν βγεις από τον χάρτη.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Πρέπει να περιμένεις μερικά δευτερόλεπτα πριν αλλάξεις κανάλι.
+Musisz posiadać cel.	Πρέπει να έχεις στόχο.
+Musisz stać obok sklepu.	Πρέπει να στέκεσαι δίπλα στο κατάστημα.
+Musisz zaczekać %d min. przed ponownym użyciem.	Πρέπει να περιμένεις %d λεπ. πριν το χρησιμοποιήσεις ξανά.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Πρέπει να περιμένεις %d δευτ. πριν το χρησιμοποιήσεις ξανά.
+Musisz zdjąć bukiet.	Πρέπει πρώτα να βγάλεις το μπουκέτο.
+Musisz znajdować się na tej samej mapie co sklep.	Πρέπει να βρίσκεσαι στον ίδιο χάρτη με το κατάστημα.
+Musisz znajdować się na tym samym kanale co sklep.	Πρέπει να βρίσκεσαι στο ίδιο κανάλι με το κατάστημα.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Σε αυτόν τον χάρτη μπορεί να γίνονται αναγκαστικές μάχες.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Σε αυτό το κανάλι υπάρχουν πάρα πολλά καταστήματα. Για να ξεπεράσεις το δωρεάν όριο απαιτείται κατάστημα premium.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Σε αυτό το κανάλι επιτεύχθηκε το μέγιστο όριο καταστημάτων εκτός σύνδεσης. Δεν μπορείς να ανοίξεις κατάστημα.
+Następna fala za %d sek.	Επόμενο κύμα σε %d δευτ.
+Naładowany na %d sekund.	Φορτισμένο για %d δευτερόλεπτα.
+Nie jesteś zablokowany.	Δεν είσαι κολλημένος.
+Nie ma kogo ożywić.	Δεν υπάρχει κανείς για ανάσταση.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Δεν έχεις χώρο στο ιματιοφυλάκιο. Το αντικείμενο στάλθηκε στην αποθήκη ItemShop.
+Nie masz sklepu na tej mapie.	Δεν έχεις κατάστημα σε αυτόν τον χάρτη.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Δεν έχεις κατάστημα σε αυτό το κανάλι. (Βρέθηκε στο κανάλι %d).
+Nie możesz czytać ksiąg będąć przemieniony.	Δεν μπορείς να διαβάζεις βιβλία όσο είσαι μεταμορφωμένος.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Δεν μπορείς να εξελίξεις περαιτέρω αυτή την ικανότητα. Χρησιμοποίησε Ειλητό Επαναφοράς Ικανοτήτων ή Βιβλίο της Λήθης.
+Nie możesz dodać więcej bonusów.	Δεν μπορείς να προσθέσεις περισσότερα μπόνους.
+Nie możesz jeździć konno podczas łowienia.	Δεν μπορείς να ιππεύεις ενώ ψαρεύεις.
+Nie możesz jeździć konno, gdy jesteś powalony.	Δεν μπορείς να ιππεύεις όταν είσαι ξαπλωμένος.
+Nie możesz jeździć nosząc przedmiot.	Δεν μπορείς να ιππεύεις κρατώντας αντικείμενο.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Δεν μπορείς να συνεχίσεις όταν είναι ενεργό άλλο παράθυρο.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Δεν μπορείς να συνεχίσεις, επειδή τα Yang θα ξεπεράσουν το επιτρεπτό όριο των 2 δισεκατομμυρίων.
+Nie możesz kupować od samego siebie.	Δεν μπορείς να αγοράσεις από τον εαυτό σου.
+Nie możesz mieć więcej niż %d przyjaciół.	Δεν μπορείς να έχεις περισσότερους από %d φίλους.
+Nie możesz nosić Smokingu na koniu.	Δεν μπορείς να φορέσεις Σμόκιν πάνω στο άλογο.
+Nie możesz nosić tego przedmiotu konno.	Δεν μπορείς να φορέσεις αυτό το αντικείμενο πάνω στο άλογο.
+Nie możesz otworzyć pustego sklepu.	Δεν μπορείς να ανοίξεις άδειο κατάστημα.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Δεν μπορείς να ανοίξεις κατάστημα εκτός σύνδεσης σε αυτό το σημείο.
+Nie możesz otworzyć sklepu w tym miejscu.	Δεν μπορείς να ανοίξεις κατάστημα σε αυτό το σημείο.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Δεν μπορείς να ανοίξεις αυτό το κατάστημα. Παραλάβε πρώτα όλα τα αντικείμενα.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Δεν μπορείς να ανοίξεις κατάστημα εδώ. Είσαι πολύ κοντά σε άλλο κατάστημα.
+Nie możesz otworzyć więcej sklepów.	Δεν μπορείς να ανοίξεις περισσότερα καταστήματα.
+Nie możesz ożywić kogoś, kto żyje.	Δεν μπορείς να αναστήσεις κάποιον που ζει.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Δεν μπορείς να μαζέψεις αυτό το αντικείμενο όσο είσαι στο παράθυρο αποστολής.
+Nie możesz przenieść się do tego obszaru.	Δεν μπορείς να μεταφερθείς σε αυτή την περιοχή.
+Nie możesz przenieść się do tej osoby.	Δεν μπορείς να μεταφερθείς σε αυτό το άτομο.
+Nie możesz przywołać do tego obszaru.	Δεν μπορείς να καλέσεις σε αυτή την περιοχή.
+Nie możesz przywołać konia w tym miejscu.	Δεν μπορείς να καλέσεις άλογο σε αυτό το σημείο.
+Nie możesz się teraz teleportować.	Δεν μπορείς να τηλεμεταφερθείς τώρα.
+Nie możesz sprintować będąc spowolnionym.	Δεν μπορείς να τρέξεις σπριντ όσο είσαι επιβραδυμένος.
+Nie możesz sprintować nosząc przedmiot.	Δεν μπορείς να τρέξεις σπριντ κρατώντας αντικείμενο.
+Nie możesz sprzedawać noszonych przedmiotów.	Δεν μπορείς να πουλήσεις φορεμένα αντικείμενα.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Δεν μπορείς να πουλήσεις κλειδωμένα αντικείμενα.
+Nie możesz sprzedać przedmiotów, które nosisz.	Δεν μπορείς να πουλήσεις αντικείμενα που φοράς.
+Nie możesz sprzedać założonego przedmiotu.	Δεν μπορείς να πουλήσεις φορεμένο αντικείμενο.
+Nie możesz tego teraz użyć.	Δεν μπορείς να το χρησιμοποιήσεις τώρα.
+Nie możesz tego użyć, gdy masz otwarte okno.	Δεν μπορείς να το χρησιμοποιήσεις όταν έχεις ανοιχτό παράθυρο.
+Nie możesz tego zrobić na kanale specjalnym.	Δεν μπορείς να το κάνεις αυτό σε ειδικό κανάλι.
+Nie możesz teleportować się nosząc przedmiot.	Δεν μπορείς να τηλεμεταφερθείς κρατώντας αντικείμενο.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Δεν μπορείς να δώσεις τώρα εφέ, περίμενε λίγο.
+Nie możesz teraz podnosić przedmiotów.	Δεν μπορείς να μαζέψεις αντικείμενα τώρα.
+Nie możesz teraz wykonać tej operacji.	Δεν μπορείς να εκτελέσεις αυτή την ενέργεια τώρα.
+Nie możesz teraz zejść z wierzchowca.	Δεν μπορείς να κατέβεις τώρα από το ιππάσιμο.
+Nie możesz tutaj otworzyć depozytu.	Δεν μπορείς να ανοίξεις εδώ αποθήκη.
+Nie możesz uczyć się będąc przemienionym.	Δεν μπορείς να μαθαίνεις όσο είσαι μεταμορφωμένος.
+Nie możesz ulepszyć tego przedmiotu.	Δεν μπορείς να βελτιώσεις αυτό το αντικείμενο.
+Nie możesz użyć tego na wojnie.	Δεν μπορείς να το χρησιμοποιήσεις σε χάρτη πολέμου.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Δεν μπορείς να χρησιμοποιήσεις αυτό το αντικείμενο όταν είναι ενεργό το παράθυρο αποστολής.
+Nie możesz użyć tego przedmiotu konno.	Δεν μπορείς να χρησιμοποιήσεις αυτό το αντικείμενο πάνω στο άλογο.
+Nie możesz wyjąć umieszczonego kamienia.	Δεν μπορείς να βγάλεις την πέτρα που έχει τοποθετηθεί.
+Nie możesz wykonać tej akcji będąc martwy.	Δεν μπορείς να το κάνεις αυτό όσο είσαι νεκρός.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Δεν μπορείς να βάλεις αντικείμενα από τα σαμάρια του αλόγου σε κανονικό κατάστημα.
+Nie możesz zablokować więcej niż %d osób.	Δεν μπορείς να αποκλείσεις περισσότερα από %d άτομα.
+Nie możesz zapisać pozycji w tym miejscu.	Δεν μπορείς να αποθηκεύσεις θέση σε αυτό το σημείο.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Δεν μπορείς να αποθηκεύσεις θέση στο εχθρικό Βασίλειο.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Δεν μπορείς να προσθέσεις αποκλεισμένο άτομο στους φίλους σου.
+Nie możesz zmienić bonusów.	Δεν μπορείς να αλλάξεις τα μπόνους.
+Nie możesz zmienić trybu PvP na wojnie.	Δεν μπορείς να αλλάξεις τη λειτουργία PvP σε πόλεμο.
+Nie można użyć na innym graczu.	Δεν μπορεί να χρησιμοποιηθεί σε άλλον παίκτη.
+Nie można ładować.	Δεν μπορεί να φορτιστεί.
+Nie posiadasz otwartego sklepu.	Δεν έχεις ανοιχτό κατάστημα.
+Nie posiadasz sklepu premium.	Δεν έχεις κατάστημα premium.
+Nie posiadasz sklepu.	Δεν έχεις κατάστημα.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Δεν έχεις τα απαιτούμενα αντικείμενα για την αγορά.
+Nie posiadasz wystarczająco dużo reputacji.	Δεν έχεις αρκετή φήμη.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Δεν πληροίς τις προϋποθέσεις για να ανοίξεις δικό σου κατάστημα.
+Nie udało się wytworzyć.	Η κατασκευή απέτυχε.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Δεν έριξες κανένα αντικείμενο, επειδή σε προστατεύει ο Θεός Δράκος.
+Nie znaleziono gracza o podanej nazwie.	Δεν βρέθηκε παίκτης με αυτό το όνομα.
+Niedostępne.	Μη διαθέσιμο.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Ορισμένα αντικείμενα στο κατάστημα επικαλύπτονται.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Ορισμένα αντικείμενα στο κατάστημα βρίσκονται σε κλειδωμένες θέσεις.
+Niewystarczająca ilość Smoczych Monet.	Ανεπαρκής αριθμός Δρακονομισμάτων.
+Niewystarczająca ilość Smoczych Znaków.	Ανεπαρκής αριθμός Σημαδιών του Δράκου.
+Nikt nie wypłynął - statek zostaje w porcie.	Κανείς δεν σάλπαρε - το πλοίο μένει στο λιμάνι.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Το Μαχαιράκι Βοτανολόγου μπορεί να βελτιωθεί μόνο από τον Βοτανολόγο.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Ο παραλήπτης δεν μπορεί να λάβει πρόσκληση φιλίας.
+Odczekaj chwilę po zakończeniu handlu.	Περίμενε λίγο μετά το τέλος της συναλλαγής.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Περίμενε ακόμα %s πριν την επόμενη εκπαίδευση.
+Odczekaj jeszcze %s przed zakupem.	Περίμενε ακόμα %s πριν την αγορά.
+Odczekaj przed następnym ulepszeniem.	Περίμενε πριν την επόμενη βελτίωση.
+Oferta sklepu zmieniła się.	Η προσφορά του καταστήματος άλλαξε.
+Okno zarządzania sklepem musi być otwarte.	Το παράθυρο διαχείρισης του καταστήματος πρέπει να είναι ανοιχτό.
+Osiągnięto limit zakupu tego przedmiotu.	Επιτεύχθηκε το όριο αγοράς αυτού του αντικειμένου.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Επιτεύχθηκε ο μέγιστος αριθμός αγορών αυτού του αντικειμένου σε αυτόν τον λογαριασμό.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Το άτομο που προσπαθείς να αναστήσεις δεν είναι άνθρωπος.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Έλαβες %d φήμη (Βασιλική Φρουρά)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Έλαβες %d φήμη (Γιοι της Ερήμου)
+Otrzymałeś %s (Juki Konne)	Έλαβες %s (Σαμάρια Αλόγου)
+Otrzymałeś %s (szt. %d)	Έλαβες %s (τεμ. %d)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Έλαβες %s (τεμ. %d) (Σαμάρια Αλόγου)
+OX-Question: 	OX-Ερώτηση: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Θυμήσου ότι σε αυτόν τον χάρτη δεν μπορεί να στηθεί κατάστημα εκτός σύνδεσης.
+Podana kwota jest większa niż zarobione Yang.	Το ποσό που έδωσες είναι μεγαλύτερο από τα Yang που κέρδισες.
+Podana kwota jest za mała.	Το ποσό που έδωσες είναι πολύ μικρό.
+Podana osoba jest na liście Twoich przyjaciół.	Το άτομο αυτό είναι στη λίστα φίλων σου.
+Podatek od sprzedaży: %d%% (%lld Yang).	Φόρος πώλησης: %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Εμφανίστηκε Αυγό Ύδρας! Σπάσ' το και τα τέρατα θα πάνε στον πάτο.
+Pomimo treningu nie czujesz się zmęczony.	Παρά την εκπαίδευση δεν νιώθεις κουρασμένος.
+Pomyślnie dodano bonus.	Το μπόνους προστέθηκε με επιτυχία.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Τα Yang αναλήφθηκαν με επιτυχία από το ταμείο του καταστήματος.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Έχεις ανοιχτό κατάστημα ή το ταμείο του καταστήματός σου περιέχει αντικείμενα.
+Pospieszcie się, macie %d min., by przejść przez portal.	Βιαστείτε, έχετε %d λεπ. για να περάσετε την πύλη.
+Potomstwo Hydry trafiło maszt laserem!	Τα νεογνά της Ύδρας χτύπησαν τον ιστό με λέιζερ!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Χρειάζεσαι %lld Yang για να ανοίξεις αυτό το είδος καταστήματος
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Χρειάζεσαι χώρο για τουλάχιστον αντικείμενο 3 θέσεων για να ανοίξεις το σεντούκι.
+Pozostały czas %d sekund.	Υπόλοιπος χρόνος: %d δευτερόλεπτα.
+Pozostały czas: %.1f sek.	Υπόλοιπος χρόνος: %.1f δευτ.
+Pozostały czas: %.2f sek.	Υπόλοιπος χρόνος: %.2f δευτ.
+Pozycja sklepu została oznaczona strzałką.	Η θέση του καταστήματός σου σημειώθηκε με βέλος.
+Prosimy o powrót do pierwotnej lokalizacji.	Παρακαλούμε επιστρέψτε στην αρχική σας τοποθεσία.
+Prośba o wezwanie została wysłana.	Το αίτημα κλήσης στάλθηκε.
+Przechwyciłeś laser Potomstwa Hydry.	Έπιασες το λέιζερ των νεογνών της Ύδρας.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Το αντικείμενο μπορεί να χρησιμοποιηθεί μόνο σε όπλα και πανοπλίες έως το επίπεδο 40.
+Przedmiot nie może być użyty na akcesoriach.	Το αντικείμενο δεν μπορεί να χρησιμοποιηθεί σε αξεσουάρ.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	Το αντικείμενο δεν έχει Πέτρα Ψυχής για αφαίρεση.
+Przedmiot zniknie za %d minut.	Το αντικείμενο θα εξαφανιστεί σε %d λεπτά.
+Przedmiot został dodany do twojego ekwipunku	Το αντικείμενο προστέθηκε στο ιματιοφυλάκιό σου
+Przedmioty zostały dodane do twojego ekwipunku	Τα αντικείμενα προστέθηκαν στο ιματιοφυλάκιό σου
+Przedmioty zostały pomyśnie zaktualizowane.	Τα αντικείμενα ενημερώθηκαν με επιτυχία.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Αντικείμενα που χρησιμοποιείς δεν μπορούν να πουληθούν στο προσωπικό σου κατάστημα.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Συνδέσου ξανά για να εφαρμοστεί σωστά το εφέ VIP.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Κάλεσε το άλογό σου για να αποκτήσεις πρόσβαση στα σαμάρια του αλόγου.
+Rejs trwał za długo - statek zawraca.	Το ταξίδι κράτησε πολύ - το πλοίο γυρίζει πίσω.
+Rzuciłeś %d. (%d-%d)	Έριξες %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Έριξες ζάρι και έφερες %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Ο διακομιστής θα κλείσει σε 10 λεπτά λόγω εργασιών συντήρησης.
+Sklep #PLAYER_NAME#	Κατάστημα του #PLAYER_NAME#
+Sklep - %s	Κατάστημα - %s
+Sklep jest otwarty.	Το κατάστημα είναι ανοιχτό.
+Sklep jest w trybie edycji.	Το κατάστημα είναι σε λειτουργία επεξεργασίας.
+Sklep jest zamknięty.	Το κατάστημα είναι κλειστό.
+Sklep nie jest w trybie edycji.	Το κατάστημα δεν είναι σε λειτουργία επεξεργασίας.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Το κατάστημα επεξεργάστηκε πρόσφατα από τον ιδιοκτήτη. Περίμενε λίγο πριν την αγορά.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Το κατάστημα έκλεισε, τα υπόλοιπα αντικείμενα και τα Yang που κέρδισε προστέθηκαν στο ταμείο.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Το σεντούκι με Πέτρες Ψυχής του Δράκου δεν είναι ενεργοποιημένο.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS! Ο ιστός θρυμματίστηκε και το πλοίο βυθίζεται. Σε λίγο θα επιστρέψετε στη στεριά.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Το σπριντ με τα πόδια είναι αδύνατο με την ταχύτητα κίνησης που έχεις (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	Η ικανότητα που εκπαιδεύεις έχει ήδη το μέγιστο επίπεδο (%d).
+Ta aukcja nie jest już dostępna.	Αυτή η δημοπρασία δεν είναι πια διαθέσιμη.
+Ta opcja jest tymczasowo niedostępna.	Αυτή η επιλογή δεν είναι προσωρινά διαθέσιμη.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Αυτά τα νερά είναι πολύ φτωχά, σχεδόν δεν υπάρχουν ψάρια εδώ, μίλα με τον Ψαρά.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Αυτός ο παίκτης έχει πάνω από 2 δισεκατομμύρια Yang. Δεν μπορείς να συναλλαγείς μαζί του.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Αυτή η αγορά θα ξεπερνούσε το επιτρεπτό όριο αγορών ανά λογαριασμό. Αγόρασε λιγότερα τεμάχια.
+Test server time limit passed	Το χρονικό όριο του δοκιμαστικού διακομιστή πέρασε
+To miejsce jest wolne od plagi Kamieni Metin.	Αυτό το μέρος είναι ελεύθερο από την πανούκλα των Πετρών Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Δεν ήμουν εγώ... αλλά αυτοί σε διάλεξαν. Θα ξαναβρεθούμε, πιο γρήγορα απ' όσο νομίζεις.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Το δηλητήριο μπορεί να χρησιμοποιηθεί μόνο στη Γιγάντια Χελώνα.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Η ομάδα σου περιλαμβάνει κάθε κλάση, γι' αυτό παίρνεις μπόνους εμπειρίας.
+Twoja postać nie żyje, nie możesz tego zrobić.	Ο χαρακτήρας σου είναι νεκρός, δεν μπορείς να το κάνεις αυτό.
+Twoja ranga nie może już wzrosnąć.	Η κατάταξή σου δεν μπορεί να ανέβει άλλο.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	Το άνοιγμα καταστημάτων έχει μπλοκαριστεί για τη βαθμίδα σου!
+Tworzenie sklepów jest tymczasowo wyłączone	Το άνοιγμα καταστημάτων είναι προσωρινά απενεργοποιημένο
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Το Άλογό σου πεθαίνει της πείνας και δεν μπορεί να κουραστεί σε αυτή την κατάσταση.
+Tylko GM ma dostęp do tej komendy.	Μόνο οι GM έχουν πρόσβαση σε αυτή την εντολή.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Αυτή την ενέργεια μπορείς να την κάνεις μόνο στον Ναό του Ζωδιακού.
+Udało ci się pokonać smoka w %d sekund!	Κατάφερες να νικήσεις τον δράκο σε %d δευτερόλεπτα!
+Upuszczone Yang zniknie za %d sekund.	Τα Yang που έπεσαν θα εξαφανιστούν σε %d δευτερόλεπτα.
+Upuszczony przedmiot zniknie za %d minut.	Το αντικείμενο που έπεσε θα εξαφανιστεί σε %d λεπτά.
+Usuniecie przedmiotu	Το αντικείμενο αφαιρέθηκε
+Uwolniłeś się!	Ελευθερώθηκες!
+W depozycie sklepu offline zalegają przedmioty.	Στο ταμείο του καταστήματος εκτός σύνδεσης υπάρχουν ακόμα αντικείμενα.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Στο δάσος ακούγεται ένα δυσοίωνο θρόισμα... ο Άρχοντας των Πνευμάτων των Δέντρων ξυπνά από τον ύπνο του!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Η αξία του καταστήματος και των Yang σου είναι μεγαλύτερη από το επιτρεπτό ποσό Yang (2 δισεκατομμύρια).
+Wesele dalej trwa!	Ο γάμος συνεχίζεται ακόμα!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	Ο πόλεμος μεταξύ %s και %s θα ξεκινήσει σε %d λεπτά!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Το συγκεκριμένο κανάλι είναι διαθέσιμο μόνο για λογαριασμούς Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Όλοι έπεσαν! Ο χρόνος σας στον Ναό θα τελειώσει αν δεν αναστηθεί κανείς μέσα σε ένα λεπτό.
+Wszystkie potwory na mapach zostały zabite!	Όλα τα τέρατα στους χάρτες σκοτώθηκαν!
+Wygląda na to, że na haczyku jest %s.	Φαίνεται ότι στο αγκίστρι είναι: %s.
+Wyglądało na to, że %s wisi na haku.	Φαινόταν ότι στο αγκίστρι κρεμόταν: %s.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Κέρδισες τη μονομαχία με %d/%d (%d%%) ΖΩΗ!
+Wyjście z mapy zostało przerwane.	Η έξοδος από τον χάρτη διακόπηκε.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Εξαντλήθηκε το όριο αγορών της δημοπρασίας σε αυτόν τον λογαριασμό (το πολύ %d αγορές).
+Wymagane %d Staminy	Απαιτούνται %d Αντοχής
+Wymagane %s.	Απαιτείται: %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Απαιτείται Γυαλί Διαίσθησης ή ενεργή Συνδρομή Premium.
+Wystapił błąd	Παρουσιάστηκε σφάλμα
+Wystąpił błąd. (Kod błędu: %s)	Παρουσιάστηκε σφάλμα. (Κωδικός σφάλματος: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Η αναζήτηση ολοκληρώθηκε. Βρέθηκαν %d καταστήματα.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Η αναζήτηση διακόπηκε. Βρέθηκαν πάνω από %d καταστήματα με το συγκεκριμένο αντικείμενο.
+Wyłowiłeś %s!	Έπιασες: %s!
+Wędka może zostać ulepszona tylko u Rybaka.	Το Καλάμι μπορεί να βελτιωθεί μόνο από τον Ψαρά.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Ο κάτοχος του αντικειμένου έχει πάρα πολλά αντικείμενα στο ιματιοφυλάκιο.
+Za 5 min zostanie wykonany automatyczny reset spotów!	Σε 5 λεπτά θα γίνει αυτόματη επαναφορά των σημείων!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Περίμενε %d δευτερόλεπτα πριν χρησιμοποιήσεις αυτό το αντικείμενο.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Περίμενε %d δευτερόλεπτα για να κάνεις νέα αλλαγή στο κατάστημα.
+Zaczekaj %d sekund, przed kolejną akcją.	Περίμενε %d δευτερόλεπτα πριν την επόμενη ενέργεια.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Περίμενε %s πριν χρησιμοποιήσεις ξανά το ειλητό.
+Zaczekaj chwilę, przed kolejną akcją.	Περίμενε λίγο πριν την επόμενη ενέργεια.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Περίμενε λίγο. Γίνεται έξοδος από τον χάρτη.
+Zakup wymaga odpowiedniej reputacji.	Η αγορά απαιτεί κατάλληλη φήμη.
+Zamkniecie sklepu	Το κατάστημα έκλεισε
+Zaproszony gracz jest w tym momencie zajęty.	Ο παίκτης που προσκάλεσες είναι αυτή τη στιγμή απασχολημένος.
+Zdobyłeś %s!	Απέκτησες: %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Στεριά στον ορίζοντα! Το πλοίο σώθηκε - περάστε από την πύλη.
+Zmiana kanału została przerwana.	Η αλλαγή καναλιού διακόπηκε.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Η αλλαγή στο συγκεκριμένο κανάλι είναι προς το παρόν αδύνατη.
+Znowu atakują! Do broni!	Επιτίθενται πάλι! Στα όπλα!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Έμεινε κάτι που πρέπει να διορθώσω... κάτι που δεν έπρεπε ποτέ να συμβεί.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	Ο θάνατος δεν είναι το τέλος, αλλά μάλλον η αρχή ενός νέου δρόμου.

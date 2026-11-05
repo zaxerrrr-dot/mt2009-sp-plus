@@ -1,0 +1,297 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>cz (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+%d dni %d godzin	%d dní %d hodin
+%d dni %d godzin i %d minut	%d dní %d hodin a %d minut
+%d godzin i %d minut	%d hodin a %d minut
+%d sekund do wyjścia z mapy.	%d sekund do opuštění mapy.
+%d sekund do zmiany kanału.	%d sekund do změny kanálu.
+%s jest blisko Ciebie.	%s je blízko tebe.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s je připojen na kanálu %d. (aktuální kanál: %d)
+%s rzucił %d. (%d-%d)	%s hodil %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s hodil kostkou a získal %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	30 minut uplynulo. Ohně zhasly.
+<Gildia> Wskazany gracz jest zajęty.	<Cech> Určený hráč je zaneprázdněn.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Skupina> Skupina nemůže přijímat další, dokud jsou členové v dungeonu.
+<Grupa> Lider grupy jest w lochu.	<Skupina> Vůdce skupiny je v dungeonu.
+<Guild> %d Skills used (%d, %d) to %u	<Cech> %d schopností použito (%d, %d) na %u
+[1106-??]No puedes unir esto.	[1106-??]Tohle nelze spojit.
+[Gildia] Gildia jest w trakcie wojny.	[Cech] Cech je ve válce.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Cech] Cech dosáhl limitu pozvánek.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Cech] Cech dosáhl maximální úrovně.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Cech] Nabito %d Energie dračího ducha.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Cech] Během války nemůžeš odebrat člena cechu.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Cech] Cechovní schopnosti nemůžeš použít mimo arénu.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Cech] Noví členové jsou nyní omezeni.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Cech] Během cechovní války nemůžeš odebrat člena cechu.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Cech] Pozvaná osoba je právě zaneprázdněna.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Skupina] Družinu nelze rozpustit, protože členové družiny jsou v dungeonu.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Sklad] Ve skladu nemůžeš přesouvat předměty.
+Aby otworzyć sklep potrzebujesz Tobół.	K otevření krámu potřebuješ Měšec.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Ke koupi tohoto předmětu musí mít postava alespoň úroveň %u.
+Atakują nas morskie potwory! Do broni!	Útočí na nás mořská monstra! Do zbraně!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Bonus k vylepšení lze použít na předmět nejvýše do %d. úrovně.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Bonus k vylepšení lze použít na předmět s maximálním stupněm vylepšení +%d.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Bonus k vylepšení lze použít jen na bižuterii.
+Bonus na ulepszenie może być użyty tylko na bronie.	Bonus k vylepšení lze použít jen na zbraně.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Bonus k vylepšení lze použít jen na zbroje, helmy a štíty.
+Brak danych. Skontaktuj się z administratorem.	Chybí data. Kontaktuj administrátora.
+Brak kamienia do wyjęcia.	Není kámen k vyjmutí.
+Brak miejsca w ekwipunku.	Není místo ve výbavě.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Žádné daně. Aktuální kapitál: %u Potřebný kapitál: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Chyba předmětu při pokusu o otevření krámu.
+Cena przedmiotu zmieniła się.	Cena předmětu se změnila.
+Cena przedmiotu została zmieniona.	Cena předmětu byla změněna.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Něco se chytilo na háček, ale nevidíš, co to je.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	Rudý les ukrývá mnoho tajemství, o kterých jste nevěděli.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Detektor byl spuštěn, ale nezjistil žádné kameny duší.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Efekty VIP se nekombinují s Prémiovým předplatným. Nákup nelze provést.
+Eliksir jest pusty. Napełnij go u Alchemika.	Elixír je prázdný. Naplň ho u Alchymisty.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Emoce jsou dostupné jen pro předplatitele Prémie.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Vlna %d: braňte stěžeň a poražte Hydru.
+Fala %d: brońcie masztu przez %d sek.	Vlna %d: braňte stěžeň po dobu %d s.
+Funkcja tymczasowo niedostępna.	Funkce je dočasně nedostupná.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	Cech je na maximální úrovni, ale tvůj dar přijme.
+Gracz %s został dodany do listy zablokowanych.	Hráč %s byl přidán na seznam blokovaných.
+Gracz %s został usunięty z listy zablokowanych.	Hráč %s byl odebrán ze seznamu blokovaných.
+Ja ci pokazać, że mi nie przeszkadzać!	Já ti ukázat, že mě neotravovat!
+Jajo Hydry pękło - potwory idą na dno!	Hydra vejce prasklo - monstra jdou ke dnu!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Jeden z předmětů má nepovolenou cenu (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Jeden z předmětů se nachází na nepovolené pozici.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Jeden z účastníků svatby je zaneprázdněn nebo nedávno ukončil obchod.
+Jesteś już przyjacielem gracza %s.	Už jsi přítelem hráče %s.
+Jesteś za daleko od Kowala.	Jsi příliš daleko od kováře.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Pokud s těmito podmínkami nesouhlasíš
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Kameny duše +3 nelze tímto předmětem vylepšit.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	Kámen duše nelze tímto předmětem vylepšit.
+Kilof może zostać ulepszony tylko u Deokbae.	Krumpáč lze vylepšit jen u Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Někdo koupil %dx %s z tvého krámku za %d Yangů.
+Masz za mało Animosfer.	Máš málo Animosfér.
+Maszt naprawiony: %d%% PŻ.	Stěžeň opraven: %d%% HP.
+Maszt ocalał. Przygotujcie się na następną falę!	Stěžeň přežil. Připravte se na další vlnu!
+Maszt: zostało %d%% PŻ!	Stěžeň: zbývá %d%% HP!
+Możesz używać Białej Flagi co %d minut.	Bílý prapor můžeš používat každých %d minut.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Tuto schopnost můžeš použít jen ve svém království.
+Możesz wyrzucić przedmioty co %d sekund.	Předměty můžeš zahodit každých %d sekund.
+Możesz wyrzucić Yang co 10 sekund.	Yangy můžeš zahodit každých 10 sekund.
+Możesz łowić tylko w M1.	Rybařit můžeš jen na M1.
+Możliwość pisania została zablokowana przez siły wyższe!	Možnost psaní byla zablokována vyšší mocí!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Musíš být na úrovni %d, abys tuto knihu pochopil.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Musíš mít alespoň úroveň %d, abys koupil tento předmět.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Musíš mít na sobě svatební šaty, abys mohl nasadit kytici.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Musíš počkat %d min. před dalším použitím této volby.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Po boji musíš chvíli počkat před použitím této volby.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Musíš počkat několik sekund, než opustíš mapu.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Musíš počkat několik sekund, než změníš kanál.
+Musisz posiadać cel.	Musíš mít cíl.
+Musisz stać obok sklepu.	Musíš stát vedle krámu.
+Musisz zaczekać %d min. przed ponownym użyciem.	Musíš počkat %d min. před dalším použitím.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Musíš počkat %d s před dalším použitím.
+Musisz zdjąć bukiet.	Musíš sundat kytici.
+Musisz znajdować się na tej samej mapie co sklep.	Musíš být na stejné mapě jako krám.
+Musisz znajdować się na tym samym kanale co sklep.	Musíš být na stejném kanále jako krám.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Na této mapě se mohou odehrávat vynucené bitvy.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Na tomto kanále je příliš mnoho krámů. K překročení bezplatného limitu je potřeba prémiový krám.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Na tomto kanále bylo dosaženo maximálního limitu offline krámů. Nemůžeš otevřít krám.
+Następna fala za %d sek.	Další vlna za %d s.
+Naładowany na %d sekund.	Nabito na %d sekund.
+Nie jesteś zablokowany.	Nejsi blokován.
+Nie ma kogo ożywić.	Není koho oživit.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Nemáš místo ve výbavě. Předmět byl poslán do skladu ItemShop.
+Nie masz sklepu na tej mapie.	Na této mapě nemáš krám.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Na tomto kanále nemáš krám. (Nalezen na kanále %d).
+Nie możesz czytać ksiąg będąć przemieniony.	Nemůžeš číst knihy v proměněné podobě.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Tuto schopnost už nemůžeš dále rozvíjet. Použij Reset schopností nebo Knihu zapomnění.
+Nie możesz dodać więcej bonusów.	Nemůžeš přidat další bonusy.
+Nie możesz jeździć konno podczas łowienia.	Nemůžeš jezdit na koni při rybaření.
+Nie możesz jeździć konno, gdy jesteś powalony.	Nemůžeš jezdit na koni, když jsi sražen k zemi.
+Nie możesz jeździć nosząc przedmiot.	Nemůžeš jezdit, když něco neseš.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Nemůžeš pokračovat, dokud je aktivní jiné okno.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Nemůžeš pokračovat, protože Yangy by překročily povolený limit 2 miliard.
+Nie możesz kupować od samego siebie.	Nemůžeš nakupovat sám od sebe.
+Nie możesz mieć więcej niż %d przyjaciół.	Nemůžeš mít více než %d přátel.
+Nie możesz nosić Smokingu na koniu.	Nemůžeš nosit Smoking na koni.
+Nie możesz nosić tego przedmiotu konno.	Tento předmět nemůžeš nosit na koni.
+Nie możesz otworzyć pustego sklepu.	Nemůžeš otevřít prázdný krám.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Na tomto místě nemůžeš otevřít offline krám.
+Nie możesz otworzyć sklepu w tym miejscu.	Na tomto místě nemůžeš otevřít krám.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Tento krám nemůžeš otevřít. Vyzvedni všechny předměty.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Tady nemůžeš otevřít krám. Jsi příliš blízko jiného krámu.
+Nie możesz otworzyć więcej sklepów.	Nemůžeš otevřít další krámy.
+Nie możesz ożywić kogoś, kto żyje.	Nemůžeš oživit někoho, kdo žije.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Nemůžeš zvedat předměty, když jsi v okně úkolů.
+Nie możesz przenieść się do tego obszaru.	Nemůžeš se přenést do této oblasti.
+Nie możesz przenieść się do tej osoby.	Nemůžeš se přenést k této osobě.
+Nie możesz przywołać do tego obszaru.	Nemůžeš přivolat do této oblasti.
+Nie możesz przywołać konia w tym miejscu.	Na tomto místě nemůžeš přivolat koně.
+Nie możesz się teraz teleportować.	Teď se nemůžeš teleportovat.
+Nie możesz sprintować będąc spowolnionym.	Nemůžeš sprintovat, když jsi zpomalen.
+Nie możesz sprintować nosząc przedmiot.	Nemůžeš sprintovat, když něco neseš.
+Nie możesz sprzedawać noszonych przedmiotów.	Nemůžeš prodávat nasazené předměty.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Nemůžeš prodávat zamčené předměty.
+Nie możesz sprzedać przedmiotów, które nosisz.	Nemůžeš prodat předměty, které máš na sobě.
+Nie możesz sprzedać założonego przedmiotu.	Nemůžeš prodat nasazený předmět.
+Nie możesz tego teraz użyć.	Teď to nemůžeš použít.
+Nie możesz tego użyć, gdy masz otwarte okno.	Nemůžeš to použít, když máš otevřené okno.
+Nie możesz tego zrobić na kanale specjalnym.	Na speciálním kanále to nemůžeš udělat.
+Nie możesz teleportować się nosząc przedmiot.	Nemůžeš se teleportovat, když něco neseš.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Teď nemůžeš udělit efekt, chvíli počkej.
+Nie możesz teraz podnosić przedmiotów.	Teď nemůžeš zvedat předměty.
+Nie możesz teraz wykonać tej operacji.	Teď nemůžeš provést tuto operaci.
+Nie możesz teraz zejść z wierzchowca.	Teď nemůžeš sesednout z koně.
+Nie możesz tutaj otworzyć depozytu.	Zde nemůžeš otevřít depozit.
+Nie możesz uczyć się będąc przemienionym.	Nemůžeš se učit v proměněné podobě.
+Nie możesz ulepszyć tego przedmiotu.	Tento předmět nemůžeš vylepšit.
+Nie możesz użyć tego na wojnie.	Toto nemůžeš použít ve válce.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Tento předmět nemůžeš použít, když je aktivní okno úkolů.
+Nie możesz użyć tego przedmiotu konno.	Tento předmět nemůžeš použít na koni.
+Nie możesz wyjąć umieszczonego kamienia.	Nemůžeš vyjmout osazený kámen.
+Nie możesz wykonać tej akcji będąc martwy.	Tuto akci nemůžeš provést, když jsi mrtvý.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Nemůžeš vkládat předměty z koňských brašen do běžného krámu.
+Nie możesz zablokować więcej niż %d osób.	Nemůžeš zablokovat více než %d osob.
+Nie możesz zapisać pozycji w tym miejscu.	Na tomto místě nemůžeš uložit pozici.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Nemůžeš uložit pozici nepřátelského království.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Nemůžeš pozvat mezi přátele zablokovanou osobu.
+Nie możesz zmienić bonusów.	Nemůžeš změnit bonusy.
+Nie możesz zmienić trybu PvP na wojnie.	Ve válce nemůžeš změnit režim PvP.
+Nie można użyć na innym graczu.	Nelze použít na jiného hráče.
+Nie można ładować.	Nelze nabít.
+Nie posiadasz otwartego sklepu.	Nemáš otevřený krám.
+Nie posiadasz sklepu premium.	Nemáš prémiový krám.
+Nie posiadasz sklepu.	Nemáš krám.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Nemáš požadované předměty k nákupu.
+Nie posiadasz wystarczająco dużo reputacji.	Nemáš dostatek reputace.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Nesplňuješ požadavky k otevření vlastního krámu.
+Nie udało się wytworzyć.	Výrobu se nepodařilo provést.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Nepustil jsi žádný předmět, protože tě chrání Dračí bůh.
+Nie znaleziono gracza o podanej nazwie.	Hráč s daným jménem nebyl nalezen.
+Niedostępne.	Nedostupné.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Některé předměty v krámu se překrývají.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Některé předměty v krámu leží na zablokovaném místě.
+Niewystarczająca ilość Smoczych Monet.	Nedostatečný počet Dračích mincí.
+Niewystarczająca ilość Smoczych Znaków.	Nedostatečný počet Dračích znaků.
+Nikt nie wypłynął - statek zostaje w porcie.	Nikdo nevyplul - loď zůstává v přístavu.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Bylinkářův nožík lze vylepšit jen u Bylinkáře.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Příjemce nemůže obdržet pozvánku mezi přátele.
+Odczekaj chwilę po zakończeniu handlu.	Po skončení obchodu chvíli počkej.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Ještě počkej %s před dalším školením.
+Odczekaj jeszcze %s przed zakupem.	Ještě počkej %s před nákupem.
+Odczekaj przed następnym ulepszeniem.	Počkej před dalším vylepšením.
+Oferta sklepu zmieniła się.	Nabídka krámu se změnila.
+Okno zarządzania sklepem musi być otwarte.	Okno správy krámu musí být otevřené.
+Osiągnięto limit zakupu tego przedmiotu.	Bylo dosaženo limitu nákupu tohoto předmětu.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Bylo dosaženo maximálního počtu nákupů tohoto předmětu na tomto účtu.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Osoba, kterou se snažíš oživit, není člověk.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Získal jsi %d reputace (Královská garda)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Získal jsi %d reputace (Synové pouště)
+Otrzymałeś %s (Juki Konne)	Získal jsi %s (Koňské brašny)
+Otrzymałeś %s (szt. %d)	Získal jsi %s (ks %d)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Získal jsi %s (ks %d) (Koňské brašny)
+OX-Question: 	OX otázka: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Pamatuj, že na této mapě nelze zřídit offline krám.
+Podana kwota jest większa niż zarobione Yang.	Zadaná částka je vyšší než vydělané Yangy.
+Podana kwota jest za mała.	Zadaná částka je příliš malá.
+Podana osoba jest na liście Twoich przyjaciół.	Zadaná osoba je na seznamu tvých přátel.
+Podatek od sprzedaży: %d%% (%lld Yang).	Daň z prodeje: %d%% (%lld Yangů).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Objevilo se Hydra vejce! Rozbij ho a monstra půjdou ke dnu.
+Pomimo treningu nie czujesz się zmęczony.	I přes trénink se necítíš unavený.
+Pomyślnie dodano bonus.	Bonus byl úspěšně přidán.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Yangy z depozitu krámu byly úspěšně vyplaceny.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Máš otevřený krám nebo depozit krámu obsahuje předměty.
+Pospieszcie się, macie %d min., by przejść przez portal.	Pospěšte si, máte %d min., abyste prošli portálem.
+Potomstwo Hydry trafiło maszt laserem!	Potomek Hydry zasáhl stěžeň laserem!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	K otevření tohoto druhu krámu potřebuješ %lld Yangů
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	K otevření truhly potřebuješ místo alespoň pro předmět o velikosti 3 slotů.
+Pozostały czas %d sekund.	Zbývající čas %d sekund.
+Pozostały czas: %.1f sek.	Zbývající čas: %.1f s.
+Pozostały czas: %.2f sek.	Zbývající čas: %.2f s.
+Pozycja sklepu została oznaczona strzałką.	Poloha krámu byla označena šipkou.
+Prosimy o powrót do pierwotnej lokalizacji.	Vrať se prosím na původní místo.
+Prośba o wezwanie została wysłana.	Žádost o přivolání byla odeslána.
+Przechwyciłeś laser Potomstwa Hydry.	Zachytil jsi laser Potomka Hydry.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Předmět lze použít jen na zbraně a zbroje do 40. úrovně.
+Przedmiot nie może być użyty na akcesoriach.	Předmět nelze použít na doplňky.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	Předmět neobsahuje Kámen duše k vyjmutí.
+Przedmiot zniknie za %d minut.	Předmět zmizí za %d minut.
+Przedmiot został dodany do twojego ekwipunku	Předmět byl přidán do tvé výbavy
+Przedmioty zostały dodane do twojego ekwipunku	Předměty byly přidány do tvé výbavy
+Przedmioty zostały pomyśnie zaktualizowane.	Předměty byly úspěšně aktualizovány.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Předměty, které používáš, nelze prodat ve tvém osobním krámu.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Přihlas se znovu, aby se efekt VIP správně udělil.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Přivolej koně, abys měl přístup k předmětům v koňských brašnách.
+Rejs trwał za długo - statek zawraca.	Plavba trvala příliš dlouho - loď se vrací.
+Rzuciłeś %d. (%d-%d)	Hodil jsi %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Hodil jsi kostkou a získal %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Server bude za 10 minut vypnut kvůli údržbě.
+Sklep #PLAYER_NAME#	Krám #PLAYER_NAME#
+Sklep - %s	Krám - %s
+Sklep jest otwarty.	Krám je otevřený.
+Sklep jest w trybie edycji.	Krám je v režimu úprav.
+Sklep jest zamknięty.	Krám je zavřený.
+Sklep nie jest w trybie edycji.	Krám není v režimu úprav.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Krám byl nedávno upraven majitelem. Před nákupem chvíli počkej.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Krám byl zavřen, zbylé předměty a vydělané yangy byly přidány do depozitu.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Truhla s Kameny duše draka není aktivována.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS! Stěžeň je roztříštěn, loď se potápí. Za chvíli se vrátíte na pevninu.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Sprint pěšky není možný při dané rychlosti pohybu (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	Trénovaná schopnost již má maximální úroveň (%d).
+Ta aukcja nie jest już dostępna.	Tato aukce už není dostupná.
+Ta opcja jest tymczasowo niedostępna.	Tato volba je dočasně nedostupná.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Tyto vody jsou velmi nekvalitní, téměř tu nejsou ryby, promluv si s Rybářem.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Tento hráč má více než 2 miliardy Yangů. Nemůžeš s ním obchodovat.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Tento nákup by překročil povolený limit nákupů na účet. Kup méně kusů.
+Test server time limit passed	Časový limit testovacího serveru uplynul
+To miejsce jest wolne od plagi Kamieni Metin.	Toto místo je prosté moru Kamenů Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	To nejsem já... ale oni si tě vybrali. Uvidíme se znovu, dříve, než si myslíte.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Jed lze použít jen na Obří želvě.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Tvá skupina se skládá ze všech tříd, díky čemuž získáváš bonus ke zkušenostem.
+Twoja postać nie żyje, nie możesz tego zrobić.	Tvá postava je mrtvá, nemůžeš to udělat.
+Twoja ranga nie może już wzrosnąć.	Tvá hodnost už nemůže vzrůst.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	Zřizování krámů pro tvou pozici bylo zablokováno!
+Tworzenie sklepów jest tymczasowo wyłączone	Zřizování krámů je dočasně vypnuto
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Tvůj kůň je vyhladovělý, v tomto stavu se nesmí přepínat.
+Tylko GM ma dostęp do tej komendy.	K tomuto příkazu má přístup jen GM.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Tuto činnost lze provést jen v Chrámu Zvěrokruhu.
+Udało ci się pokonać smoka w %d sekund!	Podařilo se ti porazit draka za %d sekund!
+Upuszczone Yang zniknie za %d sekund.	Zahozené Yangy zmizí za %d sekund.
+Upuszczony przedmiot zniknie za %d minut.	Zahozený předmět zmizí za %d minut.
+Usuniecie przedmiotu	Odstranění předmětu
+Uwolniłeś się!	Osvobodil ses!
+W depozycie sklepu offline zalegają przedmioty.	V depozitu offline krámu zůstávají předměty.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	V lese je slyšet zlověstný šum... Pán duchů stromů se probouzí ze spánku!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Hodnota krámu a tvých Yangů je vyšší než povolené množství Yangů (2 miliardy).
+Wesele dalej trwa!	Svatba stále pokračuje!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	Válka mezi %s a %s začne za %d minut!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Určený kanál je dostupný jen pro účty Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Všichni padli! Váš čas v Chrámu skončí, pokud do minuty nikdo nebude oživen.
+Wszystkie potwory na mapach zostały zabite!	Všechna monstra na mapách byla zabita!
+Wygląda na to, że na haczyku jest %s.	Vypadá to, že na háčku je %s.
+Wyglądało na to, że %s wisi na haku.	Vypadalo to, že na háčku visí %s.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Vyhrál jsi souboj s %d/%d (%d%%) HP!
+Wyjście z mapy zostało przerwane.	Opuštění mapy bylo přerušeno.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Byl vyčerpán limit nákupů z aukce na tomto účtu (max. %d nákupů).
+Wymagane %d Staminy	Vyžadováno %d Staminy
+Wymagane %s.	Vyžadováno %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Vyžadováno Sklo intuice nebo aktivní Prémiové předplatné.
+Wystapił błąd	Nastala chyba
+Wystąpił błąd. (Kod błędu: %s)	Nastala chyba. (Kód chyby: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Vyhledávání dokončeno. Nalezeno %d krámů.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Vyhledávání zastaveno. Nalezeno více než %d krámů s daným předmětem.
+Wyłowiłeś %s!	Vylovil jsi %s!
+Wędka może zostać ulepszona tylko u Rybaka.	Prut lze vylepšit jen u Rybáře.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Majitel předmětu má ve výbavě příliš mnoho předmětů.
+Za 5 min zostanie wykonany automatyczny reset spotów!	Za 5 min proběhne automatický reset spotů!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Počkej %d sekund před použitím tohoto předmětu.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Počkej %d sekund, než provedeš další změnu v krámu.
+Zaczekaj %d sekund, przed kolejną akcją.	Počkej %d sekund před další akcí.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Počkej %s, než znovu použiješ svitek.
+Zaczekaj chwilę, przed kolejną akcją.	Počkej chvíli před další akcí.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Počkej chvíli. Probíhá opuštění mapy.
+Zakup wymaga odpowiedniej reputacji.	Nákup vyžaduje odpovídající reputaci.
+Zamkniecie sklepu	Zavření krámu
+Zaproszony gracz jest w tym momencie zajęty.	Pozvaný hráč je právě zaneprázdněn.
+Zdobyłeś %s!	Získal jsi %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Země na obzoru! Loď přežila - projděte portálem.
+Zmiana kanału została przerwana.	Změna kanálu byla přerušena.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Změna na určený kanál je nyní nemožná.
+Znowu atakują! Do broni!	Zase útočí! Do zbraně!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Zbylo něco, co musím napravit... něco, co se nikdy nemělo stát.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	Smrt není konec, ale spíše začátek nové cesty.

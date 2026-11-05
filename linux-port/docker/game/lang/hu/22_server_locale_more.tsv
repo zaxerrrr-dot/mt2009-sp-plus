@@ -1,0 +1,296 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>hu (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+%d dni %d godzin	%d nap %d óra
+%d dni %d godzin i %d minut	%d nap %d óra és %d perc
+%d godzin i %d minut	%d óra és %d perc
+%d minut	%d perc
+%d sekund do wyjścia z mapy.	%d másodperc a pályáról való kilépésig.
+%d sekund do zmiany kanału.	%d másodperc a csatornaváltásig.
+%s jest blisko Ciebie.	%s a közeledben van.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s a(z) %d. csatornához csatlakozott. (jelenlegi csatorna: %d)
+%s rzucił %d. (%d-%d)	%s dobott: %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s dobókockával dobott: %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	30 perc eltelt. A máglyák kialudtak.
+<Gildia> Wskazany gracz jest zajęty.	<Céh> A megadott játékos foglalt.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Csoport> A csoport nem fogadhat új tagokat, amíg a tagok kazamatában vannak.
+<Grupa> Lider grupy jest w lochu.	<Csoport> A csoportvezető kazamatában van.
+[1106-??]No puedes unir esto.	[1106-??]Ezt nem egyesítheted.
+[Gildia] Gildia jest w trakcie wojny.	[Céh] A céh háborúban áll.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Céh] A céh elérte a meghívások korlátját.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Céh] A céh elérte a maximális szintet.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Céh] %d Sárkányszellem-energia feltöltve.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Céh] Háború alatt nem távolíthatsz el céhtagot.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Céh] A céh készségeit az arénán kívül nem használhatod.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Céh] Új tagok felvétele jelenleg korlátozott.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Céh] Céhháború alatt nem rúghatsz ki céhtagot.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Céh] A meghívott személy most foglalt.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Csoport] A csapatot nem lehet feloszlatni, mert csapattagok vannak a kazamatában.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Raktár] A raktárban nem helyezhetsz át tárgyakat.
+Aby otworzyć sklep potrzebujesz Tobół.	A bolt megnyitásához egy Csomóra van szükséged.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Ennek a tárgynak a megvásárlásához a karakternek legalább %u. szintűnek kell lennie.
+Atakują nas morskie potwory! Do broni!	Tengeri szörnyek támadnak ránk! Fegyverbe!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	A fejlesztési bónusz legfeljebb %d. szintű tárgyon használható.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	A fejlesztési bónusz legfeljebb +%d fejlesztésű tárgyon használható.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	A fejlesztési bónusz csak ékszeren használható.
+Bonus na ulepszenie może być użyty tylko na bronie.	A fejlesztési bónusz csak fegyveren használható.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	A fejlesztési bónusz csak páncélon, sisakon és pajzson használható.
+Brak danych. Skontaktuj się z administratorem.	Hiányzó adatok. Lépj kapcsolatba egy adminisztrátorral.
+Brak kamienia do wyjęcia.	Nincs kivehető kő.
+Brak miejsca w ekwipunku.	Nincs elég hely a tárhelyeden.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Adóhiány. Jelenlegi tőke: %u Szükséges tőke: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Tárgyhiba történt a bolt megnyitásakor.
+Cena przedmiotu zmieniła się.	A tárgy ára megváltozott.
+Cena przedmiotu została zmieniona.	A tárgy ára sikeresen módosítva.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Valami ráharapott a horogra, de nem látod, micsoda.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	A Vörös erdő sok titkot rejt, amelyekről nem tudtatok.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Az érzékelő bekapcsolt, de lélekköveket nem észlelt.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	A VIP hatások nem vonhatók össze a Premium előfizetéssel. Nem vásárolhatod meg.
+Eliksir jest pusty. Napełnij go u Alchemika.	Az elixír üres. Töltesd újra az Alkimistával.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Az érzelmek csak Premium előfizetőknek érhetők el.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	%d. hullám: védjétek az árbocot, és győzzétek le a Hidrát.
+Fala %d: brońcie masztu przez %d sek.	%d. hullám: védjétek az árbocot %d mp-ig.
+Funkcja tymczasowo niedostępna.	Ez a funkció átmenetileg nem elérhető.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	A céh a legmagasabb szinten van, de elfogadja az ajándékodat.
+Gracz %s został dodany do listy zablokowanych.	A(z) %s játékos felkerült a tiltólistádra.
+Gracz %s został usunięty z listy zablokowanych.	A(z) %s játékos lekerült a tiltólistádról.
+Ja ci pokazać, że mi nie przeszkadzać!	Én megmutatni neked, hogy nem zavarni engem!
+Jajo Hydry pękło - potwory idą na dno!	A Hidra tojása szétrepedt - a szörnyek a mélybe zuhannak!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Az egyik tárgy ára nem megengedett (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Az egyik tárgy nem megengedett helyen van.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Az esküvő egyik résztvevője foglalt, vagy nemrég fejezte be a kereskedést.
+Jesteś już przyjacielem gracza %s.	Már barátod %s.
+Jesteś za daleko od Kowala.	Túl messze vagy a Kovácstól.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Ha nem fogadod el ezeket a feltételeket
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	A +3 Lélekköveket ezzel a tárggyal nem lehet fejleszteni.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	A Lélekkövet ezzel a tárggyal nem lehet fejleszteni.
+Kilof może zostać ulepszony tylko u Deokbae.	A Csákányt csak Deokbae tudja fejleszteni.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Valaki megvásárolt %dx %s tárgyat a boltodból %d Yangért.
+Masz za mało Animosfer.	Nincs elég Animoszférád.
+Maszt naprawiony: %d%% PŻ.	Az árboc megjavítva: %d%% TP.
+Maszt ocalał. Przygotujcie się na następną falę!	Az árboc túlélte. Készüljetek a következő hullámra!
+Maszt: zostało %d%% PŻ!	Az árboc: %d%% TP maradt!
+Możesz używać Białej Flagi co %d minut.	A Fehér zászlót %d percenként használhatod.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Ezt a készséget csak a saját Királyságodban használhatod.
+Możesz wyrzucić przedmioty co %d sekund.	Tárgyakat %d másodpercenként egyszer dobhatsz el.
+Możesz wyrzucić Yang co 10 sekund.	Yangot 10 másodpercenként egyszer dobhatsz el.
+Możesz łowić tylko w M1.	Horgászni csak az M1-ben lehet.
+Możliwość pisania została zablokowana przez siły wyższe!	Az írási lehetőségedet felsőbb erők letiltották!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Legalább %d. szintűnek kell lenned, hogy megértsd ezt a Könyvet.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Legalább %d. szintűnek kell lenned, hogy megvásárold ezt a tárgyat.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Menyasszonyi ruhát kell viselned a csokor felvételéhez.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Várnod kell %d percet, mielőtt újra használhatod ezt az opciót.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Harc után várnod kell egy kicsit, mielőtt használhatod ezt az opciót.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Várnod kell néhány másodpercet, mielőtt kilépsz a pályáról.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Várnod kell néhány másodpercet, mielőtt csatornát váltasz.
+Musisz posiadać cel.	Kell egy célpont.
+Musisz stać obok sklepu.	A bolt mellett kell állnod.
+Musisz zaczekać %d min. przed ponownym użyciem.	Várnod kell %d percet az újbóli használat előtt.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Várnod kell %d másodpercet az újbóli használat előtt.
+Musisz zdjąć bukiet.	Először le kell venned a csokrot.
+Musisz znajdować się na tej samej mapie co sklep.	Ugyanazon a pályán kell lenned, mint a boltnak.
+Musisz znajdować się na tym samym kanale co sklep.	Ugyanazon a csatornán kell lenned, mint a boltnak.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Ezen a pályán kényszerített csaták zajlhatnak.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Ezen a csatornán túl sok bolt van. A szabad korlát túllépéséhez prémium bolt szükséges.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Ezen a csatornán elérték az offline boltok maximális számát. Nem nyithatsz boltot.
+Następna fala za %d sek.	A következő hullám %d mp múlva.
+Naładowany na %d sekund.	%d másodpercre feltöltve.
+Nie jesteś zablokowany.	Nem vagy beragadva.
+Nie ma kogo ożywić.	Nincs kit feléleszteni.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Nincs hely a tárhelyeden. A tárgy az ItemShop raktárba került.
+Nie masz sklepu na tej mapie.	Nincs boltod ezen a pályán.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Nincs boltod ezen a csatornán. (Megtalálva a(z) %d. csatornán).
+Nie możesz czytać ksiąg będąć przemieniony.	Átváltozva nem olvashatsz könyveket.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Ezt a készséget nem fejlesztheted tovább. Használj Készség visszaállítót vagy Feledés könyvét.
+Nie możesz dodać więcej bonusów.	Nem adhatsz hozzá több bónuszt.
+Nie możesz jeździć konno podczas łowienia.	Horgászás közben nem lovagolhatsz.
+Nie możesz jeździć konno, gdy jesteś powalony.	Nem lovagolhatsz, amíg le vagy döntve.
+Nie możesz jeździć nosząc przedmiot.	Tárgyat cipelve nem lovagolhatsz.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Nem folytathatod, amíg másik ablak aktív.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Nem folytathatod, mert a Yang meghaladná a megengedett 2 milliárdos korlátot.
+Nie możesz kupować od samego siebie.	Nem vásárolhatsz önmagadtól.
+Nie możesz mieć więcej niż %d przyjaciół.	Nem lehet több barátod, mint %d.
+Nie możesz nosić Smokingu na koniu.	Lovon nem viselhetsz Szmokingot.
+Nie możesz nosić tego przedmiotu konno.	Ezt a tárgyat lovon nem viselheted.
+Nie możesz otworzyć pustego sklepu.	Üres boltot nem nyithatsz.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Itt nem nyithatsz offline boltot.
+Nie możesz otworzyć sklepu w tym miejscu.	Itt nem nyithatsz boltot.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Ezt a boltot nem nyithatod meg. Előbb vedd át az összes tárgyat.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Itt nem nyithatsz boltot. Túl közel vagy egy másik bolthoz.
+Nie możesz otworzyć więcej sklepów.	Több boltot nem nyithatsz.
+Nie możesz ożywić kogoś, kto żyje.	Élőt nem éleszthetsz fel.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Nem vehetsz fel tárgyakat, amíg a küldetés ablakban vagy.
+Nie możesz przenieść się do tego obszaru.	Nem mehetsz arra a területre.
+Nie możesz przenieść się do tej osoby.	Nem teleportálhatsz ehhez a személyhez.
+Nie możesz przywołać do tego obszaru.	Nem idézhetsz meg erre a területre.
+Nie możesz przywołać konia w tym miejscu.	Itt nem idézhetsz meg lovat.
+Nie możesz się teraz teleportować.	Most nem teleportálhatsz.
+Nie możesz sprintować będąc spowolnionym.	Lassítva nem sprintelhetsz.
+Nie możesz sprintować nosząc przedmiot.	Tárgyat cipelve nem sprintelhetsz.
+Nie możesz sprzedawać noszonych przedmiotów.	Viselt tárgyakat nem adhatsz el.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Zárolt tárgyakat nem adhatsz el.
+Nie możesz sprzedać przedmiotów, które nosisz.	A rajtad lévő tárgyakat nem adhatod el.
+Nie możesz sprzedać założonego przedmiotu.	Felvett tárgyat nem adhatsz el.
+Nie możesz tego teraz użyć.	Ezt most nem használhatod.
+Nie możesz tego użyć, gdy masz otwarte okno.	Ezt nem használhatod, amíg nyitva van egy ablak.
+Nie możesz tego zrobić na kanale specjalnym.	Ezt nem teheted meg különleges csatornán.
+Nie możesz teleportować się nosząc przedmiot.	Tárgyat cipelve nem teleportálhatsz.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Most nem adhatsz hatást, várj egy kicsit.
+Nie możesz teraz podnosić przedmiotów.	Most nem vehetsz fel tárgyakat.
+Nie możesz teraz wykonać tej operacji.	Ezt a műveletet most nem hajthatod végre.
+Nie możesz teraz zejść z wierzchowca.	Most nem szállhatsz le a hátasról.
+Nie możesz tutaj otworzyć depozytu.	Itt nem nyithatsz raktárat.
+Nie możesz uczyć się będąc przemienionym.	Átváltozva nem tanulhatsz.
+Nie możesz ulepszyć tego przedmiotu.	Ezt a tárgyat nem fejlesztheted.
+Nie możesz użyć tego na wojnie.	Ezt háborúban nem használhatod.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Ezt a tárgyat nem használhatod, amíg a küldetés ablak aktív.
+Nie możesz użyć tego przedmiotu konno.	Ezt a tárgyat lovon nem használhatod.
+Nie możesz wyjąć umieszczonego kamienia.	A behelyezett követ nem veheted ki.
+Nie możesz wykonać tej akcji będąc martwy.	Halottként ezt nem teheted.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	A lovas táskák tárgyait nem teheted a közönséges boltba.
+Nie możesz zablokować więcej niż %d osób.	Nem tilthatsz le több mint %d személyt.
+Nie możesz zapisać pozycji w tym miejscu.	Itt nem mentheted el a pozíciót.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Az ellenséges Királyság pozícióját nem mentheted el.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Letiltott személyt nem hívhatsz meg barátnak.
+Nie możesz zmienić bonusów.	A bónuszokat nem változtathatod meg.
+Nie możesz zmienić trybu PvP na wojnie.	Háborúban nem változtathatod a PvP módot.
+Nie można użyć na innym graczu.	Ezt másik játékosra nem lehet használni.
+Nie można ładować.	Nem tölthető.
+Nie posiadasz otwartego sklepu.	Nincs nyitott boltod.
+Nie posiadasz sklepu premium.	Nincs prémium boltod.
+Nie posiadasz sklepu.	Nincs boltod.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Nincsenek meg a vásárláshoz szükséges tárgyaid.
+Nie posiadasz wystarczająco dużo reputacji.	Nincs elég hírneved.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Nem teljesíted a saját bolt megnyitásának feltételeit.
+Nie udało się wytworzyć.	Nem sikerült elkészíteni.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Nem dobtál el egy tárgyat sem, mert a Sárkányisten védelme alatt állsz.
+Nie znaleziono gracza o podanej nazwie.	Nem található ilyen nevű játékos.
+Niedostępne.	Nem elérhető.
+Niektóre przedmioty w sklepie na siebie nachodzą.	A boltban egyes tárgyak fedik egymást.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	A boltban egyes tárgyak zárolt helyen vannak.
+Niewystarczająca ilość Smoczych Monet.	Nincs elég Sárkányérméd.
+Niewystarczająca ilość Smoczych Znaków.	Nincs elég Sárkányjeled.
+Nikt nie wypłynął - statek zostaje w porcie.	Senki sem hajózott ki - a hajó a kikötőben marad.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	A Füvesember kését csak a Füvesember tudja fejleszteni.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	A címzett nem kaphat barátmeghívást.
+Odczekaj chwilę po zakończeniu handlu.	Várj egy kicsit a kereskedés befejezése után.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Várj még %s a következő edzés előtt.
+Odczekaj jeszcze %s przed zakupem.	Várj még %s a vásárlás előtt.
+Odczekaj przed następnym ulepszeniem.	Várj a következő fejlesztés előtt.
+Oferta sklepu zmieniła się.	A bolt kínálata megváltozott.
+Okno zarządzania sklepem musi być otwarte.	A bolt kezelőablakának nyitva kell lennie.
+Osiągnięto limit zakupu tego przedmiotu.	Elérted ennek a tárgynak a vásárlási korlátját.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Ezen a fiókon elérték a tárgy maximális vásárlási számát.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Akit fel akarsz éleszteni, nem ember.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Kaptál %d hírnevet (Királyi Gárda)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Kaptál %d hírnevet (A Sivatag Fiai)
+Otrzymałeś %s (Juki Konne)	Kaptál: %s (Lovas táskák)
+Otrzymałeś %s (szt. %d)	Kaptál: %s (%d db)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Kaptál: %s (%d db) (Lovas táskák)
+OX-Question: 	OX-kérdés: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Ne feledd, hogy ezen a pályán nem lehet offline boltot felállítani.
+Podana kwota jest większa niż zarobione Yang.	A megadott összeg nagyobb, mint a megkeresett Yang.
+Podana kwota jest za mała.	A megadott összeg túl kicsi.
+Podana osoba jest na liście Twoich przyjaciół.	A megadott személy rajta van a barátlistádon.
+Podatek od sprzedaży: %d%% (%lld Yang).	Eladási adó: %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Megjelent a Hidra tojása! Törd szét, és a szörnyek a mélybe zuhannak.
+Pomimo treningu nie czujesz się zmęczony.	Az edzés ellenére sem érzed magad fáradtnak.
+Pomyślnie dodano bonus.	A bónusz sikeresen hozzáadva.
+Pomyślnie wypłacono Yang z depozytu sklepu.	A Yang sikeresen kivéve a bolt letétjéből.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Van nyitott boltod, vagy a bolt letétje tárgyakat tartalmaz.
+Pospieszcie się, macie %d min., by przejść przez portal.	Siessetek, %d percetek van, hogy átmenjetek a portálon.
+Potomstwo Hydry trafiło maszt laserem!	A Hidra ivadéka lézerrel eltalálta az árbocot!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	%lld Yangra van szükséged ilyen típusú bolt megnyitásához
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Legalább egy 3 helyes tárgynak kell hely a láda kinyitásához.
+Pozostały czas %d sekund.	Hátralévő idő: %d másodperc.
+Pozostały czas: %.1f sek.	Hátralévő idő: %.1f mp
+Pozostały czas: %.2f sek.	Hátralévő idő: %.2f mp
+Pozycja sklepu została oznaczona strzałką.	A boltod pozícióját nyíl jelöli.
+Prosimy o powrót do pierwotnej lokalizacji.	Kérjük, térj vissza az eredeti helyedre.
+Prośba o wezwanie została wysłana.	A megidézési kérés elküldve.
+Przechwyciłeś laser Potomstwa Hydry.	Elkaptad a Hidra ivadékának lézerét.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Ez a tárgy csak a 40. szintig használható fegyvereken és páncélokon.
+Przedmiot nie może być użyty na akcesoriach.	Ez a tárgy kiegészítőkön nem használható.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	A tárgyban nincs kivehető Lélekkő.
+Przedmiot zniknie za %d minut.	A tárgy %d perc múlva eltűnik.
+Przedmiot został dodany do twojego ekwipunku	A tárgy bekerült a tárhelyedre
+Przedmioty zostały dodane do twojego ekwipunku	A tárgyak bekerültek a tárhelyedre
+Przedmioty zostały pomyśnie zaktualizowane.	A tárgyak sikeresen frissítve.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	A használt tárgyakat nem adhatod el a személyes boltodban.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Jelentkezz be újra, hogy a VIP hatás megfelelően érvényesüljön.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Idézd meg a lovadat, hogy hozzáférj a lovas táskák tárgyaihoz.
+Rejs trwał za długo - statek zawraca.	Az út túl sokáig tartott - a hajó visszafordul.
+Rzuciłeś %d. (%d-%d)	Dobtál: %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Dobókockával dobtál: %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	A szerver 10 perc múlva leáll karbantartás miatt.
+Sklep #PLAYER_NAME#	#PLAYER_NAME# boltja
+Sklep - %s	Bolt - %s
+Sklep jest otwarty.	A bolt nyitva van.
+Sklep jest w trybie edycji.	A bolt szerkesztési módban van.
+Sklep jest zamknięty.	A bolt zárva van.
+Sklep nie jest w trybie edycji.	A bolt nincs szerkesztési módban.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	A boltot nemrég szerkesztette a tulajdonosa. Várj egy kicsit a vásárlás előtt.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	A bolt bezárt, a megmaradt tárgyak és a megkeresett Yang a letétbe kerültek.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	A Sárkány Lélekkő doboz nincs aktiválva.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS! Az árboc összetört, a hajó süllyed. Hamarosan visszakerültök a szárazföldre.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	A jelenlegi mozgási sebességgel (>= %d) gyalog nem sprintelhetsz
+Szkolona umiejętność posiada już maksymalny poziom (%d).	A fejlesztett készség már a legmagasabb szinten van (%d).
+Ta aukcja nie jest już dostępna.	Ez az aukció már nem elérhető.
+Ta opcja jest tymczasowo niedostępna.	Ez a lehetőség átmenetileg nem elérhető.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Ezek a vizek nagyon rossz minőségűek, alig van itt hal, beszélj a Halásszal.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Ennek a játékosnak több mint 2 milliárd Yangja van. Nem kereskedhetsz vele.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Ez a vásárlás túllépné a fiókonkénti vásárlási korlátot. Vegyél kevesebbet.
+To miejsce jest wolne od plagi Kamieni Metin.	Ez a hely mentes a Metinkövek csapásától.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Nem én voltam... de ők téged választottak. Hamarabb találkozunk újra, mint gondolnád.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	A méreg csak az Óriás teknősön használható.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	A csoportodban minden kaszt képviselve van, ezért tapasztalati bónuszt kapsz.
+Twoja postać nie żyje, nie możesz tego zrobić.	A karaktered halott, ezt nem teheted.
+Twoja ranga nie może już wzrosnąć.	A rangod már nem emelkedhet tovább.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	A bolt létrehozása a beosztásodra le van tiltva!
+Tworzenie sklepów jest tymczasowo wyłączone	A boltok létrehozása átmenetileg ki van kapcsolva
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	A Lovad kiéhezett, ilyen állapotban nem terhelheted túl.
+Tylko GM ma dostęp do tej komendy.	Ehhez a parancshoz csak a GM-nek van hozzáférése.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Ezt a műveletet csak a Zodiákus templomban lehet végrehajtani.
+Udało ci się pokonać smoka w %d sekund!	Sikerült legyőznöd a sárkányt %d másodperc alatt!
+Upuszczone Yang zniknie za %d sekund.	Az eldobott Yang %d másodperc múlva eltűnik.
+Upuszczony przedmiot zniknie za %d minut.	Az eldobott tárgy %d perc múlva eltűnik.
+Usuniecie przedmiotu	Tárgy eltávolítása
+Uwolniłeś się!	Sikerült kiszabadítanod magad!
+W depozycie sklepu offline zalegają przedmioty.	Az offline bolt letétjében még tárgyak vannak.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Baljós suttogás tölti be az erdőt... a Szellemfák Ura felébred álmából!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	A bolt és a Yangod értéke együtt meghaladja a megengedett Yang mennyiséget (2 milliárd).
+Wesele dalej trwa!	Az esküvő még tart!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	A(z) %s és %s közötti háború %d perc múlva kezdődik!
+Wskazany kanał dostępny jest tylko dla kont Premium.	A megadott csatorna csak Premium fiókoknak elérhető.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Mindenki elesett! A Templomban töltött időtök véget ér, ha egy percen belül senkit sem élesztenek fel.
+Wszystkie potwory na mapach zostały zabite!	A pályákon minden szörnyet megöltek!
+Wygląda na to, że na haczyku jest %s.	Úgy tűnik, a horgon %s van.
+Wyglądało na to, że %s wisi na haku.	Úgy tűnt, hogy %s lóg a horgon.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Megnyerted a párbajt %d/%d (%d%%) TP-vel!
+Wyjście z mapy zostało przerwane.	A pályáról való kilépés megszakadt.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Ezen a fiókon felhasználták az aukció vásárlási korlátját (legfeljebb %d vásárlás).
+Wymagane %d Staminy	%d Állóképesség szükséges
+Wymagane %s.	Szükséges: %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Szükséges egy Intuíció üvege vagy aktív Premium előfizetés.
+Wystapił błąd	Hiba történt
+Wystąpił błąd. (Kod błędu: %s)	Hiba történt. (Hibakód: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	A keresés befejeződött. %d boltot találtunk.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	A keresés leállt. Több mint %d boltot találtunk a megadott tárggyal.
+Wyłowiłeś %s!	Kifogtad: %s!
+Wędka może zostać ulepszona tylko u Rybaka.	A Horgászbotot csak a Halász tudja fejleszteni.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	A tárgy tulajdonosának túl sok tárgy van a tárhelyén.
+Za 5 min zostanie wykonany automatyczny reset spotów!	5 perc múlva automatikus helyszín-visszaállítás történik!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Várj %d másodpercet a tárgy használata előtt.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Várj %d másodpercet a bolt következő módosítása előtt.
+Zaczekaj %d sekund, przed kolejną akcją.	Várj %d másodpercet a következő művelet előtt.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Várj %s, mielőtt újra használod a tekercset.
+Zaczekaj chwilę, przed kolejną akcją.	Várj egy kicsit a következő művelet előtt.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Várj egy kicsit. A pályáról való kilépés folyamatban.
+Zakup wymaga odpowiedniej reputacji.	A vásárláshoz megfelelő hírnév szükséges.
+Zamkniecie sklepu	Bolt bezárva
+Zaproszony gracz jest w tym momencie zajęty.	A meghívott játékos most foglalt.
+Zdobyłeś %s!	Megszerezted: %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Szárazföld a láthatáron! A hajó megmenekült - menjetek át a portálon.
+Zmiana kanału została przerwana.	A csatornaváltás megszakadt.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	A megadott csatornára jelenleg nem válthatsz.
+Znowu atakują! Do broni!	Újra támadnak! Fegyverbe!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Maradt valami, amit helyre kell hoznom... valami, aminek soha nem lett volna szabad megtörténnie.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	A halál nem a vég, hanem egy új út kezdete.

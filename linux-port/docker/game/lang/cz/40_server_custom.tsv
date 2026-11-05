@@ -1,0 +1,422 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>cz (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, obnova %d s: %s
+  %u %s - jeszcze %u min	  %u %s - ještě %u min
+  %u %s - na stałe	  %u %s - trvale
+ (bot, także odpoczynek)	 (bot, také odpočinek)
+ i premie do dropu	 a bonusy k dropu
+ Nagroda trafila do ekwipunku.	 Odměna přišla do výbavy.
+%s (offline): zapis do player.quest się nie udał.	%s (offline): zápis do player.quest se nepodařil.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s jde za někým, kdo ho zavolal, a teď nepřijme souboj.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s jde na nájezd a teď nepřijme souboj.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s je něčím společníkem a neúčastní se soubojů.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s je něčím společníkem a nepřipojí se k tvé skupině.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s je na jiném jádru (kanál %u) a fronta player.web_admin_queue zakázku nepřijala.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s je na kanále %u - reset (%s) zadán; provede se tam během několika sekund.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s kope rudu a teď nepřijme souboj.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s rybaří a teď nepřijme souboj.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s nemá v ruce zbraň a nepřijme souboj.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s nepřijme souboj pod úrovní %d.
+%s nie walczy w strefie bezpiecznej.	%s nebojuje v bezpečné zóně.
+%s odrzuca zaproszenie do znajomych.	%s odmítá pozvánku mezi přátele.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s otevřel Poklad Balathora - tvá odměna přišla do výbavy.
+%s posiada teraz żywioł: %s!	%s má nyní element: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s přijímá pozvánku do cechu %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma už má nejvyšší hodnotu (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 dílů - efekt sady aktivní
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s nemá denní limit (odpočinek mají jen boti ve hře).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, konec za %ld min, odměny ještě %ld min, hodnota %d, příznak %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: efekt už má nejvyšší úroveň (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: tato schopnost cechu už má nejvyšší úroveň.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: tento hráč je na tvém seznamu blokovaných.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: tento hráč od tebe nepřijímá pozvánky.
+%s: tytułów %u, założony %u	%s: titulů %u, založeno %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - vynuluje dnešní limit výprav postavy.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (Obrana lodi, map %ld; ships here: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Buffi dostupná od úrovně %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Toto místo Buffi přijímá jen: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Tuto schopnost trénuje Kniha schopností: %s (šaman).
+[Gildia] %s	[Cech] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Cech] Boti sbírají jen materiály na stavbu: Kmen, Uhelný kámen, Překližku.
+[Gildia] Brak miejsca w ekwipunku.	[Cech] Není místo ve výbavě.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Cech] Budova se nevejde na pozemek cechu. Posuň ji blíž ke středu pozemku.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Cech] Množství: od 1 do %d kusů.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Cech] Jedna mise na předměty už probíhá - zruš ji, abys zadal novou.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Cech] Jedna sbírka už probíhá - počkej, až skončí, nebo ji zruš.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Cech] Mise zrušena - předměty z banky se vracejí botům, kteří je přinesli.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Cech] Neprobíhá žádná mise na předměty.
+[Gildia] Nie ma trwajacej zrzutki.	[Cech] Neprobíhá žádná sbírka.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Cech] Není výprava ke zrušení (ve věži ji už nelze zrušit).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Cech] Povinnosti cechu jsou dočasně nedostupné.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Cech] Povinnosti cechu zadává jen vůdce cechu.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Cech] Stojíš tam, kde má stát budova. Odejdi kousek stranou nebo posuň budovu.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Cech] Tam, kde má stát budova, stojí %s. Počkej, až odejde, nebo posuň budovu.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Cech] Tuto schopnost lze použít jen během cechovní války nebo v Balathorově kryptě.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Cech] V bance cechu tento předmět není.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Cech] Na tomto místě už stojí jiná budova. Posuň novou budovu nebo ji otoč.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Cech] Vyplaceno z banky cechu: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Cech] Výprava na Věž démonů už je zorganizována.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Cech] Výprava na Věž démonů zrušena.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Cech] Yangy z pokladny cechu lze utratit jen na cech: nákup půdy a budovy. Nelze je vyplatit.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Cech] Z pokladny cechu zaplaceno %lld Yangů, z tvé výbavy %lld Yangů.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Cech] Sbírka skončila. Vložené yangy zůstávají v pokladně cechu.
+[Gildia] Zrzutka: od %s do %s yang.	[Cech] Sbírka: od %s do %s yangů.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Příměří] Zaútočilo se na bota - příměří s boty bylo porušeno.
+[Towarzysz] %s	[Společník] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Válka] Aréna této války se ještě připravuje - zkus to za pár sekund.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Válka] Aréna válek je na jiném jádru - vstup na mapu svého království M1 a klikni znovu.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Válka] Boti bojují v cechovních válkách jen na kanále 1 - změň kanál a klikni znovu.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Válka] Cech %s právě bojuje v jiné válce.
+[Wojna] Jestes juz na polu wojny.	[Válka] Už jsi na bojišti.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Válka] Odměna za vyhranou válku: %d x Truhla měsíčního jasu (tvé zabití: %d).
+[Wojna] Nie nalezysz do gildii.	[Válka] Nepatříš do žádného cechu.
+[Wojna] Nie znam areny tej wojny.	[Válka] Neznám arénu této války.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Válka] Přenáším tě do tábora tvého cechu na aréně válek.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Válka] Teď se nemůžeš přenést - zkus to za chvíli.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Válka] Toto je válka v poli: bojujete tam, kde se potkáte.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Válka] Tvůj cech teď nevede válku.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Válka] Válka cechu %s už je vyhlášena - boti odpoví na chatu cechu.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Válka] Války s cechy botů jsou vypnuty v panelu serveru.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Válka] Vyhlášena válka cechu botů %s. S boty se bojuje na aréně válek (kanál 1). Odpověď přijde za pár sekund na chatu cechu.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Válka] S cechem %s už probíhá válka nebo její ukončování.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Chyť krále] 25 královských karet dalo nový Královský balíček (máš %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Chyť krále] Čeká na tebe odměna z přerušené hry - udělej místo ve výbavě a přihlas se znovu.
+[Zlap Krola] Event teraz nie trwa.	[Chyť krále] Event teď neprobíhá.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Chyť krále] Už máš nejvíce královských balíčků (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Chyť krále] Nemáš dost Královských balíčků nebo yangů (%d balíčků a %d yangů za hru).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Chyť krále] Tohle lze použít jen během eventu.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Chyť krále] Udělej místo ve výbavě, abys převzal odměnu.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Auto-sleva: od 1 do %d%% každých 1-%d hodin.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor poražen! Zanechal po sobě svůj poklad - vyzvedněte si odměnu. Opuštění krypty za %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: není etapa k přeskočení (jen v Kryptě, během nájezdu)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor utekl, ale zanechal po sobě svůj poklad - vyzvedněte si odměnu. Opuštění krypty za %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor zvítězil - výprava se nezdařila, bez odměny. Opuštění krypty za %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: opakovatelná mise dokončena (%u. krát)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: mise dokončena!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: mise znovu načteny (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: závěrečná odměna této sezóny už byla vyzvednuta.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: nejdřív dokonči všechny mise sezóny.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: všechny mise sezóny dokončeny - vyzvedni závěrečnou odměnu!
+Bonus zestawu kostiumow (%s): %ld czesci.	Bonus sady kostýmů (%s): %ld částí.
+Boss Swiata jest chwilowo niedostepny.	Boss světa je dočasně nedostupný.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Boss světa: %d. místo, úroveň kořisti %s (%lld poškození, +%d bodů hodnosti). Vyzvedni odměnu v okně Bosse světa, než se objeví další boss.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss světa: není místo ve výbavě (potřeba %d volných polí) - uvolni místo a klikni znovu.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss světa: část odměn vyzvednuta; na zbytek není místo ve výbavě (potřeba %d volných polí) - uvolni místo a klikni znovu.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Boss světa: odměna sezóny %u za %d. místo tvého cechu.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Boss světa: odměna sezóny %u za %d. místo v žebříčku postav.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Boss světa: odměna už byla vyzvednuta nebo propadla.
+Boss Swiata: nie masz nagrody do odebrania.	Boss světa: nemáš odměnu k vyzvednutí.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Boss světa: vyzvednuta odměna za %d. místo (úroveň kořisti %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Boss světa: bonus za misi - hodnota útoku +%d%% na %d h.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Boss světa: způsobil jsi %lld poškození - málo na odměnu (potřeba %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Boss světa: zavři ostatní okna (obchod, krám, sklad), než vyzvedneš odměnu.
+Boty opuszczaja Wieze Demonow.	Boti opouštějí Věž démonů.
+Brak miejsca w kategorii: %s.	Není místo v kategorii: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Zbraně pro Mladé hrdiny nelze vylepšovat ani měnit.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: neznámý příkaz nebo špatné argumenty (%s) - nic se nezměnilo
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: postava na jiném jádru (kanál %d) - příkaz odeslán
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: postava offline - změna (%s) uložena, projeví se při jejím příštím vstupu do hry
+champion: nie ma postaci %s	champion: postava %s neexistuje
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: neznámý příkaz nebo špatné argumenty (%s) - nic se nezměnilo
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Čas vypršel - Balathor zvítězil. Opuštění krypty za %s.
+Czas przejecia bota minal - postac wraca do bota.	Čas převzetí bota vypršel - postava se vrací k botovi.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	Dřívější systém petů nahradil Systém domácích zvířat - okno mazlíčka otevřeš klávesou U.
+Do ewolucji tej szaty potrzeba: %s x%d.	K evoluci tohoto kostýmu je potřeba: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Do rukavic se hodí jen Démonické kameny.
+Dom Aukcyjny jest dostepny tylko w M1.	Aukční dům je dostupný jen na M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	Aukční dům je na tomto světě vypnutý.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Skvělé! Mocný Démonický kámen dal dvojnásobnou hodnotu.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u předmětů, %u monster.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Děti květin: event i čas na výměnu už skončily.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Děti květin: odměna je dočasně nedostupná - nahlas to administraci.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Děti květin: zavři ostatní okna (obchod, krám, sklad), než budeš vyměňovat.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Děti květin: získáváš Semena květin (máš %d).
+dziś nie było wypraw	dnes nebyly žádné výpravy
+Efekt zestawu nadany: %s.	Efekt sady udělen: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Výbava je plná - zakoupená část balíčku leží pod tvýma nohama.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Vyřazeni! Váš čas v dungeonu skončí, pokud do minuty nikdo neoživí.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir bude s tebou 3 minuty. Zmizí, pokud se vzdálíš nebo změníš mapu.
+Enasir odszedł.	Enasir odešel.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir si účtoval poplatek za službu: %lld Yangů (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - zbývající čas %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Sklad %s, Krám %s, přivolán: %s, zde povoleno: %s.
+Enasir: usługi zabrane.	Enasir: služby odebrány.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	Event Děti květin skončil - tuto květinu už nelze použít.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Rybářský event - Puzzle teď neprobíhá - krabice otevřeš během příštího eventu.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Evoluce je možná až na úrovni %d při 100%% zkušeností.
+Ewolucja udana: %s, poziom %d.	Evoluce úspěšná: %s, úroveň %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Gaya je nyní měna: %d Gaya přibylo na tvé počítadlo Gaya (vedle Yangů ve výbavě).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Gaya se nevkládá do okna - kovář si ji bere sám z výbavy.
+Gildia nauczyła się: %s (poziom %d/%d).	Cech se naučil: %s (úroveň %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	Cech nemá rozdané body schopností.
+Gildia odzyskała punkty umiejętności: %d.	Cech získal zpět body schopností: %d.
+GM zresetował Twój limit dziennych dungeonów.	GM resetoval tvůj limit denních dungeonů.
+Gracz %s nie ma tytułu %s.	Hráč %s nemá titul %s.
+Gracza %s nie ma na tym kanale (albo to bot).	Hráč %s není na tomto kanále (nebo je to bot).
+Gratulacje - %d. poziom!	Gratulujeme - %d. úroveň!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Jedno z Dračích vajec přivolává ledový chlad! Zaměřte na něj útoky, abyste ho zastavili.
+Kamien Demonow osadzony.	Démonický kámen osazen.
+Kamien Demonow pasuje tylko do rekawic.	Démonický kámen se hodí jen do rukavic.
+Kamien Demonow pekl przy osadzaniu.	Démonický kámen praskl při osazování.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	Kameny smrti střeží sedmé patro. Rozbijte všechny čtyři!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	Rituální kámen funguje jen na předměty nad 80. úrovní.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	karty: účet %u, úroveň %d, cíle %u/%u/%u, zabito %d, monstra %d, sady nasazeny %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Každý pokus číst tuto knihu stojí %u EXP Šampiona - máš málo.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Prokletí Sunga Mahi blokuje tvé schopnosti.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Klienti se seznamem eventů na tomto jádru: %u, vůdce: %s.
+Kod zrealizowany: %s.	Kód uplatněn: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Kolo štěstí (staré): získáváš %ux %s.
+Kolo Fortuny: %s	Kolo štěstí: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Kolo štěstí: není místo - čeká %u odměn. Udělej místo a otevři kolo znovu.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Kolo štěstí: udělej místo ve výbavě - odměna čeká.
+Kolo Losu: %s	Kolo osudu: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Kolo osudu: data znovu načtena (%u kol, %u předmětů), aktivní kolo %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	Barvu jezdecké schopnosti lze změnit, když ji znáš.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	Barvu schopnosti lze změnit od úrovně P této schopnosti.
+kostium (strój)	kostým (oděv)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	Kostým zbraně nepasuje ke zbrani této strany - sundán do výbavy.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	Kostým zbraně nepasuje ke zbrani této strany a ve výbavě není místo, aby se sundal.
+kostium broni szamana	kostým zbraně šamana
+kostium fryzury	kostým účesu
+Krwawisz! (%d sek.)	Krvácíš! (%d s)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Balathorovu kryptu nelze otevřít na tomto jádru.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	Knihu Přesnosti přečteš od 1. úrovně Šampiona.
+Księgi się zmieniły - ułóż je od nowa.	Knihy se změnily - seřaď je znovu.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Dungeony: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (jen odpočinek bota); bez dungeonu nebo all - všechny.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	Lokátor NPC je zapnutý pro každou postavu - tento předmět už není potřeba.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	Malé požehnání nezabralo - 6. a 7. bonus beze změny.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Už máš nejvíce Gaya, kolik lze mít (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Už máš odemčené všechny 4 strany výbavy.
+Masz już ten tytuł.	Tento titul už máš.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Máš nový bod statistik Sung Ma (volné: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Máš u sebe více Yangů, než dovoluje limit (100 mld.). Nemůžeš obchodovat.
+Masz za mało Gaya (potrzeba %d).	Máš málo Gaya (potřeba %d).
+Masz za mało materiału (potrzeba %d).	Máš málo materiálu (potřeba %d).
+Masz za mało Yang (potrzeba %d).	Máš málo Yangů (potřeba %d).
+Masz za mało Yang.	Máš málo Yangů.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Místa Arezzo jsou na tomto serveru vypnutá - vracíš se do města.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Mise "Poraz Bosse světa" splněna - bonus +%d%% hodnoty útoku na %d h čeká v okně Bosse světa.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Můžeš nosit jen jeden Kámen elementů najednou (Obrany nebo Síly). Nejdřív sundej ten, který nosíš.
+Możesz łowić ryby od 30 poziomu.	Rybařit můžeš od úrovně 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Musíš stát klidně, abys změnil stranu výbavy.
+na stałe	trvale
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Na tuto schopnost nebyly vynaloženy body schopností - úroveň z Příručky a z knih nelze vrátit. Celou ripostu a posilovač odstraní Svitek snadného tréninku.
+Na tym kanale magazyn jest niedostępny.	Na tomto kanále je sklad nedostupný.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Na koni použij Zrušení polymorfie koně.
+Nadano tytuł %s graczowi %s.	Udělen titul %s hráči %s.
+Nadano tytuł %s.	Udělen titul %s.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	Odměnu z Krypty obdrželo %d postav z cechu.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Nejdřív se nauč posilovač - použij Manuál zesílení.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Nejdřív odemkni další stranu výbavy (předmět "Strana výbavy II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Nejdřív odemkni Dračí alchymii - kámen přijde do jejího okna.
+Najpierw wybierz drogę umiejętności.	Nejdřív vyber cestu schopností.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Nejdřív vyber ripostu - použij Manuál ochrany.
+Najpierw wyjmij przedmiot ze Switchbota.	Nejdřív vyjmi předmět ze Switchbota.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Nejdřív vlož předmět, který má dostat nový vzhled.
+Najpierw włóż szatę aury.	Nejdřív vlož kostým s aurou.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Nejdřív zavři ostatní okna (obchod, krám, sklad).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Nejdřív zavři ostatní okna (obchod, krám, sklad, šerpy).
+Najpierw zamknij okno szaty aury.	Nejdřív zavři okno kostýmu s aurou.
+Najwyżej 1000 dni.	Nejvýše 1000 dní.
+Nie ma postaci %s.	Postava %s neexistuje.
+Nie ma takiego tytułu (/tytul lista).	Takový titul neexistuje (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Nemáš ve výbavě zbraň, zbroj ani helmu od 75. úrovně vylepšené alespoň na +7 (bez efektu sady tohoto kováře). Polož předmět do okna spolu se střepy a Designem sady.
+Nie masz wolnych punktow Sung Ma.	Nemáš volné body Sung Ma.
+Nie mozesz przywolac kamienia Metin w lochu.	V dungeonu nemůžeš přivolat kámen Metin.
+Nie mozesz przywolac zyly w lochu.	V dungeonu nemůžeš přivolat žílu.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Nelze prodat - překročil bys limit 100 mld. Yangů u sebe.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Nasazený předmět nelze přesunout do Switchbota.
+Nie możesz się teleportować z lochu.	Z dungeonu se nemůžeš teleportovat.
+Nie możesz teraz zmienić strony ekwipunku.	Teď nemůžeš změnit stranu výbavy.
+Nie możesz tutaj użyć tego przedmiotu.	Tady tento předmět použít nemůžeš.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	Nemůžeš nasadit předmět %s ze strany výbavy %s - strana beze změny.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Tento předmět teď nelze zničit - zavři ostatní okna a zkus to znovu.
+Nie nadano tytułu %s (gracz ma go już na stałe).	Titul %s nebyl udělen (hráč ho už má trvale).
+Nie nadano tytułu %s.	Titul %s nebyl udělen.
+Nie należysz do gildii.	Nepatříš do žádného cechu.
+Nie przeniesiono bota %s: %s.	Bot %s nebyl přenesen: %s.
+nie trwa	neprobíhá
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Nepodařilo se udělit efekt sady. Předmět zůstal nedotčen.
+Nie udało się otworzyć Krypty Balathora.	Nepodařilo se otevřít Balathorovu kryptu.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Nepodařilo se. Materiály a Yangy propadly, předmět zůstal v okně.
+Nie znasz tej umiejetnosci.	Tuto schopnost neznáš.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Neznámý dungeon "%s". Dungeony: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby nebo all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Nikdo z botů nemá 75. úroveň - Věž končí v šestém patře.
+Od 1 do %d wymian naraz.	Od 1 do %d výměn najednou.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	Od stupně G1 do P rozvíjí ripostu a posilovač Duchovní kámen+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Odemčena strana výbavy %s (stran: %d/4). Přepínáš je záložkami v okně výbavy nebo schopností "Změna strany výbavy" (pomocné schopnosti).
+Ogniste Strzały załadowane do Hwachy: %u.	Ohnivé šípy nabité do Hwachy: %u.
+Osiagnieto limit zakupu tego przedmiotu.	Bylo dosaženo limitu nákupu tohoto předmětu.
+Otrzymujesz %d Gaya.	Získáváš %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	Získáváš kartu Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Získáváš sadu karet Okey (máš %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Otevřel jsi Poklad Balathora - odměna přišla do tvé výbavy.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Parametry lze přenést jen z náramku, náhrdelníku, náušnic nebo štítu.
+Parametry przeniesione na szatę aury.	Parametry přeneseny na kostým s aurou.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Parametry kostýmu s aurou odstraněny - můžeš přenést nové.
+Poczekaj 10 sekund po walce.	Počkej 10 sekund po boji.
+Poczekaj 3 sekundy przed kolejną zmianą.	Počkej 3 sekundy před další změnou.
+Poczekaj chwile przed kolejna zmiana opisu.	Počkej chvíli před další změnou popisu.
+Poczekaj chwile przed kolejna zmiana stanu.	Počkej chvíli před další změnou stavu.
+Poczekaj chwile przed kolejnym zaproszeniem.	Počkej chvíli před další pozvánkou.
+Podaj gracza.	Zadej hráče.
+Podejdź do Seon-Hae.	Přijď k Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	Objevilo se Ohnivé dračí vejce.
+Pokonajcie wszystkie pobliskie potwory.	Poražte všechna okolní monstra.
+Polimorfia działa tylko na wierzchowcach.	Polymorfie funguje jen na koních.
+Polimorfia wierzchowca zakończona.	Polymorfie koně skončila.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Neúspěch! Efekt %s se nezapnul - květ uvadl.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Neúspěch! Nepodařilo se zvýšit efekt %s na úroveň %d - květ uvadl.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Neúspěch! Nepodařilo se změnit efekt na %s - květ uvadl, předchozí efekt zůstává.
+Potrzeba %lld ksiąg (w oknie: %lld).	Potřeba %lld knih (v okně: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Mocný válečný kůň jí jen Červený ženšen (premium).
+Poziom Czempiona: %d.	Úroveň Šampiona: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Polož do okna zbraň, zbroj nebo helmu od 75. úrovně, vylepšené alespoň na +7.
+Precyzja: poziom %s, bonus Precyzji +%d.	Přesnost: úroveň %s, bonus Přesnosti +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Denní dárek: %lld Yangů a po %d lektvarech (V). Další za 24 hodin.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Přetáhni nástavec na šerpu ve výbavě (šerpa sundána).
+Przeci±gnij zwój na broń w ekwipunku.	Přetáhni svitek na zbraň ve výbavě.
+Przeciągnij Anulację na przedmiot z transmutacją.	Přetáhni Zrušení na předmět s transmutací.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Přetáhni Osvědčení aury+ na kostým s aurou.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	Předmět %s teď nelze sundat - strana výbavy beze změny.
+Przeniesiono bota %s do Ciebie.	Bot %s byl přenesen k tobě.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Přeneseno do dodatečné výbavy: %d (připojeno ke stohům: %d).
+Przenosić można raz na 3 sekundy.	Přesouvat lze jednou za 3 sekundy.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	Při dalším útoku bude potřeba více poškození.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Tlačítko přivolání Enasira vyžaduje novou verzi klienta - aktualizuj hru.
+Przywolana zyla zniknie po 15 minutach.	Přivolaná žíla zmizí po 15 minutách.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	Přivolaný kámen Metin zmizí po 15 minutách, pokud ho nezničíš.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	Otázka vypršela - zkus předmět sundat znovu.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Žebříček: sezóna %u právě končí (shrnutí asi za 2 minuty).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Žebříček: sezóna %u, %s, držitelů titulů: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Rukavice: další doba obnovy této schopnosti je kratší o 5 s.
+Rekrutacja potworow jest wylaczona.	Nábor monster je vypnutý.
+Relikt debug: odnowienia wyzerowane.	Relikt debug: obnovy vynulovány.
+Relikt debug: okienko %s puste.	Relikt debug: okénko %s prázdné.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relikt debug: okénko %s, %s (%u), příznaky %ld, čas %ld / %ld s, funguje: %s, tik: %s, boj: %d s
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relikt debug: HP %d / %d, EP %d / %d, kůň: %s
+Relikt Duszy: nowy bonus - %s (%d).	Relikvie duše: nový bonus - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	Ripostu a posilovač od stupně M1 nelze vrátit.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Rozvoj úspěšný. Nyní je možná evoluce kostýmu (Kostým s aurou: evoluce).
+Rozwój udany: poziom %d.	Rozvoj úspěšný: úroveň %d.
+Ryba się zerwała z haczyka.	Ryba se utrhla z háčku.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae nemá knihy pro tvou cestu.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, čas %d min, držený předmět %d, výsledek %d, šance %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: čas nastaven na nulu.
+Silniejszy efekt tego rodzaju już działa.	Silnější efekt tohoto druhu už působí.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	Krám je zavřený - otevři ho znovu místo prodlužování.
+Sklep ma juz maksymalny czas (%d dni).	Krám už má maximální čas (%d dní).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Krám prodloužen o %u h (zbývá asi %u h %u min).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Zaměřte se na Zmrzlé dračí vejce, než zmizí (%d s).
+Sortowac mozna raz na 3 sekundy.	Třídit lze jednou za 3 sekundy.
+Statystyki Sung Ma ma tylko Czempion.	Statistiky Sung Ma má jen Šampion.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	Strana výbavy %s je ještě zamčená - odemkne ji další předmět "Strana výbavy II".
+Strona ekwipunku: %s.	Strana výbavy: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	Stranu výbavy lze měnit jednou za 5 sekund.
+Sukces! Efekt %s jest aktywny (poziom 1).	Úspěch! Efekt %s je aktivní (úroveň 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Úspěch! Efekt %s vzrostl na úroveň %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot zastaven. Chybí předmět Zaklít kostým.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot zastaven. Chybí Zaklínání předmětu.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: nepodařilo se změnit bonusy tohoto kostýmu.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: tento předmět nelze zaklít (chybí bonusy).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Šance zvýšena o %d%% (spotřebován 1 předmět).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	Šerpa má nový vzhled (bonusy a pohlcování beze změny).
+Ta Anulacja działa tylko na wierzchowcach.	Toto Zrušení funguje jen na koních.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Tato kniha je pro Šampiony: přečteš ji od 1. úrovně Šampiona.
+Ta szarfa ma juz te nakladke.	Tato šerpa už tento nástavec má.
+Ta szata aury ma już najwyższy poziom.	Tento kostým s aurou už má nejvyšší úroveň.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Tento kostým je na vrcholu svého druhu - nyní evoluce (Kostým s aurou: evoluce).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Tento kostým už má přenesené parametry. Vyčisti ho Osvědčením aury+.
+Ta szata nie ma przeniesionych parametrów.	Tento kostým nemá přenesené parametry.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Tento Sloup může zranit jen Ninja nebo Šaman.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Tento předmět lze použít jen v Pekelné věži Sunga Mahi.
+Tego przedmiotu nie mozna dodac do Switchbota.	Tento předmět nelze přidat do Switchbota.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Tento předmět teď nelze použít (nasazený, v obchodu nebo zamčený).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Tento předmět se používá v okně mazlíčka (klávesa U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Tento stoh nelze při této ceně rozdělit - kup celý stoh.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	Teleport ke vchodu stojí %lld Yangů - tolik u sebe nemáš.
+Teleport pod wejście: zapłacono %lld Yang.	Teleport ke vchodu: zaplaceno %lld Yangů.
+Ten certyfikat nie nadaje żadnego tytułu.	Tento certifikát neuděluje žádný titul.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Tento posilovač není pro tvou třídu a cestu schopností.
+Ten efekt już działa i potrwa dłużej niż nowy.	Tento efekt už působí a potrvá déle než nový.
+Ten element nie pasuje w tym miejscu.	Tento prvek sem nepasuje.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Tento hráč nepojme tolik Yangů (limit 100 mld. u sebe).
+Ten loch jest dla poziomów %d - %d.	Tento dungeon je pro úrovně %d - %d.
+Ten Metin moze zranic tylko Szaman.	Tento Metin může zranit jen Šaman.
+Ten opis zawiera niedozwolone slowo.	Tento popis obsahuje nepovolené slovo.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Toto monstrum žije na mapě, na kterou se vstupuje s propustkou - teleport kartou tam není dostupný.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Tento předmět je dostupný jen se zapnutým modulem Arezzo.
+Ten przedmiot jest juz w Switchbocie.	Tento předmět už je ve Switchbotu.
+Ten przedmiot ma już ten efekt zestawu.	Tento předmět už má tento efekt sady.
+Ten przedmiot nie ma transmutacji.	Tento předmět nemá transmutaci.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Tento předmět nepatří do žádné kategorie dodatečné výbavy.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Tento předmět nepasuje do této kategorie dodatečné výbavy.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Tento předmět nezvyšuje šanci na výrobu.
+Ten wygląd nie pasuje do tego przedmiotu.	Tento vzhled nepasuje na tento předmět.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Tento svitek prodávám jen členům cechu alespoň na %d. úrovni.
+To nie jest bilet do tej przemiany.	Toto není vstupenka k této proměně.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	To je země Sung Ma: bez Úrovně Šampiona zdejší monstra nezraníš.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Transmutace odstraněna - předmět má opět svůj vzhled.
+Transmutacja zakończona.	Transmutace dokončena.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Transmutaci podléhají jen zbraně, zbroje, kostýmy a vzhledy zbraní.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Sem lze vložit jen Ledovou nebo Ohnivou runu aury.
+Tu można włożyć tylko szatę aury.	Sem lze vložit jen kostým s aurou.
+Twoja gildia ma już otwartą Kryptę Balathora.	Tvůj cech už má otevřenou Balathorovu kryptu.
+Twoja gildia nie ma otwartej Krypty Balathora.	Tvůj cech nemá otevřenou Balathorovu kryptu.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Tvá Přesnost už má nejvyšší úroveň (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Tvá Úroveň Šampiona je příliš nízká k použití tohoto předmětu (vyžadováno: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Tvá Úroveň Šampiona je příliš nízká k nasazení tohoto předmětu (vyžadováno: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Tituly vyžadují novou verzi klienta - aktualizuj hru.
+Tę księgę może przeczytać tylko lider gildii.	Tuto knihu může přečíst jen vůdce cechu.
+Udało się odeprzeć lodowe zimno.	Podařilo se odrazit ledový chlad.
+Użycie: /kod MT2009-PLUS-XXXX	Použití: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	Ve výbavě nejsou předměty pro dodatečnou výbavu.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	V jednom obchodu lze dát nejvýše 10 mld. Yangů.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	V Pekelné věži Sunga Mahi fungují jen věžní lektvary (V) od Obchodnice.
+W tych rekawicach nie ma wolnego miejsca na kamien.	V těchto rukavicích není volné místo na kámen.
+W tym stosie nie ma juz tylu sztuk.	V tomto stohu už není tolik kusů.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	Hodnota krámu a tvé Yangy by překročily limit 100 mld. Yangů.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	Vzhled tohoto předmětu nepasuje na tvou třídu.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	Vzhled tohoto předmětu nepasuje na tvé pohlaví.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Výprava přerušena - Skrytý Balathor utekl, ale zanechal svůj poklad. Opuštění krypty za %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Výprava přerušena. Opuštění krypty za %s.
+Wyspa Skarbow: %s (flaga %s).	Ostrov pokladů: %s (příznak %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	Rybářské Puzzle vyžadují novou verzi klienta - aktualizuj hru.
+Włóż bilet w okno transmutacji u Teowadena.	Vlož vstupenku do okna transmutace u Teowadena.
+Włóż oba przedmioty.	Vlož oba předměty.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: event %s, sezóna %u (uzavřena %d), hry na tomto jádru %u, desky %d, kmeny %d, odměna čeká %d
+Yut Nori: event sie nie odbywa.	Yut Nori: event neprobíhá.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: event právě začíná, zkus to za chvíli.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: březové kmeny lze přidat jen během eventu.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: potřebuješ %d x desku Yut Nori a %d yangů.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: uvolni místo ve výbavě, abys převzal odměnu.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	Za 10 sekund se objeví Zmrzlé dračí vejce - tehdy do něj udeřte společně.
+Za mało Yang (potrzeba %lld).	Málo Yangů (potřeba %lld).
+Zabrano tytuł %s graczowi %s.	Titul %s byl odebrán hráči %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	Zaklínání elementu se nezdařilo! Zbraň zůstala beze změny.
+Zaczarowanie żywiołu powiodło się! %s.	Zaklínání elementu se zdařilo! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Zavři ostatní okna (obchod, krám, sklad).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Zavři ostatní okna (obchod, krám, sklad, kostku) a zkus to znovu.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Zavři ostatní okna, abys mohl setřídit dodatečnou výbavu.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Zavři ostatní okna, abys mohl spojit stohy v dodatečné výbavě.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Zavři ostatní okna, abys mohl přesunout předměty do dodatečné výbavy.
+Zamknij inne okna, aby użyć tego przedmiotu.	Zavři ostatní okna, abys mohl použít tento předmět.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Zavři ostatní okna, abys mohl změnit stranu výbavy.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Do skupiny lze pozvat jen hráče na stejné mapě a stejném kanále.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Zastav se, abys skryl nebo ukázal kostým.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Sundej předmět a vezmi si ho do výbavy.
+Zdejmij szatę i weź ją do ekwipunku.	Sundej kostým a vezmi si ho do výbavy.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Sada kostýmů není úplná - bonus sady zmizel.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Sada kostýmů: +%ld ŽB a +%ld hodnoty útoku.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Země Sung Ma vyžaduje: Síla %d, Vitalita %d, Odolnost %d, Inteligence %d - při nedostatku tvá síla slábne na polovinu.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Už znáš jinou ripostu - lze mít jen jednu. Tato kniha ji nerozvíjí.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Zničte Masivní ledovou stěnu, která chrání[ENTER]Zmrzlá dračí vejce!
+Zniszczono: %s.	Zničeno: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Úroveň zaklínání elementu byla snížena: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Úroveň zaklínání elementu byla snížena: zbraň už nemá element (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Zbývá ve výbavě: %d - není místo v kategorii: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Denní limit (%s) postavy %s (offline) byl resetován: %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Denní limit (%s) postavy %s%s byl resetován: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Udělej místo ve výbavě (potřeba %d volných polí).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Udělej místo ve výbavě - předmět ze skladu stran výbavy čeká na volné pole.
+Zwój albo broń nie leży już w ekwipunku.	Svitek nebo zbraň už není ve výbavě.
+Łączyć stosy można raz na 3 sekundy.	Stohy lze spojovat jednou za 3 sekundy.

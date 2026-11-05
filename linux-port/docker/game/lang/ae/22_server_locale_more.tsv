@@ -1,0 +1,299 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>ae (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+%d dni %d godzin	%d أيام %d ساعات
+%d dni %d godzin i %d minut	%d أيام %d ساعات و%d دقائق
+%d godzin i %d minut	%d ساعات و%d دقائق
+%d minut	%d دقائق
+%d sekund do wyjścia z mapy.	%d ثوانٍ حتى الخروج من الخريطة.
+%d sekund do zmiany kanału.	%d ثوانٍ حتى تغيير القناة.
+%s jest blisko Ciebie.	%s قريب منك.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s متصل على القناة %d. (القناة الحالية: %d)
+%s rzucił %d. (%d-%d)	%s رمى %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s رمى النرد وحصل على %d. (%d-%d)
+%s[%d]s Attack Position: %d %d	%s[%d]s موقع الهجوم: %d %d
+30 minut minęło. Ogniska zgasły.	مرت 30 دقيقة. انطفأت النيران.
+<Gildia> Wskazany gracz jest zajęty.	<الرابطة> اللاعب المحدد مشغول.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<المجموعة> لا يمكن للمجموعة قبول آخرين عندما يكون الأعضاء في زنزانة.
+<Grupa> Lider grupy jest w lochu.	<المجموعة> قائد المجموعة في زنزانة.
+<Guild> %d Skills used (%d, %d) to %u	<الرابطة> استُخدمت %d مهارات (%d, %d) على %u
+[1106-??]No puedes unir esto.	[1106-??]لا يمكنك دمج هذا.
+[Gildia] Gildia jest w trakcie wojny.	[الرابطة] الرابطة في حالة حرب.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[الرابطة] بلغت الرابطة حد الدعوات.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[الرابطة] بلغت الرابطة أعلى مستوى.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[الرابطة] تم شحن %d من طاقة روح التنين.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[الرابطة] لا يمكنك إزالة عضو من الرابطة أثناء الحرب.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[الرابطة] لا يمكنك استخدام مهارات الرابطة خارج الساحة.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[الرابطة] الأعضاء الجدد مقيّدون حالياً.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[الرابطة] أثناء حرب الرابطة لا يمكنك طرد أعضاء الرابطة.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[الرابطة] الشخص المدعو مشغول في هذه اللحظة.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[المجموعة] لا يمكن حل الفريق لأن أعضاء الفريق داخل الزنزانة.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[المخزن] لا يمكنك نقل الأشياء في المخزن.
+Aby otworzyć sklep potrzebujesz Tobół.	لفتح متجر تحتاج إلى حزمة.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	لشراء هذا الشيء يجب أن يكون مستوى الشخصية %u على الأقل.
+Atakują nas morskie potwory! Do broni!	الوحوش البحرية تهاجمنا! إلى الأسلحة!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	علاوة التحسين يمكن استخدامها على شيء حتى المستوى %d كحد أقصى.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	علاوة التحسين يمكن استخدامها على شيء بدرجة تحسين +%d كحد أقصى.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	علاوة التحسين يمكن استخدامها على المجوهرات فقط.
+Bonus na ulepszenie może być użyty tylko na bronie.	علاوة التحسين يمكن استخدامها على الأسلحة فقط.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	علاوة التحسين يمكن استخدامها على الدروع والخوذات والدروع الواقية فقط.
+Brak danych. Skontaktuj się z administratorem.	لا توجد بيانات. تواصل مع المشرف.
+Brak kamienia do wyjęcia.	لا يوجد حجر لإخراجه.
+Brak miejsca w ekwipunku.	لا يوجد مكان في الحقيبة.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	لا توجد ضرائب. رأس المال الحالي: %u رأس المال المطلوب: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	خطأ في الشيء أثناء محاولة فتح المتجر.
+Cena przedmiotu zmieniła się.	تغيّر سعر الشيء.
+Cena przedmiotu została zmieniona.	تم تغيير سعر الشيء.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	علق شيء بالخطاف، لكنك لا ترى ما هو.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	الغابة الحمراء تخفي أسراراً كثيرة لم تكونوا تعرفونها.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	تم تشغيل الكاشف، لكن لم تُكتشف أي أحجار روح.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	تأثيرات VIP لا تجتمع مع اشتراك بريميوم. لا يمكنك إتمام الشراء.
+Eliksir jest pusty. Napełnij go u Alchemika.	الإكسير فارغ. املأه عند الكيميائي.
+Emocje są dostepne tylko dla Subskrybentów Premium.	الحركات التعبيرية متاحة فقط لمشتركي بريميوم.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	الموجة %d: دافعوا عن الصاري واهزموا الهيدرا.
+Fala %d: brońcie masztu przez %d sek.	الموجة %d: دافعوا عن الصاري لمدة %d ث.
+Funkcja tymczasowo niedostępna.	الميزة غير متاحة مؤقتاً.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	الرابطة في أعلى مستوى، لكنها ستقبل هديتك.
+Gracz %s został dodany do listy zablokowanych.	تمت إضافة اللاعب %s إلى قائمة المحظورين.
+Gracz %s został usunięty z listy zablokowanych.	تمت إزالة اللاعب %s من قائمة المحظورين.
+Ja ci pokazać, że mi nie przeszkadzać!	أنا أريك أنك لا تزعجني!
+Jajo Hydry pękło - potwory idą na dno!	انفجرت بيضة الهيدرا - الوحوش تنزل إلى القاع!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	أحد الأشياء له سعر غير مسموح (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	أحد الأشياء في مكان غير مسموح.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	أحد المشاركين في الزفاف مشغول أو أنهى التجارة مؤخراً.
+Jesteś już przyjacielem gracza %s.	أنت صديق اللاعب %s بالفعل.
+Jesteś za daleko od Kowala.	أنت بعيد جداً عن الحداد.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	إذا لم توافق على هذه الشروط
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	لا يمكن تحسين أحجار الروح +3 بهذا الشيء.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	لا يمكن تحسين حجر الروح بهذا الشيء.
+Kilof może zostać ulepszony tylko u Deokbae.	لا يمكن تحسين المعول إلا عند ديوكباي.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	اشترى أحدهم %dx %s من متجرك مقابل %d يانغ.
+Masz za mało Animosfer.	ليس لديك ما يكفي من كرات الأنيما.
+Maszt naprawiony: %d%% PŻ.	تم إصلاح الصاري: %d%% نقاط حياة.
+Maszt ocalał. Przygotujcie się na następną falę!	نجا الصاري. استعدوا للموجة التالية!
+Maszt: zostało %d%% PŻ!	الصاري: متبقٍ %d%% من نقاط الحياة!
+Możesz używać Białej Flagi co %d minut.	يمكنك استخدام العلم الأبيض كل %d دقيقة.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	يمكنك استخدام هذه المهارة فقط في مملكتك.
+Możesz wyrzucić przedmioty co %d sekund.	يمكنك رمي الأشياء كل %d ثانية.
+Możesz wyrzucić Yang co 10 sekund.	يمكنك رمي اليانغ كل 10 ثوانٍ.
+Możesz łowić tylko w M1.	يمكنك الصيد فقط في M1.
+Możliwość pisania została zablokowana przez siły wyższe!	تم حظر إمكانية الكتابة من قبل قوى عليا!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	يجب أن تكون في المستوى %d لتفهم هذا الكتاب.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	يجب أن تكون في المستوى %d على الأقل لشراء هذا الشيء.
+Musisz nosić suknie ślubną, aby założyć bukiet.	يجب أن ترتدي فستان الزفاف لتتمكن من حمل الباقة.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	يجب أن تنتظر %d دقيقة قبل استخدام هذا الخيار مرة أخرى.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	يجب أن تنتظر قليلاً بعد القتال قبل استخدام هذا الخيار.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	يجب أن تنتظر بضع ثوانٍ قبل الخروج من الخريطة.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	يجب أن تنتظر بضع ثوانٍ قبل تغيير القناة.
+Musisz posiadać cel.	يجب أن يكون لديك هدف.
+Musisz stać obok sklepu.	يجب أن تقف بجانب المتجر.
+Musisz zaczekać %d min. przed ponownym użyciem.	يجب أن تنتظر %d دقيقة قبل الاستخدام مرة أخرى.
+Musisz zaczekać %d sek. przed ponownym użyciem.	يجب أن تنتظر %d ثانية قبل الاستخدام مرة أخرى.
+Musisz zdjąć bukiet.	يجب أن تنزع الباقة.
+Musisz znajdować się na tej samej mapie co sklep.	يجب أن تكون على الخريطة نفسها التي فيها المتجر.
+Musisz znajdować się na tym samym kanale co sklep.	يجب أن تكون على القناة نفسها التي فيها المتجر.
+Na tej mapie mogą odbywać się wymuszone bitwy.	قد تقع على هذه الخريطة معارك إجبارية.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	يوجد عدد كبير جداً من المتاجر على هذه القناة. لتجاوز الحد المجاني يلزم متجر بريميوم.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	بلغت هذه القناة الحد الأقصى للمتاجر غير المتصلة. لا يمكنك فتح متجر.
+Następna fala za %d sek.	الموجة التالية بعد %d ث.
+Naładowany na %d sekund.	مشحون لمدة %d ثانية.
+Nie jesteś zablokowany.	أنت لست عالقاً.
+Nie ma kogo ożywić.	لا يوجد من يمكن إحياؤه.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	لا يوجد مكان في حقيبتك. تم إرسال الشيء إلى مخزن متجر العناصر.
+Nie masz sklepu na tej mapie.	ليس لديك متجر على هذه الخريطة.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	ليس لديك متجر على هذه القناة. (وُجد على القناة %d).
+Nie możesz czytać ksiąg będąć przemieniony.	لا يمكنك قراءة الكتب وأنت متحوّل.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	لا يمكنك تطوير هذه المهارة أكثر. استخدم لفيفة استعادة المهارات أو كتاب النسيان.
+Nie możesz dodać więcej bonusów.	لا يمكنك إضافة المزيد من العلاوات.
+Nie możesz jeździć konno podczas łowienia.	لا يمكنك ركوب الحصان أثناء الصيد.
+Nie możesz jeździć konno, gdy jesteś powalony.	لا يمكنك ركوب الحصان وأنت مطروح أرضاً.
+Nie możesz jeździć nosząc przedmiot.	لا يمكنك الركوب وأنت تحمل شيئاً.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	لا يمكنك المتابعة بينما نافذة أخرى مفتوحة.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	لا يمكنك المتابعة لأن اليانغ سيتجاوز الحد المسموح به وهو 2 مليار.
+Nie możesz kupować od samego siebie.	لا يمكنك الشراء من نفسك.
+Nie możesz mieć więcej niż %d przyjaciół.	لا يمكن أن يكون لديك أكثر من %d أصدقاء.
+Nie możesz nosić Smokingu na koniu.	لا يمكنك ارتداء البدلة الرسمية على الحصان.
+Nie możesz nosić tego przedmiotu konno.	لا يمكنك ارتداء هذا الشيء وأنت على الحصان.
+Nie możesz otworzyć pustego sklepu.	لا يمكنك فتح متجر فارغ.
+Nie możesz otworzyć sklepu offline w tym miejscu.	لا يمكنك فتح متجر غير متصل في هذا المكان.
+Nie możesz otworzyć sklepu w tym miejscu.	لا يمكنك فتح متجر في هذا المكان.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	لا يمكنك فتح هذا المتجر. استلم جميع الأشياء أولاً.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	لا يمكنك فتح متجر هنا. أنت قريب جداً من متجر آخر.
+Nie możesz otworzyć więcej sklepów.	لا يمكنك فتح المزيد من المتاجر.
+Nie możesz ożywić kogoś, kto żyje.	لا يمكنك إحياء شخص حي.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	لا يمكنك التقاط الأشياء وأنت في نافذة المهمة.
+Nie możesz przenieść się do tego obszaru.	لا يمكنك الانتقال إلى هذه المنطقة.
+Nie możesz przenieść się do tej osoby.	لا يمكنك الانتقال إلى هذا الشخص.
+Nie możesz przywołać do tego obszaru.	لا يمكنك الاستدعاء إلى هذه المنطقة.
+Nie możesz przywołać konia w tym miejscu.	لا يمكنك استدعاء الحصان في هذا المكان.
+Nie możesz się teraz teleportować.	لا يمكنك الانتقال الفوري الآن.
+Nie możesz sprintować będąc spowolnionym.	لا يمكنك الركض السريع وأنت مبطّأ.
+Nie możesz sprintować nosząc przedmiot.	لا يمكنك الركض السريع وأنت تحمل شيئاً.
+Nie możesz sprzedawać noszonych przedmiotów.	لا يمكنك بيع الأشياء المرتداة.
+Nie możesz sprzedawać zablokowanych przedmiotów.	لا يمكنك بيع الأشياء المقفلة.
+Nie możesz sprzedać przedmiotów, które nosisz.	لا يمكنك بيع الأشياء التي ترتديها.
+Nie możesz sprzedać założonego przedmiotu.	لا يمكنك بيع شيء مرتدى.
+Nie możesz tego teraz użyć.	لا يمكنك استخدام هذا الآن.
+Nie możesz tego użyć, gdy masz otwarte okno.	لا يمكنك استخدام هذا وأنت تملك نافذة مفتوحة.
+Nie możesz tego zrobić na kanale specjalnym.	لا يمكنك فعل ذلك على قناة خاصة.
+Nie możesz teleportować się nosząc przedmiot.	لا يمكنك الانتقال الفوري وأنت تحمل شيئاً.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	لا يمكنك منح التأثير الآن، انتظر قليلاً.
+Nie możesz teraz podnosić przedmiotów.	لا يمكنك التقاط الأشياء الآن.
+Nie możesz teraz wykonać tej operacji.	لا يمكنك تنفيذ هذه العملية الآن.
+Nie możesz teraz zejść z wierzchowca.	لا يمكنك النزول عن الحصان الآن.
+Nie możesz tutaj otworzyć depozytu.	لا يمكنك فتح المخزن هنا.
+Nie możesz uczyć się będąc przemienionym.	لا يمكنك التعلّم وأنت متحوّل.
+Nie możesz ulepszyć tego przedmiotu.	لا يمكنك تحسين هذا الشيء.
+Nie możesz użyć tego na wojnie.	لا يمكنك استخدام هذا في الحرب.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	لا يمكنك استخدام هذا الشيء عندما تكون نافذة المهمة مفتوحة.
+Nie możesz użyć tego przedmiotu konno.	لا يمكنك استخدام هذا الشيء وأنت على الحصان.
+Nie możesz wyjąć umieszczonego kamienia.	لا يمكنك إخراج الحجر الذي تم تركيبه.
+Nie możesz wykonać tej akcji będąc martwy.	لا يمكنك فعل هذا وأنت ميت.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	لا يمكنك وضع أشياء من حقائب الحصان في متجر عادي.
+Nie możesz zablokować więcej niż %d osób.	لا يمكنك حظر أكثر من %d أشخاص.
+Nie możesz zapisać pozycji w tym miejscu.	لا يمكنك حفظ الموضع في هذا المكان.
+Nie możesz zapisać pozycji wrogiego Królestwa.	لا يمكنك حفظ موضع في المملكة المعادية.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	لا يمكنك دعوة شخص محظور إلى الأصدقاء.
+Nie możesz zmienić bonusów.	لا يمكنك تغيير العلاوات.
+Nie możesz zmienić trybu PvP na wojnie.	لا يمكنك تغيير وضع PvP أثناء الحرب.
+Nie można użyć na innym graczu.	لا يمكن استخدام هذا على لاعب آخر.
+Nie można ładować.	لا يمكن الشحن.
+Nie posiadasz otwartego sklepu.	ليس لديك متجر مفتوح.
+Nie posiadasz sklepu premium.	ليس لديك متجر بريميوم.
+Nie posiadasz sklepu.	ليس لديك متجر.
+Nie posiadasz wymaganych przedmiotów do zakupu.	ليست لديك الأشياء المطلوبة للشراء.
+Nie posiadasz wystarczająco dużo reputacji.	ليس لديك سمعة كافية.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	أنت لا تستوفي شروط فتح متجرك الخاص.
+Nie udało się wytworzyć.	فشلت الصناعة.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	لم تُسقط أي شيء لأن إله التنين يحميك.
+Nie znaleziono gracza o podanej nazwie.	لم يُعثر على لاعب بهذا الاسم.
+Niedostępne.	غير متاح.
+Niektóre przedmioty w sklepie na siebie nachodzą.	بعض الأشياء في المتجر متداخلة.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	بعض الأشياء في المتجر موضوعة في خانة مقفلة.
+Niewystarczająca ilość Smoczych Monet.	لا يوجد ما يكفي من نقود التنين.
+Niewystarczająca ilość Smoczych Znaków.	لا يوجد ما يكفي من علامات التنين.
+Nikt nie wypłynął - statek zostaje w porcie.	لم يبحر أحد - تبقى السفينة في الميناء.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	لا يمكن تحسين سكين العشاب إلا عند العشاب.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	المستلم لا يمكنه تلقي دعوة صداقة.
+Odczekaj chwilę po zakończeniu handlu.	انتظر قليلاً بعد انتهاء التجارة.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	انتظر %s أخرى قبل التدريب التالي.
+Odczekaj jeszcze %s przed zakupem.	انتظر %s أخرى قبل الشراء.
+Odczekaj przed następnym ulepszeniem.	انتظر قليلاً قبل التحسين التالي.
+Oferta sklepu zmieniła się.	تغيّر عرض المتجر.
+Okno zarządzania sklepem musi być otwarte.	يجب أن تكون نافذة إدارة المتجر مفتوحة.
+Osiągnięto limit zakupu tego przedmiotu.	تم بلوغ حد شراء هذا الشيء.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	بلغ هذا الحساب الحد الأقصى لمرات شراء هذا الشيء.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	الشخص الذي تحاول إحياءه ليس إنساناً.
+Otrzymałeś %d reputacji (Królewska Gwardia)	حصلت على %d سمعة (الحرس الملكي)
+Otrzymałeś %d reputacji (Synowie Pustyni)	حصلت على %d سمعة (أبناء الصحراء)
+Otrzymałeś %s (Juki Konne)	حصلت على %s (حقائب الحصان)
+Otrzymałeś %s (szt. %d)	حصلت على %s (%d قطعة)
+Otrzymałeś %s (szt. %d) (Juki Konne)	حصلت على %s (%d قطعة) (حقائب الحصان)
+OX-Question: 	[سؤال OX: ] 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	تذكّر أنه لا يمكن إقامة متجر غير متصل على هذه الخريطة.
+Podana kwota jest większa niż zarobione Yang.	المبلغ المحدد أكبر من اليانغ المكتسب.
+Podana kwota jest za mała.	المبلغ المحدد صغير جداً.
+Podana osoba jest na liście Twoich przyjaciół.	هذا الشخص موجود في قائمة أصدقائك.
+Podatek od sprzedaży: %d%% (%lld Yang).	ضريبة البيع: %d%% (%lld يانغ).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	ظهرت بيضة الهيدرا! حطّمها وستغرق الوحوش في القاع.
+Pomimo treningu nie czujesz się zmęczony.	على الرغم من التدريب لا تشعر بالتعب.
+Pomyślnie dodano bonus.	تمت إضافة العلاوة بنجاح.
+Pomyślnie wypłacono Yang z depozytu sklepu.	تم سحب اليانغ من وديعة المتجر بنجاح.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	لديك متجر مفتوح أو أن وديعة المتجر تحتوي على أشياء.
+Pospieszcie się, macie %d min., by przejść przez portal.	أسرعوا، لديكم %d دقيقة للعبور من البوابة.
+Potomstwo Hydry trafiło maszt laserem!	نسل الهيدرا أصاب الصاري بالليزر!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	تحتاج إلى %lld يانغ لفتح هذا النوع من المتاجر
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	تحتاج إلى مكان لشيء من 3 خانات على الأقل لفتح الصندوق.
+Pozostały czas %d sekund.	الوقت المتبقي %d ثانية.
+Pozostały czas: %.1f sek.	الوقت المتبقي: %.1f ث.
+Pozostały czas: %.2f sek.	الوقت المتبقي: %.2f ث.
+Pozycja sklepu została oznaczona strzałką.	تم تحديد موقع متجرك بسهم.
+Prosimy o powrót do pierwotnej lokalizacji.	نرجو العودة إلى موقعك الأصلي.
+Prośba o wezwanie została wysłana.	تم إرسال طلب الاستدعاء.
+Przechwyciłeś laser Potomstwa Hydry.	اعترضت ليزر نسل الهيدرا.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	يمكن استخدام الشيء فقط على الأسلحة والدروع حتى المستوى 40.
+Przedmiot nie może być użyty na akcesoriach.	لا يمكن استخدام الشيء على الإكسسوارات.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	لا يحتوي الشيء على حجر روح لإخراجه.
+Przedmiot zniknie za %d minut.	سيختفي الشيء بعد %d دقيقة.
+Przedmiot został dodany do twojego ekwipunku	تمت إضافة الشيء إلى حقيبتك
+Przedmioty zostały dodane do twojego ekwipunku	تمت إضافة الأشياء إلى حقيبتك
+Przedmioty zostały pomyśnie zaktualizowane.	تم تحديث الأشياء بنجاح.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	لا يمكن بيع الأشياء التي تستخدمها في متجرك الشخصي.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	أعد تسجيل الدخول ليُمنح تأثير VIP بشكل صحيح.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	استدعِ الحصان للوصول إلى الأشياء في حقائب الحصان.
+Rejs trwał za długo - statek zawraca.	استغرقت الرحلة وقتاً طويلاً - السفينة تعود.
+Rzuciłeś %d. (%d-%d)	رميت %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	رميت النرد وحصلت على %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	سيتم إغلاق الخادم خلال 10 دقائق بسبب أعمال الصيانة.
+Sklep #PLAYER_NAME#	متجر #PLAYER_NAME#
+Sklep - %s	المتجر - %s
+Sklep jest otwarty.	المتجر مفتوح.
+Sklep jest w trybie edycji.	المتجر في وضع التعديل.
+Sklep jest zamknięty.	المتجر مغلق.
+Sklep nie jest w trybie edycji.	المتجر ليس في وضع التعديل.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	عدّل المالك المتجر مؤخراً. انتظر قليلاً قبل الشراء.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	تم إغلاق المتجر، وأُضيفت الأشياء المتبقية واليانغ المكتسب إلى الوديعة.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	صندوق أحجار روح التنين غير مفعّل.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	نداء استغاثة! تحطّم الصاري والسفينة تغرق. ستعودون إلى اليابسة بعد قليل.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	الركض السريع على الأقدام غير ممكن بسرعة الحركة الحالية (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	المهارة قيد التدريب بلغت أعلى مستوى (%d).
+Ta aukcja nie jest już dostępna.	هذا المزاد لم يعد متاحاً.
+Ta opcja jest tymczasowo niedostępna.	هذا الخيار غير متاح مؤقتاً.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	جودة هذه المياه ضعيفة جداً ولا توجد فيها أسماك تقريباً، تحدث إلى الصياد.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	هذا اللاعب يملك أكثر من 2 مليار يانغ. لا يمكنك التجارة معه.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	هذا الشراء سيتجاوز حد الشراء المسموح به للحساب. اشتر عدداً أقل.
+Test server time limit passed	انتهت المهلة الزمنية لخادم الاختبار
+To miejsce jest wolne od plagi Kamieni Metin.	هذا المكان خالٍ من وباء أحجار الماتين.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	لم أكن أنا... لكنهم اختاروك. سنلتقي مجدداً، أسرع مما تظنون.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	لا يمكن استخدام السم إلا على السلحفاة العملاقة.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	مجموعتك تضم كل الفئات، لذلك تحصل على علاوة خبرة.
+Twoja postać nie żyje, nie możesz tego zrobić.	شخصيتك ميتة ولا يمكنك فعل ذلك.
+Twoja ranga nie może już wzrosnąć.	رتبتك لا يمكن أن ترتفع أكثر.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	تم حظر إنشاء المتاجر لمنصبك!
+Tworzenie sklepów jest tymczasowo wyłączone	إنشاء المتاجر معطل مؤقتاً
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	حصانك جائع جداً ولا يمكنه بذل جهد في هذه الحالة.
+Tylko GM ma dostęp do tej komendy.	هذا الأمر متاح لمشرفي اللعبة فقط.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	لا يمكن تنفيذ هذا الإجراء إلا في معبد زودياك.
+Udało ci się pokonać smoka w %d sekund!	تمكنت من هزيمة التنين في %d ثانية!
+Upuszczone Yang zniknie za %d sekund.	اليانغ المسقط سيختفي بعد %d ثانية.
+Upuszczony przedmiot zniknie za %d minut.	الشيء المسقط سيختفي بعد %d دقيقة.
+Usuniecie przedmiotu	إزالة الشيء
+Uwolniłeś się!	لقد تحررت!
+W depozycie sklepu offline zalegają przedmioty.	توجد أشياء متبقية في وديعة المتجر غير المتصل.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	حفيف مشؤوم يملأ الغابة... سيد أرواح الأشجار يستيقظ من نومه!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	قيمة المتجر ويانغ لديك معاً أكبر من الكمية المسموح بها من اليانغ (2 مليار).
+Wesele dalej trwa!	الزفاف ما زال مستمراً!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	الحرب بين %s و%s ستبدأ بعد %d دقيقة!
+Wskazany kanał dostępny jest tylko dla kont Premium.	القناة المحددة متاحة فقط لحسابات بريميوم.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	سقط الجميع! سينتهي وقتكم في المعبد إذا لم يُبعث أحد خلال دقيقة.
+Wszystkie potwory na mapach zostały zabite!	تم قتل جميع الوحوش على الخرائط!
+Wygląda na to, że na haczyku jest %s.	يبدو أن %s على الخطاف.
+Wyglądało na to, że %s wisi na haku.	بدا أن %s معلّق على الخطاف.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	فزت بالمبارزة بـ %d/%d (%d%%) من نقاط الحياة!
+Wyjście z mapy zostało przerwane.	تمت مقاطعة الخروج من الخريطة.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	تم استنفاد حد شراء المزاد على هذا الحساب (%d مرات شراء كحد أقصى).
+Wymagane %d Staminy	مطلوب %d تحمل
+Wymagane %s.	مطلوب %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	يلزم زجاج البصيرة أو اشتراك بريميوم نشط.
+Wystapił błąd	حدث خطأ
+Wystąpił błąd. (Kod błędu: %s)	حدث خطأ. (رمز الخطأ: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	انتهى البحث. تم العثور على %d متاجر.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	توقف البحث. تم العثور على أكثر من %d متجراً فيها الشيء المحدد.
+Wyłowiłeś %s!	اصطدت %s!
+Wędka może zostać ulepszona tylko u Rybaka.	لا يمكن تحسين الصنارة إلا عند الصياد.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	مالك الشيء لديه أشياء كثيرة جداً في حقيبته.
+Za 5 min zostanie wykonany automatyczny reset spotów!	بعد 5 دقائق ستتم إعادة ضبط المواقع تلقائياً!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	انتظر %d ثانية قبل استخدام هذا الشيء.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	انتظر %d ثانية لإجراء التغيير التالي في المتجر.
+Zaczekaj %d sekund, przed kolejną akcją.	انتظر %d ثانية قبل الإجراء التالي.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	انتظر %s قبل استخدام اللفيفة مرة أخرى.
+Zaczekaj chwilę, przed kolejną akcją.	انتظر قليلاً قبل الإجراء التالي.
+Zaczekaj chwilę. Trwa wyjście z mapy.	انتظر قليلاً. جارٍ الخروج من الخريطة.
+Zakup wymaga odpowiedniej reputacji.	يتطلب هذا الشراء سمعة مناسبة.
+Zamkniecie sklepu	إغلاق المتجر
+Zaproszony gracz jest w tym momencie zajęty.	اللاعب المدعو مشغول في هذه اللحظة.
+Zdobyłeś %s!	حصلت على %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	اليابسة في الأفق! نجت السفينة - اعبروا من البوابة.
+Zmiana kanału została przerwana.	تمت مقاطعة تغيير القناة.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	التغيير إلى القناة المحددة غير ممكن حالياً.
+Znowu atakują! Do broni!	إنهم يهاجمون مجدداً! إلى الأسلحة!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	بقي شيء يجب أن أصلحه... شيء ما كان يجب أن يحدث أبداً.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	الموت ليس النهاية، بل بداية طريق جديد.

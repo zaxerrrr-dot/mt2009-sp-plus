@@ -1,0 +1,332 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>ae (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  %sx Materiały Rzemieślnicze 	  %sx مواد حرفية 
+  %sx Medal Konny	  %sx وسام الحصان
+%s (Czyściec Ognia)	%s (مطهر النار)
+%s (dzisiejsze wejścia)	%s (مرات الدخول اليوم)
+%s (Kamień Driad)	%s (حجر الدرياد)
+%s (Książka Przebudzenia)	%s (كتاب الصحوة)
+%s (Lodowa Kraina)	%s (الأرض الجليدية)
+%s (odpoczynek: %s min)	%s (الراحة: %s دقيقة)
+%s (poziom / Czempion)	%s (المستوى / البطل)
+%s (poziom)	%s (المستوى)
+%s (słaby: %s/%s)	%s (ضعيف: %s/%s)
+%s (Zamarznięte Klucze)	%s (المفاتيح المتجمدة)
+%s (Zegarek Kieszonkowy)	%s (ساعة جيب)
+%s (żywioł %s)	%s (العنصر %s)
+%s drogocenne Gaya.	%s غايا ثمينة.
+%s Efekt Zestawu. Wymagany jest	%s تأثير الطقم. يلزم
+%s juz idzie do ciebie.	%s قادم إليك بالفعل.
+%s kk Yang	%s مليون يانغ
+%s odłamków II tej samej części, Projekt	%s شظايا II من الجزء نفسه، قالب
+%s razy.	%s مرات.
+%s szykuje potężny atak w linii - uciekaj w bok!	%s يجهّز هجوماً قوياً في خط مستقيم - اهرب إلى الجانب!
+%s tys. Yang	%s ألف يانغ
+%s w oknie = hełm Dragona, bez nich - hełm Smoków.	%s في النافذة = خوذة دراجون، بدونها - خوذة التنانين.
+%s znalazł odpowiedni klucz!	%s وجد المفتاح المناسب!
+%s, %s albo %s)	%s، %s أو %s)
+%s. piętro zdobyte w %s! Schody prowadzą na następne piętro.	تم الحصول على الطابق %s في %s! الدرج يقود إلى الطابق التالي.
+(stojących obok). Teraz: %s.	(الواقفين بالقرب). الآن: %s.
+1. %s - poziom %s	1. %s - المستوى %s
+1. miejsce: %s x 10	المركز الأول: %s x 10
+1. miejsce: 10x %s	المركز الأول: 10x %s
+1. Poziom Czempiona, każdy oddaje %s Zamarznięte Klucze.	المستوى 1 للبطل، كل واحد يسلّم %s مفتاحاً متجمداً.
+100 000 000 Yang i 500 Gaya. Szansa: %s%%.	100 000 000 يانغ و500 غايا. الفرصة: %s%%.
+10x %s, 1 000 000 Yang. Szansa 30%% (+5) do 70%% (+9),	10x %s، 1 000 000 يانغ. الفرصة من 30%% (+5) إلى 70%% (+9)،
+2. %s - poziom %s	2. %s - المستوى %s
+2. miejsce: %s x 5	المركز الثاني: %s x 5
+2. miejsce: 5x %s	المركز الثاني: 5x %s
+3. miejsce: %s x 3	المركز الثالث: %s x 3
+3. miejsce: 3x %s	المركز الثالث: 3x %s
+4. - 10. miejsce: %s x 1	المركز 4 - 10: %s x 1
+4.-10. miejsce: 1x %s	المركز 4-10: 1x %s
+40x %s, 200 Gaya i 20 000 000 Yang.	40x %s، 200 غايا و20 000 000 يانغ.
+<< Piętra %s - %s	<< الطوابق %s - %s
+Alastor pokonany! Za %s s wracacie do Upiornego Strażnika po nagrodę.	تم هزيمة آلاستور! بعد %s ث تعودون إلى الحارس الشبح لتنالوا المكافأة.
+Alastor wpada w szał (%s/3) - zniszczcie Białe Jaja Smoka!	آلاستور يدخل في حالة غضب (%s/3) - دمّروا بيض التنين الأبيض!
+Biblioteka Wiedzy (%s/5): %s	مكتبة المعرفة (%s/5): %s
+Biblioteka Wiedzy: %s	مكتبة المعرفة: %s
+Biblioteka Wiedzy: %s zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	مكتبة المعرفة: %s يحصل على ختم المكتبة. استخدمه لاستدعاء الموجة التالية.
+Biblioteka Wiedzy: Baronówna wyczuwa %s śmiałków - ma %s%% więcej życia.	مكتبة المعرفة: البارونة تشعر بـ %s مغامراً - لديها %s%% حياة إضافية.
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x%s (podział łupu: %s na %s).	مكتبة المعرفة: تحصل على: صندوق المكتبة x%s (توزيع الغنائم: %s على %s).
+Biblioteka Wiedzy: Pieczęć %s/%s złamana. Nadchodzi następna fala!	مكتبة المعرفة: الختم %s/%s تحطّم. الموجة التالية قادمة!
+Biblioteka Wiedzy: Pokonane pająki: %s / %s	مكتبة المعرفة: العناكب المهزومة: %s / %s
+Biblioteka Wiedzy: Pozostałe królowe: %s	مكتبة المعرفة: الملكات المتبقيات: %s
+Biblioteka Wiedzy: Pozostałe Metiny: %s	مكتبة المعرفة: الماتين المتبقية: %s
+Biblioteka Wiedzy: Pozostało %s min.	مكتبة المعرفة: متبقٍ %s دقيقة.
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: %s na %s).	مكتبة المعرفة: هذه المرة بدون صندوق (توزيع الغنائم: %s على %s).
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (%s).	مكتبة المعرفة: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa %s/%s.	تم استهلاك تذكرة أتلانتس. رحلة اليوم %s/%s.
+Bron 65 > 80: 2x %s,	سلاح 65 > 80: 2x %s،
+Bron 80 > 87: 3x %s,	سلاح 80 > 87: 3x %s،
+Bron 87 > Cyjanit: 3x %s,	سلاح 87 > كيانيت: 3x %s،
+Cena: %s Yang za bilet.	السعر: %s يانغ للتذكرة.
+Do Erebu wchodzi najwyżej %s osób.	إلى إريبو يدخل %s أشخاص على الأكثر.
+Do Erebu wejdzie tylko grupa co najmniej %s osób.	إلى إريبو لن تدخل إلا مجموعة من %s أشخاص على الأقل.
+Do Głębi wchodzi drużyna od %s do %s osób	إلى الأعماق يدخل فريق من %s إلى %s أشخاص
+dopiero od poziomu %s.	فقط من المستوى %s.
+Doświadczenie: %s	الخبرة: %s
+Drużyna od %s do %s osób, poziom %s+,	فريق من %s إلى %s أشخاص، المستوى %s+،
+Dzisiejsze wyprawy do ruin już wykorzystane (%s dziennie):	تم استنفاد رحلات اليوم إلى الأطلال (%s يومياً):
+Dzisiejsze wyprawy do Schronienia już wykorzystane (%s dziennie):	تم استنفاد رحلات اليوم إلى الملجأ (%s يومياً):
+Dzisiejsze wyprawy do tego lochu już wykorzystane (%s dziennie):	تم استنفاد رحلات اليوم إلى هذه الزنزانة (%s يومياً):
+Dzisiejsze wyprawy na statek już wykorzystane (%s dziennie):	تم استنفاد رحلات اليوم إلى السفينة (%s يومياً):
+Dziś już dostałeś paszę. Wróć za %s h.	لقد حصلت على العلف اليوم. عُد بعد %s ساعة.
+Erebu: zostało %s min. Po czasie grupa wróci do Zaklętego Lasu.	إريبو: متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى الغابة المسحورة.
+Gotowe - oto %s.	تم - تفضل %s.
+Gotowe! Teraz otwórz pieczęć numer %s.	تم! الآن افتح الختم رقم %s.
+Grota Wygnańców 2 (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	كهف اللعنة 2 (ا.ح): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Grota Wygnańców 2 (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	كهف اللعنة 2 (ف.ز): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Głowa Węża obrócona (%s/4).	تم تدوير رأس الأفعى (%s/4).
+Głębie: brakuje ci Zamarzniętych Kluczy (%s sztuki).	الأعماق: تنقصك المفاتيح المتجمدة (%s قطع).
+Głębie: pozostało %s min.	الأعماق: متبقٍ %s دقيقة.
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom %s.	ستسحقك الأعماق. عُد عندما تبلغ المستوى %s.
+hełm 80. poziomu ulepszony na +5 do +9 (%s,	خوذة من المستوى 80 محسّنة من +5 إلى +9 (%s،
+Hełm Dragona (obrona): 5x %s, 5x %s,	خوذة دراجون (دفاع): 5x %s، 5x %s،
+Hełm Smoków (atak): 5x %s, 5x %s,	خوذة التنانين (هجوم): 5x %s، 5x %s،
+i %s Yang oszlifuję %s drogocenne Gaya.	و%s يانغ سأصقل %s غايا ثمينة.
+Jesteś za słaby. Wróć, gdy osiągniesz poziom %s.	أنت ضعيف جداً. عُد عندما تبلغ المستوى %s.
+Kamienie smoka: %s / %s	أحجار التنين: %s / %s
+Kamień Duszy %s	حجر الروح %s
+Katakumby Diabła: Wyjdziesz z lochu za %s sekund.	سراديب الشيطان: ستخرج من الزنزانة بعد %s ثانية.
+Katakumby Diabła: Wyjdziesz z lochu za %s sekundy.	سراديب الشيطان: ستخرج من الزنزانة بعد %s ثوانٍ.
+Klątwa Sunga Mahi: stopień %s (%s%% PŻ). Antidotum SungMa ją zdejmuje.	لعنة سونغ ماهي: الدرجة %s (%s%% نقاط حياة). ترياق سونغ ماهي يزيلها.
+Kolejne zadanie (%s/6):	المهمة التالية (%s/6):
+Kolumna Węży otwarta (%s/6).	تم فتح عمود الأفعى (%s/6).
+Koszt: %s yang.	التكلفة: %s يانغ.
+Kowal Świątyni Węży czeka. Uwolnieni kowale: %s/4.	حداد معبد الأفاعي ينتظر. الحدادون المحرَّرون: %s/4.
+Królestwo Żywiołów jest dostępne od poziomu %s. Wracasz do portu.	مملكة العناصر متاحة من المستوى %s. تعود إلى الميناء.
+Królowa Meley: %s	الملكة ميلي: %s
+Królowa Meley: ETAP %s - %s	الملكة ميلي: المرحلة %s - %s
+Królowa Meley: ETAP 4 - %s	الملكة ميلي: المرحلة 4 - %s
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (%s/4).	الملكة ميلي: خاتم نار التنين يشتعل على التمثال (%s/4).
+Królowa Meley: Pozostało %s min.	الملكة ميلي: متبقٍ %s دقيقة.
+Królowa Meley: Smocze Jaja (%s) chronią statuy. Zniszczcie je.	الملكة ميلي: بيض التنين (%s) تحمي التماثيل. دمّروها.
+Królowa Meley: Statua zmienia kolor (%s/4).	الملكة ميلي: التمثال يغيّر لونه (%s/4).
+Księga nie jest jeszcze gotowa. Wróć za %s h.	الكتاب ليس جاهزاً بعد. عُد بعد %s ساعة.
+Leże Smoka: %s	عرين التنين: %s
+Leże Smoka: %s powstaje na nowo - Beran-Setaou znów jest nietykalny!	عرين التنين: %s يُبعث من جديد - بيران-سيتاو منيع مرة أخرى!
+Leże Smoka: %s zniszczony. Pozostało kamieni: %s.	عرين التنين: تم تدمير %s. الأحجار المتبقية: %s.
+Leże Smoka: dopóki stoi choć jeden kamień smoka (%s), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	عرين التنين: ما دام حجر تنين واحد على الأقل قائماً (%s)، بيران-سيتاو منيع. دمّروا الأحجار!
+Leże Smoka: Pozostało %s min.	عرين التنين: متبقٍ %s دقيقة.
+Masz %s Kamyków i %s Gaya.	لديك %s أحجار كريمة و%s غايا.
+Masz za mało Gaya (potrzeba %s).	ليس لديك ما يكفي من غايا (تحتاج %s).
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba %s).	ليس لديك ما يكفي من توسعات متجر غايا (تحتاج %s).
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z %s.	سقط ماتين. بيران-سيتاو (ا.ح) ما زال يستمد القوة من %s.
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z %s.	سقط ماتين. بيران-سيتاو (ف.ز) ما زال يستمد القوة من %s.
+Misja ukończona. Nagroda: %s x100.	اكتملت المهمة. المكافأة: %s x100.
+Misja ukończona. Nagroda: %s.	اكتملت المهمة. المكافأة: %s.
+Misję możesz powtórzyć za %s h %s min.	يمكنك تكرار المهمة بعد %s ساعة %s دقيقة.
+Mogę wytworzyć dla ciebie %s.	يمكنني أن أصنع لك %s.
+Mój wynik: %s	نتيجتي: %s
+Nadciąga grupa żywiołu %s.	تقترب مجموعة العنصر %s.
+nagroda %s	المكافأة %s
+Nagroda: %s PD.	المكافأة: %s خبرة.
+Najpierw ukończ %s. piętro w tym sezonie.	أكمل أولاً الطابق %s في هذا الموسم.
+Najwyżej %s wejść dziennie (dziś: %s/%s).	%s مرات دخول يومياً على الأكثر (اليوم: %s/%s).
+Najwyżej %s wypraw dziennie (dziś: %s/%s).	%s رحلات يومياً على الأكثر (اليوم: %s/%s).
+Nemere: Pieczęć złamana. Pozostało: %s	النمير: الختم محطّم. المتبقي: %s
+Nemere: Pozostało %s min.	النمير: متبقٍ %s دقيقة.
+Nemere: Szel pokonany (%s/4).	النمير: تم هزيمة شيل (%s/4).
+Nemere: Zaginione cele etapu pojawiają się ponownie (%s).	النمير: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Nie masz przy sobie %s Yang.	ليس معك %s يانغ.
+Nie udało się wydać broni (kod %s). Zgłoś to administratorowi serwera.	تعذر تسليم السلاح (الرمز %s). بلّغ مدير الخادم بهذا.
+Od poziomu %s i 1. Poziomu Czempiona.	من المستوى %s والمستوى 1 للبطل.
+Od poziomu %s, grupa od %s osób, 30 minut;	من المستوى %s، مجموعة من %s أشخاص أو أكثر، 30 دقيقة؛
+Od poziomu %s, tylko w grupie. Każdy musi	من المستوى %s، في مجموعة فقط. على كل واحد أن
+Od poziomu %s, tylko w grupie. Po ukończeniu lub	من المستوى %s، في مجموعة فقط. بعد الانتهاء أو
+Od poziomu %s. Sam albo z drużyną.	من المستوى %s. بمفردك أو مع فريق.
+Od poziomu %s. Wstęp: %s Yang.	من المستوى %s. الدخول: %s يانغ.
+Oddaj uszy: %s	سلّم الآذان: %s
+Opłata za wejście: %s Yang.	رسوم الدخول: %s يانغ.
+Opłata za wejście: %s Yang. Dzisiejsza wyprawa %s/%s.	رسوم الدخول: %s يانغ. رحلة اليوم %s/%s.
+Otrzymujesz skrzynie z przerwanej gry w Okey: %s	تحصل على صناديق من لعبة أوكي المقطوعة: %s
+Otrzymujesz: %s x %s	تحصل على: %s x %s
+Otrzymujesz: %s. Broń zniknie za 15 dni (także założona).	تحصل على: %s. السلاح سيختفي بعد 15 يوماً (حتى وهو مرتدى).
+otrzymujesz: %sx %s	تحصل على: %sx %s
+Pasza dla konia: %s/30	علف الحصان: %s/30
+Pieczęć zdjęta (%s/7).	تم نزع الختم (%s/7).
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za %s.	يجب أن يرتاح الخاتم بعد آخر انتقال فوري. الخاتم التالي سيكون جاهزاً بعد %s.
+Pierścień odzyska moc za %s min.	سيستعيد الخاتم قوته بعد %s دقيقة.
+Piętra %s - %s	الطوابق %s - %s
+Piętra %s - %s >>	الطوابق %s - %s >>
+Piętro %s	الطابق %s
+Piętro %s (%s), etap 1: pokonaj wszystkie potwory w limicie czasu!	الطابق %s (%s)، المرحلة 1: اهزم جميع الوحوش ضمن الوقت المحدد!
+Piętro %s (następne)	الطابق %s (التالي)
+Piętro %s - nowe	الطابق %s - جديد
+Piętro %s - ukończone	الطابق %s - مكتمل
+Piętro %s, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	الطابق %s، المرحلة 3: اهزم موجات الوحوش حتى يظهر الزعماء!
+Pojawiają się bossowie piętra: %s! Pokonaj ich, by zdobyć piętro.	تظهر زعماء الطابق: %s! اهزمهم لتنال الطابق.
+Pokonajcie %s pająków, a potem użyjcie Pieczęci Biblioteki (%s/%s).	اهزموا %s عنكبوتاً، ثم استخدموا ختم المكتبة (%s/%s).
+Pokonajcie %s potworów głębin.	اهزموا %s من وحوش الأعماق.
+Pokonajcie %s skorpionów, a potem użyjcie Pieczęci Ruin (%s/%s).	اهزموا %s عقرباً، ثم استخدموا ختم الأطلال (%s/%s).
+Pokonajcie %s strażników ruin.	اهزموا %s من حراس الأطلال.
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (%s/%s).	اهزموا 40 مخلوقاً من الأدغال، ثم استخدموا ختم الأدغال (%s/%s).
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (%s/%s).	اهزموا 60 قرداً، ثم استخدموا ختم التل (%s/%s).
+Pokonane potwory: %s/100	الوحوش المهزومة: %s/100
+Pokonane: %s / %s	المهزومون: %s / %s
+Pokonani: %s / 50	المهزومون: %s / 50
+Port Nowego Kontynentu jest dostępny od poziomu %s. Łódź zabiera cię z powrotem na Przylądek.	ميناء القارة الجديدة متاح من المستوى %s. القارب يعيدك إلى الرأس.
+Portowy Sklep Gaya - kupiono: %s.	متجر غايا في الميناء - تم شراء: %s.
+Portowy Sklep Gaya: slot %s jest odblokowany na stałe.	متجر غايا في الميناء: الخانة %s مفتوحة بشكل دائم.
+Potrzebujesz przedmiotu: %s.	تحتاج إلى الشيء: %s.
+Potrzebuję %s Kamyków, %s Yang oraz	أحتاج %s أحجار كريمة، %s يانغ و
+poziom %s	المستوى %s
+Poziom konia: %s -> %s	مستوى الحصان: %s -> %s
+poziomu %s.	المستوى %s.
+Pozostalo podrozy: %s	الرحلات المتبقية: %s
+Pozostałe stele: %s	الألواح المتبقية: %s
+Pozostałe teleporty: %s z %s.	الانتقالات الفورية المتبقية: %s من %s.
+Pozostało: %s	المتبقي: %s
+Pozostały czas: %s min	الوقت المتبقي: %s دقيقة
+Pozostały czas: %s min.	الوقت المتبقي: %s دقيقة.
+Przy Strazniku zostaja: %s	تبقى عند الحارس: %s
+Pył Wężowy: +1 minuta. Zostało %s min.	غبار الأفعى: +1 دقيقة. متبقٍ %s دقيقة.
+Płaskowyż Iluzji przyjmuje wojowników od poziomu %s.	هضبة الوهم تستقبل المحاربين من المستوى %s.
+Razador: Pozostało %s min.	رازادور: متبقٍ %s دقيقة.
+Razador: Stela zgaszona. Pozostało: %s	رازادور: انطفأ اللوح. المتبقي: %s
+Razador: Zaginione cele etapu pojawiają się ponownie (%s).	رازادور: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Rosy En-Tai (PB): %s / %s.	ندى الإنتاي (ا.ح): %s / %s.
+Rosy En-Tai (SZC): %s / %s.	ندى الإنتاي (ف.ز): %s / %s.
+Ruiny Atlantydy (%s/6): %s	أطلال أتلانتس (%s/6): %s
+Ruiny Atlantydy: %s	أطلال أتلانتس: %s
+Ruiny Atlantydy: %s ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	أطلال أتلانتس: %s يحمل مفتاح أتلانتس. سلّموه إلى عمود الأصداف الصحيح!
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x%s (podział łupu: %s na %s).	أطلال أتلانتس: تحصل على: صندوق أتلانتس x%s (توزيع الغنائم: %s على %s).
+Ruiny Atlantydy: Pokonane potwory: %s / %s	أطلال أتلانتس: الوحوش المهزومة: %s / %s
+Ruiny Atlantydy: Pozostało %s min.	أطلال أتلانتس: متبقٍ %s دقيقة.
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: %s.	أطلال أتلانتس: تم هزيمة الحارس. الأعمدة المتبقية: %s.
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: %s - mniej czasu na Morkhota.	أطلال أتلانتس: كان مجرد وهم! نقاط العقوبة: %s - وقت أقل لمورخوت.
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: %s na %s).	أطلال أتلانتس: هذه المرة بدون صندوق (توزيع الغنائم: %s على %s).
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (%s).	أطلال أتلانتس: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Ruiny Atlantydy: Zostało Serc Atlantydy: %s	أطلال أتلانتس: المتبقي من قلوب أتلانتس: %s
+Ruiny Skorpiona (%s/5): %s	أطلال العقرب (%s/5): %s
+Ruiny Skorpiona: %s	أطلال العقرب: %s
+Ruiny Skorpiona: %s zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	أطلال العقرب: %s يحصل على ختم الأطلال. استخدمه لاستدعاء الموجة التالية.
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x%s (podział łupu: %s na %s).	أطلال العقرب: تحصل على: صندوق العقرب x%s (توزيع الغنائم: %s على %s).
+Ruiny Skorpiona: Pieczęć Ruin %s/%s złamana. Nadchodzi następna fala!	أطلال العقرب: ختم الأطلال %s/%s تحطّم. الموجة التالية قادمة!
+Ruiny Skorpiona: Pokonane potwory: %s / %s	أطلال العقرب: الوحوش المهزومة: %s / %s
+Ruiny Skorpiona: Pozostało %s min.	أطلال العقرب: متبقٍ %s دقيقة.
+Ruiny Skorpiona: Pozostało: %s	أطلال العقرب: المتبقي: %s
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: %s na %s).	أطلال العقرب: هذه المرة بدون صندوق (توزيع الغنائم: %s على %s).
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (%s).	أطلال العقرب: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Schody prowadzą na %s. piętro.	الدرج يقود إلى الطابق %s.
+Schronienie Meley: %s	ملجأ ميلي: %s
+Silny: po %s ukończonych słabych. 30 minut na Alastora.	قوي: بعد %s من الضعفاء المكتملين. 30 دقيقة لآلاستور.
+Skraca czas oczekiwania o %s%%	يقلّص وقت الانتظار بنسبة %s%%
+Sloty odblokowuje się po kolei: najpierw slot %s.	تُفتح الخانات بالتسلسل: أولاً الخانة %s.
+Starożytna Dżungla (%s/6): %s	الأدغال القديمة (%s/6): %s
+Starożytna Dżungla: %s	الأدغال القديمة: %s
+Starożytna Dżungla: %s zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	الأدغال القديمة: %s يحصل على ختم الأدغال. استخدمه لاستدعاء الموجة التالية.
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x%s (podział łupu: %s na %s).	الأدغال القديمة: تحصل على: صندوق الأدغال x%s (توزيع الغنائم: %s على %s).
+Starożytna Dżungla: Pieczęć Dżungli %s/%s złamana. Nadchodzi następna fala!	الأدغال القديمة: ختم الأدغال %s/%s تحطّم. الموجة التالية قادمة!
+Starożytna Dżungla: Pokonane potwory: %s / %s	الأدغال القديمة: الوحوش المهزومة: %s / %s
+Starożytna Dżungla: Pozostało %s min.	الأدغال القديمة: متبقٍ %s دقيقة.
+Starożytna Dżungla: Pozostało: %s	الأدغال القديمة: المتبقي: %s
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: %s na %s).	الأدغال القديمة: هذه المرة بدون صندوق (توزيع الغنائم: %s على %s).
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (%s).	الأدغال القديمة: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Stały bonus: %s	علاوة دائمة: %s
+Stały bonus: %s +5	علاوة دائمة: %s +5
+Straznik Katakumb nie wpuszcza cie z grupa: %s	حارس السراديب لا يسمح لك بالدخول مع المجموعة: %s
+Strażnica Nemere (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	برج مراقبة النمير (ا.ح): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Strażnica Nemere (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	برج مراقبة النمير (ف.ز): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Szansa powodzenia: %s%%. Kontynuować?	فرصة النجاح: %s%%. هل تريد المتابعة؟
+Szansa: %s%%. Możesz też przeciągnąć Kamyki na mnie.	الفرصة: %s%%. يمكنك أيضاً سحب الأحجار الكريمة إليّ.
+Twierdza Czerwonego Smoka (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	قلعة التنين الأحمر (ا.ح): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Twierdza Czerwonego Smoka (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	قلعة التنين الأحمر (ف.ز): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Twoj wynik: %s	نتيجتك: %s
+Twój koń nauczył się: %s (poziom 1).	تعلّم حصانك: %s (المستوى 1).
+Twój koń osiągnął %s poziom.	بلغ حصانك المستوى %s.
+Ty możesz wejść za %s min.	يمكنك الدخول بعد %s دقيقة.
+Udało się! Otrzymujesz %s Gaya.	نجحت! تحصل على %s غايا.
+Ukończone w tym sezonie: %s / %s.	المكتمل في هذا الموسم: %s / %s.
+Ukończone w tym sezonie: %s.	المكتمل في هذا الموسم: %s.
+umiejętność %s	مهارة %s
+Uwięziony Kowal jest wolny (%s/4)!	الحداد الأسير حرّ (%s/4)!
+Uwolnieni kowale: %s/4. Ulepszyłbym ci	الحدادون المحرَّرون: %s/4. كنت سأحسّن لك
+Wejście kosztuje %s Yang - nie masz tyle przy sobie.	الدخول يكلّف %s يانغ - ليس معك هذا المبلغ.
+Wejście kosztuje %s Yang - za mało przy sobie:	الدخول يكلّف %s يانغ - معك أقل من المطلوب:
+Wejście od poziomu %s.	الدخول من المستوى %s.
+Wejście od poziomu %s. Doświadczenie z tamtych	الدخول من المستوى %s. الخبرة من تلك
+Wejście: %s Yang.	الدخول: %s يانغ.
+Wejście: %s Yang. Najwyżej %s wypraw dziennie (dziś: %s/%s).	الدخول: %s يانغ. %s رحلات يومياً على الأكثر (اليوم: %s/%s).
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie %s Yang).	الدخول: تذكرة أتلانتس - واحدة لكل شخص (عندي %s يانغ).
+Wieża Demonów: Wyjdziesz z lochu za %s sekund.	برج الشياطين: ستخرج من الزنزانة بعد %s ثانية.
+Wieża Demonów: Wyjdziesz z lochu za %s sekundy.	برج الشياطين: ستخرج من الزنزانة بعد %s ثوانٍ.
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (%s).	برج الشياطين: ماتين الطابق المفقودة تظهر مرة أخرى (%s).
+Wieża Sung Mahi - %s: %s	برج سونغ ماهي - %s: %s
+Wieża Sung Mahi: %s	برج سونغ ماهي: %s
+Wieża Sung Mahi: %s. piętro ukończone w %s (min:s). Możesz na nie wrócić portalem w hali.	برج سونغ ماهي: تم إكمال الطابق %s في %s (د:ث). يمكنك العودة إليه عبر البوابة في القاعة.
+Wieża Sung Mahi: nagroda za %s. piętro w tym sezonie czeka w Magazynie ItemShop.	برج سونغ ماهي: مكافأة الطابق %s في هذا الموسم تنتظر في مخزن متجر العناصر.
+Wieża Sung Mahi: nagrody za %s. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	برج سونغ ماهي: تعذر حفظ مكافآت الطابق %s الآن - ستحصل عليها عند إكمال هذا الطابق في المرة القادمة.
+Wieża Sung Mahi: walka na %s. piętrze zaczyna się za 10 sekund.	برج سونغ ماهي: القتال في الطابق %s يبدأ بعد 10 ثوانٍ.
+Wioska I (%s)	القرية I (%s)
+Wioska II (%s)	القرية II (%s)
+Wróć, gdy osiągniesz poziom %s.	عُد عندما تبلغ المستوى %s.
+Wspinaczka: 1 Sztandar Czaszki (masz: %s).	التسلق: 1 راية جمجمة (لديك: %s).
+Wstęp kosztuje %s Yang.	الدخول يكلّف %s يانغ.
+Wstęp: %s Yang.	الدخول: %s يانغ.
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (%s). Wróć jutro.	لقد استنفدت رحلات اليوم إلى ملجأ ميلي (%s). عُد غداً.
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (%s). Wróć jutro.	لقد استنفدت رحلات اليوم إلى هذه الزنزانة (%s). عُد غداً.
+Wykorzystałeś już dzisiejsze wyprawy na statek (%s). Wróć jutro.	لقد استنفدت رحلات اليوم إلى السفينة (%s). عُد غداً.
+Wymagany poziom: %s. Bez czekania między wyprawami.	المستوى المطلوب: %s. دون انتظار بين الرحلات.
+Wymagany poziom: %s. Limit %s minut, bez czekania między wyprawami.	المستوى المطلوب: %s. الحد %s دقيقة، دون انتظار بين الرحلات.
+Wzgórze Wukonga (%s/6): %s	تل ووكونغ (%s/6): %s
+Wzgórze Wukonga: %s	تل ووكونغ: %s
+Wzgórze Wukonga: %s zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	تل ووكونغ: %s يحصل على ختم التل. استخدمه لاستدعاء الموجة التالية.
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x%s (podział łupu: %s na %s).	تل ووكونغ: تحصل على: صندوق ووكونغ x%s (توزيع الغنائم: %s على %s).
+Wzgórze Wukonga: Pieczęć Wzgórza %s/%s złamana. Nadchodzi następna fala!	تل ووكونغ: ختم التل %s/%s تحطّم. الموجة التالية قادمة!
+Wzgórze Wukonga: Pokonane potwory: %s / %s	تل ووكونغ: الوحوش المهزومة: %s / %s
+Wzgórze Wukonga: Pozostało %s min.	تل ووكونغ: متبقٍ %s دقيقة.
+Wzgórze Wukonga: Pozostało: %s	تل ووكونغ: المتبقي: %s
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: %s na %s).	تل ووكونغ: هذه المرة بدون صندوق (توزيع الغنائم: %s على %s).
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (%s).	تل ووكونغ: أهداف المرحلة المفقودة تظهر مرة أخرى (%s).
+Z %s Kamyków, Kamienia Duszy (+0 do +3)	من %s أحجار كريمة، حجر روح (+0 إلى +3)
+Z tej zbroi zrobie: %s	من هذا الدرع سأصنع: %s
+Z łusek i rogów Balathora zrobię %s,	من حراشف بالاتور وقرونه سأصنع %s،
+Za %s sekund zostaniesz przeniesiony na Doyyumhwaji.	بعد %s ثانية ستُنقل إلى دويومهواجي.
+Za %s sekund zostaniesz teleportowany do Doliny Orków.	بعد %s ثانية ستُنقل فوراً إلى وادي الغيلان.
+Za %s sekund zostaniesz teleportowany do Groty Wygnańców.	بعد %s ثانية ستُنقل فوراً إلى كهف_اللعنة.
+Za %s sekund zostaniesz teleportowany do miasta.	بعد %s ثانية ستُنقل فوراً إلى المدينة.
+Za %s sekund zostaniesz teleportowany do Świątyni Hwang.	بعد %s ثانية ستُنقل فوراً إلى معبد هوانغ.
+Za %s sekund zostaniesz teleportowany do Świątyni Ochao.	بعد %s ثانية ستُنقل فوراً إلى معبد الآشاو.
+Za %s sekund zostaniesz teleportowany na Górę Sohan.	بعد %s ثانية ستُنقل فوراً إلى جبل_سوهان.
+Za %s sekund zostaniesz teleportowany na Ognistą Ziemię.	بعد %s ثانية ستُنقل فوراً إلى أرض النار.
+Za %s sekundy zostaniesz przeniesiony na Doyyumhwaji.	بعد %s ثوانٍ ستُنقل إلى دويومهواجي.
+Za %s sekundy zostaniesz teleportowany do Doliny Orków.	بعد %s ثوانٍ ستُنقل فوراً إلى وادي الغيلان.
+Za %s sekundy zostaniesz teleportowany do Groty Wygnańców.	بعد %s ثوانٍ ستُنقل فوراً إلى كهف_اللعنة.
+Za %s sekundy zostaniesz teleportowany do miasta.	بعد %s ثوانٍ ستُنقل فوراً إلى المدينة.
+Za %s sekundy zostaniesz teleportowany do Świątyni Hwang.	بعد %s ثوانٍ ستُنقل فوراً إلى معبد هوانغ.
+Za %s sekundy zostaniesz teleportowany do Świątyni Ochao.	بعد %s ثوانٍ ستُنقل فوراً إلى معبد الآشاو.
+Za %s sekundy zostaniesz teleportowany na Górę Sohan.	بعد %s ثوانٍ ستُنقل فوراً إلى جبل_سوهان.
+Za %s sekundy zostaniesz teleportowany na Ognistą Ziemię.	بعد %s ثوانٍ ستُنقل فوراً إلى أرض النار.
+Za chwilę zostaniecie przeniesieni na %s. piętro.	ستُنقلون إلى الطابق %s بعد قليل.
+Za grę, w której zdobędziesz %s,	للعبة تحصل فيها على %s،
+Za słabi na głębiny (poziom %s+):	أنتم ضعفاء جداً على الأعماق (المستوى %s+):
+Za słabi, by wejść (poziom %s+):	أنتم ضعفاء جداً للدخول (المستوى %s+):
+Za słabi, by wejść na pokład (poziom %s+):	أنتم ضعفاء جداً لصعود السفينة (المستوى %s+):
+Zabij %s Wojowników En-Tai (PB) i wróć do mnie.	اقتل %s من محاربي الإنتاي (ا.ح) وعُد إليّ.
+Zabij %s Wojowników En-Tai (SZC) i wróć do mnie.	اقتل %s من محاربي الإنتاي (ف.ز) وعُد إليّ.
+Zaginione Metiny pojawiają się ponownie (%s).	الماتين المفقودة تظهر مرة أخرى (%s).
+Zaklęty Las (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	الغابة المسحورة (ا.ح): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+Zaklęty Las (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	الغابة المسحورة (ف.ز): متبقٍ %s دقيقة. بعد انتهاء الوقت تعود المجموعة إلى هضبة الوهم.
+zapomniana %s	%s منسية
+Zapomnieć %s?	هل تريد نسيان %s؟
+Zbierz więcej Kamyków - potrzebuję %s.	اجمع المزيد من الأحجار الكريمة - أحتاج %s.
+Zbroja i buty > 80: 3x %s,	درع وحذاء > 80: 3x %s،
+Zdobyte: %s / 5	تم الحصول على: %s / 5
+Zdobądź %s Ros En-Tai (PB).	احصل على %s من ندى الإنتاي (ا.ح).
+Zdobądź %s Ros En-Tai (SZC).	احصل على %s من ندى الإنتاي (ف.ز).
+Zebrana pasza: %s/30	العلف المجموع: %s/30
+Zestawu tej części%s,	طقم هذا الجزء%s،
+Ziemie Yohary są dostępne od poziomu %s. Wracasz do Portu Nowego Kontynentu.	أراضي يوهارا متاحة من المستوى %s. تعود إلى ميناء القارة الجديدة.
+Zniszcz %s Metiny Drzewnych Stworzeń (PB).	دمّر %s من ماتين مخلوقات الأشجار (ا.ح).
+Zniszcz %s Metinów Drzewnych Stworzeń (SZC).	دمّر %s من ماتين مخلوقات الأشجار (ف.ز).
+Zniszczcie %s Serca Atlantydy.	دمّروا %s من قلوب أتلانتس.
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (%s zostało).	دمّروا محارة الأعماق وسلّموا مفتاح أتلانتس إلى عمود الأصداف الصحيح (متبقٍ %s).
+Zniszczone Metiny: %s / %s.	الماتين المدمّرة: %s / %s.
+Zniszczone: %s / 5	المدمَّر: %s / 5
+Złota Księga Konia: %s/100	كتاب الحصان الذهبي: %s/100
+Śmiertelny Chłód Alastora skuwa ziemię (%s/12) - omijajcie białe kręgi!	برد آلاستور القاتل يجمّد الأرض (%s/12) - تجنبوا الدوائر البيضاء!
+Świetnie! Oto twoja pasza: %s sztuk.	رائع! هذا علفك: %s قطعة.
+Świątynia Węży: walka się zaczęła! Czas: %s min. Zapamiętajcie żywioły pierwszych czterech grup.	معبد الأفاعي: بدأت المعركة! الوقت: %s دقيقة. تذكروا عناصر المجموعات الأربع الأولى.
+Świątynia Węży: zostało %s min.	معبد الأفاعي: متبقٍ %s دقيقة.
+żywioł %s	العنصر %s

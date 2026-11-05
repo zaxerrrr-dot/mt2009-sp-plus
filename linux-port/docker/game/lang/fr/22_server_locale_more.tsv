@@ -1,5 +1,4 @@
-# MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
-# Polish<TAB>fr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check fr lists what is missing.
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>fr (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
 %d dni %d godzin	%d jours %d heures
 %d dni %d godzin i %d minut	%d jours %d heures et %d minutes
 %d godzin i %d minut	%d heures et %d minutes
@@ -14,6 +13,7 @@
 <Gildia> Wskazany gracz jest zajęty.	<Guilde> Ce joueur est occupé.
 <Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Groupe> Le groupe ne peut pas inviter quand des membres sont dans un donjon.
 <Grupa> Lider grupy jest w lochu.	<Groupe> Le chef du groupe est dans un donjon.
+<Guild> %d Skills used (%d, %d) to %u	<Guilde> %d compétences utilisées (%d, %d) sur %u
 [1106-??]No puedes unir esto.	[1106-??]Vous ne pouvez pas combiner ceci.
 [Gildia] Gildia jest w trakcie wojny.	[Guilde] La guilde est en guerre.
 [Gildia] Gildia osiągnęła limit zaproszeń.	[Guilde] La guilde a atteint sa limite d'invitations.
@@ -239,6 +239,7 @@ Ta opcja jest tymczasowo niedostępna.	Cette option est momentanément indisponi
 Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Ces eaux sont très pauvres, il n'y a presque pas de poissons ici. Parlez au Pêcheur.
 Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Ce joueur a plus de 2 milliards de Yang. Échange impossible.
 Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Cet achat dépasserait la limite d'achats par compte. Achetez-en moins.
+Test server time limit passed	Limite de temps du serveur de test dépassée
 To miejsce jest wolne od plagi Kamieni Metin.	Cet endroit est libéré du fléau des pierres Metin.
 To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Ce n'est pas moi... mais ils vous ont choisis. Nous nous reverrons, plus tôt que vous ne le pensez.
 Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Le poison ne s'utilise que sur la Tortue des sables Géante.

@@ -1,0 +1,332 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>hu (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  %sx Materiały Rzemieślnicze 	  %sx Kézműves alapanyag 
+  %sx Medal Konny	  %sx Ló medál
+%s (Czyściec Ognia)	%s (Tűz Tisztítótüze)
+%s (dzisiejsze wejścia)	%s (mai belépések)
+%s (Kamień Driad)	%s (Tündérek köve)
+%s (Książka Przebudzenia)	%s (Megvilágosodás kódex)
+%s (Lodowa Kraina)	%s (Jégország)
+%s (odpoczynek: %s min)	%s (pihenő: %s perc)
+%s (poziom / Czempion)	%s (szint / Bajnok)
+%s (poziom)	%s (szint)
+%s (słaby: %s/%s)	%s (gyenge: %s/%s)
+%s (Zamarznięte Klucze)	%s (Fagyos kulcsok)
+%s (Zegarek Kieszonkowy)	%s (Zsebóra)
+%s (żywioł %s)	%s (elem %s)
+%s drogocenne Gaya.	%s értékes Gaya.
+%s Efekt Zestawu. Wymagany jest	%s Szett-hatás. Szükséges
+%s juz idzie do ciebie.	%s már úton van hozzád.
+%s kk Yang	%s millió Yang
+%s odłamków II tej samej części, Projekt	%s II. szilánkból ugyanabból az alkatrészből, Terv
+%s razy.	%s alkalommal.
+%s szykuje potężny atak w linii - uciekaj w bok!	%s hatalmas vonalas támadásra készül - ugorj oldalra!
+%s tys. Yang	%s ezer Yang
+%s w oknie = hełm Dragona, bez nich - hełm Smoków.	%s az ablakban = Dragon sisak, nélkülük - Sárkányok sisakja.
+%s znalazł odpowiedni klucz!	%s megtalálta a megfelelő kulcsot!
+%s, %s albo %s)	%s, %s vagy %s)
+%s. piętro zdobyte w %s! Schody prowadzą na następne piętro.	A(z) %s. emelet meghódítva %s alatt! A lépcső a következő emeletre vezet.
+(stojących obok). Teraz: %s.	(mellettük állók). Most: %s.
+1. %s - poziom %s	1. %s - szint %s
+1. miejsce: %s x 10	1. hely: %s x 10
+1. miejsce: 10x %s	1. hely: 10x %s
+1. Poziom Czempiona, każdy oddaje %s Zamarznięte Klucze.	1. Bajnok szint, mindenki %s Fagyos kulcsot ad le.
+100 000 000 Yang i 500 Gaya. Szansa: %s%%.	100 000 000 Yang és 500 Gaya. Esély: %s%%.
+10x %s, 1 000 000 Yang. Szansa 30%% (+5) do 70%% (+9),	10x %s, 1 000 000 Yang. Esély 30%% (+5) és 70%% (+9) között,
+2. %s - poziom %s	2. %s - szint %s
+2. miejsce: %s x 5	2. hely: %s x 5
+2. miejsce: 5x %s	2. hely: 5x %s
+3. miejsce: %s x 3	3. hely: %s x 3
+3. miejsce: 3x %s	3. hely: 3x %s
+4. - 10. miejsce: %s x 1	4. - 10. hely: %s x 1
+4.-10. miejsce: 1x %s	4.-10. hely: 1x %s
+40x %s, 200 Gaya i 20 000 000 Yang.	40x %s, 200 Gaya és 20 000 000 Yang.
+<< Piętra %s - %s	<< Emeletek %s - %s
+Alastor pokonany! Za %s s wracacie do Upiornego Strażnika po nagrodę.	Alasztór legyőzve! %s mp múlva visszatértek a Szellem őrhöz a jutalomért.
+Alastor wpada w szał (%s/3) - zniszczcie Białe Jaja Smoka!	Alasztór tombol (%s/3) - pusztítsátok el a Fehér sárkánytojásokat!
+Biblioteka Wiedzy (%s/5): %s	Tudás könyvtára (%s/5): %s
+Biblioteka Wiedzy: %s	Tudás könyvtára: %s
+Biblioteka Wiedzy: %s zdobywa Pieczęć Biblioteki. Użyj jej, aby przyzwać następną falę.	Tudás könyvtára: %s megszerzi a Könyvtár pecsétjét. Használd a következő hullám megidézéséhez.
+Biblioteka Wiedzy: Baronówna wyczuwa %s śmiałków - ma %s%% więcej życia.	Tudás könyvtára: A Bárónő %s kalandort érzékel - %s%%-kal több életereje van.
+Biblioteka Wiedzy: Otrzymujesz: Skrzynia Biblioteki x%s (podział łupu: %s na %s).	Tudás könyvtára: Kapsz: Könyvtár láda x%s (zsákmányelosztás: %s elosztva %s fő között).
+Biblioteka Wiedzy: Pieczęć %s/%s złamana. Nadchodzi następna fala!	Tudás könyvtára: %s/%s pecsét eltört. Jön a következő hullám!
+Biblioteka Wiedzy: Pokonane pająki: %s / %s	Tudás könyvtára: Legyőzött pókok: %s / %s
+Biblioteka Wiedzy: Pozostałe królowe: %s	Tudás könyvtára: Hátralévő királynők: %s
+Biblioteka Wiedzy: Pozostałe Metiny: %s	Tudás könyvtára: Hátralévő metinek: %s
+Biblioteka Wiedzy: Pozostało %s min.	Tudás könyvtára: %s perc van hátra.
+Biblioteka Wiedzy: tym razem bez skrzyni (podział łupu: %s na %s).	Tudás könyvtára: ezúttal nincs láda (zsákmányelosztás: %s elosztva %s fő között).
+Biblioteka Wiedzy: Zaginione cele etapu pojawiają się ponownie (%s).	Tudás könyvtára: Az eltűnt szakaszcélok újra megjelennek (%s).
+Bilet do Atlantydy zużyty. Dzisiejsza wyprawa %s/%s.	Az Atlantisz jegy felhasználva. A mai expedíció: %s/%s.
+Bron 65 > 80: 2x %s,	Fegyver 65 > 80: 2x %s,
+Bron 80 > 87: 3x %s,	Fegyver 80 > 87: 3x %s,
+Bron 87 > Cyjanit: 3x %s,	Fegyver 87 > Kianit: 3x %s,
+Cena: %s Yang za bilet.	Ár: %s Yang jegyenként.
+Do Erebu wchodzi najwyżej %s osób.	Erebuba legfeljebb %s fő léphet be.
+Do Erebu wejdzie tylko grupa co najmniej %s osób.	Erebuba csak legalább %s fős csoport léphet be.
+Do Głębi wchodzi drużyna od %s do %s osób	A Mélységekbe %s és %s fő közötti csapat léphet be
+dopiero od poziomu %s.	csak a(z) %s. szinttől.
+Doświadczenie: %s	Tapasztalat: %s
+Drużyna od %s do %s osób, poziom %s+,	Csapat %s és %s fő között, %s+ szint,
+Dzisiejsze wyprawy do ruin już wykorzystane (%s dziennie):	A mai romokhoz vezető expedíciók már felhasználva (%s naponta):
+Dzisiejsze wyprawy do Schronienia już wykorzystane (%s dziennie):	A mai Menedékhez vezető expedíciók már felhasználva (%s naponta):
+Dzisiejsze wyprawy do tego lochu już wykorzystane (%s dziennie):	A mai expedíciók ebbe a kazamatába már felhasználva (%s naponta):
+Dzisiejsze wyprawy na statek już wykorzystane (%s dziennie):	A mai hajóexpedíciók már felhasználva (%s naponta):
+Dziś już dostałeś paszę. Wróć za %s h.	Ma már kaptál takarmányt. Gyere vissza %s óra múlva.
+Erebu: zostało %s min. Po czasie grupa wróci do Zaklętego Lasu.	Erebu: %s perc van hátra. Az idő leteltével a csoport visszatér az Elvarázsolt erdőbe.
+Gotowe - oto %s.	Kész - itt van %s.
+Gotowe! Teraz otwórz pieczęć numer %s.	Kész! Most nyisd ki a(z) %s. számú pecsétet.
+Grota Wygnańców 2 (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Száműzöttek barlangja 2 (MV): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Grota Wygnańców 2 (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Száműzöttek barlangja 2 (IH): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Głowa Węża obrócona (%s/4).	Kígyófej elfordítva (%s/4).
+Głębie: brakuje ci Zamarzniętych Kluczy (%s sztuki).	Mélységek: hiányoznak a Fagyos kulcsaid (%s darab).
+Głębie: pozostało %s min.	Mélységek: %s perc van hátra.
+Głębiny cię zmiażdżą. Wróć, gdy osiągniesz poziom %s.	A mélység összezúz. Gyere vissza, ha eléred a(z) %s. szintet.
+hełm 80. poziomu ulepszony na +5 do +9 (%s,	+5-től +9-ig fejlesztett 80. szintű sisak (%s,
+Hełm Dragona (obrona): 5x %s, 5x %s,	Dragon sisak (védelem): 5x %s, 5x %s,
+Hełm Smoków (atak): 5x %s, 5x %s,	Sárkányok sisakja (támadás): 5x %s, 5x %s,
+i %s Yang oszlifuję %s drogocenne Gaya.	és %s Yangért megcsiszolok %s értékes Gayát.
+Jesteś za słaby. Wróć, gdy osiągniesz poziom %s.	Túl gyenge vagy. Gyere vissza, ha eléred a(z) %s. szintet.
+Kamienie smoka: %s / %s	Sárkánykövek: %s / %s
+Kamień Duszy %s	Lélekkő %s
+Katakumby Diabła: Wyjdziesz z lochu za %s sekund.	Ördög katakombái: %s másodperc múlva kilépsz a kazamatából.
+Katakumby Diabła: Wyjdziesz z lochu za %s sekundy.	Ördög katakombái: %s másodperc múlva kilépsz a kazamatából.
+Klątwa Sunga Mahi: stopień %s (%s%% PŻ). Antidotum SungMa ją zdejmuje.	Sung Mahi átka: %s fokozat (%s%% TP). A Sung Ma ellenméreg eltávolítja.
+Kolejne zadanie (%s/6):	Következő feladat (%s/6):
+Kolumna Węży otwarta (%s/6).	Kígyóoszlop kinyitva (%s/6).
+Koszt: %s yang.	Költség: %s Yang.
+Kowal Świątyni Węży czeka. Uwolnieni kowale: %s/4.	A Szerpent templom kovácsa vár. Kiszabadított kovácsok: %s/4.
+Królestwo Żywiołów jest dostępne od poziomu %s. Wracasz do portu.	Az Elementálok birodalma a(z) %s. szinttől érhető el. Visszatérsz a kikötőbe.
+Królowa Meley: %s	Meley királynő: %s
+Królowa Meley: ETAP %s - %s	Meley királynő: %s. SZAKASZ - %s
+Królowa Meley: ETAP 4 - %s	Meley királynő: 4. SZAKASZ - %s
+Królowa Meley: Pierścień Smoczego Ognia płonie na statui (%s/4).	Meley királynő: A Sárkánytűz-gyűrű ég a szobron (%s/4).
+Królowa Meley: Pozostało %s min.	Meley királynő: %s perc van hátra.
+Królowa Meley: Smocze Jaja (%s) chronią statuy. Zniszczcie je.	Meley királynő: Sárkánytojások (%s) védik a szobrokat. Pusztítsátok el őket.
+Królowa Meley: Statua zmienia kolor (%s/4).	Meley királynő: A szobor színt vált (%s/4).
+Księga nie jest jeszcze gotowa. Wróć za %s h.	A könyv még nincs kész. Gyere vissza %s óra múlva.
+Leże Smoka: %s	Sárkány odúja: %s
+Leże Smoka: %s powstaje na nowo - Beran-Setaou znów jest nietykalny!	Sárkány odúja: %s újra felépül - Beran-Setaou ismét sebezhetetlen!
+Leże Smoka: %s zniszczony. Pozostało kamieni: %s.	Sárkány odúja: %s elpusztítva. Megmaradt kövek: %s.
+Leże Smoka: dopóki stoi choć jeden kamień smoka (%s), Beran-Setaou jest nietykalny. Zniszczcie kamienie!	Sárkány odúja: amíg csak egy sárkánykő is áll (%s), Beran-Setaou sebezhetetlen. Pusztítsátok el a köveket!
+Leże Smoka: Pozostało %s min.	Sárkány odúja: %s perc van hátra.
+Masz %s Kamyków i %s Gaya.	Van nálad %s Fénylő kődarab és %s Gaya.
+Masz za mało Gaya (potrzeba %s).	Nincs elég Gayad (szükséges: %s).
+Masz za mało Rozszerzeń Sklepu Gaya (potrzeba %s).	Nincs elég Gaya piac bővítőd (szükséges: %s).
+Metin padł. Beran-Setaou (PB) czerpie jeszcze moc z %s.	A metin elesett. Beran-Setaou (MV) még mindig erőt merít ebből: %s.
+Metin padł. Beran-Setaou (SZC) czerpie jeszcze moc z %s.	A metin elesett. Beran-Setaou (IH) még mindig erőt merít ebből: %s.
+Misja ukończona. Nagroda: %s x100.	A küldetés teljesítve. Jutalom: %s x100.
+Misja ukończona. Nagroda: %s.	A küldetés teljesítve. Jutalom: %s.
+Misję możesz powtórzyć za %s h %s min.	A küldetést %s óra %s perc múlva ismételheted meg.
+Mogę wytworzyć dla ciebie %s.	Elkészíthetem neked: %s.
+Mój wynik: %s	Az eredményem: %s
+Nadciąga grupa żywiołu %s.	Közeledik egy %s elemű csoport.
+nagroda %s	jutalom %s
+Nagroda: %s PD.	Jutalom: %s EXP.
+Najpierw ukończ %s. piętro w tym sezonie.	Előbb teljesítsd a(z) %s. emeletet ebben a szezonban.
+Najwyżej %s wejść dziennie (dziś: %s/%s).	Naponta legfeljebb %s belépés (ma: %s/%s).
+Najwyżej %s wypraw dziennie (dziś: %s/%s).	Naponta legfeljebb %s expedíció (ma: %s/%s).
+Nemere: Pieczęć złamana. Pozostało: %s	Nemere: A pecsét megtört. Hátravan: %s
+Nemere: Pozostało %s min.	Nemere: %s perc van hátra.
+Nemere: Szel pokonany (%s/4).	Nemere: Szel legyőzve (%s/4).
+Nemere: Zaginione cele etapu pojawiają się ponownie (%s).	Nemere: Az eltűnt szakaszcélok újra megjelennek (%s).
+Nie masz przy sobie %s Yang.	Nincs nálad %s Yang.
+Nie udało się wydać broni (kod %s). Zgłoś to administratorowi serwera.	Nem sikerült kiadni a fegyvert (kód: %s). Jelentsd ezt a szerver adminisztrátorának.
+Od poziomu %s i 1. Poziomu Czempiona.	A(z) %s. szinttől és 1. Bajnok szinttel.
+Od poziomu %s, grupa od %s osób, 30 minut;	A(z) %s. szinttől, %s fős vagy nagyobb csoport, 30 perc;
+Od poziomu %s, tylko w grupie. Każdy musi	A(z) %s. szinttől, csak csoportban. Mindenkinek
+Od poziomu %s, tylko w grupie. Po ukończeniu lub	A(z) %s. szinttől, csak csoportban. Befejezés vagy
+Od poziomu %s. Sam albo z drużyną.	A(z) %s. szinttől. Egyedül vagy csapattal.
+Od poziomu %s. Wstęp: %s Yang.	A(z) %s. szinttől. Belépő: %s Yang.
+Oddaj uszy: %s	Add le a füleket: %s
+Opłata za wejście: %s Yang.	Belépési díj: %s Yang.
+Opłata za wejście: %s Yang. Dzisiejsza wyprawa %s/%s.	Belépési díj: %s Yang. A mai expedíció: %s/%s.
+Otrzymujesz skrzynie z przerwanej gry w Okey: %s	Megkapod a megszakadt Okey játék ládáit: %s
+Otrzymujesz: %s x %s	Megkapod: %s x %s
+Otrzymujesz: %s. Broń zniknie za 15 dni (także założona).	Megkapod: %s. A fegyver 15 nap múlva eltűnik (felszerelve is).
+otrzymujesz: %sx %s	megkapod: %sx %s
+Pasza dla konia: %s/30	Takarmány a lónak: %s/30
+Pieczęć zdjęta (%s/7).	Pecsét eltávolítva (%s/7).
+Pierścień musi odpocząć po ostatniej teleportacji. Najbliższy będzie gotowy za %s.	A gyűrűnek pihennie kell az utolsó teleportálás után. A következő %s múlva lesz kész.
+Pierścień odzyska moc za %s min.	A gyűrű %s perc múlva nyeri vissza erejét.
+Piętra %s - %s	Emeletek %s - %s
+Piętra %s - %s >>	Emeletek %s - %s >>
+Piętro %s	Emelet %s
+Piętro %s (%s), etap 1: pokonaj wszystkie potwory w limicie czasu!	%s. emelet (%s), 1. szakasz: győzd le az összes szörnyet az időkorláton belül!
+Piętro %s (następne)	%s. emelet (következő)
+Piętro %s - nowe	%s. emelet - új
+Piętro %s - ukończone	%s. emelet - teljesítve
+Piętro %s, etap 3: pokonaj fale potworów, aż pojawią się bossowie!	%s. emelet, 3. szakasz: győzd le a szörnyhullámokat, amíg meg nem jelennek a főnökök!
+Pojawiają się bossowie piętra: %s! Pokonaj ich, by zdobyć piętro.	Megjelennek az emelet főnökei: %s! Győzd le őket, hogy megszerezd az emeletet.
+Pokonajcie %s pająków, a potem użyjcie Pieczęci Biblioteki (%s/%s).	Győzzetek le %s pókot, majd használjátok a Könyvtár pecsétjét (%s/%s).
+Pokonajcie %s potworów głębin.	Győzzetek le %s mélységi szörnyet.
+Pokonajcie %s skorpionów, a potem użyjcie Pieczęci Ruin (%s/%s).	Győzzetek le %s skorpiont, majd használjátok a Romok pecsétjét (%s/%s).
+Pokonajcie %s strażników ruin.	Győzzetek le %s romőrt.
+Pokonajcie 40 stworzeń dżungli, a potem użyjcie Pieczęci Dżungli (%s/%s).	Győzzetek le 40 dzsungellényt, majd használjátok a Dzsungel pecsétjét (%s/%s).
+Pokonajcie 60 małp, a potem użyjcie Pieczęci Wzgórza (%s/%s).	Győzzetek le 60 majmot, majd használjátok a Domb pecsétjét (%s/%s).
+Pokonane potwory: %s/100	Legyőzött szörnyek: %s/100
+Pokonane: %s / %s	Legyőzve: %s / %s
+Pokonani: %s / 50	Legyőzöttek: %s / 50
+Port Nowego Kontynentu jest dostępny od poziomu %s. Łódź zabiera cię z powrotem na Przylądek.	Az Új Kontinens kikötője a(z) %s. szinttől érhető el. A hajó visszavisz a Fokra.
+Portowy Sklep Gaya - kupiono: %s.	Kikötői Gaya bolt - megvásárolva: %s.
+Portowy Sklep Gaya: slot %s jest odblokowany na stałe.	Kikötői Gaya bolt: a(z) %s. hely véglegesen fel van oldva.
+Potrzebujesz przedmiotu: %s.	Szükséged van erre a tárgyra: %s.
+Potrzebuję %s Kamyków, %s Yang oraz	Szükségem van %s Fénylő kődarabra, %s Yangra és
+poziom %s	%s. szint
+Poziom konia: %s -> %s	A ló szintje: %s -> %s
+poziomu %s.	%s. szint.
+Pozostalo podrozy: %s	Hátralévő utak: %s
+Pozostałe stele: %s	Hátralévő emlékkövek: %s
+Pozostałe teleporty: %s z %s.	Hátralévő teleportok: %s / %s.
+Pozostało: %s	Hátravan: %s
+Pozostały czas: %s min	Hátralévő idő: %s perc
+Pozostały czas: %s min.	Hátralévő idő: %s perc.
+Przy Strazniku zostaja: %s	Az Őrnél maradnak: %s
+Pył Wężowy: +1 minuta. Zostało %s min.	Szerpent por: +1 perc. %s perc van hátra.
+Płaskowyż Iluzji przyjmuje wojowników od poziomu %s.	Az Illúzió-fennsík a(z) %s. szinttől fogad harcosokat.
+Razador: Pozostało %s min.	Razador: %s perc van hátra.
+Razador: Stela zgaszona. Pozostało: %s	Razador: Az emlékkő kialudt. Hátravan: %s
+Razador: Zaginione cele etapu pojawiają się ponownie (%s).	Razador: Az eltűnt szakaszcélok újra megjelennek (%s).
+Rosy En-Tai (PB): %s / %s.	En-Tai harmat (MV): %s / %s.
+Rosy En-Tai (SZC): %s / %s.	En-Tai harmat (IH): %s / %s.
+Ruiny Atlantydy (%s/6): %s	Atlantisz romjai (%s/6): %s
+Ruiny Atlantydy: %s	Atlantisz romjai: %s
+Ruiny Atlantydy: %s ma Klucz Atlantydy. Oddajcie go właściwej Kolumnie z Muszli!	Atlantisz romjai: %s birtokolja az Atlantisz kulcsot. Adjátok oda a megfelelő Kagylóoszlopnak!
+Ruiny Atlantydy: Otrzymujesz: Skrzynia Atlantydy x%s (podział łupu: %s na %s).	Atlantisz romjai: Kapsz: Atlantisz láda x%s (zsákmányelosztás: %s elosztva %s fő között).
+Ruiny Atlantydy: Pokonane potwory: %s / %s	Atlantisz romjai: Legyőzött szörnyek: %s / %s
+Ruiny Atlantydy: Pozostało %s min.	Atlantisz romjai: %s perc van hátra.
+Ruiny Atlantydy: Strażnik pokonany. Zostało kolumn: %s.	Atlantisz romjai: Az őr legyőzve. Hátralévő oszlopok: %s.
+Ruiny Atlantydy: To było tylko złudzenie! Punkty karne: %s - mniej czasu na Morkhota.	Atlantisz romjai: Ez csak káprázat volt! Büntetőpontok: %s - kevesebb idő Morkhotra.
+Ruiny Atlantydy: tym razem bez skrzyni (podział łupu: %s na %s).	Atlantisz romjai: ezúttal nincs láda (zsákmányelosztás: %s elosztva %s fő között).
+Ruiny Atlantydy: Zaginione cele etapu pojawiają się ponownie (%s).	Atlantisz romjai: Az eltűnt szakaszcélok újra megjelennek (%s).
+Ruiny Atlantydy: Zostało Serc Atlantydy: %s	Atlantisz romjai: Hátralévő Atlantisz szívek: %s
+Ruiny Skorpiona (%s/5): %s	Skorpió romok (%s/5): %s
+Ruiny Skorpiona: %s	Skorpió romok: %s
+Ruiny Skorpiona: %s zdobywa Pieczęć Ruin. Użyj jej, aby przyzwać następną falę.	Skorpió romok: %s megszerzi a Romok pecsétjét. Használd a következő hullám megidézéséhez.
+Ruiny Skorpiona: Otrzymujesz: Skrzynia Skorpiona x%s (podział łupu: %s na %s).	Skorpió romok: Kapsz: Skorpió láda x%s (zsákmányelosztás: %s elosztva %s fő között).
+Ruiny Skorpiona: Pieczęć Ruin %s/%s złamana. Nadchodzi następna fala!	Skorpió romok: %s/%s Romok pecsét eltört. Jön a következő hullám!
+Ruiny Skorpiona: Pokonane potwory: %s / %s	Skorpió romok: Legyőzött szörnyek: %s / %s
+Ruiny Skorpiona: Pozostało %s min.	Skorpió romok: %s perc van hátra.
+Ruiny Skorpiona: Pozostało: %s	Skorpió romok: Hátravan: %s
+Ruiny Skorpiona: tym razem bez skrzyni (podział łupu: %s na %s).	Skorpió romok: ezúttal nincs láda (zsákmányelosztás: %s elosztva %s fő között).
+Ruiny Skorpiona: Zaginione cele etapu pojawiają się ponownie (%s).	Skorpió romok: Az eltűnt szakaszcélok újra megjelennek (%s).
+Schody prowadzą na %s. piętro.	A lépcső a(z) %s. emeletre vezet.
+Schronienie Meley: %s	Meley menedéke: %s
+Silny: po %s ukończonych słabych. 30 minut na Alastora.	Erős: %s teljesített gyenge után. 30 perc Alasztórra.
+Skraca czas oczekiwania o %s%%	%s%%-kal csökkenti a várakozási időt
+Sloty odblokowuje się po kolei: najpierw slot %s.	A helyek sorban oldódnak fel: először a(z) %s. hely.
+Starożytna Dżungla (%s/6): %s	Ősi dzsungel (%s/6): %s
+Starożytna Dżungla: %s	Ősi dzsungel: %s
+Starożytna Dżungla: %s zdobywa Pieczęć Dżungli. Użyj jej, aby przyzwać następną falę.	Ősi dzsungel: %s megszerzi a Dzsungel pecsétjét. Használd a következő hullám megidézéséhez.
+Starożytna Dżungla: Otrzymujesz: Skrzynia Dżungli x%s (podział łupu: %s na %s).	Ősi dzsungel: Kapsz: Dzsungel láda x%s (zsákmányelosztás: %s elosztva %s fő között).
+Starożytna Dżungla: Pieczęć Dżungli %s/%s złamana. Nadchodzi następna fala!	Ősi dzsungel: %s/%s Dzsungel pecsét eltört. Jön a következő hullám!
+Starożytna Dżungla: Pokonane potwory: %s / %s	Ősi dzsungel: Legyőzött szörnyek: %s / %s
+Starożytna Dżungla: Pozostało %s min.	Ősi dzsungel: %s perc van hátra.
+Starożytna Dżungla: Pozostało: %s	Ősi dzsungel: Hátravan: %s
+Starożytna Dżungla: tym razem bez skrzyni (podział łupu: %s na %s).	Ősi dzsungel: ezúttal nincs láda (zsákmányelosztás: %s elosztva %s fő között).
+Starożytna Dżungla: Zaginione cele etapu pojawiają się ponownie (%s).	Ősi dzsungel: Az eltűnt szakaszcélok újra megjelennek (%s).
+Stały bonus: %s	Állandó bónusz: %s
+Stały bonus: %s +5	Állandó bónusz: %s +5
+Straznik Katakumb nie wpuszcza cie z grupa: %s	A Katakomba őr nem enged be ezzel a csoporttal: %s
+Strażnica Nemere (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Nemere őrtornya (MV): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Strażnica Nemere (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Nemere őrtornya (IH): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Szansa powodzenia: %s%%. Kontynuować?	Siker esélye: %s%%. Folytatod?
+Szansa: %s%%. Możesz też przeciągnąć Kamyki na mnie.	Esély: %s%%. A Fénylő kődarabokat rám is húzhatod.
+Twierdza Czerwonego Smoka (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Vörös Sárkány erőd (MV): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Twierdza Czerwonego Smoka (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Vörös Sárkány erőd (IH): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Twoj wynik: %s	Az eredményed: %s
+Twój koń nauczył się: %s (poziom 1).	A lovad megtanulta: %s (1. szint).
+Twój koń osiągnął %s poziom.	A lovad elérte a(z) %s. szintet.
+Ty możesz wejść za %s min.	Te %s perc múlva léphetsz be.
+Udało się! Otrzymujesz %s Gaya.	Sikerült! Kapsz %s Gayát.
+Ukończone w tym sezonie: %s / %s.	Ebben a szezonban teljesítve: %s / %s.
+Ukończone w tym sezonie: %s.	Ebben a szezonban teljesítve: %s.
+umiejętność %s	készség %s
+Uwięziony Kowal jest wolny (%s/4)!	A fogoly kovács szabad (%s/4)!
+Uwolnieni kowale: %s/4. Ulepszyłbym ci	Kiszabadított kovácsok: %s/4. Fejleszteném neked a
+Wejście kosztuje %s Yang - nie masz tyle przy sobie.	A belépés %s Yangba kerül - nincs nálad ennyi.
+Wejście kosztuje %s Yang - za mało przy sobie:	A belépés %s Yangba kerül - nincs nálad elég:
+Wejście od poziomu %s.	Belépés a(z) %s. szinttől.
+Wejście od poziomu %s. Doświadczenie z tamtych	Belépés a(z) %s. szinttől. Az onnan származó tapasztalat
+Wejście: %s Yang.	Belépés: %s Yang.
+Wejście: %s Yang. Najwyżej %s wypraw dziennie (dziś: %s/%s).	Belépés: %s Yang. Naponta legfeljebb %s expedíció (ma: %s/%s).
+Wejście: Bilet do Atlantydy - jeden za każdą osobę (u mnie %s Yang).	Belépés: Atlantisz jegy - személyenként egy (nálam %s Yangért kapható).
+Wieża Demonów: Wyjdziesz z lochu za %s sekund.	Démon-torony: %s másodperc múlva kilépsz a kazamatából.
+Wieża Demonów: Wyjdziesz z lochu za %s sekundy.	Démon-torony: %s másodperc múlva kilépsz a kazamatából.
+Wieża Demonów: Zaginione Metiny piętra pojawiają się ponownie (%s).	Démon-torony: Az emelet eltűnt metinjei újra megjelennek (%s).
+Wieża Sung Mahi - %s: %s	Sung Mahi tornya - %s: %s
+Wieża Sung Mahi: %s	Sung Mahi tornya: %s
+Wieża Sung Mahi: %s. piętro ukończone w %s (min:s). Możesz na nie wrócić portalem w hali.	Sung Mahi tornya: a(z) %s. emelet teljesítve %s alatt (perc:mp). Visszatérhetsz oda a csarnokban lévő portállal.
+Wieża Sung Mahi: nagroda za %s. piętro w tym sezonie czeka w Magazynie ItemShop.	Sung Mahi tornya: a(z) %s. emelet ebben a szezonban járó jutalma az ItemShop raktárban vár.
+Wieża Sung Mahi: nagrody za %s. piętro nie udało się teraz zapisać - dostaniesz ją przy następnym ukończeniu tego piętra.	Sung Mahi tornya: a(z) %s. emelet jutalmát most nem sikerült elmenteni - a következő teljesítéskor megkapod.
+Wieża Sung Mahi: walka na %s. piętrze zaczyna się za 10 sekund.	Sung Mahi tornya: a harc a(z) %s. emeleten 10 másodperc múlva kezdődik.
+Wioska I (%s)	I. falu (%s)
+Wioska II (%s)	II. falu (%s)
+Wróć, gdy osiągniesz poziom %s.	Gyere vissza, ha eléred a(z) %s. szintet.
+Wspinaczka: 1 Sztandar Czaszki (masz: %s).	Mászás: 1 Koponyazászló (van: %s).
+Wstęp kosztuje %s Yang.	A belépés %s Yangba kerül.
+Wstęp: %s Yang.	Belépő: %s Yang.
+Wykorzystałeś już dzisiejsze wyprawy do Schronienia Meley (%s). Wróć jutro.	Már felhasználtad a mai expedícióidat Meley menedékére (%s). Gyere vissza holnap.
+Wykorzystałeś już dzisiejsze wyprawy do tego lochu (%s). Wróć jutro.	Már felhasználtad a mai expedícióidat ebbe a kazamatába (%s). Gyere vissza holnap.
+Wykorzystałeś już dzisiejsze wyprawy na statek (%s). Wróć jutro.	Már felhasználtad a mai hajóexpedícióidat (%s). Gyere vissza holnap.
+Wymagany poziom: %s. Bez czekania między wyprawami.	Szükséges szint: %s. Várakozás nélkül az expedíciók között.
+Wymagany poziom: %s. Limit %s minut, bez czekania między wyprawami.	Szükséges szint: %s. Korlát: %s perc, várakozás nélkül az expedíciók között.
+Wzgórze Wukonga (%s/6): %s	Wukong dombja (%s/6): %s
+Wzgórze Wukonga: %s	Wukong dombja: %s
+Wzgórze Wukonga: %s zdobywa Pieczęć Wzgórza. Użyj jej, aby przyzwać następną falę.	Wukong dombja: %s megszerzi a Domb pecsétjét. Használd a következő hullám megidézéséhez.
+Wzgórze Wukonga: Otrzymujesz: Skrzynia Wukonga x%s (podział łupu: %s na %s).	Wukong dombja: Kapsz: Wukong láda x%s (zsákmányelosztás: %s elosztva %s fő között).
+Wzgórze Wukonga: Pieczęć Wzgórza %s/%s złamana. Nadchodzi następna fala!	Wukong dombja: %s/%s Domb pecsét eltört. Jön a következő hullám!
+Wzgórze Wukonga: Pokonane potwory: %s / %s	Wukong dombja: Legyőzött szörnyek: %s / %s
+Wzgórze Wukonga: Pozostało %s min.	Wukong dombja: %s perc van hátra.
+Wzgórze Wukonga: Pozostało: %s	Wukong dombja: Hátravan: %s
+Wzgórze Wukonga: tym razem bez skrzyni (podział łupu: %s na %s).	Wukong dombja: ezúttal nincs láda (zsákmányelosztás: %s elosztva %s fő között).
+Wzgórze Wukonga: Zaginione cele etapu pojawiają się ponownie (%s).	Wukong dombja: Az eltűnt szakaszcélok újra megjelennek (%s).
+Z %s Kamyków, Kamienia Duszy (+0 do +3)	%s Fénylő kődarab, Lélekkő (+0-tól +3-ig)
+Z tej zbroi zrobie: %s	Ebből a páncélból ezt készítem: %s
+Z łusek i rogów Balathora zrobię %s,	Balathor pikkelyeiből és szarvaiból elkészítem ezt: %s,
+Za %s sekund zostaniesz przeniesiony na Doyyumhwaji.	%s másodperc múlva átkerülsz Doyyumhwajiba.
+Za %s sekund zostaniesz teleportowany do Doliny Orków.	%s másodperc múlva teleportálnak az Ork-völgybe.
+Za %s sekund zostaniesz teleportowany do Groty Wygnańców.	%s másodperc múlva teleportálnak a Száműzöttek barlangjába.
+Za %s sekund zostaniesz teleportowany do miasta.	%s másodperc múlva teleportálnak a városba.
+Za %s sekund zostaniesz teleportowany do Świątyni Hwang.	%s másodperc múlva teleportálnak a Hwang templomba.
+Za %s sekund zostaniesz teleportowany do Świątyni Ochao.	%s másodperc múlva teleportálnak az Ochao templomba.
+Za %s sekund zostaniesz teleportowany na Górę Sohan.	%s másodperc múlva teleportálnak a Sohan-hegyre.
+Za %s sekund zostaniesz teleportowany na Ognistą Ziemię.	%s másodperc múlva teleportálnak a Tűzföldre.
+Za %s sekundy zostaniesz przeniesiony na Doyyumhwaji.	%s másodperc múlva átkerülsz Doyyumhwajiba.
+Za %s sekundy zostaniesz teleportowany do Doliny Orków.	%s másodperc múlva teleportálnak az Ork-völgybe.
+Za %s sekundy zostaniesz teleportowany do Groty Wygnańców.	%s másodperc múlva teleportálnak a Száműzöttek barlangjába.
+Za %s sekundy zostaniesz teleportowany do miasta.	%s másodperc múlva teleportálnak a városba.
+Za %s sekundy zostaniesz teleportowany do Świątyni Hwang.	%s másodperc múlva teleportálnak a Hwang templomba.
+Za %s sekundy zostaniesz teleportowany do Świątyni Ochao.	%s másodperc múlva teleportálnak az Ochao templomba.
+Za %s sekundy zostaniesz teleportowany na Górę Sohan.	%s másodperc múlva teleportálnak a Sohan-hegyre.
+Za %s sekundy zostaniesz teleportowany na Ognistą Ziemię.	%s másodperc múlva teleportálnak a Tűzföldre.
+Za chwilę zostaniecie przeniesieni na %s. piętro.	Hamarosan átkerültök a(z) %s. emeletre.
+Za grę, w której zdobędziesz %s,	Olyan játékért, amelyben %s pontot szerzel,
+Za słabi na głębiny (poziom %s+):	Túl gyengék vagytok a mélységhez (%s+ szint):
+Za słabi, by wejść (poziom %s+):	Túl gyengék vagytok a belépéshez (%s+ szint):
+Za słabi, by wejść na pokład (poziom %s+):	Túl gyengék vagytok a fedélzetre lépéshez (%s+ szint):
+Zabij %s Wojowników En-Tai (PB) i wróć do mnie.	Ölj meg %s En-Tai harcost (MV), és gyere vissza hozzám.
+Zabij %s Wojowników En-Tai (SZC) i wróć do mnie.	Ölj meg %s En-Tai harcost (IH), és gyere vissza hozzám.
+Zaginione Metiny pojawiają się ponownie (%s).	Az eltűnt metinek újra megjelennek (%s).
+Zaklęty Las (PB): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Elvarázsolt erdő (MV): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+Zaklęty Las (SZC): zostało %s min. Po czasie grupa wróci na Płaskowyż Iluzji.	Elvarázsolt erdő (IH): %s perc van hátra. Az idő leteltével a csoport visszatér az Illúzió-fennsíkra.
+zapomniana %s	elfelejtett %s
+Zapomnieć %s?	Elfelejted: %s?
+Zbierz więcej Kamyków - potrzebuję %s.	Gyűjts még Fénylő kődarabot - szükségem van ennyire: %s.
+Zbroja i buty > 80: 3x %s,	Páncél és cipő > 80: 3x %s,
+Zdobyte: %s / 5	Megszerezve: %s / 5
+Zdobądź %s Ros En-Tai (PB).	Szerezz %s En-Tai harmatot (MV).
+Zdobądź %s Ros En-Tai (SZC).	Szerezz %s En-Tai harmatot (IH).
+Zebrana pasza: %s/30	Összegyűjtött takarmány: %s/30
+Zestawu tej części%s,	Ennek az alkatrésznek a szettje%s,
+Ziemie Yohary są dostępne od poziomu %s. Wracasz do Portu Nowego Kontynentu.	Yohara földjei a(z) %s. szinttől érhetők el. Visszatérsz az Új Kontinens kikötőjébe.
+Zniszcz %s Metiny Drzewnych Stworzeń (PB).	Pusztíts el %s Faszörny metint (MV).
+Zniszcz %s Metinów Drzewnych Stworzeń (SZC).	Pusztíts el %s Faszörny metint (IH).
+Zniszczcie %s Serca Atlantydy.	Pusztítsatok el %s Atlantisz szívet.
+Zniszczcie Głębinową Muszlę i oddajcie Klucz Atlantydy właściwej Kolumnie z Muszli (%s zostało).	Pusztítsátok el a Mélytengeri kagylót, és vigyétek az Atlantisz kulcsot a megfelelő Kagylóoszlophoz (%s maradt).
+Zniszczone Metiny: %s / %s.	Elpusztított metinek: %s / %s.
+Zniszczone: %s / 5	Elpusztítva: %s / 5
+Złota Księga Konia: %s/100	Arany ló könyv: %s/100
+Śmiertelny Chłód Alastora skuwa ziemię (%s/12) - omijajcie białe kręgi!	Alasztór Halálos hidege lefagyasztja a földet (%s/12) - kerüljétek a fehér köröket!
+Świetnie! Oto twoja pasza: %s sztuk.	Remek! Itt a takarmányod: %s darab.
+Świątynia Węży: walka się zaczęła! Czas: %s min. Zapamiętajcie żywioły pierwszych czterech grup.	Szerpent templom: a csata megkezdődött! Idő: %s perc. Jegyezzétek meg az első négy csoport elemeit.
+Świątynia Węży: zostało %s min.	Szerpent templom: %s perc van hátra.
+żywioł %s	elem %s

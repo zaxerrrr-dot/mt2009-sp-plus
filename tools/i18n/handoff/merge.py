@@ -4,7 +4,7 @@
 this run are kept (a re-run replaces only what it has)."""
 import os, sys
 W = os.path.dirname(os.path.abspath(__file__))
-LANG = "/opt/metin2/git/wt-y-tr-quest/linux-port/docker/game/lang"
+LANG = os.path.abspath(os.path.join(W, "..", "..", "..", "linux-port", "docker", "game", "lang"))
 lang = sys.argv[1]
 pl = {}
 for line in open(os.path.join(W, "all_pl.tsv"), encoding="utf-8"):

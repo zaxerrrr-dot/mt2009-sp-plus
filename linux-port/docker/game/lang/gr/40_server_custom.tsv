@@ -1,0 +1,422 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>gr (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, επαναφορά %d δευτ.: %s
+  %u %s - jeszcze %u min	  %u %s - ακόμα %u λεπ.
+  %u %s - na stałe	  %u %s - μόνιμα
+ (bot, także odpoczynek)	 (bot, μαζί με την ξεκούραση)
+ i premie do dropu	 και μπόνους λείας
+ Nagroda trafila do ekwipunku.	 Η ανταμοιβή μπήκε στο ιματιοφυλάκιό σου.
+%s (offline): zapis do player.quest się nie udał.	%s (εκτός σύνδεσης): η αποθήκευση στο player.quest απέτυχε.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	Ο/Η %s πηγαίνει σε κάποιον που τον κάλεσε και δεν θα δεχτεί τώρα μονομαχία.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	Ο/Η %s πηγαίνει σε επιδρομή και δεν θα δεχτεί τώρα μονομαχία.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	Ο/Η %s είναι σύντροφος κάποιου και δεν παίρνει μέρος σε μονομαχίες.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	Ο/Η %s είναι σύντροφος κάποιου και δεν θα μπει στην ομάδα σου.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	Ο/Η %s βρίσκεται σε άλλον πυρήνα (κανάλι %u), και η ουρά player.web_admin_queue δεν δέχτηκε την εντολή.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	Ο/Η %s βρίσκεται στο κανάλι %u - η επαναφορά (%s) ζητήθηκε και θα εκτελεστεί εκεί σε λίγα δευτερόλεπτα.
+%s kopie rude i nie przyjmie teraz pojedynku.	Ο/Η %s σκάβει μετάλλευμα και δεν θα δεχτεί τώρα μονομαχία.
+%s lowi ryby i nie przyjmie teraz pojedynku.	Ο/Η %s ψαρεύει και δεν θα δεχτεί τώρα μονομαχία.
+%s nie ma broni w reku i nie przyjmie pojedynku.	Ο/Η %s δεν κρατά όπλο στο χέρι και δεν θα δεχτεί μονομαχία.
+%s nie przyjmie pojedynku ponizej %d poziomu.	Ο/Η %s δεν δέχεται μονομαχία κάτω από το επίπεδο %d.
+%s nie walczy w strefie bezpiecznej.	Ο/Η %s δεν πολεμά σε ασφαλή ζώνη.
+%s odrzuca zaproszenie do znajomych.	Ο/Η %s απορρίπτει την πρόσκληση φιλίας.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	Ο/Η %s άνοιξε τον Θησαυρό του Balathor - η ανταμοιβή σου μπήκε στο ιματιοφυλάκιο.
+%s posiada teraz żywioł: %s!	Ο/Η %s έχει τώρα στοιχείο: %s!
+%s przyjmuje zaproszenie do gildii %s.	Ο/Η %s δέχεται την πρόσκληση στη συντεχνία %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	Το %s Sung Ma έχει ήδη τη μέγιστη τιμή (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 μέρη - το αποτέλεσμα σετ είναι ενεργό
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: το %s δεν έχει ημερήσιο όριο (η ξεκούραση ισχύει μόνο για bots στο παιχνίδι).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, τέλος σε %ld λεπ., ανταμοιβές ακόμα για %ld λεπ., τιμή %d, σημαία %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: το αποτέλεσμα έχει ήδη το ανώτατο επίπεδο (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: αυτή η ικανότητα της συντεχνίας έχει ήδη το ανώτατο επίπεδο.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: αυτός ο παίκτης βρίσκεται στη λίστα αποκλεισμένων σου.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: αυτός ο παίκτης δεν δέχεται προσκλήσεις από σένα.
+%s: tytułów %u, założony %u	%s: τίτλοι %u, φορεμένος %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - μηδενίζει το σημερινό όριο εκστρατειών του χαρακτήρα.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (Άμυνα Πλοίου, χάρτης %ld; πλοία εδώ: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Η Buffi είναι διαθέσιμη από το επίπεδο %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Αυτή η θέση Buffi δέχεται μόνο: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Αυτή την ικανότητα την εκπαιδεύει το Βιβλίο Ικανοτήτων: %s (σαμάνος).
+[Gildia] %s	[Συντεχνία] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Συντεχνία] Τα bots μαζεύουν μόνο υλικά κατασκευής: Κορμό, Πέτρα Άνθρακα, Καπλαμά.
+[Gildia] Brak miejsca w ekwipunku.	[Συντεχνία] Δεν υπάρχει χώρος στο ιματιοφυλάκιο.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Συντεχνία] Το κτίριο δεν χωράει στη γη της συντεχνίας. Μετακίνησέ το πιο κοντά στο κέντρο της γης.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Συντεχνία] Ποσότητα: από 1 έως %d τεμάχια.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Συντεχνία] Μία αποστολή αντικειμένων τρέχει ήδη - ακύρωσέ την για να αναθέσεις νέα.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Συντεχνία] Ένας έρανος τρέχει ήδη - περίμενε να τελειώσει ή ακύρωσέ τον.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Συντεχνία] Η αποστολή ακυρώθηκε - τα αντικείμενα από την τράπεζα επιστρέφουν στα bots που τα έφεραν.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Συντεχνία] Δεν τρέχει αποστολή αντικειμένων.
+[Gildia] Nie ma trwajacej zrzutki.	[Συντεχνία] Δεν τρέχει έρανος.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Συντεχνία] Δεν υπάρχει εκστρατεία για ακύρωση (μέσα στον πύργο δεν μπορεί πια να ακυρωθεί).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Συντεχνία] Τα καθήκοντα της συντεχνίας δεν είναι προσωρινά διαθέσιμα.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Συντεχνία] Τα καθήκοντα της συντεχνίας αναθέτει μόνο ο αρχηγός της συντεχνίας.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Συντεχνία] Στέκεσαι εκεί που πρέπει να μπει το κτίριο. Απομακρύνσου λίγο ή μετακίνησε το κτίριο.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Συντεχνία] Εκεί που πρέπει να μπει το κτίριο στέκεται ο/η %s. Περίμενε να φύγει ή μετακίνησε το κτίριο.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Συντεχνία] Αυτή η ικανότητα μπορεί να χρησιμοποιηθεί μόνο κατά τη διάρκεια πολέμου συντεχνιών ή στην Κρύπτη του Balathor.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Συντεχνία] Αυτό το αντικείμενο δεν υπάρχει στην τράπεζα της συντεχνίας.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Συντεχνία] Εδώ υπάρχει ήδη άλλο κτίριο. Μετακίνησε το νέο κτίριο ή περίστρεψέ το.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Συντεχνία] Αναλήφθηκε από την τράπεζα της συντεχνίας: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Συντεχνία] Η εκστρατεία στον Πύργο των Δαιμόνων έχει ήδη οργανωθεί.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Συντεχνία] Η εκστρατεία στον Πύργο των Δαιμόνων ακυρώθηκε.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Συντεχνία] Τα Yang από το θησαυροφυλάκιο της συντεχνίας μπορούν να ξοδευτούν μόνο για τη συντεχνία: αγορά γης και κτίρια. Δεν μπορούν να αναληφθούν.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Συντεχνία] Πληρώθηκαν %lld Yang από το θησαυροφυλάκιο της συντεχνίας και %lld Yang από το ιματιοφυλάκιό σου.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Συντεχνία] Ο έρανος ολοκληρώθηκε. Τα Yang που κατατέθηκαν μένουν στο θησαυροφυλάκιο της συντεχνίας.
+[Gildia] Zrzutka: od %s do %s yang.	[Συντεχνία] Έρανος: από %s έως %s Yang.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Εκεχειρία] Επιτέθηκες σε bot - η εκεχειρία με τα bots διακόπηκε.
+[Towarzysz] %s	[Σύντροφος] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Πόλεμος] Η αρένα αυτού του πολέμου ετοιμάζεται ακόμα - δοκίμασε σε λίγα δευτερόλεπτα.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Πόλεμος] Η αρένα των πολέμων βρίσκεται σε άλλον πυρήνα - πήγαινε στον χάρτη M1 του βασιλείου σου και κάνε ξανά κλικ.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Πόλεμος] Τα bots πολεμούν στους πολέμους συντεχνιών μόνο στο κανάλι 1 - άλλαξε κανάλι και κάνε ξανά κλικ.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Πόλεμος] Η συντεχνία %s πολεμά τώρα σε άλλον πόλεμο.
+[Wojna] Jestes juz na polu wojny.	[Πόλεμος] Βρίσκεσαι ήδη στο πεδίο του πολέμου.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Πόλεμος] Ανταμοιβή για τη νίκη στον πόλεμο: %d x Σεντουκάκι Λάμψης Σελήνης (οι φόνοι σου: %d).
+[Wojna] Nie nalezysz do gildii.	[Πόλεμος] Δεν ανήκεις σε συντεχνία.
+[Wojna] Nie znam areny tej wojny.	[Πόλεμος] Δεν γνωρίζω την αρένα αυτού του πολέμου.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Πόλεμος] Σε μεταφέρω στο στρατόπεδο της συντεχνίας σου στην αρένα των πολέμων.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Πόλεμος] Τώρα δεν μπορείς να μεταφερθείς - δοκίμασε σε λίγο.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Πόλεμος] Αυτός είναι πόλεμος στο πεδίο: πολεμάτε εκεί που θα συναντηθείτε.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Πόλεμος] Η συντεχνία σου δεν διεξάγει τώρα πόλεμο.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Πόλεμος] Ο πόλεμος εναντίον της συντεχνίας %s έχει ήδη κηρυχθεί - τα bots θα απαντήσουν στη συνομιλία της συντεχνίας.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Πόλεμος] Οι πόλεμοι εναντίον συντεχνιών bots είναι απενεργοποιημένοι στον πίνακα του διακομιστή.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Πόλεμος] Κηρύχθηκε πόλεμος στη συντεχνία bots %s. Τα bots πολεμούνται στην αρένα των πολέμων (κανάλι 1). Η απάντηση θα έρθει σε λίγα δευτερόλεπτα στη συνομιλία της συντεχνίας.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Πόλεμος] Με τη συντεχνία %s διεξάγεται ήδη πόλεμος ή η λήξη του.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Πιάσε τον Βασιλιά] 25 βασιλικές κάρτες έδωσαν μια νέα Βασιλική Τράπουλα (έχεις %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Πιάσε τον Βασιλιά] Σε περιμένει ανταμοιβή από διακοπέν παιχνίδι - άδειασε χώρο στο ιματιοφυλάκιο και συνδέσου ξανά.
+[Zlap Krola] Event teraz nie trwa.	[Πιάσε τον Βασιλιά] Το event δεν τρέχει τώρα.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Πιάσε τον Βασιλιά] Έχεις ήδη το μέγιστο πλήθος βασιλικών τράπουλων (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Πιάσε τον Βασιλιά] Δεν έχεις αρκετές Βασιλικές Τράπουλες ή Yang (%d τράπουλες και %d Yang ανά παιχνίδι).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Πιάσε τον Βασιλιά] Αυτό μπορεί να χρησιμοποιηθεί μόνο κατά τη διάρκεια του event.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Πιάσε τον Βασιλιά] Άδειασε χώρο στο ιματιοφυλάκιο για να παραλάβεις την ανταμοιβή.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Αυτόματη μείωση τιμής: από 1 έως %d%% κάθε 1-%d ώρες.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Ο Balathor νικήθηκε! Άφησε πίσω του τον θησαυρό του - παραλάβετε την ανταμοιβή. Έξοδος από την κρύπτη σε %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: δεν υπάρχει στάδιο για παράλειψη (μόνο στην Κρύπτη, κατά τη διάρκεια επιδρομής)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Ο Balathor το έσκασε, αλλά άφησε πίσω του τον θησαυρό του - παραλάβετε την ανταμοιβή. Έξοδος από την κρύπτη σε %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Ο Balathor νίκησε - η εκστρατεία απέτυχε, χωρίς ανταμοιβή. Έξοδος από την κρύπτη σε %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: ολοκληρώθηκε επαναλαμβανόμενη αποστολή (%u. φορά)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: η αποστολή ολοκληρώθηκε!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: οι αποστολές φορτώθηκαν ξανά (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: η τελική ανταμοιβή αυτής της σεζόν έχει ήδη παραληφθεί.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: πρώτα ολοκλήρωσε όλες τις αποστολές της σεζόν.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: όλες οι αποστολές της σεζόν ολοκληρώθηκαν - παρέλαβε την τελική ανταμοιβή!
+Bonus zestawu kostiumow (%s): %ld czesci.	Μπόνους σετ στολών (%s): %ld μέρη.
+Boss Swiata jest chwilowo niedostepny.	Το Αφεντικό του Κόσμου δεν είναι προσωρινά διαθέσιμο.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Αφεντικό του Κόσμου: θέση %d, επίπεδο λείας %s (%lld ζημιά, +%d πόντοι κατάταξης). Παρέλαβε την ανταμοιβή στο παράθυρο του Αφεντικού του Κόσμου πριν εμφανιστεί το επόμενο αφεντικό.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Αφεντικό του Κόσμου: δεν υπάρχει χώρος στο ιματιοφυλάκιο (χρειάζονται %d ελεύθερες θέσεις) - άδειασε χώρο και κάνε ξανά κλικ.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Αφεντικό του Κόσμου: μέρος των ανταμοιβών παραλήφθηκε· για τις υπόλοιπες δεν υπάρχει χώρος στο ιματιοφυλάκιο (χρειάζονται %d ελεύθερες θέσεις) - άδειασε χώρο και κάνε ξανά κλικ.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Αφεντικό του Κόσμου: ανταμοιβή σεζόν %u για τη θέση %d της συντεχνίας σου.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Αφεντικό του Κόσμου: ανταμοιβή σεζόν %u για τη θέση %d στην κατάταξη χαρακτήρων.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Αφεντικό του Κόσμου: η ανταμοιβή έχει ήδη παραληφθεί ή έχει λήξει.
+Boss Swiata: nie masz nagrody do odebrania.	Αφεντικό του Κόσμου: δεν έχεις ανταμοιβή για παραλαβή.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Αφεντικό του Κόσμου: παραλήφθηκε η ανταμοιβή για τη θέση %d (επίπεδο λείας %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Αφεντικό του Κόσμου: μπόνους αποστολής - τιμή επίθεσης +%d%% για %d ώρες.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Αφεντικό του Κόσμου: προκάλεσες %lld ζημιά - δεν αρκεί για ανταμοιβή (χρειάζονται %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Αφεντικό του Κόσμου: κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη) πριν παραλάβεις την ανταμοιβή.
+Boty opuszczaja Wieze Demonow.	Τα bots εγκαταλείπουν τον Πύργο των Δαιμόνων.
+Brak miejsca w kategorii: %s.	Δεν υπάρχει χώρος στην κατηγορία: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Τα όπλα για Νεαρούς Ήρωες δεν μπορούν να βελτιωθούν ούτε να αλλάξουν.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: άγνωστη εντολή ή λάθος παράμετροι (%s) - δεν άλλαξε τίποτα
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: ο χαρακτήρας βρίσκεται σε άλλον πυρήνα (κανάλι %d) - η εντολή στάλθηκε
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: ο χαρακτήρας είναι εκτός σύνδεσης - η αλλαγή (%s) αποθηκεύτηκε και θα εφαρμοστεί στην επόμενη είσοδό του στο παιχνίδι
+champion: nie ma postaci %s	champion: δεν υπάρχει χαρακτήρας %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: άγνωστη εντολή ή λάθος παράμετροι (%s) - δεν άλλαξε τίποτα
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Ο χρόνος τελείωσε - ο Balathor νίκησε. Έξοδος από την κρύπτη σε %s.
+Czas przejecia bota minal - postac wraca do bota.	Ο χρόνος ανάληψης του bot έληξε - ο χαρακτήρας επιστρέφει στο bot.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	Το παλιό σύστημα κατοικιδίων αντικαταστάθηκε από το Σύστημα Κατοικιδίων - το παράθυρο κατοικιδίου ανοίγει με το πλήκτρο U.
+Do ewolucji tej szaty potrzeba: %s x%d.	Για την εξέλιξη αυτής της ενδυμασίας χρειάζονται: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	Στα γάντια ταιριάζουν μόνο Πέτρες Δαιμόνων.
+Dom Aukcyjny jest dostepny tylko w M1.	Ο Οίκος Δημοπρασιών είναι διαθέσιμος μόνο στο M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	Ο Οίκος Δημοπρασιών είναι απενεργοποιημένος σε αυτόν τον κόσμο.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Εξαιρετικά! Η Πέτρα Δύναμης των Δαιμόνων έδωσε διπλή τιμή.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u αντικείμενα, %u τέρατα.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Παιδιά Λουλούδια: το event και ο χρόνος ανταλλαγής έχουν τελειώσει.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Παιδιά Λουλούδια: η ανταμοιβή δεν είναι προσωρινά διαθέσιμη - αναφέρετέ το στη διοίκηση.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Παιδιά Λουλούδια: κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη) πριν κάνεις ανταλλαγή.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Παιδιά Λουλούδια: αποκτάς Σπόρους Λουλουδιών (έχεις %d).
+dziś nie było wypraw	σήμερα δεν έγιναν εκστρατείες
+Efekt zestawu nadany: %s.	Το αποτέλεσμα σετ εφαρμόστηκε: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Το ιματιοφυλάκιο είναι γεμάτο - το μέρος της στοίβας που αγοράστηκε βρίσκεται στα πόδια σου.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Αποκλείστηκες! Ο χρόνος σας στη δοκιμασία τελειώνει αν δεν αναστηθεί κανείς μέσα σε ένα λεπτό.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Ο Enasir θα είναι μαζί σου για 3 λεπτά. Θα εξαφανιστεί αν απομακρυνθείς ή αλλάξεις χάρτη.
+Enasir odszedł.	Ο Enasir έφυγε.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Ο Enasir πήρε αμοιβή υπηρεσίας: %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - υπόλοιπος χρόνος %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Αποθήκη %s, Κατάστημα %s, καλεσμένος: %s, επιτρέπεται εδώ: %s.
+Enasir: usługi zabrane.	Enasir: οι υπηρεσίες αφαιρέθηκαν.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	Το event Παιδιά Λουλούδια τελείωσε - αυτό το λουλούδι δεν μπορεί πια να χρησιμοποιηθεί.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Το Event Ψαρέματος - Παζλ δεν τρέχει τώρα - τα κουτιά θα τα ανοίξεις στο επόμενο event.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Η εξέλιξη είναι δυνατή μόνο στο επίπεδο %d με 100%% εμπειρία.
+Ewolucja udana: %s, poziom %d.	Επιτυχής εξέλιξη: %s, επίπεδο %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Το Gaya είναι πλέον νόμισμα: %d Gaya πήγαν στον μετρητή Gaya σου (δίπλα στα Yang στο ιματιοφυλάκιο).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Το Gaya δεν μπαίνει στο παράθυρο - ο σιδεράς το παίρνει μόνος του από το ιματιοφυλάκιο.
+Gildia nauczyła się: %s (poziom %d/%d).	Η συντεχνία έμαθε: %s (επίπεδο %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	Η συντεχνία δεν έχει μοιρασμένους πόντους ικανοτήτων.
+Gildia odzyskała punkty umiejętności: %d.	Η συντεχνία ανέκτησε πόντους ικανοτήτων: %d.
+GM zresetował Twój limit dziennych dungeonów.	Ένας GM μηδένισε το ημερήσιο όριο δοκιμασιών σου.
+Gracz %s nie ma tytułu %s.	Ο παίκτης %s δεν έχει τον τίτλο %s.
+Gracza %s nie ma na tym kanale (albo to bot).	Ο παίκτης %s δεν βρίσκεται σε αυτό το κανάλι (ή είναι bot).
+Gratulacje - %d. poziom!	Συγχαρητήρια - επίπεδο %d!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Ένα από τα Αυγά του Δράκου καλεί πάγωμα! Συγκεντρώστε τις επιθέσεις σας πάνω του για να το σταματήσετε.
+Kamien Demonow osadzony.	Η Πέτρα του Δαίμονα τοποθετήθηκε.
+Kamien Demonow pasuje tylko do rekawic.	Η Πέτρα του Δαίμονα ταιριάζει μόνο σε γάντια.
+Kamien Demonow pekl przy osadzaniu.	Η Πέτρα του Δαίμονα ράγισε κατά την τοποθέτηση.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	Οι Πέτρες του Θανάτου φυλάνε τον έβδομο όροφο. Σπάστε και τις τέσσερις!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	Η Τελετουργική Πέτρα λειτουργεί μόνο σε αντικείμενα πάνω από το επίπεδο 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	κάρτες: λογαριασμός %u, επίπεδο %d, στόχοι %u/%u/%u, σκοτωμένοι %d, τέρατα %d, σετ φορεμένα %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Κάθε προσπάθεια ανάγνωσης αυτού του βιβλίου κοστίζει %u EXP Πρωταθλητή - δεν έχεις αρκετά.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Η κατάρα του Sung Mahi μπλοκάρει τις ικανότητές σου.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Πελάτες με τη λίστα events σε αυτόν τον πυρήνα: %u, αρχηγός: %s.
+Kod zrealizowany: %s.	Ο κωδικός εξαργυρώθηκε: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Τροχός της Τύχης (παλιός): λαμβάνεις %ux %s.
+Kolo Fortuny: %s	Τροχός της Τύχης: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Τροχός της Τύχης: δεν υπάρχει χώρος - περιμένουν %u ανταμοιβές. Άδειασε χώρο και άνοιξε ξανά τον τροχό.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Τροχός της Τύχης: άδειασε χώρο στο ιματιοφυλάκιο - περιμένει μια ανταμοιβή.
+Kolo Losu: %s	Τροχός της Μοίρας: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Τροχός της Μοίρας: τα δεδομένα φορτώθηκαν ξανά (%u τροχοί, %u αντικείμενα), ενεργός τροχός %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	Το χρώμα της ικανότητας ιππασίας μπορεί να αλλάξει όταν την ξέρεις.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	Το χρώμα της ικανότητας μπορεί να αλλάξει από το επίπεδο P αυτής της ικανότητας.
+kostium (strój)	στολή (ενδυμασία)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	Η στολή όπλου δεν ταιριάζει με το όπλο αυτής της σελίδας - αφαιρέθηκε στο ιματιοφυλάκιο.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	Η στολή όπλου δεν ταιριάζει με το όπλο αυτής της σελίδας, και δεν υπάρχει χώρος στο ιματιοφυλάκιο για να αφαιρεθεί.
+kostium broni szamana	στολή όπλου σαμάνου
+kostium fryzury	στολή χτενίσματος
+Krwawisz! (%d sek.)	Αιμορραγείς! (%d δευτ.)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Η Κρύπτη του Balathor δεν μπορεί να ανοίξει σε αυτόν τον πυρήνα.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	Το Βιβλίο της Ακρίβειας μπορείς να το διαβάσεις από το Επίπεδο Πρωταθλητή 1.
+Księgi się zmieniły - ułóż je od nowa.	Τα βιβλία άλλαξαν - τακτοποίησέ τα από την αρχή.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Δοκιμασίες: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (μόνο ξεκούραση bot)· χωρίς δοκιμασία ή all - όλες.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	Ο Εντοπιστής NPC είναι ενεργός για κάθε χαρακτήρα - αυτό το αντικείμενο δεν χρειάζεται πια.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	Η Μικρή Ευλογία δεν λειτούργησε - το 6ο και το 7ο μπόνους παραμένουν ίδια.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Έχεις ήδη τα περισσότερα Gaya που μπορείς να έχεις (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Έχεις ήδη ξεκλειδώσει και τις 4 σελίδες του ιματιοφυλακίου.
+Masz już ten tytuł.	Έχεις ήδη αυτόν τον τίτλο.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Έχεις νέο πόντο στατιστικών Sung Ma (ελεύθεροι: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Έχεις μαζί σου περισσότερα Yang από όσα επιτρέπει το όριο (100 δισ.). Δεν μπορείς να συναλλαγείς.
+Masz za mało Gaya (potrzeba %d).	Δεν έχεις αρκετά Gaya (χρειάζονται %d).
+Masz za mało materiału (potrzeba %d).	Δεν έχεις αρκετό υλικό (χρειάζονται %d).
+Masz za mało Yang (potrzeba %d).	Δεν έχεις αρκετά Yang (χρειάζονται %d).
+Masz za mało Yang.	Δεν έχεις αρκετά Yang.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Οι χώροι της Arezzo είναι απενεργοποιημένοι σε αυτόν τον διακομιστή - επιστρέφεις στην πόλη.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Η αποστολή "Νίκησε το Αφεντικό του Κόσμου" ολοκληρώθηκε - μπόνους +%d%% στην τιμή επίθεσης για %d ώρες σε περιμένει στο παράθυρο του Αφεντικού του Κόσμου.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Μπορείς να φοράς μόνο μία Πέτρα Στοιχείων τη φορά (Προστασίας ή Δύναμης). Πρώτα βγάλε αυτήν που φοράς.
+Możesz łowić ryby od 30 poziomu.	Μπορείς να ψαρεύεις από το επίπεδο 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Πρέπει να στέκεσαι ακίνητος για να αλλάξεις σελίδα ιματιοφυλακίου.
+na stałe	μόνιμα
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Σε αυτή την ικανότητα δεν ξοδεύτηκαν πόντοι ικανοτήτων - τα επίπεδα από το Εγχειρίδιο και τα βιβλία δεν μπορούν να αναιρεθούν. Ολόκληρη την αντεπίθεση και το ενισχυτικό αφαιρεί το Ειλητό Αλλαγής Εκπαίδευσης.
+Na tym kanale magazyn jest niedostępny.	Σε αυτό το κανάλι η αποθήκη δεν είναι διαθέσιμη.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Όταν ιππεύεις, χρησιμοποίησε την Ακύρωση Μεταμόρφωσης Ιππάσιμου.
+Nadano tytuł %s graczowi %s.	Δόθηκε ο τίτλος %s στον παίκτη %s.
+Nadano tytuł %s.	Δόθηκε ο τίτλος %s.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	Την ανταμοιβή από την Κρύπτη έλαβαν %d χαρακτήρες της συντεχνίας.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Πρώτα μάθε ενισχυτικό - χρησιμοποίησε το Εγχειρίδιο: Ενισχυτικό.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Πρώτα ξεκλείδωσε μια επιπλέον σελίδα ιματιοφυλακίου (αντικείμενο "Σελίδα ιματιοφυλακίου II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Πρώτα ξεκλείδωσε την Αλχημεία Πετρών Δράκου - η πέτρα πηγαίνει στο παράθυρό της.
+Najpierw wybierz drogę umiejętności.	Πρώτα διάλεξε μονοπάτι ικανοτήτων.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Πρώτα διάλεξε αντεπίθεση - χρησιμοποίησε το Εγχειρίδιο: Αντεπίθεση.
+Najpierw wyjmij przedmiot ze Switchbota.	Πρώτα βγάλε το αντικείμενο από το Switchbot.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Πρώτα βάλε το αντικείμενο που θα πάρει νέα εμφάνιση.
+Najpierw włóż szatę aury.	Πρώτα βάλε την ενδυμασία αύρας.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Πρώτα κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Πρώτα κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη, ζώνες).
+Najpierw zamknij okno szaty aury.	Πρώτα κλείσε το παράθυρο ενδυμασίας αύρας.
+Najwyżej 1000 dni.	Το πολύ 1000 ημέρες.
+Nie ma postaci %s.	Δεν υπάρχει χαρακτήρας %s.
+Nie ma takiego tytułu (/tytul lista).	Δεν υπάρχει τέτοιος τίτλος (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Δεν έχεις στο ιματιοφυλάκιο όπλο, πανοπλία ή κράνος από το επίπεδο 75 βελτιωμένο τουλάχιστον σε +7 (χωρίς το αποτέλεσμα σετ αυτού του σιδερά). Βάλε το αντικείμενο στο παράθυρο μαζί με τα θραύσματα και ένα Σχέδιο Σετ.
+Nie masz wolnych punktow Sung Ma.	Δεν έχεις ελεύθερους πόντους Sung Ma.
+Nie mozesz przywolac kamienia Metin w lochu.	Δεν μπορείς να καλέσεις πέτρα Metin σε δοκιμασία.
+Nie mozesz przywolac zyly w lochu.	Δεν μπορείς να καλέσεις φλέβα σε δοκιμασία.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Δεν μπορείς να πουλήσεις - θα ξεπερνούσες το όριο των 100 δισ. Yang που μπορείς να έχεις μαζί σου.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Ένα φορεμένο αντικείμενο δεν μπορεί να μεταφερθεί στο Switchbot.
+Nie możesz się teleportować z lochu.	Δεν μπορείς να τηλεμεταφερθείς από δοκιμασία.
+Nie możesz teraz zmienić strony ekwipunku.	Δεν μπορείς να αλλάξεις τώρα σελίδα ιματιοφυλακίου.
+Nie możesz tutaj użyć tego przedmiotu.	Δεν μπορείς να χρησιμοποιήσεις εδώ αυτό το αντικείμενο.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	Δεν μπορείς να φορέσεις το αντικείμενο %s από τη σελίδα ιματιοφυλακίου %s - η σελίδα παραμένει ίδια.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Αυτό το αντικείμενο δεν μπορεί να καταστραφεί τώρα - κλείσε τα άλλα παράθυρα και δοκίμασε ξανά.
+Nie nadano tytułu %s (gracz ma go już na stałe).	Ο τίτλος %s δεν δόθηκε (ο παίκτης τον έχει ήδη μόνιμα).
+Nie nadano tytułu %s.	Ο τίτλος %s δεν δόθηκε.
+Nie należysz do gildii.	Δεν ανήκεις σε συντεχνία.
+Nie przeniesiono bota %s: %s.	Το bot %s δεν μεταφέρθηκε: %s.
+nie trwa	δεν τρέχει
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Δεν ήταν δυνατή η εφαρμογή του αποτελέσματος σετ. Το αντικείμενο έμεινε άθικτο.
+Nie udało się otworzyć Krypty Balathora.	Δεν ήταν δυνατό να ανοίξει η Κρύπτη του Balathor.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Απέτυχε. Τα υλικά και τα Yang χάθηκαν, το αντικείμενο έμεινε στο παράθυρο.
+Nie znasz tej umiejetnosci.	Δεν ξέρεις αυτή την ικανότητα.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Άγνωστη δοκιμασία "%s". Δοκιμασίες: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby ή all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Κανένα από τα bots δεν είναι επιπέδου 75 - ο Πύργος τελειώνει στον έκτο όροφο.
+Od 1 do %d wymian naraz.	Από 1 έως %d ανταλλαγές ταυτόχρονα.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	Από τον βαθμό G1 έως P την αντεπίθεση και το ενισχυτικό εξελίσσει η Πέτρα Πνεύματος+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Ξεκλειδώθηκε η σελίδα ιματιοφυλακίου %s (σελίδες: %d/4). Εναλλάσσεις με τις καρτέλες στο παράθυρο του ιματιοφυλακίου ή με την ικανότητα "Αλλαγή σελίδας ιματιοφυλακίου" (βοηθητικές ικανότητες).
+Ogniste Strzały załadowane do Hwachy: %u.	Φλεγόμενα Βέλη φορτώθηκαν στο Hwacha: %u.
+Osiagnieto limit zakupu tego przedmiotu.	Επιτεύχθηκε το όριο αγοράς αυτού του αντικειμένου.
+Otrzymujesz %d Gaya.	Λαμβάνεις %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	Λαμβάνεις κάρτα Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Λαμβάνεις σετ καρτών Okey (έχεις %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Άνοιξες τον Θησαυρό του Balathor - η ανταμοιβή μπήκε στο ιματιοφυλάκιό σου.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Οι παράμετροι μπορούν να μεταφερθούν μόνο από βραχιόλι, κολιέ, σκουλαρίκια ή ασπίδα.
+Parametry przeniesione na szatę aury.	Οι παράμετροι μεταφέρθηκαν στην ενδυμασία αύρας.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Οι παράμετροι της ενδυμασίας αύρας αφαιρέθηκαν - μπορείς να μεταφέρεις νέες.
+Poczekaj 10 sekund po walce.	Περίμενε 10 δευτερόλεπτα μετά τη μάχη.
+Poczekaj 3 sekundy przed kolejną zmianą.	Περίμενε 3 δευτερόλεπτα πριν την επόμενη αλλαγή.
+Poczekaj chwile przed kolejna zmiana opisu.	Περίμενε λίγο πριν αλλάξεις ξανά την περιγραφή.
+Poczekaj chwile przed kolejna zmiana stanu.	Περίμενε λίγο πριν αλλάξεις ξανά την κατάσταση.
+Poczekaj chwile przed kolejnym zaproszeniem.	Περίμενε λίγο πριν την επόμενη πρόσκληση.
+Podaj gracza.	Δώσε παίκτη.
+Podejdź do Seon-Hae.	Πήγαινε στη Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	Εμφανίστηκε ένα Φλογερό Αυγό του Δράκου.
+Pokonajcie wszystkie pobliskie potwory.	Νικήστε όλα τα κοντινά τέρατα.
+Polimorfia działa tylko na wierzchowcach.	Η μεταμόρφωση λειτουργεί μόνο σε ιππάσιμα.
+Polimorfia wierzchowca zakończona.	Η μεταμόρφωση του ιππάσιμου τελείωσε.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Αποτυχία! Το αποτέλεσμα %s δεν ενεργοποιήθηκε - το λουλούδι μάρανε.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Αποτυχία! Δεν ήταν δυνατό να ανέβει το αποτέλεσμα %s στο επίπεδο %d - το λουλούδι μάρανε.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Αποτυχία! Δεν ήταν δυνατό να αλλάξει το αποτέλεσμα σε %s - το λουλούδι μάρανε, το προηγούμενο αποτέλεσμα μένει.
+Potrzeba %lld ksiąg (w oknie: %lld).	Χρειάζονται %lld βιβλία (στο παράθυρο: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Το Ισχυρό Πολεμικό Άλογο τρώει μόνο Κόκκινο Τζίνσενγκ (premium).
+Poziom Czempiona: %d.	Επίπεδο Πρωταθλητή: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Βάλε στο παράθυρο όπλο, πανοπλία ή κράνος από το επίπεδο 75, βελτιωμένο τουλάχιστον σε +7.
+Precyzja: poziom %s, bonus Precyzji +%d.	Ακρίβεια: επίπεδο %s, μπόνους Ακρίβειας +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Ημερήσιο δώρο: %lld Yang και από %d φίλτρα (Μ). Το επόμενο σε 24 ώρες.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Σύρε το κάλυμμα πάνω σε μια ζώνη στο ιματιοφυλάκιο (η ζώνη βγήκε).
+Przeci±gnij zwój na broń w ekwipunku.	Σύρε το ειλητό πάνω σε ένα όπλο στο ιματιοφυλάκιο.
+Przeciągnij Anulację na przedmiot z transmutacją.	Σύρε την Ακύρωση πάνω σε αντικείμενο με μεταμόρφωση εμφάνισης.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Σύρε το Πιστοποιητικό Αύρας+ πάνω στην ενδυμασία αύρας.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	Το αντικείμενο %s δεν μπορεί να βγει τώρα - η σελίδα ιματιοφυλακίου παραμένει ίδια.
+Przeniesiono bota %s do Ciebie.	Το bot %s μεταφέρθηκε σε σένα.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Μεταφέρθηκαν στο επιπλέον ιματιοφυλάκιο: %d (προστέθηκαν σε στοίβες: %d).
+Przenosić można raz na 3 sekundy.	Μεταφορά μπορεί να γίνει μία φορά ανά 3 δευτερόλεπτα.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	Στην επόμενη επίθεση θα χρειαστεί περισσότερη ζημιά.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Το κουμπί κλήσης του Enasir απαιτεί νέα έκδοση του client - ενημέρωσε το παιχνίδι.
+Przywolana zyla zniknie po 15 minutach.	Η φλέβα που κάλεσες θα εξαφανιστεί μετά από 15 λεπτά.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	Η πέτρα Metin που κάλεσες θα εξαφανιστεί μετά από 15 λεπτά, αν δεν την καταστρέψεις.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	Η ερώτηση έληξε - δοκίμασε ξανά να βγάλεις το αντικείμενο.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Κατάταξη: η σεζόν %u τελειώνει τώρα (περίληψη σε περίπου 2 λεπτά).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Κατάταξη: σεζόν %u, %s, κάτοχοι τίτλων: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Γάντια: η επόμενη επαναφορά αυτής της ικανότητας είναι μικρότερη κατά 5 δευτ.
+Rekrutacja potworow jest wylaczona.	Η στρατολόγηση τεράτων είναι απενεργοποιημένη.
+Relikt debug: odnowienia wyzerowane.	Relic debug: οι επαναφορές μηδενίστηκαν.
+Relikt debug: okienko %s puste.	Relic debug: η θέση %s είναι άδεια.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relic debug: θέση %s, %s (%u), σημαίες %ld, χρόνος %ld / %ld δευτ., ενεργό: %s, tik: %s, μάχη: %d δευτ.
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relic debug: ΖΩΗ %d / %d, ΜΑΝΑ %d / %d, ιππάσιμο: %s
+Relikt Duszy: nowy bonus - %s (%d).	Κειμήλιο Ψυχής: νέο μπόνους - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	Η αντεπίθεση και το ενισχυτικό από τον βαθμό M1 δεν μπορούν να αναιρεθούν.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Επιτυχής ανάπτυξη. Τώρα είναι δυνατή η εξέλιξη της ενδυμασίας (Ενδυμασία αύρας: εξέλιξη).
+Rozwój udany: poziom %d.	Επιτυχής ανάπτυξη: επίπεδο %d.
+Ryba się zerwała z haczyka.	Το ψάρι ξέφυγε από το αγκίστρι.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Η Seon-Hae δεν έχει βιβλία για το μονοπάτι σου.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, χρόνος %d λεπ., κρατούμενο αντικείμενο %d, αποτέλεσμα %d, πιθανότητα %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: ο χρόνος μηδενίστηκε.
+Silniejszy efekt tego rodzaju już działa.	Ισχυρότερο αποτέλεσμα αυτού του είδους είναι ήδη ενεργό.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	Το κατάστημα είναι κλειστό - άνοιξέ το ξανά αντί να το παρατείνεις.
+Sklep ma juz maksymalny czas (%d dni).	Το κατάστημα έχει ήδη τον μέγιστο χρόνο (%d ημέρες).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Το κατάστημα παρατάθηκε κατά %u ώρες (απομένουν περίπου %u ώρες %u λεπ.).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Συγκεντρωθείτε στο Παγωμένο Αυγό του Δράκου πριν εξαφανιστεί (%d δευτ.).
+Sortowac mozna raz na 3 sekundy.	Ταξινόμηση μπορεί να γίνει μία φορά ανά 3 δευτερόλεπτα.
+Statystyki Sung Ma ma tylko Czempion.	Στατιστικά Sung Ma έχει μόνο ο Πρωταθλητής.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	Η σελίδα ιματιοφυλακίου %s είναι ακόμα κλειδωμένη - την ξεκλειδώνει ένα ακόμα αντικείμενο "Σελίδα ιματιοφυλακίου II".
+Strona ekwipunku: %s.	Σελίδα ιματιοφυλακίου: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	Τη σελίδα ιματιοφυλακίου μπορείς να την αλλάζεις μία φορά ανά 5 δευτερόλεπτα.
+Sukces! Efekt %s jest aktywny (poziom 1).	Επιτυχία! Το αποτέλεσμα %s είναι ενεργό (επίπεδο 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Επιτυχία! Το αποτέλεσμα %s ανέβηκε στο επίπεδο %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Το Switchbot σταμάτησε. Λείπει το αντικείμενο Μάγεψε στολή.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Το Switchbot σταμάτησε. Λείπουν Μαγείες Αντικειμένου.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: δεν ήταν δυνατό να αλλάξουν τα μπόνους αυτής της στολής.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: αυτό το αντικείμενο δεν μπορεί να μαγευτεί (δεν έχει μπόνους).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Η πιθανότητα αυξήθηκε κατά %d%% (χρησιμοποιήθηκε 1 αντικείμενο).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	Η ζώνη έχει νέα εμφάνιση (τα μπόνους και η απορρόφηση παραμένουν ίδια).
+Ta Anulacja działa tylko na wierzchowcach.	Αυτή η Ακύρωση λειτουργεί μόνο σε ιππάσιμα.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Αυτό το βιβλίο είναι για Πρωταθλητές: μπορείς να το διαβάσεις από το Επίπεδο Πρωταθλητή 1.
+Ta szarfa ma juz te nakladke.	Αυτή η ζώνη έχει ήδη αυτό το κάλυμμα.
+Ta szata aury ma już najwyższy poziom.	Αυτή η ενδυμασία αύρας έχει ήδη το ανώτατο επίπεδο.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Αυτή η ενδυμασία είναι στην κορυφή του είδους της - τώρα εξέλιξη (Ενδυμασία αύρας: εξέλιξη).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Αυτή η ενδυμασία έχει ήδη μεταφερμένες παραμέτρους. Καθάρισέ την με Πιστοποιητικό Αύρας+.
+Ta szata nie ma przeniesionych parametrów.	Αυτή η ενδυμασία δεν έχει μεταφερμένες παραμέτρους.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Αυτή την Κολώνα μπορεί να τη βλάψει μόνο Νίντζα ή Σαμάνος.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Αυτό το αντικείμενο μπορεί να χρησιμοποιηθεί μόνο στον Πύργο της Κόλασης του Sung Mahi.
+Tego przedmiotu nie mozna dodac do Switchbota.	Αυτό το αντικείμενο δεν μπορεί να προστεθεί στο Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Αυτό το αντικείμενο δεν μπορεί να χρησιμοποιηθεί τώρα (φορεμένο, σε συναλλαγή ή κλειδωμένο).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Αυτό το αντικείμενο χρησιμοποιείται στο παράθυρο κατοικιδίου (πλήκτρο U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Αυτή η στοίβα δεν μπορεί να χωριστεί με αυτή την τιμή - αγόρασε ολόκληρη τη στοίβα.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	Η τηλεμεταφορά στην είσοδο κοστίζει %lld Yang - δεν έχεις τόσα μαζί σου.
+Teleport pod wejście: zapłacono %lld Yang.	Τηλεμεταφορά στην είσοδο: πληρώθηκαν %lld Yang.
+Ten certyfikat nie nadaje żadnego tytułu.	Αυτό το πιστοποιητικό δεν δίνει κανέναν τίτλο.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Αυτό το ενισχυτικό δεν είναι για την κλάση και το μονοπάτι ικανοτήτων σου.
+Ten efekt już działa i potrwa dłużej niż nowy.	Αυτό το αποτέλεσμα είναι ήδη ενεργό και θα διαρκέσει περισσότερο από το νέο.
+Ten element nie pasuje w tym miejscu.	Αυτό το κομμάτι δεν ταιριάζει εδώ.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Αυτός ο παίκτης δεν χωράει τόσα Yang (όριο 100 δισ. μαζί του).
+Ten loch jest dla poziomów %d - %d.	Αυτή η δοκιμασία είναι για επίπεδα %d - %d.
+Ten Metin moze zranic tylko Szaman.	Αυτό το Metin μπορεί να το βλάψει μόνο Σαμάνος.
+Ten opis zawiera niedozwolone slowo.	Αυτή η περιγραφή περιέχει απαγορευμένη λέξη.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Αυτό το τέρας ζει σε χάρτη στον οποίο μπαίνεις με πάσο - η τηλεμεταφορά με κάρτα δεν είναι εκεί διαθέσιμη.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Αυτό το αντικείμενο είναι διαθέσιμο μόνο με ενεργοποιημένη την ενότητα Arezzo.
+Ten przedmiot jest juz w Switchbocie.	Αυτό το αντικείμενο είναι ήδη στο Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	Αυτό το αντικείμενο έχει ήδη αυτό το αποτέλεσμα σετ.
+Ten przedmiot nie ma transmutacji.	Αυτό το αντικείμενο δεν έχει μεταμόρφωση εμφάνισης.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Αυτό το αντικείμενο δεν ανήκει σε καμία κατηγορία επιπλέον ιματιοφυλακίου.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Αυτό το αντικείμενο δεν ταιριάζει σε αυτή την κατηγορία επιπλέον ιματιοφυλακίου.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Αυτό το αντικείμενο δεν αυξάνει την πιθανότητα κατασκευής.
+Ten wygląd nie pasuje do tego przedmiotu.	Αυτή η εμφάνιση δεν ταιριάζει σε αυτό το αντικείμενο.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Αυτό το ειλητό το πουλάω μόνο σε μέλη συντεχνιών τουλάχιστον επιπέδου %d.
+To nie jest bilet do tej przemiany.	Αυτό δεν είναι εισιτήριο για αυτή τη μεταμόρφωση.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	Αυτή είναι η γη του Sung Ma: χωρίς Επίπεδο Πρωταθλητή δεν μπορείς να βλάψεις τα τέρατα εδώ.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Η μεταμόρφωση εμφάνισης αφαιρέθηκε - το αντικείμενο έχει πάλι τη δική του εμφάνιση.
+Transmutacja zakończona.	Η μεταμόρφωση εμφάνισης ολοκληρώθηκε.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Σε μεταμόρφωση εμφάνισης υπόκεινται μόνο όπλα, πανοπλίες, στολές και εμφανίσεις όπλων.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Εδώ μπορείς να βάλεις μόνο Πάγινη ή Φλογερή Ρούνο Αύρας.
+Tu można włożyć tylko szatę aury.	Εδώ μπορείς να βάλεις μόνο ενδυμασία αύρας.
+Twoja gildia ma już otwartą Kryptę Balathora.	Η συντεχνία σου έχει ήδη ανοιχτή την Κρύπτη του Balathor.
+Twoja gildia nie ma otwartej Krypty Balathora.	Η συντεχνία σου δεν έχει ανοιχτή την Κρύπτη του Balathor.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Η Ακρίβειά σου έχει ήδη το ανώτατο επίπεδο (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Το Επίπεδο Πρωταθλητή σου είναι πολύ χαμηλό για να χρησιμοποιήσεις αυτό το αντικείμενο (απαιτείται: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Το Επίπεδο Πρωταθλητή σου είναι πολύ χαμηλό για να φορέσεις αυτό το αντικείμενο (απαιτείται: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Οι τίτλοι απαιτούν νέα έκδοση του client - ενημέρωσε το παιχνίδι.
+Tę księgę może przeczytać tylko lider gildii.	Αυτό το βιβλίο μπορεί να το διαβάσει μόνο ο αρχηγός της συντεχνίας.
+Udało się odeprzeć lodowe zimno.	Κατάφερες να αποκρούσεις το πάγωμα.
+Użycie: /kod MT2009-PLUS-XXXX	Χρήση: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	Στο ιματιοφυλάκιο δεν υπάρχουν αντικείμενα για το επιπλέον ιματιοφυλάκιο.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Σε μία συναλλαγή μπορείς να δώσεις το πολύ 10 δισ. Yang.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	Στον Πύργο της Κόλασης του Sung Mahi λειτουργούν μόνο τα φίλτρα του πύργου (W) από την Έμπορο.
+W tych rekawicach nie ma wolnego miejsca na kamien.	Σε αυτά τα γάντια δεν υπάρχει ελεύθερη θέση για πέτρα.
+W tym stosie nie ma juz tylu sztuk.	Σε αυτή τη στοίβα δεν υπάρχουν πια τόσα τεμάχια.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	Η αξία του καταστήματος και τα Yang σου θα ξεπερνούσαν το όριο των 100 δισ. Yang.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	Η εμφάνιση αυτού του αντικειμένου δεν ταιριάζει στην κλάση σου.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	Η εμφάνιση αυτού του αντικειμένου δεν ταιριάζει στο φύλο σου.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Η εκστρατεία διακόπηκε - ο Κρυμμένος Balathor το έσκασε, αλλά άφησε τον θησαυρό του. Έξοδος από την κρύπτη σε %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Η εκστρατεία διακόπηκε. Έξοδος από την κρύπτη σε %s.
+Wyspa Skarbow: %s (flaga %s).	Νησί των Θησαυρών: %s (σημαία %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	Το Παζλ Ψαρέματος απαιτεί νέα έκδοση του client - ενημέρωσε το παιχνίδι.
+Włóż bilet w okno transmutacji u Teowadena.	Βάλε το εισιτήριο στο παράθυρο μεταμόρφωσης εμφάνισης του Teowaden.
+Włóż oba przedmioty.	Βάλε και τα δύο αντικείμενα.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: event %s, σεζόν %u (κλειστή %d), παιχνίδια σε αυτόν τον πυρήνα %u, ταμπλό %d, κορμοί %d, ανταμοιβή σε αναμονή %d
+Yut Nori: event sie nie odbywa.	Yut Nori: το event δεν διεξάγεται.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: το event μόλις ξεκινά, δοκίμασε σε λίγο.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: οι κορμοί σημύδας μπορούν να προστεθούν μόνο κατά τη διάρκεια του event.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: χρειάζεσαι %d x ταμπλό Yut Nori και %d Yang.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: άδειασε χώρο στο ιματιοφυλάκιο για να παραλάβεις την ανταμοιβή.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	Σε 10 δευτερόλεπτα θα εμφανιστεί το Παγωμένο Αυγό του Δράκου - τότε χτυπήστε το όλοι μαζί.
+Za mało Yang (potrzeba %lld).	Δεν έχεις αρκετά Yang (χρειάζονται %lld).
+Zabrano tytuł %s graczowi %s.	Αφαιρέθηκε ο τίτλος %s από τον παίκτη %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	Η μαγεία στοιχείου απέτυχε! Το όπλο έμεινε αμετάβλητο.
+Zaczarowanie żywiołu powiodło się! %s.	Η μαγεία στοιχείου πέτυχε! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Κλείσε τα άλλα παράθυρα (συναλλαγή, κατάστημα, αποθήκη, ζάρι) και δοκίμασε ξανά.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Κλείσε τα άλλα παράθυρα για να ταξινομήσεις το επιπλέον ιματιοφυλάκιο.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Κλείσε τα άλλα παράθυρα για να ενώσεις στοίβες στο επιπλέον ιματιοφυλάκιο.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Κλείσε τα άλλα παράθυρα για να μεταφέρεις αντικείμενα στο επιπλέον ιματιοφυλάκιο.
+Zamknij inne okna, aby użyć tego przedmiotu.	Κλείσε τα άλλα παράθυρα για να χρησιμοποιήσεις αυτό το αντικείμενο.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Κλείσε τα άλλα παράθυρα για να αλλάξεις σελίδα ιματιοφυλακίου.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Στην ομάδα μπορείς να προσκαλέσεις μόνο παίκτη στον ίδιο χάρτη και στο ίδιο κανάλι.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Σταμάτα για να κρύψεις ή να δείξεις τη στολή.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Βγάλε το αντικείμενο και βάλ' το στο ιματιοφυλάκιο.
+Zdejmij szatę i weź ją do ekwipunku.	Βγάλε την ενδυμασία και βάλ' την στο ιματιοφυλάκιο.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Το σετ στολών είναι ελλιπές - το μπόνους σετ χάθηκε.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Σετ στολών: +%ld ΖΩΗ και +%ld τιμή επίθεσης.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Η γη του Sung Ma απαιτεί: Δύναμη %d, Ζωτικότητα %d, Αντοχή %d, Νοημοσύνη %d - αν υπολείπεσαι, η δύναμή σου μειώνεται στο μισό.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Ξέρεις ήδη άλλη αντεπίθεση - μπορείς να έχεις μόνο μία. Αυτό το βιβλίο δεν την αναπτύσσει.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Καταστρέψτε τον Τεράστιο Πάγινο Τοίχο που προστατεύει[ENTER]τα Παγωμένα Αυγά του Δράκου!
+Zniszczono: %s.	Καταστράφηκε: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Το επίπεδο της μαγείας στοιχείου μειώθηκε: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Το επίπεδο της μαγείας στοιχείου μειώθηκε: το όπλο δεν έχει πια στοιχείο (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Έμειναν στο ιματιοφυλάκιο: %d - δεν υπάρχει χώρος στην κατηγορία: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Μηδενίστηκε το ημερήσιο όριο (%s) του χαρακτήρα %s (εκτός σύνδεσης): %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Μηδενίστηκε το ημερήσιο όριο (%s) του χαρακτήρα %s%s: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Άδειασε χώρο στο ιματιοφυλάκιο (χρειάζονται %d ελεύθερες θέσεις).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Άδειασε χώρο στο ιματιοφυλάκιο - ένα αντικείμενο από την αποθήκη των σελίδων ιματιοφυλακίου περιμένει για ελεύθερη θέση.
+Zwój albo broń nie leży już w ekwipunku.	Το ειλητό ή το όπλο δεν βρίσκεται πια στο ιματιοφυλάκιο.
+Łączyć stosy można raz na 3 sekundy.	Στοίβες μπορούν να ενωθούν μία φορά ανά 3 δευτερόλεπτα.

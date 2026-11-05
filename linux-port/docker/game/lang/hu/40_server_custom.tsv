@@ -1,0 +1,422 @@
+# MT2009_PLUS_LANGUAGE_V1 - Polish<TAB>hu (by hand; UTF-8; tools/i18n/handoff/import_staging.py)
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, visszatöltés %d mp: %s
+  %u %s - jeszcze %u min	  %u %s - még %u perc
+  %u %s - na stałe	  %u %s - tartósan
+ (bot, także odpoczynek)	 (bot, a pihenővel együtt)
+ i premie do dropu	 és dropbónuszok
+ Nagroda trafila do ekwipunku.	 A jutalom bekerült a tárhelyedre.
+%s (offline): zapis do player.quest się nie udał.	%s (offline): a player.quest-be írás nem sikerült.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s elmegy ahhoz, aki hívta, ezért most nem fogad el párbajt.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s portyán van, ezért most nem fogad el párbajt.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s valakinek a társa, és nem vesz részt párbajokban.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s valakinek a társa, és nem csatlakozik a csoportodhoz.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s egy másik magon van (%u. csatorna), és a player.web_admin_queue sor nem fogadta el a megbízást.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s a(z) %u. csatornán van - a visszaállítás (%s) kiadva; néhány másodpercen belül lefut ott.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s ércet bányászik, ezért most nem fogad el párbajt.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s horgászik, ezért most nem fogad el párbajt.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s kezében nincs fegyver, ezért nem fogad el párbajt.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s nem fogad el párbajt %d. szint alatt.
+%s nie walczy w strefie bezpiecznej.	%s nem harcol biztonságos zónában.
+%s odrzuca zaproszenie do znajomych.	%s elutasítja a barátkérelmet.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s kinyitotta Balathor Kincsét - a jutalmad bekerült a tárhelyedre.
+%s posiada teraz żywioł: %s!	%s új eleme: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s elfogadja a(z) %s céhbe szóló meghívást.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	A(z) %s Sung Ma már a legmagasabb értéken van (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 alkatrész - szetthatás aktív
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s-nak nincs napi korlátja (a pihenő csak a játékbeli botokra vonatkozik).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, vége %ld perc múlva, jutalmak még %ld percig, érték %d, jelző %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: a hatás már a legmagasabb szinten van (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: ez a céhkészség már a legmagasabb szinten van.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: ez a játékos a tiltólistádon van.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: ez a játékos nem fogad el tőled meghívást.
+%s: tytułów %u, założony %u	%s: címek: %u, felvett: %u
+/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.	/dungeon_reset <nick> [loch|all] (/resetdungi) - nullázza a karakter mai kazamata-expedíciós korlátját.
+/dw create | start | info | wave <1-4> | end   (Obrona Statku, map %ld; ships here: %u)	/dw create | start | info | wave <1-4> | end   (Hajóvédelem, térkép: %ld; hajók itt: %u)
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] A Buffi a(z) %d. szinttől érhető el.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Ez a Buffi-hely csak ezt fogadja: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Ezt a készséget a Készségkönyv képzi: %s (sámán).
+[Gildia] %s	[Céh] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Céh] A botok csak építőanyagot gyűjtenek: Törzs, Szénkő, Furnérlemez.
+[Gildia] Brak miejsca w ekwipunku.	[Céh] Nincs elég hely a tárhelyeden.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Céh] Az épület nem fér el a céh területén. Told közelebb a terület közepéhez.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Céh] Mennyiség: 1-től %d darabig.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Céh] Már folyik egy tárgymisszió - töröld, ha újat akarsz kiadni.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Céh] Már folyik egy gyűjtés - várd meg, amíg véget ér, vagy töröld.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Céh] Misszió törölve - a bankból a tárgyak visszakerülnek a botokhoz, amelyek hozták őket.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Céh] Nincs folyamatban lévő tárgymisszió.
+[Gildia] Nie ma trwajacej zrzutki.	[Céh] Nincs folyamatban lévő gyűjtés.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Céh] Nincs lemondható expedíció (a toronyban már nem lehet lemondani).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Céh] A céhfeladatok átmenetileg nem elérhetők.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Céh] A céhfeladatokat csak a céhvezér adhatja ki.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Céh] Ott állsz, ahová az épület kerülne. Lépj arrébb, vagy told el az épületet.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Céh] Ott, ahová az épület kerülne, %s áll. Várd meg, amíg elmegy, vagy told el az épületet.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Céh] Ezt a készséget csak céhháború alatt vagy Balathor kriptájában lehet használni.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Céh] A céh bankjában nincs ilyen tárgy.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Céh] Ezen a helyen már áll egy másik épület. Told el vagy forgasd el az újat.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Céh] Kivéve a céh bankjából: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Céh] A Démon-toronyba már szerveztek expedíciót.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Céh] A Démon-toronyba induló expedíció lemondva.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Céh] A céh kincstárának Yangját csak a céhre lehet költeni: földvásárlásra és épületekre. Nem vehető ki.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Céh] A céh kincstárából %lld Yangot, a te tárhelyedről %lld Yangot fizettek.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Céh] Gyűjtés lezárva. A befizetett Yang a céh kincstárában marad.
+[Gildia] Zrzutka: od %s do %s yang.	[Céh] Gyűjtés: %s és %s Yang között.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Fegyverszünet] Megtámadtak egy botot - a botokkal kötött fegyverszünet megszakadt.
+[Towarzysz] %s	[Társ] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Háború] A háború arénája még készül - próbáld újra néhány másodperc múlva.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Háború] A háborús aréna egy másik magon van - menj a királyságod M1 térképére, és kattints újra.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Háború] A botok csak az 1. csatornán harcolnak céhháborúban - válts csatornát, és kattints újra.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Háború] A(z) %s céh most egy másik háborúban harcol.
+[Wojna] Jestes juz na polu wojny.	[Háború] Már a csatatéren vagy.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Háború] Jutalom a megnyert háborúért: %d x Holdfény kincsesláda (a gyilkosságaid: %d).
+[Wojna] Nie nalezysz do gildii.	[Háború] Nem tartozol céhhez.
+[Wojna] Nie znam areny tej wojny.	[Háború] Nem ismerem ennek a háborúnak az arénáját.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Háború] Áthelyezlek a céhed táborába a háborús arénában.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Háború] Most nem helyezhetünk át - próbáld újra egy pillanat múlva.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Háború] Ez nyílt háború: ott harcoltok, ahol találkoztok.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Háború] A céhed most nem áll háborúban.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Háború] A(z) %s céh elleni háború már ki van hirdetve - a botok a céhchaten válaszolnak.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Háború] A botcéhek elleni háborúk ki vannak kapcsolva a szerver panelen.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Háború] Háború kihirdetve a(z) %s botcéh ellen. A botok ellen a háborús arénában kell harcolni (1. csatorna). A válasz néhány másodpercen belül érkezik a céhchaten.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Háború] A(z) %s céh ellen már folyik háború, vagy éppen véget ér.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Fogd el a királyt] 25 királykártyából új Királypakli lett (van %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Fogd el a királyt] Jutalom vár rád egy megszakadt játékból - csinálj helyet a tárhelyeden, és jelentkezz be újra.
+[Zlap Krola] Event teraz nie trwa.	[Fogd el a királyt] Az esemény most nem tart.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Fogd el a királyt] Már a lehető legtöbb Királypaklid megvan (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Fogd el a királyt] Nincs elég Királypaklid vagy Yangod (%d pakli és %d Yang játékonként).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Fogd el a királyt] Ezt csak az esemény ideje alatt lehet használni.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Fogd el a királyt] Csinálj helyet a tárhelyeden, hogy átvehesd a jutalmat.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Automatikus árcsökkentés: 1-től %d%%-ig, 1-%d óránként.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor legyőzve! Hátrahagyta a kincsét - vegyétek át a jutalmat. A kriptát %s múlva hagyjátok el.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: nincs kihagyható szakasz (csak a Kriptában, portya közben)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor elmenekült, de hátrahagyta a kincsét - vegyétek át a jutalmat. A kriptát %s múlva hagyjátok el.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor győzött - az expedíció sikertelen, jutalom nélkül. A kriptát %s múlva hagyjátok el.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: ismételhető misszió teljesítve (%u. alkalommal)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: misszió teljesítve!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: a missziók újratöltve (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: ennek a szezonnak a végső jutalmát már átvetted.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: előbb teljesítsd a szezon összes missziót.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: a szezon összes missziója teljesítve - vedd át a végső jutalmat!
+Bonus zestawu kostiumow (%s): %ld czesci.	Jelmezszett bónusz (%s): %ld alkatrész.
+Boss Swiata jest chwilowo niedostepny.	A Világboss átmenetileg nem elérhető.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Világboss: %d. hely, zsákmányfokozat: %s (%lld sebzés, +%d rangpont). Vedd át a jutalmat a Világboss ablakban, mielőtt a következő boss megjelenik.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Világboss: nincs elég hely a tárhelyeden (%d szabad hely kell) - szabadíts fel helyet, és kattints újra.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Világboss: a jutalmak egy részét átvetted; a többinek nincs hely a tárhelyeden (%d szabad hely kell) - szabadíts fel helyet, és kattints újra.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Világboss: %u. szezon jutalma a céhed %d. helyezéséért.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Világboss: %u. szezon jutalma a karakterranglista %d. helyéért.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Világboss: a jutalmat már átvették, vagy elveszett.
+Boss Swiata: nie masz nagrody do odebrania.	Világboss: nincs átvehető jutalmad.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Világboss: jutalom átvéve a(z) %d. helyért (zsákmányfokozat: %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Világboss: misszióbónusz - támadóérték +%d%% %d órára.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Világboss: %lld sebzést okoztál - ez kevés a jutalomhoz (%u kell).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Világboss: zárd be a többi ablakot (csere, bolt, raktár), mielőtt átveszed a jutalmat.
+Boty opuszczaja Wieze Demonow.	A botok elhagyják a Démon-tornyot.
+Brak miejsca w kategorii: %s.	Nincs hely a kategóriában: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	A Fiatal hősök fegyverei nem fejleszthetők és nem módosíthatók.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: ismeretlen parancs vagy hibás argumentumok (%s) - semmi sem változott
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: a karakter egy másik magon van (%d. csatorna) - parancs elküldve
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: a karakter offline - a módosítás (%s) elmentve, a következő belépésekor lép életbe
+champion: nie ma postaci %s	champion: nincs ilyen karakter: %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: ismeretlen parancs vagy hibás argumentumok (%s) - semmi sem változott
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Az idő lejárt - Balathor győzött. A kriptát %s múlva hagyjátok el.
+Czas przejecia bota minal - postac wraca do bota.	A bot átvételének ideje lejárt - a karakter visszatér a bothoz.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	A régi pet rendszert a Háziállat-rendszer váltotta fel - a háziállat ablakot a U billentyű nyitja.
+Do ewolucji tej szaty potrzeba: %s x%d.	Ennek az öltözéknek az evolúciójához szükséges: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	A kesztyűbe csak Démon kövek illenek.
+Dom Aukcyjny jest dostepny tylko w M1.	Az Aukciósház csak az M1-ben érhető el.
+Dom Aukcyjny jest wylaczony na tym swiecie.	Az Aukciósház ezen a világon ki van kapcsolva.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Kiváló! A Mágikus démon kő dupla értéket adott.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u tárgy, %u szörny.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Virággyerekek: az esemény és a csereidő véget ért.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Virággyerekek: a jutalom átmenetileg nem elérhető - jelezd az adminisztrációnak.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Virággyerekek: zárd be a többi ablakot (csere, bolt, raktár), mielőtt cserélnél.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Virággyerekek: Virágmagot szerzel (van %d).
+dziś nie było wypraw	ma nem voltak expedíciók
+Efekt zestawu nadany: %s.	Szetthatás alkalmazva: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	A tárhelyed tele van - a megvásárolt köteg egy része a lábad előtt fekszik.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Kiestetek! A kazamatában töltött időtök véget ér, ha egy percen belül senki sem éleszt fel valakit.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir 3 percig melletted marad. Eltűnik, ha eltávolodsz, vagy pályát váltasz.
+Enasir odszedł.	Enasir elment.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir levonta a szolgáltatási díjat: %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - hátralévő idő: %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Raktár %s, Bolt %s, megidézve: %s, itt engedélyezett: %s.
+Enasir: usługi zabrane.	Enasir: a szolgáltatások elvonva.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	A Virággyerekek esemény véget ért - ez a virág már nem használható.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Horgász esemény - Kirakós most nem tart - a dobozokat a következő eseménykor nyithatod ki.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Az evolúció csak a(z) %d. szinten lehetséges, 100%% tapasztalattal.
+Ewolucja udana: %s, poziom %d.	Sikeres evolúció: %s, %d. szint.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	A Gaya mostantól fizetőeszköz: %d Gaya került a Gaya számlálódra (a Yang mellett a tárhelyen).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	A Gayát nem az ablakba kell tenni - a kovács maga veszi el a tárhelyedről.
+Gildia nauczyła się: %s (poziom %d/%d).	A céh megtanulta: %s (%d/%d. szint).
+Gildia nie ma rozdanych punktów umiejętności.	A céhnek nincsenek elosztott készségpontjai.
+Gildia odzyskała punkty umiejętności: %d.	A céh visszakapta a készségpontokat: %d.
+GM zresetował Twój limit dziennych dungeonów.	Egy GM nullázta a napi kazamatakorlátodat.
+Gracz %s nie ma tytułu %s.	A(z) %s játékosnak nincs %s címe.
+Gracza %s nie ma na tym kanale (albo to bot).	A(z) %s játékos nincs ezen a csatornán (vagy bot).
+Gratulacje - %d. poziom!	Gratulálunk - %d. szint!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Az egyik Sárkánytojás jeges hideget idéz! Összpontosítsatok rá támadásokat, hogy megállítsátok.
+Kamien Demonow osadzony.	Démon kő beillesztve.
+Kamien Demonow pasuje tylko do rekawic.	A Démon kő csak kesztyűbe illik.
+Kamien Demonow pekl przy osadzaniu.	A Démon kő beillesztéskor megrepedt.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	A Halál kövei őrzik a hetedik emeletet. Törjétek szét mind a négyet!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	A Rituális kő csak a 80. szint feletti tárgyakon működik.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	kártyák: fiók %u, szint %d, célok %u/%u/%u, megölt %d, szörnyek %d, felvett szettek %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	A könyv minden olvasási kísérlete %u Bajnok EXP-be kerül - nincs elég.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Sung Mahi átka blokkolja a készségeidet.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Eseménylistás kliensek ezen a magon: %u, vezető: %s.
+Kod zrealizowany: %s.	Kód beváltva: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Szerencsekerék (régi): kapsz %ux %s.
+Kolo Fortuny: %s	Szerencsekerék: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Szerencsekerék: nincs hely - %u jutalom vár. Csinálj helyet, és nyisd meg újra a kereket.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Szerencsekerék: csinálj helyet a tárhelyeden - jutalom vár.
+Kolo Losu: %s	Sorskerék: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Sorskerék: adatok újratöltve (%u kerék, %u tárgy), aktív kerék: %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	A lovas készség színét megváltoztathatod, ha ismered.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	A készség színe a készség P szintjétől változtatható.
+kostium (strój)	jelmez (öltözék)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	A fegyverjelmez nem illik az oldal fegyveréhez - a tárhelyre került.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	A fegyverjelmez nem illik az oldal fegyveréhez, és nincs hely a tárhelyen a levételéhez.
+kostium broni szamana	sámán fegyverjelmez
+kostium fryzury	frizurajelmez
+Krwawisz! (%d sek.)	Vérzel! (%d mp)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Balathor kriptája nem nyitható meg ezen a magon.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	A Pontosság könyvét az 1. Bajnok szinttől olvashatod.
+Księgi się zmieniły - ułóż je od nowa.	A könyvek megváltoztak - rendezd el őket újra.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Kazamaták: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (csak bot pihenő); kazamata nélkül vagy all - mindegyik.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	Az NPC-kereső minden karakternél be van kapcsolva - erre a tárgyra már nincs szükség.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	A Kis áhítat nem hatott - a 6. és 7. bónusz változatlan.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Már a lehető legtöbb Gayád van (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Már mind a 4 tárhelyoldalt feloldottad.
+Masz już ten tytuł.	Ez a címed már megvan.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Új Sung Ma statisztikapontod van (szabad: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Több Yang van nálad, mint a korlát engedi (100 mrd). Nem kereskedhetsz.
+Masz za mało Gaya (potrzeba %d).	Nincs elég Gayad (szükséges: %d).
+Masz za mało materiału (potrzeba %d).	Nincs elég anyagod (szükséges: %d).
+Masz za mało Yang (potrzeba %d).	Nincs elég Yangod (szükséges: %d).
+Masz za mało Yang.	Nincs elég Yangod.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Az Arezzo helyszínek ezen a szerveren ki vannak kapcsolva - visszatérsz a városba.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	A "Győzd le a Világbosst" misszió teljesítve - +%d%% támadóérték bónusz %d órára vár a Világboss ablakban.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Egyszerre csak egy Elementáris követ viselhetsz (Védelem vagy Erő). Előbb vedd le a jelenlegit.
+Możesz łowić ryby od 30 poziomu.	A 30. szinttől horgászhatsz.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Nyugodtan kell állnod a tárhelyoldal váltásához.
+na stałe	tartósan
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Erre a készségre nem költöttek készségpontot - a Kézikönyvből és a könyvekből származó szintet nem lehet visszavonni. A teljes elhárítót és fokozót a Tanváltás tekercse távolítja el.
+Na tym kanale magazyn jest niedostępny.	Ezen a csatornán a raktár nem elérhető.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Hátason használd a Hátas polimorf visszavonását.
+Nadano tytuł %s graczowi %s.	A(z) %s cím odaítélve a(z) %s játékosnak.
+Nadano tytuł %s.	A(z) %s cím odaítélve.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	A Kripta jutalmát %d céhtag karakter kapta meg.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Előbb tanulj fokozót - használd a Fokozó kézikönyvet.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Előbb oldj fel egy extra tárhelyoldalt (a "Tárhelyoldal II" tárgy).
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Előbb oldd fel a Sárkánykő-alkímiát - a kő annak az ablakába kerül.
+Najpierw wybierz drogę umiejętności.	Előbb válassz készségutat.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Előbb válassz elhárítót - használd az Elhárító kézikönyvet.
+Najpierw wyjmij przedmiot ze Switchbota.	Előbb vedd ki a tárgyat a Switchbotból.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Előbb tedd be azt a tárgyat, amelyik az új megjelenést kapja.
+Najpierw włóż szatę aury.	Előbb tedd be az aura öltözéket.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Előbb zárd be a többi ablakot (csere, bolt, raktár).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Előbb zárd be a többi ablakot (csere, bolt, raktár, pántok).
+Najpierw zamknij okno szaty aury.	Előbb zárd be az aura öltözék ablakát.
+Najwyżej 1000 dni.	Legfeljebb 1000 nap.
+Nie ma postaci %s.	Nincs ilyen karakter: %s.
+Nie ma takiego tytułu (/tytul lista).	Nincs ilyen cím (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Nincs a tárhelyeden 75. szinttől legalább +7-re fejlesztett fegyver, páncél vagy sisak (ennek a kovácsnak a szetthatása nélkül). Tedd a tárgyat az ablakba a szilánkokkal és a Szett tervvel.
+Nie masz wolnych punktow Sung Ma.	Nincs szabad Sung Ma pontod.
+Nie mozesz przywolac kamienia Metin w lochu.	Kazamatában nem idézhetsz meg Metinkövet.
+Nie mozesz przywolac zyly w lochu.	Kazamatában nem idézhetsz meg érclelőhelyet.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Nem adhatsz el - túllépnéd a 100 mrd Yang nálad lévő korlátot.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Felszerelt tárgyat nem lehet a Switchbotba áthelyezni.
+Nie możesz się teleportować z lochu.	Kazamatából nem teleportálhatsz.
+Nie możesz teraz zmienić strony ekwipunku.	Most nem válthatsz tárhelyoldalt.
+Nie możesz tutaj użyć tego przedmiotu.	Itt nem használhatod ezt a tárgyat.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	A(z) %s tárgyat nem veheted fel a(z) %s tárhelyoldalról - az oldal változatlan.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Ez a tárgy most nem semmisíthető meg - zárd be a többi ablakot, és próbáld újra.
+Nie nadano tytułu %s (gracz ma go już na stałe).	A(z) %s cím nem lett odaítélve (a játékosnak már tartósan megvan).
+Nie nadano tytułu %s.	A(z) %s cím nem lett odaítélve.
+Nie należysz do gildii.	Nem tartozol céhhez.
+Nie przeniesiono bota %s: %s.	A(z) %s bot nem lett áthelyezve: %s.
+nie trwa	nem fut
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	A szetthatást nem sikerült alkalmazni. A tárgy érintetlen maradt.
+Nie udało się otworzyć Krypty Balathora.	Nem sikerült megnyitni Balathor kriptáját.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Nem sikerült. Az anyagok és a Yang elvesztek, a tárgy az ablakban maradt.
+Nie znasz tej umiejetnosci.	Ezt a készséget nem ismered.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Ismeretlen kazamata: "%s". Kazamaták: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby vagy all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Egyik botnak sincs 75. szintje - a Torony a hatodik emeletnél véget ér.
+Od 1 do %d wymian naraz.	Egyszerre 1-től %d cseréig.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	A G1-től P fokozatig az elhárítót és a fokozót a Lélekkő+ fejleszti.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	A(z) %s tárhelyoldal feloldva (oldalak: %d/4). Az oldalak között a tárhely ablak füleivel vagy a "Tárhelyoldal váltása" készséggel (támogató készségek) válthatsz.
+Ogniste Strzały załadowane do Hwachy: %u.	Tűznyilak betöltve a Hwachába: %u.
+Osiagnieto limit zakupu tego przedmiotu.	Elérted ennek a tárgynak a vásárlási korlátját.
+Otrzymujesz %d Gaya.	Kapsz %d Gayát.
+Otrzymujesz kartę Okey (%d/%d).	Kapsz egy Okey kártyát (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Kapsz egy Okey kártyapaklit (van %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Kinyitottad Balathor Kincsét - a jutalom bekerült a tárhelyedre.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	A paramétereket csak karkötőről, nyakláncról, fülbevalóról vagy pajzsról lehet átvinni.
+Parametry przeniesione na szatę aury.	A paraméterek átkerültek az aura öltözékre.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Az aura öltözék paraméterei eltávolítva - újakat vihetsz át.
+Poczekaj 10 sekund po walce.	Várj 10 másodpercet a harc után.
+Poczekaj 3 sekundy przed kolejną zmianą.	Várj 3 másodpercet a következő váltás előtt.
+Poczekaj chwile przed kolejna zmiana opisu.	Várj egy kicsit a leírás következő módosítása előtt.
+Poczekaj chwile przed kolejna zmiana stanu.	Várj egy kicsit az állapot következő módosítása előtt.
+Poczekaj chwile przed kolejnym zaproszeniem.	Várj egy kicsit a következő meghívás előtt.
+Podaj gracza.	Add meg a játékost.
+Podejdź do Seon-Hae.	Menj Seon-Haehoz.
+Pojawiło się Ogniste Jajo Smoka.	Megjelent egy Tüzes sárkánytojás.
+Pokonajcie wszystkie pobliskie potwory.	Győzzetek le minden közeli szörnyet.
+Polimorfia działa tylko na wierzchowcach.	A polimorf csak hátasokon működik.
+Polimorfia wierzchowca zakończona.	A hátas polimorf véget ért.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Kudarc! A(z) %s hatás nem lépett működésbe - a virág elhervadt.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Kudarc! A(z) %s hatást nem sikerült a(z) %d. szintre emelni - a virág elhervadt.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Kudarc! A hatást nem sikerült erre cserélni: %s - a virág elhervadt, az előző hatás megmarad.
+Potrzeba %lld ksiąg (w oknie: %lld).	%lld könyv szükséges (az ablakban: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Az Erős katonai ló csak Vörös ginzenget (prémium) eszik.
+Poziom Czempiona: %d.	Bajnok szint: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Tegyél az ablakba 75. szinttől legalább +7-re fejlesztett fegyvert, páncélt vagy sisakot.
+Precyzja: poziom %s, bonus Precyzji +%d.	Pontosság: %s szint, Pontosság bónusz +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Napi ajándék: %lld Yang és %d db ital (nagy). A következő 24 óra múlva.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Húzd a borítást a tárhelyedben lévő pántra (a pánt levéve).
+Przeci±gnij zwój na broń w ekwipunku.	Húzd a tekercset a tárhelyedben lévő fegyverre.
+Przeciągnij Anulację na przedmiot z transmutacją.	Húzd a Visszafordítót egy átalakított tárgyra.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Húzd az Aura tanúsítvány+-t az aura öltözékre.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	A(z) %s tárgyat most nem veheted le - a tárhelyoldal változatlan.
+Przeniesiono bota %s do Ciebie.	A(z) %s bot áthelyezve hozzád.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Áthelyezve a kiegészítő tárhelyre: %d (kötegekhez adva: %d).
+Przenosić można raz na 3 sekundy.	Áthelyezni 3 másodpercenként egyszer lehet.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	A következő támadáshoz több sebzés kell.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Az Enasir megidéző gomb új kliensverziót igényel - frissítsd a játékot.
+Przywolana zyla zniknie po 15 minutach.	A megidézett érclelőhely 15 perc múlva eltűnik.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	A megidézett Metinkő 15 perc múlva eltűnik, ha nem pusztítod el.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	A kérdés lejárt - próbáld meg újra levenni a tárgyat.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Ranglista: a(z) %u. szezon most ér véget (összegzés kb. 2 perc múlva).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Ranglista: %u. szezon, %s, címbirtokosok: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Kesztyű: ennek a készségnek a következő visszatöltési ideje 5 mp-cel rövidebb.
+Rekrutacja potworow jest wylaczona.	A szörnyek toborzása ki van kapcsolva.
+Relikt debug: odnowienia wyzerowane.	Ereklye debug: a visszatöltések nullázva.
+Relikt debug: okienko %s puste.	Ereklye debug: a(z) %s rekesz üres.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Ereklye debug: rekesz %s, %s (%u), jelzők %ld, idő %ld / %ld mp, aktív: %s, tik: %s, harc: %d mp
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Ereklye debug: TP %d / %d, MP %d / %d, hátas: %s
+Relikt Duszy: nowy bonus - %s (%d).	Lélek ereklye: új bónusz - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	Az elhárító és a fokozó az M1 fokozattól nem vonható vissza.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Fejlesztés sikeres. Az öltözék most már evolválhat (Aura öltözék: evolúció).
+Rozwój udany: poziom %d.	Fejlesztés sikeres: %d. szint.
+Ryba się zerwała z haczyka.	A hal leszakadt a horogról.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Haenél nincsenek könyvek az utadhoz.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, idő %d perc, tartott tárgy %d, eredmény %d, esély %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: az idő nullára állítva.
+Silniejszy efekt tego rodzaju już działa.	Már hat egy erősebb ilyen hatás.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	A bolt zárva van - nyisd meg újra a meghosszabbítás helyett.
+Sklep ma juz maksymalny czas (%d dni).	A bolt elérte a maximális időt (%d nap).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	A bolt meghosszabbítva %u órával (kb. %u óra %u perc van hátra).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Összpontosítsatok a Megfagyott sárkánytojásra, mielőtt eltűnik (%d mp).
+Sortowac mozna raz na 3 sekundy.	Rendezni 3 másodpercenként egyszer lehet.
+Statystyki Sung Ma ma tylko Czempion.	Sung Ma statisztikái csak Bajnoknak vannak.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	A(z) %s tárhelyoldal még zárolva van - a következő "Tárhelyoldal II" tárgy oldja fel.
+Strona ekwipunku: %s.	Tárhelyoldal: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	A tárhelyoldalt 5 másodpercenként egyszer lehet váltani.
+Sukces! Efekt %s jest aktywny (poziom 1).	Siker! A(z) %s hatás aktív (1. szint).
+Sukces! Efekt %s wzrosl do poziomu %d.	Siker! A(z) %s hatás a(z) %d. szintre emelkedett.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot leállítva. Nincs Öltözékbűvölő tárgy.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot leállítva. Nincs Megbűvölő tárgy.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: nem sikerült megváltoztatni ennek a jelmeznek a bónuszait.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: ez a tárgy nem bűvölhető meg (nincsenek bónuszai).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Az esély %d%%-kal megnőtt (1 tárgy felhasználva).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	A pánt új megjelenést kapott (a bónuszok és az elnyelés változatlan).
+Ta Anulacja działa tylko na wierzchowcach.	Ez a Visszafordító csak hátasokon működik.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Ez a könyv Bajnokoknak való: az 1. Bajnok szinttől olvashatod.
+Ta szarfa ma juz te nakladke.	Ezen a pánton már rajta van ez a borítás.
+Ta szata aury ma już najwyższy poziom.	Ez az aura öltözék már a legmagasabb szinten van.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Ez az öltözék a fajtája csúcsán van - most evolváld (Aura öltözék: evolúció).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Ezen az öltözéken már átvitt paraméterek vannak. Töröld az Aura tanúsítvány+-szal.
+Ta szata nie ma przeniesionych parametrów.	Ezen az öltözéken nincsenek átvitt paraméterek.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Ezt az Oszlopot csak Nindzsa vagy Sámán sebezheti meg.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Ez a tárgy csak Sung Mahi tornyában használható.
+Tego przedmiotu nie mozna dodac do Switchbota.	Ezt a tárgyat nem lehet a Switchbothoz adni.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Ezt a tárgyat most nem használhatod (felszerelt, kereskedésben van, vagy zárolt).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Ezt a tárgyat a háziállat ablakban használod (U billentyű).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Ezt a köteget ennél az árnál nem lehet felosztani - vedd meg az egész köteget.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	A teleport a bejárathoz %lld Yangba kerül - nincs nálad ennyi.
+Teleport pod wejście: zapłacono %lld Yang.	Teleport a bejárathoz: %lld Yang kifizetve.
+Ten certyfikat nie nadaje żadnego tytułu.	Ez a tanúsítvány nem ad semmilyen címet.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Ez a fokozó nem a te kasztodnak és készségutadnak való.
+Ten efekt już działa i potrwa dłużej niż nowy.	Ez a hatás már aktív, és tovább tart, mint az új.
+Ten element nie pasuje w tym miejscu.	Ez az elem itt nem illik.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Ez a játékos nem fér el ennyi Yangot (korlát: 100 mrd nála).
+Ten loch jest dla poziomów %d - %d.	Ez a kazamata a %d - %d. szintűeknek való.
+Ten Metin moze zranic tylko Szaman.	Ezt a Metint csak Sámán sebezheti meg.
+Ten opis zawiera niedozwolone slowo.	Ez a leírás tiltott szót tartalmaz.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Ez a szörny olyan térképen él, ahová belépővel lehet menni - kártyás teleport ott nem elérhető.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Ez a tárgy csak bekapcsolt Arezzo modullal érhető el.
+Ten przedmiot jest juz w Switchbocie.	Ez a tárgy már a Switchbotban van.
+Ten przedmiot ma już ten efekt zestawu.	Ennek a tárgynak már megvan ez a szetthatás.
+Ten przedmiot nie ma transmutacji.	Ennek a tárgynak nincs átalakítása.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Ez a tárgy egyik kiegészítő tárhely kategóriába sem tartozik.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Ez a tárgy nem illik ebbe a kiegészítő tárhely kategóriába.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Ez a tárgy nem növeli a készítés esélyét.
+Ten wygląd nie pasuje do tego przedmiotu.	Ez a megjelenés nem illik ehhez a tárgyhoz.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Ezt a tekercset csak legalább %d. szintű céhek tagjainak adom el.
+To nie jest bilet do tej przemiany.	Ez nem ennek az átváltozásnak a jegye.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	Ez Sung Ma földje: Bajnok szint nélkül nem sebezheted az itteni szörnyeket.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Az átalakítás eltávolítva - a tárgy ismét a saját megjelenését viseli.
+Transmutacja zakończona.	Az átalakítás befejeződött.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Átalakítani csak fegyvereket, páncélokat, jelmezeket és fegyverkinézeteket lehet.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Ide csak Aura-jégrúnát vagy Aura-tűzrúnát lehet tenni.
+Tu można włożyć tylko szatę aury.	Ide csak aura öltözéket lehet tenni.
+Twoja gildia ma już otwartą Kryptę Balathora.	A céhednek már nyitva van Balathor kriptája.
+Twoja gildia nie ma otwartej Krypty Balathora.	A céhednek nincs nyitva Balathor kriptája.
+Twoja Precyzja ma juz najwyzszy poziom (P).	A Pontosságod már a legmagasabb szinten van (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	A Bajnok szinted túl alacsony ennek a tárgynak a használatához (szükséges: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	A Bajnok szinted túl alacsony ennek a tárgynak a felvételéhez (szükséges: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	A címekhez újabb kliens kell - frissítsd a játékot.
+Tę księgę może przeczytać tylko lider gildii.	Ezt a könyvet csak a céhvezér olvashatja el.
+Udało się odeprzeć lodowe zimno.	Sikerült visszaverni a jeges hideget.
+Użycie: /kod MT2009-PLUS-XXXX	Használat: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	A tárhelyeden nincsenek kiegészítő tárhelyre való tárgyak.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Egy kereskedésben legfeljebb 10 mrd Yangot adhatsz.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	Sung Mahi tornyában csak a Kereskedőnőtől származó toronyitalok (W) működnek.
+W tych rekawicach nie ma wolnego miejsca na kamien.	Ezekben a kesztyűkben nincs szabad hely kőnek.
+W tym stosie nie ma juz tylu sztuk.	Ebben a kötegben már nincs ennyi darab.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	A bolt értéke és a Yangod meghaladná a 100 mrd Yang korlátot.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	Ennek a tárgynak a megjelenése nem illik a kasztodhoz.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	Ennek a tárgynak a megjelenése nem illik a nemedhez.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Az expedíció megszakadt - a Rejtett Balathor elmenekült, de hátrahagyta a kincsét. A kriptát %s múlva hagyjátok el.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Az expedíció megszakadt. A kriptát %s múlva hagyjátok el.
+Wyspa Skarbow: %s (flaga %s).	Kincses-sziget: %s (jelző %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	A Horgász kirakósnak újabb kliens kell - frissítsd a játékot.
+Włóż bilet w okno transmutacji u Teowadena.	Tedd a jegyet Teowaden átalakító ablakába.
+Włóż oba przedmioty.	Tedd be mindkét tárgyat.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: esemény %s, %u. szezon (lezárva %d), játékok ezen a magon: %u, táblák: %d, törzsek: %d, jutalom vár: %d
+Yut Nori: event sie nie odbywa.	Yut Nori: az esemény nem zajlik.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: az esemény éppen kezdődik, próbáld újra egy pillanat múlva.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: nyírfatörzset csak az esemény alatt lehet hozzáadni.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: szükséged van %d x Yut Nori táblára és %d Yangra.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: szabadíts fel helyet a tárhelyeden a jutalom átvételéhez.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	10 másodperc múlva megjelenik a Megfagyott sárkánytojás - akkor együtt üssétek meg.
+Za mało Yang (potrzeba %lld).	Nincs elég Yang (szükséges: %lld).
+Zabrano tytuł %s graczowi %s.	A(z) %s cím elvéve a(z) %s játékostól.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	Az elem megbűvölése nem sikerült! A fegyver változatlan maradt.
+Zaczarowanie żywiołu powiodło się! %s.	Az elem megbűvölése sikerült! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Zárd be a többi ablakot (csere, bolt, raktár).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Zárd be a többi ablakot (csere, bolt, raktár, kocka), és próbáld újra.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Zárd be a többi ablakot a kiegészítő tárhely rendezéséhez.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Zárd be a többi ablakot a kötegek egyesítéséhez a kiegészítő tárhelyen.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Zárd be a többi ablakot a tárgyak kiegészítő tárhelyre helyezéséhez.
+Zamknij inne okna, aby użyć tego przedmiotu.	Zárd be a többi ablakot ennek a tárgynak a használatához.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Zárd be a többi ablakot a tárhelyoldal váltásához.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Csak azonos térképen és azonos csatornán lévő játékost hívhatsz meg a csoportba.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Állj meg a jelmez elrejtéséhez vagy megjelenítéséhez.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Vedd le a tárgyat, és tedd a tárhelyedre.
+Zdejmij szatę i weź ją do ekwipunku.	Vedd le az öltözéket, és tedd a tárhelyedre.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	A jelmezszett hiányos - a szettbónusz megszűnt.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Jelmezszett: +%ld TP és +%ld támadóérték.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Sung Ma földje megköveteli: Erő %d, Vitalitás %d, Ellenállás %d, Intelligencia %d - hiány esetén az erőd a felére csökken.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Már ismersz egy másik elhárítót - csak egyet lehet birtokolni. Ez a könyv nem fejleszti.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Pusztítsátok el a Masszív jégfalat, amely védi[ENTER]a Megfagyott sárkánytojásokat!
+Zniszczono: %s.	Elpusztítva: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Az elem megbűvölésének szintje csökkent: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Az elem megbűvölésének szintje csökkent: a fegyvernek már nincs eleme (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	A tárhelyen maradt: %d - nincs hely a kategóriában: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	A(z) %s karakter (offline) napi korlátja (%s) nullázva: %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	A(z) %s%s karakter napi korlátja (%s) nullázva: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Csinálj helyet a tárhelyeden (%d szabad hely kell).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Csinálj helyet a tárhelyeden - egy tárgy a tárhelyoldalak raktárából szabad helyre vár.
+Zwój albo broń nie leży już w ekwipunku.	A tekercs vagy a fegyver már nincs a tárhelyeden.
+Łączyć stosy można raz na 3 sekundy.	Kötegeket 3 másodpercenként egyszer lehet egyesíteni.
