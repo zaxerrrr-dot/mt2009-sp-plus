@@ -22,5 +22,17 @@
   "marker": "MT2009_PLUS_MALL_PAGES_V1 (grid)",
   "old": "\t\t\tCGrid grid(5, MAX(1, pi->pSafebox->bSize) * 9);\n",
   "new": "\t\t\t// MT2009_PLUS_MALL_PAGES_V1 (grid) (server-patches/mall3): the item-shop storage's\n\t\t\t// deliveries fill every page the player's client shows (1 or 3); its bSize is\n\t\t\t// 1 (or 0 with no safebox row) and was the only limit before.\n\t\t\tCGrid grid(5, MAX(1, pi->ip[0] == 1 ? (int) pi->ip[1] : (int) pi->pSafebox->bSize) * 9);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_MALL_STACK_V1 (load)",
+  "old": "\t\t\tif (!m_pkMall->Add(pItems->pos, item))\n\t\t\t\tM2_DESTROY_ITEM(item);\n\t\t\telse\n\t\t\t\titem->SetSkipSave(false);\n\t\t}\n\t}\n}\n",
+  "new": "\t\t\tif (!m_pkMall->Add(pItems->pos, item))\n\t\t\t\tM2_DESTROY_ITEM(item);\n\t\t\telse\n\t\t\t\titem->SetSkipSave(false);\n\t\t}\n\n\t\t// MT2009_PLUS_MALL_STACK_V1 (load) (server-patches/mall3): the deliveries the db core\n\t\t// just turned into rows, and stacks split before, poured together in the game, which\n\t\t// holds the storage's items now (playerbot_arrange::MergeMallStacks).\n\t\t{ void Mt2009MallStackOnLoad(LPCHARACTER); Mt2009MallStackOnLoad(this); }\n\t}\n}\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_MALL_STACK_V1 (stale rows)",
+  "old": "\t\tpi->pSafebox->wItemCount = s_items.size();\n",
+  "new": "\t\t// MT2009_PLUS_MALL_STACK_V1 (stale rows) (server-patches/mall3): an item taken out of the\n\t\t// item-shop storage is saved into the item cache (window INVENTORY, owner the player);\n\t\t// its table row says MALL until the cache is flushed. A MALL row is never cached\n\t\t// (QUERY_ITEM_SAVE writes it and drops the cache entry), so a row whose id is in the\n\t\t// cache is not in the storage: it is not sent, or the game would show it twice and its\n\t\t// stack merge (LoadMall) could pour units that are already in the bag.\n\t\tif (pi->ip[0] == 1)\n\t\t{\n\t\t\tsize_t kept = 0;\n\t\t\tfor (size_t i = 0; i < s_items.size(); ++i)\n\t\t\t{\n\t\t\t\tif (GetItemCache(s_items[i].id))\n\t\t\t\t{\n\t\t\t\t\tsys_log(0, \"MALL: item %u (vnum %u) of account %u is in the item cache - not in the storage\",\n\t\t\t\t\t\t\ts_items[i].id, s_items[i].vnum, pi->account_id);\n\t\t\t\t\tcontinue;\n\t\t\t\t}\n\t\t\t\ts_items[kept++] = s_items[i];\n\t\t\t}\n\t\t\ts_items.resize(kept);\n\t\t}\n\n\t\tpi->pSafebox->wItemCount = s_items.size();\n"
  }
 ]

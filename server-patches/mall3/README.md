@@ -26,3 +26,23 @@ Stary klient: dostawy dalej tylko na stronę 1, jak dotąd (pola 45+ i tak już
 przychodziły do jego exe bez szkody – wektor ma 135 pól, okno ich nie rysuje).
 Klient: `MallWindow` z przyciskami stron I / II / III jak w magazynie.
 Exe bez zmian.
+
+## Stosy w magazynie Item-Shopu (`MT2009_PLUS_MALL_STACK_V1`)
+
+Właściciel, 5 listopada 2026: 10 paczek Cor Draconis po 10 sztuk ma się ułożyć
+w jeden stos, to samo z nagrodami Koła Losu. Wszystkie dostawy do tego okna idą
+przez `player.item_award` (mall=1): Item-Shop V3 i stary sklep, Koło Losu (strona
+i gra), kupony, nagrody SMH, `pc.give_award`, sklep w grze. Baza zamienia je na
+wiersze `item` (okno MALL) dopiero przy otwarciu magazynu.
+
+- `char.cpp` (`LoadMall`) – po wczytaniu magazynu gra łączy stosy
+  (`playerbot_arrange::MergeMallStacks`, overlay `playerbot_arrange.cpp`):
+  nowe dostawy dołączają do istniejących stosów, rozbite stosy z wcześniej też
+  się łączą, do limitu stosu z `item_proto` (200). Nic się nie przesuwa; pusty
+  stos znika. Łączy się tylko to, co łączy silnik (ten sam vnum, flaga stosu,
+  te same sockety, bonusy, wygląd), bez przedmiotów z czasem (limit real time,
+  od pierwszego użycia, od założenia) i bez `ITEM_UNIQUE`.
+- `db ClientManager.cpp` (`RESULT_SAFEBOX_LOAD`) – wiersz MALL, którego id jest
+  w cache przedmiotów bazy (wyjęty do ekwipunku, cache jeszcze nie zapisany),
+  nie jest wysyłany do gry: nie ma go w magazynie, więc nie pokaże się drugi raz
+  i nie zostanie dolany do innego stosu.

@@ -64,6 +64,18 @@ TResult ArrangeSafebox(LPCHARACTER ch, bool fromPlayer);
 // stosy" button. The same pours ArrangeSafebox makes, on the same clock.
 TResult MergeSafeboxStacks(LPCHARACTER ch, bool fromPlayer);
 
+// MT2009_PLUS_MALL_STACK_V1 (the owner, 5 November 2026: "10 paczek Cor
+// Draconis po 10 sztuk ma sie ulozyc w stos w oknie ItemShopu, to samo z Kolem
+// Losu"): the ItemShop storage's stacks poured together right after
+// CHARACTER::LoadMall built it. Every item_award delivery (ItemShop V3 and the
+// old shop, Kolo Losu on the page and in the game, coupons, SMH rewards,
+// pc.give_award) arrives there as a new row when the storage opens, so this is
+// both the delivery's stacking and the compaction of stacks split before.
+// Nothing moves; a stack poured empty leaves the storage. Only what SameStack
+// pours, nothing time-limited and no unique item. Called by char.cpp
+// (server-patches/mall3); no cooldown of its own - LoadMall has its 10 s.
+TResult MergeMallStacks(LPCHARACTER ch);
+
 // A stack moved by count between the bag and the open safebox, or inside the
 // safebox (blasty's proposal, 19 September): /safebox_put, /safebox_take and
 // /safebox_move, answered "SafeboxTransferResult <op> <code> <units>" and

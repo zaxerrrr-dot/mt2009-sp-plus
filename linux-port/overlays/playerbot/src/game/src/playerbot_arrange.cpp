@@ -1139,6 +1139,148 @@ static TResult ArrangeSafeboxImpl(LPCHARACTER ch, bool fromPlayer, bool mergeOnl
 	return result;
 }
 
+namespace {
+
+// MT2009_PLUS_MALL_STACK_V1: what the ItemShop storage may pour. The engine's
+// own stacking (SameStack, IsSplittable) and, on top, nothing that counts its
+// time - a real-time limit, a timer started on first use or on wearing, a
+// unique item - even when two of them carry the same sockets today.
+bool MallMayPour(LPITEM item)
+{
+	if (!item || item->GetID() == 0 || !IsSplittable(item) || item->isLocked() || item->IsExchanging())
+		return false;
+	if (item->GetType() == ITEM_UNIQUE)
+		return false;
+	const TItemTable* proto = item->GetProto();
+	if (!proto)
+		return false;
+	for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+		switch (proto->aLimits[i].bType) {
+		case LIMIT_REAL_TIME:
+		case LIMIT_REAL_TIME_START_FIRST_USE:
+		case LIMIT_TIMER_BASED_ON_WEAR:
+			return false;
+		default:
+			break;
+		}
+	return true;
+}
+
+bool MallSameStack(LPITEM a, LPITEM b)
+{
+	if (!SameStack(a, b) || a->GetYExtra() != b->GetYExtra())
+		return false;
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	if (a->GetTransmutation() != b->GetTransmutation())
+		return false;
+#endif
+	return true;
+}
+
+}  // namespace
+
+// MT2009_PLUS_MALL_STACK_V1: one pass in cell order. A stack with room takes
+// from every later stack of the same kind, so the storage ends with full stacks
+// and at most one partial one per kind, each in the earliest cell it already
+// had. Each pour writes the taker's row before the giver goes: SetCount and
+// FlushDelayedSave send HEADER_GD_ITEM_SAVE (a MALL row is written by the db
+// core at once, never cached), then M2_DESTROY_ITEM sends HEADER_GD_ITEM_DESTROY
+// - one socket, one db queue, in that order.
+TResult MergeMallStacks(LPCHARACTER ch)
+{
+	TResult result;
+	CSafebox* box = ch ? ch->GetMall() : NULL;
+	if (!box || !ch->IsPC() || !ch->GetDesc() || !box->IsValidPosition(0)) {
+		result.code = RESULT_NO_SAFEBOX;
+		return result;
+	}
+	// CSafebox::Remove refuses while another window is open; nothing is
+	// poured that could not be taken out after.
+	if (ch->IsBusy(BUSY_SAFEBOX)) {
+		result.code = RESULT_BUSY;
+		return result;
+	}
+	const int pages = SafeboxPages(box);
+	std::map<DWORD, uint64_t> unitsBefore;
+	CountSafeboxUnits(box, pages, unitsBefore);
+
+	std::vector<LPITEM> takers;	// stacks with room, in cell order
+	std::set<LPITEM> recounted;
+	for (int pos = 0; pos < pages * SAFEBOX_PAGE_CELLS; ++pos) {
+		LPITEM item = box->Get(pos);
+		if (!item)
+			continue;
+		++result.items;
+		if (item->GetCell() != (WORD)pos || item->GetOwner() != ch || item->GetWindow() != MALL) {
+			++result.pinned;
+			continue;
+		}
+		if (!MallMayPour(item))
+			continue;
+		bool gone = false;
+		for (size_t i = 0; i < takers.size();) {
+			LPITEM to = takers[i];
+			if (!MallSameStack(to, item)) {
+				++i;
+				continue;
+			}
+			const ITEM_COUNT have = to->GetCount();
+			const ITEM_COUNT max = (ITEM_COUNT)to->GetMaxStack();
+			const ITEM_COUNT give = item->GetCount();
+			if (have >= max) {
+				takers.erase(takers.begin() + i);
+				continue;
+			}
+			const ITEM_COUNT units = MIN(max - have, give);
+			to->SetCount(have + units);
+			if (to->GetCount() != have + units) {	// the engine would not hold it - leave both as they were
+				to->SetCount(have);
+				sys_err("MALL_STACK: pid=%u name=%s item %u (%s) refused %u more", ch->GetPlayerID(), ch->GetName(),
+						to->GetID(), to->GetName(), units);
+				++i;
+				continue;
+			}
+			ITEM_MANAGER::instance().FlushDelayedSave(to);
+			recounted.insert(to);
+			result.units += units;
+			if (units == give) {
+				if (box->Remove((DWORD)pos) != item) {	// not expected: Remove is asked under the same IsBusy
+					to->SetCount(have);
+					ITEM_MANAGER::instance().FlushDelayedSave(to);
+					result.units -= units;
+					sys_err("MALL_STACK: pid=%u name=%s item %u (%s) could not leave cell %d; pour taken back",
+							ch->GetPlayerID(), ch->GetName(), item->GetID(), item->GetName(), pos);
+					break;
+				}
+				LogManager::instance().ItemLog(ch, item, "MALL_STACK", to->GetName());
+				recounted.erase(item);
+				M2_DESTROY_ITEM(item);
+				++result.merged;
+				gone = true;
+				break;
+			}
+			item->SetCount(give - units);
+			ITEM_MANAGER::instance().FlushDelayedSave(item);
+			recounted.insert(item);
+			takers.erase(takers.begin() + i);	// full now
+		}
+		if (!gone && item->GetCount() < (ITEM_COUNT)item->GetMaxStack())
+			takers.push_back(item);
+	}
+	for (std::set<LPITEM>::const_iterator it = recounted.begin(); it != recounted.end(); ++it)
+		RefreshSafeboxItem(box, *it);
+
+	std::map<DWORD, uint64_t> unitsAfter;
+	CountSafeboxUnits(box, pages, unitsAfter);
+	if (unitsAfter != unitsBefore)
+		sys_err("MALL_STACK: pid=%u name=%s the storage's units changed in the merge", ch->GetPlayerID(), ch->GetName());
+	if (result.merged || result.units)
+		sys_log(0, "MALL_STACK: pid=%u name=%s items=%d merged=%d units=%u", ch->GetPlayerID(), ch->GetName(),
+				result.items, result.merged, result.units);
+	result.code = result.units ? RESULT_DONE : RESULT_NOTHING;
+	return result;
+}
+
 TTransfer PutIntoSafebox(LPCHARACTER ch, unsigned int bagCell, unsigned int safePos, unsigned int count)
 {
 	TTransfer result;
@@ -1437,6 +1579,13 @@ TResult MergeSafeboxStacks(LPCHARACTER, bool)
 	return result;
 }
 
+TResult MergeMallStacks(LPCHARACTER)
+{
+	TResult result;
+	result.code = RESULT_UNSUPPORTED;
+	return result;
+}
+
 TTransfer PutIntoSafebox(LPCHARACTER, unsigned int, unsigned int, unsigned int)
 {
 	return TTransfer();
@@ -1455,3 +1604,10 @@ TTransfer MoveInSafebox(LPCHARACTER, unsigned int, unsigned int, unsigned int)
 }  // namespace playerbot_arrange
 
 #endif
+
+// MT2009_PLUS_MALL_STACK_V1 (call): char.cpp's CHARACTER::LoadMall calls this by
+// a local declaration (server-patches/mall3), so the engine TU needs no header.
+void Mt2009MallStackOnLoad(LPCHARACTER ch)
+{
+	playerbot_arrange::MergeMallStacks(ch);
+}
