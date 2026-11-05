@@ -1451,7 +1451,8 @@ namespace
 		state.bTownNeedSkillReset = !inM2 && ShouldPlayerBotResetSkills(ch, state, dwNow);
 		state.bTownNeedMisc = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) ||
 				NeedsPlayerBotPotions(ch) || HasPlayerBotExcessPotions(ch) ||
-				NeedsPlayerBotProgressionBoots(ch);
+				NeedsPlayerBotProgressionBoots(ch) ||
+				NeedsPlayerBotQuiver(ch);	// MT2009_PLUS_BOT_QUIVER_STORE_V1: Handlarka's Kolczan
 		// And a bot of thirty whose only weapon is for the tenth level or under
 		// (Community Patch 5, point 2), and a weapon held off its next step for
 		// want of the backup the merchant sells (R8 of Iwakura's audit).

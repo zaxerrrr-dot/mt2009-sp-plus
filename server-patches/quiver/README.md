@@ -38,6 +38,7 @@ przerywa całość, zanim cokolwiek zostanie zapisane.
   `img/item/08010.png`). Idempotentne; cena zmieniona ręcznie zostaje.
 - Boty (`playerbot_gear.h`, `playerbot_economy.h`): `IsPlayerBotQuiver` – ta sama reguła; założony kołczan
   liczy się jako pełny zapas (bot nie kupuje strzał), przegląd ekwipunku go nie zdejmuje, kołczan z plecaka
-  idzie przed każdym stosem, nigdy nie jest złomem. Boty go nie kupują.
+  idzie przed każdym stosem, nigdy nie jest złomem. Kołczany 8011/8012 kupują u Handlarki (`MT2009_PLUS_BOT_QUIVER_STORE_V1`,
+  `server-patches/strzaly`).
 - Klient: `client-patches/client-2.0.30/tools/quiver` (rekord `item_proto`, `item_list.txt`, `itemdesc.txt`,
   ikona `icon/item/08010.tga` – nowy wpis paczki `icon`).

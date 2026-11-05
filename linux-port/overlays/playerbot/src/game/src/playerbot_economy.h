@@ -6251,6 +6251,9 @@ namespace
 			BuyPlayerBotProgressionGear(ch,
 					GetPlayerBotProgressionBootsVnum(ch), "boots");
 
+		// MT2009_PLUS_BOT_QUIVER_STORE_V1: an Archer's Kolczan (7 days, else 1 day) after the potions and the boots
+		BuyPlayerBotQuiverAtMerchant(ch);
+
 		return true;
 	}
 

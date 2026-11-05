@@ -16,6 +16,12 @@ Owsap (`Srcs/Server/game/src/battle.cpp`) liczy obrażenia strzały jako `rzut(�
 
 Boty: `GetPlayerBotArrowGrade` (`playerbot_gear.h`) nie odrzuca już strzał po `value2/4/5` (silnik ich nie czyta) –
 najlepsza strzała to najwyższe `value3`, kołczan idzie przed każdym stosem; katalog ItemShopu V3 – kołczan od poziomu 0.
+`MT2009_PLUS_BOT_QUIVER_STORE_V1` (właściciel: zasięg strzału botów bez zmian, boty kupują kołczany): łucznik z łukiem,
+bez kołczanu z co najmniej godziną czasu (założonego lub w plecaku), kupuje u Handlarki (`ManagePlayerBotMiscMerchant`, po
+miksturach i butach; potrzeba wizyty w mieście – `bTownNeedMisc`) Kołczan na 7 dni (8012), gdy stać go ponad zarezerwowane
+Yang (`GetPlayerBotReservedGold`), inaczej na 1 dzień (8011), inaczej nic – zostają zwykłe strzały. Ceny z `item_proto`.
+Nowy kołczan czeka w plecaku i wchodzi, gdy stary wygaśnie (kołczan po czasie nie jest „używalną strzałą”). Kołczan
+z ItemShopu (8010, potrzeba QUIVER katalogu V3) liczy się tak samo.
 
 - `apply_strzaly.py <game/src>` – Linux/VPS; `Apply-StrzalyPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
   oba czytają ten sam `edits.json`. Kolejność: dowolna. Przy wdrożeniu dopisać `strzaly` do listy łatek skryptu wdrożenia.
