@@ -162,6 +162,15 @@ def main():
     ap.add_argument('--out', default=OUT)
     a = ap.parse_args()
     found = collect(a.src)
+    # The map destinations of the over-head status (playerbot_status.h is
+    # skipped, it has its own English), which the raid calls and the
+    # companion say too: "Chodzcie do Swiatyni Hwang".
+    st = open(os.path.join(a.src, 'playerbot_status.h'), encoding='latin-1').read()
+    at = st.find('const char* GetPlayerBotMapDestinationPl(long mapIndex)')
+    if at >= 0:
+        body = st[at:st.index('\n\t}\n', at)]
+        for m in re.finditer(r'return "([^"]+)"', body):
+            found.setdefault(m.group(1), set()).add('playerbot_status.h')
     manual = os.path.join(HERE, 'manual_pl.tsv')
     for line in open(manual, encoding='utf-8'):
         if line.startswith('#') or '\t' not in line:

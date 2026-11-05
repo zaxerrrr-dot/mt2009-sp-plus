@@ -674,6 +674,17 @@ namespace
 		std::vector<std::pair<size_t, size_t> > caps;   // offset, length in the line
 	};
 
+	bool IsPlayerBotI18nSentenceEnd(const std::string& s, size_t i);
+
+	// Whether raw[from, from + len) holds a cut of the line (". ", ", ", ":D ").
+	bool PlayerBotI18nHasCut(const std::string& raw, size_t from, size_t len)
+	{
+		for (size_t i = from; i + 1 < from + len; ++i)
+			if (IsPlayerBotI18nSentenceEnd(raw, i))
+				return true;
+		return false;
+	}
+
 	// Pieces from `pi` against folded[ti, end). Slots take one byte at least.
 	bool MatchPlayerBotI18nPieces(const TPlayerBotI18nEntry& e, size_t pi, const std::string& folded, size_t ti,
 			size_t end, TPlayerBotI18nMatch& m, int& budget)
@@ -726,17 +737,44 @@ namespace
 		return false;
 	}
 
-	std::string TranslatePlayerBotI18nValue(TPlayerBotI18nLang& lang, const std::string& value, int depth);
+	std::string TranslatePlayerBotI18nValue(TPlayerBotI18nLang& lang, const std::string& value, int depth, bool* ok = NULL);
+
+	// The translation of one template's match, or false when a slot holds a
+	// cut of the line it cannot translate: "Stoje ze straganem $MAPIN" must
+	// not take "w Joan. Wpadnij :D" for its place and leave half of it Polish.
+	bool BuildPlayerBotI18nOutput(TPlayerBotI18nLang& lang, const TPlayerBotI18nEntry& e, const TPlayerBotI18nMatch& m,
+			const std::string& raw, int depth, std::string& out)
+	{
+		std::vector<std::string> values(m.caps.size());
+		for (size_t k = 0; k < m.caps.size(); ++k)
+		{
+			const std::pair<size_t, size_t>& c = m.caps[k];
+			bool ok = true;
+			values[k] = TranslatePlayerBotI18nValue(lang, raw.substr(c.first, c.second), depth + 1, &ok);
+			if (!ok && PlayerBotI18nHasCut(raw, c.first, c.second))
+				return false;
+		}
+		out.clear();
+		for (size_t i = 0; i < e.out.size(); ++i)
+		{
+			const TPlayerBotI18nOutPiece& o = e.out[i];
+			if (o.slot < 0)
+				out += o.text;
+			else if (o.slot < (int)values.size())
+				out += values[o.slot];
+		}
+		return true;
+	}
 
 	// Every template that could cover folded[start, end) whole, the most fixed
 	// text first. The translation in `out`.
 	bool TranslatePlayerBotI18nWhole(TPlayerBotI18nLang& lang, const std::string& raw, const std::string& folded,
 			size_t start, size_t end, std::string& out, int depth)
 	{
-		if (end <= start)
+		if (end <= start || depth > 4)
 			return false;
 		const TPlayerBotI18nEntry* best = NULL;
-		TPlayerBotI18nMatch bestMatch;
+		std::string bestOut;
 		const std::string head = folded.substr(start, std::min<size_t>(2, end - start));
 		for (int pass = 0; pass < 3; ++pass)
 		{
@@ -766,27 +804,18 @@ namespace
 					continue;
 				TPlayerBotI18nMatch m;
 				int budget = 2000;
-				if (MatchPlayerBotI18nPieces(e, 0, folded, start, end, m, budget))
+				std::string o;
+				if (MatchPlayerBotI18nPieces(e, 0, folded, start, end, m, budget) &&
+						BuildPlayerBotI18nOutput(lang, e, m, raw, depth, o))
 				{
 					best = &e;
-					bestMatch = m;
+					bestOut.swap(o);
 				}
 			}
 		}
 		if (!best)
 			return false;
-		out.clear();
-		for (size_t i = 0; i < best->out.size(); ++i)
-		{
-			const TPlayerBotI18nOutPiece& o = best->out[i];
-			if (o.slot < 0)
-				out += o.text;
-			else if (o.slot < (int)bestMatch.caps.size())
-			{
-				const std::pair<size_t, size_t>& c = bestMatch.caps[o.slot];
-				out += TranslatePlayerBotI18nValue(lang, raw.substr(c.first, c.second), depth + 1);
-			}
-		}
+		out.swap(bestOut);
 		return true;
 	}
 
@@ -874,8 +903,10 @@ namespace
 		return out;
 	}
 
-	std::string TranslatePlayerBotI18nValue(TPlayerBotI18nLang& lang, const std::string& value, int depth)
+	std::string TranslatePlayerBotI18nValue(TPlayerBotI18nLang& lang, const std::string& value, int depth, bool* ok)
 	{
+		if (ok)
+			*ok = true;
 		if (value.empty() || depth > 3)
 			return value;
 		// The spaces round it stay where they were.
@@ -903,7 +934,35 @@ namespace
 			TrimPlayerBotI18nEnd(trimmed);
 			if (!TranslatePlayerBotI18nWhole(lang, core, folded, 0, trimmed.size(), out, depth) &&
 					!TranslatePlayerBotI18nName(lang, core, out))
+			{
 				out = core;
+				bool all = false;
+				// A list: "Kosc x3, Miecz+5" item by item.
+				if (core.find(", ") != std::string::npos)
+				{
+					all = true;
+					std::string joined;
+					size_t from = 0;
+					while (from <= core.size())
+					{
+						size_t comma = core.find(", ", from);
+						if (comma == std::string::npos)
+							comma = core.size();
+						// Item by item: a part must be an item's or a monster's name, not a sentence.
+						std::string part;
+						const bool partOk = TranslatePlayerBotI18nName(lang, core.substr(from, comma - from), part);
+						if (!joined.empty())
+							joined += ", ";
+						joined += part;
+						all = all && partOk;
+						from = comma + 2;
+					}
+					if (all)
+						out = joined;
+				}
+				if (!all && ok)
+					*ok = false;
+			}
 			else if (trimmed.size() < core.size() && (out.empty() || out[out.size() - 1] != '.'))
 				out += core.substr(trimmed.size());
 		}

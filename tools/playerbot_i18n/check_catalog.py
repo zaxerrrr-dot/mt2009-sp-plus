@@ -47,6 +47,18 @@ def load_tsv(path):
     return rows
 
 
+def cut_at(s, i):
+    if i + 1 >= len(s) or s[i + 1] != ' ':
+        return False
+    c = s[i]
+    if c in '.!?,;:':
+        return True
+    if i == 0:
+        return False
+    p = s[i - 1]
+    return (p in ':;' and c in 'DPp)(d') or (p in 'xX' and c in 'Dd')
+
+
 class Entry:
     def __init__(self, pl, out):
         pl = trim_end(pl)
@@ -110,34 +122,47 @@ class Lang:
         return False
 
     def whole(self, raw, folded, s, e_, depth):
+        if depth > 4:
+            return None
         for e in self.entries:
             if e.literal > e_ - s:
                 continue
             caps = []
-            if self.match(e, folded, s, e_, 0, caps, [2000]):
-                out = e.out
-                for name, (o, ln) in zip(e.slots, caps):
-                    out = out.replace(name, self.value(raw[o:o + ln], depth + 1))
-                return out
+            if not self.match(e, folded, s, e_, 0, caps, [2000]):
+                continue
+            vals, good = {}, True
+            for name, (o, ln) in zip(e.slots, caps):
+                v, ok = self.value(raw[o:o + ln], depth + 1)
+                if not ok and any(cut_at(raw, i) for i in range(o, o + ln - 1)):
+                    good = False
+                    break
+                vals[name] = v
+            if not good:
+                continue
+            out = e.out
+            for name in sorted(vals, key=len, reverse=True):
+                out = out.replace(name, vals[name])
+            return out
         return None
 
     def value(self, v, depth):
         core = v.strip()
         if not core or depth > 3 or re.fullmatch(r'[0-9.,k%+\-]+', core):
-            return v
+            return v, True
         f = fold(core)
         t = trim_end(f)
         r = self.whole(core, f, 0, len(t), depth)
-        return v.replace(core, r if r is not None else core)
+        # (the core also takes a list of item names, by its name tables)
+        return v.replace(core, r if r is not None else core), r is not None
 
     def line(self, text):
+        return self.line_as(text)
+
+    def line_as(self, text):
         folded = fold(text)
         cuts = [0]
         for i in range(len(text) - 1):
-            if text[i + 1] != ' ':
-                continue
-            c, p = text[i], text[i - 1] if i else ''
-            if c in '.!?,;:' or ((p in ':;') and c in 'DPp)(d') or (p in 'xX' and c in 'Dd'):
+            if cut_at(text, i):
                 cuts.append(i + 2)
         cuts.append(len(text))
         n = len(cuts)

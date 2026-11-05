@@ -4010,3 +4010,70 @@ zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	zodiac {1}, {2} spots left, w
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	party for zodiac {1}, come to the portal in the courtyard
 zrun_{1}	zrun_{1}
 $X na CH$N	$X on CH$N
+S> {1} - {2}, {3} - {4} | stragan {5} ch{6}	WTS {1} - {2}, {3} - {4} | shop {5} ch{6}
+Teraz: {1}. Zmien: /towarzysz walka atakuj | obrona | spokoj	Now: {1}. Change: /towarzysz walka atakuj | obrona | spokoj
+do Lochu Pajakow 2	to the Spider Dungeon 2
+do Lochu Pajakow 3	to the Spider Dungeon 3
+do Lasu	to the Ghost Wood
+do Doyyumhwaji	to Doyyumhwaji
+do Groty Wygnancow	to the Grotto of Exile
+do Groty Wygnancow 2	to the Grotto of Exile 2
+do Swiatyni Ochao	to the Temple of Ochao
+do Doliny Cyklopow	to the Cyclops Valley
+na Pustkowie Faraona	to the Pharaoh's Wasteland
+na Wezowe Pole	to the Snakefield
+do Krainy Gigantow	to the Land of Giants
+do Zakletego Lasu	to the Enchanted Forest
+do Szczeliny Czasu	to the Time Rift
+na Hydre	to the Hydra
+na Przyladek Smoczej Glowy	to Cape Dragon Head
+na Zbocze Gautama	to the Dawnmist Slope
+do Nefrytowej Zatoki	to the Bay of Black Sand
+w Gromiste Gory	into the Thunder Mountains
+do Opuszczonej Twierdzy	to the Abandoned Fortress
+do Dongan	to Dongan
+do Seoganland	to Seoganland
+do Namgan	to Namgan
+na Przelecz Yilad	to the Yilad Pass
+do Wawozu Polnocnego Wiatru	to the North Wind Gorge
+do Rozpadliny Dusz	to the Soul Rift
+do Schronienia Polnocnego Wiatru	to the North Wind Shelter
+do Zejscia Polnocnego Wiatru	to the North Wind Descent
+$A albo $B	$A or $B
+$A lub $B	$A or $B
+orki	orcs
+pajaki	spiders
+wilki	wolves
+niedzwiedzie	bears
+tygrysy	tigers
+dziki	boars
+malpy	monkeys
+szkielety	skeletons
+duchy	ghosts
+demony	demons
+zombie	zombies
+skorpiony	scorpions
+bestie	beasts
+zolnierzy	soldiers
+lisy	foxes
+jelenie	deer
+weze	snakes
+zmije	vipers
+golemy	golems
+upiory	wraiths
+drzewce	treants
+kaplanow	priests
+bandytow	bandits
+lucznikow	archers
+wojownikow	warriors
+surow	suras
+nietoperze	bats
+wojownik	warrior
+szaman	shaman
+postac	character
+wojownikiem	a warrior
+szamanem	a shaman
+moby	mobs
+nic	nothing
+ktos	someone
+dalej	further on

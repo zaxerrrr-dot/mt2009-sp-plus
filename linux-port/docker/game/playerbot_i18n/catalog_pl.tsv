@@ -2486,9 +2486,9 @@ Ok, nie ma sprawy, podzielimy sie spotem.	playerbot_conv_generator.h
 No dobra, zapomnijmy.	playerbot_conv_generator.h
 Spoko, nic sie nie stalo.	playerbot_conv_generator.h
 Radz sobie sam.	playerbot_conv_generator.h
-cos lepszego	playerbot_conv_say.h
-ta mapa	playerbot_conv_say.h
-w miescie	playerbot_conv_say.h
+cos lepszego	manual_pl.tsv,playerbot_conv_say.h
+ta mapa	manual_pl.tsv,playerbot_conv_say.h
+w miescie	manual_pl.tsv,playerbot_conv_say.h
 magiczna bron	playerbot_conv_state.h
 czarna magia	playerbot_conv_state.h
 Trzystronne Ciecie	playerbot_conv_state.h
@@ -2532,29 +2532,29 @@ M2 Bokjung	playerbot_conv_state.h
 M1 Pyongmoo	playerbot_conv_state.h
 M2 Bakra	playerbot_conv_state.h
 w Yongan	playerbot_conv_state.h,playerbot_world_events.h
-do Yongan	playerbot_conv_state.h
+do Yongan	playerbot_conv_state.h,playerbot_status.h
 w Waryong	playerbot_conv_state.h
 do Waryong	playerbot_conv_state.h
 w Jayang	playerbot_conv_state.h,playerbot_world_events.h
-do Jayang	playerbot_conv_state.h
+do Jayang	playerbot_conv_state.h,playerbot_status.h
 Ziemia Klanu	playerbot_conv_state.h
 na Ziemi Klanu	playerbot_conv_state.h
-na Ziemie Klanu	playerbot_conv_state.h
+na Ziemie Klanu	playerbot_conv_state.h,playerbot_status.h
 Loch Malp	playerbot_conv_state.h
 w Lochu Malp	playerbot_conv_state.h
-do Lochu Malp	playerbot_conv_state.h
+do Lochu Malp	playerbot_conv_state.h,playerbot_status.h
 w Joan	playerbot_conv_state.h,playerbot_world_events.h
-do Joan	playerbot_conv_state.h
+do Joan	playerbot_conv_state.h,playerbot_status.h
 w Bokjung	playerbot_conv_state.h,playerbot_world_events.h
-do Bokjung	playerbot_conv_state.h
+do Bokjung	playerbot_conv_state.h,playerbot_status.h
 w Pyongmoo	playerbot_conv_state.h,playerbot_world_events.h
-do Pyongmoo	playerbot_conv_state.h
+do Pyongmoo	playerbot_conv_state.h,playerbot_status.h
 w Bakra	playerbot_conv_state.h,playerbot_world_events.h
-do Bakra	playerbot_conv_state.h
+do Bakra	playerbot_conv_state.h,playerbot_status.h
 Gora Sohan	playerbot_conv_state.h,playerbot_guildduty.h,playerbot_world_events.h
 na Gorze Sohan	playerbot_conv_state.h,playerbot_world_events.h
 na Sohan	playerbot_conv_state.h
-na Gore Sohan	playerbot_conv_state.h
+na Gore Sohan	playerbot_conv_state.h,playerbot_status.h
 Ognista Ziemia	playerbot_conv_state.h,playerbot_guildduty.h,playerbot_world_events.h
 na Ognistej Ziemi	playerbot_conv_state.h,playerbot_world_events.h
 na Ognistej	playerbot_conv_state.h
@@ -2562,38 +2562,38 @@ na Ognista Ziemie	playerbot_conv_state.h
 Pustynia Yongbi	playerbot_conv_state.h,playerbot_world_events.h
 na Pustyni Yongbi	playerbot_conv_state.h,playerbot_world_events.h
 na Pustyni	playerbot_conv_state.h
-na Pustynie Yongbi	playerbot_conv_state.h
+na Pustynie Yongbi	playerbot_conv_state.h,playerbot_status.h
 Dolina Orkow	playerbot_conv_state.h,playerbot_guildduty.h,playerbot_world_events.h
 w Dolinie Orkow	playerbot_conv_state.h,playerbot_world_events.h
 w Dolinie	playerbot_conv_state.h
-do Doliny Orkow	playerbot_conv_state.h
+do Doliny Orkow	playerbot_conv_state.h,playerbot_status.h
 Swiatynia Hwang	playerbot_conv_state.h,playerbot_guildduty.h,playerbot_world_events.h
 w Swiatyni Hwang	playerbot_conv_state.h,playerbot_world_events.h
 w Swiatyni	playerbot_conv_state.h
-do Swiatyni Hwang	playerbot_conv_state.h
+do Swiatyni Hwang	playerbot_conv_state.h,playerbot_status.h
 Wieza Demonow	playerbot_conv_state.h
 w Wiezy Demonow	playerbot_conv_state.h
 w Wiezy	playerbot_conv_state.h
-do Wiezy Demonow	playerbot_conv_state.h
+do Wiezy Demonow	playerbot_conv_state.h,playerbot_status.h
 Las Duchow	playerbot_conv_state.h,playerbot_world_events.h
 do Lasu Duchow	playerbot_conv_state.h
 Czerwony Las	playerbot_conv_state.h,playerbot_world_events.h
-do Czerwonego Lasu	playerbot_conv_state.h
+do Czerwonego Lasu	playerbot_conv_state.h,playerbot_status.h
 Loch Pajakow II	playerbot_conv_state.h
 w Lochu Pajakow II	playerbot_conv_state.h
 w Lochu Pajakow	playerbot_conv_state.h
 do Lochu Pajakow II	playerbot_conv_state.h
 Loch Pajakow	playerbot_conv_state.h
-do Lochu Pajakow	playerbot_conv_state.h
+do Lochu Pajakow	playerbot_conv_state.h,playerbot_status.h
 Loch Malp II	playerbot_conv_state.h
 w Lochu Malp II	playerbot_conv_state.h
-do Lochu Malp II	playerbot_conv_state.h
+do Lochu Malp II	playerbot_conv_state.h,playerbot_status.h
 Loch Malp III	playerbot_conv_state.h
 w Lochu Malp III	playerbot_conv_state.h
-do Lochu Malp III	playerbot_conv_state.h
-swoja postacia	playerbot_conv_state.h
-lodowe potwory	playerbot_conv_state.h
-ogniste potwory	playerbot_conv_state.h
+do Lochu Malp III	playerbot_conv_state.h,playerbot_status.h
+swoja postacia	manual_pl.tsv,playerbot_conv_state.h
+lodowe potwory	manual_pl.tsv,playerbot_conv_state.h
+ogniste potwory	manual_pl.tsv,playerbot_conv_state.h
 nie wiem	playerbot_conv_style.h
 Nie wiem	playerbot_conv_style.h
 w ogole	playerbot_conv_style.h
@@ -4008,6 +4008,69 @@ zbieram pt do swiatyni zodiaku ({1}), jeszcze {2} osob, idziemy na {3} pietro	pl
 zodiak {1}, {2} wolnych miejsc, kto ma animosfery?	playerbot_zodiac_runs.h
 pt na zodiaka {1}, wbijac pod portal na dziedzincu	playerbot_zodiac_runs.h
 zrun_{1}	playerbot_zodiac_runs.h
+do Lochu Pajakow 2	playerbot_status.h
+do Lochu Pajakow 3	playerbot_status.h
+do Lasu	playerbot_status.h
+do Doyyumhwaji	playerbot_status.h
+do Groty Wygnancow	playerbot_status.h
+do Groty Wygnancow 2	playerbot_status.h
+do Swiatyni Ochao	playerbot_status.h
+do Doliny Cyklopow	playerbot_status.h
+na Pustkowie Faraona	playerbot_status.h
+na Wezowe Pole	playerbot_status.h
+do Krainy Gigantow	playerbot_status.h
+do Zakletego Lasu	playerbot_status.h
+do Szczeliny Czasu	playerbot_status.h
+na Hydre	playerbot_status.h
+na Przyladek Smoczej Glowy	playerbot_status.h
+na Zbocze Gautama	playerbot_status.h
+do Nefrytowej Zatoki	playerbot_status.h
+w Gromiste Gory	playerbot_status.h
+do Opuszczonej Twierdzy	playerbot_status.h
+do Dongan	playerbot_status.h
+do Seoganland	playerbot_status.h
+do Namgan	playerbot_status.h
+na Przelecz Yilad	playerbot_status.h
+do Wawozu Polnocnego Wiatru	playerbot_status.h
+do Rozpadliny Dusz	playerbot_status.h
+do Schronienia Polnocnego Wiatru	playerbot_status.h
+do Zejscia Polnocnego Wiatru	playerbot_status.h
 $X na CH$N	manual_pl.tsv
 $A albo $B	manual_pl.tsv
 $A lub $B	manual_pl.tsv
+orki	manual_pl.tsv
+pajaki	manual_pl.tsv
+wilki	manual_pl.tsv
+niedzwiedzie	manual_pl.tsv
+tygrysy	manual_pl.tsv
+dziki	manual_pl.tsv
+malpy	manual_pl.tsv
+szkielety	manual_pl.tsv
+duchy	manual_pl.tsv
+demony	manual_pl.tsv
+zombie	manual_pl.tsv
+skorpiony	manual_pl.tsv
+bestie	manual_pl.tsv
+zolnierzy	manual_pl.tsv
+lisy	manual_pl.tsv
+jelenie	manual_pl.tsv
+weze	manual_pl.tsv
+zmije	manual_pl.tsv
+golemy	manual_pl.tsv
+upiory	manual_pl.tsv
+drzewce	manual_pl.tsv
+kaplanow	manual_pl.tsv
+bandytow	manual_pl.tsv
+lucznikow	manual_pl.tsv
+wojownikow	manual_pl.tsv
+surow	manual_pl.tsv
+nietoperze	manual_pl.tsv
+wojownik	manual_pl.tsv
+szaman	manual_pl.tsv
+postac	manual_pl.tsv
+wojownikiem	manual_pl.tsv
+szamanem	manual_pl.tsv
+moby	manual_pl.tsv
+nic	manual_pl.tsv
+ktos	manual_pl.tsv
+dalej	manual_pl.tsv

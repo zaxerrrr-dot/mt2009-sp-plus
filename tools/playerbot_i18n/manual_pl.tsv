@@ -3,3 +3,47 @@
 $X na CH$N	conv_say.h: $MAPIN of a person on another channel
 $A albo $B	lists of places: "w Czerwonym Lesie albo na Gorze Sohan"
 $A lub $B	lists
+# Single words the conversation puts into its slots (playerbot_conv_state.h, _say.h): monster
+# families ($FAMILY), classes ($CLASS, $CLASSI), the fallbacks of Fill().
+orki	$FAMILY
+pajaki	$FAMILY
+wilki	$FAMILY
+niedzwiedzie	$FAMILY
+tygrysy	$FAMILY
+dziki	$FAMILY
+malpy	$FAMILY
+szkielety	$FAMILY
+duchy	$FAMILY
+demony	$FAMILY
+zombie	$FAMILY
+skorpiony	$FAMILY
+bestie	$FAMILY
+zolnierzy	$FAMILY
+lisy	$FAMILY
+jelenie	$FAMILY
+weze	$FAMILY
+zmije	$FAMILY
+golemy	$FAMILY
+upiory	$FAMILY
+drzewce	$FAMILY
+kaplanow	$FAMILY
+bandytow	$FAMILY
+lucznikow	$FAMILY
+wojownikow	$FAMILY
+lodowe potwory	$FAMILY
+ogniste potwory	$FAMILY
+surow	$FAMILY
+nietoperze	$FAMILY
+wojownik	$CLASS
+szaman	$CLASS
+postac	$CLASS
+wojownikiem	$CLASSI (instrumental: "jestem wojownikiem")
+szamanem	$CLASSI
+swoja postacia	$CLASSI
+moby	Fill() fallback of $TARGET / $FAMILY
+nic	Fill() fallback of $WEAPON / $ARMOR
+ktos	Fill() fallback of $LEADER
+dalej	Fill() fallback of $DEST ("further on")
+ta mapa	Fill() fallback of $MAPNAME
+w miescie	Fill() fallback of $SHOPAT
+cos lepszego	Fill() fallback of $GOAL
