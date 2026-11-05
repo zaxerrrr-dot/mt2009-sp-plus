@@ -1,2 +1,299 @@
 # MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
 # Polish<TAB>tr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check tr lists what is missing.
+%d dni %d godzin	%d gün %d saat
+%d dni %d godzin i %d minut	%d gün %d saat ve %d dakika
+%d godzin i %d minut	%d saat ve %d dakika
+%d minut	%d dakika
+%d sekund do wyjścia z mapy.	Haritadan çıkışa %d saniye.
+%d sekund do zmiany kanału.	Kanal değişimine %d saniye.
+%s jest blisko Ciebie.	%s yakınında.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s, %d. kanala bağlı. (şu anki kanal: %d)
+%s rzucił %d. (%d-%d)	%s %d attı. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s zar attı ve %d geldi. (%d-%d)
+%s[%d]s Attack Position: %d %d	%s[%d]s Saldırı Konumu: %d %d
+30 minut minęło. Ogniska zgasły.	30 dakika doldu. Ateşler söndü.
+<Gildia> Wskazany gracz jest zajęty.	<Lonca> Oyuncu meşgul.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Grup> Üyeler zindandayken grup kimseyi davet edemez.
+<Grupa> Lider grupy jest w lochu.	<Grup> Grup lideri bir zindanda.
+<Guild> %d Skills used (%d, %d) to %u	<Lonca> %d beceri kullanıldı (%d, %d) - %u
+[1106-??]No puedes unir esto.	[1106-??] Bunu birleştiremezsin.
+[Gildia] Gildia jest w trakcie wojny.	[Lonca] Lonca savaşta.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Lonca] Lonca davet sınırına ulaştı.
+[Gildia] Gildia osiągnęła maksymalny poziom.	<Lonca> Lonca zaten en yüksek seviyeye ulaştı.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Lonca] %d birim Ejderha Ruhu şarj edildi.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Lonca] Savaş sırasında bir lonca üyesini çıkaramazsın.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Lonca] Lonca becerilerini lonca savaşı arenası dışında kullanamazsın.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	<Lonca> Yeni üyelik şu anda kısıtlı.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	<Lonca> Lonca savaşı sırasında diğer lonca üyelerini atamazsın.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Lonca] Davet ettiğin kişi şu anda meşgul.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	<Grup> Zindanda grup üyeleri olduğu için grup dağıtılamaz.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	<Depo> Depodaki eşyalar taşınamaz.
+Aby otworzyć sklep potrzebujesz Tobół.	Dükkan açmak için bir Bohça gerekir.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Bu eşyayı almak için karakterin en az %u. seviye olmalı.
+Atakują nas morskie potwory! Do broni!	Gemi savunması: deniz canavarları saldırıyor! Savaşa hazırlanın!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Yükseltme bonusu sadece en fazla %d. seviyedeki eşyalarda kullanılabilir.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Yükseltme bonusu sadece en fazla +%d olan eşyalarda kullanılabilir.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Yükseltme bonusu sadece takılarda kullanılabilir.
+Bonus na ulepszenie może być użyty tylko na bronie.	Yükseltme bonusu sadece silahlarda kullanılabilir.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Yükseltme bonusu sadece zırh, kask ve kalkanlarda kullanılabilir.
+Brak danych. Skontaktuj się z administratorem.	Eksik veri. Lütfen bir yöneticiyle iletişime geç.
+Brak kamienia do wyjęcia.	Çıkarılacak metin taşı yok.
+Brak miejsca w ekwipunku.	Envanterde yeterli yer yok.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Vergi yetersiz. Mevcut sermaye: %u Gereken sermaye: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Dükkan açılırken bir eşya hatası oluştu.
+Cena przedmiotu zmieniła się.	Eşyanın fiyatı değişti.
+Cena przedmiotu została zmieniona.	Eşyanın fiyatı başarıyla değiştirildi.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Bir şey oltaya takıldı ama ne olduğunu göremiyorsun.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	Kızıl Orman hiç bilmediğin birçok sır saklıyor.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Dedektör çalıştı ama hiç ruh taşı bulunamadı.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	VIP etkileri Premium Abonelik ile birleşmez. Bu satın alımı yapamazsın.
+Eliksir jest pusty. Napełnij go u Alchemika.	İksir boş. Simyacıya doldurt.
+Emocje są dostepne tylko dla Subskrybentów Premium.	İfadeler sadece Premium abonelere açıktır.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Gemi savunması: %d. dalga - direği koruyun ve Hydra'yı yenin.
+Fala %d: brońcie masztu przez %d sek.	Gemi savunması: %d. dalga - direği %d sn. koruyun.
+Funkcja tymczasowo niedostępna.	Bu özellik şimdilik kullanılamıyor.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	Lonca en yüksek seviyede ama hediyeni kabul ediyor.
+Gracz %s został dodany do listy zablokowanych.	%s oyuncusu engellenenler listene eklendi.
+Gracz %s został usunięty z listy zablokowanych.	%s oyuncusu engellenenler listenden çıkarıldı.
+Ja ci pokazać, że mi nie przeszkadzać!	Beni rahatsız etmemeyi göstereyim sana!
+Jajo Hydry pękło - potwory idą na dno!	Gemi savunması: Hydra Yumurtası patladı - canavarlar batıyor!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Eşyalardan birinin fiyatı geçersiz (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Eşyalardan biri izin verilmeyen bir yerde.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Düğün görevlerinden biri düğünden ayrılmaya hazır değil.
+Jesteś już przyjacielem gracza %s.	%s ile zaten arkadaşsın.
+Jesteś za daleko od Kowala.	Demirciden çok uzaktasın.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Bu koşulları kabul etmezsen
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	+3 ruh taşları bu eşyayla geliştirilemez.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	Ruh taşı bu eşyayla geliştirilemez.
+Kilof może zostać ulepszony tylko u Deokbae.	Kazmayı sadece Deokbae geliştirebilir.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Biri dükkanından %dx %s satın aldı, %d Yang karşılığında.
+Masz za mało Animosfer.	Yeterli animasferin yok.
+Maszt naprawiony: %d%% PŻ.	Gemi savunması: direk onarıldı - %d%% HP.
+Maszt ocalał. Przygotujcie się na następną falę!	Gemi savunması: direği korudunuz. Sonraki dalgaya hazırlanın!
+Maszt: zostało %d%% PŻ!	Gemi savunması: direğin %d%% HP'si kaldı!
+Możesz używać Białej Flagi co %d minut.	Beyaz Bayrağı her %d dakikada bir kullanabilirsin.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Bu beceriyi sadece kendi topraklarında kullanabilirsin.
+Możesz wyrzucić przedmioty co %d sekund.	Eşyaları sadece %d saniyede bir yere atabilirsin.
+Możesz wyrzucić Yang co 10 sekund.	Yang'ı sadece 10 saniyede bir yere atabilirsin.
+Możesz łowić tylko w M1.	Sadece M1'de balık tutabilirsin.
+Możliwość pisania została zablokowana przez siły wyższe!	Sohbetin bir GM tarafından engellendi.
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Bu kitabı anlamak için en az %d. seviye olmalısın.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Bu eşyayı almak için en az %d. seviye olmalısın.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Gelin buketi takmak için gelinlik giymelisin.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Bu seçeneği tekrar kullanmak için %d dakika beklemelisin.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Bu seçeneği kullanmadan önce savaştan sonra biraz beklemelisin.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Haritadan çıkmadan önce birkaç saniye beklemelisin.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Kanalı değiştirmeden önce birkaç saniye beklemelisin.
+Musisz posiadać cel.	Bir hedefe ihtiyacın var.
+Musisz stać obok sklepu.	Dükkanın yanında durmalısın.
+Musisz zaczekać %d min. przed ponownym użyciem.	Tekrar kullanmadan önce %d dk. beklemelisin.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Tekrar kullanmadan önce %d sn. beklemelisin.
+Musisz zdjąć bukiet.	Önce buketi çıkarmalısın.
+Musisz znajdować się na tej samej mapie co sklep.	Dükkanla aynı haritada olmalısın.
+Musisz znajdować się na tym samym kanale co sklep.	Dükkanla aynı kanalda olmalısın.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Bu haritada zorunlu savaşlar olabilir.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Bu kanalda çok fazla dükkan var. Ücretsiz sınırı aşmak için premium dükkan gerekir.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Bu kanal çevrimdışı dükkan sınırına ulaştı. Dükkan açamazsın.
+Następna fala za %d sek.	Gemi savunması: sonraki dalga %d sn. sonra başlıyor.
+Naładowany na %d sekund.	%d saniye şarj edildi
+Nie jesteś zablokowany.	Sıkışmış değilsin.
+Nie ma kogo ożywić.	Diriltilecek kimse yok.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Envanterinde yer yok. Eşya Nesne Market deposuna gönderildi.
+Nie masz sklepu na tej mapie.	Bu haritada dükkanın yok.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Bu kanalda dükkanın yok. (%d. kanalda bulundu.)
+Nie możesz czytać ksiąg będąć przemieniony.	Dönüşmüşken kitap okuyamazsın.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Bu beceriyi daha fazla geliştiremezsin. Beceri Sıfırlama Parşömeni veya Unutkanlık Bandı kullan.
+Nie możesz dodać więcej bonusów.	Daha fazla bonus ekleyemezsin.
+Nie możesz jeździć konno podczas łowienia.	Balık tutarken binemezsin.
+Nie możesz jeździć konno, gdy jesteś powalony.	Düşerken binemezsin.
+Nie możesz jeździć nosząc przedmiot.	Bir eşya taşırken binemezsin.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Başka bir pencere açıkken devam edemezsin.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Devam edemezsin: Yang'ın 2 milyar sınırını aşar.
+Nie możesz kupować od samego siebie.	Kendinden satın alamazsın.
+Nie możesz mieć więcej niż %d przyjaciół.	%d arkadaştan fazlasına sahip olamazsın.
+Nie możesz nosić Smokingu na koniu.	Atın üstünde smokin giyemezsin.
+Nie możesz nosić tego przedmiotu konno.	Bu eşyayı at üstünde giyemezsin.
+Nie możesz otworzyć pustego sklepu.	Boş bir dükkan açamazsın.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Burada çevrimdışı dükkan açamazsın.
+Nie możesz otworzyć sklepu w tym miejscu.	Burada dükkan açamazsın.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Bu dükkanı açamazsın. Önce tüm eşyalarını topla.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Burada dükkan açamazsın. Başka bir dükkana çok yakınsın.
+Nie możesz otworzyć więcej sklepów.	Daha fazla dükkan açamazsın.
+Nie możesz ożywić kogoś, kto żyje.	Yaşayan birini diriltemezsin.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Görev kullanırken bu eşyayı alamazsın
+Nie możesz przenieść się do tego obszaru.	O bölgeye gidemezsin.
+Nie możesz przenieść się do tej osoby.	Bu kişinin yanına ışınlanamazsın.
+Nie możesz przywołać do tego obszaru.	O bölgeye çağıramazsın.
+Nie możesz przywołać konia w tym miejscu.	Atını burada çağıramazsın.
+Nie możesz się teraz teleportować.	Şu anda ışınlanamazsın.
+Nie możesz sprintować będąc spowolnionym.	Yavaşlamışken koşamazsın.
+Nie możesz sprintować nosząc przedmiot.	Bir eşya taşırken koşamazsın.
+Nie możesz sprzedawać noszonych przedmiotów.	Kuşandığın eşyaları satamazsın.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Kilitli eşyaları satamazsın.
+Nie możesz sprzedać przedmiotów, które nosisz.	Kuşandığın eşyaları satamazsın.
+Nie możesz sprzedać założonego przedmiotu.	Giydiğin bir eşyayı satamazsın.
+Nie możesz tego teraz użyć.	Şu anda kullanamazsın.
+Nie możesz tego użyć, gdy masz otwarte okno.	Açık bir pencere varken bunu kullanamazsın.
+Nie możesz tego zrobić na kanale specjalnym.	Bunu özel kanalda yapamazsın.
+Nie możesz teleportować się nosząc przedmiot.	Bir eşya taşırken ışınlanamazsın.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Etkiler henüz yüklenmedi!
+Nie możesz teraz podnosić przedmiotów.	Meşgulken eşya alamazsın.
+Nie możesz teraz wykonać tej operacji.	Bu işlemi şu anda yapamazsın.
+Nie możesz teraz zejść z wierzchowca.	Şu anda inemezsin.
+Nie możesz tutaj otworzyć depozytu.	Bu bölgede depo açamazsın.
+Nie możesz uczyć się będąc przemienionym.	Dönüşmüşken öğrenemezsin.
+Nie możesz ulepszyć tego przedmiotu.	Bu eşyayı geliştiremezsin.
+Nie możesz użyć tego na wojnie.	Bunu savaş haritasında kullanamazsın.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Görev kullanırken bu eşyayı kullanamazsın
+Nie możesz użyć tego przedmiotu konno.	Bu eşyayı at üstünde kullanamazsın.
+Nie możesz wyjąć umieszczonego kamienia.	Takılmış taşı çıkaramazsın.
+Nie możesz wykonać tej akcji będąc martwy.	Ölüyken bunu yapamazsın.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	At envanterindeki eşyaları normal dükkana ekleyemezsin.
+Nie możesz zablokować więcej niż %d osób.	%d kişiden fazlasını engelleyemezsin.
+Nie możesz zapisać pozycji w tym miejscu.	Burada konum kaydedemezsin.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Karşı krallıktaki bir konumu kaydedemezsin.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Engellediğin birini arkadaş olarak ekleyemezsin.
+Nie możesz zmienić bonusów.	Bonusları değiştiremezsin.
+Nie możesz zmienić trybu PvP na wojnie.	Savaşta PvP modunu değiştiremezsin.
+Nie można użyć na innym graczu.	Bu başka bir oyuncuda kullanılamaz.
+Nie można ładować.	Şarj edilemiyor.
+Nie posiadasz otwartego sklepu.	Açık bir dükkanın yok.
+Nie posiadasz sklepu premium.	Premium dükkanın yok.
+Nie posiadasz sklepu.	Dükkanın yok.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Bu eşyayı almak için belirli eşyalara ihtiyacın var.
+Nie posiadasz wystarczająco dużo reputacji.	Yeterli itibarın yok.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Kendi dükkanını açma koşullarını karşılamıyorsun.
+Nie udało się wytworzyć.	Üretim başarısız.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Ejderha Tanrısı seni koruduğu için hiçbir eşya düşürmedin.
+Nie znaleziono gracza o podanej nazwie.	Bu isimde bir oyuncu bulunamadı.
+Niedostępne.	Kullanılamıyor.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Dükkandaki bazı eşyalar üst üste biniyor.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Dükkandaki bazı eşyalar kilitli yuvalarda.
+Niewystarczająca ilość Smoczych Monet.	Yeterli Ejderha Paran yok.
+Niewystarczająca ilość Smoczych Znaków.	Yeterli Ejderha Markan yok.
+Nikt nie wypłynął - statek zostaje w porcie.	Gemi savunması: kimse yola çıkmadı - gemi limanda kalıyor.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Bitki Bıçağını sadece Bitki Uzmanı geliştirebilir.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Alıcı arkadaşlık daveti alamıyor.
+Odczekaj chwilę po zakończeniu handlu.	Bir ticaretten sonra biraz bekle.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Sonraki eğitimden önce %s daha bekle.
+Odczekaj jeszcze %s przed zakupem.	Satın almadan önce %s daha bekle.
+Odczekaj przed następnym ulepszeniem.	Sonraki yükseltmeden önce biraz bekle.
+Oferta sklepu zmieniła się.	Dükkanın teklifi değişti.
+Okno zarządzania sklepem musi być otwarte.	Dükkanın yönetim penceresi açık olmalı.
+Osiągnięto limit zakupu tego przedmiotu.	Bu eşyanın satın alma sınırına ulaşıldı.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	Bu hesap bu eşyayı izin verilen sayıda satın aldı.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Diriltmeye çalıştığın kişi insan değil.
+Otrzymałeś %d reputacji (Królewska Gwardia)	%d itibar kazandın (Kraliyet Muhafızları)
+Otrzymałeś %d reputacji (Synowie Pustyni)	%d itibar kazandın (Çölün Oğulları)
+Otrzymałeś %s (Juki Konne)	%s alındı (At Envanteri)
+Otrzymałeś %s (szt. %d)	%s %d alındı
+Otrzymałeś %s (szt. %d) (Juki Konne)	%s %d alındı (At Envanteri)
+OX-Question: 	OX Sorusu: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Bu haritada çevrimdışı dükkan kurulamayacağını unutma.
+Podana kwota jest większa niż zarobione Yang.	Miktar kazanılan Yang'dan fazla.
+Podana kwota jest za mała.	Miktar çok küçük.
+Podana osoba jest na liście Twoich przyjaciół.	Bu kişi arkadaş listende.
+Podatek od sprzedaży: %d%% (%lld Yang).	Bu satıştan %d%% vergi alınacak (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	Gemi savunması: bir Hydra Yumurtası belirdi! Canavarları batırmak için onu yok edin.
+Pomimo treningu nie czujesz się zmęczony.	Eğitime rağmen yorgun hissetmiyorsun.
+Pomyślnie dodano bonus.	Yeni bonus başarıyla eklendi.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Yang dükkanın deposundan çekildi.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Zaten açık bir dükkanın var ya da dükkanının deposunda eşya var.
+Pospieszcie się, macie %d min., by przejść przez portal.	Gemi savunması: acele edin, portaldan geçmek için %d dk. var.
+Potomstwo Hydry trafiło maszt laserem!	Gemi savunması: Hydra'nın yavrusu direği lazerle vurdu!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Bu tür bir dükkan açmak için %lld Yang gerekir
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Kutuyu açmak için en az 3 yuvalık bir eşyaya yer gerekir.
+Pozostały czas %d sekund.	Kalan süre %d saniye.
+Pozostały czas: %.1f sek.	Kalan süre: %.1f
+Pozostały czas: %.2f sek.	Kalan süre: %.2f
+Pozycja sklepu została oznaczona strzałką.	Dükkanının konumu bir okla işaretlendi.
+Prosimy o powrót do pierwotnej lokalizacji.	Lütfen eski haline ve eski yerine dön.
+Prośba o wezwanie została wysłana.	Çağırma isteği gönderildi.
+Przechwyciłeś laser Potomstwa Hydry.	Gemi savunması: Hydra yavrusunun lazerini yakaladınız.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Bu eşya sadece 40. seviyeye kadar silah veya zırhlarda kullanılabilir.
+Przedmiot nie może być użyty na akcesoriach.	Bu eşya aksesuarlarda kullanılamaz.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	Çıkarılabilecek Ruh Taşı yok.
+Przedmiot zniknie za %d minut.	Eşya %d dakika sonra kaybolacak.
+Przedmiot został dodany do twojego ekwipunku	Eşya envanterine eklendi
+Przedmioty zostały dodane do twojego ekwipunku	Eşyalar envanterine eklendi
+Przedmioty zostały pomyśnie zaktualizowane.	Eşyalar güncellendi.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Kullandığın eşyalar kişisel dükkanında satılamaz.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	VIP etkisinin doğru uygulanması için tekrar giriş yap.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	At envanterine erişmek için atını çağır.
+Rejs trwał za długo - statek zawraca.	Gemi savunması: yolculuk çok uzun sürdü - gemi geri dönüyor.
+Rzuciłeś %d. (%d-%d)	%d attın. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Zar attın ve %d geldi. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Sunucu bakım nedeniyle 10 dakika içinde kapatılacak.
+Sklep #PLAYER_NAME#	#PLAYER_NAME# Dükkanı
+Sklep - %s	Dükkan - %s
+Sklep jest otwarty.	Dükkan açık.
+Sklep jest w trybie edycji.	Dükkan düzenleme modunda.
+Sklep jest zamknięty.	Dükkan kapalı.
+Sklep nie jest w trybie edycji.	Dükkan düzenleme modunda değil.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Dükkan kısa süre önce sahibi tarafından düzenlendi. Lütfen biraz bekle.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Dükkan kapatıldı; kalan eşyalar ve kazanılan Yang deposunda.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Ejderha Ruhu Taşı kutusu etkin değil.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	Gemi savunması: İMDAT! Direk parçalandı ve gemi batıyor. Karaya götürüleceksiniz.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Hareket hızınla (>= %d) yaya koşamazsın
+Szkolona umiejętność posiada już maksymalny poziom (%d).	Bu beceri zaten en yüksek seviyede (%d).
+Ta aukcja nie jest już dostępna.	Bu açık artırma artık mevcut değil.
+Ta opcja jest tymczasowo niedostępna.	Bu özellik geçici olarak kullanılamıyor.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Bu sular çok fakir, burada neredeyse hiç balık yok. Balıkçıyla konuş.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Oyuncunun 2 milyardan fazla Yang'ı var. Onunla ticaret yapamazsın.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Bu alım bir hesabın alabileceği sınırı aşar. Daha az al.
+To miejsce jest wolne od plagi Kamieni Metin.	Burası Metin Taşları belasından kurtuldu.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Ben değildim... ama seni seçtiler. Sandığından da erken tekrar görüşeceğiz.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Zehir sadece Dev Kaplumbağa üzerinde kullanılabilir.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Grubun her sınıftan oluşuyor, bu yüzden deneyim bonusu alacaksın.
+Twoja postać nie żyje, nie możesz tego zrobić.	Karakterin öldü ve bunu yapamaz.
+Twoja ranga nie może już wzrosnąć.	Rütben daha fazla yükselemez.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	Rütben için dükkan açmak engellendi!
+Tworzenie sklepów jest tymczasowo wyłączone	Dükkan açmak şimdilik kapalı
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Atın açlıktan ölüyor ve bu durumda kendini zorlayamaz.
+Tylko GM ma dostęp do tej komendy.	Bu komuta sadece GM'ler erişebilir
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Bu işlem sadece Zodyak Tapınağı'nda yapılabilir.
+Udało ci się pokonać smoka w %d sekund!	Ejderhayı %d saniyede yenmeyi başardın!
+Upuszczone Yang zniknie za %d sekund.	Yere atılan Yang %d saniye sonra kaybolacak.
+Upuszczony przedmiot zniknie za %d minut.	Yere atılan eşya %d dakika sonra kaybolacak.
+Usuniecie przedmiotu	Eşya kaldırıldı
+Uwolniłeś się!	Kendini başarıyla kurtardın.
+W depozycie sklepu offline zalegają przedmioty.	Çevrimdışı dükkanının deposunda hâlâ eşyalar var.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	Ormanı uğursuz bir hışırtı dolduruyor... Hayalet Ağaç Efendisi uykusundan uyanıyor!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Dükkanın değeri ve Yang'ın toplamı izin verilenden fazla (2 milyar).
+Wesele dalej trwa!	Düğün hâlâ devam ediyor!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	%s ile %s arasındaki savaş %d dakika sonra başlayacak!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Bu kanal sadece Premium hesaplara açık.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Elendiniz! Bir dakika içinde kimse dirilmezse zindandaki süreniz sona erer.
+Wszystkie potwory na mapach zostały zabite!	Haritalardaki tüm canavarlar öldürüldü!
+Wygląda na to, że na haczyku jest %s.	Görünüşe göre %s oltaya takıldı.
+Wyglądało na to, że %s wisi na haku.	%s oltada asılı duruyor gibiydi.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Düelloyu %d/%d (%d%%) HP ile kazandın!
+Wyjście z mapy zostało przerwane.	Haritadan çıkış yarıda kesildi.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	Bu hesap bu açık artırmadaki alımlarını tüketti (en fazla %d).
+Wymagane %d Staminy	%d Dayanıklılık gerekli
+Wymagane %s.	%s gerekli.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	Bir Bilgelik Kadehi veya aktif bir Premium Abonelik gerekir.
+Wystapił błąd	Bir hata oluştu
+Wystąpił błąd. (Kod błędu: %s)	Bir hata oluştu. Kod %s
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Arama bitti. %d dükkan bulundu.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Arama durduruldu. Aranan eşyaya sahip %d'den fazla dükkan bulundu.
+Wyłowiłeś %s!	%s yakaladın!
+Wędka może zostać ulepszona tylko u Rybaka.	Oltayı sadece Balıkçı geliştirebilir.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Sahibinin envanterinde çok fazla eşya var.
+Za 5 min zostanie wykonany automatyczny reset spotów!	5 dakika içinde noktalar otomatik olarak sıfırlanacak!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Bu eşyayı kullanmadan önce %d saniye bekle.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Dükkandaki sonraki değişiklikten önce %d saniye bekle.
+Zaczekaj %d sekund, przed kolejną akcją.	Sonraki eyleminden önce %d saniye bekle.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Parşömeni tekrar kullanmadan önce %s bekle.
+Zaczekaj chwilę, przed kolejną akcją.	Sonraki eyleminden önce biraz bekle.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Lütfen biraz bekle. Haritadan çıkılıyor.
+Zakup wymaga odpowiedniej reputacji.	Bu alım için daha fazla itibar gerekir.
+Zamkniecie sklepu	Dükkan kapandı
+Zaproszony gracz jest w tym momencie zajęty.	Davet ettiğin oyuncu şu anda meşgul.
+Zdobyłeś %s!	%s aldın!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Gemi savunması: kara göründü! Gemiyi korudunuz - portaldan geçin.
+Zmiana kanału została przerwana.	Kanal değişimi yarıda kesildi.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Şu anda o kanala geçemezsin.
+Znowu atakują! Do broni!	Gemi savunması: yine saldırıyorlar! Silahlarınızı hazırlayın!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	Düzeltmem gereken bir şey kaldı... asla olmaması gereken bir şey.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	Ölüm son değil, yeni bir yolun başlangıcıdır.
