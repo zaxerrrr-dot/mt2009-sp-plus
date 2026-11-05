@@ -782,7 +782,9 @@ namespace
 	{
 		int plus = 0;
 		const int gear = GetPlayerBotYdgGearLevel(ch, &plus);
-		return (long long)ch->GetLevel() * 1000LL + (long long)ch->GetConquerorLevel() * 400LL + gear * 20LL + plus * 30LL;
+		// V2: health, attack and defence too (the night's second parties - 17 thousand health - died every 20 s).
+		return (long long)ch->GetLevel() * 1000LL + (long long)ch->GetConquerorLevel() * 400LL + gear * 20LL + plus * 30LL +
+				(long long)ch->GetMaxHP() / 5 + (long long)ch->GetPoint(POINT_ATT_GRADE) * 2 + (long long)ch->GetPoint(POINT_DEF_GRADE) * 2;
 	}
 
 	// The best bots of this core for "auto": parties of `size` in one kingdom each, a Shaman and a Ninja first.
@@ -802,7 +804,7 @@ namespace
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
-			if (s_setPlayerBotYdgTrainees.count(pid) || IsPlayerBotYoharaHydraResident(pid))
+			if (s_setPlayerBotYdgTrainees.count(pid) || IsPlayerBotYoharaHydraResident(pid) || IsPlayerBotErebuTrainee(pid))
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetLevel() < PLAYERBOT_YDG_MIN_LEVEL || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
@@ -1202,6 +1204,7 @@ namespace
 	const DWORD AFFECT_PLAYERBOT_YDG_POISON = 861;
 	const DWORD AFFECT_PLAYERBOT_YDG_BLEED = 862;
 	const DWORD AFFECT_PLAYERBOT_YDG_MONSTER = 863;
+	const DWORD AFFECT_PLAYERBOT_YDG_HP = 864;
 
 	void BuffPlayerBotYdgMember(LPCHARACTER c)
 	{
@@ -1217,6 +1220,9 @@ namespace
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_BLEED, POINT_BLEEDING_PCT, bleed, 0, dur, 0, true);
 		if (monster > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_MONSTER, POINT_ATTBONUS_MONSTER, monster, 0, dur, 0, true);
+		const int hp = GetPlayerBotYdgEnv("PLAYERBOT_YDG_HP_PCT", 20, 0, 50);
+		if (hp > 0)
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_HP, POINT_MAX_HP_PCT, hp, 0, dur, 0, true);
 	}
 
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run)
@@ -1281,6 +1287,7 @@ namespace
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_POISON);	// V2: the run's bonuses end with it
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_BLEED);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_MONSTER);
+			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_HP);
 			const int lv = c->GetLevel();
 			lvLow = lvLow == 0 || lv < lvLow ? lv : lvLow;
 			lvHigh = std::max(lvHigh, lv);

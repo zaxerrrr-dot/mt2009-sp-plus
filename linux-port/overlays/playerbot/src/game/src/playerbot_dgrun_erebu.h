@@ -477,7 +477,8 @@ namespace
 			return false;
 		const DWORD pid = ch->GetPlayerID();
 		if (IsPlayerBotErebuTrainee(pid) || s_mapPlayerBotDgRunBots.count(pid) || IsPlayerBotYoharaHydraResident(pid) ||
-				IsPlayerBotYoharaSzcResident(pid) || IsPlayerBotYoharaLeaving(pid))
+				IsPlayerBotYoharaSzcResident(pid) || IsPlayerBotYoharaLeaving(pid) ||
+				IsPlayerBotYdgTrainee(pid))	// MT2009_PLUS_BOT_YDG_TRAIN_V2: not the Yohara dungeons' trainees
 			return false;
 		return GetPlayerBotDgRunRefusal(ch, state, dwNow) == NULL;
 	}
@@ -596,7 +597,14 @@ namespace
 		if (automatic >= wanted)
 			return;
 		static DWORD s_dwNextTry = 0;
-		if (s_dwNextTry != 0 && (int)(dwNow - s_dwNextTry) < 0)
+		// MT2009_PLUS_BOT_YDG_TRAIN_V2: the first parties four minutes after the core is up - the bots log in first,
+		// and the Yohara dungeons' training (playerbot_ydg_train) picks its parties before this one.
+		if (s_dwNextTry == 0)
+		{
+			s_dwNextTry = dwNow + 4 * 60 * 1000;
+			return;
+		}
+		if ((int)(dwNow - s_dwNextTry) < 0)
 			return;
 		s_dwNextTry = dwNow + 60000;
 		const int size = GetPlayerBotErebuTrainSize();
@@ -804,7 +812,21 @@ namespace
 				return;
 		}
 		else
+		{
+			// MT2009_PLUS_BOT_YDG_TRAIN_V2: lowered - the automatic parties over the count go once their run is over.
+			int automatic = 0;
+			std::vector<int> idle;
+			for (std::map<int, TPlayerBotErebuParty>::const_iterator p = s_mapPlayerBotErebuParties.begin(); p != s_mapPlayerBotErebuParties.end(); ++p)
+				if (!p->second.bManual)
+				{
+					++automatic;
+					if (p->second.iRun == 0)
+						idle.push_back(p->first);
+				}
+			for (size_t i = 0; i < idle.size() && automatic > wanted; ++i, --automatic)
+				DissolvePlayerBotErebuParty(idle[i], "dissolved");
 			FormPlayerBotErebuParties(wanted, dwNow);
+		}
 		if (s_mapPlayerBotErebuParties.empty())
 			return;
 		if (s_dwNextStatus == 0 || (int)(dwNow - s_dwNextStatus) >= 0)
