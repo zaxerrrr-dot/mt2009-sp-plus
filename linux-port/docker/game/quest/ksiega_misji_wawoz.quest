@@ -1,0 +1,86 @@
+-- MT2009_PLUS_BRAKI_WIKI_V1: Ksiêga Misji (W.P³n.W.) (50336) jak na serwerach globalnych (w³aœciciel 5.11.2026:
+-- "Dodaj zgodnie z Wiki Global"). Wiki: pl "Ksiêga Misji (W.P³n.W.)" (opis, od poziomu 120, tylko jedna misja),
+-- de "Missionsbuch (N.W.-Schl.)" (misja na mapie W¹wozu, jedna aktywna ksiêga czempiona naraz, bez przerywania),
+-- tr "Gorev Kitaplari" (Gorev Kitabi (Yohara): W¹wóz Pó³nocnego Wiatru x300; nagroda losowa: Kamyki x100 albo
+-- Relikt Duszy klasy postaci):
+--   * u¿ycie ksiêgi (od poziomu 120) zaczyna misjê: pokonaj 300 potworów w W¹wozie Pó³nocnego Wiatru (mapa 388);
+--     ksiêga znika przy przyjêciu misji; druga ksiêga nic nie robi, dopóki misja trwa (nie da siê jej przerwaæ);
+--   * po 300 potworach nagroda: 50% Kamyki x100 (95926), 50% Relikt Duszy klasy (30272 Wojownik, 30273 Ninja,
+--     30274 Sura, 30275 Szaman - bonus reliktu, MT2009_PLUS_RELIC_V1); potem mo¿na u¿yæ nastêpnej ksiêgi.
+-- Ksiêga wypada w W¹wozie Pó³nocnego Wiatru (yohara_maps2: potwory 0,05%, wodzowie 5%).
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest ksiega_misji_wawoz begin
+	state start begin
+		function cfg()
+			return { book = 50336, map = 388, need = 300, level = 120, stones = 95926, stones_n = 100,
+				relic = { [0] = 30272, [1] = 30273, [2] = 30274, [3] = 30275 } }
+		end
+
+		when 50336.use begin
+			local c = ksiega_misji_wawoz.cfg()
+			if pc.get_level() < c.level then
+				syschat("Ksiêgê Misji mo¿na aktywowaæ od poziomu 120.")
+				return
+			end
+			say_title("Ksiêga Misji (W.P³n.W.)")
+			say("Misja: pokonaj 300 potworów w W¹wozie")
+			say("Pó³nocnego Wiatru.")
+			say("")
+			say_reward("Nagroda (losowo jedna):")
+			say_reward("- Kamyki x100,")
+			say_reward("- Relikt Duszy twojej klasy.")
+			say("")
+			say("Misji nie mo¿na przerwaæ. Ksiêga zniknie.")
+			if select("Aktywuj misjê (300 potworów)", "Anuluj") ~= 1 then
+				return
+			end
+			if pc.count_item(c.book) < 1 then
+				return
+			end
+			pc.remove_item(c.book, 1)
+			pc.setqf("kills", 0)
+			set_state(active)
+			syschat("Misja z Ksiêgi Misji (W.P³n.W.): pokonaj 300 potworów w W¹wozie Pó³nocnego Wiatru.")
+		end
+	end
+
+	state active begin
+		when letter begin
+			send_letter("Ksiêga Misji (W.P³n.W.)")
+		end
+
+		when button or info begin
+			say_title("Ksiêga Misji (W.P³n.W.)")
+			say("Pokonaj 300 potworów w W¹wozie")
+			say("Pó³nocnego Wiatru.")
+			say(string.format("Postêp: %d / %d.", pc.getqf("kills"), ksiega_misji_wawoz.cfg().need))
+		end
+
+		when 50336.use begin
+			syschat("Masz ju¿ aktywn¹ misjê z Ksiêgi Misji (W.P³n.W.). Najpierw j¹ ukoñcz.")
+		end
+
+		when kill with not npc.is_pc() and npc.get_type() == 0 and pc.get_map_index() == 388 begin
+			local c = ksiega_misji_wawoz.cfg()
+			local n = pc.getqf("kills") + 1
+			pc.setqf("kills", n)
+			if n < c.need then
+				if math.mod(n, 50) == 0 then
+					syschat(string.format("Ksiêga Misji (W.P³n.W.): %d / %d potworów.", n, c.need))
+				end
+				return
+			end
+			pc.setqf("kills", 0)
+			clear_letter()
+			set_state(start)
+			local relic = c.relic[pc.get_job()]
+			if relic ~= nil and number(1, 100) <= 50 then
+				pc.give_item2(relic, 1)
+				syschat("Misja ukoñczona. Nagroda: " .. item_name(relic) .. ".")
+			else
+				pc.give_item2(c.stones, c.stones_n)
+				syschat("Misja ukoñczona. Nagroda: " .. item_name(c.stones) .. " x100.")
+			end
+		end
+	end
+end

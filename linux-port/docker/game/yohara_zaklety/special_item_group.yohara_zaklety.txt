@@ -5,46 +5,50 @@
 
 # MT2009_PLUS_CHEST_DROPS_V1: 50266 - 36 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_BRAKI_WIKI_V1): 2 rows, 1.961% each
+#   (the pl-wiki's plates, no rate - the owner, 5 November 2026); the sheet's rows scaled to what is left.
 # Left out (renormalised): Zbroja Dowodcy+0 1.923% - the Lycan's (no such class here)
 Group	MT2009_yzl_50266
 {
 	Vnum	50266 -- Skrzynia Jotuna Thryma - Jotun Thrym (Erebu)
-	1	exp	500000	9804 -- EXP 500000
-	2	gold	400000	5882 -- Yang 400000
-	3	exp	700000	5882 -- EXP 700000
-	4	50514	1	4902 -- Podrecznik: Dopalacz
-	5	50515	1	4902 -- Podrecznik: Riposta
-	6	50324	1	4902 -- Skrzynia Ksiag: Dopalacz
-	7	exp	1000000	4902 -- EXP 1000000
-	8	gold	250000	4902 -- Yang 250000
-	9	15373	1	3922 -- Buty Euforii+3
-	10	15433	1	3922 -- Buty Zimorodka+3
-	11	30610	1	2941 -- Mithril
-	12	15374	1	2941 -- Buty Euforii+4
-	13	15434	1	2941 -- Buty Zimorodka+4
-	14	30192	1	2941 -- Mleczny Sok
-	15	27994	1	1961 -- Krwawa Perla
-	16	27993	1	1961 -- Niebieska Perla
-	17	20000	1	1961 -- Pancerz Diabel. Rogu+0
-	18	20500	1	1961 -- Pancerz Koscioplytowy+0
-	19	20750	1	1961 -- Zlote Ubranie+0
-	20	30602	1	1961 -- Niebieski Barwnik
-	21	30603	1	1961 -- Czerwony Barwnik
-	22	30615	1	1961 -- Bialy Barwnik
-	23	95603	1	1961 -- Ciezkie Pasy
-	24	55003	1	1961 -- Ksiega Mlodego Zwierza
-	25	27992	1	1961 -- Biala Perla
-	26	20250	1	1961 -- Szata Smoczego Jezdzca+0
-	27	30614	1	1961 -- Czarny Barwnik
-	28	25040	1	980 -- Zwoj Blogoslawienstwa
-	29	76015	1	980 -- Kula Blogoslawienstwa
-	30	30616	1	980 -- Dwutlenek Tytanu
-	31	30618	1	980 -- Kamien Ksiezycowy
-	32	55004	1	980 -- Ksiega Dzikiego Zwierza
-	33	55005	1	980 -- Ksiega Dzielnego Zwierza
-	34	50525	1	980 -- Kamien Duchowy+
-	35	30617	1	980 -- Agat
-	36	30619	1	980 -- Barwnik zloty metalik
+	1	exp	500000	9419 -- EXP 500000
+	2	gold	400000	5652 -- Yang 400000
+	3	exp	700000	5652 -- EXP 700000
+	4	50514	1	4710 -- Podrecznik: Dopalacz
+	5	50515	1	4710 -- Podrecznik: Riposta
+	6	50324	1	4710 -- Skrzynia Ksiag: Dopalacz
+	7	exp	1000000	4710 -- EXP 1000000
+	8	gold	250000	4710 -- Yang 250000
+	9	15373	1	3768 -- Buty Euforii+3
+	10	15433	1	3768 -- Buty Zimorodka+3
+	11	30610	1	2826 -- Mithril
+	12	15374	1	2826 -- Buty Euforii+4
+	13	15434	1	2826 -- Buty Zimorodka+4
+	14	30192	1	2826 -- Mleczny Sok
+	15	27994	1	1884 -- Krwawa Perla
+	16	27993	1	1884 -- Niebieska Perla
+	17	20000	1	1884 -- Pancerz Diabel. Rogu+0
+	18	20500	1	1884 -- Pancerz Koscioplytowy+0
+	19	20750	1	1884 -- Zlote Ubranie+0
+	20	30602	1	1884 -- Niebieski Barwnik
+	21	30603	1	1884 -- Czerwony Barwnik
+	22	30615	1	1884 -- Bialy Barwnik
+	23	95603	1	1884 -- Ciezkie Pasy
+	24	55003	1	1884 -- Ksiega Mlodego Zwierza
+	25	27992	1	1884 -- Biala Perla
+	26	20250	1	1884 -- Szata Smoczego Jezdzca+0
+	27	30614	1	1884 -- Czarny Barwnik
+	28	25040	1	942 -- Zwoj Blogoslawienstwa
+	29	76015	1	942 -- Kula Blogoslawienstwa
+	30	30616	1	942 -- Dwutlenek Tytanu
+	31	30618	1	942 -- Kamien Ksiezycowy
+	32	55004	1	942 -- Ksiega Dzikiego Zwierza
+	33	55005	1	942 -- Ksiega Dzielnego Zwierza
+	34	50525	1	942 -- Kamien Duchowy+
+	35	30617	1	942 -- Agat
+	36	30619	1	942 -- Barwnik zloty metalik
+	37	30606	1	1961 -- Srebrne Plyty - wiki, no rate - owner 5.11
+	38	30608	1	1961 -- Stalowe Plyty - wiki, no rate - owner 5.11
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 54701 - 83 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),

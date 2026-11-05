@@ -35,7 +35,8 @@ JADE_ITEMS = {
 
 
 def IsGlove(vnum):
-	return 23000 <= vnum <= 23039
+	# MT2009_PLUS_BRAKI_WIKI_V1: Rekawice Weza 23050-23089 too
+	return 23000 <= vnum <= 23039 or 23050 <= vnum <= 23089
 
 
 def IsJadeJewellery(vnum):
@@ -72,6 +73,9 @@ def GloveSocketData(number):
 # client has not heard the value (a glove that is not the player's own: a trade, a shop, Seon-Hae's window).
 GLOVE_WILL = {23000: 184, 23010: 186, 23020: 185, 23030: 187}
 GLOVE_WILL_RANGE = ((3, 7), (5, 11), (9, 17), (14, 22), (19, 28), (24, 34), (29, 40), (34, 46), (39, 52), (58, 63))
+# MT2009_PLUS_BRAKI_WIKI_V1: Rekawice Weza (SILA 23050, ODP 23060, WIT 23070, INT 23080) - the pl-wiki's Will ranges
+GLOVE_WILL.update({23050: 184, 23060: 186, 23070: 185, 23080: 187})
+SERPENT_GLOVE_WILL_RANGE = ((6, 9), (10, 13), (14, 19), (19, 25), (24, 31), (30, 38), (36, 44), (42, 50), (49, 58), (69, 78))
 POINT_GLOVE_BASE_ATTR_PCT = 251
 
 
@@ -82,7 +86,7 @@ def GloveBaseLine(vnum, extra, attrSlot):
 		return ("", False)
 	value = (extra >> 8) & 0xFF
 	if value <= 0:
-		low, high = GLOVE_WILL_RANGE[vnum % 10]
+		low, high = (SERPENT_GLOVE_WILL_RANGE if vnum >= 23050 else GLOVE_WILL_RANGE)[vnum % 10]
 		text = localeinfo_point.GetApplyString(point, low) or ""
 		return ((text + " - %d" % high) if text else "", False)
 	pct = 0

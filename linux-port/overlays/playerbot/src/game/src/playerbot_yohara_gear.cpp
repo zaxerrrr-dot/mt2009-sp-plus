@@ -58,6 +58,16 @@ namespace
 	// +0 3-7 ... +9 58-63 (Owsap's APPLY_RANDOM 1-4).
 	const short s_aGloveWill[10][2] = { { 3, 7 }, { 5, 11 }, { 9, 17 }, { 14, 22 }, { 19, 28 }, { 24, 34 }, { 29, 40 },
 			{ 34, 46 }, { 39, 52 }, { 58, 63 } };
+	// MT2009_PLUS_BRAKI_WIKI_V1 (serpent gloves): pl-wiki "Rekawice Weza (SILA / ODP / WIT / INT)": +0 6-9 ... +9 69-78
+	// (Owsap's APPLY_RANDOM 24-27, ApplyRandomValue24).
+	const short s_aSerpentGloveWill[10][2] = { { 6, 9 }, { 10, 13 }, { 14, 19 }, { 19, 25 }, { 24, 31 }, { 30, 38 },
+			{ 36, 44 }, { 42, 50 }, { 49, 58 }, { 69, 78 } };
+
+	// the Will range of a glove's level - the Sung Ma gloves' or the serpent gloves' (23050-23089)
+	const short* GloveWillRange(DWORD dwVnum)
+	{
+		return (dwVnum >= 23050 && dwVnum <= 23089 ? s_aSerpentGloveWill : s_aGloveWill)[dwVnum % 10];
+	}
 	// pl-wiki "Kamien Mocy": a stone's Will +0 1, +1 3, +2 6, +3 9, +4 15 (Owsap's bDefaultValues); a Kamien Mocy
 	// Demonow (value5 2) may give twice as much.
 	const int s_aiStoneWill[5] = { 1, 3, 6, 9, 15 };
@@ -137,7 +147,7 @@ namespace yohara_gear
 // ==== the gloves ====================================================================================================
 
 // 23000-23009 Rekawice Mocy (SILA), 23010-23019 Zwinne Rekawice (ODP), 23020-23029 Pancerne Rekawice (WIT),
-// 23030-23039 Ochronne Rekawice (INT) - the wiki's Will of each glove.
+// 23030-23039 Ochronne Rekawice (INT) - the wiki's Will of each glove; Rekawice Weza 23050-23089 (MT2009_PLUS_BRAKI_WIKI_V1).
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType)
 {
 	switch (dwVnum - dwVnum % 10)
@@ -146,6 +156,11 @@ bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType)
 		case 23010: bWillType = POINT_SUNGMA_MOVE; return true;
 		case 23020: bWillType = POINT_SUNGMA_HP; return true;
 		case 23030: bWillType = POINT_SUNGMA_IMMUNE; return true;
+		// MT2009_PLUS_BRAKI_WIKI_V1 (serpent gloves): Rekawice Weza (SILA / ODP / WIT / INT) 23050-23089 - the same Wills
+		case 23050: bWillType = POINT_SUNGMA_STR; return true;
+		case 23060: bWillType = POINT_SUNGMA_MOVE; return true;
+		case 23070: bWillType = POINT_SUNGMA_HP; return true;
+		case 23080: bWillType = POINT_SUNGMA_IMMUNE; return true;
 	}
 	return false;
 }
@@ -261,7 +276,7 @@ void Mt2009GloveCreate(LPITEM item)
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return;
-	GloveBaseStore(item, RandomIn(s_aGloveWill[item->GetVnum() % 10]));
+	GloveBaseStore(item, RandomIn(GloveWillRange(item->GetVnum())));
 }
 
 // MT2009_PLUS_GLOVE_BASE_V1 (load): ITEM_MANAGER::CreateItem, after the ysets' own yextra - a new glove's Will is
@@ -288,7 +303,7 @@ void Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
 		item->SetYExtra(dwExtra);
 		if (GloveBase(item) > 0)
 			return;
-		GloveBaseStore(item, RandomIn(s_aGloveWill[item->GetVnum() % 10]));
+		GloveBaseStore(item, RandomIn(GloveWillRange(item->GetVnum())));
 	}
 	if (!bSkipSave)
 		GloveBaseSave(item);
@@ -347,8 +362,8 @@ void Mt2009GloveRefine(LPITEM pOld, LPITEM pNew)
 	if (!pOld || !pNew || !Mt2009GloveType(pOld->GetVnum(), bWillType) || !Mt2009GloveType(pNew->GetVnum(), bNewWillType)
 			|| bWillType != bNewWillType)
 		return;
-	const short* rOld = s_aGloveWill[pOld->GetVnum() % 10];
-	const short* rNew = s_aGloveWill[pNew->GetVnum() % 10];
+	const short* rOld = GloveWillRange(pOld->GetVnum());	// MT2009_PLUS_BRAKI_WIKI_V1 (serpent gloves): their own ranges
+	const short* rNew = GloveWillRange(pNew->GetVnum());
 	int iOld = GloveBase(pOld);
 	if (iOld <= 0)
 	{

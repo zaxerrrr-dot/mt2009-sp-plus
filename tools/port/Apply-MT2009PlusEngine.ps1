@@ -2211,4 +2211,17 @@ if ((Test-Path -LiteralPath $sesjaApply -PathType Leaf) -and
     }
 }
 
+# Braki Yohary wg wiki (server-patches/brakiwiki, MT2009_PLUS_BRAKI_WIKI_V1; the owner, 5 November 2026): Tajemniczy
+# Talizman's two random base lines (Will SungMa of a random stat, a random element's power) and a glove's Obrona
+# (Rekawice Weza). Anchors on lines of talizmanwoli; after sesja.
+$brakiWikiApply = Join-Path $repo 'server-patches/brakiwiki/Apply-BrakiWikiPatch.ps1'
+if ((Test-Path -LiteralPath $brakiWikiApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $brakiWikiResult = & $brakiWikiApply -SourceDir $engineGameSource
+    if ($brakiWikiResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} wiki item edit(s).' -f $brakiWikiResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

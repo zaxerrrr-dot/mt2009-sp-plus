@@ -4965,6 +4965,19 @@ if [ -s /opt/playerbot/gf_wartosci.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_BRAKI_WIKI_V1: the Yohara items of braki-yohara.md B9 as on the global server (the owner, 5 November 2026:
+# "Dodaj zgodnie z Wiki Global") - braki_wiki.sql (tools/brakiwiki/gen_brakiwiki.py): Tajemniczy Talizman+1..+9
+# (81561-81569) and 81560's next item, Rekawice Weza 23050-23089. After yohara_items3.sql / yohara_gloves.sql, before
+# refine_global.sql (it gives them the wiki's recipes 40429-40437 / 40384-40392). Mistrz Chi's recipes, the drops and
+# the mission book's quest: game/Dockerfile; the base lines: server-patches/brakiwiki. Every start, idempotent.
+if [ -s /opt/playerbot/braki_wiki.sql ]; then
+    if db < /opt/playerbot/braki_wiki.sql; then
+        echo "[playerbot-migrate] Yohara items as on the wiki: braki_wiki.sql applied"
+    else
+        fail_step "Yohara items as on the wiki: braki_wiki.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_REFINE_GLOBAL_V1: refining as on the global server for every item (the owner, 20 October 2026) -
 # refine_global.sql (tools/refineglobal/gen_refineglobal.py, from the owner's upgrade sheet): the sheet's recipes
 # (Yang, chance, materials) as refine_proto 40000.. and every item we have on its step, the "+9 -> next item" steps
