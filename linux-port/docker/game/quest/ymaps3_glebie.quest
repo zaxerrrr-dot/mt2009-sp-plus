@@ -44,11 +44,13 @@ quest ymaps3_glebie begin
 				-- MT2009_PLUS_YOHARA_LOKACJE_V1: + Schronienie's groups 9150-9155 (6784-6787, no General) - the owner's sheet
 				-- of 20 October lists them in Glebie beside Zejscie's 6792-6796
 				groups = {9160, 9161, 9162, 9163, 9164, 9150, 9151, 9152, 9153, 9154, 9155},
+				-- MT2009_PLUS_GLEBIE_HP_FIX_V1 (owner, 5 Nov 2026): hp = Alastor's real max HP (mob_proto 6790 and 6791: 22587258);
+				-- the heals of Wrath and berserk were counted from the sheet's 67.75M and 48.75M (2-3 times too large)
 				k = {
-					[1] = {boss = 6790, egg = 8635, hp = 67751800, cold_hp = 15000, cold_pct = 5, cold_max = 5,
+					[1] = {boss = 6790, egg = 8635, hp = 22587258, cold_hp = 15000, cold_pct = 5, cold_max = 5,
 						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, rage = {10, 15, 20}, dead_kick = 180, reward = 70411,
 						   rank = "glebie_slaby", name = "G³êbie Pó³nocnego Wiatru (s³aby)"},
-					[2] = {boss = 6791, egg = 8636, hp = 48751800, cold_hp = 20000, cold_pct = 7, cold_max = 7,
+					[2] = {boss = 6791, egg = 8636, hp = 22587258, cold_hp = 20000, cold_pct = 7, cold_max = 7,
 						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, rage = {20, 30, 40}, dead_kick = 120, reward = 70412,
 						   rank = "glebie_silny", name = "G³êbie Pó³nocnego Wiatru (silny)"},
 				},
