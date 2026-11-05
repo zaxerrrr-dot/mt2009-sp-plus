@@ -200,6 +200,13 @@ def gen_language(code, cfg, cat, res):
     for v in sorted(cat.items):
         pl = cat.items[v]
         rows.append('%d\t%s' % (v, t('item', str(v), pl) if ('item', str(v)) in cat.entries else pl))
+    # itemdesc rows of vnums item_proto lacks (the exe adds some of them itself, e.g. 100101 "Smocze Cegi+")
+    b = cat.files.get('itemdesc.txt')
+    if b is not None:
+        for cols in L.tsv_lines(b):
+            if len(cols) >= 2 and cols[0].strip().isdigit() and int(cols[0]) not in cat.items and L.has_text(cols[1]) \
+                    and not L.garbled(cols[1]):
+                rows.append('%s\t%s' % (cols[0].strip(), t('item', cols[0].strip(), cols[1])))
     files['item_names.txt'] = enc(NL.join(rows) + NL)
     rows = ['VNUM\tLOCALE_NAME']
     for v in sorted(cat.mobs):
@@ -335,6 +342,15 @@ def coverage(res, cat):
 # ---------------------------------------------------------------- pack writing
 
 
+def _m2pack_c36():
+    """/opt/metin2/cache/c36/m2pack.py - the one with repack2 (removal); the tz one on the path has no repack2"""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('m2pack_c36', '/opt/metin2/cache/c36/m2pack.py')
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def write_pack(base, out, files, report, check):
     import m2pack
     import packlib
@@ -347,7 +363,7 @@ def write_pack(base, out, files, report, check):
         report['locale_removed'] = drop
         if not check:
             ti, td = os.path.join(out, 'locale.index.lang'), os.path.join(out, 'locale.data.lang')
-            m2pack.repack2(os.path.join(src, 'locale.index'), os.path.join(src, 'locale.data'), ti, td, remove=drop)
+            _m2pack_c36().repack2(os.path.join(src, 'locale.index'), os.path.join(src, 'locale.data'), ti, td, remove=drop)
             os.replace(ti, os.path.join(out, 'locale.index'))
             os.replace(td, os.path.join(out, 'locale.data'))
             f2, v2, nw = m2pack.read_index(os.path.join(out, 'locale.index'))

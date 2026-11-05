@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Lingua
+Język / Language	Lingua / Language
+Język klienta: %s	Lingua del client: %s
+Nazwy, opisy i okna zmienią język po ponownym	Nomi, descrizioni e finestre cambiano lingua
+Po ponownym uruchomieniu: %s	Dopo il riavvio: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Questa versione del client ha solo alcune lingue: aggiorna il client.
+Uruchom klienta ponownie (Restart the client).	Riavvia il client.
+Uruchom ponownie	Riavvia
+uruchomieniu klienta (Language: after a restart).	dopo il riavvio del client.

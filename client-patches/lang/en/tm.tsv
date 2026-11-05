@@ -688,6 +688,9 @@ Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	If you or the Tr
 Ji Jin	Ji Jin
 Juki Konne	Horse Saddlebags
 Juz sprzedane (pominiete): %d.	Already sold (skipped): %d.
+Język	Language
+Język / Language	Language
+Język klienta: %s	Client language: %s
 Kamera filmowa - obrót w lewo	Cinematic camera - rotate left
 Kamera filmowa - obrót w prawo	Cinematic camera - rotate right
 Kamera filmowa - oddal	Cinematic camera - zoom out
@@ -1186,6 +1189,7 @@ Nazwa zawiera niedozwolone słowa.	The name contains forbidden words.
 Nazwa:	Name:
 Nazwa: -	Name: -
 Nazwy graczy i przedmiotów	Player and item names
+Nazwy, opisy i okna zmienią język po ponownym	Names, descriptions and windows change language
 Naładuj eliksir	Recharge elixir
 Nałogowiec	Addict
 NewPet	NewPet
@@ -1517,6 +1521,7 @@ Pierścień Wakacyjny	Holiday Ring
 Pierścień Wielkanocny	Easter Ring
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	A ring with an exquisitely crafted crescent-moon engraving. Grants: +50% EXP, +20% attack speed, +20% casting speed, +30% attack, +10% max. HP, +10% max. SP.
 Pisklę Exedyara	Exedyar Hatchling
+Po ponownym uruchomieniu: %s	After a restart: %s
 Po prawej są twoje wyniki	On the right you see your results
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Can be traded.
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Cannot be traded.
@@ -2065,6 +2070,7 @@ Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje si
 Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from the Frozen Land, Nemere's lair. It holds a true royal treasure.
 Ta skrzynka nic nie wydaje.	This chest gives nothing.
 Ta tura jest już pełna - odbierz nagrodę za turę.	This round is already complete - claim your round reward.
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	This client version has only some of the languages - update the client.
 Tahoma	Tahoma
 Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	A Catch the King deck. Right-click it during the event to add it to your decks; start the game in the event window (button next to the minimap). Cards and decks are lost when the next event begins.
 Tam nic nie ma.	There is nothing there.
@@ -2180,6 +2186,8 @@ Umiejętność peta	Pet Skill
 Uniform, który niegdyś należał do martwego już brata Mirine.	A uniform that once belonged to Mirine's late brother.
 Uporządkowano ekwipunek: przestawiono %d, scalono stosów: %d.	Inventory sorted: %d moved, stacks merged: %d.
 Uporządkowano magazyn: przestawiono %d, scalono stosów: %d.	Storeroom sorted: %d moved, stacks merged: %d.
+Uruchom klienta ponownie (Restart the client).	Restart the client.
+Uruchom ponownie	Restart
 Ustaw nowe hasło na stronie.	Set a new password on the website.
 Usun przedmioty	Destroy Items
 Usunąć pozycję %d (%s)?	Delete location %d (%s)?
@@ -2726,6 +2734,7 @@ stałą blokadą konta.	in a permanent account ban.
 tylko gdy gracz jest AKTUALNIE online.	only when the player is CURRENTLY online.
 ulepszony Nóż.	upgraded Knife.
 umiejetnosci dodaj %d	umiejetnosci dodaj %d
+uruchomieniu klienta (Language: after a restart).	after the client is restarted.
 walka %d	walka %d
 ważne	important
 wprowadzenie aby móc kontynuować rozgrywkę.	to be able to continue playing.

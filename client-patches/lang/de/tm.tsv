@@ -170,6 +170,9 @@ Inserted an invalid price.	Ungültiger Preis eingegeben.
 Item inserted into the shopping safebox.	Gegenstand wurde in die Handelstruhe gelegt.
 Jest to lizak o tajemniczym składzie. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Ein Lutscher mit geheimnisvoller Zusammensetzung. Verleiht: +50% EXP, +20% Angriffsgeschwindigkeit, +20% Zaubergeschwindigkeit, +30% Angriff, +10% max. TP, +10% max. MP.
 Jewel	Schmuck
+Język	Sprache
+Język / Language	Sprache / Language
+Język klienta: %s	Sprache des Clients: %s
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Eine Steintafel mit uralten Runen. Sie strahlt eine unbekannte Energie aus.
 Kamień Przebudzenia	Stein des Erwachens
 Kamień Tygrysa	Tigerstein
@@ -430,6 +433,7 @@ Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, ab
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Skin für eine Einhandwaffe (Schwert) – Krieger, Ninja, Sura. Gilt 30 Tage ab dem Kauf.
 Nasiono o niezbadanych właściwościach.	Ein Samen mit unerforschten Eigenschaften.
 Natychmiastowo odnawia wszystkie Punkty Energii. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Regeneriert augenblicklich alle MP. Einmal alle 2 Minuten verwendbar. Teilt sich die Abklingzeit mit den Tränken der Unverwundbarkeit und Unantastbarkeit.
+Nazwy, opisy i okna zmienią język po ponownym	Namen, Beschreibungen und Fenster wechseln die Sprache
 Necklace	Halskette
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Blaue Mütze mit Hasenohren für ihn. Verleiht dir mindestens einen zufälligen Bonus.
 Niedźwiedzina	Bärenfleisch
@@ -517,6 +521,7 @@ Pierwszorzędne Buty	Erstklassige Schuhe
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Ein Ring mit einer kunstvoll gearbeiteten Gravur in Form eines Halbmonds. Verleiht: +50% EXP, +20% Angriffsgeschwindigkeit, +20% Zaubergeschwindigkeit, +30% Angriff, +10% max. TP, +10% max. MP.
 Pióro Mędrca	Feder des Weisen
 Po okazaniu tego biletu Stajennemu, będziesz mógł jeździć konno przez określony czas.	Wenn du diese Karte dem Stallburschen zeigst, kannst du eine bestimmte Zeit lang reiten.
+Po ponownym uruchomieniu: %s	Nach dem Neustart: %s
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	Fügt bei Benutzung eine Monsterkarte zu deiner Sammlung hinzu (Monsterkarten im Esc-Menü). Handelbar.
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Fügt bei Benutzung eine Monsterkarte zu deiner Sammlung hinzu (Monsterkarten im Esc-Menü). Nicht handelbar.
 Podkręć piłkę jak Baljit-Elvedin!	Schieß eine Bananenflanke wie Baljit-Elvedin!
@@ -684,6 +689,7 @@ Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 
 Ta pieczęć przywołuje uroczego Feniksa Jadeitu.	Dieses Siegel ruft den reizenden Jadephönix herbei.
 Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	Diese Truhe wurde aus dem Fegefeuer geborgen, Razadors Hort. In ihr liegt ein wahrhaft königlicher Schatz.
 Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	Diese Truhe wurde aus dem Eisland geborgen, Nemeres Hort. In ihr liegt ein wahrhaft königlicher Schatz.
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Diese Client-Version hat nur einen Teil der Sprachen - aktualisiere den Client.
 Tajemnicza księga od Płatnerza z 6. piętra Wieży Demonów, pełna zapomnianych sekretów rzemiosła.	Ein geheimnisvolles Buch vom Waffenschmied im 6. Stock des Dämonenturms, voller vergessener Geheimnisse des Handwerks.
 Tajemnicza substancja, która osłabia twardą skorupę Olbrzymiego Żółwia na 10 minut, czyniąc go podatnym na ataki każdą bronią.	Eine geheimnisvolle Substanz, die den harten Panzer der Großen Wüstenschildkröte 10 Minuten lang schwächt und sie für Angriffe mit jeder Waffe verwundbar macht.
 Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	Ein Deck für Schnapp den König. Klicke während des Events mit der rechten Maustaste darauf, um es deinen Decks hinzuzufügen; das Spiel startest du im Eventfenster (Schaltfläche an der Minikarte). Karten und Decks verfallen, wenn das nächste Event beginnt.
@@ -713,6 +719,8 @@ Type	Typ
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Die Lieblingsfrisur einsamer Krieger, sieht im Wind großartig aus. Ändert die Frisur deines Charakters dauerhaft.
 Uniform, który niegdyś należał do martwego już brata Mirine.	Eine Uniform, die einst Mirines verstorbenem Bruder gehörte.
 Upoważania do łowienia na królewskich łowiskach na 1 godzinę. Znika po 24 godzinach posiadania.	Berechtigt 1 Stunde lang zum Angeln in den königlichen Fischgründen. Verschwindet 24 Stunden nach Erhalt.
+Uruchom klienta ponownie (Restart the client).	Starte den Client neu.
+Uruchom ponownie	Neu starten
 Use at least one filter to start the search.	Verwende mindestens einen Filter, um die Suche zu starten.
 Using it the item will be destroyed and change the appearance of your shop for 15 days. Do you want to continue?	Bei der Verwendung wird der Gegenstand verbraucht und das Aussehen deines Ladens für 15 Tage geändert. Möchtest du fortfahren?
 Usuwa wszystkie bonusy z twojego jednego przedmiotu, po czym dodaje nowe - losowe. Ilość bonusów nie ulega zmianie.	Entfernt alle Boni von einem deiner Gegenstände und fügt neue, zufällige hinzu. Die Anzahl der Boni bleibt gleich.
@@ -841,6 +849,7 @@ Zwój ten umożliwia usunięcie ostatnio pomyślnie dodanego Kamienia Duszy ze w
 Zwój ten umożliwia usunięcie wskazanego Kamienia Duszy z przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Mit dieser Schriftrolle kannst du einen ausgewählten Geiststein aus einem Gegenstand entfernen. Ein Geiststein +5 wird beim Entfernen zerstört.
 Zwój Życia	Schriftrolle des Lebens
 Złocisty piasek, nasycony magią i tajemnicą.	Goldener Sand, durchdrungen von Magie und Geheimnis.
+uruchomieniu klienta (Language: after a restart).	nach einem Neustart des Clients.
 {}'s Auction	Auktion von {}
 {}'s Shop	Laden von {}
 |Eikashop/ultimate/average.png|e |cFFFF9999|hUnknown|r	|Eikashop/ultimate/average.png|e |cFFFF9999|hUnbekannt|r

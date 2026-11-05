@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Dil
+Język / Language	Dil / Language
+Język klienta: %s	İstemci dili: %s
+Nazwy, opisy i okna zmienią język po ponownym	İsimler, açıklamalar ve pencereler dili
+Po ponownym uruchomieniu: %s	Yeniden başlatmadan sonra: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Bu istemci sürümünde dillerin yalnızca bir kısmı var - istemciyi güncelle.
+Uruchom klienta ponownie (Restart the client).	İstemciyi yeniden başlat.
+Uruchom ponownie	Yeniden başlat
+uruchomieniu klienta (Language: after a restart).	istemci yeniden başlatılınca değiştirir.

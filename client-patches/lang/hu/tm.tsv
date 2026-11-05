@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Nyelv
+Język / Language	Nyelv / Language
+Język klienta: %s	A kliens nyelve: %s
+Nazwy, opisy i okna zmienią język po ponownym	A nevek, leírások és ablakok nyelve
+Po ponownym uruchomieniu: %s	Újraindítás után: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Ez a kliensverzió csak a nyelvek egy részét ismeri - frissítsd a klienst.
+Uruchom klienta ponownie (Restart the client).	Indítsd újra a klienst.
+Uruchom ponownie	Újraindítás
+uruchomieniu klienta (Language: after a restart).	a kliens újraindítása után változik.

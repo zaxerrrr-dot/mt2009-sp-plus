@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Γλώσσα
+Język / Language	Γλώσσα / Language
+Język klienta: %s	Γλώσσα πελάτη: %s
+Nazwy, opisy i okna zmienią język po ponownym	Τα ονόματα, οι περιγραφές και τα παράθυρα αλλάζουν γλώσσα
+Po ponownym uruchomieniu: %s	Μετά την επανεκκίνηση: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Αυτή η έκδοση του πελάτη έχει μόνο μερικές γλώσσες - ενημέρωσε τον πελάτη.
+Uruchom klienta ponownie (Restart the client).	Κάνε επανεκκίνηση του πελάτη.
+Uruchom ponownie	Επανεκκίνηση
+uruchomieniu klienta (Language: after a restart).	μετά την επανεκκίνηση του πελάτη.

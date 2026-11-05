@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Jazyk
+Język / Language	Jazyk / Language
+Język klienta: %s	Jazyk klienta: %s
+Nazwy, opisy i okna zmienią język po ponownym	Názvy, popisy a okna změní jazyk
+Po ponownym uruchomieniu: %s	Po restartu: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Tato verze klienta má jen část jazyků - aktualizuj klienta.
+Uruchom klienta ponownie (Restart the client).	Restartuj klienta.
+Uruchom ponownie	Restartovat
+uruchomieniu klienta (Language: after a restart).	po restartu klienta.

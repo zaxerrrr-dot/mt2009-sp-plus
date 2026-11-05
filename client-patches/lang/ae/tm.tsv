@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	اللغة
+Język / Language	اللغة / Language
+Język klienta: %s	لغة العميل: %s
+Nazwy, opisy i okna zmienią język po ponownym	تتغير لغة الأسماء والأوصاف والنوافذ
+Po ponownym uruchomieniu: %s	بعد إعادة التشغيل: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	هذا الإصدار من العميل يحتوي على بعض اللغات فقط - حدّث العميل.
+Uruchom klienta ponownie (Restart the client).	أعد تشغيل العميل.
+Uruchom ponownie	إعادة التشغيل
+uruchomieniu klienta (Language: after a restart).	بعد إعادة تشغيل العميل.

@@ -1,0 +1,11 @@
+# OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
+# Polish text	translation
+Język	Limbă
+Język / Language	Limbă / Language
+Język klienta: %s	Limba clientului: %s
+Nazwy, opisy i okna zmienią język po ponownym	Numele, descrierile și ferestrele își schimbă limba
+Po ponownym uruchomieniu: %s	După repornire: %s
+Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Această versiune a clientului are doar o parte din limbi - actualizează clientul.
+Uruchom klienta ponownie (Restart the client).	Repornește clientul.
+Uruchom ponownie	Repornește
+uruchomieniu klienta (Language: after a restart).	după repornirea clientului.
