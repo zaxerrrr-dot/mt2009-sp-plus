@@ -20,6 +20,10 @@
 -- Strefy na ziemi: d.zone_attack / d.zone_hurt (MT2009_PLUS_DUNGEON_ZONE_V1, server-patches/strefy) - prawdziwe
 -- obra¿enia, œmieræ jak od potwora. Sza³: leczenie i +10/15/20% (silny +20/30/40%) obra¿eñ Alastora
 -- (d.unique_damage_pct); kto le¿y martwy 3 min (silny 2 min), wylatuje z G³êbi (d.kick_dead) - wiki TR.
+-- MT2009_PLUS_BOT_GLEBIE_V1: wyprawy botow (playerbot_dungeon_runs_ydg_glebie.h, wiersze glebie_slaby / glebie_silny):
+-- rdzen tworzy instancje z flaga mt2009_dgrun, ustawia "kind" i p1..p8 (boty licza sie do kolcow, Chlodu i nagrody jak
+-- ludzie), pobiera klucze i prosi o init (ymaps3_glebie_dgrun); przebudzenie Alastora to ymaps3_glebie_dgrun_next
+-- (dotkniecie jaja przez przywodce); flaga "won" po zabiciu Alastora; ranking tylko dla ludzi.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest ymaps3_glebie begin
 	state start begin
@@ -57,6 +61,34 @@ quest ymaps3_glebie begin
 						fx = "d:/ymir work/effect/monster2/whitedragon_circle_ice.mse",
 						hit = "d:/ymir work/effect/monster2/whitedragon_boss2_s1_blow.mse"},
 			}
+		end
+
+		-- the instance's start (the first person's login, or a bots' run - ymaps3_glebie_dgrun)
+		function init()
+			local c = ymaps3_glebie.cfg()
+			d.setf("init", 1)
+			d.setf("start", get_global_time())
+			d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			local egg = d.spawn_mob(4030, c.egg[1], c.egg[2])
+			d.set_unique("egg", egg) -- MT2009_PLUS_BOT_GLEBIE_V1
+			d.spawn_mob(3971, c.crystal[1], c.crystal[2])
+			d.spawn_mob(3973, c.portal_east[1], c.portal_east[2])
+			server_timer("ymaps3_glebie_tick", 5, d.get_map_index())
+		end
+
+		-- Alastor wakes (the leader's touch of the egg, or a bots' run - ymaps3_glebie_dgrun_next)
+		function wake()
+			local c = ymaps3_glebie.cfg()
+			local kind = d.getf("kind")
+			if kind ~= 2 then
+				kind = 1
+			end
+			local vid = d.spawn_mob(c.k[kind].boss, c.egg[1], c.egg[2])
+			d.set_unique("alastor", vid)
+			d.setf("awake", 1)
+			d.setf("woke", get_global_time())
+			d.setf("next_cold", get_global_time() + 60)
+			d.notice("Alastor siê przebudzi³! Uciekajcie przed lodowymi kolcami i niszczcie Bia³e Jaja Smoka.")
 		end
 
 		function inside()
@@ -294,13 +326,7 @@ quest ymaps3_glebie begin
 			end
 			ymaps3_glebie.register()
 			if d.getf("init") == 0 then
-				d.setf("init", 1)
-				d.setf("start", get_global_time())
-				d.setf("mt2009_keep_until", get_global_time() + c.keep)
-				d.spawn_mob(4030, c.egg[1], c.egg[2])
-				d.spawn_mob(3971, c.crystal[1], c.crystal[2])
-				d.spawn_mob(3973, c.portal_east[1], c.portal_east[2])
-				server_timer("ymaps3_glebie_tick", 5, d.get_map_index())
+				ymaps3_glebie.init()
 			end
 			local kind = d.getf("kind")
 			syschat(c.k[kind].name..": przywódca budzi Alastora, dotykaj¹c Bia³ego Jaja Smoka. 30 minut od wejœcia.")
@@ -312,14 +338,33 @@ quest ymaps3_glebie begin
 				syschat("Tylko przywódca dru¿yny mo¿e obudziæ Alastora.")
 				return
 			end
-			local kind = d.getf("kind")
 			npc.purge()
-			local vid = d.spawn_mob(c.k[kind].boss, c.egg[1], c.egg[2])
-			d.set_unique("alastor", vid)
-			d.setf("awake", 1)
-			d.setf("woke", get_global_time())
-			d.setf("next_cold", get_global_time() + 60)
-			d.notice("Alastor siê przebudzi³! Uciekajcie przed lodowymi kolcami i niszczcie Bia³e Jaja Smoka.")
+			ymaps3_glebie.wake()
+		end
+
+		-- MT2009_PLUS_BOT_GLEBIE_V1: a bots' run (playerbot_dungeon_runs_ydg_glebie.h) - the core made the instance, set
+		-- "kind" and the players p1..p8 and took the keys; here the quest's own start
+		when ymaps3_glebie_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					if d.getf("kind") ~= 2 then
+						d.setf("kind", 1)
+					end
+					local c = ymaps3_glebie.cfg()
+					d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+					ymaps3_glebie.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_GLEBIE_V1: the bots' leader touches the White Dragon Egg
+		when ymaps3_glebie_dgrun_next.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 1 and d.getf("awake") == 0 and d.getf("closed") == 0 then
+					d.purge_unique("egg")
+					ymaps3_glebie.wake()
+				end
+			end
 		end
 
 		-- the crystal: its death opens the way to the egg chamber
@@ -342,7 +387,10 @@ quest ymaps3_glebie begin
 			local c = ymaps3_glebie.cfg()
 			local kind = d.getf("kind")
 			d.setf("closed", 1)
-			d.update_ranking(c.k[kind].rank, get_global_time() - d.getf("start"))
+			d.setf("won", 1) -- MT2009_PLUS_BOT_GLEBIE_V1
+			if d.getf("mt2009_dgrun") ~= 1 then
+				d.update_ranking(c.k[kind].rank, get_global_time() - d.getf("start"))
+			end
 			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size) * 100, (c.base_y + c.size) * 100)
 			for i = 1, 8 do
 				local pid = d.getf("p"..i)

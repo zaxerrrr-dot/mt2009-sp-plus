@@ -195,6 +195,10 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391) - the statue's 120 and 1-8, monsters of 123-129 (150-190
 		// thousand HP), Metins of 8.5 million, Nethis 23 million: five called, four to go in, a Shaman always.
 		{ "swiatynia", 120, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_GLEBIE_V1: Glebie Polnocnego Wiatru (395) - the quest's 120 and a Champion level (1-8 people),
+		// Alastor of 135 with 22.5 million health: five called, four to go in, a Shaman always.
+		{ "glebie_slaby", 120, 5, 5, 4, true },
+		{ "glebie_silny", 120, 5, 5, 4, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

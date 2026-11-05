@@ -53,7 +53,8 @@ namespace
 		YDG_NEMERE,
 		YDG_BERAN,
 		YDG_JOTUN,
-		YDG_WEZE	// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391) - playerbot_dungeon_runs_ydg_weze.h
+		YDG_WEZE,	// MT2009_PLUS_BOT_YDG_WEZE_V1: Swiatynia Wezy (391) - playerbot_dungeon_runs_ydg_weze.h
+		YDG_GLEBIE		// MT2009_PLUS_BOT_GLEBIE_V1: Alastor (playerbot_dungeon_runs_ydg_glebie.h)
 	};
 
 	struct TPlayerBotYdgDef
@@ -72,6 +73,8 @@ namespace
 		{ "nemere_pb", YDG_NEMERE, false },
 		{ "jotun_pb", YDG_JOTUN, false },
 		{ "swiatynia", YDG_WEZE, false },	// MT2009_PLUS_BOT_YDG_WEZE_V1
+		{ "glebie_slaby", YDG_GLEBIE, false },	// MT2009_PLUS_BOT_GLEBIE_V1
+		{ "glebie_silny", YDG_GLEBIE, false },
 	};
 	const size_t PLAYERBOT_YDG_DEF_COUNT = sizeof(PLAYERBOT_YDG_DEFS) / sizeof(PLAYERBOT_YDG_DEFS[0]);
 
@@ -141,6 +144,19 @@ namespace
 	void FinishPlayerBotWezeMember(LPCHARACTER ch, int runId);
 	void ForgetPlayerBotWeze(long instance);
 	int GetPlayerBotYdgDefMinLevel(int def);
+	// MT2009_PLUS_BOT_GLEBIE_V1: playerbot_dungeon_runs_ydg_glebie.h (included after this file).
+	int GetPlayerBotGlebieStage(LPDUNGEON d);
+	long long GetPlayerBotGlebieSignature(LPDUNGEON d);
+	void GetPlayerBotGlebieObjectives(const TPlayerBotDgRunDef& def, LPDUNGEON d, const TPlayerBotArzDgScan& scan,
+			std::vector<DWORD>& out);
+	bool GetPlayerBotGlebieCamp(LPDUNGEON d, long& x, long& y);
+	bool ManagePlayerBotGlebieBot(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	bool ShouldPlayerBotGlebieWake(const TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
+	long long ChargePlayerBotGlebieKeys(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
+	bool IsPlayerBotGlebiePartyOk(int def, const std::vector<playerbot_dgrun::TCand>& free, std::string& why);
+	bool IsPlayerBotGlebieAutoOk(LPCHARACTER ch, const std::vector<int>& defs);
+	void NotePlayerBotGlebieRunStart(const TPlayerBotDgRun& run);
+	void NotePlayerBotGlebieRunEnd(const TPlayerBotDgRun& run);
 
 	// ------------------------------------------------------------ the quests' flags
 
@@ -162,6 +178,8 @@ namespace
 				return level == 2 ? 9 : std::max(1, d->GetFlag("bst"));
 			case YDG_WEZE:		// MT2009_PLUS_BOT_YDG_WEZE_V1: 1 the Portal, 2-7 the temple's levels, 8 Nethis
 				return GetPlayerBotWezeStage(d);
+			case YDG_GLEBIE:	// MT2009_PLUS_BOT_GLEBIE_V1: 1 before Alastor wakes, 2 Alastor, 3 won
+				return GetPlayerBotGlebieStage(d);
 			default:
 				return previous;
 		}
@@ -183,6 +201,7 @@ namespace
 		for (size_t i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i)
 			sig = sig * 31LL + d->GetFlag(flags[i]);
 		sig = sig * 31LL + GetPlayerBotWezeSignature(d);	// MT2009_PLUS_BOT_YDG_WEZE_V1 (0 off its map)
+		sig = sig * 31LL + GetPlayerBotGlebieSignature(d);	// MT2009_PLUS_BOT_GLEBIE_V1
 		return sig;
 	}
 
@@ -267,6 +286,9 @@ namespace
 			case YDG_WEZE:	// MT2009_PLUS_BOT_YDG_WEZE_V1
 				GetPlayerBotWezeObjectives(d, out);
 				break;
+			case YDG_GLEBIE:	// MT2009_PLUS_BOT_GLEBIE_V1
+				GetPlayerBotGlebieObjectives(def, d, scan, out);
+				break;
 			default:
 				break;
 		}
@@ -332,6 +354,9 @@ namespace
 
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y)
 	{
+		const TPlayerBotYdgDef* gl = FindPlayerBotYdgDef(def.szKey);	// MT2009_PLUS_BOT_GLEBIE_V1: by the egg till Alastor wakes
+		if (gl && gl->iBoss == YDG_GLEBIE)
+			return GetPlayerBotGlebieCamp(d, x, y);
 		if (!IsPlayerBotYdgSzcKeysStage(def, d))
 			return false;
 		std::map<long, int>::const_iterator it = s_mapPlayerBotYdgSzcSpot.find(d->GetMapIndex());
@@ -528,6 +553,8 @@ namespace
 			return false;
 		if (y->iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: the keys, the cages, the heads (their orders)
 			return ManagePlayerBotWezeItems(ch, state, run, d, dwNow);
+		if (y->iBoss == YDG_GLEBIE)	// MT2009_PLUS_BOT_GLEBIE_V1: the egg chamber's members, the halls' portals
+			return ManagePlayerBotGlebieBot(ch, state, run, d, dwNow);
 		DWORD& next = s_mapPlayerBotYdgItemAt[ch->GetPlayerID()];
 		if (next != 0 && (int)(next - dwNow) > 0)
 			return false;
@@ -820,6 +847,9 @@ namespace
 			case YDG_WEZE:	// MT2009_PLUS_BOT_YDG_WEZE_V1: the Portal's start, the Smith's way to the 7th level
 				ask = IsPlayerBotWezeNextWanted(d);
 				break;
+			case YDG_GLEBIE:	// MT2009_PLUS_BOT_GLEBIE_V1: the leader touches the egg - Alastor wakes
+				ask = ShouldPlayerBotGlebieWake(run, d, dwNow);
+				break;
 			default:
 				break;
 		}
@@ -839,6 +869,8 @@ namespace
 			return 0;
 		if (y->iBoss == YDG_WEZE)	// MT2009_PLUS_BOT_YDG_WEZE_V1: no ticket - the day's five (Wejscie do Swiatyni Wezy)
 			return ChargePlayerBotWezeEntry(ch);
+		if (y->iBoss == YDG_GLEBIE)	// MT2009_PLUS_BOT_GLEBIE_V1: three Zamarzniete Klucze
+			return ChargePlayerBotGlebieKeys(ch, def);
 		if (y->bSzc)
 			return ChargePlayerBotYoharaSzcWatch(ch);
 		if (ch->CountSpecifyItem(PLAYERBOT_YDG_BOOK) > 0)
@@ -1003,6 +1035,8 @@ namespace
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetLevel() < minLevel || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+				continue;
+			if (!IsPlayerBotGlebieAutoOk(ch, defs))	// MT2009_PLUS_BOT_GLEBIE_V1: 120 and a Champion level for Glebie alone
 				continue;
 			const char* refusal = GetPlayerBotDgRunRefusal(ch, it->second, dwNow);
 			if (refusal && strcmp(refusal, "dungeon_run"))
@@ -1345,6 +1379,8 @@ namespace
 					if (ofLevel < rule.startMin)
 						continue;
 				}
+				if (!IsPlayerBotGlebiePartyOk(cand, free, why))	// MT2009_PLUS_BOT_GLEBIE_V1: 120, a Champion level, strong: 3 weak
+					continue;
 				def = cand;
 				tp.next = (tp.next + t + 1) % tp.defs.size();
 			}
@@ -1510,6 +1546,7 @@ namespace
 		}
 		sys_log(0, "BOT_YDG: run start run=%d dungeon=%s instance=%ld train_party=%d members=%d gear_avg=%d mix=%s", run.iId,
 				def.szKey, run.lInstance, GetPlayerBotYdgTrainParty(run.iId), n, n ? gearSum / n : 0, mix.c_str());
+		NotePlayerBotGlebieRunStart(run);	// MT2009_PLUS_BOT_GLEBIE_V1
 	}
 
 	void NotePlayerBotYdgRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS)
@@ -1518,6 +1555,7 @@ namespace
 		const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(def.szKey);
 		const bool won = run.dwFinishedAt != 0;
 		const int party = GetPlayerBotYdgTrainParty(run.iId);
+		NotePlayerBotGlebieRunEnd(run);	// MT2009_PLUS_BOT_GLEBIE_V1: the chests at Upiorny Straznik, the members' marks
 		for (size_t i = 0; i < s_vecPlayerBotYdgTrain.size(); ++i)
 			if (s_vecPlayerBotYdgTrain[i].iId == party)
 			{
