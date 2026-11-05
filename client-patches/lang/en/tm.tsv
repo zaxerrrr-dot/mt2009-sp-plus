@@ -37,6 +37,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 (%d na %d)	 (%d of %d)
 (Aby zmiany weszly w zycie trzeba zrestartowac serwer (Nic sie nie usunie))	(The server must be restarted for the changes to take effect (nothing will be deleted))
 (Kup wszystkie przedmioty tego typu)	(Buy all items of this type)
+(Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(No use yet - it will come with the next Yohara update.)
 (Najedź myszką na ikonę)	(Hover over an icon)
 (brak)	(none)
 (poziom %d)	 (level %d)
@@ -64,6 +65,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 -- Wojownik Mental - skille P --	-- Warrior Mental - P skills --
 ---------------------------------------------------------------------------- DELETE LOGO WINDOW	---------------------------------------------------------------------------- DELETE LOGO WINDOW
 ---------------------------------------------------------------CLOSE LOGO WINDOW	---------------------------------------------------------------CLOSE LOGO WINDOW
+... a ty jesteś sędzią i katem. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	... and you are judge and executioner. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...and %d more - full list in the Drop Wiki window (inventory sidebar).
 / - powtarza poprzednia komende	/ - repeats the previous command
 /a level - Zmienia lvl gracza	/a level - Changes a player's level
@@ -199,6 +201,9 @@ Antyczne: te nagrody odblokujesz po 5 turach.	Antique: you unlock these rewards 
 Anubis	Anubis
 Anuluj edycje	Cancel editing
 Anuluj misję	Cancel Mission
+Apteczka (PB) strażników Zaklętego Lasu (PB).	First-aid kit (PB) of the Enchanted Forest (PB) guards.
+Apteczka (SZC) strażników Zaklętego Lasu (SZC).	First-aid kit (SZC) of the Enchanted Forest (SZC) guards.
+Apteczka strażników Zaklętego Lasu.	First-aid kit of the Enchanted Forest guards.
 Arial	Arial
 Arial:14	Arial:14
 Arktyczny Khan	Arctic Khan
@@ -239,6 +244,7 @@ BETA: Buff M1	BETA: Buff M1
 BETA: Buff P	BETA: Buff P
 BUSY	BUSY
 Badania Biologa	Biologist's Research
+Balmung i jego spadkobierca to legendarne ostrza - przynajmniej mają coś ze sobą wspólnego. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Balmung and its heir are legendary blades - at least they have something in common. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Ban (%s pid: |cff5af22c%d|r)	Ban (%s pid: |cff5af22c%d|r)
 Bank jest pusty.	The bank is empty.
 Bank przedmiotów gildii:	Guild item bank:
@@ -246,6 +252,7 @@ Bardzo długi	Very long
 Bardzo długo	Very long
 Bardzo krótki	Very short
 Bardzo krótko	Very short
+Bardzo rzadka zdobycz. Jego łuski błyszczą niczym płynne złoto! Kliknij prawym przyciskiem: wypuść go, pokrój albo użyj jako przynęty.	A very rare catch. Its scales shine like liquid gold! Right-click: release it, cut it up or use it as bait.
 Bastet	Bastet
 Battle Pass - %s %d (do końca %d dni)	Battle Pass - %s %d (%d days left)
 Bazowa obrona: %d (+%d%% wzmocnienia)	Base defence: %d (+%d%% from upgrades)
@@ -336,6 +343,8 @@ Brakuje Yang na: %s (%s).	Not enough Yang for: %s (%s).
 Brakuje ci Odłamków: %s.	You are missing Powershards: %s.
 Brakuje ci Suplementów: %s.	You are missing Additives: %s.
 Bronie	Weapons
+Broń ta łączy wdzięk i niebezpieczeństwo w wirze piękna. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	This weapon combines grace and danger in a whirl of beauty. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Brzeszczot wypełniony mocą mrocznego smoka.	A broadsword filled with the power of the dark dragon.
 Brązowa Chusta	Brown Headscarf
 Brązowa Chusta+	Brown Headscarf+
 Brązowy Turban	Brown Turban
@@ -344,6 +353,7 @@ Buffy	Buffs
 Błogosławieństwa goblina	Goblin Blessings
 Błogosławieństwo ulepszania	Upgrade Blessing
 Błyskaw.	Instant
+Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Grants its enemies eternal rest in a flash. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Błąd zapytania.	Query error.
 Błędne podanie kodu może skutkować	Entering the wrong code may result
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Restore interface.
@@ -359,10 +369,12 @@ Cena: %s reputacji	Price: %s reputation
 Cena: malejaco	Price: descending
 Cena: rosnaco	Price: ascending
 Certyfikat Duszy	Soul Certificate
+Chaegirab na pewno się tym interesuje.	Chaegirab will surely be interested in this.
 Chcesz zacząć grę?	Do you want to start the game?
 Chcesz zakończyć grę i otrzymać wygraną?	Do you want to end the game and receive your winnings?
 Chodząca Legenda	Walking Legend
 Chrobry Moa (pieczęć)	Valiant Moa Seal
+Chroni przed wodą, ciśnieniem i ciemnością głębin. Wpuszcza jedną osobę do Ruin Atlantydy (poziom 75+). Do kupienia u Maga Atlantydy w Dolinie Orków, czasem wypada dowódcom i generałom Groty Wygnańców.	Protects against the water, pressure and darkness of the depths. Lets one person into the Ruins of Atlantis (level 75+). Can be bought from the Atlantis Mage in the Orc Valley; sometimes dropped by commanders and generals in the Grotto of Exile.
 Chryzantema: szansa na cios krytyczny +%d%%	Chrysanthemum: critical hit chance +%d%%
 Chusta (czarna)	Headscarf (black)
 Chwilę...	One moment...
@@ -459,8 +471,10 @@ Depozyt ItemShop	ItemShop Deposit
 Deszcz Metinów Zuo	Zuo's Metin Rain
 Diabłom	Devils
 Dla tego przedmiotu nie ma już dodatkowego bonusu.	There is no extra bonus left for this item.
+Dla wszystkich bohaterów, którym dobro owdowiałych kobiet leży na sercu. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	For all heroes who have the welfare of widows at heart. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Dni (tylko blokada tymczasowa):	Days (temporary ban only):
 Do 5 bonusow naraz, kazdy z minimalnym progiem:	Up to 5 bonuses at once, each with a minimum threshold:
+Do dnia dzisiejszego tkwi w skale legendarny Miecz Rolanda Durendal. Wydaje nam się, że efektywniej będzie rozwalić Mścicielem Durendala skałę na małe odłamki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	To this day, Roland's legendary sword Durendal remains stuck in the rock. We think it would be more effective to smash the rock into small pieces with the Durendal Avenger. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Do końca: %s Wpłacających botów: %d	Time left: %s   Contributing bots: %d
 Do zaplaty za %d szt.: %s	To pay for %d pcs: %s
 Do zgłoszenia	Claimable
@@ -468,6 +482,7 @@ Dobra robota! Karty mają tę samą wartość.[ENTER]To koniec twojej kolejki. W
 Dodaj GM	Add GM
 Dodaj Kamień Duszy do wymiany.	Add a Soul Stone to exchange.
 Dodaj Księgę Umiejętności do wymiany.	Add a Skill Book to exchange.
+Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Adds another slot for valuable item offers to the Gaya Shop, starting with the first slot in the second row from the left. Use it at the Harbour Gaya Shop (Warrior Statue in the New Continent Harbour).
 Dodaj przedmiot do wymiany.	Add an item to exchange.
 Dodaj przedmioty do sklepu.	Add items to the shop.
 Dodaj statystyki	Add stats
@@ -504,6 +519,14 @@ Drop potwora %s:	Drops of monster %s:
 Drop przedmiotów +%d%%	Item drop +%d%%
 Dropek Metinów	Metin Dropper
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	The second half of the setting above - a separate chance rolled when a Metin stone is destroyed instead of when a normal monster is killed.
+Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
+Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
+Drzewny Szmaragd (PB) od Władcy En-Tai (PB). Zanieś go Badaczowi Lasu (PB).	Tree Emerald (PB) from the En-Tai Lord (PB). Take it to the Forest Researcher (PB).
+Drzewny Szmaragd (SZC) od Władcy En-Tai (SZC). Zanieś go Badaczowi Lasu (SZC).	Tree Emerald (SZC) from the En-Tai Lord (SZC). Take it to the Forest Researcher (SZC).
+Drzewny Szmaragd od Władcy En-Tai. Zanieś go Badaczowi Lasu - da ci Kamień Driad.	Tree Emerald from the En-Tai Lord. Take it to the Forest Researcher - he will give you a Dryad Stone.
+Duch Ziemi (PB) - zapiski strażników Zaklętego Lasu (PB).	Earth Spirit (PB) - notes of the Enchanted Forest (PB) guards.
+Duch Ziemi od Strażnika Świątyni. Zanieś go Strażnikowi Lasu w Zaklętym Lesie.	Earth Spirit from the Temple Guardian. Take it to the Forest Guardian in the Enchanted Forest.
+Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Premium braised ginseng - the only feed of the Mighty War Horse (horse from level 31). Right-click to feed your summoned horse, or give it to the horse. Dropped by Yohara monsters.
 Duża	Large
 Duży Skorpion	Big Scorpion
 Dwuklik: załóż	Double-click: equip
@@ -523,6 +546,7 @@ Długi Kucyk (różowy)	Long Ponytail (pink)
 Długi Warkocz (król.)	Long Braid (royal blue)
 Długie Włosy (rubinowe)	Long Hair (ruby)
 Długo	Long
+Dźwięcznie dzwonią dzwoneczki! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Jingle bells, jingle bells! Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Dźwięk	Sound
 Dźwięki zabójstw (boss, metin, gracz)	Kill sounds (boss, Metin, player)
 Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip)	Database Editor -> Apply -> Download current client files (zip)
@@ -587,6 +611,8 @@ GM: Captcha	GM: Captcha
 GM: Podglad Gracza	GM: Player View
 Gdy inna gildia jest w wieży, wyprawa czeka na swoją kolej.	When another guild is in the tower, the expedition waits for its turn.
 Gdy masz mało życia, bierze na siebie, co cię bije.	When your health is low, it draws the attacks aimed at you.
+Gdy przerywa się jej triumfalny hymn, wpada w złość. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	When its triumphant hymn is interrupted, it flies into a rage. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Gdy twój wachlarz przecina przeciwników, słychać tylko lekki syczenie w powietrzu. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	When your fan cuts through your opponents, all you hear is a faint hiss in the air. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Gdzie: %s	Where: %s
 Glodny Alfa Wilk	Hungry Alpha Wolf
 Glodny Czarny Niedzwiedz	Hungry Black Bear
@@ -631,6 +657,10 @@ Haneul	Haneul
 Happy Hour	Happy Hour
 Helmy - Szaman	Helmets - Shaman
 Helmy - Wojownik	Helmets - Warrior
+Hełm wypełniony mocą boskiego smoka.	A helmet filled with the power of the divine dragon.
+Hełm wypełniony mocą magicznego smoka.	A helmet filled with the power of the magic dragon.
+Hełm wypełniony mocą mrocznego smoka.	A helmet filled with the power of the dark dragon.
+Hełm wypełniony mocą wietrznego smoka.	A helmet filled with the power of the wind dragon.
 Historia Sklepu	Shop History
 Historia czatu	Chat history
 Historia sklepu	Shop history
@@ -668,6 +698,7 @@ ItemShop	ItemShop
 Jajo Feniksa	Phoenix Egg
 Jak czesto wypada szkatulka: z zabitego potwora i z rozbitego Metina. Domyslnie w grze 1% i 30%; wiecej szkatulek to wiecej zwojow bonusow, mikstur szybkosci i Zwojow Blogoslawienstwa u botow. Dziala w piec sekund, dla botow i graczy tak samo.	How often a chest drops: from a killed monster and from a destroyed Metin. Game default is 1% and 30%; more chests mean more bonus scrolls, speed potions and Blessing Scrolls for bots. Takes effect within five seconds, the same for bots and players.
 Jakie otrzymam benefity?	What benefits do I get?
+Jako prawy właściciel tego dwuręcznego miecza zawarłeś prawdziwy pakt z kostuchą - z niekorzyścią dla swojego przeciwnika. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	As the rightful owner of this two-handed sword, you have made a true pact with the Grim Reaper - to your opponent's disadvantage. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Jakość +%d%%	Quality +%d%%
 Jakość Niska	Low Quality
 Jakość Ultra	Ultra Quality
@@ -679,6 +710,7 @@ Jayang (M2)	Yayang (M2)
 Jednoręczne	One-Handed
 Jedyni w swoim rodzaju	One of a Kind
 Jedzenie (max. 2)	Food (max. 2)
+Jego historia jest już dawno zapomniana, ale jego nazwa nadal jest legendą. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Its story has long been forgotten, but its name is still a legend. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Jest to lizak o tajemniczym składzie. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	A lollipop of mysterious composition. Grants: +50% EXP, +20% attack speed, +20% casting speed, +30% attack, +10% max. HP, +10% max. SP.
 Jest to sposób na regularne wspieranie projektu, a także najlepszy pakiet dla gracza,[ENTER]z najlepszą ceną do wartości jakie otrzymasz, po dołączeniu do graczy premium.	It is a way to support the project regularly and also the best package for a player,[ENTER]with the best price-to-value ratio you get after joining the premium players.
 Jesteś połączony z kanałem specjalnym.	You are connected to the special channel.
@@ -688,6 +720,7 @@ Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	If you or the Tr
 Ji Jin	Ji Jin
 Juki Konne	Horse Saddlebags
 Juz sprzedane (pominiete): %d.	Already sold (skipped): %d.
+Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Even the Aztecs used obsidian to make powerful bladed weapons. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Język	Language
 Język / Language	Language
 Język klienta: %s	Client language: %s
@@ -704,7 +737,10 @@ Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	A stone tabl
 Kamienny Lew	Stone Lion
 Kamień Piramidy	Pyramid Stone
 Kamień Wzgórza	Hill Stone
+Kamień duszy do broni. Twoje umiejętności magiczne pomijają część odporności na magię innego gracza (tylko w walce z graczami). Sura korzysta z połowy tej wartości.	Spirit Stone for weapons. Your magic skills ignore part of another player's magic resistance (only in PvP). Suras benefit from half of this value.
+Kamień duszy do zbroi. Twoje umiejętności magiczne pomijają część odporności na magię innego gracza (tylko w walce z graczami). Sura korzysta z połowy tej wartości.	Spirit Stone for armour. Your magic skills ignore part of another player's magic resistance (only in PvP). Suras benefit from half of this value.
 Kamień oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.	A stone purified of every flaw - essential for refining Spirit Stones.
+Kamień ten daje ci 2% szansy na wyprodukowanie przedmiotów wypełnionych mocą smoka!	This stone gives you a 2% chance to craft items filled with the power of the dragon!
 Kanał Specjalny	Special Channel
 Kapelusz Czarownicy	Witch Hat
 Kapelusz Czarownicy+	Witch Hat+
@@ -744,6 +780,7 @@ Kliknij, aby zobaczyć pozostały czas odnowienia.	Click to see the remaining co
 Kliknij: następny pet (%d/%d)	Click: next pet (%d/%d)
 Klucz Miejsca Umiejętności	Skill Slot Key
 Klucz Mrozu	Frost Key
+Klucz jest zimny jak lód. Otwiera dostęp na trzecie piętro Strażnicy Nemere. Mogą go użyć tylko szamani.	The key is as cold as ice. It opens access to the third floor of Nemere's Watchtower. Only Shamans can use it.
 Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	A key from the Frozen Land. Use it in Nemere's dungeon to reach the Ice Pillar.
 Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	A key from the Frozen Land. Use it in Nemere's dungeon to open the way further.
 Klątwa Świątyni;Twój umysł jest otępiony przez co;znacznie tracisz zdolności bojowe.	Temple Curse;Your mind is dulled, so;your combat abilities are greatly weakened.
@@ -777,6 +814,28 @@ Kostium Zająca (szary)	Rabbit Costume (grey)
 Kostium Zająca+ (brąz.)	Rabbit Costume+ (brown)
 Kostium Zająca+ (szary)	Rabbit Costume+ (grey)
 Kostium może mieć od 1 do %d bonusów.	A costume can have 1 to %d bonuses.
+Kostium z zestawu Arezzo (Zestaw Anielski). Działa 30 dni od założenia.	Costume from the Arezzo collection (Angel Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Arktycznego Krola). Działa 30 dni od założenia.	Costume from the Arezzo collection (Arctic King Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Blekitnego Wiatru). Działa 30 dni od założenia.	Costume from the Arezzo collection (Azure Wind Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Chwaly). Działa 30 dni od założenia.	Costume from the Arezzo collection (Glory Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Cienia). Działa 30 dni od założenia.	Costume from the Arezzo collection (Shadow Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Druida). Działa 30 dni od założenia.	Costume from the Arezzo collection (Druid Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Jokera). Działa 30 dni od założenia.	Costume from the Arezzo collection (Joker Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Krola Lodu). Działa 30 dni od założenia.	Costume from the Arezzo collection (Ice King Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Krwawej Zemsty). Działa 30 dni od założenia.	Costume from the Arezzo collection (Blood Vengeance Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Ksiezycowy). Działa 30 dni od założenia.	Costume from the Arezzo collection (Moon Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Lesnego Ksiecia). Działa 30 dni od założenia.	Costume from the Arezzo collection (Forest Prince Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Letniej Chwaly). Działa 30 dni od założenia.	Costume from the Arezzo collection (Summer Glory Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Mroku). Działa 30 dni od założenia.	Costume from the Arezzo collection (Darkness Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Mroznego Rycerza). Działa 30 dni od założenia.	Costume from the Arezzo collection (Frost Knight Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Niebieskiego Smoka). Działa 30 dni od założenia.	Costume from the Arezzo collection (Blue Dragon Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Ognistego Rycerza). Działa 30 dni od założenia.	Costume from the Arezzo collection (Fire Knight Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Plagi). Działa 30 dni od założenia.	Costume from the Arezzo collection (Plague Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Działa 30 dni od założenia.	Costume from the Arezzo collection (Emerald Lord Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od założenia.	Costume from the Arezzo collection (Phantom Night Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Costume from the Arezzo collection (Viking Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Costume from the Arezzo collection (Gilded Set). Lasts 30 days from equipping.
+Kostium z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Costume from the Arezzo collection (Golden Dragon Set). Lasts 30 days from equipping.
 Kostium, fryzura, skórka broni, wierzchowiec i szarfa towarzysza.	The Companion's costume, hairstyle, weapon skin, mount and sash.
 Kostium: %s, dopóki brakuje bonusów, potem %s	Costume: %s while bonuses are missing, then %s
 Kostiumy towarzysza	Companion's Costumes
@@ -925,6 +984,7 @@ Koń i wierzchowiec	Horse and mount
 Kraina Ognia	Fireland
 Kryształ Lodu	Ice Crystal
 Kryształ z Lodowej Krainy. Oddaj go jednej z lodowych pieczęci w lochu Nemere.	A crystal from the Frozen Land. Hand it over to one of the ice seals in Nemere's dungeon.
+Kryształy padparadży to rzadkie i niezwykle wykwintne czerwone szafiry. Służą do ulepszania ekwipunku.	Padparadscha crystals are rare and exceptionally exquisite red sapphires. They are used to upgrade equipment.
 Król Skorpionów	Scorpion King
 Król uciekł! Gra dobiegła końca.[ENTER]Jeżeli masz co najmniej 10 punktów, odbierz swoją wygraną.	The king has escaped! The game is over.[ENTER]If you have at least 10 points, claim your winnings.
 Królewska Gwardia	Royal Guard
@@ -935,6 +995,7 @@ Krótki	Short
 Krótko	Short
 Ksiegi zapomnienia	Books of Forgetfulness
 Ksiąg w oknie: %d (wymian: %d)	Books in the window: %d  (exchanges: %d)
+Księga ta umożliwia ci wybór jednej z ośmiu ripost i naukę jej 1. poziomu. Można znać tylko jedną ripostę - wybieraj mądrze! Wymaga 5. poziomu i wybranej drogi umiejętności.	This book lets you choose one of eight ripostes and learn its level 1. You can only know one riposte - choose wisely! Requires level 5 and a chosen skill path.
 Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: block up to 10%. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
 Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: intelligence up to 10. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
 Księga umiejętności peta: obrażenia umiejętności do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Pet skill book: skill damage up to 5%. The first book teaches the skill (level 1), each further book raises its level (max. 20). New skill slots are unlocked by pet evolution.
@@ -988,7 +1049,10 @@ Las Duchow	Ghost Forest
 Las Duchów Lungsam	Lungsam Ghost Forest
 Las Porannej Mgły	Dawnmist Wood
 Latwy loch malp	Easy Monkey Dungeon
+Legenda głosi, że ostrze wykonane zostało z odłamków odległej gwiazdy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Legend has it that the blade was forged from shards of a distant star. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Legendarne zioło, którym wyjątkowo zdolni jeźdźcy ożywiają Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, gdy twój koń nie żyje.	A legendary herb with which exceptionally skilled riders revive the Mighty War Horse (horse from level 31). Right-click when your horse is dead.
 Legendarne: te nagrody odblokujesz po 10 turach.	Legendary: you unlock these rewards after 10 rounds.
+Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	A medicine made from leaves of life. When taken, it instantly regenerates HP and SP.
 Leopardzik (120 dni)	Leopard Cub (120 days)
 Leopardzik (30 dni)	Leopard Cub (30 days)
 Leopardzik (7 dni)	Leopard Cub (7 days)
@@ -1003,6 +1067,7 @@ Limit członków grupy: od %d do %d	Group size limit: %d to %d
 Limit zakupów na konto: %d	Purchase limit per account: %d
 Lista komend GM	GM command list
 Lista komend GM:	GM command list:
+Litery na tej potężnej cegle wydają się emanować blaskiem.	The letters on this mighty brick seem to radiate light.
 Loch Pajakow V1	Spider Dungeon V1
 Loch Pajakow V2	Spider Dungeon V2
 Lodowa Kraina	Ice Land
@@ -1010,6 +1075,7 @@ Lodowa Pieczęć	Ice Seal
 Lodowa_Grota 6304 10882	Ice_Cave 6304 10882
 Lodowy Filar	Ice Pillar
 Lodowy Klucz	Ice Key
+Lodowy klucz otwiera dostęp na dziewiąte piętro Strażnicy Nemere.	The ice key opens access to the ninth floor of Nemere's Watchtower.
 Login: %s (aid: |cfffffb24%d|r)	Login: %s (aid: |cfffffb24%d|r)
 Losowanie nie wyszło - bonusy wróciły, przedmiot nie został zużyty.	The roll failed - the bonuses were restored and the item was not used up.
 Ludziom	Half-Humans
@@ -1041,6 +1107,70 @@ Masz za mało Doblonów (potrzeba %d).	You do not have enough Doubloons (%d need
 Masz za mało Talii Królewskich lub Yang, aby grać.	You do not have enough King Decks or Yang to play.
 Masz za mało Yang na to uszlachetnianie.	You don't have enough Yang for this refinement.
 Masz za mało latorośli tego kwiatu.	You don't have enough shoots of this flower.
+Materiał do budowy Wędki Węglowej (u Rybaka). Ze Skrzyni Nimfy Wodnej.	Material for building the Carbon Fishing Pole (at the Fisherman). From the Water Nymph Chest.
+Materiał do produkcji ochronnych rękawic	Material for making protective gloves
+Materiał do produkcji pancernych rękawic	Material for making armoured gloves
+Materiał do produkcji rękawic	Material for making gloves
+Materiał do produkcji rękawic mocy	Material for making gloves of power
+Materiał do produkcji zbroi wężowej.	Material for making serpent armour.
+Materiał do produkcji zwinnych rękawic	Material for making agile gloves
+Materiał do sporządzania i ulepszenia rękawic	Material for crafting and upgrading gloves
+Materiał do ulepszania Rękawic Węża.	Material for upgrading the Serpent Gloves.
+Materiał do ulepszania biżuterii z jadeitu (Obręczy, Kolii i Klipsów Jadeitu): z +3 na +4, +5 i +6 potrzeba 5, 7 i 10 rogów.	Material for upgrading jade jewellery (Jade Bangle, Necklace and Earrings): from +3 to +4, +5 and +6 you need 5, 7 and 10 horns.
+Materiał do ulepszania biżuterii z jadeitu (Obręczy, Kolii i Klipsów Jadeitu): z +6 na +7, +8 i +9 potrzeba 15, 20 i 25 płyt.	Material for upgrading jade jewellery (Jade Bangle, Necklace and Earrings): from +6 to +7, +8 and +9 you need 15, 20 and 25 plates.
+Materiał do ulepszania broni wężowej.	Material for upgrading serpent weapons.
+Materiał do ulepszania rękawic	Material for upgrading gloves
+Materiał do ulepszania szaty aury. Udaj się do Theowahdana, aby ulepszyć swoją szatę aury. Daje 1 punkt doświadczenia szaty. Wypada z potworów.	Material for upgrading the aura outfit. Go to Theowahdan to upgrade your aura outfit. Gives 1 outfit experience point. Dropped by monsters.
+Materiał do ulepszania szaty aury. Udaj się do Theowahdana, aby ulepszyć swoją szatę aury. Daje 10 punktów doświadczenia szaty.	Material for upgrading the aura outfit. Go to Theowahdan to upgrade your aura outfit. Gives 10 outfit experience points.
+Materiał do ulepszania tajemniczego talizmanu.	Material for upgrading the mysterious talisman.
+Materiał do ulepszania zbroi wężowej.	Material for upgrading serpent armour.
+Materiał do ulepszenia broni Zodiaku.	Material for upgrading Zodiac weapons.
+Materiał do ulepszenia wyposażenia Zodiaku.	Material for upgrading Zodiac equipment.
+Materiał do uszlachetnienia	Refinement material
+Materiał do wykonania kaftana wężowego dla Ninja.	Material for crafting the Serpent Jacket for Ninjas.
+Materiał do wykonania miecza wężowego dla Wojowników, Ninja lub Sura.	Material for crafting the Serpent Sword for Warriors, Ninjas or Suras.
+Materiał do wykonania niebiańskiego płaszcza wężowego dla Likanów. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Material for crafting the Celestial Serpent Cloak for Lycans. (No use yet - it will come with the next Yohara update.)
+Materiał do wykonania ostrza wężowego dla Sura.	Material for crafting the Serpent Blade for Suras.
+Materiał do wykonania płaszcza wężowego dla Wojowników.	Material for crafting the Serpent Cloak for Warriors.
+Materiał do wykonania sztyletu wężowego dla Ninja.	Material for crafting the Serpent Dagger for Ninjas.
+Materiał do wykonania wielkiego miecza wężowego dla Wojowników.	Material for crafting the Great Serpent Sword for Warriors.
+Materiał do wykonania zacnego płaszcza wężowego dla Szamanów.	Material for crafting the Noble Serpent Cloak for Shamans.
+Materiał do wykonania złego płaszcza wężowego dla Sura.	Material for crafting the Evil Serpent Cloak for Suras.
+Materiał do wykonania łuku wężowego dla Ninja.	Material for crafting the Serpent Bow for Ninjas.
+Materiał do wytwarzania i ulepszania biżuterii z jadeitu. Mistrz Chi w Dongan potrzebuje 25 lub 30 płyt do Obręczy, Kolii i Klipsów Jadeitu; ulepszanie tej biżuterii z +3 na +4, +5 i +6 wymaga 15, 20 i 25 płyt.	Material for crafting and upgrading jade jewellery. Master Chi in Dongan needs 25 or 30 plates for the Jade Bangle, Necklace and Earrings; upgrading this jewellery from +3 to +4, +5 and +6 requires 15, 20 and 25 plates.
+Materiał do wytworzenia biżuterii z Jadeitu Dymu. Mistrz Chi w Dongan potrzebuje 10 łusek do Obręczy, Kolii lub Klipsów Jadeitu Dymu.	Material for crafting Smoke Jade jewellery. Master Chi in Dongan needs 10 scales for a Smoke Jade Bangle, Necklace or Earrings.
+Materiał do wytworzenia biżuterii z Jadeitu Nocy. Mistrz Chi w Dongan potrzebuje 5 kłów do Obręczy, Kolii lub Klipsów Jadeitu Nocy.	Material for crafting Night Jade jewellery. Master Chi in Dongan needs 5 fangs for a Night Jade Bangle, Necklace or Earrings.
+Materiał do wytworzenia biżuterii z Jadeitu Słońca. Mistrz Chi w Dongan potrzebuje 2 rdzeni do Obręczy, Kolii lub Klipsów Jadeitu Słońca.	Material for crafting Sun Jade jewellery. Master Chi in Dongan needs 2 cores for a Sun Jade Bangle, Necklace or Earrings.
+Materiał na okazały odłamek broni II.	Material for a Splendid Weapon Shard II.
+Materiał na okazały odłamek hełmu II.	Material for a Splendid Helmet Shard II.
+Materiał na okazały odłamek zbroi II.	Material for a Splendid Armour Shard II.
+Materiał na rycerski odłamek broni II.	Material for a Knightly Weapon Shard II.
+Materiał na rycerski odłamek hełmu II.	Material for a Knightly Helmet Shard II.
+Materiał na rycerski odłamek zbroi II.	Material for a Knightly Armour Shard II.
+Materiał na święty odłamek broni II.	Material for a Holy Weapon Shard II.
+Materiał na święty odłamek hełmu II.	Material for a Holy Helmet Shard II.
+Materiał na święty odłamek zbroi II.	Material for a Holy Armour Shard II.
+Materiał potrzebny do wykonania zbroi wężowej.	Material needed to make serpent armour.
+Materiał potrzebny, by u kowala zestawów móc dodać do broni efekt zestawu.	Material needed to add the set effect to a weapon at the Set Smith.
+Materiał potrzebny, by u kowala zestawów móc dodać do broni książęcy efekt zestawu lub na majestatyczny odłamek broni II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +2500 PŻ +10% do ataków magicznych / ataków walki wręcz +5 do szybkości ruchu	Material needed to add the Princely set effect to a weapon at the Set Smith, or for a Majestic Weapon Shard II.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +2500 HP +10% magic attack / melee attack +5 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do broni majestatyczny efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +3500 PŻ +15% do ataków magicznych / ataków walki wręcz +7 do szybkości ruchu	Material needed to add the Majestic set effect to a weapon at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +3500 HP +15% magic attack / melee attack +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do broni okazały efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +3 do szybkości ruchu [3 przedmioty] +1500 PŻ +7 do szybkości ruchu	Material needed to add the Splendid set effect to a weapon at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +3 movement speed  [3 items] +1500 HP +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do broni rycerski efekt zestawu lub na książęcy odłamek broni II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +1% siły w walce z potworami [3 przedmioty] +1500 PŻ +5% siły w walce z potworami	Material needed to add the Knightly set effect to a weapon at the Set Smith, or for a Princely Weapon Shard II.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +1% strength against monsters  [3 items] +1500 HP +5% strength against monsters
+Materiał potrzebny, by u kowala zestawów móc dodać do broni święty efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +5% PD [3 przedmioty] +1500 PŻ +15% PD	Material needed to add the Holy set effect to a weapon at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +5% EXP  [3 items] +1500 HP +15% EXP
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu efekt zestawu.	Material needed to add the set effect to a helmet at the Set Smith.
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu książęcy efekt zestawu lub na majestatyczny odłamek hełmu II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +2500 PŻ +10% do ataków magicznych / ataków walki wręcz +5 do szybkości ruchu	Material needed to add the Princely set effect to a helmet at the Set Smith, or for a Majestic Helmet Shard II.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +2500 HP +10% magic attack / melee attack +5 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu majestatyczny efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +3500 PŻ +15% do ataków magicznych / ataków walki wręcz +7 do szybkości ruchu	Material needed to add the Majestic set effect to a helmet at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +3500 HP +15% magic attack / melee attack +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu okazały efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +3 do szybkości ruchu [3 przedmioty] +1500 PŻ +7 do szybkości ruchu	Material needed to add the Splendid set effect to a helmet at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +3 movement speed  [3 items] +1500 HP +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu rycerski efekt zestawu lub na książęcy odłamek hełmu II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +1% siły w walce z potworami [3 przedmioty] +1500 PŻ +5% siły w walce z potworami	Material needed to add the Knightly set effect to a helmet at the Set Smith, or for a Princely Helmet Shard II.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +1% strength against monsters  [3 items] +1500 HP +5% strength against monsters
+Materiał potrzebny, by u kowala zestawów móc dodać do hełmu święty efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +5% PD [3 przedmioty] +1500 PŻ +15% PD	Material needed to add the Holy set effect to a helmet at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +5% EXP  [3 items] +1500 HP +15% EXP
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi efekt zestawu.	Material needed to add the set effect to armour at the Set Smith.
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi książęcy efekt zestawu lub na majestatyczny odłamek zbroi II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +2500 PŻ +10% do ataków magicznych / ataków walki wręcz +5 do szybkości ruchu	Material needed to add the Princely set effect to armour at the Set Smith, or for a Majestic Armour Shard II.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +2500 HP +10% magic attack / melee attack +5 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi majestatyczny efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. [3 przedmioty] +3500 PŻ +15% do ataków magicznych / ataków walki wręcz +7 do szybkości ruchu	Material needed to add the Majestic set effect to armour at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus.  [3 items] +3500 HP +15% magic attack / melee attack +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi okazały efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +3 do szybkości ruchu [3 przedmioty] +1500 PŻ +7 do szybkości ruchu	Material needed to add the Splendid set effect to armour at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +3 movement speed  [3 items] +1500 HP +7 movement speed
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi rycerski efekt zestawu lub na książęcy odłamek zbroi II. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +1% siły w walce z potworami [3 przedmioty] +1500 PŻ +5% siły w walce z potworami	Material needed to add the Knightly set effect to armour at the Set Smith, or for a Princely Armour Shard II.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +1% strength against monsters  [3 items] +1500 HP +5% strength against monsters
+Materiał potrzebny, by u kowala zestawów móc dodać do zbroi święty efekt zestawu. Gdy używasz jednocześnie kilku przedmiotów z tym efektem zestawu, otrzymujesz bonus zestawu. Siła efektu zależy przy tym od liczby wyposażonych łącznie przedmiotów. [2 przedmioty] +500 PŻ +5% PD [3 przedmioty] +1500 PŻ +15% PD	Material needed to add the Holy set effect to armour at the Set Smith.  When you use several items with this set effect at the same time, you receive a set bonus. The strength of the effect depends on the total number of equipped items.  [2 items] +500 HP +5% EXP  [3 items] +1500 HP +15% EXP
+Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 105. poziom (Zodiaku, biżuteria 105, Talizmany Woli), broni, zbroi i hełmów na 96. poziom (Smoka Mroku) oraz talizmanów. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Material that gives a chance to add a 6th or 7th bonus at Seon-Hae - to items for level 105 (Zodiac, level 105 jewellery, Talismans of Will), weapons, armour and helmets for level 96 (Dark Dragon) and talismans. One shard gives a 2% chance, at most 10 at once (20%).
+Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 30. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Material that gives a chance to add a 6th or 7th bonus at Seon-Hae - to items for level 30. One shard gives a 2% chance, at most 10 at once (20%).
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 0-29.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 105-119.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 120 and above.
@@ -1061,6 +1191,7 @@ Metin Zwątpienia	Metin of Doubt
 Metinom	Metins
 Metiny wielkanocne dropią jajka - wymień je u Wielkanocnego Zająca w mieście.	Easter Metins drop eggs - exchange them with the Easter Bunny in town.
 Metiny:	Metins:
+Miecz wypełniony mocą mrocznego smoka.	A sword filled with the power of the dark dragon.
 Miecze dwureczne	Two-handed swords
 Miecze jednoreczne	One-handed swords
 Miedzy 22:00 a 05:59 czasu serwera rdzen podnosi flage nocy - ta sama, ktora GM ustawia komenda /xmas_snow 1 - a rano ja opuszcza. Klient pokazuje nocne niebo i, bo to flaga swiateczna, snieg.	Between 22:00 and 05:59 server time the core raises the night flag - the same one a GM sets with /xmas_snow 1 - and lowers it in the morning. The client shows the night sky and, since it is a holiday flag, snow.
@@ -1098,6 +1229,7 @@ Minimapa (pokaż/ukryj)	Minimap (show/hide)
 Minimapa - oddal	Minimap - zoom out
 Minimapa - przybliż	Minimap - zoom in
 Misja kart	Card mission
+Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	An intricately decorated key that opens the Water Nymph Chest. (No use yet - it will come with the next Yohara update.)
 Mistrz Gry wymaga weryfikacji poprzez wpisanie	A Game Master requires verification by entering
 Mistrz Poziomów	Master of Levels
 Mistrz ekwipunku	Equipment Master
@@ -1106,16 +1238,23 @@ Mistykom	Mystics
 Modna Fryzura (siwa)	Fashionable Hairstyle (grey)
 Modna Fryzura (złota)	Fashionable Hairstyle (golden)
 Mounty	Mounts
+Może dodać bonus reliktu. Równocześnie może mieć do 4 bonusów. Bonusów nie można zmieniać. Umieść go w oknie Bonusu Reliktu (prawy klik) - po pierwszej aktywacji wyjęcie go niszczy.	Can add a relic bonus. It can hold up to 4 bonuses at the same time. The bonuses cannot be changed. Place it in the Relic Bonus window (right-click) - after the first activation, removing it destroys it.
+Może dodać lub przedłużyć bonus reliktu. Razem z pozostałymi duszami służy do dodawania bonusów i doładowania Reliktu Duszy (okno Bonusu Reliktu).	Can add or extend a relic bonus. Together with the other souls, it is used to add bonuses to and recharge the Soul Relic (Relic Bonus window).
 Może schwytać karty: [1]	Can capture cards: [1]
 Może schwytać karty: [1], [2]	Can capture cards: [1], [2]
 Może schwytać karty: [1], [2], [3]	Can capture cards: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Can capture cards: [1], [2], [3], [4]
 Może schwytać karty: [K]	Can capture cards: [K]
+Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It can bring some dreamers back down to earth. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Możesz przenosić parametry z biżuterii (bransolety, naszyjnika, kolczyków) i tarczy na szatę aury z pewnym stopniem absorpcji - u Theowahdana. Najwyższy poziom: 250 (25% absorpcji). Można nią handlować.	You can transfer stats from jewellery (bracelet, necklace, earrings) and shields to the aura outfit with a certain absorption rate - at Theowahdan. Maximum level: 250 (25% absorption). It can be traded.
+Możesz przenosić parametry z biżuterii (bransolety, naszyjnika, kolczyków) i tarczy na szatę aury z pewnym stopniem absorpcji - u Theowahdana. Za pomocą run aury możesz ulepszać szatę aury. Można ją ulepszać do poziomu 49 i rozwijać od poziomu 49.	You can transfer stats from jewellery (bracelet, necklace, earrings) and shields to the aura outfit with a certain absorption rate - at Theowahdan. With aura runes you can upgrade the aura outfit. It can be upgraded up to level 49 and evolved from level 49.
+Możesz przenosić parametry z biżuterii (bransolety, naszyjnika, kolczyków) i tarczy na szatę aury z pewnym stopniem absorpcji - u Theowahdana. Za pomocą run aury możesz ulepszać szatę aury. Od poziomu 99 można ją rozwijać.	You can transfer stats from jewellery (bracelet, necklace, earrings) and shields to the aura outfit with a certain absorption rate - at Theowahdan. With aura runes you can upgrade the aura outfit. From level 99 it can be evolved.
 Możesz też teleportować się pod wejście,	You can also teleport to the entrance
 Możesz w szybki sposób wyszukać wszystkie[ENTER]kupony SM na rynku sklepów graczy.[ENTER]Sprawdź, gdzie możesz kupić kupon.	You can quickly search for all[ENTER]DC Vouchers on the player shop market.[ENTER]See where you can buy a voucher.
 Możliwe do włączenia	Can be activated
 Możliwość korzystania z Emocji	Access to Emotions
 Możliwość wysyłania podglądu przedmiotów na czacie.	Ability to share item previews in chat.
+Można usłyszeć złowieszcze słowa, gdy naciągasz cięciwę i wypuszczasz strzałę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	You can hear ominous words as you draw the bowstring and loose an arrow. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Mroźny Rufus	Frost Rufus
 Mroźny Rufus (pieczęć)	Frost Rufus Seal
 Mumia Kapłanka	Mummy Priestess
@@ -1168,7 +1307,113 @@ Największe zadane obrażenia (umiejętność)	Highest damage dealt (skill)
 Największe zadane obrażenia (zwykłe)	Highest damage dealt (normal)
 Najwyższa ewolucja	Highest evolution
 Najwyższe DMG: %s	Highest DMG: %s
+Nakrycie głowy z zestawu Arezzo (Zestaw Anielski). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Angel Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Arktycznego Krola). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Arctic King Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Blekitnego Wiatru). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Azure Wind Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Chwaly). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Glory Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Cienia). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Shadow Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Druida). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Druid Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Jokera). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Joker Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Krola Lodu). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Ice King Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Krwawej Zemsty). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Blood Vengeance Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Ksiezycowy). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Moon Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Lesnego Ksiecia). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Forest Prince Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Letniej Chwaly). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Summer Glory Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Mroku). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Darkness Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Mroznego Rycerza). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Frost Knight Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Niebieskiego Smoka). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Blue Dragon Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Ognistego Rycerza). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Fire Knight Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Plagi). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Plague Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Emerald Lord Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Phantom Night Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Viking Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Gilded Set). Lasts 30 days from equipping.
+Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Golden Dragon Set). Lasts 30 days from equipping.
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Skin for a one-handed weapon (sword) - Warrior, Ninja, Sura. Lasts 30 days from purchase.
+Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Anielski): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Anielski): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Arktycznego Krola): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Arctic King Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Arktycznego Krola): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Arctic King Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Arktycznego Krola): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Arctic King Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Arktycznego Krola): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Arctic King Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Blekitnego Wiatru): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Azure Wind Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Blekitnego Wiatru): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Azure Wind Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Blekitnego Wiatru): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Azure Wind Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Blekitnego Wiatru): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Azure Wind Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Chwaly): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Glory Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Chwaly): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Glory Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Chwaly): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Glory Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Chwaly): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Glory Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Cienia): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Shadow Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Cienia): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Shadow Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Cienia): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Shadow Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Cienia): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Shadow Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Druida): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Druid Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Druida): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Druid Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Druida): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Druid Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Druida): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Druid Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Jokera): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Joker Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Jokera): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Joker Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Jokera): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Joker Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Jokera): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Joker Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krola Lodu): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Ice King Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krola Lodu): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Ice King Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krola Lodu): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Ice King Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krola Lodu): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Ice King Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krwawej Zemsty): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blood Vengeance Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krwawej Zemsty): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blood Vengeance Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blood Vengeance Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blood Vengeance Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ksiezycowy): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Moon Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ksiezycowy): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Moon Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ksiezycowy): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Moon Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ksiezycowy): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Moon Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Lesnego Ksiecia): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Forest Prince Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Lesnego Ksiecia): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Forest Prince Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Lesnego Ksiecia): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Forest Prince Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Lesnego Ksiecia): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Forest Prince Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Letniej Chwaly): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Summer Glory Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Letniej Chwaly): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Summer Glory Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Letniej Chwaly): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Summer Glory Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Letniej Chwaly): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Summer Glory Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroku): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Darkness Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroku): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Darkness Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroku): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Darkness Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroku): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Darkness Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroznego Rycerza): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Frost Knight Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroznego Rycerza): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Frost Knight Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroznego Rycerza): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Frost Knight Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Mroznego Rycerza): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Frost Knight Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Niebieskiego Smoka): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blue Dragon Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Niebieskiego Smoka): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blue Dragon Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Niebieskiego Smoka): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blue Dragon Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Niebieskiego Smoka): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Blue Dragon Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ognistego Rycerza): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Fire Knight Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ognistego Rycerza): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Fire Knight Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Fire Knight Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Fire Knight Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Plagi): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Plague Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Plagi): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Plague Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Plagi): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Plague Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Plagi): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Plague Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Emerald Lord Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Emerald Lord Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Emerald Lord Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Emerald Lord Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Upiornej Nocy): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Phantom Night Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Upiornej Nocy): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Phantom Night Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Upiornej Nocy): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Phantom Night Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Upiornej Nocy): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Phantom Night Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Wikinga): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Viking Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Wikinga): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Viking Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Wikinga): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Viking Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Wikinga): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Viking Set): Warrior. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Ninja. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Shaman. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik, ninja, sura. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Warrior, Ninja, Sura. Lasts 30 days from equipping.
+Nakładka na broń z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Golden Dragon Set): Warrior. Lasts 30 days from equipping.
 Nakładki na broń	Weapon Skins
 Napis nad glowa bota (poluje, idzie do kowala, lowi). Wylacz dla graczy, ktorym to przeszkadza. Wolanie na czacie swiata o ulepszeniu na +7/+8/+9 zostaje niezaleznie od tego.	Text above the bot's head (hunting, going to the blacksmith, fishing). Turn it off for players who find it distracting. The world chat shout about upgrading to +7/+8/+9 stays regardless.
 Napisz %(n)s razy na wołaj	Write %(n)s times in Shout chat
@@ -1179,6 +1424,8 @@ Następna strona	Next page
 Następne Szybkie Pole Dostępu [Alt]	Next Quickslot Bar [Alt]
 Następne ulepszenie ma o %d%% większą szansę. (Raz na event)	Your next upgrade has a %d%% higher chance of success. (Once per event)
 Następne ulepszenie nie zużyje materiałów. (Raz na event)	Your next upgrade will not use up any materials. (Once per event)
+Natychmiast przywraca 230 PE.	Instantly restores 230 SP.
+Natychmiast przywraca 230 PŻ.	Instantly restores 230 HP.
 Natychmiast regeneruje Punkty Życia. Szansa na usunięcie negatywnych efektów. Absorpcja obrażeń od potworów. Możliwość użycia na innym graczu.	Instantly restores HP. Chance to remove negative effects. Absorbs damage from monsters. Can be used on another player.
 Nazwa A-Z	Name A-Z
 Nazwa Postaci jest niepoprawna.	The character name is invalid.
@@ -1200,6 +1447,7 @@ Nick:	Name:
 Nick: %s (pid: |cff5af22c%d|r)	Name: %s (pid: |cff5af22c%d|r)
 Nick: NAZWA_GRACZA (pid: |cff5af22c99999|r)	Name: NAZWA_GRACZA (pid: |cff5af22c99999|r)
 Nick: PLAYER_NAME	Name: PLAYER_NAME
+Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It is not intended for oral hygiene. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Nie ma już tej skrzynki w tym miejscu ekwipunku.	This chest is no longer in this inventory slot.
 Nie ma stosów do połączenia.	There are no stacks to merge.
 Nie ma takiego gracza.	There is no such player.
@@ -1258,6 +1506,7 @@ Niedostępne	Unavailable
 Niedozwolony znak w nazwie konta.	Invalid character in the account name.
 Niedozwolony znak w nicku.	Invalid character in the name.
 Niedozwolony znak w polu.	Invalid character in the field.
+Niegdyś ulubiona broń morderczych asasynów. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Once the favourite weapon of murderous assassins. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Nieosiągnięte	Not reached
 Niepoprawna ranga.	Invalid rank.
 Niepoprawne imperium.	Invalid kingdom.
@@ -1265,6 +1514,7 @@ Niepoprawny kod (|cffffa826%s|r)	Incorrect code (|cffffa826%s|r)
 Niepoprawny kod usunięcia postaci.	Invalid character deletion code.
 Niepoprawny kod.	Invalid code.
 Niepowodzenie	Failed
+Niepozorny i łatwy do ukrycia - jednak już najpotężniejsi władcy padli jego ofiarą. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Inconspicuous and easy to hide - yet the mightiest rulers have fallen victim to it. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Nieprawidlowa odpowiedz serwera.	Invalid server response.
 Nieumarłym	Undead
 Niezapisane zmiany	Unsaved changes
@@ -1282,6 +1532,7 @@ Ninja Ostrze	Ninja Blade
 Ninja Łuk	Ninja Archery
 Noc trwać będzie od 22:00 do 6:00.	Night lasts from 22:00 to 6:00.
 Normalny loch malp	Normal Monkey Dungeon
+Nosi nazwę demona o ostrych jak brzytwa kłach. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Named after a demon with razor-sharp fangs. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Notatka Kowala	Blacksmith's Note
 Nowa plansza nagród za %d Doblonów.	New reward board for %d Doubloons.
 Nowa wartosc:	New value:
@@ -1297,6 +1548,7 @@ OK. Poziom konia: %s	OK. Horse level: %s
 OK. Punkty range: %s	OK. Rank points: %s
 OK. Smocze Monety dodane.	OK. Dragon Coins added.
 OPEN LOGO WINDOW ----------------------------------------------------------------------------	OPEN LOGO WINDOW  ----------------------------------------------------------------------------
+Obdarza cię na Płaskowyżu Siły Natury przez 10 minut odpornością na klątwę żywiołu. Pierścień ten możesz tylko przez określony czas zachować w ekwipunku.	Grants you resistance to the elemental curse on the Plateau of Natural Forces for 10 minutes. You can only keep this ring in your inventory for a limited time.
 Obecna sesja	Current session
 Obecnie nie ma żadnych ofert błyskawicznych.	There are no flash offers at the moment.
 Obecnie trwa przerwa techniczna.	Maintenance is currently in progress.
@@ -1350,6 +1602,7 @@ Odbierz przedmioty z depozytu sklepu.	Collect the items from your shop deposit.
 Odbierz wszystkie przedmioty	Collect all items
 Odbija ataki fizyczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Reflects physical attacks. Can be cast on another player. Bonus when used on yourself.
 Odbiór nagród: jeszcze %s	Claiming rewards: %s left
+Odblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać. Nie można nim handlować.	Unlocks another equipment page (II, then III and IV): up to four item sets (armour, helmet, shoes, bracelet, weapon, necklace, earrings, arrows, shield, talisman, gloves) switched with one click - tabs I-IV in the equipment window or the skill “Change Equipment Page” (support skills). Only the equipped page gives bonuses; rings, costumes and the belt are shared. One use - one page, at most three per character. It cannot be traded.
 Odczekaj	Wait
 Odczekaj chwilę przed kolejnym porządkowaniem.	Wait a moment before sorting again.
 Oddać przedmiot Seon-Hae (szansa %d%%)?	Hand the item over to Seon-Hae (chance %d%%)?
@@ -1400,6 +1653,9 @@ Ofert: %d (pasuje do filtrow: %d)	Offers: %d (matching filters: %d)
 Oferta sklepu zmieniła się.	The shop's offer has changed.
 Oferta sklepu została edytowana.	The shop's offer has been edited.
 Oferty Błyskawiczne	Flash Offers
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	A sealed document that permits crafting Reinforce Item.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	A sealed document that permits crafting Reinforce Item. This item can be traded.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	A sealed document that permits crafting Enchant Item.
 Ogólne	General
 Okna	Windows
 Okno admina botow nie zaladowalo sie w tym kliencie - szczegoly w syserr.txt	The bot admin window failed to load in this client - details in syserr.txt
@@ -1420,6 +1676,9 @@ Orkom	Orcs
 Osiągnij 1 poziom jeździectwa[ENTER]i porozmawiaj ze Stajennym.	Reach Riding level 1[ENTER]and talk to the Stable Boy.
 Ostatni zakup moze sie jeszcze dokonczyc.	The last purchase may still complete.
 Ostatnio online:	Last online:
+Ostrze tak ostre, że może wyciąć duszę z ciała. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	A blade so sharp it can cut the soul from the body. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Ostrze wypełnione mocą mrocznego smoka.	A blade filled with the power of the dark dragon.
+Otacza cię aura przepełniona energią. Pierścień wykuty ze smoczego ognia zniszczy w mgnieniu oka statuy w Schronieniu Meley - gdy statuy zaświecą na niebiesko, stań przy statui i kliknij pierścień prawym przyciskiem myszy. Znika po wyjściu ze Schronienia.	You are surrounded by an aura full of energy. This ring forged from dragon fire will destroy the statues in Meley's Lair in the blink of an eye - when the statues glow blue, stand next to a statue and right-click the ring. Disappears when you leave the Lair.
 Otrzymujesz	You receive
 Otrzymujesz %d Kluczy Goblina.	You receive %d Goblin Keys.
 Otrzymujesz 1 Doblona.	You receive 1 Doubloon.
@@ -1448,6 +1707,7 @@ Otwórz ponownie	Reopen
 Otwórz sklep	Open shop
 Otwórz sklep ponownie	Reopen shop
 Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	An ornate, gilded sword that once belonged to Mirine. It is no longer fit for battle, but it looks very valuable.
+Ożyw ponownie siebie lub jednego z graczy w Świątynia Zodiaku.	Revive yourself or another player in the Zodiac Temple.
 P. Książę+ (biały)	Desert Prince+ (white)
 P. Książę+ (brąz.)	Desert Prince+ (brown)
 P. Księżniczka (biała)	Desert Princess (white)
@@ -1510,7 +1770,10 @@ Pieczęć ta przywołuje Młodego Tygrysa, który, po przejściu szkolenia bojow
 Pieczęć ta przywołuje Młodego Wilka, który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	This seal summons a Young Wolf which, after completing its battle training, gives its rider up to 5% extra EXP.
 Pieczęć ta przywołuje Śmiałego Dragora. Dodaje on swojemu właścicielowi +5% do siły przeciwko potworom.	This seal summons a Bold Dragor. It gives its owner +5% strength against monsters.
 Pieczęć ta przywołuje Śmiałego Dragora. Dodaje on swojemu właścicielowi +5% do zebranego doświadczenia.	This seal summons a Bold Dragor. It gives its owner +5% more experience gained.
+Pieczęć z czystego lodu. Otwiera dostęp na szóste piętro Strażnicy Nemere.	A seal of pure ice. It opens access to the sixth floor of Nemere's Watchtower.
 Pierwsza nagroda tury jest darmowa.	The first reward of each round is free.
+Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The first of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
+Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The first of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Pierwszy "+" na zakładce Status też ci je daje.	The first "+" on the Status tab also gives them to you.
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	The first "+" on the Skills tab also gives them to you.
 Pierwszy 30 poziom	First to Level 30
@@ -1521,6 +1784,21 @@ Pierścień Wakacyjny	Holiday Ring
 Pierścień Wielkanocny	Easter Ring
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	A ring with an exquisitely crafted crescent-moon engraving. Grants: +50% EXP, +20% attack speed, +20% casting speed, +30% attack, +10% max. HP, +10% max. SP.
 Pisklę Exedyara	Exedyar Hatchling
+Plan wykonania brzeszczota.	A plan for making a broadsword.
+Plan wykonania dzwonu.	A plan for making a bell.
+Plan wykonania hełmu ninja.	A plan for making a Ninja helmet.
+Plan wykonania hełmu sura.	A plan for making a Sura helmet.
+Plan wykonania hełmu szamana.	A plan for making a Shaman helmet.
+Plan wykonania hełmu wojownika.	A plan for making a Warrior helmet.
+Plan wykonania miecza.	A plan for making a sword.
+Plan wykonania ostrza.	A plan for making a blade.
+Plan wykonania sztyletu.	A plan for making a dagger.
+Plan wykonania wachlarza.	A plan for making a fan.
+Plan wykonania zbroi ninja.	A plan for making Ninja armour.
+Plan wykonania zbroi sura.	A plan for making Sura armour.
+Plan wykonania zbroi szamana.	A plan for making Shaman armour.
+Plan wykonania zbroi wojownika.	A plan for making Warrior armour.
+Plan wykonania łuku.	A plan for making a bow.
 Po ponownym uruchomieniu: %s	After a restart: %s
 Po prawej są twoje wyniki	On the right you see your results
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Can be traded.
@@ -1531,8 +1809,10 @@ Pobierz Yang	Collect Yang
 Pobierz aktualne pliki klienta w panelu:	Download the current client files in the panel:
 Pobierz aktualne raty	Fetch current rates
 Poboczna	Side quest
+Pobłogosławiony przez boga, ale nikt nie wie jakiego. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Blessed by a god, but nobody knows which one. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Pochyl w dół	Tilt down
 Pochyl w górę	Tilt up
+Pochłania nie tylko światło księżyca, ale również sporo krwi. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It drinks in not only the moonlight, but plenty of blood as well. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Podaj ID i ilosc.	Enter the ID and amount.
 Podaj Kod:	Enter Code:
 Podaj PID i ilosc.	Enter the PID and amount.
@@ -1617,6 +1897,7 @@ Pomyślnie wykorzystano kupon!	Voucher redeemed successfully!
 Ponad %d godz.	Over %d hrs
 Poniżej %d godz.	Under %d hrs
 Ponowne użycie po %s	Can be used again in %s
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Następny przedmiot oddany do badań Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjęcie zamiast 60%. Nie dotyczy misji na Yohara. Przedmiot ten jest zdatny do handlu.	Improves the quality of items intended for research, which increases the chance of them being accepted. The next item handed in for research to Biologist Chaegirab or Seon-Pyeong has a 90% chance of being accepted instead of 60%. Does not apply to Yohara quests. This item can be traded.
 Poprawnie podany kod. Zajelo to %d sekund.	Code entered correctly. It took %d seconds.
 Poproś o nowy kod (max 2 razy)	Request a new code (max. 2 times)
 Poprzednia	Previous
@@ -1634,12 +1915,16 @@ Poszukiwanie skarbów rozpoczęło się.	The treasure hunt has begun.
 Poszukiwanie skarbów zakończyło się.	The treasure hunt has ended.
 Potrafi strzelać w kilka celów jednocześnie.	Can shoot at several targets at once.
 Potrzeba %d ksiąg (w oknie: %d).	%d books needed (in the window: %d).
+Potrzebna do rozwoju konia od 21 poziomu: karmisz nią konia w oknie rozwoju u Stajennego (doświadczenie konia), a próba awansu zjada 50 sztuk. Otrzymasz ją u Stajennego (codziennie, "Pasza dla konia").	Needed for horse training from level 21: you feed it to your horse in the training window at the Stable Boy (horse experience), and a promotion attempt uses up 50 pieces. You get it from the Stable Boy (daily, "Horse Feed").
+Potrzebna, by wejść do lochu Przebudzenia.	Required to enter the Awakening dungeon.
+Potrzebny, by wejść do lochu Szczeliny Czasu (Statua Szczeliny Czasu na Płaskowyżu Iluzji). Każdy członek grupy musi go mieć - znika przy wejściu.	Required to enter the Time Rift dungeon (Time Rift Statue on the Plateau of Illusion). Every group member must have one - it disappears on entry.
 Potrzebujesz %d Kart Nowego Początku.	You need %d New Start Cards.
 Potwierdz w oknie	Confirm in the window
 Potwierdzenie wygaslo. Sprobuj ponownie.	The confirmation has expired. Please try again.
 Potwierdzenie zakupu	Purchase Confirmation
 Potworom	Monsters
 Potworom pustyni	Desert Monsters
+Potężny materiał, z pomocą którego możesz wykonać tajemniczy talizman.	A powerful material with which you can make a mysterious talisman.
 Powiększ	Zoom in
 Powoduje ukrycie się postaci, atak z Zasadzki.	Hides the character; enables attacking from Ambush.
 Powrot do miasta, gdy tylko koncza sie czerwone mikstury.	Return to town as soon as the red potions run out.
@@ -1664,6 +1949,8 @@ Pozostały czas: %d s	Time left: %d s
 Pozwala wylosować nowe cele misji Kart Potworów.	Lets you draw new targets for the Monster Cards mission.
 Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Lets you forget one pet skill: right-click it in the pet window.
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Lets you reset the Monster Cards mission beyond the free reset (once every 24 hours).
+Połyskujący amulet daje ci +10% odporności na wszystkie żywioły: błyskawice, ogień, lód, wiatr, ziemię i mrok. Czas użytkowania: 7 dni - mija także wtedy, gdy kamień nie jest noszony. Można nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Nie można nim handlować ani go przechować w magazynie.	This shimmering amulet gives you +10% resistance to all elements: lightning, fire, ice, wind, earth and darkness. Duration: 7 days - it also runs out while the stone is not worn. Only one Elemental Stone can be worn at a time (Protection or Power). It cannot be traded or kept in the storeroom.
+Połyskujący amulet daje ci 10% mocy wszystkich żywiołów: błyskawic, ognia, lodu, wiatru, ziemi i mroku. Czas użytkowania: 7 dni - mija także wtedy, gdy kamień nie jest noszony. Można nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Nie można nim handlować ani go przechować w magazynie.	This shimmering amulet gives you 10% of the power of all elements: lightning, fire, ice, wind, earth and darkness. Duration: 7 days - it also runs out while the stone is not worn. Only one Elemental Stone can be worn at a time (Protection or Power). It cannot be traded or kept in the storeroom.
 Połącz wszystkie przedmioty	Stack all items
 Połączono stosy w magazynie: %d. Reszta przedmiotów została na miejscu.	Stacks merged in the storeroom: %d. The other items stayed in place.
 Połączono stosy: %d. Reszta ekwipunku została na miejscu.	Stacks merged: %d. The rest of the inventory stayed in place.
@@ -1690,9 +1977,12 @@ Proszę wybrać czas trwania sklepu	Please select a shop duration
 Proteinowa Przekąska	Protein Snack
 Przebicie odpornosci na omdlenie	Stun resistance break
 Przeciągnij broń, zbroję lub kostium do jednego z pól u góry.	Drag a weapon, armour or costume into one of the slots at the top.
+Przeciągnij jedną z tych strzał na Hwachę w Krypcie Balathora, aby ją naładować. Służy do zniszczenia tarczy Zamrożonego Jaja Smoka. Strzały dają Pradawne Kryształy Lodu.	Drag one of these arrows onto the Hwacha in Balathor's Crypt to load it. Used to destroy the shield of the Frozen Dragon Egg. The arrows give Ancient Ice Crystals.
+Przeciągnij ją na maszt statku, aby go naprawić. Ważna 5 minut.	Drag it onto the ship's mast to repair it. Valid for 5 minutes.
 Przeciągnij kamień ze swojej alchemii na zestaw.	Drag a stone from your alchemy onto the set.
 Przeciągnij skrzynkę z ekwipunku.	Drag a chest from the inventory.
 Przeciągnij tu skrzynkę z ekwipunku	Drag a chest here from the inventory
+Przeczytanie księgi umożliwi ci zwiększenie precyzji. Znika po przeczytaniu. Wymaga co najmniej 1. Poziomu Czempiona.	Reading this book lets you increase your precision. Disappears after reading. Requires at least Champion Level 1.
 Przeczytałem/am i akceptuję zasady.	I have read and accept the rules.
 Przedmiot %d	Item %d
 Przedmiot jest niedostępny.	The item is unavailable.
@@ -1700,6 +1990,7 @@ Przedmiot jest założony, zablokowany albo w handlu.	The item is equipped, lock
 Przedmiot ma już wybrane bonusy.	The item already has the chosen bonuses.
 Przedmiot musi mieć pięć bonusów.	The item must have five bonuses.
 Przedmiot musi posiadać od 1 do 3 bonusów.	The item must have 1 to 3 bonuses.
+Przedmiot służy do ulepszania Twojej zbroi.	This item is used to upgrade your armour.
 Przedmiot utworzony.	Item created.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Consumable. The attempt may fail. On success, grants a chance of double experience for 12 hours. The effect can be raised up to level 5 with further Daffodils. Works during the Flower Power event.
 Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Consumable. The attempt may fail. On success, increases your defence for 12 hours. The effect can be raised up to level 5 with further Sunflowers. Works during the Flower Power event.
@@ -1711,16 +2002,22 @@ Przedmiot zablokowany na tym miejscu - sortowanie go nie przesunie (Alt+LPM zdej
 Przedmiot zmienil sie. Operacja przerwana; sprawdz ekwipunek.	An item has changed. Operation cancelled; check your inventory.
 Przedmiot:	Item:
 Przedmioty Konne	Horse Items
+Przedłuża życie twojego Appaloosa o 7 dni.	Extends the life of your Appaloosa by 7 days.
 Przejdź do nagród za tury	Go to Round Rewards
 Przekierowuje obrażenia z PŻ na PE.	Redirects damage from HP to SP.
 Przemiana w %s	Transformation into %s
 Przemień	Transform
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Move the file to the upload/ folder in the main game directory.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Infuses the body with the magic of the holidays, granting its wearer extraordinary power. Failed attempts to upgrade the Ring at the Blacksmith do not destroy the item. Duration: 7 days (max. 60 days).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Infuses the body with the magic of the holidays, granting its wearer extraordinary power. Failed attempts to upgrade the Ring at the Blacksmith do not destroy the item. Max. duration: 60 days.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Infuses the body with the magic of Easter, granting its wearer extraordinary power. Failed attempts to upgrade the Ring at the Blacksmith do not destroy the item.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni.	Infuses the body with the magic of Easter, granting its wearer extraordinary power. Failed attempts to upgrade the Ring at the Blacksmith do not destroy the item. Duration: 7 days.
+Przepala się przez wnętrzności twojego przeciwnika jak rozpalony nóż przez masło. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Burns through your opponent's guts like a hot knife through butter. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Przepełniona wolą SungMa.	Filled with the will of SungMa.
+Przepełnione wolą SungMa.	Filled with the will of SungMa.
 Przepraszamy za wszelkie niedogodności.	We apologise for any inconvenience.
 Przerwij (%d)	Stop (%d)
+Przesądziło już o niejednym losie. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It has already decided many a fate. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Przetopy	Smelted Ores
 Przewidywane zarobki netto:	Estimated net earnings:
 Przewidywany czas trwania: |cffffaa21%s|r	Estimated duration: |cffffaa21%s|r
@@ -1729,9 +2026,14 @@ Przeznacz je na ziemię gildii albo budynki.	Spend it on guild land or buildings
 Przełęcz 6201 11875	Pass 6201 11875
 Przełęcz 6809 11943	Pass 6809 11943
 Przełęcz 6846 11841	Pass 6846 11841
+Przy dźwiękach tego dzwonu skazywani byli na śmierć wrodzy królowie i koronowani nowi władcy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	At the sound of this bell, enemy kings were sentenced to death and new rulers were crowned. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Przy pomocy tej wysokiej jakości wędki z włókna węglowego złapiesz wyjątkowo grube ryby. Jest lepsza od zwykłej wędki (jak wędka +22). Działa 30 dni (czas płynie także poza grą), potem znika. Nie da się jej ulepszyć ani przekazać.	With this high-quality carbon-fibre fishing pole you will catch exceptionally big fish. It is better than a normal fishing pole (like a +22 pole). Lasts 30 days (time also runs while offline), then disappears. It cannot be upgraded or traded.
 Przy twoim pełnym EQ zbiera twój drop i trzyma go dla ciebie.	When your inventory is full, it collects your drops and keeps them for you.
 Przynęta: %s	Bait: %s
 Przywołany potwór już nie żyje.	The summoned monster is already dead.
+Przywołuje Potężnego Konia Wojskowego (koń od 31 poziomu). Potrzebujesz 300 PE, by jej użyć. Otrzymasz ją u Stajennego po zadaniu "Złota Księga Konia".	Summons the Mighty War Horse (horse from level 31). You need 300 SP to use it. You receive it from the Stable Boy after the quest "Golden Horse Book".
+Przywraca 600 PE.	Restores 600 SP.
+Przywraca 600 PŻ.	Restores 600 HP.
 Przywraca PŻ %.0f	Restores HP: %.0f
 Przywrócić wszystkie domyślne klawisze?	Restore all default keys?
 Przywrócono domyślne klawisze	Default keys restored
@@ -1767,16 +2069,21 @@ Regeneracja PM	SP regeneration
 Regeneracja PZ	HP regeneration
 Regeneracja ST: +%d%%	Stamina Regeneration: +%d%%
 Regeneracja wytrzymalosci	Stamina regeneration
+Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Reset the Gaya Shop before the 5 hours are up and check out new valuable items. Use it at the Harbour Gaya Shop (Warrior Statue in the New Continent Harbour).
 Rola Atakujący:	Attacker role:
 Rola Berserkera:	Berserker role:
 Rola Blokującego:	Blocker role:
 Rola Mistrza Um.:	Skill Master role:
 Rola Obrońcy:	Defender role:
 Rola Walczącego w Zwarciu:	Blade Fighter role:
+Rosa En-Tai (PB) od Niszczycieli En-Tai (PB). Zanieś ją Zwiadowcy Lasu (PB).	En-Tai Dew (PB) from the En-Tai Destroyers (PB). Take it to the Forest Scout (PB).
+Rosa En-Tai (SZC) od Niszczycieli En-Tai (SZC). Zanieś ją Zwiadowcy Lasu (SZC).	En-Tai Dew (SZC) from the En-Tai Destroyers (SZC). Take it to the Forest Scout (SZC).
+Rosa En-Tai od Niszczycieli En-Tai. Zanieś pięć Zwiadowcy Lasu.	En-Tai Dew from the En-Tai Destroyers. Take five to the Forest Scout.
 Rosy Defensywne	Defensive Dews
 Rosy Ofensywne	Offensive Dews
 Rosy Wzmacniające	Enhancing Dews
 Rozbijanie Metina Twardości	Destroying the Metin of Toughness
+Rozbrzmiewają triumfalnie bębny i trąbki, gdy dzierżysz miecz na polu bitwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Drums and trumpets sound triumphantly when you wield this sword on the battlefield. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Rozdaj od nowa (raz za darmo)	Redistribute (once for free)
 Rozdzielczość	Resolution
 Rozkazy dla botów twojej gildii	Orders for your guild's bots
@@ -1795,6 +2102,7 @@ Ruda Turmalinu	Tourmaline Ore
 Rudy i przetopy	Ores and smelted ores
 Ruiny Skorpiona	Scorpion Ruins
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rummy (Okey): the game window will arrive with a client update.
+Ryba występująca tylko w wodach płynących.	A fish found only in flowing waters.
 Rybka nie może wyjść poza pole	The fish must not leave the field
 Rybołówstwo	Fishing
 Ryby Pieczone	Grilled Fish
@@ -1802,6 +2110,7 @@ Ryby Surowe	Raw Fish
 Ryzykujesz utratą przedmiotu!	You risk losing an item!
 Rzadki kamień z bossów. U Kowala przemienia broń 75. poziomu +9 w broń przebudzoną +0, zachowując bonusy i kamienie (koszt: 200 000 000 Yang).	A rare stone dropped by bosses. At the Blacksmith it turns a level 75 weapon +9 into an awakened weapon +0, keeping its bonuses and stones (cost: 200 000 000 Yang).
 Rzadkie: te nagrody odblokujesz po 3 turach.	Rare: you unlock these rewards after 3 rounds.
+Rzewna melodia twojej przygody. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	The wistful melody of your adventure. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Rzuca na ciebie swoje buffy.	Casts its buffs on you.
 Sam otwiera skrzynie z plecaka. Wyłączone: zostawia je tobie.	Opens chests from its backpack by itself. Off: leaves them to you.
 Search Shop Premium	Search Shop Premium
@@ -1830,6 +2139,7 @@ Serwer odrzucil operacje (%s). Sprawdz ekwipunek.	The server rejected the operat
 Serwer odrzucil wartosc (1-10000).	The server rejected the value (1-10000).
 Serwer potwierdzil usuniecie wybranych przedmiotow.	The server confirmed that the selected items were destroyed.
 Shop Decoration	Shop Decoration
+Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	You sow a light breeze and your enemies reap a raging gale. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Sierp (Pieczęć)	Crescent Moon Seal
 Silne frontowe uderzenie obszarowe.	A powerful frontal area strike.
 Silny Dziki Piechur	Strong Savage Infantry
@@ -1865,11 +2175,15 @@ Skrzynia Cupido	Cupido Chest
 Skrzynia Dżungli	Jungle Chest
 Skrzynia Gniewnego Serca	Wrathful Heart Chest
 Skrzynia Huashinka	Little Huashin Chest
+Skrzynia Jotuna Thryma z Erebu - jej ciężka kłódka wróży cenną zawartość.	Jotun Thrym's chest from Erebos - its heavy padlock promises valuable contents.
 Skrzynia Likanów (d)	Large Lycan Chest
 Skrzynia Likanów (m)	Small Lycan Chest
 Skrzynia Sierpu	Crescent Moon Chest
 Skrzynia Skorpiona	Scorpion Chest
 Skrzynia Wukonga	Wukong Chest
+Skrzynia ta zawiera losową księgę umiejętności do nauki dopalacza.	This chest contains a random skill book for learning a booster.
+Skrzynia ta zawiera losową księgę umiejętności do nauki riposty.	This chest contains a random skill book for learning a riposte.
+Skrzynia z Królestwa Duchów Wodnych. Otwórz ją za pomocą Klucza Nimfy Wodnej.	A chest from the Kingdom of Water Spirits. Open it with a Water Nymph Key.
 Skrzynie i klucze	Chests and keys
 Skrzynka	Chest
 Skrzynka Dzwoneczka	Little Bell Box
@@ -1877,10 +2191,12 @@ Skrzynka Płatka Śniegu	Snowflake Box
 Skrzynka musi być w ekwipunku.	The chest must be in the inventory.
 Skrzynki	Chests
 Skrócenie ładowania um. o %d%%	Skill casting time reduced by %d%% 
+Składnik do produkcji lekarstwa iluzji.	An ingredient for making the medicine of illusion.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingredient for upgrading Soul Stones at the Blacksmith (from +4): 1, 1, 2, 2, 3 pieces are needed for the successive levels, along with Magic Dust. Dropped by the Strong Ice Witch (Grotto of Exile), Beran-Setaou (Dragon's Lair) and the Jungle Queen (Ancient Jungle).
 Smocze Monety	Dragon Coins
 Smocze Znaki	Dragon Marks
 Smocze kamienie towarzysza: daj, załóż, zdejmij, weź.	The Companion's dragon stones: give, equip, remove, take.
+Smocze rogi wykonane są z najtrwalszego surowca.	Dragon horns are made of the most durable material.
 Smoczy Gniew	Dragon's Wrath
 Sohan	Sohan
 Sojusznik	Ally
@@ -1908,10 +2224,13 @@ Sprzedaj złom	Sell Junk
 Sprzedając wszystkie przedmioty w sklepie zapłacisz %s podatku.	By selling all items in the shop you will pay %s in tax.
 Sprzedanych przedmiotów:	Items sold: 
 Spróbuj później.	Try again later.
+Spuść na przeciwnika dzwonki i niech rozbrzmiewające echo rozwali mu czachę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Bring the bells down on your opponent and let the ringing echo smash his skull. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	A heart-shaped silver pendant set with magical gems. Grants: +30% EXP, +10% attack speed, +10% casting speed, +10% strength against monsters, +5% max. HP, +5% max. SP.
 Srednia: %s / szt.	Average: %s / pc.
 Stajnia i polowanie na medale w Lochu Malp.	Stable and medal hunting in the Monkey Dungeon.
 Stamina / sek.: %d	Stamina / sec.: %d
+Standardowa Muzyka Metin2	Standard Game Music
+Standardowa muzyka Metin2	Standard game music
 Stara Fryzura (biała)	Old Hairstyle (white)
 Stara Fryzura (czarna)	Old Hairstyle (black)
 Stare efekty	Old effects
@@ -1957,6 +2276,7 @@ Strój Czarodzieja	Warlock Outfit
 Strój Czarodzieja+	Warlock Outfit+
 Strój Zombie	Zombie Outfit
 Strój Zombie+	Zombie Outfit+
+Stuprocentowo ostateczny cios! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	A one hundred per cent final blow! Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Sukienka Bożon. (biała)	Christmas Dress (white)
 Sukienka Bożon. (czerw.)	Christmas Dress (red)
 Sukienka Bożon.+(biała)	Christmas Dress+ (white)
@@ -2022,6 +2342,9 @@ Szkatułka z Kluczami Goblina	Goblin Key Box
 Szkatułki Blasku Księżyca	Moonlight Treasure Chests
 Szkatułki i Klucze	Chests and Keys
 Szkolenie	Training
+Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC).	Noble Wood (SZC) from the En-Tai Lord (SZC). Take it to the Forest Researcher (SZC).
+Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Noble Wood from the En-Tai Lord. Take it to the Forest Researcher.
+Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Noble Tree (PB) from the En-Tai Lord (PB). Take it to the Forest Researcher (PB).
 Sztuk: %d	Quantity: %d
 Sztuk: %d |	Pieces: %d | 
 Sztuka Bogobójcy	Art of the Godslayer
@@ -2046,9 +2369,11 @@ Sztuka Świętej Ochrony	Art of Holy Protection
 Sztuka Świętej Wody	Art of Holy Water
 Sztuka Świętej Zbroi	Art of the Holy Armour
 Sztuka Życia	Art of Life
+Sztylet wypełniony mocą mrocznego smoka.	A dagger filled with the power of the dark dragon.
 Szukaj przedmiotu w całym sklepie	Search for an item in the whole shop
 Szukaj skarbu	Search for Treasure
 Szukaj...	Search...
+Szybka jak błyskawica, nieobliczalna jak huragan. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Fast as lightning, unpredictable as a hurricane. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Szybki atak obszarowy i teleportujący.	A fast area attack that teleports you. 
 Szybki atak z szansą na omdlenie przeciwnika.	A fast attack with a chance to stun the enemy.
 Szybkie rozdanie statystyk	Quick Stat Allocation
@@ -2059,21 +2384,37 @@ Szybkość czarowania	Casting Speed
 Szybkość: %d zmian/s	Speed: %d switches/s
 Słaba jakość strzału: od %.1fm	Poor shot quality: from %.1fm
 Słodka Staruszka	Sweet Old Lady
+Słodkowodna ryba drapieżna występująca w tropikach.	A predatory freshwater fish found in the tropics.
 Słonecznik: obrona +%d%%	Sunflower: defence +%d%%
+Służy do wytworzenia Reliktu Duszy u Biologa Chaegiraba w Dongan.	Used to craft a Soul Relic at Biologist Chaegirab in Dongan.
+Słychać krew, pulsującą w żyłach ofiary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	You can hear the blood pulsing in your victim's veins. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 TRWA TERAZ	ON NOW
+Ta butelka zawiera tajemniczo lśniącą ciecz.	This bottle contains a mysteriously glowing liquid.
+Ta dobra dusza jest na wieki uwięziona w szklanej kuli.	This good soul is trapped forever in a glass sphere.
 Ta funkcja wymaga co najmniej %d gwiazdek.	This feature requires at least %d stars.
+Ta księga umiejętności uczy cię dopalacza twojej klasy i drogi umiejętności (1. poziom). Wymaga riposty rozwiniętej do poziomu P.	This skill book teaches you the booster of your class and skill path (level 1). Requires the riposte to be trained to level P.
 Ta magiczna rękawica zwiększa zręczność użytkownika, pozwalając na podnoszenie przedmiotów z ziemi o 500% szybciej.	This magic glove increases the wearer's dexterity, letting them pick up items from the ground 500% faster.
 Ta opcja jest dostępna od 2. gwiazdki.	This option is available from the 2nd star.
 Ta opcja jest dostępna od 3. gwiazdki.	This option is available from the 3rd star.
 Ta opcja jest dostępna od 4. gwiazdki.	This option is available from the 4th star.
 Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from the Purgatory of Fire, Razador's lair. It holds a true royal treasure.
+Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.	This chest was recovered from the Fire Purgatory, Razador's lair. It holds a true royal treasure. It can be opened 3 times - it gives something every time.
 Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	This chest was recovered from the Frozen Land, Nemere's lair. It holds a true royal treasure.
+Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.	This chest was recovered from the Ice Land, Nemere's lair. It holds a true royal treasure. It can be opened 3 times - it gives something every time.
 Ta skrzynka nic nie wydaje.	This chest gives nothing.
 Ta tura jest już pełna - odbierz nagrodę za turę.	This round is already complete - claim your round reward.
 Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	This client version has only some of the languages - update the client.
 Tahoma	Tahoma
+Tajemnicza skrzynia Berana-Setaou może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	Beran-Setaou's mysterious chest may contain refinement materials and Awakening stones.
+Tajemnicza skrzynia Jotuna Thryma może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	Jotun Thrym's mysterious chest may contain refinement materials and Awakening stones.
+Tajemnicza skrzynia Nemere może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	Nemere's mysterious chest may contain refinement materials and Awakening stones.
+Tajemnicza skrzynia Przebudzenia może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	The mysterious Awakening chest may contain refinement materials and Awakening stones.
+Tajemnicza skrzynia Razadora może zawierać materiały do uszlachetnienia oraz kamienie Przebudzenia.	Razador's mysterious chest may contain refinement materials and Awakening stones.
 Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	A Catch the King deck. Right-click it during the event to add it to your decks; start the game in the event window (button next to the minimap). Cards and decks are lost when the next event begins.
+Tam gdzie spadnie jego strzała, zaczyna się gwałtowna burza. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Wherever its arrow falls, a violent storm begins. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Tam nic nie ma.	There is nothing there.
+Tańczy jak zjawa śmierci poprzez szeregi wrogiej armii. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Dances like a spectre of death through the ranks of the enemy army. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Tchnienie smoka jest równie śmiertelne jak strzała w samo serce. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	The dragon's breath is as deadly as an arrow straight to the heart. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Te miejsca odblokujesz aktywnościami w grze.	You unlock these slots through in-game activities.
 Te miejsca odblokujesz za pomocą Sklepu Premium.	You unlock these slots with the Premium Shop.
 Tego klawisza nie można przypisać - wybierz inny.	This key cannot be assigned - choose another.
@@ -2088,12 +2429,27 @@ Teleportacja za: %d:%02d	Teleport in: %d:%02d
 Teleportować się do: %s?	Teleport to: %s?
 Teleportuj pod wejście	Teleport to entrance
 Teleportuje do: %s	Teleporting to: %s
+Ten dwuręczny miecz położy kres twoim wrogom - a może nawet całemu światu? Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	This two-handed sword will put an end to your enemies - and perhaps even to the whole world? Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Ten gatunek kraba zwany jest ze względu na swój rozmiar krabem gigantem.	Because of its size, this species of crab is called the giant crab.
+Ten gatunek skorupiaka prowadzi nocny tryb życia, a dnie spędza w swojej kryjówce.	This species of crustacean is nocturnal and spends its days in its hiding place.
+Ten magiczny klucz aktywuje portal do Świątyni Smoka (SZC). Zostawia go Generał Yonghan (SZC), który pojawia się po Kapitanie Yonghanie (SZC-110). Duch Sura (SZC) chce trzech od każdego.	This magic key activates the portal to the Dragon's Temple (SZC). It is left by General Yonghan (SZC), who appears after Captain Yonghan (SZC-110). The Sura Spirit (SZC) wants three from each player.
+Ten materiał jest potrzebny do ulepszania Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora+.	This material is needed to upgrade the Serpent Cap. You can find it in Balathor's Frost Chest+.
+Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz go znaleźć w Mroźnej Skrzyni Balathora.	This material is required to craft the Serpent Cap. You can find it in Balathor's Frost Chest.
+Ten materiał jest wymagany do wytworzenia Wężowego Czepca. Możesz otrzymać go w Sklepie Gaya.	This material is required to craft the Serpent Cap. You can get it in the Gaya Shop.
+Ten niebieskawy klejnot został wydobyty w kopalniach Góry Sohan.	This bluish gem was mined in the mines of Mount Sohan.
+Ten praktyczny pakiet zawiera mnóstwo dusz, dzięki którym możesz doładować swoje relikty duszy i korzystać z potężnych bonusów reliktu. Zawartość pakietu: Dusza Miecza, Dusza Ochrony, Dusza Ozdoby, Dusza Światła.	This handy package contains lots of souls with which you can recharge your soul relics and enjoy powerful relic bonuses. Package contents: Soul of the Sword, Soul of Protection, Soul of Ornament, Soul of Light.
+Ten pryzmatyczny kryształ służy do uszlachetnienia przedmiotu wyposażenia.	This prismatic crystal is used to refine a piece of equipment.
+Ten przedmiot jest używany do wyrobu hełmów.	This item is used to make helmets.
 Ten przedmiot jest właśnie zmieniany - zatrzymaj go najpierw.	This item is being switched right now - stop it first.
 Ten przedmiot ma już 6. i 7. bonus.	This item already has a 6th and 7th bonus.
 Ten przedmiot nie ma bonusów do zmiany.	This item has no bonuses to switch.
 Ten przedmiot nie może mieć tego bonusu.	This item cannot have this bonus.
 Ten serwer ma zmienione przedmioty/umiejętności (Edytor bazy danych),	This server has modified items/skills (Database Editor),
 Ten serwer nie ma kanału %d.	This server has no channel %d.
+Ten szlachetny kamień w kształcie łzy zawiera w sobie iskierkę światła księżyca. Służy do uszlachetnienia przedmiotu wyposażenia.	This teardrop-shaped gemstone holds a spark of moonlight. It is used to refine a piece of equipment.
+Ten słodki owoc pochodzi z ogrodu Boga Smoków.	This sweet fruit comes from the garden of the Dragon God.
+Ten tajemniczo połyskujący kamień daje doskonałą szansę przy ulepszaniu przedmiotów. Ulepszony w ten sposób przedmiot nie może zostać ani pogorszony ani zniszczony. Kamień ten funkcjonuje tylko dla przedmiotów powyżej poziomu 80. Zwiększa szansę na ulepszenie o 15%.	This mysteriously shimmering stone gives an excellent chance when upgrading items. An item upgraded this way can be neither downgraded nor destroyed. This stone only works on items above level 80. Increases the upgrade chance by 15%.
+Ten tajemniczo połyskujący kamyk służy do uszlachetnienia przedmiotu wyposażenia.	This mysteriously shimmering pebble is used to refine a piece of equipment.
 Teraz nie możesz zgłosić bonusu zestawu.	You cannot claim a set bonus right now.
 Teraz nie możesz zmienić się w potwora.	You cannot transform into a monster right now.
 Teraz: %s	Now: %s
@@ -2131,7 +2487,10 @@ Trwale usunac wybrane stosy?	Permanently destroy the selected stacks?
 Tryb Nocy	Night Mode
 Tryb ekranu	Screen mode
 Tryb: %s	Mode: %s
+Trzecia z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The third of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
+Trzecia z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The third of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Turmalin	Tourmaline
+Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Your steel will sing world-class arias on the battlefield. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Twoje miejsce: %d (wynik: %s)	Your place: %d   (score: %s)
 Twoje podarki	Your gifts
 Twoje punkty i pozostałe karty zostaną zresetowane.	Your points and remaining cards will be reset.
@@ -2143,6 +2502,7 @@ Twój drop - trzyma go dla ciebie	Your drop - it keeps it for you
 Twój metin2client.exe jest starszy niż reszta klienta[ENTER](2 strony ekwipunku zamiast 4), więc gra go nie wpuści.[ENTER]Zamknij grę i pobierz pełny klient MT2009 PLUS[ENTER]z Discorda projektu: metin2sp.pl/discord	Your client .exe file is older than the rest of the client[ENTER](2 inventory pages instead of 4), so the game won't let it in.[ENTER]Close the game and download the full MT2009 PLUS client[ENTER]from the project's Discord: metin2sp.pl/discord
 Twój poziom jest za niski, by się teleportować.	Your level is too low to teleport.
 Tygrys, niedźwiedź, dzik	Tiger, Bear, Boar
+Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Only a few understand the ancient language from which this weapon's name comes. Yet none of them has ever dared to translate it. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Tylko scal stosy	Merge stacks only
 Tym kluczem zdobędziesz więcej nagród w Poszukiwaniu skarbów.	This key gets you more rewards in the Treasure Hunt.
 Typ	Type
@@ -2152,9 +2512,14 @@ Typ: %s	Type: %s
 Typ: -	Type: -
 Tytuł: %s - zwycięzcy poprzedniego sezonu	Title: %s  -  winners of the previous season
 Tytuły rankingu:	Ranking titles:
+Tę demoniczną pamiątkę rodzinną otacza złowieszcza aura, przed którą nie tylko wrogowie drżą. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	This demonic heirloom is surrounded by an ominous aura that makes more than just your enemies tremble. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Uczony Stylu Małp	Monkey Style Scholar
+Uczy gildię umiejętności Burza Balathora (+1 poziom, najwyżej 10). | Odporność na omdlenie i spowolnienie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Storm (+1 level, max. 10). | Resistance to fainting and slowing. | Only the guild leader can read it.
+Uczy gildię umiejętności Nieugiętość Balathora (+1 poziom, najwyżej 10). | Odporność na odrzucenie i powalenie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Steadfastness (+1 level, max. 10). | Resistance to knockback and knockdown. | Only the guild leader can read it.
+Uczy gildię umiejętności Wola Balathora (+1 poziom, najwyżej 10). | Odporność na ogłuszenie, kajdany i zamrożenie. | Czyta tylko lider gildii.	Teaches the guild the skill Balathor's Will (+1 level, max. 10). | Resistance to stun, shackles and freezing. | Only the guild leader can read it.
 Udane ulepszenia	Successful Upgrades
 Udało ci się ochronić Goblina Skarbów!	You have protected the Treasure Goblin!
+Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Strike, and the bell tolls for someone! Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Share of bots that linger by the stalls for a while after shopping in town instead of going straight back to hunting. 100% means a lively town, 0% - everyone out in the field.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Share of stall keepers who put their weak upgrades (+0 to +3) on the counter for pennies instead of selling them to an NPC - scrap to burn at the blacksmith, like on hard servers. Off by default.
 Ukończ %(n)s lochów	Complete %(n)s dungeons
@@ -2173,6 +2538,7 @@ Ukryj kostiumy	Hide costumes
 Ukryj sklepy graczy	Hide player shops
 Ukryj wodę	Hide water
 Ukryj/pokaż ikony zadań	Hide/show quest icons
+Ukąsił cię już kiedyś elf? Nie? To zaliczasz się do szczęściarzy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Ever been bitten by an elf? No? Then count yourself lucky. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Ulepsz przedmiot %(n)s razy	Upgrade an item %(n)s times
 Ulepszacze	Upgrade Materials
 Ulepszanie broni i pancerza zamiast polowania.	Upgrading weapons and armour instead of hunting.
@@ -2210,17 +2576,35 @@ Uziemienie	Root
 Ułóż i scal	Sort and merge
 Użyj %(n)s x %(what)s	Use %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Use a Pet Skill Book from your inventory
+Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Use the ring in the Elemental Kingdom (in one of the nine areas) to always teleport to the Plateau of Natural Forces. The ring disappears after use.
+Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Use the ring in the Elemental Kingdom (in one of the nine areas) for a chance (10%) to teleport to the Plateau of Natural Forces. The ring disappears with each use. Dropped by all monsters and Metins of the Elemental Kingdom (entrance: portal and the Old Man in the New Continent Harbour).
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Use to turn the experience lock on or off. No time limit.
 Użyj, kiedy zablokujesz się w "teksturach".	Use when you get stuck in "textures".
+Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Using the wings of the dragon Alteran, you can refine a piece of equipment.
 VIPy	VIP
+W błyszczącej złotej szkatułce mogą znajdować się talizmany żywiołowe, broń lub szarfy Zodiaku.	The shiny golden box may contain elemental talismans, Zodiac weapons or sashes.
+W jaskrawo zielonej szkatułce mogą znajdować się broń, szarfy lub insygnia Zodiaku.	The bright green box may contain Zodiac weapons, sashes or insignia.
 W magazynie nie ma stosów do połączenia.	There are no stacks to merge in the storeroom.
 W pobliżu jest zakryta [5].	There is a face-down [5] nearby.
 W przypadku śmierci na ujemnej randze;nie ryzykujesz utratą przedmiotu.;Efekt znika w przypadku ochrony;potencjalnej utraty przedmiotu.	If you die with a negative rank,;you do not risk losing an item.;The effect disappears when it protects you;from a potential item loss.
 W skrzyni był Bilet Skarbów!	There was a Treasure Ticket in the chest!
 W sprzedaży są cenne przedmioty (%d), kontynuować?	Valuable items are up for sale (%d), continue?
 W stacku jest: %d szt.	In the stack: %d pcs
+W tajemniczej skrzyni mogą znajdować się broń, wyposażenie i szarfy Zodiaku.	The mysterious chest may contain Zodiac weapons, equipment and sashes.
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklop. Jupitera (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Jupiter Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklop. Merkurego (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Mercury Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Marsa (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Mars Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Neptuna (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Neptune Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Saturna (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Saturn Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Urana (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Uranus Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Wenus (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Venus Encyclopaedia (L).
+W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci: 10x Mikstura Mądrości (3h), 20x Zwój Egzorcyzmu, 10x Rada Pustelnika, 5x Pierścień Teleportacji i Encyklopedia Ziemi (D).	In this splendid chest you will find many handy items for your character: 10x Potion of Wisdom (3h), 20x Exorcism Scroll, 10x Concentrated Reading, 5x Teleportation Ring and Earth Encyclopaedia (L).
 W tym oknie są wszystkie wyprawy.	This window lists all dungeons.
+W tym tajemniczym zielonkawym kamieniu jest zamknięta dusza driady, drzewnego duszka. Driada ta zna zaklęte słowa, które umożliwią ci wstęp do Erebu.	The soul of a dryad, a tree spirit, is trapped inside this mysterious greenish stone. This dryad knows the magic words that will let you enter Erebos.
+W tym tajemniczym zielonkawym kamieniu jest zamknięta dusza driady, drzewnego duszka. Driada zna zaklęte słowa, które otwierają wstęp do Erebu - Przywódca Straży Lasu wpuszcza grupę, której każdy członek go ma (znika przy wejściu).	The soul of a dryad, a tree spirit, is trapped inside this mysterious greenish stone. The dryad knows the magic words that open the way to Erebos - the Forest Guard Leader lets in a group in which every member has one (it disappears on entry).
 W wieży	In the tower
+W złocistej szkatułce mogą znajdować się zbroja, szarfy lub insygnia Zodiaku.	The golden box may contain Zodiac armour, sashes or insignia.
+Walczy w imieniu upadłych aniołów. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Fights in the name of the fallen angels. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Walczący w zwarciu (maks. PŻ)	Melee Fighter (max. HP)
 Walka	Combat
 Walka razem, a nie kazdy bot na wlasna reke.	Fighting together rather than each bot on its own.
@@ -2242,12 +2626,14 @@ Wczytuje miejsce %d...	Loading location %d...
 Wczytywanie ofert...	Loading offers...
 Wczytywanie ofert... pobrano %d	Loading offers... fetched %d
 Wczytywanie...	Loading...
+Według nordyckich legend Walkirie sprowadzały dusze najdzielniejszych poległych w boju wojowników do Walhalli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	According to Norse legend, the Valkyries carried the souls of the bravest warriors fallen in battle to Valhalla. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Według zegara systemowego.	According to the system clock.
 Wejdź na wojnę	Enter the War
 Wejście: %s	Entry: %s
 Wersja: %d.%d.%d%s	Version: %d.%d.%d%s
 Wersja: 1.0.0	Version: 1.0.0
 Wersja: xxx	Version: xxx
+Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	A shimmering pearl may be hidden inside this magnificent shell.
 Wezwij wolne boty gildii z tej części świata.	Summon free guild bots from this part of the world.
 Weź yang od towarzysza	Take Yang from the Companion
 Widok sklep	Shop view
@@ -2284,6 +2670,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Enter how many bonuses must match (
 Wpłacało botów: %d	Bots that contributed: %d
 Wsiądź/zsiądź (koń, wierzchowiec)	Mount/dismount (horse, mount)
 Wskazany kanał dostępny jest tylko dla kont Premium.	The selected channel is only available for Premium accounts.
+Wspaniały skarb z wnętrza połyskującej muszli.	A magnificent treasure from inside a shimmering shell.
 Wszystkie	All
 Wszystkie karty w rzędzie lub kolumnie: +10 punktów.	All cards in a row or column: +10 points.
 Wszystkie miejsca na mikstury zostały zajęte.	All potion slots are occupied.
@@ -2308,6 +2695,7 @@ Wyboru nie można cofnąć. Kontynuować?	This choice cannot be undone. Continue
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	The selected rank requires this many stars on every monster of the set.
 Wybrany kanał dostępny jest tylko dla kont Premium.	The selected channel is only available for Premium accounts.
 Wycena czesciowa - trwa wczytywanie	Partial valuation - still loading
+Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Withdrawn item: the Awakening Ritual no longer exists and this stone has no use. You can throw it away.
 Wyczyszczono wszystkie znaczniki sklepów offline.	All offline shop markers have been cleared.
 Wyczyszczono: %s	Cleared: %s
 Wyczyść	Clear
@@ -2318,6 +2706,7 @@ Wydarzenie Walentynkowe	Valentine's Event
 Wydarzenie Wielkanocne.	Easter Event.
 Wydobądź %(n)s rudy	Mine %(n)s ore
 Wygląd postaci	Character appearance
+Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Looks harmless, but is 100% deadly. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Wygrane pojedynki	Duels won
 Wygładzanie Krawędzi	Anti-Aliasing
 Wyjmij Kamień Duszy	Remove Spirit Stone
@@ -2348,6 +2737,7 @@ Wymiana ksiąg umiejętności	Skill Book Exchange
 Wymiany	Exchanges
 Wymienić %d ksiąg na %d nowych za %s Yang?	Exchange %d books for %d new ones for %s Yang?
 Wyniki odświeżają się co minutę.	Results refresh every minute.
+Wypada z Głębinowej Muszli w Ruinach Atlantydy. Oddaj go właściwej Kolumnie z Muszli.	Dropped by the Deep-Sea Shell in the Ruins of Atlantis. Hand it over to the right Shell Column.
 Wyprawa rusza na kanale 1. Boty z gildii od poziomu %(level)d zbierają się	The expedition starts on channel 1. Guild bots from level %(level)d gather
 Wypuść	Release
 Wypuść %s na wolność? Tego nie da się cofnąć.	Release %s into the wild? This cannot be undone.
@@ -2384,6 +2774,8 @@ Wyłączony	Off
 Wyłączony filtr: podnoszę wszystko.	Filter off: I pick up everything.
 Wyślij boty	Send Bots
 Wzgórze Wukonga	Wukong's Hill
+Wzmacnia losową wolę SungMa.	Strengthens a random will of SungMa.
+Wzmacnia losową wolę SungMa. Przy dodaniu istnieje szansa na podwójny bonus.	Strengthens a random will of SungMa. When adding, there is a chance of a double bonus.
 Wzmacniające	Boosting
 Wzmocnienie (max. 5)	Boost (max. 5)
 Wzmocnienie Obrony +%d%%	Defence Boost +%d%%
@@ -2408,6 +2800,7 @@ Włącza je właściciel serwera w launcherze.	The server owner enables them in 
 Włącza tryb nocy na większości map.	Enables night mode on most maps.
 Włączono tryb edycji sklepu.	Shop edit mode enabled.
 Włączony	On
+Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Furious, spiked and merciless. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Yang z potworów +%d%%	Yang from monsters +%d%%
 Yutnori: ta gra wymaga nowego klienta (aktualizacja exe).	Yut Nori: this game requires a new client (exe update).
 Z bonusem	With bonus
@@ -2434,6 +2827,7 @@ Za wysoka wartość: %s.	Value too high: %s.
 Zabici gracze	Players Killed
 Zabij %(n)s potworów	Kill %(n)s monsters
 Zabij %(n)s x %(what)s	Kill %(n)s x %(what)s
+Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Kills orcs and all other monsters. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Zabite potwory	Monsters killed
 Zablokowani	Blocked
 Zablokowany przy sortowaniu (Alt+LPM)	Locked when sorting (Alt+LMB)
@@ -2464,6 +2858,7 @@ Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Saved locat
 Zapisano (%s%%).	Saved (%s%%).
 Zapisano.	Saved.
 Zapisuje miejsce %d...	Saving location %d...
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Save Screenshot:  Print (the screenshot is saved in the game's "screenshot" subfolder)
 Zaplanowana została przerwa w dostępie do usług.	A service maintenance break has been scheduled.
 Zapomnieć %s? (zużywa Pet Revertus)	Forget %s? (uses up Pet Revertus)
 Zaprzysiężone	Sworn
@@ -2473,16 +2868,28 @@ Zarzadzanie	Management
 Zarzadzanie Botami [GM]	Bot Management [GM]
 Zarządzaj sklepem	Manage shop
 Zawiera 8 Kluczy Goblina.	Contains 8 Goblin Keys.
+Zawiera duży kawałek układanki do udziału w Evencie Rybackim (element 3 x 2). Kliknij prawym przyciskiem myszy, aby otworzyć okno puzzli.	Contains a large puzzle piece for taking part in the Fishing Event (3 x 2 piece). Right-click to open the puzzle window.
+Zawiera księgę umiejętności lub przy odrobinie szczęścia odłamek w losowym kolorze. Szansa na odłamek jest większa niż w zwyczajnej skrzyni z odłamkiem.	Contains a skill book or, with a bit of luck, a shard in a random colour. The chance of a shard is higher than in a normal shard chest.
+Zawiera losowy element puzzli do zabawy w wędkarskie puzzle. Kliknij prawym przyciskiem myszy, aby otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.	Contains a random puzzle piece for the fishing puzzle game. Right-click to open the puzzle window - there you open the box and place the piece.
+Zawiera losowy rzadki przedmiot. Nagroda za pokonanie Bossa Świata.	Contains a random rare item. A reward for defeating the World Boss.
 Zawiera losową księgę umiejętności peta.	Contains a random pet skill book.
+Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, jeśli ją pomyślnie ukończysz. Od poziomu: 120.	Contains a quest in the North Wind Gorge, for which you receive a reward if you complete it successfully. From level: 120.
 Zaznacz wszystkie	Select All
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	The selected quests will disappear from the list as if they had never existed.
 Zaznaczone: %d z %d	Selected: %d of %d
 Założone przez ciebie - towarzysz tego nie zdejmie	Equipped by you - the Companion will not remove it
+Zaśpiewa ci pieśń o śmierci. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It will sing you a song of death. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Collect insignia to exchange them for chests or upgrade material.
 Zbieranie dla Biologa zamiast bicia poziomow.	Collecting for the Biologist instead of levelling.
 Zbierz %(n)s yang	Collect %(n)s Yang
 Zbierz %(n)s ziół	Gather %(n)s herbs
 Zbiórka na parterze wieży	Gathering on the tower's ground floor
 Zbroja Króla Wojowników+	Warrior King's Armour+
+Zbroja wypełniona mocą boskiego smoka.	Armour filled with the power of the divine dragon.
+Zbroja wypełniona mocą magicznego smoka.	Armour filled with the power of the magic dragon.
+Zbroja wypełniona mocą mrocznego smoka.	Armour filled with the power of the dark dragon.
+Zbroja wypełniona mocą niebiańskiego smoka.	Armour filled with the power of the celestial dragon.
+Zbroja wypełniona mocą wietrznego smoka.	Armour filled with the power of the wind dragon.
 Zbroja, Tarcza, Hełm	Armour, Shield, Helmet
 Zbroje - Ninja	Armour - Ninja
 Zbroje - Sura	Armour - Sura
@@ -2530,6 +2937,7 @@ Zmiana nazwy postaci	Change Character Name
 Zmianki (B): %d Pozostałe: %d	Switchers (B): %d    Other: %d
 Zmianki z (B) są używane jako pierwsze	Switchers marked (B) are used first
 Zmien poziom konia	Change horse level
+Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Changes the bonuses of a mythical Dragon Stone in the Dragon Stone Alchemy window (bonus change tab).
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Changes the name of the active pet (costs an additional 100.000 Yang).
 Zmienić bonusy tego przedmiotu jeden raz?	Switch the bonuses of this item once?
 Zmień cenę	Change price
@@ -2584,6 +2992,7 @@ Zwiększa otrzymywane Punkty Doświadczenia o 50% na 2 godziny.	Increases Experi
 Zwiększa otrzymywane Punkty Doświadczenia o 50% na 30 minut.	Increases Experience Points gained by 50% for 30 minutes.
 Zwiększa otrzymywane Punkty Doświadczenia o 50% na 60 minut. Przedmiot ten jest zdatny do handlu.	Increases the Experience Points you receive by 50% for 60 minutes. This item is tradeable.
 Zwiększa otrzymywane Punkty Doświadczenia o 50% przez 1 godzinę.	Increases Experience Points gained by 50% for 1 hour.
+Zwiększa otrzymywane doświadczenie o 10% na 10 minut.	Increases the experience you receive by 10% for 10 minutes.
 Zwiększa prędkość poruszania się oraz przyspiesza tempo odnowienia umiejętności. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Increases movement speed and speeds up skill cooldowns. Can be cast on another player. Bonus when used on yourself.
 Zwiększa siłę ataku.	Increases attack power.
 Zwiększa szanse na krytyczne uderzenie. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Increases critical hit chance. Can be cast on another player. Bonus when used on yourself.
@@ -2600,6 +3009,9 @@ Zwiększa szybkość poruszania się. Zwiększa regenerację staminy w walce. S�
 Zwiększa twoją Szybkość Ataku o 10% na okres 30 minut.	Increases your Attack Speed by 10% for 30 minutes.
 Zwiększa twoją Szybkość Ataku o 10% na okres 30 minut. Przedmiot ten jest zdatny do handlu.	Increases your Attack Speed by 10% for 30 minutes. This item is tradeable.
 Zwiększa twoją Szybkość Ataku o 15% na okres 30 minut. Efekt utrzymuje się po śmierci.	Increases your Attack Speed by 15% for 30 minutes. The effect persists after death.
+Zwiększa twoją odporność na ciemność o 10% na 10 minut.	Increases your darkness resistance by 10% for 10 minutes.
+Zwiększa twoją odporność na lód o 10% na 10 minut.	Increases your ice resistance by 10% for 10 minutes.
+Zwiększa twoją odporność na ziemię o 10% na 10 minut.	Increases your earth resistance by 10% for 10 minutes.
 Zwiększa wartość magicznego ataku na małżeństwo przez 3 godziny maksymalnie o 10%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.	Increases the married couple's magic attack value by up to 10% for 3 hours when worn by one of the partners. The item's effect depends on the percentage of Love Points. If the couple has e.g. 50% Love Points, the maximum effect is halved.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Increases physical and magic damage dealt. Can be cast on another player. Bonus when used on yourself.
 Zwiększa zadawane obrażenia fizyczne oraz kradnie PŻ od przeciwnika.	Increases physical damage dealt and steals HP from the enemy. 
@@ -2609,6 +3021,7 @@ Zwiń pasek	Collapse Bar
 Zwoje i Marmury	Scrolls and Marbles
 Zwoje i bonusy	Scrolls and bonuses
 Zwoje i księgi	Scrolls & Books
+Zwraca gildii wszystkie punkty rozdane na jej umiejętności (bez umiejętności Balathora). | Czyta tylko lider gildii.	Refunds to the guild all points spent on its skills (except Balathor skills). | Only the guild leader can read it.
 Zwykłe Mikstury	Regular Potions
 Zwykły sklep	Regular shop
 Zwykły sklep | %s	Regular shop | %s
@@ -2785,6 +3198,8 @@ zrzutka %d %d	zrzutka %d %d
 Łowca	Hunter
 Łowienie i kopanie	Fishing and mining
 Łucznik	Archer
+Łuk wypełniony mocą mrocznego smoka.	A bow filled with the power of the dark dragon.
+Łup z Ruin Atlantydy. Otwórz, aby zobaczyć, co skrywały głębiny.	Loot from the Ruins of Atlantis. Open it to see what the depths were hiding.
 Ściąga do ciebie grupy potworów z okolicy.	Pulls groups of monsters from the area to you.
 Śni. Czapa Niedźwiedzia+	Snow Bear Hat+
 Śnie. Czapa Niedźwiedzia	Snow Bear Hat
@@ -2800,6 +3215,7 @@ zrzutka %d %d	zrzutka %d %d
 Świadectwo Moy	Moa Certificate
 Świadectwo Zmiany	Certificate of Reversal
 Świadectwo Zmiany+	Certificate of Reversal+
+Świetnie nadaje się do upieczenia nad ogniskiem.	Perfect for grilling over a campfire.
 Świąteczna Brązowa Skrzynia Okey	Christmas Bronze Okey Chest
 Świąteczna Srebrna Skrzynia Okey	Christmas Silver Okey Chest
 Świąteczna Złota Skrzynia Okey	Christmas Golden Okey Chest
@@ -2809,5 +3225,7 @@ zrzutka %d %d	zrzutka %d %d
 Świąteczne Rumi (Okey)	Christmas Rummy (Okey)
 Święty Miecz Bogów+	Holy Sword of the Gods+
 Święty Odłamek	Holy Powershard
+Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	A sacred flower from the garden of the Dragon God. It is used to upgrade equipment.
 şó ĹĄşę	şó ĹĄşę
+Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	No ravens were harmed in the making of this weapon. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	None: turns off Companion messages. Important: full inventory, backpack, valuables.
