@@ -189,7 +189,7 @@ def main():
         for src, sp, st in sides:
             for dom, key, a, b in pairs(sp, st, o_en if src == 'owsap' and code != 'en' else None):
                 b_clean = b.strip() if dom != 'file' else b
-                if L.FORBIDDEN.search(b_clean) and not L.FORBIDDEN.search(a):
+                if L.FORBIDDEN.search(b_clean):
                     stats['forbidden'] += 1
                     continue
                 if not L.same_placeholders(a, b_clean):

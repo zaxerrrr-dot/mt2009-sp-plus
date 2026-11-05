@@ -1101,7 +1101,8 @@ class LoginWindow(ui.ScriptWindow):
 		if self.staleExeDialog:
 			self.staleExeDialog.Hide()
 		dlg = uiCommon.PopupDialog()
-		dlg.SetText(STALE_EXE_TEXT["pl"] if __import__("mt2009lang").IsSource() else STALE_EXE_TEXT["en"])
+		# MT2009_PLUS_LANG_V1: the Polish text; the dialog's lines pass the language sink (mt2009lang)
+		dlg.SetText(STALE_EXE_TEXT["pl"])
 		dlg.Open()
 		self.staleExeDialog = dlg
 

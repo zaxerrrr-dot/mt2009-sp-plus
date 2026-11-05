@@ -199,6 +199,18 @@ def same_placeholders(pl, tr):
     return a2 == b2
 
 
+_NUM = re.compile(r'(?<![%.\w])\d+(?:[.,]\d+)?')
+
+
+def numbers(s):
+    """the numbers of a text (not those of a %-placeholder or of a word like M1 / x2)"""
+    return _NUM.findall(s)
+
+
+def num_key(s):
+    return _NUM.sub('#', norm_key(s))
+
+
 _REFINE = re.compile(r'^(.*?)(\s*\+\s*\d+)$')
 
 
@@ -209,8 +221,10 @@ def split_refine(name):
     return name, ''
 
 
-FORBIDDEN = re.compile(r'metin\s*2|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|resmi|tieru|ameria|'
-                       r'metin2alerts', re.I)
+# never in a translation (the owner's rule for player-facing text in any language); the project's own domain metin2sp.pl
+# is not the game's name. A Polish source with one of them gets a translation without it (or none).
+FORBIDDEN = re.compile(r'metin\s*2(?!sp)|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|\bresm[iî]\b|tieru|'
+                       r'ameria|metin2alerts|επίσημ|رسمي', re.I)
 
 # ---------------------------------------------------------------- translation store
 
@@ -240,6 +254,14 @@ class Store(object):
                         self.tm[norm_key(r[0])] = r[1]
         for k, v in self.tm.items():
             self.tm_loose.setdefault(k.lower(), v)
+        # numeric templates: a text that differs only in its numbers ("Restores 600 HP." / "Restores 230 HP.") reuses
+        # a translation whose numbers are the Polish ones in the same order
+        self.tm_num = {}
+        for k, v in sorted(self.tm.items()):
+            nk = numbers(k)
+            # not for ordinals / units glued to a number ("1st", "2nd", "3x") - they change with the number
+            if nk and numbers(v) == nk and not re.search(r'\d[^\W\d_]', v, re.UNICODE):
+                self.tm_num.setdefault(num_key(k), _NUM.split(v))
 
     def candidates(self, domain, key, pl):
         """(text, how) of every table hit, best first: keyed (same / similar Polish), tm (exact, folded case),
@@ -265,6 +287,15 @@ class Store(object):
             if suf:
                 for t, how in self.candidates(domain, None, base):
                     yield t + suf.replace(' ', ''), 'base'
+        nums = numbers(nk)
+        if nums:
+            parts = self.tm_num.get(num_key(nk))
+            if parts is not None and len(parts) == len(nums) + 1:
+                out = [parts[0]]
+                for n, lit in zip(nums, parts[1:]):
+                    out.append(n)
+                    out.append(lit)
+                yield ''.join(out), 'num'
 
     def lookup(self, domain, key, pl):
         for t, how in self.candidates(domain, key, pl):
@@ -297,7 +328,7 @@ class Resolver(object):
             if store is None:
                 continue
             for t, how in store.candidates(domain, key, pl):
-                if not same_placeholders(pl, t) or (FORBIDDEN.search(t) and not FORBIDDEN.search(pl)):
+                if not same_placeholders(pl, t) or FORBIDDEN.search(t):
                     if count:
                         self.refused.append((store.code, domain, key, pl, t))
                     continue

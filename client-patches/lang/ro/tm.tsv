@@ -1,11 +1,915 @@
 # OUR translations (merge_translations.py; edit freely - they win over tm_orig.tsv)
 # Polish text	translation
+(Auction)	(Licitație)
+10% or more	10% sau mai mult
+100% szans na przeczytanie	100% șanse de citire
+15% or more	15% sau mai mult
+1927 Imha (k)	1927 Imha (f)
+1927 Imha+ (k)	1927 Imha+ (f)
+20% or more	20% sau mai mult
+25% only	doar 25%
+AC Miryang (k)	AC Miryang (f)
+AC Miryang+ (k)	AC Miryang+ (f)
+AFC Yayang+ (k)	AFC Yayang+ (f)
+Accept	Acceptă
+Aktywny pet zapomina wszystkie umiejętności (miejsca zostają otwarte).	Însoțitorul activ uită toate abilitățile (sloturile rămân deblocate).
+Alchemy	Alchimie
+Alchemy Grade:	Grad alchimie:
+All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Toate obiectele care nu încap în inventar vor fi mutate în Seiful de Cumpărături. Vrei să continui?
+All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Toate |cFFFFFF99|h{}|r vor fi mutate în inventar sau în Seiful de Cumpărături. Vrei să continui?
+Amulet Wojownika	Amuleta Războinicului
+Amulet wzmacniający odwagę noszącego.	Amuletă care întărește curajul purtătorului.
+Ancient	Antic
+Armor	Armură
+Aromatyczna zupa grzybowa, przywraca siły zmęczonym wędrowcom.	O supă aromată de ciuperci, redă puterile drumeților obosiți.
+Artefakt wzmacniający czarną magię, zdobywany z piekielnych otchłani.	Un artefact care întărește magia neagră, obținut din abisurile infernale.
+Auction	Licitație
+Auction List	Lista licitațiilor
+Auctions	Licitații
+Auto Łowy (8h)	Vânătoare Automată (8h)
+Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Îți reface automat PM-ul. Conține 1.000.000 PM.
+Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Îți reface automat PM-ul. Conține 100.000 PM.
+Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	Îți reface automat PM-ul. Conține 300.000 PM.
+Automatycznie regeneruje twoje PE. Objętość 700.000 PE.	Îți reface automat PM-ul. Conține 700.000 PM.
+Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Îți reface automat PV-ul. Conține 1.000.000 PV.
+Automatycznie regeneruje twoje PŻ. Objętość 10.000.000 PŻ.	Îți reface automat PV-ul. Conține 10.000.000 PV.
+Automatycznie regeneruje twoje PŻ. Objętość 3.000.000 PŻ.	Îți reface automat PV-ul. Conține 3.000.000 PV.
+Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	Îți reface automat PV-ul. Conține 7.000.000 PV.
+Average Price: |cFF99FF99|hRequesting...|r	Preț mediu: |cFF99FF99|hSe solicită...|r
+Average Price: |cFFFF9999|hNot available|r	Preț mediu: |cFFFF9999|hIndisponibil|r
+Average Price: |cFFFFFF99|h{}|r	Preț mediu: |cFFFFFF99|h{}|r
+Bardzo naturalna fryzura z włosami do ramion. Na stałe zmienia fryzurę Twojej postaci.	O coafură foarte naturală, cu părul până la umeri. Schimbă definitiv coafura caracterului tău.
+Bell	Clopot
+Bezcenna peleryna używana przez wielu uciekinierów. Gdy ją założysz, twoja ranga zostanie ukryta.	O pelerină neprețuită, folosită de mulți fugari. Când o porți, rangul tău va fi ascuns.
+Bi-Pung	Bi-Pung
+Bi-Sang-Gab	Bi-Sang-Gab
+Bilet na jeden obrót Kołem Fortuny (F12). Kupisz go w ItemShopie za Smocze Monety.	Un bilet pentru o rotire a Roții Norocului (F12). Îl poți cumpăra din ItemShop cu Monede Dragon.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków, jak również w Twierdzy Czerwonego Smoka. Wystarczy pokazać go odpowiedniemu strażnikowi. Przedmiot ten jest niezdatny do handlu.	Acest bilet îți permite să intri la un nou nivel al Temniței Păianjenilor, precum și al Fortăreței Dragonului Roșu. Este suficient să-l arăți gardianului potrivit. Obiectul nu poate fi negociat.
+Bilet ten umożliwia dostanie się na nowy poziom w Lochu Pająków.	Acest bilet îți permite să intri la un nou nivel al Temniței Păianjenilor.
+Blade	Lamă
+Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Blochează experiența obținută, inclusiv recompensele din misiuni. Experiența obținută cât timp durează efectul se pierde definitiv!
+Body	Corp
+Book	Carte
+Borussia Chunjo (k)	Borussia Chunjo (f)
+Borussia Chunjo+ (k)	Borussia Chunjo+ (f)
+Bow	Arc
+Brillant	Strălucitor
+Buy	Cumpără
+By accepting the offer you will receive the price offered in exchange for the item. Do you want to accept the offer?	Dacă accepți oferta, vei primi prețul oferit în schimbul obiectului. Vrei să accepți oferta?
+Bąk miotający iskry.	Un titirez care aruncă scântei.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Binecuvântare care îți reface imediat Punctele de Viață la 100%. Poate fi folosită o dată la 2 minute. Are timp de reîncărcare comun cu Licorile Invulnerabilității și Intangibilității.
+Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Binecuvântare care îți reface imediat Punctele de Viață și Punctele de Mana la 100%. Poate fi folosită o dată la 2 minute. Are timp de reîncărcare comun cu Licorile Invulnerabilității și Intangibilității.
+CFR Smoczy Ogień 07 (k)	CFR Focul Dragonului 07 (f)
+CFR Smoczy Ogień 07 (m)	CFR Focul Dragonului 07 (m)
+CFR Smoczy Ogień 07+ (k)	CFR Focul Dragonului 07+ (f)
+CFR Smoczy Ogień 07+ (m)	CFR Focul Dragonului 07+ (m)
+Cancel	Anulează
+Cancel Filters	Anulează filtrele
+Cancel Shop	Închide magazinul
+Cannot make private offers for item that costs less than 10.000 yangs.	Nu poți face oferte private pentru obiecte care costă mai puțin de 10.000 Yang.
+Certyfikat Duszy	Certificatul Sufletului
+Chung-Zin	Chung-Zin
+Ciągliwość	Maleabilitate
+Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Un vârf de săgeată greu, făcut din piatră rezistentă. Deși mai lent, oferă lovituri puternice și este perfect pentru a străpunge armurile groase.
+Claim Items	Ridică obiectele
+Claim Money	Ridică banii
+Claw	Gheară
+Continue	Continuă
+Costume	Costum
+Create	Creează
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (biały).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (alb).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (czerwony).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (roșu).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (niebieski).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (albastru).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (gri).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (verde).
+Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (auriu).
+Czarna Stal	Oțel Negru
+Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Căciulă neagră cu urechi de iepure pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Czerwone Nasiono	Sămânță Roșie
+Czysta esencja z serca najgłębszych źródeł.	Esență pură din inima celor mai adânci izvoare.
+Daeyami FC (k)	Daeyami FC (f)
+Daeyami FC+ (k)	Daeyami FC+ (f)
+Dagger	Pumnal
+Daje aktywnemu petowi 5% doświadczenia potrzebnego na następny poziom.	Îi oferă însoțitorului activ 5% din experiența necesară pentru nivelul următor.
+Daje aktywnemu petowi 800.000 punktów doświadczenia.	Îi oferă însoțitorului activ 800.000 de puncte de experiență.
+Daje: +30% PD, +20% obrony przed surami, +20% obrony przed szamanami, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Oferă: +30% EXP, +20% apărare împotriva sura, +20% apărare împotriva șamanilor, +30% putere împotriva monștrilor, +10% PV max., +10% PM max.
+Daje: +30% PD, +20% obrony przed wojownikami, +20% obrony przed ninja, +30% siły przeciwko potworom, +10% maks. PŻ, +10% maks. PE.	Oferă: +30% EXP, +20% apărare împotriva războinicilor, +20% apărare împotriva ninja, +30% putere împotriva monștrilor, +10% PV max., +10% PM max.
+Daje: +50% PD, +30% ataku, +20% szybkości ataku, +20% szybkości zaklęć, +10% maks. PŻ, +10% maks. PE.	Oferă: +50% EXP, +30% atac, +20% viteză de atac, +20% viteză de vrăjire, +10% PV max., +10% PM max.
+Demoniczny Klucz	Cheie Demonică
+Deny	Respinge
+Diabelskie Rogi	Coarne de Diavol
+Do you want to buy all |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	Vrei să cumperi toate |cFFFFFF99|h{}|r vândute la |cFFFFFF99|h{}|r?
+Do you want to buy |cFFFFFF99|h{}|r sold at |cFFFFFF99|h{}|r?	Vrei să cumperi |cFFFFFF99|h{}|r vândut la |cFFFFFF99|h{}|r?
+Do you want to move the shop to your current location? The operation will cost |cFFFFFF99|h{}|r.	Vrei să muți magazinul în locul în care te afli? Operațiunea va costa |cFFFFFF99|h{}|r.
+Do you want to transfer all items to your inventory?	Vrei să muți toate obiectele în inventar?
+Dobra Wytrzymałość	Rezistență Bună
+Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twojej postaci.	Coafura binecunoscută a războinicilor străvechi. Schimbă definitiv coafura caracterului tău.
+Dodaje aktywnemu petowi 7 dni energii życiowej (najwyżej 84). Pet bez energii nie może zostać przywołany.	Îi oferă însoțitorului activ 7 zile de energie vitală (maxim 84). Un însoțitor fără energie nu poate fi chemat.
+Dowód na ujarzmienie siły trzech dusz – niezbędny do przebudzenia mocy Elitarnych Kamieni Duszy.	Dovada stăpânirii puterii a trei suflete – necesară pentru trezirea puterii Pietrelor Spiritului de Elită.
+Doyyumhwan CF (k)	Doyyumhwan CF (f)
+Doyyumhwan CF+ (k)	Doyyumhwan CF+ (f)
+Drewniany Klucz	Cheie de Lemn
+Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Un inel prețios împodobit cu jad și turcoaz. Oferă: +50% EXP, +30% putere împotriva monștrilor, +20% viteză de atac și de vrăjire, +10% PV și PM max.
+Dusza wojownika, obdarzona mocą.	Sufletul unui războinic, înzestrat cu putere.
+Działają kojąco na skórę. Stosowane w leczeniu oparzeń i podrażnień	Calmează pielea. Se folosesc la tratarea arsurilor și iritațiilor
+Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Datorită acestei licori vei aduna cu 150% mai multă experiență în 3 ore de joc. Nu poate fi negociată.
+Dzięki tej pieczęci możesz przywołać jednorożca.	Cu ajutorul acestui sigiliu poți chema un unicorn.
+Dzięki tej pieczęci możesz przywołać marę senną.	Cu ajutorul acestui sigiliu poți chema un coșmar.
+Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Cu ajutorul acestui sigiliu îți poți chema animăluțul.
+Dzięki tej pieczęci z jaja wykluje się Sheldon.	Datorită acestui sigiliu, Sheldon va ieși din ou.
+Długie blond włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, blond. Schimbă definitiv coafura caracterului tău.
+Długie włosy, tradycjonalna fryzura. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, coafură tradițională. Schimbă definitiv coafura caracterului tău.
+Długie, brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, castaniu. Schimbă definitiv coafura caracterului tău.
+Długie, czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, negru. Schimbă definitiv coafura caracterului tău.
+Długie, czerwone włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, roșu, în stil extravagant. Schimbă definitiv coafura caracterului tău.
+Długie, fioletowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, violet, în stil extravagant. Schimbă definitiv coafura caracterului tău.
+Długie, fioletowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, violet. Schimbă definitiv coafura caracterului tău.
+Długie, hebanowe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, abanos, în stil extravagant. Schimbă definitiv coafura caracterului tău.
+Długie, nieskazitelnie białe włosy w ekstrawaganckim stylu. Na stałe zmienia fryzurę Twojej postaci.	Păr lung, alb imaculat, în stil extravagant. Schimbă definitiv coafura caracterului tău.
+Earrings	Cercei
+Efekt nie jest do końca znany, może wywoływać halucynacje.	Efectul nu este pe deplin cunoscut, poate provoca halucinații.
+Efekt nie łączy się z bonusami Konta Premium. Nie jest to przedmiot, po zakupie pakiet jest nadany na konto.	Efectul nu se cumulează cu bonusurile Contului Premium. Nu este un obiect: după cumpărare, pachetul este adăugat contului.
+Eggs	Ouă
+Egzotyczne mięso, znane ze swojego smaku.	Carne exotică, cunoscută pentru gustul ei.
+Ekstrawagancka fryzura - typowa dla kobiet sura. Na stałe zmienia fryzurę Twojej postaci.	O coafură extravagantă - tipică pentru femeile sura. Schimbă definitiv coafura caracterului tău.
+Elegancka, gładka fryzura. Na stałe zmienia fryzurę Twojej postaci.	O coafură elegantă și netedă. Schimbă definitiv coafura caracterului tău.
+Esencja Magii	Esența Magiei
+Esencja Natury	Esența Naturii
+Esencja Wody	Esența Apei
+Ezoteryczne Drewno	Lemn Ezoteric
+FC Bakra (k)	FC Bakra (f)
+FC Bakra+ (k)	FC Bakra+ (f)
+FC Bawaria Hwang+ (k)	FC Bavaria Hwang+ (f)
+FC Bawaria Hwang+ (m)	FC Bavaria Hwang+ (m)
+FC Bokjung (k)	FC Bokjung (f)
+FC Bokjung+ (k)	FC Bokjung+ (f)
+FC Bokjung+ (m)	FC Bokjung+ (m)
+FC Gumsan (k)	FC Gumsan (f)
+FC Gumsan+ (k)	FC Gumsan+ (f)
+FC Jinno 04 (k)	FC Jinno 04 (f)
+FC Jinno 04+ (k)	FC Jinno 04+ (f)
+FC Ognista Ziemia+ (k)	FC Țara de Foc+ (f)
+FC Ognista Ziemia+ (m)	FC Țara de Foc+ (m)
+FC Sangsun Dong (k)	FC Sangsun Dong (f)
+FC Sangsun Dong+ (k)	FC Sangsun Dong+ (f)
+FC Sangsun Dong+ (m)	FC Sangsun Dong+ (m)
+FC St. Seungryong (k)	FC St. Seungryong (f)
+FC St. Seungryong+ (k)	FC St. Seungryong+ (f)
+Fan	Evantai
+Filters History	Istoricul filtrelor
+Fish	Pește
+Fryzura nadająca Ci mroczny wygląd. Na stałe zmienia fryzurę Twojej postaci.	O coafură care îți dă un aspect întunecat. Schimbă definitiv coafura caracterului tău.
+Fryzura układana warstwami. Na stałe zmienia fryzurę Twojej postaci.	O coafură în straturi. Schimbă definitiv coafura caracterului tău.
+Fryzura wyglądająca jak ogonek kucyka. Na stałe zmienia fryzurę Twojej postaci.	O coafură care arată ca o coadă de ponei. Schimbă definitiv coafura caracterului tău.
+Fryzura z długim kucykiem. Na stałe zmienia fryzurę Twojej postaci.	O coafură cu o coadă de cal lungă. Schimbă definitiv coafura caracterului tău.
+Fryzura z kucykiem. Na stałe zmienia fryzurę Twojej postaci.	O coafură cu coadă de cal. Schimbă definitiv coafura caracterului tău.
+Futro przeklętego wilka	Blana Lupului Blestemat
+GNK Kuahlo Dong (k)	GNK Kuahlo Dong (f)
+GNK Kuahlo Dong+ (k)	GNK Kuahlo Dong+ (f)
+Gang-Ma	Gang-Ma
+Gang-Ryoung-Gab	Gang-Ryoung-Gab
+Gałąź wciąż bijąca życiem, tętniąca energią.	O ramură în care încă bate viața, pulsând de energie.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa nawet gdy jesteś wylogowany.	Cât timp îi porți, Viteza de Mișcare a caracterului tău crește cu 30. Timpul curge chiar și când ești deconectat.
+Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30. Czas upływa tylko kiedy buty są założone.	Cât timp îi porți, Viteza de Mișcare a caracterului tău crește cu 30. Timpul curge doar cât timp papucii sunt purtați.
+Geuk-Hon-Gab	Geuk-Hon-Gab
+Glewia	Glaive
+Gorące wino z przyprawami, które przez 30 minut obdarzy cię następującymi bonusami: +10% szybkości, +5% obrażeń i +10% doświadczenia.	Vin fiert cu mirodenii care îți oferă timp de 30 de minute următoarele bonusuri: +10% viteză, +5% daune și +10% experiență.
+Gourou	Gourou
+Grawerunek na pierścieniu głosi: "Niech błogosławi Cię Bóg Smoków". Pierścień ten obniża ryzyku utracenia przedmiotu w walce.	Gravura de pe inel spune: „Fie ca Zeul Dragon să te binecuvânteze”. Acest inel reduce riscul de a pierde un obiect în luptă.
+Grot z czystego srebra, znany ze swojej skuteczności przeciwko istotom magicznym. Łucznicy używają go, aby zmierzyć się z najpotężniejszymi przeciwnikami.	Un vârf de săgeată din argint pur, cunoscut pentru eficiența sa împotriva ființelor magice. Arcașii îl folosesc pentru a înfrunta cei mai puternici adversari.
+Gwarancja Rzemiosła (Biżuteria)	Garanția Meșteșugului (Bijuterii)
+Gwarancja Rzemiosła (Broń)	Garanția Meșteșugului (Armă)
+Gwarancja Rzemiosła (Zbroja)	Garanția Meșteșugului (Armură)
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	O garanție a meșteșugului pe care o respectă Fierarul din fiecare sat. Folosește-o pe un obiect pentru a-l îmbunătăți.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	O garanție a meșteșugului pe care o respectă Fierarul din fiecare sat. Folosește-o pe un obiect pentru a-l îmbunătăți. Nu funcționează pe armele de nivel 30. Obiectul poate fi distrus.
+Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	O garanție a meșteșugului pe care o respectă Fierarul din fiecare sat. Folosește-o pe un obiect pentru a-l îmbunătăți. Obiectul poate fi distrus.
+Ha-An-Gab	Ha-An-Gab
+Hairs	Coafuri
+Hasun Dong FC (k)	Hasun Dong FC (f)
+Hasun Dong FC+ (k)	Hasun Dong FC+ (f)
+Helm	Coif
+Heuk-Gui-Gab	Heuk-Gui-Gab
+History	Istoric
+Ho-Gu	Ho-Gu
+Ho-Young	Ho-Young
+Inna Wroga Wytrzymałość	Altă Rezistență Inamică
+Insert Price	Introdu prețul
+Inserted an invalid price.	Ai introdus un preț nevalid.
+Item inserted into the shopping safebox.	Obiectul a fost pus în Seiful de Cumpărături.
+Jest to lizak o tajemniczym składzie. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	O acadea cu o compoziție misterioasă. Oferă: +50% EXP, +20% viteză de atac, +20% viteză de vrăjire, +30% atac, +10% PV max., +10% PM max.
+Jewel	Bijuterie
+Juventus Yongbi (k)	Juventus Yongbi (f)
+Juventus Yongbi+ (k)	Juventus Yongbi+ (f)
 Język	Limbă
 Język / Language	Limbă / Language
 Język klienta: %s	Limba clientului: %s
+Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	O tăbliță de piatră cu rune străvechi. Emană o energie necunoscută.
+Kamień Przebudzenia	Piatra Trezirii
+Kamień Tygrysa	Piatra Tigrului
+Kamień oczyszczony z wszelkiej skazy - kluczowy w procesie uszlachetniania Kamieni Duszy.	O piatră curățată de orice defect - esențială în procesul de rafinare a Pietrelor Spiritului.
+Kamień z mocą tygrysa, klucz do rytuałów i ochrony. Przedmiot z misji.	O piatră cu puterea tigrului, cheia ritualurilor și a protecției. Obiect de misiune.
+Kamień z serca ziemi.	O piatră din inima pământului.
+Karta Wędkarska	Permis de Pescuit
+Karta do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich kart - 25 kart tworzy Talię Królewską. Karty i talie przepadają, gdy zacznie się następny event.	O carte pentru jocul Prinde Regele. Dă click dreapta în timpul evenimentului pentru a o adăuga la cărțile tale - 25 de cărți formează un Pachet Rege. Cărțile și pachetele dispar când începe următorul eveniment.
+Karta do gry w Okey. Kliknij prawym przyciskiem w czasie eventu Okey, aby dodać ją do kart (24 karty tworzą zestaw kart).	O carte de joc Okey. Dă click dreapta în timpul evenimentului Okey pentru a o adăuga la cărțile tale (24 de cărți formează un set de cărți).
+Kiedyś ta brązowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Cândva, această coafură legată, castanie, era pieptănătura tradițională a războinicilor. Schimbă definitiv coafura caracterului tău.
+Kiedyś ta czerwona wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Cândva, această coafură legată, roșie, era pieptănătura tradițională a războinicilor. Schimbă definitiv coafura caracterului tău.
+Kiedyś ta fioletowa wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Cândva, această coafură legată, violetă, era pieptănătura tradițională a războinicilor. Schimbă definitiv coafura caracterului tău.
+Kiedyś ta jasna wiązana fryzura była tradycyjnym uczesaniem wojowników. Na stałe zmienia fryzurę Twojej postaci.	Cândva, această coafură legată, deschisă la culoare, era pieptănătura tradițională a războinicilor. Schimbă definitiv coafura caracterului tău.
+Kiepsko wyglądający pierścień noszony przez starożytnych bohaterów. Zdobywasz więcej punktów doświadczenia przez godzinę. | Nie może być zdjęty.	Un inel cu aspect jalnic, purtat de eroii străvechi. Obții mai multe puncte de experiență timp de o oră. | Nu poate fi scos.
+Kliknij prawym przyciskiem, aby dodać pień do gry Yutnori. 28 pni łączy się w planszę do Yutnori. Działa tylko w czasie eventu.	Dă click dreapta pentru a adăuga bețișorul la jocul Yut Nori. 28 de bețișoare formează o tablă de Yut Nori. Funcționează doar în timpul evenimentului.
+Kliknij prawym przyciskiem, aby dodać planszę do gry Yutnori (okno wydarzeń lub Stół do Yutnori). Jedna gra kosztuje planszę i 30 000 Yang.	Dă click dreapta pentru a adăuga o tablă de Yut Nori (fereastra evenimentelor sau Masa de Yut Nori). Un joc costă o tablă și 30 000 Yang.
+Kliknij prawym przyciskiem, aby przyjąć peta z transportera (najwyżej 3 pety na postać). Nie sprzedawaj go w sklepie NPC - pet by przepadł.	Click dreapta pentru a scoate însoțitorul din cușca de transport (maxim 3 însoțitori pe caracter). Nu o vinde la un magazin NPC - însoțitorul s-ar pierde.
+Kliknij prawym przyciskiem, aby wykluć peta (Czerwony Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Dragonel Roșu, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Małpka, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Maimuțică, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Mały Baashido, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Micul Baashido, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Nemere, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Mini Nemere, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Mini Razador, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Mini Razador, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Nessie, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Nessie, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Pajączek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Păianjenel, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Pisklę Exedyara, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Puiul lui Exedyar, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Kliknij prawym przyciskiem, aby wykluć peta (Smoczek, 100.000 yang). Pet przywołany obok peta z ItemShopu zdobywa doświadczenie razem z tobą, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.	Click dreapta pentru a cloci însoțitorul (Dragonel, 100.000 Yang). Însoțitorul chemat lângă însoțitorul din ItemShop câștigă experiență împreună cu tine, evoluează și îți oferă bonusuri. Fereastra însoțitorului: /newpet sau butonul de pe bară.
+Klucz Mrozu	Cheia Gerului
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby dotrzeć do Lodowego Filaru.	O cheie din Țara de Gheață. Folosește-o în temnița lui Nemere pentru a ajunge la Stâlpul de Gheață.
+Klucz z Lodowej Krainy. Użyj go w lochu Nemere, aby otworzyć dalsze przejście.	O cheie din Țara de Gheață. Folosește-o în temnița lui Nemere pentru a deschide trecerea mai departe.
+Klucz z runami demonów, pozwala wejść do Wieży Demonów po osiągnięciu dziennego limitu wejść. Znika po 48 godzinach od zakupu.	O cheie cu rune demonice, îți permite să intri în Turnul Demonilor după ce ai atins limita zilnică de intrări. Dispare la 48 de ore de la cumpărare.
+Kobieca spinka do włosów. Przedmiot pochodzi z misji.	O agrafă de păr femeiască. Obiectul provine dintr-o misiune.
+Kolorowe jajko wielkanocne	Ou de Paște colorat
+Komplet Piłkarski w kolorze biało-czarnym dla niego. Daje ci min. jeden losowy bonus.	Kit de fotbal în alb și negru pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze biało-czarnym dla niej. Daje ci min. jeden losowy bonus.	Kit de fotbal în alb și negru pentru femei. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niego. Daje ci min. jeden losowy bonus.	Kit de fotbal în negru și portocaliu pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze czarno-pomarańczowym dla niej. Daje ci min. jeden losowy bonus.	Kit de fotbal în negru și portocaliu pentru femei. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze czerwono-złotym dla niego. Daje ci min. jeden losowy bonus.	Kit de fotbal în roșu și auriu pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze czerwono-złotym dla niej. Daje ci min. jeden losowy bonus.	Kit de fotbal în roșu și auriu pentru femei. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze granatowym dla niego. Daje ci min. jeden losowy bonus.	Kit de fotbal în bleumarin pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze granatowym dla niej. Daje ci min. jeden losowy bonus.	Kit de fotbal în bleumarin pentru femei. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niego. Daje ci min. jeden losowy bonus.	Kit de fotbal în galben și albastru pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Komplet Piłkarski w kolorze żółto-niebieskim dla niej. Daje ci min. jeden losowy bonus.	Kit de fotbal în galben și albastru pentru femei. Îți oferă cel puțin un bonus aleatoriu.
+Korzeń Czerwonego Lasu	Rădăcina Pădurii Roșii
+Kostium z czarnego pluszu dla niego. Daje ci min. jeden losowy bonus.	Costum din pluș negru pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Kostium z niebieskiego pluszu dla niego. Daje ci min. jeden losowy bonus.	Costum din pluș albastru pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Koszul. MŚ ALG (k/bonus)	Tricou CM ALG (f/bonus)
+Koszul. MŚ ALG (m/bonus)	Tricou CM ALG (m/bonus)
+Koszul. MŚ ARG (k/bonus)	Tricou CM ARG (f/bonus)
+Koszul. MŚ ARG (m/bonus)	Tricou CM ARG (m/bonus)
+Koszul. MŚ AUS (k/bonus)	Tricou CM AUS (f/bonus)
+Koszul. MŚ AUS (m/bonus)	Tricou CM AUS (m/bonus)
+Koszul. MŚ BEL (k/bonus)	Tricou CM BEL (f/bonus)
+Koszul. MŚ BEL (m/bonus)	Tricou CM BEL (m/bonus)
+Koszul. MŚ BIH (k/bonus)	Tricou CM BIH (f/bonus)
+Koszul. MŚ BIH (m/bonus)	Tricou CM BIH (m/bonus)
+Koszul. MŚ BRA (k/bonus)	Tricou CM BRA (f/bonus)
+Koszul. MŚ BRA (m/bonus)	Tricou CM BRA (m/bonus)
+Koszul. MŚ CHI (k/bonus)	Tricou CM CHI (f/bonus)
+Koszul. MŚ CHI (m/bonus)	Tricou CM CHI (m/bonus)
+Koszul. MŚ CIV (k/bonus)	Tricou CM CIV (f/bonus)
+Koszul. MŚ CIV (m/bonus)	Tricou CM CIV (m/bonus)
+Koszul. MŚ CMR (k/bonus)	Tricou CM CMR (f/bonus)
+Koszul. MŚ CMR (m/bonus)	Tricou CM CMR (m/bonus)
+Koszul. MŚ COL (m/bonus)	Tricou CM COL (m/bonus)
+Koszul. MŚ CRC (k/bonus)	Tricou CM CRC (f/bonus)
+Koszul. MŚ CRC (m/bonus)	Tricou CM CRC (m/bonus)
+Koszulka MŚ ALG (k)	Tricou CM ALG (f)
+Koszulka MŚ ALG (m)	Tricou CM ALG (m)
+Koszulka MŚ ARG (k)	Tricou CM ARG (f)
+Koszulka MŚ ARG (m)	Tricou CM ARG (m)
+Koszulka MŚ AUS (k)	Tricou CM AUS (f)
+Koszulka MŚ AUS (m)	Tricou CM AUS (m)
+Koszulka MŚ BEL (k)	Tricou CM BEL (f)
+Koszulka MŚ BEL (m)	Tricou CM BEL (m)
+Koszulka MŚ BIH (k)	Tricou CM BIH (f)
+Koszulka MŚ BIH (m)	Tricou CM BIH (m)
+Koszulka MŚ BRA (k)	Tricou CM BRA (f)
+Koszulka MŚ BRA (m)	Tricou CM BRA (m)
+Koszulka MŚ CHI (k)	Tricou CM CHI (f)
+Koszulka MŚ CHI (m)	Tricou CM CHI (m)
+Koszulka MŚ CIV (k)	Tricou CM CIV (f)
+Koszulka MŚ CIV (m)	Tricou CM CIV (m)
+Koszulka MŚ CMR (k)	Tricou CM CMR (f)
+Koszulka MŚ CMR (m)	Tricou CM CMR (m)
+Koszulka MŚ COL (k)	Tricou CM COL (f)
+Koszulka MŚ COL (m)	Tricou CM COL (m)
+Koszulka MŚ CRC (k)	Tricou CM CRC (f)
+Koszulka MŚ CRC (m)	Tricou CM CRC (m)
+Koszulka MŚ CRO (k)	Tricou CM CRO (f)
+Koszulka MŚ CRO (m)	Tricou CM CRO (m)
+Koszulka MŚ ECU (k)	Tricou CM ECU (f)
+Koszulka MŚ ECU (m)	Tricou CM ECU (m)
+Koszulka MŚ ENG (k)	Tricou CM ENG (f)
+Koszulka MŚ ENG (m)	Tricou CM ENG (m)
+Koszulka MŚ ESP (k)	Tricou CM ESP (f)
+Koszulka MŚ ESP (m)	Tricou CM ESP (m)
+Koszulka MŚ FRA (k)	Tricou CM FRA (f)
+Koszulka MŚ FRA (m)	Tricou CM FRA (m)
+Koszulka MŚ GER (k)	Tricou CM GER (f)
+Koszulka MŚ GER (m)	Tricou CM GER (m)
+Koszulka MŚ GHA (k)	Tricou CM GHA (f)
+Koszulka MŚ GHA (m)	Tricou CM GHA (m)
+Koszulka MŚ GRE (k)	Tricou CM GRE (f)
+Koszulka MŚ GRE (m)	Tricou CM GRE (m)
+Koszulka MŚ HON (k)	Tricou CM HON (f)
+Koszulka MŚ HON (m)	Tricou CM HON (m)
+Koszulka MŚ IRN (k)	Tricou CM IRN (f)
+Koszulka MŚ IRN (m)	Tricou CM IRN (m)
+Koszulka MŚ ITA (k)	Tricou CM ITA (f)
+Koszulka MŚ ITA (m)	Tricou CM ITA (m)
+Koszulka MŚ JPN (k)	Tricou CM JPN (f)
+Koszulka MŚ JPN (m)	Tricou CM JPN (m)
+Koszulka MŚ KOR (k)	Tricou CM KOR (f)
+Koszulka MŚ KOR (m)	Tricou CM KOR (m)
+Koszulka MŚ MEX (k)	Tricou CM MEX (f)
+Koszulka MŚ MEX (m)	Tricou CM MEX (m)
+Koszulka MŚ NED (k)	Tricou CM NED (f)
+Koszulka MŚ NED (m)	Tricou CM NED (m)
+Koszulka MŚ NGA (k)	Tricou CM NGA (f)
+Koszulka MŚ NGA (m)	Tricou CM NGA (m)
+Koszulka MŚ POR (k)	Tricou CM POR (f)
+Koszulka MŚ POR (m)	Tricou CM POR (m)
+Koszulka MŚ RUS (k)	Tricou CM RUS (f)
+Koszulka MŚ RUS (m)	Tricou CM RUS (m)
+Koszulka MŚ SUI (k)	Tricou CM SUI (f)
+Koszulka MŚ SUI (m)	Tricou CM SUI (m)
+Koszulka MŚ URU (k)	Tricou CM URU (f)
+Koszulka MŚ URU (m)	Tricou CM URU (m)
+Koszulka MŚ USA (k)	Tricou CM USA (f)
+Koszulka MŚ USA (m)	Tricou CM USA (m)
+Koszulka MŚ w barwach narodowych Chorwacji. Daje przynajmniej jeden losowy bonus.	Tricou de la Campionatul Mondial în culorile naționale ale Croației. Îți oferă cel puțin un bonus aleatoriu.
+Koszyk napełniony jajkami wielkanocnymi.	Un coș plin cu ouă de Paște.
+Kołczan pełen strzał, które nigdy się nie kończą. Załóż go w miejsce strzał: łuk ninja strzela bez zużywania strzał (obrażenia jak ze Srebrnej Strzały). Działa 14 dni od zakupu.	O tolbă plină cu săgeți care nu se termină niciodată. Echipeaz-o în locul săgeților: arcul ninja trage fără să consume săgeți (daune ca de la Săgeata de Argint). Valabilă 14 zile de la cumpărare.
+Kronika Rzemieślników	Cronica Meșteșugarilor
+Kryształ Lodu	Cristal de Gheață
+Kryształ z Lodowej Krainy. Oddaj go jednej z lodowych pieczęci w lochu Nemere.	Un cristal din Țara de Gheață. Predă-l unuia dintre sigiliile de gheață din temnița lui Nemere.
+Kryształowy pucharek pozwoli ci w kreatywny sposób zaprezentować lody. Pozwala przedłużyć Pierścień Wakacyjny o dodatkowy 1 dzień.|Istnieje szansa na niepowodzenie.	Cupa de cristal îți permite să prezinți înghețata într-un mod creativ. Îți permite să prelungești Inelul de Vacanță cu încă 1 zi.|Există o șansă de eșec.
+Królewska zbroja wojownika. Kostium tylko dla wojownika (postać męska). Działa 30 dni od zakupu.	Armura regală a războinicului. Costum doar pentru Războinic (caracter masculin). Valabil 30 de zile de la cumpărare.
+Krótka fryzura noszona w większości przez atletów. Na stałe zmienia fryzurę Twojej postaci.	O coafură scurtă, purtată mai ales de atleți. Schimbă definitiv coafura caracterului tău.
+Księga Erudyty	Tomul Eruditului
+Księga umiejętności peta: blok do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: blocare până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: inteligencja do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: inteligență până la 10. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: obrażenia umiejętności do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: paguba abilităților până la 5%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: obrona przed umiejętnościami do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la paguba abilităților până la 5%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: obrona przed średnimi obrażeniami do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la paguba medie până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: odporność na krytyczne do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la lovituri critice până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: odporność na lód, ziemię i ciemność do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la gheață, pământ și întuneric până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: odporność na przeszywające do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la lovituri pătrunzătoare până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: odporność na półludzi do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență împotriva semi-oamenilor până la 5%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: odporność na truciznę do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: rezistență la otravă până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: podwójne doświadczenie i przedmioty do 10%, yang do 20%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: experiență și obiecte duble până la 10%, Yang până la 20%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: silny przeciwko bossom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: puternic împotriva boșilor până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: silny przeciwko kamieniom Metin do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: puternic împotriva pietrelor Metin până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: silny przeciwko nieumarłym i diabłom do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: puternic împotriva strigoilor și diavolilor până la 15%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: silny przeciwko potworom do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: puternic împotriva monștrilor până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: silny przeciwko półludziom do 5%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: puternic împotriva semi-oamenilor până la 5%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: siła do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: putere până la 10. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: szybkość czarowania do 15%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: viteza de vrăjire până la 15%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: witalność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: vitalitate până la 10. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: zręczność do 10. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: dexteritate până la 10. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga umiejętności peta: średnie obrażenia do 10%. Pierwsza księga uczy umiejętności (poziom 1), każda następna podnosi jej poziom (najwyżej 20). Nowe miejsca na umiejętności otwiera ewolucja peta.	Carte de abilitate pentru însoțitor: paguba medie până la 10%. Prima carte învață abilitatea (nivelul 1), fiecare carte următoare îi crește nivelul (maxim 20). Sloturile noi pentru abilități se deblochează prin evoluția însoțitorului.
+Księga zawiera duszę starego kowala. Jeśli jej użyjesz, zwiększy to szansę na pomyślne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu jest redukowana o 1 poziom.	Cartea conține sufletul unui fierar bătrân. Dacă o folosești, crește cu 15% șansa de îmbunătățire reușită a obiectului. Obiectul nu este distrus dacă îmbunătățirea eșuează. În caz de eșec, calitatea obiectului scade cu 1 nivel.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana nawet przez niedoświadczonego wojownika.	O carte legată cu o curea de piele maro. Conține o misiune care poate fi îndeplinită chiar și de un războinic neexperimentat.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczone osoby.	O carte legată cu o curea de piele maro. Conține o misiune care poate fi îndeplinită doar de cei experimentați.
+Księga, która jest związana brązowym skórzanym paskiem. Zawiera misję, która może zostać wykonana tylko przez doświadczonych wojowników.	O carte legată cu o curea de piele maro. Conține o misiune care poate fi îndeplinită doar de războinici experimentați.
+Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	Voucher în valoare de 250 de Monede Dragon. Obiectul poate fi negociat.
+Legendarna książka, która usuwa z pamięci nauczoną umiejętność całkowicie. Możesz przenieść jeden punkt umiejętności.	Cartea legendară care șterge complet din memorie o abilitate învățată. Poți muta un punct de abilitate.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Normalnym Lochu Małp.	Iarbă legendară, mănânc-o pentru a te proteja de blestemul maimuțelor în Temnița Normală a Maimuțelor.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Trudnym Lochu Małp.	Iarbă legendară, mănânc-o pentru a te proteja de blestemul maimuțelor în Temnița Grea a Maimuțelor.
+Legendarne Zioło, zjedz je, aby uchronić się przed klątwą małp w Łatwym Lochu Małp.	Iarbă legendară, mănânc-o pentru a te proteja de blestemul maimuțelor în Temnița Ușoară a Maimuțelor.
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut.	O marmură legendară, binecuvântată. Dacă obiectul are 4 bonusuri, adaugă încă unul.
+Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut. Przedmiot niezdatny do handlu.	O marmură legendară, binecuvântată. Dacă obiectul are 4 bonusuri, adaugă încă unul. Obiectul nu poate fi negociat.
+Legendary	Legendar
+Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Leac pentru Râia Demonilor. Obiect necesar pentru o misiune.
+Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Un vârf de săgeată ușor și flexibil, făcut din bambus. Ideal pentru trageri rapide și precise, folosit de arcașii care prețuiesc mobilitatea și viteza.
+List Gończy	Afiș de Căutare
+Lodowata Maź	Mâzgă Înghețată
+Lodowy Klucz	Cheie de Gheață
+Lv. Max:	Nv. max.:
+Lv. Min:	Nv. min.:
+Ma-Ryoung-Sin-Gab	Ma-Ryoung-Sin-Gab
+Ma-Sin-Gab	Ma-Sin-Gab
+Magiczna Ruda	Minereu Magic
+Magiczny Pył	Praf Magic
+Magiczny amulet, który przywraca czystość skażonym wodom.	Amuletă magică ce redă puritatea apelor contaminate.
+Marmur regenerujący trochę Punktów Życia.	Marmură care reface puține Puncte de Viață.
+Maska Ezoteryka jest mistycznym artefaktem, który od wieków noszony był przez adeptów tajemnych sztuk związanych z kultem Boga Tygrysa Sabaha. Ręcznie malowane wzory, inspirowane duchowymi wizjami ezoteryków, symbolizują połączenie ze światem duchów i zrozumienie mistycznych sił.	Masca Ezotericului este un artefact mistic, purtat de secole de adepții artelor oculte legate de cultul Zeului Tigru Sabah. Modelele pictate de mână, inspirate de viziunile spirituale ale ezotericilor, simbolizează legătura cu lumea spiritelor și înțelegerea forțelor mistice.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 0-29.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 105-119.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 120 și peste.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 30-39.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 40-49.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 40-49.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 50-59.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 50-59.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 60-74.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 75-89.
+Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 90-104.
+Materiały Rzemieślnicze	Materiale de Meșteșug
+Matowy Lód	Gheață Mată
+Matowy Lód+	Gheață Mată+
+Mikstura sporządzona z Soku Z Pokrzywy i Bzu. Zwiększa szansę na zadanie krytycznego ciosu o 10% na 3 minuty.	O licoare preparată din Suc de Floare Clopoțel și Liliac. Crește cu 10% șansa de a da o lovitură critică timp de 3 minute.
+Min. Raise	Supralicitare min.
+Mineral	Mineral
+Mini-wersja Generała Huashina daje ci o 5% wyższe szanse na zadanie przeszywającego ciosu i podwyższa twoje PŻ o 1500.	Versiunea în miniatură a Generalului Huashin îți oferă cu 5% mai multă șansă de a da o lovitură pătrunzătoare și îți crește PV-ul cu 1500.
+Mistyczna substancja ożywiająca florę i faunę lasu.	O substanță mistică ce dă viață florei și faunei pădurii.
+Mięso Demona	Carne de Demon
+Mięso niedźwiedzia, popularne w wioskach myśliwych.	Carne de urs, apreciată în satele vânătorilor.
+Mięso w stanie rozkładu, unikać kontaktu.	Carne în descompunere, evită contactul.
+Modna brązowa fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	O coafură șatenă la modă, cu o fundă frumoasă. Schimbă definitiv coafura caracterului tău.
+Modna czerwona fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	O coafură roșie la modă, cu o fundă frumoasă. Schimbă definitiv coafura caracterului tău.
+Modna jasna fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	O coafură deschisă la culoare, la modă, cu o fundă frumoasă. Schimbă definitiv coafura caracterului tău.
+Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej postaci.	O coafură albastră la modă, cu o fundă frumoasă. Schimbă definitiv coafura caracterului tău.
+Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Părul tuns la modă le permite șamanilor să-și exprime firea. Schimbă definitiv coafura caracterului tău.
+Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Păr tuns la modă, care le permite șamanilor să-și exprime firea. Schimbă definitiv coafura caracterului tău.
+Może być uszlachetniona do Niebiańskich Łez używając pieca gildii.	Poate fi rafinată în Lacrimi Cerești folosind cuptorul breslei.
+Może być uszlachetniony do Bursztynu używając pieca gildii bursztynu.	Poate fi rafinat în Chihlimbar folosind cuptorul de chihlimbar al breslei.
+Może być uszlachetniony do Diamentu używając pieca gildii.	Poate fi rafinat în Diamant folosind cuptorul breslei.
+Możesz zamienić się w potwora ukrytego w marmurze.	Te poți transforma în monstrul ascuns în marmură.
+Możesz zamienić się w potwora używając marmuru.	Te poți transforma într-un monstru folosind marmura.
+Mt2009	Mt2009
+Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Se spune că ce se află în acest cufăr este la fel de prețios ca și cufărul însuși.
+Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel G1 cu 90 inteligență.
+Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel M1 cu 90 inteligență.
+Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel P cu 90 inteligență.
+Nagroda za grę Złap Króla z wynikiem 550 punktów lub więcej i za miejsce w pierwszej dziesiątce rankingu. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc Prinde Regele cu un scor de 550 de puncte sau mai mult și pentru un loc în primii zece din clasament. Click dreapta pentru a deschide.
+Nagroda za grę Złap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc Prinde Regele cu un scor între 10 și 399 de puncte. Click dreapta pentru a deschide.
+Nagroda za grę Złap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc Prinde Regele cu un scor între 400 și 549 de puncte. Click dreapta pentru a deschide.
+Nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc de Okey încheiat cu un scor de 300-399 de puncte. Click dreapta pentru a deschide.
+Nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc de Okey încheiat cu un scor de 400 de puncte sau mai mult. Click dreapta pentru a deschide.
+Nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru un joc de Okey încheiat cu un scor sub 300 de puncte. Click dreapta pentru a deschide.
+Nagroda za grę w Yutnori z co najmniej 220 punktami. Zawiera Złoty Pakiet Yutnori i Cor Draconis (drogocenne).	Recompensă pentru un joc de Yut Nori cu cel puțin 220 de puncte. Conține un Mănunchi Yut Nori Aur și Cor Draconis (prețios).
+Nagroda za grę w Yutnori ze 150-219 punktami. Zawiera Srebrny Pakiet Yutnori, czasem Zwój Błogosławieństwa.	Recompensă pentru un joc de Yut Nori cu 150-219 puncte. Conține un Mănunchi Yut Nori Argint, uneori un Pergament Binecuvântat.
+Nagroda za pokonanie Baronówny Pająków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru înfrângerea Baronesei Păianjen în Biblioteca Cunoașterii. Click dreapta pentru a deschide.
+Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru înfrângerea Regelui Scorpionilor în Ruinele Scorpionului. Click dreapta pentru a deschide.
+Nagroda za pokonanie Królowej Dżungli w Starożytnej Dżungli. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru înfrângerea Reginei Junglei în Jungla Străveche. Click dreapta pentru a deschide.
+Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă pentru înfrângerea lui WuKong pe Dealul lui Wukong. Click dreapta pentru a deschide.
+Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Aspect pentru armă cu o mână (sabie) - Războinic, Ninja, Sura. Valabil 30 de zile de la cumpărare.
+Nasiono o niezbadanych właściwościach.	O sămânță cu proprietăți necunoscute.
+Natychmiastowo odnawia wszystkie Punkty Energii. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Reface imediat toate Punctele de Mana. Poate fi folosită o dată la 2 minute. Are timp de reîncărcare comun cu Licorile Invulnerabilității și Intangibilității.
 Nazwy, opisy i okna zmienią język po ponownym	Numele, descrierile și ferestrele își schimbă limba
+Necklace	Colier
+Nefrytowe City FC (k)	Jad City FC (f)
+Nefrytowe City FC (m)	Jad City FC (m)
+Nefrytowe City FC+ (k)	Jad City FC+ (f)
+Nefrytowe City FC+ (m)	Jad City FC+ (m)
+Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Căciulă albastră cu urechi de iepure pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Niedźwiedzina	Carne de Urs
+Nieprzenikniony pancerz strażnika ognia.	Platoșa de nepătruns a gardianului focului.
+Niezbędna do wytwarzania dużych mikstur.	Necesară pentru prepararea licorilor mari.
+Niezbędna do wytwarzania średnich mikstur.	Necesară pentru prepararea licorilor medii.
+Nieznany Kamień	Piatră Necunoscută
+Ninja Armor	Armură Ninja
+Noe-Un-Gab	Noe-Un-Gab
+Normal	Normal
+Notatka Kowala pokazująca jak ulepszać bronie.	Notița Fierarului care arată cum să îmbunătățești armele.
+Notifications	Notificări
+Nożyk Zielarza	Cuțitul Ierbarului
+O-Gyo	O-Gyo
+OSC Lungsam (k)	OSC Lungsam (f)
+OSC Lungsam+ (k)	OSC Lungsam+ (f)
+Obsydian	Obsidian
+Oczy potwora, używane w czarnoksięskich rytuałach.	Ochii unui monstru, folosiți în ritualuri vrăjitorești.
+Oczyszczający Amulet Wód	Amuleta Purificării Apelor
+Oczyszczony Kamień Duszy	Piatra Spiritului Purificată
+Odłamek	Fragment
+Offer	Ofertă
+Offer List	Lista ofertelor
+Offer successfully created.	Oferta a fost creată cu succes.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	Un document care îți dă dreptul să creezi o Îmbunătățire a Obiectului.
+Oficjalny dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	Un document care îți dă dreptul să creezi o Îmbunătățire a Obiectului. Obiectul poate fi negociat.
+Oficjalny dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	Un document care îți dă dreptul să creezi o Vrăjire a Obiectului.
+Ogon Małpy	Coadă de Maimuță
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Odpowiednio zadziwiający jest rezultat.	Îmblânzirea Spiritelor Animalelor rele cere o mare măiestrie magică. Rezultatul este pe măsură de uimitor.
+Okiełznanie złych Duchów Zwierząt wymaga nie lada kunsztu magicznego. Zmienia wygląd Twojego konia, jeżeli założysz przed przywołaniem.	Îmblânzirea Spiritelor Animalelor rele cere o mare măiestrie magică. Schimbă înfățișarea calului tău dacă o echipezi înainte de a-l chema.
+Okrycie na głowę z czarnej tkaniny dla mężczyzn. Daje ci min. jeden losowy bonus.	Acoperământ pentru cap din material negru pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Opatrunek	Bandaj
+Open Auction	Deschide licitația
+Open Auction Board	Deschide licitațiile
+Open Notification Board	Deschide notificările
+Open Private Offers Board	Deschide ofertele private
+Open Safebox Board	Deschide seiful
+Open Search Shop (|Eshortcut/ctrl.tga|e + S)	Deschide căutarea în magazine (|Eshortcut/ctrl.tga|e + S)
+Open Shop	Deschide magazinul
+Orkowe Jądra	Testicule de Orc
+Osadzony na pierścieniu niewidoczny klejnot o mocy ukrywania. Gdy znajdzie się na twojej dłoni, twoja istota zatraci się w cieniu, ukrywając swój poziom przed ciekawskimi oczami świata.	Pe acest inel este montată o bijuterie invizibilă cu puterea ascunderii. Odată ce se află pe mâna ta, ființa ta se pierde în umbre, ascunzându-ți nivelul de privirile curioase ale lumii.
+Ostre pazury, używane w obrzędach i czarach.	Gheare ascuțite, folosite în ritualuri și vrăji.
+Otrzymasz 1 Punkt Umiejętności Jeździectwa kiedy ją przeczytasz. Znika po przeczytaniu.	Primești 1 Punct de Abilitate la Călărit când o citești. Dispare după citire.
+Otrzymujesz w walce 50% więcej Punktów Doświadczenia.	Primești în luptă cu 50% mai multe Puncte de Experiență.
+Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Deschide ușa spre glorie și putere. Oferă toate avantajele Contului Premium timp de 30 de zile.|Obiectul poate fi negociat.
+Otwiera nawet najtrudniejsze zamki z lekkością.	Deschide cu ușurință chiar și cele mai grele încuietori.
+Otwiera nowe miejsce na umiejętność heroicznego peta od 100 poziomu.	Deblochează un nou slot de abilitate pentru un însoțitor eroic de la nivelul 100.
+Otwiera okno Kolekcjonera z dowolnego miejsca.	Deschide fereastra Colectorului de oriunde.
+Otwórz pakiet i sprawdź, co udało ci się wygrać.	Deschide mănunchiul și vezi ce ai câștigat.
+Ozdobny miecz Mirine	Sabia Ornamentală a lui Mirine
+Ozdobny, pozłacany miecz należący kiedyś do Mirine. Nie nadaje się już do walki, ale wygląda na bardzo cenny.	O sabie ornamentală, aurită, care a aparținut cândva lui Mirine. Nu mai e bună de luptă, dar pare foarte valoroasă.
+Pakuje wybranego peta (okno peta, klawisz U) do transportera, który można sprzedać, oddać w handlu albo schować do magazynu. Kto użyje pełnego transportera, dostaje peta z jego poziomem, ewolucją, bonusami i umiejętnościami.	Împachetează însoțitorul ales (fereastra însoțitorului, tasta U) într-o cușcă de transport care poate fi vândută, dată la negoț sau pusă în depozit. Cine folosește cușca plină primește însoțitorul cu nivelul, evoluția, bonusurile și abilitățile sale.
+Pamiątka po bracie	Amintirea Fratelui
+Pas Z Wężowej Skóry	Centură din Piele de Șarpe
+Pazury Małpy	Gheare de Maimuță
+Pergamin	Pergament
+Pet	Însoțitor
+Piasek Pustyni	Nisipul Deșertului
+Pieczony Gromadnik	Hamsie Prăjită
+Pieczęć Biblioteki	Sigiliul Bibliotecii
+Pieczęć Dżungli	Sigiliul Junglei
+Pieczęć Rufusa	Sigiliul lui Rufus
+Pieczęć Ruin	Sigiliul Ruinelor
+Pieczęć Wzgórza	Sigiliul Dealului
+Pieczęć dla Szlachetnego Czarnego Konia.	Sigiliu pentru Nobilul Cal Negru.
+Pieczęć do jednego z pięknych i nadzwyczaj rzadkich purpurowych koni.	Sigiliu pentru unul dintre frumoșii și extrem de rarii cai purpurii.
+Pieczęć strażnika Biblioteki Wiedzy. Użyj jej w lochu, aby przyzwać kolejną falę pająków.	Sigiliul gardianului Bibliotecii Cunoașterii. Folosește-l în temniță pentru a chema următorul val de păianjeni.
+Pieczęć strażnika Ruin Skorpiona. Użyj jej w lochu, aby przyzwać kolejną falę skorpionów.	Sigiliul gardianului Ruinelor Scorpionului. Folosește-l în temniță pentru a chema următorul val de scorpioni.
+Pieczęć strażnika Starożytnej Dżungli. Użyj jej w lochu, aby przyzwać kolejną falę stworzeń.	Sigiliul gardianului Junglei Străvechi. Folosește-l în temniță pentru a chema următorul val de creaturi.
+Pieczęć strażnika Wzgórza Wukonga. Użyj jej w lochu, aby przyzwać kolejną falę małp.	Sigiliul gardianului Dealului lui Wukong. Folosește-l în temniță pentru a chema următorul val de maimuțe.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% siły przeciwko potworom.	Acest sigiliu cheamă Dragorul Tânăr. După antrenamentul de luptă, îi oferă stăpânului său până la 5% putere împotriva monștrilor.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego daje on swojemu właścicielowi do 5% więcej doświadczenia.	Acest sigiliu cheamă Dragorul Tânăr. După antrenamentul de luptă, îi oferă stăpânului său până la 5% mai multă experiență.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on atak swojego właściciela o maks. 100.	Acest sigiliu cheamă Dragorul Tânăr. După antrenamentul de luptă, crește atacul stăpânului său cu până la 100.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego podnosi on obronę swojego właściciela o maks. 150.	Acest sigiliu cheamă Dragorul Tânăr. După antrenamentul de luptă, crește apărarea stăpânului său cu până la 150.
+Pieczęć ta przywołuje Młodego Dragora. Po przejściu szkolenia bojowego zwiększa on PŻ swojego właściciela o maks. 500.	Acest sigiliu cheamă Dragorul Tânăr. După antrenamentul de luptă, crește PV-ul stăpânului său cu până la 500.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Acest sigiliu cheamă Renul Tânăr (m) care, după antrenamentul de luptă, îi oferă călărețului său până la 5% putere împotriva monștrilor.
+Pieczęć ta przywołuje Młodego Renifera (m), który, po przejściu szkolenia bojowego, przynosi swojemu jeźdźcowi maks. 5% dodatkowych PD.	Acest sigiliu cheamă Renul Tânăr (m) care, după antrenamentul de luptă, îi aduce călărețului său până la 5% EXP suplimentar.
+Pieczęć ta przywołuje Młodego Renifera (ż), który, po przejściu szkolenia bojowego, nadaje swojemu jeźdźcowi maks. 5% siły w walce z potworami.	Acest sigiliu cheamă Renul Tânăr (f) care, după antrenamentul de luptă, îi oferă călărețului său până la 5% putere împotriva monștrilor.
+Pieczęć ta przywołuje czarną małą panterkę.	Acest sigiliu cheamă o mică panteră neagră.
+Pieczęć ta przywołuje dzielnego leoparda.	Acest sigiliu cheamă un leopard viteaz.
+Pieczęć ta przywołuje grubiutkiego kata w czarnej zbroi.	Acest sigiliu cheamă un călău durduliu în armură neagră.
+Pieczęć ta przywołuje grubiutkiego kata w złotej zbroi.	Acest sigiliu cheamă un călău durduliu în armură aurie.
+Pieczęć ta przywołuje słodkiego małego leoparda.	Acest sigiliu cheamă un mic leopard drăguț.
+Pieczęć ta przywołuje tajemniczą czarną panterę.	Acest sigiliu cheamă o misterioasă panteră neagră.
+Pieczęć ta przywołuje twojego kościanego pupila Kostka.	Acest sigiliu cheamă animăluțul tău osos, Oscior.
+Pierwszorzędne Buty	Încălțări de Primă Clasă
+Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Inel cu o gravură măiestrită în formă de semilună. Oferă: +50% EXP, +20% viteză de atac, +20% viteză de vrăjire, +30% atac, +10% PV max., +10% PM max.
+Pióro Mędrca	Pana Înțeleptului
+Po okazaniu tego biletu Stajennemu, będziesz mógł jeździć konno przez określony czas.	Dacă arăți acest bilet Grăjdarului, vei putea călări un cal pentru o anumită perioadă.
 Po ponownym uruchomieniu: %s	După repornire: %s
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Można nią handlować.	La folosire adaugă o carte de monstru în colecție (Cărți de Monștri în meniul de sub Esc). Poate fi negociată.
+Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	La folosire adaugă o carte de monstru în colecție (Cărți de Monștri în meniul de sub Esc). Nu poate fi negociată.
+Podkręć piłkę jak Baljit-Elvedin!	Șutează cu efect ca Baljit-Elvedin!
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Crește bonusul însoțitorului: PV max. (până la 4000) cu un nivel (nivelurile 0-5, însoțitor de la nivelul 1).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Crește bonusul însoțitorului: PV max. (până la 4000) cu un nivel (nivelurile 10-15, însoțitor de la nivelul 75).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Crește bonusul însoțitorului: PV max. (până la 4000) cu un nivel (nivelurile 15-20, însoțitor de la nivelul 100).
+Podnosi bonus peta: maks. PŻ (do 4000) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Crește bonusul însoțitorului: PV max. (până la 4000) cu un nivel (nivelurile 5-10, însoțitor de la nivelul 40).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Crește bonusul însoțitorului: puternic împotriva monștrilor (până la 20%) cu un nivel (nivelurile 0-5, însoțitor de la nivelul 1).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Crește bonusul însoțitorului: puternic împotriva monștrilor (până la 20%) cu un nivel (nivelurile 10-15, însoțitor de la nivelul 75).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Crește bonusul însoțitorului: puternic împotriva monștrilor (până la 20%) cu un nivel (nivelurile 15-20, însoțitor de la nivelul 100).
+Podnosi bonus peta: silny przeciwko potworom (do 20%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Crește bonusul însoțitorului: puternic împotriva monștrilor (până la 20%) cu un nivel (nivelurile 5-10, însoțitor de la nivelul 40).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 0-5, pet od 1 poziomu).	Crește bonusul însoțitorului: șansă de lovitură critică (până la 10%) cu un nivel (nivelurile 0-5, însoțitor de la nivelul 1).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 10-15, pet od 75 poziomu).	Crește bonusul însoțitorului: șansă de lovitură critică (până la 10%) cu un nivel (nivelurile 10-15, însoțitor de la nivelul 75).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 15-20, pet od 100 poziomu).	Crește bonusul însoțitorului: șansă de lovitură critică (până la 10%) cu un nivel (nivelurile 15-20, însoțitor de la nivelul 100).
+Podnosi bonus peta: szansa na krytyczne uderzenie (do 10%) o jeden poziom (poziomy 5-10, pet od 40 poziomu).	Crește bonusul însoțitorului: șansă de lovitură critică (până la 10%) cu un nivel (nivelurile 5-10, însoțitor de la nivelul 40).
+Podnosi szansę na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut.	Crește cu 20% șansa de a da o lovitură critică în luptă, timp de 10 minute.
+Podnosi szansę na zadanie przeszywającego uderzenia podczas walki o 20% przez 10 minut.	Crește cu 20% șansa de a da o lovitură pătrunzătoare în luptă, timp de 10 minute.
+Podnosi szansę pomyślnej nauki o mnożnik 1,75.	Crește șansa de învățare reușită cu un multiplicator de 1,75.
+Podnosi szansę pomyślnej nauki umiejętności w następnej książce o mnożnik 2,5.	Crește de 2,5 ori șansa de a învăța cu succes abilitatea din următoarea carte.
+Podwaja szansę na wypadnięcie przedmiotu na 2 godziny. Zdjęcie rękawicy jest niemożliwe.	Dublează timp de 2 ore șansa de a obține obiecte. Mănușa nu poate fi scoasă.
+Podwaja szansę na zdobycie Yang. | Czas trwania 30 minut. (Brak możliwości przekazywania!)	Dublează șansa de a obține Yang. | Durată: 30 de minute. (Nu poate fi transferat!)
+Podwaja szansę na zdobycie przedmiotu na 10 godzin.	Dublează timp de 10 ore șansa de a obține obiecte.
+Podwaja szansę na zdobycie przedmiotu na godzinę. Zdjęcie rękawicy jest niemożliwe.	Dublează timp de o oră șansa de a obține obiecte. Mănușa nu poate fi scoasă.
+Podwaja szansę na zdobycie przedmiotu z 30 Kamieni Metin, Bossów lub Minibossów. Zużywa się przy śmierci potwora.	Dublează șansa de a obține obiecte de la 30 de Pietre Metin, Boși sau Mini-boși. Se consumă la moartea monstrului.
+Poprawia jakość przedmiotów przeznaczonych do badań, co powoduje zwiększenie szansy na ich przyjęcie. Przedmiot ten jest niezdatny do handlu.	Îmbunătățește calitatea obiectelor destinate cercetării, ceea ce crește șansa ca acestea să fie acceptate. Obiectul nu poate fi negociat.
+Potężne pióro, które przyspiesza analizę, rozwija intelekt i wspomaga szybką naukę.	O pană puternică ce grăbește analiza, dezvoltă intelectul și ajută la învățarea rapidă.
+Powszechne mięso, cenione za smak.	Carne obișnuită, prețuită pentru gustul ei.
+Pozwala Ci na pokazanie przedmiotu z twojego ekwipunku na czacie.	Îți permite să arăți în chat un obiect din inventar.
+Pozwala na przeczytanie następnej księgi w przypadku niepomyślnej nauki.	Îți permite să citești următoarea carte dacă învățarea eșuează.
+Pozwala przedłużyć Pierścień Wielkanocny o dodatkowy 1 dzień. Istnieje szansa na niepowodzenie.	Îți permite să prelungești Inelul de Paște cu încă 1 zi. Există o șansă de eșec.
+Pozwala wylosować nowe cele misji Kart Potworów.	Îți permite să tragi la sorți noi ținte pentru misiunea Cărților de Monștri.
+Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Îți permite să uiți o abilitate a însoțitorului: dă click dreapta pe ea în fereastra însoțitorului.
+Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Îți permite să resetezi misiunea Cărților de Monștri peste resetarea gratuită (o dată la 24 de ore).
+Pozwolenie na Wzmocn. Przedmiotu	Permis Îmbunătățire Obiect
+Pozwolenie na Zaczar. Przedmiotu	Permis Vrăjire Obiect
+Praktyczna krótka fryzura emanująca złowrogą aurą. Na stałe zmienia fryzurę Twojej postaci.	O coafură scurtă și practică ce emană o aură amenințătoare. Schimbă definitiv coafura caracterului tău.
+Prastary korzeń z głębi Czerwonego Lasu.	O rădăcină străveche din adâncul Pădurii Roșii.
+Precyzyjnie wyciąga pęknięty kamień, pozostawiając resztę nienaruszoną.	Extrage cu precizie o piatră crăpată, lăsând restul neatins.
+Price Max:	Preț max.:
+Price Min:	Preț min.:
+Przedmiot potrzebny w zadaniu Uriela.	Obiect necesar în misiunea lui Uriel.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie daje przez 12 godzin szansę na podwójne doświadczenie. Efekt można podnieść do poziomu 5 kolejnymi narcyzami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, oferă timp de 12 ore o șansă de experiență dublă. Efectul poate fi ridicat până la nivelul 5 cu alte Narcise. Funcționează în timpul evenimentului Copiii Florilor.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin obronę. Efekt można podnieść do poziomu 5 kolejnymi słonecznikami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore apărarea. Efectul poate fi ridicat până la nivelul 5 cu alte Flori ale Soarelui. Funcționează în timpul evenimentului Copiii Florilor.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin siłę ataku. Efekt można podnieść do poziomu 5 kolejnymi konwaliami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore valoarea atacului. Efectul poate fi ridicat până la nivelul 5 cu alte Flori Clopoțel. Funcționează în timpul evenimentului Copiii Florilor.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na cios krytyczny. Efekt można podnieść do poziomu 5 kolejnymi chryzantemami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore șansa de lovitură critică. Efectul poate fi ridicat până la nivelul 5 cu alte Crizanteme. Funcționează în timpul evenimentului Copiii Florilor.
+Przedmiot użytkowy. Próba może się nie udać. Przy sukcesie zwiększa na 12 godzin szansę na przedmioty. Efekt można podnieść do poziomu 5 kolejnymi liliami. Działa w czasie eventu Dzieci Kwiaty.	Obiect consumabil. Încercarea poate eșua. La reușită, crește timp de 12 ore șansa de a obține obiecte. Efectul poate fi ridicat până la nivelul 5 cu alți Crini. Funcționează în timpul evenimentului Copiii Florilor.
+Przedmiot wymagany do misji.	Obiect necesar pentru o misiune.
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Pătrunde trupul cu magia Vacanței, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului. Durată: 7 zile (max. 60 de zile).
+Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Pătrunde trupul cu magia Vacanței, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului. Durată max.: 60 de zile.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Pătrunde trupul cu magia Paștelui, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului.
+Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni.	Pătrunde trupul cu magia Paștelui, oferindu-i purtătorului o putere neobișnuită. Încercările nereușite de îmbunătățire a Inelului la Fierar nu duc la pierderea obiectului. Durată: 7 zile.
+Przepustka ta umożliwia dostanie się na nowy poziom w Lochu Pająków.	Acest permis îți permite să intri la un nou nivel al Temniței Păianjenilor.
+Przetopiona moc minerałów, kryjąca tajemniczą energię alchemiczną.	Puterea topită a mineralelor, care ascunde o energie alchimică misterioasă.
+Przetopiony Kruszec	Minereu Topit
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury.	Cu ajutorul acestui obiect îți poți antrena cunoașterea rețetei pentru prepararea licorii respective.
+Przy pomocy tego przedmiotu możesz szkolić znajomość przepisu na wykonanie danej mikstury. Przedmiot otrzymany z misji.	Cu ajutorul acestui obiect îți poți antrena cunoașterea rețetei pentru prepararea licorii respective. Obiect obținut dintr-o misiune.
+Pusty koszyk, do którego możesz wkładać jajka wielkanocne	Un coș gol în care poți pune ouă de Paște
+Pyungmo Saint Hwang (m)	Pyungmo Saint Hwang (m)
+Pyungmoo Saint Hwang (k)	Pyungmoo Saint Hwang (f)
+Pyungmoo Saint Hwang+(k)	Pyungmoo Saint Hwang+(f)
+Pyungmoo Saint Hwang+(m)	Pyungmoo Saint Hwang+(m)
+Płomień Potępionych	Flacăra Osândiților
+Raise	Supralicitează
+Rare	Rar
+Real Sohan (k)	Real Sohan (f)
+Real Sohan+ (k)	Real Sohan+ (f)
+Restore Duration	Prelungește durata
+Romantyczny kwiat okazujący zauroczenie.	O floare romantică ce arată afecțiune.
+Roślina wspomaga trawienie. Pomaga również w łagodzeniu bólów brzucha.	Planta ajută digestia. Ajută și la calmarea durerilor de stomac.
+Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Peștele pregătit la foc de tabără este o minunată delicatesă afumată.
+Ryba przyrządzona nad ogniskiem. Wspaniały wędzony przysmak.	Pește pregătit la foc de tabără. O minunată delicatesă afumată.
+Rytualny składnik, symbol siły i odwagi.	Ingredient ritual, simbol al forței și al curajului.
+Rzadki kamień z bossów. U Kowala przemienia broń 75. poziomu +9 w broń przebudzoną +0, zachowując bonusy i kamienie (koszt: 200 000 000 Yang).	O piatră rară obținută de la boși. La Fierar transformă o armă de nivel 75 +9 într-o armă trezită +0, păstrând bonusurile și pietrele (cost: 200 000 000 Yang).
+Rzadki metal, wchłaniający energię magiczną, idealny do potężnych broni i pancerzy.	Un metal rar care absoarbe energia magică, ideal pentru arme și armuri puternice.
+Rzadki minerał o ogromnej mocy, niezbędny do tworzenia potężnych przedmiotów alchemicznych.	Un mineral rar cu o putere uriașă, indispensabil pentru crearea obiectelor alchimice puternice.
+Rzadkie drewno, pulsujące magiczną energią.	Lemn rar, care pulsează de energie magică.
+Ręka podnosi upuszczone pieniądze automatycznie przez 15 minut.	Mâna adună automat banii căzuți timp de 15 minute.
+Ręka podnosi upuszczone pieniądze automatycznie przez 3 godziny.	Mâna adună automat banii căzuți timp de 3 ore.
+Ręka podnosi upuszczone pieniądze automatycznie przez 30 minut.	Mâna adună automat banii căzuți timp de 30 de minute.
+SC Doyyum (k)	SC Doyyum (f)
+SC Doyyum+ (k)	SC Doyyum+ (f)
+SC Doyyum+ (m)	SC Doyyum+ (m)
+SL Jungsun Dong (k)	SL Jungsun Dong (f)
+SL Jungsun Dong (m)	SL Jungsun Dong (m)
+SL Jungsun Dong+ (k)	SL Jungsun Dong+ (f)
+Sash	Eșarfă
+Sash Abs.:	Abs. eșarfă:
+Schludna fryzura z białą opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	O coafură îngrijită cu o bentiță albă. Schimbă definitiv coafura caracterului tău.
+Schludna fryzura z czerwoną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	O coafură îngrijită cu o bentiță roșie. Schimbă definitiv coafura caracterului tău.
+Schludna fryzura z jasną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	O coafură îngrijită cu o bentiță deschisă la culoare. Schimbă definitiv coafura caracterului tău.
+Schludna fryzura z zieloną opaską do włosów. Na stałe zmienia fryzurę Twojej postaci.	O coafură îngrijită cu o bentiță verde. Schimbă definitiv coafura caracterului tău.
+Schludna fryzura zrobiona przy użyciu chusty do włosów. Na stałe zmienia fryzurę Twojej postaci.	O coafură îngrijită, făcută cu ajutorul unei bentițe. Schimbă definitiv coafura caracterului tău.
+Seal	Sigiliu
+Search	Caută
+Search Shop	Căutare magazine
+Search Shop Premium	Căutare magazine Premium
+Search Shop Premium is already active.	Căutarea magazine Premium este deja activă.
+Searched Name : |cFFFFFF99|h{}|r (found {} items)	Nume căutat: |cFFFFFF99|h{}|r (găsite {} obiecte)
+Select Item	Alege obiectul
+Select...	Alege...
+Serce Wojownika	Inima Războinicului
+Serce upadłego bohatera, symbol siły.	Inima unui erou căzut, simbol al forței.
+Shaman Armor	Armură Șaman
+Shield	Scut
+Shinsoo United (k)	Shinsoo United (f)
+Shinsoo United+ (k)	Shinsoo United+ (f)
+Shoes	Încălțări
+Shop Decoration n.{}	Decorațiunea magazinului nr. {}
+Shop Decorations	Decorațiuni magazin
+Shop Repositioning	Mută magazinul
+Shop view	Vizualizare magazin
+Shopping Safebox	Seif de Cumpărături
+Show Filter Informations	Arată informațiile filtrului
+Shuriken	Shuriken
+Shuriken+	Shuriken+
+Silny Wywar z Ziół	Fiertură Tare de Ierburi
+Skamieniała Krewetka	Crevetă Pietrificată
+Skamieniały fragment ognia Piekła, w którym uwięzione są płomienie potępionych.	Un fragment pietrificat din focul Iadului, în care sunt închise flăcările celor osândiți.
+Sklep został zamknięty!	Magazinul a fost închis!
+Skoncentrowany wywar z rzadkich ziół, dodaje energii i wzmacnia ciało.	O fiertură concentrată din ierburi rare, dă energie și întărește trupul.
+Skondensowana forma czystej magii - pulsuje energią, której nie sposób okiełznać.	O formă condensată de magie pură - pulsează de o energie imposibil de îmblânzit.
+Skondensowana magia w iskrzącym klejnocie.	Magie condensată într-o bijuterie scânteietoare.
+Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Pietrele Spiritului sfărâmate își pot găsi o nouă întrebuințare.
+Skrzynia Biblioteki	Cufărul Bibliotecii
+Skrzynia Dżungli	Cufărul Junglei
+Skrzynia Likanów (d)	Cufăr Lycan (mare)
+Skrzynia Likanów (m)	Cufăr Lycan (mic)
+Skrzynia Skorpiona	Cufărul Scorpionului
+Skrzynia Wukonga	Cufăr Wukong
+Skóra Przeklętego Niedźwiedzia	Pielea Ursului Blestemat
+Skóra Przeklętego Tygrysa	Pielea Tigrului Blestemat
+Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingredient pentru îmbunătățirea Pietrelor Spiritului la Fierar (de la +4): sunt necesare 1, 1, 2, 2, 3 bucăți pentru treptele următoare, alături de Praful Magic. Cade de la Vrăjitoarea Rea de Gheață (Grota Exilului), Beran-Setaou (Bârlogul Dragonului) și Regina Junglei (Jungla Străveche).
+Smocza Dolina SC (k)	Valea Dragonului SC (f)
+Smocza Dolina SC (m)	Valea Dragonului SC (m)
+Smocza Dolina SC+ (k)	Valea Dragonului SC+ (f)
+Smocza Dolina SC+ (m)	Valea Dragonului SC+ (m)
+Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersalnym wyborem dla łuczników szukających równowagi między szybkością a siłą uderzenia.	Un vârf de săgeată solid din fier, care îmbină o greutate bună cu durabilitatea. Este o alegere universală pentru arcașii care caută echilibrul între viteză și forța loviturii.
+Something went wrong. (Generic error)	Ceva nu a mers bine. (Eroare generală)
+Sort by price	Sortează după preț
+Sparta Jungrang (k)	Sparta Jungrang (f)
+Sparta Jungrang (m)	Sparta Jungrang (m)
+Sparta Jungrang+ (k)	Sparta Jungrang+ (f)
+Sparta Jungrang+ (m)	Sparta Jungrang+ (m)
+Spięta u góry fryzura wykorzystująca spinkę w kształcie motyla. Na stałe zmienia fryzurę Twojej postaci.	O coafură prinsă sus cu o agrafă în formă de fluture. Schimbă definitiv coafura caracterului tău.
+Sprzedałeś |cFFFFFF99|h{}|r za |cFFFFFF99|h{}|r.	Ai vândut |cFFFFFF99|h{}|r pentru |cFFFFFF99|h{}|r.
+Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un pandantiv de argint în formă de inimă, încrustat cu bijuterii magice. Oferă: +30% EXP, +10% viteză de atac, +10% viteză de vrăjire, +10% putere împotriva monștrilor, +5% PV max., +5% PM max.
+Stara, zakurzona skrzynka, z której przy każdym ruchu wysypuje się drobny, pustynny piasek.	O cutie veche și prăfuită din care, la fiecare mișcare, se scurge nisip fin de deșert.
+Starożytna fryzura okazująca silny indywidualny charakter. Na stałe zmienia fryzurę Twojej postaci.	O coafură străveche ce arată un caracter puternic și independent. Schimbă definitiv coafura caracterului tău.
+Starożytna księga, której lektura znacząco zwiększa wiedzę i umiejętności.	O carte străveche a cărei lectură sporește considerabil cunoștințele și abilitățile.
+Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Un pergament străvechi prin care curge puterea lui Weol - îți permite să tragi la sorți noi binecuvântări.
+Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Un pergament vechi cu un ordin de ucidere; folosirea lui pornește o misiune.
+Stone	Piatră
+Strój na mundial reprezentacji Anglii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Angliei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Belgii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Belgiei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Francji - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Franței - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Hiszpanii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Spaniei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Holandii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Olandei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Niemiec - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Germaniei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Portugalii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Portugaliei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Rosji - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Rusiei - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Szwajcarii - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Elveției - îți oferă cel puțin un bonus aleatoriu.
+Strój na mundial reprezentacji Włoch - daje ci min. jeden losowy bonus.	Kit de fotbal de la Campionatul Mondial în culorile naționale ale Italiei - îți oferă cel puțin un bonus aleatoriu.
+Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	O coafură pieptănată pe spate, stilată, dar cu aspect unsuros; antenele sunt accentul principal al acestei coafuri. Schimbă definitiv coafura caracterului tău.
+Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	O coafură stilată de Șaman. Schimbă definitiv coafura caracterului tău.
+Su-Sin	Su-Sin
+Sub-type	Subtip
+Sura Armor	Armură Sura
+Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Materii prime necesare pentru crearea și îmbunătățirea obiectelor excepționale.
+Sword	Sabie
+Symbol zręczności, popularny wśród złodziei.	Un simbol al dexterității, apreciat printre hoți.
+Szansa na przebicie +10%	Șansă de lovitură pătrunzătoare +10%
+Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Șansa de a obține obiecte crește de 1,5 ori pentru membrii iCafe.
+Szansa na złapanie rzadkiej ryby podwaja się. (Brak możliwości przekazywania!)	Șansa de a prinde un pește rar se dublează. (Nu poate fi transferat!)
+Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Cufărașul lui Chegal, Goliatul Umbrei. Înăuntru se află ceva prețios.
+Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Cufărașul Marelui Spirit al Copacului. Înăuntru se află ceva prețios.
+Szmaragdowy Marmur	Marmură de Smarald
+Słaba Zbroja	Armură Slabă
+Ta magiczna rękawica zwiększa zręczność użytkownika, pozwalając na podnoszenie przedmiotów z ziemi o 500% szybciej.	Această mănușă magică crește dexteritatea purtătorului, permițându-i să ridice obiectele de pe jos cu 500% mai repede.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut.	Această licoare crește Viteza de Regenerare a Vrăjilor cu 20 la sută timp de 30 de minute.
+Ta mikstura zwiększa Szybkość Regeneracji Zaklęcia o 20 procent na okres 30 minut. Niezdatna do handlu.	Această licoare crește Viteza de Regenerare a Vrăjilor cu 20 la sută timp de 30 de minute. Nu poate fi negociată.
+Ta pieczęć przywołuje uroczego Feniksa Jadeitu.	Acest sigiliu cheamă grațiosul Phoenix de Jad.
+Ta skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. Znajduje się w niej prawdziwy królewski skarb.	Acest cufăr a fost scos din Purgatoriul Focului, bârlogul lui Razador. În el se află o adevărată comoară regală.
+Ta skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje się w niej prawdziwy królewski skarb.	Acest cufăr a fost scos din Țara de Gheață, bârlogul lui Nemere. În el se află o adevărată comoară regală.
 Ta wersja klienta ma tylko część języków - zaktualizuj klienta.	Această versiune a clientului are doar o parte din limbi - actualizează clientul.
+Tajemnicza księga od Płatnerza z 6. piętra Wieży Demonów, pełna zapomnianych sekretów rzemiosła.	O carte misterioasă de la Armurierul de la etajul 6 al Turnului Demonilor, plină de secrete uitate ale meșteșugului.
+Tajemnicza substancja, która osłabia twardą skorupę Olbrzymiego Żółwia na 10 minut, czyniąc go podatnym na ataki każdą bronią.	O substanță misterioasă care slăbește carapacea tare a Țestoasei Gigant timp de 10 minute, făcând-o vulnerabilă la atacurile cu orice armă.
+Talia do gry Złap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodać ją do swoich talii; grę zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadają, gdy zacznie się następny event.	Un pachet pentru jocul Prinde Regele. Dă click dreapta în timpul evenimentului pentru a-l adăuga la pachetele tale; jocul îl începi din fereastra evenimentului (butonul de lângă minimapă). Cărțile și pachetele dispar când începe următorul eveniment.
+Ten magiczny marmur daje szansę na zerwanie dodatkowych kwiatów na 1 godzinę.	Această marmură magică îți oferă șansa de a culege flori suplimentare timp de 1 oră.
+Ten magiczny marmur pokazuje informacje o złowionej rybie. Zwiększa szansę na pomyślne wyłowienie ryby o 2%.	Această marmură magică arată informații despre peștele prins. Crește cu 2% șansa de a pescui cu succes un pește.
+Ten rożek na lody posiada wyjątkowe działanie, a przede wszystkim daje zastrzyk energii! Cudowne latem.	Acest cornet de înghețată are un efect deosebit și, mai presus de toate, îți dă un plus de energie! Minunat vara.
+The Search Shop Premium is required to use this feature.	Pentru această funcție este necesară Căutarea magazine Premium.
+The bid cannot be lower than |cFFFFFF99|h{}%|r of the sale price.	Oferta nu poate fi mai mică de |cFFFFFF99|h{}%|r din prețul de vânzare.
+The bid must be lower than the sale price.	Oferta trebuie să fie mai mică decât prețul de vânzare.
+The item will be transferred to the Shopping Safebox. Are you sure you want to close the auction?	Obiectul va fi mutat în Seiful de Cumpărături. Sigur vrei să închei licitația?
+The list is Empty.	Lista este goală.
+The offer for |cFFFFFF99|h{}|r was cancelled by the bidder.	Oferta pentru |cFFFFFF99|h{}|r a fost anulată de ofertant.
+The offer will be deleted. Do you want to continue?	Oferta va fi ștearsă. Vrei să continui?
+The operation will cost |cFFFFFF99|h{}|r. Do you want to continue?	Operațiunea va costa |cFFFFFF99|h{}|r. Vrei să continui?
+The price has been changed, please check the new price and try again.	Prețul a fost schimbat, verifică noul preț și încearcă din nou.
+The shop is no longer available.	Magazinul nu mai este disponibil.
+The store is closed. You cannot sell items.	Magazinul este închis. Nu poți vinde obiecte.
+This item is not available for sale at this time.	Acest obiect nu este disponibil pentru vânzare în acest moment.
+Today {:02d}:{:02d}	Azi {:02d}:{:02d}
+Tomorrow {:02d}:{:02d}	Mâine {:02d}:{:02d}
+Too many actions in a short time. Please wait a while and try again.	Prea multe acțiuni într-un timp scurt. Așteaptă puțin și încearcă din nou.
+Trade Hub	Centru de comerț
+Two Hand Sword	Sabie cu două mâini
+Tylko BETA	Doar BETA
+Tym kluczem zdobędziesz więcej nagród w Poszukiwaniu skarbów.	Cu această cheie obții mai multe recompense la Vânătoarea de Comori.
+Type	Tip
+Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Coafura preferată a războinicilor singuratici, arată grozav când bate vântul. Schimbă definitiv coafura caracterului tău.
+Uniform, który niegdyś należał do martwego już brata Mirine.	Uniforma care a aparținut cândva fratelui decedat al lui Mirine.
+Upoważania do łowienia na królewskich łowiskach na 1 godzinę. Znika po 24 godzinach posiadania.	Îți permite să pescuiești în zonele de pescuit regale timp de 1 oră. Dispare la 24 de ore după ce o primești.
 Uruchom klienta ponownie (Restart the client).	Repornește clientul.
 Uruchom ponownie	Repornește
+Use at least one filter to start the search.	Folosește cel puțin un filtru pentru a începe căutarea.
+Using it the item will be destroyed and change the appearance of your shop for 15 days. Do you want to continue?	Folosindu-l, obiectul va fi distrus și va schimba aspectul magazinului tău timp de 15 zile. Vrei să continui?
+Usuwa wszystkie bonusy z twojego jednego przedmiotu, po czym dodaje nowe - losowe. Ilość bonusów nie ulega zmianie.	Șterge toate bonusurile de pe unul dintre obiectele tale, apoi adaugă altele noi, aleatorii. Numărul de bonusuri nu se schimbă.
+Uwalnia Cię od klątwy złego ducha.	Te eliberează de blestemul spiritului rău.
+Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Folosește-l pentru a debloca 5 sloturi blocate din magazinul tău personal.
+W przypadku oddania uszkodzonego przedmiotu do analizy Biologa, będziesz mógł oddać następny bez potrzeby odczekania czasu.	Dacă îi predai Biologului un obiect deteriorat pentru analiză, îl poți preda pe următorul fără să mai aștepți.
+Wait 10 seconds between one offer created and another.	Așteaptă 10 secunde între crearea a două oferte.
+Wait 5 seconds between searches.	Așteaptă 5 secunde între căutări.
+Waleczna Dusza	Suflet Viteaz
+Warrior Armor	Armură Războinic
+Weapon	Armă
+Wieprzowina	Carne de Porc
+Wodna Szata	Haina Apei
+Wojenna szata w kolorze czarnym dla mężczyzn. Daje ci min. jeden losowy bonus.	Haină de luptă neagră pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Wolfman Armor	Armură Lycan
+Wrist	Brățară
+Wrogi Mur	Zidul Inamic
+Wspaniałe brązowe włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr castaniu minunat. Schimbă definitiv coafura caracterului tău.
+Wspaniałe czarne włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr negru minunat. Schimbă definitiv coafura caracterului tău.
+Wspaniałe czerwone włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr roșu minunat. Schimbă definitiv coafura caracterului tău.
+Wspaniałe zielone włosy. Na stałe zmienia fryzurę Twojej postaci.	Păr verde minunat. Schimbă definitiv coafura caracterului tău.
+Współdzieli czas ładowania z Błogosławieństwami Życia, Magii i Smoka.	Are timp de reîncărcare comun cu Binecuvântările Vieții, Magiei și Dragonului.
+Wydarzenie Wakacyjne	Evenimentul de Vacanță
+Wydarzenie Walentynkowe	Evenimentul de Ziua Îndrăgostiților
+Wydarzenie Wielkanocne.	Evenimentul de Paște.
+Wyjątkowo trwały pergamin, pełen zapomnianej wiedzy.	Un pergament extrem de rezistent, plin de cunoștințe uitate.
+Wyjątkowo wytrzymały grot ze stali. Zapewnia doskonałą penetrację i jest niezawodny w bitwach wymagających maksymalnej skuteczności.	Un vârf de săgeată din oțel, extrem de rezistent. Oferă o penetrare excelentă și este de încredere în bătăliile care cer eficiență maximă.
+Wymaga przelogowania po zakupie.	Necesită reconectare după cumpărare.
+Wysuszone Oczy	Ochi Uscați
+Wytrych	Șperaclu
+Wytrzymałość Wroga	Rezistența Inamicului
+Wężowa Szkatułka. Coś cennego znajduje się w środku.	Cufărașul Șarpelui. Înăuntru se află ceva prețios.
+Ya-Sang-Gab	Ya-Sang-Gab
+Yesterday {:02d}:{:02d}	Ieri {:02d}:{:02d}
+Yongan FC (k)	Yongan FC (f)
+Yongan FC+ (k)	Yongan FC+ (f)
+You are already the highest bidder in this auction.	Ești deja cel mai mare ofertant la această licitație.
+You cannot cancel the auction if it has received bids.	Nu poți anula licitația dacă a primit deja oferte.
+You cannot create a shop in this place.	Nu poți crea un magazin în acest loc.
+You cannot create an auction in this place.	Nu poți crea o licitație în acest loc.
+You cannot move a closed shop.	Nu poți muta un magazin închis.
+You cannot offer less than the min. raise.	Nu poți oferi mai puțin decât supralicitarea minimă.
+You cannot perform this operation right now.	Nu poți efectua această operațiune acum.
+You cannot sell this item.	Nu poți vinde acest obiect.
+You do not have enough money to offer this amount.	Nu ai destui bani pentru a oferi această sumă.
+You do not have enough space to collect the item.	Nu ai destul spațiu pentru a ridica obiectul.
+You do not have enough yang to complete the purchase.	Nu ai destui Yang pentru a finaliza cumpărarea.
+You do not own any auctions. Would you like to create an Auction now?	Nu ai nicio licitație. Vrei să creezi una acum?
+You don't have enough money to complete the request.	Nu ai destui bani pentru a finaliza cererea.
+You don't have enough money.	Nu ai destui bani.
+You entered an invalid price.	Ai introdus un preț nevalid.
+You have already made an offer for this item.	Ai făcut deja o ofertă pentru acest obiect.
+You have already unlocked all the slots in the shop.	Ai deblocat deja toate sloturile din magazin.
+You have reached the limit of pending private offers.	Ai atins limita de oferte private în așteptare.
+You have received an offer for |cFFFFFF99|h{}|r.	Ai primit o ofertă pentru |cFFFFFF99|h{}|r.
+You have run out of available space. Unable to sell the item.	Nu mai ai spațiu disponibil. Obiectul nu poate fi vândut.
+You won the auction of |cFFFFFF99|h{}|r by paying |cFFFFFF99|h{}|r.	Ai câștigat licitația pentru |cFFFFFF99|h{}|r plătind |cFFFFFF99|h{}|r.
+Young-Seon	Young-Seon
+Your auction of |cFFFFFF99|h{}|r has expired.	Licitația ta pentru |cFFFFFF99|h{}|r a expirat.
+Your auction of |cFFFFFF99|h{}|r has received a new bid.	Licitația ta pentru |cFFFFFF99|h{}|r a primit o nouă ofertă.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been accepted.	Oferta ta de |cFFFFFF99|h{}|r pentru |cFFFFFF99|h{}|r a fost acceptată.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r has been canceled.	Oferta ta de |cFFFFFF99|h{}|r pentru |cFFFFFF99|h{}|r a fost anulată.
+Your offer of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r was rejected by the seller.	Oferta ta de |cFFFFFF99|h{}|r pentru |cFFFFFF99|h{}|r a fost respinsă de vânzător.
+Your shopping safebox is too full. To proceed you must first lighten it.	Seiful de Cumpărături este prea plin. Pentru a continua, trebuie mai întâi să-l golești.
+Your |cFFFFFF99|hShop Decoration|r is expired.	|cFFFFFF99|hDecorațiunea magazinului|r a expirat.
+Your |cFFFFFF99|h{}|r auction has ended. |cFFFFFF99|h{}|r purchased the item for |cFFFFFF99|h{}|r yangs.	Licitația ta pentru |cFFFFFF99|h{}|r s-a încheiat. |cFFFFFF99|h{}|r a cumpărat obiectul cu |cFFFFFF99|h{}|r Yang.
+Your |cFFFFFF99|h{}|r has expired and has been removed from your shop.	|cFFFFFF99|h{}|r a expirat și a fost eliminat din magazinul tău.
+Za pomocą tej mikstury zdobywasz 50% więcej doświadczenia podczas godziny grania.	Cu această licoare obții cu 50% mai multă experiență într-o oră de joc.
+Za pomocą tej pieczęci możesz przywołać lwa Leonidasa.	Cu ajutorul acestui sigiliu poți chema leul Leonidas.
+Za pomocą tej pieczęci możesz przywołać pancerną pandę.	Cu ajutorul acestui sigiliu poți chema panda în armură.
+Za pomocą tej pieczęci możesz przywołać renifera Bambi.	Cu ajutorul acestui sigiliu poți chema renul Bambi.
+Za pomocą tej pieczęci możesz przywołać renifera Kometka.	Cu ajutorul acestui sigiliu poți chema renul Cometa.
+Za pomocą tej pieczęci możesz przywołać tygrysa Khana.	Cu ajutorul acestui sigiliu poți chema tigrul Khan.
+Za pomocą tej pieczęci możesz przywołać warchlaka Boczusia.	Cu ajutorul acestui sigiliu poți chema purcelușul Porcușor.
+Za pomocą tej pieczęci możesz przywołać ślicznego polarnego niedźwiadka.	Cu ajutorul acestui sigiliu poți chema un drăguț pui de urs polar.
+Za pomocą tej pieczęci możesz przywołać śliczniutką pandę.	Cu ajutorul acestui sigiliu poți chema un pui de panda adorabil.
+Za pomocą tej pieczęci przywołujesz Gniewne Serce. Obdarza cię ono o 5% wyższą szansą na trafienia krytyczne i podnosi twoje PŻ o 1500 pkt.	Cu acest sigiliu chemi Inima Mâniei. Îți oferă cu 5% mai multă șansă de lovituri critice și îți crește PV-ul cu 1500.
+Za pomocą tej pieczęci przywołujesz swój osobisty talizman szczęścia. Obdarza cię on o 5% wyższą szansą na przeszywające ciosy i podnosi twoje PŻ o 1500 pkt.	Cu acest sigiliu îți chemi talismanul personal de noroc. Îți oferă cu 5% mai multă șansă de lovituri pătrunzătoare și îți crește PV-ul cu 1500.
+Zaczarowany Klejnot	Bijuterie Fermecată
+Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Împiedică pierderea rezistenței calului, ideal pentru călătorii lungi fără pauze.
+Zawiera 8 Kluczy Goblina.	Conține 8 Chei Goblin.
+Zawiera losową księgę umiejętności peta.	Conține o carte de abilitate aleatorie pentru însoțitor.
+Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Conține recompense pentru războinicii curajoși care slujesc în Valea Seungryong.
+Zbieraj Gałki Lodów dla Summer.	Colectează Cupe de Înghețată pentru Vară.
+Zbroja Dzikiego Knura	Armura Mistrețului
+Zbroja Niedźwiedzia	Armura Ursului
+Zbroja Tygrysa	Armura Tigrului
+Zbroja Wilka	Armura Lupului
+Zeok-Hyoun	Zeok-Hyoun
+Zeok-Sang-Gab	Zeok-Sang-Gab
+Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Un set de 24 de cărți Okey. Dă click dreapta pentru a-l adăuga - un joc de Okey costă 1 set de cărți și 30 000 Yang.
+Zgniłe Mięso	Carne Putredă
+Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Schimbă numele însoțitorului activ (costă în plus 100.000 Yang).
+Zmierzwiona fryzura z opaską na czoło. Na stałe zmienia fryzurę Twojej postaci.	O coafură ciufulită cu bentiță pe frunte. Schimbă definitiv coafura caracterului tău.
+Zmniejsza obrażenia jakie otrzymujesz podczas walki o 12-15% przez 30 min.	Reduce cu 12-15% daunele pe care le primești în luptă, timp de 30 de minute.
+Zmniejsza zużycie Staminy o połowę.	Reduce la jumătate consumul de Stamina.
+Zmrożone czarne mięso o niezwykłej mocy.	Carne neagră înghețată, cu o putere neobișnuită.
+Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Făcută din cacao, lapte, unt și zahăr. Se oferă pentru a arăta afecțiune.
+Zung-Seon	Zung-Seon
+Zupa Grzybowa	Supă de Ciuperci
+Zwierzęta o białym futrze są rzadkością i wiele kultur przypisuje im nadzwyczajne siły.	Animalele cu blană albă sunt o raritate, iar multe culturi le atribuie puteri extraordinare.
+Zwiększa Szybkość Ruchu o 30 na 30 minut. Efekt utrzymuje się po śmierci.	Crește Viteza de Mișcare cu 30 timp de 30 de minute. Efectul rămâne și după moarte.
+Zwiększa Twoją Szybkość Ataku o 10% na okres 30 minut. Niezdatna do handlu.	Îți crește Viteza de Atac cu 10% timp de 30 de minute. Nu poate fi negociată.
+Zwiększa Twoją Szybkość Ataku o 15% na okres 30 minut. Niezdatna do handlu.	Îți crește Viteza de Atac cu 15% timp de 30 de minute. Nu poate fi negociată.
+Zwiększa ilość Punktów Energii o 20% przez 30 min.	Îți crește Punctele de Mana cu 20% timp de 30 de minute.
+Zwiększa ilość Punktów Życia o 20% na okres 30 minut.	Îți crește Punctele de Viață cu 20% timp de 30 de minute.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min.	Crește cu 12-15% daunele pe care le provoci în luptă, timp de 30 de minute.
+Zwiększa obrażenie jakie zadajesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.	Crește cu 12-15% daunele pe care le provoci în luptă, timp de 30 de minute. Obiectul poate fi negociat.
+Zwiększa otrzymywane Punkty Doświadczenia o 20% dla członków iCafe.	Crește cu 20% Punctele de Experiență obținute pentru membrii iCafe.
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +10% przy 5 Suplementach i 10 Odłamkach).	Crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae (până la +10% cu 5 Aditivi și 10 Fragmente).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +20% przy 5 Suplementach i 10 Odłamkach).	Crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae (până la +20% cu 5 Aditivi și 10 Fragmente).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +5% przy 5 Suplementach i 10 Odłamkach).	Crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae (până la +5% cu 5 Aditivi și 10 Fragmente).
+Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +50% przy 5 Suplementach i 10 Odłamkach).	Crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae (până la +50% cu 5 Aditivi și 10 Fragmente).
+Zwiększa szansę na wypadnięcie przedmiotu z bonusem na godzinę. Zdjęcie rękawicy jest niemożliwe.	Crește timp de o oră șansa de a obține un obiect cu bonus. Mănușa nu poate fi scoasă.
+Zwiększa szansę na złapanie rzadkiej ryby przez 15 minut.	Crește șansa de a prinde un pește rar timp de 15 minute.
+Zwiększa szansę na złapanie rzadkiej ryby przez 3 godziny.	Crește șansa de a prinde un pește rar timp de 3 ore.
+Zwiększa szansę na złapanie rzadkiej ryby przez 30 minut.	Crește șansa de a prinde un pește rar timp de 30 de minute.
+Zwiększa twoją Szybkość Ataku o 10% na okres 30 minut.	Îți crește Viteza de Atac cu 10% timp de 30 de minute.
+Zwiększa twoją Szybkość Ataku o 15% na okres 30 minut. Efekt utrzymuje się po śmierci.	Îți crește Viteza de Atac cu 15% timp de 30 de minute. Efectul rămâne și după moarte.
+Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Crește rezistența. Este cunoscut pentru proprietățile sale de întărire a mușchilor.
+Zwiększa zadawane obrażenia o 12% do 15% gdy atakujesz. Działa przez 30 minut.	Crește daunele provocate cu 12% până la 15% când ataci. Durează 30 de minute.
+Zwój Inkarnacji	Pergamentul Reîncarnării
+Zwój Nasycenia	Pergamentul Saturației
+Zwój pozwala Ci wydobyć Kamień Duszy z broni albo zbroi. Zostawia znak wydobycia. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Pergamentul îți permite să extragi Piatra Spiritului dintr-o armă sau armură. Lasă un semn de extragere. Piatra Spiritului +5 este distrusă la extragere.
+Zwój pozwala zapisać obecną pozycję, aby potem powrócić do obecnej lokalizacji. Można użyć co 15 minut.	Pergamentul îți permite să salvezi poziția actuală, pentru a te întoarce mai târziu în acest loc. Poate fi folosit o dată la 15 minute.
+Zwój pozwalający Ci teleportować się do miasta pierwszego Twojego królestwa. Można użyć co 15 minut.	Pergament care îți permite să te teleportezi în primul oraș al regatului tău. Poate fi folosit o dată la 15 minute.
+Zwój ten umożliwia usunięcie ostatnio pomyślnie dodanego Kamienia Duszy ze wskazanego przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Acest pergament îți permite să scoți din obiectul ales ultima Piatră a Spiritului adăugată cu succes. Piatra Spiritului +5 este distrusă la extragere.
+Zwój ten umożliwia usunięcie wskazanego Kamienia Duszy z przedmiotu. Kamień Duszy +5 jest usuwany przy ekstrakcji.	Acest pergament îți permite să scoți Piatra Spiritului aleasă dintr-un obiect. Piatra Spiritului +5 este distrusă la extragere.
+Zwój Życia	Pergamentul Vieții
+Złocisty piasek, nasycony magią i tajemnicą.	Nisip auriu, pătruns de magie și mister.
 uruchomieniu klienta (Language: after a restart).	după repornirea clientului.
+{}'s Auction	Licitația lui {}
+{}'s Shop	Magazinul lui {}
+|Eikashop/ultimate/average.png|e |cFFFF9999|hUnknown|r	|Eikashop/ultimate/average.png|e |cFFFF9999|hNecunoscut|r
+|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r	|Eikashop/ultimate/average.png|e |cFFFFFF99|h{}|r
+|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Buy all those at this price	|Eshortcut/ctrl.tga|e + |Eshortcut/mleft.tga|e Cumpără-le pe toate la acest preț
+|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Edit Price of all similar Items.	|Eshortcut/mleft.tga|e + |Eshortcut/ctrl.tga|e Modifică prețul tuturor obiectelor similare.
+|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Edit Price	|Eshortcut/mleft.tga|e + |Eshortcut/shift.tga|e Modifică prețul
+|Eshortcut/mleft.tga|e Buy	|Eshortcut/mleft.tga|e Cumpără
+|Eshortcut/mleft.tga|e Claim Item	|Eshortcut/mleft.tga|e Ridică obiectul
+|Eshortcut/mleft.tga|e Remove Item	|Eshortcut/mleft.tga|e Elimină obiectul
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Remove all similar Items	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Elimină toate obiectele similare
+|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Use x10	|Eshortcut/mright.tga|e + |Eshortcut/ctrl.tga|e Folosește x10
+|Eshortcut/mright.tga|e Remove Item	|Eshortcut/mright.tga|e Elimină obiectul
+|Eshortcut/mright.tga|e Sell Item	|Eshortcut/mright.tga|e Vinde obiectul
+|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Private Offer	|Eshortcut/shift.tga|e + |Eshortcut/mleft.tga|e Ofertă privată
+|cFFFF9999|hExhausted duration|r	|cFFFF9999|hDurată expirată|r
+|cFFFFFF88Three Days|h|r	|cFFFFFF88Trei zile|h|r
+|cFFFFFF99|h{}|r has outbid you for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r te-a supralicitat pentru |cFFFFFF99|h{}|r.
+|cFFFFFF99|h{}|r won the auction of |cFFFFFF99|h{}|r for |cFFFFFF99|h{}|r.	|cFFFFFF99|h{}|r a câștigat licitația pentru |cFFFFFF99|h{}|r cu |cFFFFFF99|h{}|r.
+Čć»ç°©	Čć»ç°©
+Łuski Smoka	Solzi de Dragon
+Śluz zamrożonych istot, chłodny w dotyku.	 Mâzga unor creaturi înghețate, rece la atingere.
+Świadectwo Zmiany+	Certificatul Schimbării+
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă festivă pentru un joc de Okey încheiat cu un scor de 300-399 de puncte. Click dreapta pentru a deschide.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem 400 punktów lub wyższym. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă festivă pentru un joc de Okey încheiat cu un scor de 400 de puncte sau mai mult. Click dreapta pentru a deschide.
+Świąteczna nagroda za grę w Okey zakończoną z wynikiem poniżej 300 punktów. Kliknij prawym przyciskiem, aby otworzyć.	Recompensă festivă pentru un joc de Okey încheiat cu un scor sub 300 de puncte. Click dreapta pentru a deschide.
+Święty Miecz Bogów+	Sabia Sfântă a Zeilor+
+Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	O sursă de putere pentru undiță. Atingerea ei îmbunătățește unealta și deschide calea spre pescuitul din cele mai adânci ape.
+Żelazo	Fier
+Żołnierze	Soldați
+Żywe Drzewo	Lemn Viu

@@ -484,7 +484,8 @@ def main():
                     if suf:
                         pl = b.strip()
                         en_t = L.split_refine(en_t)[0].strip() if en_t else en_t
-                k = (dom if dom in ('file',) else '', L.norm_key(pl))
+                # one row per text that differs only in its numbers (the numeric templates fill the others)
+                k = (dom if dom in ('file',) else '', L.num_key(pl))
                 if k in seen:
                     continue
                 seen.add(k)

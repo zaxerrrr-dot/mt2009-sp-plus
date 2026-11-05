@@ -352,6 +352,7 @@ def _Load():
 	templates = {}
 	generic = []
 	labels = {}
+	fragments = []
 	lang = Language()
 	if lang != SOURCE:
 		data = _Read(TEXTS_FILE % lang)
@@ -365,6 +366,16 @@ def _Load():
 			pl = _Unescape(line[:tab])
 			tr = _Unescape(line[tab + 1:])
 			texts[pl] = tr
+			# a dialog shows a text line by line (uiCommon.PopupDialog splits it at [ENTER], others at a newline): the
+			# lines of a text with the same number of lines in both languages are entries too
+			for sep in ("[ENTER]", "\n"):
+				if sep in pl:
+					pls = pl.split(sep)
+					trs = tr.split(sep)
+					if len(pls) == len(trs):
+						for a, b in zip(pls, trs):
+							if a.strip() and a not in texts:
+								fragments.append((a, b))
 			if "%" in pl:
 				if "%%" in pl and not [p for p in _Placeholders(pl) if not p[3]]:
 					# shown after a % formatting: "100%% ..." reads "100% ..."
@@ -380,6 +391,9 @@ def _Load():
 			stripped = pl.rstrip(" ")
 			if stripped.endswith(":") and len(stripped) > 1:
 				labels[stripped] = tr.rstrip(" ")
+	for a, b in fragments:
+		if a not in texts:
+			texts[a] = b
 	_state["texts"] = texts
 	_state["templates"] = templates
 	_state["generic"] = generic

@@ -97,10 +97,11 @@ def main():
                 continue
             for line in t.split('\r\n'):
                 if L.FORBIDDEN.search(line):
-                    pl_has = any(L.FORBIDDEN.search(x) for x in (pl_game.get(line.split('\t')[0], ['', ''])[1],))
-                    if not pl_has and 'metin2sp' not in line.lower():
-                        bad.append('%s: forbidden name in %r' % (n, line[:80]))
-                        break
+                    bad.append('%s: forbidden name in %r' % (n, line[:80]))
+                    break
+        for line in files.get('locale/%s/mt2009_texts.txt' % code, b'').split(b'\r\n'):
+            if b'\t' in line and L.FORBIDDEN.search(line.split(b'\t', 1)[1].decode(enc, 'replace')):
+                bad.append('mt2009_texts.txt: forbidden name in %r' % line[:80])
         report[code] = bad[:20] + (['... %d more' % (len(bad) - 20)] if len(bad) > 20 else [])
         problems.extend('%s: %s' % (code, b) for b in bad)
     for code, bad in sorted(report.items()):

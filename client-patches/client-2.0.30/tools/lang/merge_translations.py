@@ -39,7 +39,7 @@ def main():
                 continue
             if dom != 'file':
                 t = t.strip('\r')
-            if not L.same_placeholders(pl, t) or (L.FORBIDDEN.search(t) and not L.FORBIDDEN.search(pl)):
+            if not L.same_placeholders(pl, t) or L.FORBIDDEN.search(t):
                 refused += 1
                 bad.append((i, pl, t))
                 continue
