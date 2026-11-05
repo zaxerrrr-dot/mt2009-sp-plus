@@ -164,6 +164,9 @@ BOOT_ONCE = {
     # MT2009_PLUS_REMOTE_CALL_V1: Enasir's items 72368-72371 (remote_call.sql), tab Wyposazenie
     "remote_call_50": {"adds": (50, 51, 52, 53), "note": "Dozorca / Handlarz Enasir (h) i x4"},
     "remote_call_50_prices": {"adds": (), "note": "Ceny Enasira: 7 dni 49 SM, 28 dni 149 SM"},
+    # MT2009_PLUS_GROWTH_PET_V1: Zaczaruj zwierzaka 55033 (pety, item 9), tab Pety
+    "pety_40938": {"adds": (40938,), "note": "Zaczaruj zwierzaka"},
+    "pety_40938_price": {"adds": (), "note": "Zaczaruj zwierzaka: 299 SM"},
 }
 
 

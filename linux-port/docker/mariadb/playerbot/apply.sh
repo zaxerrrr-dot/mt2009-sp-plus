@@ -1815,9 +1815,11 @@ db -e "INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) SELECT 3
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (55400, 55100);" 2>/dev/null || echo x)" = "2" ]; then
 ishop_once pety_40930 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40930, 55400, 1, 39, 'DRAGON_COIN', 0), (40931, 55001, 1, 19, 'DRAGON_COIN', 0), (40932, 55002, 1, 79, 'DRAGON_COIN', 0), (40933, 55008, 1, 49, 'DRAGON_COIN', 0), (40934, 55029, 1, 79, 'DRAGON_COIN', 0), (40935, 55030, 1, 59, 'DRAGON_COIN', 0), (40936, 55100, 1, 179, 'DRAGON_COIN', 0), (40937, 55009, 1, 129, 'DRAGON_COIN', 0);" "could not add the growth pets' ItemShop lines"
 # MT2009_PLUS_GROWTH_PET_SOURCES_V1 (the owner's Yohara list 3.0.14, item 9): Zaczaruj zwierzaka 55033 had no source -
-# pl-wiki: Item-Shop (no price given; 49 Smocze Monety, the pet tab's scale - to approve), so line 40938 of the Pety tab,
+# pl-wiki: Item-Shop (no price given; the owner set 299 Smocze Monety on 5 November 2026), so line 40938 of the Pety tab,
 # in game and on the web (the web shows the in-game lines). Once per install, like the other pet lines.
-ishop_once pety_40938 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40938, 55033, 1, 49, 'DRAGON_COIN', 0);" "could not add Zaczaruj zwierzaka to the ItemShop"
+ishop_once pety_40938 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40938, 55033, 1, 299, 'DRAGON_COIN', 0);" "could not add Zaczaruj zwierzaka to the ItemShop"
+# the owner's price (5 November 2026): 299 SM; a world that got the first proposal (49) once, a panel price stays.
+ishop_once pety_40938_price "UPDATE common.itemshop_items SET price = 299 WHERE \`index\` = 40938 AND vnum = 55033 AND price = 49;" "could not set Zaczaruj zwierzaka's price"
 # the web ItemShop (itemshop3.shop) has its own Odzywka / Skrzynia Ksiag Zwierza lines (v3_lines 100172-100174): the two
 # in-game twins hidden there
 db -e "INSERT IGNORE INTO itemshop3.line_overrides (idx, hidden) SELECT 40931, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'itemshop3' AND TABLE_NAME = 'line_overrides'); INSERT IGNORE INTO itemshop3.line_overrides (idx, hidden) SELECT 40937, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'itemshop3' AND TABLE_NAME = 'line_overrides');" 2>/dev/null || true

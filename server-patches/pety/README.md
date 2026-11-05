@@ -184,6 +184,6 @@ okna petów) i przycisk w pasku bocznym. Brama wersji: `M2_CLIENT_MIN_VERSION` 1
   umiejętności 55010–55027 / 55034–55038 należą do zakładki Księgi (`Mt2009EkwCategoryOf`,
   `MT2009_PLUS_GROWTH_PET_BOOKS_V1`); 55028–55031 (Smakołyki, Reverti/Revertus) to nie księgi – zostają w torbie.
 - **Bez wieku przy rozwoju (pkt 8)**: `EVOLUTION` ma wiek 0, `EvolveBlock` nie sprawdza wieku.
-- **Zaczaruj zwierzaka 55033 (pkt 9)**: ItemShop (linia 40938, 49 SM do zatwierdzenia – w grze i na WWW), Portowy Sklep
+- **Zaczaruj zwierzaka 55033 (pkt 9)**: ItemShop (linia 40938, 299 SM – cena właściciela 5.11 – w grze i na WWW), Portowy Sklep
   Gaya (rząd III, 2000 Gaya jak wiki, `ygaya.quest`), Battle Pass (trzecia nagroda misji 6 / 9 / 12, jeśli wolna – raz,
   znacznik `pety:bp_enchant_v1`), Koło Losu (`kola-src`). Stos 200 i handel – już były.
