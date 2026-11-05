@@ -554,6 +554,7 @@ namespace
 			std::vector<DWORD>& out);
 	bool ManagePlayerBotYdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	bool GetPlayerBotYdgCamp(const TPlayerBotDgRunDef& def, LPDUNGEON d, long& x, long& y);
+	int GetPlayerBotYdgTrainParty(int runId);
 	LPCHARACTER PickPlayerBotYdgRouteGoal(LPCHARACTER ch, const TPlayerBotArzDgScan& scan, const std::vector<DWORD>& goals,
 			TPlayerBotDgRunBot& rb, const TPlayerBotDgRun& run, DWORD dwNow);
 	// run -> (the objective's vid, chosen at) - MT2009_PLUS_BOT_YDG_TRAIN_V2
@@ -3097,7 +3098,11 @@ namespace
 	bool UpdatePlayerBotDgRunGather(TPlayerBotDgRun& run, DWORD dwNow)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
-		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(def.szKey);
+		playerbot_dgrun::TRunRule rule = playerbot_dgrun::RuleFor(def.szKey);
+		// MT2009_PLUS_BOT_YDG_TRAIN_V3: a YDG training party goes without a healing Shaman when it has none (the run's
+		// bonuses stand for it) - 10 Beran parties a dungeon left some with none, disbanded in a second, again and again.
+		if (def.bKind == DGRUN_KIND_YDG && GetPlayerBotYdgTrainParty(run.iId) != 0)
+			rule.needHealer = false;
 		int answered = 0, pending = 0, arrived = 0;
 		// V2: a Shaman that can heal among those on their way, among those there.
 		bool healerAnswered = false, healerArrived = false, healerPending = false;
