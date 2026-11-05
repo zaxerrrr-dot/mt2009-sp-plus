@@ -101,6 +101,13 @@ Różności (sklep 3, 10 000 Yang), linie ItemShopu 40930–40937 (raz na instal
 Odżywka 19, Klatka 79, Pergamin 49, Reverti 79, Revertus 59, Boska Odżywka 179, Skrzynia Ksiąg 129 SM; 40931/40937
 ukryte w sklepie WWW, który ma własne linie).
 
+Nazwy przedmiotów = tytuły stron przedmiotów na pl-wiki (wszystkie 69; Jajo Aamona i Mały Aamon (pieczęć) – tylko
+w tabeli strony systemu, bez własnych stron). Świat, który zapisał już `pety:items_v1` (potem tylko INSERT IGNORE),
+dostaje je raz znacznikiem `pety:names_v1` (UPDATE name/locale_name 69 wierszy) – naprawia m.in. stare przemianowanie
+55033/55034 na Reverti/Revertus z bloku ishop5 w `apply.sh` (usunięte). Zmiana nazwy w `pety_data`/`gen_pety_sql` =
+nowy znacznik (`NAMES_MARKER`). Opisy tych przedmiotów w sklepie WWW (`shop3/include/db/client_itemdesc.json`) =
+opisy z `pety_items.json`.
+
 ### Migracja (raz, znacznik `pety:migracja_v1`, jedna transakcja)
 
 - Każdy wiersz `player.newpet_pet` → `player.growth_pet` (id 0xF0000000 + stare id): gatunek (`jajo + 300`), imię,

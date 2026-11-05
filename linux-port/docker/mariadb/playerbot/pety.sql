@@ -272,6 +272,87 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (55414,'Jajo Aamona',_cp1250 X'4A616A6F2041616D6F6E61',37,0,1,0,1,32768,0,0,'',10000,5000,0,0,0,0,0,0,7,604800,0,0,0,0,0,0,0,0,55714,0,0,100000,0,0,0,0,0,0,0,0),
 (55714,'Maly Aamon (pieczec)',_cp1250 X'4D61B3792041616D6F6E2028706965637AEAE629',37,1,1,0,1,123008,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,34229,0,0,34230,34231,0,0,0,0,0,0,0);
 
+-- ---- The items' names = the pl-wiki's item pages (System Zwierzat Domowych), once more: pety:names_v1 -------------------
+-- A world that wrote pety:items_v1 earlier keeps its rows (INSERT IGNORE); a later every-start rename of these
+-- vnums (the old ishop5 block of apply.sh: 55033 / 55034 -> Reverti / Revertus Zwierza) is fixed here. Once a
+-- marker - an operator's later rename stays; a new name in pety_data / gen_pety_sql = a new marker.
+DELIMITER //
+BEGIN NOT ATOMIC
+	IF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pety:names_v1') = 0 THEN
+		UPDATE world.item_proto SET name = 'Odzywka', locale_name = _cp1250 X'4F64BF79776B61' WHERE vnum = 55001;
+		UPDATE world.item_proto SET name = 'Klatka Transportowa', locale_name = _cp1250 X'4B6C61746B61205472616E73706F72746F7761' WHERE vnum = 55002;
+		UPDATE world.item_proto SET name = 'Ksiega Mlodego Zwierza', locale_name = _cp1250 X'4B7369EA6761204DB36F6465676F205A776965727A61' WHERE vnum = 55003;
+		UPDATE world.item_proto SET name = 'Ksiega Dzikiego Zwierza', locale_name = _cp1250 X'4B7369EA676120447A696B6965676F205A776965727A61' WHERE vnum = 55004;
+		UPDATE world.item_proto SET name = 'Ksiega Dzielnego Zwierza', locale_name = _cp1250 X'4B7369EA676120447A69656C6E65676F205A776965727A61' WHERE vnum = 55005;
+		UPDATE world.item_proto SET name = 'Bohat. Ksiega Zwierza', locale_name = _cp1250 X'426F6861742E204B7369EA6761205A776965727A61' WHERE vnum = 55006;
+		UPDATE world.item_proto SET name = 'Przeb. Ksiega Zwierza', locale_name = _cp1250 X'50727A65622E204B7369EA6761205A776965727A61' WHERE vnum = 55007;
+		UPDATE world.item_proto SET name = 'Pergamin Nazwy Zwierzaka', locale_name = _cp1250 X'50657267616D696E204E617A7779205A776965727A616B61' WHERE vnum = 55008;
+		UPDATE world.item_proto SET name = 'Skrzynia Ksiag Zwierza', locale_name = _cp1250 X'536B727A796E6961204B7369B967205A776965727A61' WHERE vnum = 55009;
+		UPDATE world.item_proto SET name = 'Odpornosc (wojownik)', locale_name = _cp1250 X'4F64706F726E6F9CE62028776F6A6F776E696B29' WHERE vnum = 55010;
+		UPDATE world.item_proto SET name = 'Odpornosc (sura)', locale_name = _cp1250 X'4F64706F726E6F9CE620287375726129' WHERE vnum = 55011;
+		UPDATE world.item_proto SET name = 'Odpornosc (ninja)', locale_name = _cp1250 X'4F64706F726E6F9CE620286E696E6A6129' WHERE vnum = 55012;
+		UPDATE world.item_proto SET name = 'Odpornosc (szaman)', locale_name = _cp1250 X'4F64706F726E6F9CE62028737A616D616E29' WHERE vnum = 55013;
+		UPDATE world.item_proto SET name = 'Odpornosc (likan)', locale_name = _cp1250 X'4F64706F726E6F9CE620286C696B616E29' WHERE vnum = 55014;
+		UPDATE world.item_proto SET name = 'Ksiega Berserka', locale_name = _cp1250 X'4B7369EA6761204265727365726B61' WHERE vnum = 55015;
+		UPDATE world.item_proto SET name = 'Ksiega Antymagii', locale_name = _cp1250 X'4B7369EA676120416E74796D61676969' WHERE vnum = 55016;
+		UPDATE world.item_proto SET name = 'Ksiega Przyspieszenia', locale_name = _cp1250 X'4B7369EA67612050727A7973706965737A656E6961' WHERE vnum = 55017;
+		UPDATE world.item_proto SET name = 'Ksiega Przebicia', locale_name = _cp1250 X'4B7369EA67612050727A656269636961' WHERE vnum = 55018;
+		UPDATE world.item_proto SET name = 'Ksiega Odnowy', locale_name = _cp1250 X'4B7369EA6761204F646E6F7779' WHERE vnum = 55019;
+		UPDATE world.item_proto SET name = 'Ksiega Wampira', locale_name = _cp1250 X'4B7369EA67612057616D70697261' WHERE vnum = 55020;
+		UPDATE world.item_proto SET name = 'Ksiega Ducha', locale_name = _cp1250 X'4B7369EA6761204475636861' WHERE vnum = 55021;
+		UPDATE world.item_proto SET name = 'Ksiega Przeszkody', locale_name = _cp1250 X'4B7369EA67612050727A65737A6B6F6479' WHERE vnum = 55022;
+		UPDATE world.item_proto SET name = 'Ksiega Zwierciadla', locale_name = _cp1250 X'4B7369EA6761205A7769657263696164B361' WHERE vnum = 55023;
+		UPDATE world.item_proto SET name = 'Ksiega Dropu Yang', locale_name = _cp1250 X'4B7369EA67612044726F70752059616E67' WHERE vnum = 55024;
+		UPDATE world.item_proto SET name = 'Ksiega Zasiegu', locale_name = _cp1250 X'4B7369EA6761205A617369EA6775' WHERE vnum = 55025;
+		UPDATE world.item_proto SET name = 'Ksiega Niesmiertelnosci', locale_name = _cp1250 X'4B7369EA6761204E69659C6D69657274656C6E6F9C6369' WHERE vnum = 55026;
+		UPDATE world.item_proto SET name = 'Ksiega Uzdrowienia', locale_name = _cp1250 X'4B7369EA676120557A64726F7769656E6961' WHERE vnum = 55027;
+		UPDATE world.item_proto SET name = 'Ksiega Browarnika', locale_name = _cp1250 X'4B7369EA67612042726F7761726E696B61' WHERE vnum = 55034;
+		UPDATE world.item_proto SET name = 'Ksiega Lowcy Potworow', locale_name = _cp1250 X'4B7369EA676120A36F77637920506F74776F72F377' WHERE vnum = 55035;
+		UPDATE world.item_proto SET name = 'Ksiega Spostrzegawczosci', locale_name = _cp1250 X'4B7369EA67612053706F7374727A65676177637A6F9C6369' WHERE vnum = 55036;
+		UPDATE world.item_proto SET name = 'Ksiega Absorpcji Zycia', locale_name = _cp1250 X'4B7369EA6761204162736F7270636A6920AF79636961' WHERE vnum = 55037;
+		UPDATE world.item_proto SET name = 'Ksiega Lekkie jak Piorko', locale_name = _cp1250 X'4B7369EA6761204C656B6B6965206A616B205069F3726B6F' WHERE vnum = 55038;
+		UPDATE world.item_proto SET name = 'Smakolyk', locale_name = _cp1250 X'536D616B6FB3796B' WHERE vnum = 55028;
+		UPDATE world.item_proto SET name = 'Reverti Zwierza', locale_name = _cp1250 X'52657665727469205A776965727A61' WHERE vnum = 55029;
+		UPDATE world.item_proto SET name = 'Revertus Zwierza', locale_name = _cp1250 X'5265766572747573205A776965727A61' WHERE vnum = 55030;
+		UPDATE world.item_proto SET name = 'Smakolyk+', locale_name = _cp1250 X'536D616B6FB3796B2B' WHERE vnum = 55031;
+		UPDATE world.item_proto SET name = 'Sfera Losu Zwierzaka', locale_name = _cp1250 X'5366657261204C6F7375205A776965727A616B61' WHERE vnum = 55032;
+		UPDATE world.item_proto SET name = 'Zaczaruj zwierzaka', locale_name = _cp1250 X'5A61637A6172756A207A776965727A616B61' WHERE vnum = 55033;
+		UPDATE world.item_proto SET name = 'Smaczny Smakolyk', locale_name = _cp1250 X'536D61637A6E7920536D616B6FB3796B' WHERE vnum = 55042;
+		UPDATE world.item_proto SET name = 'Boska Odzywka', locale_name = _cp1250 X'426F736B61204F64BF79776B61' WHERE vnum = 55100;
+		UPDATE world.item_proto SET name = 'Skrzynka na Zwierzaka', locale_name = _cp1250 X'536B727A796E6B61206E61205A776965727A616B61' WHERE vnum = 55400;
+		UPDATE world.item_proto SET name = 'Jajo Malpiszona', locale_name = _cp1250 X'4A616A6F204D61B37069737A6F6E61' WHERE vnum = 55401;
+		UPDATE world.item_proto SET name = 'Maly Malpiszon (pieczec)', locale_name = _cp1250 X'4D61B379204D61B37069737A6F6E2028706965637AEAE629' WHERE vnum = 55701;
+		UPDATE world.item_proto SET name = 'Jajo Pajaka', locale_name = _cp1250 X'4A616A6F2050616AB96B61' WHERE vnum = 55402;
+		UPDATE world.item_proto SET name = 'Maly Pajak (pieczec)', locale_name = _cp1250 X'4D61B3792050616AB96B2028706965637AEAE629' WHERE vnum = 55702;
+		UPDATE world.item_proto SET name = 'Jajo Razadora', locale_name = _cp1250 X'4A616A6F2052617A61646F7261' WHERE vnum = 55403;
+		UPDATE world.item_proto SET name = 'Maly Razador (pieczec)', locale_name = _cp1250 X'4D61B3792052617A61646F722028706965637AEAE629' WHERE vnum = 55703;
+		UPDATE world.item_proto SET name = 'Jajo Nemere', locale_name = _cp1250 X'4A616A6F204E656D657265' WHERE vnum = 55404;
+		UPDATE world.item_proto SET name = 'Mala Nemere (pieczec)', locale_name = _cp1250 X'4D61B361204E656D6572652028706965637AEAE629' WHERE vnum = 55704;
+		UPDATE world.item_proto SET name = 'Niebieskie Jajo Smoka', locale_name = _cp1250 X'4E6965626965736B6965204A616A6F20536D6F6B61' WHERE vnum = 55405;
+		UPDATE world.item_proto SET name = 'Niebieski Maly Smok (pieczec)', locale_name = _cp1250 X'4E6965626965736B69204D61B37920536D6F6B2028706965637AEAE629' WHERE vnum = 55705;
+		UPDATE world.item_proto SET name = 'Czerwone Jajo Smoka', locale_name = _cp1250 X'437A6572776F6E65204A616A6F20536D6F6B61' WHERE vnum = 55406;
+		UPDATE world.item_proto SET name = 'Mala Meley (pieczec)', locale_name = _cp1250 X'4D61B361204D656C65792028706965637AEAE629' WHERE vnum = 55706;
+		UPDATE world.item_proto SET name = 'Jajo Mini Azraela', locale_name = _cp1250 X'4A616A6F204D696E6920417A7261656C61' WHERE vnum = 55407;
+		UPDATE world.item_proto SET name = 'Mini Azrael (pieczec)', locale_name = _cp1250 X'4D696E6920417A7261656C2028706965637AEAE629' WHERE vnum = 55707;
+		UPDATE world.item_proto SET name = 'Jajo Grubego Mini Kata', locale_name = _cp1250 X'4A616A6F204772756265676F204D696E69204B617461' WHERE vnum = 55408;
+		UPDATE world.item_proto SET name = 'Gruby Mini Kat (pieczec)', locale_name = _cp1250 X'4772756279204D696E69204B61742028706965637AEAE629' WHERE vnum = 55708;
+		UPDATE world.item_proto SET name = 'Jajo Baashido', locale_name = _cp1250 X'4A616A6F20426161736869646F' WHERE vnum = 55409;
+		UPDATE world.item_proto SET name = 'Maly Baashido (pieczec)', locale_name = _cp1250 X'4D61B37920426161736869646F2028706965637AEAE629' WHERE vnum = 55709;
+		UPDATE world.item_proto SET name = 'Jajo Nessie', locale_name = _cp1250 X'4A616A6F204E6573736965' WHERE vnum = 55410;
+		UPDATE world.item_proto SET name = 'Nessie (pieczec)', locale_name = _cp1250 X'4E65737369652028706965637AEAE629' WHERE vnum = 55710;
+		UPDATE world.item_proto SET name = 'Jajo Exedyara', locale_name = _cp1250 X'4A616A6F204578656479617261' WHERE vnum = 55411;
+		UPDATE world.item_proto SET name = 'Wylag Exedyara (pieczec)', locale_name = _cp1250 X'57796CB9672045786564796172612028706965637AEAE629' WHERE vnum = 55711;
+		UPDATE world.item_proto SET name = 'Biale Jajo Smoka', locale_name = _cp1250 X'426961B365204A616A6F20536D6F6B61' WHERE vnum = 55412;
+		UPDATE world.item_proto SET name = 'Gniewny Mini Alastor (pieczec)', locale_name = _cp1250 X'476E6965776E79204D696E6920416C6173746F722028706965637AEAE629' WHERE vnum = 55712;
+		UPDATE world.item_proto SET name = 'Jajo Straznika', locale_name = _cp1250 X'4A616A6F2053747261BF6E696B61' WHERE vnum = 55413;
+		UPDATE world.item_proto SET name = 'Mini-Dowodca (pieczec)', locale_name = _cp1250 X'4D696E692D446F77F36463612028706965637AEAE629' WHERE vnum = 55713;
+		UPDATE world.item_proto SET name = 'Jajo Aamona', locale_name = _cp1250 X'4A616A6F2041616D6F6E61' WHERE vnum = 55414;
+		UPDATE world.item_proto SET name = 'Maly Aamon (pieczec)', locale_name = _cp1250 X'4D61B3792041616D6F6E2028706965637AEAE629' WHERE vnum = 55714;
+		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:names_v1', NOW());
+	END IF;
+END//
+DELIMITER ;
+
 -- ---- The pet mobs (young / heroic / champion; clones of 34001 like the ItemShop pets; the client's npclist has
 -- their models - client-patches/client-2.0.30/tools/pety) ----------------------------------------------------------
 DROP TEMPORARY TABLE IF EXISTS world.gp_mob;

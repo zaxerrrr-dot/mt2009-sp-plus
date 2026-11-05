@@ -7,8 +7,9 @@
 #   72803          Buff Premium SungMa        ITEM_QUEST, real time 1 day (the shop's line 1 / 7 / 15 / 30)
 #   72804-72807    Eliksir W. SungMa (SIŁA / WIT / ODP / INT)   ITEM_QUEST, stack 200
 #   renamed        55002 Klatka Transportowa, 72322 Karta Resetu, 72323 Karta Przetasowania, 55008 Pergamin Nazwy
-#                  Zwierzaka, 55033 Reverti Zwierza, 55034 Revertus Zwierza; 100300 / 100400 / 100500 Zielona /
-#                  Niebieska / Różowa Smocza Fasola
+#                  Zwierzaka; 100300 / 100400 / 100500 Zielona / Niebieska / Różowa Smocza Fasola
+#                  (55033 / 55034 are no Reverti / Revertus any more: the growth pets moved those to 55029 / 55030 and
+#                  55033 / 55034 are Zaczaruj zwierzaka / Księga Browarnika - tools/pety owns all its vnums' records)
 #
 # New records are copies of 30228's with every value cleared (tools/monstercard's card_record), icons of items the icon
 # pack has (nothing new to pack): the ticket 71095, Szkło Intuicji's glass 71113, the premium token, the Sung Ma
@@ -48,7 +49,6 @@ ITEMS = (
 )
 RENAMES = {
 	55002: u'Klatka Transportowa', 72322: u'Karta Resetu', 72323: u'Karta Przetasowania', 55008: u'Pergamin Nazwy Zwierzaka',
-	55033: u'Reverti Zwierza', 55034: u'Revertus Zwierza',
 	100300: u'Zielona Smocza Fasola', 100400: u'Niebieska Smocza Fasola', 100500: u'Różowa Smocza Fasola',
 }
 

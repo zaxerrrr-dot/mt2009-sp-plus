@@ -26,6 +26,7 @@ F_STACK = 1 << 2
 LIMIT_REAL_TIME = 7
 
 MIGRATED_ID_BASE = 0xF0000000   # pet ids of the old system's pets (never an item id)
+NAMES_MARKER = 'pety:names_v1'  # the items' names (pl-wiki) put on an existing world once; bump on a rename
 
 
 def item(vnum, name, desc, type_, subtype, stack=200, antiflag=0, gold=0, sell=0, limit=(0, 0), values=(0,) * 6,
@@ -267,6 +268,23 @@ def gen_sql():
     w("DELIMITER ;")
     w("INSERT IGNORE INTO world.item_proto (%s) VALUES" % COLS)
     w(",\n".join(item_row(it) for it in its) + ";")
+    w("")
+    # ---- names ----
+    w("-- ---- The items' names = the pl-wiki's item pages (System Zwierzat Domowych), once more: %s -------------------"
+      % NAMES_MARKER)
+    w("-- A world that wrote pety:items_v1 earlier keeps its rows (INSERT IGNORE); a later every-start rename of these")
+    w("-- vnums (the old ishop5 block of apply.sh: 55033 / 55034 -> Reverti / Revertus Zwierza) is fixed here. Once a")
+    w("-- marker - an operator's later rename stays; a new name in pety_data / gen_pety_sql = a new marker.")
+    w("DELIMITER //")
+    w("BEGIN NOT ATOMIC")
+    w("\tIF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '%s') = 0 THEN" % NAMES_MARKER)
+    for it in its:
+        w("\t\tUPDATE world.item_proto SET name = '%s', locale_name = %s WHERE vnum = %d;"
+          % (ascii_name(it['name']), cp1250_hex(it['name']), it['vnum']))
+    w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % NAMES_MARKER)
+    w("\tEND IF;")
+    w("END//")
+    w("DELIMITER ;")
     w("")
     w("-- ---- The pet mobs (young / heroic / champion; clones of 34001 like the ItemShop pets; the client's npclist has")
     w("-- their models - client-patches/client-2.0.30/tools/pety) ----------------------------------------------------------")

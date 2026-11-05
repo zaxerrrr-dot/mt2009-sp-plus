@@ -2,7 +2,7 @@
 # MT2009_PLUS_ITEMSHOP_V3_V8 - checks the packs build_ishop5_packs.py wrote (on the OUT of the whole Yohara chain): the 8
 # new items' item_proto records (dbdata: vnum, names, type, stack, anti flags, flags, real-time limit), their
 # item_list lines (gamedata) with an icon that is in a pack or the repo's root/icon/item, their itemdesc lines (dbdata),
-# and the 6 + 3 renamed items' Polish names (item_proto and itemdesc).
+# and the 4 + 3 renamed items' Polish names (item_proto and itemdesc).
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ishop5/verify_ishop5.py \
 #     <OUT pack dir> [<BASE pack dir>]
 import os
