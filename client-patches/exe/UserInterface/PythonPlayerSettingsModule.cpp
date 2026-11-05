@@ -108,8 +108,11 @@ const bool CPlayerSettingsModule::LoadInitData()
           // chrmgr.RegisterCacheEffect(chrmgr.EFFECT_SUCCESS, "",			"season1/effect/success.mse" },
           // chrmgr.RegisterCacheEffect(chrmgr.EFFECT_FAIL, "",	"season1/effect/fail.mse" },
 
-          {pkBase.EFFECT_LEVELUP_ON_14_FOR_GERMANY, "", "season1/effect/paymessage_warning.mse"},
-          {pkBase.EFFECT_LEVELUP_UNDER_15_FOR_GERMANY, "", "season1/effect/paymessage_decide.mse"},
+          // MT2009_PLUS_NO_PAYMESSAGE_V1: GF's paymessage_warning/decide.mse are a German board with the game's logo and
+          // "www.Metin2.de" (a free-to-play ad); both slots play the ordinary level-up effect instead (the growth pet's
+          // level-up sent SE_LEVELUP_ON_14_FOR_GERMANY - 3.0.14 item 4)
+          {pkBase.EFFECT_LEVELUP_ON_14_FOR_GERMANY, "", "d:/ymir work/effect/etc/levelup_1/level_up.mse"},
+          {pkBase.EFFECT_LEVELUP_UNDER_15_FOR_GERMANY, "", "d:/ymir work/effect/etc/levelup_1/level_up.mse"},
 
           {pkBase.EFFECT_PERCENT_DAMAGE1, "", "d:/ymir work/effect/hit/percent_damage1.mse"},
           {pkBase.EFFECT_PERCENT_DAMAGE2, "", "d:/ymir work/effect/hit/percent_damage2.mse"},

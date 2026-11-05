@@ -839,13 +839,11 @@ bool CPythonNetworkStream::RecvSpecialEffect()
 			effect = CInstanceBase::EFFECT_FR_SUCCESS;
 			bAttachEffect = false ;
 			break;
+		// MT2009_PLUS_NO_PAYMESSAGE_V1: never GF's German "Level-Up ... www.Metin2.de" boards - the ordinary level-up
+		// effect on the character instead (the growth pet's level-up sent SE_LEVELUP_ON_14_FOR_GERMANY)
 		case SE_LEVELUP_ON_14_FOR_GERMANY:
-			effect = CInstanceBase::EFFECT_LEVELUP_ON_14_FOR_GERMANY;
-			bAttachEffect = false ;
-			break;
 		case SE_LEVELUP_UNDER_15_FOR_GERMANY:
-			effect = CInstanceBase::EFFECT_LEVELUP_UNDER_15_FOR_GERMANY;
-			bAttachEffect = false ;
+			effect = CInstanceBase::EFFECT_LEVELUP;
 			break;
 		case SE_PERCENT_DAMAGE1:
 			effect = CInstanceBase::EFFECT_PERCENT_DAMAGE1;
