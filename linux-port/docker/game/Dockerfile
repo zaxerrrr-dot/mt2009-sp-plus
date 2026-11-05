@@ -1153,7 +1153,7 @@ RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
 # with a free warp on the same cell (10077) and Seon-Pyeong beside them
 # (20091). Koe-Pung and Seon-Pyeong come back and the warp stays commented,
 # as the game has it: "wejscie do groty chyba powinno wymagac jakiegos
-# klucza" (Tieru, 26 September; 2.2.20 had opened the warp). The Bloodstone
+# klucza" (26 September; 2.2.20 had opened the warp). The Bloodstone
 # is Seon-Hae's daily quest (quest/heavens_cave_keyquest.quest), and the
 # package stands Seon-Hae (20095) in Jinno's first village alone: Yongan and
 # Joan get him beside their herbalist (20018), on cells measured free and on

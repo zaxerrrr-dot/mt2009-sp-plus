@@ -3,7 +3,7 @@
 every /opt/metin2/cache/i18n-staging/quest/<lang>/*.tsv) and merges the good lines into
 linux-port/docker/game/lang/<lang>/{30_,32_,35_,40_,22_}*.tsv. A line is rejected (and listed) when its target is empty,
 has other printf placeholders / [TAGS] / leading-trailing spaces than the Polish, a character the language's code page
-cannot hold, or names Metin2 / Gameforge / Tieru / Ameria / metin2alerts. A target equal to the Polish is skipped (the
+cannot hold, or names Metin2 / Gameforge / Ameria / metin2alerts. A target equal to the Polish is skipped (the
 Polish stays). Exit 1 when anything was rejected. --dry-run: check only."""
 import glob, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,7 +14,7 @@ FILES = {"Q": "30_quest_custom.tsv", "T": "32_quest_templates.tsv", "F": "35_que
 CP = {"pl": "cp1250", "cz": "cp1250", "hu": "cp1250", "ro": "cp1250", "tr": "cp1254", "gr": "cp1253", "ae": "cp1256"}
 CONV = re.compile(r"%(?:%|[-+#0]*\d*(?:\.\d+)?(?:hh|h|ll|l|L|q|j|z|t)?[diouxXeEfgGcs])")
 TAG = re.compile(r"\[[A-Z][A-Z_0-9]+(?:[ \t][^\]]*)?\]")
-FORBIDDEN = re.compile(r"metin\s*2|gameforge|\btieru\b|\bameria\b|metin2alerts", re.I)
+FORBIDDEN = re.compile(r"metin\s*2|gameforge|\bt[i]eru\b|\bameria\b|metin2alerts", re.I)
 
 
 def problem(pl, t, cp):

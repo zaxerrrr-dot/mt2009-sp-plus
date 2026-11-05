@@ -50,7 +50,7 @@
 .live-map-section{width:100%}
 }
 
-/* Seban Panel palette: the live widget no longer borrows Tieru's gold/brown skin. */
+/* Seban Panel palette: the live widget no longer borrows the upstream gold/brown skin. */
 .live-shell{background:linear-gradient(135deg,#101d2d,#0c1726);border-color:#213852}
 .live-shell header h2{color:#dcecff}.live-filters{background:#0d1929;border-color:#294562}.live-filters label,.live-shell footer{color:#b7cce5}
 .level-filter button{background:#203d63;color:#dcecff}.level-filter button.active{background:#1f6fe5;color:#fff}
@@ -70,7 +70,7 @@
    within that range; a real 2K monitor keeps the original untouched. */
 @media(min-width:1351px) and (max-width:2199px){.live-dashboard-grid{grid-template-columns:minmax(0,1fr)!important}}
 
-/* v1.39: live map uses the active panel theme, not fixed Tieru blue. */
+/* v1.39: live map uses the active panel theme, not a fixed blue. */
 :root{--live-surface:#0d1929;--live-surface-strong:#101d2d;--live-border:#294562;--live-line:#213852;--live-accent:#1f6fe5;--live-accent-text:#dcecff;--live-number:#82b6ff;--live-progress-end:#49d49a;--live-filter:#203d63}
 body[data-theme="ember"]{--live-surface:#251717;--live-surface-strong:#2b1918;--live-border:#563535;--live-line:#4b302f;--live-accent:#b45337;--live-accent-text:#fff0e5;--live-number:#e7aa78;--live-progress-end:#e0a154;--live-filter:#643d30}
 body[data-theme="forest"]{--live-surface:#12251a;--live-surface-strong:#173021;--live-border:#2a5439;--live-line:#244a33;--live-accent:#2d8b57;--live-accent-text:#ebfff1;--live-number:#85dba3;--live-progress-end:#86d85a;--live-filter:#255f3e}

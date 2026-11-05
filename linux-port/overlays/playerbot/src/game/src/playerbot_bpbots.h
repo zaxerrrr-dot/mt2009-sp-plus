@@ -1133,7 +1133,7 @@ namespace playerbot_bpbots
 		if (!c || !mt2009_battlepass::IsBot(c) || c->GetEmpire() != empire || c->IsDead() ||
 				(int)c->GetLevel() < g_iShoutLimitLevel || IsPlayerBotSidekickPID(pid) || IsPlayerBotOnMercContract(pid) ||
 				IsPlayerBotShouterPID(pid) || // MT2009_PLUS_SHOUTERS_V1: its own lines only
-				IsPlayerBotMedalShouterPID(pid)) // MT2009_PLUS_MEDAL_SHOUTERS_V1: and Tieru's kind
+				IsPlayerBotMedalShouterPID(pid)) // MT2009_PLUS_MEDAL_SHOUTERS_V1: and the upstream kind
 			return NULL;
 		return c;
 	}

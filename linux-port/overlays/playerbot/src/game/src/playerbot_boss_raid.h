@@ -17,7 +17,7 @@
 // twenty-three bots of whom exactly one was on him for eighteen of the
 // thirty-four minutes he was fought, and not one casket in any bag
 // ("sprawdzilem stan szkatulek - nie ma u mnie ani jednej po paru dniach
-// gry", prodnathin; Tieru: the Giant Turtle, the Flame King, the Spider
+// gry", prodnathin; the Giant Turtle, the Flame King, the Spider
 // Queen, Nine Tails, the Tiger Spectre - every boss has to be killed).
 //
 // A raid is the Demon Tower's shape on open ground. This core's world pass

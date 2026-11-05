@@ -2727,9 +2727,9 @@
 30365	Szmaragdowy Marmur	Kamieñ z serca ziemi.
 30366	Pergamin	Wyj¹tkowo trwa³y pergamin, pe³en zapomnianej wiedzy.
 30367	£uski Smoka	Nieprzenikniony pancerz stra¿nika ognia.
-30368	Pozwolenie na Wzmocn. Przedmiotu	Oficjalny dokument uprawniaj¹cy do wytworzenia Wzmocnienia Przedmiotu.
-30369	Pozwolenie na Wzmocn. Przedmiotu	Oficjalny dokument uprawniaj¹cy do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.
-30370	Pozwolenie na Zaczar. Przedmiotu	Oficjalny dokument uprawniaj¹cy do wytworzenia Zaczarowania Przedmiotu.
+30368	Pozwolenie na Wzmocn. Przedmiotu	Dokument uprawniaj¹cy do wytworzenia Wzmocnienia Przedmiotu.
+30369	Pozwolenie na Wzmocn. Przedmiotu	Dokument uprawniaj¹cy do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.
+30370	Pozwolenie na Zaczar. Przedmiotu	Dokument uprawniaj¹cy do wytworzenia Zaczarowania Przedmiotu.
 72731	Maska Sabaha	Maska Ezoteryka jest mistycznym artefaktem, który od wieków noszony by³ przez adeptów tajemnych sztuk zwi¹zanych z kultem Boga Tygrysa Sabaha. Rêcznie malowane wzory, inspirowane duchowymi wizjami ezoteryków, symbolizuj¹ po³¹czenie ze œwiatem duchów i zrozumienie mistycznych si³.
 72735	Maska Sabaha	Maska Ezoteryka jest mistycznym artefaktem, który od wieków noszony by³ przez adeptów tajemnych sztuk zwi¹zanych z kultem Boga Tygrysa Sabaha. Rêcznie malowane wzory, inspirowane duchowymi wizjami ezoteryków, symbolizuj¹ po³¹czenie ze œwiatem duchów i zrozumienie mistycznych si³.
 30371	Diabelskie Rogi	Artefakt wzmacniaj¹cy czarn¹ magiê, zdobywany z piekielnych otch³ani.

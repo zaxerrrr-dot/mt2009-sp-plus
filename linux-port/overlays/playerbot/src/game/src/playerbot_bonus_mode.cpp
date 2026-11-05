@@ -1,4 +1,4 @@
-// MT2009_PLUS_GLOBAL_BONUS_V1 - M2_BONUS_MODE: mt2009 (the default) or global (Tieru's 2.2.31 "Bonusy jak na
+// MT2009_PLUS_GLOBAL_BONUS_V1 - M2_BONUS_MODE: mt2009 (the default) or global (2.2.31 "Bonusy jak na
 // serwerze globalnym", the owner 14 October 2026; server-patches/bonusyglobal/README.md).
 //
 // The migrator (mariadb/playerbot/apply.sh) switches world.item_attr and the monsters' elements and writes the
@@ -7,7 +7,7 @@
 //     (playerbot_elements.cpp): in BOTH modes the full percent, cap 80% (the owner, 23 October 2026 - 1% of
 //     resistance = 1% less damage; from 14 October to 23 October it was 30% of it);
 //   * BonusModeItemDropBonus - the double-item chance line (POINT_ITEM_DROP_BONUS of a bracelet or earrings) adds
-//     to the drop chance as the thief's gloves and the premium do (item_manager.cpp, Tieru's 2.2.31); 0 in mt2009;
+//     to the drop chance as the thief's gloves and the premium do (item_manager.cpp, the upstream 2.2.31); 0 in mt2009;
 //   * BonusModeAttrValue - one item_attr row holds one set of values for every item: global gives the armour's
 //     fire/lightning/wind resistance 2-15%, and a talisman (ATTRIBUTE_SET_PENDANT) keeps its own 5-25% of those
 //     three (5% a level), as in mt2009 (item_attribute.cpp, CItem::AddAttr).

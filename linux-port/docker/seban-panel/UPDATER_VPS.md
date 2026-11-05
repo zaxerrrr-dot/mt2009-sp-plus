@@ -1,6 +1,6 @@
-# Aktualizator Tieru na VPS
+# Aktualizator wydania bazowego na VPS
 
-Ten poradnik włącza przycisk aktualizacji w Seban Panelu. Działa on przez oficjalny, odizolowany kontener `updater` Tieru. Seban Panel zapisuje tylko zlecenie do wspólnego wolumenu; nie ma dostępu do socketu Dockera.
+Ten poradnik włącza przycisk aktualizacji w Seban Panelu. Działa on przez odizolowany kontener `updater` wydania bazowego. Seban Panel zapisuje tylko zlecenie do wspólnego wolumenu; nie ma dostępu do socketu Dockera.
 
 Przed rozpoczęciem włącz hasło w Seban Panelu. Przycisk aktualizacji jest dostępny wyłącznie po zalogowaniu, aby osoba odwiedzająca publiczny adres panelu nie mogła zrestartować serwera.
 
@@ -13,7 +13,7 @@ Dalsza część poradnika dotyczy linii 1.x. Serwer 2.x rozpoznasz po pliku `lin
 
 Na takim serwerze nie uruchamiaj `m2-updater` (także przez `docker compose exec`) ani własnego skryptu, który kopiuje `linux-port/docker` z repozytorium. To pliki linii 1.x, między innymi `docker-compose.yml` z MariaDB 10.11 zamiast 11.8, a stara wersja bazy uszkadza jej pliki. `m2-updater` odmawia pracy na serwerze 2.x i wskazuje `update.sh`.
 
-## Wariant standardowy Tieru
+## Wariant standardowy wydania bazowego
 
 Poniższe polecenia wykonaj na VPS przez SSH jako użytkownik z `sudo`. Zastąp `/opt/seban-panel` ścieżką, pod którą rozpakowano Seban Panel.
 
@@ -21,7 +21,7 @@ Poniższe polecenia wykonaj na VPS przez SSH jako użytkownik z `sudo`. Zastąp 
 STACK=/opt/metin2/stack
 PANEL=/opt/seban-panel
 
-# Sprawdź, czy wskazany katalog należy do instalacji Tieru.
+# Sprawdź, czy wskazany katalog należy do instalacji wydania bazowego.
 test -f "$STACK/docker-compose.yml"
 
 # Znajdź nazwę współdzielonego wolumenu aktualizatora.
@@ -44,11 +44,11 @@ docker compose --profile update up -d updater
 docker compose exec updater m2-updater selftest
 ```
 
-Poprawny wynik kończy się linią `everything it needs is here`. Odśwież `/manage` w Seban Panelu, zaloguj się i użyj przycisku **Pobierz i zainstaluj aktualizację Tieru**.
+Poprawny wynik kończy się linią `everything it needs is here`. Odśwież `/manage` w Seban Panelu, zaloguj się i użyj przycisku **Pobierz i zainstaluj aktualizację wydania bazowego**.
 
 ## Gdy test mówi o brakującym pakiecie serwera
 
-Oficjalny projekt celowo nie pobiera plików serwera Metin2 z przypadkowych adresów. Aktualizator potrzebuje jednorazowo legalnie posiadanego pakietu bazowego r40250, np. `Reference_Server.zip`. Jeżeli serwer został postawiony oficjalnym instalatorem Tieru, pakiet zwykle jest już w cache i ten krok nie jest potrzebny.
+Oficjalny projekt celowo nie pobiera plików serwera Metin2 z przypadkowych adresów. Aktualizator potrzebuje jednorazowo legalnie posiadanego pakietu bazowego r40250, np. `Reference_Server.zip`. Jeżeli serwer został postawiony oficjalnym instalatorem wydania bazowego, pakiet zwykle jest już w cache i ten krok nie jest potrzebny.
 
 Jeśli `selftest` przechodzi, ale pierwsze zlecenie zatrzymuje się przy `No Metin2 server-file package`, przygotuj cache z własnego pakietu. Wskaż prawidłową ścieżkę do archiwum — nie publikuj go ani nie dodawaj do repozytorium:
 
@@ -67,7 +67,7 @@ To przygotowuje cache i kontekst przyszłych wydań. Nie wdraża aktualizacji do
 
 ## Instalacja o niestandardowej ścieżce
 
-Jeżeli `docker compose ls` pokazuje inny katalog niż `/opt/metin2/stack`, ustaw go jawnie w pliku `.env` instalacji Tieru. Przykład poniżej zachowuje istniejące wartości i aktualizuje tylko klucze aktualizatora:
+Jeżeli `docker compose ls` pokazuje inny katalog niż `/opt/metin2/stack`, ustaw go jawnie w pliku `.env` instalacji wydania bazowego. Przykład poniżej zachowuje istniejące wartości i aktualizuje tylko klucze aktualizatora:
 
 ```bash
 STACK=/wlasna/sciezka/do/linux-port/docker
@@ -102,7 +102,7 @@ Następnie wykonaj opisane wyżej przygotowanie cache z własnym pakietem r40250
 
 ## Co robi przycisk
 
-1. Pobiera bieżący kod z gałęzi `main` Tieru.
+1. Pobiera bieżący kod z gałęzi `main` wydania bazowego.
 2. Przygotowuje kontekst Docker, korzystając z lokalnego cache plików serwera.
 3. Kopiuje nowy kontekst nad instalację bez kasowania `.env` ani `docker-compose.override.yml`.
 4. Wykonuje `docker compose up -d --build`.

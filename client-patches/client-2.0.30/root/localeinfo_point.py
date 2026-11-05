@@ -208,7 +208,7 @@ ATTR_MAX_VALUES = {
 }
 
 # MT2009_PLUS_GLOBAL_BONUS_V1: the server's M2_BONUS_MODE ("BonusMode 0|1" at login, quest zywioly, game.py).
-# global (Tieru's 2.2.31 "Bonusy jak na serwerze globalnym"): Max HP 2000, Max SP 80 (200 on a necklace - also
+# global (2.2.31 "Bonusy jak na serwerze globalnym"): Max HP 2000, Max SP 80 (200 on a necklace - also
 # orange), regeneration 30%, fire/lightning/wind resistance 15%, the experience and double-item chances 20%; the
 # maxima above are mt2009's. BONUS_GLOBAL also switches uitarget.py's element icons to zywioly_global.py.
 BONUS_GLOBAL = 0

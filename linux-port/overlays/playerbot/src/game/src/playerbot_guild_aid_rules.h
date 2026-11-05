@@ -10,7 +10,7 @@
 // jakiejs mapie zlatuja sie boty z jego gildii by walczyc z nami, ale boty z
 // naszej gildii kompletnie to olewaja (dwukrotnie pobliski bot z mojej gildii
 // olal sytuacje, ze walcze z 5 innymi botami)" (Derpsonkowy95, 28 September;
-// Iwakura: "Punkt 1 jest spoko, mozna dodac"; Tieru: "jestem na tak"). People
+// Iwakura: "Punkt 1 jest spoko, mozna dodac"; "jestem na tak"). People
 // invite bots into their guilds, and those bots now answer for the person the
 // way a bot guild answers for its bot - bounded where that one is not:
 //

@@ -101,7 +101,7 @@ inline long long ChestAskingBase(long long sheetPrice, long long worth)
 }
 
 // Whether a Moonlight chest stays closed for its keeper's counter. Only a
-// dropper keeps any - a drop character's counter is its trade (Tieru, 15
+// dropper keeps any - a drop character's counter is its trade (15
 // September: "dodaj im mozliwosc podnoszenia tego i dawania na sklep") - and
 // it opens what is over its hold. Everybody else opens every chest it gets,
 // the resource trader included: its one bot in five used to hold six for its

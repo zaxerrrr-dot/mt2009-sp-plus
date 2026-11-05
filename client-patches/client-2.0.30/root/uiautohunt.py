@@ -1,5 +1,5 @@
 # Auto Hunt System
-# Created by SIZOWSKI (Thank you for the original code! Go subscribe to him on YouTube! https://www.youtube.com/@metin2singleplayer a.k.a "ZAXEP - METIN2 SINGLE PLAYER")
+# Created by SIZOWSKI (Thank you for the original code!)
 # Modernized by Colide (Uriel).
 #
 # MT2009_PLUS_UPSTREAM_2_0_76: rebased on the upstream client 2.0.76 (from

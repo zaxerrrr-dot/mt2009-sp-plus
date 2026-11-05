@@ -11,7 +11,7 @@ updater Seban Panelu czytają aktualizacje **tylko** z repozytorium moda:
 | Paczka ZIP | adres `url` z manifestu, zwykle załącznik GitHub Release |
 | Serwer zapasowy (gdy GitHub nie odpowiada) | `http://141.94.100.53/aktualizacje/` — te same nazwy plików, patrz niżej |
 
-Adres z oficjalnego repozytorium (`TieruYT/metin2-playerbots`) jest odrzucany.
+Adres z repozytorium wydania bazowego (dowolne `*/metin2-playerbots`) jest odrzucany.
 Pusty `manifestUrl` zapisany w `.m2launcher.json` z czasów, gdy aktualizacje
 były wyłączone, launcher sam zamienia na adres moda.
 
@@ -35,7 +35,7 @@ W **pełnym folderze serwera moda** (tym z `VERSION`, `MOD_VERSION`,
 1. Wprowadź zmiany. Plik, którego nie ma w
    `launcher\server-update-files.mod.txt`, **nie trafi do graczy** — nowe pliki
    dopisz w sekcji „the mod's own files”.
-2. Nałóż zmiany silnika MT2009 Plus (jak `playerbotify.py` u Tieru – tylko
+2. Nałóż zmiany silnika MT2009 Plus (jak `playerbotify.py` w wydaniu bazowym – tylko
    u Ciebie, przy wydaniu; gracze niczego nie łatają, dostają gotowe pliki
    `.cpp` w paczce):
 
@@ -159,37 +159,37 @@ musi **raz** dostać nowe pliki ręcznie (albo pełną nową paczkę):
 
 Każda kolejna aktualizacja przychodzi już sama.
 
-## Przenoszenie nowej wersji od Tieru
+## Przenoszenie nowej wersji wydania bazowego
 
 Nie kopiuj całego drzewa oficjalnego wydania na repozytorium. Wydanie 2.2.3
 tak zrobiło i cofnęło wygląd launchera oraz kanał aktualizacji (naprawione
 w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
-(weź poprawki Tieru, zostaw nasze fragmenty), a nie nadpisuj:
+(weź poprawki wydania bazowego, zostaw nasze fragmenty), a nie nadpisuj:
 
 | Plik | Co jest nasze |
 |---|---|
 | `Metin2-Launcher-GUI.Layout.ps1` | tytuł MT2009 PLUS, podtytuł, metin2sp.pl, przycisk Discord, stopka |
 | `Metin2-Launcher-GUI.Background.png` | tło MT2009 PLUS |
-| `launcher/Metin2Launcher.psm1` | kanał `zaxerrrr-dot/mt2009-sp-plus`, odrzucanie kanału Tieru, naprawa pustego `manifestUrl` |
+| `launcher/Metin2Launcher.psm1` | kanał `zaxerrrr-dot/mt2009-sp-plus`, odrzucanie kanału wydania bazowego, naprawa pustego `manifestUrl` |
 | `launcher/launcher.config.example.json` | adres `update-manifest-mt2009.json` moda |
 | `files/admin_panel.py` i `linux-port/docker/panel/app/admin_panel.py` | sprawdzanie wersji w repozytorium moda (`/VERSION`) |
 | `linux-port/docker/seban-panel/app.py` | sprawdzanie wydań repozytorium moda |
-| `linux-port/docker/seban-panel/updater/update-mt2009.py` | manifest moda, odrzucanie Tieru |
-| `linux-port/tools/update.sh` | domyślne repozytorium moda, odrzucanie Tieru |
+| `linux-port/docker/seban-panel/updater/update-mt2009.py` | manifest moda, odrzucanie wydania bazowego |
+| `linux-port/tools/update.sh` | domyślne repozytorium moda, odrzucanie wydania bazowego |
 | `linux-port/docker/mariadb/playerbot/apply.sh` | pętla wgrywająca `mod/*.sql` (oferty ItemShopu: kostiumy, fryzury, nakładki, pety, mounty) — bez niej nowe światy mają pusty ItemShop |
 | `linux-port/docker/mariadb/playerbot/mod/*.sql` | oferty ItemShopu w grze i w przeglądarce |
 | `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION`, BOM w skryptach PowerShell i zmian silnika MT2009 Plus |
-| pliki silnika w `linux-port/docker/game/src/server/game/src/` (m.in. `item_manager.cpp`, `char_item.cpp`, `cmd.cpp`, `char_affect.cpp`, `MountSystem.cpp`, `input_main.cpp`) | po wzięciu wersji Tieru uruchom ponownie `tools/port/Apply-MT2009PlusEngine.ps1` (albo bliźniaki `server-patches/*/apply_*.py`) – każda łatka ma swój znacznik `MT2009_PLUS_...` |
+| pliki silnika w `linux-port/docker/game/src/server/game/src/` (m.in. `item_manager.cpp`, `char_item.cpp`, `cmd.cpp`, `char_affect.cpp`, `MountSystem.cpp`, `input_main.cpp`) | po wzięciu wersji bazowej uruchom ponownie `tools/port/Apply-MT2009PlusEngine.ps1` (albo bliźniaki `server-patches/*/apply_*.py`) – każda łatka ma swój znacznik `MT2009_PLUS_...` |
 | `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
 | `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |
 
-**Baza Tieru: 2.2.20** (scalone 26 września 2026, razem z 2.2.19; wcześniej 2.2.18 i 2.2.15, 25 września, 2.2.9, 24 września). Scalaj trójstronnie
-(`git merge-file`): nasz plik, plik Tieru z wersji, na której nasz jest
-oparty, i nowa wersja Tieru. Nie zakładaj jednej bazy dla wszystkich plików
-– przed tym scaleniem źródła botów były na Tieru 2.2.3, choć CHANGELOG
+**Baza upstream: 2.2.20** (scalone 26 września 2026, razem z 2.2.19; wcześniej 2.2.18 i 2.2.15, 25 września, 2.2.9, 24 września). Scalaj trójstronnie
+(`git merge-file`): nasz plik, plik bazowy z wersji, na której nasz jest
+oparty, i nowa wersja bazowa. Nie zakładaj jednej bazy dla wszystkich plików
+– przed tym scaleniem źródła botów były na wydaniu bazowym 2.2.3, choć CHANGELOG
 mówił o 2.2.6, a pojedyncze pliki na 2.2.5–2.2.8. Dla każdego pliku bazą
-jest ta wersja Tieru, od której nasz plik różni się najmniej (albo ta, z
-którą jest identyczny – wtedy po prostu weź nową wersję Tieru).
+jest ta wersja bazowa, od której nasz plik różni się najmniej (albo ta, z
+którą jest identyczny – wtedy po prostu weź nową wersję bazową).
 
 `files/admin_panel.py` ma być identyczny z `linux-port/docker/panel/app/admin_panel.py`:
 launcher przy starcie kopiuje ten pierwszy na drugi (`start-server.ps1`,
@@ -198,11 +198,10 @@ launcher przy starcie kopiuje ten pierwszy na drugi (`start-server.ps1`,
 Po scaleniu sprawdź:
 
 ```sh
-grep -rn "TieruYT\|metin2singleplayer\|buycoffee" --include=*.ps1 --include=*.psm1 --include=*.py --include=*.sh .
+grep -rniE "t[i]eru|metin2single[p]layer|buycoffee" --include=*.ps1 --include=*.psm1 --include=*.py --include=*.sh .
 ```
 
-Jedyne dozwolone trafienia to blokady kanału Tieru (`TieruYT/metin2-playerbots`
-w warunkach odrzucających) i stary instalator `installer/`.
+Jedyne dozwolone trafienie to stary instalator `installer/`.
 
 Każdy plik `.ps1` / `.psm1` musi być zapisany jako **UTF-8 z BOM** — bez
 tego Windows PowerShell nie wczyta polskich znaków i launcher nie wstanie.

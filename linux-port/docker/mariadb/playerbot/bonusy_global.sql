@@ -1,4 +1,4 @@
--- MT2009_PLUS_GLOBAL_BONUS_V1: the item bonus table of M2_BONUS_MODE=global (Tieru's 2.2.31 "Bonusy jak na
+-- MT2009_PLUS_GLOBAL_BONUS_V1: the item bonus table of M2_BONUS_MODE=global (2.2.31 "Bonusy jak na
 -- serwerze globalnym", item_attr_global_2231, mapped by name onto our world.item_attr). apply.sh runs it when the
 -- world switches from mt2009 to global - while world.item_attr_mt2009 is empty (it holds the mt2009 rows exactly
 -- while the global set is in item_attr, so the state lives in the world database itself) - never twice in a row: an

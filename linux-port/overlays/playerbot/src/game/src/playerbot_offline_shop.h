@@ -1301,7 +1301,7 @@ namespace {
     // bag for the slot. Nothing asked the counter for gear - only for room to
     // add goods - so a warrior of 75 whose weapon burned at the anvil fought on
     // with a Gilotynowe Ostrze +7 of level ten while a Halabarda +6 and three
-    // swords of level 55 stood on her own counter (CiosZKarpia, Tieru,
+    // swords of level 55 stood on her own counter (CiosZKarpia,
     // 15 September). A line taken back within six hours is not taken again:
     // a piece the equipment pass will not put on would otherwise go back on
     // the counter and come off it every visit.

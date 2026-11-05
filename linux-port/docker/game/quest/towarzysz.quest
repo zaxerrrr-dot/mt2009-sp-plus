@@ -1,4 +1,4 @@
--- Towarzysz: the player's own companion (playerbot_sidekick.h, Tieru,
+-- Towarzysz: the player's own companion (playerbot_sidekick.h,
 -- 24 September). A letter at every login is the whole interface: before the
 -- companion exists it asks for the class, the sex, the path and the name, and
 -- afterwards it is the companion's menu - call it back, let it play on its
@@ -15,7 +15,7 @@
 --
 -- The world may do without it: M2_SIDEKICK=0 in .env (the launcher's
 -- difficulty window) is the event flag m2_sidekick_off, and then no letter is
--- sent, so nobody has the way in (Tieru, 25 September). A letter already in
+-- sent, so nobody has the way in (25 September). A letter already in
 -- the bag from before says so, and the server refuses the command anyway.
 quest towarzysz begin
 	state start begin

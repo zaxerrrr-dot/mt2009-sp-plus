@@ -8,12 +8,12 @@
 [![Support the project](https://img.shields.io/badge/Support_the_project_–_buy_a_coffee-1E88E5?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buycoffee.to/mt2009plus)
 
 A local Metin2 singleplayer world full of autonomous characters (Playerbots),
-built on Tieru's official **Metin2 Playerbots** release (mt2009 server files,
-version 2.2.0) — **extended with systems the official release does not have**:
+built on the base **Metin2 Playerbots** release (mt2009 server files,
+version 2.2.0) — **extended with systems the base release does not have**:
 costumes, hairstyles, weapon skins, sashes, mounts, pets and alchemy
 (Dragon Soul), over 2,200 new items in total.
 
-The bots behave exactly as in the official release: they level up, fight solo
+The bots behave exactly as in the base release: they level up, fight solo
 and in parties, loot, refine gear at the Blacksmith, hunt Metin stones and
 trade with each other. This pack adds new items and systems to that world,
 plus a few bot improvements.
@@ -27,7 +27,7 @@ plus a few bot improvements.
 
 > [!IMPORTANT]
 > You need **this pack's client** (with the new costumes, mounts, pets and
-> items). Tieru's official client will not show the new items. This repository
+> items). The base release's client will not show the new items. This repository
 > contains no game files — the full package (client + server) is under
 > **Releases**, see [SERWER_PL.md](SERWER_PL.md).
 
@@ -88,14 +88,14 @@ The numbers below are counted from the ItemShop offers shipped with the pack
 
 ### ⚙️ Other
 - The server accepts the client regardless of its version.
-- Updates come from **this repository**, never from the official one —
-  an official package would overwrite the modifications ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
+- Updates come from **this repository**, never from any other source —
+  a foreign package would overwrite the modifications ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
 
 Full change list (Polish): [MODS_PL.md](MODS_PL.md).
 
 ---
 
-## 🌟 Bot features (from the official release)
+## 🌟 Bot features (from the base release)
 
 Bots are **full player characters driven by AI inside the server engine** —
 players see their natural movement, attack animations, skills and equipment
@@ -173,8 +173,8 @@ The launcher's **KOPIA ŚWIATA** button saves the whole world to a zip file.
 
 ## 📜 License
 
-MT2009 PLUS is a modification of Metin2 Playerbots (Tieru) and, from the
-version based on Tieru 2.2.17, is shared under **CC BY-NC-SA 4.0**
+MT2009 PLUS is a modification of Metin2 Playerbots and, from the
+version based on base release 2.2.17, is shared under **CC BY-NC-SA 4.0**
 (Attribution – NonCommercial – ShareAlike), see [LICENSE](LICENSE). You may
 copy, share and modify the pack if you credit the authors, do not make money
 from it and share a modified version under the same licence. Older parts under
@@ -182,19 +182,15 @@ MIT: [LICENSE-MIT.txt](LICENSE-MIT.txt). The game server code, game data and
 client belong neither to the project authors nor to us – read
 [NOTICE.md](NOTICE.md) before redistributing.
 
-Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0
-
 ---
 
 ## 🤝 Credits and the original project
 
-This pack is a modification of **Metin2 Playerbots** by **Tieru**, which is the
+This pack is a modification of **Metin2 Playerbots**, which is the
 core of MT2009 PLUS. All additional changes are made by
 **ZAXEP/SIZOWSKI**.
 
-- **Original project (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
-
-And the authors and helpers the official release builds on:
+And the authors and helpers the base release builds on:
 - **AzzlackSyndicate** — author of the original Linux port base, installers and panel. The source repository is currently private; Git history and full attribution are preserved.
 - **OskarPWA** — the bot storage window and skill icons on the page come from the panel they built and shared for porting.
 - **seban latino** — author of Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), the second panel in this install: live map, profiles, rankings, economy, telemetry and bulk item grants.

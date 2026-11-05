@@ -5,9 +5,9 @@
 # clocks, drink the potions put in its slots under a share of health or mana,
 # use an item such as the cape on a clock, hit Metin stones when asked, keep
 # going on a horse and stand up after dying. Here all of it is free and there is
-# no premium half (Tieru, 15 September). What the official page does not
+# no premium half (15 September). What the official page does not
 # describe and a player wants is a pick-up that leaves some things on the
-# ground - "nie podnos broni, zbroi" (Tieru, 15 September) - so the pick-up
+# ground - "nie podnos broni, zbroi" (15 September) - so the pick-up
 # goes by kind.
 #
 # The window is Colide's (19 September), a player who rebuilt it for himself and
@@ -39,7 +39,7 @@
 # Every place goes both ways as an offset from the character: this client
 # counts positions from its map's corner and the server from the world's, and
 # the world's coordinates put every item a map's base out of the pick-up's
-# reach ("nie podnosi dropu", Tieru, 15 September).
+# reach ("nie podnosi dropu", 15 September).
 # Every step, swing and pick-up goes through the client's own paths - the main
 # instance's walk, the attack key, the pick-up packet - so the server sees a
 # player walking, swinging and bending down, never a teleport.
@@ -221,7 +221,7 @@ def ConfigFromOldValues(values):
     if 'config_version' not in values:
         # A file saved by the window that drew the pick-up's switches as toggle
         # buttons has no version: their pressed look read as "off", and one
-        # click on Podnos turned the whole pick-up off (autohunt_Tieru.cfg,
+        # click on Podnos turned the whole pick-up off (autohunt_<name>.cfg,
         # 15 September). Such a file gets the pick-up back once.
         config['pickup'] = 1
         for key, label, bit in LOOT_KINDS:

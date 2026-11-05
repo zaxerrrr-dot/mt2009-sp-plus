@@ -1,6 +1,6 @@
 # Bonusy i żywioły: tryb mt2009 albo global – `MT2009_PLUS_GLOBAL_BONUS_V1`
 
-Właściciel, 14.10.2026: „zmiany bonusów i żywiołów dokładnie jak w wydaniu Tieru (2.2.31, „Bonusy jak na serwerze
+Właściciel, 14.10.2026: „zmiany bonusów i żywiołów dokładnie jak w wydaniu bazowym (2.2.31, „Bonusy jak na serwerze
 globalnym”), ale z opcją w .env: albo bonusy MT2009 PLUS (jak dotąd), albo bonusy serwera globalnego”, a w trybie
 global żywioły na wszystkich potworach. Jedna zmienna, **`M2_BONUS_MODE`** (`linux-port/docker/.env.example`):
 
@@ -21,12 +21,12 @@ global żywioły na wszystkich potworach. Jedna zmienna, **`M2_BONUS_MODE`** (`l
 Przedmioty **zachowują wszystkie bonusy**, które mają – w obu kierunkach zmienia się tylko pula losowania
 (`player.item` nie jest ruszane). Przełączać można dowolnie często; działa po restarcie (migrator).
 
-## Co zmienił Tieru (2.2.31) i jak to jest u nas
+## Co zmieniło wydanie bazowe (2.2.31) i jak to jest u nas
 
-| Tieru | U nas |
+| Wydanie bazowe | U nas |
 |---|---|
 | `apply.sh`: migracja `item_attr_global_2231` (jednorazowa, UPDATE po wartościach paczki + INSERT 5 wierszy) | `mariadb/playerbot/bonusy_global.sql` – te same wartości, po nazwie bonusu (`apply` = `POINT_*`, nigdy po numerze); kopia 14 wierszy trybu mt2009 w `world.item_attr_mt2009`, `bonusy_mt2009.sql` oddaje je z powrotem |
-| `apply.sh`: `mob_elements_r40250_2231` (bity 11 i 14 na 47 + 63 vnumach z r40250) | `tools/zywioly/gen_zywioly_moby_global.py` → `zywioly_moby_global.sql`: kolumny Att* oficjalnego mob_proto (Owsap = pl-wiki; zawiera całą listę Tieru) dla każdego potwora, wszystkie 6 żywiołów |
+| `apply.sh`: `mob_elements_r40250_2231` (bity 11 i 14 na 47 + 63 vnumach z r40250) | `tools/zywioly/gen_zywioly_moby_global.py` → `zywioly_moby_global.sql`: kolumny Att* oficjalnego mob_proto (Owsap = pl-wiki; zawiera całą listę wydania bazowego) dla każdego potwora, wszystkie 6 żywiołów |
 | `battle.cpp`: odkomentowane `iAtk -= iAtk * 30 * resist / 10000` w `CalcAttBonus` | nasz `ElementsAttackBonus` (`playerbot_elements.cpp`) już liczy odporność; w trybie global bierze 30% jej wartości (`BonusModeElementResist`) – bez drugiego, podwójnego odejmowania |
 | `item_manager.cpp`: `POINT_ITEM_DROP_BONUS` dodany do `item_drop_bonus` | `edits.json` (drop) → `BonusModeItemDropBonus`, tylko w trybie global |
 | klient 2.0.45: `ATTR_MAX_VALUES` (maks. wartości świecą na pomarańczowo) | root `localeinfo_point.py`: zestaw mt2009 i global, `SetBonusMode` po komendzie serwera `BonusMode 0/1` |
@@ -40,10 +40,10 @@ Nie przeniesione (u nas własne): launcher, boty, Seon-Pyeong (jest), towarzysz,
 ## Konflikt z naszymi żywiołami (`MT2009_PLUS_ELEMENTS_V1`, Autor: Digi Rasta) – decyzje
 
 1. **Jeden wiersz `item_attr` na bonus.** Odporność na ogień/błyskawice/wiatr ma u nas wiersz talizmanu (5–25%, tylko
-   kolumna `pendant`). W trybie global wiersz ma wartości Tieru (2–15%) i kolumny zbroi/bransolety/hełmu, a rdzeń daje
+   kolumna `pendant`). W trybie global wiersz ma wartości z wydania bazowego (2–15%) i kolumny zbroi/bransolety/hełmu, a rdzeń daje
    talizmanowi jego własne 5% na poziom (`BonusModeAttrValue` w `CItem::AddAttr`, `edits.json` attr value) – talizman
    losuje tak samo w obu trybach. Lód/ziemia/mrok – bez zmian (tylko talizman).
-2. **Wzór odporności:** mt2009 – nasz (pełny procent, strop 80%); global – Tieru/oryginał (30%).
+2. **Wzór odporności:** mt2009 – nasz (pełny procent, strop 80%); global – wydanie bazowe/oryginał (30%).
 3. **Żywioły potworów w trybie global:** oficjalny żywioł wygrywa z naszymi regułami (np. Podziemne Lodowe potwory Groty
    1131–1137: lód zamiast błyskawicy mapy; Ezoteryczni Przywoływacze 791–795, Rakszas: wiatr; Piekielny Bastard: mrok –
    18 zmian); potwór bez oficjalnego żywiołu zachowuje nasz (nadpisania bossów właściciela); prawdziwe kopie oficjalnych

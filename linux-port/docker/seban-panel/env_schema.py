@@ -515,8 +515,13 @@ SCHEMA = [
        "panele", "string", "", ["panel"], allow_empty=True, pattern=r"[^$\"'`\\#]{1,60}", hint="do 60 znaków, bez $ \" ' ` \\ #"),
     _e("M2_CONTACT_EMAIL", "E-mail kontaktowy", "Adres, na który gracze piszą w sprawach serwera (strona główna panelu). Puste = linia ukryta.",
        "panele", "string", "", ["panel"], allow_empty=True, pattern=r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", hint="np. admin@example.org"),
-    _e("M2_SEBAN_TIERU_PANEL_URL", "Adres panelu klasycznego (dla przeglądarki)",
+    _e("M2_SEBAN_PANEL_URL", "Adres panelu klasycznego (dla przeglądarki)",
        "Adres panelu klasycznego widziany z przeglądarki – przycisk przejścia między panelami i ikony umiejętności. Puste = http://127.0.0.1:<port panelu>.",
+       "panele", "url", "", SEBAN, allow_empty=True),
+    # MT2009_PLUS_PANEL_URL_RENAME_V1: the older name of the same setting - a server that already has it keeps it; it
+    # counts only while M2_SEBAN_PANEL_URL is empty.
+    _e("M2_SEBAN_TIERU_PANEL_URL", "Adres panelu klasycznego (starsza nazwa)",
+       "Starsza nazwa ustawienia wyżej, z dawnych instalacji – działa nadal, gdy nowe pole jest puste. Nowe instalacje jej nie mają.",
        "panele", "url", "", SEBAN, allow_empty=True),
     _e("M2_GM_PANEL_URL", "Adres karty postaci dla GM",
        "Gdzie otwiera się „Podgląd” postaci z okna gracza w grze (karta postaci w panelu klasycznym). Puste = http://127.0.0.1:<port panelu>/.",

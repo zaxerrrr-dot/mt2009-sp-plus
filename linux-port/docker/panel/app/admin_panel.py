@@ -249,7 +249,7 @@ HUNTING_MOB_NAMES_PL = {
 
 # A skill book is vnum 50300 (or a named book) with the skill id in socket0;
 # the bag showed only "Ksiega Umiejetnosci" and nobody could tell which
-# skill it was (Tieru, 13 September). Flatten the per-class skill tables
+# skill it was (13 September). Flatten the per-class skill tables
 # into one id -> name map so a book can spell its skill out.
 SKILL_ID_NAMES = {}
 SKILL_ID_NAMES_PL = {}
@@ -1269,7 +1269,7 @@ def read_ai_weights():
     # asked for them (19 September); off is the world as it was before.
     vals["PERSONA"] = 1
     # The three shouters of the first villages (playerbot_shouters.h,
-    # MT2009_PLUS_SHOUTERS_V1) and the three medal droppers among them, Tieru's
+    # MT2009_PLUS_SHOUTERS_V1) and the three medal droppers among them
     # (MT2009_PLUS_MEDAL_SHOUTERS_V1): on top of the bot count. On.
     vals["SHOUTERS"] = 1
     # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h) - tiers,
@@ -1636,7 +1636,7 @@ def write_ai_weights(vals):
 
 # The Moonlight chest switch: one click that turns the drop off without
 # losing the two figures the operator had set ("Daj w panelu www mozliwosc
-# wylaczenia dropu szkat blasku", Tieru, 16 September). Off is CHEST 0 and
+# wylaczenia dropu szkat blasku", 16 September). Off is CHEST 0 and
 # CHEST_STONE 0 in the weights file - what the core reads within five
 # seconds - and the sliders' values kept beside it in a file of the panel's
 # own, because an unknown key in the weights file costs the core a log line
@@ -4607,16 +4607,16 @@ T["tip_lang"]["pl"] = "Zmień język tego panelu. Język w grze pozostaje bez zm
 T["tip_logout"]["pl"] = "Zakończ sesję administratora w panelu. Konto w grze pozostaje bez zmian."
 # MT2009 Plus: what this server is, in place of the upstream project's words.
 T["about_goal"] = {
-    "pl": "MT2009 PLUS to lokalny świat Metin2 singleplayer na plikach serwerowych mt2009, pełen autonomicznych postaci (Playerbots): boty zdobywają poziomy, walczą solo i w grupach, ulepszają ekwipunek, polują na Metiny i handlują między sobą.",
-    "en": "MT2009 PLUS is a local singleplayer Metin2 world on the mt2009 server files, full of autonomous characters (Playerbots): the bots level up, fight solo and in parties, refine their gear, hunt Metin stones and trade with each other.",
-    "de": "MT2009 PLUS ist eine lokale Singleplayer-Welt von Metin2 auf den mt2009-Serverdateien, voller autonomer Charaktere (Playerbots): Die Bots steigen auf, kämpfen allein und in Gruppen, verbessern ihre Ausrüstung, jagen Metinsteine und handeln miteinander.",
-    "tr": "MT2009 PLUS, mt2009 sunucu dosyaları üzerinde çalışan yerel bir tek oyunculu Metin2 dünyasıdır ve otonom karakterlerle (Playerbots) doludur: botlar seviye atlar, tek başına ve grupla savaşır, ekipmanını geliştirir, Metin taşı avlar ve birbirleriyle ticaret yapar.",
+    "pl": "MT2009 PLUS to lokalny świat singleplayer na plikach serwerowych mt2009, pełen autonomicznych postaci (Playerbots): boty zdobywają poziomy, walczą solo i w grupach, ulepszają ekwipunek, polują na Metiny i handlują między sobą.",
+    "en": "MT2009 PLUS is a local singleplayer world on the mt2009 server files, full of autonomous characters (Playerbots): the bots level up, fight solo and in parties, refine their gear, hunt Metin stones and trade with each other.",
+    "de": "MT2009 PLUS ist eine lokale Singleplayer-Welt auf den mt2009-Serverdateien, voller autonomer Charaktere (Playerbots): Die Bots steigen auf, kämpfen allein und in Gruppen, verbessern ihre Ausrüstung, jagen Metinsteine und handeln miteinander.",
+    "tr": "MT2009 PLUS, mt2009 sunucu dosyaları üzerinde çalışan yerel bir tek oyunculu dünyadır ve otonom karakterlerle (Playerbots) doludur: botlar seviye atlar, tek başına ve grupla savaşır, ekipmanını geliştirir, Metin taşı avlar ve birbirleriyle ticaret yapar.",
 }
 T["about_hobby"] = {
-    "pl": "To paczka modyfikacji oficjalnego wydania Metin2 Playerbots od Tieru. Dodaje ponad 2200 nowych przedmiotów i systemów: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety i alchemię (Smocze Kamienie), a do tego ItemShop w grze i w przeglądarce.",
-    "en": "It is a modification pack of Tieru's official Metin2 Playerbots release. It adds over 2,200 new items and systems: costumes, hairstyles, weapon skins, sashes, mounts, pets and alchemy (Dragon Soul), plus an ItemShop in the game and in the browser.",
-    "de": "Es ist ein Modifikationspaket der offiziellen Metin2-Playerbots-Veröffentlichung von Tieru. Es bringt über 2.200 neue Gegenstände und Systeme: Kostüme, Frisuren, Waffenskins, Schärpen, Reittiere, Haustiere und Alchemie (Drachenstein), dazu einen ItemShop im Spiel und im Browser.",
-    "tr": "Tieru'nun resmî Metin2 Playerbots sürümünün bir modifikasyon paketidir. 2.200'den fazla yeni eşya ve sistem ekler: kostümler, saç modelleri, silah kaplamaları, kuşaklar, binekler, evcil hayvanlar ve simya (Ejderha Taşı), ayrıca oyun içi ve tarayıcıda ItemShop.",
+    "pl": "To paczka modyfikacji bazowego wydania Playerbots. Dodaje ponad 2200 nowych przedmiotów i systemów: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety i alchemię (Smocze Kamienie), a do tego ItemShop w grze i w przeglądarce.",
+    "en": "It is a modification pack of the base Playerbots release. It adds over 2,200 new items and systems: costumes, hairstyles, weapon skins, sashes, mounts, pets and alchemy (Dragon Soul), plus an ItemShop in the game and in the browser.",
+    "de": "Es ist ein Modifikationspaket der Playerbots-Basisveröffentlichung. Es bringt über 2.200 neue Gegenstände und Systeme: Kostüme, Frisuren, Waffenskins, Schärpen, Reittiere, Haustiere und Alchemie (Drachenstein), dazu einen ItemShop im Spiel und im Browser.",
+    "tr": "Playerbots temel sürümünün bir modifikasyon paketidir. 2.200'den fazla yeni eşya ve sistem ekler: kostümler, saç modelleri, silah kaplamaları, kuşaklar, binekler, evcil hayvanlar ve simya (Ejderha Taşı), ayrıca oyun içi ve tarayıcıda ItemShop.",
 }
 T["about_oss"] = {
     "pl": "Aktualizacje przychodzą przez launcher z repozytorium MT2009 PLUS, a nowości i pomoc znajdziesz na stronie projektu i na Discordzie.",
@@ -4754,7 +4754,7 @@ T.update({
                   "tr":"Yalnızca botların çevrimdışı tezgahlarını nereye kurduğuyla ilgilidir - NPC tüccarlardan alışverişle değil. Kapalı (varsayılan): bot tezgahını yalnızca oyuncuların alışveriş yaptığı ilk köylerde açar; ikinci köyde duran ve süresi dolan tezgah, sahibinin bir sonraki ziyaretinde ilk köyün pazar halkasında yenilenir. Açık: tezgahlar eskisi gibi iki köyde de durur."},
  "ai_shop_m2_on": {"en":"Allowed","pl":"Dozwolone","de":"Erlaubt","tr":"İzin verildi"},
  "ai_shouters":  {"en":"Shouters (6 bots)","pl":"Krzykacze (6 botów)","de":"Schreier (6 Bots)","tr":"Bağıranlar (6 bot)"},
- "ai_shouters_help": {"en":"Three extra bots, one per kingdom (apka2009, appka2009, apppka2009), on top of the bot count. They level up to 15, then stand without weapon and armour by the general store of their kingdom's first village and now and then shout a line on the shout channel (once per 20-30 channel lines, at least 10 minutes apart). They answer nothing: no whispers, parties, trades or guilds. Three more, Tieru, Tiieru and Tiiieru, one per kingdom, are medal droppers: they farm the Monkey Dungeon with their experience locked like the other medal droppers, sell medals at their counter and stall, and shout their own lines about medals on the same rules. Off: all six log out at once and do not come back until switched on again.",
+ "ai_shouters_help": {"en":"Three extra bots, one per kingdom (apka2009, appka2009, apppka2009), on top of the bot count. They level up to 15, then stand without weapon and armour by the general store of their kingdom's first village and now and then shout a line on the shout channel (once per 20-30 channel lines, at least 10 minutes apart). They answer nothing: no whispers, parties, trades or guilds. Three more, the three medal shouters, one per kingdom, are medal droppers: they farm the Monkey Dungeon with their experience locked like the other medal droppers, sell medals at their counter and stall, and shout their own lines about medals on the same rules. Off: all six log out at once and do not come back until switched on again.",
                   "pl":"Trzy dodatkowe boty, po jednym na królestwo (apka2009, appka2009, apppka2009), ponad liczbę botów. Wbijają 15 poziom, potem stoją bez broni i zbroi przy Handlarce w pierwszej wiosce swojego królestwa i co jakiś czas wołają na kanale wołaj (raz na 20–30 wiadomości kanału, nie częściej niż co 10 minut). Nie odpowiadają na szepty, grupy, handel ani gildie. Trzy kolejne, Tieru, Tiieru i Tiiieru, po jednym na królestwo, to dropki medali: z blokadą expa jak inne dropki farmią loch małp, sprzedają medale w ladzie i na straganie i wołają o medalach na tych samych zasadach. Wyłączone: wszystkie sześć od razu się wylogowuje i nie wraca, dopóki ich nie włączysz.",
                   "de":"Drei zusätzliche Bots, einer pro Reich, über der Botanzahl. Sie leveln bis 15 und stehen dann ohne Waffe und Rüstung beim Gemischtwarenhändler im ersten Dorf und rufen ab und zu etwas in den Ruf-Kanal. Drei weitere, Tieru, Tiieru und Tiiieru, sind Medaillen-Dropper im Affen-Dungeon und rufen ihre eigenen Sprüche über Medaillen. Aus: alle sechs loggen sofort aus.",
                   "tr":"Her krallık için bir tane olmak üzere bot sayısının üstünde üç ek bot. 15. seviyeye kadar kasarlar, sonra ilk köyün genel mağazasının yanında silahsız ve zırhsız durup ara sıra bağırma kanalına yazarlar. Üç tane daha, Tieru, Tiieru ve Tiiieru, Maymun Zindanı'nda madalya düşürücüdür ve madalyalar hakkında kendi sözlerini bağırırlar. Kapalı: altısı da hemen çıkış yapar."},
@@ -6680,7 +6680,7 @@ def local_open():
         return False
     # The mt2009 line is the single-player suite: one player at their own
     # machine, no passphrase to invent or lose ("wylacz wymog wpisywania
-    # hasla, to projekt singleplayer" - Tieru, 13 September). An operator who
+    # hasla, to projekt singleplayer" - 13 September). An operator who
     # exposes it sets M2_PANEL_LOCAL_ONLY=0 or runs it behind the proxy,
     # both handled above.
     if ENGINE_MT2009:
@@ -11585,7 +11585,7 @@ function openBotModal(pid) {
               // Only when there is a hunt to report. On the mt2009 line
               // levelup.quest ships in quest/_unused, so hunting_progress_label
               // returns "" and this row said "Polowanie: Brak danych" to every
-              // bot on every card (Tieru, 13 September). A row that can only
+              // bot on every card (13 September). A row that can only
               // ever say "no data" is not a row.
               (p.hunting_label ? '<div style="grid-column:1 / -1"><b>' + I18N.hunting + ':</b> <span style="color:#fb923c">' + p.hunting_label + '</span></div>' : '') +
               '</div>';
@@ -11719,7 +11719,7 @@ function openBotModal(pid) {
               ' onclick="toggleBotSafeboxFromEl(this)">\U0001F4E6</div>';
 
       // And the stall beside it: what the bot sells lives in its offline shop,
-      // which is neither the bag nor the depot (Tieru, 17 September).
+      // which is neither the bag nor the depot (17 September).
       html += '<div class="m2-equip-slot" title="' + I18N.shop +
               '" style="left:150px;top:46px;width:34px;height:34px;cursor:pointer;' +
               'display:flex;align-items:center;justify-content:center;font-size:19px"' +
@@ -11729,7 +11729,7 @@ function openBotModal(pid) {
       // No refresh button: opening a character is the refresh. openBotModal
       // reads /api/bot_inventory every time it runs, and the three fetches of
       // this window ask the browser for no cached copy, so what the card shows
-      // is what the database held the moment it was opened (Tieru, 20
+      // is what the database held the moment it was opened (20
       // September - "jak wchodzi sie w jakas postac niech sie odswieza").
       // What is left of the old caveat is the core's own delay, not ours: a
       // bot's items are written on the cache cycle, an equip at once since
@@ -12264,7 +12264,7 @@ def api_admin_warp_me():
         # character who played BEFORE the one sitting in the game, queued the
         # WARP for somebody offline, answered "timeout", and left the row
         # pending to teleport that other character on their next login
-        # (reproduced: Tieru in the game, the queue row for AdminSura). The
+        # (reproduced: a character in the game, the queue row for AdminSura). The
         # quest serves a row only to the character it names while that
         # character is online, so the honest way to find the online one is to
         # ask every recent human character at once, take the first answer,
@@ -13397,7 +13397,7 @@ def gear_history_offline_buys(cur, pid, limit):
 # DEVILTOWER for the Demon Tower smith and SCROLL:<vnum> for a scroll (the last
 # two since playerbotify's apply_refine_log_way; before that either smith said
 # POWER and every scroll SCROLL, or nothing when the SET column dropped its
-# name). Tieru, 15.09: "w nawiasie pisz (Kowal, Zwoj Blogoslawienstwa, ...)".
+# name). 15.09: "w nawiasie pisz (Kowal, Zwoj Blogoslawienstwa, ...)".
 REFINE_WAY_LABELS = {
     "POWER":      {"pl": "Kowal",                 "en": "Blacksmith"},
     "GUILD":      {"pl": "Kowal gildii",          "en": "Guild blacksmith"},
@@ -14193,9 +14193,9 @@ def api_bot_gear_history(pid):
                 item = localized_item_name(vnum, language) if vnum else ""
                 hint = log_text(r.get("hint")).strip()
                 detail = ""
-                if how in ("PLAYERBOT_GIFT_OUT",):
+                if how in ("PLAYERBOT_GIFT_OUT"):
                     detail = "→ " + hint
-                elif how in ("PLAYERBOT_GIFT_IN",):
+                elif how in ("PLAYERBOT_GIFT_IN"):
                     detail = "← " + hint
                 elif how == "PLAYERBOT_STALL_SOLD":
                     # "vnum xCOUNT za PRICE"

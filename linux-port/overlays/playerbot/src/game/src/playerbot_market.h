@@ -111,7 +111,7 @@ namespace
 	}
 
 	// A Moonlight chest is opened, so a bot with room buys one off a counter
-	// (Tieru, 15 September: "wazne przedmioty dla botow, duzo fajnych itemow im
+	// (15 September: "wazne przedmioty dla botow, duzo fajnych itemow im
 	// z tego dropi"). No rule wanted one before: every chest a trader listed
 	// stayed listed - 3 000 on AkhiGubernator's counters and not one sold. Not a
 	// dropper, which sells them (IsPlayerBotMoonlightChestSeller; the resource

@@ -23,7 +23,7 @@ Rules:
    (Polish<TAB>Portuguese) - grep it for a term (e.g. Yang, EXP, Dragon Coins, Metin Stone, Spirit Stone, Blessing Scroll,
    dungeon, Biologist, Blacksmith) to use the game's usual word in this language. Proper names (NPCs, places like
    Yohara, Seon-Hae, Chaegirab, Jaharr, Enasir, Balathor, Sung Mahi) stay as they are.
-4. Never write "Metin2", "Gameforge", "official server", "Tieru", "Ameria", "metin2alerts".
+4. Never write "Metin2", "Gameforge", "official server", "Ameria", "metin2alerts".
 5. Every character must exist in the client's code page cp1252 (the check below tests it). Use plain ASCII
    punctuation (straight quotes, "-"); for Romanian use ş ţ (cedilla), not ș ț.
 6. A line that is not player text (a technical identifier, a GM command's syntax line, a debug line full of `%u` codes)

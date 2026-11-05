@@ -71,7 +71,7 @@ function Add-MissingDotEnvKeys {
         # place that reads one uses ${VAR:-default}, which falls back on an
         # empty value too. Writing the empty line would gain nothing and would
         # put a setting in front of the player that has no meaning on its own -
-        # M2_SEBAN_TIERU_PANEL_URL is the one that made this worth a rule.
+        # the classic-panel URL setting is the one that made this worth a rule.
         if (-not $match.Groups[2].Value.Trim()) { continue }
         if ([Regex]::IsMatch($Content, '(?m)^' + [Regex]::Escape($name) + '=')) { continue }
         $Content = Set-DotEnvValue -Content $Content -Name $name -Value $match.Groups[2].Value
@@ -1012,7 +1012,7 @@ function Assert-PanelPassphrase {
     # writes only its PBKDF2 hash into m2panel.conf, and prints the plaintext
     # once to a container log nobody reads. From then on the panel has a
     # password that exists nowhere: "ja nie mam zadnego hasla nawet w panelu
-    # tieru", "przy czystej instalacji losuje haslo".
+    # klasycznym", "przy czystej instalacji losuje haslo".
     #
     # So the launcher fills the blank before Compose ever sees it. Written to
     # .env, where the operator can read it back, and said out loud once here.
@@ -1473,8 +1473,8 @@ if ((Test-Path -LiteralPath $overlaySource -PathType Container) -and
 
     # MT2009 Plus engine changes (Auto Lowy, exact-item shop search, the bots'
     # Cor Draconis and sash drop, no Death Ruler wings) are applied at release
-    # time by tools\port\Apply-MT2009PlusEngine.ps1, the way Tieru's
-    # playerbotify.py applies his: the patched engine files come in the update
+    # time by tools\port\Apply-MT2009PlusEngine.ps1, the way the base
+    # release's playerbotify.py applies its own: the patched engine files come in the update
     # zip, and nothing here edits an engine file.
 
     # The migrate container's first act is `[ -s playerbots_seed.sql ] || exit 1`.

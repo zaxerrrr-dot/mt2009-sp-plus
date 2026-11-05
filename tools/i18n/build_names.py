@@ -11,14 +11,14 @@ one made up here when an original exists. Sources, first hit wins:
      item_names.txt, mob_names.txt) by vnum, when the item there is ours
      (the same Polish name, letters' marks aside)
   3. the same tables by the Polish name, for one of ours on another vnum
-  4. the upstream English/Turkish tables (Tieru item_names_en.json ...)
+  4. the upstream English/Turkish tables (item_names_en.json ...)
   5. "Name+N": the name of the item it is a level of
 
 Written as <app>/i18n/<lang>/names.json ({"names": {Polish: name}}) into
 seban-panel, panel/app and the ItemShop, and tools/i18n/names_report.json says
 how many of our names each language has.
 
-    python3 tools/i18n/build_names.py [--owsap DIR] [--tieru DIR]
+    python3 tools/i18n/build_names.py [--owsap DIR] [--upstream DIR]
 """
 import argparse
 import json
@@ -109,14 +109,14 @@ def norm(s):
 LEVEL = re.compile(r"^(.*?)\+(\d+)$")
 
 
-def build(kind, ours, owsap_dir, tieru_dir):
+def build(kind, ours, owsap_dir, upstream_dir):
     owpl = owsap_names(owsap_dir, "pl", kind)
-    tieru = {}
+    upstream = {}
     for lang in ("en", "tr"):
         try:
-            tieru[lang] = json.load(open(os.path.join(tieru_dir, "%s_names_%s.json" % (kind, lang)), encoding="utf-8"))
+            upstream[lang] = json.load(open(os.path.join(upstream_dir, "%s_names_%s.json" % (kind, lang)), encoding="utf-8"))
         except (OSError, ValueError):
-            tieru[lang] = {}
+            upstream[lang] = {}
     result, report, knowns = {}, {}, {}
     for lang in LANGS:
         names = {}
@@ -146,8 +146,8 @@ def build(kind, ours, owsap_dir, tieru_dir):
             if pl not in names and norm(pl) in by_name:
                 names[pl] = by_name[norm(pl)]
         # 4. upstream tables
-        if lang in tieru:
-            for vnum, pair in tieru[lang].items():
+        if lang in upstream:
+            for vnum, pair in upstream[lang].items():
                 if isinstance(pair, list) and len(pair) == 2 and pair[0] and pair[1] and pair[0] not in names:
                     names[pair[0]] = pair[1]
         # 5. levels: "Name+N" from "Name+M" / "Name"
@@ -180,14 +180,14 @@ def build(kind, ours, owsap_dir, tieru_dir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--owsap", default="/opt/metin2/cache/owsap/Tools/Tools/Dump Proto/share")
-    ap.add_argument("--tieru", default=os.environ.get("TIERU_NAMES", ""))
+    ap.add_argument("--upstream", default=os.environ.get("UPSTREAM_NAMES", ""))
     ap.add_argument("--todo", action="store_true", help="write tools/i18n/names_todo/<lang>.txt: names with no source")
     args = ap.parse_args()
     sql = os.path.join(DOCKER, "mariadb", "playerbot")
     items = parse_proto_sql(os.path.join(sql, "item_proto.mt2009plus.sql"))
     mobs = parse_proto_sql(os.path.join(sql, "mob_proto.mt2009plus.sql"))
-    item_names, item_report, item_known = build("item", items, args.owsap, args.tieru)
-    mob_names, mob_report, mob_known = build("mob", mobs, args.owsap, args.tieru)
+    item_names, item_report, item_known = build("item", items, args.owsap, args.upstream)
+    mob_names, mob_report, mob_known = build("mob", mobs, args.owsap, args.upstream)
     known_all = {lang: item_known[lang] | mob_known[lang] for lang in LANGS}
     for lang in LANGS:
         merged = dict(item_names[lang])

@@ -134,7 +134,7 @@ foreach ($required in @($cliLauncher, $modulePath, $diagnosticsModulePath, $comp
             "Launcher sam go nie usuwa - najczesciej zabiera go antywirus (falszywy alarm na skrypt, ktory pobiera i uruchamia serwer).`r`n`r`n" +
             "1. Zajrzyj do kwarantanny antywirusa. W Windows: Zabezpieczenia Windows > Ochrona przed wirusami i zagrozeniami > Historia ochrony. " +
             "Przywroc plik i dodaj folder $root do wykluczen.`r`n" +
-            "2. Jesli nie da sie go przywrocic: pobierz z GitHuba (TieruYT/metin2-playerbots, Releases) paczke metin2-server-update-<wersja>.zip " +
+            "2. Jesli nie da sie go przywrocic: pobierz z GitHuba (repozytorium zaxerrrr-dot/mt2009-sp-plus, zakladka Releases) paczke metin2-server-update-<wersja>.zip " +
             "i wyjmij z niej $relative do $root. Najpierw dodaj wykluczenie, inaczej antywirus zabierze go znowu.")
     }
 }
@@ -523,7 +523,7 @@ function Confirm-ClientForUpdate {
 # The game client keeps its language in game1.cfg beside the exe, one line
 # "LANGUAGE <code>" (CPythonSystem::LoadConfig; with no file or no line it is
 # Polish), and its own switch is on the login screen and closes the client. A
-# player who set the launcher to English had to find it (Tieru, 23 September:
+# player who set the launcher to English had to find it (23 September:
 # "zeby nie musieli szukac zmiany jezyka gry"), so the launcher offers it
 # itself, when it chooses the client and before it starts one.
 function Get-ClientGameLanguage {
@@ -1233,7 +1233,7 @@ function Show-DifficultyDialog {
     # numbers are what the migrate service turns into the event flags at the
     # next start (quest/m2_difficulty.lua, and the engine and the bots for the
     # skill books), so the dialog says a restart is needed. Below them, whether
-    # the world is played with Auto Lowy and with the companion (Tieru, 25
+    # the world is played with Auto Lowy and with the companion (25
     # September: Drip's COOP without the auto hunt), and whether a player's new
     # character gets the apprentice chest - asked before only where a fresh
     # world is made, so a world already standing had no way to it (Drip looked
@@ -2061,7 +2061,7 @@ function Add-BotDialogHelp {
     # A "?" beside a setting of the bot dialog: a hover shows what the setting
     # does, a click opens the same text in a box that stays until it is read
     # ("tego nie za bardzo rozumiem, mozesz tam dodac jakies opisy albo znaki
-    # zapytania co znaczy kazda regula", Tieru, 23 September). The text goes on
+    # zapytania co znaczy kazda regula", 23 September). The text goes on
     # the setting's own label and box too, so a hover anywhere on the row
     # explains it. The tooltip does not wrap, so the texts carry their breaks.
     param(
@@ -3926,7 +3926,7 @@ function Show-PanelChoiceDialog {
 
     # The third thing somebody pressing this button may actually want.
     # "podajcie te kody do gm bo ja nie moge na www wejsc", "ja nie mam zadnego
-    # hasla nawet w panelu tieru" - it is one line in .env and nothing showed it.
+    # hasla nawet w panelu klasycznym" - it is one line in .env and nothing showed it.
     $passwordButton = [Windows.Forms.Button]::new()
     $passwordButton.Text = (T 'panelPw')
     $passwordButton.Location = [Drawing.Point]::new(16, 174)
@@ -4485,7 +4485,7 @@ $statusTimer.Start()
 # A new version people can actually notice. The footer has always changed
 # colour when the server was behind, and that is easy to miss on a window
 # sitting in the background - so while an update is waiting the line blinks
-# red and says so in words (Tieru: "zrob migotanie na czerwono ze jest wydana
+# red and says so in words ("zrob migotanie na czerwono ze jest wydana
 # nowa wersja klienta lub serwera, aby ludzie to widzieli").
 #
 # The timer owns nothing but the colour: Update-VersionFooter decides whether

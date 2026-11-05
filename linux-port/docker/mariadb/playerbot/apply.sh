@@ -362,13 +362,13 @@ fi
 # package, and under ENABLE_QUEST_DND_EVENT that flag makes UseItemEx treat an
 # ITEM_QUEST as "drop it onto another item": a plain use finds no target cell
 # and returns before the quest is asked, so teleport_ring.quest never ran for
-# a player ("caly czas nie dziala pierscien teleportu", Tieru, 16 September).
+# a player ("caly czas nie dziala pierscien teleportu", 16 September).
 # The ring is dragged onto nothing; the flag comes off. Idempotent.
 db -e "UPDATE world.item_proto SET flag = flag & ~8192 WHERE vnum = 70058 AND (flag & 8192) <> 0;"
 
 # MT2009 Plus: every item the mod's world has (item_proto.mt2009plus.sql,
 # the full package's world.item_proto), added where this world lacks it. A
-# world made from another dump - Tieru's, or one the launcher made anew when
+# world made from another dump - the base release's, or one the launcher made anew when
 # it lost its identity - had no Amethyst (170000...), and every game core
 # died at boot on special_item_group.txt ("there is no item 170000"), so a
 # login got through the auth core and then nowhere. INSERT IGNORE: a row
@@ -550,7 +550,7 @@ db -e "DELETE FROM world.crafting_proto WHERE vnum IN (71, 72, 74) AND item_vnum
 # is live on the next start; idempotent.
 db -e "DELETE FROM world.shop_item WHERE item_vnum IN (72731, 72735);"
 # And nobody keeps one: every Maska Sabaha still in a bag, on a character, in a
-# safebox or on a counter is removed (Tieru, 15 September, "usun" to the masks
+# safebox or on a counter is removed (15 September, "usun" to the masks
 # players already held). On every start, so a mask an old core still held while
 # an update ran this beside it goes on the next one.
 masks=$(db -e "DELETE FROM player.item WHERE vnum IN (72731, 72735); SELECT ROW_COUNT();" || echo x)
@@ -1078,7 +1078,7 @@ before=$(db -e "
 # for a test cycle long ago, and that number reached every player as a promise
 # the game never kept: the panel showed it, the bots levelled at 100%, and the
 # first press of the button - even without touching a field - was what made it
-# real (NerrVoVy and Tieru, 20 September).
+# real (NerrVoVy, 20 September).
 #
 # So the numbers the launcher asked for are written here, into both places at
 # once, and only while the flags are absent: a world that has been set from the
@@ -1315,7 +1315,7 @@ fi
 
 # Whether the world is played with Auto Lowy and with the companion
 # (Towarzysz): the launcher's difficulty window writes M2_AUTOHUNT and
-# M2_SIDEKICK, both on unless .env says 0 (Tieru, 25 September, for Drip's
+# M2_SIDEKICK, both on unless .env says 0 (25 September, for Drip's
 # COOP without the auto hunt; since Yohara 3.0 the companion is off unless .env
 # says 1 - MT2009_PLUS_SIDEKICK_OFF_V1). Off, the server refuses the hunt's target
 # and drop (m2_autohunt_off, playerbotify apply_auto_hunt_switch) and
@@ -4612,7 +4612,7 @@ if [ "$regen_split" != "1" ]; then
 fi
 
 # MT2009_PLUS_GLOBAL_BONUS_V1 (server-patches/bonusyglobal/README.md): M2_BONUS_MODE - mt2009 (the default, the
-# world as it was) or global (Tieru's 2.2.31 "Bonusy jak na serwerze globalnym" and elements on every monster).
+# world as it was) or global (2.2.31 "Bonusy jak na serwerze globalnym" and elements on every monster).
 # After every step above that writes item_attr or the monsters' elements (zywioly_*.sql, every *_zywioly.sql):
 #   * item_attr - world.item_attr_mt2009 holds the mt2009 rows exactly while the global set is in item_attr:
 #     global and it is empty -> bonusy_global.sql (copies the 14 rows, writes the global ones); mt2009 and it is not

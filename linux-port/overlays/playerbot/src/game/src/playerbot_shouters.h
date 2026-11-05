@@ -30,7 +30,7 @@
 // moves, the chatter, the companions' picker, whispers and guild invites).
 //
 // MT2009_PLUS_MEDAL_SHOUTERS_V1: and three more krzykacze, the owner's own
-// (2 October) - Tieru (Shinsoo), Tiieru (Chunjo), Tiiieru (Jinno) - kept the
+// (2 October) - the three shouters named per kingdom (Shinsoo, Chunjo, Jinno) - kept the
 // same way and by the same switch: picked once, renamed, written into
 // player.playerbot_shouter (in the row of their kingdom plus
 // PLAYERBOT_MEDAL_SHOUTER_ROW, so everything that keeps that table's bots out
@@ -152,7 +152,7 @@ namespace
 			if (row[1]) str_to_number(pid, row[1]);
 			if (empire >= 1 && empire <= 3 && pid != 0)
 				s_aPlayerBotShouters[empire].pid = pid;
-			// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's rows.
+			// MT2009_PLUS_MEDAL_SHOUTERS_V1: the upstream rows.
 			else if (empire >= PLAYERBOT_MEDAL_SHOUTER_ROW + 1 && empire <= PLAYERBOT_MEDAL_SHOUTER_ROW + 3 && pid != 0)
 				s_aPlayerBotMedalShouters[empire - PLAYERBOT_MEDAL_SHOUTER_ROW].pid = pid;
 		}
@@ -188,7 +188,7 @@ namespace
 		return NULL;
 	}
 
-	// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru, Tiieru and Tiiieru - medal
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: the three medal shouters - medal
 	// droppers that shout, not shouters that stand (IsPlayerBotShouterPID
 	// does not count them).
 	TPlayerBotShouter* GetPlayerBotMedalShouter(DWORD pid)
@@ -275,7 +275,7 @@ namespace
 	}
 
 	// MT2009_PLUS_MEDAL_SHOUTERS_V1: an ordinary bot that wears one of
-	// Tieru's names - the name pool deals "Tieru" to a Jinno bot - gives it
+	// the shouters' names - the name pool deals "Tieru" to a Jinno bot - gives it
 	// up: held out of the world (CPlayerBotManager::Spawn asks), logged out
 	// if this core plays it, and once it has been out of the game as long as
 	// an identity the shouters take (out of the db core's cache) it goes
@@ -370,7 +370,7 @@ namespace
 	// first (somebody else's is reported and that kingdom goes without), then
 	// a never-played identity of the kingdom from the far end of the seed,
 	// renamed and written down. Only on the core that keeps it.
-	// MT2009_PLUS_MEDAL_SHOUTERS_V1: the same for Tieru's kind (bMedal): an
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: the same for the upstream kind (bMedal): an
 	// identity no further than the medal dropper's lock, its own row.
 	DWORD CreatePlayerBotShouter(BYTE empire, bool bMedal = false)
 	{
@@ -400,7 +400,7 @@ namespace
 			const bool bot = row[1] && strncmp(row[1], "playerbot_", 10) == 0;
 			// Ours already - a row lost after the rename - is taken back; anybody
 			// else's name is theirs. MT2009_PLUS_MEDAL_SHOUTERS_V1: one of
-			// Tieru's names on any other bot is given up by it.
+			// the shouters' names on any other bot is given up by it.
 			const bool ordinary = bot && !IsPlayerBotSidekickPID(owner) && !IsPlayerBotShouterPID(owner) &&
 					!IsPlayerBotMedalShouterPID(owner);
 			if (ordinary && ownerEmpire == empire && CPlayerBotManager::instance().IsRegisteredBotPID(owner))
@@ -506,7 +506,7 @@ namespace
 			s_iPlayerBotShoutersSwitchSeen = enabled ? 1 : 0;
 		}
 		CPlayerBotManager& mgr = CPlayerBotManager::instance();
-		// MT2009_PLUS_MEDAL_SHOUTERS_V1: apka2009's three, then Tieru's.
+		// MT2009_PLUS_MEDAL_SHOUTERS_V1: apka2009's three, then the medal shouters'.
 		for (int i = 0; i < 6; ++i)
 		{
 			const bool medal = i >= 3;
@@ -564,7 +564,7 @@ namespace
 
 	// Its line, when the channel has carried enough since the last one.
 	// MT2009_PLUS_MEDAL_SHOUTERS_V1: from its own list - apka2009's or
-	// Tieru's (bMedal).
+	// the upstream (bMedal).
 	void ManagePlayerBotShouterLine(LPCHARACTER ch, TPlayerBotShouter& s, DWORD dwNow, bool bMedal = false)
 	{
 		const BYTE empire = ch->GetEmpire();
@@ -641,7 +641,7 @@ namespace
 	{
 		if (!ch || ch->IsDead())
 			return false;
-		// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's kind plays as the medal
+		// MT2009_PLUS_MEDAL_SHOUTERS_V1: the upstream kind plays as the medal
 		// dropper it is - the tick goes on - and shouts from apka2009's level
 		// on, wherever it is.
 		if (TPlayerBotShouter* medal = GetPlayerBotMedalShouter(ch->GetPlayerID()))

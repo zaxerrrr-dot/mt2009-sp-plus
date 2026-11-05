@@ -1,4 +1,4 @@
-// The player's own companion - "Towarzysz" (Tieru, 24 September): a bot that
+// The player's own companion - "Towarzysz" (24 September): a bot that
 // belongs to one player for good, the way a follower does in Diablo. The
 // player picks its class, its sex, its path and its name in the Towarzysz
 // quest; from then on it is in the player's party with the experience split
@@ -45,7 +45,7 @@ namespace
 	};
 
 	// How it fights at the owner's side: the letter's "Jak ma walczyc?" and the
-	// whispers "atakuj", "nie atakuj pierwszy" and "nie walcz" (Tieru, 25
+	// whispers "atakuj", "nie atakuj pierwszy" and "nie walcz" (25
 	// September: "typu nie atakuj pierwszy").
 	enum EPlayerBotSidekickStance
 	{
@@ -156,7 +156,7 @@ namespace
 	// before it gives up and makes a new pair. Every new pair renames one more
 	// of the population's bots.
 	const DWORD PLAYERBOT_SIDEKICK_SELFTEST_OWNER_WAIT_MS = 10 * 60 * 1000;
-	// The companion's window in the client (uisidekick.py, the P key; Tieru,
+	// The companion's window in the client (uisidekick.py, the P key;
 	// 25 September: "GUI do sterowania towarzyszem ... rozne akcje, ktore
 	// mozna mu zlecac"): the version of what it is sent.
 	const int PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL = 1;
@@ -188,7 +188,7 @@ namespace
 	const DWORD PLAYERBOT_SIDEKICK_EQUIP_WAIT_MS = 4000;
 	const size_t PLAYERBOT_SIDEKICK_EQ_MAX_LINES = 260;
 	// A companion that falls, is sent away or leaves on an errand in the
-	// middle of a fight hands what was fighting it to its owner (Tieru, 25
+	// middle of a fight hands what was fighting it to its owner (25
 	// September: "Boty zaczepione przez towarzysza niech lapia tez aggro na nas
 	// (np. jak nasz towarzysz zginie)"). The engine gives a monster whose
 	// victim died a new one only when the monster is aggressive
@@ -203,11 +203,11 @@ namespace
 	const int PLAYERBOT_SIDEKICK_HANDOFF_RANGE = 2500;
 	// The owner spends the stat points (the window's status page; Kiciamol,
 	// 25 September: "Dodasz jeszcze mozliwosc dodawania statystyk przez
-	// gracza?" - Tieru: "Tak"). One order adds at most this many points: the
+	// gracza?" - upstream: "Tak"). One order adds at most this many points: the
 	// page's "+" is the player's own, whose Ctrl + click asks for a number of
 	// two digits, and ninety is what one stat can hold.
 	const int PLAYERBOT_SIDEKICK_STAT_ORDER_MAX = 90;
-	// "Lurowanie" in the window (Tieru, 25 September: "towarzysz zbiera 3
+	// "Lurowanie" in the window (25 September: "towarzysz zbiera 3
 	// grupki mobow - moby zwykle sa w trojke/czworke, wiec niech jakos to
 	// odroznia i zbiera spoty"). A course wakes up to this many packs round
 	// the owner and walks back with them. A pack is one group as the regen
@@ -4398,8 +4398,7 @@ namespace
 	}
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
-	// Walking through one's own companion ("wylacz kolizje player-towarzysz",
-	// Tieru, 26 September: at its owner's side in a fight it stood in the way).
+	// Walking through one's own companion ("wylacz kolizje player-towarzysz", 26 September: at its owner's side in a fight it stood in the way).
 	// The collision is the client's alone - CInstanceBase::CheckAdvancing tests
 	// the main instance against every other one, and
 	// CActorInstance::TestActorCollision skips a victim whose actor type is NPC
@@ -5932,7 +5931,7 @@ namespace
 	// ------------------------------------------------ its bag and skills, in a window
 	//
 	// The companion's bag and worn gear in a window of the owner's client
-	// (uisidekickinventory.py; Tieru, 25 September: "widoczny jej ekwipunek, ze
+	// (uisidekickinventory.py; 25 September: "widoczny jej ekwipunek, ze
 	// mozesz itemy przenosic normalnie dowoli"), and its skills beside it. What
 	// the owner does there is the owner's word over the AI's:
 	// - a piece the owner puts on is pinned (IsPlayerBotSidekickPinned): the
@@ -7659,7 +7658,7 @@ namespace
 	// "statystyki" (the numbers come with the skills, SidekickSkillBegin),
 	// "statystyki dodaj <ht|iq|st|dx> [ile]", "statystyki reczne <0|1>" and
 	// "statystyki odnow": Kiciamol's question of 25 September, "Dodasz
-	// jeszcze mozliwosc dodawania statystyk przez gracza?" - Tieru: "Tak". The
+	// jeszcze mozliwosc dodawania statystyk przez gracza?" - upstream: "Tak". The
 	// first point the owner spends makes the points the owner's
 	// (ManagePlayerBotStats spends none after it), as with the skills. The AI
 	// spends a point within a second of the level that brings it, so by the
@@ -10180,7 +10179,7 @@ namespace
 	// A skill at seventeen that did not turn Master, and the Forgetting Book
 	// to roll again (Hiob's screenshot of 26 September: Smoczy Skowyt and
 	// Pomoc Smoka at seventeen, nothing free - "ona zacznie uzywac OZ???";
-	// Tieru: "bysmy mogli uzyc za nia ksiegi zapomnienia lub ona sama bedzie
+	// upstream: "bysmy mogli uzyc za nia ksiegi zapomnienia lub ona sama bedzie
 	// uzywac"). The engine rolls once, as a point takes a skill to seventeen
 	// (SkillLevelUp), and refuses every point after it; the book
 	// (ITEM_SKILLFORGET, the skill in its first socket, SkillLevelDown) takes
@@ -11762,7 +11761,7 @@ namespace
 		// The personality pass sits below this one in the tick, so at the
 		// owner's side it runs here or never - and the title over the
 		// companion's head read "Grinder", decided before it joined the party,
-		// where it should read Towarzysz (Tieru's screenshots of 25 September).
+		// where it should read Towarzysz (screenshots of 25 September).
 		ManagePlayerBotPersona(ch, state, dwNow);
 		if (KeepPlayerBotSidekickAlive(ch, state, owner, dwNow))
 			return true;

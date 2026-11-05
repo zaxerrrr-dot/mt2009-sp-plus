@@ -450,7 +450,7 @@ namespace playerbot_persona
 		// was frozen at 71, on a number no tier names. Measured in the whole of
 		// m2zip's history - locks at 63, 64, 65 ... up to 112 of them at 71,
 		// where the last tier ends at 62. The document's tiers stop at Mount
-		// Sohan, so above it a Grinder is not held at all (Tieru, 20 September).
+		// Sohan, so above it a Grinder is not held at all (20 September).
 		return 0;
 	}
 
@@ -1234,7 +1234,7 @@ namespace playerbot_persona
 	// heavy purse (`chance`, in percent): half the traders, a third of the
 	// wanderers, one careful collector in twenty. Every other bot sells what
 	// the list names by the ordinary rules, and a plain armour goes to the
-	// merchant ("te zbroje nadaja sie do handlarza", Tieru).
+	// merchant ("te zbroje nadaja sie do handlarza",).
 	inline bool GamblerByNature(uint32_t hash, int chance)
 	{
 		return chance > 0 && (int)(hash % 100U) < chance;

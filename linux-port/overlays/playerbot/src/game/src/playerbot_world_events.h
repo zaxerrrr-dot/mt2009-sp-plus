@@ -5,7 +5,7 @@
 // world, scheduled and switched on from the panel's Events page like the
 // chests and the rates (playerbot_event_rules.h is the file and the clock,
 // playerbot_events.h judges it once a second), and answered by the bots
-// (Tieru, 26 September: "Tanaka i zuo z integracja z panelem www, do tego
+// (26 September: "Tanaka i zuo z integracja z panelem www, do tego
 // boty niech sie motywuja do uczestniczenia w evencie").
 //
 // Tanaka is the treasure goblin. Pirate Tanaka (5001) is a level-one COWARD

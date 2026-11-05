@@ -1,19 +1,19 @@
 # Metin2 Playerbots — Advanced Web Panel (Seban Panel)
 
 Alternatywny, rozbudowany panel administracyjny dla serwerów **Metin2 z
-[Playerbots by Tieru](https://github.com/TieruYT/metin2-playerbots)** (linia
-mt2009). Działa obok klasycznego Panelu Tieru — nie zastępuje go i nie
+Playerbots** (linia
+mt2009). Działa obok klasycznego panelu — nie zastępuje go i nie
 wymaga migracji danych, tylko dokłada drugi, nowocześniejszy widok świata i
 własne narzędzia.
 
-To repozytorium jest **fanowskim dodatkiem do Playerbots by Tieru** — jeśli
+To repozytorium jest **fanowskim dodatkiem do Playerbots** — jeśli
 nie prowadzisz serwera na tym silniku, ten projekt Ci się nie przyda.
 
 ## Jak to jest zbudowane
 
 Ten panel **nie jest samodzielnym projektem z własnym `docker-compose.yml`**.
-Jest podkatalogiem wpiętym w istniejący stack Playerbots — Tieru's
-`docker-compose.yml` buduje go stąd (`context: /opt/seban-panel-custom`) jako
+Jest podkatalogiem wpiętym w istniejący stack Playerbots — `docker-compose.yml`
+wydania bazowego buduje go stąd (`context: /opt/seban-panel-custom`) jako
 trzy dodatkowe usługi obok gry i bazy:
 
 - `seban-panel` — sama aplikacja webowa (Flask + gunicorn), port `7790` na
@@ -37,7 +37,7 @@ nic nie trzeba migrować ani duplikować.
    ```
 
 2. Podepnij go do stacku — najprościej przez `docker-compose.override.yml` w
-   `linux-port/docker/`, żeby nie ruszać pliku Tieru bezpośrednio (przeżywa
+   `linux-port/docker/`, żeby nie ruszać pliku bazowego bezpośrednio (przeżywa
    wtedy każdą aktualizację silnika):
 
    ```yaml
@@ -58,7 +58,7 @@ nic nie trzeba migrować ani duplikować.
    panelu, motyw i opcjonalne hasło.
 
 Zmienne środowiskowe, jakich panel oczekuje (ustawiane zwykle przez
-`docker-compose.yml` Tieru, nie ręcznie — patrz `environment: &seban-env` w
+`docker-compose.yml` wydania bazowego, nie ręcznie — patrz `environment: &seban-env` w
 tamtym pliku):
 
 | Zmienna | Znaczenie |
@@ -68,7 +68,7 @@ tamtym pliku):
 | `PLAYERBOTS_LOGIN_PORT`, `PLAYERBOTS_WORLD_PORT` | Porty rdzenia gry — kontrola etapu restartu. |
 | `PLAYERBOTS_STATUS_GLOB` | Ścieżka do plików `playerbot_status.tsv`. |
 | `PLAYERBOTS_VERSION` | Wersja Playerbots wyświetlana na dashboardzie. |
-| `TIERU_PANEL_URL` | Publiczny adres klasycznego Panelu Tieru (link w menu). |
+| `PANEL_URL` | Publiczny adres klasycznego panelu (link w menu). Starsza nazwa zmiennej z dawnych instalacji nadal działa. |
 | `SEBAN_SESSION_SECRET` | Sekret sesji Flask. Nigdy nie publikuj wartości. |
 | `SEBAN_COLLECTOR_INTERVAL` | Interwał kolektora w sekundach (domyślnie `300`). |
 | `SEBAN_M2_ROOT` | Ścieżka do katalogu serwera na hoście — używana przez `seban-collector` do jednorazowego wczytania puli nicków botów. |

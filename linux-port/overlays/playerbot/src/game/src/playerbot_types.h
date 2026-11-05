@@ -131,7 +131,7 @@ namespace
 	// player crafts or refines it further (IsPlayerBotPickupGoods): "Korzenie
 	// Gango, Grzyby Tue, Krysztalowe Kolczyki, Zbroje Twarzy Ducha ... warto
 	// podnosic, aby dalej przerabiac", the level-65 weapons, Fasolki Zen and
-	// Pigulki Krwi with them (Tieru, 15 September). The herbs are the
+	// Pigulki Krwi with them (15 September). The herbs are the
 	// herbalist's 50724 and 50726; the Biologist's 50704 and 50706 are quest
 	// items and were never left behind.
 	// The mission books and the horse's hay and carrots with them: a player uses
@@ -232,7 +232,7 @@ namespace
 	const DWORD PLAYERBOT_EQUIPMENT_COMBAT_DELAY = 1700;
 	const DWORD PLAYERBOT_GEAR_LOG_INTERVAL = 10000;
 	const DWORD PLAYERBOT_WOODEN_ARROW_VNUM = 8000;
-	// A bot's quiver is never emptied (Tieru, 24 September: "zeby boty Archer
+	// A bot's quiver is never emptied (24 September: "zeby boty Archer
 	// nie musialy kupowac ciagle strzal, a mialy je bez limitu"), so an Archer
 	// needs arrows only when it has none it can nock, and one bundle bought
 	// then lasts it for good. The shots of a player's Archer still spend
@@ -508,7 +508,7 @@ namespace
 	// lines of their own, because a private shop sells a line whole.
 	const DWORD PLAYERBOT_STACK_MERGE_INTERVAL = 300000;
 	// A tidy bag: every potion first, then chests and keys, then the rest
-	// (Tieru: "co jakis czas sortowac ekwipunek", and on 15 September
+	// ("co jakis czas sortowac ekwipunek", and on 15 September
 	// "wszelakie potki pierwsze a potem reszte"). Only single-cell items move,
 	// each with the engine's own MoveItem into an empty cell - a swap goes
 	// through a free cell in three - so nothing is merged, overwritten or
@@ -737,7 +737,7 @@ namespace
 	// How many of a map's candidate lines, most score a yang first, are
 	// built into an item and asked the purchase's own tests.
 	const int PLAYERBOT_ARMOUR_UPGRADE_PREVIEW_LINES = 8;
-	// The level-30 weapons (Tieru, 15 September): "taka bron +6/7 z srednimi
+	// The level-30 weapons (15 September): "taka bron +6/7 z srednimi
 	// 25% jest znacznie lepsza niz krwawy miecz +5/6", the bots should want
 	// them and grind them "nawet do +9", and from 37% average "tylko bodziami
 	// lub zwojami, nigdy u kowala". A weapon at or above either line is refined
@@ -745,7 +745,7 @@ namespace
 	const long PLAYERBOT_WEAPON_SCROLL_ONLY_AVERAGE = 37;
 	const long PLAYERBOT_WEAPON_SCROLL_ONLY_SKILL = 15;
 	// Under this average a level-30 weapon goes to the plain anvil up to +4 and
-	// takes a scroll only from the step to +5 (Tieru, 15 September: "jesli taka
+	// takes a scroll only from the step to +5 (15 September: "jesli taka
 	// bron ma mniejsze srednie niz 30% to warto zwojow uzywac dopiero od +5
 	// wzwyz, a do +4 u kowala"). The family's steps to +3 and +4 run at 75 and
 	// 65 percent, under PLAYERBOT_WORN_SCROLL_MAX_PROB, and CiosZKarpia put ten
@@ -810,7 +810,7 @@ namespace
 	// the operator's ceiling for its line and never under a scroll (the
 	// scrolls are for the bot's own gear), and is sold finished: "niech w 50%
 	// przypadkach ryzykuja ulepszanie, zeby pozniej drozej sprzedac gotowy
-	// przedmiot" (Tieru). Most burn on the way, which the counters can spare.
+	// przedmiot". Most burn on the way, which the counters can spare.
 	const int PLAYERBOT_LEVEL30_SALE_REFINE_PERCENT = 50;
 	const BYTE PLAYERBOT_LEVEL30_LOW_AVERAGE_SCROLL_FROM_PLUS = 4;
 	// A level-30 weapon is judged at what it will be, not at what it is: its
@@ -901,7 +901,7 @@ namespace
 	// one shop with 34 herb lines holding 89 units, while 517 bags held 62 813
 	// roots in stacks of 200 ("korzenie gango i inne ziolka sa stackowane w
 	// sklepach po 1, gdzie takie tanie przedmioty powinny byc stackowane w
-	// duzych ilosciach", Tieru). The cheapest refine material on those
+	// duzych ilosciach",). The cheapest refine material on those
 	// counters asked 240 thousand a unit, the dearest herb 67 thousand.
 	const DWORD PLAYERBOT_SHOP_BULK_MAX_BASE_PRICE = 5000;
 	const int PLAYERBOT_SHOP_BULK_PACK_UNITS = 50;
@@ -910,7 +910,7 @@ namespace
 	// A hoard - this many units of a refine material over the anvil's reserve
 	// (IsPlayerBotHoardedMaterial) - opens a counter by itself. "Niektore boty
 	// maja po prawie 200 danego ulepszacza ... powinni wystawiac nie po 1
-	// sztuce a po 10" (Tieru, 15 September): 158 bots held 19 577 Nieznane
+	// sztuce a po 10" (15 September): 158 bots held 19 577 Nieznane
 	// Lekarstwo that day, and the ledger called 7182 of an hour's listing
 	// decisions overstock, so none of it ever left a bag. It went up in packs
 	// of ten until Iwakura's Patch 4 (point 3) cut every material the way a
@@ -934,7 +934,7 @@ namespace
 	// The medal is an ITEM_USE, a single by the rule below, and the offline
 	// stand cut none of its kind, so a stack went up whole - ten and twenty on
 	// a line that nobody bought ("wystawiaja nawet po 10 sztuk i nikt tego nie
-	// kupuje", Tieru, 23 September). A longer line already standing comes home
+	// kupuje", 23 September). A longer line already standing comes home
 	// at the next service visit to be cut (BotOfflineUnwantedLine).
 	const int PLAYERBOT_SHOP_HORSE_MEDAL_LINE_UNITS = 2;
 	// Single lines of one kind kept by count - the books of one skill, the
@@ -980,8 +980,7 @@ namespace
 	// One of them is reason enough: a book of another class is of no use to
 	// the bot and belongs on its counter at once, not in its bag or its box
 	// ("wszystkie ksiegi jakie bot ma w ekwipunku czy w magazynie nie na swoja
-	// klase powinny ladowac natychmiast w sklepie, aby bot nie chomikowal",
-	// Tieru, 24 September). At three, 709 bots of the test world held 1 587 of
+	// klase powinny ladowac natychmiast w sklepie, aby bot nie chomikowal", 24 September). At three, 709 bots of the test world held 1 587 of
 	// them in their bags, two apiece, and opened no counter for them. The box
 	// takes none of them any more (CollectPlayerBotSafeboxBooks) and gives back
 	// what an older version put there (WithdrawPlayerBotSafebox).
@@ -1019,7 +1018,7 @@ namespace
 	const int PLAYERBOT_SOUL_STONE_MIN_GEAR_REFINE = 6;
 	const int PLAYERBOT_SOUL_STONE_TOP_GEAR_REFINE = 8;
 	const int PLAYERBOT_SOUL_STONE_TOP_GEAR_MIN_GRADE = 4;
-	// The operator's one exception to Iwakura's ban on +0..+2 (Tieru, 19
+	// The operator's one exception to Iwakura's ban on +0..+2 (19
 	// September: "te kamienie mozna wkladac jak sie dropnie do slabych itemow
 	// do 21 levela jesli sa to itemy co najwyzej +6"): a stone of a banned
 	// grade that the bot found goes into a piece of level 21 or less at +6 or
@@ -1125,7 +1124,7 @@ namespace
 	// in input_db.cpp): the cohort may be asked to arrive over a quarter of an
 	// hour instead of the minute above, and a second cohort may join one at a
 	// time over a day - "1000 wbija w ciagu 15 minut, a dodatkowe 500 dolacza
-	// stopniowo w ciagu 24 godzin" (Tieru, 16 September), the day a player
+	// stopniowo w ciagu 24 godzin" (16 September), the day a player
 	// started two thousand at once and the square "looked like a hospital".
 	// These are the bounds; the defaults are the minute above and nobody late.
 	const DWORD PLAYERBOT_SPAWN_WINDOW_MAX_MINUTES = 180;
@@ -1191,11 +1190,11 @@ namespace
 	// A stone is broken together, not claimed. Up to this many bots may be on
 	// one before the next is sent elsewhere; a bot joins a stone others are
 	// already breaking up to PLAYERBOT_STONE_JOIN_LEVEL_DELTA over its own
-	// ("jesli nie da sobie rady, niech dolacza", Tieru, 16 September) and
+	// ("jesli nie da sobie rady, niech dolacza", 16 September) and
 	// nobody fights one more than PLAYERBOT_STONE_OUTGROWN_LEVELS under itself:
 	// the band of characters on an ordinary stone is sixteen levels either
 	// way ("przedzial postaci bijacych metina niech wynosi maksymalnie 16
-	// poziomow", Tieru, 16 September - the drop curve is 1% at fifteen over,
+	// poziomow", 16 September - the drop curve is 1% at fifteen over,
 	// so past that a stone gives nothing). A Demon Tower stone is not a Metin
 	// but a floor's objective and has no band: IsPlayerBotDungeonStoneObjective.
 	// A stone only a player is hitting is left to the player unless the switch
@@ -1311,7 +1310,7 @@ namespace
 	const BYTE PLAYERBOT_SHOP_SPARE_MIN_REFINE = 7;
 	// An Archer breaks a Metin with a dagger, and a +0 dagger breaks nothing:
 	// "powinni uzywac ulepszonych sztyletow na co najmniej +4, nie nizej bo nic
-	// z tego nie bedzie" (Tieru). The stone dagger is worn only on a stone, so it
+	// z tego nie bedzie". The stone dagger is worn only on a stone, so it
 	// never counts as a wearable upgrade or a higher-tier spare and would never
 	// be refined in the bag - this floor makes it a refine candidate and its
 	// target. The +1..+4 steps are 90% each on this world's table, so reaching it
@@ -1347,12 +1346,11 @@ namespace
 	const int PLAYERBOT_SHOP_LOW_GEAR_MAX_LINES = 2;
 	// Starter gear - a weapon or body armour of level one - goes up only from
 	// +7: "Miecz+6, bo to bron na 1 lv, wiec nic nie warta, raczej do handlarza,
-	// chyba ze bylaby +8 lub +9" (Tieru, 15 September) made it +8, and the
+	// chyba ze bylaby +8 lub +9" (15 September) made it +8, and the
 	// measurement of 20 September said what that cost - fifteen starter +7 a
 	// day handed to a merchant, because this one number is both thresholds:
 	// the counter takes a piece from it and the junk rule scraps everything
-	// under it, so +7 fell between them. "+7 to nigdy nie jest zlom" (Tieru,
-	// 20 September) is the rule that wins, and the only way to keep it without
+	// under it, so +7 fell between them. "+7 to nigdy nie jest zlom" (// 20 September) is the rule that wins, and the only way to keep it without
 	// leaving a +7 in the bag for good is to let the counter have it. Below it
 	// the piece is still the merchant's. The cap above counts only lines under
 	// PLAYERBOT_SHOP_LOW_GEAR_CAP_BELOW_REFINE: a sura of twenty-five kept a
@@ -1507,7 +1505,7 @@ namespace
 	// The offline stand's version of the same markdown: a line nobody has
 	// bought comes down PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT for every
 	// PLAYERBOT_OFFLINE_UNSOLD_STEP_MS it has stood, to the same ceiling and
-	// never under the blacksmith's bill (Tieru, 16 September: "jesli nie
+	// never under the blacksmith's bill (16 September: "jesli nie
 	// schodza po obecnych cenach to zmniejszaj ceny stopniowo do jakiegos
 	// stopnia minimalnego"). Three hours since Iwakura's answer above.
 	const DWORD PLAYERBOT_OFFLINE_UNSOLD_STEP_MS = 3 * 60 * 60 * 1000;
@@ -1785,7 +1783,7 @@ namespace
 	// above its tier's floor; the elite and the strong keep small tables and
 	// are few a kingdom, so a thousand bots end with one or two elite guilds a
 	// kingdom, a few strong ones and the rest ("gildie mega mocne, silne oraz
-	// srednie i slabsze", Tieru, 16 September). Indexed by EPlayerBotGuildTier.
+	// srednie i slabsze", 16 September). Indexed by EPlayerBotGuildTier.
 	const int PLAYERBOT_GUILD_TIER_COUNT = 4;
 	const int PLAYERBOT_GUILD_TIER_PERCENT[PLAYERBOT_GUILD_TIER_COUNT] = { 3, 15, 50, 100 };
 	const int PLAYERBOT_GUILD_TIER_MEMBER_CAP[PLAYERBOT_GUILD_TIER_COUNT] = { 24, 40, 0, 0 };
@@ -1814,7 +1812,7 @@ namespace
 	// length and the rhythm are the panel's since DUDU's ask (WAR_MINUTES,
 	// WAR_HOURS, playerbot_config.h). The first wars all began thirty minutes
 	// after the start and ended together, so a player who came to watch half
-	// an hour later found none (Tieru, 16 September).
+	// an hour later found none (16 September).
 	const DWORD PLAYERBOT_GUILD_WAR_FIRST_DELAY = 30 * 60 * 1000;
 	const DWORD PLAYERBOT_GUILD_WAR_KINGDOM_STAGGER = 40 * 60 * 1000;
 	const DWORD PLAYERBOT_GUILD_WAR_RETRY_MS = 10 * 60 * 1000;
@@ -1830,7 +1828,7 @@ namespace
 	// fightable, and Jinno's on a strip beside its safe zone, 55%. The bots
 	// fought on the bridge, in the river and up the slopes
 	// ("zmienilbym w kazdym krolestwie miejsce, w ktorym sie bija - na jakis
-	// otwarty obszar", prodnathin, with a screenshot of the bridge; Tieru: "by
+	// otwarty obszar", prodnathin, with a screenshot of the bridge; "by
 	// boty na wojnie nie wypadaly poza most do rzeki i na wzgorza"). So the
 	// middle is the most open point within OPEN_SEARCH of the Town.txt point
 	// reachable from it - the share of cells neither blocked nor the safe
@@ -1850,9 +1848,9 @@ namespace
 	// skill won, and the dead stood up among their killers to be killed again:
 	// "fajnie jakby gildie mialy 2 oddzielne teleporty, mialy jakies pare
 	// sekund na zbuffowanie sie i dopiero wtedy ogien" (prodnathin, 24
-	// September), "zeby boty dobiegaly na srodek sie bic" (Tieru). A spread of
+	// September), "zeby boty dobiegaly na srodek sie bic". A spread of
 	// 700 in September left two columns standing apart ("niech ida od
-	// poczatku na srodek", Tieru, 17 September), which the muster answers:
+	// poczatku na srodek", 17 September), which the muster answers:
 	// once it is over a bot goes for a foe or for the middle, never back to
 	// its camp. The first distance the map's ground allows is taken - both
 	// camps open, CAMP_SAFE_MARGIN clear of the safe zone and joined to the
@@ -1876,7 +1874,7 @@ namespace
 	// "At the camp", for the muster, the buffs and the grace below.
 	const long PLAYERBOT_GUILD_WAR_CAMP_RADIUS = 500;
 	// A war is a fight with no town to walk back to ("czy boty uzywaja potek na
-	// wojnie? powinny!", Tieru, 27 September): the life pass drank only below
+	// wojnie? powinny!", 27 September): the life pass drank only below
 	// the hunting 65%, so every round opened on wounded bots and ended in
 	// seconds (Gacek, 26 September). A red below 85% and a blue below 50% in
 	// the fight, and at the camp topped up to 95% and 90%.
@@ -1936,7 +1934,7 @@ namespace
 	// arrive was everybody's nearest and the war was a queue: "wszyscy sie
 	// rzucaja na jedna osobe i tak w kolko ... zeby po prostu kazdy bil
 	// najblizszy cel" (prodnathin, 23 September); "zmien to aby bylo bardziej
-	// naturalnie" (Tieru, 24 September). A foe now costs his distance, plus
+	// naturalnie" (24 September). A foe now costs his distance, plus
 	// CROWD_PENALTY for every bot of the chooser's guild already on him, plus
 	// a draw of up to JITTER by the pair of pids - so two bots standing side
 	// by side do not choose alike - and the one held costs KEEP_BONUS less.
@@ -2097,7 +2095,7 @@ namespace
 	// 25 September five raids of six ended stone_timeout on the ground floor:
 	// its demons are 1001-1004 at 57-60, and bots of 40-48 spent the ten
 	// minutes dying and standing up. At fifty-five the youngest member has the
-	// floor's common demons two to five levels over itself (Tieru: "Podniesc
+	// floor's common demons two to five levels over itself ("Podniesc
 	// prog?" - "tak").
 	const int PLAYERBOT_TOWER_MIN_LEVEL = 55;
 	const int PLAYERBOT_TOWER_UPPER_LEVEL = 75;
@@ -2131,8 +2129,7 @@ namespace
 	const int PLAYERBOT_TOWER_POTION_HP_PERCENT = 85;
 	const int PLAYERBOT_TOWER_POTION_SP_PERCENT = 50;
 	// The seventh floor: the monsters first and the Metin of Murder after
-	// ("niech najpierw skupia sie na mobach, a potem zabieraja sie za kamien",
-	// Tieru, after prodnathin's "lapia aggro na metina i olewaja moby", 23
+	// ("niech najpierw skupia sie na mobach, a potem zabieraja sie za kamien", after prodnathin's "lapia aggro na metina i olewaja moby", 23
 	// September). While a monster stands this close to a bot the stone is not
 	// its target, one it holds is let go, and what it fights is ranked from
 	// where it stands rather than from the stone.
@@ -2178,7 +2175,7 @@ namespace
 	// so a bot that cannot reach him no longer holds everybody to the cap.
 	const DWORD PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS = 45 * 1000;
 	const DWORD PLAYERBOT_TOWER_SMITH_TURN_MS = 20 * 1000;
-	// What a bot gives him is never a piece it wears (Tieru: "nie swoj noszony,
+	// What a bot gives him is never a piece it wears ("nie swoj noszony,
 	// a jakis zarobkowy albo zapasowy, np. +6 i podejma probe na +7, bo kowal
 	// w DT nie wymaga ulepszaczy"): a bag piece he takes, a spare the bot will
 	// wear from any grade under its target, anything else - counter goods -
@@ -2201,7 +2198,7 @@ namespace
 	// jest zawsze pierwszy i wpierdala sie prosto w walke (przez jego
 	// umiejetnosc co daje speeda) ... fajnie jakby tylko i wylacznie bil z
 	// daleka" (prodnathin, 23 September); "Archer powinien zachowac odleglosc
-	// kilku metrow, w koncu strzela z luku" (Tieru, 24 September). It stops at
+	// kilku metrow, w koncu strzela z luku" (24 September). It stops at
 	// ARCHER_RANGE of its foe - the shots and the archery skills all reach
 	// 2500 (world.skill_proto: 46, 48 and 50) - and a monster that comes
 	// within ARCHER_KEEP_AWAY of it gets one step, ARCHER_STEP_BACK towards
@@ -2352,7 +2349,7 @@ namespace
 	// And one keeper in PLAYERBOT_ISHOP_HAIR_TRADE_SHARE buys a head it cannot
 	// wear, for its counter, when its coins are wanted for nothing of its own:
 	// the item shop's hairstyles are what a player should find on a counter,
-	// where the dyes from the water stood (Tieru, 18 September). One at a
+	// where the dyes from the water stood (18 September). One at a
 	// time, bag and counter together. No hairstyle on this package carries a
 	// bonus - every applytype of the 96 in the shop is zero - so it is the
 	// look that is for sale.
@@ -2444,7 +2441,7 @@ namespace
 	// rerolled away, whatever the class - not only a caster's. The equip pass
 	// values average damage for PvE (see the prize in playerbot_gear.h), but a
 	// big skill line is a nice PvP bonus this world will use once PvP ships, and
-	// "szkoda tracic takiego ladnego bonusu do PvP" (Tieru): the bot keeps such a
+	// "szkoda tracic takiego ladnego bonusu do PvP": the bot keeps such a
 	// weapon, or sells it whole on an offline counter, rather than mixing it off.
 	const long PLAYERBOT_BONUS_SKILL_PVP_PCT = 21;
 	const BYTE PLAYERBOT_BONUS_CHANGE_MIN_REFINE = 5;
@@ -2632,7 +2629,7 @@ namespace
 	// warrior charges a foe standing between the two, the aura goes up inside
 	// the buff range, and the rotation runs on a shorter clock - a duel lasts
 	// twenty seconds, and the hunt's pause between casts left room for one
-	// skill in it (Tieru, 15 September: swords waved from afar, Trzystronne
+	// skill in it (15 September: swords waved from afar, Trzystronne
 	// Ciecie under no aura, no Szarza and no Wir Miecza).
 	const int PLAYERBOT_DUEL_MELEE_RANGE = 170;
 	const int PLAYERBOT_DUEL_CASTER_RANGE = 600;
@@ -2652,7 +2649,7 @@ namespace
 	// is commented out anyway. For a king (the Spider Baroness, the Elite Queen)
 	// it is 1. So the line is worth twice as much from the level the boss hubs
 	// begin at, and no more ("przyda im sie w ekwipunku tez bonus szansa na
-	// otrucie", Tieru, 15 September).
+	// otrucie", 15 September).
 	const int PLAYERBOT_POISON_BOSS_LEVEL = 50;
 	// How long the bot assumes an agreed duel lasts. The engine knows exactly
 	// (CPVPManager), but its IsFighting sits behind ENABLE_NEWSTUFF on one line
@@ -4858,7 +4855,7 @@ namespace
 	const int PLAYERBOT_CHEST_COUNTER_LINES = 3;
 	// A dropper picks the chests up and sells them rather than opening them
 	// ("dropki medali nie podnosza szkat. blasku", darkroom22; "dodaj im
-	// mozliwosc podnoszenia tego i dawania na sklep", Tieru, 15 September). It
+	// mozliwosc podnoszenia tego i dawania na sklep", 15 September). It
 	// keeps this many unopened for its counter and opens the rest, so a counter
 	// it seldom serves - a medal dropper's is served out of its dungeon only -
 	// does not fill its bag. The only bot that keeps any since 28 September,
@@ -4920,7 +4917,7 @@ namespace
 	// And for the first of those seconds the bot stands where the stone broke
 	// and looks for its drop on every pass, holding the tick even when the
 	// ground is empty so far: "mogliby chociaz 5 sekund poobserwowac co
-	// wypadlo" (Tieru, 24 September, over bots that ran on and left the
+	// wypadlo" (24 September, over bots that ran on and left the
 	// stone's skill books lying). Not with its health under the second number:
 	// the stone's pack is still on it, and the fight comes first then.
 	const DWORD PLAYERBOT_METIN_LOOT_LINGER_MS = 5000;
@@ -5025,7 +5022,7 @@ namespace
 	// take one, the Demon Kings of the tower's third and sixth floors among
 	// them ("niekoniecznie wydaje mi sie potrzebne zeby boty tracily na nich
 	// marmurki", prodnathin, 23 September), and the players keep theirs for
-	// the ninth floor's Umarly Rozpruwacz (Tieru, the same evening: "zwykle
+	// the ninth floor's Umarly Rozpruwacz (the same evening: "zwykle
 	// uzywa sie na riperze"). 1095, Niebieska Smierc, is the name he gave it
 	// from memory; it is the Catacomb's boss and costs nothing to name here.
 	const DWORD PLAYERBOT_POLYMORPH_BOSS_VNUMS[] = { 1093, 1095 };
@@ -5201,7 +5198,7 @@ namespace
 	const DWORD PLAYERBOT_CAMPFIRE_VNUM = 27600;
 	// Dead fish kept for the campfire; the rest is the merchant's. Kept without
 	// a bound, 161 bots of the test world carried 932 dead carp, and one bag's
-	// second page was fish (Tieru, 15 September).
+	// second page was fish (15 September).
 	const int PLAYERBOT_DEAD_FISH_KEEP = 10;
 	const DWORD PLAYERBOT_CAMPFIRE_MOB_VNUM = 12000;
 	const DWORD PLAYERBOT_BAKE_WINDOW = 35000;
@@ -5349,8 +5346,7 @@ namespace
 	// lines that went up before a cap existed never came down: on 18 September
 	// one of m2zip's counters carried 46 lines of Kawalek Lodu, others ten to
 	// fourteen of one hair dye or seventeen horse medals, and some 10 800 lines
-	// stood over three of one item ("caly sklep jest w matowych lodach",
-	// Tieru). The books and the soul stone keep their own cap by skill
+	// stood over three of one item ("caly sklep jest w matowych lodach",). The books and the soul stone keep their own cap by skill
 	// (IsPlayerBotCountedSingleGoods), a Forgetting Scroll is one skill's, and
 	// the operator's "stall" is never second-guessed.
 	const int PLAYERBOT_SHOP_SAME_VNUM_LINES = 3;
@@ -5463,7 +5459,7 @@ namespace
 	// The Teleport Ring (70058, level 30): a bot out of potions or a weapon
 	// on a frontier map recalls home with it instead of the long, dangerous
 	// walk to the exit portal ("musza isc po potki bo sie skonczyly a sa w
-	// Dolinie Orkow czy na V1", Tieru). Not consumed; a per-bot clock keeps
+	// Dolinie Orkow czy na V1",). Not consumed; a per-bot clock keeps
 	// it to the engine's own 30-minute cooldown.
 	const DWORD PLAYERBOT_TELEPORT_RING_VNUM = 70058;
 	const BYTE PLAYERBOT_TELEPORT_RING_MIN_LEVEL = 30;
@@ -5556,7 +5552,7 @@ namespace
 	// as many of the shop channel's, with no live stand behind them, the other
 	// way - so the split does not move and nobody stays put for good ("it
 	// would be cool if bots change channels itself like 4 hours", Dixdros;
-	// "on tez ma racje, myslalem ze jest tak dynamicznie zrobione", Tieru, 24
+	// "on tez ma racje, myslalem ze jest tak dynamicznie zrobione", 24
 	// September). At a thousand bots and the slider's 40 that is three a gate
 	// each way, ninety an hour: a bot of the second channel stays about four
 	// and a half hours, one of the shop channel longer, because it is the
@@ -5940,7 +5936,7 @@ namespace
 	// throws them away too (DiscardPlayerBotFishedDyes) but for one colour it
 	// has yet to use and these few per thousand, drawn by the item, kept for a
 	// counter: "a jak juz jakis sprzedaje, to niech bedzie bardzo rzadkie"
-	// (Tieru). The item shop's dyes are goods as before.
+	//. The item shop's dyes are goods as before.
 	const int PLAYERBOT_HAIR_DYE_KEEP_PERMILLE = 30;
 
 	// A hair dye of either kind - one a bot could use, or one it can only sell.
@@ -6292,7 +6288,7 @@ namespace
 	// Uciekiniera (70048) and Symb. Krola Przepowiedni (70050), uniques of the
 	// old Moonlight chest no bot wears or uses. 283 bots of the test world
 	// carried 966 capes, and one bag's second page was capes and symbols
-	// (Tieru, 15 September: "niech boty tego nie podnosza").
+	// (15 September: "niech boty tego nie podnosza").
 	bool IsPlayerBotLeftOnGroundItem(DWORD vnum)
 	{
 		// The Demon Tower's fake Bong-In key (playerbot_demon_tower.h): the
@@ -6309,7 +6305,7 @@ namespace
 	// The uniques a bot never wears (playerbot_unique_slots.h). Pierscien
 	// Niejawnosci (70007) hides the level over a character's head and Plaszcz
 	// Uciekiniera (70048) its alignment title - a player hiding something, not
-	// a bot playing. "Bot Toty nie ma widocznego lv, dlaczego?" (Tieru, 15
+	// a bot playing. "Bot Toty nie ma widocznego lv, dlaczego?" (15
 	// September) was one of eleven bots wearing the ring, put there by the
 	// equipment pass because any unique fills an empty unique slot.
 	bool IsPlayerBotNeverWornUnique(DWORD vnum)
@@ -6323,7 +6319,7 @@ namespace
 	// so unique_expire_event takes a minute a minute from the socket and stops
 	// at the unequip. A bot wears them while it hunts and takes them off in
 	// town ("pierscienie czy rekawice zaklada sie na slot na x czasu ... oby
-	// nie ubierali ich w miescie", Tieru, 15 September).
+	// nie ubierali ich w miescie", 15 September).
 	// MT2009_PLUS_DROP90_V1: 39002 too - the ring the level-90 maps' bosses and
 	// Metins drop (70005's masked twin, in group 10000 since; Dockerfile). The
 	// equipment pass, not knowing it, put it on in town like any unique.
@@ -6714,7 +6710,7 @@ namespace
 	// PLAYERBOT_BIOLOGIST_HERB_ERRAND_MAX_MS.
 	// Seventy per mille since 2.0.70: at 2.5% a bot of seventy-five with four
 	// rows left waited hours for a place and the rows were never caught up
-	// ("jak mozna bezpiecznie zrobic by boty nadrabialy sobie biologa", Tieru,
+	// ("jak mozna bezpiecznie zrobic by boty nadrabialy sobie biologa",
 	// 17 September). The crowd is still bounded by construction - a share of
 	// the live population, which is what 2.0.60 was missing - so this is 70-80
 	// bots in the first villages at a time on a world of eleven hundred, not
@@ -6756,7 +6752,7 @@ namespace
 	// and what the Biologist is still owed stays off the anvil
 	// (GetPlayerBotBiologistReserve): "w pierwszej kolejnosci te przedmioty
 	// maja trafiac do biologa, dopiero pozniej na sklep lub jako ulepszacz"
-	// (Tieru, 15 September). Measured that day on the test world: 978 bots in
+	// (15 September). Measured that day on the test world: 978 bots in
 	// the Orc Tooth row and not one finished, while 358 bots carried 1484
 	// teeth - past forty the row was outgrown and the teeth stayed in the bag.
 	const int PLAYERBOT_BIOLOGIST_COLLECT_QUEST_LEVEL = 30;
@@ -7964,7 +7960,7 @@ namespace
 	bool IsPlayerBotOnKingdomVisit(DWORD pid);
 	bool IsPlayerBotKingdomRaidFoe(LPCHARACTER ch, LPCHARACTER target);
 	bool IsPlayerBotKingdomRaidBlow(LPCHARACTER victim, LPCHARACTER attacker);
-	// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's three, medal droppers that shout
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: the upstream three, medal droppers that shout
 	// (playerbot_shouters.h); not counted by IsPlayerBotShouterPID.
 	bool IsPlayerBotMedalShouterPID(DWORD pid);
 	// MT2009_PLUS_PROGRESSION_V3: what a bot a gate holds works on while it is
@@ -8869,7 +8865,7 @@ namespace
 	// earrings, boots and necklaces nearly all at +0 to +2 ("Boty zbieraja
 	// nadmiar itemow, ktore do niczego sie im nie przydadza", GoracyDelfin;
 	// "zbroje na 34 czy 42 lv tez sa malo warte jesli nie sa ulepszone ... to
-	// juz lepiej jak laduja u handlarza", Tieru). But only a gambler keeps the
+	// juz lepiej jak laduja u handlarza",). But only a gambler keeps the
 	// list, so what that took was the gamblers' stock, and the boxes of every
 	// other bot were emptied by the list's own release: "czesc musi zostac
 	// (po 2 sztuki danego typu) pod Hazardziste" (Iwakura, the same day).

@@ -2,7 +2,7 @@
 #define __INC_METIN2_PLAYERBOT_CATACOMB_H__
 
 // The Devil's Catacomb, raided by a party of bots ("dodamy obsluge rajdu na
-// azraela", Tieru, 26 September).
+// azraela", 26 September).
 //
 // The dungeon is devilcatacomb_zone.quest (quest/, compiled by the game
 // image), map 216 on game1: a public first floor and six more in an

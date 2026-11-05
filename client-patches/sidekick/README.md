@@ -1,7 +1,7 @@
-# Towarzysz i przyciski paska z klienta Tieru
+# Towarzysz i przyciski paska z klienta wydania bazowego
 
-Ten katalog przechowuje selektywny port funkcji z klienta Tieru do
-MT2009 Plus. Pełne paczki Tieru nie są podmieniane, dzięki czemu pozostają
+Ten katalog przechowuje selektywny port funkcji z klienta wydania bazowego do
+MT2009 Plus. Pełne paczki wydania bazowego nie są podmieniane, dzięki czemu pozostają
 nasze cztery strony ekwipunku, COOP, Auto Łowy, ItemShop i pozostałe poprawki.
 
 ## Zawartość
@@ -35,5 +35,5 @@ nie powoduje awarii klienta; okno pozostaje w stanie oczekiwania na odpowiedź.
 3. Zastosuj `client-sidekick-autohunt.patch` względem katalogu nadrzędnego.
 4. Spakuj ponownie `root.data` i `root.index`.
 
-Nowy plik EXE ani pełny pack `locale` z wydania Tieru nie są wymagane przez
+Nowy plik EXE ani pełny pack `locale` z wydania bazowego nie są wymagane przez
 te funkcje.

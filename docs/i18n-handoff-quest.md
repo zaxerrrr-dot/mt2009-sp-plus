@@ -64,7 +64,7 @@ Short version of the rules:
 5. Official names from the glossary (PB / SZC markers as the glossary writes them, e.g. fr/pt/cz… – grep `(PB)`).
    Proper names (Yohara, Seon-Hae, Chaegirab, Jaharr, Enasir, Balathor, Sung Mahi, Erebu, Nemere, Razador as the
    glossary has it) stay.
-6. Never write Metin2, Gameforge, "official server", Tieru, Ameria, metin2alerts.
+6. Never write Metin2, Gameforge, "official server", Ameria, metin2alerts.
 7. Only characters of the code page: fr/pt cp1252, cz/hu cp1250, gr cp1253, ae cp1256. Straight quotes, "-".
 8. Technical lines (GM command syntax like `/goblin gm …`, debug lines full of `%u`, already-English lines from the
    engine): copy the Polish into column 4 unchanged (the importer then skips them).

@@ -304,7 +304,7 @@ namespace
 			return false;
 		// Never the goods a player crafts further, whatever the merchant pays:
 		// a bot of seventy-three walked past Grzyb Tue, Korzen Gango and a
-		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September). A piece of
+		// Zbroja Twarzy Ducha+3 on a floor (15 September). A piece of
 		// gear the bag already keeps its share of (PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
 		// is the merchant's anyway, so it is judged like any other drop.
 		if (IsPlayerBotPickupGoods(item) &&
@@ -335,7 +335,7 @@ namespace
 				// Helmets and shields are picked up whatever their merchant price:
 				// the ones of level 21, 41 and 61 are worth more than it says, and a
 				// dungeon floor kept its Upiorna Maska while bots of fifty walked
-				// past (Tieru, 15 September: "tarcze na 21 41 61 poziom czy helmy
+				// past (15 September: "tarcze na 21 41 61 poziom czy helmy
 				// ... warto podnosic tak czy siak").
 				if (item->GetType() == ITEM_ARMOR &&
 						(item->GetSubType() == ARMOR_HEAD || item->GetSubType() == ARMOR_SHIELD))
@@ -673,7 +673,7 @@ namespace
 				m_bagFull(CountPlayerBotFreeInventoryCells(owner) == 0),
 				m_skippedNoRoom(0),
 				// Inside the Demon Tower a bot picks up its own drop whatever it
-				// is worth (Tieru, 23 September: "niech tam drop swoj pilnuja,
+				// is worth (23 September: "niech tam drop swoj pilnuja,
 				// aby podnosili"). The floors were left strewn with potions and
 				// outgrown gear +2 under the names of bots of sixty and seventy -
 				// exactly what the choosy looter walks past - while the owners

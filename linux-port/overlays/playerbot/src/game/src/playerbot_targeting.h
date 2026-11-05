@@ -434,7 +434,7 @@ namespace
 	}
 
 	// And the other half of his rule: somebody of another kingdom breaking the
-	// stone - a bot, or a person ("doslownie z dokumentu", Tieru, 19 September)
+	// stone - a bot, or a person ("doslownie z dokumentu", 19 September)
 	// - whom this bot's blow can reach. The nearest to the bot.
 	//
 	// Another kingdom's bot is a rival only to a bot of the hostile share
@@ -538,7 +538,7 @@ namespace
 
 	// A stone above the bot's own band that others are already breaking. "Jesli
 	// nie da sobie rady, niech dolacza jesli ktos w danym momencie bije kamien"
-	// (Tieru, 16 September): up to PLAYERBOT_STONE_JOIN_LEVEL_DELTA over the bot,
+	// (16 September): up to PLAYERBOT_STONE_JOIN_LEVEL_DELTA over the bot,
 	// never one it has outgrown by PLAYERBOT_STONE_OUTGROWN_LEVELS (the drop
 	// curve is gone there for everybody) - sixteen either way, the operator's
 	// band - and never a dungeon trigger, unless the bot is climbing the tower
@@ -581,7 +581,7 @@ namespace
 	// break stones and a +0 dagger barely scratches one, so it "pada na gleba x
 	// razy i rezygnuje" - but it may still help a stone somebody else is already
 	// breaking, from range with the bow ("no chyba ze ktos inny bije kamien metin
-	// to on moze z luku go bic", Tieru). Melee classes are unchanged.
+	// to on moze z luku go bic",). Melee classes are unchanged.
 	bool CanPlayerBotEngageStone(LPCHARACTER ch, LPCHARACTER stone)
 	{
 		if (!ch || !stone)
@@ -1650,7 +1650,7 @@ namespace
 					if (IsPlayerBotStoneTakenByAnotherKingdom(m_owner, candidate))
 						return false;
 					// A stone is the game's key fight for every bot, not a hunter's
-					// speciality (Tieru, 16 September): above the sweet-spot monster
+					// speciality (16 September): above the sweet-spot monster
 					// for anybody, and one somebody is already on comes first of all.
 					baseScore = isMetinHunter ? 1500000 : PLAYERBOT_STONE_BASE_SCORE;
 					if (IsPlayerBotStoneUnderJoinableAttack(m_owner, candidate))
@@ -2662,7 +2662,7 @@ namespace
 		const DWORD dwPrimaryVID = (DWORD)primary->GetVID();	// MT2009_PLUS_BOT_PURGED_TARGET_V1
 		primary->Damage(ch, iDamage, DAMAGE_TYPE_NORMAL);
 		NotePlayerBotStoneHit(ch, primary);
-		// No UseArrow: a bot's quiver never empties (Tieru, 24 September), so an
+		// No UseArrow: a bot's quiver never empties (24 September), so an
 		// Archer does not walk to town for arrows every half hour. The skill
 		// path in playerbot_combat.h does the same.
 		// Human duel melee ownership was sent before the combo, together with

@@ -1,5 +1,5 @@
 Postanowienia ogólne
-1.1. MT2009 PLUS to darmowy projekt fanowski: serwer dzia³a na Twoim komputerze albo na VPS, a œwiat zaludniaj¹ boty. Projekt nie jest powi¹zany z Gameforge ani Webzen.[ENTER]1.2. Projekt jest rozwijany publicznie na GitHubie: github.com/zaxerrrr-dot/mt2009-sp-plus. Strona projektu i wiki: metin2sp.pl.[ENTER]1.3. Korzystasz z gry na w³asn¹ odpowiedzialnoœæ. Projekt jest dostarczany w stanie „jak jest”, bez gwarancji.
+1.1. MT2009 PLUS to darmowy projekt fanowski: serwer dzia³a na Twoim komputerze albo na VPS, a œwiat zaludniaj¹ boty. Projekt nie jest powi¹zany z ¿adnym wydawc¹ gry.[ENTER]1.2. Projekt jest rozwijany publicznie na GitHubie: github.com/zaxerrrr-dot/mt2009-sp-plus. Strona projektu i wiki: metin2sp.pl.[ENTER]1.3. Korzystasz z gry na w³asn¹ odpowiedzialnoœæ. Projekt jest dostarczany w stanie „jak jest”, bez gwarancji.
 Zasady
 2.1. Na w³asnym serwerze grasz, jak chcesz. Konta admin i test s¹ kontami Twojej instalacji.[ENTER]2.2. Je¿eli udostêpniasz serwer znajomym, to Ty jesteœ jego administratorem i odpowiadasz za porz¹dek: gra fair, szacunek dla innych, ¿adnych oszustw ani przeszkadzania w grze.[ENTER]2.3. Nie podawaj paczki jako w³asnej i nie sprzedawaj jej. Projekt jest i pozostaje darmowy, na licencji CC BY-NC-SA 4.0 (szczegó³y w plikach paczki serwera).
 Wsparcie projektu

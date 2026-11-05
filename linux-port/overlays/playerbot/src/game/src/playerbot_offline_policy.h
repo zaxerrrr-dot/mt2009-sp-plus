@@ -231,7 +231,7 @@ inline bool Fits(int cell, int height, int width, int cells) {
 // the one the client's owner window lays out, and the guest window shows a
 // bot's pages side by side, one grid twenty columns wide (clientrootify's
 // offlineshopguest.py; since client 2.0.51 - 2.0.50 showed a page at a time
-// behind tabs, and Tieru wanted one bigger page). Players asked for it: a bot
+// behind tabs, and one bigger page was asked for). Players asked for it: a bot
 // cannot stand a second character's shop beside its first ("boty to nie
 // ludzie wiec nie postawia sobie drugiej postaci zeby otworzyc sklepik",
 // prodnathin, 28 September). The engine's add path (playerbotify's

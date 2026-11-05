@@ -64,7 +64,7 @@ file back (UTF-8, tab-separated, one row per line, `\n` inside a cell stays the 
    colour tags `|cFFxxxxxx` … `|r`, `|h`, `|H…`, `|E…|e`, one-letter key tags like `[K]`. Keep leading/trailing spaces
    and a trailing `:` / `: ` exactly (code appends a value after it).
 2. Numbers: every number of the source, same digits, same order (write "Level 3", not "3rd level").
-3. Never write: Metin2 (any form), Gameforge, Webzen, Tieru, Ameria, metin2alerts, or "official/officially" in any
+3. Never write: Metin2 (any form), Gameforge, Webzen, Ameria, metin2alerts, or "official/officially" in any
    language (offiziell, oficial, ufficiale, officiel, oficiální, hivatalos, resmi, επίσημ…, رسمي). Rephrase neutrally
    ("sealed document", "standard game music"). URLs like `metin2sp.pl`, `github.com/…` and `MT2009 PLUS` stay as they are.
 4. Slash commands and their arguments stay unchanged (`/go trent2`, `/level 99`); only the description after them is

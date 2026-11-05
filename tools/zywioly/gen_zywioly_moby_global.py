@@ -7,7 +7,7 @@ mt2009 mode is gen_zywioly_moby.py's set (zywioly_moby.sql) plus the Yohara batc
 adds, on top of it, every monster's element of the original data:
 
   * the bulk source is Owsap's official mob_proto (the AttElec/AttFire/AttIce/AttWind/AttEarth/AttDark columns,
-    = the pl-wiki "Zywiol" pages; it agrees with every vnum of Tieru's 2.2.31 list - lightning: Setaou, Dowodca
+    = the pl-wiki "Zywiol" pages; it agrees with every vnum of the upstream 2.2.31 list - lightning: Setaou, Dowodca
     Yonghan, Niszczyciel, Ogry, Cyklopi..., wind: Fanatycy, Zabi Zolnierze, Krolowa Pajakow, Olbrzymi Zolw...);
     a monster with two elements (six in the data) keeps both bits;
   * the official element WINS over the mt2009 rules (wiki bosses, the map and dungeon rules, the boss overrides) -

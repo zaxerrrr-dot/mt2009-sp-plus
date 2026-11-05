@@ -592,7 +592,7 @@ Launcher dostał nowy wygląd z tłem:
   diagnostyka;
 - pod menu wersje serwera, launchera i klienta oraz przycisk „Postaw
   kawkę”;
-- w nagłówku link do metin2singleplayer.com i przełącznik języka;
+- w nagłówku link do strony projektu i przełącznik języka;
 - akcje jako karty z opisem;
 - log operacji, który można zwinąć;
 - przycisk rat EXP / DROP / YANG, który otwiera edytor rat w panelu WWW.
@@ -1730,7 +1730,7 @@ Serwer 2.0.79, klient bez zmian (2.0.16). W launcherze ZAINSTALUJ AKTUALIZACJE.
 - Zioła z małp zostają w dropach, bo quest poboczny na poziomy 55–57 wymaga
   zioła z trudnych małp. Samo użycie zioła niczego już nie robi.
 
-### Przedmioty na „stall” też mają limit linii na ladzie (Tieru)
+### Przedmioty na „stall” też mają limit linii na ladzie
 
 - Przedmiot ustawiony w panelu (Polityka przedmiotów) na „stall” dalej trafia
   na ladę przed wszystkim innym i nigdy do handlarza, ale na jednej ladzie
@@ -1759,7 +1759,7 @@ Serwer 2.0.78, klient bez zmian (2.0.16). W launcherze ZAINSTALUJ AKTUALIZACJE.
   pochodzi z cudzej przeróbki i jak przywrócić fabryczny, zamiast ogólnego
   „Operacja nie powiodła się”.
 
-### Różnorodność na ladach (Tieru, Hiob)
+### Różnorodność na ladach (Hiob)
 
 - Na jednej ladzie stoją najwyżej 3 linie tego samego przedmiotu. Do tej
   pory zdarzały się lady z 46 liniami Kawałka Lodu albo z kilkunastoma
@@ -1774,7 +1774,7 @@ Serwer 2.0.78, klient bez zmian (2.0.16). W launcherze ZAINSTALUJ AKTUALIZACJE.
   zwykłym sprzętem. W drugich wioskach (Bokjung, Jayang, Bakra) sprzedawcy
   mieli brakujące materiały w torbach, ale ich lady były pełne.
 
-### Broń na 30 poziom innej klasy (Tieru)
+### Broń na 30 poziom innej klasy
 
 - Połowa broni na 30 poziom, których bot nie może założyć, idzie najpierw do
   kowala. Ulepsza je na zwykłym kowadle, bez zwojów, do sufitu z tabeli dla
@@ -1786,7 +1786,7 @@ Serwer 2.0.78, klient bez zmian (2.0.16). W launcherze ZAINSTALUJ AKTUALIZACJE.
   +9 zostaje rzadkością. Od +5 do +9 pod Zwojem Błogosławieństwa to średnio
   ok. 200 zwojów, a na zwykłym kowadle dochodzi 0,8% broni.
 
-### Farby do włosów i fryzury (Tieru)
+### Farby do włosów i fryzury
 
 - Farby do włosów z łowienia boty wyrzucają, tak jak robi większość graczy.
   Zostawiają jedną, jeśli same nie mają jeszcze koloru włosów, i bardzo
@@ -1996,7 +1996,7 @@ cd linux-port/docker && docker compose up -d --build panel
 Serwer 2.0.75, klient 2.0.15. W launcherze ZAINSTALUJ AKTUALIZACJE — przycisk
 porządkowania potrzebuje nowego serwera i nowego klienta.
 
-### „Scal i uporządkuj” — jedno kliknięcie, cały ekwipunek (Tieru; plan z audytu Codexa)
+### „Scal i uporządkuj” — jedno kliknięcie, cały ekwipunek (plan z audytu Codexa)
 
 Przycisk w oknie ekwipunku (dotąd „automatyczne łączenie”) wysyła teraz do
 serwera jedno polecenie. Serwer w ułamku sekundy:
@@ -2185,7 +2185,7 @@ Teraz przygotowuje go `update.sh` przed budową, a paczka zawiera schemat.
 Serwer testowy z 1099 botami:
 
 - logowanie nowym klientem i przenoszenie przedmiotów między stronami I–IV
-  sprawdził Tieru;
+  sprawdzono;
 - migracja poszerzyła 1143 paski skrótów;
 - przez 17 minut po zmianie nie wypadła żadna Szkatułka, a godzinę wcześniej
   w 6 minut było ich 39;
@@ -2247,7 +2247,7 @@ linie na godzinę wobec 736, a pustych prób czytania było 57 na godzinę zamia
 
 Serwer 2.0.72, klient bez zmian (2.0.13).
 
-### Boty kupują to, czego brakuje im do rozwoju (Tieru; wdrożył Codex)
+### Boty kupują to, czego brakuje im do rozwoju (wdrożył Codex)
 
 Do tej pory bot kupował z lad materiały, sprzęt i kilka rzeczy strategicznych,
 a księgi umiejętności, Kamienie Duchowe i okazy dla Biologa zdobywał raczej
@@ -2353,7 +2353,7 @@ godzinami.
 Ucieczka kończy się teraz po oddaleniu się na bezpieczny dystans albo po
 minucie, niezależnie od tego, co potwór o tym sądzi. Powód trafia do logu.
 
-### Broń 30 poziomu: kowal do progu, dalej zwoje (Tieru)
+### Broń 30 poziomu: kowal do progu, dalej zwoje
 
 Ile stopni bot wywalczy u kowala, zależy teraz od średnich obrażeń broni — im
 lepsza broń, tym wcześniej przestaje ryzykować:
@@ -2396,7 +2396,7 @@ dalej odrzuca oferty, słaba pozwala szukać lepszej.
 
 Serwer 2.0.70, klient 2.0.13.
 
-### Boty nadrabiają misje Biologa (Tieru)
+### Boty nadrabiają misje Biologa
 
 Bot z wysokiego poziomu, któremu zostały pierwsze wiersze Biologa (zioła z
 pierwszej wioski), czekał na nie godzinami: wyjazd po zioła ma limit, żeby nie
@@ -2414,7 +2414,7 @@ powtórzyła się sytuacja z 2.0.60, gdy pół świata ruszyło naraz do M1. Ter
 Reguła „żaden wiersz nie jest za niski” i pierwszeństwo próby konia zostają bez
 zmian.
 
-### Koniec krążenia materiałów do magazynu i z powrotem (Tieru)
+### Koniec krążenia materiałów do magazynu i z powrotem
 
 Bot wkładał do magazynu **cały stos** materiału razem z rezerwą, którą trzyma na
 własne ulepszanie, a sekundę później — już z pustą torbą — wyjmował go z
@@ -2425,14 +2425,14 @@ botów), bo baza nie nadążała zapisać, że przedmiot jest już w torbie. Ter
 magazynu idzie tylko nadwyżka ponad rezerwę kowala, a wyjmowanie nie rusza tego,
 co ta sama wizyta włożyła.
 
-### Sklep bota widoczny w panelu (Tieru)
+### Sklep bota widoczny w panelu
 
 W oknie ekwipunku bota, obok magazynu, jest ikona sklepu: otwiera okno z nazwą
 lady, mapą i pozycją oraz listą wystawionych rzeczy z cenami. Wcześniej widać
 było tylko torbę i magazyn, a to, co bot sprzedaje, leży w jego sklepie
 offline. Obok jest też przycisk odświeżania.
 
-### Ekwipunek w panelu bez opóźnienia (Tieru)
+### Ekwipunek w panelu bez opóźnienia
 
 Panel czyta bazę, a rdzeń trzymał zmianę przedmiotu w pamięci nawet siedem
 minut — dlatego zaraz po założeniu tarczy slot potrafił świecić pustką. Teraz
@@ -2449,7 +2449,7 @@ ponownego logowania. Cała zmiana po stronie klienta jest autorstwa ĹŌŞƬĒĶ
 
 Serwer 2.0.69; klient bez zmian (2.0.12).
 
-### Karta Wędkarska od 30 poziomu (Hiob, Tieru)
+### Karta Wędkarska od 30 poziomu (Hiob,)
 
 Wędkę na tym serwerze zakłada się od 30 poziomu i od 30 można łowić, ale sklep
 Rybaka sprzedawał Kartę Wędkarską dopiero od 50 — gracz między 30 a 49 poziomem
@@ -2462,7 +2462,7 @@ misję wprowadzającą Rybaka.
 
 Serwer 2.0.68; klient bez zmian (2.0.12).
 
-### Zioła na ladzie w dużych paczkach, ulepszacze w małych (Tieru, Hiob, uxietoszef)
+### Zioła na ladzie w dużych paczkach, ulepszacze w małych (Hiob, uxietoszef)
 
 Sklep offline bota wystawiał przy każdej wizycie jedną linię — taki stos, jaki
 akurat leżał w komórce torby. Korzenie Gango i Grzyby Tue szły więc po 1–2
@@ -2678,7 +2678,7 @@ gdy wędkarzy było więcej niż stanowisk — stał na piasku do końca limitu
 bezczynności; teraz dzieli z kimś mokre stanowisko, a gdy cały brzeg jest
 suchy, kończy sesję od razu.
 
-### Wojna gildii botów pieszo i od razu na środku (NerrVoVy, Tieru)
+### Wojna gildii botów pieszo i od razu na środku (NerrVoVy,)
 
 Boty odwołują konie na polu bitwy (dotąd bojowy koń zostawał w siodle) i obie
 strony zbierają się na tym samym otwartym gruncie na środku mapy gildyjnej,
@@ -4269,7 +4269,7 @@ magazynie, a przy każdej wizycie scala stosy rozsypane wcześniej. Na naszym
 Bot od 40 poziomu, który ma co najmniej 500 tys. yang, nie biegnie już po
 mikstury, sprzęt co najmniej 10 poziomów poniżej swojego (do +3, bez cennych
 bonusów) ani zioła, jeśli są warte u handlarza mniej niż 40 tys. yang
-(sizowski, próg od Tieru). Materiały do ulepszeń, księgi, zwoje, szkatułki,
+(sizowski). Materiały do ulepszeń, księgi, zwoje, szkatułki,
 kamienie, sprzęt, który mógłby założyć, i yang zbiera jak dotąd, a młode i
 biedne boty zbierają wszystko.
 
@@ -5138,7 +5138,7 @@ godziny, gdy nie ma czego nadrabiać. Żadnej masowej przeceny na raz: to ta sam
 Tylko serwer (ZAINSTALUJ AKTUALIZACJE); klient bez zmian. Domknięcie systemu cen
 Iwakury: rynek reaguje teraz na to, co się sprzedaje, a co zalega.
 
-### Znika „Polowanie” tam, gdzie polowania nie ma (Tieru)
+### Znika „Polowanie” tam, gdzie polowania nie ma
 
 Misja polowania (`levelup.quest`) leży na tej linii silnika w `quest/_unused` —
 żaden hook zabicia nie strzela, więc licznik stoi na zerze dla każdego bota.
@@ -5362,7 +5362,7 @@ Demona celowo bez tej opcji.
 Dwa checkboxy w oknie („Nie zamykaj okna”, „Potwierdzaj Enterem”) to zmiana po
 stronie klienta i **nie ma jej w tej paczce** — wymaga osobnego wydania klienta.
 
-### Launcher: koniec z „port jest już zajęty” (Tieru)
+### Launcher: koniec z „port jest już zajęty”
 
 Przy każdej próbie aktualizacji launcher przerywał budowanie komunikatem
 o zajętym porcie, a wyłączanie Dockera nie pomagało. Trzy przyczyny naraz:
@@ -5485,7 +5485,7 @@ na zawiniątko, opłatę sklepu offline i rezerwę na Teleporter, i czy minęły
 minuty od spawnu — stoją **przed** skanem, rozdzielaniem i marszem. Odmowa
 jest logowana (`PLAYERBOT_SHOP: refused ... reason=cannot_pay`).
 
-### Bot liczy obrażenia na cios i tak wybiera broń (Tieru)
+### Bot liczy obrażenia na cios i tak wybiera broń
 
 „Wprowadź matematyczny algorytm dla bota, który przelicza atak per hit z danej
 broni uwzględniając bonusy i średnie broni”. Wynik broni w wyborze ekwipunku to
@@ -5621,7 +5621,7 @@ dokumentacji o „kohorcie 50 lvl z seeda” — nigdy jej nie było.
 
 ## 2.0.25 — 2026-09-13
 
-Tylko serwer (ZAINSTALUJ AKTUALIZACJE); klient bez zmian. Poprawki do 2.0.24 wg uwag Tieru.
+Tylko serwer (ZAINSTALUJ AKTUALIZACJE); klient bez zmian. Poprawki do 2.0.24 wg uwag graczy.
 
 ### Broń: w PvE liczą się średnie obrażenia, umiejętności zostają do PvP
 
@@ -5657,7 +5657,7 @@ dopiero ulepsza — a przy tym gorsza, ale bardziej ulepszona broń już nie wyg
 ### Łucznicy-ninja ulepszają sztylet do metinów (co najmniej +4)
 
 „Powinni używać ulepszonych sztyletów na co najmniej +4, nie niżej, bo nic z
-tego nie będzie” (Tieru). Łucznik rozbija metiny sztyletem, ale sztylet leży w
+tego nie będzie”. Łucznik rozbija metiny sztyletem, ale sztylet leży w
 plecaku (gdy trzyma łuk), więc nigdy nie liczył się ani jako ulepszenie do
 założenia, ani jako lepszy zapas — i zostawał na +0, którym metina się nie
 rozbije. Teraz wybrany sztylet do metinów jest ulepszany w plecaku jak noszona
@@ -5674,7 +5674,7 @@ pierwotnego zgłoszenia), więc miasto nie jest zalewane.
 
 ### Materiały pod presją plecaka trafiają do magazynu, nie do handlarza
 
-Na prośbę Tieru: gdy w plecaku brakuje miejsca, ulepszacze (materiały) idą teraz
+Na prośbę upstream: gdy w plecaku brakuje miejsca, ulepszacze (materiały) idą teraz
 do magazynu u Dozorcy (M1/M2), a nie do handlarza za grosze. Materiał, którego
 ktoś potrzebuje, dalej trafia na stragan; do magazynu idzie tylko to, czego bot
 nie sprzeda na ladzie.
@@ -6204,8 +6204,7 @@ Tylko serwer (ZAINSTALUJ AKTUALIZACJE); klient bez zmian.
 Konto `admin` ma cztery postacie GM — Admin (wojownik), AdminNinja,
 AdminSura i postać operatora — i dotąd tylko generator `gm_characters.sql`
 je wyposażał: raz, przy tworzeniu, bez umiejętności, bez konia w siodle i
-bez eliksirów; postać założoną ręcznie przed dodaniem generatora (Tieru,
-szamanka na poziomie 1 z wachlarzem +0) omijał w całości, a stosy 50 zwojów
+bez eliksirów; postać założoną ręcznie przed dodaniem generatora (szamanka na poziomie 1 z wachlarzem +0) omijał w całości, a stosy 50 zwojów
 i 50 medali w jednym rekordzie były stosami, których silnik nie utrzymuje
 (proto: 20). Nowy quest `gm_profile` uruchamia się przy każdym logowaniu
 postaci GM z konta `admin` i, gdy wersja profilu postaci jest starsza,
@@ -6233,7 +6232,7 @@ założeń na pół sekundy, a logowanie potrafi je zużyć, więc to, czego
 logowanie nie założyło, ubiera timer kilka sekund później.
 `gm_characters.sql` wpisuje stosy zgodne z proto i nie daje medali konnych.
 Sprawdzone na stosie testowym na wszystkich czterech postaciach (w tym
-Tieru z poziomu 1 i ninja z łukiem w ręku): komplet założony, eliksiry
+szamanka z poziomu 1 i ninja z łukiem w ręku): komplet założony, eliksiry
 włączone przez quest, po dwa–trzy logowania i restart rdzenia z tą samą
 liczbą przedmiotów.
 
@@ -6299,7 +6298,7 @@ sklepy offline (`ikarus_shop_manager.cpp`, plik w paczce).
 ### Panel klasyczny: nazwy, dane i rozmiary przedmiotów z tego świata
 
 „Pomieszane nazwy angielskie/polskie, brak danych przedmiotu, miecz na dwa
-sloty widoczny w jednym” (Tieru). Panel czytał nazwy i rozmiary z plików
+sloty widoczny w jednym”. Panel czytał nazwy i rozmiary z plików
 linii 1.x (`items.json`, `item_names_pl.txt`) i tłumaczył resztę słowo po
 słowie — stąd „Leather Buty”, „Azure Suit”, „Przedmiot #30347”. Na mt2009
 panel czyta teraz `player.item_proto` tego świata (rdzeń db odświeża ją z
@@ -6310,7 +6309,7 @@ Tabela ładuje się przy pierwszym użyciu i odświeża co godzinę.
 ### Panel klasyczny bez hasła na serwerze tylko lokalnym
 
 „Nie wiem, gdzie mam hasło admina — może niech każdy będzie automatycznie
-zalogowany, skoro to singleplayer” (Tieru). Panel ma od dawna tryb bez
+zalogowany, skoro to singleplayer”. Panel ma od dawna tryb bez
 hasła, ale włączał go tylko instalator linii 1.x; paczka 2.x nie ma
 instalatora. Panel dostaje teraz adres, na którym go opublikowano
 (`M2_HOST_BIND_ADDRESS`, w paczce 127.0.0.1): na adresie lokalnym nikt poza
@@ -6321,15 +6320,15 @@ ustawia `M2_PANEL_LOCAL_ONLY=0` w `.env` (nowy klucz, opisany w
 
 ### Teleport do bota z panelu klasycznego
 
-„Nie działa teleportowanie do bota” (Tieru). Przycisk wybierał postać
+„Nie działa teleportowanie do bota”. Przycisk wybierał postać
 gracza po najnowszym `last_play`, a ten zapis powstaje przy zapisie
 postaci, minuty po zalogowaniu — wybierał więc postać, która grała
 poprzednio, kolejkował teleport dla kogoś, kto nie jest w grze, odpowiadał
 „timeout” i zostawiał wiersz w kolejce, żeby teleportować tamtą postać przy
-jej następnym logowaniu. Odtworzone na stosie testowym: w grze Tieru, panel
+jej następnym logowaniu. Odtworzone na stosie testowym: w grze, panel
 kolejkował dla AdminSura. Panel pyta teraz wszystkie postacie graczy z
 ostatniego tygodnia naraz, bierze pierwszą odpowiedź (tylko postać online
-ją da) i wycofuje resztę. Sprawdzone: `WarpSet Tieru … target map 1`,
+ją da) i wycofuje resztę. Sprawdzone: `WarpSet <postać> … target map 1`,
 ponowne logowanie na rdzeniu docelowym w 3 sekundy, kolejka pusta.
 
 ### Paczka logów zbiera też linie skrzyń i walk
@@ -6583,7 +6582,7 @@ suwaka pisze `PLAYERBOT_CONFIG: town rest N%`.
 
 ### Cztery postacie GM także na koncie, na którym już ktoś gra
 
-„Na moim koncie admin nie ma postaci GM, tylko moja Tieru” — skrypt z 2.0.4
+„Na moim koncie admin nie ma postaci GM, tylko moja własna” — skrypt z 2.0.4
 tworzył Admin, AdminNinja, AdminSura i AdminSzaman tylko wtedy, gdy konto
 `admin` nie miało **żadnej** postaci, więc kto założył sobie postać wcześniej,
 nie dostawał ich nigdy. Teraz skrypt dosiewa brakujące klasy do wolnych
@@ -7923,7 +7922,7 @@ trenerów.
 
 - **Yang z zabójstwa trafia prosto do sakiewki każdemu — graczom i botom —
   bez Trzeciej Ręki** (Invisible: „czy da się dodać status trzeciej ręki bez
-  zajmowania slota w eq?”; Tieru: „na większości serwerów tak jest
+  zajmowania slota w eq?”; „na większości serwerów tak jest
   domyślnie”). Łatka silnika 0010 w `CHARACTER::RewardGold` uznaje każdego
   zabójcę za wyposażonego w automatyczne zbieranie; Trzecia Ręka i premium
   nadal są honorowane, ale niepotrzebne. Plik `char_battle.cpp` jedzie w
@@ -7938,7 +7937,7 @@ trenerów.
 
 ### Boty w grze
 
-- **Bot znów zbiera cudzy drop, gdy ma okazję** (decyzja Tieru). Blokada z
+- **Bot znów zbiera cudzy drop, gdy ma okazję** (decyzja zgłaszającego). Blokada z
   1.31.4 („przedmiot bez właściciela podnosi tylko bot, który widział go,
   gdy był jego”) cofnięta: po dziesięciu sekundach drop przestaje mieć
   właściciela i bot bierze go jak każdy gracz, który stoi obok. Reszta
@@ -7962,7 +7961,7 @@ trenerów.
 
 ### Boty w grze
 
-- **NPC z siodła** (Tieru). Bot nie zsiada już z konia przy sklepie, kowalu,
+- **NPC z siodła**. Bot nie zsiada już z konia przy sklepie, kowalu,
   dozorcy, Biologu ani przy portalu — silnik obsługuje jeźdźca przy każdej
   ladzie, odmawia tylko czytania księgi (tu bot zsiada) i stroju. Zsiadanie
   przy każdym NPC i wsiadanie zaraz potem było najbardziej widoczną częścią
@@ -10025,10 +10024,8 @@ i przeskanowana Defenderem przed publikacją.
   nadal bramkuje pięcio-dziesięciominutowy odstęp, a warunek wymaga pieniędzy
   na wyjazd.
 
-  Ustalenie z audytu przekazanego przez Tieru; sprawdzone w kodzie, który
+  Ustalenie z audytu przekazanego przez zgłaszającego; sprawdzone w kodzie, który
   właśnie zmieniałem, a nie w starszej kopii z buildera.
-
-Zgłoszenie: Tieru.
 
 ---
 
@@ -10067,7 +10064,7 @@ Zgłoszenie: Tieru.
   co wygląda jak wersja; przy każdej innej odpowiedzi diagnostyka pokazuje
   dosłowną treść odmowy demona.
 
-Zgłoszenie: Tieru, OskarPWA, BibiSiu.
+Zgłoszenie: OskarPWA, BibiSiu.
 
 ---
 
@@ -10091,8 +10088,6 @@ Zgłoszenie: Tieru, OskarPWA, BibiSiu.
   dziewięć minut do jednego na dwie i pół minuty na całą populację), lecz
   tempo rozwoju umiejętności ogranicza teraz podaż właściwych ksiąg, a nie
   żaden zegar.
-
-Zgłoszenie: Tieru.
 
 ---
 
@@ -10158,7 +10153,7 @@ Zgłoszenie: OskarPWA.
   sekund i ani razu nie ruszył się z miejsca. Przyciąganie celu mieści się teraz
   w promieniu dojścia, a cel naprawdę nieosiągalny trafia w istniejący ratunek.
 
-Zgłoszenie: Tieru, Remigiusz.
+Zgłoszenie: Remigiusz.
 
 ---
 
@@ -10269,8 +10264,6 @@ Zgłoszenie: OskarPWA, ŁOŚTEK, Remigiusz, stylowy26.
   pieszej, wysyłał czwarty cios, którego koń nie ma, i kolejny za wcześnie,
   więc kombo nigdy nie grało do końca.
 
-Zgłoszenie: Tieru.
-
 ---
 
 ## 1.30.4 — 2026-09-07
@@ -10282,8 +10275,6 @@ Zgłoszenie: Tieru.
   broni (nosi ją każda postać, także z łukiem). Reguła usunięta; zostają
   te właściwe: nie kupuj, gdy w plecaku leży co najmniej równie dobry
   zamiennik, i wymagaj 15 % przewagi nad noszonym.
-
-Zgłoszenie: Tieru.
 
 ---
 
@@ -10337,8 +10328,6 @@ Zgłoszenie: OskarPWA.
   PZ, poziom 60, co ok. 4 godziny) idzie tylko lider drużyny co najmniej
   trzyosobowej, a członkowie za nim. Log: `PLAYERBOT_RAID: boss ...
   standing/down` i `heading for boss`.
-
-Zgłoszenie: Tieru.
 
 ---
 
@@ -11766,7 +11755,7 @@ Co z tego wynika w praktyce:
 
 **Zmierzone na uruchomionym serwerze:** trasy nieosiągalne do Doliny Orków **7812 → 0**, w całym ostatnim oknie logu zostały **4 awarie od 2 botów**. Bot obecny na mapie stoi wewnątrz głównego terenu łowieckiego.
 
-**Zamknięte zgłoszenia:** [#5](https://github.com/TieruYT/metin2-playerbots/issues/5) i [#7](https://github.com/TieruYT/metin2-playerbots/issues/7).
+**Zamknięte zgłoszenia:** #5 i #7.
 
 ## 1.23.8 — 2026-09-04
 
@@ -11938,8 +11927,8 @@ Co z tego wynika w praktyce:
 ### Fixed
 
 - **Prywatnego sklepu nie mógł otworzyć nikt w zbroi — także Ty.** `OpenMyShop` zaczynał się od `GetPart(PART_MAIN) > 2`, a silnik trzyma w `PART_MAIN` numer noszonej zbroi, więc warunek odrzucał każdą ubraną postać. Miał chronić przed otwieraniem sklepu w transformacji i teraz pyta o to wprost. Zmiana idzie jako osobna łatka rdzenia.
-- **Bot trzymający cel nie sprawdzał już podróży** ([#10](https://github.com/TieruYT/metin2-playerbots/issues/10)), przez co gęste spoty potrafiły go uwięzić.
-- **Loch Małp nie pytał o mikstury** ([#11](https://github.com/TieruYT/metin2-playerbots/issues/11)) — bot bez mikstur zostawał i ginął w kółko. Zgłoszone razem z poprawką przez `sentydeploy`.
+- **Bot trzymający cel nie sprawdzał już podróży** (#10), przez co gęste spoty potrafiły go uwięzić.
+- **Loch Małp nie pytał o mikstury** (#11) — bot bez mikstur zostawał i ginął w kółko. Zgłoszone razem z poprawką przez `sentydeploy`.
 - **Paczka aktualizacji nie zawierała trzech plików**, bez których przebudowa u gracza kończy się błędem kompilacji: `playerbot_world_rules.h` (zyskał nowe pole), nowy `playerbot_types.h` oraz `prepare-context.sh`, który jako jedyny kopiuje pliki overlaya do budowania.
 
 ---
@@ -11956,7 +11945,7 @@ Co z tego wynika w praktyce:
 
 ### Fixed
 
-- **Boty powyżej 35 poziomu nie mogły wyjść z Joan i biły tam wilki.** Zgłoszone przez `sentydeploy` w [#9](https://github.com/TieruYT/metin2-playerbots/issues/9) razem z pomiarem na 350 botach: **z 276 postaci powyżej 35 poziomu aż 243 tkwiły w Joan**, goniąc Dzikie Psy i Niebieskie Wilki. Bramka wyjścia z miasta sprawdzała tylko przynależność do grupy expiącej w Bokjung, która kończy się na 35 poziomie — więc bot 36+ odbijał się od niej przy każdym takcie i nigdy nie docierał do trasy na nowe mapy. To właśnie te „boty biją psy na 30 poziomie", które wracały na Discordzie. Przechodzi teraz każdy, kto ma dokąd pójść.
+- **Boty powyżej 35 poziomu nie mogły wyjść z Joan i biły tam wilki.** Zgłoszone przez `sentydeploy` w #9 razem z pomiarem na 350 botach: **z 276 postaci powyżej 35 poziomu aż 243 tkwiły w Joan**, goniąc Dzikie Psy i Niebieskie Wilki. Bramka wyjścia z miasta sprawdzała tylko przynależność do grupy expiącej w Bokjung, która kończy się na 35 poziomie — więc bot 36+ odbijał się od niej przy każdym takcie i nigdy nie docierał do trasy na nowe mapy. To właśnie te „boty biją psy na 30 poziomie", które wracały na Discordzie. Przechodzi teraz każdy, kto ma dokąd pójść.
 - **Pętla Joan ↔ Bokjung powyżej sufitu.** Bot, którego Joan wypuściła, docierał do Bokjung, a tam odsyłano go z powrotem, bo nie należał do tamtejszej grupy. Powyżej 35 poziomu nie ma już powodu wracać.
 
 ### Changed
@@ -11969,7 +11958,7 @@ Co z tego wynika w praktyce:
 
 ### Fixed
 
-- **Boty kupowały hełm innej klasy i nie mogły go założyć.** Zgłoszone przez `sentydeploy` w [#8](https://github.com/TieruYT/metin2-playerbots/issues/8) — bardzo dobra diagnoza. Rodziny hełmów dzieli 140 numerów, a pętla wyboru sięgała dokładnie `baza + 140`, czyli startowego hełmu sąsiedniej klasy. Ponieważ wygrywało „ostatnie trafienie", a startowy hełm wymaga 0 poziomu, zawsze nadpisywał poprawny wybór. Wojownik kupował hełm Ninji, Sura hełm Szamana — i gra odmawiała założenia. Widać to było w danych: Szaman, którego rodzina jest ostatnia w łańcuchu, miał hełm w 100% przypadków, pozostałe klasy poniżej 50%. Wybór idzie teraz według **najwyższego wymaganego poziomu**, więc przedmiot startowy obcej klasy nigdy nie przebije właściwego. Ta sama poprawka objęła wszystkie pięć list progresji (broń, zbroja, tarcza, hełm, buty).
+- **Boty kupowały hełm innej klasy i nie mogły go założyć.** Zgłoszone przez `sentydeploy` w #8 — bardzo dobra diagnoza. Rodziny hełmów dzieli 140 numerów, a pętla wyboru sięgała dokładnie `baza + 140`, czyli startowego hełmu sąsiedniej klasy. Ponieważ wygrywało „ostatnie trafienie", a startowy hełm wymaga 0 poziomu, zawsze nadpisywał poprawny wybór. Wojownik kupował hełm Ninji, Sura hełm Szamana — i gra odmawiała założenia. Widać to było w danych: Szaman, którego rodzina jest ostatnia w łańcuchu, miał hełm w 100% przypadków, pozostałe klasy poniżej 50%. Wybór idzie teraz według **najwyższego wymaganego poziomu**, więc przedmiot startowy obcej klasy nigdy nie przebije właściwego. Ta sama poprawka objęła wszystkie pięć list progresji (broń, zbroja, tarcza, hełm, buty).
 
 - **Przerwana aktualizacja nie zostawia już serwera w martwym punkcie.** Gdy Docker nie dokończył budowania, nowe pliki (w tym `VERSION`) były już na dysku, więc launcher mówił „masz najnowszą wersję" i nigdy nie ponawiał budowania — a „GRAJ" startowało stare obrazy. **Właśnie dlatego część graczy nie widziała nowych map na stronie mimo aktualizacji.** Launcher zapisuje teraz znacznik nieukończonej przebudowy: dopóki istnieje, wersja liczy się jako nieznana, a kliknięcie **GRAJ** samo dokańcza budowanie. Nic nie trzeba robić ręcznie.
 
@@ -12123,7 +12112,7 @@ Co z tego wynika w praktyce:
 
 ### Changed
 
-- **The project is now installable independently of the retired upstream repository.** Installer, updater, panel metadata, and image labels point at `TieruYT/metin2-playerbots`.
+- **The project is now installable independently of the retired upstream repository.** Installer, updater, panel metadata, and image labels point at the project's own repository.
 - **Native-client-only installation.** The withdrawn upstream WebClient is not fetched, published, or started. Legacy WebClient flags remain accepted only so old saved commands do not fail.
 - **Bring your own files (BYOF).** No third-party r40250 server/client mirror is built in. Supply a local server archive/reference directory and, optionally, a native client archive you are authorised to use. Windows adds `-ClientArchive` and `-NoClient`.
 - Added an explicit provenance and attribution document, retained upstream Git history, and clarified the licensing boundary for all game files.

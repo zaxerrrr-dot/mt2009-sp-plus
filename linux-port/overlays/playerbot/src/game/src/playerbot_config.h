@@ -153,7 +153,7 @@ namespace
 	// that can burn and for a prize piece). Seven puts a scroll on the steps to
 	// +7, +8 and +9 only, and every step under that goes to the plain anvil the
 	// way a bot with no scroll refines - asked for as one setting for the whole
-	// world ("tylko mozna np uzywac na +7 +8 +9", Tieru).
+	// world ("tylko mozna np uzywac na +7 +8 +9",).
 	int s_iPlayerBotScrollFromPlus = 1;
 	// MT2009_PLUS_BOT_STONE4_MARKET_V1 (the owner, 19 October): the soul
 	// stones +4 a bot keeps, puts on a counter, stores or sells to the merchant
@@ -2174,7 +2174,7 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	// planner's goal is the status line's word: the blacksmith, the books and
 	// the two missions each start from a need of their own, so those sliders
 	// changed what a bot said over its head and nothing it did (the audit of
-	// 28 September; "sprawdz wszystkie suwaki na www", Tieru). Under neutral
+	// 28 September; "sprawdz wszystkie suwaki na www",). Under neutral
 	// they now close the errand for a share of the bots, half an hour at a
 	// time: at 50 a bot takes it in half its windows. The threshold is read at
 	// every ask, so a change in the panel is felt at once; only the draw

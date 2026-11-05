@@ -36,7 +36,7 @@ Nakładka: `linux-port/overlays/playerbot/src/game/src/mt2009_language.{h,cpp}`.
 * `build_server_lang.py` – generuje `10_quest_stock.tsv` (questy paczki: `gameforge.*`, `translate.*`, `locale.*`),
   `20_server_locale.tsv` (LC_TEXT), `item_names.tsv`, `mob_names.tsv`, `language.cfg`. Źródła: oficjalne teksty GF z
   klienta Owsapa (`locale_quest.txt` / `locale_string.txt` po id, dopasowane po polskim tekście albo po angielskim),
-  angielski i turecki Tieru (podpis polskiego sprawdzany), niemiecki pakietu Vegas (tylko dane), nazwy z Dump Proto
+  angielski i turecki z wydania bazowego (podpis polskiego sprawdzany), niemiecki pakietu Vegas (tylko dane), nazwy z Dump Proto
   Owsapa (tylko gdy oficjalna polska nazwa vnuma = nasza). Tylko z tymi samymi konwersjami printf; nigdy z
   „Metin2/Gameforge”.
 * `extract_server_texts.py` – nasze teksty: `data/quest_custom_pl.tsv` (questy i biblioteki), `data/quest_templates_pl.tsv`

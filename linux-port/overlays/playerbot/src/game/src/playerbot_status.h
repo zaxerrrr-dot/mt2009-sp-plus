@@ -415,7 +415,7 @@ namespace
 	// level, so a bot of eighty in Orc Valley with ten teeth handed in is
 	// after Jinunggyi's stone - and read "Zbieram dla Biologa: Zab Orka" there
 	// (prodnathin, 27 September: "musze zrobic chmurke nad postacia ze akurat
-	// to robia", Tieru).
+	// to robia",).
 	const char* GetPlayerBotBiologistStatusItem(LPCHARACTER ch, const TPlayerBotBiologistMission* mission,
 			size_t missionIndex, bool en, char* link, size_t linkSize, bool* outKey)
 	{

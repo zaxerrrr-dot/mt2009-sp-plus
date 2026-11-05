@@ -18,7 +18,7 @@ Ten katalog przechowuje klientową część zmiany rozwijanej na gałęzi
   przejściu z wyboru postaci do gry.
 
 Serwerowa część Auto Łowów (`/autohunt_target`, `/autohunt_loot`) jest już
-w plikach silnika paczki serwera – to Auto Łowy 2.0 Tieru, które obsługują też
+w plikach silnika paczki serwera – to Auto Łowy 2.0 z wydania bazowego, które obsługują też
 to okno. Usunięcie 85101 z puli Metinów/bossów i 85104 z puli szkatułek robi
 `tools/port/Apply-MT2009PlusEngine.ps1` przy wydaniu serwera; załatane pliki
 silnika przychodzą w paczce.

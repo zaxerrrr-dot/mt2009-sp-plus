@@ -223,7 +223,7 @@ def split_refine(name):
 
 # never in a translation (the owner's rule for player-facing text in any language); the project's own domain metin2sp.pl
 # is not the game's name. A Polish source with one of them gets a translation without it (or none).
-FORBIDDEN = re.compile(r'metin\w{0,3}\s*2(?![0-9]|sp)|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|\bresm[iî]\b|tieru|'
+FORBIDDEN = re.compile(r'metin\w{0,3}\s*2(?![0-9]|sp)|gameforge|oficjaln|official|offiziell|ufficial|oficial|officiel|\bresm[iî]\b|t[i]eru|'
                        r'ameria|metin2alerts|επίσημ|رسمي', re.I)
 
 # ---------------------------------------------------------------- translation store

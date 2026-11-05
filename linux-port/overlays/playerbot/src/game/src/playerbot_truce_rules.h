@@ -12,7 +12,7 @@
 // "defending itself" round him). A truce is the way out, by two roads: a
 // whisper to any bot - "poddaje sie", the operator's promise on the Discord
 // the same minute - and the person's second death in a quarter of an hour
-// while bots fought them (Tieru: "jak gracz padnie z 2/3 razy"). During it no
+// while bots fought them ("jak gracz padnie z 2/3 razy"). During it no
 // bot takes the person on for any of the protocol's reasons, and only a blow
 // aimed at a bot ends it: one at the person's selected target, not the graze
 // of an area skill cast at something else.

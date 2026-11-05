@@ -65,8 +65,7 @@ const DWORD PLAYER_COOLDOWN_MS = 2000;
 std::unordered_map<DWORD, DWORD> s_mapLastPlayerArrange;
 
 // The order of the bag, category first. Potions lead - "wszelakie potki
-// pierwsze a potem reszte" was the operator's rule for the bots' bags (Tieru,
-// 15 September), and a player reaches for them most - then what is worn, the
+// pierwsze a potem reszte" was the operator's rule for the bots' bags (// 15 September), and a player reaches for them most - then what is worn, the
 // books, what improves gear, chests and keys, the other usable things, what
 // fishing and gathering need, quest items, and the rest.
 enum ECategory {
@@ -762,7 +761,7 @@ static TResult ArrangeInventoryImpl(LPCHARACTER ch, bool fromPlayer, bool mergeO
 }
 
 // ---------------------------------------------------------------------------
-// The safebox (blasty's proposal of 19 September, Tieru's yes the same
+// The safebox (blasty's proposal of 19 September, the upstream yes the same
 // minute): its own "Scal i uporzadkuj", and a stack moved by count across the
 // safebox and the bag or inside the safebox. The client has no safebox packet
 // that carries a count - SafeboxCheckin, SafeboxCheckout and SafeboxItemMove
