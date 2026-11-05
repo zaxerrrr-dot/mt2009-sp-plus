@@ -1,2 +1,297 @@
 # MT2009_PLUS_LANGUAGE_V1 - the engine's LC_TEXT lines the official sources lack in this language (by hand)
 # Polish<TAB>ro (by hand; UTF-8). tools/i18n/extract_server_texts.py --check ro lists what is missing.
+%d dni %d godzin	%d zile %d ore
+%d dni %d godzin i %d minut	%d zile %d ore şi %d minute
+%d godzin i %d minut	%d ore şi %d minute
+%d minut	%d minute
+%d sekund do wyjścia z mapy.	%d secunde până la ieşirea de pe hartă.
+%d sekund do zmiany kanału.	%d secunde până la schimbarea canalului.
+%s jest blisko Ciebie.	%s e aproape de tine.
+%s jest połączony na kanale %d. (bieżący kanał: %d)	%s e conectat pe canalul %d. (canalul curent: %d)
+%s rzucił %d. (%d-%d)	%s a dat %d. (%d-%d)
+%s rzucił kostką i uzyskał %d. (%d-%d)	%s a aruncat zarul şi a obţinut %d. (%d-%d)
+30 minut minęło. Ogniska zgasły.	Au trecut 30 de minute. Focurile de tabără s-au stins.
+<Gildia> Wskazany gracz jest zajęty.	<Breaslă> Jucătorul indicat e ocupat.
+<Grupa> Grupa nie może przyjmować innych kiedy członkowe są w lochu.	<Grup> Grupul nu poate primi alţi membri cât timp membrii sunt în temniţă.
+<Grupa> Lider grupy jest w lochu.	<Grup> Liderul grupului e în temniţă.
+[1106-??]No puedes unir esto.	[1106-??]Nu poţi uni asta.
+[Gildia] Gildia jest w trakcie wojny.	[Breaslă] Breasla e în război.
+[Gildia] Gildia osiągnęła limit zaproszeń.	[Breaslă] Breasla a atins limita de invitaţii.
+[Gildia] Gildia osiągnęła maksymalny poziom.	[Breaslă] Breasla a atins nivelul maxim.
+[Gildia] Naładowano %d Energii Ducha Smoka.	[Breaslă] S-au încărcat %d Energie a Spiritului Dragonului.
+[Gildia] Nie możesz usunąć członka gildii w trakcie wojny.	[Breaslă] Nu poţi elimina un membru al breslei în timpul războiului.
+[Gildia] Nie możesz użyć umiejętności gildyjnych poza areną.	[Breaslă] Nu poţi folosi abilităţile breslei în afara arenei.
+[Gildia] Nowi członkowie są obecnie ograniczeni.	[Breaslă] Noii membri sunt momentan restricţionaţi.
+[Gildia] W trakcie wojny gildii nie możesz usunąć członka gildii.	[Breaslă] În timpul unui război de breaslă nu poţi elimina un membru al breslei.
+[Gildia] Zaproszona osoba jest w tym momencie zajęta.	[Breaslă] Persoana invitată e ocupată în acest moment.
+[Grupa] Drużyny nie można rozwiązać, ponieważ w lochu znajdują się członkowie drużyny.	[Grup] Grupul nu poate fi desfiinţat, pentru că în temniţă se află membri ai grupului.
+[Magazyn] Nie możesz przenosić przedmiotów w magazynie.	[Depozit] Nu poţi muta obiecte în depozit.
+Aby otworzyć sklep potrzebujesz Tobół.	Ca să deschizi un magazin ai nevoie de un Mănunchi.
+Aby zakupić ten przedmiot, postać musi posiadać przynajmniej %u poziom.	Ca să cumperi acest obiect, personajul trebuie să aibă cel puţin nivelul %u.
+Atakują nas morskie potwory! Do broni!	Ne atacă monştrii marini! La arme!
+Bonus na ulepszenie może być użyty na przedmiot do max. %d poziomu.	Bonusul de îmbunătăţire poate fi folosit pe un obiect de cel mult nivelul %d.
+Bonus na ulepszenie może być użyty na przedmiot o max. stopniu ulepszenia +%d.	Bonusul de îmbunătăţire poate fi folosit pe un obiect îmbunătăţit cel mult la +%d.
+Bonus na ulepszenie może być użyty tylko na biżuterię.	Bonusul de îmbunătăţire poate fi folosit doar pe bijuterii.
+Bonus na ulepszenie może być użyty tylko na bronie.	Bonusul de îmbunătăţire poate fi folosit doar pe arme.
+Bonus na ulepszenie może być użyty tylko na zbroje, hełmy i tarcze.	Bonusul de îmbunătăţire poate fi folosit doar pe armuri, coifuri şi scuturi.
+Brak danych. Skontaktuj się z administratorem.	Lipsesc date. Contactează un administrator.
+Brak kamienia do wyjęcia.	Nu există nicio piatră de scos.
+Brak miejsca w ekwipunku.	Nu e loc în inventar.
+Brak podatków. Bieżący kapitał: %u Potrzebny kapitał: %u	Taxe insuficiente. Capital curent: %u Capital necesar: %u
+Bład przedmiotu przy próbie otwarcia sklepu.	Eroare de obiect la deschiderea magazinului.
+Cena przedmiotu zmieniła się.	Preţul obiectului s-a schimbat.
+Cena przedmiotu została zmieniona.	Preţul obiectului a fost modificat.
+Coś nadziało się na haczyk, ale nie widzisz, co to jest.	Ceva a muşcat din cârlig, dar nu vezi ce este.
+Czerwony Las skrywa wiele sekretów, o których nie wiedzieliście.	Pădurea Roşie ascunde multe secrete pe care nu le ştiaţi.
+Detektor został uruchomiony, ale nie wykryto żadnych kamieni duszy.	Detectorul a fost pornit, dar nu s-a găsit nicio piatră a spiritului.
+Efekty VIP nie łączą się z Subskrypcją Premium. Nie możesz dokonać zakupu.	Efectele VIP nu se cumulează cu Abonamentul Premium. Nu poţi face achiziţia.
+Eliksir jest pusty. Napełnij go u Alchemika.	Elixirul e gol. Umple-l la Alchimist.
+Emocje są dostepne tylko dla Subskrybentów Premium.	Emoţiile sunt disponibile doar pentru abonaţii Premium.
+Fala %d: brońcie masztu i pokonajcie Hydrę.	Valul %d: apăraţi catargul şi învingeţi Hidra.
+Fala %d: brońcie masztu przez %d sek.	Valul %d: apăraţi catargul timp de %d sec.
+Funkcja tymczasowo niedostępna.	Funcţie temporar indisponibilă.
+Gildia jest na maksymalnym poziomie, jednak przyjmie Twój podarunek.	Breasla e la nivelul maxim, dar îţi va primi darul.
+Gracz %s został dodany do listy zablokowanych.	Jucătorul %s a fost adăugat pe lista de blocaţi.
+Gracz %s został usunięty z listy zablokowanych.	Jucătorul %s a fost scos de pe lista de blocaţi.
+Ja ci pokazać, że mi nie przeszkadzać!	Eu arătat ţie să nu mă deranja!
+Jajo Hydry pękło - potwory idą na dno!	Oul Hidrei s-a spart - monştrii se scufundă!
+Jeden z przedmiotów posiada niedozwoloną cenę (%s).	Unul din obiecte are un preţ nepermis (%s).
+Jeden z przedmiotów znajduje się na niedozwolonej pozycji.	Unul din obiecte se află pe o poziţie nepermisă.
+Jeden z uczestników wesela jest zajęty lub niedawno zakończył handel.	Unul din participanţii la nuntă e ocupat sau a terminat de curând un negoţ.
+Jesteś już przyjacielem gracza %s.	Eşti deja prieten cu jucătorul %s.
+Jesteś za daleko od Kowala.	Eşti prea departe de Fierar.
+Jeżeli nie zgadzasz się z niniejszymi warunkami	Dacă nu eşti de acord cu aceste condiţii
+Kamienie Duszy +3 nie mogą być ulepszone tym przedmiotem.	Pietrele Spiritului +3 nu pot fi îmbunătăţite cu acest obiect.
+Kamień Duszy nie może być ulepszony tym przedmiotem.	Piatra Spiritului nu poate fi îmbunătăţită cu acest obiect.
+Kilof może zostać ulepszony tylko u Deokbae.	Târnăcopul poate fi îmbunătăţit doar la Deokbae.
+Ktoś zakupił %dx %s z Twojego sklepiku za %d Yang.	Cineva a cumpărat %dx %s din magazinul tău pentru %d Yang.
+Masz za mało Animosfer.	Ai prea puţine Animosfere.
+Maszt naprawiony: %d%% PŻ.	Catarg reparat: %d%% PV.
+Maszt ocalał. Przygotujcie się na następną falę!	Catargul a rezistat. Pregătiţi-vă pentru următorul val!
+Maszt: zostało %d%% PŻ!	Catarg: au rămas %d%% PV!
+Możesz używać Białej Flagi co %d minut.	Poţi folosi Steagul Alb o dată la %d minute.
+Możesz użyć tej umiejętności tylko w swoim Królestwie.	Poţi folosi această abilitate doar în Regatul tău.
+Możesz wyrzucić przedmioty co %d sekund.	Poţi arunca obiecte o dată la %d secunde.
+Możesz wyrzucić Yang co 10 sekund.	Poţi arunca Yang o dată la 10 secunde.
+Możesz łowić tylko w M1.	Poţi pescui doar în M1.
+Możliwość pisania została zablokowana przez siły wyższe!	Posibilitatea de a scrie a fost blocată de forţe superioare!
+Musisz być na %d poziomie, aby zrozumieć tą Księgę.	Trebuie să ai nivelul %d ca să înţelegi această Carte.
+Musisz mieć co najmniej %d poziom aby kupić ten przedmiot.	Trebuie să ai cel puţin nivelul %d ca să cumperi acest obiect.
+Musisz nosić suknie ślubną, aby założyć bukiet.	Trebuie să porţi rochie de mireasă ca să echipezi buchetul.
+Musisz odczekać %d min. przed ponownym użyciem tej opcji.	Trebuie să aştepţi %d min. înainte să foloseşti din nou această opţiune.
+Musisz odczekać chwilę po walce przed użyciem tej opcji.	Trebuie să aştepţi puţin după luptă înainte să foloseşti această opţiune.
+Musisz odczekać kilka sekund zanim wyjdziesz z mapy.	Trebuie să aştepţi câteva secunde înainte să ieşi de pe hartă.
+Musisz odczekać kilka sekund zanim zmienisz kanał.	Trebuie să aştepţi câteva secunde înainte să schimbi canalul.
+Musisz posiadać cel.	Ai nevoie de o ţintă.
+Musisz stać obok sklepu.	Trebuie să stai lângă magazin.
+Musisz zaczekać %d min. przed ponownym użyciem.	Trebuie să aştepţi %d min. înainte de a-l folosi din nou.
+Musisz zaczekać %d sek. przed ponownym użyciem.	Trebuie să aştepţi %d sec. înainte de a-l folosi din nou.
+Musisz zdjąć bukiet.	Trebuie să scoţi buchetul.
+Musisz znajdować się na tej samej mapie co sklep.	Trebuie să fii pe aceeaşi hartă cu magazinul.
+Musisz znajdować się na tym samym kanale co sklep.	Trebuie să fii pe acelaşi canal cu magazinul.
+Na tej mapie mogą odbywać się wymuszone bitwy.	Pe această hartă pot avea loc lupte forţate.
+Na tym kanale jest za dużo sklepów. Aby ominać darmowy limit wymagany jest sklep premium.	Pe acest canal sunt prea multe magazine. Ca să treci de limita gratuită e nevoie de un magazin premium.
+Na tym kanale osiągnięto maksymalny limit sklepów offline. Nie możesz otworzyć sklepu.	Pe acest canal s-a atins limita maximă de magazine offline. Nu poţi deschide un magazin.
+Następna fala za %d sek.	Următorul val peste %d sec.
+Naładowany na %d sekund.	Încărcat pentru %d secunde.
+Nie jesteś zablokowany.	Nu eşti blocat.
+Nie ma kogo ożywić.	Nu are cine să fie reînviat.
+Nie masz miejsca w ekwipunku. Przedmiot nadano do magazynu ItemShop.	Nu ai loc în inventar. Obiectul a fost trimis în depozitul ItemShop.
+Nie masz sklepu na tej mapie.	Nu ai magazin pe această hartă.
+Nie masz sklepu na tym kanale. (Znaleziono na kanale %d).	Nu ai magazin pe acest canal. (Găsit pe canalul %d).
+Nie możesz czytać ksiąg będąć przemieniony.	Nu poţi citi cărţi cât eşti transformat.
+Nie możesz dalej rozwijać tej umiejętności. Użyj Zwoju Powrotu Um. lub Księgi Zapomnienia.	Nu mai poţi dezvolta această abilitate. Foloseşte Pergam. Reset Abilitate sau Cartea Uitării.
+Nie możesz dodać więcej bonusów.	Nu mai poţi adăuga bonusuri.
+Nie możesz jeździć konno podczas łowienia.	Nu poţi călări în timp ce pescuieşti.
+Nie możesz jeździć konno, gdy jesteś powalony.	Nu poţi călări cât eşti doborât.
+Nie możesz jeździć nosząc przedmiot.	Nu poţi călări în timp ce cari un obiect.
+Nie możesz kontynuować kiedy inne okno jest aktywne.	Nu poţi continua cât timp altă fereastră e activă.
+Nie możesz kontynuować, ponieważ Yang przekroczą dozwolony limit 2 miliardów.	Nu poţi continua, pentru că Yang-ul ar depăşi limita permisă de 2 miliarde.
+Nie możesz kupować od samego siebie.	Nu poţi cumpăra de la tine însuţi.
+Nie możesz mieć więcej niż %d przyjaciół.	Nu poţi avea mai mult de %d prieteni.
+Nie możesz nosić Smokingu na koniu.	Nu poţi purta Smoching pe cal.
+Nie możesz nosić tego przedmiotu konno.	Nu poţi purta acest obiect călare.
+Nie możesz otworzyć pustego sklepu.	Nu poţi deschide un magazin gol.
+Nie możesz otworzyć sklepu offline w tym miejscu.	Nu poţi deschide un magazin offline în acest loc.
+Nie możesz otworzyć sklepu w tym miejscu.	Nu poţi deschide un magazin în acest loc.
+Nie możesz otworzyć tego sklepu. Odbierz wszystkie przedmioty.	Nu poţi deschide acest magazin. Ridică toate obiectele.
+Nie możesz otworzyć tutaj sklepu. Jesteś zbyt blisko innego sklepu.	Nu poţi deschide un magazin aici. Eşti prea aproape de alt magazin.
+Nie możesz otworzyć więcej sklepów.	Nu mai poţi deschide alte magazine.
+Nie możesz ożywić kogoś, kto żyje.	Nu poţi reînvia pe cineva care e viu.
+Nie możesz podności przedmiotów jeżeli jesteś w oknie misji.	Nu poţi ridica obiecte cât eşti în fereastra de misiune.
+Nie możesz przenieść się do tego obszaru.	Nu te poţi muta în această zonă.
+Nie możesz przenieść się do tej osoby.	Nu te poţi muta la această persoană.
+Nie możesz przywołać do tego obszaru.	Nu poţi chema în această zonă.
+Nie możesz przywołać konia w tym miejscu.	Nu poţi chema calul în acest loc.
+Nie możesz się teraz teleportować.	Nu te poţi teleporta acum.
+Nie możesz sprintować będąc spowolnionym.	Nu poţi alerga cât eşti încetinit.
+Nie możesz sprintować nosząc przedmiot.	Nu poţi alerga în timp ce cari un obiect.
+Nie możesz sprzedawać noszonych przedmiotów.	Nu poţi vinde obiectele purtate.
+Nie możesz sprzedawać zablokowanych przedmiotów.	Nu poţi vinde obiecte blocate.
+Nie możesz sprzedać przedmiotów, które nosisz.	Nu poţi vinde obiectele pe care le porţi.
+Nie możesz sprzedać założonego przedmiotu.	Nu poţi vinde un obiect echipat.
+Nie możesz tego teraz użyć.	Nu poţi folosi asta acum.
+Nie możesz tego użyć, gdy masz otwarte okno.	Nu poţi folosi asta cât ai o fereastră deschisă.
+Nie możesz tego zrobić na kanale specjalnym.	Nu poţi face asta pe canalul special.
+Nie możesz teleportować się nosząc przedmiot.	Nu te poţi teleporta în timp ce cari un obiect.
+Nie możesz teraz nadać efektu, zaczekaj chwilę.	Nu poţi aplica efectul acum, aşteaptă puţin.
+Nie możesz teraz podnosić przedmiotów.	Nu poţi ridica obiecte acum.
+Nie możesz teraz wykonać tej operacji.	Nu poţi efectua această operaţie acum.
+Nie możesz teraz zejść z wierzchowca.	Nu poţi coborî acum de pe animalul de călărie.
+Nie możesz tutaj otworzyć depozytu.	Nu poţi deschide depozitul aici.
+Nie możesz uczyć się będąc przemienionym.	Nu poţi învăţa cât eşti transformat.
+Nie możesz ulepszyć tego przedmiotu.	Nu poţi îmbunătăţi acest obiect.
+Nie możesz użyć tego na wojnie.	Nu poţi folosi asta în război.
+Nie możesz użyć tego przedmiotu kiedy okno misji jest aktywne.	Nu poţi folosi acest obiect cât fereastra de misiune e activă.
+Nie możesz użyć tego przedmiotu konno.	Nu poţi folosi acest obiect călare.
+Nie możesz wyjąć umieszczonego kamienia.	Nu poţi scoate piatra încastrată.
+Nie możesz wykonać tej akcji będąc martwy.	Nu poţi face această acţiune cât eşti mort.
+Nie możesz włożyć przedmiotów z juków konnych do zwykłego sklepu.	Nu poţi pune obiecte din desagii calului într-un magazin obişnuit.
+Nie możesz zablokować więcej niż %d osób.	Nu poţi bloca mai mult de %d persoane.
+Nie możesz zapisać pozycji w tym miejscu.	Nu poţi salva poziţia în acest loc.
+Nie możesz zapisać pozycji wrogiego Królestwa.	Nu poţi salva o poziţie din Regatul inamic.
+Nie możesz zaprosić do przyjaciół zablokowanej osoby.	Nu poţi adăuga la prieteni o persoană blocată.
+Nie możesz zmienić bonusów.	Nu poţi schimba bonusurile.
+Nie możesz zmienić trybu PvP na wojnie.	Nu poţi schimba modul PvP în război.
+Nie można użyć na innym graczu.	Nu poate fi folosit pe alt jucător.
+Nie można ładować.	Nu se poate încărca.
+Nie posiadasz otwartego sklepu.	Nu ai un magazin deschis.
+Nie posiadasz sklepu premium.	Nu ai magazin premium.
+Nie posiadasz sklepu.	Nu ai magazin.
+Nie posiadasz wymaganych przedmiotów do zakupu.	Nu ai obiectele necesare pentru cumpărare.
+Nie posiadasz wystarczająco dużo reputacji.	Nu ai destulă reputaţie.
+Nie spełniasz wymagań do otwarcia własnego sklepu.	Nu îndeplineşti cerinţele pentru a-ţi deschide propriul magazin.
+Nie udało się wytworzyć.	Crearea a eşuat.
+Nie upuściłeś żadnego przedmiotu, ponieważ jesteś chroniony przez Boga Smoków.	Nu ai pierdut niciun obiect, pentru că eşti protejat de Zeul Dragon.
+Nie znaleziono gracza o podanej nazwie.	Nu s-a găsit niciun jucător cu acest nume.
+Niedostępne.	Indisponibil.
+Niektóre przedmioty w sklepie na siebie nachodzą.	Unele obiecte din magazin se suprapun.
+Niektóre przedmioty w sklepie położone są w zablokowanym miejscu.	Unele obiecte din magazin sunt pe un loc blocat.
+Niewystarczająca ilość Smoczych Monet.	Nu ai destule Monede Dragon.
+Niewystarczająca ilość Smoczych Znaków.	Nu ai destule Mărci Dragon.
+Nikt nie wypłynął - statek zostaje w porcie.	Nimeni n-a plecat pe mare - nava rămâne în port.
+Nożyk Zielarza może zostać ulepszony tylko u Zielarza.	Cuţitul Ierbarului poate fi îmbunătăţit doar la Ierbar.
+Odbiorca nie może otrzymać zaproszenia do znajomych.	Destinatarul nu poate primi cereri de prietenie.
+Odczekaj chwilę po zakończeniu handlu.	Aşteaptă puţin după terminarea negoţului.
+Odczekaj jeszcze %s przed kolejnym szkoleniem.	Mai aşteaptă %s înainte de următorul antrenament.
+Odczekaj jeszcze %s przed zakupem.	Mai aşteaptă %s înainte de cumpărare.
+Odczekaj przed następnym ulepszeniem.	Aşteaptă înainte de următoarea îmbunătăţire.
+Oferta sklepu zmieniła się.	Oferta magazinului s-a schimbat.
+Okno zarządzania sklepem musi być otwarte.	Fereastra de administrare a magazinului trebuie să fie deschisă.
+Osiągnięto limit zakupu tego przedmiotu.	S-a atins limita de cumpărare pentru acest obiect.
+Osiągnięto maksymalną ilość zakupów tego przedmiotu na tym koncie.	S-a atins numărul maxim de cumpărări ale acestui obiect pe acest cont.
+Osoba, którą próbujesz ożywić, nie jest człowiekiem.	Persoana pe care încerci s-o reînvii nu e om.
+Otrzymałeś %d reputacji (Królewska Gwardia)	Ai primit %d reputaţie (Garda Regală)
+Otrzymałeś %d reputacji (Synowie Pustyni)	Ai primit %d reputaţie (Fiii Deşertului)
+Otrzymałeś %s (Juki Konne)	Ai primit %s (Desagii calului)
+Otrzymałeś %s (szt. %d)	Ai primit %s (buc. %d)
+Otrzymałeś %s (szt. %d) (Juki Konne)	Ai primit %s (buc. %d) (Desagii calului)
+OX-Question: 	Întrebare OX: 
+Pamiętaj, że na tej mapie nie da się wystawić sklepu offline.	Ţine minte că pe această hartă nu se poate deschide un magazin offline.
+Podana kwota jest większa niż zarobione Yang.	Suma indicată e mai mare decât Yang-ul câştigat.
+Podana kwota jest za mała.	Suma indicată e prea mică.
+Podana osoba jest na liście Twoich przyjaciół.	Persoana indicată e pe lista ta de prieteni.
+Podatek od sprzedaży: %d%% (%lld Yang).	Taxă pe vânzare: %d%% (%lld Yang).
+Pojawiło się Jajo Hydry! Rozbij je, a potwory pójdą na dno.	A apărut un Ou al Hidrei! Sparge-l şi monştrii se vor scufunda.
+Pomimo treningu nie czujesz się zmęczony.	În ciuda antrenamentului nu te simţi obosit.
+Pomyślnie dodano bonus.	Bonus adăugat cu succes.
+Pomyślnie wypłacono Yang z depozytu sklepu.	Yang-ul a fost retras cu succes din depozitul magazinului.
+Posiadasz otwarty sklep lub depozyt sklepu zawiera przedmioty.	Ai un magazin deschis sau depozitul magazinului conţine obiecte.
+Pospieszcie się, macie %d min., by przejść przez portal.	Grăbiţi-vă, aveţi %d min. ca să treceţi prin portal.
+Potomstwo Hydry trafiło maszt laserem!	Progenitura Hidrei a lovit catargul cu un laser!
+Potrzebujesz %lld Yang by otworzyć taki rodzaj sklepu	Ai nevoie de %lld Yang ca să deschizi acest tip de magazin
+Potrzebujesz miejsca na minimum 3 slotowy przedmiot, aby otworzyć skrzynie.	Ai nevoie de loc pentru un obiect de minim 3 sloturi ca să deschizi cufărul.
+Pozostały czas %d sekund.	Timp rămas %d secunde.
+Pozostały czas: %.1f sek.	Timp rămas: %.1f sec.
+Pozostały czas: %.2f sek.	Timp rămas: %.2f sec.
+Pozycja sklepu została oznaczona strzałką.	Poziţia magazinului a fost marcată cu o săgeată.
+Prosimy o powrót do pierwotnej lokalizacji.	Te rugăm să te întorci în locaţia iniţială.
+Prośba o wezwanie została wysłana.	Cererea de chemare a fost trimisă.
+Przechwyciłeś laser Potomstwa Hydry.	Ai interceptat laserul Progeniturii Hidrei.
+Przedmiot może być użyty tylko na bronie i zbroje do 40 poziomu.	Obiectul poate fi folosit doar pe arme şi armuri până la nivelul 40.
+Przedmiot nie może być użyty na akcesoriach.	Obiectul nu poate fi folosit pe accesorii.
+Przedmiot nie posiada Kamienia Duszy do wyjęcia.	Obiectul nu are nicio Piatră a Spiritului de scos.
+Przedmiot zniknie za %d minut.	Obiectul va dispărea peste %d minute.
+Przedmiot został dodany do twojego ekwipunku	Obiectul a fost adăugat în inventarul tău
+Przedmioty zostały dodane do twojego ekwipunku	Obiectele au fost adăugate în inventarul tău
+Przedmioty zostały pomyśnie zaktualizowane.	Obiectele au fost actualizate cu succes.
+Przedmiotów, których używasz, nie można sprzedać w Twoim sklepie osobistym.	Obiectele pe care le foloseşti nu pot fi vândute în magazinul tău personal.
+Przeloguj się, aby efekt VIP został poprawnie nadany.	Reconectează-te ca efectul VIP să fie aplicat corect.
+Przywołaj konia, aby uzyskać dostęp do przedmiotów w jukach konnych.	Cheamă calul ca să ai acces la obiectele din desagii calului.
+Rejs trwał za długo - statek zawraca.	Călătoria a durat prea mult - nava se întoarce.
+Rzuciłeś %d. (%d-%d)	Ai dat %d. (%d-%d)
+Rzuciłeś kostką i uzyskałeś %d. (%d-%d)	Ai aruncat zarul şi ai obţinut %d. (%d-%d)
+Serwer zostanie zamknięty za 10 minut z powodu prac konserwacyjnych.	Serverul se va închide peste 10 minute pentru lucrări de mentenanţă.
+Sklep #PLAYER_NAME#	Magazinul lui #PLAYER_NAME#
+Sklep - %s	Magazin - %s
+Sklep jest otwarty.	Magazinul e deschis.
+Sklep jest w trybie edycji.	Magazinul e în modul de editare.
+Sklep jest zamknięty.	Magazinul e închis.
+Sklep nie jest w trybie edycji.	Magazinul nu e în modul de editare.
+Sklep został niedawno edytowany przez właściciela. Odczekaj chwilę przed zakupem.	Magazinul a fost editat de curând de proprietar. Aşteaptă puţin înainte de cumpărare.
+Sklep został zamknięty, pozostałe przedmioty oraz zarobione yang zostały dodane do depozytu.	Magazinul a fost închis, obiectele rămase şi Yang-ul câştigat au fost adăugate în depozit.
+Skrzynia z Kamieniami Duszy Smoka nie jest aktywowana.	Cufărul cu Pietre ale Sufletului Dragonului nu e activat.
+SOS! Maszt strzaskany, statek tonie. Za chwilę wrócicie na ląd.	SOS! Catargul e sfărâmat, nava se scufundă. Imediat vă întoarceţi pe uscat.
+Sprint pieszo jest niemożliwy przy posiadanej szybkości ruchu (>= %d)	Alergarea pe jos e imposibilă la viteza de mişcare actuală (>= %d)
+Szkolona umiejętność posiada już maksymalny poziom (%d).	Abilitatea antrenată are deja nivelul maxim (%d).
+Ta aukcja nie jest już dostępna.	Această licitaţie nu mai e disponibilă.
+Ta opcja jest tymczasowo niedostępna.	Această opţiune e temporar indisponibilă.
+Te wody są bardzo słabej jakości, nie ma tu prawie ryb, porozmawiaj z Rybakiem.	Apele acestea sunt foarte sărace, aproape că nu sunt peşti aici, vorbeşte cu Pescarul.
+Ten gracz posiada więcej niż 2 miliardy Yang. Nie możesz z nim handlować.	Acest jucător are peste 2 miliarde Yang. Nu poţi face negoţ cu el.
+Ten zakup przekroczyłby dozwolony limit zakupów na konto. Kup mniej sztuk.	Această cumpărare ar depăşi limita permisă pe cont. Cumpără mai puţine bucăţi.
+To miejsce jest wolne od plagi Kamieni Metin.	Acest loc e liber de plaga Pietrelor Metin.
+To nie ja... ale oni cię wybrali. Zobaczymy się ponownie, szybciej, niż myślicie.	Nu eu... ci ei te-au ales. Ne vom revedea, mai curând decât credeţi.
+Trucizna może zostać użyta tylko na Olbrzymim Żółwiu.	Otrava poate fi folosită doar pe Testoasa Gigant.
+Twoja grupa składa się z każdej klasy, dzięki czemu otrzymujesz bonus doświadczenia.	Grupul tău are câte un membru din fiecare clasă, aşa că primeşti un bonus de experienţă.
+Twoja postać nie żyje, nie możesz tego zrobić.	Personajul tău e mort, nu poţi face asta.
+Twoja ranga nie może już wzrosnąć.	Rangul tău nu mai poate creşte.
+Tworzenie sklepów dla twojej posady zostało zablokowane!	Crearea magazinelor a fost blocată pentru funcţia ta!
+Tworzenie sklepów jest tymczasowo wyłączone	Crearea magazinelor e temporar dezactivată
+Twój Koń jest wygłodzony, nie może się w tym stanie przemęczać.	Calul tău e înfometat, nu se poate obosi în această stare.
+Tylko GM ma dostęp do tej komendy.	Doar un GM are acces la această comandă.
+Tę czynność można wykonać tylko w Świątyni Zodiaku.	Această acţiune poate fi făcută doar în Templul Zodiacului.
+Udało ci się pokonać smoka w %d sekund!	Ai reuşit să învingi dragonul în %d secunde!
+Upuszczone Yang zniknie za %d sekund.	Yang-ul aruncat va dispărea peste %d secunde.
+Upuszczony przedmiot zniknie za %d minut.	Obiectul aruncat va dispărea peste %d minute.
+Usuniecie przedmiotu	Ştergerea obiectului
+Uwolniłeś się!	Te-ai eliberat!
+W depozycie sklepu offline zalegają przedmioty.	În depozitul magazinului offline au rămas obiecte.
+W lesie słychać złowieszczy szum... Władca Duchów Drzew budzi się ze snu!	În pădure se aude un foşnet sinistru... Stăpânul Spiritelor Copacilor se trezeşte din somn!
+Wartość sklepu i Twoich Yang jest większa niż dozwolona ilość Yang (2 miliardy).	Valoarea magazinului şi a Yang-ului tău e mai mare decât cantitatea permisă de Yang (2 miliarde).
+Wesele dalej trwa!	Nunta încă are loc!
+Wojna pomiędzy %s a %s zacznie się za %d minut!	Războiul dintre %s şi %s începe peste %d minute!
+Wskazany kanał dostępny jest tylko dla kont Premium.	Canalul indicat e disponibil doar pentru conturile Premium.
+Wszyscy polegli! Wasz czas w Świątyni skończy się, jeśli nikt nie zostanie wskrzeszony w ciągu minuty.	Toţi au căzut! Timpul vostru în Templu se termină dacă nimeni nu e reînviat într-un minut.
+Wszystkie potwory na mapach zostały zabite!	Toţi monştrii de pe hărţi au fost ucişi!
+Wygląda na to, że na haczyku jest %s.	Se pare că în cârlig e %s.
+Wyglądało na to, że %s wisi na haku.	Părea că %s atârnă în cârlig.
+Wygrałeś pojedynek z %d/%d (%d%%) PŻ!	Ai câştigat duelul cu %d/%d (%d%%) PV!
+Wyjście z mapy zostało przerwane.	Ieşirea de pe hartă a fost întreruptă.
+Wykorzystano limit zakupu aukcji na tym koncie (max %d zakupów).	S-a folosit limita de cumpărare a licitaţiei pe acest cont (max. %d cumpărări).
+Wymagane %d Staminy	E nevoie de %d Stamina
+Wymagane %s.	E nevoie de %s.
+Wymagane Szkło Intuicji lub aktywna Subskrypcja Premium.	E nevoie de Sticla Cunoaşterii sau de un Abonament Premium activ.
+Wystapił błąd	A apărut o eroare
+Wystąpił błąd. (Kod błędu: %s)	A apărut o eroare. (Cod eroare: %s)
+Wyszukiwanie zakończone. Znaleziono %d sklepów.	Căutare terminată. S-au găsit %d magazine.
+Wyszukiwanie zatrzymane. Znaleziono ponad %d sklepów z podanym przedmiotem.	Căutare oprită. S-au găsit peste %d magazine cu obiectul indicat.
+Wyłowiłeś %s!	Ai pescuit %s!
+Wędka może zostać ulepszona tylko u Rybaka.	Undiţa poate fi îmbunătăţită doar la Pescar.
+Właściciel przedmiotu ma za dużo przedmiotów w ekwipunku.	Proprietarul obiectului are prea multe obiecte în inventar.
+Za 5 min zostanie wykonany automatyczny reset spotów!	Peste 5 min se va face resetarea automată a spoturilor!
+Zaczekaj %d sekund przed użyciem tego przedmiotu.	Aşteaptă %d secunde înainte să foloseşti acest obiect.
+Zaczekaj %d sekund, aby dokonać kolejnej zmiany w sklepie.	Aşteaptă %d secunde ca să faci următoarea schimbare în magazin.
+Zaczekaj %d sekund, przed kolejną akcją.	Aşteaptă %d secunde înainte de următoarea acţiune.
+Zaczekaj %s zanim ponownie użyjesz zwoju.	Aşteaptă %s înainte să foloseşti din nou pergamentul.
+Zaczekaj chwilę, przed kolejną akcją.	Aşteaptă puţin înainte de următoarea acţiune.
+Zaczekaj chwilę. Trwa wyjście z mapy.	Aşteaptă puţin. Ieşirea de pe hartă e în curs.
+Zakup wymaga odpowiedniej reputacji.	Cumpărarea necesită reputaţia potrivită.
+Zamkniecie sklepu	Închiderea magazinului
+Zaproszony gracz jest w tym momencie zajęty.	Jucătorul invitat e ocupat în acest moment.
+Zdobyłeś %s!	Ai obţinut %s!
+Ziemia na horyzoncie! Statek ocalał - przejdźcie przez portal.	Pământ la orizont! Nava a rezistat - treceţi prin portal.
+Zmiana kanału została przerwana.	Schimbarea canalului a fost întreruptă.
+Zmiana na wskazany kanał jest obecnie niemożliwa.	Schimbarea pe canalul indicat e momentan imposibilă.
+Znowu atakują! Do broni!	Atacă din nou! La arme!
+Zostało coś, co muszę naprawić... coś, co nigdy nie powinno się wydarzyć.	A rămas ceva ce trebuie să repar... ceva ce n-ar fi trebuit să se întâmple niciodată.
+Śmierć nie jest końcem, a raczej początkiem nowej drogi.	Moartea nu e sfârşitul, ci mai degrabă începutul unui nou drum.

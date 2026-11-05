@@ -1,2 +1,421 @@
 # MT2009_PLUS_LANGUAGE_V1 - our engine code's lines (tools/i18n/data/server_custom_pl.tsv)
 # Polish<TAB>ro (by hand; UTF-8). tools/i18n/extract_server_texts.py --check ro lists what is missing.
+  #%d %s = %d, odnowienie %d s: %s	  #%d %s = %d, reîncărcare %d s: %s
+  %u %s - jeszcze %u min	  %u %s - încă %u min
+  %u %s - na stałe	  %u %s - permanent
+ (bot, także odpoczynek)	 (bot, inclusiv odihna)
+ i premie do dropu	 şi bonusuri la drop
+ Nagroda trafila do ekwipunku.	 Recompensa a ajuns în inventar.
+%s (offline): zapis do player.quest się nie udał.	%s (offline): salvarea în player.quest a eşuat.
+%s idzie do kogos, kto go zawolal, i nie przyjmie teraz pojedynku.	%s merge la cineva care l-a chemat şi nu acceptă acum un duel.
+%s idzie z rajdem i nie przyjmie teraz pojedynku.	%s e într-un raid şi nu acceptă acum un duel.
+%s jest czyims towarzyszem i nie bierze udzialu w pojedynkach.	%s e însoţitorul cuiva şi nu participă la dueluri.
+%s jest czyims towarzyszem i nie dolaczy do twojej grupy.	%s e însoţitorul cuiva şi nu se va alătura grupului tău.
+%s jest na innym rdzeniu (kanał %u), a kolejka player.web_admin_queue nie przyjęła zlecenia.	%s e pe alt nucleu (canalul %u), iar coada player.web_admin_queue nu a acceptat comanda.
+%s jest na kanale %u - reset (%s) zlecony; wykona się tam w ciągu kilku sekund.	%s e pe canalul %u - reset (%s) comandat; se va executa acolo în câteva secunde.
+%s kopie rude i nie przyjmie teraz pojedynku.	%s sapă minereu şi nu acceptă acum un duel.
+%s lowi ryby i nie przyjmie teraz pojedynku.	%s pescuieşte şi nu acceptă acum un duel.
+%s nie ma broni w reku i nie przyjmie pojedynku.	%s nu are armă în mână şi nu acceptă duelul.
+%s nie przyjmie pojedynku ponizej %d poziomu.	%s nu acceptă dueluri sub nivelul %d.
+%s nie walczy w strefie bezpiecznej.	%s nu luptă în zona sigură.
+%s odrzuca zaproszenie do znajomych.	%s refuză cererea de prietenie.
+%s otworzył Skarb Balathora - twoja nagroda trafiła do ekwipunku.	%s a deschis Comoara lui Balathor - recompensa ta a ajuns în inventar.
+%s posiada teraz żywioł: %s!	%s are acum elementul: %s!
+%s przyjmuje zaproszenie do gildii %s.	%s acceptă invitaţia în breasla %s.
+%s Sung Ma ma juz najwyzsza wartosc (%d).	%s Sung Ma are deja cea mai mare valoare (%d).
+%s: %d/3 części - efekt zestawu aktywny	%s: %d/3 piese - efectul setului e activ
+%s: %s nie ma dziennego limitu (odpoczynek jest tylko botom w grze).	%s: %s nu are limită zilnică (odihna e doar pentru boţii din joc).
+%s: %s, koniec za %ld min, nagrody jeszcze %ld min, wartosc %d, flaga %s = %d	%s: %s, se termină în %ld min, recompense încă %ld min, valoare %d, flag %s = %d
+%s: efekt ma juz najwyzszy poziom (%d).	%s: efectul are deja cel mai înalt nivel (%d).
+%s: ta umiejętność gildii ma już najwyższy poziom.	%s: această abilitate a breslei are deja cel mai înalt nivel.
+%s: ten gracz jest na Twojej liście zablokowanych.	%s: acest jucător e pe lista ta de blocaţi.
+%s: ten gracz nie przyjmuje od Ciebie zaproszeń.	%s: acest jucător nu acceptă invitaţii de la tine.
+%s: tytułów %u, założony %u	%s: titluri %u, purtat %u
+[Buffi] Buffi dostępna od %d poziomu.	[Buffi] Buffi e disponibilă de la nivelul %d.
+[Buffi] To miejsce Buffi przyjmuje tylko: %s.	[Buffi] Acest loc Buffi acceptă doar: %s.
+[Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Această abilitate se antrenează cu Cartea de Abilităţi: %s (şaman).
+[Gildia] %s	[Breaslă] %s
+[Gildia] Boty zbieraja tylko materialy na budowe: Pien, Kamien Weglowy, Dykta.	[Breaslă] Boţii adună doar materiale de construcţie: Buştean, Piatră de Cărbune, Placaj.
+[Gildia] Brak miejsca w ekwipunku.	[Breaslă] Nu e loc în inventar.
+[Gildia] Budynek nie miesci sie na terenie gildii. Przesun go blizej srodka terenu.	[Breaslă] Clădirea nu încape pe terenul breslei. Mut-o mai aproape de centrul terenului.
+[Gildia] Ilosc: od 1 do %d sztuk.	[Breaslă] Cantitate: de la 1 la %d bucăţi.
+[Gildia] Jedna misja na przedmioty juz trwa - anuluj ja, zeby zlecic nowa.	[Breaslă] O misiune pentru obiecte e deja în curs - anuleaz-o ca să dai una nouă.
+[Gildia] Jedna zrzutka juz trwa - poczekaj, az sie skonczy, albo ja anuluj.	[Breaslă] O colectă e deja în curs - aşteaptă să se termine sau anuleaz-o.
+[Gildia] Misja anulowana - przedmioty z banku wracaja do botow, ktore je przyniosly.	[Breaslă] Misiune anulată - obiectele din bancă se întorc la boţii care le-au adus.
+[Gildia] Nie ma trwajacej misji na przedmioty.	[Breaslă] Nu există nicio misiune pentru obiecte în curs.
+[Gildia] Nie ma trwajacej zrzutki.	[Breaslă] Nu există nicio colectă în curs.
+[Gildia] Nie ma wyprawy do odwolania (w wiezy nie da sie juz jej odwolac).	[Breaslă] Nu există nicio expediţie de anulat (în turn nu mai poate fi anulată).
+[Gildia] Obowiazki gildii sa chwilowo niedostepne.	[Breaslă] Îndatoririle breslei sunt momentan indisponibile.
+[Gildia] Obowiazki gildii zleca tylko lider gildii.	[Breaslă] Doar liderul breslei poate da îndatoriri breslei.
+[Gildia] Stoisz tam, gdzie ma stanac budynek. Odejdz kawalek albo przesun budynek.	[Breaslă] Stai acolo unde trebuie să stea clădirea. Fă un pas în lateral sau mută clădirea.
+[Gildia] Tam, gdzie ma stanac budynek, stoi %s. Poczekaj, az odejdzie, albo przesun budynek.	[Breaslă] Acolo unde trebuie să stea clădirea stă %s. Aşteaptă să plece sau mută clădirea.
+[Gildia] Tej umiejętności można użyć tylko podczas wojny gildii albo w Krypcie Balathora.	[Breaslă] Această abilitate poate fi folosită doar în timpul unui război de breaslă sau în Cripta lui Balathor.
+[Gildia] W banku gildii nie ma tego przedmiotu.	[Breaslă] Acest obiect nu e în banca breslei.
+[Gildia] W tym miejscu stoi juz inny budynek. Przesun nowy budynek albo go obroc.	[Breaslă] Aici stă deja altă clădire. Mută clădirea nouă sau roteşte-o.
+[Gildia] Wyplacono z banku gildii: %d x %s.	[Breaslă] Retras din banca breslei: %d x %s.
+[Gildia] Wyprawa na Wieze Demonow juz jest zorganizowana.	[Breaslă] O expediţie în Turnul Demonilor e deja organizată.
+[Gildia] Wyprawa na Wieze Demonow odwolana.	[Breaslă] Expediţia în Turnul Demonilor a fost anulată.
+[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.	[Breaslă] Yang-ul din trezoreria breslei poate fi cheltuit doar pentru breaslă: teren şi clădiri. Nu poate fi retras.
+[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.	[Breaslă] Din trezoreria breslei s-au plătit %lld Yang, din inventarul tău %lld Yang.
+[Gildia] Zrzutka zakonczona. Wplacone yang zostaje w skarbcu gildii.	[Breaslă] Colectă încheiată. Yang-ul depus rămâne în trezoreria breslei.
+[Gildia] Zrzutka: od %s do %s yang.	[Breaslă] Colectă: de la %s la %s Yang.
+[Rozejm] Zaatakowano bota - rozejm z botami zerwany.	[Armistiţiu] Un bot a fost atacat - armistiţiul cu boţii e rupt.
+[Towarzysz] %s	[Însoţitor] %s
+[Wojna] Arena tej wojny jeszcze sie przygotowuje - sprobuj za kilka sekund.	[Război] Arena acestui război încă se pregăteşte - încearcă peste câteva secunde.
+[Wojna] Arena wojen jest na innym rdzeniu - wejdz na mape swojego krolestwa M1 i kliknij jeszcze raz.	[Război] Arena războaielor e pe alt nucleu - intră pe harta M1 a regatului tău şi dă click din nou.
+[Wojna] Boty walcza w wojnach gildii tylko na kanale 1 - zmien kanal i kliknij jeszcze raz.	[Război] Boţii luptă în războaiele de breaslă doar pe canalul 1 - schimbă canalul şi dă click din nou.
+[Wojna] Gildia %s walczy teraz w innej wojnie.	[Război] Breasla %s luptă acum în alt război.
+[Wojna] Jestes juz na polu wojny.	[Război] Eşti deja pe câmpul de luptă.
+[Wojna] Nagroda za wygrana wojne: %d x Szkatulka Blasku Ksiezyca (twoje zabojstwa: %d).	[Război] Recompensă pentru războiul câştigat: %d x Cufăr Lumina Lunii (ucideri ale tale: %d).
+[Wojna] Nie nalezysz do gildii.	[Război] Nu faci parte dintr-o breaslă.
+[Wojna] Nie znam areny tej wojny.	[Război] Nu cunosc arena acestui război.
+[Wojna] Przenosze cie do obozu twojej gildii na arenie wojen.	[Război] Te mut în tabăra breslei tale din arena războaielor.
+[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.	[Război] Acum nu poţi fi mutat - încearcă puţin mai târziu.
+[Wojna] To wojna w polu: walczycie tam, gdzie sie spotkacie.	[Război] E un război în câmp deschis: luptaţi acolo unde vă întâlniţi.
+[Wojna] Twoja gildia nie prowadzi teraz wojny.	[Război] Breasla ta nu e acum în război.
+[Wojna] Wojna gildii %s jest juz wypowiedziana - boty odpowiedza na czacie gildii.	[Război] Războiul cu breasla %s e deja declarat - boţii vor răspunde în chatul breslei.
+[Wojna] Wojny z gildiami botow sa wylaczone w panelu serwera.	[Război] Războaiele cu breslele de boţi sunt dezactivate în panoul serverului.
+[Wojna] Wypowiedziano wojne gildii botow %s. Z botami walczy sie na arenie wojen (kanal 1). Odpowiedz przyjdzie za kilka sekund na czacie gildii.	[Război] S-a declarat război breslei de boţi %s. Cu boţii se luptă în arena războaielor (canalul 1). Răspunsul vine în câteva secunde în chatul breslei.
+[Wojna] Z gildia %s trwa juz wojna albo jej konczenie.	[Război] Cu breasla %s e deja un război în curs sau pe cale să se încheie.
+[Zlap Krola] 25 kart krolewskich dalo nowa Talie Krolewska (masz %d).	[Prinde Regele] 25 de cărţi regale au dat un nou Pachet Rege (ai %d).
+[Zlap Krola] Czeka na ciebie nagroda z przerwanej gry - zrob miejsce w ekwipunku i zaloguj sie ponownie.	[Prinde Regele] Te aşteaptă o recompensă dintr-un joc întrerupt - fă loc în inventar şi conectează-te din nou.
+[Zlap Krola] Event teraz nie trwa.	[Prinde Regele] Evenimentul nu are loc acum.
+[Zlap Krola] Masz juz najwiecej talii krolewskich (%d).	[Prinde Regele] Ai deja numărul maxim de Pachete Rege (%d).
+[Zlap Krola] Nie masz dosc Talii Krolewskich albo yang (%d talii i %d yang za gre).	[Prinde Regele] Nu ai destule Pachete Rege sau Yang (%d pachete şi %d Yang pe joc).
+[Zlap Krola] Tego mozna uzyc tylko w czasie eventu.	[Prinde Regele] Asta poate fi folosit doar în timpul evenimentului.
+[Zlap Krola] Zrob miejsce w ekwipunku, zeby odebrac nagrode.	[Prinde Regele] Fă loc în inventar ca să primeşti recompensa.
+Auto-obnizka: od 1 do %d%% co 1-%d godzin.	Auto-reducere: de la 1 la %d%% la fiecare 1-%d ore.
+Balathor pokonany! Zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor învins! Şi-a lăsat comoara în urmă - luaţi-vă recompensa. Ieşirea din criptă peste %s.
+balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)	balathor skip: nu există etapă de sărit (doar în Criptă, în timpul raidului)
+Balathor uciekł, ale zostawił po sobie swój skarb - odbierzcie nagrodę. Opuszczenie krypty za %s.	Balathor a fugit, dar şi-a lăsat comoara în urmă - luaţi-vă recompensa. Ieşirea din criptă peste %s.
+Balathor zwyciężył - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.	Balathor a câştigat - expediţie eşuată, fără recompensă. Ieşirea din criptă peste %s.
+Battle Pass: misja powtarzalna ukonczona (%u. raz)!%s	Battle Pass: misiune repetabilă terminată (a %u-a oară)!%s
+Battle Pass: misja ukonczona!%s	Battle Pass: misiune terminată!%s
+Battle Pass: misje wczytane ponownie (%u).	Battle Pass: misiuni reîncărcate (%u).
+Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.	Battle Pass: recompensa finală a acestui sezon a fost deja luată.
+Battle Pass: najpierw ukoncz wszystkie misje sezonu.	Battle Pass: mai întâi termină toate misiunile sezonului.
+Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!	Battle Pass: toate misiunile sezonului terminate - ia recompensa finală!
+Bonus zestawu kostiumow (%s): %ld czesci.	Bonus set de costume (%s): %ld piese.
+Boss Swiata jest chwilowo niedostepny.	Boss-ul Lumii e momentan indisponibil.
+Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.	Boss-ul Lumii: locul %d, nivel pradă %s (%lld daune, +%d pct. rang). Ia recompensa în fereastra Boss-ului Lumii înainte să apară următorul boss.
+Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss-ul Lumii: nu e loc în inventar (e nevoie de %d sloturi libere) - eliberează loc şi dă click din nou.
+Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.	Boss-ul Lumii: o parte din recompense luată; pentru rest nu e loc în inventar (e nevoie de %d sloturi libere) - eliberează loc şi dă click din nou.
+Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.	Boss-ul Lumii: recompensa sezonului %u pentru locul %d al breslei tale.
+Boss Swiata: nagroda sezonu %u za %d. miejsce w rankingu postaci.	Boss-ul Lumii: recompensa sezonului %u pentru locul %d în clasamentul personajelor.
+Boss Swiata: nagroda zostala juz odebrana albo przepadla.	Boss-ul Lumii: recompensa a fost deja luată sau a expirat.
+Boss Swiata: nie masz nagrody do odebrania.	Boss-ul Lumii: nu ai nicio recompensă de luat.
+Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.	Boss-ul Lumii: recompensa pentru locul %d luată (nivel pradă %s)%s.
+Boss Swiata: premia misji - wartosc ataku +%d%% na %d h.	Boss-ul Lumii: bonus de misiune - valoare atac +%d%% pentru %d h.
+Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).	Boss-ul Lumii: ai dat %lld daune - prea puţin pentru recompensă (e nevoie de %u).
+Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.	Boss-ul Lumii: închide celelalte ferestre (negoţ, magazin, depozit) înainte să iei recompensa.
+Boty opuszczaja Wieze Demonow.	Boţii părăsesc Turnul Demonilor.
+Brak miejsca w kategorii: %s.	Nu e loc în categoria: %s.
+Broni dla Mlodych Bohaterow nie mozna ulepszac ani zmieniac.	Armele pentru Tinerii Eroi nu pot fi îmbunătăţite sau schimbate.
+champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion %s: comandă necunoscută sau argumente greşite (%s) - nimic schimbat
+champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana	champion %s: personaj pe alt nucleu (canalul %d) - comandă trimisă
+champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry	champion %s: personaj offline - schimbarea (%s) salvată, se aplică la următoarea intrare în joc
+champion: nie ma postaci %s	champion: nu există personajul %s
+champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono	champion: comandă necunoscută sau argumente greşite (%s) - nimic schimbat
+Czas minął - Balathor zwyciężył. Opuszczenie krypty za %s.	Timpul a expirat - Balathor a câştigat. Ieşirea din criptă peste %s.
+Czas przejecia bota minal - postac wraca do bota.	Timpul de preluare a botului a expirat - personajul revine botului.
+Dawny system petów zastąpił System Zwierząt Domowych - okno zwierzaka otwiera klawisz U.	Vechiul sistem de animăluţe a fost înlocuit de Sistemul de Animale de Companie - fereastra animalului se deschide cu tasta U.
+Do ewolucji tej szaty potrzeba: %s x%d.	Pentru evoluţia acestui costum e nevoie de: %s x%d.
+Do rekawic pasuja tylko Kamienie Demonow.	În mănuşi se potrivesc doar Pietrele Demon.
+Dom Aukcyjny jest dostepny tylko w M1.	Casa de Licitaţii e disponibilă doar în M1.
+Dom Aukcyjny jest wylaczony na tym swiecie.	Casa de Licitaţii e dezactivată pe această lume.
+Doskonale! Kamien Mocy Demonow dal podwojna wartosc.	Excelent! Piatra Dură Demon a dat valoare dublă.
+Drop wiki: %u przedmiotów, %u potworów.	Drop wiki: %u obiecte, %u monştri.
+Dzieci Kwiaty: event i czas na wymiane juz sie skonczyly.	Copiii Florilor: evenimentul şi timpul de schimb s-au terminat.
+Dzieci Kwiaty: nagroda jest chwilowo niedostepna - zglos to administracji.	Copiii Florilor: recompensa e momentan indisponibilă - anunţă administraţia.
+Dzieci Kwiaty: zamknij inne okna (handel, sklep, magazyn), zanim wymienisz.	Copiii Florilor: închide celelalte ferestre (negoţ, magazin, depozit) înainte de schimb.
+Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).	Copiii Florilor: primeşti Seminţe de Flori (ai %d).
+dziś nie było wypraw	azi nu au fost expediţii
+Efekt zestawu nadany: %s.	Efect de set aplicat: %s.
+Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.	Inventarul e plin - partea cumpărată din teanc stă la picioarele tale.
+Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.	Eliminaţi! Timpul vostru în temniţă se termină dacă nimeni nu reînvie într-un minut.
+Enasir będzie przy tobie przez 3 minuty. Zniknie, jeśli się oddalisz albo zmienisz mapę.	Enasir va sta cu tine 3 minute. Dispare dacă te îndepărtezi sau schimbi harta.
+Enasir odszedł.	Enasir a plecat.
+Enasir pobrał opłatę za usługę: %lld Yang (10%%).	Enasir a luat o taxă pentru serviciu: %lld Yang (10%%).
+Enasir: %s - pozostały czas %s.	Enasir: %s - timp rămas %s.
+Enasir: Magazyn %s, Sklep %s, przywołany: %s, tu wolno: %s.	Enasir: Depozit %s, Magazin %s, chemat: %s, permis aici: %s.
+Enasir: usługi zabrane.	Enasir: servicii retrase.
+Event Dzieci Kwiaty sie skonczyl - tego kwiatu nie mozna juz uzyc.	Evenimentul Copiii Florilor s-a terminat - această floare nu mai poate fi folosită.
+Event Rybacki - Puzzle nie trwa teraz - pudełka otworzysz podczas następnego eventu.	Evenimentul de Pescuit - Puzzle nu are loc acum - cutiile le deschizi la următorul eveniment.
+Ewolucja jest możliwa dopiero na poziomie %d ze 100%% doświadczenia.	Evoluţia e posibilă abia la nivelul %d cu 100%% experienţă.
+Ewolucja udana: %s, poziom %d.	Evoluţie reuşită: %s, nivelul %d.
+Gaya jest teraz walutą: %d Gaya trafiło na twój licznik Gaya (obok Yang w ekwipunku).	Gaya e acum o monedă: %d Gaya au ajuns în contorul tău de Gaya (lângă Yang în inventar).
+Gaya nie kładzie się w oknie - kowal bierze ją sam z ekwipunku.	Gaya nu se pune în fereastră - fierarul o ia singur din inventar.
+Gildia nauczyła się: %s (poziom %d/%d).	Breasla a învăţat: %s (nivelul %d/%d).
+Gildia nie ma rozdanych punktów umiejętności.	Breasla nu are puncte de abilitate distribuite.
+Gildia odzyskała punkty umiejętności: %d.	Breasla a recuperat puncte de abilitate: %d.
+GM zresetował Twój limit dziennych dungeonów.	Un GM ţi-a resetat limita zilnică de temniţe.
+Gracz %s nie ma tytułu %s.	Jucătorul %s nu are titlul %s.
+Gracza %s nie ma na tym kanale (albo to bot).	Jucătorul %s nu e pe acest canal (sau e bot).
+Gratulacje - %d. poziom!	Felicitări - nivelul %d!
+Jedno z Jaj Smoka przywołuje lodowe zimno! Skupcie na nim ataki, by je powstrzymać.	Unul din Ouăle de Dragon cheamă un frig de gheaţă! Concentraţi atacurile pe el ca să-l opriţi.
+Kamien Demonow osadzony.	Piatră Demon încastrată.
+Kamien Demonow pasuje tylko do rekawic.	Piatra Demon se potriveşte doar în mănuşi.
+Kamien Demonow pekl przy osadzaniu.	Piatra Demon s-a crăpat la încastrare.
+Kamienie Smierci strzega siodmego pietra. Rozbijcie wszystkie cztery!	Pietrele Morţii păzesc etajul şapte. Spargeţi-le pe toate patru!
+Kamień Rytualny działa tylko na przedmioty powyżej 80. poziomu.	Piatra Fermecată funcţionează doar pe obiecte peste nivelul 80.
+karty: konto %u, poziom %d, cele %u/%u/%u, zabite %d, potwory %d, zestawy zalozone %d	cărţi: cont %u, nivel %d, obiective %u/%u/%u, ucişi %d, monştri %d, seturi purtate %d
+Kazda proba czytania tej ksiegi kosztuje %u PD Czempiona - masz za malo.	Fiecare încercare de a citi această carte costă %u EXP de Campion - ai prea puţin.
+Klatwa Sunga Mahi blokuje twoje umiejetnosci.	Blestemul lui Sung Mahi îţi blochează abilităţile.
+Klienci z lista eventow na tym rdzeniu: %u, lider: %s.	Clienţi cu lista de evenimente pe acest nucleu: %u, lider: %s.
+Kod zrealizowany: %s.	Cod folosit: %s.
+Kolo Fortuny (stare): otrzymujesz %ux %s.	Roata Norocului (veche): primeşti %ux %s.
+Kolo Fortuny: %s	Roata Norocului: %s
+Kolo Fortuny: brak miejsca - %u nagrod czeka. Zrob miejsce i otworz kolo ponownie.	Roata Norocului: nu e loc - %u recompense aşteaptă. Fă loc şi deschide roata din nou.
+Kolo Fortuny: zrob miejsce w ekwipunku - nagroda czeka.	Roata Norocului: fă loc în inventar - o recompensă aşteaptă.
+Kolo Losu: %s	Roata Destinului: %s
+Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.	Roata Destinului: date reîncărcate (%u roţi, %u obiecte), roata activă %d.
+Kolor umiejętności konnej można zmienić, gdy ją znasz.	Culoarea unei abilităţi de călărie poate fi schimbată când o cunoşti.
+Kolor umiejętności można zmienić od poziomu P tej umiejętności.	Culoarea abilităţii poate fi schimbată de la nivelul P al abilităţii.
+kostium (strój)	costum (ţinută)
+Kostium broni nie pasuje do broni tej strony - zdjęty do ekwipunku.	Costumul de armă nu se potriveşte cu arma acestei pagini - mutat în inventar.
+Kostium broni nie pasuje do broni tej strony, a w ekwipunku brak miejsca, aby go zdjąć.	Costumul de armă nu se potriveşte cu arma acestei pagini, iar în inventar nu e loc ca să-l scoţi.
+kostium broni szamana	costum de armă de şaman
+kostium fryzury	costum de coafură
+Krwawisz! (%d sek.)	Sângerezi! (%d sec.)
+Krypty Balathora nie można otworzyć na tym rdzeniu.	Cripta lui Balathor nu poate fi deschisă pe acest nucleu.
+Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.	Cartea Preciziei o poţi citi de la Nivelul 1 de Campion.
+Księgi się zmieniły - ułóż je od nowa.	Cărţile s-au schimbat - aranjează-le din nou.
+Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.	Temniţe: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (doar odihna botului); fără temniţă sau all - toate.
+Lokalizator NPC jest włączony dla każdej postaci - ten przedmiot nie jest już potrzebny.	Localizatorul NPC e activat pentru fiecare personaj - acest obiect nu mai e necesar.
+Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.	Orison Mic nu a funcţionat - bonusurile 6 şi 7 rămân neschimbate.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Ai deja cea mai multă Gaya pe care o poţi avea (999 999).
+Masz już odblokowane wszystkie 4 strony ekwipunku.	Ai deblocat deja toate cele 4 pagini de inventar.
+Masz już ten tytuł.	Ai deja acest titlu.
+Masz nowy punkt statystyk Sung Ma (wolne: %d).	Ai un nou punct de statistică Sung Ma (libere: %d).
+Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.	Ai la tine mai mult Yang decât permite limita (100 mld.). Nu poţi face negoţ.
+Masz za mało Gaya (potrzeba %d).	Ai prea puţină Gaya (e nevoie de %d).
+Masz za mało materiału (potrzeba %d).	Ai prea puţin material (e nevoie de %d).
+Masz za mało Yang (potrzeba %d).	Ai prea puţin Yang (e nevoie de %d).
+Masz za mało Yang.	Ai prea puţin Yang.
+Miejsca Arezzo są wyłączone na tym serwerze - wracasz do miasta.	Locurile Arezzo sunt dezactivate pe acest server - te întorci în oraş.
+Misja "Pokonaj Bossa Swiata" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.	Misiunea "Învinge Boss-ul Lumii" îndeplinită - un bonus de +%d%% valoare atac pentru %d h te aşteaptă în fereastra Boss-ului Lumii.
+Możesz nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Najpierw zdejmij ten, który nosisz.	Poţi purta doar o Piatră a Elementelor odată (Protecţie sau Putere). Mai întâi scoate-o pe cea pe care o porţi.
+Możesz łowić ryby od 30 poziomu.	Poţi pescui de la nivelul 30.
+Musisz stać spokojnie, aby zmienić stronę ekwipunku.	Trebuie să stai pe loc ca să schimbi pagina de inventar.
+na stałe	permanent
+Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.	Pe această abilitate nu s-au cheltuit puncte de abilitate - nivelurile din Manual şi din cărţi nu pot fi anulate. Toată riposta şi amplificatorul le şterge Pergamentul Deştept.
+Na tym kanale magazyn jest niedostępny.	Pe acest canal depozitul nu e disponibil.
+Na wierzchowcu użyj Anulacji Polimorfii Wierzchowca.	Pe animalul de călărie foloseşte Anularea Polimorfiei Animalului de Călărie.
+Nadano tytuł %s graczowi %s.	Titlul %s a fost acordat jucătorului %s.
+Nadano tytuł %s.	Titlul %s a fost acordat.
+Nagrodę z Krypty otrzymało %d postaci z gildii.	Recompensa din Criptă au primit-o %d personaje din breaslă.
+Najpierw naucz sie dopalacza - uzyj Podrecznika: Dopalacz.	Mai întâi învaţă amplificatorul - foloseşte Manual: Amplificator.
+Najpierw odblokuj dodatkową stronę ekwipunku (przedmiot "Strona ekwipunku II").	Mai întâi deblochează o pagină suplimentară de inventar (obiectul "Pagină de inventar II").
+Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.	Mai întâi deblochează Alchimia Dragonului - piatra ajunge în fereastra ei.
+Najpierw wybierz drogę umiejętności.	Mai întâi alege calea abilităţilor.
+Najpierw wybierz riposte - uzyj Podrecznika: Riposta.	Mai întâi alege riposta - foloseşte Manual: Ripostă.
+Najpierw wyjmij przedmiot ze Switchbota.	Mai întâi scoate obiectul din Switchbot.
+Najpierw włóż przedmiot, który ma dostać nowy wygląd.	Mai întâi pune obiectul care trebuie să primească noul aspect.
+Najpierw włóż szatę aury.	Mai întâi pune costumul aura.
+Najpierw zamknij inne okna (handel, sklep, magazyn).	Mai întâi închide celelalte ferestre (negoţ, magazin, depozit).
+Najpierw zamknij inne okna (handel, sklep, magazyn, szarfy).	Mai întâi închide celelalte ferestre (negoţ, magazin, depozit, eşarfe).
+Najpierw zamknij okno szaty aury.	Mai întâi închide fereastra costumului aura.
+Najwyżej 1000 dni.	Cel mult 1000 de zile.
+Nie ma postaci %s.	Nu există personajul %s.
+Nie ma takiego tytułu (/tytul lista).	Nu există un astfel de titlu (/tytul lista).
+Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.	Nu ai în inventar armă, armură sau coif de la nivelul 75 îmbunătăţite cel puţin la +7 (fără efectul de set al acestui fierar). Pune obiectul în fereastră împreună cu cioburile şi Proiectul Setului.
+Nie masz wolnych punktow Sung Ma.	Nu ai puncte Sung Ma libere.
+Nie mozesz przywolac kamienia Metin w lochu.	Nu poţi chema o Piatră Metin în temniţă.
+Nie mozesz przywolac zyly w lochu.	Nu poţi chema un filon în temniţă.
+Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.	Nu poţi vinde - ai depăşi limita de 100 mld. Yang la tine.
+Nie mozna przeniesc zalozonego przedmiotu do Switchbota.	Un obiect echipat nu poate fi mutat în Switchbot.
+Nie możesz się teleportować z lochu.	Nu te poţi teleporta din temniţă.
+Nie możesz teraz zmienić strony ekwipunku.	Nu poţi schimba acum pagina de inventar.
+Nie możesz tutaj użyć tego przedmiotu.	Nu poţi folosi acest obiect aici.
+Nie możesz założyć przedmiotu %s ze strony ekwipunku %s - strona bez zmian.	Nu poţi echipa obiectul %s de pe pagina de inventar %s - pagina rămâne neschimbată.
+Nie można teraz zniszczyć tego przedmiotu - zamknij inne okna i spróbuj ponownie.	Acest obiect nu poate fi distrus acum - închide celelalte ferestre şi încearcă din nou.
+Nie nadano tytułu %s (gracz ma go już na stałe).	Titlul %s nu a fost acordat (jucătorul îl are deja permanent).
+Nie nadano tytułu %s.	Titlul %s nu a fost acordat.
+Nie należysz do gildii.	Nu faci parte dintr-o breaslă.
+Nie przeniesiono bota %s: %s.	Botul %s nu a fost mutat: %s.
+nie trwa	nu are loc
+Nie udało się nadać efektu zestawu. Przedmiot pozostał nienaruszony.	Efectul de set nu a putut fi aplicat. Obiectul a rămas neatins.
+Nie udało się otworzyć Krypty Balathora.	Cripta lui Balathor nu a putut fi deschisă.
+Nie udało się. Materiały i Yang przepadły, przedmiot został w oknie.	Nu a reuşit. Materialele şi Yang-ul s-au pierdut, obiectul a rămas în fereastră.
+Nie znasz tej umiejetnosci.	Nu cunoşti această abilitate.
+Nieznany loch "%s". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.	Temniţă necunoscută "%s". Temniţe: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby sau all.
+Nikt z botow nie ma 75. poziomu - Wieza konczy sie na szostym pietrze.	Niciun bot nu are nivelul 75 - Turnul se termină la etajul şase.
+Od 1 do %d wymian naraz.	De la 1 la %d schimburi odată.
+Od stopnia G1 do P riposte i dopalacz rozwija Kamien Duchowy+.	De la gradul G1 la P, riposta şi amplificatorul le dezvoltă Piatra Sufletului+.
+Odblokowano stronę ekwipunku %s (stron: %d/4). Przełączasz je zakładkami w oknie ekwipunku albo umiejętnością "Zmiana strony ekwipunku" (umiejętności pomocnicze).	Pagina de inventar %s deblocată (pagini: %d/4). Le schimbi cu filele din fereastra de inventar sau cu abilitatea "Schimbarea paginii de inventar" (abilităţi ajutătoare).
+Ogniste Strzały załadowane do Hwachy: %u.	Săgeţi de Foc încărcate în Hwacha: %u.
+Osiagnieto limit zakupu tego przedmiotu.	S-a atins limita de cumpărare pentru acest obiect.
+Otrzymujesz %d Gaya.	Primeşti %d Gaya.
+Otrzymujesz kartę Okey (%d/%d).	Primeşti o carte Okey (%d/%d).
+Otrzymujesz zestaw kart Okey (masz %d).	Primeşti un set de cărţi Okey (ai %d).
+Otworzyłeś Skarb Balathora - nagroda trafiła do twojego ekwipunku.	Ai deschis Comoara lui Balathor - recompensa a ajuns în inventarul tău.
+Parametry można przenieść tylko z bransolety, naszyjnika, kolczyków albo tarczy.	Parametrii pot fi transferaţi doar de la brăţară, colier, cercei sau scut.
+Parametry przeniesione na szatę aury.	Parametri transferaţi pe costumul aura.
+Parametry szaty aury usunięte - możesz przenieść nowe.	Parametrii costumului aura şterşi - poţi transfera alţii noi.
+Poczekaj 10 sekund po walce.	Aşteaptă 10 secunde după luptă.
+Poczekaj 3 sekundy przed kolejną zmianą.	Aşteaptă 3 secunde înainte de următoarea schimbare.
+Poczekaj chwile przed kolejna zmiana opisu.	Aşteaptă puţin înainte de a schimba din nou descrierea.
+Poczekaj chwile przed kolejna zmiana stanu.	Aşteaptă puţin înainte de a schimba din nou starea.
+Poczekaj chwile przed kolejnym zaproszeniem.	Aşteaptă puţin înainte de următoarea invitaţie.
+Podaj gracza.	Specifică jucătorul.
+Podejdź do Seon-Hae.	Du-te la Seon-Hae.
+Pojawiło się Ogniste Jajo Smoka.	A apărut un Ou de Dragon de Foc.
+Pokonajcie wszystkie pobliskie potwory.	Învingeţi toţi monştrii din apropiere.
+Polimorfia działa tylko na wierzchowcach.	Polimorfia funcţionează doar pe animalele de călărie.
+Polimorfia wierzchowca zakończona.	Polimorfia animalului de călărie s-a încheiat.
+Porazka! Efekt %s sie nie wlaczyl - kwiat zwiedl.	Eşec! Efectul %s nu s-a activat - floarea s-a ofilit.
+Porazka! Nie udalo sie podniesc efektu %s do poziomu %d - kwiat zwiedl.	Eşec! Efectul %s nu a putut fi ridicat la nivelul %d - floarea s-a ofilit.
+Porazka! Nie udalo sie zamienic efektu na %s - kwiat zwiedl, poprzedni efekt zostaje.	Eşec! Efectul nu a putut fi schimbat în %s - floarea s-a ofilit, efectul anterior rămâne.
+Potrzeba %lld ksiąg (w oknie: %lld).	E nevoie de %lld cărţi (în fereastră: %lld).
+Potężny Koń Wojskowy je tylko Czer. Żeń-szeń (premium).	Calul Militar Puternic mănâncă doar Ginseng Roşu (Premium).
+Poziom Czempiona: %d.	Nivel de Campion: %d.
+Połóż w oknie broń, zbroję albo hełm od 75. poziomu, ulepszony co najmniej do +7.	Pune în fereastră o armă, armură sau coif de la nivelul 75, îmbunătăţit cel puţin la +7.
+Precyzja: poziom %s, bonus Precyzji +%d.	Precizie: nivelul %s, bonus Precizie +%d.
+Prezent dzienny: %lld Yang i po %d mikstur (D). Następny za 24 godziny.	Cadou zilnic: %lld Yang şi câte %d poţiuni (D). Următorul peste 24 de ore.
+Przeciagnij nakladke na szarfe w ekwipunku (szarfa zdjeta).	Trage aplicaţia pe o eşarfă din inventar (eşarfa scoasă).
+Przeci±gnij zwój na broń w ekwipunku.	Trage pergamentul pe o armă din inventar.
+Przeciągnij Anulację na przedmiot z transmutacją.	Trage Anularea pe un obiect cu transmutare.
+Przeciągnij Świadectwo Aury+ na szatę aury.	Trage Certificat Aura+ pe costumul aura.
+Przedmiotu %s nie można teraz zdjąć - strona ekwipunku bez zmian.	Obiectul %s nu poate fi scos acum - pagina de inventar rămâne neschimbată.
+Przeniesiono bota %s do Ciebie.	Botul %s a fost mutat la tine.
+Przeniesiono do dodatkowego ekwipunku: %d (dołączono do stosów: %d).	Mutate în inventarul suplimentar: %d (adăugate la teancuri: %d).
+Przenosić można raz na 3 sekundy.	Poţi muta o dată la 3 secunde.
+Przy następnym ataku potrzeba będzie więcej obrażeń.	La următorul atac va fi nevoie de mai multe daune.
+Przycisk przywołania Enasira wymaga nowej wersji klienta - zaktualizuj grę.	Butonul de chemare a lui Enasir necesită o versiune nouă a clientului - actualizează jocul.
+Przywolana zyla zniknie po 15 minutach.	Filonul chemat dispare după 15 minute.
+Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.	Piatra Metin chemată dispare după 15 minute dacă nu o distrugi.
+Pytanie wygasło - spróbuj zdjąć przedmiot jeszcze raz.	Întrebarea a expirat - încearcă din nou să scoţi obiectul.
+Ranking: sezon %u konczy sie teraz (podsumowanie za ok. 2 minuty).	Clasament: sezonul %u se încheie acum (rezumat în aprox. 2 minute).
+Ranking: sezon %u, %s, posiadaczy tytulow: %u.	Clasament: sezonul %u, %s, deţinători de titluri: %u.
+Rekawice: kolejny czas odnowienia tej umiejetnosci krotszy o 5 sek.	Mănuşi: următoarea reîncărcare a acestei abilităţi e mai scurtă cu 5 sec.
+Rekrutacja potworow jest wylaczona.	Recrutarea monştrilor e dezactivată.
+Relikt debug: odnowienia wyzerowane.	Relicvă debug: reîncărcări resetate.
+Relikt debug: okienko %s puste.	Relicvă debug: slotul %s gol.
+Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, działa: %s, tik: %s, walka: %d s	Relicvă debug: slot %s, %s (%u), flaguri %ld, timp %ld / %ld s, activ: %s, tic: %s, luptă: %d s
+Relikt debug: PŻ %d / %d, PE %d / %d, wierzchowiec: %s	Relicvă debug: PV %d / %d, PM %d / %d, animal de călărie: %s
+Relikt Duszy: nowy bonus - %s (%d).	Spirit Relicvă: bonus nou - %s (%d).
+Riposty i dopalacza od stopnia M1 nie mozna cofnac.	Riposta şi amplificatorul de la gradul M1 nu pot fi anulate.
+Rozwój udany. Teraz możliwa jest ewolucja szaty (Szata aury: ewolucja).	Dezvoltare reuşită. Acum costumul poate evolua (Costum aura: evoluţie).
+Rozwój udany: poziom %d.	Dezvoltare reuşită: nivelul %d.
+Ryba się zerwała z haczyka.	Peştele a scăpat din cârlig.
+Seon-Hae nie ma ksiąg dla Twojej drogi.	Seon-Hae nu are cărţi pentru calea ta.
+Seon-Hae: %s, czas %d min, trzymany przedmiot %d, wynik %d, szansa %d%%. /seonhae gm now	Seon-Hae: %s, timp %d min, obiect ţinut %d, rezultat %d, şansă %d%%. /seonhae gm now
+Seon-Hae: czas ustawiony na zero.	Seon-Hae: timpul setat la zero.
+Silniejszy efekt tego rodzaju już działa.	Un efect mai puternic de acest fel e deja activ.
+Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.	Magazinul e închis - redeschide-l în loc să-l prelungeşti.
+Sklep ma juz maksymalny czas (%d dni).	Magazinul are deja timpul maxim (%d zile).
+Sklep przedluzony o %u h (zostalo ok. %u h %u min).	Magazin prelungit cu %u h (au rămas aprox. %u h %u min).
+Skupcie się na Zamrożonym Jaju Smoka, zanim zniknie (%d s).	Concentraţi-vă pe Oul de Dragon Îngheţat înainte să dispară (%d s).
+Sortowac mozna raz na 3 sekundy.	Poţi sorta o dată la 3 secunde.
+Statystyki Sung Ma ma tylko Czempion.	Statistici Sung Ma are doar un Campion.
+Strona ekwipunku %s jest jeszcze zablokowana - odblokowuje ją kolejny przedmiot "Strona ekwipunku II".	Pagina de inventar %s e încă blocată - o deblochează încă un obiect "Pagină de inventar II".
+Strona ekwipunku: %s.	Pagina de inventar: %s.
+Stronę ekwipunku można zmieniać raz na 5 sekund.	Pagina de inventar poate fi schimbată o dată la 5 secunde.
+Sukces! Efekt %s jest aktywny (poziom 1).	Succes! Efectul %s e activ (nivelul 1).
+Sukces! Efekt %s wzrosl do poziomu %d.	Succes! Efectul %s a crescut la nivelul %d.
+Switchbot zatrzymany. Brak przedmiotu Zaczaruj kostium.	Switchbot oprit. Lipseşte obiectul Costum Vrăjit.
+Switchbot zatrzymany. Brak Zaczarowan Przedmiotu.	Switchbot oprit. Lipseşte Vrăjeşte Obiectul.
+Switchbot: nie udalo sie zmienic bonusow tego kostiumu.	Switchbot: bonusurile acestui costum nu au putut fi schimbate.
+Switchbot: tego przedmiotu nie mozna zaczarowac (brak bonusow).	Switchbot: acest obiect nu poate fi vrăjit (fără bonusuri).
+Szansa podwyższona o %d%% (zużyto 1 przedmiot).	Şansă crescută cu %d%% (s-a consumat 1 obiect).
+Szarfa ma nowy wyglad (bonusy i pochlanianie bez zmian).	Eşarfa are un aspect nou (bonusurile şi absorbţia neschimbate).
+Ta Anulacja działa tylko na wierzchowcach.	Această Anulare funcţionează doar pe animalele de călărie.
+Ta ksiega jest dla Czempionow: przeczytasz ja od 1. Poziomu Czempiona.	Această carte e pentru Campioni: o poţi citi de la Nivelul 1 de Campion.
+Ta szarfa ma juz te nakladke.	Această eşarfă are deja această aplicaţie.
+Ta szata aury ma już najwyższy poziom.	Acest costum aura are deja cel mai înalt nivel.
+Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).	Acest costum e în vârful categoriei lui - acum evoluţia (Costum aura: evoluţie).
+Ta szata ma już przeniesione parametry. Wyczyść ją Świadectwem Aury+.	Acest costum are deja parametri transferaţi. Curăţă-l cu Certificat Aura+.
+Ta szata nie ma przeniesionych parametrów.	Acest costum nu are parametri transferaţi.
+Te Kolumne moze zranic tylko Ninja albo Szaman.	Această Coloană o poate răni doar un Ninja sau un Şaman.
+Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.	Acest obiect poate fi folosit doar în Turnul Infernal al lui Sung Mahi.
+Tego przedmiotu nie mozna dodac do Switchbota.	Acest obiect nu poate fi adăugat în Switchbot.
+Tego przedmiotu nie można teraz użyć (założony, w handlu albo zablokowany).	Acest obiect nu poate fi folosit acum (echipat, în negoţ sau blocat).
+Tego przedmiotu używa się w oknie zwierzaka (klawisz U).	Acest obiect se foloseşte în fereastra animalului de companie (tasta U).
+Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.	Acest teanc nu poate fi împărţit la acest preţ - cumpără tot teancul.
+Teleport pod wejście kosztuje %lld Yang - nie masz tyle przy sobie.	Teleportul la intrare costă %lld Yang - nu ai atât la tine.
+Teleport pod wejście: zapłacono %lld Yang.	Teleport la intrare: plătit %lld Yang.
+Ten certyfikat nie nadaje żadnego tytułu.	Acest certificat nu acordă niciun titlu.
+Ten dopalacz nie jest dla twojej klasy i drogi umiejetnosci.	Acest amplificator nu e pentru clasa şi calea ta de abilităţi.
+Ten efekt już działa i potrwa dłużej niż nowy.	Acest efect e deja activ şi va dura mai mult decât cel nou.
+Ten element nie pasuje w tym miejscu.	Această piesă nu se potriveşte aici.
+Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).	Acest jucător nu poate ţine atâta Yang (limită 100 mld. la el).
+Ten loch jest dla poziomów %d - %d.	Această temniţă e pentru nivelurile %d - %d.
+Ten Metin moze zranic tylko Szaman.	Acest Metin îl poate răni doar un Şaman.
+Ten opis zawiera niedozwolone slowo.	Această descriere conţine un cuvânt interzis.
+Ten potwór żyje na mapie, na którą wchodzi się z przepustką - teleport kartą jest tam niedostępny.	Acest monstru trăieşte pe o hartă în care se intră cu permis - teleportul cu cartea nu e disponibil acolo.
+Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.	Acest obiect e disponibil doar cu modulul Arezzo activat.
+Ten przedmiot jest juz w Switchbocie.	Acest obiect e deja în Switchbot.
+Ten przedmiot ma już ten efekt zestawu.	Acest obiect are deja acest efect de set.
+Ten przedmiot nie ma transmutacji.	Acest obiect nu are transmutare.
+Ten przedmiot nie należy do żadnej kategorii dodatkowego ekwipunku.	Acest obiect nu aparţine niciunei categorii a inventarului suplimentar.
+Ten przedmiot nie pasuje do tej kategorii dodatkowego ekwipunku.	Acest obiect nu se potriveşte în această categorie a inventarului suplimentar.
+Ten przedmiot nie zwiększa szansy wytwarzania.	Acest obiect nu creşte şansa de creare.
+Ten wygląd nie pasuje do tego przedmiotu.	Acest aspect nu se potriveşte cu acest obiect.
+Ten zwój sprzedaję tylko członkom gildii co najmniej na %d. poziomie.	Acest pergament îl vând doar membrilor breslelor de cel puţin nivelul %d.
+To nie jest bilet do tej przemiany.	Acesta nu e biletul pentru această transformare.
+To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.	E ţinutul Sung Ma: fără Nivel de Campion nu poţi răni monştrii de aici.
+Transmutacja usunięta - przedmiot ma znowu swój wygląd.	Transmutare înlăturată - obiectul are din nou aspectul lui.
+Transmutacja zakończona.	Transmutare terminată.
+Transmutacji podlegają tylko bronie, zbroje, kostiumy i wizerunki broni.	Pot fi transmutate doar armele, armurile, costumele şi aspectele de armă.
+Tu można włożyć tylko Lodową albo Ognistą Runę Aury.	Aici se poate pune doar o Rună Aura de Gheaţă sau de Foc.
+Tu można włożyć tylko szatę aury.	Aici se poate pune doar un costum aura.
+Twoja gildia ma już otwartą Kryptę Balathora.	Breasla ta are deja deschisă Cripta lui Balathor.
+Twoja gildia nie ma otwartej Krypty Balathora.	Breasla ta nu are deschisă Cripta lui Balathor.
+Twoja Precyzja ma juz najwyzszy poziom (P).	Precizia ta are deja cel mai înalt nivel (P).
+Twój Poziom Czempiona jest za niski, aby użyć tego przedmiotu (wymagany: %ld).	Nivelul tău de Campion e prea mic ca să foloseşti acest obiect (necesar: %ld).
+Twój Poziom Czempiona jest za niski, aby założyć ten przedmiot (wymagany: %ld).	Nivelul tău de Campion e prea mic ca să echipezi acest obiect (necesar: %ld).
+Tytuły wymagają nowej wersji klienta - zaktualizuj grę.	Titlurile necesită o versiune nouă a clientului - actualizează jocul.
+Tę księgę może przeczytać tylko lider gildii.	Această carte o poate citi doar liderul breslei.
+Udało się odeprzeć lodowe zimno.	Aţi respins frigul de gheaţă.
+Użycie: /kod MT2009-PLUS-XXXX	Utilizare: /kod MT2009-PLUS-XXXX
+W ekwipunku nie ma przedmiotów do dodatkowego ekwipunku.	În inventar nu sunt obiecte pentru inventarul suplimentar.
+W jednym handlu mozna dac najwyzej 10 mld Yang.	Într-un negoţ poţi da cel mult 10 mld. Yang.
+W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.	În Turnul Infernal al lui Sung Mahi funcţionează doar poţiunile de turn (W) de la Negustor.
+W tych rekawicach nie ma wolnego miejsca na kamien.	În aceste mănuşi nu e loc liber pentru piatră.
+W tym stosie nie ma juz tylu sztuk.	Acest teanc nu mai are atâtea bucăţi.
+Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.	Valoarea magazinului şi Yang-ul tău ar depăşi limita de 100 mld. Yang.
+Wygląd tego przedmiotu nie pasuje do Twojej klasy.	Aspectul acestui obiect nu se potriveşte cu clasa ta.
+Wygląd tego przedmiotu nie pasuje do Twojej płci.	Aspectul acestui obiect nu se potriveşte cu sexul tău.
+Wyprawa przerwana - Ukryty Balathor uciekł, ale zostawił swój skarb. Opuszczenie krypty za %s.	Expediţie întreruptă - Balathor Ascuns a fugit, dar şi-a lăsat comoara. Ieşirea din criptă peste %s.
+Wyprawa przerwana. Opuszczenie krypty za %s.	Expediţie întreruptă. Ieşirea din criptă peste %s.
+Wyspa Skarbow: %s (flaga %s).	Insula Comorilor: %s (flag %s).
+Wędkarskie Puzzle wymagaj± nowej wersji klienta - zaktualizuj grę.	Puzzle-ul de Pescuit necesită o versiune nouă a clientului - actualizează jocul.
+Włóż bilet w okno transmutacji u Teowadena.	Pune biletul în fereastra de transmutare la Teowaden.
+Włóż oba przedmioty.	Pune ambele obiecte.
+Yut Nori: event %s, sezon %u (zamkniety %d), gry na tym rdzeniu %u, plansze %d, pnie %d, nagroda czeka %d	Yut Nori: eveniment %s, sezon %u (închis %d), jocuri pe acest nucleu %u, plăci %d, buşteni %d, recompensă aşteaptă %d
+Yut Nori: event sie nie odbywa.	Yut Nori: evenimentul nu are loc.
+Yut Nori: event wlasnie sie zaczyna, sprobuj za chwile.	Yut Nori: evenimentul tocmai începe, încearcă puţin mai târziu.
+Yut Nori: pnie brzozy mozna dodac tylko w czasie eventu.	Yut Nori: buştenii de mesteacăn pot fi adăugaţi doar în timpul evenimentului.
+Yut Nori: potrzebujesz %d x plansza do Yut Nori i %d yang.	Yut Nori: ai nevoie de %d x Placă Yut Nori şi %d Yang.
+Yut Nori: zwolnij miejsce w ekwipunku, aby odebrac nagrode.	Yut Nori: eliberează loc în inventar ca să iei recompensa.
+Za 10 sekund pojawi się Zamrożone Jajo Smoka - wtedy uderzcie w nie wspólnie.	Peste 10 secunde apare Oul de Dragon Îngheţat - atunci loviţi-l împreună.
+Za mało Yang (potrzeba %lld).	Prea puţin Yang (e nevoie de %lld).
+Zabrano tytuł %s graczowi %s.	Titlul %s a fost luat de la jucătorul %s.
+Zaczarowanie żywiołu nie powiodło się! Broń pozostała bez zmian.	Vrăjirea elementului a eşuat! Arma a rămas neschimbată.
+Zaczarowanie żywiołu powiodło się! %s.	Vrăjirea elementului a reuşit! %s.
+Zamknij inne okna (handel, sklep, magazyn).	Închide celelalte ferestre (negoţ, magazin, depozit).
+Zamknij inne okna (handel, sklep, magazyn, kostkę) i spróbuj jeszcze raz.	Închide celelalte ferestre (negoţ, magazin, depozit, zarul) şi încearcă din nou.
+Zamknij inne okna, aby posortowac dodatkowy ekwipunek.	Închide celelalte ferestre ca să sortezi inventarul suplimentar.
+Zamknij inne okna, aby połączyć stosy w dodatkowym ekwipunku.	Închide celelalte ferestre ca să uneşti teancurile din inventarul suplimentar.
+Zamknij inne okna, aby przenieść przedmioty do dodatkowego ekwipunku.	Închide celelalte ferestre ca să muţi obiectele în inventarul suplimentar.
+Zamknij inne okna, aby użyć tego przedmiotu.	Închide celelalte ferestre ca să foloseşti acest obiect.
+Zamknij inne okna, aby zmienić stronę ekwipunku.	Închide celelalte ferestre ca să schimbi pagina de inventar.
+Zaprosic do grupy mozna tylko gracza na tej samej mapie i tym samym kanale.	Poţi invita în grup doar un jucător de pe aceeaşi hartă şi acelaşi canal.
+Zatrzymaj się, żeby ukryć albo pokazać kostium.	Opreşte-te ca să ascunzi sau să arăţi costumul.
+Zdejmij przedmiot i weĽ go do ekwipunku.	Scoate obiectul şi pune-l în inventar.
+Zdejmij szatę i weź ją do ekwipunku.	Scoate costumul şi pune-l în inventar.
+Zestaw kostiumow niepelny - bonus zestawu zniknal.	Set de costume incomplet - bonusul setului a dispărut.
+Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.	Set de costume: +%ld PV şi +%ld valoare atac.
+Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - przy brakach Twoja sila slabnie o polowe.	Ţinutul Sung Ma cere: Putere %d, Vitalitate %d, Rezistenţă %d, Inteligenţă %d - dacă îţi lipseşte ceva, forţa ta scade la jumătate.
+Znasz juz inna riposte - mozna miec tylko jedna. Ta ksiega jej nie rozwija.	Cunoşti deja altă ripostă - poţi avea doar una. Această carte nu o dezvoltă.
+Zniszczcie Masywną Lodową Ścianę, która chroni[ENTER]Zamrożone Jaja Smoka!	Distrugeţi Zidul Masiv de Gheaţă care protejează[ENTER]Ouăle de Dragon Îngheţate!
+Zniszczono: %s.	Distrus: %s.
+Został zmniejszony poziom zaczarowania żywiołu: %s +%d.	Nivelul vrăjirii elementului a scăzut: %s +%d.
+Został zmniejszony poziom zaczarowania żywiołu: broń nie ma już żywiołu (%s).	Nivelul vrăjirii elementului a scăzut: arma nu mai are element (%s).
+Zostało w ekwipunku: %d - brak miejsca w kategorii: %s.	Rămase în inventar: %d - nu e loc în categoria: %s.
+Zresetowano dzienny limit (%s) postaci %s (offline): %s.	Limita zilnică (%s) a personajului %s (offline) a fost resetată: %s.
+Zresetowano dzienny limit (%s) postaci %s%s: %s.	Limita zilnică (%s) a personajului %s%s a fost resetată: %s.
+Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	Fă loc în inventar (e nevoie de %d sloturi libere).
+Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	Fă loc în inventar - un obiect din depozitul paginilor de inventar aşteaptă un slot liber.
+Zwój albo broń nie leży już w ekwipunku.	Pergamentul sau arma nu mai e în inventar.
+Łączyć stosy można raz na 3 sekundy.	Poţi uni teancurile o dată la 3 secunde.
