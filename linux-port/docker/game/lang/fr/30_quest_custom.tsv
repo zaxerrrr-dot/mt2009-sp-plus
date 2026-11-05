@@ -1,0 +1,2117 @@
+# MT2009_PLUS_LANGUAGE_V1 - our quests and quest libraries (tools/i18n/data/quest_custom_pl.tsv)
+# Polish<TAB>fr (by hand; UTF-8). tools/i18n/extract_server_texts.py --check fr lists what is missing.
+    2 Ładne + Dusza = Zacny (30%)	    2 Intermédiaires + Âme = Raffinée (30%)
+    3 Drobne + Dusza = Ładny (35%)	    3 Mineures + Âme = Intermédiaire (35%)
+    5 Małych + Dusza = Drobny (45%)	    5 Petites + Âme = Mineure (45%)
+    Zacny + Dusza = Silny (25%)	    Raffinée + Âme = Forte (25%)
+  Tuńczyka na 60 minut (rzadkie ryby jak z Rybimi Wnętrznościami).	  doré pendant 60 minutes (poissons rares comme avec le Manuel de pêche).
+ i Kamień Księżycowy	 et Pierre de lune
+%d godz.	%d h
+%d godz. %d min	%d h %d min
+%d godz. %d min.	%d h %d min.
+%d godz., %d min.	%d h, %d min.
+%d min., %d sek.	%d min., %d sec.
+%d sek.	%d sec.
+%d. %s - %d pkt	%d. %s - %d pts
+%s %d-%d: +%d%% PD	%s %d-%d: +%d%% EXP
+%s (%s, bonusy: %d)	%s (%s, bonus : %d)
+%s cię szuka. Wydaje się, że chce ci powiedzieć[ENTER]coś ważnego.	%s vous cherche. Il semble vouloir vous dire[ENTER]quelque chose d'important.
+%s jest już na stopniu P.	%s est déjà au grade P.
+%s: %d. Wszystkie te punkty	%s : %d. Tous ces points
+%s: nie rozdano tu jeszcze punktów.	%s : aucun point n'a encore été réparti ici.
+%s: osiągnięto stopień P - najwyższy.	%s : grade P atteint - le plus élevé.
+%s: teraz %s.	%s : maintenant %s.
+(15% odporności = 4,5% mniej obrażeń).	(15% de résistance = 4,5% de dégâts en moins).
+(do M1), księgami (do G1) i Kamieniem Duchowym+ (do P).	(jusqu'à M1), livres (jusqu'à G1) et Pierre d'âme+ (jusqu'à P).
+(drogocenne). Pakiet może zawierać m.in.:	(précieux). Le lot peut contenir entre autres :
+(klawisz P) na jej umiejętność.	(touche P) sur sa compétence.
+(klawisz P).	(touche P).
+(kostium, fryzura albo nakladka na bron).	(costume, coiffure ou apparence d'arme).
+(najedź na przedmiot). Gdy się nie uda, materiały przepadają.	(survolez l'objet). En cas d'échec, les matériaux sont perdus.
+(PB) od każdego z was.	(ÉV) de chacun de vous.
+(PB). Wróć, gdy zadanie zostanie wykonane.	(ÉV). Revenez quand la mission sera accomplie.
+(prawy klik na relikt) i dodaj mu bonusy duszami.	(clic droit sur la relique) et ajoutez-lui des bonus avec des âmes.
+(SZC) od każdego z was.	(ST) de chacun de vous.
+(SZC). Wróć, gdy zadanie zostanie wykonane.	(ST). Revenez quand la mission sera accomplie.
+(zależnie od kryształu) na 2 godziny gry. Pasek	(selon le cristal) pour 2 heures de jeu. La barre
++1000 PŻ (maks.)	+1000 PV (max.)
++1100 PŻ (maks.)	+1100 PV (max.)
++120 Obrony	+120 Défense
++140 Obrony	+140 Défense
++5% albo +10%. Każda maska jest inna. 	+5% ou +10%. Chaque masque est différent. 
++51 Wartości Ataku	+51 Valeur d'attaque
++60 Wartości Ataku	+60 Valeur d'attaque
+- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.	- Chausses d'euphorie +5..+9 - j'en ferai des Chaussures d'océan.
+- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,	- Bottes d'oiseau-glace +5..+9 - j'en ferai des Chaussures de feu,
+- czas płynie także poza grą - potem znika. Nie da się jej ulepszyć ani przekazać.	- le temps passe aussi hors ligne - puis il disparaît. Impossible de l'améliorer ou de l'échanger.
+- Kamyki x100,	- Gemme précieuse x100,
+- Pokrój: może coś w nim znajdziesz (bardzo rzadko nawet Wędkę Węglową).	- Découper : vous y trouverez peut-être quelque chose (très rarement même une Canne à pêche en carbone).
+- Relikt Duszy twojej klasy.	- Relique d'âme de votre classe.
+- Użyj jako przynęty: Bonus Złotego Tuńczyka na 5 minut - silniejszy.	- Utiliser comme appât : Bonus du Thon doré pendant 5 minutes - plus fort.
+- Wypuść: zwykle zmokniesz (Mokre Szaty: -50 szybkości ruchu na 5 minut), czasem dostaniesz Bonus Złotego	- Relâcher : en général vous êtes trempé (Vêtements mouillés : -50 vitesse de déplacement pendant 5 minutes), parfois vous obtenez le Bonus du Thon
+- z Pustym Eliksirem Mocy - eliksir mocy żywiołu,	- avec un Élixir de force vide - un élixir de force élémentaire,
+- z Pustym Eliksirem Odp. - eliksir odporności.	- avec un Élixir de résist. vide - un élixir de résistance.
+... Skargi przyjmuję jednak wyłącznie w formie	... Mais je n'accepte les plaintes que sous forme
+1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.	Niveau 1 : 0,8%, M1 : 8%, G1 : 13,1%, P : 20%.
+1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.	Niveau 1 : 1,2%, M1 : 12%, G1 : 19,7%, P : 30%.
+1. miejsce: 10x Złote Trofeum Yutnori	1re place : 10x Trophée Yutnori d'or
+1. poziom Świątyni Węży	Niveau 1 du Temple des serpents
+10 Jadeitów Nocy oraz do broni 5 Kowadeł Płn. Wiatru	10 Jadéites nocturnes et pour les armes 5 Enclumes d'Aquilon
+10 Kowadeł, 5 planów broni, 5 Środków Ściernych,	10 Enclumes, 5 plans d'arme, 5 Abrasifs,
+100 000 - 500 000 yang lub doświadczenie,	100 000 - 500 000 Yangs ou de l'expérience,
+120 i Championem 4, 600 pkt rankingu gildii	120 et Champion 4, 600 points de classement de guilde
+2 części: +500 PŻ, +1% siły przeciw potworom; 3 części: +1500 PŻ, +5% siły przeciw potworom	2 pièces : +500 PV, +1% de force contre les monstres ; 3 pièces : +1500 PV, +5% de force contre les monstres
+2 części: +500 PŻ, +3% szybkości ruchu; 3 części: +1500 PŻ, +7% szybkości ruchu	2 pièces : +500 PV, +3% vitesse de déplacement ; 3 pièces : +1500 PV, +7% vitesse de déplacement
+2 części: +500 PŻ, +5% PD; 3 części: +1500 PŻ, +15% PD	2 pièces : +500 PV, +5% EXP ; 3 pièces : +1500 PV, +15% EXP
+2. miejsce: 5x Złote Trofeum Yutnori	2e place : 5x Trophée Yutnori d'or
+250 albo 500. Poziom szaty to 1000, 2000, 4000,	250 ou 500. Le niveau de la robe est 1000, 2000, 4000,
+3 000 000 Yang). Z 10 Rycerskich odłamków II - Książęcy,	3 000 000 Yangs). Avec 10 Morceaux de chevalier II - Princier,
+3 części: +2500 PŻ, +10% magii / walki wręcz, +5% szybkości ruchu	3 pièces : +2500 PV, +10% magie / corps à corps, +5% vitesse de déplacement
+3 części: +3500 PŻ, +15% magii / walki wręcz, +7% szybkości ruchu	3 pièces : +3500 PV, +15% magie / corps à corps, +7% vitesse de déplacement
+3. miejsce: 3x Złote Trofeum Yutnori	3e place : 3x Trophée Yutnori d'or
+300 - 399 punktow - srebrna	300 - 399 points - argent
+4. - 10. miejsce: 1x Złote Trofeum Yutnori	4e - 10e place : 1x Trophée Yutnori d'or
+400 punktow i wiecej - zlota	400 points et plus - or
+5 Stali, kamień przebudzenia i 2 500 000 Yang.	5 Aciers, une pierre d'éveil et 2 500 000 Yangs.
+50 000 - 100 000 yang, doświadczenie albo	50 000 - 100 000 Yangs, de l'expérience ou
+550 punktów i więcej	550 points et plus
+6. i 7. bonus (Seon-Hae)	6e et 7e bonus (Seon-Hae)
+75. poziom przedmiotu i ulepszenie co najmniej +7.	niveau d'objet 75 et une amélioration d'au moins +7.
+8000 albo 16000 punktów - zależnie od jej rodzaju.	8000 ou 16000 points - selon son type.
+[Gildia] Ze skarbca gildii zapłacono %d Yang, z Twojego ekwipunku %d Yang.	[Guilde] %d Yangs payés par le trésor de guilde, %d Yangs par votre inventaire.
+a kto polegnie, wraca do portu.	et qui tombe retourne au port.
+a nie każdy nadaje się do badań.	et tous ne conviennent pas à la recherche.
+a obecne bonusy celu zostana nadpisane.	et les bonus actuels de la cible seront écrasés.
+a otrzymasz lepszy kamień:	et vous obtiendrez une meilleure pierre :
+a sam WuKong czeka na śmiałków na szczycie.	et WuKong lui-même attend les braves au sommet.
+a spróbuję wytworzyć Odłamek Reliktu.	et j'essaierai de fabriquer un Morceau de relique.
+a te zmiany są bardzo niepokojące. Moi bracia	et ces changements sont très inquiétants. Mes frères
+A teraz odczep się i pozwól mi w spokoju	Et maintenant, fichez le camp et laissez-moi en paix
+a zamieni się w Upiorną Skrzynię. Spróbuj! 	et il se changera en Coffre d'Halloween. Essayez ! 
+Aby dokończyć regenerację, musisz być na mapie Świątyni Zodiaku.	Pour terminer la régénération, vous devez être sur la carte du Temple du zodiaque.
+Aby stworzyć Kryształ Energii,	Pour créer un Cristal d'énergie,
+Ach, udało ci się! Dobrze, teraz stworzę ci z[ENTER]tego pryzmat ożywienia.	Ah, vous avez réussi ! Bien, je vais maintenant vous en[ENTER]faire un Prisme du réveil.
+Aktywuj misję (300 potworów)	Activer la mission (300 monstres)
+Alarm w Świątyni Zodiaku	Alerte au Temple du zodiaque
+Alastor się przebudził! Uciekajcie przed lodowymi kolcami i niszczcie Białe Jaja Smoka.	Alastor s'est réveillé ! Fuyez les pics de glace et détruisez les Œufs de dragon blanc.
+albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow	ou Teinture rouge (Chaussures d'océan), 5 Sangles massives
+albo sztandar użyty w hali) zabiera jeden sztandar.	ou une bannière utilisée dans la salle) retire une bannière.
+albo trzy kolejne liczby daja punkty - seria	ou trois nombres consécutifs donnent des points - une série
+albo u Statuy Wojownika (z odłamków I).	ou à la Statue de Guerrier (avec les morceaux I).
+Alchemia to nieobliczalna nauka i każdy kolejny	L'alchimie est une science imprévisible et chaque nouveau
+Alchemik w Dongan potrzebuje pomocy.	L'Alchimiste de Dongan a besoin d'aide.
+Appaloosa bedzie z toba o 7 dni dluzej.	Appaloosa restera avec vous 7 jours de plus.
+Apteczka! Podziwiam twoją odwagę - jak ci się udało	Trousse de secours ! J'admire votre courage - comment avez-vous
+Apteczka! W ostatniej chwili - dziękuję.	Trousse de secours ! Juste à temps - merci.
+apteczka. Podejrzewam wojowników En-Tai, bo	Trousse de secours. Je soupçonne les guerriers En-Tai, car
+apteczkę.	Trousse de secours.
+Atak powierzchniowy cię dosięgnął.	L'attaque de surface vous a atteint.
+Atakuje wszystko w poblizu	Attaque tout à proximité
+Auto Lowy sa na tym swiecie wylaczone - zachowaj bilet.	La Chasse auto est désactivée dans ce monde - gardez le ticket.
+Auto Lowy sa teraz dostepne dla kazdego - zachowaj bilet na pozniej.	La Chasse auto est maintenant disponible pour tous - gardez le ticket pour plus tard.
+Auto Lowy: +8 h, razem %d h (liczy sie tylko czas w grze).	Chasse auto : +8 h, %d h au total (seul le temps en jeu compte).
+Auto Lowy: masz juz ponad 30 dni czasu.	Chasse auto : vous avez déjà plus de 30 jours de temps.
+Auto Łowy: jeszcze %d dni %d h (dni kalendarzowe) - działają, dopóki bilet jest w ekwipunku.	Chasse auto : encore %d jours %d h (jours calendaires) - active tant que le ticket est dans l'inventaire.
+aż znajdziesz przy którymś z nich Lekarstwo.	jusqu'à ce que vous trouviez des Médicaments sur l'un d'eux.
+Badacz Lasu szuka kogoś odważnego. Idź do niego.	L'Éclaireur de la forêt cherche quelqu'un de courageux. Allez le voir.
+Badacza Lasu. Najpierw zmierzycie się z Bagjanamu.	l'Éclaireur de la forêt. D'abord, vous affronterez Bagjanamu.
+Badam klejnoty, które powstają w lodzie Groty	J'étudie les gemmes qui se forment dans la glace de la Grotte
+Badania Biologa	Recherches du biologiste
+badania są ukończone. Wybierz jeden stały bonus:	les recherches sont terminées. Choisissez un bonus permanent :
+badaniami. Sprawdź w Dongan, czy potrzebuje	ses recherches. Allez voir à Dongan s'il a besoin
+Badanie Seona-Pyeonga	Recherche de Seon-Pyeong
+Badanie Seona-Pyeonga 2	Recherche de Seon-Pyeong 2
+Badanie Seona-Pyeonga: nagroda	Recherche de Seon-Pyeong : récompense
+badanie, które chcesz przyśpieszyć.	la recherche que vous voulez accélérer.
+Bagjanamu (PB) pokonany. Ziemia drży - Jotun Thrym (PB) nadchodzi!	Bagjanamu (ÉV) vaincu. La terre tremble - Jotun Thrym (ÉV) arrive !
+Bagjanamu (SZC) pokonany. Ziemia drży - Jotun Thrym (SZC) nadchodzi!	Bagjanamu (ST) vaincu. La terre tremble - Jotun Thrym (ST) arrive !
+Bagjanamu pokonany. Ziemia drży - Jotun Thrym nadchodzi!	Bagjanamu vaincu. La terre tremble - Jotun Thrym arrive !
+Balathor zwyciężył - ta wyprawa nie przyniosła nagrody.	Balathor l'a emporté - cette expédition n'a apporté aucune récompense.
+Balathor, Biały Smok, śpi w lodowej krypcie.	Balathor, le Dragon blanc, dort dans la crypte de glace.
+Baronówna Pająków pokonana w %d:%02d! Loch został ukończony.	Baronne araignée vaincue en %d:%02d ! Le donjon est terminé.
+Baronówny zagnieździły się między regałami i nikt	Les Baronnes ont fait leur nid entre les étagères et personne
+barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang	teinture et plaques selon l'armure choisie, 10 000 000 Yangs
+Beran-Setaou (PB) został pokonany!	Beran-Setaou (ÉV) a été vaincu !
+Beran-Setaou (SZC) został pokonany!	Beran-Setaou (ST) a été vaincu !
+Beran-Setaou nie żyje. Wkrótce wszyscy wrócicie	Beran-Setaou est mort. Bientôt vous retournerez tous
+Beran-Setaou został pokonany!	Beran-Setaou a été vaincu !
+BETA: czas skrocony do 10s	BETA : temps réduit à 10s
+BETA: DT jest dostepne od 2 etapu.	BETA : DT est disponible à partir de l'étape 2.
+Bez Biletu do Atlantydy nie przetrwasz w głębinach. Kup go u Maga Atlantydy.	Sans Ticket pour l'Atlantide, vous ne survivrez pas dans les profondeurs. Achetez-le au Mage de l'Atlantide.
+Bez Biletu do Atlantydy:	Sans Ticket pour l'Atlantide :
+Bez Drzewnego Szmaragdu nic nie zrobię. Pokonaj	Sans Émeraude boisée, je ne peux rien faire. Vainquez
+Bez Szlachetnego Drewna nic nie zrobię. Pokonaj	Sans Bois précieux, je ne peux rien faire. Vainquez
+Bez zmian	Aucun changement
+Biblioteka Wiedzy	Bibliothèque du Savoir
+Biblioteka Wiedzy: Czas minął. Strażnik wyprowadza was z Biblioteki.	Bibliothèque du Savoir : le temps est écoulé. Le Gardien vous fait sortir de la Bibliothèque.
+Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Bibliothèque du Savoir : étape réussie. Prochain défi dans 5 secondes.
+Biblioteka Wiedzy: nie udało się otworzyć przejścia - porozmawiaj ze Strażnikiem Biblioteki.	Bibliothèque du Savoir : le passage n'a pas pu s'ouvrir - parlez au Gardien de la Bibliothèque.
+Biblioteka Wiedzy: Pieczęć Biblioteki zadziałała sama.	Bibliothèque du Savoir : le Sceau de la Bibliothèque s'est activé tout seul.
+Biblioteka Wiedzy: porozmawiaj ze Strażnikiem Biblioteki, aby otworzyć przejście.	Bibliothèque du Savoir : parlez au Gardien de la Bibliothèque pour ouvrir le passage.
+Biblioteka Wiedzy: przejście prowadzi przez poczekalnię.	Bibliothèque du Savoir : le passage mène par la salle d'attente.
+Biblioteka Wiedzy: przejście się otwiera...	Bibliothèque du Savoir : le passage s'ouvre...
+Biblioteka Wiedzy: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Bibliothèque du Savoir : cette expédition est déjà terminée. Parlez au gardien pour en commencer une nouvelle.
+Biblioteka Wiedzy: Ten loch został już ukończony.	Bibliothèque du Savoir : ce donjon a déjà été terminé.
+Biblioteka Wiedzy: Witajcie. Za 5 sekund z półek wypełzną pająki.	Bibliothèque du Savoir : bienvenue. Dans 5 secondes, des araignées sortiront des étagères.
+biega za toba, broni cie i zbiera twoj drop.	vous suit, vous protège et ramasse votre butin.
+Bilet do Atlantydy chroni przed wodą, ciśnieniem	Le Ticket pour l'Atlantide protège de l'eau, de la pression
+Bilet kupicie u mnie - opcja: Kup Bilet do Atlantydy.	Vous pouvez m'acheter le ticket - option : Acheter un Ticket pour l'Atlantide.
+Bilet Podrozniczy	Ticket de voyage
+Bilet, mogę cię zabrać do Tajemniczej Instancji.	Ticket, je peux vous emmener à l'Instance mystérieuse.
+Bio-badanie 1	Bio-recherche 1
+Bio-badanie 2	Bio-recherche 2
+Bio-badanie 3	Bio-recherche 3
+Bio-badanie 4	Bio-recherche 4
+Bio-badanie 5	Bio-recherche 5
+Bio-badanie 6	Bio-recherche 6
+Bio-badanie 7	Bio-recherche 7
+Bio-badanie 8	Bio-recherche 8
+Biolog	Biologiste
+Biorę tylko tyle run, ile trzeba.	Je ne prends que le nombre de runes nécessaire.
+Blogoslawienstwo obrony: moja obrona	Bénédiction de défense : ma défense
+Blogoslawienstwo odpornosci: trucizna	Bénédiction de résistance : poison
+Blogoslawienstwo szybkosci: bede chodzil	Bénédiction de vitesse : je marcherai
+Blogoslawienstwo zycia: moje punkty zycia	Bénédiction de vie : mes points de vie
+bo jeszcze chwilę temu byłem na imprezie	car il y a un instant j'étais encore à une fête
+bo kiedyś przypłacisz to życiem.	car un jour vous le paierez de votre vie.
+Bonus eventowy PD Uriela wg przedziału poziomów	Bonus d'EXP d'événement d'Uriel par tranche de niveaux
+bonus losuję przy wytworzeniu - zostaje przy ulepszaniu.	le bonus est tiré à la fabrication - il reste lors de l'amélioration.
+Bonus PD +%d%% na %s	Bonus EXP +%d%% pour %s
+Bonus PD +%d%% potrwa jeszcze: %s	Bonus EXP +%d%% encore actif pendant : %s
+Bonus PD na %s według przedziału poziomów:	Bonus EXP pour %s par tranche de niveaux :
+Bonus Złotego Tuńczyka: 5 minut.	Bonus du Thon doré : 5 minutes.
+Bonus Złotego Tuńczyka: 60 minut.	Bonus du Thon doré : 60 minutes.
+Bonusy i kamienie oddanego przedmiotu przepadaja.	Les bonus et pierres de l'objet remis sont perdus.
+Bonusy i kamienie oddanych butow przepadaja.	Les bonus et pierres des chaussures remises sont perdus.
+Bonusy i kamienie zostana przeniesione.	Les bonus et pierres seront transférés.
+Bonusy mozna przeniesc tylko: kostium na kostium,	Les bonus ne se transfèrent que : costume vers costume,
+Boty z Twojej drużyny wejdą do lochu razem z Tobą.	Les bots de votre groupe entreront dans le donjon avec vous.
+Brak miejsca w ekwipunku na tę broń - zwolnij miejsce i wybierz jeszcze raz.	Pas de place dans l'inventaire pour cette arme - libérez de la place et choisissez à nouveau.
+Brak otwartych misji z czasem oczekiwania.	Aucune mission ouverte avec un temps d'attente.
+Brak ustawionych przedziałów poziomów.	Aucune tranche de niveaux définie.
+Brakuje ci materialow albo Yang.	Il vous manque des matériaux ou des Yangs.
+Brakuje ci przedmiotów.	Il vous manque des objets.
+Brakuje ci Ros En-Tai (PB). Zdobądź je od	Il vous manque de la Rosée En-Tai (ÉV). Obtenez-la auprès
+Brakuje ci Ros En-Tai (SZC). Zdobądź je od	Il vous manque de la Rosée En-Tai (ST). Obtenez-la auprès
+Brakuje jeszcze %d klejnotów.	Il manque encore %d gemmes.
+Brama już się otwiera. Poczekaj chwilę.	La porte s'ouvre déjà. Patientez un instant.
+Brama nie chce się dziś otworzyć. Spróbuj ponownie	La porte ne veut pas s'ouvrir aujourd'hui. Réessayez
+Brazowa skrzynia (do 299 punktow)	Coffre de bronze (jusqu'à 299 points)
+Bronie dla Młodych Bohaterów	Armes pour les Jeunes Héros
+Bronie dla Młodych Bohaterów są wyłączone	Les Armes pour les Jeunes Héros sont désactivées
+Bronie dla Młodych Bohaterów są wyłączone na tym serwerze.	Les Armes pour les Jeunes Héros sont désactivées sur ce serveur.
+Broń przyjmie wygląd broni tego samego rodzaju albo	L'arme prendra l'apparence d'une arme du même type ou
+Brązowy Pakiet Yutnori	Lot Yutnori de bronze
+Buff Premium SungMa: +10 do Woli SungMa (siła, witalność, odporność, inteligencja) jeszcze przez %d h.	Buff Premium SungMa : +10 Volonté SungMa (force, vitalité, résistance, intelligence) encore pendant %d h.
+Buff Premium SungMa: czas tego przedmiotu już minął.	Buff Premium SungMa : le temps de cet objet est déjà écoulé.
+Buffi dostępna od 55 poziomu.	Buffi est disponible à partir du niveau 55.
+Buffi jest wyłączony na tym serwerze.	Buffi est désactivé sur ce serveur.
+by Mikstura Talentu zadziałała.	pour que la Potion de talent agisse.
+by o nim opowiedzieć.	pour vous en parler.
+by wejść:	pour entrer :
+by złożyć z nich kryształ. Wróć, gdy będziesz	pour en faire un cristal. Revenez quand vous serez
+Bywa też u dowódców i generałów Groty Wygnańców.	Les capitaines et généraux de la Grotte de l'Exil en ont aussi.
+Błogosławieństwa, Zaczarowanie i Wzmocnienie	Bénédiction, Enchantement et Renforcement
+Błogosławieństwa. Pakiet może zawierać m.in.:	Bénédiction. Le lot peut contenir entre autres :
+Błogosławieństwo Buffi	Bénédiction de Buffi
+błyskawic	foudre
+Błyskawica i lód (mapa 1)	Foudre et glace (carte 1)
+Błyskawicy	Foudre
+błyskawicę, lód, wiatr, ziemię albo mrok.	la foudre, la glace, le vent, la terre ou les ténèbres.
+Błyszcząca - 10x Ładny Kamień Chaosu i 5 000 000 Yang,	Brillante - 10x Pierre du chaos splen. et 5 000 000 Yangs,
+Błądzić jest rzeczą ludzką - wybieraj rozważnie.	L'erreur est humaine - choisissez avec soin.
+całą drużynę stojącą obok.	tout le groupe qui se tient à côté.
+Cel (otrzyma bonusy zrodla):	Cible (recevra les bonus de la source) :
+Chaegirab ciągle jeszcze zajęty jest swoimi	Chaegirab est toujours occupé par ses
+Chaegirab w Dongan potrzebuje pomocy.	Chaegirab à Dongan a besoin d'aide.
+Chaos w Zaklętym Lesie	Chaos dans la Forêt enchantée
+Chcesz opuścić Kryptę Balathora?	Voulez-vous quitter la Crypte de Balathor ?
+Chcesz teraz wymienić Kartę Maski Dyni	Voulez-vous échanger maintenant la Carte: masque citrouille
+Chcę zabić tego smoka!	Je veux tuer ce dragon !
+choć jeden, żaden cios go nie zrani.	ne serait-ce qu'un, aucun coup ne le blessera.
+Cialo (Body)	Corps (Body)
+ciebie ekwipunek Smoka Mroku.	vous l'équipement du Dragon des ténèbres.
+cię wieczne potępienie.	vous la damnation éternelle.
+Co mam zrobic?	Que dois-je faire ?
+co najmniej jednego towarzysza z grupy.	au moins un compagnon du groupe.
+Co się dzieje?! Morze się wzburzyło... Czyżby	Que se passe-t-il ?! La mer est déchaînée... Serait-ce
+Codzienna misja Świat Iluzji: Nemere pokonany.	Mission quotidienne Monde des illusions : Nemere vaincu.
+Codzienna misja Świat Iluzji: Razador pokonany.	Mission quotidienne Monde des illusions : Razador vaincu.
+Codzienna misja: Świat Iluzji	Mission quotidienne : Monde des illusions
+Cor Draconis (zwyczajne, szlachetne), perły,	Cor Draconis (ordinaire, noble), perles,
+Cos poszlo nie tak.	Quelque chose s'est mal passé.
+Czarna Magia	Magie noire
+czas - od 10 do 60 minut. Pył Wężowy dodaje minutę.	temps - de 10 à 60 minutes. La Poussière de serpent ajoute une minute.
+Czas minął - Alastor wypędza was z Głębi.	Le temps est écoulé - Alastor vous chasse des Profondeurs.
+Czas minął! Sung Mahi wyrzuca cię z wieży.	Le temps est écoulé ! Sung Mahi vous jette hors de la tour.
+Czas minął. Możesz spróbować jeszcze raz.	Le temps est écoulé. Vous pouvez réessayer.
+Czas oczekiwania został skrócony.	Le temps d'attente a été réduit.
+Czas odbioru nagrod juz minal.	Le délai pour récupérer les récompenses est déjà passé.
+czeka Morkhot, władca głębin.	Morkhot, seigneur des profondeurs, attend.
+czeka na ciebie - on wie, gdzie szukać Władców	vous attend - il sait où chercher les Seigneurs
+czeka Nemere, pan mrozu. Nikt stamtąd nie wrócił,	Nemere, seigneur du gel, attend. Personne n'en est revenu,
+Czekaj na event w kalendarzu wydarzeń.	Attendez l'événement dans le calendrier des événements.
+Czempion	Champion
+Czempiona (Opcje klawiszy: Czempion).	Champion (Options des touches : Champion).
+Czer. Żeń-szeń (premium) to karma Potężnego Konia Wojskowego (31+).	Le Ginseng rouge (premium) nourrit le Puissant cheval militaire (31+).
+Czerwone Pudło Zodiaku	Coffret zodiacal rouge
+Czerwony Żeń-szeń 	Ginseng rouge 
+cztery fale, a skarb Hydry będzie twój.	quatre vagues, et le trésor de l'Hydre sera à vous.
+Czuje sie silniejszy! Dziekuje.	Je me sens plus fort ! Merci.
+Czujesz tę pulsującą energię?	Sentez-vous cette énergie qui pulse ?
+Czwartek (Wu-Wei)	Jeudi (Wu-Wei)
+Czy chcesz opuścić jaskinie i wrócić do Dongan?	Voulez-vous quitter la grotte et retourner à Dongan ?
+Czy chcesz opuścić Królestwo Żywiołów	Voulez-vous quitter le Monde élémentaire
+Czy chcesz opuścić Schronienie Meley? Walka trwa	Voulez-vous quitter le Repaire de Meley ? Le combat continue
+Czy chcesz opuścić wieżę? Wspinaczka się skończy.	Voulez-vous quitter la tour ? L'ascension prendra fin.
+Czy chcesz opuścić świątynię?	Voulez-vous quitter le temple ?
+Czy chcesz podnieść kotwicę i ruszyć w drogę?	Voulez-vous lever l'ancre et partir ?
+Czy chcesz przejść przez Gardziel Am-heha i	Voulez-vous traverser les Gorges d'Am-Heh et
+Czy chcesz się teleportować?	Voulez-vous vous téléporter ?
+Czy chcesz teraz wejść Świątyni Zodiaku?	Voulez-vous entrer dans le Temple du zodiaque maintenant ?
+Czy chcesz teraz zejść ze statku? Wejście	Voulez-vous descendre du navire maintenant ? Entrer
+Czy chcesz użyć Spirali Czasu?	Voulez-vous utiliser un Accélérateur ?
+Czy chcesz wrócić na Przełęcz Yilad?	Voulez-vous retourner au Col de Yilad ?
+Czy chcesz wrócić z Tajemniczej Instancji	Voulez-vous revenir de l'Instance mystérieuse
+Czy chcesz zejść głębiej do jaskiń?	Voulez-vous descendre plus profond dans les grottes ?
+Czy chcesz zejść na ląd?	Voulez-vous débarquer ?
+Czy chcesz, abym zaprowadzil cie do Swiatyni?	Voulez-vous que je vous conduise au Temple ?
+Czy jestes jednym z nich?	Êtes-vous l'un d'eux ?
+Czy jesteście gotowi stanąć przed Nemere (PB),	Êtes-vous prêts à affronter Nemere (ÉV),
+Czy jesteście gotowi stanąć przed Nemere (SZC),	Êtes-vous prêts à affronter Nemere (ST),
+Czy na pewno chcesz zregenerować wszystkie portale?	Voulez-vous vraiment régénérer tous les portails ?
+Czy na pewno chcesz zregenerować?	Voulez-vous vraiment régénérer ?
+Czy przypominasz sobie jeszcze Jaskinie Gnolli	Vous souvenez-vous encore des Grottes des Gnolls
+Czy znasz legendę o Świątyni Zodiaku?	Connaissez-vous la légende du Temple du zodiaque ?
+czyste egzemplarze.	exemplaires intacts.
+Czyściec Ognia (Razador)	Purgatoire de feu (Razador)
+Czyściec Ognia: nie udało się otworzyć portalu - porozmawiaj z posągiem Am-heh.	Purgatoire de feu : le portail n'a pas pu s'ouvrir - parlez à la statue d'Am-Heh.
+Czyściec Ognia: porozmawiaj z posągiem Am-heh, aby otworzyć portal.	Purgatoire de feu : parlez à la statue d'Am-Heh pour ouvrir le portail.
+Czyściec Ognia: portal się otwiera...	Purgatoire de feu : le portail s'ouvre...
+Czyściec Ognia: przejście prowadzi przez poczekalnię.	Purgatoire de feu : le passage mène par la salle d'attente.
+części (Święty 500 000, Okazały 1 000 000, Rycerski	pièces (Sacré 500 000, Majestueux 1 000 000, Chevalier
+Członek grupy jest za daleko. Zbierzcie się przy mnie.	Un membre du groupe est trop loin. Rassemblez-vous près de moi.
+Członek grupy nie posiada przedmiotu potrzebnego,	Un membre du groupe n'a pas l'objet nécessaire
+Członkowie, posiadający za mało Animosfer:	Membres ayant trop peu d'Animosphères :
+członków gildii obecnych w Krypcie.	membres de la guilde présents dans la Crypte.
+daje 1 punkt doświadczenia, Ogniste - 10, 50, 100,	donne 1 point d'expérience, les Ardents - 10, 50, 100,
+dalej bez ciebie - możesz do niej wrócić u mnie	sans vous - vous pouvez y revenir par moi
+demony. Najlepiej zdobyć ją od Niszczycieli En-Tai.	démons. Le mieux est de l'obtenir des Destructeurs En-Tai.
+Demonów. W oknie wytwarzania zobaczysz każdy przepis:	Démons. Dans la fenêtre de fabrication, vous verrez chaque recette :
+Dla twojego poziomu: +%d%% PD	Pour votre niveau : +%d%% EXP
+dla twojej klasy. Uda się na pewno.	pour votre classe. La réussite est garantie.
+do Chaegiraba w Dongan po nagrodę.	chez Chaegirab à Dongan pour votre récompense.
+Do Erebu wchodzi się tylko w grupie.	On n'entre à Erebu qu'en groupe.
+do Groty Wygnańców.	vers la Grotte de l'Exil.
+Do jaskiń wpuszczam od 1. Poziomu Czempiona.	J'autorise l'entrée des grottes dès le Niveau de Champion 1.
+Do którego obszaru chcesz się udać?	Dans quelle zone voulez-vous aller ?
+Do lochu wchodzi najwyżej 8 osób.	8 personnes au plus peuvent entrer dans le donjon.
+Do Lochów Przebudzenia wchodzi się tylko w grupie.	On n'entre dans les Donjons de l'éveil qu'en groupe.
+do Namgan?	vers Namgan ?
+do niej wejść przeze mnie.	y entrer par moi.
+do P. Nie masz żadnej z nich na stopniu G1-G10.	jusqu'à P. Vous n'en avez aucune au grade G1-G10.
+Do Portu Nowego Kontynentu	Vers le Port du Nouveau Continent
+Do przeniesienia bonusow z jednego kostiumu na drugi	Pour transférer les bonus d'un costume à un autre
+Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.	Vers le Poste de Nemere (ÉV) : Ninja et Chamane dans le groupe.
+Do Strażnicy Nemere (SZC): Ninja i Szaman w grupie.	Vers le Poste de Nemere (ST) : Ninja et Chamane dans le groupe.
+Do Szczeliny Czasu wchodzi najwyżej 8 osób.	8 personnes au plus peuvent entrer dans la Faille temporelle.
+Do Szczeliny Czasu wchodzi się tylko w grupie.	On n'entre dans la Faille temporelle qu'en groupe.
+Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)	En plus un Patron, Teinture bleue (Chaussures de feu)
+Do walki z Balathorem	Pour combattre Balathor
+do wyboru.	au choix.
+Do zakończenia badań potrzebuję jeszcze	Pour terminer mes recherches, il me faut encore
+do ziem Yohary, gdzie rządzi wola Sung Mahi.	vers les terres de Yohara, où règne la volonté de Sung Mahi.
+Do Świątyni Smoka wchodzi się tylko w grupie.	On n'entre dans le Temple du Dragon qu'en groupe.
+Do świątyni wchodzi najwyżej 8 osób.	8 personnes au plus peuvent entrer dans le temple.
+Dobra robota. Las od razu oddycha lżej.	Bon travail. La forêt respire déjà mieux.
+Dobrze	Bien
+Dobrze! Następny Metin.	Bien ! Metin suivant.
+Dobrze, szanuję twoją decyzję. Wróć,	Bien, je respecte votre décision. Revenez
+Dobrze, w takim razie chodz za mna!	Bien, alors suivez-moi !
+Dobrze, zbadam je. Wróć po wynik za dobę.	Bien, je vais les examiner. Revenez chercher le résultat dans un jour.
+Dodano %d Smoczych Monet do Twojego konta.	%d Monnaies du Dragon ont été créditées sur votre compte.
+dodasz Wzmocnieniem Przedmiotu.	que vous ajoutez avec l'Objet de renforcement.
+Dodatkowy bonus (6. i 7.)	Bonus supplémentaire (6e et 7e)
+Dokad chcesz sie udac?	Où voulez-vous aller ?
+Dokąd chcesz się przenieść?	Où voulez-vous être transporté ?
+Dokąd chcesz się udać?	Où voulez-vous aller ?
+Dom Aukcyjny	Hôtel des ventes
+Dom Aukcyjny jest na tym świecie wyłączony.	L'Hôtel des ventes est désactivé dans ce monde.
+Dopalacz zwiększa obrażenia zadawane jedną umiejętnością.	Un Bonus augmente les dégâts infligés par une compétence.
+Dopalacz: Duchowe Uderzenie	Bonus Attaque de l'esprit
+Dopalacz: Mroczne Uderzenie	Bonus Attaque des Ténèbres
+Dopalacz: Ognista Strzała	Bonus Flèche de feu
+Dopalacz: Przywołanie Błyskawicy	Bonus Invocation de foudre
+Dopalacz: Strzelający Smok	Bonus Dragon chassant
+Dopalacz: Uderzenie Palcem	Bonus Toucher brûlant
+Dopalacz: Wir Miecza	Bonus Moulinet à l'épée
+Dopalacz: Zasadzka	Bonus Embuscade
+Dopalacza nauczysz się, gdy rozwiniesz dowolną ripostę do poziomu P.	Vous apprendrez un Bonus quand vous aurez monté une parade au niveau P.
+dopiero początek. Teraz potrzebuję Klejnotów	que le début. Maintenant il me faut des Gemmes
+Dopóki stoi choć jeden z nich, smoka nie da się zranić.	Tant qu'un seul d'entre eux tient debout, le dragon est invulnérable.
+Doskonały okaz! Dziękuję.	Un spécimen parfait ! Merci.
+dostajesz jeden taki Łup za każdą postawioną talię.	vous obtenez un tel butin pour chaque jeu misé.
+dostaniesz 1 Doblona, a gdy znajdziemy wlasciwa	vous recevrez 1 Doublon, et quand nous trouverons la bonne
+dostaniesz ode mnie maski! He he! 	vous aurez des masques de ma part ! Hé hé ! 
+Dostarcz apteczkę Zwiadowcy	Livrer la trousse de secours au Guetteur
+doszedł na szczyt i obronił statek przed Hydrą.	a atteint le sommet et défendu le navire contre l'Hydre.
+Doświadczenie Czempiona dają potwory ziemi	L'EXP de Champion vient des monstres de la terre
+doświadczeniem szata czeka na ewolucję.	d'expérience, la robe attend son évolution.
+Draconis (mityczne, drogocenne), perły, kolczyki	Draconis (mythique, précieux), perles, boucles d'oreilles
+drogę na nowy kontynent. Czy mam cię zabrać do	le chemin du nouveau continent. Dois-je vous emmener à
+dropują, ale dają więcej PD niż zazwyczaj.	ne lâchent rien, mais donnent plus d'EXP que d'habitude.
+Druga fala - i Szel (PB)!	Deuxième vague - et Szel (ÉV) !
+Druga fala - i Szel (SZC)!	Deuxième vague - et Szel (ST) !
+Druga wioska	Deuxième village
+Drugi rekonesans	Deuxième reconnaissance
+Drugi rekonesans: wróć do Zwiadowcy Lasu.	Deuxième reconnaissance : retournez voir le Guetteur de la forêt.
+Druid En-Tai (PB) musi być gdzieś w pobliżu. Zabierz	Le Druide En-Tai (ÉV) doit être quelque part. Prenez
+Druid En-Tai (SZC) musi być gdzieś w pobliżu. Zabierz	Le Druide En-Tai (ST) doit être quelque part. Prenez
+Druid En-Tai miał przy sobie apteczkę (PB). Zanieś ją Strażnikowi Lasu (PB).	Le Druide En-Tai avait une trousse de secours (ÉV). Apportez-la au Gardien de la forêt (ÉV).
+Druid En-Tai miał przy sobie apteczkę (SZC). Zanieś ją Strażnikowi Lasu (SZC).	Le Druide En-Tai avait une trousse de secours (ST). Apportez-la au Gardien de la forêt (ST).
+Druid En-Tai miał przy sobie apteczkę. Zanieś ją Strażnikowi Lasu.	Le Druide En-Tai avait une trousse de secours. Apportez-la au Gardien de la forêt.
+Drużyna na tej mapie wejdzie razem z tobą.	Votre groupe sur cette carte entrera avec vous.
+Drużyna nie jest wymagana.	Aucun groupe n'est requis.
+Duch Ziemi! Dzięki niemu zrozumiemy, co się dzieje	L'Esprit de la terre ! Grâce à lui, nous comprendrons ce qui se passe
+Duchowym Buffi.	Buffi spirituel.
+Duchowym+.	spirituelle+.
+duchy sześciu żywiołów strzegą swoich ziem.	les esprits des six éléments gardent leurs terres.
+Dusza Miecza	Âme tranchante
+Dusza Miecza (powtarzalna)	Âme tranchante (répétable)
+Dusza Ochrony	Âme protectrice
+Dusza Ochrony (powtarzalna)	Âme protectrice (répétable)
+Dusza Ozdoby	Âme ornementale
+Dusza Ozdoby (powtarzalna)	Âme ornementale (répétable)
+Dusza Światła	Âme lumineuse
+Dusza Światła (powtarzalna)	Âme lumineuse (répétable)
+dyniogłowym! Nazywam się Jack Pumpkin, a to jest	tête de citrouille ! Je m'appelle Jack Pumpkin, et voici
+Działa już lepsza ryba na doświadczenie - słabsza nie zadziała razem z nią.	Un meilleur poisson d'EXP est déjà actif - un plus faible ne fonctionnera pas avec lui.
+działają u Ciebie o połowę rzadziej.	fonctionnent deux fois moins souvent pour vous.
+Dziekuje za pomoc! Za chwile wrocisz na lad.	Merci pour votre aide ! Vous serez bientôt de retour à terre.
+Dziekuje! Oto twoje szkatulki.	Merci ! Voici vos coffrets.
+Dziekuje, ze mnie tu odprowadziles.	Merci de m'avoir escorté jusqu'ici.
+Dziesieciu graczy z najwieksza suma punktow	Les dix joueurs ayant le plus grand total de points
+Dziesięciu graczy z najwyższym łącznym wynikiem	Les dix joueurs ayant le meilleur score total
+Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.	Grâce à mon pouvoir, vous entrerez dans les Donjons de l'éveil.
+Dzięki temu skróci się czas oczekiwania. Wybierz	Cela réduira le temps d'attente. Choisissez
+Dzięki tobie moje badania są ukończone.	Grâce à vous, mes recherches sont terminées.
+Dziękuję ci za pomoc, wojowniku.	Merci pour votre aide, guerrier.
+Dziękuję ci za pomoc, wojowniku. Las jest ci wdzięczny.	Merci pour votre aide, guerrier. La forêt vous est reconnaissante.
+Dziękuję ci. Wynagrodzę cię za pomoc.	Merci. Je vous récompenserai pour votre aide.
+Dziękuję za pomoc. Weź to w nagrodę.	Merci pour votre aide. Prenez ceci en récompense.
+Dziękuję, już mi lepiej. Do uszlachetnienia	Merci, je me sens mieux. Pour le raffinage
+Dziękuję. Na razie świątynia jest bezpieczna. Oto[ENTER]twój prezent. Jednak energia znowu wzrośnie. Wróć[ENTER]po 24 godzinach, by zmniejszyć poziom energii za[ENTER]pomocą Animosfer. Oczywiście, że otrzymasz za to[ENTER]kolejną nagrodę.	Merci. Le temple est en sécurité pour l'instant. Voici[ENTER]votre cadeau. Mais l'énergie va remonter. Revenez[ENTER]dans 24 heures pour baisser le niveau d'énergie avec[ENTER]des Animosphères. Bien sûr, vous recevrez une autre[ENTER]récompense pour cela.
+Efekt zestawu	Effet de set
+eksperyment może się nie powieść.	l'expérience peut échouer.
+ekwipunek. Potrafie tez oszlifowac klejnoty	équipement. Je sais aussi tailler les gemmes
+eliksir (szansa 90%, od 120. poziomu):	élixir (chance 90%, à partir du niveau 120) :
+Eliksir daje od 8 do 20% na 1 do 10 minut -	L'élixir donne de 8 à 20% pendant 1 à 10 minutes -
+Eliksir nie działa w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).	L'élixir ne marche pas dans les missions de Yohara et ne réduit pas le temps d'attente (c'est le rôle de l'Accélérateur).
+Eliksir Poszukiwacza działa w badaniach Biologa - od 30 poziomu.	L'Élixir du chercheur agit sur les recherches du Biologiste - dès le niveau 30.
+Eliksir Poszukiwacza już działa - zostanie zużyty przy następnym oddaniu przedmiotu do badań.	L'Élixir du chercheur est déjà actif - il sera consommé lors de votre prochaine remise d'objet pour les recherches.
+Eliksir Poszukiwacza poprawił jakość przedmiotu: szansa na przyjęcie %d%%.	L'Élixir du chercheur a amélioré la qualité de l'objet : chance d'acceptation %d%%.
+Eliksir Woli SungMa: +5 (%s) na 30 min.	Élixir de volonté SungMa : +5 (%s) pendant 30 min.
+Eliksiry Yohary	Élixirs de Yohara
+En-Tai (PB). Odnajdź go i odbierz mu apteczkę.	En-Tai (ÉV). Trouvez-le et reprenez-lui la trousse de secours.
+En-Tai (SZC). Zabijaj druidów, aż zdobędziesz	En-Tai (ST). Tuez des druides jusqu'à obtenir
+En-Tai zachowują się co najmniej dziwnie. Przerzedź ich	Les En-Tai se comportent pour le moins bizarrement. Éclaircissez leurs rangs
+En-Tai, bo zachowują się co najmniej dziwnie.	En-Tai, car ils se comportent pour le moins bizarrement.
+Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.	Encyclopédie ouverte : 25 livres de compétence sont dans votre inventaire.
+Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.	Encyclopédie : il vous faut %d places libres dans l'inventaire.
+energii przy pasku zadań pokaże, ile ci zostało.	d'énergie près de la barre des tâches montre ce qu'il vous reste.
+Erebu (PB): Bagjanamu (PB) strzeże drogi do Jotuna Thryma!	Erebu (ÉV) : Bagjanamu (ÉV) garde le chemin de Jotun Thrym !
+Erebu (SZC): Bagjanamu (SZC) strzeże drogi do Jotuna Thryma!	Erebu (ST) : Bagjanamu (ST) garde le chemin de Jotun Thrym !
+Erebu jest dziś zamknięte. Wróć później.	Erebu est fermé aujourd'hui. Revenez plus tard.
+Erebu nie przyjmie was teraz. Spróbuj za chwilę.	Erebu ne vous laisse pas entrer pour l'instant. Réessayez dans un moment.
+Erebu: Bagjanamu strzeże drogi do Jotuna Thryma! Macie 30 minut.	Erebu : Bagjanamu garde le chemin de Jotun Thrym ! Vous avez 30 minutes.
+Erebu: czas minął - wracacie do Zaklętego Lasu.	Erebu : le temps est écoulé - vous retournez à la Forêt enchantée.
+Erebu: potrzebujesz Kamienia Driad.	Erebu : il vous faut une Pierre des dryades.
+Erebu: ta wyprawa już się skończyła.	Erebu : cette expédition est déjà terminée.
+Etap 2: pokonaj Demoniczny Kamień i wszystkie potwory! Łucznicy budzą się, gdy kamień oberwie.	Étape 2 : vainquez la Pierre démoniaque et tous les monstres ! Les archers se réveillent quand la pierre est touchée.
+Etap 2: pokonaj potwory w limicie czasu! Klątwa Sunga Mahi co 10 s odbiera więcej PŻ - Antidotum SungMa ją zdejmuje.	Étape 2 : vainquez les monstres dans le temps imparti ! La malédiction de Sung Mahi prend plus de PV toutes les 10 s - l'Antidote SungMa la lève.
+Etap 2: unikaj wszystkich ataków przez minutę! Trafienie kręgiem zostawia 1 PŻ - drugie przy niepełnym PŻ zabija.	Étape 2 : esquivez toutes les attaques pendant une minute ! Un coup du cercle laisse 1 PV - un second sans PV pleins tue.
+Etap 2: znajdź kamień, by usunąć pieczęć! Pieczęcie otwierają się tylko w odpowiedniej kolejności.	Étape 2 : trouvez la pierre pour lever le sceau ! Les sceaux ne s'ouvrent que dans le bon ordre.
+Etap 2: znajdź odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.	Étape 2 : trouvez la bonne clé pour fuir ! La Clé énigmatique tombe des monstres.
+Etap 2: znajdź parę potworów, które do siebie nie pasują, i pokonaj ją!	Étape 2 : trouvez la paire de monstres qui ne vont pas ensemble et vainquez-la !
+Etap 2: zniszcz prawidłowy kamień metin! Masz jedną szansę.	Étape 2 : détruisez la bonne Pierre Metin ! Vous n'avez qu'une chance.
+Etap ukończony - przejdź przez portal	Étape terminée - passez par le portail
+Event jeszcze trwa - nagrody za ranking	L'événement est encore en cours - les récompenses du classement
+eventu odbiera tu po jego końcu (przez 7 dni):	de l'événement se récupèrent ici après sa fin (pendant 7 jours) :
+Ewolucja zawsze się udaje i daje +1 poziom,	L'évolution réussit toujours et donne +1 niveau,
+Fabuła	Histoire
+Fala Śmierci	Vague de la Mort
+Fragment duszy: %d / 10	Fragment d'âme : %d / 10
+fryzure na fryzure, nakladke na nakladke.	coiffure pour coiffure, apparence pour apparence.
+Gardziel Am-heha	Gorges d'Am-Heh
+Gaya biorę sam z twojego licznika Gaya.	Je prends moi-même les Gaya sur votre compteur de Gaya.
+Gaya biorę z twojego licznika Gaya.	Je prends les Gaya sur votre compteur de Gaya.
+Gaya biorę z twojego licznika Gaya. Kliknij przepis,	Je prends les Gaya sur votre compteur de Gaya. Cliquez sur une recette,
+gdy się nie uda, hełm i materiały przepadają.	en cas d'échec, le casque et les matériaux sont perdus.
+gdy skończę.	quand j'aurai fini.
+Gdy statek wypłynie, nie będzie odwrotu - Hydra	Une fois le navire parti, pas de retour possible - l'Hydre
+Gdy walka się zacznie, świątynia odmierzy wam	Une fois le combat commencé, le temple vous comptera
+Gdzie jest apteczka? Odbierz ją Druidom En-Tai.	Où est la trousse de secours ? Reprenez-la aux Druides En-Tai.
+Gdzie jest apteczka? Odbierz ją Druidowi En-Tai.	Où est la trousse de secours ? Reprenez-la au Druide En-Tai.
+Gdzie jest Drzewny Szmaragd (PB)? Pokonaj Władcę.	Où est l'Émeraude boisée (ÉV) ? Vainquez le Seigneur.
+Gdzie jest Drzewny Szmaragd (SZC)? Pokonaj Władcę.	Où est l'Émeraude boisée (ST) ? Vainquez le Seigneur.
+Gdzie jest Szlachetne Drewno (SZC)? Pokonaj Władcę.	Où est le Bois précieux (ST) ? Vainquez le Seigneur.
+Gdzie jest Szlachetne Drzewo (PB)? Pokonaj Władcę.	Où est le Bois précieux (ÉV) ? Vainquez le Seigneur.
+Gildia może wejść ponownie za %d min.	La guilde pourra entrer à nouveau dans %d min.
+Gildia musi istnieć co najmniej 24 godziny.	La guilde doit exister depuis au moins 24 heures.
+Gildia musi mieć co najmniej %d poziom.	La guilde doit être au moins de niveau %d.
+Gildia potrzebuje %d pkt rankingu gildii.	La guilde a besoin de %d points de classement de guilde.
+Glos Barah Taraji	Voix de Barah Taraji
+GM: Krypta Balathora - zeruj przerwę gildii	GM : Crypte de Balathor - réinitialiser la pause de guilde
+GM: Musisz byc na 1 lub 2 pietrze DT.	GM : Vous devez être à l'étage 1 ou 2 de DT.
+GM: szanse połowu	GM : chances de pêche
+Gniew Alastora! Przyzywa sługi i leczy swoje rany.	Colère d'Alastor ! Il invoque des serviteurs et soigne ses blessures.
+Goblin Skarbow:	Gobelin trésor :
+Gorzka porażka! Twoja wspinaczka kończy się tutaj - za chwilę wracasz do hali.	Amère défaite ! Votre ascension s'arrête ici - vous retournez bientôt dans la salle.
+Gotowe! Porozmawiaj ze mna jeszcze raz.	C'est fait ! Parlez-moi encore une fois.
+Gotowe! Wróć do Mnicha Milbon, by odebrać prezent.	C'est fait ! Retournez voir le Moine Milbon pour recevoir votre cadeau.
+Gotowe. Bonus PD +%d%% na %s	C'est fait. Bonus EXP +%d%% pour %s
+Gotowe. Bonusy zostaly przeniesione, a przedmiot	C'est fait. Les bonus ont été transférés, et l'objet
+Gotowe. Umieść Relikt w oknie Bonusu Reliktu	C'est fait. Placez la Relique dans la fenêtre Bonus de relique
+Gotowi? Balathor nie zna litości.	Prêts ? Balathor ne connaît pas la pitié.
+Gra kosztuje 30 000 yang i jeden zestaw kart.	La partie coûte 30 000 Yangs et un jeu de cartes.
+Graj po swojemu (wolna reka)	Jouer à votre façon (main libre)
+Gratulacje! Za miejsce w pierwszej dziesiątce	Félicitations ! Pour une place dans les dix premiers
+Gre konczysz, kiedy chcesz. Dostajesz skrzynie:	Vous finissez la partie quand vous voulez. Vous recevez des coffres :
+Gromiste Góry	Montagnes fulgurantes
+Grota Wygnańców (wejście)	Grotte de l'Exil (entrée)
+Grota Wygnańców 2	Grotte de l'Exil 2
+Grota Wygnańców 2 (PB)	Grotte de l'Exil 2 (ÉV)
+Grota Wygnańców 2 (PB): czas minął - wracacie na Płaskowyż Iluzji.	Grotte de l'Exil 2 (ÉV) : le temps est écoulé - vous retournez au Plateau des illusions.
+Grota Wygnańców 2 (PB): masz 60 minut. Zdobądźcie Kręte Klucze (PB) i odszukajcie Ducha Sura.	Grotte de l'Exil 2 (ÉV) : vous avez 60 minutes. Obtenez les Clés en spirale (ÉV) et trouvez l'Esprit d'un Sura.
+Grota Wygnańców 2 (PB): potrzebujesz Książki Przebudzenia.	Grotte de l'Exil 2 (ÉV) : il vous faut un Livre de l'éveil.
+Grota Wygnańców 2 (PB): ta wyprawa już się skończyła.	Grotte de l'Exil 2 (ÉV) : cette expédition est déjà terminée.
+Grota Wygnańców 2 (SZC)	Grotte de l'Exil 2 (ST)
+Grota Wygnańców 2 (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Grotte de l'Exil 2 (ST) : le temps est écoulé - vous retournez au Plateau des illusions.
+Grota Wygnańców 2 (SZC): masz 60 minut. Zdobądźcie Kręte Klucze (SZC) i odszukajcie Ducha Sura.	Grotte de l'Exil 2 (ST) : vous avez 60 minutes. Obtenez les Clés en spirale (ST) et trouvez l'Esprit d'un Sura.
+Grota Wygnańców 2 (SZC): potrzebujesz Zegarka Kieszonkowego.	Grotte de l'Exil 2 (ST) : il vous faut une Montre de poche.
+Grota Wygnańców 2 (SZC): ta wyprawa już się skończyła.	Grotte de l'Exil 2 (ST) : cette expédition est déjà terminée.
+Grota Wygnańców 2 (zablokowane)	Grotte de l'Exil 2 (verrouillée)
+Grota Wygnańców 2 jest dostępna tylko z Groty Wygnańców.	La Grotte de l'Exil 2 n'est accessible que depuis la Grotte de l'Exil.
+Grrr, to nie jest kryształ Metin, lecz kawałek	Grrr, ce n'est pas un Cristal de Metin, mais un morceau
+Głębie (silny)	Profondeurs (difficile)
+Głębie (słaby)	Profondeurs (facile)
+Głębie nie przyjmą was teraz. Spróbuj za chwilę.	Les Profondeurs ne vous laissent pas entrer pour l'instant. Réessayez dans un moment.
+Głębie Północnego Wiatru	Profondeurs d'Aquilon
+Głębie Północnego Wiatru (silny)	Profondeurs d'Aquilon (difficile)
+Głębie Północnego Wiatru (słaby)	Profondeurs d'Aquilon (facile)
+Głębie są dziś zamknięte. Wróć później.	Les Profondeurs sont fermées aujourd'hui. Revenez plus tard.
+Głębie: ta wyprawa już się skończyła.	Profondeurs : cette expédition est déjà terminée.
+Głębie: zbyt długo leżałeś martwy - wypadasz z wyprawy.	Profondeurs : vous êtes resté mort trop longtemps - vous quittez l'expédition.
+Halloween, nagle zawirował cały świat i w ułamku	Halloween, soudain le monde entier a tourbillonné et en une fraction
+Handlarz Bronią w Dongan potrzebuje pomocy.	Le Marchand d'armes de Dongan a besoin d'aide.
+Handlarz Zbrojami w Dongan potrzebuje pomocy.	Le Marchand d'armures de Dongan a besoin d'aide.
+Hej! Wiem, że zamieniono mnie w kamień - to	Hé ! Je sais qu'on m'a changé en pierre - c'est
+Hej, ty! Tak, ty! Wygladasz na kogos, kto umie	Hé, vous ! Oui, vous ! Vous avez l'air de quelqu'un qui sait
+hełm 120. poziomu dla każdej klasy. Połóż materiały	un casque de niveau 120 pour chaque classe. Posez les matériaux
+Hełmy na 100 poziom	Casques de niveau 100
+Hmm... Nie mam maski, która pasowałaby	Hmm... Je n'ai pas de masque qui irait
+Hmmm, ta paproć jest niestety uszkodzona. Nie ma	Hmmm, cette fougère est malheureusement abîmée. Il n'y a
+Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strzał).	Le Hwacha n'est pas encore prêt (il faut des Flèches de feu).
+Hydra pokonana! Statek może teraz dopłynąć do	L'Hydre est vaincue ! Le navire peut maintenant voguer vers
+i 400 000 Yang. Szansa zależy od plusa butów:	et 400 000 Yangs. La chance dépend du plus des chaussures :
+i 5 Kamieni Szlif. Płn. W., do zbroi 5 Jedwabi Wężowych	et 5 Pierres d'affûtage d'Aqu., pour l'armure 5 Soies serpent
+i 5 Politur Wężowych. Koszt: 10 000 000 Yang i 100 Gaya,	et 5 Vernis serpent. Coût : 10 000 000 Yangs et 100 Gaya,
+i ciemnością głębin. Bez niego nie zejdziesz do ruin.	et l'obscurité des profondeurs. Sans lui, vous ne descendrez pas aux ruines.
+i co najmniej 500 000 Yang w skarbcu gildii.	et au moins 500 000 Yangs dans le trésor de guilde.
+i hełm (przykład dla twojej klasy, +7) i wszystkie	et un casque (exemple pour votre classe, +7) et tous
+i magowie strzega swiatyni dzien i noc, a po jej	et des mages gardent le temple jour et nuit, et après sa
+i materiały - wszystkie przepisy zobaczysz w oknie.	et les matériaux - vous verrez toutes les recettes dans la fenêtre.
+i moze niewlasciwie dzialac. Wlacza go wlasciciel	et peut mal fonctionner. Il est activé par le propriétaire
+i Podziemnych Lodowych Golemów w Grocie.	et les Golems de glace d'enfer dans la Grotte.
+i Starożytna Dżungla (wiatr). Odporność	et la Jungle antique (vent). Résistance
+i te dodane. Im wyższy poziom szaty, tym większa	et celles ajoutées. Plus le niveau de la robe est élevé, plus
+i wrócić do Portu Nowego Kontynentu?	et retourner au Port du Nouveau Continent ?
+i Zaczarowanego Lasu (wiatr) oraz lochy:	et la Forêt enchantée (vent) et les donjons :
+i zbroi poziomu 65 wykuwam nowy, potezniejszy	et d'armure de niveau 65, je forge une nouvelle, plus puissante
+ich blask zmienia się pod wpływem emocji.	leur éclat change sous l'effet des émotions.
+Ich strażnicy pilnują Płomiennego Feniksa,	Leurs gardiens veillent sur le Phœnix flamboyant,
+Idź dalej	Continuer
+Idź do Opuszczonej Twierdzy	Allez à la Forteresse abandonnée
+Idź do teleportera i przenieś się do Świątyni[ENTER]Zodiaku. Mnich Milbon czeka tam już na ciebie.	Allez au téléporteur et rendez-vous au Temple du[ENTER]zodiaque. Le Moine Milbon vous y attend déjà.
+Idź do Świątyni Węży	Allez au Temple des serpents
+idź jeszcze raz do Władców En-Tai i przynieś mi Drzewny	retournez voir les Seigneurs En-Tai et rapportez-moi
+Idź już i znajdź jeden %s!	Allez maintenant et trouvez un %s !
+Ignator (PB) jeszcze żyje. Walcz dalej albo czeka	Ignator (ÉV) est encore en vie. Continuez le combat ou
+Ignator (PB), strażnik żaru, został pokonany.	Ignator (ÉV), gardien des braises, a été vaincu.
+Ignator (SZC) jeszcze żyje. Walcz dalej albo czeka	Ignator (ST) est encore en vie. Continuez le combat ou
+Ignator (SZC), strażnik żaru, został pokonany.	Ignator (ST), gardien des braises, a été vaincu.
+Informacja o mapie	Informations sur la carte
+innym... Czegoś takiego na pewno jeszcze nie	autre... Vous n'avez sûrement jamais rien vu de tel
+Inteligencja %d.	Intelligence %d.
+Inteligencja - trucizna, ogień i krwawienie	Intelligence - poison, feu et saignement
+Inteligencja Sung Ma	Intelligence Sung Ma
+ja wyrzucasz. Trzy karty o tej samej liczbie	vous la défaussez. Trois cartes du même nombre
+Jak grac w Okey?	Comment jouer à l'Okey ?
+Jak ma sie nazywac?	Quel doit être son nom ?
+Jak ma walczyc?	Comment doit-il combattre ?
+Jak mam walczyc przy tobie?	Comment dois-je combattre à vos côtés ?
+Jak sie masz?	Comment allez-vous ?
+Jaka ma byc jego klasa?	Quelle doit être sa classe ?
+Jaka sciezka?	Quelle voie ?
+Jaskinie Gnolli	Grottes des Gnolls
+Jaskinie Gnolli są dostępne od 1. Poziomu Czempiona. Wracasz do Dongan.	Les Grottes des Gnolls sont accessibles dès le Niveau de Champion 1. Vous retournez à Dongan.
+Jazda (Bezszelest. Chód)	À dos (foulée de plume)
+Jazda (Brak Odrzutu)	À dos (sans recul)
+Jazda (Gwałt. Wichura)	À dos (forte tempête)
+Jazda (Nieśmiertelność)	À dos (invincibilité)
+Jazda (umiej. konne)	À dos (apt. monture)
+Jazda (W. SungMa. INT)	À dos (vo. SungMa, INT)
+Jazda (W. SungMa. ODP)	À dos (vo. SungMa, RES)
+Jazda (W. SungMa. SIŁA)	À dos (vo. SungMa, STR)
+Jazda (W. SungMa. WIT)	À dos (vo. SungMa, VIT)
+Jazda (Zwinne Kopyta)	À dos (sabots vifs)
+Jazda Konna (Ninja)	À dos (anti Ninjas)
+Jazda Konna (PD)	À dos (EXP)
+Jazda Konna (Precyzja)	À dos (précision)
+Jazda Konna (przeciw diabłom)	À dos (anti démons)
+Jazda Konna (przeciw insektom)	À dos (anti insectes)
+Jazda Konna (przeciw mistykom)	À dos (anti mystiques)
+Jazda Konna (przeciw nieumarłym)	À dos (anti morts-vivants)
+Jazda Konna (przeciw orkom)	À dos (anti orcs)
+Jazda Konna (przeciw potworom pustyni)	À dos (anti monstres du désert)
+Jazda Konna (przeciw potworom)	À dos (anti monstres)
+Jazda Konna (przeciw półludziom)	À dos (anti demi-humains)
+Jazda Konna (przeciw zwierzętom)	À dos (anti animaux)
+Jazda Konna (Sura)	À dos (anti Suras)
+Jazda Konna (Szaman)	À dos (anti Chamane)
+Jazda Konna (Wojownik)	À dos (anti Guerriers)
+Jeden transfer zuzywa jedna sztuke.	Un transfert consomme une pièce.
+Jeden z wybranych przedmiotow nie lezy juz w Twoim	L'un des objets choisis n'est plus dans votre
+Jedna z twoich mocy woli SungMa zostanie	L'une de vos volontés SungMa sera
+jednak: tylko pierwsza próba zawsze się udaje.	cependant : seule la première tentative réussit toujours.
+jednego jadeitu potrzebują tych samych materiałów.	un jade nécessitent les mêmes matériaux.
+jedną pełną kulę doświadczenia.	un orbe d'expérience plein.
+Jego jad zabił już niejednego wojownika,	Son venin a déjà tué plus d'un guerrier,
+Jego łuski błyszczą niczym płynne złoto! Co z nim zrobisz?	Ses écailles brillent comme de l'or liquide ! Qu'allez-vous en faire ?
+Jej Królowa nie wypuściła jeszcze nikogo,	Sa Reine n'a encore laissé partir personne,
+jej potomstwem, najadami i samą bestią. Wytrzymaj	sa progéniture, les naïades et la bête elle-même. Tenez bon
+Jej potwory rani tylko Czempion - ten, kto	Seul un Champion blesse ses monstres - celui qui
+Jesli ja albo ty zginiemy, wyprawa przepadnie.	Si vous ou moi mourons, l'expédition est perdue.
+jest część parametrów, którą da (poziom 250 - 25%).	est la part des stats qu'il donne (niveau 250 - 25%).
+Jestem Goblinem Skarbow. Od lat szukam wielkiej	Je suis le Gobelin trésor. Depuis des années je cherche un grand
+Jestem w trakcie dokładniejszej analizy	Je suis en train d'analyser de plus près
+jesteś dość silny, by przetrwać. Naprawdę chcesz	vous êtes assez fort pour survivre. Voulez-vous vraiment
+Jesteś już w Porcie Nowego Kontynentu.	Vous êtes déjà au Port du Nouveau Continent.
+Jeszcze chwile	Encore un instant
+jeszcze jego Drzewny Szmaragd, a dam ci coś cennego.	aussi son Émeraude boisée, et je vous donnerai quelque chose de précieux.
+jeszcze lepsze. Przynies mi:	encore mieux. Apportez-moi :
+Jeszcze nie	Pas encore
+Jeszcze nie odpoczęli po poprzedniej wyprawie:	Ils ne se sont pas encore reposés de la dernière expédition :
+Jeszcze nie skończyłem. Wróć za:	Je n'ai pas encore fini. Revenez dans :
+Jeszcze nie udało ci się zniszczyć wszystkich %d[ENTER]kamieni Metin. Wróć do mnie, gdy już wykonasz to[ENTER]zadanie.	Vous n'avez pas encore détruit les %d[ENTER]Pierres Metin. Revenez me voir quand vous aurez[ENTER]accompli cette mission.
+Jeszcze nieaktywne.	Pas encore actif.
+jeszcze przez chwile. Prowadzi do Zakletego Lasu,	encore un moment. Il mène à la Forêt enchantée,
+jeszcze raz do Władców En-Tai i przynieś mi Drzewny	encore une fois chez les Seigneurs En-Tai et rapportez-moi
+jeśli się rozmyślisz.	si vous changez d'avis.
+Jeśli statek wciąż płynie, łódź zaraz cię do	Si le navire vogue encore, une barque va vous y
+Jeśli wyprawa wciąż trwa, brama zaraz cię zabierze.	Si l'expédition est encore en cours, la porte va vous emmener.
+Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.	Si l'expédition est encore en cours, le pouvoir de la statue va vous emmener.
+Jeśli wyprawa wciąż trwa, portal zaraz cię zabierze.	Si l'expédition est encore en cours, le portail va vous emmener.
+Jeśli wyprawa wciąż trwa, przejście zaraz cię zabierze.	Si l'expédition est encore en cours, le passage va vous emmener.
+Jeśli wyprawa wciąż trwa, prąd zaraz cię zabierze.	Si l'expédition est encore en cours, le courant va vous emmener.
+Jotun Thrym (PB) przybył do Erebu!	Jotun Thrym (ÉV) est arrivé à Erebu !
+Jotun Thrym (SZC) przybył do Erebu!	Jotun Thrym (ST) est arrivé à Erebu !
+Jotun Thrym przybył do Erebu!	Jotun Thrym est arrivé à Erebu !
+Juz mam to blogoslawienstwo.	J'ai déjà cette bénédiction.
+ją pokonali.	l'ont vaincue.
+Kamieni stworzę Tajemniczy Talizman. W oknie wytwarzania	Pierres, je créerai un Talisman mystérieux. Dans la fenêtre de fabrication
+Kamienia Dusz Beran-Setaou. Zdobędziesz go	Pierre d'âme de Beran-S. Vous l'obtiendrez
+Kamienia Duszy +0, +1, +2 albo +3. Oszlifuję z nich	Pierre d'âme +0, +1, +2 ou +3. Je taillerai avec elles
+Kamienie leżą - smok jest bezbronny. Spieszcie się,	Les pierres sont tombées - le dragon est sans défense. Vite,
+Kamienie Przebudzenia	Pierres d'éveil
+Kamienie smoka chronią Beran-Setaou. Dopóki stoi	Les pierres du dragon protègent Beran-Setaou. Tant qu'il en reste
+Kamień decyduje o szansie: Mały 2%, Drobny 5%,	La pierre fixe la chance : Petite 2%, Mineure 5%,
+Kamień demonów oberwał - łucznicy atakują!	La Pierre démoniaque a été touchée - les archers attaquent !
+Kamień Driad.	Pierre des dryades.
+Kamień Duchowy Buffi	Pierre d'âme de Buffi
+Kamień Duchowy Buffi trenuje umiejętności Buffi	La Pierre d'âme de Buffi entraîne les compétences de Buffi
+Kamień Duchowy+	Pierre d'âme+
+Kamień Duchowy+ rozwija ripostę i dopalacz od stopnia G1	La Pierre d'âme+ fait progresser la parade et le bonus dès le grade G1
+Kamień Dusz Beran-Setaou	Pierre d'âme de Beran-S.
+Kamień Dusz Beran-Setaou! Dzięki niemu moje	La Pierre d'âme de Beran-S. ! Grâce à elle, mes
+Kamień Metin z Yohara działa tylko na mapach Yohary z Wolą SungMa.	Une Pierre Metin de Yohara ne marche que sur les cartes de Yohara avec la Volonté SungMa.
+Kamień Metin z Yohara wymaga 1. Poziomu Czempiona.	Une Pierre Metin de Yohara requiert le Niveau de Champion 1.
+kamień przebudzenia i 2 500 000 Yang. Kamień decyduje	une pierre d'éveil et 2 500 000 Yangs. La pierre fixe
+Kamień użyty na złej steli się rozpadnie.	Une pierre utilisée sur la mauvaise stèle tombera en poussière.
+karty Okey. 24 karty tworza zestaw kart.	cartes Okey. 24 cartes forment un jeu de cartes.
+Katakumby Diabła: Wyjdziesz z lochu za 1 sekundę.	Catacombes du Diable : vous quitterez le donjon dans 1 seconde.
+Każda klasa i droga ma swój dopalacz - twój to:	Chaque classe et voie a son propre bonus - le vôtre est :
+Każda mapa Sung Ma ma swoje wymagania. Gdy	Chaque carte Sung Ma a ses exigences. Quand
+Każde pełne 10% Siły daje też +1% do	Chaque tranche complète de 10% de Force donne aussi +1% à
+Każdego dnia otwierają się zawsze dwie różne[ENTER]świątynie.	Chaque jour, deux temples différents sont[ENTER]toujours ouverts.
+Każdy musi mieć %d poziom, Champion 4 i być w gildii od 24 godzin. Nie spełniają:	Chacun doit avoir le niveau %d, Champion 4 et être dans la guilde depuis 24 heures. Ne remplissent pas :
+Każdy wojownik może wybrać nagrodę u Złotej Smoczej Skrzyni - macie na to minutę.	Chaque guerrier peut choisir une récompense au Coffre du dragon doré - vous avez une minute.
+Klejnoty dla Seona-Pyeonga	Joyaux pour Seon-Pyeong
+Klejnoty Zawiści wypadają z Podziemnych Lod.	Les Joyaux de Cruauté tombent des Golems de glace
+Klejnoty Zawiści zdradziły mi wiele, ale to	Les Joyaux de Cruauté m'ont appris beaucoup, mais ce
+Klif Gautama (Zbocze Gautama)	Falaise de Gautama (Pente de Gautama)
+Kliknij prawym przyciskiem Pierścień Smoczego Ognia, stojąc przy statui. Jaja wracają co 2 minuty.	Faites un clic droit sur l'Anneau de feu du dragon près d'une statue. Les œufs reviennent toutes les 2 minutes.
+Kliknij talie, aby dobrac karty. Lewym	Cliquez sur la pioche pour tirer des cartes. Clic
+Klucz do Więzienia nie pasuje - kowal wciąż siedzi w klatce.	La Clé de prison ne convient pas - le forgeron est toujours en cage.
+Klucz Goblina!	Clé gobelin !
+Klucz Wężowy rozsypuje się - Kolumna pozostaje niewzruszona.	La Clé serpent tombe en poussière - le Pilier reste inébranlable.
+Klucza Lod. Kwiatu (PB) może użyć tylko Ninja albo Szaman.	Seul un Ninja ou un Chamane peut utiliser la Clé crist. de glace (ÉV).
+Klucza Lod. Kwiatu (SZC) może użyć tylko Ninja albo Szaman.	Seul un Ninja ou un Chamane peut utiliser la Clé crist. de glace (ST).
+Klątwa	Malédiction
+klątwa Sung Mahi. Ale jestem szamanem i znam	la malédiction de Sung Mahi. Mais je suis chamane et je connais
+Klątwa Sunga Mahi zdjęta.	La malédiction de Sung Mahi est levée.
+Kobieta	Femme
+Kobieta czy mezczyzna?	Femme ou homme ?
+Kolejny Potężny Wojownik Wężowy (lód)!	Encore un Guerrier serpent cruel (glace) !
+kolekcjoner przedmiot	objet de collection
+kolie i klipsy, a z Kamienia Demonów - Kamień Mocy	colliers et boucles d'oreilles, et avec une Pierre démoniaque - une Pierre de force
+Kolumna Smoka Północy (PB) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (PB).	Pilier du Dragon du Nord (ÉV) détruit. Le chef du groupe peut parler au Lion de glace (ÉV).
+Kolumna Smoka Północy (SZC) zniszczona. Przywódca grupy może porozmawiać z Lodowym Lwem (SZC).	Pilier du Dragon du Nord (ST) détruit. Le chef du groupe peut parler au Lion de glace (ST).
+komnatach krazy Straznik En-Tai, ktory co chwile	salles erre un Gardien En-Tai, qui de temps en temps
+konczy ja - skrzynie dostaniesz przy	la termine - vous recevez les coffres à
+Koniec gry daje jedna skrzynie wedlug wyniku.	La fin de partie donne un coffre selon le score.
+kontynent - Yoharę. Odwiedź go w Dongan, gdy	continent - Yohara. Rendez-lui visite à Dongan quand
+kostiumu, wierzchowiec - wygląd innego wierzchowca.	costume, monture - l'apparence d'une autre monture.
+Kostiumy, fryzury i nakladki na bron -- wszystko po 1 yangu.	Costumes, coiffures et apparences d'arme -- tout à 1 Yang.
+Koszt szkolenia:	Coût de l'entraînement :
+Koszt: 100 000 000 Yang (przy odbiorze)	Coût : 100 000 000 Yangs (au retrait)
+Koszt: 50 000 000 Yang albo Bilet Transmutacji,	Coût : 50 000 000 Yangs ou un Bon de projection,
+Krainie, a dostaniesz Książkę.	Contrée, et vous recevrez un Livre.
+krainy Jotuna Thryma za Swiatynia, albo z powrotem	la contrée de Jotun Thrym derrière le Temple, ou retour
+Krypta Balathora jest teraz zamknięta.	La Crypte de Balathor est maintenant fermée.
+Krypta Balathora: wejście	Crypte de Balathor : entrer
+Krypta Balathora: zgłoszenie gildii	Crypte de Balathor : inscription de la guilde
+Krypta jest otwarta. Członkowie gildii mogą teraz	La Crypte est ouverte. Les membres de la guilde peuvent maintenant
+Krypta twojej gildii jest już zamknięta.	La Crypte de votre guilde est déjà fermée.
+Krypta twojej gildii jest na kanale %d.	La Crypte de votre guilde est sur le canal %d.
+Kryształ Płn. Wiatru pękł - droga do Komnaty Kryształu stoi otworem.	Le Cristal d'Aquilon s'est brisé - le chemin vers la Salle du cristal est ouvert.
+Kryształy Metin	Cristaux de Metin
+Kryształy Metin wypadają z Metinów Szacunku,	Les Cristaux de Metin tombent des Metins d'estime,
+Kryształy Metin: nagroda	Cristaux de Metin : récompense
+kryształów Metin do moich badań!	de Cristaux de Metin pour mes recherches !
+Król Skorpionów pokonany! Czas: %d:%02d. Loch został ukończony.	Roi scorpion vaincu ! Temps : %d:%02d. Le donjon est terminé.
+królem mrozu i lodu?	le roi du gel et de la glace ?
+Królestwa Żywiołów.	du Monde élémentaire.
+Królestwo Żywiołów	Monde élémentaire
+Królestwo Żywiołów nie przyjmuje pokonanych. Wracasz do portu.	Le Monde élémentaire n'accueille pas les vaincus. Vous retournez au port.
+Królestwo Żywiołów to dziewięć obszarów, gdzie	Le Monde élémentaire, ce sont neuf zones où
+Królowa Dżungli pokonana! Czas: %d:%02d. Loch został ukończony.	Reine de la jungle vaincue ! Temps : %d:%02d. Le donjon est terminé.
+Królowa Meley: Brama Schronienia zamknęła się za wami.	Reine Meley : la Porte du Repaire s'est refermée derrière vous.
+Królowa Meley: Czas minął. Brama Schronienia wyrzuca was na zewnątrz.	Reine Meley : le temps est écoulé. La Porte du Repaire vous rejette dehors.
+Królowa Meley: Kolumny zadają cios Królowej Meley! Następny etap za 5 sekund.	Reine Meley : les colonnes frappent la Reine Meley ! Étape suivante dans 5 secondes.
+Królowa Meley: Statuy świecą na niebiesko - użyjcie Pierścieni Smoczego Ognia przy statuach!	Reine Meley : les statues brillent en bleu - utilisez les Anneaux de feu du dragon près des statues !
+Królowa Meley: Tarcza statui zgasła - atakujcie!	Reine Meley : le bouclier de la statue s'est éteint - attaquez !
+Królowa Meley: Walka zacznie się za 10 sekund. Macie godzinę na zniszczenie czterech statui.	Reine Meley : le combat commence dans 10 secondes. Vous avez une heure pour détruire les quatre statues.
+Królowa Smoków Meley pokonana!	Meley, reine des dragons, vaincue !
+Królowa Smoków Meley została pokonana!	Meley, reine des dragons, a été vaincue !
+Królowa Węży Nethis pokonana! Za 20 s wracacie pod Statuę Węży po nagrodę.	Reine Nethis vaincue ! Dans 20 s, vous retournez à la Statue de serpent pour la récompense.
+Królowa Węży Nethis pokonana. Oto twoja nagroda.	Reine Nethis vaincue. Voici votre récompense.
+Krąg Księcia: Wola SungMa (SIŁA) -32 na 7 sekund.	Cercle du Prince : Volonté SungMa (FOR) -32 pendant 7 secondes.
+Krąg Wróżbity: jesteś ogłuszony.	Cercle du Devin : vous êtes étourdi.
+Książęcy	Princier
+Księga kosztuje 100 000 000 Yang. Wróć z pieniędzmi.	Le livre coûte 100 000 000 Yangs. Revenez avec l'argent.
+Księga Misji (W.Płn.W.)	Livre quête (R. d'Aqui.)
+Księga Misji (W.Płn.W.): %d / %d potworów.	Livre quête (R. d'Aqui.) : %d / %d monstres.
+Księgę Misji można aktywować od poziomu 120.	Le Livre de quête peut être activé dès le niveau 120.
+kto wszedł tam bez drużyny najlepszych wojowników.	qui y est entré sans une équipe des meilleurs guerriers.
+ktora jest z toba w grupie, expi z toba po rowno,	qui est dans votre groupe, gagne autant d'EXP que vous,
+Ktora zbroje mam z niej zrobic?	Quelle armure dois-je en faire ?
+ktore moge przekuc. Zalozonego przedmiotu	que je peux reforger. Un objet équipé
+Ktory przedmiot mam przekuc? Mozesz go tez	Quel objet dois-je reforger ? Vous pouvez aussi
+któraś statystyka jest za niska: Siła - zadajesz	une stat est trop basse : Force - vous infligez
+które otwierają Erebu. Przywódca Straży Lasu wpuści	qui ouvrent Erebu. Le chef de la Garde de la forêt laisse entrer
+Które portale chcesz zregenerować?	Quels portails voulez-vous régénérer ?
+który chcesz wykonać - obręcz, kolia i klipsy	que vous voulez fabriquer - bracelet, collier et boucles d'oreilles
+Który Kamień Duszy oddajesz?	Quelle Pierre d'âme remettez-vous ?
+który myślał, że poradzi sobie z Razadorem.	qui pensait pouvoir venir à bout de Razador.
+Którą umiejętność Buffi chcesz trenować?	Quelle compétence de Buffi voulez-vous entraîner ?
+Którą umiejętność chcesz trenować?	Quelle compétence voulez-vous entraîner ?
+Którą umiejętność udoskonalić?	Quelle compétence améliorer ?
+którą z nich wydobyłem. Wybierz, co chcesz.	que j'en ai extraite. Choisissez ce que vous voulez.
+Kup	Acheter
+Kup bilet	Acheter un ticket
+Kup Bilet do Atlantydy	Acheter un Ticket pour l'Atlantide
+Kup kostiumy i nakladki	Acheter costumes et apparences
+Kup materialy Alchemika	Acheter des matériaux de l'Alchimiste
+Kup przedmioty	Acheter des objets
+kupisz w Sklepie Gaya.	s'achète à la Bourse aux Gayas.
+Kwiat Żywiołu	Fleur d'élément
+Kwiaty Żywiołu	Fleurs d'élément
+Lasu (PB). Uważaj, by po drodze niczego nie zgubić!	de la forêt (ÉV). Attention à ne rien perdre en chemin !
+Lasu (SZC). Uważaj, by po drodze niczego nie zgubić!	de la forêt (ST). Attention à ne rien perdre en chemin !
+Ledwo trzymam się na nogach... Energia	Je tiens à peine debout... L'énergie
+Legenda głosi, że rosą En-Tai można przegnać złe	La légende dit que la rosée En-Tai peut chasser les mauvais
+Legendy mówią, że za tym portalem śpi Razador,	Les légendes disent que derrière ce portail dort Razador,
+lekarstwa. Pokonuj Metiny Świadomość w Dongan,	de médicaments. Vainquez les Metins de réalisation à Dongan,
+Lekarstwo	Médicaments
+Lekarstwo Iluzji	Médicament illusoire
+Lekarstwo. Zanieś je: Alchemik.	Médicaments. Apportez-les : Alchimiste.
+Lekarstwo. Zanieś je: Chaegirab.	Médicaments. Apportez-les : Chaegirab.
+Lekarstwo. Zanieś je: Handlarz Bronią.	Médicaments. Apportez-les : Marchand d'armes.
+Lekarstwo. Zanieś je: Handlarz Zbrojami.	Médicaments. Apportez-les : Marchand d'armures.
+Lekarstwo. Zanieś je: Uriel.	Médicaments. Apportez-les : Uriel.
+Lepsza jest tylko Wędka Węglowa: zrobię ci ją z Wędziska, Przelotki, Rękojeści i 3 Włókien Węglowych.	Seule la Canne à pêche en carbone est meilleure : je la fais avec une Canne à pêche brute, un Anneau de canne à pêche, une Poignée de canne à pêche et 3 Fibres de carbone.
+Lew budzi się, a z mrozu wychodzą potwory...	Le lion s'éveille, et des monstres sortent du gel...
+Leże Smoka (Beran-Setaou)	Antre du Dragon (Beran-Setaou)
+Leże Smoka - wyprawa	Antre du Dragon - expédition
+Leże Smoka: Czas minął. Beran-Setaou wyrzuca was ze swojego leża.	Antre du Dragon : le temps est écoulé. Beran-Setaou vous chasse de son antre.
+Leże Smoka: kamienie leżą - atakujcie Beran-Setaou!	Antre du Dragon : les pierres sont tombées - attaquez Beran-Setaou !
+Leże Smoka: nie udało się otworzyć przejścia - porozmawiaj z Duchem Sura.	Antre du Dragon : le passage n'a pas pu s'ouvrir - parlez à l'Esprit d'un Sura.
+Leże Smoka: Ostatni kamień padł - Beran-Setaou jest bezbronny! Atakujcie!	Antre du Dragon : la dernière pierre est tombée - Beran-Setaou est sans défense ! Attaquez !
+Leże Smoka: porozmawiaj z Duchem Sura, aby otworzyć przejście.	Antre du Dragon : parlez à l'Esprit d'un Sura pour ouvrir le passage.
+Leże Smoka: przejście prowadzi przez poczekalnię.	Antre du Dragon : le passage mène par la salle d'attente.
+Leże Smoka: przejście się otwiera...	Antre du Dragon : le passage s'ouvre...
+licznych walkach. Odnajdź Władcę En-Tai (SZC) i	nombreux combats. Trouvez le Seigneur En-Tai (ST) et
+Liczy się łączna liczba punktów ze wszystkich gier	Ce qui compte, c'est le total des points de toutes les parties
+Loch nie przyjmie was teraz. Spróbuj za chwilę.	Le donjon ne peut pas vous accueillir maintenant. Réessayez dans un moment.
+Loch Pająków 1 (Kuahklo Dong)	Donjon des araignées 1 (Kuahklo Dong)
+Lochy Przebudzenia	Donjons de l'éveil
+Lochy Przebudzenia wpuszczają tylko tych, którzy	Les Donjons de l'éveil n'acceptent que ceux qui
+Lochy Przebudzenia, a statuy kowali wykują dla	les Donjons de l'éveil, et les statues de forgerons forgeront pour
+Lochy są dziś zamknięte. Wróć później.	Les donjons sont fermés aujourd'hui. Revenez plus tard.
+Lodogóry	Monts de glace
+Lodowa Kraina (Nemere)	Terre de glace (Nemere)
+Lodowa Kraina: nie udało się otworzyć przejścia - porozmawiaj z Kamiennym Lwem.	Terre de glace : le passage n'a pas pu s'ouvrir - parlez au Lion de pierre.
+Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyć przejście.	Terre de glace : parlez au Lion de pierre pour ouvrir le passage.
+Lodowa Kraina: przejście prowadzi przez poczekalnię.	Terre de glace : le passage mène par la salle d'attente.
+Lodowa Kraina: przejście się otwiera...	Terre de glace : le passage s'ouvre...
+Lodu	Glace
+Lucznik (luk)	Archer (arc)
+Ludzi i Podziemnych Lodowych Golemów	Hommes et Golems de glace d'enfer
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.	Maât a triomphé de l'Isfet - la dernière Stèle de l'Isfet (ÉV) est détruite.
+Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (SZC) zniszczona.	Maât a triomphé de l'Isfet - la dernière Stèle de l'Isfet (ST) est détruite.
+Magazyn	Entrepôt
+magazyn lub inne okno i sprobuj ponownie.	l'entrepôt ou une autre fenêtre et réessayez.
+Majestatyczny	Majestueux
+Mam do niej klucz, ale nie wiem, ktora z	J'en ai la clé, mais je ne sais pas laquelle
+Mam już wszystkie 20 Klejnotów Mądrości!	J'ai déjà les 20 Joyaux de Sagesse !
+Mapa teleportacji jest wylaczona na tym serwerze.	La carte de téléportation est désactivée sur ce serveur.
+Marchewka	Carotte
+Maska dyni wytrzyma 7 dni od pierwszego	Le masque de citrouille dure 7 jours dès la première
+Masz 30 minut. Powodzenia!	Vous avez 30 minutes. Bonne chance !
+Masz 60 minut, by je ukończyć. Po ukończeniu lub po	Vous avez 60 minutes pour la terminer. Une fois terminée ou après
+Masz dla mnie oczyszczone rdzenie? Niech spojrzę...	Vous avez des noyaux purifiés pour moi ? Voyons voir...
+Masz już aktywną misję z Księgi Misji (W.Płn.W.). Najpierw ją ukończ.	Vous avez déjà une mission active du Livre quête (R. d'Aqui.). Terminez-la d'abord.
+Masz już najwięcej Gaya, ile można mieć (999 999).	Vous avez déjà le maximum de Gaya possible (999 999).
+Masz już Złotą Księgę Konia. Od 31 poziomu twój koń to Potężny Koń Wojskowy.	Vous avez déjà le Livre chevalin d'or. Dès le niveau 31, votre cheval est un Puissant cheval militaire.
+Masz Kamień Dusz Beran-Setaou. Zanieś go	Vous avez la Pierre d'âme de Beran-S. Apportez-la
+Masz Klucz Kryształu Duszy. Otworzyć wrota[ENTER]i przenieść grupę na 2. poziom?	Vous avez la Clé à cristal d'âme. Ouvrir la porte[ENTER]et emmener le groupe au niveau 2 ?
+Masz Lekarstwo. Zanieś je: Alchemik (Dongan).	Vous avez les Médicaments. Apportez-les : Alchimiste (Dongan).
+Masz Lekarstwo. Zanieś je: Chaegirab (Dongan).	Vous avez les Médicaments. Apportez-les : Chaegirab (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Bronią (Dongan).	Vous avez les Médicaments. Apportez-les : Marchand d'armes (Dongan).
+Masz Lekarstwo. Zanieś je: Handlarz Zbrojami (Dongan).	Vous avez les Médicaments. Apportez-les : Marchand d'armures (Dongan).
+Masz Lekarstwo. Zanieś je: Uriel (Dongan).	Vous avez les Médicaments. Apportez-les : Uriel (Dongan).
+Masz za mało punktów rangi - ranga spadnie poniżej zera.	Vous avez trop peu de points de rang - votre rang passerait sous zéro.
+Masz za mało Yang.	Vous n'avez pas assez de Yangs.
+Masz za niski poziom.	Votre niveau est trop bas.
+materialy, Yang i szanse (najedz na przedmiot).	matériaux, Yangs et chances (survolez l'objet).
+Materialy, Yang i szanse - w oknie (najedz na przedmiot).	Matériaux, Yangs et chances - dans la fenêtre (survolez l'objet).
+Materiały Balathora daje Krypta Balathora, Zroszony Młot	Les matériaux de Balathor viennent de la Crypte de Balathor, le Marteau humide
+Materiały znajdziesz w Skrzyni Nimfy Wodnej (otwiera ją Klucz Nimfy Wodnej). Wędka działa 30 dni	Les matériaux sont dans le Coffre des sirènes (il s'ouvre avec la Clé des sirènes). La canne dure 30 jours
+materiały, Yang i szansę (najedź na przedmiot).	matériaux, Yangs et chances (survolez l'objet).
+Materiały, Yang i szansę zobaczysz w oknie wytwarzania	Vous verrez les matériaux, Yangs et chances dans la fenêtre de fabrication
+materiały. Pasuje każda broń, zbroja albo hełm	matériaux. N'importe quelle arme, armure ou casque convient
+Max PŻ +2000	PV max +2000
+Mechanizm Steli Isfet uruchomi tylko Złota Zębatka	Seul un Pignon doré peut lancer le mécanisme de la Stèle de l'Isfet
+Medal Siły Natury działa tylko w Królestwie Żywiołów.	L'Ordre primal ne fonctionne que dans le Monde élémentaire.
+Medal Siły Natury: przez 10 minut Płaskowyż nie odbiera ci PŻ.	Ordre primal : pendant 10 minutes, le Plateau ne vous retire pas de PV.
+Metin Chłodu (PB) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin du froid (ÉV) détruit. Vous allez être transportés au 7e étage.
+Metin Chłodu (SZC) zniszczony. Za chwilę zostaniecie przeniesieni na 7. piętro.	Metin du froid (ST) détruit. Vous allez être transportés au 7e étage.
+Metin Purgatorium (PB) wciąż stoi - demony wracają!	Le Metin du Purgatoire (ÉV) tient toujours - les démons reviennent !
+Metin Purgatorium (PB) został zniszczony.	Le Metin du Purgatoire (ÉV) a été détruit.
+Metin Purgatorium (SZC) wciąż stoi - demony wracają!	Le Metin du Purgatoire (ST) tient toujours - les démons reviennent !
+Metin Purgatorium (SZC) został zniszczony.	Le Metin du Purgatoire (ST) a été détruit.
+Metinu Świadomość zatruła mnie i potrzebuję 	Le Metin de réalisation m'a empoisonné et j'ai besoin 
+Metiny Drzewnych Stworzeń (PB)	Metins des Êtres sylvestres (ÉV)
+Metiny Drzewnych Stworzeń (SZC)	Metins des Êtres sylvestres (ST)
+Metiny Drzewnych Stworzeń budzą En-Tai do życia.	Les Metins des Êtres sylvestres réveillent les En-Tai.
+Metiny Drzewnych Stworzeń zatruwają ten las.	Les Metins des Êtres sylvestres empoisonnent cette forêt.
+Metiny zniszczone. Las trochę się uspokoił.	Metins détruits. La forêt s'est un peu calmée.
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (PB).	Metins détruits. Retournez voir le Guetteur de la forêt (ÉV).
+Metiny zniszczone. Wróć do Zwiadowcy Lasu (SZC).	Metins détruits. Retournez voir le Guetteur de la forêt (ST).
+Mezczyzna	Homme
+mieć co najmniej %d sztuk.	en avoir au moins %d.
+mieć Książkę Przebudzenia (zabieraną przy wejściu).	avoir un Livre de l'éveil (pris à l'entrée).
+Mikstura jeszcze nie zadziała - organizm musi odpocząć.	La potion n'agit pas encore - votre corps doit se reposer.
+Mikstura nie zadziałała tym razem. Spróbuj ponownie później.	La potion n'a pas agi cette fois. Réessayez plus tard.
+Mikstura Talentu	Potion de talent
+Mikstura Talentu udoskonala 9. umiejętność od G1 do P. %s	La Potion de talent améliore la 9e compétence de G1 à P. %s
+Miksturę Mądrości	Potion de sagesse
+Misja poboczna	Mission secondaire
+Misja trwa. Pokonaj obu bossów i wróć do mnie:	La mission est en cours. Vainquez les deux boss et revenez me voir :
+Misja wykonana! Portal do następnego etapu jest otwarty.	Mission accomplie ! Le portail vers l'étape suivante est ouvert.
+Misja z Księgi Misji (W.Płn.W.): pokonaj 300 potworów w Wąwozie Północnego Wiatru.	Mission du Livre quête (R. d'Aqui.) : vainquez 300 monstres dans le Ravin d'Aquilon.
+Misja: pokonaj 300 potworów w Wąwozie	Mission : vainquez 300 monstres dans le Ravin
+Misji nie można przerwać. Księga zniknie.	La mission ne peut pas être annulée. Le livre disparaîtra.
+Mistrz gildii może zgłosić tu swoją gildię:	Le chef de guilde peut inscrire sa guilde ici :
+mniej - brazowa	moins - bronze
+Moc klejnotów jest teraz twoja na zawsze.	Le pouvoir des joyaux est désormais à vous pour toujours.
+Moc pierścienia wyczerpała się.	Le pouvoir de l'anneau est épuisé.
+Moc Smoczego Oka na dziś się wyczerpała. Jutro odbierz ją ponownie u Alchemika.	Le pouvoir de l'Œil du dragon est épuisé pour aujourd'hui. Revenez le chercher demain chez l'Alchimiste.
+mogą być wyjątkowo podatne na wpływ Sunga Mahi.	peuvent être très sensibles à l'influence de Sung Mahi.
+Mogę cię zabrać do każdego z nich; między	Je peux vous emmener vers chacun d'eux ; entre
+Mogę odnowić błogosławieństwo: +%d%% PD na %s	Je peux renouveler la bénédiction : +%d%% EXP pour %s
+Mogę przenieść na szatę aury parametry bransolety,	Je peux transférer les stats d'un bracelet sur la robe d'aura,
+Mogę przenieść wygląd jednego przedmiotu na drugi.	Je peux transférer l'apparence d'un objet sur un autre.
+Mogę więc stworzyć z nich Kryształ Energii.	Je peux donc en créer un Cristal d'énergie.
+Moi bracia zaginęli, a z nimi apteczka. Wojownicy	Mes frères ont disparu, et la trousse de secours avec eux. Les guerriers
+Moj klucz nie pasuje do tej skrzyni.	Ma clé ne va pas dans ce coffre.
+Moj klucz pasuje! To jest wlasciwa skrzynia!	Ma clé convient ! C'est le bon coffre !
+Moja moc przeniesie cię na Płaskowyż Iluzji. Tam	Mon pouvoir vous emmènera au Plateau des illusions. Là-bas
+Moja technika jest genialna, ale jeszcze	Ma technique est géniale, mais encore
+Moje badania wykazały, że potwory znajdujące	Mes recherches ont montré que les monstres qui se trouvent
+Moje czasy	Mes temps
+Mokre Szaty: -50 szybkości ruchu na 5 minut.	Vêtements mouillés : -50 vitesse de déplacement pendant 5 minutes.
+Morkhot nadchodzi! Macie mało czasu.	Morkhot arrive ! Il vous reste peu de temps.
+Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zostały ukończone.	Morkhot vaincu ! Temps : %d:%02d. Les Ruines de l'Atlantide sont terminées.
+Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.	Vous pouvez aussi choisir l'objet ou le glisser sur moi.
+mozesz wybrac od razu.	vous pouvez choisir tout de suite.
+Mozesz zabrac w droge stalego towarzysza: postac,	Vous pouvez emmener un compagnon permanent : un personnage,
+Może później	Peut-être plus tard
+może się nie udać.	peut échouer.
+Możesz wejść sam albo z drużyną; boty z drużyny wchodzą bez biletu.	Vous pouvez entrer seul ou en groupe ; les bots du groupe entrent sans ticket.
+możesz znaleźć Kartę Maski Dyni. 	vous pouvez trouver une Carte: masque citrouille. 
+Można mieć tylko jedną ripostę. Zwój Zmiany Treningu	On ne peut avoir qu'une parade. Le Parch. de modif. d'entr.
+Mroczne Paprocie	Osmondes obscures
+Mroczne Paprocie: nagroda	Osmondes obscures : récompense
+mrocznej paproci.	d'osmonde obscure.
+Mroczny Cierń - mrok.	Épine obscure - ténèbres.
+Mroczną Paproć znajdziesz u potworów	Vous trouverez l'Osmonde obscure sur les monstres
+Mrok i ziemia (mapa 3)	Ténèbres et terre (carte 3)
+Mroku	Ténèbres
+Mroźnego Klucza (PB) może użyć tylko Szaman.	Seul un Chamane peut utiliser la Clé gelée (ÉV).
+Mroźnego Klucza (SZC) może użyć tylko Szaman.	Seul un Chamane peut utiliser la Clé gelée (ST).
+mu apteczkę.	lui la trousse de secours.
+musi najpierw osiągnąć stopień G1 (księgami).	doit d'abord atteindre le grade G1 (avec des livres).
+Musisz dalej szukać.	Vous devez continuer à chercher.
+Musisz jeszcze trochę potrenować! Wróć, gdy	Vous devez encore vous entraîner un peu ! Revenez quand
+Musisz załadować co najmniej 12 Animosfer, by[ENTER]wejść.	Vous devez charger au moins 12 Animosphères pour[ENTER]entrer.
+Mój przyjaciel Chaegirab bada teraz nowy	Mon ami Chaegirab étudie en ce moment un nouveau
+Mówi się, że Żelazny Smok wzniósł świątynię[ENTER]jedynym ognistym oddechem na cześć 12 strażników[ENTER]Zodiaku. Śmiałków, którzy powrócą ze świętych[ENTER]komnat strażników oczekuje sława, honor i[ENTER]niezmierzone bogactwa.	On dit que le Dragon de fer a élevé le temple[ENTER]d'un seul souffle de feu en l'honneur des 12 gardiens[ENTER]du zodiaque. Gloire, honneur et richesses sans fin[ENTER]attendent les braves qui reviennent des salles[ENTER]sacrées des gardiens.
+Mądrości, które noszą przy sobie wojownicy	de Sagesse, que portent sur eux les guerriers
+Mądrość przychodzi z doświadczeniem, ale dla	La sagesse vient avec l'expérience, mais pour
+Mądry wybór. Teraz zniszcz następną stelę.	Un choix judicieux. Maintenant, détruisez la stèle suivante.
+Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat	Un choix judicieux. Maintenant, détruisez la dernière stèle, et Maât
+Na 7. poziomie czekają Głowy Węża. Odłamki z	Au niveau 7, les Têtes de serpent attendent. Les morceaux de
+na bizuterie i splesc dla ciebie pas.	en bijoux et vous tresser une ceinture.
+na bron z bonusami. Zdejmij przedmiot, jesli jest	en une arme avec bonus. Retirez l'objet s'il est
+na Doyyumhwaji, póki nie minie godzina.	à Doyyumhwaji, tant que l'heure n'est pas écoulée.
+Na graczy żywioły nie działają.	Les éléments n'ont aucun effet sur les joueurs.
+Na które piętro chcesz wejść?	À quel étage voulez-vous entrer ?
+na Maskę Dyni? 	contre le Masque de citrouille ? 
+Na morzu za przylądkiem grasuje Hydra. Każdy	Au-delà du cap, une Hydre rôde en mer. Chaque
+Na nagrodę jest jeszcze za wcześnie.	Il est encore trop tôt pour la récompense.
+na niej już żadnych zarodników. Przynieś mi inną.	plus de spores dessus. Apportez-m'en une autre.
+na nowym kontynencie.	sur le nouveau continent.
+Na pewno poddać wyprawę?	Abandonner vraiment l'expédition ?
+Na pewno? Towarzysz odejdzie, a jego postac	Vous êtes sûr ? Le compagnon partira, et son personnage
+Na pokład!	Tous à bord !
+na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze	aux niveaux 10, 20, 30, 40, 50, 60 et 70 - toujours
+Na poziomie 49, 99, 149, 199 i 249 z pełnym	Aux niveaux 49, 99, 149, 199 et 249 avec une pleine
+na Przyladku Smoczego Ognia.	au Cap du Feu du Dragon.
+Na Przylądek Smoczego Ognia	Vers le Cap du Feu du Dragon
+na Przylądku Smoczego Ognia.	au Cap du Feu du Dragon.
+na siedmiu poziomach czeka Królowa Węży Nethis.	sur sept niveaux attend la Reine Nethis.
+Na statek wpuszczam tylko drużyny.	Je ne laisse monter à bord que des groupes.
+na stopniu G1-G10. Od M1 do G1 - zwykłe Księgi	au grade G1-G10. De M1 à G1 - Livres normaux
+na twoją głowę. Zachowaj kartę na lepsze czasy. 	sur votre tête. Gardez la carte pour des jours meilleurs. 
+na tym serwerze.	sur ce serveur.
+Na ukończenie instancji macie 60 minut. Potwory nie	Vous avez 60 minutes pour terminer l'instance. Les monstres ne
+Na wyprawę jest 60 minut, potem 3 godziny przerwy.	L'expédition dure 60 minutes, puis 3 heures de pause.
+Na Wzgórzu zamieszkały małpy mistrza WuKonga.	Les singes de maître WuKong se sont installés sur la Colline.
+na Zbocze Gautama.	vers la Pente de Gautama.
+na żywioł odejmuje cały swój procent	contre un élément retire tout son pourcentage
+nadaje się do badań. Przynieś mi inny.	convient à la recherche. Apportez-m'en un autre.
+Nadam twojej broni, zbroi albo hełmowi	Je donnerai à votre arme, armure ou casque
+nadciągał sztorm?	une tempête approchait ?
+nadciągnie w czterech falach. Brońcie masztu!	arrivera en quatre vagues. Défendez le mât !
+Nadszedł czas, by dostarczyć apteczkę Zwiadowcy	Il est temps de livrer la trousse de secours au Guetteur
+Nagroda (losowo jedna):	Récompense (une au hasard) :
+Nagroda za badania	Récompense des recherches
+Nagroda za Meley	Récompense de Meley
+Nagroda została już odebrana przez wszystkich	La récompense a déjà été récupérée par tous
+Nagroda została już odebrana.	La récompense a déjà été récupérée.
+Nagroda: 11 650 000 PD i Kamień Driad.	Récompense : 11 650 000 EXP et une Pierre des dryades.
+Nagroda: 11 650 000 PD.	Récompense : 11 650 000 EXP.
+Nagroda: 5 582 500 PD i 10 Korzeni Gango.	Récompense : 5 582 500 EXP et 10 Racines de Gango.
+Nagroda: 5 825 000 PD i 5 Róż Alpejskich.	Récompense : 5 825 000 EXP et 5 Roses des montagnes.
+Nagroda: 7 766 000 PD i 10 Wód Young.	Récompense : 7 766 000 EXP et 10 Eaux de Yuong.
+Nagroda: 7 766 000 PD.	Récompense : 7 766 000 EXP.
+Nagroda: 776 600 PD.	Récompense : 776 600 EXP.
+Nagroda: Książka Przebudzenia. Misję można	Récompense : Livre de l'éveil. La mission peut
+Nagrody dla najlepszych	Récompenses pour les meilleurs
+Nagrody w Łupach Królewskich	Récompenses du Butin royal
+Nagrody za grę Yut Nori	Récompenses du jeu Yutnori
+Nagrody za pierwsze 10 miejsc	Récompenses des 10 premières places
+Nagrody za ranking	Récompenses du classement
+Nagrodę za ten event już odebrałeś.	Vous avez déjà récupéré la récompense de cet événement.
+Najlepsza gra	Meilleure partie
+Najlepsze czasy pięter w tym sezonie (min:s):	Meilleurs temps d'étage cette saison (min:s) :
+Najlepszy wynik	Meilleur score
+najlepszych graczy. Może następnym razem!	meilleurs joueurs. Peut-être la prochaine fois !
+najpierw 9. pietro Wiezy Demonow	d'abord le 9e étage de la Tour des démons
+Najpierw opuść loch.	Quittez d'abord le donjon.
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (PB).	Aidez d'abord le Gardien et le Guetteur de la forêt (ÉV).
+Najpierw pomóż Strażnikowi i Zwiadowcy Lasu (SZC).	Aidez d'abord le Gardien et le Guetteur de la forêt (ST).
+Najpierw trzeba zamknąć otwartą Kryptę.	Il faut d'abord fermer la Crypte ouverte.
+Najpierw ukończ zadanie Stajennego (Złota Księga Konia).	Terminez d'abord la quête du palefrenier (Livre chevalin d'or).
+Najpierw wybierz drogę umiejętności (Szkolenie).	Choisissez d'abord votre voie de compétences (Formation).
+Najpierw wybierz drogę umiejętności.	Choisissez d'abord votre voie de compétences.
+Najpierw zdobądź Poziom Czempiona.	Atteignez d'abord le niveau de Champion.
+Najpierw zostań Czempionem (1. Poziom Czempiona).	Devenez d'abord Champion (niveau de Champion 1).
+Najpierw zrob miejsce w ekwipunku.	Faites d'abord de la place dans votre inventaire.
+najwyższy poziom (Rybak na Przylądku).	le niveau le plus élevé (Pêcheur au Cap).
+naklada na bron	s'applique aux armes
+Napraw Hwachę teraz	Réparer le Hwacha maintenant
+Nastepna strona	Page suivante
+nastepnym logowaniu.	prochaine connexion.
+Następna próba możliwa po 12 godzinach.	Prochaine tentative possible dans 12 heures.
+Następna próba możliwa po 8-12 godzinach.	Prochaine tentative possible dans 8 à 12 heures.
+Następna próba za: %s.	Prochaine tentative dans : %s.
+Następna teleportacja za %d min %d s.	Prochaine téléportation dans %d min %d s.
+Następnym razem na pewno się uda!	La prochaine fois, ça marchera sûrement !
+Nasza wyprawa sie skonczyla.	Notre expédition est terminée.
+naszyjnika, kolczyków albo tarczy - te podstawowe	collier, boucles d'oreilles ou bouclier - ces objets de base
+Natury W Królestwie - daje szansę na przeniesienie.	de la Nature dans le Royaume - donne une chance de transfert.
+Naucz się teraz	Apprendre maintenant
+nauczyć się ich ponownie z podręczników.	les réapprendre avec les manuels.
+Nauczyłeś się dopalacza (poziom 1).	Vous avez appris le bonus (niveau 1).
+Nauczyłeś się riposty (poziom 1).	Vous avez appris la parade (niveau 1).
+Nawet w trudnych warunkach muszę dalej	Même dans des conditions difficiles, je dois continuer
+Nazwa mapy: Świątynia Zodiaku[ENTER]Poziom: %d[ENTER]Koszt: %d	Nom de la carte : Temple du zodiaque[ENTER]Niveau : %d[ENTER]Coût : %d
+Nefrytowa Zatoka	Baie de Néphrite
+Nemere (lód), Leże Smoka (błyskawica)	Nemere (glace), Antre du dragon (foudre)
+Nemere (PB) został pokonany!	Nemere (ÉV) a été vaincu !
+Nemere (SZC) został pokonany!	Nemere (ST) a été vaincu !
+Nemere został pokonany!	Nemere a été vaincu !
+Nemere: Brakujące potwory komnaty pojawiają się ponownie.	Nemere : les monstres manquants de la salle réapparaissent.
+Nemere: Czas minął. Mróz wyrzuca was z Lodowej Krainy.	Nemere : le temps est écoulé. Le gel vous chasse de la Terre de glace.
+Nemere: Etap zaliczony. Za 5 sekund przejdziecie dalej.	Nemere : étape terminée. Vous continuez dans 5 secondes.
+Nemere: Klucz Mrozu otworzył przejście.	Nemere : la Clé du gel a ouvert le passage.
+Nemere: Lodowy Klucz otworzył przejście.	Nemere : la Clé de glace a ouvert le passage.
+Nemere: Porozmawiaj z Kamiennym Lwem, aby rozpocząć wyprawę.	Nemere : parlez au Lion de pierre pour lancer l'expédition.
+Nic	Rien
+Nie atakuje pierwszy	N'attaque pas en premier
+nie bedzie mi szkodzic.	ne me fera pas de mal.
+Nie będziesz żałować, że zostałem przez ciebie	Vous ne regretterez pas que je sois
+Nie ciąży na tobie klątwa.	Aucune malédiction ne pèse sur vous.
+Nie działają tam zwoje ani pierścienie powrotu,	Les parchemins et anneaux de retour n'y marchent pas,
+Nie giń tam. Kto padnie, wraca do Dongan.	Ne mourez pas là-bas. Qui tombe retourne à Dongan.
+Nie ma takiego piętra.	Cet étage n'existe pas.
+Nie masz Appaloosa, ktorego mozna nakarmic.	Vous n'avez pas d'Appaloosa à nourrir.
+Nie masz jeszcze dość Odłamków Energii,	Vous n'avez pas encore assez de Fragments d'énergie,
+Nie masz juz przedmiotu Transfer bonusow.	Vous n'avez plus l'objet Transfert de bonus.
+Nie masz już gotowego pierścienia.	Vous n'avez plus d'anneau prêt.
+Nie masz Kamienia Duszy +0, +1, +2 ani +3.	Vous n'avez pas de Pierre d'âme +0, +1, +2 ou +3.
+Nie masz Karty Maski Dyni? W takim razie nie	Pas de Carte: masque citrouille ? Alors ne
+Nie masz przy sobie Kamienia Dusz Beran-Setaou.	Vous n'avez pas de Pierre d'âme de Beran-Setaou sur vous.
+Nie masz przy sobie Klejnotu Mądrości.	Vous n'avez pas de Joyau de Sagesse sur vous.
+Nie masz przy sobie Klejnotu Zawiści.	Vous n'avez pas de Joyau de Cruauté sur vous.
+Nie masz przy sobie Kryształu Metin.	Vous n'avez pas de Cristal de Metin sur vous.
+Nie masz przy sobie Mrocznej Paproci.	Vous n'avez pas d'Osmonde obscure sur vous.
+Nie masz przy sobie Oczyszczonego Rdzenia.	Vous n'avez pas de Noyau purifié sur vous.
+Nie masz przy sobie Odłamka Reliktu swojej klasy.	Vous n'avez pas d'Éclat relique de votre classe sur vous.
+Nie masz teraz broni do odebrania. Kolejna czeka	Vous n'avez aucune arme à récupérer pour l'instant. La prochaine attend
+Nie masz tyle yang.	Vous n'avez pas autant de yangs.
+Nie masz w ekwipunku kostiumu, fryzury ani nakladki	Vous n'avez ni costume, ni coiffure, ni apparence dans votre inventaire
+Nie masz w plecaku broni, zbroi ani butow +9,	Vous n'avez ni arme, ni armure, ni chaussures +9 dans votre sac,
+Nie masz w plecaku drugiego przedmiotu tego samego rodzaju (%s).	Vous n'avez pas de second objet du même type dans votre sac (%s).
+Nie masz żadnych buffów Enasira.	Vous n'avez aucun buff d'Enasir.
+nie minelo 30 minut od ostatniego wyjscia	30 minutes ne se sont pas écoulées depuis votre dernière sortie
+Nie moge teraz pracowac - zamknij handel, sklep,	Je ne peux pas travailler - fermez l'échange, la boutique,
+Nie mogę teraz ulepszyć tej wędki. Zdejmij ją z ręki i przynieś jeszcze raz.	Je ne peux pas améliorer cette canne à pêche. Retirez-la de votre main et rapportez-la.
+Nie mozesz sie teleportowac w trakcie pojedynku.	Vous ne pouvez pas vous téléporter pendant un duel.
+Nie mozesz sie teleportowac w trakcie wojny gildii.	Vous ne pouvez pas vous téléporter pendant une guerre de guilde.
+Nie mozesz sie teraz teleportowac.	Vous ne pouvez pas vous téléporter pour l'instant.
+nie może dostać się do ksiąg.	ne peut pas atteindre les livres.
+Nie możesz jednocześnie używać Złotego Karasia i Krabu Królewskiego.	Vous ne pouvez pas utiliser le Poisson rouge et le Crabe royal en même temps.
+Nie możesz się teleportować w trakcie pojedynku.	Vous ne pouvez pas vous téléporter pendant un duel.
+Nie możesz się teleportować w trakcie wojny gildii.	Vous ne pouvez pas vous téléporter pendant une guerre de guilde.
+Nie możesz teraz otworzyć magazynu.	Vous ne pouvez pas ouvrir l'entrepôt pour l'instant.
+Nie możesz teraz otworzyć sklepu.	Vous ne pouvez pas ouvrir la boutique pour l'instant.
+Nie możesz teraz zapisać pozycji.	Vous ne pouvez pas enregistrer la position pour l'instant.
+Nie możesz teraz zostać Czempionem.	Vous ne pouvez pas devenir Champion pour l'instant.
+Nie możesz więcej skrócić czasu oczekiwania.	Vous ne pouvez plus réduire le temps d'attente.
+Nie można jej ulepszać, zmieniać bonusów, wymieniać ani sprzedawać.	Impossible de l'améliorer, de changer ses bonus, de l'échanger ou de la vendre.
+Nie należysz do gildii.	Vous n'êtes membre d'aucune guilde.
+Nie posiadasz wystarczającej ilości kluczy! Aby	Vous n'avez pas assez de clés ! Pour
+nie przyjme - zdejmij go najpierw.	je ne l'accepte pas - retirez-le d'abord.
+Nie spełniają warunków:	Ne remplissent pas les conditions :
+Nie spełniasz już warunków.	Vous ne remplissez plus les conditions.
+Nie teraz	Pas maintenant
+Nie udało ci się jeszcze? Na co czekasz? Ruszaj w[ENTER]drogę i oczyść 1. poziom.	Pas encore réussi ? Qu'attendez-vous ? Mettez-vous[ENTER]en route et nettoyez le 1er niveau.
+Nie udało się - spróbuj ponownie.	Échec - réessayez.
+Nie udało się otworzyć przejścia. Spróbuj ponownie za chwilę.	Impossible d'ouvrir le passage. Réessayez dans un instant.
+Nie udało się przywołać konia. Spróbuj jeszcze raz.	Impossible d'appeler le cheval. Réessayez.
+Nie udało się...	Échec...
+Nie usunięto żadnej misji.	Aucune quête n'a été supprimée.
+Nie walcze, tylko sie bronie	Je ne combats pas, je me défends seulement
+Nie wszystkie demony zostały pokonane.	Tous les démons n'ont pas été vaincus.
+Nie wszystkie potwory tolerują zarodniki tej	Tous les monstres ne tolèrent pas les spores de cette
+Nie wystarczy ci to? No, no mój przyjacielu. Nie[ENTER]mam już mocy. Dopiero jutro mogę ci znowu pomóc.	Ça ne vous suffit pas ? Allons, mon ami. Je n'ai[ENTER]plus de pouvoir. Je ne pourrai vous aider que demain.
+Nie zawsze się to udaje.	Ça ne marche pas toujours.
+Nie znasz żadnej riposty ani dopalacza.	Vous ne connaissez aucune parade ni aucun bonus.
+nie zyjesz	vous êtes mort
+Nie, dzisiaj nie.	Non, pas aujourd'hui.
+Nie, lepiej później.	Non, plutôt plus tard.
+Nie, nie teraz.	Non, pas maintenant.
+Nie, zostanę tutaj.	Non, je reste ici.
+niebezpieczne dla mieszkańców wioski.	dangereux pour les villageois.
+niebezpiecznie. Ale jeśli masz Przepustkę, pewnie	dangereux. Mais si vous avez un Ticket, je suppose
+niebezpiecznie. Jeśli jesteś gotów, przeprowadzę cię.	dangereux. Si vous êtes prêt, je vous y conduirai.
+Niebieskie Pudło Zodiaku	Coffret zodiacal bleu
+Niech ci %s wyjaśni, jak stworzyć pryzmat[ENTER]ożywienia.	Que %s vous explique comment créer un Prisme[ENTER]du réveil.
+Niech moje błogosławieństwo ci w tym pomoże.	Que ma bénédiction vous y aide.
+niedopracowana. Tak to już bywa z alchemią.	inachevée. Ainsi va l'alchimie.
+Niedziela (WSZYSTKIE)	Dimanche (TOUS)
+niego wrócić?	y retourner ?
+niego zabierze.	en prendra.
+Niektóre mroźne potwory niosą Mroźne Klucze (PB) - znajdź prawdziwy. Użyć go może tylko Szaman.	Certains monstres du gel portent des Clés gelées (ÉV) - trouvez la vraie. Seul un Chamane peut l'utiliser.
+Niektóre mroźne potwory niosą Mroźne Klucze (SZC) - znajdź prawdziwy. Użyć go może tylko Szaman.	Certains monstres du gel portent des Clés gelées (ST) - trouvez la vraie. Seul un Chamane peut l'utiliser.
+Niektóre potwory mają żywioł: ogień,	Certains monstres ont un élément : feu,
+Niestety nie udało ci się uplasować na liście	Hélas, vous n'êtes pas entré dans la liste
+Niestety rdzeń jest lekko zanieczyszczony.	Hélas, le noyau est légèrement contaminé.
+Niestety, nie ma cie w pierwszej dziesiatce	Hélas, vous n'êtes pas dans les dix premiers
+Niestety, nie ma cię w pierwszej dziesiątce rankingu.	Hélas, vous n'êtes pas dans les dix premiers du classement.
+Niestety, ten klejnot jest zmętniały - nie	Hélas, ce joyau s'est troublé - il ne
+Niestety, tym razem kryształ nie powstał.	Hélas, le cristal ne s'est pas formé cette fois.
+Niestety, tym razem się nie udało. Spróbuj	Hélas, ça n'a pas marché cette fois. Réessayez
+Niestety, tym razem się nie udało. Wędka straciła 10% punktów - łów dalej i spróbuj ponownie.	Hélas, ça n'a pas marché cette fois. La canne a perdu 10% des points - continuez à pêcher et réessayez.
+Niestety, z tych fragmentów nie udało się 	Hélas, ces fragments n'ont pas permis 
+Nieudana próba zabiera materiały, nie przedmiot.	Une tentative ratée prend les matériaux, pas l'objet.
+Nieudana próba zabiera od 1/3 do 1/2 tych punktów.	Une tentative ratée prend de 1/3 à 1/2 de ces points.
+Nieudana próba zabiera wszystkie materiały.	Une tentative ratée prend tous les matériaux.
+nieudana: od -%d do -%d punktów rangi.	échec : de -%d à -%d points de rang.
+Nikogo nie wpuszczam lekkomyślnie - tam jest	Je ne laisse entrer personne à la légère - là-bas, c'est
+Nikt jeszcze nie zagral w tym sezonie.	Personne n'a encore joué cette saison.
+Nikt jeszcze nie zagrał w tym evencie.	Personne n'a encore joué à cet évènement.
+niosą Książkę Przebudzenia. Udowodnij swoją siłę:	portent le Livre de l'éveil. Prouvez votre force :
+Niszczyciele En-Tai noszą Rosę En-Tai - z niej	Les Destructeurs En-Tai portent la Rosée En-Tai - avec elle
+Niszczycieli En-Tai.	Destructeurs En-Tai.
+nią ukryty mechanizm Steli Isfet (PB). Zębatkę noszą demony.	elle le mécanisme caché de la Stèle de l'Isfet (ÉV). Les démons portent le rouage.
+nią ukryty mechanizm Steli Isfet (SZC). Zębatkę noszą demony.	elle le mécanisme caché de la Stèle de l'Isfet (ST). Les démons portent le rouage.
+Nowa wyprawa	Nouvelle expédition
+Nowego Kontynentu.	du Nouveau Continent.
+Nowy hełm jest +0, bonusy i kamienie starego przepadają.	Le nouveau casque est +0, les bonus et pierres de l'ancien sont perdus.
+nowy sezon - piętra, nagrody i czasy od nowa.	une nouvelle saison - étages, récompenses et temps à zéro.
+o 100 szybciej.	100 plus vite.
+o szansie: Mały 2%, Drobny 5%, Ładny 10%, Zacny 15%,	la chance : Petit 2%, Mineur 5%, Joli 10%, Bon 15%,
+Oba przedmioty musza byc tego samego rodzaju	Les deux objets doivent être du même type
+Obecne potrwa jeszcze: %s	L'actuel dure encore : %s
+Obok ciebie pojawił się Metin z Yohary. Zniknie po 15 minutach, jeśli go nie zniszczysz.	Un Metin de Yohara est apparu près de vous. Il disparaît dans 15 minutes si vous ne le détruisez pas.
+Obok ciebie pojawiła się Żyła Jadeitu. Wydobądź z niej rudę kilofem - zniknie po 15 minutach.	Une Veine de Jade est apparue près de vous. Extrayez-en du minerai à la pioche - elle disparaît dans 15 minutes.
+obrażeń od jego potworów (do 80%).	de dégâts de ses monstres (jusqu'à 80%).
+obrażeń przeciw wszystkim (do +20%).	de dégâts contre tous (jusqu'à +20%).
+Obrona +100	Défense +100
+Obrona -100	Défense -100
+Obrona już się rozpoczęła.	La défense a déjà commencé.
+Obrona Statku (Hydra)	Défense du navire (Hydre)
+Obrona Statku: naprawiasz maszt.	Défense du navire : vous réparez le mât.
+Obrona Statku: porozmawiaj ze Sterem, aby rozpocząć obronę masztu.	Défense du navire : parlez au Gouvernail pour lancer la défense du mât.
+Obrona Statku: ten statek już zawinął do portu.	Défense du navire : ce navire est déjà arrivé au port.
+Obrona Statku: łódź nie dopłynęła do statku - porozmawiaj z Rybakiem ponownie.	Défense du navire : la barque n'a pas atteint le navire - reparlez au Pêcheur.
+Obroniłeś już statek przed Hydrą, więc znasz	Vous avez déjà défendu le navire contre l'Hydre, vous connaissez donc
+Obroń najpierw statek przed Hydrą, mając	Défendez d'abord le navire contre l'Hydre, en ayant
+Obróć go w popiół i wróć.	Réduisez-le en cendres et revenez.
+obszarami prowadzą też portale na miejscu.	zones sont aussi reliées par des portails sur place.
+Obudź wąwóz Am-heh i pokonaj Razadora.	Réveillez les Gorges d'Am-Heh et battez Razador.
+Och! Bez Tajemniczego Biletu nie mogę cię wpuścić.	Oh ! Sans Ticket mystérieux, je ne peux pas vous laisser entrer.
+Oczyszczone Rdzenie	Noyaux purifiés
+Oczyszczone Rdzenie znajdziesz u potworów	Vous trouverez des Noyaux purifiés sur les monstres
+Oczyszczone Rdzenie: nagroda	Noyaux purifiés : récompense
+Oczywiście	Bien sûr
+Oczywiście.	Bien sûr.
+od 10 do 399 punktów	de 10 à 399 points
+Od 21 poziomu koń rośnie od Paszy dla Konia. Karm go, aż pasek doświadczenia się wypełni, i spróbuj awansu: 50 paszy i Yang. Nieudana próba zostawia pasek - następna kosztuje dodatkowo Gaya i się uda.	Dès le niveau 21, votre cheval grandit avec de l'Avoine. Nourrissez-le jusqu'à remplir la barre d'expérience, puis tentez de le faire monter : 50 avoines et des yangs. Un échec garde la barre - la suivante coûte en plus des Gaya et réussit.
+Od 3 do 16 liter i cyfr, bez spacji.	De 3 à 16 lettres et chiffres, sans espaces.
+Od 30 poziomu konia: Poziom Czempiona 1	Dès le niveau de cheval 30 : niveau de Champion 1
+Od 31 poziomu twój koń będzie Potężnym Koniem Wojskowym. Przywołasz go tą księgą (300 PE).	Dès le niveau 31, votre cheval sera un Puissant cheval militaire. Vous l'appelez avec ce livre (300 PM).
+od 4 do 16 członków obok mnie, każdy z poziomem	de 4 à 16 membres près de moi, chacun de niveau
+od 400 do 549 punktów	de 400 à 549 points
+od 75. poziomu, +7 i wyżej - połóż swój przedmiot w oknie.	dès le niveau 75, +7 ou plus - placez votre objet dans la fenêtre.
+Od dziś jesteś Czempionem (poziom 1).	Dès aujourd'hui, vous êtes Champion (niveau 1).
+od jego potworów o 30% swojej wartości	de ses monstres à 30% de sa valeur
+od potworow, a ja sam nie dam im rady.	des monstres, et je ne peux pas les vaincre seul.
+od razu przywraca 500 PŻ i 500 PE.	rend aussitôt 500 PV et 500 PM.
+od stopnia G1 do P. Żadna z nich nie jest teraz	du grade G1 à P. Aucun d'eux n'est en ce moment
+odbierają główne nagrody! Czy jesteś jednym z nich?	récupèrent les récompenses principales ! En faites-vous partie ?
+Odbierz nagrode za ranking	Récupérer la récompense du classement
+Odbierz nagrodę gildii	Récupérer la récompense de guilde
+Odbierz nagrodę z rankingu	Récupérer la récompense du classement
+Odbierz nagrodę za ranking	Récupérer la récompense du classement
+Odbierz nagrodę!	Récupérez votre récompense !
+Odbierz od niego nagrodę - jeden stały bonus	Récupérez auprès de lui votre récompense - un bonus permanent
+odbierzesz nagrodę tutaj, przy stole:	vous récupérerez votre récompense ici, à la table :
+odbierzesz po jego zakończeniu.	vous la récupérerez à sa fin.
+odczekaj chwile po handlu, sklepie, magazynie lub ulepszaniu	attendez un peu après un échange, une boutique, l'entrepôt ou une amélioration
+Oddaj fragmenty duszy	Remettre les fragments d'âme
+Oddaj Klejnot Mądrości	Remettre le Joyau de Sagesse
+Oddaj Klejnot Zawiści	Remettre le Joyau de Cruauté
+Oddaj kryształ do zbadania	Remettre le cristal pour étude
+Oddaj paproć do zbadania	Remettre l'osmonde pour étude
+Oddaj popioły	Remettre les cendres
+Oddaj rdzeń do zbadania	Remettre le noyau pour étude
+Odebrales juz swoja nagrode w tym sezonie.	Vous avez déjà récupéré votre récompense cette saison.
+Odejdz na dobre	Partir pour de bon
+Odeślij Enasira	Renvoyer Enasir
+Odnów błogosławieństwo	Renouveler la bénédiction
+ODP	RÉS
+Odpornosc na trucizne (500 000 yang)	Résistance au poison (500 000 yangs)
+Odporność - chodzisz o połowę wolniej,	Résistance - vous avancez deux fois moins vite,
+Odporność na Omdlenia i Spowolnienia	Résistance à l'étourdissement et au ralentissement
+Odporność na Trucizny i Krwawienie	Résistance au poison et au saignement
+Odporność na żywioł zmniejsza obrażenia	La résistance élémentaire réduit les dégâts
+Odporność Sung Ma	Résistance Sung Ma
+Odprowadz mnie do skrzyn. Za kazdego potwora	Escortez-moi jusqu'aux coffres. Pour chaque monstre
+Odprowadziles mnie do wlasciwej skrzyni juz	Vous m'avez déjà escorté jusqu'au bon coffre
+Odwiedź Gardziel Am-heha (PB), by otworzyć kolejny Zamek Losu.	Allez aux Gorges d'Am-Heh (ÉV) pour ouvrir le prochain Verrou du destin.
+Odwiedź Gardziel Am-heha (SZC), by otworzyć kolejny Zamek Losu.	Allez aux Gorges d'Am-Heh (ST) pour ouvrir le prochain Verrou du destin.
+Odwiedź mnie jutro, po tym jak zniszczysz %s.	Revenez me voir demain, après avoir détruit %s.
+Odłamek rozsypuje się - Głowa Węża ani drgnie.	Le morceau s'effrite - la Tête de serpent ne bouge pas.
+Odłamek Smoczego Kamienia?!	Un Fragment pierre-dragon ?!
+odłamka potrzebuję jeszcze 10 popiołów. Zbierz je	morceau, il me faut encore 10 cendres. Récoltez-les
+Ogień i wiatr (mapa 2)	Feu et vent (carte 2)
+Ognia	Feu
+Ognioszczyt	Pic de feu
+Ognioturnia	Chaîne de feu
+Ogniste Buty i Buty Oceanu szyje Kawuco	Kawuco coud les Chaussures de feu et Chaussures d'océan
+Ognisty Liść - ogień, Mroźny Korzonek - lód,	Feuille flamme - feu, Racine de gel - glace,
+Okazały	Splendide
+Okno towarzysza (klawisz P)	Fenêtre du compagnon (touche P)
+Okno towarzysza otwiera klawisz P. Mozesz tez mu	La touche P ouvre la fenêtre du compagnon. Vous pouvez aussi
+Okno wytwarzania	Fenêtre de fabrication
+Opusc Swiatynie	Quitter le Temple
+Opuszczona Twierdza	Forteresse abandonnée
+Opuść Leże Smoka	Quitter l'Antre du dragon
+Opuść Schronienie	Quitter le Refuge
+Ornament i drugi Talizman +0 tego	Ornement et un second Talisman +0 du
+osiągniesz co najmniej poziom 35.	vous atteindrez au moins le niveau 35.
+Ostatni Metin padł - Beran-Setaou (PB) stracił swoją tarczę!	Le dernier Metin est tombé - Beran-Setaou (ÉV) a perdu son bouclier !
+Ostatni Metin padł - Beran-Setaou (SZC) stracił swoją tarczę!	Le dernier Metin est tombé - Beran-Setaou (ST) a perdu son bouclier !
+Ostrze (Weaponry)	Lame (Weaponry)
+Oto moj sklep z materialami do Alchemii Smoczych Kamieni.	Voici ma boutique de matériaux d'Alchimie des pierres-dragon.
+Oto nowa Złota Księga Konia.	Voici un nouveau Livre chevalin d'or.
+Oto on! Weź ten Kamień Driad (PB) - driada zna	Le voilà ! Prenez cette Pierre des dryades (ÉV) - la dryade connaît
+Oto on! Weź ten Kamień Driad (SZC) - driada zna	Le voilà ! Prenez cette Pierre des dryades (ST) - la dryade connaît
+Oto twoja nagroda: 100 Doblonow!	Voici votre récompense : 100 doublons !
+Oto twój Kryształ Energii. Niezłe cacko, co?	Voici votre Cristal d'énergie. Joli bijou, hein ?
+otrzymał swoją nagrodę do ekwipunku.	a reçu sa récompense dans l'inventaire.
+Otrzymujesz Buffi (na zawsze) i Zwój Imienia Buffi za 55 poziom. Okno Buffi otwiera klawisz P.	Vous recevez Buffi (permanent) et un Parchemin de nom de Buffi pour le niveau 55. La touche P ouvre la fenêtre de Buffi.
+Otrzymujesz czerwone pudła Zodiaku: %d	Vous recevez des coffrets zodiacaux rouges : %d
+Otrzymujesz kwiaty żywiołu: %d	Vous recevez des fleurs d'élément : %d
+Otrzymujesz niebieskie pudła Zodiaku: %d	Vous recevez des coffrets zodiacaux bleus : %d
+Otrzymujesz Złotą Księgę Konia!	Vous recevez le Livre chevalin d'or !
+Otrzymujesz: %dx Złote Trofeum Yutnori	Vous recevez : %dx Trophée Yutnori d'or
+Otworz okno ulepszania	Ouvrir la fenêtre d'amélioration
+Otworz okno wytwarzania	Ouvrir la fenêtre de fabrication
+Otworz skrzynie	Ouvrir les coffres
+Otwórz Bibliotekę Wiedzy	Ouvrir la Bibliothèque du savoir
+Otwórz Leże Smoka	Ouvrir l'Antre du dragon
+Otwórz Magazyn	Ouvrir l'entrepôt
+Otwórz okno	Ouvrir la fenêtre
+Otwórz okno kowala	Ouvrir la fenêtre du forgeron
+Otwórz okno wytwarzania	Ouvrir la fenêtre de fabrication
+Otwórz okno zielarstwa	Ouvrir la fenêtre d'herboristerie
+Otwórz pieczęcie Arktycznych Kostek (PB) we właściwej kolejności Gwiazdami Północy (PB) z potworów.	Ouvrez les sceaux des Cubes de l'Arctis (ÉV) dans le bon ordre avec les Étoiles du Nord (ÉV) des monstres.
+Otwórz pieczęcie Arktycznych Kostek (SZC) we właściwej kolejności Gwiazdami Północy (SZC) z potworów.	Ouvrez les sceaux des Cubes de l'Arctis (ST) dans le bon ordre avec les Étoiles du Nord (ST) des monstres.
+Otwórz portal Czyśćca Ognia	Ouvrir le portail du Purgatoire de feu
+Otwórz przejście	Ouvrir le passage
+Otwórz przejście do Lodowej Krainy	Ouvrir le passage vers la Terre de glace
+Otwórz sklep	Ouvrir la boutique
+ożyły - wojownicy En-Tai napadają na strażników lasu.	se sont animés - les guerriers En-Tai attaquent les gardiens de la forêt.
+Panel wypraw pokaże ci ranking każdego lochu.	Le panneau d'expéditions vous montre le classement de chaque donjon.
+Pasza dla konia	Avoine
+Pasza dla konia: 30/30 - wróć do Stajennego.	Avoine : 30/30 - retournez voir le palefrenier.
+pewne ciekawe miejsce... Jeśli masz Tajemniczy	un certain endroit curieux... Si vous avez un Ticket
+Pieczęci Biblioteki można użyć tylko w Bibliotece Wiedzy, po pokonaniu fali pająków.	Le Sceau de la bibliothèque ne s'utilise que dans la Bibliothèque du savoir, après la vague d'araignées.
+Pieczęcie złamane. Wąwóz Am-heh budzi się...	Les sceaux sont brisés. Les Gorges d'Am-Heh s'éveillent...
+Pieczęć Dżungli można użyć tylko w lochu, po pokonaniu fali potworów.	Le Sceau de la jungle ne s'utilise que dans le donjon, après la vague de monstres.
+Pieczęć przyjmie tylko Kryształ Lodu.	Le sceau n'accepte qu'un Cristal de glace.
+Pieczęć Ruin można użyć tylko w lochu, po pokonaniu fali potworów.	Le Sceau des ruines ne s'utilise que dans le donjon, après la vague de monstres.
+Pieczęć Wzgórza można użyć tylko w lochu, po pokonaniu fali potworów.	Le Sceau de la colline ne s'utilise que dans le donjon, après la vague de monstres.
+Piekielny Cios	Coup infernal
+Pierscien Anty-Exp: doswiadczenie znowu wlaczone.	Anneau anti-EXP : l'expérience est réactivée.
+Pierscien Anty-Exp: nie dostajesz doswiadczenia (uzyj ponownie, by wlaczyc).	Anneau anti-EXP : vous ne gagnez pas d'expérience (réutilisez-le pour l'activer).
+pierwotnych kamieni. Przynieś mi po prostu	pierres primitives. Apportez-moi simplement
+Pierwsza wioska	Premier village
+pierwszy 1% to +18% obrażeń przeciw jego	le premier 1% donne +18% de dégâts contre ses
+Pierwszy rekonesans	Première reconnaissance
+Pierwszy rekonesans: wróć do Strażnika Lasu.	Première reconnaissance : retournez voir le Gardien de la forêt.
+pierwszym poziomie roi się od Kapp i skażonych	premier niveau grouille de Kappas et de
+Pierścienia możesz używać od %d poziomu.	Vous pouvez utiliser l'anneau dès le niveau %d.
+Pierścienia Siły Natury można użyć tylko w Królestwie Żywiołów.	L'Anneau primal ne s'utilise que dans le Royaume des éléments.
+Pierścień jest gotowy.	L'anneau est prêt.
+Pierścień Siły Natury rozsypał się w pył - tym razem bez skutku.	L'Anneau primal est tombé en poussière - sans effet cette fois.
+Pierścień wypada ze wszystkich potworów i Metinów	L'anneau tombe de tous les monstres et Metins
+Pierścień zadziała dopiero wtedy, gdy statuy zaświecą na niebiesko (etap 4).	L'anneau ne fonctionne que lorsque les statues brillent en bleu (étape 4).
+Pierścień zaprowadzi cię na nowy kontynent	L'anneau vous mènera au nouveau continent
+Pilnuj, zeby potwory mnie nie dopadly.	Veillez à ce que les monstres ne m'attrapent pas.
+Pilnuję wejścia do Schronienia Północnego Wiatru.	Je garde l'entrée du Refuge d'Aquilon.
+Piorunowe Zioło - błyskawica, Kwiat Północnego	Herbe du tonnerre - foudre, Fleur d'Aquilon
+Pirat Tanaka to zmora naszych brzegow.	Le pirate Tanaka est le fléau de nos côtes.
+Piątek (Shen-Yu)	Vendredi (Shen-Yu)
+pięknie lśniące odłamki, dobrze?	des morceaux bien brillants, d'accord ?
+Piętra odblokowujesz po kolei; nowy miesiąc to	Vous débloquez les étages un par un ; un nouveau mois, c'est
+Pięć Ros En-Tai - wystarczy dla wszystkich rannych.	Cinq Rosées En-Tai - assez pour tous les blessés.
+pięćdziesiąt pięter jego najlepszych wojowników.	cinquante étages de ses meilleurs guerriers.
+Pięćdziesiąt pięter, każde z trzech etapów.	Cinquante étages, chacun en trois étapes.
+Planszę do Yutnori	Plateau de Yutnori
+Planszę do Yutnori, Kamień Kowala, Zwój	Plateau de Yutnori, Pierre du Forgeron, Parchemin
+Planszę do Yutnori, Zwój Błogosławieństwa,	Plateau de Yutnori, Parchemin de Bénédiction,
+plecaku (zostal zalozony, przeniesiony lub wymieniony).	sac (il a été équipé, déplacé ou échangé).
+po czasie wrócicie na Płaskowyż Iluzji.	après un moment, vous reviendrez au Plateau des illusions.
+po jednym. Wypadają z Podziemnych Lod. Ludzi	un par un. Ils tombent des Hommes de glace souterrains
+po jednym. Wypadają z Łuczników i Komendantów	un par un. Ils tombent des Archers et Commandants
+po prostu mój kostium. Jestem nieco rozkojarzony,	tout simplement mon costume. Je suis un peu distrait,
+po prostu przeciagnac na mnie.	il suffit de le glisser sur moi.
+Poczekaj chwilę po handlu lub rozmowie i spróbuj ponownie.	Attendez un peu après un échange ou une discussion et réessayez.
+Poczekaj chwilę po handlu lub rozmowie.	Attendez un peu après un échange ou une discussion.
+Poczekaj tu na niego - zabierze całą drużynę.	Attendez-le ici - il emmènera tout le groupe.
+Pod falami śpią ruiny Atlantydy. Ich strażnicy	Sous les vagues dorment les ruines de l'Atlantide. Leurs gardiens
+Pod tym sztandarem możesz wejść do Piekielnej Wieży	Sous cette bannière, vous pouvez entrer dans la Tour infernale
+Poddaj	Abandonner
+Poddaj wyprawę gildii	Abandonner l'expédition de guilde
+Poddać wyprawę może tylko mistrz gildii.	Seul le chef de guilde peut abandonner l'expédition.
+Podejdz blizej i sprobuj jeszcze raz.	Approchez-vous et réessayez.
+Podejdź bliżej do Smoczej Statui, która jeszcze nie płonie.	Approchez-vous d'une Statue du dragon qui ne brûle pas encore.
+Podróże po Yoharze	Voyages à travers Yohara
+Podręcznik: Dopalacz	Manuel : Bonus
+Podręcznik: Riposta	Manuel : Parade
+Pojawił się Metin Chłodu (PB)! Zranić go może tylko Szaman.	Un Metin du froid (ÉV) est apparu ! Seul un Chamane peut le blesser.
+Pojawił się Metin Chłodu (SZC)! Zranić go może tylko Szaman.	Un Metin du froid (ST) est apparu ! Seul un Chamane peut le blesser.
+pojedynczo - każdy muszę dokładnie zbadać,	un par un - je dois étudier chacun avec soin,
+Pokaz nagrody	Voir les récompenses
+Pokaż mi go...	Montrez-le-moi...
+Pokaż mi go... Zobaczmy, co skrywa ten blask.	Montrez-le-moi... Voyons ce que cache cet éclat.
+Pokaż ranking	Voir le classement
+Pokonaj 300 potworów w Wąwozie	Battez 300 monstres dans les Gorges
+Pokonaj 50 Wojowników En-Tai w Zaklętym Lesie.	Battez 50 Guerriers En-Tai dans la Forêt enchantée.
+Pokonaj bossów piętra i unikaj kręgów	Battez les boss de l'étage et évitez les cercles
+Pokonaj czterech Szelów.	Battez quatre Szels.
+Pokonaj fale potworów, aż pojawią się bossowie	Battez les vagues de monstres jusqu'à l'arrivée des boss
+Pokonaj Nemere (PB), króla mrozu i lodu!	Battez Nemere (ÉV), roi du gel et de la glace !
+Pokonaj Nemere (SZC), króla mrozu i lodu!	Battez Nemere (ST), roi du gel et de la glace !
+Pokonaj Nemere!	Battez Nemere !
+pokonaj Razadora w Czyśćcu Ognia i Nemere w Lodowej	battez Razador au Purgatoire de feu et Nemere en Terre
+Pokonaj wszystkich wrogów!	Battez tous les ennemis !
+Pokonaj wszystkich wrogów, a błogosławieństwo doda ci	Battez tous les ennemis et la bénédiction vous donnera
+Pokonaj wszystkie mroźne potwory, a potem zniszcz Metin Chłodu (PB) - zranić go może tylko Szaman.	Battez tous les monstres du gel, puis détruisez le Metin du froid (ÉV) - seul un Chamane peut le blesser.
+Pokonaj wszystkie mroźne potwory, a potem zniszcz Metin Chłodu (SZC) - zranić go może tylko Szaman.	Battez tous les monstres du gel, puis détruisez le Metin du froid (ST) - seul un Chamane peut le blesser.
+Pokonaj wszystkie potwory	Battez tous les monstres
+Pokonaj wszystkie potwory na tym piętrze.	Battez tous les monstres de cet étage.
+Pokonaj wszystkie potwory w otwartej komnacie.	Battez tous les monstres de la salle ouverte.
+Pokonaj Władcę En-Tai i zdobądź Drzewny Szmaragd.	Battez le Seigneur En-Tai et obtenez l'Émeraude boisée.
+Pokonaj Władcę En-Tai i zdobądź Szlachetne Drewno.	Battez le Seigneur En-Tai et obtenez le Bois précieux.
+Pokonajcie 3 Czerwone Skorpiony.	Battez 3 Scorpions rouges.
+Pokonajcie 3 Faethorny.	Battez 3 Faethorns.
+Pokonajcie 3 Królowe Pająków.	Battez 3 Reines araignées.
+Pokonajcie 3 Obrońców Chmur.	Battez 3 Défenseurs des nuages.
+Pokonajcie Baronównę Pająków!	Battez la Baronne araignée !
+Pokonajcie Króla Skorpionów!	Battez le Roi scorpion !
+Pokonajcie Królewską Sowę!	Battez la Chouette royale !
+Pokonajcie Królową Dżungli!	Battez la Reine de la jungle !
+Pokonajcie Płomiennego Feniksa!	Battez le Phénix flamboyant !
+Pokonajcie WuKonga!	Battez WuKong !
+Pokonaliście Alastora. Oto wasza nagroda.	Vous avez vaincu Alastor. Voici votre récompense.
+Pokonaliście Jotuna Thryma (PB)!	Vous avez vaincu Jotun Thrym (ÉV) !
+Pokonaliście Jotuna Thryma (SZC)!	Vous avez vaincu Jotun Thrym (ST) !
+Pokonaliście Jotuna Thryma!	Vous avez vaincu Jotun Thrym !
+Pokonałeś Razadora i Nemere. Oto twoja nagroda:	Vous avez vaincu Razador et Nemere. Voici votre récompense :
+Pokonałeś Wojowników En-Tai, ale apteczki nie mieli.	Vous avez vaincu les Guerriers En-Tai, mais ils n'avaient pas de trousse.
+Pokonuj Druidów En-Tai, aż znajdziesz apteczkę.	Battez des Druides En-Tai jusqu'à trouver une trousse de secours.
+Pokonuj Metiny Świadomość w Dongan, aż zdobędziesz	Battez des Metins de réalisation à Dongan jusqu'à obtenir
+Pokonuj mroźne potwory i zdobądź Klucz Lod. Kwiatu (PB) - wypada tylko, gdy zabija Ninja.	Battez des monstres du gel et obtenez la Clé crist. de glace (ÉV) - elle ne tombe que si un Ninja tue.
+Pokonuj mroźne potwory i zdobądź Klucz Lod. Kwiatu (SZC) - wypada tylko, gdy zabija Ninja.	Battez des monstres du gel et obtenez la Clé crist. de glace (ST) - elle ne tombe que si un Ninja tue.
+Pokonuj potwory - co jakiś czas znajdziesz przy nich paszę.	Battez des monstres - de temps en temps, ils ont de l'avoine.
+Pokonuj potwory na tym poziomie - czasem wypada[ENTER]z nich Klucz Kryształu Duszy. Z kluczem w[ENTER]ekwipunku porozmawiaj ze statuą albo przeciągnij[ENTER]go na nią.	Battez les monstres de ce niveau - parfois, ils lâchent[ENTER]une Clé à cristal d'âme. Avec la clé dans votre[ENTER]inventaire, parlez à la statue ou glissez[ENTER]la clé sur elle.
+Pokonuj potwory w czasie eventu, aby zbierac	Battez des monstres pendant l'évènement pour récolter
+Pokrój	Découper
+Polacz Szarfy	Fusionner les étoles
+Polimorfia wierzchowca	Polymorphie de monture
+Pomieszczenie bossa	Salle du boss
+Pomoc Smoka Buffi	Aide du dragon Buffi
+pomocniczych (ostatnie pole).	auxiliaires (dernier emplacement).
+Pomoge ci	Je vais vous aider
+Poniedziałek (Zi-Chou)	Lundi (Zi-Chou)
+ponownie 2 godziny po zakończeniu.	de nouveau 2 heures après la fin.
+ponownie jutro.	de nouveau demain.
+Popioły	Cendres
+Popiół: %d / 10	Cendres : %d / 10
+Poprzednia ryba na doświadczenie przestała działać - zastąpiła ją lepsza.	L'ancien poisson d'expérience ne fait plus effet - un meilleur l'a remplacé.
+Poprzednia strona	Page précédente
+poprzedniej próbki. Wróć do mnie trochę później!	l'échantillon précédent. Revenez me voir un peu plus tard !
+Porozmawiaj z %s w Świątyni Zodiaku.	Parlez à %s dans le Temple du zodiaque.
+Porozmawiaj z %s.	Parlez à %s.
+Porozmawiaj z Badaczem Lasu.	Parlez à l'Éclaireur de forêt.
+Porozmawiaj z nim (od poziomu 120).	Parlez-lui (dès le niveau 120).
+Porozmawiaj z nim przy wejściu do Groty	Parlez-lui à l'entrée de la Grotte
+Porozmawiaj z nim.	Parlez-lui.
+Porozmawiaj ze mną: Nagroda za badania	Parlez-moi : récompense de recherche
+Porozmawiaj ze Zwiadowcą Lasu.	Parlez au Pisteur de la forêt.
+Port Nowego Kontynentu	Port du Nouveau Continent
+Portal do Świątyni Smoka otworzą trzy Kręte Klucze	Le portail du Temple du dragon s'ouvre avec trois Clés en spirale
+Portal pozostawiony przez Straznika En-Tai drga	Le portail laissé par le Gardien En-Tai tremble
+Portal prowadzi do następnego etapu.	Le portail mène à l'étape suivante.
+Portowy Sklep Gaya	Bourse aux Gayas du port
+Portowy Sklep Gaya: nowa oferta jest gotowa.	Bourse aux Gayas du port : une nouvelle offre est prête.
+Portu Nowego Kontynentu. Dokąd chcesz płynąć?	Port du Nouveau Continent. Où voulez-vous naviguer ?
+portu?	port ?
+Porzuć misję teraz	Abandonner la mission maintenant
+Posiadasz następujące buffy:	Vous avez les buffs suivants :
+Postęp: %d / %d.	Progression : %d / %d.
+Potrzebne: część (wykon.), 10 Wzorów Wężowych,	Requis : pièce (fabriquée), 10 Modèles serpent,
+potrzebny 75. poziom	niveau 75 requis
+potrzebuje Zegarka Kieszonkowego od Handlarki Iluzji.	il faut une Montre de poche de la Marchande d'illusions.
+Potrzebujesz %d poziomu i Championa 4.	Il vous faut le niveau %d et Champion 4.
+Potrzebujesz 300 PE.	Il vous faut 300 PM.
+potrzebujesz przedmiotu:	il vous faut l'objet :
+Potrzebujesz Przepustki.	Il vous faut un Ticket.
+Potrzebujesz Sztandaru Czaszki (Gnoll Kapitan, Ahtrin Kapitan, Wódz Wojenny Schronienia, ItemShop).	Il vous faut une Bannière du crâne (Capitaine gnoll, Capitaine ahtrin, Chef guerrier citadelle, Item Shop).
+Potrzebujesz Upiornej Dyni, aby użyć Czarodziejskiej Różdżki. 	Il vous faut une Citrouille d'Halloween pour utiliser la Baguette magique. 
+potrzebuję %d Odłamków Energii.	il me faut %d Fragments d'énergie.
+Potrzebuję 30 porcji paszy. Pokonuj potwory - przy niektórych ją znajdziesz. Za pomoc dostaniesz 22-27 Paszy dla Konia.	Il me faut 30 portions d'avoine. Battez des monstres - certains en ont. En récompense, vous recevez 22-27 Avoines.
+Potrzebuję do moich badań oczyszczonych rdzeni.	J'ai besoin de noyaux purifiés pour mes recherches.
+potrzebuję. I to zawdzięczam tylko tobie.	besoin. Et je ne le dois qu'à vous.
+potworom, każdy kolejny +0,5% (do 80%).	monstres, chaque suivant +0,5% (jusqu'à 80%).
+potworom, Wojownikom, Ninja, Surom albo Szamanom,	monstres, Guerriers, Ninjas, Suras ou Chamanes,
+Potwory nadciągają szybciej!	Les monstres arrivent plus vite !
+Potwory Szczeliny Czasu nie dają dropu, ale dają więcej PD.	Les monstres de la Faille temporelle ne lâchent rien, mais donnent plus d'EXP.
+potworów obracają je - w dobrej kolejności.	monstres les tournent - dans le bon ordre.
+potworów zdobędzie tylko Czempion.	monstres, seul un Champion les obtiendra.
+Potęga mądrości	Puissance de la sagesse
+Potęga mądrości już jest z tobą.	La Puissance de la sagesse est déjà avec vous.
+Potęga Sung Mahi wyrzuca pokonanych z jaskiń. Wracasz do Dongan.	La puissance de Sung Mahi chasse les vaincus des grottes. Vous retournez à Dongan.
+Potężny Wojownik Wężowy (ziemia) wkracza do sali!	Un Guerrier serpent cruel (terre) entre dans la salle !
+Potężny Wojownik Wężowy odradza się w lodzie!	Un Guerrier serpent cruel renaît dans la glace !
+Powodzenia!	Bonne chance !
+Powoli opadasz z sił, co? Nie pracuj tak ciężko,	Vous vous épuisez, hein ? Ne travaillez pas si dur,
+powtarzać co 24 godziny.	répéter toutes les 24 heures.
+Poziom	Niveau
+Poziom Czempiona	Niveau de Champion
+Poziom Czempiona: %d, doświadczenie %d / %d.	Niveau de Champion : %d, expérience %d / %d.
+poziomu): 10 Zwykłych Skór, 5 planów, 5 Cienkich	niveau) : 10 Cuirs ordinaires, 5 plans, 5 Cuirs
+Pozniej	Plus tard
+pozwala zapomnieć ją i wybrać nową.	permet de l'oublier et d'en choisir une nouvelle.
+Pozycje w obcym królestwie są niedostępne.	Les positions dans un royaume étranger sont indisponibles.
+połowę obrażeń, Witalność - masz połowę PŻ,	moitié des dégâts, Vitalité - vous avez la moitié des PV,
+Połóż liście w oknie wytwarzania.	Placez les feuilles dans la fenêtre de fabrication.
+Połóż przedmiot w oknie razem z materiałami:	Placez l'objet dans la fenêtre avec les matériaux :
+Połącz kamienie przebudzenia z Duszą Przebudzenia,	Combinez les pierres d'éveil avec l'Âme de l'éveil,
+Prawdziwy Kamień Metin został zniszczony. Za chwilę zejdziecie do Tartara!	La vraie Pierre Metin a été détruite. Vous allez bientôt descendre au Tartare !
+Precyzja -10	Précision -10
+proba zaliczona	épreuve réussie
+Projekty Zestawu i odłamki I wypadają w Królestwie	Les Plans d'ensemble et éclats I tombent dans le Royaume
+Promienista - 20x Wspaniały Kamień Chaosu i 10 000 000 Yang.	Rayonnante - 20x Pierre chaos précieuse et 10 000 000 yangs.
+Prosta - 10x Agat i 5 000 000 Yang,	Sobre - 10x Agate et 5 000 000 yangs,
+Proszę, oto ona. Załóż ją w oknie kostiumów -	Tenez, la voici. Équipez-la dans la fenêtre des costumes -
+Proszę, oto twój Kryształ Energii. Pamiętaj	Tenez, voici votre Cristal d'énergie. Rappelez-vous
+Proszę. Niech głębiny będą dla ciebie łaskawe.	Tenez. Que les profondeurs vous soient clémentes.
+prowadzi portal Strażnika En-Tai w Świątyni Ochao.	mène le portail du Gardien En-Tai au Temple d'Ochao.
+prowadzić badania. Pracuję nad czymś zupełnie	faire mes recherches. Je travaille sur quelque chose de tout
+prowadzę działalności charytatywnej - interes	ne fais pas de charité - les affaires
+Prowadź mnie	Guidez-moi
+Pryzmat Ożywienia	Prisme du réveil
+przebywa ich król. Przynieś mi Drzewny Szmaragd.	réside leur roi. Apportez-moi une Émeraude boisée.
+Przechwyc bonus do Szarfy	Capturer un bonus pour l'étole
+przed Hydrą, i wszystkich innych śmiałków.	face à l'Hydre, et tous les autres téméraires.
+Przedmiot zrodlowy nie ma juz zadnych bonusow.	L'objet source n'a plus aucun bonus.
+Przedmiot, którego wygląd weźmiesz, zniknie.	L'objet dont vous prenez l'apparence disparaîtra.
+Przedmiot, z którego przeniesiesz parametry, zniknie.	L'objet dont vous transférez les stats disparaîtra.
+Przedmiotu, Buty Wiatru, Lizak Potęgi, Cor	d'objet, Bottes du vent, Sucette de la force, Cor
+przedniej zabawy życzę! 	je vous souhaite bien du plaisir ! 
+Przejdź do Czyśćca Ognia	Aller au Purgatoire de feu
+Przejdź do Leża Smoka	Aller à l'Antre du dragon
+Przejdź do Lodowej Krainy	Aller en Terre de glace
+Przejdź na 7. poziom	Aller au 7e étage
+Przejście jest jeszcze zamknięte. Wróć później.	Le passage est encore fermé. Revenez plus tard.
+Przejście już się otwiera. Poczekaj chwilę.	Le passage s'ouvre déjà. Patientez un instant.
+Przekuj przedmiot +9	Reforger un objet +9
+Przekuj zbroje	Reforger l'armure
+Przekuwam bron, zbroje i buty ulepszone na +9	Je reforge armes, armures et chaussures améliorées à +9
+Przekuwanie zbroi	Reforge d'armure
+przeniesione parametry zostają.	les stats transférées restent.
+Przenieś mnie	Téléportez-moi
+Przenieś mnie do hali wieży	Emmenez-moi au hall de la tour
+Przenieś mnie do Razadora	Emmenez-moi à Razador
+Przenosi ona parametry biżuterii, a u Theowahdana	Elle transfère les stats des bijoux, et chez Theowahdan
+Przenoszę tylko wygląd: statystyki i bonusy zostają.	Je ne transfère que l'apparence : stats et bonus restent.
+Przenośnej Żyły Jadeitu nie użyjesz w lochu.	Vous ne pouvez pas utiliser le Filon de jadéite mobile en donjon.
+przepadły.	sont perdus.
+Przepisy	Recettes
+Przerwa gildii wyzerowana.	Délai de guilde réinitialisé.
+Przetrwaj klątwę - zdejmuje ją Antidotum SungMa	Survivez à la malédiction - l'Antidote SungMa l'enlève
+przez 7 dni po koncu eventu:	pendant 7 jours après la fin de l'évènement :
+Przełęcz Yilad	Col de Yilad
+przy brzegu przez cały dzień.	près du rivage toute la journée.
+Przy mnie musi stać od %d do %d członków gildii (teraz: %d).	De %d à %d membres de guilde doivent être près de moi (actuellement : %d).
+Przy odrobinie szczęścia w Upiornej Skrzyni	Avec un peu de chance, dans un Coffre d'Halloween
+Przy ujemnej randze koszt jest podwójny.	Avec un rang négatif, le coût est doublé.
+Przy ujemnej randze trening kosztuje %d punktów rangi.	Avec un rang négatif, l'entraînement coûte %d points de rang.
+przyciskiem kladziesz karte na stol, prawym	bouton, vous posez une carte sur la table, droit
+Przyjmij misję teraz	Accepter la mission maintenant
+Przyjęte klejnoty: %d / 10	Joyaux acceptés : %d / 10
+Przyjęte klejnoty: %d / 20	Joyaux acceptés : %d / 20
+Przyjęte: %d / 10	Acceptés : %d / 10
+Przykro mi, najpierw musisz zapłacić. Nie	Désolé, vous devez d'abord payer. Je ne
+Przylądek Smoczego Ognia	Cap du Feu du dragon
+Przynies dwie Szarfy tego samego stopnia, a polacze je w jedna, silniejsza.	Apportez deux étoles du même grade et je les fusionnerai en une plus forte.
+Przynies przedmiot, materialy i Yang - przepisy	Apportez l'objet, les matériaux et des yangs - les recettes
+Przynies Szarfe oraz przedmiot, z ktorego chcesz przechwycic bonus.	Apportez une étole et l'objet dont vous voulez capturer un bonus.
+Przynieś mi 10 fragmentów duszy miecza.	Apportez-moi 10 fragments d'âme d'épée.
+Przynieś mi 10 fragmentów duszy ochrony.	Apportez-moi 10 fragments d'âme de protection.
+Przynieś mi 10 fragmentów duszy ozdoby.	Apportez-moi 10 fragments d'âme d'ornement.
+Przynieś mi 10 fragmentów duszy światła.	Apportez-moi 10 fragments d'âme de lumière.
+Przynieś mi 10 Klejnotów Zawiści. Przynoś je	Apportez-moi 10 Joyaux de Cruauté. Apportez-les
+Przynieś mi 10 popiołów z potworów w Dongan,	Apportez-moi 10 cendres de monstres de Dongan,
+Przynieś mi 20 Klejnotów Mądrości, po jednym.	Apportez-moi 20 Joyaux de Sagesse, un par un.
+przynieś mi jego szlachetne drewno.	apportez-moi son bois précieux.
+Przynieś mi jeszcze %d szt.	Apportez-m'en encore %d.
+Przynieś mi kryształy Metin - małe odłamki	Apportez-moi des cristaux de Metin - de petits éclats
+Przynieś mi wędkę, a zobaczę, czy da się ją ulepszyć.	Apportez-moi une canne à pêche et je verrai si on peut l'améliorer.
+Przynieś Seon-Pyeongowi 10 Klejnotów Zawiści,	Apportez à Seon-Pyeong 10 Joyaux de Cruauté,
+Przynieś Seon-Pyeongowi 20 Klejnotów Mądrości,	Apportez à Seon-Pyeong 20 Joyaux de Sagesse,
+Przywolaj do mnie	Appeler auprès de moi
+Przywołaj konia, aby go nakarmić.	Appelez votre cheval pour le nourrir.
+Przywołaj konia, aby go szkolić.	Appelez votre cheval pour l'entraîner.
+Przywódca Straży Lasu (PB) cię tam zaprowadzi.	Le Chef gardien de la forêt (ÉV) vous y conduira.
+Przywódca Straży Lasu (PB) zaprowadzi was do Erebu.	Le Chef gardien de la forêt (ÉV) vous conduira à l'Érèbe.
+Przywódca Straży Lasu (SZC) cię tam zaprowadzi.	Le Chef gardien de la forêt (ST) vous y conduira.
+Przywódca Straży Lasu (SZC) zaprowadzi was do Erebu.	Le Chef gardien de la forêt (ST) vous conduira à l'Érèbe.
+Przędz, 5 Oznak Sławy (zbroja) albo 5 Stali (hełm),	Fil, 5 Galons de la gloire (armure) ou 5 Aciers (casque),
+Próba Czarnego Rumaka	Épreuve du Destrier noir
+Próby Czarnego Rumaka już nie ma - porozmawiaj ze mną o rozwoju konia.	L'épreuve du Destrier noir n'existe plus - parlez-moi du développement du cheval.
+Prąd zabierze cię tam, gdzie walczy twoja drużyna.	Le courant vous emmènera là où votre groupe combat.
+Punkty jednej statystyki odda Nowa Wola.	La Volonté nouvelle rend les points d'une stat.
+Punkty umiejętności wydane na nie wrócą. Potem możesz	Les points de compétence dépensés reviendront. Ensuite, vous pouvez
+Punkty wróciły do puli.	Les points sont revenus dans la réserve.
+Pył Wężowy: czas nie może przekroczyć 60 minut.	Poussière de serpent : la durée ne peut pas dépasser 60 minutes.
+Północnego Wiatru.	d'Aquilon.
+Płacisz tylko za siebie - boty z drużyny i towarzysz wchodzą bez opłaty.	Vous ne payez que pour vous - les bots du groupe et le compagnon entrent gratuitement.
+Płaskowyż Iluzji	Plateau des illusions
+Płaskowyż Iluzji otwiera się przed wojownikami od	Le Plateau des illusions s'ouvre aux guerriers dès
+Płaskowyż Sił Natury: twoje PŻ będą stale spadać. Medal Siły Natury chroni przez 10 minut.	Plateau primal : vos PV baissent sans cesse. L'Ordre primal vous protège 10 minutes.
+Płaskowyż Sił Natury: użyj Pierścienia Siły	Plateau primal : utilisez l'Anneau
+Płyń do portu	Naviguer vers le port
+Płyń na Przylądek	Naviguer vers le Cap
+Raczej nie	Plutôt pas
+Ranking lochów	Classement des donjons
+Ranking nie jest jeszcze zamknięty.	Le classement n'est pas encore clos.
+Ranking Okey	Classement Okey
+rankingu calkowitych punktow.	du classement des points totaux.
+rankingu i odbiora najwieksze nagrody!	du classement et récupèrent les plus grosses récompenses !
+Razador (PB) został pokonany!	Razador (ÉV) a été vaincu !
+Razador (SZC) został pokonany!	Razador (ST) a été vaincu !
+Razador został pokonany!	Razador a été vaincu !
+Razador: Brakujące potwory komnaty pojawiają się ponownie.	Razador : les monstres manquants de la salle réapparaissent.
+Razador: Czas minął. Portal wyrzuca was z Czyśćca Ognia.	Razador : le temps est écoulé. Le portail vous chasse du Purgatoire de feu.
+Razador: Pokonajcie Razadora!	Razador : battez Razador !
+Razador: Porozmawiaj z posągiem Am-heh, aby otrzymać zadanie.	Razador : parlez à la statue d'Am-Heh pour recevoir une tâche.
+Razador: Wszystkie pieczęcie złamane. Wróć do posągu Am-heh, aby obudzić wąwóz.	Razador : tous les sceaux sont brisés. Retournez à la statue d'Am-Heh pour éveiller les gorges.
+Razador: Wąwóz Am-heh budzi się! Za chwilę staniecie przed Razadorem.	Razador : les Gorges d'Am-Heh s'éveillent ! Vous allez bientôt affronter Razador.
+Razador: Zadanie wykonane. Wróć do posągu Am-heh po następne.	Razador : tâche accomplie. Retournez à la statue d'Am-Heh pour la suivante.
+Regeneracja PE +30%	Régénération PM +30%
+Regeneracja PE -30%	Régénération PM -30%
+Regeneracja PŻ +30%	Régénération PV +30%
+Regeneracja PŻ -30%	Régénération PV -30%
+Regeneracja zakończona	Régénération terminée
+Reguły świątyni	Règles du temple
+Rekonesans Przebudzenia	Reconnaissance de l'éveil
+Rekonesans Szczeliny Czasu	Reconnaissance de la Faille temporelle
+Relikt Duszy	Relique d'âme
+Relikt Duszy (powtarzalna)	Relique d'âme (répétable)
+Riposta zmniejsza obrażenia, które otrzymujesz od jednej	La parade réduit les dégâts que vous subissez d'une
+Riposta: Duchowe Uderzenie	Parade : Attaque de l'esprit
+Riposta: Mroczne Uderzenie	Parade : Attaque des Ténèbres
+Riposta: Ognista Strzała	Parade : Flèche de feu
+Riposta: Przywołanie Błyskawicy	Parade : Invocation de foudre
+Riposta: Strzelający Smok	Parade : Dragon chassant
+Riposta: Uderzenie Palcem	Parade : Toucher brûlant
+Riposta: Wir Miecza	Parade : Moulinet à l'épée
+Riposta: Zasadzka	Parade : Embuscade
+Robie soki, ksiegi Eksperta, Lekarstwo Iluzji i Szate Aury.	Je fais des jus, des livres d'Expert, le Médicament illusoire et la Tenue d'aura.
+Robie soki, wody i rosy.	Je fais des jus, des eaux et des rosées.
+Robie soki, wody, pasy i Runy Wykuwania (z dwoch run - runa o gwiazdke wyzsza).	Je fais des jus, des eaux, des ceintures et des Runes de forge (de deux runes - une rune d'une étoile de plus).
+Rosy En-Tai	Rosées En-Tai
+Rosy En-Tai (PB)	Rosées En-Tai (ÉV)
+Rosy En-Tai (SZC)	Rosées En-Tai (ST)
+Rozpocznij obronę masztu	Lancer la défense du mât
+Rozpocznij walkę!	Lancer le combat !
+Rozpocznij wyprawę na Nemere	Lancer l'expédition contre Nemere
+Rozpocznij zadanie	Lancer la tâche
+Rozwijasz ją punktami umiejętności lub księgami riposty	Vous la développez avec des points de compétence ou des livres de parade
+rozwiniesz ją aż do poziomu 250.	vous la développerez jusqu'au niveau 250.
+Rozwój konia (21-40)	Développement du cheval (21-40)
+rośliny mrocznej paproci! Zasłużyłeś na nagrodę!	plantes d'osmonde obscure ! Vous méritez une récompense !
+rośliny. Przynieś mi nieuszkodzone sadzonki	plantes. Apportez-moi des pousses intactes
+Ruiny Atlantydy	Ruines de l'Atlantide
+Ruiny Atlantydy: Czas minął. Prąd wynosi was z ruin.	Ruines de l'Atlantide : le temps est écoulé. Le courant vous emporte hors des ruines.
+Ruiny Atlantydy: Etap zaliczony. Za 5 sekund następne wyzwanie.	Ruines de l'Atlantide : étape terminée. Prochain défi dans 5 secondes.
+Ruiny Atlantydy: Głębinowa Muszla zniknęła. Pojawia się nowa.	Ruines de l'Atlantide : le Coquillage des abysses a disparu. Un nouveau apparaît.
+Ruiny Atlantydy: Klucz przepadł w głębinach. Pojawia się nowa Głębinowa Muszla.	Ruines de l'Atlantide : la clé s'est perdue dans les abysses. Un nouveau Coquillage des abysses apparaît.
+Ruiny Atlantydy: Kolumna się otwiera! Pokonajcie Strażnika Atlantydy.	Ruines de l'Atlantide : la colonne s'ouvre ! Battez le Gardien de l'Atlantide.
+Ruiny Atlantydy: Macie %d s, by pokonać Morkhota (punkty karne: %d).	Ruines de l'Atlantide : vous avez %d s pour battre Morkhot (points de pénalité : %d).
+Ruiny Atlantydy: Morkhot skrył się w głębinach! Zniszczcie Pradawne Serce Atlantydy, by go przywołać.	Ruines de l'Atlantide : Morkhot s'est caché dans les abysses ! Détruisez le Cœur ancien de l'Atlantide pour l'appeler.
+Ruiny Atlantydy: Najpierw pokonajcie Strażnika Atlantydy.	Ruines de l'Atlantide : battez d'abord le Gardien de l'Atlantide.
+Ruiny Atlantydy: nie udało się otworzyć przejścia - porozmawiaj z Magiem Atlantydy.	Ruines de l'Atlantide : le passage ne s'est pas ouvert - parlez au Mage de l'Atlantide.
+Ruiny Atlantydy: Pokonajcie Morkhota!	Ruines de l'Atlantide : battez Morkhot !
+Ruiny Atlantydy: porozmawiaj z Magiem Atlantydy, aby otworzyć przejście.	Ruines de l'Atlantide : parlez au Mage de l'Atlantide pour ouvrir le passage.
+Ruiny Atlantydy: przejście prowadzi przez poczekalnię.	Ruines de l'Atlantide : le passage traverse la salle d'attente.
+Ruiny Atlantydy: przejście się otwiera...	Ruines de l'Atlantide : le passage s'ouvre...
+Ruiny Atlantydy: Serca Atlantydy zniszczone. Morkhot się budzi!	Ruines de l'Atlantide : les Cœurs de l'Atlantide sont détruits. Morkhot s'éveille !
+Ruiny Atlantydy: Strażnik Atlantydy pojawia się ponownie.	Ruines de l'Atlantide : le Gardien de l'Atlantide réapparaît.
+Ruiny Atlantydy: Ta wyprawa już się zakończyła. Porozmawiaj z Magiem Atlantydy, aby wyruszyć na nową.	Ruines de l'Atlantide : cette expédition est déjà terminée. Parlez au Mage de l'Atlantide pour en lancer une nouvelle.
+Ruiny Atlantydy: Ten loch został już ukończony.	Ruines de l'Atlantide : ce donjon a déjà été terminé.
+Ruiny Atlantydy: To była prawdziwa Elita Atlantydy! Złudzenia rozpływają się w wodzie.	Ruines de l'Atlantide : c'était la vraie Élite de l'Atlantide ! Les illusions se dissolvent dans l'eau.
+Ruiny Atlantydy: To nie ta kolumna. Klucz rozpadł się - pojawia się nowa Głębinowa Muszla.	Ruines de l'Atlantide : mauvaise colonne. La clé s'est brisée - un nouveau Coquillage des abysses apparaît.
+Ruiny Atlantydy: Witajcie w głębinach. Za 5 sekund obudzą się strażnicy ruin.	Ruines de l'Atlantide : bienvenue dans les abysses. Les gardiens des ruines s'éveillent dans 5 secondes.
+Ruiny Atlantydy: Wszystkie kolumny otwarte. Za 5 sekund prąd zabierze was w głąb ruin.	Ruines de l'Atlantide : toutes les colonnes sont ouvertes. Dans 5 secondes, le courant vous emmène au cœur des ruines.
+Ruiny Skorpiona	Ruines du Scorpion
+Ruiny Skorpiona: Czas minął. Strażnik wyprowadza was z lochu.	Ruines du Scorpion : le temps est écoulé. Le gardien vous fait sortir du donjon.
+Ruiny Skorpiona: Etap zaliczony. Za 5 sekund następne wyzwanie.	Ruines du Scorpion : étape terminée. Prochain défi dans 5 secondes.
+Ruiny Skorpiona: nie udało się otworzyć przejścia - porozmawiaj ze strażnikiem.	Ruines du Scorpion : le passage ne s'est pas ouvert - parlez au gardien.
+Ruiny Skorpiona: Pieczęć Ruin zadziałała sama.	Ruines du Scorpion : le Sceau des ruines s'est activé tout seul.
+Ruiny Skorpiona: porozmawiaj ze strażnikiem, aby otworzyć przejście.	Ruines du Scorpion : parlez au gardien pour ouvrir le passage.
+Ruiny Skorpiona: przejście prowadzi przez poczekalnię.	Ruines du Scorpion : le passage traverse la salle d'attente.
+Ruiny Skorpiona: przejście się otwiera...	Ruines du Scorpion : le passage s'ouvre...
+Ruiny Skorpiona: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Ruines du Scorpion : cette expédition est déjà terminée. Parlez au gardien pour en lancer une nouvelle.
+Ruiny Skorpiona: Ten loch został już ukończony.	Ruines du Scorpion : ce donjon a déjà été terminé.
+Ruiny Skorpiona: Witajcie. Za 5 sekund z piasku wyjdą skorpiony.	Ruines du Scorpion : bienvenue. Dans 5 secondes, les scorpions sortiront du sable.
+Runy aury podnoszą poziom szaty: Lodowa Runa Aury	Les runes d'aura augmentent le niveau de la tenue : Rune d'aura glacée
+Ruszajmy w droge!	En route !
+Rycerski	Chevaleresque
+Różdżki z kamieni Metin. Dotknij dyni różdżką,	Baguettes des pierres Metin. Touchez la citrouille avec la baguette,
+rękawic Sung Ma.	gants Sung Ma.
+rękawice bez ulepszaczy... ale nie widzę u ciebie	des gants sans objets d'amélioration... mais je ne vois pas sur vous
+Sala tronowa Nemere	Salle du trône de Nemere
+Sam albo z drużyną (do 8). Boty z drużyny wejdą razem z Tobą.	Seul ou en groupe (jusqu'à 8). Les bots du groupe entrent avec vous.
+Sam albo z drużyną. Boty z drużyny wchodzą razem z Tobą.	Seul ou en groupe. Les bots du groupe entrent avec vous.
+Sam bym tego dokonał, ale mój miecz stępił się w	Je l'aurais fait moi-même, mais mon épée s'est émoussée dans
+Sam bym tego dokonał, ale mój miecz stępił się,	Je l'aurais fait moi-même, mais mon épée s'est émoussée,
+Sam nie przetrwasz w Szczelinie Czasu - potrzebujesz	Seul, vous ne survivrez pas dans la Faille temporelle - il vous faut
+Sam nie przetrwasz w tym lochu - potrzebujesz	Seul, vous ne survivrez pas dans ce donjon - il vous faut
+samego żywiołu. Własne bonusy talizmanu	même élément. Les bonus propres du talisman
+Schody prowadzą na następne piętro	L'escalier mène à l'étage suivant
+Schronienie jest jeszcze zamknięte. Wróć później.	Le Refuge est encore fermé. Revenez plus tard.
+Schronienie Meley	Repaire de Meley
+Schronienie Meley: brama się nie otworzyła - porozmawiaj ze Strażnikiem Smoków ponownie.	Repaire de Meley : la porte ne s'est pas ouverte - reparlez au Garde du dragon.
+Schronienie Meley: nie wybrałeś nagrody - otrzymujesz Skrzynię Królowej Meley.	Repaire de Meley : vous n'avez pas choisi de récompense - vous recevez le Coffre de la reine Meley.
+Schronienie Północnego Wiatru	Refuge d'Aquilon
+sekundy znalazłem się właśnie tutaj... 	secondes, je me suis retrouvé ici même... 
+Seon-Pyeong ma już wszystkie Klejnoty Zawiści.	Seon-Pyeong a déjà tous les Joyaux de Cruauté.
+Seon-Pyeong prowadzi dalej swoje badania.	Seon-Pyeong poursuit ses recherches.
+Seon-Pyeong, badacz przy wejściu do Groty	Seon-Pyeong, un chercheur à l'entrée de la Grotte
+Seon-Pyeongowi.	à Seon-Pyeong.
+serwera (M2_SIDEKICK=1). Zamiast niego jest Buffi	serveur (M2_SIDEKICK=1). À la place, il y a Buffi
+Setaou (oraz ze Skrzyni Hydry).	Setaou (et du Coffre de l'Hydre).
+Setaou w Grocie Wygnańców.	Setaou dans la Grotte de l'exil.
+Siano	Foin
+sie poslugiwac bronia.	se servir d'une arme.
+sie w tym miejscu portal.	un portail apparaît à cet endroit.
+siedmiu Stelach Isfet (PB) we właściwej kolejności.	sept Stèles de l'Isfet (ÉV) dans le bon ordre.
+siedmiu Stelach Isfet (SZC) we właściwej kolejności.	sept Stèles de l'Isfet (ST) dans le bon ordre.
+Silniejszy efekt tego rodzaju już działa.	Un effet plus fort de ce type est déjà actif.
+silniejszą bestię.	une bête plus forte.
+Silny 25%.	Fort 25%.
+się w pobliżu reagują na kamienie Metin.	des environs réagissent aux pierres Metin.
+sił na kolejne fale.	de forces pour les vagues suivantes.
+SIŁA	FOR
+Siła %d, Witalność %d, Odporność %d,	Force %d, Vitalité %d, Résistance %d,
+Siła natury porywa cię na Płaskowyż Sił Natury!	La force de la nature vous emporte sur le Plateau primal !
+Siła Sung Ma	Force Sung Ma
+Siły żywiołowe	Forces élémentaires
+Skarb Królowej Meley należy do tych, którzy	Le Trésor de la reine Meley appartient à ceux qui
+Skarb otwarty! Każdy członek gildii obecny w Krypcie	Trésor ouvert ! Chaque membre de la guilde présent dans la Crypte
+Skarbiec gildii musi mieć co najmniej 500 000 Yang.	Le trésor de guilde doit contenir au moins 500 000 yangs.
+Sklep	Boutique
+Sklep Gaya otworzysz przy Statui Wojownika w Porcie Nowego Kontynentu.	Vous ouvrez la Bourse aux Gayas près de la Statue du guerrier au Port du Nouveau Continent.
+Skrytobojca (sztylety)	Assassin (dagues)
+skrywają wielką siłę. Przynieś mi 10 ziół jednego	cachent une grande force. Apportez-moi 10 herbes d'un
+skrzyni skarbow ukrytej na tej wyspie.	coffre au trésor caché sur cette île.
+Skrzynia Królowej Meley	Coffre de la reine Meley
+Skrzynia otwarta: mikstury, zwoje, rady, pierscienie i encyklopedia sa w ekwipunku.	Coffre ouvert : potions, parchemins, conseils, anneaux et encyclopédie sont dans l'inventaire.
+Skrzynia Sm. Strażników	Coffre des gardes du dr.
+Skrzynia: potrzebujesz 9 wolnych miejsc w ekwipunku.	Coffre : il vous faut 9 emplacements libres dans l'inventaire.
+skrzynie - 100 Doblonow.	coffres - 100 doublons.
+Smocze Jaja wciąż chronią statuy - najpierw je zniszczcie.	Les Œufs de dragon protègent encore les statues - détruisez-les d'abord.
+Smocze Statuy chronią jej leże - zniszczcie je	Les Statues de dragon protègent son repaire - détruisez-les
+Smok (Dragon)	Dragon (Dragon)
+Sobota (Xu-Hai)	Samedi (Xu-Hai)
+Sobowtór Szela (PB) rozpływa się w mroźnym powietrzu.	Le Double de Szel (ÉV) se dissipe dans l'air glacé.
+Sobowtór Szela (SZC) rozpływa się w mroźnym powietrzu.	Le Double de Szel (ST) se dissipe dans l'air glacé.
+Spełniasz wszystkie warunki. Czy chcesz	Vous remplissez toutes les conditions. Voulez-vous
+Spirala Czasu (10%)	Accélérateur (10 %)
+Spirala Czasu (20%)	Accélérateur (20 %)
+Spirala Czasu (30%)	Accélérateur (30 %)
+Spirala Czasu może skrócić czas oczekiwania.	Un Accélérateur peut réduire le temps d'attente.
+Spróbuj ponownie później.	Réessayez plus tard.
+Spytaj go o nią w pierwszej wiosce.	Demandez-le-lui dans le premier village.
+Srebrna skrzynia (300 - 399 punktow)	Coffre d'argent (300 - 399 points)
+Srebrne Trofeum Yutnori	Trophée Yutnori d'argent
+Stajenny	Palefrenier
+Stajenny - pasza dla konia	Palefrenier - avoine
+Stajenny - rozwój konia	Palefrenier - développement du cheval
+Stajenny - szkolenie konia	Palefrenier - entraînement du cheval
+Stajenny - umiejętności konia	Palefrenier - compétences du cheval
+Stajenny - Złota Księga Konia	Palefrenier - Livre chevalin d'or
+Stajenny: awans konia (11)	Palefrenier : promotion du cheval (11)
+Stajenny: awans konia (21)	Palefrenier : promotion du cheval (21)
+Stajenny: pierwszy koń (kucyk)	Palefrenier : premier cheval (poney)
+stają się tam agresywniejsze. A to jest	y deviennent plus agressifs. Et voici
+stanąć twarzą w twarz ze swoim przeznaczeniem?	affronter votre destin face à face ?
+Starożytna Dżungla	Jungle antique
+Starożytna Dżungla: Czas minął. Strażnik wyprowadza was z lochu.	Jungle antique : le temps est écoulé. Le gardien vous fait sortir du donjon.
+Starożytna Dżungla: Etap zaliczony. Za 5 sekund następne wyzwanie.	Jungle antique : étape terminée. Prochain défi dans 5 secondes.
+Starożytna Dżungla: nie udało się otworzyć przejścia - porozmawiaj ze strażnikiem.	Jungle antique : le passage ne s'est pas ouvert - parlez au gardien.
+Starożytna Dżungla: Pieczęć Dżungli zadziałała sama.	Jungle antique : le Sceau de la jungle s'est activé tout seul.
+Starożytna Dżungla: porozmawiaj ze strażnikiem, aby otworzyć przejście.	Jungle antique : parlez au gardien pour ouvrir le passage.
+Starożytna Dżungla: przejście prowadzi przez poczekalnię.	Jungle antique : le passage traverse la salle d'attente.
+Starożytna Dżungla: przejście się otwiera...	Jungle antique : le passage s'ouvre...
+Starożytna Dżungla: Ta wyprawa już się zakończyła. Porozmawiaj ze strażnikiem, aby wyruszyć na nową.	Jungle antique : cette expédition est déjà terminée. Parlez au gardien pour en lancer une nouvelle.
+Starożytna Dżungla: Ten loch został już ukończony.	Jungle antique : ce donjon a déjà été terminé.
+Starożytna Dżungla: Witajcie. Za 5 sekund dżungla się przebudzi.	Jungle antique : bienvenue. Dans 5 secondes, la jungle s'éveillera.
+Statek nie może dziś wypłynąć. Spróbuj ponownie	Le navire ne peut pas partir aujourd'hui. Réessayez
+Statek stoi dziś w porcie. Wróć później.	Le navire reste au port aujourd'hui. Revenez plus tard.
+statek, który wypływa, musi bronić masztu przed	le navire qui part doit défendre le mât contre
+Statua Kuda	Statue mythique
+Statua Kuda strzeże wejścia na 2. poziom[ENTER]Diabelskich Katakumb.	La Statue mythique garde l'entrée du niveau 2[ENTER]des Catacombes du diable.
+Statua Przebudzenia otworzy przed twoją grupą,	La Statue de l'éveil ouvrira à votre groupe
+Statua Węży prowadzi do wnętrza świątyni, gdzie	La Statue de serpent mène à l'intérieur du temple, où
+statystyk Sung Ma - rozdasz go w oknie	de stats Sung Ma - vous le répartissez dans la fenêtre
+Stały bonus czepca to atak magiczny i w zwarciu. Drugi	Le bonus fixe de la coiffe est l'attaque magique et de mêlée. Second
+Stały bonus konia (Potwory / Bossy / Metiny) został zniesiony - koń rośnie teraz do 40 poziomu.	Le bonus fixe du cheval (Monstres / Boss / Metins) a été supprimé - le cheval monte maintenant jusqu'au niveau 40.
+Stań przy mnie - przywódca zabierze	Restez près de moi - le chef emmènera
+Stań przy mnie - przywódca zabierze drużynę stojącą obok.	Restez près de moi - le chef emmènera le groupe qui se tient à côté.
+Stela Isfet (PB) została zniszczona.	La Stèle de l'Isfet (ÉV) a été détruite.
+Stela Isfet (SZC) została zniszczona.	La Stèle de l'Isfet (ST) a été détruite.
+Stela nie przyjmuje tego przedmiotu.	La stèle n'accepte pas cet objet.
+Stol Okey:	Table d'Okey :
+Strażnica Nemere (PB)	Tour de guet de Nemere (ÉV)
+Strażnica Nemere (PB) ma limit czasu - godzinę.	La Tour de guet de Nemere (ÉV) a une limite de temps - une heure.
+Strażnica Nemere (PB): czas minął - wracacie na Płaskowyż Iluzji.	Tour de guet de Nemere (ÉV) : temps écoulé - retour au Plateau des illusions.
+Strażnica Nemere (PB): masz 60 minut. Przywódca grupy zaczyna u Lodowego Lwa (PB).	Tour de guet de Nemere (ÉV) : vous avez 60 minutes. Le chef de groupe commence au Lion de glace (ÉV).
+Strażnica Nemere (PB): potrzebujesz Książki Przebudzenia.	Tour de guet de Nemere (ÉV) : il vous faut un Livre de l'éveil.
+Strażnica Nemere (PB): ta wyprawa już się skończyła.	Tour de guet de Nemere (ÉV) : cette expédition est déjà terminée.
+Strażnica Nemere (SZC)	Tour de guet de Nemere (ST)
+Strażnica Nemere (SZC) ma limit czasu - godzinę.	La Tour de guet de Nemere (ST) a une limite de temps - une heure.
+Strażnica Nemere (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Tour de guet de Nemere (ST) : temps écoulé - retour au Plateau des illusions.
+Strażnica Nemere (SZC): masz 60 minut. Przywódca grupy zaczyna u Lodowego Lwa (SZC).	Tour de guet de Nemere (ST) : vous avez 60 minutes. Le chef de groupe commence au Lion de glace (ST).
+Strażnica Nemere (SZC): potrzebujesz Zegarka Kieszonkowego.	Tour de guet de Nemere (ST) : il vous faut une Montre de poche.
+Strażnica Nemere (SZC): ta wyprawa już się skończyła.	Tour de guet de Nemere (ST) : cette expédition est déjà terminée.
+Strażnik Lasu (PB) potrzebuje twojej pomocy.	Le Gardien de la forêt (ÉV) a besoin de votre aide.
+Strażnik Lasu (SZC) potrzebuje twojej pomocy.	Le Gardien de la forêt (ST) a besoin de votre aide.
+Strażnik Lasu czeka na Ducha Ziemi.	Le Gardien de la forêt attend l'Esprit de la terre.
+Strażnik Lasu da ci kolejne zadania - po następny	Le Gardien de la forêt vous donnera d'autres tâches - pour la prochaine
+Strażnik Lasu miał mi przysłać apteczkę - wróć po nią.	Le Gardien de la forêt devait m'envoyer une trousse de secours - allez la chercher.
+Strażnik Lasu miał mi przysłać apteczkę.	Le Gardien de la forêt devait m'envoyer une trousse de secours.
+Strażnik Lasu potrzebuje twojej pomocy.	Le Gardien de la forêt a besoin de votre aide.
+Strażnik Świątyni miał mi coś przesłać. Wróć z tym.	Le Gardien du temple devait m'envoyer quelque chose. Revenez avec.
+Strażnik Świątyni na Zboczu Gautama ma wieści z	Le Gardien du temple de la Falaise de Gautama a des nouvelles de
+Strona %d z %d	Page %d sur %d
+Strzał Wichury	Tir de tempête
+Strzałka nad NPC oznacza, że chce on z tobą[ENTER]porozmawiać. Jeśli nie zobaczysz NPC na swoim[ENTER]ekranie, podążaj za migającym punktem na[ENTER]mini-mapie.	Une flèche au-dessus d'un PNJ signifie qu'il veut[ENTER]vous parler. Si vous ne voyez pas le PNJ à[ENTER]l'écran, suivez le point clignotant sur la[ENTER]mini-carte.
+strzegą go przed każdym ciosem - najpierw	le protègent de chaque coup - d'abord
+Strzelaj	Tirer
+Stół do Yutnori	Table de Yutnori
+Suma punktow	Total des points
+Sung Ma. Co ćwierć paska dostajesz punkt	Sung Ma. Chaque quart de barre vous donne un point
+Sunga Mahi. Każda wspinaczka (portal w hali wieży	de Sung Mahi. Chaque ascension (le portail du hall de la tour
+Swiatynia Ochao	Temple d'Ochao
+Swoją nagrodę już wybrałeś.	Vous avez déjà choisi votre récompense.
+System towarzysza nie jest dalej rozwijany	Le système de compagnon n'est plus développé
+Szaman	Chamane
+Szaman - bez nich nie przejdziecie Strażnicy Nemere.	Chamane - sans eux, vous ne passerez pas la Tour de guet de Nemere.
+Szansa 10% (+5) do 50% (+9), gdy się nie uda, hełm zostaje.	Chance de 10% (+5) à 50% (+9) ; en cas d'échec, le casque reste.
+Szansa 50%, gdy się nie uda, materiały przepadają.	Chance 50% ; en cas d'échec, les matériaux sont perdus.
+szansa 50%.	chance 50%.
+Szansa powodzenia: %d%%. Jeśli się nie uda, wędka zostanie, ale straci 10%% punktów.	Chance de réussite : %d%%. En cas d'échec, la canne reste, mais perd 10%% de ses points.
+Szansa: %d%%. Udana próba: -%d punktów rangi,	Chance : %d%%. Tentative réussie : -%d points de rang,
+Szansa: 70%.	Chance : 70%.
+Szata Aury	Tenue d'aura
+Szata aury: ewolucja	Tenue d'aura : évolution
+Szata aury: przenieś parametry	Tenue d'aura : transférer les stats
+Szata aury: rozwój	Tenue d'aura : développement
+Szata nie może mieć już przeniesionych parametrów -	La tenue ne peut plus recevoir de stats transférées -
+Szatę ze szczytu jej rodzaju zmienię w następną:	Je transforme une tenue au sommet de son type en la suivante :
+szczególnie wysokoenergetyczne. Niektóre z nich	particulièrement riches en énergie. Certaines d'entre elles
+Szczelina Czasu	Faille temporelle
+Szczelina Czasu jest dziś zamknięta. Wróć później.	La Faille temporelle est fermée aujourd'hui. Revenez plus tard.
+Szczelina Czasu nie przyjmie was teraz. Spróbuj za chwilę.	La Faille temporelle ne vous accepte pas maintenant. Réessayez dans un instant.
+Szczeliny Czasu. Musicie być w grupie, a każdy z was	de la Faille temporelle. Vous devez être en groupe, et chacun de vous
+Szczytobłysk	Pic d'éclair
+Szczytomrok	Pic d'ombre
+Szel (PB) pokonany. Za chwilę zostaniecie przeniesieni na 8. piętro.	Szel (ÉV) vaincu. Vous allez être transférés au 8e étage.
+Szel (SZC) pokonany. Za chwilę zostaniecie przeniesieni na 8. piętro.	Szel (ST) vaincu. Vous allez être transférés au 8e étage.
+szepnac: chodz, graj sam, czekaj, zakupy, stan.	chuchoter : chodz, graj sam, czekaj, zakupy, stan.
+Szeptem tez zrozumiem: chodz, graj sam, czekaj,	Je comprends aussi les chuchotements : chodz, graj sam, czekaj,
+szeregi - pokonaj 50 Wojowników En-Tai.	rangs - battez 50 Guerriers En-Tai.
+Szkatulke.	Coffret.
+Szkoda... Porozmawiaj ze mna, gdy bedziesz gotowy.	Dommage... Parlez-moi quand vous serez prêt.
+Szkol konia	Entraîner le cheval
+Szkolenie konia	Entraînement du cheval
+Szlachetna - 10x Prosty Kamień Chaosu i 5 000 000 Yang,	Noble - 10x Pierre du chaos simple et 5 000 000 yangs,
+Szlachetna Trawa wskrzesza Potężnego Konia Wojskowego (31+).	L'Herbe luxuriante ressuscite le Puissant cheval militaire (31+).
+Szlachetne Drewno - tylko on je ma.	Bois précieux - lui seul en a.
+szlachetne drewno.	bois précieux.
+Szlifowanie Kamyków	Polissage des gemmes
+Szlifowanie się nie udało. Kamyki i Kamień Duszy	Le polissage a échoué. Les Gemmes précieuses et la Pierre d'âme
+Szlifuj	Polir
+Szmaragd (PB).	Émeraude (ÉV).
+Szmaragd (SZC).	Émeraude (ST).
+Szukał cię Mnich Milbon. Chce ci coś podarować i[ENTER]czeka na ciebie w Świątyni Zodiaku. Przeniesie[ENTER]cię tam teleporter.	Le Moine Milbon vous cherchait. Il veut vous offrir quelque chose et[ENTER]vous attend au Temple du zodiaque. Le téléporteur[ENTER]vous y emmènera.
+Szybko! Chron mnie przed potworami!	Vite ! Protégez-moi des monstres !
+Szybkość Ataku +20%	Vitesse d'attaque +20%
+Szybkość Ataku -20%	Vitesse d'attaque -20%
+Szybkość Buffi	Vitesse de Buffi
+Szybkość Ruchu +20%	Vitesse de déplacement +20%
+Szybkość Zaklęcia +20%	Vitesse de sort +20%
+Szybkość Zaklęcia -20%	Vitesse de sort -20%
+są bardzo niepokojące. Moi bracia zaginęli, a z nimi	sont très inquiétantes. Mes frères ont disparu, et avec eux
+Są one bardzo rzadkie. Często po dokładniejszym	Elles sont très rares. Souvent, après un examen
+służą żołnierze Setaou. Cztery kamienie smoka	servent les soldats de Setaou. Quatre pierres du dragon
+Ta funkcja jest chwilowo niedostepna.	Cette fonction est temporairement indisponible.
+Ta mapa jest teraz zamknieta.	Cette carte est fermée pour l'instant.
+Ta mapa jest teraz zamknięta.	Cette carte est fermée pour l'instant.
+Ta mapa wymaga %d poziomu.	Cette carte requiert le niveau %d.
+Ta mikstura została wycofana i nie działa. Możesz ją sprzedać w sklepie NPC.	Cette potion a été retirée et ne fonctionne pas. Vous pouvez la vendre dans une boutique de PNJ.
+Ta mroczna paproć idealnie nadaje się do moich badań.	Cette osmonde obscure est parfaite pour mes recherches.
+Ta oferta jest już nieaktualna - otwórz list jeszcze raz.	Cette offre n'est plus valable - rouvrez la lettre.
+Ta para pasowała! Teraz pokonaj wszystkie potwory na szachownicy.	La paire correspondait ! Battez maintenant tous les monstres de l'échiquier.
+Ta pozycja jest pusta.	Cet emplacement est vide.
+Ta pozycja jest uszkodzona - zapisz ją ponownie.	Cet emplacement est endommagé - enregistrez-le de nouveau.
+Ta riposta zmniejszy obrażenia od tej umiejętności:	Cette parade réduit les dégâts de cette compétence :
+Ta wyprawa została już ukończona.	Cette expédition a déjà été terminée.
+Ta Złota Zębatka (PB) była zepsuta i rozpadła się.	Ce Pignon doré (ÉV) était cassé et s'est brisé.
+Ta Złota Zębatka (SZC) była zepsuta i rozpadła się.	Ce Pignon doré (ST) était cassé et s'est brisé.
+Tajemnicza Instancja	Instance mystérieuse
+Tajemnicza Instancja wymaga 1. Poziomu Czempiona.	L'Instance mystérieuse requiert le niveau de Champion 1.
+Tak, natychmiast!	Oui, tout de suite !
+Tak, oczywiście!	Oui, bien sûr !
+Tak, odejdz	Oui, partez
+Tak, prowadz	Oui, guidez-moi
+Tak, przenies bonusy	Oui, transférer les bonus
+Tak, tak uczyń.	Oui, faites-le.
+Tak, zostanę Czempionem	Oui, je deviens Champion
+takie jak w oryginalnej grze.	comme dans le jeu d'origine.
+taką upiorną maskę. Chcesz? 	un masque aussi effrayant. Vous en voulez un ? 
+Talizman żywiołu daje Siłę tego żywiołu:	Un talisman d'élément donne la Force de cet élément :
+Talizmany wypadają z bossów swojego	Les talismans tombent des boss de leur
+Tamta wyprawa już się skończyła.	Cette expédition-là est déjà terminée.
+Tarcza Eteru	Bouclier d'éther
+Tego przedmiotu może użyć tylko Czempion.	Seul un Champion peut utiliser cet objet.
+Tego przedmiotu teraz nie przekuje.	Je ne peux pas reforger cet objet maintenant.
+Tej mapy nie ma w zapisanych pozycjach (lochy, eventy i mapy specjalne są wyłączone).	Cette carte n'est pas dans les positions enregistrées (donjons, évènements et cartes spéciales sont exclus).
+Tej umiejętności nie możesz się nauczyć.	Vous ne pouvez pas apprendre cette compétence.
+Tej umiejętności nie można się nauczyć.	Cette compétence ne peut pas être apprise.
+Teleportacja nie powiodła się - zwój wrócił do ekwipunku.	Téléportation échouée - le parchemin est revenu dans l'inventaire.
+Teleportacja wymaga czystego Zwoju Powrotu w ekwipunku.	La téléportation requiert un Parchemin du lieu vierge dans l'inventaire.
+Teleportacja: %s (zużyto 1 zwój).	Téléportation : %s (1 parchemin utilisé).
+Teleportuj do portu	Téléporter au port
+Ten efekt już działa i potrwa dłużej niż nowy.	Cet effet est déjà actif et durera plus longtemps que le nouveau.
+Ten klucz nie pasuje teraz do niczego.	Cette clé ne correspond à rien pour l'instant.
+Ten kolor... ten oddźwięk mocy... wspaniale.	Cette couleur... cet écho de puissance... magnifique.
+Ten list zostaje: to menu twojego towarzysza.	Cette lettre reste : c'est le menu de votre compagnon.
+Ten loch został już ukończony.	Ce donjon a déjà été terminé.
+Ten pierścień odpoczywa - użyjesz innego, gotowego.	Cet anneau se repose - vous en utiliserez un autre, prêt.
+Ten pierścień upuściła Hydra, konając.	L'Hydre a lâché cet anneau en mourant.
+Ten slot już kupiono - poczekaj na nową ofertę.	Cet emplacement a déjà été acheté - attendez une nouvelle offre.
+Ten zabieg kosztuje %d Yang. Zapłacisz?	Ce soin coûte %d yangs. Vous payez ?
+Teraz nie ma nagród do odebrania.	Aucune récompense à récupérer pour l'instant.
+To był zły klucz. Znajdź właściwy!	C'était la mauvaise clé. Trouvez la bonne !
+To Druidzi En-Tai za tym stoją. Odbierz im apteczkę.	Ce sont les Druides En-Tai qui sont derrière ça. Reprenez-leur la trousse.
+To dziwna kreatura jest wszystkiemu winna - Druid	Cette étrange créature est responsable de tout - le Druide
+To fascynujące! Kamienie Metin są tutaj	C'est fascinant ! Les pierres Metin ici sont
+to interes.	ce sont les affaires.
+To nie jest przedmiot, którego potrzebuję... Wróć,	Ce n'est pas l'objet dont j'ai besoin... Revenez
+To nie ta! Wracamy na poczatek i szukamy	Pas celui-là ! Retour au départ pour chercher
+To Wędka+20 - lepszej zwykłej wędki nie zrobię.	C'est une Canne à pêche+20 - je ne peux pas faire de meilleure canne ordinaire.
+Towarzysz	Compagnon
+Towarzysze sa wylaczeni na tym serwerze.	Les compagnons sont désactivés sur ce serveur.
+Trafił cię krąg! Zostaje ci 1 PŻ - kolejne trafienie przy niepełnym PŻ zabija.	Le cercle vous a touché ! Il vous reste 1 PV - un autre coup sans PV pleins vous tue.
+Transfer bonusow kostiumu	Transfert de bonus de costume
+Transfer sie nie udal - nic nie zostalo zniszczone.	Le transfert a échoué - rien n'a été détruit.
+Transmutacja	Transmutation
+Transmutacja przedmiotu	Transmutation d'objet
+Trening kosztuje %d punktów rangi.	L'entraînement coûte %d points de rang.
+Trening się nie udał...	L'entraînement a échoué...
+Trening się udał!	L'entraînement a réussi !
+Trenuj	S'entraîner
+trzeba je zniszczyć.	il faut les détruire.
+trzech skrzyn jest ta wlasciwa. Wyspa roi sie	des trois coffres est le bon. L'île grouille
+Trzy Elity Atlantydy - tylko jedna jest prawdziwa. Zabicie złudzenia to punkt karny.	Trois Élites de l'Atlantide - une seule est vraie. Tuer une illusion donne un point de pénalité.
+Trzymam mieszkańców z dala od jaskiń - tam jest	Je tiens les villageois loin des grottes - là-bas, c'est
+Trzęsienie	Séisme
+Tu spisano imiona tych, którzy obronili statek	Ici sont écrits les noms de ceux qui ont défendu le navire
+Turniobłysk	Crête d'éclair
+Turniomrok	Crête d'ombre
+tutaj dotrzeć?	arriver ici ?
+tutaj dotrzeć? Weź te Korzenie Gango.	arriver ici ? Prenez ces Racines de Gango.
+Tutaj moc pierścienia nie działa. Najpierw	Le pouvoir de l'anneau ne marche pas ici. D'abord
+Tutaj nie da się przywołać Metina. Spróbuj w innym miejscu.	Impossible d'appeler un Metin ici. Essayez ailleurs.
+Tutaj pierścień nie działa.	L'anneau ne marche pas ici.
+Tutaj żyła się nie pojawi. Spróbuj w innym miejscu.	Aucune veine n'apparaîtra ici. Essayez ailleurs.
+Tuńczyk odpłynął, a na pożegnanie obdarzył cię swoim blaskiem.	Le thon s'est éloigné et vous a baigné de son éclat en guise d'adieu.
+Tuńczyk szarpnął się i ochlapał cię od stóp do głów.	Le thon s'est débattu et vous a éclaboussé des pieds à la tête.
+Twierdza Czerwonego Smoka (PB)	Forteresse du Dragon rouge (ÉV)
+Twierdza Czerwonego Smoka (PB): czas minął - wracacie na Płaskowyż Iluzji.	Forteresse du Dragon rouge (ÉV) : temps écoulé - retour au Plateau des illusions.
+Twierdza Czerwonego Smoka (PB): masz 60 minut. Porozmawiaj z Gardzielą Am-heha.	Forteresse du Dragon rouge (ÉV) : vous avez 60 minutes. Parlez aux Gorges d'Am-Heh.
+Twierdza Czerwonego Smoka (PB): piekielny władca Razador (PB) czeka!	Forteresse du Dragon rouge (ÉV) : le seigneur infernal Razador (ÉV) attend !
+Twierdza Czerwonego Smoka (PB): potrzebujesz Książki Przebudzenia.	Forteresse du Dragon rouge (ÉV) : il vous faut un Livre de l'éveil.
+Twierdza Czerwonego Smoka (PB): ta wyprawa już się skończyła.	Forteresse du Dragon rouge (ÉV) : cette expédition est déjà terminée.
+Twierdza Czerwonego Smoka (SZC)	Forteresse du Dragon rouge (ST)
+Twierdza Czerwonego Smoka (SZC): czas minął - wracacie na Płaskowyż Iluzji.	Forteresse du Dragon rouge (ST) : temps écoulé - retour au Plateau des illusions.
+Twierdza Czerwonego Smoka (SZC): masz 60 minut. Porozmawiaj z Gardzielą Am-heha.	Forteresse du Dragon rouge (ST) : vous avez 60 minutes. Parlez aux Gorges d'Am-Heh.
+Twierdza Czerwonego Smoka (SZC): piekielny władca Razador (SZC) czeka!	Forteresse du Dragon rouge (ST) : le seigneur infernal Razador (ST) attend !
+Twierdza Czerwonego Smoka (SZC): potrzebujesz Zegarka Kieszonkowego.	Forteresse du Dragon rouge (ST) : il vous faut une Montre de poche.
+Twierdza Czerwonego Smoka (SZC): ta wyprawa już się skończyła.	Forteresse du Dragon rouge (ST) : cette expédition est déjà terminée.
+Twoja %s ma %d z %d punktów.	Votre %s a %d points sur %d.
+Twoja %s ma wszystkie punkty (%d/%d). Ulepszę ją za darmo na %s.	Votre %s a tous ses points (%d/%d). Je l'améliore gratuitement en %s.
+Twoja drużyna wciąż walczy w Głębiach.	Votre groupe combat encore dans les Profondeurs.
+Twoja gildia ma już otwartą Kryptę Balathora.	Votre guilde a déjà ouvert la Crypte de Balathor.
+Twoja mądrość urosła od naszej ostatniej rozmowy.	Votre sagesse a grandi depuis notre dernière discussion.
+Twoja ranga jest zbyt niska (-19 000 lub mniej),	Votre rang est trop bas (-19 000 ou moins),
+Twoja ranga jest zbyt niska, by trenować z Kamieniem	Votre rang est trop bas pour vous entraîner avec la Pierre
+Twoja wyprawa wciąż trwa.	Votre expédition est toujours en cours.
+Twoja wyprawa wciąż trwa. Czy chcesz do niej wrócić?	Votre expédition est toujours en cours. Voulez-vous la rejoindre ?
+Twoje riposty i dopalacze zostały zapomniane.	Vos parades et bonus ont été oubliés.
+twojego ekwipunku wzrosną o 1, 3, 5, 7 lub 10 proc.	de votre équipement augmentent de 1, 3, 5, 7 ou 10 pour cent.
+twojego poziomu nie mam teraz błogosławieństwa.	votre niveau, je n'ai pas de bénédiction pour l'instant.
+twoją grupę, gdy każdy z was będzie miał taki kamień.	votre groupe, quand chacun de vous aura une telle pierre.
+Twój bonus potrwa jeszcze: %s	Votre bonus dure encore : %s
+Twój duch musi jeszcze odpocząć po ostatnim treningu.	Votre esprit doit encore se reposer après le dernier entraînement.
+Twój koń jest gotów na próbę awansu. Porozmawiaj ze mną o awansie konia.	Votre cheval est prêt pour l'épreuve de promotion. Parlez-moi de la promotion du cheval.
+Twój koń jest już przywołany.	Votre cheval est déjà appelé.
+Twój koń nie ma wolnego miejsca (od 21 poziomu jedno, od 31 dwa). Stajenny pomoże zapomnieć.	Votre cheval n'a pas d'emplacement libre (un dès le niveau 21, deux dès le 31). Le palefrenier peut vous aider à oublier.
+Twój koń nie zna żadnej umiejętności. Przeczytaj księgę umiejętności konnej (od 21 poziomu konia jedna, od 31 dwie).	Votre cheval ne connaît aucune compétence. Lisez un livre de compétence équestre (un dès le niveau de cheval 21, deux dès le 31).
+Twój koń nie żyje - wskrzesi go Szlachetna Trawa.	Votre cheval est mort - l'Herbe luxuriante le ressuscitera.
+Twój koń osiągnął najwyższy, 40 poziom.	Votre cheval a atteint le niveau maximal, 40.
+Twój koń wrócił do życia. Przywołaj go ponownie.	Votre cheval est revenu à la vie. Appelez-le de nouveau.
+Twój koń zapomniał tę umiejętność.	Votre cheval a oublié cette compétence.
+Twój koń zna już tę umiejętność.	Votre cheval connaît déjà cette compétence.
+Twój koń żyje.	Votre cheval est en vie.
+Twój poziom nie mieści się w żadnym przedziale.	Votre niveau n'entre dans aucune tranche.
+Twój statek może jeszcze płynąć. Czy chcesz na	Votre navire peut encore naviguer. Voulez-vous
+Twój wynik: %d pkt	Votre score : %d pts
+Tylko mistrz gildii może zgłosić gildię do Krypty.	Seul le chef de guilde peut inscrire la guilde à la Crypte.
+Tylko najlepsi utrzymaja sie na szczycie	Seuls les meilleurs restent au sommet
+Tylko najlepsi zostają na szczycie rankingu i	Seuls les meilleurs restent au sommet du classement et
+Tylko przywódca drużyny może dać sygnał do	Seul le chef du groupe peut donner le signal de
+Tylko przywódca drużyny może obudzić Alastora.	Seul le chef du groupe peut réveiller Alastor.
+Tylko przywódca drużyny może otworzyć bramę.	Seul le chef du groupe peut ouvrir la porte.
+Tylko przywódca drużyny może otworzyć Głębie.	Seul le chef du groupe peut ouvrir les Profondeurs.
+Tylko przywódca drużyny może otworzyć przejście.	Seul le chef du groupe peut ouvrir le passage.
+Tylko przywódca drużyny może otworzyć świątynię.	Seul le chef du groupe peut ouvrir le temple.
+Tylko przywódca drużyny może rozpocząć walkę.	Seul le chef du groupe peut lancer le combat.
+Tylko przywódca drużyny może wynająć statek.	Seul le chef du groupe peut louer le navire.
+Tylko przywódca grupy może otworzyć loch.	Seul le chef du groupe peut ouvrir le donjon.
+Tylko przywódca grupy może otworzyć portal.	Seul le chef du groupe peut ouvrir le portail.
+Tylko przywódca grupy może otworzyć Szczelinę Czasu.	Seul le chef du groupe peut ouvrir la Faille temporelle.
+Tylko przywódca grupy może poprowadzić was dalej.	Seul le chef du groupe peut vous mener plus loin.
+Tylko przywódca grupy może poprowadzić was do Erebu.	Seul le chef du groupe peut vous mener à l'Érèbe.
+Tylko przywódca grupy może przyjąć zadanie.	Seul le chef du groupe peut accepter la quête.
+Tylko przywódca grupy może zacząć wyprawę.	Seul le chef du groupe peut lancer l'expédition.
+Tylko przywódca wyprawy może obudzić lwa.	Seul le chef de l'expédition peut réveiller le lion.
+Tylko przywódca wyprawy może obudzić posąg.	Seul le chef de l'expédition peut réveiller la statue.
+Tylko z drużyną. Boty z drużyny wchodzą razem z Tobą.	En groupe uniquement. Les bots du groupe entrent avec vous.
+tylko z progu twojego obecnego poziomu.	uniquement à partir du seuil de votre niveau actuel.
+uaktywnić portal, potrzebuję 3x	activer le portail, il me faut 3x
+udaje, kamienie i bonusy zostaja.	réussit, les pierres et bonus restent.
+Udało ci się pokonać Wojowników En-Tai (PB). Wróć do Strażnika Lasu (PB).	Vous avez vaincu les Guerriers En-Tai (ÉV). Retournez voir le Gardien de la forêt (ÉV).
+Udało ci się pokonać Wojowników En-Tai (SZC). Wróć do Strażnika Lasu (SZC).	Vous avez vaincu les Guerriers En-Tai (ST). Retournez voir le Gardien de la forêt (ST).
+Udało ci się zdobyć Rosy En-Tai (PB). Zanieś je Zwiadowcy Lasu (PB).	Vous avez obtenu les Rosées En-Tai (ÉV). Apportez-les au Pisteur de la forêt (ÉV).
+Udało ci się zdobyć Rosy En-Tai (SZC). Zanieś je Zwiadowcy Lasu (SZC).	Vous avez obtenu les Rosées En-Tai (ST). Apportez-les au Pisteur de la forêt (ST).
+Udało ci się zebrać dla mnie wszystkie	Vous avez réussi à récolter pour moi tous les
+Udało ci się zebrać wszystko. Wróć szybko	Vous avez tout récolté. Revenez vite
+Udało ci się znaleźć kryształ Metin? Zerknę na niego.	Vous avez trouvé un cristal de Metin ? Je vais y jeter un œil.
+Udało ci się znaleźć paproć? Daj, sprawdzę szybko...	Vous avez trouvé l'osmonde ? Donnez, je vérifie vite...
+Udało się!	Réussi !
+Udało się! Masz teraz %s.	Réussi ! Vous avez maintenant %s.
+Udało się! Oto Odłamek Reliktu twojej klasy.	Réussi ! Voici l'Éclat relique de votre classe.
+Udało się! Weź tę duszę.	Réussi ! Prenez cette âme.
+Ulepsz rękawice	Améliorer les gants
+Ulepsz wędkę za darmo	Améliorer la canne à pêche gratuitement
+ulepsza je do +200: 10 Kwiatów Żywiołu,	les améliore jusqu'à +200 : 10 Fleurs d'élément,
+Ulepszenie przedmiotu usuwa transmutację.	Améliorer un objet supprime la transmutation.
+ulepszona: SIŁA, ODP, WIT lub INT.	améliorée : FOR, RÉS, VIT ou INT.
+Ulepszysz je w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom). Zapomnienie jest darmowe.	Vous les améliorez dans la fenêtre de développement du cheval (1000 Gaya et 20 000 000 yangs par niveau). Oublier est gratuit.
+Umiejętności konia	Compétences du cheval
+Umiejętności konne zna dopiero koń od 21 poziomu.	Seul un cheval de niveau 21 ou plus peut connaître des compétences équestres.
+umiejętności przeciwnika. Możesz znać tylko jedną ripostę -	compétences de l'adversaire. Vous ne pouvez connaître qu'une parade -
+Umiejętności szamana przeciągnięte w oknie Buffi	Les compétences de chamane glissées dans la fenêtre de Buffi
+Umiejętności są zablokowane	Les compétences sont bloquées
+Umysl (Mental)	Esprit (Mental)
+Unikaj kręgów przez 60 sekund	Évitez les cercles pendant 60 secondes
+Upiorne Dynie wypadają z potworów, a Czarodziejskie	Les Citrouilles d'Halloween tombent des monstres, et les Baguettes
+upływie czasu wrócisz na Płaskowyż Iluzji - innego	à la fin du temps, vous reviendrez au Plateau des illusions - pas d'autre
+Uratuj Alchemika	Sauver l'Alchimiste
+Uratuj Chaegiraba	Sauver Chaegirab
+Uratuj Handlarza Bronią 	Sauver le Marchand d'armes 
+Uratuj Handlarza Zbrojami	Sauver le Marchand d'armures
+Uratuj Uriela	Sauver Uriel
+Uriel dzieli się teraz potęgą mądrości.	Uriel partage maintenant la Puissance de la sagesse.
+Uriel nie dzieli się teraz potęgą mądrości.	Uriel ne partage pas la Puissance de la sagesse en ce moment.
+Uriel w Dongan potrzebuje pomocy.	Uriel à Dongan a besoin d'aide.
+Usunięto misje: %d (bez nagród).	Quêtes supprimées : %d (sans récompense).
+Usunięto pozycję %d.	Position %d supprimée.
+usuwa je Świadectwo Aury+.	le Certificat d'aura+ les retire.
+usuwam?	je le retire ?
+Usuwanie misji jest teraz wyłączone.	La suppression de quêtes est désactivée pour l'instant.
+Uszlachetnianie odłamków zestawu	Raffinage des éclats d'ensemble
+Uszlachetnij	Raffiner
+Uszlachetnij Odłamek Reliktu	Raffiner l'Éclat relique
+Uszy Pirata Tanaki	Oreilles du pirate Tanaka
+Uszyję ci rękawice SungMa, z jadeitu zrobię obręcze,	Je vous coudrai des gants SungMa, je ferai des bracelets de jade,
+UWAGA: przedmiot zrodlowy przepadnie bezpowrotnie,	ATTENTION : l'objet source sera perdu à jamais,
+Uważaj na kolejność! Spróbuj innej kostki.	Attention à l'ordre ! Essayez un autre dé.
+Uważaj na swoje słowa! Nie jestem żadnym	Surveillez vos paroles ! Je ne suis pas
+Uważności, Jin i Świadomości na Yoharze.	de Vigilance, de Jin et de Réalisation à Yohara.
+Uzdrowienie (Heal)	Guérison (Heal)
+Użyj	Utiliser
+Użyj Animosfer, by obniżyć mroczną energię w[ENTER]Świątyni Zodiaku zanim będzie za późno. Wchodząc[ENTER]do świątyni, zużywasz automatycznie Animosfery.[ENTER]Uwaga: nie możesz ukończyć misji, jeśli masz[ENTER]aktywowany znak strażnika.	Utilisez des Animasphères pour réduire l'énergie obscure[ENTER]du Temple du zodiaque avant qu'il soit trop tard. En entrant[ENTER]dans le temple, vous consommez les Animasphères.[ENTER]Attention : impossible de terminer la quête si vous avez[ENTER]le Signum des gardiens actif.
+Użyj go w Portowym Sklepie Gaya - Statua Wojownika w Porcie Nowego Kontynentu.	Utilisez-le à la Bourse aux Gayas du port - Statue de Guerrier au Port du Nouveau Continent.
+Użyj jako przynęty	Utiliser comme appât
+Użyj kryształu (prawy przycisk myszy), a bonusy	Utilisez le cristal (clic droit), et les bonus
+Użyj ponownie	Réutiliser
+Użyj zwoju	Utiliser le parchemin
+Użyjcie Pierścienia Smoczego Ognia przy każdej z czterech statui.	Utilisez l'Anneau du Feu du dragon devant chacune des quatre statues.
+w ciągu godziny, a jej skarb będzie wasz.	en une heure, et son trésor sera à vous.
+w Grocie Wygnańców (oraz ze Skrzyni Hydry).	dans la Grotte de l'exil (et du Coffre de l'Hydre).
+W grupie musi być co najmniej jeden Ninja i jeden	Le groupe doit compter au moins un Ninja et un
+W Głębiach śpi Alastor, biały smok Północnego	Dans les Profondeurs dort Alastor, le dragon blanc
+w hełm godny 100. poziomu. Połóż w oknie wytwarzania	en un casque digne du niveau 100. Placez dans la fenêtre de fabrication
+w Jaskiniach Gnolli.	dans les Grottes des gnolls.
+w jednym kolorze daje ich wiecej.	d'une seule couleur en donne davantage.
+W końcu mam wystarczającą ilość doskonałych	Enfin, j'ai assez de parfaits
+w kryształ. Ale ja też muszę z czegoś żyć, prawda?	en cristal. Mais moi aussi, je dois bien vivre, non ?
+w legendarny ekwipunek. Ulepszenie zawsze sie	en équipement légendaire. L'amélioration réussit
+W lochu nie można zapisać pozycji.	Impossible d'enregistrer une position dans un donjon.
+W niedziele otwarte są wszystkie świątynie.	Le dimanche, tous les temples sont ouverts.
+W oknie są zawsze wszystkie moje przepisy: broń, zbroja	La fenêtre montre toujours toutes mes recettes : arme, armure
+W oknie wytwarzania zobaczysz wszystkie przepisy:	Dans la fenêtre de fabrication, vous verrez toutes les recettes :
+w oknie wytwarzania:	dans la fenêtre de fabrication :
+W ruinach za pustynią gnieździ się Król Skorpionów.	Le Roi scorpion niche dans les ruines au-delà du désert.
+w sezonie odbierze tu dodatkowe nagrody	dans la saison récupérera ici des récompenses en plus
+W skrzyni moze byc:	Le coffre peut contenir :
+w tym evencie. Przez 7 dni po jego zakończeniu	à cet évènement. Pendant 7 jours après sa fin
+W tym kamieniu zamknąłem duszę driady. Zna słowa,	J'ai enfermé l'âme d'une dryade dans cette pierre. Elle connaît les mots,
+W tym miejscu nie można zapisać pozycji.	Impossible d'enregistrer la position à cet endroit.
+W tym sezonie nie ukończyłeś jeszcze piętra.	Vous n'avez encore terminé aucun étage cette saison.
+W tym świecie nie ma Likanów - tej umiejętności nie można się nauczyć.	Il n'y a pas de Lycans dans ce monde - cette compétence ne peut pas être apprise.
+W tym świecie potwory mają żywioły	Dans ce monde, les monstres ont des éléments
+w zbroje 105. poziomu. Przeciagnij zbroje na mnie.	en armure de niveau 105. Glissez l'armure sur moi.
+w zbroje 90. poziomu, a zbroje 90. poziomu +9	en armure de niveau 90, et une armure de niveau 90 +9
+W środku nie było nic ciekawego.	Il n'y avait rien d'intéressant à l'intérieur.
+W środku znalazłeś:	À l'intérieur, vous avez trouvé :
+W środku: Srebrny Pakiet Yutnori, czasem Zwój	À l'intérieur : Lot Yutnori d'argent, parfois un Parchemin
+W środku: Złoty Pakiet Yutnori i Cor Draconis	À l'intérieur : Lot Yutnori d'or et Cor Draconis
+Walczymy dalej	On continue le combat
+Walkę zaczyna mistrz gildii.	Le chef de guilde lance le combat.
+warp na %d	warp sur %d
+Wartość Ataku +200	Valeur d'attaque +200
+Wartość Ataku -1600	Valeur d'attaque -1600
+wartość i czas losuję przy sporządzaniu.	je tire la valeur et la durée au moment de la préparation.
+Wciąż badam poprzedni klejnot. Wróć,	J'étudie encore le joyau précédent. Revenez,
+wciąż bronią skarbów zatopionego miasta, a w głębi	gardent encore les trésors de la cité engloutie, et dans les profondeurs
+Wejdz bez gildii	Entrer sans guilde
+Wejdz solo (tylko ty)	Entrer en solo (vous seul)
+Wejdz z gildia	Entrer avec la guilde
+Wejdź do Biblioteki Wiedzy	Entrer dans la Bibliothèque du savoir
+Wejdź do Erebu	Entrer dans l'Érèbe
+Wejdź do hali wieży	Entrer dans le hall de la tour
+Wejdź do Krypty	Entrer dans la Crypte
+Wejdź do lochu	Entrer dans le donjon
+Wejdź do ruin	Entrer dans les ruines
+Wejdź do sali	Entrer dans la salle
+Wejdź do Schronienia	Entrer dans le Refuge
+Wejdź do Schronienia Meley	Entrer dans le Repaire de Meley
+Wejdź do świątyni	Entrer dans le temple
+Wejście Do Świątyni Węży: dzisiejsze wejścia odnowione.	Entrée Temple du serpent : les entrées du jour sont renouvelées.
+Wejście Do Świątyni Węży: masz jeszcze wszystkie dzisiejsze wejścia.	Entrée Temple du serpent : vous avez encore toutes les entrées du jour.
+Wejście od 1. Poziomu Czempiona, za Przepustkę.	Entrée dès le niveau de Champion 1, avec un Ticket.
+Wejść do Krypty Balathora?	Entrer dans la Crypte de Balathor ?
+wejść do środka?	entrer à l'intérieur ?
+Wejść można tylko w grupie: statua przenosi[ENTER]wszystkich jej członków, którzy są na tym poziomie.	On n'entre qu'en groupe : la statue transporte[ENTER]tous ses membres qui sont à cet étage.
+wezwany! Chętnie zaoferuję ci swoje usługi.	appelé ! Je vous offre volontiers mes services.
+Wiatru	d'Aquilon
+Wiatru - wiatr, Ziemne Pnącze - ziemia,	- vent, Sarment de terre - terre,
+Wiatru. Mogę otworzyć wam drogę - słabszą albo	d'Aquilon. Je peux vous ouvrir la voie - plus faible ou
+widziałeś na oczy.	vue de vos yeux.
+Widzisz tę niewielką kulkę na górze po lewej[ENTER]stronie minimapy? Tam właśnie liczone są[ENTER]Animosfery. Pamiętaj, że bez tej skoncentrowanej[ENTER]energii życia nie możesz przejść przez bramy[ENTER]strażników. Otarło mi się o uszy, że potrzeba 12[ENTER]Animosfer do Świątyni Zodiaku. Czy chcesz stawić[ENTER]czoło temu wyzwaniu?	Voyez-vous cette petite bille en haut à gauche[ENTER]de la mini-carte ? C'est là que sont comptées[ENTER]les Animasphères. Sans cette énergie vitale[ENTER]concentrée, vous ne passerez pas les portes des[ENTER]gardiens. J'ai entendu dire qu'il faut 12[ENTER]Animasphères pour le Temple du zodiaque. Voulez-vous[ENTER]relever ce défi ?
+wie, gdzie szukać Władców En-Tai.	sait où chercher les Seigneurs En-Tai.
+Wiecej obrony (500 000 yang)	Plus de défense (500 000 yangs)
+Wiecej zycia (500 000 yang)	Plus de vie (500 000 yangs)
+Wiedza to potęga, która rośnie z każdą walką.	Le savoir est une puissance qui grandit à chaque combat.
+Wiedziałem! Moja technika jest genialna!	Je le savais ! Ma technique est géniale !
+Wieksza szybkosc (1 500 000 yang)	Plus de vitesse (1 500 000 yangs)
+Wierzchowce zostają na lądzie. Niech zsiądą:	Les montures restent à terre. Faites-les descendre :
+wierzchowiec: 30 000 000 Yang albo Bilet Polimorfii.	monture : 30 000 000 yangs ou un Ticket de polymorphie.
+Wieża Demonów: Wyjdziesz z lochu za 1 sekundę.	Tour des démons : vous quitterez le donjon dans 1 seconde.
+Wieża nie przyjmie cię teraz. Spróbuj za chwilę.	La tour ne vous accepte pas maintenant. Réessayez dans un instant.
+Wieża nie przyjmuje botów.	La tour n'accepte pas les bots.
+Wieża przyjmuje od 1. Poziomu Czempiona.	La tour accepte dès le niveau de Champion 1.
+Wieża przyjmuje tylko w pojedynkę.	La tour n'accepte qu'en solo.
+Wieża Sung Mahi	Tour de Sung Mahi
+Wieża Sung Mahi (rozmowa)	Tour de Sung Mahi (discussion)
+Wieża Sung Mahi przyjmuje od 1. Poziomu Czempiona. Wracasz do Seoganland.	La Tour de Sung Mahi accepte dès le niveau de Champion 1. Vous retournez à Seoganland.
+Wieża Sung Mahi to wyzwanie dla jednej osoby - opuść drużynę, by wejść.	La Tour de Sung Mahi est un défi en solo - quittez votre groupe pour entrer.
+Wieża Sung Mahi to wyzwanie dla jednej osoby.	La Tour de Sung Mahi est un défi en solo.
+Wieża Sung Mahi: klucz nie pasuje. Znajdź inny i spróbuj jeszcze raz.	Tour de Sung Mahi : la clé ne correspond pas. Trouvez-en une autre et réessayez.
+Wieża Sung Mahi: przemiana nie działa w wieży.	Tour de Sung Mahi : la transformation ne marche pas dans la tour.
+Wieża Sung Mahi: ta pieczęć jeszcze się nie poddaje - najpierw inna.	Tour de Sung Mahi : ce sceau ne cède pas encore - un autre d'abord.
+Wieża Sung Mahi: ta wspinaczka już się skończyła.	Tour de Sung Mahi : cette ascension est déjà terminée.
+Wieża Sung Mahi: wierzchowce nie wchodzą do wieży.	Tour de Sung Mahi : les montures n'entrent pas dans la tour.
+WIT	VIT
+Witaj, wedrowcze! Z dobrych butow potrafie uszyc	Salut, voyageur ! Avec de bonnes chaussures, je sais coudre
+Witaj, wojowniku! Z dobrze ulepszonej broni	Salut, guerrier ! Avec une arme bien améliorée
+Witaj. Jak widzę z pierwszym poziomem nie było[ENTER]problemów.	Bonjour. Je vois que le premier niveau ne vous a pas[ENTER]posé de problème.
+Witalność Sung Ma	Vitalité Sung Ma
+Witam! Czy chcesz dowiedzieć się czegoś więcej o[ENTER]pryzmacie ożywienia?	Bonjour ! Voulez-vous en savoir plus sur le[ENTER]prisme du réveil ?
+Witam! Dobrze, że jesteś.	Bonjour ! Heureusement que vous êtes là.
+Witam! Mam dla ciebie prezent, ale najpierw muszę[ENTER]poprosić cię o przysługę. W Świątyni Zodiaku[ENTER]gwałtownie wzrosła moc mrocznej energii. Na[ENTER]szczęście można ją absorbować za pomocą[ENTER]Animosfer. Udaj się do świątyni i użyj 24[ENTER]Animosfer, by ponownie obniżyć poziom energii.[ENTER]Uwaga: nie możesz ukończyć misji, jeśli masz[ENTER]aktywowany znak strażnika.	Bonjour ! J'ai un cadeau pour vous, mais je dois d'abord[ENTER]vous demander un service. Au Temple du zodiaque,[ENTER]l'énergie obscure a brusquement augmenté. Par[ENTER]chance, on peut l'absorber avec des[ENTER]Animasphères. Allez au temple et utilisez 24[ENTER]Animasphères pour réduire à nouveau l'énergie.[ENTER]Attention : impossible de terminer la quête si vous avez[ENTER]le Signum des gardiens actif.
+wizerunku broni, zbroja i kostium - wygląd zbroi albo	apparence d'arme, armure et costume - apparence d'armure ou
+Wojownicy En-Tai	Guerriers En-Tai
+Wojownicy En-Tai (PB)	Guerriers En-Tai (ÉV)
+Wojownicy En-Tai (PB) wciąż krążą po lesie. Pokonaj	Les Guerriers En-Tai (ÉV) rôdent encore dans la forêt. Battez
+Wojownicy En-Tai (SZC)	Guerriers En-Tai (ST)
+Wojownicy En-Tai (SZC) wciąż krążą po lesie. Pokonaj	Les Guerriers En-Tai (ST) rôdent encore dans la forêt. Battez
+Wojownik	Guerrier
+Wola SungMa (INT)	Volonté SungMa (INT)
+Wola SungMa (ODP)	Volonté SungMa (RÉS)
+Wola SungMa (ODP) -20	Volonté SungMa (RÉS) -20
+Wola SungMa (SIŁA)	Volonté SungMa (FOR)
+Wola SungMa (SIŁA) -10	Volonté SungMa (FOR) -10
+Wola SungMa (WIT)	Volonté SungMa (VIT)
+Wolne punkty Sung Ma: %d.	Points Sung Ma libres : %d.
+Wow, co za doskonały rdzeń. Świetnie!	Waouh, quel noyau parfait. Génial !
+Wpuszczam tylko wojownikow od %d poziomu.	Je ne laisse entrer que les guerriers dès le niveau %d.
+Wpuszczę grupę, jeśli każdy z was ma Kamień Driad od	Je laisse entrer le groupe si chacun de vous a une Pierre des dryades de
+Wreszcie mam tyle oczyszczonych rdzeni, ile	Enfin, j'ai autant de noyaux purifiés que
+Wroc	Retour
+Wroc, gdy bedziesz silniejszy.	Revenez quand vous serez plus fort.
+wroci do swiata jako zwykly bot. Nowego	reviendra dans le monde comme un bot ordinaire. Un nouveau
+wrócą do puli i rozdasz je od nowa.	retournent dans la réserve et vous les répartissez à nouveau.
+Wróć do Erebu	Retourner à l'Érèbe
+Wróć do lochu	Retourner au donjon
+Wróć do mnie później. Następna próba za:	Revenez me voir plus tard. Prochaine tentative dans :
+Wróć do Namgan	Retourner à Namgan
+Wróć do portu	Retourner au port
+Wróć do ruin	Retourner aux ruines
+Wróć do Strażnika Lasu.	Retournez voir le Gardien de la forêt.
+Wróć do swojej postaci (przemiana), by wejść.	Reprenez votre forme (transformation) pour entrer.
+Wróć do wioski	Retourner au village
+Wróć do Zwiadowcy Lasu.	Retournez voir le Pisteur de la forêt.
+Wróć jutro po następną.	Revenez demain pour la suivante.
+Wróć jutro, gdy ponownie zbierzesz 24 Animosfery.	Revenez demain quand vous aurez de nouveau récolté 24 Animasphères.
+Wróć na 1. poziom Świątyni	Retourner au 1er niveau du Temple
+Wróć na Przełęcz Yilad	Retourner au Col de Yilad
+Wróć na Przylądek Smoczego Ognia	Retourner au Cap du Feu du dragon
+Wróć, gdy będziesz miał co najmniej 24 Animosfery.	Revenez quand vous aurez au moins 24 Animasphères.
+Wróć, gdy osiągniesz 75 poziom.	Revenez quand vous aurez atteint le niveau 75.
+Wróć, gdy osiągniesz najwyższy poziom.	Revenez quand vous aurez atteint le niveau maximal.
+Wróć, gdy przeminie.	Revenez quand il sera passé.
+Wróć, gdy wszystkie Stele Isfet zostaną odblokowane.	Revenez quand toutes les Stèles de l'Isfet seront débloquées.
+wskutek licznych walk. Odnajdź Władcę En-Tai (PB) i	après de nombreux combats. Trouvez le Seigneur En-Tai (ÉV) et
+Wspaniale! Badacz Lasu (PB) czeka na ciebie - on	Magnifique ! L'Éclaireur de forêt (ÉV) vous attend - il
+Wspaniale! Mam już wszystkie 10 Klejnotów	Magnifique ! J'ai maintenant les 10 Joyaux
+Wspaniale! Weź tę Wodę Young. Badacz Lasu (SZC)	Magnifique ! Prenez cette Eau Young. L'Éclaireur de forêt (ST)
+Wspinaczka już trwa - sztandar powiewa nad tobą.	L'ascension est en cours - la bannière flotte au-dessus de vous.
+Wspinaczka zakończona - wracasz do hali.	Ascension terminée - vous retournez au hall.
