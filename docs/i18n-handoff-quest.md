@@ -18,6 +18,7 @@ All dictionaries are in `linux-port/docker/game/lang/<code>/` – UTF-8, one `Po
 | `32_quest_templates.tsv` | our quests' glued lines as formats (`Za %s sekund ...`) | hand (T ids) |
 | `35_quest_fragments.tsv` | pieces of glued lines | hand (F ids) |
 | `40_server_custom.tsv` | our C++ chat lines | hand (S ids) |
+| `45_quest_info.tsv` | short forms for the quest window only (title <= 30 bytes, clock / counter name <= 16 in the client's code page; MT2009_PLUS_LANGUAGE_QUESTINFO_V1) - add one when a title / counter translation is longer | hand |
 
 Hand files are **complete** for: en, de, tr, ro, es, it. (`extract_server_texts.py --check <lang>` still reports ~300
 "missing" for those – these are GM/debug/technical lines and names that stay Polish on purpose.)

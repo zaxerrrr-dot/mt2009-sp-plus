@@ -40,5 +40,35 @@
   "marker": "MT2009_PLUS_LANGUAGE_V1 (command table)",
   "old": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n",
   "new": "\t{ \"title_system\",\tdo_title_system,\t0,\tPOS_DEAD,\tGM_LOW_WIZARD\t},\n\t{ \"lang\",\tdo_mt2009_lang,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_LANGUAGE_V1 (command table)\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (include)",
+  "old": "#include \"questevent.h\"\n",
+  "new": "#include \"questevent.h\"\n#include \"mt2009_language.h\" // MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (include): the quest window in the reader's language\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (title)",
+  "old": "\t\t\tconstexpr auto TitleSize = 30+1;\n\t\t\tm_RunningQuestState->_title.reserve(TitleSize);\n\t\t\tbuf.write(m_RunningQuestState->_title.c_str(), TitleSize);\n",
+  "new": "\t\t\tconstexpr auto TitleSize = 30+1;\n\t\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (title): the Polish title in the reader's language, cut to the field, NUL-filled\n\t\t\tchar title[TitleSize];\n\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_title, title, sizeof(title));\n\t\t\tbuf.write(title, TitleSize);\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (clock)",
+  "old": "\t\t\tconstexpr auto ClockSize = 16+1;\n\t\t\tm_RunningQuestState->_clock_name.reserve(ClockSize);\n\t\t\tbuf.write(m_RunningQuestState->_clock_name.c_str(), ClockSize);\n",
+  "new": "\t\t\tconstexpr auto ClockSize = 16+1;\n\t\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (clock): the clock's name in the reader's language\n\t\t\tchar clockName[ClockSize];\n\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_clock_name, clockName, sizeof(clockName));\n\t\t\tbuf.write(clockName, ClockSize);\n"
+ },
+ {
+  "file": "questpc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (counter)",
+  "old": "\t\t\tconstexpr auto CounterSize = 16+1;\n\t\t\tm_RunningQuestState->_counter_name.reserve(CounterSize);\n\t\t\tbuf.write(m_RunningQuestState->_counter_name.c_str(), CounterSize);\n",
+  "new": "\t\t\tconstexpr auto CounterSize = 16+1;\n\t\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (counter): the counter's name in the reader's language\n\t\t\tchar counterName[CounterSize];\n\t\t\tMt2009QuestInfoText(CQuestManager::instance().GetCurrentCharacterPtr(), m_RunningQuestState->_counter_name, counterName, sizeof(counterName));\n\t\t\tbuf.write(counterName, CounterSize);\n"
+ },
+ {
+  "file": "desc.cpp",
+  "marker": "MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (packet)",
+  "old": "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n\t\t}\n",
+  "new": "\t\t\tc_pvData = buffer_read_peek(m_lpBufferedOutputBuffer);\n\t\t\tiSize = buffer_size(m_lpBufferedOutputBuffer);\n\t\t}\n\t\t// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (packet): a text packet's Polish words without diacritics for a client whose code page is not\n\t\t// cp1250 (mt2009_language.cpp); the packet itself for anything else.\n\t\t{ const void* Mt2009LanguagePacketOut(LPCHARACTER, const void*, int); c_pvData = Mt2009LanguagePacketOut(GetCharacter(), c_pvData, iSize); }\n"
  }
 ]

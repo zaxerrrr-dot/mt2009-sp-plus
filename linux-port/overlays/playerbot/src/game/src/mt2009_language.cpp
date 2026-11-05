@@ -6,6 +6,8 @@
 #include "config.h"
 #include "char.h"
 #include "desc.h"
+#include "packet.h"
+#include "buffer_manager.h"
 #include "db.h"
 #include "locale.hpp"
 #include "locale_service.h"
@@ -20,6 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cstddef>
 #include <string>
 #include <map>
 #include <unordered_map>
@@ -311,6 +314,9 @@ namespace mt2009_language
 		std::unordered_map<std::string, std::vector<size_t> > fragmentBuckets;	// their first two bytes
 		std::unordered_map<DWORD, std::string> items;
 		std::unordered_map<DWORD, std::string> mobs;
+		// MT2009_PLUS_LANGUAGE_QUESTINFO_V1: forms that fit the quest window's fields (*quest_info*.tsv; the client's
+		// packet has 30 bytes for a title, 16 for a clock's / a counter's name): Polish -> the short form.
+		std::unordered_map<std::string, std::string> questInfo;
 		size_t files;
 		size_t texts;
 		size_t dropped;
@@ -605,6 +611,7 @@ namespace mt2009_language
 		const bool items = name == "item_names.tsv";
 		const bool mobs = name == "mob_names.tsv";
 		const bool fragments = name.find("fragment") != std::string::npos;
+		const bool questInfo = name.find("quest_info") != std::string::npos;
 		for (size_t i = 0; i < lines.size(); ++i)
 		{
 			const std::string& line = lines[i];
@@ -624,6 +631,12 @@ namespace mt2009_language
 				if (!str_to_number(vnum, a.c_str()) || !vnum || b.empty())
 					continue;
 				(items ? lang.items : lang.mobs)[vnum] = FromUtf8(Unescape(b), lang.codePage);
+				continue;
+			}
+			if (questInfo)
+			{
+				if (!b.empty())
+					lang.questInfo[FromUtf8(Unescape(a), 1250)] = FromUtf8(Unescape(b), lang.codePage);
 				continue;
 			}
 			if (fragments)
@@ -1032,10 +1045,22 @@ bool Mt2009PlayerChoseLanguage(LPCHARACTER ch)
 	return ch && ch->IsPC() && s_playerLanguage.find(ch->GetPlayerID()) != s_playerLanguage.end();
 }
 
+static void SetPlayerLanguageStored(LPCHARACTER ch, const char* code);
+
 void SetPlayerLanguage(LPCHARACTER ch, const char* code)
 {
 	if (!ch || !ch->IsPC())
 		return;
+	// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (refresh): the quest window's titles, clocks and counters were sent in the
+	// language read until now (the login quests run before the client's "/lang" may arrive) - again in the new one.
+	const std::string before = GetPlayerLanguage(ch);
+	SetPlayerLanguageStored(ch, code);
+	if (before != GetPlayerLanguage(ch))
+		Mt2009ResendQuestInfo(ch);
+}
+
+static void SetPlayerLanguageStored(LPCHARACTER ch, const char* code)
+{
 	const DWORD pid = ch->GetPlayerID();
 	std::unordered_map<DWORD, std::string>::iterator it = s_playerLanguage.find(pid);
 	// MT2009_PLUS_LANGUAGE_DEFAULT_V1: "default" (NULL, ""): back to the server's default (player.language NULL).
@@ -1159,6 +1184,394 @@ int Mt2009LanguageChatResult(LPCHARACTER ch, unsigned char type, bool formatTran
 		return len;
 	strlcpy(buf, out.c_str(), size);
 	return (int) strlen(buf);
+}
+
+// MT2009_PLUS_LANGUAGE_QUESTINFO_V1 (the owner, 5 November 2026 - an English client showed the quest window's titles
+// and counters in Polish, read in cp1252: "Chaos w Zakl?tym Lesie" with the Polish e-ogonek drawn as e-circumflex):
+// * the quest window's texts (title, clock name, counter name) are kept in Polish in the quest's state and put into the
+//   reader's language when the packet is made (PC::SendQuestInfoPakcet, server-patches/language edits), so a change of
+//   language (the client's "/lang" after the login quests) sends them again in the new one (Mt2009ResendQuestInfo);
+// * the code page's safety net: a Polish word that reaches a reader whose client does not use cp1250 (chat, whisper,
+//   the quest's script, the quest window, a confirm question) is written without its diacritics (a-c-e-l-n-o-s-z-z),
+//   not as cp1250 bytes the client draws as other letters. Czech, Hungarian and Romanian (cp1250) keep the bytes.
+namespace mt2009_language
+{
+	// The ASCII letter of a Polish letter's cp1250 byte, 0 for any other byte.
+	static char PolishLetter(unsigned char c)
+	{
+		switch (c)
+		{
+			case 0xB9: return 'a';
+			case 0xE6: return 'c';
+			case 0xEA: return 'e';
+			case 0xB3: return 'l';
+			case 0xF1: return 'n';
+			case 0xF3: return 'o';
+			case 0x9C: return 's';
+			case 0x9F: return 'z';
+			case 0xBF: return 'z';
+			case 0xA5: return 'A';
+			case 0xC6: return 'C';
+			case 0xCA: return 'E';
+			case 0xA3: return 'L';
+			case 0xD1: return 'N';
+			case 0xD3: return 'O';
+			case 0x8C: return 'S';
+			case 0x8F: return 'Z';
+			case 0xAF: return 'Z';
+			default: return 0;
+		}
+	}
+
+	// Punctuation the code pages share (quotes, dashes, the ellipsis, no-break space, << >>, degree, middle dot, section):
+	// it separates words and is never changed.
+	static bool SharedPunctuation(unsigned char c)
+	{
+		switch (c)
+		{
+			case 0x84: case 0x85: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95: case 0x96: case 0x97:
+			case 0xA0: case 0xA7: case 0xAB: case 0xB0: case 0xB7: case 0xBB:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	// A Polish letter's byte that is a letter of the reader's own language as well (Spanish n with tilde and the
+	// inverted question mark, French e circumflex / oe / ae, Portuguese e circumflex - in cp1252): a word with only
+	// these may be the reader's own and stays. o acute draws as itself in cp1252 / cp1254 and never marks a word.
+	static bool OwnLetter(const std::string& lang, int cp, unsigned char c)
+	{
+		if ((cp == 1252 || cp == 1254) && (c == 0xF3 || c == 0xD3))
+			return true;
+		if (lang == "es")
+			return c == 0xF1 || c == 0xD1 || c == 0xBF;
+		if (lang == "fr")
+			return c == 0xEA || c == 0xCA || c == 0x9C || c == 0x8C || c == 0xE6 || c == 0xC6;
+		if (lang == "pt")
+			return c == 0xEA || c == 0xCA;
+		return false;
+	}
+
+	static int CodePageOf(const char* lang)
+	{
+		if (IsPolish(lang))
+			return 1250;
+		return Get(lang).codePage;
+	}
+
+	// One word of s starting at i (ASCII letters / digits and bytes over 0x7F but the shared punctuation): its end,
+	// whether it may be Polish (no byte over 0x7F that is no Polish letter; in a non-Latin code page also an ASCII
+	// letter - a Greek or an Arabic word has none), whether it has a Polish letter and whether one of them is no
+	// letter of the reader's language.
+	static size_t ScanWord(const std::string& lang, int cp, const char* s, size_t i, size_t n, bool& polish, bool& letter, bool& marker)
+	{
+		bool ascii = false, foreign = false;
+		letter = marker = false;
+		size_t end = i;
+		while (end < n && s[end])
+		{
+			const unsigned char b = (unsigned char) s[end];
+			if (b < 0x80)
+			{
+				if (!isalnum(b))
+					break;
+				if (isalpha(b))
+					ascii = true;
+			}
+			else
+			{
+				if (SharedPunctuation(b))
+					break;
+				if (!PolishLetter(b))
+					foreign = true;
+				else
+				{
+					letter = true;
+					if (!OwnLetter(lang, cp, b))
+						marker = true;
+				}
+			}
+			++end;
+		}
+		polish = !foreign && (ascii || (cp != 1253 && cp != 1256));
+		return end;
+	}
+
+	static bool WordStart(unsigned char c)
+	{
+		return c >= 0x80 ? !SharedPunctuation(c) : isalnum(c) != 0;
+	}
+
+	// The Polish words of s[0, n) (up to a NUL) without their diacritics, for a reader of `lang` (code page cp !=
+	// 1250), line by line (a newline or a quest's "[ENTER]" ends one): a line is Polish when one of its words has a
+	// Polish letter that is no letter of the reader's language (l with stroke, a / e ogonek, z dot, ... - the French
+	// e circumflex or the Spanish n with tilde do not count); then each of its words made of ASCII and Polish letters
+	// only is written without the diacritics. So a translated line (French "Foret" with its circumflex, Spanish,
+	// German umlauts, Greek or Arabic - no ASCII letter there) is never touched. Returns whether anything changed.
+	static bool TransliterateWords(const std::string& lang, int cp, char* s, size_t n)
+	{
+		size_t len = 0;
+		while (len < n && s[len])
+			++len;
+		bool changed = false;
+		size_t line = 0;
+		while (line < len)
+		{
+			size_t lineEnd = line;
+			while (lineEnd < len && s[lineEnd] != '\n' && !(s[lineEnd] == '[' && len - lineEnd >= 7 && !memcmp(s + lineEnd, "[ENTER]", 7)))
+				++lineEnd;
+			bool strong = false;
+			for (size_t i = line; i < lineEnd && !strong;)
+			{
+				if (!WordStart((unsigned char) s[i]))
+				{
+					++i;
+					continue;
+				}
+				bool polish, letter, marker;
+				const size_t end = ScanWord(lang, cp, s, i, lineEnd, polish, letter, marker);
+				strong = polish && marker;
+				i = end;
+			}
+			if (strong)
+			{
+				for (size_t i = line; i < lineEnd;)
+				{
+					if (!WordStart((unsigned char) s[i]))
+					{
+						++i;
+						continue;
+					}
+					bool polish, letter, marker;
+					const size_t end = ScanWord(lang, cp, s, i, lineEnd, polish, letter, marker);
+					if (polish && letter)
+					{
+						for (size_t k = i; k < end; ++k)
+						{
+							const char a = PolishLetter((unsigned char) s[k]);
+							if (a)
+							{
+								s[k] = a;
+								changed = true;
+							}
+						}
+					}
+					i = end;
+				}
+			}
+			line = lineEnd < len ? lineEnd + (s[lineEnd] == '\n' ? 1 : 7) : len;
+		}
+		return changed;
+	}
+
+	// A quest window field: the "[ENTER]" of a GF text as a space, cut to `limit` bytes at a word's end when it is
+	// longer (the client's field), without a dangling separator.
+	static void FitQuestField(std::string& s, size_t limit)
+	{
+		size_t p;
+		while ((p = s.find("[ENTER]")) != std::string::npos)
+			s.replace(p, 7, " ");
+		while (!s.empty() && s[s.size() - 1] == ' ')
+			s.erase(s.size() - 1);
+		if (s.size() <= limit)
+			return;
+		size_t cut = limit;
+		while (cut > 0 && s[cut] != ' ')
+			--cut;
+		if (cut < limit / 2)
+			cut = limit;
+		s.erase(cut);
+		while (!s.empty() && strchr(" :,;-(/", s[s.size() - 1]))
+			s.erase(s.size() - 1);
+	}
+
+	static bool QuestInfoShort(SLanguage& lang, const std::string& text, std::string& out)
+	{
+		std::unordered_map<std::string, std::string>::const_iterator it = lang.questInfo.find(text);
+		if (it == lang.questInfo.end())
+			return false;
+		out = it->second;
+		return true;
+	}
+
+	static std::string Trimmed(const std::string& s)
+	{
+		size_t a = 0, b = s.size();
+		while (a < b && isspace((unsigned char) s[a]))
+			++a;
+		while (b > a && isspace((unsigned char) s[b - 1]))
+			--b;
+		return s.substr(a, b - a);
+	}
+}
+
+int Mt2009LanguageCodePage(const char* lang)
+{
+	return CodePageOf(lang);
+}
+
+bool Mt2009TransliterateFor(LPCHARACTER ch, char* text, size_t size)
+{
+	if (!ch || !text || !size)
+		return false;
+	const char* lang = GetPlayerLanguage(ch);
+	if (IsPolish(lang))
+		return false;
+	const int cp = CodePageOf(lang);
+	if (cp == 1250)
+		return false;
+	return TransliterateWords(lang, cp, text, size);
+}
+
+void Mt2009QuestInfoText(LPCHARACTER ch, const std::string& polish, char* out, size_t size)
+{
+	if (!out || !size)
+		return;
+	memset(out, 0, size);
+	std::string s = polish;
+	const char* lang = GetPlayerLanguage(ch);
+	if (!IsPolish(lang) && !s.empty())
+	{
+		SLanguage& L = Get(lang);
+		std::string t;
+		const std::string trimmed = Trimmed(s);
+		bool found = QuestInfoShort(L, s, t) || (trimmed != s && QuestInfoShort(L, trimmed, t));
+		// Then the full text (the fallback's too); a GF title often ends in a space the dictionary may lack.
+		if (!found)
+			found = Find(lang, s, t) || (trimmed != s && !trimmed.empty() && Find(lang, trimmed, t));
+		if (found)
+			s = t;
+		else if (L.codePage != 1250)
+		{
+			std::vector<char> b(s.begin(), s.end());
+			if (!b.empty() && TransliterateWords(lang, L.codePage, &b[0], b.size()))
+				s.assign(b.begin(), b.end());
+		}
+	}
+	FitQuestField(s, size - 1);
+	memcpy(out, s.data(), MIN(s.size(), size - 1));
+}
+
+void Mt2009ResendQuestInfo(LPCHARACTER ch)
+{
+	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
+		return;
+	quest::PC* pPC = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
+	if (!pPC || !pPC->IsLoaded())
+		return;
+	for (quest::PC::QuestInfoIterator it = pPC->quest_begin(); it != pPC->quest_end(); ++it)
+	{
+		const quest::QuestState& qs = it->second;
+		// Only a quest whose letter is on the client (q.start / send_letter): an update of another index would make
+		// the client an empty quest.
+		if (!qs.bStart || !qs.iIndex)
+			continue;
+		BYTE flag = 0;
+		TEMP_BUFFER buf;
+		if (!qs._title.empty())
+		{
+			char t[30 + 1];
+			Mt2009QuestInfoText(ch, qs._title, t, sizeof(t));
+			buf.write(t, sizeof(t));
+			flag |= quest::PC::QUEST_SEND_TITLE;
+		}
+		if (!qs._clock_name.empty())
+		{
+			char t[16 + 1];
+			Mt2009QuestInfoText(ch, qs._clock_name, t, sizeof(t));
+			buf.write(t, sizeof(t));
+			flag |= quest::PC::QUEST_SEND_CLOCK_NAME;
+		}
+		if (!qs._counter_name.empty())
+		{
+			char t[16 + 1];
+			Mt2009QuestInfoText(ch, qs._counter_name, t, sizeof(t));
+			buf.write(t, sizeof(t));
+			flag |= quest::PC::QUEST_SEND_COUNTER_NAME;
+		}
+		if (!flag)
+			continue;
+		packet_quest_info qi;
+		qi.header = HEADER_GC_QUEST_INFO;
+		qi.size = sizeof(struct packet_quest_info) + buf.size();
+		qi.index = qs.iIndex;
+#ifdef ENABLE_QUEST_CATEGORY
+		qi.c_index = quest::CQuestManager::instance().ReadQuestCategoryFile(qi.index);
+#endif
+		qi.flag = flag;
+		ch->GetDesc()->BufferedPacket(&qi, sizeof(qi));
+		ch->GetDesc()->Packet(buf.read_peek(), buf.size());
+	}
+}
+
+const void* Mt2009LanguagePacketOut(LPCHARACTER ch, const void* data, int size)
+{
+	if (!ch || !data || size <= 1)
+		return data;
+	const BYTE header = *(const BYTE*) data;
+	size_t from = 0, to = 0;
+	switch (header)
+	{
+		case HEADER_GC_CHAT:
+		{
+			if (size < (int) sizeof(TPacketGCChat))
+				return data;
+			const TPacketGCChat* p = (const TPacketGCChat*) data;
+			// The client's commands are data, never text to read.
+			if (p->type == CHAT_TYPE_COMMAND)
+				return data;
+			from = sizeof(TPacketGCChat);
+			to = MIN((size_t) p->size, (size_t) size);
+			break;
+		}
+		case HEADER_GC_WHISPER:
+		{
+			if (size < (int) sizeof(TPacketGCWhisper))
+				return data;
+			from = sizeof(TPacketGCWhisper);
+			to = MIN((size_t) ((const TPacketGCWhisper*) data)->wSize, (size_t) size);
+			break;
+		}
+		case HEADER_GC_SCRIPT:
+		{
+			if (size < (int) sizeof(struct packet_script))
+				return data;
+			from = sizeof(struct packet_script);
+			to = MIN((size_t) ((const struct packet_script*) data)->size, (size_t) size);
+			break;
+		}
+		case HEADER_GC_QUEST_CONFIRM:
+		{
+			if (size < (int) sizeof(TPacketGCQuestConfirm))
+				return data;
+			from = offsetof(TPacketGCQuestConfirm, msg);
+			to = from + sizeof(((TPacketGCQuestConfirm*) 0)->msg);
+			break;
+		}
+		default:
+			return data;
+	}
+	if (to <= from)
+		return data;
+	const char* lang = GetPlayerLanguage(ch);
+	if (IsPolish(lang))
+		return data;
+	const int cp = CodePageOf(lang);
+	if (cp == 1250)
+		return data;
+	// Anything to change at all (a Polish letter's byte) before the copy.
+	const unsigned char* bytes = (const unsigned char*) data;
+	bool any = false;
+	for (size_t i = from; i < to && !any; ++i)
+		any = PolishLetter(bytes[i]) != 0;
+	if (!any)
+		return data;
+	static std::vector<char> s_out;
+	s_out.assign((const char*) data, (const char*) data + size);
+	if (!TransliterateWords(lang, cp, &s_out[from], to - from))
+		return data;
+	return &s_out[0];
 }
 
 void Mt2009LanguageCommand(LPCHARACTER ch, const char* argument)
