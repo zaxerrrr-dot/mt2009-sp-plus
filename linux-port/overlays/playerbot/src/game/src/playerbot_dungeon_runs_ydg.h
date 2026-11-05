@@ -1494,6 +1494,11 @@ namespace
 	const DWORD AFFECT_PLAYERBOT_YDG_PIERCE = 866;
 	const DWORD AFFECT_PLAYERBOT_YDG_MOVE = 867;
 	const DWORD AFFECT_PLAYERBOT_YDG_ATTSPD = 868;
+	// The night of 5/6 November: Glebie's parties (395: 60/50/60/65) came in with Sung Ma of 22-58 - every member's blows
+	// and health halved (ChampionDamage / ChampionMaxHP), Alastor at 96-99% after 5 minutes. A member short of the
+	// dungeon's Sung Ma requirement gets the missing Will for the run (what a player's Sung Ma stones would give) -
+	// the bots stronger, the dungeon unchanged.
+	const DWORD AFFECT_PLAYERBOT_YDG_SUNGMA[4] = { 869, 870, 871, 872 };	// Sila, Witalnosc, Odpornosc, Inteligencja
 
 	void BuffPlayerBotYdgMember(LPCHARACTER c)
 	{
@@ -1530,6 +1535,29 @@ namespace
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_HP, POINT_MAX_HP_PCT, hp, 0, dur, 0, true);
 	}
 
+	// The run's dungeon's Sung Ma requirement filled up (see AFFECT_PLAYERBOT_YDG_SUNGMA); the added Will logged.
+	std::string BuffPlayerBotYdgSungma(LPCHARACTER c, long lMap)
+	{
+		const champion::SungmaRequirement* req = c && lMap > 0 && GetPlayerBotYdgEnv("PLAYERBOT_YDG_SUNGMA", 1, 0, 1) ?
+				champion::MapRequirement(lMap) : NULL;
+		if (!req)
+			return "";
+		const int want[4] = { req->str, req->hp, req->move, req->immune };
+		std::string added;
+		for (int k = 0; k < 4; ++k)
+		{
+			const BYTE point = (BYTE)(POINT_SUNGMA_STR + k);
+			const int have = yohara_gear::SungmaEffective(c, point);
+			if (have >= want[k])
+				continue;
+			const int pct = MAX(-99, (int)c->GetPoint(POINT_SUNGMA_PER_STR + k));
+			const int add = (want[k] - have) * 100 / (100 + pct) + 1;
+			c->AddAffect(AFFECT_PLAYERBOT_YDG_SUNGMA[k], point, add, 0, 3700, 0, true);
+			added += (added.empty() ? "" : "/") + std::to_string(k) + "+" + std::to_string(add);
+		}
+		return added;
+	}
+
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
@@ -1545,6 +1573,12 @@ namespace
 				continue;
 			MakePlayerBotYdgRoom(c, "run_start");	// V2: a cell for the run's items
 			BuffPlayerBotYdgMember(c);
+			{
+				const std::string sm = BuffPlayerBotYdgSungma(c, def.lMap);
+				if (!sm.empty())
+					sys_log(0, "BOT_YDG: sungma run=%d pid=%u name=%s map=%ld added=%s", run.iId, c->GetPlayerID(), c->GetName(),
+							def.lMap, sm.c_str());
+			}
 			snaps[run.members[i]] = SnapPlayerBotYdg(c);
 			int plus = 0;
 			const int gear = GetPlayerBotYdgGearLevel(c, &plus);
@@ -1599,6 +1633,8 @@ namespace
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_PIERCE);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_MOVE);
 			c->RemoveAffect(AFFECT_PLAYERBOT_YDG_ATTSPD);
+			for (int k = 0; k < 4; ++k)
+				c->RemoveAffect(AFFECT_PLAYERBOT_YDG_SUNGMA[k]);
 			const int lv = c->GetLevel();
 			lvLow = lvLow == 0 || lv < lvLow ? lv : lvLow;
 			lvHigh = std::max(lvHigh, lv);
