@@ -1341,11 +1341,11 @@ namespace
 		const long dur = 3700;
 		const int poison = GetPlayerBotYdgEnv("PLAYERBOT_YDG_POISON_PCT", 15, 0, 50);
 		const int bleed = GetPlayerBotYdgEnv("PLAYERBOT_YDG_BLEED_PCT", 15, 0, 50);
-		const int monster = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MONSTER_PCT", 30, 0, 50);
+		const int monster = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MONSTER_PCT", 50, 0, 80);
 		// the 5 November night: one Yonghan down in 27 minutes with the first three - a gear's critical and
 		// piercing hits as well
-		const int crit = GetPlayerBotYdgEnv("PLAYERBOT_YDG_CRIT_PCT", 20, 0, 50);
-		const int pierce = GetPlayerBotYdgEnv("PLAYERBOT_YDG_PIERCE_PCT", 15, 0, 50);
+		const int crit = GetPlayerBotYdgEnv("PLAYERBOT_YDG_CRIT_PCT", 30, 0, 50);
+		const int pierce = GetPlayerBotYdgEnv("PLAYERBOT_YDG_PIERCE_PCT", 25, 0, 50);
 		if (crit > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_CRIT, POINT_CRITICAL_PCT, crit, 0, dur, 0, true);
 		if (pierce > 0)
@@ -1353,7 +1353,7 @@ namespace
 		// V3: the SZC cave's route to the key's Yonghans is ~2 400 cells of walk (the navigation's plan, 5 November) -
 		// a speed potion's and a fast weapon's worth of movement and attack speed.
 		const int move = GetPlayerBotYdgEnv("PLAYERBOT_YDG_MOVE_SPEED", 40, 0, 100);
-		const int attspd = GetPlayerBotYdgEnv("PLAYERBOT_YDG_ATT_SPEED", 20, 0, 50);
+		const int attspd = GetPlayerBotYdgEnv("PLAYERBOT_YDG_ATT_SPEED", 30, 0, 50);
 		if (move > 0)
 			c->AddAffect(AFFECT_PLAYERBOT_YDG_MOVE, POINT_MOV_SPEED, move, 0, dur, 0, true);
 		if (attspd > 0)
