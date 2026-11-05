@@ -199,6 +199,9 @@ namespace playerbot_dgrun
 		// Alastor of 135 with 22.5 million health: five called, four to go in, a Shaman always.
 		{ "glebie_slaby", 120, 5, 5, 4, true },
 		{ "glebie_silny", 120, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3 - the quest's 120 and a Champion level (the panel's 1-8): the clock's
+		// call wants four and a healing Shaman, goes in with three (a YDG training party without one - the run's bonuses).
+		{ "gnolle", 120, 4, 4, 3, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
