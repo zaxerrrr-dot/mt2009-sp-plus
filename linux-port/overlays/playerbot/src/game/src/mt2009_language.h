@@ -4,21 +4,30 @@
 // MT2009_PLUS_LANGUAGE_V1: the server's language core (server-patches/language/README.md).
 //
 // Every player reads the language his client names: the client sends "/lang <code>" after entering the game and at
-// every change; it is kept in player.player.language (VARCHAR(4), default 'pl') and read back when the character enters
-// a core. Polish is the source of every text; anything said to a reader of another language is looked up in that
-// language's dictionary (share/locale/<locale>/lang/<code>/*.tsv - Polish source<TAB>translation, UTF-8, converted to
-// the language's code page when loaded) and, missing there, in the English one; a text without either stays Polish.
+// every change (only a language its user chose); it is kept in player.player.language (VARCHAR(4), NULL = never
+// chosen: the server's default, M2_DEFAULT_LANGUAGE) and read back when the character enters a core. Polish is the
+// source of every text; anything said to a reader of another language is looked up in that language's dictionary
+// (share/locale/<locale>/lang/<code>/*.tsv - Polish source<TAB>translation, UTF-8, converted to the language's code
+// page when loaded) and, missing there, in the English one; a text without either stays Polish.
 //
-// Callers (the bots, any engine code): GetPlayerLanguage(target) names the reader's language ("pl" for a bot, a
-// character with no client, nobody); Mt2009TranslateFor(target, polish) / LC_TEXT_FOR(target, key) give the text in it.
+// Callers (the bots, any engine code): GetPlayerLanguage(target) names the reader's language (his own choice, else the
+// server's default - a bot's too; "pl" for nobody); Mt2009TranslateFor(target, polish) / LC_TEXT_FOR(target, key) give
+// the text in it.
 // CHARACTER::ChatPacket already translates INFO / NOTICE / BIG_NOTICE / TALKING / DICE lines by itself.
 
 class CHARACTER;
 typedef CHARACTER* LPCHARACTER;
 
-// The reader's language code ("pl", "en", "de", ...); never NULL.
+// MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language (M2_DEFAULT_LANGUAGE in .env, "pl" when not set) -
+// the language of every player who never chose one (player.player.language NULL) and of the bots' public channels.
+const char* Mt2009DefaultLanguage();
+// The reader's language code ("pl", "en", "de", ...): the player's own choice, else the server's default ("pl" for
+// nobody, a monster); never NULL.
 const char* GetPlayerLanguage(LPCHARACTER ch);
-// Sets it (a known code, 2-4 letters; aliases such as "cs" -> "cz" are mapped) and stores it in player.player.language.
+// Whether the player chose a language himself ("/lang <code>"), rather than reading the server's default.
+bool Mt2009PlayerChoseLanguage(LPCHARACTER ch);
+// Sets it (a known code, 2-4 letters; aliases such as "cs" -> "cz" are mapped) and stores it in player.player.language;
+// "default" (or NULL / "") forgets the choice - the player reads the server's default again (NULL in the table).
 void SetPlayerLanguage(LPCHARACTER ch, const char* code);
 
 // A Polish text in the language `lang` (exact text, then a format template "%d ..."; then English); the text itself

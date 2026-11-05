@@ -5451,9 +5451,10 @@ def lang():
     if chosen in LANGS:
         return chosen
     # MT2009_PLUS_WEB_I18N_V1: the m2lang cookie (shared with the Seban panel
-    # and the ItemShop), then the browser - but only one that does not list
-    # Polish at all, so the Polish player on an English Windows above still
-    # gets Polish; a German one with a German browser gets German.
+    # and the ItemShop), then the server's default language (M2_DEFAULT_LANGUAGE,
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1), and only without one the browser - but
+    # only one that does not list Polish at all, so the Polish player on an
+    # English Windows above still gets Polish.
     return I18N.pick(cookie=request.cookies.get("m2lang"),
                      accept=request.headers.get("Accept-Language", ""), default="pl")
 

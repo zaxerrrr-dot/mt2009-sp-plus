@@ -50,7 +50,8 @@ import re
 # 7: M2_PLAYER_ATTACK (MT2009_PLUS_PC_ATTACK_V1, the EMERALD configuration).
 # 8: M2_SEBAN_SNAPSHOT_HEAVY_HOURS (MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1).
 # 9: M2_SKILL_HACK (MT2009_PLUS_SKILL_HACK_V1, the other specialisation's skills).
-SCHEMA_VERSION = 9
+# 10: M2_DEFAULT_LANGUAGE (MT2009_PLUS_LANGUAGE_DEFAULT_V1, the server's default language).
+SCHEMA_VERSION = 10
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -368,6 +369,19 @@ SCHEMA = [
        "swiat", "int", "3", ["game"], min=0, max=1000),
     _e("M2_DRAGON_COIN_BOSS_PERMILLE", "Kupon SM (100) z bossów (‰)", "Szansa w promilach na Kupon SM (100) z bossa (50 = 5%).",
        "swiat", "int", "50", ["game"], min=0, max=1000),
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language (mt2009_language.cpp, the panels, the ItemShop)
+    _e("M2_DEFAULT_LANGUAGE", "Domyślny język serwera",
+       "Język, w którym gra każdy gracz, dopóki sam nie wybierze innego w ustawieniach klienta (teksty serwera, questy, "
+       "ogłoszenia, odpowiedzi botów), język botów na krzyku i w handlu, język, na który przełącza się klient bez "
+       "własnego wyboru, oraz język paneli i ItemShopu dla odwiedzającego, który nie wybrał innego. "
+       "Wybór gracza zawsze ma pierwszeństwo i zostaje po zmianie tej wartości.",
+       "swiat", "enum", "pl", ["game", "panel", "itemshop"] + SEBAN,
+       options=[["pl", "polski (pl)"], ["en", "English (en)"], ["de", "Deutsch (de)"], ["tr", "Türkçe (tr)"],
+                ["ro", "Română (ro)"], ["es", "Español (es)"], ["it", "Italiano (it)"], ["fr", "Français (fr)"],
+                ["pt", "Português (pt)"], ["cz", "Čeština (cz)"], ["hu", "Magyar (hu)"], ["gr", "Ελληνικά (gr)"],
+                ["ae", "العربية (ae)"]],
+       note="Działa po restarcie serwera gry; gracze widzą go przy następnym wejściu do gry, klient bez własnego wyboru "
+            "– po ponownym uruchomieniu."),
     _e("M2_DEFAULT_GAME_LANGUAGE", "Język nazw w grze (świeża instalacja)",
        "Język nazw przedmiotów, potworów i questów dla świeżego świata. Później przełącza się go przyciskiem w panelu (ten wybór ma pierwszeństwo).",
        "swiat", "enum", "en", [], options=[["pl", "polski"], ["en", "angielski"]],

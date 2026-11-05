@@ -30,6 +30,8 @@
 #    --bots N         liczba botów (domyślnie według pamięci)
 #    --profil NAZWA   konfiguracja nowego świata (mt2009, clean_easy, clean_hard,
 #                     sapphire, emerald - panel zaawansowany: Konfiguracja serwera)
+#    --jezyk KOD      domyślny język serwera: pl en de tr ro es it fr pt cz hu gr ae
+#                     (bez opcji instalator pyta; M2_DEFAULT_LANGUAGE w .env)
 #    --bez-aktualizacji  zostaw wersję z pełnej paczki
 #    --force          instaluj mimo małej pamięci albo dysku
 #    --tylko-pliki    tylko kroki 1-3 (pliki gotowe w FOLDER), bez Dockera
@@ -53,6 +55,7 @@ MIRROR_NOTICE='GitHub niedostępny - pobieram z serwera zapasowego'
 ADDRESS=''
 BOTS=''
 PROFILE=''
+LANGUAGE_CODE=''
 UPDATE=1
 FORCE=0
 FILES_ONLY=0
@@ -73,10 +76,11 @@ while [ $# -gt 0 ]; do
         --address) [ $# -ge 2 ] || die "--address wymaga adresu"; ADDRESS=$2; shift 2 ;;
         --bots) [ $# -ge 2 ] || die "--bots wymaga liczby"; BOTS=$2; shift 2 ;;
         --profil|--profile) [ $# -ge 2 ] || die "--profil wymaga nazwy"; PROFILE=$2; shift 2 ;;
+        --jezyk|--language) [ $# -ge 2 ] || die "--jezyk wymaga kodu (pl, en, de...)"; LANGUAGE_CODE=$2; shift 2 ;;
         --bez-aktualizacji) UPDATE=0; shift ;;
         --force) FORCE=1; shift ;;
         --tylko-pliki) FILES_ONLY=1; shift ;;
-        -h|--help) sed -n '2,37p' "$0"; exit 0 ;;
+        -h|--help) sed -n '2,38p' "$0"; exit 0 ;;
         *) die "nieznana opcja: $1 (pomoc: sh $0 --help)" ;;
     esac
 done
@@ -207,6 +211,7 @@ set -- install --follow
 [ -n "$ADDRESS" ] && set -- "$@" --address "$ADDRESS"
 [ -n "$BOTS" ] && set -- "$@" --bots "$BOTS"
 [ -n "$PROFILE" ] && set -- "$@" --profile "$PROFILE"  # MT2009_PLUS_SERVER_CONFIG_V1
+[ -n "$LANGUAGE_CODE" ] && set -- "$@" --language "$LANGUAGE_CODE"  # MT2009_PLUS_LANGUAGE_DEFAULT_V1
 [ "$FORCE" = 1 ] && set -- "$@" --force
 sh "$(installer)" "$@"
 rc=$?

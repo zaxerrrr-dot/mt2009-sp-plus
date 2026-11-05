@@ -74,6 +74,10 @@ SWAP_SIZE_MB=4096
 ADDRESS=''
 BOTS=''
 PROFILE=''
+# MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language (M2_DEFAULT_LANGUAGE): --language, else the
+# environment's M2_DEFAULT_LANGUAGE, else asked on a terminal, else pl.
+SRV_LANGUAGE=${M2_DEFAULT_LANGUAGE:-}
+SRV_LANGUAGES='pl en de tr ro es it fr pt cz hu gr ae'
 FOLLOW=auto
 NO_SWAP=0
 FORCE=0
@@ -510,6 +514,59 @@ apply_profile() {
     say "Konfiguracja serwera: profil $PROFILE -$_applied (kalendarz eventow profilu dopiszesz w panelu zaawansowanym: Konfiguracja serwera)."
 }
 
+# ---- the server's default language (MT2009_PLUS_LANGUAGE_DEFAULT_V1) -----------
+# What every player reads until he picks his own language in the client's settings, the bots' shout and trade chat,
+# and the panels' and the ItemShop's language for a visitor who has not picked one.
+normalize_language() {
+    _l=$(printf '%s' "$1" | tr 'A-Z' 'a-z' | tr -d ' \r')
+    case "$_l" in cs) _l=cz ;; el) _l=gr ;; ar) _l=ae ;; esac
+    case " $SRV_LANGUAGES " in *" $_l "*) printf '%s' "$_l" ;; *) return 1 ;; esac
+}
+
+check_language() {
+    [ -n "$SRV_LANGUAGE" ] || return 0
+    SRV_LANGUAGE=$(normalize_language "$SRV_LANGUAGE") || die "--language: jeden z kodow: $SRV_LANGUAGES"
+}
+
+# Asked only for a new .env, on a terminal, when neither --language nor M2_DEFAULT_LANGUAGE said it (the launcher
+# always passes --language; a script without a terminal gets pl).
+ask_language() {
+    [ -z "$SRV_LANGUAGE" ] || return 0
+    if [ -t 0 ] && [ -t 1 ]; then
+        say ""
+        say "Domyslny jezyk serwera / server language - gracze graja w nim, dopoki sami nie wybiora innego w ustawieniach:"
+        say "  pl polski, en English, de Deutsch, tr Turkce, ro Romana, es Espanol, it Italiano,"
+        say "  fr Francais, pt Portugues, cz Cestina, hu Magyar, gr Ellinika, ae Arabic"
+        while :; do
+            printf 'Jezyk / language [pl]: '
+            read -r _answer || _answer=''
+            [ -n "$_answer" ] || _answer=pl
+            SRV_LANGUAGE=$(normalize_language "$_answer") && break
+            say "Nie znam '$_answer' - wpisz jeden z kodow: $SRV_LANGUAGES"
+        done
+    else
+        SRV_LANGUAGE=pl
+    fi
+}
+
+# A new .env: the chosen language. An existing one keeps its own unless --language (or M2_DEFAULT_LANGUAGE) names
+# one, and gets pl when it has none (an .env made before the setting).
+apply_language() {
+    if [ "$ENV_KEPT" = 1 ]; then
+        if [ -n "$SRV_LANGUAGE" ]; then
+            [ "$(env_get M2_DEFAULT_LANGUAGE)" = "$SRV_LANGUAGE" ] && return 0
+            env_set M2_DEFAULT_LANGUAGE "$SRV_LANGUAGE"
+            say "Domyslny jezyk serwera: $SRV_LANGUAGE (M2_DEFAULT_LANGUAGE)."
+        elif ! env_has M2_DEFAULT_LANGUAGE; then
+            env_set M2_DEFAULT_LANGUAGE pl
+        fi
+        return 0
+    fi
+    ask_language
+    env_set M2_DEFAULT_LANGUAGE "$SRV_LANGUAGE"
+    say "Domyslny jezyk serwera: $SRV_LANGUAGE (M2_DEFAULT_LANGUAGE; zmienisz go w panelu zaawansowanym albo w launcherze)."
+}
+
 ENV_KEPT=0
 prepare_env() {
     if [ -f "$ENV_FILE" ]; then
@@ -520,6 +577,7 @@ prepare_env() {
         write_new_env
         apply_profile
     fi
+    apply_language
 }
 
 # What a Windows install gets from the launcher and a Linux one did not:
@@ -787,6 +845,10 @@ cmd_install() {
     check_arch
     check_machine
     check_profile
+    check_language
+    # A new world's language is asked now, before Docker and the swap take their minutes (an .env that is there keeps
+    # its own).
+    [ -f "$ENV_FILE" ] || ask_language
     # The swap and the refusal before Docker: a machine that is going to be
     # refused should not get Docker installed first.
     ensure_swap
@@ -952,6 +1014,10 @@ uzycie: sudo sh linux-port/tools/vps-install.sh [polecenie] [opcje]
 opcje:
   --address ADRES   publiczny adres serwera (domyslnie: odczytany IPv4)
   --bots N          liczba botow (domyslnie: wedlug pamieci 150/400/800)
+  --language KOD    domyslny jezyk serwera (M2_DEFAULT_LANGUAGE): pl en de tr ro
+                    es it fr pt cz hu gr ae; bez opcji: M2_DEFAULT_LANGUAGE ze
+                    srodowiska, pytanie w terminalu, inaczej pl; istniejacy .env
+                    zmienia tylko podana opcja
   --profile NAZWA   konfiguracja nowego swiata z panelu (Konfiguracja serwera):
                     mt2009, clean_easy, clean_hard, sapphire, emerald (wielkosc
                     liter bez znaczenia) - tylko gdy .env
@@ -979,15 +1045,17 @@ esac
 P1=''; P2=''; _npos=0
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        --address|--bots|--from|--profile)
+        --address|--bots|--from|--profile|--language)
             [ "$#" -ge 2 ] || die "$1: brak wartosci"
             case "$1" in
                 --address) ADDRESS=$2 ;;
                 --bots) BOTS=$2 ;;
                 --from) FROM=$2 ;;
                 --profile) PROFILE=$2 ;;
+                --language) SRV_LANGUAGE=$2 ;;
             esac
             shift ;;
+        --language=*) SRV_LANGUAGE=${1#*=} ;;
         --address=*) ADDRESS=${1#*=} ;;
         --bots=*) BOTS=${1#*=} ;;
         --profile=*) PROFILE=${1#*=} ;;
@@ -1023,6 +1091,7 @@ case "$_cmd" in
             [ -n "$ADDRESS" ] && set -- "$@" --address "$ADDRESS"
             [ -n "$BOTS" ] && set -- "$@" --bots "$BOTS"
             [ -n "$PROFILE" ] && set -- "$@" --profile "$PROFILE"
+            [ -n "$SRV_LANGUAGE" ] && set -- "$@" --language "$SRV_LANGUAGE"
             [ -n "$FROM" ] && set -- "$@" --from "$FROM"
             [ "$FOLLOW" = no ] && set -- "$@" --no-follow
             [ "$FOLLOW" = yes ] && set -- "$@" --follow

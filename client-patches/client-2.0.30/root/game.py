@@ -1041,6 +1041,20 @@ class GameWindow(ui.ScriptWindow):
 	def __YSetsItem(self, *args):
 		__import__("ysets").OnServer(*args)
 
+	# MT2009_PLUS_LANGUAGE_DEFAULT_V1: "MT2009LANG <server default> <the player's own language|->" at the entry into the
+	# game. A client whose user never chose a language takes it for its own texts at the next start (mt2009lang.py);
+	# the language window says so and offers the restart.
+	def __Mt2009Language(self, default = "pl", own = "-", *rest):
+		try:
+			import mt2009lang
+			if not mt2009lang.OnServerLanguage(default, own):
+				return
+			name = mt2009lang.LanguageName(mt2009lang.ChosenLanguage())
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "J\xeazyk serwera: %s - klient zmieni j\xeazyk po ponownym uruchomieniu (Server language: after a restart)." % name)
+			__import__("uilanguage").GetWindow().Open()
+		except Exception, msg:
+			dbg.TraceError("MT2009LANG: %s" % msg)
+
 	# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the server's quest index -> category map
 	# (playerbot_quest_renewal.cpp), "QuestCategory <part> <index>:<category>,..."
 	def __QuestRenewalCategory(self, part = "0", data = "-", *rest):
@@ -2885,7 +2899,8 @@ class GameWindow(ui.ScriptWindow):
 				self.__gmCheckSent = True
 				net.SendChatPacket("/gmpanel_check_gm")
 				# MT2009_PLUS_LANG_V1: the player's language to the server ("/lang <code>", at every entry into the
-				# game - the server's texts, bots and quests follow it; mt2009lang.py)
+				# game - the server's texts, bots and quests follow it; mt2009lang.py). Only a language the user chose
+				# himself: without one the player reads the server's default (MT2009_PLUS_LANGUAGE_DEFAULT_V1).
 				__import__("mt2009lang").SendToServer()
 				# The event calendar's mini icon and its schedule (uieventcalendar.py).
 				__import__("uieventcalendar").Start()
@@ -3730,6 +3745,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
+		serverCommandList["MT2009LANG"] = self.__Mt2009Language # MT2009_PLUS_LANGUAGE_DEFAULT_V1
 		serverCommandList["QuestCategory"] = self.__QuestRenewalCategory # MT2009_PLUS_QUEST_RENEWAL_V1
 		serverCommandList["WELEM"] = self.__WeaponElement # MT2009_PLUS_WEAPON_ELEMENT_V1
 		serverCommandList["WELEMOPEN"] = self.__WeaponElementOpen

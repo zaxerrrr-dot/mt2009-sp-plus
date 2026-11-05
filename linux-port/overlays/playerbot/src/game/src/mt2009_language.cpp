@@ -18,6 +18,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <map>
@@ -320,8 +321,14 @@ namespace mt2009_language
 	static std::map<std::string, SLanguage> s_languages;
 	static std::vector<std::string> s_available;
 	static bool s_scanned = false;
+	// A player's own choice ("/lang <code>", player.player.language); no entry: the server's default language.
 	static std::unordered_map<DWORD, std::string> s_playerLanguage;
 	static bool s_dbColumn = true;
+
+	// MT2009_PLUS_LANGUAGE_DEFAULT_V1 (the owner, 5 November 2026: "domyslny jezyk dla calego serwera"): the language
+	// of every player who never chose one, of the bots' public channels and of the world - M2_DEFAULT_LANGUAGE in .env
+	// (the launcher or the VPS installer writes it), one of the twelve codes; Polish when it is not set or unknown.
+	static const char* const KNOWN_CODES[] = { "pl", "en", "de", "tr", "ro", "es", "it", "fr", "pt", "cz", "hu", "gr", "ae" };
 
 	static std::string LanguageDir()
 	{
@@ -359,6 +366,34 @@ namespace mt2009_language
 		if (s == "ger" || s == "deu")
 			return "de";
 		return s;
+	}
+
+	static bool KnownCode(const std::string& code)
+	{
+		for (size_t i = 0; i < sizeof(KNOWN_CODES) / sizeof(KNOWN_CODES[0]); ++i)
+			if (code == KNOWN_CODES[i])
+				return true;
+		return false;
+	}
+
+	static const std::string& DefaultLanguage()
+	{
+		static std::string s_default;
+		static bool s_read = false;
+		if (!s_read)
+		{
+			s_read = true;
+			const char* env = getenv("M2_DEFAULT_LANGUAGE");
+			s_default = env && *env ? Normalize(env) : std::string();
+			if (!KnownCode(s_default))
+			{
+				if (env && *env)
+					sys_err("MT2009_LANGUAGE: M2_DEFAULT_LANGUAGE '%s' is not a known language - Polish", env);
+				s_default = POLISH;
+			}
+			sys_log(0, "MT2009_LANGUAGE: the server's default language is %s", s_default.c_str());
+		}
+		return s_default;
 	}
 
 	static void Scan()
@@ -977,54 +1012,94 @@ static struct SMt2009LanguageInit
 	SMt2009LanguageInit() { s_nameHook = &EngineNameHook; }
 } s_mt2009LanguageInit;
 
+const char* Mt2009DefaultLanguage()
+{
+	return DefaultLanguage().c_str();
+}
+
 const char* GetPlayerLanguage(LPCHARACTER ch)
 {
+	// MT2009_PLUS_LANGUAGE_DEFAULT_V1: nobody, a monster - the source (Polish); a player (and a bot) without a choice
+	// of his own - the server's default.
 	if (!ch || !ch->IsPC())
 		return POLISH;
 	std::unordered_map<DWORD, std::string>::const_iterator it = s_playerLanguage.find(ch->GetPlayerID());
-	return it == s_playerLanguage.end() ? POLISH : it->second.c_str();
+	return it == s_playerLanguage.end() ? DefaultLanguage().c_str() : it->second.c_str();
+}
+
+bool Mt2009PlayerChoseLanguage(LPCHARACTER ch)
+{
+	return ch && ch->IsPC() && s_playerLanguage.find(ch->GetPlayerID()) != s_playerLanguage.end();
 }
 
 void SetPlayerLanguage(LPCHARACTER ch, const char* code)
 {
 	if (!ch || !ch->IsPC())
 		return;
+	const DWORD pid = ch->GetPlayerID();
+	std::unordered_map<DWORD, std::string>::iterator it = s_playerLanguage.find(pid);
+	// MT2009_PLUS_LANGUAGE_DEFAULT_V1: "default" (NULL, ""): back to the server's default (player.language NULL).
+	if (!code || !*code || !strcmp(code, "default") || !strcmp(code, "auto") || !strcmp(code, "-"))
+	{
+		if (it == s_playerLanguage.end())
+			return;
+		s_playerLanguage.erase(it);
+		if (s_dbColumn)
+			DBManager::instance().Query("UPDATE player%s SET language = NULL WHERE id = %u", get_table_postfix(), pid);
+		return;
+	}
 	const std::string lang = Normalize(code);
 	if (lang.empty())
 		return;
-	const DWORD pid = ch->GetPlayerID();
-	const std::string before = GetPlayerLanguage(ch);
-	if (lang == POLISH)
-		s_playerLanguage.erase(pid);
-	else
-		s_playerLanguage[pid] = lang;
-	if (before != lang && s_dbColumn)
+	// An explicit choice is kept even when it is the default's language (Polish included): a later change of the
+	// server's default does not move this player.
+	if (it != s_playerLanguage.end() && it->second == lang)
+		return;
+	s_playerLanguage[pid] = lang;
+	if (s_dbColumn)
 		DBManager::instance().Query("UPDATE player%s SET language = '%s' WHERE id = %u", get_table_postfix(), lang.c_str(), pid);
 }
 
 void Mt2009LanguageOnEnterGame(LPCHARACTER ch)
 {
-	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot() || !s_dbColumn)
+	if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
 		return;
 	const DWORD pid = ch->GetPlayerID();
-	std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery("SELECT language FROM player%s WHERE id = %u", get_table_postfix(), pid));
-	if (!msg || msg->uiSQLErrno != 0)
+	std::string lang;
+	if (s_dbColumn)
 	{
-		if (msg && msg->uiSQLErrno == 1054)
+		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery("SELECT language FROM player%s WHERE id = %u", get_table_postfix(), pid));
+		if (!msg || msg->uiSQLErrno != 0)
 		{
-			// The migration (language.sql) has not run: Polish for all, no more questions.
-			s_dbColumn = false;
-			sys_err("MT2009_LANGUAGE: player.language is missing (language.sql) - languages are not kept");
+			if (msg && msg->uiSQLErrno == 1054)
+			{
+				// The migration (language.sql) has not run: the server's default for all, no more questions.
+				s_dbColumn = false;
+				sys_err("MT2009_LANGUAGE: player.language is missing (language.sql) - languages are not kept");
+			}
 		}
-		return;
+		else
+		{
+			SQLResult* res = msg->Get();
+			MYSQL_ROW row = res && res->uiNumRows > 0 ? mysql_fetch_row(res->pSQLResult) : NULL;
+			// NULL / '': never chosen - the server's default (MT2009_PLUS_LANGUAGE_DEFAULT_V1).
+			lang = row && row[0] ? Normalize(row[0]) : std::string();
+			if (lang.empty())
+				s_playerLanguage.erase(pid);
+			else
+				s_playerLanguage[pid] = lang;
+		}
 	}
-	SQLResult* res = msg->Get();
-	MYSQL_ROW row = res && res->uiNumRows > 0 ? mysql_fetch_row(res->pSQLResult) : NULL;
-	const std::string lang = row && row[0] ? Normalize(row[0]) : std::string();
-	if (lang.empty() || lang == POLISH)
-		s_playerLanguage.erase(pid);
 	else
-		s_playerLanguage[pid] = lang;
+	{
+		std::unordered_map<DWORD, std::string>::const_iterator it = s_playerLanguage.find(pid);
+		if (it != s_playerLanguage.end())
+			lang = it->second;
+	}
+	// MT2009_PLUS_LANGUAGE_DEFAULT_V1: the client learns the server's default and the player's own choice ("-": none);
+	// a client whose user never picked a language takes it for its own texts too (mt2009lang.OnServerLanguage in the
+	// client; an older client has no handler and ignores the command).
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "MT2009LANG %s %s", DefaultLanguage().c_str(), lang.empty() ? "-" : lang.c_str());
 }
 
 const char* Mt2009Translate(const char* lang, const char* polish)
@@ -1094,7 +1169,8 @@ void Mt2009LanguageCommand(LPCHARACTER ch, const char* argument)
 	one_argument(argument, arg, sizeof(arg));
 	if (!*arg)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "lang: %s (%s)", GetPlayerLanguage(ch), AvailableList().c_str());
+		ch->ChatPacket(CHAT_TYPE_INFO, "lang: %s%s, default %s (%s)", GetPlayerLanguage(ch),
+				Mt2009PlayerChoseLanguage(ch) ? "" : " (default)", DefaultLanguage().c_str(), AvailableList().c_str());
 		return;
 	}
 	if (!strcmp(arg, "reload") && ch->GetGMLevel() >= GM_IMPLEMENTOR)

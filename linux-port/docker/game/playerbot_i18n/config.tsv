@@ -6,10 +6,13 @@
 # DETECT               1: a whisper clearly in a catalog's language is answered in it
 #                         (and noted for 30 minutes), whatever the client said
 # FALLBACK             a line the catalog cannot translate whole: 0 said in Polish, 1 not said
+# The world's language - the shout / trade chat / over the bots' heads, a guild's chat
+# with nobody online - is the server's default, M2_DEFAULT_LANGUAGE in .env (Polish when
+# not set); a whisper is answered in the reader's own language.
 # PUBLIC_FOREIGN_PCT   share of the bots (0-100) that speak another language on the
-#                         shout / trade chat / over their heads; 0 = a Polish world
+#                         shout / trade chat / over their heads; 0 = all in the world's language
 # PUBLIC_NEED_PLAYERS  1: those bots speak the languages of the players online only
-#                         (and Polish while nobody of another language plays)
+#                         (and the world's language while nobody of another language plays)
 # LOG_MISSES           1: lines without a translation go to /opt/m2spool/playerbot_i18n_miss_<lang>.tsv
 ENABLED	1
 DETECT	1

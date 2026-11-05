@@ -1202,7 +1202,8 @@ function Get-DifficultyFromEnv {
     if ($level -notin @('easy', 'medium', 'hard', 'custom')) { $level = 'easy' }
     return @{ Level = $level; Biologist = $bio; Horse = $horse; Book = $book; BotBook = $botBook
         AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea; Arezzo = $arezzo
-        ExchangeCustom = $exchangeCustom; MonsterHp = $monsterHp; StarterKit = $starterKit }
+        ExchangeCustom = $exchangeCustom; MonsterHp = $monsterHp; StarterKit = $starterKit
+        Language = $(if (Get-ServerLanguageFromEnv) { Get-ServerLanguageFromEnv } else { 'pl' }) }
 }
 
 # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances by the level -
@@ -1228,6 +1229,105 @@ function Get-ExchangeChances {
     return , $out
 }
 
+# MT2009_PLUS_LANGUAGE_DEFAULT_V1 (the owner, 5 November 2026): the server's
+# default language, M2_DEFAULT_LANGUAGE in .env - every player plays in it
+# until he picks his own in the client's settings. Asked once before the first
+# start (GRAJ), before a VPS install, in the new-world window, and changed
+# later in the difficulty window ("Ustawienia świata"). The CLI writes .env
+# and gives the local client the same language unless its user chose one.
+function Get-ServerLanguageFromEnv {
+    $envPath = Join-Path $root 'linux-port\docker\.env'
+    if (Test-Path -LiteralPath $envPath -PathType Leaf) {
+        $m = [Regex]::Match([IO.File]::ReadAllText($envPath), '(?m)^M2_DEFAULT_LANGUAGE=(\S+)\s*$')
+        if ($m.Success) {
+            $code = ConvertTo-M2ServerLanguage $m.Groups[1].Value
+            if ($code) { return $code }
+        }
+    }
+    return ''
+}
+
+function New-ServerLanguageBox {
+    # A drop-down list of the languages ("Polski (pl)" ...), $Selected chosen.
+    param([string]$Selected = 'pl', [int]$X, [int]$Y, [int]$Width = 264)
+    $box = [Windows.Forms.ComboBox]::new()
+    $box.Name = 'serverLanguage'
+    $box.DropDownStyle = 'DropDownList'
+    $box.Location = [Drawing.Point]::new($X, $Y)
+    $box.Size = [Drawing.Size]::new($Width, 24)
+    $codes = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($language in @(Get-M2ServerLanguages)) {
+        [void]$box.Items.Add(('{0} ({1})' -f $language.Name, $language.Code))
+        $codes.Add($language.Code)
+    }
+    $box.Tag = $codes.ToArray()
+    $box.SelectedIndex = [Math]::Max(0, $codes.IndexOf("$Selected"))
+    return $box
+}
+
+function Get-ServerLanguageBoxValue {
+    param($Box)
+    $codes = @($Box.Tag)
+    return [string]$codes[[Math]::Max(0, $Box.SelectedIndex)]
+}
+
+function Get-ServerLanguageMarkerPath { return (Join-Path $root '.m2server-language') }
+
+function Show-ServerLanguageDialog {
+    # The question on its own (first start, VPS install): the chosen code or $null.
+    param([string]$Selected = '', [string]$Note = '')
+    if (-not $Selected) { $Selected = Get-ServerLanguageFromEnv }
+    if (-not $Selected) { $Selected = $(if ($script:Lang -eq 'en') { 'en' } else { 'pl' }) }
+    $dialog = [Windows.Forms.Form]::new()
+    $dialog.Text = 'Język serwera / Server language'
+    $dialog.Size = [Drawing.Size]::new(460, 250)
+    $dialog.StartPosition = 'CenterParent'
+    $dialog.FormBorderStyle = 'FixedDialog'
+    $dialog.MaximizeBox = $false
+    $dialog.MinimizeBox = $false
+    $info = [Windows.Forms.Label]::new()
+    $info.Text = ("Domyślny język serwera: w nim grają wszyscy gracze, dopóki sami nie wybiorą innego w ustawieniach klienta (Opcje - Język). Boty piszą w nim na krzyku i w handlu, a klient na tym komputerze uruchomi się w tym języku.`r`n" +
+        "The server's default language: every player plays in it until they pick another one in the client's settings.")
+    if ($Note) { $info.Text += "`r`n$Note" }
+    $info.Location = [Drawing.Point]::new(14, 12)
+    $info.Size = [Drawing.Size]::new(420, 104)
+    $dialog.Controls.Add($info)
+    $box = New-ServerLanguageBox -Selected $Selected -X 14 -Y 124 -Width 420
+    $dialog.Controls.Add($box)
+    $okButton = [Windows.Forms.Button]::new()
+    $okButton.Text = 'OK'
+    $okButton.Location = [Drawing.Point]::new(232, 164)
+    $okButton.Size = [Drawing.Size]::new(100, 32)
+    $okButton.DialogResult = [Windows.Forms.DialogResult]::OK
+    $dialog.Controls.Add($okButton)
+    $cancelButton = [Windows.Forms.Button]::new()
+    $cancelButton.Text = (T 'cancel')
+    $cancelButton.Location = [Drawing.Point]::new(338, 164)
+    $cancelButton.Size = [Drawing.Size]::new(96, 32)
+    $cancelButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
+    $dialog.Controls.Add($cancelButton)
+    $dialog.AcceptButton = $okButton
+    $dialog.CancelButton = $cancelButton
+    $result = $dialog.ShowDialog()
+    $code = Get-ServerLanguageBoxValue $box
+    $dialog.Dispose()
+    if ($result -ne [Windows.Forms.DialogResult]::OK) { return $null }
+    return $code
+}
+
+function Get-FirstStartServerLanguageArgs {
+    # Before the first GRAJ after this setting arrived: the question, once. The
+    # answer is remembered beside the launcher's settings; a cancelled window
+    # keeps what .env has (pl) and asks no more - the difficulty window changes it.
+    $marker = Get-ServerLanguageMarkerPath
+    if (Test-Path -LiteralPath $marker -PathType Leaf) { return @() }
+    $code = Show-ServerLanguageDialog
+    try { [IO.File]::WriteAllText($marker, $(if ($code) { $code } else { '-' })) } catch { }
+    if (-not $code) { return @() }
+    Write-LocalLog "Domyślny język serwera: $code"
+    return @('-ServerLanguage', $code)
+}
+
 function Show-DifficultyDialog {
     # Four presets as radio buttons and the hour counts custom reads; the
     # numbers are what the migrate service turns into the event flags at the
@@ -1248,7 +1348,7 @@ function Show-DifficultyDialog {
     param([hashtable]$Current)
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = (T 'difficultyDialog')
-    $dialog.Size = [Drawing.Size]::new(560, 748)
+    $dialog.Size = [Drawing.Size]::new(560, 782)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -1453,17 +1553,26 @@ function Show-DifficultyDialog {
     $monsterHpCheck.Size = [Drawing.Size]::new(516, 24)
     $monsterHpCheck.Checked = $monsterHpEasy
     $dialog.Controls.Add($monsterHpCheck)
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language.
+    $languageLabel = [Windows.Forms.Label]::new()
+    $languageLabel.Text = 'Domyślny język serwera (gracze bez własnego wyboru):'
+    $languageLabel.Location = [Drawing.Point]::new(18, $y + 352)
+    $languageLabel.Size = [Drawing.Size]::new(250, 22)
+    $dialog.Controls.Add($languageLabel)
+    $languageNow = $(if ($Current.Language) { [string]$Current.Language } else { 'pl' })
+    $languageBox = New-ServerLanguageBox -Selected $languageNow -X 270 -Y ($y + 348)
+    $dialog.Controls.Add($languageBox)
 
     $okButton = [Windows.Forms.Button]::new()
     $okButton.Text = (T 'apply')
-    $okButton.Location = [Drawing.Point]::new(332, $y + 360)
+    $okButton.Location = [Drawing.Point]::new(332, $y + 394)
     $okButton.Size = [Drawing.Size]::new(100, 32)
     $okButton.DialogResult = [Windows.Forms.DialogResult]::OK
     $dialog.Controls.Add($okButton)
 
     $cancelButton = [Windows.Forms.Button]::new()
     $cancelButton.Text = (T 'cancel')
-    $cancelButton.Location = [Drawing.Point]::new(438, $y + 360)
+    $cancelButton.Location = [Drawing.Point]::new(438, $y + 394)
     $cancelButton.Size = [Drawing.Size]::new(96, 32)
     $cancelButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($cancelButton)
@@ -1484,11 +1593,12 @@ function Show-DifficultyDialog {
     $flea = $fleaCheck.Checked
     $arezzo = $arezzoCheck.Checked
     $monsterHp = $(if ($monsterHpCheck.Checked -eq $monsterHpEasy) { "$($Current.MonsterHp)" } elseif ($monsterHpCheck.Checked) { 'easy' } else { 'default' })
+    $language = Get-ServerLanguageBoxValue $languageBox
     $dialog.Dispose()
     if ($result -ne [Windows.Forms.DialogResult]::OK) { return $null }
     return @{ Level = $chosen; Biologist = $bio; Horse = $horse; Book = $book; BotBook = $botBook
         AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea; Arezzo = $arezzo
-        MonsterHp = $monsterHp }
+        MonsterHp = $monsterHp; Language = $language }
 }
 
 function Show-FreshWorldDialog {
@@ -1501,7 +1611,7 @@ function Show-FreshWorldDialog {
     # @{ Exp; Drop; Yang; Hold; Starter } or $null.
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = 'Nowy świat - ustawienia na start'
-    $dialog.Size = [Drawing.Size]::new(560, 476)
+    $dialog.Size = [Drawing.Size]::new(560, 510)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -1610,6 +1720,17 @@ function Show-FreshWorldDialog {
     $dialog.Controls.Add($kitBox)
     $y += 34
 
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the new world's default language.
+    $languageLabel = [Windows.Forms.Label]::new()
+    $languageLabel.Text = 'Domyślny język serwera:'
+    $languageLabel.Location = [Drawing.Point]::new(18, $y + 10)
+    $languageLabel.Size = [Drawing.Size]::new(250, 22)
+    $dialog.Controls.Add($languageLabel)
+    $languageNow = Get-ServerLanguageFromEnv
+    $languageBox = New-ServerLanguageBox -Selected $(if ($languageNow) { $languageNow } else { 'pl' }) -X 270 -Y ($y + 6)
+    $dialog.Controls.Add($languageBox)
+    $y += 34
+
     # The boxes belong to "własne"; a preset says its own numbers.
     $sync = {
         $form = $this.FindForm()
@@ -1651,9 +1772,10 @@ function Show-FreshWorldDialog {
     $hold = $(if ($holdBox.Checked) { 1 } else { 0 })
     $starter = $(if ($starterBox.Checked) { 1 } else { 0 })
     $kit = $kitKeys[[Math]::Max(0, $kitBox.SelectedIndex)]
+    $language = Get-ServerLanguageBoxValue $languageBox
     $dialog.Dispose()
     if ($result -ne [Windows.Forms.DialogResult]::OK) { return $null }
-    return @{ Exp = $values.Exp; Drop = $values.Drop; Yang = $values.Yang; Hold = $hold; Starter = $starter; Kit = $kit }
+    return @{ Exp = $values.Exp; Drop = $values.Drop; Yang = $values.Yang; Hold = $hold; Starter = $starter; Kit = $kit; Language = $language }
 }
 
 function Get-LauncherFingerprint {
@@ -2998,7 +3120,9 @@ $playButton.Add_Click({
             if (-not (Select-ClientExecutable)) { return }
         }
     }
-    Start-LauncherAction -Action 'Start' -LaunchClient:$withClient
+    # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's language, asked once.
+    $languageArgs = @(Get-FirstStartServerLanguageArgs)
+    Start-LauncherAction -Action 'Start' -LaunchClient:$withClient -ExtraArgs $languageArgs
 })
 $dockerButton.Add_Click({ Start-LauncherAction -Action 'StartDocker' })
 $stopButton.Add_Click({
@@ -3768,8 +3892,11 @@ function Show-VpsDialog {
             ("Zainstalować ten świat na VPS {0}?`r`n`r`n- folder serwera pójdzie na VPS (około 100 MB, bez .env, kopii, logów i klienta),`r`n- VPS dostanie Dockera, plik wymiany (przy małej pamięci) i swój .env z losowymi hasłami,`r`n- pierwsza budowa trwa tam 15-40 minut - postęp w logu launchera; zamknięcie launchera jej nie przerywa,`r`n- konta admin i test dostaną nowe hasła (przycisk HASŁA KONT).`r`n`r`nKontynuować?" -f $vps.host),
             'Zainstaluj na VPS', 'YesNo', 'Question')
         if ($answer -ne [Windows.Forms.DialogResult]::Yes) { return }
+        # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the VPS world's default language.
+        $vpsLanguage = Show-ServerLanguageDialog -Note 'VPS: zmienisz go później w panelu zaawansowanym (Ustawienia serwera).'
+        if (-not $vpsLanguage) { return }
         $dialog.Close()
-        Start-LauncherAction -Action 'VpsInstall' -Yes
+        Start-LauncherAction -Action 'VpsInstall' -Yes -ExtraArgs @('-ServerLanguage', $vpsLanguage)
     })
 
     $buttons['update'].Add_Click({
@@ -4123,7 +4250,8 @@ $difficultyButton.Add_Click({
         }
     }
     $monsterHpPct = switch ("$($chosen.MonsterHp)") { 'easy' { '80' } 'default' { '100' } '' { '100' } default { "$($chosen.MonsterHp)".TrimEnd('%') } }
-    $features = "Auto Łowy $(if (-not $chosen.AutoHunt) { 'wyłączone' } elseif ($chosen.AutoHuntItem) { 'włączone (tylko po kupnie z ItemShop)' } else { 'włączone (dla każdego)' }), Towarzysz $(if ($chosen.Sidekick) { 'włączony' } else { 'wyłączony' }), Skrzynia Ucznia $(if ($chosen.Starter) { 'tak' } else { 'nie' }), Dom Towarowy $(if ($chosen.Flea) { 'włączony' } else { 'wyłączony' }), Moduł Arezzo $(if ($chosen.Arezzo) { 'włączony' } else { 'wyłączony' }), życie potworów $monsterHpPct%"
+    $languageWhat = $(foreach ($language in @(Get-M2ServerLanguages)) { if ($language.Code -eq $chosen.Language) { $language.Name } })
+    $features = "język serwera $languageWhat, Auto Łowy $(if (-not $chosen.AutoHunt) { 'wyłączone' } elseif ($chosen.AutoHuntItem) { 'włączone (tylko po kupnie z ItemShop)' } else { 'włączone (dla każdego)' }), Towarzysz $(if ($chosen.Sidekick) { 'włączony' } else { 'wyłączony' }), Skrzynia Ucznia $(if ($chosen.Starter) { 'tak' } else { 'nie' }), Dom Towarowy $(if ($chosen.Flea) { 'włączony' } else { 'wyłączony' }), Moduł Arezzo $(if ($chosen.Arezzo) { 'włączony' } else { 'wyłączony' }), życie potworów $monsterHpPct%"
     $answer = [Windows.Forms.MessageBox]::Show(
         "Ustawić poziom trudności: $what; $features - i zrestartować serwer teraz, aby zastosować? Baza i postęp botów pozostaną bez zmian.",
         'Poziom trudności', 'YesNoCancel', 'Question')
@@ -4135,7 +4263,8 @@ $difficultyButton.Add_Click({
         '-StarterChest', $(if ($chosen.Starter) { '1' } else { '0' }),
         '-FleaMarket', $(if ($chosen.Flea) { '1' } else { '0' }),
         '-Arezzo', $(if ($chosen.Arezzo) { '1' } else { '0' }),
-        '-MonsterHp', "$($chosen.MonsterHp)")
+        '-MonsterHp', "$($chosen.MonsterHp)",
+        '-ServerLanguage', "$($chosen.Language)")
     if ($answer -eq [Windows.Forms.DialogResult]::Yes) {
         Start-LauncherAction -Action 'SetDifficulty' -Yes -ExtraArgs $extra
     }
@@ -4302,7 +4431,8 @@ $worldBackupButton.Add_Click({
         '-RateYang', "$($fresh.Yang)",
         '-HoldBots', "$($fresh.Hold)",
         '-StarterChest', "$($fresh.Starter)",
-        '-StarterKit', "$($fresh.Kit)")
+        '-StarterKit', "$($fresh.Kit)",
+        '-ServerLanguage', "$($fresh.Language)")
 })
 $dbAccessButton.Add_Click({
     # In-process on purpose: an action would print through the log box and the

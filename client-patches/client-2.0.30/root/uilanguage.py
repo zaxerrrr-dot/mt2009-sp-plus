@@ -1,8 +1,9 @@
 # MT2009_PLUS_LANG_V1 - the language choice: the "Jezyk" tab of the Esc menu's "Opcje Gry" (uioptionstabs.py,
 # uisystem.GetOptionPage("lang")) and the "Language" button of the login screen (intrologin.py). One window for both:
 # a button per language of mt2009lang.Languages() (its own name), the chosen one marked.
-#   - a click saves the choice (game1.cfg LANGUAGE); in the game it also tells the server ("/lang <code>", the server's
-#     texts, bots and quests follow at once);
+#   - a click saves the choice (game1.cfg LANGUAGE, mt2009_language.cfg "user <code>": the user's own choice, which a
+#     server's default language never overrides - MT2009_PLUS_LANGUAGE_DEFAULT_V1); in the game it also tells the
+#     server ("/lang <code>", the server's texts, bots and quests follow at once);
 #   - the client's own texts, names and descriptions change at the next start: "Uruchom ponownie" starts the client
 #     again on an exe with app.Mt2009Restart (exe-src21), else the window asks the player to restart it.
 # Python 2.7 as the client has it; the texts are CP1250 escapes (mt2009lang translates them like any other).

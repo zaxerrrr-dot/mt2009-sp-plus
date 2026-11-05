@@ -5399,8 +5399,9 @@ if [ -s /opt/playerbot/runy_wykuwania.sql ]; then
 fi
 
 # MT2009_PLUS_LANGUAGE_V1 (the owner, 5 November 2026: the game in other languages): language.sql - player.player.language
-# (and player_deleted's), VARCHAR(4) DEFAULT 'pl': the language each player reads, set by the client's "/lang <code>"
-# (server-patches/language, mt2009_language.cpp). Idempotent (ADD COLUMN IF NOT EXISTS); before the cores.
+# (and player_deleted's), VARCHAR(4) NULL: the language each player chose with the client's "/lang <code>", NULL = the
+# server's default (M2_DEFAULT_LANGUAGE, MT2009_PLUS_LANGUAGE_DEFAULT_V1; the first version's NOT NULL 'pl' is turned
+# into NULL once) (server-patches/language, mt2009_language.cpp). Idempotent (ADD COLUMN IF NOT EXISTS); before the cores.
 if [ -s /opt/playerbot/language.sql ]; then
     if db < /opt/playerbot/language.sql; then
         echo "[playerbot-migrate] languages: language.sql applied"

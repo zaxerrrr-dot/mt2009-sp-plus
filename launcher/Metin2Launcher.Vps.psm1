@@ -822,7 +822,9 @@ function Install-M2Vps {
     # started, and its build read until it ends. The passwords it makes are
     # not printed here: the output of an action goes to launcher-logs, which
     # support bundles carry (Get-M2VpsAccounts shows them in the window).
-    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)][string]$ServerRoot)
+    # -Language: the world's default language (M2_DEFAULT_LANGUAGE, MT2009_PLUS_LANGUAGE_DEFAULT_V1) for
+    # vps-install.sh --language; '' lets the script keep an existing .env's and write pl into a new one.
+    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)][string]$ServerRoot, [string]$Language = '')
     Assert-M2VpsState -State $State
     Write-Host ('VPS: {0}@{1}:{2}, folder {3}' -f $State.user, $State.host, $State.port, $State.remoteDir)
     $machine = Test-M2VpsMachine -State $State
@@ -849,6 +851,8 @@ function Install-M2Vps {
     [void](Send-M2VpsServer -State $State -ServerRoot $ServerRoot)
     Write-Host 'Uruchamiam instalator na VPS (Docker, plik wymiany, .env, budowa w tle)...'
     $arguments = 'install --no-follow' + (Get-M2VpsInstallAddressArgument -HostName ([string]$State.host))
+    # Only a plain code reaches the remote command line.
+    if ("$Language" -match '^[a-z]{2}$') { $arguments += (' --language ' + $Language) }
     $start = Invoke-M2Vps -State $State -Command (Get-M2VpsScriptCommand -State $State -Arguments $arguments) -Stream -TimeoutSeconds 0
     if ($start.ExitCode -ne 0) {
         $why = ([string]$start.Error).Trim()

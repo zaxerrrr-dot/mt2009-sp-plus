@@ -13,8 +13,16 @@
 #                                list matches a formatted one; "Label: " + value by its label)
 #   T(pl, en)                    playerbot_lang.T: the language's text of a Polish / English pair
 #   LocalePath(path)             locale/pl/<file> -> locale/<language>/<file> when the language has it
-#   SetLanguage(code)            saves the choice (game1.cfg) and, in the game, tells the server ("/lang <code>")
-#   SendToServer()               "/lang <code>" - game.py at every entry into the game
+#   SetLanguage(code)            saves the user's choice (game1.cfg) and, in the game, tells the server ("/lang <code>")
+#   SendToServer()               "/lang <code>" - game.py at every entry into the game, only for a language the user
+#                                chose himself (else the server gives the player its default language)
+#   OnServerLanguage(def, own)   the server's "MT2009LANG <default> <own|->" at the entry: a client whose user never
+#                                chose a language takes the player's own one, else the server's default (game1.cfg,
+#                                at the next start)
+# MT2009_PLUS_LANGUAGE_DEFAULT_V1: who set game1.cfg's LANGUAGE is kept in mt2009_language.cfg beside it - "user <code>"
+# (the login screen / Options choice: it always wins) or "server <code>" (the server's default, or the launcher's for
+# the server it set up, may change it again). Without the file a language other than Polish counts as the user's (a
+# client set before the file existed).
 # Polish (the source) passes everything through unchanged. A change of language takes effect at the next start of the
 # client (the exe reads the names, descriptions and the codepage at start): Restart() starts it again on an exe with
 # app.Mt2009Restart, else the player is asked to.
@@ -28,6 +36,7 @@ except ImportError:
 	systemSetting = None
 
 SOURCE = "pl"
+ORIGIN_FILE = "mt2009_language.cfg"
 LIST_FILE = "locale/common/mt2009_languages.txt"
 TEXTS_FILE = "locale/%s/mt2009_texts.txt"
 CACHE_LIMIT = 6000
@@ -211,24 +220,99 @@ def _Save(code):
 		pass
 
 
+def _Open(path, mode):
+	try:
+		import __builtin__
+		return getattr(__builtin__, "old_open", open)(path, mode)
+	except Exception:
+		return open(path, mode)
+
+
+def _ReadOrigin():
+	"""("user" | "server", code) of mt2009_language.cfg, or (None, None)"""
+	try:
+		f = _Open(ORIGIN_FILE, "r")
+		try:
+			parts = f.read().split()
+		finally:
+			f.close()
+	except Exception:
+		return None, None
+	if len(parts) >= 2 and parts[0] in ("user", "server"):
+		return parts[0], parts[1].lower()
+	return None, None
+
+
+def _WriteOrigin(origin, code):
+	try:
+		f = _Open(ORIGIN_FILE, "w")
+		try:
+			f.write("%s %s\n" % (origin, code))
+		finally:
+			f.close()
+	except Exception:
+		pass
+
+
+def UserChose():
+	"""whether the language of game1.cfg is the user's own choice (not the server's default)"""
+	origin, code = _ReadOrigin()
+	if origin is not None:
+		return origin == "user"
+	# a client set up before mt2009_language.cfg existed: any language but Polish was somebody's choice
+	return _Configured() != SOURCE
+
+
 def SendToServer(code=None):
-	"""tell the server the player's language (the server's texts, bots and quests follow it)"""
+	"""tell the server the player's language (the server's texts, bots and quests follow it); without a code only
+	the user's own choice is sent - a client that never had one leaves the player on the server's default"""
+	if code is None:
+		if not UserChose():
+			return
+		code = ChosenLanguage()
 	try:
 		import net
-		net.SendChatPacket("/lang %s" % (code or ChosenLanguage()))
+		net.SendChatPacket("/lang %s" % code)
 	except Exception:
 		pass
 
 
 def SetLanguage(code, inGame=False):
-	"""save the choice for the next start; True when it differs from this run's language (a restart is needed)"""
+	"""save the user's choice for the next start; True when it differs from this run's language (a restart is
+	needed)"""
 	Language()
 	code = (code or SOURCE).lower()
 	_state["chosen"] = code
 	_Save(code)
+	_WriteOrigin("user", code)
 	if inGame:
 		SendToServer(code)
 	return code != _state["lang"]
+
+
+def _Normalize(code):
+	code = (code or "").strip().lower()
+	return {"cs": "cz", "el": "gr", "ar": "ae"}.get(code, code)
+
+
+def OnServerLanguage(default, own="-"):
+	"""MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's "MT2009LANG <default> <own|->" at the entry into the game. A client
+	whose user never chose a language takes the player's own language (chosen on another computer), else the server's
+	default, for its own texts at the next start. True when game1.cfg changed (the language window is shown then)."""
+	if UserChose():
+		return False
+	own = _Normalize(own)
+	target = own if own and own != "-" else _Normalize(default)
+	if not target or not _Usable(target):
+		return False
+	Language()
+	if target == _state["chosen"]:
+		_WriteOrigin("server", target)
+		return False
+	_state["chosen"] = target
+	_Save(target)
+	_WriteOrigin("server", target)
+	return target != _state["lang"]
 
 
 def Restart():

@@ -368,6 +368,9 @@ services:
       M2_BALATHOR_ON: "${M2_BALATHOR_ON:-1}"
       # Only said in the start log here; the migrate service is what acts on it.
       M2_DIFFICULTY: "${M2_DIFFICULTY:-easy}"
+      # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the server's default language (pl en de tr ro es it fr pt cz hu gr ae) - every
+      # player who never chose one in the client's settings, the bots' shout and trade chat (mt2009_language.cpp).
+      M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
       TZ: "${M2_TZ:-UTC}"
 
     ports:
@@ -440,6 +443,8 @@ services:
       M2_BRAND: "${M2_BRAND:-}"
       M2_CLIENT_NAME: "${M2_CLIENT_NAME:-}"
       M2_CLIENT_URL: "${M2_CLIENT_URL:-}"
+      # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the pages' language for a visitor who has not picked one (m2lang cookie).
+      M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
       # 180, not 45: r40250 gives a character four inventory pages. At 45 the
       # panel only looks at the first page and refuses to give an item to
       # anyone whose first page is full.
@@ -657,6 +662,8 @@ services:
       PLAYERBOTS_VERSION: "${M2_PLAYERBOTS_VERSION:-2.2.38}"
       # MT2009_PLUS_YOHARA_UPDATER_ON_V1: 0 = no release check and no changelog from GitHub.
       M2_UPDATE_CHECK: "${M2_UPDATE_CHECK:-1}"
+      # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the panel's language for a visitor who has not picked one (m2lang cookie).
+      M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
       TZ: "${M2_TZ:-UTC}"
     ports:
       # 7790 outside: 7789 is the browser bridge's port in this stack.
@@ -695,6 +702,9 @@ services:
       # The r40250 core signs the shop link with "GF9001"; only a core built
       # with another key needs this changed.
       M2_MALL_SAS_KEY: "${M2_MALL_SAS_KEY:-GF9001}"
+      # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the shop's language for a visitor who has not picked one (m2lang cookie, the
+      # character's own game language).
+      M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
       TZ: "${M2_TZ:-UTC}"
     ports:
       # MT2009_PLUS_ITEMSHOP_PUBLIC_V1: the ItemShop is the players' page (the in-game coin opens it on the

@@ -16,6 +16,10 @@ and commits.
 - Lookup per text: language tables → English → Polish with diacritics folded. A text missing in a language therefore
   shows English, never broken Polish.
 - Texts that differ only in numbers are translated once ("numeric templates").
+- Server default language (`MT2009_PLUS_LANGUAGE_DEFAULT_V1`, `M2_DEFAULT_LANGUAGE`): at the entry into the game the
+  server sends `MT2009LANG <default> <own|->`; a client whose user never chose a language (`mt2009_language.cfg` beside
+  `game1.cfg`: `user <code>` / `server <code>`) saves it to `game1.cfg` and shows it from the next start; `/lang` is sent
+  only for the user's own choice. The launcher writes the same two files for the local client.
 - Escapes inside TSV cells: `\t`, `\n`, `\\`.
 
 ## 2. Status at handoff (5 Nov 2026, catalog of the 3.0.15 client build, own-translation coverage)
