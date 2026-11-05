@@ -35,6 +35,7 @@
 #include "constants.h"
 #include "config.h"
 #include "char.h"
+#include "item.h"
 #include "playerbot_engine_compat.h"	// PlayerBotChangeGold (MT2009_PLUS_GOLD_CHANGE_FIX_V1)
 #include "char_manager.h"
 #include "desc.h"
