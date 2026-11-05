@@ -6,6 +6,8 @@
 --   Baek-Go (20018) from 15 - juices, Charyzma / Inspiracja Eksperta; Lekarstwo Iluzji and Zwyczajna Szata Aury
 --     (MT2009_PLUS_NPC_CRAFT_WINDOW_V1, cube.npc_okno.txt - before, quest talks);
 --   Yu-Hwan (20017) from 35 - juices, waters, belts (the belts at Mistrz 20082 are gone - not on the wiki);
+--     MT2009_PLUS_RUNY_WYKUWANIA_V1: and the Runy Wykuwania 2*..5* (cube.runy.txt; pl-wiki "Yu-Hwan": "Wytwarza Runy
+--     Wykuwania 2* i wyzej");
 --   Huahn-So (20022) from 55 - juices, waters, dews (the elixirs need items this world lacks).
 -- The text without diacritics; no literal ends with a Polish letter (qc).
 quest mikstury_okno begin
@@ -30,7 +32,7 @@ quest mikstury_okno begin
 		end
 
 		when 20017.chat."Wytwarzanie" with pc.get_level() >= 35 begin
-			mikstury_okno.open(20017, "Robie soki, wody i pasy.")
+			mikstury_okno.open(20017, "Robie soki, wody, pasy i Runy Wykuwania (z dwoch run - runa o gwiazdke wyzsza).") -- MT2009_PLUS_RUNY_WYKUWANIA_V1
 		end
 
 		when 20022.chat."Wytwarzanie mikstur" with pc.get_level() >= 55 begin

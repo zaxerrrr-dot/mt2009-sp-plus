@@ -5385,6 +5385,19 @@ ishop_once remote_call_50_prices "UPDATE common.itemshop_items SET price = 49 WH
 UPDATE common.itemshop_items SET price = 149 WHERE \`index\` IN (52, 53) AND vnum IN (72368, 72369) AND price = 59;" "could not set Enasir's ItemShop prices (MT2009_PLUS_REMOTE_CALL_V1)"
 fi
 
+# MT2009_PLUS_RUNY_WYKUWANIA_V1 (the owner, 5 November 2026: "dodaj wszystkie runy zgodnie z wiki"): runy_wykuwania.sql
+# (tools/runy/gen_runy.py) - Runy Wykuwania 79605-79659, 11 kinds x 1*..5*, the pl-wiki's names and flags. The crafting
+# window's chance bonus is game/cube_improve.txt, Yu-Hwan's upgrades game/cube.runy.txt, the 1* in Portowy Sklep Gaya
+# (quest ygaya), the 5* on Kolo Losu (kola-src/przedmioty.json). Those name these vnums - before the cores. Idempotent
+# (INSERT IGNORE).
+if [ -s /opt/playerbot/runy_wykuwania.sql ]; then
+    if db < /opt/playerbot/runy_wykuwania.sql; then
+        echo "[playerbot-migrate] Runy Wykuwania: runy_wykuwania.sql applied"
+    else
+        fail_step "Runy Wykuwania: runy_wykuwania.sql failed (MT2009_PLUS_RUNY_WYKUWANIA_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

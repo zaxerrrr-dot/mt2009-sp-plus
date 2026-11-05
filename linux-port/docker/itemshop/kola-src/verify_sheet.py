@@ -265,6 +265,24 @@ def main():
         m = mapping.get(s)
         if not m or not m.get('vnum'):
             errors.append('source %s has no vnum in przedmioty.json' % s)
+    # MT2009_PLUS_RUNY_WYKUWANIA_V1 (5 November 2026): the Runy Wykuwania are real items now (tools/runy/gen_runy.py,
+    # 79605-79659, five grades a kind) - a sheet's "5* Runa Wykuwania ..." is a 5* rune, never a stand-in again
+    RUNE_5 = {u'Pasów': 79609, u'Broni': 79614, u'Zbroi': 79619, u'Akcesoriów': 79629, u'Rękawic': 79654}
+    runes = 0
+    for s in srcs:
+        sname = (cfg['src_items'].get(s) or {}).get('name') or ''
+        if not sname.startswith(u'5* Runa Wykuwania '):
+            continue
+        runes += 1
+        m = mapping.get(s) or {}
+        want = RUNE_5.get(sname[len(u'5* Runa Wykuwania '):])
+        if want is None:
+            errors.append('source %s %s: a forging rune kind not in RUNE_5' % (s, sname))
+        elif m.get('vnum') != want or m.get('status') != 'ok':
+            errors.append('source %s %s: must be the 5* rune %d with status ok (now %s %s)'
+                          % (s, sname, want, m.get('vnum'), m.get('status')))
+    if runes != len(RUNE_5):
+        errors.append('the sheet has %d "5* Runa Wykuwania" sources, expected %d' % (runes, len(RUNE_5)))
     if db:
         vn = sorted({int(mapping[s]['vnum']) for s in srcs if mapping.get(s, {}).get('vnum')})
         sql = 'SELECT vnum FROM world.item_proto WHERE vnum IN (%s);' % ','.join(map(str, vn))

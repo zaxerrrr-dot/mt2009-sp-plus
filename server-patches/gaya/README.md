@@ -37,8 +37,8 @@ i pokazać, co trzeba dać” – jak na serwerach globalnych). Siedemnaście ed
 - `cube improve <komórka ekwipunku>` (−1: brak) – przedmiot „Podwyższ szansę”: tabela `locale/cube_improve.txt`
   (`vnum premia kategoria [npc,npc…]`, czytana przy pierwszym otwarciu okna i `/reload c`); działa na recepturę swojej
   kategorii (u wskazanych NPC), dodaje premię (do 100%), przy każdej próbie znika jedna sztuka (`Cube_make_window`,
-  `cube make`). Odpowiedź do klienta: `CubeImprove vnum premia kategoria`. Runy Wykuwania (79605–79659) – ich
-  przedmiotów jeszcze nie ma, linie w tabeli są zakomentowane;
+  `cube make`). Odpowiedź do klienta: `CubeImprove vnum premia kategoria`. Runy Wykuwania (79605–79659) – od
+  `MT2009_PLUS_RUNY_WYKUWANIA_V1` (5.11.2026, `tools/runy/gen_runy.py`) są przedmiotami i mają swoje 55 linii w tabeli;
 - kategoria receptury: linia `category N` (0 zbroje … 13 alchemia, jak globalne okno) albo z przedmiotu-wyniku;
 - `copy_attr 1` (receptura): wynik dostaje kamienie i bonusy pierwszego przedmiotu receptury (`CopyAllAttrTo`, jak
   ulepszenie) – Admirał Angmur (`game/cube.npc_okno.txt`); Seon-Pyeong (20091): jego wiersze rdzeń robi sam z zestawów

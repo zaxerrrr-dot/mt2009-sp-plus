@@ -34,7 +34,7 @@ quest ygaya begin
 		-- we have the same item, else ours of the wiki's name; left out (not in our world): B³êkitna Mikstura,
 		-- Rozszerzenie Ekwipunku, Karta Resetu, Szpula Kaszmiru, Œwiadectwo Zmiany, Torba Emocji,
 		-- Modlitwa Egzorcyzmu, Skrzyneczki Losu, Szk³o Handlu, Buty Wiatru (1d), Lizak Potêgi,
-		-- Karta Przetasowania, Anulacja Transmutacji, Zaczarowanie Przedmiotu+, Smoczy P³omieñ, Runy Wykuwania,
+		-- Karta Przetasowania, Anulacja Transmutacji, Zaczarowanie Przedmiotu+, Smoczy P³omieñ,
 		-- Zielona Smocza Fasola
 		-- Zaczaruj zwierzaka (55033, 2000 Gaya in row III as the wiki) came with the growth pets
 		-- (MT2009_PLUS_GROWTH_PET_SOURCES_V1, Yohara list 3.0.14 item 9), appended the same way
@@ -72,6 +72,10 @@ quest ygaya begin
 				{76013, 1, 1963}, {76014, 1, 1263}, {76010, 1, 171}, {39068, 1, 172},
 				{31265, 1, 52},     -- Zroszony M³ot (MT2009_PLUS_SERPENT_HOOD_V1)
 				{55033, 1, 2000},   -- Zaczaruj zwierzaka (MT2009_PLUS_GROWTH_PET_SOURCES_V1)
+				-- MT2009_PLUS_RUNY_WYKUWANIA_V1: the eleven 1* Runy Wykuwania (79605..79655, step 5) as the wiki's
+				-- column "Sloty 7-9": 10 Gaya, Zest. Broni / Zest. Zbroi / Prz. d. Zw. 30 Gaya (tools/runy/gen_runy.py)
+				{79605, 1, 10}, {79610, 1, 10}, {79615, 1, 10}, {79620, 1, 10}, {79625, 1, 10}, {79630, 1, 10},
+				{79635, 1, 30}, {79640, 1, 10}, {79645, 1, 30}, {79650, 1, 10}, {79655, 1, 30},
 			}
 		end
 

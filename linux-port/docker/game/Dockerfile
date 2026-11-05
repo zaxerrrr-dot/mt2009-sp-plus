@@ -2432,6 +2432,25 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-okno/cube.n
  && rm -rf /tmp/cube-okno \
  && echo "share: NPC crafting windows ($n recipes: Mistrz Chi, Tajemniczy Oltarz, Baek-Go, Admiral Angmur; MT2009_PLUS_NPC_CRAFT_WINDOW_V1)"
 
+# MT2009_PLUS_RUNY_WYKUWANIA_V1 (share; the owner, 5 November 2026: "dodaj wszystkie runy zgodnie z wiki"): cube.runy.txt
+# (tools/runy/gen_runy.py) - Yu-Hwan (20017) turns two Runy Wykuwania of one kind into one of the next grade (2*..5*,
+# 40%, 2/4/6/10 Gaya, 200 000..1 000 000 Yang - the pl-wiki's item pages); his window opens by quest mikstury_okno.
+# The runes' items: runy_wykuwania.sql (apply.sh); their chance bonus: cube_improve.txt above. No rune recipe before.
+COPY cube.runy.txt /tmp/cube-runy/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-runy/cube.runy.txt \
+ && ! grep -q 'MT2009_PLUS_RUNY_WYKUWANIA_V1' "$C" \
+ && ! grep -q -E '^reward[[:blank:]]+796([0-5][0-9])[[:blank:]]' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 44 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^reward[[:blank:]]+796[0-5][0-9][[:blank:]]+1' "$C")" -eq 44 \
+ && test "$(grep -c -E '^gaya[[:blank:]]+(2|4|6|10)[[:space:]]*$' "$A")" -eq 44 \
+ && test "$(grep -c -E '^796[0-5][0-9][[:blank:]]' /opt/metin2/share/locale/poland/cube_improve.txt)" -eq 55 \
+ && rm -rf /tmp/cube-runy \
+ && echo "share: Runy Wykuwania at Yu-Hwan ($n recipes; MT2009_PLUS_RUNY_WYKUWANIA_V1)"
+
 # MT2009_PLUS_YOHARA_CRACK_V1 (share): Statua Szczeliny Czasu and the first Time Rift dungeon (the owner, 14 October
 # 2026: only Zaklety Las for now; pl-wiki "Statua Szczeliny Czasu", "Zaklety Las (SZC)", "Erebu (SZC)", the six SZC
 # missions; Owsap v6.2.6 crack_dawnmist_dungeon for the spawns and the stages) - Zaklety Las (SZC) (404,

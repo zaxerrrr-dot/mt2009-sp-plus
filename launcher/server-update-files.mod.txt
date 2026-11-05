@@ -715,6 +715,10 @@ linux-port/docker/mariadb/playerbot/tytuly.sql
 linux-port/overlays/playerbot/src/game/src/remote_call.cpp
 linux-port/docker/game/src/server/game/src/remote_call.cpp
 linux-port/docker/mariadb/playerbot/remote_call.sql
+# MT2009_PLUS_RUNY_WYKUWANIA_V1 (tools/runy/gen_runy.py): Runy Wykuwania - the items runy_wykuwania.sql (apply.sh), the
+# upgrades at Yu-Hwan cube.runy.txt (game/Dockerfile); cube_improve.txt, quest/* and itemshop/* are listed above.
+linux-port/docker/mariadb/playerbot/runy_wykuwania.sql
+linux-port/docker/game/cube.runy.txt
 # MT2009_PLUS_FISHING_RENEWAL_V1 (server-patches/fishren): the new fishing minigame - the engine file pair with the
 # overlay (char.cpp / cmd.cpp above).
 linux-port/overlays/playerbot/src/game/src/fish_renewal.cpp
