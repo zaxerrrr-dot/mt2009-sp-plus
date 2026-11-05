@@ -148,6 +148,8 @@ namespace playerbot_lfg
 			{ "meley", { "meley", "schronienie meley", "meley" }, { "schronienia meley", "meley" } },
 			// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			{ "hydra", { "hydr`e", "statek", "hydr`e" }, { "hydry", "statku" } },
+			// MT2009_PLUS_BOT_EREBU_V1
+			{ "erebu", { "erebu", "jotuna", "thryma" }, { "erebu", "erebu" } },
 			{ "malpy1", { "ma`lpy", "`latwe ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy2", { "`srednie ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy3", { "trudne ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },

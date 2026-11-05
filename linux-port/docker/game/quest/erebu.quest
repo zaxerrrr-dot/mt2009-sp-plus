@@ -9,7 +9,10 @@
 --   * Zaklêty Las: kto by³ wylogowany na tej mapie d³u¿ej ni¿ 10 minut, wraca przed wejœcie do Œwi¹tyni Ochao (do
 --     Stra¿nika Œwi¹tyni na Zboczu Gautama - pl-wiki "Zaklêty Las"); kto stanie w naro¿niku Erebu na otwartej mapie,
 --     wraca na jej pocz¹tek.
--- Mapa jest na rdzeniu Yohary (game3) - boty tam nie wchodz¹, licz¹ siê ludzie z grupy.
+-- Mapa jest na rdzeniu Yohary (game3) - boty z grupy cz³owieka nie wchodz¹, licz¹ siê ludzie z grupy.
+-- MT2009_PLUS_BOT_EREBU_V1: w³asne wyprawy botów (playerbot_dungeon_runs.h, wiersz "erebu"): rdzeñ tworzy instancjê,
+-- oznacza j¹ flag¹ mt2009_dgrun, wpuszcza grupê i prosi o init (erebu_dgrun); bilet, odpoczynek i flagi p³aci rdzeñ.
+-- Flaga etapu "stage": 1 Bagjanamu, 2 Jotun Thrym (po Bagjanamu), 3 wygrana.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest erebu begin
 	state start begin
@@ -28,6 +31,18 @@ quest erebu begin
 		function inside()
 			local idx = pc.get_map_index()
 			return idx >= 353 * 10000 and idx < 354 * 10000 and pc.in_dungeon()
+		end
+
+		-- the first boss and the clock (the first person's login, or a bots' run - erebu_dgrun)
+		function init()
+			local c = erebu.cfg()
+			d.setf("init", 1)
+			d.setf("stage", 1) -- MT2009_PLUS_BOT_EREBU_V1
+			d.setf("start", get_global_time())
+			d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			d.spawn_mob(c.first, c.boss[1], c.boss[2])
+			d.notice("Erebu: Bagjanamu strze¿e drogi do Jotuna Thryma! Macie 30 minut.")
+			server_timer("erebu_tick", 60, d.get_map_index())
 		end
 
 		function finish(text)
@@ -159,6 +174,10 @@ quest erebu begin
 				pc.warp((c.base_x + c.out[1]) * 100, (c.base_y + c.out[2]) * 100, c.map)
 				return
 			end
+			-- MT2009_PLUS_BOT_EREBU_V1: a bot of a bots' run - the core paid its Kamieñ Driad and set its flags
+			if pc.is_playerbot() then
+				return
+			end
 			if pc.getf("erebu", "idx") ~= idx then
 				if not pc.is_gm() then
 					if pc.count_item(c.ticket) < 1 then
@@ -174,12 +193,7 @@ quest erebu begin
 			end
 			pc.unmount()
 			if d.getf("init") == 0 then
-				d.setf("init", 1)
-				d.setf("start", get_global_time())
-				d.setf("mt2009_keep_until", get_global_time() + c.keep)
-				d.spawn_mob(c.first, c.boss[1], c.boss[2])
-				d.notice("Erebu: Bagjanamu strze¿e drogi do Jotuna Thryma! Macie 30 minut.")
-				server_timer("erebu_tick", 60, d.get_map_index())
+				erebu.init()
 			end
 		end
 
@@ -202,6 +216,7 @@ quest erebu begin
 
 		when 6408.kill with erebu.inside() and d.getf("closed") == 0 begin
 			local c = erebu.cfg()
+			d.setf("stage", 2) -- MT2009_PLUS_BOT_EREBU_V1
 			d.notice("Bagjanamu pokonany. Ziemia dr¿y - Jotun Thrym nadchodzi!")
 			server_timer("erebu_spawn", c.boss_delay, d.get_map_index())
 		end
@@ -217,8 +232,11 @@ quest erebu begin
 		when 6192.kill with erebu.inside() and d.getf("closed") == 0 and d.getf("won") == 0 begin
 			local c = erebu.cfg()
 			d.setf("won", 1)
+			d.setf("stage", 3) -- MT2009_PLUS_BOT_EREBU_V1
 			d.setqf2("erebu", "end", get_global_time())
-			d.update_ranking("erebu", get_global_time() - d.getf("start"))
+			if d.getf("mt2009_dgrun") ~= 1 then
+				d.update_ranking("erebu", get_global_time() - d.getf("start"))
+			end
 			d.notice("Pokonaliœcie Jotuna Thryma!")
 			d.notice("Za 3 minuty wszyscy wróc¹ do Zaklêtego Lasu.")
 			server_timer("erebu_end", c.end_sec, d.get_map_index())
@@ -227,6 +245,16 @@ quest erebu begin
 		when erebu_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				erebu.finish(nil)
+			end
+		end
+
+		-- MT2009_PLUS_BOT_EREBU_V1: start wyprawy botów (playerbot_dungeon_runs.h): rdzeñ tworzy instancjê,
+		-- oznacza j¹ flag¹ mt2009_dgrun i prosi o init.
+		when erebu_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					erebu.init()
+				end
 			end
 		end
 

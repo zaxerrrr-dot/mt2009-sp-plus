@@ -170,6 +170,9 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the owner, 22 October (later): "Zmniejsz party do dwoch osob ... Party =
 		// jeden ninja + inna postac" - a fixed pair, both of it to call, to ask for and to go in.
 		{ "hydra", 110, 2, 2, 2, false },
+		// MT2009_PLUS_BOT_EREBU_V1: Erebu (353) - the quest's party of 5-8 from level 95, Bagjanamu 120 and Jotun Thrym
+		// 123 with his Uzdrowiciele: six called, five to go in (the quest's least), a Shaman that can heal always.
+		{ "erebu", 95, 6, 6, 5, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
