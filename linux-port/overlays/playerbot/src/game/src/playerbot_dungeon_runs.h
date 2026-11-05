@@ -561,7 +561,7 @@ namespace
 			TPlayerBotDgRunBot& rb, const TPlayerBotDgRun& run, DWORD dwNow);
 	// run -> (the objective's vid, chosen at) - MT2009_PLUS_BOT_YDG_TRAIN_V2
 	std::map<int, std::pair<DWORD, DWORD> > s_mapPlayerBotYdgSticky;
-	const DWORD PLAYERBOT_YDG_STICKY_MS = 5 * 60 * 1000;
+	const DWORD PLAYERBOT_YDG_STICKY_MS = 15 * 60 * 1000;	// V3: 5 min flipped the SZC walk midway
 	void UpdatePlayerBotYdgInside(TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow);
 	long long ChargePlayerBotYdgTicket(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
 	void NotePlayerBotYdgRunStart(const TPlayerBotDgRun& run);
@@ -1743,7 +1743,11 @@ namespace
 			LPCHARACTER mate = CountPlayerBotDgRunPack(run, ch, PLAYERBOT_DGRUN_PACK_NEAR, others, nearBy);
 			const bool hurt = ch->GetMaxHP() > 0 &&
 					(long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_LEADER_HOLD_HP;
-			const bool alone = others > 0 && nearBy < std::min(others, 2);
+			// MT2009_PLUS_BOT_YDG_TRAIN_V3: on the long walk to a far objective (the SZC cave's key spots, ~2 500 cells)
+			// the leader does not wait for the others - those far behind are put beside it (the party pass's catch-up).
+			LPCHARACTER farFocus = def.bKind == DGRUN_KIND_YDG && run.dwFocusVID ? CHARACTER_MANAGER::instance().Find(run.dwFocusVID) : NULL;
+			const bool walking = farFocus && DISTANCE_APPROX(farFocus->GetX() - ch->GetX(), farFocus->GetY() - ch->GetY()) > 10000;
+			const bool alone = others > 0 && nearBy < std::min(others, 2) && !walking;
 			if (!alone)
 				rb.dwHoldSince = 0;
 			else if (rb.dwHoldSince == 0)
