@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 nap)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 óra)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: %(b)d. szint.
 %d - %d obrażeń	%d - %d sebzés
 %d - rzadko 100 - jak w grze %d - czesto	%d - ritkán      100 - mint a játékban      %d - gyakran
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 %d%% Wola SungMa (WIT)	%d%% SungMa Akarata (ÉLE)
 %d%% na losowy bonus.	%d%% esély véletlenszerű bónuszra.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% esély a támadási sebzés kivédésére
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% esély az ellenfelek eltaposására 20 mp-ig
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% esély a halál elkerülésére és 30%% HP visszaállítására
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% esély, hogy a környező szörnyek mind téged támadnak (a bátorság köpenye)
 %d%% Średnie Obrażenia	%d%% Átlagos sebzés
 %d. miejsce	%d. hely
 %d. pusty	%d. üres
+%dx %s (dowolne z %d)	%dx %s (bármelyik a(z) %d közül)
 %dx (po %d)	%dx (á %d)
 %s %d - zostało %d	%s %d - hátravan %d
 %s (%d szt.)	%s (%d db)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Szint %d) - pid %d, pozíció (%d, %d), birodalom %d
 %s (Pozostały czas: %s)	%s (Hátralévő idő: %s)
 %s (co %d sek.)	%s (%d mp-enként)
+%s (inna mapa)	%s (másik térkép)
 %s (maks. %.1f)	%s (max. %.1f)
 %s (maks. %d)	%s (max. %d)
 %s (maks.)	%s (max.)
@@ -108,19 +114,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 (Kup wszystkie przedmioty tego typu)	(Az összes ilyen típusú tárgy megvétele)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Egyelőre nem használható - a következő Yohara-frissítéssel érkezik.)
 (Najedź myszką na ikonę)	(Vidd az egeret az ikon fölé)
+(brak klawisza - Esc, Skróty klawiszowe)	(nincs billentyű - Esc, Gyorsbillentyűk)
 (brak)	(nincs)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (a szűrő ki van kapcsolva - most mindent felveszel)
 (na koniu: %d)	 (lovon: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(legmagasabb szint, Hajóvédelem, teljes tapasztalatgömb).
 (nieznana)	 (ismeretlen)
 (od P)	 (P-től)
+(postac offline - brak podgladu skilli)	(a karakter offline - nincs képesség-előnézet)
 (poziom %d)	 (%d. szint)
+(puste)	(üres)
 (szansa %s%%)	 (esély %s%%)
 (ten bot nic jeszcze nie powiedzial)	(ez a bot még nem mondott semmit)
 (wybierz stworzenie)	(válassz lényt)
 (wybierz z listy)	(válassz a listából)
 (wybierz)	(válassz)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* FIGYELEM * Kísérleti opció![ENTER]A felület méretezési módja ronthatja[ENTER]a felület minőségét (grafikai elemek, betűtípus).[ENTER]A |cff8ab98ezöld|r szín azt jelenti, hogy a méretezés LEHET a legoptimálisabb.[ENTER]A |cffe57976piros|r szín azt jelenti, hogy a méretezés a játék[ENTER]lefagyásához vezethet.
++ Dodaj bonus	+ Bónusz hozzáadása
 + Dodaj przedmiot	+ Tárgy hozzáadása
 + Pkt umiejetn.	+ Képességpontok
 +%d Inteligencja	+%d Értelem
@@ -152,6 +162,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 +15 wartości ataku	+15 támadóérték
 +3% siły przeciwko kamieniom Metin	+3% erő a Metin kövek ellen
 +50% szansy na drop przez 2 godziny	   +50% dobási esély 2 órán át
++800 PŻ	+800 HP
 , PPM: dokładny filtr	, JKG: részletes szűrő
 , atak włączony	, támadás bekapcsolva
 - Czekaj cierpliwie na odpowiedź.	- Várj türelmesen a válaszra.
@@ -162,6 +173,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 - drugie miejsce od 31 poziomu konia	- második hely a ló 31. szintjétől
 - piętro %d	 - %d. emelet
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- szabad hely: olvass el egy lovas képességkönyvet
+-- Ninja Archer - skille P --	-- Ninja Archer - P képességek --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - P képességek --
+-- Sura BM - skille P --	-- Sura BM - P képességek --
+-- Sura WP - skille P --	-- Sura WP - P képességek --
 -- Szaman Healer - skille P --	-- Sámán Gyógyító - P képességek --
 -- Szaman Smok - skille P --	-- Sámán Sárkány - P képességek --
 -- Wojownik Body - skille P --	-- Harcos Test - P képességek --
@@ -171,17 +186,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 ... i %d więcej.	... és még %d.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...és még %d - a teljes lista a Drop wiki ablakban (az eszköztár oldalsávja).
 / - powtarza poprzednia komende	/ - megismétli az előző parancsot
+/a - dajemy komus dany lvl	/a - valakinek adott szintet adunk
 /a level - Zmienia lvl gracza	/a level - Megváltoztatja a játékos szintjét
 /b - ogloszenie w ramce	/b - hirdetmény keretben
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - egy időre letiltja a csevegést
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - letiltott csevegésű játékosok listája
 /dc - wyrzuca kogos z serwera	/dc - kidob valakit a szerverről
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...nem tudom...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...nem tudom...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...nem tudom...
 /gete - ...nie wiem...	/gete - ...nem tudom...
 /getq - ...nie wiem...	/getq - ...nem tudom...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - teleport a sivatagba
 /go s - teleport na Gore Sohan	/go s - teleport a Sohan-hegyre
+/go t - teleport do Doliny Orkow	/go t - teleport az Ork-völgybe
 /go tr - teleport do Lasu Duchow	/go tr - teleport a Szellemerdőbe
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - teleport a Vörös Erdőbe
 /go x y - przenosi do wspolrzednych x y	/go x y - az x y koordinátákra visz
@@ -190,13 +217,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 /horse_level - podnosi poziom konia	/horse_level - növeli a ló szintjét
 /horse_ride - przywoluje konia	/horse_ride - megidézi a lovat
 /inv - niewidzialnosc	/inv - láthatatlanság
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - több darab tárgyat ad hozzá
 /item - dodaje przedmiot	/item - tárgyat ad hozzá
 /kill - zabija gracza	/kill - megöli a játékost
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - a karakter szintjének módosítása
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - szörnyet vagy NPC-t idéz meg
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - sétasebesség
 /n - Wiadomosc na gorze ekranu	/n - Üzenet a képernyő tetején
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Megfigyelő mód
 /open - start eventu OX	/open - az OX esemény indítása
 /p - zamiana w potwora lub npc	/p - szörnnyé vagy NPC-vé alakít
@@ -214,12 +250,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - Megadott százalékkal növeli az EXP-t meghatározott időre
 /purge - usuwa potwory, npc itp z okolicy	/purge - eltávolítja a szörnyeket, NPC-ket stb. a környékről
 /r - przywraca wszystkie pkt energii i zycia	/r - visszaállítja az összes energia- és életpontot
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...nem tudom...
 /reset - resetuje PZ i PE	/reset - visszaállítja a HP-t és az SP-t
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - lovagi rang
+/set exp - dostajemy dana ilosc expa	/set exp - adott mennyiségű EXP-et kapunk
+/set gold - dostajemy dana ilosc Yang	/set gold - adott mennyiségű Yangot kapunk
+/set max_hp - zwieksza punkty zycia	/set max_hp - növeli az életerőpontokat
 /set max_sp - zwieksza punkty energii	/set max_sp - növeli az energiapontokat
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - megadott mennyiségű képességpontot ad hozzá
+/set_maxhp - doladowanie hp	/set_maxhp - HP feltöltése
 /set_maxsp - doladowanie pe	/set_maxsp - SP feltöltése
+/set_state information - ...nie wiem...	/set_state information - ...nem tudom...
+/set_state run - ...nie wiem...	/set_state run - ...nem tudom...
+/set_state start - ...nie wiem...	/set_state start - ...nem tudom...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Parancsnoklás P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Polimorfia P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - a ló 30. szintje
@@ -233,21 +284,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Sárkányisten Dühe
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Sárkány Kívánsága
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...nem tudom...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - valakinek adott képességet adunk P-re
 /ski 121 - Dowodzenie	/ski 121 - Parancsnoklás
 /ski 131 - Przywolaj Konia	/ski 131 - Ló megidézése
 /slow - spowalnia gracza	/slow - lassítja a játékost
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - elájítja a játékost
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - a játékost a GM-hez viszi
+/w - ilosc osob online	/w - online játékosok száma
 /warp - przenosi GM'a do gracza	/warp - a GM-et a játékoshoz viszi
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Havas sziget (GM-ek búvóhelye)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - teleport a GM-ek arénájába
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - előbb jobb gombbal kattintunk a szörnyre, majd beírjuk a parancsot, és a szörnynek 1 HP-ja lesz
+/xmas 0 - Dzien	/xmas 0 - Nappal
 /xmas 1 - Noc	/xmas 1 - Éjszaka
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Nappal
 /xmas_boom 1 - Noc	/xmas_boom 1 - Éjszaka
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - hó kikapcsolása
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - hó bekapcsolása
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - A zene kikapcsol
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Bekapcsol a karácsonyi dal
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - ünnep KI
 0 - nakarm peta	0 - etesd a kisállatot
 0 = bez granicy	0 = nincs korlát
 1 dzień	1 nap
+1 godz.	1 óra
 1 krok	1 lépés
+1* Runa Wyk. Akcesoriów	1* Kovácsoló Rúna: Kiegészítő
+1* Runa Wyk. Ks. Um.	1* Kovácsoló Rúna: Képességkönyv
+1* Runa Wyk. Poz. Prz.	1* Kovácsoló Rúna: Egyéb tárgy
+1* Runa Wyk. Prz. d. Zw.	1* Kovácsoló Rúna: Kedvenc-tárgy
+1* Runa Wyk. Rękawiczek	1* Kovácsoló Rúna: Kesztyű
+1* Runa Wyk. Zest. Broni	1* Kovácsoló Rúna: Fegyverszett
+1* Runa Wyk. Zest. Hełm.	1* Kovácsoló Rúna: Sisakszett
+1* Runa Wyk. Zest. Zbroi	1* Kovácsoló Rúna: Páncélszett
+1* Runa Wykuwania Broni	1* Kovácsoló Rúna: Fegyver
+1* Runa Wykuwania Pasów	1* Kovácsoló Rúna: Öv
+1* Runa Wykuwania Zbroi	1* Kovácsoló Rúna: Páncél
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normál. Azonnal életbe lép.
 1. Posterunek Myr	1. Myr őrhely
 1. dodany bonus +%d%%	1. hozzáadott bónusz +%d%%
@@ -257,15 +332,21 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25-ös csomag)
 100 Kamyków, Skrzynka Tajemnic, Zagadkowa Szkatułka,	   100 Kavics, Titkok Ládikája, Rejtélyes Szkatulya,
 100% szans na przeczytanie	100% esély az elolvasásra
 100% szans na ulepszenie.	100% esély a fejlesztés sikerére.
+2 godz.	2 óra
 2-12 liter lub cyfr!	2-12 betű vagy szám!
 25 kart królewskich dało nową Talię Królewską.	25 királykártya új Királypaklit alkotott.
 25% only	Csak 25%
+25-40 lvl	25-40. szint
 2x PD	2x tapasztalat
 3 Loch Pająków	3. Pókbarlang
 3 losowe bonusy podstawowe	3 véletlen alapbónusz
 3 metiny	3 Metin
+4 godz.	4 óra
+5 bossow	5 boss
+5% obrażeń będzie dodanych do PŻ	A sebzés 5%-a hozzáadódik a HP-hoz
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Kavics, Rejtélyes Szkatulya, Sárkánypénz utalvány (20),
 50% więcej doświadczenia	50%-kal több tapasztalat
+8 godz.	8 óra
 < 10 sek	< 10 mp
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	%d%% HP-t nyel el a viharkarom használatakor
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	%d%% HP-t nyel el a szellemcsapás használatakor
@@ -302,6 +383,7 @@ Ahtrin Wielki Mistrz	Ahtrin nagymester
 Ahtrin Wojownik	Ahtrin harcos
 Ahtrin Zwiadowca	Ahtrin felderítő
 Akcja:	Művelet:
+Akcje botow	Bot műveletek
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Az adatok betöltése folyamatban van. Próbáld újra később.
 Aktualny poziom: %s	Jelenlegi szint: %s
 Aktywna	Aktív
@@ -338,6 +420,8 @@ Alchemy	Alkímia
 Alchemy Grade:	Alkímia fokozat:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Az összes tárgy, amely nem fér el a felszerelésedben, a Vásárlási széfbe kerül. Szeretnéd folytatni?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Az összes |cFFFFFF99|h{}|r a felszerelésedbe vagy a Vásárlási széfbe kerül. Szeretnéd folytatni?
+Alt (przytrzymaj)	Alt (nyomva tartva)
+Alt + LPM	Alt + BEK
 Amal	Amal
 Amator Ninja	Amatőr nindzsa
 Amator Shaman	Amatőr sámán
@@ -358,6 +442,7 @@ Antymagia	Antimágia
 Anubis	Anubisz
 Anulacja Polimorfii Wierzchowca	Hátas Polimorfia Visszavonása
 Anulacja Transmutacji	Transzmutáció Visszavonása
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	A hátralévő műveletek megszakítva. Az elküldött törlések már végrehajtódhattak.
 Anuluj edycje	Szerkesztés megszakítása
 Anuluj misję	Küldetés megszakítása
 Appaloosa	Appaloosa
@@ -369,6 +454,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Elsősegélydoboz (IH) az Elv
 Apteczka strażników Zaklętego Lasu.	Az Elvarázsolt erdő őreinek elsősegély-készlete.
 Arahan Zodiaku	Zodiákus Arahan
 Arbuz	Görögdinnye
+Arena Pojedynków	Párbaj Aréna
+Arena pojedynkow	Párbaj aréna
 Argos (mrok)	Argosz (sötét)
 Argos (ogień)	Argosz (tűz)
 Arial	Arial
@@ -393,6 +480,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Nagy hatótávolságú támadás, el
 Atak krwawienia	Vérzéses támadás
 Atak magiczny	Mágikus támadás
 Atak magiczny/fizyczny %	Mágikus/fizikai támadás %
+Atak na Metiny	Támadás a Metinekre
 Atak na odległość	Távolsági támadás
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Forgó támadás három találati esélylyel és az ellenfél megmérgezésének esélyével. 
 Atak obszarowy walki wręcz	Közelharci területi támadás
@@ -411,6 +499,7 @@ Atak trzema ciosami pod rząd.	Támadás három egymást követő ütéssel.
 Atak umożliwiający ominięcie obrony przeciwnika.	Olyan támadás, amely átlépi az ellenfél védelmét.
 Atak w kilka celów	Támadás több célpontra
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Nagy hatótávolságú távolsági támadás, egy ellenfelet vagy több egymás mellett álló ellenfelet talál el.
+Atak z wierzchowca	Támadás hátasról
 Atak zasięgowy	Hatósugarú támadás
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Harc közben megtámadja a közeli szörnyeket villámokkal, amelyek sebzése megfelel az automatikus támadás sebzésének (újratöltési idő 15 mp).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Támadd az ellenségeket sárkányalakokkal.|Erősíti: Intelligencia (++), Ügyesség (pontosság) (+), karakterszint.
@@ -418,6 +507,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Középről támadja az ellenségeket.|Erősíti: Erő (++), Életerő (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Megtámadja a körülötted lévő ellenfeleket, esélye van elkábítani az ellenfelet.
 Atakuje wszystkich przeciwników wokół siebie.	Megtámadja a körülötted lévő összes ellenfelet.
+Atakujący (atak)	Támadó (támadás)
 Atrybut Błyskawicy	Villám tulajdonság
 Atrybut Błyskawicy|Efekt Omdlenia	Villám tulajdonság|Ájulás hatás
 Atrybut Piorunu	Villám tulajdonság
@@ -448,6 +538,7 @@ Auto Łowy: bojowiec wyłączony.	Auto Vadászat: harci ló mód kikapcsolva.
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Auto Vadászat: nincs hátralévő idő. Vedd meg az "Auto Vadászat (8h)" jegyet az ItemShopban, és használd a leltárból - az idő csak játék közben telik.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Auto Vadászat: nem lehet felszállni a lóra - vadászat gyalog tovább. Szállj fel magad (Ctrl+G), és a harci ló mód visszatér.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Auto Vadászat: nem tudok felszállni a lóra - %d másodpercenként próbálkozom, addig gyalog harcolok.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Auto vadászat: nem sikerült újra felszállni a hátasra elakadás után - a vadászat leállt.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Auto Vadászat: elakadás után nem sikerült újra felszállni a hátasra.
 Auto Łowy: nie udało się zapisać ustawień.	Auto Vadászat: a beállításokat nem sikerült elmenteni.
 Auto Łowy: podnoszenie jest wyłączone.	Auto Vadászat: a felvétel ki van kapcsolva.
@@ -467,24 +558,33 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Az automatikus ár inaktív. Az á
 Auto-obnizka ceny	Auto-árcsökkentés
 Auto-obnizka: %s - nowa cena %s	Auto-árcsökkentés: %s - új ár %s
 Auto-obnizka: -%d%% co %dh, min. %s	Auto-árcsökkentés: -%d%% %d óránként, min. %s
+Auto-obnizka: -%d%%/%dh	Auto-árcsökkentés: -%d%%/%dó
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Auto-árcsökkentés: 1-%d%%, 1-%d óránként, minimális ár legalább 1 Yang.
+Auto-obnizka: wyl.	Auto-árcsökkentés: ki
 Auto-obnizka: wylaczona	Auto-árcsökkentés: kikapcsolva
 Autologin: ponownie za %d s (próba %d)	Autologin: újra %d mp múlva (%d. próba)
 Automatyczne podnoszenie Yang.	Automatikus Yang-felvétel.
+Automatyczne zbieranie	Automatikus gyűjtés
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Automatikusan visszatölti az Mp-det. Kapacitás: 1.000.000 Mp.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Automatikusan visszatölti az Mp-det. Kapacitás: 100.000 Mp.
 Automatycznie regeneruje twoje PŻ. Objętość 1.000.000 PŻ.	Automatikusan visszatölti a TP-det. Kapacitás: 1.000.000 TP.
 Autopodnoszenie:	Automatikus felvétel:
 Autopoty	Auto italok
 Autospin - wygrane: %s	Autospin - nyeremények: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autospin leállt - a Szerencsekerék ki van kapcsolva.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autospin leállt - nincs válasz a szervertől.
+Autospin zatrzymany - obrót odrzucony.	Autospin leállt - a forgás elutasítva.
 Autospin zatrzymany.	Az Autospin leállt.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autospin: %d pörgetés, elköltött Sárkánypénz: %d, fő jutalmak: %d.
 Autospin: brak odpowiedzi.	Autospin: nincs válasz.
+Autospin: główna nagroda - zatrzymany.	Autospin: főnyeremény - leállt.
 Autospin: główna nagroda!	Autospin: fő jutalom!
+Autospin: koniec (%d obrotów).	Autospin: vége (%d forgás).
 Autospin: koniec.	Autospin: vége.
 Autospin: koło wyłączone.	Autospin: a kerék ki van kapcsolva.
 Autospin: obrót odrzucony.	Autospin: a pörgetést elutasították.
 Autospin: za mało SM.	Autospin: nincs elég Sárkánypénz.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin: nincs elég Sárkány Érme a következő forgáshoz.
 Autołowy	Auto Vadászat
 Autołowy (TEST)	Auto Vadászat (TESZT)
 Autołowy - szybki start/stop	Auto Vadászat - gyors indítás/leállítás
@@ -533,6 +633,7 @@ Best. Czl. Skor. Zodiaku	Zodiákus skorpióember szörny
 Best. Wężowy Miecznik	Kígyó kardforgató szörny
 Best. Wężowy Wojownik	Kígyó harcos szörny
 Best. Wężowy Łucznik	Kígyó íjász szörny
+Bestialski Fanatyk	Vad Fanatikus
 Bez bonusów podstawowych - jadeit nic nie dodaje	Alapbónuszok nélkül - a jade nem ad hozzá semmit
 Bez imienia (Zwój Imienia Buffi).	Név nélkül (Buffi névtekercs).
 Bez koloru	Szín nélkül
@@ -580,11 +681,13 @@ Biolog	Biológus
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	A Biológus állandó bónuszokat ad, a törölt lépés pedig nem állítható vissza.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	A Biológusnak nincs szüksége időre egy rossz minőségű minta elemzéséhez.
 Blad danych - sprawdz ID i ilosc.	Adathiba - ellenőrizd az ID-t és a mennyiséget.
+Blad danych - sprawdz PID i ilosc.	Adathiba - ellenőrizd a PID-et és a mennyiséget.
 Blad danych - sprawdz kwote.	Adathiba - ellenőrizd az összeget.
 Blad danych - sprawdz wartosc.	Adathiba - ellenőrizd az értéket.
 Blad danych.	Adathiba.
 Blad odpowiedzi serwera.	Hiba a szerver válaszában.
 Blad zapytania do bazy.	Hiba az adatbázis-lekérdezésben.
+Blad: %s	Hiba: %s
 Blad: nie mozna utworzyc marmuru.	Hiba: a márvány nem hozható létre.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Hiba: az újraindítási kérelmet nem sikerült elmenteni.
 Blade	Penge
@@ -592,8 +695,11 @@ Blok Ataku	Támadás blokkolása
 Blokada Konta	Fiók tiltása
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	A tiltás a fiókba való KÖVETKEZŐ bejelentkezéstől él - nem
 Blokada konta	Fióktiltás
+Blokada permanentna	Végleges tiltás
+Blokada tymczasowa	Ideiglenes tiltás
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	A rendezési zárolás csak a hátizsákban lévő tárgyra helyezhető.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Blokkolja a szerzett tapasztalatot. Ez a küldetések jutalmaira is vonatkozik. A hatás ideje alatt szerzett tapasztalat örökre elvész!
+Blokujący (czas trwania)	Blokkoló (időtartam)
 Bo Zodiaku	Zodiákus Bo
 Boczuś	Malacka
 Body	Test
@@ -623,6 +729,7 @@ Bonus vs Bossy	Bónusz Bossok ellen
 Bonus vs Bossy/Metiny	Bónusz Bossok/Metinek ellen
 Bonus vs Ludzie	Bónusz Emberek ellen
 Bonus vs Metiny	Bónusz Metinek ellen
+Bonus vs Nieumarli	Bónusz élőholtak ellen
 Bonus vs Orki	Bónusz Orkok ellen
 Bonus vs Potwory	Bónusz Szörnyek ellen
 Bonus vs Szaman	Bónusz Sámán ellen
@@ -671,9 +778,12 @@ Bossy	Bossok
 Bossy > Metiny > Moby	Főnökök > Metinek > Szörnyek
 Bossy > Moby > Metiny	Főnökök > Szörnyek > Metinek
 Bot	Bot
+Boty do spawnu	Idézendő botok
 Boty gildii	Céhbotok
 Boty nie maja jeszcze wyceny tego przedmiotu.	A botoknak még nincs árazásuk erre a tárgyra.
+Boty pisza na czacie	A botok írnak a chaten
 Boty w misji: %d / %d (od poziomu %d)	Botok a küldetésben: %d / %d (%d. szinttől)
+Boty zlomiarze	Roncsvadász botok
 Boty: %s z %s (razem %s)	Botok: %s / %s (összesen %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Botok: %d (céhből %d, bérelt %d), kért: %d
 Bow	Íj
@@ -683,6 +793,7 @@ Brak / >	Nincs / >
 Brak aktywnej misji albo limit został przekroczony.	Nincs aktív küldetés, vagy a korlátot túllépted.
 Brak aktywnej sesji	Nincs aktív munkamenet
 Brak aktywnej sesji.	Nincs aktív munkamenet.
+Brak bonusu albo powyżej %d	Nincs bónusz vagy %d felett
 Brak danych cenowych dla tego przedmiotu.	Nincs árdata ehhez a tárgyhoz.
 Brak danych do wyceny	Nincs adat az árazáshoz
 Brak danych o bonusach.	Nincs adat a bónuszokról.
@@ -729,8 +840,10 @@ Brakuje Yang na: %s (%s).	Nincs elég Yang ehhez: %s (%s).
 Brakuje ci Odłamków: %s.	Hiányoznak a Szilánkok: %s.
 Brakuje ci Suplementów: %s.	Hiányoznak a Kiegészítők: %s.
 Brakuje materiałów do rozwoju.	Hiányoznak a fejlesztéshez szükséges alapanyagok.
+Brakuje: %s	Hiányzik: %s
 Bransoleta z Turmalinu	Turmalin Karkötő
 Braz. Niedzw. Zodiaku	Zodiákus barna medve
+Brazowy Niedzwiedz	Barna Medve
 Brillant	Ragyogó
 Bronie	Fegyverek
 Browarnik	Italmester
@@ -745,6 +858,7 @@ Brązowa Chusta	Barna fejkendő
 Brązowa Chusta+	Barna fejkendő+
 Brązowa Farba	Barna Festék
 Brązowa Rosa	Barna Harmat
+Brązowa Wilcza Szata+(m)	Barna Farkas Köpeny+ (f)
 Brązowa Woda	Barna Víz
 Brązowe Płyty	Bronz Lemezek
 Brązowy Sok	Barna Lé
@@ -780,10 +894,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Áldás, amely azonnal 100 százalékra állítja vissza az Életpontjaidat és Energiapontjaidat. 2 percenként használható. Az újratöltési idő közös a Sebezhetetlenség és Érinthetetlenség főzetekkel.
 Błyskaw.	Azonnali
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Villámgyorsan örök nyugalomra küldi ellenségeit. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
+Błyszcząca	Ragyogó
 Błyszcząca Szata Aury	Ragyogó Aura Köntös
 Błąd serwera - spróbuj ponownie.	Szerverhiba - próbáld újra.
 Błąd zapytania.	Lekérdezési hiba.
 Błędne podanie kodu może skutkować	A hibás kód megadása
+C. Ratownik Plażowy+	Kék Strandmentő+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	A CPU TNL gyorsíthat egy gyengébb számítógépen.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Felület visszaállítása.
@@ -822,6 +938,7 @@ Charyzma Nowicjusza	Újonc Karizmája
 Chcesz zacząć grę?	El szeretnéd kezdeni a játékot?
 Chcesz zakończyć grę i otrzymać wygraną?	Befejezed a játékot, és átveszed a nyereményt?
 Chcesz zrealizować to pole?	Be szeretnéd váltani ezt a mezőt?
+Chciano botów: %d	Kért botok: %d
 Chciałeś %d szt., a tyle da się kupić.	%d db-ot szerettél volna, ennyit lehet megvenni.
 Chegal, Goliat Cienia	Chegal, árnyék góliát
 Chodząca Legenda	Járó Legenda
@@ -836,12 +953,14 @@ Chwilę...	Egy pillanat...
 Chwilę... spróbuj jeszcze raz.	Egy pillanat... próbáld újra.
 Cicha Klątwa	Néma Átok
 Ciekawski	Kíváncsi
+Ciemna Szata Proroka+(m)	Sötét Próféta Köpeny+ (f)
 Ciemność	Sötétség
 Cienie	Árnyékok
 Cieniolubny Liść	Árnyékkedvelő Levél
 Cienka Nić	Vékony Cérna
 Cienka Przędza	Finom Fonal
 Cienka Skóra	Vékony Bőr
+Ciepły Kaftan Zimowy+(m)	Meleg Téli Kabát+ (f)
 Ciągliwość	Rugalmasság
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Nehéz hegy tartós kőből. Bár lassabb, hatalmas csapásokat biztosít, és kiválóan alkalmas kemény páncélok átütésére.
 Ciężkie Pasy	Nehéz szíjak
@@ -865,6 +984,9 @@ Continue	Folytatás
 Costume	Jelmez
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Valami rosszul sült el. A tárgy biztonságban van Seon-Haenál - próbáld később.
 Create	Létrehozás
+Ctrl (przytrzymaj)	Ctrl (nyomva tartva)
+Ctrl + LPM	Ctrl + BEK
+Ctrl + PPM	Ctrl + JEK
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + JKG: mindet kivesz, Shift: mennyiség
 Ctrl + klik: kilka punktów naraz	Ctrl + kattintás: több pont egyszerre
 Ctrl + klik: odepnij	Ctrl + kattintás: leoldás
@@ -889,6 +1011,9 @@ Cyjanowy Sok	Ciánkék Lé
 Cyklop Kat (BŚ)	Küklopsz hóhér (Világboss)
 Cyklop Mag (BŚ)	Küklopsz mágus (Világboss)
 Cyklop Żołnierz (BŚ)	Küklopsz katona (Világboss)
+Cz. Królik K. Czarów+(m)	Fek. Varázs Nyuszi+ (f)
+Cz. Szata Faraona+ (m)	Fek. Fáraó Köpeny+ (f)
+Cz. Wojownik P.Księżyca+	Vörös Holdharcos+
 Czapka Jokera (k)	Joker sapka (n)
 Czapka Jokera (m)	Joker sapka (f)
 Czapka z Pomp. (czerw.)	Bojtos sapka (piros)
@@ -900,15 +1025,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	A pecsét varázsa megidézi hátasodat, a fenséges bengáli tigrist (szürke).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	A pecsét varázsa megidézi hátasodat, a fenséges bengáli tigrist (zöld).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	A pecsét varázsa megidézi hátasodat, a fenséges bengáli tigrist (arany).
+Czar. Szata Dokkaebi+(m)	Fek. Dokkaebi Köpeny+ (f)
+Czarna Lampa Lorda+	Fekete Lord Lámpa+
 Czarna Pantera	Fekete párduc
 Czarna Stal	Fekete Acél
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Fekete nyuszifüles sapka férfiaknak. Legalább egy véletlenszerű bónuszt ad.
 Czarna magia	Fekete mágia
 Czarnoksiężnik P. Wieży	Pokoli torony varázslója
 Czarny Barwnik	Fekete Festék
+Czarny Niedzwiedz	Fekete Medve
 Czarny Ork Zodiaku	Zodiákus fekete ork
 Czarny Rumak	Fekete csataló
 Czarny Skorpion	Fekete skorpió
+Czarny jak noc Ks. Wam.+	Éjfekete Vámpírherceg+
 Czarodziej Gnoll	Gnoll varázsló
 Czarodziej Stylu Małp	Majomstílus varázslója
 Czarownik Sch. Płn. W.	Menedék varázsló (Északi szél)
@@ -968,11 +1097,14 @@ Czekoladowy Amulet	Csokoládé Amulett
 Czempion	Bajnok
 Czempion %s	Bajnok %s
 Czer. Amazonka Zodiaku	Zodiákus vörös amazon
+Czer. Sweter Świąt.+ (m)	Vörös Ünn. Pulóver+ (f)
 Czer. Żeń-szeń (premium)	Vörös Ginzeng (prémium)
 Czerw. Duch Drzewa	Vörös fa szelleme
 Czerw. Duch Pniaka	Vörös tönk szelleme
+Czerw. Galowy Strój+ (m)	Vörös Díszruha+ (f)
 Czerw. Las Duchow	Vörös Szellemerdő
 Czerw. Tr. Pajak Zodiaku	Zodiákus vörös mérges pók
+Czerw. Zbr. Azraela+ (m)	Vörös Azrael Páncél+ (f)
 Czerwona Mikstura (W)	Vörös Ital (H)
 Czerwona Runa SungMa	Vörös SungMa Rúna
 Czerwona Smocza Łuska	Vörös Sárkány Pikkely
@@ -990,8 +1122,11 @@ Czerwony Kat Zodiaku	Zodiákus vörös hóhér
 Czerwony Mag Zodiaku	Zodiákus vörös mágus
 Czerwony Monokl	Vörös Monokli
 Czerwony Skorpion	Vörös skorpió
+Czerwony Smoczek	Vörös Sárkányka
+Czerwony Smoczy Rycerz+	Vörös Sárkánylovag+
 Czerwony Smoczy Róg	Vörös Sárkány Szarv
 Czerwony Sok	Vörös Lé
+Czerwony Toreador+	Vörös Torreádor+
 Czwartek	Csütörtök
 Czy chcesz cofnąć misję do poziomu 1?	Szeretnéd visszaállítani a küldetést az 1. szintre?
 Czy chcesz dokonać masowej sprzedaży?	Szeretnél tömeges eladást végrehajtani?
@@ -1001,7 +1136,7 @@ Czy chcesz kupić %s %s za %s?	Meg szeretnéd vásárolni: %s %s, ennyiért: %s?
 Czy chcesz kupić %s (szt. %d) za %s?	Szeretnéd megvásárolni: %s (%d db) ennyiért: %s?
 Czy chcesz naładować %d Animosfer?	Szeretnél %d Animoszférát feltölteni?
 Czy chcesz odesłać Enasira?	El szeretnéd küldeni Enasirt?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Szeretnéd megújítani %s Yangért a(z) %d Sárkányszellemet?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Megújítod %s Yangért: %d Sárkánylélek?
 Czy chcesz opuścić wojnę gildii?	Szeretnéd elhagyni a céhháborút?
 Czy chcesz otworzyć to pudło?	Kinyitod ezt a dobozt?
 Czy chcesz ożywić gracza %s?	Szeretnéd feléleszteni %s játékost?
@@ -1039,6 +1174,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Felveszi
 Czym jest Konto Premium?	Mi az a prémium fiók?
 Czysta esencja z serca najgłębszych źródeł.	Tiszta esszencia a legmélyebb források szívéből.
 Czyste zwoje (%s) w ekwipunku: %d	Üres tekercsek (%s) a leltárban: %d
+Czytanie bez opoznienia dnia	Olvasás napi késleltetés nélkül
+Czyściec Ognia	Tűz Purgatórium
 Czyśćiec Ognia	Tűz Purgatóriuma
 Część zestawów kostiumów (%d)	A jelmezszettek része (%d)
 Członek gildii %s jest teraz w grze.	A céh tagja, %s, most van játékban.
@@ -1128,6 +1265,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Adj hozzá egy Lelkikövet a cseréhez.
 Dodaj Księgę Umiejętności do wymiany.	Adj hozzá egy Készségkönyvet a cseréhez.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Adj a Gaya Bolthoz még egy helyet az értékes tárgyajánlatoknak, a bal oldali második sor első helyétől kezdve. Használd a Gaya Kikötői Boltban (Harcos Szobor az Új Kontinens kikötőjében).
+Dodaj do ulubionych	Hozzáadás a kedvencekhez
 Dodaj przedmiot do wymiany.	Adj hozzá egy tárgyat a cseréhez.
 Dodaj przedmioty do sklepu.	Adj tárgyakat a bolthoz.
 Dodaj punkt Sung Ma	Sung Ma pont hozzáadása
@@ -1152,14 +1290,19 @@ Dolina	Völgy
 Dolina Cyklopow	Küklopsz-völgy
 Dolina Cyklopów	Küklopszok Völgye
 Dolina Orkow	Orkok Völgye
+Dolina Orków	Ork-völgy
+Dolina Orków / Ognista Ziemia	Ork-völgy / Tüzes Föld
 Dom Aukcyjny	Aukciósház
 Dom Aukcyjny działa tylko w M1.	Az Aukciósház csak az M1-ben működik.
 Dom Aukcyjny jest wyłączony.	Az Aukciósház ki van kapcsolva.
 Dom Aukcyjny moze byc wylaczony.	Az Aukciósház ki lehet kapcsolva.
 Dom Aukcyjny: %s	Aukciósház: %s
+Dom Aukcyjny: %s - %s.	Aukciósház: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Aukciósház: egyszerre legfeljebb %d bónusz.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Aukciósház: a korábbi vásárlások még folyamatban vannak.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Aukciósház: próbáld újra egy pillanat múlva.
+Dom Towarowy	Áruház
+Dom Towarowy: %s	Áruház: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Áruház: a kijelölt ajánlatok vásárlása folyamatban.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Áruház: jelöld ki az ajánlatokat (négyzet az ajánlatnál), majd Mindent megvesz.
 Domyślna	Alapértelmezett
@@ -1207,6 +1350,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Tapasztalat +%(v)s%% lovaglás közben
 Doświadczenie +%d%%	Tapasztalat +%d%%
 Doświadczenie Czempiona : %.2f%%	Bajnok tapasztalat : %.2f%%
 Doświadczenie Czempiona: %s / %s	Bajnok tapasztalat: %s / %s
+Doświadczenie łącznie	Összes tapasztalat
 Doświadczenie: %d%%	Tapasztalat: %d%%
 Doświadczenie: %d%% (%d / %d)	Tapasztalat: %d%% (%d / %d)
 Doświadczenie: %s / %s	Tapasztalat: %s / %s
@@ -1215,10 +1359,15 @@ Drewniany Klucz	Fa Kulcs
 Drobny Kam. Przebudzenia	Apró Felébredés Köve
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Yohara értékes valutája. Csiszolj 30 Kavicsot a Harcos Szobornál az Új Kontinens kikötőjében (+0 és +3 közötti Szellemkővel és 15 000 Yanggal - 70% esély), és 3 Gayát kapsz. Fizethetsz vele a Gaya Kikötői Boltban, a készletkovácsoknál, a Kígyószobornál, a Titokzatos Oltárnál és Chi Mesternél. Más játékosokkal nem cserélhető.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Nefrittel és türkizzel díszített értékes gyűrű. Ad: +50% TP, +30% erő a szörnyek ellen, +20% támadási és varázslási sebesség, +10% max. TP és Mp.
+Drop Przedmiotow:	Tárgyzsákmány:
 Drop Yang	Yang-zsákmány
 Drop potwora %s:	%s szörny dropja:
 Drop przedmiotów +%d%%	Tárgydobás +%d%%
+Drop z bossów	Boss zsákmány
 Dropek Metinów	Metin Zsákmányoló
+Dropek medali	Érem zsákmány
+Dropek z M2	M2 zsákmány
+Dropek z M3	M3 zsákmány
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	A fenti beállítás második fele - külön esély, amelyet a Metin kő széttörésekor számol, a hagyományos szörny megölése helyett.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A három éberség könyv közül a második. Növelheti a tulajdonos karizmáját. Olvasás után a könyv eltűnik. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A három alakzatharc könyv közül a második. Növelheti a tulajdonos inspirációját. Olvasás után a könyv eltűnik. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
@@ -1258,6 +1407,7 @@ Dusza wojownika, obdarzona mocą.	Harcos lelke, erővel felruházva.
 Dusza Światła	Fény Lélek
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	A lelkeket a játék magától veszi a leltárból - elég, ha nálad vannak.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Párolt prémium ginzeng - az Erőteljes Hadiló egyetlen takarmánya (ló a 31. szinttől). Kattints jobb egérgombbal, hogy megetesd a megidézett lovat, vagy add oda a lónak. A Yohara szörnyeiből esik.
+Duzy Lysy Ork	Nagy Kopasz Ork
 Duża	Nagy
 Duży Skorpion	Nagy skorpió
 Dwigant Zodiaku	Zodiákus Dwigant
@@ -1288,14 +1438,17 @@ Dzik Zodiaku	Zodiákus vaddisznó
 Dziki General Zodiaku	Zodiákus vad tábornok
 Dziki Lucznik Zodiaku	Zodiákus vad íjász
 Dziki Moa (pieczęć)	Vad Moa pecsét
+Dziki Sluga	Vad Szolga
 Dziki Sluga Zodiaku	Zodiákus vad szolga
 Dziki Z. Piech. Zodiaku	Zodiákus vad gyalogos
+Dziki Zolnierz Piechoty	Vad Gyalogos Katona
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Ezzel a főzettel 3 játékóra alatt 150%-kal több tapasztalatot gyűjtesz. Nem kereskedhető.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Ezzel a pecséttel megidézheted az egyszarvút.
 Dzięki tej pieczęci możesz przywołać marę senną.	Ezzel a pecséttel megidézheted a lidércet.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Ezzel a pecséttel megidézheted a kedvencedet.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Ebből a pecsétből kikel Sheldon a tojásból.
 Dziękujemy za zgłoszenie!	Köszönjük a jelentést!
+Dziś	Ma
 Dzwon Anielski	Angyal harang
 Dzwon Arkt. Króla	Sarki király harang
 Dzwon Błk. Wiatru	Kék szél harang
@@ -1401,6 +1554,7 @@ Elit. Ork Zodiaku	Zodiákus elit ork
 Elit. Ork Zwiad. Zodiaku	Zodiákus elit ork felderítő
 Elita Atlantydy	Atlantisz elitje
 Elitarny Ezoteryczny Fanatyk	Elit Ezoterikus Fanatikus
+Elitarny Ork	Elit Ork
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	A focibajnokok emblémája. 6 órára ad: +50% EXP, +20% támadási sebesség, +20% varázslási sebesség, +35% mágikus és közelharci támadás, +10% max. HP, +10% max. SP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Kétszemélyes érzelmek (csók, paskolás) beleegyezés kérdezése nélkül.
 Emocje: nie	Érzelmek: nem
@@ -1439,6 +1593,7 @@ Event wielkanocny	Húsvéti esemény
 Event wlaczony	Esemény bekapcsolva
 Event wyłączony	Esemény kikapcsolva
 Eventy (bonus imperium)	Események (királyság bónusz)
+Eventy w dniu %s:	Események %s napon:
 Eventy wylaczone	Események kikapcsolva
 Ewoluować szatę za %s Yang i materiał?	Fejleszted a ruhát %s Yang és az anyag ellenében?
 Expimy razem	Együtt szintezünk
@@ -1447,6 +1602,7 @@ Ezot. Dreczyciel Zodiaku	Zodiákus ezoterikus kínzó
 Ezot. Fanatyk Zodiaku	Zodiákus ezoterikus fanatikus
 Ezot. Wojownik Zodiaku	Zodiákus ezoterikus harcos
 Ezoteryczne Drewno	Ezoterikus Fa
+Ezoteryczny Fanatyk	Ezoterikus Fanatikus
 Ezoteryczny Ostrzowiec	Ezoterikus pengefej
 FC Bawaria Hwang+ (k)	FC Bajorország Hwang+ (N)
 FC Bawaria Hwang+ (m)	FC Bajorország Hwang+ (F)
@@ -1465,6 +1621,8 @@ Fan	Legyező
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Végzetes halál szárnyai
 Filters History	Szűrők előzményei
+Filtr %d	Szűrő %d
+Filtr (%d)	Szűrő (%d)
 Filtr bonusów (prawy klik czyści)	Bónuszszűrő (jobb klikk törli)
 Filtr podnoszenia	Felvételi szűrő
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	A felvételi szűrő KI VAN KAPCSOLVA (Ctrl+Z) - most mindent felveszel.
@@ -1473,7 +1631,9 @@ Filtr podnoszenia: %s	Felvételi szűrő: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Felvételi szűrő: ennek a karakternek az Auto Vadászat tárgytípusai most a Z-re, az Auto Vadászatra és a Társra is érvényesek (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Felvételi szűrő: a(z) "%s" sablon betöltve.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Felvételi szűrő: a(z) "%s" típus szabályai elmentve (%d).
+Filtr rodzaju	Típusszűrő
 Filtr wyłączony - podnosisz wszystko.	A szűrő ki van kapcsolva - mindent felveszel.
+Filtry (%d)	Szűrők (%d)
 Filtry bonusow	Bónusz szűrők
 Fioletowa	Lila
 Fioletowa Rosa	Lila Harmat
@@ -1558,9 +1718,11 @@ Glodny Czarny Niedzwiedz	Éhes Fekete Medve
 Glodny Dzik	Éhes Vaddisznó
 Glodny Niebieski Alfa Wilk	Éhes Kék Alfa Farkas
 Glodny Niebieski Wilk	Éhes Kék Farkas
+Glodny Niedzwiedz	Éhes Medve
 Glodny Szary Wilk	Éhes Szürke Farkas
 Glodny Tygrys	Éhes Tigris
 Glodny Wilk	Éhes Farkas
+Glodny Zablakany Pies	Éhes Kóbor Kutya
 Gniazdo Sheldona	Sheldon fészke
 Gniewne Serce (pieczęć)	Dühös szív pecsét
 Gniewny Mini Alastor	Dühös mini Alastor
@@ -1584,6 +1746,7 @@ Gotowa do ewolucji u Theowahdana	Készen áll a fejlődésre Theowahdannál
 Gotowa za: %s	Kész ennyi idő múlva: %s
 Gotowe! Odbierz przedmiot	Kész! Vedd át a tárgyat
 Gotowy do użycia	Használatra kész
+Gotowy. Usuwane sa cale wybrane stosy.	Kész. A kijelölt halmok teljes egészében törlődnek.
 Gourou	Gourou
 Gra	Játék
 Gra beze mnie	Nélkülem játszik
@@ -1619,6 +1782,7 @@ Gruby Mini Kat (pieczęć)	Kövér Mini Hóhér (pecsét)
 Grudzień	December
 Grupa: %s	Csoport: %s
 Grupuj	Csoportosítás
+Grupy (PT)	Csoportok (PT)
 Gruszka	Körte
 Gwarancja Rzemiosła (Biżuteria)	Mesterségbiztosíték (Ékszer)
 Gwarancja Rzemiosła (Broń)	Mesterségbiztosíték (Fegyver)
@@ -1626,11 +1790,13 @@ Gwarancja Rzemiosła (Zbroja)	Mesterségbiztosíték (Páncél)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Mesterségbeli garancia, amelyet minden falu kovácsa tiszteletben tart. Használd egy tárgyon a fejlesztéséhez.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Mesterségbeli garancia, amelyet minden falu kovácsa tiszteletben tart. Használd egy tárgyon a fejlesztéséhez. 30. szintű fegyvereken nem működik. A tárgy megsemmisülhet.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Mesterségbeli garancia, amelyet minden falu kovácsa tiszteletben tart. Használd egy tárgyon a fejlesztéséhez. A tárgy megsemmisülhet.
+Gwardia Ognistego Smoka+	Tűzsárkány Gárda+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Heves csapás előre egy téglalap alakú területre.
 Gwiazda Nocy	Éj Csillaga\r\n
 Gwiazda Północy (PB)	Sarkcsillag (MV)
 Gwiazda Północy (SZC)	Sarkcsillag (IH)
 Gwiezdny Skarb	Csillagkincs
+Górnik	Bányász
 Górski Behemot	Hegyi behemót
 Góry Gromu	Mennydörgés-hegység
 Głowa Węża	Kígyófej
@@ -1650,9 +1816,11 @@ Handlarz Enasir	Enasir Kereskedő
 Handlarz Enasir (h)	Enasir kereskedő (h)
 Handlarz Zodiaku	Zodiákus kereskedő
 Handlarz nie jest zainteresowany tym przedmiotem.	A kereskedő nem érdeklődik ez iránt a tárgy iránt.
-Handluj z %s	Kereskedés vele: %s
+Handluj z %s	Kereskedés: %s
 Happy Hour	Happy Hour
 Helm	Sisak
+Helmy - Ninja	Sisakok - Ninja
+Helmy - Sura	Sisakok - Sura
 Helmy - Szaman	Sisakok - Sámán
 Helmy - Wojownik	Sisakok - Harcos
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1726,6 +1894,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	A Hwacha nem tölt
 Hwang	Hwang
 Hydra	Hydra
 I am the czempion! Punktacja: %d	Én vagyok a bajnok! Pontszám: %d
+ID Bota:	Bot ID:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR rangot az admin fiók legrégebbi karakterének.
 Ich liczba na event jest ograniczona.	Számuk eseményenként korlátozott.
 Id. Skrzynia Kolczyków	Tökéletes fülbevaló láda
@@ -1740,6 +1909,9 @@ Ile sztuk kupic:	Hány darabot vásárolsz:
 Ile sztuk kupic?	Hány darabot vásárolsz?
 Ile sztuk kupić:	Hány darabot vásárolsz:
 Ile sztuk kupić?	Hány darabot vásárolsz?
+Ile? %s	Mennyi? %s
+Ilosc: malejaco	Mennyiség: csökkenő
+Ilosc: rosnaco	Mennyiség: növekvő
 Ilość prób: - jedna, + najwięcej, ile się da.	Próbálkozások száma: - egy, + a lehető legtöbb.
 Ilość Ładunków: %d	Töltetek száma: %d
 Ilość śmierci	Halálok száma
@@ -1762,6 +1934,7 @@ Info o efekt.	Hatás infó
 Informacje	Információk
 Informacje o misji	Küldetés információ
 Informacje o sklepie	Bolt adatai 
+Inkub Płomieni+	Lángok Inkubusza+
 Inna Wroga Wytrzymałość	Az Ellenség Más Kitartása
 Inna postać już ma tą nazwę.	Egy másik karakter már használja ezt a nevet.
 Inne Mikstury	Egyéb italok
@@ -1816,6 +1989,7 @@ Inteligencja Sung Ma	Sung Ma Intelligenciája
 Inteligencja Sung Ma +%d	Sung Ma Intelligenciája +%d
 Item inserted into the shopping safebox.	A tárgy a vásárlási széfbe került.
 ItemShop	ItemShop
+Ja (GM)	Én (GM)
 Jabłko	Alma
 Jadeit Dymu	Füst Jáde
 Jadeit Mgły	Köd Jáde
@@ -1876,7 +2050,16 @@ Jazda Konna (Precyzja)	Lovaglás (Pontosság)
 Jazda Konna (Sura)	Lovaglás (Sura)
 Jazda Konna (Szaman)	Lovaglás (Sámán)
 Jazda Konna (Wojownik)	Lovaglás (Harcos)
+Jazda Konna (diabły)	Lovaglás (ördögök)
+Jazda Konna (insekty)	Lovaglás (rovarok)
 Jazda Konna (losowo)	Lovaglás (véletlen)
+Jazda Konna (mistycy)	Lovaglás (misztikusok)
+Jazda Konna (nieumarli)	Lovaglás (élőholtak)
+Jazda Konna (orki)	Lovaglás (orkok)
+Jazda Konna (potwory)	Lovaglás (szörnyek)
+Jazda Konna (pustynia)	Lovaglás (sivatag)
+Jazda Konna (półludzie)	Lovaglás (félemberek)
+Jazda Konna (zwierzęta)	Lovaglás (állatok)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Balathor egyik Sárkánytojása jeges hideget idéz! Összpontosítsátok rá a támadásokat.
 Jednoręczne	Egykezes
 Jedwab	Selyem
@@ -1897,12 +2080,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	Ha grafik
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Ha a HP-d 90% felett van, a megadott százalékkal kevesebb sebzést kapsz.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Ha a HP-d 90% felett van, x%-kal kevesebb sebzést kapsz.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Ha a HP-d 90%% felett van, %d%%-kal kevesebb sebzést kapsz.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Ha a bolt nem jelenik meg, ez a kliens még nem rendelkezik
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Ha ezt használod, kapsz egy erősítést, amellyel megidézheted Enasirt, és kereskedhetsz vele, mint a Vegyeskereskedővel (eladáskor az ár 10%-át vonja le). Időtartam: 7 nap. Legfeljebb 1000 napig hosszabbítható.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Ha ezt használod, kapsz egy erősítést, amellyel megidézheted Enasirt, és kereskedhetsz vele, mint a Vegyeskereskedővel (eladáskor az ár 10%-át vonja le). Időtartam: 7 nap. Legfeljebb 1000 napig hosszabbítható. A tárgy cserélhető más játékosokkal.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Ha ezt használod, kapsz egy erősítést, amellyel megidézheted Enasirt, hogy elérd a raktáradat. Időtartam: 7 nap. Legfeljebb 1000 napig hosszabbítható.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Ha ezt használod, kapsz egy erősítést, amellyel megidézheted Enasirt, hogy elérd a raktáradat. Időtartam: 7 nap. Legfeljebb 1000 napig hosszabbítható. A tárgy cserélhető más játékosokkal.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Ha te meghalsz, vagy a Kincs Goblin elpusztul, az expedíció kudarcot vall.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Ha grafikai problémád van, válaszd a 'Rendszerbeállítások' vagy a 'CONFIG.exe' lehetőséget
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Ha a fedett [5] szomszédos egy felfedett kártyával,
 Jin Bing (lód)	Jin Bing (jég)
 Jin Bing (mrok)	Jin Bing (sötét)
 Jin-Hee Zodiaku	Zodiákus Jin-Hee
@@ -1913,9 +2098,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Nyelv
 Język / Language	Nyelv / Language
 Język klienta: %s	A kliens nyelve: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Szerver nyelve: %s - a kliens újraindítás után vált nyelvet (Server language: after a restart).
 KRĘCI SIĘ...	FOROG...
 Kaftan Wężowy	Kígyó Kaftán
 Kaftan Wężowy (wykon.)	Kígyó Kaftán (készített)
+Kalendarz eventów	Eseménynaptár
+Kalendarz eventów: %s - %d	Eseménynaptár: %s - %d
 Kam. Pieczęci Sunga Mahi	Sung Mahi Pecsétkő
 Kamera filmowa - obrót w lewo	Filmkamera - forgatás balra
 Kamera filmowa - obrót w prawo	Filmkamera - forgatás jobbra
@@ -1926,6 +2114,7 @@ Kamera filmowa - w dół	Filmkamera - le
 Kamera filmowa - w górę	Filmkamera - fel
 Kamienie	Kövek
 Kamienie Duszy (0 = puste):	Szellemkövek (0 = üres):
+Kamienie Metin	Metin Kövek
 Kamienie Teleportacji: %d. Teleportować do: %s?	Teleportációs Kövek: %d. Teleportálsz ide: %s?
 Kamienie dusz	Lélekkövek
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Ősi rúnákkal ellátott kőtábla. Ismeretlen energiát sugároz.
@@ -1959,6 +2148,7 @@ Kamień Teleportacji	Teleport kő
 Kamień Teleportacji+	Teleport kő+
 Kamień Tygrysa	Tigris Kő
 Kamień Wzgórza	Domb köve
+Kamień Węglowy	Szénkő
 Kamień Wężowy	Kígyó Kő
 Kamień Wężowy+	Kígyó Kő+
 Kamień do Fundamentu+	Alapkő+
@@ -2079,6 +2269,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	A k�
 Kolejny boss za: %s	Következő főnök: %s múlva
 Kolejny cel	Következő cél
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Következő szint: %d hely, %s Yang, %d. karakterszinttől
+Kolekcja lochów	Kazamata gyűjtemény
+Kolekcja pól	Mezei gyűjtemény
 Kolia Jadeitu Dymu	Füst Jáde Függő
 Kolia Jadeitu Mgły	Köd Jáde Függő
 Kolia Jadeitu Nocy	Éj Jáde Függő
@@ -2378,6 +2570,7 @@ Koło Losu jest teraz wyłączone.	A Szerencsekerék jelenleg ki van kapcsolva.
 Koło Losu: brama otwarta - poziom %d!	Szerencsekerék: a kapu megnyílt - %d. szint!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Szerencsekerék: nyertél %s. A jutalom az ItemShop raktárban vár.
 Koło Losu: zdobywasz klucz (%d/%d).	Szerencsekerék: kulcsot szerzel (%d/%d).
+Koło Płomieni Nocy	Éjszakai Lángok Köre
 Koło Skrzydła Nocy	Éjszárny Kereke
 Koło Słonecznego Wilka	Napfarkas Kereke
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	A keréknek 16 mezője van, mindegyik 1/16 eséllyel. Minden pörgetés előtt a mezők újra kisorsolódnak.
@@ -2388,6 +2581,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	A ló megevett %(a)d L
 Krab Królewski	Királyrák
 Krab Pancerny Zodiaku	Zodiákus páncélos rák
 Krab Wojow. Zodiaku	Zodiákus harcos rák
+Kradziez PM	SP-lopás
+Kradziez PZ	HP-lopás
 Kradzież PE	SP-lopás
 Kraina Gigantow	Óriások földje
 Kraina Ognia	Tűz Földje
@@ -2424,14 +2619,18 @@ Krótki	Rövid
 Krótko	Rövid
 Kręty Klucz (PB)	Girbegurba Kulcs (MV)
 Kręty Klucz (SZC)	Girbegurba Kulcs (IH)
+Ksiegi umiejetnosci	Képességkönyvek
 Ksiegi zapomnienia	Feledés könyvei
 Ksiąg w oknie: %d (wymian: %d)	Könyvek az ablakban: %d  (cserék: %d)
 Książ. Odłamek Broni II	Hercegi Fegyver Szilánk II
 Książ. Odłamek Hełmu II	Hercegi Sisak Szilánk II
 Książ. Odłamek Zbroi II	Hercegi Páncél Szilánk II
 Książka Przebudzenia	Felébredés Könyve
+Książę Atlantydy+	Atlantisz Hercege+
+Książę Orientu (brąz.)+	Kelet Hercege (bronz)+
 Książę Piekielnej Wieży	Pokoli torony hercege
 Książę Śmierci P. Wieży	Pokoli torony halálhercege
+Książęcy	Hercegi
 Książęcy Efekt Zestawu	Hercegi szetthatás
 Książęcy Kowal Zestawu	Hercegi szettkovács
 Księga Absorpcji Życia	Életelnyelés Könyv
@@ -2495,6 +2694,7 @@ Księga: Burza Balathora	Könyv: Balathor Vihara
 Księga: Nieugiętość Balathora	Könyv: Balathor Rendíthetetlensége
 Księga: Wola Balathora	Könyv: Balathor Akarata
 Księgi	Könyvek
+Księgi Misji	Megbízáskönyvek
 Księgi Um. Pasywnych	Passzív képességek könyvei
 Księgi umiejętności	Készségkönyvek
 Księgi zapomnienia	Feledés könyvei
@@ -2510,7 +2710,10 @@ Kup część stosu	A halom egy részének megvásárlása
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Egy tárgyból a megadott darabszám megvásárlása, a legolcsóbbtól
 Kup tę ofertę	Ajánlat megvásárlása
 Kup wiele	Több vásárlása
+Kup wiele działa dla jednego przedmiotu.	A tömeges vásárlás egy tárgyra működik.
 Kup wszystkie zaznaczone oferty	Az összes kijelölt ajánlat megvásárlása
+Kup wybrane (%d	Kijelöltek vétele (%d
+Kup wybrane (0	Kijelöltek vétele (0
 Kup!	Vásárlás!
 Kupic %d ofert za lacznie %s?	Megveszel %d ajánlatot összesen %s értékben?
 Kupione - nowa oferta za %s.	Megvásárolva - új ajánlat %s múlva.
@@ -2520,11 +2723,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	%d / %d ajánlat megvásárolva: %d db, en
 Kupić %d szt. (ofert: %d) za %s?	Megveszel %d db-ot (ajánlatok: %d) ennyiért: %s?
 Kupić %s za %s Gaya?	Megveszed: %s, ennyiért: %s Gaya?
 Kupić %s za %s?	Megveszed: %s, ennyiért: %s?
+Kupić zaznaczone oferty: %d?	Megveszed a kijelölt ajánlatokat: %d?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Sárkánypénz utalvány (50), +100% dobási esély 2 órán át
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	20 Sárkánypénz értékű kupon. Kattints jobb egérgombbal, hogy jóváírd a fiókodon.
 Kupony	Kuponok
 Kupony SM	SM kuponok
 Kupony SM/Premium	SM/prémium kuponok
+Kupowanie mikstur	Bájitalok vásárlása
 Kupuja sie po kolei; blad przerywa zakupy.	Egymás után vásárol; hiba esetén a vásárlás megszakad.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Ezekből az Item Shopban megvásárolja, amit használ (frizurák nélkül). Nem költ: hozzájuk sem nyúl.
 Kursor nad postaciami	Kurzor a karakterek felett
@@ -2535,6 +2740,7 @@ Kwitnąca Brzoskwinia	Virágzó barackfa
 Kwitnące Kaki	Virágzó datolyaszilva
 Kwota (yang):	Összeg (Yang):
 Kwota SM:	SM összeg:
+Kwota Yang:	Yang összeg:
 Kwota:	Összeg:
 Kłopoty na Zboczu Gautama	Bajok a Gautama-lejtőn
 LPM: podnoszę tak / nie	BEG: felvétel igen / nem
@@ -2562,12 +2768,14 @@ Lekarstwo Iluzji	Illúzió Gyógyír
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Gyógyszer a Démonok rühességére. A küldetéshez szükséges tárgy.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Az élet leveleiből készült gyógyszer. Bevétele után azonnal regenerálódik a HP és az SP.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Könnyű Lépés (mozgási sebesség +%(v)s) %(d)d mp-ig a gyalogos támadás után (300 mp-enként)
+Lekki Strój Plażowy+ (m)	Könnyű Strandruha+ (f)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Könnyű és hajlékony bambuszhegy. Gyors és pontos lövésekhez ideális, a mozgékonyságot és gyorsaságot kedvelő íjászok használják.
 Lekkie jak Piórko	Tollkönnyű
 Leopardzik (7 dni)	Leopárdkölyök (7 nap)
 Level konia:	Ló szintje:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Bal mező: a tárgy, amely új kinézetet kap.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Bal mező: a hátas, amely új kinézetet kap.
+Lewy Shift	Bal Shift
 Leśna Wróżka	Erdei tündér
 Leże Smoka	Sárkány Odúja
 Licencja Najemnika	Zsoldos engedély
@@ -2578,18 +2786,22 @@ Liczba bonusów na kostiumie (co najmniej):	Bónuszok száma a jelmezen (legalá
 Liczba botów (3-16):	Botok száma (3-16):
 Liczba gier:	Játékok száma:
 Liczba online	Online létszám
+Liczba sztuk	Darabszám
 Liczba sztuk:	Darabszám:
 Liczba w ekwipunku	Mennyiség a felszerelésben
 Liczby	Számok
 Lider grupy	Csoportvezető
 Lilia: szansa na przedmioty +%d%%	Liliom: tárgydobás esélye +%d%%
 Liliowa Runa SungMa	Lila SungMa Rúna
+Limit Lvl: %d do %d	Szintkorlát: %d - %d
 Limit członków grupy: od %d do %d	Csoporttagok korlátja: %d és %d között
 Limit zakupów na konto: %d	Fiókonkénti vásárlási limit: %d
 Limit zakupów na minutę - dokończ za chwilę.	Percenkénti vásárlási korlát - fejezd be egy pillanat múlva.
 List Gończy	Körözési Plakát
 Lista GM jest pusta: nastepny start moze nadac	A GM lista üres: a következő indítás adhat
 Lista jest pusta.	A lista üres.
+Lista komend GM	GM parancslista
+Lista komend GM:	GM parancslista:
 Lista tytułów	Címlista
 Lista wyciszonych	Némítottak listája
 Lista znajomych	Barátlista
@@ -2597,6 +2809,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Az erőteljes t�
 Lizak Magii	Mágia Nyalóka
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Titokzatos összetételű, mágiával teli nyalóka. Ad: +50% TP, +20% támadási sebesség, +20% varázslási sebesség, +30% mágikus sebzés, +10% max. TP, +10% max. Mp. 7 napig hat.
 Liście Życia	Az Élet Levelei
+Loch / wyprawa	Kazamata / expedíció
 Loch Malp (latwy)	Majombörtön (könnyű)
 Loch Malp (normalny)	Majombörtön (normál)
 Loch Malp (trudny)	Majombörtön (nehéz)
@@ -2605,6 +2818,7 @@ Loch Pajakow V1	Pókbarlang V1
 Loch Pajakow V2	Pókbarlang V2
 Loch Pająków (1)	Pókbörtön (1)
 Loch Pająków V1	Pókbörtön V1
+Loch Polowy	Mezei Kazamata
 Lochy Yohary	Yohara börtönei
 Lod. Wiel. Zab. Zodiaku	Zodiákus jég nagy gyilkos
 Lodogóry 690 10169	Jéghegyek 690 10169
@@ -2698,12 +2912,14 @@ Maksimum	Legtöbb
 Maksymalnie	Legfeljebb
 Maksymalny	Maximális
 Mala liczba ofert - wycena orientacyjna	Kevés ajánlat - tájékoztató árazás
+Malpi Zolnierz	Majomkatona
 Maniak Cz. Wiat. Zodiaku	Zodiákus fekete szél mániákus
 Manu	Manu
 Mapa %d	%d. térkép
 Mapa (index):	Térkép (index):
 Mapa OX	OX térkép
 Mapa teleportacji - TAB	Teleport térkép - TAB
+Mapa Ślubna	Esküvői Térkép
 Mapa świata	Világtérkép
 Mapa: %s	Térkép: %s
 Mapy	Térképek
@@ -2825,14 +3041,20 @@ Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu
 Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów na 30. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).	Anyag, amely bizonyos valószínűséggel lehetővé teszi a 6. vagy 7. bónusz hozzáadását Seon-Haenál - 30. szintű tárgyakhoz. Egy szilánk 2% esélyt ad, egyszerre legfeljebb 10 (20%).
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29.	Anyag, amely növeli a 6. vagy 7. bónusz hozzáadásának esélyét Seon-Haenál. Tárgyszint: 0-29.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej.	Anyag, amely növeli a 6. vagy 7. bónusz hozzáadásának esélyét Seon-Haenál. Tárgyszint: 120 és felette.
+Materiały	Anyagok
 Materiały Rzemieślnicze	Mesterségi Anyagok
 Materiały ulepszeń	Fejlesztőanyagok
 Matowy Lód	Matt Jég
 Matowy Lód+	Matt Jég+
 Max PE: +%d	Maximális SP: +%d
+Max PM	Max SP
+Max PM %	Max SP %
+Max PZ	Max HP
+Max PZ %	Max HP %
 Max PŻ +2500 / +2000 / +1500	Maximális HP +2500 / +2000 / +1500
 Max PŻ: +%d	Maximális HP: +%d
 Max wytrzymalosc	Max. állóképesség
+Max. PŻ +%d	Max. HP +%d
 Max. poziom przedmiotu: %d	Tárgy max. szintje: %d
 Max. ulepszenie z +%d na +%d.	Max. fejlesztés +%d-ról +%d-ra.
 Mała Meley	Kis Meley
@@ -2840,9 +3062,11 @@ Mała Meley (pieczęć)	Kis Meley (pecsét)
 Mała Nemere	Kis Nemere
 Mała Nemere (pieczęć)	Kis Nemere (pecsét)
 Małe Błogosławieństwo	Kis Áldás
+Małpi Loch	Majom Kazamata
 Małpi Loch (trudny)	Majomtömlöc (nehéz)
 Małpi Loch (łatwy)	Majomtömlöc (könnyű)
 Małpi Loch (średni)	Majomtömlöc (közepes)
+Małpka	Majmocska
 Mały Aamon	Kis Aamon
 Mały Aamon (pieczęć)	Kis Aamon (pecsét)
 Mały Baashido	Kis Baashido
@@ -2994,7 +3218,7 @@ Min-Sun	Min-Sun
 Min. %d bonusów	Min. %d bónusz
 Min. Raise	Min. emelés
 Min. liczba bonusow:	Min. bónuszok száma:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: a tárgynak rendelkeznie kell ezzel a bónusszal, legalább X értékkel. Kattintás: Nincs / >.\nNincs / >: felveszi a tárgyat e bónusz nélkül, vele pedig csak X felett. Kattintás: Min.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: a tárgynak legalább X értékű bónusszal kell rendelkeznie. Kattintás: Nincs / >.\nNincs / >: felveszi a bónusz nélküli tárgyat, a bónuszost csak X felett. Kattintás: Min.
 Mineral	Érc
 Mini Azrael	Mini Azrael
 Mini Azrael (pieczęć)	Mini Azrael (pecsét)
@@ -3015,11 +3239,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Szórj sötét erőket, hogy sebezd az ellenségeket.|Erősíti: Intelligencia (++), Ügyesség (pontosság) (+), karakterszint.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Villámokat szórsz.|Erősíti: Intelligencia (++), Ügyesség (pontosság) (+), karakterszint.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Szórj talizmánokat, hogy sebezd az ellenségeket.|Erősíti: Intelligencia (++), Ügyesség (pontosság) (+), karakterszint.
+Misja %d	%d. küldetés
 Misja kart	Kártyaküldetés
 Misje Biologa	Biológus küldetései
 Misje dzienne	Napi küldetések
 Misje główne	Fő küldetések
 Misje poboczne	Mellékküldetések
+Misje polowania	Vadászküldetések
 Misje łowieckie	Vadászküldetések
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Míves kulcs, amely kinyitja a víznimfa ládáját. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
 Mistrz Ahtrin	Ahtrin mester
@@ -3033,6 +3259,8 @@ Mistrz Włóczni Ki	Ki lándzsamester
 Mistrz Włóczni Mao	Mao lándzsamester
 Mistrz ekwipunku	Felszerelés Mestere
 Mistrz przepadnie.	 A mester szint elvész.
+Mistrz umiejętności	Képességmester
+Mistrzowska piłka nożna	Bajnoki Futball
 Mistrzowski Emblemat	Mester Embléma
 Mistyczna substancja ożywiająca florę i faunę lasu.	Misztikus anyag, amely új életet lehel az erdő növény- és állatvilágába.
 Mistykom	Misztikusok ellen
@@ -3045,6 +3273,7 @@ Mnich Milbon	Milbon szerzetes
 Mniej niz 1 min.	Kevesebb mint 1 perc.
 Mnoznik dropu przedmiotow	Tárgy drop szorzó
 Mnoznik dropu yang	Yang drop szorzó
+Moby 1 hit	Mobok 1 ütésre
 Moby > Bossy > Metiny	Szörnyek > Főnökök > Metinek
 Moby > Metiny > Bossy	Szörnyek > Metinek > Főnökök
 Moc Błyskawic	Villám ereje
@@ -3071,6 +3300,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Divatosan vágott haj, amely lehetővé teszi a sámánok számára, hogy kifejezzék a természetüket. Véglegesen megváltoztatja a karaktered frizuráját.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Divatosan vágott haj, amely lehetővé teszi a sámánok számára, hogy kifejezzék a természetüket. Véglegesen megváltoztatja a karaktered frizuráját.
 Moj cel	Saját célpont
+Moja postac	Saját karakterem
 Moje miejsca	Saját helyeim
 Mokre Szaty: szybkość ruchu -50	Nedves Ruha: mozgási sebesség -50
 Moloch	Moloch
@@ -3085,6 +3315,7 @@ Może schwytać karty: [1]	Elfoghatja a kártyákat: [1]
 Może schwytać karty: [1], [2]	Elfoghatja a kártyákat: [1], [2]
 Może schwytać karty: [1], [2], [3]	Elfoghatja a kártyákat: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Elfoghatja a kártyákat: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Elfoghatja a kártyákat: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Elfoghatja a kártyákat: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Néhány álmodozót leránthat a földre. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Możesz mieć najwyżej %d własnych kategorii.	Legfeljebb %d saját kategóriád lehet.
@@ -3117,10 +3348,12 @@ Można znać tylko jedną ripostę.	Csak egy riposztot ismerhetsz.
 Mroczna Paproć	Sötét Páfrány
 Mroczna Wieża	Sötét Torony
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	A sötét gömbnek %d%% esélye van az ellenfél kábítására
+Mrocznego Uderzenia	Sötét Ütés
 Mroczny Cierń	Sötét Tövis
 Mroczny Kat Zodiaku	Zodiákus sötét hóhér
 Mrok	Sötétség
 Mroz. Lod. Czl. Zodiaku	Zodiákus fagyos jégember
+Mrozny Lodowy Czlowiek	Fagyos Jégember
 Mroźna Skrz. Balathora	Balathor fagyosládája
 Mroźna Skrz. Balathora+	Balathor fagyos ládája+
 Mroźny Klucz (PB)	Fagyos Kulcs (MV)
@@ -3131,6 +3364,7 @@ Mroźny Rufus	Fagyos Rufus
 Mroźny Rufus (pieczęć)	Fagyos Rufus pecsét
 Mt2009	Mt2009
 Mumia Kapłanka	Múmia papnő
+Mundur Strażaka+(m)	Tűzoltó Egyenruha+ (f)
 Musisz go pokonać, by otrzymać nagrodę.	Le kell győznöd, hogy jutalmat kapj.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	A Tüzes Sárkánytojást át kell tolnod a másik oldalra.
 Myr Bojownik (wiatr)	Myr küzdő (szél)
@@ -3146,6 +3380,7 @@ Myr Prymus (wiatr)	Myr prímusz (szél)
 Myr Prymus (ziemia)	Myr prímusz (föld)
 Myr Weteran (wiatr)	Myr veterán (szél)
 Myr Weteran (ziemia)	Myr veterán (föld)
+Mój ranking	Saját rangom
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Úgy mondják, a láda tartalma ugyanolyan értékes, mint maga a láda.
 Młodszy Hazardzista	Ifjabb Szerencsejátékos
 Młody Moa (pieczęć)	Fiatal Moa pecsét
@@ -3191,6 +3426,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Nyomj meg egy billentyűt ehhez: %s
 Naczelny Hazardzista	Főszerencsejátékos
 Nadaj imię	Név adása
+Nadaj range	Rang adása
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	10 percre megadja a Sárkány Sámán G1 szintű buffjait 90 intelligenciával.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	10 percre megadja a Sárkány Sámán M1 szintű buffjait 90 intelligenciával.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	10 percre megadja a Sárkány Sámán P szintű buffjait 90 intelligenciával.
@@ -3218,7 +3454,9 @@ Nagrody są już odkryte.	A jutalmak már fel vannak fedve.
 Nagrody za tury	Fordulójutalmak
 Najbliższy	Legközelebbi
 Najczęściej zabijani	Leggyakrabban leölt
+Najdłuższa sesja	Leghosszabb munkamenet
 Najedź myszką na przedmiot, aby zobaczyć opis.	Vidd az egeret egy tárgy fölé a leírás megtekintéséhez.
+Najlepsza sesja (yang)	Legjobb munkamenet (yang)
 Najlepszy czas: %s	Legjobb idő: %s
 Najpierw dezaktywuj Relikt Duszy.	Előbb deaktiváld a Lélekereklyét.
 Najpierw dodaj eliksir.	Először adj hozzá egy elixírt.
@@ -3282,6 +3520,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Fejfedő az Arezzo szettből (Viking szett). A felvételtől számított 30 napig hat.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Fejfedő az Arezzo szettből (Aranyló szett). A felvételtől számított 30 napig hat.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Fejfedő az Arezzo-gyűjteményből (Arany Sárkány Készlet). Felvételtől számítva 30 napig érvényes.
+Nakładka na broń	Fegyver borítás
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Felület egykezes fegyverre (kard) - harcos, nindzsa, sura. A vásárlástól számított 30 napig hat.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Fegyverkinézet az Arezzo-gyűjteményből (Angyal Készlet): Nindzsa. Felvételtől számítva 30 napig érvényes.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Fegyverkinézet az Arezzo-gyűjteményből (Angyal Készlet): Sámán. Felvételtől számítva 30 napig érvényes.
@@ -3425,6 +3664,7 @@ Nazwa Postaci jest niepoprawna.	A karakter neve érvénytelen.
 Nazwa jest niewłaściwa.	A név nem megfelelő.
 Nazwa postaci jest identyczna jak nazwa konta.	A karakter neve megegyezik a fiók nevével.
 Nazwa pozycji (do %d znaków)	Pozíció neve (legfeljebb %d karakter)
+Nazwa presetu	Preset neve
 Nazwa przedmiotu	Tárgy neve
 Nazwa reguły	Szabály neve
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	A karaktered neve nem tartalmazhat különleges karaktereket.
@@ -3446,6 +3686,7 @@ Nic tu nie ma.	Itt nincs semmi.
 Nick:	Név:
 Nick: %s (pid: |cff5af22c%d|r)	Név: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Név: PLAYER_NAME
+Nie 1. atak	Nem 1. támadás
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Már nincs rá szükség: az NPC-kereső minden karakternél be van kapcsolva. | A világtérképen a címsorban lévő gombbal válts nézetet.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Nem szájhigiéniára szánták. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Nie jest składnikiem receptur ani ulepszeń.	Semmilyen recept vagy fejlesztés összetevője sem.
@@ -3539,6 +3780,7 @@ Nie widzisz jeszcze całej mapy.	Még nem látod a teljes térképet.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	%d tárgy nem lett kitéve - a bolt bezárult.
 Nie zaznaczono żadnej misji.	Nincs kijelölt küldetés.
 Nie znaleziono gracza.	A játékos nem található.
+Nie znaleziono moba/metina o takim ID.	Nem található mob/metin ilyen ID-vel.
 Nie znaleziono żadnych wypraw.	Nem található egyetlen expedíció sem.
 Niebiańska Tarcza	Mennyei Pajzs
 Niebiańska Tarcza nie może zostać nadana.	A Mennyei Pajzs nem adható meg.
@@ -3546,12 +3788,15 @@ Niebieska Mikstura (W)	Kék Ital (H)
 Niebieska Runa SungMa	Kék SungMa Rúna
 Niebieska Woda	Kék Víz
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Kék nyuszifüles sapka férfiaknak. Legalább egy véletlenszerű bónuszt ad.
+Niebieski Alfa Wilk	Kék Alfa Farkas
 Niebieski Barwnik	Kék Festék
 Niebieski Mały Smok	Kék kis sárkány
 Niebieski Mały Smok (pieczęć)	Kék Kis Sárkány (pecsét)
 Niebieski Skorpion	Kék skorpió
 Niebieski Sok	Kék Lé
+Niebieski Wilk	Kék Farkas
 Niebieski Wilk Zodiaku	Zodiákus kék farkas
+Niebieski Wzorowy Uczeń+	Kék Mintadiák+
 Niebieskie Jajo Smoka	Kék Sárkánytojás
 Niebieskie Pudło Zodiaku	Kék Zodiákus Doboz
 Niebieskie Zioło	Kék Gyógynövény
@@ -3578,6 +3823,7 @@ Nieprawidlowy nick	Érvénytelen név
 Nieprawidłowy kod koloru (np. #FF8800).	Érvénytelen színkód (pl. #FF8800).
 Nieprawidłowy limit czasu.	Érvénytelen időkorlát.
 Nieprzenikniony pancerz strażnika ognia.	A tűz őrének áthatolhatatlan páncélja.
+Niesmiertelnosc WYL	Halhatatlanság KI
 Nieudana	Sikertelen
 Nieugiętość Balathora	Balathor Rendíthetetlensége
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Balathor Rendíthetetlensége: ellenállás a hátralökéssel és a ledöntéssel szemben %d%%
@@ -3609,6 +3855,7 @@ Nieśmiertelność	Halhatatlanság
 Nigdy nie upadasz	Soha nem esel el
 Nikt jeszcze nie ma wyniku w tym sezonie.	Ebben az évadban még senkinek nincs eredménye.
 Nikt jeszcze nie ukończył tury.	Még senki nem teljesített fordulót.
+Ninja (Łuk)	Ninja (Íj)
 Ninja Armor	Nindzsa páncél
 Ninja Ostrze	Nindzsa Penge
 Ninja Łuk	Nindzsa Íj
@@ -3620,6 +3867,7 @@ Niszczyciel En-Tai (BŚ)	En-Tai pusztító (Világboss)
 Niszczyciel P. Wieży	Pokoli torony pusztítója
 Niszczyciel Zodiaku	Zodiákus pusztító
 Noc trwać będzie od 22:00 do 6:00.	Az éjszaka 22:00-tól 6:00-ig tart.
+Noc/snieg po 22:00	Éjszaka/hó 22:00 után
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normál
 Normalny Koń	Normál ló
@@ -3667,6 +3915,7 @@ Obowiązki gildii - panel lidera	Céhfeladatok - vezetői panel
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Sebz. Metinek/Bossok/MiniBossok +%.0f%%
 Obrazenia magiczne	Mágikus sebzés
 Obrazenia magiczne vs potwory	Mágikus sebzés szörnyek ellen
+Obrazenia umiejetnosci	Képességsebzés
 Obraż. sztyletów w potwory +%d	Tőrök sebzése a szörnyek ellen +%d
 Obraż. umiejętności	Képességsebzés
 Obrażenia %s +%s%%	%s sebzés +%s%%
@@ -3693,7 +3942,13 @@ Obrażenia przeciwko Metinom +%d%%	Sebzés a Metinek ellen +%d%%
 Obrażenia umiejętności	Képességsebzés
 Obrażenia umiejętności konnych +%(v)s%%	Lovas képességek sebzése +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Sebzés a Seungryong-völgyben +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	A Metin Kövekre mért sebzés +%d%% 5 mp-ig
+Obrażenia zwiększają się o %d%% na 10 sek.	A sebzés %d%%-kal nő 10 mp-ig
 Obrażenia/Obrona	Sebzés/Védelem
+Obrażenie Umiejętności: 10%	Képességsebzés: 10%
+Obrażenie Umiejętności: 3%	Képességsebzés: 3%
+Obrażenie Umiejętności: 5%	Képességsebzés: 5%
+Obrażenie Umiejętności: 7%	Képességsebzés: 7%
 Obrona %	Védelem %
 Obrona +%.0f	Védelem +%.0f
 Obrona +12~15%	Védelem +12~15%
@@ -3710,11 +3965,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Védelem az Ujjcsapás k�
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Védelem a Kardforgószél képesség ellen +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Védelem a Leshely képesség ellen +%.1f%%
 Obrona przed śr. obrażeniami	Védelem az átl. sebzés ellen
+Obrona przy Metinach	Védelem Metineknél
 Obrona vs Ninja	Védelem Nindzsák ellen
 Obrona vs Sura	Védelem Surák ellen
 Obrona vs Szamanom	Védelem Sámánok ellen
 Obrona vs Wojownikom	Védelem Harcosok ellen
 Obrońca	Védő
+Obrońca (obrona)	Védő (védelem)
 Obrońca Chmur	Felhők védelmezője
 Obrońca Stylu Małp	Majomstílus védelmezője
 Obrót %d/%s, wydano %d SM	%d/%s. pörgetés, elköltött Sárkánypénz: %d
@@ -3763,6 +4020,7 @@ Odbicie Walki. Wręcz	Közelharc visszaverése
 Odbicie ataku fizycznego: %.0f%%	Fizikai támadás visszaverése: %.0f%%
 Odbicie ciosu	Csapás visszaverése
 Odbicie pocisku	Lövedék visszaverése
+Odbierz GM...	GM elvétele...
 Odbierz nagrodę	Jutalom átvétele
 Odbierz nagrodę za turę	Fordulójutalom átvétele
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Vedd át a fordulójutalmat a Kincskeresés ablakban.
@@ -3786,6 +4044,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Átadod a tárgyat Seon-Haenak (esély 
 Oddelegowany Komendant	Kirendelt parancsnok
 Odebrac range GM postaci %s?	Elveszed a(z) %s karakter GM rangját?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Csak az aktuális forduló (%d) jutalmát veheted át.
+Odeslij boty	Botok visszaküldése
 Odkryta karta	Felfedett kártya
 Odnowa	Megújulás
 Odp. na Br. Dwuręczną	Ellenáll. Kétkezes fegy.
@@ -3801,12 +4060,16 @@ Odp. na Wiatr	Szél ellenáll.
 Odp. na Ziemię	Föld ellenáll.
 Odpały	Időzített tárgyak
 Odpały (Sekundy)	Időzített tárgyak (másodperc)
+Odpoczynek w miescie	Pihenés a városban
 Odpornosc na omdlenia	Ájulás-ellenállás
 Odpornosc na spowolnienie	Ellenállás a lassítással szemben
 Odpornosc na upadek	Ellenállás az eséssel szemben
+Odpornosc: Ninja	Ellenállás: Ninja
+Odpornosc: Sura	Ellenállás: Sura
 Odpornosc: Szaman	Ellenállás: Sámán
 Odpornosc: Wojownik	Ellenállás: Harcos
 Odpornosc: ataki fizyczne	Ellenállás: fizikai támadások
+Odpornosc: blyskawice	Ellenállás: villám
 Odpornosc: bron dwureczna	Ellenállás: kétkezes fegyver
 Odpornosc: cios krytyczny	Ellenállás: kritikus csapás
 Odpornosc: dzwony	Ellenállás: csengők
@@ -3815,8 +4078,12 @@ Odpornosc: ludzie	Ellenállás: emberek
 Odpornosc: magia	Ellenállás: mágia
 Odpornosc: miecze	Ellenállás: kardok
 Odpornosc: mrok	Ellenállás: sötétség
+Odpornosc: obrazenia umiejetnosci	Ellenállás: képességsebzés
+Odpornosc: ogien	Ellenállás: tűz
 Odpornosc: potwory	Ellenállás: szörnyek
 Odpornosc: przebicie	Ellenállás: átütés
+Odpornosc: srednie obrazenia	Ellenállás: átlagsebzés
+Odpornosc: strzaly	Ellenállás: nyilak
 Odpornosc: sztylety	Ellenállás: tőrök
 Odpornosc: trucizny	Ellenállás: mérgek
 Odpornosc: wachlarze	Ellenállás: legyezők
@@ -3845,6 +4112,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Ellenállás a Sötétséggel sz
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Ellenállás a Nindzsákkal szemben: csökkenti a Nindzsák által okozott sebzést.
 Odporność na Obrażenia Fizyczne: %d%%	Fizikai sebzéssel szembeni ellenállás: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Ellenállás a Tűzzel szemben (+%d%% az összértékből)
+Odporność na Ogień: 5%	Tűz ellenállás: 5%
 Odporność na Ognista Strzała	Ellenállás a Tüzes Nyíllal szemben
 Odporność na Przywołanie Błyskawicy	Ellenállás a Villámidézéssel szemben
 Odporność na Strzał	Ellenállás Nyíllal szemben
@@ -3867,6 +4135,7 @@ Odporność na ataki fizyczne %d%%	Fizikai támadások elleni ellenállás %d%%
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Ellenállás a kritikus csapással szemben: csökkenti a kritikus csapás miatt elszenvedett sebzést.
 Odporność na fizyczne obrażenia	Ellenállás a fizikai sebzéssel szemben
 Odporność na krytyczne	Kritikus találat elleni ellenállás
+Odporność na lód +5%	Jég-ellenállás +5%
 Odporność na lód, ziemię, ciemność	Jég, föld, sötétség elleni ellenállás
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Ellenállás a sötétséggel szemben: csökkenti bizonyos szörnyek által okozott sebzést.
 Odporność na obraż. umiej.	Képességsebzés ellenáll.
@@ -3883,6 +4152,7 @@ Odporność vs Ludziom	Ellenállás Emberek ellen
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Végleg elbocsátod a társat? Ez nem vonható vissza.
 Odrodz spawny	Megjelenési pontok újraindítása
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Teleportok közti idő: %d perc. Börtönök és eseménytérképek nélkül.
+Odswiez liste	Lista frissítése
 Odważny	Merész
 Odwołaj	Visszahív
 Odwołaj zwierzaka, zanim go zaczarujesz.	Hívd vissza a kisállatot, mielőtt elvarázsolod.
@@ -3939,6 +4209,7 @@ Ognista Runa Aury (10)	Tűz Aura Rúna (10)
 Ogniste Buty	Tűz Cipő
 Ogniste Jajo Smoka	Tüzes sárkánytojás
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	A tűzcsapásnak %d%% esélye van, hogy visszaverődik az ellenfélre
+Ognistej Strzały	Tüzes Nyíl
 Ognisty Duch Zodiaku	Zodiákus tüzes szellem
 Ognisty Duch Żaru (BŚ)	Tüzes parázsszellem (Világboss)
 Ognisty Golem Mag	Tüzes gólem mágus
@@ -3965,6 +4236,7 @@ Okaz. Odłamek Hełmu I	Pompás Sisak Szilánk I
 Okaz. Odłamek Hełmu II	Pompás Sisak Szilánk II
 Okaz. Odłamek Zbroi I	Pompás Páncél Szilánk I
 Okaz. Odłamek Zbroi II	Pompás Páncél Szilánk II
+Okazały	Pompás
 Okazały Efekt Zestawu	Pompás szetthatás
 Okazały Kowal Zestawu	Díszes szettkovács
 Okienko %s - %s, bonusy %d / %d	%s mező - %s, bónuszok: %d / %d
@@ -4022,6 +4294,7 @@ Osobisty Sklepik Premium	Személyes Prémium Bolt
 Ostatni boss	Utolsó főnök
 Ostatni drop: %s	Utolsó dobás: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Az utolsó vásárlás még befejeződhet.
+Ostatnia nagroda:	Utolsó nyeremény:
 Ostatnia sprzedaz botow: brak danych.	A botok utolsó eladása: nincs adat.
 Ostatnia strona	Utolsó oldal
 Ostatnie 7 dni	Utolsó 7 nap
@@ -4090,6 +4363,7 @@ Otrzymujesz: %s.	Kapsz: %s.
 Otrzymywane Obrażenia +%d%%	Kapott sebzés +%d%%
 Otrzymywane obrażenia +%.0f%%	Kapott sebzés +%.0f%%
 Otwarte skrzynie	Kinyitott ládák
+Otwarto skrzynek: %d.	Kinyitott ládák: %d.
 Otwarto: %d szt.	Kinyitva: %d db
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Megnyitja az utat a dicsőséghez és az erőhöz. 30 napra megadja a Prémium fiók összes előnyét.|A tárgy kereskedhető.
 Otwiera je ewolucja peta	A kisállat fejlődése nyitja meg
@@ -4108,6 +4382,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Nyisd ki a csomagot, és n
 Otwórz ponownie	Újranyitás
 Otwórz sklep	Bolt megnyitása
 Otwórz sklep ponownie	Bolt újranyitása
+Otwórz skrzynie	Nyiss ládákat
 Owoc Bogów	Az Istenek Gyümölcse
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Rang gyümölcs: +200 Rangpont (normál rang). 0 és 20 000 pont között működik. Az első rang (Vitéz) 21 000-től. Parancs: /rang.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Rang gyümölcs: +200 Rangpont a normál rangon felül. 20 000 (teljes normál rang) és 40 000 pont között működik. Parancs: /rang.
@@ -4206,6 +4481,7 @@ PB: Żołnierz Setaou	MV: Setaou katona
 PD czempiona	Bajnok EXP
 PD z potworów: %s / %s	EXP szörnyekből: %s / %s
 PD z przedmiotów: %s / %s	EXP tárgyakból: %s / %s
+PID bota:	Bot PID:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	LEGYŐZD A VILÁGFŐNÖKÖT (naponta egyszer)
 PPM - następny event	JKG - következő esemény
 PPM / dwuklik: wyjmij stos	JKG / dupla klikk: köteg kivétele
@@ -4238,9 +4514,12 @@ Pancerne Rękawice	Páncélozott Kesztyű
 Pancerny Hełm Dragona	Dragon Páncélsisak
 Pancerny Hełm Smoków	A Sárkányok Páncélsisakja
 Pancerz Czarnego Ognia	Fekete Tűz Páncél
+Pancerz Horroru+ (złoty)	Horror Páncél+ (arany)
 Pancerz Magmy	Magma Páncél
 Pancerz Zodiaku	Zodiákus Mellvért
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	A GM panel nem töltődött be ebben a kliensben - részletek a syserr.txt fájlban
+Panel botów (GM)	Bot panel (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	A panel BETA verzióban van. Ha hibát találsz
 Panterka (7 dni)	Kis párduc (7 nap)
 Pas Z Wężowej Skóry	Kígyóbőr Öv
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	A ló tapasztalatsávja tele van - próbáld meg az előléptetést.
@@ -4251,6 +4530,7 @@ Pasy	Övek
 Pasza dla Konia	Lótáp
 Pasza dla Konia w ekwipunku: %d	Lótáp a leltárban: %d
 Pazury Małpy	Majom Karmok
+Październik	Október
 Peleryny	Köpenyek
 Pelne PZ/PE	Teljes HP/SP
 Pergamin	Pergamen
@@ -4264,6 +4544,7 @@ Perły	Gyöngyök
 Pet	Kedvenc
 Pety	Kedvencek
 Pewne zmiany wymagają restartu gry, kontynuować?	Egyes módosítások a játék újraindítását igénylik, folytatod?
+Pełen werwy	Életerős
 Pełne EQ	Teli EQ
 Pełne doświadczenie - czas na rozwój.	Teljes tapasztalat - ideje fejleszteni.
 Pełne okno	Keret nélküli ablak
@@ -4349,6 +4630,7 @@ Piekielny Żarłacz Dusz	Pokoli lélekfaló
 Piekło	Pokol
 Piekło - wybierz respawn	Pokol - válaszd ki az újraéledést
 Pierwsza nagroda tury jest darmowa.	Minden forduló első jutalma ingyenes.
+Pierwsza strona	Első oldal
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A három éberség könyv közül az első. Növelheti a tulajdonos karizmáját. Olvasás után a könyv eltűnik. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A három alakzatharc könyv közül az első. Növelheti a tulajdonos inspirációját. Olvasás után a könyv eltűnik. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
 Pierwszorzędne Buty	Elsőrangú Cipő
@@ -4356,6 +4638,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	A Státusz fül első "+" gomb
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	A Képességek fül első "+" gombja is neked adja őket.
 Pierwszy 30 poziom	Első 30. szint
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	A küldetés első visszaállítása 24 órán belül ingyenes.
+Pierścień / amulet	Gyűrű / amulett
 Pierścień Dośw. (iCafe)	Tapasztalat gyűrű (iCafe)
 Pierścień Godności	Méltóság Gyűrűje
 Pierścień Hydry	Hidra Gyűrű
@@ -4368,6 +4651,7 @@ Pierścień Wielkanocny	Húsvéti Gyűrű
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Félholdat formázó, mesterien gravírozott gyűrű. Ad: +50% TP, +20% támadási sebesség, +20% varázslási sebesség, +30% támadás, +10% max. TP, +10% max. Mp.
 Pień+	Törzs+
 Piorunowe Zioło	Mennydörgés fű
+Pirat+ (m)	Kalóz+ (f)
 Pisanie	Írás
 Pisklę Exedyara	Exedyar fióka
 Pióro Mędrca	Bölcs Tolla
@@ -4411,6 +4695,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Használatkor szörnykártyát ad a gyűjteményhez (Szörnykártyák az Esc menüben). Nem kereskedhető vele.
 Po zabiciu: kolejny, którego już biłeś	Leölés után: a következő, amelyet már megütöttél
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	8 nyílvessző betöltése után a Hwacha átüti Balathor pikkelyeit. Az Ősi Jégkristályok Tüzes Nyílvesszőket adnak. Betöltve: %d
+Pobieram drop...	Zsákmány letöltése...
 Pobieram ustawienia botow...	Botbeállítások lekérése...
 Pobieram zawartość z serwera...	Tartalom lekérése a szervertől...
 Pobieranie cen dla %d przedmiotow...	Árak letöltése %d tárgyhoz...
@@ -4449,7 +4734,10 @@ Podaj wartosc.	Add meg az értéket.
 Podaj wlasciciela i wybierz przedmiot.	Add meg a tulajdonost és válassz tárgyat.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Harc közben %d%% eséllyel ellenállsz az elesésnek (újratöltési idő 60 mp).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	A harc során a te okozott sebzésed számít.
+Podczas walki otrzymasz efekt eliksiru księżyca	Harc közben megkapod a hold elixír hatását
+Podczas walki otrzymasz efekt eliksiru słońca	Harc közben megkapod a nap elixír hatását
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Settenkedj az ellenség mögé, és mérj rá halálos csapást.|Erősíti: Erő (++), Ügyesség (++).
+Podglad EQ	Felszerelés előnézet
 Podgląd niedostępny.	Az előnézet nem érhető el.
 Podgląd skrzynki	Láda előnézet
 Podgląd skrzyń	Ládák előnézete
@@ -4520,8 +4808,10 @@ Pokaż szatę aury	Aura ruha mutatása
 Pokaż wizerunek broni	Fegyverkinézet mutatása
 Pokaż założony tytuł	Felvett cím mutatása
 Pokaż znowu wszystkie przedmioty	Az összes tárgy újbóli megjelenítése
+Pokonaj %(n)s bossów	Győzz le %(n)s bosst
 Pokonaj %(n)s x %(what)s	Győzz le %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Győzd le a Világfőnököt a semleges zónában, és szerezz jutalmakat!
+Pokonaj bossów	Győzd le a bossokat
 Pokonane bossy	Legyőzött főnökök
 Pokonane minibossy	Legyőzött minifőnökök
 Pokonani gracze (przeciwne król.)	Legyőzött játékosok (ellenséges birodalmak)
@@ -4591,6 +4881,7 @@ Portal Świątyni Węży	Kígyótemplom portál
 Portal: Nowy Kontynent	Portál: Új kontinens
 Posiada szanse na otrucie przeciwnika.	Esélye van megmérgezni az ellenfelet.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Esélye van megmérgezni az ellenfelet, és kábítást is tartalmaz.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	%d%% esélyed van, hogy 30 mp-ig automatikusan felszeded a közeli tárgyakat
 Postać ma za duży poziom.	A karakter szintje túl magas.
 Postać zostanie usunięta.	A karakter törölve lesz.
 Posterunek Trolli	Troll őrhely
@@ -4688,7 +4979,10 @@ Poziom: %d (%s Szata Aury)	Szint: %d (%s aura ruha)
 Poziom: %s	Szint: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Szint: 1-19, M1-M10, G1-G10 vagy P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Szint: szám 1-19, M1-M10, G1-G10 vagy P
+Pozostalo 23:59:59	Hátravan 23:59:59
 Pozostalo czasu: 30s	Hátralévő idő: 30mp
+Pozostalo prob: 3	Hátralévő próbák: 3
+Pozostalo: 45s	Hátravan: 45s
 Pozostaly czas: %ds	Hátralévő idő: %dmp
 Pozostałe	Hátralévő
 Pozostałe misje	Egyéb küldetések
@@ -4710,6 +5004,7 @@ Pozwala wylosować nowe cele misji Kart Potworów.	Lehetővé teszi a Szörnyká
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Lehetővé teszi a Szörnykártyák küldetés visszaállítását az ingyenes visszaállításon felül (24 óránként egyszer).
 Pozwolenie na Wzmocn. Przedmiotu	Tárgyerősítési Engedély
 Pozwolenie na Zaczar. Przedmiotu	Tárgybűvölési Engedély
+Pozycja niezapisana	Pozíció nincs mentve
 Położenie	Hely
 Położenie nieznane	Ismeretlen hely
 Połyskująca Biała Perła	Csillogó Fehér Gyöngy
@@ -4795,9 +5090,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Egyszerű szűrő (speciál
 Prosty rozpryskowy atak	Egyszerű területi támadás
 Proszę wpisać nazwę sklepu	Kérlek, add meg a bolt nevét
 Proszę wybrać czas trwania sklepu	Kérlek, válaszd ki a bolt időtartamát
+Prowadza stragan: %s	Árust: %s
+Prowadza stragan: -	Árust: -
 Prywatność	Adatvédelem
 Pryzmat Ożywienia	Feltámasztás Prizma
 Pryzmat Ożywienia (Q)	Feltámasztás Prizma (Q)
+Pryzmatyczny	Prizmás
 Przeb. Księga Zwierza	Felébredt Kedvenc Könyv
 Przebicie	Átütés
 Przebicie bloku	Blokk áttörése
@@ -4882,7 +5180,7 @@ Przeniesione z: %s	Átvive innen: %s
 Przeniesiono część - reszta się nie zmieściła.	Egy rész átkerült - a többi nem fért el.
 Przenieś do extra EQ	Áthelyezés az extra EQ-ba
 Przenieś je u Theowahdana.	Vidd át őket Theowahdannál.
-Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Helyezd át a fájlt a játék fő könyvtárában lévő upload/ mappába.
+Przenieś plik do folderu upload/ w głównym katalogu gry Metin2.	Helyezd a fájlt a játék főmappájában lévő upload/ mappába.
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Átjárja a testet a nyár varázsával, rendkívüli erővel ruházva fel viselőjét. A Gyűrű sikertelen fejlesztési kísérletei a kovácsnál nem okozzák a tárgy elvesztését. Időtartam: 7 nap (max. 60 nap).
 Przenika ciało magią Wakacji, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu. Max. czas trwania 60 dni.	Átjárja a testet a nyár varázsával, rendkívüli erővel ruházva fel viselőjét. A Gyűrű sikertelen fejlesztési kísérletei a kovácsnál nem okozzák a tárgy elvesztését. Max. időtartam: 60 nap.
 Przenika ciało magią Wielkanocy, obdarzając jego właściciela niezwykłą mocą. Nieudane próby ulepszenia Pierścienia u Kowala nie powodują utraty przedmiotu.	Átjárja a testet a húsvét varázsával, rendkívüli erővel ruházva fel viselőjét. A Gyűrű sikertelen fejlesztési kísérletei a kovácsnál nem okozzák a tárgy elvesztését.
@@ -4958,7 +5256,7 @@ Przywołuje demoniczne moce do olbrzymiego pchnięcia mieczem.|Wzmacnia: Siła (
 Przywołuje na przeciwnika żądne zemsty demony.|Wzmacnia: Inteligencja (++), Zręczność (+), Witalność (+), poziom postaci.	Bosszúra szomjazó démonokat idéz az ellenfélre.|Erősíti: Intelligencia (++), Ügyesség (+), Életerő (+), karakterszint.
 Przywraca 600 PE.	Visszaállít 600 Mp-t.
 Przywraca 600 PŻ.	Visszaállít 600 TP-t.
-Przywraca PŻ %.0f	Visszaad %.0f HP-t
+Przywraca PŻ %.0f	HP visszaállítása: %.0f
 Przywraca PŻ po zabiciu potwora.	Szörny megölése után visszaállítja a HP-t.
 Przywrócić wszystkie domyślne klawisze?	Visszaállítod az összes alapértelmezett billentyűt?
 Przywrócono domyślne klawisze	Alapértelmezett billentyűk visszaállítva
@@ -4976,8 +5274,10 @@ Próby	Próbálkozások
 Prędkość ataku	Támadási sebesség
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Támadási sebesség +%(v)s%% %(d)d mp-ig a hátasról történt támadás után (180 mp-enként)
 Prędkość czarowania	Varázslási sebesség
+Prędkość po zsiadaniu	Sebesség leszálláskor
 Prędkość ruchu	Mozgási sebesség
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Mozgási sebesség +%(v)s%% %(d)d mp-ig a hátasról történt támadás után (180 mp-enként)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	A mozgási sebesség %d%%-kal nő 10 mp-ig
 Prędkość ruchu znacznie zwiększona.	A mozgási sebesség jelentősen megnőtt.
 Pudełko Kart Potworów Yohary	Yohara szörnykártya doboz
 Pudło wędkarskich puzzli	Horgász Kirakós Doboz
@@ -4986,6 +5286,7 @@ Punkty Doświadczenia: +%d%%	Tapasztalati pont: +%d%%
 Punkty Doświadczenia: +150%	Tapasztalati pontok: +150%
 Punkty Rangi: %d	Rangpontok: %d
 Punkty doswiadczenia %	Tapasztalati pontok %
+Punkty doświadczenia +%d%%	Tapasztalati pont +%d%%
 Punkty konne:	Lovaglópontok:
 Punkty miłości: %d%%	Szerelempontok: %d%%
 Punkty range:	Rangpontok:
@@ -5135,6 +5436,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Gaya Bolt Nullázás
 Reset oferty	Ajánlat visszaállítása
 Reset oferty (Reset Sklepu Gaya)	Ajánlat visszaállítása (Gaya Bolt Visszaállítás)
+Reset umiejętności	Képességek visszaállítása
 Resetuj	Visszaállítás
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Állítsd vissza a Gaya Boltot már 5 óra letelte előtt, és nézd meg az új értékes tárgyakat. Használd a Gaya Kikötői Boltban (Harcos Szobor az Új Kontinens kikötőjében).
 Restart serwera...	Szerver újraindítása...
@@ -5184,6 +5486,7 @@ Rozbudowa jest teraz niedostępna.	A bővítés most nem érhető el.
 Rozdaj od nowa (raz za darmo)	Újraosztás (egyszer ingyen)
 Rozdane: %d	Kiosztva: %d
 Rozdzielczość	Felbontás
+Rozkaz wysłany.	Parancs elküldve.
 Rozkazy dla botów twojej gildii	Parancsok a céhed botjainak
 Rozkazy wydaje mistrz gildii	Parancsokat a céhvezér ad
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Egy |cffffb514Játékmesterrel|r beszélgetsz.
@@ -5217,6 +5520,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Pontosság Könyvével fejleszthető (0
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Fejleszted a kisállatot „%s” fokozatra? Az alapanyagok eltűnnek.
 Rozwiń pasek	Sáv kinyitása
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Kinyitás: az összes gyorsgomb sáv (4 x 8)
+Rozwój	Fejlődés
 Rozwój do stopnia: %s	Fejlesztés a következő fokozatra: %s
 Rozwój konia	Lótanítás
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Lótanítás: hiányzik a Lótáp (%(a)d szükséges).
@@ -5243,6 +5547,7 @@ Ruda Turmalinu	Turmalinérc
 Rudy i przetopy	Ércek és olvasztványok
 Ruiny Atlantydy	Atlantisz Romjai
 Ruiny Skorpiona	Skorpió Romjai
+Rumi (Okey)	Rumi (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Römi (Okey): a játékablak a kliensfrissítéssel érkezik.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Harap a hal! Kattints rá %d alkalommal, amíg a körben úszik (%d mp-ed van).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	A tábortűzön készített hal remek füstölt csemege.
@@ -5279,6 +5584,7 @@ Rzeźnik Piekielnej Wieży	Pokoli torony hóhéra
 Rzeźnik Wężowy	Kígyó hóhér
 Rzuca na ciebie swoje buffy.	Rád varázsolja a buffjait.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Csillagfénnyel teli tárgyakat dob az ellenfelekre.|Erősíti: Ügyesség (++), karakterszint.
+Rzucam buffy	Buffokat dobok
 Rzygacz	Vízköpő
 Róg Balathora	Balathor Szarva
 Róg Nemere	Nemere Szarva
@@ -5458,11 +5764,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Szerver: nincs megerősítés, �
 Serwer: czekam na potwierdzenie	Szerver: várok a megerősítésre
 Sesja już trwa.	A munkamenet már fut.
 Sesja zakończona: osiągnięto limit czasu.	A munkamenet véget ért: elérted az időkorlátot.
+Sesje (z bieżącą)	Munkamenetek (a jelenlegivel)
+Sezon %d	%d. évad
 Sezon %d - %s (do końca: %d dni %s)	%d. szezon - %s (hátra: %d nap %s)
+Sezon: Chunjo	Évad: Chunjo
+Sezon: Jinno	Évad: Jinno
+Sezon: Shinsoo	Évad: Shinsoo
 Sfera Losu Zwierzaka	Kedvenc Sors Gömb
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Sorsgömb: megmutatja a kisállat típusát (felhasznál egy Kisállat Sorsgömböt)
 Shaman Armor	Sámán páncél
 Shield	Pajzs
+Shift + LPM	Shift + BEK
 Shoes	Cipő
 Shop Decoration	Bolt Dekoráció
 Shop Decoration n.{}	{}. bolt dekoráció
@@ -5475,6 +5787,7 @@ Shuriken	Shuriken
 Shuriken+	Shuriken+
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Enyhe szelet vetsz, és ellenségeid heves vihart aratnak. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Sierp (Pieczęć)	Sarló pecsét
+Sierpień	Augusztus
 Silna Fala Śmierci	Erős Halálhullám
 Silna Tarcza Eteru	Erős Éterpajzs
 Silne Trzęsienie	Erős Földrengés
@@ -5490,6 +5803,7 @@ Silny Druid En-Tai	Erős En-Tai druida
 Silny Dziki Piechur	Erős Vad Gyalogos
 Silny Dziki Sluga	Erős Vad Szolga
 Silny Kam. Przebudzenia	Erős Felébredés Köve
+Silny Malpi Zolnierz	Erős Majomkatona
 Silny Meteor	Erős Meteor
 Silny Niszczyciel En-Tai	Erős En-Tai pusztító
 Silny Piekielny Cios	Erős Pokoli Csapás
@@ -5543,23 +5857,34 @@ Silny.	Erős.
 Siła Ataku	Támadóerő
 Siła Ataku %.0f-%0.f	Támadóerő %.0f-%0.f
 Siła Ataku +%.0f	Támadóerő +%.0f
+Siła Ataku: +%.0f	Támadóerő: +%.0f
+Siła Błyskawic	Villámerő
 Siła Błyskawic (+%d%% łącznej wartości)	Villámerő (+%d%% az összértékből)
 Siła Błyskawic +%d%%	Villámerő +%d%%
+Siła Błyskawic +5%	Villámerő +5%
+Siła Lodu	Jégerő
 Siła Lodu (+%d%% łącznej wartości)	Jégerő (+%d%% az összértékből)
 Siła Lodu +%d%%	Jégerő +%d%%
+Siła Lodu +5%	Jégerő +5%
 Siła Mroku	Sötétség ereje
 Siła Mroku (+%d%% łącznej wartości)	Sötétségerő (+%d%% az összértékből)
 Siła Mroku +%d%%	Sötétségerő +%d%%
+Siła Mroku +5%	Sötétségerő +5%
 Siła Obrony	Védelmi erő
+Siła Ognia	Tűzerő
 Siła Ognia (+%d%% łącznej wartości)	Tűzerő (+%d%% az összértékből)
 Siła Ognia +%d%%	Tűzerő +%d%%
+Siła Ognia +5%	Tűzerő +5%
 Siła Sung Ma	Sung Ma Ereje
 Siła Sung Ma +%d	Sung Ma Ereje +%d
+Siła Wiatru	Szélerő
 Siła Wiatru (+%d%% łącznej wartości)	Szélerő (+%d%% az összértékből)
 Siła Wiatru +%d%%	Szélerő +%d%%
+Siła Wiatru +5%	Szélerő +5%
 Siła Ziemi	Föld ereje
 Siła Ziemi (+%d%% łącznej wartości)	Földerő (+%d%% az összértékből)
 Siła Ziemi +%d%%	Földerő +%d%%
+Siła Ziemi +5%	Földerő +5%
 Siła ataku +%.0f-%.0f	Támadóerő +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	A támadóerő nagyobb, ha hátba találod
 Siła ataku wroga -%d%%	Az ellenség támadóereje -%d%% 
@@ -5651,6 +5976,7 @@ Skorpion Lucznik Zodiaku	Zodiákus skorpió íjász
 Skorpion Wężowy	Kígyó skorpió
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Használd ki a |cff2b80ffvillámajánlatokat|r![ENTER]Az aukciók legkésőbb eddig tartanak: |cff2b80ff%s|r[ENTER]vagy a készlet erejéig.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	A széttört Lélekkövek új felhasználást találhatnak.
+Skrytobójca	Orgyilkos
 Skrytobójcza Wykałaczka	Bérgyilkos Fogpiszkáló
 Skrz. Ninja M. Łuku (D)	Nindzsa Íj Láda (nagy)
 Skrz. Ninja M.Ostrza (D)	Nindzsa Penge Láda (nagy)
@@ -5711,12 +6037,16 @@ Skrzynka musi być w ekwipunku.	A ládának a leltárban kell lennie.
 Skrzynka na Zwierzaka	Kedvenc Doboz
 Skrzynki	Ládák
 Skrócenie ładowania um. o %d%%	Képesség töltési ideje %d%%-kal csökkent 
+Skróty	Gyorsgombok
+Skróty klawiszowe	Gyorsbillentyűk
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Összpontosítsd a támadásaidat a Fagyott Sárkánytojásra, mielőtt %d mp múlva eltűnik.
 Skóra Przeklętego Niedźwiedzia	Elátkozott Medve Bőr
 Skóra Przeklętego Tygrysa	Elátkozott Tigris Bőr
 Skąd	Forrás
 Składnik do produkcji lekarstwa iluzji.	Az illúzió-gyógyszer előállításának összetevője.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	A Lélekkövek kovácsnál történő fejlesztésének összetevője (+4-től): a következő fokozatokhoz 1, 1, 2, 2, 3 darab kell a Mágikus Por mellett. Az Erős Jégboszorkány (Száműzöttek barlangja), Beran-Setaou (Sárkány odú) és a Dzsungel királynője (Ősi dzsungel) ejti.
+Slaby Malpi Miotacz	Gyenge Majomhajító
+Slaby Malpi Zolnierz	Gyenge Majomkatona
 Slot z krzyżykiem jest jeszcze zamknięty.	A kereszttel jelölt hely még zárva van.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Zárolt hely: a Gaya Bolt Bővítés x%d feloldja.
 Sloty umiejętności: %d	Képességhelyek: %d
@@ -5750,9 +6080,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Valami hiba történt. (Általános hiba)
 Songmin, Arktyczne Yeti	Songmin, sarki jeti
 Sort by price	Rendezés ár szerint
+Sortowanie autopickup	Automatikus felvétel rendezése
 Sortowanie i wyszukiwanie	Rendezés és keresés
 Sortuj po cenie całej oferty	Rendezés a teljes ajánlat ára szerint
 Sortuj po cenie oferty albo za sztukę	Rendezés ajánlati ár vagy darabár szerint
+Sortuj po ilości	Rendezés mennyiség szerint
 Soul Crystal Alchemist	Lélekkristály alkimista
 Sowa Księżycowa	Holdbagoly
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	A Sötétség Megrontása;A bőrödet égeti és repeszti a sötét energia,;így nagyobb sebzést szenvedsz el.
@@ -5761,6 +6093,7 @@ Spalone przedmioty u Kowala	A Kovácsnál elégetett tárgyak
 Sparta Jungrang+ (k)	Sparta Jungrang+ (N)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (F)
 Spartaner	Spartaner
+Spawn Botow	Botok idézése
 Specjalne	Különleges
 Specjalne Zioła	Különleges gyógynövények
 Specjalny	Különleges
@@ -5774,6 +6107,7 @@ Sportowa Fryzura(czarna)	Sportos frizura (fekete)
 Spostrzegawczość	Éleslátás
 Społeczność	Közösség
 Sprawdz konto	Fiók ellenőrzése
+Sprawdz status	Állapot ellenőrzése
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Szerveroldali támogatás ellenőrzése. Húzd a tárgyakat a kukába.
 Sprawdzanie...	Ellenőrzés...
 Sprawdź ekwipunek	Leltár ellenőrzése
@@ -5799,6 +6133,7 @@ Srebrne Płyty	Ezüst Lemezek
 Srebrny Grot	Ezüst Nyílhegy
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Ezüst szív alakú medál, mágikus drágakövekkel kirakva. Ad: +30% TP, +10% támadási sebesség, +10% varázslási sebesség, +10% erő a szörnyek ellen, +5% max. TP, +5% max. Mp.
 Srednia: %s / szt.	Átlag: %s / db
+Srednie obrazenia	Átlagsebzés
 Stabilne Sznury	Erős kötelek
 Stajnia i polowanie na medale w Lochu Malp.	Istálló és éremvadászat a Majomtömlöcben.
 Stal	Acél
@@ -5808,8 +6143,9 @@ Stalowy Hełm Dragona	Dragon Acélsisak
 Stalowy Hełm Smoków	A Sárkányok Acélsisakja
 Stamina / sek.: %d	Állóképesség / mp.: %d
 Stan (czat)	Állapot (csevegés)
-Standardowa Muzyka Metin2	A Játék Alapzenéje
-Standardowa muzyka Metin2	A játék alapzenéje
+Stan: %s	Állapot: %s
+Standardowa Muzyka Metin2	Alapértelmezett játékzene
+Standardowa muzyka Metin2	Alapértelmezett játékzene
 Stanton-Płatnerz	Stanton, páncélkovács
 Stara Fryzura (biała)	Régi frizura (fehér)
 Stara Fryzura (czarna)	Régi frizura (fekete)
@@ -5829,6 +6165,7 @@ Starożytny Robak	Ősi féreg
 Starożytny Skorpion	Ősi skorpió
 Starożytny Wojownik	Ősi harcos
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Ősi tekercs, amely lehetővé teszi Woel erejének áramlását - új áldások sorsolását teszi lehetővé.
+Starszy Hazardzista	Idősebb Szerencsejátékos
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Régi pergamen gyilkossági paranccsal, használata után aktiválja a küldetéseket.
 Statua Chena	Chen szobra
 Statua Chou	Chou szobor
@@ -5898,19 +6235,25 @@ Strażnik Rozpad. Dusz	Lélekhasadék őre
 Strażnik Ruin	Romok őre
 Strażnik Smoków Dolnarr	Dolnarr sárkányőr
 Strażnik Smoków Jaharr	Jaharr sárkányőr
+Strażnik Srebr. Piasku+	Ezüsthomok Őr+
 Strażnik Trytonów	Tritón őr
 Strażnik Wzgórza	Domb őre
 Strażnik Węży	Kígyóőr
 Strażnik z Yohara	Yohara őr
+Strefa Surowców	Nyersanyag Zóna
 Strona %d / %d	%d / %d. oldal
 Strona %d / %d (%d)	Oldal: %d / %d  (%d)
 Strona %d/%d	%d/%d. oldal
 Strona 1	1. oldal
 Strona WWW	Weboldal
+Strona ekwipunku I	Felszerelés I. oldal
 Strona ekwipunku II	Felszerelés II. oldal
 Strona ekwipunku II (wymienna)	Felszerelés II. oldal (cserélhető)
+Strona ekwipunku III	Felszerelés III. oldal
 Strona ekwipunku IV	Eszköztár IV. oldal
 Strz. dół	Nyíl le
+Strz. góra	Nyíl fel
+Strz. lewo	Nyíl balra
 Strz. prawo	Nyíl jobbra
 Strzał Wichury	Viharlövés
 Strzał Wichury (9.skill)	Viharlövés (9. képesség)
@@ -5918,6 +6261,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Löv�
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Nyílvessző a nindzsa íjához. Teljes sebzés a céltól 5 m-ig (az íj hatótávbónusza megnöveli ezt a távolságot), utána minden további méternél 5%-kal kevesebb. A tegez sebzése nem csökken a távolsággal.
 Strzały: Handlarz Bronią (cena NPC).	Nyilak: Fegyverkereskedő (NPC ár).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Lőj sárkányalakokat, és támadd az ellenségeket.|Erősíti: Intelligencia (++), Ügyesség (pontosság) (+), karakterszint.
+Strzelającego Smoka	Lövő Sárkány
 Strój Czarodzieja	Varázsló ruha
 Strój Czarodzieja+	Varázsló ruha+
 Strój Zombie	Zombi ruha
@@ -5939,6 +6283,7 @@ Stwór z Głębin	Mélység szörnye
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Hozz létre nagy robbanást az ujjhegyeiddel.|Erősíti: Intelligencia (++), Erő (+), karakterszint.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Hozz létre hatalmas tornádót, hogy legyőzz több ellenséget.|Erősíti: Intelligencia (++), Erő (+), karakterszint.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Hozz létre mérgező felhőt az ellenségek körül, és mérgezd meg őket.|Erősíti: Ügyesség (++), Erő (+), karakterszint.
+Styczeń	Január
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Stílusos, de kissé zsíros hatású, hátrafésült frizura, a kulcsfontosságú eleme az antennák. Véglegesen megváltoztatja a karaktered frizuráját.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	A Sámán stílusos frizurája. Véglegesen megváltoztatja a karaktered frizuráját.
 Su-Sin	Su-Sin
@@ -5962,11 +6307,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	A bolt összbev
 Sun Herb	Napfű
 Super Kamienie Metin (+%d)	Szuper Metin Kövek (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Kiegészítő (legfeljebb 5 db): Kicsi +1%, Közepes +2%, Nagy +4%, Erős +10% darabonként.
+Sura (Broń)	Sura (Fegyver)
+Sura (Czarna Magia)	Sura (Fekete Mágia)
 Sura Armor	Sura páncél
 Sura Czarna Magia	Sura Fekete Mágia
 Sura Mistrz Broni	Sura Fegyvermester
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Különleges tárgyak készítéséhez és fejlesztéséhez szükséges nyersanyagok.
 Sutra	Szútra
+Swiat i eventy	Világ és események
+Swiatynia Hwang	Hwang Templom
+Swiatynia Ochao	Ochao Templom
 Swiatynia Zodiaku	Zodiákus templom
 Switchbot (zmiana bonusów)	Switchbot (bónuszváltás)
 Switchbot - zmiana bonusów	Switchbot - bónuszcsere
@@ -5975,10 +6325,12 @@ Sword	Kard
 Sycomor	Szikomor
 Symbol zręczności, popularny wśród złodziei.	Az ügyesség jelképe, a tolvajok körében népszerű.
 Synowie Pustyni	A Sivatag Fiai
+Szalenie odważny	Őrülten bátor
 Szalony Hazardzista	Őrült Szerencsejátékos
 Szalony Naukowiec	Őrült Tudós
 Szalony Wędkarz	Őrült Horgász
 Szaman (Leczenie)	Sámán (Gyógyító)
+Szaman (Smok)	Samán (Sárkány)
 Szaman Leczenie	Sámán Gyógyítás
 Szaman Smok	Sámán Sárkány
 Szamanka (K)	Sámán (N)
@@ -5994,6 +6346,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Esély a Kábulás-immunitá
 Szansa na Spowolnie.	Lassítás esélye
 Szansa na Uziemienie %.0f%%	Leföldelés esélye %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Csapáskivédés esélye: növeli a közelharci támadás elkerülésének esélyét.
+Szansa na cios krytyczny +2%	Kritikus csapás esélye +2%
+Szansa na cios krytyczny +5%	Kritikus csapás esélye +5%
+Szansa na cios krytyczny +7%	Kritikus csapás esélye +7%
+Szansa na cios krytyczny +8%	Kritikus csapás esélye +8%
 Szansa na cios krytyczny: +%.0f%%	Kritikus találat esélye: +%.0f%%
 Szansa na cios przebicia %.0f%%	Átütő csapás esélye %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Yang drop esélye: növeli a több Yang szerzésének esélyét.
@@ -6022,12 +6378,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	A sikeres tanulá
 Szansa na przebicie	Átütés esélye
 Szansa na przebicie +10%	Átütés esélye +10%
 Szansa na przedmiot z bonusem	Esély bónuszos tárgyra
+Szansa na przeszywające Uderzenie: 2%	Átütő csapás esélye: 2%
+Szansa na przeszywające Uderzenie: 5%	Átütő csapás esélye: 5%
+Szansa na przeszywające Uderzenie: 8%	Átütő csapás esélye: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Átható csapás esélye: növeli az átható csapás esélyét.
 Szansa na przeszywający strzał +%.0f%%	Átható lövés esélye +%.0f%%
 Szansa na spowolnienie	Lassítás esélye
 Szansa na transfer %d%% otrzymanych obrażeń do PE	%d%% esély a kapott sebzés MP-ként való átvitelére
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Nyílkitérés esélye: növeli a nyíl vagy a szörny távolsági támadásának elkerülési esélyét.
 Szansa na wydobycie rudy +%d%%	Esély az érc kibányászására +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Esély tárgy zuhanására a bosstól +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	A tárgyejtés esélye 1,5-szeresére nő az iCafe tagoknak.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Tárgyak szerzésének esélye megszorozva ezzel: %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Yang szerzésének esélye megszorozva ezzel: %.1f
@@ -6078,12 +6438,15 @@ Szary Barwnik	Szürke Festék
 Szary Lśniący Odłamek	Szürke Fényes Szilánk
 Szary Sok	Szürke Lé
 Szata	Ruha
+Szata Dżinna+ (m)	Dzsinn Köpeny+ (f)
 Szata Harmonii	Harmónia Ruha
 Szata Księżyca	Hold Ruha
 Szata Ognia	Tűz Ruha
 Szata Wiary	A Hit Köntöse
 Szata Zodiaku	Zodiákus Köntös
 Szata aury: ewolucja	Aura ruha: fejlődés
+Szata aury: przenieś parametry	Aura ruha: paraméterek átvitele
+Szata aury: rozwój	Aura ruha: fejlesztés
 Szczyt rodzaju - czas na ewolucję	A fokozat csúcsa - ideje fejlődni
 Szczytobłysk 830 9454	Csúcsfény 830 9454
 Szczytomrok 3393 9454	Sötétcsúcs 3393 9454
@@ -6096,6 +6459,7 @@ Szkarłaczny Żądłak	Skarlát fullánkos
 Szkat. Chegala	Chegal Kincsesláda
 Szkat. Olbrzym. Drzewa	Óriásfa Kincsesláda
 Szkatulka Ksiezycowa - z rozbitego Metina	Holdfény Ládika - széttört Metinből
+Szkatulka Ksiezycowa - z zabitego potwora	Holdszelence - megölt szörnytől
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Chegal, az árnyék góliát ládikája. Valami értékes van benne.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Az Óriás fa szelleme ládikája. Valami értékes van benne.
 Szkatułka Yohara	Yohara Ládika
@@ -6114,6 +6478,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Nemes fa En-Tai urától. Vidd el az Erdő kutatójának.
 Szlachetne Drzewo (PB)	Nemes Fa (MV)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Nemes Fa (MV) En-Tai Úrtól (MV). Vidd el az Erdőkutatónak (MV).
+Szlachetny Legionista+	Nemes Légiós+
 Szmaragdowy Marmur	Smaragd Márvány
 Szpon Kruka	Hollókarom
 Szpon Wężowy (wykon.)	Kígyó Karom (készített)
@@ -6175,7 +6540,10 @@ Szybkość Ataku +5%	Támadási sebesség +5%
 Szybkość Buffi	Buffi Sebessége
 Szybkość Ruchu +%.0f%%	Mozgási sebesség +%.0f%%
 Szybkość Ruchu 20%	Mozgási sebesség 20%
+Szybkość Zaklęcia +2%	Varázslási sebesség +2%
+Szybkość Zaklęcia +5%	Varázslási sebesség +5%
 Szybkość czarowania	Varázslási sebesség
+Szybkość ruchu +%d%%	Mozgási sebesség +%d%%
 Szybkość: %d zmian/s	Sebesség: %d csere/mp
 Słaba Zbroja	Gyenge Páncél
 Słaba jakość strzału: od %.1fm	Gyenge lövésminőség: %.1fm-től
@@ -6183,6 +6551,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Édes öregasszony
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Édes amulett Valentin-napra. Ad: +50% TP, +20% támadási sebesség, +20% varázslási sebesség, +10% erő a szörnyek ellen, +10% max. TP, +10% max. Mp. Az idő akkor is telik, ha nem viseled.
 Słodkowodna ryba drapieżna występująca w tropikach.	Édesvízi ragadozó hal, amely a trópusokon él.
+Słon. Szata Wukong+ (m)	Nap. Wukong Köpeny+ (f)
 Słonecznik: obrona +%d%%	Napraforgó: védelem +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Szavak a tárgynevekből (vesszővel elválasztva)
 Słudzy Sung Mahi	Sung Mahi Szolgái
@@ -6390,8 +6759,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Ma {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Holnap {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Túl sok művelet rövid idő alatt. Kérlek, várj egy kicsit, és próbáld újra.
+Top przedmiotów	Top tárgyak
 Topaz Woli	Akarat Topáz
 Torba towarzysza: weź do siebie	Társ táska: átvétel magadhoz
+Towarzysz (nierozwijany)	Társ (nem fejlődő)
 Towarzysz bierze tylko cały stos.	A Társ csak egész köteget vesz el.
 Towarzysz dostanie ścieżkę na 5 poziomie.	A Társ az 5. szinten kap egy utat.
 Towarzysz drużyny	Csapattárs
@@ -6403,9 +6774,11 @@ Towarzysz zakłada grupę i cię zaprasza.	A Társ csoportot alapít, és meghí
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	A Társ felhasznál egy Felejtés Könyvét vagy egy Képességvisszaállító Iratot.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	A Társ, a Cor Draconis és a rendszerküldetések itt nem jelennek meg.
 Towarzysze są tu wyłączeni.	A társak itt ki vannak kapcsolva.
+Towarzysze są wyłączeni na tym serwerze.	A társak ezen a szerveren ki vannak kapcsolva.
 Trade Hub	Kereskedőközpont
 Trafienia	Találatok
 Transfer bonusów	Bónuszok átvitele
+Transfer obrazen do PM	Sebzés átvitele SP-be
 Transformuj kostium	Jelmez átalakítása
 Transporter jest pusty.	A szállító üres.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Buffi képességét edzi G1 fokozattól P-ig, mint a Szellemkő a hagyományos képességeket (rangpontok, következő próba 12 óra múlva, Egzorcizmus Tekercs azonnal). Az Elvarázsolt Erdőtől felfelé Metinekből és bossokból esik.
@@ -6456,6 +6829,7 @@ Twierdza Czerwonego Smoka (SZC)	Vörös Sárkány Erőd (IH)
 Twierdza Razadora	Razador erődje
 Two Hand Sword	Kétkezes kard
 Twoja Gaya: %s	Gayád: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	A védelmed %d%%-kal nő 5 mp-ig
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Pozíciód: megmutatja a térképet, amelyen vagy, és rá középre állítja a nézetet.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Az acélod világhírű áriákat zeng majd a csatatéren. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Twoje Smocze Monety: %d	Sárkánypénzed: %d
@@ -6490,6 +6864,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Ugyanennyi pontot kap
 Tylko BETA	Csak BÉTA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Más karakterek GM-jét csak az IMPLEMENTOR módosíthatja.
 Tylko broń, zbroje i kostiumy dla tej płci	Csak fegyverek, páncélok és jelmezek ehhez a nemhez
+Tylko dla mnie	Csak nekem
 Tylko dla mnie: cały drop jest twój.	Csak nekem: az egész dobás a tiéd.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Csak kevesen értik azt az ősi nyelvet, amelyről e fegyver a nevét kapta. Egyikük sem merte azonban lefordítani ezt a nevet. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Tylko scal stosy	Csak halmok összevonása
@@ -6508,6 +6883,7 @@ Typ: -	Típus: -
 Type	Típus
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Gyakori felszerelésbónuszok vagy az összes, amit a kliens ismer
 Tysieczny Wojow. Zodiaku	Zodiákus ezres harcos
+Tysieczny Wojownik	Ezres Harcos
 Tytuł %s wygaśnie za niecałą godzinę.	A(z) %s cím kevesebb mint egy óra múlva lejár.
 Tytuł Czciciel Słońca	Cím: Napimádó
 Tytuł Czempion Nyx	Cím: Nyx Bajnok
@@ -6561,12 +6937,15 @@ Udało ci się ochronić Goblina Skarbów!	Sikerült megvédened a Kincs Goblint
 Udało się odeprzeć lodowy chłód.	Sikerült visszaverned a jeges hideget.
 Udało się: %s	Sikerült: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Üss, és valakinek megkondul a lélekharang! Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
+Uderzenia Palcem	Ujjütés
 Uderzenie Pioruna	Villámcsapás
 Uderzenie Płonącego Palca	Lángoló Ujj Csapása
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Az ujjcsapásnak %d%% esélye van, hogy visszaverődik az ellenfélre
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Azon botok aránya, amelyek a városi bevásárlás után egy ideig a standoknál maradnak ahelyett, hogy rögtön visszamennének vadászni. 100% élő város, 0% - mindenki a terepen van.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Azon árusok aránya, akik a gyenge fejlesztéseiket (+0 és +3 között) potom áron teszik ki a pultra ahelyett, hogy az NPC-nek adnák el - a kovácsnál elégetendő hulladék, mint a kemény szervereken. Alapértelmezetten kikapcsolva.
+Udział	Részesedés
 Ukończ %(n)s lochów	Teljesíts %(n)s börtönt
+Ukończ lochy	Teljesíts börtönöket
 Ukończenia: %d	Teljesítések: %d
 Ukończone	Teljesítve
 Ukończone księgi misji	Teljesített küldetéskönyvek
@@ -6575,6 +6954,7 @@ Ukończone wyprawy	Teljesített expedíciók
 Ukończone: %d / %d	Teljesítve: %d / %d
 Ukryj aury umiejętności	Képességaurák elrejtése
 Ukryj budynki i obiekty	Épületek és objektumok elrejtése
+Ukryj cudze	Mások elrejtése
 Ukryj czaszkę nad bossami	Koponya elrejtése a főnökök felett
 Ukryj drzewa	Fák elrejtése
 Ukryj efekty wzmocnień (szaman)	Erősítő hatások elrejtése (sámán)
@@ -6613,11 +6993,14 @@ Ulepszenie: Zasadzka	Fejlesztés: Leshely
 Ulepszenie: od 0 do 9.	Fejlesztés: 0-tól 9-ig.
 Ulepszona Butelka	Továbbfejlesztett Palack
 Ulepszony Barwnik	Továbbfejlesztett Festék
+Ulepszysz do: %s	Fejlesztheted erre: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Fejlesztheted az Istállómesternél (Lótanítás).
 Ulepszyć %s do poziomu %d?	Fejleszted a(z) %s képességet a(z) %d. szintre?
 Ultra	Ultra
 Ulubieni na górze listy	Kedvencek a lista tetején
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Magányos harcosok kedvenc frizurája, remekül néz ki, ha fúj a szél. Véglegesen megváltoztatja a karaktered frizuráját.
+Umiejetnosci widac tylko u gracza online	A képességek csak online játékosnál láthatók
+Umiejętn.	Képess.
 Umiejętności konia (miejsca: %d z 2)	Lóképességek (helyek: %d / 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Képességet a „Hősies” fokozattól lehet tanítani.
 Umiejętności pomocnicze	Támogató képességek
@@ -6625,6 +7008,7 @@ Umiejętności potencjału	Potenciál képességek
 Umiejętności potencjału (tylko czempion, 2 sloty)	Potenciál képességek (csak bajnok, 2 hely)
 Umiejętności potencjału (z jaj zwierzaków)	Potenciál képességek (kisállat-tojásokból)
 Umiejętności rozdaję sam	A képességpontokat magam osztom ki
+Umiejętności towarzysza	Társ képességei
 Umiejętności zwierzaka (3 sloty)	Kisállat képességei (3 hely)
 Umiejętności: przeciągnij je z okna postaci do pól.	Képességek: húzd őket a karakterablakból a mezőkbe.
 Umiejętność %d	%d. képesség
@@ -6637,6 +7021,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Egy egyenruha,
 Unik	Kitérés
 Unik Strzały	Nyíl kitérése
 Unik: %d%%	Kitérés: %d%%
+Uniknięcie śmierci	Halál elkerülése
 Upiorne Echo	Kísértet visszhang
 Upiorny Strażnik	Kísérteties őr
 Upiorny Wojownik	Kísértet harcos
@@ -6654,6 +7039,8 @@ Ustaw nowe hasło na stronie.	Állíts be új jelszót a weboldalon.
 Ustaw ten pasek jako aktywny (%d)	A sáv aktívvá tétele (%d)
 Ustawienia Społeczności zapisane.	A Közösség beállításai elmentve.
 Ustawienia Walki	Harci beállítások
+Usun GM	GM törlése
+Usun Moby	Mobok törlése
 Usun potwory	Szörnyek eltávolítása
 Usun przedmioty	Tárgyak megsemmisítése
 Usun wszystkie	Összes eltávolítása
@@ -6706,14 +7093,17 @@ Uziemienie	Földbe gyökerezés
 Ułóż i scal	Rendezés és összevonás
 Użycie	Használat
 Użyj	Használ
+Użyj %(n)s przedmiotów	Használj %(n)s tárgyat
 Użyj %(n)s x %(what)s	Használj %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Használj egy Kisállat Készségkönyvet a leltáradból
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Használd a Kígyótemplomban, hogy egy perccel meghosszabbítsd az expedíció idejét (legfeljebb 60 percig).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Használd, hogy felfedezz 5 zárolt helyet a személyes boltodban.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Használd a gyűrűt az Elemek Királyságában (a kilenc terület egyikén), hogy mindig a Természeterő-fennsíkra teleportálj. A gyűrű használat után eltűnik.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Használd a gyűrűt az Elemek Királyságában (a kilenc terület egyikén), hogy 10% eséllyel a Természeterő-fennsíkra teleportálj. A gyűrű minden használatkor eltűnik. Az Elemek Királysága minden szörnyétől és Metin kövétől eshet (bejárat: portál és az Öregember az Új Kontinens kikötőjében).
+Użyj przedmiotu	Használj tárgyat
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Használd a tapasztalatzár be- vagy kikapcsolásához. Időkorlát nélkül.
 Użyj, kiedy zablokujesz się w "teksturach".	Használd, ha beragadsz a „textúrákba”.
+Użytkowe	Használati
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Alteran sárkányának szárnyaival nemesíthetsz egy felszerelési tárgyat.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Ezzel az engedéllyel zsoldost toborozhatsz. (Egyelőre nincs haszna - a Yohara következő frissítésével érkezik.)
 Używalne	Használható
@@ -6803,6 +7193,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Az ütésnek %d%% esélye van,
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Yohara valutája (legfeljebb 999 999). Csiszolj Kavicsokat a Harcos Szobornál a kikötőben, fizess a Gaya Boltban és készítéskor.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Csere valuta: 1 Won = 100 000 000 Yang.
 Wampir	Vámpír
+Wampir+ (szary)	Vámpír+ (szürke)
 Warkocze Plem. (czerw.)	Törzsi copfok (piros)
 Warkocze Plem. (fiol.)	Törzsi copfok (lila)
 Warkocze Plem. (nieb.)	Törzsi copfok (kék)
@@ -6816,11 +7207,14 @@ Wartosc ataku vs potwory	Támadóérték szörnyek ellen
 Wartosc magicznego ataku	Mágikus támadóérték
 Wartownik z Yohara	Yohara őrszem
 Wartość Ataku	Támadóérték
+Wartość Ataku +30	Támadási érték +30
 Wartość Ataku w potwory +%d	Támadóérték a szörnyek ellen +%d
 Wartość Ataku: +12~15%	Támadóérték: +12~15%
 Wartość Magicznego Ataku: +30	Mágikus támadóérték: +30
 Wartość ataku +75 (miejsca 1-3)	Támadóérték +75 (1-3. helyezett)
+Wartość bonusu dokładnie taka	A bónusz értéke pontosan ennyi
 Wartość bonusu taka albo niższa	Ennyi vagy alacsonyabb bónuszérték
+Wartość bonusu taka albo wyższa	A bónusz értéke ennyi vagy magasabb
 Wartość sklepu przekracza 2 miliardy Yang.	A bolt értéke meghaladja a 2 milliárd Yangot.
 Warunek: bonus o co najmniej podanej wartości	Feltétel: legalább a megadott értékű bónusz
 Warunki	Feltételek
@@ -6849,6 +7243,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	TESZT verzió: a no
 Wersja: %d.%d.%d%s	Verzió: %d.%d.%d%s
 Wersja: 1.0.0	Verzió: 1.0.0
 Wersja: xxx	Verzió: xxx
+Wesoły Posłaniec Miłości	Vidám Szerelemhírnök
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Ebben a csodás kagylóban csillogó gyöngy rejtőzhet.
 Wezowy Lucznik Zodiaku	Zodiákus kígyó íjász
 Wezowy Miecznik Zodiaku	Zodiákus kígyó kardforgató
@@ -6878,13 +7273,16 @@ Wielorybi Pancerz	Bálna Páncél
 Wieprzowina	Sertéshús
 Wierzchowiec utknął - wsiadam ponownie	A hátas elakadt - újra felszállok
 Wieża Sung Mahi	Sung Mahi Tornya
+Wiking Światła+	Fény Viking+
 Wilk Piekielnej Wieży	Pokoli torony farkasa
 Wilk Zodiaku	Zodiákus farkas
+Wilki alfa	Alfa farkasok
 Wino Brzoskwini (W)	Barackbor (H)
 Wino Kwiatu Brzoskwini+	Barackvirág bor+
 Winogrono	Szőlő
 Wioska Gildii	Céhfalu
 Wioska gildii 1	Céhfalu 1
+Wiru Miecza	Kardforgatag
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Forgasd a kardod, hogy több ellenfelet támadj.|Erősíti: Erő (++), Ügyesség (+), Életerő (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Pörögj az ellenségek között tőrrel.|Erősíti: Ügyesség (++), Erő (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	A pörgő tőrnek %d%% esélye van az ellenfél kábítására
@@ -6905,6 +7303,7 @@ Wojna Imperiow 1	Királyságháború 1
 Wojna gildii i Krypta Balathora	Céhháború és Balathor Kriptája
 Wojow. z Toporem Zodiaku	Zodiákus baltás harcos
 Wojowniczka (K)	Harcos (N)
+Wojownik (Body)	Harcos (Test)
 Wojownik (Mental)	Harcos (Szellemi)
 Wojownik Ciało	Harcos Test
 Wojownik En-Tai	En-Tai harcos
@@ -6918,6 +7317,7 @@ Wojownik Umysł	Harcos Elme
 Wojownik Uruk	Uruk harcos
 Wojownik Zephyr	Zephyr harcos
 Wojskowy Koń	Katonai ló
+Wokol mnie	Körülöttem
 Wola Balathora	Balathor Akarata
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Balathor Akarata: ellenállás a kábítással, béklyóval és fagyasztással szemben %d%%
 Wola Sung Ma tej mapy	A térkép SungMa akarata
@@ -6942,6 +7342,7 @@ Wolne punkty statusu: %d	Szabad státuszpontok: %d
 Wolne punkty umiejętności	Szabad képességpontok
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	A lassú méregnek %d%% esélye van, hogy visszaverődik az ellenfélre
 Wounded Soldier	Sebesült katona
+Wołanie	Hívás
 Wpisz co najmniej 2 litery nazwy.	Írd be a név legalább 2 betűjét.
 Wpisz co najmniej 2 litery.	Írj be legalább 2 betűt.
 Wpisz ilosc (1-%d)	Add meg a mennyiséget (1-%d)
@@ -6959,6 +7360,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Írd be, hány bónusznak kell egye
 Wpłacało botów: %d	Befizető botok: %d
 Wrist	Csukló
 Wrogi Mur	Ellenséges Fal
+Wrzesień	Szeptember
 Wróć 11553 12697	Vissza 11553 12697
 Wróć do zapisanych reguł	Vissza a mentett szabályokhoz
 Wróć do zwykłej mapy	Vissza a normál térképre
@@ -6993,6 +7395,7 @@ Wszystkie na P	Mind P-re
 Wszystkie sloty sklepu są już odblokowane.	A bolt összes helye már fel van oldva.
 Wszystkie umiej. P	Minden képesség P
 Wszystkie warstwy	Minden réteg
+Wszystkie żywioły	Minden elem
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Mind: %d próbálkozás (sikeres: %d, sikertelen: %d).
 Wszystkie: tylko %s lub %s.	Mind: csak %s vagy %s.
 Wszystko to za 50 zł na miesiąc!	Mindez havi 50 złotyért!
@@ -7031,13 +7434,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	A kijelölés megvál
 Wyboru nie można cofnąć. Kontynuować?	A választás nem vonható vissza. Folytatod?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	A kiválasztott rang a készlet minden szörnyénél ennyi csillagot igényel.
 Wybrane bonusy i wartości	Kiválasztott bónuszok és értékek
+Wybrano: %s	Kiválasztva: %s
 Wybrany NPC jest tuż obok.	A kiválasztott NPC közvetlenül melletted van.
 Wybrany kanał dostępny jest tylko dla kont Premium.	A kiválasztott csatorna csak prémium fiókok számára érhető el.
 Wybrany przepis: %s	Kiválasztott recept: %s
 Wycena czesciowa - trwa wczytywanie	Részleges árazás - a betöltés folyamatban
 Wycena wygasła - wyceń ponownie.	Az árazás lejárt - árazd újra.
+Wycisz 1 dzien	Némítás 1 nap
+Wycisz 1 h	Némítás 1 óra
+Wycisz 10 min	Némítás 10 perc
 Wycisz na:	Némítás ennyi időre:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Kivont tárgy: az Ébredés szertartása már nincs, a kőnek nincs semmi haszna. Eldobhatod.
+Wyczysc filtry	Szűrők törlése
 Wyczyszczono wszystkie znaczniki sklepów offline.	Az összes offline bolt jelölője törölve lett.
 Wyczyszczono: %s	Törölve: %s
 Wyczyść	Törlés
@@ -7056,6 +7464,7 @@ Wydarzenie Wakacyjne	Nyári esemény
 Wydarzenie Walentynkowe	Valentin-napi esemény
 Wydarzenie Wielkanocne.	Húsvéti esemény.
 Wydobądź %(n)s rudy	Bányássz %(n)s ércet
+Wydobądź rudę	Bányássz ércet
 Wydłuża czas trwania twoich umiejętności.	Meghosszabbítja a képességeid időtartamát.
 Wygląd postaci	Karakter kinézet
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Ártalmatlannak látszik, de 100 százalékig halálos. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
@@ -7081,6 +7490,7 @@ Wykonaj zestaw broni	Fegyverszett készítése
 Wykonaj zestaw hełmu	Sisakszett készítése
 Wykonaj zestaw zbroi	Páncélszett készítése
 Wykonane zmiany: %d	Elvégzett cserék: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Végrehajtva: %s/%s. Összesen aktív: %s
 Wykopane rudy	Kibányászott ércek
 Wykorzystaj	Beváltás
 Wykorzystaj voucher	Kupon beváltása
@@ -7089,6 +7499,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	Egy meg nem nyitott bol
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Potenciálisan értékes tárgyat észleltünk, folytatod?
 Wykryto przedmiot z bonusem, kontynuować?	Bónuszos tárgyat észleltünk, folytatod?
 Wykryto wysoki poziom ulepszenia, kontynuować?	Magas fejlesztési szintet észleltünk, folytatod?
+Wylacz eventy	Események kikapcsolása
 Wylosować nową ofertę od razu?	Azonnal új ajánlatot sorsolsz?
 Wylosuj cele od nowa	Célok újrasorsolása
 Wyląg Exedyara	Exedyar kikelt kölyke
@@ -7112,6 +7523,8 @@ Wymagany poziom do zakupu: %d	A vásárláshoz szükséges szint: %d
 Wymagany poziom postaci: 75	Szükséges karakterszint: 75
 Wymagany poziom: %d	Szükséges szint: %d
 Wymiana ksiąg umiejętności	Képességkönyvek cseréje
+Wymiana u: %s	Csere itt: %s
+Wymiana: %s	Csere: %s
 Wymiany	Cserék
 Wymienić %d ksiąg na %d nowych za %s Yang?	Becserélsz %d könyvet %d újra %s Yangért?
 Wyniki odświeżają się co minutę.	Az eredmények percenként frissülnek.
@@ -7125,6 +7538,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Szabadon engeded %s kisáll
 Wypłać	Kivétel
 Wypłać sztuk:	Kivétel (db):
 Wyrok	Ítélet
+Wyrzuc bota	Bot kidobása
 Wyrzuc z gry...	Kidobás a játékból...
 Wyrzuc z serwera	Kidobás a szerverről
 Wyrzucic %s z gry?	Kidobod %s játékost a játékból?
@@ -7142,6 +7556,7 @@ Wysuszone Oczy	Szárított Szemek
 Wysyłanie do serwera...	Küldés a szervernek...
 Wyszukaj biżuterię i buty.	Ékszerek és cipők keresése.
 Wyszukaj bronie.	Fegyverek keresése.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Keress online játékost a képességek megtekintéséhez
 Wyszukaj przedmiot	Tárgy keresése
 Wyszukaj przedmioty z min. 1 bonusem.	Keress tárgyakat legalább 1 bónusszal.
 Wyszukaj zbroje/tarcze/hełmy.	Páncélok/pajzsok/sisakok keresése.
@@ -7240,6 +7655,7 @@ Wściekły Cierń	Dühöngő Tüske
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Dühös, tüskés és kíméletlen. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y globális méterben. Ctrl + kattintás a térképen = teleport.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang gyilkosságonként
 Yang z potworów +%d%%	Yang a szörnyektől +%d%%
 Yang za próbę awansu	Yang előléptetési kísérletenként
 Yesterday {:02d}:{:02d}	Tegnap {:02d}:{:02d}
@@ -7283,9 +7699,11 @@ Z jaja: %s	Tojásból: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Minden helyről ajánlatonként egy dolgot vásárolhatsz.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Illő jelmezzel: +800 HP, +15 támadóérték
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Illő frizurával: +800 HP, +15 támadóérték
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	%d%% eséllyel visszaállítja a képességeid várakozási idejét
 Z łukiem	Íjjal
 Z. Eliksir Mocy Płn. W.	Arany Északi Szél Erő Elixír
 Z. Eliksir Odp. na Ogień	Arany Tűzállóság Elixír
+ZAKRĘĆ	PÖRGETÉS
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	%d perc múlva elteleportálnak. Beszélj Dolnarral, a Sárkányőrzővel, hogy azonnal távozhass.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	A(z) %d. helyes ládához való kíséretért Goblin Kulcsot kapsz!
 Za 10 sekund pojawi się Jajo Smoka Balathora - wtedy możesz skupić na nim atak.	10 másodperc múlva megjelenik Balathor Sárkánytojása - akkor összpontosíthatod rá a támadásodat.
@@ -7326,13 +7744,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Ezért a körért %s Yangot és %d x
 Za ukończone tury także otrzymujesz nagrody.	A teljesített fordulókért is kapsz jutalmat.
 Za wysoka wartość: %s.	Túl magas érték: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	A speciális szűrő ki van kapcsolva: Játékopciók -> Egyéb -> Felvételi szűrő.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Speciális felvételi szűrő (jobb klikk a Ctrl+Z-n)
+Zabic postac %s?	Megölöd a(z) %s karaktert?
 Zabici gracze	Megölt játékosok
 Zabij %(n)s potworów	Ölj meg %(n)s szörnyet
+Zabij potwory	Öld meg a szörnyeket
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Megöli az orkokat és minden más förtelmet. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Zabite potwory	Legyőzött szörnyek
 Zablokowac konto %s NA ZAWSZE?	Letiltod a(z) %s fiókot ÖRÖKRE?
 Zablokowac konto %s na %s dni?	Letiltod a(z) %s fiókot %s napra?
 Zablokowac nowe logowania (przerwa techniczna)?	Letiltod az új bejelentkezéseket (karbantartás)?
+Zablokowane miejsce	Zárolt hely
 Zablokowani	Letiltottak
 Zablokowany przy sortowaniu (Alt+LPM)	Rendezésnél zárolva (Alt+BEK)
 Zablokuj ekwipunek	Felszerelés zárolása
@@ -7342,6 +7764,7 @@ Zabrakło Yang.	Elfogyott a Yang.
 Zabójca	Gyilkos
 Zabójca Króla	Királygyilkos
 Zabłąkany Dzikus	Kóbor vadember
+Zachowanie botow	Botok viselkedése
 Zacny Kam. Przebudzenia	Finom Felébredés Köve
 Zacny P. Wężowy (wykon.)	Nemes Kígyó Köpeny (kész.)
 Zacny Płaszcz Wężowy	Nemes Kígyó Köpeny
@@ -7375,6 +7798,7 @@ Zakończyć sesję farmienia?	Befejezed a farmolási munkamenetet?
 Zakres rysowania	Megjelenítési távolság
 Zakres sklepów	Boltok hatótávolsága
 Zakres widoku	Látótávolság
+Zakresy (puste = bez limitu)	Tartományok (üres = korlát nélkül)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Egy lefordított [5] feküdt a felfedett kártya mellett.[ENTER]Sajnos nem kapsz pontot. Most válaszd ki a királyodat [K].
 Zakręć kołem za jedyne	Pörgesd meg a kereket mindössze
 Zakręć kołem.	Pörgesd meg a kereket.
@@ -7382,6 +7806,7 @@ Zaktualizuj klienta i serwer.	Frissítsd a klienst és a szervert.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Frissítsd a szervert a státuszpontok kiosztásához.
 Zakup raz na %s	Vásárlás %s-ként egyszer
 Zakupy przerwane.	A vásárlás megszakadt.
+Zakupy towarzysza	Társ vásárlások
 Zakupy włoży ci do torby albo do swojej.	A vásárolt dolgokat a te vagy a saját táskájába teszi.
 Zamarznięta Wieża	Fagyott Torony
 Zamarznięty Generał	Fagyott tábornok
@@ -7403,6 +7828,7 @@ Zapisane bonusy	Mentett bónuszok
 Zapisane miejsca	Mentett helyek
 Zapisane pozycje	Mentett pozíciók
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	A mentett pozíciók csak üres tekerccsel (%s) működnek a leltárban.
+Zapisane zestawy	Mentett készletek
 Zapisano	Elmentve
 Zapisano (%s%%).	Mentve (%s%%).
 Zapisano (gracz offline)	Elmentve (a játékos offline)
@@ -7410,10 +7836,11 @@ Zapisano preset "%s".	A(z) "%s" sablon elmentve.
 Zapisano.	Mentve.
 Zapisano. Odswiezanie rang GM...	Elmentve. GM rangok frissítése...
 Zapisuje miejsce %d...	Hely mentése: %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Képernyőkép mentése:  Print (a képernyőkép a játék "screenshot" almappájába kerül)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Képernyőkép mentése:  Print (a kép a játék "screenshot" almappájába kerül)
 Zapisz i wyślij	Mentés és küldés
 Zapisz obecny filtr jako preset o tej nazwie	Jelenlegi szűrő mentése sablonként ezen a néven
 Zapisz reguły i wyślij je na serwer	Szabályok mentése és elküldése a szervernek
+Zapisz tu	Mentés ide
 Zaplanowana została przerwa w dostępie do usług.	Szolgáltatáskiesést terveztünk be.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Megakadályozza a ló állóképességének csökkenését, ideális hosszú utazásokhoz megállás nélkül.
 Zapomnienie umiejętności: Stajenny (za darmo).	Képességek elfelejtése: Istállómester (ingyen).
@@ -7452,6 +7879,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	A Seungryong völgyében szolgáló bátor harcosok jutalmait tartalmazza.
 Zawiodłeś.	Kudarcot vallottál.
 Zaznacz albo odznacz całą stronę	Az egész oldal kijelölése vagy kijelölésének törlése
+Zaznacz do "Kup wybrane"	Jelöld be a "Kijelöltek vétele" opcióhoz
 Zaznacz oferty, które chcesz kupić.	Jelöld ki a megvenni kívánt ajánlatokat.
 Zaznacz wszystkie	Összes kijelölése
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	A kijelölt küldetések eltűnnek a listáról, mintha soha nem is léteztek volna.
@@ -7470,9 +7898,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Gyűjts jelvényeket, hogy ládákra vagy fejlesztő anyagra cseréld őket.
 Zbieranie dla Biologa zamiast bicia poziomow.	Gyűjtés a Biológusnak szintlépés helyett.
 Zbierz %(n)s ziół	Gyűjts %(n)s gyógynövényt
+Zbierz yang	Gyűjts Yangot
+Zbierz zioła	Gyűjts gyógynövényeket
 Zbir Piekielnej Wieży	Pokoli torony martaléka
 Zbiórka na parterze wieży	Gyülekezés a torony földszintjén
 Zbocze Gautama	Gautama lejtő
+Zbr. Mroku Księżyca+ (m)	Holdsötét Páncél+ (f)
+Zbroja Ajolosa+ (m)	Ajolosz Páncél+ (f)
+Zbroja Avalonu+ (srebr.)	Avalon Páncél+ (ezüst)
 Zbroja Boskiego Smoka	Isteni Sárkány Páncél
 Zbroja Dzikiego Knura	Vadkan Páncél
 Zbroja Króla Wojowników+	Harcos király páncélja+
@@ -7481,8 +7914,10 @@ Zbroja Płytowa Zodiaku	Zodiákus Lemezpáncél
 Zbroja Smoka Magii	Mágia Sárkány Páncél
 Zbroja Smoka Mroku	Sötét Sárkány Páncél
 Zbroja Smoka Wiatru	Szél Sárkány Páncél
+Zbroja Szczodrego+	Bőkezű Páncél+
 Zbroja Tygrysa	Tigris Páncél
 Zbroja Wilka	Farkas Páncél
+Zbroja Zmarłych+ (m)	Holtak Páncélja+ (f)
 Zbroja Zodiaku	Zodiákus Páncél
 Zbroja wypełniona mocą boskiego smoka.	Isteni sárkány erejével átitatott páncél.
 Zbroja wypełniona mocą magicznego smoka.	Mágikus sárkány erejével átitatott páncél.
@@ -7511,6 +7946,8 @@ Zdobyte Yang	Szerzett Yang
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Az Új Kontinens szörnyeiért és küldetéseiért kapod.
 Zdobywasz je, chroniąc Goblina Skarbów	Úgy szerezheted meg őket, hogy megvéded a Kincs Goblint
 Zebrane kwiaty	Összegyűjtött virágok
+Zebrano %s z %s yang (%.1f%%)	Összegyűlt %s / %s Yang (%.1f%%)
+Zebrano: %d / %d	Összegyűlt: %d / %d
 Zegarek Kieszonkowy	Zsebóra
 Zejście Północnego Wiatru	Északi Szél Leszállása
 ZejściePłnW. 11590 12181	ÉSzél lejárat 11590 12181
@@ -7522,11 +7959,15 @@ Zemsta Czarnej Śmierci	A Fekete Halál Bosszúja
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Megidézett bossok: %s/%s.
 Zestaw %d	%d. szett
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	24 Okey kártyából álló készlet. Kattints jobb gombbal a hozzáadáshoz - egy Okey játék 1 kártyakészletbe és 30 000 Yangba kerül.
 Zestaw Opieki nad Koniem	Lóápolási készlet
 Zestaw kostiumów	Jelmezszett
 Zestaw kostiumów:	Jelmezszett:
+Zestaw:	Szett: 
+Zestawy lochowe	Kazamata készletek
+Zestawy polowe	Mezei készletek
 Zestawy: broń	Szettek: fegyverek
 Zestawy: hełmy	Szettek: sisakok
 Zestawy: zbroje	Szettek: páncélok
@@ -7546,6 +7987,7 @@ Zielone Zioło	Zöld Gyógynövény
 Zielone, fioletowe, peleryny: z targu.	Zöld, lila, köpenyek: a piacról.
 Zielony Lśniący Odłamek	Zöld Fényes Szilánk
 Zielony Sok	Zöld Lé
+Zielony Szaman+	Zöld Sámán+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Sung Ma Földje;Bajnok Szint nélkül nem sebezheted az itteni szörnyeket.
 Ziemie Mrocznego Smoka	A Sötét Sárkány földjei
 Ziemie gildii	Céhföldek
@@ -7562,11 +8004,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Sung Mahi ereje által átalakított fű. A villám elixírek elkészítéséhez szükséges. Az elixíreket Huahn-So füvesember készíti (Bokjung, Bakra, Jayang).
 Zjawa Żółt. Tygrysa (BŚ)	Sárga tigris kísértet (Világboss)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	A tele sávhoz szükséges táp elfogy.
+Zlamanie klatwy swiatyni	Templomátok megtörése
 Zlamanie odpornosci: dzwony	Ellenállás áttörése: csengők
+Zlamanie odpornosci: luki	Ellenállás áttörése: íjak
 Zlamanie odpornosci: miecze	Ellenállás áttörése: kardok
 Zlamanie odpornosci: sztylety	Ellenállás áttörése: tőrök
 Zlamanie odpornosci: wachlarze	Ellenállás áttörése: legyezők
 Zleć zbieranie:	Gyűjtés megrendelése:
+Zlodziej zycia	Életrabló
 Zly Silny Malpi Zolnierz	Gonosz Erős Majomkatona
 Zly Zolnierz Czarnej Burzy	Gonosz Fekete Vihar Katona
 Zly format (np. 18, M5, G1, P).	Hibás formátum (pl. 18, M5, G1, P).
@@ -7586,6 +8031,8 @@ Zmianki z (B) są używane jako pierwsze	A (B) jelű cserélők kerülnek felhas
 Zmiany dzialaja po kilku sekundach	A módosítások néhány másodperc múlva lépnek életbe
 Zmien ceny wszystkich	Az összes ár módosítása
 Zmien poziom konia	Ló szintjének módosítása
+Zmien range	Rang módosítása
+Zmien skille	Képességek módosítása
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Megváltoztatja a mitikus Sárkánykő bónuszait a Sárkányalkímia ablakban (bónuszváltás fül).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Megváltoztatja a kedvenc nevét (100.000 Yang).
 Zmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były.	Kis valószínűséggel megváltoztatja a 6. és 7. bónuszt. Húzd egy tárgyra: 10% esélye van a 6. és 7. bónusz megváltoztatására, az első 5 bónusz változatlan marad. Kudarc esetén a tárgy elhasználódik, a bónuszok pedig olyanok maradnak, mint voltak.
@@ -7642,10 +8089,14 @@ Znak Strażnika	Őrző Jegye
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Mesterien kovácsolt kulcs mágikus kristályból. A tökéletes láda kinyitásához szükséges.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Kiváló! A kártyád magasabb.[ENTER]Fedj fel egy újabb kártyát.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Találat: %d - megjelenítve: %d, szűkítsd a keresést.
+Znaleziono: %d	Találat: %d
 Znaleziono: %d - wybierz z listy.	Találat: %d - válassz a listából.
+Znaleziono: %s	Találat: %s
 Znika 15 dni po otrzymaniu.	Az átvétel után 15 nappal eltűnik.
+Zniszcz %(n)s kamieni Metin	Pusztíts el %(n)s Metin követ
 Zniszcz %(n)s x %(what)s	Pusztíts el %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Pusztítsd el a tojásokat a sebzés okozásához!
+Zniszcz kamienie Metin	Pusztíts el Metin köveket
 Zniszczone Metiny	Elpusztított Metinek
 Zniszczone kamienie Metin	Elpusztított Metin kövek
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Egy Sárkánytojás megsemmisült - Balathor Pecsétje erősen meggyengült.
@@ -7657,6 +8108,7 @@ Zodiak Ognia	Tűz Zodiákus
 Zodiak Wiatru	Szél Zodiákus
 Zodiak Ziemi	Föld Zodiákus
 Zol. Czar. Wiat. Zodiaku	Zodiákus arany fekete szél
+Zolnierz Czarnego Wiatru	Fekete Szél Katonája
 Zolnierz Gladiator Kosci	Csont gladiátor katona
 Zolnierz Shrimp Zodiaku	Zodiákus Shrimp katona
 Zolnierz Spartaner	Spartaner katona
@@ -7678,8 +8130,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Kaka�
 Zroszony Młot	Harmatos Kalapács
 Zrzut ekranu	Képernyőkép
 Zrzut ekranu zapisano w '%s'.	A képernyőkép mentve ide: '%s'.
+Zrzutka yang	Yang-gyűjtés
 Zrób miejsce w ekwipunku.	Csinálj helyet a leltáradban.
 Zręczność	Ügyesség
+Zsiadam po buffy	Leszállok buffokért
 Zsiądź z konia, aby go rozwijać.	Szállj le a lóról a tanításhoz.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Gombaleves
@@ -7762,6 +8216,28 @@ Zwiększa szansę na drop Yang.	Növeli a Yang-zsákmány esélyét.
 Zwiększa szansę na kradzież PE.	Növeli az SP-lopás esélyét.
 Zwiększa szansę na kradzież PŻ.	Növeli a HP-lopás esélyét.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	10 percre 10%-kal megnöveli a kritikus találat esélyét.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) kiegészítők készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) kiegészítők készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) fegyverek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) fegyverek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) képességkönyvek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) képességkönyvek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) övek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) övek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) egyéb tárgyak készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) egyéb tárgyak készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) kedvencek tárgyai készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) kedvencek tárgyai készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) kesztyűk készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) kesztyűk készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) páncélok készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) páncélok készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) fegyverszettek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) fegyverszettek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) sisakszettek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) sisakszettek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Növeli a(z) páncélszettek készítésének sikerességi esélyét 1%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Két ilyen rúnát Yu-Hwan 2* rúnává (40%) alakít át.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Növeli a(z) páncélszettek készítésének sikerességi esélyét 20%-kal. Tedd a készítési ablak "Esély növelése" mezőjébe - minden próbálkozásnál egy rúna elhasználódik. Ez a rúna maximális szintje.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	10 percre 10%-kal megnöveli az átütő találat esélyét.
 Zwiększa szansę na przywołanie konia.	Növeli a ló megidézésének esélyét.
 Zwiększa szansę na spowolnienie przeciwnika.	Növeli az ellenfél lelassításának esélyét.
@@ -7788,6 +8264,10 @@ Zwiększa twoją szybkość ataku o 15% na okres 30 minut. Niezdatna do handlu.	
 Zwiększa twoją szybkość ataku o 20% na okres 30 minut. Niezdatna do handlu.	30 percre 20%-kal megnöveli a támadási sebességedet. Nem kereskedhető.
 Zwiększa umiejętności twojego wierzchowca	Növeli a hátasod képességeit
 Zwiększa wartość odbitych ciosów.	Növeli a visszavert csapások értékét.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	%d mp-re 15-tel növeli a SungMa akaraterőt (INT) harcban.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	%d mp-re 15-tel növeli a SungMa akaraterőt (RES) harcban.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	%d mp-re 15-tel növeli a SungMa akaraterőt (STR) harcban.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	%d mp-re 15-tel növeli a SungMa akaraterőt (VIT) harcban.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Növeli az állóképességet. Izomerősítő tulajdonságairól ismert.
 Zwiększa wzrost doświadczenia.	Növeli a tapasztalat növekedését.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Növeli az okozott fizikai és mágikus sebzést. Más játékosra is rávarázsolható. Önmagadon használva bónuszt kapsz.
@@ -7811,6 +8291,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Visszaadja a Sung Ma Elle
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Visszaadja a Sung Ma Erőbe fektetett Bajnok pontokat.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Visszaadja a Sung Ma Vitalitásba fektetett Bajnok pontokat.
 Zwyczajna Szata Aury	Közönséges Aura Köntös
+Zwykle bicie potworow	Sima szörnyverés
 Zwykła Skóra	Közönséges Bőr
 Zwykłe Mikstury	Közönséges italok
 Zwykłe potwory	Normál szörnyek
@@ -7877,8 +8358,11 @@ Złośliwa	Rosszindulatú
 Zły Pł. Wężowy (wykon.)	Gonosz Kígyó Köpeny (kész.)
 Zły Płaszcz Wężowy	Gonosz Kígyó Köpeny
 Złów %(n)s ryb	Fogj ki %(n)s halat
+Złów ryby	Fogj halat
 [ Założony ]	[ Felvéve ]
 [%s] [Sklep] %s	[%s] [Bolt] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Egy Buffi képességre húzz egy sámán Készségkönyvet.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Ezt a képességet a Készségkönyv fejleszti: %s (sámán).
 [NIE]	[NEM]
@@ -7887,7 +8371,9 @@ Złów %(n)s ryb	Fogj ki %(n)s halat
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Kliensfájlok] Töltsd le az aktuális kliensfájlokat a panelen: Adatbázis-szerkesztő -> Alkalmaz -> Aktuális kliensfájlok letöltése (zip), és csomagold ki őket a játék mappájába.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Kincskeresés] Új fordulót értél el!
 [Sklep]	[Bolt]
+[TAK]	[IGEN]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Háború] A céhed háborúban áll - kattints a „Belépés a háborúba” gombra a háborús táblán (bal alsó sarok).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	de ha kudarcot vallasz, a tárgy megsemmisül. Szeretnéd folytatni?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	de csak az időtartam 50%-áig, és az életkor elölről kezdődik.
@@ -7897,6 +8383,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Közvetlenül támadod az ellenséget.|Erősíti: Erő (++), Ügyesség (+), Életerő (+).
 autotarget: no Kolejny cel row in the game options	autotarget: nincs Következő cél sor a játékbeállításokban
 bez bonusu	bónusz nélkül
+bije wszystko w pobliżu	mindent megüt a közelben
 bonusów 1-5 spoza warunków	a feltételeken kívüli 1-5. bónuszok
 brak bonusu	nincs bónusz
 bush_ancientlichen	bush_ancientlichen
@@ -7935,7 +8422,15 @@ dni	nap
 do końca SM	amíg el nem fogy a Sárkánypénz
 dodaje nowy crafting %d item %d	új craftolást ad hozzá: %d tárgy %d
 dodatkowo zweryfikowana po stronie serwera.	ezen felül a szerver oldalán is ellenőrzésre kerül.
+dystans %d	dystans %d
 dzień	nap
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	az egyik térképen: Seungryong-völgy, Yongbi-sivatag,
 gildie każdego królestwa (odbiór w tym oknie).	királyságonként (átvétel ebben az ablakban).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	és várakozási idővel. Add hozzá: egy-egy Kard, Védelem,
@@ -7955,11 +8450,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	könyv a te kasztodhoz és 
 ktoś był szybszy	valaki gyorsabb volt
 która ma już pięć bonusów.	amelyeken már öt bónusz van.
 które wypadają z ostatniego bossa.	amelyek az utolsó bossból esnek.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	bal egérgomb vagy %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	véletlen térkép
 ma swój ranking postaci i gildii. Na koniec sezonu	saját karakter- és céhrangsora van. A szezon végén
 maksymalne PŻ /2	maximális HP /2
 maksymalne PŻ są o połowę mniejsze	a maximális HP a felére csökken
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: hiba a kártyák ablakában (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	az eszköztárban nyitott fül mellett).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	a Kincs-szigeten (Kincsjegyek a ládákból).
@@ -7978,6 +8478,7 @@ nie udało się zapisać ustawień.	nem sikerült elmenteni a beállításokat.
 nie walczy wcale	egyáltalán nem harcol
 nie wybrano	nincs kiválasztva
 nie wydaje	nem költ
+nie zaczyna, broni ciebie i siebie	nem kezd, véd téged és önmagát
 nowego bossa! W przeciwnym razie nagroda przepadnie.	megjelenik! Ellenkező esetben a jutalom elvész.
 obnizaj cene o	csökkentse az árat ennyivel:
 obok ciebie	melletted
@@ -7985,7 +8486,9 @@ obrażenia zadawane potworom /2	a szörnyeknek okozott sebzés /2
 obrażenia zadawane potworom są o połowę mniejsze	a szörnyeknek okozott sebzés a felére csökken
 od +%d	+%d-tól
 od +0 do +7 (także z bonusami),	+0-tól +7-ig (bónuszokkal is),
+odprawa tak	odprawa tak
 oferta została już sprzedana	az ajánlat már elkelt
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	más tárgy alá - hány másodpercenként használja.
 podswietl po (godzin, 0 = wyl.)	kiemelés ennyi óra után (0 = ki)
@@ -7997,11 +8500,13 @@ poziom łupu IV - 25 Kamyków	IV. zsákmányszint - 25 Kavics
 przez podany czas; każdy zostawia sobie zapas.	a megadott időn át; mindegyik tart magánál tartalékot.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	a Démontorony földszintjén lévő Keménység Metinnél; a hiányzó helyeket
 przy kolejnych próbach łowienia?	a következő horgászati próbálkozásoknál?
+przy tobie	melletted
 przywołany	megidézve
 próby: %d	próbálkozás: %d
 prędkość ruchu /2	mozgási sebesség /2
 prędkość ruchu jest o połowę mniejsza	a mozgási sebesség a felére csökken
 puste = dowolny przedmiot	üres = bármely tárgy
+reguła "%s"	"%s" szabály
 reliktu go niszczy.	az ereklye kivétele elpusztítja.
 robi zakupy	vásárol
 rodzaj bez filtra	típus szűrő nélkül
@@ -8013,11 +8518,16 @@ ręcznie	kézzel
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	a szerver nem válaszol (hiányzik az autohunttest javítás) - nem indult el.
 serwer nie potwierdził zakupu	a szerver nem erősítette meg a vásárlást
 serwer nie pozwala teraz polować.	a szerver most nem engedi a vadászatot.
+sezon %d	%d. évad
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	térképen vagy, mint a Világfőnök, és a minimálisan
 skillbook	Képességkönyv
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	a bolt hibás tárgyakat tartalmazhat. Folytatod?
 sklep odmówił sprzedaży	a bolt megtagadta az eladást
 start, zasięg %d m.	indítás, hatótáv: %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	a fiók végleges tiltását vonhatja maga után.
 stoi - pokonajcie go, zanim ucieknie!	áll - győzzétek le, mielőtt elmenekül!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	ez a tárgy itt nem használható (ital, erősítés vagy harmat).
@@ -8031,24 +8541,36 @@ tylko gdy gracz jest AKTUALNIE online.	csak akkor, ha a játékos JELENLEG onlin
 uciekł - nikt nie dostał nagrody	elmenekült - senki nem kapott jutalmat
 ulepszony Nóż.	továbbfejlesztett Kés.
 umiej %d	%d. képesség
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	a kliens újraindítása után változik.
 ustawienia zapisane.	beállítások elmentve.
+usun	usun 
+usun %d	usun %d
+w dniach	napokban
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	támadóérték +20% 3 órán át (a jutalommal együtt vehető át,
 ważne	fontos
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	beépített böngésző (új kliens exe fájl szükséges).
+wolna ręka	szabad kéz
 wprowadzenie aby móc kontynuować rozgrywkę.	helyesen, hogy folytathasd a játékot.
 wszystkie przedmioty	összes tárgy
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	mező (I / II) ereklyéje működik. Az első aktiválás után
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	kijelentkezteti a már bejelentkezett munkamenetet. Kidobás a szerverről működik
 wyłączone na tym serwerze.	ki van kapcsolva ezen a szerveren.
 z nagrodą, przed pojawieniem się kolejnego bossa).	a következő főnök megjelenése előtt).
 zajmiesz w rankingu.	érsz el a rangsorban.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	a királyságodból bérelt botok töltik be. Néhány perc gyülekezés után
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	leállt - elindult a normál Auto Vadászat.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	páncélok és jelmezek egymással, fegyverkinézet az ilyen típusú fegyverrel.
 zeruje Twoje obrażenia.	nullázza a sebzésed.
 zmieniła się cena albo ilość	az ár vagy a mennyiség megváltozott
 zostają, a zwierzak zachowuje 80% swojego wieku.	megmaradnak, a kisállat pedig megtartja életkorának 80%-át.
 zostanie zresetowany.	nullázódik.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 {} + {} rozdziel przedmioty.	{} + {} tárgyak szétválasztása.
 {}'s Auction	{} aukciója
@@ -8088,12 +8610,19 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dGyűjtés befejezve - az egész összeg összegyűlt
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aA gyűjtés ideje lejárt
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aElőbb teljesítsd://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aA gyűjtést a vezető lezárta
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893aelérhető [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - gyors bejelentkezés.
+|cfff4f770Trwa misja	|cfff4f770Megbízás folyamatban
+|cfff4f770Trwa zrzutka	|cfff4f770Gyűjtés folyamatban
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742FIGYELEM!|r Biztonsági ellenőrzés!
+Óó	Óó
+Ąą	Ąą
 ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
 ąćęłńóśźż	ąćęłńóśźż
 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Egyetlen szörny sem dobja ezt.
 Ładny Kam. Przebudzenia	Szép Felébredés Köve
 Ładny Kamień Chaosu	Szép Káosz Kő
@@ -8145,6 +8674,8 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Łuski Smoka	Sárkánypikkelyek
 Łączenie	Kapcsolódás
 Łączne obrażenia	Összes sebzés
+Łączny czas	Összidő
+Łł	Łł
 Ńń	Ńń
 Ściana	Fal
 Ściąga do ciebie grupy potworów z okolicy.	Idehúzza hozzád a környék szörnycsoportjait.
@@ -8158,12 +8689,14 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Śnieżna Czapa Leoparda+	Havas leopárd sapka+
 Śnieżna Czapa Zajęcza	Havas nyuszi sapka
 Śnieżna Czapa Zajęcza+	Havas nyuszi sapka+
+Śnieżny Bambi	Havas Bambi
 Śnieżny Kwiat	Hóvirág\r\n
 Śnieżny Leonidas	Havas Leonidas
 Śnieżny Leonidas(piecz.)	Havas Leonidas pecsét
 Śpiew Stali	Az Acél Éneke
 Śpiew Wiatru	A Szél Éneke
 Śpiewająca Furia	Éneklő Düh
+Śr. czas sesji	Átl. munkamenet
 Śr. obrażenia	Átl. sebzés
 Śr. yang na sesję	Átl. Yang munkamenetenként
 Średni	Közepes
@@ -8172,6 +8705,7 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Średnio	Közepes
 Środa	Szerda
 Środek Ścierny	Csiszolóanyag
+Św. Nosiciel Światła+	Szent Fényhordozó+
 Św. Odłamek Broni I	Szent Fegyver Szilánk I
 Św. Odłamek Broni II	Szent Fegyver Szilánk II
 Św. Odłamek Hełmu I	Szent Sisak Szilánk I
@@ -8185,6 +8719,7 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Światło Gwiazd	Csillagfény
 Światło Gwiazd (9.skill)	Csillagfény (9. képesség)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Kiválóan alkalmas tábortűzön való sütésre.
+Świąt. Zim. Zbroja+ (m)	Ünn. Téli Páncél+ (f)
 Świąteczna Brązowa Skrzynia Okey	Karácsonyi Bronz Okey Láda
 Świąteczna Srebrna Skrzynia Okey	Karácsonyi Ezüst Okey Láda
 Świąteczna Złota Skrzynia Okey	Karácsonyi Arany Okey Láda
@@ -8195,14 +8730,17 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Świątynia	Templom
 Świątynia Węży	Kígyótemplom
 Świątynia Zodiaku	Zodiákus Templom
+Święty	Szent
 Święty Efekt Zestawu	Szent szetthatás
 Święty Kowal Zestawu	Szent szettkovács
 Święty Miecz Bogów+	Az istenek szent kardja+
 Święty Odłamek	Szent Erőszilánk
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Szent virág a Sárkányisten kertjéből. Felszerelés fejlesztésére szolgál.
+Śś	Śś
 şó ĹĄşę	şó ĹĄşę
 Źródła	Források
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	A horgászbot erőforrása. Érintése fejleszti az eszközt, és megnyitja az utat a legmélyebb vizek fogásaihoz.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Egyetlen holló sem bánta a fegyver elkészítését. Fegyver Fiatal Hősöknek: 15 nappal a megszerzés után eltűnik (felvéve is). Nem fejleszthető, nem módosítható, bónuszok nem adhatók hozzá, szellemkő nem helyezhető bele, nem cserélhető, nem adható el, és nem tehető a raktárba.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Egyik sem: kikapcsolja a Társ üzeneteit. Fontos: teli EQ, hátizsák, értékek.
 Żałobna Pieśń	Gyászének
@@ -8219,6 +8757,7 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Żołnierz Schron. Płn. W.	Menedék katona (Északi szél)
 Żołnierz Wężowy	Kígyó katona
 Żołnierze	Katonák
+Życie goblina	Goblin élete
 Żywe Drzewo	Élő Fa
 Żywioł potworów na tym piętrze	A szörnyek eleme ezen az emeleten
 Żywioł: %s	Elem: %s
@@ -8238,3 +8777,4 @@ zwykłe Auto Łowy zatrzymane.	a normál Auto Vadászat leállt.
 Żółty Sok	Sárga Lé
 Żądza Krwi +%.0f	Vérszomj +%.0f
 Żż	Żż
+żadne	nincs

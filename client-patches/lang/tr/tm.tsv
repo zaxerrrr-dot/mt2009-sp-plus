@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 gün)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 saat)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: seviye %(b)d.
 %d - %d obrażeń	%d - %d hasar
 %d - rzadko 100 - jak w grze %d - czesto	%d - nadir      100 - oyundaki gibi      %d - sık
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 %d%% Wola SungMa (WIT)	%%%d SungMa İradesi (WIT)
 %d%% na losowy bonus.	Rastgele bonus için %d%%.
 %d%% szans na zablokowanie obrażeń od ataku	Saldırılardan gelen hasarı engelleme şansı %%%d
+%d%% szansy na deptanie przeciwników przez 20 sek.	%%%d şansla 20 sn. boyunca rakipleri çiğnersin
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%%%d şansla ölümden kaçınır ve %%30 HP yeniler
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%%%d şansla çevredeki tüm canavarlar sana saldırır (cesaret pelerini)
 %d%% Średnie Obrażenia	%%%d Ortalama Hasar
 %d. miejsce	%d. sıra
 %d. pusty	%d. boş
+%dx %s (dowolne z %d)	%dx %s (%d içinden herhangi biri)
 %dx (po %d)	%dx (tanesi %d)
 %s %d - zostało %d	%s %d - %d kaldı
 %s (%d szt.)	%s (%d adet)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Sv %d) - pid %d, konum (%d, %d), krallık %d
 %s (Pozostały czas: %s)	%s (Kalan süre: %s)
 %s (co %d sek.)	%s (her %d sn.)
+%s (inna mapa)	%s (başka harita)
 %s (maks. %.1f)	%s (maks. %.1f)
 %s (maks. %d)	%s (maks. %d)
 %s (maks.)	%s (maks.)
@@ -111,19 +117,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 (Kup wszystkie przedmioty tego typu)	(Bu türdeki tüm eşyaları satın al)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 (Najedź myszką na ikonę)	(Simgenin üzerine gel)
+(brak klawisza - Esc, Skróty klawiszowe)	(tuş yok - Esc, Kısayol Tuşları)
 (brak)	(yok)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (filtre kapalı - şu anda her şeyi topluyorsun)
 (na koniu: %d)	 (binekte: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(en yüksek seviye, Gemi Savunması, tam tecrübe küresi).
 (nieznana)	 (bilinmiyor)
 (od P)	 (P'den)
+(postac offline - brak podgladu skilli)	(karakter çevrimdışı - yetenek önizlemesi yok)
 (poziom %d)	 (seviye %d)
+(puste)	(boş)
 (szansa %s%%)	 (şans %%%s)
 (ten bot nic jeszcze nie powiedzial)	(bu bot henüz bir şey söylemedi)
 (wybierz stworzenie)	(bir yaratık seç)
 (wybierz z listy)	(listeden seç)
 (wybierz)	(seç)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* DİKKAT * Deneysel seçenek![ENTER]Arayüz Ölçekleme Modu arayüzün kalitesini[ENTER]düşürebilir (grafik öğeler, yazı tipi).[ENTER]|cff8ab98eYeşil|r renk ölçeklemenin en uygun OLABİLECEĞİNİ gösterir.[ENTER]|cffe57976Kırmızı|r renk ölçeklemenin oyunun[ENTER]yanıt vermemesine yol açabileceğini gösterir.
++ Dodaj bonus	+ Bonus ekle
 + Dodaj przedmiot	+ Eşya ekle
 + Pkt umiejetn.	+ Yetenek puanı
 +%d Inteligencja	+%d Zeka
@@ -156,6 +166,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 +25% szansy na drop przez 2 godziny	   2 saat boyunca +%25 düşme şansı
 +3% siły przeciwko kamieniom Metin	Metin taşlarına karşı +%3 güç
 +50% szansy na drop przez 2 godziny	   2 saat boyunca +%50 düşme şansı
++800 PŻ	+800 PŻ
 , PPM: dokładny filtr	, SağTık: ayrıntılı filtre
 , atak włączony	, saldırı açık
 - Czekaj cierpliwie na odpowiedź.	- Cevabı sabırla bekle.
@@ -166,6 +177,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 - drugie miejsce od 31 poziomu konia	- ikinci yuva at seviye 31'den itibaren
 - piętro %d	 - kat %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- boş yuva: bir at yeteneği kitabı oku
+-- Ninja Archer - skille P --	-- Ninja Okçu - Yetenekler P --
+-- Ninja Dagger - skille P --	-- Ninja Hançer - Yetenekler P --
+-- Sura BM - skille P --	-- Sura BM - Yetenekler P --
+-- Sura WP - skille P --	-- Sura WP - Yetenekler P --
 -- Szaman Healer - skille P --	-- Şaman İyileştirici - P yetenekleri --
 -- Szaman Smok - skille P --	-- Şaman Ejderha - P yetenekleri --
 -- Wojownik Body - skille P --	-- Savaşçı Beden - P yetenekleri --
@@ -175,17 +190,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 ... i %d więcej.	... ve %d tane daha.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...ve %d tane daha - tam liste Düşme Wiki penceresinde (envanter kenar çubuğu).
 / - powtarza poprzednia komende	/ - önceki komutu tekrarlar
+/a - dajemy komus dany lvl	/a - birine belirtilen seviyeyi veririz
 /a level - Zmienia lvl gracza	/a level - Oyuncunun seviyesini değiştirir
 /b - ogloszenie w ramce	/b - çerçeveli duyuru
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - sohbeti bir süreliğine engeller
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - sohbeti engellenmiş oyuncuların listesi
 /dc - wyrzuca kogos z serwera	/dc - birini sunucudan atar
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...bilinmiyor...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...bilinmiyor...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...bilinmiyor...
 /gete - ...nie wiem...	/gete - ...bilinmiyor...
 /getq - ...nie wiem...	/getq - ...bilinmiyor...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - çöle ışınlanma
 /go s - teleport na Gore Sohan	/go s - Sohan Dağı'na ışınlanma
+/go t - teleport do Doliny Orkow	/go t - Ork Vadisi'ne ışınlanma
 /go tr - teleport do Lasu Duchow	/go tr - Hayalet Orman'a ışınlanma
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - Kızıl Orman'a ışınlanma
 /go x y - przenosi do wspolrzednych x y	/go x y - x y koordinatlarına götürür
@@ -194,13 +221,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 /horse_level - podnosi poziom konia	/horse_level - at seviyesini yükseltir
 /horse_ride - przywoluje konia	/horse_ride - atı çağırır
 /inv - niewidzialnosc	/inv - görünmezlik
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - bir eşyadan birkaç adet ekler
 /item - dodaje przedmiot	/item - eşya ekler
 /kill - zabija gracza	/kill - oyuncuyu öldürür
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - karakterin seviyesini değiştirir
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - canavar veya NPC çağırır
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - yürüme hızı
 /n - Wiadomosc na gorze ekranu	/n - Ekranın üstünde mesaj
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Gözlemci modu
 /open - start eventu OX	/open - OX etkinliğini başlatır
 /p - zamiana w potwora lub npc	/p - seni canavara veya NPC'ye dönüştürür
@@ -218,12 +254,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - EXP'yi belirli bir süre için verilen yüzde kadar artırır
 /purge - usuwa potwory, npc itp z okolicy	/purge - çevredeki canavarları, NPC'leri vb. kaldırır
 /r - przywraca wszystkie pkt energii i zycia	/r - tüm SP ve HP'yi yeniler
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...bilinmiyor...
 /reset - resetuje PZ i PE	/reset - HP ve SP'yi yeniler
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - şövalye rütbesi
+/set exp - dostajemy dana ilosc expa	/set exp - belirtilen miktarda EXP alırız
+/set gold - dostajemy dana ilosc Yang	/set gold - belirtilen miktarda Yang alırız
+/set max_hp - zwieksza punkty zycia	/set max_hp - can puanını artırır
 /set max_sp - zwieksza punkty energii	/set max_sp - SP'yi artırır
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - verilen sayıda yetenek puanı ekler
+/set_maxhp - doladowanie hp	/set_maxhp - HP yükleme
 /set_maxsp - doladowanie pe	/set_maxsp - SP'yi doldurur
+/set_state information - ...nie wiem...	/set_state information - ...bilmiyorum...
+/set_state run - ...nie wiem...	/set_state run - ...bilmiyorum...
+/set_state start - ...nie wiem...	/set_state start - ...bilmiyorum...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Liderlik P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Dönüşüm P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - at seviyesi 30
@@ -237,21 +288,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Ejderha Tanrısı'nın Gazabı
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Ejderha'nın Dileği
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...bilinmiyor...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - birine belirtilen yeteneği P olarak veririz
 /ski 121 - Dowodzenie	/ski 121 - Liderlik
 /ski 131 - Przywolaj Konia	/ski 131 - At Çağır
 /slow - spowalnia gracza	/slow - oyuncuyu yavaşlatır
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - oyuncuyu bayıltır
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - oyuncuyu GM'nin yanına getirir
+/w - ilosc osob online	/w - çevrimiçi kişi sayısı
 /warp - przenosi GM'a do gracza	/warp - GM'yi oyuncunun yanına götürür
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Karlı Ada (GM'lerin yerleşimi)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - GM Arenası'na ışınlanma
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - önce canavara sağ tıkla, sonra komutu yaz ve canavarın 1 HP'si kalır
+/xmas 0 - Dzien	/xmas 0 - Gündüz
 /xmas 1 - Noc	/xmas 1 - Gece
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Gündüz
 /xmas_boom 1 - Noc	/xmas_boom 1 - Gece
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - karı kapat
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - karı aç
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - Şarkı kapanır
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Noel şarkısını açar
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - bayram KAPALI
 0 - nakarm peta	0 - evcil hayvanı besle
 0 = bez granicy	0 = sınır yok
 1 dzień	1 gün
+1 godz.	1 sa.
 1 krok	1 adım
+1* Runa Wyk. Akcesoriów	1* Aksesuar Dövme Rünü
+1* Runa Wyk. Ks. Um.	1* Beceri Kitabı Dövme Rünü
+1* Runa Wyk. Poz. Prz.	1* Diğer Eşya Dövme Rünü
+1* Runa Wyk. Prz. d. Zw.	1* Pet Eşyası Dövme Rünü
+1* Runa Wyk. Rękawiczek	1* Eldiven Dövme Rünü
+1* Runa Wyk. Zest. Broni	1* Silah Seti Dövme Rünü
+1* Runa Wyk. Zest. Hełm.	1* Miğfer Seti Dövme Rünü
+1* Runa Wyk. Zest. Zbroi	1* Zırh Seti Dövme Rünü
+1* Runa Wykuwania Broni	1* Silah Dövme Rünü
+1* Runa Wykuwania Pasów	1* Kemer Dövme Rünü
+1* Runa Wykuwania Zbroi	1* Zırh Dövme Rünü
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normal. Hemen etkili olur.
 1. Posterunek Myr	1. Myr Karakolu
 1. dodany bonus +%d%%	1. eklenen bonus +%%%d
@@ -262,16 +337,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (25'li Paket)
 100% szans na przeczytanie	%100 okuma şansı
 100% szans na ulepszenie.	%100 yükseltme şansı.
 15% or more	%15 veya daha fazla
+2 godz.	2 sa.
 2-12 liter lub cyfr!	2-12 harf veya rakam!
 20% or more	%20 veya daha fazla
 25 kart królewskich dało nową Talię Królewską.	25 kral kartı yeni bir Kral Destesi oluşturdu.
 25% only	Yalnızca %25
+25-40 lvl	25-40 sv
 2x PD	2x Tecrübe
 3 Loch Pająków	Örümcek Zindanı 3
 3 losowe bonusy podstawowe	3 rastgele temel bonus
 3 metiny	3 Metin
+4 godz.	4 sa.
+5 bossow	5 boss
+5% obrażeń będzie dodanych do PŻ	Hasarın %5'i PŻ'ye eklenir
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Çakıl Taşı, Esrarengiz Sandık, Ejderha Parası Kuponu (20),
 50% więcej doświadczenia	%50 daha fazla tecrübe
+8 godz.	8 sa.
 < 10 sek	< 10 sn
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	Fırtına Pençesi kullanıldığında HP'nin %%%d kadarını emer
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	Ruh Darbesi kullanıldığında HP'nin %%%d kadarını emer
@@ -308,6 +389,7 @@ Ahtrin Wielki Mistrz	Ahtrin Büyük Ustası
 Ahtrin Wojownik	Ahtrin Savaşçısı
 Ahtrin Zwiadowca	Ahtrin Gözcüsü
 Akcja:	İşlem:
+Akcje botow	Bot işlemleri
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Veriler şu anda yükleniyor. Lütfen daha sonra tekrar dene.
 Aktualny poziom: %s	Mevcut seviye: %s
 Aktywna	Etkin
@@ -345,6 +427,8 @@ Alchemy	Simya
 Alchemy Grade:	Simya Derecesi:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Envanterine sığmayan tüm eşyalar Pazar Deposuna taşınacak. Devam etmek istiyor musun?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Tüm |cFFFFFF99|h{}|r envantere veya Pazar Deposuna taşınacak. Devam etmek istiyor musun?
+Alt (przytrzymaj)	Alt (basılı tut)
+Alt + LPM	Alt + Sol Tık
 Amal	Amal
 Amator Ninja	Acemi Ninja
 Amator Shaman	Acemi Şaman
@@ -365,6 +449,7 @@ Antymagia	Anti-Büyü
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Binek Dönüşümü İptali
 Anulacja Transmutacji	Dönüşüm İptali
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Kalan işlemler iptal edildi. Gönderilen silme istekleri zaten uygulanmış olabilir.
 Anuluj edycje	Düzenlemeleri İptal Et
 Anuluj misję	Görevi İptal Et
 Appaloosa	Appaloosa
@@ -376,6 +461,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Büyülü Orman (ZÇ) muhafı
 Apteczka strażników Zaklętego Lasu.	Büyülü Orman muhafızlarının ilk yardım çantası.
 Arahan Zodiaku	Zodyak Arahan
 Arbuz	Karpuz
+Arena Pojedynków	Düello Arenası
+Arena pojedynkow	Düello arenası
 Argos (mrok)	Argos (karanlık)
 Argos (ogień)	Argos (ateş)
 Arial	Arial
@@ -400,6 +487,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Rakibi sersemleten uzun menzilli sal
 Atak krwawienia	Kanama saldırısı
 Atak magiczny	Büyü saldırısı
 Atak magiczny/fizyczny %	Büyülü/fiziksel saldırı %
+Atak na Metiny	Metin Saldırısı
 Atak na odległość	Uzak mesafe saldırısı
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Üç isabet şansı ve rakibi zehirleme şansı olan dönen bir saldırı. 
 Atak obszarowy walki wręcz	Yakın dövüş alan saldırısı
@@ -418,6 +506,7 @@ Atak trzema ciosami pod rząd.	Arka arkaya üç darbeyle saldırır.
 Atak umożliwiający ominięcie obrony przeciwnika.	Rakibin savunmasını atlatan bir saldırı.
 Atak w kilka celów	Birden Fazla Hedefe Saldırı
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Geniş menzilli uzak saldırı; tek bir düşmanı veya yan yana duran birkaç düşmanı vurur.
+Atak z wierzchowca	Binekten Saldırı
 Atak zasięgowy	Uzun menzilli saldırı
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Savaş sırasında yakındaki canavarlara, hasarı otomatik saldırı hasarına eşit olan şimşeklerle saldır (bekleme süresi 15 sn.).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Düşmanlara ejderha suretleriyle saldır.|Güçlendiren: Zeka (++), Çeviklik (isabet) (+), karakter seviyesi.
@@ -425,6 +514,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Düşmanlara doğrudan saldırır.|Güçlendiren: Güç (++), Dayanıklılık (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Etrafındaki düşmanlara saldırır, rakibi sersemletme şansı vardır.
 Atakuje wszystkich przeciwników wokół siebie.	Etrafındaki tüm düşmanlara saldırır.
+Atakujący (atak)	Saldırgan (saldırı)
 Atrybut Błyskawicy	Şimşek Özelliği
 Atrybut Błyskawicy|Efekt Omdlenia	Şimşek Özelliği|Bayılma Etkisi
 Atrybut Piorunu	Yıldırım Özelliği
@@ -455,6 +545,7 @@ Auto Łowy: bojowiec wyłączony.	Oto Av: savaş atı modu kapalı.
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Oto Av: süre kalmadı. İtem Mağazası'ndan "Oto Av (8s)" satın al ve envanterden kullan - süre yalnızca oyundayken akar.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Oto Av: ata binilemiyor - yaya avlanılıyor. Kendin bin (Ctrl+G), savaş atı modu geri gelir.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Oto Av: ata binemiyorum - her %d sn'de bir deniyorum, o zamana kadar yaya savaşıyorum.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Otomatik Av: bineğe tekrar binilemedi, takılma sonrası av durduruldu.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Oto Av: takıldıktan sonra bineğe yeniden binilemedi.
 Auto Łowy: nie udało się zapisać ustawień.	Oto Av: ayarlar kaydedilemedi.
 Auto Łowy: podnoszenie jest wyłączone.	Oto Av: eşya toplama kapalı.
@@ -474,10 +565,13 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Otomatik fiyat etkin değil. Hiçb
 Auto-obnizka ceny	Otomatik fiyat indirimi
 Auto-obnizka: %s - nowa cena %s	Otomatik indirim: %s - yeni fiyat %s
 Auto-obnizka: -%d%% co %dh, min. %s	Otomatik indirim: -%%%d her %d sa, en az %s
+Auto-obnizka: -%d%%/%dh	Auto-obnizka: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Otomatik indirim: %%1-%%%d, her 1-%d saatte bir, asgari fiyat en az 1 Yang.
+Auto-obnizka: wyl.	Auto-obnizka: wyl.
 Auto-obnizka: wylaczona	Otomatik indirim: kapalı
 Autologin: ponownie za %d s (próba %d)	Otomatik giriş: %d sn sonra yeniden (deneme %d)
 Automatyczne podnoszenie Yang.	Otomatik Yang toplama.
+Automatyczne zbieranie	Otomatik toplama
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	SP'ni otomatik olarak yeniler. Hacim: 1.000.000 SP.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	SP'ni otomatik olarak yeniler. Hacim: 100.000 SP.
 Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	SP'ni otomatik olarak yeniler. Hacim: 300.000 SP.
@@ -489,14 +583,20 @@ Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	HP'ni otomatik ol
 Autopodnoszenie:	Otomatik toplama:
 Autopoty	Otomatik İksirler
 Autospin - wygrane: %s	Otomatik çevirme - kazançlar: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Otomatik çevirme durduruldu - Kader Çarkı kapalı.
+Autospin zatrzymany - brak odpowiedzi serwera.	Otomatik çevirme durduruldu - sunucudan yanıt yok.
+Autospin zatrzymany - obrót odrzucony.	Otomatik çevirme durduruldu - çevirme reddedildi.
 Autospin zatrzymany.	Otomatik çevirme durduruldu.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Otomatik çevirme: %d çevirme, %d Ejderha Parası harcandı, ana ödül: %d.
 Autospin: brak odpowiedzi.	Otomatik çevirme: yanıt yok.
+Autospin: główna nagroda - zatrzymany.	Otomatik çevirme: ana ödül - durduruldu.
 Autospin: główna nagroda!	Otomatik çevirme: ana ödül!
+Autospin: koniec (%d obrotów).	Otomatik çevirme: bitti (%d çevirme).
 Autospin: koniec.	Otomatik çevirme: bitti.
 Autospin: koło wyłączone.	Otomatik çevirme: çark kapalı.
 Autospin: obrót odrzucony.	Otomatik çevirme: çevirme reddedildi.
 Autospin: za mało SM.	Otomatik çevirme: Ejderha Parası yetersiz.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Otomatik çevirme: bir sonraki çevirme için yeterli Ejderha Parası yok.
 Autołowy	Otomatik Av
 Autołowy (TEST)	Otomatik Av (TEST)
 Autołowy - szybki start/stop	Otomatik Av - hızlı başlat/durdur
@@ -545,6 +645,7 @@ Best. Czl. Skor. Zodiaku	Zodyak Vahşi Akrep Adamı
 Best. Wężowy Miecznik	Vahşi Yılan Kılıç Ustası
 Best. Wężowy Wojownik	Vahşi Yılan Savaşçısı
 Best. Wężowy Łucznik	Vahşi Yılan Okçusu
+Bestialski Fanatyk	Vahşi Fanatik
 Bez bonusów podstawowych - jadeit nic nie dodaje	Temel bonus yok - yeşim hiçbir şey eklemez
 Bez imienia (Zwój Imienia Buffi).	İsimsiz (Buffi İsim Tomarı).
 Bez koloru	Renksiz
@@ -592,11 +693,13 @@ Biolog	Biyolog
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	Biyolog kalıcı bonuslar verir ve silinen adım geri alınamaz.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	Biyolog, kalitesiz bir örneği incelemek için süre harcamaz.
 Blad danych - sprawdz ID i ilosc.	Veri hatası - ID ve miktarı kontrol et.
+Blad danych - sprawdz PID i ilosc.	Veri hatası - PID'yi ve miktarı kontrol et.
 Blad danych - sprawdz kwote.	Veri hatası - tutarı kontrol et.
 Blad danych - sprawdz wartosc.	Veri hatası - değeri kontrol et.
 Blad danych.	Veri hatası.
 Blad odpowiedzi serwera.	Sunucu yanıt hatası.
 Blad zapytania do bazy.	Veritabanı sorgu hatası.
+Blad: %s	Hata: %s
 Blad: nie mozna utworzyc marmuru.	Hata: bilye oluşturulamadı.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Hata: yeniden başlatma isteği kaydedilemedi.
 Blade	Bıçak
@@ -604,8 +707,11 @@ Blok Ataku	Saldırı Bloku
 Blokada Konta	Hesap Yasağı
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	Yasak, bu hesaba SONRAKİ girişten itibaren geçerli olur - yalnızca
 Blokada konta	Hesap Yasağı
+Blokada permanentna	Kalıcı engel
+Blokada tymczasowa	Geçici engel
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	Sıralama kilidi yalnızca çantadaki bir eşyaya konabilir.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Kazanılan tecrübeyi engeller. Bu, görev ödüllerini de kapsar. Etki süresince kazanılan tecrübe sonsuza dek kaybolur!
+Blokujący (czas trwania)	Engelleyici (süre)
 Bo Zodiaku	Zodyak Bo
 Body	Gövde
 Bohat. Księga Zwierza	Kahraman Evcil Hayvan Kitabı
@@ -634,6 +740,7 @@ Bonus vs Bossy	Patronlara karşı bonus
 Bonus vs Bossy/Metiny	Patronlara/Metinlere karşı bonus
 Bonus vs Ludzie	Yarı insanlara karşı bonus
 Bonus vs Metiny	Metinlere karşı bonus
+Bonus vs Nieumarli	Ölümsüzlere Bonus
 Bonus vs Orki	Orklara karşı bonus
 Bonus vs Potwory	Canavarlara karşı bonus
 Bonus vs Szaman	Şamana karşı bonus
@@ -682,9 +789,12 @@ Bossy	Patronlar
 Bossy > Metiny > Moby	Bosslar > Metinler > Canavarlar
 Bossy > Moby > Metiny	Bosslar > Canavarlar > Metinler
 Bot	Bot
+Boty do spawnu	Doğacak botlar
 Boty gildii	Lonca Botları
 Boty nie maja jeszcze wyceny tego przedmiotu.	Botların bu eşya için henüz bir fiyatı yok.
+Boty pisza na czacie	Botlar sohbette yazıyor
 Boty w misji: %d / %d (od poziomu %d)	Görevdeki botlar: %d / %d (%d. seviyeden itibaren)
+Boty zlomiarze	Hurdacı botlar
 Boty: %s z %s (razem %s)	Botlar: %s / %s (toplam %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Bot: %d (loncadan %d, kiralanan %d), istenen %d
 Bow	Yay
@@ -694,6 +804,7 @@ Brak / >	Yok / >
 Brak aktywnej misji albo limit został przekroczony.	Etkin görev yok veya sınır aşıldı.
 Brak aktywnej sesji	Etkin oturum yok
 Brak aktywnej sesji.	Etkin oturum yok.
+Brak bonusu albo powyżej %d	Bonus yok veya %d üzeri
 Brak danych cenowych dla tego przedmiotu.	Bu eşya için fiyat verisi yok.
 Brak danych do wyceny	Değerleme için veri yok
 Brak danych o bonusach.	Bonus verisi yok.
@@ -740,8 +851,10 @@ Brakuje Yang na: %s (%s).	Yeterli Yang yok: %s (%s).
 Brakuje ci Odłamków: %s.	Güç Parçaların eksik: %s.
 Brakuje ci Suplementów: %s.	Katkıların eksik: %s.
 Brakuje materiałów do rozwoju.	Gelişim için malzeme yetersiz.
+Brakuje: %s	Eksik: %s
 Bransoleta z Turmalinu	Turmalin Bilezik
 Braz. Niedzw. Zodiaku	Zodyak Kahverengi Ayısı
+Brazowy Niedzwiedz	Kahverengi Ayı
 Brillant	Parlak
 Bronie	Silahlar
 Browarnik	Biracı
@@ -756,6 +869,7 @@ Brązowa Chusta	Kahverengi Başörtüsü
 Brązowa Chusta+	Kahverengi Başörtüsü+
 Brązowa Farba	Kahverengi Boya
 Brązowa Rosa	Kahverengi Çiy
+Brązowa Wilcza Szata+(m)	Kahverengi Kurt Cübbesi+ (e)
 Brązowa Woda	Kahverengi Su
 Brązowe Płyty	Bronz Plakalar
 Brązowy Sok	Kahverengi Meyve Suyu
@@ -791,10 +905,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	HP ve SP'ni anında %100'e yenileyen bir kutsama. 2 dakikada bir kullanılabilir. Bekleme süresini Dokunulmazlık ve Yenilmezlik İksirleri ile paylaşır.
 Błyskaw.	Şimşek
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Düşmanlarına anında ebedi huzur sağlar. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
+Błyszcząca	Parlayan
 Błyszcząca Szata Aury	Parlak Aura Cübbesi
 Błąd serwera - spróbuj ponownie.	Sunucu hatası - tekrar dene.
 Błąd zapytania.	Sorgu hatası.
 Błędne podanie kodu może skutkować	Kodun yanlış girilmesi
+C. Ratownik Plażowy+	Kır. Cankurtaran+
 CPU	CPU
 CPU TNL może ulepszyć szybkość słabszego PC.	CPU TNL zayıf bir bilgisayarın hızını artırabilir.
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Arayüzü geri getir.
@@ -833,6 +949,7 @@ Charyzma Nowicjusza	Acemi Karizması
 Chcesz zacząć grę?	Oyuna başlamak istiyor musun?
 Chcesz zakończyć grę i otrzymać wygraną?	Oyunu bitirip kazancını almak istiyor musun?
 Chcesz zrealizować to pole?	Bu alanı kullanmak istiyor musun?
+Chciano botów: %d	İstenen bot: %d
 Chciałeś %d szt., a tyle da się kupić.	%d adet istedin, satın alınabilecek miktar bu kadar.
 Chegal, Goliat Cienia	Chegal, Gölge Devi
 Chodząca Legenda	Yürüyen Efsane
@@ -847,12 +964,14 @@ Chwilę...	Bir saniye...
 Chwilę... spróbuj jeszcze raz.	Bir saniye... tekrar dene.
 Cicha Klątwa	Sessiz Lanet
 Ciekawski	Meraklı
+Ciemna Szata Proroka+(m)	Koyu Peygamber Cübbesi+ (e)
 Ciemność	Karanlık
 Cienie	Gölgeler
 Cieniolubny Liść	Gölgesever Yaprak
 Cienka Nić	İnce Tel
 Cienka Przędza	İnce İplik
 Cienka Skóra	İnce Deri
+Ciepły Kaftan Zimowy+(m)	Sıcak Kış Kaftanı+ (e)
 Ciągliwość	Esneklik
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Dayanıklı taştan yapılmış ağır bir ok ucu. Daha yavaş olsa da güçlü darbeler vurur ve sert zırhları delmek için mükemmeldir.
 Ciężkie Pasy	Ağır Kayışlar
@@ -876,6 +995,9 @@ Continue	Devam
 Costume	Kostüm
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Bir şeyler ters gitti. Eşya Seon-Hae'de güvende - daha sonra tekrar dene.
 Create	Oluştur
+Ctrl (przytrzymaj)	Ctrl (basılı tut)
+Ctrl + LPM	Ctrl + Sol Tık
+Ctrl + PPM	Ctrl + Sağ Tık
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + SağTık: hepsini çıkar, Shift: miktar
 Ctrl + klik: kilka punktów naraz	Ctrl + tıkla: aynı anda birkaç puan
 Ctrl + klik: odepnij	Ctrl + tıkla: çöz
@@ -900,6 +1022,9 @@ Cyjanowy Sok	Camgöbeği Meyve Suyu
 Cyklop Kat (BŚ)	Siklop Celladı (DB)
 Cyklop Mag (BŚ)	Siklop Büyücüsü (DB)
 Cyklop Żołnierz (BŚ)	Siklop Askeri (DB)
+Cz. Królik K. Czarów+(m)	Kır. Büyücü Tavşan+ (e)
+Cz. Szata Faraona+ (m)	Kır. Firavun Cübbesi+ (e)
+Cz. Wojownik P.Księżyca+	Kır. Ay Savaşçısı+
 Czapka Jokera (k)	Hokkabaz Şapkası (k)
 Czapka Jokera (m)	Hokkabaz Şapkası (e)
 Czapka z Pomp. (czerw.)	Ponponlu Bere (kırmızı)
@@ -911,15 +1036,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Bu mührün büyüsü bineğini, görkemli Bengal Kaplanını (gri) çağırır.
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Bu mührün büyüsü bineğini, görkemli Bengal Kaplanını (yeşil) çağırır.
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Bu mührün büyüsü bineğini, görkemli Bengal Kaplanını (altın) çağırır.
+Czar. Szata Dokkaebi+(m)	Siyah Dokkaebi Cübbesi+ (e)
+Czarna Lampa Lorda+	Lord'un Kara Lambası+
 Czarna Pantera	Kara Panter
 Czarna Stal	Kara Çelik
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Erkekler için tavşan kulaklı siyah şapka. Sana en az bir rastgele efsun verir.
 Czarna magia	Kara Büyü
 Czarnoksiężnik P. Wieży	Cehennem Kulesi Büyücüsü
 Czarny Barwnik	Siyah Boya
+Czarny Niedzwiedz	Kara Ayı
 Czarny Ork Zodiaku	Zodyak Kara Ork
 Czarny Rumak	Kara Aygır
 Czarny Skorpion	Kara Akrep
+Czarny jak noc Ks. Wam.+	Gece Kadar Siyah Vampir Prensi+
 Czarodziej Gnoll	Gnoll Büyücü
 Czarodziej Stylu Małp	Maymun Tarzı Büyücüsü
 Czarownik Sch. Płn. W.	K. Rüzgârı Sığınak Büyücüsü
@@ -979,11 +1108,14 @@ Czekoladowy Amulet	Çikolata Tılsımı
 Czempion	Şampiyon
 Czempion %s	Şampiyon %s
 Czer. Amazonka Zodiaku	Zodyak Kızıl Amazon
+Czer. Sweter Świąt.+ (m)	Kır. Bayram Kazağı+ (e)
 Czer. Żeń-szeń (premium)	Kırmızı Ginseng (premium)
 Czerw. Duch Drzewa	Kırmızı Ağaç Ruhu
 Czerw. Duch Pniaka	Kırmızı Kütük Ruhu
+Czerw. Galowy Strój+ (m)	Kır. Gala Kıyafeti+ (e)
 Czerw. Las Duchow	Kızıl Hayalet Orman
 Czerw. Tr. Pajak Zodiaku	Zodyak Kırmızı Zehirli Örümceği
+Czerw. Zbr. Azraela+ (m)	Kırmızı Azrael Zırhı+ (e)
 Czerwona Mikstura (W)	Kırmızı İksir (Sa)
 Czerwona Runa SungMa	Kırmızı SungMa Rünü
 Czerwona Smocza Łuska	Kırmızı Ejderha Pulu
@@ -1001,8 +1133,11 @@ Czerwony Kat Zodiaku	Zodyak Kızıl Cellat
 Czerwony Mag Zodiaku	Zodyak Kızıl Büyücü
 Czerwony Monokl	Kırmızı Monokl
 Czerwony Skorpion	Kırmızı Akrep
+Czerwony Smoczek	Kırmızı Ejderçik
+Czerwony Smoczy Rycerz+	Kırmızı Ejder Şövalyesi+
 Czerwony Smoczy Róg	Kırmızı Ejderha Boynuzu
 Czerwony Sok	Kırmızı Meyve Suyu
+Czerwony Toreador+	Kırmızı Matador+
 Czwartek	Perşembe
 Czy chcesz cofnąć misję do poziomu 1?	Görevi 1. seviyeye sıfırlamak istiyor musun?
 Czy chcesz dokonać masowej sprzedaży?	Toplu satış yapmak istiyor musun?
@@ -1012,7 +1147,7 @@ Czy chcesz kupić %s %s za %s?	%s %s, %s karşılığında satın almak istiyor 
 Czy chcesz kupić %s (szt. %d) za %s?	%s (x%d) eşyasını %s karşılığında satın almak istiyor musun?
 Czy chcesz naładować %d Animosfer?	%d Animküre doldurmak istiyor musun?
 Czy chcesz odesłać Enasira?	Enasir'i göndermek istiyor musun?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	%s Yang karşılığında %d Ejderha Hayaleti yenilemek istiyor musun?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	%s Yang karşılığında %d Ejder Ruhu yenilemek ister misin?
 Czy chcesz opuścić wojnę gildii?	Lonca savaşından ayrılmak istiyor musun?
 Czy chcesz otworzyć to pudło?	Bu kutuyu açmak istiyor musun?
 Czy chcesz ożywić gracza %s?	%s adlı oyuncuyu diriltmek istiyor musun?
@@ -1050,6 +1185,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Bu tür�
 Czym jest Konto Premium?	Premium Hesap nedir?
 Czysta esencja z serca najgłębszych źródeł.	En derin kaynakların kalbinden gelen saf öz.
 Czyste zwoje (%s) w ekwipunku: %d	Envanterdeki boş tomarlar (%s): %d
+Czytanie bez opoznienia dnia	Gün gecikmesi olmadan okuma
+Czyściec Ognia	Ateş Araf'ı
 Czyśćiec Ognia	Ateş Arafı
 Część zestawów kostiumów (%d)	Kostüm setlerinin parçası (%d)
 Członek gildii %s jest teraz w grze.	Lonca üyesi %s şu anda oyunda.
@@ -1125,6 +1262,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Takas için bir Ruh Taşı ekle.
 Dodaj Księgę Umiejętności do wymiany.	Takas için bir Beceri Kitabı ekle.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Gaya Dükkanı'na, soldan ikinci sıradaki ilk yuvadan başlayarak değerli eşya teklifleri için bir yuva daha ekler. Liman Gaya Dükkanı'nda kullan (Yeni Kıta Limanı'ndaki Savaşçı Heykeli).
+Dodaj do ulubionych	Favorilere ekle
 Dodaj przedmiot do wymiany.	Takas için bir eşya ekle.
 Dodaj przedmioty do sklepu.	Dükkâna eşya ekle.
 Dodaj punkt Sung Ma	Sung Ma puanı ekle
@@ -1150,14 +1288,19 @@ Dolina	Vadi
 Dolina Cyklopow	Kiklop Vadisi
 Dolina Cyklopów	Siklop Vadisi
 Dolina Orkow	Ork Vadisi
+Dolina Orków	Ork Vadisi
+Dolina Orków / Ognista Ziemia	Ork Vadisi / Ateş Diyarı
 Dom Aukcyjny	Müzayede Evi
 Dom Aukcyjny działa tylko w M1.	Müzayede Evi yalnızca M1'de çalışır.
 Dom Aukcyjny jest wyłączony.	Müzayede Evi devre dışı.
 Dom Aukcyjny moze byc wylaczony.	Müzayede Evi devre dışı olabilir.
 Dom Aukcyjny: %s	Müzayede Evi: %s
+Dom Aukcyjny: %s - %s.	Müzayede Evi: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Müzayede Evi: aynı anda en fazla %d bonus.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Müzayede Evi: önceki satın alımlar hâlâ sürüyor.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Müzayede Evi: biraz sonra tekrar dene.
+Dom Towarowy	Çarşı
+Dom Towarowy: %s	Çarşı: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Pazar Yeri: seçilen teklifler satın alınıyor.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Pazar Yeri: teklifleri seç (tekliğin yanındaki kutucuk), sonra Hepsini al'a bas.
 Domyślna	Varsayılan
@@ -1205,6 +1348,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Binerken tecrübe +%%%(v)s
 Doświadczenie +%d%%	Tecrübe +%%%d
 Doświadczenie Czempiona : %.2f%%	Şampiyon tecrübesi : %%%.2f
 Doświadczenie Czempiona: %s / %s	Şampiyon tecrübesi: %s / %s
+Doświadczenie łącznie	Toplam deneyim
 Doświadczenie: %d%%	Tecrübe: %%%d
 Doświadczenie: %d%% (%d / %d)	Tecrübe: %%%d (%d / %d)
 Doświadczenie: %s / %s	Tecrübe: %s / %s
@@ -1213,10 +1357,15 @@ Drewniany Klucz	Tahta Anahtar
 Drobny Kam. Przebudzenia	Ufak Uyanış Taşı
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Yohara'nın değerli para birimi. Yeni Kıta Limanı'ndaki Savaşçı Heykeli'nde 30 Çakılı işle (Zihin Taşı +0 ile +3 ve 15 000 Yang ile - %70 şans) ve 3 Gaya kazan. Bununla Liman Gaya Dükkanı'nda, set demircilerinde, Yılan Heykeli'nde, Gizemli Sunak'ta ve Usta Chi'de ödeme yaparsın. Diğer oyuncularla takas edilemez.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Yeşim ve turkuazla süslenmiş değerli bir yüzük. Verir: +%50 EXP, +%30 canavarlara karşı güç, +%20 saldırı ve büyü hızı, +%10 maks. HP ve SP.
+Drop Przedmiotow:	Eşya Düşürme:
 Drop Yang	Yang Düşürme
 Drop potwora %s:	%s canavarının düşürdükleri:
 Drop przedmiotów +%d%%	Eşya düşmesi +%%%d
+Drop z bossów	Boss Düşürmesi
 Dropek Metinów	Metin Düşürücü
+Dropek medali	Madalya Düşeni
+Dropek z M2	M2 Düşeni
+Dropek z M3	M3 Düşeni
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	Yukarıdaki ayarın ikinci yarısı - sıradan bir canavar öldürüldüğünde değil, bir Metin taşı yıkıldığında hesaplanan ayrı bir şans.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Üç farkındalık kitabının ikincisi. Sahibinin karizmasını artırabilir. Okunduktan sonra kitap kaybolur. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Üç diziliş savaşı kitabının ikincisi. Sahibinin ilhamını artırabilir. Okunduktan sonra kitap kaybolur. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
@@ -1256,6 +1405,7 @@ Dusza wojownika, obdarzona mocą.	Güçle donatılmış bir savaşçının ruhu.
 Dusza Światła	Işık Ruhu
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Ruhlar envanterden kendiliğinden alınır - yanında taşımak yeterli.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Premium haşlanmış ginseng - Güçlü Savaş Atı'nın (31. seviyeden itibaren at) tek yemi. Çağırdığın atı beslemek için sağ tıkla veya ata ver. Yohara canavarlarından düşer.
+Duzy Lysy Ork	Büyük Kel Ork
 Duża	Büyük
 Duży Skorpion	Büyük Akrep
 Dwigant Zodiaku	Zodyak Dvigantı
@@ -1286,14 +1436,17 @@ Dzik Zodiaku	Zodyak Yaban Domuzu
 Dziki General Zodiaku	Zodyak Vahşi Generali
 Dziki Lucznik Zodiaku	Zodyak Vahşi Okçusu
 Dziki Moa (pieczęć)	Yabani Moa (Mühür)
+Dziki Sluga	Vahşi Hizmetkar
 Dziki Sluga Zodiaku	Zodyak Vahşi Hizmetkârı
 Dziki Z. Piech. Zodiaku	Zodyak Vahşi Piyadesi
+Dziki Zolnierz Piechoty	Vahşi Piyade Askeri
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Bu iksir sayesinde 3 saatlik oyun süresi boyunca %150 daha fazla tecrübe toplarsın. Takas edilemez.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Bu mühür sayesinde tek boynuzlu atı çağırabilirsin.
 Dzięki tej pieczęci możesz przywołać marę senną.	Bu mühür sayesinde kâbus atını çağırabilirsin.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Bu mühür sayesinde petini çağırabilirsin.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Bu mühür sayesinde yumurtadan Sheldon çıkar.
 Dziękujemy za zgłoszenie!	Bildirimin için teşekkürler!
+Dziś	Bugün
 Dzwon Anielski	Melek Çanı
 Dzwon Arkt. Króla	Kutup Kralı Çanı
 Dzwon Błk. Wiatru	Lacivert Rüzgâr Çanı
@@ -1411,6 +1564,7 @@ Elit. Ork Zodiaku	Zodyak Seçkin Ork
 Elit. Ork Zwiad. Zodiaku	Zodyak Seçkin Ork Gözcüsü
 Elita Atlantydy	Atlantis Seçkini
 Elitarny Ezoteryczny Fanatyk	Elit Mistik Fanatik
+Elitarny Ork	Elit Ork
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Futbol şampiyonlarının amblemi. 6 saat boyunca verir: +%50 EXP, +%20 saldırı hızı, +%20 büyü hızı, +%35 büyülü ve yakın dövüş saldırısı, +%10 maks. HP, +%10 maks. SP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	İki kişilik duygu ifadeleri (öpücük, okşama) izin sormadan.
 Emocje: nie	Duygu ifadeleri: hayır
@@ -1448,6 +1602,7 @@ Event wielkanocny	Paskalya Etkinliği
 Event wlaczony	Etkinlik açık
 Event wyłączony	Etkinlik kapalı
 Eventy (bonus imperium)	Etkinlikler (krallık bonusu)
+Eventy w dniu %s:	%s günündeki etkinlikler:
 Eventy wylaczone	Etkinlikler kapalı
 Ewoluować szatę za %s Yang i materiał?	Kıyafet %s Yang ve malzeme karşılığında evrimleştirilsin mi?
 Expimy razem	Birlikte EXP Kasalım
@@ -1456,6 +1611,7 @@ Ezot. Dreczyciel Zodiaku	Zodyak Ezoterik Işkenceci
 Ezot. Fanatyk Zodiaku	Zodyak Ezoterik Fanatik
 Ezot. Wojownik Zodiaku	Zodyak Ezoterik Savaşçı
 Ezoteryczne Drewno	Ezoterik Odun
+Ezoteryczny Fanatyk	Ezoterik Fanatik
 Ezoteryczny Ostrzowiec	Ezoterik Bıçak Ustası
 FC Bawaria Hwang+ (k)	FC Bawaria Hwang+ (d)
 FC Bawaria Hwang+ (m)	FC Bawaria Hwang+ (e)
@@ -1478,6 +1634,8 @@ Farbuje włosy na czarno.|Możesz farbować włosy raz na 3 poziomy.	Saçını s
 Farbuje włosy na czerwono.|Możesz farbować włosy raz na 3 poziomy.	Saçını kırmızıya boyar.|Saçını her 3 seviyede bir boyayabilirsin.
 Fatalne Skrzydla Smierci	Ölümcül Ölüm Kanatları
 Filters History	Filtre Geçmişi
+Filtr %d	Filtre %d
+Filtr (%d)	Filtre (%d)
 Filtr bonusów (prawy klik czyści)	Bonus filtresi (sağ tık temizler)
 Filtr podnoszenia	Alma Filtresi
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	Toplama filtresi KAPALI (Ctrl+Z) - şu anda her şeyi topluyorsun.
@@ -1486,7 +1644,9 @@ Filtr podnoszenia: %s	Toplama filtresi: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Toplama filtresi: bu karakterin Oto Av eşya türleri artık Z, Oto Av ve Yoldaş için geçerli (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Toplama filtresi: "%s" ön ayarı yüklendi.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Toplama filtresi: "%s" türünün kuralları kaydedildi (%d).
+Filtr rodzaju	Tür filtresi
 Filtr wyłączony - podnosisz wszystko.	Filtre kapalı - her şeyi topluyorsun.
+Filtry (%d)	Filtreler (%d)
 Filtry bonusow	Bonus filtreleri
 Fioletowa	Mor
 Fioletowa Rosa	Mor Çiy
@@ -1573,9 +1733,11 @@ Glodny Czarny Niedzwiedz	Aç Kara Ayı
 Glodny Dzik	Aç Yaban Domuzu
 Glodny Niebieski Alfa Wilk	Aç Mavi Alfa Kurt
 Glodny Niebieski Wilk	Aç Mavi Kurt
+Glodny Niedzwiedz	Aç Ayı
 Glodny Szary Wilk	Aç Gri Kurt
 Glodny Tygrys	Aç Kaplan
 Glodny Wilk	Aç Kurt
+Glodny Zablakany Pies	Aç Başıboş Köpek
 Gniazdo Sheldona	Sheldon'ın Yuvası
 Gniewne Serce (pieczęć)	Öfkeli Kalp (Mühür)
 Gniewny Mini Alastor	Öfkeli Mini Alastor
@@ -1600,6 +1762,7 @@ Gotowa do ewolucji u Theowahdana	Theowahdan'da evrime hazır
 Gotowa za: %s	Hazır olmasına: %s
 Gotowe! Odbierz przedmiot	Hazır! Eşyanı al
 Gotowy do użycia	Kullanıma hazır
+Gotowy. Usuwane sa cale wybrane stosy.	Hazır. Seçilen yığınların tamamı silinir.
 Gourou	Gourou
 Gra	Oyun
 Gra beze mnie	Bensiz Oynar
@@ -1636,6 +1799,7 @@ Gruby Mini Kat (pieczęć)	Şişman Mini Cellat (mühür)
 Grudzień	Aralık
 Grupa: %s	Grup: %s
 Grupuj	Grupla
+Grupy (PT)	Gruplar (PT)
 Gruszka	Armut
 Gwarancja Rzemiosła (Biżuteria)	Zanaat Garantisi (Takı)
 Gwarancja Rzemiosła (Broń)	Zanaat Garantisi (Silah)
@@ -1643,11 +1807,13 @@ Gwarancja Rzemiosła (Zbroja)	Zanaat Garantisi (Zırh)
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan. 30. seviye silahlarda işe yaramaz. Nesne yok olabilir.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	Her köyün Demircisinin saygı duyduğu bir ustalık garantisi. Yükseltmek için nesnenin üzerinde kullan. Nesne yok olabilir.
+Gwardia Ognistego Smoka+	Ateş Ejderi Muhafızı+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Dikdörtgen bir alana şiddetli bir önden vuruş.
 Gwiazda Nocy	Gece Yıldızı\r\n
 Gwiazda Północy (PB)	Kutup Yıldızı (TS)
 Gwiazda Północy (SZC)	Kutup Yıldızı (ZÇ)
 Gwiezdny Skarb	Yıldız Hazinesi
+Górnik	Madenci
 Górski Behemot	Dağ Behemotu
 Góry Gromu	Gök Gürültüsü Dağları
 Głowa Węża	Yılan Başı
@@ -1667,9 +1833,11 @@ Handlarz Enasir	Tüccar Enasir
 Handlarz Enasir (h)	Tüccar Enasir (t)
 Handlarz Zodiaku	Zodyak Tüccarı
 Handlarz nie jest zainteresowany tym przedmiotem.	Tüccar bu eşyayla ilgilenmiyor.
-Handluj z %s	%s ile ticaret
+Handluj z %s	%s ile alışveriş
 Happy Hour	Happy Hour
 Helm	Kask
+Helmy - Ninja	Kask - Ninja
+Helmy - Sura	Kask - Sura
 Helmy - Szaman	Miğferler - Şaman
 Helmy - Wojownik	Miğferler - Savaşçı
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1743,6 +1911,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	Hwacha onarılmada
 Hwang	Hwang
 Hydra	Hydra
 I am the czempion! Punktacja: %d	Ben şampiyonum! Puan: %d
+ID Bota:	Bot ID:
 IMPLEMENTOR najstarszej postaci konta admin.	admin hesabının en eski karakterine IMPLEMENTOR.
 Ich liczba na event jest ograniczona.	Etkinlik başına sayıları sınırlıdır.
 Id. Skrzynia Kolczyków	Kusursuz Küpe Sandığı
@@ -1756,6 +1925,9 @@ Ile sztuk kupic:	Kaç adet satın alınacak:
 Ile sztuk kupic?	Kaç adet satın almak istiyorsun?
 Ile sztuk kupić:	Kaç adet satın alınsın:
 Ile sztuk kupić?	Kaç adet satın almak istiyorsun?
+Ile? %s	Kaç tane? %s
+Ilosc: malejaco	Miktar: azalan
+Ilosc: rosnaco	Miktar: artan
 Ilość prób: - jedna, + najwięcej, ile się da.	Deneme sayısı: - bir, + mümkün olan en fazla.
 Ilość Ładunków: %d	Yük Sayısı: %d
 Ilość śmierci	Ölüm sayısı
@@ -1778,6 +1950,7 @@ Info o efekt.	Etki Bilgisi
 Informacje	Bilgi
 Informacje o misji	Görev Bilgileri
 Informacje o sklepie	Dükkân Bilgileri 
+Inkub Płomieni+	Alev İnkübüsü+
 Inna Wroga Wytrzymałość	Diğer Düşman Dayanıklılığı
 Inna postać już ma tą nazwę.	Başka bir karakter zaten bu adı kullanıyor.
 Inne Mikstury	Diğer İksirler
@@ -1832,6 +2005,7 @@ Inteligencja Sung Ma	Sung Ma Zekâsı
 Inteligencja Sung Ma +%d	Sung Ma Zekası +%d
 Item inserted into the shopping safebox.	Eşya Pazar Deposuna eklendi.
 ItemShop	Nesne Market
+Ja (GM)	Ben (GM)
 Jabłko	Elma
 Jadeit Dymu	Duman Yeşimi
 Jadeit Mgły	Sis Yeşimi
@@ -1892,7 +2066,16 @@ Jazda Konna (Precyzja)	Binek (İsabet)
 Jazda Konna (Sura)	Binek (Sura)
 Jazda Konna (Szaman)	Binek (Şaman)
 Jazda Konna (Wojownik)	Binek (Savaşçı)
+Jazda Konna (diabły)	Binicilik (şeytanlar)
+Jazda Konna (insekty)	Binicilik (böcekler)
 Jazda Konna (losowo)	Binek (rastgele)
+Jazda Konna (mistycy)	Binicilik (mistikler)
+Jazda Konna (nieumarli)	Binicilik (ölümsüzler)
+Jazda Konna (orki)	Binicilik (orklar)
+Jazda Konna (potwory)	Binicilik (canavarlar)
+Jazda Konna (pustynia)	Binicilik (çöl)
+Jazda Konna (półludzie)	Binicilik (yarı insanlar)
+Jazda Konna (zwierzęta)	Binicilik (hayvanlar)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Balathor'un Ejderha Yumurtalarından biri buz gibi soğuğu çağırıyor! Saldırılarınızı ona yoğunlaştırın.
 Jednoręczne	Tek El
 Jedwab	İpek
@@ -1913,12 +2096,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	Grafikler
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	HP'n %90'ın üzerindeyse belirtilen yüzde kadar daha az hasar alırsın.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	HP'n %90'ın üzerindeyse x% daha az hasar alırsın.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	HP'n %%90'ın üzerindeyse %%%d daha az hasar alırsın.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Mağaza görünmüyorsa, bu istemcide henüz yok
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Bunu kullanırsan, Enasir'i çağırıp onunla Çeşitli Eşya Satıcısı gibi ticaret yapmanı sağlayan bir güçlendirme alırsın (satışta fiyatın %10'unu keser). Süre: 7 gün. En fazla 1000 güne kadar uzatılabilir.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Bunu kullanırsan, Enasir'i çağırıp onunla Çeşitli Eşya Satıcısı gibi ticaret yapmanı sağlayan bir güçlendirme alırsın (satışta fiyatın %10'unu keser). Süre: 7 gün. En fazla 1000 güne kadar uzatılabilir. Eşya diğer oyuncularla takas edilebilir.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Bunu kullanırsan, depona erişmek için Enasir'i çağırmanı sağlayan bir güçlendirme alırsın. Süre: 7 gün. En fazla 1000 güne kadar uzatılabilir.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Bunu kullanırsan, depona erişmek için Enasir'i çağırmanı sağlayan bir güçlendirme alırsın. Süre: 7 gün. En fazla 1000 güne kadar uzatılabilir. Eşya diğer oyuncularla takas edilebilir.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Sen veya Hazine Goblini ölürseniz sefer başarısız olur.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Grafiklerde sorun varsa 'Sistem Seçenekleri' veya 'CONFIG.exe' seç
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Kapalı [5], açık bir kartla bitişikse,
 Jin Bing (lód)	Jin Bing (buz)
 Jin Bing (mrok)	Jin Bing (karanlık)
 Jin-Hee Zodiaku	Zodyak Jin-Hee
@@ -1929,9 +2114,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Dil
 Język / Language	Dil / Language
 Język klienta: %s	İstemci dili: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Sunucu dili: %s - istemci yeniden başlatıldıktan sonra dili değiştirir (Server language: after a restart).
 KRĘCI SIĘ...	DÖNÜYOR...
 Kaftan Wężowy	Yılan Kaftanı
 Kaftan Wężowy (wykon.)	Yılan Kaftanı (işlenmiş)
+Kalendarz eventów	Etkinlik takvimi
+Kalendarz eventów: %s - %d	Etkinlik takvimi: %s - %d
 Kam. Pieczęci Sunga Mahi	Sung Mahi Mühür Taşı
 Kamera filmowa - obrót w lewo	Sinematik kamera - sola dön
 Kamera filmowa - obrót w prawo	Sinematik kamera - sağa dön
@@ -1942,6 +2130,7 @@ Kamera filmowa - w dół	Sinematik kamera - aşağı
 Kamera filmowa - w górę	Sinematik kamera - yukarı
 Kamienie	Taşlar
 Kamienie Duszy (0 = puste):	Zihin Taşları (0 = boş):
+Kamienie Metin	Metin Taşları
 Kamienie Teleportacji: %d. Teleportować do: %s?	Işınlanma Taşları: %d. Şuraya ışınlan: %s?
 Kamienie dusz	Ruh Taşları
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	Kadim rünler taşıyan taş bir tablet. Bilinmeyen bir enerji yayar.
@@ -1975,6 +2164,7 @@ Kamień Teleportacji	Işınlanma Taşı
 Kamień Teleportacji+	Işınlanma Taşı+
 Kamień Tygrysa	Kaplan Taşı
 Kamień Wzgórza	Tepe Taşı
+Kamień Węglowy	Kömür Taşı
 Kamień Wężowy	Yılan Taşı
 Kamień Wężowy+	Yılan Taşı+
 Kamień do Fundamentu+	Temel Taşı+
@@ -2107,6 +2297,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Sonr
 Kolejny boss za: %s	Sonraki boss: %s sonra
 Kolejny cel	Sonraki Hedef
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Sonraki kademe: %d yer, %s Yang, karakter seviyesi %d+
+Kolekcja lochów	Zindan koleksiyonu
+Kolekcja pól	Alan koleksiyonu
 Kolia Jadeitu Dymu	Duman Yeşimi Kolye
 Kolia Jadeitu Mgły	Sis Yeşimi Kolye
 Kolia Jadeitu Nocy	Gece Yeşimi Kolye
@@ -2407,6 +2599,7 @@ Koło Losu jest teraz wyłączone.	Kader Çarkı şu anda kapalı.
 Koło Losu: brama otwarta - poziom %d!	Kader Çarkı: kapı açıldı - seviye %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Kader Çarkı: %s kazandın. Ödül İtem Mağazası deposunda bekliyor.
 Koło Losu: zdobywasz klucz (%d/%d).	Kader Çarkı: bir anahtar kazandın (%d/%d).
+Koło Płomieni Nocy	Gece Alevi Çarkı
 Koło Skrzydła Nocy	Gece Kanadı Çarkı
 Koło Słonecznego Wilka	Güneş Kurdu Çarkı
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	Çarkta 16 alan var, her birinin şansı 1/16. Her çevirmeden önce alanlar yeniden belirlenir.
@@ -2417,6 +2610,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	At %(a)d At Yemi yedi 
 Krab Królewski	Kral Yengeç
 Krab Pancerny Zodiaku	Zodyak Zırhlı Yengeç
 Krab Wojow. Zodiaku	Zodyak Yengeç Savaşçısı
+Kradziez PM	SP Çalma
+Kradziez PZ	HP Çalma
 Kradzież PE	SP Çalma
 Kraina Gigantow	Devler Diyarı
 Kraina Ognia	Ateş Diyarı
@@ -2453,14 +2648,18 @@ Krótki	Kısa
 Krótko	Kısa
 Kręty Klucz (PB)	Eğri Anahtar (TS)
 Kręty Klucz (SZC)	Eğri Anahtar (ZÇ)
+Ksiegi umiejetnosci	Yetenek Kitapları
 Ksiegi zapomnienia	Unutma kitapları
 Ksiąg w oknie: %d (wymian: %d)	Penceredeki kitap: %d  (takas: %d)
 Książ. Odłamek Broni II	Prens Silah Parçası II
 Książ. Odłamek Hełmu II	Prens Miğfer Parçası II
 Książ. Odłamek Zbroi II	Prens Zırh Parçası II
 Książka Przebudzenia	Uyanış Kitabı
+Książę Atlantydy+	Atlantis Prensi+
+Książę Orientu (brąz.)+	Doğu Prensi (bronz)+
 Książę Piekielnej Wieży	Cehennem Kulesi Prensi
 Książę Śmierci P. Wieży	Cehennem Kulesi Ölüm Prensi
+Książęcy	Prens
 Książęcy Efekt Zestawu	Prens Set Etkisi
 Książęcy Kowal Zestawu	Prens Set Demircisi
 Księga Absorpcji Życia	Can Emme Kitabı
@@ -2545,6 +2744,7 @@ Księga: Burza Balathora	Kitap: Balathor'un Fırtınası
 Księga: Nieugiętość Balathora	Kitap: Balathor'un Direnci
 Księga: Wola Balathora	Kitap: Balathor'un İradesi
 Księgi	Kitaplar
+Księgi Misji	Görev Kitapları
 Księgi Um. Pasywnych	Pasif Beceri Kitapları
 Księgi umiejętności	Yetenek kitapları
 Księgi zapomnienia	Unutuş Kitapları
@@ -2560,7 +2760,10 @@ Kup część stosu	Yığının bir kısmını satın al
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Tek bir eşyadan belirtilen adedi en ucuzdan başlayarak satın al
 Kup tę ofertę	Bu teklifi satın al
 Kup wiele	Çoklu satın al
+Kup wiele działa dla jednego przedmiotu.	Çoklu satın alma tek bir eşya için çalışır.
 Kup wszystkie zaznaczone oferty	Seçilen tüm teklifleri satın al
+Kup wybrane (%d	Seçilenleri al (%d
+Kup wybrane (0	Seçilenleri al (0
 Kup!	Satın Al!
 Kupic %d ofert za lacznie %s?	%d teklif toplam %s karşılığında satın alınsın mı?
 Kupione - nowa oferta za %s.	Satın alındı - yeni teklif %s sonra.
@@ -2570,6 +2773,7 @@ Kupiono %d z %d ofert: %d szt. za %s.	%d / %d teklif satın alındı: %d adet, %
 Kupić %d szt. (ofert: %d) za %s?	%d adet (teklif: %d) %s karşılığında satın alınsın mı?
 Kupić %s za %s Gaya?	%s, %s Gaya karşılığında satın alınsın mı?
 Kupić %s za %s?	%s, %s karşılığında satın alınsın mı?
+Kupić zaznaczone oferty: %d?	Seçilen %d teklif satın alınsın mı?
 Kupon SM (250)	EP Kuponu (250)
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Ejderha Parası Kuponu (50), 2 saat boyunca +%100 düşme şansı
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	20 Ejderha Parası değerinde kupon. Hesabına eklemek için sağ tıkla.
@@ -2577,6 +2781,7 @@ Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	250 E
 Kupony	Kuponlar
 Kupony SM	EP Kuponları
 Kupony SM/Premium	EP/Premium Kuponları
+Kupowanie mikstur	İksir satın alma
 Kupuja sie po kolei; blad przerywa zakupy.	Sırayla satın alınır; bir hata alışverişi durdurur.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Bunlarla İtem Mağazası'ndan kullandığı şeyleri alır (saç modelleri hariç). Harcamaz: onlara dokunmaz.
 Kursor nad postaciami	İmleç karakterlerin üzerinde
@@ -2587,6 +2792,7 @@ Kwitnąca Brzoskwinia	Çiçek Açan Şeftali
 Kwitnące Kaki	Çiçek Açan Hurma
 Kwota (yang):	Miktar (Yang):
 Kwota SM:	EP tutarı:
+Kwota Yang:	Yang miktarı:
 Kwota:	Tutar:
 Kłopoty na Zboczu Gautama	Gautama Uçurumu'nda Dert
 LPM: podnoszę tak / nie	SolTık: topla evet / hayır
@@ -2614,6 +2820,7 @@ Lekarstwo Iluzji	Yanılsama İlacı
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Şeytan Uyuzu için ilaç. Görev için gerekli eşya.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Hayat yapraklarından yapılmış bir ilaç. İçildiğinde HP ve SP anında yenilenir.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Yaya saldırdıktan sonra %(d)d sn boyunca Hafif Adım (hareket hızı +%(v)s) (her 300 sn)
+Lekki Strój Plażowy+ (m)	Hafif Plaj Kıyafeti+ (e)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Bambudan yapılmış hafif ve esnek bir ok ucu. Hızlı ve isabetli atışlar için idealdir; hareketliliğe ve hıza önem veren okçular tarafından kullanılır.
 Lekkie jak Piórko	Tüy Kadar Hafif
 Leopardzik (120 dni)	Leopar Yavrusu (120 gün)
@@ -2622,6 +2829,7 @@ Leopardzik (7 dni)	Leopar Yavrusu (7 gün)
 Level konia:	At seviyesi:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Sol yuva: yeni görünümü alacak eşya.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Sol yuva: yeni görünümü alacak binek.
+Lewy Shift	Sol Shift
 Leśna Wróżka	Orman Perisi
 Leże Smoka	Ejderha İni
 Licencja Najemnika	Paralı Asker Lisansı
@@ -2632,18 +2840,22 @@ Liczba bonusów na kostiumie (co najmniej):	Kostümdeki bonus sayısı (en az):
 Liczba botów (3-16):	Bot sayısı (3-16):
 Liczba gier:	Oyun sayısı:
 Liczba online	Çevrimiçi sayısı
+Liczba sztuk	Adet sayısı
 Liczba sztuk:	Adet:
 Liczba w ekwipunku	Envanterdeki miktar
 Liczby	Sayılar
 Lider grupy	Grup Lideri
 Lilia: szansa na przedmioty +%d%%	Zambak: eşya düşme şansı +%%%d
 Liliowa Runa SungMa	Eflatun SungMa Rünü
+Limit Lvl: %d do %d	Seviye sınırı: %d - %d
 Limit członków grupy: od %d do %d	Grup üyesi sınırı: %d ile %d arası
 Limit zakupów na konto: %d	Hesap başına satın alma sınırı: %d
 Limit zakupów na minutę - dokończ za chwilę.	Dakikadaki satın alma sınırı - biraz sonra tamamla.
 List Gończy	Aranıyor Afişi
 Lista GM jest pusta: nastepny start moze nadac	GM listesi boş: bir sonraki başlatma verebilir
 Lista jest pusta.	Liste boş.
+Lista komend GM	GM komut listesi
+Lista komend GM:	GM komut listesi:
 Lista tytułów	Unvan listesi
 Lista wyciszonych	Susturulanlar listesi
 Lista znajomych	Arkadaş listesi
@@ -2651,6 +2863,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Bu güçlü tuğ
 Lizak Magii	Büyü Lolipopu
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	Gizemli içeriğe sahip, büyüyle dolu bir lolipop. Verdikleri: +%50 tecrübe, +%20 saldırı hızı, +%20 büyü hızı, +%30 büyü hasarı, +%10 maks. HP, +%10 maks. SP. 7 gün etkilidir.
 Liście Życia	Hayat Yaprakları
+Loch / wyprawa	Zindan / sefer
 Loch Malp (latwy)	Maymun Zindanı (Kolay)
 Loch Malp (normalny)	Maymun Zindanı (Normal)
 Loch Malp (trudny)	Maymun Zindanı (Zor)
@@ -2659,6 +2872,7 @@ Loch Pajakow V1	Örümcek Zindanı V1
 Loch Pajakow V2	Örümcek Zindanı V2
 Loch Pająków (1)	Örümcek Zindanı (1)
 Loch Pająków V1	Örümcek Zindanı V1
+Loch Polowy	Alan Zindanı
 Lochy Yohary	Yohara zindanları
 Lod. Wiel. Zab. Zodiaku	Zodyak Buz Katil Balinası
 Lodogóry 690 10169	BuzDağları 690 10169
@@ -2752,11 +2966,13 @@ Maksimum	Maksimum
 Maksymalnie	En fazla
 Maksymalny	Maksimum
 Mala liczba ofert - wycena orientacyjna	Az sayıda teklif - yaklaşık değerleme
+Malpi Zolnierz	Maymun Asker
 Maniak Cz. Wiat. Zodiaku	Zodyak Kara Rüzgâr Delisi
 Mapa %d	Harita %d
 Mapa (index):	Harita (indeks):
 Mapa OX	OX Haritası
 Mapa teleportacji - TAB	Işınlanma haritası - TAB
+Mapa Ślubna	Düğün Haritası
 Mapa świata	Dünya haritası
 Mapa: %s	Harita: %s
 Mapy	Haritalar
@@ -2885,14 +3101,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Seon-Hae'de 6. veya 7. efsunu ekleme şansını artıran malzeme. Eşya seviyesi: 90-104.
+Materiały	Malzemeler
 Materiały Rzemieślnicze	Zanaat Malzemeleri
 Materiały ulepszeń	Yükseltme malzemeleri
 Matowy Lód	Buzlu Mermer
 Matowy Lód+	Buzlu Mermer+
 Max PE: +%d	Maks. SP: +%d
+Max PM	Maks SP
+Max PM %	Maks SP %
+Max PZ	Maks HP
+Max PZ %	Maks HP %
 Max PŻ +2500 / +2000 / +1500	Maks. HP +2500 / +2000 / +1500
 Max PŻ: +%d	Maks. HP: +%d
 Max wytrzymalosc	Maks. dayanıklılık
+Max. PŻ +%d	Maks. PŻ +%d
 Max. poziom przedmiotu: %d	Maks. eşya seviyesi: %d
 Max. ulepszenie z +%d na +%d.	Maks. yükseltme +%d'den +%d'ye.
 Mała Meley	Küçük Meley
@@ -2900,9 +3122,11 @@ Mała Meley (pieczęć)	Küçük Meley (mühür)
 Mała Nemere	Küçük Nemere
 Mała Nemere (pieczęć)	Küçük Nemere (mühür)
 Małe Błogosławieństwo	Küçük Kutsama
+Małpi Loch	Maymun Zindanı
 Małpi Loch (trudny)	Maymun Zindanı (Zor)
 Małpi Loch (łatwy)	Maymun Zindanı (Kolay)
 Małpi Loch (średni)	Maymun Zindanı (Orta)
+Małpka	Maymun
 Mały Aamon	Küçük Aamon
 Mały Aamon (pieczęć)	Küçük Aamon (mühür)
 Mały Baashido	Bebek Baashido
@@ -3054,7 +3278,7 @@ Min-Sun	Min-Sun
 Min. %d bonusów	Min. %d bonus
 Min. Raise	Min. Artırım
 Min. liczba bonusow:	Asgari bonus sayısı:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: eşyada bu bonus olmalı, en az X. Tıkla: Yok / >.\nYok / >: bu bonusu olmayan eşyayı toplar, olanı yalnızca X üzerindeyse. Tıkla: Min.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: eşyada bu bonus en az X olmalı. Tık: Yok / >.\nYok / >: bonusu olmayan eşyayı alır, bonuslu olanı yalnızca X üzerinde alır. Tık: Min.
 Mineral	Maden
 Minerał	Maden
 Mini Azrael	Mini Azrael
@@ -3076,11 +3300,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Düşmanlara zarar vermek için karanlık güçler fırlat.|Güçlendiren: Zeka (++), Çeviklik (isabet) (+), karakter seviyesi.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Yıldırım fırlat.|Güçlendiren: Zeka (++), Çeviklik (isabet) (+), karakter seviyesi.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Düşmanlara zarar vermek için tılsımlar fırlat.|Güçlendiren: Zeka (++), Çeviklik (isabet) (+), karakter seviyesi.
+Misja %d	Görev %d
 Misja kart	Kart görevi
 Misje Biologa	Biyolog görevleri
 Misje dzienne	Günlük görevler
 Misje główne	Ana görevler
 Misje poboczne	Yan görevler
+Misje polowania	Avlanma görevleri
 Misje łowieckie	Avcılık görevleri
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Su Perisi'nin sandığını açan, ustaca süslenmiş bir anahtar. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 Mistrz Ahtrin	Ahtrin Ustası
@@ -3094,6 +3320,8 @@ Mistrz Włóczni Ki	Mızrak Ustası Ki
 Mistrz Włóczni Mao	Mızrak Ustası Mao
 Mistrz ekwipunku	Ekipman Ustası
 Mistrz przepadnie.	 Usta seviyesi kaybolacak.
+Mistrz umiejętności	Beceri ustası
+Mistrzowska piłka nożna	Usta Futbolcu
 Mistrzowski Emblemat	Usta Amblemi
 Mistyczna substancja ożywiająca florę i faunę lasu.	Ormanın bitki ve hayvanlarına can veren mistik bir madde.
 Mistykom	Mistiklere
@@ -3106,6 +3334,7 @@ Mnich Milbon	Keşiş Milbon
 Mniej niz 1 min.	1 dk.'dan az
 Mnoznik dropu przedmiotow	Eşya düşme çarpanı
 Mnoznik dropu yang	Yang düşme çarpanı
+Moby 1 hit	Mob 1 vuruş
 Moby > Bossy > Metiny	Canavarlar > Bosslar > Metinler
 Moby > Metiny > Bossy	Canavarlar > Metinler > Bosslar
 Moc Błyskawic	Şimşek Gücü
@@ -3132,6 +3361,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Modaya uygun kesilmiş saçlar, şamanların mizaçlarını yansıtmalarını sağlar. Karakterinin saç modelini kalıcı olarak değiştirir.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Şamanların mizaçlarını yansıtmalarını sağlayan, modaya uygun kesilmiş saçlar. Karakterinin saç modelini kalıcı olarak değiştirir.
 Moj cel	Hedefim
+Moja postac	Karakterim
 Moje miejsca	Yerlerim
 Mokre Szaty: szybkość ruchu -50	Islak Cüppe: hareket hızı -50
 Moloch	Moloch
@@ -3146,6 +3376,7 @@ Może schwytać karty: [1]	Şu kartları yakalayabilir: [1]
 Może schwytać karty: [1], [2]	Şu kartları yakalayabilir: [1], [2]
 Może schwytać karty: [1], [2], [3]	Şu kartları yakalayabilir: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Şu kartları yakalayabilir: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Şu kartları yakalayabilir: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Şu kartları yakalayabilir: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Bazı hayalperestleri yere indirebilir. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Możesz mieć najwyżej %d własnych kategorii.	En fazla %d özel kategorin olabilir.
@@ -3178,10 +3409,12 @@ Można znać tylko jedną ripostę.	Yalnızca bir karşı saldırı bilinebilir.
 Mroczna Paproć	Karanlık Eğrelti
 Mroczna Wieża	Karanlık Kule
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Karanlık Küre'nin rakibi sersemletme şansı %%%d
+Mrocznego Uderzenia	Karanlık Vuruş
 Mroczny Cierń	Karanlık Diken
 Mroczny Kat Zodiaku	Zodyak Karanlık Cellat
 Mrok	Karanlık
 Mroz. Lod. Czl. Zodiaku	Zodyak Dondurucu Buz Adamı
+Mrozny Lodowy Czlowiek	Dondurucu Buz Adam
 Mroźna Skrz. Balathora	Balathor Buz Sandığı
 Mroźna Skrz. Balathora+	Balathor Buz Sandığı+
 Mroźny Klucz (PB)	Buz Anahtarı (TS)
@@ -3192,6 +3425,7 @@ Mroźny Rufus	Ayaz Rufus
 Mroźny Rufus (pieczęć)	Ayaz Rufus (Mühür)
 Mt2009	Mt2009
 Mumia Kapłanka	Rahibe Mumya
+Mundur Strażaka+(m)	İtfaiyeci Üniforması+ (e)
 Musisz go pokonać, by otrzymać nagrodę.	Ödül almak için onu yenmelisin.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Ateşli Ejderha Yumurtası'nı diğer yöne itmelisin.
 Myr Bojownik (wiatr)	Myr Dövüşçüsü (rüzgâr)
@@ -3207,6 +3441,7 @@ Myr Prymus (wiatr)	Myr Primusu (rüzgâr)
 Myr Prymus (ziemia)	Myr Primusu (toprak)
 Myr Weteran (wiatr)	Myr Gazisi (rüzgâr)
 Myr Weteran (ziemia)	Myr Gazisi (toprak)
+Mój ranking	Sıralamam
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Bu sandığın içindekilerin de sandığın kendisi kadar değerli olduğu söylenir.
 Młodszy Hazardzista	Acemi Kumarbaz
 Młody Moa (pieczęć)	Genç Moa (Mühür)
@@ -3252,6 +3487,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Şunun için bir tuşa bas: %s
 Naczelny Hazardzista	Başkumarbaz
 Nadaj imię	Ad ver
+Nadaj range	Rütbe ver
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	10 dakika boyunca 90 zekâya sahip G1 seviyesindeki bir Ejderha Şamanının desteklerini verir.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	10 dakika boyunca 90 zekâya sahip M1 seviyesindeki bir Ejderha Şamanının desteklerini verir.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	10 dakika boyunca 90 zekâya sahip P seviyesindeki bir Ejderha Şamanının desteklerini verir.
@@ -3280,7 +3516,9 @@ Nagrody są już odkryte.	Ödüller zaten açıldı.
 Nagrody za tury	Tur Ödülleri
 Najbliższy	En yakın
 Najczęściej zabijani	En sık öldürülenler
+Najdłuższa sesja	En uzun oturum
 Najedź myszką na przedmiot, aby zobaczyć opis.	Açıklamasını görmek için fareyi bir eşyanın üzerine getir.
+Najlepsza sesja (yang)	En iyi oturum (yang)
 Najlepszy czas: %s	En iyi süre: %s
 Najpierw dezaktywuj Relikt Duszy.	Önce Ruh Kalıntısını devre dışı bırak.
 Najpierw dodaj eliksir.	Önce bir özüt ekle.
@@ -3344,6 +3582,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Arezzo koleksiyonundan başlık (Viking Seti). Takıldıktan sonra 30 gün etkilidir.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Arezzo koleksiyonundan başlık (Yaldızlı Set). Takıldıktan sonra 30 gün etkilidir.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Arezzo koleksiyonundan başlık (Altın Ejderha Seti). Takıldıktan sonra 30 gün etkilidir.
+Nakładka na broń	Silah kaplaması
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Tek elli silah (kılıç) görünümü - savaşçı, ninja, sura. Satın alındıktan sonra 30 gün geçerlidir.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Arezzo koleksiyonundan silah görünümü (Melek Seti): Ninja. Takıldıktan sonra 30 gün etkilidir.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Arezzo koleksiyonundan silah görünümü (Melek Seti): Şaman. Takıldıktan sonra 30 gün etkilidir.
@@ -3487,6 +3726,7 @@ Nazwa Postaci jest niepoprawna.	Karakter adı geçersiz.
 Nazwa jest niewłaściwa.	İsim uygun değil.
 Nazwa postaci jest identyczna jak nazwa konta.	Karakter adı hesap adıyla aynı.
 Nazwa pozycji (do %d znaków)	Konum adı (en fazla %d karakter)
+Nazwa presetu	Ön ayar adı
 Nazwa przedmiotu	Eşya adı
 Nazwa reguły	Kural adı
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Karakter adın özel karakter içeremez.
@@ -3508,6 +3748,7 @@ Nic tu nie ma.	Burada hiçbir şey yok.
 Nick:	Takma ad:
 Nick: %s (pid: |cff5af22c%d|r)	Takma ad: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Takma ad: PLAYER_NAME
+Nie 1. atak	1. saldırı değil
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Artık gerekli değil: NPC Bulucu her karakter için açıktır. | Dünya haritasında görünümü başlık çubuğundaki düğmeyle değiştir.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Ağız hijyeni için tasarlanmamıştır. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Nie jest składnikiem receptur ani ulepszeń.	Hiçbir tarifin veya yükseltmenin bileşeni değil.
@@ -3601,6 +3842,7 @@ Nie widzisz jeszcze całej mapy.	Haritanın tamamını henüz göremiyorsun.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	%d eşya satışa konulmadı - dükkan kapatıldı.
 Nie zaznaczono żadnej misji.	Hiçbir görev seçilmedi.
 Nie znaleziono gracza.	Oyuncu bulunamadı.
+Nie znaleziono moba/metina o takim ID.	Bu ID'ye sahip mob/metin bulunamadı.
 Nie znaleziono żadnych wypraw.	Hiçbir sefer bulunamadı.
 Niebiańska Tarcza	Göksel Kalkan
 Niebiańska Tarcza nie może zostać nadana.	Göksel Kalkan verilemez.
@@ -3608,12 +3850,15 @@ Niebieska Mikstura (W)	Mavi İksir (Sa)
 Niebieska Runa SungMa	Mavi SungMa Rünü
 Niebieska Woda	Mavi Su
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Erkekler için tavşan kulaklı mavi şapka. Sana en az bir rastgele efsun verir.
+Niebieski Alfa Wilk	Mavi Alfa Kurt
 Niebieski Barwnik	Mavi Boya
 Niebieski Mały Smok	Mavi Küçük Ejderha
 Niebieski Mały Smok (pieczęć)	Mavi Küçük Ejderha (mühür)
 Niebieski Skorpion	Mavi Akrep
 Niebieski Sok	Mavi Meyve Suyu
+Niebieski Wilk	Mavi Kurt
 Niebieski Wilk Zodiaku	Zodyak Mavi Kurdu
+Niebieski Wzorowy Uczeń+	Mavi Örnek Öğrenci+
 Niebieskie Jajo Smoka	Mavi Ejderha Yumurtası
 Niebieskie Pudło Zodiaku	Mavi Zodyak Kutusu
 Niebieskie Zioło	Mavi Bitki
@@ -3640,6 +3885,7 @@ Nieprawidlowy nick	Geçersiz ad
 Nieprawidłowy kod koloru (np. #FF8800).	Geçersiz renk kodu (örn. #FF8800).
 Nieprawidłowy limit czasu.	Geçersiz süre sınırı.
 Nieprzenikniony pancerz strażnika ognia.	Ateş muhafızının aşılamaz zırhı.
+Niesmiertelnosc WYL	Ölümsüzlük KAPALI
 Nieudana	Başarısız
 Nieugiętość Balathora	Balathor'un Sarsılmazlığı
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Balathor'un Sarsılmazlığı: geri savurma ve yere yıkılma direnci %%%d
@@ -3671,6 +3917,7 @@ Nieśmiertelność	Ölümsüzlük
 Nigdy nie upadasz	Asla düşmezsin
 Nikt jeszcze nie ma wyniku w tym sezonie.	Bu sezonda henüz kimsenin skoru yok.
 Nikt jeszcze nie ukończył tury.	Henüz kimse bir turu tamamlamadı.
+Ninja (Łuk)	Ninja (Yay)
 Ninja Armor	Ninja Zırhı
 Ninja Ostrze	Ninja Bıçak
 Ninja Łuk	Ninja Okçuluk
@@ -3682,6 +3929,7 @@ Niszczyciel En-Tai (BŚ)	En-Tai Yıkıcısı (DB)
 Niszczyciel P. Wieży	Cehennem Kulesi Yıkıcısı
 Niszczyciel Zodiaku	Zodyak Yıkıcı
 Noc trwać będzie od 22:00 do 6:00.	Gece 22:00 ile 6:00 arasında sürer.
+Noc/snieg po 22:00	Gece/kar saat 22:00'den sonra
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normal
 Normalne	Normal
@@ -3729,6 +3977,7 @@ Obowiązki gildii - panel lidera	Lonca Görevleri - Lider Paneli
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Hasar Metin/Patron/Mini Patron +%.0f%%
 Obrazenia magiczne	Büyü hasarı
 Obrazenia magiczne vs potwory	Canavarlara karşı büyü hasarı
+Obrazenia umiejetnosci	Yetenek hasarı
 Obraż. sztyletów w potwory +%d	Hançerlerin canavarlara hasarı +%d
 Obraż. umiejętności	Yetenek Hasarı
 Obrażenia %s +%s%%	%s hasarı +%s%%
@@ -3755,7 +4004,13 @@ Obrażenia przeciwko Metinom +%d%%	Metinlere karşı hasar +%%%d
 Obrażenia umiejętności	Yetenek Hasarı
 Obrażenia umiejętności konnych +%(v)s%%	At yeteneklerinin hasarı +%%%(v)s
 Obrażenia w Dolinie Seungryong +%d%%	Seungryong Vadisi'nde hasar +%%%d
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Metin Taşlarına verilen hasar 5 sn. boyunca +%%%d
+Obrażenia zwiększają się o %d%% na 10 sek.	Hasar 10 sn. boyunca %%%d artar
 Obrażenia/Obrona	Hasar/Savunma
+Obrażenie Umiejętności: 10%	Beceri Hasarı: %10
+Obrażenie Umiejętności: 3%	Beceri Hasarı: %3
+Obrażenie Umiejętności: 5%	Beceri Hasarı: %5
+Obrażenie Umiejętności: 7%	Beceri Hasarı: %7
 Obrona %	Savunma %
 Obrona +%.0f	Savunma +%.0f
 Obrona +12~15%	Savunma +12~15%
@@ -3772,11 +4027,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Parmak Darbesi yeteneğin
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Kılıç Çevirme yeteneğine karşı savunma +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Pusu yeteneğine karşı savunma +%.1f%%
 Obrona przed śr. obrażeniami	Ort. Hasar Direnci
+Obrona przy Metinach	Metin Savunması
 Obrona vs Ninja	Ninjalara Karşı Savunma
 Obrona vs Sura	Sura'lara Karşı Savunma
 Obrona vs Szamanom	Şamanlara Karşı Savunma
 Obrona vs Wojownikom	Savaşçılara Karşı Savunma
 Obrońca	Savunucu
+Obrońca (obrona)	Savunmacı (savunma)
 Obrońca Chmur	Bulut Koruyucusu
 Obrońca Stylu Małp	Maymun Tarzı Koruyucusu
 Obrót %d/%s, wydano %d SM	Çevirme %d/%s, %d Ejderha Parası harcandı
@@ -3825,6 +4082,7 @@ Odbicie Walki. Wręcz	Yakın Dövüş Yansıtma
 Odbicie ataku fizycznego: %.0f%%	Fiziksel Saldırı Yansıtma: %.0f%%
 Odbicie ciosu	Darbe yansıtma
 Odbicie pocisku	Mermi yansıtma
+Odbierz GM...	GM al...
 Odbierz nagrodę	Ödülü al
 Odbierz nagrodę za turę	Tur Ödülünü Al
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Tur ödülünü Hazine Arayışı penceresinden al.
@@ -3848,6 +4106,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Eşya Seon-Hae'ye verilsin mi (şans %%
 Oddelegowany Komendant	Görevlendirilmiş Komutan
 Odebrac range GM postaci %s?	%s karakterinin GM rütbesi alınsın mı?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Yalnızca mevcut turun (%d) ödülünü alabilirsin.
+Odeslij boty	Botları gönder
 Odkryta karta	Açılmış Kart
 Odnowa	Yenilenme
 Odp. na Br. Dwuręczną	Çift El Silah Direnci
@@ -3863,12 +4122,16 @@ Odp. na Wiatr	Rüzgâr Direnci
 Odp. na Ziemię	Toprak Direnci
 Odpały	Süreli eşyalar
 Odpały (Sekundy)	Süreli eşyalar (saniye)
+Odpoczynek w miescie	Şehirde dinlenme
 Odpornosc na omdlenia	Bayılma direnci
 Odpornosc na spowolnienie	Yavaşlama direnci
 Odpornosc na upadek	Yere devrilme direnci
+Odpornosc: Ninja	Direnç: Ninja
+Odpornosc: Sura	Direnç: Sura
 Odpornosc: Szaman	Direnç: Şaman
 Odpornosc: Wojownik	Direnç: Savaşçı
 Odpornosc: ataki fizyczne	Direnç: fiziksel saldırılar
+Odpornosc: blyskawice	Direnç: şimşek
 Odpornosc: bron dwureczna	Direnç: iki elli silahlar
 Odpornosc: cios krytyczny	Direnç: kritik vuruş
 Odpornosc: dzwony	Direnç: çanlar
@@ -3877,8 +4140,12 @@ Odpornosc: ludzie	Direnç: yarı insanlar
 Odpornosc: magia	Direnç: büyü
 Odpornosc: miecze	Direnç: kılıçlar
 Odpornosc: mrok	Direnç: karanlık
+Odpornosc: obrazenia umiejetnosci	Direnç: yetenek hasarı
+Odpornosc: ogien	Direnç: ateş
 Odpornosc: potwory	Direnç: canavarlar
 Odpornosc: przebicie	Direnç: delici vuruş
+Odpornosc: srednie obrazenia	Direnç: ortalama hasar
+Odpornosc: strzaly	Direnç: oklar
 Odpornosc: sztylety	Direnç: hançerler
 Odpornosc: trucizny	Direnç: zehir
 Odpornosc: wachlarze	Direnç: yelpazeler
@@ -3907,6 +4174,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Karanlık Direnci (toplam değer
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Ninjalara karşı direnç: Ninjalardan aldığın hasarı azaltır.
 Odporność na Obrażenia Fizyczne: %d%%	Fiziksel Hasara Karşı Direnç: %%%d
 Odporność na Ogień (+%d%% łącznej wartości)	Ateş Direnci (toplam değerin +%%%d'i)
+Odporność na Ogień: 5%	Ateş direnci %5
 Odporność na Ognista Strzała	Ateş Oku Direnci
 Odporność na Przywołanie Błyskawicy	Yıldırım Çağırma Direnci
 Odporność na Strzał	Ok Direnci
@@ -3929,6 +4197,7 @@ Odporność na ataki fizyczne %d%%	Fiziksel saldırılara karşı direnç %%%d
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Kritik vuruş direnci: kritik vuruşlardan aldığın hasarı azaltır.
 Odporność na fizyczne obrażenia	Fiziksel Hasara Direnç
 Odporność na krytyczne	Kritik Vuruş Direnci
+Odporność na lód +5%	Buz direnci +%5
 Odporność na lód, ziemię, ciemność	Buz, Toprak, Karanlık Direnci
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Karanlık direnci: belirli canavarların verdiği hasarı azaltır.
 Odporność na obraż. umiej.	Yetenek Hasarı Direnci
@@ -3945,6 +4214,7 @@ Odporność vs Ludziom	İnsanlara Karşı Direnç
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Yoldaş kalıcı olarak uğurlansın mı? Bu geri alınamaz.
 Odrodz spawny	Doğma noktalarını yenile
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Işınlanmalar arası süre: %d dk. Zindanlar ve etkinlik haritaları hariç.
+Odswiez liste	Listeyi yenile
 Odważny	Yürekli
 Odwołaj	Geri Gönder
 Odwołaj zwierzaka, zanim go zaczarujesz.	Büyülemeden önce hayvanı geri çağır.
@@ -4001,6 +4271,7 @@ Ognista Runa Aury (10)	Ateş Aura Rünü (10)
 Ogniste Buty	Ateş Ayakkabıları
 Ogniste Jajo Smoka	Ateşli Ejderha Yumurtası
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Alev Darbesi'nin rakibe geri yansıma şansı %%%d
+Ognistej Strzały	Ateşli Ok
 Ognisty Duch Zodiaku	Zodyak Ateş Ruhu
 Ognisty Duch Żaru (BŚ)	Kor Ateş Ruhu (DB)
 Ognisty Golem Mag	Ateş Golemi Büyücüsü
@@ -4027,6 +4298,7 @@ Okaz. Odłamek Hełmu I	Seçkin Miğfer Parçası I
 Okaz. Odłamek Hełmu II	Seçkin Miğfer Parçası II
 Okaz. Odłamek Zbroi I	Seçkin Zırh Parçası I
 Okaz. Odłamek Zbroi II	Seçkin Zırh Parçası II
+Okazały	Görkemli
 Okazały Efekt Zestawu	Muhteşem Set Etkisi
 Okazały Kowal Zestawu	Seçkin Set Demircisi
 Okienko %s - %s, bonusy %d / %d	Yuva %s - %s, bonus %d / %d
@@ -4084,6 +4356,7 @@ Osobisty Sklepik Premium	Kişisel Premium Dükkân
 Ostatni boss	Son boss
 Ostatni drop: %s	Son düşen: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Son satın alma hâlâ tamamlanabilir.
+Ostatnia nagroda:	Son ödül:
 Ostatnia sprzedaz botow: brak danych.	Botların son satışı: veri yok.
 Ostatnia strona	Son sayfa
 Ostatnie 7 dni	Son 7 gün
@@ -4152,6 +4425,7 @@ Otrzymujesz: %s.	Alıyorsun: %s.
 Otrzymywane Obrażenia +%d%%	Alınan Hasar +%%%d
 Otrzymywane obrażenia +%.0f%%	Alınan Hasar +%.0f%%
 Otwarte skrzynie	Açılan sandıklar
+Otwarto skrzynek: %d.	Açılan sandık: %d.
 Otwarto: %d szt.	Açıldı: %d adet
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Şan ve güce açılan kapıyı aralar. 30 gün boyunca Premium Hesabın tüm avantajlarını verir.|Bu eşya takas edilebilir.
 Otwiera je ewolucja peta	Evcil hayvan evrimiyle açılır
@@ -4171,6 +4445,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Paketi aç ve ne kazandı�
 Otwórz ponownie	Yeniden Aç
 Otwórz sklep	Dükkânı Aç
 Otwórz sklep ponownie	Dükkânı yeniden aç
+Otwórz skrzynie	Sandıkları aç
 Owoc Bogów	Tanrı Meyvesi
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Rütbe meyvesi: +200 Rütbe Puanı (normal rütbe). 0 ile 20 000 puan arasında işe yarar. İlk rütbe (Yiğit) 21 000'den başlar. Komut: /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Rütbe meyvesi: normal rütbenin üzerine +200 Rütbe Puanı. 20 000 (tam normal rütbe) ile 40 000 puan arasında işe yarar. Komut: /ranga.
@@ -4269,6 +4544,7 @@ PB: Żołnierz Setaou	TS: Setaou Askeri
 PD czempiona	Şampiyon EXP
 PD z potworów: %s / %s	Canavarlardan EXP: %s / %s
 PD z przedmiotów: %s / %s	Eşyalardan EXP: %s / %s
+PID bota:	Bot PID:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	DÜNYA BOSSU'NU YEN (günde bir kez)
 PPM - następny event	SağTık - sonraki etkinlik
 PPM / dwuklik: wyjmij stos	SağTık / çift tık: yığını çıkar
@@ -4302,9 +4578,12 @@ Pancerne Rękawice	Zırhlı Eldivenler
 Pancerny Hełm Dragona	Zırhlı Dragon Miğferi
 Pancerny Hełm Smoków	Zırhlı Ejderha Miğferi
 Pancerz Czarnego Ognia	Kara Ateş Zırhı
+Pancerz Horroru+ (złoty)	Dehşet Zırhı+ (altın)
 Pancerz Magmy	Magma Zırhı
 Pancerz Zodiaku	Zodyak Zırhı
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	GM paneli bu istemcide yüklenemedi - ayrıntılar syserr.txt dosyasında
+Panel botów (GM)	Bot paneli (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	Panel BETA sürümündedir. Hata fark edersen
 Panterka (120 dni)	Küçük Panter (120 gün)
 Panterka (30 dni)	Küçük Panter (30 gün)
 Panterka (7 dni)	Küçük Panter (7 gün)
@@ -4317,6 +4596,7 @@ Pasy	Kemerler
 Pasza dla Konia	At Yemi
 Pasza dla Konia w ekwipunku: %d	Envanterde At Yemi: %d
 Pazury Małpy	Maymun Pençeleri
+Październik	Ekim
 Peleryny	Pelerinler
 Pelne PZ/PE	Tam HP/SP
 Pergamin	Parşömen
@@ -4332,6 +4612,7 @@ Pet Reverti	Pet Reverti
 Pet Revertus	Pet Revertus
 Pety	Petler
 Pewne zmiany wymagają restartu gry, kontynuować?	Bazı değişiklikler oyunun yeniden başlatılmasını gerektirir. Devam edilsin mi?
+Pełen werwy	Enerji Dolu
 Pełne EQ	Dolu EQ
 Pełne doświadczenie - czas na rozwój.	Tam tecrübe - gelişim zamanı.
 Pełne okno	Tam Pencere
@@ -4417,6 +4698,7 @@ Piekielny Żarłacz Dusz	Cehennem Ruh Yiyicisi
 Piekło	Cehennem
 Piekło - wybierz respawn	Cehennem - doğma noktasını seç
 Pierwsza nagroda tury jest darmowa.	Her turun ilk ödülü bedavadır.
+Pierwsza strona	İlk sayfa
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Üç farkındalık kitabının ilki. Sahibinin karizmasını artırabilir. Okunduktan sonra kitap kaybolur. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Üç diziliş savaşı kitabının ilki. Sahibinin ilhamını artırabilir. Okunduktan sonra kitap kaybolur. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 Pierwszorzędne Buty	Üstün Ayakkabılar
@@ -4424,6 +4706,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	Durum sekmesindeki ilk "+" da 
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	Yetenekler sekmesindeki ilk "+" da sana verir.
 Pierwszy 30 poziom	İlk 30. Seviye
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	24 saat içindeki ilk görev sıfırlaması ücretsizdir.
+Pierścień / amulet	Yüzük / kolye
 Pierścień Dośw. (iCafe)	Tecrübe Yüzüğü (iCafe)
 Pierścień Godności	Onur Yüzüğü
 Pierścień Hydry	Hydra Yüzüğü
@@ -4436,6 +4719,7 @@ Pierścień Wielkanocny	Paskalya Yüzüğü
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Hilal şeklinde ustalıkla işlenmiş oymalı bir yüzük. Verir: +%50 EXP, +%20 saldırı hızı, +%20 büyü hızı, +%30 saldırı, +%10 maks. HP, +%10 maks. SP.
 Pień+	Kütük+
 Piorunowe Zioło	Şimşek Otu
+Pirat+ (m)	Korsan+ (e)
 Pisanie	Yazma
 Pisklę Exedyara	Exedyar Yavrusu
 Pióro Mędrca	Bilgenin Tüyü
@@ -4479,6 +4763,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	Kullanıldığında koleksiyonuna bir canavar kartı ekler (Esc menüsündeki Canavar Kartları). Ticareti yapılamaz.
 Po zabiciu: kolejny, którego już biłeś	Öldürmeden sonra: daha önce vurduğun bir sonraki
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	8 ok yüklendiğinde Hwacha, Balathor'un pullarını delecek. Ateşli Oklar Kadim Buz Kristalleri verir. Yüklenen: %d
+Pobieram drop...	Düşenler alınıyor...
 Pobieram ustawienia botow...	Bot ayarları getiriliyor...
 Pobieram zawartość z serwera...	İçerik sunucudan alınıyor...
 Pobieranie cen dla %d przedmiotow...	%d eşya için fiyatlar alınıyor...
@@ -4517,7 +4802,10 @@ Podaj wartosc.	Bir değer gir.
 Podaj wlasciciela i wybierz przedmiot.	Sahibini gir ve bir eşya seç.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	Savaş sırasında %%%d olasılıkla düşmeye karşı direnç kazanırsın (bekleme süresi 60 sn.).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	Savaş sırasında verdiğin hasar sayılır.
+Podczas walki otrzymasz efekt eliksiru księżyca	Savaşta ay iksirinin etkisini alırsın
+Podczas walki otrzymasz efekt eliksiru słońca	Savaşta güneş iksirinin etkisini alırsın
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Düşmana arkadan yaklaş ve ölümcül bir darbe indir.|Güçlendiren: Güç (++), Çeviklik (++).
+Podglad EQ	EQ önizleme
 Podgląd niedostępny.	Önizleme mevcut değil.
 Podgląd skrzynki	Sandık önizlemesi
 Podgląd skrzyń	Sandık önizlemesi
@@ -4601,8 +4889,10 @@ Pokaż szatę aury	Aura kıyafetini göster
 Pokaż wizerunek broni	Silah görünümünü göster
 Pokaż założony tytuł	Kuşanılan unvanı göster
 Pokaż znowu wszystkie przedmioty	Tüm eşyaları yeniden göster
+Pokonaj %(n)s bossów	%(n)s bossu yen
 Pokonaj %(n)s x %(what)s	%(n)s x %(what)s yen
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Dünya Bossu'nu tarafsız bölgede yen ve ödüller kazan!
+Pokonaj bossów	Bossları yen
 Pokonane bossy	Yenilen bosslar
 Pokonane minibossy	Yenilen mini bosslar
 Pokonani gracze (przeciwne król.)	Yenilen oyuncular (düşman krallıklar)
@@ -4673,6 +4963,7 @@ Portal Świątyni Węży	Yılan Tapınağı Portalı
 Portal: Nowy Kontynent	Portal: Yeni Kıta
 Posiada szanse na otrucie przeciwnika.	Rakibi zehirleme şansı vardır.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Rakibi zehirleme şansı vardır ve sersemletme içerir.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	%%%d şansla 30 sn. boyunca yakındaki eşyaları otomatik toplarsın
 Postać ma za duży poziom.	Karakterin seviyesi çok yüksek.
 Postać zostanie usunięta.	Karakter silinecek.
 Posterunek Trolli	Trol Karakolu
@@ -4770,7 +5061,10 @@ Poziom: %d (%s Szata Aury)	Seviye: %d (%s Aura Kıyafeti)
 Poziom: %s	Seviye: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Seviye: 1-19, M1-M10, G1-G10 veya P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Seviye: 1-19 arası sayı, M1-M10, G1-G10 veya P
+Pozostalo 23:59:59	Kalan 23:59:59
 Pozostalo czasu: 30s	Kalan süre: 30sn
+Pozostalo prob: 3	Kalan deneme: 3
+Pozostalo: 45s	Kalan: 45sn
 Pozostaly czas: %ds	Kalan süre: %dsn
 Pozostałe	Kalan
 Pozostałe misje	Diğer görevler
@@ -4794,6 +5088,7 @@ Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w 
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Canavar Kartları görevini ücretsiz sıfırlamanın (24 saatte bir) dışında da sıfırlamanı sağlar.
 Pozwolenie na Wzmocn. Przedmiotu	Eşya Güçlendirme İzni
 Pozwolenie na Zaczar. Przedmiotu	Eşya Büyüleme İzni
+Pozycja niezapisana	Konum kaydedilmedi
 Położenie	Konum
 Położenie nieznane	Konum bilinmiyor
 Połyskująca Biała Perła	Işıltılı Beyaz İnci
@@ -4880,9 +5175,12 @@ Prosty rozpryskowy atak	Düz alan saldırısı
 Proszę wpisać nazwę sklepu	Lütfen dükkân adını gir
 Proszę wybrać czas trwania sklepu	Lütfen dükkân süresini seç
 Proteinowa Przekąska	Proteinli Atıştırmalık
+Prowadza stragan: %s	Tezgah işletiyor: %s
+Prowadza stragan: -	Tezgah işletiyor: -
 Prywatność	Gizlilik
 Pryzmat Ożywienia	Diriliş Prizması
 Pryzmat Ożywienia (Q)	Diriliş Prizması (Q)
+Pryzmatyczny	Prizmatik
 Przeb. Księga Zwierza	Uyanmış Evcil Hayvan Kitabı
 Przebicie	Delme
 Przebicie bloku	Blok delme
@@ -5043,7 +5341,7 @@ Przywołuje demoniczne moce do olbrzymiego pchnięcia mieczem.|Wzmacnia: Siła (
 Przywołuje na przeciwnika żądne zemsty demony.|Wzmacnia: Inteligencja (++), Zręczność (+), Witalność (+), poziom postaci.	Rakibin üzerine intikam dolu şeytanları çağırır.|Güçlendiren: Zeka (++), Çeviklik (+), Dayanıklılık (+), karakter seviyesi.
 Przywraca 600 PE.	600 SP yeniler.
 Przywraca 600 PŻ.	600 HP yeniler.
-Przywraca PŻ %.0f	HP yeniler: %.0f
+Przywraca PŻ %.0f	PŻ geri yükler %.0f
 Przywraca PŻ po zabiciu potwora.	Bir canavar öldürüldükten sonra HP yeniler.
 Przywrócić wszystkie domyślne klawisze?	Tüm varsayılan tuşlar geri yüklensin mi?
 Przywrócono domyślne klawisze	Varsayılan tuşlar geri yüklendi
@@ -5061,8 +5359,10 @@ Próby	Denemeler
 Prędkość ataku	Saldırı hızı
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Eyerden saldırdıktan sonra %(d)d sn boyunca saldırı hızı +%%%(v)s (her 180 sn)
 Prędkość czarowania	Büyü hızı
+Prędkość po zsiadaniu	İnince Hız
 Prędkość ruchu	Hareket hızı
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Eyerden saldırdıktan sonra %(d)d sn boyunca hareket hızı +%%%(v)s (her 180 sn)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	Hareket hızı 10 sn. boyunca %%%d artar
 Prędkość ruchu znacznie zwiększona.	Hareket hızı büyük ölçüde arttı.
 Pudełko Kart Potworów Yohary	Yohara Canavar Kartı Kutusu
 Pudło wędkarskich puzzli	Balıkçılık Yapboz Kutusu
@@ -5070,6 +5370,7 @@ Pula... pokazuje bossow danego przedzialu	Havuz... verilen aralığın bossları
 Punkty Doświadczenia: +150%	Tecrübe Puanı: +%150
 Punkty Rangi: %d	Rütbe Puanı: %d
 Punkty doswiadczenia %	Tecrübe puanı %
+Punkty doświadczenia +%d%%	EXP +%d%%
 Punkty konne:	Binicilik puanları:
 Punkty miłości: %d%%	Aşk puanları: %%%d
 Punkty range:	Rütbe puanları:
@@ -5220,6 +5521,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Gaya Dükkânı Sıfırlama
 Reset oferty	Teklif sıfırlama
 Reset oferty (Reset Sklepu Gaya)	Teklif sıfırlama (Gaya Dükkânı Sıfırlaması)
+Reset umiejętności	Yetenek sıfırlama
 Resetuj	Sıfırla
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	5 saat dolmadan Gaya Dükkanı'nı sıfırla ve yeni değerli eşyalara göz at. Liman Gaya Dükkanı'nda kullan (Yeni Kıta Limanı'ndaki Savaşçı Heykeli).
 Restart serwera...	Sunucu yeniden başlatılıyor...
@@ -5269,6 +5571,7 @@ Rozbudowa jest teraz niedostępna.	Genişletme şu anda kullanılamıyor.
 Rozdaj od nowa (raz za darmo)	Yeniden dağıt (bir kez ücretsiz)
 Rozdane: %d	Dağıtılan: %d
 Rozdzielczość	Çözünürlük
+Rozkaz wysłany.	Emir gönderildi.
 Rozkazy dla botów twojej gildii	Loncanın botları için emirler
 Rozkazy wydaje mistrz gildii	Emirleri lonca lideri verir
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	|cffffb514Oyun Yöneticisi|r ile konuşuyorsun.
@@ -5302,6 +5605,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Hassasiyet Kitabı ile geliştirilir (0
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Hayvan "%s" aşamasına geliştirilsin mi? Malzemeler kaybolacak.
 Rozwiń pasek	Çubuğu Genişlet
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Genişlet: tüm hızlı erişim çubukları (4 x 8)
+Rozwój	Gelişim
 Rozwój do stopnia: %s	Şu aşamaya gelişim: %s
 Rozwój konia	At eğitimi
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	At eğitimi: At Yemi yetersiz (%(a)d gerekli).
@@ -5328,6 +5632,7 @@ Ruda Turmalinu	Turmalin Cevheri
 Rudy i przetopy	Cevherler ve eritilmiş cevherler
 Ruiny Atlantydy	Atlantis Kalıntıları
 Ruiny Skorpiona	Akrep Kalıntıları
+Rumi (Okey)	Rumi (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rummy (Okey): oyun penceresi istemci güncellemesiyle gelecek.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Balık oltaya geliyor! Dairede yüzerken ona %d kez tıkla (%d sn süren var).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Kamp ateşinde pişirilmiş balık, harika bir tütsülenmiş lezzet.
@@ -5365,6 +5670,7 @@ Rzeźnik Piekielnej Wieży	Cehennem Kulesi Kasabı
 Rzeźnik Wężowy	Yılan Kasabı
 Rzuca na ciebie swoje buffy.	Güçlendirmelerini üzerine atar.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Rakiplerine yıldız ışığıyla dolu yıldızlar fırlatır.|Güçlendiren: Çeviklik (++), karakter seviyesi.
+Rzucam buffy	Buff atıyorum
 Rzygacz	Gargoyl
 Róg Balathora	Balathor'un Boynuzu
 Róg Nemere	Nemere'nin Boynuzu
@@ -5546,11 +5852,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Sunucu: onay yok, yeniden deniyo
 Serwer: czekam na potwierdzenie	Sunucu: onay bekleniyor
 Sesja już trwa.	Bir oturum zaten sürüyor.
 Sesja zakończona: osiągnięto limit czasu.	Oturum sona erdi: süre sınırına ulaşıldı.
+Sesje (z bieżącą)	Oturumlar (mevcut dahil)
+Sezon %d	Sezon %d
 Sezon %d - %s (do końca: %d dni %s)	Sezon %d - %s (kalan: %d gün %s)
+Sezon: Chunjo	Sezon: Chunjo
+Sezon: Jinno	Sezon: Jinno
+Sezon: Shinsoo	Sezon: Shinsoo
 Sfera Losu Zwierzaka	Evcil Hayvan Kader Küresi
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Kader Küresi: hayvanın türünü gösterir (bir Hayvan Kader Küresi harcar)
 Shaman Armor	Şaman Zırhı
 Shield	Kalkan
+Shift + LPM	Shift + Sol Tık
 Shoes	Ayakkabı
 Shop Decoration	Dükkân Dekorasyonu
 Shop Decoration n.{}	Dükkân Dekorasyonu no.{}
@@ -5563,6 +5875,7 @@ Shuriken	Shuriken
 Shuriken+	Shuriken+
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Sen hafif bir rüzgar eker, düşmanların azgın bir fırtına biçer. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Sierp (Pieczęć)	Hilal (Mühür)
+Sierpień	Ağustos
 Silna Fala Śmierci	Güçlü Ölüm Dalgası
 Silna Tarcza Eteru	Güçlü Esir Kalkanı
 Silne Trzęsienie	Güçlü Sarsıntı
@@ -5578,6 +5891,7 @@ Silny Druid En-Tai	Güçlü En-Tai Druidi
 Silny Dziki Piechur	Güçlü Vahşi Piyade
 Silny Dziki Sluga	Güçlü Vahşi Uşak
 Silny Kam. Przebudzenia	Güçlü Uyanış Taşı
+Silny Malpi Zolnierz	Güçlü Maymun Asker
 Silny Meteor	Güçlü Meteor
 Silny Niszczyciel En-Tai	Güçlü En-Tai Yıkıcısı
 Silny Piekielny Cios	Güçlü Cehennem Darbesi
@@ -5629,25 +5943,36 @@ Silny przeciwko:	Güçlü:
 Silny.	Güçlü.
 Siła	Güç
 Siła Ataku	Saldırı Gücü
-Siła Ataku %.0f-%0.f	Saldırı Değeri %.0f-%0.f
-Siła Ataku +%.0f	Saldırı Değeri +%.0f
+Siła Ataku %.0f-%0.f	Saldırı değeri %.0f-%0.f
+Siła Ataku +%.0f	Saldırı değeri +%.0f
+Siła Ataku: +%.0f	Saldırı değeri: +%.0f
+Siła Błyskawic	Şimşek Gücü
 Siła Błyskawic (+%d%% łącznej wartości)	Şimşek Gücü (toplam değerin +%%%d'i)
 Siła Błyskawic +%d%%	Şimşek Gücü +%%%d
+Siła Błyskawic +5%	Yıldırım Gücü +%5
+Siła Lodu	Buz Gücü
 Siła Lodu (+%d%% łącznej wartości)	Buz Gücü (toplam değerin +%%%d'i)
 Siła Lodu +%d%%	Buz Gücü +%%%d
+Siła Lodu +5%	Buz Gücü +%5
 Siła Mroku	Karanlık Gücü
 Siła Mroku (+%d%% łącznej wartości)	Karanlık Gücü (toplam değerin +%%%d'i)
 Siła Mroku +%d%%	Karanlık Gücü +%%%d
+Siła Mroku +5%	Karanlık Gücü +%5
 Siła Obrony	Savunma Gücü
+Siła Ognia	Ateş Gücü
 Siła Ognia (+%d%% łącznej wartości)	Ateş Gücü (toplam değerin +%%%d'i)
 Siła Ognia +%d%%	Ateş Gücü +%%%d
+Siła Ognia +5%	Ateş Gücü +%5
 Siła Sung Ma	Sung Ma Gücü
 Siła Sung Ma +%d	Sung Ma Gücü +%d
+Siła Wiatru	Rüzgar Gücü
 Siła Wiatru (+%d%% łącznej wartości)	Rüzgar Gücü (toplam değerin +%%%d'i)
 Siła Wiatru +%d%%	Rüzgar Gücü +%%%d
+Siła Wiatru +5%	Rüzgar Gücü +%5
 Siła Ziemi	Toprak Gücü
 Siła Ziemi (+%d%% łącznej wartości)	Toprak Gücü (toplam değerin +%%%d'i)
 Siła Ziemi +%d%%	Toprak Gücü +%%%d
+Siła Ziemi +5%	Toprak Gücü +%5
 Siła ataku +%.0f-%.0f	Saldırı değeri +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	Sırta vurulursa saldırı gücü artar
 Siła ataku wroga -%d%%	Düşman saldırı gücü -%%%d 
@@ -5739,6 +6064,7 @@ Skorpion Lucznik Zodiaku	Zodyak Akrep Okçusu
 Skorpion Wężowy	Yılan Akrebi
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	|cff2b80ffFlaş tekliflerden|r yararlan![ENTER]Açık artırmalar en geç |cff2b80ff%s|r tarihine kadar[ENTER]veya stoklar tükenene kadar sürer.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Parçalanmış Ruh Taşları yeni bir kullanım alanı bulabilir.
+Skrytobójca	Skrytobójca
 Skrytobójcza Wykałaczka	Suikastçı Kürdanı
 Skrz. Ninja M. Łuku (D)	Ninja Yay Sandığı (B)
 Skrz. Ninja M.Ostrza (D)	Ninja Hançer Sandığı (B)
@@ -5799,12 +6125,16 @@ Skrzynka musi być w ekwipunku.	Sandık envanterde olmalı.
 Skrzynka na Zwierzaka	Evcil Hayvan Kutusu
 Skrzynki	Sandıklar
 Skrócenie ładowania um. o %d%%	Beceri bekleme süresi %d%% kısalır 
+Skróty	Kısayollar
+Skróty klawiszowe	Kısayol Tuşları
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Donmuş Ejderha Yumurtası %d sn. içinde kaybolmadan önce saldırılarını ona yoğunlaştır.
 Skóra Przeklętego Niedźwiedzia	Lanetli Ayı Postu
 Skóra Przeklętego Tygrysa	Lanetli Kaplan Postu
 Skąd	Kaynak
 Składnik do produkcji lekarstwa iluzji.	Yanılsama ilacı yapmak için bir bileşen.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Demircide Ruh Taşı yükseltme malzemesi (+4'ten itibaren): Büyülü Toz ile birlikte sonraki kademeler için 1, 1, 2, 2, 3 adet gerekir. Güçlü Buz Cadısı (Sürgün Mağarası), Beran-Setaou (Ejderha İni) ve Orman Kraliçesi (Kadim Orman) düşürür.
+Slaby Malpi Miotacz	Zayıf Maymun Atıcı
+Slaby Malpi Zolnierz	Zayıf Maymun Asker
 Slot z krzyżykiem jest jeszcze zamknięty.	Çarpı işaretli yuva hâlâ kilitli.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Yuva kilitli: Gaya Dükkânı Genişletmesi x%d kilidini açar.
 Sloty umiejętności: %d	Yetenek yuvaları: %d
@@ -5838,9 +6168,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Bir şeyler ters gitti. (Genel hata)
 Songmin, Arktyczne Yeti	Songmin, Kutup Yetisi
 Sort by price	Fiyata göre sırala
+Sortowanie autopickup	Otomatik toplama sıralaması
 Sortowanie i wyszukiwanie	Sıralama ve arama
 Sortuj po cenie całej oferty	Tüm teklifin fiyatına göre sırala
 Sortuj po cenie oferty albo za sztukę	Teklif fiyatına veya adet başına fiyata göre sırala
+Sortuj po ilości	Miktara göre sırala
 Soul Crystal Alchemist	Ruh Kristali Simyacısı
 Sowa Księżycowa	Ay Baykuşu
 Spacja	Boşluk
@@ -5850,6 +6182,7 @@ Spalone przedmioty u Kowala	Demircide yanan eşyalar
 Sparta Jungrang+ (k)	Sparta Jungrang+ (d)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (e)
 Spartaner	Spartaner
+Spawn Botow	Bot Doğurma
 Specjalne	Özel
 Specjalne Zioła	Özel Bitkiler
 Specjalny	Özel
@@ -5863,6 +6196,7 @@ Sportowa Fryzura(czarna)	Sportif Saç (siyah)
 Spostrzegawczość	Dikkat
 Społeczność	Topluluk
 Sprawdz konto	Hesabı kontrol et
+Sprawdz status	Durumu kontrol et
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Sunucu desteği kontrol ediliyor. Eşyaları çöpe sürükle.
 Sprawdzanie...	Kontrol ediliyor...
 Sprawdź ekwipunek	Envanteri kontrol et
@@ -5888,6 +6222,7 @@ Srebrne Płyty	Gümüş Plakalar
 Srebrny Grot	Gümüş Ok Ucu
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Büyülü mücevherlerle süslenmiş, kalp şeklinde gümüş bir kolye. Verir: +%30 EXP, +%10 saldırı hızı, +%10 büyü hızı, +%10 canavarlara karşı güç, +%5 maks. HP, +%5 maks. SP.
 Srednia: %s / szt.	Ortalama: %s / adet
+Srednie obrazenia	Ortalama hasar
 Stabilne Sznury	Sağlam İpler
 Stajnia i polowanie na medale w Lochu Malp.	Maymun Zindanı'nda ahır ve madalya avı.
 Stal	Çelik
@@ -5897,6 +6232,7 @@ Stalowy Hełm Dragona	Çelik Dragon Miğferi
 Stalowy Hełm Smoków	Çelik Ejderha Miğferi
 Stamina / sek.: %d	Dayanıklılık / sn.: %d
 Stan (czat)	Durum (sohbet)
+Stan: %s	Durum: %s
 Standardowa Muzyka Metin2	Standart Oyun Müziği
 Standardowa muzyka Metin2	Standart oyun müziği
 Stanton-Płatnerz	Stanton-Zırhçı
@@ -5918,6 +6254,7 @@ Starożytny Robak	Kadim Solucan
 Starożytny Skorpion	Kadim Akrep
 Starożytny Wojownik	Kadim Savaşçı
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Weol'ün gücünün akmasını sağlayan kadim bir parşömen - yeni kutsamalar çekmeni sağlar.
+Starszy Hazardzista	Kıdemli Kumarbaz
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Öldürme emri içeren eski bir parşömen; kullanıldığında görevleri etkinleştirir.
 Statua Chena	Chen Heykeli
 Statua Chou	Chou Heykeli
@@ -5987,19 +6324,25 @@ Strażnik Rozpad. Dusz	Ruh Yarığı Muhafızı
 Strażnik Ruin	Harabe Muhafızı
 Strażnik Smoków Dolnarr	Ejderha Muhafızı Dolnarr
 Strażnik Smoków Jaharr	Ejderha Muhafızı Jaharr
+Strażnik Srebr. Piasku+	Gümüş Kum Muhafızı+
 Strażnik Trytonów	Triton Muhafızı
 Strażnik Wzgórza	Tepe Muhafızı
 Strażnik Węży	Yılan Muhafızı
 Strażnik z Yohara	Yohara Muhafızı
+Strefa Surowców	Hammadde Bölgesi
 Strona %d / %d	Sayfa %d / %d
 Strona %d / %d (%d)	Sayfa %d / %d  (%d)
 Strona %d/%d	Sayfa %d/%d
 Strona 1	Sayfa 1
 Strona WWW	Web Sitesi
+Strona ekwipunku I	Envanter Sayfası I
 Strona ekwipunku II	Envanter Sayfası II
 Strona ekwipunku II (wymienna)	Envanter Sayfası II (takas)
+Strona ekwipunku III	Envanter Sayfası III
 Strona ekwipunku IV	Ekipman sayfası IV
 Strz. dół	Aşağı Ok
+Strz. góra	Ok yukarı
+Strz. lewo	Ok sol
 Strz. prawo	Sağ Ok
 Strzał Wichury	Fırtına Atışı
 Strzał Wichury (9.skill)	Kasırga Atışı (9. beceri)
@@ -6007,6 +6350,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	Büy�
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Ninja yayı için ok. Hedeften 5 m'ye kadar tam hasar (yay menzil bonusu bu mesafeyi uzatır), sonra her ek metre için %5 daha az. Ok kılıfı mesafeyle hasar kaybetmez.
 Strzały: Handlarz Bronią (cena NPC).	Oklar: Silah Satıcısı (NPC fiyatı).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Ejderha suretleri fırlat ve düşmanlara saldır.|Güçlendiren: Zeka (++), Çeviklik (isabet) (+), karakter seviyesi.
+Strzelającego Smoka	Ateş Eden Ejderha
 Strój Czarodzieja	Büyücü Kıyafeti
 Strój Czarodzieja+	Büyücü Kıyafeti+
 Strój Zombie	Zombi Kıyafeti
@@ -6028,6 +6372,7 @@ Stwór z Głębin	Derinlik Yaratığı
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Parmak uçlarınla büyük bir patlama yarat.|Güçlendiren: Zeka (++), Güç (+), karakter seviyesi.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Birkaç düşmanı alt etmek için güçlü bir kasırga yarat.|Güçlendiren: Zeka (++), Güç (+), karakter seviyesi.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Düşmanların çevresinde zehirli bir bulut yarat ve onları zehirle.|Güçlendiren: Çeviklik (++), Güç (+), karakter seviyesi.
+Styczeń	Ocak
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	Geriye taranmış, şık ama yağlı görünen bir saç modeli; antenler bu modelin en önemli detayıdır. Karakterinin saç modelini kalıcı olarak değiştirir.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	Şık bir Şaman saç modeli. Karakterinin saç modelini kalıcı olarak değiştirir.
 Su-Sin	Su-Sin
@@ -6051,11 +6396,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Dükkânın top
 Sun Herb	Güneş Otu
 Super Kamienie Metin (+%d)	Süper Metin Taşları (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Katkı (en fazla 5 adet): Küçük +%1, Orta +%2, Büyük +%4, Güçlü +%10 (adet başına).
+Sura (Broń)	Sura (Silah)
+Sura (Czarna Magia)	Sura (Kara Büyü)
 Sura Armor	Sura Zırhı
 Sura Czarna Magia	Sura Kara Büyü
 Sura Mistrz Broni	Sura Silah Ustası
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Eşsiz eşyalar üretmek ve yükseltmek için gereken hammaddeler.
 Sutra	Sutra
+Swiat i eventy	Dünya ve etkinlikler
+Swiatynia Hwang	Hwang Tapınağı
+Swiatynia Ochao	Ochao Tapınağı
 Swiatynia Zodiaku	Zodyak Tapınağı
 Switchbot (zmiana bonusów)	Switchbot (bonus değiştirme)
 Switchbot - zmiana bonusów	Switchbot - bonus değiştirme
@@ -6063,10 +6413,12 @@ Switchbot wymaga nowego klienta (exe 3.0).	Switchbot yeni bir istemci gerektirir
 Sword	Kılıç
 Symbol zręczności, popularny wśród złodziei.	Hırsızlar arasında sevilen bir çeviklik sembolü.
 Synowie Pustyni	Çölün Oğulları
+Szalenie odważny	Çılgın Cesur
 Szalony Hazardzista	Çılgın Kumarbaz
 Szalony Naukowiec	Çılgın Bilim İnsanı
 Szalony Wędkarz	Çılgın Balıkçı
 Szaman (Leczenie)	Şaman (İyileştirme)
+Szaman (Smok)	Şaman (Ejderha)
 Szaman Leczenie	Şaman İyileştirme
 Szaman Smok	Şaman Ejderha
 Szamanka (K)	Şaman (K)
@@ -6082,6 +6434,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Sersemleme Bağışıklığ�
 Szansa na Spowolnie.	Yavaşlatma Şansı
 Szansa na Uziemienie %.0f%%	Yere Çivileme Şansı %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Darbe bloklama şansı: yakın mesafe saldırısından kaçınma şansını artırır.
+Szansa na cios krytyczny +2%	Kritik Vuruş Şansı: +%2
+Szansa na cios krytyczny +5%	Kritik Vuruş Şansı: +%5
+Szansa na cios krytyczny +7%	Kritik Vuruş Şansı: +%7
+Szansa na cios krytyczny +8%	Kritik Vuruş Şansı: +%8
 Szansa na cios krytyczny: +%.0f%%	Kritik vuruş şansı: +%.0f%%
 Szansa na cios przebicia %.0f%%	Delici Vuruş Şansı %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Yang düşme şansı: daha fazla Yang elde etme şansını artırır.
@@ -6110,12 +6466,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Başarılı öğr
 Szansa na przebicie	Delici vuruş şansı
 Szansa na przebicie +10%	Delici vuruş şansı +%10
 Szansa na przedmiot z bonusem	Bonuslu eşya şansı
+Szansa na przeszywające Uderzenie: 2%	Delici Vuruş şansı %2
+Szansa na przeszywające Uderzenie: 5%	Delici Vuruş şansı %5
+Szansa na przeszywające Uderzenie: 8%	Delici Vuruş şansı %8
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Delici vuruş şansı: delici vuruş yapma şansını artırır.
 Szansa na przeszywający strzał +%.0f%%	Delici Atış Şansı +%.0f%%
 Szansa na spowolnienie	Yavaşlatma şansı
 Szansa na transfer %d%% otrzymanych obrażeń do PE	Alınan hasarın %%%d kadarını SP'ye aktarma şansı
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Ok kaçınma şansı: bir okdan veya canavarın uzak mesafe saldırısından kaçınma şansını artırır.
 Szansa na wydobycie rudy +%d%%	Maden çıkarma şansı +%%%d
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Boss'tan eşya düşme şansı +%%%d
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	iCafe üyeleri için eşya düşme şansı 1,5 kat artar.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Eşya elde etme şansı %.1f ile çarpılır
 Szansa na zdobycie Yang pomnożona o %.1f	Yang elde etme şansı %.1f ile çarpılır
@@ -6166,12 +6526,15 @@ Szary Barwnik	Gri Boya
 Szary Lśniący Odłamek	Gri Parlak Parça
 Szary Sok	Gri Meyve Suyu
 Szata	Kıyafet
+Szata Dżinna+ (m)	Cin Cübbesi+ (e)
 Szata Harmonii	Uyum Cübbesi
 Szata Księżyca	Ay Cübbesi
 Szata Ognia	Ateş Cübbesi
 Szata Wiary	İman Cübbesi
 Szata Zodiaku	Zodyak Cübbesi
 Szata aury: ewolucja	Aura kıyafeti: evrim
+Szata aury: przenieś parametry	Aura Cübbesi: parametreleri aktar
+Szata aury: rozwój	Aura Cübbesi: gelişim
 Szczyt rodzaju - czas na ewolucję	Türün zirvesi - evrim zamanı
 Szczytobłysk 830 9454	ParıltıZirvesi 830 9454
 Szczytomrok 3393 9454	KaranlıkZirvesi 3393 9454
@@ -6184,6 +6547,7 @@ Szkarłaczny Żądłak	Kızıl Zehirli Diken
 Szkat. Chegala	Chegal'in Sandığı
 Szkat. Olbrzym. Drzewa	Dev Ağaç Sandığı
 Szkatulka Ksiezycowa - z rozbitego Metina	Ay Kutusu - yıkılan Metin'den
+Szkatulka Ksiezycowa - z zabitego potwora	Ay Sandığı - öldürülen canavardan
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Gölge Goliath'ı Chegal'in sandığı. İçinde değerli bir şey var.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Dev Ağaç Ruhu'nun sandığı. İçinde değerli bir şey var.
 Szkatułka Yohara	Yohara Kutusu
@@ -6202,6 +6566,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	En-Tai Lordu'ndan düşen Soylu Odun. Onu Orman Araştırmacısı'na götür.
 Szlachetne Drzewo (PB)	Asil Odun (TS)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	En-Tai Lordu'ndan (TS) düşen Soylu Ağaç (TS). Onu Orman Araştırmacısı'na (TS) götür.
+Szlachetny Legionista+	Asil Lejyoner+
 Szmaragdowy Marmur	Zümrüt Mermer
 Szpon Kruka	Kuzgun Pençesi
 Szpon Wężowy (wykon.)	Yılan Pençesi (işlenmiş)
@@ -6285,7 +6650,10 @@ Szybkość Ataku +5%	Saldırı Hızı +%5
 Szybkość Buffi	Buffi'nin Hızı
 Szybkość Ruchu +%.0f%%	Hareket Hızı +%.0f%%
 Szybkość Ruchu 20%	Hareket Hızı %20
+Szybkość Zaklęcia +2%	Büyü Hızı +%2
+Szybkość Zaklęcia +5%	Büyü Hızı +%5
 Szybkość czarowania	Büyü Hızı
+Szybkość ruchu +%d%%	Hareket Hızı +%d%%
 Szybkość: %d zmian/s	Hız: %d değişim/sn
 Słaba Zbroja	Zayıf Zırh
 Słaba jakość strzału: od %.1fm	Zayıf atış kalitesi: %.1fm'den itibaren
@@ -6293,6 +6661,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Tatlı Yaşlı Kadın
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	Sevgililer Günü için tatlı bir tılsım. Verdikleri: +%50 tecrübe, +%20 saldırı hızı, +%20 büyü hızı, +%10 canavarlara karşı güç, +%10 maks. HP, +%10 maks. SP. Takmasan bile süresi akar.
 Słodkowodna ryba drapieżna występująca w tropikach.	Tropik bölgelerde yaşayan, tatlı su yırtıcı bir balık.
+Słon. Szata Wukong+ (m)	Güneş Wukong Cübbesi+ (e)
 Słonecznik: obrona +%d%%	Ayçiçeği: savunma +%%%d
 Słowa z nazw przedmiotów (po przecinku)	Eşya adlarından kelimeler (virgülle ayır)
 Słudzy Sung Mahi	Sung Mahi'nin Hizmetkârları
@@ -6502,8 +6871,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Bugün {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Yarın {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Kısa sürede çok fazla işlem. Lütfen biraz bekleyip tekrar dene.
+Top przedmiotów	En çok eşya
 Topaz Woli	İrade Topazı
 Torba towarzysza: weź do siebie	Yoldaş çantası: kendine al
+Towarzysz (nierozwijany)	Yoldaş (gelişmeyen)
 Towarzysz bierze tylko cały stos.	Yoldaş yalnızca yığının tamamını alır.
 Towarzysz dostanie ścieżkę na 5 poziomie.	Yoldaş 5. seviyede bir yol alacak.
 Towarzysz drużyny	Takım Yoldaşı
@@ -6515,9 +6886,11 @@ Towarzysz zakłada grupę i cię zaprasza.	Yoldaş grup kurar ve seni davet eder
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	Yoldaş bir Unutuş Kitabı veya bir Yetenek Sıfırlama Belgesi harcayacak.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Yoldaş, Cor Draconis ve sistem görevleri burada gösterilmez.
 Towarzysze są tu wyłączeni.	Yoldaşlar burada kapalı.
+Towarzysze są wyłączeni na tym serwerze.	Bu sunucuda yoldaşlar kapalı.
 Trade Hub	Ticaret Merkezi
 Trafienia	İsabetler
 Transfer bonusów	Efsun Aktarımı
+Transfer obrazen do PM	Hasarı SP'ye Aktarma
 Transformuj kostium	Kostümü Dönüştür
 Transporter jest pusty.	Taşıyıcı boş.
 Transporter z Petem	Nakliye Kutusu (Petli)
@@ -6569,6 +6942,7 @@ Twierdza Czerwonego Smoka (SZC)	Kızıl Ejderha Kalesi (ZÇ)
 Twierdza Razadora	Razador Kalesi
 Two Hand Sword	Çift El Kılıcı
 Twoja Gaya: %s	Gaya'n: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Savunman 5 sn. boyunca %%%d artar
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Konumun: bulunduğun haritayı gösterir ve görünümü üzerine ortalar.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Çeliğin savaş alanında dünya çapında aryalar söyleyecek. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Twoje Smocze Monety: %d	Ejderha Paraların: %d
@@ -6603,6 +6977,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Loncan da aynı sayı
 Tylko BETA	Yalnızca BETA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Başka karakterlerin GM'ini yalnızca IMPLEMENTOR değiştirir.
 Tylko broń, zbroje i kostiumy dla tej płci	Yalnızca bu cinsiyete uygun silahlar, zırhlar ve kostümler
+Tylko dla mnie	Sadece benim için
 Tylko dla mnie: cały drop jest twój.	Yalnızca bana: tüm düşenler senin.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Bu silahın adının geldiği kadim dili yalnızca birkaç kişi anlar. Ama hiçbiri bu adı çevirmeye cesaret edemedi. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Tylko scal stosy	Yalnızca yığınları birleştir
@@ -6621,6 +6996,7 @@ Typ: -	Tür: -
 Type	Tür
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Yaygın ekipman bonusları veya istemcinin bildiği tümü
 Tysieczny Wojow. Zodiaku	Zodyak Bin Başı Savaşçı
+Tysieczny Wojownik	Bin Kişilik Savaşçı
 Tytuł %s wygaśnie za niecałą godzinę.	%s unvanı bir saatten kısa sürede sona erecek.
 Tytuł Czciciel Słońca	Güneş Hayranı Unvanı
 Tytuł Czempion Nyx	Nyx Şampiyonu Unvanı
@@ -6674,12 +7050,15 @@ Udało ci się ochronić Goblina Skarbów!	Hazine Goblini'ni korumayı başardı
 Udało się odeprzeć lodowy chłód.	Buz gibi soğuk başarıyla savuşturuldu.
 Udało się: %s	Başarılı: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Vur ve çan birisi için çalsın! Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
+Uderzenia Palcem	Parmak Vuruşu
 Uderzenie Pioruna	Yıldırım Çarpması
 Uderzenie Płonącego Palca	Yanan Parmak Darbesi
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Parmak Darbesi'nin rakibe geri yansıma şansı %%%d
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Şehirde alışverişten sonra hemen avlanmaya dönmek yerine bir süre tezgahların yanında oyalanan botların oranı. %100 canlı bir şehir demektir, %0 - herkes sahada.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Zayıf geliştirmelerini (+0 ile +3) NPC'ye satmak yerine, sert sunuculardaki gibi demircide yakılacak hurda olarak, birkaç kuruşa tezgaha koyan tezgahçıların oranı. Varsayılan olarak kapalı.
+Udział	Pay
 Ukończ %(n)s lochów	%(n)s zindan tamamla
+Ukończ lochy	Zindanları tamamla
 Ukończenia: %d	Tamamlama: %d
 Ukończone	Tamamlandı
 Ukończone księgi misji	Tamamlanan görev kitapları
@@ -6688,6 +7067,7 @@ Ukończone wyprawy	Tamamlanan Seferler
 Ukończone: %d / %d	Tamamlanan: %d / %d
 Ukryj aury umiejętności	Yetenek auralarını gizle
 Ukryj budynki i obiekty	Binaları ve nesneleri gizle
+Ukryj cudze	Başkalarınınkini gizle
 Ukryj czaszkę nad bossami	Bosslar üzerindeki kafatasını gizle
 Ukryj drzewa	Ağaçları gizle
 Ukryj efekty wzmocnień (szaman)	Güçlendirme efektlerini gizle (Şaman)
@@ -6726,11 +7106,14 @@ Ulepszenie: Zasadzka	Geliştirme: Pusu
 Ulepszenie: od 0 do 9.	Geliştirme: 0 ile 9 arası.
 Ulepszona Butelka	Yükseltme Şişesi
 Ulepszony Barwnik	Geliştirilmiş Boya
+Ulepszysz do: %s	Yükseltirsin: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Onu Seyis'te geliştirirsin (At eğitimi).
 Ulepszyć %s do poziomu %d?	%s, %d. seviyeye yükseltilsin mi?
 Ultra	Ultra
 Ulubieni na górze listy	Favoriler listenin en üstünde
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Yalnız savaşçıların gözde saç modeli; rüzgârda harika görünür. Karakterinin saç modelini kalıcı olarak değiştirir.
+Umiejetnosci widac tylko u gracza online	Beceriler yalnızca çevrimiçi oyuncuda görünür
+Umiejętn.	Beceri
 Umiejętności konia (miejsca: %d z 2)	At yetenekleri (yuva: %d / 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Yetenekler "Kahraman" aşamasından itibaren öğretilebilir.
 Umiejętności pomocnicze	Destek yetenekleri
@@ -6738,6 +7121,7 @@ Umiejętności potencjału	Potansiyel yetenekleri
 Umiejętności potencjału (tylko czempion, 2 sloty)	Potansiyel yetenekleri (yalnızca şampiyon, 2 yuva)
 Umiejętności potencjału (z jaj zwierzaków)	Potansiyel yetenekleri (hayvan yumurtalarından)
 Umiejętności rozdaję sam	Yetenek puanlarını kendim dağıtırım
+Umiejętności towarzysza	Yoldaş becerileri
 Umiejętności zwierzaka (3 sloty)	Hayvan yetenekleri (3 yuva)
 Umiejętności: przeciągnij je z okna postaci do pól.	Yetenekler: onları karakter penceresinden yuvalara sürükle.
 Umiejętność %d	Yetenek %d
@@ -6750,6 +7134,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Bir zamanlar M
 Unik	Kaçınma
 Unik Strzały	Ok Kaçışı
 Unik: %d%%	Kaçınma: %%%d
+Uniknięcie śmierci	Ölümden Kaçınma
 Upiorne Echo	Hayalet Yankı
 Upiorny Strażnik	Hayalet Muhafız
 Upiorny Wojownik	Hayalet Savaşçı
@@ -6767,6 +7152,8 @@ Ustaw nowe hasło na stronie.	Web sitesinde yeni bir şifre belirle.
 Ustaw ten pasek jako aktywny (%d)	Bu çubuğu etkin yap (%d)
 Ustawienia Społeczności zapisane.	Topluluk ayarları kaydedildi.
 Ustawienia Walki	Savaş Ayarları
+Usun GM	GM Sil
+Usun Moby	Mobları Sil
 Usun potwory	Canavarları sil
 Usun przedmioty	Eşyaları Yok Et
 Usun wszystkie	Hepsini sil
@@ -6819,14 +7206,17 @@ Uziemienie	Köklenme
 Ułóż i scal	Düzenle ve birleştir
 Użycie	Kullanım
 Użyj	Kullan
+Użyj %(n)s przedmiotów	%(n)s eşya kullan
 Użyj %(n)s x %(what)s	%(n)s x %(what)s kullan
 Użyj Księgi Umiejętności Peta z ekwipunku	Envanterinden bir Evcil Hayvan Yetenek Kitabı kullan
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Yılan Tapınağı'nda sefer süresini bir dakika uzatmak için kullan (en fazla 60 dakikaya kadar).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Kişisel pazarındaki 5 kilitli yuvayı açmak için kullan.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Yüzüğü Element Krallığı'nda (dokuz bölgeden birinde) kullanarak her zaman Doğa Güçleri Platosu'na ışınlan. Yüzük kullanıldıktan sonra kaybolur.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Yüzüğü Element Krallığı'nda (dokuz bölgeden birinde) kullanarak Doğa Güçleri Platosu'na ışınlanma şansı (%10) elde et. Yüzük her kullanımda kaybolur. Element Krallığı'ndaki tüm canavarlardan ve Metinlerden düşer (giriş: Yeni Kıta Limanı'ndaki portal ve İhtiyar).
+Użyj przedmiotu	Eşya kullan
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Tecrübe kilidini açmak veya kapatmak için kullan. Süre sınırı yok.
 Użyj, kiedy zablokujesz się w "teksturach".	"Dokulara" sıkıştığında kullan.
+Użytkowe	Kullanılabilir
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Ejderha Alteran'ın kanatlarıyla bir ekipman parçasını rafine edebilirsin.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Bu lisansla bir paralı asker tutabilirsin. (Şimdilik kullanımı yok - Yohara'nın bir sonraki güncellemesiyle gelecek.)
 Używalne	Kullanılabilir
@@ -6917,6 +7307,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Savurma'nın rakibe geri yans�
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Yohara para birimi (en fazla 999 999). Çakılları Liman'daki Savaşçı Heykeli'nde işle, Gaya Dükkanı'nda ve üretimde bununla öde.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Takas para birimi: 1 Won = 100 000 000 Yang.
 Wampir	Vampir
+Wampir+ (szary)	Vampir+ (gri)
 Warkocze Plem. (czerw.)	Kabile Örgüleri (kırmızı)
 Warkocze Plem. (fiol.)	Kabile Örgüleri (mor)
 Warkocze Plem. (nieb.)	Kabile Örgüleri (mavi)
@@ -6930,11 +7321,14 @@ Wartosc ataku vs potwory	Canavarlara karşı saldırı değeri
 Wartosc magicznego ataku	Büyülü saldırı değeri
 Wartownik z Yohara	Yohara Nöbetçisi
 Wartość Ataku	Saldırı Değeri
+Wartość Ataku +30	Saldırı Değeri +30
 Wartość Ataku w potwory +%d	Canavarlara karşı Saldırı Değeri +%d
 Wartość Ataku: +12~15%	Saldırı Değeri: +12~15%
 Wartość Magicznego Ataku: +30	Büyülü Saldırı Değeri: +30
 Wartość ataku +75 (miejsca 1-3)	Saldırı değeri +75 (1-3. sıralar)
+Wartość bonusu dokładnie taka	Bonus değeri tam olarak bu
 Wartość bonusu taka albo niższa	Bonus değeri bu veya daha düşük
+Wartość bonusu taka albo wyższa	Bonus değeri bu veya daha yüksek
 Wartość sklepu przekracza 2 miliardy Yang.	Dükkânın değeri 2 milyar Yang'ı aşıyor.
 Warunek: bonus o co najmniej podanej wartości	Koşul: verilen değerde veya daha yüksek bonus
 Warunki	Koşullar
@@ -6963,6 +7357,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	TEST sürümü: bu 
 Wersja: %d.%d.%d%s	Sürüm: %d.%d.%d%s
 Wersja: 1.0.0	Sürüm: 1.0.0
 Wersja: xxx	Sürüm: xxx
+Wesoły Posłaniec Miłości	Neşeli Aşk Habercisi
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	Bu muhteşem kabuğun içinde parıldayan bir inci saklı olabilir.
 Wezowy Lucznik Zodiaku	Zodyak Yılan Okçusu
 Wezowy Miecznik Zodiaku	Zodyak Yılan Kılıç Ustası
@@ -6992,13 +7387,16 @@ Wielorybi Pancerz	Balina Zırhı
 Wieprzowina	Domuz Eti
 Wierzchowiec utknął - wsiadam ponownie	Binek takıldı - yeniden biniyorum
 Wieża Sung Mahi	Sung Mahi Kulesi
+Wiking Światła+	Işık Vikingi+
 Wilk Piekielnej Wieży	Cehennem Kulesi Kurdu
 Wilk Zodiaku	Zodyak Kurdu
+Wilki alfa	Wilki alfa
 Wino Brzoskwini (W)	Şeftali Şarabı (Sa)
 Wino Kwiatu Brzoskwini+	Şeftali Çiçeği Şarabı+
 Winogrono	Üzüm
 Wioska Gildii	Lonca Köyü
 Wioska gildii 1	Lonca Köyü 1
+Wiru Miecza	Kılıç Kasırgası
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Birden fazla rakibe saldırmak için kılıcı döndür.|Güçlendiren: Güç (++), Çeviklik (+), Dayanıklılık (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Hançerle düşmanların arasında dön.|Güçlendiren: Çeviklik (++), Güç (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Dönen Hançer'in rakibi sersemletme şansı %%%d
@@ -7019,6 +7417,7 @@ Wojna Imperiow 1	Krallık Savaşı 1
 Wojna gildii i Krypta Balathora	Lonca savaşı ve Balathor Mahzeni
 Wojow. z Toporem Zodiaku	Zodyak Baltalı Savaşçı
 Wojowniczka (K)	Savaşçı (K)
+Wojownik (Body)	Savaşçı (Beden)
 Wojownik (Mental)	Savaşçı (Zihinsel)
 Wojownik Ciało	Savaşçı Beden
 Wojownik En-Tai	En-Tai Savaşçısı
@@ -7032,6 +7431,7 @@ Wojownik Umysł	Savaşçı Zihin
 Wojownik Uruk	Uruk Savaşçısı
 Wojownik Zephyr	Zephyr Savaşçısı
 Wojskowy Koń	Askeri At
+Wokol mnie	Çevremde
 Wola Balathora	Balathor'un İradesi
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Balathor'un İradesi: sersemletme, zincir ve donma direnci %%%d
 Wola Sung Ma tej mapy	Bu haritanın Sung Ma İradesi
@@ -7056,6 +7456,7 @@ Wolne punkty statusu: %d	Boş durum puanları: %d
 Wolne punkty umiejętności	Boş yetenek puanları
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Sinsi Zehir'in rakibe geri yansıma şansı %%%d
 Wounded Soldier	Yaralı Asker
+Wołanie	Çağrı
 Wpisz co najmniej 2 litery nazwy.	Adın en az 2 harfini yaz.
 Wpisz co najmniej 2 litery.	En az 2 harf yaz.
 Wpisz ilosc (1-%d)	Miktar gir (1-%d)
@@ -7073,6 +7474,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Kaç bonusun eşleşmesi gerektiği
 Wpłacało botów: %d	Yatıran bot: %d
 Wrist	Bilezik
 Wrogi Mur	Düşman Duvarı
+Wrzesień	Eylül
 Wróć 11553 12697	Dön 11553 12697
 Wróć do zapisanych reguł	Kayıtlı kurallara dön
 Wróć do zwykłej mapy	Normal haritaya dön
@@ -7106,6 +7508,7 @@ Wszystkie na P	Hepsi P'ye
 Wszystkie sloty sklepu są już odblokowane.	Dükkânın tüm yuvalarının kilidi zaten açık.
 Wszystkie umiej. P	Tüm yetenekler P
 Wszystkie warstwy	Tüm katmanlar
+Wszystkie żywioły	Tüm elementler
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Tümü: %d deneme (başarılı: %d, başarısız: %d).
 Wszystkie: tylko %s lub %s.	Tümü: yalnızca %s veya %s.
 Wszystko to za 50 zł na miesiąc!	Tüm bunlar ayda 50 PLN!
@@ -7144,13 +7547,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	Seçim değişti veya
 Wyboru nie można cofnąć. Kontynuować?	Bu seçim geri alınamaz. Devam edilsin mi?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	Seçilen rütbe, setin her canavarında bu kadar yıldız gerektirir.
 Wybrane bonusy i wartości	Seçilen bonuslar ve değerler
+Wybrano: %s	Seçildi: %s
 Wybrany NPC jest tuż obok.	Seçilen NPC hemen yanında.
 Wybrany kanał dostępny jest tylko dla kont Premium.	Seçilen kanal yalnızca Premium hesaplar içindir.
 Wybrany przepis: %s	Seçilen tarif: %s
 Wycena czesciowa - trwa wczytywanie	Kısmi değerleme - yükleme sürüyor
 Wycena wygasła - wyceń ponownie.	Fiyat teklifinin süresi doldu - yeniden fiyat al.
+Wycisz 1 dzien	1 gün sustur
+Wycisz 1 h	1 sa sustur
+Wycisz 10 min	10 dk sustur
 Wycisz na:	Susturma süresi:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Kullanımdan kaldırılmış eşya: Uyanış Ritüeli artık yok ve bu taşın hiçbir kullanımı kalmadı. Atabilirsin.
+Wyczysc filtry	Filtreleri temizle
 Wyczyszczono wszystkie znaczniki sklepów offline.	Tüm çevrimdışı dükkân işaretleri temizlendi.
 Wyczyszczono: %s	Temizlendi: %s
 Wyczyść	Temizle
@@ -7169,6 +7577,7 @@ Wydarzenie Wakacyjne	Yaz Etkinliği
 Wydarzenie Walentynkowe	Sevgililer Günü Etkinliği
 Wydarzenie Wielkanocne.	Paskalya Etkinliği.
 Wydobądź %(n)s rudy	%(n)s cevher çıkar
+Wydobądź rudę	Maden çıkar
 Wydłuża czas trwania twoich umiejętności.	Yeteneklerinin süresini uzatır.
 Wygląd postaci	Karakter görünümü
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Zararsız görünüyor ama %100 ölümcül. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
@@ -7194,6 +7603,7 @@ Wykonaj zestaw broni	Silah seti üret
 Wykonaj zestaw hełmu	Miğfer seti üret
 Wykonaj zestaw zbroi	Zırh seti üret
 Wykonane zmiany: %d	Yapılan değişimler: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Yapıldı: %s/%s. Toplam aktif: %s
 Wykopane rudy	Çıkarılan madenler
 Wykorzystaj	Kullan
 Wykorzystaj voucher	Kupon Kullan
@@ -7202,6 +7612,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	Açılmamış bir dükk
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	Değerli olabilecek bir eşya tespit edildi, devam edilsin mi?
 Wykryto przedmiot z bonusem, kontynuować?	Efsunlu bir eşya tespit edildi, devam edilsin mi?
 Wykryto wysoki poziom ulepszenia, kontynuować?	Yüksek yükseltme seviyesi tespit edildi, devam edilsin mi?
+Wylacz eventy	Etkinlikleri kapat
 Wylosować nową ofertę od razu?	Hemen yeni bir teklif çekilsin mi?
 Wylosuj cele od nowa	Hedefleri yeniden çek
 Wyląg Exedyara	Exedyar Yavrusu
@@ -7225,6 +7636,8 @@ Wymagany poziom do zakupu: %d	Satın almak için gereken seviye: %d
 Wymagany poziom postaci: 75	Gereken karakter seviyesi: 75
 Wymagany poziom: %d	Gereken seviye: %d
 Wymiana ksiąg umiejętności	Yetenek Kitabı Takası
+Wymiana u: %s	Takas yeri: %s
+Wymiana: %s	Takas: %s
 Wymiany	Takaslar
 Wymienić %d ksiąg na %d nowych za %s Yang?	%d kitap, %s Yang karşılığında %d yeni kitapla takas edilsin mi?
 Wyniki odświeżają się co minutę.	Sonuçlar her dakika yenilenir.
@@ -7238,6 +7651,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	%s özgürlüğüne salıns
 Wypłać	Çek
 Wypłać sztuk:	Çekilecek adet:
 Wyrok	Hüküm
+Wyrzuc bota	Botu At
 Wyrzuc z gry...	Oyundan at...
 Wyrzuc z serwera	Sunucudan at
 Wyrzucic %s z gry?	%s oyundan atılsın mı?
@@ -7255,6 +7669,7 @@ Wysuszone Oczy	Kurutulmuş Gözler
 Wysyłanie do serwera...	Sunucuya gönderiliyor...
 Wyszukaj biżuterię i buty.	Takı ve ayakkabı ara.
 Wyszukaj bronie.	Silah ara.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Becerileri görmek için çevrimiçi bir oyuncu ara
 Wyszukaj przedmiot	Eşya Ara
 Wyszukaj przedmioty z min. 1 bonusem.	En az 1 efsunlu eşyaları ara.
 Wyszukaj zbroje/tarcze/hełmy.	Zırh/kalkan/kask ara.
@@ -7353,6 +7768,7 @@ Wściekły Cierń	Öfkeli Diken
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Öfkeli, dikenli ve acımasız. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	Küresel metre cinsinden X/Y. Ctrl + haritaya tıkla = ışınlan.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Öldürme başına Yang
 Yang z potworów +%d%%	Canavarlardan Yang +%%%d
 Yang za próbę awansu	Terfi denemesi başına Yang
 Yesterday {:02d}:{:02d}	Dün {:02d}:{:02d}
@@ -7396,9 +7812,11 @@ Z jaja: %s	Yumurtadan: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Her yuvadan teklif başına bir şey satın alabilirsin.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Uyumlu kostümle: +800 HP, +15 Saldırı Değeri
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Uyumlu saç modeliyle: +800 HP, +15 Saldırı Değeri
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	%%%d şansla yeteneklerinin bekleme süresini sıfırlar
 Z łukiem	Yay ile
 Z. Eliksir Mocy Płn. W.	Altın K. Rüzgârı Gücü İksiri
 Z. Eliksir Odp. na Ogień	Altın Ateş Direnci İksiri
+ZAKRĘĆ	ÇEVİR
 ZRĘ	ÇEV
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	%d dk. sonra ışınlanacaksın. Hemen çıkmak için Ejderha Muhafızı Dolnarr ile konuş.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	Doğru sandığa %d. eskort için bir Goblin Anahtarı alıyorsun!
@@ -7440,13 +7858,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Bu tur sana %s Yang ve %d x %s'ye ma
 Za ukończone tury także otrzymujesz nagrody.	Tamamlanan turlar için de ödül alırsın.
 Za wysoka wartość: %s.	Değer çok yüksek: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	Gelişmiş filtre kapalı: Oyun Seçenekleri -> Ek -> Toplama filtresi.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Gelişmiş toplama filtresi (Ctrl+Z'de sağ tık)
+Zabic postac %s?	%s karakteri öldürülsün mü?
 Zabici gracze	Öldürülen Oyuncular
 Zabij %(n)s potworów	%(n)s canavar öldür
+Zabij potwory	Canavarları öldür
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Orkları ve diğer tüm yaratıkları öldürür. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Zabite potwory	Öldürülen canavarlar
 Zablokowac konto %s NA ZAWSZE?	%s hesabı SÜRESİZ yasaklansın mı?
 Zablokowac konto %s na %s dni?	%s hesabı %s gün yasaklansın mı?
 Zablokowac nowe logowania (przerwa techniczna)?	Yeni girişler engellensin mi (bakım)?
+Zablokowane miejsce	Kilitli yer
 Zablokowani	Engellenenler
 Zablokowany przy sortowaniu (Alt+LPM)	Sıralarken kilitli (Alt+Sol Tık)
 Zablokuj ekwipunek	Ekipmanı Kilitle
@@ -7456,6 +7878,7 @@ Zabrakło Yang.	Yang yetmedi.
 Zabójca	Katil
 Zabójca Króla	Kral Katili
 Zabłąkany Dzikus	Başıboş Yabani
+Zachowanie botow	Botların davranışı
 Zacny Kam. Przebudzenia	Değerli Uyanış Taşı
 Zacny P. Wężowy (wykon.)	Asil Yılan Pel. (işlenmiş)
 Zacny Płaszcz Wężowy	Asil Yılan Pelerini
@@ -7489,6 +7912,7 @@ Zakończyć sesję farmienia?	Farm oturumu sonlandırılsın mı?
 Zakres rysowania	Çizim Mesafesi
 Zakres sklepów	Dükkân Menzili
 Zakres widoku	Görüş Mesafesi
+Zakresy (puste = bez limitu)	Aralıklar (boş = sınırsız)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Açılan kartın yanında kapalı bir [5] vardı.[ENTER]Ne yazık ki puan alamazsın. Şimdi kralını [K] seç.
 Zakręć kołem za jedyne	Çarkı yalnızca şu karşılığında çevir
 Zakręć kołem.	Çarkı çevir.
@@ -7496,6 +7920,7 @@ Zaktualizuj klienta i serwer.	İstemciyi ve sunucuyu güncelle.
 Zaktualizuj serwer, żeby rozdawać statystyki.	İstatistikleri dağıtmak için sunucuyu güncelle.
 Zakup raz na %s	%s içinde bir kez satın alınabilir
 Zakupy przerwane.	Satın alımlar kesildi.
+Zakupy towarzysza	Yoldaş alışverişi
 Zakupy włoży ci do torby albo do swojej.	Aldıklarını senin çantana veya kendi çantasına koyar.
 Zamarznięta Wieża	Donmuş Kule
 Zamarznięty Generał	Donmuş General
@@ -7517,6 +7942,7 @@ Zapisane bonusy	Kayıtlı bonuslar
 Zapisane miejsca	Kayıtlı konumlar
 Zapisane pozycje	Kayıtlı konumlar
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Kayıtlı konumlar yalnızca envanterinde boş tomar (%s) varsa çalışır.
+Zapisane zestawy	Kayıtlı setler
 Zapisano	Kaydedildi
 Zapisano (%s%%).	Kaydedildi (%s%%).
 Zapisano (gracz offline)	Kaydedildi (oyuncu çevrimdışı)
@@ -7524,10 +7950,11 @@ Zapisano preset "%s".	"%s" ön ayarı kaydedildi.
 Zapisano.	Kaydedildi.
 Zapisano. Odswiezanie rang GM...	Kaydedildi. GM rütbeleri yenileniyor...
 Zapisuje miejsce %d...	Konum %d kaydediliyor...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Ekran görüntüsü kaydet:  Print (ekran görüntüsü oyunun "screenshot" alt klasörüne kaydedilir)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Ekran görüntüsü kaydet:  Print (Görüntü, oyun klasörünün "screenshot" alt klasörüne kaydedilir)
 Zapisz i wyślij	Kaydet ve gönder
 Zapisz obecny filtr jako preset o tej nazwie	Mevcut filtreyi bu adla ön ayar olarak kaydet
 Zapisz reguły i wyślij je na serwer	Kuralları kaydet ve sunucuya gönder
+Zapisz tu	Buraya kaydet
 Zaplanowana została przerwa w dostępie do usług.	Hizmetlere erişimde planlı bir ara verilecek.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Atının dayanıklılık kaybetmesini önler; molasız uzun yolculuklar için idealdir.
 Zapomnienie umiejętności: Stajenny (za darmo).	Yetenek unutma: Seyis (ücretsiz).
@@ -7567,6 +7994,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Seungryong Vadisi'nde hizmet eden cesur savaşçılar için ödüller içerir.
 Zawiodłeś.	Başarısız oldun.
 Zaznacz albo odznacz całą stronę	Tüm sayfayı seç veya seçimi kaldır
+Zaznacz do "Kup wybrane"	"Seçilenleri satın al" için işaretle
 Zaznacz oferty, które chcesz kupić.	Satın almak istediğin teklifleri seç.
 Zaznacz wszystkie	Tümünü Seç
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Seçilen görevler hiç var olmamış gibi listeden kaybolacak.
@@ -7585,9 +8013,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Sandıklarla veya geliştirme malzemeleriyle takas etmek için nişanları topla.
 Zbieranie dla Biologa zamiast bicia poziomow.	Seviye basmak yerine Biyolog için toplama.
 Zbierz %(n)s ziół	%(n)s ot topla
+Zbierz yang	Yang topla
+Zbierz zioła	Ot topla
 Zbir Piekielnej Wieży	Cehennem Kulesi Haydudu
 Zbiórka na parterze wieży	Kulenin zemin katında toplanma
 Zbocze Gautama	Gautama Yamacı
+Zbr. Mroku Księżyca+ (m)	Ay Karanlığı Zırhı+ (e)
+Zbroja Ajolosa+ (m)	Ajolos Zırhı+ (e)
+Zbroja Avalonu+ (srebr.)	Avalon Zırhı+ (gümüş)
 Zbroja Boskiego Smoka	Kutsal Ejderha Zırhı
 Zbroja Dzikiego Knura	Yaban Domuzu Zırhı
 Zbroja Króla Wojowników+	Savaşçı Kral Zırhı+
@@ -7596,8 +8029,10 @@ Zbroja Płytowa Zodiaku	Zodyak Plaka Zırhı
 Zbroja Smoka Magii	Büyü Ejderhası Zırhı
 Zbroja Smoka Mroku	Karanlık Ejderha Zırhı
 Zbroja Smoka Wiatru	Rüzgâr Ejderhası Zırhı
+Zbroja Szczodrego+	Cömert Zırhı+
 Zbroja Tygrysa	Kaplan Zırhı
 Zbroja Wilka	Kurt Zırhı
+Zbroja Zmarłych+ (m)	Ölüler Zırhı+ (e)
 Zbroja Zodiaku	Zodyak Zırhı
 Zbroja wypełniona mocą boskiego smoka.	İlahi ejderhanın gücüyle dolu bir zırh.
 Zbroja wypełniona mocą magicznego smoka.	Büyü ejderhasının gücüyle dolu bir zırh.
@@ -7627,6 +8062,8 @@ Zdobyte Yang	Kazanılan Yang
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Bunu Yeni Kıta'daki canavarlardan ve görevlerden kazanırsın.
 Zdobywasz je, chroniąc Goblina Skarbów	Bunları Hazine Goblini'ni koruyarak kazanırsın
 Zebrane kwiaty	Toplanan çiçekler
+Zebrano %s z %s yang (%.1f%%)	%s / %s yang toplandı (%.1f%%)
+Zebrano: %d / %d	Toplandı: %d / %d
 Zegarek Kieszonkowy	Cep Saati
 Zejście Północnego Wiatru	Kuzey Rüzgarı İnişi
 ZejściePłnW. 11590 12181	KRüzgârıİniş 11590 12181
@@ -7638,11 +8075,15 @@ Zemsta Czarnej Śmierci	Kara Ölüm'ün İntikamı
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Doğan boss sayısı: %s/%s.
 Zestaw %d	Set %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	24 Okey kartından oluşan set. Eklemek için sağ tıkla - bir Okey oyunu 1 kart seti ve 30 000 Yang tutar.
 Zestaw Opieki nad Koniem	At Bakım Seti
 Zestaw kostiumów	Kostüm Seti
 Zestaw kostiumów:	Kostüm seti: 
+Zestaw:	Set: 
+Zestawy lochowe	Zindan setleri
+Zestawy polowe	Alan setleri
 Zestawy: broń	Setler: silahlar
 Zestawy: hełmy	Setler: miğferler
 Zestawy: zbroje	Setler: zırhlar
@@ -7662,6 +8103,7 @@ Zielone Zioło	Yeşil Bitki
 Zielone, fioletowe, peleryny: z targu.	Yeşil, mor, pelerinler: pazardan.
 Zielony Lśniący Odłamek	Yeşil Parlak Parça
 Zielony Sok	Yeşil Meyve Suyu
+Zielony Szaman+	Yeşil Şaman+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Sung Ma Diyarı;Şampiyon Seviyesi olmadan buradaki canavarlara zarar veremezsin.
 Ziemie Mrocznego Smoka	Karanlık Ejderha Diyarları
 Ziemie gildii	Lonca diyarları
@@ -7678,11 +8120,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Sung Mahi'nin gücüyle değişmiş bir ot. Yıldırım iksirleri yapmak için gereklidir. İksirleri otçu Huahn-So (Bokjung, Bakra, Jayang) hazırlar.
 Zjawa Żółt. Tygrysa (BŚ)	Sarı Kaplan Hayaleti (DB)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Çubuğu doldurmak için gereken yem yenecek.
+Zlamanie klatwy swiatyni	Tapınak Lanetini Kırma
 Zlamanie odpornosci: dzwony	Savunma delme: çanlar
+Zlamanie odpornosci: luki	Direnç Kırma: yaylar
 Zlamanie odpornosci: miecze	Savunma delme: kılıçlar
 Zlamanie odpornosci: sztylety	Savunma delme: hançerler
 Zlamanie odpornosci: wachlarze	Savunma delme: yelpazeler
 Zleć zbieranie:	Toplama görevi ver:
+Zlodziej zycia	Yaşam Hırsızı
 Zly Silny Malpi Zolnierz	Kötü Güçlü Maymun Asker
 Zly Zolnierz Czarnej Burzy	Kötü Kara Fırtına Askeri
 Zly format (np. 18, M5, G1, P).	Yanlış biçim (örn. 18, M5, G1, P).
@@ -7702,6 +8147,8 @@ Zmianki z (B) są używane jako pierwsze	(B) işaretli değiştiriciler önce ku
 Zmiany dzialaja po kilku sekundach	Değişiklikler birkaç saniye sonra etkili olur
 Zmien ceny wszystkich	Hepsinin fiyatını değiştir
 Zmien poziom konia	At seviyesini değiştir
+Zmien range	Rütbe değiştir
+Zmien skille	Yetenek değiştir
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Ejderha Simyası penceresinde (bonus değiştirme sekmesi) efsanevi bir Ejderha Taşı'nın bonuslarını değiştirir.
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Aktif petin adını değiştirir (ayrıca 100.000 Yang).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Evcil hayvanın adını değiştirir (100.000 Yang).
@@ -7759,10 +8206,14 @@ Znak Strażnika	Muhafız İşareti
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	Büyülü kristalden ustaca dövülmüş bir anahtar. Kusursuz sandığı açmak için gereklidir.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Harika! Kartın daha yüksek.[ENTER]Bir kart daha aç.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	%d bulundu - %d gösterildi, aramayı daralt.
+Znaleziono: %d	Bulundu: %d
 Znaleziono: %d - wybierz z listy.	Bulunan: %d - listeden seç.
+Znaleziono: %s	Bulundu: %s
 Znika 15 dni po otrzymaniu.	Alındıktan 15 gün sonra kaybolur.
+Zniszcz %(n)s kamieni Metin	%(n)s Metin taşını yok et
 Zniszcz %(n)s x %(what)s	%(n)s x %(what)s yok et
 Zniszcz jaja, aby zadawać obrażenia!	Hasar vermek için yumurtaları yok et!
+Zniszcz kamienie Metin	Metin taşlarını yok et
 Zniszczone Metiny	Yok Edilen Metinler
 Zniszczone kamienie Metin	Yok edilen Metin Taşları
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Ejderha Yumurtası yok edildi - Balathor'un Mührü iyice zayıfladı.
@@ -7774,6 +8225,7 @@ Zodiak Ognia	Ateş Zodyağı
 Zodiak Wiatru	Rüzgar Zodyağı
 Zodiak Ziemi	Toprak Zodyağı
 Zol. Czar. Wiat. Zodiaku	Zodyak Altın Kara Rüzgârı
+Zolnierz Czarnego Wiatru	Kara Rüzgar Askeri
 Zolnierz Gladiator Kosci	Kemik Gladyatör Askeri
 Zolnierz Shrimp Zodiaku	Zodyak Karides Askeri
 Zolnierz Spartaner	Spartaner Askeri
@@ -7795,8 +8247,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Kakao
 Zroszony Młot	Çiyli Çekiç
 Zrzut ekranu	Ekran görüntüsü
 Zrzut ekranu zapisano w '%s'.	Ekran görüntüsü '%s' konumuna kaydedildi.
+Zrzutka yang	Yang bağışı
 Zrób miejsce w ekwipunku.	Envanterde yer aç.
 Zręczność	Çeviklik
+Zsiadam po buffy	Buff için iniyorum
 Zsiądź z konia, aby go rozwijać.	Atı geliştirmek için attan in.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Mantar Çorbası
@@ -7885,6 +8339,28 @@ Zwiększa szansę na drop Yang.	Yang düşürme şansını artırır.
 Zwiększa szansę na kradzież PE.	SP çalma şansını artırır.
 Zwiększa szansę na kradzież PŻ.	HP çalma şansını artırır.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	10 dakika boyunca kritik vuruş şansını %10 artırır.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında aksesuarların başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında aksesuarların başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Silah üretiminde başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Silah üretiminde başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında beceri kitabının başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında beceri kitabının başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Kemer üretiminde başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Kemer üretiminde başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında diğer eşyaların başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında diğer eşyaların başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında pet eşyalarının başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında pet eşyalarının başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında eldivenlerin başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında eldivenlerin başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Zırh üretiminde başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Zırh üretiminde başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında silah setlerinin başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında silah setlerinin başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında miğfer setlerinin başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında miğfer setlerinin başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Üretim sırasında zırh setlerinin başarı şansını %1 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Yu-Hwan bu türden iki rünü 2* rüne (%40) dönüştürür.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Üretim sırasında zırh setlerinin başarı şansını %20 artırır. Üretim penceresindeki "Şansı artır" alanına koy - her denemede bir rün harcanır. Bu, rünün en yüksek seviyesidir.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	10 dakika boyunca delici vuruş şansını %10 artırır.
 Zwiększa szansę na przywołanie konia.	At çağırma şansını artırır.
 Zwiększa szansę na spowolnienie przeciwnika.	Rakibi yavaşlatma şansını artırır.
@@ -7911,6 +8387,10 @@ Zwiększa twoją siłę obrony.	Savunma gücünü artırır.
 Zwiększa twoją szybkość ataku o 20% na okres 30 minut. Niezdatna do handlu.	30 dakika boyunca saldırı hızını %20 artırır. Ticareti yapılamaz.
 Zwiększa umiejętności twojego wierzchowca	Bineğinin yeteneklerini artırır
 Zwiększa wartość odbitych ciosów.	Yansıtılan hasarın değerini artırır.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Savaşta SungMa iradesini (ZKA) 15 artırır, %d sn.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Savaşta SungMa iradesini (SAV) 15 artırır, %d sn.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Savaşta SungMa iradesini (GÜÇ) 15 artırır, %d sn.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Savaşta SungMa iradesini (VIT) 15 artırır, %d sn.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Dayanıklılığı artırır. Kasları güçlendiren özellikleriyle bilinir.
 Zwiększa wzrost doświadczenia.	Tecrübe kazanımını artırır.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Verilen fiziksel ve büyü hasarını artırır. Başka bir oyuncuya uygulanabilir. Kendine kullanıldığında bonus verir.
@@ -7934,6 +8414,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Sung Ma Direnci'ne harcan
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Sung Ma Gücü'ne harcanan Şampiyon puanlarını geri verir.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Sung Ma Dayanıklılığı'na harcanan Şampiyon puanlarını geri verir.
 Zwyczajna Szata Aury	Sıradan Aura Cübbesi
+Zwykle bicie potworow	Sıradan canavar kesme
 Zwykła Skóra	Sade Deri
 Zwykłe Mikstury	Normal İksirler
 Zwykłe potwory	Normal canavarlar
@@ -8001,8 +8482,11 @@ Złośliwa	Kötücül
 Zły Pł. Wężowy (wykon.)	Kötü Yılan Pel. (işlenmiş)
 Zły Płaszcz Wężowy	Kötü Yılan Pelerini
 Złów %(n)s ryb	%(n)s balık tut
+Złów ryby	Balık tut
 [ Założony ]	[ Takılı ]
 [%s] [Sklep] %s	[%s] [Dükkan] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Bonus DOŚ]	[EXP Bonusu]
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Bir Buffi yeteneğine şaman Yetenek Kitabı sürükle.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Bu yetenek şu Yetenek Kitabıyla eğitilir: %s (şaman).
@@ -8012,7 +8496,10 @@ Złów %(n)s ryb	%(n)s balık tut
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[İstemci dosyaları] Güncel istemci dosyalarını panelden indir: Veritabanı Düzenleyici -> Uygula -> Güncel istemci dosyalarını indir (zip) ve oyun klasörüne çıkar.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Hazine Arayışı] Yeni tura ulaşıldı!
 [Sklep]	[Dükkan]
+[TAK]	[EVET]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Savaş] Loncan savaşta - savaş panosundaki (sol alt köşe) "Savaşa katıl" düğmesine tıkla.
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	ama başarısız olursan Eşya yok olacak. Devam etmek istiyor musun?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	ama yalnızca %50 süreyle ve yaş sıfırlanarak.
 aoe_giant	aoe_giant
@@ -8021,6 +8508,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Düşmanlara doğrudan saldırırsın.|Güçlendiren: Güç (++), Çeviklik (+), Dayanıklılık (+).
 autotarget: no Kolejny cel row in the game options	autotarget: oyun seçeneklerinde Sonraki Hedef satırı yok
 bez bonusu	bonus yok
+bije wszystko w pobliżu	yakındaki her şeye vurur
 bonusów 1-5 spoza warunków	koşullar dışındaki bonus 1-5
 brak bonusu	bonus yok
 bush_ancientlichen	bush_ancientlichen
@@ -8059,7 +8547,15 @@ dni	gün
 do końca SM	Ejderha Parası bitene dek
 dodaje nowy crafting %d item %d	yeni üretim ekleniyor %d eşya %d
 dodatkowo zweryfikowana po stronie serwera.	sunucu tarafında doğrulanır.
+dystans %d	dystans %d
 dzień	gün
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	şu haritalardan birinde ortaya çıkar: Seungryong Vadisi, Yongbi Çölü,
 gildie każdego królestwa (odbiór w tym oknie).	loncası ödül alır (bu pencereden alınır).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	bekleme süresiyle kendiliğinden etkinleşir. Ekle: Kılıç, Koruma,
@@ -8079,11 +8575,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	rastgele bir kitap. Yığı
 ktoś był szybszy	biri senden hızlıydı
 która ma już pięć bonusów.	(yalnızca zaten beş bonusu olanlara).
 które wypadają z ostatniego bossa.	düşen eşyaları gösterir.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	sol fare tuşu veya %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	rastgele harita
 ma swój ranking postaci i gildii. Na koniec sezonu	kendi karakter ve lonca sıralaması var. Sezon
 maksymalne PŻ /2	maksimum HP /2
 maksymalne PŻ są o połowę mniejsze	maksimum HP yarıya düşer
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: kart penceresinde hata (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	envanterde ona sağ tıkla).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	Hazine Adası'nda (sandıklardan çıkan Hazine Biletleri ile).
@@ -8102,6 +8603,7 @@ nie udało się zapisać ustawień.	ayarlar kaydedilemedi.
 nie walczy wcale	hiç savaşmaz
 nie wybrano	seçilmedi
 nie wydaje	harcamaz
+nie zaczyna, broni ciebie i siebie	başlamaz, seni ve kendini korur
 nowego bossa! W przeciwnym razie nagroda przepadnie.	al! Aksi halde ödül kaybolur.
 obnizaj cene o	fiyatı şu kadar düşür
 obok ciebie	yanında
@@ -8109,7 +8611,9 @@ obrażenia zadawane potworom /2	canavarlara verilen hasar /2
 obrażenia zadawane potworom są o połowę mniejsze	canavarlara verilen hasar yarıya düşer
 od +%d	+%d ve üzeri
 od +0 do +7 (także z bonusami),	+0'dan +7'ye kadar (bonuslu olanlar da),
+odprawa tak	odprawa tak
 oferta została już sprzedana	teklif zaten satıldı
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	başka bir eşyanın altına - kaç saniyede bir kullanılacağını yaz.
 podswietl po (godzin, 0 = wyl.)	şu süreden sonra vurgula (saat, 0 = kapalı)
@@ -8121,11 +8625,13 @@ poziom łupu IV - 25 Kamyków	ganimet seviyesi IV - 25 Çakıl Taşı
 przez podany czas; każdy zostawia sobie zapas.	verilen süre boyunca; her biri kendine yedek bırakır.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	Şeytan Kulesi'nin zemin katındaki Sertlik Metini'nin yanında; boş yerleri
 przy kolejnych próbach łowienia?	öğretici gösterilsin mi?
+przy tobie	yanında
 przywołany	çağrıldı
 próby: %d	deneme: %d
 prędkość ruchu /2	hareket hızı /2
 prędkość ruchu jest o połowę mniejsza	hareket hızı yarıya düşer
 puste = dowolny przedmiot	boş = herhangi bir eşya
+reguła "%s"	kural "%s"
 reliktu go niszczy.	çıkarmak onu yok eder.
 robi zakupy	alışveriş yapıyor
 rodzaj bez filtra	tür filtresiz
@@ -8137,11 +8643,16 @@ ręcznie	elle
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	sunucu yanıt vermiyor (autohunttest yaması yok) - başlatılmadı.
 serwer nie potwierdził zakupu	sunucu satın alımı onaylamadı
 serwer nie pozwala teraz polować.	sunucu şu anda avlanmaya izin vermiyor.
+sezon %d	sezon %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	haritadaysan ve gereken asgari hasarı verdiysen
 skillbook	skillbook
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	dükkânda yanlış eşyalar olabilir. Devam edilsin mi?
 sklep odmówił sprzedaży	dükkân satışı reddetti
 start, zasięg %d m.	başladı, menzil %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	hesabın kalıcı olarak engellenmesine yol açabilir.
 stoi - pokonajcie go, zanim ucieknie!	duruyor - kaçmadan önce onu yenin!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	bu eşya burada kullanılamaz (iksir, güçlendirme veya çiy).
@@ -8155,24 +8666,36 @@ tylko gdy gracz jest AKTUALNIE online.	oyuncu ŞU AN çevrimiçiyken değil.
 uciekł - nikt nie dostał nagrody	kaçtı - kimse ödül almadı
 ulepszony Nóż.	yükseltilmiş Bıçak.
 umiej %d	yetenek %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	istemci yeniden başlatılınca değiştirir.
 ustawienia zapisane.	ayarlar kaydedildi.
+usun	usun 
+usun %d	usun %d
+w dniach	gün olarak
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	3 saat boyunca saldırı değeri +%20 (ödülle birlikte alınır,
 ważne	önemli
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	yerleşik tarayıcı (yeni bir istemci exe dosyası gerekir).
+wolna ręka	serbest
 wprowadzenie aby móc kontynuować rozgrywkę.	edebilmek için lütfen kodu doğru gir.
 wszystkie przedmioty	tüm eşyalar
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	kalıntısı çalışır. İlk etkinleştirmeden sonra kalıntıyı
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	zaten giriş yapmış oturumu kapatır. Sunucudan at çalışır
 wyłączone na tym serwerze.	bu sunucuda kapalı.
 z nagrodą, przed pojawieniem się kolejnego bossa).	bir sonraki boss ortaya çıkmadan önce).
 zajmiesz w rankingu.	o kadar yüksek bir yer alırsın.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	krallığından kiralanan botlar doldurur. Birkaç dakikalık toplanmadan sonra
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	durduruldu - normal Oto Av başladı.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	zırhlar ve kostümler kendi aralarında, silah görünümü o türden silahlarla.
 zeruje Twoje obrażenia.	hasarını sıfırlar.
 zmieniła się cena albo ilość	fiyat veya miktar değişti
 zostają, a zwierzak zachowuje 80% swojego wieku.	korunur, evcil hayvan yaşının %80'ini muhafaza eder.
 zostanie zresetowany.	sıfırlanır.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 {} + {} rozdziel przedmioty.	{} + {} eşyaları böler.
 {}'s Auction	{} Açık Artırması
@@ -8212,11 +8735,21 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dBağış toplama tamamlandı - tüm miktar toplandı
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aBağış toplama süresi doldu
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aÖnce tamamla://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aBağış lider tarafından sonlandırıldı
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893akullanılabilir [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - hızlı giriş.
+|cfff4f770Trwa misja	|cfff4f770Görev sürüyor
+|cfff4f770Trwa zrzutka	|cfff4f770Bağış sürüyor
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742DİKKAT!|r Güvenlik kontrolü!
+Óó	Óó
+Ąą	Ąą
+ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
+ąćęłńóśźż	ąćęłńóśźż
+ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
 Čć»ç°©	Čć»ç°©
 Čć»çĹő±¸	Čć»çĹő±¸
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Hiçbir canavar bunu düşürmüyor.
 Ładny Kam. Przebudzenia	Güzel Uyanış Taşı
 Ładny Kamień Chaosu	Güzel Kaos Taşı
@@ -8268,6 +8801,9 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Łuski Smoka	Ejderha Pulları
 Łączenie	Bağlantı
 Łączne obrażenia	Toplam hasar
+Łączny czas	Toplam süre
+Łł	Łł
+Ńń	Ńń
 Ściana	Duvar
 Ściąga do ciebie grupy potworów z okolicy.	Çevredeki canavar gruplarını sana çeker.
 Ścięgno Balathora	Balathor'un Kası
@@ -8280,12 +8816,14 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Śnieżna Czapa Leoparda+	Karlı Leopar Şapkası+
 Śnieżna Czapa Zajęcza	Karlı Tavşan Şapkası
 Śnieżna Czapa Zajęcza+	Karlı Tavşan Şapkası+
+Śnieżny Bambi	Kar Bambi
 Śnieżny Kwiat	Kar Çiçeği\r\n
 Śnieżny Leonidas	Karlı Leonidas
 Śnieżny Leonidas(piecz.)	Karlı Leonidas (Mühür)
 Śpiew Stali	Çelik Şarkısı
 Śpiew Wiatru	Rüzgâr Şarkısı
 Śpiewająca Furia	Şarkı Söyleyen Öfke
+Śr. czas sesji	Ort. oturum süresi
 Śr. obrażenia	Ort. Hasar
 Śr. yang na sesję	Oturum başına ort. Yang
 Średni	Orta
@@ -8294,6 +8832,7 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Średnio	Orta
 Środa	Çarşamba
 Środek Ścierny	Aşındırıcı
+Św. Nosiciel Światła+	Kutsal Işık Taşıyıcı+
 Św. Odłamek Broni I	Kutsal Silah Parçası I
 Św. Odłamek Broni II	Kutsal Silah Parçası II
 Św. Odłamek Hełmu I	Kutsal Miğfer Parçası I
@@ -8307,6 +8846,7 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Światło Gwiazd	Yıldız Işığı
 Światło Gwiazd (9.skill)	Yıldız Işığı (9. beceri)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Kamp ateşinde pişirmek için harika.
+Świąt. Zim. Zbroja+ (m)	Kış Bayramı Zırhı+ (e)
 Świąteczna Brązowa Skrzynia Okey	Noel Bronz Okey Sandığı
 Świąteczna Srebrna Skrzynia Okey	Noel Gümüş Okey Sandığı
 Świąteczna Złota Skrzynia Okey	Noel Altın Okey Sandığı
@@ -8317,13 +8857,17 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Świątynia	Tapınak
 Świątynia Węży	Yılan Tapınağı
 Świątynia Zodiaku	Zodyak Tapınağı
+Święty	Kutsal
 Święty Efekt Zestawu	Kutsal Set Etkisi
 Święty Kowal Zestawu	Kutsal Set Demircisi
 Święty Miecz Bogów+	Tanrıların Kutsal Kılıcı+
 Święty Odłamek	Kutsal Güç Parçası
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	Ejderha Tanrısı'nın bahçesinden kutsal bir çiçek. Ekipmanı geliştirmek için kullanılır.
+Śś	Śś
+şó ĹĄşę	şó ĹĄşę
 Źródła	Kaynaklar
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	Olta için bir güç kaynağı. Dokunuşu aleti geliştirerek en derin sulardan balık tutmanın yolunu açar.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Bu silahın yapımında hiçbir kuzgun zarar görmedi. Genç Kahramanlar silahı: aldıktan 15 gün sonra kaybolur (takılı olsa bile). Geliştirilemez, bonusları değiştirilemez veya eklenemez, zihin taşı takılamaz, takas edilemez, satılamaz ve depoya konamaz.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Hiçbiri: Yoldaş mesajlarını kapatır. Önemli: dolu EQ, sırt çantası, değerli eşyalar.
 Żałobna Pieśń	Yas Şarkısı
@@ -8340,6 +8884,7 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Żołnierz Schron. Płn. W.	K. Rüzgârı Sığınak Askeri
 Żołnierz Wężowy	Yılan Askeri
 Żołnierze	Askerler
+Życie goblina	Goblin Canı
 Żywe Drzewo	Canlı Odun
 Żywioł potworów na tym piętrze	Bu kattaki canavarların elementi
 Żywioł: %s	Unsur: %s
@@ -8358,3 +8903,5 @@ zwykłe Auto Łowy zatrzymane.	normal Oto Av durduruldu.
 Żółty Lśniący Odłamek	Sarı Parlak Parça
 Żółty Sok	Sarı Meyve Suyu
 Żądza Krwi +%.0f	Kan Sarhoşluğu +%.0f
+Żż	Żż
+żadne	hiçbiri

@@ -4,6 +4,7 @@
 $ITEM_NAME (30 dni)	$ITEM_NAME (30 de zile)
 $ITEM_NAME (30 godzin)	$ITEM_NAME (30 de ore)
 $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
+%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])	%([-+ #0]*)(\\d*)(?:\\.(\\d+))?([a-zA-Z%])
 %(name)s: poziom %(b)d.	%(name)s: nivel %(b)d.
 %d - %d obrażeń	%d - %d daune
 %d - rzadko 100 - jak w grze %d - czesto	%d - rar      100 - ca în joc      %d - des
@@ -66,9 +67,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 %d%% Wola SungMa (WIT)	%d%% Voința SungMa (VIT)
 %d%% na losowy bonus.	%d%% pentru un bonus aleatoriu.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% șanse de a bloca daunele unui atac
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% șanse de a călca în picioare adversarii timp de 20 sec.
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% șanse de a evita moartea și de a reface 30%% PV
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% șanse ca toți monștrii din jur să te atace (pelerina curajului)
 %d%% Średnie Obrażenia	%d%% Daune Medii
 %d. miejsce	Locul %d
 %d. pusty	%d. gol
+%dx %s (dowolne z %d)	%dx %s (oricare din %d)
 %dx (po %d)	%dx (câte %d)
 %s %d - zostało %d	%s %d - au rămas %d
 %s (%d szt.)	%s (%d buc.)
@@ -76,6 +81,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Niv %d) - pid %d, poz (%d, %d), imperiul %d
 %s (Pozostały czas: %s)	%s (Timp rămas: %s)
 %s (co %d sek.)	%s (la fiecare %d sec.)
+%s (inna mapa)	%s (altă hartă)
 %s (maks. %.1f)	%s (max. %.1f)
 %s (maks. %d)	%s (max. %d)
 %s (maks.)	%s (max.)
@@ -108,19 +114,23 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 (Kup wszystkie przedmioty tego typu)	(Cumpără toate obiectele de acest tip)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 (Najedź myszką na ikonę)	(Poziționează cursorul pe pictogramă)
+(brak klawisza - Esc, Skróty klawiszowe)	(fără tastă - Esc, Taste rapide)
 (brak)	(niciunul)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (filtrul este oprit - acum ridici tot)
 (na koniu: %d)	 (pe cal: %d)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(nivel maxim, Apărarea Navei, sfera de experiență plină).
 (nieznana)	 (necunoscută)
 (od P)	 (de la P)
+(postac offline - brak podgladu skilli)	(personaj offline - fără previzualizare abilități)
 (poziom %d)	 (nivel %d)
+(puste)	(gol)
 (szansa %s%%)	 (șansă %s%%)
 (ten bot nic jeszcze nie powiedzial)	(acest bot nu a spus încă nimic)
 (wybierz stworzenie)	(alege creatura)
 (wybierz z listy)	(alege din listă)
 (wybierz)	(alege)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* ATENȚIE * Opțiune experimentală![ENTER]Modul de Scalare a interfeței poate duce la scăderea[ENTER]calității interfeței (elemente grafice, font).[ENTER]Culoarea |cff8ab98everde|r înseamnă că scalarea POATE FI cea mai optimă.[ENTER]Culoarea |cffe57976roșie|r înseamnă că scalarea poate duce[ENTER]la lipsa de răspuns a jocului.
++ Dodaj bonus	+ Adaugă bonus
 + Dodaj przedmiot	+ Adaugă obiect
 + Pkt umiejetn.	+ Puncte abil.
 +%d Inteligencja	+%d Inteligență
@@ -152,6 +162,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 +15 wartości ataku	+15 la valoarea de atac
 +3% siły przeciwko kamieniom Metin	+3% putere împotriva pietrelor Metin
 +50% szansy na drop przez 2 godziny	   +50% șansă de obiecte căzute timp de 2 ore
++800 PŻ	+800 PV
 , PPM: dokładny filtr	, PPM: filtru exact
 , atak włączony	, atac pornit
 - Czekaj cierpliwie na odpowiedź.	- Așteaptă cu răbdare răspunsul.
@@ -162,6 +173,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 - drugie miejsce od 31 poziomu konia	- al doilea loc de la nivelul 31 al calului
 - piętro %d	 - etajul %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- loc liber: citește cartea de abilități de călărie
+-- Ninja Archer - skille P --	-- Ninja Archer - abilități P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - abilități P --
+-- Sura BM - skille P --	-- Sura BM - abilități P --
+-- Sura WP - skille P --	-- Sura WP - abilități P --
 -- Szaman Healer - skille P --	-- Șaman Vindecător - abilități P --
 -- Szaman Smok - skille P --	-- Șaman Dragon - abilități P --
 -- Wojownik Body - skille P --	-- Războinic Corp - abilități P --
@@ -171,17 +186,29 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 ... i %d więcej.	... și încă %d.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...și încă %d - lista completă în fereastra Drop wiki (bara laterală a inventarului).
 / - powtarza poprzednia komende	/ - repetă comanda anterioară
+/a - dajemy komus dany lvl	/a - dăm cuiva un anumit nivel
 /a level - Zmienia lvl gracza	/a level - Schimbă nivelul jucătorului
 /b - ogloszenie w ramce	/b - anunț în chenar
+/battlepass nagroda	/battlepass nagroda
 /block_chat - blokuje chat na jakis czas	/block_chat - blochează chatul pentru o vreme
+/block_chat_list - lista graczy z zablokowanym pisaniem	/block_chat_list - lista jucătorilor cu chatul blocat
 /dc - wyrzuca kogos z serwera	/dc - elimină pe cineva de pe server
 /e lotto-drop - ...nie wiem...	/e lotto-drop - ...nu știu...
 /e lotto_round - ...nie wiem...	/e lotto_round - ...nu știu...
+/ekwipunek doekw %d	/ekwipunek doekw %d
+/ekwipunek dotorby %d %d	/ekwipunek dotorby %d %d
+/ekwipunek hello	/ekwipunek hello
+/ekwipunek kostka %d %d %d	/ekwipunek kostka %d %d %d
+/ekwipunek sortuj wszystko	/ekwipunek sortuj wszystko
+/ekwipunek sprzedaj %d %d %d	/ekwipunek sprzedaj %d %d %d
+/ekwipunek stos %d	/ekwipunek stos %d
 /f - ...nie wiem...	/f - ...nu știu...
 /gete - ...nie wiem...	/gete - ...nu știu...
 /getq - ...nie wiem...	/getq - ...nu știu...
+/gildia_boty	/gildia_boty 
 /go d - teleport na pustynie	/go d - teleportare în deșert
 /go s - teleport na Gore Sohan	/go s - teleportare la Muntele Sohan
+/go t - teleport do Doliny Orkow	/go t - teleport în Valea Orcilor
 /go tr - teleport do Lasu Duchow	/go tr - teleportare în Pădurea Spiritelor
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - teleportare în Pădurea Roșie
 /go x y - przenosi do wspolrzednych x y	/go x y - mută la coordonatele x y
@@ -190,13 +217,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 /horse_level - podnosi poziom konia	/horse_level - ridică nivelul calului
 /horse_ride - przywoluje konia	/horse_ride - cheamă calul
 /inv - niewidzialnosc	/inv - invizibilitate
+/irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - adaugă mai multe bucăți dintr-un obiect
 /item - dodaje przedmiot	/item - adaugă un obiect
 /kill - zabija gracza	/kill - omoară jucătorul
+/kostiumy_innych %d	/kostiumy_innych %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - schimbă nivelul personajului
+/lochy open	/lochy open
+/lochy rank %d %d	/lochy rank %d %d
+/lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - cheamă un monstru sau un NPC
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - viteza de mers
 /n - Wiadomosc na gorze ekranu	/n - Mesaj în partea de sus a ecranului
+/nowy_ksiegi x%d %s	/nowy_ksiegi x%d %s
 /o - Tryb obserwowania	/o - Mod observator
 /open - start eventu OX	/open - pornește evenimentul OX
 /p - zamiana w potwora lub npc	/p - transformare în monstru sau NPC
@@ -214,12 +250,27 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 /priv_empire 0:4exp - Zwieksza exp o dany procent na okreslony czas	/priv_empire 0:4exp - Crește EXP cu un procent dat pe un timp stabilit
 /purge - usuwa potwory, npc itp z okolicy	/purge - șterge monștrii, NPC-urile etc. din zonă
 /r - przywraca wszystkie pkt energii i zycia	/r - restabilește toate punctele de energie și viață
+/relikt activate %d	/relikt activate %d
+/relikt add %d	/relikt add %d
+/relikt charge %d	/relikt charge %d
+/relikt hello	/relikt hello
+/relikt page %d	/relikt page %d
+/relikt put %d %d	/relikt put %d %d
+/relikt take %d	/relikt take %d
 /reload q - ...nie wiem...	/reload q - ...nu știu...
 /reset - resetuje PZ i PE	/reset - resetează PV și PM
+/sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - rang de cavaler
+/set exp - dostajemy dana ilosc expa	/set exp - primim o anumită cantitate de EXP
+/set gold - dostajemy dana ilosc Yang	/set gold - primim o anumită cantitate de Yang
+/set max_hp - zwieksza punkty zycia	/set max_hp - mărește punctele de viață
 /set max_sp - zwieksza punkty energii	/set max_sp - crește punctele de energie
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - adaugă un număr dat de puncte de abilitate
+/set_maxhp - doladowanie hp	/set_maxhp - reîncărcare HP
 /set_maxsp - doladowanie pe	/set_maxsp - reîncarcă PM
+/set_state information - ...nie wiem...	/set_state information - ...nu știu...
+/set_state run - ...nie wiem...	/set_state run - ...nu știu...
+/set_state start - ...nie wiem...	/set_state start - ...nu știu...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Conducere P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Polimorfie P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - nivel 30 al calului
@@ -233,21 +284,45 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Furia Zeului Dragon
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Dorința Dragonului
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...nu știu...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - dăm cuiva o anumită abilitate la P
 /ski 121 - Dowodzenie	/ski 121 - Conducere
 /ski 131 - Przywolaj Konia	/ski 131 - Cheamă Calul
 /slow - spowalnia gracza	/slow - încetinește jucătorul
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - leșină jucătorul
+/towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - mută jucătorul la GM
+/w - ilosc osob online	/w - numărul de persoane online
 /warp - przenosi GM'a do gracza	/warp - mută GM-ul la jucător
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Insula cu zăpadă (Locuința GM-ilor)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - teleport în Arena GM
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - mai întâi dai clic dreapta pe monstru, apoi scrii comanda și monstrul rămâne cu 1 PV
+/xmas 0 - Dzien	/xmas 0 - Zi
 /xmas 1 - Noc	/xmas 1 - Noapte
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Zi
 /xmas_boom 1 - Noc	/xmas_boom 1 - Noapte
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - oprește zăpada
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - pornește zăpada
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - Melodia se oprește
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Pornește melodia de sărbători
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - sărbători OFF
 0 - nakarm peta	0 - hrănește animalul
 0 = bez granicy	0 = fără limită
 1 dzień	1 zi
+1 godz.	1 oră
 1 krok	1 pas
+1* Runa Wyk. Akcesoriów	1* Runa Forj. Accesoriilor
+1* Runa Wyk. Ks. Um.	1* Runa Forj. Cărți Abil.
+1* Runa Wyk. Poz. Prz.	1* Runa Forj. Alte Obiecte
+1* Runa Wyk. Prz. d. Zw.	1* Runa Forj. Obiecte Animal
+1* Runa Wyk. Rękawiczek	1* Runa Forj. Mănuși
+1* Runa Wyk. Zest. Broni	1* Runa Forj. Set Arme
+1* Runa Wyk. Zest. Hełm.	1* Runa Forj. Set Căști
+1* Runa Wyk. Zest. Zbroi	1* Runa Forj. Set Armuri
+1* Runa Wykuwania Broni	1* Runa Forjării Armelor
+1* Runa Wykuwania Pasów	1* Runa Forjării Centurilor
+1* Runa Wykuwania Zbroi	1* Runa Forjării Armurilor
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normal. Funcționează imediat.
 1. Posterunek Myr	Avanpostul 1 Myr
 1. dodany bonus +%d%%	Bonusul 1 adăugat +%d%%
@@ -260,16 +335,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pachet 25)
 15% or more	15% sau mai mult
 1927 Imha (k)	1927 Imha (f)
 1927 Imha+ (k)	1927 Imha+ (f)
+2 godz.	2 ore
 2-12 liter lub cyfr!	2-12 litere sau cifre!
 20% or more	20% sau mai mult
 25 kart królewskich dało nową Talię Królewską.	25 de cărți regale au format un nou Pachet Regal.
 25% only	doar 25%
+25-40 lvl	Nivel 25-40
 2x PD	2x EXP
 3 Loch Pająków	Temnița Păianjenilor 3
 3 losowe bonusy podstawowe	3 bonusuri de bază aleatorii
 3 metiny	3 metin-uri
+4 godz.	4 ore
+5 bossow	5 bossi
+5% obrażeń będzie dodanych do PŻ	5% din daune vor fi adăugate la PV
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Pietricele, Caseta Enigmatică, Cupon SM (20),
 50% więcej doświadczenia	50% mai multă experiență
+8 godz.	8 ore
 < 10 sek	< 10 sec
 AC Miryang (k)	AC Miryang (f)
 AC Miryang+ (k)	AC Miryang+ (f)
@@ -309,6 +390,7 @@ Ahtrin Wielki Mistrz	Marele Maestru Ahtrin
 Ahtrin Wojownik	Ahtrin Războinic
 Ahtrin Zwiadowca	Ahtrin Iscoadă
 Akcja:	Acțiune:
+Akcje botow	Acțiuni boți
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Datele se încarcă în prezent. Încearcă din nou mai târziu.
 Aktualny poziom: %s	Nivel actual: %s
 Aktywna	Activă
@@ -346,6 +428,8 @@ Alchemy	Alchimie
 Alchemy Grade:	Grad alchimie:
 All items that cannot be placed in your Inventory will be moved to the Shopping Safebox. Do You want to continue?	Toate obiectele care nu încap în inventar vor fi mutate în Seiful de Cumpărături. Vrei să continui?
 All |cFFFFFF99|h{}|r will be moved to Inventory or Shopping Safebox. Do You want to continue?	Toate |cFFFFFF99|h{}|r vor fi mutate în inventar sau în Seiful de Cumpărături. Vrei să continui?
+Alt (przytrzymaj)	Alt (ține apăsat)
+Alt + LPM	Alt + clic stg.
 Amal	Amal
 Amator Ninja	Ninja Începător
 Amator Shaman	Șaman Începător
@@ -366,6 +450,7 @@ Antymagia	Antimagie
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Anularea Polimorfiei Monturii
 Anulacja Transmutacji	Anularea Transmutației
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Operațiunile rămase au fost anulate. Ștergerile trimise ar fi putut fi deja executate.
 Anuluj edycje	Anulează editarea
 Anuluj misję	Anulează misiunea
 Appaloosa	Appaloosa
@@ -377,6 +462,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	Trusă de prim ajutor (TR) a 
 Apteczka strażników Zaklętego Lasu.	Trusa de prim ajutor a gardienilor Pădurii Vrăjite.
 Arahan Zodiaku	Arahan Zodiac
 Arbuz	Pepene Verde
+Arena Pojedynków	Arena Duelurilor
+Arena pojedynkow	Arena de dueluri
 Argos (mrok)	Argos (întuneric)
 Argos (ogień)	Argos (foc)
 Arial	Arial
@@ -401,6 +488,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Atac la distanță mare, amețește 
 Atak krwawienia	Atac de sângerare
 Atak magiczny	Atac magic
 Atak magiczny/fizyczny %	Atac magic/fizic %
+Atak na Metiny	Atac asupra Metin-urilor
 Atak na odległość	Atac la distanță
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	Atac rotativ cu trei șanse de lovire și șansa de a otrăvi inamicul. 
 Atak obszarowy walki wręcz	Atac de zonă corp la corp
@@ -419,6 +507,7 @@ Atak trzema ciosami pod rząd.	Atac cu trei lovituri la rând.
 Atak umożliwiający ominięcie obrony przeciwnika.	Un atac care ignoră apărarea inamicului.
 Atak w kilka celów	Atac asupra mai multor ținte
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Atac la distanță mare, lovește un singur inamic sau mai mulți aflați unul lângă altul.
+Atak z wierzchowca	Atac de pe montură
 Atak zasięgowy	Atac cu rază lungă
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	Atacă monștrii din apropiere în timpul luptei cu fulgere ale căror daune corespund daunelor atacului automat (timp de reîncărcare 15 sec.).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Atacă dușmanii cu chipuri de dragon.|Întărit de: Inteligență (++), Dexteritate (precizie) (+), nivelul personajului.
@@ -426,6 +515,7 @@ Atakuj wszystkich wrogów, którzy atakują z dystansu (np. łucznicy). (od poz.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Atacă dușmanii frontal.|Întărit de: Forță (++), Vitalitate (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Atacă inamicii din jurul tău, cu șansa de a amețe inamicul.
 Atakuje wszystkich przeciwników wokół siebie.	Atacă toți inamicii din jurul tău.
+Atakujący (atak)	Atacator (atac)
 Atrybut Błyskawicy	Atributul Fulgerului
 Atrybut Błyskawicy|Efekt Omdlenia	Atributul Fulgerului|Efect de Leșin
 Atrybut Piorunu	Atributul Fulgerului
@@ -456,6 +546,7 @@ Auto Łowy: bojowiec wyłączony.	Vânătoare Automată: luptătorul călare est
 Auto Łowy: brak czasu. Kup "Auto Łowy (8h)" w ItemShopie i użyj go z ekwipunku - czas leci tylko w grze.	Vânătoare Automată: nu mai ai timp. Cumpără „Vânătoare Automată (8h)” din ItemShop și folosește-o din inventar - timpul trece doar în joc.
 Auto Łowy: nie da się wsiąść na konia - łowy dalej pieszo. Wsiądź sam (Ctrl+G), a bojowiec wróci.	Vânătoare Automată: nu se poate încăleca calul - vânătoare mai departe pe jos. Încalecă singur (Ctrl+G) și luptătorul călare revine.
 Auto Łowy: nie mogę wsiąść na konia - próbuję co %d s, a do tego czasu walczę pieszo.	Vânătoare Automată: nu pot încăleca calul - încerc la fiecare %d s, iar până atunci lupt pe jos.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Auto Vânătoare: nu s-a putut încăleca din nou după blocare - vânătoarea a fost oprită.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Vânătoare Automată: nu s-a putut încăleca din nou pe montură după blocare.
 Auto Łowy: nie udało się zapisać ustawień.	Vânătoare Automată: setările nu au putut fi salvate.
 Auto Łowy: podnoszenie jest wyłączone.	Vânătoare Automată: ridicarea este dezactivată.
@@ -475,10 +566,13 @@ Auto-cena jest nieaktywna. Nie zmieniono cen.	Prețul automat este inactiv. Pre�
 Auto-obnizka ceny	Reducerea automată a prețului
 Auto-obnizka: %s - nowa cena %s	Reducere automată: %s - preț nou %s
 Auto-obnizka: -%d%% co %dh, min. %s	Reducere automată: -%d%% la fiecare %dh, min. %s
+Auto-obnizka: -%d%%/%dh	Reducere auto: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Reducere automată: 1-%d%%, la fiecare 1-%d ore, preț minim de cel puțin 1 Yang.
+Auto-obnizka: wyl.	Reducere auto: oprit
 Auto-obnizka: wylaczona	Reducere automată: dezactivată
 Autologin: ponownie za %d s (próba %d)	Autologin: din nou peste %d s (încercarea %d)
 Automatyczne podnoszenie Yang.	Strângerea automată a Yang.
+Automatyczne zbieranie	Colectare automată
 Automatycznie regeneruje twoje PE. Objętość 1.000.000 PE.	Îți reface automat PM-ul. Conține 1.000.000 PM.
 Automatycznie regeneruje twoje PE. Objętość 100.000 PE.	Îți reface automat PM-ul. Conține 100.000 PM.
 Automatycznie regeneruje twoje PE. Objętość 300.000 PE.	Îți reface automat PM-ul. Conține 300.000 PM.
@@ -490,14 +584,20 @@ Automatycznie regeneruje twoje PŻ. Objętość 7.000.000 PŻ.	Îți reface auto
 Autopodnoszenie:	Ridicare automată:
 Autopoty	Auto-poțiuni
 Autospin - wygrane: %s	Autospin - câștiguri: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autospin oprit - Roata Norocului este dezactivată.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autospin oprit - serverul nu răspunde.
+Autospin zatrzymany - obrót odrzucony.	Autospin oprit - rotirea a fost respinsă.
 Autospin zatrzymany.	Autospin oprit.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autospin: %d rotiri, cheltuiți %d SM, recompense principale: %d.
 Autospin: brak odpowiedzi.	Autospin: niciun răspuns.
+Autospin: główna nagroda - zatrzymany.	Autospin: recompensă principală - oprit.
 Autospin: główna nagroda!	Autospin: recompensa principală!
+Autospin: koniec (%d obrotów).	Autospin: sfârșit (%d rotiri).
 Autospin: koniec.	Autospin: sfârșit.
 Autospin: koło wyłączone.	Autospin: roata este dezactivată.
 Autospin: obrót odrzucony.	Autospin: rotirea a fost respinsă.
 Autospin: za mało SM.	Autospin: prea puțini SM.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin: prea puține Monede Dragon pentru următoarea rotire.
 Autołowy	Vânătoare automată
 Autołowy (TEST)	Vânătoare automată (TEST)
 Autołowy - szybki start/stop	Vânătoare automată - start/stop rapid
@@ -546,6 +646,7 @@ Best. Czl. Skor. Zodiaku	Om-Scorpion Bestial Zodiac
 Best. Wężowy Miecznik	Spadasin Bestial Șarpe
 Best. Wężowy Wojownik	Războinic Bestial Șarpe
 Best. Wężowy Łucznik	Arcaș Bestial Șarpe
+Bestialski Fanatyk	Fanatic Bestial
 Bez bonusów podstawowych - jadeit nic nie dodaje	Fără bonusuri de bază - jadul nu adaugă nimic
 Bez imienia (Zwój Imienia Buffi).	Fără nume (Pergamentul Numelui Buffi).
 Bez koloru	Fără culoare
@@ -593,11 +694,13 @@ Biolog	Biolog
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	Biologul oferă bonusuri permanente, iar un pas șters nu poate fi anulat.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	Biologul nu are nevoie de timp pentru a analiza o mostră de calitate slabă.
 Blad danych - sprawdz ID i ilosc.	Eroare de date - verifică ID-ul și cantitatea.
+Blad danych - sprawdz PID i ilosc.	Eroare de date - verifică PID și cantitatea.
 Blad danych - sprawdz kwote.	Eroare de date - verifică suma.
 Blad danych - sprawdz wartosc.	Eroare de date - verifică valoarea.
 Blad danych.	Eroare de date.
 Blad odpowiedzi serwera.	Eroare în răspunsul serverului.
 Blad zapytania do bazy.	Eroare la interogarea bazei de date.
+Blad: %s	Eroare: %s
 Blad: nie mozna utworzyc marmuru.	Eroare: nu se poate crea bila.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Eroare: cererea de repornire nu a putut fi salvată.
 Blade	Lamă
@@ -605,8 +708,11 @@ Blok Ataku	Blocarea Atacului
 Blokada Konta	Blocare Cont
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	Blocarea funcționează de la URMĂTOAREA conectare la acest cont - nu
 Blokada konta	Blocarea contului
+Blokada permanentna	Blocare permanentă
+Blokada tymczasowa	Blocare temporară
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	Blocarea sortării se poate pune doar pe un obiect din rucsac.
 Blokuje zdobywane doświadczenie. Dotyczy to także nagród z misji. Zdobyte doświadczenie w trakcie trwania efektu przepada na zawsze!	Blochează experiența obținută, inclusiv recompensele din misiuni. Experiența obținută cât timp durează efectul se pierde definitiv!
+Blokujący (czas trwania)	Blocant (durată)
 Bo Zodiaku	Bo Zodiac
 Body	Corp
 Bohat. Księga Zwierza	Cartea Eroică a Animalului
@@ -635,6 +741,7 @@ Bonus vs Bossy	Bonus vs Bossi
 Bonus vs Bossy/Metiny	Bonus vs Bossi/Metin
 Bonus vs Ludzie	Bonus vs Oameni
 Bonus vs Metiny	Bonus vs Metin
+Bonus vs Nieumarli	Bonus vs Moarte-vii
 Bonus vs Orki	Bonus vs Orci
 Bonus vs Potwory	Bonus vs Monștri
 Bonus vs Szaman	Bonus vs Șaman
@@ -685,9 +792,12 @@ Bossy	Bossi
 Bossy > Metiny > Moby	Bossi > Metin-uri > Monștri
 Bossy > Moby > Metiny	Bossi > Monștri > Metin-uri
 Bot	Bot
+Boty do spawnu	Boți de spawnat
 Boty gildii	Boții breslei
 Boty nie maja jeszcze wyceny tego przedmiotu.	Boții nu au încă o evaluare pentru acest obiect.
+Boty pisza na czacie	Boții scriu în chat
 Boty w misji: %d / %d (od poziomu %d)	Boți în misiune: %d / %d (de la nivelul %d)
+Boty zlomiarze	Boți colecționari de fier vechi
 Boty: %s z %s (razem %s)	Boți: %s din %s (în total %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Boți: %d (din breaslă %d, angajați %d), s-au dorit %d
 Bow	Arc
@@ -697,6 +807,7 @@ Brak / >	Fără / >
 Brak aktywnej misji albo limit został przekroczony.	Nicio misiune activă sau limita a fost depășită.
 Brak aktywnej sesji	Nicio sesiune activă
 Brak aktywnej sesji.	Nicio sesiune activă.
+Brak bonusu albo powyżej %d	Fără bonus sau peste %d
 Brak danych cenowych dla tego przedmiotu.	Nu există date de preț pentru acest obiect.
 Brak danych do wyceny	Nu există date pentru evaluare
 Brak danych o bonusach.	Nu există date despre bonusuri.
@@ -743,8 +854,10 @@ Brakuje Yang na: %s (%s).	Îți lipsesc Yang pentru: %s (%s).
 Brakuje ci Odłamków: %s.	Îți lipsesc Fragmente: %s.
 Brakuje ci Suplementów: %s.	Îți lipsesc Suplimente: %s.
 Brakuje materiałów do rozwoju.	Lipsesc materialele pentru dezvoltare.
+Brakuje: %s	Lipsește: %s
 Bransoleta z Turmalinu	Brățară de Turmalină
 Braz. Niedzw. Zodiaku	Urs Brun Zodiac
+Brazowy Niedzwiedz	Urs Brun
 Brillant	Strălucitor
 Bronie	Arme
 Browarnik	Berarul
@@ -759,6 +872,7 @@ Brązowa Chusta	Basma Maro
 Brązowa Chusta+	Basma Maro+
 Brązowa Farba	Vopsea Maro
 Brązowa Rosa	Rouă Maro
+Brązowa Wilcza Szata+(m)	Robă Maro de Lup+ (b)
 Brązowa Woda	Apă Maro
 Brązowe Płyty	Plăci de Bronz
 Brązowy Sok	Suc Maro
@@ -794,10 +908,12 @@ Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia do 100%. 
 Błogosławieństwo, które natychmiast regeneruje twoje Punkty Życia oraz Punkty Energii do 100%. Można użyć raz na 2 minuty. Współdzieli czas ładowania z Miksturami Niewrażliwości i Nietykalności.	Binecuvântare care îți reface imediat Punctele de Viață și Punctele de Mana la 100%. Poate fi folosită o dată la 2 minute. Are timp de reîncărcare comun cu Licorile Invulnerabilității și Intangibilității.
 Błyskaw.	Rapid
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Le oferă dușmanilor odihna veșnică într-o clipită. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
+Błyszcząca	Strălucitoare
 Błyszcząca Szata Aury	Robă Strălucitoare a Aurei
 Błąd serwera - spróbuj ponownie.	Eroare de server - încearcă din nou.
 Błąd zapytania.	Eroare de interogare.
 Błędne podanie kodu może skutkować	Introducerea unui cod greșit poate duce
+C. Ratownik Plażowy+	Salvamar Negru+
 CFR Smoczy Ogień 07 (k)	CFR Focul Dragonului 07 (f)
 CFR Smoczy Ogień 07 (m)	CFR Focul Dragonului 07 (m)
 CFR Smoczy Ogień 07+ (k)	CFR Focul Dragonului 07+ (f)
@@ -840,6 +956,7 @@ Charyzma Nowicjusza	Carisma Novicelui
 Chcesz zacząć grę?	Vrei să începi jocul?
 Chcesz zakończyć grę i otrzymać wygraną?	Vrei să închei jocul și să primești câștigul?
 Chcesz zrealizować to pole?	Vrei să revendici acest câmp?
+Chciano botów: %d	Boți doriți: %d
 Chciałeś %d szt., a tyle da się kupić.	Ai vrut %d buc., iar atâtea se pot cumpăra.
 Chegal, Goliat Cienia	Chegal, Goliatul Umbrei
 Chodząca Legenda	Legendă Ambulantă
@@ -854,12 +971,14 @@ Chwilę...	O clipă...
 Chwilę... spróbuj jeszcze raz.	O clipă... încearcă din nou.
 Cicha Klątwa	Blestemul Tăcut
 Ciekawski	Curios
+Ciemna Szata Proroka+(m)	Robă Întunecată de Profet+ (b)
 Ciemność	Întuneric
 Cienie	Umbre
 Cieniolubny Liść	Frunza Iubitoare de Umbră
 Cienka Nić	Ață Subțire
 Cienka Przędza	Fir Subțire
 Cienka Skóra	Piele Subțire
+Ciepły Kaftan Zimowy+(m)	Caftan Cald de Iarnă+ (b)
 Ciągliwość	Maleabilitate
 Ciężki grot wykonany z wytrzymałego kamienia. Choć wolniejszy, zapewnia potężne uderzenia i doskonale nadaje się do przebijania twardych pancerzy.	Un vârf de săgeată greu, făcut din piatră rezistentă. Deși mai lent, oferă lovituri puternice și este perfect pentru a străpunge armurile groase.
 Ciężkie Pasy	Curele Grele
@@ -898,6 +1017,9 @@ Cor Rubinum+ (epickie)	Cor Rubinum+ (epic)
 Costume	Costum
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Ceva a mers prost. Obiectul este în siguranță la Seon-Hae - încearcă mai târziu.
 Create	Creează
+Ctrl (przytrzymaj)	Ctrl (ține apăsat)
+Ctrl + LPM	Ctrl + clic stg.
+Ctrl + PPM	Ctrl + clic dr.
 Ctrl + PPM: wyjmij wszystko, Shift: ilość	Ctrl + clic dreapta: scoate tot, Shift: cantitate
 Ctrl + klik: kilka punktów naraz	Ctrl + clic: mai multe puncte deodată
 Ctrl + klik: odepnij	Ctrl + clic: desprinde
@@ -922,6 +1044,9 @@ Cyjanowy Sok	Suc Cian
 Cyklop Kat (BŚ)	Ciclop Călău (BM)
 Cyklop Mag (BŚ)	Ciclop Mag (BM)
 Cyklop Żołnierz (BŚ)	Ciclop Soldat (BM)
+Cz. Królik K. Czarów+(m)	Iepurele Roșu al Vrăjilor+ (b)
+Cz. Szata Faraona+ (m)	Robă Roșie de Faraon+ (b)
+Cz. Wojownik P.Księżyca+	Războinicul Roșu al Lunii+
 Czapka Jokera (k)	Pălăria Jokerului (f)
 Czapka Jokera (m)	Pălăria Jokerului (m)
 Czapka z Pomp. (czerw.)	Căciulă cu Ciucure (roșie)
@@ -933,15 +1058,19 @@ Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Beng
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (szary).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (gri).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (zielony).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (verde).
 Czar tej pieczęci przywołuje twojego wierzchowca, majestatycznego Tygrysa Bengalskiego (złoty).	Vraja acestui sigiliu îți cheamă armăsarul, maiestuosul Tigru Bengal (auriu).
+Czar. Szata Dokkaebi+(m)	Robă Neagră Dokkaebi+ (b)
+Czarna Lampa Lorda+	Lampa Neagră a Lordului+
 Czarna Pantera	Pantera Neagră
 Czarna Stal	Oțel Negru
 Czarna czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Căciulă neagră cu urechi de iepure pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
 Czarna magia	Magie neagră
 Czarnoksiężnik P. Wieży	Vrăjitorul Turnului Infernal
 Czarny Barwnik	Colorant Negru
+Czarny Niedzwiedz	Urs Negru
 Czarny Ork Zodiaku	Orc Negru Zodiac
 Czarny Rumak	Armăsar Negru
 Czarny Skorpion	Scorpion Negru
+Czarny jak noc Ks. Wam.+	Vampirul Negru ca Noaptea+
 Czarodziej Gnoll	Vrăjitor Gnoll
 Czarodziej Stylu Małp	Vrăjitor al Stilului Maimuței
 Czarownik Sch. Płn. W.	Vrăjitor din Adăp. Vântului de Nord
@@ -1001,11 +1130,14 @@ Czekoladowy Amulet	Amuleta de Ciocolată
 Czempion	Campion
 Czempion %s	Campion %s
 Czer. Amazonka Zodiaku	Amazoană Hoață Roșie Zodiac
+Czer. Sweter Świąt.+ (m)	Pulover Roșu Festiv+ (b)
 Czer. Żeń-szeń (premium)	Ginseng Roșu (premium)
 Czerw. Duch Drzewa	Spiritul Roșu al Copacului
 Czerw. Duch Pniaka	Spiritul Roșu al Buturugii
+Czerw. Galowy Strój+ (m)	Ținută Roșie de Gală+ (b)
 Czerw. Las Duchow	Pădurea Roșie a Spiritelor
 Czerw. Tr. Pajak Zodiaku	Păianjen Otrăv. Roșu Zodiac
+Czerw. Zbr. Azraela+ (m)	Armura Roșie a lui Azrael+ (b)
 Czerwona Mikstura (W)	Poțiune Roșie (W)
 Czerwona Runa SungMa	Rună SungMa Roșie
 Czerwona Smocza Łuska	Solzul Dragonului Roșu
@@ -1023,8 +1155,11 @@ Czerwony Kat Zodiaku	Călău Hoț Roșu Zodiac
 Czerwony Mag Zodiaku	Mag Hoț Roșu Zodiac
 Czerwony Monokl	Monoclu Roșu
 Czerwony Skorpion	Scorpion Roșu
+Czerwony Smoczek	Dragonul Roșu Mic
+Czerwony Smoczy Rycerz+	Cavalerul Dragonului Roșu+
 Czerwony Smoczy Róg	Cornul Dragonului Roșu
 Czerwony Sok	Suc Roșu
+Czerwony Toreador+	Toreador Roșu+
 Czwartek	Joi
 Czy chcesz cofnąć misję do poziomu 1?	Vrei să readuci misiunea la nivelul 1?
 Czy chcesz dokonać masowej sprzedaży?	Vrei să efectuezi o vânzare în masă?
@@ -1034,7 +1169,7 @@ Czy chcesz kupić %s %s za %s?	Vrei să cumperi %s %s pentru %s?
 Czy chcesz kupić %s (szt. %d) za %s?	Vrei să cumperi %s (buc. %d) pentru %s?
 Czy chcesz naładować %d Animosfer?	Vrei să încarci %d Animosfere?
 Czy chcesz odesłać Enasira?	Vrei să-l trimiți pe Enasir înapoi?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Vrei să plătești %s Yang pentru a reîncărca %d Spirit de Dragon?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Vrei să reînnoiești pentru %s Yang %d Spirit de Dragon?
 Czy chcesz opuścić wojnę gildii?	Vrei să părăsești războiul breslelor?
 Czy chcesz otworzyć to pudło?	Vrei să deschizi această cutie?
 Czy chcesz ożywić gracza %s?	Vrei să readuci la viață jucătorul %s?
@@ -1072,6 +1207,8 @@ Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Dacă ac
 Czym jest Konto Premium?	Ce este Contul Premium?
 Czysta esencja z serca najgłębszych źródeł.	Esență pură din inima celor mai adânci izvoare.
 Czyste zwoje (%s) w ekwipunku: %d	Pergamente curate (%s) în inventar: %d
+Czytanie bez opoznienia dnia	Citire fără întârzierea zilei
+Czyściec Ognia	Purgatoriul Focului
 Czyśćiec Ognia	Purgatoriul Focului
 Część zestawów kostiumów (%d)	Parte a seturilor de costume (%d)
 Członek gildii %s jest teraz w grze.	Membrul breslei %s este acum în joc.
@@ -1149,6 +1286,7 @@ Dobrze znana fryzura starożytnych wojowników. Na stałe zmienia fryzurę Twoje
 Dodaj Kamień Duszy do wymiany.	Adaugă o Piatră a Sufletului pentru schimb.
 Dodaj Księgę Umiejętności do wymiany.	Adaugă o Carte de Abilități pentru schimb.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Adaugă în Magazinul Gaya un nou slot pentru oferte valoroase de obiecte, începând cu primul slot din al doilea rând, din stânga. Folosește-l la Magazinul Gaya din Port (Statuia Războinicului din Portul Noului Continent).
+Dodaj do ulubionych	Adaugă la favorite
 Dodaj przedmiot do wymiany.	Adaugă un obiect pentru schimb.
 Dodaj przedmioty do sklepu.	Adaugă obiecte în magazin.
 Dodaj punkt Sung Ma	Adaugă un punct Sung Ma
@@ -1174,14 +1312,19 @@ Dolina	Valea
 Dolina Cyklopow	Valea Ciclopilor
 Dolina Cyklopów	Valea Ciclopilor
 Dolina Orkow	Valea Orcilor
+Dolina Orków	Valea Orcilor
+Dolina Orków / Ognista Ziemia	Valea Orcilor / Pământul de Foc
 Dom Aukcyjny	Casa de Licitații
 Dom Aukcyjny działa tylko w M1.	Casa de Licitații funcționează doar în M1.
 Dom Aukcyjny jest wyłączony.	Casa de Licitații este dezactivată.
 Dom Aukcyjny moze byc wylaczony.	Casa de Licitații poate fi dezactivată.
 Dom Aukcyjny: %s	Casa de Licitații: %s
+Dom Aukcyjny: %s - %s.	Casa de Licitații: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Casa de Licitații: cel mult %d bonusuri deodată.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Casa de Licitații: cumpărăturile anterioare sunt încă în curs.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Casa de Licitații: încearcă din nou peste puțin timp.
+Dom Towarowy	Casa de Mărfuri
+Dom Towarowy: %s	Casa de Mărfuri: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Magazinul Universal: se cumpără ofertele bifate.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Magazinul Universal: bifează ofertele (căsuța de lângă ofertă), apoi apasă Cumpără tot.
 Domyślna	Implicită
@@ -1231,6 +1374,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Experiență +%(v)s%% în timpul călărie
 Doświadczenie +%d%%	Experiență +%d%%
 Doświadczenie Czempiona : %.2f%%	Experiența de Campion : %.2f%%
 Doświadczenie Czempiona: %s / %s	Experiența de Campion: %s / %s
+Doświadczenie łącznie	Experiență totală
 Doświadczenie: %d%%	Experiență: %d%%
 Doświadczenie: %d%% (%d / %d)	Experiență: %d%% (%d / %d)
 Doświadczenie: %s / %s	Experiență: %s / %s
@@ -1239,10 +1383,15 @@ Drewniany Klucz	Cheie de Lemn
 Drobny Kam. Przebudzenia	Piatra Măruntă a Trezirii
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	Moneda prețioasă a Yohara. Șlefuiește 30 de Pietricele la Statuia Războinicului din Portul Noului Continent (cu o Piatră a Spiritului de la +0 la +3 și 15 000 Yang - șansă de 70%) și vei primi 3 Gaya. O folosești ca plată la Magazinul Gaya din Port, la fierarii de seturi, la Statuia Șerpilor, la Altarul Misterios și la Maestrul Chi. Nu poate fi schimbată cu alți jucători.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	Un inel prețios împodobit cu jad și turcoaz. Oferă: +50% EXP, +30% putere împotriva monștrilor, +20% viteză de atac și de vrăjire, +10% PV și PM max.
+Drop Przedmiotow:	Drop Obiecte:
 Drop Yang	Drop Yang
 Drop potwora %s:	Obiecte căzute de la monstrul %s:
 Drop przedmiotów +%d%%	Obiecte căzute +%d%%
+Drop z bossów	Drop de la bossi
 Dropek Metinów	Obiecte de la Metin-uri
+Dropek medali	Drop medalii
+Dropek z M2	Drop din M2
+Dropek z M3	Drop din M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	A doua jumătate a setării de mai sus - o șansă separată calculată la spargerea unei pietre Metin, în locul uciderii unui monstru obișnuit.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A doua dintre cele trei cărți ale atenției. Poate crește carisma proprietarului. După citire, cartea dispare. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	A doua dintre cele trei cărți ale luptei în formație. Poate crește inspirația proprietarului. După citire, cartea dispare. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
@@ -1282,6 +1431,7 @@ Dusza wojownika, obdarzona mocą.	Sufletul unui războinic, înzestrat cu putere
 Dusza Światła	Sufletul Luminii
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Sufletele sunt luate singure din inventar - este suficient să le ai la tine.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Ginseng fiert premium - singura hrană a Calului de Război Puternic (cal de la nivelul 31). Dă clic dreapta pentru a-ți hrăni calul invocat sau dă-l calului. Pică de la monștrii din Yohara.
+Duzy Lysy Ork	Orc Mare și Chel
 Duża	Mare
 Duży Skorpion	Scorpion Mare
 Dwigant Zodiaku	Dvigant Zodiac
@@ -1313,14 +1463,17 @@ Dzik Zodiaku	Mistreț Zodiac
 Dziki General Zodiaku	General Sălbatic Zodiac
 Dziki Lucznik Zodiaku	Arcaș Sălbatic Zodiac
 Dziki Moa (pieczęć)	Moa Sălbatic (sigiliu)
+Dziki Sluga	Slujitor Sălbatic
 Dziki Sluga Zodiaku	Slujitor Sălbatic Zodiac
 Dziki Z. Piech. Zodiaku	Infanterist Sălbatic Zodiac
+Dziki Zolnierz Piechoty	Soldat de Infanterie Sălbatic
 Dzięki tej miksturze w ciągu 3 godz. gry zbierzesz 150% więcej doświadczenia. Niezdatna do handlu.	Datorită acestei licori vei aduna cu 150% mai multă experiență în 3 ore de joc. Nu poate fi negociată.
 Dzięki tej pieczęci możesz przywołać jednorożca.	Cu ajutorul acestui sigiliu poți chema un unicorn.
 Dzięki tej pieczęci możesz przywołać marę senną.	Cu ajutorul acestui sigiliu poți chema un coșmar.
 Dzięki tej pieczęci możesz przywołać swojego zwierzaka.	Cu ajutorul acestui sigiliu îți poți chema animăluțul.
 Dzięki tej pieczęci z jaja wykluje się Sheldon.	Datorită acestui sigiliu, Sheldon va ieși din ou.
 Dziękujemy za zgłoszenie!	Îți mulțumim pentru raportare!
+Dziś	Azi
 Dzwon Anielski	Clopot Angelic
 Dzwon Arkt. Króla	Clopotul Regelui Arctic
 Dzwon Błk. Wiatru	Clopotul Vântului Azuriu
@@ -1426,6 +1579,7 @@ Elit. Ork Zodiaku	Orc de Elită Zodiac
 Elit. Ork Zwiad. Zodiaku	Orc de Elită Iscoadă Zodiac
 Elita Atlantydy	Elita Atlantidei
 Elitarny Ezoteryczny Fanatyk	Fanatic Ezoteric de Elită
+Elitarny Ork	Orc de Elită
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblema campionilor la fotbal. Timp de 6 ore oferă: +50% EXP, +20% viteză de atac, +20% viteză de incantare, +35% atac magic și corp la corp, +10% HP max., +10% SP max.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Emoții în doi (sărut, bătaie ușoară) fără a cere acordul.
 Emocje: nie	Emoții: nu
@@ -1463,6 +1617,7 @@ Event wielkanocny	Eveniment de Paște
 Event wlaczony	Eveniment pornit
 Event wyłączony	Eveniment dezactivat
 Eventy (bonus imperium)	Evenimente (bonus de imperiu)
+Eventy w dniu %s:	Evenimente în ziua %s:
 Eventy wylaczone	Evenimente oprite
 Ewoluować szatę za %s Yang i materiał?	Evoluezi roba pentru %s Yang și material?
 Expimy razem	Facem EXP împreună
@@ -1471,6 +1626,7 @@ Ezot. Dreczyciel Zodiaku	Chinuitor Esoteric Zodiac
 Ezot. Fanatyk Zodiaku	Fanatic Esoteric Zodiac
 Ezot. Wojownik Zodiaku	Luptător Esoteric Zodiac
 Ezoteryczne Drewno	Lemn Ezoteric
+Ezoteryczny Fanatyk	Fanatic Ezoteric
 Ezoteryczny Ostrzowiec	Spadasinul Esoteric
 FC Bakra (k)	FC Bakra (f)
 FC Bakra+ (k)	FC Bakra+ (f)
@@ -1499,6 +1655,8 @@ Fan	Evantai
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Aripile Fatale ale Morții
 Filters History	Istoricul filtrelor
+Filtr %d	Filtru %d
+Filtr (%d)	Filtru (%d)
 Filtr bonusów (prawy klik czyści)	Filtru de bonusuri (clic dreapta șterge)
 Filtr podnoszenia	Filtru de ridicare
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	Filtrul de ridicare este OPRIT (Ctrl+Z) - acum ridici tot.
@@ -1507,7 +1665,9 @@ Filtr podnoszenia: %s	Filtru de ridicare: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Filtru de ridicare: tipurile din Vânătoarea Automată a acestui personaj funcționează acum pentru Z, Vânătoare Automată și Însoțitor (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Filtru de ridicare: s-a încărcat presetarea „%s”.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Filtru de ridicare: regulile tipului „%s” au fost salvate (%d).
+Filtr rodzaju	Filtru de tip
 Filtr wyłączony - podnosisz wszystko.	Filtru oprit - ridici tot.
+Filtry (%d)	Filtre (%d)
 Filtry bonusow	Filtre de bonusuri
 Fioletowa	Violetă
 Fioletowa Rosa	Rouă Violetă
@@ -1596,9 +1756,11 @@ Glodny Czarny Niedzwiedz	Urs Negru Flămând
 Glodny Dzik	Mistreț Flămând
 Glodny Niebieski Alfa Wilk	Lup Alfa Albastru Flămând
 Glodny Niebieski Wilk	Lup Albastru Flămând
+Glodny Niedzwiedz	Urs Înfometat
 Glodny Szary Wilk	Lup Cenușiu Flămând
 Glodny Tygrys	Tigru Flămând
 Glodny Wilk	Lup Flămând
+Glodny Zablakany Pies	Câine Vagabond Înfometat
 Gniazdo Sheldona	Cuibul lui Sheldon
 Gniewne Serce (pieczęć)	Inimă Furioasă (sigiliu)
 Gniewny Mini Alastor	Mini Alastor Furios
@@ -1624,6 +1786,7 @@ Gotowa do ewolucji u Theowahdana	Gata de evoluție la Theowahdan
 Gotowa za: %s	Gata peste: %s
 Gotowe! Odbierz przedmiot	Gata! Ridică obiectul
 Gotowy do użycia	Gata de folosire
+Gotowy. Usuwane sa cale wybrane stosy.	Gata. Se șterg stivele întregi selectate.
 Gourou	Gourou
 Gra	Joc
 Gra beze mnie	Joacă fără mine
@@ -1661,6 +1824,7 @@ Gruby Mini Kat (pieczęć)	Mini Călău Grăsuț (sigiliu)
 Grudzień	Decembrie
 Grupa: %s	Grup: %s
 Grupuj	Grupează
+Grupy (PT)	Grupuri (PT)
 Gruszka	Pară
 Gwarancja Rzemiosła (Biżuteria)	Garanția Meșteșugului (Bijuterii)
 Gwarancja Rzemiosła (Broń)	Garanția Meșteșugului (Armă)
@@ -1669,11 +1833,13 @@ Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Nie działa na bronie 30 poziom. Przedmiot może ulec zniszczeniu.	O garanție a meșteșugului pe care o respectă Fierarul din fiecare sat. Folosește-o pe un obiect pentru a-l îmbunătăți. Nu funcționează pe armele de nivel 30. Obiectul poate fi distrus.
 Gwarancja rzemiosła którą respektuje Kowal każdej wioski. Użyj na przedmiot, aby ulepszyć. Przedmiot może ulec zniszczeniu.	O garanție a meșteșugului pe care o respectă Fierarul din fiecare sat. Folosește-o pe un obiect pentru a-l îmbunătăți. Obiectul poate fi distrus.
 Gwardia Ochronna	Garda de Protecție
+Gwardia Ognistego Smoka+	Garda Dragonului de Foc+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	Lovitură frontală violentă asupra unei zone dreptunghiulare.
 Gwiazda Nocy	Steaua Nopții\r\n
 Gwiazda Północy (PB)	Steaua Nordului (RX)
 Gwiazda Północy (SZC)	Steaua Nordului (TR)
 Gwiezdny Skarb	Comoara Stelară
+Górnik	Miner
 Górski Behemot	Behemotul Muntelui
 Góry Gromu	Munții Tunetului
 Głowa Węża	Capul Șarpelui
@@ -1698,6 +1864,8 @@ Happy Hour	Happy Hour
 Hasun Dong FC (k)	Hasun Dong FC (f)
 Hasun Dong FC+ (k)	Hasun Dong FC+ (f)
 Helm	Coif
+Helmy - Ninja	Căști - Ninja
+Helmy - Sura	Căști - Sura
 Helmy - Szaman	Căști - Șaman
 Helmy - Wojownik	Căști - Războinic
 Heuk-Gui-Gab	Heuk-Gui-Gab
@@ -1771,6 +1939,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	Hwacha nu poate fi
 Hwang	Hwang
 Hydra	Hidra
 I am the czempion! Punktacja: %d	Sunt campionul! Scor: %d
+ID Bota:	ID Bot:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR celui mai vechi personaj al contului admin.
 Ich liczba na event jest ograniczona.	Numărul lor pe eveniment este limitat.
 Id. Skrzynia Kolczyków	Cufărul Perfect al Cerceilor
@@ -1785,6 +1954,9 @@ Ile sztuk kupic:	Câte bucăți să cumperi:
 Ile sztuk kupic?	Câte bucăți să cumperi?
 Ile sztuk kupić:	Câte bucăți să cumperi:
 Ile sztuk kupić?	Câte bucăți să cumperi?
+Ile? %s	Câte? %s
+Ilosc: malejaco	Cantitate: descrescător
+Ilosc: rosnaco	Cantitate: crescător
 Ilość prób: - jedna, + najwięcej, ile się da.	Numărul de încercări: - una, + cât mai multe posibil.
 Ilość Ładunków: %d	Număr de încărcări: %d
 Ilość śmierci	Număr de decese
@@ -1807,6 +1979,7 @@ Info o efekt.	Info efect.
 Informacje	Informații
 Informacje o misji	Informații despre misiune
 Informacje o sklepie	Informații despre magazin 
+Inkub Płomieni+	Incubul Flăcărilor+
 Inna Wroga Wytrzymałość	Altă Rezistență Inamică
 Inna postać już ma tą nazwę.	Un alt personaj are deja acest nume.
 Inne Mikstury	Alte Poțiuni
@@ -1862,6 +2035,7 @@ Inteligencja Sung Ma +%d	Inteligența Sung Ma +%d
 Irokez (m)	Creastă de Cocoș (b)
 Item inserted into the shopping safebox.	Obiectul a fost pus în Seiful de Cumpărături.
 ItemShop	ItemShop
+Ja (GM)	Eu (GM)
 Jabłko	Măr
 Jadeit Dymu	Jadul Fumului
 Jadeit Mgły	Jadul Ceții
@@ -1922,7 +2096,16 @@ Jazda Konna (Precyzja)	Călărie (Precizie)
 Jazda Konna (Sura)	Călărie (Sura)
 Jazda Konna (Szaman)	Călărie (Șaman)
 Jazda Konna (Wojownik)	Călărie (Războinic)
+Jazda Konna (diabły)	Călărie (diavoli)
+Jazda Konna (insekty)	Călărie (insecte)
 Jazda Konna (losowo)	Călărie (aleatoriu)
+Jazda Konna (mistycy)	Călărie (mistici)
+Jazda Konna (nieumarli)	Călărie (nemorți)
+Jazda Konna (orki)	Călărie (orci)
+Jazda Konna (potwory)	Călărie (monștri)
+Jazda Konna (pustynia)	Călărie (deșert)
+Jazda Konna (półludzie)	Călărie (semi-oameni)
+Jazda Konna (zwierzęta)	Călărie (animale)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	Unul dintre Ouăle Dragonului lui Balathor invocă un frig înghețat! Concentrați atacurile asupra lui.
 Jednoręczne	Cu o Mână
 Jedwab	Mătase
@@ -1943,12 +2126,14 @@ Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;	Dacă ai 
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	Dacă ai peste 90% PV, primești daune mai mici cu procentul indicat.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	Dacă ai peste 90% PV, primești daune mai mici cu x%.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	Dacă ai peste 90%% PV, primești daune mai mici cu %d%%.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	Dacă magazinul nu apare, acest client nu are încă
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Dacă folosești acest obiect, primești un buff care îți permite să-l invoci pe Enasir și să faci comerț cu el ca și cu Negustoreasa de Articole Diverse (la vânzare ia 10% din preț). Durată: 7 zile. Poate fi prelungită până la maximum 1000 de zile.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Dacă folosești acest obiect, primești un buff care îți permite să-l invoci pe Enasir și să faci comerț cu el ca și cu Negustoreasa de Articole Diverse (la vânzare ia 10% din preț). Durată: 7 zile. Poate fi prelungită până la maximum 1000 de zile. Obiectul poate fi schimbat cu alți jucători.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	Dacă folosești acest obiect, primești un buff care îți permite să-l invoci pe Enasir pentru a accesa depozitul tău. Durată: 7 zile. Poate fi prelungită până la maximum 1000 de zile.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	Dacă folosești acest obiect, primești un buff care îți permite să-l invoci pe Enasir pentru a accesa depozitul tău. Durată: 7 zile. Poate fi prelungită până la maximum 1000 de zile. Obiectul poate fi schimbat cu alți jucători.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	Dacă tu sau Goblinul Comorilor muriți, expediția eșuează.
 Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'	Dacă apar probleme cu grafica, alege 'Opțiuni de sistem' sau 'CONFIG.exe'
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	Dacă [5] acoperită se învecinează cu o carte descoperită,
 Jin Bing (lód)	Jin Bing (gheață)
 Jin Bing (mrok)	Jin Bing (întuneric)
 Jin-Hee Zodiaku	Jin-Hee Zodiac
@@ -1962,9 +2147,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Limbă
 Język / Language	Limbă / Language
 Język klienta: %s	Limba clientului: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Limba serverului: %s - clientul își va schimba limba după repornire (Limba serverului: după repornire).
 KRĘCI SIĘ...	SE ÎNVÂRTE...
 Kaftan Wężowy	Jacheta Șarpelui
 Kaftan Wężowy (wykon.)	Jacheta Șarpelui (fabr.)
+Kalendarz eventów	Calendar evenimente
+Kalendarz eventów: %s - %d	Calendar evenimente: %s - %d
 Kam. Pieczęci Sunga Mahi	Piatra Sigiliului lui Sung Mahi
 Kamera filmowa - obrót w lewo	Cameră cinematică - rotire la stânga
 Kamera filmowa - obrót w prawo	Cameră cinematică - rotire la dreapta
@@ -1975,6 +2163,7 @@ Kamera filmowa - w dół	Cameră cinematică - în jos
 Kamera filmowa - w górę	Cameră cinematică - în sus
 Kamienie	Pietre
 Kamienie Duszy (0 = puste):	Pietre ale Spiritului (0 = gol):
+Kamienie Metin	Pietre Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Pietre de Teleportare: %d. Te teleportezi la: %s?
 Kamienie dusz	Pietre ale sufletului
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	O tăbliță de piatră cu rune străvechi. Emană o energie necunoscută.
@@ -2008,6 +2197,7 @@ Kamień Teleportacji	Piatra Teleportării
 Kamień Teleportacji+	Piatra Teleportării+
 Kamień Tygrysa	Piatra Tigrului
 Kamień Wzgórza	Piatra Dealului
+Kamień Węglowy	Piatră de Cărbune
 Kamień Wężowy	Piatra Șarpelui
 Kamień Wężowy+	Piatra Șarpelui+
 Kamień do Fundamentu+	Piatra de Fundație+
@@ -2138,6 +2328,8 @@ Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Urm�
 Kolejny boss za: %s	Următorul boss peste: %s
 Kolejny cel	Ținta următoare
 Kolejny poziom: %d miejsc, %s Yang, od %d poziomu postaci	Nivelul următor: %d locuri, %s Yang, de la nivelul personajului %d
+Kolekcja lochów	Colecția temnițelor
+Kolekcja pól	Colecția câmpurilor
 Kolia Jadeitu Dymu	Pandantiv de Jad al Fumului
 Kolia Jadeitu Mgły	Pandantiv de Jad al Ceții
 Kolia Jadeitu Nocy	Pandantiv de Jad al Nopții
@@ -2439,6 +2631,7 @@ Koło Losu jest teraz wyłączone.	Roata Sorții este acum dezactivată.
 Koło Losu: brama otwarta - poziom %d!	Roata Sorții: poarta este deschisă - nivelul %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Roata Sorții: câștigi %s. Recompensa te așteaptă în depozitul ItemShop.
 Koło Losu: zdobywasz klucz (%d/%d).	Roata Sorții: obții o cheie (%d/%d).
+Koło Płomieni Nocy	Roata Flăcărilor Nopții
 Koło Skrzydła Nocy	Roata Aripii Nopții
 Koło Słonecznego Wilka	Roata Lupului Soarelui
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	Roata are 16 câmpuri, fiecare cu șansa 1/16. Înainte de fiecare rotire câmpurile sunt trase din nou la sorți.
@@ -2449,6 +2642,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	Calul a mâncat %(a)d 
 Krab Królewski	Crab Regal
 Krab Pancerny Zodiaku	Crab Blindat Zodiac
 Krab Wojow. Zodiaku	Crab Războinic Zodiac
+Kradziez PM	Furt PM
+Kradziez PZ	Furt PV
 Kradzież PE	Furt PM
 Kraina Gigantow	Tărâmul Giganților
 Kraina Ognia	Tărâmul Focului
@@ -2485,14 +2680,18 @@ Krótki	Scurtă
 Krótko	Scurt
 Kręty Klucz (PB)	Cheie Răsucită (RX)
 Kręty Klucz (SZC)	Cheie Răsucită (TR)
+Ksiegi umiejetnosci	Cărți de abilități
 Ksiegi zapomnienia	Cărți ale uitării
 Ksiąg w oknie: %d (wymian: %d)	Cărți în fereastră: %d  (schimburi: %d)
 Książ. Odłamek Broni II	Fragm. Princiar de Armă II
 Książ. Odłamek Hełmu II	Fragm. Princiar de Coif II
 Książ. Odłamek Zbroi II	Fragm. Princiar de Armură II
 Książka Przebudzenia	Cartea Trezirii
+Książę Atlantydy+	Prințul Atlantidei+
+Książę Orientu (brąz.)+	Prințul Orientului (bronz)+
 Książę Piekielnej Wieży	Prințul Turnului Infernal
 Książę Śmierci P. Wieży	Prințul Morții al Turnului Infernal
+Książęcy	Princiar
 Książęcy Efekt Zestawu	Efect Princiar de Set
 Książęcy Kowal Zestawu	Fierarul Princiar al Setului
 Księga Absorpcji Życia	Cartea Absorbției Vieții
@@ -2577,6 +2776,7 @@ Księga: Burza Balathora	Cartea: Furtuna lui Balathor
 Księga: Nieugiętość Balathora	Cartea: Neclintirea lui Balathor
 Księga: Wola Balathora	Cartea: Voința lui Balathor
 Księgi	Cărți
+Księgi Misji	Cărțile Misiunilor
 Księgi Um. Pasywnych	Cărți de Abil. Pasive
 Księgi umiejętności	Cărți de abilități
 Księgi zapomnienia	Cărți ale uitării
@@ -2592,7 +2792,10 @@ Kup część stosu	Cumpără o parte din stivă
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Cumpără numărul indicat de bucăți dintr-un obiect, începând de la cea mai ieftină
 Kup tę ofertę	Cumpără această ofertă
 Kup wiele	Cumpără multe
+Kup wiele działa dla jednego przedmiotu.	Cumpărarea multiplă funcționează pentru un singur obiect.
 Kup wszystkie zaznaczone oferty	Cumpără toate ofertele bifate
+Kup wybrane (%d	Cumpără selecția (%d
+Kup wybrane (0	Cumpără selecția (0
 Kup!	Cumpără!
 Kupic %d ofert za lacznie %s?	Cumperi %d oferte pentru un total de %s?
 Kupione - nowa oferta za %s.	Cumpărat - ofertă nouă peste %s.
@@ -2602,12 +2805,14 @@ Kupiono %d z %d ofert: %d szt. za %s.	Cumpărate %d din %d oferte: %d buc. pentr
 Kupić %d szt. (ofert: %d) za %s?	Cumperi %d buc. (oferte: %d) pentru %s?
 Kupić %s za %s Gaya?	Cumperi %s pentru %s Gaya?
 Kupić %s za %s?	Cumperi %s pentru %s?
+Kupić zaznaczone oferty: %d?	Cumperi ofertele bifate: %d?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   Cupon SM (50), +100% șansă de obiecte căzute timp de 2 ore
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	Cupon în valoare de 20 de Monede Dragon. Dă clic dreapta pentru a le adăuga în cont.
 Kupon o wartości 250 Smoczych Monet. Przedmiot ten jest zdatny do handlu.	Voucher în valoare de 250 de Monede Dragon. Obiectul poate fi negociat.
 Kupony	Cupoane
 Kupony SM	Cupoane MD
 Kupony SM/Premium	Cupoane MD/Premium
+Kupowanie mikstur	Cumpărare poțiuni
 Kupuja sie po kolei; blad przerywa zakupy.	Se cumpără pe rând; o eroare întrerupe cumpărăturile.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Cumpără cu ele din Item Shop ce folosește (fără coafuri). Nu cheltuiește: nu le atinge.
 Kursor nad postaciami	Cursor deasupra personajelor
@@ -2618,6 +2823,7 @@ Kwitnąca Brzoskwinia	Piersic în Floare
 Kwitnące Kaki	Kaki în Floare
 Kwota (yang):	Sumă (yang):
 Kwota SM:	Sumă SM:
+Kwota Yang:	Sumă Yang:
 Kwota:	Sumă:
 Kłopoty na Zboczu Gautama	Necazuri pe Panta lui Gautama
 LPM: podnoszę tak / nie	LPM: ridic da / nu
@@ -2645,6 +2851,7 @@ Lekarstwo Iluzji	Leac al Iluziei
 Lekarstwo na Świerzb Demonów. Przedmiot wymagany do misji.	Leac pentru Râia Demonilor. Obiect necesar pentru o misiune.
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	Medicament preparat din frunze ale vieții. După administrare, HP și SP sunt regenerate instantaneu.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Pas Ușor (viteză de mișcare +%(v)s) pentru %(d)d s după un atac pe jos (la fiecare 300 s)
+Lekki Strój Plażowy+ (m)	Ținută Ușoară de Plajă+ (b)
 Lekki i giętki grot wykonany z bambusa. Idealny do szybkich i precyzyjnych strzałów, używany przez łuczników ceniących mobilność i szybkość.	Un vârf de săgeată ușor și flexibil, făcut din bambus. Ideal pentru trageri rapide și precise, folosit de arcașii care prețuiesc mobilitatea și viteza.
 Lekkie jak Piórko	Ușor ca o Pană
 Lemur Generał	Lemur General
@@ -2653,6 +2860,7 @@ Leopardzik (7 dni)	Leopardaș (7 zile)
 Level konia:	Nivelul calului:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Câmpul stâng: obiectul care va primi un aspect nou.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Câmpul stâng: montura care va primi un aspect nou.
+Lewy Shift	Shift stâng
 Leśna Wróżka	Zâna Pădurii
 Leże Smoka	Bârlogul Dragonului
 Licencja Najemnika	Licența Mercenarului
@@ -2663,18 +2871,22 @@ Liczba bonusów na kostiumie (co najmniej):	Numărul de bonusuri de pe costum (c
 Liczba botów (3-16):	Numărul de boți (3-16):
 Liczba gier:	Numărul de jocuri:
 Liczba online	Număr online
+Liczba sztuk	Număr de bucăți
 Liczba sztuk:	Număr de bucăți:
 Liczba w ekwipunku	Număr în inventar
 Liczby	Numere
 Lider grupy	Liderul grupului
 Lilia: szansa na przedmioty +%d%%	Crin: șansa de obiecte +%d%%
 Liliowa Runa SungMa	Rună SungMa Liliachie
+Limit Lvl: %d do %d	Limită nivel: %d până la %d
 Limit członków grupy: od %d do %d	Limita membrilor grupului: de la %d la %d
 Limit zakupów na konto: %d	Limită de achiziții per cont: %d
 Limit zakupów na minutę - dokończ za chwilę.	Limita de cumpărături pe minut - termină peste puțin timp.
 List Gończy	Afiș de Căutare
 Lista GM jest pusta: nastepny start moze nadac	Lista GM este goală: următoarea pornire poate acorda
 Lista jest pusta.	Lista este goală.
+Lista komend GM	Lista comenzilor GM
+Lista komend GM:	Lista comenzilor GM:
 Lista tytułów	Lista titlurilor
 Lista wyciszonych	Lista celor reduși la tăcere
 Lista znajomych	Lista de prieteni
@@ -2682,6 +2894,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	Literele de pe a
 Lizak Magii	Acadea Magică
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	O acadea cu o compoziție misterioasă, plină de magie. Oferă: +50% EXP, +20% viteză de atac, +20% viteză de incantare, +30% daune magice, +10% HP max., +10% SP max. Durează 7 zile.
 Liście Życia	Frunzele Vieții
+Loch / wyprawa	Temniță / expediție
 Loch Malp (latwy)	Temnița Maimuțelor (ușoară)
 Loch Malp (normalny)	Temnița Maimuțelor (normală)
 Loch Malp (trudny)	Temnița Maimuțelor (grea)
@@ -2690,6 +2903,7 @@ Loch Pajakow V1	Temnița Păianjenilor V1
 Loch Pajakow V2	Temnița Păianjenilor V2
 Loch Pająków (1)	Temnița Păianjenilor (1)
 Loch Pająków V1	Temnița Păianjenilor V1
+Loch Polowy	Temniță de Câmp
 Lochy Yohary	Temnițele Yohara
 Lod. Wiel. Zab. Zodiaku	Balenă Ucigașă de Gheață Zodiac
 Lodogóry 690 10169	Munții de Gheață 690 10169
@@ -2783,12 +2997,14 @@ Maksimum	Maxim
 Maksymalnie	Maxim
 Maksymalny	Maximă
 Mala liczba ofert - wycena orientacyjna	Număr mic de oferte - evaluare orientativă
+Malpi Zolnierz	Soldat Maimuță
 Maniak Cz. Wiat. Zodiaku	Maniac Vânt Negru Zodiac
 Manu	Manu
 Mapa %d	Harta %d
 Mapa (index):	Hartă (index):
 Mapa OX	Harta OX
 Mapa teleportacji - TAB	Harta de teleportare - TAB
+Mapa Ślubna	Harta Nunții
 Mapa świata	Harta lumii
 Mapa: %s	Hartă: %s
 Mapy	Hărți
@@ -2917,14 +3133,20 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	Material care crește șansa de a adăuga al 6-lea sau al 7-lea bonus la Seon-Hae. Nivelul obiectului: 90-104.
+Materiały	Materiale
 Materiały Rzemieślnicze	Materiale de Meșteșug
 Materiały ulepszeń	Materiale de îmbunătățire
 Matowy Lód	Gheață Mată
 Matowy Lód+	Gheață Mată+
 Max PE: +%d	PM max.: +%d
+Max PM	PM max
+Max PM %	PM max %
+Max PZ	PV max
+Max PZ %	PV max %
 Max PŻ +2500 / +2000 / +1500	PV max. +2500 / +2000 / +1500
 Max PŻ: +%d	PV max.: +%d
 Max wytrzymalosc	Rezistență maximă
+Max. PŻ +%d	PV max. +%d
 Max. poziom przedmiotu: %d	Nivel max. al obiectului: %d
 Max. ulepszenie z +%d na +%d.	Îmbunătățire max. de la +%d la +%d.
 Mała Meley	Mica Meley
@@ -2932,9 +3154,11 @@ Mała Meley (pieczęć)	Meley Mică (sigiliu)
 Mała Nemere	Mica Nemere
 Mała Nemere (pieczęć)	Nemere Mică (sigiliu)
 Małe Błogosławieństwo	Mica Binecuvântare
+Małpi Loch	Temnița Maimuțelor
 Małpi Loch (trudny)	Temnița Maimuțelor (grea)
 Małpi Loch (łatwy)	Temnița Maimuțelor (ușoară)
 Małpi Loch (średni)	Temnița Maimuțelor (medie)
+Małpka	Maimuțică
 Mały Aamon	Micul Aamon
 Mały Aamon (pieczęć)	Aamon Mic (sigiliu)
 Mały Baashido	Micul Baashido
@@ -3108,11 +3332,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Aruncă forțe întunecate pentru a răni dușmanii.|Întărit de: Inteligență (++), Dexteritate (precizie) (+), nivelul personajului.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Aruncă fulgere.|Întărit de: Inteligență (++), Dexteritate (precizie) (+), nivelul personajului.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Aruncă talismane pentru a răni dușmanii.|Întărit de: Inteligență (++), Dexteritate (precizie) (+), nivelul personajului.
+Misja %d	Misiune %d
 Misja kart	Misiunea cărților
 Misje Biologa	Misiunile Biologului
 Misje dzienne	Misiuni zilnice
 Misje główne	Misiuni principale
 Misje poboczne	Misiuni secundare
+Misje polowania	Misiuni de vânătoare
 Misje łowieckie	Misiuni de vânătoare
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	O cheie meticulos ornamentată, care deschide cufărul nimfei apelor. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 Mistrz Ahtrin	Maestrul Ahtrin
@@ -3126,6 +3352,8 @@ Mistrz Włóczni Ki	Maestrul Suliței Ki
 Mistrz Włóczni Mao	Maestrul Suliței Mao
 Mistrz ekwipunku	Maestrul echipamentului
 Mistrz przepadnie.	 Maestria se va pierde.
+Mistrz umiejętności	Maestru al abilităților
+Mistrzowska piłka nożna	Fotbal de Campion
 Mistrzowski Emblemat	Emblema Maestrului
 Mistyczna substancja ożywiająca florę i faunę lasu.	O substanță mistică ce dă viață florei și faunei pădurii.
 Mistykom	Misticilor
@@ -3138,6 +3366,7 @@ Mnich Milbon	Călugărul Milbon
 Mniej niz 1 min.	Mai puțin de 1 min.
 Mnoznik dropu przedmiotow	Multiplicator obiecte căzute
 Mnoznik dropu yang	Multiplicator Yang căzut
+Moby 1 hit	Monștri 1 lovitură
 Moby > Bossy > Metiny	Monștri > Bossi > Metin-uri
 Moby > Metiny > Bossy	Monștri > Metin-uri > Bossi
 Moc Błyskawic	Puterea Fulgerelor
@@ -3164,6 +3393,7 @@ Modna niebieska fryzura z piękną wstążką. Na stałe zmienia fryzurę Twojej
 Modnie przycięte włosy zapewniają szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Părul tuns la modă le permite șamanilor să-și exprime firea. Schimbă definitiv coafura caracterului tău.
 Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia. Na stałe zmienia fryzurę Twojej postaci.	Păr tuns la modă, care le permite șamanilor să-și exprime firea. Schimbă definitiv coafura caracterului tău.
 Moj cel	Ținta mea
+Moja postac	Personajul meu
 Moje miejsca	Locurile mele
 Mokre Szaty: szybkość ruchu -50	Haine Ude: viteza de mișcare -50
 Moloch	Moloch
@@ -3178,6 +3408,7 @@ Może schwytać karty: [1]	Poate captura cărțile: [1]
 Może schwytać karty: [1], [2]	Poate captura cărțile: [1], [2]
 Może schwytać karty: [1], [2], [3]	Poate captura cărțile: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Poate captura cărțile: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Poate captura cărțile: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Poate captura cărțile: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Poate readuce pe pământ unii visători. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Możesz mieć najwyżej %d własnych kategorii.	Poți avea cel mult %d categorii proprii.
@@ -3210,10 +3441,12 @@ Można znać tylko jedną ripostę.	Se poate cunoaște o singură ripostă.
 Mroczna Paproć	Ferigă Întunecată
 Mroczna Wieża	Turnul Întunecat
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Sfera întunecată are %d%% șanse să năucească adversarul
+Mrocznego Uderzenia	Lovitura Întunecată
 Mroczny Cierń	Spin Întunecat
 Mroczny Kat Zodiaku	Călău Întunecat Zodiac
 Mrok	Întuneric
 Mroz. Lod. Czl. Zodiaku	Om de Gheață Înghețat Zodiac
+Mrozny Lodowy Czlowiek	Om de Gheață Înghețat
 Mroźna Skrz. Balathora	Cufărul de Gheață al lui Balathor
 Mroźna Skrz. Balathora+	Cufărul de Gheață al lui Balathor+
 Mroźny Klucz (PB)	Cheia de Îngheț (RX)
@@ -3224,6 +3457,7 @@ Mroźny Rufus	Rufus de Gheață
 Mroźny Rufus (pieczęć)	Rufus de Gheață (sigiliu)
 Mt2009	Mt2009
 Mumia Kapłanka	Mumie Preoteasă
+Mundur Strażaka+(m)	Uniformă de Pompier+ (b)
 Musisz go pokonać, by otrzymać nagrodę.	Trebuie să îl învingi pentru a primi recompensa.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	Trebuie să împingi Oul de Foc al Dragonului spre cealaltă parte.
 Myr Bojownik (wiatr)	Myr Luptător (vânt)
@@ -3239,6 +3473,7 @@ Myr Prymus (wiatr)	Myr Primus (vânt)
 Myr Prymus (ziemia)	Myr Primus (pământ)
 Myr Weteran (wiatr)	Myr Veteran (vânt)
 Myr Weteran (ziemia)	Myr Veteran (pământ)
+Mój ranking	Clasamentul meu
 Mówi się, że zawartość tej skrzyni jest równie drogocenne, jak sama skrzynia.	Se spune că ce se află în acest cufăr este la fel de prețios ca și cufărul însuși.
 Młodszy Hazardzista	Jucător Începător
 Młody Moa (pieczęć)	Moa Tânăr (sigiliu)
@@ -3284,6 +3519,7 @@ Nabira	Nabira
 Naciśnij klawisz dla: %s	Apasă o tastă pentru: %s
 Naczelny Hazardzista	Jucător Șef
 Nadaj imię	Dă un nume
+Nadaj range	Acordă rang
 Nadaje buffy na poziomie G1 Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel G1 cu 90 inteligență.
 Nadaje buffy na poziomie M1 Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel M1 cu 90 inteligență.
 Nadaje buffy na poziomie P Szamana Smoka z 90 inteligencji na 10 minut.	Îți oferă timp de 10 minute buff-urile unui Șaman Dragon de nivel P cu 90 inteligență.
@@ -3312,7 +3548,9 @@ Nagrody są już odkryte.	Recompensele sunt deja descoperite.
 Nagrody za tury	Recompense pentru runde
 Najbliższy	Cel mai apropiat
 Najczęściej zabijani	Cei mai des uciși
+Najdłuższa sesja	Cea mai lungă sesiune
 Najedź myszką na przedmiot, aby zobaczyć opis.	Poziționează cursorul pe un obiect pentru a vedea descrierea.
+Najlepsza sesja (yang)	Cea mai bună sesiune (yang)
 Najlepszy czas: %s	Cel mai bun timp: %s
 Najpierw dezaktywuj Relikt Duszy.	Mai întâi dezactivează Relicva Sufletului.
 Najpierw dodaj eliksir.	Mai întâi adaugă un elixir.
@@ -3376,6 +3614,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Acoperământ pentru cap din colecția Arezzo (Setul Vikingului). Durează 30 de zile de la echipare.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Acoperământ pentru cap din colecția Arezzo (Setul Auriu). Durează 30 de zile de la echipare.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Acoperământ pentru cap din colecția Arezzo (Setul Dragonului de Aur). Durează 30 de zile de la echipare.
+Nakładka na broń	Strat pentru armă
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Aspect pentru armă cu o mână (sabie) - Războinic, Ninja, Sura. Valabil 30 de zile de la cumpărare.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Aspect pentru armă din colecția Arezzo (Setul Angelic): ninja. Durează 30 de zile de la echipare.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Aspect pentru armă din colecția Arezzo (Setul Angelic): șaman. Durează 30 de zile de la echipare.
@@ -3519,6 +3758,7 @@ Nazwa Postaci jest niepoprawna.	Numele personajului este invalid.
 Nazwa jest niewłaściwa.	Numele este nepotrivit.
 Nazwa postaci jest identyczna jak nazwa konta.	Numele personajului este identic cu numele contului.
 Nazwa pozycji (do %d znaków)	Numele poziției (până la %d caractere)
+Nazwa presetu	Numele presetului
 Nazwa przedmiotu	Numele obiectului
 Nazwa reguły	Numele regulii
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Numele personajului tău nu poate conține caractere speciale.
@@ -3545,6 +3785,7 @@ Nic tu nie ma.	Nu este nimic aici.
 Nick:	Nume:
 Nick: %s (pid: |cff5af22c%d|r)	Nume: %s (pid: |cff5af22c%d|r)
 Nick: PLAYER_NAME	Nume: PLAYER_NAME
+Nie 1. atak	Nu primul atac
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	Nu mai este necesar: Localizatorul NPC este activat pentru fiecare personaj. | Pe harta lumii schimbă vizualizarea cu butonul din bara de titlu.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Nu este destinată igienei orale. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Nie jest składnikiem receptur ani ulepszeń.	Nu este ingredient al rețetelor sau îmbunătățirilor.
@@ -3638,6 +3879,7 @@ Nie widzisz jeszcze całej mapy.	Încă nu vezi întreaga hartă.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	Nu au fost expuse %d obiecte - magazinul a fost închis.
 Nie zaznaczono żadnej misji.	Nicio misiune nu a fost bifată.
 Nie znaleziono gracza.	Jucătorul nu a fost găsit.
+Nie znaleziono moba/metina o takim ID.	Nu s-a găsit monstrul/metin-ul cu acest ID.
 Nie znaleziono żadnych wypraw.	Nu s-a găsit nicio expediție.
 Niebiańska Tarcza	Scutul Ceresc
 Niebiańska Tarcza nie może zostać nadana.	Scutul Ceresc nu poate fi acordat.
@@ -3645,12 +3887,15 @@ Niebieska Mikstura (W)	Poțiune Albastră (W)
 Niebieska Runa SungMa	Rună SungMa Albastră
 Niebieska Woda	Apă Albastră
 Niebieska czapka z uszami zająca dla niego. Daje ci min. jeden losowy bonus.	Căciulă albastră cu urechi de iepure pentru bărbați. Îți oferă cel puțin un bonus aleatoriu.
+Niebieski Alfa Wilk	Lup Alfa Albastru
 Niebieski Barwnik	Colorant Albastru
 Niebieski Mały Smok	Micul Dragon Albastru
 Niebieski Mały Smok (pieczęć)	Dragon Albastru Mic (sigiliu)
 Niebieski Skorpion	Scorpion Albastru
 Niebieski Sok	Suc Albastru
+Niebieski Wilk	Lup Albastru
 Niebieski Wilk Zodiaku	Lup Albastru Zodiac
+Niebieski Wzorowy Uczeń+	Elevul Model Albastru+
 Niebieskie Jajo Smoka	Oul Albastru al Dragonului
 Niebieskie Pudło Zodiaku	Cutia Albastră a Zodiacului
 Niebieskie Zioło	Plantă Albastră
@@ -3677,6 +3922,7 @@ Nieprawidlowy nick	Nume incorect
 Nieprawidłowy kod koloru (np. #FF8800).	Cod de culoare incorect (de ex. #FF8800).
 Nieprawidłowy limit czasu.	Limită de timp incorectă.
 Nieprzenikniony pancerz strażnika ognia.	Platoșa de nepătruns a gardianului focului.
+Niesmiertelnosc WYL	Nemurire OPRIT
 Nieudana	Eșuată
 Nieugiętość Balathora	Neclintirea lui Balathor
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Neclintirea lui Balathor: rezistență la respingere și doborâre %d%%
@@ -3708,6 +3954,7 @@ Nieśmiertelność	Nemurire
 Nigdy nie upadasz	Nu cazi niciodată
 Nikt jeszcze nie ma wyniku w tym sezonie.	Nimeni nu are încă un rezultat în acest sezon.
 Nikt jeszcze nie ukończył tury.	Nimeni nu a finalizat încă o rundă.
+Ninja (Łuk)	Ninja (Arc)
 Ninja Armor	Armură Ninja
 Ninja Ostrze	Ninja Lamă
 Ninja Łuk	Ninja Arc
@@ -3719,6 +3966,7 @@ Niszczyciel En-Tai (BŚ)	Distrugător En-Tai (BM)
 Niszczyciel P. Wieży	Distrugătorul Turnului Infernal
 Niszczyciel Zodiaku	Distrugător Zodiac
 Noc trwać będzie od 22:00 do 6:00.	Noaptea va dura de la 22:00 până la 6:00.
+Noc/snieg po 22:00	Noapte/zăpadă după 22:00
 Noe-Un-Gab	Noe-Un-Gab
 Normal	Normal
 Normalne	Obișnuit
@@ -3769,6 +4017,7 @@ Obowiązki gildii - panel lidera	Obligațiile breslei - panoul liderului
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Daune vs. Metine/Bossi/MiniBossi +%.0f%%
 Obrazenia magiczne	Daune magice
 Obrazenia magiczne vs potwory	Daune magice vs monștri
+Obrazenia umiejetnosci	Daune abilități
 Obraż. sztyletów w potwory +%d	Daune pumnale vs monștri +%d
 Obraż. umiejętności	Daune de abilitate
 Obrażenia %s +%s%%	Daune %s +%s%%
@@ -3795,7 +4044,13 @@ Obrażenia przeciwko Metinom +%d%%	Daune împotriva Metinilor +%d%%
 Obrażenia umiejętności	Daune de abilitate
 Obrażenia umiejętności konnych +%(v)s%%	Daune ale abilităților de călărie +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Daune în Valea Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Daunele aduse Pietrelor Metin +%d%% timp de 5 sec.
+Obrażenia zwiększają się o %d%% na 10 sek.	Daunele cresc cu %d%% timp de 10 sec.
 Obrażenia/Obrona	Daune/Apărare
+Obrażenie Umiejętności: 10%	Daune abilități: 10%
+Obrażenie Umiejętności: 3%	Daune abilități: 3%
+Obrażenie Umiejętności: 5%	Daune abilități: 5%
+Obrażenie Umiejętności: 7%	Daune abilități: 7%
 Obrona %	Apărare %
 Obrona +%.0f	Apărare +%.0f
 Obrona +12~15%	Apărare +12~15%
@@ -3812,11 +4067,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Apărare împotriva abili
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Apărare împotriva abilității Vârtejul Sabiei +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Apărare împotriva abilității Ambuscadă +%.1f%%
 Obrona przed śr. obrażeniami	Apărare împotriva daunelor medii
+Obrona przy Metinach	Apărare la Metin-uri
 Obrona vs Ninja	Apărare vs Ninja
 Obrona vs Sura	Apărare vs Sura
 Obrona vs Szamanom	Apărare vs Șamani
 Obrona vs Wojownikom	Apărare vs Războinici
 Obrońca	Apărător
+Obrońca (obrona)	Apărător (apărare)
 Obrońca Chmur	Apărătorul Norilor
 Obrońca Stylu Małp	Apărător al Stilului Maimuței
 Obrót %d/%s, wydano %d SM	Rotirea %d/%s, cheltuiți %d SM
@@ -3866,6 +4123,7 @@ Odbicie Walki. Wręcz	Reflectare în Corp la Corp
 Odbicie ataku fizycznego: %.0f%%	Reflectarea atacului fizic: %.0f%%
 Odbicie ciosu	Reflectarea loviturii
 Odbicie pocisku	Reflectarea proiectilului
+Odbierz GM...	Retrage GM...
 Odbierz nagrodę	Ridică recompensa
 Odbierz nagrodę za turę	Ridică recompensa rundei
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Ridică recompensa rundei în fereastra Căutării comorilor.
@@ -3889,6 +4147,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Dai obiectul lui Seon-Hae (șansă %d%%
 Oddelegowany Komendant	Comandant Delegat
 Odebrac range GM postaci %s?	Retragi rangul de GM personajului %s?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	Poți ridica doar recompensa pentru runda curentă (%d).
+Odeslij boty	Trimite boții înapoi
 Odkryta karta	Carte descoperită
 Odnowa	Reînnoire
 Odp. na Br. Dwuręczną	Rez. la Arma cu Două Mâini
@@ -3904,12 +4163,16 @@ Odp. na Wiatr	Rez. la Vânt
 Odp. na Ziemię	Rez. la Pământ
 Odpały	Declanșări
 Odpały (Sekundy)	Declanșări (Secunde)
+Odpoczynek w miescie	Odihnă în oraș
 Odpornosc na omdlenia	Rezistență la leșin
 Odpornosc na spowolnienie	Rezistență la încetinire
 Odpornosc na upadek	Rezistență la doborâre
+Odpornosc: Ninja	Rezistență: Ninja
+Odpornosc: Sura	Rezistență: Sura
 Odpornosc: Szaman	Rezistență: Șaman
 Odpornosc: Wojownik	Rezistență: Războinic
 Odpornosc: ataki fizyczne	Rezistență: atacuri fizice
+Odpornosc: blyskawice	Rezistență: fulgere
 Odpornosc: bron dwureczna	Rezistență: armă cu două mâini
 Odpornosc: cios krytyczny	Rezistență: lovitură critică
 Odpornosc: dzwony	Rezistență: clopote
@@ -3918,8 +4181,12 @@ Odpornosc: ludzie	Rezistență: oameni
 Odpornosc: magia	Rezistență: magie
 Odpornosc: miecze	Rezistență: săbii
 Odpornosc: mrok	Rezistență: întuneric
+Odpornosc: obrazenia umiejetnosci	Rezistență: daune abilități
+Odpornosc: ogien	Rezistență: foc
 Odpornosc: potwory	Rezistență: monștri
 Odpornosc: przebicie	Rezistență: străpungere
+Odpornosc: srednie obrazenia	Rezistență: daune medii
+Odpornosc: strzaly	Rezistență: săgeți
 Odpornosc: sztylety	Rezistență: pumnale
 Odpornosc: trucizny	Rezistență: otrăvuri
 Odpornosc: wachlarze	Rezistență: evantaie
@@ -3948,6 +4215,7 @@ Odporność na Mrok (+%d%% łącznej wartości)	Rezistență la Întuneric (+%d%
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Rezistență la Ninja: reduce daunele pe care le primești din mâna Ninja.
 Odporność na Obrażenia Fizyczne: %d%%	Rezistență la daune fizice: %d%%
 Odporność na Ogień (+%d%% łącznej wartości)	Rezistență la Foc (+%d%% din valoarea totală)
+Odporność na Ogień: 5%	Rezistență la foc: 5%
 Odporność na Ognista Strzała	Rezistență la Săgeata de Foc
 Odporność na Przywołanie Błyskawicy	Rezistență la Invocarea Fulgerului
 Odporność na Strzał	Rezistență la Săgeată
@@ -3970,6 +4238,7 @@ Odporność na ataki fizyczne %d%%	Rezistență la atacurile fizice %d%%
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Rezistență la lovitura critică: reduce daunele primite din cauza unei lovituri critice.
 Odporność na fizyczne obrażenia	Rezistență la daune fizice
 Odporność na krytyczne	Rezistență la critice
+Odporność na lód +5%	Rezistență la gheață +5%
 Odporność na lód, ziemię, ciemność	Rezistență la gheață, pământ, întuneric
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Rezistență la întuneric: reduce daunele provocate de anumiți monștri.
 Odporność na obraż. umiej.	Rezistență la daune de abil.
@@ -3986,6 +4255,7 @@ Odporność vs Ludziom	Rezistență vs Oameni
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Concediezi însoțitorul definitiv? Acest lucru nu poate fi anulat.
 Odrodz spawny	Reface punctele de apariție
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Interval între teleportări: %d min. Fără temnițe și hărți de evenimente.
+Odswiez liste	Reîmprospătează lista
 Odważny	Îndrăzneț
 Odwołaj	Retrage
 Odwołaj zwierzaka, zanim go zaczarujesz.	Retrage animalul înainte de a-l fermeca.
@@ -4042,6 +4312,7 @@ Ognista Runa Aury (10)	Runa Focului a Aurei (10)
 Ogniste Buty	Încălțări de Foc
 Ogniste Jajo Smoka	Oul de Foc al Dragonului
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Lovitura de foc are %d%% șanse să fie returnată adversarului
+Ognistej Strzały	Săgeata de Foc
 Ognisty Duch Zodiaku	Spirit de Foc Zodiac
 Ognisty Duch Żaru (BŚ)	Spirit de Foc al Jarului (BM)
 Ognisty Golem Mag	Golem de Foc Mag
@@ -4068,6 +4339,7 @@ Okaz. Odłamek Hełmu I	Fragm. Ales de Coif I
 Okaz. Odłamek Hełmu II	Fragm. Ales de Coif II
 Okaz. Odłamek Zbroi I	Fragm. Ales de Armură I
 Okaz. Odłamek Zbroi II	Fragm. Ales de Armură II
+Okazały	Impunător
 Okazały Efekt Zestawu	Efect Fastuos de Set
 Okazały Kowal Zestawu	Fierarul Fastuos al Setului
 Okienko %s - %s, bonusy %d / %d	Fereastra %s - %s, bonusuri %d / %d
@@ -4126,6 +4398,7 @@ Osobisty Sklepik Premium	Magazin Personal Premium
 Ostatni boss	Ultimul boss
 Ostatni drop: %s	Ultimul obiect căzut: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	Ultima cumpărare se poate încă finaliza.
+Ostatnia nagroda:	Ultima recompensă:
 Ostatnia sprzedaz botow: brak danych.	Ultima vânzare a boților: nu există date.
 Ostatnia strona	Ultima pagină
 Ostatnie 7 dni	Ultimele 7 zile
@@ -4194,6 +4467,7 @@ Otrzymujesz: %s.	Primești: %s.
 Otrzymywane Obrażenia +%d%%	Daune primite +%d%%
 Otrzymywane obrażenia +%.0f%%	Daune primite +%.0f%%
 Otwarte skrzynie	Lăzi deschise
+Otwarto skrzynek: %d.	Cutii deschise: %d.
 Otwarto: %d szt.	Deschise: %d buc.
 Otwiera drzwi do chwały i mocy. Nadaje wszystkie benefity Konta Premium na okres 30 dni.|Przedmiot jest zdatny do handlu.	Deschide ușa spre glorie și putere. Oferă toate avantajele Contului Premium timp de 30 de zile.|Obiectul poate fi negociat.
 Otwiera je ewolucja peta	Se deschide odată cu evoluția animalului
@@ -4213,6 +4487,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Deschide mănunchiul și v
 Otwórz ponownie	Redeschide
 Otwórz sklep	Deschide magazinul
 Otwórz sklep ponownie	Redeschide magazinul
+Otwórz skrzynie	Deschide cufere
 Owoc Bogów	Fructul Zeilor
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Fructul rangului: +200 Puncte de Rang (rang obișnuit). Funcționează între 0 și 20 000 de puncte. Primul rang (Viteaz) de la 21 000. Comanda /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Fructul rangului: +200 Puncte de Rang peste rangul obișnuit. Funcționează de la 20 000 (rang obișnuit complet) până la 40 000 de puncte. Comanda /ranga.
@@ -4314,6 +4589,7 @@ PD z potworów: %s / %s	EXP de la monștri: %s / %s
 PD z przedmiotów: %s / %s	EXP de la obiecte: %s / %s
 PE +%d	SP +%d
 PE +%d%%	SP +%d%%
+PID bota:	PID bot:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	ÎNVINGE BOSSUL LUMII (o dată pe zi)
 PPM - następny event	Clic dreapta - următorul eveniment
 PPM / dwuklik: wyjmij stos	Clic dreapta / dublu clic: scoate stiva
@@ -4347,9 +4623,12 @@ Pancerne Rękawice	Mănuși Blindate
 Pancerny Hełm Dragona	Coiful Blindat al lui Dragon
 Pancerny Hełm Smoków	Coiful Blindat al Dragonilor
 Pancerz Czarnego Ognia	Armura Focului Negru
+Pancerz Horroru+ (złoty)	Armura Groazei+ (aurie)
 Pancerz Magmy	Armura Magmei
 Pancerz Zodiaku	Platoșa Zodiacului
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	Panoul GM nu s-a încărcat în acest client - detalii în syserr.txt
+Panel botów (GM)	Panou boți (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	Panoul este în versiune BETA. Dacă observi bug-uri
 Panterka (7 dni)	Panteră Mică (7 zile)
 Pas Z Wężowej Skóry	Centură din Piele de Șarpe
 Pasek doświadczenia konia jest pełny - spróbuj awansu.	Bara de experiență a calului este plină - încearcă avansarea.
@@ -4360,6 +4639,7 @@ Pasy	Centuri
 Pasza dla Konia	Furaj pentru Cal
 Pasza dla Konia w ekwipunku: %d	Furaj pentru Cal în inventar: %d
 Pazury Małpy	Gheare de Maimuță
+Październik	Octombrie
 Peleryny	Mantii
 Pelne PZ/PE	PV/PM complete
 Pergamin	Pergament
@@ -4373,6 +4653,7 @@ Perły	Perle
 Pet	Însoțitor
 Pety	Animale de companie
 Pewne zmiany wymagają restartu gry, kontynuować?	Unele modificări necesită repornirea jocului, continui?
+Pełen werwy	Plin de energie
 Pełne EQ	Inventar plin
 Pełne doświadczenie - czas na rozwój.	Experiență completă - este timpul pentru dezvoltare.
 Pełne okno	Fereastră fără margini
@@ -4459,6 +4740,7 @@ Piekielny Żarłacz Dusz	Devoratorul Infernal de Suflete
 Piekło	Infern
 Piekło - wybierz respawn	Infern - alege punctul de reapariție
 Pierwsza nagroda tury jest darmowa.	Prima recompensă a rundei este gratuită.
+Pierwsza strona	Prima pagină
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Prima dintre cele trei cărți ale atenției. Poate crește carisma proprietarului. După citire, cartea dispare. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Prima dintre cele trei cărți ale luptei în formație. Poate crește inspirația proprietarului. După citire, cartea dispare. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 Pierwszorzędne Buty	Încălțări de Primă Clasă
@@ -4466,6 +4748,7 @@ Pierwszy "+" na zakładce Status też ci je daje.	Primul „+” din fila Stare 
 Pierwszy "+" na zakładce Umiejętności też ci je daje.	Primul „+” din fila Abilități ți le dă și ție.
 Pierwszy 30 poziom	Primul nivel 30
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	Prima resetare a misiunii în 24 de ore este gratuită.
+Pierścień / amulet	Inel / amuletă
 Pierścień Dośw. (iCafe)	Inelul Experienței (iCafe)
 Pierścień Godności	Inelul Demnității
 Pierścień Hydry	Inelul Hidrei
@@ -4478,6 +4761,7 @@ Pierścień Wielkanocny	Inel de Paște
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	Inel cu o gravură măiestrită în formă de semilună. Oferă: +50% EXP, +20% viteză de atac, +20% viteză de vrăjire, +30% atac, +10% PV max., +10% PM max.
 Pień+	Buștean+
 Piorunowe Zioło	Planta Tunetului
+Pirat+ (m)	Pirat+ (b)
 Pisanie	Scriere
 Pisklę Exedyara	Puiul lui Exedyar
 Pióro Mędrca	Pana Înțeleptului
@@ -4521,6 +4805,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	La folosire adaugă o carte de monstru în colecție (Cărți de Monștri în meniul de sub Esc). Nu poate fi negociată.
 Po zabiciu: kolejny, którego już biłeś	După ucidere: următorul pe care l-ai lovit deja
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	După încărcarea a 8 săgeți, Hwacha va străpunge solzii lui Balathor. Săgețile de Foc se obțin din Cristalele Străvechi de Gheață. Încărcate: %d
+Pobieram drop...	Se descarcă drop-ul...
 Pobieram ustawienia botow...	Se descarcă setările boților...
 Pobieram zawartość z serwera...	Se descarcă conținutul de pe server...
 Pobieranie cen dla %d przedmiotow...	Se descarcă prețurile pentru %d obiecte...
@@ -4559,7 +4844,10 @@ Podaj wartosc.	Introdu valoarea.
 Podaj wlasciciela i wybierz przedmiot.	Introdu proprietarul și alege obiectul.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	În timpul luptei există o probabilitate de %d%% de rezistență la doborâre (timp de reîncărcare 60 sec.).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	În timpul luptei se numără daunele provocate de tine.
+Podczas walki otrzymasz efekt eliksiru księżyca	În luptă primești efectul elixirului lunii
+Podczas walki otrzymasz efekt eliksiru słońca	În luptă primești efectul elixirului soarelui
 Podejdź wroga od tyłu i zadaj śmiertelny cios.|Wzmacnia: Siła (++), Zręczność (++).	Apropie-te de dușman din spate și dă o lovitură mortală.|Întărit de: Forță (++), Dexteritate (++).
+Podglad EQ	Previzualizare EQ
 Podgląd niedostępny.	Previzualizare indisponibilă.
 Podgląd skrzynki	Previzualizarea cutiei
 Podgląd skrzyń	Previzualizarea cuferelor
@@ -4644,8 +4932,10 @@ Pokaż szatę aury	Arată roba aurei
 Pokaż wizerunek broni	Arată aspectul armei
 Pokaż założony tytuł	Arată titlul echipat
 Pokaż znowu wszystkie przedmioty	Arată din nou toate obiectele
+Pokonaj %(n)s bossów	Învinge %(n)s bossi
 Pokonaj %(n)s x %(what)s	Învinge %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Învinge Bossul Lumii în zona neutră și obține recompense!
+Pokonaj bossów	Învinge bossi
 Pokonane bossy	Bossi învinși
 Pokonane minibossy	Mini-bossi învinși
 Pokonani gracze (przeciwne król.)	Jucători învinși (regate inamice)
@@ -4716,6 +5006,7 @@ Portal Świątyni Węży	Portalul Templului Șerpilor
 Portal: Nowy Kontynent	Portal: Continentul Nou
 Posiada szanse na otrucie przeciwnika.	Are șansa de a otrăvi inamicul.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Are șansa de a otrăvi inamicul și include amețire.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	Ai %d%% șanse ca timp de 30 sec. să colectezi automat obiectele din apropiere
 Postać ma za duży poziom.	Personajul are un nivel prea mare.
 Postać zostanie usunięta.	Personajul va fi șters.
 Posterunek Trolli	Avanpostul Trolilor
@@ -4813,7 +5104,10 @@ Poziom: %d (%s Szata Aury)	Nivel: %d (Roba Aurei %s)
 Poziom: %s	Nivel: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Nivel: 1-19, M1-M10, G1-G10 sau P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Nivel: număr 1-19, M1-M10, G1-G10 sau P
+Pozostalo 23:59:59	Rămas 23:59:59
 Pozostalo czasu: 30s	Timp rămas: 30s
+Pozostalo prob: 3	Încercări rămase: 3
+Pozostalo: 45s	Rămas: 45s
 Pozostaly czas: %ds	Timp rămas: %ds
 Pozostałe	Rămase
 Pozostałe misje	Alte misiuni
@@ -4837,6 +5131,7 @@ Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w 
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Îți permite să resetezi misiunea Cărților de Monștri peste resetarea gratuită (o dată la 24 de ore).
 Pozwolenie na Wzmocn. Przedmiotu	Permis Îmbunătățire Obiect
 Pozwolenie na Zaczar. Przedmiotu	Permis Vrăjire Obiect
+Pozycja niezapisana	Poziție nesalvată
 Położenie	Poziție
 Położenie nieznane	Poziție necunoscută
 Połyskująca Biała Perła	Perlă Albă Strălucitoare
@@ -4922,9 +5217,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Filtru simplu (avansat: Op�
 Prosty rozpryskowy atak	Atac simplu cu împrăștiere
 Proszę wpisać nazwę sklepu	Te rog introdu numele magazinului
 Proszę wybrać czas trwania sklepu	Te rog alege durata magazinului
+Prowadza stragan: %s	Ține taraba: %s
+Prowadza stragan: -	Ține taraba: -
 Prywatność	Confidențialitate
 Pryzmat Ożywienia	Prisma Reînvierii
 Pryzmat Ożywienia (Q)	Prisma Reînvierii (Q)
+Pryzmatyczny	Prismatic
 Przeb. Księga Zwierza	Cartea Trezită a Animalului
 Przebicie	Străpungere
 Przebicie bloku	Străpungerea blocului
@@ -5086,7 +5384,7 @@ Przywołuje demoniczne moce do olbrzymiego pchnięcia mieczem.|Wzmacnia: Siła (
 Przywołuje na przeciwnika żądne zemsty demony.|Wzmacnia: Inteligencja (++), Zręczność (+), Witalność (+), poziom postaci.	Invocă asupra adversarului demoni însetați de răzbunare.|Întărit de: Inteligență (++), Dexteritate (+), Vitalitate (+), nivelul personajului.
 Przywraca 600 PE.	Restaurează 600 SP.
 Przywraca 600 PŻ.	Restaurează 600 HP.
-Przywraca PŻ %.0f	Restaurează HP %.0f
+Przywraca PŻ %.0f	Restabilește PV %.0f
 Przywraca PŻ po zabiciu potwora.	Restabilește PV după uciderea unui monstru.
 Przywrócić wszystkie domyślne klawisze?	Restabilești toate tastele implicite?
 Przywrócono domyślne klawisze	Tastele implicite au fost restabilite
@@ -5104,8 +5402,10 @@ Próby	Încercări
 Prędkość ataku	Viteza de atac
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Viteză de atac +%(v)s%% pentru %(d)d s după un atac de pe spatele monturii (la fiecare 180 s)
 Prędkość czarowania	Viteza de lansare a vrăjilor
+Prędkość po zsiadaniu	Viteză după descălecare
 Prędkość ruchu	Viteza de mișcare
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Viteză de mișcare +%(v)s%% pentru %(d)d s după un atac de pe spatele monturii (la fiecare 180 s)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	Viteza de mișcare crește cu %d%% timp de 10 sec.
 Prędkość ruchu znacznie zwiększona.	Viteza de mișcare mult crescută.
 Pudełko Kart Potworów Yohary	Cutia cu Cărți de Monștri din Yohara
 Pudło wędkarskich puzzli	Cutia cu Puzzle-uri de Pescuit
@@ -5114,6 +5414,7 @@ Punkty Doświadczenia: +%d%%	Puncte de experiență: +%d%%
 Punkty Doświadczenia: +150%	Puncte de Experiență: +150%
 Punkty Rangi: %d	Puncte de Rang: %d
 Punkty doswiadczenia %	Puncte de experiență %
+Punkty doświadczenia +%d%%	Puncte de experiență +%d%%
 Punkty konne:	Puncte de călărie:
 Punkty miłości: %d%%	Puncte de iubire: %d%%
 Punkty range:	Puncte de rang:
@@ -5267,6 +5568,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Resetare Magazin Gaya
 Reset oferty	Resetarea ofertei
 Reset oferty (Reset Sklepu Gaya)	Resetarea ofertei (Resetarea Magazinului Gaya)
+Reset umiejętności	Resetare abilități
 Resetuj	Resetează
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Resetează Magazinul Gaya înainte să treacă cele 5 ore și vezi noile obiecte valoroase. Folosește-l la Magazinul Gaya din Port (Statuia Războinicului din Portul Noului Continent).
 Restart serwera...	Repornirea serverului...
@@ -5316,6 +5618,7 @@ Rozbudowa jest teraz niedostępna.	Extinderea nu este disponibilă acum.
 Rozdaj od nowa (raz za darmo)	Distribuie din nou (o dată gratuit)
 Rozdane: %d	Distribuite: %d
 Rozdzielczość	Rezoluție
+Rozkaz wysłany.	Ordin trimis.
 Rozkazy dla botów twojej gildii	Ordine pentru boții breslei tale
 Rozkazy wydaje mistrz gildii	Ordinele le dă maestrul breslei
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	Vorbești cu un |cffffb514Maestru al Jocului|r.
@@ -5349,6 +5652,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Se dezvoltă cu Cartea Preciziei (de la
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Dezvolți animalul până la treapta „%s”? Materialele vor dispărea.
 Rozwiń pasek	Extinde bara
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Extinde: toate barele de acces rapid (4 x 8)
+Rozwój	Dezvoltare
 Rozwój do stopnia: %s	Dezvoltare până la treapta: %s
 Rozwój konia	Dezvoltarea calului
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Dezvoltarea calului: lipsește Furajul pentru Cal (sunt necesare %(a)d).
@@ -5375,6 +5679,7 @@ Ruda Turmalinu	Minereu de Turmalină
 Rudy i przetopy	Minereuri și topituri
 Ruiny Atlantydy	Ruinele Atlantidei
 Ruiny Skorpiona	Ruinele Scorpionului
+Rumi (Okey)	Rumi (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rumi (Okey): fereastra jocului va apărea odată cu actualizarea clientului.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	Peștele mușcă! Fă clic pe el de %d ori când înoată în cerc (ai %d s).
 Ryba przyrządzona nad ogniskiem to wspaniały wędzony przysmak.	Peștele pregătit la foc de tabără este o minunată delicatesă afumată.
@@ -5412,6 +5717,7 @@ Rzeźnik Piekielnej Wieży	Măcelarul Turnului Infernal
 Rzeźnik Wężowy	Măcelar Șarpe
 Rzuca na ciebie swoje buffy.	Aruncă asupra ta buff-urile lui.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Aruncă în adversari stele pline de lumină.|Întărit de: Dexteritate (++), nivelul personajului.
+Rzucam buffy	Aplic buff-uri
 Rzygacz	Garguie
 Róg Balathora	Cornul lui Balathor
 Róg Nemere	Cornul lui Nemere
@@ -5597,11 +5903,17 @@ Serwer: brak potwierdzenia, ponawiam (%d/%d)...	Server: fără confirmare, reiau
 Serwer: czekam na potwierdzenie	Server: aștept confirmarea
 Sesja już trwa.	Sesiunea este deja în desfășurare.
 Sesja zakończona: osiągnięto limit czasu.	Sesiune încheiată: s-a atins limita de timp.
+Sesje (z bieżącą)	Sesiuni (cu cea curentă)
+Sezon %d	Sezon %d
 Sezon %d - %s (do końca: %d dni %s)	Sezonul %d - %s (până la sfârșit: %d zile %s)
+Sezon: Chunjo	Sezon: Chunjo
+Sezon: Jinno	Sezon: Jinno
+Sezon: Shinsoo	Sezon: Shinsoo
 Sfera Losu Zwierzaka	Sfera Destinului Animalului
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Sfera sorții: arată tipul animalului (consumă o Sferă a Sorții a Animalului)
 Shaman Armor	Armură Șaman
 Shield	Scut
+Shift + LPM	Shift + clic stg.
 Shinsoo United (k)	Shinsoo United (f)
 Shinsoo United+ (k)	Shinsoo United+ (f)
 Shoes	Încălțări
@@ -5616,6 +5928,7 @@ Shuriken	Shuriken
 Shuriken+	Shuriken+
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Semeni o briză ușoară, iar dușmanii tăi culeg o vijelie năprasnică. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Sierp (Pieczęć)	Semiluna (sigiliu)
+Sierpień	August
 Silna Fala Śmierci	Unda Puternică a Morții
 Silna Tarcza Eteru	Scutul Puternic al Eterului
 Silne Trzęsienie	Cutremur Puternic
@@ -5631,6 +5944,7 @@ Silny Druid En-Tai	Druid En-Tai Puternic
 Silny Dziki Piechur	Pieton Sălbatic Puternic
 Silny Dziki Sluga	Slujitor Sălbatic Puternic
 Silny Kam. Przebudzenia	Piatra Puternică a Trezirii
+Silny Malpi Zolnierz	Soldat Maimuță Puternic
 Silny Meteor	Meteor Puternic
 Silny Niszczyciel En-Tai	Distrugător En-Tai Puternic
 Silny Piekielny Cios	Lovitura Infernală Puternică
@@ -5683,25 +5997,36 @@ Silny przeciwko:	Puternic împotriva:
 Silny.	Puternic.
 Siła	Forță
 Siła Ataku	Puterea Atacului
-Siła Ataku %.0f-%0.f	Forță de Atac %.0f-%0.f
-Siła Ataku +%.0f	Forță de Atac +%.0f
+Siła Ataku %.0f-%0.f	Valoare atac %.0f-%0.f
+Siła Ataku +%.0f	Valoare atac +%.0f
+Siła Ataku: +%.0f	Valoare atac: +%.0f
+Siła Błyskawic	Puterea Fulgerelor
 Siła Błyskawic (+%d%% łącznej wartości)	Puterea Fulgerelor (+%d%% din valoarea totală)
 Siła Błyskawic +%d%%	Puterea Fulgerelor +%d%%
+Siła Błyskawic +5%	Puterea Fulgerului +5%
+Siła Lodu	Puterea Gheții
 Siła Lodu (+%d%% łącznej wartości)	Puterea Gheții (+%d%% din valoarea totală)
 Siła Lodu +%d%%	Puterea Gheții +%d%%
+Siła Lodu +5%	Puterea Gheții +5%
 Siła Mroku	Puterea Întunericului
 Siła Mroku (+%d%% łącznej wartości)	Puterea Întunericului (+%d%% din valoarea totală)
 Siła Mroku +%d%%	Puterea Întunericului +%d%%
+Siła Mroku +5%	Puterea Întunericului +5%
 Siła Obrony	Puterea Apărării
+Siła Ognia	Puterea Focului
 Siła Ognia (+%d%% łącznej wartości)	Puterea Focului (+%d%% din valoarea totală)
 Siła Ognia +%d%%	Puterea Focului +%d%%
+Siła Ognia +5%	Puterea Focului +5%
 Siła Sung Ma	Forța Sung Ma
 Siła Sung Ma +%d	Forța Sung Ma +%d
+Siła Wiatru	Puterea Vântului
 Siła Wiatru (+%d%% łącznej wartości)	Puterea Vântului (+%d%% din valoarea totală)
 Siła Wiatru +%d%%	Puterea Vântului +%d%%
+Siła Wiatru +5%	Puterea Vântului +5%
 Siła Ziemi	Puterea Pământului
 Siła Ziemi (+%d%% łącznej wartości)	Puterea Pământului (+%d%% din valoarea totală)
 Siła Ziemi +%d%%	Puterea Pământului +%d%%
+Siła Ziemi +5%	Puterea Pământului +5%
 Siła ataku +%.0f-%.0f	Forță de atac +%.0f-%.0f
 Siła ataku jest większa, jeśli cios zadano w plecy	Forța de atac este mai mare dacă lovitura este dată în spate
 Siła ataku wroga -%d%%	Puterea de atac a inamicului -%d%% 
@@ -5793,6 +6118,7 @@ Skorpion Lucznik Zodiaku	Scorpion Arcaș Zodiac
 Skorpion Wężowy	Scorpion Șarpe
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Profită de |cff2b80ffofertele fulger|r![ENTER]Licitațiile durează cel târziu până la |cff2b80ff%s|r[ENTER]sau până la epuizarea stocului.
 Skruszone Kamienie Dusz mogą znaleźć nowe zastosowanie.	Pietrele Spiritului sfărâmate își pot găsi o nouă întrebuințare.
+Skrytobójca	Asasin
 Skrytobójcza Wykałaczka	Scobitoarea Asasinului
 Skrz. Ninja M. Łuku (D)	Cufăr Ninja Arc (M)
 Skrz. Ninja M.Ostrza (D)	Cufăr Ninja Lamă (M)
@@ -5853,12 +6179,16 @@ Skrzynka musi być w ekwipunku.	Cutia trebuie să fie în inventar.
 Skrzynka na Zwierzaka	Cutia Animalului
 Skrzynki	Cutii
 Skrócenie ładowania um. o %d%%	Timp de încărcare a abil. redus cu %d%% 
+Skróty	Scurtături
+Skróty klawiszowe	Taste rapide
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Concentrează atacurile asupra Oului Înghețat al Dragonului înainte să dispară în %d sec.
 Skóra Przeklętego Niedźwiedzia	Pielea Ursului Blestemat
 Skóra Przeklętego Tygrysa	Pielea Tigrului Blestemat
 Skąd	De unde
 Składnik do produkcji lekarstwa iluzji.	Ingredient pentru fabricarea medicamentului iluziei.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingredient pentru îmbunătățirea Pietrelor Spiritului la Fierar (de la +4): sunt necesare 1, 1, 2, 2, 3 bucăți pentru treptele următoare, alături de Praful Magic. Cade de la Vrăjitoarea Rea de Gheață (Grota Exilului), Beran-Setaou (Bârlogul Dragonului) și Regina Junglei (Jungla Străveche).
+Slaby Malpi Miotacz	Aruncător Maimuță Slab
+Slaby Malpi Zolnierz	Soldat Maimuță Slab
 Slot z krzyżykiem jest jeszcze zamknięty.	Locul cu cruce este încă închis.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Loc blocat: îl va debloca Extinderea Magazinului Gaya x%d.
 Sloty umiejętności: %d	Locuri de abilități: %d
@@ -5896,9 +6226,11 @@ Solidny grot z żelaza, łączący dobrą wagę z trwałością. Jest uniwersaln
 Something went wrong. (Generic error)	Ceva nu a mers bine. (Eroare generală)
 Songmin, Arktyczne Yeti	Songmin, Yeti-ul Arctic
 Sort by price	Sortează după preț
+Sortowanie autopickup	Sortare autopickup
 Sortowanie i wyszukiwanie	Sortare și căutare
 Sortuj po cenie całej oferty	Sortează după prețul întregii oferte
 Sortuj po cenie oferty albo za sztukę	Sortează după prețul ofertei sau pe bucată
+Sortuj po ilości	Sortează după cantitate
 Soul Crystal Alchemist	Alchimist Cristal al Sufletului
 Sowa Księżycowa	Bufniță Lunară
 Spacja	Spațiu
@@ -5910,6 +6242,7 @@ Sparta Jungrang (m)	Sparta Jungrang (m)
 Sparta Jungrang+ (k)	Sparta Jungrang+ (f)
 Sparta Jungrang+ (m)	Sparta Jungrang+ (m)
 Spartaner	Spartaner
+Spawn Botow	Spawn Boți
 Specjalne	Speciale
 Specjalne Zioła	Ierburi Speciale
 Specjalny	Deosebit
@@ -5923,6 +6256,7 @@ Sportowa Fryzura(czarna)	Coafură Sportivă (neagră)
 Spostrzegawczość	Spirit de Observație
 Społeczność	Comunitate
 Sprawdz konto	Verifică contul
+Sprawdz status	Verifică starea
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Se verifică suportul pe server. Trage obiectele în coș.
 Sprawdzanie...	Se verifică...
 Sprawdź ekwipunek	Verifică inventarul
@@ -5948,6 +6282,7 @@ Srebrne Płyty	Plăci de Argint
 Srebrny Grot	Vârf de Săgeată din Argint
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	Un pandantiv de argint în formă de inimă, încrustat cu bijuterii magice. Oferă: +30% EXP, +10% viteză de atac, +10% viteză de vrăjire, +10% putere împotriva monștrilor, +5% PV max., +5% PM max.
 Srednia: %s / szt.	Medie: %s / buc.
+Srednie obrazenia	Daune medii
 Stabilne Sznury	Funii Rezistente
 Stajnia i polowanie na medale w Lochu Malp.	Grajdul și vânătoarea de medalii în Temnița Malpelor.
 Stal	Oțel
@@ -5957,7 +6292,8 @@ Stalowy Hełm Dragona	Coiful de Oțel al lui Dragon
 Stalowy Hełm Smoków	Coiful de Oțel al Dragonilor
 Stamina / sek.: %d	Stamina / secundă: %d
 Stan (czat)	Stare (chat)
-Standardowa Muzyka Metin2	Muzica Standard a Jocului
+Stan: %s	Stare: %s
+Standardowa Muzyka Metin2	Muzica standard a jocului
 Standardowa muzyka Metin2	Muzica standard a jocului
 Stanton-Płatnerz	Stanton, Făuritor de Armuri
 Stara Fryzura (biała)	Coafură Veche (albă)
@@ -5978,6 +6314,7 @@ Starożytny Robak	Vierme Străvechi
 Starożytny Skorpion	Scorpion Străvechi
 Starożytny Wojownik	Războinic Străvechi
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	Un pergament străvechi prin care curge puterea lui Weol - îți permite să tragi la sorți noi binecuvântări.
+Starszy Hazardzista	Jucător de Noroc Senior
 Stary pergamin z nakazem zabicia, po użyciu aktywuje misje.	Un pergament vechi cu un ordin de ucidere; folosirea lui pornește o misiune.
 Statua Chena	Statuia Chen
 Statua Chou	Statuia Chou
@@ -6048,19 +6385,25 @@ Strażnik Rozpad. Dusz	Gardianul Faliilor Sufletelor
 Strażnik Ruin	Gardianul Ruinelor
 Strażnik Smoków Dolnarr	Gardianul Dragon Dolnarr
 Strażnik Smoków Jaharr	Gardianul Dragon Jaharr
+Strażnik Srebr. Piasku+	Paznicul Nisipului de Argint+
 Strażnik Trytonów	Gardian al Tritonilor
 Strażnik Wzgórza	Gardianul Dealului
 Strażnik Węży	Gardianul Șerpilor
 Strażnik z Yohara	Gardian din Yohara
+Strefa Surowców	Zona Resurselor
 Strona %d / %d	Pagina %d / %d
 Strona %d / %d (%d)	Pagina %d / %d  (%d)
 Strona %d/%d	Pagina %d/%d
 Strona 1	Pagina 1
 Strona WWW	Site web
+Strona ekwipunku I	Pagina inventarului I
 Strona ekwipunku II	Pagina de inventar II
 Strona ekwipunku II (wymienna)	Pagina de inventar II (schimbabilă)
+Strona ekwipunku III	Pagina inventarului III
 Strona ekwipunku IV	Pagina de inventar IV
 Strz. dół	Săg. jos
+Strz. góra	Săg. sus
+Strz. lewo	Săg. stânga
 Strz. prawo	Săg. dreapta
 Strzał Wichury	Săgeata Vijeliei
 Strzał Wichury (9.skill)	Salva Furtunii (abil. 9)
@@ -6068,6 +6411,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	O lov
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	Săgeată pentru arcul de ninja. Daune complete până la 5 m de țintă (un bonus la raza arcului prelungește această distanță), apoi cu 5% mai puține pentru fiecare metru următor. Tolba nu pierde daune odată cu distanța.
 Strzały: Handlarz Bronią (cena NPC).	Săgeți: Negustorul de Arme (preț NPC).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Trage cu chipuri de dragon și atacă dușmanii.|Întărit de: Inteligență (++), Dexteritate (precizie) (+), nivelul personajului.
+Strzelającego Smoka	Dragonul Trăgător
 Strój Czarodzieja	Costum de Vrăjitor
 Strój Czarodzieja+	Costum de Vrăjitor+
 Strój Zombie	Costum de Zombi
@@ -6089,6 +6433,7 @@ Stwór z Głębin	Făptura din Adâncuri
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Creează o explozie mare cu vârfurile degetelor.|Întărit de: Inteligență (++), Forță (+), nivelul personajului.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Creează o tornadă puternică pentru a învinge mai mulți dușmani.|Întărit de: Inteligență (++), Forță (+), nivelul personajului.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Creează un nor otrăvitor în jurul dușmanilor și otrăvește-i.|Întărit de: Dexteritate (++), Forță (+), nivelul personajului.
+Styczeń	Ianuarie
 Stylowa ale tłusto wyglądająca fryzura zaczesana do tyłu, anteny są kluczowym akcentem tej fryzury. Na stałe zmienia fryzurę Twojej postaci.	O coafură pieptănată pe spate, stilată, dar cu aspect unsuros; antenele sunt accentul principal al acestei coafuri. Schimbă definitiv coafura caracterului tău.
 Stylowa fryzura Szamana. Na stałe zmienia fryzurę Twojej postaci.	O coafură stilată de Șaman. Schimbă definitiv coafura caracterului tău.
 Su-Sin	Su-Sin
@@ -6112,11 +6457,16 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	Câștigurile t
 Sun Herb	Plantă a Soarelui
 Super Kamienie Metin (+%d)	Super Pietre Metin (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Supliment (până la 5 buc.): Mic +1%, Mediu +2%, Mare +4%, Puternic +10% pe bucată.
+Sura (Broń)	Sura (Armă)
+Sura (Czarna Magia)	Sura (Magie Neagră)
 Sura Armor	Armură Sura
 Sura Czarna Magia	Sura Magie Neagră
 Sura Mistrz Broni	Sura Armură de Arme
 Surowce potrzebne do tworzenia i ulepszania wyjątkowych przedmiotów.	Materii prime necesare pentru crearea și îmbunătățirea obiectelor excepționale.
 Sutra	Sutra
+Swiat i eventy	Lume și evenimente
+Swiatynia Hwang	Templul Hwang
+Swiatynia Ochao	Templul Ochao
 Swiatynia Zodiaku	Templul Zodiacului
 Switchbot (zmiana bonusów)	Switchbot (schimbare bonusuri)
 Switchbot - zmiana bonusów	Switchbot - schimbarea bonusurilor
@@ -6125,10 +6475,12 @@ Sword	Sabie
 Sycomor	Sicomor
 Symbol zręczności, popularny wśród złodziei.	Un simbol al dexterității, apreciat printre hoți.
 Synowie Pustyni	Fiii Deșertului
+Szalenie odważny	Nebunesc de curajos
 Szalony Hazardzista	Jucător Nebun
 Szalony Naukowiec	Savant Nebun
 Szalony Wędkarz	Pescar Nebun
 Szaman (Leczenie)	Șaman (Vindecare)
+Szaman (Smok)	Șaman (Dragon)
 Szaman Leczenie	Șaman Vindecare
 Szaman Smok	Șaman Dragon
 Szamanka (K)	Șamană (F)
@@ -6144,6 +6496,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Șansa de a Străpunge Imuni
 Szansa na Spowolnie.	Șansă de Încetinire
 Szansa na Uziemienie %.0f%%	Șansă de Imobilizare %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Șansa de blocare a loviturilor: crește șansa de a evita un atac de la mică distanță.
+Szansa na cios krytyczny +2%	Șansă de lovitură critică +2%
+Szansa na cios krytyczny +5%	Șansă de lovitură critică +5%
+Szansa na cios krytyczny +7%	Șansă de lovitură critică +7%
+Szansa na cios krytyczny +8%	Șansă de lovitură critică +8%
 Szansa na cios krytyczny: +%.0f%%	Șansa de lovitură critică: +%.0f%%
 Szansa na cios przebicia %.0f%%	Șansa unei lovituri de străpungere %.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Șansa de Yang căzut: crește șansa de a obține mai mulți Yang.
@@ -6172,12 +6528,16 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Șansa de învă�
 Szansa na przebicie	Șansă de străpungere
 Szansa na przebicie +10%	Șansă de lovitură pătrunzătoare +10%
 Szansa na przedmiot z bonusem	Șansă la obiect cu bonus
+Szansa na przeszywające Uderzenie: 2%	Șansă de lovitură pătrunzătoare: 2%
+Szansa na przeszywające Uderzenie: 5%	Șansă de lovitură pătrunzătoare: 5%
+Szansa na przeszywające Uderzenie: 8%	Șansă de lovitură pătrunzătoare: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Șansa de lovitură străpungătoare: crește șansa de a da o lovitură străpungătoare.
 Szansa na przeszywający strzał +%.0f%%	Șansa unei lovituri perforante +%.0f%%
 Szansa na spowolnienie	Șansă de încetinire
 Szansa na transfer %d%% otrzymanych obrażeń do PE	Șansă de %d%% de a transfera daunele primite către SP
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Șansa de a evita săgeata: crește șansa de a evita o săgeată sau un atac la distanță al monstrului.
 Szansa na wydobycie rudy +%d%%	Șansa de a extrage minereu +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Șansa de drop a unui obiect de la boss +%d%%
 Szansa na wyrzucanie przedmiotów zwiększona 1.5 raza dla członków iCafe.	Șansa de a obține obiecte crește de 1,5 ori pentru membrii iCafe.
 Szansa na zdobycie Przedmiotów pomnożona o %.1f	Șansa de a obține Obiecte înmulțită cu %.1f
 Szansa na zdobycie Yang pomnożona o %.1f	Șansa de a obține Yang înmulțită cu %.1f
@@ -6228,12 +6588,15 @@ Szary Barwnik	Colorant Gri
 Szary Lśniący Odłamek	Fragment Lucios Gri
 Szary Sok	Suc Gri
 Szata	Robă
+Szata Dżinna+ (m)	Robă de Djinn+ (b)
 Szata Harmonii	Robea Armoniei
 Szata Księżyca	Robea Lunii
 Szata Ognia	Robea Focului
 Szata Wiary	Robea Credinței
 Szata Zodiaku	Robea Zodiacului
 Szata aury: ewolucja	Roba aurei: evoluție
+Szata aury: przenieś parametry	Robă de aură: transferă parametrii
+Szata aury: rozwój	Robă de aură: dezvoltare
 Szczyt rodzaju - czas na ewolucję	Vârful speciei - este timpul pentru evoluție
 Szczytobłysk 830 9454	Strălucirea Piscului 830 9454
 Szczytomrok 3393 9454	Piscul Întunecat 3393 9454
@@ -6246,6 +6609,7 @@ Szkarłaczny Żądłak	Înțepătorul Stacojiu
 Szkat. Chegala	Cufărul lui Chegal
 Szkat. Olbrzym. Drzewa	Cufărul Arborelui Uriaș
 Szkatulka Ksiezycowa - z rozbitego Metina	Cutia Lunii - dintr-un Metin spart
+Szkatulka Ksiezycowa - z zabitego potwora	Cutia Lunii - de la monstrul ucis
 Szkatułka Chegala, Goliata Cienia. Coś cennego znajduje się w środku.	Cufărașul lui Chegal, Goliatul Umbrei. Înăuntru se află ceva prețios.
 Szkatułka Olbrzymiego Ducha Drzewa. Coś cennego znajduje się w środku.	Cufărașul Marelui Spirit al Copacului. Înăuntru se află ceva prețios.
 Szkatułka Yohara	Casetă Yohara
@@ -6264,6 +6628,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Lemn Nobil de la Stăpânul En-Tai. Du-l Cercetătorului Pădurii.
 Szlachetne Drzewo (PB)	Copac Nobil (RX)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Lemn Nobil (RX) de la Stăpânul En-Tai (RX). Du-l Cercetătorului Pădurii (RX).
+Szlachetny Legionista+	Legionarul Nobil+
 Szmaragdowy Marmur	Marmură de Smarald
 Szpon Kruka	Ghearele Corbului
 Szpon Wężowy (wykon.)	Ghearele Șarpelui (fabr.)
@@ -6325,7 +6690,10 @@ Szybkość Ataku +5%	Viteză de Atac +5%
 Szybkość Buffi	Viteza lui Buffi
 Szybkość Ruchu +%.0f%%	Viteză de Mișcare +%.0f%%
 Szybkość Ruchu 20%	Viteză de Mișcare 20%
+Szybkość Zaklęcia +2%	Viteza vrăjilor +2%
+Szybkość Zaklęcia +5%	Viteza vrăjilor +5%
 Szybkość czarowania	Viteza de lansare a vrăjilor
+Szybkość ruchu +%d%%	Viteză de mișcare +%d%%
 Szybkość: %d zmian/s	Viteză: %d schimbări/s
 Słaba Zbroja	Armură Slabă
 Słaba jakość strzału: od %.1fm	Calitate slabă a tirului: de la %.1fm
@@ -6333,6 +6701,7 @@ Słabsze potwory nie słyszą twoich kroków|Zwiększa maks. limit ruchu do 220.
 Słodka Staruszka	Bătrânică Dulce
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	O amuletă dulce de Ziua Îndrăgostiților. Oferă: +50% EXP, +20% viteză de atac, +20% viteză de incantare, +10% forță împotriva monștrilor, +10% HP max., +10% SP max. Timpul curge și când nu îl porți.
 Słodkowodna ryba drapieżna występująca w tropikach.	Pește de apă dulce răpitor, întâlnit în tropice.
+Słon. Szata Wukong+ (m)	Robă Wukong Solară+ (b)
 Słonecznik: obrona +%d%%	Floarea-soarelui: apărare +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Cuvinte din numele obiectelor (separate prin virgulă)
 Słudzy Sung Mahi	Slujitorii lui Sung Mahi
@@ -6543,8 +6912,10 @@ To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja
 Today {:02d}:{:02d}	Azi {:02d}:{:02d}
 Tomorrow {:02d}:{:02d}	Mâine {:02d}:{:02d}
 Too many actions in a short time. Please wait a while and try again.	Prea multe acțiuni într-un timp scurt. Așteaptă puțin și încearcă din nou.
+Top przedmiotów	Top obiecte
 Topaz Woli	Topazul Voinței
 Torba towarzysza: weź do siebie	Geanta însoțitorului: ia la tine
+Towarzysz (nierozwijany)	Însoțitor (nepliabil)
 Towarzysz bierze tylko cały stos.	Însoțitorul ia doar întreaga stivă.
 Towarzysz dostanie ścieżkę na 5 poziomie.	Însoțitorul va primi o cale la nivelul 5.
 Towarzysz drużyny	Însoțitorul echipei
@@ -6556,9 +6927,11 @@ Towarzysz zakłada grupę i cię zaprasza.	Însoțitorul formează grupul și te
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	Însoțitorul va consuma CU sau Pergamentul Întoarcerii Abilităților.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Însoțitorul, Cor Draconis și misiunile sistemelor nu sunt afișate aici.
 Towarzysze są tu wyłączeni.	Însoțitorii sunt dezactivați aici.
+Towarzysze są wyłączeni na tym serwerze.	Însoțitorii sunt dezactivați pe acest server.
 Trade Hub	Centru de comerț
 Trafienia	Lovituri reușite
 Transfer bonusów	Transferul bonusurilor
+Transfer obrazen do PM	Transfer daune în PM
 Transformuj kostium	Transformă costumul
 Transporter jest pusty.	Transportorul este gol.
 Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego Lasu wzwyż.	Antrenează o abilitate a lui Buffi de la gradul G1 la P, așa cum face Piatra Spiritului pentru abilitățile obișnuite (puncte de rang, următoarea încercare după 12 ore, Pergamentul Exorcismului pentru una imediată). Pică de la Metine și bossi începând din Pădurea Vrăjită.
@@ -6611,6 +6984,7 @@ Twierdza Czerwonego Smoka (SZC)	Fortăreața Dragonului Roșu (TR)
 Twierdza Razadora	Fortăreața lui Razador
 Two Hand Sword	Sabie cu două mâini
 Twoja Gaya: %s	Gaya ta: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Apărarea ta crește cu %d%% timp de 5 sec.
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Poziția ta: arată harta pe care te afli și setează vizualizarea pe ea.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Oțelul tău va intona arii de talie mondială pe câmpul de luptă. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Twoje Smocze Monety: %d	Monedele tale Dragon: %d
@@ -6645,6 +7019,7 @@ Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Același număr de pu
 Tylko BETA	Doar BETA
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Doar IMPLEMENTORUL schimbă GM-ul altor personaje.
 Tylko broń, zbroje i kostiumy dla tej płci	Doar arme, armuri și costume pentru acest sex
+Tylko dla mnie	Doar pentru mine
 Tylko dla mnie: cały drop jest twój.	Doar pentru mine: toate obiectele căzute sunt ale tale.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Doar puțini înțeleg limba străveche din care provine numele acestei arme. Nici unul dintre ei nu a îndrăznit însă să traducă acest nume. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Tylko scal stosy	Doar îmbină stivele
@@ -6663,6 +7038,7 @@ Typ: -	Tip: -
 Type	Tip
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Bonusuri tipice ale echipamentului sau toate cunoscute de client
 Tysieczny Wojow. Zodiaku	Luptător al Miilor Zodiac
+Tysieczny Wojownik	Războinic de o Mie
 Tytuł %s wygaśnie za niecałą godzinę.	Titlul %s va expira în mai puțin de o oră.
 Tytuł Czciciel Słońca	Titlu Închinător la Soare
 Tytuł Czempion Nyx	Titlu Campionul Nyx
@@ -6716,12 +7092,15 @@ Udało ci się ochronić Goblina Skarbów!	Ai reușit să aperi Goblinul Comoril
 Udało się odeprzeć lodowy chłód.	Ai reușit să respingi frigul înghețat.
 Udało się: %s	Reușit: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Lovește și clopotul va bate pentru cineva! Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
+Uderzenia Palcem	Lovitura cu Degetul
 Uderzenie Pioruna	Lovitura Fulgerului
 Uderzenie Płonącego Palca	Lovitura Degetului Arzător
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Lovitura cu degetul are %d%% șanse să fie returnată adversarului
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Ponderea boților care, după treburile din oraș, mai rămân o vreme lângă taraba în loc să se întoarcă direct la vânătoare. 100% înseamnă oraș viu, 0% - toți sunt pe teren.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Ponderea negustorilor care își expun la tejghea îmbunătățirile slabe (+0 până la +3) pe nimic, în loc să le vândă la NPC - fier vechi pentru topit la fierar, ca pe serverele hard. Implicit dezactivat.
+Udział	Pondere
 Ukończ %(n)s lochów	Finalizează %(n)s temnițe
+Ukończ lochy	Finalizează temnițe
 Ukończenia: %d	Finalizări: %d
 Ukończone	Finalizate
 Ukończone księgi misji	Cărți de misiuni finalizate
@@ -6730,6 +7109,7 @@ Ukończone wyprawy	Expediții finalizate
 Ukończone: %d / %d	Finalizate: %d / %d
 Ukryj aury umiejętności	Ascunde aurele abilităților
 Ukryj budynki i obiekty	Ascunde clădirile și obiectele
+Ukryj cudze	Ascunde pe ale altora
 Ukryj czaszkę nad bossami	Ascunde craniul de deasupra bossilor
 Ukryj drzewa	Ascunde copacii
 Ukryj efekty wzmocnień (szaman)	Ascunde efectele întăririlor (șaman)
@@ -6768,11 +7148,14 @@ Ulepszenie: Zasadzka	Îmbunătățire: Ambuscadă
 Ulepszenie: od 0 do 9.	Îmbunătățire: de la 0 la 9.
 Ulepszona Butelka	Sticlă Îmbunătățită
 Ulepszony Barwnik	Colorant Îmbunătățit
+Ulepszysz do: %s	Îmbunătățești la: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	O îmbunătățești la Grăjdar (Dezvoltarea calului).
 Ulepszyć %s do poziomu %d?	Îmbunătățești %s la nivelul %d?
 Ultra	Ultra
 Ulubieni na górze listy	Favoriții în partea de sus a listei
 Ulubiona fryzura samotnych wojowników, wygląda świetnie gdy wieje wiatr. Na stałe zmienia fryzurę Twojej postaci.	Coafura preferată a războinicilor singuratici, arată grozav când bate vântul. Schimbă definitiv coafura caracterului tău.
+Umiejetnosci widac tylko u gracza online	Abilitățile se văd doar la un jucător online
+Umiejętn.	Abilit.
 Umiejętności konia (miejsca: %d z 2)	Abilitățile calului (locuri: %d din 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Abilitățile pot fi învățate începând cu treapta „Eroic”.
 Umiejętności pomocnicze	Abilități auxiliare
@@ -6780,6 +7163,7 @@ Umiejętności potencjału	Abilități de potențial
 Umiejętności potencjału (tylko czempion, 2 sloty)	Abilități de potențial (doar campion, 2 locuri)
 Umiejętności potencjału (z jaj zwierzaków)	Abilități de potențial (din ouăle animalelor)
 Umiejętności rozdaję sam	Abilitățile le distribui eu
+Umiejętności towarzysza	Abilitățile însoțitorului
 Umiejętności zwierzaka (3 sloty)	Abilitățile animalului (3 locuri)
 Umiejętności: przeciągnij je z okna postaci do pól.	Abilități: trage-le din fereastra personajului în câmpuri.
 Umiejętność %d	Abilitatea %d
@@ -6793,6 +7177,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	Uniforma care 
 Unik	Eschivare
 Unik Strzały	Eschivarea Săgeții
 Unik: %d%%	Eschivare: %d%%
+Uniknięcie śmierci	Evitarea morții
 Upiorne Echo	Ecou Fantomatic
 Upiorny Strażnik	Gardian Fantomatic
 Upiorny Wojownik	Războinic Fantomatic
@@ -6810,6 +7195,8 @@ Ustaw nowe hasło na stronie.	Setează o parolă nouă pe site.
 Ustaw ten pasek jako aktywny (%d)	Setează această bară ca activă (%d)
 Ustawienia Społeczności zapisane.	Setările Comunității au fost salvate.
 Ustawienia Walki	Setări de Luptă
+Usun GM	Șterge GM
+Usun Moby	Șterge Monștri
 Usun potwory	Șterge monștrii
 Usun przedmioty	Șterge obiectele
 Usun wszystkie	Șterge pe toți
@@ -6862,14 +7249,17 @@ Uziemienie	Imobilizare
 Ułóż i scal	Aranjează și îmbină
 Użycie	Utilizare
 Użyj	Folosește
+Użyj %(n)s przedmiotów	Folosește %(n)s obiecte
 Użyj %(n)s x %(what)s	Folosește %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Folosește Cartea de Abilități a Animalului din inventar
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Folosește-l în Templul Șerpilor pentru a prelungi timpul expediției cu un minut (cel mult până la 60 de minute).
 Użyj go, aby odkryć 5 zablokowanych miejsc w swoim osobistym sklepiku.	Folosește-l pentru a debloca 5 sloturi blocate din magazinul tău personal.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Folosește inelul în Regatul Elementelor (într-una din cele nouă zone) pentru a te teleporta mereu pe Platoul Forțelor Naturii. Inelul dispare după folosire.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Folosește inelul în Regatul Elementelor (într-una din cele nouă zone) pentru a avea șansa (10%) să te teleportezi pe Platoul Forțelor Naturii. Inelul dispare la fiecare folosire. Pică de la toți monștrii și Metinele Regatului Elementelor (intrarea: portalul și Bătrânul din Portul Noului Continent).
+Użyj przedmiotu	Folosește obiectul
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Folosește pentru a porni sau opri blocarea experienței. Fără limită de timp.
 Użyj, kiedy zablokujesz się w "teksturach".	Folosește când rămâi blocat în "texturi".
+Użytkowe	Utilitare
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Folosind aripile dragonului Alteran poți rafina un obiect de echipament.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	Folosind această licență poți recruta un mercenar. (Deocamdată fără utilizare - va veni odată cu următoarea actualizare Yohara.)
 Używalne	Consumabile
@@ -6961,6 +7351,7 @@ Walnięcie ma %d%% szans na oddanie przeciwnikowi	Lovitura puternică are %d%% �
 Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, płać w Sklepie Gaya i przy wytwarzaniu.	Moneda Yohara (maximum 999 999). Șlefuiește Pietricele la Statuia Războinicului din Port, plătește în Magazinul Gaya și la fabricare.
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Moneda de schimb: 1 Won = 100 000 000 Yang.
 Wampir	Vampir
+Wampir+ (szary)	Vampir+ (gri)
 Warkocze Plem. (czerw.)	Codițe Tribale (roșii)
 Warkocze Plem. (fiol.)	Codițe Tribale (violet)
 Warkocze Plem. (nieb.)	Codițe Tribale (albastre)
@@ -6974,11 +7365,14 @@ Wartosc ataku vs potwory	Valoare atac vs monștri
 Wartosc magicznego ataku	Valoare atac magic
 Wartownik z Yohara	Santinelă din Yohara
 Wartość Ataku	Valoare Atac
+Wartość Ataku +30	Valoarea atacului +30
 Wartość Ataku w potwory +%d	Valoare de atac împotriva monștrilor +%d
 Wartość Ataku: +12~15%	Valoare de atac: +12~15%
 Wartość Magicznego Ataku: +30	Valoare Atac Magic: +30
 Wartość ataku +75 (miejsca 1-3)	Valoare de atac +75 (locurile 1-3)
+Wartość bonusu dokładnie taka	Valoarea bonusului exact aceasta
 Wartość bonusu taka albo niższa	Valoarea bonusului egală sau mai mică
+Wartość bonusu taka albo wyższa	Valoarea bonusului aceasta sau mai mare
 Wartość sklepu przekracza 2 miliardy Yang.	Valoarea magazinului depășește 2 miliarde de Yang.
 Warunek: bonus o co najmniej podanej wartości	Condiție: bonus cu cel puțin valoarea indicată
 Warunki	Condiții
@@ -7007,6 +7401,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	Versiune de TEST: V
 Wersja: %d.%d.%d%s	Versiune: %d.%d.%d%s
 Wersja: 1.0.0	Versiune: 1.0.0
 Wersja: xxx	Versiune: xxx
+Wesoły Posłaniec Miłości	Mesagerul Vesel al Iubirii
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	În interiorul acestei scoici minunate se poate ascunde o perlă sclipitoare.
 Wezowy Lucznik Zodiaku	Arcaș Șarpe Zodiac
 Wezowy Miecznik Zodiaku	Spadasin Șarpe Zodiac
@@ -7036,13 +7431,16 @@ Wielorybi Pancerz	Armura Balenei
 Wieprzowina	Carne de Porc
 Wierzchowiec utknął - wsiadam ponownie	Montura s-a blocat - încalec din nou
 Wieża Sung Mahi	Turnul Sung Mahi
+Wiking Światła+	Vikingul Luminii+
 Wilk Piekielnej Wieży	Lupul Turnului Infernal
 Wilk Zodiaku	Lup Zodiac
+Wilki alfa	Lupi alfa
 Wino Brzoskwini (W)	Vin de Piersici (W)
 Wino Kwiatu Brzoskwini+	Vinul Florii de Piersic+
 Winogrono	Strugure
 Wioska Gildii	Satul Breslei
 Wioska gildii 1	Satul breslei 1
+Wiru Miecza	Vârtejul Sabiei
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Învârte sabia pentru a ataca mai mulți adversari.|Întărit de: Forță (++), Dexteritate (+), Vitalitate (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Învârte-te printre dușmani cu un pumnal.|Întărit de: Dexteritate (++), Forță (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Pumnalul rotitor are %d%% șanse să năucească adversarul
@@ -7063,6 +7461,7 @@ Wojna Imperiow 1	Războiul Imperiilor 1
 Wojna gildii i Krypta Balathora	Războiul breslelor și Cripta lui Balathor
 Wojow. z Toporem Zodiaku	Luptător cu Topor Zodiac
 Wojowniczka (K)	Războinică (F)
+Wojownik (Body)	Războinic (Corp)
 Wojownik (Mental)	Războinic (Mental)
 Wojownik Ciało	Războinic Corp
 Wojownik En-Tai	Luptător En-Tai
@@ -7076,6 +7475,7 @@ Wojownik Umysł	Războinic Minte
 Wojownik Uruk	Războinic Uruk
 Wojownik Zephyr	Războinic Zephyr
 Wojskowy Koń	Cal Militar
+Wokol mnie	În jurul meu
 Wola Balathora	Voința lui Balathor
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Voința lui Balathor: rezistență la amețire, lanțuri și îngheț %d%%
 Wola Sung Ma tej mapy	Voința Sung Ma a acestei hărți
@@ -7100,6 +7500,7 @@ Wolne punkty statusu: %d	Puncte de stare libere: %d
 Wolne punkty umiejętności	Puncte de abilitate libere
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Otrava cu acțiune lentă are %d%% șanse să fie returnată adversarului
 Wounded Soldier	Soldat Rănit
+Wołanie	Chemare
 Wpisz co najmniej 2 litery nazwy.	Scrie cel puțin 2 litere din nume.
 Wpisz co najmniej 2 litery.	Scrie cel puțin 2 litere.
 Wpisz ilosc (1-%d)	Introdu cantitatea (1-%d)
@@ -7117,6 +7518,7 @@ Wpisz, ile bonusów ma się zgadzać (1-%d).	Scrie câte bonusuri trebuie să se
 Wpłacało botów: %d	Boți care au depus: %d
 Wrist	Brățară
 Wrogi Mur	Zidul Inamic
+Wrzesień	Septembrie
 Wróć 11553 12697	Întoarce-te 11553 12697
 Wróć do zapisanych reguł	Revino la regulile salvate
 Wróć do zwykłej mapy	Revino la harta obișnuită
@@ -7150,6 +7552,7 @@ Wszystkie na P	Toate la P
 Wszystkie sloty sklepu są już odblokowane.	Toate locurile magazinului sunt deja deblocate.
 Wszystkie umiej. P	Toate abil. P
 Wszystkie warstwy	Toate straturile
+Wszystkie żywioły	Toate elementele
 Wszystkie: %d prób (udane: %d, nieudane: %d).	Toate: %d încercări (reușite: %d, eșuate: %d).
 Wszystkie: tylko %s lub %s.	Toate: doar %s sau %s.
 Wszystko to za 50 zł na miesiąc!	Toate acestea pentru 50 PLN pe lună!
@@ -7188,13 +7591,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	Selecția s-a schimba
 Wyboru nie można cofnąć. Kontynuować?	Alegerea nu poate fi anulată. Continui?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	Rangul ales necesită atâtea stele la fiecare monstru din set.
 Wybrane bonusy i wartości	Bonusuri și valori alese
+Wybrano: %s	Selectat: %s
 Wybrany NPC jest tuż obok.	NPC-ul ales este chiar alături.
 Wybrany kanał dostępny jest tylko dla kont Premium.	Canalul ales este disponibil doar pentru conturile Premium.
 Wybrany przepis: %s	Rețeta aleasă: %s
 Wycena czesciowa - trwa wczytywanie	Evaluare parțială - încărcarea este în curs
 Wycena wygasła - wyceń ponownie.	Evaluarea a expirat - evaluează din nou.
+Wycisz 1 dzien	Mut 1 zi
+Wycisz 1 h	Mut 1 h
+Wycisz 10 min	Mut 10 min
 Wycisz na:	Redu la tăcere pentru:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Obiect retras: Ritualul Trezirii nu mai există, iar piatra nu mai are nicio utilitate. O poți arunca.
+Wyczysc filtry	Șterge filtrele
 Wyczyszczono wszystkie znaczniki sklepów offline.	Toți indicatorii magazinelor offline au fost șterși.
 Wyczyszczono: %s	Șters: %s
 Wyczyść	Șterge
@@ -7213,6 +7621,7 @@ Wydarzenie Wakacyjne	Evenimentul de Vacanță
 Wydarzenie Walentynkowe	Evenimentul de Ziua Îndrăgostiților
 Wydarzenie Wielkanocne.	Evenimentul de Paște.
 Wydobądź %(n)s rudy	Extrage %(n)s minereu
+Wydobądź rudę	Extrage minereu
 Wydłuża czas trwania twoich umiejętności.	Prelungește durata abilităților tale.
 Wygląd postaci	Aspectul personajului
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Pare inofensiv, dar este mortal 100%. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
@@ -7239,6 +7648,7 @@ Wykonaj zestaw broni	Fabrică setul de arme
 Wykonaj zestaw hełmu	Fabrică setul de căști
 Wykonaj zestaw zbroi	Fabrică setul de armuri
 Wykonane zmiany: %d	Schimbări efectuate: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Executat %s/%s. Total activi: %s
 Wykopane rudy	Minereuri extrase
 Wykorzystaj	Folosește
 Wykorzystaj voucher	Folosește voucherul
@@ -7247,6 +7657,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	A fost detectată o con
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	A fost detectat un obiect potențial valoros, continui?
 Wykryto przedmiot z bonusem, kontynuować?	A fost detectat un obiect cu bonus, continui?
 Wykryto wysoki poziom ulepszenia, kontynuować?	A fost detectat un nivel ridicat de îmbunătățire, continui?
+Wylacz eventy	Oprește evenimentele
 Wylosować nową ofertę od razu?	Tragi la sorți imediat o ofertă nouă?
 Wylosuj cele od nowa	Trage la sorți din nou ținte
 Wyląg Exedyara	Puiul lui Exedyar
@@ -7270,6 +7681,8 @@ Wymagany poziom do zakupu: %d	Nivel necesar pentru cumpărare: %d
 Wymagany poziom postaci: 75	Nivel necesar al personajului: 75
 Wymagany poziom: %d	Nivel necesar: %d
 Wymiana ksiąg umiejętności	Schimbul cărților de abilități
+Wymiana u: %s	Schimb la: %s
+Wymiana: %s	Schimb: %s
 Wymiany	Schimburi
 Wymienić %d ksiąg na %d nowych za %s Yang?	Schimbi %d cărți cu %d noi pentru %s Yang?
 Wyniki odświeżają się co minutę.	Rezultatele se reîmprospătează la fiecare minut.
@@ -7283,6 +7696,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Dai drumul lui %s în liber
 Wypłać	Retrage
 Wypłać sztuk:	Retrage bucăți:
 Wyrok	Verdictul
+Wyrzuc bota	Dă afară botul
 Wyrzuc z gry...	Elimină din joc...
 Wyrzuc z serwera	Elimină de pe server
 Wyrzucic %s z gry?	Elimini %s din joc?
@@ -7300,6 +7714,7 @@ Wysuszone Oczy	Ochi Uscați
 Wysyłanie do serwera...	Se trimite la server...
 Wyszukaj biżuterię i buty.	Caută bijuterii și încălțăminte.
 Wyszukaj bronie.	Caută arme.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Caută un jucător online pentru a vedea abilitățile
 Wyszukaj przedmiot	Caută obiect
 Wyszukaj przedmioty z min. 1 bonusem.	Caută obiecte cu cel puțin 1 bonus.
 Wyszukaj zbroje/tarcze/hełmy.	Caută armuri/scuturi/coifuri.
@@ -7401,6 +7816,7 @@ Wściekły Cierń	Spinul Furios
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Furios, țepos și fără milă. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y în metri globali. Ctrl + clic pe hartă = teleportare.
 Ya-Sang-Gab	Ya-Sang-Gab
+Yang na zabójstwo	Yang per ucidere
 Yang z potworów +%d%%	Yang de la monștri +%d%%
 Yang za próbę awansu	Yang pentru încercarea de avansare
 Yesterday {:02d}:{:02d}	Ieri {:02d}:{:02d}
@@ -7446,9 +7862,11 @@ Z jaja: %s	Din ou: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	Din fiecare loc cumperi un singur lucru pe ofertă.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	Cu costumul potrivit: +800 PV, +15 la valoarea de atac
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	Cu coafura potrivită: +800 PV, +15 la valoarea de atac
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	Cu %d%% șanse resetează timpul de reîncărcare al abilităților tale
 Z łukiem	Cu arcul
 Z. Eliksir Mocy Płn. W.	Elixirul Auriu al Puterii Vântului de Nord
 Z. Eliksir Odp. na Ogień	Elixir Auriu de Rezistență la Foc
+ZAKRĘĆ	ROTEȘTE
 ZRĘ	DEX
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	Peste %d min vei fi transportat. Vorbește cu Paznicul Dragonilor Dolnarr pentru a ieși imediat.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	Pentru a %d-a conducere la cufărul corect primești o Cheie a Goblinului!
@@ -7490,13 +7908,17 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	Pentru această rundă vei plăti %s
 Za ukończone tury także otrzymujesz nagrody.	Pentru rundele finalizate primești de asemenea recompense.
 Za wysoka wartość: %s.	Valoare prea mare: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	Filtrul avansat este oprit: Opțiunile Jocului -> Suplimentare -> Filtru de ridicare.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Filtru avansat de ridicare (clic dreapta în Ctrl+Z)
+Zabic postac %s?	Omori personajul %s?
 Zabici gracze	Jucători uciși
 Zabij %(n)s potworów	Omoară %(n)s monștri
+Zabij potwory	Ucide monștri
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Ucide orci și toate celelalte hidoșenii. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Zabite potwory	Monștri uciși
 Zablokowac konto %s NA ZAWSZE?	Blochezi contul %s PENTRU TOTDEAUNA?
 Zablokowac konto %s na %s dni?	Blochezi contul %s pentru %s zile?
 Zablokowac nowe logowania (przerwa techniczna)?	Blochezi conectările noi (pauză tehnică)?
+Zablokowane miejsce	Loc blocat
 Zablokowani	Blocați
 Zablokowany przy sortowaniu (Alt+LPM)	Blocat la sortare (Alt+clic stânga)
 Zablokuj ekwipunek	Blochează inventarul
@@ -7506,6 +7928,7 @@ Zabrakło Yang.	Au lipsit Yang.
 Zabójca	Ucigaș
 Zabójca Króla	Ucigașul de Regi
 Zabłąkany Dzikus	Sălbaticul Rătăcit
+Zachowanie botow	Comportamentul boților
 Zacny Kam. Przebudzenia	Piatra Aleasă a Trezirii
 Zacny P. Wężowy (wykon.)	Mantia Nobilă a Șarp. (fabr.)
 Zacny Płaszcz Wężowy	Mantia Nobilă a Șarpelui
@@ -7539,6 +7962,7 @@ Zakończyć sesję farmienia?	Închei sesiunea de farm?
 Zakres rysowania	Distanța de randare
 Zakres sklepów	Raza magazinelor
 Zakres widoku	Raza de vizibilitate
+Zakresy (puste = bez limitu)	Intervale (gol = fără limită)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	Un [5] acoperit se afla lângă cartea descoperită.[ENTER]Din păcate nu primești niciun punct. Alege acum regele tău [K].
 Zakręć kołem za jedyne	Învârte roata doar pentru
 Zakręć kołem.	Învârte roata.
@@ -7546,6 +7970,7 @@ Zaktualizuj klienta i serwer.	Actualizează clientul și serverul.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Actualizează serverul pentru a distribui statistici.
 Zakup raz na %s	Cumpărare o dată la %s
 Zakupy przerwane.	Cumpărăturile au fost întrerupte.
+Zakupy towarzysza	Cumpărături însoțitor
 Zakupy włoży ci do torby albo do swojej.	Cumpărăturile ți le pune în geantă sau în a lui.
 Zamarznięta Wieża	Turnul Înghețat
 Zamarznięty Generał	General Înghețat
@@ -7567,6 +7992,7 @@ Zapisane bonusy	Bonusuri salvate
 Zapisane miejsca	Locuri salvate
 Zapisane pozycje	Poziții salvate
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Pozițiile salvate funcționează doar cu un pergament curat (%s) în inventar.
+Zapisane zestawy	Seturi salvate
 Zapisano	Salvat
 Zapisano (%s%%).	Salvat (%s%%).
 Zapisano (gracz offline)	Salvat (jucătorul este offline)
@@ -7574,10 +8000,11 @@ Zapisano preset "%s".	Presetarea „%s” a fost salvată.
 Zapisano.	Salvat.
 Zapisano. Odswiezanie rang GM...	Salvat. Se reîmprospătează rangurile GM...
 Zapisuje miejsce %d...	Se salvează locul %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Salvează captura de ecran:  Print (captura de ecran se salvează în subfolderul "screenshot" al jocului)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Salvează captura de ecran:  Print (captura va fi salvată în subfolderul jocului "screenshot")
 Zapisz i wyślij	Salvează și trimite
 Zapisz obecny filtr jako preset o tej nazwie	Salvează filtrul curent ca presetare cu acest nume
 Zapisz reguły i wyślij je na serwer	Salvează regulile și trimite-le la server
+Zapisz tu	Salvează aici
 Zaplanowana została przerwa w dostępie do usług.	A fost programată o pauză în accesul la servicii.
 Zapobiega utracie wytrzymałości konia, idealny do długich podróży bez przerw.	Împiedică pierderea rezistenței calului, ideal pentru călătorii lungi fără pauze.
 Zapomnienie umiejętności: Stajenny (za darmo).	Uitarea abilității: Grăjdar (gratuit).
@@ -7618,6 +8045,7 @@ Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, je
 Zawiera nagrody dla dzielnych wojowników służących w Dolinie Seungryong.	Conține recompense pentru războinicii curajoși care slujesc în Valea Seungryong.
 Zawiodłeś.	Ai eșuat.
 Zaznacz albo odznacz całą stronę	Bifează sau debifează toată pagina
+Zaznacz do "Kup wybrane"	Bifează pentru "Cumpără selecția"
 Zaznacz oferty, które chcesz kupić.	Bifează ofertele pe care vrei să le cumperi.
 Zaznacz wszystkie	Bifează toate
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	Misiunile bifate vor dispărea din listă ca și cum nu ar fi existat niciodată.
@@ -7636,9 +8064,14 @@ Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w dro
 Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Adună însemne pentru a le schimba pe cufere sau pe material de îmbunătățire.
 Zbieranie dla Biologa zamiast bicia poziomow.	Colectare pentru Biolog în loc de ridicat nivelul.
 Zbierz %(n)s ziół	Adună %(n)s plante
+Zbierz yang	Adună yang
+Zbierz zioła	Adună plante
 Zbir Piekielnej Wieży	Bătăușul Turnului Infernal
 Zbiórka na parterze wieży	Adunare la parterul turnului
 Zbocze Gautama	Panta Gautama
+Zbr. Mroku Księżyca+ (m)	Armura Întunericului Lunii+ (b)
+Zbroja Ajolosa+ (m)	Armura lui Ajolos+ (b)
+Zbroja Avalonu+ (srebr.)	Armura Avalonului+ (argint)
 Zbroja Boskiego Smoka	Armura Dragonului Divin
 Zbroja Dzikiego Knura	Armura Mistrețului
 Zbroja Króla Wojowników+	Armura Regelui Războinicilor+
@@ -7647,8 +8080,10 @@ Zbroja Płytowa Zodiaku	Armura cu Plăci a Zodiacului
 Zbroja Smoka Magii	Armura Dragonului Magiei
 Zbroja Smoka Mroku	Armura Dragonului Întunecat
 Zbroja Smoka Wiatru	Armura Dragonului Vântului
+Zbroja Szczodrego+	Armura Generosului+
 Zbroja Tygrysa	Armura Tigrului
 Zbroja Wilka	Armura Lupului
+Zbroja Zmarłych+ (m)	Armura Morților+ (b)
 Zbroja Zodiaku	Armura Zodiacului
 Zbroja wypełniona mocą boskiego smoka.	Armură plină de puterea dragonului divin.
 Zbroja wypełniona mocą magicznego smoka.	Armură plină de puterea dragonului magic.
@@ -7677,6 +8112,8 @@ Zdobyte Yang	Yang câștigat
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	Le câștigi pentru monștri și misiuni din Noul Continent.
 Zdobywasz je, chroniąc Goblina Skarbów	Le obții apărând Goblinul Comorilor
 Zebrane kwiaty	Flori culese
+Zebrano %s z %s yang (%.1f%%)	Strâns %s din %s yang (%.1f%%)
+Zebrano: %d / %d	Strâns: %d / %d
 Zegarek Kieszonkowy	Ceas de Buzunar
 Zejście Północnego Wiatru	Coborârea Vântului de Nord
 ZejściePłnW. 11590 12181	Coborârea Vântului de Nord 11590 12181
@@ -7688,11 +8125,15 @@ Zemsta Czarnej Śmierci	Răzbunarea Morții Negre
 Zeok-Hyoun	Zeok-Hyoun
 Zeok-Sang-Gab	Zeok-Sang-Gab
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Boți spawnați: %s/%s.
 Zestaw %d	Setul %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	Un set de 24 de cărți Okey. Dă click dreapta pentru a-l adăuga - un joc de Okey costă 1 set de cărți și 30 000 Yang.
 Zestaw Opieki nad Koniem	Set de Îngrijire a Calului
 Zestaw kostiumów	Set de costume
 Zestaw kostiumów:	Set de costume: 
+Zestaw:	Set: 
+Zestawy lochowe	Seturi de temniță
+Zestawy polowe	Seturi de câmp
 Zestawy: broń	Seturi: arme
 Zestawy: hełmy	Seturi: căști
 Zestawy: zbroje	Seturi: armuri
@@ -7712,6 +8153,7 @@ Zielone Zioło	Plantă Verde
 Zielone, fioletowe, peleryny: z targu.	Verzi, violete, mantii: de la piață.
 Zielony Lśniący Odłamek	Fragment Lucios Verde
 Zielony Sok	Suc Verde
+Zielony Szaman+	Șamanul Verde+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Pământul Sung Ma;Fără Nivel de Campion nu vei răni monștrii de aici.
 Ziemie Mrocznego Smoka	Ținuturile Dragonului Întunecat
 Ziemie gildii	Ținuturile breslei
@@ -7728,11 +8170,14 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	Plantă transformată de puterea lui Sung Mahi. Necesară pentru prepararea elixirelor de fulger. Elixirele sunt preparate de ierbarul Huahn-So (Bokjung, Bakra, Jayang).
 Zjawa Żółt. Tygrysa (BŚ)	Fantoma Tigrului Galben (BM)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	Va fi consumat furajul necesar pentru bara plină.
+Zlamanie klatwy swiatyni	Ruperea blestemului templului
 Zlamanie odpornosci: dzwony	Spargerea rezistenței: clopote
+Zlamanie odpornosci: luki	Ruperea rezistenței: arcuri
 Zlamanie odpornosci: miecze	Spargerea rezistenței: săbii
 Zlamanie odpornosci: sztylety	Spargerea rezistenței: pumnale
 Zlamanie odpornosci: wachlarze	Spargerea rezistenței: evantaie
 Zleć zbieranie:	Comandă colectarea:
+Zlodziej zycia	Hoț de viață
 Zly Silny Malpi Zolnierz	Soldat Maimuță Rău și Puternic
 Zly Zolnierz Czarnej Burzy	Soldat Rău al Furtunii Negre
 Zly format (np. 18, M5, G1, P).	Format greșit (de ex. 18, M5, G1, P).
@@ -7752,6 +8197,8 @@ Zmianki z (B) są używane jako pierwsze	Pergamentele din (B) sunt folosite prim
 Zmiany dzialaja po kilku sekundach	Modificările funcționează după câteva secunde
 Zmien ceny wszystkich	Schimbă prețurile tuturor
 Zmien poziom konia	Schimbă nivelul calului
+Zmien range	Schimbă rangul
+Zmien skille	Schimbă abilitățile
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Schimbă bonusurile unei Pietre Dragon mitice în fereastra Alchimiei Dragonului (fila de schimbare a bonusurilor).
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Schimbă numele însoțitorului activ (costă în plus 100.000 Yang).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Schimbă numele însoțitorului (100.000 Yang).
@@ -7809,10 +8256,14 @@ Znak Strażnika	Semnul Paznicului
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	O cheie făurită desăvârșit din cristal magic. Necesară pentru a deschide un cufăr perfect.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Excelent! Cartea ta este mai mare.[ENTER]Descoperă următoarea carte.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Găsite %d - afișate %d, restrânge căutarea.
+Znaleziono: %d	Găsit: %d
 Znaleziono: %d - wybierz z listy.	Găsite: %d - alege din listă.
+Znaleziono: %s	Găsit: %s
 Znika 15 dni po otrzymaniu.	Dispare la 15 zile după primire.
+Zniszcz %(n)s kamieni Metin	Distruge %(n)s pietre Metin
 Zniszcz %(n)s x %(what)s	Distruge %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Distruge ouăle pentru a provoca daune!
+Zniszcz kamienie Metin	Distruge pietre Metin
 Zniszczone Metiny	Metin-uri distruse
 Zniszczone kamienie Metin	Pietre Metin distruse
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	Oul Dragonului a fost distrus - Sigiliul lui Balathor s-a slăbit mult.
@@ -7824,6 +8275,7 @@ Zodiak Ognia	Zodiacul Focului
 Zodiak Wiatru	Zodiacul Vântului
 Zodiak Ziemi	Zodiacul Pământului
 Zol. Czar. Wiat. Zodiaku	Soldat Vânt Negru Zodiac
+Zolnierz Czarnego Wiatru	Soldat al Vântului Negru
 Zolnierz Gladiator Kosci	Soldat Gladiator de Os
 Zolnierz Shrimp Zodiaku	Soldat Crevete Zodiac
 Zolnierz Spartaner	Soldat Spartaner
@@ -7845,8 +8297,10 @@ Zrobiona z kakao, mleka, masła i cukru. Dawana aby okazywać zauroczenie.	Făcu
 Zroszony Młot	Ciocan Rourat
 Zrzut ekranu	Captură de ecran
 Zrzut ekranu zapisano w '%s'.	Captura de ecran a fost salvată în '%s'.
+Zrzutka yang	Colectă yang
 Zrób miejsce w ekwipunku.	Fă loc în inventar.
 Zręczność	Dexteritate
+Zsiadam po buffy	Descalec pentru buff-uri
 Zsiądź z konia, aby go rozwijać.	Descalecă pentru a-l dezvolta.
 Zung-Seon	Zung-Seon
 Zupa Grzybowa	Supă de Ciuperci
@@ -7934,6 +8388,28 @@ Zwiększa szansę na drop Yang.	Crește șansa de drop de Yang.
 Zwiększa szansę na kradzież PE.	Crește șansa de a fura SP.
 Zwiększa szansę na kradzież PŻ.	Crește șansa de a fura HP.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Crește cu 10% șansa unei lovituri critice timp de 10 minute.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea accesoriilor cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea accesoriilor cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea armelor cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea armelor cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea cărții de abilități cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea cărții de abilități cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea centurilor cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea centurilor cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea celorlalte obiecte cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea celorlalte obiecte cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea obiectelor pentru animale cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea obiectelor pentru animale cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea mănușilor cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea mănușilor cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea armurilor cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea armurilor cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea seturilor de arme cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea seturilor de arme cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea seturilor de căști cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea seturilor de căști cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Mărește șansa de succes la fabricarea seturilor de armuri cu 1%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Yu-Hwan transformă două astfel de rune într-o rună 2* (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Mărește șansa de succes la fabricarea seturilor de armuri cu 20%. Pune-o în câmpul "Crește șansa" din fereastra de fabricare - la fiecare încercare se consumă o rună. Este nivelul maxim al runei.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Crește cu 10% șansa unei lovituri perforante timp de 10 minute.
 Zwiększa szansę na przywołanie konia.	Crește șansa de a invoca calul.
 Zwiększa szansę na spowolnienie przeciwnika.	Crește șansa de a încetini adversarul.
@@ -7960,6 +8436,10 @@ Zwiększa twoją siłę obrony.	Îți crește puterea de apărare.
 Zwiększa twoją szybkość ataku o 20% na okres 30 minut. Niezdatna do handlu.	Îți crește viteza de atac cu 20% pentru 30 de minute. Nu poate fi tranzacționată.
 Zwiększa umiejętności twojego wierzchowca	Îți crește abilitățile monturii
 Zwiększa wartość odbitych ciosów.	Crește valoarea loviturilor reflectate.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Crește voința SungMa (INT) în luptă cu 15 timp de %d sec.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Crește voința SungMa (REZ) în luptă cu 15 timp de %d sec.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Crește voința SungMa (FOR) în luptă cu 15 timp de %d sec.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Crește voința SungMa (VIT) în luptă cu 15 timp de %d sec.
 Zwiększa wytrzymałość. Jest znany ze swoich właściwości wzmacniających mięśnie.	Crește rezistența. Este cunoscut pentru proprietățile sale de întărire a mușchilor.
 Zwiększa wzrost doświadczenia.	Crește sporul de experiență.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Crește daunele fizice și magice provocate. Poate fi aplicat și altui jucător. Bonus când este folosit asupra ta.
@@ -7983,6 +8463,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Returnează punctele de C
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Returnează punctele de Campion cheltuite pe Forța Sung Ma.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Returnează punctele de Campion cheltuite pe Vitalitatea Sung Ma.
 Zwyczajna Szata Aury	Robă Obișnuită a Aurei
+Zwykle bicie potworow	Luptă obișnuită cu monștri
 Zwykła Skóra	Piele Simplă
 Zwykłe Mikstury	Poțiuni Obișnuite
 Zwykłe potwory	Monștri obișnuiți
@@ -8049,8 +8530,11 @@ Złośliwa	Răutăcios
 Zły Pł. Wężowy (wykon.)	Mantia Rea a Șarp. (fabr.)
 Zły Płaszcz Wężowy	Mantia Rea a Șarpelui
 Złów %(n)s ryb	Prinde %(n)s pești
+Złów ryby	Pescuiește pește
 [ Założony ]	[ Echipat ]
 [%s] [Sklep] %s	[%s] [Magazin] %s
+[+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
+[A-Za-z_][A-Za-z_0-9]*	[A-Za-z_][A-Za-z_0-9]*
 [Buffi] Na umiejętność Buffi przeciągnij Księgę Umiejętności szamana.	[Buffi] Pe abilitatea Buffi trage Cartea de Abilități a șamanului.
 [Buffi] Tę umiejętność trenuje Księga Umiejętności: %s (szaman).	[Buffi] Această abilitate este antrenată de Cartea de Abilități: %s (șaman).
 [NIE]	[NU]
@@ -8059,7 +8543,9 @@ Złów %(n)s ryb	Prinde %(n)s pești
 [Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.	[Fișiere client] Descarcă fișierele de client actuale în panou: Editor de baze de date -> Aplică -> Descarcă fișierele de client actuale (zip) și dezarhivează-le în folderul jocului.
 [Poszukiwanie skarbów] Osiągnięto nową turę!	[Căutarea comorilor] S-a atins o rundă nouă!
 [Sklep]	[Magazin]
+[TAK]	[DA]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[Război] Breasla ta este în război - fă clic pe „Intră în război” pe tabla de război (colțul din stânga jos).
+\\.\\s*[A-Za-z_]	\\.\\s*[A-Za-z_]
 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż	abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.ĄąĆćĘęŁłŃńÓóŚśŹźŻż
 ale jeśli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuować?	dar dacă eșuezi, Obiectul va fi distrus. Vrei să continui?
 ale tylko do 50% czasu trwania i z wiekiem od nowa.	dar doar până la 50% din durată și cu vârsta de la început.
@@ -8069,6 +8555,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Îți atingi dușmanii direct.|Întărit de: Forță (++), Dexteritate (+), Vitalitate (+).
 autotarget: no Kolejny cel row in the game options	autotarget: nu există rândul Ținta următoare în opțiunile jocului
 bez bonusu	fără bonus
+bije wszystko w pobliżu	lovește tot ce e în apropiere
 bonusów 1-5 spoza warunków	bonusuri 1-5 în afara condițiilor
 brak bonusu	fără bonus
 bush_ancientlichen	bush_ancientlichen
@@ -8107,7 +8594,15 @@ dni	zile
 do końca SM	până la sfârșitul SM
 dodaje nowy crafting %d item %d	adaugă craft nou %d item %d
 dodatkowo zweryfikowana po stronie serwera.	verificată suplimentar de partea serverului.
+dystans %d	dystans %d
 dzień	zi
+emocje %d	emocje %d
+eq daj %d %d	eq daj %d %d
+eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
+eq ruch %d %d	eq ruch %d %d
+eq ruch %d -1	eq ruch %d -1
+eq yang daj %d	eq yang daj %d
 eventu na jednej z map: Dolina Seungryong, Pustynia Yongbi,	evenimentului pe una dintre hărți: Valea Seungryong, Deșertul Yongbi,
 gildie każdego królestwa (odbiór w tym oknie).	bresle din fiecare regat (ridicare în această fereastră).
 i czasem odnowienia. Dodaj: po jednej Duszy Miecza, Ochrony,	și un timp de reîncărcare. Adaugă: câte un Suflet al Sabiei, Protecției,
@@ -8127,11 +8622,16 @@ księga Twojej klasy i drogi. Stos liczy się cały.	a clasei și căii tale. St
 ktoś był szybszy	altcineva a fost mai rapid
 która ma już pięć bonusów.	care au deja cinci bonusuri.
 które wypadają z ostatniego bossa.	care cad de la ultimul boss.
+kup %s %d	kup %s %d
+kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	buton stâng al mouse-ului sau %s
+lider %d	lider %d
+lista %d	lista %d
 losowa mapa	hartă aleatorie
 ma swój ranking postaci i gildii. Na koniec sezonu	are propriul clasament de personaje și bresle. La sfârșitul sezonului
 maksymalne PŻ /2	PV maxime /2
 maksymalne PŻ są o połowę mniejsze	PV maxime sunt înjumătățite
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: eroare în fereastra cărților (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	în inventar cu fila deschisă).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	pe Insula Comorilor (Bilete de Comoară din cufere).
@@ -8150,6 +8650,7 @@ nie udało się zapisać ustawień.	setările nu au putut fi salvate.
 nie walczy wcale	nu luptă deloc
 nie wybrano	nealeasă
 nie wydaje	nu cheltuiește
+nie zaczyna, broni ciebie i siebie	nu începe lupta, te apără pe tine și pe sine
 nowego bossa! W przeciwnym razie nagroda przepadnie.	unui nou boss! Altfel recompensa se pierde.
 obnizaj cene o	scade prețul cu
 obok ciebie	lângă tine
@@ -8157,7 +8658,9 @@ obrażenia zadawane potworom /2	daunele provocate monștrilor /2
 obrażenia zadawane potworom są o połowę mniejsze	daunele provocate monștrilor sunt înjumătățite
 od +%d	de la +%d
 od +0 do +7 (także z bonusami),	de la +0 la +7 (și cu bonusuri),
+odprawa tak	odprawa tak
 oferta została już sprzedana	oferta a fost deja vândută
+okno 1	okno 1
 phoenix1	phoenix1
 pod innym przedmiotem - co ile sekund go używa.	sub alt obiect - la câte secunde îl folosește.
 podswietl po (godzin, 0 = wyl.)	evidențiază după (ore, 0 = oprit)
@@ -8169,11 +8672,13 @@ poziom łupu IV - 25 Kamyków	nivelul prăzii IV - 25 Pietricele
 przez podany czas; każdy zostawia sobie zapas.	pe durata indicată; fiecare își păstrează o rezervă.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	la Metinul Durității de la parterul Turnului Demonilor; locurile libere
 przy kolejnych próbach łowienia?	la următoarele încercări de pescuit?
+przy tobie	lângă tine
 przywołany	chemat
 próby: %d	încercări: %d
 prędkość ruchu /2	viteza de mișcare /2
 prędkość ruchu jest o połowę mniejsza	viteza de mișcare este înjumătățită
 puste = dowolny przedmiot	gol = orice obiect
+reguła "%s"	regula "%s"
 reliktu go niszczy.	relicvei o distruge.
 robi zakupy	face cumpărături
 rodzaj bez filtra	tip fără filtru
@@ -8185,11 +8690,16 @@ ręcznie	manual
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	serverul nu răspunde (lipsește corecția autohunttest) - nu a pornit.
 serwer nie potwierdził zakupu	serverul nu a confirmat cumpărarea
 serwer nie pozwala teraz polować.	serverul nu permite vânătoarea acum.
+sezon %d	sezon %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	pe aceeași hartă cu Bossul Lumii și provoci cantitatea minimă
 skillbook	Carte de Abilități
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	magazinul poate conține obiecte greșite. Continui?
 sklep odmówił sprzedaży	magazinul a refuzat vânzarea
 start, zasięg %d m.	start, rază %d m.
+statystyki dodaj %s %d	statystyki dodaj %s %d
+statystyki dodaj %s 1	statystyki dodaj %s 1
+statystyki odnow	statystyki odnow
+statystyki reczne %d	statystyki reczne %d
 stałą blokadą konta.	la blocarea permanentă a contului.
 stoi - pokonajcie go, zanim ucieknie!	stă pe loc - învingeți-l înainte să fugă!
 tego przedmiotu nie da się tu użyć (mikstura, wzmocnienie albo rosa).	acest obiect nu poate fi folosit aici (poțiune, întărire sau rouă).
@@ -8203,24 +8713,36 @@ tylko gdy gracz jest AKTUALNIE online.	doar când jucătorul este ACUM online.
 uciekł - nikt nie dostał nagrody	a fugit - nimeni nu a primit recompensa
 ulepszony Nóż.	Cuțit îmbunătățit.
 umiej %d	abil %d
+umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	după repornirea clientului.
 ustawienia zapisane.	setările au fost salvate.
+usun	usun 
+usun %d	usun %d
+w dniach	în zile
+walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	valoare de atac +20% timp de 3 ore (de ridicat împreună
 ważne	importante
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	browserului încorporat (este necesar un nou fișier exe al clientului).
+wolna ręka	liber
 wprowadzenie aby móc kontynuować rozgrywkę.	pentru a putea continua jocul.
 wszystkie przedmioty	toate obiectele
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	din fereastra aleasă (I / II). După prima activare, scoaterea
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	deconectează sesiunea deja conectată. Scoaterea de pe server funcționează
 wyłączone na tym serwerze.	dezactivat pe acest server.
 z nagrodą, przed pojawieniem się kolejnego bossa).	cu recompensa, înainte de apariția următorului boss).
 zajmiesz w rankingu.	pe care o vei ocupa în clasament.
 zajmują wynajęte boty z Twojego królestwa. Po kilku minutach zbiórki	sunt ocupate de boți angajați din regatul tău. După câteva minute de adunare
+zapisz %d	zapisz %d
+zapisz %d %s	zapisz %d %s
 zatrzymane - ruszyły zwykłe Auto Łowy.	oprit - a pornit Vânătoarea Automată obișnuită.
 zbroje i kostiumy między sobą, wizerunek broni z bronią tego rodzaju.	armurile și costumele între ele, aspectul armei cu o armă de același fel.
 zeruje Twoje obrażenia.	îți resetează daunele.
 zmieniła się cena albo ilość	prețul sau cantitatea s-a schimbat
 zostają, a zwierzak zachowuje 80% swojego wieku.	rămân, iar animalul păstrează 80% din vârsta sa.
 zostanie zresetowany.	va fi resetat.
+zrzutka %d %d	zrzutka %d %d
 zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 {} + {} rozdziel przedmioty.	{} + {} împarte obiectele.
 {}'s Auction	Licitația lui {}
@@ -8260,13 +8782,20 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 |cff82ff7dZrzutka zakończona - zebrano całą kwotę	|cff82ff7dColectă încheiată - s-a adunat toată suma
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aTimpul colectei a expirat
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aMai întâi finalizează://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aColectă încheiată de lider
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893adisponibile [|r%d|cffbc893a]|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - autentificare rapidă.
+|cfff4f770Trwa misja	|cfff4f770Misiune în desfășurare
+|cfff4f770Trwa zrzutka	|cfff4f770Colectă în desfășurare
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742ATENȚIE!|r Control de securitate!
+Óó	Óó
+Ąą	Ąą
 ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
 ąćęłńóśźż	ąćęłńóśźż
 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
 Čć»ç°©	Čć»ç°©
+Ęę	Ęę
 Ładen potwór tego nie dropi.	Niciun monstru nu aruncă asta.
 Ładny Kam. Przebudzenia	Piatra Frumoasă a Trezirii
 Ładny Kamień Chaosu	Piatra Frumoasă a Haosului
@@ -8318,6 +8847,8 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Łuski Smoka	Solzi de Dragon
 Łączenie	Conexiune
 Łączne obrażenia	Daune totale
+Łączny czas	Timp total
+Łł	Łł
 Ńń	Ńń
 Ściana	Zid
 Ściąga do ciebie grupy potworów z okolicy.	Aduce la tine grupuri de monștri din zonă.
@@ -8331,12 +8862,14 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Śnieżna Czapa Leoparda+	Căciulă de Leopard de Zăpadă+
 Śnieżna Czapa Zajęcza	Căciulă de Iepure de Zăpadă
 Śnieżna Czapa Zajęcza+	Căciulă de Iepure de Zăpadă+
+Śnieżny Bambi	Bambi de Zăpadă
 Śnieżny Kwiat	Floarea Zăpezii\r\n
 Śnieżny Leonidas	Leonidas de Zăpadă
 Śnieżny Leonidas(piecz.)	Leonidas de Zăpadă (sigiliu)
 Śpiew Stali	Cântecul Oțelului
 Śpiew Wiatru	Cântecul Vântului
 Śpiewająca Furia	Furia Cântătoare
+Śr. czas sesji	Timp mediu sesiune
 Śr. obrażenia	Daune medii
 Śr. yang na sesję	Yang medii pe sesiune
 Średni	Medie
@@ -8345,6 +8878,7 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Średnio	Mediu
 Środa	Miercuri
 Środek Ścierny	Abraziv
+Św. Nosiciel Światła+	Sf. Purtător al Luminii+
 Św. Odłamek Broni I	Fragm. Sfânt de Armă I
 Św. Odłamek Broni II	Fragm. Sfânt de Armă II
 Św. Odłamek Hełmu I	Fragm. Sfânt de Coif I
@@ -8358,6 +8892,7 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Światło Gwiazd	Lumina Stelelor
 Światło Gwiazd (9.skill)	Lumina Stelelor (abil. 9)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Se potrivește de minune la frigere deasupra focului de tabără.
+Świąt. Zim. Zbroja+ (m)	Armură Iarnă Festivă+ (b)
 Świąteczna Brązowa Skrzynia Okey	Cufărul Okey de Bronz de Crăciun
 Świąteczna Srebrna Skrzynia Okey	Cufărul Okey Argintiu de Crăciun
 Świąteczna Złota Skrzynia Okey	Cufărul Okey Auriu de Crăciun
@@ -8368,14 +8903,17 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Świątynia	Templu
 Świątynia Węży	Templul Șerpilor
 Świątynia Zodiaku	Templul Zodiacului
+Święty	Sfânt
 Święty Efekt Zestawu	Efect Sfânt de Set
 Święty Kowal Zestawu	Fierarul Sfânt al Setului
 Święty Miecz Bogów+	Sabia Sfântă a Zeilor+
 Święty Odłamek	Fragment Sfânt
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	O floare sacră din grădina Zeului Dragon. Este folosită la îmbunătățirea echipamentului.
+Śś	Śś
 şó ĹĄşę	şó ĹĄşę
 Źródła	Surse
 Źródło mocy dla wędki. Jej dotyk ulepsza narzędzie, otwierając drogę do łowów z najgłębszych wód.	O sursă de putere pentru undiță. Atingerea ei îmbunătățește unealta și deschide calea spre pescuitul din cele mai adânci ape.
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Niciun corb nu a fost rănit la fabricarea acestei arme. Armă pentru Tinerii Eroi: dispare la 15 zile după primire (chiar și echipată). Nu poate fi îmbunătățită, nu i se pot schimba sau adăuga bonusuri, nu i se pot introduce pietre ale spiritului, nu poate fi tranzacționată, vândută sau depusă în depozit.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	Niciunul: oprește mesajele de la Însoțitor. Importante: inventar plin, rucsac, lucruri valoroase.
 Żałobna Pieśń	Cântec de Doliu
@@ -8392,6 +8930,7 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Żołnierz Schron. Płn. W.	Soldat din Adăp. Vântului de Nord
 Żołnierz Wężowy	Soldat Șarpe
 Żołnierze	Soldați
+Życie goblina	Viața goblinului
 Żywe Drzewo	Lemn Viu
 Żywioł potworów na tym piętrze	Elementul monștrilor de pe acest etaj
 Żywioł: %s	Elementul: %s
@@ -8411,3 +8950,4 @@ zwykłe Auto Łowy zatrzymane.	Vânătoarea Automată obișnuită s-a oprit.
 Żółty Sok	Suc Galben
 Żądza Krwi +%.0f	Setea de Sânge +%.0f
 Żż	Żż
+żadne	niciuna

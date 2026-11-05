@@ -71,15 +71,20 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 %d%% Wola SungMa (WIT)	%d%% SungMa Will (VIT)
 %d%% na losowy bonus.	%d%% for a random bonus.
 %d%% szans na zablokowanie obrażeń od ataku	%d%% chance to block damage from attacks
+%d%% szansy na deptanie przeciwników przez 20 sek.	%d%% chance to trample enemies for 20 sec.
+%d%% szansy na uniknięcie śmierci i odnowienie 30%% PŻ	%d%% chance to avoid death and restore 30%% HP
+%d%% szansy, że wszystkie potwory wokół zaatakują cię (peleryna męstwa)	%d%% chance that all monsters around you will attack you (Cloak of Valor)
 %d%% Średnie Obrażenia	%d%% Average Damage
 %d. miejsce	Place %d
 %d. pusty	%d. empty
+%dx %s (dowolne z %d)	%dx %s (any of %d)
 %dx (po %d)	%dx (%d each)
 %s (%d szt.)	%s (%d pcs.)
 %s (%d) - %d szt.	%s (%d) - %d pcs.
 %s (Lv %d) - pid %d, poz (%d, %d), cesarstwo %d	%s (Lv %d) - pid %d, pos (%d, %d), kingdom %d
 %s (Pozostały czas: %s)	%s (Time remaining: %s)
 %s (co %d sek.)	%s (every %d sec.)
+%s (inna mapa)	%s (other map)
 %s (maks. %.1f)	%s (max. %.1f)
 %s (maks. %d)	%s (max. %d)
 %s (maks.)	%s (max.)
@@ -114,18 +119,22 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 (Kup wszystkie przedmioty tego typu)	(Buy all items of this type)
 (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	(No use yet - it will come with the next Yohara update.)
 (Najedź myszką na ikonę)	(Hover over an icon)
+(brak klawisza - Esc, Skróty klawiszowe)	(no key - Esc, Keyboard Shortcuts)
 (brak)	(none)
 (filtr jest wyłączony - teraz podnosisz wszystko)	 (the filter is disabled - you are picking up everything now)
 (najwyższy poziom, Obrona Statku, pełna kula doświadczenia).	(highest level, Ship Defence, full experience orb).
 (nieznana)	 (unknown)
 (od P)	 (from P)
+(postac offline - brak podgladu skilli)	(character offline - no skill preview)
 (poziom %d)	 (level %d)
+(puste)	(empty)
 (szansa %s%%)	 (chance %s%%)
 (ten bot nic jeszcze nie powiedzial)	(this bot hasn't said anything yet)
 (wybierz stworzenie)	(choose a creature)
 (wybierz z listy)	(choose from the list)
 (wybierz)	(choose)
 * UWAGA * Opcja eksperymentalna![ENTER]Tryb Skalowania interfejsu może prowadzić do obniżenia[ENTER]jakości interfejsu (elementy graficzne, czcionka).[ENTER]Kolor |cff8ab98ezielony|r oznacza, że skalowanie MOŻE BYĆ najoptymalniejsze.[ENTER]Kolor |cffe57976czerwony|r oznacza, że skalowanie może doprowadzić[ENTER]do braku responsywności gry.	* WARNING * Experimental option![ENTER]Interface scaling mode may lower[ENTER]the interface quality (graphics, font).[ENTER]|cff8ab98eGreen|r means the scaling MAY BE the most optimal.[ENTER]|cffe57976Red|r means the scaling may cause[ENTER]the game to become unresponsive.
++ Dodaj bonus	+ Add bonus
 + Dodaj przedmiot	+ Add item
 + Pkt umiejetn.	+ Skill pts
 +%d Inteligencja	+%d Intelligence
@@ -157,6 +166,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 +15 wartości ataku	+15 attack value
 +3% siły przeciwko kamieniom Metin	+3% strength against Metin Stones
 +50% szansy na drop przez 2 godziny	   +50% drop chance for 2 hours
++800 PŻ	+800 HP
 , PPM: dokładny filtr	, RMB: detailed filter
 - Czekaj cierpliwie na odpowiedź.	- Wait patiently for a reply.
 - Pisz krótko i konkretnie.	- Keep it short and to the point.
@@ -166,6 +176,10 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 - drugie miejsce od 31 poziomu konia	- second slot from horse level 31
 - piętro %d	 - floor %d
 - wolne miejsce: przeczytaj księgę umiejętności konnej	- free slot: read a horse skill book
+-- Ninja Archer - skille P --	-- Ninja Archer - skille P --
+-- Ninja Dagger - skille P --	-- Ninja Dagger - skille P --
+-- Sura BM - skille P --	-- Sura BM - skille P --
+-- Sura WP - skille P --	-- Sura WP - skille P --
 -- Szaman Healer - skille P --	-- Shaman Healer - P skills --
 -- Szaman Smok - skille P --	-- Shaman Dragon - P skills --
 -- Wojownik Body - skille P --	-- Warrior Body - P skills --
@@ -177,6 +191,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 ... i %d więcej.	... and %d more.
 ...i jeszcze %d - pełna lista w oknie Drop wiki (pasek boczny ekwipunku).	  ...and %d more - full list in the Drop Wiki window (inventory sidebar).
 / - powtarza poprzednia komende	/ - repeats the previous command
+/a - dajemy komus dany lvl	/a - dajemy komus dany lvl
 /a level - Zmienia lvl gracza	/a level - Changes a player's level
 /b - ogloszenie w ramce	/b - framed announcement
 /balathor unpoly	/balathor unpoly
@@ -208,6 +223,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 /gildia_obowiazki	/gildia_obowiazki 
 /go d - teleport na pustynie	/go d - teleport to the desert
 /go s - teleport na Gore Sohan	/go s - teleport to Mount Sohan
+/go t - teleport do Doliny Orkow	/go t - teleport do Doliny Orkow
 /go tr - teleport do Lasu Duchow	/go tr - teleport to the Ghost Forest
 /go trent2 - teleport do Czerwonego Lasu	/go trent2 - teleport to the Red Forest
 /go x y - przenosi do wspolrzednych x y	/go x y - moves to coordinates x y
@@ -217,6 +233,7 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 /horse_ride - przywoluje konia	/horse_ride - summons the horse
 /inv - niewidzialnosc	/inv - invisibility
 /irrem anuluj	/irrem anuluj
+/irrem usun %d	/irrem usun %d
 /item - dodaje kilka sztuk przedmiotu	/item - adds several pieces of an item
 /item - dodaje przedmiot	/item - adds an item
 /kill - zabija gracza	/kill - kills a player
@@ -224,11 +241,13 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 /konie_rozwoj	/konie_rozwoj 
 /kostiumy_innych %d	/kostiumy_innych %d
 /kostiumy_ukryj %d	/kostiumy_ukryj %d
+/kostiumy_ukryj m %d	/kostiumy_ukryj m %d
 /level - zmiana lvl'u postaci	/level - changes the character's level
 /lochy open	/lochy open
 /lochy rank %d %d	/lochy rank %d %d
 /lochy warp %d	/lochy warp %d
 /m - przywoluje potwora lub npc	/m - summons a monster or NPC
+/mlodzi_wybor %d %d	/mlodzi_wybor %d %d
 /mspd 0 - 1000 - szybkosc chodzenia	/mspd 0 - 1000 - walking speed
 /n - Wiadomosc na gorze ekranu	/n - Message at the top of the screen
 /newpet	/newpet 
@@ -261,9 +280,16 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 /reset - resetuje PZ i PE	/reset - restores HP and SP
 /sesja	/sesja 
 /set align 200000 - ranga rycerski	/set align 200000 - Chivalric rank
+/set exp - dostajemy dana ilosc expa	/set exp - dostajemy dana ilosc expa
+/set gold - dostajemy dana ilosc Yang	/set gold - dostajemy dana ilosc Yang
+/set max_hp - zwieksza punkty zycia	/set max_hp - zwieksza punkty zycia
 /set max_sp - zwieksza punkty energii	/set max_sp - increases SP
 /set skill - dodaje dana ilosc pkt umiejetnosci	/set skill - adds the given number of skill points
+/set_maxhp - doladowanie hp	/set_maxhp - doladowanie hp
 /set_maxsp - doladowanie pe	/set_maxsp - refills SP
+/set_state information - ...nie wiem...	/set_state information - ...nie wiem...
+/set_state run - ...nie wiem...	/set_state run - ...nie wiem...
+/set_state start - ...nie wiem...	/set_state start - ...nie wiem...
 /setsk 121 59 - Dowodzenie P	/setsk 121 59 - Leadership P
 /setsk 129 59 - Polimorfia P	/setsk 129 59 - Transform P
 /setsk 130 30 - 30 lvl konia	/setsk 130 30 - horse level 30
@@ -277,24 +303,47 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 /setsk 155 7 - Furia Boga Smokow	/setsk 155 7 - Wrath of the Dragon God
 /setsk 156 7 - Smocze Zyczenie	/setsk 156 7 - Dragon's Wish
 /setsk 157 7 - ...nie wiem...	/setsk 157 7 - ...unknown...
+/setskillother 59 - dajemy komus dany skill na P	/setskillother 59 - dajemy komus dany skill na P
 /ski 121 - Dowodzenie	/ski 121 - Leadership
 /ski 131 - Przywolaj Konia	/ski 131 - Call Horse
 /slow - spowalnia gracza	/slow - slows a player
+/stat st	/stat st
+/stat- st	/stat- st
 /stun - omdlewa gracza	/stun - stuns a player
 /towarzysz	/towarzysz 
 /transfer - przenosi gracza do GM'a	/transfer - moves a player to the GM
 /u - ilosc osob online	/u - number of players online
+/w - ilosc osob online	/w - ilosc osob online
 /warp - przenosi GM'a do gracza	/warp - moves the GM to a player
 /warp 200 100 - Wyspa ze sniegiem (Siedliszcza GM'ow)	/warp 200 100 - Snow island (GMs' settlement)
+/warp 400 600 - teleport do Areny GM'ow	/warp 400 600 - teleport do Areny GM'ow
 /weak - najpierw klikamy na potwora ppm, nastepnie wpisujemy komende i potwor ma 1hp	/weak - first right-click the monster, then type the command and the monster has 1 HP
 /x - dzien	/x - day
+/xmas 0 - Dzien	/xmas 0 - Dzien
 /xmas 1 - Noc	/xmas 1 - Night
+/xmas_boom 0 - Dzien	/xmas_boom 0 - Dzien
 /xmas_boom 1 - Noc	/xmas_boom 1 - Night
+/xmas_snow 0 - wylacz snieg	/xmas_snow 0 - wylacz snieg
+/xmas_snow 1 - wlacz snieg	/xmas_snow 1 - wlacz snieg
+/xmas_song 0 - Wylacza sie piosenka	/xmas_song 0 - Wylacza sie piosenka
 /xmas_song 1 - Wlacza sie piosenka swiateczna	/xmas_song 1 - Plays the Christmas song
+/xmas_tree 0 - swieta OFF	/xmas_tree 0 - swieta OFF
 0 - nakarm peta	0 - feed your pet
 0 = bez granicy	0 = no limit
 1 dzień	1 day
+1 godz.	1 hr.
 1 krok	1 step
+1* Runa Wyk. Akcesoriów	1* Accessory Forging Rune
+1* Runa Wyk. Ks. Um.	1* Forging Rune: Skill Books
+1* Runa Wyk. Poz. Prz.	1* Forging Rune: Other Items
+1* Runa Wyk. Prz. d. Zw.	1* Forging Rune: Pet Items
+1* Runa Wyk. Rękawiczek	1* Glove Forging Rune
+1* Runa Wyk. Zest. Broni	1* Forging Rune: Weapon Sets
+1* Runa Wyk. Zest. Hełm.	1* Forging Rune: Helmet Sets
+1* Runa Wyk. Zest. Zbroi	1* Forging Rune: Armor Sets
+1* Runa Wykuwania Broni	1* Weapon Forging Rune
+1* Runa Wykuwania Pasów	1* Belt Forging Rune
+1* Runa Wykuwania Zbroi	1* Armor Forging Rune
 1-10000, 100 = normalnie. Dziala od razu.	1-10000, 100 = normal. Takes effect immediately.
 1. Posterunek Myr	1st Myr Outpost
 1. dodany bonus +%d%%	Added bonus 1 +%d%%
@@ -303,15 +352,21 @@ $ITEM_NAME (Paczka 25)	$ITEM_NAME (Pack of 25)
 100 Kamyków, Skrzynka Tajemnic, Zagadkowa Szkatułka,	   100 Pebbles, Chest of Secrets, Mysterious Chest,
 100% szans na przeczytanie	100% chance of successful reading
 100% szans na ulepszenie.	100% success chance on upgrade.
+2 godz.	2 hr.
 2-12 liter lub cyfr!	2-12 letters or digits!
 2. Posterunek Myr	2. Myr Guard Post
 25 kart królewskich dało nową Talię Królewską.	25 King Cards have formed a new King Deck.
+25-40 lvl	25-40 lvl
 2x PD	2x EXP
 3 Loch Pająków	Spider Dungeon 3
 3 losowe bonusy podstawowe	3 random basic bonuses
 3 metiny	3 Metins
+4 godz.	4 hr.
+5 bossow	5 bosses
+5% obrażeń będzie dodanych do PŻ	5% of damage will be added to HP
 50 Kamyków, Zagadkowa Szkatułka, Kupon SM (20),	   50 Pebbles, Mysterious Chest, DC Voucher (20),
 50% więcej doświadczenia	50% more experience
+8 godz.	8 hr.
 < 10 sek	< 10 sec
 Absorbuje %d%% PŻ przy użyciu burzowego szponu	Absorbs %d%% HP when using Lightning Claw
 Absorbuje %d%% PŻ przy użyciu duchowego ciosu	Absorbs %d%% HP when using Spirit Strike
@@ -346,6 +401,7 @@ Ahtrin Wielki Mistrz	Ahtrin Grandmaster
 Ahtrin Wojownik	Ahtrin Warrior
 Ahtrin Zwiadowca	Ahtrin Scout
 Akcja:	Action:
+Akcje botow	Bot Actions
 Aktualnie trwa wczytywanie danych. Spróbuj ponownie później.	Data is currently loading. Please try again later.
 Aktualny poziom: %s	Current level: %s
 Aktywna	Active
@@ -377,6 +433,8 @@ Alchemia jest wyłączona na tym serwerze.	Alchemy is disabled on this server.
 Alchemia legendarna	Legendary Alchemy
 Alchemia mityczna	Mythical Alchemy
 Alchemia towarzysza	Companion's Alchemy
+Alt (przytrzymaj)	Alt (hold)
+Alt + LPM	Alt + LMB
 Amulet Nazara	Nazar Amulet
 Amulet chroniący przed złym spojrzeniem. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń, +10% siły w walce z potworami. Czas upływa także, gdy go nie nosisz.	An amulet protecting against the evil eye. Gives: +50% EXP, +20% attack speed, +20% casting speed, +30% damage, +10% strength against monsters. Time also runs out while you are not wearing it.
 Amulet z Koła Strażników. Daje: +50% PD, +5% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z kamieniami Metin, +40% obrażeń umiejętności. Czas upływa także, gdy go nie nosisz.	An amulet from the Guardians' Circle. Gives: +50% EXP, +5% attack speed, +20% casting speed, +10% strength against Metin stones, +40% skill damage. Time also runs out while you are not wearing it.
@@ -389,6 +447,7 @@ Antymagia	Anti-Magic
 Anubis	Anubis
 Anulacja Polimorfii Wierzchowca	Mount Polymorph Reversal
 Anulacja Transmutacji	Transmutation Reversal
+Anulowano pozostale operacje. Wyslane usuniecia mogly juz zostac wykonane.	Remaining operations cancelled. Deletions already sent may have been carried out.
 Anuluj edycje	Cancel editing
 Anuluj misję	Cancel Mission
 Appaloosa	Appaloosa
@@ -400,6 +459,8 @@ Apteczka (SZC) strażników Zaklętego Lasu (SZC).	First-aid kit (TR) of the Enc
 Apteczka strażników Zaklętego Lasu.	First-aid kit of the Enchanted Forest guards.
 Arahan Zodiaku	Zodiac Arahan
 Arbuz	Watermelon
+Arena Pojedynków	Duel Arena
+Arena pojedynkow	Duel Arena
 Argos (mrok)	Argos (Darkness)
 Argos (ogień)	Argos (Fire)
 Arial	Arial
@@ -419,6 +480,7 @@ Atak długodystansowy, omdlewa przeciwnika.	Long-range attack that stuns the ene
 Atak krwawienia	Bleeding attack
 Atak magiczny	Magic attack
 Atak magiczny/fizyczny %	Magic/physical attack %
+Atak na Metiny	Attack vs. Metin Stones
 Atak obrotowy posiadający trzy szanse na trafienie oraz szansę na otrucie przeciwnika.	A spinning attack with three chances to hit and a chance to poison the enemy. 
 Atak obszarowy walki wręcz	Close-combat area attack
 Atak obszarowy we wszystkich przeciwników wokół postaci.	Area attack against all enemies around the character. 
@@ -431,11 +493,13 @@ Atak sztyletem vs potwory	Dagger attack vs monsters
 Atak trzema ciosami pod rząd.	Attacks with three blows in a row.
 Atak umożliwiający ominięcie obrony przeciwnika.	An attack that bypasses the enemy's defence.
 Atak z dystansu o dużym zasięgu, atakuje jednego przeciwnika, lub kilku stojących obok siebie.	Long-range attack with a large reach; hits a single enemy or several standing next to each other.
+Atak z wierzchowca	Mounted Attack
 Atakuj potwory w pobliżu podczas walki za pomocą błyskawic, których obrażenia odpowiadają obrażeniom od automatycznego ataku (czas regeneracji 15 sek.).	During combat, attack nearby monsters with lightning that deals damage equal to your auto-attack damage (cooldown 15 sec.).
 Atakuj wrogów smoczymi podobiznami.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Attack enemies with a dragon figure.|Boosted by: Intelligence (++), Dexterity (accuracy) (+), character level.
 Atakuje centralnie wrogów.|Wzmacnia: Siła (++), Witalność (+).	Attack enemies directly.|Boosted by: Strength (++), Vitality (+).
 Atakuje przeciwników wokół siebie, posiada szansę na omdlenie przeciwnika.	Attacks enemies around you, with a chance to stun the enemy.
 Atakuje wszystkich przeciwników wokół siebie.	Attacks all enemies around you.
+Atakujący (atak)	Attacker (attack)
 Atrybuty	Attributes
 Atrybuty podstawowe rękawic są zwiększone o %d %% (bonusy wbudowane rękawic)	The base attributes of gloves are increased by %d %% (built-in glove bonuses)
 Aukcja zakończona	Auction ended
@@ -446,25 +510,35 @@ Auto Łowy (TEST)	Auto Hunt (TEST)
 Auto Łowy (TEST):	Auto Hunt (TEST): 
 Auto Łowy przez 7 dni kalendarzowych od zakupu - działają, dopóki bilet jest w ekwipunku.	Auto Hunt for 7 calendar days from purchase - works as long as the ticket is in your inventory.
 Auto Łowy: bojowiec nie działa na desce, chmurze ani drakkarze - łowy jak pieszo.	Auto Hunt: the battle horse does not work on a board, cloud or drakkar - hunting as on foot.
+Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu - łowy zatrzymane.	Auto Hunt: failed to remount after getting stuck - hunt stopped.
 Auto Łowy: nie udało się ponownie wsiąść na wierzchowca po utknięciu.	Auto Hunt: could not get back on the mount after getting stuck.
 Auto Łowy;Czas leci tylko w grze.	Auto Hunt;Time only passes while in game.
 Auto-obnizka ceny	Automatic price discount
 Auto-obnizka: %s - nowa cena %s	Auto-discount: %s - new price %s
 Auto-obnizka: -%d%% co %dh, min. %s	Auto-discount: -%d%% every %dh, min. %s
+Auto-obnizka: -%d%%/%dh	Auto-discount: -%d%%/%dh
 Auto-obnizka: 1-%d%%, co 1-%d godzin, cena minimalna co najmniej 1 Yang.	Auto-discount: 1-%d%%, every 1-%d hours, minimum price at least 1 Yang.
+Auto-obnizka: wyl.	Auto-discount: off
 Auto-obnizka: wylaczona	Auto-discount: off
 Autologin: ponownie za %d s (próba %d)	Autologin: retrying in %d s (attempt %d)
 Automatyczne podnoszenie Yang.	Automatic Yang pickup.
+Automatyczne zbieranie	Auto Pickup
 Autopoty	Auto Potions
 Autospin - wygrane: %s	Autospin - wins: %s
+Autospin zatrzymany - Koło Losu jest wyłączone.	Autospin stopped - Wheel of Fortune is disabled.
+Autospin zatrzymany - brak odpowiedzi serwera.	Autospin stopped - no response from the server.
+Autospin zatrzymany - obrót odrzucony.	Autospin stopped - spin rejected.
 Autospin zatrzymany.	Autospin stopped.
 Autospin: %d obrotów, wydano %d SM, główne nagrody: %d.	Autospin: %d spins, spent %d DC, main rewards: %d.
 Autospin: brak odpowiedzi.	Autospin: no response.
+Autospin: główna nagroda - zatrzymany.	Autospin: jackpot - stopped.
 Autospin: główna nagroda!	Autospin: main reward!
+Autospin: koniec (%d obrotów).	Autospin: finished (%d spins).
 Autospin: koniec.	Autospin: finished.
 Autospin: koło wyłączone.	Autospin: wheel disabled.
 Autospin: obrót odrzucony.	Autospin: spin rejected.
 Autospin: za mało SM.	Autospin: not enough DC.
+Autospin: za mało Smoczych Monet na kolejny obrót.	Autospin: not enough Dragon Coins for another spin.
 Autołowy	Auto Hunt
 Autołowy (TEST)	Auto Hunt (TEST)
 Autołowy - szybki start/stop	Auto Hunt - quick start/stop
@@ -507,6 +581,7 @@ Best. Czl. Skor. Zodiaku	Zodiac Bestial Scorpion Man
 Best. Wężowy Miecznik	Bestial Serpent Swordsman
 Best. Wężowy Wojownik	Bestial Serpent Warrior
 Best. Wężowy Łucznik	Bestial Serpent Archer
+Bestialski Fanatyk	Bestialski Fanatyk
 Bez bonusów podstawowych - jadeit nic nie dodaje	No basic bonuses - the jade adds nothing
 Bez imienia (Zwój Imienia Buffi).	No name (Buffi Name Scroll).
 Bez koloru	No colour
@@ -546,17 +621,22 @@ Biolog	Biologist
 Biolog daje stałe bonusy, a usuniętego kroku nie da się cofnąć.	The Biologist gives permanent bonuses, and a deleted step cannot be undone.
 Biolog nie potrzebuje czasu na przeanalizowanie próbki złej jakości.	The Biologist needs no time to analyse a poor-quality sample.
 Blad danych - sprawdz ID i ilosc.	Data error - check the ID and amount.
+Blad danych - sprawdz PID i ilosc.	Data error - check PID and quantity.
 Blad danych - sprawdz kwote.	Data error - check the amount.
 Blad danych - sprawdz wartosc.	Data error - check the value.
 Blad danych.	Data error.
 Blad odpowiedzi serwera.	Server response error.
 Blad zapytania do bazy.	Database query error.
+Blad: %s	Error: %s
 Blad: nie mozna utworzyc marmuru.	Error: could not create the marble.
 Blad: nie udalo sie zapisac zgloszenia restartu.	Error: could not save the restart request.
 Blok Ataku	Attack Block
 Blokada Konta	Account Ban
 Blokada dziala od NASTEPNEGO logowania na to konto - nie	The ban takes effect from the NEXT login to this account - not
+Blokada permanentna	Permanent Ban
+Blokada tymczasowa	Temporary Ban
 Blokadę sortowania można założyć tylko na przedmiot w plecaku.	The sort lock can only be placed on an item in the backpack.
+Blokujący (czas trwania)	Blocker (duration)
 Bo Zodiaku	Zodiac Bo
 Bohat. Księga Zwierza	Heroic Pet Book
 Bohaterski	Heroic
@@ -576,6 +656,7 @@ Bonus vs Bossy	Bonus vs Bosses
 Bonus vs Bossy/Metiny	Bonus vs Bosses/Metins
 Bonus vs Ludzie	Bonus vs Half-Humans
 Bonus vs Metiny	Bonus vs Metins
+Bonus vs Nieumarli	Bonus vs. Undead
 Bonus vs Orki	Bonus vs Orcs
 Bonus vs Potwory	Bonus vs Monsters
 Bonus vs Szaman	Bonus vs Shaman
@@ -621,8 +702,11 @@ Boss Świata: szansa na drop przedmiotów +%d%%	World Boss: item drop chance +%d
 Boss Świata: wartość ataku +%d%%	World Boss: attack value +%d%%
 Bossom	Bosses
 Bot	Bot
+Boty do spawnu	Bots to Spawn
 Boty gildii	Guild Bots
+Boty pisza na czacie	Boty pisza na czacie
 Boty w misji: %d / %d (od poziomu %d)	Bots on the mission: %d / %d (from level %d)
+Boty zlomiarze	Boty zlomiarze
 Boty: %s z %s (razem %s)	Bots: %s of %s (total %s)
 Botów: %d (z gildii %d, wynajętych %d), chciano %d	Bots: %d (%d from the guild, %d hired), %d requested
 Brachindul	Brachindul
@@ -631,6 +715,7 @@ Brak / >	None / >
 Brak aktywnej misji albo limit został przekroczony.	No active mission, or the limit has been exceeded.
 Brak aktywnej sesji	No active session
 Brak aktywnej sesji.	No active session.
+Brak bonusu albo powyżej %d	No bonus or above %d
 Brak danych do wyceny	No data for valuation
 Brak danych o bonusach.	No bonus data.
 Brak danych o dropie	No drop data
@@ -676,8 +761,10 @@ Brakuje Yang na: %s (%s).	Not enough Yang for: %s (%s).
 Brakuje ci Odłamków: %s.	You are missing Powershards: %s.
 Brakuje ci Suplementów: %s.	You are missing Additives: %s.
 Brakuje materiałów do rozwoju.	Not enough materials to evolve.
+Brakuje: %s	Missing: %s
 Bransoleta z Turmalinu	Tourmaline Bracelet
 Braz. Niedzw. Zodiaku	Zodiac Brown Bear
+Brazowy Niedzwiedz	Brazowy Niedzwiedz
 Bronie	Weapons
 Browarnik	Brewer
 Broń dla Młodych Bohaterów - poziom %d	Young Heroes' weapon - level %d
@@ -689,6 +776,7 @@ Brzeszczot Smoka Mrok	Dark Dragon Broadsword
 Brzeszczot wypełniony mocą mrocznego smoka.	A broadsword filled with the power of the dark dragon.
 Brązowa Chusta	Brown Headscarf
 Brązowa Chusta+	Brown Headscarf+
+Brązowa Wilcza Szata+(m)	Brown Wolf Robe+ (m)
 Brązowe Płyty	Bronze Plates
 Brązowy Turban	Brown Turban
 Brązowy Turban+	Brown Turban+
@@ -729,10 +817,12 @@ Błogosławieństwo Mocy	Blessing of Power
 Błogosławieństwo ulepszania	Upgrade Blessing
 Błyskaw.	Instant
 Błyskawicznie zapewnia swoim wrogom wieczny spoczynek. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Grants its enemies eternal rest in a flash. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Błyszcząca	Shining
 Błyszcząca Szata Aury	Shining Aura Robe
 Błąd serwera - spróbuj ponownie.	Server error - try again.
 Błąd zapytania.	Query error.
 Błędne podanie kodu może skutkować	Entering the wrong code may result
+C. Ratownik Plażowy+	Red Beach Lifeguard+
 CTRL+TAB - Przywróć interfejs.	CTRL+TAB - Restore interface.
 Captcha	Captcha
 Cel	Target
@@ -760,6 +850,7 @@ Charyzma Nowicjusza	Novice's Charisma
 Chcesz zacząć grę?	Do you want to start the game?
 Chcesz zakończyć grę i otrzymać wygraną?	Do you want to end the game and receive your winnings?
 Chcesz zrealizować to pole?	Do you want to claim this field?
+Chciano botów: %d	Bots wanted: %d
 Chciałeś %d szt., a tyle da się kupić.	You wanted %d pcs., this is how many can be bought.
 Chodząca Legenda	Walking Legend
 Chrobry Moa (pieczęć)	Valiant Moa Seal
@@ -771,12 +862,14 @@ Chwilę...	One moment...
 Chwilę... spróbuj jeszcze raz.	Just a moment... try again.
 Cicha Klątwa	Silent Curse
 Ciekawski	Curious
+Ciemna Szata Proroka+(m)	Dark Prophet Robe+ (m)
 Ciemność	Darkness
 Cienie	Shadows
 Cieniolubny Liść	Shade-Loving Leaf
 Cienka Nić	Thin Thread
 Cienka Przędza	Fine Yarn
 Cienka Skóra	Thin Leather
+Ciepły Kaftan Zimowy+(m)	Warm Winter Jacket+ (m)
 Ciężkie Pasy	Heavy Straps
 Co 12 sekund może osłonić członków grupy przed obrażeniami.|Wzmacnia: tylko poziom umiejętności.	Every 12 seconds it can shield group members from damage.|Boosted by: skill level only.
 Co chcesz zrobić z %dx %s?	What do you want to do with %dx %s?
@@ -792,6 +885,9 @@ Cofa wszystkie punkty statystyk - raz, za darmo.	Resets all stat points - once, 
 Cofnij zmiany	Undo changes
 Cofnąć wszystkie punkty statystyk towarzysza, żeby rozdać je od nowa? Darmowy reset jest tylko jeden.	Reset all of the Companion's stat points to redistribute them? There is only one free reset.
 Coś poszło nie tak. Przedmiot jest bezpieczny u Seon-Hae - spróbuj później.	Something went wrong. The item is safe with Seon-Hae - try again later.
+Ctrl (przytrzymaj)	Ctrl (hold)
+Ctrl + LPM	Ctrl + LMB
+Ctrl + PPM	Ctrl + RMB
 Ctrl + klik: kilka punktów naraz	Ctrl + click: several points at once
 Ctrl + klik: odepnij	Ctrl + click: unpin
 Ctrl + prawy klik: wszystkie księgi z torby.	Ctrl + right-click: all books from your bag.
@@ -812,17 +908,24 @@ Cyjanitowy Łuk	Cyanite Bow
 Cyklop Kat (BŚ)	Cyclops Executioner (WB)
 Cyklop Mag (BŚ)	Cyclops Magician (WB)
 Cyklop Żołnierz (BŚ)	Cyclops Soldier (WB)
+Cz. Królik K. Czarów+(m)	Red Magic Rabbit+ (m)
+Cz. Szata Faraona+ (m)	Red Pharaoh Robe+ (m)
+Cz. Wojownik P.Księżyca+	Red Moon Warrior+
 Czapka Jokera (k)	Joker Cap (f)
 Czapka Jokera (m)	Joker Cap (m)
 Czapka z Pomp. (czerw.)	Bobble Hat (red)
 Czapka z Pomp.+ (biała)	Bobble Hat+ (white)
 Czapka z Pomp.+ (czerw.)	Bobble Hat+ (red)
+Czar. Szata Dokkaebi+(m)	Black Dokkaebi Robe+ (m)
+Czarna Lampa Lorda+	Black Lord's Lamp+
 Czarna Pantera	Black Panther
 Czarna magia	Black Magic
 Czarnoksiężnik P. Wieży	Hellish Tower Warlock
 Czarny Barwnik	Black Dye
+Czarny Niedzwiedz	Czarny Niedzwiedz
 Czarny Ork Zodiaku	Zodiac Black Orc
 Czarny Skorpion	Black Scorpion
+Czarny jak noc Ks. Wam.+	Night-Black Vampire Prince+
 Czarodziej Gnoll	Gnoll Sorcerer
 Czarodziej Stylu Małp	Monkey Style Sorcerer
 Czarownik Sch. Płn. W.	N. Wind Shelter Sorcerer
@@ -882,9 +985,12 @@ Czekoladowy Amulet	Chocolate Amulet
 Czempion	Champion
 Czempion %s	Champion %s
 Czer. Amazonka Zodiaku	Zodiac Red Thief Amazon
+Czer. Sweter Świąt.+ (m)	Red Festive Sweater+ (m)
 Czer. Żeń-szeń (premium)	Red Ginseng (Premium)
+Czerw. Galowy Strój+ (m)	Red Formal Outfit+ (m)
 Czerw. Las Duchow	Red Ghost Forest
 Czerw. Tr. Pajak Zodiaku	Zodiac Red Poison Spider
+Czerw. Zbr. Azraela+ (m)	Red Azrael Armor+ (m)
 Czerwona Mikstura (W)	Red Potion (W)
 Czerwona Runa SungMa	Red SungMa Rune
 Czerwona Smocza Łuska	Red Dragon Scale
@@ -897,7 +1003,10 @@ Czerwony Dzik Zodiaku	Zodiac Red Wild Boar
 Czerwony Kat Zodiaku	Zodiac Red Thief Executioner
 Czerwony Mag Zodiaku	Zodiac Red Thief Magician
 Czerwony Skorpion	Red Scorpion
+Czerwony Smoczek	Little Red Dragon
+Czerwony Smoczy Rycerz+	Red Dragon Knight+
 Czerwony Smoczy Róg	Red Dragon Horn
+Czerwony Toreador+	Red Toreador+
 Czwartek	Thursday
 Czy chcesz cofnąć misję do poziomu 1?	Do you want to reset the mission to level 1?
 Czy chcesz dokonać masowej sprzedaży?	Do you want to perform a mass sale?
@@ -906,7 +1015,7 @@ Czy chcesz go zniszczyć? (%s)	Do you want to destroy it? (%s)
 Czy chcesz kupić %s (szt. %d) za %s?	Do you want to buy %s (x%d) for %s?
 Czy chcesz naładować %d Animosfer?	Do you want to charge %d Animospheres?
 Czy chcesz odesłać Enasira?	Do you want to send Enasir away?
-Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Do you want to pay %s Yang to restore %d Dragon Ghost?
+Czy chcesz odnowić za %s Yang %d Ducha Smoka?	Do you want to pay %s Yang to renew %d Dragon Spirit?
 Czy chcesz opuścić wojnę gildii?	Do you want to leave the guild war?
 Czy chcesz otworzyć to pudło?	Do you want to open this box?
 Czy chcesz ożywić gracza %s?	Do you want to revive the player %s?
@@ -941,6 +1050,8 @@ Czy na pewno chcesz wyrzucić ten element?	Are you sure you want to throw away t
 Czy ten rodzaj jest w ogóle podnoszony (to samo co LPM w oknie filtra)	Whether this type is picked up at all (same as LMB in the filter window)
 Czym jest Konto Premium?	What is a Premium Account?
 Czyste zwoje (%s) w ekwipunku: %d	Blank scrolls (%s) in inventory: %d
+Czytanie bez opoznienia dnia	Czytanie bez opoznienia dnia
+Czyściec Ognia	Purgatory of Fire
 Czyśćiec Ognia	Purgatory of Fire
 Część zestawów kostiumów (%d)	Part of costume sets (%d)
 Członek gildii %s jest teraz w grze.	Guild member %s is now online.
@@ -1007,6 +1118,7 @@ Dodaj GM	Add GM
 Dodaj Kamień Duszy do wymiany.	Add a Soul Stone to exchange.
 Dodaj Księgę Umiejętności do wymiany.	Add a Skill Book to exchange.
 Dodaj do Sklepu Gaya kolejny slot na cenne oferty przedmiotów, rozpoczynając od pierwszego slotu w drugim rzędzie z lewej. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Adds another slot for valuable item offers to the Gaya Shop, starting with the first slot in the second row from the left. Use it at the Harbour Gaya Shop (Warrior Statue in the New Continent Harbour).
+Dodaj do ulubionych	Add to Favorites
 Dodaj przedmiot do wymiany.	Add an item to exchange.
 Dodaj przedmioty do sklepu.	Add items to the shop.
 Dodaj punkt Sung Ma	Add Sung Ma point
@@ -1024,22 +1136,27 @@ Dodatkowy EQ	Extra EQ
 Dodatkowy ekwipunek	Extra inventory
 Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0).	The extra inventory requires a new client (exe 3.0).
 Dodać nowy losowy bonus? Zużyje po jednej duszy każdego rodzaju.	Add a new random bonus? It will use one soul of each kind.
-Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	A sealed document that permits crafting Reinforce Item.
-Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	A sealed document that permits crafting Reinforce Item. This item can be traded.
-Dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	A sealed document that permits crafting Enchant Item.
+Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu.	A document authorizing the creation of an Item Reinforcement.
+Dokument uprawniający do wytworzenia Wzmocnienia Przedmiotu. Przedmiot jest zdatny do handlu.	A document authorizing the creation of an Item Reinforcement. The item is tradable.
+Dokument uprawniający do wytworzenia Zaczarowania Przedmiotu.	A document authorizing the creation of an Item Enchantment.
 Dokładny filtr...	Detailed filter...
 Dolina	Valley
 Dolina Cyklopow	Cyclops Valley
 Dolina Cyklopów	Cyclops Valley
 Dolina Orkow	Orc Valley
+Dolina Orków	Orc Valley
+Dolina Orków / Ognista Ziemia	Orc Valley / Fire Land
 Dom Aukcyjny	Auction House
 Dom Aukcyjny działa tylko w M1.	The Auction House only works in M1.
 Dom Aukcyjny jest wyłączony.	The Auction House is disabled.
 Dom Aukcyjny moze byc wylaczony.	The Auction House may be disabled.
 Dom Aukcyjny: %s	Auction House: %s
+Dom Aukcyjny: %s - %s.	Auction House: %s - %s.
 Dom Aukcyjny: najwyżej %d bonusów naraz.	Auction House: at most %d bonuses at once.
 Dom Aukcyjny: poprzednie zakupy jeszcze trwają.	Auction House: previous purchases are still in progress.
 Dom Aukcyjny: spróbuj jeszcze raz za chwilę.	Auction House: try again in a moment.
+Dom Towarowy	Department Store
+Dom Towarowy: %s	Department Store: %s
 Dom Towarowy: trwa kupowanie zaznaczonych ofert.	Marketplace: buying the selected offers.
 Dom Towarowy: zaznacz oferty (kwadrat przy ofercie), a potem Kup wszystko.	Marketplace: select offers (checkbox next to an offer), then Buy all.
 Domyślna	Default
@@ -1087,6 +1204,7 @@ Doświadczenie +%(v)s%% podczas jazdy	Experience +%(v)s%% while riding
 Doświadczenie +%d%%	Experience +%d%%
 Doświadczenie Czempiona : %.2f%%	Champion experience : %.2f%%
 Doświadczenie Czempiona: %s / %s	Champion experience: %s / %s
+Doświadczenie łącznie	Total Experience
 Doświadczenie: %d%%	Experience: %d%%
 Doświadczenie: %d%% (%d / %d)	Experience: %d%% (%d / %d)
 Doświadczenie: %s / %s	Experience: %s / %s
@@ -1094,10 +1212,15 @@ Doświadczenie: %s / %s (%.2f%%)	Experience: %s / %s (%.2f%%)
 Drobny Kam. Przebudzenia	Tiny Awakening Stone
 Drogocenna waluta Yohary. Oszlifuj 30 Kamyków u Statuy Wojownika w Porcie Nowego Kontynentu (z Kamieniem Duszy +0 do +3 i 15 000 Yang - szansa 70%), a otrzymasz 3 Gaya. Płacisz nią w Portowym Sklepie Gaya, u kowali zestawów, u Statuy Węży, Tajemniczego Ołtarza i Mistrza Chi. Nie można jej wymieniać z innymi graczami.	The precious currency of Yohara. Cut 30 Pebbles at the Warrior Statue in the Port of the New Continent (with a Soul Stone +0 to +3 and 15 000 Yang - 70% chance) and you receive 3 Gaya. You pay with it in the Port Gaya Shop, at the set blacksmiths, at the Serpent Statue, the Mysterious Altar and Master Chi. It cannot be traded with other players.
 Drogocenny pierścień przyozdobiony nefrytem i turkusem. Daje: +50% PD, +30% siły przeciwko potworom, +20% szybkości ataku i zaklęć, +10% maks. PŻ i PE.	A precious ring adorned with jade and turquoise. Grants: +50% EXP, +30% strength against monsters, +20% attack and casting speed, +10% max. HP and SP.
+Drop Przedmiotow:	Drop Przedmiotow:
 Drop Yang	Yang Drop
 Drop potwora %s:	Drops of monster %s:
 Drop przedmiotów +%d%%	Item drop +%d%%
+Drop z bossów	Boss Drop
 Dropek Metinów	Metin Dropper
+Dropek medali	Medal Drop
+Dropek z M2	Drop from M2
+Dropek z M3	Drop from M3
 Druga polowa ustawienia powyzej - osobna szansa liczona przy rozbiciu kamienia Metin, zamiast przy zabiciu zwyklego potwora.	The second half of the setting above - a separate chance rolled when a Metin stone is destroyed instead of when a normal monster is killed.
 Druga z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Druga z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The second of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
@@ -1134,6 +1257,7 @@ Dusza Przebudzenia	Soul of Awakening
 Dusza Światła	Light Soul
 Dusze są brane z ekwipunku same - wystarczy je mieć przy sobie.	Souls are taken from the inventory automatically - just carry them with you.
 Duszony żeń-szeń premium - jedyna pasza Potężnego Konia Wojskowego (koń od 31 poziomu). Kliknij prawym przyciskiem myszy, aby nakarmić przywołanego konia, albo podaj go koniowi. Wypada z potworów Yohary.	Premium braised ginseng - the only feed of the Mighty War Horse (horse from level 31). Right-click to feed your summoned horse, or give it to the horse. Dropped by Yohara monsters.
+Duzy Lysy Ork	Duzy Lysy Ork
 Duża	Large
 Duży Skorpion	Big Scorpion
 Dwigant Zodiaku	Zodiac Twiant
@@ -1164,9 +1288,12 @@ Dzik Zodiaku	Zodiac Wild Boar
 Dziki General Zodiaku	Zodiac Savage General
 Dziki Lucznik Zodiaku	Zodiac Savage Archer
 Dziki Moa (pieczęć)	Wild Moa Seal
+Dziki Sluga	Dziki Sluga
 Dziki Sluga Zodiaku	Zodiac Savage Minion
 Dziki Z. Piech. Zodiaku	Zodiac Savage Infantryman
+Dziki Zolnierz Piechoty	Dziki Zolnierz Piechoty
 Dziękujemy za zgłoszenie!	Thank you for your report!
+Dziś	Today
 Dzwon Anielski	Angel Bell
 Dzwon Arkt. Króla	Arctic King Bell
 Dzwon Błk. Wiatru	Azure Wind Bell
@@ -1269,6 +1396,7 @@ Elit. Ork Zodiaku	Zodiac Elite Orc
 Elit. Ork Zwiad. Zodiaku	Zodiac Elite Orc Scout
 Elita Atlantydy	Atlantis Elite
 Elitarny Ezoteryczny Fanatyk	Elite Esoteric Fanatic
+Elitarny Ork	Elitarny Ork
 Emblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.	Emblem of the football champions. For 6 hours it gives: +50% EXP, +20% attack speed, +20% casting speed, +35% magic and melee attack, +10% max. HP, +10% max. SP.
 Emocje we dwoje (pocałunek, klepnięcie) bez pytania o zgodę.	Emotes for two (kiss, pat) without asking for consent.
 Emocje: nie	Emotions: No
@@ -1304,6 +1432,7 @@ Event wielkanocny	Easter Event
 Event wlaczony	Event enabled
 Event wyłączony	Event disabled
 Eventy (bonus imperium)	Events (empire bonus)
+Eventy w dniu %s:	Events on %s:
 Eventy wylaczone	Events disabled
 Ewolucja	Evolution
 Ewolucja: %s	Evolution: %s
@@ -1313,6 +1442,7 @@ Expimy: polują wokół ciebie.	Level Together: they hunt around you.
 Ezot. Dreczyciel Zodiaku	Zodiac Dark Tormentor
 Ezot. Fanatyk Zodiaku	Zodiac Dark Fanatic
 Ezot. Wojownik Zodiaku	Zodiac Esoteric Fighter
+Ezoteryczny Fanatyk	Ezoteryczny Fanatyk
 FULL	FULL
 Fabuła	Story
 Faethorn	Faethorn
@@ -1320,6 +1450,8 @@ Fala Śmierci	Wave of Death
 Fala Śmierci (9.skill)	Wave of Death (9th Skill)
 Fantilla	Fantilla
 Fatalne Skrzydla Smierci	Fatal Wings of Death
+Filtr %d	Filter %d
+Filtr (%d)	Filter (%d)
 Filtr bonusów (prawy klik czyści)	Bonus filter (right-click clears)
 Filtr podnoszenia	Pickup Filter
 Filtr podnoszenia jest WYŁĄCZONY (Ctrl+Z) - teraz podnosisz wszystko.	The pickup filter is OFF (Ctrl+Z) - you are picking up everything now.
@@ -1328,7 +1460,9 @@ Filtr podnoszenia: %s	Pickup filter: %s
 Filtr podnoszenia: rodzaje z Auto Łowów tej postaci działają teraz dla Z, Auto Łowów i Towarzysza (Ctrl+Z).	Pick-up filter: this character's Auto Hunt item types now apply to Z, Auto Hunt and Companion (Ctrl+Z).
 Filtr podnoszenia: wczytano preset "%s".	Pickup filter: preset "%s" loaded.
 Filtr podnoszenia: zapisano reguły rodzaju "%s" (%d).	Pickup filter: rules of type "%s" saved (%d).
+Filtr rodzaju	Type filter
 Filtr wyłączony - podnosisz wszystko.	Filter disabled - you pick up everything.
+Filtry (%d)	Filters (%d)
 Filtry bonusow	Bonus filters
 Fioletowa	Purple
 Fishbot	Fishbot
@@ -1393,9 +1527,11 @@ Glodny Czarny Niedzwiedz	Hungry Black Bear
 Glodny Dzik	Hungry Wild Boar
 Glodny Niebieski Alfa Wilk	Hungry Alpha Blue Wolf
 Glodny Niebieski Wilk	Hungry Blue Wolf
+Glodny Niedzwiedz	Glodny Niedzwiedz
 Glodny Szary Wilk	Hungry Grey Wolf
 Glodny Tygrys	Hungry Tiger
 Glodny Wilk	Hungry Wolf
+Glodny Zablakany Pies	Glodny Zablakany Pies
 Gniazdo Sheldona	Sheldon's Nest
 Gniewne Serce (pieczęć)	Wrathful Heart Seal
 Gniewny Mini Alastor	Angry Mini Alastor
@@ -1419,6 +1555,7 @@ Gotowa za: %s	Ready in: %s
 Gotowe za: %s	Ready in: %s
 Gotowe! Odbierz przedmiot	Ready! Collect your item
 Gotowy do użycia	Ready to use
+Gotowy. Usuwane sa cale wybrane stosy.	Done. Whole selected stacks are being deleted.
 Gra	Game
 Gra beze mnie	Plays Without Me
 Gra dalej, gdy wyjdziesz z gry - do twojego poziomu +30.	Keeps playing when you log out - up to your level +30.
@@ -1450,13 +1587,16 @@ Gruby Mini Kat (pieczęć)	Fat Mini Executioner (Seal)
 Grudzień	December
 Grupa: %s	Group: %s
 Grupuj	Group
+Grupy (PT)	Grupy (PT)
 Gruszka	Pear
+Gwardia Ognistego Smoka+	Fire Dragon Guard+
 Gwałtowne frontalne uderzenie w prostokątny obszar.	A violent frontal strike on a rectangular area.
 Gwiazda Północy (PB)	North Star (RX)
 Gwiazda Północy (SZC)	North Star (TR)
 Gwiezdny Skarb	Starry Treasure
 Góra Grzmotów	Thunder Mountains
 Góra_Sohan 4108 2250	Mount_Sohan 4108 2250
+Górnik	Miner
 Góry Gromu	Thunder Mountains
 Głowa Węża	Serpent Head
 Główne nagrody	Main rewards
@@ -1475,6 +1615,8 @@ Handlarz nie jest zainteresowany tym przedmiotem.	The merchant is not interested
 Handluj z %s	Trade with %s
 Haneul	Haneul
 Happy Hour	Happy Hour
+Helmy - Ninja	Helmets - Ninja
+Helmy - Sura	Helmets - Sura
 Helmy - Szaman	Helmets - Shaman
 Helmy - Wojownik	Helmets - Warrior
 Hełm Anielski (k)	Angel Helmet (f)
@@ -1544,6 +1686,7 @@ Hwachy nie można załadować, zanim nie zostanie naprawiona.	The Hwacha cannot 
 Hwang	Hwang
 Hydra	Hydra
 I am the czempion! Punktacja: %d	I am the champion! Score: %d
+ID Bota:	Bot ID:
 IMPLEMENTOR najstarszej postaci konta admin.	IMPLEMENTOR to the oldest character of the admin account.
 Ich liczba na event jest ograniczona.	Their number per event is limited.
 Id. Skrzynia Kolczyków	Perfect Earrings Chest
@@ -1555,6 +1698,9 @@ Ile sztuk kupic:	How many to buy:
 Ile sztuk kupic?	How many do you want to buy?
 Ile sztuk kupić:	How many to buy:
 Ile sztuk kupić?	How many do you want to buy?
+Ile? %s	How many? %s
+Ilosc: malejaco	Quantity: descending
+Ilosc: rosnaco	Quantity: ascending
 Ilość prób: - jedna, + najwięcej, ile się da.	Number of attempts: - one, + as many as possible.
 Ilość Ładunków: %d	Charges: %d
 Ilość śmierci	Deaths
@@ -1576,6 +1722,7 @@ Info o efekt.	Effect info
 Informacje	Information
 Informacje o misji	Quest Information
 Informacje o sklepie	Shop information 
+Inkub Płomieni+	Flame Incubus+
 Inne Mikstury	Other Potions
 Inne bonusy	Other bonuses
 Inne hacki/cheaty	Other hacks/cheats
@@ -1620,6 +1767,7 @@ Insygnia Zodiaku	Zodiac Insignia
 Inteligencja Sung Ma	Sung Ma Intelligence
 Inteligencja Sung Ma +%d	Sung Ma Intelligence +%d
 ItemShop	ItemShop
+Ja (GM)	Me (GM)
 Jabłko	Apple
 Jadeit Dymu	Smoke Jade
 Jadeit Mgły	Mist Jade
@@ -1680,7 +1828,16 @@ Jazda Konna (Precyzja)	Horse Riding (Precision)
 Jazda Konna (Sura)	Horse Riding (Sura)
 Jazda Konna (Szaman)	Horse Riding (Shaman)
 Jazda Konna (Wojownik)	Horse Riding (Warrior)
+Jazda Konna (diabły)	Horse Riding (Devils)
+Jazda Konna (insekty)	Horse Riding (Insects)
 Jazda Konna (losowo)	Horse Riding (Random)
+Jazda Konna (mistycy)	Horse Riding (Mystics)
+Jazda Konna (nieumarli)	Horse Riding (Undead)
+Jazda Konna (orki)	Horse Riding (Orcs)
+Jazda Konna (potwory)	Horse Riding (Monsters)
+Jazda Konna (pustynia)	Horse Riding (Desert)
+Jazda Konna (półludzie)	Horse Riding (Half-Humans)
+Jazda Konna (zwierzęta)	Horse Riding (Animals)
 Jedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.	One of Balathor's Dragon Eggs is summoning an icy chill! Focus your attacks on it.
 Jednoręczne	One-Handed
 Jedwab	Silk
@@ -1697,11 +1854,13 @@ Jeśli jednak Bossowi Świata uda się uciec, licznik obrażeń	However, if the 
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o podany procent.	If you have more than 90% HP, you take less damage by the given percentage.
 Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%.	If you have more than 90% HP, you take x% less damage.
 Jeśli masz powyżej 90%% PŻ, doznajesz obrażenia niższe o %d%%.	If you have more than 90%% HP, you take %d%% less damage.
+Jeśli sklep się nie pokazuje, ten klient nie ma jeszcze	If the shop does not show up, this client does not yet have
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	If you use this, you receive a buff that lets you summon Enasir and trade with him as with the General Store Saleswoman (he takes 10% of the price when you sell). Duration: 7 days. Can be extended to a maximum of 1000 days.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira i handlować z nim jak z Handlarką Różności (przy sprzedaży pobiera 10% ceny). Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	If you use this, you receive a buff that lets you summon Enasir and trade with him as with the General Store Saleswoman (he takes 10% of the price when you sell). Duration: 7 days. Can be extended to a maximum of 1000 days. The item can be traded with other players.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni.	If you use this, you receive a buff that lets you summon Enasir to access your storeroom. Duration: 7 days. Can be extended to a maximum of 1000 days.
 Jeśli tego użyjesz, otrzymasz buff, który pozwoli ci przywołać Enasira, aby uzyskać dostęp do swojego magazynu. Czas trwania: 7 dni. Można przedłużyć do maksymalnie 1000 dni. Przedmiot można wymieniać z innymi graczami.	If you use this, you receive a buff that lets you summon Enasir to access your storeroom. Duration: 7 days. Can be extended to a maximum of 1000 days. The item can be traded with other players.
 Jeśli ty albo Goblin Skarbów zginiecie, wyprawa się nie uda.	If you or the Treasure Goblin die, the expedition fails.
+Jeżeli zakryta [5] graniczy z odkrywaną kartą,	If the covered [5] borders a revealed card,
 Ji Jin	Ji Jin
 Jin Bing (lód)	Jin Bing (Ice)
 Jin Bing (mrok)	Jin Bing (Darkness)
@@ -1713,9 +1872,12 @@ Już Aztekowie używali obsydianu do produkcji potężnej broni siecznej. Broń 
 Język	Language
 Język / Language	Language
 Język klienta: %s	Client language: %s
+Język serwera: %s - klient zmieni język po ponownym uruchomieniu (Server language: after a restart).	Server language: %s - the client will change language after a restart.
 KRĘCI SIĘ...	SPINNING...
 Kaftan Wężowy	Serpent Jacket
 Kaftan Wężowy (wykon.)	Serpent Jacket (Craft)
+Kalendarz eventów	Event Calendar
+Kalendarz eventów: %s - %d	Event Calendar: %s - %d
 Kam. Pieczęci Sunga Mahi	Sung Mahi Seal Stone
 Kamera filmowa - obrót w lewo	Cinematic camera - rotate left
 Kamera filmowa - obrót w prawo	Cinematic camera - rotate right
@@ -1725,6 +1887,7 @@ Kamera filmowa - reset	Cinematic camera - reset
 Kamera filmowa - w dół	Cinematic camera - down
 Kamera filmowa - w górę	Cinematic camera - up
 Kamienie Duszy (0 = puste):	Spirit Stones (0 = empty):
+Kamienie Metin	Kamienie Metin
 Kamienie Teleportacji: %d. Teleportować do: %s?	Teleportation Stones: %d. Teleport to: %s?
 Kamienie dusz	Spirit Stones
 Kamienna tabliczka z pradawnymi runami. Emanuje nieznaną energią.	A stone tablet bearing ancient runes. It radiates an unknown energy.
@@ -1755,6 +1918,7 @@ Kamień Szlif. Płn. W.	North Wind Whetstone
 Kamień Teleportacji	Teleportation Stone
 Kamień Teleportacji+	Teleportation Stone+
 Kamień Wzgórza	Hill Stone
+Kamień Węglowy	Coal Stone
 Kamień Wężowy	Serpent Stone
 Kamień Wężowy+	Serpent Stone+
 Kamień do Fundamentu+	Foundation Stone+
@@ -1871,6 +2035,8 @@ Kolejna teleportacja możliwa za niecałą minutę.	Next teleport possible in le
 Kolejne (maks. 6 na dobę) kosztują 2, 4, 6, 8 i 10 Kart Nowego Początku.	Further ones (max. 6 per day) cost 2, 4, 6, 8 and 10 New Start Cards.
 Kolejny boss za: %s	Next boss in: %s
 Kolejny cel	Next Target
+Kolekcja lochów	Dungeon Collection
+Kolekcja pól	Field Collection
 Kolia Jadeitu Dymu	Smoke Jade Pendant
 Kolia Jadeitu Mgły	Mist Jade Pendant
 Kolia Jadeitu Nocy	Night Jade Pendant
@@ -2158,6 +2324,7 @@ Koło Losu jest teraz wyłączone.	The Wheel of Fortune is currently disabled.
 Koło Losu: brama otwarta - poziom %d!	Wheel of Fortune: gate open - level %d!
 Koło Losu: wygrywasz %s. Nagroda czeka w magazynie ItemShopu.	Wheel of Fortune: you win %s. The reward is waiting in the ItemShop storeroom.
 Koło Losu: zdobywasz klucz (%d/%d).	Wheel of Fortune: you obtain a key (%d/%d).
+Koło Płomieni Nocy	Night Flame Wheel
 Koło Skrzydła Nocy	Wheel of the Night Wing
 Koło Słonecznego Wilka	Wheel of the Sun Wolf
 Koło ma 16 pól, każde z szansą 1/16. Przed każdym obrotem pola są losowane od nowa.	The wheel has 16 fields, each with a 1/16 chance. Before every spin the fields are drawn anew.
@@ -2167,6 +2334,8 @@ Koń zjadł %(a)d Paszy dla Konia (doświadczenie %(b)d).	The horse ate %(a)d Ho
 Krab Królewski	King Crab
 Krab Pancerny Zodiaku	Zodiac Armoured Crab
 Krab Wojow. Zodiaku	Zodiac Crab Warrior
+Kradziez PM	SP Steal
+Kradziez PZ	HP Steal
 Kradzież PE	SP Steal
 Kraina Gigantow	Land of Giants
 Kraina Ognia	Fireland
@@ -2198,14 +2367,18 @@ Krótki	Short
 Krótko	Short
 Kręty Klucz (PB)	Twisted Key (RX)
 Kręty Klucz (SZC)	Twisted Key (TR)
+Ksiegi umiejetnosci	Ksiegi umiejetnosci
 Ksiegi zapomnienia	Books of Forgetfulness
 Ksiąg w oknie: %d (wymian: %d)	Books in the window: %d  (exchanges: %d)
 Książ. Odłamek Broni II	Princely Weapon Shard II
 Książ. Odłamek Hełmu II	Princely Helmet Shard II
 Książ. Odłamek Zbroi II	Princely Armour Shard II
 Książka Przebudzenia	Book of Awakening
+Książę Atlantydy+	Prince of Atlantis+
+Książę Orientu (brąz.)+	Prince of the Orient (bronze)+
 Książę Piekielnej Wieży	Hellish Tower Prince
 Książę Śmierci P. Wieży	Hellish Tower Prince of Death
+Książęcy	Princely
 Książęcy Efekt Zestawu	Princely Set Effect
 Książęcy Kowal Zestawu	Princely Set Smith
 Księga Absorpcji Życia	Life Absorption Book
@@ -2283,6 +2456,7 @@ Księga Łowcy Potworów	Monster Hunter Book
 Księga: Burza Balathora	Book: Balathor's Storm
 Księga: Nieugiętość Balathora	Book: Balathor's Steadfastness
 Księga: Wola Balathora	Book: Balathor's Will
+Księgi Misji	Quest Books
 Księgi Um. Pasywnych	Passive Skill Books
 Księgi umiejętności	Skill books
 Księgi zapomnienia	Books of Forgetfulness
@@ -2302,9 +2476,12 @@ Kup część stosu	Buy part of the stack
 Kup podaną liczbę sztuk jednego przedmiotu, od najtańszej	Buy the given quantity of one item, cheapest first
 Kup tę ofertę	Buy this offer
 Kup wiele	Buy multiple
+Kup wiele działa dla jednego przedmiotu.	Buy Many works for a single item.
 Kup wszystkie zaznaczone oferty	Buy all selected offers
 Kup wszystko (%d)	Buy all (%d)
 Kup wszystko (0)	Buy all (0)
+Kup wybrane (%d	Buy Selected (%d
+Kup wybrane (0	Buy Selected (0
 Kup!	Buy!
 Kup...	Buy...
 Kupic %d ofert za lacznie %s?	Buy %d offers for a total of %s?
@@ -2316,11 +2493,13 @@ Kupiono %d z %d ofert: %d szt. za %s.	Bought %d of %d offers: %d pcs. for %s.
 Kupić %d szt. (ofert: %d) za %s?	Buy %d pcs. (offers: %d) for %s?
 Kupić %s za %s Gaya?	Buy %s for %s Gaya?
 Kupić %s za %s?	Buy %s for %s?
+Kupić zaznaczone oferty: %d?	Buy the selected offers: %d?
 Kupon SM (50), +100% szansy na drop przez 2 godziny	   DC Voucher (50), +100% drop chance for 2 hours
 Kupon o wartości 20 Smoczych Monet. Kliknij prawym przyciskiem myszy, aby dodać je do konta.	A voucher worth 20 Dragon Coins. Right-click to add them to your account.
 Kupony	Vouchers
 Kupony SM	DC Vouchers
 Kupony SM/Premium	DC/Premium Vouchers
+Kupowanie mikstur	Kupowanie mikstur
 Kupuja sie po kolei; blad przerywa zakupy.	Items are bought one by one; an error stops the purchases.
 Kupuje za nie w Item Shopie to, czego używa (bez fryzur). Nie wydaje: nie rusza ich.	Buys what it uses in the Item Shop with them (no hairstyles). Doesn't spend: leaves them untouched.
 Kursor nad postaciami	Cursor over characters
@@ -2329,6 +2508,7 @@ Kwiat Żywiołu	Elemental Flower
 Kwiecień	April
 Kwota (yang):	Amount (Yang):
 Kwota SM:	DC amount:
+Kwota Yang:	Yang Amount:
 Kwota:	Amount:
 Kłopoty na Zboczu Gautama	Trouble on Gautama Cliff
 LPM: podnoszę tak / nie	LMB: pick up yes / no
@@ -2346,6 +2526,7 @@ Legendarne: te nagrody odblokujesz po 10 turach.	Legendary: you unlock these rew
 Lekarstwo Iluzji	Illusion Remedy
 Lekarstwo sporządzone z liści życia. Po zażyciu zostaną natychmiast regenerowane PŻ i PE.	A medicine made from leaves of life. When taken, it instantly regenerates HP and SP.
 Lekki Krok (prędkość ruchu +%(v)s) na %(d)d s po ataku pieszo (co 300 s)	Light Step (movement speed +%(v)s) for %(d)d s after attacking on foot (every 300 s)
+Lekki Strój Plażowy+ (m)	Light Beach Outfit+ (m)
 Lekkie jak Piórko	Light as a Feather
 Leopardzik (120 dni)	Leopard Cub (120 days)
 Leopardzik (30 dni)	Leopard Cub (30 days)
@@ -2353,6 +2534,7 @@ Leopardzik (7 dni)	Leopard Cub (7 days)
 Level konia:	Horse level:
 Lewe pole: przedmiot, który dostanie nowy wygląd.	Left slot: the item that will get the new look.
 Lewe pole: wierzchowiec, który dostanie nowy wygląd.	Left slot: the mount that will get the new look.
+Lewy Shift	Left Shift
 Leśna Wróżka	Forest Fairy
 Leże Smoka	Dragon's Lair
 Licencja Najemnika	Mercenary Licence
@@ -2363,6 +2545,7 @@ Liczba bonusów na kostiumie (co najmniej):	Number of bonuses on the costume (at
 Liczba botów (3-16):	Number of bots (3-16):
 Liczba gier:	Number of games:
 Liczba online	Online count
+Liczba sztuk	Quantity
 Liczba sztuk:	Quantity:
 Liczba w ekwipunku	Amount in Inventory
 Liczby	Numbers
@@ -2370,6 +2553,7 @@ Lider (Dow. %s)	Leader (Lead. %s)
 Lider grupy	Group Leader
 Lilia: szansa na przedmioty +%d%%	Lily: item drop chance +%d%%
 Liliowa Runa SungMa	Lilac SungMa Rune
+Limit Lvl: %d do %d	Level Limit: %d to %d
 Limit członków grupy: od %d do %d	Group size limit: %d to %d
 Limit zakupów na konto: %d	Purchase limit per account: %d
 Limit zakupów na minutę - dokończ za chwilę.	Purchase limit per minute - finish in a moment.
@@ -2384,6 +2568,7 @@ Litery na tej potężnej cegle wydają się emanować blaskiem.	The letters on t
 Lizak Magii	Magic Lolly
 Lizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.	A lollipop of mysterious ingredients, full of magic. Gives: +50% EXP, +20% attack speed, +20% casting speed, +30% magic damage, +10% max. HP, +10% max. SP. Lasts 7 days.
 Liście Życia	Leaves of Life
+Loch / wyprawa	Dungeon / Expedition
 Loch Malp (latwy)	Monkey Dungeon (Easy)
 Loch Malp (normalny)	Monkey Dungeon (Normal)
 Loch Malp (trudny)	Monkey Dungeon (Hard)
@@ -2392,6 +2577,7 @@ Loch Pajakow V1	Spider Dungeon V1
 Loch Pajakow V2	Spider Dungeon V2
 Loch Pająków (1)	Spider Dungeon (1)
 Loch Pająków V1	Spider Dungeon V1
+Loch Polowy	Field Dungeon
 Lochy Yohary	Yohara dungeons
 Lod. Wiel. Zab. Zodiaku	Zodiac Ice Killer Whale
 Lodogóry 690 10169	Icehills 690 10169
@@ -2459,11 +2645,13 @@ Maks. redukcja obrażeń: %d%% (potwory %d%%)	Max. damage reduction: %d%% (monst
 Maksymalnie	Maximum
 Maksymalny	Maximum
 Mala liczba ofert - wycena orientacyjna	Few offers - rough valuation
+Malpi Zolnierz	Malpi Zolnierz
 Maniak Cz. Wiat. Zodiaku	Zodiac Black Wind Maniac
 Mapa %d	Map %d
 Mapa (index):	Map (index):
 Mapa OX	OX Map
 Mapa teleportacji - TAB	Teleport map - TAB
+Mapa Ślubna	Wedding Map
 Mapa świata	World map
 Mapa: %s	Map: %s
 Mapy	Maps
@@ -2585,11 +2773,17 @@ Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Pozi
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 60-74.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 75-89.
 Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104.	A material that increases the chance of adding a 6th or 7th bonus at Seon-Hae. Item level: 90-104.
+Materiały	Materials
 Materiały ulepszeń	Upgrade materials
 Max PE: +%d	Max SP: +%d
+Max PM	Max SP
+Max PM %	Max SP %
+Max PZ	Max HP
+Max PZ %	Max HP %
 Max PŻ +2500 / +2000 / +1500	Max. HP +2500 / +2000 / +1500
 Max PŻ: +%d	Max HP: +%d
 Max wytrzymalosc	Max Endurance
+Max. PŻ +%d	Max. HP +%d
 Max. poziom przedmiotu: %d	Max. item level: %d
 Max. ulepszenie z +%d na +%d.	Max. upgrade from +%d to +%d.
 Mała Meley	Little Meley
@@ -2597,9 +2791,11 @@ Mała Meley (pieczęć)	Little Meley (Seal)
 Mała Nemere	Little Nemere
 Mała Nemere (pieczęć)	Little Nemere (Seal)
 Małe Błogosławieństwo	Small Blessing
+Małpi Loch	Monkey Dungeon
 Małpi Loch (trudny)	Monkey Dungeon (Hard)
 Małpi Loch (łatwy)	Monkey Dungeon (Easy)
 Małpi Loch (średni)	Monkey Dungeon (Medium)
+Małpka	Monkey
 Mały Aamon	Little Aamon
 Mały Aamon (pieczęć)	Little Aamon (Seal)
 Mały Baashido	Baby Baashido
@@ -2723,7 +2919,7 @@ Mikstury: przeciągnij je i inne przedmioty z ekwipunku.	Potions: drag them and 
 Min. %d bonusów	Min. %d bonuses
 Min. bonusów: %d	Min. bonuses: %d
 Min. liczba bonusow:	Min. number of bonuses:
-Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: the item must have this bonus, at least X. Click: None / >.\nNone / >: picks up an item without this bonus, and with it only above X. Click: Min.
+Min.: przedmiot musi mieć ten bonus, co najmniej X. Klik: Brak / >. Brak / >: podnosi przedmiot bez tego bonusu, a z nim tylko powyżej X. Klik: Min.	Min.: the item must have this bonus at X or higher. Click: None / >.\nNone / >: picks up an item without this bonus, and with it only above X. Click: Min.
 Mini Azrael	Mini Azrael
 Mini Azrael (pieczęć)	Mini Azrael (Seal)
 Mini-Dowódca	Mini Commander
@@ -2742,11 +2938,13 @@ Miotaj mrocznymi kulami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręcz
 Miotaj mrocznymi siłami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Throw the Dark Force to damage enemies.|Boosted by: Intelligence (++), Dexterity (accuracy) (+), character level.
 Miotaj pioruny.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Attack with thunderbolts.|Boosted by: Intelligence (++), Dexterity (accuracy) (+), character level.
 Miotaj talizmanami, aby ranić wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Throw a talisman to damage enemies.|Boosted by: Intelligence (++), Dexterity (accuracy) (+), character level.
+Misja %d	Quest %d
 Misja kart	Card mission
 Misje Biologa	Biologist quests
 Misje dzienne	Daily quests
 Misje główne	Main quests
 Misje poboczne	Side quests
+Misje polowania	Misje polowania
 Misje łowieckie	Hunting quests
 Misternie zdobiony klucz, który otwiera skrzynię nimfy wodnej. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	An intricately decorated key that opens the Water Nymph Chest. (No use yet - it will come with the next Yohara update.)
 Mistrz Ahtrin	Master Ahtrin
@@ -2760,6 +2958,8 @@ Mistrz Włóczni Ki	Spear Master Ki
 Mistrz Włóczni Mao	Spear Master Mao
 Mistrz ekwipunku	Equipment Master
 Mistrz przepadnie.	 Master level will be lost.
+Mistrz umiejętności	Skill Master
+Mistrzowska piłka nożna	Master Football
 Mistrzowski Emblemat	Master Emblem
 Mistykom	Mystics
 Mithril	Mithril
@@ -2768,6 +2968,7 @@ Mnich Milbon	Monk Milbon
 Mniej niz 1 min.	Less than 1 min.
 Mnoznik dropu przedmiotow	Item drop multiplier
 Mnoznik dropu yang	Yang drop multiplier
+Moby 1 hit	Mobs 1 Hit
 Moc Błyskawic	Lightning Power
 Moc Lodu	Ice Power
 Moc Mroku	Darkness Power
@@ -2779,6 +2980,7 @@ Mocny Sznur	Strong Rope
 Modna Fryzura (siwa)	Fashionable Hairstyle (grey)
 Modna Fryzura (złota)	Fashionable Hairstyle (golden)
 Moj cel	My target
+Moja postac	My Character
 Moje miejsca	My locations
 Mokre Szaty: szybkość ruchu -50	Wet Robes: movement speed -50
 Moloch	Moloch
@@ -2790,6 +2992,7 @@ Może schwytać karty: [1]	Can capture cards: [1]
 Może schwytać karty: [1], [2]	Can capture cards: [1], [2]
 Może schwytać karty: [1], [2], [3]	Can capture cards: [1], [2], [3]
 Może schwytać karty: [1], [2], [3], [4]	Can capture cards: [1], [2], [3], [4]
+Może schwytać karty: [1], [2], [3], [4], [5]	Can capture cards: [1], [2], [3], [4], [5]
 Może schwytać karty: [K]	Can capture cards: [K]
 Może ściągnąć na ziemię niektórych marzycieli. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It can bring some dreamers back down to earth. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Możesz mieć najwyżej %d własnych kategorii.	You can have at most %d custom categories.
@@ -2818,10 +3021,12 @@ Można znać tylko jedną ripostę.	You can only know one riposte.
 Mroczna Paproć	Dark Fern
 Mroczna Wieża	Dark Tower
 Mroczna sfera ma %d%% szans na ogłuszenie przeciwnika	Dark Orb has a %d%% chance to stun the opponent
+Mrocznego Uderzenia	of the Dark Strike
 Mroczny Cierń	Dark Thorn
 Mroczny Kat Zodiaku	Zodiac Dark Executioner
 Mrok	Darkness
 Mroz. Lod. Czl. Zodiaku	Zodiac Frosty Ice Man
+Mrozny Lodowy Czlowiek	Mrozny Lodowy Czlowiek
 Mroźna Skrz. Balathora	Balathor's Frost Chest
 Mroźna Skrz. Balathora+	Balathor's Frost Chest+
 Mroźny Klucz (PB)	Frost Key (RX)
@@ -2830,6 +3035,7 @@ Mroźny Korzonek	Frost Rootlet
 Mroźny Rufus	Frost Rufus
 Mroźny Rufus (pieczęć)	Frost Rufus Seal
 Mumia Kapłanka	Mummy Priestess
+Mundur Strażaka+(m)	Firefighter Uniform+ (m)
 Musisz go pokonać, by otrzymać nagrodę.	You must defeat it to receive a reward.
 Musisz przesunąć Ogniste Jajo Smoka w drugą stronę.	You must push the Fire Dragon Egg to the other side.
 Myr Bojownik (wiatr)	Myr Fighter (Wind)
@@ -2846,6 +3052,7 @@ Myr Prymus (ziemia)	Myr Primus (Earth)
 Myr Sung Mahi	Myr of Sung Mahi
 Myr Weteran (wiatr)	Myr Veteran (Wind)
 Myr Weteran (ziemia)	Myr Veteran (Earth)
+Mój ranking	My Ranking
 Młodszy Hazardzista	Junior Gambler
 Młody Moa (pieczęć)	Young Moa Seal
 Młody Skorpion	Young Scorpion
@@ -2888,6 +3095,7 @@ Na ziemie Yohary można się teleportować od 1. Poziomu Czempiona.	You can tele
 Naciśnij klawisz dla: %s	Press a key for: %s
 Naczelny Hazardzista	Chief Gambler
 Nadaj imię	Give a name
+Nadaj range	Grant rank
 Nadaje imię przywołanej Buffi (imię zostaje przy jej pieczęci). Buffi z imieniem rzuca też Szybkość i Zwiększenie Ataku, a ty dostajesz +10% silny przeciwko bossom na 7 dni. Nowe imię - dopiero gdy ten bonus minie.	Gives a name to the summoned Buffi (the name stays with her seal). A named Buffi also casts Swiftness and Attack Up, and you get +10% Strong against bosses for 7 days. A new name only once this bonus has expired.
 Nadpisać pozycję %d (%s) obecnym miejscem?	Overwrite location %d (%s) with your current position?
 Nadwyżka %d (omdlenie i spowolnienie +1 proc. co 100)	Surplus %d (blackout and slow +1 pct. per 100)
@@ -2914,7 +3122,9 @@ Nagrody standardowe	Standard rewards
 Nagrody są już odkryte.	The rewards have already been revealed.
 Nagrody za tury	Round Rewards
 Najczęściej zabijani	Most often killed
+Najdłuższa sesja	Longest Session
 Najedź myszką na przedmiot, aby zobaczyć opis.	Hover over an item to see its description.
+Najlepsza sesja (yang)	Best Session (Yang)
 Najlepszy czas: %s	Best time: %s
 Najpierw dezaktywuj Relikt Duszy.	Deactivate the Soul Relic first.
 Najpierw dodaj eliksir.	Add an elixir first.
@@ -2976,6 +3186,7 @@ Nakrycie głowy z zestawu Arezzo (Zestaw Upiornej Nocy). Działa 30 dni od zało
 Nakrycie głowy z zestawu Arezzo (Zestaw Wikinga). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Viking Set). Lasts 30 days from equipping.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlocisty). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Gilded Set). Lasts 30 days from equipping.
 Nakrycie głowy z zestawu Arezzo (Zestaw Zlotego Smoka). Działa 30 dni od założenia.	Headgear from the Arezzo collection (Golden Dragon Set). Lasts 30 days from equipping.
+Nakładka na broń	Weapon Overlay
 Nakładka na broń jednoręczną (miecz) - wojownik, ninja, sura. Działa 30 dni od zakupu.	Skin for a one-handed weapon (sword) - Warrior, Ninja, Sura. Lasts 30 days from purchase.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): ninja. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Ninja. Lasts 30 days from equipping.
 Nakładka na broń z zestawu Arezzo (Zestaw Anielski): szaman. Działa 30 dni od założenia.	Weapon skin from the Arezzo collection (Angel Set): Shaman. Lasts 30 days from equipping.
@@ -3118,6 +3329,7 @@ Nazwa A-Z	Name A-Z
 Nazwa Postaci jest niepoprawna.	The character name is invalid.
 Nazwa postaci jest identyczna jak nazwa konta.	The character name is identical to the account name.
 Nazwa pozycji (do %d znaków)	Location name (up to %d characters)
+Nazwa presetu	Preset name
 Nazwa przedmiotu	Item name
 Nazwa reguły	Rule name
 Nazwa twojej postaci nie może zawierać znaków specjalnych.	Your character name cannot contain special characters.
@@ -3141,6 +3353,7 @@ Nick:	Name:
 Nick: %s (pid: |cff5af22c%d|r)	Name: %s (pid: |cff5af22c%d|r)
 Nick: NAZWA_GRACZA (pid: |cff5af22c99999|r)	Name: NAZWA_GRACZA (pid: |cff5af22c99999|r)
 Nick: PLAYER_NAME	Name: PLAYER_NAME
+Nie 1. atak	Not 1st attack
 Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata przełącz widok przyciskiem w pasku tytułu.	No longer needed: the NPC Locator is enabled for every character. | On the world map, switch the view with the button in the title bar.
 Nie jest ona przeznaczona do higieny jamy ustnej. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	It is not intended for oral hygiene. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Nie jest składnikiem receptur ani ulepszeń.	Not an ingredient of any recipe or upgrade.
@@ -3222,16 +3435,20 @@ Nie widzisz jeszcze całej mapy.	You cannot see the whole map yet.
 Nie wystawiono %d przedmiotow - sklep zostal zamkniety.	%d items were not listed - the shop has been closed.
 Nie zaznaczono żadnej misji.	No quest selected.
 Nie znaleziono gracza.	Player not found.
+Nie znaleziono moba/metina o takim ID.	No mob/metin found with that ID.
 Nie znaleziono żadnych wypraw.	No dungeons found.
 Niebiańska Tarcza	Heavenly Shield
 Niebiańska Tarcza nie może zostać nadana.	Heavenly Shield cannot be granted.
 Niebieska Mikstura (W)	Blue Potion (W)
 Niebieska Runa SungMa	Blue SungMa Rune
+Niebieski Alfa Wilk	Niebieski Alfa Wilk
 Niebieski Barwnik	Blue Dye
 Niebieski Mały Smok	Little Blue Dragon
 Niebieski Mały Smok (pieczęć)	Little Blue Dragon (Seal)
 Niebieski Skorpion	Blue Scorpion
+Niebieski Wilk	Niebieski Wilk
 Niebieski Wilk Zodiaku	Zodiac Blue Wolf
+Niebieski Wzorowy Uczeń+	Blue Model Student+
 Niebieskie Jajo Smoka	Blue Dragon Egg
 Niebieskie Pudło Zodiaku	Blue Zodiac Box
 Niedostępne	Unavailable
@@ -3254,6 +3471,7 @@ Nieprawidlowa odpowiedz serwera.	Invalid server response.
 Nieprawidlowy nick	Invalid name
 Nieprawidłowy kod koloru (np. #FF8800).	Invalid colour code (e.g. #FF8800).
 Nieprawidłowy limit czasu.	Invalid time limit.
+Niesmiertelnosc WYL	Immortality OFF
 Nieudana	Failed
 Nieugiętość Balathora	Balathor's Steadfastness
 Nieugiętość Balathora: odporność na odrzucenie i powalenie %d%%	Balathor's Steadfastness: resistance to knockback and knockdown %d%%
@@ -3280,6 +3498,7 @@ Niezwykle cenna roślina potrzebna do wytwarzania wyjątkowo mocnych eliksirów.
 Nieśmiertelność	Immortality
 Nikt jeszcze nie ma wyniku w tym sezonie.	Nobody has a score yet this season.
 Nikt jeszcze nie ukończył tury.	Nobody has completed a round yet.
+Ninja (Łuk)	Ninja (Bow)
 Ninja Ostrze	Ninja Blade
 Ninja Łuk	Ninja Archery
 Niski ranking powoduje zwiększenie zadawanych obrażeń	A low ranking increases the damage you deal
@@ -3290,6 +3509,7 @@ Niszczyciel En-Tai (BŚ)	En-Tai Destroyer (WB)
 Niszczyciel P. Wieży	Hellish Tower Destroyer
 Niszczyciel Zodiaku	Zodiac Destroyer
 Noc trwać będzie od 22:00 do 6:00.	Night lasts from 22:00 to 6:00.
+Noc/snieg po 22:00	Noc/snieg po 22:00
 Normalny loch malp	Normal Monkey Dungeon
 Nosi nazwę demona o ostrych jak brzytwa kłach. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Named after a demon with razor-sharp fangs. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Notatka Kowala	Blacksmith's Note
@@ -3329,6 +3549,7 @@ Obowiązki gildii - panel lidera	Guild Duties - Leader Panel
 Obr. Metiny/Bossy/MiniBossy +%.0f%%	Dmg. vs Metins/Bosses/Mini-bosses +%.0f%%
 Obrazenia magiczne	Magic damage
 Obrazenia magiczne vs potwory	Magic damage vs monsters
+Obrazenia umiejetnosci	Skill Damage
 Obraż. sztyletów w potwory +%d	Dagger dmg. vs monsters +%d
 Obraż. umiejętności	Skill Damage
 Obrażenia %s +%s%%	%s damage +%s%%
@@ -3355,7 +3576,13 @@ Obrażenia przeciwko Metinom +%d%%	Damage against Metins +%d%%
 Obrażenia umiejętności	Skill Damage
 Obrażenia umiejętności konnych +%(v)s%%	Horse skill damage +%(v)s%%
 Obrażenia w Dolinie Seungryong +%d%%	Damage in the Valley of Seungryong +%d%%
+Obrażenia zadawane Kamieniom Metin +%d%% na 5 sek.	Damage dealt to Metin Stones +%d%% for 5 sec.
+Obrażenia zwiększają się o %d%% na 10 sek.	Damage increases by %d%% for 10 sec.
 Obrażenia/Obrona	Damage/Defence
+Obrażenie Umiejętności: 10%	Skill Damage: 10%
+Obrażenie Umiejętności: 3%	Skill Damage: 3%
+Obrażenie Umiejętności: 5%	Skill Damage: 5%
+Obrażenie Umiejętności: 7%	Skill Damage: 7%
 Obrona %	Defence %
 Obrona Statku	Ship Defence
 Obrona i odporności	Defence and resistances
@@ -3370,11 +3597,13 @@ Obrona przed umiejętnością Uderzenie Palcem +%.1f%%	Defence against the Finge
 Obrona przed umiejętnością Wir Miecza +%.1f%%	Defence against the Sword Spin skill +%.1f%%
 Obrona przed umiejętnością Zasadzka +%.1f%%	Defence against the Ambush skill +%.1f%%
 Obrona przed śr. obrażeniami	Avg. Damage Resistance
+Obrona przy Metinach	Defense near Metin Stones
 Obrona vs Ninja	Def. vs Ninjas
 Obrona vs Sura	Def. vs Suras
 Obrona vs Szamanom	Def. vs Shamans
 Obrona vs Wojownikom	Def. vs Warriors
 Obrońca	Defender
+Obrońca (obrona)	Defender (defense)
 Obrońca Chmur	Cloud Guardian
 Obrońca Stylu Małp	Monkey Style Defender
 Obrót %d/%s, wydano %d SM	Spin %d/%s, spent %d DC
@@ -3416,6 +3645,7 @@ Od: %s Do: %s	From: %s To: %s
 Odbicie Walki. Wręcz	Melee Reflect
 Odbicie ciosu	Reflect blow
 Odbicie pocisku	Reflect projectile
+Odbierz GM...	Revoke GM...
 Odbierz nagrodę	Claim reward
 Odbierz nagrodę za turę	Claim Round Reward
 Odbierz nagrodę za turę w oknie Poszukiwania skarbów.	Claim your round reward in the Treasure Hunt window.
@@ -3439,6 +3669,7 @@ Oddać przedmiot Seon-Hae (szansa %d%%)?	Hand the item over to Seon-Hae (chance 
 Oddelegowany Komendant	Delegated Commander
 Odebrac range GM postaci %s?	Remove the GM rank of character %s?
 Odebrać możesz tylko nagrodę za bieżącą turę (%d).	You can only claim the reward for the current round (%d).
+Odeslij boty	Send bots back
 Odkryta karta	Revealed Card
 Odnowa	Renewal
 Odp. na Br. Dwuręczną	Two-Handed Res.
@@ -3452,12 +3683,16 @@ Odp. na Przecię.Obr.	Avg. Damage Res.
 Odp. na Przesz. Cios	Piercing Hit Res.
 Odp. na Wiatr	Wind Res.
 Odp. na Ziemię	Earth Res.
+Odpoczynek w miescie	Odpoczynek w miescie
 Odpornosc na omdlenia	Stun resistance
 Odpornosc na spowolnienie	Slow resistance
 Odpornosc na upadek	Knockdown resistance
+Odpornosc: Ninja	Resistance: Ninja
+Odpornosc: Sura	Resistance: Sura
 Odpornosc: Szaman	Resistance: Shaman
 Odpornosc: Wojownik	Resistance: Warrior
 Odpornosc: ataki fizyczne	Resistance: physical attacks
+Odpornosc: blyskawice	Resistance: Lightning
 Odpornosc: bron dwureczna	Resistance: two-handed weapons
 Odpornosc: cios krytyczny	Resistance: critical hit
 Odpornosc: dzwony	Resistance: bells
@@ -3466,8 +3701,12 @@ Odpornosc: ludzie	Resistance: half-humans
 Odpornosc: magia	Resistance: magic
 Odpornosc: miecze	Resistance: swords
 Odpornosc: mrok	Resistance: darkness
+Odpornosc: obrazenia umiejetnosci	Resistance: Skill Damage
+Odpornosc: ogien	Resistance: Fire
 Odpornosc: potwory	Resistance: monsters
 Odpornosc: przebicie	Resistance: piercing hit
+Odpornosc: srednie obrazenia	Resistance: Average Damage
+Odpornosc: strzaly	Resistance: Arrows
 Odpornosc: sztylety	Resistance: daggers
 Odpornosc: trucizny	Resistance: poison
 Odpornosc: wachlarze	Resistance: fans
@@ -3494,6 +3733,7 @@ Odporność na Mroczne Uderzenie	Dark Strike Resistance
 Odporność na Mrok (+%d%% łącznej wartości)	Darkness Resistance (+%d%% of total value)
 Odporność na Ninja: zmniejsza obrażenia, które odnosisz z ręki Ninja.	Resistance against Ninjas: reduces the damage you take from Ninjas.
 Odporność na Ogień (+%d%% łącznej wartości)	Fire Resistance (+%d%% of total value)
+Odporność na Ogień: 5%	Fire Resistance: 5%
 Odporność na Ognista Strzała	Fire Arrow Resistance
 Odporność na Przywołanie Błyskawicy	Summon Lightning Resistance
 Odporność na Strzał	Arrow Resistance
@@ -3515,6 +3755,7 @@ Odporność na Ziemię (+%d%% łącznej wartości)	Earth Resistance (+%d%% of to
 Odporność na ataki fizyczne %d%%	Resistance against physical attacks %d%% 
 Odporność na cios krytyczny: zmniejsza obrażenia odnoszone wskutek ciosu krytycznego.	Critical hit resistance: reduces the damage taken from critical hits.
 Odporność na krytyczne	Critical Hit Resistance
+Odporność na lód +5%	Ice Resistance +5%
 Odporność na lód, ziemię, ciemność	Ice, Earth, Darkness Resistance
 Odporność na mrok: zmniejsza obrażenia zadawane przez określone potwory.	Darkness resistance: reduces the damage dealt by certain monsters.
 Odporność na obraż. umiej.	Skill Damage Resistance
@@ -3531,6 +3772,7 @@ Odporność vs Ludziom	Resistance vs Humans
 Odprawić towarzysza na dobre? Tego nie da się cofnąć.	Dismiss the Companion for good? This cannot be undone.
 Odrodz spawny	Respawn spawns
 Odstęp między teleportami: %d min. Bez lochów i map eventów.	Time between teleports: %d min. No dungeons or event maps.
+Odswiez liste	Refresh List
 Odważny	Courageous
 Odwołaj	Cancel
 Odwołaj zwierzaka, zanim go zaczarujesz.	Recall the pet before enchanting it.
@@ -3584,6 +3826,7 @@ Ognista Runa Aury (10)	Fire Aura Rune (10)
 Ogniste Buty	Fire Shoes
 Ogniste Jajo Smoka	Fire Dragon Egg
 Ogniste uderzenie ma %d%% szans na oddanie przeciwnikowi	Flame Strike has a %d%% chance to be reflected onto the opponent
+Ognistej Strzały	of the Fire Arrow
 Ognisty Duch Zodiaku	Zodiac Flame Ghost
 Ognisty Duch Żaru (BŚ)	Ember Flame Ghost (WB)
 Ognisty Krol Zodiaku	Zodiac Flame King
@@ -3606,6 +3849,7 @@ Okaz. Odłamek Hełmu I	Splendid Helmet Shard I
 Okaz. Odłamek Hełmu II	Splendid Helmet Shard II
 Okaz. Odłamek Zbroi I	Splendid Armour Shard I
 Okaz. Odłamek Zbroi II	Splendid Armour Shard II
+Okazały	Magnificent
 Okazały Efekt Zestawu	Grand Set Effect
 Okazały Kowal Zestawu	Splendid Set Smith
 Okienko %s - %s, bonusy %d / %d	Slot %s - %s, bonuses %d / %d
@@ -3648,6 +3892,7 @@ Osobisty Sklepik Premium	Personal Premium Shop
 Ostatni boss	Last boss
 Ostatni drop: %s	Last drop: %s
 Ostatni zakup moze sie jeszcze dokonczyc.	The last purchase may still complete.
+Ostatnia nagroda:	Last reward:
 Ostatnia strona	Last page
 Ostatnie 7 dni	Last 7 days
 Ostatnie Uderzenie	Final Blow
@@ -3711,6 +3956,7 @@ Otrzymujesz tytuł %s. Załóż go w oknie tytułów (portret w oknie postaci).	
 Otrzymujesz: %s.	You receive: %s.
 Otrzymywane Obrażenia +%d%%	Damage Taken +%d%%
 Otwarte skrzynie	Chests opened
+Otwarto skrzynek: %d.	Chests opened: %d.
 Otwarto: %d szt.	Opened: %d pcs.
 Otwiera je ewolucja peta	Unlocked by pet evolution
 Otwiera nowe miejsce na umiejętność heroicznego peta od 100 poziomu.	Unlocks a new skill slot for a heroic pet from level 100.
@@ -3728,6 +3974,7 @@ Otwórz pakiet i sprawdź, co udało ci się wygrać.	Open the bundle and see wh
 Otwórz ponownie	Reopen
 Otwórz sklep	Open shop
 Otwórz sklep ponownie	Reopen shop
+Otwórz skrzynie	Open chests
 Owoc Bogów	Fruit of the Gods
 Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.	Rank fruit: +200 Rank Points (normal rank). Works from 0 to 20 000 points. The first rank (Valiant) from 21 000. Command /ranga.
 Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.	Rank fruit: +200 Rank Points beyond the normal rank. Works from 20 000 (full normal rank) to 40 000 points. Command /ranga.
@@ -3824,6 +4071,7 @@ PB: Żołnierz Setaou	RX: Setaou Soldier
 PD czempiona	Champion EXP
 PD z potworów: %s / %s	EXP from monsters: %s / %s
 PD z przedmiotów: %s / %s	EXP from items: %s / %s
+PID bota:	Bot PID:
 POKONAJ BOSSA ŚWIATA (raz dziennie)	DEFEAT THE WORLD BOSS (once a day)
 PPM - następny event	RMB - next event
 PPM: dodaj do handlu	RMB: add to trade
@@ -3854,9 +4102,12 @@ Pancerne Rękawice	Armoured Gloves
 Pancerny Hełm Dragona	Dragon Armoured Helmet
 Pancerny Hełm Smoków	Armoured Helmet of the Dragons
 Pancerz Czarnego Ognia	Black Fire Armour
+Pancerz Horroru+ (złoty)	Horror Armor+ (gold)
 Pancerz Magmy	Magma Armour
 Pancerz Zodiaku	Zodiac Cuirass
 Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt	The GM panel failed to load in this client - details in syserr.txt
+Panel botów (GM)	Bot Panel (GM)
+Panel jest w wersji BETA. Jak zauwazysz bugi	The panel is in BETA. If you notice any bugs
 Panterka (120 dni)	Little Panther (120 days)
 Panterka (30 dni)	Little Panther (30 days)
 Panterka (7 dni)	Little Panther (7 days)
@@ -3867,6 +4118,7 @@ Pasuje:	Matches:
 Pasy	Belts
 Pasza dla Konia	Horse Fodder
 Pasza dla Konia w ekwipunku: %d	Horse Feed in inventory: %d
+Październik	October
 Peleryny	Capes
 Pelne PZ/PE	Full HP/SP
 Pergamin Nazwy Zwierzaka	Pet Name Scroll
@@ -3879,6 +4131,7 @@ Pet Reverti	Pet Reverti
 Pet Revertus	Pet Revertus
 Pety	Pets
 Pewne zmiany wymagają restartu gry, kontynuować?	Some changes require restarting the game. Continue?
+Pełen werwy	Full of Vigor
 Pełne EQ	Full Inventory
 Pełne doświadczenie - czas na rozwój.	Full experience - time to evolve.
 Pełne okno	Borderless window
@@ -3940,6 +4193,7 @@ Piekielny Włócznik (BŚ)	Hell Spearman (WB)
 Piekło	Hell
 Piekło - wybierz respawn	Hell - choose respawn
 Pierwsza nagroda tury jest darmowa.	The first reward of each round is free.
+Pierwsza strona	First page
 Pierwsza z trzech ksiąg uważności. Może zwiększyć charyzmę właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The first of three books of mindfulness. It can increase its owner's charisma. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Pierwsza z trzech ksiąg walk formacji. Może zwiększyć inspirację właściciela. Po przeczytaniu księga znika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	The first of three books of formation combat. It can increase its owner's inspiration. The book disappears after reading. (No use yet - it will come with the next Yohara update.)
 Pierwszy "+" na zakładce Status też ci je daje.	The first "+" on the Status tab also gives them to you.
@@ -3948,6 +4202,7 @@ Pierwszy 30 poziom	First to Level 30
 Pierwszy 60 poziom	First to Level 60
 Pierwszy 90 poziom	First to Level 90
 Pierwszy reset misji w ciągu 24 godzin jest darmowy.	The first mission reset within 24 hours is free.
+Pierścień / amulet	Ring / amulet
 Pierścień Hydry	Hydra Ring
 Pierścień Siły Natury	Ring of Nature's Power
 Pierścień Siły Natury (100%)	Ring of Nature's Power (100%)
@@ -3957,6 +4212,7 @@ Pierścień Wielkanocny	Easter Ring
 Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% ataku, +10% maks. PŻ, +10% maks. PE.	A ring with an exquisitely crafted crescent-moon engraving. Grants: +50% EXP, +20% attack speed, +20% casting speed, +30% attack, +10% max. HP, +10% max. SP.
 Pień+	Trunk+
 Piorunowe Zioło	Thunder Herb
+Pirat+ (m)	Pirate+ (m)
 Pisklę Exedyara	Exedyar Hatchling
 Piątek	Friday
 Piętro %d	Floor %d
@@ -3994,6 +4250,7 @@ Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). M
 Po użyciu dodaje kartę potwora do kolekcji (Karty Potworów w menu pod Esc). Nie można nią handlować.	When used, adds a monster card to your collection (Monster Cards in the Esc menu). Cannot be traded.
 Po zabiciu: kolejny, którego już biłeś	After a kill: next one you have already hit
 Po załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d	After loading 8 arrows, the Hwacha will pierce Balathor's scales. Ancient Ice Crystals give Fire Arrows. Loaded: %d
+Pobieram drop...	Fetching drop...
 Pobieram ustawienia botow...	Fetching bot settings...
 Pobieram zawartość z serwera...	Fetching contents from the server...
 Pobierz	Fetch
@@ -4030,6 +4287,9 @@ Podaj wartosc.	Enter a value.
 Podaj wlasciciela i wybierz przedmiot.	Enter the owner and choose an item.
 Podczas walki istnieje %d%% prawdopodobieństwa na odporność na upadek (czas regeneracji 60 sek.).	During combat there is a %d%% chance of resistance to falling (cooldown 60 sec.).
 Podczas walki liczone są zadane przez Ciebie obrażenia.	During the fight the damage you deal is counted.
+Podczas walki otrzymasz efekt eliksiru księżyca	During combat you receive the effect of the Elixir of the Moon
+Podczas walki otrzymasz efekt eliksiru słońca	During combat you receive the effect of the Elixir of the Sun
+Podglad EQ	Equipment Preview
 Podgląd niedostępny.	Preview unavailable.
 Podgląd skrzynki	Chest preview
 Podgląd skrzyń	Chest preview
@@ -4105,8 +4365,10 @@ Pokaż szatę aury	Show aura outfit
 Pokaż wizerunek broni	Show weapon skin
 Pokaż założony tytuł	Show equipped title
 Pokaż znowu wszystkie przedmioty	Show all items again
+Pokonaj %(n)s bossów	Defeat %(n)s bosses
 Pokonaj %(n)s x %(what)s	Defeat %(n)s x %(what)s
 Pokonaj Bossa Świata w neutralnej strefie i zdobądź nagrody!	Defeat the World Boss in the neutral zone and earn rewards!
+Pokonaj bossów	Defeat bosses
 Pokonane bossy	Bosses defeated
 Pokonane minibossy	Mini-bosses defeated
 Pokonani gracze (przeciwne król.)	Players defeated (enemy kingdoms)
@@ -4173,6 +4435,7 @@ Portal Świątyni Węży	Serpent Temple Portal
 Portal: Nowy Kontynent	Portal: New Continent
 Posiada szanse na otrucie przeciwnika.	Has a chance to poison the enemy.
 Posiada szansę na otrucie przeciwnika oraz zawiera w sobie omdlenie.	Has a chance to poison the enemy and includes a stun.
+Posiadasz %d%% szansy, że przez 30 sek. zbierzesz automatycznie przedmioty w pobliżu	You have a %d%% chance to automatically pick up nearby items for 30 sec.
 Postać ma za duży poziom.	The character's level is too high.
 Posterunek Trolli	Troll Outpost
 Postęp	Progress
@@ -4262,7 +4525,10 @@ Poziom: %d (%s Szata Aury)	Level: %d (%s Aura Outfit)
 Poziom: %s	Level: %s
 Poziom: 1-19, M1-M10, G1-G10 albo P	Level: 1-19, M1-M10, G1-G10 or P
 Poziom: liczba 1-19, M1-M10, G1-G10 albo P	Level: number 1-19, M1-M10, G1-G10 or P
+Pozostalo 23:59:59	Remaining 23:59:59
 Pozostalo czasu: 30s	Time left: 30s
+Pozostalo prob: 3	Attempts left: 3
+Pozostalo: 45s	Remaining: 45s
 Pozostaly czas: %ds	Time left: %ds
 Pozostałe	Remaining
 Pozostałe misje	Other quests
@@ -4281,6 +4547,7 @@ Pozostały czas: %d s	Time left: %d s
 Pozwala wylosować nowe cele misji Kart Potworów.	Lets you draw new targets for the Monster Cards mission.
 Pozwala zapomnieć jedną umiejętność peta: kliknij ją prawym przyciskiem w oknie peta.	Lets you forget one pet skill: right-click it in the pet window.
 Pozwala zresetować misję Kart Potworów ponad darmowy reset (raz na 24 godziny).	Lets you reset the Monster Cards mission beyond the free reset (once every 24 hours).
+Pozycja niezapisana	Position not saved
 Położenie	Location
 Położenie nieznane	Location unknown
 Połyskująca Biała Perła	Shimmering White Pearl
@@ -4359,9 +4626,12 @@ Prosty filtr (zaawansowany: Opcje Gry -> Dodatkowe).	Simple filter (advanced: Ga
 Proszę wpisać nazwę sklepu	Please enter a shop name
 Proszę wybrać czas trwania sklepu	Please select a shop duration
 Proteinowa Przekąska	Protein Snack
+Prowadza stragan: %s	Running a shop: %s
+Prowadza stragan: -	Running a shop: -
 Prywatność	Privacy
 Pryzmat Ożywienia	Prism of Revival
 Pryzmat Ożywienia (Q)	Prism of Revival (Q)
+Pryzmatyczny	Prismatic
 Przeb. Księga Zwierza	Awakened Pet Book
 Przebicie	Piercing
 Przebicie bloku	Block piercing
@@ -4510,7 +4780,7 @@ Przywołuje demoniczne moce do olbrzymiego pchnięcia mieczem.|Wzmacnia: Siła (
 Przywołuje na przeciwnika żądne zemsty demony.|Wzmacnia: Inteligencja (++), Zręczność (+), Witalność (+), poziom postaci.	Summons vengeful demons upon the opponent.|Boosted by: Intelligence (++), Dexterity (+), Vitality (+), character level.
 Przywraca 600 PE.	Restores 600 SP.
 Przywraca 600 PŻ.	Restores 600 HP.
-Przywraca PŻ %.0f	Restores HP: %.0f
+Przywraca PŻ %.0f	Restores HP %.0f
 Przywraca PŻ po zabiciu potwora.	Restores HP after killing a monster.
 Przywrócić wszystkie domyślne klawisze?	Restore all default keys?
 Przywrócono domyślne klawisze	Default keys restored
@@ -4528,8 +4798,10 @@ Próby	Attempts
 Prędkość ataku	Attack speed
 Prędkość ataku +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Attack speed +%(v)s%% for %(d)d s after attacking from the saddle (every 180 s)
 Prędkość czarowania	Casting speed
+Prędkość po zsiadaniu	Speed After Dismounting
 Prędkość ruchu	Movement speed
 Prędkość ruchu +%(v)s%% na %(d)d s po ataku z grzbietu wierzchowca (co 180 s)	Movement speed +%(v)s%% for %(d)d s after attacking from the saddle (every 180 s)
+Prędkość ruchu wzrasta o %d%% na 10 sek.	Movement speed increases by %d%% for 10 sec.
 Prędkość ruchu znacznie zwiększona.	Movement speed greatly increased.
 Pudełko Kart Potworów Yohary	Yohara Monster Card Box
 Pudło wędkarskich puzzli	Fishing Puzzle Box
@@ -4537,6 +4809,7 @@ Pula... pokazuje bossow danego przedzialu	Pool... shows the bosses of the given 
 Punkty Doświadczenia: +150%	Experience Points: +150%
 Punkty Rangi: %d	Rank Points: %d
 Punkty doswiadczenia %	Experience points %
+Punkty doświadczenia +%d%%	Experience Points +%d%%
 Punkty konne:	Horse points:
 Punkty miłości: %d%%	Love points: %d%%
 Punkty range:	Rank points:
@@ -4635,6 +4908,7 @@ Requiem	Requiem
 Reset Sklepu Gaya	Gaya Shop Reset
 Reset oferty	Offer reset
 Reset oferty (Reset Sklepu Gaya)	Offer reset (Gaya Shop Reset)
+Reset umiejętności	Skill Reset
 Resetuj	Reset
 Resetuj Sklep Gaya jeszcze przed upływem 5 godzin i sprawdź nowe cenne przedmioty. Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).	Reset the Gaya Shop before the 5 hours are up and check out new valuable items. Use it at the Harbour Gaya Shop (Warrior Statue in the New Continent Harbour).
 Restart serwera...	Restart server...
@@ -4680,6 +4954,7 @@ Rozbrzmiewają triumfalnie bębny i trąbki, gdy dzierżysz miecz na polu bitwy.
 Rozdaj od nowa (raz za darmo)	Redistribute (once for free)
 Rozdane: %d	Handed out: %d
 Rozdzielczość	Resolution
+Rozkaz wysłany.	Order sent.
 Rozkazy dla botów twojej gildii	Orders for your guild's bots
 Rozkazy wydaje mistrz gildii	Orders are given by the guild leader
 Rozmawiasz z |cffffb514Mistrzem Gry|r.	You are talking to a |cffffb514Game Master|r.
@@ -4714,6 +4989,7 @@ Rozwijana Księgą Precyzji (od 0 do P).	Trained with the Book of Precision (fro
 Rozwinąć zwierzaka do stopnia „%s”? Materiały znikną.	Evolve the pet to the “%s” stage? The materials will disappear.
 Rozwiń pasek	Expand Bar
 Rozwiń: wszystkie paski szybkiego dostępu (4 x 8)	Expand: all quick slot bars (4 x 8)
+Rozwój	Development
 Rozwój do stopnia: %s	Evolve to stage: %s
 Rozwój konia	Horse training
 Rozwój konia: brakuje Paszy dla Konia (potrzeba %(a)d).	Horse training: not enough Horse Feed (%(a)d needed).
@@ -4740,6 +5016,7 @@ Ruda Turmalinu	Tourmaline Ore
 Rudy i przetopy	Ores and smelted ores
 Ruiny Atlantydy	Ruins of Atlantis
 Ruiny Skorpiona	Scorpion Ruins
+Rumi (Okey)	Rummy (Okey)
 Rumi (Okey): okno gry pojawi się z aktualizacją klienta.	Rummy (Okey): the game window will arrive with a client update.
 Ryba bierze! Kliknij ją %d razy, gdy pływa w kole (masz %d s).	A fish is biting! Click it %d times while it swims in the circle (you have %d s).
 Ryba występująca tylko w wodach płynących.	A fish found only in flowing waters.
@@ -4768,6 +5045,7 @@ Rzeźnik Piekielnej Wieży	Hellish Tower Butcher
 Rzeźnik Wężowy	Serpent Butcher
 Rzuca na ciebie swoje buffy.	Casts its buffs on you.
 Rzuca w przeciwników wypełnione światłem gwiazdy.|Wzmacnia: Zręczność (++), poziom postaci.	Hurls stars filled with light at your opponents.|Boosted by: Dexterity (++), character level.
+Rzucam buffy	Casting buffs
 Róg Balathora	Balathor's Horn
 Róg Nemere	Nemere's Horn
 Róg Razadora	Razador's Horn
@@ -4886,12 +5164,19 @@ Serwer: czekam na potwierdzenie	Server: waiting for confirmation
 Sesja farmienia	Farming session
 Sesja już trwa.	A session is already running.
 Sesja zakończona: osiągnięto limit czasu.	Session ended: time limit reached.
+Sesje (z bieżącą)	Sessions (incl. current)
+Sezon %d	Season %d
 Sezon %d - %s (do końca: %d dni %s)	Season %d - %s (remaining: %d days %s)
+Sezon: Chunjo	Season: Chunjo
+Sezon: Jinno	Season: Jinno
+Sezon: Shinsoo	Season: Shinsoo
 Sfera Losu Zwierzaka	Pet Fate Sphere
 Sfera losu: pokazuje typ zwierzaka (zużywa Sferę Losu Zwierzaka)	Sphere of Fate: shows the pet's type (consumes a Pet Sphere of Fate)
+Shift + LPM	Shift + LMB
 Shop Decoration	Shop Decoration
 Siejesz lekki wiatr, a twoi wrodzy zbierają gwałtowną wichurę. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	You sow a light breeze and your enemies reap a raging gale. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Sierp (Pieczęć)	Crescent Moon Seal
+Sierpień	August
 Silna Fala Śmierci	Strong Wave of Death
 Silna Tarcza Eteru	Strong Ether Shield
 Silne Trzęsienie	Strong Tremor
@@ -4905,6 +5190,7 @@ Silny Druid En-Tai	Strong En-Tai Druid
 Silny Dziki Piechur	Strong Savage Infantry
 Silny Dziki Sluga	Strong Savage Minion
 Silny Kam. Przebudzenia	Strong Awakening Stone
+Silny Malpi Zolnierz	Silny Malpi Zolnierz
 Silny Meteor	Strong Meteor
 Silny Niszczyciel En-Tai	Strong En-Tai Destroyer
 Silny Piekielny Cios	Strong Hellish Blow
@@ -4952,26 +5238,36 @@ Silny przeciwko zwierzętom +%(v)s%% podczas jazdy	Strong against animals +%(v)s
 Silny przeciwko:	Strong against: 
 Silny.	Strong.
 Siła Ataku	Attack Power
-Siła Ataku %.0f-%0.f	Attack Value %.0f-%0.f
-Siła Ataku +%.0f	Attack Value +%.0f
-Siła Ataku: +%.0f	Attack Value: +%.0f
+Siła Ataku %.0f-%0.f	Attack Power %.0f-%0.f
+Siła Ataku +%.0f	Attack Power +%.0f
+Siła Ataku: +%.0f	Attack Power: +%.0f
+Siła Błyskawic	Power of Lightning
 Siła Błyskawic (+%d%% łącznej wartości)	Lightning Power (+%d%% of total value)
 Siła Błyskawic +%d%%	Lightning Power +%d%%
+Siła Błyskawic +5%	Lightning Power +5%
+Siła Lodu	Power of Ice
 Siła Lodu (+%d%% łącznej wartości)	Ice Power (+%d%% of total value)
 Siła Lodu +%d%%	Ice Power +%d%%
+Siła Lodu +5%	Ice Power +5%
 Siła Mroku	Darkness Power
 Siła Mroku (+%d%% łącznej wartości)	Darkness Power (+%d%% of total value)
 Siła Mroku +%d%%	Darkness Power +%d%%
+Siła Mroku +5%	Dark Power +5%
 Siła Obrony	Defence
+Siła Ognia	Power of Fire
 Siła Ognia (+%d%% łącznej wartości)	Fire Power (+%d%% of total value)
 Siła Ognia +%d%%	Fire Power +%d%%
+Siła Ognia +5%	Fire Power +5%
 Siła Sung Ma	Sung Ma Strength
 Siła Sung Ma +%d	Sung Ma Strength +%d
+Siła Wiatru	Power of Wind
 Siła Wiatru (+%d%% łącznej wartości)	Wind Power (+%d%% of total value)
 Siła Wiatru +%d%%	Wind Power +%d%%
+Siła Wiatru +5%	Wind Power +5%
 Siła Ziemi	Earth Power
 Siła Ziemi (+%d%% łącznej wartości)	Earth Power (+%d%% of total value)
 Siła Ziemi +%d%%	Earth Power +%d%%
+Siła Ziemi +5%	Earth Power +5%
 Siła ataku +%.0f-%.0f	Attack value +%.0f-%.0f
 Siła ataku wroga -%d%%	Enemy attack power -%d%% 
 Siła vs Bossom	Str. vs Bosses
@@ -5052,6 +5348,7 @@ Skondensowana forma czystej magii - pulsuje energią, której nie sposób okieł
 Skorpion Lucznik Zodiaku	Zodiac Scorpion Archer
 Skorpion Wężowy	Serpent Scorpion
 Skorzystaj z |cff2b80ffofert błyskawicznych|r![ENTER]Aukcje trwają najpóźniej do |cff2b80ff%s|r[ENTER]lub do wyczerpania zapasów.	Take advantage of the |cff2b80ffflash offers|r![ENTER]Auctions last until |cff2b80ff%s|r at the latest[ENTER]or while stocks last.
+Skrytobójca	Assassin
 Skrytobójcza Wykałaczka	Assassin's Toothpick
 Skrz. Ninja M. Łuku (D)	Large Archery Ninja Chest
 Skrz. Ninja M.Ostrza (D)	Large Blade-Fight Ninja Chest
@@ -5110,10 +5407,14 @@ Skrzynka musi być w ekwipunku.	The chest must be in the inventory.
 Skrzynka na Zwierzaka	Pet Box
 Skrzynki	Chests
 Skrócenie ładowania um. o %d%%	Skill casting time reduced by %d%% 
+Skróty	Shortcuts
+Skróty klawiszowe	Keyboard Shortcuts
 Skup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.	Focus your attacks on the Frozen Dragon Egg before it disappears in %d sec.
 Skąd	Source
 Składnik do produkcji lekarstwa iluzji.	An ingredient for making the medicine of illusion.
 Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy (Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).	Ingredient for upgrading Soul Stones at the Blacksmith (from +4): 1, 1, 2, 2, 3 pieces are needed for the successive levels, along with Magic Dust. Dropped by the Strong Ice Witch (Grotto of Exile), Beran-Setaou (Dragon's Lair) and the Jungle Queen (Ancient Jungle).
+Slaby Malpi Miotacz	Slaby Malpi Miotacz
+Slaby Malpi Zolnierz	Slaby Malpi Zolnierz
 Slot z krzyżykiem jest jeszcze zamknięty.	A slot with a cross is still locked.
 Slot zablokowany: odblokuje go Rozszerzenie Sklepu Gaya x%d.	Slot locked: a Gaya Shop Extension x%d will unlock it.
 Sloty umiejętności: %d	Skill slots: %d
@@ -5141,14 +5442,17 @@ Sojusznik	Ally
 Soki Defensywne	Defensive Juices
 Soki Ofensywne	Offensive Juices
 Soki Wzmacniające	Enhancing Juices
+Sortowanie autopickup	Autopickup Sorting
 Sortowanie i wyszukiwanie	Sorting and search
 Sortuj po cenie całej oferty	Sort by the price of the whole offer
 Sortuj po cenie oferty albo za sztukę	Sort by offer price or by price per piece
+Sortuj po ilości	Sort by quantity
 Sowa Księżycowa	Moon Owl
 Spaczenie Ciemności;Skóra piecze i pęka pod wpływem mrocznej energii,;wystawiając cię na większe obrażenia.	Corruption of Darkness;Your skin burns and cracks under dark energy,;exposing you to greater damage.
 Spal wrogów eksplozją.|Wzmacnia: Inteligencja (++), Siła (+), Witalność (+), poziom postaci.	Burn enemies with an explosion.|Boosted by: Intelligence (++), Strength (+), Vitality (+), character level.
 Spalone przedmioty u Kowala	Items burned at the Blacksmith
 Spartaner	Spartaner
+Spawn Botow	Spawn Botow
 Specjalne	Special
 Specjalne Zioła	Special Herbs
 Specjalny	Special
@@ -5162,6 +5466,7 @@ Spostrzegawczość	Perception
 Społeczność	Community
 Sprawdz Gracza	Check Player
 Sprawdz konto	Check account
+Sprawdz status	Check Status
 Sprawdzam gracza %s (pid %s) kod: %s	Checking player %s (pid %s) code: %s
 Sprawdzanie obslugi na serwerze. Przeciagnij przedmioty do kosza.	Checking server support. Drag items into the bin.
 Sprawdzanie...	Checking...
@@ -5185,6 +5490,7 @@ Srebrne Pudełko Kart Potwora	Silver Monster Card Box
 Srebrne Płyty	Silver Plates
 Srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami. Daje: +30% PD, +10% szybkości ataku, +10% szybkości zaklęć, +10% siły przeciwko potworom, +5% maks. PŻ, +5% maks. PE.	A heart-shaped silver pendant set with magical gems. Grants: +30% EXP, +10% attack speed, +10% casting speed, +10% strength against monsters, +5% max. HP, +5% max. SP.
 Srednia: %s / szt.	Average: %s / pc.
+Srednie obrazenia	Average Damage
 Stabilne Sznury	Sturdy Cords
 Stajnia i polowanie na medale w Lochu Malp.	Stable and medal hunting in the Monkey Dungeon.
 Stal	Steel
@@ -5194,6 +5500,7 @@ Stalowy Hełm Dragona	Dragon Steel Helmet
 Stalowy Hełm Smoków	Steel Helmet of the Dragons
 Stamina / sek.: %d	Stamina / sec.: %d
 Stan (czat)	State (chat)
+Stan: %s	Status: %s
 Standardowa Muzyka Metin2	Standard Game Music
 Standardowa muzyka Metin2	Standard game music
 Stara Fryzura (biała)	Old Hairstyle (white)
@@ -5212,6 +5519,7 @@ Starożytny Robak	Ancient Worm
 Starożytny Skorpion	Ancient Scorpion
 Starożytny Wojownik	Ancient Warrior
 Starożytny zwój umożliwiający przepływ mocy Woela - pozwala losować nowe błogosławieństwa.	An ancient scroll that channels Weol's power - it lets you roll new blessings.
+Starszy Hazardzista	Senior Gambler
 Start za %s	Starts in %s
 Statua Chena	Chen Statue
 Statua Chou	Chou Statue
@@ -5281,19 +5589,25 @@ Strażnik Rozpad. Dusz	Soul Rift Guard
 Strażnik Ruin	Ruins Guardian
 Strażnik Smoków Dolnarr	Dragon Guardian Dolnarr
 Strażnik Smoków Jaharr	Dragon Guardian Jaharr
+Strażnik Srebr. Piasku+	Silver Sand Guardian+
 Strażnik Trytonów	Triton Guard
 Strażnik Wzgórza	Hill Guardian
 Strażnik Węży	Serpent Guard
 Strażnik z Yohara	Yohara Guard
+Strefa Surowców	Resource Zone
 Strona %d / %d	Page %d / %d
 Strona %d / %d (%d)	Page %d / %d  (%d)
 Strona %d/%d	Page %d/%d
 Strona 1	Page 1
 Strona WWW	Website
+Strona ekwipunku I	Equipment Page I
 Strona ekwipunku II	Inventory Page II
 Strona ekwipunku II (wymienna)	Inventory Page II (Tradable)
+Strona ekwipunku III	Equipment Page III
 Strona ekwipunku IV	Equipment page IV
 Strz. dół	Down Arrow
+Strz. góra	Arrow Up
+Strz. lewo	Arrow Left
 Strz. prawo	Right Arrow
 Strzał Wichury	Gale Shot
 Strzał Wichury (9.skill)	Gale Shot (9th Skill)
@@ -5301,6 +5615,7 @@ Strzał, który wyrządza wielkie obrażenia.|Wzmacnia: Zręczność (++).	A sho
 Strzała do łuku ninja. Pełne obrażenia do 5 m od celu (premia do zasięgu łuku wydłuża ten dystans), potem o 5% mniej za każdy kolejny metr. Kołczan nie traci obrażeń z odległością.	An arrow for the ninja bow. Full damage up to 5 m from the target (a bow range bonus extends this distance), then 5% less for every further metre. A quiver does not lose damage with distance.
 Strzały: Handlarz Bronią (cena NPC).	Arrows: Weapon Dealer (NPC price).
 Strzelaj smoczymi podobiznami i atakuj wrogów.|Wzmacnia: Inteligencja (++), Zręczność (celność) (+), poziom postaci.	Shoot a dragon figure to attack enemies directly.|Boosted by: Intelligence (++), Dexterity (accuracy) (+), character level.
+Strzelającego Smoka	of the Arrow Shower
 Strój Czarodzieja	Warlock Outfit
 Strój Czarodzieja+	Warlock Outfit+
 Strój Zombie	Zombie Outfit
@@ -5312,6 +5627,7 @@ Stwór z Głębin	Creature from the Deep
 Stwórz dużą eksplozję swoimi koniuszkami palców.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Cause a big explosion with your fingertips.|Boosted by: Intelligence (++), Strength (+), character level.
 Stwórz potężne tornado, aby pokonać kilku wrogów.|Wzmacnia: Inteligencja (++), Siła (+), poziom postaci.	Create a strong tornado to defeat several enemies.|Boosted by: Intelligence (++), Strength (+), character level.
 Stwórz trującą chmurę wokół wrogów i otruj ich.|Wzmacnia: Zręczność (++), Siła (+), poziom postaci.	Make poisonous clouds around the enemy and intoxicate them.|Boosted by: Dexterity (++), Strength (+), character level.
+Styczeń	January
 Sukienka Bożon. (biała)	Christmas Dress (white)
 Sukienka Bożon. (czerw.)	Christmas Dress (red)
 Sukienka Bożon.+(biała)	Christmas Dress+ (white)
@@ -5331,18 +5647,25 @@ Suma zarobków sklepu nie może przekroczyć 2.000.000.000 Yang.	The shop's tota
 Super Kamienie Metin (+%d)	Super Metin Stones (+%d)
 Suplement (do 5 szt.): Mały +1%, Średni +2%, Duży +4%, Silny +10% za sztukę.	Additive (up to 5 pcs.): Small +1%, Medium +2%, Large +4%, Strong +10% per piece.
 Suplementy (do 5) zwiększają szansę - im więcej Odłamków, tym bardziej.	Additives (up to 5) increase the chance - the more Powershards, the more so.
+Sura (Broń)	Sura (Weapon)
+Sura (Czarna Magia)	Sura (Black Magic)
 Sura Czarna Magia	Sura Black Magic
 Sura Mistrz Broni	Sura Weaponry
+Swiat i eventy	World and Events
+Swiatynia Hwang	Hwang Temple
+Swiatynia Ochao	Ochao Temple
 Swiatynia Zodiaku	Zodiac Temple
 Switchbot (zmiana bonusów)	Switchbot (bonus change)
 Switchbot - zmiana bonusów	Switchbot - bonus change
 Switchbot wymaga nowego klienta (exe 3.0).	The Switchbot requires a new client (exe 3.0).
 Synowie Pustyni	Sons of the Desert
+Szalenie odważny	Incredibly Brave
 Szalony Hazardzista	Mad Gambler
 Szalony Naukowiec	Mad Scientist
 Szalony Wędkarz	Crazy Angler
 Szaman (Leczenie)	Shaman (Healing)
 Szaman (M)	Shaman (M)
+Szaman (Smok)	Shaman (Dragon)
 Szaman Leczenie	Shaman Healing
 Szaman Smok	Shaman Dragon
 Szamanka (K)	Shaman (F)
@@ -5357,6 +5680,10 @@ Szansa na Przebicie Niewrażliwości Omdlenia +%d%%	Chance to Break Stun Immunit
 Szansa na Spowolnie.	Slow Chance
 Szansa na Uziemienie %.0f%%	Chance to Root %.0f%%
 Szansa na blok ciosów: zwiększa szansę na uniknięcie ataku z krótkiego dystansu.	Chance to block hits: increases the chance of avoiding a close-range attack.
+Szansa na cios krytyczny +2%	Critical Hit Chance +2%
+Szansa na cios krytyczny +5%	Critical Hit Chance +5%
+Szansa na cios krytyczny +7%	Critical Hit Chance +7%
+Szansa na cios krytyczny +8%	Critical Hit Chance +8%
 Szansa na cios krytyczny: +%.0f%%	Chance of critical hit: +%.0f%%
 Szansa na drop Yang: zwiększa szansę na zdobycie więcej Yang.	Yang drop chance: increases the chance of obtaining more Yang.
 Szansa na drop podwójnej ilości Yang: zwiększa szansę na otrzymanie podwójnej ilości Yang.	Chance of double Yang drop: increases the chance of receiving double the amount of Yang.
@@ -5381,10 +5708,14 @@ Szansa na pomyślną naukę zwiększona o współczynnik %.2f.	Chance of success
 Szansa na przebicie	Piercing hit chance
 Szansa na przebicie +10%	Piercing Hit chance +10%
 Szansa na przedmiot z bonusem	Chance for item with bonus
+Szansa na przeszywające Uderzenie: 2%	Piercing Hit Chance: 2%
+Szansa na przeszywające Uderzenie: 5%	Piercing Hit Chance: 5%
+Szansa na przeszywające Uderzenie: 8%	Piercing Hit Chance: 8%
 Szansa na przeszywający cios: zwiększa szansę na zadanie przeszywającego ciosu.	Piercing hit chance: increases the chance of landing a piercing hit.
 Szansa na spowolnienie	Slow chance
 Szansa na uniknięcie strzały: zwiększa szansę na uniknięcie strzały lub długodystansowego ataku potwora.	Chance to dodge arrows: increases the chance of dodging an arrow or a monster's long-range attack.
 Szansa na wydobycie rudy +%d%%	Chance to mine ore +%d%%
+Szansa na wypadnięcie przedmiotu z bossa +%d%%	Chance for an item to drop from a boss +%d%%
 Szansa na zdobycie Yang x%.1f	Chance to obtain Yang x%.1f
 Szansa na zdobycie przedmiotu z bonusem +%d%%	Chance to obtain an item with bonuses +%d%%
 Szansa na zdobycie przedmiotów x%.1f	Chance to obtain items x%.1f
@@ -5429,12 +5760,15 @@ Szarfy zacne	Fine Sashes
 Szary Barwnik	Grey Dye
 Szary Lśniący Odłamek	Grey Gleaming Shard
 Szata	Outfit
+Szata Dżinna+ (m)	Djinn Robe+ (m)
 Szata Harmonii	Clothing of Harmony
 Szata Księżyca	Moon Clothing
 Szata Ognia	Fire Clothing
 Szata Wiary	Robe of Faith
 Szata Zodiaku	Zodiac Clothing
 Szata aury: ewolucja	Aura outfit: evolution
+Szata aury: przenieś parametry	Aura Robe: Transfer Stats
+Szata aury: rozwój	Aura Robe: Development
 Szczyt rodzaju - czas na ewolucję	Top of the grade - time to evolve
 Szczytobłysk 830 9454	Peakgleam 830 9454
 Szczytomrok 3393 9454	Peakgloom 3393 9454
@@ -5444,6 +5778,7 @@ Szeptacz Tytanów	Titan Whisperer
 Szeptotruj	Venomwhisper
 Szkarłaczny Żądłak	Scarlet Stinger
 Szkatulka Ksiezycowa - z rozbitego Metina	Moon Casket - from a destroyed Metin
+Szkatulka Ksiezycowa - z zabitego potwora	Szkatulka Ksiezycowa - z zabitego potwora
 Szkatułka Yohara	Yohara Casket
 Szkatułka wyrwana ze szponów Alastora.	A casket snatched from Alastor's claws.
 Szkatułka z Kluczami Goblina	Goblin Key Box
@@ -5459,6 +5794,7 @@ Szlachetne Drewno (SZC) od Władcy En-Tai (SZC). Zanieś je Badaczowi Lasu (SZC)
 Szlachetne Drewno od Władcy En-Tai. Zanieś je Badaczowi Lasu.	Noble Wood from the En-Tai Lord. Take it to the Forest Researcher.
 Szlachetne Drzewo (PB)	Noble Tree (RX)
 Szlachetne Drzewo (PB) od Władcy En-Tai (PB). Zanieś je Badaczowi Lasu (PB).	Noble Tree (RX) from the En-Tai Lord (RX). Take it to the Forest Researcher (RX).
+Szlachetny Legionista+	Noble Legionnaire+
 Szpon Kruka	Raven's Talon
 Szpon Wężowy (wykon.)	Serpent Claw (Craft)
 Szpon Zodiaku	Zodiac Claw
@@ -5538,12 +5874,16 @@ Szybkosc zaklec	Casting Speed
 Szybkość Ataku +5%	Attack Speed +5%
 Szybkość Buffi	Buffi's Swiftness
 Szybkość Ruchu 20%	Movement Speed 20%
+Szybkość Zaklęcia +2%	Casting Speed +2%
+Szybkość Zaklęcia +5%	Casting Speed +5%
 Szybkość czarowania	Casting Speed
+Szybkość ruchu +%d%%	Movement Speed +%d%%
 Szybkość: %d zmian/s	Speed: %d switches/s
 Słaba jakość strzału: od %.1fm	Poor shot quality: from %.1fm
 Słodka Staruszka	Sweet Old Lady
 Słodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.	A sweet Valentine's amulet. Gives: +50% EXP, +20% attack speed, +20% casting speed, +10% strength against monsters, +10% max. HP, +10% max. SP. Time also runs out while you are not wearing it.
 Słodkowodna ryba drapieżna występująca w tropikach.	A predatory freshwater fish found in the tropics.
+Słon. Szata Wukong+ (m)	Sun Wukong Robe+ (m)
 Słonecznik: obrona +%d%%	Sunflower: defence +%d%%
 Słowa z nazw przedmiotów (po przecinku)	Words from item names (comma-separated)
 Słudzy Sung Mahi	Servants of Sung Mahi
@@ -5728,9 +6068,11 @@ To srebrne pudełko zawiera losową Kartę Potwora albo 1000 Yang. Spróbuj szcz
 To zła skrzynia skarbów. Odprowadź Goblina Skarbów jeszcze raz!	This is the wrong treasure chest. Escort the Treasure Goblin again!
 To złote pudełko zawsze zawiera jedną losową Kartę Potwora z poziomów misji 1-15 (bez potworów Yohary). Użyj karty, by dodać ją do swojej kolekcji (okno Kart Potworów, klawisz J).	This golden box always contains one random Monster Card from quest levels 1-15 (no Yohara monsters). Use the card to add it to your collection (Monster Cards window, J key).
 To, co bot robi, gdy nic innego sie nie dopomina. Podnies, a sprawunki przegraja.	What the bot does when nothing else demands its attention. Raise it and errands lose out.
+Top przedmiotów	Top Items
 Topaz Woli	Topaz of Will
 Torba towarzysza: weź do siebie	Companion bag: take to yourself
 Towarzysz	Companion
+Towarzysz (nierozwijany)	Companion (non-growing)
 Towarzysz bierze tylko cały stos.	The Companion only takes a whole stack.
 Towarzysz dostanie ścieżkę na 5 poziomie.	The Companion will get a path at level 5.
 Towarzysz drużyny	Party Companion
@@ -5742,8 +6084,10 @@ Towarzysz zakłada grupę i cię zaprasza.	The Companion founds a group and invi
 Towarzysz zużyje KZ albo Zwój Powrotu Umiejętności.	The Companion will use up a Book of Forgetfulness or a Skill Reset Document.
 Towarzysz, Cor Draconis i misje systemów nie są tu pokazywane.	Companion, Cor Draconis and system quests are not shown here.
 Towarzysze są tu wyłączeni.	Companions are disabled here.
+Towarzysze są wyłączeni na tym serwerze.	Companions are disabled on this server.
 Trafienia	Hits
 Transfer bonusów	Bonus Transfer
+Transfer obrazen do PM	Damage to SP Transfer
 Transformuj kostium	Transform Costume
 Transporter jest pusty.	The transporter is empty.
 Transporter z Petem	Transport Box (with Pet)
@@ -5790,6 +6134,7 @@ Twierdza Czerwonego Smoka (PB)	Red Dragon Fortress (RX)
 Twierdza Czerwonego Smoka (SZC)	Red Dragon Fortress (TR)
 Twierdza Razadora	Razador's Fortress
 Twoja Gaya: %s	Your Gaya: %s
+Twoja obrona wzrasta o %d%% na 5 sek.	Your defense increases by %d%% for 5 sec.
 Twoja pozycja: pokazuje mapę, na której jesteś, i ustawia na niej widok.	Your position: shows the map you are on and centres the view on it.
 Twoja stal zaintonuje światowe arie na polu walki. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Your steel will sing world-class arias on the battlefield. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Twoje Smocze Monety: %d	Your Dragon Coins: %d
@@ -5821,6 +6166,7 @@ Tygrys, niedźwiedź, dzik	Tiger, Bear, Boar
 Tyle samo punktów dostaje Twoja gildia. Każde królestwo	Your guild receives the same number of points. Each kingdom
 Tylko IMPLEMENTOR zmienia GM innych postaci.	Only an IMPLEMENTOR changes the GM of other characters.
 Tylko broń, zbroje i kostiumy dla tej płci	Only weapons, armour and costumes for this gender
+Tylko dla mnie	Only for me
 Tylko dla mnie: cały drop jest twój.	Only for me: all the drop is yours.
 Tylko nieliczni rozumieją ten starożytny język, od którego pochodzi nazwa tej broni. Żaden z nich jednak nie odważył się przetłumaczyć tej nazwy. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Only a few understand the ancient language from which this weapon's name comes. Yet none of them has ever dared to translate it. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Tylko scal stosy	Merge stacks only
@@ -5838,6 +6184,7 @@ Typ: %s	Type: %s
 Typ: -	Type: -
 Typowe bonusy ekwipunku albo wszystkie znane klientowi	Common equipment bonuses or all known to the client
 Tysieczny Wojow. Zodiaku	Zodiac Thousand Fighter
+Tysieczny Wojownik	Tysieczny Wojownik
 Tytuł %s wygaśnie za niecałą godzinę.	The title %s will expire in less than an hour.
 Tytuł Czciciel Słońca	Title: Sun Worshipper
 Tytuł Czempion Nyx	Title: Nyx Champion
@@ -5891,11 +6238,14 @@ Udało ci się ochronić Goblina Skarbów!	You have protected the Treasure Gobli
 Udało się odeprzeć lodowy chłód.	You managed to repel the icy chill.
 Udało się: %s	Success: %s
 Uderz i komuś zabije dzwon! Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Strike, and the bell tolls for someone! Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
+Uderzenia Palcem	of the Finger Strike
 Uderzenie Pioruna	Lightning Strike
 Uderzenie palcem ma %d%% szans na oddanie przeciwnikowi	Finger Strike has a %d%% chance to be reflected onto the opponent
 Udzial botow, ktore po sprawunku w miescie zostaja na chwile przy straganach zamiast wracac od razu na polowanie. 100% to zywe miasto, 0% - wszyscy w terenie.	Share of bots that linger by the stalls for a while after shopping in town instead of going straight back to hunting. 100% means a lively town, 0% - everyone out in the field.
 Udzial straganiarzy, ktorzy wystawiaja na lade swoje slabe ulepszenia (+0 do +3) za grosze zamiast sprzedawac je NPC - zlom do palenia u kowala, jak na serwerach hard. Domyslnie wylaczone.	Share of stall keepers who put their weak upgrades (+0 to +3) on the counter for pennies instead of selling them to an NPC - scrap to burn at the blacksmith, like on hard servers. Off by default.
+Udział	Share
 Ukończ %(n)s lochów	Complete %(n)s dungeons
+Ukończ lochy	Complete dungeons
 Ukończenia: %d	Completions: %d
 Ukończone	Completed
 Ukończone księgi misji	Quest books completed
@@ -5905,6 +6255,7 @@ Ukończone: %d / %d	Completed: %d / %d
 Ukryj aury umiejętności	Hide skill auras
 Ukryj budynki i obiekty	Hide buildings and objects
 Ukryj chmury	Hide clouds
+Ukryj cudze	Hide Others'
 Ukryj czaszkę nad bossami	Hide skull above bosses
 Ukryj drzewa	Hide trees
 Ukryj efekty wzmocnień (szaman)	Hide buff effects (Shaman)
@@ -5943,10 +6294,13 @@ Ulepszenie: Wir Miecza	Upgrade: Sword Spin
 Ulepszenie: Zasadzka	Upgrade: Ambush
 Ulepszenie: od 0 do 9.	Upgrade: from 0 to 9.
 Ulepszony Barwnik	Improved Dye
+Ulepszysz do: %s	Upgrades to: %s
 Ulepszysz ją u Stajennego (Rozwój konia).	Upgrade it at the Stable Boy (Horse training).
 Ulepszyć %s do poziomu %d?	Upgrade %s to level %d?
 Ultra	Ultra
 Ulubieni na górze listy	Favourites at the top of the list
+Umiejetnosci widac tylko u gracza online	Skills are only visible for an online player
+Umiejętn.	Skills
 Umiejętności konia (miejsca: %d z 2)	Horse skills (slots: %d of 2)
 Umiejętności można uczyć od stopnia „Bohaterski”.	Skills can be learnt from the “Heroic” stage.
 Umiejętności pomocnicze	Support skills
@@ -5954,6 +6308,7 @@ Umiejętności potencjału	Potential skills
 Umiejętności potencjału (tylko czempion, 2 sloty)	Potential skills (champion only, 2 slots)
 Umiejętności potencjału (z jaj zwierzaków)	Potential skills (from pet eggs)
 Umiejętności rozdaję sam	I distribute skill points myself
+Umiejętności towarzysza	Companion Skills
 Umiejętności zwierzaka (3 sloty)	Pet skills (3 slots)
 Umiejętności: przeciągnij je z okna postaci do pól.	Skills: drag them from the character window into the slots.
 Umiejętność %d	Skill %d
@@ -5965,6 +6320,7 @@ Uniform, który niegdyś należał do martwego już brata Mirine.	A uniform that
 Unik	Evasion
 Unik Strzały	Arrow Dodge
 Unik: %d%%	Dodge: %d%%
+Uniknięcie śmierci	Death Avoidance
 Upiorne Echo	Ghostly Echo
 Upiorny Strażnik	Ghostly Guard
 Upiorny Wojownik	Ghostly Warrior
@@ -5978,6 +6334,8 @@ Ustaw	Set
 Ustaw nowe hasło na stronie.	Set a new password on the website.
 Ustaw ten pasek jako aktywny (%d)	Set this bar as active (%d)
 Ustawienia Społeczności zapisane.	Community settings saved.
+Usun GM	Remove GM
+Usun Moby	Remove Mobs
 Usun potwory	Remove monsters
 Usun przedmioty	Destroy Items
 Usun wszystkie	Remove all
@@ -6025,13 +6383,16 @@ Uziemienie	Root
 Ułóż i scal	Sort and merge
 Użycie	Use
 Użyj	Use
+Użyj %(n)s przedmiotów	Use %(n)s Items
 Użyj %(n)s x %(what)s	Use %(n)s x %(what)s
 Użyj Księgi Umiejętności Peta z ekwipunku	Use a Pet Skill Book from your inventory
 Użyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut).	Use it in the Serpent Temple to extend the expedition time by one minute (up to 60 minutes at most).
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu.	Use the ring in the Elemental Kingdom (in one of the nine areas) to always teleport to the Plateau of Natural Forces. The ring disappears after use.
 Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).	Use the ring in the Elemental Kingdom (in one of the nine areas) for a chance (10%) to teleport to the Plateau of Natural Forces. The ring disappears with each use. Dropped by all monsters and Metins of the Elemental Kingdom (entrance: portal and the Old Man in the New Continent Harbour).
+Użyj przedmiotu	Use Item
 Użyj, aby włączyć albo wyłączyć blokadę doświadczenia. Bez limitu czasu.	Use to turn the experience lock on or off. No time limit.
 Użyj, kiedy zablokujesz się w "teksturach".	Use when you get stuck in "textures".
+Użytkowe	Consumables
 Używając skrzydeł smoka Alterana możesz uszlachetnić przedmiot wyposażenia.	Using the wings of the dragon Alteran, you can refine a piece of equipment.
 Używając tej licencji możesz rekrutować najemnika. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)	With this licence you can recruit a mercenary. (No use yet - it will come with the next Yohara update.)
 Używalne	Usable
@@ -6117,6 +6478,7 @@ Waluta Yohary (najwyżej 999 999). Szlifuj Kamyki u Statuy Wojownika w Porcie, p
 Waluta wymiany: 1 Won = 100 000 000 Yang.	Exchange currency: 1 Won = 100 000 000 Yang.
 Waluty (Yang, Gaya)	Currencies (Yang, Gaya)
 Wampir	Vampire
+Wampir+ (szary)	Vampire+ (gray)
 Warkocze Plem. (czerw.)	Tribal Braids (red)
 Warkocze Plem. (fiol.)	Tribal Braids (purple)
 Warkocze Plem. (nieb.)	Tribal Braids (blue)
@@ -6129,10 +6491,13 @@ Wartosc ataku vs potwory	Attack value vs monsters
 Wartosc magicznego ataku	Magic attack value
 Wartownik z Yohara	Yohara Sentry
 Wartość Ataku	Attack Value
+Wartość Ataku +30	Attack Value +30
 Wartość Ataku w potwory +%d	Attack Value against monsters +%d
 Wartość Magicznego Ataku: +30	Magical Attack Value: +30
 Wartość ataku +75 (miejsca 1-3)	Attack Value +75 (places 1-3)
+Wartość bonusu dokładnie taka	Bonus value exactly this
 Wartość bonusu taka albo niższa	Bonus value equal or lower
+Wartość bonusu taka albo wyższa	Bonus value this or higher
 Wartość sklepu przekracza 2 miliardy Yang.	The shop's value exceeds 2 billion Yang.
 Warunek: bonus o co najmniej podanej wartości	Condition: bonus of at least the given value
 Warunki	Conditions
@@ -6159,6 +6524,7 @@ Wersja TESTOWA: zwykłe Auto Łowy (K) stają, gdy ta rusza.	TEST version: the n
 Wersja: %d.%d.%d%s	Version: %d.%d.%d%s
 Wersja: 1.0.0	Version: 1.0.0
 Wersja: xxx	Version: xxx
+Wesoły Posłaniec Miłości	Cheerful Messenger of Love
 Wewnątrz tej wspaniałej muszli może ukrywać się połyskująca perła.	A shimmering pearl may be hidden inside this magnificent shell.
 Wezowy Lucznik Zodiaku	Zodiac Snake Archer
 Wezowy Miecznik Zodiaku	Zodiac Snake Swordsman
@@ -6184,13 +6550,16 @@ Wielki Miecz Wężowy	Great Serpent Sword
 Wielki Mistrz P. Wieży	Hellish Tower Grandmaster
 Wielorybi Pancerz	Whale Armour
 Wieża Sung Mahi	Sung Mahi Tower
+Wiking Światła+	Viking of Light+
 Wilk Piekielnej Wieży	Hellish Tower Wolf
 Wilk Zodiaku	Zodiac Wolf
+Wilki alfa	Alpha Wolves
 Wino Brzoskwini (W)	Peach Wine (W)
 Wino Kwiatu Brzoskwini+	Peach Flower Wine+
 Winogrono	Grape
 Wioska Gildii	Guild Village
 Wioska gildii 1	Guild Village 1
+Wiru Miecza	of the Sword Spin
 Wiruj mieczem aby atakować wielu przeciwników.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Spin the sword to attack several enemies.|Boosted by: Strength (++), Dexterity (+), Vitality (+).
 Wiruj między wrogami ze sztyletem.|Wzmacnia: Zręczność (++), Siła (++).	Whirl around enemies with a dagger.|Boosted by: Dexterity (++), Strength (++).
 Wirujący sztylet ma %d%% szans na ogłuszenie przeciwnika	Rolling Dagger has a %d%% chance to stun the opponent
@@ -6209,6 +6578,7 @@ Wojna Imperiow 1	Empire War 1
 Wojna gildii i Krypta Balathora	Guild war and Balathor's Crypt
 Wojow. z Toporem Zodiaku	Zodiac Axe Fighter
 Wojowniczka (K)	Warrior (F)
+Wojownik (Body)	Warrior (Body)
 Wojownik (M)	Warrior (M)
 Wojownik (Mental)	Warrior (Mental)
 Wojownik Ciało	Warrior Body
@@ -6222,6 +6592,7 @@ Wojownik Trytonów	Triton Warrior
 Wojownik Umysł	Warrior Mental
 Wojownik Uruk	Uruk Warrior
 Wojownik Zephyr	Zephyr Warrior
+Wokol mnie	Around me
 Wola Balathora	Balathor's Will
 Wola Balathora: odporność na ogłuszenie, kajdany i zamrożenie %d%%	Balathor's Will: resistance to stun, shackles and freezing %d%%
 Wola Sung Ma tej mapy	Sung Ma Will of this map
@@ -6244,6 +6615,7 @@ Wolne punkty Sung Ma: %d	Free Sung Ma points: %d
 Wolne punkty statusu: %d	Free status points: %d
 Wolne punkty umiejętności	Free skill points
 Wolno działająca trucizna ma %d%% szans na oddanie przeciwnikowi	Insidious Poison has a %d%% chance to be reflected onto the opponent
+Wołanie	Call
 Wpisz co najmniej 2 litery nazwy.	Enter at least 2 letters of the name.
 Wpisz co najmniej 2 litery.	Enter at least 2 letters.
 Wpisz ilosc (1-%d)	Enter amount (1-%d)
@@ -6259,6 +6631,7 @@ Wpisz swój PIN.	Enter your PIN.
 Wpisz tresc ogloszenia	Enter the announcement text
 Wpisz, ile bonusów ma się zgadzać (1-%d).	Enter how many bonuses must match (1-%d).
 Wpłacało botów: %d	Bots that contributed: %d
+Wrzesień	September
 Wróć 11553 12697	Return 11553 12697
 Wróć do zapisanych reguł	Return to the saved rules
 Wróć do zwykłej mapy	Back to the normal map
@@ -6287,6 +6660,7 @@ Wszystkie na P	All to P
 Wszystkie sloty sklepu są już odblokowane.	All shop slots are already unlocked.
 Wszystkie umiej. P	All skills P
 Wszystkie warstwy	All layers
+Wszystkie żywioły	All Elements
 Wszystkie: %d prób (udane: %d, nieudane: %d).	All: %d attempts (successful: %d, failed: %d).
 Wszystkie: tylko %s lub %s.	All: only %s or %s.
 Wszystko to za 50 zł na miesiąc!	All this for 50 PLN per month!
@@ -6325,13 +6699,18 @@ Wybor zmienil sie lub wygasl. Wybierz przedmioty ponownie.	The selection has cha
 Wyboru nie można cofnąć. Kontynuować?	This choice cannot be undone. Continue?
 Wybrana ranga wymaga tylu gwiazdek u każdego potwora zestawu.	The selected rank requires this many stars on every monster of the set.
 Wybrane bonusy i wartości	Selected bonuses and values
+Wybrano: %s	Selected: %s
 Wybrany NPC jest tuż obok.	The selected NPC is right next to you.
 Wybrany kanał dostępny jest tylko dla kont Premium.	The selected channel is only available for Premium accounts.
 Wybrany przepis: %s	Selected recipe: %s
 Wycena czesciowa - trwa wczytywanie	Partial valuation - still loading
 Wycena wygasła - wyceń ponownie.	The quote has expired - get a new quote.
+Wycisz 1 dzien	Mute 1 day
+Wycisz 1 h	Mute 1 h
+Wycisz 10 min	Mute 10 min
 Wycisz na:	Mute for:
 Wycofany przedmiot: Rytuału Przebudzenia już nie ma, a kamień nie ma żadnego zastosowania. Możesz go wyrzucić.	Withdrawn item: the Awakening Ritual no longer exists and this stone has no use. You can throw it away.
+Wyczysc filtry	Clear Filters
 Wyczyszczono wszystkie znaczniki sklepów offline.	All offline shop markers have been cleared.
 Wyczyszczono: %s	Cleared: %s
 Wyczyść	Clear
@@ -6349,6 +6728,7 @@ Wydarzenie Wakacyjne	Summer Event
 Wydarzenie Walentynkowe	Valentine's Event
 Wydarzenie Wielkanocne.	Easter Event.
 Wydobądź %(n)s rudy	Mine %(n)s ore
+Wydobądź rudę	Mine ore
 Wydłuża czas trwania twoich umiejętności.	Extends the duration of your skills.
 Wygląd postaci	Character appearance
 Wygląda niegroźnie, ale jest w 100% śmiertelny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Looks harmless, but is 100% deadly. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
@@ -6371,6 +6751,7 @@ Wykonaj zestaw broni	Make weapon set
 Wykonaj zestaw hełmu	Make helmet set
 Wykonaj zestaw zbroi	Make armour set
 Wykonane zmiany: %d	Switches done: %d
+Wykonano %s/%s. Aktywnych ogolem: %s	Done %s/%s. Total active: %s
 Wykopane rudy	Ores mined
 Wykorzystaj	Redeem
 Wykorzystaj voucher	Redeem Voucher
@@ -6379,6 +6760,7 @@ Wykryto konfiguracje sklepu, który nie został otwarty.	A configuration of a sh
 Wykryto potencjalnie wartościowy przedmiot, kontynuować?	A potentially valuable item was detected. Continue?
 Wykryto przedmiot z bonusem, kontynuować?	An item with bonuses was detected. Continue?
 Wykryto wysoki poziom ulepszenia, kontynuować?	A high upgrade level was detected. Continue?
+Wylacz eventy	Disable events
 Wylosować nową ofertę od razu?	Draw a new offer right away?
 Wylosuj cele od nowa	Redraw targets
 Wyląg Exedyara	Exedyar Hatchling
@@ -6401,6 +6783,8 @@ Wymagany poziom do zakupu: %d	Level required to buy: %d
 Wymagany poziom postaci: 75	Required character level: 75
 Wymagany poziom: %d	Required level: %d
 Wymiana ksiąg umiejętności	Skill Book Exchange
+Wymiana u: %s	Exchange at: %s
+Wymiana: %s	Exchange: %s
 Wymiany	Exchanges
 Wymienić %d ksiąg na %d nowych za %s Yang?	Exchange %d books for %d new ones for %s Yang?
 Wyniki odświeżają się co minutę.	Results refresh every minute.
@@ -6414,6 +6798,7 @@ Wypuść %s na wolność? Tego nie da się cofnąć.	Release %s into the wild? T
 Wypłać	Withdraw
 Wypłać sztuk:	Withdraw amount:
 Wyrok	Verdict
+Wyrzuc bota	Kick Bot
 Wyrzuc z gry...	Kick from game...
 Wyrzuc z serwera	Kick from server
 Wyrzucic %s z gry?	Kick %s from the game?
@@ -6430,6 +6815,7 @@ Wystąpił błąd podczas łączenia z kanałem.	An error occurred while connect
 Wysyłanie do serwera...	Sending to the server...
 Wyszukaj biżuterię i buty.	Search for jewellery and shoes.
 Wyszukaj bronie.	Search for weapons.
+Wyszukaj gracza online, zeby zobaczyc umiejetnosci	Search for an online player to see their skills
 Wyszukaj przedmiot	Search item
 Wyszukaj przedmioty z min. 1 bonusem.	Search for items with at least 1 bonus.
 Wyszukaj zbroje/tarcze/hełmy.	Search for armour/shields/helmets.
@@ -6522,6 +6908,7 @@ Włączony	On
 Wściekły Cierń	Raging Thorn
 Wściekły, kolczasty i bezlitosny. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Furious, spiked and merciless. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 X/Y w metrach globalnych. Ctrl + klik na mapie = teleport.	X/Y in global metres. Ctrl + click on the map = teleport.
+Yang na zabójstwo	Yang per Kill
 Yang z potworów +%d%%	Yang from monsters +%d%%
 Yang za próbę awansu	Yang per promotion attempt
 Yeti Płn. Wiatru	North Wind Yeti
@@ -6533,10 +6920,12 @@ Z jaja: %s	From egg: %s
 Z każdego slotu kupisz jedną rzecz na ofertę.	From each slot you can buy one thing per offer.
 Z pasującym kostiumem: +800 PŻ, +15 wartości ataku	With a matching costume: +800 HP, +15 Attack Value
 Z pasującą fryzurą: +800 PŻ, +15 wartości ataku	With a matching hairstyle: +800 HP, +15 Attack Value
+Z szansą %d%% resetuje czas odnowienia twoich umiejętności	With a %d%% chance, resets the cooldown of your skills
 Z łukiem	With a bow
 Z, `, pet, Auto Łowy i Towarzysz. Yang zawsze.	Z, `, pet, Auto Hunt and Companion. Yang always.
 Z. Eliksir Mocy Płn. W.	Golden Elixir of North Wind Power
 Z. Eliksir Odp. na Ogień	Golden Fire Resistance Elixir
+ZAKRĘĆ	SPIN
 Za %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.	You will be teleported in %d min. Talk to Dragon Guardian Dolnarr to leave immediately.
 Za %d. odprowadzenie do właściwej skrzyni otrzymujesz Klucz Goblina!	For escort no. %d to the right chest you receive a Goblin Key!
 Za 10 sekund pojawi się Jajo Smoka Balathora - wtedy możesz skupić na nim atak.	In 10 seconds Balathor's Dragon Egg will appear - then you can focus your attack on it.
@@ -6566,14 +6955,18 @@ Za tę rundę zapłacisz %s Yang i %d x %s.	This round will cost you %s Yang and
 Za ukończone tury także otrzymujesz nagrody.	You also receive rewards for completed rounds.
 Za wysoka wartość: %s.	Value too high: %s.
 Zaawansowany filtr jest wyłączony: Opcje Gry -> Dodatkowe -> Filtr podnoszenia.	The advanced filter is disabled: Game Options -> Extra -> Pickup filter.
+Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)	Advanced Pickup Filter (RMB on Ctrl+Z)
+Zabic postac %s?	Kill character %s?
 Zabici gracze	Players Killed
 Zabij %(n)s potworów	Kill %(n)s monsters
 Zabij %(n)s x %(what)s	Kill %(n)s x %(what)s
+Zabij potwory	Kill monsters
 Zabija orki i wszystkie inne poczwary. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	Kills orcs and all other monsters. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Zabite potwory	Monsters killed
 Zablokowac konto %s NA ZAWSZE?	Ban account %s FOREVER?
 Zablokowac konto %s na %s dni?	Ban account %s for %s days?
 Zablokowac nowe logowania (przerwa techniczna)?	Block new logins (maintenance)?
+Zablokowane miejsce	Locked slot
 Zablokowani	Blocked
 Zablokowany przy sortowaniu (Alt+LPM)	Locked when sorting (Alt+LMB)
 Zablokuj ekwipunek	Lock Equipment
@@ -6582,6 +6975,7 @@ Zablokuj na dni...	Ban for days...
 Zabrakło Yang.	Out of Yang.
 Zabójca	Killer
 Zabójca Króla	Kingslayer
+Zachowanie botow	Bot Behavior
 Zacny Kam. Przebudzenia	Fine Awakening Stone
 Zacny P. Wężowy (wykon.)	Noble Serpent Cloak (Craft)
 Zacny Płaszcz Wężowy	Noble Serpent Cloak
@@ -6613,6 +7007,7 @@ Zakończyć sesję farmienia?	End the farming session?
 Zakres rysowania	Render distance
 Zakres sklepów	Shop range
 Zakres widoku	View distance
+Zakresy (puste = bez limitu)	Ranges (empty = no limit)
 Zakryta [5] leżała obok odkrytej karty.[ENTER]Niestety nie otrzymujesz żadnych punktów. Wybierz teraz swojego króla [K].	A face-down [5] was next to the revealed card.[ENTER]Unfortunately you receive no points. Now choose your king [K].
 Zakręć kołem za jedyne	Spin the wheel for only
 Zakręć kołem.	Spin the wheel.
@@ -6620,6 +7015,7 @@ Zaktualizuj klienta i serwer.	Update the client and the server.
 Zaktualizuj serwer, żeby rozdawać statystyki.	Update the server to distribute stats.
 Zakup raz na %s	Purchase once every %s
 Zakupy przerwane.	Purchases interrupted.
+Zakupy towarzysza	Companion Purchases
 Zakupy włoży ci do torby albo do swojej.	It puts the purchases in your bag or its own.
 Zamarznięta Wieża	Frozen Tower
 Zamarznięty Generał	Frozen General
@@ -6639,6 +7035,7 @@ Zapisane bonusy	Saved bonuses
 Zapisane miejsca	Saved locations
 Zapisane pozycje	Saved positions
 Zapisane pozycje działają tylko z czystym zwojem (%s) w ekwipunku.	Saved locations only work with a blank scroll (%s) in your inventory.
+Zapisane zestawy	Saved Sets
 Zapisano	Saved
 Zapisano (%s%%).	Saved (%s%%).
 Zapisano (gracz offline)	Saved (player offline)
@@ -6646,10 +7043,11 @@ Zapisano preset "%s".	Preset "%s" saved.
 Zapisano.	Saved.
 Zapisano. Odswiezanie rang GM...	Saved. Refreshing GM ranks...
 Zapisuje miejsce %d...	Saving location %d...
-Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Save Screenshot:  Print (the screenshot is saved in the game's "screenshot" subfolder)
+Zapisz Screenshota: Print (Screen będzie zapisany w podkatalogu gry "Metin2\\screenshot")	Save Screenshot:  Print (Screen will be saved in the "screenshot" subfolder of the game folder)
 Zapisz i wyślij	Save and send
 Zapisz obecny filtr jako preset o tej nazwie	Save the current filter as a preset with this name
 Zapisz reguły i wyślij je na serwer	Save the rules and send them to the server
+Zapisz tu	Save here
 Zaplanowana została przerwa w dostępie do usług.	A service maintenance break has been scheduled.
 Zapomnienie umiejętności: Stajenny (za darmo).	Forgetting skills: Stable Boy (free).
 Zapomnieć %s? (zużywa Pet Revertus)	Forget %s? (uses up Pet Revertus)
@@ -6681,6 +7079,7 @@ Zawiera losowy rzadki przedmiot. Nagroda za pokonanie Bossa Świata.	Contains a 
 Zawiera losową księgę umiejętności peta.	Contains a random pet skill book.
 Zawiera misję w Wąwozie Północnego Wiatru, za którą otrzymasz nagrodę, jeśli ją pomyślnie ukończysz. Od poziomu: 120.	Contains a quest in the North Wind Gorge, for which you receive a reward if you complete it successfully. From level: 120.
 Zaznacz albo odznacz całą stronę	Select or deselect the whole page
+Zaznacz do "Kup wybrane"	Select for "Buy Selected"
 Zaznacz oferty, które chcesz kupić.	Select the offers you want to buy.
 Zaznacz wszystkie	Select All
 Zaznaczone misje znikną z listy tak, jakby ich nigdy nie było.	The selected quests will disappear from the list as if they had never existed.
@@ -6697,15 +7096,22 @@ Zbieraj insygnia, by wymieniać je na skrzynie lub materiał do ulepszenia.	Coll
 Zbieranie dla Biologa zamiast bicia poziomow.	Collecting for the Biologist instead of levelling.
 Zbierz %(n)s yang	Collect %(n)s Yang
 Zbierz %(n)s ziół	Gather %(n)s herbs
+Zbierz yang	Collect Yang
+Zbierz zioła	Gather herbs
 Zbir Piekielnej Wieży	Hellish Tower Thug
 Zbiórka na parterze wieży	Gathering on the tower's ground floor
 Zbocze Gautama	Gautama Slope
+Zbr. Mroku Księżyca+ (m)	Moon Dark Armor+ (m)
+Zbroja Ajolosa+ (m)	Ajolos Armor+ (m)
+Zbroja Avalonu+ (srebr.)	Avalon Armor+ (silver)
 Zbroja Boskiego Smoka	Divine Dragon Armour
 Zbroja Króla Wojowników+	Warrior King's Armour+
 Zbroja Płytowa Zodiaku	Zodiac Plate Armour
 Zbroja Smoka Magii	Magic Dragon Armour
 Zbroja Smoka Mroku	Dark Dragon Armour
 Zbroja Smoka Wiatru	Wind Dragon Armour
+Zbroja Szczodrego+	Armor of the Generous+
+Zbroja Zmarłych+ (m)	Armor of the Dead+ (m)
 Zbroja Zodiaku	Zodiac Armour
 Zbroja wypełniona mocą boskiego smoka.	Armour filled with the power of the divine dragon.
 Zbroja wypełniona mocą magicznego smoka.	Armour filled with the power of the magic dragon.
@@ -6734,6 +7140,8 @@ Zdobyte Yang	Yang earned
 Zdobywasz je za potwory i zadania Nowego Kontynentu.	You earn it from monsters and quests on the New Continent.
 Zdobywasz je, chroniąc Goblina Skarbów	You earn them by protecting the Treasure Goblin
 Zebrane kwiaty	Flowers gathered
+Zebrano %s z %s yang (%.1f%%)	Collected %s of %s Yang (%.1f%%)
+Zebrano: %d / %d	Collected: %d / %d
 Zegarek Kieszonkowy	Pocket Watch
 Zejście Północnego Wiatru	North Wind Descent
 ZejściePłnW. 11590 12181	NWindDescent 11590 12181
@@ -6743,11 +7151,15 @@ Zelazny Wojownik	Iron Warrior
 Zemsta Białej Przysięgi	Revenge of the White Oath
 Zemsta Czarnej Śmierci	Revenge of the Black Death
 Zephyr	Zephyr
+Zespawnowano bossow: %s/%s.	Bosses spawned: %s/%s.
 Zestaw %d	Set %d
 Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodać - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.	A set of 24 Okey cards. Right-click to add it - one game of Okey costs 1 card set and 30,000 Yang.
 Zestaw Opieki nad Koniem	Horse Care Kit
 Zestaw kostiumów	Costume Set
 Zestaw kostiumów:	Costume set: 
+Zestaw:	Set: 
+Zestawy lochowe	Dungeon Sets
+Zestawy polowe	Field Sets
 Zestawy: broń	Sets: weapons
 Zestawy: hełmy	Sets: helmets
 Zestawy: zbroje	Sets: armour
@@ -6763,6 +7175,7 @@ Zielona Runa SungMa	Green SungMa Rune
 Zielone Kły	Green Fangs
 Zielone, fioletowe, peleryny: z targu.	Green, purple, capes: from the market.
 Zielony Lśniący Odłamek	Green Gleaming Shard
+Zielony Szaman+	Green Shaman+
 Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potworów.	Sung Ma Land;Without a Champion Level you cannot hurt the monsters here.
 Ziemie Mrocznego Smoka	Lands of the Dark Dragon
 Ziemie gildii	Guild lands
@@ -6779,12 +7192,15 @@ Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania ognistych eliks
 Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania piorunowych eliksirów. Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).	A herb changed by the power of Sung Mahi. Required for brewing thunder elixirs. The herbalist Huahn-So (Bokjung, Bakra, Jayang) brews the elixirs.
 Zjawa Żółt. Tygrysa (BŚ)	Yellow Tiger Ghost (WB)
 Zjedzona zostanie pasza potrzebna do pełnego paska.	The feed needed for a full bar will be eaten.
+Zlamanie klatwy swiatyni	Temple Curse Break
 Zlamanie odpornosci: bron 2-r.	Defence break: 2-h weapons
 Zlamanie odpornosci: dzwony	Defence break: bells
+Zlamanie odpornosci: luki	Resistance Break: Bows
 Zlamanie odpornosci: miecze	Defence break: swords
 Zlamanie odpornosci: sztylety	Defence break: daggers
 Zlamanie odpornosci: wachlarze	Defence break: fans
 Zleć zbieranie:	Order gathering:
+Zlodziej zycia	Life Thief
 Zly Silny Malpi Zolnierz	Evil Strong Apesoldier
 Zly Zolnierz Czarnej Burzy	Evil Black Storm Soldier
 Zly format (np. 18, M5, G1, P).	Wrong format (e.g. 18, M5, G1, P).
@@ -6803,6 +7219,8 @@ Zmianki (B): %d Pozostałe: %d	Switchers (B): %d    Other: %d
 Zmianki z (B) są używane jako pierwsze	Switchers marked (B) are used first
 Zmiany dzialaja po kilku sekundach	Changes take effect after a few seconds
 Zmien poziom konia	Change horse level
+Zmien range	Change Rank
+Zmien skille	Change Skills
 Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).	Changes the bonuses of a mythical Dragon Stone in the Dragon Stone Alchemy window (bonus change tab).
 Zmienia imię aktywnego peta (dodatkowo 100.000 yang).	Changes the name of the active pet (costs an additional 100.000 Yang).
 Zmienia imię zwierzaka domowego (100.000 Yang).	Changes a pet's name (100.000 Yang).
@@ -6854,10 +7272,14 @@ Znak Strażnika	Guardian's Mark
 Znakomicie wykuty klucz z magicznego kryształu. Potrzebny do otworzenia idealnej skrzyni.	An excellently forged key made of magic crystal. Needed to open a perfect chest.
 Znakomicie! Twoja karta jest wyższa.[ENTER]Odkryj kolejną kartę.	Excellent! Your card is higher.[ENTER]Reveal another card.
 Znaleziono %d - pokazano %d, zawęź wyszukiwanie.	Found %d - showing %d, narrow your search.
+Znaleziono: %d	Found: %d
 Znaleziono: %d - wybierz z listy.	Found: %d - choose from the list.
+Znaleziono: %s	Found: %s
 Znika 15 dni po otrzymaniu.	Disappears 15 days after receiving it.
+Zniszcz %(n)s kamieni Metin	Destroy %(n)s Metin Stones
 Zniszcz %(n)s x %(what)s	Destroy %(n)s x %(what)s
 Zniszcz jaja, aby zadawać obrażenia!	Destroy the eggs to deal damage!
+Zniszcz kamienie Metin	Destroy Metin Stones
 Zniszczone Metiny	Metins Destroyed
 Zniszczone kamienie Metin	Metin Stones destroyed
 Zniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.	A Dragon Egg has been destroyed - Balathor's Seal has weakened greatly.
@@ -6869,6 +7291,7 @@ Zodiak Ognia	Fire Zodiac
 Zodiak Wiatru	Wind Zodiac
 Zodiak Ziemi	Earth Zodiac
 Zol. Czar. Wiat. Zodiaku	Zodiac Black Wind Soldier
+Zolnierz Czarnego Wiatru	Zolnierz Czarnego Wiatru
 Zolnierz Gladiator Kosci	Bone Gladiator Soldier
 Zolnierz Shrimp Zodiaku	Zodiac Shrimp Soldier
 Zolnierz Spartaner	Spartaner Soldier
@@ -6887,8 +7310,10 @@ Zrestartuj serwer	Restart server
 Zroszony Młot	Dewy Hammer
 Zrzut ekranu	Screenshot
 Zrzutka	Collection
+Zrzutka yang	Yang Collection
 Zrób miejsce w ekwipunku.	Make room in your inventory.
 Zręczność	Dexterity
+Zsiadam po buffy	Dismounting for buffs
 Zsiądź z konia, aby go rozwijać.	Dismount to train your horse.
 Zużyje 1 czysty zwój: %s.	Uses up 1 blank scroll: %s.
 Zużyje to 1 przedmiot (%s, a bez bonusów %s).	This uses 1 item (%s, or %s if it has no bonuses).
@@ -6977,6 +7402,28 @@ Zwiększa szansę na drop Yang.	Increases the chance of a Yang drop.
 Zwiększa szansę na kradzież PE.	Increases the chance to steal SP.
 Zwiększa szansę na kradzież PŻ.	Increases the chance to steal HP.
 Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.	Increases the chance of a critical hit by 10% for 10 minutes.
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting accessories by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania akcesoriów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting accessories by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting weapons by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting weapons by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting skill books by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania księgi umiejętności o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting skill books by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting belts by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pasów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting belts by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting other items by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania pozostałych przedmiotów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting other items by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting pet items by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania przedmiotów dla zwierzaków o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting pet items by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting gloves by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania rękawiczek o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting gloves by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting armor by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting armor by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting weapon sets by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów broni o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting weapon sets by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting helmet sets by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów hełmów o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting helmet sets by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 1%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Dwie takie runy Yu-Hwan przekształci w runę 2* (40%).	Increases the success chance when crafting armor sets by 1%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. Yu-Hwan will turn two of these runes into a 2* rune (40%).
+Zwiększa szansę na powodzenie podczas wytwarzania zestawów zbroi o 20%. Połóż ją w polu "Podwyższ szansę" okna wytwarzania - przy każdej próbie zużywa się jedna runa. Jest to maksymalny poziom runy.	Increases the success chance when crafting armor sets by 20%. Place it in the "Boost Chance" field of the crafting window - one rune is used up per attempt. This is the maximum rune level.
 Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.	Increases the chance of a piercing hit by 10% for 10 minutes.
 Zwiększa szansę na spowolnienie przeciwnika.	Increases the chance of slowing the opponent.
 Zwiększa szansę na trafienie przeciwnika.	Increases the chance of hitting the opponent.
@@ -7001,6 +7448,10 @@ Zwiększa twoją siłę obrony.	Increases your defence.
 Zwiększa umiejętności twojego wierzchowca	Increases your mount's skills
 Zwiększa wartość magicznego ataku na małżeństwo przez 3 godziny maksymalnie o 10%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.	Increases the married couple's magic attack value by up to 10% for 3 hours when worn by one of the partners. The item's effect depends on the percentage of Love Points. If the couple has e.g. 50% Love Points, the maximum effect is halved.
 Zwiększa wartość odbitych ciosów.	Increases the value of reflected damage.
+Zwiększa wolę SungMa (INT) w walce o 15 na %d sek.	Increases SungMa Will (INT) in combat by 15 for %d sec.
+Zwiększa wolę SungMa (ODP) w walce o 15 na %d sek.	Increases SungMa Will (RES) in combat by 15 for %d sec.
+Zwiększa wolę SungMa (SIŁA) w walce o 15 na %d sek.	Increases SungMa Will (STR) in combat by 15 for %d sec.
+Zwiększa wolę SungMa (WIT) w walce o 15 na %d sek.	Increases SungMa Will (VIT) in combat by 15 for %d sec.
 Zwiększa wzrost doświadczenia.	Increases experience gain.
 Zwiększa zadawane obrażenia fizyczne i magiczne. Możliwość zbuffowania innego gracza. Bonus użycia na samym sobie.	Increases physical and magic damage dealt. Can be cast on another player. Bonus when used on yourself.
 Zwiększa zadawane obrażenia fizyczne oraz kradnie PŻ od przeciwnika.	Increases physical damage dealt and steals HP from the enemy. 
@@ -7022,6 +7473,7 @@ Zwraca punkty Czempiona rozdane w Odporność Sung Ma.	Returns the Champion poin
 Zwraca punkty Czempiona rozdane w Siłę Sung Ma.	Returns the Champion points spent on Sung Ma Strength.
 Zwraca punkty Czempiona rozdane w Witalność Sung Ma.	Returns the Champion points spent on Sung Ma Vitality.
 Zwyczajna Szata Aury	Ordinary Aura Robe
+Zwykle bicie potworow	Zwykle bicie potworow
 Zwykła Skóra	Plain Leather
 Zwykłe Mikstury	Regular Potions
 Zwykłe potwory	Normal monsters
@@ -7081,6 +7533,7 @@ Złośliwa	Malicious
 Zły Pł. Wężowy (wykon.)	Evil Serpent Cloak (Craft)
 Zły Płaszcz Wężowy	Evil Serpent Cloak
 Złów %(n)s ryb	Catch %(n)s fish
+Złów ryby	Catch fish
 [ Założony ]	[ Equipped ]
 [%s] [Sklep] %s	[%s] [Shop] %s
 [+-]?%[-+ #0-9.]*[a-zA-Z]|%%	[+-]?%[-+ #0-9.]*[a-zA-Z]|%%
@@ -7098,6 +7551,7 @@ Złów %(n)s ryb	Catch %(n)s fish
 [Przedmiot ze slotem]	[Item with socket]
 [Przywołaj]	[Summon]
 [Sklep]	[Shop]
+[TAK]	[YES]
 [Ustanów Napastnika]	[Set Attacker]
 [Ustanów Walczącego Ostrzem]	[Set Blade Fighter]
 [Wojna] Twoja gildia jest na wojnie - kliknij "Wejdź na wojnę" na tablicy wojny (lewy dolny róg).	[War] Your guild is at war - click "Join the war" on the war board (bottom left corner).
@@ -7111,6 +7565,7 @@ aoe_tree_small	aoe_tree_small
 atakujesz wrogów bezpośrednio.|Wzmacnia: Siła (++), Zręczność (+), Witalność (+).	Attack enemies directly.|Boosted by: Strength (++), Dexterity (+), Vitality (+).
 autotarget: no Kolejny cel row in the game options	autotarget: no Next Target row in the game options
 bez bonusu	no bonus
+bije wszystko w pobliżu	attacks everything nearby
 bonusów 1-5 spoza warunków	bonuses 1-5 outside the conditions
 brak bonusu	no bonus
 bush_ancientlichen	bush_ancientlichen
@@ -7155,6 +7610,7 @@ dzień	day
 emocje %d	emocje %d
 eq daj %d %d	eq daj %d %d
 eq daj %d -1	eq daj %d -1
+eq odepnij %d	eq odepnij %d
 eq ruch %d %d	eq ruch %d %d
 eq ruch %d -1	eq ruch %d -1
 eq yang daj %d	eq yang daj %d
@@ -7180,11 +7636,12 @@ kup %s %d	kup %s %d
 kup %s %d tak	kup %s %d tak
 lewy przycisk myszy lub %s	left mouse button or %s
 lider %d	lider %d
-lista %d	lista %d
+lista %d	list %d
 losowa mapa	random map
 ma swój ranking postaci i gildii. Na koniec sezonu	has its own character and guild ranking. At the end of the season
 maksymalne PŻ /2	maximum HP /2
 maksymalne PŻ są o połowę mniejsze	maximum HP is halved
+misja %d %d	misja %d %d
 monstercard: blad w oknie kart (%s): %s	monstercard: error in the card window (%s): %s
 myszy w ekwipunku przy otwartej zakładce).	it in the inventory while the tab is open).
 na Wyspie Skarbów (Bilety Skarbów ze skrzyń).	on Treasure Island (Treasure Tickets from chests).
@@ -7202,6 +7659,7 @@ nie udało się zapisać ustawień.	failed to save the settings.
 nie walczy wcale	does not fight at all
 nie wybrano	not selected
 nie wydaje	doesn't spend
+nie zaczyna, broni ciebie i siebie	doesn't start fights, defends you and itself
 nowego bossa! W przeciwnym razie nagroda przepadnie.	a new boss! Otherwise the reward will be lost.
 obnizaj cene o	lower the price by
 obok ciebie	next to you
@@ -7222,11 +7680,13 @@ poziom łupu IV - 25 Kamyków	loot level IV - 25 Pebbles
 przez podany czas; każdy zostawia sobie zapas.	over the given time; each keeps a reserve for itself.
 przy Metinie Twardości na parterze Wieży Demonów; brakujące miejsca	at the Metin of Toughness on the ground floor of the Demon Tower; empty places
 przy kolejnych próbach łowienia?	on your next fishing attempts?
+przy tobie	by your side
 przywołany	summoned
 próby: %d	attempts: %d
 prędkość ruchu /2	movement speed /2
 prędkość ruchu jest o połowę mniejsza	movement speed is halved
 puste = dowolny przedmiot	empty = any item
+reguła "%s"	rule "%s"
 reliktu go niszczy.	the relic destroys it.
 robi zakupy	is shopping
 rodzaj bez filtra	type without filter
@@ -7239,6 +7699,7 @@ ręcznie	manually
 serwer nie odpowiada (brak poprawki autohunttest) - nie wystartowano.	the server is not responding (autohunttest patch missing) - not started.
 serwer nie potwierdził zakupu	the server did not confirm the purchase
 serwer nie pozwala teraz polować.	the server does not allow hunting right now.
+sezon %d	Season %d
 się na tej samej mapie, co Boss Świata, i zadasz minimalną	the same map as the World Boss and deal the minimum
 skillbook	Skill Book
 sklep może posiadać niepoprawne przedmioty. Kontynuować?	the shop may contain incorrect items. Continue?
@@ -7262,15 +7723,22 @@ uciekł - nikt nie dostał nagrody	escaped - nobody received a reward
 ulepszony Nóż.	upgraded Knife.
 umiej %d	skill %d
 umiejetnosci dodaj %d	umiejetnosci dodaj %d
+umiejetnosci reczne %d	umiejetnosci reczne %d
+umiejetnosci zeruj %d	umiejetnosci zeruj %d
 uruchomieniu klienta (Language: after a restart).	after the client is restarted.
 ustawienia zapisane.	settings saved.
+usun	usun 
+usun %d	usun %d
+w dniach	in days
 walka %d	walka %d
 wartość ataku +20% przez 3 godziny (do odebrania razem	attack value +20% for 3 hours (to be claimed together
 ważne	important
 wbudowanej przeglądarki (potrzebny nowy plik exe klienta).	built-in browser (a new client exe file is needed).
+wolna ręka	free roam
 wprowadzenie aby móc kontynuować rozgrywkę.	to be able to continue playing.
 wszystkie przedmioty	all items
 wybranego okienka (I / II). Po pierwszej aktywacji wyjęcie	selected slot (I / II) works. After the first activation, removing
+wylogowuje juz zalogowanej sesji. Wyrzuc z serwera dziala	logs out an already logged-in session. Kick from Server works
 wyłączone na tym serwerze.	disabled on this server.
 z nagrodą, przed pojawieniem się kolejnego bossa).	with the reward, before the next boss appears).
 zajmiesz w rankingu.	you will take in the ranking.
@@ -7312,19 +7780,26 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 |cff9a9a9aCzas zrzutki minął	|cff9a9a9aThe fundraiser time is up
 |cff9a9a9aMisja anulowana	|cff9a9a9aMission cancelled
 |cff9a9a9aNajpierw ukończ://	|cff9a9a9aComplete first://
+|cff9a9a9aZrzutka zakończona przez lidera	|cff9a9a9aCollection ended by the leader
 |cffbc893adostępne [|r%d|cffbc893a]|r	|cffbc893aavailable [|r%d|cffbc893a]|r
 |cffd5eb4b(+%s)|r	 |cffd5eb4b(+%s)|r
 |cffd5eb4b+%.2f%%|r	 |cffd5eb4b+%.2f%%|r
 |cfff0b324F%d|r - szybkie logowanie.	|cfff0b324F%d|r - quick login.
+|cfff4f770Trwa misja	|cfff4f770Mission in progress
+|cfff4f770Trwa zrzutka	|cfff4f770Collection in progress
 |cfff58742UWAGA!|r Kontrola bezpieczeństwa!	|cfff58742ATTENTION!|r Security check!
 |cffffa600*|r	|cffffa600*|r
 |cff{0}	|cff{0}
 |cff{}|h	|cff{}|h
 |cff{}|h{}|r	|cff{}|h{}|r
+Óó	Óó
+Ąą	Ąą
 ĄĆĘŁŃÓŚŹŻ	ĄĆĘŁŃÓŚŹŻ
 ąćęłńóśźż	ąćęłńóśźż
 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ	ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
+Ćć	Ćć
 Čć»çĹő±¸	Čć»çĹő±¸
+Ęę	Ęę
 Ładen potwór tego nie dropi.	No monster drops this.
 Ładny Kam. Przebudzenia	Pretty Awakening Stone
 Ładny Kamień Chaosu	Pretty Chaos Stone
@@ -7375,6 +7850,8 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Łuska Balathora	Balathor's Scale
 Łączenie	Connection
 Łączne obrażenia	Total damage
+Łączny czas	Total Time
+Łł	Łł
 Ńń	Ńń
 Ściana	Wall
 Ściąga do ciebie grupy potworów z okolicy.	Pulls groups of monsters from the area to you.
@@ -7387,11 +7864,13 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Śnieżna Czapa Leoparda+	Snow Leopard Hat+
 Śnieżna Czapa Zajęcza	Snow Rabbit Hat
 Śnieżna Czapa Zajęcza+	Snow Rabbit Hat+
+Śnieżny Bambi	Snow Bambi
 Śnieżny Leonidas	Snow Leonidas
 Śnieżny Leonidas(piecz.)	Snow Leonidas Seal
 Śpiew Stali	Song of Steel
 Śpiew Wiatru	Song of the Wind
 Śpiewająca Furia	Singing Fury
+Śr. czas sesji	Avg. Session Time
 Śr. obrażenia	Avg. Damage
 Śr. yang na sesję	Avg. Yang per session
 Średni	Medium
@@ -7400,6 +7879,7 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Średnio	Medium
 Środa	Wednesday
 Środek Ścierny	Abrasive
+Św. Nosiciel Światła+	Holy Light Bearer+
 Św. Odłamek Broni I	Holy Weapon Shard I
 Św. Odłamek Broni II	Holy Weapon Shard II
 Św. Odłamek Hełmu I	Holy Helmet Shard I
@@ -7413,6 +7893,7 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Światło Gwiazd	Starlight
 Światło Gwiazd (9.skill)	Starlight (9th Skill)
 Świetnie nadaje się do upieczenia nad ogniskiem.	Perfect for grilling over a campfire.
+Świąt. Zim. Zbroja+ (m)	Festive Winter Armor+ (m)
 Świąteczna Brązowa Skrzynia Okey	Christmas Bronze Okey Chest
 Świąteczna Srebrna Skrzynia Okey	Christmas Silver Okey Chest
 Świąteczna Złota Skrzynia Okey	Christmas Golden Okey Chest
@@ -7423,13 +7904,16 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Świątynia	Temple
 Świątynia Węży	Serpent Temple
 Świątynia Zodiaku	Zodiac Temple
+Święty	Holy
 Święty Efekt Zestawu	Holy Set Effect
 Święty Kowal Zestawu	Holy Set Smith
 Święty Miecz Bogów+	Holy Sword of the Gods+
 Święty Odłamek	Holy Powershard
 Święty kwiat z ogrodu Smoczego Boga. Służy do ulepszania ekwipunku.	A sacred flower from the garden of the Dragon God. It is used to upgrade equipment.
+Śś	Śś
 şó ĹĄşę	şó ĹĄşę
 Źródła	Sources
+Źź	Źź
 Żaden kruk nie został skrzywdzony podczas tworzenia tej broni. Broń dla Młodych Bohaterów: znika 15 dni po otrzymaniu (także założona). Nie można jej ulepszać, zmieniać ani dodawać bonusów, wkładać kamieni duszy, wymieniać, sprzedawać ani odkładać do magazynu.	No ravens were harmed in the making of this weapon. Young Heroes' weapon: disappears 15 days after you receive it (even if equipped). It cannot be upgraded, have its bonuses changed or added, hold Spirit Stones, or be traded, sold or put in the storeroom.
 Żadne: wyłącza wiadomości od Towarzysza. Ważne: pełne EQ, plecak, cenne rzeczy.	None: turns off Companion messages. Important: full inventory, backpack, valuables.
 Żałobna Pieśń	Mourning Song
@@ -7443,6 +7927,7 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Żołnierz Murena Głębin	Deep Moray Soldier
 Żołnierz Schron. Płn. W.	N. Wind Shelter Soldier
 Żołnierz Wężowy	Serpent Soldier
+Życie goblina	Goblin Life
 Żywioł potworów na tym piętrze	Element of the monsters on this floor
 Żywioł: %s	Element: %s
 Żywiołak Błyskawicy	Lightning Elemental
@@ -7458,3 +7943,4 @@ zwykłe Auto Łowy zatrzymane.	normal Auto Hunt stopped.
 Żyła Jadeitu Słońca	Sun Jade Vein
 Żółty Lśniący Odłamek	Yellow Gleaming Shard
 Żż	Żż
+żadne	none
