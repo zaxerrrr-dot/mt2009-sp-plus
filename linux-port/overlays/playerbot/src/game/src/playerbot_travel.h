@@ -667,7 +667,7 @@ namespace
 	// Shinsoo 500 characters and not one horse, Jinno 500 and not one, Chunjo
 	// the only kingdom levelling any ("tylko boty z chunjo leveluja konia",
 	// RetroGracz38; "bo z innych nie wchodza do lochu dlatego", NerrVoVy).
-	// MT2009_PLUS_BOT_DEATHLOOP_V1: a dungeon the bot loops on, or one its level is held out of alone (playerbot_deathloop.h).
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: a Monkey map the bot loops on (playerbot_deathloop.h).
 	bool IsPlayerBotDeathloopMonkeyBlocked(LPCHARACTER ch, long map);
 
 	long GetPlayerBotMonkeyMapFor(LPCHARACTER ch)
@@ -682,9 +682,9 @@ namespace
 			return IsPlayerBotMapHostedHere(own) && !IsPlayerBotDeathloopMonkeyBlocked(ch, own) ? own : 0;
 		long shared = band == PLAYERBOT_MONKEY_BAND_MEDIUM
 				? PLAYERBOT_MAP_MONKEY_MEDIUM : PLAYERBOT_MAP_MONKEY_HARD;
-		// MT2009_PLUS_BOT_DEATHLOOP_V1: alone, a bot of 46-54 takes the medium dungeon instead of the hard one (its
-		// monkeys of 45-54 and Lord Malp killed them in a loop), one of 33-35 its own easy one instead of the medium -
-		// or the next lower one when it loops on its own
+		// MT2009_PLUS_BOT_DEATHLOOP_V1: the bands are the level's alone (GetPlayerBotMonkeyMinLevel: 108 from 36, 109
+		// from 55); a map the bot loops on (more than eight deaths in an hour, playerbot_deathloop.h) gives way to the
+		// next lower one for the avoid's time
 		if (shared == PLAYERBOT_MAP_MONKEY_HARD && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))
 			shared = PLAYERBOT_MAP_MONKEY_MEDIUM;
 		if (shared == PLAYERBOT_MAP_MONKEY_MEDIUM && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))

@@ -6471,13 +6471,42 @@ namespace
 		PLAYERBOT_MONKEY_BAND_HARD
 	};
 
+	// MT2009_PLUS_BOT_DEATHLOOP_V1 (the owner, 6 November 2026: "lochy malp to nie dungeon, to zwykla mapa do dropu
+	// medali konnych"): the Monkey maps are chosen by the level alone, party or not - the medium one (108) from
+	// PLAYERBOT_MONKEY2_MIN_LEVEL (36), the hard one (109) from PLAYERBOT_MONKEY3_MIN_LEVEL (55), the kingdom's easy one
+	// under that (83.168.110.166: bots of 33-35 on 108 and of 46-54 on 109 died there in a loop). Event flag
+	// m2_bot_deathloop_monkey_off 1 (or m2_bot_deathloop_off 1): the old bands, 33 and 46.
+	int GetPlayerBotMonkeyMinLevel(bool hard)
+	{
+		static int s_iMedium = -1, s_iHard = -1;
+		if (s_iMedium < 0)
+		{
+			const char* m = std::getenv("PLAYERBOT_MONKEY2_MIN_LEVEL");
+			const char* h = std::getenv("PLAYERBOT_MONKEY3_MIN_LEVEL");
+			s_iMedium = std::max(1, std::min(250, m && *m ? atoi(m) : 36));
+			s_iHard = std::max(s_iMedium, std::min(250, h && *h ? atoi(h) : 55));
+		}
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 1000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_deathloop_monkey_off") == 0 &&
+					quest::CQuestManager::instance().GetEventFlag("m2_bot_deathloop_off") == 0;
+		}
+		if (!s_bOn)
+			return hard ? PLAYERBOT_MONKEY_HARD_MIN_LEVEL : PLAYERBOT_MONKEY_MEDIUM_MIN_LEVEL;
+		return hard ? s_iHard : s_iMedium;
+	}
+
 	EPlayerBotMonkeyBand GetPlayerBotMonkeyBandForLevel(BYTE level)
 	{
 		if (level < PLAYERBOT_MONKEY_MIN_LEVEL)
 			return PLAYERBOT_MONKEY_BAND_NONE;
-		if (level < PLAYERBOT_MONKEY_MEDIUM_MIN_LEVEL)
+		if ((int)level < GetPlayerBotMonkeyMinLevel(false))
 			return PLAYERBOT_MONKEY_BAND_EASY;
-		if (level < PLAYERBOT_MONKEY_HARD_MIN_LEVEL)
+		if ((int)level < GetPlayerBotMonkeyMinLevel(true))
 			return PLAYERBOT_MONKEY_BAND_MEDIUM;
 		return PLAYERBOT_MONKEY_BAND_HARD;
 	}

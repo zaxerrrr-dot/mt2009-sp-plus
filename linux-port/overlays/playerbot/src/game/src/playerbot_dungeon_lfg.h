@@ -232,7 +232,7 @@ namespace
 		{
 			int d = difficulty;
 			if (d == 0)
-				d = personLevel >= PLAYERBOT_MONKEY_HARD_MIN_LEVEL ? 3 : personLevel >= PLAYERBOT_MONKEY_MEDIUM_MIN_LEVEL ? 2 : 1;
+				d = personLevel >= GetPlayerBotMonkeyMinLevel(true) ? 3 : personLevel >= GetPlayerBotMonkeyMinLevel(false) ? 2 : 1;
 			k = d == 3 ? "malpy3" : d == 2 ? "malpy2" : "malpy1";
 		}
 		out.key = k;
@@ -247,12 +247,12 @@ namespace
 			else if (k == "malpy2")
 			{
 				out.map = PLAYERBOT_MAP_MONKEY_MEDIUM;
-				out.lvMin = PLAYERBOT_MONKEY_MEDIUM_MIN_LEVEL;
+				out.lvMin = GetPlayerBotMonkeyMinLevel(false);	// MT2009_PLUS_BOT_DEATHLOOP_V1
 			}
 			else
 			{
 				out.map = PLAYERBOT_MAP_MONKEY_HARD;
-				out.lvMin = PLAYERBOT_MONKEY_HARD_MIN_LEVEL;
+				out.lvMin = GetPlayerBotMonkeyMinLevel(true);	// MT2009_PLUS_BOT_DEATHLOOP_V1
 			}
 			if (!GetPlayerBotMonkeyArrival(out.map, out.x, out.y))
 				return false;

@@ -32,7 +32,7 @@
 //    defence first after a death in the last hour. Sung Ma hunters keep their own boosters (playerbot_yohara_guides.h).
 //
 // Switches: event flag m2_bot_survive_off 1 - all four off; m2_bot_survive_tier_off / _stepdown_off / _ring_off /
-// _booster_off - one; env PLAYERBOT_SURVIVE_TIER_MIN_LEVEL (60), PLAYERBOT_SURVIVE_DEATHS_H (4),
+// _booster_off - one; env PLAYERBOT_SURVIVE_TIER_MIN_LEVEL (60), PLAYERBOT_SURVIVE_DEATHS_H (9),
 // PLAYERBOT_SURVIVE_STEPDOWN_MIN (120), PLAYERBOT_SURVIVE_BOOSTER_MIN_LEVEL (50), PLAYERBOT_SURVIVE_BOOSTER_DAY_MAX (400).
 // The log: PLAYERBOT_SURVIVE: lines - step down / step back (each), tier pick (throttled), ring listed (throttled),
 // booster bought / drunk (throttled), census every PLAYERBOT_SURVIVE_CENSUS_MS.
@@ -250,6 +250,17 @@ namespace
 		return -1;
 	}
 
+	// MT2009_PLUS_BOT_DEATHLOOP_V1 (the owner, 6 November 2026: "trzy smierci to za malo - jak ginie powyzej 8 razy"): the
+	// deaths an hour on one map that send a bot to an easier one - here, and the death loop's map avoid
+	// (playerbot_deathloop.h) reads the same number. Env PLAYERBOT_SURVIVE_DEATHS_H (9, was 4).
+	int GetPlayerBotSurviveDeathsPerHour()
+	{
+		static int s_iDeaths = -1;
+		if (s_iDeaths < 0)
+			s_iDeaths = GetPlayerBotSurviveEnv("PLAYERBOT_SURVIVE_DEATHS_H", 9, 2, 100);
+		return s_iDeaths;
+	}
+
 	// A death, on the tick it is noticed (playerbot_survival.h, after the persona's). Only a monster's, on a 2.x hunting
 	// map, outside a dungeon's or a war's business.
 	void NotePlayerBotSurviveDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -277,13 +288,10 @@ namespace
 		int onMap = 0;
 		for (size_t i = 0; i < b.deaths.size(); ++i)
 			onMap += b.deaths[i].second == map ? 1 : 0;
-		static int s_iDeaths = -1, s_iMin = -1;
-		if (s_iDeaths < 0)
-		{
-			s_iDeaths = GetPlayerBotSurviveEnv("PLAYERBOT_SURVIVE_DEATHS_H", 4, 2, 100);
+		static int s_iMin = -1;
+		if (s_iMin < 0)
 			s_iMin = GetPlayerBotSurviveEnv("PLAYERBOT_SURVIVE_STEPDOWN_MIN", 120, 10, 24 * 60);
-		}
-		if (onMap < s_iDeaths)
+		if (onMap < GetPlayerBotSurviveDeathsPerHour())
 			return;
 		b.hard[map] = dwNow + (DWORD)s_iMin * 60000U;
 		b.dwStepAt = 0;	// pick again
@@ -295,25 +303,6 @@ namespace
 		++s_kPlayerBotSurvive.stepDowns;
 		sys_log(0, "PLAYERBOT_SURVIVE: step down pid=%u name=%s level=%u map=%ld deaths_h=%d hp=%d for_min=%d",
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, onMap, ch->GetMaxHP(), s_iMin);
-	}
-
-	// MT2009_PLUS_BOT_DEATHLOOP_V1: a death loop on a 2.x hunting map (playerbot_deathloop.h) steps the bot down at once,
-	// for the loop's minutes (never shorter than a step down already running). True when the map is one of the rows.
-	bool MarkPlayerBotSurviveHard(LPCHARACTER ch, long map, DWORD forMs, const char* why)
-	{
-		if (!ch || !IsPlayerBotSurviveOn(SURVIVE_STEPDOWN) || GetPlayerBotSurviveMapLevel(map) < 0)
-			return false;
-		TPlayerBotSurviveBot& b = s_mapPlayerBotSurvive[ch->GetPlayerID()];
-		const DWORD until = get_dword_time() + forMs;
-		std::map<long, DWORD>::iterator h = b.hard.find(map);
-		if (h == b.hard.end() || (int)(until - h->second) > 0)
-			b.hard[map] = until;
-		b.dwStepAt = 0;	// pick again
-		++s_kPlayerBotSurvive.stepDowns;
-		sys_log(0, "PLAYERBOT_SURVIVE: step down pid=%u name=%s level=%u map=%ld why=%s hp=%d for_min=%u",
-				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, why ? why : "?", ch->GetMaxHP(),
-				(unsigned int)(forMs / 60000U));
-		return true;
 	}
 
 	// Whether a map of the drop knowledge has a monster in this bot's drop window that gives one of the wanted items;

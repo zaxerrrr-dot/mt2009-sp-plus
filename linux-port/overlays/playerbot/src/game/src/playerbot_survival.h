@@ -19,6 +19,9 @@ namespace
 	// MT2009_PLUS_BOT_DEATHLOOP_V1: the death loop's count and the revive away from the pack (playerbot_deathloop.h).
 	void NotePlayerBotDeathloopDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	bool MovePlayerBotDeathloopRevived(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// V2: the hidden run to the safe point, and the visible rest after it.
+	bool ManagePlayerBotDeathloopFlee(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	bool IsPlayerBotDeathloopRecoveryShown(DWORD pid);
 
 	// MT2009_PLUS_BOT_HELD_RETREAT_V1: a bot held by a monster does not hide.
 	// At 20% HP a bot went into the emergency rest - invisible, healing,
@@ -310,11 +313,17 @@ namespace
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
 
+		// MT2009_PLUS_BOT_DEATHLOOP_V1: a bot that stood up among monsters runs, hidden, to the safe point first
+		// (playerbot_deathloop.h); there it rests visibly - the safe point is its protection.
+		if (ManagePlayerBotDeathloopFlee(ch, state, dwNow))
+			return true;
 		if (RestHealPlayerBot(ch, state, dwNow))
 		{
 			EndPlayerBotRecovery(ch, state);
 			return false;
 		}
+		if (IsPlayerBotDeathloopRecoveryShown(ch->GetPlayerID()))
+			return true;
 		KeepPlayerBotRecoveryHidden(ch, state, dwNow);
 
 		// While recovering invisibly, if we are right inside the death danger zone (< 800 distance),
@@ -536,8 +545,9 @@ namespace
 				// deaths in two minutes at one point, revived with a fifth of its health among the same monsters.
 				if (MovePlayerBotSungmaRevived(ch))
 					ClearPlayerBotRoute(state, true);
-				// MT2009_PLUS_BOT_DEATHLOOP_V1: every other bot stands up at the map's town point when a pack stands round
-				// the body or it fell on this spot before (playerbot_deathloop.h) - not into the monsters that killed it.
+				// MT2009_PLUS_BOT_DEATHLOOP_V1: every other bot stands up by its body and, when a pack stands round it or it
+				// fell on this spot before, runs hidden to the nearest safe point (the map's town point only when there is
+				// none) - playerbot_deathloop.h, not into the monsters that killed it.
 				else if (MovePlayerBotDeathloopRevived(ch, state, dwNow))
 					ClearPlayerBotRoute(state, true);
 			}
