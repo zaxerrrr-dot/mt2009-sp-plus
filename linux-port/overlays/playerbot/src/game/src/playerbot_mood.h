@@ -186,6 +186,11 @@ namespace
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_MEDAL_GOAL, (p.bMedalGoalDone ? 1 : 0) + 1);
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS, (int)(p.dwHeldMs / 1000) + 1);	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_LOCK, (int)p.bHeldLock + 1);
+		{
+			const int graceLeftS = p.dwPinGraceUntil != 0 && (int)(dwNow - p.dwPinGraceUntil) < 0 ?
+					(int)((p.dwPinGraceUntil - dwNow) / 1000U) : 0;
+			ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_PIN_GRACE, graceLeftS > 0 ? (int)get_global_time() + graceLeftS + 1 : 0);
+		}
 		p.bDirty = false;
 		p.dwNextSave = dwNow + PLAYERBOT_PERSONA_SAVE_INTERVAL;
 	}
@@ -239,6 +244,10 @@ namespace
 			const int heldLock = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_LOCK) - 1;
 			p.bHeldLock = heldLock > 0 && heldLock <= PLAYER_MAX_LEVEL_CONST ? (BYTE)heldLock : 0;
 			p.dwHeldMs = p.bHeldLock != 0 && heldS > 0 ? (DWORD)heldS * 1000U : 0;
+			const int graceEnd = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_PIN_GRACE) - 1;
+			const int graceLeftS = graceEnd > 0 ? graceEnd - (int)get_global_time() : 0;
+			p.dwPinGraceUntil = graceLeftS > 0 && graceLeftS <= 24 * 3600 ?
+					((dwNow + (DWORD)graceLeftS * 1000U) ? dwNow + (DWORD)graceLeftS * 1000U : 1) : 0;
 		}
 		// A goal dropper that graduated before this login plays as the
 		// Wanderer its draw would otherwise have made it (community patch 2,

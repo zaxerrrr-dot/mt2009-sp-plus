@@ -8287,6 +8287,9 @@ namespace
 	// its lock (seconds + 1) and the lock they were counted at (+ 1).
 	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS = "playerbot.persona_hold_s";
 	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_LOCK = "playerbot.persona_hold_lv";
+	// The death pin's grace after a lock given up: the unix time it ends (+ 1), so
+	// it goes with the bot to the other channel (2.42 test, 6 November 2026).
+	const char* const PLAYERBOT_PERSONA_FLAG_PIN_GRACE = "playerbot.persona_pin_grace";
 
 	// The Grinder and the Conqueror (Zdobywca). A Grinder that meets the Law of
 	// Advancement is asked once an hour whether it moves on or stays to push
