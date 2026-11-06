@@ -5469,7 +5469,7 @@ namespace
 			if (!IsPlayerBotRefineBagCandidate(ch, item))
 			{
 				if (IsPlayerBotSpecialLevel30Weapon(item))
-					PlayerBotLogThrottled("refine_l30_skipped", dwNow,
+					PlayerBotLogThrottledEvery("refine_l30_skipped", dwNow, 600000,
 							"PLAYERBOT_AI: level-30 weapon not refined pid=%u name=%s vnum=%u plus=%u level=%u reason=not_a_candidate junk=%d spare=%d upgrade=%d",
 							ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 							(unsigned int)item->GetRefineLevel(), (unsigned int)ch->GetLevel(),
@@ -5483,7 +5483,7 @@ namespace
 			if (plusLevel >= GetPlayerBotRefineTarget(ch, item))
 			{
 				if (IsPlayerBotSpecialLevel30Weapon(item))
-					PlayerBotLogThrottled("refine_l30_target", dwNow,
+					PlayerBotLogThrottledEvery("refine_l30_target", dwNow, 600000,
 							"PLAYERBOT_AI: level-30 weapon not refined pid=%u name=%s vnum=%u plus=%u level=%u reason=target_reached target=%u",
 							ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 							(unsigned int)plusLevel, (unsigned int)ch->GetLevel(),
@@ -5772,7 +5772,7 @@ namespace
 				if (aboveCeiling && !cheapGamble && scrollStepAllowed && scrollCell < 0 &&
 						!PlayerBotPlainStepLiftsHold(ch, item, stepProb, "anvil_table"))
 				{
-					PlayerBotLogThrottled("refine_weapon_ceiling", dwNow,
+					PlayerBotLogThrottledEvery("refine_weapon_ceiling", dwNow, 600000,
 							"PLAYERBOT_AI: weapon waits for a scroll pid=%u name=%s vnum=%u level=%d plus=%u avg=%ld ceiling=%d prob=%d where=anvil",
 							ch->GetPlayerID(), ch->GetName(), oldVnum, item->GetLevelLimit(),
 							(unsigned int)plusLevel, average, anvilCeiling, stepProb);
@@ -6810,7 +6810,7 @@ namespace
 				FindPlayerBotRefineScrollCellFor(ch, item, (int)recipe->prob) < 0 &&
 				!IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))	// MT2009_PLUS_BOT_REFINE_POLICY_V1
 		{
-			PlayerBotLogThrottled("refine_weapon_ceiling_plan", get_dword_time(),
+			PlayerBotLogThrottledEvery("refine_weapon_ceiling_plan", get_dword_time(), 600000,
 					"PLAYERBOT_AI: weapon waits for a scroll pid=%u name=%s vnum=%u level=%d plus=%u avg=%ld ceiling=%d prob=%d where=plan",
 					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), item->GetLevelLimit(),
 					(unsigned int)item->GetRefineLevel(), SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS),

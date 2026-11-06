@@ -2769,8 +2769,30 @@ namespace
 
 		if (swapped || PlayerBotEquipItem(ch, bestItem))
 		{
-			sys_log(0, "PLAYERBOT_AI: equipped upgrade pid=%u name=%s wear=%d old_vnum=%u new_vnum=%u old_score=%lld new_score=%lld",
-					ch->GetPlayerID(), ch->GetName(), bestWearCell, oldVnum, newVnum, oldScore, bestScore);
+			// MT2009_PLUS_BOT_LOG_QUIET_V1: a swap straight back to what the slot held before (within half an hour) is
+			// churn - counted and said once a minute for the population; any other swap one a bot every gap
+			// (PlayerBotLogPerBot). The swap's row in log.log below stays whole.
+			{
+				static std::map<std::pair<DWORD, int>, std::pair<std::pair<DWORD, DWORD>, DWORD> > s_mapLastSwap;	// (pid, wear) -> ((old, new), when)
+				static unsigned int s_uChurn = 0;
+				if (s_mapLastSwap.size() > 200000)
+					s_mapLastSwap.clear();
+				std::pair<std::pair<DWORD, DWORD>, DWORD>& last = s_mapLastSwap[std::make_pair(ch->GetPlayerID(), (int)bestWearCell)];
+				const bool churn = last.second != 0 && dwNow - last.second < 30U * 60U * 1000U &&
+						last.first.first == newVnum && last.first.second == oldVnum;
+				last = std::make_pair(std::make_pair(oldVnum, newVnum), dwNow ? dwNow : 1);
+				if (churn && IsPlayerBotLogQuiet())
+				{
+					++s_uChurn;
+					PlayerBotLogThrottled("equip_churn", dwNow,
+							"PLAYERBOT_AI: equip churn pid=%u name=%s wear=%d back_to=%u from=%u churn_total=%u",
+							ch->GetPlayerID(), ch->GetName(), bestWearCell, newVnum, oldVnum, s_uChurn);
+				}
+				else
+					PlayerBotLogPerBot("equip", ch->GetPlayerID(), dwNow,
+							"PLAYERBOT_AI: equipped upgrade pid=%u name=%s wear=%d old_vnum=%u new_vnum=%u old_score=%lld new_score=%lld",
+							ch->GetPlayerID(), ch->GetName(), bestWearCell, oldVnum, newVnum, oldScore, bestScore);
+			}
 			if (bestWearCell == WEAR_WEAPON && bestOldItem)
 				s_mapPlayerBotWeaponTakenOff[ch->GetPlayerID()] = std::make_pair(bestOldItem->GetID(), dwNow);
 			else if (!pinned)
@@ -6559,7 +6581,7 @@ namespace
 				const DWORD potionVnum = item->GetVnum();
 				if (ch->UseItem(TItemPos(INVENTORY, cell)))
 				{
-					sys_log(0, "PLAYERBOT_AI: used health potion pid=%u name=%s vnum=%u hp=%d/%d",
+					PlayerBotLogPerBot("hp_potion", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: used health potion pid=%u name=%s vnum=%u hp=%d/%d",
 							ch->GetPlayerID(), ch->GetName(), potionVnum, ch->GetHP(), ch->GetMaxHP());
 					NotePlayerBotStrongMapHardship(ch, 2); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 					return true;
@@ -6613,7 +6635,7 @@ namespace
 				const DWORD potionVnum = item->GetVnum();
 				if (ch->UseItem(TItemPos(INVENTORY, cell)))
 				{
-					sys_log(0, "PLAYERBOT_AI: used mana potion pid=%u name=%s vnum=%u sp=%d/%d",
+					PlayerBotLogPerBot("sp_potion", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: used mana potion pid=%u name=%s vnum=%u sp=%d/%d",
 							ch->GetPlayerID(), ch->GetName(), potionVnum, ch->GetSP(), ch->GetMaxSP());
 					return true;
 				}

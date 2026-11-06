@@ -1014,7 +1014,7 @@ namespace
 			// (PLAYERBOT_HORSE_TRAVEL_FLIP_HOLD_MS).
 			state.dwNextHorseRideCheckTime = dwNow + PLAYERBOT_HORSE_TRAVEL_FLIP_HOLD_MS;
 			state.dwLastMeaningfulActivityTime = dwNow;
-			sys_log(0, "PLAYERBOT_HORSE: dismounted pid=%u name=%s map=%ld pos=(%ld,%ld) reason=%s",
+			PlayerBotLogPerBot("horse_down", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_HORSE: dismounted pid=%u name=%s map=%ld pos=(%ld,%ld) reason=%s",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
 					reason ? reason : "?");
 			return true;
@@ -1071,7 +1071,7 @@ namespace
 		state.dwNextNavPlanTime = 0;
 		state.dwNextHorseRideCheckTime = dwNow + 1000;
 		state.dwLastMeaningfulActivityTime = dwNow;
-		sys_log(0, "PLAYERBOT_HORSE: mounted pid=%u name=%s horse_level=%u mount=%u map=%ld pos=(%ld,%ld) reason=%s",
+		PlayerBotLogPerBot("horse_up", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_HORSE: mounted pid=%u name=%s horse_level=%u mount=%u map=%ld pos=(%ld,%ld) reason=%s",
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetHorseLevel(),
 				(unsigned int)(bSeal ? ch->GetMountVnum() : 0),
 				ch->GetMapIndex(), ch->GetX(), ch->GetY(), reason ? reason : "?");

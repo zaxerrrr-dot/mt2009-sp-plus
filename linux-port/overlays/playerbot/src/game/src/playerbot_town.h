@@ -3921,8 +3921,17 @@ namespace
 		if (item && IsPlayerBotSmCouponVnum(item->GetVnum()))
 			return 0;
 #endif
-		const DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
+		DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
 				GetPlayerBotMarketFloor(item));
+		// MT2009_PLUS_BOT_MARKET_CLEARING_V1: no floor holds a line of a clearing kind over its clearing ask
+		// (playerbot_market_clearing.h) - half the sheet was what kept 77 thousand Rybia Osc at 200 thousand and up.
+		if (item && floor > 0)
+		{
+			const DWORD clearUnit = GetPlayerBotClearingUnit(item->GetVnum());
+			if (clearUnit > 0)
+				floor = (DWORD)std::min<unsigned long long>((unsigned long long)floor,
+						(unsigned long long)clearUnit * (unsigned long long)std::max<DWORD>(1, item->GetCount()));
+		}
 		return floor == 0 ? 0 : HumanizePlayerBotPrice(floor, true);
 	}
 
@@ -4782,6 +4791,20 @@ namespace
 		// MT2009_PLUS_MARKET_V3: a piece off the sheet, by the plus its lines
 		// or its average make it (LiftPlayerBotGearPrice); nothing for the rest.
 		unit = LiftPlayerBotGearPrice(item, unit);
+		// MT2009_PLUS_BOT_MARKET_CLEARING_V1: a kind the counters hold far more of than sells asks no more than its
+		// clearing ask (playerbot_market_clearing.h) - the last word over the sheet, the index, the memory and the floors
+		// above: "zmniejszamy do momentu, az przedmioty beda znikac z rynku" (the owner, 6 November 2026).
+		{
+			const DWORD clearUnit = GetPlayerBotClearingUnit(item->GetVnum());
+			if (clearUnit > 0 && unit > clearUnit && refine == 0)
+			{
+				const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(item->GetVnum());
+				PlayerBotPriceStep(per::STEP_LEDGER, clearUnit, entry ? entry->dwDemandBots : 0,
+						entry ? entry->dwSupplyUnits : 0, (long long)clearUnit * 100LL / std::max<DWORD>(1, unit));
+				unit = clearUnit;
+				++s_kPlayerBotClearCounters.capped;
+			}
+		}
 		// MT2009_PLUS_DIGI_STACK_V1: in 64 bits - a stack of 200 soul stones
 		// wrapped a DWORD (200 x +6 asked a twentieth of its worth). Over the
 		// DWORD it stays at the top, which no bot listing takes (PLAYERBOT_GOLD_MAX, 2 bn:
