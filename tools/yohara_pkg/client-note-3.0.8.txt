@@ -1,0 +1,19 @@
+    Kolejnosc: klient 2.0.64 -> klient-test-yohara-3.0.0.zip ->
+    klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip -> klient-test-yohara-3.0.6-latka.zip
+    -> klient-test-yohara-3.0.6b-poprawki.zip -> latki klient-test-yohara-3.0.7-latka.zip
+    ... klient-test-yohara-3.0.17-latka.zip po kolei -> klient-test-yohara-3.0.19-latka.zip.
+    Poprawki 3.0.9b (klient-test-yohara-3.0.9b-poprawki.zip) nie sa potrzebne - latka
+    3.0.10 je zawiera. Latka 3.0.18 nie jest potrzebna - 3.0.19 zastepuje jej plik exe.
+    Z latek, w ktorych jest plik exe gry (3.0.8, 3.0.9, 3.0.10, 3.0.11, 3.0.14, 3.0.16,
+    3.0.19), kopiuj folder "pack" ORAZ plik exe gry.
+    Gotowy klient zglasza sie jako wersja 1.3.3. Serwer odrzuca kazdy starszy
+    klient (M2_CLIENT_MIN_VERSION=1010303, domyslnie) komunikatem "Wymagana
+    aktualizacja klienta gry przez Patcher." - nie lacz sie starszym klientem.
+----
+- Kolejność łatek klienta: klient 2.0.64 → klient-test-yohara-3.0.0.zip → klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip
+  → klient-test-yohara-3.0.6-latka.zip → klient-test-yohara-3.0.6b-poprawki.zip → łatki 3.0.7 … 3.0.17 po kolei
+  → klient-test-yohara-3.0.19-latka.zip (poprawki 3.0.9b nie są potrzebne – łatka 3.0.10 je zawiera; łatka 3.0.18
+  nie jest potrzebna – 3.0.19 zastępuje jej plik exe). Z łatek z plikiem exe gry (3.0.8, 3.0.9, 3.0.10, 3.0.11, 3.0.14,
+  3.0.16, 3.0.19) kopiuj folder „pack” ORAZ plik exe gry. Kto ma już klienta 3.0.19 z testów – nic nie wgrywa.
+- Gotowy klient zgłasza się jako wersja 1.3.3. Serwer 3.0.8 odrzuca każdy starszy klient (M2_CLIENT_MIN_VERSION=1010303,
+  domyślnie) komunikatem „Wymagana aktualizacja klienta gry przez Patcher.”.

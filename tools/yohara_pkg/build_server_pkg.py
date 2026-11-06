@@ -15,6 +15,14 @@ klient-test-yohara-3.0.6b-poprawki.zip,klient-test-yohara-3.0.7-latka.zip,klient
 klient-test-yohara-3.0.9-latka.zip,klient-test-yohara-3.0.10-latka.zip \
         --client-note-file client-note-3.0.7.txt \
         --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.6-test-serwer.zip
+    python3 tools/yohara_pkg/build_server_pkg.py --version 3.0.8 --prev-version 3.0.7 \
+        --client-version 3.0.19 --changelog /opt/metin2/cache/yohara/CHANGELOG-YOHARA-3.0.8.md \
+        --client-chain klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip,klient-test-yohara-3.0.6-latka.zip,\
+klient-test-yohara-3.0.6b-poprawki.zip,klient-test-yohara-3.0.7-latka.zip,...,klient-test-yohara-3.0.17-latka.zip,\
+klient-test-yohara-3.0.19-latka.zip \
+        --client-note-file tools/yohara_pkg/client-note-3.0.8.txt \
+        --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.7-test-serwer.zip
+    (the chain spelled out: 3.0.7 - 3.0.17 one by one; 3.0.9b and 3.0.18 are not needed)
 
 What goes in (the way 3.0.0-3.0.2 were made, written down):
   * every file git tracks at --ref, without the repository-only trees
@@ -185,7 +193,7 @@ wlaczone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1). Starszy klient zamyka sie
 przy wejsciu na te mapy.
 Wazne: NIE uruchamiaj MT2009-Patcher.exe i nie klikaj w launcherze
 "aktualizuj klienta" - patcher sciaga klienta 2.x i nadpisalby pliki
-Yohary. Gre uruchamiaj bezposrednio przez metin2client.exe (albo
+Yohary. Gre uruchamiaj bezposrednio przez plik exe gry (albo
 przyciskiem GRAJ w launcherze).
 Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
 
