@@ -226,6 +226,11 @@ namespace
 						a.change == playerbot_persona::GRINDER_LOCK_LIFTED_NEVER_HOLDS ? "never_holds" : "no_tier");
 				break;
 			case playerbot_persona::GRINDER_LOCK_REDRAWN:
+				// 2.42 test (6 November 2026): a lock outside the tier table that
+				// today's draw gives again (was=65 now=65) came back on every
+				// pass - ~30 000 lines an hour a core. Only a real change speaks.
+				if (was == a.written)
+					break;
 				sys_log(0, "PLAYERBOT_PERSONA: grinder lock redrawn pid=%u name=%s was=%u now=%u",
 						ch->GetPlayerID(), ch->GetName(), (unsigned int)was, (unsigned int)a.written);
 				break;

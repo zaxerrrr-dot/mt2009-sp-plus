@@ -4485,13 +4485,15 @@ namespace
 	// piece is never held for a scroll that would not be used on it.
 	int FindPlayerBotRefineScrollCellFor(LPCHARACTER ch, LPITEM item, int stepProb = 100)
 	{
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: the census ticks on every ask (2.42 test, 6 November 2026: ticked
+		// only on a plain policy step, it never came out on the test world).
+		TickPlayerBotRefinePolicyCensus(get_dword_time());
 		if (!ch || !item || IsPlayerBotScrollFreeGear(item))
 			return -1;
 		// MT2009_PLUS_BOT_REFINE_POLICY_V1: no scroll on a cheap piece's step at good odds, nor on a cheap merchant
 		// shield's / helmet's step to +6.
 		if (IsPlayerBotPlainAnvilPolicyStep(item, stepProb))
 		{
-			TickPlayerBotRefinePolicyCensus(get_dword_time());
 			const int cell = FindPlayerBotRefineScrollCell(ch, item->GetRefineLevel(), stepProb);
 			if (cell >= 0)
 				++s_kPlayerBotRefinePolicyStats.uScrollSaved;
