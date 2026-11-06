@@ -549,19 +549,19 @@ migrate_yohara_updates() {
     printf 'M2_YOHARA_UPDATES_DEFAULTED=1\n' >> "$_env"
 }
 
-# MT2009_PLUS_DB_LOG_RETENTION_V1: a world installed before 2.36 has kept its
-# whole log database, and the owner of each decides when old rows go - the
-# first prune of a big log.log rewrites it once. So an .env without the key
-# gets 0 (keep everything, what compose already reads for an absent key),
-# written out so the panel's .env page shows what is in force instead of the
-# example's 14; a new install has the example's 14 already.
+# MT2009_PLUS_DB_LOG_RETENTION_V1: an .env without the key gets the default
+# written out, so the panel's .env page shows what is in force. An owner's own
+# value (0 = keep everything included) is never touched.
+# MT2009_PLUS_BOT_LOG_TRIM_V1 (the owner, 6 November 2026): the default is 3
+# days (compose reads 3 for an absent key too). The first prune of a big
+# log.log rewrites it once (log_maintenance.py).
 migrate_db_log_retention() {
     _env="$COMPOSE_DIR/.env"
     [ -f "$_env" ] || return 0
     grep -q '^M2_DB_LOG_RETENTION_DAYS=' "$_env" && return 0
     [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
-    printf 'M2_DB_LOG_RETENTION_DAYS=0\n' >> "$_env"
-    note "   the log database keeps everything: M2_DB_LOG_RETENTION_DAYS=0 (set 7 or 14 in the panel to prune it)"
+    printf 'M2_DB_LOG_RETENTION_DAYS=3\n' >> "$_env"
+    note "   the log database keeps 3 days: M2_DB_LOG_RETENTION_DAYS=3 (0 = everything, set in the panel)"
 }
 
 # Channel N listens on BASE+10*(N-1)..+2 inside the container (BASE is

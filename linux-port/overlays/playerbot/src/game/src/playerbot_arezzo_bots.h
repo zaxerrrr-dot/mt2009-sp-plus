@@ -61,9 +61,19 @@
 // The orders are kept in playerbot_arezzo_orders.txt and read back after a
 // restart. The watch writes playerbot_arezzo_track.tsv every 15 s and ARZ_BOT
 // lines to syslog.
+// MT2009_PLUS_AREZZO_TRACK_ROTATE_V1 (the owner, 6 November 2026 - vps3 had a
+// 252 MB track file that was never rotated): the track file rolls over once a
+// day (and when it passes PLAYERBOT_AREZZO_TRACK_MAX_MB, 64 by default) to
+// playerbot_arezzo_track.tsv.<YYYYMMDD>[-HHMMSS], and the rolled files older
+// than PLAYERBOT_AREZZO_TRACK_KEEP_DAYS days (7 by default) are deleted, like
+// the cores' syslog. PLAYERBOT_AREZZO_TRACK_KEEP_DAYS=0: no rotation (the old
+// single growing file). Log: "ARZ_BOT: track rotated ..." at each roll.
 //
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_ochao_bots.h and before playerbot_travel.h.
+
+#include <dirent.h>
+#include <sys/stat.h>
 
 namespace
 {
@@ -1617,6 +1627,77 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_AREZZO_TRACK_ROTATE_V1: before the track file is opened for
+	// its next lines. A stat(2) a call; the folder is read only at a roll.
+	int GetPlayerBotArezzoTrackEnvInt(const char* name, int def, int lo, int hi)
+	{
+		const char* v = getenv(name);
+		if (!v || !*v)
+			return def;
+		const int n = atoi(v);
+		return n < lo ? lo : (n > hi ? hi : n);
+	}
+
+	void RotatePlayerBotArezzoTrack(time_t wall)
+	{
+		static int s_iKeepDays = -1, s_iMaxMb = 0;
+		if (s_iKeepDays < 0)
+		{
+			s_iKeepDays = GetPlayerBotArezzoTrackEnvInt("PLAYERBOT_AREZZO_TRACK_KEEP_DAYS", 7, 0, 365);
+			s_iMaxMb = GetPlayerBotArezzoTrackEnvInt("PLAYERBOT_AREZZO_TRACK_MAX_MB", 64, 1, 4096);
+			sys_log(0, "ARZ_BOT: track rotation keep_days=%d max_mb=%d", s_iKeepDays, s_iMaxMb);
+		}
+		if (s_iKeepDays == 0)
+			return;
+		struct stat st;
+		if (stat(PLAYERBOT_AREZZO_TRACK_FILE, &st) != 0)
+			return;
+		struct tm nowTm, fileTm;
+		localtime_r(&wall, &nowTm);
+		localtime_r(&st.st_mtime, &fileTm);
+		const bool otherDay = nowTm.tm_year != fileTm.tm_year || nowTm.tm_yday != fileTm.tm_yday;
+		const bool tooBig = st.st_size >= (off_t)s_iMaxMb * 1024 * 1024;
+		if (!otherDay && !tooBig)
+			return;
+		char to[96];
+		if (otherDay)
+			snprintf(to, sizeof(to), "%s.%04d%02d%02d", PLAYERBOT_AREZZO_TRACK_FILE, fileTm.tm_year + 1900, fileTm.tm_mon + 1,
+					fileTm.tm_mday);
+		struct stat taken;
+		if (!otherDay || stat(to, &taken) == 0)
+			snprintf(to, sizeof(to), "%s.%04d%02d%02d-%02d%02d%02d", PLAYERBOT_AREZZO_TRACK_FILE, fileTm.tm_year + 1900,
+					fileTm.tm_mon + 1, fileTm.tm_mday, nowTm.tm_hour, nowTm.tm_min, nowTm.tm_sec);
+		if (rename(PLAYERBOT_AREZZO_TRACK_FILE, to) != 0)
+		{
+			sys_err("ARZ_BOT: track rotate to %s failed errno=%d", to, errno);
+			return;
+		}
+		// The rolled files of more than keep_days days ago (the date in the name).
+		struct tm cutTm;
+		const time_t cut = wall - (time_t)s_iKeepDays * 86400;
+		localtime_r(&cut, &cutTm);
+		const int cutDay = (cutTm.tm_year + 1900) * 10000 + (cutTm.tm_mon + 1) * 100 + cutTm.tm_mday;
+		const size_t len = strlen(PLAYERBOT_AREZZO_TRACK_FILE);
+		int removed = 0;
+		if (DIR* dir = opendir("."))
+		{
+			while (struct dirent* e = readdir(dir))
+			{
+				const char* n = e->d_name;
+				if (strncmp(n, PLAYERBOT_AREZZO_TRACK_FILE, len) != 0 || n[len] != '.')
+					continue;
+				int day = 0, digits = 0;
+				for (const char* c = n + len + 1; *c >= '0' && *c <= '9' && digits < 8; ++c, ++digits)
+					day = day * 10 + (*c - '0');
+				if (digits == 8 && day < cutDay && unlink(n) == 0)
+					++removed;
+			}
+			closedir(dir);
+		}
+		sys_log(0, "ARZ_BOT: track rotated to=%s size_kb=%ld reason=%s removed_old=%d keep_days=%d", to,
+				(long)(st.st_size / 1024), otherDay ? "day" : "size", removed, s_iKeepDays);
+	}
+
 	void TickPlayerBotArezzo()
 	{
 		const DWORD dwNow = get_dword_time();
@@ -1643,6 +1724,7 @@ namespace
 		if (writeTrack)
 		{
 			s_dwNextTrack = dwNow + PLAYERBOT_AREZZO_TRACK_MS;
+			RotatePlayerBotArezzoTrack(time(0));	// MT2009_PLUS_AREZZO_TRACK_ROTATE_V1
 			out = fopen(PLAYERBOT_AREZZO_TRACK_FILE, "a");
 		}
 		const time_t wall = time(0);

@@ -72,6 +72,20 @@
 
 namespace
 {
+	// MT2009_PLUS_QUEST_LOG_SPAM_V1 (6 November 2026): a statue's health for the BOT_MELEY lines without
+	// CDungeon::IsUniqueDead - the engine writes "Unknown Key or Dead : stoneN" to syserr for a key whose statue
+	// died (2 564 lines a day). The quest keeps the statue's vid in the flag bv<i> (refresh_shields); -1 = none.
+	int GetPlayerBotMeleyStonePct(LPDUNGEON d, int i)
+	{
+		char key[16];
+		snprintf(key, sizeof(key), "bv%d", i);
+		const DWORD vid = (DWORD)d->GetFlag(key);
+		LPCHARACTER s = vid ? CHARACTER_MANAGER::instance().Find(vid) : NULL;
+		if (!s || s->IsDead() || s->GetRaceNum() != 6118 || s->GetMapIndex() != d->GetMapIndex() || s->GetMaxHP() <= 0)
+			return -1;
+		return (int)(100.0 * s->GetHP() / s->GetMaxHP());
+	}
+
 	const long PLAYERBOT_MELEY_MAP = 356;
 	const int PLAYERBOT_MELEY_MIN_LEVEL = 95;
 	const DWORD PLAYERBOT_MELEY_MATS[3] = { 30620, 30621, 30622 };	// Czerwony Smoczy Rog, Czerwona Smocza Luska, Plan Zbroi: Helm
@@ -590,8 +604,7 @@ namespace
 					for (int i = 1; i <= 4; ++i)
 					{
 						char key[16], buf[32];
-						snprintf(key, sizeof(key), "stone%d", i);
-						const int pct = d->IsUniqueDead(key) ? -1 : (int)d->GetUniqueHpPerc(key);
+						const int pct = GetPlayerBotMeleyStonePct(d, i);	// MT2009_PLUS_QUEST_LOG_SPAM_V1
 						snprintf(key, sizeof(key), "lock%d", i);
 						snprintf(buf, sizeof(buf), "%s%d%s", st.empty() ? "" : ",", pct, d->GetFlag(key) == 1 ? "L" : "");
 						st += buf;
@@ -615,8 +628,7 @@ namespace
 				for (int i = 1; i <= 4; ++i)
 				{
 					char key[16], buf[32];
-					snprintf(key, sizeof(key), "stone%d", i);
-					const int pct = d->IsUniqueDead(key) ? -1 : (int)d->GetUniqueHpPerc(key);
+					const int pct = GetPlayerBotMeleyStonePct(d, i);	// MT2009_PLUS_QUEST_LOG_SPAM_V1
 					snprintf(key, sizeof(key), "lock%d", i);
 					snprintf(buf, sizeof(buf), "%s%d%s", st.empty() ? "" : ",", pct, d->GetFlag(key) == 1 ? "L" : "");
 					st += buf;

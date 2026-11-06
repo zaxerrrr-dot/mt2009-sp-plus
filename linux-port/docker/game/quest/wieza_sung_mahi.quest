@@ -1370,6 +1370,7 @@ quest wieza_sung_mahi begin
 			d.setf("mt2009_keep_until", now + 3 * 3600)
 			d.setf("countdown", now + 10)
 			d.notice("Wie¿a Sung Mahi: walka na "..f..". piêtrze zaczyna siê za 10 sekund.")
+			clear_server_timer("wsm_tick", d.get_map_index()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("wsm_tick", 1, d.get_map_index()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
 		end
 
@@ -1466,6 +1467,7 @@ quest wieza_sung_mahi begin
 			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
 				return
 			end
+			clear_server_timer("wsm_tick", get_server_timer_arg()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("wsm_tick", 1, get_server_timer_arg()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
 			local now = get_global_time()
 			if math.mod(now, 3) == 0 then
