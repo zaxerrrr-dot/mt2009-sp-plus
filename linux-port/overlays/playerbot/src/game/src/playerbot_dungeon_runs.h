@@ -1807,8 +1807,13 @@ namespace
 		// Metins (stage 2: 4 of 54 runs abandoned there on 7 October, the
 		// room's guards on the pack all the while) and Razador's Metin.
 		run.dwFocusVID = 0;
+		// MT2009_PLUS_BOT_MELEY_RUNS_V1 (the night of 5/6 November): Schronienie Meley's eggs (20422) are burst down whatever
+		// the hits - 60-80 magma monsters on the party, the leader always under half and holding, the four eggs (back
+		// every 120 s) never touched, the statues shielded for good and every stage-2 run wiped at 110 deaths.
+		const bool burst = def.bKind == DGRUN_KIND_MELEY && goal && goal->GetRaceNum() == 20422 && ch->GetMaxHP() > 0 &&
+				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * 20;
 		if (goal && ch->GetMaxHP() > 0 &&
-				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP &&
+				((long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP || burst) &&
 				(goal->IsStone() || dwNow - run.dwStageSince >= PLAYERBOT_DGRUN_FOCUS_MS))
 		{
 			const bool curGoal = cur && std::find(goals.begin(), goals.end(), cur->GetRaceNum()) != goals.end();
@@ -1834,7 +1839,7 @@ namespace
 				rb.dwHoldSince = dwNow;
 			// A pack that cannot come is not waited for for ever.
 			const bool waited = alone && dwNow - rb.dwHoldSince > PLAYERBOT_DGRUN_REGROUP_MAX_MS;
-			if (hurt || (alone && !waited))
+			if ((hurt || (alone && !waited)) && !burst)
 			{
 				LPCHARACTER keep = NULL;
 				if (cur && (cur->IsStone() || IsPlayerBotDgRunMemberOf(cur->GetVictim(), run.iId)) &&
@@ -2561,8 +2566,9 @@ namespace
 		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the leader's objective, hit with
 		// it by everybody not hurt (the party dungeon pass puts what attacks
 		// the bot first, and that is what kept the stones standing).
+		const int focusHp = PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_MELEY ? 20 : PLAYERBOT_DGRUN_FOCUS_HP;	// the eggs
 		if (run.dwFocusVID != 0 && ch->GetMaxHP() > 0 && !IsPlayerBotKillRewardless(ch) &&
-				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP)
+				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * focusHp)
 		{
 			LPCHARACTER focus = CHARACTER_MANAGER::instance().Find(run.dwFocusVID);
 			if (IsPlayerBotPdgFoe(ch, focus) &&
