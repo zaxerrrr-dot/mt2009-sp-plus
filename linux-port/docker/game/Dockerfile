@@ -668,6 +668,17 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_dro
  && rm -f "$A" \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_beran_2493' "$F")" = 1 \
  && echo "share: Beran-Setaou's wiki drop appended"
+# MT2009_PLUS_HELMY60_V1: the level-60 helmets +0 from Straszydlo (1303) as the pl-wiki lists them (the owner,
+# 6 November) - the frogs and Ropuszy General have them from moby_global; one drop group merged by the engine.
+COPY mob_drop_item.helmy60.append.txt /tmp/mob_drop_item.helmy60.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.helmy60.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_helmy60_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && rm -f "$A" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_helmy60_1303' "$F")" = 1 \
+ && echo "share: level-60 helmets from Straszydlo appended"
 # MT2009_PLUS_BOOTS_V1: Mleczny Sok (30192), a refine material of the level-65 boots, from Las Duchow's Driada, Duch
 # Wierzby, Zle Drzewo and Duch Pniaka as on the pl-wiki (the owner, 15 October) - one drop group each.
 COPY mob_drop_item.buty.append.txt /tmp/mob_drop_item.buty.append.txt
