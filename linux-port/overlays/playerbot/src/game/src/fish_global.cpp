@@ -10,7 +10,7 @@
 //                              Bonus Zlotego Tunczyka"; before, only the premium counted - a worn 71008 did nothing).
 //   Mt2009FishNimfaDrop(...)   Skrzynia Nimfy Wodnej (27625) from every monster of level 70 or more (not a Metin), as
 //                              a monster's "Type drop" row: event flag nimfa_chest_drop = the row's value x 100 (0 -
-//                              the default 200, a row "2" = 0.5% a kill; below 0 - off), with the kill's level
+//                              the default 50 = a row "0.5", like Srebrna Szkatułka on Zaklęty Las; below 0 - off), with the kill's level
 //                              difference and drop bonuses (ITEM_MANAGER::CreateDropItem's iDeltaPercent / iRandRange).
 #include "stdafx.h"
 #include "constants.h"
@@ -32,7 +32,7 @@ namespace
 	const DWORD FISHGLOBAL_AFFECT_GOLD_TUNA = 742;
 	const DWORD FISHGLOBAL_NIMFA_CHEST = 27625;
 	const int FISHGLOBAL_NIMFA_MIN_LEVEL = 70;
-	const int FISHGLOBAL_NIMFA_DEFAULT_X100 = 200;
+	const int FISHGLOBAL_NIMFA_DEFAULT_X100 = 50;	// owner 6 Nov 2026: 0.5% (was 2%), like the lowest Srebrna/Złota Szkatułka row
 }
 
 bool Mt2009FishMindOrTuna(LPCHARACTER ch)
