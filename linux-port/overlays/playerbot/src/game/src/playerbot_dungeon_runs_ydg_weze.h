@@ -202,9 +202,11 @@ namespace
 		return true;
 	}
 
+	// V4 (03:35): the last Metin with no time limit - four runs fell into the 4th level with 20+ groups left in room 3
+	// after the 180 s and were abandoned there (the Warrior never came); the bots now reach the groups (unstranded).
 	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
 	{
-		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && IsPlayerBotWezeAddsFirst(d, instance);
+		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && CountPlayerBotWezeAdds(instance) > 0;
 	}
 
 	// The living monsters' races (not the Metins, the Kolumny, the cages) as objectives.
@@ -257,7 +259,7 @@ namespace
 			case 3:
 			{
 				const int e = GetPlayerBotWezeOrder(d, d->GetFlag("next"));
-				if (IsPlayerBotWezeAddsFirst(d, d->GetMapIndex()))
+				if (d->GetFlag("next") == 4 ? CountPlayerBotWezeAdds(d->GetMapIndex()) > 0 : IsPlayerBotWezeAddsFirst(d, d->GetMapIndex()))
 					AddPlayerBotWezeAddRaces(d->GetMapIndex(), out);
 				else if (e)
 					out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
