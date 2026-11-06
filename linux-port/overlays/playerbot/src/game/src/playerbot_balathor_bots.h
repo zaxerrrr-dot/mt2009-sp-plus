@@ -49,7 +49,8 @@
 //     for the hour (BuffPlayerBotYdgMember - the bots stronger, the Krypta unchanged) and a bag cell for the chests;
 //   * the inside: every step as for a guild's run above (the leader fires the Hwacha), the reward for every bot in it;
 //   * the operator: the file playerbot_balathor_train in the core's directory (read when it changed, every 30 s):
-//         parties <n> [size]   n party runs at once (0-20), parties of size (4-8, default 8); a short rest after a run
+//         parties <n> [size] [min]  n party runs at once (0-20), parties of size (4-8, default 8), a party called with
+//                      min free at least (default the quest's 4); a short rest after a run
 //         # ...                a comment
 //     Without it: PLAYERBOT_BALATHOR_PARTIES (.env, default 1) party runs at once, size 8, a member's 3 h rest. The
 //     DUNGEONS switch of the bots' dungeon runs (IsPlayerBotDgRunOn) stops new calls.
@@ -150,7 +151,8 @@ namespace
 	{
 		int parties;	// 0: no training (PLAYERBOT_BALATHOR_PARTIES)
 		int size;
-		TPlayerBotBalathorTrain() : parties(0), size(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX) {}
+		int minSize;	// MT2009_PLUS_BALATHOR_BOT_PARTY_MIN_V1: a party is called with this many free at least (0: the quest's 4)
+		TPlayerBotBalathorTrain() : parties(0), size(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX), minSize(0) {}
 	};
 	TPlayerBotBalathorTrain s_kPlayerBotBalathorTrain;
 	unsigned int s_uPlayerBotBalathorPartyCalled = 0, s_uPlayerBotBalathorPartyEntered = 0, s_uPlayerBotBalathorPartyWon = 0;
@@ -638,6 +640,11 @@ namespace
 				dNear = d;
 			}
 		}
+		// MT2009_PLUS_BALATHOR_BOT_HIDDEN_FOCUS_V1 (6 Nov day): the hidden Balathor's adds (6898/6899) come back in groups
+		// for good - a party taking what attacks it first stood 10+ min at the boss's 99-100% with 25-30 adds up (run
+		// 90006). A bot not hurt hits the boss; a hurt one (under 40%) clears what is on it.
+		if (boss && ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * 40)
+			return boss;
 		if (threat)
 			return threat;
 		LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
@@ -1109,8 +1116,8 @@ namespace
 			while (fgets(line, sizeof(line), fp))
 			{
 				char cmd[32] = "";
-				int a = 0, b = 0;
-				const int got = sscanf(line, "%31s %d %d", cmd, &a, &b);
+				int a = 0, b = 0, c = 0;
+				const int got = sscanf(line, "%31s %d %d %d", cmd, &a, &b, &c);
 				if (got < 1 || cmd[0] == '#')
 					continue;
 				if (!strcmp(cmd, "parties") && got >= 2)
@@ -1118,6 +1125,8 @@ namespace
 					t.parties = std::max(0, std::min(20, a));
 					if (got >= 3)
 						t.size = std::max(4, std::min(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX, b));
+					if (got >= 4)	// MT2009_PLUS_BALATHOR_BOT_PARTY_MIN_V1: "parties <n> <size> <min>"
+						t.minSize = std::max(0, std::min(t.size, c));
 				}
 				else
 					sys_log(0, "PLAYERBOT_BALATHOR: train unknown line=%s", line);
@@ -1125,8 +1134,8 @@ namespace
 			fclose(fp);
 		}
 		s_kPlayerBotBalathorTrain = t;
-		sys_log(0, "PLAYERBOT_BALATHOR: train load parties=%d size=%d (cap=%d size=%d) file=%s", t.parties, t.size,
-				GetPlayerBotBalathorPartyCap(), GetPlayerBotBalathorPartySize(), mtime ? "yes" : "no");
+		sys_log(0, "PLAYERBOT_BALATHOR: train load parties=%d size=%d min=%d (cap=%d size=%d) file=%s", t.parties, t.size,
+				t.minSize, GetPlayerBotBalathorPartyCap(), GetPlayerBotBalathorPartySize(), mtime ? "yes" : "no");
 	}
 
 	DWORD NextPlayerBotBalathorPartyKey()
@@ -1220,7 +1229,8 @@ namespace
 					most = pool[e].size() - used[e];
 					empire = e;
 				}
-			if (empire == 0 || (int)most < (int)cfg.bRegisterMinMemberCount)
+			if (empire == 0 || (int)most < std::max((int)cfg.bRegisterMinMemberCount,
+					train ? s_kPlayerBotBalathorTrain.minSize : 0))	// MT2009_PLUS_BALATHOR_BOT_PARTY_MIN_V1
 				return;
 			const DWORD key = NextPlayerBotBalathorPartyKey();
 			if (!key)
