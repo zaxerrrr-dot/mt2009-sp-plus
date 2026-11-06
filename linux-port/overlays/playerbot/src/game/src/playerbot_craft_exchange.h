@@ -69,6 +69,12 @@ namespace
 	// item id: the Dozorca's, not the counter's again.
 	std::set<DWORD> s_setPlayerBotCraftRecalled;
 
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: the swap at the Dozorca (playerbot_mats_flow.h, later) - 15 of these for a refine
+	// material of the maps up to 75 that a worn piece's next step lacks.
+	int GetPlayerBotMatsSwapWanted(LPCHARACTER ch);
+	bool IsPlayerBotMatsSwapDue(LPCHARACTER ch);
+	int SwapPlayerBotMaterials(LPCHARACTER ch);
+
 	int CountPlayerBotCraftMaterials(LPCHARACTER ch)
 	{
 		return ch ? (int)ch->CountSpecifyItem(PLAYERBOT_CRAFT_MATERIAL_VNUM) : 0;
@@ -80,7 +86,8 @@ namespace
 	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly)
 	{
 		return GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly) + // MT2009_PLUS_HORSE_GOODS_MARKET_V1
-				GetPlayerBotYoharaShopMaterialsWanted(ch); // MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's elixirs of resistance (Dongan's exchange)
+				GetPlayerBotYoharaShopMaterialsWanted(ch) + // MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's elixirs of resistance (Dongan's exchange)
+				GetPlayerBotMatsSwapWanted(ch); // MT2009_PLUS_BOT_MATS_FLOW_V1: the swap's materials
 	}
 
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
@@ -511,7 +518,9 @@ namespace
 			// MT2009_PLUS_HORSE30_V1: a horse training's materials count.
 			const bool shortOfMaterials =
 					CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, true);
-			if (units <= 0 || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials) ||
+			// MT2009_PLUS_BOT_MATS_FLOW_V1: or the swap alone - the materials for a piece its anvil lacks.
+			const bool swapDue = IsPlayerBotMatsSwapDue(ch);
+			if ((units <= 0 && !swapDue) || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials && !swapDue) ||
 					CountPlayerBotFreeInventoryCells(ch) < 2)
 				return false;
 			state.bCraftErrand = PLAYERBOT_CRAFT_ERRAND_DOZORCA;
@@ -520,8 +529,8 @@ namespace
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
-			sys_log(0, "PLAYERBOT_CRAFT: going to the Dozorca pid=%u name=%s lv=%d units=%d materials=%d",
-					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), units, CountPlayerBotCraftMaterials(ch));
+			sys_log(0, "PLAYERBOT_CRAFT: going to the Dozorca pid=%u name=%s lv=%d units=%d materials=%d swap=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), units, CountPlayerBotCraftMaterials(ch), swapDue ? 1 : 0);
 		}
 
 		const playerbot_empire_rules::TPoint npc = svc.storekeeper;
@@ -555,6 +564,7 @@ namespace
 			return true;
 
 		ExchangePlayerBotCraftGoods(ch);
+		SwapPlayerBotMaterials(ch);	// MT2009_PLUS_BOT_MATS_FLOW_V1: with what the exchange just made too
 		EndPlayerBotCraftErrand(state, dwNow);
 		return false;
 	}

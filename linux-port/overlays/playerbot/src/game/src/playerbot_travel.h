@@ -936,6 +936,9 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
 
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: playerbot_mats_flow.h - the map of a material farm order (Zab Orka).
+	long GetPlayerBotMatsFarmMap(LPCHARACTER ch);
+
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -1015,6 +1018,13 @@ namespace
 			const long errandMap = GetPlayerBotGuildErrandMap(ch);
 			if (errandMap != 0 && IsPlayerBotFrontierMapIndex(errandMap) && IsPlayerBotMapHostedHere(errandMap))
 				return errandMap;
+		}
+		// MT2009_PLUS_BOT_MATS_FLOW_V1: a material the bot's anvil lacks and the market will not sell it is farmed where
+		// the drop knowledge found it - while its level still gets the drop (playerbot_mats_flow.h).
+		{
+			const long farmMap = GetPlayerBotMatsFarmMap(ch);
+			if (farmMap != 0)
+				return farmMap;
 		}
 		// And the military trial is in the Demon Tower, for the same reason: the
 		// bot hunts where the trial is, whatever its level would otherwise say.
@@ -1395,7 +1405,7 @@ namespace
 		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the element maps' gate (fire 60 the Spider Dungeons, lightning 75 the Grotto,
 		// wind 75 Zaklety Las, ... - playerbot_element_maps.h) on the draw's map; an errand's map stays as it was named.
 		if (map != 0 && map != GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) &&
-				map != GetPlayerBotGuildErrandMap(ch) && GetPlayerBotArezzoFrontier(ch) == 0 &&
+				map != GetPlayerBotGuildErrandMap(ch) && map != GetPlayerBotMatsFarmMap(ch) && GetPlayerBotArezzoFrontier(ch) == 0 &&
 				!IsPlayerBotOnBlackSteedTrial(ch) && !IsPlayerBotOnMilitaryHorseTrial(ch))
 			map = GatePlayerBotElementMap(ch, map);
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there

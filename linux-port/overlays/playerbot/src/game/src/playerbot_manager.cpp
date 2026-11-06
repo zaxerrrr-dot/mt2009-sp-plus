@@ -483,6 +483,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 #include "playerbot_dropknow.h"
 // MT2009_PLUS_BOT_DROPKI_V1: the Dropki, the Yohara dungeons' drop farmers - after the drop knowledge
 #include "playerbot_dropki.h"
+// MT2009_PLUS_BOT_MATS_FLOW_V1: the materials on the move - the swap at the Dozorca, the scarce materials and the belts'
+// out of the boxes, the farm map of a material the market cannot sell the bot - after the drop knowledge
+#include "playerbot_mats_flow.h"
 
 namespace
 {
