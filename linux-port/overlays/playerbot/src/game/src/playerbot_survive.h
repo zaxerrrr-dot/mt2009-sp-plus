@@ -31,11 +31,31 @@
 //    PLAYERBOT_SURVIVE_BOOSTER_DAY_MAX) and drinks them as it arrives on the hunting ground, outside a safe zone - the
 //    defence first after a death in the last hour. Sung Ma hunters keep their own boosters (playerbot_yohara_guides.h).
 //
-// Switches: event flag m2_bot_survive_off 1 - all four off; m2_bot_survive_tier_off / _stepdown_off / _ring_off /
+// 5. MT2009_PLUS_BOT_DRAGON_GOD_V1 - the Dragon God effects for good (the owner, 6 November 2026, Yohara: "wszystkie boty
+//    niech maja no limit odpalony efekt: Zycie boga smokow, Obrona boga smokow, Atak boga smokow"). Every bot of every
+//    level and persona holds the three affects the items give when a player drinks them - read from item_proto at run
+//    time (71027 Zycie: AFFECT_MALL 510 / POINT_MAX_HP_PCT 119 / 20; 71028 Atak: 510 / POINT_MALL_ATTBONUS 114 / 15;
+//    71030 Obrona: 510 / POINT_MALL_DEFBONUS 115 / 15) - for nothing, no item, no marks. Added the way the drink adds
+//    them (AddAffect bOverride + IsCube: one affect a type and point, the next replaces it), for
+//    PLAYERBOT_DRAGON_GOD_DURATION_S and renewed under PLAYERBOT_DRAGON_GOD_RENEW_S left, not with
+//    INFINITE_AFFECT_DURATION: the bot's own affect row then never holds more than three hours, and with the switch
+//    off the effects simply run out. Nothing until the bot's affects are loaded (LoadAffect appends the saved ones
+//    after ClearAffect(true), which keeps type 500-599 - an affect added before it would stand twice); a second copy of
+//    one (type, point) found anyway is removed and one added again. AFFECT_MALL is not cleared on death (char_affect.cpp
+//    IS_NO_CLEAR_ON_DEATH_AFFECT 500-599); the pass checks every PLAYERBOT_DRAGON_GOD_LOOK_MS after login, a map or
+//    channel change (a new character, loaded from the saved row) and a revive alike, and skips a dead bot. A stronger
+//    affect of the same point (none in item_proto now) is left on. A sidekick (a player's hired bot) gets none, and one
+//    of the grant's length (over the item's own 1800 s) it still holds is taken off. With it on, 4. buys nothing and the
+//    ItemShop's raid wish skips the three (the Sung Ma guides see them running and buy none either).
+//
+// Switches: event flag m2_bot_dragon_god_off 1 - 5. off and 4. as before (the old buy and drink);
+// event flag m2_bot_survive_off 1 - all four off; m2_bot_survive_tier_off / _stepdown_off / _ring_off /
 // _booster_off - one; env PLAYERBOT_SURVIVE_TIER_MIN_LEVEL (60), PLAYERBOT_SURVIVE_DEATHS_H (9),
 // PLAYERBOT_SURVIVE_STEPDOWN_MIN (120), PLAYERBOT_SURVIVE_BOOSTER_MIN_LEVEL (50), PLAYERBOT_SURVIVE_BOOSTER_DAY_MAX (400).
 // The log: PLAYERBOT_SURVIVE: lines - step down / step back (each), tier pick (throttled), ring listed (throttled),
 // booster bought / drunk (throttled), census every PLAYERBOT_SURVIVE_CENSUS_MS.
+// PLAYERBOT_DRAGONGOD: census bots= with_all3= applied= reapplied= dedup= sidekick_removed= off= every
+// PLAYERBOT_SURVIVE_CENSUS_MS; PLAYERBOT_DRAGONGOD: applied (throttled).
 //
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_dropki.h (the market, the ItemShop V3,
 // the drop knowledge before it), in the anonymous namespace; the early headers ask its hooks through declarations.
@@ -491,6 +511,172 @@ namespace
 		}
 	}
 
+	// ------------------------------------------------------------ 5. the Dragon God effects for good
+
+	const DWORD PLAYERBOT_DRAGON_GOD_VNUMS[3] = { 71027, 71028, 71030 };	// Zycie, Atak, Obrona Boga Smokow
+	const long PLAYERBOT_DRAGON_GOD_DURATION_S = 3 * 60 * 60;
+	const long PLAYERBOT_DRAGON_GOD_RENEW_S = 60 * 60;
+	const DWORD PLAYERBOT_DRAGON_GOD_LOOK_MS = 5000;
+
+	bool IsPlayerBotDragonGodOn()
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 1000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_dragon_god_off") == 0;
+		}
+		return s_bOn;
+	}
+
+	// Whether the grant covers this vnum now (the ItemShop's wishes ask it).
+	bool IsPlayerBotDragonGodGranted(DWORD vnum)
+	{
+		if (!IsPlayerBotDragonGodOn())
+			return false;
+		for (int i = 0; i < 3; ++i)
+			if (PLAYERBOT_DRAGON_GOD_VNUMS[i] == vnum)
+				return true;
+		return false;
+	}
+
+	struct TPlayerBotDragonGodStats
+	{
+		unsigned int applied, reapplied, dedup, sidekickRemoved;
+		TPlayerBotDragonGodStats() : applied(0), reapplied(0), dedup(0), sidekickRemoved(0) {}
+	};
+	TPlayerBotDragonGodStats s_kPlayerBotDragonGod;
+
+	struct TPlayerBotDragonGodBot
+	{
+		DWORD dwNextLook, dwSeen;
+		bool bAll3;
+		TPlayerBotDragonGodBot() : dwNextLook(0), dwSeen(0), bAll3(false) {}
+	};
+	std::map<DWORD, TPlayerBotDragonGodBot> s_mapPlayerBotDragonGod;
+
+	bool IsPlayerBotSidekickPID(DWORD pid);	// playerbot_sidekick.h
+
+	// The item's affect (type, point, value, the item's own seconds) as a drink adds it; false - no such item.
+	bool ReadPlayerBotDragonGodAffect(DWORD vnum, DWORD& type, WORD& point, long& value, long& itemSeconds)
+	{
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (!proto || proto->bType != ITEM_USE || proto->bSubType != USE_AFFECT || proto->alValues[0] <= 0 ||
+				proto->alValues[1] <= 0 || proto->alValues[1] >= POINT_MAX_NUM || proto->alValues[2] <= 0)
+			return false;
+		type = (DWORD)proto->alValues[0];
+		point = (WORD)proto->alValues[1];
+		value = (long)proto->alValues[2];
+		itemSeconds = (long)proto->alValues[3];
+		return true;
+	}
+
+	// Every bot, on each pass's head (playerbot_manager.cpp, before the passes that end a tick early).
+	void ReportPlayerBotDragonGod(DWORD dwNow);
+
+	void ManagePlayerBotDragonGod(LPCHARACTER ch, DWORD dwNow)
+	{
+		ReportPlayerBotDragonGod(dwNow);
+		if (!ch || !ch->IsPC() || !IsPlayerBotDragonGodOn())
+			return;
+		const DWORD pid = ch->GetPlayerID();
+		TPlayerBotDragonGodBot& b = s_mapPlayerBotDragonGod[pid];
+		b.dwSeen = dwNow ? dwNow : 1;
+		if ((int)(dwNow - b.dwNextLook) < 0)
+			return;
+		b.dwNextLook = dwNow + PLAYERBOT_DRAGON_GOD_LOOK_MS + (DWORD)number(0, 1000);
+		if (!ch->IsLoadedAffect() || ch->IsDead())
+			return;
+		const bool sidekick = IsPlayerBotSidekickPID(pid);
+		int held = 0;
+		for (int i = 0; i < 3; ++i)
+		{
+			DWORD type = 0;
+			WORD point = 0;
+			long value = 0, itemSeconds = 0;
+			if (!ReadPlayerBotDragonGodAffect(PLAYERBOT_DRAGON_GOD_VNUMS[i], type, point, value, itemSeconds))
+				continue;
+			// the copies of this (type, point) on the bot
+			std::vector<CAffect*> copies;
+			const std::list<CAffect*>& all = ch->GetAffectContainer();
+			for (std::list<CAffect*>::const_iterator it = all.begin(); it != all.end(); ++it)
+				if ((*it)->dwType == type && (*it)->bApplyOn == point)
+					copies.push_back(*it);
+			if (sidekick)
+			{
+				// a player's hired bot: none, and the grant's own (longer than any drink) taken off
+				for (size_t k = 0; k < copies.size(); ++k)
+					if (copies[k]->lDuration > std::max(itemSeconds, 1L) + 5)
+					{
+						ch->RemoveAffect(copies[k]);
+						++s_kPlayerBotDragonGod.sidekickRemoved;
+					}
+				continue;
+			}
+			bool renew = false, again = false;
+			if (copies.size() > 1)
+			{
+				for (size_t k = 0; k < copies.size(); ++k)
+					ch->RemoveAffect(copies[k]);
+				++s_kPlayerBotDragonGod.dedup;
+				renew = true;
+			}
+			else if (copies.empty())
+				renew = true;
+			else if (copies[0]->lApplyValue > value)
+				;	// a stronger one of the point: left on
+			else if (copies[0]->lApplyValue < value || copies[0]->lDuration < PLAYERBOT_DRAGON_GOD_RENEW_S)
+				renew = again = true;
+			if (renew)
+			{
+				if (!ch->AddAffect(type, point, value, 0, PLAYERBOT_DRAGON_GOD_DURATION_S, 0, true, true,
+						PLAYERBOT_DRAGON_GOD_VNUMS[i]))
+					continue;
+				if (again)
+					++s_kPlayerBotDragonGod.reapplied;
+				else
+				{
+					++s_kPlayerBotDragonGod.applied;
+					PlayerBotLogThrottled("dragon_god_applied", dwNow,
+							"PLAYERBOT_DRAGONGOD: applied pid=%u name=%s level=%u vnum=%u type=%u point=%u value=%ld",
+							pid, ch->GetName(), (unsigned int)ch->GetLevel(), PLAYERBOT_DRAGON_GOD_VNUMS[i], type,
+							(unsigned int)point, value);
+				}
+			}
+			++held;
+		}
+		b.bAll3 = !sidekick && held == 3;
+	}
+
+	void ReportPlayerBotDragonGod(DWORD dwNow)
+	{
+		static DWORD s_dwNext = 0;
+		if (s_dwNext == 0)
+			s_dwNext = dwNow + PLAYERBOT_SURVIVE_CENSUS_MS;
+		if ((int)(dwNow - s_dwNext) < 0)
+			return;
+		s_dwNext = dwNow + PLAYERBOT_SURVIVE_CENSUS_MS;
+		unsigned int bots = 0, all3 = 0;
+		for (std::map<DWORD, TPlayerBotDragonGodBot>::iterator it = s_mapPlayerBotDragonGod.begin();
+				it != s_mapPlayerBotDragonGod.end();)
+		{
+			if (dwNow - it->second.dwSeen >= 2 * 60 * 1000)
+			{
+				s_mapPlayerBotDragonGod.erase(it++);
+				continue;
+			}
+			++bots;
+			all3 += it->second.bAll3 ? 1U : 0U;
+			++it;
+		}
+		const TPlayerBotDragonGodStats& s = s_kPlayerBotDragonGod;
+		sys_log(0, "PLAYERBOT_DRAGONGOD: census bots=%u with_all3=%u applied=%u reapplied=%u dedup=%u sidekick_removed=%u off=%d",
+				bots, all3, s.applied, s.reapplied, s.dedup, s.sidekickRemoved, IsPlayerBotDragonGodOn() ? 0 : 1);
+		s_kPlayerBotDragonGod = TPlayerBotDragonGodStats();
+	}
+
 	// ------------------------------------------------------------ 4. Dragon God boosters
 
 	bool IsPlayerBotSurviveBoosterRunning(LPCHARACTER ch, DWORD vnum)
@@ -518,7 +704,7 @@ namespace
 	void ManagePlayerBotSurviveBoosters(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 #ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
-		if (!IsPlayerBotSurviveOn(SURVIVE_BOOSTER))
+		if (!IsPlayerBotSurviveOn(SURVIVE_BOOSTER) || IsPlayerBotDragonGodOn())	// MT2009_PLUS_BOT_DRAGON_GOD_V1: granted (5.)
 			return;
 		static int s_iMin = -1, s_iDayMax = -1;
 		if (s_iMin < 0)

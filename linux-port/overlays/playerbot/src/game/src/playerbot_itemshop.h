@@ -1581,6 +1581,8 @@ namespace
 		return !HasPlayerBotBonusStone(ch, PLAYERBOT_BONUS_CHANGE_VNUM);
 	}
 
+	bool IsPlayerBotDragonGodGranted(DWORD vnum);	// playerbot_survive.h (MT2009_PLUS_BOT_DRAGON_GOD_V1)
+
 	bool PlayerBotHoldsBooster(LPCHARACTER ch)
 	{
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
@@ -1971,7 +1973,8 @@ namespace
 		};
 		if (fighting && !PlayerBotHoldsBooster(ch))
 			for (size_t i = 0; i < sizeof(PLAYERBOT_ISHOP_BOOSTER_VNUMS) / sizeof(PLAYERBOT_ISHOP_BOOSTER_VNUMS[0]); ++i)
-				if (PlayerBotMarksCover(state, PLAYERBOT_ISHOP_BOOSTER_VNUMS[i]))
+				if (!IsPlayerBotDragonGodGranted(PLAYERBOT_ISHOP_BOOSTER_VNUMS[i]) &&	// MT2009_PLUS_BOT_DRAGON_GOD_V1: granted
+						PlayerBotMarksCover(state, PLAYERBOT_ISHOP_BOOSTER_VNUMS[i]))
 				{
 					add(PLAYERBOT_ISHOP_BOOSTER_VNUMS[i], true, "raid_booster", true);
 					break;

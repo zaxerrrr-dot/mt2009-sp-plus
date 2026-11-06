@@ -7505,6 +7505,11 @@ WritePlayerBotGuildStatus(dwNow);
 		if (IsPlayerBotYoharaLeaving(it->first))
 			continue;
 
+		// MT2009_PLUS_BOT_DRAGON_GOD_V1: Zycie / Atak / Obrona Boga Smokow on every bot for good, ahead of every pass that
+		// ends the tick early - after a login, a channel change or a revive alike (playerbot_survive.h, 5.).
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotDragonGod(ch, dwNow);
+
 		// A human duel owns both halves of the tick, before errands and PvE targeting.
 		if (d->IsPhase(PHASE_GAME) && ManagePlayerBotDuelFlow(ch, state, dwNow))
 		{
