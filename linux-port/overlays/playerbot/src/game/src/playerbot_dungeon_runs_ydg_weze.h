@@ -566,20 +566,48 @@ namespace
 		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(ch->GetMapIndex());
 		if (!nav.Init(ch->GetMapIndex()))
 			return false;
-		long ax = 0, ay = 0, bx = 0, by = 0;
-		if (!GetPlayerBotWezeSpot(run.lInstance, lvl, 1, ax, ay) || !GetPlayerBotWezeSpot(run.lInstance, lvl, 4, bx, by))
-			return false;
-		const DWORD room = nav.GetComponentAtWorld(ax, ay, 6);
-		if (!room || nav.GetComponentAtWorld(bx, by, 6) != room)
-			return false;
 		const DWORD mine = nav.GetComponentAtWorld(ch->GetX(), ch->GetY(), 2);
-		if (!mine || mine == room)
+		// V2 (02:25): the six spots' parts said nothing ("foe off the ground, waiting ... from=(89500,1697600)" 300 a
+		// minute) - the test is the monsters': none of them on the bot's part, the nearest one's part is the room.
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+		long bestX = 0, bestY = 0;
+		DWORD bestPart = 0;
+		int bestD = INT_MAX;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			const DWORD r = scan.foes[i].dwRace;
+			if (r == PLAYERBOT_WEZE_COLUMN || r == PLAYERBOT_WEZE_CAGED || r >= 20000)
+				continue;
+			const DWORD part = nav.GetComponentAtWorld(scan.foes[i].lX, scan.foes[i].lY, 3);
+			if (!part)
+				continue;
+			if (part == mine)
+				return false;	// something to fight on its own ground
+			const int dd = DISTANCE_APPROX(ch->GetX() - scan.foes[i].lX, ch->GetY() - scan.foes[i].lY);
+			if (dd < bestD && dd < 12000)
+			{
+				bestD = dd;
+				bestPart = part;
+				bestX = scan.foes[i].lX;
+				bestY = scan.foes[i].lY;
+			}
+		}
+		if (!bestPart)
 			return false;
-		long cx = 0, cy = 0;
-		GetPlayerBotWezeSpot(run.lInstance, lvl, 0, cx, cy);
 		PIXEL_POSITION p;
-		long tx = ax, ty = ay;
-		if (nav.FindNearestWalkableWorld(cx, cy, 8, p) && nav.GetComponentAtWorld(p.x, p.y, 1) == room)
+		p.x = bestX;
+		p.y = bestY;
+		p.z = 0;
+		long tx = bestX, ty = bestY;
+		if (nav.FindNearestWalkableWorld(bestX, bestY, 6, p) && nav.GetComponentAtWorld(p.x, p.y, 1) == bestPart)
+		{
+			tx = p.x;
+			ty = p.y;
+		}
+		// a step of the way only (a few cells off the foe), not onto it
+		tx += (long)((long long)(ch->GetX() - tx) * 400 / std::max(1, bestD));
+		ty += (long)((long long)(ch->GetY() - ty) * 400 / std::max(1, bestD));
+		if (nav.GetComponentAtWorld(tx, ty, 1) != bestPart)
 		{
 			tx = p.x;
 			ty = p.y;
@@ -591,8 +619,8 @@ namespace
 		ch->SetVictim(NULL);
 		ch->Show(ch->GetMapIndex(), tx, ty);
 		ch->Stop();
-		PlayerBotLogThrottled("weze_unstrand", dwNow, "BOT_YDG: weze unstranded run=%d name=%s lvl=%d part=%u room=%u to=(%ld,%ld)", run.iId,
-				ch->GetName(), lvl, (unsigned int)mine, (unsigned int)room, tx, ty);
+		PlayerBotLogThrottled("weze_unstrand", dwNow, "BOT_YDG: weze unstranded run=%d name=%s lvl=%d part=%u to_part=%u to=(%ld,%ld) dist=%d",
+				run.iId, ch->GetName(), lvl, (unsigned int)mine, (unsigned int)bestPart, tx, ty, bestD);
 		return true;
 	}
 
