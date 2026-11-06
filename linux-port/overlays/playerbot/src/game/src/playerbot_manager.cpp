@@ -5550,6 +5550,60 @@ bool CPlayerBotManager::PlaceLoadingSidekick(DWORD dwPlayerID, long& lMapIndex, 
 	return true;
 }
 
+// MT2009_PLUS_BOT_LOAD_PLACE_V1 (6 November 2026, the second bot analysis, item 10: "bots spawned on a core that
+// doesn't host their map - pick a core that hosts it, or reset the bot to its village"). Asked by InputDB::PlayerLoad
+// (server-patches/enginefixes, the same marker) BEFORE the engine's GetValidLocation, for a bot only. Every such load
+// was already a handover arrival (game3: the claimed row's spot, placed by PlaceLoadingSidekick after the miss) or a
+// way home (game1: the engine's ENABLE_GOHOME_IF_MAP_NOT_EXIST put it in its first village) - none failed (test
+// server, 6 November: 193/193 and 180/180 entered the game) - but each wrote two SYSERR lines first ("GetValidLocation:
+// cannot find sectree_map", "PlayerLoad: cannot find valid location"; ~5 000 a day). Here the same places are given
+// before the check: the handover's / companion's spot (PlaceLoadingSidekick), else the kingdom's first village when
+// this core hosts it. A core with neither (game3 has no village) leaves the load to the engine as before and says
+// so (PLAYERBOT_LOAD_PLACE: no_place - the bot should not have been asked for here). PLAYERBOT_LOAD_PLACE=0 (the
+// game container's environment) turns it off: the engine's own way, with its SYSERR lines.
+bool CPlayerBotManager::PlaceLoadingBot(DWORD dwPlayerID, BYTE bEmpire, long lHomeMap, long lHomeX, long lHomeY,
+		long& lMapIndex, long& x, long& y)
+{
+	static int s_iOn = -1;
+	if (s_iOn < 0)
+	{
+		const char* v = getenv("PLAYERBOT_LOAD_PLACE");
+		s_iOn = (v && *v && std::atoi(v) == 0) ? 0 : 1;
+		sys_log(0, "PLAYERBOT_LOAD_PLACE: config on=%d", s_iOn);
+	}
+	if (!s_iOn)
+		return false;
+	const long lBase = lMapIndex >= 10000 ? lMapIndex / 10000 : lMapIndex;
+	if (lBase != 0 && map_allow_find(lBase))
+		return false;
+	const DWORD dwNow = get_dword_time();
+	long lPlaceMap = lMapIndex, lPlaceX = x, lPlaceY = y;
+	if (PlaceLoadingSidekick(dwPlayerID, lPlaceMap, lPlaceX, lPlaceY))
+	{
+		PlayerBotLogThrottled("load_place_spot", dwNow,
+				"PLAYERBOT_LOAD_PLACE: spot pid=%u saved_map=%ld -> map=%ld (handover or companion, before the engine's check)",
+				dwPlayerID, lMapIndex, lPlaceMap);
+		lMapIndex = lPlaceMap;
+		x = lPlaceX;
+		y = lPlaceY;
+		return true;
+	}
+	if (lHomeMap > 0 && map_allow_find(lHomeMap) && lHomeX > 0 && lHomeY > 0)
+	{
+		PlayerBotLogThrottled("load_place_village", dwNow,
+				"PLAYERBOT_LOAD_PLACE: village pid=%u empire=%u saved_map=%ld not on this core -> map=%ld",
+				dwPlayerID, (unsigned int)bEmpire, lMapIndex, lHomeMap);
+		lMapIndex = lHomeMap;
+		x = lHomeX;
+		y = lHomeY;
+		return true;
+	}
+	PlayerBotErrThrottled("load_place_none", dwNow,
+			"PLAYERBOT_LOAD_PLACE: no_place pid=%u empire=%u saved_map=%ld - neither its map nor its village (%ld) is on this core",
+			dwPlayerID, (unsigned int)bEmpire, lMapIndex, lHomeMap);
+	return false;
+}
+
 // The owner a companion's kill counts for (CHARACTER::Dead through
 // playerbotify's apply_sidekick_kill_credit): the engine gives a monster's
 // death to the quests of the character DistributeExp names, which is the

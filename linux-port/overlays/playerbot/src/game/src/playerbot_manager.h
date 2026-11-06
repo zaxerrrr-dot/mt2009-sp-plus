@@ -195,6 +195,12 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// host loads instead: beside its owner (InputDB::PlayerLoad, mt2009
 		// via playerbotify.py). False for anybody else.
 		bool	PlaceLoadingSidekick(DWORD dwPlayerID, long& lMapIndex, long& x, long& y);
+		// MT2009_PLUS_BOT_LOAD_PLACE_V1: a bot saved on a map this core does not host, asked
+		// before the engine's GetValidLocation (InputDB::PlayerLoad, server-patches/enginefixes):
+		// the handover's / companion's spot, else the kingdom's first village (lHome*) when it is
+		// here. False: the map is here, the switch is off, or no place - the engine's way.
+		bool	PlaceLoadingBot(DWORD dwPlayerID, BYTE bEmpire, long lHomeMap, long lHomeX, long lHomeY,
+				long& lMapIndex, long& x, long& y);
 		// The owner a companion's kill counts for in the quests, or NULL
 		// (CHARACTER::Dead, mt2009 via playerbotify.py).
 		LPCHARACTER	GetSidekickKillCredit(LPCHARACTER killer, LPCHARACTER victim);

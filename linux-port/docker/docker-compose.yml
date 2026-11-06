@@ -295,6 +295,9 @@ services:
       # runs on the 90-level maps; the limits are per channel.
       PLAYERBOT_HANDOVER: "${PLAYERBOT_HANDOVER:-1}"
       PLAYERBOT_HANDOVER_CHANNELS: "${PLAYERBOT_HANDOVER_CHANNELS:-1}"
+      # MT2009_PLUS_BOT_LOAD_PLACE_V1: a bot saved on a map its core lacks is placed before the
+      # engine's check (handover spot / village) - CPlayerBotManager::PlaceLoadingBot.
+      PLAYERBOT_LOAD_PLACE: "${PLAYERBOT_LOAD_PLACE:-1}"
       PLAYERBOT_ZAKLETY_MAX: "${PLAYERBOT_ZAKLETY_MAX:-100}"
       PLAYERBOT_ZAKLETY_MIN_LEVEL: "${PLAYERBOT_ZAKLETY_MIN_LEVEL:-100}"
       PLAYERBOT_ZAKLETY_MIN_HP: "${PLAYERBOT_ZAKLETY_MIN_HP:-20000}"

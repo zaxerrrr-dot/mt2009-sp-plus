@@ -1,0 +1,73 @@
+// MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026, the second bot analysis, item 2): the groups the Yohara
+// Metins and eggs call (mob_proto attack_speed..move_speed = a group range, char_state.cpp __StateIdle_Stone) and
+// no source has - not Owsap's group.txt, not GF's client. Ours, of each place's own monsters (README.md).
+// Hand-written: edit here; the Dockerfile step checks that none of these vnums exists before.
+Group	MT2009_ymetin_Metin_Wawoz_Zwiadowca
+{
+	Vnum	6218
+	Leader	"Zamarzniety Zwiadowca"	6771
+	1	"Zamarzniety Lis"	6770
+	2	"Zamarzniety Lis"	6770
+}
+
+Group	MT2009_ymetin_Metin_Wawoz_Wojownik
+{
+	Vnum	6219
+	Leader	"Zamarzniety Wojownik"	6772
+	1	"Zamarzniety Zwiadowca"	6771
+	2	"Zamarzniety Lis"	6770
+}
+
+Group	MT2009_ymetin_Metin_Wawoz_Lowca
+{
+	Vnum	6220
+	Leader	"Zamarzniety Lowca"	6773
+	1	"Zamarzniety Wojownik"	6772
+	2	"Zamarzniety Zwiadowca"	6771
+}
+
+Group	MT2009_ymetin_Metin_Wezowy_Robotnik
+{
+	Vnum	6229
+	Leader	"Robotnik Wezowy"	6851
+	1	"Skorpion Wezowy"	6850
+	2	"Skorpion Wezowy"	6850
+}
+
+Group	MT2009_ymetin_Metin_Wezowy_Kappa
+{
+	Vnum	6230
+	Leader	"Kappa Wezowy"	6852
+	1	"Robotnik Wezowy"	6851
+	2	"Skorpion Wezowy"	6850
+}
+
+Group	MT2009_ymetin_Jajo_slabe_Zolnierze
+{
+	Vnum	6249
+	Leader	"Zolnierz Schron. Pln. W."	6792
+	1	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymetin_Jajo_slabe_Zadziora
+{
+	Vnum	6250
+	Leader	"Zadziora Schron. Pln. W."	6793
+	1	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymetin_Jajo_silne_Wojownik
+{
+	Vnum	6252
+	Leader	"Wojownik Schron. Pln. W."	6794
+	1	"Zadziora Schron. Pln. W."	6793
+	2	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymetin_Jajo_silne_Czarownik
+{
+	Vnum	6253
+	Leader	"Czarownik Sch. Pln. W."	6795
+	1	"Zadziora Schron. Pln. W."	6793
+	2	"Zolnierz Schron. Pln. W."	6792
+}

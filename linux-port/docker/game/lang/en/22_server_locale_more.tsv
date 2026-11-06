@@ -1,0 +1,8 @@
+# MT2009_PLUS_LOCALE_BRAKI_V1 - LC_TEXT lines our base locale_string.txt lacked (game/locale_string.braki.txt);
+# Polish<TAB>en (by hand; UTF-8). The other languages fall back to English.
+Udało się.	Success.
+Nie udało się.	Failed.
+Za mało miejsca w ekwipunku, by oddzielić jedną sztukę tego przedmiotu.	You don't have enough space to auto-split the unique item.
+Tego przedmiotu nie można rozdzielić.	The unique item is not stackable.
+Nie możesz zdjąć kostiumu broni - brak miejsca w ekwipunku.	You cannot unequip the costume weapon. Not enough space.
+Nie możesz założyć tego kostiumu broni - nie pasuje do noszonej broni.	You cannot equip the costume weapon. Wrong equipped weapon.

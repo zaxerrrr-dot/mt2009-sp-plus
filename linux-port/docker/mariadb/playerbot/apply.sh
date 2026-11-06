@@ -549,6 +549,18 @@ db -e "DELETE FROM world.crafting_proto WHERE vnum IN (71, 72, 74) AND item_vnum
 # that sold one sells it no more. The db core reads the shops at boot, so this
 # is live on the next start; idempotent.
 db -e "DELETE FROM world.shop_item WHERE item_vnum IN (72731, 72735);"
+# MT2009_PLUS_SHOP_WINDOW_FIT_V1 (6 November 2026, the second bot analysis, item 11): an NPC shop window is 5x8
+# cells and a two-handed weapon takes 3 rows - two a column, ten in all. Shop 1004 (all_twohand_sword, the base
+# world's game-master shop of every two-handed weapon) has 13: the last three (3100, 3110, 3120) never showed and
+# every core start wrote "SetShopItems: not enough shop window" for them. They go to a shop of their own, 1020
+# (all_twohand_sword2, the same kind: no NPC). Only when 1004 still has them and 1020 is free; idempotent.
+db -e "INSERT INTO world.shop (vnum, name, npc_vnum) SELECT 1020, 'all_twohand_sword2', 0 FROM DUAL
+       WHERE NOT EXISTS (SELECT 1 FROM world.shop WHERE vnum = 1020)
+         AND (SELECT COUNT(*) FROM world.shop_item WHERE shop_vnum = 1004 AND item_vnum IN (3100, 3110, 3120)) = 3
+         AND (SELECT COUNT(*) FROM world.shop_item WHERE shop_vnum = 1004) > 10;
+       UPDATE world.shop_item SET shop_vnum = 1020 WHERE shop_vnum = 1004 AND item_vnum IN (3100, 3110, 3120)
+         AND EXISTS (SELECT 1 FROM world.shop WHERE vnum = 1020 AND name = 'all_twohand_sword2');" \
+    || fail_step "could not split shop 1004 (all_twohand_sword) to fit its window" >&2
 # And nobody keeps one: every Maska Sabaha still in a bag, on a character, in a
 # safebox or on a counter is removed (15 September, "usun" to the masks
 # players already held). On every start, so a mask an old core still held while
@@ -4140,6 +4152,17 @@ for yma_sql in yohara_moby_arkusz.sql; do
         echo "[playerbot-migrate] Yohara monsters (the owner's sheet): $yma_sql applied"
     else
         fail_step "Yohara monsters (the owner's sheet): $yma_sql failed" >&2
+    fi
+done
+# MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026): the four Time Rift / Plaskowyz Metins (8126, 8127, 8136, 8137)
+# call the groups our generators gave Owsap's (6178-6181, 6171-6174) - yohara_metiny_grupy.sql, guarded UPDATEs
+# after every Yohara mob file. Idempotent.
+for ymg_sql in yohara_metiny_grupy.sql; do
+    [ -s "/opt/playerbot/$ymg_sql" ] || continue
+    if db < "/opt/playerbot/$ymg_sql"; then
+        echo "[playerbot-migrate] Yohara Metins' groups: $ymg_sql applied"
+    else
+        fail_step "Yohara Metins' groups: $ymg_sql failed" >&2
     fi
 done
 # MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara as on the global server (the owner, 20 October 2026) -

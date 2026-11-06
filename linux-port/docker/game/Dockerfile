@@ -970,6 +970,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! LC_ALL=C grep -q -P '[\x80-\xff]' "$L/quest/mt2009_language.lua" \
  && echo "share: languages $(ls "$L/lang" | tr '\n' ' ')"
 
+# MT2009_PLUS_LOCALE_BRAKI_V1 (6 November 2026, the second bot analysis, item 11): the engine's LC_TEXT lines the base
+# locale_string.txt lacked - the sash's "Success." / "Failed.", the unique item's split, the costume weapon's (the
+# Yohara test: "locale_find: LOCALE_ERROR" ~110 000 a day, the players read them in English). locale_string.braki.txt
+# (cp1250, edit there); lang/en/22_server_locale_more.tsv takes the Polish lines back to English (the other languages
+# fall back to it). None of the keys may be there before.
+COPY locale_string.braki.txt /tmp/locale_string.braki.txt
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/locale_string.braki.txt \
+ && f="$L/locale_string.txt" \
+ && ! grep -q -F '"Success.";' "$f" \
+ && ! grep -q -F '"You don'"'"'t have enough space to auto-split the unique item.";' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\n' >> "$f"; } \
+ && printf '\n' >> "$f" && sed 's/\r$//' "$A" >> "$f" \
+ && test "$(grep -c -F '"Success.";' "$f")" = 1 \
+ && test "$(grep -c -F '"You cannot equip the costume weapon. Wrong equipped weapon.";' "$f")" = 1 \
+ && rm -f "$A" \
+ && echo "share: locale_string - 7 engine lines it lacked (MT2009_PLUS_LOCALE_BRAKI_V1)"
+
 # MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026; server-patches/mikstury/README.md): m2_mikstury_limity.lua is
 # dofile'd after m2_difficulty.lua and before m2_mikstury.lua (the step below wraps what it sets) and replaces
 # potion_system.use_potion - the herbal potions and the grilled fish (item type 36) with no group limit, no block by an
@@ -3168,12 +3185,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
 # (tools/yohara_motions/gen_ymotions.py writes ymotions/: motlist.txt with two official slips fixed, the .msa).
 # After every Yohara step; a folder there already is replaced by this one. The NPC historian walks in place (no
 # Accumulation in its run.msa, as official).
+# MT2009_PLUS_YONGHAN_SKILL_HIT_V1: + ch_general (Dowodca / General Yonghan 2491/2492, Huashin 2494/2495) - the
+# image's 24.msa/25.msa had no hit events (MotionEventType 4), "UseMobSkill: No skill hit data", no skills used.
 COPY ymotions/ /tmp/ymotions-add/
 RUN set -eu; A=/tmp/ymotions-add; D=/opt/metin2/share/data/monster \
  && mkdir -p "$D" \
  && n=0 && for m in "$A"/data/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; n=$((n + 1)); done \
- && test "$n" = 105 \
+ && test "$n" = 106 \
  && for f in east_earth_knight east_earth_soldier2 east_earth_magic east_gnoll_soldier snakevalley_pawn smhtower_boss trent_soldier; do test -s "$D/$f/motlist.txt"; test -s "$D/$f/run.msa"; done \
+ && grep -q -E '^[[:blank:]]*MotionEventType[[:blank:]]+4' "$D/ch_general/24.msa" \
+ && grep -q -E '^[[:blank:]]*MotionEventType[[:blank:]]+4' "$D/ch_general/25.msa" \
  && test -z "$(for m in "$A"/data/monster/*/run.msa; do case "$m" in */historian/*) continue;; esac; grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
  && rm -rf "$A" \
  && echo "share: Yohara monster motions - $n folders (MT2009_PLUS_YOHARA_MOTIONS_V1)"
@@ -3384,6 +3405,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
  && cat "$A/special_spawns.yohara_lokacje.txt" >> "$S" \
  && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+6789[[:space:]]*$' "$S")" -eq 1 \
  && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines; Wodz Wojenny Schronienia 3 of 12 points)"
+
+# MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026, the second bot analysis, item 2): the groups the Yohara Metins
+# and the White Dragon Eggs call and nothing defined (NOT_EXIST_GROUP_VNUM 6229/6230 on 390/391, 6249/6250/6252/6253
+# on 395, 6218-6220 on 385/388/389 - ~17 000 a day on the Yohara test): yohara_metiny/group.yohara_metiny.txt, of each
+# place's own monsters (README.md). None may exist before. The four Time Rift / Plaskowyz Metins' ranges:
+# mariadb/playerbot/yohara_metiny_grupy.sql (the same marker).
+COPY yohara_metiny/ /tmp/yohara-metiny-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-metiny-add \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/group.yohara_metiny.txt" \
+ && GV='(621[89]|6220|6229|6230|6249|6250|6252|6253)' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_metiny.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 9 \
+ && rm -rf "$A" \
+ && echo "share: Yohara Metins' and eggs' groups - 9 (MT2009_PLUS_YOHARA_STONE_GROUPS_V1)"
 
 # MT2009_PLUS_MOBY_ARKUSZ_V1: the drops of the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx)
 # our Yohara monsters lacked - mob_drop_item.yohara_arkusz.txt (tools/ymoby_arkusz/gen_ymoby_arkusz.py, yohara_arkusz/
