@@ -40,6 +40,27 @@
 // The log: BOT_GNOLLE lines (in, door, boss up/down, level, progress every 2 min, died out / back in, run end) and
 // the file playerbot_gnolle_runs.tsv (one row a run); BOT_DGRUN / BOT_YDG lines as every run.
 //
+// MT2009_PLUS_BOT_GNOLLE_V2 - the day of 6 November (the night: 71 runs, 1 won; parties wandering level 1 for 20 minutes,
+// dying out on levels 2 and 3, ten parties after the same shared bosses). The owner: "mniej druzyn, i wyzsze lvl na 2 i 3
+// poziom". Nothing of the caves changes - only the bots:
+//   - the queue (IsPlayerBotGnolleOpenOk, every caller - the clock, the Dropki, the training): at most "gnolle max"
+//     (default 3) parties in the caves, and a new one only while a level-1 boss stands that no party on level 1 has yet
+//     ("gnolle bosses 1"; the bosses' board scanned from the maps every 5 s, its changes logged) - a party does not go
+//     in to find the bosses dead; on a level the leader leaves a boss another party is on (a claim) and walks on;
+//   - the route: the shortest chain of portals of each level (worked out of the maps' server_attr and the portals' landing
+//     cells - the three levels are one layout, 11 rooms, both bosses of a level on the way: the first by the last portal,
+//     the second in the way down's room), PLAYERBOT_GNOLLE_ROUTE; the leader takes the route's portal of the room it stands
+//     in (the maze's search when it stands off the route), fights what attacks, a boss of its own room and what stands
+//     close in its room (up to PLAYERBOT_GNOLLE_CLEAR_MS a room) - the old hunt of the rooms nearest by portals is off
+//     (PLAYERBOT_GNOLLE_HUNT_S, default now 0);
+//   - the strength to go down (GatePlayerBotGnolleWayDown, "gnolle l2" / "gnolle l3"): a member short of it (Champion
+//     level, gear level and plus, the run's max health) goes out to Dongan instead of dying below; the party goes on with
+//     enough members, a healer and the gear's average, else it leaves the caves (aborted) - no more suicides on level 2;
+//   - the run's bonuses (BuffPlayerBotYdgMember, the Sung Ma Will) again for a member back in after a death (a death
+//     clears the affects - the night's re-entered members fought levels 2/3 with half their health) and at every level;
+//   - the retreat: a member under "gnolle retreat" (45%) of its health drinks, and with the potion not enough steps back
+//     hidden to the pack (the run's break-off) before the 30% the other runs use.
+//
 // An implementation fragment: included at the end of playerbot_dungeon_runs.h (after the YDG one), in its anonymous
 // namespace.
 
@@ -71,6 +92,23 @@ namespace
 	const DWORD PLAYERBOT_GNOLLE_PULL_GRACE_MS = 60000;
 	const DWORD PLAYERBOT_GNOLLE_MAZE_RETRY_MS = 5000;
 	const char* const PLAYERBOT_GNOLLE_RUNS_FILE = "playerbot_gnolle_runs.tsv";
+	// MT2009_PLUS_BOT_GNOLLE_V2
+	const int PLAYERBOT_GNOLLE_CLEAR_RANGE = 1500;		// a foe this close in the leader's room: fought on the way
+	const DWORD PLAYERBOT_GNOLLE_CLEAR_MS = 90000;		// at most this long a room (the regen never ends)
+	const DWORD PLAYERBOT_GNOLLE_BOARD_MS = 5000;		// the bosses' board
+	const DWORD PLAYERBOT_GNOLLE_CLAIM_MS = 20000;		// a boss a party's leader went for: its, this long after
+	const DWORD PLAYERBOT_GNOLLE_BOSS_STALE_MS = 75 * 60 * 1000;	// no level-1 boss seen this long: the queue lets one in
+	const int PLAYERBOT_GNOLLE_ROUTE_REACH = 300;		// a route cell matches the portal standing this near it
+	// The route of each level: its portals' cells in turn (from the way in at 213,110 to the way down's room). The maps'
+	// server_attr flooded into rooms (11 a level) joined by the portals' landing cells (mob_proto names), the shortest
+	// chain: level 1 10901 10903 10913 10922 10916 10924; level 2 10931 10932 10934 10940 10946 10950 10949 10954;
+	// level 3 10961 10962 10964 10969 10975 10979 10983 10984. Mistrz (6804/6814/6819) stands by the last portal,
+	// Kapitan / Wielki Mistrz (6805/6815/6820) in the way down's room.
+	const long PLAYERBOT_GNOLLE_ROUTE[3][9][2] = {
+		{ { 320, 238 }, { 210, 495 }, { 528, 415 }, { 553, 291 }, { 82, 746 }, { 597, 331 }, { 0, 0 } },
+		{ { 320, 238 }, { 350, 361 }, { 421, 272 }, { 65, 434 }, { 82, 746 }, { 541, 40 }, { 278, 705 }, { 597, 331 }, { 0, 0 } },
+		{ { 320, 238 }, { 350, 361 }, { 421, 272 }, { 70, 368 }, { 101, 547 }, { 278, 705 }, { 626, 296 }, { 597, 331 }, { 0, 0 } },
+	};
 
 	int GetPlayerBotGnolleLevel(long map)
 	{
@@ -259,14 +297,19 @@ namespace
 		std::set<DWORD> inCaves;		// went in
 		DWORD dwHuntVid, dwHuntAt;
 		bool bExit;
+		// MT2009_PLUS_BOT_GNOLLE_V2: the room the leader stands in (since), the route's portal it goes for, retreats
+		DWORD dwRoom, dwRoomSince;
+		int iRouteDoor, iRetreats, iNotStrong;
 		TPlayerBotGnolleRun() : iLevel(1), dwLevelSince(0), dwWaySince(0), dwNextProgress(0), dwPullSince(0), iDoors(0),
-				iBossKills(0), iReentries(0), iDiedOut(0), dwHuntVid(0), dwHuntAt(0), bExit(false) {}
+				iBossKills(0), iReentries(0), iDiedOut(0), dwHuntVid(0), dwHuntAt(0), bExit(false), dwRoom(0), dwRoomSince(0),
+				iRouteDoor(-1), iRetreats(0), iNotStrong(0) {}
 	};
 	std::map<int, TPlayerBotGnolleRun> s_mapPlayerBotGnolleRuns;
 
 	DWORD GetPlayerBotGnolleHuntMs()
 	{
-		return (DWORD)ReadPlayerBotYoharaEnvInt("PLAYERBOT_GNOLLE_HUNT_S", 360, 0, 3600) * 1000U;
+		// MT2009_PLUS_BOT_GNOLLE_V2: off by default - the route (the night's hunt took the parties all over level 1)
+		return (DWORD)ReadPlayerBotYoharaEnvInt("PLAYERBOT_GNOLLE_HUNT_S", 0, 0, 3600) * 1000U;
 	}
 
 	DWORD GetPlayerBotGnolleLevelMaxMs()
@@ -277,6 +320,145 @@ namespace
 	bool IsPlayerBotGnolleBoss(int level, DWORD race)
 	{
 		return level >= 1 && level <= 3 && (race == PLAYERBOT_GNOLLE_BOSSES[level - 1][0] || race == PLAYERBOT_GNOLLE_BOSSES[level - 1][1]);
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_GNOLLE_V2: the queue, the strength
+
+	// The bosses standing on each level (-1: the level is not on this core), scanned every PLAYERBOT_GNOLLE_BOARD_MS.
+	struct TPlayerBotGnolleBoard
+	{
+		DWORD dwAt;
+		int up[3];
+		DWORD dwLastUp[3];	// a boss of the level seen standing (or the board's first look)
+		TPlayerBotGnolleBoard() : dwAt(0)
+		{
+			for (int i = 0; i < 3; ++i)
+			{
+				up[i] = -1;
+				dwLastUp[i] = 0;
+			}
+		}
+	};
+	TPlayerBotGnolleBoard s_kPlayerBotGnolleBoard;
+
+	const TPlayerBotGnolleBoard& ReadPlayerBotGnolleBoard(DWORD dwNow)
+	{
+		TPlayerBotGnolleBoard& b = s_kPlayerBotGnolleBoard;
+		if (b.dwAt != 0 && dwNow - b.dwAt < PLAYERBOT_GNOLLE_BOARD_MS)
+			return b;
+		b.dwAt = dwNow;
+		for (int l = 0; l < 3; ++l)
+		{
+			const long map = PLAYERBOT_GNOLLE_MAP_FIRST + l;
+			int up = -1;
+			if (IsPlayerBotMapHostedHere(map) && SECTREE_MANAGER::instance().GetMap(map))
+			{
+				up = 0;
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+					if (scan.foes[i].dwRace == PLAYERBOT_GNOLLE_BOSSES[l][0] || scan.foes[i].dwRace == PLAYERBOT_GNOLLE_BOSSES[l][1])
+					{
+						LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+						up += c && !c->IsDead() ? 1 : 0;
+					}
+			}
+			if (up > 0 || (up == 0 && b.dwLastUp[l] == 0))
+				b.dwLastUp[l] = dwNow;
+			if (up != b.up[l])
+				sys_log(0, "BOT_GNOLLE: bosses level=%d up=%d (was %d)", l + 1, up, b.up[l]);
+			b.up[l] = up;
+		}
+		return b;
+	}
+
+	// The caves' queue for a new party (every caller - OpenPlayerBotDgRun, the training's choice): "gnolle max" parties
+	// at once, and a level-1 boss standing for each party on level 1 (or about to go in) - "gnolle bosses".
+	bool IsPlayerBotGnolleOpenOk(DWORD dwNow, const char* why)
+	{
+		const TPlayerBotGnolleCfg& cfg = s_kPlayerBotGnolleCfg;
+		int running = 0, onFirst = 0;
+		for (std::map<int, TPlayerBotDgRun>::const_iterator it = s_mapPlayerBotDgRuns.begin(); it != s_mapPlayerBotDgRuns.end(); ++it)
+		{
+			if (it->second.iDef < 0 || it->second.iDef >= PLAYERBOT_DGRUN_DEF_COUNT ||
+					PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_GNOLLE)
+				continue;
+			++running;
+			std::map<int, TPlayerBotGnolleRun>::const_iterator g = s_mapPlayerBotGnolleRuns.find(it->first);
+			if (g == s_mapPlayerBotGnolleRuns.end() || (g->second.iLevel <= 1 && !g->second.bExit))
+				++onFirst;
+		}
+		if (running >= cfg.iMax)
+		{
+			PlayerBotLogThrottled("gnolle_queue_full", dwNow, "BOT_GNOLLE: queue - %d parties in (max %d), no new one (%s)", running,
+					cfg.iMax, why ? why : "-");
+			return false;
+		}
+		if (!cfg.bBosses)
+			return true;
+		const TPlayerBotGnolleBoard& b = ReadPlayerBotGnolleBoard(dwNow);
+		if (b.up[0] < 0 || b.up[0] > onFirst)
+			return true;
+		if (onFirst == 0 && b.dwLastUp[0] != 0 && dwNow - b.dwLastUp[0] >= PLAYERBOT_GNOLLE_BOSS_STALE_MS)
+		{
+			PlayerBotLogThrottled("gnolle_queue_stale", dwNow, "BOT_GNOLLE: queue - no level-1 boss seen for %u min, one party in (%s)",
+					(dwNow - b.dwLastUp[0]) / 60000, why ? why : "-");
+			return true;
+		}
+		PlayerBotLogThrottled("gnolle_queue_bosses", dwNow, "BOT_GNOLLE: queue - waits for a level-1 boss up=%d on_level1=%d running=%d "
+				"(level 2 up=%d, level 3 up=%d) (%s)", b.up[0], onFirst, running, b.up[1], b.up[2], why ? why : "-");
+		return false;
+	}
+
+	// The strength for level 2 (gate 0) or 3 (gate 1): the Champion level, the gear's level and plus
+	// (GetPlayerBotYdgGearLevel: the weapon, armour and helmet) and - in the run, with its bonuses - the max health.
+	const char* GetPlayerBotGnolleWeakness(LPCHARACTER ch, int gate, bool withHp)
+	{
+		if (!ch || gate < 0 || gate > 1)
+			return "none";
+		const TPlayerBotGnolleGate& g = s_kPlayerBotGnolleCfg.gate[gate];
+		int plus = 0;
+		const int gear = GetPlayerBotYdgGearLevel(ch, &plus);
+		if (ch->GetConquerorLevel() < g.champion)
+			return "champion";
+		if (gear < g.gear)
+			return "gear";
+		if (plus < g.plus)
+			return "plus";
+		if (withHp && ch->GetMaxHP() < g.hp)
+			return "hp";
+		return NULL;
+	}
+
+	bool IsPlayerBotGnolleStrong(LPCHARACTER ch, int gate, bool withHp)
+	{
+		return GetPlayerBotGnolleWeakness(ch, gate, withHp) == NULL;
+	}
+
+	// The boss a party's leader went for: its for PLAYERBOT_GNOLLE_CLAIM_MS (refreshed while it fights it).
+	std::map<DWORD, std::pair<int, DWORD> > s_mapPlayerBotGnolleClaims;
+
+	bool IsPlayerBotGnolleBossTaken(DWORD vid, int runId, DWORD dwNow)
+	{
+		std::map<DWORD, std::pair<int, DWORD> >::iterator it = s_mapPlayerBotGnolleClaims.find(vid);
+		if (it == s_mapPlayerBotGnolleClaims.end() || it->second.first == runId)
+			return false;
+		if (dwNow - it->second.second >= PLAYERBOT_GNOLLE_CLAIM_MS || !s_mapPlayerBotDgRuns.count(it->second.first))
+		{
+			s_mapPlayerBotGnolleClaims.erase(it);
+			return false;
+		}
+		return true;
+	}
+
+	// The run's bonuses again (a death took them; a new level's hour).
+	void RebuffPlayerBotGnolleMember(LPCHARACTER ch, const TPlayerBotDgRun& run, const char* why)
+	{
+		if (!ch)
+			return;
+		BuffPlayerBotYdgMember(ch);
+		const std::string sm = BuffPlayerBotYdgSungma(ch, PLAYERBOT_DGRUN_DEFS[run.iDef].lMap);
+		sys_log(0, "BOT_GNOLLE: bonuses again pid=%u name=%s run=%d why=%s sungma=%s max_hp=%d", ch->GetPlayerID(), ch->GetName(),
+				run.iId, why, sm.empty() ? "-" : sm.c_str(), ch->GetMaxHP());
 	}
 
 	// ------------------------------------------------------------ the ticket
@@ -386,14 +568,21 @@ namespace
 	// ------------------------------------------------------------ the walk
 
 	// Towards (tx, ty) on the bot's level: straight in its own room, else to the first portal of the way and through.
+	// V2: forceDoor - the route's portal of this room (FindPlayerBotGnolleRouteDoor), walked to and through.
 	bool WalkPlayerBotGnolle(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotGnolleRun& gr, long tx, long ty, DWORD dwNow,
-			const char* what)
+			const char* what, int forceDoor = -1)
 	{
 		const long map = ch->GetMapIndex();
 		const TPlayerBotGnolleMaze* m = GetPlayerBotGnolleMaze(map, dwNow);
 		long gx = tx, gy = ty;
 		int door = -1;
-		if (m)
+		if (m && forceDoor >= 0 && forceDoor < (int)m->doors.size())
+		{
+			door = forceDoor;
+			gx = m->doors[door].lFromX;
+			gy = m->doors[door].lFromY;
+		}
+		else if (m)
 		{
 			const DWORD from = GetPlayerBotGnolleRoom(map, ch->GetX(), ch->GetY());
 			const DWORD to = GetPlayerBotGnolleRoom(map, tx, ty);
@@ -440,6 +629,27 @@ namespace
 			MovePlayerBot(ch, gx, gy, dwNow, door >= 0 ? 3 : 8, true, false);
 		}
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_GNOLLE_V2: the route's portal of the room `here` (PLAYERBOT_GNOLLE_ROUTE), or -1 (off the route).
+	int FindPlayerBotGnolleRouteDoor(const TPlayerBotGnolleMaze& m, long map, DWORD here)
+	{
+		const int level = GetPlayerBotGnolleLevel(map);
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(map);
+		if (level < 1 || !pMap || here == 0)
+			return -1;
+		for (int k = 0; k < 9 && PLAYERBOT_GNOLLE_ROUTE[level - 1][k][0] != 0; ++k)
+		{
+			const long wx = pMap->m_setting.iBaseX + PLAYERBOT_GNOLLE_ROUTE[level - 1][k][0] * 100;
+			const long wy = pMap->m_setting.iBaseY + PLAYERBOT_GNOLLE_ROUTE[level - 1][k][1] * 100;
+			for (size_t i = 0; i < m.doors.size(); ++i)
+			{
+				const TPlayerBotGnolleDoor& d = m.doors[i];
+				if (d.dwFrom == here && labs(d.lFromX - wx) <= PLAYERBOT_GNOLLE_ROUTE_REACH && labs(d.lFromY - wy) <= PLAYERBOT_GNOLLE_ROUTE_REACH)
+					return (int)i;
+			}
+		}
+		return -1;
 	}
 
 	// ------------------------------------------------------------ the leader
@@ -540,11 +750,18 @@ namespace
 			if (!IsPlayerBotPdgFoe(ch, c))
 				continue;
 			const int dist = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+			// V2: a boss of the leader's own room (the route passes both of a level's), not another party's
 			if (IsPlayerBotGnolleBoss(level, c->GetRaceNum()) && !IsPlayerBotDgRunUnreachable(rb, (DWORD)c->GetVID(), dwNow) &&
-					dist < dBoss)
+					dist < dBoss && (here ? GetPlayerBotGnolleRoom(map, c->GetX(), c->GetY()) == here : dist <= PLAYERBOT_GNOLLE_FIGHT_RANGE))
 			{
-				boss = c;
-				dBoss = dist;
+				if (IsPlayerBotGnolleBossTaken((DWORD)c->GetVID(), run.iId, dwNow))
+					PlayerBotLogThrottled("gnolle_boss_taken", dwNow, "BOT_GNOLLE: boss left to another party run=%d level=%d race=%u",
+							run.iId, level, (unsigned int)c->GetRaceNum());
+				else
+				{
+					boss = c;
+					dBoss = dist;
+				}
 			}
 			if (dist > PLAYERBOT_DGRUN_THREAT_RANGE || c->GetRaceNum() >= 20000)
 				continue;
@@ -621,6 +838,7 @@ namespace
 			}
 			if (dBoss <= PLAYERBOT_GNOLLE_FIGHT_RANGE)
 				run.dwFocusVID = (DWORD)boss->GetVID();
+			s_mapPlayerBotGnolleClaims[(DWORD)boss->GetVID()] = std::make_pair(run.iId, dwNow);	// V2: this party's
 			return GoForPlayerBotGnolleFoe(ch, state, gr, rb, boss, dwNow, "boss");
 		}
 		const bool hunting = dwNow - gr.dwLevelSince < GetPlayerBotGnolleHuntMs();
@@ -629,6 +847,32 @@ namespace
 			LPCHARACTER foe = PickPlayerBotGnolleHunt(ch, gr, rb, scan, dwNow);
 			if (foe)
 				return GoForPlayerBotGnolleFoe(ch, state, gr, rb, foe, dwNow, "hunt");
+		}
+		// V2: what stands close in the leader's room, on the way (a room's while at most) - no walk to other rooms.
+		if (here != gr.dwRoom)
+		{
+			gr.dwRoom = here;
+			gr.dwRoomSince = dwNow;
+		}
+		if (here && dwNow - gr.dwRoomSince < PLAYERBOT_GNOLLE_CLEAR_MS)
+		{
+			LPCHARACTER nearFoe = NULL;
+			int dNear = PLAYERBOT_GNOLLE_CLEAR_RANGE + 1;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+			{
+				if (scan.foes[i].dwRace >= 20000)
+					continue;
+				const int dist = DISTANCE_APPROX(ch->GetX() - scan.foes[i].lX, ch->GetY() - scan.foes[i].lY);
+				if (dist >= dNear || IsPlayerBotDgRunUnreachable(rb, scan.foes[i].dwVID, dwNow))
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+				if (!IsPlayerBotPdgFoe(ch, c) || GetPlayerBotGnolleRoom(map, c->GetX(), c->GetY()) != here)
+					continue;
+				nearFoe = c;
+				dNear = dist;
+			}
+			if (nearFoe)
+				return GoForPlayerBotGnolleFoe(ch, state, gr, rb, nearFoe, dwNow, "clear");
 		}
 		// What lies about, then the way down.
 		if (HandleLoot(ch, state, dwNow))
@@ -649,6 +893,26 @@ namespace
 				ch->Stop();
 			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
 			return true;
+		}
+		// V2: the route - this room's portal of it; off the route (or the maze not read yet) the maze's own search.
+		{
+			const TPlayerBotGnolleMaze* m = GetPlayerBotGnolleMaze(map, dwNow);
+			if (m && here && here != GetPlayerBotGnolleRoom(map, wx, wy))
+			{
+				const int door = FindPlayerBotGnolleRouteDoor(*m, map, here);
+				if (door >= 0)
+				{
+					if (gr.iRouteDoor != door)
+					{
+						gr.iRouteDoor = door;
+						sys_log(0, "BOT_GNOLLE: route run=%d level=%d room=%u portal=%u level_s=%u", run.iId, level, (unsigned int)here,
+								(unsigned int)m->doors[door].dwVnum, (dwNow - gr.dwLevelSince) / 1000);
+					}
+					return WalkPlayerBotGnolle(ch, state, gr, wx, wy, dwNow, "route", door);
+				}
+				PlayerBotLogThrottled("gnolle_off_route", dwNow, "BOT_GNOLLE: off the route run=%d level=%d room=%u - the maze's way",
+						run.iId, level, (unsigned int)here);
+			}
 		}
 		return WalkPlayerBotGnolle(ch, state, gr, wx, wy, dwNow, "way_down");
 	}
@@ -773,6 +1037,35 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_GNOLLE_V2: under "gnolle retreat" of its health a member drinks; the potion not enough, it steps back
+	// as the run's break-off does (hidden a few seconds, to the pack, healed) - before the 30% of the other runs: a death
+	// here is the caves' end for it.
+	bool RetreatPlayerBotGnolle(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotGnolleRun& gr, DWORD dwNow)
+	{
+		const int pct = s_kPlayerBotGnolleCfg.iRetreatHp;
+		if (pct <= 0 || state.bRecoveringAfterDeath || ch->IsDead() || ch->GetMaxHP() <= 0 ||
+				(long long)ch->GetHP() * 100 > (long long)ch->GetMaxHP() * pct)
+			return false;
+		UseHealthPotion(ch, state, dwNow, 100);
+		if (((long long)ch->GetHP() + ch->GetPoint(POINT_HP_RECOVERY)) * 100 > (long long)ch->GetMaxHP() * pct)
+			return false;
+		state.bRecoveringAfterDeath = true;
+		state.dwLastDeathTime = dwNow;
+		state.lDeathX = 0;
+		state.lDeathY = 0;
+		state.dwNextRecoveryHealTime = dwNow;
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ClearPlayerBotRoute(state, true);
+		ch->ReviveInvisible(5);
+		state.dwNextRecoveryProtectionTime = dwNow + PLAYERBOT_RECOVERY_PROTECTION_INTERVAL;
+		++run.iBreakOffs;
+		++gr.iRetreats;
+		PlayerBotLogThrottled("gnolle_retreat", dwNow, "BOT_GNOLLE: retreat pid=%u name=%s run=%d level=%d hp=%d/%d", ch->GetPlayerID(),
+				ch->GetName(), run.iId, gr.iLevel, ch->GetHP(), ch->GetMaxHP());
+		return true;
+	}
+
 	// ------------------------------------------------------------ the bot's tick
 
 	// A member on the run's level (ManagePlayerBotDungeonRun, DGRUN_PHASE_INSIDE).
@@ -810,6 +1103,8 @@ namespace
 			return true;
 		}
 		if (!state.bRecoveringAfterDeath && !FindPlayerBotDgRunThreat(ch, run.iId) && HandleLoot(ch, state, dwNow))
+			return true;
+		if (RetreatPlayerBotGnolle(ch, state, run, gr, dwNow))	// MT2009_PLUS_BOT_GNOLLE_V2
 			return true;
 		if (KeepPlayerBotDgRunAlive(ch, state, run, dwNow))
 			return true;
@@ -863,6 +1158,64 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_GNOLLE_V2: the strength for the next level ("gnolle l2" / "gnolle l3"). A member short of it goes out
+	// to Dongan; the party goes on with enough members, a healer and the gear's average - else everybody out (aborted).
+	// False: the run is over.
+	bool GatePlayerBotGnolleWayDown(TPlayerBotDgRun& run, TPlayerBotGnolleRun& gr, DWORD dwNow)
+	{
+		const int next = gr.iLevel + 1;
+		if (next < 2 || next > 3)
+			return true;
+		const int gate = next - 2;
+		const TPlayerBotGnolleGate& g = s_kPlayerBotGnolleCfg.gate[gate];
+		std::vector<DWORD> weak;
+		std::string weakNames;
+		int fit = 0, gearSum = 0;
+		bool healer = false;
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c || c->IsDead() || c->GetMapIndex() != run.lInstance)
+				continue;
+			const char* why = GetPlayerBotGnolleWeakness(c, gate, true);
+			if (why)
+			{
+				weak.push_back(run.members[i]);
+				if (weakNames.size() < 200)
+				{
+					char buf[96];
+					snprintf(buf, sizeof(buf), "%s%s:%s(c%d/hp%d)", weakNames.empty() ? "" : ",", c->GetName(), why,
+							(int)c->GetConquerorLevel(), c->GetMaxHP());
+					weakNames += buf;
+				}
+				continue;
+			}
+			int plus = 0;
+			gearSum += GetPlayerBotYdgGearLevel(c, &plus);
+			++fit;
+			healer = healer || (c->GetJob() == JOB_SHAMAN && c->GetSkillGroup() != 0);
+		}
+		const int avg = fit > 0 ? gearSum / fit : 0;
+		const bool ok = fit >= g.members && (!g.healer || healer) && avg >= g.avg;
+		sys_log(0, "BOT_GNOLLE: gate run=%d to_level=%d fit=%d (needs %d) healer=%d gear_avg=%d (needs %d) ok=%d weak=%s", run.iId,
+				next, fit, g.members, healer ? 1 : 0, avg, g.avg, ok ? 1 : 0, weakNames.empty() ? "-" : weakNames.c_str());
+		if (!ok)
+		{
+			sys_log(0, "BOT_GNOLLE: stop run=%d level=%d - not strong enough for level %d, out of the caves", run.iId, gr.iLevel, next);
+			PullPlayerBotGnolleRun(run, gr, "aborted", dwNow);
+			return false;
+		}
+		for (size_t i = 0; i < weak.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(weak[i]);
+			if (c)
+				SendPlayerBotGnolleOut(run, c, dwNow, "not_strong");
+			++gr.iNotStrong;
+			DropPlayerBotDgRunMember(run, weak[i], dwNow, PLAYERBOT_DGRUN_REST_REFUSED_MS, "not_strong");
+		}
+		return true;
+	}
+
 	// The party down to the next level (each one's warp, the dialog's), or out by level 3's exit.
 	void TakePlayerBotGnolleWayDown(TPlayerBotDgRun& run, TPlayerBotGnolleRun& gr, DWORD dwNow)
 	{
@@ -897,7 +1250,10 @@ namespace
 				continue;
 			}
 			if (PutPlayerBotGnolleOnLevel(ch, next, idx++))
+			{
 				++moved;
+				RebuffPlayerBotGnolleMember(ch, run, "level");	// MT2009_PLUS_BOT_GNOLLE_V2: the bonuses' hour again
+			}
 			else
 				++left;
 		}
@@ -905,6 +1261,8 @@ namespace
 		gr.dwLevelSince = dwNow;
 		gr.dwWaySince = 0;
 		gr.dwHuntVid = 0;
+		gr.dwRoom = gr.dwRoomSince = 0;	// MT2009_PLUS_BOT_GNOLLE_V2
+		gr.iRouteDoor = -1;
 		run.iStage = next;
 		run.dwStageSince = dwNow;
 		run.dwLastProgress = dwNow;
@@ -1004,6 +1362,8 @@ namespace
 						++back;
 						++gr.iReentries;
 						run.llFees += ChargePlayerBotGnolleTicket(ch);
+						// MT2009_PLUS_BOT_GNOLLE_V2: the death cleared the run's bonuses (half the health on the Sung Ma maps)
+						RebuffPlayerBotGnolleMember(ch, run, "back_in");
 						sys_log(0, "BOT_GNOLLE: back in pid=%u name=%s run=%d times=%d from=%ld", pid, ch->GetName(), run.iId, back, map);
 						continue;
 					}
@@ -1150,6 +1510,8 @@ namespace
 			}
 			if ((by >= alive && dwNow - gr.dwWaySince >= 3000) || dwNow - gr.dwWaySince >= PLAYERBOT_GNOLLE_WAY_WAIT_MS)
 			{
+				if (gr.iLevel < 3 && !GatePlayerBotGnolleWayDown(run, gr, dwNow))	// MT2009_PLUS_BOT_GNOLLE_V2
+					return true;
 				TakePlayerBotGnolleWayDown(run, gr, dwNow);
 				return true;
 			}
@@ -1161,11 +1523,11 @@ namespace
 			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(run.lInstance);
 			const long bx = pMap ? pMap->m_setting.iBaseX : 0, by = pMap ? pMap->m_setting.iBaseY : 0;
 			sys_log(0, "BOT_GNOLLE: progress run=%d level=%d level_s=%u inside=%d alive=%d fit=%d members=%u deaths=%d died_out=%d "
-					"back_in=%d doors=%d bosses=%d focus=%u leader=%s@(%ld,%ld) room=%u way=%d", run.iId, gr.iLevel,
+					"back_in=%d doors=%d bosses=%d focus=%u leader=%s@(%ld,%ld) room=%u way=%d retreats=%d", run.iId, gr.iLevel,
 					(dwNow - gr.dwLevelSince) / 1000, inside, alive, fit, (unsigned int)run.members.size(), run.iDeaths, gr.iDiedOut,
 					gr.iReentries, gr.iDoors, gr.iBossKills, (unsigned int)run.dwFocusVID, a ? a->GetName() : "-",
 					a ? (a->GetX() - bx) / 100 : 0, a ? (a->GetY() - by) / 100 : 0,
-					a ? (unsigned int)GetPlayerBotGnolleRoom(run.lInstance, a->GetX(), a->GetY()) : 0U, gr.dwWaySince ? 1 : 0);
+					a ? (unsigned int)GetPlayerBotGnolleRoom(run.lInstance, a->GetX(), a->GetY()) : 0U, gr.dwWaySince ? 1 : 0, gr.iRetreats);
 		}
 		if (run.iDeaths >= PLAYERBOT_DGRUN_MAX_DEATHS)
 		{
@@ -1196,6 +1558,14 @@ namespace
 		TPlayerBotGnolleRun gr = g != s_mapPlayerBotGnolleRuns.end() ? g->second : TPlayerBotGnolleRun();
 		if (g != s_mapPlayerBotGnolleRuns.end())
 			s_mapPlayerBotGnolleRuns.erase(g);
+		// MT2009_PLUS_BOT_GNOLLE_V2: its bosses free for the others
+		for (std::map<DWORD, std::pair<int, DWORD> >::iterator c = s_mapPlayerBotGnolleClaims.begin(); c != s_mapPlayerBotGnolleClaims.end();)
+		{
+			if (c->second.first == run.iId)
+				s_mapPlayerBotGnolleClaims.erase(c++);
+			else
+				++c;
+		}
 		const bool won = run.dwFinishedAt != 0;
 		const int party = GetPlayerBotYdgTrainParty(run.iId);
 		std::string names;
@@ -1206,10 +1576,11 @@ namespace
 				names += (names.empty() ? "" : ",") + std::string(c->GetName());
 		}
 		sys_log(0, "BOT_GNOLLE: run end run=%d train_party=%d result=%s won=%d entered=%d took_s=%u level=%d level_s=%s deaths=%d "
-				"wipes=%d died_out=%d back_in=%d doors=%d bosses=%d (%s) members=%u fees=%lld", run.iId, party, result ? result : "-",
+				"wipes=%d died_out=%d back_in=%d doors=%d bosses=%d (%s) members=%u fees=%lld retreats=%d not_strong=%d", run.iId, party,
+				result ? result : "-",
 				won ? 1 : 0, entered ? 1 : 0, tookS, entered ? gr.iLevel : 0, run.stageSecs.empty() ? "-" : run.stageSecs.c_str(),
 				run.iDeaths, run.iWipes, gr.iDiedOut, gr.iReentries, gr.iDoors, gr.iBossKills, gr.bosses.empty() ? "-" : gr.bosses.c_str(),
-				(unsigned int)run.members.size(), run.llFees);
+				(unsigned int)run.members.size(), run.llFees, gr.iRetreats, gr.iNotStrong);
 		FILE* fp = fopen(PLAYERBOT_GNOLLE_RUNS_FILE, "a");
 		if (fp)
 		{
