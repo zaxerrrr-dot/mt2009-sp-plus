@@ -76,7 +76,9 @@ namespace
 	const DWORD PLAYERBOT_HP70_MEDIAN_MS = 10 * 60 * 1000;
 	const int PLAYERBOT_HP70_BAND_LEVELS = 5;
 	const int PLAYERBOT_HP70_MIN_SAMPLES = 5;
-	const int PLAYERBOT_HP70_SAMPLE_FROM_LEVEL = 60;
+	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: from 50 (was 60) - the Wukong gate reads the bands of 50-59 too; the HP
+	// urgency still starts at PLAYERBOT_SM_HP70_MIN_LEVEL (70).
+	const int PLAYERBOT_HP70_SAMPLE_FROM_LEVEL = 50;
 
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi);	// playerbot_yohara_bots.h
 
@@ -298,10 +300,27 @@ namespace
 	{
 		int band;
 		long long hp;
+		long long atk;	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: GetPlayerBotRealAttack
 		DWORD when;
 	};
 	std::map<DWORD, TPlayerBotHpSample> s_mapPlayerBotHpSamples;
 	std::map<int, long long> s_mapPlayerBotHpMedian;
+	std::map<int, long long> s_mapPlayerBotAtkMedian;	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2
+
+	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: the blow the bot really strikes with - the weapon in its hand read by the
+	// damage model (GetPlayerBotWeaponHitDamage: its grade, roll, plus, average and skill damage, crit, penetration, a
+	// young heroes' "Wartosc ataku"), so a level-30 weapon with a good average-damage line counts for what it does,
+	// not for its level. A bot with a young heroes' weapon in the hand is read with that weapon (the hand worn), not
+	// the planned one GetPlayerBotHandWeapon gives. No weapon: 0.
+	long long GetPlayerBotRealAttack(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		LPITEM hand = ch->GetWear(WEAR_WEAPON);
+		if (!hand || hand->GetType() != ITEM_WEAPON)
+			hand = GetPlayerBotHandWeapon(ch);
+		return hand ? GetPlayerBotWeaponHitDamage(hand, ch) : 0;
+	}
 	DWORD s_dwPlayerBotHpMedianAt = 0;
 
 	int GetPlayerBotHpBand(int level)
@@ -314,7 +333,7 @@ namespace
 		if (s_dwPlayerBotHpMedianAt != 0 && now - s_dwPlayerBotHpMedianAt < PLAYERBOT_HP70_MEDIAN_MS)
 			return;
 		s_dwPlayerBotHpMedianAt = now ? now : 1;
-		std::map<int, std::vector<long long> > byBand;
+		std::map<int, std::vector<long long> > byBand, atkByBand;
 		for (std::map<DWORD, TPlayerBotHpSample>::iterator it = s_mapPlayerBotHpSamples.begin();
 				it != s_mapPlayerBotHpSamples.end(); )
 		{
@@ -324,6 +343,7 @@ namespace
 				continue;
 			}
 			byBand[it->second.band].push_back(it->second.hp);
+			atkByBand[it->second.band].push_back(it->second.atk);
 			++it;
 		}
 		s_mapPlayerBotHpMedian.clear();
@@ -335,6 +355,32 @@ namespace
 			std::nth_element(v.begin(), v.begin() + v.size() / 2, v.end());
 			s_mapPlayerBotHpMedian[it->first] = v[v.size() / 2];
 		}
+		s_mapPlayerBotAtkMedian.clear();
+		for (std::map<int, std::vector<long long> >::iterator it = atkByBand.begin(); it != atkByBand.end(); ++it)
+		{
+			std::vector<long long>& v = it->second;
+			if ((int)v.size() < PLAYERBOT_HP70_MIN_SAMPLES)
+				continue;
+			std::nth_element(v.begin(), v.begin() + v.size() / 2, v.end());
+			s_mapPlayerBotAtkMedian[it->first] = v[v.size() / 2];
+		}
+	}
+
+	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: the medians of the band of five levels a level is in (sampled from
+	// PLAYERBOT_HP70_SAMPLE_FROM_LEVEL, PLAYERBOT_HP70_MIN_SAMPLES live samples a band at least); false - no median.
+	bool GetPlayerBotBandMedians(int level, long long* hpOut, long long* atkOut)
+	{
+		RefreshPlayerBotHpMedians(get_dword_time());
+		const int band = GetPlayerBotHpBand(level);
+		std::map<int, long long>::const_iterator h = s_mapPlayerBotHpMedian.find(band);
+		std::map<int, long long>::const_iterator a = s_mapPlayerBotAtkMedian.find(band);
+		if (h == s_mapPlayerBotHpMedian.end() || a == s_mapPlayerBotAtkMedian.end())
+			return false;
+		if (hpOut)
+			*hpOut = h->second;
+		if (atkOut)
+			*atkOut = a->second;
+		return true;
 	}
 
 	int GetPlayerBotHp70MinLevel()
@@ -466,6 +512,7 @@ namespace
 				TPlayerBotHpSample& sample = s_mapPlayerBotHpSamples[pid];
 				sample.band = GetPlayerBotHpBand((int)ch->GetLevel());
 				sample.hp = (long long)ch->GetMaxHP();
+				sample.atk = GetPlayerBotRealAttack(ch);	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2
 				sample.when = now;
 			}
 		}

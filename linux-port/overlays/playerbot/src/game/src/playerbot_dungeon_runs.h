@@ -3105,37 +3105,46 @@ namespace
 	// MT2009_PLUS_BOT_WUKONG_GATE_V1 (the owner, 6 November 2026 - the second bot analysis, point 4): Wzgorze Wukonga
 	// got the bots the Zodiac's strength gate leaves free - the weak ones: 31 deaths a run on one world, 34% of the
 	// runs wiped and 40 deaths a run on another, 205 lost of 1 947 on the supporters'. A bot goes to Wukong only of
-	// wk_gate_level (50) and up with its weapon and its armour (each the item's level + its plus, as the Zodiac's gate
-	// reads them; a young heroes' weapon a +9 of the bot's level) at most wk_gate_gear (15) levels under its own - so
-	// the party's weakest member is of 50 and its gear of the window. A bot of Wukong's band the gate turns away (and
+	// wk_gate_level (50) and up and as strong as its peers (below). A bot of Wukong's band the gate turns away (and
 	// the Zodiac's, whose gate let it be) goes into the Biblioteka's call instead, above that band if need be (its
 	// cooldown and five a day hold). Event flag bot_wukong_gate -1: no gate (as before), bot_wukong_biblio -1: no
 	// Biblioteka for the refused. Log: BOT_DGRUN: wukong gate (throttled) - refused by reason and sent on.
+	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2 (the owner, 6 November 2026: "To bez sensu bo bronie na 30 lvl z dobrym SR sa
+	// super, albo bronie mlodych bohaterow"): the item levels of the weapon and the armour are no measure of strength
+	// and are not read any more. The bot's real blow (GetPlayerBotRealAttack - the hand's weapon through the damage
+	// model, average and skill damage and a young heroes' line in) and its max HP are held to the medians of the bots of
+	// its band of five levels (sampled by the errands, playerbot_errands.h): at least wk_gate_atk_pct (70) % of the
+	// band's blow and wk_gate_hp_pct (70) % of its HP. A band with too few samples (PLAYERBOT_HP70_MIN_SAMPLES) lets
+	// the bot through.
 	bool IsPlayerBotWukongGateOn() { return quest::CQuestManager::instance().GetEventFlag("bot_wukong_gate") >= 0; }
 	int GetPlayerBotWukongGateSetting(const char* name, int def, int lo, int hi)
 	{
 		const int v = quest::CQuestManager::instance().GetEventFlag(name);
 		return v > 0 ? std::max(lo, std::min(hi, v)) : def;
 	}
-	enum { WUKONG_GATE_OK = 0, WUKONG_GATE_LEVEL, WUKONG_GATE_WEAPON, WUKONG_GATE_ARMOUR, WUKONG_GATE_COUNT };
+	enum { WUKONG_GATE_OK = 0, WUKONG_GATE_LEVEL, WUKONG_GATE_ATK, WUKONG_GATE_HP, WUKONG_GATE_COUNT };
 	unsigned int s_auPlayerBotWukongGate[WUKONG_GATE_COUNT];
 	unsigned int s_uPlayerBotWukongGateBiblio = 0;
-	int GetPlayerBotWukongGateRefusal(LPCHARACTER ch)
+	unsigned int s_uPlayerBotWukongGateNoMedian = 0;	// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: passed for a thin band
+	int GetPlayerBotWukongGateRefusal(LPCHARACTER ch, bool count = false)
 	{
 		const int level = ch->GetLevel();
 		if (level < GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250))
 			return WUKONG_GATE_LEVEL;
-		const int window = GetPlayerBotWukongGateSetting("wk_gate_gear", 15, 0, 250);
-		LPITEM weapon = GetPlayerBotHandWeapon(ch);
-		int wl = 0, wp = 0;
-		if (!weapon || !weapon->GetProto())
-			return WUKONG_GATE_WEAPON;
-		GetPlayerBotWeaponEffective(ch, &wl, &wp, weapon);
-		if (wl + wp < level - window)
-			return WUKONG_GATE_WEAPON;
-		LPITEM body = ch->GetWear(WEAR_BODY);
-		if (!body || !body->GetProto() || GetPlayerBotProtoLevelLimit(body->GetProto()) + body->GetRefineLevel() < level - window)
-			return WUKONG_GATE_ARMOUR;
+		// MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: the real blow and HP against the band's medians.
+		long long hpMedian = 0, atkMedian = 0;
+		if (!GetPlayerBotBandMedians(level, &hpMedian, &atkMedian))
+		{
+			if (count)
+				++s_uPlayerBotWukongGateNoMedian;
+			return WUKONG_GATE_OK;
+		}
+		const long long atkPct = GetPlayerBotWukongGateSetting("wk_gate_atk_pct", 70, 1, 200);
+		if (atkMedian > 0 && GetPlayerBotRealAttack(ch) * 100 < atkMedian * atkPct)
+			return WUKONG_GATE_ATK;
+		const long long hpPct = GetPlayerBotWukongGateSetting("wk_gate_hp_pct", 70, 1, 200);
+		if (hpMedian > 0 && (long long)ch->GetMaxHP() * 100 < hpMedian * hpPct)
+			return WUKONG_GATE_HP;
 		return WUKONG_GATE_OK;
 	}
 
@@ -4324,7 +4333,7 @@ namespace
 				// MT2009_PLUS_BOT_WUKONG_GATE_V1: Wukong's strength gate (the operator's forced call is not gated).
 				if (forced < 0 && !strcmp(def.szKey, "wukong") && IsPlayerBotWukongGateOn())
 				{
-					const int refusal = GetPlayerBotWukongGateRefusal(ch);
+					const int refusal = GetPlayerBotWukongGateRefusal(ch, true);
 					if (refusal != WUKONG_GATE_OK)
 					{
 						++s_auPlayerBotWukongGate[refusal];
@@ -4361,15 +4370,18 @@ namespace
 				}
 			}
 		}
-		if (s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL] + s_auPlayerBotWukongGate[WUKONG_GATE_WEAPON] +
-				s_auPlayerBotWukongGate[WUKONG_GATE_ARMOUR] > 0)
+		if (s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL] + s_auPlayerBotWukongGate[WUKONG_GATE_ATK] +
+				s_auPlayerBotWukongGate[WUKONG_GATE_HP] > 0)
 		{
-			// MT2009_PLUS_BOT_WUKONG_GATE_V1: the gate's counts since the last line (bot looks, a pass each).
+			// MT2009_PLUS_BOT_WUKONG_GATE_V1 / _STRENGTH_V2: the gate's counts since the core started (bot looks, a pass
+			// each); no_median - passed for a band with too few samples.
 			PlayerBotLogThrottled("dgrun_wukong_gate", dwNow,
-					"BOT_DGRUN: wukong gate totals passed=%u refused level=%u weapon=%u armour=%u to_biblioteka=%u (min_level=%d gear_window=%d)",
-					s_auPlayerBotWukongGate[WUKONG_GATE_OK], s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL],
-					s_auPlayerBotWukongGate[WUKONG_GATE_WEAPON], s_auPlayerBotWukongGate[WUKONG_GATE_ARMOUR], s_uPlayerBotWukongGateBiblio,
-					GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250), GetPlayerBotWukongGateSetting("wk_gate_gear", 15, 0, 250));
+					"BOT_DGRUN: wukong gate totals passed=%u (no_median=%u) refused level=%u atk=%u hp=%u to_biblioteka=%u "
+					"(min_level=%d atk_pct=%d hp_pct=%d)",
+					s_auPlayerBotWukongGate[WUKONG_GATE_OK], s_uPlayerBotWukongGateNoMedian, s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL],
+					s_auPlayerBotWukongGate[WUKONG_GATE_ATK], s_auPlayerBotWukongGate[WUKONG_GATE_HP], s_uPlayerBotWukongGateBiblio,
+					GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250), GetPlayerBotWukongGateSetting("wk_gate_atk_pct", 70, 1, 200),
+					GetPlayerBotWukongGateSetting("wk_gate_hp_pct", 70, 1, 200));
 		}
 		if (forced == -1)
 			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
