@@ -555,6 +555,47 @@ namespace
 		return true;
 	}
 
+	// The night of 5/6 November: the 7th level's arrival (move_to: the room's (0,-50) = (127,592)) is cut off from the
+	// room in the bots' grid ("PLAYERBOT_NAV: unreachable from=(89500,1697600)", 37 a minute) - the five parties at the
+	// 7th level stood there for 10+ minutes with 40-50 groups alive at 100%. A member whose grid part is not the room's
+	// (the six spots') steps into the room - a short move inside the instance, as the portals of Glebie do.
+	bool UnstrandPlayerBotWeze(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotDgRun& run, int lvl, DWORD dwNow)
+	{
+		if (lvl < 3 || lvl > 7 || !run.lInstance || ch->GetMapIndex() != run.lInstance)
+			return false;
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(ch->GetMapIndex());
+		if (!nav.Init(ch->GetMapIndex()))
+			return false;
+		long ax = 0, ay = 0, bx = 0, by = 0;
+		if (!GetPlayerBotWezeSpot(run.lInstance, lvl, 1, ax, ay) || !GetPlayerBotWezeSpot(run.lInstance, lvl, 4, bx, by))
+			return false;
+		const DWORD room = nav.GetComponentAtWorld(ax, ay, 6);
+		if (!room || nav.GetComponentAtWorld(bx, by, 6) != room)
+			return false;
+		const DWORD mine = nav.GetComponentAtWorld(ch->GetX(), ch->GetY(), 2);
+		if (!mine || mine == room)
+			return false;
+		long cx = 0, cy = 0;
+		GetPlayerBotWezeSpot(run.lInstance, lvl, 0, cx, cy);
+		PIXEL_POSITION p;
+		long tx = ax, ty = ay;
+		if (nav.FindNearestWalkableWorld(cx, cy, 8, p) && nav.GetComponentAtWorld(p.x, p.y, 1) == room)
+		{
+			tx = p.x;
+			ty = p.y;
+		}
+		if (ch->IsStateMove())
+			ch->Stop();
+		ClearPlayerBotRoute(state, true);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ch->Show(ch->GetMapIndex(), tx, ty);
+		ch->Stop();
+		PlayerBotLogThrottled("weze_unstrand", dwNow, "BOT_YDG: weze unstranded run=%d name=%s lvl=%d part=%u room=%u to=(%ld,%ld)", run.iId,
+				ch->GetName(), lvl, (unsigned int)mine, (unsigned int)room, tx, ty);
+		return true;
+	}
+
 	bool ManagePlayerBotWezeItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPDUNGEON d, DWORD dwNow)
 	{
 		if (!IsPlayerBotWezeDungeon(d) || d->GetFlag("started") != 1 || d->GetFlag("closed") == 1)
@@ -564,6 +605,8 @@ namespace
 			return false;
 		next = dwNow + PLAYERBOT_YDG_ITEM_SCAN_MS;
 		const int lvl = d->GetFlag("lvl");
+		if (UnstrandPlayerBotWeze(ch, state, run, lvl, dwNow))
+			return true;
 		// The hand-ins of this level.
 		if (lvl == 5 && ch->CountSpecifyItem(PLAYERBOT_WEZE_KEY) > 0)
 		{
