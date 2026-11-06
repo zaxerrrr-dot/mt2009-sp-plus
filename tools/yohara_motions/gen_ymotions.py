@@ -15,6 +15,12 @@ from the file's (hanma_boss back_Standup.msa -> back_standup.msa; Linux is case-
 official folder lacks (snakevalley_pawn back_damage.msa ...) stays - the core reads only WALK/RUN/NORMAL_ATTACK/
 SPECIAL* and skips a file it cannot open.
 
+MT2009_PLUS_YONGHAN_SKILL_HIT_V1 (6 November 2026, the second bot analysis, item 11): + ch_general - Dowodca /
+General Yonghan (2491/2492) and Huashin (2494/2495). The image's folder carries the client's 24.msa/25.msa (the
+SPECIAL motions) without the official server's hit events (MotionEventType 4 with SphereData), so the core had
+no skill hit data for them ("UseMobSkill: No skill hit data", ~1 400 a day on the Yohara test) and the generals
+never used their two skills. Owsap's files are the official server's (the same motlist.txt; RUN/attack equal).
+
 Writes linux-port/docker/game/ymotions/data/monster/<folder>/ (GENERATED - edit FOLDERS, run it again); the
 Dockerfile step "share: Yohara monster motions" copies them (an existing folder of the image is replaced).
 """
@@ -47,6 +53,7 @@ whitedragon_cave_boss2 whitedragon_cave_knight01 whitedragon_cave_knight02 white
 whitedragon_cave_s_knight whitedragon_cave_s_pawn whitedragon_npc_ice whitedragonvalley_boss
 whitedragonvalley_knight01 whitedragonvalley_knight02 whitedragonvalley_pawn whitedragonvalley_s_knight
 whitedragonvalley_s_pawn yamachun
+ch_general
 """.split()
 
 

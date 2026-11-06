@@ -3168,12 +3168,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
 # (tools/yohara_motions/gen_ymotions.py writes ymotions/: motlist.txt with two official slips fixed, the .msa).
 # After every Yohara step; a folder there already is replaced by this one. The NPC historian walks in place (no
 # Accumulation in its run.msa, as official).
+# MT2009_PLUS_YONGHAN_SKILL_HIT_V1: + ch_general (Dowodca / General Yonghan 2491/2492, Huashin 2494/2495) - the
+# image's 24.msa/25.msa had no hit events (MotionEventType 4), "UseMobSkill: No skill hit data", no skills used.
 COPY ymotions/ /tmp/ymotions-add/
 RUN set -eu; A=/tmp/ymotions-add; D=/opt/metin2/share/data/monster \
  && mkdir -p "$D" \
  && n=0 && for m in "$A"/data/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; n=$((n + 1)); done \
- && test "$n" = 105 \
+ && test "$n" = 106 \
  && for f in east_earth_knight east_earth_soldier2 east_earth_magic east_gnoll_soldier snakevalley_pawn smhtower_boss trent_soldier; do test -s "$D/$f/motlist.txt"; test -s "$D/$f/run.msa"; done \
+ && grep -q -E '^[[:blank:]]*MotionEventType[[:blank:]]+4' "$D/ch_general/24.msa" \
+ && grep -q -E '^[[:blank:]]*MotionEventType[[:blank:]]+4' "$D/ch_general/25.msa" \
  && test -z "$(for m in "$A"/data/monster/*/run.msa; do case "$m" in */historian/*) continue;; esac; grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
  && rm -rf "$A" \
  && echo "share: Yohara monster motions - $n folders (MT2009_PLUS_YOHARA_MOTIONS_V1)"
