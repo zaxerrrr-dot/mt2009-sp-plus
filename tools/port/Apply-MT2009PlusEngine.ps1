@@ -2278,6 +2278,19 @@ if ((Test-Path -LiteralPath $languageApply -PathType Leaf) -and
     }
 }
 
+# No guild offering at a Champion Level (server-patches/gildiaexp, MT2009_PLUS_GUILD_OFFER_CHAMPION_V1; the owner,
+# 6 November 2026, as the wiki has it): CGuild::OfferExp refuses a character with conqueror_level >= 1 (a line for a
+# person, none for a bot), input_main.cpp drops the second "failed" line. After czempion/pdbonus, before logtrim.
+$gildiaExpApply = Join-Path $repo 'server-patches/gildiaexp/Apply-GildiaExpPatch.ps1'
+if ((Test-Path -LiteralPath $gildiaExpApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild.cpp') -PathType Leaf)) {
+    $gildiaExpResult = & $gildiaExpApply -SourceDir $engineGameSource
+    if ($gildiaExpResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild offering edit(s).' -f $gildiaExpResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 # The bots' log rows and the quests' server timers (server-patches/logtrim, MT2009_PLUS_BOT_LOG_TRIM_V1 and
 # MT2009_PLUS_QUEST_TIMER_RESCHEDULE_V1; the owner, 6 November 2026): log.cpp - a bot's GET_GOLD into an hourly sum row,
 # no SOCKET*/ATTR_FORCE item_meta_log rows of bots (playerbot_logtrim.cpp); questmanager.cpp/.h, questevent.cpp - a

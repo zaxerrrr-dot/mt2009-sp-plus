@@ -1,0 +1,14 @@
+[
+  {
+    "file": "guild.cpp",
+    "marker": "MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (refuse)",
+    "old": "\tif (ch->FindAffect(AFFECT_EXP_BLOCK))\n\t\treturn false;\n\n\tif (ch->GetExp() < (DWORD) amount)\n",
+    "new": "\tif (ch->FindAffect(AFFECT_EXP_BLOCK))\n\t\treturn false;\n\n\t// MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (refuse): no offering at a Champion Level (the owner, 6 November 2026,\n\t// as the wiki has it). A Champion's bar is the champion one (POINT_CONQUEROR_EXP); the ordinary bar of\n\t// level 120 is hidden and refills to next_exp - 1 from every kill, so offering it gave the guild free\n\t// experience (vps3, 6 November: 1 132 221 700 in 33 s, nothing gone from the visible bar). A bot is refused\n\t// without a line (playerbot_guild.h does not ask).\n\tif (ch->GetConquerorLevel() >= 1)\n\t{\n\t\tif (ch->GetDesc() && !ch->GetDesc()->IsBot())\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Gildia] Na Poziomie Czempiona nie mozna oddawac doswiadczenia gildii.\");\n\t\treturn false;\n\t}\n\n\tif (ch->GetExp() < (DWORD) amount)\n"
+  },
+  {
+    "file": "input_main.cpp",
+    "marker": "MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (no second line)",
+    "old": "\t\t\t\t\telse\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"[Guild] Experience usage has failed.\"));\n",
+    "new": "\t\t\t\t\telse if (ch->GetConquerorLevel() < 1) // MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (no second line): OfferExp said why\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"[Guild] Experience usage has failed.\"));\n"
+  }
+]

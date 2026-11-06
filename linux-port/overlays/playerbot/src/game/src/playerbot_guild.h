@@ -703,6 +703,10 @@ namespace
 		if (dwNow < state.dwNextGuildExpOfferTime)
 			return;
 		state.dwNextGuildExpOfferTime = dwNow + PLAYERBOT_GUILD_EXP_OFFER_INTERVAL;
+		// MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (bots): a Champion offers nothing (CGuild::OfferExp refuses a
+		// conqueror_level >= 1 - server-patches/gildiaexp); the bot does not ask.
+		if (ch->GetConquerorLevel() >= 1)
+			return;
 
 		const DWORD exp = ch->GetExp();
 		const DWORD gained = ch->GetLevel() != state.bGuildLevelAtLastOffer ? exp :

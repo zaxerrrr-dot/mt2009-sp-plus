@@ -507,3 +507,4 @@ Zrób miejsce w ekwipunku (potrzeba %d wolnych pól).	linux-port/overlays/player
 Zrób miejsce w ekwipunku - przedmiot z magazynu stron ekwipunku czeka na wolne pole.	linux-port/overlays/playerbot/src/game/src/playerbot_addeq.cpp:333
 Zwój albo broń nie leży już w ekwipunku.	linux-port/overlays/playerbot/src/game/src/weapon_element.cpp:547
 Łączyć stosy można raz na 3 sekundy.	linux-port/overlays/playerbot/src/game/src/playerbot_ekwipunek.cpp:1101
+[Gildia] Na Poziomie Czempiona nie mozna oddawac doswiadczenia gildii.	server-patches/gildiaexp/edits.json (MT2009_PLUS_GUILD_OFFER_CHAMPION_V1 (refuse))
