@@ -132,6 +132,14 @@ namespace
 		gear.shield = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_SHIELD), false);
 		// The mask or the helmet, which the law asks for from level 35 on.
 		gear.helmet = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_HEAD), false);
+		// MT2009_PLUS_BOT_LAW_NO_BETTER_V1: a piece the game has nothing better
+		// for, within the bot's level, meets the window whatever its level.
+		if (gear.weapon.present && !gear.weapon.premium)
+			gear.weapon.noBetter = IsPlayerBotSlotNoBetter(ch, WEAR_WEAPON, gear.weapon.levelLimit);
+		if (gear.armour.present)
+			gear.armour.noBetter = IsPlayerBotSlotNoBetter(ch, WEAR_BODY, gear.armour.levelLimit);
+		if (gear.helmet.present)
+			gear.helmet.noBetter = IsPlayerBotSlotNoBetter(ch, WEAR_HEAD, gear.helmet.levelLimit);
 		gear.wantsShield = PlayerBotWantsShield(ch);
 		return gear;
 	}
@@ -276,6 +284,34 @@ namespace
 		return cost > 0 && (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) >= cost;
 	}
 
+	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1 (the owner, 6 November 2026): a Grinder's
+	// tier hold and the Law of Advancement let go after a time, like a gate of
+	// the checklist ("gate given up" after 180 minutes, playerbot_progression.h):
+	// on the supporters' world 79% of the bots online gathered no experience,
+	// 840 of 947 held bots of 35+ waiting for gear they could neither buy nor
+	// refine. On 2.x (6 November 2026) it was 79-82% of the bots online, a
+	// third of the locks the law's pins after deaths (26-29, 36-39, 49-54).
+	// The minutes are the checklist's own (the panel's timeout_min,
+	// 180), or PLAYERBOT_LOCK_TIMEOUT_MIN from the environment (0 switches the
+	// limit off, 10..1440 otherwise). Read once.
+	DWORD GetPlayerBotLockTimeoutMs()
+	{
+		static int s_iEnvMin = -2;
+		if (s_iEnvMin == -2)
+		{
+			const char* v = std::getenv("PLAYERBOT_LOCK_TIMEOUT_MIN");
+			s_iEnvMin = v && *v ? std::max(0, std::min(24 * 60, atoi(v))) : -1;
+			if (s_iEnvMin > 0 && s_iEnvMin < 10)
+				s_iEnvMin = 10;
+			sys_log(0, "PLAYERBOT_PERSONA: lock timeout %s",
+					s_iEnvMin < 0 ? "from the checklist's timeout_min" : s_iEnvMin == 0 ? "off" : "from PLAYERBOT_LOCK_TIMEOUT_MIN");
+		}
+		if (s_iEnvMin == 0)
+			return 0;
+		const unsigned int minutes = s_iEnvMin > 0 ? (unsigned int)s_iEnvMin : playerbot_progression::Config().timeoutMin;
+		return (DWORD)minutes * 60000U;
+	}
+
 	// The Law of Advancement, asked of a Grinder that has reached its lock.
 	// Meeting it does not move the bot on: it is asked when the law is first
 	// met and then once an hour, and its character says how likely it is to
@@ -295,11 +331,41 @@ namespace
 		}
 		if (p.bAdvanced)
 			return;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: the play time since the last pass (a
+		// long gap is a logout or a rest, not play).
+		const DWORD heldDt = p.dwHeldTick != 0 ? dwNow - p.dwHeldTick : 0;
+		p.dwHeldTick = dwNow ? dwNow : 1;
 		const BYTE lock = GetPlayerBotPersonaLockLevel(ch, state);
 		if (lock == 0 || ch->GetLevel() < lock)
 			return;
 		// MT2009_PLUS_BOT_LAW_GEAR_V1: one plus more after "outgrew its gear".
 		const int gaps = playerbot_persona::AwansGaps(GetPlayerBotAdvanceGear(ch), p.bLockPinned ? 1 : 0);
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: held at this lock - the tier's or the
+		// law's pinned one - for the limit's minutes of play, the bot moves on
+		// whatever its gear (a new lock starts the count again).
+		if (p.bHeldLock != lock)
+		{
+			p.bHeldLock = lock;
+			p.dwHeldMs = 0;
+			p.bDirty = true;
+		}
+		else if (heldDt < 60000U)
+			p.dwHeldMs += heldDt;
+		const DWORD limitMs = GetPlayerBotLockTimeoutMs();
+		if (limitMs != 0 && p.dwHeldMs >= limitMs)
+		{
+			sys_log(0, "PLAYERBOT_PERSONA: lock given up pid=%u name=%s level=%u lock=%u pinned=%d gaps=%d held_min=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), (unsigned int)lock,
+					p.bLockPinned ? 1 : 0, gaps, p.dwHeldMs / 60000U);
+			p.bAdvanced = true;
+			p.bLockLevel = 0;
+			p.bLockPinned = false;
+			p.dwNextAdvanceRoll = 0;
+			p.bHeldLock = 0;
+			p.dwHeldMs = 0;
+			p.bDirty = true;
+			return;
+		}
 		if (gaps != 0)
 		{
 			p.dwNextAdvanceRoll = 0;
@@ -361,6 +427,8 @@ namespace
 		p.bLockLevel = 0;
 		p.bLockPinned = false;
 		p.dwNextAdvanceRoll = 0;
+		p.bHeldLock = 0;	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1
+		p.dwHeldMs = 0;
 		p.bDirty = true;
 		const LPITEM weapon = GetPlayerBotHandWeapon(ch);
 		const LPITEM armour = ch->GetWear(WEAR_BODY);
@@ -450,6 +518,8 @@ namespace
 		// advance clears it.
 		p.bLockPinned = true;
 		p.dwNextAdvanceRoll = 0;
+		p.bHeldLock = 0;	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: the law's hold counts from now
+		p.dwHeldMs = 0;
 		p.deaths = playerbot_persona::TDeathWindow();
 		p.bDirty = true;
 		sys_log(0, "PLAYERBOT_PERSONA: outgrew its gear, back to grinding pid=%u name=%s level=%u map=%ld",
@@ -624,7 +694,8 @@ namespace
 	{
 		LPITEM worn = wearCell == WEAR_WEAPON ? GetPlayerBotHandWeapon(ch) : ch->GetWear(wearCell);
 		return worn && (int)worn->GetRefineLevel() >= plus &&
-				(int)GetPlayerBotPersonaLevelLimit(worn) + playerbot_persona::AWANS_LEVEL_WINDOW >= (int)ch->GetLevel();
+				((int)GetPlayerBotPersonaLevelLimit(worn) + playerbot_persona::AWANS_LEVEL_WINDOW >= (int)ch->GetLevel() ||
+				 IsPlayerBotSlotNoBetter(ch, wearCell, (int)GetPlayerBotPersonaLevelLimit(worn)));	// MT2009_PLUS_BOT_LAW_NO_BETTER_V1
 	}
 
 	// A goal dropper's look at its purse (community patch 2, point 4): the

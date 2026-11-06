@@ -184,6 +184,8 @@ namespace
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_QUIT, (p.bQuitGrinding ? 1 : 0) + 1);
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_QUIT_TIER, (int)p.bQuitRolledTier + 1);
 		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_MEDAL_GOAL, (p.bMedalGoalDone ? 1 : 0) + 1);
+		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS, (int)(p.dwHeldMs / 1000) + 1);	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1
+		ch->SetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_LOCK, (int)p.bHeldLock + 1);
 		p.bDirty = false;
 		p.dwNextSave = dwNow + PLAYERBOT_PERSONA_SAVE_INTERVAL;
 	}
@@ -231,6 +233,13 @@ namespace
 		const int quitTier = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_QUIT_TIER) - 1;
 		p.bQuitRolledTier = quitTier > 0 && quitTier < 256 ? (BYTE)quitTier : 0;
 		p.bMedalGoalDone = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_MEDAL_GOAL) - 1 == 1;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: the minutes already stood at the lock.
+		{
+			const int heldS = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS) - 1;
+			const int heldLock = ch->GetQuestFlag(PLAYERBOT_PERSONA_FLAG_HOLD_LOCK) - 1;
+			p.bHeldLock = heldLock > 0 && heldLock <= PLAYER_MAX_LEVEL_CONST ? (BYTE)heldLock : 0;
+			p.dwHeldMs = p.bHeldLock != 0 && heldS > 0 ? (DWORD)heldS * 1000U : 0;
+		}
 		// A goal dropper that graduated before this login plays as the
 		// Wanderer its draw would otherwise have made it (community patch 2,
 		// point 4); the operator's cohort is the operator's.
