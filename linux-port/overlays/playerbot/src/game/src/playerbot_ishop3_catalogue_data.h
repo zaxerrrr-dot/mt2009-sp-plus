@@ -4,8 +4,8 @@
 // uses it (or NEVER and why), the hold / day caps (MT2009_PLUS_BOT_ISHOP_NEED_V1) and the lines it has.
 // The prices are read at runtime (RefreshPlayerBotIshop3Catalogue); this table says what an item is FOR.
 //
-// The catalogue: 1052 lines (959 items, 48 chest lines); classes by item: NEVER 120, OWNED 874, USE 4, COMFORT 9.
-// Lines a bot may buy, by class: NEVER 110, OWNED 888, USE 7, COMFORT 15.
+// The catalogue: 1052 lines (959 items, 48 chest lines); classes by item: NEVER 118, OWNED 874, USE 6, COMFORT 9.
+// Lines a bot may buy, by class: NEVER 108, OWNED 888, USE 9, COMFORT 15.
 #ifndef __INC_METIN2_PLAYERBOT_ISHOP3_CATALOGUE_DATA_H__
 #define __INC_METIN2_PLAYERBOT_ISHOP3_CATALOGUE_DATA_H__
 
@@ -41,7 +41,7 @@ namespace
 		PLAYERBOT_ISHOP3_NEED_AUTO_POTION_HP,	// COMFORT: an auto HP potion (ManagePlayerBotAutoPotions) when none is running or held
 		PLAYERBOT_ISHOP3_NEED_AUTO_POTION_SP,	// COMFORT: an auto SP potion when none is running or held
 		PLAYERBOT_ISHOP3_NEED_CAPE,	// USE: Peleryna Mestwa for a cape build short of PLAYERBOT_CAPE_WANT
-		PLAYERBOT_ISHOP3_NEED_NEWPET,	// USE: the New Pet's want (GetPlayerBotNewPetWant): the food for its life energy
+		PLAYERBOT_ISHOP3_NEED_NEWPET,	// USE: the New Pet's want (GetPlayerBotNewPetWant): the food for its life energy, the egg box, the book chest
 		PLAYERBOT_ISHOP3_NEED_HORSE_FEED,	// COMFORT: the horse's feed for its next try (Mt2009KonieBotFeedWanted) beyond the daily gift
 		PLAYERBOT_ISHOP3_NEED_LIFE_FRUIT,	// USE: Owoc Zycia for the rank of the next Kamien Duchowy when no counter has one
 		PLAYERBOT_ISHOP3_NEED_QUIVER,	// USE: Kolczan for an archer's bow (its arrows never run out)
@@ -627,12 +627,12 @@ namespace
 		{  55001, PLAYERBOT_ISHOP3_NEED_NEWPET, 4, 8, 0, 2, 2, 3 },	// Odzywka - PLAYERBOT_NEWPET_FOOD_KEEP (MT2009_PLUS_GROWTH_PET_V1)
 		{  55002, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Klatka Transportowa - trading pets is the players'
 		{  55008, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Pergamin Nazwy Zwierzaka - a pet rename - never
-		{  55009, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Skrzynia Ksiag Zwierza - the bots take the exact books off the counters
+		{  55009, PLAYERBOT_ISHOP3_NEED_NEWPET, 1, 1, 0, 1, 1, 1 },	// Skrzynia Ksiag Zwierza - an open skill slot and no book to read (MT2009_PLUS_BOT_PET_GROW_V1)
 		{  55029, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Reverti Zwierza - the bots keep their pets' skills
 		{  55030, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Revertus Zwierza - the bots keep their pets' skills
 		{  55033, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Zaczaruj zwierzaka - no bot logic re-rolls a pet
 		{  55100, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Boska Odzywka - the bots revive with Odzywka
-		{  55400, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Skrzynka na Zwierzaka - the bots take the eggs off the counters
+		{  55400, PLAYERBOT_ISHOP3_NEED_NEWPET, 1, 1, 0, 1, 1, 1 },	// Skrzynka na Zwierzaka - a keeper with no pet and no egg (MT2009_PLUS_BOT_PET_GROW_V1)
 		{  56000, PLAYERBOT_ISHOP3_NEED_LOOK_MOUNT, 0, 0, 0, 1, 1, 1 },	// Appaloosa - a mount
 		{  70020, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Wino z Kwiatu Brzoskwini - the wine - no potion list of the bots drinks it
 		{  70024, PLAYERBOT_ISHOP3_NEED_BONUS_STONE, 2, 4, 0, 1, 1, 1 },	// Marmur Blogoslawienstwa - the marble for a piece of four lines

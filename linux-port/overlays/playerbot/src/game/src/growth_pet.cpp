@@ -2128,6 +2128,59 @@ namespace growth_pet
 		return true;
 	}
 
+	// A potential slot of a champion pet filled with an egg held by ch (the window's add; the bots call it too -
+	// MT2009_PLUS_BOT_PET_GROW_V1). bAnswer: the window's answer packets.
+	bool DoPotential(LPCHARACTER ch, Pet& p, int slot, LPITEM egg, bool bAnswer)
+	{
+		if (!IsChampion(p) || slot < 0 || slot >= OpenPotentialSlots(p))
+			return false;
+		const Species* sp = egg && IsEgg(egg) && IsHeldBy(egg, ch) ? FindSpeciesByEgg(egg->GetVnum()) : NULL;
+		if (!sp || PotentialActive(p, slot))
+		{
+			if (bAnswer)
+				SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
+			return false;
+		}
+		const long long end = (long long)egg->GetSocket(0);
+		if (end <= (long long)Now())
+		{
+			Say(ch, "To jajo jest ju\xbf zbyt stare.");
+			if (bAnswer)
+				SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
+			return false;
+		}
+		// a random skill of the egg's species list; the same potential skill never twice
+		std::vector<BYTE> pool;
+		const BYTE other = p.d.aPotential[slot ^ 1].dwEggVnum ? p.d.aPotential[slot ^ 1].bSkill : 0;
+		for (int i = 0; i < 8 && POTENTIAL[sp->idx][i]; ++i)
+			if (POTENTIAL[sp->idx][i] != other)
+				pool.push_back(POTENTIAL[sp->idx][i]);
+		if (pool.empty())
+		{
+			Say(ch, "To jajo nie da nowej umiej\xeatno\x9c" "ci potencja\xb3u.");
+			if (bAnswer)
+				SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
+			return false;
+		}
+		TGrowthPetPotential& pot = p.d.aPotential[slot];
+		pot.dwEggVnum = egg->GetVnum();
+		pot.bSkill = pool[number(0, (int)pool.size() - 1)];
+		pot.dwEndTime = (DWORD)end;
+		p.potentialCooltime[slot] = 0;
+		if (egg->GetCount() > 1)
+			egg->SetCount(egg->GetCount() - 1);
+		else
+			ITEM_MANAGER::instance().RemoveItem(egg, "GROWTH_PET_POTENTIAL");
+		SaveNow(p);
+		SendPotential(ch, p);
+		if (bAnswer)
+			SendSub(ch, SUBHEADER_PET_POTENTIAL_SUCCESS);
+		const TGrowthPetSkillTable* t = BaseSkillProto(pot.bSkill);
+		Sayf(ch, "Nowa umiej\xeatno\x9c\xe6 potencja\xb3u: %s.", t ? t->szName : "?");
+		ch->ComputePoints();
+		return true;
+	}
+
 	void PacketPotential(LPCHARACTER ch, const TPacketCGPetPotential* pk)
 	{
 		Pet* p = SummonedPet(ch);
@@ -2147,53 +2200,23 @@ namespace growth_pet
 			ch->ComputePoints();
 			return;
 		}
-		LPITEM egg = FindHeldItemByPos(ch, pk->eggPos);
-		const Species* sp = egg && IsEgg(egg) ? FindSpeciesByEgg(egg->GetVnum()) : NULL;
-		if (!sp || PotentialActive(*p, slot))
-		{
-			SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
-			return;
-		}
-		const long long end = (long long)egg->GetSocket(0);
-		if (end <= (long long)Now())
-		{
-			Say(ch, "To jajo jest ju\xbf zbyt stare.");
-			SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
-			return;
-		}
-		// a random skill of the egg's species list; the same potential skill never twice
-		std::vector<BYTE> pool;
-		const BYTE other = p->d.aPotential[slot ^ 1].dwEggVnum ? p->d.aPotential[slot ^ 1].bSkill : 0;
-		for (int i = 0; i < 8 && POTENTIAL[sp->idx][i]; ++i)
-			if (POTENTIAL[sp->idx][i] != other)
-				pool.push_back(POTENTIAL[sp->idx][i]);
-		if (pool.empty())
-		{
-			Say(ch, "To jajo nie da nowej umiej\xeatno\x9c" "ci potencja\xb3u.");
-			SendSub(ch, SUBHEADER_PET_POTENTIAL_FAILED);
-			return;
-		}
-		TGrowthPetPotential& pot = p->d.aPotential[slot];
-		pot.dwEggVnum = egg->GetVnum();
-		pot.bSkill = pool[number(0, (int)pool.size() - 1)];
-		pot.dwEndTime = (DWORD)end;
-		p->potentialCooltime[slot] = 0;
-		if (egg->GetCount() > 1)
-			egg->SetCount(egg->GetCount() - 1);
-		else
-			ITEM_MANAGER::instance().RemoveItem(egg, "GROWTH_PET_POTENTIAL");
-		SaveNow(*p);
-		SendPotential(ch, *p);
-		SendSub(ch, SUBHEADER_PET_POTENTIAL_SUCCESS);
-		const TGrowthPetSkillTable* t = BaseSkillProto(pot.bSkill);
-		Sayf(ch, "Nowa umiej\xeatno\x9c\xe6 potencja\xb3u: %s.", t ? t->szName : "?");
-		ch->ComputePoints();
+		DoPotential(ch, *p, slot, FindHeldItemByPos(ch, pk->eggPos), true);
 	}
 
 	// ---- DG 185: pets from the db core -------------------------------------------------------------------------------
 
 	void GivePending(LPCHARACTER ch, Pet& p)
 	{
+		// MT2009_PLUS_GROWTH_PET_ID_FIX_V1: the seal's socket 2 is a 32-bit long in this engine (-m32) and the item
+		// table's socket2 is unsigned - an id over 0x7FFFFFFF went into the db core negative and came back 0 (605 seals
+		// without their pet on the test world, 6 November 2026; pety.sql pety:id_fix_v1 moved the old system's pets
+		// under it). Such a pet waits for that fix instead of getting a seal that loses it at the next save.
+		if (p.d.dwID > 0x7FFFFFFFU)
+		{
+			sys_err("GROWTH_PET: pending pet %u of pid %u has an id a seal cannot hold (pety:id_fix_v1 not applied?)",
+					p.d.dwID, ch->GetPlayerID());
+			return;
+		}
 		const int cell = ch->GetEmptyInventory(1);
 		if (cell < 0)
 		{
@@ -2331,6 +2354,10 @@ namespace growth_pet
 			v.skillLocked[i] = p.d.aSkill[i].bLocked != 0;
 		}
 		v.summoned = p.mobVid != 0;
+		// MT2009_PLUS_BOT_PET_GROW_V1: the champion's potential slots
+		v.potentialOpen = OpenPotentialSlots(p);
+		for (int i = 0; i < GROWTH_PET_POTENTIAL_SLOTS; ++i)
+			v.potentialActive[i] = PotentialActive(p, i);
 	}
 
 	bool GetPet(DWORD id, PetView& out)
@@ -2384,6 +2411,13 @@ namespace growth_pet
 		for (int i = 0; i < 9 && e->items[i][0]; ++i)
 			out.push_back(std::make_pair(e->items[i][0], (int)e->items[i][1]));
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_PET_GROW_V1: the level (the champion level for stage 6) the evolution to toStage asks (0: none).
+	int EvolutionLevel(int toStage)
+	{
+		const Evolution* e = EvolutionTo(toStage);
+		return e ? (int)e->level : 0;
 	}
 
 	bool Hatch(CHARACTER* ch, CItem* egg, const char* name)
@@ -2505,6 +2539,13 @@ namespace growth_pet
 	{
 		Pet* p = SummonedPet(ch);
 		return p && DoEvolve(ch, *p);
+	}
+
+	// MT2009_PLUS_BOT_PET_GROW_V1: an egg into a potential slot of ch's summoned champion pet (the window's add).
+	bool FillPotential(CHARACTER* ch, int slot, CItem* egg)
+	{
+		Pet* p = ch ? SummonedPet(ch) : NULL;
+		return p && DoPotential(ch, *p, slot, egg, false);
 	}
 
 	bool LearnSkill(CHARACTER* ch, int slot, CItem* book)

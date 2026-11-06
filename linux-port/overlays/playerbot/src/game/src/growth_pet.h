@@ -36,6 +36,8 @@ namespace growth_pet
 		BYTE skillLevel[GROWTH_PET_SKILL_SLOTS];
 		bool skillLocked[GROWTH_PET_SKILL_SLOTS];
 		bool summoned;
+		int potentialOpen;	// MT2009_PLUS_BOT_PET_GROW_V1: the champion's open potential slots (0-2)
+		bool potentialActive[GROWTH_PET_POTENTIAL_SLOTS];
 	};
 
 	// ---- queries ----
@@ -48,6 +50,7 @@ namespace growth_pet
 	void ListPets(CHARACTER* ch, std::vector<PetView>& out);	// the pets of the seals in ch's bags
 	bool CanEvolve(DWORD id, CHARACTER* ch, int& toStage);	// level/age/exp met (not the materials)
 	bool GetEvolutionMaterials(int toStage, std::vector<std::pair<DWORD, int> >& out);
+	int EvolutionLevel(int toStage);	// MT2009_PLUS_BOT_PET_GROW_V1: the level (champion level for 6) the step asks
 	unsigned long long NeedMobExp(int level);
 	unsigned long long NeedItemExp(int level);
 
@@ -61,6 +64,7 @@ namespace growth_pet
 	bool Evolve(CHARACTER* ch);									// the summoned pet; the materials from the bags
 	bool LearnSkill(CHARACTER* ch, int slot, CItem* book);
 	bool UpgradeSkill(CHARACTER* ch, int slot);
+	bool FillPotential(CHARACTER* ch, int slot, CItem* egg);		// MT2009_PLUS_BOT_PET_GROW_V1: an egg into a champion's potential slot
 
 	// ---- engine hooks (edits.json / playerqol shims) ----
 	int UseItem(CHARACTER* ch, CItem* item, TItemPos destCell);	// -1 not ours, 0 refused, 1 used

@@ -82,15 +82,15 @@ BEGIN NOT ATOMIC
 		SELECT COUNT(*) INTO has_old FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'player' AND TABLE_NAME = 'newpet_pet';
 		START TRANSACTION;
 		IF has_old > 0 THEN
-			-- the pets: id 0xF0000000 + the old id, state 3 (a seal at the next login) or 2 (packed in a transporter)
+			-- the pets: id 0x7F000000 + the old id, state 3 (a seal at the next login) or 2 (packed in a transporter)
 			INSERT IGNORE INTO player.growth_pet (id, owner_id, vnum, state, name, level, evolution, type, birthday,
 					end_time, max_time)
-			SELECT 4026531840 + n.id, IF(n.packed, 0, n.pid), n.egg + 300, IF(n.packed, 2, 3), n.name, LEAST(GREATEST(n.level, 1), 105),
+			SELECT 2130706432 + n.id, IF(n.packed, 0, n.pid), n.egg + 300, IF(n.packed, 2, 3), n.name, LEAST(GREATEST(n.level, 1), 105),
 					CASE WHEN n.level >= 81 AND n.evolution >= 3 THEN 4 WHEN n.level >= 81 THEN 3 WHEN n.level >= 41 THEN 2 ELSE 1 END,
 					0, IF(n.created > 0, n.created, UNIX_TIMESTAMP()), 0, 0
 			FROM player.newpet_pet n WHERE n.egg BETWEEN 55401 AND 55414;
 			-- a transporter with a pet (55007, socket0 = the old id) -> Klatka Transportowa with the pet (30 days)
-			UPDATE player.item SET socket2 = IF(socket0 > 0, 4026531840 + socket0, 0), socket0 = IF(socket0 > 0, UNIX_TIMESTAMP() + 2592000, 0),
+			UPDATE player.item SET socket2 = IF(socket0 > 0, 2130706432 + socket0, 0), socket0 = IF(socket0 > 0, UNIX_TIMESTAMP() + 2592000, 0),
 				socket1 = IF(socket0 > 0, UNIX_TIMESTAMP(), 0), vnum = 55002, count = 1 WHERE vnum = 55007;
 			-- (player.newpet_pet stays as it was - nothing reads it any more; a backup of the old pets)
 		END IF;
@@ -185,6 +185,41 @@ BEGIN NOT ATOMIC
 		-- the elixirs and the slot key are no items any more
 		DELETE FROM world.item_proto WHERE vnum BETWEEN 55101 AND 55118;
 		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:migracja_v1', NOW());
+		COMMIT;
+	END IF;
+END//
+DELIMITER ;
+
+-- ---- Once: pety:id_fix_v1 (MT2009_PLUS_GROWTH_PET_ID_FIX_V1, 6 November 2026) ------------------------------------------
+-- The first migration gave the old system's pets ids from 0xF0000000; a seal's socket 2 is a 32-bit long in the game
+-- (-m32), so such an id went to the db core negative and the unsigned socket2 kept 0: the seal lost its pet at the
+-- first save (605 seals on the test world, nearly every pet-keeping bot). The pets move to 0x7F000000 + the old id, and a
+-- seal with socket2 = 0 gets back the one pet of its owner it can be (the same species, end and life time - the
+-- game wrote both together); a pet two seals could be, or a seal two pets could be, is left alone.
+DELIMITER //
+BEGIN NOT ATOMIC
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;
+	IF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pety:id_fix_v1') = 0 THEN
+		START TRANSACTION;
+		CREATE OR REPLACE TEMPORARY TABLE player.tmp_growth_pet_relink (item_id INT UNSIGNED NOT NULL PRIMARY KEY,
+				pet_id INT UNSIGNED NOT NULL, KEY (pet_id)) ENGINE=MEMORY;
+		INSERT INTO player.tmp_growth_pet_relink (item_id, pet_id)
+			SELECT i.id, MIN(g.id) FROM player.item i JOIN player.growth_pet g ON g.owner_id = i.owner_id AND g.vnum = i.vnum
+					AND g.state = 1 AND g.id >= 4026531840 AND g.end_time = i.socket0 AND g.max_time = i.socket1
+			WHERE i.vnum BETWEEN 55701 AND 55714 AND i.socket2 = 0 AND i.window NOT IN ('SAFEBOX', 'MALL')
+			GROUP BY i.id HAVING COUNT(*) = 1;
+		CREATE OR REPLACE TEMPORARY TABLE player.tmp_growth_pet_twice (pet_id INT UNSIGNED NOT NULL PRIMARY KEY) ENGINE=MEMORY;
+		INSERT INTO player.tmp_growth_pet_twice (pet_id)
+			SELECT pet_id FROM player.tmp_growth_pet_relink GROUP BY pet_id HAVING COUNT(*) > 1;
+		DELETE FROM player.tmp_growth_pet_relink WHERE pet_id IN (SELECT pet_id FROM player.tmp_growth_pet_twice);
+		UPDATE player.item i JOIN player.tmp_growth_pet_relink r ON r.item_id = i.id SET i.socket2 = r.pet_id - 1895825408;
+		-- a seal or a cage still holding an old id (one the game has not saved since)
+		UPDATE player.item SET socket2 = socket2 - 1895825408 WHERE socket2 >= 4026531840 AND (vnum = 55002 OR vnum BETWEEN 55701 AND 55714);
+		UPDATE player.item_award SET socket2 = socket2 - 1895825408 WHERE socket2 >= 4026531840 AND (vnum = 55002 OR vnum BETWEEN 55701 AND 55714);
+		UPDATE player.growth_pet SET id = id - 1895825408 WHERE id >= 4026531840;
+		DROP TEMPORARY TABLE IF EXISTS player.tmp_growth_pet_relink;
+		DROP TEMPORARY TABLE IF EXISTS player.tmp_growth_pet_twice;
+		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:id_fix_v1', NOW());
 		COMMIT;
 	END IF;
 END//

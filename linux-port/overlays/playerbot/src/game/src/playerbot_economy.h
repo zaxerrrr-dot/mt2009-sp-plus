@@ -1508,7 +1508,18 @@ namespace
 	// What the stack a counter's lines are cut from keeps back: the anvil's
 	// reserve of a material, the keys the bot holds on to, the scrolls of its
 	// own scroll work, one of anything else.
+	int GetPlayerBotStallBaseKeepRules(LPCHARACTER ch, LPITEM item);
+
+	// MT2009_PLUS_BOT_PET_GROW_V1: and at least what a pet keeper's next
+	// evolution takes of it (playerbot_newpet_bots.h, from ten levels before
+	// the step) - the drops of the hunts are its first source.
 	int GetPlayerBotStallBaseKeep(LPCHARACTER ch, LPITEM item)
+	{
+		const int keep = GetPlayerBotStallBaseKeepRules(ch, item);
+		return item ? std::max(keep, GetPlayerBotNewPetStageKeep(ch, item->GetVnum())) : keep;
+	}
+
+	int GetPlayerBotStallBaseKeepRules(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item)
 			return 1;
