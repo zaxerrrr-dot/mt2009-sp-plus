@@ -441,6 +441,92 @@ namespace
 		return plus;
 	}
 
+	// MT2009_PLUS_BOT_LAW_NO_BETTER_V1 (the owner, 6 November 2026: "helm
+	// dowolnego poziomu tam, gdzie gra nie ma lepszego"): the law's level window
+	// (twenty levels) asked a bot of 62 for a helmet of 42 or more where the
+	// files of the supporters' world have none between 41 and 80 - a demand no
+	// bot could meet, so the lock held it for good (2.x: 649 bots of 50-79 with
+	// a helmet of 41, the next one of 80). A piece counts as of the
+	// bot's level when the game has nothing better for its slot: no piece of
+	// the slot the bot may wear (class, sex), with a refine path (a gear
+	// family, not an event one-off), above this one's level and at or under the
+	// bot's. The switch: PLAYERBOT_LAW_NO_BETTER=0 in the environment puts the
+	// plain window back.
+	bool IsPlayerBotLawNoBetterOn()
+	{
+		static int s_iOn = -1;
+		if (s_iOn < 0)
+		{
+			const char* v = std::getenv("PLAYERBOT_LAW_NO_BETTER");
+			s_iOn = v && *v == '0' ? 0 : 1;
+			sys_log(0, "PLAYERBOT_LAW: no-better rule %s", s_iOn ? "on" : "off (PLAYERBOT_LAW_NO_BETTER=0)");
+		}
+		return s_iOn == 1;
+	}
+
+	// Whether a proto belongs to a wear slot, for the scan below.
+	bool IsPlayerBotProtoOfWearSlot(LPCHARACTER ch, const TItemTable* proto, int wearCell)
+	{
+		if (!proto)
+			return false;
+		if (wearCell == WEAR_WEAPON)
+			return proto->bType == ITEM_WEAPON && proto->bSubType != WEAPON_ARROW &&
+					IsPlayerBotWeaponSubTypeFor(ch, proto->bSubType);
+		if (proto->bType != ITEM_ARMOR)
+			return false;
+		switch (wearCell)
+		{
+			case WEAR_BODY: return proto->bSubType == ARMOR_BODY;
+			case WEAR_HEAD: return proto->bSubType == ARMOR_HEAD;
+			case WEAR_SHIELD: return proto->bSubType == ARMOR_SHIELD;
+			case WEAR_FOOTS: return proto->bSubType == ARMOR_FOOTS;
+			case WEAR_WRIST: return proto->bSubType == ARMOR_WRIST;
+			case WEAR_NECK: return proto->bSubType == ARMOR_NECK;
+			case WEAR_EAR: return proto->bSubType == ARMOR_EAR;
+			default: return false;
+		}
+	}
+
+	// The highest level limit of a +0 piece of the slot the game has for this
+	// bot at or under its level, -1 for none. Kept by class, sex, skill group
+	// (the weapons), slot and level: item_proto does not change while the
+	// world runs.
+	int GetPlayerBotBestSlotLevelInGame(LPCHARACTER ch, int wearCell)
+	{
+		if (!ch)
+			return -1;
+		static std::map<DWORD, int> s_cache;
+		const DWORD key = (DWORD)ch->GetJob() | ((DWORD)GET_SEX(ch) << 3) | ((DWORD)ch->GetSkillGroup() << 4) |
+				((DWORD)(wearCell & 0xff) << 8) | ((DWORD)std::min<int>(255, ch->GetLevel()) << 16);
+		std::map<DWORD, int>::const_iterator it = s_cache.find(key);
+		if (it != s_cache.end())
+			return it->second;
+		const int level = (int)ch->GetLevel();
+		int best = -1;
+		for (DWORD vnum = 0; vnum < 40000; vnum += 10)
+		{
+			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+			if (!proto || proto->dwVnum != vnum || proto->dwRefinedVnum == 0 ||
+					!IsPlayerBotProtoOfWearSlot(ch, proto, wearCell) || !IsPlayerBotProtoForCharacter(ch, proto))
+				continue;
+			const int limit = GetPlayerBotProtoLevelLimit(proto);
+			if (limit <= level && limit > best)
+				best = limit;
+		}
+		s_cache[key] = best;
+		return best;
+	}
+
+	// The piece of `levelLimit` in this slot is as good as the game has for the
+	// bot (MT2009_PLUS_BOT_LAW_NO_BETTER_V1).
+	bool IsPlayerBotSlotNoBetter(LPCHARACTER ch, int wearCell, int levelLimit)
+	{
+		if (!ch || !IsPlayerBotLawNoBetterOn())
+			return false;
+		const int best = GetPlayerBotBestSlotLevelInGame(ch, wearCell);
+		return best >= 0 && levelLimit >= best;
+	}
+
 	// A body armour or a helmet under the law's level window (IsPieceCurrent):
 	// whatever its plus, it never meets the law. Such a piece is outdated
 	// (IsPlayerBotOutdatedGear), so the equipment pass puts on the piece of
@@ -454,7 +540,9 @@ namespace
 			return false;
 		if (GetPlayerBotLawPlusForSlot(ch, item->GetSubType() == ARMOR_BODY ? WEAR_BODY : WEAR_HEAD) == 0)
 			return false;
-		return (int)item->GetLevelLimit() + (int)playerbot_persona::AWANS_LEVEL_WINDOW < (int)ch->GetLevel();
+		return (int)item->GetLevelLimit() + (int)playerbot_persona::AWANS_LEVEL_WINDOW < (int)ch->GetLevel() &&
+				!IsPlayerBotSlotNoBetter(ch, item->GetSubType() == ARMOR_BODY ? WEAR_BODY : WEAR_HEAD,
+						(int)item->GetLevelLimit());	// MT2009_PLUS_BOT_LAW_NO_BETTER_V1
 	}
 
 	// How far the anvil has to take a worn piece for the law: the slot's plus

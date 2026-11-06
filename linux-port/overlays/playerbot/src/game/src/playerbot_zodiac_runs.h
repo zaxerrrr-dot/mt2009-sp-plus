@@ -340,7 +340,8 @@ namespace
 		int level;
 		bool healer;
 		int ready;	// V7: the floor it is ready for (an own run's), 0 for a test run
-		TZrunCand(DWORD p, int l, bool h, int r = 0) : pid(p), level(l), healer(h), ready(r) {}
+		int strength;	// MT2009_PLUS_ZODIAC_STRENGTH_V1: its level held to its gear (GetZrunStrength)
+		TZrunCand(DWORD p, int l, bool h, int r = 0, int s = 0) : pid(p), level(l), healer(h), ready(r), strength(s) {}
 	};
 
 	// V7: the run of a drawn party (the leader first): the gathering at the sign's portal. StartZrun's own
@@ -492,6 +493,114 @@ namespace
 			if (e >= s_aiReady[i][0])
 				return s_aiReady[i][1];
 		return 0;
+	}
+
+	// MT2009_PLUS_ZODIAC_STRENGTH_V1 (the owner, 6 November 2026: only parties of sufficient strength go in).
+	// On the floors 6, 12, 19 and 24 one death sends the whole party out (CZodiacManager::DeadPC) - "expelled"
+	// was 88% of the failed own runs on the supporters' world (1 202 of 1 308 a week) and 1 012 of 1 132 on
+	// vps3, nearly all of them on floor 6
+	// (2.x, 6 November: 93% of the own runs on one world and 3 639 of 8 163 on the supporters' world).
+	// Counted over the Yohara test world's 2 976 own runs (6 November) floor 6
+	// throws out a party whose weakest member is of 45-59 in 27% of the runs, 60-64 20%, 65-69 15%, 70-74 11%,
+	// 75-79 5%, 80+ 1% - the weakest member is the one who dies. So a party goes in only when, for each of
+	// those floors on its way, its weakest member's strength (the level held to the gear: weapon's and
+	// armour's level + plus + zrun_str_gear, 10) is at least the floor's mark and the party's average the mark
+	// + zrun_str_avg (5); its run ends before the first floor it is too weak for, and a party too weak for
+	// floor 6 does not go (the weakest dropped first while more than ZRUN_OWN_MIN remain). The marks are the
+	// event flags zrun_str6/12/19/24 (65/75/85/100); zrun_strength -1 switches the gate off. The operator's
+	// forced call ("own" in the test file) is not gated.
+	bool ZrunStrengthOn() { return GetZrunSetting("zrun_strength", 1) > 0; }
+	int ZrunStrengthGear() { const int v = GetZrunSetting("zrun_str_gear", 10); return v < 0 ? 0 : v; }
+	int ZrunStrengthAvg() { const int v = GetZrunSetting("zrun_str_avg", 5); return v < 0 ? 0 : v; }
+	int ZrunStrengthMark(int floor)
+	{
+		switch (floor)
+		{
+			case 6: return GetZrunSetting("zrun_str6", 65);
+			case 12: return GetZrunSetting("zrun_str12", 75);
+			case 19: return GetZrunSetting("zrun_str19", 85);
+			case 24: return GetZrunSetting("zrun_str24", 100);
+			default: return 0;
+		}
+	}
+
+	int GetZrunStrength(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		const int gear = GetZrunGearLevel(ch);
+		return std::min((int)ch->GetLevel(), gear > 0 ? gear + ZrunStrengthGear() : 0);
+	}
+
+	// The last floor the party is strong enough to go to (39: the whole temple); the floor it stops before,
+	// its weakest member's strength and the average, for the log.
+	int GetZrunStrengthFloor(const std::vector<TZrunCand>& party, int* pStopAt = NULL, int* pMin = NULL, int* pAvg = NULL)
+	{
+		int weakest = 0, sum = 0;
+		for (size_t i = 0; i < party.size(); ++i)
+		{
+			weakest = i == 0 ? party[i].strength : std::min(weakest, party[i].strength);
+			sum += party[i].strength;
+		}
+		const int avg = party.empty() ? 0 : sum / (int)party.size();
+		if (pMin)
+			*pMin = weakest;
+		if (pAvg)
+			*pAvg = avg;
+		if (pStopAt)
+			*pStopAt = 0;
+		static const int s_aiFloors[] = { 6, 12, 19, 24 };
+		for (size_t i = 0; i < sizeof(s_aiFloors) / sizeof(s_aiFloors[0]); ++i)
+		{
+			const int mark = ZrunStrengthMark(s_aiFloors[i]);
+			if (mark > 0 && (party.empty() || weakest < mark || avg < mark + ZrunStrengthAvg()))
+			{
+				if (pStopAt)
+					*pStopAt = s_aiFloors[i];
+				return s_aiFloors[i] - 1;
+			}
+		}
+		return 39;
+	}
+
+	// The kingdom's party made strong enough for ZRUN_OWN_MIN_FLOOR: the weakest dropped (the one Shaman kept)
+	// while more than ZRUN_OWN_MIN remain. The last floor it may go to, or 0 when it stays too weak.
+	int TrimZrunPartyToStrength(std::vector<TZrunCand>& party, int empire, DWORD dwNow)
+	{
+		int stopAt = 0, weakest = 0, avg = 0;
+		int floor = GetZrunStrengthFloor(party, &stopAt, &weakest, &avg);
+		const size_t before = party.size();
+		while (floor < ZRUN_OWN_MIN_FLOOR && (int)party.size() > ZRUN_OWN_MIN)
+		{
+			int healers = 0;
+			for (size_t i = 0; i < party.size(); ++i)
+				healers += party[i].healer ? 1 : 0;
+			size_t drop = party.size();
+			for (size_t i = 0; i < party.size(); ++i)
+			{
+				if (party[i].healer && healers == 1)
+					continue;
+				if (drop == party.size() || party[i].strength < party[drop].strength)
+					drop = i;
+			}
+			if (drop == party.size())
+				break;
+			party.erase(party.begin() + drop);
+			floor = GetZrunStrengthFloor(party, &stopAt, &weakest, &avg);
+		}
+		if (floor < ZRUN_OWN_MIN_FLOOR)
+		{
+			PlayerBotLogThrottled("zrun_strength_refused", dwNow,
+					"ZODIAC_RUN: strength gate refused empire=%d party=%u (of %u) weakest=%d avg=%d floor=%d needs=%d/%d",
+					empire, (unsigned int)party.size(), (unsigned int)before, weakest, avg, stopAt,
+					ZrunStrengthMark(stopAt), ZrunStrengthMark(stopAt) + ZrunStrengthAvg());
+			return 0;
+		}
+		if (party.size() != before || floor < 39)
+			PlayerBotLogThrottled("zrun_strength_capped", dwNow,
+					"ZODIAC_RUN: strength gate empire=%d party=%u (of %u) weakest=%d avg=%d last_floor=%d",
+					empire, (unsigned int)party.size(), (unsigned int)before, weakest, avg, floor);
+		return floor;
 	}
 
 	// A Pergamin Sfer from the bag used as a player uses it (+30 Anima Spheres); true when one was.
@@ -671,11 +780,12 @@ namespace
 			if (GetPlayerBotDgRunRefusal(ch, it->second, dwNow))
 				continue;
 			byEmpire[ch->GetEmpire()].push_back(TZrunCand(pid, ch->GetLevel(), ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0,
-					ready));
+					ready, GetZrunStrength(ch)));
 		}
 		// Each kingdom's readiest first; the Anima Spheres asked of those (a query each) until the party is there.
 		std::vector<TZrunCand> payers[4];
 		size_t pools[4] = { 0, 0, 0, 0 };
+		int strengthFloor[4] = { 39, 39, 39, 39 };	// MT2009_PLUS_ZODIAC_STRENGTH_V1
 		int best = 0;
 		for (int e = 1; e <= 3; ++e)
 		{
@@ -701,6 +811,14 @@ namespace
 				payers[e].push_back(pool[i]);
 				healer = healer || pool[i].healer;
 			}
+			// MT2009_PLUS_ZODIAC_STRENGTH_V1: a party too weak for floor 6 stays out.
+			strengthFloor[e] = 39;
+			if (!forced && ZrunStrengthOn() && (int)payers[e].size() >= ZRUN_OWN_MIN)
+			{
+				strengthFloor[e] = TrimZrunPartyToStrength(payers[e], e, dwNow);
+				if (strengthFloor[e] == 0)
+					payers[e].clear();
+			}
 			if ((int)payers[e].size() >= (forced ? 1 : ZRUN_OWN_MIN) &&
 					(best == 0 || payers[e].size() > payers[best].size()))
 				best = e;
@@ -716,7 +834,7 @@ namespace
 		std::vector<TZrunCand>& picked = payers[best];
 		// The highest level leads; the run goes as far as its least ready member is ready for.
 		std::sort(picked.begin(), picked.end(), [](const TZrunCand& a, const TZrunCand& b) { return a.level > b.level; });
-		int target = 39;
+		int target = strengthFloor[best];	// MT2009_PLUS_ZODIAC_STRENGTH_V1: no further than its strength goes
 		for (size_t i = 0; i < picked.size(); ++i)
 			target = std::min(target, picked[i].ready);
 		if (target >= 39)
