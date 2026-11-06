@@ -376,6 +376,11 @@ namespace
 			p.dwNextAdvanceRoll = 0;
 			p.bHeldLock = 0;
 			p.dwHeldMs = 0;
+			// From 2.x (the 2.42 test, 6 November 2026): 50 of 97 bots let go were
+			// pinned again by their deaths within half an hour, held at the next
+			// level for the whole timeout. For the timeout's own minutes the deaths
+			// are the step down's and the death loop's (an easier map), not a new pin.
+			p.dwPinGraceUntil = (dwNow + limitMs) ? dwNow + limitMs : 1;
 			p.bDirty = true;
 			return;
 		}
@@ -524,6 +529,16 @@ namespace
 			NotePlayerBotDistress(ch, state, dwNow);
 		if (!weak || !p.bAdvanced)
 			return;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: no death pin in the grace after a lock given up.
+		if (p.dwPinGraceUntil != 0 && (int)(dwNow - p.dwPinGraceUntil) < 0)
+		{
+			PlayerBotLogThrottled("persona_pin_grace", dwNow,
+					"PLAYERBOT_PERSONA: death pin waived after a lock given up pid=%u name=%s level=%u grace_left_min=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(),
+					(unsigned int)((p.dwPinGraceUntil - dwNow) / 60000U));
+			return;
+		}
+		p.dwPinGraceUntil = 0;
 		p.bAdvanced = false;
 		p.bLockLevel = (BYTE)std::min<int>(255, ch->GetLevel());
 		// Pinned, so neither the tier's draw nor the lift of a lock no tier

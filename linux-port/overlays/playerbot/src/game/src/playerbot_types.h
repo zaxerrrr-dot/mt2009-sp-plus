@@ -8593,6 +8593,9 @@ namespace
 	// its lock (seconds + 1) and the lock they were counted at (+ 1).
 	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS = "playerbot.persona_hold_s";
 	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_LOCK = "playerbot.persona_hold_lv";
+	// The death pin's grace after a lock given up: the unix time it ends (+ 1), so
+	// it goes with the bot to the other channel (from 2.x, 6 November 2026).
+	const char* const PLAYERBOT_PERSONA_FLAG_PIN_GRACE = "playerbot.persona_pin_grace";
 
 	// The Grinder and the Conqueror (Zdobywca). A Grinder that meets the Law of
 	// Advancement is asked once an hour whether it moves on or stays to push
@@ -9003,6 +9006,9 @@ namespace
 		DWORD dwHeldMs;
 		BYTE bHeldLock;
 		DWORD dwHeldTick;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1 (from 2.x, the 2.42 test): after a lock
+		// given up the law's death pin waits this long (the timeout's own minutes).
+		DWORD dwPinGraceUntil;
 		DWORD dwNextAdvanceRoll;
 		playerbot_persona::TDeathWindow deaths;
 		// The player-death counter of the engine (PLAYER_STATS_DEATH_FROM_
@@ -9161,7 +9167,7 @@ namespace
 			llBookBudgetBase(0), llBookBudgetSpent(0), dwBookBudgetSince(0),
 			adwReadyGearWaitUntil(), adwReadyGearCheckedAt(), bQuitGrinding(false), bQuitRolledTier(0),
 			bMedalGoalDone(false), dwNextMedalGoalCheck(0),
-			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwHeldMs(0), bHeldLock(0), dwHeldTick(0), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
+			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwHeldMs(0), bHeldLock(0), dwHeldTick(0), dwPinGraceUntil(0), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
 			llVisitGoldStart(0), llLevel30BudgetBase(0), llLevel30BudgetSpent(0), dwLevel30BudgetSince(0),
 			bGambling(false), llGambleGoldStart(0),
 			llGambleSpent(0), dwGambleUntil(0), dwNextGambleAt(0), dwNextGambleStep(0),
