@@ -4155,12 +4155,16 @@ for yma_sql in yohara_moby_arkusz.sql; do
     fi
 done
 # MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026): the four Time Rift / Plaskowyz Metins (8126, 8127, 8136, 8137)
-# call the groups our generators gave Owsap's (6178-6181, 6171-6174) - yohara_metiny_grupy.sql, guarded UPDATEs
-# after every Yohara mob file. Idempotent.
+# call the groups our generators gave Owsap's (6178-6181, 6171-6174), and Metin Jin (8065) its own 6221-6223 instead
+# of the En-Tai 6176-6178 (V3) - yohara_metiny_grupy.sql, guarded UPDATEs after every Yohara mob file. Idempotent.
 for ymg_sql in yohara_metiny_grupy.sql; do
     [ -s "/opt/playerbot/$ymg_sql" ] || continue
     if db < "/opt/playerbot/$ymg_sql"; then
         echo "[playerbot-migrate] Yohara Metins' groups: $ymg_sql applied"
+        # MT2009_PLUS_YOHARA_STONE_GROUPS_V3: no Yohara Metin may still call a range our generators gave other places
+        # (8065 6176-6178: Plaskowyz / Szczelina En-Tai); a row the operator changed to something else is not counted.
+        ymg_left=$(db -N -e "SELECT COUNT(*) FROM world.mob_proto WHERE (vnum = 8065 AND attack_speed = 6176 AND move_speed = 6178) OR (vnum IN (8126, 8127, 8136, 8137) AND attack_speed IN (6401, 6411, 6420, 6430))" 2>/dev/null || echo 0)
+        [ "${ymg_left:-0}" = 0 ] || echo "[playerbot-migrate] WARNING: Yohara Metins' groups: $ymg_left row(s) still on the old ranges" >&2
     else
         fail_step "Yohara Metins' groups: $ymg_sql failed" >&2
     fi

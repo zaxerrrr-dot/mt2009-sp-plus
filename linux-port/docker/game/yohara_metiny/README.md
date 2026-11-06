@@ -12,6 +12,7 @@ istnieć wcześniej):
 | grupy | kto przywołuje | gdzie | skład (potwory miejsca) |
 |---|---|---|---|
 | 6218–6220 | Metin Shiho (8066), Metin z Gumar (8077) | Przełęcz Yilad (385, tylko Shiho), Wąwóz Płn. Wiatru (388), Rozpadlina Dusz (389) – te same grupy na każdej mapie | Skażeni z Przełęczy Yilad: Mnich, Zadziora, Żołnierz (mrok 6761/6759/6758 i ziemia 6878/6876/6875) oraz Wojownik (mrok 6760), po 3 |
+| 6221–6223 | Metin Jin (8065) | Namgan (377), Przełęcz Yilad (385) | Myr z ziemi: Golem, Bojownik, Kovix (6720, 6721, 6718) i Proletariusz (6719), po 3 |
 | 6229, 6230 | Metiny Wężowe (8630–8634), Metin Wężowy Przestrzeni (8076) | Świątynia Węży (391), 1. poziom Świątyni (390) | Skorpion / Robotnik / Kappa Wężowy (6850–6852), po 3 |
 | 6249, 6250 | Białe Jajo Smoka (słaby) 8635 | Głębie Płn. Wiatru (395) | Żołnierz / Zadziora Schron. Płn. W. (6792, 6793), po 2 |
 | 6252, 6253 | Białe Jajo Smoka (silny) 8636 | Głębie Płn. Wiatru (395) | Wojownik / Czarownik / Zadziora / Żołnierz Schron. (6792–6795), po 3 |
@@ -22,6 +23,12 @@ sam skład: Skażony Mnich, Zadziora i Żołnierz (mrok i ziemia) oraz Skażony 
 nie Zamarznięci z Wąwozu (V1 dawał lodowe potwory także na 385 i 389). Wiki pl pisze „Generał” zamiast „Żołnierz”;
 wiki en ma Żołnierza i na stronach samych potworów (Tainted Soldier: „Metin of the Shiho / of Gumar”, Tainted General:
 bez Metinów), więc Żołnierz.
+
+Metin Jin (`MT2009_PLUS_YOHARA_STONE_GROUPS_V3`): na globalu (wiki pl/en) przywołuje Myr Kovix, Proletariusza, Golema i
+Bojownika (ziemia). Jego zakres z danych globalu, 6176–6178, to u nas grupy wygenerowane dla innych miejsc (6176/6177:
+„PB: … En-Tai” Płaskowyżu Iluzji, 6178: „SZC: Wojownik En-Tai” Szczeliny Czasu), więc na 377/385 wychodzili En-Tai.
+`yohara_metiny_grupy.sql` przestawia 8065 (tylko wiersz z 6176–6178) na 6221–6223, a apply.sh ostrzega, gdy któryś Metin
+zostaje na starym zakresie. Przegląd wszystkich kamieni Yohary (6.11): innych kolizji zakresów nie ma.
 
 Grupy przywołane przez Metin nie należą do lochu (`d.count_monster()` ich nie liczy), więc nie wstrzymują przejścia
 na kolejny poziom Świątyni ani Kowala/Wojownika.

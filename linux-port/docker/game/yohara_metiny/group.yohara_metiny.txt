@@ -29,6 +29,34 @@ Group	MT2009_ymetin_Shiho_Gumar_Wojownik
 	2	"Skazony Zolnierz (mrok)"	6758
 }
 
+// 6221-6223 (Metin Jin 8065 on 377/385; MT2009_PLUS_YOHARA_STONE_GROUPS_V3): the earth Myr of the global wiki's list -
+// Kovix, Proletariusz, Golem, Bojownik (6718-6721). Its own range 6176-6178 is Plaskowyz Iluzji's / Szczelina Czasu's
+// En-Tai groups here (tools/yohara_iluzja, tools/yohara_crack renumbered), so mariadb/playerbot/yohara_metiny_grupy.sql
+// moves 8065 onto these.
+Group	MT2009_ymetin_Jin_Golem
+{
+	Vnum	6221
+	Leader	"Myr Golem (ziemia)"	6720
+	1	"Myr Kovix (ziemia)"	6718
+	2	"Myr Proletariusz"	6719
+}
+
+Group	MT2009_ymetin_Jin_Bojownik
+{
+	Vnum	6222
+	Leader	"Myr Bojownik (ziemia)"	6721
+	1	"Myr Kovix (ziemia)"	6718
+	2	"Myr Kovix (ziemia)"	6718
+}
+
+Group	MT2009_ymetin_Jin_Proletariusz
+{
+	Vnum	6223
+	Leader	"Myr Bojownik (ziemia)"	6721
+	1	"Myr Golem (ziemia)"	6720
+	2	"Myr Proletariusz"	6719
+}
+
 Group	MT2009_ymetin_Metin_Wezowy_Robotnik
 {
 	Vnum	6229

@@ -7,6 +7,10 @@
 --   8136 PB: Metin Drz. Stworzen   6411-6414 -> 6171-6174 (6411/6412 called Atlantyda's Stwor z Glebin and
 --                                                           Nieumarly Rybi Wojownik onto map 371; 6413/6414 none)
 --   8137 PB: Metin Lasu            6430-6433 -> 6171-6174 (Owsap's 6430-6433 = 6411-6414)
+-- MT2009_PLUS_YOHARA_STONE_GROUPS_V3 (6 November 2026, "sprawdz jak jest na globalu"): Metin Jin (8065, maps 377/385)
+-- kept the global 6176-6178, which here are Plaskowyz Iluzji's PB En-Tai (6176/6177) and Szczelina Czasu's SZC Wojownik
+-- En-Tai (6178) - so it called those onto 377/385. Global: the earth Myr (Kovix, Proletariusz, Golem, Bojownik):
+--   8065 Metin Jin                 6176-6178 -> 6221-6223 (game/yohara_metiny/group.yohara_metiny.txt)
 -- Guarded: only a row that still has Owsap's numbers (one the operator set is kept). Idempotent. After every Yohara
 -- mob file (apply.sh). The groups of the other Yohara Metins and eggs: game/yohara_metiny/group.yohara_metiny.txt.
 SET NAMES utf8mb4;
@@ -14,3 +18,4 @@ UPDATE world.mob_proto SET attack_speed = 6178, move_speed = 6181 WHERE vnum = 8
 UPDATE world.mob_proto SET attack_speed = 6178, move_speed = 6181 WHERE vnum = 8127 AND attack_speed = 6420 AND move_speed = 6423;
 UPDATE world.mob_proto SET attack_speed = 6171, move_speed = 6174 WHERE vnum = 8136 AND attack_speed = 6411 AND move_speed = 6414;
 UPDATE world.mob_proto SET attack_speed = 6171, move_speed = 6174 WHERE vnum = 8137 AND attack_speed = 6430 AND move_speed = 6433;
+UPDATE world.mob_proto SET attack_speed = 6221, move_speed = 6223 WHERE vnum = 8065 AND attack_speed = 6176 AND move_speed = 6178;

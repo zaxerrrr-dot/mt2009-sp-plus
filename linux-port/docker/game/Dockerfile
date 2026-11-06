@@ -3410,19 +3410,21 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
 # and the White Dragon Eggs call and nothing defined (NOT_EXIST_GROUP_VNUM 6229/6230 on 390/391, 6249/6250/6252/6253
 # on 395, 6218-6220 on 385/388/389 - ~17 000 a day on the Yohara test): yohara_metiny/group.yohara_metiny.txt, of each
 # place's own monsters (README.md); Shiho/Gumar 6218-6220: the Tainted of Yilad as on the global server, the same on
-# every map (MT2009_PLUS_YOHARA_STONE_GROUPS_V2). None may exist before. The four Time Rift / Plaskowyz Metins' ranges:
-# mariadb/playerbot/yohara_metiny_grupy.sql (the same marker).
+# every map (MT2009_PLUS_YOHARA_STONE_GROUPS_V2).
+# Metin Jin (8065, 377/385): 6221-6223, the global earth Myr; its own 6176-6178 are Plaskowyz / Szczelina En-Tai groups
+# here, so yohara_metiny_grupy.sql moves it (MT2009_PLUS_YOHARA_STONE_GROUPS_V3). None may exist before. The four
+# Time Rift / Plaskowyz Metins' ranges and Jin's: mariadb/playerbot/yohara_metiny_grupy.sql (the same markers).
 COPY yohara_metiny/ /tmp/yohara-metiny-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-metiny-add \
  && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/group.yohara_metiny.txt" \
- && GV='(621[89]|6220|6229|6230|6249|6250|6252|6253)' \
+ && GV='(621[89]|622[0-3]|6229|6230|6249|6250|6252|6253)' \
  && f="$L/group.txt" \
  && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/group.yohara_metiny.txt" >> "$f" \
- && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 9 \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 12 \
  && rm -rf "$A" \
- && echo "share: Yohara Metins' and eggs' groups - 9 (MT2009_PLUS_YOHARA_STONE_GROUPS_V1)"
+ && echo "share: Yohara Metins' and eggs' groups - 12 (MT2009_PLUS_YOHARA_STONE_GROUPS_V1/V3)"
 
 # MT2009_PLUS_MOBY_ARKUSZ_V1: the drops of the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx)
 # our Yohara monsters lacked - mob_drop_item.yohara_arkusz.txt (tools/ymoby_arkusz/gen_ymoby_arkusz.py, yohara_arkusz/
