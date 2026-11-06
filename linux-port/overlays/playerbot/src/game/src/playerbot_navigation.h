@@ -389,7 +389,10 @@ namespace
 						// Gnolli 1-3 (382-384, the runs' own maze walk asks for the grid) on the Yohara core.
 						mapIndex != 390 && !(mapIndex >= 382 && mapIndex <= 384) &&
 						// MT2009_PLUS_BOT_LABIRYNT_V1 (night 5/6 Nov): Labirynt (79, game1) - "way in refused ... no_navigation"
-						mapIndex != 79)
+						mapIndex != 79 &&
+						// MT2009_PLUS_BOT_WIEZA_V1 (night 5/6 Nov): Wieza Sung Mahi's floors (386, 387) - "jump refused ...
+						// refused=no_navigation" for every trainee
+						mapIndex != 386 && mapIndex != 387)
 					return false;
 
 				if (m_initialized && m_mapIndex == mapIndex)
