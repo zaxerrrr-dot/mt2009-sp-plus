@@ -1,13 +1,13 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-11-04T16:44:00Z",
- "statusMessage": "MT2009 PLUS 2.41.0: madrzejsze boty (ekwipunek, handel, gdzie expia), mniej lagow bazy danych, Grota Wygnancow V2. Klient bez zmian (2.0.71).",
+ "publishedAt": "2026-11-06T17:00:00Z",
+ "statusMessage": "MT2009 PLUS 2.42.0: boty szybciej sie rozwijaja (blokady expa, materialy, ulepszanie), mniej smierci botow, rynek botow z sensownymi cenami. Klient bez zmian (2.0.71).",
  "server": {
-  "version": "2.41.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.41.0/metin2-server-update-2.41.0.zip",
-  "sha256": "7E8660B273EA61411EAA9558BFB2673C30B9F1EB57A862CAE261DF1AC00CD320",
-  "size": 116977241
+  "version": "2.42.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.42.0/metin2-server-update-2.42.0.zip",
+  "sha256": "AE58A6B3C24175766672F035B454884E6C967CB3DD9588F86598FADFF0A9D2EC",
+  "size": 117108051
  },
  "client": {
   "version": "2.0.71",
