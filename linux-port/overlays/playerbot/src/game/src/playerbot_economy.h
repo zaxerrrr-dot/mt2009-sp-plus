@@ -4042,7 +4042,8 @@ namespace
 	//   m2_bot_refine_policy_off    1 turns the scroll policy and the cheap merchant rule off (the old rules)
 	//   m2_bot_refine_low_prob      a step under this many percent takes a scroll (default 70)
 	//   m2_bot_refine_scroll_level  an item of this level or over takes a scroll at any step (default 75)
-	//   m2_bot_cheap_npc_plus       cheap merchant shields / helmets: plain anvil up to this plus (default 6)
+	//   m2_bot_cheap_npc_plus       cheap merchant shields / helmets: plain anvil up to this plus, and no step past it
+	//                               (default 5; MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1 - it was 6, a plain step to +6)
 	//   m2_bot_cheap_npc_level      the highest level of such a piece, +1 (default 0+1: level 0 only)
 	//   m2_bot_anvil_wait_off       1 turns the material wait off (only the old 15-25 min closing)
 	//   m2_bot_anvil_wait_minutes   how long a refused step waits at most for a change (default 120)
@@ -4056,6 +4057,11 @@ namespace
 		unsigned int uStepWaitsKept;	// a planner question answered "no" by a waiting step
 		unsigned int uStepWaitsReleased;
 		unsigned int uStepWaitsExpired;
+		// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: a cheap merchant piece burnt at the plain anvil, and what came of it.
+		unsigned int uCheapNpcBurned;
+		unsigned int uCheapNpcRebought;		// bought again from the merchant in the same pass
+		unsigned int uCheapNpcRebuyFailed;	// the slot empty and the merchant could not sell (yang, bag)
+		unsigned int uCheapNpcRebuyNotNeeded;	// another piece for the slot was at hand
 		DWORD dwLastCensus;
 		TPlayerBotRefinePolicyStats() { memset(this, 0, sizeof(*this)); }
 	};
@@ -4112,13 +4118,14 @@ namespace
 		if (dwNow - t.dwLastCensus < PLAYERBOT_REFINE_POLICY_CENSUS_MS)
 			return;
 		t.dwLastCensus = dwNow;
-		sys_log(0, "PLAYERBOT_REFINE_POLICY: census policy=%d low_prob=%d scroll_level=%d cheap_plus=%d scroll_saved=%u cheap_npc_plain=%u holds_lifted=%u anvil_waits_set=%u kept=%u released=%u expired=%u",
+		sys_log(0, "PLAYERBOT_REFINE_POLICY: census policy=%d low_prob=%d scroll_level=%d cheap_plus=%d scroll_saved=%u cheap_npc_plain=%u holds_lifted=%u anvil_waits_set=%u kept=%u released=%u expired=%u cheap_npc_burned=%u cheap_npc_rebought=%u cheap_npc_rebuy_failed=%u cheap_npc_rebuy_not_needed=%u",
 				IsPlayerBotRefinePolicyOn() ? 1 : 0,
 				GetPlayerBotRefinePolicyFlag("m2_bot_refine_low_prob", playerbot_refine_rules::POLICY_LOW_PROB),
 				GetPlayerBotRefinePolicyFlag("m2_bot_refine_scroll_level", playerbot_refine_rules::POLICY_EXPENSIVE_LEVEL),
 				GetPlayerBotRefinePolicyFlag("m2_bot_cheap_npc_plus", playerbot_refine_rules::POLICY_CHEAP_NPC_PLUS),
 				t.uScrollSaved, t.uCheapNpcPlain, t.uPlainHoldsLifted, t.uStepWaitsSet, t.uStepWaitsKept,
-				t.uStepWaitsReleased, t.uStepWaitsExpired);
+				t.uStepWaitsReleased, t.uStepWaitsExpired, t.uCheapNpcBurned, t.uCheapNpcRebought,
+				t.uCheapNpcRebuyFailed, t.uCheapNpcRebuyNotNeeded);
 		const DWORD keep = t.dwLastCensus;
 		t = TPlayerBotRefinePolicyStats();
 		t.dwLastCensus = keep;
@@ -4145,6 +4152,79 @@ namespace
 			return false;
 		const DWORD base = item->GetVnum() - (DWORD)std::max(0, (int)item->GetRefineLevel());
 		return FindPlayerBotMerchantOffer(base, NULL);
+	}
+
+	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1 (the owner, 6 November 2026: "ulepszac bez zwojow tylko do +5. A jak mu
+	// spali niech kupuje od razu kolejna"). Under the policy a cheap merchant shield or helmet (not valuable, under
+	// the scroll level) goes no higher than m2_bot_cheap_npc_plus (default 5): every refine target and the law's
+	// anvil plus stop there (GetPlayerBotRefineTarget, GetPlayerBotLawRefinePlus), so no pass - the blacksmith, the
+	// scroll in the field, the material shopping - takes a step past it, and the law counts such a piece at its
+	// ceiling as met (GetPlayerBotAdvanceGear): the merchants sell no better shield, and a +6 the bot may not make
+	// would hold it at its lock for good.
+	int GetPlayerBotCheapNpcPlus()
+	{
+		return GetPlayerBotRefinePolicyFlag("m2_bot_cheap_npc_plus", playerbot_refine_rules::POLICY_CHEAP_NPC_PLUS);
+	}
+
+	bool IsPlayerBotCheapNpcCapped(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_ARMOR ||
+				(item->GetSubType() != ARMOR_SHIELD && item->GetSubType() != ARMOR_HEAD) || !IsPlayerBotRefinePolicyOn())
+			return false;
+		const int expensive = GetPlayerBotRefinePolicyFlag("m2_bot_refine_scroll_level",
+				playerbot_refine_rules::POLICY_EXPENSIVE_LEVEL);
+		const bool valuable = IsPlayerBotRefinePolicyValuable(item);
+		const bool cheap = !valuable && IsPlayerBotCheapNpcShieldOrHelmet(item);
+		return playerbot_refine_rules::CheapNpcCeilingTarget(255, cheap, valuable, (int)item->GetLevelLimit(),
+				expensive, GetPlayerBotCheapNpcPlus()) < 255;
+	}
+
+	// The target with the ceiling applied.
+	BYTE CapPlayerBotCheapNpcTarget(LPITEM item, BYTE target)
+	{
+		if (!IsPlayerBotCheapNpcCapped(item))
+			return target;
+		return (BYTE)std::max(0, std::min((int)target, GetPlayerBotCheapNpcPlus()));
+	}
+
+	bool IsPlayerBotCheapNpcAtCeiling(LPITEM item)
+	{
+		return IsPlayerBotCheapNpcCapped(item) && (int)item->GetRefineLevel() >= GetPlayerBotCheapNpcPlus();
+	}
+
+	// A cheap merchant piece the plain anvil has just burnt: when nothing else is at hand for its slot, the same
+	// piece is bought again from the merchant right away - in the same pass, where the bot stands - so the next step
+	// of the visit raises it and the bot does not walk on without a shield or a helmet until a later shopping look.
+	bool PlayerBotHasPieceForSlot(LPCHARACTER ch, BYTE slot);
+	bool RebuyPlayerBotCheapNpcPiece(LPCHARACTER ch, DWORD burntVnum, BYTE burntPlus, BYTE subType, BYTE wearCell,
+			DWORD dwNow)
+	{
+		if (!ch)
+			return false;
+		TPlayerBotRefinePolicyStats& t = s_kPlayerBotRefinePolicyStats;
+		++t.uCheapNpcBurned;
+		const BYTE slot = wearCell < WEAR_MAX_NUM ? wearCell
+				: (subType == ARMOR_SHIELD ? (BYTE)WEAR_SHIELD : (BYTE)WEAR_HEAD);
+		const DWORD base = burntVnum - (DWORD)burntPlus;
+		if (PlayerBotHasPieceForSlot(ch, slot))
+		{
+			++t.uCheapNpcRebuyNotNeeded;
+			PlayerBotLogThrottled("refine_policy_cheap_rebuy_skip", dwNow,
+					"PLAYERBOT_REFINE_POLICY: cheap npc burnt, rebuy not needed pid=%u name=%s slot=%u vnum=%u plus=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)slot, burntVnum, (unsigned int)burntPlus);
+			return false;
+		}
+		const bool bought = BuyPlayerBotProgressionGear(ch, base,
+				subType == ARMOR_SHIELD ? "shield" : "helmet");
+		if (bought)
+			++t.uCheapNpcRebought;
+		else
+			++t.uCheapNpcRebuyFailed;
+		PlayerBotLogThrottled(bought ? "refine_policy_cheap_rebuy" : "refine_policy_cheap_rebuy_failed", dwNow,
+				"PLAYERBOT_REFINE_POLICY: cheap npc burnt, instant rebuy %s pid=%u name=%s slot=%u burnt_vnum=%u plus=%u buy_vnum=%u gold=%lld",
+				bought ? "OK" : "FAILED", ch->GetPlayerID(), ch->GetName(), (unsigned int)slot, burntVnum,
+				(unsigned int)burntPlus, base, (long long)ch->GetGold());
+		return bought;
 	}
 
 	// Whether this step of this piece goes to the plain anvil under the owner's policy: no scroll is looked for and
@@ -5896,6 +5976,7 @@ namespace
 					? item->FindEquipCell(ch) : -1;
 			// MT2009_PLUS_BOT_REFINE_POLICY_V1: a cheap merchant shield's / helmet's plain step, for the census.
 			const bool cheapNpcPlainStep = scrollCell < 0 && plainPolicyStep && IsPlayerBotCheapNpcShieldOrHelmet(item);
+			const BYTE cheapNpcSubType = item->GetSubType();	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: the item may burn
 			const long long goldBeforeAttempt = (long long)ch->GetGold();
 			const WORD cellBefore = item->GetCell();
 			const DWORD idBefore = item->GetID();
@@ -5964,6 +6045,10 @@ namespace
 					// after the burn (playerbot_explain.h).
 					if (scrollCell < 0 && wearCell < WEAR_MAX_NUM)
 						NotePlayerBotExplainBurn(ch->GetPlayerID(), wearCell, dwNow);
+					// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: a burnt cheap merchant shield / helmet is bought again
+					// now, before the market and the next shopping look are asked (the slot is then no longer empty).
+					if (cheapNpcPlainStep && scrollCell < 0)
+						RebuyPlayerBotCheapNpcPiece(ch, oldVnum, plusLevel, cheapNpcSubType, wearCell, dwNow);
 					// A burnt class weapon is bought again straight away, while the
 					// bot still stands in the village ("bot ma obowiazek zakupic
 					// kolejna sztuke broni na 30. poziom z rynku, jesli pozwala na to

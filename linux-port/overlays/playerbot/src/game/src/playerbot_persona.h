@@ -150,6 +150,12 @@ namespace
 		if (gear.helmet.present)
 			gear.helmet.noBetter = IsPlayerBotSlotNoBetter(ch, WEAR_HEAD, gear.helmet.levelLimit);
 		gear.wantsShield = PlayerBotWantsShield(ch);
+		// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: a cheap merchant shield / helmet at its ceiling (+5) is as far as
+		// the bot may take it - the law's +6 would hold it at its lock for good; the law counts it as met.
+		if (gear.shield.present && IsPlayerBotCheapNpcAtCeiling(ch->GetWear(WEAR_SHIELD)))
+			gear.shield.plus = 9;
+		if (gear.helmet.present && IsPlayerBotCheapNpcAtCeiling(ch->GetWear(WEAR_HEAD)))
+			gear.helmet.plus = 9;
 		return gear;
 	}
 
