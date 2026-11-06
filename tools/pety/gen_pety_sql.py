@@ -25,7 +25,10 @@ A_DROP, A_SELL, A_GIVE, A_PKDROP, A_STACK, A_MYSHOP = 1 << 7, 1 << 8, 1 << 13, 1
 F_STACK = 1 << 2
 LIMIT_REAL_TIME = 7
 
-MIGRATED_ID_BASE = 0xF0000000   # pet ids of the old system's pets (never an item id)
+MIGRATED_ID_BASE = 0x7F000000   # pet ids of the old system's pets (never an item id; under 0x80000000 - a seal's socket
+                                # is a 32-bit long in the -m32 game: MT2009_PLUS_GROWTH_PET_ID_FIX_V1)
+OLD_MIGRATED_ID_BASE = 0xF0000000   # the first migration's base (pety:migracja_v1 before the fix)
+ID_FIX_MARKER = 'pety:id_fix_v1'
 NAMES_MARKER = 'pety:names_v1'  # the items' names (pl-wiki) put on an existing world once; bump on a rename
 # The owner's Yohara list 3.0.14, item 3: the treats stack to 200 like the other pet consumables (Smakolyk 55028,
 # Smakolyk+ 55031; Smaczny Smakolyk 55042 already did). A world that wrote pety:items_v1 gets the new stack / flags once.
@@ -225,7 +228,7 @@ def gen_sql():
     w("\t\tSELECT COUNT(*) INTO has_old FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'player' AND TABLE_NAME = 'newpet_pet';")
     w("\t\tSTART TRANSACTION;")
     w("\t\tIF has_old > 0 THEN")
-    w("\t\t\t-- the pets: id 0xF0000000 + the old id, state 3 (a seal at the next login) or 2 (packed in a transporter)")
+    w("\t\t\t-- the pets: id 0x%X + the old id, state 3 (a seal at the next login) or 2 (packed in a transporter)" % MIGRATED_ID_BASE)
     w("\t\t\tINSERT IGNORE INTO player.growth_pet (id, owner_id, vnum, state, name, level, evolution, type, birthday,")
     w("\t\t\t\t\tend_time, max_time)")
     w("\t\t\tSELECT %d + n.id, IF(n.packed, 0, n.pid), n.egg + 300, IF(n.packed, 2, 3), n.name, LEAST(GREATEST(n.level, 1), 105)," % MIGRATED_ID_BASE)
@@ -257,6 +260,48 @@ def gen_sql():
     w("\t\t-- the elixirs and the slot key are no items any more")
     w("\t\tDELETE FROM world.item_proto WHERE vnum BETWEEN 55101 AND 55118;")
     w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:migracja_v1', NOW());")
+    w("\t\tCOMMIT;")
+    w("\tEND IF;")
+    w("END//")
+    w("DELIMITER ;")
+    w("")
+    # ---- the id fix (MT2009_PLUS_GROWTH_PET_ID_FIX_V1) ----
+    delta = OLD_MIGRATED_ID_BASE - MIGRATED_ID_BASE
+    w("-- ---- Once: %s (MT2009_PLUS_GROWTH_PET_ID_FIX_V1, 6 November 2026) ------------------------------------------"
+      % ID_FIX_MARKER)
+    w("-- The first migration gave the old system's pets ids from 0x%X; a seal's socket 2 is a 32-bit long in the game"
+      % OLD_MIGRATED_ID_BASE)
+    w("-- (-m32), so such an id went to the db core negative and the unsigned socket2 kept 0: the seal lost its pet at the")
+    w("-- first save (605 seals on the test world, nearly every pet-keeping bot). The pets move to 0x%X + the old id, and a"
+      % MIGRATED_ID_BASE)
+    w("-- seal with socket2 = 0 gets back the one pet of its owner it can be (the same species, end and life time - the")
+    w("-- game wrote both together); a pet two seals could be, or a seal two pets could be, is left alone.")
+    w("DELIMITER //")
+    w("BEGIN NOT ATOMIC")
+    w("\tDECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;")
+    w("\tIF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '%s') = 0 THEN" % ID_FIX_MARKER)
+    w("\t\tSTART TRANSACTION;")
+    w("\t\tCREATE OR REPLACE TEMPORARY TABLE player.tmp_growth_pet_relink (item_id INT UNSIGNED NOT NULL PRIMARY KEY,")
+    w("\t\t\t\tpet_id INT UNSIGNED NOT NULL, KEY (pet_id)) ENGINE=MEMORY;")
+    w("\t\tINSERT INTO player.tmp_growth_pet_relink (item_id, pet_id)")
+    w("\t\t\tSELECT i.id, MIN(g.id) FROM player.item i JOIN player.growth_pet g ON g.owner_id = i.owner_id AND g.vnum = i.vnum")
+    w("\t\t\t\t\tAND g.state = 1 AND g.id >= %d AND g.end_time = i.socket0 AND g.max_time = i.socket1" % OLD_MIGRATED_ID_BASE)
+    w("\t\t\tWHERE i.vnum BETWEEN 55701 AND 55714 AND i.socket2 = 0 AND i.window NOT IN ('SAFEBOX', 'MALL')")
+    w("\t\t\tGROUP BY i.id HAVING COUNT(*) = 1;")
+    w("\t\tCREATE OR REPLACE TEMPORARY TABLE player.tmp_growth_pet_twice (pet_id INT UNSIGNED NOT NULL PRIMARY KEY) ENGINE=MEMORY;")
+    w("\t\tINSERT INTO player.tmp_growth_pet_twice (pet_id)")
+    w("\t\t\tSELECT pet_id FROM player.tmp_growth_pet_relink GROUP BY pet_id HAVING COUNT(*) > 1;")
+    w("\t\tDELETE FROM player.tmp_growth_pet_relink WHERE pet_id IN (SELECT pet_id FROM player.tmp_growth_pet_twice);")
+    w("\t\tUPDATE player.item i JOIN player.tmp_growth_pet_relink r ON r.item_id = i.id SET i.socket2 = r.pet_id - %d;" % delta)
+    w("\t\t-- a seal or a cage still holding an old id (one the game has not saved since)")
+    w("\t\tUPDATE player.item SET socket2 = socket2 - %d WHERE socket2 >= %d AND (vnum = 55002 OR vnum BETWEEN 55701 AND 55714);"
+      % (delta, OLD_MIGRATED_ID_BASE))
+    w("\t\tUPDATE player.item_award SET socket2 = socket2 - %d WHERE socket2 >= %d AND (vnum = 55002 OR vnum BETWEEN 55701 AND 55714);"
+      % (delta, OLD_MIGRATED_ID_BASE))
+    w("\t\tUPDATE player.growth_pet SET id = id - %d WHERE id >= %d;" % (delta, OLD_MIGRATED_ID_BASE))
+    w("\t\tDROP TEMPORARY TABLE IF EXISTS player.tmp_growth_pet_relink;")
+    w("\t\tDROP TEMPORARY TABLE IF EXISTS player.tmp_growth_pet_twice;")
+    w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % ID_FIX_MARKER)
     w("\t\tCOMMIT;")
     w("\tEND IF;")
     w("END//")
