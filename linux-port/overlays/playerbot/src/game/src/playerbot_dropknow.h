@@ -158,6 +158,10 @@ namespace
 	unsigned int s_auPlayerBotDkChoices[DKCHOICE_COUNT] = { 0, 0, 0, 0, 0, 0, 0 };
 	unsigned int s_uPlayerBotDkLooked = 0;
 
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: playerbot_mats_flow.h (later) - a market the bot cannot pay is no source; its status.
+	bool IsPlayerBotMatsMarketUnaffordable(LPCHARACTER ch, DWORD vnum, int lack);
+	void LogPlayerBotMatsStatus();
+
 	// The event flag, looked at once a second (asked for every monster a scan weighs).
 	bool IsPlayerBotDropKnowOff()
 	{
@@ -673,7 +677,9 @@ namespace
 			else
 			{
 				const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(vnum);
-				if (e && e->dwSupplyUnits > 0)
+				// MT2009_PLUS_BOT_MATS_FLOW_V1: a market whose last ask the bot cannot pay is not its source (Zab Orka at
+				// 1-9 million a piece against purses of 1.5-5 million: 261 bots an hour at +7, 6 November)
+				if (e && e->dwSupplyUnits > 0 && !IsPlayerBotMatsMarketUnaffordable(ch, vnum, lack))
 					pick.iChoice = DKCHOICE_MARKET;
 				else
 					pick = PickPlayerBotDkSource(ch, vnum);
@@ -775,6 +781,7 @@ namespace
 				"demand=%s farmers=%u off=%d", s_kPlayerBotDropKnow.bBuilt ? 1 : 0, (unsigned int)s_kPlayerBotDropKnow.byItem.size(),
 				s_uPlayerBotDkLooked, c[0], c[1], c[2], c[3], c[4], c[5], c[6], demand.empty() ? "-" : demand.c_str(),
 				(unsigned int)s_mapPlayerBotDkFarm.size(), IsPlayerBotDropKnowOff() ? 1 : 0);
+		LogPlayerBotMatsStatus();	// MT2009_PLUS_BOT_MATS_FLOW_V1
 	}
 
 	void RunPlayerBotDkTestFile(DWORD dwNow)
