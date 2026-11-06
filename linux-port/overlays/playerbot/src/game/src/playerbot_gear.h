@@ -3816,9 +3816,14 @@ namespace
 	// back rather than burn it (IsPlayerBotSafeRefineScroll): the Blessing
 	// Scroll and the kinds better than it; never the War God's, which stops at
 	// +3, nor a Gwarancja. The policy is playerbot_refine_rules.h's.
+	// MT2009_PLUS_BOT_REFINE_POLICY_V1 (playerbot_economy.h): a step of good odds of a piece under level 75 is the
+	// plain anvil's - the rule claims neither the step nor the scrolls for it.
+	bool IsPlayerBotPlainAnvilPolicyStep(LPITEM item);
 	bool IsPlayerBotScrollRuleWeapon(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->GetSubType() == WEAPON_ARROW)
+			return false;
+		if (IsPlayerBotPlainAnvilPolicyStep(item))
 			return false;
 		const int level = (int)item->GetLevelLimit();
 		const int plus = (int)item->GetRefineLevel();
@@ -3849,6 +3854,8 @@ namespace
 	bool IsPlayerBotScrollRuleArmour(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->GetType() != ITEM_ARMOR || item->GetSubType() != ARMOR_BODY)
+			return false;
+		if (IsPlayerBotPlainAnvilPolicyStep(item))	// MT2009_PLUS_BOT_REFINE_POLICY_V1
 			return false;
 		const int level = (int)item->GetLevelLimit();
 		const int plus = (int)item->GetRefineLevel();
