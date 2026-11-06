@@ -396,6 +396,12 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // another kingdom's first village through Orc Valley and the guilds' raids on
 // one - last, after the meetings, the market and the guild war it borrows.
 #include "playerbot_kingdom_visits.h"
+// MT2009_PLUS_BOT_SURVIVE_V1 (include): tier gear 60+, the step down after deaths, exp rings to the market, Dragon God
+// boosters through the ItemShop - after the market, the ItemShop and the env reader of playerbot_yohara_bots.h
+#include "playerbot_survive.h"
+// MT2009_PLUS_BOT_DEATHLOOP_V1 (include): the revive by the body and the hidden flee to a safe point, the loop's map
+// avoided, the Monkey maps' level bands, the death pin cleared on the easier map - after the step down it feeds
+#include "playerbot_deathloop.h"
 
 namespace
 {
@@ -7801,6 +7807,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// Rings and gloves on the clock while the bot hunts and off in town,
 		// and the uniques a bot never wears off for good.
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
+		// MT2009_PLUS_BOT_SURVIVE_V1: the Dragon God boosters bought and drunk before the hunt, the death loop's pin, the
+		// censuses (playerbot_survive.h, playerbot_deathloop.h).
+		ManagePlayerBotSurvive(ch, state, dwNow);
 		// The gear pass, early. It used to sit at the bottom of the tick, past
 		// the stall, the loot, the horse, the fishing, the travel, the town
 		// visit and the wander, each of which claims the tick - so a bot that
