@@ -68,8 +68,8 @@
 //     20438+sign is there or not), the least run first; a kingdom with
 //     ZRUN_OWN_MIN free bots that want to go (the dungeon runs' refusal, rest,
 //     share by personality and the kingdom's shout gap) and that are ready -
-//     GetZrunReadyFloor: the bot's level, held to its gear (the weapon's and
-//     the armour's level, + their plus, + 15), against the floors' monster
+//     GetZrunReadyFloor: the bot's level, held to its real power (its
+//     strength + 5, MT2009_PLUS_ZODIAC_STRENGTH_V2), against the floors' monster
 //     levels (MobLevels/OfficerLevels): floor 6 at 45 ... floor 39 at 110 - and
 //     hold the entry, 12 Anima Spheres (player.bead: 36 to begin with, one an
 //     hour up to 36 - BeadTime, the login's count, asked once an hour a bot -
@@ -340,7 +340,7 @@ namespace
 		int level;
 		bool healer;
 		int ready;	// V7: the floor it is ready for (an own run's), 0 for a test run
-		int strength;	// MT2009_PLUS_ZODIAC_STRENGTH_V1: its level held to its gear (GetZrunStrength)
+		int strength;	// MT2009_PLUS_ZODIAC_STRENGTH_V1/_V2: its level held to its real power (GetZrunStrength)
 		TZrunCand(DWORD p, int l, bool h, int r = 0, int s = 0) : pid(p), level(l), healer(h), ready(r), strength(s) {}
 	};
 
@@ -467,52 +467,38 @@ namespace
 
 	// ------------------------------------------------------------ V7: the bots' own call
 
-	// The gear's level: the lower of the weapon's and the armour's, each with its plus.
-	int GetZrunGearLevel(LPCHARACTER ch)
-	{
-		LPITEM weapon = GetPlayerBotHandWeapon(ch);
-		LPITEM body = ch->GetWear(WEAR_BODY);
-		if (!weapon || !body || !weapon->GetProto() || !body->GetProto())
-			return 0;
-		// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: a young heroes' weapon is a +9 weapon of the bot's level.
-		int wl = 0, wp = 0;
-		GetPlayerBotWeaponEffective(ch, &wl, &wp, weapon);
-		const int w = wl + wp;
-		const int b = GetPlayerBotProtoLevelLimit(body->GetProto()) + body->GetRefineLevel();
-		return std::min(w, b);
-	}
-
-	// The highest floor a bot is ready for: its level, held to its gear (+15), against the floors' monsters
-	// (MobLevels: 1-3 up to 30, 4-6 45, 7-9 60, 10-12 75, 13-15 80, 16-21 85, 22-28 100, 29-34 135; the
-	// Metins of 35-39 at OfficerLevels, 120-135). 39 is the whole temple (40 follows it).
-	int GetZrunReadyFloor(LPCHARACTER ch)
-	{
-		if (!ch)
-			return 0;
-		const int e = std::min((int)ch->GetLevel(), GetZrunGearLevel(ch) + 15);
-		static const int s_aiReady[][2] = { { 110, 39 }, { 105, 34 }, { 100, 28 }, { 85, 21 }, { 80, 15 }, { 75, 12 },
-			{ 60, 9 }, { 45, 6 } };
-		for (size_t i = 0; i < sizeof(s_aiReady) / sizeof(s_aiReady[0]); ++i)
-			if (e >= s_aiReady[i][0])
-				return s_aiReady[i][1];
-		return 0;
-	}
-
 	// MT2009_PLUS_ZODIAC_STRENGTH_V1 (the owner, 6 November 2026: only parties of sufficient strength go in).
 	// On the floors 6, 12, 19 and 24 one death sends the whole party out (CZodiacManager::DeadPC) - "expelled"
 	// was 88% of the failed own runs on the supporters' world (1 202 of 1 308 a week) and 1 012 of 1 132 on
 	// vps3, nearly all of them on floor 6. Counted over the test world's 2 976 own runs (6 November) floor 6
 	// throws out a party whose weakest member is of 45-59 in 27% of the runs, 60-64 20%, 65-69 15%, 70-74 11%,
 	// 75-79 5%, 80+ 1% - the weakest member is the one who dies. So a party goes in only when, for each of
-	// those floors on its way, its weakest member's strength (the level held to the gear: weapon's and
-	// armour's level + plus + zrun_str_gear, 10) is at least the floor's mark and the party's average the mark
-	// + zrun_str_avg (5); its run ends before the first floor it is too weak for, and a party too weak for
-	// floor 6 does not go (the weakest dropped first while more than ZRUN_OWN_MIN remain). The marks are the
-	// event flags zrun_str6/12/19/24 (65/75/85/100); zrun_strength -1 switches the gate off. The operator's
-	// forced call ("own" in the test file) is not gated.
+	// those floors on its way, its weakest member's strength (GetZrunStrength, below) is at least the floor's
+	// mark and the party's average the mark + zrun_str_avg (5); its run ends before the first floor it is too
+	// weak for, and a party too weak for floor 6 does not go (the weakest dropped first while more than
+	// ZRUN_OWN_MIN remain). The marks are the event flags zrun_str6/12/19/24 (65/75/85/100); zrun_strength -1
+	// switches the gate off. The operator's forced call ("own" in the test file) is not gated.
+	//
+	// MT2009_PLUS_ZODIAC_STRENGTH_V2 (the owner, 6 November 2026, as MT2009_PLUS_BOT_WUKONG_STRENGTH_V2: a
+	// level-30 weapon with a good average-damage line, or a young heroes' weapon, is strong - the item level is
+	// no measure). V1 held the strength to the gear's level (the weapon's and the armour's level + plus +
+	// zrun_str_gear) and the ready floor to it + 15; neither reads an item level any more. A bot's strength is
+	// its level - "the level it fights like" - unless its real blow (GetPlayerBotRealAttack: the hand's weapon
+	// through the damage model) is under zrun_atk_pct (70) % or its max HP under zrun_hp_pct (70) % of the
+	// medians of the bots of its band of five levels (GetPlayerBotBandMedians, sampled from level 50 by the
+	// errands). Such a bot is held back in level units, so the marks keep their meaning (levels):
+	//   q        = the worse of (blow / band's blow) / zrun_atk_pct and (HP / band's HP) / zrun_hp_pct, in %
+	//   strength = min(level - zrun_str_gear, level * q / 100)          (only when q < 100)
+	// - at least zrun_str_gear (10; now the held-back bot's least step down, about one mark: the marks lie
+	// 10-15 apart) and deeper the further it lags: a 90 at 69% of its band's blow is 80 (to floor 18), at 49% is
+	// 63 (not even floor 6). The ready floor is the strength + 5 (at most the level), as V1's gear + 15 was its
+	// gear + 10. A band with too few samples (PLAYERBOT_HP70_MIN_SAMPLES) lets the bot through on its level
+	// alone; no weapon in a sampled band is a blow of 0 (strength 0). The own call's refusals by level/atk/hp and
+	// the held-back bots are counted: "ZODIAC_RUN: strength census" (throttled, and in "status").
 	bool ZrunStrengthOn() { return GetZrunSetting("zrun_strength", 1) > 0; }
 	int ZrunStrengthGear() { const int v = GetZrunSetting("zrun_str_gear", 10); return v < 0 ? 0 : v; }
 	int ZrunStrengthAvg() { const int v = GetZrunSetting("zrun_str_avg", 5); return v < 0 ? 0 : v; }
+	int ZrunStrengthPct(const char* name) { const int v = GetZrunSetting(name, 70); return v < 1 ? 70 : std::min(200, v); }
 	int ZrunStrengthMark(int floor)
 	{
 		switch (floor)
@@ -525,12 +511,78 @@ namespace
 		}
 	}
 
-	int GetZrunStrength(LPCHARACTER ch)
+	// MT2009_PLUS_ZODIAC_STRENGTH_V2: why a bot's strength is what it is, and the census of the own call (bot
+	// looks since the core started, a plan pass each).
+	enum { ZRUN_POWER_OK = 0, ZRUN_POWER_NO_MEDIAN, ZRUN_POWER_ATK, ZRUN_POWER_HP };
+	struct TZrunStrengthCensus
+	{
+		unsigned int looks, passed, noMedian, heldAtk, heldHp, refusedLevel, refusedAtk, refusedHp, trimmed, partyRefused;
+	};
+	TZrunStrengthCensus s_kZrunStrengthCensus = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+	// The bot's strength (the level it fights like, above); why out: ZRUN_POWER_*.
+	int GetZrunStrength(LPCHARACTER ch, int* pWhy = NULL)
+	{
+		if (pWhy)
+			*pWhy = ZRUN_POWER_OK;
+		if (!ch)
+			return 0;
+		const int level = ch->GetLevel();
+		long long hpMedian = 0, atkMedian = 0;
+		if (!GetPlayerBotBandMedians(level, &hpMedian, &atkMedian))
+		{
+			if (pWhy)
+				*pWhy = ZRUN_POWER_NO_MEDIAN;
+			return level;
+		}
+		long long qAtk = 100, qHp = 100;
+		if (atkMedian > 0)
+			qAtk = GetPlayerBotRealAttack(ch) * 10000 / (atkMedian * ZrunStrengthPct("zrun_atk_pct"));
+		if (hpMedian > 0)
+			qHp = (long long)ch->GetMaxHP() * 10000 / (hpMedian * ZrunStrengthPct("zrun_hp_pct"));
+		const long long q = std::max(0LL, std::min(qAtk, qHp));
+		if (q >= 100)
+			return level;
+		if (pWhy)
+			*pWhy = qAtk <= qHp ? ZRUN_POWER_ATK : ZRUN_POWER_HP;
+		return std::max(0, std::min(level - ZrunStrengthGear(), (int)((long long)level * q / 100)));
+	}
+
+	// The highest floor a level (or a strength) is ready for, against the floors' monsters (MobLevels: 1-3 up to
+	// 30, 4-6 45, 7-9 60, 10-12 75, 13-15 80, 16-21 85, 22-28 100, 29-34 135; the Metins of 35-39 at
+	// OfficerLevels, 120-135). 39 is the whole temple (40 follows it).
+	int GetZrunReadyFloorOf(int e)
+	{
+		static const int s_aiReady[][2] = { { 110, 39 }, { 105, 34 }, { 100, 28 }, { 85, 21 }, { 80, 15 }, { 75, 12 },
+			{ 60, 9 }, { 45, 6 } };
+		for (size_t i = 0; i < sizeof(s_aiReady) / sizeof(s_aiReady[0]); ++i)
+			if (e >= s_aiReady[i][0])
+				return s_aiReady[i][1];
+		return 0;
+	}
+
+	// The highest floor a bot is ready for: its level, held to its real power (V2: its strength + 5).
+	int GetZrunReadyFloor(LPCHARACTER ch, int strength)
 	{
 		if (!ch)
 			return 0;
-		const int gear = GetZrunGearLevel(ch);
-		return std::min((int)ch->GetLevel(), gear > 0 ? gear + ZrunStrengthGear() : 0);
+		return GetZrunReadyFloorOf(std::min((int)ch->GetLevel(), strength + 5));
+	}
+
+	void LogZrunStrengthCensus(DWORD dwNow, bool throttled)
+	{
+		const TZrunStrengthCensus& c = s_kZrunStrengthCensus;
+		char line[400];
+		snprintf(line, sizeof(line), "looks=%u passed=%u no_median=%u held atk=%u hp=%u refused level=%u atk=%u hp=%u "
+				"trimmed=%u party_refused=%u (gate=%d atk_pct=%d hp_pct=%d step=%d marks=%d/%d/%d/%d avg=+%d)",
+				c.looks, c.passed, c.noMedian, c.heldAtk, c.heldHp, c.refusedLevel, c.refusedAtk, c.refusedHp, c.trimmed,
+				c.partyRefused, ZrunStrengthOn() ? 1 : 0, ZrunStrengthPct("zrun_atk_pct"), ZrunStrengthPct("zrun_hp_pct"),
+				ZrunStrengthGear(), ZrunStrengthMark(6), ZrunStrengthMark(12), ZrunStrengthMark(19), ZrunStrengthMark(24),
+				ZrunStrengthAvg());
+		if (throttled)
+			PlayerBotLogThrottled("zrun_strength_census", dwNow, "ZODIAC_RUN: strength census %s", line);
+		else
+			sys_log(0, "ZODIAC_RUN: strength census %s", line);
 	}
 
 	// The last floor the party is strong enough to go to (39: the whole temple); the floor it stops before,
@@ -587,10 +639,12 @@ namespace
 			if (drop == party.size())
 				break;
 			party.erase(party.begin() + drop);
+			++s_kZrunStrengthCensus.trimmed;	// MT2009_PLUS_ZODIAC_STRENGTH_V2
 			floor = GetZrunStrengthFloor(party, &stopAt, &weakest, &avg);
 		}
 		if (floor < ZRUN_OWN_MIN_FLOOR)
 		{
+			++s_kZrunStrengthCensus.partyRefused;	// MT2009_PLUS_ZODIAC_STRENGTH_V2
 			PlayerBotLogThrottled("zrun_strength_refused", dwNow,
 					"ZODIAC_RUN: strength gate refused empire=%d party=%u (of %u) weakest=%d avg=%d floor=%d needs=%d/%d",
 					empire, (unsigned int)party.size(), (unsigned int)before, weakest, avg, stopAt,
@@ -775,14 +829,43 @@ namespace
 			if (!forced && s_adwPlayerBotDgRunShoutAt[ch->GetEmpire()] != 0 &&
 					dwNow - s_adwPlayerBotDgRunShoutAt[ch->GetEmpire()] < PLAYERBOT_DGRUN_SHOUT_GAP_MS)
 				continue;
-			const int ready = GetZrunReadyFloor(ch);
+			// MT2009_PLUS_ZODIAC_STRENGTH_V2: the strength and the ready floor of the real power; counted.
+			int why = ZRUN_POWER_OK;
+			const int strength = GetZrunStrength(ch, &why);
+			const int ready = GetZrunReadyFloor(ch, strength);
+			TZrunStrengthCensus& census = s_kZrunStrengthCensus;
+			if (!forced)
+				++census.looks;
 			if (ready < ZRUN_OWN_MIN_FLOOR)
+			{
+				if (!forced)
+				{
+					if (GetZrunReadyFloorOf(ch->GetLevel()) < ZRUN_OWN_MIN_FLOOR)
+						++census.refusedLevel;
+					else if (why == ZRUN_POWER_ATK)
+						++census.refusedAtk;
+					else
+						++census.refusedHp;
+				}
 				continue;
+			}
+			if (!forced)
+			{
+				++census.passed;
+				if (why == ZRUN_POWER_NO_MEDIAN)
+					++census.noMedian;
+				else if (why == ZRUN_POWER_ATK)
+					++census.heldAtk;
+				else if (why == ZRUN_POWER_HP)
+					++census.heldHp;
+			}
 			if (GetPlayerBotDgRunRefusal(ch, it->second, dwNow))
 				continue;
 			byEmpire[ch->GetEmpire()].push_back(TZrunCand(pid, ch->GetLevel(), ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0,
-					ready, GetZrunStrength(ch)));
+					ready, strength));
 		}
+		if (!forced)
+			LogZrunStrengthCensus(dwNow, true);	// MT2009_PLUS_ZODIAC_STRENGTH_V2
 		// Each kingdom's readiest first; the Anima Spheres asked of those (a query each) until the party is there.
 		std::vector<TZrunCand> payers[4];
 		size_t pools[4] = { 0, 0, 0, 0 };
@@ -1744,6 +1827,7 @@ namespace
 				ZrunOwn() ? 1 : 0, ZrunOwnMax(), CountPlayerBotDgRuns(-1) + CountOwnZruns(), GetPlayerBotDgRunCap(),
 				open.empty() ? "-" : open.c_str(), ZrunSize(), ZrunMinLevel(), ZrunTargetFloor(), ZrunBoost(), ZrunPrisms(),
 				ZrunGapSeconds(), (unsigned int)s_bZrunNextSign);
+		LogZrunStrengthCensus(get_dword_time(), false);	// MT2009_PLUS_ZODIAC_STRENGTH_V2
 	}
 
 	BYTE ParseZrunSign(const char* arg)
