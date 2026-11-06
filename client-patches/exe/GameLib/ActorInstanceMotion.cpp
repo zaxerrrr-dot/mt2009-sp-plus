@@ -25,8 +25,15 @@ void CActorInstance::__MotionEventProcess(BOOL isPC)
 	}
 	else
 	{
-		MotionEventProcess();
-		SoundEventProcess(!isPC);
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		// MT2009_PLUS_STANDING_MOUNT_V2: on a standing mount the rider's WALK/RUN data stays bound (the movement state
+		// machine needs TYPE_MOVE) while his model plays WAIT - skip the walk's footstep sounds/effects then.
+		if (!(__IsMoveMotion() && __IsMountingStandingMount()))
+#endif
+		{
+			MotionEventProcess();
+			SoundEventProcess(!isPC);
+		}
 
 		++m_kCurMotNode.dwcurFrame;
 	}
@@ -729,7 +736,9 @@ DWORD CActorInstance::__SetMotion(const SSetMotionData& c_rkSetMotData, DWORD dw
 #ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
 		// MT2009_PLUS_STANDING_MOUNT_V1: on a standing mount the rider keeps his ground motion modes, so WALK/RUN
 		// were his walk/run on the board. He now plays his WAIT (standing, all of its random variants) while the
-		// board plays its own walk/run and moves; the motion node keeps WALK/RUN, so moving/stopping is unchanged.
+		// board plays its own walk/run and moves. Only the model's animation is swapped: the motion node AND the bound
+		// motion data stay WALK/RUN (MT2009_PLUS_STANDING_MOUNT_V2 - with WAIT's data bound IsMoving() was false, so
+		// key-up/stop and turning never reached the walk: endless glide, no direction change in 3.0.18).
 		if ((CRaceMotionData::NAME_WALK == wMotionIndex || CRaceMotionData::NAME_RUN == wMotionIndex) && __IsMountingStandingMount())
 		{
 			MOTION_KEY dwWaitKey;
@@ -762,7 +771,7 @@ DWORD CActorInstance::__SetMotion(const SSetMotionData& c_rkSetMotData, DWORD dw
 
 	__HideWeaponTrace();
 
-	if (__BindMotionData(dwRiderMotKey))	// MT2009_PLUS_STANDING_MOUNT_V1: WAIT's data (no footsteps) when standing on a board
+	if (__BindMotionData(dwMotKey))	// MT2009_PLUS_STANDING_MOUNT_V2: always the requested motion's data (TYPE_MOVE for WALK/RUN)
 	{
 		int iLoopCount = __GetLoopCount();
 		SetMotionLoopCount(iLoopCount);

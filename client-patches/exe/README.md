@@ -28,7 +28,7 @@ grał naziemny chód/bieg. Teraz stoi (WAIT), a deska/chmura/łódź gra własny
 |---|---|
 | `UserInterface/Locale_inc.h` | `ENABLE_MT2009_STANDING_MOUNT_FIX`, `MT2009_STANDING_MOUNT_FIRST/LAST`, `ENABLE_FIX_EFFECT_MOVEMENT` |
 | `GameLib/ActorInstance.h/.cpp` | `__IsMountingStandingMount()`; `__GetCurrentComboType` daje na nim typ kombinacji jak na ziemi; `UpdateAttachingInstances` przeniesione z `OnUpdate` do `INSTANCEBASE_Transform` po `Transform()` (efekty nie zostają w tyle w ruchu) |
-| `GameLib/ActorInstanceMotion.cpp` | `__SetMotion`: przy WALK/RUN na wierzchowcu stojącym model jeźdźca gra WAIT jego trybu (z losowymi wariantami) i wiąże dane WAIT (bez kroków); węzeł ruchu zostaje WALK/RUN, więc logika ruchu/zatrzymania bez zmian |
+| `GameLib/ActorInstanceMotion.cpp` | `__SetMotion`: przy WALK/RUN na wierzchowcu stojącym tylko **model** jeźdźca gra WAIT jego trybu (z losowymi wariantami); węzeł ruchu i związane dane ruchu zostają WALK/RUN (`TYPE_MOVE`), więc `IsWalking()`/zatrzymanie/skręt działają jak na koniu. `__MotionEventProcess` pomija wtedy zdarzenia/dźwięki chodu (bez kroków). `MT2009_PLUS_STANDING_MOUNT_V2` (3.0.19): w 3.0.18 wiązane były dane WAIT, więc `IsWalking()` = false – po puszczeniu W postać sunęła bez końca i nie dało się zmienić kierunku |
 | `GameLib/ActorInstanceBattle.cpp` | `__OnEndCombo`: kombinacja naziemna zaczyna się od początku (nie od 1 jak na koniu) |
 | `GameLib/ActorInstanceAttach.cpp` | wachlarz zostaje w prawej ręce (poza naziemna), nie w lewej jak na koniu |
 | `GameLib/ActorInstanceCollisionDetection.cpp` | `BlockMovement`: zatrzymuje też ruch samego jeźdźca (nie przechodzi przez ściany) |
