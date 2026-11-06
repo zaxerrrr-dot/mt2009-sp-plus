@@ -248,17 +248,34 @@ namespace
 			s_mapPlayerBotBalathorPolySince.erase(pid);
 	}
 
-	bool IsPlayerBotBalathorCandidate(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
+	bool IsPlayerBotBalathorPartyTraining();
+
+	// MT2009_PLUS_BALATHOR_BOT_CENSUS_WHY_V1: why a fit bot is not a candidate (NULL: it is) - the census counts them
+	const char* GetPlayerBotBalathorCandidateWhy(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || ch->IsDead() || !IsPlayerBotBalathorFitMember(ch))
-			return false;
+			return "unfit";
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, DWORD>::const_iterator rest = s_mapPlayerBotBalathorRest.find(pid);
 		if (rest != s_mapPlayerBotBalathorRest.end() && (int)(dwNow - rest->second) < 0)
-			return false;
-		if (IsPlayerBotOnBalathorRun(pid) || IsPlayerBotOnDungeonRun(pid) || IsPlayerBotYoharaCohortPID(pid))
-			return false;
-		return GetPlayerBotLfgRefusal(ch, state, dwNow) == NULL;
+			return "rest";
+		if (IsPlayerBotOnBalathorRun(pid))
+			return "balathor_run";
+		if (IsPlayerBotOnDungeonRun(pid))
+			return "dgrun";
+		// MT2009_PLUS_BALATHOR_BOT_COHORT_V1: in the party training a Yohara cohort member goes like into Meley - only one
+		// living in the Hydra / SZC or a dungeon trainee is held (6 Nov: 166 fit, 0 free with the whole cohort held)
+		if (IsPlayerBotYoharaHydraResident(pid) || IsPlayerBotYoharaSzcResident(pid) || IsPlayerBotErebuTrainee(pid) ||
+				IsPlayerBotYdgTrainee(pid))
+			return "trainee";
+		if (!IsPlayerBotBalathorPartyTraining() && IsPlayerBotYoharaCohortPID(pid))
+			return "yohara_cohort";
+		return GetPlayerBotLfgRefusal(ch, state, dwNow);
+	}
+
+	bool IsPlayerBotBalathorCandidate(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
+	{
+		return GetPlayerBotBalathorCandidateWhy(ch, state, dwNow) == NULL;
 	}
 
 	void GetPlayerBotBalathorSpot(const TPlayerBotBalathorRun& run, DWORD pid, long& x, long& y)
@@ -1119,6 +1136,7 @@ namespace
 		const SBalathorConfig& cfg = CBalathorManager::Instance().GetConfig();
 		// The pool by kingdom, the strongest first.
 		std::vector<std::pair<long long, DWORD> > pool[4];
+		std::map<std::string, int> whyCount;
 		int levelFit = 0;
 		for (TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.begin(); st != s_mapPlayerBotAIStates.end(); ++st)
 		{
@@ -1128,15 +1146,27 @@ namespace
 			if (!IsPlayerBotBalathorFitMember(ch))
 				continue;
 			++levelFit;
-			if (IsPlayerBotBalathorCandidate(ch, st->second, dwNow))
+			const char* why = GetPlayerBotBalathorCandidateWhy(ch, st->second, dwNow);
+			if (!why)
 				pool[ch->GetEmpire()].push_back(std::make_pair(ScorePlayerBotYdg(ch), st->first));
+			else if (census)
+				++whyCount[why];
 		}
 		const int size = GetPlayerBotBalathorPartySize();
 		if (census)
+		{
+			std::string whyText;
+			for (std::map<std::string, int>::const_iterator w = whyCount.begin(); w != whyCount.end(); ++w)
+			{
+				char buf[64];
+				snprintf(buf, sizeof(buf), "%s%s:%d", whyText.empty() ? "" : ",", w->first.c_str(), w->second);
+				whyText += buf;
+			}
 			sys_log(0, "PLAYERBOT_BALATHOR: party census fit_level=%d free=%u/%u/%u size=%d running=%d cap=%d train=%d called=%u "
-					"entered=%u rewards=%u on=%d", levelFit, (unsigned int)pool[1].size(), (unsigned int)pool[2].size(),
+					"entered=%u rewards=%u on=%d not_free=%s", levelFit, (unsigned int)pool[1].size(), (unsigned int)pool[2].size(),
 					(unsigned int)pool[3].size(), size, running, cap, train ? 1 : 0, s_uPlayerBotBalathorPartyCalled,
-					s_uPlayerBotBalathorPartyEntered, s_uPlayerBotBalathorPartyWon, on ? 1 : 0);
+					s_uPlayerBotBalathorPartyEntered, s_uPlayerBotBalathorPartyWon, on ? 1 : 0, whyText.empty() ? "-" : whyText.c_str());
+		}
 		if (!call)
 			return;
 		for (int e = 1; e <= 3; ++e)
