@@ -2108,6 +2108,8 @@ namespace {
                     ++lines;
         return lines;
     }
+    // MT2009_PLUS_BOT_SURVIVE_V1: an exp-locked bot's Experience Rings ahead of the candidates (playerbot_survive.h).
+    void HoistPlayerBotSurviveExpRings(LPCHARACTER ch, std::vector<std::pair<int, WORD> >& scored);
     void BotOfflineHoistSpareGear(LPCHARACTER ch, NativeShop shop, std::vector<std::pair<int, WORD> >& scored) {
         if (!ch || !shop || scored.size() < 2) return;
         int lines[9] = { -1, -1, -1, -1, -1, -1, -1, -1, -1 };
@@ -3483,6 +3485,7 @@ namespace {
         std::vector<std::pair<int, WORD> > scored;
         CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGearOnCounter, true);   // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1
         BotOfflineHoistSpareGear(ch, shop, scored);   // MT2009_PLUS_BOT_SHIELD_LISTING_V1
+        HoistPlayerBotSurviveExpRings(ch, scored);   // MT2009_PLUS_BOT_SURVIVE_V1: an exp-locked bot's rings go up first
         // The line cut before the board opened goes first, whatever it scores
         // now: it is exactly a line, so BotOfflinePrepareLine below hands it
         // back as it is. A stale cell (the item gone, or another in its

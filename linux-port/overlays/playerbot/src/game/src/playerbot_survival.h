@@ -14,6 +14,9 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_SURVIVE_V1: the deaths an hour that step a bot down to an easier map (playerbot_survive.h).
+	void NotePlayerBotSurviveDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+
 	// MT2009_PLUS_BOT_HELD_RETREAT_V1: a bot held by a monster does not hide.
 	// At 20% HP a bot went into the emergency rest - invisible, healing,
 	// standing still - and the monsters that chased it could not strike an
@@ -435,6 +438,7 @@ namespace
 			// A Conqueror dying to monsters too often has outgrown its gear
 			// (playerbot_persona.h).
 			NotePlayerBotPersonaDeath(ch, state, dwNow);
+			NotePlayerBotSurviveDeath(ch, state, dwNow); // MT2009_PLUS_BOT_SURVIVE_V1
 
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
