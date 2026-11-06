@@ -4769,6 +4769,9 @@ namespace
 	// (FindPlayerBotBackupWeapon, FindPlayerBotBackupArmour) nor a project for
 	// the anvil (IsPlayerBotHigherTierSpare), and the box gives it back to the
 	// counter (WithdrawPlayerBotSafebox).
+	// MT2009_PLUS_BOT_SURVIVE_V1: a body armour of the 61 / 66 tier over the worn one's level (playerbot_survive.h).
+	bool IsPlayerBotSurviveTierProject(LPCHARACTER ch, LPITEM item, LPITEM worn);
+
 	bool IsPlayerBotFinishedSpareGoods(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->GetRefineLevel() < PLAYERBOT_SPARE_GOODS_MIN_PLUS ||
@@ -4782,6 +4785,9 @@ namespace
 		else if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_SHIELD)
 			worn = ch->GetWear(WEAR_SHIELD);
 		if (!worn || worn == item)
+			return false;
+		// MT2009_PLUS_BOT_SURVIVE_V1: "zbroja 61/66 dla botow 60+" - the tier's armour goes on to +9 and on the bot.
+		if (IsPlayerBotSurviveTierProject(ch, item, worn))
 			return false;
 		return GetPlayerBotEquipmentScore(worn, ch) >= GetPlayerBotEquipmentScore(item, ch);
 	}

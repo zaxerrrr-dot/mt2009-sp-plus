@@ -935,6 +935,8 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
+	// MT2009_PLUS_BOT_SURVIVE_V1: the easier map of a bot dying on the draw's (playerbot_survive.h).
+	long ApplyPlayerBotSurviveStepDown(LPCHARACTER ch, long map);
 
 	// MT2009_PLUS_BOT_MATS_FLOW_V1: playerbot_mats_flow.h - the map of a material farm order (Zab Orka).
 	long GetPlayerBotMatsFarmMap(LPCHARACTER ch);
@@ -1407,7 +1409,12 @@ namespace
 		if (map != 0 && map != GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) &&
 				map != GetPlayerBotGuildErrandMap(ch) && map != GetPlayerBotMatsFarmMap(ch) && GetPlayerBotArezzoFrontier(ch) == 0 &&
 				!IsPlayerBotOnBlackSteedTrial(ch) && !IsPlayerBotOnMilitaryHorseTrial(ch))
+		{
 			map = GatePlayerBotElementMap(ch, map);
+			// MT2009_PLUS_BOT_SURVIVE_V1: several deaths an hour on the draw's map - an easier one for a while, where the
+			// materials the bot lacks drop (playerbot_survive.h); an errand's map stays as it was named.
+			map = ApplyPlayerBotSurviveStepDown(ch, map);
+		}
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))

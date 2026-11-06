@@ -486,6 +486,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_MATS_FLOW_V1: the materials on the move - the swap at the Dozorca, the scarce materials and the belts'
 // out of the boxes, the farm map of a material the market cannot sell the bot - after the drop knowledge
 #include "playerbot_mats_flow.h"
+// MT2009_PLUS_BOT_SURVIVE_V1: tier gear 60+, the step down after deaths, exp rings to the market, Dragon God boosters -
+// after the market, the ItemShop V3 and the drop knowledge it uses
+#include "playerbot_survive.h"
 
 namespace
 {
@@ -7994,6 +7997,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// Rings and gloves on the clock while the bot hunts and off in town,
 		// and the uniques a bot never wears off for good.
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
+		// MT2009_PLUS_BOT_SURVIVE_V1: the Dragon God boosters bought and drunk before the hunt, the census (playerbot_survive.h).
+		ManagePlayerBotSurvive(ch, state, dwNow);
 		// MT2009_PLUS_ELEMENT_STONES_V1: a Yohara bot's Kamien Ochrony Zywiolow on, renewed when it ends.
 		ManagePlayerBotElementStone(ch, state, dwNow);
 		// MT2009_PLUS_BOT_ELEMENT_PET_V1: and the Maly Zywiolak of its hunt element out (bought, renewed after its 15 days).
