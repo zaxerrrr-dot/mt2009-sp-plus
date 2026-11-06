@@ -40,7 +40,7 @@
 // The operator: the file playerbot_meley_train in the core's directory (read every 30 s when it changed; kept), the
 // same line on game1 and game3:
 //     parties <n> [size]   n runs at once on game1 (the 3 h rest off, a short rest after a run), parties of size
-//                          (5-8, default 6); on game3 up to n * size Sung Ma visitors away at once
+//                          (5-16, default 6); on game3 up to n * size Sung Ma visitors away at once (at most 160)
 //     trips <n>            the visitors' cap, whatever parties says
 //     # ...                a comment
 // Without the file: PLAYERBOT_MELEY_RUNS (.env, default 2) runs at once and PLAYERBOT_MELEY_TRIPS (default 12)
@@ -49,6 +49,22 @@
 //
 // The log: BOT_MELEY lines (train, pool, called, share, run start / end with the materials gained, trip out / home /
 // held / released, status every PLAYERBOT_MELEY_STATUS_MS) besides the BOT_DGRUN ones of every run.
+//
+// MT2009_PLUS_BOT_MELEY16_V1 (the owner, 6 November: "Meley druzyny po 16 botow, zrob 10 takich druzyn i testuj"; the
+// night before parties of 7-8 passed stage 1 and wiped in stage 2 every time - 4 eggs of 1.3 million back every 120 s,
+// the statues 75% -> 50% between two egg waves, 60-90 magma monsters on the party). The guild lair is for 4-16 people:
+//   * a run of up to PLAYERBOT_MELEY_PARTY_MAX (16) - the core's party is of eight (PARTY_MAX_MEMBER), so a run of
+//     more than eight is the leader's party and a second one (UpdatePlayerBotDgRunParty); the quest asks for none
+//     (the bots' run is jumped in by the core); two healing Shamans asked for when the size is over eight (one at
+//     the least, as before); called with and gone in with 3/4 of the size at the least (12 of 16), the runs' death
+//     cap 110 a party of eight (220 for 16);
+//   * the roles inside a run of nine and more (PLAYERBOT_MELEY_ROLE_*, set as it goes in): the healers (the Shamans:
+//     Cure and the buffs first, then the leader's objective), the egg killers (a quarter, the strongest hitters) -
+//     each on an egg of its own while eggs stand (the statues are untouchable while one stands), the magma guard (a
+//     quarter, the Warriors and Suras with the most health) - what attacks a member, a healer first, never the
+//     objective while there is such a monster, and the statue team (the rest with the leader) - the leader's
+//     objective (the eggs, then one statue all together, its 75% -> 50% in one window before the eggs come back);
+//   * nothing of the lair changed: no monster, statue, egg, timer or reward.
 //
 // An implementation fragment: included at the end of playerbot_dungeon_runs.h, in the anonymous namespace, after the
 // YDG one (its bonuses, room and score); the Sung Ma hooks (playerbot_yohara_sungma.h) and the gear2 need
@@ -72,6 +88,14 @@ namespace
 	const int PLAYERBOT_MELEY_VISIT_RUNS = 1;
 	const int PLAYERBOT_MELEY_VISIT_RUNS_TRAIN = 3;
 	const int PLAYERBOT_MELEY_CALLS_A_PASS = 2;
+	// MT2009_PLUS_BOT_MELEY16_V1: the guild lair's 4-16 - a run's largest party, the visitors' cap, the roles.
+	const int PLAYERBOT_MELEY_PARTY_MAX = 16;
+	const int PLAYERBOT_MELEY_TRIPS_MAX = 160;
+	const int PLAYERBOT_MELEY_ROLE_STATUE = 0;
+	const int PLAYERBOT_MELEY_ROLE_HEAL = 1;
+	const int PLAYERBOT_MELEY_ROLE_EGG = 2;
+	const int PLAYERBOT_MELEY_ROLE_MAGMA = 3;
+	const int PLAYERBOT_MELEY_ROLE_FOCUS_HP = 20;	// under it a role is left for the run's own (alive first)
 	const char* const PLAYERBOT_MELEY_TRAIN_FILE = "playerbot_meley_train";
 
 	// playerbot_yohara_gear2.h (later in this unit): how many of a material the bot's targets take, one attempt.
@@ -106,7 +130,9 @@ namespace
 		DWORD dwNextShare;
 		int iShared;
 		std::map<DWORD, std::vector<int> > start;
-		TPlayerBotMeleyRun() : bTrain(false), iNeeders(0), iVisitors(0), dwNextShare(0), iShared(0) {}
+		int iSize;	// MT2009_PLUS_BOT_MELEY16_V1: the party size called (0: not this planner's)
+		std::map<DWORD, std::pair<int, int> > roles;	// pid -> role, its index among the role's members
+		TPlayerBotMeleyRun() : bTrain(false), iNeeders(0), iVisitors(0), dwNextShare(0), iShared(0), iSize(0) {}
 	};
 	std::map<int, TPlayerBotMeleyRun> s_mapPlayerBotMeleyRuns;
 	struct TPlayerBotMeleyStats
@@ -150,9 +176,9 @@ namespace
 			return s_kPlayerBotMeleyTrain.trips;
 		static int s_iTrips = -1;
 		if (s_iTrips < 0)
-			s_iTrips = ReadPlayerBotYoharaEnvInt("PLAYERBOT_MELEY_TRIPS", 12, 0, 96);
+			s_iTrips = ReadPlayerBotYoharaEnvInt("PLAYERBOT_MELEY_TRIPS", 12, 0, PLAYERBOT_MELEY_TRIPS_MAX);
 		if (IsPlayerBotMeleyTraining())
-			return std::min(96, std::max(s_iTrips, s_kPlayerBotMeleyTrain.parties * s_kPlayerBotMeleyTrain.size));
+			return std::min(PLAYERBOT_MELEY_TRIPS_MAX, std::max(s_iTrips, s_kPlayerBotMeleyTrain.parties * s_kPlayerBotMeleyTrain.size));
 		return s_iTrips;
 	}
 
@@ -185,10 +211,10 @@ namespace
 				{
 					t.parties = std::max(0, std::min(20, a));
 					if (got >= 3)
-						t.size = std::max(5, std::min(playerbot_dgrun::PARTY_MAX, b));
+						t.size = std::max(5, std::min(PLAYERBOT_MELEY_PARTY_MAX, b));	// MT2009_PLUS_BOT_MELEY16_V1: up to 16
 				}
 				else if (!strcmp(cmd, "trips") && got >= 2)
-					t.trips = std::max(0, std::min(96, a));
+					t.trips = std::max(0, std::min(PLAYERBOT_MELEY_TRIPS_MAX, a));
 				else
 					sys_log(0, "BOT_MELEY: train unknown line=%s", line);
 			}
@@ -447,6 +473,63 @@ namespace
 		return b != s_mapPlayerBotDgRunBots.end() && IsPlayerBotMeleyPlannedRun(b->second.iRun);
 	}
 
+	// MT2009_PLUS_BOT_MELEY16_V1: the roles of a run of more than eight as it goes in - the healing Shamans, a quarter
+	// of the rest the magma guard (the Warriors, then the Suras, the most health first), a quarter the egg killers (the
+	// strongest of the rest, ScorePlayerBotYdg), the rest and the leader the statue team. A smaller run: no roles.
+	void AssignPlayerBotMeleyRoles(const TPlayerBotDgRun& run, TPlayerBotMeleyRun& mr)
+	{
+		mr.roles.clear();
+		if ((int)run.members.size() <= playerbot_dgrun::PARTY_MAX)
+			return;
+		std::vector<LPCHARACTER> rest;
+		int count[4] = { 0, 0, 0, 0 };
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c)
+				continue;
+			if (run.members[i] == run.dwLeader)
+				mr.roles[run.members[i]] = std::make_pair(PLAYERBOT_MELEY_ROLE_STATUE, count[PLAYERBOT_MELEY_ROLE_STATUE]++);
+			else if (c->GetJob() == JOB_SHAMAN && c->GetSkillGroup() != 0)
+				mr.roles[run.members[i]] = std::make_pair(PLAYERBOT_MELEY_ROLE_HEAL, count[PLAYERBOT_MELEY_ROLE_HEAL]++);
+			else
+				rest.push_back(c);
+		}
+		const int quarter = std::max(2, (int)run.members.size() / 4);
+		// the magma guard: the Warriors and the Suras (the bodies), the most health first; then whoever has most
+		std::sort(rest.begin(), rest.end(), [](LPCHARACTER a, LPCHARACTER b)
+				{
+					const int ka = a->GetJob() == JOB_WARRIOR ? 0 : (a->GetJob() == JOB_SURA ? 1 : 2);
+					const int kb = b->GetJob() == JOB_WARRIOR ? 0 : (b->GetJob() == JOB_SURA ? 1 : 2);
+					return ka != kb ? ka < kb : a->GetMaxHP() > b->GetMaxHP();
+				});
+		std::vector<LPCHARACTER> left;
+		for (size_t i = 0; i < rest.size(); ++i)
+			if (count[PLAYERBOT_MELEY_ROLE_MAGMA] < quarter && (int)(rest.size() - i) > quarter)
+				mr.roles[rest[i]->GetPlayerID()] = std::make_pair(PLAYERBOT_MELEY_ROLE_MAGMA, count[PLAYERBOT_MELEY_ROLE_MAGMA]++);
+			else
+				left.push_back(rest[i]);
+		// the egg killers: the strongest hitters of the rest
+		std::sort(left.begin(), left.end(), [](LPCHARACTER a, LPCHARACTER b) { return ScorePlayerBotYdg(a) > ScorePlayerBotYdg(b); });
+		for (size_t i = 0; i < left.size(); ++i)
+			if (count[PLAYERBOT_MELEY_ROLE_EGG] < quarter)
+				mr.roles[left[i]->GetPlayerID()] = std::make_pair(PLAYERBOT_MELEY_ROLE_EGG, count[PLAYERBOT_MELEY_ROLE_EGG]++);
+			else
+				mr.roles[left[i]->GetPlayerID()] = std::make_pair(PLAYERBOT_MELEY_ROLE_STATUE, count[PLAYERBOT_MELEY_ROLE_STATUE]++);
+		static const char* const name[4] = { "statue", "heal", "egg", "magma" };
+		std::string line;
+		for (std::map<DWORD, std::pair<int, int> >::const_iterator r = mr.roles.begin(); r != mr.roles.end(); ++r)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(r->first);
+			char buf[64];
+			snprintf(buf, sizeof(buf), "%s%s:%s", line.empty() ? "" : ",", c ? c->GetName() : "?", name[r->second.first & 3]);
+			if (line.size() < 500)
+				line += buf;
+		}
+		sys_log(0, "BOT_MELEY: roles run=%d members=%u statue=%d heal=%d egg=%d magma=%d (%s)", run.iId,
+				(unsigned int)run.members.size(), count[0], count[1], count[2], count[3], line.c_str());
+	}
+
 	void NotePlayerBotMeleyRunStart(const TPlayerBotDgRun& run)
 	{
 		TPlayerBotMeleyRun& mr = s_mapPlayerBotMeleyRuns[run.iId];
@@ -473,6 +556,7 @@ namespace
 		}
 		sys_log(0, "BOT_MELEY: run start run=%d instance=%ld empire=%u train=%d members=%u mix=%s", run.iId, run.lInstance,
 				(unsigned int)run.bEmpire, mr.bTrain ? 1 : 0, (unsigned int)run.members.size(), mix.c_str());
+		AssignPlayerBotMeleyRoles(run, mr);
 	}
 
 	// Every second of a run inside (UpdatePlayerBotDgRun): the materials shared now and then, a bag cell kept.
@@ -598,6 +682,95 @@ namespace
 		return rest;
 	}
 
+	// MT2009_PLUS_BOT_MELEY16_V1: the run's size and start (playerbot_dungeon_runs.h's hooks).
+	int GetPlayerBotMeleyRunPartyMax(int runId)
+	{
+		std::map<int, TPlayerBotMeleyRun>::const_iterator mr = s_mapPlayerBotMeleyRuns.find(runId);
+		return mr != s_mapPlayerBotMeleyRuns.end() ? std::min(PLAYERBOT_MELEY_PARTY_MAX, mr->second.iSize) : 0;
+	}
+
+	int GetPlayerBotMeleyRunStartMin(int runId, int startMin)
+	{
+		const int size = GetPlayerBotMeleyRunPartyMax(runId);
+		return size > playerbot_dgrun::PARTY_MAX ? std::max(startMin, size * 3 / 4) : startMin;
+	}
+
+	// MT2009_PLUS_BOT_MELEY16_V1: a member's role inside (ManagePlayerBotDgRunInside, before the leader's focus) - true
+	// when the role gave it its move. The egg killers: an egg of their own (by their index) while eggs stand; the magma
+	// guard: the monster on a member nearest to it, one on a healer first. Neither below PLAYERBOT_MELEY_ROLE_FOCUS_HP,
+	// nor with nothing for the role - then the run's own (the leader's objective, the party pass).
+	bool FightPlayerBotMeleyRole(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPCHARACTER anchor, DWORD dwNow)
+	{
+		std::map<int, TPlayerBotMeleyRun>::const_iterator mr = s_mapPlayerBotMeleyRuns.find(run.iId);
+		if (mr == s_mapPlayerBotMeleyRuns.end() || mr->second.roles.empty() || !ch || !anchor || state.bRecoveringAfterDeath)
+			return false;
+		std::map<DWORD, std::pair<int, int> >::const_iterator r = mr->second.roles.find(ch->GetPlayerID());
+		if (r == mr->second.roles.end() || (r->second.first != PLAYERBOT_MELEY_ROLE_EGG && r->second.first != PLAYERBOT_MELEY_ROLE_MAGMA))
+			return false;
+		if (ch->GetMaxHP() <= 0 || (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * PLAYERBOT_MELEY_ROLE_FOCUS_HP ||
+				IsPlayerBotKillRewardless(ch))
+			return false;
+		LPDUNGEON d = ch->GetDungeon();
+		const int stage = d ? d->GetFlag("stage") : 0;
+		if (stage < 1 || stage > 4)
+			return false;
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+		LPCHARACTER foe = NULL;
+		if (r->second.first == PLAYERBOT_MELEY_ROLE_EGG)
+		{
+			std::vector<LPCHARACTER> eggs;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+			{
+				if (scan.foes[i].dwRace != 20422)
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+				if (IsPlayerBotPdgFoe(ch, c) && c->GetMapIndex() == ch->GetMapIndex())
+					eggs.push_back(c);
+			}
+			if (eggs.empty())
+				return false;
+			std::sort(eggs.begin(), eggs.end(), [](LPCHARACTER a, LPCHARACTER b) { return (DWORD)a->GetVID() < (DWORD)b->GetVID(); });
+			foe = eggs[(size_t)r->second.second % eggs.size()];
+		}
+		else
+		{
+			// the magma guard: what attacks a member near the party (a healer's attacker first), the one in hand kept
+			LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+			int best = INT_MAX;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+			{
+				const DWORD race = scan.foes[i].dwRace;
+				if (race >= 20000 || race == 6118 || race == 6116)
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+				if (!IsPlayerBotPdgFoe(ch, c) || c->GetMapIndex() != ch->GetMapIndex())
+					continue;
+				LPCHARACTER v = c->GetVictim();
+				if (!IsPlayerBotDgRunMemberOf(v, run.iId) ||
+						DISTANCE_APPROX(anchor->GetX() - c->GetX(), anchor->GetY() - c->GetY()) > PLAYERBOT_PDG_HUNT_RANGE)
+					continue;
+				int score = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+				if (v->GetJob() == JOB_SHAMAN)
+					score -= 3000;
+				if (c == cur)
+					score -= 2000;
+				if (score < best)
+				{
+					best = score;
+					foe = c;
+				}
+			}
+			if (!foe)
+				return false;
+		}
+		if (BuffPlayerBotTowerFellows(ch, state, dwNow))
+			return true;
+		PlayerBotLogThrottled("meley_role", dwNow, "BOT_MELEY: role pid=%u name=%s run=%d role=%s stage=%d foe=%u hp=%d/%d",
+				ch->GetPlayerID(), ch->GetName(), run.iId, r->second.first == PLAYERBOT_MELEY_ROLE_EGG ? "egg" : "magma", stage,
+				(unsigned int)foe->GetRaceNum(), foe->GetHP(), foe->GetMaxHP());
+		return FightPlayerBotTowerObjective(ch, state, foe, dwNow);
+	}
+
 	// ------------------------------------------------------------ the planner (the core of 356)
 
 	struct TPlayerBotMeleyCand
@@ -719,8 +892,18 @@ namespace
 			}
 		if (party.empty())
 			return false;
+		// MT2009_PLUS_BOT_MELEY16_V1: a party of more than eight a second healer when the kingdom has one
+		if (size > playerbot_dgrun::PARTY_MAX)
+			for (size_t i = 0; i < v.size(); ++i)
+				if (v[i].healer)
+				{
+					party.push_back(v[i]);
+					v.erase(v.begin() + i);
+					break;
+				}
 		int perJob[4] = { 0, 0, 0, 0 };
-		++perJob[party[0].job & 3];
+		for (size_t i = 0; i < party.size(); ++i)
+			++perJob[party[i].job & 3];
 		const int cap = std::max(2, (size + 2) / 3);
 		for (size_t i = 0; i < v.size() && (int)party.size() < size;)
 		{
@@ -757,7 +940,7 @@ namespace
 		slot.lvMin = PLAYERBOT_MELEY_MIN_LEVEL;
 		slot.lvMax = gPlayerMaxLevel;
 		slot.partyMin = playerbot_dgrun::RuleFor("meley").startMin;
-		slot.partyMax = playerbot_dgrun::PARTY_MAX;
+		slot.partyMax = std::max(playerbot_dgrun::PARTY_MAX, (int)party.size());	// MT2009_PLUS_BOT_MELEY16_V1
 		slot.panel = mt2009_dpanel::FindKey("meley");
 		slot.ok = slot.empireOk[empire] = true;
 		TPlayerBotLfgPlace& place = slot.place[empire];
@@ -788,6 +971,7 @@ namespace
 			return 0;
 		TPlayerBotMeleyRun& mr = s_mapPlayerBotMeleyRuns[id];
 		mr.bTrain = IsPlayerBotMeleyTraining();
+		mr.iSize = (int)picked.size();	// MT2009_PLUS_BOT_MELEY16_V1
 		mr.iNeeders = needers;
 		mr.iVisitors = visitors;
 		++s_kPlayerBotMeleyStats.called;
@@ -853,7 +1037,9 @@ namespace
 		GatherPlayerBotMeleyPool(pool, dwNow);
 		const int size = IsPlayerBotMeleyTraining() ? s_kPlayerBotMeleyTrain.size : 6;
 		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor("meley");
-		const int least = std::max(rule.startMin, std::min(size, rule.preferMin));
+		// MT2009_PLUS_BOT_MELEY16_V1: a party of more than eight is called with 3/4 of it at the least (12 of 16)
+		const int least = size > playerbot_dgrun::PARTY_MAX ? std::max(rule.startMin, size * 3 / 4)
+				: std::max(rule.startMin, std::min(size, rule.preferMin));
 		int calls = 0;
 		while ((running < cap || (forced && calls == 0)) && calls < PLAYERBOT_MELEY_CALLS_A_PASS)
 		{

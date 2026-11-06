@@ -558,6 +558,9 @@ namespace
 		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: a pair's partner on the mast's guard now (the mast low), and how often.
 		bool bHydraPairGuard;
 		int iPairGuards;
+		// MT2009_PLUS_BOT_MELEY16_V1: a run of more than PARTY_MAX (Schronienie Meley's 16, the guild lair's 4-16): the
+		// leader's party of eight and a second one led by this member (0: none yet) - the core's party is of eight.
+		DWORD dwSubLeader;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
@@ -567,7 +570,7 @@ namespace
 				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0),
 				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0), iHydraParty(0), bShipStarted(false), iShipWave(0),
 				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0), bHydraPairGuard(false),
-				iPairGuards(0) {}
+				iPairGuards(0), dwSubLeader(0) {}
 	};
 
 	// MT2009_PLUS_BOT_YDG_V1: playerbot_dungeon_runs_ydg.h, included at the end of this file.
@@ -671,6 +674,10 @@ namespace
 	DWORD NotePlayerBotMeleyRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
 	void PlanPlayerBotMeleyRuns(DWORD dwNow, bool forced);
 	bool RunPlayerBotMeleyTestLine(const char* cmd, DWORD dwNow);
+	// MT2009_PLUS_BOT_MELEY16_V1: a Meley run's own size (up to 16) and start, and its members' roles inside.
+	int GetPlayerBotMeleyRunPartyMax(int runId);
+	int GetPlayerBotMeleyRunStartMin(int runId, int startMin);
+	bool FightPlayerBotMeleyRole(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPCHARACTER anchor, DWORD dwNow);
 	// MT2009_PLUS_BOT_DROPKNOW_V1 / MT2009_PLUS_BOT_DROPKI_V1: the drop knowledge's demand on a dungeon, the Dropki
 	// (playerbot_dropknow.h, playerbot_dropki.h - included by playerbot_manager.cpp later in this unit).
 	bool IsPlayerBotDropKnowDemander(DWORD pid, int def);
@@ -1367,6 +1374,14 @@ namespace
 			return false;
 		std::map<DWORD, TPlayerBotDgRunBot>::const_iterator b = s_mapPlayerBotDgRunBots.find(v->GetPlayerID());
 		return b != s_mapPlayerBotDgRunBots.end() && b->second.iRun == runId;
+	}
+
+	// MT2009_PLUS_BOT_MELEY16_V1: how many a run may hold - PARTY_MAX, a Meley run of the planner its own (up to 16).
+	int GetPlayerBotDgRunPartyMax(const TPlayerBotDgRun& run)
+	{
+		if (PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_MELEY)
+			return std::max(playerbot_dgrun::PARTY_MAX, GetPlayerBotMeleyRunPartyMax(run.iId));
+		return playerbot_dgrun::PARTY_MAX;
 	}
 
 	// Fit to fight: standing, not recovering, PLAYERBOT_DGRUN_FIT_HP of its health.
@@ -2566,6 +2581,9 @@ namespace
 		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the leader's objective, hit with
 		// it by everybody not hurt (the party dungeon pass puts what attacks
 		// the bot first, and that is what kept the stones standing).
+		// MT2009_PLUS_BOT_MELEY16_V1: a Meley party of 12-16 - its egg killers and its magma guard first (their roles).
+		if (def.bKind == DGRUN_KIND_MELEY && FightPlayerBotMeleyRole(ch, state, run, anchor, dwNow))
+			return true;
 		const int focusHp = PLAYERBOT_DGRUN_DEFS[run.iDef].bKind == DGRUN_KIND_MELEY ? 20 : PLAYERBOT_DGRUN_FOCUS_HP;	// the eggs
 		if (run.dwFocusVID != 0 && ch->GetMaxHP() > 0 && !IsPlayerBotKillRewardless(ch) &&
 				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * focusHp)
@@ -2941,8 +2959,9 @@ namespace
 			state->dwTargetVID = 0;
 			ch->SetVictim(NULL);
 			ClearPlayerBotRoute(*state, true);
+			// MT2009_PLUS_BOT_MELEY16_V1: a party of more than nine on the nine spots again (the first nine as before)
 			const long jx = x + (long)(in.size() % 3) * 150 - 150;
-			const long jy = y + (long)(in.size() / 3) * 150 - 75;
+			const long jy = y + (long)((in.size() % 9) / 3) * 150 - 75;
 			s_szPlayerBotTransitionRefusal = NULL;
 			if (!ch->WarpSet(jx, jy, run.lInstance) || ch->GetMapIndex() != run.lInstance)
 			{
@@ -2995,6 +3014,13 @@ namespace
 			party->SetParameter(PARTY_EXP_DISTRIBUTION_PARITY);
 			sys_log(0, "BOT_DGRUN: party made run=%d leader=%s", run.iId, leader->GetName());
 		}
+		// MT2009_PLUS_BOT_MELEY16_V1: the run's second party (a run of more than eight - the core's party is of eight).
+		if (run.dwSubLeader == run.dwLeader)
+			run.dwSubLeader = 0;	// its leader now leads the run: a new second party when one is wanted
+		LPCHARACTER subLeader = run.dwSubLeader ? CHARACTER_MANAGER::instance().FindByPID(run.dwSubLeader) : NULL;
+		LPPARTY sub = subLeader && subLeader->GetParty() && subLeader->GetParty()->GetLeaderPID() == run.dwSubLeader &&
+				std::find(run.members.begin(), run.members.end(), run.dwSubLeader) != run.members.end() ? subLeader->GetParty() : NULL;
+		const bool big = (int)run.members.size() > playerbot_dgrun::PARTY_MAX;
 		for (size_t i = 0; i < run.members.size(); ++i)
 		{
 			if (run.members[i] == run.dwLeader)
@@ -3002,12 +3028,37 @@ namespace
 			std::map<DWORD, TPlayerBotDgRunBot>::const_iterator b = s_mapPlayerBotDgRunBots.find(run.members[i]);
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
 			if (!ch || b == s_mapPlayerBotDgRunBots.end() || !b->second.bArrived || ch->GetParty() == party ||
-					ch->GetEmpire() != leader->GetEmpire() || party->GetMemberCount() >= (DWORD)playerbot_dgrun::PARTY_MAX)
+					(sub && ch->GetParty() == sub) || ch->GetEmpire() != leader->GetEmpire())
+				continue;
+			if (party->GetMemberCount() < (DWORD)playerbot_dgrun::PARTY_MAX)
+			{
+				if (ch->GetParty())
+					LeavePlayerBotParty(ch);
+				party->Join(ch->GetPlayerID());
+				party->Link(ch);
+				continue;
+			}
+			if (!big)
+				continue;
+			if (!sub)
+			{
+				if (ch->GetParty())
+					LeavePlayerBotParty(ch);
+				sub = CPartyManager::instance().CreateParty(ch);
+				if (!sub)
+					continue;
+				sub->Link(ch);
+				sub->SetParameter(PARTY_EXP_DISTRIBUTION_PARITY);
+				run.dwSubLeader = ch->GetPlayerID();
+				sys_log(0, "BOT_DGRUN: second party made run=%d leader=%s", run.iId, ch->GetName());
+				continue;
+			}
+			if (sub->GetMemberCount() >= (DWORD)playerbot_dgrun::PARTY_MAX)
 				continue;
 			if (ch->GetParty())
 				LeavePlayerBotParty(ch);
-			party->Join(ch->GetPlayerID());
-			party->Link(ch);
+			sub->Join(ch->GetPlayerID());
+			sub->Link(ch);
 		}
 	}
 
@@ -3025,7 +3076,7 @@ namespace
 	bool RecruitPlayerBotDgRunMember(TPlayerBotDgRun& run, bool healerOnly, DWORD dwNow)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
-		if (run.iReplacements >= PLAYERBOT_DGRUN_MAX_REPLACEMENTS || (int)run.members.size() >= playerbot_dgrun::PARTY_MAX)
+		if (run.iReplacements >= PLAYERBOT_DGRUN_MAX_REPLACEMENTS || (int)run.members.size() >= GetPlayerBotDgRunPartyMax(run))
 			return false;
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: a Hydra party is a cohort's fixed party - nobody called in for it.
 		if (def.bKind == DGRUN_KIND_HYDRA)
@@ -3230,6 +3281,8 @@ namespace
 		// bonuses stand for it) - 10 Beran parties a dungeon left some with none, disbanded in a second, again and again.
 		if ((def.bKind == DGRUN_KIND_YDG || def.bKind == DGRUN_KIND_GNOLLE) && GetPlayerBotYdgTrainParty(run.iId) != 0)
 			rule.needHealer = false;
+		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY16_V1: a party of 16 goes in with 12 at the least
+			rule.startMin = GetPlayerBotMeleyRunStartMin(run.iId, rule.startMin);
 		int answered = 0, pending = 0, arrived = 0;
 		// V2: a Shaman that can heal among those on their way, among those there.
 		bool healerAnswered = false, healerArrived = false, healerPending = false;
@@ -3769,7 +3822,8 @@ namespace
 		// deaths and six wipes, each wipe "progress" because another Szel's
 		// health moved. A won run of the night took 81 at the most.
 		if (run.iWipesIdle >= PLAYERBOT_DGRUN_MAX_WIPES || run.iWipes >= PLAYERBOT_DGRUN_MAX_WIPES_ALL ||
-				run.iDeaths >= PLAYERBOT_DGRUN_MAX_DEATHS)
+				run.iDeaths >= PLAYERBOT_DGRUN_MAX_DEATHS * std::max(playerbot_dgrun::PARTY_MAX, (int)run.members.size()) /
+						playerbot_dgrun::PARTY_MAX)	// MT2009_PLUS_BOT_MELEY16_V1: 110 for eight, 220 for sixteen
 		{
 			sys_log(0, "BOT_DGRUN: given up after %d wipes (%d in a row) run=%d dungeon=%s stage=%d", run.iWipes,
 					run.iWipesIdle, run.iId, def.szKey, run.iStage);
