@@ -970,6 +970,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! LC_ALL=C grep -q -P '[\x80-\xff]' "$L/quest/mt2009_language.lua" \
  && echo "share: languages $(ls "$L/lang" | tr '\n' ' ')"
 
+# MT2009_PLUS_LOCALE_BRAKI_V1 (6 November 2026, the second bot analysis, item 11): the engine's LC_TEXT lines the base
+# locale_string.txt lacked - the sash's "Success." / "Failed.", the unique item's split, the costume weapon's (the
+# Yohara test: "locale_find: LOCALE_ERROR" ~110 000 a day, the players read them in English). locale_string.braki.txt
+# (cp1250, edit there); lang/en/22_server_locale_more.tsv takes the Polish lines back to English (the other languages
+# fall back to it). None of the keys may be there before.
+COPY locale_string.braki.txt /tmp/locale_string.braki.txt
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/locale_string.braki.txt \
+ && f="$L/locale_string.txt" \
+ && ! grep -q -F '"Success.";' "$f" \
+ && ! grep -q -F '"You don'"'"'t have enough space to auto-split the unique item.";' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\n' >> "$f"; } \
+ && printf '\n' >> "$f" && sed 's/\r$//' "$A" >> "$f" \
+ && test "$(grep -c -F '"Success.";' "$f")" = 1 \
+ && test "$(grep -c -F '"You cannot equip the costume weapon. Wrong equipped weapon.";' "$f")" = 1 \
+ && rm -f "$A" \
+ && echo "share: locale_string - 7 engine lines it lacked (MT2009_PLUS_LOCALE_BRAKI_V1)"
+
 # MT2009_PLUS_MIKSTURY_V1 (the owner, 4 November 2026; server-patches/mikstury/README.md): m2_mikstury_limity.lua is
 # dofile'd after m2_difficulty.lua and before m2_mikstury.lua (the step below wraps what it sets) and replaces
 # potion_system.use_potion - the herbal potions and the grilled fish (item type 36) with no group limit, no block by an

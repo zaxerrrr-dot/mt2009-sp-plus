@@ -1,0 +1,20 @@
+"Success.";
+"Uda³o siê.";
+
+"Failed.";
+"Nie uda³o siê.";
+
+"You don't have enough space to auto-split the unique item.";
+"Za ma³o miejsca w ekwipunku, by oddzieliæ jedn¹ sztukê tego przedmiotu.";
+
+"The unique item is not stackable.";
+"Tego przedmiotu nie mo¿na rozdzieliæ.";
+
+"The unique item has the antiflag stack.";
+"Tego przedmiotu nie mo¿na rozdzieliæ.";
+
+"You cannot unequip the costume weapon. Not enough space.";
+"Nie mo¿esz zdj¹æ kostiumu broni - brak miejsca w ekwipunku.";
+
+"You cannot equip the costume weapon. Wrong equipped weapon.";
+"Nie mo¿esz za³o¿yæ tego kostiumu broni - nie pasuje do noszonej broni.";
