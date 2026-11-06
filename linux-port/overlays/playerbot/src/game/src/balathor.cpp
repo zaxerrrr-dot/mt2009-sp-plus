@@ -20,6 +20,7 @@
 
 CBalathor::CBalathor(DWORD dwMapIndex, DWORD dwID)
 {
+	m_bBotParty = false;	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1
 	m_dwEffID = 1;
 	m_bStepIndex = 0;
 	m_dwGuildID = dwID;
@@ -110,7 +111,8 @@ void CBalathor::Finish(BYTE bFinishType)
 	SetStage(BALATHOR_STAGE_CLOSE);
 	if (bSpawnChest)
 		SpawnCharacterByFlag("chest");
-	CGuildManager::Instance().SetFlag(m_dwGuildID, "balathor_channel", 0);
+	if (!m_bBotParty)	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: no guild behind a bot party's Krypta
+		CGuildManager::Instance().SetFlag(m_dwGuildID, "balathor_channel", 0);
 }
 
 void CBalathor::Close(bool bInstantClose)
@@ -816,7 +818,8 @@ bool CBalathor::CanUseHwatcha()
 
 	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
 
-	CGuild* pGuild = CGuildManager::Instance().FindGuild(m_dwGuildID);
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a bot party's Krypta has no guild - no guild SP asked.
+	CGuild* pGuild = m_bBotParty ? NULL : CGuildManager::Instance().FindGuild(m_dwGuildID);
 	if (pGuild)
 	{
 		if (pGuild->GetSP() < config.dwReviveHwatchaRequestSP)
@@ -846,7 +849,8 @@ void CBalathor::UseHwatcha()
 	else
 		SetHwatchaEffect(true);
 
-	CGuild* pGuild = CGuildManager::Instance().FindGuild(m_dwGuildID);
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a bot party's Krypta has no guild - no guild SP taken.
+	CGuild* pGuild = m_bBotParty ? NULL : CGuildManager::Instance().FindGuild(m_dwGuildID);
 	if (pGuild)
 	{
 		int iValue = static_cast<long>(config.dwReviveHwatchaRequestSP);
@@ -2340,9 +2344,18 @@ BYTE CBalathor::ClaimReward(LPCHARACTER ch)
 		LPCHARACTER tch = CHARACTER_MANAGER::Instance().FindByPID(pid);
 		if (!tch || tch->GetMapIndex() != m_dwMapIndex)
 			continue;
-		CGuild* pGuild = tch->GetGuild();
-		if (!pGuild || pGuild->GetID() != m_dwGuildID)
-			continue;
+		// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: in a bot party's Krypta every playerbot inside (only bots get in there).
+		if (m_bBotParty)
+		{
+			if (!tch->GetDesc() || !tch->GetDesc()->IsBot())
+				continue;
+		}
+		else
+		{
+			CGuild* pGuild = tch->GetGuild();
+			if (!pGuild || pGuild->GetID() != m_dwGuildID)
+				continue;
+		}
 		AddRecipient(tch);
 	}
 

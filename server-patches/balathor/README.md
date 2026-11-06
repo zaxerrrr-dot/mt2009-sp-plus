@@ -13,6 +13,7 @@ Gildyjne leże Białego Smoka (pl-wiki „Krypta Balathora”, wersja 24.3) dla 
 | Baza | `linux-port/docker/mariadb/playerbot/balathor.sql` (generator `tools/balathor/gen_balathor_sql.py`, krok `apply.sh`): 17 potworów/NPC/kamieni, żywioły, Ognista Strzała 30395, skrzynie 83075/83076 |
 | Quest | `linux-port/docker/game/quest/krypta_balathora.quest` (cp1250) |
 | Boty | `playerbot_types.h` (`IsPlayerBotOffLimitsMap`: 420) i `playerbot_party_dungeon.h` (`IsPlayerBotDungeonPartyMove`: żaden bot nie wchodzi za człowiekiem) |
+| Boty – własne drużyny | `MT2009_PLUS_BALATHOR_BOT_PARTY_V1` (6.11.2026, decyzja właściciela): drużyna samych botów (lider bot, każdy członek bot, dowolna gildia lub żadna) wchodzi tylko na poziom postaci (120 + Champion 4) i liczebność PT (4–8): bez gildii, punktów rankingu, skarbca, SP gildii na Hwachę i przerwy gildii. `CBalathorManager::CreateForBotParty` (klucz biegu ≥ `0x7F000000`, nie id gildii; nagroda dla każdego bota w Krypcie), biegi w `playerbot_balathor_bots.h`, plik `playerbot_balathor_train` (`parties <n> [size]`), bez pliku `PLAYERBOT_BALATHOR_PARTIES` (1). Gracze – quest bez zmian. |
 | Klient | exe: `client-patches/exe` (`__BALATHOR__`, README tam); root/paczki: `client-patches/client-2.0.30/root` + `tools/balathor` |
 
 ## Włączanie
