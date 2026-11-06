@@ -11,10 +11,17 @@ istnieć wcześniej):
 
 | grupy | kto przywołuje | gdzie | skład (potwory miejsca) |
 |---|---|---|---|
-| 6218–6220 | Metin Shiho (8066), Metin z Gumar (8077) | Wąwóz Płn. Wiatru (388); wg arkusza też Yilad (385) i Rozpadlina (389) | Zamarznięty Lis / Zwiadowca / Wojownik / Łowca (6770–6773), po 3 |
+| 6218–6220 | Metin Shiho (8066), Metin z Gumar (8077) | Przełęcz Yilad (385, tylko Shiho), Wąwóz Płn. Wiatru (388), Rozpadlina Dusz (389) – te same grupy na każdej mapie | Skażeni z Przełęczy Yilad: Mnich, Zadziora, Żołnierz (mrok 6761/6759/6758 i ziemia 6878/6876/6875) oraz Wojownik (mrok 6760), po 3 |
 | 6229, 6230 | Metiny Wężowe (8630–8634), Metin Wężowy Przestrzeni (8076) | Świątynia Węży (391), 1. poziom Świątyni (390) | Skorpion / Robotnik / Kappa Wężowy (6850–6852), po 3 |
 | 6249, 6250 | Białe Jajo Smoka (słaby) 8635 | Głębie Płn. Wiatru (395) | Żołnierz / Zadziora Schron. Płn. W. (6792, 6793), po 2 |
 | 6252, 6253 | Białe Jajo Smoka (silny) 8636 | Głębie Płn. Wiatru (395) | Wojownik / Czarownik / Zadziora / Żołnierz Schron. (6792–6795), po 3 |
+
+Shiho i Gumar (`MT2009_PLUS_YOHARA_STONE_GROUPS_V2`, 6.11.2026, „sprawdź jak jest na globalu”): na globalu oba Metiny mają
+jeden vnum i jeden zakres grup (`mob_proto` Owsapa: 6218–6220) na wszystkich mapach, a wiki (pl/en) podaje dla obu ten
+sam skład: Skażony Mnich, Zadziora i Żołnierz (mrok i ziemia) oraz Skażony Wojownik (mrok) – potwory Przełęczy Yilad,
+nie Zamarznięci z Wąwozu (V1 dawał lodowe potwory także na 385 i 389). Wiki pl pisze „Generał” zamiast „Żołnierz”;
+wiki en ma Żołnierza i na stronach samych potworów (Tainted Soldier: „Metin of the Shiho / of Gumar”, Tainted General:
+bez Metinów), więc Żołnierz.
 
 Grupy przywołane przez Metin nie należą do lochu (`d.count_monster()` ich nie liczy), więc nie wstrzymują przejścia
 na kolejny poziom Świątyni ani Kowala/Wojownika.

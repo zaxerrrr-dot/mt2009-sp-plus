@@ -3409,7 +3409,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
 # MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026, the second bot analysis, item 2): the groups the Yohara Metins
 # and the White Dragon Eggs call and nothing defined (NOT_EXIST_GROUP_VNUM 6229/6230 on 390/391, 6249/6250/6252/6253
 # on 395, 6218-6220 on 385/388/389 - ~17 000 a day on the Yohara test): yohara_metiny/group.yohara_metiny.txt, of each
-# place's own monsters (README.md). None may exist before. The four Time Rift / Plaskowyz Metins' ranges:
+# place's own monsters (README.md); Shiho/Gumar 6218-6220: the Tainted of Yilad as on the global server, the same on
+# every map (MT2009_PLUS_YOHARA_STONE_GROUPS_V2). None may exist before. The four Time Rift / Plaskowyz Metins' ranges:
 # mariadb/playerbot/yohara_metiny_grupy.sql (the same marker).
 COPY yohara_metiny/ /tmp/yohara-metiny-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-metiny-add \

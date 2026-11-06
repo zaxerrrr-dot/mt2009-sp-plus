@@ -2,28 +2,31 @@
 // Metins and eggs call (mob_proto attack_speed..move_speed = a group range, char_state.cpp __StateIdle_Stone) and
 // no source has - not Owsap's group.txt, not GF's client. Ours, of each place's own monsters (README.md).
 // Hand-written: edit here; the Dockerfile step checks that none of these vnums exists before.
-Group	MT2009_ymetin_Metin_Wawoz_Zwiadowca
+// 6218-6220 (Metin Shiho 8066 on 385/388/389, Metin z Gumar 8077 on 388/389 - one vnum and one range on every map, as on
+// the global server): the Tainted of Przelecz Yilad, darkness and earth - Monk, Skirmisher, Soldier of both and the
+// darkness Warrior (the global wiki's list for both Metins), not the Wawoz's Frozen ones (MT2009_PLUS_YOHARA_STONE_GROUPS_V2).
+Group	MT2009_ymetin_Shiho_Gumar_Mnich
 {
 	Vnum	6218
-	Leader	"Zamarzniety Zwiadowca"	6771
-	1	"Zamarzniety Lis"	6770
-	2	"Zamarzniety Lis"	6770
+	Leader	"Skazony Mnich (mrok)"	6761
+	1	"Skazony Mnich (ziemia)"	6878
+	2	"Skazony Zolnierz (mrok)"	6758
 }
 
-Group	MT2009_ymetin_Metin_Wawoz_Wojownik
+Group	MT2009_ymetin_Shiho_Gumar_Zadziora
 {
 	Vnum	6219
-	Leader	"Zamarzniety Wojownik"	6772
-	1	"Zamarzniety Zwiadowca"	6771
-	2	"Zamarzniety Lis"	6770
+	Leader	"Skazony Zadziora (ziemia)"	6876
+	1	"Skazony Zadziora (mrok)"	6759
+	2	"Skazony Zolnierz (ziemia)"	6875
 }
 
-Group	MT2009_ymetin_Metin_Wawoz_Lowca
+Group	MT2009_ymetin_Shiho_Gumar_Wojownik
 {
 	Vnum	6220
-	Leader	"Zamarzniety Lowca"	6773
-	1	"Zamarzniety Wojownik"	6772
-	2	"Zamarzniety Zwiadowca"	6771
+	Leader	"Skazony Wojownik (mrok)"	6760
+	1	"Skazony Mnich (ziemia)"	6878
+	2	"Skazony Zolnierz (mrok)"	6758
 }
 
 Group	MT2009_ymetin_Metin_Wezowy_Robotnik
