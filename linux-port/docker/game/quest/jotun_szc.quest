@@ -107,6 +107,63 @@ quest jotun_szc begin
 			end
 		end
 
+		-- MT2009_PLUS_BOT_SZC_BOSS_V1 (night 6/7 November 2026, the owner: "boty maja przejsc wszystkie dungeony, ktorych
+		-- jeszcze nie robily"): a bots' run (mt2009_dgrun) with the event flag m2_bot_szc_boss = 1 does the six missions
+		-- as one party - the same kills (50 Wojownikow En-Tai, the Druid's kit 1 in 25, 5 Metinow Drzewnych Stworzen,
+		-- 5 Niszczycieli En-Tai, the Wladca En-Tai twice), counted on the dungeon (flags bm = the mission, bc = its count)
+		-- instead of each man's quest state and the talks; then the boss room opens as at Przywodca Strazy Lasu (no
+		-- Kamien Driad and no mission rewards for bots). The flag 0 (the default): the bots only hunt (21 October).
+		-- Players: nothing changes.
+		function bot_on()
+			return d.getf("mt2009_dgrun") == 1 and game.get_event_flag("m2_bot_szc_boss") == 1 and d.getf("closed") == 0 and
+				d.getf("level") == 0
+		end
+
+		function bot_next(m)
+			d.setf("bm", m)
+			d.setf("bc", 0)
+			d.setf("bm_at", get_global_time())
+		end
+
+		function bot_kill(race)
+			local c = jotun_szc.cfg()
+			if not jotun_szc.bot_on() then
+				return
+			end
+			local m = d.getf("bm")
+			if m == 0 then
+				m = 1
+				jotun_szc.bot_next(1)
+			end
+			if m == 1 and race == 4260 then
+				d.setf("bc", d.getf("bc") + 1)
+				if d.getf("bc") >= c.warriors then
+					jotun_szc.bot_next(2)
+				end
+			elseif m == 2 and race == 4262 then
+				d.setf("bc", d.getf("bc") + 1)
+				if number(1, c.kit_chance) == 1 then
+					-- the kit to the Straznik and on to the Zwiadowca: missions 2 and 3 at once
+					jotun_szc.bot_next(4)
+				end
+			elseif m == 4 and race == 8126 then
+				d.setf("bc", d.getf("bc") + 1)
+				if d.getf("bc") >= c.stones then
+					jotun_szc.bot_next(5)
+				end
+			elseif m == 5 and race == 4264 then
+				d.setf("bc", d.getf("bc") + 1)
+				if d.getf("bc") >= c.destroyers then
+					jotun_szc.bot_next(6)
+				end
+			elseif (m == 6 or m == 7) and race == 4265 then
+				jotun_szc.bot_next(m + 1)
+				if m + 1 == 8 then
+					server_timer("jotun_szc_botboss", 5, d.get_map_index())
+				end
+			end
+		end
+
 		when login with jotun_szc.inside() begin
 			local c = jotun_szc.cfg()
 			local idx = pc.get_map_index()
@@ -378,6 +435,25 @@ quest jotun_szc begin
 			syschat("W³adca En-Tai (SZC) pokonany. Wróæ do Badacza Lasu (SZC).")
 		end
 
+		-- MT2009_PLUS_BOT_SZC_BOSS_V1: the bots' party's kills (a bots' run only - no man has a quest state there)
+		when 4260.kill or 4262.kill or 8126.kill or 4264.kill or 4265.kill with jotun_szc.inside() and d.getf("mt2009_dgrun") == 1 begin
+			jotun_szc.bot_kill(npc.get_race())
+		end
+
+		-- MT2009_PLUS_BOT_SZC_BOSS_V1: the six missions done - the boss room as the leader's talk opens it
+		when jotun_szc_botboss.server_timer begin
+			local c = jotun_szc.cfg()
+			if d.select(get_server_timer_arg()) and d.getf("mt2009_dgrun") == 1 and d.getf("closed") == 0 and
+					d.getf("level") == 0 and d.getf("bm") == 8 then
+				d.setf("level", 2)
+				d.clear_regen()
+				d.kill_all()
+				d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+				d.spawn_mob(4272, c.boss[1], c.boss[2])
+				d.notice("Erebu (SZC): Bagjanamu (SZC) strze¿e drogi do Jotuna Thryma!")
+			end
+		end
+
 		-- Przywódca Stra¿y Lasu (SZC): Erebu
 		when 20522.chat."Pomieszczenie bossa" with jotun_szc.inside() and d.getf("closed") == 0 and d.getf("level") == 0 and npc.lock() begin
 			local c = jotun_szc.cfg()
@@ -462,7 +538,10 @@ quest jotun_szc begin
 		when 4403.kill with jotun_szc.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
 			local c = jotun_szc.cfg()
 			d.setf("closed", 1)
-			d.update_ranking("jotun_szc", get_global_time() - d.getf("start"))
+			d.setf("won", 1) -- MT2009_PLUS_BOT_SZC_BOSS_V1: the bots' run reads it
+			if d.getf("mt2009_dgrun") ~= 1 then
+				d.update_ranking("jotun_szc", get_global_time() - d.getf("start"))
+			end
 			d.clear_regen()
 			d.notice("Pokonaliœcie Jotuna Thryma (SZC)!")
 			d.notice("Wszyscy wojownicy wróc¹ na P³askowy¿ Iluzji za minutê.")

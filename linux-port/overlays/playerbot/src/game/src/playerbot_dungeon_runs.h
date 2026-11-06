@@ -931,6 +931,104 @@ namespace
 
 	// ------------------------------------------------------------ the stages
 
+	// MT2009_PLUS_BOT_SZC_BOSS_V1 (night 6/7 November 2026, the owner: "boty maja przejsc wszystkie dungeony, ktorych
+	// jeszcze nie robily"): Zaklety Las (SZC) was the one Yohara dungeon no bots' run ever finished - 150+ runs, every
+	// one the quest's hour of hunting (the 21 October design: no missions). With the event flag m2_bot_szc_boss = 1
+	// jotun_szc.quest counts the six missions' kills on the dungeon for a bots' run (flags bm - the mission - and bc)
+	// and opens the boss room when they are done; here the party hunts the mission's monster (the objective), then
+	// Bagjanamu and Jotun Thrym, and the win is the quest's "won". m2_bot_szc_boss_party (default 5): the call asks
+	// for that many when the kingdom has them free (the hunt's parties were of 2-3). Log: BOT_SZC.
+	bool IsPlayerBotSzcBossOn()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss") == 1;
+	}
+
+	int GetPlayerBotSzcBossParty()
+	{
+		const int n = quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss_party");
+		return n > 0 ? std::min(8, n) : 5;
+	}
+
+	// The mission (1 Wojownicy, 2 the Druids' kit, 4 Metins, 5 Niszczyciele, 6-7 the Wladca, 8 done), 9 the boss room.
+	int GetPlayerBotSzcMission(LPDUNGEON d)
+	{
+		if (!d)
+			return 0;
+		if (d->GetFlag("level") == 2)
+			return 9;
+		return std::max(1, d->GetFlag("bm"));
+	}
+
+	void GetPlayerBotSzcObjectives(LPDUNGEON d, std::vector<DWORD>& out)
+	{
+		if (!d || d->GetFlag("mt2009_dgrun") != 1)
+			return;
+		if (d->GetFlag("level") == 2)
+		{
+			out.push_back(4272);	// Bagjanamu (SZC)
+			out.push_back(4403);	// Jotun Thrym (SZC)
+			return;
+		}
+		if (!IsPlayerBotSzcBossOn())
+			return;
+		switch (GetPlayerBotSzcMission(d))
+		{
+			case 1: out.push_back(4260); break;	// Wojownik En-Tai (SZC)
+			case 2: out.push_back(4262); break;	// Druid En-Tai (SZC)
+			case 4: out.push_back(8126); break;	// Metin Drzewnych Stworzen (SZC)
+			case 5: out.push_back(4264); break;	// Niszczyciel En-Tai (SZC)
+			case 6:
+			case 7: out.push_back(4265); break;	// Wladca En-Tai (SZC)
+			default: break;
+		}
+	}
+
+	std::map<int, DWORD> s_mapPlayerBotSzcLogAt;
+
+	// One line a minute a run (and at each mission's change): the mission, its count, the boss's health.
+	void LogPlayerBotSzcProgress(const TPlayerBotDgRun& run, LPDUNGEON d, int inside, int alive, DWORD dwNow)
+	{
+		if (!d || (!IsPlayerBotSzcBossOn() && d->GetFlag("level") != 2))
+			return;
+		DWORD& at = s_mapPlayerBotSzcLogAt[run.iId];
+		if (at != 0 && dwNow - at < 60000)
+			return;
+		at = dwNow;
+		std::vector<DWORD> goals;
+		GetPlayerBotSzcObjectives(d, goals);
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+		LPCHARACTER lead = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
+		int goalsAlive = 0, goalNear = -1, bossHp = -1;
+		DWORD boss = 0;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!c || c->IsDead())
+				continue;
+			if ((c->GetRaceNum() == 4272 || c->GetRaceNum() == 4403) && c->GetMaxHP() > 0)
+			{
+				boss = c->GetRaceNum();
+				bossHp = (int)((long long)c->GetHP() * 100 / c->GetMaxHP());
+			}
+			if (std::find(goals.begin(), goals.end(), c->GetRaceNum()) == goals.end())
+				continue;
+			++goalsAlive;
+			if (lead && lead->GetMapIndex() == c->GetMapIndex())
+			{
+				const int dd = DISTANCE_APPROX(c->GetX() - lead->GetX(), c->GetY() - lead->GetY());
+				goalNear = goalNear < 0 || dd < goalNear ? dd : goalNear;
+			}
+		}
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(run.lInstance);
+		const long lx = lead && pMap ? (lead->GetX() - pMap->m_setting.iBaseX) / 100 : -1;
+		const long ly = lead && pMap ? (lead->GetY() - pMap->m_setting.iBaseY) / 100 : -1;
+		sys_log(0, "BOT_SZC: progress run=%d mission=%d count=%d level=%d won=%d boss=%u boss_hp=%d goals_alive=%d goal_near=%d "
+				"leader=(%ld,%ld) inside=%d alive=%d deaths=%d members=%u after_s=%u",
+				run.iId, GetPlayerBotSzcMission(d), d->GetFlag("bc"), d->GetFlag("level"), d->GetFlag("won"), (unsigned int)boss,
+				bossHp, goalsAlive, goalNear, lx, ly, inside, alive, run.iDeaths, (unsigned int)run.members.size(),
+				(dwNow - run.dwEnteredAt) / 1000);
+	}
+
 	// The stage a run is at, for the log: the quests' own flags.
 	int GetPlayerBotDgRunStage(const TPlayerBotDgRunDef& def, LPDUNGEON d, int previous)
 	{
@@ -966,7 +1064,10 @@ namespace
 			}
 			// MT2009_PLUS_BOT_YOHARA_SZC_V1: one stage - the hour's hunt (jotun_szc's init()).
 			case DGRUN_KIND_SZC:
-				return d->GetFlag("init") == 1 ? 1 : 0;
+				// MT2009_PLUS_BOT_SZC_BOSS_V1: the mission (1-8), 9 the boss room, 10 Jotun Thrym down
+				if (d->GetFlag("won") == 1)
+					return 10;
+				return d->GetFlag("init") == 1 ? GetPlayerBotSzcMission(d) : 0;
 			// MT2009_PLUS_BOT_EREBU_V1: the quest's stage flag - 1 Bagjanamu, 2 Thrym, 3 won.
 			case DGRUN_KIND_EREBU:
 				return d->GetFlag("won") == 1 ? 3 : d->GetFlag("stage");
@@ -1070,6 +1171,7 @@ namespace
 				return d->GetFlag("stage") == 7;
 			case DGRUN_KIND_MELEY:
 			case DGRUN_KIND_EREBU:	// MT2009_PLUS_BOT_EREBU_V1: Jotun Thrym down
+			case DGRUN_KIND_SZC:	// MT2009_PLUS_BOT_SZC_BOSS_V1: Jotun Thrym (SZC) down
 				return d->GetFlag("won") == 1;
 			case DGRUN_KIND_HYDRA:	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: CShipDefense::Win sets it
 				return d->GetFlag("shipdef_won") == 1;
@@ -1139,7 +1241,8 @@ namespace
 		if (def.bKind == DGRUN_KIND_SZC)
 		{
 			itemStep = true;
-			sig = (long long)d->GetFlag("init");
+			sig = (long long)d->GetFlag("init") + (long long)d->GetFlag("bm") * 1009LL + (long long)d->GetFlag("bc") * 101LL +
+					(long long)d->GetFlag("level") * 7LL;	// MT2009_PLUS_BOT_SZC_BOSS_V1
 		}
 		// MT2009_PLUS_BOT_YDG_V1: the quests' flags, and the monsters' health (keys, cogs, stones and stars drop by chance).
 		else if (def.bKind == DGRUN_KIND_YDG)
@@ -1259,6 +1362,9 @@ namespace
 			}
 			case DGRUN_KIND_EREBU:	// MT2009_PLUS_BOT_EREBU_V1: the Uzdrowiciele, then the stage's boss
 				GetPlayerBotErebuObjectives(d, scan, out);
+				break;
+			case DGRUN_KIND_SZC:	// MT2009_PLUS_BOT_SZC_BOSS_V1: the mission's monster, the boss room's bosses
+				GetPlayerBotSzcObjectives(d, out);
 				break;
 			case DGRUN_KIND_YDG:	// MT2009_PLUS_BOT_YDG_V1
 				GetPlayerBotYdgObjectives(def, d, scan, out);
@@ -1929,7 +2035,8 @@ namespace
 			ch->SetVictim(NULL);
 			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
 			if (pMap && def.bKind != DGRUN_KIND_RAZADOR && def.bKind != DGRUN_KIND_NEMERE &&
-					def.bKind != DGRUN_KIND_YDG)	// MT2009_PLUS_BOT_YDG_V1: rooms and floors the quests jump to
+					def.bKind != DGRUN_KIND_YDG &&	// MT2009_PLUS_BOT_YDG_V1: rooms and floors the quests jump to
+					!(def.bKind == DGRUN_KIND_SZC && d && d->GetFlag("level") == 2))	// MT2009_PLUS_BOT_SZC_BOSS_V1: the boss room
 			{
 				long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
 				long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
@@ -3796,6 +3903,8 @@ namespace
 		// MT2009_PLUS_BOT_EREBU_V1: the bosses up and down, their health.
 		if (def.bKind == DGRUN_KIND_EREBU)
 			UpdatePlayerBotErebuRun(run, d, inside, alive, dwNow);
+		if (def.bKind == DGRUN_KIND_SZC)	// MT2009_PLUS_BOT_SZC_BOSS_V1
+			LogPlayerBotSzcProgress(run, d, inside, alive, dwNow);
 		const int stage = GetPlayerBotDgRunStage(def, d, run.iStage);
 		if (stage != run.iStage)
 		{
@@ -4066,7 +4175,10 @@ namespace
 		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
 		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
 		playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
-		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, slot.partyMax, rule.preferMin);
+		int preferMin = rule.preferMin;
+		if (info.bKind == DGRUN_KIND_SZC && IsPlayerBotSzcBossOn())	// MT2009_PLUS_BOT_SZC_BOSS_V1: a party for Jotun Thrym
+			preferMin = std::max(preferMin, GetPlayerBotSzcBossParty());
+		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, slot.partyMax, preferMin);
 		std::vector<playerbot_dgrun::TCand> picked;
 		playerbot_dgrun::PickParty(bucket, (size_t)std::max(0, want), rng, picked);
 		if (!playerbot_dgrun::PartyOk(picked, rule))
