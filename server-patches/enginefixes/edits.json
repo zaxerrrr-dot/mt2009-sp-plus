@@ -718,5 +718,29 @@
   "marker": "MT2009_PLUS_GOLD_CHANGE_FIX_V1 (gm panel)",
   "old": "\t\ttch->PointChange(POINT_GOLD, amount, true);\n",
   "new": "\t\t// MT2009_PLUS_GOLD_CHANGE_FIX_V1 (gm panel) (server-patches/enginefixes): PointChange refuses POINT_GOLD\n\t\t// (\"unknown point change type 11\") - the 64-bit purse changes through ChangeGold only.\n\t\ttch->ChangeGold((YANG)amount);\n"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_STONE_GROUP_GUARD_V1",
+  "old": "void CHARACTER::__StoneSpawnGroup(DWORD groupVnum, DWORD count)\n{\n\tCHARACTER_MANAGER::instance().SelectStone(this);\n",
+  "new": "void CHARACTER::__StoneSpawnGroup(DWORD groupVnum, DWORD count)\n{\n\t// MT2009_PLUS_STONE_GROUP_GUARD_V1 (server-patches/enginefixes; 6 November 2026, the second bot analysis,\n\t// item 2): a Metin whose group range is 0-0 (the Time Rift / Plaskowyz Metins 8120-8123, 8130-8133, the Sung Ma\n\t// tower's Kamien Duchowy 7600 - no groups, as official) calls nobody, quietly; a group not in group.txt is\n\t// said once per group and core (STONE_GROUP_MISSING) instead of a NOT_EXIST_GROUP_VNUM line at every HP step of\n\t// every such stone (thousands a day). What a stone with its groups does is unchanged.\n\tif (groupVnum == 0)\n\t\treturn;\n\tif (!CMobManager::instance().GetGroup(groupVnum))\n\t{\n\t\tstatic std::set<DWORD> s_setMt2009MissingStoneGroups;\n\t\tif (s_setMt2009MissingStoneGroups.insert(groupVnum).second)\n\t\t\tsys_err(\"STONE_GROUP_MISSING: stone %u (%s) on map %ld calls group %u - not in group.txt (said once a core)\",\n\t\t\t\t\tGetRaceNum(), GetName(), GetMapIndex(), groupVnum);\n\t\treturn;\n\t}\n\tCHARACTER_MANAGER::instance().SelectStone(this);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_POLYMORPH_MOTION_V1",
+  "old": "\tif (pkMotion)\n\t\treturn -pkMotion->GetAccumVector().y / pkMotion->GetDuration();\n\telse\n\t{\n\t\tsys_err(\"cannot find motion (name %s race %d mode %d)\", GetName(), GetRaceNum(), dwMode);\n",
+  "new": "\t// MT2009_PLUS_POLYMORPH_MOTION_V1 (server-patches/enginefixes; 6 November 2026, the second bot analysis,\n\t// item 11): a player turned into a form that has no walking motion on the server - the Zodiac's petrifying\n\t// statues (20452-20463, 12zi_statue_*: a spawn motion only, as official) and Balathor's ice crystal (20498)\n\t// - is timed by the walk of its own race instead of the 300 guess below, and no longer writes \"cannot find\n\t// motion\" for every step it is asked about (~1 900 a day on the Yohara test, bots in the ice mostly).\n\tif (!pkMotion && IsPC() && m_dwPolymorphRace && !GetMountVnum())\n\t\tpkMotion = CMotionManager::instance().GetMotion(m_points.job, MAKE_MOTION_KEY(MOTION_MODE_GENERAL, IsWalking() ? MOTION_WALK : MOTION_RUN));\n\n\tif (pkMotion)\n\t\treturn -pkMotion->GetAccumVector().y / pkMotion->GetDuration();\n\telse\n\t{\n\t\tsys_err(\"cannot find motion (name %s race %d mode %d)\", GetName(), GetRaceNum(), dwMode);\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_MOUNT_UNSUMMON_QUIET_V1",
+  "old": "\tif (GetMountVnum() == mobVnum)\n\t\tmountSystem->Unmount(mobVnum);\n\n\tmountSystem->Unsummon(mobVnum);\n}\n",
+  "new": "\tif (GetMountVnum() == mobVnum)\n\t\tmountSystem->Unmount(mobVnum);\n\n\t// MT2009_PLUS_MOUNT_UNSUMMON_QUIET_V1 (server-patches/enginefixes; 6 November 2026, the second bot analysis,\n\t// item 11): a seal taken off (or run out) whose mount was never called out - a bot's seal swap, a log-out\n\t// that took the actor first - has nothing to send away; CMountSystem::Unsummon said \"Null Pointer (actor)\"\n\t// for it (~290 a day on the Yohara test). Nothing else changes.\n\tif (mountSystem->GetByVnum(mobVnum))\n\t\tmountSystem->Unsummon(mobVnum);\n}\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_BOT_LOAD_PLACE_V1",
+  "old": "\tpTab->lMapIndex = lMapIndex;\n\n\tif (!SECTREE_MANAGER::instance().GetValidLocation(pTab->lMapIndex, pTab->x, pTab->y, lMapIndex, pos, d->GetEmpire()))\n",
+  "new": "\tpTab->lMapIndex = lMapIndex;\n\n\t// MT2009_PLUS_BOT_LOAD_PLACE_V1 (server-patches/enginefixes; 6 November 2026, the second bot analysis, item 10):\n\t// a bot saved on a map this core does not host gets its place before the check below - a handover's or a\n\t// companion's spot, else its kingdom's first village when this core hosts it (CPlayerBotManager::\n\t// PlaceLoadingBot; PLAYERBOT_LOAD_PLACE=0 turns it off). The same places the hook further down and\n\t// ENABLE_GOHOME_IF_MAP_NOT_EXIST gave after two SYSERR lines (~5 000 a day on the Yohara test).\n\tif (d->IsBot())\n\t{\n\t\tconst BYTE bMt2009BotEmpire = d->GetAccountTable().bEmpire;\n\t\tlong lMt2009BotMap = pTab->lMapIndex, lMt2009BotX = pTab->x, lMt2009BotY = pTab->y;\n\t\tif (CPlayerBotManager::instance().PlaceLoadingBot(pTab->id, bMt2009BotEmpire, (long) EMPIRE_START_MAP(bMt2009BotEmpire),\n\t\t\t\t(long) EMPIRE_START_X(bMt2009BotEmpire), (long) EMPIRE_START_Y(bMt2009BotEmpire), lMt2009BotMap, lMt2009BotX, lMt2009BotY))\n\t\t{\n\t\t\tpTab->lMapIndex = lMt2009BotMap;\n\t\t\tpTab->x = lMt2009BotX;\n\t\t\tpTab->y = lMt2009BotY;\n\t\t}\n\t}\n\n\tif (!SECTREE_MANAGER::instance().GetValidLocation(pTab->lMapIndex, pTab->x, pTab->y, lMapIndex, pos, d->GetEmpire()))\n"
  }
 ]
