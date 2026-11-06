@@ -495,25 +495,40 @@ namespace
 
 	// Whether a bot may go: the quest's four conditions, a head, and nothing
 	// of its own that the dungeon would take it from.
-	bool IsPlayerBotCatacombEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
+	// MT2009_PLUS_BOT_CATACOMB_CENSUS_V1 (the second bot analysis, point 8: "nobody to call eligible_best=0" with
+	// 115 bots of 75-81 on the supporters' world): the first condition a bot fails, by name, for the census below.
+	enum EPlayerBotCatacombRefusal
+	{
+		CATACOMB_REFUSE_NONE = 0, CATACOMB_REFUSE_LEVEL, CATACOMB_REFUSE_TOWER9, CATACOMB_REFUSE_COOLDOWN,
+		CATACOMB_REFUSE_HEAD, CATACOMB_REFUSE_PERSON, CATACOMB_REFUSE_ROLE, CATACOMB_REFUSE_BUSY, CATACOMB_REFUSE_TOOL,
+		CATACOMB_REFUSE_COUNT
+	};
+	const char* const PLAYERBOT_CATACOMB_REFUSAL_NAMES[CATACOMB_REFUSE_COUNT] = {
+		"ok", "level", "tower9", "cooldown", "head", "person_party", "sidekick_dropper", "busy", "rod_pick"
+	};
+	int GetPlayerBotCatacombRefusal(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch || ch->IsDead() || ch->GetLevel() < PLAYERBOT_CATACOMB_MIN_LEVEL)
-			return false;
+			return CATACOMB_REFUSE_LEVEL;
 		if (ch->GetQuestFlag("deviltower_zone.9_done") == 0)
-			return false;
+			return CATACOMB_REFUSE_TOWER9;
 		if (get_global_time() - ch->GetQuestFlag("devilcatacomb_zone.last_exit_time") < PLAYERBOT_CATACOMB_COOLDOWN_SECONDS)
-			return false;
+			return CATACOMB_REFUSE_COOLDOWN;
 		if (ch->CountSpecifyItem(30319) + ch->CountSpecifyItem(30320) + ch->CountSpecifyItem(76002) <= 0)
-			return false;
+			return CATACOMB_REFUSE_HEAD;
 		if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
-			return false;
+			return CATACOMB_REFUSE_PERSON;
 		if (IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotDropper(state.bPersonality))
-			return false;
+			return CATACOMB_REFUSE_ROLE;
 		if (IsPlayerBotOnTowerBusiness(ch, state) || state.dwGuildWarEnemyGID != 0)
-			return false;
+			return CATACOMB_REFUSE_BUSY;
 		if (IsPlayerBotAngler(ch, state) || IsPlayerBotMiner(ch, state) || state.bFishingSession)
-			return false;
-		return true;
+			return CATACOMB_REFUSE_TOOL;
+		return CATACOMB_REFUSE_NONE;
+	}
+	bool IsPlayerBotCatacombEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		return GetPlayerBotCatacombRefusal(ch, state) == CATACOMB_REFUSE_NONE;
 	}
 
 	struct TPlayerBotCatacombCandidate
@@ -535,11 +550,20 @@ namespace
 	bool CallPlayerBotCatacombRaid(DWORD dwNow, const char* why)
 	{
 		std::map<BYTE, std::vector<TPlayerBotCatacombCandidate> > byKingdom;
+		// MT2009_PLUS_BOT_CATACOMB_CENSUS_V1: the bots of the level (PLAYERBOT_CATACOMB_MIN_LEVEL - 5 and up, the
+		// ones about to be of it too) by kingdom and the first condition each fails.
+		int refusals[4][CATACOMB_REFUSE_COUNT];
+		memset(refusals, 0, sizeof(refusals));
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
 				it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
-			if (!ch || !IsPlayerBotCatacombEligible(ch, it->second))
+			if (!ch)
+				continue;
+			const int refusal = GetPlayerBotCatacombRefusal(ch, it->second);
+			if (ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3 && (int)ch->GetLevel() >= PLAYERBOT_CATACOMB_MIN_LEVEL - 5)
+				++refusals[ch->GetEmpire()][refusal];
+			if (refusal != CATACOMB_REFUSE_NONE)
 				continue;
 			TPlayerBotCatacombCandidate c;
 			c.pid = it->first;
@@ -560,7 +584,26 @@ namespace
 			}
 		if (most < (size_t)PLAYERBOT_CATACOMB_MIN_MEMBERS)
 		{
-			sys_log(0, "PLAYERBOT_CATACOMB: nobody to call eligible_best=%u why=%s", (unsigned int)most, why);
+			std::string census;
+			for (int e = 1; e <= 3; ++e)
+			{
+				census += e == 1 ? "" : " ";
+				char buf[24];
+				snprintf(buf, sizeof(buf), "k%d:", e);
+				census += buf;
+				bool first = true;
+				for (int r = 0; r < CATACOMB_REFUSE_COUNT; ++r)
+					if (refusals[e][r])
+					{
+						snprintf(buf, sizeof(buf), "%s%s=%d", first ? "" : ",", PLAYERBOT_CATACOMB_REFUSAL_NAMES[r], refusals[e][r]);
+						census += buf;
+						first = false;
+					}
+				if (first)
+					census += "-";
+			}
+			sys_log(0, "PLAYERBOT_CATACOMB: nobody to call eligible_best=%u why=%s level%d+ %s", (unsigned int)most, why,
+					PLAYERBOT_CATACOMB_MIN_LEVEL - 5, census.c_str());
 			return false;
 		}
 		std::vector<TPlayerBotCatacombCandidate>& all = byKingdom[empire];

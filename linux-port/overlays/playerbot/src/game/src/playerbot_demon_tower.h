@@ -70,11 +70,57 @@ namespace
 		long lInstance;
 		int iUpper;
 		std::set<DWORD> members;
+		// MT2009_PLUS_BOT_DT_PARTY_V1: a kingdom's party (no guild): dwGuildID is then
+		// PLAYERBOT_TOWER_PARTY_ID_BASE + kingdom, never a guild's id; its tier (0: the band of
+		// dt_party_min..dt_party_max, 1: the upper band, 75 and up) and its leader.
+		bool bParty;
+		BYTE bTier;
+		DWORD dwPartyLeader;
 
 		TPlayerBotTowerRaid() :
 			dwGuildID(0), bEmpire(0), bPhase(TOWER_PHASE_NONE), dwCalledAt(0),
-			dwPhaseSince(0), lInstance(0), iUpper(0) {}
+			dwPhaseSince(0), lInstance(0), iUpper(0), bParty(false), bTier(0), dwPartyLeader(0) {}
 	};
+
+	// MT2009_PLUS_BOT_DT_PARTY_V1 (the owner, 6 November 2026 - the second bot analysis, point 8): the Demon Tower
+	// as a party run of one kingdom's bots, not only a bot guild's raid. A week of the guild raids alone gave 0 runs
+	// on two worlds and ~1 an hour on the supporters' (one guild of one kingdom - the test world's every raid was
+	// Masarnia's, kingdom 3), and the Catacomb's call found eligible_best=0-3 a kingdom: its ninth floor done and
+	// the Reaper's Dried Head are the tower's only. The tower's world pass now calls, in turn, two party runs and
+	// one guild raid (each the other's fallback when nobody fits): up to PLAYERBOT_TOWER_PARTY_MAX bots of one
+	// kingdom (the kingdoms in turn), the strongest first, in a real party (exp shared, the leader's, made on the
+	// ground floor). Tier 0 - the band dt_party_min..dt_party_max (40..60 as the owner asked; the tower's own floor
+	// for a bot, PLAYERBOT_TOWER_MIN_LEVEL 55, still holds - a bot under it leaves the floors, the 25 September
+	// decision) - climbs to the sixth floor's smith ("nobody_of_75"). Tier 1 - 75 and up - goes to the Reaper, the
+	// bots without the ninth floor or a head first (the Catacomb's candidates). The next call dt_party_gap minutes
+	// after a run (30). Event flags: bot_dt_party -1 off (only the guild raids, as before), dt_party_min/max,
+	// dt_party_gap; the panel's tower switch (IsPlayerBotTowerRaidsEnabled) holds all. Log: PLAYERBOT_TOWER: party
+	// raid called / party made / no party.
+	const DWORD PLAYERBOT_TOWER_PARTY_ID_BASE = 0xFFFFFF00U;
+	const int PLAYERBOT_TOWER_PARTY_MAX = 8;
+	unsigned int s_uPlayerBotTowerCalls = 0;
+	unsigned int s_uPlayerBotTowerPartyRaids = 0;
+	BYTE s_bPlayerBotTowerPartyNextEmpire = 1;
+	int GetPlayerBotTowerPartyFlag(const char* name, int def)
+	{
+		const int v = quest::CQuestManager::instance().GetEventFlag(name);
+		return v != 0 ? v : def;
+	}
+	bool IsPlayerBotTowerPartyOn() { return GetPlayerBotTowerPartyFlag("bot_dt_party", 1) > 0; }
+	int GetPlayerBotTowerPartyMin(int tier)
+	{
+		return tier == 1 ? PLAYERBOT_TOWER_UPPER_LEVEL
+				: std::max(PLAYERBOT_TOWER_MIN_LEVEL, GetPlayerBotTowerPartyFlag("dt_party_min", 40));
+	}
+	int GetPlayerBotTowerPartyMax(int tier)
+	{
+		return tier == 1 ? PLAYER_MAX_LEVEL_CONST : std::max(PLAYERBOT_TOWER_MIN_LEVEL, GetPlayerBotTowerPartyFlag("dt_party_max", 60));
+	}
+	DWORD GetPlayerBotTowerPartyGapMs()
+	{
+		return (DWORD)std::max(5, std::min(600, GetPlayerBotTowerPartyFlag("dt_party_gap", 30))) * 60000U;
+	}
+	bool IsPlayerBotDropkiActive(DWORD pid);	// playerbot_dropki.h
 
 	TPlayerBotTowerRaid s_PlayerBotTowerRaid;
 	DWORD s_dwNextPlayerBotTowerCheck = 0;
@@ -551,7 +597,16 @@ namespace
 				? CGuildManager::instance().FindGuild(raid.dwGuildID) : NULL;
 		char msg[256];
 		std::string who;
-		if (g)
+		// MT2009_PLUS_BOT_DT_PARTY_V1: a kingdom's party raid is named after its leader.
+		LPCHARACTER partyLeader = (!g && raid.bParty && raid.bPhase == TOWER_PHASE_INSIDE && raid.lInstance == map)
+				? CHARACTER_MANAGER::instance().FindByPID(raid.dwPartyLeader) : NULL;
+		if (partyLeader)
+		{
+			snprintf(msg, sizeof(msg), "Druzyna %s (%s) pokonala Umarlego Rozpruwacza na dziewiatym pietrze Wiezy Demonow!",
+					partyLeader->GetName(), GetPlayerBotKingdomName(raid.bEmpire));
+			who = partyLeader->GetName();
+		}
+		else if (g)
 		{
 			snprintf(msg, sizeof(msg), "Gildia %s (%s) pokonala Umarlego Rozpruwacza na dziewiatym pietrze Wiezy Demonow!",
 					g->GetName(), GetPlayerBotKingdomName(raid.bEmpire));
@@ -2270,6 +2325,37 @@ namespace
 			TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_DEMON_TOWER, rallyX, rallyY, dwNow, "tower_raid");
 			return true;
 		}
+		// MT2009_PLUS_BOT_DT_PARTY_V1: a party raid's party, made on the ground floor (a party made before a warp
+		// breaks; the stone's jump keeps it - CDungeon::JumpParty / WarpBot): the leader's, which the others join.
+		if (raid.bParty)
+		{
+			LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(raid.dwPartyLeader);
+			if (leader && leader->GetMapIndex() == PLAYERBOT_MAP_DEMON_TOWER && !leader->IsDead())
+			{
+				LPPARTY party = leader->GetParty();
+				if (ch == leader && (!party || party->GetLeaderPID() != leader->GetPlayerID()))
+				{
+					if (party)
+						LeavePlayerBotParty(leader);
+					party = CPartyManager::instance().CreateParty(leader);
+					if (party)
+					{
+						party->Link(leader);
+						party->SetParameter(PARTY_EXP_DISTRIBUTION_PARITY);
+						sys_log(0, "PLAYERBOT_TOWER: party made leader=%s empire=%u tier=%d", leader->GetName(),
+								(unsigned int)raid.bEmpire, (int)raid.bTier);
+					}
+				}
+				else if (ch != leader && party && party->GetLeaderPID() == leader->GetPlayerID() &&
+						ch->GetParty() != party && party->GetMemberCount() < PLAYERBOT_TOWER_PARTY_MAX)
+				{
+					if (ch->GetParty())
+						LeavePlayerBotParty(ch);
+					party->Join(ch->GetPlayerID());
+					party->Link(ch);
+				}
+			}
+		}
 		if (KeepPlayerBotTowerAlive(ch, state, dwNow))
 			return true;
 		// A transport horse never fights; a battle horse's rider is asked about
@@ -2555,6 +2641,133 @@ namespace
 				(unsigned int)e.members.size(), e.upper, why);
 	}
 
+	// MT2009_PLUS_BOT_DT_PARTY_V1: a kingdom's bots that may go - of the tier's band, alive, free of every
+	// other business (the tower's, a raid's, a dungeon run, the Catacomb, a war, the Dropki, a person's party),
+	// no dropper, angler or miner; tier 1 puts the bots the Catacomb still waits for (no ninth floor or no head)
+	// first, then the strongest.
+	struct TPlayerBotTowerPartyCand
+	{
+		DWORD pid;
+		int strength;
+		int level;
+		bool need;
+	};
+	bool PlayerBotTowerPartyCandOrder(const TPlayerBotTowerPartyCand& a, const TPlayerBotTowerPartyCand& b)
+	{
+		if (a.need != b.need)
+			return a.need;
+		if (a.strength != b.strength)
+			return a.strength > b.strength;
+		return a.pid < b.pid;
+	}
+	void GatherPlayerBotTowerParty(int tier, std::vector<TPlayerBotTowerPartyCand> out[4])
+	{
+		const int lo = GetPlayerBotTowerPartyMin(tier), hi = GetPlayerBotTowerPartyMax(tier);
+		for (int e = 0; e < 4; ++e)
+			out[e].clear();
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || ch->IsDead() || (int)ch->GetLevel() < lo || (int)ch->GetLevel() > hi)
+				continue;
+			const BYTE empire = ch->GetEmpire();
+			if (empire < 1 || empire > 3)
+				continue;
+			const TPlayerBotAIState& st = it->second;
+			if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
+				continue;
+			if (IsPlayerBotOnTowerBusiness(ch, st) || st.dwGuildWarEnemyGID != 0 || IsPlayerBotDropkiActive(it->first))
+				continue;
+			if (IsPlayerBotSidekickPID(it->first) || IsPlayerBotDropper(st.bPersonality))
+				continue;
+			if (IsPlayerBotAngler(ch, st) || IsPlayerBotMiner(ch, st) || st.bFishingSession)
+				continue;
+			TPlayerBotTowerPartyCand c;
+			c.pid = it->first;
+			c.strength = GetPlayerBotStrengthCached(it->first);
+			if (c.strength <= 0)
+				c.strength = ch->GetLevel() * 1000;
+			c.level = ch->GetLevel();
+			c.need = tier == 1 && (ch->GetQuestFlag("deviltower_zone.9_done") == 0 ||
+					ch->CountSpecifyItem(30319) + ch->CountSpecifyItem(30320) + ch->CountSpecifyItem(76002) <= 0);
+			out[empire].push_back(c);
+		}
+		for (int e = 1; e <= 3; ++e)
+			std::sort(out[e].begin(), out[e].end(), PlayerBotTowerPartyCandOrder);
+	}
+
+	// A party raid of the tier: the kingdoms in turn from s_bPlayerBotTowerPartyNextEmpire, the first with
+	// PLAYERBOT_TOWER_MIN_MEMBERS free bots goes. Says what each kingdom had when none could.
+	bool CallPlayerBotTowerPartyRaid(int tier, DWORD dwNow, const char* why)
+	{
+		std::vector<TPlayerBotTowerPartyCand> cands[4];
+		GatherPlayerBotTowerParty(tier, cands);
+		BYTE empire = 0;
+		for (int k = 0; k < 3 && !empire; ++k)
+		{
+			const BYTE e = (BYTE)(((s_bPlayerBotTowerPartyNextEmpire - 1 + k) % 3) + 1);
+			if ((int)cands[e].size() >= PLAYERBOT_TOWER_MIN_MEMBERS)
+				empire = e;
+		}
+		if (!empire)
+		{
+			PlayerBotLogThrottled(tier == 1 ? "tower_no_party1" : "tower_no_party0", dwNow,
+					"PLAYERBOT_TOWER: no party tier=%d band=%d-%d free=%u/%u/%u (need %d of one kingdom)",
+					tier, GetPlayerBotTowerPartyMin(tier), GetPlayerBotTowerPartyMax(tier),
+					(unsigned int)cands[1].size(), (unsigned int)cands[2].size(), (unsigned int)cands[3].size(),
+					PLAYERBOT_TOWER_MIN_MEMBERS);
+			return false;
+		}
+		s_bPlayerBotTowerPartyNextEmpire = (BYTE)((empire % 3) + 1);
+		std::vector<TPlayerBotTowerPartyCand>& all = cands[empire];
+		if (all.size() > (size_t)PLAYERBOT_TOWER_PARTY_MAX)
+			all.resize((size_t)PLAYERBOT_TOWER_PARTY_MAX);
+		// The leader: the strongest of those picked (a tier-1 party's need order is not the leader's).
+		size_t lead = 0;
+		int upper = 0, needs = 0, lvMin = 999, lvMax = 0;
+		for (size_t i = 0; i < all.size(); ++i)
+		{
+			if (all[i].strength > all[lead].strength)
+				lead = i;
+			upper += all[i].level >= PLAYERBOT_TOWER_UPPER_LEVEL ? 1 : 0;
+			needs += all[i].need ? 1 : 0;
+			lvMin = std::min(lvMin, all[i].level);
+			lvMax = std::max(lvMax, all[i].level);
+		}
+		TPlayerBotTowerRaid& raid = s_PlayerBotTowerRaid;
+		raid = TPlayerBotTowerRaid();
+		raid.dwGuildID = PLAYERBOT_TOWER_PARTY_ID_BASE + empire;
+		raid.bEmpire = empire;
+		raid.bPhase = TOWER_PHASE_GATHER;
+		raid.dwCalledAt = dwNow;
+		raid.dwPhaseSince = dwNow;
+		raid.iUpper = upper;
+		raid.bParty = true;
+		raid.bTier = (BYTE)tier;
+		raid.dwPartyLeader = all[lead].pid;
+		for (size_t i = 0; i < all.size(); ++i)
+		{
+			raid.members.insert(all[i].pid);
+			TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(all[i].pid);
+			if (st != s_mapPlayerBotAIStates.end())
+			{
+				st->second.dwTowerRaidGuild = raid.dwGuildID;
+				st->second.dwNextTowerMoveTime = dwNow + (PlayerBotNavHash(all[i].pid ^ 0x544F5731U) % 60000U);
+			}
+		}
+		++s_uPlayerBotTowerRaids;
+		++s_uPlayerBotTowerPartyRaids;
+		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(raid.dwPartyLeader);
+		char msg[220];
+		snprintf(msg, sizeof(msg), "Druzyna %s (%s) rusza na Wieze Demonow: zbiorka na parterze wiezy, start za %u minut. Kto stoi na parterze, wchodzi razem z nimi.",
+				leader ? leader->GetName() : "?", GetPlayerBotKingdomName(empire), (unsigned int)(PLAYERBOT_TOWER_GATHER_MS / 60000U));
+		BroadcastNotice(msg);
+		sys_log(0, "PLAYERBOT_TOWER: party raid called tier=%d empire=%u members=%u leader=%s levels=%d-%d upper=%d catacomb_needs=%d free=%u/%u/%u why=%s",
+				tier, (unsigned int)empire, (unsigned int)all.size(), leader ? leader->GetName() : "?", lvMin, lvMax, upper, needs,
+				(unsigned int)cands[1].size(), (unsigned int)cands[2].size(), (unsigned int)cands[3].size(), why);
+		return true;
+	}
+
 	void EndPlayerBotTowerRaid(DWORD dwNow, const char* why)
 	{
 		TPlayerBotTowerRaid& raid = s_PlayerBotTowerRaid;
@@ -2563,17 +2776,23 @@ namespace
 		std::map<long, TPlayerBotTowerRun>::iterator run = s_mapPlayerBotTowerRuns.find(raid.lInstance);
 		if (run != s_mapPlayerBotTowerRuns.end())
 			floor = run->second.iLevel + 2;
-		sys_log(0, "PLAYERBOT_TOWER: raid over guild=%s id=%u phase=%d floor=%d after_min=%u why=%s",
-				g ? g->GetName() : "?", raid.dwGuildID, (int)raid.bPhase, floor,
-				(dwNow - raid.dwCalledAt) / 60000U, why);
+		sys_log(0, "PLAYERBOT_TOWER: raid over guild=%s id=%u phase=%d floor=%d after_min=%u why=%s%s",
+				g ? g->GetName() : (raid.bParty ? "party" : "?"), raid.dwGuildID, (int)raid.bPhase, floor,
+				(dwNow - raid.dwCalledAt) / 60000U, why, raid.bParty ? (raid.bTier ? " party_tier=1" : " party_tier=0") : "");
+		const bool party = raid.bParty;
 		for (std::set<DWORD>::const_iterator it = raid.members.begin(); it != raid.members.end(); ++it)
 		{
 			TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(*it);
 			if (st != s_mapPlayerBotAIStates.end() && st->second.lTowerInstance == 0)
 				st->second.dwTowerRaidGuild = 0;
+			// MT2009_PLUS_BOT_DT_PARTY_V1: the run's party goes with it (one still inside leaves it on the way out).
+			LPCHARACTER ch = party ? CHARACTER_MANAGER::instance().FindByPID(*it) : NULL;
+			if (ch && ch->GetParty() && !IsPlayerBotHumanLedParty(ch->GetParty()) && !IsPlayerBotDemonTowerInstance(ch->GetMapIndex()))
+				LeavePlayerBotParty(ch);
 		}
 		raid = TPlayerBotTowerRaid();
-		s_dwNextPlayerBotTowerRaidTime = dwNow + PLAYERBOT_TOWER_INTERVAL;
+		// MT2009_PLUS_BOT_DT_PARTY_V1: with the party runs on, the next call comes dt_party_gap minutes after a run.
+		s_dwNextPlayerBotTowerRaidTime = dwNow + (IsPlayerBotTowerPartyOn() ? GetPlayerBotTowerPartyGapMs() : PLAYERBOT_TOWER_INTERVAL);
 	}
 
 	// "Aktywuj teraz": the panel touches this file; a raid is called on the
@@ -2652,8 +2871,8 @@ namespace
 		TPlayerBotTowerRaid& raid = s_PlayerBotTowerRaid;
 		if (raid.bPhase != TOWER_PHASE_NONE)
 		{
-			CGuild* g = CGuildManager::instance().FindGuild(raid.dwGuildID);
-			if (!g)
+			CGuild* g = raid.bParty ? NULL : CGuildManager::instance().FindGuild(raid.dwGuildID);
+			if (!g && !raid.bParty)	// MT2009_PLUS_BOT_DT_PARTY_V1: a party raid has no guild
 			{
 				EndPlayerBotTowerRaid(dwNow, "guild_gone");
 				return;
@@ -2674,9 +2893,10 @@ namespace
 					{
 						raid.bPhase = TOWER_PHASE_STONE;
 						raid.dwPhaseSince = dwNow;
-						ChatPlayerBotGuild(g, "Rozbijamy Metin Twardosci!");
+						if (g)
+							ChatPlayerBotGuild(g, "Rozbijamy Metin Twardosci!");
 						sys_log(0, "PLAYERBOT_TOWER: raid breaking the stone guild=%s on_ground=%d of %u",
-								g->GetName(), onGround, (unsigned int)raid.members.size());
+								g ? g->GetName() : "party", onGround, (unsigned int)raid.members.size());
 					}
 					break;
 				case TOWER_PHASE_STONE:
@@ -2706,9 +2926,23 @@ namespace
 				TPlayerBotTowerGuildEntry e;
 				int warWindow = 0;
 				int atWar = 0;
-				if (PickPlayerBotTowerGuild(dwNow, e, warWindow, atWar))
+				// MT2009_PLUS_BOT_DT_PARTY_V1: two party raids (tier 0, then tier 1) and a guild raid in turn, each
+				// the others' fallback.
+				const unsigned int turn = s_uPlayerBotTowerCalls++ % 3;
+				const bool partyOn = IsPlayerBotTowerPartyOn();
+				bool called = false;
+				if (partyOn && turn != 2)
+					called = CallPlayerBotTowerPartyRaid(turn == 0 ? 0 : 1, dwNow, now ? "panel" : "clock") ||
+							CallPlayerBotTowerPartyRaid(turn == 0 ? 1 : 0, dwNow, now ? "panel" : "clock");
+				if (!called && PickPlayerBotTowerGuild(dwNow, e, warWindow, atWar))
+				{
 					CallPlayerBotTowerRaid(e, dwNow, now ? "panel" : "clock");
-				else
+					called = true;
+				}
+				if (!called && partyOn && turn == 2)
+					called = CallPlayerBotTowerPartyRaid(0, dwNow, now ? "panel" : "clock") ||
+							CallPlayerBotTowerPartyRaid(1, dwNow, now ? "panel" : "clock");
+				if (!called)
 				{
 					s_dwNextPlayerBotTowerRaidTime = dwNow + PLAYERBOT_TOWER_RETRY_MS;
 					// The guilds a war kept out are counted apart: "no guild"
@@ -2730,8 +2964,8 @@ namespace
 					it != s_mapPlayerBotAIStates.end(); ++it)
 				if (it->second.lTowerInstance != 0)
 					++inside;
-			sys_log(0, "PLAYERBOT_TOWER: census raids=%u runs_finished=%u best_floor=%d inside=%d phase=%d next_in_min=%d",
-					s_uPlayerBotTowerRaids, s_uPlayerBotTowerRunsFinished, s_iPlayerBotTowerBestFloor, inside,
+			sys_log(0, "PLAYERBOT_TOWER: census raids=%u party_raids=%u runs_finished=%u best_floor=%d inside=%d phase=%d next_in_min=%d",
+					s_uPlayerBotTowerRaids, s_uPlayerBotTowerPartyRaids, s_uPlayerBotTowerRunsFinished, s_iPlayerBotTowerBestFloor, inside,
 					(int)s_PlayerBotTowerRaid.bPhase,
 					s_PlayerBotTowerRaid.bPhase != TOWER_PHASE_NONE || s_dwNextPlayerBotTowerRaidTime <= dwNow
 						? 0 : (int)((s_dwNextPlayerBotTowerRaidTime - dwNow) / 60000U));

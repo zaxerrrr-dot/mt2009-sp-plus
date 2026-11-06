@@ -365,7 +365,7 @@ namespace
 	// caps (PLAYERBOT_SZC_PARTIES, PLAYERBOT_HYDRA_PARTIES), outside this one.
 	const int PLAYERBOT_DGRUN_MIN_RUNS = 4;
 	const int PLAYERBOT_DGRUN_MAX_RUNS = 12;
-	const int PLAYERBOT_DGRUN_BOTS_PER_RUN = 250;
+	const int PLAYERBOT_DGRUN_BOTS_PER_RUN = 120;	// MT2009_PLUS_BOT_DGRUN_CAP_120_V1 (6 November 2026: 250 gave 4 runs on ~1 000 bots, <1% in dungeons)
 	// One call a kingdom's shout this often at most.
 	const DWORD PLAYERBOT_DGRUN_SHOUT_GAP_MS = 75000;
 	// The answers come over this, after the call; the walk to the entrance
