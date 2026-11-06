@@ -707,7 +707,7 @@ namespace
 			if (worn && !HasPlayerBotDsTime(worn) && (!best || RankPlayerBotDs(ch, worn) >= RankPlayerBotDs(ch, best)))
 			{
 				++s_kPlayerBotAlchemyStats.keptExpired;
-				PlayerBotLogThrottled("ds_kept_expired", get_dword_time(),
+				PlayerBotLogThrottledEvery("ds_kept_expired", get_dword_time(), 600000,
 						"PLAYERBOT_DS: kept expired pid=%u name=%s vnum=%u kind=%d gold=%lld (stays on, waits for an elixir)",
 						ch->GetPlayerID(), ch->GetName(), worn->GetVnum(), kind, (long long)ch->GetGold());
 				continue;

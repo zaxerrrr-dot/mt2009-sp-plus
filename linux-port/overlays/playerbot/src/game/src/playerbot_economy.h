@@ -3892,6 +3892,295 @@ namespace
 		return true;
 	}
 
+	// ======================================================================== MT2009_PLUS_BOT_REFINE_POLICY_V1
+	// The owner's refine decisions of 6 November 2026 (section C, playerbot_refine_rules.h): Blessing Scrolls only on a
+	// step of low odds or on an item of level 75 and over; the cheap merchant shields and helmets go to +6 at the plain
+	// anvil; and a step the anvil refused waits until its material is in the bag instead of a walk to the anvil every
+	// twenty minutes. Event flags (0 = the default):
+	//   m2_bot_refine_policy_off    1 turns the scroll policy and the cheap merchant rule off (the old rules)
+	//   m2_bot_refine_low_prob      a step under this many percent takes a scroll (default 70)
+	//   m2_bot_refine_scroll_level  an item of this level or over takes a scroll at any step (default 75)
+	//   m2_bot_cheap_npc_plus       cheap merchant shields / helmets: plain anvil up to this plus (default 6)
+	//   m2_bot_cheap_npc_level      the highest level of such a piece, +1 (default 0+1: level 0 only)
+	//   m2_bot_anvil_wait_off       1 turns the material wait off (only the old 15-25 min closing)
+	//   m2_bot_anvil_wait_minutes   how long a refused step waits at most for a change (default 120)
+	// Log prefix PLAYERBOT_REFINE_POLICY (throttled; a census every ten minutes).
+	struct TPlayerBotRefinePolicyStats
+	{
+		unsigned int uScrollSaved;		// a scroll the old rules would have looked for on a plain step
+		unsigned int uCheapNpcPlain;	// a cheap merchant piece's step let to the plain anvil
+		unsigned int uPlainHoldsLifted;	// a hold (worn / hand / barred / table / rule) given way on a plain step
+		unsigned int uStepWaitsSet;
+		unsigned int uStepWaitsKept;	// a planner question answered "no" by a waiting step
+		unsigned int uStepWaitsReleased;
+		unsigned int uStepWaitsExpired;
+		DWORD dwLastCensus;
+		TPlayerBotRefinePolicyStats() { memset(this, 0, sizeof(*this)); }
+	};
+	TPlayerBotRefinePolicyStats s_kPlayerBotRefinePolicyStats;
+	const DWORD PLAYERBOT_REFINE_POLICY_CENSUS_MS = 10 * 60 * 1000;
+
+	// The flags are read once a second (the policy is asked for every piece of every bot on every pass).
+	struct TPlayerBotRefinePolicyFlags
+	{
+		DWORD dwReadAt;
+		bool bRead;
+		std::map<std::string, int> values;
+		TPlayerBotRefinePolicyFlags() : dwReadAt(0), bRead(false) {}
+	};
+	TPlayerBotRefinePolicyFlags s_kPlayerBotRefinePolicyFlags;
+
+	int GetPlayerBotRefinePolicyRawFlag(const char* name)
+	{
+		TPlayerBotRefinePolicyFlags& f = s_kPlayerBotRefinePolicyFlags;
+		const DWORD dwNow = get_dword_time();
+		if (!f.bRead || dwNow - f.dwReadAt >= 1000)
+		{
+			f.values.clear();
+			f.dwReadAt = dwNow;
+			f.bRead = true;
+		}
+		std::map<std::string, int>::const_iterator it = f.values.find(name);
+		if (it != f.values.end())
+			return it->second;
+		const int v = quest::CQuestManager::instance().GetEventFlag(name);
+		f.values[name] = v;
+		return v;
+	}
+
+	int GetPlayerBotRefinePolicyFlag(const char* name, int fallback)
+	{
+		const int v = GetPlayerBotRefinePolicyRawFlag(name);
+		return v > 0 ? v : fallback;
+	}
+
+	bool IsPlayerBotRefinePolicyOn()
+	{
+		return GetPlayerBotRefinePolicyRawFlag("m2_bot_refine_policy_off") == 0;
+	}
+
+	void TickPlayerBotRefinePolicyCensus(DWORD dwNow)
+	{
+		TPlayerBotRefinePolicyStats& t = s_kPlayerBotRefinePolicyStats;
+		if (t.dwLastCensus == 0)
+		{
+			t.dwLastCensus = dwNow;
+			return;
+		}
+		if (dwNow - t.dwLastCensus < PLAYERBOT_REFINE_POLICY_CENSUS_MS)
+			return;
+		t.dwLastCensus = dwNow;
+		sys_log(0, "PLAYERBOT_REFINE_POLICY: census policy=%d low_prob=%d scroll_level=%d cheap_plus=%d scroll_saved=%u cheap_npc_plain=%u holds_lifted=%u anvil_waits_set=%u kept=%u released=%u expired=%u",
+				IsPlayerBotRefinePolicyOn() ? 1 : 0,
+				GetPlayerBotRefinePolicyFlag("m2_bot_refine_low_prob", playerbot_refine_rules::POLICY_LOW_PROB),
+				GetPlayerBotRefinePolicyFlag("m2_bot_refine_scroll_level", playerbot_refine_rules::POLICY_EXPENSIVE_LEVEL),
+				GetPlayerBotRefinePolicyFlag("m2_bot_cheap_npc_plus", playerbot_refine_rules::POLICY_CHEAP_NPC_PLUS),
+				t.uScrollSaved, t.uCheapNpcPlain, t.uPlainHoldsLifted, t.uStepWaitsSet, t.uStepWaitsKept,
+				t.uStepWaitsReleased, t.uStepWaitsExpired);
+		const DWORD keep = t.dwLastCensus;
+		t = TPlayerBotRefinePolicyStats();
+		t.dwLastCensus = keep;
+	}
+
+	bool IsPlayerBotFourLinePiece(LPITEM item);
+
+	// A piece whose burn costs more than a scroll whatever the odds: rolled lines (the scroll-only weapon, four
+	// lines, a prize piece). Its level is asked apart (POLICY_EXPENSIVE_LEVEL).
+	bool IsPlayerBotRefinePolicyValuable(LPITEM item)
+	{
+		return item && (IsPlayerBotScrollOnlyWeapon(item) || IsPlayerBotFourLinePiece(item) || IsPlayerBotPrizeItem(item));
+	}
+
+	// A shield or a helmet the village merchants sell (FindPlayerBotMerchantOffer of its +0), of the cheap levels.
+	bool IsPlayerBotCheapNpcShieldOrHelmet(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_ARMOR ||
+				(item->GetSubType() != ARMOR_SHIELD && item->GetSubType() != ARMOR_HEAD))
+			return false;
+		const int maxLevel = GetPlayerBotRefinePolicyFlag("m2_bot_cheap_npc_level",
+				playerbot_refine_rules::POLICY_CHEAP_NPC_MAX_LEVEL + 1) - 1;
+		if ((int)item->GetLevelLimit() > maxLevel)
+			return false;
+		const DWORD base = item->GetVnum() - (DWORD)std::max(0, (int)item->GetRefineLevel());
+		return FindPlayerBotMerchantOffer(base, NULL);
+	}
+
+	// Whether this step of this piece goes to the plain anvil under the owner's policy: no scroll is looked for and
+	// no rule holds the piece for one. Gear of level 100 and over keeps its own ladder (IsPlayerBotHighGear).
+	bool IsPlayerBotPlainAnvilPolicyStep(LPITEM item, int stepProb)
+	{
+		if (!item || item->GetRefinedVnum() == 0 || !IsPlayerBotRefinePolicyOn())
+			return false;
+		if (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR)
+			return false;
+		const int lowProb = GetPlayerBotRefinePolicyFlag("m2_bot_refine_low_prob", playerbot_refine_rules::POLICY_LOW_PROB);
+		const int expensive = GetPlayerBotRefinePolicyFlag("m2_bot_refine_scroll_level",
+				playerbot_refine_rules::POLICY_EXPENSIVE_LEVEL);
+		const int cheapPlus = GetPlayerBotRefinePolicyFlag("m2_bot_cheap_npc_plus", playerbot_refine_rules::POLICY_CHEAP_NPC_PLUS);
+		const int level = (int)item->GetLevelLimit();
+		if (level >= expensive)
+			return false;
+		const bool valuable = IsPlayerBotRefinePolicyValuable(item);
+		return playerbot_refine_rules::IsPlainAnvilPolicyStep(stepProb, level, (int)item->GetRefineLevel(), valuable,
+				!valuable && IsPlayerBotCheapNpcShieldOrHelmet(item), lowProb, expensive, cheapPlus);
+	}
+
+	// The same for the piece's next step by its own recipe.
+	bool IsPlayerBotPlainAnvilPolicyStep(LPITEM item)
+	{
+		if (!item)
+			return false;
+		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
+		return recipe && IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob);
+	}
+
+	// A hold that gives way on a plain step: counted, said once a minute for everybody.
+	bool PlayerBotPlainStepLiftsHold(LPCHARACTER ch, LPITEM item, int stepProb, const char* hold)
+	{
+		if (!IsPlayerBotPlainAnvilPolicyStep(item, stepProb))
+			return false;
+		++s_kPlayerBotRefinePolicyStats.uPlainHoldsLifted;
+		if (ch)
+			PlayerBotLogThrottled("refine_policy_plain", get_dword_time(),
+					"PLAYERBOT_REFINE_POLICY: plain anvil step, no scroll pid=%u name=%s vnum=%u level=%d plus=%u prob=%d hold=%s",
+					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (int)item->GetLevelLimit(),
+					(unsigned int)item->GetRefineLevel(), stepProb, hold);
+		return true;
+	}
+
+	// The material wait (point 3 of section C: "nie nosic zbroi / broni do kowadla, gdy brakuje materialu"). A step the
+	// anvil refused - the engine's own refusal, or a whole visit that refined nothing although the planner promised a
+	// step - is remembered with what it had to work with: each material up to the recipe's count (over the
+	// Biologist's share), the fee over the reserve, a scroll for the step. While all of that is the same the step is
+	// no errand and no candidate: no walk to the anvil, no armour or weapon taken off for it. A new material in the
+	// bag (or yang for the fee, or a scroll) frees it at once; m2_bot_anvil_wait_minutes (default 120) is the most it
+	// waits for anything.
+	struct TPlayerBotAnvilStepWait
+	{
+		DWORD dwItemID;
+		BYTE bPlus;
+		unsigned long long ullInputs;
+		DWORD dwSince;
+	};
+	std::map<DWORD, std::vector<TPlayerBotAnvilStepWait> > s_mapPlayerBotAnvilStepWaits;
+	const int PLAYERBOT_ANVIL_WAIT_DEFAULT_MINUTES = 120;
+
+	bool IsPlayerBotAnvilWaitOn()
+	{
+		return GetPlayerBotRefinePolicyRawFlag("m2_bot_anvil_wait_off") == 0;
+	}
+
+	int FindPlayerBotRefineScrollCell(LPCHARACTER ch, BYTE plusLevel, int stepProb);
+
+	unsigned long long GetPlayerBotAnvilStepInputs(LPCHARACTER ch, LPITEM item, const TRefineTable* recipe)
+	{
+		unsigned long long h = 1469598103934665603ULL;
+		for (int i = 0; i < recipe->material_count; ++i)
+		{
+			const DWORD vnum = recipe->materials[i].vnum;
+			const int have = std::max(0, (int)::ElementsRefineMaterialCount(ch, item, vnum) -
+					GetPlayerBotBiologistReserve(ch, vnum));
+			const int capped = std::min(have, (int)recipe->materials[i].count);
+			h = (h ^ (unsigned long long)vnum) * 1099511628211ULL;
+			h = (h ^ (unsigned long long)capped) * 1099511628211ULL;
+		}
+		const bool fee = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) >= (long long)ch->ComputeRefineFee(recipe->cost);
+		const bool scroll = FindPlayerBotRefineScrollCell(ch, item->GetRefineLevel(), (int)recipe->prob) >= 0;
+		h = (h ^ (fee ? 0xF1ULL : 0xF0ULL)) * 1099511628211ULL;
+		h = (h ^ (scroll ? 0x51ULL : 0x50ULL)) * 1099511628211ULL;
+		return h;
+	}
+
+	// The materials as "vnum:have/need" for the log.
+	void FormatPlayerBotAnvilStepMaterials(LPCHARACTER ch, LPITEM item, const TRefineTable* recipe, char* out, size_t size)
+	{
+		size_t used = 0;
+		out[0] = 0;
+		for (int m = 0; m < recipe->material_count && used + 24 < size; ++m)
+			used += snprintf(out + used, size - used, "%s%u:%d/%d", m ? "," : "", (unsigned int)recipe->materials[m].vnum,
+					(int)::ElementsRefineMaterialCount(ch, item, recipe->materials[m].vnum), (int)recipe->materials[m].count);
+		if (used == 0)
+			snprintf(out, size, "none");
+	}
+
+	void NotePlayerBotAnvilStepWait(LPCHARACTER ch, LPITEM item, const char* why)
+	{
+		if (!ch || !item || !IsPlayerBotAnvilWaitOn())
+			return;
+		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
+		if (!recipe)
+			return;
+		const DWORD dwNow = get_dword_time();
+		std::vector<TPlayerBotAnvilStepWait>& waits = s_mapPlayerBotAnvilStepWaits[ch->GetPlayerID()];
+		TPlayerBotAnvilStepWait* slot = NULL;
+		for (size_t i = 0; i < waits.size(); ++i)
+			if (waits[i].dwItemID == item->GetID())
+				slot = &waits[i];
+		if (!slot)
+		{
+			waits.push_back(TPlayerBotAnvilStepWait());
+			slot = &waits.back();
+		}
+		slot->dwItemID = item->GetID();
+		slot->bPlus = item->GetRefineLevel();
+		slot->ullInputs = GetPlayerBotAnvilStepInputs(ch, item, recipe);
+		slot->dwSince = dwNow;
+		++s_kPlayerBotRefinePolicyStats.uStepWaitsSet;
+		char materials[128];
+		FormatPlayerBotAnvilStepMaterials(ch, item, recipe, materials, sizeof(materials));
+		PlayerBotLogThrottled("refine_policy_wait_set", dwNow,
+				"PLAYERBOT_REFINE_POLICY: anvil step waits for its material pid=%u name=%s vnum=%u plus=%u why=%s materials=%s",
+				ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetRefineLevel(), why, materials);
+	}
+
+	// Whether this step still waits (same item, same plus, same inputs, within the time).
+	bool IsPlayerBotAnvilStepWaiting(LPCHARACTER ch, LPITEM item, const TRefineTable* recipe)
+	{
+		if (!ch || !item || !recipe)
+			return false;
+		std::map<DWORD, std::vector<TPlayerBotAnvilStepWait> >::iterator it = s_mapPlayerBotAnvilStepWaits.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotAnvilStepWaits.end())
+			return false;
+		std::vector<TPlayerBotAnvilStepWait>& waits = it->second;
+		for (size_t i = 0; i < waits.size(); ++i)
+		{
+			if (waits[i].dwItemID != item->GetID())
+				continue;
+			const DWORD dwNow = get_dword_time();
+			const DWORD maxMs = (DWORD)GetPlayerBotRefinePolicyFlag("m2_bot_anvil_wait_minutes",
+					PLAYERBOT_ANVIL_WAIT_DEFAULT_MINUTES) * 60U * 1000U;
+			const char* release = NULL;
+			if (!IsPlayerBotAnvilWaitOn())
+				release = "off";
+			else if (waits[i].bPlus != item->GetRefineLevel())
+				release = "plus";
+			else if (dwNow - waits[i].dwSince >= maxMs)
+			{
+				release = "time";
+				++s_kPlayerBotRefinePolicyStats.uStepWaitsExpired;
+			}
+			else if (waits[i].ullInputs != GetPlayerBotAnvilStepInputs(ch, item, recipe))
+			{
+				release = "material";
+				++s_kPlayerBotRefinePolicyStats.uStepWaitsReleased;
+			}
+			if (!release)
+			{
+				++s_kPlayerBotRefinePolicyStats.uStepWaitsKept;
+				return true;
+			}
+			PlayerBotLogThrottled("refine_policy_wait_released", dwNow,
+					"PLAYERBOT_REFINE_POLICY: anvil step free again pid=%u name=%s vnum=%u plus=%u why=%s waited_s=%u",
+					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetRefineLevel(), release,
+					(dwNow - waits[i].dwSince) / 1000U);
+			waits.erase(waits.begin() + i);
+			if (waits.empty())
+				s_mapPlayerBotAnvilStepWaits.erase(it);
+			return false;
+		}
+		return false;
+	}
+
 	// The weapon in the hand (GetPlayerBotHandWeapon) at a step the plain anvil
 	// can burn it, with nothing to fall back on: no backup in the bag
 	// (FindPlayerBotBackupWeapon) and nothing a merchant sells at its level.
@@ -3907,6 +4196,9 @@ namespace
 		if (!recipe || recipe->prob > PLAYERBOT_WORN_SCROLL_MAX_PROB)
 			return false;
 		if (item != GetPlayerBotHandWeapon(ch))
+			return false;
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: a cheap weapon at good odds goes to the plain anvil.
+		if (IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))
 			return false;
 		// A weapon a merchant sells at the bot's level goes to the anvil as far
 		// as the bot's own drawn aim: a burned one is bought again for yang. Past
@@ -3942,6 +4234,9 @@ namespace
 			return false;
 		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
 		if (!recipe || recipe->prob > PLAYERBOT_WORN_SCROLL_MAX_PROB)
+			return false;
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: a cheap armour at good odds goes to the plain anvil.
+		if (IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))
 			return false;
 		// The armour on the back, or the one going back on: the anvil keeps it
 		// in the bag for the whole session (GetPlayerBotBodyArmour).
@@ -4039,6 +4334,10 @@ namespace
 			return false;
 		if (IsPlayerBotFourLinePiece(item))
 			return true;
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: the cheap merchant shield / helmet to +6, and every cheap piece at good
+		// odds, takes the plain anvil's risk ("Bojowa Tarcza+4" held at +4 by 769 bots, 6 November).
+		if (IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))
+			return false;
 		const int slot = GetPlayerBotFightingSlotOf(ch, item);
 		if ((int)item->GetRefineLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_MAX_PLUS &&
 				((int)ch->GetLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL || IsPlayerBotScrollFreeGear(item)))
@@ -4188,6 +4487,16 @@ namespace
 	{
 		if (!ch || !item || IsPlayerBotScrollFreeGear(item))
 			return -1;
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: no scroll on a cheap piece's step at good odds, nor on a cheap merchant
+		// shield's / helmet's step to +6.
+		if (IsPlayerBotPlainAnvilPolicyStep(item, stepProb))
+		{
+			TickPlayerBotRefinePolicyCensus(get_dword_time());
+			const int cell = FindPlayerBotRefineScrollCell(ch, item->GetRefineLevel(), stepProb);
+			if (cell >= 0)
+				++s_kPlayerBotRefinePolicyStats.uScrollSaved;
+			return -1;
+		}
 		return FindPlayerBotRefineScrollCell(ch, item->GetRefineLevel(), stepProb);
 	}
 
@@ -4768,7 +5077,7 @@ namespace
 			if (!IsPlayerBotRefineBagCandidate(ch, item))
 			{
 				if (IsPlayerBotSpecialLevel30Weapon(item))
-					PlayerBotLogThrottled("refine_l30_skipped", dwNow,
+					PlayerBotLogThrottledEvery("refine_l30_skipped", dwNow, 600000,
 							"PLAYERBOT_AI: level-30 weapon not refined pid=%u name=%s vnum=%u plus=%u level=%u reason=not_a_candidate junk=%d spare=%d upgrade=%d",
 							ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 							(unsigned int)item->GetRefineLevel(), (unsigned int)ch->GetLevel(),
@@ -4782,7 +5091,7 @@ namespace
 			if (plusLevel >= GetPlayerBotRefineTarget(ch, item))
 			{
 				if (IsPlayerBotSpecialLevel30Weapon(item))
-					PlayerBotLogThrottled("refine_l30_target", dwNow,
+					PlayerBotLogThrottledEvery("refine_l30_target", dwNow, 600000,
 							"PLAYERBOT_AI: level-30 weapon not refined pid=%u name=%s vnum=%u plus=%u level=%u reason=target_reached target=%u",
 							ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 							(unsigned int)plusLevel, (unsigned int)ch->GetLevel(),
@@ -4942,7 +5251,10 @@ namespace
 			}
 			// The caution of a piece with nothing behind it is the plain anvil's:
 			// under the scroll rule a failure hands the piece back.
-			const bool hasBackup = rulePiece || ((wearCell != 255) ? HasPlayerBotBackupGear(ch, wearCell, item) : true);
+			// MT2009_PLUS_BOT_REFINE_POLICY_V1: not on a plain step, where no scroll goes and a failure burns.
+			const bool plainPolicyStep = IsPlayerBotPlainAnvilPolicyStep(item);
+			const bool hasBackup = (rulePiece && !plainPolicyStep) ||
+					((wearCell != 255) ? HasPlayerBotBackupGear(ch, wearCell, item) : true);
 
 			if (wearCell == WEAR_WEAPON && !hasBackup && plusLevel >= 4 && ch->GetGold() < 5000)
 				continue;
@@ -4958,29 +5270,6 @@ namespace
 			// on, and a specimen the Biologist is still owed is no material at
 			// all (GetPlayerBotBiologistReserve) - DoRefine would take it anyway.
 			if (!CanPlayerBotAttemptRefineItem(ch, item))
-				continue;
-			// Equipment management after an earlier attempt may have equipped another
-			// queued candidate, so inspect its live position instead of trusting the
-			// location captured when the list was built.
-			if (item->IsEquipped())
-			{
-				int emptyCell = ch->GetEmptyInventory(item->GetSize());
-				if (emptyCell < 0)
-					continue;
-				if (!ch->UnequipItem(item) || item->IsEquipped())
-					continue;
-				if (wearCell < WEAR_MAX_NUM)
-				{
-					state.adwRefineTakenOffItem[wearCell] = item->GetID();
-					state.dwRefineTakenOffAt = dwNow;
-				}
-			}
-			// Only a piece in this bot's own bag goes to the anvil. DoRefine
-			// removes what it burns by its cell, and a piece in a slot the engine
-			// does not count as worn is removed from nowhere - the slot keeps
-			// pointing at a destroyed item (IsPlayerBotWornItemSound).
-			if (item->GetOwner() != ch || item->GetWindow() != INVENTORY ||
-					item->GetCell() >= PLAYERBOT_BAG_CELLS || ch->GetInventoryItem(item->GetCell()) != item)
 				continue;
 
 			// DoRefine(false) is the regular blacksmith path: it reads refine_proto,
@@ -5090,9 +5379,11 @@ namespace
 				// here is how a good roll is lost. Under the operator's
 				// SCROLL_FROM no scroll may go on the step, and the anvil's odds
 				// stand, as for every other piece.
-				if (aboveCeiling && !cheapGamble && scrollStepAllowed && scrollCell < 0)
+				// MT2009_PLUS_BOT_REFINE_POLICY_V1: not on a step at good odds of a weapon under level 75.
+				if (aboveCeiling && !cheapGamble && scrollStepAllowed && scrollCell < 0 &&
+						!PlayerBotPlainStepLiftsHold(ch, item, stepProb, "anvil_table"))
 				{
-					PlayerBotLogThrottled("refine_weapon_ceiling", dwNow,
+					PlayerBotLogThrottledEvery("refine_weapon_ceiling", dwNow, 600000,
 							"PLAYERBOT_AI: weapon waits for a scroll pid=%u name=%s vnum=%u level=%d plus=%u avg=%ld ceiling=%d prob=%d where=anvil",
 							ch->GetPlayerID(), ch->GetName(), oldVnum, item->GetLevelLimit(),
 							(unsigned int)plusLevel, average, anvilCeiling, stepProb);
@@ -5115,7 +5406,8 @@ namespace
 			// The armour under the scroll rule goes under a scroll at every step
 			// or waits; the bag holds three by the rule's own count, so this is
 			// a scroll kind no step may take (the War God's past +3).
-			if (scrollCell < 0 && rulePiece && item->GetType() == ITEM_ARMOR)
+			if (scrollCell < 0 && rulePiece && item->GetType() == ITEM_ARMOR &&
+					!PlayerBotPlainStepLiftsHold(ch, item, stepProb, "scroll_rule_armour"))	// MT2009_PLUS_BOT_REFINE_POLICY_V1
 			{
 				PlayerBotLogThrottled("refine_rule_armour_no_scroll", dwNow,
 						"PLAYERBOT_AI: scroll rule armour waits, no scroll for the step pid=%u name=%s vnum=%u plus=%u prob=%d",
@@ -5164,6 +5456,32 @@ namespace
 				PlayerBotLogThrottled("refine_coin", dwNow,
 						"PLAYERBOT_AI: refine at the plain anvil, the coin said so pid=%u name=%s vnum=%u plus=%u prob=%d why=%s",
 						ch->GetPlayerID(), ch->GetName(), oldVnum, (unsigned int)plusLevel, stepProb, coinWhy);
+			// MT2009_PLUS_BOT_REFINE_POLICY_V1: the piece comes off only now, once every rule above has let the step
+			// go - a worn armour or weapon taken off for a step that then waited (for a scroll, a backup) went back on
+			// at the visit's end ("EMPTY_SLOT AFTER_BLACKSMITH", 16 000 a day on a 2.x world).
+			// Equipment management after an earlier attempt may have equipped another
+			// queued candidate, so inspect its live position instead of trusting the
+			// location captured when the list was built.
+			if (item->IsEquipped())
+			{
+				int emptyCell = ch->GetEmptyInventory(item->GetSize());
+				if (emptyCell < 0)
+					continue;
+				if (!ch->UnequipItem(item) || item->IsEquipped())
+					continue;
+				if (wearCell < WEAR_MAX_NUM)
+				{
+					state.adwRefineTakenOffItem[wearCell] = item->GetID();
+					state.dwRefineTakenOffAt = dwNow;
+				}
+			}
+			// Only a piece in this bot's own bag goes to the anvil. DoRefine
+			// removes what it burns by its cell, and a piece in a slot the engine
+			// does not count as worn is removed from nowhere - the slot keeps
+			// pointing at a destroyed item (IsPlayerBotWornItemSound).
+			if (item->GetOwner() != ch || item->GetWindow() != INVENTORY ||
+					item->GetCell() >= PLAYERBOT_BAG_CELLS || ch->GetInventoryItem(item->GetCell()) != item)
+				continue;
 			// Asked before the attempt, which may destroy the item.
 			const bool classLevel30 = IsPlayerBotClassLevel30Weapon(ch, item);
 			// MT2009_PLUS_SIDEKICK_REFINE_GUARD_V1: the slot of a bag piece raised
@@ -5172,6 +5490,8 @@ namespace
 			const int spareSlot = (wearCell == 255 && !saleSpare && !classLevel30 &&
 					!IsPlayerBotSpecialLevel30Weapon(item))
 					? item->FindEquipCell(ch) : -1;
+			// MT2009_PLUS_BOT_REFINE_POLICY_V1: a cheap merchant shield's / helmet's plain step, for the census.
+			const bool cheapNpcPlainStep = scrollCell < 0 && plainPolicyStep && IsPlayerBotCheapNpcShieldOrHelmet(item);
 			const long long goldBeforeAttempt = (long long)ch->GetGold();
 			const WORD cellBefore = item->GetCell();
 			const DWORD idBefore = item->GetID();
@@ -5285,6 +5605,8 @@ namespace
 								(unsigned int)plusLevel, (long long)ch->GetGold());
 					}
 				}
+				if (cheapNpcPlainStep)
+					++s_kPlayerBotRefinePolicyStats.uCheapNpcPlain;
 				sys_log(0, "PLAYERBOT_AI: refine %s pid=%u name=%s old_vnum=%u new_vnum=%u plus=%u scroll=%d materials=%s",
 						success ? "SUCCESS" : (scrollCell >= 0 ? "FAILED_DOWNGRADED" : "FAILED_BURNED"),
 						ch->GetPlayerID(), ch->GetName(), oldVnum, nextVnum, plusLevel + 1, scrollCell >= 0 ? 1 : 0,
@@ -5295,6 +5617,10 @@ namespace
 			{
 				sys_log(0, "PLAYERBOT_AI: refine SKIPPED pid=%u name=%s vnum=%u plus=%u materials=%s (requirements/state)",
 						ch->GetPlayerID(), ch->GetName(), oldVnum, plusLevel, materials);
+				// MT2009_PLUS_BOT_REFINE_POLICY_V1: the engine refused the step - it waits for its material.
+				if (LPITEM still = ch->GetInventoryItem(cellBefore))
+					if (still->GetID() == idBefore)
+						NotePlayerBotAnvilStepWait(ch, still, "engine_refused");
 			}
 
 			// Do not equip the result again between consecutive + levels.  Keep it
@@ -6025,6 +6351,9 @@ namespace
 				item->GetRefineSet());
 		if (!recipe)
 			return false;
+		// MT2009_PLUS_BOT_REFINE_POLICY_V1: a step the anvil refused waits until its material is in the bag.
+		if (IsPlayerBotAnvilStepWaiting(ch, item, recipe))
+			return false;
 		// A weapon refined only under a scroll is no errand without one: the
 		// planner asks this before it sends a bot to the blacksmith. The
 		// class's own level-30 weapon under +6 is, scroll or no scroll
@@ -6043,9 +6372,10 @@ namespace
 		if (!scrollOnly && scrollStepAllowed && IsPlayerBotAnvilTableWeapon(item) &&
 				!IsPlayerBotCheapLevel30Roll(item) &&
 				(int)item->GetRefineLevel() >= GetPlayerBotWeaponAnvilCeiling(ch, item) &&
-				FindPlayerBotRefineScrollCellFor(ch, item, (int)recipe->prob) < 0)
+				FindPlayerBotRefineScrollCellFor(ch, item, (int)recipe->prob) < 0 &&
+				!IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))	// MT2009_PLUS_BOT_REFINE_POLICY_V1
 		{
-			PlayerBotLogThrottled("refine_weapon_ceiling_plan", get_dword_time(),
+			PlayerBotLogThrottledEvery("refine_weapon_ceiling_plan", get_dword_time(), 600000,
 					"PLAYERBOT_AI: weapon waits for a scroll pid=%u name=%s vnum=%u level=%d plus=%u avg=%ld ceiling=%d prob=%d where=plan",
 					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), item->GetLevelLimit(),
 					(unsigned int)item->GetRefineLevel(), SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS),
@@ -6225,6 +6555,50 @@ namespace
 				return true;
 		}
 		return false;
+	}
+
+	// MT2009_PLUS_BOT_REFINE_POLICY_V1: a visit that refined nothing although the planner promised a step: every step
+	// of the bot's gear short of a material in the bag right now waits for it (IsPlayerBotAnvilStepWaiting) - "refine
+	// SKIPPED ... materials=30006:2/0" every twenty minutes for hours (BodyDrag, test world, 6 November). A step the
+	// visit refused for anything else keeps only the old closing (IsPlayerBotAnvilFutile): a guild smith's piece, a
+	// coin, a caution are no reason to hold it for long.
+	int NotePlayerBotAnvilStepsRefused(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotAnvilWaitOn())
+			return 0;
+		const BYTE wearSlots[] = {
+			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
+			WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR
+		};
+		std::vector<LPITEM> pieces;
+		for (size_t i = 0; i < sizeof(wearSlots) / sizeof(wearSlots[0]); ++i)
+			if (LPITEM item = ch->GetWear(wearSlots[i]))
+				pieces.push_back(item);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR) &&
+					IsPlayerBotRefineBagCandidate(ch, item))
+				pieces.push_back(item);
+		}
+		int noted = 0;
+		for (size_t i = 0; i < pieces.size(); ++i)
+		{
+			LPITEM item = pieces[i];
+			if (item->GetRefinedVnum() == 0 || item->GetRefineLevel() >= GetPlayerBotRefineTarget(ch, item))
+				continue;
+			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
+			if (!recipe)
+				continue;
+			bool short_ = false;
+			for (int m = 0; m < recipe->material_count && !short_; ++m)
+				short_ = (int)::ElementsRefineMaterialCount(ch, item, recipe->materials[m].vnum) < (int)recipe->materials[m].count;
+			if (!short_)
+				continue;
+			NotePlayerBotAnvilStepWait(ch, item, "material_missing");
+			++noted;
+		}
+		return noted;
 	}
 
 	bool HasPlayerBotPriorityRefineOpportunity(LPCHARACTER ch)

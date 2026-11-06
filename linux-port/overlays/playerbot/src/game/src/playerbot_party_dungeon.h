@@ -584,7 +584,7 @@ namespace
 				if (ch->IsStateMove())
 					ch->Stop();
 				const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell));
-				sys_log(0, "PLAYERBOT_DUNGEON: party bot used pid=%u name=%s vnum=%u instance=%ld ok=%d",
+				PlayerBotLogPerBot("pdg_item", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_DUNGEON: party bot used pid=%u name=%s vnum=%u instance=%ld ok=%d",
 						ch->GetPlayerID(), ch->GetName(), (unsigned int)PLAYERBOT_PDG_USE_ITEMS[i], map, ok ? 1 : 0);
 				return true;
 			}

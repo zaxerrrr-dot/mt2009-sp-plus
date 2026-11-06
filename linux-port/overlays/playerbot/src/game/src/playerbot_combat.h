@@ -499,7 +499,7 @@ namespace
 					if (state.dwNextHorseRideCheckTime < until)
 						state.dwNextHorseRideCheckTime = until;
 				}
-				sys_log(0, "PLAYERBOT_AI: activated self buff skill pid=%u name=%s vnum=%u renewed=%d",
+				PlayerBotLogPerBot("self_buff", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: activated self buff skill pid=%u name=%s vnum=%u renewed=%d",
 						ch->GetPlayerID(), ch->GetName(), buffVnum, active ? 1 : 0);
 				return true;
 			}
@@ -1212,7 +1212,7 @@ namespace
 						 ? PLAYERBOT_SHAMAN_ATTACK_SKILL_INTERVAL
 						 : PLAYERBOT_SKILL_ATTACK_INTERVAL));
 				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
-				sys_log(0, "PLAYERBOT_AI: used attack skill pid=%u name=%s vnum=%u target_vid=%u hits=%u stone=%d",
+				PlayerBotLogPerBot("attack_skill", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: used attack skill pid=%u name=%s vnum=%u target_vid=%u hits=%u stone=%d",
 						ch->GetPlayerID(), ch->GetName(), skillVnum, dwTargetVID, hits,
 						bTargetStone ? 1 : 0);
 				return true;

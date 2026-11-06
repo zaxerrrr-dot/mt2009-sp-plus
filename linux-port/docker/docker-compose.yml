@@ -24,6 +24,10 @@ services:
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-db"
     restart: unless-stopped
     stop_grace_period: 60s
+    # No core files: a crashing mariadbd writing a multi-GB core under memory
+    # pressure hung unkillable for hours and blocked shutdown (6 Nov 2026).
+    ulimits:
+      core: 0
 
     environment:
       MARIADB_ROOT_PASSWORD: "${M2_DB_ROOT_PASSWORD:?set M2_DB_ROOT_PASSWORD in .env}"

@@ -135,6 +135,41 @@ namespace playerbot_refine_rules
 		return hpPercent >= SCROLL_STEP_HOLD_MIN_HP_PERCENT ? SCROLL_STEP_HOLD : SCROLL_STEP_DROP;
 	}
 
+	// MT2009_PLUS_BOT_REFINE_POLICY_V1 (the owner, 6 November 2026, section C of the bot economy brief):
+	//   "Zwoje Blogoslawienstwa tylko tam, gdzie szansa jest niska albo przedmiot jest bardzo drogi (poziom 75+)";
+	//   "tanie tarcze i helmy z NPC (Bojowa Tarcza, helmy poziomu 0) ulepszane BEZ zwojow do +6".
+	// A step of a cheap piece at good odds goes to the plain anvil: no scroll is spent on it and no rule holds it
+	// for one (the worn piece without a spare, the hand weapon without a backup, the scroll rule, the anvil table's
+	// ceiling). "Valuable" is what a burn really costs: level 75 and over, or rolled lines worth a scroll (the
+	// scroll-only weapon, four lines, a prize piece); such a piece keeps the old rules at every step.
+	const int POLICY_LOW_PROB = 70;			// a step under this many percent is "low": the scroll is worth it
+	const int POLICY_EXPENSIVE_LEVEL = 75;	// an item of this level or over is "very expensive"
+	const int POLICY_CHEAP_NPC_PLUS = 6;	// cheap merchant shields / helmets: plain anvil while landing on +6 or under
+	const int POLICY_CHEAP_NPC_MAX_LEVEL = 0;	// "Bojowa Tarcza, helmy poziomu 0"
+
+	// Whether a scroll may go on this step at all.
+	inline bool IsScrollWarranted(int stepProb, int itemLevel, bool valuableLines, int lowProb, int expensiveLevel)
+	{
+		return valuableLines || itemLevel >= expensiveLevel || stepProb < lowProb;
+	}
+
+	// Whether the step is a cheap merchant shield's or helmet's plain step (from plus, landing on plus + 1).
+	inline bool IsCheapNpcPlainStep(bool cheapNpcPiece, bool valuableLines, int plus, int maxPlus)
+	{
+		return cheapNpcPiece && !valuableLines && plus < maxPlus;
+	}
+
+	// The step goes to the plain anvil: no scroll, no hold for one.
+	inline bool IsPlainAnvilPolicyStep(int stepProb, int itemLevel, int plus, bool valuableLines, bool cheapNpcPiece,
+			int lowProb, int expensiveLevel, int cheapMaxPlus)
+	{
+		if (itemLevel >= expensiveLevel)
+			return false;
+		if (IsCheapNpcPlainStep(cheapNpcPiece, valuableLines, plus, cheapMaxPlus))
+			return true;
+		return !IsScrollWarranted(stepProb, itemLevel, valuableLines, lowProb, expensiveLevel);
+	}
+
 	// R8 of Iwakura's audit: the weapon kept for the day the one in the hand
 	// burns. One scoring scorePercent of the hand's, as before - and, besides,
 	// a copy of the hand's own family, or at any plus a weapon of the hand's

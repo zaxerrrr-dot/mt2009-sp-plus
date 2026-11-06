@@ -6901,7 +6901,7 @@ namespace
 				g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
 		{
 			EnsurePlayerBotPrivateShopChannel(ch, state, dwNow, "medals");
-			sys_log(0, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
+			PlayerBotLogPerBot("medal_wait_channel", ch->GetPlayerID(), dwNow, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
 					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM), (unsigned int)g_bChannel);
 			return false;
@@ -8591,6 +8591,8 @@ namespace
 						const DWORD cooldown = (DWORD)number((int)PLAYERBOT_ANVIL_FUTILE_MIN_MS,
 								(int)PLAYERBOT_ANVIL_FUTILE_MAX_MS);
 						s_mapPlayerBotAnvilFutileUntil[ch->GetPlayerID()] = dwNow + cooldown;
+						// MT2009_PLUS_BOT_REFINE_POLICY_V1: and every step it promised waits for its material.
+						NotePlayerBotAnvilStepsRefused(ch);
 						sys_log(0, "PLAYERBOT_TOWN: anvil refused every step, closed for a while pid=%u name=%s goal=%u cooldown_ms=%u",
 								ch->GetPlayerID(), ch->GetName(), (unsigned int)state.bLongTermGoal, cooldown);
 					}
