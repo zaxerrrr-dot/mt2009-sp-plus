@@ -3701,6 +3701,19 @@ namespace {
             auto it = shop->GetItems().upper_bound(o.repriceItem);
             bool wrapped = (it == shop->GetItems().end());
             if (wrapped) it = shop->GetItems().begin();
+            // MT2009_PLUS_BOT_MARKET_CLEARING_V1: a line of a kind being cleared that still asks well over the clearing
+            // ask goes first (playerbot_market_clearing.h) - the rotation alone took a full counter's day to reach it.
+            // The rotation's place is kept: the next step goes on from where it was.
+            bool clearingFirst = false;
+            for (auto c = shop->GetItems().begin(); c != shop->GetItems().end(); ++c)
+                if (c->second && IsPlayerBotClearingOverpriced(c->second->GetInfo().vnum, c->second->GetInfo().count,
+                        (long long)c->second->GetPrice().GetTotalYangAmount())) {
+                    it = c;
+                    wrapped = false;
+                    clearingFirst = true;
+                    break;
+                }
+            const DWORD rotationItem = o.repriceItem;
             for (int look = 0; look < PLAYERBOT_MARKET_V3_REPRICE_LOOK_AHEAD &&
                     it != shop->GetItems().end(); ++look) {
                 bool edited = false;
@@ -3750,6 +3763,15 @@ namespace {
                             }
                         }
                     }
+                }
+                if (clearingFirst) {
+                    // MT2009_PLUS_BOT_MARKET_CLEARING_V1: the jump spent, the rotation goes on from its own place.
+                    clearingFirst = false;
+                    o.repriceItem = rotationItem;
+                    if (edited) break;
+                    it = shop->GetItems().upper_bound(rotationItem);
+                    if (it == shop->GetItems().end()) it = shop->GetItems().begin();
+                    continue;
                 }
                 if (edited) break;
                 // Passed over: on to the next line, and a rotation that ran off

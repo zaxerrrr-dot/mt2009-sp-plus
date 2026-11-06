@@ -1768,6 +1768,7 @@ namespace
 				dwNow - s_dwMarketReportTime >= PLAYERBOT_MARKET_REPORT_INTERVAL;
 		s_mapMarketLedger.clear();
 		s_mapMarketLocalSupply.clear();
+		ResetPlayerBotClearingAsks();	// MT2009_PLUS_BOT_MARKET_CLEARING_V1
 		s_mapPlayerBotMissionBooksByMap.clear();
 		s_iPlayerBotJunkWeaponsOnCounters = 0;
 		ResetPlayerBotRareGoodsCensus();
@@ -1837,6 +1838,10 @@ namespace
 		// MT2009_PLUS_MARKET_V3, point 1: and every watched kind's index takes a
 		// step towards what the same counts say (UpdatePlayerBotMarketIndex).
 		UpdatePlayerBotMarketIndex(dwNow);
+		// MT2009_PLUS_BOT_MARKET_CLEARING_V1: and the clearing asks of the kinds the counters hold too much of, its census
+		// with the market report (playerbot_market_clearing.h).
+		UpdatePlayerBotMarketClearing(dwNow, s_dwMarketReportTime == 0 ||
+				dwNow - s_dwMarketReportTime >= PLAYERBOT_MARKET_REPORT_INTERVAL);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		// The slips the pass above found, put right where no keeper will -
 		// priced against the ledger and the wallets as they now stand.

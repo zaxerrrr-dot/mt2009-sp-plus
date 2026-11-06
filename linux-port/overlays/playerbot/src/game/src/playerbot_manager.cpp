@@ -223,6 +223,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // lines are in their terms: what heads a +7..+9 piece or a soul stone is its
 // asking price.
 #include "playerbot_shop_name_rules.h"
+#include "playerbot_market_clearing.h" // MT2009_PLUS_BOT_MARKET_CLEARING_V1: the supply-driven clearing ask (before the town's prices)
 #include "playerbot_town.h"
 #include "playerbot_alchemy.h"
 #include "playerbot_rank_fruit_market.h" // MT2009_PLUS_RANK_FRUIT_MARKET_V1: the eaters buy the rank fruit of their total off the counters

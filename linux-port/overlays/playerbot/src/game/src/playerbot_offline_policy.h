@@ -50,6 +50,9 @@ inline std::map<uint32_t, std::vector<SoldLine> > sold;
 // included - the one buyer the ledger could never see. Bounded for a core
 // whose ledger never runs.
 inline std::map<uint32_t, uint32_t> soldLinesByVnum;
+// MT2009_PLUS_BOT_MARKET_CLEARING_V1: and the units of those lines, until the clearing price takes them
+// (UpdatePlayerBotMarketClearing, playerbot_market_clearing.h - the same once-a-minute ledger pass).
+inline std::map<uint32_t, uint64_t> soldUnitsByVnum;
 // An owner of 0 counts the line and records no sale: the engine passes the
 // owner only on the core the owner is on (MT2009_PLUS_SALE_ONCE_V1,
 // ikarus_shop_manager.cpp). Every core recorded it, and a bot that changed
@@ -58,6 +61,8 @@ inline std::map<uint32_t, uint32_t> soldLinesByVnum;
 inline void NoteSold(uint32_t ownerid, uint32_t item, uint32_t vnum, uint32_t count, long long price, bool partial = false) {
     if (vnum && (soldLinesByVnum.size() < 4096 || soldLinesByVnum.count(vnum)))
         ++soldLinesByVnum[vnum];
+    if (vnum && count && (soldUnitsByVnum.size() < 4096 || soldUnitsByVnum.count(vnum)))   // MT2009_PLUS_BOT_MARKET_CLEARING_V1
+        soldUnitsByVnum[vnum] += count;
     if (!ownerid) return;
     auto& lines = sold[ownerid];
     // An owner nobody drains - a real player, or a bot that has left the
