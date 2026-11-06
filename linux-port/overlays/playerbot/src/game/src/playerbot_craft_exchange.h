@@ -88,7 +88,8 @@ namespace
 	{
 		return GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly) + // MT2009_PLUS_HORSE_GOODS_MARKET_V1
 				GetPlayerBotYoharaShopMaterialsWanted(ch) + // MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's elixirs of resistance (Dongan's exchange)
-				GetPlayerBotMatsSwapWanted(ch); // MT2009_PLUS_BOT_MATS_FLOW_V1: the swap's materials
+				GetPlayerBotMatsSwapWanted(ch) + // MT2009_PLUS_BOT_MATS_FLOW_V1: the swap's materials
+				GetPlayerBotBeltSwapWanted(ch); // MT2009_PLUS_BOT_BELT_MATS_V1: a belt maker's metal and pearl
 	}
 
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
@@ -520,7 +521,8 @@ namespace
 			const bool shortOfMaterials =
 					CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, true);
 			// MT2009_PLUS_BOT_MATS_FLOW_V1: or the swap alone - the materials for a piece its anvil lacks.
-			const bool swapDue = IsPlayerBotMatsSwapDue(ch);
+			const bool swapDue = IsPlayerBotMatsSwapDue(ch) ||
+					IsPlayerBotBeltSwapDue(ch);	// MT2009_PLUS_BOT_BELT_MATS_V1: or a belt maker's metal and pearl
 			if ((units <= 0 && !swapDue) || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials && !swapDue) ||
 					CountPlayerBotFreeInventoryCells(ch) < 2)
 				return false;
@@ -570,6 +572,8 @@ namespace
 		ExchangePlayerBotCraftGoods(ch);
 		if (swappedFirst < GetPlayerBotMatsCfgVisitMax())
 			SwapPlayerBotMaterials(ch, GetPlayerBotMatsCfgVisitMax() - swappedFirst);
+		// MT2009_PLUS_BOT_BELT_MATS_V1: a belt maker's metal and pearl, out of what is left over every other want.
+		SwapPlayerBotBeltMaterials(ch);
 		EndPlayerBotCraftErrand(state, dwNow);
 		return false;
 	}
@@ -585,6 +589,8 @@ namespace
 			// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: what a horse that could train
 			// waits for - the goods, or with the goods in the bag only the yang.
 			unsigned shortGoods = 0, shortYang = 0;
+			unsigned shortMedals = 0, shortMaterials = 0;	// MT2009_PLUS_BOT_HORSE_AFFORD_V1
+			unsigned healthZero = 0, healthLow = 0;
 			unsigned long long savingYang = 0;
 			unsigned long long medals = 0, horseSum = 0;
 			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
@@ -596,6 +602,10 @@ namespace
 				++bots;
 				const int h = ch->GetHorseLevel();
 				horseSum += h;
+				if (h > 0 && ch->GetHorseHealth() <= 0)
+					++healthZero;
+				else if (h > 0 && ch->GetHorseHealth() * 2 < ch->GetHorseMaxHealth())
+					++healthLow;
 				++stage[h <= 0 ? 0 : h < 10 ? 1 : h == 10 ? 2 : h < 20 ? 3 : h == 20 ? 4 : h < 29 ? 5 : h == 29 ? 6 : 7];
 				const int held = (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM);
 				medals += held;
@@ -615,7 +625,18 @@ namespace
 						savingYang += (unsigned long long)saving;
 					}
 					else
+					{
 						++shortGoods;
+						// MT2009_PLUS_BOT_HORSE_AFFORD_V1: which of the goods
+						TPlayerBotHorseTraining next;
+						if (GetPlayerBotNextHorseTraining(ch, next))
+						{
+							if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) < next.medals)
+								++shortMedals;
+							if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) < next.materials)
+								++shortMaterials;
+						}
+					}
 				}
 				if (IsPlayerBotBattleHorseCandidate(ch))
 					++candidates;
@@ -625,6 +646,14 @@ namespace
 					stage[6], stage[7],
 					medals, medalHolders, canAdvance, canWithMedal, shortGoods, shortYang, savingYang,
 					candidates, s_kPlayerBotCraftStats.medalsBought);
+			// MT2009_PLUS_BOT_HORSE_AFFORD_V1: what the goods short ones lack, and the trainings that paid goods in yang
+			// since the core started.
+			sys_log(0, "BOT_HORSE_AFFORD: census on=%d yang_pct=%d material_yang=%lld medal_yang=%lld short_goods=%u short_medals=%u "
+					"short_materials=%u short_yang=%u afford_trainings=%u afford_yang=%llu health_zero=%u health_low=%u fed=%u revived=%u",
+					IsPlayerBotSmallFixOn(SMALLFIX_HORSE) ? 1 : 0, GetPlayerBotHorseTrainingYangPercent(),
+					GetPlayerBotHorseAffordMaterialYang(), GetPlayerBotHorseAffordMedalYang(), shortGoods, shortMedals,
+					shortMaterials, shortYang, s_dwPlayerBotHorseAffordTrainings, s_ullPlayerBotHorseAffordYang,
+					healthZero, healthLow, s_dwPlayerBotHorseAffordFed, s_dwPlayerBotHorseAffordRevived);
 		}
 		sys_log(0, "PLAYERBOT_CRAFT: census exchanges=%u units_in=%llu materials_out=%llu recalled=%u bought_materials=%u bought_medals=%u bought_goods=%u material_units=%llu material_yang=%llu material_refused_cap=%u material_refused_purse=%u material_supply=%u market_full=%d",
 				s_kPlayerBotCraftStats.exchanges,

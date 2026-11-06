@@ -527,6 +527,37 @@ namespace
 		return cost <= GetPlayerBotTalismanSpare(ch) * PLAYERBOT_TALISMAN_SPEND_PERCENT / 100;
 	}
 
+	// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1 (playerbot_small_fixes.h): the cheap step - a worker whose body armour stands at
+	// PLAYERBOT_TALISMAN_CHEAP_ARMOUR_PLUS or more (the gear first), its project under PLAYERBOT_TALISMAN_CHEAP_MAX_PLUS:
+	// the Blacksmith hands over the step's spare Talisman +0 and Ornament its bag lacks, for their yang. The flowers, the
+	// fee and the roll stay the step's own.
+	struct TPlayerBotTalismanCheapStats
+	{
+		unsigned steps, spares, ornaments;
+		unsigned long long yang;
+	};
+	TPlayerBotTalismanCheapStats s_kPlayerBotTalismanCheapStats = { 0, 0, 0, 0 };
+
+	bool IsPlayerBotTalismanCheapStep(LPCHARACTER ch, const TPlayerBotTalismanPlan& p)
+	{
+		if (!ch || !IsPlayerBotSmallFixOn(SMALLFIX_TALISMAN) || p.projectId == 0 || !p.stepWearable || p.element < 0)
+			return false;
+		const TPlayerBotSmallFixCfg& c = GetPlayerBotSmallFixCfg();
+		if (p.plus >= c.talismanMaxPlus)
+			return false;
+		LPITEM body = ch->GetWear(WEAR_BODY);
+		return body && (int)body->GetRefineLevel() >= c.talismanArmourPlus;
+	}
+
+	// The yang the cheap step adds for what the bag lacks (0 when nothing is lacking or the step is not cheap).
+	long long GetPlayerBotTalismanCheapYang(LPCHARACTER ch, const TPlayerBotTalismanPlan& p)
+	{
+		if (!IsPlayerBotTalismanCheapStep(ch, p))
+			return 0;
+		const TPlayerBotSmallFixCfg& c = GetPlayerBotSmallFixCfg();
+		return (p.spares < 1 ? (long long)c.talismanSpareYang : 0LL) + (p.ornaments < 1 ? (long long)c.talismanOrnamentYang : 0LL);
+	}
+
 	// A step to go to the anvil for: the project, a wearable next plus, the fee and flowers
 	// paid for, and the spare +0 and the ornament in the bag - or still owed by the seed.
 	bool HasPlayerBotTalismanWork(LPCHARACTER ch)
@@ -539,7 +570,15 @@ namespace
 			return false;
 		if (GetPlayerBotTalismanSeedLeft(ch) > 0)
 			return true;
-		return p.spares >= 1 && p.ornaments >= 1;
+		if (p.spares >= 1 && p.ornaments >= 1)
+			return true;
+		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: or the cheap step, its goods' yang within the step's share of the purse too.
+		if (!IsPlayerBotTalismanCheapStep(ch, p))
+			return false;
+		const long long fee = std::max<long long>(0, GetPlayerBotTalismanStepFee(ch, project));
+		const int flowersMissing = std::max(0, PLAYERBOT_TALISMAN_FLOWERS_A_STEP - p.flowers);
+		return fee + flowersMissing * GetPlayerBotTalismanFlowerPrice() + GetPlayerBotTalismanCheapYang(ch, p) <=
+				GetPlayerBotTalismanSpare(ch) * PLAYERBOT_TALISMAN_SPEND_PERCENT / 100;
 	}
 
 	// ---- the Yohara spare (MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1, D14) ---------------------------
@@ -806,7 +845,10 @@ namespace
 		const long long budget = GetPlayerBotTalismanSpare(ch) * PLAYERBOT_TALISMAN_SPEND_PERCENT / 100;
 		// Only for steps the materials allow (a spare and an ornament each, or the seed's).
 		const int seedLeft = GetPlayerBotTalismanSeedLeft(ch);
-		const int byMaterials = seedLeft > 0 ? seedLeft : std::min(p.spares, p.ornaments);
+		int byMaterials = seedLeft > 0 ? seedLeft : std::min(p.spares, p.ornaments);
+		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: a cheap step's goods come at the anvil - the flowers of one step.
+		if (byMaterials < 1 && IsPlayerBotTalismanCheapStep(ch, p))
+			byMaterials = 1;
 		steps = std::min(steps, byMaterials);
 		int want = steps * PLAYERBOT_TALISMAN_FLOWERS_A_STEP - p.flowers;
 		// The seeded steps' flowers are part of the gift: handed over here, free (the step
@@ -857,7 +899,31 @@ namespace
 
 		// The seed's step: what the bag lacks of the spare and the ornament.
 		int seedLeft = GetPlayerBotTalismanSeedLeft(ch);
-		if (plan.spares < 1 || plan.ornaments < 1)
+		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: no seed owed - the cheap step's goods for their yang.
+		if ((plan.spares < 1 || plan.ornaments < 1) && seedLeft <= 0 && IsPlayerBotTalismanCheapStep(ch, plan))
+		{
+			const long long goods = GetPlayerBotTalismanCheapYang(ch, plan);
+			const long long fee = std::max<long long>(0, GetPlayerBotTalismanStepFee(ch, project));
+			if (CountPlayerBotFreeInventoryCells(ch) < 2 || goods + fee > GetPlayerBotTalismanSpare(ch))
+				return false;
+			PlayerBotChangeGold(ch, -goods);
+			if (plan.spares < 1)
+			{
+				ch->AutoGiveItem(PLAYERBOT_TALISMAN_ELEMENT[e].baseVnum, 1, -1, false);
+				++s_kPlayerBotTalismanCheapStats.spares;
+			}
+			if (plan.ornaments < 1)
+			{
+				ch->AutoGiveItem(PLAYERBOT_TALISMAN_ORNAMENT_VNUM, 1, -1, false);
+				++s_kPlayerBotTalismanCheapStats.ornaments;
+			}
+			++s_kPlayerBotTalismanCheapStats.steps;
+			s_kPlayerBotTalismanCheapStats.yang += (unsigned long long)goods;
+			sys_log(0, "BOT_TALISMAN_CHEAP: step goods pid=%u name=%s lv=%d element=%s plus=%d spare=%d ornament=%d yang=%lld gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), PLAYERBOT_TALISMAN_ELEMENT[e].name, plan.plus,
+					plan.spares < 1 ? 1 : 0, plan.ornaments < 1 ? 1 : 0, goods, (long long)ch->GetGold());
+		}
+		else if (plan.spares < 1 || plan.ornaments < 1)
 		{
 			if (seedLeft <= 0 || CountPlayerBotFreeInventoryCells(ch) < 2)
 				return false;
@@ -911,6 +977,40 @@ namespace
 		sys_log(0, "PLAYERBOT_TALISMAN: census steps=%u wears=%u seeded=%u seed_steps=%u flowers=%u bought=%u bought_yang=%llu fees=%llu maps=%u",
 				s.steps, s.wears, s.seeded, s.seedGifts, s.flowersBought, s.bought, s.boughtYang, s.fees,
 				(unsigned)s_mapPlayerBotElementCensus.size());
+		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: the cheap steps since the core started, and the bots' talismans now - the
+		// workers, their projects at +0, and what holds the rest of them back.
+		unsigned workers = 0, atZero = 0, noProject = 0, cheapReady = 0, shortGear = 0, shortPurse = 0, ready = 0;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !IsPlayerBotTalismanWorker(ch) || !ch->IsItemLoaded())
+				continue;
+			++workers;
+			const TPlayerBotTalismanPlan& p = GetPlayerBotTalismanPlan(ch);
+			if (p.projectId == 0)
+			{
+				++noProject;
+				continue;
+			}
+			if (p.plus == 0)
+				++atZero;
+			if (HasPlayerBotTalismanWork(ch))
+			{
+				++ready;
+				if (p.spares < 1 || p.ornaments < 1)
+					++cheapReady;
+			}
+			else if (p.stepWearable && (p.spares < 1 || p.ornaments < 1) && !IsPlayerBotTalismanCheapStep(ch, p))
+				++shortGear;
+			else if (p.stepWearable)
+				++shortPurse;
+		}
+		const TPlayerBotTalismanCheapStats& k = s_kPlayerBotTalismanCheapStats;
+		sys_log(0, "BOT_TALISMAN_CHEAP: census on=%d armour_plus=%d max_plus=%d workers=%u no_talisman=%u at_zero=%u ready=%u "
+				"ready_cheap=%u waiting_armour_or_goods=%u waiting_purse=%u cheap_steps=%u spares=%u ornaments=%u yang=%llu",
+				IsPlayerBotSmallFixOn(SMALLFIX_TALISMAN) ? 1 : 0, GetPlayerBotSmallFixCfg().talismanArmourPlus,
+				GetPlayerBotSmallFixCfg().talismanMaxPlus, workers, noProject, atZero, ready, cheapReady, shortGear, shortPurse,
+				k.steps, k.spares, k.ornaments, k.yang);
 	}
 }
 

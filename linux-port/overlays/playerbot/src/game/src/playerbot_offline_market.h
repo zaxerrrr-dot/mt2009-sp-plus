@@ -553,6 +553,21 @@ namespace {
             const std::map<DWORD, int>& missing, long long cap, DWORD now);
     bool FindPlayerBotRareGamblerBasePick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotStalkiPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
+    // MT2009_PLUS_BOT_BOOK_GATE_V1: a bot held by a gate for its skills (playerbot_progression.h), while the fix is on.
+    unsigned s_dwPlayerBotBookGatePicks = 0;
+    const int PLAYERBOT_BOOK_GATE_SKILL_LEVEL = 24;   // the default gates' "2 / 3 skills at 24+" (playerbot_progression_rules.h)
+    bool IsPlayerBotBookGateHeld(LPCHARACTER ch) {
+        return ch && IsPlayerBotSmallFixOn(SMALLFIX_BOOKS) &&
+            (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_SKILLS) != 0;
+    }
+    // The order a held bot's books go in: a skill under the gate's level before one past it, the highest of those first
+    // - the books gather on the skills nearest the gate instead of one each on all of them. 0 for a bot not held.
+    int GetPlayerBotBookGateRank(LPCHARACTER ch, DWORD skill) {
+        if (!IsPlayerBotBookGateHeld(ch) || !skill) return 0;
+        const int level = (int)ch->GetSkillLevel(skill);
+        return level < PLAYERBOT_BOOK_GATE_SKILL_LEVEL ? 100 + level : level;
+    }
+
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotWeaponUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
@@ -637,6 +652,16 @@ namespace {
             }
             const long long budget = Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch), PLAYERBOT_SHOPPING_GOLD_FLOOR);
             if (budget <= 0) return false;
+            // MT2009_PLUS_BOT_BOOK_GATE_V1: a bot a gate holds for its skills looks for its books first - the picks below
+            // (the dropper's, the crafts', the gear's) took its budget and its visit before the books' turn came.
+            if (IsPlayerBotBookGateHeld(ch) && FindPlayerBotBookPick(ch, state, budget, now)) {
+                ++s_dwPlayerBotBookGatePicks;
+                PlayerBotLogThrottledEvery("book_gate_pick", get_dword_time(), 60000,
+                    "BOT_BOOKGATE: held bot goes for a skill book pid=%u name=%s level=%d owner=%u item=%u gold=%lld picks=%u",
+                    ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), o.buyOwner, o.buyItem, (long long)ch->GetGold(),
+                    s_dwPlayerBotBookGatePicks);
+                return RunPlayerBotOfflinePick(ch, state, now);
+            }
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
             // MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a need's ItemShop purchase short of Smocze Monety - a Kupon SM for the
             // shortfall, on every stand of the map (playerbot_sm_coupons.h: its price cap and share of the purse).
@@ -1279,6 +1304,7 @@ namespace {
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now) {
         using namespace playerbot_offline;
         if (!ch || cap <= 0 || !PlayerBotWantsOwnBooks(ch)) return false;
+        int bestRank = -1;   // MT2009_PLUS_BOT_BOOK_GATE_V1
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
         CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
@@ -1300,7 +1326,8 @@ namespace {
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();
                 if (price <= 0 || price > cap) continue;
                 const long long unit = price / std::max<long long>(1, (long long)info.count);
-                if (bestOwner && unit >= bestUnit) continue;
+                const int rank = GetPlayerBotBookGateRank(ch, skill);   // MT2009_PLUS_BOT_BOOK_GATE_V1
+                if (bestOwner && (rank < bestRank || (rank == bestRank && unit >= bestUnit))) continue;
                 if (reach < 0)
                     reach = !haveNav || navigation.CanReach(ch->GetX(), ch->GetY(), spawn.x, spawn.y) ? 1 : 0;
                 if (reach == 0) break;
@@ -1313,6 +1340,7 @@ namespace {
                 bestOwner = shop->GetOwnerPID();
                 bestItem = id;
                 bestUnit = unit;
+                bestRank = rank;
             }
         }
         if (!bestOwner) return false;

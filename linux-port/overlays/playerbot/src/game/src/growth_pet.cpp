@@ -2411,6 +2411,23 @@ namespace growth_pet
 		return Summon(ch, *p, seal);
 	}
 
+	// MT2009_PLUS_BOT_PET_FEED_V1: the feed window's life feed (FEED_LIFE_TIME_EVENT) for one egg on the pet of a seal
+	// held by ch - +3-5% of its life, never past its maximum; the seal-eats-a-seal case is the window's alone.
+	bool FeedLifeWithEgg(CHARACTER* ch, CItem* egg, CItem* seal)
+	{
+		if (!ch || !egg || !IsEgg(egg) || !IsSeal(seal) || !IsHeldBy(seal, ch) || !IsHeldBy(egg, ch))
+			return false;
+		Pet* p = FindPet((DWORD)seal->GetSocket(2));
+		if (!p || p->holder != ch->GetPlayerID() || !IsAlive(*p))
+			return false;
+		if (!FeedLifeItem(ch, *p, egg))
+			return false;
+		SaveNow(*p);
+		SyncSeal(ch, *p);
+		SendSet(ch, *p);
+		return true;
+	}
+
 	bool FeedLife(CHARACTER* ch, CItem* odzywka, CItem* seal)
 	{
 		if (!ch || !odzywka || !IsSeal(seal) || !IsHeldBy(seal, ch))

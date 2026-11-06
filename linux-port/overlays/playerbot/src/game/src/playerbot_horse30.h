@@ -94,6 +94,13 @@ namespace
 		long long yang;
 	};
 
+	// MT2009_PLUS_BOT_HORSE_AFFORD_V1 (playerbot_small_fixes.h): the share of konie.koszt()'s yang a bot pays for the
+	// trainings 1-19 - PLAYERBOT_HORSE_AFFORD_YANG_PCT while the fix is on, the old fixed share when it is off.
+	int GetPlayerBotHorseTrainingYangPercent()
+	{
+		return IsPlayerBotSmallFixOn(SMALLFIX_HORSE) ? GetPlayerBotSmallFixCfg().horseYangPct : PLAYERBOT_HORSE_TRAINING_YANG_PERCENT;
+	}
+
 	// konie.koszt(l), and pony_buy's one medal for the first horse.
 	bool GetPlayerBotHorseTrainingCost(int level, TPlayerBotHorseTraining& out)
 	{
@@ -113,7 +120,7 @@ namespace
 			out.feedVnum = PLAYERBOT_HORSE_FEED_HAY;
 			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 5;
-			out.yang = 100000LL * (level + 1) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
+			out.yang = 100000LL * (level + 1) * GetPlayerBotHorseTrainingYangPercent() / 100;	// MT2009_PLUS_BOT_HORSE_AFFORD_V1
 			return true;
 		}
 		if (level >= 11 && level <= 19)
@@ -122,7 +129,7 @@ namespace
 			out.feedVnum = PLAYERBOT_HORSE_FEED_CARROT;
 			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 10;
-			out.yang = (2000000LL + (long long)(level - 11) * 1000000LL) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
+			out.yang = (2000000LL + (long long)(level - 11) * 1000000LL) * GetPlayerBotHorseTrainingYangPercent() / 100;	// MT2009_PLUS_BOT_HORSE_AFFORD_V1
 			return true;
 		}
 		// MT2009_PLUS_HORSE40_V1: 21-28 is the feed and the try now (konie_rozwoj.cpp)
@@ -412,6 +419,28 @@ namespace
 		return cost.feedCount;
 	}
 
+	// MT2009_PLUS_BOT_HORSE_AFFORD_V1: the materials and the medals of a training the bag lacks, which the Stajenny
+	// takes in yang from a bot (PLAYERBOT_HORSE_AFFORD_MATERIAL_YANG / _MEDAL_YANG a piece; 0 - never).
+	int GetPlayerBotHorseLackingMaterials(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
+	{
+		return ch ? std::max(0, cost.materials - (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM)) : 0;
+	}
+
+	int GetPlayerBotHorseLackingMedals(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
+	{
+		return ch ? std::max(0, cost.medals - (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM)) : 0;
+	}
+
+	long long GetPlayerBotHorseAffordMaterialYang()
+	{
+		return IsPlayerBotSmallFixOn(SMALLFIX_HORSE) ? (long long)GetPlayerBotSmallFixCfg().horseMaterialYang : 0;
+	}
+
+	long long GetPlayerBotHorseAffordMedalYang()
+	{
+		return IsPlayerBotSmallFixOn(SMALLFIX_HORSE) ? (long long)GetPlayerBotSmallFixCfg().horseMedalYang : 0;
+	}
+
 	// The yang the training costs this bot now: the fee and the feed the bag
 	// lacks at the shop's price.
 	long long GetPlayerBotHorseTrainingGold(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
@@ -423,16 +452,27 @@ namespace
 			if (lack > 0)
 				gold += GetPlayerBotHorseFeedPrice(cost.feedVnum) * lack;
 		}
+		// MT2009_PLUS_BOT_HORSE_AFFORD_V1: and the goods it pays for in yang.
+		if (ch)
+		{
+			const long long materialYang = GetPlayerBotHorseAffordMaterialYang();
+			const long long medalYang = GetPlayerBotHorseAffordMedalYang();
+			if (materialYang > 0)
+				gold += materialYang * GetPlayerBotHorseLackingMaterials(ch, cost);
+			if (medalYang > 0)
+				gold += medalYang * GetPlayerBotHorseLackingMedals(ch, cost);
+		}
 		return gold;
 	}
 
 	// The medals and the materials of the next training are in the bag; the
-	// yang aside.
+	// yang aside. MT2009_PLUS_BOT_HORSE_AFFORD_V1: or the Stajenny takes yang for what is lacking.
 	bool HasPlayerBotHorseTrainingGoods(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
 	{
 		return ch &&
-				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >= cost.medals &&
-				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) >= cost.materials;
+				((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >= cost.medals || GetPlayerBotHorseAffordMedalYang() > 0) &&
+				((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) >= cost.materials ||
+					GetPlayerBotHorseAffordMaterialYang() > 0);
 	}
 
 	// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: the yang the next training is saved
@@ -452,6 +492,41 @@ namespace
 				!HasPlayerBotHorseTrainingGoods(ch, cost))
 			return 0;
 		return GetPlayerBotHorseTrainingGold(ch, cost);
+	}
+
+	// MT2009_PLUS_BOT_HORSE_AFFORD_V1: the census' count of the trainings that paid goods in yang, and that yang.
+	unsigned s_dwPlayerBotHorseAffordTrainings = 0;
+	unsigned long long s_ullPlayerBotHorseAffordYang = 0;
+	unsigned s_dwPlayerBotHorseAffordFed = 0, s_dwPlayerBotHorseAffordRevived = 0;
+
+	// MT2009_PLUS_BOT_HORSE_AFFORD_V1: the horse's health. The engine takes a point every three days
+	// (horse_rider.cpp, HORSE_HEALTH_DROP_INTERVAL) and a player puts it back with hay; a bot never fed its horse below
+	// 31 (Mt2009KonieBotDailyFeed feeds 31+ only). A horse at 0 cannot be ridden and takes no trial
+	// (IsPlayerBotBattleHorseCandidate asks health > 0), and at 10 or 20 no training either: the bot's horse stood at 10
+	// for good. Once in ten minutes a bot's horse below its maximum is fed back to it (FeedHorse, a point each, free).
+	std::map<DWORD, DWORD> s_mapPlayerBotHorseFeedAt;
+
+	void FeedPlayerBotHorseHealth(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || !ch->IsPC() || ch->GetHorseLevel() <= 0 || !IsPlayerBotSmallFixOn(SMALLFIX_HORSE))
+			return;
+		DWORD& at = s_mapPlayerBotHorseFeedAt[ch->GetPlayerID()];
+		if (at != 0 && (int)(dwNow - at) < 0)
+			return;
+		at = dwNow + 10 * 60 * 1000 + (ch->GetPlayerID() % 60) * 1000;
+		const int before = ch->GetHorseHealth();
+		const int max = ch->GetHorseMaxHealth();
+		if (before >= max)
+			return;
+		for (int i = 0; i < 64 && ch->GetHorseHealth() < max; ++i)
+			ch->FeedHorse();
+		++s_dwPlayerBotHorseAffordFed;
+		if (before <= 0)
+			++s_dwPlayerBotHorseAffordRevived;
+		PlayerBotLogThrottledEvery("horse_afford_fed", dwNow, 600000,
+				"BOT_HORSE_AFFORD: horse fed pid=%u name=%s horse=%d health=%d->%d/%d fed=%u revived=%u",
+				ch->GetPlayerID(), ch->GetName(), (int)ch->GetHorseLevel(), before, (int)ch->GetHorseHealth(), max,
+				s_dwPlayerBotHorseAffordFed, s_dwPlayerBotHorseAffordRevived);
 	}
 
 	// Everything the training asks is in the bag and the purse: the medals,
@@ -508,15 +583,28 @@ namespace
 			if (fromBag > 0)
 				ch->RemoveSpecifyItem(cost.feedVnum, fromBag);
 		}
-		if (cost.medals > 0)
-			ch->RemoveSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM, cost.medals);
-		if (cost.materials > 0)
-			ch->RemoveSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM, cost.materials);
-		if (cost.yang > 0)
-			PlayerBotChangeGold(ch, -cost.yang);
+		// MT2009_PLUS_BOT_HORSE_AFFORD_V1: what the bag lacks of the medals and the materials, in yang.
+		const int lackMedals = GetPlayerBotHorseLackingMedals(ch, cost);
+		const int lackMaterials = GetPlayerBotHorseLackingMaterials(ch, cost);
+		const long long goodsYang = (long long)lackMedals * GetPlayerBotHorseAffordMedalYang() +
+				(long long)lackMaterials * GetPlayerBotHorseAffordMaterialYang();
+		if (cost.medals - lackMedals > 0)
+			ch->RemoveSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM, cost.medals - lackMedals);
+		if (cost.materials - lackMaterials > 0)
+			ch->RemoveSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM, cost.materials - lackMaterials);
+		if (cost.yang + goodsYang > 0)
+			PlayerBotChangeGold(ch, -(cost.yang + goodsYang));
 		sys_log(0, "PLAYERBOT_HORSE: trained pid=%u name=%s horse=%d->%d medals=%d feed=%u:%d bought=%d feed_gold=%lld materials=%d yang=%lld gold_left=%lld",
 				ch->GetPlayerID(), ch->GetName(), level, level + 1, cost.medals, (unsigned int)cost.feedVnum,
 				cost.feedCount, bought, feedGold, cost.materials, cost.yang, (long long)ch->GetGold());
+		if (goodsYang > 0)
+		{
+			++s_dwPlayerBotHorseAffordTrainings;
+			s_ullPlayerBotHorseAffordYang += (unsigned long long)goodsYang;
+			sys_log(0, "BOT_HORSE_AFFORD: goods paid in yang pid=%u name=%s horse=%d->%d medals_lacking=%d materials_lacking=%d goods_yang=%lld yang_pct=%d",
+					ch->GetPlayerID(), ch->GetName(), level, level + 1, lackMedals, lackMaterials, goodsYang,
+					GetPlayerBotHorseTrainingYangPercent());
+		}
 		return level + 1;
 	}
 }
