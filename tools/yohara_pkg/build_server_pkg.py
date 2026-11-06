@@ -36,6 +36,7 @@ What goes in (the way 3.0.0-3.0.2 were made, written down):
   * the Yohara package edits (mt2009-yohara-pkg-no-updates): no GitHub, no mirror,
     no update.sh download, the launcher reads only the package's own manifest and
     never runs MT2009-Patcher.exe;
+  * the web client service off by default (webclient_off_edits, not published yet);
   * VERSION <v>-test, CLIENT_VERSION, update-manifest-mt2009.json (channel
     yohara-test, no URL), INSTRUKCJA-YOHARA-TEST.txt, .m2launcher-rebuild-pending,
     CHANGELOG-YOHARA-<v>.md.
@@ -131,6 +132,24 @@ def no_update_edits(root, v):
          "    # %s: patcher pobiera klienta 2.x - w paczce testowej Yohara go nie uruchamiamy.\n"
          "    return ''\n"
          "    if (-not $ClientFolder -or" % MARK)
+
+
+def webclient_off_edits(root):
+    """MT2009_PLUS_YOHARA_PKG_WEBCLIENT_OFF_V1: the web client (compose service webclient) is not published
+    yet - its files are not on the download server and publishing needs the owner's go (mt2009-webclient).
+    In the package it is off by default: a new .env says M2_WEBCLIENT_ON=0 and a .env without the key (a
+    server patched from 3.0.7) gets 0 from docker-compose, so the container idles - nothing is downloaded or
+    served and the panels show no "Graj w przegladarce" link. M2_WEBCLIENT_ON=1 in .env turns it on."""
+    edit(root, 'linux-port/docker/.env.example', '\nM2_WEBCLIENT_ON=1\n',
+         '\n# %s: w paczce testowej Yohara domyslnie wylaczona.\nM2_WEBCLIENT_ON=0\n' % MARK)
+    path = os.path.join(root, 'linux-port/docker/docker-compose.yml')
+    with open(path, 'rb') as f:
+        data = f.read()
+    n = data.count(b'"${M2_WEBCLIENT_ON:-1}"')
+    if n != 3:
+        raise SystemExit('docker-compose.yml: expected 3 M2_WEBCLIENT_ON defaults, found %d' % n)
+    with open(path, 'wb') as f:
+        f.write(data.replace(b'"${M2_WEBCLIENT_ON:-1}"', b'"${M2_WEBCLIENT_ON:-0}"'))
 
 
 INSTRUKCJA = """MT2009 PLUS - Yohara {tag} (paczka serwerowa do testow)
@@ -372,6 +391,7 @@ def main():
 
     # 3. Yohara package edits and version files
     no_update_edits(root, v)
+    webclient_off_edits(root)
     write(os.path.join(root, 'VERSION'), tag + '\n')
     write(os.path.join(root, 'CLIENT_VERSION'), a.client_version + '\n')
     now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
