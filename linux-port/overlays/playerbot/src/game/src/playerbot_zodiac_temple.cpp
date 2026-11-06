@@ -266,6 +266,7 @@ void CZodiac::Initialize()
 	zodiac_floor_event_data = NULL;
 	zodiac_remaining_time_temple_floor = NULL;
 	zodiac_exit_temple_event_data = NULL;
+	m_exitNote = TExitNote();
 }
 
 void CZodiac::SetFlag(std::string name, int value)
@@ -2306,6 +2307,84 @@ void CZodiac::ExitTemple()
 	pMap->for_each(f);
 }
 
+// MT2009_PLUS_ZODIAC_DIAG_V1: the way out's cause and the floor as it stood (see the header).
+struct FZodiacExitSnap
+{
+	LPCHARACTER pkBoss;
+	int iBossHpPct, iBosses, iMobs;
+	DWORD dwDeadPid;
+	FZodiacExitSnap() : pkBoss(NULL), iBossHpPct(101), iBosses(0), iMobs(0), dwDeadPid(0) {}
+	void operator()(LPENTITY ent)
+	{
+		if (!ent->IsType(ENTITY_CHARACTER))
+			return;
+		LPCHARACTER ch = (LPCHARACTER) ent;
+		if (!ch)
+			return;
+		if (ch->IsPC())
+		{
+			if (ch->IsDead() && !dwDeadPid)
+				dwDeadPid = ch->GetPlayerID();
+			return;
+		}
+		if (ch->IsDead() || !(ch->IsMonster() || ch->IsStone()))
+			return;
+		++iMobs;
+		if (!ch->IsZodiacBoss())
+			return;
+		++iBosses;
+		const int pct = ch->GetMaxHP() > 0 ? (int)((long long)ch->GetHP() * 100 / ch->GetMaxHP()) : 100;
+		if (!pkBoss || pct < iBossHpPct)
+		{
+			pkBoss = ch;
+			iBossHpPct = pct;
+		}
+	}
+};
+
+const char* CZodiac::ExitCauseName(BYTE bCause)
+{
+	switch (bCause)
+	{
+		case ZODIAC_EXIT_TIME: return "time";
+		case ZODIAC_EXIT_DEATH: return "death";
+		case ZODIAC_EXIT_COMPLETED: return "completed";
+		default: return "none";
+	}
+}
+
+void CZodiac::NoteExit(BYTE bCause)
+{
+	if (!this || m_exitNote.bCause)
+		return;
+	if (quest::CQuestManager::instance().GetEventFlag("zodiac_diag") < 0)
+		return;
+	TExitNote note;
+	note.bCause = bCause;
+	note.bFloor = m_bFloor;
+	LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(m_lMapIndex);
+	if (pMap)
+	{
+		FZodiacExitSnap f;
+		pMap->for_each(f);
+		note.iBosses = f.iBosses;
+		note.iMobs = f.iMobs;
+		note.dwDeadPid = f.dwDeadPid;
+		if (f.pkBoss)
+		{
+			note.dwBossRace = f.pkBoss->GetRaceNum();
+			note.iBossHpPct = f.iBossHpPct;
+			note.lBossX = f.pkBoss->GetX();
+			note.lBossY = f.pkBoss->GetY();
+		}
+	}
+	m_exitNote = note;
+	sys_log(0, "ZODIAC_DIAG: exit map=%ld zodiac=%u portal=%u floor=%u cause=%s boss=%u boss_hp=%d bosses=%d mobs=%d dead_pid=%u boss_pos=(%ld,%ld) floor_s=%u",
+			m_lMapIndex, (unsigned int)m_id, (unsigned int)m_bPortal, (unsigned int)m_bFloor, ExitCauseName(bCause),
+			(unsigned int)note.dwBossRace, note.iBossHpPct, note.iBosses, note.iMobs, (unsigned int)note.dwDeadPid,
+			note.lBossX, note.lBossY, (unsigned int)(get_global_time() - m_dwGetGlobalTime));
+}
+
 void CZodiac::TimeIsUp()
 {
 	if (!this)
@@ -2323,6 +2402,7 @@ void CZodiac::TimeIsUp()
 	if (deadEvent)
 		event_cancel(&deadEvent);
 
+	NoteExit(ZODIAC_EXIT_TIME);	// MT2009_PLUS_ZODIAC_DIAG_V1: before KillAll clears the boss
 	KillAll();
 
 	ZodiacFloorMessage(43);
@@ -3914,7 +3994,45 @@ void CZodiac::SpawnMob()
 	GetX *= 100;
 	GetY *= 100;
 
-	CHARACTER_MANAGER::instance().SpawnGroupZodiac(GroupMobVnum(P,F), GetMapIndex(), GetX - 2500, GetY - 2500, GetX + 2500, GetY + 2500, NULL, true, this, MobLevels(F));
+	const DWORD dwGroup = GroupMobVnum(P,F);
+	// MT2009_PLUS_ZODIAC_DIAG_V1 (point 3c): GroupMobVnum gives 0 for a portal outside 1-12 or a floor outside
+	// 1-39 - SpawnGroup then wrote only "NOT_EXIST_GROUP_VNUM(0) Map(358xxxx)" (5 481 a day on the Yohara test
+	// world) and the floor lacked its monsters. Now which portal, floor and spawn point: the first of an
+	// instance at once, then one summary line a minute (portal:floor=count). Nothing is spawned for 0 (it
+	// never was: SpawnGroup refuses group 0). Event flag zodiac_diag -1: the old call and its syserr.
+	if (dwGroup == 0 && quest::CQuestManager::instance().GetEventFlag("zodiac_diag") >= 0)
+	{
+		static std::set<long> s_setLogged;
+		static std::map<std::pair<int, int>, int> s_mapCount;
+		static DWORD s_dwNextSummary = 0;
+		const DWORD dwNow = get_dword_time();
+		++s_mapCount[std::make_pair((int)P, (int)F)];
+		if (s_setLogged.insert(GetMapIndex()).second)
+		{
+			if (s_setLogged.size() > 4096)
+				s_setLogged.clear();
+			sys_log(0, "ZODIAC_DIAG: group0 map=%ld zodiac=%u portal=%u floor=%u next=%u pos=%u timer=%d exiting=%d monsters=%d",
+					GetMapIndex(), (unsigned int)GetId(), (unsigned int)P, (unsigned int)F, (unsigned int)m_bNextFloor,
+					(unsigned int)m_bPosition, zodiac_remaining_time_temple_floor ? 1 : 0, IsExiting() ? 1 : 0, m_iMonsterCount);
+		}
+		if ((int)(dwNow - s_dwNextSummary) >= 0)
+		{
+			s_dwNextSummary = dwNow + 60000;
+			std::string sum;
+			int total = 0;
+			for (std::map<std::pair<int, int>, int>::const_iterator it = s_mapCount.begin(); it != s_mapCount.end(); ++it)
+			{
+				char buf[32];
+				snprintf(buf, sizeof(buf), "%s%d:%d=%d", sum.empty() ? "" : ",", it->first.first, it->first.second, it->second);
+				sum += buf;
+				total += it->second;
+			}
+			sys_log(0, "ZODIAC_DIAG: group0 summary total=%d portal:floor=%s", total, sum.c_str());
+			s_mapCount.clear();
+		}
+		return;
+	}
+	CHARACTER_MANAGER::instance().SpawnGroupZodiac(dwGroup, GetMapIndex(), GetX - 2500, GetY - 2500, GetX + 2500, GetY + 2500, NULL, true, this, MobLevels(F));
 }
 
 BYTE OfficerLevels(BYTE Floor)
@@ -6364,6 +6482,7 @@ void CZodiacManager::DeadMob(LPCHARACTER Mob, DWORD mapIndex)
 
 	if (Floor == 40)
 	{
+		pZodiac->NoteExit(CZodiac::ZODIAC_EXIT_COMPLETED);	// MT2009_PLUS_ZODIAC_DIAG_V1
 		pZodiac->ZodiacFloorMessage(41);
 		pZodiac->ZodiacTime(Floor, 0, 10);
 
@@ -6406,6 +6525,7 @@ void CZodiacManager::DeadPC(DWORD mapIndex)
 		if (pZodiac->zodiac_exit_temple_event_data)
 			return;
 
+		pZodiac->NoteExit(CZodiac::ZODIAC_EXIT_DEATH);	// MT2009_PLUS_ZODIAC_DIAG_V1: before KillAll clears the boss
 		pZodiac->KillAll();
 
 		pZodiac->ZodiacFloorMessage(41);

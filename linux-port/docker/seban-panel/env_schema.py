@@ -262,9 +262,9 @@ SCHEMA = [
        "(wtedy tylko 1 loch na N botów). SZC i Hydra mają własne limity.",
        "boty", "int", "12", ["game"], min=0, max=200),
     _e("PLAYERBOT_DGRUN_BOTS_PER_RUN", "Botów na 1 loch",
-       "Limit lochów botów naraz na rdzeń to 1 loch na tylu botów rdzenia (np. 1000 botów / 250 = 4 lochy), "
+       "Limit lochów botów naraz na rdzeń to 1 loch na tylu botów rdzenia (np. 1200 botów / 120 = 10 lochów), "
        "ale nie mniej niż minimum i nie więcej niż maksimum. 0 = bez liczenia po botach (zawsze minimum).",
-       "boty", "int", "250", ["game"], min=0, max=100000),
+       "boty", "int", "120", ["game"], min=0, max=100000),
     _e("PLAYERBOT_DGRUN_STARVED_OVER_CAP", "Lochy botów ponad limit dla zapomnianych lochów",
        "O ile lochów ponad limit rdzenia boty mogą ruszyć do lochu, do którego nikt z nich nie chodził od 40 minut "
        "(żeby rzadziej wybierane lochy też miały wyprawy). 0 = nigdy ponad limit.",

@@ -1610,9 +1610,41 @@ namespace
 			}
 			if (z->IsExiting() && !run.szResult)
 			{
-				run.szResult = IsZrunNoDeathFloor(run.bFloor) ? "expelled" : "time_up";
-				sys_log(0, "ZODIAC_RUN: temple exit run=%d sign=%s floor=%u result=%s", run.iId, ZRUN_SIGN[run.bSign],
-						(unsigned int)run.bFloor, run.szResult);
+				// MT2009_PLUS_ZODIAC_DIAG_V1 (the second bot analysis, point 3a/3b): V3-V8 called every way out on
+				// 6/12/19/24 "expelled" - the floor's time too (the failed runs left after 297-354 s on average:
+				// the floor's limit, not a death). Now the temple's own note says why (CZodiac::NoteExit): a
+				// death -> "expelled", the time -> "time_up", the end -> "finished"; without a note (zodiac_diag
+				// -1) the old guess. The line adds the boss still standing (race, HP %), the bosses and monsters
+				// left, the dead person, and each member's distance to the boss, HP % and state.
+				const CZodiac::TExitNote& note = z->GetExitNote();
+				if (note.bCause == CZodiac::ZODIAC_EXIT_DEATH)
+					run.szResult = "expelled";
+				else if (note.bCause == CZodiac::ZODIAC_EXIT_TIME)
+					run.szResult = "time_up";
+				else if (note.bCause == CZodiac::ZODIAC_EXIT_COMPLETED)
+					run.szResult = "finished";
+				else
+					run.szResult = IsZrunNoDeathFloor(run.bFloor) ? "expelled" : "time_up";
+				std::string who;
+				for (size_t i = 0; i < run.members.size(); ++i)
+				{
+					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+					char buf[96];
+					if (!ch || ch->GetMapIndex() != run.lInstance)
+						snprintf(buf, sizeof(buf), "%s%u:out", who.empty() ? "" : ",", (unsigned int)run.members[i]);
+					else
+						snprintf(buf, sizeof(buf), "%s%u:L%d:hp%d:%s:d%d", who.empty() ? "" : ",", (unsigned int)run.members[i],
+								(int)ch->GetLevel(),
+								ch->GetMaxHP() > 0 ? (int)((long long)ch->GetHP() * 100 / ch->GetMaxHP()) : -1,
+								ch->IsDead() ? "dead" : "up",
+								note.dwBossRace ? DISTANCE_APPROX(ch->GetX() - note.lBossX, ch->GetY() - note.lBossY) : -1);
+					who += buf;
+				}
+				sys_log(0, "ZODIAC_RUN: temple exit run=%d sign=%s floor=%u result=%s cause=%s floor_s=%u deaths=%d floor_deaths=%d boss=%u boss_hp=%d bosses=%d mobs=%d dead_pid=%u members=%s",
+						run.iId, ZRUN_SIGN[run.bSign], (unsigned int)run.bFloor, run.szResult, CZodiac::ExitCauseName(note.bCause),
+						(unsigned int)((dwNow - run.dwFloorAt) / 1000), run.iDeaths, run.iFloorDeaths,
+						(unsigned int)note.dwBossRace, note.iBossHpPct, note.iBosses, note.iMobs, (unsigned int)note.dwDeadPid,
+						who.c_str());
 			}
 			// V2: the floor's first point (where the temple jumped everybody), once the jump is over.
 			if (!run.lFloorX && run.bFloor && leader && leader->GetMapIndex() == run.lInstance && !leader->IsDead() &&

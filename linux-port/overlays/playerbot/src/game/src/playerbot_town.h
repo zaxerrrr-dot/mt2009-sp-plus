@@ -5307,6 +5307,10 @@ namespace
 		return ahead;
 	}
 
+	// MT2009_PLUS_BOT_CATACOMB_HEAD_KEEP_V1: the heads a bot of the level keeps off its counter.
+	const int PLAYERBOT_CATACOMB_HEAD_KEEP = 3;
+	const int PLAYERBOT_CATACOMB_HEAD_KEEP_LEVEL = 75;
+
 	int ScorePlayerBotShopStockRules(LPCHARACTER ch, LPITEM item, bool merchant, bool report)
 	{
 		if (!item)
@@ -5324,6 +5328,15 @@ namespace
 		// MT2009_PLUS_BOT_DS_YOHARA800_V1: nor an alchemy user's Cors and Green Dragon Beans, nor a bulk
 		// alchemist's 71084/71085 (playerbot_alchemy.h, IsPlayerBotKeptAlchemyGoods) - before the operator's word.
 		if (ch && IsPlayerBotKeptAlchemyGoods(ch, item))
+			return -1;
+		// MT2009_PLUS_BOT_CATACOMB_HEAD_KEEP_V1 (the second bot analysis, point 8): nor a Dried Head of a bot of 75 and
+		// up holding at most PLAYERBOT_CATACOMB_HEAD_KEEP - its own way past the Catacomb's turtle rock (one a run, the
+		// Reaper's drop only). Its counter took every head it had, and the Catacomb's call found no kingdom with four
+		// bots holding one ("eligible_best=0"). Over the keep, the counter's as before. Event flag
+		// bot_catacomb_keep_head -1: the counter's at once.
+		if (ch && IsPlayerBotCatacombHead(item->GetVnum()) && (int)ch->GetLevel() >= PLAYERBOT_CATACOMB_HEAD_KEEP_LEVEL &&
+				quest::CQuestManager::instance().GetEventFlag("bot_catacomb_keep_head") >= 0 &&
+				ch->CountSpecifyItem(30319) + ch->CountSpecifyItem(30320) + ch->CountSpecifyItem(76002) <= PLAYERBOT_CATACOMB_HEAD_KEEP)
 			return -1;
 		// The operator's word first: stall goes up ahead of everything, the
 		// other three never do.
