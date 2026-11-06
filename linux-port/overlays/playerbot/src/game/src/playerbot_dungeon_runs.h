@@ -3102,6 +3102,43 @@ namespace
 	// PLAYERBOT_DGRUN_MAX_REPLACEMENTS a run, never after the gathering's time.
 	const int PLAYERBOT_DGRUN_MAX_REPLACEMENTS = 4;
 
+	// MT2009_PLUS_BOT_WUKONG_GATE_V1 (the owner, 6 November 2026 - the second bot analysis, point 4): Wzgorze Wukonga
+	// got the bots the Zodiac's strength gate leaves free - the weak ones: 31 deaths a run on one world, 34% of the
+	// runs wiped and 40 deaths a run on another, 205 lost of 1 947 on the supporters'. A bot goes to Wukong only of
+	// wk_gate_level (50) and up with its weapon and its armour (each the item's level + its plus, as the Zodiac's gate
+	// reads them; a young heroes' weapon a +9 of the bot's level) at most wk_gate_gear (15) levels under its own - so
+	// the party's weakest member is of 50 and its gear of the window. A bot of Wukong's band the gate turns away (and
+	// the Zodiac's, whose gate let it be) goes into the Biblioteka's call instead, above that band if need be (its
+	// cooldown and five a day hold). Event flag bot_wukong_gate -1: no gate (as before), bot_wukong_biblio -1: no
+	// Biblioteka for the refused. Log: BOT_DGRUN: wukong gate (throttled) - refused by reason and sent on.
+	bool IsPlayerBotWukongGateOn() { return quest::CQuestManager::instance().GetEventFlag("bot_wukong_gate") >= 0; }
+	int GetPlayerBotWukongGateSetting(const char* name, int def, int lo, int hi)
+	{
+		const int v = quest::CQuestManager::instance().GetEventFlag(name);
+		return v > 0 ? std::max(lo, std::min(hi, v)) : def;
+	}
+	enum { WUKONG_GATE_OK = 0, WUKONG_GATE_LEVEL, WUKONG_GATE_WEAPON, WUKONG_GATE_ARMOUR, WUKONG_GATE_COUNT };
+	unsigned int s_auPlayerBotWukongGate[WUKONG_GATE_COUNT];
+	unsigned int s_uPlayerBotWukongGateBiblio = 0;
+	int GetPlayerBotWukongGateRefusal(LPCHARACTER ch)
+	{
+		const int level = ch->GetLevel();
+		if (level < GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250))
+			return WUKONG_GATE_LEVEL;
+		const int window = GetPlayerBotWukongGateSetting("wk_gate_gear", 15, 0, 250);
+		LPITEM weapon = GetPlayerBotHandWeapon(ch);
+		int wl = 0, wp = 0;
+		if (!weapon || !weapon->GetProto())
+			return WUKONG_GATE_WEAPON;
+		GetPlayerBotWeaponEffective(ch, &wl, &wp, weapon);
+		if (wl + wp < level - window)
+			return WUKONG_GATE_WEAPON;
+		LPITEM body = ch->GetWear(WEAR_BODY);
+		if (!body || !body->GetProto() || GetPlayerBotProtoLevelLimit(body->GetProto()) + body->GetRefineLevel() < level - window)
+			return WUKONG_GATE_ARMOUR;
+		return WUKONG_GATE_OK;
+	}
+
 	bool RecruitPlayerBotDgRunMember(TPlayerBotDgRun& run, bool healerOnly, DWORD dwNow)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
@@ -3139,6 +3176,9 @@ namespace
 			if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGateBotOk(def, ch, true))	// MT2009_PLUS_BOT_YDG_GATE_V1: the party's average
 				continue;
 			if (IsPlayerBotMeleyVisitor(pid) && def.bKind != DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: it came for the lair
+				continue;
+			// MT2009_PLUS_BOT_WUKONG_GATE_V1: nor a weak one for Wukong in a gap.
+			if (!strcmp(def.szKey, "wukong") && IsPlayerBotWukongGateOn() && GetPlayerBotWukongGateRefusal(ch) != WUKONG_GATE_OK)
 				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
 			if (healerOnly && !healer)
@@ -4259,6 +4299,7 @@ namespace
 				weight += 4;
 			if (ch->GetJob() == JOB_SHAMAN)
 				weight += 2;
+			bool wukongRefused = false;	// MT2009_PLUS_BOT_WUKONG_GATE_V1
 			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
 			{
 				const TPlayerBotDgRunSlot& slot = slots[i];
@@ -4280,10 +4321,55 @@ namespace
 					continue;
 				if (def.bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleFit(ch))	// MT2009_PLUS_BOT_GNOLLE_V1: 120 and a Champion
 					continue;
+				// MT2009_PLUS_BOT_WUKONG_GATE_V1: Wukong's strength gate (the operator's forced call is not gated).
+				if (forced < 0 && !strcmp(def.szKey, "wukong") && IsPlayerBotWukongGateOn())
+				{
+					const int refusal = GetPlayerBotWukongGateRefusal(ch);
+					if (refusal != WUKONG_GATE_OK)
+					{
+						++s_auPlayerBotWukongGate[refusal];
+						wukongRefused = true;
+						continue;
+					}
+					++s_auPlayerBotWukongGate[WUKONG_GATE_OK];
+				}
 				// MT2009_PLUS_BOT_DROPKNOW_V1: a bot whose plans need this dungeon's drop (and no counter holds it) is drawn first
 				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(),
 						weight + (IsPlayerBotDropKnowDemander(pid, i) ? 12 : 0), ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 			}
+			// MT2009_PLUS_BOT_WUKONG_GATE_V1: the bot Wukong's gate turned away to the Biblioteka's call, over its band.
+			if (wukongRefused && quest::CQuestManager::instance().GetEventFlag("bot_wukong_biblio") >= 0)
+			{
+				for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
+				{
+					const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[i];
+					if (def.bKind != DGRUN_KIND_BIBLIO || strcmp(def.szKey, "biblioteka"))
+						continue;
+					const TPlayerBotDgRunSlot& slot = slots[i];
+					if (!slot.ok || !slot.empireOk[empire] || level < slot.lvMin)
+						continue;
+					if (playerbot_dgrun::InBand(level, slot.lvMin, slot.lvMax))
+						break;	// in the band: the loop above had it
+					if (slot.panel && mt2009_dpanel::CooldownLeft(ch, *slot.panel) > 0)
+						break;
+					if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)
+						break;
+					buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
+							ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
+					++s_uPlayerBotWukongGateBiblio;
+					break;
+				}
+			}
+		}
+		if (s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL] + s_auPlayerBotWukongGate[WUKONG_GATE_WEAPON] +
+				s_auPlayerBotWukongGate[WUKONG_GATE_ARMOUR] > 0)
+		{
+			// MT2009_PLUS_BOT_WUKONG_GATE_V1: the gate's counts since the last line (bot looks, a pass each).
+			PlayerBotLogThrottled("dgrun_wukong_gate", dwNow,
+					"BOT_DGRUN: wukong gate totals passed=%u refused level=%u weapon=%u armour=%u to_biblioteka=%u (min_level=%d gear_window=%d)",
+					s_auPlayerBotWukongGate[WUKONG_GATE_OK], s_auPlayerBotWukongGate[WUKONG_GATE_LEVEL],
+					s_auPlayerBotWukongGate[WUKONG_GATE_WEAPON], s_auPlayerBotWukongGate[WUKONG_GATE_ARMOUR], s_uPlayerBotWukongGateBiblio,
+					GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250), GetPlayerBotWukongGateSetting("wk_gate_gear", 15, 0, 250));
 		}
 		if (forced == -1)
 			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
