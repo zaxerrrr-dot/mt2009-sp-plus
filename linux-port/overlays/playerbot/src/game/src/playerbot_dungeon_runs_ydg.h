@@ -1495,6 +1495,17 @@ namespace
 					continue;
 				if ((int)free.size() < rule.startMin || (IsPlayerBotYdgNemere(cand) && !(ninja && shaman)))
 					continue;
+				// MT2009_PLUS_BOT_GNOLLE_WHOLE_V1 (night 6/7 November): a Gnolle training party goes whole (up to 5) - parties
+				// called with 3 of 5 (two "afk(broken_off)" after the last run) reached the level-2 gate with 3 fit of the 4 it
+				// asks and turned back (7 of 8 runs "aborted" 19:00-22:00). Off: event flag m2_bot_gnolle_whole_off.
+				if (PLAYERBOT_DGRUN_DEFS[cand].bKind == DGRUN_KIND_GNOLLE &&
+						quest::CQuestManager::instance().GetEventFlag("m2_bot_gnolle_whole_off") == 0 &&
+						(int)free.size() < std::min<int>(5, (int)tp.pids.size()))
+				{
+					PlayerBotLogThrottled("gnolle_whole", dwNow, "BOT_GNOLLE: train party=%d waits to go whole free=%u of %u",
+							tp.iId, (unsigned int)free.size(), (unsigned int)tp.pids.size());
+					continue;
+				}
 				// MT2009_PLUS_BOT_YDG_WEZE_V1: a dungeon of a higher level (the temple's 120) - enough members of it
 				{
 					int ofLevel = 0;
