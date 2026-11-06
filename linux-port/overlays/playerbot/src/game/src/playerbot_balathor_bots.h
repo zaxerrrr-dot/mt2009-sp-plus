@@ -36,6 +36,26 @@
 // The log: PLAYERBOT_BALATHOR lines - census (why the bot guilds cannot go), deposit, called, gathered, registered,
 // started, hwacha, reached, reward, finished, out.
 //
+// MT2009_PLUS_BALATHOR_BOT_PARTY_V1 - the bots' own way in (the owner, 6 November 2026: "Zmiana dla botow, boty nie
+// musza byc w tej samej gildii, nie sa pobierane punkty gildii, musza spelnic tylko LVL postaci i ilosc osob w PT").
+// Next to the guilds' way above, a PARTY of playerbots - led by a playerbot, every member a playerbot, of any guild or
+// none - goes in on the characters' level (register_min_level 120 and Champion 4, the quest's member_ok) and the
+// party's size (register_min_member_count 4 .. a party's 8 members) only: no guild level/age, no master, no ladder
+// points, no treasury, no guild SP for the Hwacha, no guild cooldown (CBalathorManager::CreateForBotParty - a Krypta
+// keyed by the runner, not by a guild). People keep every rule of krypta_balathora.quest; the Krypta itself (its
+// monsters, Balathor, the Hwacha's arrows, the time limit, the chests) is the same.
+//   * the pool: the free fit bots of this core, by kingdom (a party is one kingdom's), the strongest first
+//     (ScorePlayerBotYdg); a party is made at Dolnarr (a CParty, the leader's), the members get the YDG run's bonuses
+//     for the hour (BuffPlayerBotYdgMember - the bots stronger, the Krypta unchanged) and a bag cell for the chests;
+//   * the inside: every step as for a guild's run above (the leader fires the Hwacha), the reward for every bot in it;
+//   * the operator: the file playerbot_balathor_train in the core's directory (read when it changed, every 30 s):
+//         parties <n> [size]   n party runs at once (0-20), parties of size (4-8, default 8); a short rest after a run
+//         # ...                a comment
+//     Without it: PLAYERBOT_BALATHOR_PARTIES (.env, default 1) party runs at once, size 8, a member's 3 h rest. The
+//     DUNGEONS switch of the bots' dungeon runs (IsPlayerBotDgRunOn) stops new calls.
+//   * the log: PLAYERBOT_BALATHOR lines (train, party census, party called, party made, registered ... finished) and
+//     BOT_DGRUN lines with dungeon=balathor (entered, stage, closed) as for every bots' dungeon run.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_labirynt_bots.h.
 
 #ifdef __BALATHOR__
@@ -70,6 +90,15 @@ namespace
 	const int PLAYERBOT_BALATHOR_HWACHA_RANGE = 400;
 	const int PLAYERBOT_BALATHOR_SPOT_RANGE = 350;
 	const DWORD PLAYERBOT_BALATHOR_REST_MS = 3 * 60 * 60 * 1000;	// a member's own break after a run
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1
+	const DWORD PLAYERBOT_BALATHOR_TRAIN_REST_MIN_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_BALATHOR_TRAIN_REST_SPREAD_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_BALATHOR_TRAIN_PLAN_MS = 20 * 1000;
+	const DWORD PLAYERBOT_BALATHOR_FILE_MS = 30 * 1000;
+	const int PLAYERBOT_BALATHOR_PARTY_SIZE_MAX = 8;	// PARTY_MAX_MEMBER
+	const int PLAYERBOT_BALATHOR_PARTY_CALLS_A_PASS = 2;
+	const int PLAYERBOT_BALATHOR_DGRUN_ID_BASE = 90000;	// the BOT_DGRUN lines' run=, apart from the dungeon runs' ids
+	const char* const PLAYERBOT_BALATHOR_TRAIN_FILE = "playerbot_balathor_train";
 
 	enum EPlayerBotBalathorPhase
 	{
@@ -79,7 +108,7 @@ namespace
 
 	struct TPlayerBotBalathorRun
 	{
-		DWORD dwGuild;
+		DWORD dwGuild;	// the guild's id - or, for a bot party (bParty), the Krypta's key (CBalathorManager::IsBotPartyKey)
 		std::string strGuild;
 		DWORD dwMaster;
 		std::vector<DWORD> members;	// the master first
@@ -89,15 +118,21 @@ namespace
 		long lInstance;
 		bool bStarted, bClaimed;
 		int iReached, iClaim, iShots, iPushes;
+		// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a bot party's run (no guild; dwMaster is the party's leader)
+		bool bParty, bTrain;
+		int iRunId;
+		BYTE bEmpire;
 		TPlayerBotBalathorRun() : dwGuild(0), dwMaster(0), bPhase(BALATHOR_BOT_GATHER), dwCalledAt(0), dwPhaseSince(0),
 				dwStartAt(0), dwClosedAt(0), dwNoneInsideSince(0), dwNextGunner(0), lInstance(0), bStarted(false),
-				bClaimed(false), iReached(0), iClaim(-1), iShots(0), iPushes(0) {}
+				bClaimed(false), iReached(0), iClaim(-1), iShots(0), iPushes(0), bParty(false), bTrain(false), iRunId(0),
+				bEmpire(0) {}
 	};
 	struct TPlayerBotBalathorBot
 	{
 		DWORD dwGuild;
 		DWORD dwNextMove, dwNextUse, dwNextPush;
-		TPlayerBotBalathorBot() : dwGuild(0), dwNextMove(0), dwNextUse(0), dwNextPush(0) {}
+		bool bTrain;	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a training run's member - a short rest after it
+		TPlayerBotBalathorBot() : dwGuild(0), dwNextMove(0), dwNextUse(0), dwNextPush(0), bTrain(false) {}
 	};
 	std::map<DWORD, TPlayerBotBalathorRun> s_mapPlayerBotBalathorRuns;	// by guild id
 	std::map<DWORD, TPlayerBotBalathorBot> s_mapPlayerBotBalathorBots;	// by pid
@@ -107,6 +142,17 @@ namespace
 	std::map<DWORD, long> s_mapPlayerBotBalathorPresence;
 	std::map<DWORD, DWORD> s_mapPlayerBotBalathorPolySince;
 	unsigned int s_uPlayerBotBalathorCalled = 0, s_uPlayerBotBalathorRegistered = 0, s_uPlayerBotBalathorRewards = 0;
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the party runs' keys and ids, the train file, the counters.
+	DWORD s_dwPlayerBotBalathorPartyKey = 0;
+	int s_iPlayerBotBalathorPartyRunId = 0;
+	struct TPlayerBotBalathorTrain
+	{
+		int parties;	// 0: no training (PLAYERBOT_BALATHOR_PARTIES)
+		int size;
+		TPlayerBotBalathorTrain() : parties(0), size(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX) {}
+	};
+	TPlayerBotBalathorTrain s_kPlayerBotBalathorTrain;
+	unsigned int s_uPlayerBotBalathorPartyCalled = 0, s_uPlayerBotBalathorPartyEntered = 0, s_uPlayerBotBalathorPartyWon = 0;
 
 	bool IsPlayerBotOnBalathorRun(DWORD pid)
 	{
@@ -210,7 +256,7 @@ namespace
 		std::map<DWORD, DWORD>::const_iterator rest = s_mapPlayerBotBalathorRest.find(pid);
 		if (rest != s_mapPlayerBotBalathorRest.end() && (int)(dwNow - rest->second) < 0)
 			return false;
-		if (IsPlayerBotOnDungeonRun(pid) || IsPlayerBotYoharaCohortPID(pid))
+		if (IsPlayerBotOnBalathorRun(pid) || IsPlayerBotOnDungeonRun(pid) || IsPlayerBotYoharaCohortPID(pid))
 			return false;
 		return GetPlayerBotLfgRefusal(ch, state, dwNow) == NULL;
 	}
@@ -233,8 +279,10 @@ namespace
 		std::map<DWORD, TPlayerBotBalathorBot>::iterator b = s_mapPlayerBotBalathorBots.find(pid);
 		if (b == s_mapPlayerBotBalathorBots.end())
 			return;
+		const bool train = b->second.bTrain;
 		s_mapPlayerBotBalathorBots.erase(b);
-		s_mapPlayerBotBalathorRest[pid] = dwNow + PLAYERBOT_BALATHOR_REST_MS;
+		s_mapPlayerBotBalathorRest[pid] = dwNow + (train ? PLAYERBOT_BALATHOR_TRAIN_REST_MIN_MS +
+				(DWORD)number(0, (int)PLAYERBOT_BALATHOR_TRAIN_REST_SPREAD_MS) : PLAYERBOT_BALATHOR_REST_MS);
 		if (why)
 			sys_log(0, "PLAYERBOT_BALATHOR: member out pid=%u why=%s", pid, why);
 	}
@@ -251,8 +299,75 @@ namespace
 				run.strGuild.c_str(), run.dwGuild, result, GetPlayerBotBalathorReachedName(run.iReached), run.iClaim,
 				run.iShots, run.iPushes, (unsigned int)run.members.size(), (dwNow - run.dwCalledAt) / 1000);
 		const std::vector<DWORD> members = run.members;
+		// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the run's line as every bots' dungeon run's, and its party let go.
+		if (run.bParty)
+		{
+			if (run.iClaim == 99)
+				++s_uPlayerBotBalathorPartyWon;
+			sys_log(0, "BOT_DGRUN: closed run=%d dungeon=balathor instance=%ld empire=%u result=%s took_s=%u stage=%d stage_s=%s "
+					"members=%u leader=%u train=%d",
+					run.iRunId, run.lInstance, (unsigned int)run.bEmpire, result, (dwNow - run.dwCalledAt) / 1000, run.iReached,
+					GetPlayerBotBalathorReachedName(run.iReached), (unsigned int)members.size(), run.dwMaster, run.bTrain ? 1 : 0);
+			LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(run.dwMaster);
+			LPPARTY party = leader ? leader->GetParty() : NULL;
+			if (party && party->GetLeaderPID() == run.dwMaster && !IsPlayerBotHumanLedParty(party))
+				CPartyManager::instance().DeleteParty(party);
+		}
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotBalathorMember(members[i], NULL, dwNow);
+	}
+
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bot party made at Dolnarr - the leader's own party (not one it happened to be
+	// in), every member a playerbot of the leader's kingdom, fit and standing there. The members in it.
+	int MakePlayerBotBalathorParty(TPlayerBotBalathorRun& run, LPCHARACTER leader)
+	{
+		LPPARTY party = leader->GetParty();
+		if (party)
+			LeavePlayerBotParty(leader);
+		party = CPartyManager::instance().CreateParty(leader);
+		if (!party)
+			return 0;
+		party->Link(leader);
+		party->SetParameter(PARTY_EXP_DISTRIBUTION_PARITY);
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			if (run.members[i] == run.dwMaster || !run.arrived.count(run.members[i]))
+				continue;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!ch || ch->IsDead() || !ch->GetDesc() || !ch->GetDesc()->IsBot() || ch->GetEmpire() != leader->GetEmpire() ||
+					!IsPlayerBotBalathorFitMember(ch) || party->GetMemberCount() >= (DWORD)PLAYERBOT_BALATHOR_PARTY_SIZE_MAX)
+				continue;
+			if (ch->GetParty())
+				LeavePlayerBotParty(ch);
+			party->Join(ch->GetPlayerID());
+			party->Link(ch);
+		}
+		sys_log(0, "PLAYERBOT_BALATHOR: party made run=%d leader=%s members=%u", run.iRunId, leader->GetName(),
+				(unsigned int)party->GetMemberCount());
+		return (int)party->GetMemberCount();
+	}
+
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bots' own registration - the characters' level and the party's size only.
+	const char* RegisterPlayerBotBalathorParty(TPlayerBotBalathorRun& run, LPCHARACTER leader)
+	{
+		const SBalathorConfig& cfg = CBalathorManager::Instance().GetConfig();
+		if (!leader || leader->IsDead() || !leader->GetDesc() || !leader->GetDesc()->IsBot() || !IsPlayerBotBalathorFitMember(leader))
+			return "leader";
+		const int size = MakePlayerBotBalathorParty(run, leader);
+		LPPARTY party = leader->GetParty();
+		if (!party || size < (int)cfg.bRegisterMinMemberCount)
+			return "party_size";
+		// Every member of the party a playerbot (the bots' path only), each fit.
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (ch && ch->GetParty() == party && (!ch->GetDesc() || !ch->GetDesc()->IsBot() || !IsPlayerBotBalathorFitMember(ch)))
+				return "member";
+		}
+		if (IsPlayerBotHumanLedParty(party))
+			return "person";
+		const BYTE r = CBalathorManager::Instance().CreateForBotParty(leader, run.dwGuild);
+		return r == 99 ? NULL : (r == 1 ? "open" : "create");
 	}
 
 	// The quest's register() for a bot guild, and balathor.teleport for those at Dolnarr.
@@ -262,7 +377,17 @@ namespace
 		LPCHARACTER master = CHARACTER_MANAGER::instance().FindByPID(run.dwMaster);
 		CGuild* guild = master ? master->GetGuild() : NULL;
 		const char* why = NULL;
-		if (!master || !guild || guild->GetID() != run.dwGuild || guild->GetMasterPID() != run.dwMaster)
+		if (run.bParty)
+		{
+			why = RegisterPlayerBotBalathorParty(run, master);
+			if (why)
+			{
+				sys_log(0, "PLAYERBOT_BALATHOR: registration refused party run=%d leader=%s why=%s", run.iRunId,
+						master ? master->GetName() : "?", why);
+				return false;
+			}
+		}
+		else if (!master || !guild || guild->GetID() != run.dwGuild || guild->GetMasterPID() != run.dwMaster)
 			why = "master";
 		else if (guild->GetFlag("balathor_channel") != 0 || CBalathorManager::Instance().CanCreate(master) != 99)
 			why = "open";
@@ -275,15 +400,18 @@ namespace
 			sys_log(0, "PLAYERBOT_BALATHOR: registration refused guild=%s gid=%u why=%s", run.strGuild.c_str(), run.dwGuild, why);
 			return false;
 		}
-		if (cfg.dwRegisterLadderPoint > 0)
-			guild->ChangeLadderPoint(-(int)cfg.dwRegisterLadderPoint);
-		guild->SetFlag("balathor_channel", g_bChannel);
-		guild->SetFlag("balathor_cooldown", get_global_time() + cfg.dwRegisterWaitTime);
-		if (CBalathorManager::Instance().Create(master) != 99)
+		if (!run.bParty)
 		{
-			guild->SetFlag("balathor_channel", 0);
-			sys_log(0, "PLAYERBOT_BALATHOR: registration refused guild=%s gid=%u why=create", run.strGuild.c_str(), run.dwGuild);
-			return false;
+			if (cfg.dwRegisterLadderPoint > 0)
+				guild->ChangeLadderPoint(-(int)cfg.dwRegisterLadderPoint);
+			guild->SetFlag("balathor_channel", g_bChannel);
+			guild->SetFlag("balathor_cooldown", get_global_time() + cfg.dwRegisterWaitTime);
+			if (CBalathorManager::Instance().Create(master) != 99)
+			{
+				guild->SetFlag("balathor_channel", 0);
+				sys_log(0, "PLAYERBOT_BALATHOR: registration refused guild=%s gid=%u why=create", run.strGuild.c_str(), run.dwGuild);
+				return false;
+			}
 		}
 		CBalathor* crypt = CBalathorManager::Instance().FindByGID(run.dwGuild);
 		if (!crypt)
@@ -292,6 +420,8 @@ namespace
 		++s_uPlayerBotBalathorRegistered;
 		int in = 0;
 		const std::vector<DWORD> members = run.members;
+		LPPARTY party = run.bParty ? master->GetParty() : NULL;
+		std::string names;
 		for (size_t i = 0; i < members.size(); ++i)
 		{
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(members[i]);
@@ -299,6 +429,12 @@ namespace
 			if (!ch || ch->IsDead() || st == s_mapPlayerBotAIStates.end() || !run.arrived.count(members[i]))
 			{
 				ReleasePlayerBotBalathorMember(members[i], "not_at_dolnarr", dwNow);
+				continue;
+			}
+			// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: only the party goes in.
+			if (run.bParty && (!party || ch->GetParty() != party))
+			{
+				ReleasePlayerBotBalathorMember(members[i], "not_in_party", dwNow);
 				continue;
 			}
 			ch->SetWarpLocation(cfg.dwEnterMapIndex, cfg.enter_base_pos.lGX / 100, cfg.enter_base_pos.lGY / 100);
@@ -318,13 +454,32 @@ namespace
 			}
 			s_szPlayerBotTransitionRefusal = NULL;
 			SyncPlayerBotBalathorPresence(ch, dwNow);
+			if (run.bParty)
+			{
+				// the YDG run's bonuses for the hour and a bag cell for the chests - the bots stronger, the Krypta unchanged
+				BuffPlayerBotYdgMember(ch);
+				MakePlayerBotYdgRoom(ch, "balathor");
+				if (!names.empty())
+					names += ",";
+				names += ch->GetName();
+			}
 			++in;
 		}
 		run.members.erase(std::remove_if(run.members.begin(), run.members.end(),
 				[](DWORD pid) { return s_mapPlayerBotBalathorBots.count(pid) == 0; }), run.members.end());
-		sys_log(0, "PLAYERBOT_BALATHOR: registered guild=%s gid=%u master=%s instance=%ld inside=%d ladder_left=%d treasury=%lld sp=%d registered_total=%u",
-				run.strGuild.c_str(), run.dwGuild, master->GetName(), run.lInstance, in, guild->GetLadderPoint(),
-				(long long)guild->GetGuildMoneyAvailable(), guild->GetSP(), s_uPlayerBotBalathorRegistered);
+		if (run.bParty)
+		{
+			if (in > 0)
+				++s_uPlayerBotBalathorPartyEntered;
+			sys_log(0, "PLAYERBOT_BALATHOR: registered party run=%d leader=%s key=%u instance=%ld inside=%d registered_total=%u",
+					run.iRunId, master->GetName(), run.dwGuild, run.lInstance, in, s_uPlayerBotBalathorRegistered);
+			sys_log(0, "BOT_DGRUN: entered run=%d dungeon=balathor instance=%ld empire=%u members=%d fees=0 names=%s",
+					run.iRunId, run.lInstance, (unsigned int)run.bEmpire, in, names.c_str());
+		}
+		else
+			sys_log(0, "PLAYERBOT_BALATHOR: registered guild=%s gid=%u master=%s instance=%ld inside=%d ladder_left=%d treasury=%lld sp=%d registered_total=%u",
+					run.strGuild.c_str(), run.dwGuild, master->GetName(), run.lInstance, in, guild->GetLadderPoint(),
+					(long long)guild->GetGuildMoneyAvailable(), guild->GetSP(), s_uPlayerBotBalathorRegistered);
 		run.bPhase = BALATHOR_BOT_INSIDE;
 		run.dwPhaseSince = dwNow;
 		run.dwStartAt = dwNow + PLAYERBOT_BALATHOR_START_MS;
@@ -828,6 +983,9 @@ namespace
 			run.iReached = reached;
 			sys_log(0, "PLAYERBOT_BALATHOR: reached guild=%s gid=%u step=%s inside=%d in_s=%u", run.strGuild.c_str(), run.dwGuild,
 					GetPlayerBotBalathorReachedName(reached), inside, (dwNow - run.dwPhaseSince) / 1000);
+			if (run.bParty)	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1
+				sys_log(0, "BOT_DGRUN: stage run=%d dungeon=balathor instance=%ld stage=%d (%s) after_s=%u inside=%d", run.iRunId,
+						run.lInstance, reached, GetPlayerBotBalathorReachedName(reached), (dwNow - run.dwPhaseSince) / 1000, inside);
 		}
 		if (crypt->GetStage() == BALATHOR_STAGE_WAITING && !run.bStarted && (int)(dwNow - run.dwStartAt) >= 0)
 		{
@@ -849,6 +1007,189 @@ namespace
 			sys_log(0, "PLAYERBOT_BALATHOR: given up guild=%s gid=%u reached=%s (time)", run.strGuild.c_str(), run.dwGuild,
 					GetPlayerBotBalathorReachedName(run.iReached));
 			crypt->Finish(BALATHOR_FINISH_FAIL_BY_GAMEMASTER);
+		}
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bot parties
+
+	bool IsPlayerBotBalathorPartyTraining()
+	{
+		return s_kPlayerBotBalathorTrain.parties > 0;
+	}
+
+	int GetPlayerBotBalathorPartyCap()
+	{
+		if (IsPlayerBotBalathorPartyTraining())
+			return s_kPlayerBotBalathorTrain.parties;
+		return ReadPlayerBotYoharaEnvInt("PLAYERBOT_BALATHOR_PARTIES", 1, 0, 20);
+	}
+
+	int GetPlayerBotBalathorPartySize()
+	{
+		const SBalathorConfig& cfg = CBalathorManager::Instance().GetConfig();
+		const int lo = std::max(1, (int)cfg.bRegisterMinMemberCount);
+		const int hi = std::max(lo, std::min(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX, (int)cfg.bRegisterMaxMemberCount ?
+				(int)cfg.bRegisterMaxMemberCount : PLAYERBOT_BALATHOR_PARTY_SIZE_MAX));
+		const int want = IsPlayerBotBalathorPartyTraining() ? s_kPlayerBotBalathorTrain.size : PLAYERBOT_BALATHOR_PARTY_SIZE_MAX;
+		return std::max(lo, std::min(hi, want));
+	}
+
+	// The file playerbot_balathor_train in the core's directory: "parties <n> [size]" - read when it changed.
+	void ReadPlayerBotBalathorTrainFile(DWORD dwNow)
+	{
+		static DWORD s_dwNext = 0;
+		static time_t s_tMtime = (time_t)-1;
+		if (s_dwNext != 0 && (int)(dwNow - s_dwNext) < 0)
+			return;
+		s_dwNext = dwNow + PLAYERBOT_BALATHOR_FILE_MS;
+		struct stat st;
+		const time_t mtime = stat(PLAYERBOT_BALATHOR_TRAIN_FILE, &st) == 0 ? st.st_mtime : (time_t)0;
+		if (mtime == s_tMtime)
+			return;
+		s_tMtime = mtime;
+		TPlayerBotBalathorTrain t;
+		FILE* fp = mtime ? fopen(PLAYERBOT_BALATHOR_TRAIN_FILE, "r") : NULL;
+		if (fp)
+		{
+			char line[160];
+			while (fgets(line, sizeof(line), fp))
+			{
+				char cmd[32] = "";
+				int a = 0, b = 0;
+				const int got = sscanf(line, "%31s %d %d", cmd, &a, &b);
+				if (got < 1 || cmd[0] == '#')
+					continue;
+				if (!strcmp(cmd, "parties") && got >= 2)
+				{
+					t.parties = std::max(0, std::min(20, a));
+					if (got >= 3)
+						t.size = std::max(4, std::min(PLAYERBOT_BALATHOR_PARTY_SIZE_MAX, b));
+				}
+				else
+					sys_log(0, "PLAYERBOT_BALATHOR: train unknown line=%s", line);
+			}
+			fclose(fp);
+		}
+		s_kPlayerBotBalathorTrain = t;
+		sys_log(0, "PLAYERBOT_BALATHOR: train load parties=%d size=%d (cap=%d size=%d) file=%s", t.parties, t.size,
+				GetPlayerBotBalathorPartyCap(), GetPlayerBotBalathorPartySize(), mtime ? "yes" : "no");
+	}
+
+	DWORD NextPlayerBotBalathorPartyKey()
+	{
+		for (int guard = 0; guard < 1000; ++guard)
+		{
+			if (s_dwPlayerBotBalathorPartyKey < BALATHOR_BOT_PARTY_KEY_MIN || s_dwPlayerBotBalathorPartyKey >= 0xFFFFFF00)
+				s_dwPlayerBotBalathorPartyKey = BALATHOR_BOT_PARTY_KEY_MIN;
+			const DWORD key = s_dwPlayerBotBalathorPartyKey++;
+			if (!s_mapPlayerBotBalathorRuns.count(key) && !CBalathorManager::Instance().FindByGID(key))
+				return key;
+		}
+		return 0;
+	}
+
+	// The calls of the bot parties: up to the cap at once, the strongest free fit bots of one kingdom a party.
+	void PlanPlayerBotBalathorParties(DWORD dwNow, bool on)
+	{
+		static DWORD s_dwNextPlan = 0, s_dwNextCensus = 0;
+		ReadPlayerBotBalathorTrainFile(dwNow);
+		const bool train = IsPlayerBotBalathorPartyTraining();
+		if (s_dwNextPlan == 0)
+		{
+			s_dwNextPlan = dwNow + (train ? PLAYERBOT_BALATHOR_TRAIN_PLAN_MS : PLAYERBOT_BALATHOR_FIRST_PLAN_MS);
+			s_dwNextCensus = s_dwNextPlan;
+		}
+		const bool census = (int)(dwNow - s_dwNextCensus) >= 0;
+		const bool plan = (int)(dwNow - s_dwNextPlan) >= 0;
+		if (!census && !plan)
+			return;
+		if (plan)
+			s_dwNextPlan = dwNow + (train ? PLAYERBOT_BALATHOR_TRAIN_PLAN_MS : PLAYERBOT_BALATHOR_PLAN_MS);
+		if (census)
+			s_dwNextCensus = dwNow + (train ? 10 * 60 * 1000 : PLAYERBOT_BALATHOR_CENSUS_MS);
+		int running = 0;
+		for (std::map<DWORD, TPlayerBotBalathorRun>::const_iterator r = s_mapPlayerBotBalathorRuns.begin();
+				r != s_mapPlayerBotBalathorRuns.end(); ++r)
+			if (r->second.bParty)
+				++running;
+		const int cap = GetPlayerBotBalathorPartyCap();
+		const bool call = plan && on && cap > 0 && running < cap;
+		if (!call && !census)
+			return;
+		const SBalathorConfig& cfg = CBalathorManager::Instance().GetConfig();
+		// The pool by kingdom, the strongest first.
+		std::vector<std::pair<long long, DWORD> > pool[4];
+		int levelFit = 0;
+		for (TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.begin(); st != s_mapPlayerBotAIStates.end(); ++st)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(st->first);
+			if (!ch || !ch->GetDesc() || !ch->GetDesc()->IsBot() || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+				continue;
+			if (!IsPlayerBotBalathorFitMember(ch))
+				continue;
+			++levelFit;
+			if (IsPlayerBotBalathorCandidate(ch, st->second, dwNow))
+				pool[ch->GetEmpire()].push_back(std::make_pair(ScorePlayerBotYdg(ch), st->first));
+		}
+		const int size = GetPlayerBotBalathorPartySize();
+		if (census)
+			sys_log(0, "PLAYERBOT_BALATHOR: party census fit_level=%d free=%u/%u/%u size=%d running=%d cap=%d train=%d called=%u "
+					"entered=%u rewards=%u on=%d", levelFit, (unsigned int)pool[1].size(), (unsigned int)pool[2].size(),
+					(unsigned int)pool[3].size(), size, running, cap, train ? 1 : 0, s_uPlayerBotBalathorPartyCalled,
+					s_uPlayerBotBalathorPartyEntered, s_uPlayerBotBalathorPartyWon, on ? 1 : 0);
+		if (!call)
+			return;
+		for (int e = 1; e <= 3; ++e)
+			std::sort(pool[e].begin(), pool[e].end(), std::greater<std::pair<long long, DWORD> >());
+		size_t used[4] = { 0, 0, 0, 0 };
+		for (int calls = 0; calls < PLAYERBOT_BALATHOR_PARTY_CALLS_A_PASS && running < cap; ++calls)
+		{
+			// the kingdom with the most free fit bots left
+			int empire = 0;
+			size_t most = 0;
+			for (int e = 1; e <= 3; ++e)
+				if (pool[e].size() - used[e] > most)
+				{
+					most = pool[e].size() - used[e];
+					empire = e;
+				}
+			if (empire == 0 || (int)most < (int)cfg.bRegisterMinMemberCount)
+				return;
+			const DWORD key = NextPlayerBotBalathorPartyKey();
+			if (!key)
+				return;
+			std::vector<DWORD> members;
+			for (size_t i = used[empire]; i < pool[empire].size() && (int)members.size() < size; ++i)
+				members.push_back(pool[empire][i].second);
+			used[empire] += members.size();
+			TPlayerBotBalathorRun& run = s_mapPlayerBotBalathorRuns[key];
+			run = TPlayerBotBalathorRun();
+			run.bParty = true;
+			run.bTrain = train;
+			run.dwGuild = key;
+			run.iRunId = PLAYERBOT_BALATHOR_DGRUN_ID_BASE + (++s_iPlayerBotBalathorPartyRunId);
+			run.bEmpire = (BYTE)empire;
+			run.dwMaster = members[0];	// the strongest leads (and fires the Hwacha)
+			run.members = members;
+			run.dwCalledAt = dwNow;
+			run.dwPhaseSince = dwNow;
+			LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(run.dwMaster);
+			char label[64];
+			snprintf(label, sizeof(label), "party%d:%s", run.iRunId, leader ? leader->GetName() : "?");
+			run.strGuild = label;
+			for (size_t k = 0; k < members.size(); ++k)
+			{
+				TPlayerBotBalathorBot& b = s_mapPlayerBotBalathorBots[members[k]];
+				b = TPlayerBotBalathorBot();
+				b.dwGuild = key;
+				b.bTrain = train;
+			}
+			++running;
+			++s_uPlayerBotBalathorCalled;
+			++s_uPlayerBotBalathorPartyCalled;
+			sys_log(0, "PLAYERBOT_BALATHOR: party called run=%d key=%u empire=%d leader=%s members=%u free=%u running=%d cap=%d train=%d "
+					"called_total=%u", run.iRunId, key, empire, leader ? leader->GetName() : "?", (unsigned int)members.size(),
+					(unsigned int)most, running, cap, train ? 1 : 0, s_uPlayerBotBalathorPartyCalled);
 		}
 	}
 
@@ -874,6 +1215,9 @@ namespace
 			else
 				++r;
 		}
+		// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bot parties (no guild) - their own clock and cap.
+		if (IsPlayerBotBalathorOn())
+			PlanPlayerBotBalathorParties(dwNow, IsPlayerBotDgRunOn(dwNow));
 		const bool census = (int)(dwNow - s_dwNextCensus) >= 0;
 		const bool plan = (int)(dwNow - s_dwNextPlan) >= 0;
 		if (!census && !plan)
@@ -890,7 +1234,12 @@ namespace
 		}
 		const int cap = ReadPlayerBotYoharaEnvInt("PLAYERBOT_BALATHOR_MAX", 1, 0, 4);
 		const bool on = cap > 0 && IsPlayerBotDgRunOn(dwNow);
-		const bool call = plan && on && (int)s_mapPlayerBotBalathorRuns.size() < cap;
+		int guildRuns = 0;	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bot parties have their own cap
+		for (std::map<DWORD, TPlayerBotBalathorRun>::const_iterator r = s_mapPlayerBotBalathorRuns.begin();
+				r != s_mapPlayerBotBalathorRuns.end(); ++r)
+			if (!r->second.bParty)
+				++guildRuns;
+		const bool call = plan && on && guildRuns < cap;
 		if (!call && !census)
 			return;
 		// The bot guilds of this core: a bot master standing here, its fit and free bots.

@@ -184,6 +184,28 @@ BYTE CBalathorManager::Create(LPCHARACTER ch)
 	return 99;
 }
 
+// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a Krypta for a party of playerbots led by a playerbot (playerbot_balathor_bots.h
+// checks the party: all bots, the members' level and Champion, the party's size). No guild: the key is the runner's
+// (IsBotPartyKey), so no guild flag, ladder point or guild SP is touched. A person can never get one: the leader must
+// be a playerbot, and the quest's Dolnarr / teleport find a Krypta by a guild's id only.
+BYTE CBalathorManager::CreateForBotParty(LPCHARACTER leader, DWORD dwKey)
+{
+	if (!leader || !leader->GetDesc() || !leader->GetDesc()->IsBot() || !IsBotPartyKey(dwKey))
+		return 0;
+	const auto it = m_mapBalathors.find(dwKey);
+	if (it != m_mapBalathors.end())
+		return 1;
+	if (!map_allow_find(m_data.dwMapIndex))
+		return 2;
+	DWORD lMapIndex = SECTREE_MANAGER::instance().CreatePrivateMap(m_data.dwMapIndex);
+	if (!lMapIndex)
+		return 3;
+	CBalathor* pDungeon = M2_NEW CBalathor(lMapIndex, dwKey);
+	pDungeon->SetBotParty(true);
+	m_mapBalathors.emplace_hint(it, dwKey, pDungeon);
+	return 99;
+}
+
 BYTE CBalathorManager::Close(LPCHARACTER ch)
 {
 	CGuild* pGuild = ch->GetGuild();

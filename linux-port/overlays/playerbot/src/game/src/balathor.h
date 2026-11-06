@@ -77,6 +77,9 @@ enum EBalathor
 	BALATHOR_MAX_REWARD_COUNT = 4,
 };
 
+// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the keys of the bot parties' Krypts (far above any guild id).
+const DWORD BALATHOR_BOT_PARTY_KEY_MIN = 0x7F000000;
+
 struct SBalathorReward
 {
 	DWORD	dwVnum;
@@ -303,7 +306,13 @@ public:
 	void GetVictims(std::vector<LPCHARACTER>& vecVictims, bool flaming_egg, bool hwatcha);
 
 	BYTE ClaimReward(LPCHARACTER ch);
+
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: a Krypta opened for a party of playerbots only (CBalathorManager::CreateForBotParty):
+	// no guild behind it - no guild flag, no guild SP for the Hwacha, the reward for every bot inside.
+	void SetBotParty(bool bBotParty) { m_bBotParty = bBotParty; }
+	bool IsBotParty() const { return m_bBotParty; }
 protected:
+	bool m_bBotParty;
 	BYTE m_bStage;
 	BYTE m_bStepIndex;
 	DWORD m_dwStageTime;
@@ -349,6 +358,11 @@ public:
 	BYTE CanCreate(LPCHARACTER ch);
 	BYTE Create(LPCHARACTER ch);
 	BYTE Close(LPCHARACTER ch);
+	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1: the bots' own path - a party of playerbots led by a playerbot, with no guild
+	// (the owner, 6 November 2026: only the characters' level and the party's size). dwKey is the runner's own key
+	// (IsBotPartyKey), never a guild's id; the quest's register() for people is untouched.
+	static bool IsBotPartyKey(DWORD dwKey) { return dwKey >= BALATHOR_BOT_PARTY_KEY_MIN; }
+	BYTE CreateForBotParty(LPCHARACTER leader, DWORD dwKey);
 
 	bool IsGuildDungeonExist(DWORD dwID);
 	void Teleport(LPCHARACTER ch);
