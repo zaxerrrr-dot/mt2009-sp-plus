@@ -39,6 +39,11 @@
 // PLAYERBOT_MONKEY2_MIN_LEVEL (36), PLAYERBOT_MONKEY3_MIN_LEVEL (55); PLAYERBOT_SURVIVE_DEATHS_H (9).
 // The log: PLAYERBOT_DEATHLOOP: flee / town revive / loop / pin cleared (throttled), census every 10 minutes.
 //
+// MT2009_PLUS_BOT_RAID_DEATHS_V1 (from 2.x, the 2.42 test, 6 November 2026): a raider of an open-world boss raid that
+// falls PLAYERBOT_RAID_DEATHS_MAX (4) times in PLAYERBOT_RAID_DEATHS_WINDOW_MIN (10) minutes leaves the raid and is
+// refused ("deaths") by the boss raids for PLAYERBOT_RAID_DEATHS_BENCH_MIN (30) minutes - see NotePlayerBotRaidDeath.
+// Event flag m2_bot_raid_deaths_off 1 - off. Log: PLAYERBOT_DEATHLOOP: raid left; census raid_deaths= raid_left=.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_survive.h; the earlier headers ask its
 // hooks through declarations (playerbot_survival.h, playerbot_travel.h).
 
@@ -108,16 +113,20 @@ namespace
 		std::map<long, DWORD> avoid;	// map -> until
 		long lLoopMap;			// the map of the last loop, for the pin
 		int iLoopMapLevel;		// its survive row's entry level (-1: none)
+		std::deque<DWORD> raidDeaths;	// MT2009_PLUS_BOT_RAID_DEATHS_V1: the open-world boss raid's deaths (when)
+		DWORD dwRaidBenchUntil;		// called to no boss raid until then
 		TPlayerBotDeathloopBot() : bRepeat(false), iMobs(0), bFleeing(false), bShown(false), lFleeMap(0), lFleeX(0), lFleeY(0),
-				lFleeFromX(0), lFleeFromY(0), dwFleeStart(0), dwFleeUntil(0), iFleeDist(0), lLoopMap(0), iLoopMapLevel(-1) {}
+				lFleeFromX(0), lFleeFromY(0), dwFleeStart(0), dwFleeUntil(0), iFleeDist(0), lLoopMap(0), iLoopMapLevel(-1),
+				dwRaidBenchUntil(0) {}
 	};
 	std::map<DWORD, TPlayerBotDeathloopBot> s_mapPlayerBotDeathloop;
 
 	struct TPlayerBotDeathloopStats
 	{
 		unsigned int deaths, inPlace, flee, fleeReached, fleeTimedOut, fleeFailed, town, loops, pinsCleared;
+		unsigned int raidDeaths, raidBenched;	// MT2009_PLUS_BOT_RAID_DEATHS_V1
 		TPlayerBotDeathloopStats() : deaths(0), inPlace(0), flee(0), fleeReached(0), fleeTimedOut(0), fleeFailed(0), town(0),
-				loops(0), pinsCleared(0) {}
+				loops(0), pinsCleared(0), raidDeaths(0), raidBenched(0) {}
 	};
 	TPlayerBotDeathloopStats s_kPlayerBotDeathloop;
 
@@ -276,6 +285,101 @@ namespace
 				(unsigned int)(c.avoidMs / 60000U), b.iLoopMapLevel >= 0 ? 1 : 0);
 	}
 
+	// MT2009_PLUS_BOT_RAID_DEATHS_V1 (from 2.x, the 2.42 test, 6 November 2026): an open-world boss raid is a dungeon's
+	// business to the death loop, so its raiders stood up by the boss and fell again - on the 2.x test world three bots of
+	// 55-58 on Lord Malp (109) 60 deaths in seven minutes, seven bots of 62-73 on map 71 13-15 deaths each in ten minutes.
+	// A raider that falls PLAYERBOT_RAID_DEATHS_MAX (4) times within PLAYERBOT_RAID_DEATHS_WINDOW_MIN (10) minutes in one
+	// raid leaves it (the raid calls others as before) and is called to no boss raid for PLAYERBOT_RAID_DEATHS_BENCH_MIN
+	// (30) minutes; from then on its deaths are the death loop's again (the flee, the step down). Not the Temple of
+	// Ochao's raids (their own top-up), the Arezzo maps', the Demon Tower's or the Catacomb's - and on Yohara none of the
+	// dungeons: a dungeon instance, the bots' own dungeon runs (YDG, Meley, Gnolle, Swiatynia Wezy, Glebie, Wieza Sung
+	// Mahi, the Zodiac; Krypta Balathora and the Labirynt as the guild lair runs), the Dropki (the dungeon farmers) on
+	// their role, a Sung Ma resident or a guild war stay outside it as they stay outside the death loop. Event flag
+	// m2_bot_raid_deaths_off 1 - off (with the death loop's own switch).
+	struct TPlayerBotRaidDeathsConfig
+	{
+		int max;
+		DWORD windowMs, benchMs;
+	};
+
+	const TPlayerBotRaidDeathsConfig& GetPlayerBotRaidDeathsConfig()
+	{
+		static bool s_bRead = false;
+		static TPlayerBotRaidDeathsConfig c;
+		if (!s_bRead)
+		{
+			s_bRead = true;
+			c.max = ReadPlayerBotYoharaEnvInt("PLAYERBOT_RAID_DEATHS_MAX", 4, 2, 50);
+			c.windowMs = (DWORD)ReadPlayerBotYoharaEnvInt("PLAYERBOT_RAID_DEATHS_WINDOW_MIN", 10, 1, 120) * 60000U;
+			c.benchMs = (DWORD)ReadPlayerBotYoharaEnvInt("PLAYERBOT_RAID_DEATHS_BENCH_MIN", 30, 1, 24 * 60) * 60000U;
+		}
+		return c;
+	}
+
+	bool IsPlayerBotRaidDeathsOn()
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 1000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_raid_deaths_off") == 0;
+		}
+		return s_bOn && IsPlayerBotDeathloopOn();
+	}
+
+	// GetPlayerBotBossRaidRefusal (playerbot_boss_raid.h): benched after its raid deaths.
+	bool IsPlayerBotRaidDeathBenched(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotDeathloopBot>::const_iterator it = s_mapPlayerBotDeathloop.find(pid);
+		return it != s_mapPlayerBotDeathloop.end() && it->second.dwRaidBenchUntil != 0 &&
+				(int)(get_dword_time() - it->second.dwRaidBenchUntil) < 0 && IsPlayerBotRaidDeathsOn();
+	}
+
+	// A raider's death a Yohara dungeon has (the death loop's IsPlayerBotInDungeonBusiness without the raid itself, which
+	// counts as the tower's business there): an instance, the tower, the Catacomb, a dungeon run, a Dropki on its role.
+	bool IsPlayerBotRaidDeathDungeon(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		const DWORD pid = ch->GetPlayerID();
+		const long map = ch->GetMapIndex();
+		return map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || map == PLAYERBOT_MAP_DEMON_TOWER ||
+				IsPlayerBotDemonTowerInstance(map) || IsPlayerBotCatacombInstance(map) || IsPlayerBotCatacombRaider(pid) ||
+				state.dwTowerRaidGuild != 0 || state.bTowerSummoned || IsPlayerBotOnDungeonRun(pid) ||
+				IsPlayerBotDropkiActive(pid) || state.dwGuildWarEnemyGID != 0 || IsPlayerBotSungmaResidentPID(pid);
+	}
+
+	void NotePlayerBotRaidDeath(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDeathloopBot& b, DWORD dwNow)
+	{
+		if (!ch || state.wBossRaidRace == 0 || !IsPlayerBotRaidDeathsOn())
+			return;
+		const long map = state.lBossRaidMap;
+		if (map == PLAYERBOT_MAP_OCHAO || IsPlayerBotArezzoMap(map) || map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
+				ch->GetMapIndex() != map || IsPlayerBotRaidDeathDungeon(ch, state))
+			return;
+		TPlayerBotBossRaid* raid = FindPlayerBotBossRaid(map, state.wBossRaidRace);
+		if (!raid || raid->members.find(ch->GetPlayerID()) == raid->members.end())
+			return;
+		const TPlayerBotRaidDeathsConfig& c = GetPlayerBotRaidDeathsConfig();
+		++s_kPlayerBotDeathloop.raidDeaths;
+		while (!b.raidDeaths.empty() && dwNow - b.raidDeaths.front() >= c.windowMs)
+			b.raidDeaths.pop_front();
+		b.raidDeaths.push_back(dwNow);
+		if ((int)b.raidDeaths.size() < c.max)
+			return;
+		const unsigned int deaths = (unsigned int)b.raidDeaths.size();
+		const WORD race = state.wBossRaidRace;
+		b.raidDeaths.clear();
+		b.dwRaidBenchUntil = (dwNow + c.benchMs) ? dwNow + c.benchMs : 1;
+		raid->members.erase(ch->GetPlayerID());
+		ClearPlayerBotBossRaidState(state, ch, raid->dwBossVID);
+		++s_kPlayerBotDeathloop.raidBenched;
+		PlayerBotLogThrottled("deathloop_raid", dwNow,
+				"PLAYERBOT_DEATHLOOP: raid left pid=%u name=%s level=%u map=%ld race=%u deaths=%u window_min=%u bench_min=%u members_left=%u",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, (unsigned int)race, deaths,
+				(unsigned int)(c.windowMs / 60000U), (unsigned int)(c.benchMs / 60000U), (unsigned int)raid->members.size());
+	}
+
 	// HandleDeath, the tick a death is noticed (after the step down's own count).
 	void NotePlayerBotDeathloopDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -286,6 +390,7 @@ namespace
 		b.bShown = false;
 		b.bRepeat = false;
 		b.iMobs = 0;
+		NotePlayerBotRaidDeath(ch, state, b, dwNow);	// MT2009_PLUS_BOT_RAID_DEATHS_V1
 		if (!IsPlayerBotDeathloopCase(ch, state))
 			return;
 		const TPlayerBotDeathloopConfig& c = GetPlayerBotDeathloopConfig();
@@ -468,10 +573,10 @@ namespace
 			const TPlayerBotDeathloopStats& s = s_kPlayerBotDeathloop;
 			sys_log(0, "PLAYERBOT_DEATHLOOP: census on=%d deaths=%u revived_in_place=%u flee=%u flee_reached=%u "
 					"flee_timed_out=%u flee_failed=%u town=%u loops=%u avoiding_now=%u pins_cleared=%u monkey_medium_min=%d "
-					"monkey_hard_min=%d deaths_h=%d",
+					"monkey_hard_min=%d deaths_h=%d raid_deaths=%u raid_left=%u",
 					IsPlayerBotDeathloopOn() ? 1 : 0, s.deaths, s.inPlace, s.flee, s.fleeReached, s.fleeTimedOut, s.fleeFailed,
 					s.town, s.loops, avoiding, s.pinsCleared, GetPlayerBotMonkeyMinLevel(false), GetPlayerBotMonkeyMinLevel(true),
-					GetPlayerBotSurviveDeathsPerHour());
+					GetPlayerBotSurviveDeathsPerHour(), s.raidDeaths, s.raidBenched);
 			s_kPlayerBotDeathloop = TPlayerBotDeathloopStats();
 		}
 		if (!ch || ch->IsDead())

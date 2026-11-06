@@ -392,6 +392,8 @@ namespace
 		outY = raid.lBossY;
 	}
 
+	bool IsPlayerBotRaidDeathBenched(DWORD pid);	// MT2009_PLUS_BOT_RAID_DEATHS_V1 (playerbot_deathloop.h)
+
 	// Why this bot cannot be called to this boss now, or NULL when it can.
 	const char* GetPlayerBotBossRaidRefusal(LPCHARACTER c, const TPlayerBotAIState& st,
 			const TPlayerBotWorldBoss& row, DWORD dwNow)
@@ -411,6 +413,9 @@ namespace
 			return "person";
 		if (IsPlayerBotDropper(st.bPersonality))
 			return "dropper";
+		// MT2009_PLUS_BOT_RAID_DEATHS_V1: left a raid after its deaths (not the temple's or Arezzo's raids).
+		if (row.lMap != PLAYERBOT_MAP_OCHAO && !IsPlayerBotArezzoMap(row.lMap) && IsPlayerBotRaidDeathBenched(pid))
+			return "deaths";
 		// MT2009_PLUS_BOSS_RAID_V2 (2.2.51): an angler or a miner comes too -
 		// it puts the rod or the pickaxe away when called
 		// (EnlistPlayerBotBossRaider); it used to be refused ("tool").
