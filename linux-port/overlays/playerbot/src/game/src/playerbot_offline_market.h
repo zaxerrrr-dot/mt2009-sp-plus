@@ -1945,6 +1945,9 @@ namespace {
                 }
                 if (!slip) {
                     AddPlayerBotMarketSupply(item->GetVnum(), item->GetInfo().count, shop->GetSpawn().map);
+                    // MT2009_PLUS_BOT_MARKET_CLEARING_V1: what the counters ask for it (the clearing's start and census).
+                    NotePlayerBotClearingAsk(item->GetVnum(), item->GetInfo().count,
+                        (long long)item->GetPrice().GetTotalYangAmount());
                     // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: the cheapest line of each
                     // weapon by map, for the bots' look from the frontier.
                     NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,

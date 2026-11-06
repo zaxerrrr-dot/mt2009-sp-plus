@@ -291,7 +291,7 @@ namespace
 		state.bRecoveringAfterDeath = false;
 		state.dwNextRecoveryProtectionTime = 0;
 		state.dwNextRecoveryHealTime = 0;
-		sys_log(0, "PLAYERBOT_AI: recovery complete pid=%u name=%s hp=%d/%d",
+		PlayerBotLogPerBot("recovered", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: recovery complete pid=%u name=%s hp=%d/%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetHP(), ch->GetMaxHP());
 	}
 

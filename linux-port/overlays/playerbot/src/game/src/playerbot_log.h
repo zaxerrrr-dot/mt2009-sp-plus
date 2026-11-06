@@ -88,6 +88,120 @@ namespace
 		PlayerBotLogThrottledV(true, szTag, dwNow, szFormat, args);
 		va_end(args);
 	}
+
+	// MT2009_PLUS_BOT_LOG_QUIET_V1 (the owner, 6 November 2026: syslog 3.5-10 GB a day; "much less spam, keep the
+	// census lines"). The lines every bot writes for every potion, skill, mount and swap are kept one a bot every
+	// PLAYERBOT_LOG_QUIET_GAP_MIN minutes (default 10) and counted otherwise; the counts come out on one line,
+	// "PLAYERBOT_LOG: quiet ...", every ten minutes. PLAYERBOT_LOG_QUIET=0 writes every line as before. The census
+	// lines never come through here.
+	const DWORD PLAYERBOT_LOG_QUIET_REPORT_MS = 10 * 60 * 1000;
+
+	struct TPlayerBotLogQuiet
+	{
+		int on;	// -1 unread
+		DWORD gapMs;
+		DWORD reportAt;
+		std::map<std::pair<const char*, DWORD>, DWORD> lastByBot;	// (tag, pid) -> when written
+		std::map<std::string, std::pair<DWORD, DWORD> > counts;	// tag -> written, held
+		TPlayerBotLogQuiet() : on(-1), gapMs(600000), reportAt(0) {}
+	};
+	TPlayerBotLogQuiet s_kPlayerBotLogQuiet;
+
+	bool IsPlayerBotLogQuiet()
+	{
+		TPlayerBotLogQuiet& q = s_kPlayerBotLogQuiet;
+		if (q.on < 0)
+		{
+			const char* v = std::getenv("PLAYERBOT_LOG_QUIET");
+			q.on = (v && *v == '0') ? 0 : 1;
+			const char* g = std::getenv("PLAYERBOT_LOG_QUIET_GAP_MIN");
+			const int gap = g && *g ? atoi(g) : 10;
+			q.gapMs = (DWORD)std::max(1, std::min(24 * 60, gap)) * 60000U;
+			sys_log(0, "PLAYERBOT_LOG: quiet on=%d gap_min=%u", q.on, q.gapMs / 60000U);
+		}
+		return q.on != 0;
+	}
+
+	void PlayerBotLogQuietReport(DWORD dwNow)
+	{
+		TPlayerBotLogQuiet& q = s_kPlayerBotLogQuiet;
+		if (q.reportAt == 0)
+		{
+			q.reportAt = dwNow;
+			return;
+		}
+		if (dwNow - q.reportAt < PLAYERBOT_LOG_QUIET_REPORT_MS)
+			return;
+		std::string line;
+		for (std::map<std::string, std::pair<DWORD, DWORD> >::const_iterator it = q.counts.begin(); it != q.counts.end(); ++it)
+		{
+			char buf[96];
+			snprintf(buf, sizeof(buf), " %s=%u/%u", it->first.c_str(), it->second.first, it->second.first + it->second.second);
+			line += buf;
+		}
+		sys_log(0, "PLAYERBOT_LOG: quiet window_min=%u written/all:%s", (dwNow - q.reportAt) / 60000U, line.c_str());
+		q.counts.clear();
+		q.reportAt = dwNow;
+		// A bot that left keeps no entry for ever.
+		if (q.lastByBot.size() > 200000)
+			q.lastByBot.clear();
+	}
+
+	// One line a bot every gap for this tag (a string literal: its address is the key), the rest counted.
+	void PlayerBotLogPerBot(const char* szTag, DWORD dwPid, DWORD dwNow, const char* szFormat, ...)
+	{
+		if (IsPlayerBotLogQuiet())
+		{
+			TPlayerBotLogQuiet& q = s_kPlayerBotLogQuiet;
+			PlayerBotLogQuietReport(dwNow);
+			std::pair<DWORD, DWORD>& count = q.counts[szTag];
+			DWORD& last = q.lastByBot[std::make_pair(szTag, dwPid)];
+			if (last != 0 && dwNow - last < q.gapMs)
+			{
+				++count.second;
+				return;
+			}
+			last = dwNow ? dwNow : 1;
+			++count.first;
+		}
+		char body[512];
+		va_list args;
+		va_start(args, szFormat);
+		vsnprintf(body, sizeof(body), szFormat, args);
+		va_end(args);
+		sys_log(0, "%s", body);
+	}
+
+	// PlayerBotLogThrottled with a window of its own: one line a window for the whole population, the rest counted
+	// and said on the next. Under PLAYERBOT_LOG_QUIET=0 the window is the usual minute.
+	struct TPlayerBotLogEvery
+	{
+		DWORD next, held;
+		TPlayerBotLogEvery() : next(0), held(0) {}
+	};
+	std::map<std::string, TPlayerBotLogEvery> s_mapPlayerBotLogEvery;
+
+	void PlayerBotLogThrottledEvery(const char* szTag, DWORD dwNow, DWORD dwWindowMs, const char* szFormat, ...)
+	{
+		const DWORD window = IsPlayerBotLogQuiet() ? dwWindowMs : PLAYERBOT_LOG_THROTTLE_WINDOW;
+		TPlayerBotLogEvery& e = s_mapPlayerBotLogEvery[szTag ? szTag : "?"];
+		if (e.next != 0 && (int)(dwNow - e.next) < 0)
+		{
+			++e.held;
+			return;
+		}
+		char body[512];
+		va_list args;
+		va_start(args, szFormat);
+		vsnprintf(body, sizeof(body), szFormat, args);
+		va_end(args);
+		if (e.held)
+			sys_log(0, "%s [+%u more in the last %u min]", body, e.held, window / 60000U);
+		else
+			sys_log(0, "%s", body);
+		e.held = 0;
+		e.next = dwNow + window;
+	}
 }
 
 #endif

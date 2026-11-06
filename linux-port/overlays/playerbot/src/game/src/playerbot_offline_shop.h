@@ -2178,7 +2178,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u energy_shards=1",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u energy_shards=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
@@ -2198,7 +2198,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u capped_line=1",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u capped_line=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
@@ -2221,7 +2221,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u potion_pack=1",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u potion_pack=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
@@ -2242,7 +2242,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d crafted_potion=1",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d crafted_potion=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep);
             return to;
         }
@@ -2272,7 +2272,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d lines=%d small=%d",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d lines=%d small=%d",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep,
                 lines, small);
             return to;
@@ -2290,7 +2290,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=0",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=0",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
@@ -2309,7 +2309,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep);
             return to;
         }
@@ -2336,7 +2336,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d kind=%u total=%d",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d kind=%u total=%d",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep,
                 (unsigned int)(GetPlayerBotStallKindKey(item) & 0x7fffffffU), total);
             return to;
@@ -2374,7 +2374,7 @@ namespace {
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u soul_stone_stack=1",
+            PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u soul_stone_stack=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
@@ -2394,7 +2394,7 @@ namespace {
         const int to = ch->GetEmptyInventory(item->GetSize());
         if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), units))
             return -1;
-        sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u",
+        PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u",
             ch->GetPlayerID(), ch->GetName(), item->GetVnum(), units, (unsigned int)item->GetCount());
         return to;
     }
@@ -3750,6 +3750,19 @@ namespace {
             auto it = shop->GetItems().upper_bound(o.repriceItem);
             bool wrapped = (it == shop->GetItems().end());
             if (wrapped) it = shop->GetItems().begin();
+            // MT2009_PLUS_BOT_MARKET_CLEARING_V1: a line of a kind being cleared that still asks well over the clearing
+            // ask goes first (playerbot_market_clearing.h) - the rotation alone took a full counter's day to reach it.
+            // The rotation's place is kept: the next step goes on from where it was.
+            bool clearingFirst = false;
+            for (auto c = shop->GetItems().begin(); c != shop->GetItems().end(); ++c)
+                if (c->second && IsPlayerBotClearingOverpriced(c->second->GetInfo().vnum, c->second->GetInfo().count,
+                        (long long)c->second->GetPrice().GetTotalYangAmount())) {
+                    it = c;
+                    wrapped = false;
+                    clearingFirst = true;
+                    break;
+                }
+            const DWORD rotationItem = o.repriceItem;
             for (int look = 0; look < PLAYERBOT_MARKET_V3_REPRICE_LOOK_AHEAD &&
                     it != shop->GetItems().end(); ++look) {
                 bool edited = false;
@@ -3799,6 +3812,15 @@ namespace {
                             }
                         }
                     }
+                }
+                if (clearingFirst) {
+                    // MT2009_PLUS_BOT_MARKET_CLEARING_V1: the jump spent, the rotation goes on from its own place.
+                    clearingFirst = false;
+                    o.repriceItem = rotationItem;
+                    if (edited) break;
+                    it = shop->GetItems().upper_bound(rotationItem);
+                    if (it == shop->GetItems().end()) it = shop->GetItems().begin();
+                    continue;
                 }
                 if (edited) break;
                 // Passed over: on to the next line, and a rotation that ran off
