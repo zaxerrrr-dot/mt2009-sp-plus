@@ -548,6 +548,8 @@ namespace
 	// How far the anvil has to take a worn piece for the law: the slot's plus
 	// when the piece is of the law's level and under it, zero otherwise. Such
 	// a step goes to the anvil ahead of the rest (ManagePlayerBotRefining).
+	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1 (playerbot_economy.h): a cheap merchant shield / helmet stops at +5.
+	BYTE CapPlayerBotCheapNpcTarget(LPITEM item, BYTE target);
 	BYTE GetPlayerBotLawRefinePlus(LPCHARACTER ch, LPITEM item, int wearCell)
 	{
 		if (!ch || !item || wearCell < 0 || IsPlayerBotLawStaleGear(ch, item))
@@ -555,7 +557,9 @@ namespace
 		if (wearCell == WEAR_WEAPON && (item->GetType() != ITEM_WEAPON ||
 				(int)item->GetLevelLimit() + (int)playerbot_persona::AWANS_PREMIUM_LEVEL_WINDOW < (int)ch->GetLevel()))
 			return 0;
-		const BYTE plus = GetPlayerBotLawPlusForSlot(ch, wearCell);
+		BYTE plus = GetPlayerBotLawPlusForSlot(ch, wearCell);
+		if (plus != 0 && (wearCell == WEAR_SHIELD || wearCell == WEAR_HEAD))
+			plus = CapPlayerBotCheapNpcTarget(item, plus);
 		return item->GetRefineLevel() < plus ? plus : 0;
 	}
 
@@ -4332,7 +4336,18 @@ namespace
 	// (FindPlayerBotLinesProject) - is taken at least to the hand's plus, where
 	// it hits harder and the equipment pass puts it on. An aim under the hand's
 	// plus left it in the bag for good.
+	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: every target of a cheap merchant shield / helmet stops at its ceiling.
+	BYTE GetPlayerBotRefineTargetUncapped(LPCHARACTER ch, LPITEM item);
 	BYTE GetPlayerBotRefineTarget(LPCHARACTER ch, LPITEM item)
+	{
+		const BYTE target = GetPlayerBotRefineTargetUncapped(ch, item);
+		if (!item || item->GetType() != ITEM_ARMOR ||
+				(item->GetSubType() != ARMOR_SHIELD && item->GetSubType() != ARMOR_HEAD))
+			return target;
+		return CapPlayerBotCheapNpcTarget(item, target);
+	}
+
+	BYTE GetPlayerBotRefineTargetUncapped(LPCHARACTER ch, LPITEM item)
 	{
 		// The sash's grail goes to PLAYERBOT_SASH_GRAIL_PLUS; the anvil's
 		// table and scrolls decide how (playerbot_sash.h).

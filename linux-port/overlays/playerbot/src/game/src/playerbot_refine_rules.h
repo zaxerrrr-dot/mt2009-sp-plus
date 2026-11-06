@@ -137,14 +137,19 @@ namespace playerbot_refine_rules
 
 	// MT2009_PLUS_BOT_REFINE_POLICY_V1 (the owner, 6 November 2026, section C of the bot economy brief):
 	//   "Zwoje Blogoslawienstwa tylko tam, gdzie szansa jest niska albo przedmiot jest bardzo drogi (poziom 75+)";
-	//   "tanie tarcze i helmy z NPC (Bojowa Tarcza, helmy poziomu 0) ulepszane BEZ zwojow do +6".
+	//   "tanie tarcze i helmy z NPC (Bojowa Tarcza, helmy poziomu 0) ulepszane BEZ zwojow do +6" (+5 since
+	//   MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1, below).
 	// A step of a cheap piece at good odds goes to the plain anvil: no scroll is spent on it and no rule holds it
 	// for one (the worn piece without a spare, the hand weapon without a backup, the scroll rule, the anvil table's
 	// ceiling). "Valuable" is what a burn really costs: level 75 and over, or rolled lines worth a scroll (the
 	// scroll-only weapon, four lines, a prize piece); such a piece keeps the old rules at every step.
 	const int POLICY_LOW_PROB = 70;			// a step under this many percent is "low": the scroll is worth it
 	const int POLICY_EXPENSIVE_LEVEL = 75;	// an item of this level or over is "very expensive"
-	const int POLICY_CHEAP_NPC_PLUS = 6;	// cheap merchant shields / helmets: plain anvil while landing on +6 or under
+	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1 (the owner, 6 November 2026: "ulepszac bez zwojow tylko do +5. A jak mu
+	// spali niech kupuje od razu kolejna"): +5 is such a piece's ceiling - its steps up to +5 go to the plain anvil,
+	// and no step past it is taken at all, with a scroll or without. A burnt one is bought again from the merchant
+	// at once (playerbot_economy.h). It was +6, with a plain step +5 -> +6.
+	const int POLICY_CHEAP_NPC_PLUS = 5;	// cheap merchant shields / helmets: plain anvil up to +5, and no further
 	const int POLICY_CHEAP_NPC_MAX_LEVEL = 0;	// "Bojowa Tarcza, helmy poziomu 0"
 
 	// Whether a scroll may go on this step at all.
@@ -157,6 +162,15 @@ namespace playerbot_refine_rules
 	inline bool IsCheapNpcPlainStep(bool cheapNpcPiece, bool valuableLines, int plus, int maxPlus)
 	{
 		return cheapNpcPiece && !valuableLines && plus < maxPlus;
+	}
+
+	// MT2009_PLUS_BOT_CHEAP_NPC_CEILING_V1: the most a refine target may ask of a cheap merchant piece.
+	inline int CheapNpcCeilingTarget(int target, bool cheapNpcPiece, bool valuableLines, int itemLevel,
+			int expensiveLevel, int maxPlus)
+	{
+		if (!cheapNpcPiece || valuableLines || itemLevel >= expensiveLevel)
+			return target;
+		return target < maxPlus ? target : maxPlus;
 	}
 
 	// The step goes to the plain anvil: no scroll, no hold for one.
