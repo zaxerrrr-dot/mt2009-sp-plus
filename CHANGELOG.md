@@ -17,6 +17,51 @@ every version here.
 
 ---
 
+## 2.42.0 — 2026-11-06 — boty szybciej się rozwijają, mniej śmierci, rynek z sensownymi cenami
+
+Nie wymaga nowego klienta – wystarczy klient **2.0.71**.
+
+### Boty – rozwój i expienie
+- Blokady expa botów nie trzymają już w nieskończoność: po 3 godzinach gry na tym samym progu bot rusza dalej (dotyczy progów botów-grinderów i Prawa Awansu).
+- Bot zwolniony z blokady nie jest od razu blokowany ponownie po kilku śmierciach – dostaje 3 godziny spokoju, także po zmianie kanału.
+- Prawo Awansu nie wymaga już przedmiotu, którego w grze nie ma – jeśli dla danego slotu nie istnieje lepszy przedmiot w zasięgu poziomu bota (np. hełm między 41 a 80), obecny jest uznawany za wystarczający.
+- Boty 60+ kupują i ulepszają zbroje 61/66 oraz biżuterię i buty 51–62 zamiast zostawać przy niższych.
+- Boty kupują i piją Atak i Obronę Boga Smoków przed polowaniem (od 50 poziomu, z ograniczonym budżetem).
+- Boty z zablokowanym expem wystawiają swoje Pierścienie Doświadczenia na rynek, żeby trafiły do botów, które expią.
+
+### Boty – śmierci
+- Boty wskrzeszają się automatycznie z 50% życia i many (gracze bez zmian).
+- Bot wstaje przy swoim ciele i przez kilka sekund, niewidoczny dla potworów, ucieka w najbliższe bezpieczne miejsce, a potem wraca na swój spot – koniec pętli „wstał, zginął, wstał, zginął”.
+- Po więcej niż 8 śmierciach na godzinę na jednej mapie bot schodzi na łatwiejszą mapę i zbiera tam materiały na dalszy rozwój.
+- Bot, który w rajdzie na bossa ginie 4 razy w ciągu 10 minut, opuszcza rajd i przez 30 minut nie dołącza do rajdów na bossów.
+- Lochy Małp wybierane tylko według poziomu: mapa 108 od 36, mapa 109 od 55 poziomu.
+
+### Boty – ulepszanie
+- Zwoje Błogosławieństwa boty używają tylko przy niskiej szansie powodzenia albo na drogich przedmiotach (od 75 poziomu) – nie marnują ich na +0→+3.
+- Tanie tarcze i hełmy od kupców boty ulepszają bez zwojów do +5 (nie wyżej). Gdy kowal spali taką tarczę lub hełm, bot od razu kupuje nowy.
+- Bot nie nosi przedmiotów do kowadła, gdy brakuje mu materiału – czeka, aż go zdobędzie.
+- Naprawiona pętla zakładania tarczy (boty 41–52 zmieniały tarczę co 1–3 sekundy) oraz podobne pętle na naszyjniku, butach i bransoletach.
+
+### Boty – materiały i pasy
+- Boty wiedzą, co i gdzie wypada – gdy czegoś brakuje im na rynku, wiedzą, na jakiej mapie i z jakiego potwora to zdobyć (z uwzględnieniem kary za różnicę poziomów).
+- Boty wyciągają z magazynów Zęby Orka, miedź i perły – nadwyżkę wystawiają na rynek, twórcy pasów biorą to, czego brakuje im do przepisu.
+- Boty, którym brakuje Zębów Orka, idą je farmić – tylko jeśli przy ich poziomie Ząb jeszcze wypada.
+- U Dozorcy boty mogą wymienić 15 Materiałów Rzemieślniczych albo 15 sztuk materiału, którego mają za dużo (np. Rybie Ości, Małże), na 1 brakujący ulepszacz wypadający na mapach do 75 poziomu.
+
+### Rynek botów
+- Ceny przy dużym zapasie spadają krok po kroku, aż towar zacznie schodzić z rynku (np. Rybia Ość, Małż) – bez patrzenia na inflację.
+- Inflacja rynku botów liczona jest tylko z yang botów – jeden bardzo bogaty gracz nie zawyża już cen wszystkim.
+
+### Boty – kanały, Zodiak
+- Boty w drużynie, w lochu albo w walce nie są przenoszone na inny kanał (poza wyjściem do M1 na zakupy); balans kanałów rusza dopiero przy większej różnicy.
+- Do Zodiaku wchodzą tylko drużyny o odpowiedniej sile (najsłabszy członek ok. 65+); słabsze chodzą do Wukonga.
+
+### Serwer
+- Dużo mniej spamu w logach botów (wcześniej 3,5–10 GB na dobę).
+- Baza danych nie zapisuje już wielogigabajtowych zrzutów pamięci przy awarii – po padnięciu od razu wstaje sama.
+
+---
+
 ## 2.41.0 — 2026-11-04 — mądrzejsze boty, mniej lagów, Grota Wygnańców V2
 
 Nie wymaga nowego klienta – wystarczy klient **2.0.71**.
