@@ -156,10 +156,112 @@ namespace
 		return false;
 	}
 
+	// ------------------------------------------------------------ the strength gate
+
+	// MT2009_PLUS_BOT_YDG_GATE_V1 (the owner, 6 November 2026, after the night's report: "musisz poprawic quest i ogolnie
+	// poprawic boty"): only parties that can win go to Swiatynia Wezy and Glebie; the weaker bots grow elsewhere first.
+	// The night's 21:54-05:45 runs (BOT_YDG run start gear_avg / mix "gNNN+P" = GetPlayerBotYdgGearLevel of the weapon,
+	// the armour and the helmet, and their plus):
+	//   * Swiatynia: 7 wins, every one a party of average gear 96-103 with 3-5 members of "g103+9"; the 05:20 wave of
+	//     g77-80 parties (none of 103+9) never broke the 3rd level's Metins (8.5M, regen 1% / 5 s) - timeouts;
+	//   * Glebie weak: 15 wins of ~50, all parties of 7-8 with average 99-103 and 6-8 of 103+9; no party of 4-5 ever won
+	//     (20+ wipes), nor the g80 parties of 05:20;
+	//   * Glebie strong: the one win - 8 of 103+9 (average 103); parties of 4-5 wiped or timed out.
+	// So: each member of the dungeon's floor (iBotGear), the party's average at iAvgGear or more and iStrong members of
+	// PLAYERBOT_YDG_GATE_STRONG_GEAR+PLAYERBOT_YDG_GATE_STRONG_PLUS (fewer in a smaller party: all of them). The party
+	// sizes are the rules' (playerbot_dungeon_runs_rules.h: Glebie 7 / 8 at the entrance). Every figure an env
+	// (PLAYERBOT_WEZE_GATE_*, PLAYERBOT_GLEBIE_WEAK_GATE_*, PLAYERBOT_GLEBIE_STRONG_GATE_*); PLAYERBOT_YDG_GATE=0 is off.
+	// The clock's calls draw from the bots of the average or more (strict), the training's and Dropki's parties are
+	// looked at whole (the floor each, the average and the strong ones together); an "auto" training party that falls
+	// short is not formed (its bots stay free for the rest of the game).
+	struct TPlayerBotYdgGate
+	{
+		int iBotGear, iAvgGear, iStrong;
+	};
+
+	bool GetPlayerBotYdgGate(const TPlayerBotDgRunDef& def, TPlayerBotYdgGate& g)
+	{
+		if (!def.szKey || def.bKind != DGRUN_KIND_YDG || GetPlayerBotYdgEnv("PLAYERBOT_YDG_GATE", 1, 0, 1) == 0)
+			return false;
+		if (!strcmp(def.szKey, "swiatynia"))
+		{
+			g.iBotGear = GetPlayerBotYdgEnv("PLAYERBOT_WEZE_GATE_BOT_GEAR", 80, 0, 250);
+			g.iAvgGear = GetPlayerBotYdgEnv("PLAYERBOT_WEZE_GATE_AVG_GEAR", 96, 0, 250);
+			g.iStrong = GetPlayerBotYdgEnv("PLAYERBOT_WEZE_GATE_STRONG", 3, 0, 8);
+			return true;
+		}
+		const int kind = GetPlayerBotGlebieKind(def);
+		if (kind == 1)
+		{
+			g.iBotGear = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_WEAK_GATE_BOT_GEAR", 80, 0, 250);
+			g.iAvgGear = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_WEAK_GATE_AVG_GEAR", 99, 0, 250);
+			g.iStrong = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_WEAK_GATE_STRONG", 6, 0, 8);
+			return true;
+		}
+		if (kind == 2)
+		{
+			g.iBotGear = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_STRONG_GATE_BOT_GEAR", 91, 0, 250);
+			g.iAvgGear = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_STRONG_GATE_AVG_GEAR", 101, 0, 250);
+			g.iStrong = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_STRONG_GATE_STRONG", 7, 0, 8);
+			return true;
+		}
+		return false;
+	}
+
+	// The night's "g103+9": the weapon, the armour and the helmet of 103 on average at +9 on average.
+	bool IsPlayerBotYdgGateStrong(LPCHARACTER ch)
+	{
+		int plus = 0;
+		const int gear = GetPlayerBotYdgGearLevel(ch, &plus);
+		return gear >= GetPlayerBotYdgEnv("PLAYERBOT_YDG_GATE_STRONG_GEAR", 103, 0, 250) &&
+				plus >= GetPlayerBotYdgEnv("PLAYERBOT_YDG_GATE_STRONG_PLUS", 9, 0, 15);
+	}
+
+	// One bot: the floor (strict: the party's average - the clock's draw, whose parties are random).
+	bool IsPlayerBotYdgGateBotOk(const TPlayerBotDgRunDef& def, LPCHARACTER ch, bool strict)
+	{
+		TPlayerBotYdgGate g;
+		if (!GetPlayerBotYdgGate(def, g))
+			return true;
+		if (!ch)
+			return false;
+		return GetPlayerBotYdgGearLevel(ch, NULL) >= (strict ? std::max(g.iBotGear, g.iAvgGear) : g.iBotGear);
+	}
+
+	// A party: the average and the strong ones (why: "gate(avg=.. strong=..)" when it falls short).
+	bool IsPlayerBotYdgGatePartyOk(const TPlayerBotDgRunDef& def, const std::vector<DWORD>& pids, std::string* why)
+	{
+		TPlayerBotYdgGate g;
+		if (!GetPlayerBotYdgGate(def, g))
+			return true;
+		int n = 0, sum = 0, strong = 0;
+		for (size_t i = 0; i < pids.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pids[i]);
+			if (!c)
+				continue;
+			++n;
+			sum += GetPlayerBotYdgGearLevel(c, NULL);
+			strong += IsPlayerBotYdgGateStrong(c) ? 1 : 0;
+		}
+		const int avg = n ? sum / n : 0;
+		const bool ok = n > 0 && avg >= g.iAvgGear && strong >= std::min(g.iStrong, n);
+		if (!ok && why && why->size() < 400)
+		{
+			char buf[128];
+			snprintf(buf, sizeof(buf), "%s_gate(n=%d,avg=%d/%d,strong=%d/%d)", def.szKey, n, avg, g.iAvgGear, strong, std::min(g.iStrong, n));
+			*why += std::string(why->empty() ? "" : ",") + buf;
+		}
+		return ok;
+	}
+
 	// ------------------------------------------------------------ what the guard asks
 
 	bool IsPlayerBotGlebieEntryOk(const TPlayerBotDgRunDef& def, LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_YDG_GATE_V1: the floor of the gear (Swiatynia Wezy's too - this is every YDG row's check)
+		if (!IsPlayerBotYdgGateBotOk(def, ch, false))
+			return false;
 		const int kind = GetPlayerBotGlebieKind(def);
 		if (!kind)
 			return true;
@@ -168,14 +270,19 @@ namespace
 		return kind == 1 || ch->GetQuestFlag("ymaps3_glebie.weak_done") >= PLAYERBOT_GLEBIE_WEAK_NEEDED;
 	}
 
-	// A training party's members for Glebie (the others' rows: true).
+	// A training (Dropki) party's members for Glebie and Swiatynia Wezy (the others' rows: true).
 	bool IsPlayerBotGlebiePartyOk(int def, const std::vector<playerbot_dgrun::TCand>& free, std::string& why)
 	{
-		if (def < 0 || def >= PLAYERBOT_DGRUN_DEF_COUNT || !GetPlayerBotGlebieKind(PLAYERBOT_DGRUN_DEFS[def]))
+		if (def < 0 || def >= PLAYERBOT_DGRUN_DEF_COUNT)
+			return true;
+		TPlayerBotYdgGate g;
+		if (!GetPlayerBotGlebieKind(PLAYERBOT_DGRUN_DEFS[def]) && !GetPlayerBotYdgGate(PLAYERBOT_DGRUN_DEFS[def], g))
 			return true;
 		bool ok = true;
+		std::vector<DWORD> pids;
 		for (size_t i = 0; i < free.size(); ++i)
 		{
+			pids.push_back(free[i].pid);
 			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(free[i].pid);
 			if (c && IsPlayerBotGlebieEntryOk(PLAYERBOT_DGRUN_DEFS[def], c))
 				continue;
@@ -183,18 +290,67 @@ namespace
 			if (why.size() < 400)
 				why += std::string(why.empty() ? "" : ",") + (c ? c->GetName() : "?") + ":" + PLAYERBOT_DGRUN_DEFS[def].szKey + "_req";
 		}
+		// MT2009_PLUS_BOT_YDG_GATE_V1: the party together
+		if (ok && !IsPlayerBotYdgGatePartyOk(PLAYERBOT_DGRUN_DEFS[def], pids, &why))
+			ok = false;
 		return ok;
 	}
 
 	// An "auto" line of Glebie alone takes the bots that may go in (120, a Champion level).
+	// MT2009_PLUS_BOT_YDG_GATE_V1: a line of the gated rows alone (Glebie, Swiatynia Wezy) takes the bots that one of
+	// them lets in (the gear's floor; the weak Glebie for the strong one's weak runs).
 	bool IsPlayerBotGlebieAutoOk(LPCHARACTER ch, const std::vector<int>& defs)
 	{
 		if (defs.empty())
 			return true;
+		TPlayerBotYdgGate g;
 		for (size_t i = 0; i < defs.size(); ++i)
-			if (defs[i] < 0 || defs[i] >= PLAYERBOT_DGRUN_DEF_COUNT || !GetPlayerBotGlebieKind(PLAYERBOT_DGRUN_DEFS[defs[i]]))
+			if (defs[i] < 0 || defs[i] >= PLAYERBOT_DGRUN_DEF_COUNT ||
+					(!GetPlayerBotGlebieKind(PLAYERBOT_DGRUN_DEFS[defs[i]]) && !GetPlayerBotYdgGate(PLAYERBOT_DGRUN_DEFS[defs[i]], g)))
 				return true;
-		return ch && (int)ch->GetLevel() >= PLAYERBOT_GLEBIE_MIN_LEVEL && ch->GetConquerorLevel() >= 1;
+		if (!ch)
+			return false;
+		for (size_t i = 0; i < defs.size(); ++i)
+		{
+			const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[defs[i]];
+			if (GetPlayerBotGlebieKind(def) == 2)
+			{
+				// the strong one's party goes weak while a member lacks the weak wins - the strong floor of the gear
+				if (IsPlayerBotYdgGateBotOk(def, ch, false) && (int)ch->GetLevel() >= PLAYERBOT_GLEBIE_MIN_LEVEL &&
+						ch->GetConquerorLevel() >= 1)
+					return true;
+			}
+			else if (IsPlayerBotGlebieEntryOk(def, ch))
+				return true;
+		}
+		return false;
+	}
+
+	// An "auto" party of the gated rows alone that none of them lets in (the party's average, its strong ones) is not
+	// formed - true: it may go somewhere of its line (or the line has an ungated row).
+	bool IsPlayerBotYdgGateAutoPartyOk(const std::vector<int>& defs, const std::vector<DWORD>& pids, std::string& why)
+	{
+		TPlayerBotYdgGate g;
+		bool weakOrOther = false;
+		for (size_t i = 0; i < defs.size(); ++i)
+		{
+			if (defs[i] < 0 || defs[i] >= PLAYERBOT_DGRUN_DEF_COUNT)
+				return true;
+			const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[defs[i]];
+			if (!GetPlayerBotYdgGate(def, g))
+				return true;
+			// the strong Glebie only after the weak runs - beside the weak one its party is judged by the weak one's gate
+			if (GetPlayerBotGlebieKind(def) == 2)
+				continue;
+			weakOrOther = true;
+			if (IsPlayerBotYdgGatePartyOk(def, pids, &why))
+				return true;
+		}
+		if (!weakOrOther)	// a line of the strong Glebie alone
+			for (size_t i = 0; i < defs.size(); ++i)
+				if (IsPlayerBotYdgGatePartyOk(PLAYERBOT_DGRUN_DEFS[defs[i]], pids, &why))
+					return true;
+		return false;
 	}
 
 	// At the way in (the bot in the instance already): the quest's players and kind, and the three keys.
@@ -495,18 +651,66 @@ namespace
 		if (gr.iEggWanted <= 0)
 			return;
 		// Ninja, Sura, Warrior; never the leader or a healing Shaman
+		// MT2009_PLUS_BOT_GLEBIE_EGGS_V2: within a class the strongest first (ScorePlayerBotYdg - the eggs are 4.5 / 6 M)
 		static const int order[3] = { JOB_ASSASSIN, JOB_SURA, JOB_WARRIOR };
 		for (int o = 0; o < 3 && (int)gr.eggBots.size() < gr.iEggWanted; ++o)
-			for (size_t i = 0; i < run.members.size() && (int)gr.eggBots.size() < gr.iEggWanted; ++i)
+		{
+			std::vector<std::pair<long long, DWORD> > cands;
+			for (size_t i = 0; i < run.members.size(); ++i)
 			{
 				const DWORD pid = run.members[i];
 				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pid);
 				if (!c || pid == run.dwLeader || gr.eggBots.count(pid) || (int)(c->GetJob() % 4) != order[o] ||
 						c->GetMapIndex() != run.lInstance)
 					continue;
-				gr.eggBots.insert(pid);
-				sys_log(0, "BOT_GLEBIE: egg duty run=%d name=%s job=%u", run.iId, c->GetName(), (unsigned int)c->GetJob());
+				cands.push_back(std::make_pair(ScorePlayerBotYdg(c), pid));
 			}
+			std::sort(cands.begin(), cands.end(), [](const std::pair<long long, DWORD>& a, const std::pair<long long, DWORD>& b)
+					{ return a.first > b.first; });
+			for (size_t i = 0; i < cands.size() && (int)gr.eggBots.size() < gr.iEggWanted; ++i)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(cands[i].second);
+				gr.eggBots.insert(cands[i].second);
+				sys_log(0, "BOT_GLEBIE: egg duty run=%d name=%s job=%u gear=%d", run.iId, c ? c->GetName() : "?",
+						c ? (unsigned int)c->GetJob() : 0, c ? GetPlayerBotYdgGearLevel(c, NULL) : 0);
+			}
+		}
+	}
+
+	// MT2009_PLUS_BOT_GLEBIE_EGGS_V2: the egg killers' egg - the most hurt one (the least health left), ties the nearest:
+	// two killers on one egg finish it (an egg dead delays the Deadly Cold by 20 s and takes one off the berserk count),
+	// two on two eggs spread their blows and the night's eggs_max grew 3 a minute unbroken.
+	LPCHARACTER FindPlayerBotGlebieEggFocus(LPCHARACTER ch, DWORD race)
+	{
+		LPSECTREE_MAP pMap = ch ? SECTREE_MANAGER::instance().GetMap(ch->GetMapIndex()) : NULL;
+		if (!pMap)
+			return NULL;
+		struct FEgg
+		{
+			DWORD race;
+			long map, x, y;
+			long long hp;
+			int dist;
+			LPCHARACTER found;
+			void operator()(LPENTITY ent)
+			{
+				if (!ent || !ent->IsType(ENTITY_CHARACTER))
+					return;
+				LPCHARACTER c = (LPCHARACTER)ent;
+				if (c->IsPC() || c->IsDead() || c->GetRaceNum() != race || c->GetMapIndex() != map)
+					return;
+				const long long h = (long long)c->GetHP();
+				const int dd = DISTANCE_APPROX(c->GetX() - x, c->GetY() - y);
+				if (!found || h < hp || (h == hp && dd < dist))
+				{
+					found = c;
+					hp = h;
+					dist = dd;
+				}
+			}
+		} f = { race, ch->GetMapIndex(), ch->GetX(), ch->GetY(), 0, 0, NULL };
+		pMap->for_each(f);
+		return f.found;
 	}
 
 	// Through a GOTO portal of the instance - what its warp event does for a person standing on it.
@@ -581,7 +785,7 @@ namespace
 		LPCHARACTER threat = FindPlayerBotDgRunThreat(ch, run.iId);
 		if (threat && threat->GetVictim() == ch)
 			return FightPlayerBotTowerObjective(ch, state, threat, dwNow);
-		LPCHARACTER egg = FindPlayerBotGlebieRace(ch, eggRace);
+		LPCHARACTER egg = FindPlayerBotGlebieEggFocus(ch, eggRace);	// MT2009_PLUS_BOT_GLEBIE_EGGS_V2: one egg at a time
 		if (egg && IsPlayerBotPdgFoe(ch, egg))
 		{
 			PlayerBotLogThrottled("glebie_egg", dwNow, "BOT_GLEBIE: egg run=%d name=%s eggs=%d", run.iId, ch->GetName(), d->GetFlag("eggs"));
@@ -620,7 +824,9 @@ namespace
 		gr = TPlayerBotGlebieRun();
 		gr.iKind = kind;
 		const int env = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_EGG_BOTS", -1, -1, 3);
-		gr.iEggWanted = env >= 0 ? env : (run.members.size() >= 6 ? 1 : 0);
+		// MT2009_PLUS_BOT_GLEBIE_EGGS_V2 (6 November): one killer alone broke next to no egg (eggs_max 33-77 in the
+		// long fights, 3 a minute unbroken) - two in a party of seven or more (the gated parties), focused on one egg.
+		gr.iEggWanted = env >= 0 ? env : (run.members.size() >= 7 ? 2 : (run.members.size() >= 5 ? 1 : 0));
 		const champion::SungmaRequirement* req = champion::MapRequirement(PLAYERBOT_GLEBIE_MAP);
 		std::string mix;
 		int meets = 0;

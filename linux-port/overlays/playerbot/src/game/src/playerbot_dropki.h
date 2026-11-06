@@ -99,8 +99,10 @@ namespace
 		{ 8, "nemere_pb", 10, 5, 12, NULL },
 		{ 9, "jotun_pb", 10, 5, 12, NULL },
 		{ 10, "swiatynia", 10, 5, 18, NULL },
-		{ 11, "glebie_slaby", 10, 5, 20, NULL },
-		{ 12, "glebie_silny", 10, 5, 26, "glebie_slaby" },
+		// MT2009_PLUS_BOT_YDG_GATE_V1: Glebie in one party of 8 each (the rules' 7 / 8 at the entrance; 10 in parties of 8
+		// would leave a pair that never goes)
+		{ 11, "glebie_slaby", 8, 8, 20, NULL },
+		{ 12, "glebie_silny", 8, 8, 26, "glebie_slaby" },
 		{ 13, "gnolle", 10, 5, 16, NULL },
 		{ 14, "meley", 10, 6, 0, NULL },
 		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (size 1), the bots' runner playerbot_dgrun_wieza.h
