@@ -6092,6 +6092,37 @@ namespace
 	int s_iPlayerBotChannelBalanceFrom = 0;
 	int s_iPlayerBotChannelBalanceTo = 0;
 
+	// MT2009_PLUS_CHANNEL_BUSY_PIN_V1 / MT2009_PLUS_CHANNEL_HYSTERESIS_V1 (the
+	// owner, 6 November 2026): the coordinator moves nobody in a party, a
+	// dungeon or a fight - only the bot's own way to the shop channel to shop
+	// (its request) still goes - and its easing and evening out keep a band
+	// (playerbot_channel_rules.h). PLAYERBOT_CHANNEL_BUSY_PIN=0 and
+	// PLAYERBOT_CHANNEL_HYSTERESIS=0 in the environment switch them off.
+	bool IsPlayerBotChannelEnvOn(const char* name, int& cache)
+	{
+		if (cache < 0)
+		{
+			const char* v = std::getenv(name);
+			cache = v && *v == '0' ? 0 : 1;
+			sys_log(0, "PLAYERBOT_CHANNEL: %s %s", name, cache ? "on" : "off");
+		}
+		return cache == 1;
+	}
+	bool IsPlayerBotChannelBusyPinOn()
+	{
+		static int s_iOn = -1;
+		return IsPlayerBotChannelEnvOn("PLAYERBOT_CHANNEL_BUSY_PIN", s_iOn);
+	}
+	bool IsPlayerBotChannelHysteresisOn()
+	{
+		static int s_iOn = -1;
+		return IsPlayerBotChannelEnvOn("PLAYERBOT_CHANNEL_HYSTERESIS", s_iOn);
+	}
+	bool s_bPlayerBotChannelDraining = false;
+	bool s_bPlayerBotChannelBalancing = false;
+	// A fight is still on this long after the bot's last blow.
+	const DWORD PLAYERBOT_CHANNEL_FIGHT_PIN_MS = 20000;
+
 	struct TPlayerBotChannelSql
 	{
 		int iKind;
@@ -6401,6 +6432,7 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 	std::vector<DWORD> vecPid;
 	std::vector<long> vecMap;
 	std::vector<int> vecCost;
+	unsigned int busyPins[3] = { 0, 0, 0 };	// MT2009_PLUS_CHANNEL_BUSY_PIN_V1: party, dungeon, fight
 	vecPid.reserve(m_mapBots.size());
 	vecMap.reserve(m_mapBots.size());
 	vecCost.reserve(m_mapBots.size());
@@ -6434,6 +6466,20 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 				(state && (IsPlayerBotOnTowerBusiness(ch, *state) || state->dwGuildWarEnemyGID != 0 ||
 					state->bWorldEventKind != 0)) ||
 				IsPlayerBotKVHeld(pid); // MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a trip, a raid's raider or called defender
+		// MT2009_PLUS_CHANNEL_BUSY_PIN_V1: any party, a dungeon run (the Zodiac's and the lairs' too) and a
+		// fight (a victim, or a blow in the last PLAYERBOT_CHANNEL_FIGHT_PIN_MS) pin the bot where it is.
+		if (!pinned && IsPlayerBotChannelBusyPinOn())
+		{
+			const char* why = ch->GetParty() ? "party" :
+					(IsPlayerBotOnDungeonRun(pid) || (state && IsPlayerBotInDungeonBusiness(ch, *state))) ? "dungeon" :
+					(ch->GetVictim() || (state && state->dwLastCombatActionTime != 0 &&
+						dwNow - state->dwLastCombatActionTime < PLAYERBOT_CHANNEL_FIGHT_PIN_MS)) ? "fight" : NULL;
+			if (why)
+			{
+				pinned = true;
+				++busyPins[why[0] == 'p' ? 0 : why[0] == 'd' ? 1 : 2];
+			}
+		}
 #if defined(ENABLE_IKASHOP_RENEWAL)
 		auto stand = ikashop::GetManager().GetShopByOwnerID(pid);
 		liveStand = stand && stand->GetDuration() != 0;
@@ -6456,6 +6502,10 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 		vecCost.push_back(playerbot_channel_rules::MoveCost(busy, liveStand, pinned,
 				IsPlayerBotVillageMap(ch->GetMapIndex())));
 	}
+	if (busyPins[0] + busyPins[1] + busyPins[2] > 0)
+		PlayerBotLogThrottled("channel_busy_pin", dwNow,
+				"PLAYERBOT_CHANNEL: busy pin census channel=%u bots=%u party=%u dungeon=%u fight=%u",
+				(unsigned int)g_bChannel, (unsigned int)vecPid.size(), busyPins[0], busyPins[1], busyPins[2]);
 
 	for (size_t off = 0; off < vecPid.size(); off += PLAYERBOT_CHANNEL_CHUNK)
 	{
@@ -6652,8 +6702,15 @@ void CPlayerBotManager::OnChannelCensus(void* pvMsg)
 	// and how many the off-shop channels trade to even out.
 	seen[1] = onShopChannel;
 	s_iPlayerBotChannelOutTarget = playerbot_channel_rules::LeastLoadedOtherChannel(seen, m_iBotChannels);
+	// MT2009_PLUS_CHANNEL_HYSTERESIS_V1: the evening out and the easing keep their band.
+	const bool hyst = IsPlayerBotChannelHysteresisOn();
+	const bool wasBalancing = s_bPlayerBotChannelBalancing;
 	s_uPlayerBotChannelBalanceWant = playerbot_channel_rules::PlanOtherChannelBalance(seen, m_iBotChannels,
-			total, s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo);
+			total, s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo,
+			hyst ? &s_bPlayerBotChannelBalancing : NULL);
+	if (hyst && wasBalancing != s_bPlayerBotChannelBalancing)
+		sys_log(0, "PLAYERBOT_CHANNEL: hysteresis balance %s total=%u ch2=%u ch3=%u ch4=%u",
+				s_bPlayerBotChannelBalancing ? "starts" : "ends", total, seen[2], seen[3], seen[4]);
 	if (!r || total == 0 || gateAge < PLAYERBOT_CHANNEL_BATCH_GATE_SECONDS)
 	{
 		m_bChannelCoordInFlight = false;
@@ -6662,8 +6719,13 @@ void CPlayerBotManager::OnChannelCensus(void* pvMsg)
 
 	const int capPercent = playerbot_channel_rules::ShopChannelCapPercent(m_iSecondChannelShare);
 	const int targetPercent = playerbot_channel_rules::ShopChannelTargetPercent(m_iSecondChannelShare);
+	const bool wasDraining = s_bPlayerBotChannelDraining;
 	const playerbot_channel_rules::TChannelMovePlan plan = playerbot_channel_rules::PlanChannelMoves(
-			total, onShopChannel, waiting, capPercent, targetPercent);
+			total, onShopChannel, waiting, capPercent, targetPercent,
+			hyst ? &s_bPlayerBotChannelDraining : NULL);	// MT2009_PLUS_CHANNEL_HYSTERESIS_V1
+	if (hyst && wasDraining != s_bPlayerBotChannelDraining)
+		sys_log(0, "PLAYERBOT_CHANNEL: hysteresis easing %s total=%u shop_channel=%u target=%u%%",
+				s_bPlayerBotChannelDraining ? "starts" : "ends", total, onShopChannel, (unsigned int)targetPercent);
 	const unsigned int cap = total * (unsigned int)capPercent / 100U;
 	unsigned int batch = (total * playerbot_channel_rules::MOVE_BATCH_PERCENT + 99U) / 100U;
 	if (batch < 1)

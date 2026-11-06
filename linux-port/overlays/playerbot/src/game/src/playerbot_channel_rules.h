@@ -159,8 +159,19 @@ namespace playerbot_channel_rules
 	const unsigned int MOVE_BATCH_PERCENT = 3;
 	const unsigned int MOVE_DRAIN_PERCENT = 2;
 
+	// MT2009_PLUS_CHANNEL_HYSTERESIS_V1 (the owner, 6 November 2026): the easing
+	// back to the target and the evening out of the off-shop channels start
+	// only past a wider band than the one they stop at, so a channel a bot or two
+	// over its mark is not drained and refilled gate after gate.
+	const unsigned int HYST_START_PERCENT = 5;	// the easing starts this far over the target
+	const unsigned int HYST_BALANCE_START_PERCENT = 5;	// the evening out starts at this gap
+	const unsigned int HYST_BALANCE_START_MIN = 6;
+
+	// `draining` (MT2009_PLUS_CHANNEL_HYSTERESIS_V1, NULL: no hysteresis) is the
+	// caller's memory of an easing under way: it starts over target + the band
+	// and goes on down to the target.
 	inline TChannelMovePlan PlanChannelMoves(unsigned int total, unsigned int onShopChannel,
-			unsigned int waiting, int capPercent, int targetPercent)
+			unsigned int waiting, int capPercent, int targetPercent, bool* draining = 0)
 	{
 		TChannelMovePlan plan = { MOVE_NONE, 0, 0, false };
 		if (total == 0)
@@ -185,11 +196,24 @@ namespace playerbot_channel_rules
 			}
 			else if (onShopChannel > target)
 			{
+				if (draining)
+				{
+					unsigned int band = total * HYST_START_PERCENT / 100U;
+					if (band < 2)
+						band = 2;
+					if (!*draining && onShopChannel <= target + band)
+						return plan;
+					*draining = true;
+				}
 				plan.kind = MOVE_DRAIN;
 				plan.count = onShopChannel - target < drainMost ? onShopChannel - target : drainMost;
 			}
+			if (draining && onShopChannel <= target)
+				*draining = false;
 			return plan;
 		}
+		if (draining)
+			*draining = false;
 		const unsigned int room = cap > onShopChannel ? cap - onShopChannel : 0;
 		if (room > 0)
 		{
@@ -365,8 +389,10 @@ namespace playerbot_channel_rules
 	// emptiest - at most a swap batch a gate, and only while they differ by
 	// more than 2% of the bots that play (at least 3). Returns how many;
 	// from/to are the channels.
+	// `balancing` (MT2009_PLUS_CHANNEL_HYSTERESIS_V1, NULL: no hysteresis): an
+	// evening out starts at a gap of 5% (at least 6) and goes on down to the 2%.
 	inline unsigned int PlanOtherChannelBalance(const unsigned int* seen, int channels,
-			unsigned int total, int& from, int& to)
+			unsigned int total, int& from, int& to, bool* balancing = 0)
 	{
 		from = 0;
 		to = 0;
@@ -388,7 +414,20 @@ namespace playerbot_channel_rules
 		if (threshold < 3)
 			threshold = 3;
 		if (gap <= threshold)
+		{
+			if (balancing)
+				*balancing = false;
 			return 0;
+		}
+		if (balancing && !*balancing)
+		{
+			unsigned int start = total * HYST_BALANCE_START_PERCENT / 100U;
+			if (start < HYST_BALANCE_START_MIN)
+				start = HYST_BALANCE_START_MIN;
+			if (gap <= start)
+				return 0;
+			*balancing = true;
+		}
 		unsigned int batch = (total * MOVE_BATCH_PERCENT + 99U) / 100U;
 		if (batch < 1)
 			batch = 1;
