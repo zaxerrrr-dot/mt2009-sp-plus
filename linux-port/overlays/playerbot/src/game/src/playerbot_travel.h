@@ -667,6 +667,9 @@ namespace
 	// Shinsoo 500 characters and not one horse, Jinno 500 and not one, Chunjo
 	// the only kingdom levelling any ("tylko boty z chunjo leveluja konia",
 	// RetroGracz38; "bo z innych nie wchodza do lochu dlatego", NerrVoVy).
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: a Monkey map the bot loops on (playerbot_deathloop.h).
+	bool IsPlayerBotDeathloopMonkeyBlocked(LPCHARACTER ch, long map);
+
 	long GetPlayerBotMonkeyMapFor(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -676,11 +679,20 @@ namespace
 			return 0;
 		const long own = playerbot_empire_rules::GetMonkeyEasyMap(GetPlayerBotRoadsEmpire(ch));
 		if (band == PLAYERBOT_MONKEY_BAND_EASY)
-			return IsPlayerBotMapHostedHere(own) ? own : 0;
-		const long shared = band == PLAYERBOT_MONKEY_BAND_MEDIUM
+			return IsPlayerBotMapHostedHere(own) && !IsPlayerBotDeathloopMonkeyBlocked(ch, own) ? own : 0;
+		long shared = band == PLAYERBOT_MONKEY_BAND_MEDIUM
 				? PLAYERBOT_MAP_MONKEY_MEDIUM : PLAYERBOT_MAP_MONKEY_HARD;
-		if (IsPlayerBotMapHostedHere(shared))
+		// MT2009_PLUS_BOT_DEATHLOOP_V1: the bands are the level's alone (GetPlayerBotMonkeyMinLevel: 108 from 36, 109
+		// from 55); a map the bot loops on (more than eight deaths in an hour, playerbot_deathloop.h) gives way to the
+		// next lower one for the avoid's time
+		if (shared == PLAYERBOT_MAP_MONKEY_HARD && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))
+			shared = PLAYERBOT_MAP_MONKEY_MEDIUM;
+		if (shared == PLAYERBOT_MAP_MONKEY_MEDIUM && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))
+			shared = 0;
+		if (shared != 0 && IsPlayerBotMapHostedHere(shared))
 			return shared;
+		if (IsPlayerBotDeathloopMonkeyBlocked(ch, own))
+			return 0;
 		// The harder two are on the core that carries Chunjo, so under the
 		// default split layout the other two kingdoms have only their own
 		// rooms - see PLAYERBOT_MONKEY_EASY_FALLBACK_MAX_LEVEL for how long
@@ -1248,6 +1260,9 @@ namespace
 		return 0;
 	}
 
+	// MT2009_PLUS_BOT_SURVIVE_V1: the easier map of a bot dying on the draw's (playerbot_survive.h).
+	long ApplyPlayerBotSurviveStepDown(LPCHARACTER ch, long map);
+
 	// The map whose ordinary spawns still sit inside this bot's useful level
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
@@ -1306,6 +1321,12 @@ namespace
 					map = hunt70;
 			}
 		}
+		// MT2009_PLUS_BOT_SURVIVE_V1: several deaths an hour on the draw's map - an easier one for a while
+		// (playerbot_survive.h); an errand's map stays as it was named.
+		if (map != 0 && map != GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) &&
+				map != GetPlayerBotGuildErrandMap(ch) && GetPlayerBotArezzoFrontier(ch) == 0 &&
+				!IsPlayerBotOnBlackSteedTrial(ch) && !IsPlayerBotOnMilitaryHorseTrial(ch))
+			map = ApplyPlayerBotSurviveStepDown(ch, map);
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))

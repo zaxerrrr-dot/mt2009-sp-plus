@@ -223,6 +223,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // lines are in their terms: what heads a +7..+9 piece or a soul stone is its
 // asking price.
 #include "playerbot_shop_name_rules.h"
+#include "playerbot_market_clearing.h" // MT2009_PLUS_BOT_MARKET_CLEARING_V1: the supply-driven clearing ask (before the town's prices)
 #include "playerbot_town.h"
 #include "playerbot_alchemy.h"
 #include "playerbot_rank_fruit_market.h" // MT2009_PLUS_RANK_FRUIT_MARKET_V1: the eaters buy the rank fruit of their total off the counters
@@ -401,6 +402,12 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_MATS_FLOW_V1 (include): the materials on the move - the swap at the Dozorca, the scarce materials and
 // the belts' out of the boxes, the farm map of a material the market cannot sell the bot - after the drop knowledge.
 #include "playerbot_mats_flow.h"
+// MT2009_PLUS_BOT_SURVIVE_V1 (include): tier gear 60+, the step down after deaths, exp rings to the market, Dragon God
+// boosters through the ItemShop - after the market, the ItemShop and the env reader of playerbot_yohara_bots.h
+#include "playerbot_survive.h"
+// MT2009_PLUS_BOT_DEATHLOOP_V1 (include): the revive by the body and the hidden flee to a safe point, the loop's map
+// avoided, the Monkey maps' level bands, the death pin cleared on the easier map - after the step down it feeds
+#include "playerbot_deathloop.h"
 
 namespace
 {
@@ -7809,6 +7816,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// Rings and gloves on the clock while the bot hunts and off in town,
 		// and the uniques a bot never wears off for good.
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
+		// MT2009_PLUS_BOT_SURVIVE_V1: the Dragon God boosters bought and drunk before the hunt, the death loop's pin, the
+		// censuses (playerbot_survive.h, playerbot_deathloop.h).
+		ManagePlayerBotSurvive(ch, state, dwNow);
 		// The gear pass, early. It used to sit at the bottom of the tick, past
 		// the stall, the loot, the horse, the fishing, the travel, the town
 		// visit and the wander, each of which claims the tick - so a bot that

@@ -474,6 +474,14 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_SURVIVE_V1: the tier gear of the bots of 60+ - body armour 61 / 66, jewellery 54-62, boots 51+ -
+	// bought to be refined though its clean score is under the owned piece's (playerbot_survive.h).
+	void ReadPlayerBotSurviveOwnedLevels(LPCHARACTER ch, int levels[PLAYERBOT_ARMOUR_UPGRADE_SLOTS]);
+	long long GetPlayerBotSurviveTierScore(LPCHARACTER ch, int slot, int candLevel, long long score, long long ownedScore,
+			int ownedLevel);
+	long long GetPlayerBotSurviveTierScoreFor(LPCHARACTER ch, int slot, int candLevel, long long score, long long ownedScore);
+	void NotePlayerBotSurviveTierPick(LPCHARACTER ch, DWORD vnum, int slot, long long price);
+
 	// The best piece of each slot this bot owns that it could wear now: the
 	// worn one, else the best of the bag, by the equipment score. onlySlot
 	// reads one slot.
@@ -631,7 +639,10 @@ namespace
 		ReadPlayerBotBestOwnedArmour(ch, owned, slot);
 		if (owned.item[slot] == offer)
 			return false;
-		const long long score = GetPlayerBotEquipmentScore(offer, ch);
+		long long score = GetPlayerBotEquipmentScore(offer, ch);
+		// MT2009_PLUS_BOT_SURVIVE_V1: a piece of the 60+ tier over every one of the slot the bot owns
+		if (owned.item[slot])
+			score = GetPlayerBotSurviveTierScoreFor(ch, slot, (int)offer->GetLevelLimit(), score, owned.score[slot]);
 		if (owned.item[slot] &&
 				score * 100 < owned.score[slot] * (100 + PLAYERBOT_ARMOUR_UPGRADE_MIN_GAIN_PERCENT))
 			return false;
@@ -709,6 +720,8 @@ namespace
 			return look;
 		TPlayerBotOwnedArmour owned;
 		ReadPlayerBotBestOwnedArmour(ch, owned);
+		int ownedLevels[PLAYERBOT_ARMOUR_UPGRADE_SLOTS];	// MT2009_PLUS_BOT_SURVIVE_V1
+		ReadPlayerBotSurviveOwnedLevels(ch, ownedLevels);
 		long long bestValue = 0;
 		const unsigned long long lo = PlayerBotMarketLocalKey(firstVillage, 0);
 		const unsigned long long hi = PlayerBotMarketLocalKey(firstVillage, 0xFFFFFFFFU);
@@ -721,7 +734,9 @@ namespace
 				continue;
 			const int slot = GetPlayerBotArmourUpgradeSlot(proto->bSubType);
 			const long long ownedScore = owned.item[slot] ? owned.score[slot] : 0;
-			const long long score = GetPlayerBotArmourProtoScore(ch, proto);
+			// MT2009_PLUS_BOT_SURVIVE_V1: the 60+ tier's piece weighed as an upgrade of the owned one
+			const long long score = GetPlayerBotSurviveTierScore(ch, slot, GetPlayerBotProtoLevelLimit(proto),
+					GetPlayerBotArmourProtoScore(ch, proto), ownedScore, ownedLevels[slot]);
 			if (owned.item[slot] && score * 100 < ownedScore * (100 + PLAYERBOT_ARMOUR_UPGRADE_MIN_GAIN_PERCENT))
 				continue;
 			const long long gain = GetPlayerBotArmourGainPercent(score, ownedScore);

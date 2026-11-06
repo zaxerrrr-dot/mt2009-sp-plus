@@ -21,7 +21,7 @@
 //     map the bot stands on x4, a map this core hosts x2.
 //   * the need pass (ManagePlayerBotDropKnow, PLAYERBOT_DROPKNOW_PASS_BOTS bots every PLAYERBOT_DROPKNOW_PASS_MS, each
 //     bot every PLAYERBOT_DROPKNOW_NEED_MS): what the bot's anvil lacks (CollectPlayerBotWantedMaterials) and its belt
-//     recipe (CollectPlayerBotBeltMissing), the first PLAYERBOT_DROPKNOW_NEEDS_A_BOT of them, each to
+//     and talisman recipes (CollectPlayerBotCraftMissing), the first PLAYERBOT_DROPKNOW_NEEDS_A_BOT of them, each to
 //       "bag" (enough) / "market" (the ledger has it and the bot can pay the last ask - playerbot_mats_flow.h) /
 //       "farm:<map>/<mob>" (a farm order for PLAYERBOT_DROPKNOW_FARM_MS: the monster is a material target of the
 //       bot's fight, and for PLAYERBOT_MATS_FARM_VNUMS the hunting map - playerbot_mats_flow.h) / "none".
@@ -361,11 +361,11 @@ namespace
 			for (std::set<DWORD>::const_iterator it = refine.begin(); it != refine.end(); ++it)
 				if (!IsPlayerBotSafeRefineScroll(*it) && seen.insert(*it).second)
 					needs.push_back(std::make_pair(*it, std::make_pair(1, "refine")));
-			std::map<DWORD, int> belt;
-			CollectPlayerBotBeltMissing(ch, belt);
-			for (std::map<DWORD, int>::const_iterator it = belt.begin(); it != belt.end(); ++it)
-				if (seen.insert(it->first).second)
-					needs.push_back(std::make_pair(it->first, std::make_pair(it->second, "belt")));
+			std::map<DWORD, int> craft;	// the belt's and the talisman's (playerbot_workshop.h)
+			CollectPlayerBotCraftMissing(ch, craft, 1);
+			for (std::map<DWORD, int>::const_iterator it = craft.begin(); it != craft.end(); ++it)
+				if (it->second > 0 && seen.insert(it->first).second)
+					needs.push_back(std::make_pair(it->first, std::make_pair(it->second, "craft")));
 		}
 		// a farm order is this pass's, the old one goes when it ran out
 		std::map<DWORD, TPlayerBotDkFarm>::iterator oldFarm = s_mapPlayerBotDkFarm.find(pid);

@@ -24,6 +24,10 @@ services:
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-db"
     restart: unless-stopped
     stop_grace_period: 60s
+    # No core files: a crashing mariadbd writing a multi-GB core under memory
+    # pressure hung unkillable for hours and blocked shutdown (6 Nov 2026).
+    ulimits:
+      core: 0
 
     environment:
       MARIADB_ROOT_PASSWORD: "${M2_DB_ROOT_PASSWORD:?set M2_DB_ROOT_PASSWORD in .env}"
@@ -248,6 +252,16 @@ services:
       # reach the second channel's ports.
       M2_PLAYERBOT_CH2: "${M2_PLAYERBOT_CH2:-0}"
       PLAYERBOT_CH2_SHARE: "${PLAYERBOT_CH2_SHARE:-40}"
+      # MT2009_PLUS_BOT_MARKET_CLEARING_V1: the supply-driven clearing ask of overstocked stackables
+      # (playerbot_market_clearing.h; the other PLAYERBOT_MARKET_CLEAR_* knobs are read too when set here).
+      PLAYERBOT_MARKET_CLEAR: "${PLAYERBOT_MARKET_CLEAR:-1}"
+      PLAYERBOT_MARKET_CLEAR_MIN_UNITS: "${PLAYERBOT_MARKET_CLEAR_MIN_UNITS:-200}"
+      PLAYERBOT_MARKET_CLEAR_STEP_PCT: "${PLAYERBOT_MARKET_CLEAR_STEP_PCT:-10}"
+      PLAYERBOT_MARKET_CLEAR_STEP_MIN: "${PLAYERBOT_MARKET_CLEAR_STEP_MIN:-30}"
+      # MT2009_PLUS_BOT_WORLD_YANG_BOTS_V1: what the bots' inflation reads - bots | capped | all (the old sum).
+      PLAYERBOT_WORLD_YANG_MEASURE: "${PLAYERBOT_WORLD_YANG_MEASURE:-bots}"
+      PLAYERBOT_WORLD_YANG_CAP_X: "${PLAYERBOT_WORLD_YANG_CAP_X:-1000}"
+      PLAYERBOT_WORLD_YANG_CAP_MIN_M: "${PLAYERBOT_WORLD_YANG_CAP_MIN_M:-500}"
       # MT2009_PLUS_BOT_YOHARA_HANDOVER_V1 / MT2009_PLUS_237_ZAKLETY_LAS_V1: the bots between the game cores of a
       # channel (playerbot_yohara_bots.h) - Zaklety Las 100-109 and the loot runs on the 90-level maps, all on
       # game3 (MT2009_PLUS_237_NEWCORE_V1); the limits are per channel.

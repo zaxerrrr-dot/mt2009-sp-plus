@@ -1515,6 +1515,8 @@ namespace {
         if (cap <= 0) return false;
         TPlayerBotOwnedArmour owned;
         ReadPlayerBotBestOwnedArmour(ch, owned);
+        int ownedLevels[PLAYERBOT_ARMOUR_UPGRADE_SLOTS];   // MT2009_PLUS_BOT_SURVIVE_V1
+        ReadPlayerBotSurviveOwnedLevels(ch, ownedLevels);
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
         struct TCandidate { long long value; int slot; long long price; DWORD owner; DWORD item; long x; long y; };
@@ -1542,6 +1544,9 @@ namespace {
                 if (score <= 0) continue;
                 const int slot = GetPlayerBotArmourUpgradeSlot(table->bSubType);
                 const long long ownedScore = owned.item[slot] ? owned.score[slot] : 0;
+                // MT2009_PLUS_BOT_SURVIVE_V1: the 60+ tier's piece weighed as an upgrade of the owned one
+                score = GetPlayerBotSurviveTierScore(ch, slot, GetPlayerBotProtoLevelLimit(table), score, ownedScore,
+                        ownedLevels[slot]);
                 if ((owned.item[slot] && score * 100 < ownedScore * (100 + PLAYERBOT_ARMOUR_UPGRADE_MIN_GAIN_PERCENT)) ||
                         price > GetPlayerBotArmourUpgradeShare(spare, GetPlayerBotArmourGainPercent(score, ownedScore)) ||
                         IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
@@ -1574,7 +1579,11 @@ namespace {
                     WantsPlayerBotStallItem(ch, preview) &&
                     CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
                     ch->GetEmptyInventory(preview->GetSize()) >= 0;
-            const long long score = buyable ? GetPlayerBotEquipmentScore(preview, ch) : 0;
+            long long score = buyable ? GetPlayerBotEquipmentScore(preview, ch) : 0;
+            // MT2009_PLUS_BOT_SURVIVE_V1: and its value a yang as the tier's upgrade
+            if (buyable && owned.item[c.slot])
+                score = GetPlayerBotSurviveTierScore(ch, c.slot, (int)preview->GetLevelLimit(), score,
+                        owned.score[c.slot], ownedLevels[c.slot]);
             const DWORD vnum = preview->GetVnum();
             M2_DELETE(preview);
             if (!buyable) continue;
@@ -1600,6 +1609,14 @@ namespace {
         ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
         ++s_dwPlayerBotArmourUpgradePicks;
         LPITEM ownedItem = owned.item[bestSlot];
+        // MT2009_PLUS_BOT_SURVIVE_V1: a pick of the 60+ tier counted and said
+        {
+            const TItemTable* picked = ITEM_MANAGER::instance().GetTable(bestVnum);
+            if (picked && ownedItem && GetPlayerBotProtoLevelLimit(picked) > (int)ownedItem->GetLevelLimit() &&
+                    GetPlayerBotSurviveTierScore(ch, bestSlot, GetPlayerBotProtoLevelLimit(picked), 0, 1,
+                            ownedLevels[bestSlot]) > 0)
+                NotePlayerBotSurviveTierPick(ch, bestVnum, bestSlot, bestPrice);
+        }
         sys_log(0, "PLAYERBOT_GEAR_UPGRADE: goes for armour pid=%u name=%s level=%u slot=%s owned=%u score=%lld vnum=%u line=%u owner=%u score=%lld gain=%lld%% price=%lld gold=%lld",
             ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), PLAYERBOT_ARMOUR_UPGRADE_SLOT_NAMES[bestSlot],
             ownedItem ? ownedItem->GetVnum() : 0, owned.score[bestSlot], bestVnum, bestItem, bestOwner, bestScore,
@@ -1920,6 +1937,9 @@ namespace {
                 }
                 if (!slip) {
                     AddPlayerBotMarketSupply(item->GetVnum(), item->GetInfo().count, shop->GetSpawn().map);
+                    // MT2009_PLUS_BOT_MARKET_CLEARING_V1: what the counters ask for it (the clearing's start and census).
+                    NotePlayerBotClearingAsk(item->GetVnum(), item->GetInfo().count,
+                        (long long)item->GetPrice().GetTotalYangAmount());
                     // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: the cheapest line of each
                     // weapon by map, for the bots' look from the frontier.
                     NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
