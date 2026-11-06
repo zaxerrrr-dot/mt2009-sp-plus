@@ -784,6 +784,12 @@ namespace
 				if (!IsPlayerBotDgRunMemberOf(v, run.iId) ||
 						DISTANCE_APPROX(anchor->GetX() - c->GetX(), anchor->GetY() - c->GetY()) > PLAYERBOT_PDG_HUNT_RANGE)
 					continue;
+				// MT2009_PLUS_BOT_MELEY_GUARD_HEALERS_V1 (6 Nov day): in stages 2-3 the guard keeps only the healers free
+				// and else hits the run's objective with the others - the eggs and then the statue. The shield lines:
+				// the eggs took 90-120 s to fall (4 x 1.3M) and the statue window was 4-33 s, the statue's 1%/5 s
+				// regeneration took back what the window gave (run 8: 75 -> 95 -> 80 -> 90 -> 75).
+				if (stage >= 2 && stage <= 3 && v->GetJob() != JOB_SHAMAN)
+					continue;
 				int score = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
 				if (v->GetJob() == JOB_SHAMAN)
 					score -= 3000;
