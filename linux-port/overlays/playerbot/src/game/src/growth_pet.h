@@ -55,6 +55,7 @@ namespace growth_pet
 	bool Hatch(CHARACTER* ch, CItem* egg, const char* name);	// true: the seal is in ch's bag
 	bool ToggleSummon(CHARACTER* ch, CItem* seal);
 	bool FeedLife(CHARACTER* ch, CItem* odzywka, CItem* seal);	// Odzywka on a seal (also the 50 % revive)
+	bool FeedLifeWithEgg(CHARACTER* ch, CItem* egg, CItem* seal);	// MT2009_PLUS_BOT_PET_FEED_V1: an egg into the life bar (+3-5%)
 	bool FeedItemExp(CHARACTER* ch, CItem* item, int count);		// the summoned pet; weapons, armour, Smakolyk(+)
 	bool UseTastyTreat(CHARACTER* ch, CItem* item);				// Smaczny Smakolyk (55042)
 	bool Evolve(CHARACTER* ch);									// the summoned pet; the materials from the bags

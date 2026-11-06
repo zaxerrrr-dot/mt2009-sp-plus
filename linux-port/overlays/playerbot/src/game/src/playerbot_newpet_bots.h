@@ -138,8 +138,9 @@ namespace
 	struct TPlayerBotNewPetStats
 	{
 		DWORD hatched, fed, revived, treats, junk, evolved, skills, upgrades, summoned;
+		DWORD eggFeeds;	// MT2009_PLUS_BOT_PET_FEED_V1
 		TPlayerBotNewPetStats() : hatched(0), fed(0), revived(0), treats(0), junk(0), evolved(0), skills(0), upgrades(0),
-				summoned(0) {}
+				summoned(0), eggFeeds(0) {}
 	};
 	TPlayerBotNewPetStats s_kPlayerBotNewPetStats;
 	DWORD s_dwPlayerBotNewPetCensusAt = 0;
@@ -558,6 +559,35 @@ namespace
 		v.nextStage = to <= 6 ? to : 0;
 	}
 
+	// MT2009_PLUS_BOT_PET_FEED_V1: the life share under which a keeper feeds its pet.
+	int GetPlayerBotNewPetFeedPct()
+	{
+		return IsPlayerBotSmallFixOn(SMALLFIX_PETS) ? GetPlayerBotSmallFixCfg().petFeedPct : PLAYERBOT_NEWPET_FEED_BELOW_PCT;
+	}
+
+	bool PlayerBotNewPetHungry(const TPlayerBotNewPetView& v)
+	{
+		return v.hasPet && v.pet.alive && v.pet.lifeMax > 0 && v.pet.lifeLeft * 100 < v.pet.lifeMax * GetPlayerBotNewPetFeedPct();
+	}
+
+	// A weak egg (Malpiszon / Pajak) the keeper does not keep (GetPlayerBotNewPetKeep) - the junk the merchant would get
+	// for a pittance; a good egg is a counter's goods (two million), never food. Never a companion's (its player's).
+	LPITEM FindPlayerBotNewPetSpareEgg(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotNewPetCompanion(ch))
+			return NULL;
+		const int cells = std::min<int>(ch->GetInventoryMaxCount(), INVENTORY_MAX_NUM);
+		for (int i = 0; i < cells; ++i)
+		{
+			LPITEM item = ch->GetInventoryItem((WORD)i);
+			if (!item || !IsPlayerBotNewPetWeakEgg(item->GetVnum()) || item->isLocked() || item->IsExchanging())
+				continue;
+			if ((int)ch->CountSpecifyItem(item->GetVnum()) > GetPlayerBotNewPetKeep(ch, item->GetVnum()))
+				return item;
+		}
+		return NULL;
+	}
+
 	// One act, or false.
 	bool ActPlayerBotNewPet(LPCHARACTER ch, TPlayerBotNewPetView& v)
 	{
@@ -567,7 +597,10 @@ namespace
 		if (!seal)
 			return false;
 		// life: dead -> Odzywka (the 50 % revive); low -> Odzywka
-		if (!v.pet.alive || (v.pet.lifeMax > 0 && v.pet.lifeLeft * 100 < v.pet.lifeMax * PLAYERBOT_NEWPET_FEED_BELOW_PCT))
+		// MT2009_PLUS_BOT_PET_FEED_V1: "low" is PLAYERBOT_NEWPET_FEED_PCT (50) while the fix is on, and with no Odzywka in
+		// the bag a spare egg goes into the life bar (the feed window's way, +3-5% an egg).
+		const bool hungry = PlayerBotNewPetHungry(v);
+		if (!v.pet.alive || hungry)
 			if (LPITEM food = FindPlayerBotNewPetItem(ch, PLAYERBOT_PET_FOOD))
 				if (growth_pet::FeedLife(ch, food, seal))
 				{
@@ -576,6 +609,19 @@ namespace
 				}
 		if (!v.pet.alive)
 			return false;
+		if (hungry && IsPlayerBotSmallFixOn(SMALLFIX_PETS))
+			if (LPITEM egg = FindPlayerBotNewPetSpareEgg(ch))
+			{
+				const DWORD eggVnum = egg->GetVnum();
+				if (growth_pet::FeedLifeWithEgg(ch, egg, seal))
+				{
+					++s_kPlayerBotNewPetStats.eggFeeds;
+					PlayerBotLogThrottledEvery("newpet_egg_feed", get_dword_time(), 600000,
+							"BOT_PETFEED: egg fed pid=%u name=%s pet=%u egg=%u life=%lld/%lld",
+							ch->GetPlayerID(), ch->GetName(), v.pet.id, eggVnum, v.pet.lifeLeft, v.pet.lifeMax);
+					return true;
+				}
+			}
 		// out
 		if (!v.pet.summoned && v.pet.level <= ch->GetLevel())
 		{
@@ -671,6 +717,7 @@ namespace
 	void LogPlayerBotNewPetCensus()
 	{
 		DWORD keepers = 0, withPet = 0, out = 0, dead = 0, levelSum = 0, levelMax = 0, champ = 0;
+		DWORD hungry = 0, lifeSum = 0;	// MT2009_PLUS_BOT_PET_FEED_V1
 		DWORD stage[7] = { 0 };
 		const DWORD dwNow = get_dword_time();
 		for (std::map<DWORD, TPlayerBotNewPetView>::iterator it = s_mapPlayerBotNewPet.begin(); it != s_mapPlayerBotNewPet.end(); )
@@ -693,6 +740,8 @@ namespace
 			levelMax = std::max<DWORD>(levelMax, (DWORD)v.pet.level);
 			champ += v.pet.championLevel > 0 ? 1 : 0;
 			++stage[MINMAX(1, v.pet.evolution, 6)];
+			hungry += PlayerBotNewPetHungry(v) ? 1 : 0;
+			lifeSum += v.pet.alive && v.pet.lifeMax > 0 ? (DWORD)(v.pet.lifeLeft * 100 / v.pet.lifeMax) : 0;
 		}
 		const TPlayerBotNewPetStats& s = s_kPlayerBotNewPetStats;
 		sys_log(0, "PLAYERBOT_NEWPET: census keepers=%u with_pet=%u out=%u dead=%u lv_avg=%u lv_max=%u champions=%u "
@@ -700,6 +749,10 @@ namespace
 				keepers, withPet, out, dead, withPet ? levelSum / withPet : 0, levelMax, champ, stage[1], stage[2], stage[3],
 				stage[4], stage[5], stage[6], s.hatched, s.fed, s.revived, s.treats, s.junk, s.evolved, s.skills, s.upgrades,
 				s.summoned);
+		// MT2009_PLUS_BOT_PET_FEED_V1: the hungry ones (under the feed share, alive) and the eggs fed this window.
+		sys_log(0, "BOT_PETFEED: census on=%d feed_pct=%d with_pet=%u hungry=%u dead=%u life_avg_pct=%u fed=%u egg_feeds=%u revived=%u",
+				IsPlayerBotSmallFixOn(SMALLFIX_PETS) ? 1 : 0, GetPlayerBotNewPetFeedPct(), withPet, hungry, dead,
+				withPet ? lifeSum / withPet : 0, s.fed, s.eggFeeds, s.revived);
 		s_kPlayerBotNewPetStats = TPlayerBotNewPetStats();
 	}
 

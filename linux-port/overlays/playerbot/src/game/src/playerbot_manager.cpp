@@ -163,6 +163,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // may speak to a person.
 #include "playerbot_language.h"
 #include "playerbot_config.h"
+// MT2009_PLUS_BOT_SMALL_FIXES_V1: the switches and numbers of the second analysis' small fixes (horse, books, pets,
+// talismans, belts), before every file that carries one.
+#include "playerbot_small_fixes.h"
 // MT2009_PLUS_LEGENDS_V1: a bot's tier in the System Legend and the numbers
 // it changes, before everything that asks (the refine, the gear, the fight).
 #include "playerbot_legend_tier.h"
@@ -2801,7 +2804,8 @@ namespace
 				const bool canUnlock = FindPlayerBotBookAffectCell(ch, AFFECT_SKILL_NO_BOOK_DELAY) >= 0;
 				if (!ready && !canUnlock) continue;
 				const int priority = (ready ? 100000 : 0) +
-					(skillVnum == build.dwPrimaryMaxSkill ? 10000 : 0) + skillLevel;
+					(skillVnum == build.dwPrimaryMaxSkill ? 10000 : 0) + skillLevel +
+					GetPlayerBotBookGateRank(ch, skillVnum) * 100;	// MT2009_PLUS_BOT_BOOK_GATE_V1: the gate's skills first
 				if (priority > bestPriority)
 				{
 					bestPriority = priority;
@@ -2906,11 +2910,12 @@ namespace
 			// reads, a Legend's as three, a Champion's as four.
 			ApplyPlayerBotLegendBookReads(ch, bestSkillVnum, oldLevel, legendReadsBefore);
 			SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
-			sys_log(0, "PLAYERBOT_AI: read skill book pid=%u name=%s skill=%u old_level=%u new_level=%u success=%d advice=%d",
+			sys_log(0, "PLAYERBOT_AI: read skill book pid=%u name=%s skill=%u old_level=%u new_level=%u success=%d advice=%d gate=%d",
 					ch->GetPlayerID(), ch->GetName(), bestSkillVnum, oldLevel,
 					ch->GetSkillLevel(bestSkillVnum),
 					ch->GetSkillLevel(bestSkillVnum) > oldLevel ? 1 : 0,
-					advice && !ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) ? 1 : 0);
+					advice && !ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) ? 1 : 0,
+					IsPlayerBotBookGateHeld(ch) ? 1 : 0);	// MT2009_PLUS_BOT_BOOK_GATE_V1
 		}
 	}
 

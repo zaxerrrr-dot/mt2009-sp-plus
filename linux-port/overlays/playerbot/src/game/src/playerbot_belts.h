@@ -373,6 +373,127 @@ namespace
 		return true;
 	}
 
+	// ---- MT2009_PLUS_BOT_BELT_MATS_V1: the metal and the pearl at the Dozorca ------------------
+
+	// The Materialy Rzemieslnicze the other wants hold (playerbot_craft_exchange.h, later).
+	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly);
+	const DWORD PLAYERBOT_BELT_SWAP_PAY_VNUM = 30378;	// Materialy Rzemieslnicze
+
+	struct TPlayerBotBeltSwapStats
+	{
+		unsigned swaps, bots;
+		unsigned long long units, materials;
+	};
+	TPlayerBotBeltSwapStats s_kPlayerBotBeltSwapStats = { 0, 0, 0, 0 };
+	std::set<DWORD> s_setPlayerBotBeltSwapBots;
+
+	// A belt recipe's metal (Miedz 50624 ... Szafir 50638) or pearl (27992-27994): what the swap makes.
+	bool IsPlayerBotBeltSwapVnum(DWORD vnum)
+	{
+		return (vnum >= 50624 && vnum <= 50638) || (vnum >= 27992 && vnum <= 27994);
+	}
+
+	int GetPlayerBotBeltSwapRate(DWORD vnum)
+	{
+		const TPlayerBotSmallFixCfg& c = GetPlayerBotSmallFixCfg();
+		return vnum >= 27992 && vnum <= 27994 ? c.beltPearlRate : c.beltMetalRate;
+	}
+
+	// What one attempt at the maker's target lacks of its metal and pearl (not while a seed still owes it the attempt).
+	void CollectPlayerBotBeltSwapLack(LPCHARACTER ch, std::map<DWORD, int>& out)
+	{
+		out.clear();
+		if (!ch || !IsPlayerBotSmallFixOn(SMALLFIX_BELTS) || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				GetPlayerBotBeltSeedLeft(ch) > 0)
+			return;
+		const int target = GetPlayerBotBeltTarget(ch);
+		if (target < 0)
+			return;
+		const TPlayerBotBeltRecipe& r = PLAYERBOT_BELT_RECIPES[target];
+		for (int m = 0; m < 4; ++m)
+		{
+			if (r.mats[m].vnum == 0 || !IsPlayerBotBeltSwapVnum(r.mats[m].vnum))
+				continue;
+			const int lack = r.mats[m].count - (int)ch->CountSpecifyItem(r.mats[m].vnum);
+			if (lack > 0)
+				out[r.mats[m].vnum] = lack;
+		}
+	}
+
+	// The Materialy Rzemieslnicze the swap still takes (GetPlayerBotCraftMaterialsWanted's share): its 30378 stay off its
+	// counter and the Dozorca's exchange makes more of its spare refine goods.
+	int GetPlayerBotBeltSwapWanted(LPCHARACTER ch)
+	{
+		std::map<DWORD, int> lack;
+		CollectPlayerBotBeltSwapLack(ch, lack);
+		int want = 0;
+		for (std::map<DWORD, int>::const_iterator it = lack.begin(); it != lack.end(); ++it)
+			want += it->second * GetPlayerBotBeltSwapRate(it->first);
+		return want;
+	}
+
+	// The 30378 the swap may spend: what the bag holds over every other want (the horse, Dongan's elixirs, the refine swap).
+	int GetPlayerBotBeltSwapUsable(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		const int others = GetPlayerBotCraftMaterialsWanted(ch, true) - GetPlayerBotBeltSwapWanted(ch);
+		return std::max(0, (int)ch->CountSpecifyItem(PLAYERBOT_BELT_SWAP_PAY_VNUM) - std::max(0, others));
+	}
+
+	// A walk to the Dozorca for it: something lacking and the materials for at least one piece of it.
+	bool IsPlayerBotBeltSwapDue(LPCHARACTER ch)
+	{
+		std::map<DWORD, int> lack;
+		CollectPlayerBotBeltSwapLack(ch, lack);
+		if (lack.empty())
+			return false;
+		const int usable = GetPlayerBotBeltSwapUsable(ch);
+		for (std::map<DWORD, int>::const_iterator it = lack.begin(); it != lack.end(); ++it)
+			if (usable >= GetPlayerBotBeltSwapRate(it->first))
+				return true;
+		return false;
+	}
+
+	// At the Dozorca: the pieces one attempt lacks, the metal first, within PLAYERBOT_BELT_SWAP_VISIT_MAX pieces a visit.
+	int SwapPlayerBotBeltMaterials(LPCHARACTER ch)
+	{
+		std::map<DWORD, int> lack;
+		CollectPlayerBotBeltSwapLack(ch, lack);
+		if (lack.empty() || IsPlayerBotSidekickServing(ch))
+			return 0;
+		int budget = GetPlayerBotSmallFixCfg().beltVisitMax;
+		int made = 0;
+		for (int pass = 0; pass < 2; ++pass)	// the metals, then the pearls
+			for (std::map<DWORD, int>::const_iterator it = lack.begin(); it != lack.end() && budget > 0; ++it)
+			{
+				const bool pearl = it->first >= 27992 && it->first <= 27994;
+				if (pearl != (pass == 1))
+					continue;
+				if (CountPlayerBotFreeInventoryCells(ch) < 1 && ch->CountSpecifyItem(it->first) == 0)
+					return made;
+				const int rate = GetPlayerBotBeltSwapRate(it->first);
+				const int units = std::min(std::min(it->second, budget), GetPlayerBotBeltSwapUsable(ch) / rate);
+				if (units <= 0)
+					continue;
+				ch->RemoveSpecifyItem(PLAYERBOT_BELT_SWAP_PAY_VNUM, (ITEM_COUNT)(units * rate));
+				ch->AutoGiveItem(it->first, (ITEM_COUNT)units, -1, false);
+				budget -= units;
+				made += units;
+				++s_kPlayerBotBeltSwapStats.swaps;
+				s_kPlayerBotBeltSwapStats.units += (unsigned long long)units;
+				s_kPlayerBotBeltSwapStats.materials += (unsigned long long)(units * rate);
+				if (s_setPlayerBotBeltSwapBots.insert(ch->GetPlayerID()).second)
+					++s_kPlayerBotBeltSwapStats.bots;
+				sys_log(0, "BOT_BELT_MATS: swap pid=%u name=%s lv=%d item=%u units=%d lack=%d paid=%u:%d left=%d",
+						ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), it->first, units, it->second,
+						PLAYERBOT_BELT_SWAP_PAY_VNUM, units * rate, (int)ch->CountSpecifyItem(PLAYERBOT_BELT_SWAP_PAY_VNUM));
+			}
+		if (made > 0)
+			ForgetPlayerBotBeltPlan(ch);
+		return made;
+	}
+
 	// ---- the pouch ------------------------------------------------------------------------
 
 	int GetPlayerBotBeltGrade(LPCHARACTER ch)
@@ -531,9 +652,17 @@ namespace
 				if (ch->UseItem(TItemPos(INVENTORY, cell)))
 				{
 					++s_kPlayerBotBeltStats.pouchDrinks;
-					sys_log(0, "PLAYERBOT_BELT: %s potion from the pouch pid=%u name=%s vnum=%u hp=%d/%d sp=%d/%d",
-							what, ch->GetPlayerID(), ch->GetName(), vnums[v], ch->GetHP(), ch->GetMaxHP(),
-							ch->GetSP(), ch->GetMaxSP());
+					// MT2009_PLUS_BOT_BELT_MATS_V1: one line in ten minutes (14 378 in 45 minutes on one core, 6 November);
+					// the census' pouch_drinks counts them all. With the fix off, every drink as before.
+					if (IsPlayerBotSmallFixOn(SMALLFIX_BELTS))
+						PlayerBotLogThrottledEvery("belt_pouch_drink", get_dword_time(), 600000,
+								"PLAYERBOT_BELT: %s potion from the pouch pid=%u name=%s vnum=%u hp=%d/%d sp=%d/%d drinks=%u (throttled)",
+								what, ch->GetPlayerID(), ch->GetName(), vnums[v], ch->GetHP(), ch->GetMaxHP(),
+								ch->GetSP(), ch->GetMaxSP(), s_kPlayerBotBeltStats.pouchDrinks);
+					else
+						sys_log(0, "PLAYERBOT_BELT: %s potion from the pouch pid=%u name=%s vnum=%u hp=%d/%d sp=%d/%d",
+								what, ch->GetPlayerID(), ch->GetName(), vnums[v], ch->GetHP(), ch->GetMaxHP(),
+								ch->GetSP(), ch->GetMaxSP());
 					return true;
 				}
 			}
@@ -635,6 +764,11 @@ namespace
 		sys_log(0, "PLAYERBOT_BELT: census crafts=%u craft_fails=%u refines=%u burns=%u pouch_moves=%u pouch_drinks=%u seeded=%u seed_attempts=%u bought=%u bought_yang=%llu",
 				s.crafts, s.craftFails, s.refines, s.burns, s.pouchMoves, s.pouchDrinks, s.seeded, s.seedGifts,
 				s.bought, s.boughtYang);
+		// MT2009_PLUS_BOT_BELT_MATS_V1: the Dozorca's metal and pearl since the core started.
+		const TPlayerBotBeltSwapStats& w = s_kPlayerBotBeltSwapStats;
+		sys_log(0, "BOT_BELT_MATS: census on=%d metal_rate=%d pearl_rate=%d swaps=%u bots=%u units=%llu materials=%llu",
+				IsPlayerBotSmallFixOn(SMALLFIX_BELTS) ? 1 : 0, GetPlayerBotSmallFixCfg().beltMetalRate,
+				GetPlayerBotSmallFixCfg().beltPearlRate, w.swaps, w.bots, w.units, w.materials);
 	}
 }
 
@@ -655,6 +789,9 @@ namespace
 	bool RefinePlayerBotBeltStep(LPCHARACTER) { return false; }
 	void ManagePlayerBotBeltPouch(LPCHARACTER) {}
 	void LogPlayerBotBeltCensus() {}
+	int GetPlayerBotBeltSwapWanted(LPCHARACTER) { return 0; }
+	bool IsPlayerBotBeltSwapDue(LPCHARACTER) { return false; }
+	int SwapPlayerBotBeltMaterials(LPCHARACTER) { return 0; }
 }
 
 #endif

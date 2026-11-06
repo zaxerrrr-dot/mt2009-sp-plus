@@ -107,6 +107,8 @@ namespace
 		EnsurePlayerBotHorseBonus(ch);
 		// MT2009_PLUS_HORSE40_V1: the daily feed quest's Pasza dla Konia (konie_rozwoj.cpp)
 		Mt2009KonieBotDailyFeed(ch);
+		// MT2009_PLUS_BOT_HORSE_AFFORD_V1: the horse's health back to its maximum (playerbot_horse30.h)
+		FeedPlayerBotHorseHealth(ch, dwNow);
 		// The stable keeper stands in all six villages, so the horse errand is a
 		// local one wherever the bot lives.
 		playerbot_empire_rules::TTownServices svc;
