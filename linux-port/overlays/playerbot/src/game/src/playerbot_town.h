@@ -6805,7 +6805,7 @@ namespace
 				g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
 		{
 			EnsurePlayerBotPrivateShopChannel(ch, state, dwNow, "medals");
-			sys_log(0, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
+			PlayerBotLogPerBot("medal_wait_channel", ch->GetPlayerID(), dwNow, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
 					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM), (unsigned int)g_bChannel);
 			return false;

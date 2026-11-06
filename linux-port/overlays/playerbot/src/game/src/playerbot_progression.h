@@ -374,7 +374,7 @@ namespace
 		const int cap = (int)((long long)live * (long long)c.fishCapPct / 100LL);
 		if (s_aiPlayerBotProgressAnglers[band] < std::max(c.fishCapPct > 0 ? 1 : 0, cap))
 			return false;
-		PlayerBotLogThrottled("progress_fish_cap", dwNow,
+		PlayerBotLogThrottledEvery("progress_fish_cap", dwNow, 600000,
 				"PLAYERBOT_PROGRESS: fishing cap pid=%u name=%s level=%u band=%d anglers=%d live=%d cap_pct=%u",
 				ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel(), band * 10,
 				s_aiPlayerBotProgressAnglers[band], live, c.fishCapPct);
