@@ -7611,6 +7611,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_gear_upgrade.h).
 		ManagePlayerBotToolHand(ch, state, dwNow);
 
+		// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the rank fruits looked at above the runs too - a dungeon party ate none
+		// of the Gruszki its boss dropped, hours on end (its own clock: the look below then returns at once).
+		if (IsPlayerBotRankFruitGoalOn())
+			ManagePlayerBotRankPoints(ch, dwNow);
+
 		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
 		// and shouts, and does nothing else (playerbot_shouters.h).
 		if (ManagePlayerBotShouterTick(ch, state, dwNow))

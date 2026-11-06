@@ -4355,7 +4355,8 @@ namespace
 		if (IsPlayerBotRankFruit(item->GetVnum()))
 		{
 			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
-			const DWORD unit = GetPlayerBotRankFruitPrice(item->GetVnum());
+			// MT2009_PLUS_RANK_FRUIT_GOAL_V1: by supply and demand (GetPlayerBotRankFruitListUnit).
+			const DWORD unit = GetPlayerBotRankFruitListUnit(item->GetVnum());
 			if (unit != 0)
 			{
 				const DWORD fruit = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);

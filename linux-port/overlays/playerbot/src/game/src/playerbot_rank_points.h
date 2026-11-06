@@ -186,6 +186,28 @@ namespace mt2009_rankp
 		return s_enabled != 0;
 	}
 
+	// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the bots' fruit switches - event flags, 1 = that part off (the rules of
+	// V1 back), read again every ten seconds:
+	//   m2_bot_rank_fruit_goal_off   the rank goal, the reserve, the surplus listed, the eating in runs
+	//   m2_bot_rank_fruit_price_off  the list price by supply and demand (the fixed table again)
+	//   m2_bot_rank_fruit_stack_off  a bot's fruit drop joins its stack (a new bag line a drop again)
+	enum EBotFruitSwitch { BOT_FRUIT_GOAL, BOT_FRUIT_PRICE, BOT_FRUIT_STACK, BOT_FRUIT_SWITCHES };
+
+	bool BotFruitOn(EBotFruitSwitch which)
+	{
+		static const char* const FLAGS[BOT_FRUIT_SWITCHES] =
+			{ "m2_bot_rank_fruit_goal_off", "m2_bot_rank_fruit_price_off", "m2_bot_rank_fruit_stack_off" };
+		static DWORD s_readAt[BOT_FRUIT_SWITCHES] = { 0, 0, 0 };
+		static int s_off[BOT_FRUIT_SWITCHES] = { 0, 0, 0 };
+		const DWORD now = get_dword_time();
+		if (s_readAt[which] == 0 || now - s_readAt[which] >= 10000)
+		{
+			s_readAt[which] = now ? now : 1;
+			s_off[which] = quest::CQuestManager::instance().GetEventFlag(FLAGS[which]);
+		}
+		return s_off[which] == 0;
+	}
+
 	// ---------------------------------------------------------------- tables
 
 	const SFruit* FruitByVnum(DWORD vnum)
@@ -582,6 +604,23 @@ namespace mt2009_rankp
 			return;
 		if (IsBot(killer))
 		{
+			// MT2009_PLUS_RANK_FRUIT_GOAL_V1: onto the stack the bag already holds. The item given as it was never
+			// joined one - a level-70 dungeon party on the test world carried 160 lines of one or two Gruszki each.
+			if (BotFruitOn(BOT_FRUIT_STACK))
+			{
+				bool stackRoom = false;
+				for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && !stackRoom; ++cell)
+				{
+					LPITEM held = killer->GetInventoryItem(cell);
+					stackRoom = held && held->GetVnum() == fruit->vnum && !held->isLocked() &&
+							(int)held->GetCount() + count <= (int)held->GetMaxStack();
+				}
+				const bool room = stackRoom || killer->GetEmptyInventory(item->GetSize()) >= 0;
+				M2_DESTROY_ITEM(item);
+				if (room)
+					killer->AutoGiveItem(fruit->vnum, count, -1, false);
+				return;
+			}
 			if (killer->GetEmptyInventory(item->GetSize()) >= 0)
 				killer->AutoGiveItem(item);
 			else
@@ -678,16 +717,116 @@ namespace
 	// for every bot, as before.
 	const int PLAYERBOT_RANK_FRUIT_EATER_PERCENT = 75;
 
+	// MT2009_PLUS_RANK_FRUIT_GOAL_V1 (the owner, 6 November 2026: "dlaczego boty nie wystawiaja przedmiotow, ktore daja
+	// range (gruszki, winogrona, arbuzy itd). Wystawiaja tylko jablka. [...] zachecic, aby bardziej to wystawialy, albo
+	// aby uzywaly tego same i nadmiar wystawialy").
+	//
+	// What the four worlds showed (6 November, 7 days of the shops' log): the bots DO list the higher fruits, but
+	// another bot buys a Gruszka within 0-18 minutes of its listing (vps3: 4 290 listed, 4 291 bought, 11 minutes on
+	// average), so a counter shows Jablka only. The buyers were V1's eaters - three bots in four - at the alignment's
+	// cap: 1 300-1 700 of them a world, most under level 54, each wanting its total's fruit (a Gruszka from 20 000)
+	// without an end. The Gruszki come only from the Metins and bosses of levels 54-74, which a few hundred bots
+	// fight; the rest kill the Metins under 54 - Jablka, the fruit of a range they are past - and list them all.
+	//
+	// Now every bot (a trader of the MERCHANT personality aside: it lists every fruit, as before) has a rank goal
+	// (GetPlayerBotRankGoal) - the top of the range of the fruit its own level drops: 20 000 up to level 53, 40 000
+	// at 54-74, 80 000 at 75-99, 120 000 at 100-109, 200 000 from 110 - and a peaceful persona (the trader, the miner,
+	// the fishermen, the herbalist, the gamblers) the alignment's cap only ("neutral or better"; a negative alignment
+	// is the Zen beans' and the grand master's, not the fruits'). Below its goal a bot eats the fruit of its total
+	// and buys it off the counters as before; it keeps what reaching the goal still takes of every fruit plus
+	// PLAYERBOT_RANK_FRUIT_RESERVE Jablka (the grand master's training spends rank) and lists the rest - the stack
+	// the keep ends inside is cut there (one cut a look). A bot with no counter keeps its surplus for one unless
+	// its bag is under pressure. The eating runs in a dungeon run too (it had no look there).
+	// The list price: playerbot_rank_fruit_market.h (GetPlayerBotRankFruitListUnit). Census: "PLAYERBOT_RANK_FRUIT:".
+	const int PLAYERBOT_RANK_FRUIT_RESERVE = 5;
+
+	bool IsPlayerBotRankFruitGoalOn()
+	{
+		return mt2009_rankp::BotFruitOn(mt2009_rankp::BOT_FRUIT_GOAL);
+	}
+
+	int CountPlayerBotFreeInventoryCells(LPCHARACTER ch);			// playerbot_consumables.h
+	void NotePlayerBotRankFruitLook(LPCHARACTER ch, DWORD dwNow);	// playerbot_rank_fruit_market.h (the census)
+	void NotePlayerBotRankFruitEaten(DWORD vnum);					// the same
+	DWORD GetPlayerBotRankFruitListUnit(DWORD vnum);				// the same (the list price)
+
+	int GetPlayerBotRankGoal(LPCHARACTER ch)
+	{
+		using namespace mt2009_rankp;
+		if (!ch || GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MERCHANT)
+			return 0;
+		TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (st != s_mapPlayerBotAIStates.end())
+			switch (st->second.persona.bPersona)
+			{
+				case playerbot_persona::PERSONA_HANDLARZ:
+				case playerbot_persona::PERSONA_HAZARDZISTA:
+				case playerbot_persona::PERSONA_GORNIK:
+				case playerbot_persona::PERSONA_RYBAK:
+				case playerbot_persona::PERSONA_WEDKARZ:
+				case playerbot_persona::PERSONA_HAZ_MLODSZY:
+				case playerbot_persona::PERSONA_HAZ_STARSZY:
+				case playerbot_persona::PERSONA_HAZ_NACZELNY:
+				case playerbot_persona::PERSONA_HAZ_SZALONY:
+				case playerbot_persona::PERSONA_ZIELARZ:
+					return ALIGN_CAP;
+				default:
+					break;
+			}
+		return FruitForLevel(ch->GetLevel())->to;
+	}
+
+	// The pieces of this fruit reaching the goal from these points still takes.
+	int GetPlayerBotRankFruitNeed(const mt2009_rankp::SFruit& fruit, int goal, int points)
+	{
+		if (fruit.from >= goal || fruit.gain <= 0)
+			return 0;
+		const int top = std::min(goal, fruit.to);
+		const int low = std::max(points, fruit.from);
+		return top > low ? (top - low + fruit.gain - 1) / fruit.gain : 0;
+	}
+
+	// The pieces of this fruit a bot keeps in its bag (the rest is its counter's): the need, and the reserve of Jablka.
+	int GetPlayerBotRankFruitKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		using namespace mt2009_rankp;
+		const SFruit* fruit = FruitByVnum(vnum);
+		if (!ch || !fruit)
+			return 0;
+		const int goal = GetPlayerBotRankGoal(ch);
+		if (goal <= 0)
+			return 0;
+		if (!Known(ch))
+			return 1000000;	// not read on this core yet: nothing goes before its first look
+		return GetPlayerBotRankFruitNeed(*fruit, goal, KnownPoints(ch)) +
+				(fruit->to <= ALIGN_CAP ? PLAYERBOT_RANK_FRUIT_RESERVE : 0);
+	}
+
 	bool IsPlayerBotRankFruitEater(LPCHARACTER ch)
 	{
 		if (!ch || GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MERCHANT)
 			return false;
+		if (IsPlayerBotRankFruitGoalOn())	// MT2009_PLUS_RANK_FRUIT_GOAL_V1: every bot with a goal
+			return GetPlayerBotRankGoal(ch) > 0;
 		return (int)(((ch->GetPlayerID() ^ 0x52414e4bU) * 2654435761U >> 16) % 100U) <
 				PLAYERBOT_RANK_FRUIT_EATER_PERCENT;
 	}
 
+	// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the fruit a bot eats now - its total's, while under its goal (NULL: none).
+	const mt2009_rankp::SFruit* GetPlayerBotRankFruitDue(LPCHARACTER ch)
+	{
+		using namespace mt2009_rankp;
+		const int points = KnownPoints(ch);
+		const SFruit* fruit = FruitForPoints(points);
+		if (!fruit || !IsPlayerBotRankFruitGoalOn())
+			return fruit;
+		const int goal = GetPlayerBotRankGoal(ch);
+		return (points < goal && fruit->from < goal) ? fruit : NULL;
+	}
+
 	// The fruit that fits the bot's points now: its own, eaten at its next look
 	// - an eater's (IsPlayerBotRankFruitEater); a trader lists it.
+	// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the first GetPlayerBotRankFruitKeep pieces of a fruit in the bag's cell order.
 	bool IsPlayerBotKeptRankFruit(LPCHARACTER ch, LPITEM item)
 	{
 		using namespace mt2009_rankp;
@@ -696,8 +835,53 @@ namespace
 		const SFruit* fruit = FruitByVnum(item->GetVnum());
 		if (!fruit)
 			return false;
+		if (IsPlayerBotRankFruitGoalOn())
+		{
+			const int keep = GetPlayerBotRankFruitKeep(ch, fruit->vnum);
+			if (keep <= 0)
+				return false;
+			int ahead = 0;
+			const bool inBag = item->GetWindow() == INVENTORY;
+			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && ahead < keep; ++cell)
+			{
+				LPITEM held = ch->GetInventoryItem(cell);
+				if (!held || held->GetVnum() != fruit->vnum || (int)held->GetCell() != cell)
+					continue;
+				if (inBag && held == item)
+					return true;
+				ahead += std::max<int>(1, held->GetCount());
+			}
+			return ahead < keep;
+		}
 		const int points = KnownPoints(ch);
 		return points >= fruit->from && points < fruit->to;
+	}
+
+	// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the stack a fruit's keep ends inside, cut there - the keep in the front part,
+	// the surplus a line of its own for the counter. One cut a look (SplitPlayerBotStone4Kept's way).
+	bool SplitPlayerBotRankFruitKeep(LPCHARACTER ch, DWORD vnum, int keep)
+	{
+		if (keep <= 0 || (int)ch->CountSpecifyItem(vnum) <= keep)
+			return false;
+		int ahead = 0;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || (int)item->GetCell() != cell || item->GetVnum() != vnum)
+				continue;
+			const int count = std::max<int>(1, item->GetCount());
+			if (ahead + count > keep)
+			{
+				if (item->IsEquipped() || item->isLocked() || ahead >= keep)
+					return false;
+				const int to = ch->GetEmptyInventory(item->GetSize());
+				if (to < 0 || CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS)
+					return false;
+				return ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), ahead + count - keep);
+			}
+			ahead += count;
+		}
+		return false;
 	}
 
 	std::map<DWORD, DWORD> s_mapPlayerBotRankNextLook;
@@ -720,17 +904,31 @@ namespace
 			if (TierOf(KnownPoints(ch)) > 0)
 				SendTailAround(ch);
 		}
+		const bool goalOn = IsPlayerBotRankFruitGoalOn();
 		if (ch->GetExchange() || ch->GetMyShop() || !IsPlayerBotRankFruitEater(ch))	// MT2009_PLUS_RANK_FRUIT_MARKET_V1
+		{
+			if (goalOn)
+				NotePlayerBotRankFruitLook(ch, dwNow);
 			return;
+		}
 		for (int eaten = 0; eaten < 40; ++eaten)
 		{
-			const SFruit* fruit = FruitForPoints(KnownPoints(ch));
+			const SFruit* fruit = goalOn ? GetPlayerBotRankFruitDue(ch) : FruitForPoints(KnownPoints(ch));
 			if (!fruit || ch->CountSpecifyItem(fruit->vnum) <= 0)
 				break;
 			ch->RemoveSpecifyItem(fruit->vnum, 1);
 			if (!Eat(ch, *fruit, false))
 				break;
+			if (goalOn)
+				NotePlayerBotRankFruitEaten(fruit->vnum);
 		}
+		if (!goalOn)
+			return;
+		// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the keep cut off the surplus (one cut a look), then the census.
+		for (int i = 0; i < FRUIT_COUNT; ++i)
+			if (SplitPlayerBotRankFruitKeep(ch, FRUITS[i].vnum, GetPlayerBotRankFruitKeep(ch, FRUITS[i].vnum)))
+				break;
+		NotePlayerBotRankFruitLook(ch, dwNow);
 	}
 }
 
