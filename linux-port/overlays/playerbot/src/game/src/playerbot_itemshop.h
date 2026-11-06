@@ -2450,7 +2450,25 @@ namespace
 
 	bool PlayerBotKeepsVouchersForCounter(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
 	{
-		if (!ch || !PlayerBotHasCounter(ch) || !IsPlayerBotVoucherSeller(ch))
+		if (!ch || !PlayerBotHasCounter(ch))
+			return false;
+		// MT2009_PLUS_BOT_SM_HP70_V1 (the owner, 6 November 2026, point 6): an exp-locked bot needs no coins now - every
+		// one of its Kupon SM goes on its counter, past the sellers' share and its own needs (playerbot_errands.h).
+		if (IsPlayerBotLockedCouponSeller(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID()))
+		{
+			std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotVoucherCounterUntil.find(ch->GetPlayerID());
+			const bool fresh = it == s_mapPlayerBotVoucherCounterUntil.end() || (int)(dwNow - it->second) >= 0;
+			s_mapPlayerBotVoucherCounterUntil[ch->GetPlayerID()] = dwNow + PLAYERBOT_VOUCHER_COUNTER_HOLD_MS;
+			if (fresh)
+			{
+				++s_uPlayerBotLockedCouponKeeps;
+				PlayerBotLogThrottled("ishop_locked_coupons", dwNow,
+						"PLAYERBOT_ISHOP: exp-locked bot keeps its coupons for the counter pid=%u name=%s level=%u balance=%d",
+						ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), state.iDragonCoins);
+			}
+			return true;
+		}
+		if (!IsPlayerBotVoucherSeller(ch))
 			return false;
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a bot short of coins for a need (a V3 goal, the Sung Ma premium...) cashes
@@ -2482,6 +2500,9 @@ namespace
 	{
 		if (!ch || !item || IsPlayerBotSidekickPID(ch->GetPlayerID()) || !PlayerBotHasCounter(ch))
 			return false;
+		// MT2009_PLUS_BOT_SM_HP70_V1: an exp-locked bot's coupons are its counter's (playerbot_errands.h).
+		if (IsPlayerBotLockedCouponSeller(ch))
+			return true;
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 		if (IsPlayerBotItemShopEnabled() && HasPlayerBotSmCouponNeed(ch))
 			return false;	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: its own need's, cashed - never on its counter

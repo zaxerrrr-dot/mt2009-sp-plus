@@ -401,8 +401,12 @@ namespace {
             // Something worth buying, on the shop channel: ask to be moved, at
             // most this often, and forget the pick - the purchase is made there,
             // by the browse after the move.
+            // MT2009_PLUS_BOT_ERRAND_BATCH_V1: noted by the kind of the line, and asked for only with a batch of
+            // errands, an old one or a potion (playerbot_errands.h).
+            const int errandKind = ClassifyPlayerBotErrandLine(o.buyOwner, o.buyItem);
             DropPlayerBotOfflinePick(ch, state, "other_channel");
-            if (Due(now, state.dwNextBuyChannelRequestTime)) {
+            const bool errandPass = PassPlayerBotShopErrand(ch, errandKind, now);
+            if (errandPass && Due(now, state.dwNextBuyChannelRequestTime)) {
                 state.dwNextBuyChannelRequestTime = now + PLAYERBOT_SHOP_CHANNEL_BUY_REQUEST_GAP_MS;
                 if (CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID()))
                     PlayerBotLogThrottled("shop_channel_buy", now,
@@ -1424,6 +1428,7 @@ namespace {
         struct TCandidate { long long blow; long long price; long long rank; DWORD owner; DWORD item; long x; long y; };
         std::vector<TCandidate> candidates;
         std::map<DWORD, long long> blowByVnum;
+        unsigned int failPay = 0, failClaimed = 0, failBag = 0, failNav = 0;   // MT2009_PLUS_BOT_WEAPON_ERRAND_V1
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
             const auto spawn = shop->GetSpawn();
@@ -1445,15 +1450,25 @@ namespace {
                     blowByVnum[table->dwVnum] = blow;
                 }
                 if (blow <= 0 ||
-                        (owned.item && blow * 100 < owned.blow * (100 + PLAYERBOT_WEAPON_UPGRADE_MIN_GAIN_PERCENT)) ||
-                        price > GetPlayerBotWeaponUpgradeBudget(ch, GetPlayerBotWeaponGainPercent(blow, owned.item ? owned.blow : 0)) ||
-                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                        (owned.item && blow * 100 < owned.blow * (100 + PLAYERBOT_WEAPON_UPGRADE_MIN_GAIN_PERCENT)))
                     continue;
+                // MT2009_PLUS_BOT_WEAPON_ERRAND_V1: the refusals counted (the census's reasons)
+                if (price > GetPlayerBotWeaponUpgradeBudget(ch, GetPlayerBotWeaponGainPercent(blow, owned.item ? owned.blow : 0))) {
+                    ++failPay;
+                    continue;
+                }
+                if (IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now)) {
+                    ++failClaimed;
+                    continue;
+                }
                 candidates.push_back(TCandidate{ blow, price, PlayerBotOfferRankPrice(shop->GetOwnerPID(), price),
                     shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
             }
         }
-        if (candidates.empty()) return false;
+        if (candidates.empty()) {
+            s_mapPlayerBotWeaponPickFail[ch->GetPlayerID()] = failClaimed ? "claimed" : failPay ? "pay" : "gone";   // MT2009_PLUS_BOT_WEAPON_ERRAND_V1
+            return false;
+        }
         std::sort(candidates.begin(), candidates.end(), [](const TCandidate& a, const TCandidate& b) {
             return a.blow != b.blow ? a.blow > b.blow : a.rank < b.rank;
         });
@@ -1465,17 +1480,19 @@ namespace {
         TPlayerBotBuyBest best;   // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1, within one blow
         for (const TCandidate& c : candidates) {
             if (previewed >= PLAYERBOT_WEAPON_UPGRADE_PREVIEW_LINES) break;
-            if (haveNav && !navigation.CanReach(ch->GetX(), ch->GetY(), c.x, c.y)) continue;
+            if (haveNav && !navigation.CanReach(ch->GetX(), ch->GetY(), c.x, c.y)) { ++failNav; continue; }
             auto shop = ikashop::GetManager().GetShopByOwnerID(c.owner);
             auto line = shop ? shop->GetItem(c.item) : nullptr;
             LPITEM preview = line ? BotOfflinePreview(*line) : NULL;
             if (!preview) continue;
             ++previewed;
             long long gain = 0;
-            const bool buyable = IsPlayerBotWeaponUpgradeOffer(ch, preview, &gain) &&
-                    WantsPlayerBotStallItem(ch, preview) &&
-                    CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
-                    ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const bool offer = IsPlayerBotWeaponUpgradeOffer(ch, preview, &gain) && WantsPlayerBotStallItem(ch, preview);
+            const bool pays = offer && CanPlayerBotPayForOffer(ch, preview, c.price, c.owner);
+            const bool room = pays && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const bool buyable = offer && pays && room;
+            if (offer && !pays) ++failPay;          // MT2009_PLUS_BOT_WEAPON_ERRAND_V1
+            else if (pays && !room) ++failBag;
             const long long blow = buyable ? GetPlayerBotWeaponHitDamage(preview, ch) : 0;
             const int useful = buyable ? CountPlayerBotUsefulBuyLines(ch, preview) : 0;
             M2_DELETE(preview);
@@ -1493,7 +1510,12 @@ namespace {
             bestPrice = c.price;
             bestGain = gain;
         }
-        if (!bestOwner) return false;
+        if (!bestOwner) {
+            s_mapPlayerBotWeaponPickFail[ch->GetPlayerID()] = failBag ? "bag" : failPay ? "pay" : failNav ? "nav" :
+                failClaimed ? "claimed" : "gone";   // MT2009_PLUS_BOT_WEAPON_ERRAND_V1
+            return false;
+        }
+        s_mapPlayerBotWeaponPickFail.erase(ch->GetPlayerID());
         auto& o = state.offlineShop;
         o.buyOwner = bestOwner;
         o.buyItem = bestItem;

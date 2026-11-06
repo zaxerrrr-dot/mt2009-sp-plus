@@ -168,6 +168,40 @@ namespace
 		return !ready || noStones;	// noStones: the line is missing and the bag has no stones for it
 	}
 
+	// MT2009_PLUS_BOT_SM_HP70_V1 (the owner, 6 November 2026, point 6: "pilne linie HP w obecnej puli"): a bot of 70+ under
+	// its band's median max HP (IsPlayerBotUnderHpMedian, playerbot_errands.h) whose body armour, shield or necklace has
+	// no HP / defence line - an add (a piece with room for a line) or a change (a piece with lines, none of them HP /
+	// defence) is urgent: it may take the next day's seventh of the current week. The weekly grant is not raised.
+
+	bool IsPlayerBotHp70BonusUrgent(LPCHARACTER ch, bool add)
+	{
+		long long median = 0;
+		if (!ch || !IsPlayerBotUnderHpMedian(ch, &median))
+			return false;
+		static const BYTE s_wears[] = { WEAR_BODY, WEAR_SHIELD, WEAR_NECK };
+		for (size_t i = 0; i < sizeof(s_wears) / sizeof(s_wears[0]); ++i)
+		{
+			LPITEM item = ch->GetWear(s_wears[i]);
+			if (!item)
+				continue;
+			const int lines = item->GetAttributeCount();
+			bool hp = false;
+			for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM && !hp; ++a)
+			{
+				const WORD type = item->GetAttributeType(a);
+				hp = type == APPLY_MAX_HP || type == APPLY_MAX_HP_PCT || type == APPLY_DEF_GRADE_BONUS;
+			}
+			if (hp || (add ? lines >= PLAYERBOT_BONUS_MAX_LINES || !CanPlayerBotItemRollNewLine(item) : lines <= 0))
+				continue;
+			PlayerBotLogThrottled("ishop3_hp70_urgent", get_dword_time(),
+					"PLAYERBOT_ISHOP3: hp70 urgent pid=%u name=%s level=%u hp=%d median=%lld wear=%u vnum=%u lines=%d what=%s",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), (int)ch->GetMaxHP(), median,
+					(unsigned int)s_wears[i], item->GetVnum(), lines, add ? "bonus_add" : "bonus_change");
+			return true;
+		}
+		return false;
+	}
+
 	// The goals that may borrow the next day's seventh (the list: this file's header).
 	bool IsPlayerBotSmPoolUrgent(LPCHARACTER ch, const char* reason)
 	{
@@ -177,7 +211,9 @@ namespace
 				strcmp(reason, "sungma_buff_next") == 0)
 			return true;
 		if (strcmp(reason, "bonus_add") == 0 || strcmp(reason, "bonus_change") == 0 || strcmp(reason, "bonus_marble") == 0)
-			return IsPlayerBotYoharaMoveWaitingOnBonus(ch);
+			return IsPlayerBotYoharaMoveWaitingOnBonus(ch) ||
+					(strcmp(reason, "bonus_marble") != 0 &&
+					 IsPlayerBotHp70BonusUrgent(ch, strcmp(reason, "bonus_add") == 0));	// MT2009_PLUS_BOT_SM_HP70_V1
 		if (strcmp(reason, "smith_scroll") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "blessing_scroll") == 0)
 			return (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_GEAR) != 0;
 		return false;

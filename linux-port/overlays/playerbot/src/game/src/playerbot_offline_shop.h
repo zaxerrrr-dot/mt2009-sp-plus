@@ -3102,7 +3102,8 @@ namespace {
                 o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
                 return false;
             }
-            if (CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID()))
+            // MT2009_PLUS_BOT_ERRAND_BATCH_V1: its stand is one errand of the batch (playerbot_errands.h).
+            if (RequestPlayerBotShopErrand(ch, PLAYERBOT_ERRAND_STAND, now))
                 PlayerBotLogThrottled("shop_channel_service", now,
                         "PLAYERBOT_CHANNEL: pid=%u name=%s asks for the shop channel to serve its stand (here %u, expired %d)",
                         ch->GetPlayerID(), ch->GetName(), (unsigned int)g_bChannel, expired ? 1 : 0);

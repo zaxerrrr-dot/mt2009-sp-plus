@@ -288,7 +288,8 @@ namespace
 	bool WantsPlayerBotSmCouponFromMarket(LPCHARACTER ch)
 	{
 		const TPlayerBotAIState* state = FindPlayerBotSmCouponState(ch);
-		if (!state || GetPlayerBotSmCouponGap(ch, *state, true) <= 0)
+		// MT2009_PLUS_BOT_SM_HP70_V1: an exp-locked bot sells its coupons and buys none (playerbot_errands.h)
+		if (!state || IsPlayerBotLockedCouponSeller(ch) || GetPlayerBotSmCouponGap(ch, *state, true) <= 0)
 			return false;
 		if (IsPlayerBotSmCouponDayFull(s_mapPlayerBotSmCouponNeed[ch->GetPlayerID()]))
 			return false;
@@ -308,7 +309,8 @@ namespace
 	bool FindPlayerBotSmCouponPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now)
 	{
 		using namespace playerbot_offline;
-		if (!ch || !IsPlayerBotItemShopEnabled() || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+		if (!ch || !IsPlayerBotItemShopEnabled() || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				IsPlayerBotLockedCouponSeller(ch))	// MT2009_PLUS_BOT_SM_HP70_V1
 			return false;
 		const long long gap = GetPlayerBotSmCouponGap(ch, state, true);
 		if (gap <= 0)

@@ -320,7 +320,9 @@ namespace {
         }
         const size_t cap = std::max<size_t>(1,
             (size_t)GetPlayerBotsAlive() * PLAYERBOT_PROGRESSION_TRIP_PER_MILLE / 1000) * (biologistSupply ? 2 : 1);
-        if (CountPlayerBotProgressionTrips(now) >= cap) return false;
+        // MT2009_PLUS_BOT_ERRAND_BATCH_V1: a bot moved to the shop channel for its errands goes past the cap - it
+        // came for this trip (playerbot_errands.h).
+        if (CountPlayerBotProgressionTrips(now) >= cap && !IsPlayerBotErrandArrival(ch->GetPlayerID(), now)) return false;
         state.dwProgressionTripUntil = now + PLAYERBOT_PROGRESSION_TRIP_MS;
         s_mapPlayerBotProgressionTrip[ch->GetPlayerID()] = state.dwProgressionTripUntil;
         sys_log(0, "PLAYERBOT_MARKET: progression trip pid=%u name=%s map=%ld level=%d gold=%lld trips=%u cap=%u scroll_rule=%d stalki=%d",

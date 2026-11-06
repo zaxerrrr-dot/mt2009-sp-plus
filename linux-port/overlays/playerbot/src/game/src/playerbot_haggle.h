@@ -465,7 +465,8 @@ namespace
 					(h.dwChannelAskAt == 0 || now - h.dwChannelAskAt >= PLAYERBOT_HAGGLE_CHANNEL_ASK_MS))
 			{
 				h.dwChannelAskAt = now;
-				CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID());
+				// MT2009_PLUS_BOT_ERRAND_BATCH_V1: a deal is an errand of the batch (playerbot_errands.h).
+				RequestPlayerBotShopErrand(ch, ClassifyPlayerBotErrandLine(h.dwOwner, h.dwItem), now);
 			}
 			if (spawn.map == ch->GetMapIndex() && (int)spawn.channel == shopChannel && (int)g_bChannel == shopChannel)
 			{

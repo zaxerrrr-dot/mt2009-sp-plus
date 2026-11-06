@@ -65,6 +65,14 @@ namespace
 			return true;
 		if (!CPlayerBotManager::instance().IsChannelTableMode())
 			return false;
+		// MT2009_PLUS_BOT_ERRAND_BATCH_V1: its stand is one errand of the batch - held, the bot goes on with its life
+		// and the stand's pass asks again later (playerbot_errands.h).
+		if (!PassPlayerBotShopErrand(ch, PLAYERBOT_ERRAND_STAND, now))
+		{
+			state.dwNextShopKeepTime = now + PLAYERBOT_SHOP_CHANNEL_REQUEST_RETRY_MS;
+			state.offlineShop.nextService = now + PLAYERBOT_SHOP_CHANNEL_REQUEST_RETRY_MS;
+			return false;
+		}
 		const bool requested = CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID());
 		if (!state.bWaitingForShopChannel)
 			state.dwShopChannelWaitStarted = now;

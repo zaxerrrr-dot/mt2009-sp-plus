@@ -477,6 +477,8 @@ namespace
 		// MT2009_PLUS_BOT_DS_YOHARA800_V1: the bulk alchemists - Cors opened, Mythic stones made (a legendary
 		// pair that took), Mythic Highest made, stones taken to their cap (+6 on a Highest), beans spent.
 		unsigned bulkOpened, bulkMythMade, bulkHighestMade, bulkCapMade, bulkBeans;
+		// MT2009_PLUS_BOT_DS_FREE_RENEW_V1: free renewals (in place / at the Alchemist) and the ones refused.
+		unsigned freeRenewInPlace, freeRenewAlchemist, freeRenewFailed;
 	};
 	TPlayerBotAlchemyStats s_kPlayerBotAlchemyStats = { 0 };
 
@@ -728,6 +730,82 @@ namespace
 		return proto && proto->dwGold ? (long long)proto->dwGold : 0;
 	}
 
+	// MT2009_PLUS_BOT_DS_FREE_RENEW_V1 (the owner, 6 November 2026, point 9: "boty niech maja odnowienie za darmo"): a
+	// bot's Dragon Stone gets its time back for nothing - the Time Elixir (D) is given, not bought, and used on the stone
+	// the moment a worn one runs out (RenewPlayerBotDsFree, wherever the bot is), and at the Alchemist for any stone of
+	// the kind running low (DoPlayerBotAlchemistStep). Every stone of the rare grade and over is then worth its time
+	// (GetPlayerBotDsIntended), so an expired stone is never left on doing nothing. Not a player's companion (its
+	// stones are its owner's business, MT2009_PLUS_SIDEKICK_DS_ELIXIRS_V2). Switch: event flag
+	// m2_bot_ds_free_renew_off 1 - the elixir is bought again (5 000 000) and an expired stone waits for it. The log:
+	// PLAYERBOT_DS: free renew (throttled), the census's free_renew_in_place / _alchemist / _failed.
+	const DWORD PLAYERBOT_DS_FREE_RENEW_RETRY_MS = 5 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotDsFreeRenewNext;
+
+	bool IsPlayerBotDsFreeRenew(LPCHARACTER ch)
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 1000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_ds_free_renew_off") == 0;
+		}
+		return s_bOn && ch && !IsPlayerBotSidekickPID(ch->GetPlayerID());
+	}
+
+	// A Time Elixir (D) given and used on the stone; true when the stone has more time after it.
+	bool RenewPlayerBotDsFree(LPCHARACTER ch, LPITEM stone, bool alchemist)
+	{
+		if (!ch || !stone || !stone->IsDragonSoul() || !IsPlayerBotDsFreeRenew(ch) || IsPlayerBotSidekickLockedItem(ch, stone))
+			return false;
+		const DWORD now = get_dword_time();
+		if (!alchemist)
+		{
+			std::map<DWORD, DWORD>::const_iterator next = s_mapPlayerBotDsFreeRenewNext.find(ch->GetPlayerID());
+			if (next != s_mapPlayerBotDsFreeRenewNext.end() && (int)(now - next->second) < 0)
+				return false;
+			s_mapPlayerBotDsFreeRenewNext[ch->GetPlayerID()] = now + PLAYERBOT_DS_FREE_RENEW_RETRY_MS;
+		}
+		if (ch->GetEmptyInventory(1) < 0)
+		{
+			++s_kPlayerBotAlchemyStats.freeRenewFailed;
+			PlayerBotLogThrottled("ds_free_renew_bag", now,
+					"PLAYERBOT_DS: free renew refused pid=%u name=%s vnum=%u why=bag", ch->GetPlayerID(), ch->GetName(),
+					stone->GetVnum());
+			return false;
+		}
+		LPITEM elixir = ch->AutoGiveItem(PLAYERBOT_DS_TIME_ELIXIR_VNUM, 1, -1, false);
+		if (!elixir)
+		{
+			++s_kPlayerBotAlchemyStats.freeRenewFailed;
+			return false;
+		}
+		const DWORD vnum = stone->GetVnum();
+		const long before = (long)stone->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+		const bool equipped = stone->IsEquipped();
+		const bool ok = ch->UseItem(TItemPos(INVENTORY, elixir->GetCell()), TItemPos(stone->GetWindow(), stone->GetCell()));
+		const long after = (long)stone->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+		if (!ok)
+			ch->RemoveSpecifyItem(PLAYERBOT_DS_TIME_ELIXIR_VNUM, 1);	// never a free elixir for the counter
+		const bool renewed = ok && after > before;
+		if (renewed)
+		{
+			++s_kPlayerBotAlchemyStats.recharged;
+			if (alchemist)
+				++s_kPlayerBotAlchemyStats.freeRenewAlchemist;
+			else
+				++s_kPlayerBotAlchemyStats.freeRenewInPlace;
+		}
+		else
+			++s_kPlayerBotAlchemyStats.freeRenewFailed;
+		PlayerBotLogThrottled(renewed ? "ds_free_renew" : "ds_free_renew_fail", now,
+				"PLAYERBOT_DS: free renew pid=%u name=%s lv=%d vnum=%u worn=%d where=%s ok=%d sec=%ld->%ld",
+				ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), vnum, equipped ? 1 : 0,
+				alchemist ? "alchemist" : "in_place", ok ? 1 : 0, before, after);
+		return renewed;
+	}
+
 	bool IsPlayerBotDsRechargeWorthy(LPITEM item)
 	{
 		if (!item || !item->IsDragonSoul() || GetPlayerBotDsGrade(item) < PLAYERBOT_DS_MIN_WORN_GRADE)
@@ -745,6 +823,8 @@ namespace
 	// it), so an elixir is its only way back.
 	bool CanPlayerBotAffordDsElixir(LPCHARACTER ch)
 	{
+		if (IsPlayerBotDsFreeRenew(ch))
+			return true;	// MT2009_PLUS_BOT_DS_FREE_RENEW_V1
 		const long long elixir = GetPlayerBotDsElixirPrice();
 		if (!ch || elixir <= 0)
 			return false;
@@ -794,7 +874,7 @@ namespace
 			// The worn stone always counts (MT2009_PLUS_BOT_DS_KEEP_WORN_V1:
 			// it stays on until a strictly better one is ready).
 			if (s != worn && (GetPlayerBotDsGrade(s) < PLAYERBOT_DS_MIN_WORN_GRADE || ScorePlayerBotDsWorth(ch, s) <= 0 ||
-					(!HasPlayerBotDsTime(s) && !IsPlayerBotDsRechargeWorthy(s))))
+					(!HasPlayerBotDsTime(s) && !IsPlayerBotDsRechargeWorthy(s) && !IsPlayerBotDsFreeRenew(ch))))
 				continue;
 			if (!best || RankPlayerBotDs(ch, s) > RankPlayerBotDs(ch, best) ||
 					(RankPlayerBotDs(ch, s) == RankPlayerBotDs(ch, best) && s == worn))
@@ -810,7 +890,8 @@ namespace
 	{
 		LPITEM intended = GetPlayerBotDsIntended(ch, kind);
 		if (intended && intended->GetSocket(ITEM_SOCKET_REMAIN_SEC) < PLAYERBOT_DS_ELIXIR_BELOW_SEC &&
-				!IsPlayerBotSidekickLockedItem(ch, intended) && CanPlayerBotAffordDsElixir(ch))
+				!IsPlayerBotSidekickLockedItem(ch, intended) && CanPlayerBotAffordDsElixir(ch) &&
+				!(intended->IsEquipped() && IsPlayerBotDsFreeRenew(ch)))	// MT2009_PLUS_BOT_DS_FREE_RENEW_V1: renewed in place
 			return intended;
 		return NULL;
 	}
@@ -1158,6 +1239,9 @@ namespace
 		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
 		{
 			LPITEM worn = GetPlayerBotWornDs(ch, kind);
+			// MT2009_PLUS_BOT_DS_FREE_RENEW_V1: a worn stone running low gets its free elixir where the bot stands.
+			if (worn && worn->GetSocket(ITEM_SOCKET_REMAIN_SEC) < PLAYERBOT_DS_ELIXIR_BELOW_SEC && HasPlayerBotDsTime(worn))
+				RenewPlayerBotDsFree(ch, worn, false);
 			std::vector<LPITEM> stones;
 			CollectPlayerBotDragonSouls(ch, stones, kind);
 			LPITEM best = NULL;
@@ -1191,6 +1275,9 @@ namespace
 			}
 			if (worn && !HasPlayerBotDsTime(worn) && (!best || RankPlayerBotDs(ch, worn) >= RankPlayerBotDs(ch, best)))
 			{
+				// MT2009_PLUS_BOT_DS_FREE_RENEW_V1: the bot's renewal is free, here and now.
+				if (RenewPlayerBotDsFree(ch, worn, false))
+					continue;
 				++s_kPlayerBotAlchemyStats.keptExpired;
 				PlayerBotLogThrottled("ds_kept_expired", get_dword_time(),
 						"PLAYERBOT_DS: kept expired pid=%u name=%s vnum=%u kind=%d gold=%lld (stays on, waits for an elixir)",
@@ -1880,6 +1967,9 @@ namespace
 			LPITEM stone = GetPlayerBotDsRechargeTarget(ch, kind);
 			if (!stone)
 				continue;
+			// MT2009_PLUS_BOT_DS_FREE_RENEW_V1: free for a bot - no heart, no purchase.
+			if (IsPlayerBotDsFreeRenew(ch))
+				return RenewPlayerBotDsFree(ch, stone, true);
 			// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: a Dragon Heart from a spare stone first (a bulk alchemist).
 			int cell = MakePlayerBotDragonHeart(ch);
 			if (cell < 0)
@@ -2249,8 +2339,10 @@ namespace
 	void LogPlayerBotAlchemyCensus()
 	{
 		const TPlayerBotAlchemyStats& s = s_kPlayerBotAlchemyStats;
-		sys_log(0, "PLAYERBOT_DS: census recharged=%u kept_expired_passes=%u deck_on=%u deck_off=%u pulled_out=%u pull_out_destroyed=%u elixir_price=%lld",
-				s.recharged, s.keptExpired, s.deckOn, s.deckOff, s.pulledOut, s.pullOutDestroyed, GetPlayerBotDsElixirPrice());
+		sys_log(0, "PLAYERBOT_DS: census recharged=%u kept_expired_passes=%u deck_on=%u deck_off=%u pulled_out=%u pull_out_destroyed=%u elixir_price=%lld "
+				"free_renew_in_place=%u free_renew_alchemist=%u free_renew_failed=%u",
+				s.recharged, s.keptExpired, s.deckOn, s.deckOff, s.pulledOut, s.pullOutDestroyed, GetPlayerBotDsElixirPrice(),
+				s.freeRenewInPlace, s.freeRenewAlchemist, s.freeRenewFailed);
 		sys_log(0, "PLAYERBOT_ALCHEMY: census shards=%u daily_cors=%u opened=%u worn_changes=%u grade=%u step=%u strength=%u refine_fails=%u elixirs=%u beans=%u listed=%u trips=%u cor_lines_bought=%u cor_units_bought=%llu cor_yang=%llu cor_supply=%u plentiful=%d",
 				s.shards, s.cors, s.opened, s.equipped, s.refinesGrade, s.refinesStep, s.refinesStrength,
 				s.refineFails, s.elixirs, s.beans, s.listed, s.trips, s.corLinesBought, s.corUnitsBought, s.corYang,

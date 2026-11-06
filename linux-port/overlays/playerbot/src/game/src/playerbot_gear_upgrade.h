@@ -196,6 +196,9 @@ namespace
 		}
 	};
 	std::map<DWORD, TPlayerBotWeaponUpgradeLook> s_mapPlayerBotWeaponUpgradeLooks;
+	// MT2009_PLUS_BOT_WEAPON_ERRAND_V1: why the last pick of a bot that wanted a weapon found nothing to buy
+	// (FindPlayerBotWeaponUpgradePick, playerbot_offline_market.h): a literal - pay, bag, claimed, nav, gone.
+	std::map<DWORD, const char*> s_mapPlayerBotWeaponPickFail;
 	// Bots that set off for or picked such a weapon since the last report.
 	DWORD s_dwPlayerBotWeaponUpgradePicks = 0;
 	DWORD s_dwPlayerBotMerchantWeaponUpgrades = 0;
@@ -413,6 +416,45 @@ namespace
 				fresh, wanting, wanting ? gainSum / wanting : 0LL,
 				(unsigned int)s_mapPlayerBotWeaponLineCheapest.size(), s_dwPlayerBotWeaponUpgradePicks,
 				s_dwPlayerBotMerchantWeaponUpgrades);
+		// MT2009_PLUS_BOT_WEAPON_ERRAND_V1 (the owner, 6 November 2026, point 5): why the bots that want a weapon of
+		// their first village's stands did not buy it - off the shop channel, off the first village, or the last pick's
+		// own refusal (the purse, the bag, a line claimed by another, no way to the stand, the line gone).
+		{
+			unsigned int offline = 0, channel = 0, map = 0, pay = 0, bag = 0, claimed = 0, nav = 0, gone = 0, notTried = 0;
+			const bool offShop = CPlayerBotManager::instance().IsChannelTableMode() &&
+					(int)g_bChannel != playerbot_channel_rules::SHOP_CHANNEL;
+			for (std::map<DWORD, TPlayerBotWeaponUpgradeLook>::const_iterator it = s_mapPlayerBotWeaponUpgradeLooks.begin();
+					it != s_mapPlayerBotWeaponUpgradeLooks.end(); ++it)
+			{
+				if (it->second.vnum == 0)
+					continue;
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+				std::map<DWORD, const char*>::const_iterator f = s_mapPlayerBotWeaponPickFail.find(it->first);
+				const char* why = f != s_mapPlayerBotWeaponPickFail.end() ? f->second : NULL;
+				if (!ch)
+					++offline;
+				else if (offShop)
+					++channel;
+				else if (ch->GetMapIndex() != playerbot_empire_rules::GetHomeMap(ch->GetEmpire(), playerbot_empire_rules::MAP_ROLE_M1))
+					++map;
+				else if (!why)
+					++notTried;
+				else if (why[0] == 'p')
+					++pay;
+				else if (why[0] == 'b')
+					++bag;
+				else if (why[0] == 'c')
+					++claimed;
+				else if (why[0] == 'n')
+					++nav;
+				else
+					++gone;
+			}
+			sys_log(0, "PLAYERBOT_GEAR_UPGRADE: refusals channel=%u wanting=%u offline=%u off_shop_channel=%u off_first_village=%u "
+					"pay=%u bag=%u claimed=%u nav=%u gone=%u not_tried=%u",
+					(unsigned int)g_bChannel, wanting, offline, channel, map, pay, bag, claimed, nav, gone, notTried);
+			s_mapPlayerBotWeaponPickFail.clear();
+		}
 		s_dwPlayerBotWeaponUpgradePicks = 0;
 		s_dwPlayerBotMerchantWeaponUpgrades = 0;
 	}

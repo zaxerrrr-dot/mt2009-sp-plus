@@ -221,6 +221,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_mining.h"
 #include "playerbot_herbalism.h"
 #include "playerbot_gear_upgrade.h" // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: counter weapons at any plus by the damage model, the merchant's best weapon, the tool guard
+#include "playerbot_errands.h" // MT2009_PLUS_BOT_ERRAND_BATCH_V1 / _WEAPON_ERRAND_V1 / _SM_HP70_V1
 #include "playerbot_unique_slots.h"
 #include "playerbot_missions.h"
 #include "playerbot_skills.h"
@@ -6507,6 +6508,15 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 				(state && state->offlineShop.visiting);
 		busy = busy || (state && state->offlineShop.buyOwner != 0);
 #endif
+		// MT2009_PLUS_BOT_ERRAND_BATCH_V1: a bot that came to the shop channel stays while its errands run, and
+		// costs more to send away for its first hour (playerbot_errands.h).
+		if (!pinned)
+		{
+			bool stayBusy = false;
+			if (IsPlayerBotErrandArrivalPinned(pid, dwNow, stayBusy))
+				pinned = true;
+			busy = busy || stayBusy;
+		}
 		vecPid.push_back(pid);
 		vecMap.push_back(ch->GetMapIndex());
 		vecCost.push_back(playerbot_channel_rules::MoveCost(busy, liveStand, pinned,
@@ -7613,6 +7623,9 @@ WritePlayerBotGuildStatus(dwNow);
 		ManagePlayerBotDayGoal(ch, state, dwNow);
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_BOT_ERRAND_BATCH_V1 / _WEAPON_ERRAND_V1 / _SM_HP70_V1: the errands, the arrivals, the HP bands
+		// (playerbot_errands.h).
+		ManagePlayerBotErrands(ch, state, dwNow);
 		// A bot that asked to be moved to the shop channel for a stand waits in
 		// town until the coordinator moves it: without the hold it starts a hunt
 		// inside the request's stability window and is logged out in the middle

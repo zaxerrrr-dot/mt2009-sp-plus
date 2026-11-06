@@ -1446,8 +1446,11 @@ namespace
 		if (CPlayerBotManager::instance().IsChannelTableMode() &&
 				g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
 		{
+			// MT2009_PLUS_BOT_ERRAND_BATCH_V1: the far line's kind noted; asked for only with a batch (playerbot_errands.h).
+			const int errandKind = ClassifyPlayerBotErrandLine(state.offlineShop.farPickOwner, state.offlineShop.farPickItem);
 			state.offlineShop.farPickOwner = state.offlineShop.farPickItem = 0;
-			if (playerbot_offline::Due(dwNow, state.dwNextBuyChannelRequestTime))
+			if (PassPlayerBotShopErrand(ch, errandKind, dwNow) &&
+					playerbot_offline::Due(dwNow, state.dwNextBuyChannelRequestTime))
 			{
 				state.dwNextBuyChannelRequestTime = dwNow + PLAYERBOT_SHOP_CHANNEL_BUY_REQUEST_GAP_MS;
 				if (CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID()))
