@@ -204,9 +204,15 @@ namespace
 
 	// V4 (03:35): the last Metin with no time limit - four runs fell into the 4th level with 20+ groups left in room 3
 	// after the 180 s and were abandoned there (the Warrior never came); the bots now reach the groups (unstranded).
+	// MT2009_PLUS_WEZE_ROOM_PURGE_V1 (6 November, day): the quest empties the room a party leaves (move_to), so the
+	// groups of room 3 hold nothing any more - no hold at the last Metin (the groups-first turns above stay: a pile
+	// of groups at 100% only hurts), the last Metin is the turn's like the other three.
 	bool IsPlayerBotWezeHoldLastMetin(LPDUNGEON d, long instance, int hpPct)
 	{
-		return d && d->GetFlag("lvl") == 3 && d->GetFlag("next") == 4 && hpPct <= 15 && CountPlayerBotWezeAdds(instance) > 0;
+		(void)d;
+		(void)instance;
+		(void)hpPct;
+		return false;
 	}
 
 	// The living monsters' races (not the Metins, the Kolumny, the cages) as objectives.
@@ -259,7 +265,7 @@ namespace
 			case 3:
 			{
 				const int e = GetPlayerBotWezeOrder(d, d->GetFlag("next"));
-				if (d->GetFlag("next") == 4 ? CountPlayerBotWezeAdds(d->GetMapIndex()) > 0 : IsPlayerBotWezeAddsFirst(d, d->GetMapIndex()))
+				if (IsPlayerBotWezeAddsFirst(d, d->GetMapIndex()))	// MT2009_PLUS_WEZE_ROOM_PURGE_V1: the 4th Metin's turn as the others
 					AddPlayerBotWezeAddRaces(d->GetMapIndex(), out);
 				else if (e)
 					out.push_back(PLAYERBOT_WEZE_METIN_BASE + e);
@@ -648,13 +654,9 @@ namespace
 			if (six >= 1 && six <= 6 && GetPlayerBotWezeSpot(run.lInstance, 5, six, x, y))
 			{
 				LPCHARACTER col = FindPlayerBotWezeNpc(ch, PLAYERBOT_WEZE_COLUMN, x, y, PLAYERBOT_WEZE_COLUMN_RANGE);
-				// the 6th Kolumna (the way to the 6th level) only with the room clear - the Smith's count_monster
-				const int adds = d->GetFlag("opened") == 5 ? CountPlayerBotWezeAdds(run.lInstance) : 0;
-				const bool walk = col && DISTANCE_APPROX(col->GetX() - ch->GetX(), col->GetY() - ch->GetY()) > PLAYERBOT_YDG_GIVE_DISTANCE;
-				if (adds > 0)
-					PlayerBotLogThrottled("weze_hold6", dwNow, "BOT_YDG: weze last column held run=%d name=%s adds=%d", run.iId,
-							ch->GetName(), adds);
-				if ((adds == 0 || walk) && GivePlayerBotWezeItem(ch, state, run, d, col, PLAYERBOT_WEZE_KEY, next, dwNow, "column"))
+				// MT2009_PLUS_WEZE_ROOM_PURGE_V1: the 6th Kolumna at once - the quest empties room 5 as the party leaves it,
+				// so its groups no longer hold the Smith's count_monster (the hold "weze last column held" is gone)
+				if (GivePlayerBotWezeItem(ch, state, run, d, col, PLAYERBOT_WEZE_KEY, next, dwNow, "column"))
 					return true;
 			}
 		}

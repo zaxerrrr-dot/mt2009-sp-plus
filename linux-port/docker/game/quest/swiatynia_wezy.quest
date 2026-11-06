@@ -31,6 +31,7 @@ quest swiatynia_wezy begin
 				map = 391, base_x = 768, base_y = 16384,
 				town = {127, 31}, portal = {127, 70},
 				rooms = {{127, 127}, {127, 127}, {383, 127}, {639, 127}, {383, 383}, {639, 383}, {127, 642}},
+				room_half = 120,	-- MT2009_PLUS_WEZE_ROOM_PURGE_V1: a room's half width (the rooms are 256 apart)
 				six = {{35, -35}, {-35, -35}, {-35, 35}, {35, 35}, {35, 0}, {-35, 0}},
 				corners = {{35, -35}, {-35, -35}, {-35, 35}, {35, 35}},
 				heads = {{25, 0}, {0, 25}, {-25, 0}, {0, -25}},
@@ -125,9 +126,29 @@ quest swiatynia_wezy begin
 			swiatynia_wezy.group(level, m)
 		end
 
+		-- MT2009_PLUS_WEZE_ROOM_PURGE_V1 (the owner, 6 November 2026: "musisz poprawic quest"): the levels are rooms
+		-- apart (the map's six parts, no way back), but the 4th level's Warrior and the 6th level's Smith wait for
+		-- d.count_monster() == 0 - the whole instance's count. A group of the 3rd (5th) level still alive when its last
+		-- Metin fell (its 6th Kolumna opened) stayed in the room left behind and held the temple until its time ran
+		-- out, for people and bots alike. The room a party leaves is emptied of its monsters as it leaves, so the
+		-- count is the new room's. Nothing else changes: the new room's monsters all die before the Warrior / Smith.
+		function purge_room(prev, level)
+			local c = swiatynia_wezy.cfg()
+			local r, n = c.rooms[prev], c.rooms[level]
+			if r == nil or n == nil or (r[1] == n[1] and r[2] == n[2]) then
+				return
+			end
+			local h = c.room_half
+			d.purge_area((c.base_x + r[1] - h) * 100, (c.base_y + r[2] - h) * 100, (c.base_x + r[1] + h) * 100, (c.base_y + r[2] + h) * 100)
+		end
+
 		function move_to(level)
 			local c = swiatynia_wezy.cfg()
 			local x, y = swiatynia_wezy.room_xy(level, {0, -50})
+			local prev = d.getf("lvl") -- MT2009_PLUS_WEZE_ROOM_PURGE_V1
+			if prev >= 1 and prev < level then
+				swiatynia_wezy.purge_room(prev, level)
+			end
 			d.setf("lvl", level)
 			d.setf("lvl_t", get_global_time())
 			d.jump_all(c.base_x + x, c.base_y + y)

@@ -197,8 +197,11 @@ namespace playerbot_dgrun
 		{ "swiatynia", 120, 5, 5, 4, true },
 		// MT2009_PLUS_BOT_GLEBIE_V1: Glebie Polnocnego Wiatru (395) - the quest's 120 and a Champion level (1-8 people),
 		// Alastor of 135 with 22.5 million health: five called, four to go in, a Shaman always.
-		{ "glebie_slaby", 120, 5, 5, 4, true },
-		{ "glebie_silny", 120, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_YDG_GATE_V1 (6 November, the night's runs): no party of 4-5 ever won Glebie (20+ wipes), the
+		// wins were all parties of 7-8 - eight called and asked for, seven at the weak one's entrance, eight at the
+		// strong one's (its one win: eight; its parties of 4-5 wiped or timed out).
+		{ "glebie_slaby", 120, 8, 8, 7, true },
+		{ "glebie_silny", 120, 8, 8, 8, true },
 		// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3 - the quest's 120 and a Champion level (the panel's 1-8): the clock's
 		// call wants four and a healing Shaman, goes in with three (a YDG training party without one - the run's bonuses).
 		{ "gnolle", 120, 4, 4, 3, true },

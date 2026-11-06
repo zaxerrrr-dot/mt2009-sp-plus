@@ -155,6 +155,7 @@ namespace
 	long long ChargePlayerBotGlebieKeys(LPCHARACTER ch, const TPlayerBotDgRunDef& def);
 	bool IsPlayerBotGlebiePartyOk(int def, const std::vector<playerbot_dgrun::TCand>& free, std::string& why);
 	bool IsPlayerBotGlebieAutoOk(LPCHARACTER ch, const std::vector<int>& defs);
+	bool IsPlayerBotYdgGateAutoPartyOk(const std::vector<int>& defs, const std::vector<DWORD>& pids, std::string& why);	// MT2009_PLUS_BOT_YDG_GATE_V1
 	void NotePlayerBotGlebieRunStart(const TPlayerBotDgRun& run);
 	void NotePlayerBotGlebieRunEnd(const TPlayerBotDgRun& run);
 
@@ -1105,6 +1106,20 @@ namespace
 			{
 				party.push_back(v.front());
 				v.erase(v.begin());
+			}
+			// MT2009_PLUS_BOT_YDG_GATE_V1: a party of Swiatynia Wezy / Glebie alone too weak for all of its line is not
+			// formed - its bots stay free (the weaker ones grow elsewhere first); the pool goes on weaker still.
+			{
+				std::vector<DWORD> pids;
+				for (size_t i = 0; i < party.size(); ++i)
+					pids.push_back(party[i].pid);
+				std::string gate;
+				if (!IsPlayerBotYdgGateAutoPartyOk(defs, pids, gate))
+				{
+					PlayerBotLogThrottled("ydg_gate_auto", dwNow, "BOT_YDG: train auto party not formed empire=%d members=%u - too weak for its line: %s",
+							e, (unsigned int)pids.size(), gate.c_str());
+					continue;
+				}
 			}
 			// The leader: the strongest that is no Shaman.
 			std::stable_sort(party.begin(), party.end(), [](const TPlayerBotYdgPick& a, const TPlayerBotYdgPick& b)

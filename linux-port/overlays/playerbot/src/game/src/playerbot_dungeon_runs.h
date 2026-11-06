@@ -601,6 +601,9 @@ namespace
 	// MT2009_PLUS_BOT_GLEBIE_V1: playerbot_dungeon_runs_ydg_glebie.h, included at the end of this file.
 	bool DodgePlayerBotGlebieZones(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow);
 	bool IsPlayerBotGlebieEntryOk(const TPlayerBotDgRunDef& def, LPCHARACTER ch);
+	// MT2009_PLUS_BOT_YDG_GATE_V1: the strength gate of Swiatynia Wezy and Glebie (playerbot_dungeon_runs_ydg_glebie.h)
+	bool IsPlayerBotYdgGateBotOk(const TPlayerBotDgRunDef& def, LPCHARACTER ch, bool strict);
+	bool IsPlayerBotYdgGatePartyOk(const TPlayerBotDgRunDef& def, const std::vector<DWORD>& pids, std::string* why);
 	int GetPlayerBotGlebieKind(const TPlayerBotDgRunDef& def);
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -3107,6 +3110,8 @@ namespace
 				continue;
 			if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotGlebieEntryOk(def, ch))	// MT2009_PLUS_BOT_GLEBIE_V1
 				continue;
+			if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGateBotOk(def, ch, true))	// MT2009_PLUS_BOT_YDG_GATE_V1: the party's average
+				continue;
 			if (IsPlayerBotMeleyVisitor(pid) && def.bKind != DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RUNS_V1: it came for the lair
 				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
@@ -3996,6 +4001,19 @@ namespace
 						(unsigned int)picked.size());
 			return false;
 		}
+		// MT2009_PLUS_BOT_YDG_GATE_V1: Swiatynia Wezy and Glebie - the drawn party's strength (its strong ones)
+		{
+			std::vector<DWORD> pids;
+			for (size_t i = 0; i < picked.size(); ++i)
+				pids.push_back(picked[i].pid);
+			std::string gate;
+			if (info.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGatePartyOk(info, pids, &gate))
+			{
+				PlayerBotLogThrottled("ydg_gate_call", dwNow, "BOT_DGRUN: no call (%s) dungeon=%s - the party drawn falls short of the gate %s",
+						why, info.szKey, gate.c_str());
+				return false;
+			}
+		}
 		return OpenPlayerBotDgRun(def, empire, picked, slot, bucket.size(), dwNow, why) != 0;
 	}
 
@@ -4228,6 +4246,8 @@ namespace
 				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGearOk(ch))	// MT2009_PLUS_BOT_YDG_V1
 					continue;
 				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotGlebieEntryOk(def, ch))	// MT2009_PLUS_BOT_GLEBIE_V1
+					continue;
+				if (def.bKind == DGRUN_KIND_YDG && !IsPlayerBotYdgGateBotOk(def, ch, true))	// MT2009_PLUS_BOT_YDG_GATE_V1: the party's average
 					continue;
 				if (def.bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleFit(ch))	// MT2009_PLUS_BOT_GNOLLE_V1: 120 and a Champion
 					continue;
