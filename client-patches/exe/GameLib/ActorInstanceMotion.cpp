@@ -718,16 +718,30 @@ DWORD CActorInstance::__SetMotion(const SSetMotionData& c_rkSetMotData, DWORD dw
 		m_iFishingEffectID = -1;
 	}
 
+	DWORD dwRiderMotKey = dwMotKey;	// MT2009_PLUS_STANDING_MOUNT_V1: the motion the rider's model plays
+
 	if (m_pkHorse)
 	{
 		WORD wMotionIndex = GET_MOTION_INDEX(dwMotKey);
 		WORD wMotionSubIndex = GET_MOTION_SUB_INDEX(dwMotKey);
 		DWORD dwChildMotKey = MAKE_RANDOM_MOTION_KEY(m_pkHorse->m_wcurMotionMode, wMotionIndex, wMotionSubIndex);
 
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		// MT2009_PLUS_STANDING_MOUNT_V1: on a standing mount the rider keeps his ground motion modes, so WALK/RUN
+		// were his walk/run on the board. He now plays his WAIT (standing, all of its random variants) while the
+		// board plays its own walk/run and moves; the motion node keeps WALK/RUN, so moving/stopping is unchanged.
+		if ((CRaceMotionData::NAME_WALK == wMotionIndex || CRaceMotionData::NAME_RUN == wMotionIndex) && __IsMountingStandingMount())
+		{
+			MOTION_KEY dwWaitKey;
+			if (m_pkCurRaceData->GetMotionKey(m_wcurMotionMode, CRaceMotionData::NAME_WAIT, &dwWaitKey))
+				dwRiderMotKey = GetRandomMotionKey(dwWaitKey);
+		}
+#endif
+
 		if (CRaceMotionData::NAME_DEAD == wMotionIndex)
 			CGraphicThingInstance::ChangeMotion(dwMotKey, c_rkSetMotData.iLoopCount, c_rkSetMotData.fSpeedRatio);
 		else
-			CGraphicThingInstance::SetMotion(dwMotKey, c_rkSetMotData.fBlendTime, c_rkSetMotData.iLoopCount, c_rkSetMotData.fSpeedRatio);
+			CGraphicThingInstance::SetMotion(dwRiderMotKey, c_rkSetMotData.fBlendTime, c_rkSetMotData.iLoopCount, c_rkSetMotData.fSpeedRatio);
 
 		m_pkHorse->SetMotion(dwChildMotKey, c_rkSetMotData.fBlendTime, c_rkSetMotData.iLoopCount, c_rkSetMotData.fSpeedRatio);
 		m_pkHorse->__BindMotionData(dwChildMotKey);
@@ -748,7 +762,7 @@ DWORD CActorInstance::__SetMotion(const SSetMotionData& c_rkSetMotData, DWORD dw
 
 	__HideWeaponTrace();
 
-	if (__BindMotionData(dwMotKey))
+	if (__BindMotionData(dwRiderMotKey))	// MT2009_PLUS_STANDING_MOUNT_V1: WAIT's data (no footsteps) when standing on a board
 	{
 		int iLoopCount = __GetLoopCount();
 		SetMotionLoopCount(iLoopCount);

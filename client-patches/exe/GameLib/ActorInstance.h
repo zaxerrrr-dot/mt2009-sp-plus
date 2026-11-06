@@ -707,6 +707,9 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		bool		__IsDieMotion();
 		bool		__IsStandUpMotion();
 		bool		__IsMountingHorse();
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		bool		__IsMountingStandingMount();	// MT2009_PLUS_STANDING_MOUNT_V1
+#endif
 
 		bool		__CanAttack();
 		bool		__CanNextComboAttack();

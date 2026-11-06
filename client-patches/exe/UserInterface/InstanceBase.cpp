@@ -137,7 +137,11 @@ enum eMountType {MOUNT_TYPE_NONE=0, MOUNT_TYPE_NORMAL=1, MOUNT_TYPE_COMBAT=2, MO
 
 static bool IsStandingMountRace(DWORD dwMountVnum)
 {
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+	return dwMountVnum >= MT2009_STANDING_MOUNT_FIRST && dwMountVnum <= MT2009_STANDING_MOUNT_LAST;
+#else
 	return dwMountVnum >= 40003 && dwMountVnum <= 40007;
+#endif
 }
 
 eMountType GetMountLevelByVnum(DWORD dwMountVnum, bool IsNew)
@@ -3415,6 +3419,14 @@ void CInstanceBase::RefreshState(DWORD dwMotIndex, bool isLoop)
 	}
 	else if (IsHoldingPickAxe() || byItemType == ITEM_HERB_KNIFE)
 	{
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		// MT2009_PLUS_STANDING_MOUNT_V1: on a board/cloud/drakkar the rider stands with it, he does not sit
+		if (m_kHorse.IsMounting() && IsMountingStandingMount())
+		{
+			SetMotionMode(CRaceMotionData::MODE_GENERAL);
+		}
+		else
+#endif
 		if (m_kHorse.IsMounting())
 		{
 			SetMotionMode(CRaceMotionData::MODE_HORSE);
@@ -3426,6 +3438,14 @@ void CInstanceBase::RefreshState(DWORD dwMotIndex, bool isLoop)
 	}
 	else if (ITEM_ROD == byItemType)
 	{
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		// MT2009_PLUS_STANDING_MOUNT_V1: on a board/cloud/drakkar the rider stands with it, he does not sit
+		if (m_kHorse.IsMounting() && IsMountingStandingMount())
+		{
+			SetMotionMode(CRaceMotionData::MODE_GENERAL);
+		}
+		else
+#endif
 		if (m_kHorse.IsMounting())
 		{
 			SetMotionMode(CRaceMotionData::MODE_HORSE);

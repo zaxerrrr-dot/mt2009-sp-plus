@@ -417,5 +417,16 @@
 // LoadLocaleData reads locale/pl/skilldesc.txt when the language has none. Root: mt2009lang.py
 // (app.MT2009_LANG_CODEPAGE says this exe switches the codepage).
 #define ENABLE_MT2009_LANG_CODEPAGE
+// MT2009_PLUS_STANDING_MOUNT_V1 (the owner, 6 Nov 2026: on the surfboard the rider walks): a standing mount (the
+// surfboard, the Wukong clouds, the drakkars - races MT2009_STANDING_MOUNT_FIRST..LAST) keeps the rider's ground motion
+// modes (InstanceBase.cpp IsStandingMountRace / RefreshState), so its WALK/RUN were the ground walk/run. The rider now
+// plays his WAIT (the board's own walk/run moves) - ActorInstanceMotion.cpp __SetMotion; a pickaxe/rod on it stands
+// (MODE_GENERAL), not sits (MODE_HORSE); the horse-only combo/hand rules skip it; BlockMovement stops the rider too.
+#define ENABLE_MT2009_STANDING_MOUNT_FIX
+#define MT2009_STANDING_MOUNT_FIRST 40003
+#define MT2009_STANDING_MOUNT_LAST 40007
+// MT2009_PLUS_FIX_EFFECT_MOVEMENT_V1: attached effects/models are updated after the actor's transform of this frame
+// (INSTANCEBASE_Transform), not before it in OnUpdate - effects on a moving character (and on a mount) no longer lag.
+#define ENABLE_FIX_EFFECT_MOVEMENT
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

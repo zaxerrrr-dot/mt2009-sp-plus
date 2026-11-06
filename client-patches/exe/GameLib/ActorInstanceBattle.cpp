@@ -291,7 +291,11 @@ void CActorInstance::__RunNextCombo()
 
 void CActorInstance::__OnEndCombo()
 {
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+	if (__IsMountingHorse() && !__IsMountingStandingMount())	// MT2009_PLUS_STANDING_MOUNT_V1: ground combos restart at 0
+#else
 	if (__IsMountingHorse())
+#endif
 	{
 		m_dwcurComboIndex = 1;
 	}

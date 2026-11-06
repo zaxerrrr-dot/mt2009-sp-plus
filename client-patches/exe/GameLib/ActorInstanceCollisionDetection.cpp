@@ -667,6 +667,9 @@ void CActorInstance::BlockMovement()
 	if (m_pkHorse)
 	{
 		m_pkHorse->__InitializeMovement();
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+		__InitializeMovement();	// MT2009_PLUS_STANDING_MOUNT_V1: the rider's own movement (a moving skill) stops at the wall too
+#endif
 		return;
 	}
 

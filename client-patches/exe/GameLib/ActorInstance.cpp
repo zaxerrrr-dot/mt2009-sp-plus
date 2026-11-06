@@ -34,6 +34,9 @@ void CActorInstance::INSTANCEBASE_Transform()
 	//DWORD t4=ELTimer_GetMSec();
 	Transform();
 	//DWORD t5=ELTimer_GetMSec();
+#ifdef ENABLE_FIX_EFFECT_MOVEMENT
+	UpdateAttachingInstances();	// MT2009_PLUS_FIX_EFFECT_MOVEMENT_V1: after this frame's transform
+#endif
 	UpdatePointInstance();
 	//DWORD t6=ELTimer_GetMSec();
 	ShakeProcess();
@@ -82,7 +85,9 @@ void CActorInstance::OnUpdate()
 	DWORD t2=ELTimer_GetMSec();
 #endif
 
+#ifndef ENABLE_FIX_EFFECT_MOVEMENT	// MT2009_PLUS_FIX_EFFECT_MOVEMENT_V1: moved to INSTANCEBASE_Transform
 	UpdateAttachingInstances();
+#endif
 
 #ifdef __PERFORMANCE_CHECKER__
 	DWORD t3=ELTimer_GetMSec();
@@ -174,7 +179,12 @@ WORD CActorInstance::__GetCurrentComboType()
 		return 0;
 	if (IsHandMode())
 		return 0;
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+	// MT2009_PLUS_STANDING_MOUNT_V1: the ground combos (the combo skill's type) on a standing mount
+	if (__IsMountingHorse() && !__IsMountingStandingMount())
+#else
 	if (__IsMountingHorse())
+#endif
 		return 0;
 
 	return m_wcurComboType;
@@ -878,6 +888,18 @@ bool CActorInstance::__IsMountingHorse()
 {
 	return NULL != m_pkHorse;
 }
+
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+// MT2009_PLUS_STANDING_MOUNT_V1: the rider stands on it with his ground motion modes
+bool CActorInstance::__IsMountingStandingMount()
+{
+	if (!m_pkHorse)
+		return false;
+
+	const DWORD dwRace = m_pkHorse->GetRace();
+	return dwRace >= MT2009_STANDING_MOUNT_FIRST && dwRace <= MT2009_STANDING_MOUNT_LAST;
+}
+#endif
 
 void CActorInstance::MountHorse(CActorInstance * pkHorse)
 {

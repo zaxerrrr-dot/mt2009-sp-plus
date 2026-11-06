@@ -103,7 +103,11 @@ DWORD CActorInstance::AttachSmokeEffect(DWORD eSmoke)
 
 bool CActorInstance::__IsLeftHandWeapon(DWORD type)
 {
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+	if (WEAPON_DAGGER == type || (WEAPON_FAN == type && __IsMountingHorse() && !__IsMountingStandingMount()))	// MT2009_PLUS_STANDING_MOUNT_V1
+#else
 	if (WEAPON_DAGGER == type || (WEAPON_FAN == type && __IsMountingHorse()))
+#endif
 		return true;
 	else if (WEAPON_BOW == type)
 		return true;
@@ -117,7 +121,11 @@ bool CActorInstance::__IsLeftHandWeapon(DWORD type)
 
 bool CActorInstance::__IsRightHandWeapon(DWORD type)
 {
+#ifdef ENABLE_MT2009_STANDING_MOUNT_FIX
+	if (WEAPON_DAGGER == type || (WEAPON_FAN == type && __IsMountingHorse() && !__IsMountingStandingMount()))	// MT2009_PLUS_STANDING_MOUNT_V1
+#else
 	if (WEAPON_DAGGER == type || (WEAPON_FAN == type && __IsMountingHorse()))
+#endif
 		return true;
 	else if (WEAPON_BOW == type)
 		return false;

@@ -18,6 +18,25 @@ Katalog `Server/` **nie** idzie do `Source Client/` (pętla po `*/` musi go pomi
 Każda zmiana ma znacznik w komentarzu i jest za `#ifdef` z `Locale_inc.h`, więc wyłączenie
 definicji przywraca stary exe.
 
+## Wierzchowce stojące (deska, chmury, drakkary) – `MT2009_PLUS_STANDING_MOUNT_V1` (`ENABLE_MT2009_STANDING_MOUNT_FIX`), efekty w ruchu – `MT2009_PLUS_FIX_EFFECT_MOVEMENT_V1` (`ENABLE_FIX_EFFECT_MOVEMENT`)
+
+Wierzchowce stojące to rasy `MT2009_STANDING_MOUNT_FIRST..LAST` = 40003–40007 (pieczęcie 52202, 52204–52207).
+Jeździec zostaje w swoich naziemnych trybach animacji (`IsStandingMountRace` w `InstanceBase.cpp`), więc w ruchu
+grał naziemny chód/bieg. Teraz stoi (WAIT), a deska/chmura/łódź gra własny walk/run i to ona przesuwa postać.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_STANDING_MOUNT_FIX`, `MT2009_STANDING_MOUNT_FIRST/LAST`, `ENABLE_FIX_EFFECT_MOVEMENT` |
+| `GameLib/ActorInstance.h/.cpp` | `__IsMountingStandingMount()`; `__GetCurrentComboType` daje na nim typ kombinacji jak na ziemi; `UpdateAttachingInstances` przeniesione z `OnUpdate` do `INSTANCEBASE_Transform` po `Transform()` (efekty nie zostają w tyle w ruchu) |
+| `GameLib/ActorInstanceMotion.cpp` | `__SetMotion`: przy WALK/RUN na wierzchowcu stojącym model jeźdźca gra WAIT jego trybu (z losowymi wariantami) i wiąże dane WAIT (bez kroków); węzeł ruchu zostaje WALK/RUN, więc logika ruchu/zatrzymania bez zmian |
+| `GameLib/ActorInstanceBattle.cpp` | `__OnEndCombo`: kombinacja naziemna zaczyna się od początku (nie od 1 jak na koniu) |
+| `GameLib/ActorInstanceAttach.cpp` | wachlarz zostaje w prawej ręce (poza naziemna), nie w lewej jak na koniu |
+| `GameLib/ActorInstanceCollisionDetection.cpp` | `BlockMovement`: zatrzymuje też ruch samego jeźdźca (nie przechodzi przez ściany) |
+| `UserInterface/InstanceBase.cpp` | kilof / sierp / wędka na wierzchowcu stojącym: `MODE_GENERAL` (stoi), nie `MODE_HORSE` (siedział na desce) |
+
+Bez zmian paczek: modele i animacje desek są w paczkach (import GF, `npc_mount/summer_2023_hoverboard` itd.).
+Sprawdzone `clang-cl /Zs` zmienionych plików na kopii źródeł z całą nakładką (6.11.2026).
+
 ## Wbudowana przeglądarka (drugi ItemShop) – `MT2009_PLUS_ITEMSHOP_V3_V1` (`ENABLE_MT2009_INGAME_BROWSER`)
 
 `app.ShowWebPage` (okno Item Mall, czat botów, drugi ItemShop pod Shift+F12 – root `uiitemshopv3.py`) nie
