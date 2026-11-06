@@ -2902,6 +2902,51 @@ namespace
 		return s_llPlayerBotInflationFactor;
 	}
 
+	// MT2009_PLUS_BOT_WORLD_YANG_BOTS_V1 (the analysis of 83.168.110.166, 6 November 2026: one player held 17 of the
+	// world's 19.6 billion, the bots 1.4 billion between them, and the bots' prices went x1.556 by his purse while their
+	// own earnings were 0.3-1.2 million a head - a material of 1-2.5 million out of every bot's reach). The measure the
+	// curve reads is what the bots hold - every registered bot's purse, each capped at the outlier cap so a guild's
+	// fund keeper or a hoarder cannot carry it alone either. PLAYERBOT_WORLD_YANG_MEASURE (env, read once):
+	//   bots    (default) the bots' purses, each at most the cap;
+	//   capped  every character's purse, each at most the cap (a rich player counts as the cap, not his billions);
+	//   all     the old sum of every purse.
+	// The cap: PLAYERBOT_WORLD_YANG_CAP_X (1000) times the median purse of the characters counted (the purses over
+	// zero), never under PLAYERBOT_WORLD_YANG_CAP_MIN_M (500) million. A world whose bot registry is not read yet, or
+	// has no bot with yang, falls back to "capped". The supply-driven clearing (playerbot_market_clearing.h) does not
+	// read this; its asks only meet the ordinary pricing earlier or later when this moves.
+	int GetPlayerBotWorldYangMeasure()
+	{
+		static int s_iMode = -1;
+		if (s_iMode < 0)
+		{
+			const char* v = std::getenv("PLAYERBOT_WORLD_YANG_MEASURE");
+			const std::string m = v ? v : "";
+			s_iMode = m == "all" ? 0 : (m == "capped" ? 2 : 1);
+		}
+		return s_iMode;
+	}
+
+	long long CapPlayerBotWorldYangSum(std::vector<long long>& purses, long long& capOut)
+	{
+		capOut = 0;
+		if (purses.empty())
+			return 0;
+		static int s_iCapX = -1, s_iCapMinM = -1;
+		if (s_iCapX < 0)
+		{
+			s_iCapX = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WORLD_YANG_CAP_X", 1000, 10, 1000000);
+			s_iCapMinM = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WORLD_YANG_CAP_MIN_M", 500, 1, 1000000);
+		}
+		std::vector<long long> sorted(purses);
+		std::nth_element(sorted.begin(), sorted.begin() + sorted.size() / 2, sorted.end());
+		const long long median = sorted[sorted.size() / 2];
+		capOut = std::max((long long)s_iCapMinM * 1000000LL, median * (long long)s_iCapX);
+		long long sum = 0;
+		for (size_t i = 0; i < purses.size(); ++i)
+			sum += std::min(purses[i], capOut);
+		return sum;
+	}
+
 	void RefreshPlayerBotWorldYang(DWORD dwNow)
 	{
 		if (s_dwPlayerBotWorldYangAt != 0 && dwNow - s_dwPlayerBotWorldYangAt < PLAYERBOT_INFLATION_REFRESH_MS)
@@ -2911,12 +2956,36 @@ namespace
 		{
 			if (!msg || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 				return;
-			MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
-			if (!row || !row[0])
-				return;
+			std::vector<long long> all, bots;
+			long long total = 0, botTotal = 0;
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)) != NULL)
+			{
+				if (!row[0] || !row[1])
+					continue;
+				const long long gold = std::max(0LL, strtoll(row[1], NULL, 10));
+				if (gold <= 0)
+					continue;
+				total += gold;
+				all.push_back(gold);
+				if (CPlayerBotManager::instance().IsRegisteredBotPID((DWORD)strtoul(row[0], NULL, 10)))
+				{
+					botTotal += gold;
+					bots.push_back(gold);
+				}
+			}
+			int mode = GetPlayerBotWorldYangMeasure();
+			if (mode == 1 && bots.empty())
+				mode = 2;
+			long long cap = 0, measured = total;
+			if (mode == 1)
+				measured = CapPlayerBotWorldYangSum(bots, cap);
+			else if (mode == 2)
+				measured = CapPlayerBotWorldYangSum(all, cap);
 			const long long before = GetPlayerBotInflationFactor();
 			const bool first = s_llPlayerBotWorldYang == 0;
-			s_llPlayerBotWorldYang = std::max(0LL, strtoll(row[0], NULL, 10));
+			// read: never zero again (zero is "not read yet" for the coupon band and the first line below)
+			s_llPlayerBotWorldYang = std::max(1LL, measured);
 			// MT2009_PLUS_WORLD_YANG_PRICES_V1: the owner's curve, smooth.
 			s_llPlayerBotInflationFactor = playerbot_price_rules::WorldYangFactor(s_llPlayerBotWorldYang,
 					PLAYERBOT_WORLD_YANG_START_PERCENT, PLAYERBOT_WORLD_YANG_ZERO, PLAYERBOT_INFLATION_STEP_YANG,
@@ -2925,10 +2994,12 @@ namespace
 			const long long after = GetPlayerBotInflationFactor();
 			const long long one = playerbot_price_rules::INFLATION_FACTOR_ONE;
 			if (first || after != before)
-				sys_log(0, "PLAYERBOT_MARKET: world yang=%lld inflation=x%lld.%04lld steps=%lld (was x%lld.%04lld)",
+				sys_log(0, "PLAYERBOT_MARKET: world yang=%lld inflation=x%lld.%04lld steps=%lld (was x%lld.%04lld) "
+						"measure=%s all=%lld bots=%lld bot_chars=%u chars=%u cap=%lld",
 						s_llPlayerBotWorldYang, after / one, after % one, GetPlayerBotInflationSteps(),
-						before / one, before % one);
-		}, "SELECT COALESCE(SUM(gold),0) FROM player.player");
+						before / one, before % one, mode == 0 ? "all" : (mode == 1 ? "bots" : "capped"), total, botTotal,
+						(unsigned int)bots.size(), (unsigned int)all.size(), cap);
+		}, "SELECT id, gold FROM player.player WHERE gold > 0");
 	}
 
 	// Iwakura's scaling rule, from the top of his sheet: the yang drop rate

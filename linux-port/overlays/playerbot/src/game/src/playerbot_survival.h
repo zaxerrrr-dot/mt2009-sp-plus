@@ -16,6 +16,9 @@ namespace
 {
 	// MT2009_PLUS_BOT_SURVIVE_V1: the deaths an hour that step a bot down to an easier map (playerbot_survive.h).
 	void NotePlayerBotSurviveDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: the death loop's count and the revive away from the pack (playerbot_deathloop.h).
+	void NotePlayerBotDeathloopDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	bool MovePlayerBotDeathloopRevived(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 
 	// MT2009_PLUS_BOT_HELD_RETREAT_V1: a bot held by a monster does not hide.
 	// At 20% HP a bot went into the emergency rest - invisible, healing,
@@ -389,6 +392,16 @@ namespace
 		ch->ReviveInvisible(5);
 	}
 
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: the share of its health (and mana) a bot stands up with - env PLAYERBOT_REVIVE_HP_PCT
+	// (50; 20..100), read once.
+	int GetPlayerBotReviveHpPercent()
+	{
+		static int s_iPct = -1;
+		if (s_iPct < 0)
+			s_iPct = ReadPlayerBotYoharaEnvInt("PLAYERBOT_REVIVE_HP_PCT", 50, PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT, 100);
+		return s_iPct;
+	}
+
 	bool HandleDeath(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch->IsDead())
@@ -439,6 +452,7 @@ namespace
 			// (playerbot_persona.h).
 			NotePlayerBotPersonaDeath(ch, state, dwNow);
 			NotePlayerBotSurviveDeath(ch, state, dwNow); // MT2009_PLUS_BOT_SURVIVE_V1
+			NotePlayerBotDeathloopDeath(ch, state, dwNow); // MT2009_PLUS_BOT_DEATHLOOP_V1
 
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
@@ -494,11 +508,21 @@ namespace
 				state.dwNextRecoveryProtectionTime = dwNow + PLAYERBOT_RECOVERY_PROTECTION_INTERVAL;
 				state.dwNextRecoveryHealTime = dwNow;
 				ch->RemoveBadAffect();
+				// MT2009_PLUS_BOT_DEATHLOOP_V1 (the owner, 6 November 2026: "niech boty wskrzeszaja sie automatycznie z 50%
+				// zycia"): a bot stands up with PLAYERBOT_REVIVE_HP_PCT of its health (50; 20 before, the
+				// PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT the rest still breaks off at) and as much of its mana - in place or
+				// at the town point alike. Bots only: a person's restart is the engine's.
+				const int revivePct = GetPlayerBotReviveHpPercent();
 				const int safeInitialHP = ch->GetMaxHP() > 0
-						? (ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT + 99) / 100
+						? (int)(((long long)ch->GetMaxHP() * revivePct + 99) / 100)
 						: 0;
 				if (ch->GetHP() < safeInitialHP)
 					ch->PointChange(POINT_HP, safeInitialHP - ch->GetHP());
+				const int safeInitialSP = ch->GetMaxSP() > 0
+						? (int)(((long long)ch->GetMaxSP() * revivePct + 99) / 100)
+						: 0;
+				if (ch->GetSP() < safeInitialSP)
+					ch->PointChange(POINT_SP, safeInitialSP - ch->GetSP());
 				// The same five seconds do_restart gives a player. Ten made the bot
 			// disappear for twice as long as anybody else does after standing up,
 			// which is the half of dying that did not look like a player's.
@@ -511,6 +535,10 @@ namespace
 				// person's "restart in town" there), not inside the pack that killed it - 22 October, game3: four
 				// deaths in two minutes at one point, revived with a fifth of its health among the same monsters.
 				if (MovePlayerBotSungmaRevived(ch))
+					ClearPlayerBotRoute(state, true);
+				// MT2009_PLUS_BOT_DEATHLOOP_V1: every other bot stands up at the map's town point when a pack stands round
+				// the body or it fell on this spot before (playerbot_deathloop.h) - not into the monsters that killed it.
+				else if (MovePlayerBotDeathloopRevived(ch, state, dwNow))
 					ClearPlayerBotRoute(state, true);
 			}
 		}

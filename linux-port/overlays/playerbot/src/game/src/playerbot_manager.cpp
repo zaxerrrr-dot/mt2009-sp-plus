@@ -490,6 +490,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_SURVIVE_V1: tier gear 60+, the step down after deaths, exp rings to the market, Dragon God boosters -
 // after the market, the ItemShop V3 and the drop knowledge it uses
 #include "playerbot_survive.h"
+// MT2009_PLUS_BOT_DEATHLOOP_V1: the revive away from the pack, the loop's map avoided (through the step down), the
+// Monkey Dungeons' solo level gate, the death pin cleared on the easier map - after the step down it feeds
+#include "playerbot_deathloop.h"
 
 namespace
 {

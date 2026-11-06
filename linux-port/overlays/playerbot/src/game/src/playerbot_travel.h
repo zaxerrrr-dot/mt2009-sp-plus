@@ -667,6 +667,9 @@ namespace
 	// Shinsoo 500 characters and not one horse, Jinno 500 and not one, Chunjo
 	// the only kingdom levelling any ("tylko boty z chunjo leveluja konia",
 	// RetroGracz38; "bo z innych nie wchodza do lochu dlatego", NerrVoVy).
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: a dungeon the bot loops on, or one its level is held out of alone (playerbot_deathloop.h).
+	bool IsPlayerBotDeathloopMonkeyBlocked(LPCHARACTER ch, long map);
+
 	long GetPlayerBotMonkeyMapFor(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -676,11 +679,20 @@ namespace
 			return 0;
 		const long own = playerbot_empire_rules::GetMonkeyEasyMap(GetPlayerBotRoadsEmpire(ch));
 		if (band == PLAYERBOT_MONKEY_BAND_EASY)
-			return IsPlayerBotMapHostedHere(own) ? own : 0;
-		const long shared = band == PLAYERBOT_MONKEY_BAND_MEDIUM
+			return IsPlayerBotMapHostedHere(own) && !IsPlayerBotDeathloopMonkeyBlocked(ch, own) ? own : 0;
+		long shared = band == PLAYERBOT_MONKEY_BAND_MEDIUM
 				? PLAYERBOT_MAP_MONKEY_MEDIUM : PLAYERBOT_MAP_MONKEY_HARD;
-		if (IsPlayerBotMapHostedHere(shared))
+		// MT2009_PLUS_BOT_DEATHLOOP_V1: alone, a bot of 46-54 takes the medium dungeon instead of the hard one (its
+		// monkeys of 45-54 and Lord Malp killed them in a loop), one of 33-35 its own easy one instead of the medium -
+		// or the next lower one when it loops on its own
+		if (shared == PLAYERBOT_MAP_MONKEY_HARD && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))
+			shared = PLAYERBOT_MAP_MONKEY_MEDIUM;
+		if (shared == PLAYERBOT_MAP_MONKEY_MEDIUM && IsPlayerBotDeathloopMonkeyBlocked(ch, shared))
+			shared = 0;
+		if (shared != 0 && IsPlayerBotMapHostedHere(shared))
 			return shared;
+		if (IsPlayerBotDeathloopMonkeyBlocked(ch, own))
+			return 0;
 		// The harder two are on the core that carries Chunjo, so under the
 		// default split layout the other two kingdoms have only their own
 		// rooms - see PLAYERBOT_MONKEY_EASY_FALLBACK_MAX_LEVEL for how long

@@ -297,6 +297,25 @@ namespace
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, onMap, ch->GetMaxHP(), s_iMin);
 	}
 
+	// MT2009_PLUS_BOT_DEATHLOOP_V1: a death loop on a 2.x hunting map (playerbot_deathloop.h) steps the bot down at once,
+	// for the loop's minutes (never shorter than a step down already running). True when the map is one of the rows.
+	bool MarkPlayerBotSurviveHard(LPCHARACTER ch, long map, DWORD forMs, const char* why)
+	{
+		if (!ch || !IsPlayerBotSurviveOn(SURVIVE_STEPDOWN) || GetPlayerBotSurviveMapLevel(map) < 0)
+			return false;
+		TPlayerBotSurviveBot& b = s_mapPlayerBotSurvive[ch->GetPlayerID()];
+		const DWORD until = get_dword_time() + forMs;
+		std::map<long, DWORD>::iterator h = b.hard.find(map);
+		if (h == b.hard.end() || (int)(until - h->second) > 0)
+			b.hard[map] = until;
+		b.dwStepAt = 0;	// pick again
+		++s_kPlayerBotSurvive.stepDowns;
+		sys_log(0, "PLAYERBOT_SURVIVE: step down pid=%u name=%s level=%u map=%ld why=%s hp=%d for_min=%u",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, why ? why : "?", ch->GetMaxHP(),
+				(unsigned int)(forMs / 60000U));
+		return true;
+	}
+
 	// Whether a map of the drop knowledge has a monster in this bot's drop window that gives one of the wanted items;
 	// the monster and the item it gives.
 	bool FindPlayerBotSurviveMaterialMob(LPCHARACTER ch, long map, const std::set<DWORD>& wanted, DWORD& mobOut,
@@ -602,6 +621,8 @@ namespace
 
 	// ------------------------------------------------------------ the tick and the census
 
+	void ManagePlayerBotDeathloop(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);	// playerbot_deathloop.h
+
 	void ReportPlayerBotSurvive(DWORD dwNow)
 	{
 		static DWORD s_dwNext = 0;
@@ -639,6 +660,7 @@ namespace
 		}
 #endif
 		ManagePlayerBotSurviveBoosters(ch, state, dwNow);
+		ManagePlayerBotDeathloop(ch, state, dwNow);	// MT2009_PLUS_BOT_DEATHLOOP_V1 (playerbot_deathloop.h, next)
 	}
 }
 
