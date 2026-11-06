@@ -194,12 +194,58 @@ namespace
 		return s_aiShare[row];
 	}
 
+	// MT2009_PLUS_BOT_GEAR_FLIPFLOP_V1: while the equipment pass weighs two pieces for one wear slot, the resistance
+	// below leaves out what the piece worn in that slot gives (its proto applies and rolled lines of the point). The
+	// line's worth halves at the want (GetPlayerBotElementMapPointInHp), and the worn piece counted itself towards it:
+	// worn, a bracelet / necklace / pair of boots with the goal's resistance lifted the bot to the want and its own line
+	// was worth half, so a piece without it outscored it; off, the bot fell under the want and the line was worth full
+	// again - the two took turns in the slot. Without the slot's own piece both are weighed against the same total.
+	// Set by PlayerBotElementMapSlotScope only around the scoring; -1 otherwise.
+	LPCHARACTER s_pPlayerBotElementMapScoringCh = NULL;
+	int s_iPlayerBotElementMapScoringWear = -1;
+
+	struct PlayerBotElementMapSlotScope
+	{
+		LPCHARACTER m_pPrevCh;
+		int m_iPrevWear;
+		PlayerBotElementMapSlotScope(LPCHARACTER ch, int wearCell)
+			: m_pPrevCh(s_pPlayerBotElementMapScoringCh), m_iPrevWear(s_iPlayerBotElementMapScoringWear)
+		{
+			s_pPlayerBotElementMapScoringCh = ch;
+			s_iPlayerBotElementMapScoringWear = wearCell;
+		}
+		~PlayerBotElementMapSlotScope()
+		{
+			s_pPlayerBotElementMapScoringCh = m_pPrevCh;
+			s_iPlayerBotElementMapScoringWear = m_iPrevWear;
+		}
+	};
+
+	int GetPlayerBotElementMapPieceValue(LPITEM item, WORD point)
+	{
+		if (!item || !item->GetProto())
+			return 0;
+		int value = 0;
+		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
+			if (item->GetProto()->aApplies[i].bType == point)
+				value += (int)item->GetProto()->aApplies[i].lValue;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) == point)
+				value += (int)item->GetAttributeValue(i);
+		return value;
+	}
+
 	// The resistance the engine counts against a monster of element e now (ElementsAttackBonus): capped at 80.
 	int GetPlayerBotElementMapResist(LPCHARACTER ch, int e)
 	{
 		if (!ch || e < 0 || e >= 6)
 			return 0;
-		return std::max(0, std::min(Bonus67Total(ch, PLAYERBOT_ELEMENT_MAP_POINTS[e]), PLAYERBOT_ELEMENT_MAP_RESIST_CAP));
+		int total = Bonus67Total(ch, PLAYERBOT_ELEMENT_MAP_POINTS[e]);
+		if (ch == s_pPlayerBotElementMapScoringCh && s_iPlayerBotElementMapScoringWear >= 0 &&
+				s_iPlayerBotElementMapScoringWear < WEAR_MAX_NUM)
+			total -= GetPlayerBotElementMapPieceValue(ch->GetWear((BYTE)s_iPlayerBotElementMapScoringWear),
+					PLAYERBOT_ELEMENT_MAP_POINTS[e]);
+		return std::max(0, std::min(total, PLAYERBOT_ELEMENT_MAP_RESIST_CAP));
 	}
 
 	struct TPlayerBotElementMapGoal
