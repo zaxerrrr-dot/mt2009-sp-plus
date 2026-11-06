@@ -536,6 +536,18 @@ namespace
 					continue;
 				if (req.type == playerbot_progression::REQ_HORSE)
 					req.a = GetPlayerBotProgressHorseCap(req.a);
+				// MT2009_PLUS_BOT_LAW_NO_BETTER_V1: a gate never asks for a piece
+				// of a higher level than the game has for the bot's slot at its
+				// level - the best there is counts.
+				if (req.type >= playerbot_progression::REQ_WEAPON && req.type <= playerbot_progression::REQ_EARRINGS &&
+						req.a > 0 && IsPlayerBotLawNoBetterOn())
+				{
+					static const int s_aiCell[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS,
+						WEAR_WRIST, WEAR_NECK, WEAR_EAR };
+					const int best = GetPlayerBotBestSlotLevelInGame(ch, s_aiCell[req.type - playerbot_progression::REQ_WEAPON]);
+					if (best >= 0 && req.a > best)
+						req.a = best;
+				}
 				long long flagValue = 0;
 				if (req.type == playerbot_progression::REQ_QUEST_FLAG)
 					flagValue = ch->GetQuestFlag(req.flag);

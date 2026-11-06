@@ -8560,6 +8560,10 @@ namespace
 	const char* const PLAYERBOT_PERSONA_FLAG_QUIT_TIER = "playerbot.persona_quit_tier";
 	// Community patch 2, point 4: a goal dropper that has met its goal.
 	const char* const PLAYERBOT_PERSONA_FLAG_MEDAL_GOAL = "playerbot.medal_goal";
+	// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: the minutes of play a Grinder has stood at
+	// its lock (seconds + 1) and the lock they were counted at (+ 1).
+	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_SECONDS = "playerbot.persona_hold_s";
+	const char* const PLAYERBOT_PERSONA_FLAG_HOLD_LOCK = "playerbot.persona_hold_lv";
 
 	// The Grinder and the Conqueror (Zdobywca). A Grinder that meets the Law of
 	// Advancement is asked once an hour whether it moves on or stays to push
@@ -8965,6 +8969,11 @@ namespace
 		// went back to grinding after its deaths - and holds whatever the
 		// tier's draw says, until the bot advances again.
 		bool bLockPinned;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: play time held at bHeldLock (the lock
+		// it was counted at) and the last tick it was counted on.
+		DWORD dwHeldMs;
+		BYTE bHeldLock;
+		DWORD dwHeldTick;
 		DWORD dwNextAdvanceRoll;
 		playerbot_persona::TDeathWindow deaths;
 		// The player-death counter of the engine (PLAYER_STATS_DEATH_FROM_
@@ -9123,7 +9132,7 @@ namespace
 			llBookBudgetBase(0), llBookBudgetSpent(0), dwBookBudgetSince(0),
 			adwReadyGearWaitUntil(), adwReadyGearCheckedAt(), bQuitGrinding(false), bQuitRolledTier(0),
 			bMedalGoalDone(false), dwNextMedalGoalCheck(0),
-			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
+			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwHeldMs(0), bHeldLock(0), dwHeldTick(0), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
 			llVisitGoldStart(0), llLevel30BudgetBase(0), llLevel30BudgetSpent(0), dwLevel30BudgetSince(0),
 			bGambling(false), llGambleGoldStart(0),
 			llGambleSpent(0), dwGambleUntil(0), dwNextGambleAt(0), dwNextGambleStep(0),

@@ -641,9 +641,15 @@ namespace playerbot_persona
 		uint8_t levelLimit;
 		// A piece that stays good past the ordinary window.
 		bool premium;
-		TGearPiece() : present(false), plus(0), levelLimit(0), premium(false) {}
+		// MT2009_PLUS_BOT_LAW_NO_BETTER_V1 (the owner, 6 November 2026: "helm
+		// dowolnego poziomu tam, gdzie gra nie ma lepszego"): the game has no
+		// piece of this slot for the bot above this one's level and at or under
+		// the bot's own, so the window cannot ask for one - the bot of 62 with
+		// the helmet of 41 where the next helmet is of 80. Set by the engine.
+		bool noBetter;
+		TGearPiece() : present(false), plus(0), levelLimit(0), premium(false), noBetter(false) {}
 		TGearPiece(uint8_t p, uint8_t limit, bool prem = false) :
-			present(true), plus(p), levelLimit(limit), premium(prem) {}
+			present(true), plus(p), levelLimit(limit), premium(prem), noBetter(false) {}
 	};
 
 	struct TAdvanceGear
@@ -668,7 +674,7 @@ namespace playerbot_persona
 	inline bool IsPieceCurrent(const TGearPiece& p, uint8_t level)
 	{
 		const unsigned int window = p.premium ? AWANS_PREMIUM_LEVEL_WINDOW : AWANS_LEVEL_WINDOW;
-		return p.present && (unsigned int)p.levelLimit + window >= (unsigned int)level;
+		return p.present && (p.noBetter || (unsigned int)p.levelLimit + window >= (unsigned int)level);
 	}
 
 	// MT2009_PLUS_BOT_LAW_GEAR_V1: `extraPlus` raises every plus the row asks
