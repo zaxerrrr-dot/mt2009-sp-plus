@@ -87,6 +87,28 @@ class CZodiac
 		bool	IsExiting() const { return zodiac_exit_temple_event_data != NULL; }
 		DWORD	GetTime() { return m_dwGetGlobalTime; }
 
+		// MT2009_PLUS_ZODIAC_DIAG_V1 (the owner, 6 November 2026 - the second bot analysis, point 3): why the
+		// temple sends a party out. Every way out notes its cause at its first second (before KillAll clears the
+		// floor): the floor's time (TimeIsUp), a death on 6/12/19/24 (DeadPC) or the end (floor 39 done);
+		// with it the floor's boss still standing - its race, HP % and cell (the lowest HP of the bosses
+		// alive), the bosses and monsters left and the dead person whose death sent everybody out. One
+		// "ZODIAC_DIAG: exit" line in syslog a way out (players' temples too: a few a run); the bots' runs read
+		// it for their "ZODIAC_RUN: temple exit" line (cause, boss HP, the members' distance). Event flag
+		// zodiac_diag -1: no note, no line.
+		enum { ZODIAC_EXIT_NONE = 0, ZODIAC_EXIT_TIME = 1, ZODIAC_EXIT_DEATH = 2, ZODIAC_EXIT_COMPLETED = 3 };
+		struct TExitNote
+		{
+			BYTE bCause, bFloor;
+			DWORD dwBossRace, dwDeadPid;
+			int iBossHpPct, iBosses, iMobs;
+			long lBossX, lBossY;
+			TExitNote() : bCause(0), bFloor(0), dwBossRace(0), dwDeadPid(0), iBossHpPct(-1), iBosses(0), iMobs(0),
+					lBossX(0), lBossY(0) {}
+		};
+		const TExitNote& GetExitNote() const { return m_exitNote; }
+		void	NoteExit(BYTE bCause);
+		static const char* ExitCauseName(BYTE bCause);
+
 		void	ControlMob();
 		int		CountMonster();
 		int		CountIsBoss();
@@ -188,6 +210,7 @@ class CZodiac
 		friend EVENTFUNC(zodiac_dead_event);
 
 		LPPARTY m_pParty;
+		TExitNote m_exitNote;	// MT2009_PLUS_ZODIAC_DIAG_V1
 
 	public :
 		void SetPartyNull();
