@@ -650,9 +650,9 @@ services:
       SEBAN_SESSION_SECRET: "${M2_SEBAN_SESSION_SECRET:-${M2_ADMINPAGE_PASSWORD:-change-this-before-public-use}}"
       SEBAN_COLLECTOR_INTERVAL: "${M2_SEBAN_COLLECTOR_INTERVAL:-300}"
       # MT2009_PLUS_DB_LOG_RETENTION_V1: days of the log database the collector
-      # keeps (0 = all). Absent from an .env made before 2.36: 0, nothing is
-      # deleted until the owner chooses; .env.example ships 14 for a new one.
-      DB_LOG_RETENTION_DAYS: "${M2_DB_LOG_RETENTION_DAYS:-0}"
+      # keeps (0 = all). MT2009_PLUS_BOT_LOG_TRIM_V1 (the owner, 6 November
+      # 2026): 3 days when the .env has no value; .env.example ships 3 too.
+      DB_LOG_RETENTION_DAYS: "${M2_DB_LOG_RETENTION_DAYS:-3}"
       # MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1: how long the collector keeps
       # its own 5-minute snapshots (snapshot_retention.py). Monitoring history,
       # not player data: on by default, also for an .env made before it.

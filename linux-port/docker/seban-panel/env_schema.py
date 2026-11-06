@@ -652,11 +652,11 @@ SCHEMA = [
     # MT2009_PLUS_DB_LOG_RETENTION_V1
     _e("M2_DB_LOG_RETENTION_DAYS", "Ile dni trzymać logi w bazie",
        "Wpisy bazy logów (log.log, item_meta_log i inne rosnące tabele logów) starsze niż tyle dni są usuwane raz dziennie "
-       "około 5:00, małymi porcjami. 0 = trzymaj wszystko. Zalecane 14, na małym dysku 7. Statystyki „od początku serwera” "
+       "około 5:00, małymi porcjami. 0 = trzymaj wszystko. Domyślnie 3 dni. Statystyki „od początku serwera” "
        "w panelu się nie zmieniają: panel trzyma je w osobnych podsumowaniach. Poniżej 7 dni rankingi „ostatnie 7 dni” "
        "dalej działają (z podsumowań), ale surowa historia, np. kronika świata, będzie krótsza. "
        "To nie są logi plików serwera (te ustawia „Ile godzin trzymać logi serwera”).",
-       "baza", "int", "14", SEBAN, min=0, max=365, step=1,
+       "baza", "int", "3", SEBAN, min=0, max=365, step=1,
        note="Pierwsze czyszczenie dużej bazy trwa dłużej: tabela log.log bez indeksu po czasie jest wtedy jednorazowo "
             "podmieniana na nową (zachowane dni są przepisywane, stara tabela usuwana – miejsce na dysku wraca od razu). "
             "Stan i wynik ostatniego czyszczenia: Narzędzia → Logi bazy danych."),

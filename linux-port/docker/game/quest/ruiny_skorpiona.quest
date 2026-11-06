@@ -875,6 +875,7 @@ quest ruiny_skorpiona begin
 					return
 				end
 				if ruiny_skorpiona.watch_targets() then
+					clear_server_timer("skorpion_watch", get_server_timer_arg()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 					server_timer("skorpion_watch", ruiny_skorpiona.cfg().target_watch, get_server_timer_arg())
 				end
 			end

@@ -171,12 +171,36 @@ quest meley_dungeon begin
 			return vid
 		end
 
+		-- MT2009_PLUS_QUEST_LOG_SPAM_V1 (6.11.2026): zywe jaja/bossy licza flagi lochu egg_vid1..4 / boss_vid1..4
+		-- (vid przy przywolaniu, 0 po zabiciu - 20422.kill / 6116.kill). d.is_unique_dead na zabitym kluczu
+		-- pisal syserr "Unknown Key or Dead" przy kazdym tiku (28 821 linii na dobe). Tu pytamy silnik tylko o
+		-- klucz, ktory flaga uwaza za zywy; martwy bez zdarzenia zabicia (np. d.kill_all) - jedna linia i flaga 0.
+		function uniq_alive(key, flag)
+			if d.getf(flag) == 0 then
+				return false
+			end
+			if d.is_unique_dead(key) then
+				d.setf(flag, 0)
+				return false
+			end
+			return true
+		end
+
+		function uniq_killed(prefix)
+			local vid = npc.get_vid()
+			for i = 1, 4 do
+				if d.getf(prefix.."_vid"..i) == vid then
+					d.setf(prefix.."_vid"..i, 0)
+				end
+			end
+		end
+
 		function eggs_alive()
 			if d.getf("eggs_on") ~= 1 then
 				return false
 			end
 			for i = 1, 4 do
-				if not d.is_unique_dead("egg"..i) then
+				if meley_dungeon.uniq_alive("egg"..i, "egg_vid"..i) then
 					return true
 				end
 			end
@@ -188,7 +212,7 @@ quest meley_dungeon begin
 				return false
 			end
 			for i = 1, 4 do
-				if not d.is_unique_dead("boss"..i) then
+				if meley_dungeon.uniq_alive("boss"..i, "boss_vid"..i) then
 					return true
 				end
 			end
@@ -200,8 +224,10 @@ quest meley_dungeon begin
 			local c = meley_dungeon.cfg()
 			local n = 0
 			for i = 1, 4 do
-				if d.getf("eggs_on") ~= 1 or d.is_unique_dead("egg"..i) then
-					d.set_unique("egg"..i, d.spawn_mob(20422, c.stones[i][1], c.stones[i][2] + number(3, 10)))
+				if d.getf("eggs_on") ~= 1 or not meley_dungeon.uniq_alive("egg"..i, "egg_vid"..i) then
+					local vid = d.spawn_mob(20422, c.stones[i][1], c.stones[i][2] + number(3, 10))
+					d.set_unique("egg"..i, vid)
+					d.setf("egg_vid"..i, vid)
 					n = n + 1
 				end
 			end
@@ -216,7 +242,9 @@ quest meley_dungeon begin
 			local c = meley_dungeon.cfg()
 			for i = 1, 4 do
 				local x, y = c.stones[i][1], c.stones[i][2] + number(3, 10)
-				d.set_unique("boss"..i, d.spawn_mob(6116, x, y))
+				local vid = d.spawn_mob(6116, x, y)
+				d.set_unique("boss"..i, vid)
+				d.setf("boss_vid"..i, vid) -- MT2009_PLUS_QUEST_LOG_SPAM_V1
 				for k = 1, 3 do
 					d.spawn_mob(6117, x, y)
 				end
@@ -454,6 +482,7 @@ quest meley_dungeon begin
 			meley_dungeon.refresh_shields()
 			d.notice("Królowa Meley: Walka zacznie siê za 10 sekund. Macie godzinê na zniszczenie czterech statui.")
 			server_timer("meley_next", 10, d.get_map_index())
+			clear_server_timer("meley_tick", d.get_map_index()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("meley_tick", c.tick, d.get_map_index())
 		end
 
@@ -751,6 +780,15 @@ quest meley_dungeon begin
 			q.end_other_pc_block()
 		end
 
+		-- MT2009_PLUS_QUEST_LOG_SPAM_V1: zabite jajo / Idall - flaga 0, bez pytania silnika o martwy klucz.
+		when 20422.kill with meley_dungeon.inside() begin
+			meley_dungeon.uniq_killed("egg")
+		end
+
+		when 6116.kill with meley_dungeon.inside() begin
+			meley_dungeon.uniq_killed("boss")
+		end
+
 		-- Statua zbita do zera mimo progu (cios miêdzy dwoma sprawdzeniami): wraca na swoje miejsce z progiem.
 		when 6118.kill with meley_dungeon.inside() begin
 			local c = meley_dungeon.cfg()
@@ -829,6 +867,7 @@ quest meley_dungeon begin
 				end
 				meley_dungeon.refresh_shields()
 				if d.getf("stage") ~= 5 then
+					clear_server_timer("meley_tick", get_server_timer_arg()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 					server_timer("meley_tick", c.tick, get_server_timer_arg())
 				end
 			end

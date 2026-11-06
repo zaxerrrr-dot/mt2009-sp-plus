@@ -2278,4 +2278,18 @@ if ((Test-Path -LiteralPath $languageApply -PathType Leaf) -and
     }
 }
 
+# The bots' log rows and the quests' server timers (server-patches/logtrim, MT2009_PLUS_BOT_LOG_TRIM_V1 and
+# MT2009_PLUS_QUEST_TIMER_RESCHEDULE_V1; the owner, 6 November 2026): log.cpp - a bot's GET_GOLD into an hourly sum row,
+# no SOCKET*/ATTR_FORCE item_meta_log rows of bots (playerbot_logtrim.cpp); questmanager.cpp/.h, questevent.cpp - a
+# quest's server_timer of a name already registered reschedules it. Last: its anchors are the patched engine.
+$logTrimApply = Join-Path $repo 'server-patches/logtrim/Apply-LogTrimPatch.ps1'
+if ((Test-Path -LiteralPath $logTrimApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'log.cpp') -PathType Leaf)) {
+    $logTrimResult = & $logTrimApply -SourceDir $engineGameSource
+    if ($logTrimResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} log trim / quest timer edit(s).' -f $logTrimResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

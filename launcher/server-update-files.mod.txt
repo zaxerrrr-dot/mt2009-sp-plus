@@ -756,3 +756,8 @@ linux-port/docker/game/lang/cz/*
 linux-port/docker/game/lang/hu/*
 linux-port/docker/game/lang/gr/*
 linux-port/docker/game/lang/ae/*
+# MT2009_PLUS_BOT_LOG_TRIM_V1 / MT2009_PLUS_QUEST_TIMER_RESCHEDULE_V1 (server-patches/logtrim): the bots' GET_GOLD as an
+# hourly sum row, no SOCKET*/ATTR_FORCE meta rows of bots (overlay playerbot_logtrim.cpp in playerbot_* above), and a
+# quest server timer registered again reschedules it (questmanager.cpp/.h above).
+linux-port/docker/game/src/server/game/src/log.cpp
+linux-port/docker/game/src/server/game/src/questevent.cpp

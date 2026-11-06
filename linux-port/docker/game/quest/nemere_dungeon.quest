@@ -980,6 +980,7 @@ quest nemere_dungeon begin
 		when nemere_watch.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				if nemere_dungeon.watch_targets() then
+					clear_server_timer("nemere_watch", get_server_timer_arg()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 					server_timer("nemere_watch", nemere_dungeon.cfg().target_watch, get_server_timer_arg())
 				end
 			end

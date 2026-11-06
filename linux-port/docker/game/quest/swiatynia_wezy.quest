@@ -366,6 +366,7 @@ quest swiatynia_wezy begin
 			d.setf("lvl_t", now)
 			npc.purge()
 			d.notice("Œwi¹tynia Wê¿y: walka siê zaczê³a! Czas: "..limit.." min. Zapamiêtajcie ¿ywio³y pierwszych czterech grup.")
+			clear_server_timer("swiatynia_tick", d.get_map_index()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("swiatynia_tick", 5, d.get_map_index())
 		end
 
@@ -422,6 +423,7 @@ quest swiatynia_wezy begin
 				swiatynia_wezy.finish("Œwi¹tynia Wê¿y: czas min¹³ - œwi¹tynia was wypêdza.")
 				return
 			end
+			clear_server_timer("swiatynia_tick", get_server_timer_arg()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("swiatynia_tick", 5, get_server_timer_arg())
 			local left = d.getf("limit_at") - now
 			if math.mod(left, 300) < 5 then
@@ -912,6 +914,7 @@ quest swiatynia_wezy begin
 			d.setf("lvl", 2)
 			d.setf("lvl_t", now)
 			d.purge_area((c.base_x + c.portal[1] - 5) * 100, (c.base_y + c.portal[2] - 5) * 100, (c.base_x + c.portal[1] + 5) * 100, (c.base_y + c.portal[2] + 5) * 100)
+			clear_server_timer("swiatynia_tick", d.get_map_index()) -- MT2009_PLUS_QUEST_LOG_SPAM_V1: bez "already registered"
 			server_timer("swiatynia_tick", 5, d.get_map_index())
 		end
 

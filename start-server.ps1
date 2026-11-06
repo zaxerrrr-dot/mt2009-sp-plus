@@ -921,17 +921,17 @@ function Assert-YoharaGamePortRange {
 }
 
 function Assert-DbLogRetentionDefault {
-    # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
-    # whole log database; its owner decides when old rows go (the first prune of
-    # a big log.log rewrites it once). An .env without the key gets 0 here,
-    # before Add-MissingDotEnvKeys would copy the example's 14 into it; a new
-    # .env is made from the example and has 14 already.
+    # MT2009_PLUS_DB_LOG_RETENTION_V1: an .env without the key gets the default
+    # written out; an owner's own value (0 = keep everything included) stays.
+    # MT2009_PLUS_BOT_LOG_TRIM_V1 (the owner, 6 November 2026): 3 days, the same
+    # as compose for an absent key and the example. The first prune of a big
+    # log.log rewrites it once.
     param(
         [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
     )
     if ([Regex]::IsMatch($Content, '(?m)^M2_DB_LOG_RETENTION_DAYS=')) { return $Content }
-    Write-Host 'Logi bazy: trzymane w calosci (M2_DB_LOG_RETENTION_DAYS=0); 7 lub 14 dni ustawisz w panelu.' -ForegroundColor DarkGray
-    return (Set-DotEnvValue -Content $Content -Name 'M2_DB_LOG_RETENTION_DAYS' -Value '0')
+    Write-Host 'Logi bazy: 3 dni (M2_DB_LOG_RETENTION_DAYS=3); 0 = wszystko, zmienisz w panelu.' -ForegroundColor DarkGray
+    return (Set-DotEnvValue -Content $Content -Name 'M2_DB_LOG_RETENTION_DAYS' -Value '3')
 }
 
 function Get-M2HostTimeZoneName {
