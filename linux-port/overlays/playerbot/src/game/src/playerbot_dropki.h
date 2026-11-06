@@ -59,7 +59,8 @@
 //     drop knowledge's farm order makes it the bot's target); one of a party at a time, every PLAYERBOT_DROPKI_BREAK_GAP_MS.
 //
 // The operator: the file playerbot_dropki in the core's directory (read every 30 s when it changed; kept):
-//     <dungeon> <count> [size]   that many Dropki of the row on this core (0: none), its parties' size
+//     <dungeon> <count> [size]   that many Dropki of the row on this core (0: none), its parties' size (a row's default
+//                                is 10; Wieza Sung Mahi's 0 - the bots stay out of the tower unless "wieza <n>" is here)
 //     cap <runs> [per_dungeon]   the Dropki's runs at once on the core / of one dungeon
 //     sell <lines>               the goods that send a Dropki to sell
 //     off                        no Dropki (the roles stay in the flags, nobody held)
@@ -105,8 +106,10 @@ namespace
 		{ 12, "glebie_silny", 8, 8, 26, "glebie_slaby" },
 		{ 13, "gnolle", 10, 5, 16, NULL },
 		{ 14, "meley", 10, 6, 0, NULL },
-		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (size 1), the bots' runner playerbot_dgrun_wieza.h
-		{ 15, "wieza_smh", 10, 1, 20, NULL },
+		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (size 1), the bots' runner playerbot_dgrun_wieza.h.
+		// MT2009_PLUS_BOT_GNOLLE_V2: none by default (the owner, 6 November: "narazie boty nie wchodza na wieze") - only
+		// the file's own "wieza <n>" line gives the row its Dropki.
+		{ 15, "wieza_smh", 0, 1, 20, NULL },
 	};
 	const int PLAYERBOT_DROPKI_DG_COUNT = (int)(sizeof(PLAYERBOT_DROPKI_DGS) / sizeof(PLAYERBOT_DROPKI_DGS[0]));
 
@@ -227,6 +230,13 @@ namespace
 			if (!strcmp(PLAYERBOT_DROPKI_DGS[i].szKey, key))
 				return i;
 		return -1;
+	}
+
+	// MT2009_PLUS_BOT_GNOLLE_V2: the Dropki's tower row has bots (only by the file's "wieza <n>" - its default is 0).
+	bool IsPlayerBotDropkiTowerOn()
+	{
+		const int dg = FindPlayerBotDropkiDg("wieza_smh");
+		return dg >= 0 && s_kPlayerBotDropkiCfg.count[dg] > 0 && IsPlayerBotDropkiOn();
 	}
 
 	int FindPlayerBotDropkiDgById(int id)

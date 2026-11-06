@@ -647,6 +647,9 @@ namespace
 	bool RunPlayerBotErebuTestLine(const char* cmd, const std::string& line, DWORD dwNow);
 	// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli's own (playerbot_dgrun_gnolle.h, included at the end of this file).
 	bool IsPlayerBotGnolleFit(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_GNOLLE_V2: the strength for level 2 (gate 0) / 3 (gate 1); the caves' queue for a new party
+	bool IsPlayerBotGnolleStrong(LPCHARACTER ch, int gate, bool withHp);
+	bool IsPlayerBotGnolleOpenOk(DWORD dwNow, const char* why);
 	long long ChargePlayerBotGnolleTicket(LPCHARACTER ch);
 	bool StartPlayerBotGnolleRun(TPlayerBotDgRun& run, DWORD dwNow);
 	bool UpdatePlayerBotGnolleRun(TPlayerBotDgRun& run, DWORD dwNow);
@@ -4025,6 +4028,9 @@ namespace
 		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
 		playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 		if (picked.empty())
+			return 0;
+		// MT2009_PLUS_BOT_GNOLLE_V2: every caller's party for the caves waits in the caves' queue
+		if (info.bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleOpenOk(dwNow, why))
 			return 0;
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(picked[0].pid);
 		if (!leader)

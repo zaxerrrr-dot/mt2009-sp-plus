@@ -953,6 +953,89 @@ namespace
 	// defaults, PLAYERBOT_YDG_TRAIN_MAX_RUNS and the dungeon's clock cap + 2). The clock's own caps stay.
 	int s_iPlayerBotYdgTrainCapTotal = 0, s_iPlayerBotYdgTrainCapPerDg = 0;
 
+	// MT2009_PLUS_BOT_GNOLLE_V2: Jaskinie Gnolli's own lines of the file (the owner, 6 November: "mniej druzyn, i wyzsze
+	// lvl na 2 i 3 poziom"). The defaults hold without the file and for every caller (the clock, the Dropki, the training):
+	//     gnolle max <n>            parties in the caves at once, all callers together (default 3; 0 = none)
+	//     gnolle bosses <0|1>       a new party only while a level-1 boss stands that no party on level 1 has (default 1)
+	//     gnolle retreat <pct>      a member under this much health drinks and steps back (default 45)
+	//     gnolle l2 k=v ...         the strength to go down to level 2 (members champion gear plus hp healer avg)
+	//     gnolle l3 k=v ...         the same for level 3
+	// The night of 5/6 November's only win (run 17: 5 members, Champion 5-10, gear 80+6..103+9 - avg 93, max health in the
+	// run 18 144-24 377, two Shamans, 0 deaths) gave the defaults: level 2 - 4 members, each Champion 5, gear 80 (+6), 18 000
+	// health, a healer, the party's gear 85 on average; level 3 - the same with 5 members and 90 on average.
+	struct TPlayerBotGnolleGate
+	{
+		int members, champion, gear, plus, hp, avg;
+		bool healer;
+	};
+	struct TPlayerBotGnolleCfg
+	{
+		int iMax;
+		bool bBosses;
+		int iRetreatHp;
+		TPlayerBotGnolleGate gate[2];	// [0] level 2, [1] level 3
+		TPlayerBotGnolleCfg() : iMax(3), bBosses(true), iRetreatHp(45)
+		{
+			const TPlayerBotGnolleGate l2 = { 4, 5, 80, 6, 18000, 85, true };
+			const TPlayerBotGnolleGate l3 = { 5, 5, 80, 6, 18000, 90, true };
+			gate[0] = l2;
+			gate[1] = l3;
+		}
+	};
+	TPlayerBotGnolleCfg s_kPlayerBotGnolleCfg;
+
+	void LogPlayerBotGnolleCfg()
+	{
+		const TPlayerBotGnolleCfg& c = s_kPlayerBotGnolleCfg;
+		sys_log(0, "BOT_GNOLLE: config max=%d bosses=%d retreat=%d l2=m%d/c%d/g%d+%d/hp%d/avg%d/healer%d "
+				"l3=m%d/c%d/g%d+%d/hp%d/avg%d/healer%d", c.iMax, c.bBosses ? 1 : 0, c.iRetreatHp, c.gate[0].members,
+				c.gate[0].champion, c.gate[0].gear, c.gate[0].plus, c.gate[0].hp, c.gate[0].avg, c.gate[0].healer ? 1 : 0,
+				c.gate[1].members, c.gate[1].champion, c.gate[1].gear, c.gate[1].plus, c.gate[1].hp, c.gate[1].avg,
+				c.gate[1].healer ? 1 : 0);
+	}
+
+	bool ParsePlayerBotGnolleTrainLine(const std::vector<std::string>& w)
+	{
+		TPlayerBotGnolleCfg& c = s_kPlayerBotGnolleCfg;
+		if (w.size() < 3)
+			return false;
+		if (w[1] == "max")
+			c.iMax = std::max(0, std::min(atoi(w[2].c_str()), 10));
+		else if (w[1] == "bosses")
+			c.bBosses = atoi(w[2].c_str()) != 0;
+		else if (w[1] == "retreat")
+			c.iRetreatHp = std::max(0, std::min(atoi(w[2].c_str()), 90));
+		else if (w[1] == "l2" || w[1] == "l3")
+		{
+			TPlayerBotGnolleGate& g = c.gate[w[1] == "l2" ? 0 : 1];
+			for (size_t i = 2; i < w.size(); ++i)
+			{
+				const size_t eq = w[i].find('=');
+				if (eq == std::string::npos)
+					continue;
+				const std::string k = w[i].substr(0, eq);
+				const int v = atoi(w[i].c_str() + eq + 1);
+				if (k == "members")
+					g.members = std::max(1, std::min(v, (int)playerbot_dgrun::PARTY_MAX));
+				else if (k == "champion")
+					g.champion = std::max(0, std::min(v, 100));
+				else if (k == "gear")
+					g.gear = std::max(0, std::min(v, 200));
+				else if (k == "plus")
+					g.plus = std::max(0, std::min(v, 15));
+				else if (k == "hp")
+					g.hp = std::max(0, std::min(v, 1000000));
+				else if (k == "avg")
+					g.avg = std::max(0, std::min(v, 200));
+				else if (k == "healer")
+					g.healer = v != 0;
+			}
+		}
+		else
+			return false;
+		return true;
+	}
+
 	bool IsPlayerBotYdgTrainee(DWORD pid)
 	{
 		// MT2009_PLUS_BOT_DROPKI_V1: an active Dropki is held for its dungeon as a training member (playerbot_dropki.h)
@@ -1053,6 +1136,9 @@ namespace
 				continue;
 			// MT2009_PLUS_BOT_GNOLLE_V1: a party for Jaskinie Gnolli only of those Halabardnik lets in (120, a Champion).
 			if (gnolleOnly && !IsPlayerBotGnolleFit(ch))
+				continue;
+			// MT2009_PLUS_BOT_GNOLLE_V2: and strong enough for level 2 (its Champion level and gear; the health is the run's)
+			if (gnolleOnly && !IsPlayerBotGnolleStrong(ch, 0, false))
 				continue;
 			const char* refusal = GetPlayerBotDgRunRefusal(ch, it->second, dwNow);
 			if (refusal && strcmp(refusal, "dungeon_run"))
@@ -1161,6 +1247,7 @@ namespace
 				s_vecPlayerBotYdgTrain.clear();
 				s_setPlayerBotYdgTrainees.clear();
 				s_vecPlayerBotYdgAutoPending.clear();
+				s_kPlayerBotGnolleCfg = TPlayerBotGnolleCfg();	// MT2009_PLUS_BOT_GNOLLE_V2: the defaults again
 			}
 			s_bPlayerBotYdgTrainFile = false;
 			return;
@@ -1177,6 +1264,7 @@ namespace
 		s_setPlayerBotYdgTrainees.clear();
 		s_vecPlayerBotYdgAutoPending.clear();
 		s_iPlayerBotYdgTrainCapTotal = s_iPlayerBotYdgTrainCapPerDg = 0;
+		s_kPlayerBotGnolleCfg = TPlayerBotGnolleCfg();	// MT2009_PLUS_BOT_GNOLLE_V2: the defaults unless the file says
 		char line[1024];
 		std::vector<std::string> autos;
 		while (fgets(line, sizeof(line), fp))
@@ -1218,10 +1306,16 @@ namespace
 			}
 			else if (w[0] == "auto" && w.size() >= 3)
 				autos.push_back(w[1] + " " + w[2] + " " + (w.size() >= 4 ? w[3] : std::string("any")));
+			else if (w[0] == "gnolle")	// MT2009_PLUS_BOT_GNOLLE_V2
+			{
+				if (!ParsePlayerBotGnolleTrainLine(w))
+					sys_log(0, "BOT_YDG: train line unknown: gnolle %s", w.size() > 1 ? w[1].c_str() : "-");
+			}
 			else
 				sys_log(0, "BOT_YDG: train line unknown: %s", w[0].c_str());
 		}
 		fclose(fp);
+		LogPlayerBotGnolleCfg();	// MT2009_PLUS_BOT_GNOLLE_V2
 		for (size_t i = 0; i < autos.size(); ++i)
 		{
 			int parties = 0, size = 0;
@@ -1410,6 +1504,9 @@ namespace
 						continue;
 				}
 				if (!IsPlayerBotGlebiePartyOk(cand, free, why))	// MT2009_PLUS_BOT_GLEBIE_V1: 120, a Champion level, strong: 3 weak
+					continue;
+				// MT2009_PLUS_BOT_GNOLLE_V2: the caves' own queue (parties at once, a level-1 boss for it) - the next dungeon
+				if (PLAYERBOT_DGRUN_DEFS[cand].bKind == DGRUN_KIND_GNOLLE && !IsPlayerBotGnolleOpenOk(dwNow, "ydg_train"))
 					continue;
 				def = cand;
 				tp.next = (tp.next + t + 1) % tp.defs.size();

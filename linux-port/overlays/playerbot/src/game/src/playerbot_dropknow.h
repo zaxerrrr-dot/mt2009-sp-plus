@@ -215,6 +215,8 @@ namespace
 	}
 
 	// Whether the bot may go into the row as it is (the level, the Yohara rows' Champion level and the guard's own asks).
+	bool IsPlayerBotDropkiTowerOn();	// MT2009_PLUS_BOT_GNOLLE_V2: playerbot_dropki.h
+
 	bool CanPlayerBotDoDkDef(LPCHARACTER ch, int def)
 	{
 		if (!ch || def < 0 || def >= PLAYERBOT_DGRUN_DEF_COUNT)
@@ -229,8 +231,13 @@ namespace
 			return false;
 		if (d.bKind == DGRUN_KIND_GNOLLE)
 			return IsPlayerBotGnolleFit(ch);
-		if (d.bKind == DGRUN_KIND_WIEZA)	// MT2009_PLUS_BOT_WIEZA_V1: 120, a Champion level, gear, not at its limit's rest
-			return IsPlayerBotWiezaFit(ch);
+		// MT2009_PLUS_BOT_WIEZA_V1: 120, a Champion level, gear, not at its limit's rest.
+		// MT2009_PLUS_BOT_GNOLLE_V2: and only while the tower is on for the bots (the owner, 6 November: "narazie boty nie
+		// wchodza na wieze") - the Dropki file's "wieza <n>" or the training's playerbot_wieza_train; else a material's
+		// source is never the tower (a bot would wait for a climb nobody calls).
+		if (d.bKind == DGRUN_KIND_WIEZA)
+			return (IsPlayerBotDropkiTowerOn() || IsPlayerBotWiezaTrainOn() || !s_kPlayerBotWiezaTrain.fixed.empty()) &&
+					IsPlayerBotWiezaFit(ch);
 		if (d.bKind == DGRUN_KIND_YDG || d.bKind == DGRUN_KIND_EREBU || d.bKind == DGRUN_KIND_SZC)
 		{
 			if (GetPlayerBotChampionLevel(ch) < 1)
