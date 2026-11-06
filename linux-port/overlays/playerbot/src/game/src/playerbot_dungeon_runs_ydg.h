@@ -1435,6 +1435,7 @@ namespace
 			BYTE empire = 0;
 			bool ninja = false, shaman = false;
 			int away = 0;
+			int ofEmpire[4] = { 0, 0, 0, 0 };	// MT2009_PLUS_BOT_GNOLLE_WHOLE_V1: the party's members online, by kingdom
 			std::string why;
 			for (size_t k = 0; k < tp.pids.size(); ++k)
 			{
@@ -1446,6 +1447,8 @@ namespace
 					++away;
 					continue;
 				}
+				if (ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3)
+					++ofEmpire[ch->GetEmpire()];
 				if (s_mapPlayerBotDgRunBots.count(pid) || ch->IsDead())
 				{
 					why += std::string(why.empty() ? "" : ",") + ch->GetName() + (ch->IsDead() ? ":dead" : ":in_run");
@@ -1497,10 +1500,11 @@ namespace
 					continue;
 				// MT2009_PLUS_BOT_GNOLLE_WHOLE_V1 (night 6/7 November): a Gnolle training party goes whole (up to 5) - parties
 				// called with 3 of 5 (two "afk(broken_off)" after the last run) reached the level-2 gate with 3 fit of the 4 it
-				// asks and turned back (7 of 8 runs "aborted" 19:00-22:00). Off: event flag m2_bot_gnolle_whole_off.
+				// asks and turned back (7 of 8 runs "aborted" 19:00-22:00). Off: event flag m2_bot_gnolle_whole_off. Whole = the
+				// members of the called kingdom (a party of mixed kingdoms waited for ever for the other kingdom's three).
 				if (PLAYERBOT_DGRUN_DEFS[cand].bKind == DGRUN_KIND_GNOLLE &&
 						quest::CQuestManager::instance().GetEventFlag("m2_bot_gnolle_whole_off") == 0 &&
-						(int)free.size() < std::min<int>(5, (int)tp.pids.size()))
+						(int)free.size() < std::min<int>(5, ofEmpire[empire]))
 				{
 					PlayerBotLogThrottled("gnolle_whole", dwNow, "BOT_GNOLLE: train party=%d waits to go whole free=%u of %u",
 							tp.iId, (unsigned int)free.size(), (unsigned int)tp.pids.size());

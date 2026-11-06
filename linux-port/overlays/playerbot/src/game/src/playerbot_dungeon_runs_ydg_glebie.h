@@ -573,6 +573,18 @@ namespace
 	{
 		if (!ch || ch->IsDead() || !ch->GetSectree() || !GetPlayerBotGlebieRunKind(run))
 			return false;
+		// MT2009_PLUS_BOT_GLEBIE_REBUFF_V1 (night 6/7 November): a death clears the run's bonuses (BuffPlayerBotYdgMember,
+		// the Sung Ma Will) - with 100+ deaths a fight most of the party fought Alastor without them after the first
+		// minutes (Alastor back at 97-100% after the berserks, 2 of 2 weak runs wiped at 22:40-23:30). Given again on the
+		// first tick standing, as the Gnolle and the Wieza do. Off: event flag m2_bot_glebie_rebuff_off.
+		if (!ch->FindAffect(AFFECT_PLAYERBOT_YDG_MONSTER) &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_glebie_rebuff_off") == 0)
+		{
+			BuffPlayerBotYdgMember(ch);
+			BuffPlayerBotYdgSungma(ch, PLAYERBOT_GLEBIE_MAP);
+			PlayerBotLogThrottled("glebie_rebuff", dwNow, "BOT_GLEBIE: rebuff run=%d name=%s hp=%d/%d", run.iId, ch->GetName(),
+					ch->GetHP(), ch->GetMaxHP());
+		}
 		const int avoid = GetPlayerBotYdgEnv("PLAYERBOT_GLEBIE_ZONE_AVOID", 620, 0, 1500);
 		if (avoid <= 0)
 			return false;
