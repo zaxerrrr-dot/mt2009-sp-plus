@@ -2485,6 +2485,29 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-runy/cube.r
  && rm -rf /tmp/cube-runy \
  && echo "share: Runy Wykuwania at Yu-Hwan ($n recipes; MT2009_PLUS_RUNY_WYKUWANIA_V1)"
 
+# MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (share; the owner, 6 November 2026, Yohara: "Dodaj mozliwosc wytwarzania u Uriela. 7
+# owocow klasy poprzedniej przerabiasz na owoc wyzej ... szansa 95%, bez oplaty yang"): cube.owoce.txt
+# (tools/owoce/gen_owoce.py) - Uriel (20011) turns 7 Jablko / Gruszka / Winogrono / Arbuz (80050-80053) into one of the
+# next fruit (80051-80054), 95%, 0 Yang; his window opens by quest mikstury_okno ("Wytwarzanie owocow"). The window's
+# list comes from the server (no client data). The bots craft by the same numbers (playerbot_rank_fruit_craft.h).
+# Uriel must have no recipe before.
+COPY cube.owoce.txt /tmp/cube-owoce/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-owoce/cube.owoce.txt \
+ && ! grep -q 'MT2009_PLUS_RANK_FRUIT_CRAFT_V1' "$C" \
+ && ! grep -q -E '^npc[[:blank:]]+20011[[:space:]]*$' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 4 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20011[[:space:]]*$' "$C")" -eq 4 \
+ && test "$(grep -c -E '^item[[:blank:]]+8005[0-3][[:blank:]]+7[[:space:]]*$' "$A")" -eq 4 \
+ && test "$(grep -c -E '^reward[[:blank:]]+8005[1-4][[:blank:]]+1[[:space:]]*$' "$A")" -eq 4 \
+ && test "$(grep -c -E '^percent[[:blank:]]+95[[:space:]]*$' "$A")" -eq 4 \
+ && test "$(grep -c -E '^gold[[:blank:]]+0[[:space:]]*$' "$A")" -eq 4 \
+ && rm -rf /tmp/cube-owoce \
+ && echo "share: rank fruits at Uriel ($n recipes; MT2009_PLUS_RANK_FRUIT_CRAFT_V1)"
+
 # MT2009_PLUS_YOHARA_CRACK_V1 (share): Statua Szczeliny Czasu and the first Time Rift dungeon (the owner, 14 October
 # 2026: only Zaklety Las for now; pl-wiki "Statua Szczeliny Czasu", "Zaklety Las (SZC)", "Erebu (SZC)", the six SZC
 # missions; Owsap v6.2.6 crack_dawnmist_dungeon for the spawns and the stages) - Zaklety Las (SZC) (404,

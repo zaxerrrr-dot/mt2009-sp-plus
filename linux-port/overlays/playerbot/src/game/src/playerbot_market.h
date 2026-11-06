@@ -1218,6 +1218,7 @@ namespace
 			NotePlayerBotChestBought(ch->GetPlayerID(), get_dword_time());
 		NotePlayerBotMinigameChestBought(ch, pick.dwVnum, paid, pick.wCount); // MT2009_PLUS_BOT_MINIGAMES_V1
 		NotePlayerBotRecipeBought(ch, pick.dwVnum, paid);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
+		NotePlayerBotRankFruitBought(ch, pick.dwVnum, pick.wCount);	// MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (the census)
 		// A gambler's purchase is charged to the session's budget.
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);

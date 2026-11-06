@@ -191,14 +191,17 @@ namespace mt2009_rankp
 	//   m2_bot_rank_fruit_goal_off   the rank goal, the reserve, the surplus listed, the eating in runs
 	//   m2_bot_rank_fruit_price_off  the list price by supply and demand (the fixed table again)
 	//   m2_bot_rank_fruit_stack_off  a bot's fruit drop joins its stack (a new bag line a drop again)
-	enum EBotFruitSwitch { BOT_FRUIT_GOAL, BOT_FRUIT_PRICE, BOT_FRUIT_STACK, BOT_FRUIT_SWITCHES };
+	//   m2_bot_fruit_craft_off       MT2009_PLUS_RANK_FRUIT_CRAFT_V1: the bots' 7 -> 1 crafting at Uriel and the
+	//                                lower fruit bought for it (playerbot_rank_fruit_craft.h)
+	enum EBotFruitSwitch { BOT_FRUIT_GOAL, BOT_FRUIT_PRICE, BOT_FRUIT_STACK, BOT_FRUIT_CRAFT, BOT_FRUIT_SWITCHES };
 
 	bool BotFruitOn(EBotFruitSwitch which)
 	{
 		static const char* const FLAGS[BOT_FRUIT_SWITCHES] =
-			{ "m2_bot_rank_fruit_goal_off", "m2_bot_rank_fruit_price_off", "m2_bot_rank_fruit_stack_off" };
-		static DWORD s_readAt[BOT_FRUIT_SWITCHES] = { 0, 0, 0 };
-		static int s_off[BOT_FRUIT_SWITCHES] = { 0, 0, 0 };
+			{ "m2_bot_rank_fruit_goal_off", "m2_bot_rank_fruit_price_off", "m2_bot_rank_fruit_stack_off",
+			  "m2_bot_fruit_craft_off" };
+		static DWORD s_readAt[BOT_FRUIT_SWITCHES] = { 0, 0, 0, 0 };
+		static int s_off[BOT_FRUIT_SWITCHES] = { 0, 0, 0, 0 };
 		const DWORD now = get_dword_time();
 		if (s_readAt[which] == 0 || now - s_readAt[which] >= 10000)
 		{
@@ -786,8 +789,10 @@ namespace
 		return top > low ? (top - low + fruit.gain - 1) / fruit.gain : 0;
 	}
 
-	// The pieces of this fruit a bot keeps in its bag (the rest is its counter's): the need, and the reserve of Jablka.
-	int GetPlayerBotRankFruitKeep(LPCHARACTER ch, DWORD vnum)
+	// The pieces of this fruit a bot keeps in its bag for itself (eaten or the reserve): the need, and the reserve of
+	// Jablka. MT2009_PLUS_RANK_FRUIT_CRAFT_V1: the "base" keep - GetPlayerBotRankFruitKeep adds the pieces held for a
+	// craft at Uriel.
+	int GetPlayerBotRankFruitBaseKeep(LPCHARACTER ch, DWORD vnum)
 	{
 		using namespace mt2009_rankp;
 		const SFruit* fruit = FruitByVnum(vnum);
@@ -800,6 +805,55 @@ namespace
 			return 1000000;	// not read on this core yet: nothing goes before its first look
 		return GetPlayerBotRankFruitNeed(*fruit, goal, KnownPoints(ch)) +
 				(fruit->to <= ALIGN_CAP ? PLAYERBOT_RANK_FRUIT_RESERVE : 0);
+	}
+
+	// MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (the owner, 6 November 2026, Yohara: "7 owocow klasy poprzedniej przerabiasz na
+	// owoc wyzej" at Uriel, 95%, no Yang - cube.owoce.txt): the recipe, a change there is a change here.
+	const int PLAYERBOT_FRUIT_CRAFT_IN = 7;		// pieces of the lower fruit
+	const int PLAYERBOT_FRUIT_CRAFT_PERCENT = 95;
+	const long long PLAYERBOT_FRUIT_CRAFT_GOLD = 0;
+	const int PLAYERBOT_FRUIT_CRAFT_AHEAD = 10;	// higher pieces a bot plans to craft ahead (the buyers' BUY_AHEAD)
+
+	bool IsPlayerBotFruitCraftOn()
+	{
+		return mt2009_rankp::Enabled() && mt2009_rankp::BotFruitOn(mt2009_rankp::BOT_FRUIT_CRAFT) &&
+				IsPlayerBotRankFruitGoalOn();
+	}
+
+	const mt2009_rankp::SFruit* GetPlayerBotRankFruitDue(LPCHARACTER ch);
+
+	// The index of a fruit in FRUITS (-1: none).
+	int GetPlayerBotRankFruitIndex(DWORD vnum)
+	{
+		for (int i = 0; i < mt2009_rankp::FRUIT_COUNT; ++i)
+			if (mt2009_rankp::FRUITS[i].vnum == vnum)
+				return i;
+		return -1;
+	}
+
+	// The pieces of the fruit below its due one a bot holds for its own crafts: seven a higher piece it still eats
+	// (up to PLAYERBOT_FRUIT_CRAFT_AHEAD, less the higher pieces it holds). They stay off the counter until Uriel.
+	int GetPlayerBotRankFruitCraftKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		using namespace mt2009_rankp;
+		if (!ch || !IsPlayerBotFruitCraftOn() || !Known(ch) || GetPlayerBotRankGoal(ch) <= 0)
+			return 0;
+		const SFruit* due = GetPlayerBotRankFruitDue(ch);
+		const int dueIndex = due ? GetPlayerBotRankFruitIndex(due->vnum) : -1;
+		if (dueIndex <= 0 || FRUITS[dueIndex - 1].vnum != vnum)
+			return 0;
+		const int need = std::min(GetPlayerBotRankFruitNeed(*due, GetPlayerBotRankGoal(ch), KnownPoints(ch)),
+				PLAYERBOT_FRUIT_CRAFT_AHEAD) - (int)ch->CountSpecifyItem(due->vnum);
+		return need > 0 ? need * PLAYERBOT_FRUIT_CRAFT_IN : 0;
+	}
+
+	// The pieces of this fruit a bot keeps in its bag (the rest is its counter's): the base keep and the craft's.
+	int GetPlayerBotRankFruitKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		const int base = GetPlayerBotRankFruitBaseKeep(ch, vnum);
+		if (base >= 1000000)
+			return base;
+		return base + GetPlayerBotRankFruitCraftKeep(ch, vnum);
 	}
 
 	bool IsPlayerBotRankFruitEater(LPCHARACTER ch)

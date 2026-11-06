@@ -66,12 +66,60 @@ namespace
 		return std::max(0, std::min(range, PLAYERBOT_RANK_FRUIT_BUY_AHEAD) - (int)ch->CountSpecifyItem(fruit->vnum));
 	}
 
+	// MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (the owner, 6 November 2026): the lower fruit bought to craft the one the bot
+	// eats at Uriel (7 -> 1, 95%, cube.owoce.txt; playerbot_rank_fruit_craft.h). Two cases:
+	//   cheaper    - seven of the lower fruit at its ask (the clearing ask when overstocked) cost less than one of
+	//                the fruit it eats ("jesli cena 7 jablek jest nizsza niz gruszki") - what clears the Jablka;
+	//   no_higher  - no counter holds the fruit it eats at all ("jesli nie ma gruszek na rynku, a maja yangi, to i tak
+	//                kupuja jablka, aby zrobic gruszke"): the lower fruit whatever the comparison, within the eater's
+	//                purse and tolerance (CanPlayerBotPayForRankFruit).
+	// One step down only (a Winogrono eater buys Gruszki, not Jablka). Returns the lower pieces still wanted.
+	unsigned long long s_aPlayerBotRankFruitBoughtForCraft[mt2009_rankp::FRUIT_COUNT];
+	unsigned long long s_ullPlayerBotRankFruitBoughtNoHigher = 0;
+
+	int GetPlayerBotRankFruitCraftBuyWant(LPCHARACTER ch, DWORD* lowerOut = NULL, bool* noHigherOut = NULL)
+	{
+		using namespace mt2009_rankp;
+		if (lowerOut)
+			*lowerOut = 0;
+		if (noHigherOut)
+			*noHigherOut = false;
+		if (!ch || !IsPlayerBotFruitCraftOn())
+			return 0;
+		DWORD higher = 0;
+		const int higherWant = GetPlayerBotRankFruitWant(ch, &higher);
+		const int index = higher ? GetPlayerBotRankFruitIndex(higher) : -1;
+		if (higherWant <= 0 || index <= 0)
+			return 0;
+		const DWORD lower = FRUITS[index - 1].vnum;
+		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(higher);
+		const bool noHigher = !entry || entry->dwSupplyUnits == 0;
+		const bool cheaper = (unsigned long long)GetPlayerBotRankFruitListUnit(lower) * PLAYERBOT_FRUIT_CRAFT_IN <
+				(unsigned long long)GetPlayerBotRankFruitListUnit(higher);
+		if (!noHigher && !cheaper)
+			return 0;
+		const int spare = std::max(0, (int)ch->CountSpecifyItem(lower) - GetPlayerBotRankFruitBaseKeep(ch, lower));
+		const int want = higherWant * PLAYERBOT_FRUIT_CRAFT_IN - spare;
+		if (want <= 0)
+			return 0;
+		if (lowerOut)
+			*lowerOut = lower;
+		if (noHigherOut)
+			*noHigherOut = noHigher;
+		return want;
+	}
+
 	// A counter's line the bot would eat: its fruit, no more than it wants.
+	// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: or the fruit below it, for a craft at Uriel.
 	bool WantsPlayerBotRankFruitOffer(LPCHARACTER ch, LPITEM offer)
 	{
 		DWORD vnum = 0;
 		const int want = GetPlayerBotRankFruitWant(ch, &vnum);
-		return offer && want > 0 && offer->GetVnum() == vnum && (int)offer->GetCount() <= want;
+		if (offer && want > 0 && offer->GetVnum() == vnum && (int)offer->GetCount() <= want)
+			return true;
+		DWORD lower = 0;
+		const int lowerWant = offer ? GetPlayerBotRankFruitCraftBuyWant(ch, &lower) : 0;
+		return lowerWant > 0 && offer->GetVnum() == lower && (int)offer->GetCount() <= lowerWant;
 	}
 
 	// What an eater spends on fruit: a share of what it can spare.
@@ -92,8 +140,40 @@ namespace
 			return false;
 		const long long unit = price / std::max<long long>(1, (long long)item->GetCount());
 		const long long table = (long long)GetPlayerBotRankFruitPrice(item->GetVnum());
-		return table > 0 && unit <= table * PLAYERBOT_RANK_FRUIT_BUY_OVER_PERCENT / 100 &&
-				price <= GetPlayerBotRankFruitBudget(ch);
+		if (!(table > 0 && unit <= table * PLAYERBOT_RANK_FRUIT_BUY_OVER_PERCENT / 100 &&
+				price <= GetPlayerBotRankFruitBudget(ch)))
+			return false;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: the lower fruit for a craft - while the fruit it eats is on a counter, only
+		// when seven of these cost less than one of that at its ask.
+		DWORD eats = 0;
+		GetPlayerBotRankFruitWant(ch, &eats);
+		if (item->GetVnum() == eats)
+			return true;
+		DWORD lower = 0;
+		bool noHigher = false;
+		if (GetPlayerBotRankFruitCraftBuyWant(ch, &lower, &noHigher) <= 0 || lower != item->GetVnum())
+			return true;	// not a craft's purchase: the rules above, as before
+		return noHigher || (unsigned long long)unit * PLAYERBOT_FRUIT_CRAFT_IN <
+				(unsigned long long)GetPlayerBotRankFruitListUnit(eats);
+	}
+
+	// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: a purchase of a rank fruit (playerbot_market.h, playerbot_offline_market.h) -
+	// counted as bought for a craft when it is the fruit below the one the bot eats.
+	void NotePlayerBotRankFruitBought(LPCHARACTER ch, DWORD vnum, long long count)
+	{
+		using namespace mt2009_rankp;
+		const int index = GetPlayerBotRankFruitIndex(vnum);
+		if (!ch || index < 0 || index + 1 >= FRUIT_COUNT || count <= 0 || !IsPlayerBotFruitCraftOn())
+			return;
+		const SFruit* due = GetPlayerBotRankFruitToEat(ch);
+		if (!due || due->vnum != FRUITS[index + 1].vnum)
+			return;
+		s_aPlayerBotRankFruitBoughtForCraft[index] += (unsigned long long)count;
+		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(due->vnum);
+		if (!entry || entry->dwSupplyUnits == 0)
+			s_ullPlayerBotRankFruitBoughtNoHigher += (unsigned long long)count;
+		sys_log(1, "PLAYERBOT_RANK_FRUIT_CRAFT: bought pid=%u name=%s vnum=%u count=%lld for=%u no_higher=%d",
+				ch->GetPlayerID(), ch->GetName(), vnum, count, due->vnum, (!entry || entry->dwSupplyUnits == 0) ? 1 : 0);
 	}
 
 	// Worth a walk to the market: it wants its fruit, a counter has some (the
@@ -103,6 +183,16 @@ namespace
 		DWORD vnum = 0;
 		if (GetPlayerBotRankFruitWant(ch, &vnum) <= 0 || vnum == 0)
 			return false;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: or the fruit below it, to craft (GetPlayerBotRankFruitCraftBuyWant).
+		DWORD lower = 0;
+		if (GetPlayerBotRankFruitCraftBuyWant(ch, &lower) > 0 && lower != 0)
+		{
+			const TPlayerBotMarketLedgerEntry* low = GetPlayerBotMarketLedgerEntry(lower);
+			if (low && low->dwSupplyUnits > 0 &&
+					GetPlayerBotRankFruitBudget(ch) >= (long long)std::min(GetPlayerBotRankFruitPrice(lower),
+							std::max<DWORD>(1, GetPlayerBotRankFruitListUnit(lower))))
+				return true;
+		}
 		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnum);
 		return entry && entry->dwSupplyUnits > 0 &&
 				GetPlayerBotRankFruitBudget(ch) >= (long long)std::min(GetPlayerBotRankFruitPrice(vnum),
@@ -117,9 +207,22 @@ namespace
 		const int want = GetPlayerBotRankFruitWant(ch, &vnum);
 		if (want <= 0 || vnum == 0)
 			return 0;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: the lower fruit too, when crafting is cheaper (the scan takes the cheapest
+		// unit - the lower fruit while a counter holds it), or instead when none of its own is on a counter
+		// (GetPlayerBotRankFruitCraftBuyWant).
+		DWORD lower = 0;
+		bool noHigher = false;
+		const int lowerWant = GetPlayerBotRankFruitCraftBuyWant(ch, &lower, &noHigher);
 		const long long budget = GetPlayerBotRankFruitBudget(ch);
+		if (lowerWant > 0 && lower != 0 &&
+				budget >= (long long)std::min(GetPlayerBotRankFruitPrice(lower), std::max<DWORD>(1, GetPlayerBotRankFruitListUnit(lower))))
+		{
+			missing[lower] = lowerWant;
+			if (noHigher)
+				return budget;
+		}
 		if (budget < (long long)std::min(GetPlayerBotRankFruitPrice(vnum), std::max<DWORD>(1, GetPlayerBotRankFruitListUnit(vnum))))
-			return 0;
+			return missing.empty() ? 0 : budget;
 		missing[vnum] = want;
 		return budget;
 	}
