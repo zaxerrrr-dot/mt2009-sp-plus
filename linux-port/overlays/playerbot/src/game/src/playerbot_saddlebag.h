@@ -119,6 +119,13 @@ namespace
 	// item id: the Dozorca's, not the counter's again.
 	std::set<DWORD> s_setPlayerBotCraftRecalled;
 
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: the swap at the Dozorca (playerbot_mats_flow.h, later) - 15 of these (or 15 of a
+	// surplus refine good) for a refine material of the maps up to 75 that a worn piece's next step lacks.
+	int GetPlayerBotMatsSwapWanted(LPCHARACTER ch);
+	bool IsPlayerBotMatsSwapDue(LPCHARACTER ch);
+	int SwapPlayerBotMaterials(LPCHARACTER ch, int budget);
+	int GetPlayerBotMatsCfgVisitMax();
+
 	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid)
 	{
 		const DWORD h = (pid * 2246822519U) ^ 0x4a554b49U;
@@ -215,7 +222,8 @@ namespace
 	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly)
 	{
 		return GetPlayerBotSaddlebagMaterialsWanted(ch, nextOnly) +
-				GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly); // MT2009_PLUS_HORSE_GOODS_MARKET_V1
+				GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly) + // MT2009_PLUS_HORSE_GOODS_MARKET_V1
+				GetPlayerBotMatsSwapWanted(ch); // MT2009_PLUS_BOT_MATS_FLOW_V1: the swap's materials
 	}
 
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
@@ -724,10 +732,15 @@ namespace
 				// MT2009_PLUS_HORSE30_V1: a horse training's materials count too.
 				const bool shortOfMaterials =
 						CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, true);
-				if (units <= 0 || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials) ||
+				// MT2009_PLUS_BOT_MATS_FLOW_V1: or the swap alone - the materials for a piece its anvil lacks.
+				const bool swapDue = IsPlayerBotMatsSwapDue(ch);
+				if ((units <= 0 && !swapDue) || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials && !swapDue) ||
 						CountPlayerBotFreeInventoryCells(ch) < 2)
 					return false;
 				state.bSaddlebagErrand = PLAYERBOT_SADDLEBAG_ERRAND_DOZORCA;
+				if (swapDue)
+					sys_log(0, "BOT_MATS: going to the Dozorca pid=%u name=%s lv=%d units=%d materials=%d swap=1",
+							ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), units, CountPlayerBotCraftMaterials(ch));
 			}
 			state.dwNextSaddlebagActionTime = 0;
 			state.dwTargetVID = 0;
@@ -777,7 +790,12 @@ namespace
 			OpenPlayerBotSaddlebagRow(ch);
 		else
 		{
+			// MT2009_PLUS_BOT_MATS_FLOW_V1: the swap before the exchange (its path "any" takes 15 surplus goods for a piece,
+			// where the exchange would make ~8 materials of them), and again after it with what the exchange made.
+			const int swappedFirst = SwapPlayerBotMaterials(ch, GetPlayerBotMatsCfgVisitMax());
 			ExchangePlayerBotCraftGoods(ch);
+			if (swappedFirst < GetPlayerBotMatsCfgVisitMax())
+				SwapPlayerBotMaterials(ch, GetPlayerBotMatsCfgVisitMax() - swappedFirst);
 			// Straight on to the stable when the exchange made the row.
 			if (CanPlayerBotOpenSaddlebagRow(ch))
 			{

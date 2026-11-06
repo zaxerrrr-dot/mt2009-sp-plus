@@ -689,6 +689,9 @@ namespace
 	// it could work - judged by the item alone (IsPlayerBotGambleStock), the
 	// bag's own tests run at the anvil - and the materials its bag pieces'
 	// next steps consume.
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: the scarce materials (Zab Orka) and the belts' first (playerbot_mats_flow.h, later).
+	int WithdrawPlayerBotMatsPriority(LPCHARACTER ch, CSafebox* box, int budget, const std::set<DWORD>* pJustDeposited);
+
 	int WithdrawPlayerBotSafebox(LPCHARACTER ch, CSafebox* box,
 			const std::set<DWORD>* pJustDeposited = NULL, TPlayerBotPersona* pGambler = NULL,
 			TPlayerBotPersona* pPersona = NULL, int* pReleased = NULL)
@@ -707,6 +710,10 @@ namespace
 			CollectPlayerBotLppBoxRelease(ch, box, lppRelease);
 		int taken = 0;
 		const DWORD dwBoxNow = get_dword_time();	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
+		// MT2009_PLUS_BOT_MATS_FLOW_V1: before the pass below, which takes PLAYERBOT_SAFEBOX_WITHDRAW_MAX things from the
+		// box's first cells - a tooth or a pearl deeper down never came out.
+		if (!pGambler && !IsPlayerBotSidekickServing(ch))
+			taken += WithdrawPlayerBotMatsPriority(ch, box, PLAYERBOT_SAFEBOX_WITHDRAW_MAX, pJustDeposited);
 		// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: the medal droppers' books
 		// taken out this visit (PLAYERBOT_MEDAL_DROPPER_BOX_BOOK_STACKS).
 		int medalBooksTaken = 0;

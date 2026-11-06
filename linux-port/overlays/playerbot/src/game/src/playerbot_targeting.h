@@ -1130,6 +1130,9 @@ namespace
 	// for a raid breaking it.
 	bool IsPlayerBotDemonTowerTarget(LPCHARACTER ch, LPCHARACTER candidate);
 
+	// MT2009_PLUS_BOT_DROPKNOW_V1: playerbot_dropknow.h (later) - the monster of the bot's farm order.
+	bool IsPlayerBotDropKnowFarmMob(LPCHARACTER ch, DWORD race);
+
 	playerbot_combat_value::Context BuildPlayerBotCombatContext(
 			LPCHARACTER ch, LPCHARACTER candidate, const TPlayerBotAIState& state,
 			bool baseEligible, DWORD desiredMobVnum, bool huntM2Bestials,
@@ -1273,6 +1276,11 @@ namespace
 			if (drop != 0 && wantedDrops->find(drop) != wantedDrops->end())
 				context.activeMaterialTarget = true;
 		}
+		// MT2009_PLUS_BOT_DROPKNOW_V1: and the monster the drop knowledge sent the bot to farm (its drop tables know more
+		// than the one designated etc-drop above), while the level still gets the drop.
+		if (!context.activeMaterialTarget && candidate->IsMonster() &&
+				IsPlayerBotDropKnowFarmMob(ch, candidate->GetRaceNum()) && CanPlayerBotFarmMaterialFrom(ch, candidate))
+			context.activeMaterialTarget = true;
 
 		if (huntM2Bestials && candidate->IsMonster() &&
 				(candidate->GetRaceNum() == 533 || candidate->GetRaceNum() == 534))

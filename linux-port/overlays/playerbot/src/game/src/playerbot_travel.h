@@ -924,6 +924,9 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
 
+	// MT2009_PLUS_BOT_MATS_FLOW_V1: playerbot_mats_flow.h - the map of a material farm order (Zab Orka).
+	long GetPlayerBotMatsFarmMap(LPCHARACTER ch);
+
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -995,6 +998,13 @@ namespace
 			const long errandMap = GetPlayerBotGuildErrandMap(ch);
 			if (errandMap != 0 && IsPlayerBotFrontierMapIndex(errandMap) && IsPlayerBotMapHostedHere(errandMap))
 				return errandMap;
+		}
+		// MT2009_PLUS_BOT_MATS_FLOW_V1: a material the bot's anvil lacks and the market will not sell it is farmed where
+		// the drop knowledge found it - while its level still gets the drop (playerbot_mats_flow.h).
+		{
+			const long farmMap = GetPlayerBotMatsFarmMap(ch);
+			if (farmMap != 0 && (!metinolog || PlayerBotMapHasMetinStones(farmMap)))
+				return farmMap;
 		}
 		// And the military trial is in the Demon Tower, for the same reason: the
 		// bot hunts where the trial is, whatever its level would otherwise say.

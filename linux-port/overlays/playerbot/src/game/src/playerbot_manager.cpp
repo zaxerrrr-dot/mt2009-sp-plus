@@ -395,6 +395,12 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // another kingdom's first village through Orc Valley and the guilds' raids on
 // one - last, after the meetings, the market and the guild war it borrows.
 #include "playerbot_kingdom_visits.h"
+// MT2009_PLUS_BOT_DROPKNOW_V1 (include, 2.x trimmed): what drops from what and where - after the market, the belts,
+// the saddlebag and the dungeon runs it asks.
+#include "playerbot_dropknow.h"
+// MT2009_PLUS_BOT_MATS_FLOW_V1 (include): the materials on the move - the swap at the Dozorca, the scarce materials and
+// the belts' out of the boxes, the farm map of a material the market cannot sell the bot - after the drop knowledge.
+#include "playerbot_mats_flow.h"
 
 namespace
 {
@@ -7103,6 +7109,9 @@ void CPlayerBotManager::Update()
 	// and their ends (playerbot_dungeon_runs.h).
 	ManagePlayerBotDungeonRuns(dwNow);
 	ManagePlayerBotZodiacRuns(dwNow);	// MT2009_PLUS_ZODIAC_RUNS_V1
+	// MT2009_PLUS_BOT_DROPKNOW_V1 (pass): the drop index, the bots' material needs to their sources, the farm orders
+	// (playerbot_dropknow.h).
+	ManagePlayerBotDropKnow(dwNow);
 	// MT2009_PLUS_BOT_REPRICE_NOW_V1 (pass): every keeper's counter repriced
 	// at once, a few keepers a second (playerbot_reprice_now.h).
 	ManagePlayerBotRepriceNow(dwNow);
