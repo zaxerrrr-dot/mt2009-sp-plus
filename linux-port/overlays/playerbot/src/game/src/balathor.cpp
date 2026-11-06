@@ -1407,7 +1407,11 @@ void CBalathor::StepProgress(DWORD dwCurTime)
 				int iPercent = 0;
 				if (dragon->GetMaxHP() >= 0)
 					iPercent = (dragon->GetHP() * 100) / dragon->GetMaxHP();
-				if (!iPercent)
+				// MT2009_PLUS_BALATHOR_NEG_HP_FIX_V1 (night 6/7 November 2026): the Hwacha's cuts (PointChange) take the
+				// dragon under zero when its health was not a whole number of cuts (its regeneration, a blow) - at -19% ..
+				// -139% "!iPercent" never held and the Krypta stood at Balathor for good (parties 90001-90004 at 22:15-22:30,
+				// shots 6-10, arrows gone). Zero or less is down - for players as well.
+				if (iPercent <= 0)
 				{
 					const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
 					if (dwCurTime - m_dwStageTime < config.dwBoss1RequiredTime)
@@ -1439,7 +1443,7 @@ void CBalathor::StepProgress(DWORD dwCurTime)
 				if (dragon->GetMaxHP() >= 0)
 					iPercent = (dragon->GetHP() * 100) / dragon->GetMaxHP();
 
-				if (!iPercent)
+				if (iPercent <= 0)	// MT2009_PLUS_BALATHOR_NEG_HP_FIX_V1
 					bBalathorDead = true;
 				else
 					Motion(dragon, 255, BALATHOR_1_TAKE_DAMAGE);
