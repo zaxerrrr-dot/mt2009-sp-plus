@@ -568,6 +568,41 @@ namespace
 			// a run called by the test file or a recruit of the clock's (not this planner's): its record now
 			mr = s_mapPlayerBotMeleyRuns.insert(std::make_pair(run.iId, TPlayerBotMeleyRun())).first;
 		}
+		// MT2009_PLUS_BOT_MELEY_STATUE_FOCUS_V1 (6 Nov day): the egg windows - when the last egg falls (the statues' shield
+		// down) and when eggs stand again, with the statues' health at both ends
+		{
+			static std::map<int, std::pair<int, DWORD> > s_window;	// run -> (eggs were up 1 / down 0 / unknown -1, since)
+			LPDUNGEON d = run.lInstance ? CDungeonManager::instance().FindByMapIndex(run.lInstance) : NULL;
+			const int stage = d ? d->GetFlag("stage") : 0;
+			if (d && stage >= 2 && stage <= 4)
+			{
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+				int eggs = 0;
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+					eggs += scan.foes[i].dwRace == 20422 ? 1 : 0;
+				std::map<int, std::pair<int, DWORD> >::iterator w = s_window.find(run.iId);
+				if (w == s_window.end())
+					w = s_window.insert(std::make_pair(run.iId, std::make_pair(-1, dwNow))).first;
+				const int up = eggs > 0 ? 1 : 0;
+				if (w->second.first != up)
+				{
+					std::string st;
+					for (int i = 1; i <= 4; ++i)
+					{
+						char key[16], buf[32];
+						snprintf(key, sizeof(key), "stone%d", i);
+						const int pct = d->IsUniqueDead(key) ? -1 : (int)d->GetUniqueHpPerc(key);
+						snprintf(key, sizeof(key), "lock%d", i);
+						snprintf(buf, sizeof(buf), "%s%d%s", st.empty() ? "" : ",", pct, d->GetFlag(key) == 1 ? "L" : "");
+						st += buf;
+					}
+					if (w->second.first >= 0)
+						sys_log(0, "BOT_MELEY: shield run=%d stage=%d %s after_s=%u eggs=%d statues=%s", run.iId, stage,
+								up ? "up" : "down", (dwNow - w->second.second) / 1000, eggs, st.c_str());
+					w->second = std::make_pair(up, dwNow);
+				}
+			}
+		}
 		// the night of 5/6 November: a progress line every 2 minutes (the stage, the statues' health and locks, the eggs)
 		{
 			static std::map<int, DWORD> s_next;

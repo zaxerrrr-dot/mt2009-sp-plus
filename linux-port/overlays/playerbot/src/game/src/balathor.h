@@ -311,6 +311,9 @@ public:
 	// no guild behind it - no guild flag, no guild SP for the Hwacha, the reward for every bot inside.
 	void SetBotParty(bool bBotParty) { m_bBotParty = bBotParty; }
 	bool IsBotParty() const { return m_bBotParty; }
+	// MT2009_PLUS_BALATHOR_BOT_PROGRESS_V1: the bots' progress line - the module's step and what it waits for
+	BYTE GetStepIndex() const { return m_bStepIndex; }
+	size_t GetRegenCount() const { return m_dwRegenMobs.size(); }
 protected:
 	bool m_bBotParty;
 	BYTE m_bStage;

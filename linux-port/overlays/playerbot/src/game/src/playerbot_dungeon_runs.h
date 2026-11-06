@@ -1748,6 +1748,29 @@ namespace
 				dAny = dist;
 			}
 		}
+		// MT2009_PLUS_BOT_MELEY_STATUE_FOCUS_V1 (6 Nov day): Schronienie Meley's statues - the most hurt one standing, not
+		// the nearest. Each egg window (the shield down until the eggs come back, 120 s) went to the statue nearest the
+		// last egg, a different one each time, and the 1%/5 s regeneration took every one back to 100 in the next
+		// window (run 12: 88, 89, 83, 82, 79 on four statues in turn, none ever at 75).
+		if (def.bKind == DGRUN_KIND_MELEY && goal && goal->GetRaceNum() == 6118)
+		{
+			int bestPct = goal->GetMaxHP() > 0 ? (int)((long long)goal->GetHP() * 100 / goal->GetMaxHP()) : 100;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+			{
+				if (scan.foes[i].dwRace != 6118)
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+				if (!IsPlayerBotPdgFoe(ch, c) || c->GetMaxHP() <= 0 || IsPlayerBotDgRunUnreachable(rb, (DWORD)c->GetVID(), dwNow))
+					continue;
+				const int pct = (int)((long long)c->GetHP() * 100 / c->GetMaxHP());
+				if (pct < bestPct)
+				{
+					bestPct = pct;
+					goal = c;
+					dGoal = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+				}
+			}
+		}
 		// MT2009_PLUS_BOT_YDG_TRAIN_V2: the objective chosen is kept (up to PLAYERBOT_YDG_STICKY_MS) while it stands and
 		// can be reached - the nearest by a straight line changed as the route went round the walls, and Beran's
 		// cave's leader went back and forth between two Yonghan groups for half an hour (05:16-05:46, 5 November).

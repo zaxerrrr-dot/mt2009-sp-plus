@@ -122,10 +122,11 @@ namespace
 		bool bParty, bTrain;
 		int iRunId;
 		BYTE bEmpire;
+		DWORD dwNextProgress;	// MT2009_PLUS_BALATHOR_BOT_PROGRESS_V1
 		TPlayerBotBalathorRun() : dwGuild(0), dwMaster(0), bPhase(BALATHOR_BOT_GATHER), dwCalledAt(0), dwPhaseSince(0),
 				dwStartAt(0), dwClosedAt(0), dwNoneInsideSince(0), dwNextGunner(0), lInstance(0), bStarted(false),
 				bClaimed(false), iReached(0), iClaim(-1), iShots(0), iPushes(0), bParty(false), bTrain(false), iRunId(0),
-				bEmpire(0) {}
+				bEmpire(0), dwNextProgress(0) {}
 	};
 	struct TPlayerBotBalathorBot
 	{
@@ -1003,6 +1004,42 @@ namespace
 			if (run.bParty)	// MT2009_PLUS_BALATHOR_BOT_PARTY_V1
 				sys_log(0, "BOT_DGRUN: stage run=%d dungeon=balathor instance=%ld stage=%d (%s) after_s=%u inside=%d", run.iRunId,
 						run.lInstance, reached, GetPlayerBotBalathorReachedName(reached), (dwNow - run.dwPhaseSince) / 1000, inside);
+		}
+		// MT2009_PLUS_BALATHOR_BOT_PROGRESS_V1 (6 Nov day): a line a minute - the module's step (1 gate, 2 waves, 3 crystal,
+		// 4 walls/frozen eggs, 5 Balathor), what it waits for, the crystal's health, the members alive, the instance's foes
+		if (crypt->GetStage() == BALATHOR_STAGE_RUN && (int)(dwNow - run.dwNextProgress) >= 0)
+		{
+			run.dwNextProgress = dwNow + 60 * 1000;
+			int alive = 0, poly = 0;
+			for (size_t i = 0; i < run.members.size(); ++i)
+			{
+				LPCHARACTER m = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+				if (m && m->GetMapIndex() == run.lInstance)
+				{
+					alive += m->IsDead() ? 0 : 1;
+					poly += m->FindAffect(AFFECT_POLYMORPH) ? 1 : 0;
+				}
+			}
+			LPCHARACTER crystal = crypt->GetCharacterByFlag("ice_crystal");
+			LPCHARACTER dragon = crypt->GetCharacterByFlag("dragon");
+			const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+			std::map<DWORD, int> races;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+				++races[scan.foes[i].dwRace];
+			std::string foes;
+			for (std::map<DWORD, int>::const_iterator r = races.begin(); r != races.end() && foes.size() < 200; ++r)
+			{
+				char buf[32];
+				snprintf(buf, sizeof(buf), "%s%u:%d", foes.empty() ? "" : ",", (unsigned int)r->first, r->second);
+				foes += buf;
+			}
+			sys_log(0, "PLAYERBOT_BALATHOR: progress run=%d step=%u regen=%u crystal=%d%% dragon=%u:%d%% arrows=%u inside=%d alive=%d "
+					"poly=%d in_s=%u foes=%s", run.iRunId, (unsigned int)crypt->GetStepIndex(), (unsigned int)crypt->GetRegenCount(),
+					crystal && crystal->GetMaxHP() > 0 ? (int)((long long)crystal->GetHP() * 100 / crystal->GetMaxHP()) : -1,
+					dragon ? (unsigned int)dragon->GetRaceNum() : 0U,
+					dragon && dragon->GetMaxHP() > 0 ? (int)((long long)dragon->GetHP() * 100 / dragon->GetMaxHP()) : -1,
+					crypt->GetFlag("fire_arrow_count"), inside, alive, poly, (dwNow - run.dwPhaseSince) / 1000,
+					foes.empty() ? "-" : foes.c_str());
 		}
 		if (crypt->GetStage() == BALATHOR_STAGE_WAITING && !run.bStarted && (int)(dwNow - run.dwStartAt) >= 0)
 		{
