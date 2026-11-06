@@ -17,6 +17,9 @@
 //     What the swap still needs counts as the bot's wanted materials (GetPlayerBotCraftMaterialsWanted): its 30378 stay
 //     off its counter, the Dozorca takes its spare refine goods for more, the market's 30378 are bought for it. A Champion's
 //     materials for Dongan's elixirs (GetPlayerBotYoharaShopMaterialsWanted) are never swapped away.
+//     The second path ("any" - the owner: "moze byc i A i B, dwie sciezki"): the same rate of ONE refine good the bot holds
+//     too much of (Rybia Osc, Malz, ...: over max(10, its anvil's reserve) + the Biologist's share + the crafts' keep; never
+//     a kind it is short of, a policy item, 30378, a scroll) for what the first path left lacking, in the same visit cap.
 //   * The scarce materials' boxes (PLAYERBOT_MATS_SCARCE_VNUMS, "30006" - Zab Orka): at a safebox visit of a bot with a
 //     counter, before the box's ordinary pass (which takes six things a visit from the first cells, so a tooth deep in a
 //     box never came out), a stack of it comes out for the counter while the bot's teeth (bag + box) are over its keep:
@@ -33,7 +36,8 @@
 //     maker takes out what its target recipe lacks; a bot with a counter takes out what is over its own keep (the crafts'
 //     keep, the anvil's, its jewellery's sockets) while its bag holds none of it over the keep - for the counter.
 //
-// Switches (event flags, looked at once a second): m2_bot_mats_off 1 - all of it; m2_bot_mats_swap_off,
+// Switches (event flags, looked at once a second): m2_bot_mats_off 1 - all of it; m2_bot_mats_swap_off (path "crafting"),
+// m2_bot_mats_swap_any_off (path "any"),
 // m2_bot_mats_scarce_off, m2_bot_mats_farm_off, m2_bot_mats_belts_off - one part. The numbers: env (read once) as above,
 // plus PLAYERBOT_MATS_BOX_STACKS (3: the stacks a visit takes this way).
 // The log: BOT_MATS lines - eligible (the swap's materials, at each drop-knowledge build), swap (a bot's swap), farm (a bot's
@@ -100,6 +104,7 @@ namespace
 		MATS_PART_SCARCE,
 		MATS_PART_FARM,
 		MATS_PART_BELTS,
+		MATS_PART_SWAP_ANY,	// the owner's second path (6 November): 15 of a surplus refine good for the missing piece
 		MATS_PART_COUNT
 	};
 
@@ -107,7 +112,7 @@ namespace
 	bool IsPlayerBotMatsOff(int part)
 	{
 		static DWORD s_dwAt = 0;
-		static bool s_abOff[MATS_PART_COUNT] = { false, false, false, false };
+		static bool s_abOff[MATS_PART_COUNT] = { false, false, false, false, false };
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 1000)
 		{
@@ -118,6 +123,7 @@ namespace
 			s_abOff[MATS_PART_SCARCE] = all || q.GetEventFlag("m2_bot_mats_scarce_off") != 0;
 			s_abOff[MATS_PART_FARM] = all || q.GetEventFlag("m2_bot_mats_farm_off") != 0;
 			s_abOff[MATS_PART_BELTS] = all || q.GetEventFlag("m2_bot_mats_belts_off") != 0;
+			s_abOff[MATS_PART_SWAP_ANY] = all || q.GetEventFlag("m2_bot_mats_swap_any_off") != 0;
 		}
 		return part < 0 || part >= MATS_PART_COUNT || s_abOff[part];
 	}
@@ -125,12 +131,14 @@ namespace
 	struct TPlayerBotMatsStats
 	{
 		unsigned swaps, swapUnits, swapBots;
+		unsigned swapsAny, swapAnyUnits;
+		unsigned long long swapAnyGoods;
 		unsigned long long swapMaterials;
 		unsigned boxScarce, boxBeltCraft, boxBeltMarket;
 		unsigned long long boxScarceUnits;
 		unsigned farmOrders, unaffordable;
 	};
-	TPlayerBotMatsStats s_kPlayerBotMatsStats = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	TPlayerBotMatsStats s_kPlayerBotMatsStats = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	std::set<DWORD> s_setPlayerBotMatsSwapBots;
 
 	// ------------------------------------------------------------ the swap
@@ -233,7 +241,7 @@ namespace
 
 	int GetPlayerBotMatsSwapUnits(LPCHARACTER ch)
 	{
-		if (!ch || IsPlayerBotMatsOff(MATS_PART_SWAP) || !s_kPlayerBotDropKnow.bBuilt)
+		if (!ch || (IsPlayerBotMatsOff(MATS_PART_SWAP) && IsPlayerBotMatsOff(MATS_PART_SWAP_ANY)) || !s_kPlayerBotDropKnow.bBuilt)
 			return 0;
 		const DWORD now = get_dword_time();
 		TPlayerBotMatsNeed& n = s_mapPlayerBotMatsNeed[ch->GetPlayerID()];
@@ -254,10 +262,116 @@ namespace
 		return n.units;
 	}
 
-	// GetPlayerBotCraftMaterialsWanted's share: the Materialy Rzemieslnicze the swap still takes.
+	// GetPlayerBotCraftMaterialsWanted's share: the Materialy Rzemieslnicze the swap (path "crafting") still takes.
 	int GetPlayerBotMatsSwapWanted(LPCHARACTER ch)
 	{
+		if (!ch || IsPlayerBotMatsOff(MATS_PART_SWAP))
+			return 0;
 		return GetPlayerBotMatsSwapUnits(ch) * GetPlayerBotMatsCfg().swapRate;
+	}
+
+	// ---- the second path ("any", the owner, 6 November: "moze byc i A i B, dwie sciezki"): PLAYERBOT_MATS_SWAP_RATE units
+	// of one refine good the bot holds too much of. A unit of the kind is surplus over: the bag's materials keep
+	// (PLAYERBOT_BAG_MATERIAL_KEEP) or its anvil's reserve, whichever is more, plus the Biologist's share and the crafts'
+	// keep (belts, talismans, Chi, GEAR2). Never a kind the bot is short of, never one the operator put a policy on, never
+	// the companion's, never 30378 itself (that is the first path), a refine scroll, the heaven oil or a herb.
+
+	bool IsPlayerBotMatsSwapAnyGood(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || item->IsEquipped() || item->isLocked() || item->IsExchanging())
+			return false;
+		if (item->GetWindow() == INVENTORY ? item->GetCell() >= PLAYERBOT_BAG_CELLS : item->GetWindow() != UPGRADE_INVENTORY)
+			return false;
+		const DWORD vnum = item->GetVnum();
+		if (vnum == PLAYERBOT_MATS_CRAFT_VNUM || vnum == PLAYERBOT_HEAVEN_OIL_VNUM || IsPlayerBotSafeRefineScroll(vnum) ||
+				!IsPlayerBotTradeableMaterial(item) || GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE ||
+				IsPlayerBotSidekickLockedItem(ch, item))
+			return false;
+		return true;
+	}
+
+	int GetPlayerBotMatsSwapAnyKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		return std::max(PLAYERBOT_BAG_MATERIAL_KEEP, GetPlayerBotRefineMaterialReserve(ch, vnum)) +
+				GetPlayerBotBiologistReserve(ch, vnum) + GetPlayerBotCraftMaterialKeep(ch, vnum);
+	}
+
+	// The bot's swappable stacks, by kind (the bag's cells, then the materials' storage), and each kind's surplus.
+	void CollectPlayerBotMatsSwapAnyStock(LPCHARACTER ch, std::map<DWORD, std::vector<LPITEM> >& stacks, std::map<DWORD, int>& surplus)
+	{
+		stacks.clear();
+		surplus.clear();
+		if (!ch || !ch->IsItemLoaded())
+			return;
+		const int scope = PLAYERBOT_BAG_CELLS + (IsPlayerBotEkwPagesOn(ch) ? SPECIAL_INVENTORY_MAX_NUM : 0);
+		for (int at = 0; at < scope; ++at)
+		{
+			const WORD cell = (WORD)(at < PLAYERBOT_BAG_CELLS ? at : at - PLAYERBOT_BAG_CELLS);
+			LPITEM item = at < PLAYERBOT_BAG_CELLS ? ch->GetInventoryItem(cell) : ch->Mt2009SpecialGetItem(UPGRADE_INVENTORY, cell);
+			if (!item || item->GetCell() != cell || !IsPlayerBotMatsSwapAnyGood(ch, item))
+				continue;
+			stacks[item->GetVnum()].push_back(item);
+		}
+		const int rate = GetPlayerBotMatsCfg().swapRate;
+		for (std::map<DWORD, std::vector<LPITEM> >::const_iterator it = stacks.begin(); it != stacks.end(); ++it)
+		{
+			if (PlayerBotNeedsRefineMaterial(ch, it->first))
+				continue;
+			int held = 0;
+			for (size_t i = 0; i < it->second.size(); ++i)
+				held += std::max<int>(1, (int)it->second[i]->GetCount());
+			// what the counted stacks hold over the keep (the whole of the bot's count is asked for the keep)
+			const int over = std::min(held, (int)ch->CountSpecifyItem(it->first) - GetPlayerBotMatsSwapAnyKeep(ch, it->first));
+			if (over >= rate)
+				surplus[it->first] = over;
+		}
+	}
+
+	// The kind with the most surplus, or 0.
+	DWORD PickPlayerBotMatsSwapAnyKind(const std::map<DWORD, int>& surplus, DWORD exclude)
+	{
+		DWORD best = 0;
+		int most = 0;
+		for (std::map<DWORD, int>::const_iterator it = surplus.begin(); it != surplus.end(); ++it)
+			if (it->first != exclude && it->second > most)
+			{
+				best = it->first;
+				most = it->second;
+			}
+		return best;
+	}
+
+	// Takes `units` of the kind off its stacks, the last stacks first (the first ones hold the keep).
+	void TakePlayerBotMatsSwapAnyGoods(std::vector<LPITEM>& stacks, int units)
+	{
+		for (size_t i = stacks.size(); i > 0 && units > 0; --i)
+		{
+			LPITEM item = stacks[i - 1];
+			if (!item)
+				continue;
+			const int count = std::max<int>(1, (int)item->GetCount());
+			if (count > units)
+			{
+				item->SetCount(count - units);
+				units = 0;
+			}
+			else
+			{
+				units -= count;
+				stacks[i - 1] = NULL;
+				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_MATS_SWAP_ANY");
+			}
+		}
+	}
+
+	bool HasPlayerBotMatsSwapAnyStock(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotMatsOff(MATS_PART_SWAP_ANY))
+			return false;
+		std::map<DWORD, std::vector<LPITEM> > stacks;
+		std::map<DWORD, int> surplus;
+		CollectPlayerBotMatsSwapAnyStock(ch, stacks, surplus);
+		return !surplus.empty();
 	}
 
 	int GetPlayerBotMatsSwapUsable(LPCHARACTER ch)
@@ -265,43 +379,100 @@ namespace
 		return std::max(0, (int)ch->CountSpecifyItem(PLAYERBOT_MATS_CRAFT_VNUM) - GetPlayerBotYoharaShopMaterialsWanted(ch));
 	}
 
-	// A walk to the Dozorca for the swap alone: a piece to make and the materials for it.
+	// A walk to the Dozorca for the swap alone: a piece to make and the goods for it - 30378 (path "crafting") or a
+	// surplus refine good (path "any").
 	bool IsPlayerBotMatsSwapDue(LPCHARACTER ch)
 	{
-		return ch && GetPlayerBotMatsSwapUnits(ch) > 0 && GetPlayerBotMatsSwapUsable(ch) >= GetPlayerBotMatsCfg().swapRate;
+		if (!ch || GetPlayerBotMatsSwapUnits(ch) <= 0)
+			return false;
+		if (!IsPlayerBotMatsOff(MATS_PART_SWAP) && GetPlayerBotMatsSwapUsable(ch) >= GetPlayerBotMatsCfg().swapRate)
+			return true;
+		return HasPlayerBotMatsSwapAnyStock(ch);
 	}
 
-	// At the Dozorca: the materials out, the pieces in. Returns the pieces made.
-	int SwapPlayerBotMaterials(LPCHARACTER ch)
+	// At the Dozorca: the goods out, the pieces in - path "crafting" (30378) first, then path "any" (a surplus refine good)
+	// for what is still lacking, within one visit's PLAYERBOT_MATS_SWAP_VISIT_MAX. Returns the pieces made.
+	int SwapPlayerBotMaterials(LPCHARACTER ch, int budget)
 	{
-		if (!ch || IsPlayerBotMatsOff(MATS_PART_SWAP) || IsPlayerBotSidekickServing(ch))
+		const bool crafting = !IsPlayerBotMatsOff(MATS_PART_SWAP), any = !IsPlayerBotMatsOff(MATS_PART_SWAP_ANY);
+		if (!ch || (!crafting && !any) || IsPlayerBotSidekickServing(ch))
 			return 0;
 		const TPlayerBotMatsCfg& c = GetPlayerBotMatsCfg();
+		const int cap = std::min(budget, c.swapVisitMax);
+		if (cap <= 0)
+			return 0;
 		std::map<DWORD, int> missing;
 		CollectPlayerBotMatsSwapMissing(ch, missing);
 		s_mapPlayerBotMatsNeed.erase(ch->GetPlayerID());
+		std::map<DWORD, std::vector<LPITEM> > stacks;
+		std::map<DWORD, int> surplus;
+		bool stockRead = false;
 		int made = 0;
-		for (std::map<DWORD, int>::const_iterator it = missing.begin(); it != missing.end() && made < c.swapVisitMax; ++it)
+		for (std::map<DWORD, int>::const_iterator it = missing.begin(); it != missing.end() && made < cap; ++it)
 		{
-			const int usable = GetPlayerBotMatsSwapUsable(ch);
-			const int units = std::min(std::min(it->second, c.swapVisitMax - made), usable / c.swapRate);
-			if (units <= 0)
-				break;
+			int lack = it->second;
 			if (CountPlayerBotFreeInventoryCells(ch) < 1 && ch->CountSpecifyItem(it->first) == 0)
 				break;
-			ch->RemoveSpecifyItem(PLAYERBOT_MATS_CRAFT_VNUM, (ITEM_COUNT)(units * c.swapRate));
-			ch->AutoGiveItem(it->first, (ITEM_COUNT)units, -1, false);
-			made += units;
-			++s_kPlayerBotMatsStats.swaps;
-			s_kPlayerBotMatsStats.swapUnits += units;
-			s_kPlayerBotMatsStats.swapMaterials += (unsigned long long)(units * c.swapRate);
-			if (s_setPlayerBotMatsSwapBots.insert(ch->GetPlayerID()).second)
-				++s_kPlayerBotMatsStats.swapBots;
-			sys_log(0, "BOT_MATS: swap pid=%u name=%s level=%d item=%u(%s) units=%d lack=%d materials=%d left=%d",
-					ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), it->first, PlayerBotDkItemName(it->first), units,
-					it->second, units * c.swapRate, (int)ch->CountSpecifyItem(PLAYERBOT_MATS_CRAFT_VNUM));
+			// path "crafting": 30378
+			if (crafting)
+			{
+				const int units = std::min(std::min(lack, cap - made), GetPlayerBotMatsSwapUsable(ch) / c.swapRate);
+				if (units > 0)
+				{
+					ch->RemoveSpecifyItem(PLAYERBOT_MATS_CRAFT_VNUM, (ITEM_COUNT)(units * c.swapRate));
+					ch->AutoGiveItem(it->first, (ITEM_COUNT)units, -1, false);
+					made += units;
+					lack -= units;
+					++s_kPlayerBotMatsStats.swaps;
+					s_kPlayerBotMatsStats.swapUnits += units;
+					s_kPlayerBotMatsStats.swapMaterials += (unsigned long long)(units * c.swapRate);
+					if (s_setPlayerBotMatsSwapBots.insert(ch->GetPlayerID()).second)
+						++s_kPlayerBotMatsStats.swapBots;
+					sys_log(0, "BOT_MATS: swap path=crafting pid=%u name=%s level=%d item=%u(%s) units=%d lack=%d paid=%u:%d left=%d",
+							ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), it->first, PlayerBotDkItemName(it->first), units,
+							it->second, PLAYERBOT_MATS_CRAFT_VNUM, units * c.swapRate, (int)ch->CountSpecifyItem(PLAYERBOT_MATS_CRAFT_VNUM));
+				}
+			}
+			// path "any": a surplus refine good, the kind with the most over its keep first
+			while (any && lack > 0 && made < cap)
+			{
+				if (!stockRead)
+				{
+					CollectPlayerBotMatsSwapAnyStock(ch, stacks, surplus);
+					stockRead = true;
+				}
+				const DWORD kind = PickPlayerBotMatsSwapAnyKind(surplus, it->first);
+				if (kind == 0)
+					break;
+				const int units = std::min(std::min(lack, cap - made), surplus[kind] / c.swapRate);
+				if (units <= 0)
+				{
+					surplus.erase(kind);
+					continue;
+				}
+				TakePlayerBotMatsSwapAnyGoods(stacks[kind], units * c.swapRate);
+				surplus[kind] -= units * c.swapRate;
+				if (surplus[kind] < c.swapRate)
+					surplus.erase(kind);
+				ch->AutoGiveItem(it->first, (ITEM_COUNT)units, -1, false);
+				made += units;
+				lack -= units;
+				++s_kPlayerBotMatsStats.swapsAny;
+				s_kPlayerBotMatsStats.swapAnyUnits += units;
+				s_kPlayerBotMatsStats.swapAnyGoods += (unsigned long long)(units * c.swapRate);
+				if (s_setPlayerBotMatsSwapBots.insert(ch->GetPlayerID()).second)
+					++s_kPlayerBotMatsStats.swapBots;
+				sys_log(0, "BOT_MATS: swap path=any pid=%u name=%s level=%d item=%u(%s) units=%d lack=%d paid=%u(%s):%d left=%d",
+						ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), it->first, PlayerBotDkItemName(it->first), units,
+						it->second, kind, PlayerBotDkItemName(kind), units * c.swapRate, (int)ch->CountSpecifyItem(kind));
+			}
 		}
 		return made;
+	}
+
+	int GetPlayerBotMatsCfgVisitMax()
+	{
+		return GetPlayerBotMatsCfg().swapVisitMax;
 	}
 
 	// ------------------------------------------------------------ the boxes
@@ -547,13 +718,16 @@ namespace
 	void LogPlayerBotMatsStatus()
 	{
 		const TPlayerBotMatsStats& s = s_kPlayerBotMatsStats;
-		sys_log(0, "BOT_MATS: status eligible=%u swaps=%u swap_units=%u swap_materials=%llu swap_bots=%u box_scarce=%u "
+		sys_log(0, "BOT_MATS: status eligible=%u swaps=%u swap_units=%u swap_materials=%llu swaps_any=%u swap_any_units=%u "
+				"swap_any_goods=%llu swap_bots=%u box_scarce=%u "
 				"box_scarce_units=%llu box_belt_craft=%u box_belt_market=%u farm_orders=%u farmers=%u unaffordable=%u "
-				"off(swap/scarce/farm/belts)=%d/%d/%d/%d",
-				(unsigned int)GetPlayerBotMatsSwapEligible().size(), s.swaps, s.swapUnits, s.swapMaterials, s.swapBots,
+				"off(swap/swap_any/scarce/farm/belts)=%d/%d/%d/%d/%d",
+				(unsigned int)GetPlayerBotMatsSwapEligible().size(), s.swaps, s.swapUnits, s.swapMaterials, s.swapsAny,
+				s.swapAnyUnits, s.swapAnyGoods, s.swapBots,
 				s.boxScarce, s.boxScarceUnits, s.boxBeltCraft, s.boxBeltMarket, s.farmOrders,
 				(unsigned int)s_mapPlayerBotMatsFarmers.size(), s.unaffordable,
-				IsPlayerBotMatsOff(MATS_PART_SWAP) ? 1 : 0, IsPlayerBotMatsOff(MATS_PART_SCARCE) ? 1 : 0,
+				IsPlayerBotMatsOff(MATS_PART_SWAP) ? 1 : 0, IsPlayerBotMatsOff(MATS_PART_SWAP_ANY) ? 1 : 0,
+				IsPlayerBotMatsOff(MATS_PART_SCARCE) ? 1 : 0,
 				IsPlayerBotMatsOff(MATS_PART_FARM) ? 1 : 0, IsPlayerBotMatsOff(MATS_PART_BELTS) ? 1 : 0);
 		if (s_setPlayerBotMatsSwapBots.size() > 50000)
 			s_setPlayerBotMatsSwapBots.clear();

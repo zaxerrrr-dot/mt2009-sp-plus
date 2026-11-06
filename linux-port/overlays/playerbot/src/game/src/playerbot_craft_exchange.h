@@ -73,7 +73,8 @@ namespace
 	// material of the maps up to 75 that a worn piece's next step lacks.
 	int GetPlayerBotMatsSwapWanted(LPCHARACTER ch);
 	bool IsPlayerBotMatsSwapDue(LPCHARACTER ch);
-	int SwapPlayerBotMaterials(LPCHARACTER ch);
+	int SwapPlayerBotMaterials(LPCHARACTER ch, int budget);
+	int GetPlayerBotMatsCfgVisitMax();
 
 	int CountPlayerBotCraftMaterials(LPCHARACTER ch)
 	{
@@ -563,8 +564,12 @@ namespace
 		if (dwNow < state.dwNextCraftActionTime)
 			return true;
 
+		// MT2009_PLUS_BOT_MATS_FLOW_V1: the swap before the exchange (its path "any" takes 15 surplus goods for a piece,
+		// where the exchange would make ~8 materials of them), and again after it with what the exchange made.
+		const int swappedFirst = SwapPlayerBotMaterials(ch, GetPlayerBotMatsCfgVisitMax());
 		ExchangePlayerBotCraftGoods(ch);
-		SwapPlayerBotMaterials(ch);	// MT2009_PLUS_BOT_MATS_FLOW_V1: with what the exchange just made too
+		if (swappedFirst < GetPlayerBotMatsCfgVisitMax())
+			SwapPlayerBotMaterials(ch, GetPlayerBotMatsCfgVisitMax() - swappedFirst);
 		EndPlayerBotCraftErrand(state, dwNow);
 		return false;
 	}
