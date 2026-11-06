@@ -8697,6 +8697,9 @@ namespace
 		DWORD dwHeldMs;
 		BYTE bHeldLock;
 		DWORD dwHeldTick;
+		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1 (2.42 test): after a lock given up the
+		// law's death pin waits this long (the timeout's own minutes).
+		DWORD dwPinGraceUntil;
 		DWORD dwNextAdvanceRoll;
 		playerbot_persona::TDeathWindow deaths;
 		// The player-death counter of the engine (PLAYER_STATS_DEATH_FROM_
@@ -8855,7 +8858,7 @@ namespace
 			llBookBudgetBase(0), llBookBudgetSpent(0), dwBookBudgetSince(0),
 			adwReadyGearWaitUntil(), adwReadyGearCheckedAt(), bQuitGrinding(false), bQuitRolledTier(0),
 			bMedalGoalDone(false), dwNextMedalGoalCheck(0),
-			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwHeldMs(0), bHeldLock(0), dwHeldTick(0), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
+			bAdvanced(false), bLockLevel(0), bLockPinned(false), dwHeldMs(0), bHeldLock(0), dwHeldTick(0), dwPinGraceUntil(0), dwNextAdvanceRoll(0), llPlayerDeaths(-1),
 			llVisitGoldStart(0), llLevel30BudgetBase(0), llLevel30BudgetSpent(0), dwLevel30BudgetSince(0),
 			bGambling(false), llGambleGoldStart(0),
 			llGambleSpent(0), dwGambleUntil(0), dwNextGambleAt(0), dwNextGambleStep(0),
