@@ -3389,6 +3389,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
  && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+6789[[:space:]]*$' "$S")" -eq 1 \
  && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines; Wodz Wojenny Schronienia 3 of 12 points)"
 
+# MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026, the second bot analysis, item 2): the groups the Yohara Metins
+# and the White Dragon Eggs call and nothing defined (NOT_EXIST_GROUP_VNUM 6229/6230 on 390/391, 6249/6250/6252/6253
+# on 395, 6218-6220 on 385/388/389 - ~17 000 a day on the Yohara test): yohara_metiny/group.yohara_metiny.txt, of each
+# place's own monsters (README.md). None may exist before. The four Time Rift / Plaskowyz Metins' ranges:
+# mariadb/playerbot/yohara_metiny_grupy.sql (the same marker).
+COPY yohara_metiny/ /tmp/yohara-metiny-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-metiny-add \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/group.yohara_metiny.txt" \
+ && GV='(621[89]|6220|6229|6230|6249|6250|6252|6253)' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_metiny.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 9 \
+ && rm -rf "$A" \
+ && echo "share: Yohara Metins' and eggs' groups - 9 (MT2009_PLUS_YOHARA_STONE_GROUPS_V1)"
+
 # MT2009_PLUS_MOBY_ARKUSZ_V1: the drops of the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx)
 # our Yohara monsters lacked - mob_drop_item.yohara_arkusz.txt (tools/ymoby_arkusz/gen_ymoby_arkusz.py, yohara_arkusz/
 # README.md): groups MT2009_yarkusz_<mob> of Type drop, which the engine adds to the monster's own groups. After every

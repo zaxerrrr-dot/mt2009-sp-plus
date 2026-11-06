@@ -4142,6 +4142,17 @@ for yma_sql in yohara_moby_arkusz.sql; do
         fail_step "Yohara monsters (the owner's sheet): $yma_sql failed" >&2
     fi
 done
+# MT2009_PLUS_YOHARA_STONE_GROUPS_V1 (6 November 2026): the four Time Rift / Plaskowyz Metins (8126, 8127, 8136, 8137)
+# call the groups our generators gave Owsap's (6178-6181, 6171-6174) - yohara_metiny_grupy.sql, guarded UPDATEs
+# after every Yohara mob file. Idempotent.
+for ymg_sql in yohara_metiny_grupy.sql; do
+    [ -s "/opt/playerbot/$ymg_sql" ] || continue
+    if db < "/opt/playerbot/$ymg_sql"; then
+        echo "[playerbot-migrate] Yohara Metins' groups: $ymg_sql applied"
+    else
+        fail_step "Yohara Metins' groups: $ymg_sql failed" >&2
+    fi
+done
 # MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara as on the global server (the owner, 20 October 2026) -
 # moby_global.sql (tools/ymoby_arkusz/gen_moby_global.py): HP, damage, EXP, levels, defence, stats, speeds,
 # regeneration, the effects' chances, resistances, the AI / immunity flags of the owner's sheet, the race flags of the
