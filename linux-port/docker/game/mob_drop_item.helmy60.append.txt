@@ -1,0 +1,17 @@
+// MT2009_PLUS_HELMY60_V1: the level-60 helmets (Maska Strachu 12260, Orkowy Kaptur 12390, Rogowy Helm 12530,
+// Kapelusz Kardynala 12670) as the pl-wiki lists them (the owner, 6 November 2026: "zgodnie z wiki global").
+// The wiki's monster page "Straszydlo" and all four helmet pages name Straszydlo (1303, Swiatynia Hwang) as a source;
+// ours only had them on Drzewny Zabi Zolnierz 1301, Drzewny Zabi Przyw. 1302 and Ropuszy General 1305
+// (MT2009_mglobal_*, 0.5 each). Straszydlo gets the same four +0 at the same value (the wiki gives no rate).
+// Type drop: pct / 4 percent at the server's 100% drop (0.5 = 0.125% a kill, before the level difference and the
+// drop bonuses / the mob_item flag). The engine merges this group with the monster's others (its Lisc / Dykta).
+
+Group	MT2009_helmy60_1303
+{
+	Mob	1303	-- Straszydlo
+	Type	drop
+	1	12260	1	0.5	-- Maska Strachu+0, 0.125%
+	2	12390	1	0.5	-- Orkowy Kaptur+0, 0.125%
+	3	12530	1	0.5	-- Rogowy Helm+0, 0.125%
+	4	12670	1	0.5	-- Kapelusz Kardynala+0, 0.125%
+}
