@@ -187,3 +187,9 @@ ALTER TABLE player.pvpfan_category ADD COLUMN IF NOT EXISTS potions TINYINT(1) N
 -- panel's queue shows what is really waiting.
 UPDATE player.pvpfan_command SET done = 1, result = 'Nikt nie odebral polecenia (brak rdzenia z mapa areny na tym kanale?)'
  WHERE done = 0 AND created_at < NOW() - INTERVAL 1 HOUR;
+
+-- MT2009_PLUS_PVPFAN_NO_GEAR_OUT_V1 (the owner, 7 November 2026: "nie ma byc nawet najmniejszej szansy, ze ich ekwipunek
+-- trafi na rynek serwera"): every start, before the game is up, an arena bot keeps nothing - its items (worn, bag,
+-- storages, safebox, shop windows) and its Yang go; a war makes the set anew. The game also clears it at the war's end.
+DELETE FROM player.item WHERE owner_id IN (SELECT pid FROM player.pvpfan_char);
+UPDATE player.player SET gold = 0 WHERE gold <> 0 AND id IN (SELECT pid FROM player.pvpfan_char);

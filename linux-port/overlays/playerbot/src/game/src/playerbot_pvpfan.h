@@ -1454,6 +1454,12 @@ namespace
 				ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
 				if (ch->GetAlignment() != 0)
 					ch->UpdateAlignment(-ch->GetAlignment());
+				// MT2009_PLUS_PVPFAN_NO_GEAR_OUT_V1 (the owner, 7 November 2026: "nie ma byc nawet najmniejszej szansy, ze ich
+				// ekwipunek trafi na rynek serwera"): the whole set is destroyed before the bot logs off - it is made anew
+				// at the next start; the character keeps nothing between wars.
+				ClearPlayerBotPvpFanBelongings(ch);
+				ch->SetGold(0);
+				ch->Save();
 			}
 			CPlayerBotManager::instance().Despawn(f.pid, playerbot_session_rules::OUT_GM);
 			f.phase = PVPFAN_F_OUT;
