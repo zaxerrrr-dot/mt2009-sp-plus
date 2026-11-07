@@ -90,9 +90,17 @@ namespace
 	enum EPlayerBotNeedKind
 	{
 		BOTNEED_PET_EVOLUTION = 0,
+		// MT2009_PLUS_BOT_NEED_DROP_ALL_V1 (the owner, 7 November 2026: "inne przedmioty tez niech dropia, nie tylko do
+		// ewolucji"): every drop of a bot, without the level fade. Event flag m2_bot_need_drop_all_off 1: the pet's only.
+		BOTNEED_ANY,
 		BOTNEED_KIND_COUNT
 	};
-	const char* const PLAYERBOT_NEED_KIND_NAMES[BOTNEED_KIND_COUNT] = { "pet" };
+	const char* const PLAYERBOT_NEED_KIND_NAMES[BOTNEED_KIND_COUNT] = { "pet", "any" };
+
+	bool IsPlayerBotNeedDropAllOn()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_need_drop_all_off") != 1;
+	}
 
 	bool IsPlayerBotPetNeedBot(LPCHARACTER ch)
 	{
@@ -109,6 +117,8 @@ namespace
 		{
 			case BOTNEED_PET_EVOLUTION:
 				return IsPlayerBotPetNeedBot(ch);
+			case BOTNEED_ANY:
+				return IsPlayerBotNeedDropAllOn() && !IsPlayerBotNewPetCompanion(ch);
 		}
 		return false;
 	}
@@ -126,6 +136,8 @@ namespace
 				const int need = v ? GetPlayerBotNewPetMaterialNeed(ch, *v, vnum) : 0;
 				return need > 0 && (int)ch->CountSpecifyItem(vnum) < need;
 			}
+			case BOTNEED_ANY:
+				return vnum != 0 && IsPlayerBotNeedDropAllOn() && !IsPlayerBotNewPetCompanion(ch);
 		}
 		return false;
 	}
@@ -617,11 +629,13 @@ void Mt2009PlusBotNeedDropNote(LPCHARACTER pkKiller, DWORD dwVnum, bool bBypasse
 	if (kind < 0)
 		return;
 	++s_kPlayerBotPetMatStats.needDrops;
-	++s_kPlayerBotPetMatStats.needDropsBy[dwVnum];
+	if (kind == BOTNEED_PET_EVOLUTION)	// the per-item lists stay the pet materials' (any item: totals only)
+		++s_kPlayerBotPetMatStats.needDropsBy[dwVnum];
 	if (bBypassed)
 	{
 		++s_kPlayerBotPetMatStats.bypassed;
-		++s_kPlayerBotPetMatStats.bypassedBy[dwVnum];
+		if (kind == BOTNEED_PET_EVOLUTION)
+			++s_kPlayerBotPetMatStats.bypassedBy[dwVnum];
 		PlayerBotLogThrottledEvery("petmat_bypass", get_dword_time(), 300000,
 				"BOT_PETMAT: bypass pid=%u name=%s level=%d kind=%s vnum=%u(%s) map=%ld have=%u",
 				pkKiller->GetPlayerID(), pkKiller->GetName(), (int)pkKiller->GetLevel(), PLAYERBOT_NEED_KIND_NAMES[kind], dwVnum,

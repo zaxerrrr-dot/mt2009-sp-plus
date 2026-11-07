@@ -16,6 +16,8 @@ przedmioty na każdym lvl. Czyli nie mają capa na drop -15%”).
 - Co jest „potrzebne”, decyduje nakładka botów (`linux-port/overlays/playerbot/src/game/src/playerbot_petmat.h`,
   `EPlayerBotNeedKind`): na razie materiał następnego etapu ewolucji peta (strażnik peta, etap otwarty, w torbie mniej niż
   wymaga etap). Kolejne rodzaje dopisuje się tam.
+  Od `MT2009_PLUS_BOT_NEED_DROP_ALL_V1` (właściciel, 07.11.2026: „inne przedmioty też niech dropią, nie tylko do ewolucji”)
+  także **każdy przedmiot** dropu bota (bez towarzyszy graczy); flaga `m2_bot_need_drop_all_off 1` zostawia tylko materiały peta.
 - **Gracze bez zmian**: dla osoby funkcje zwracają false, a liczba wywołań `number()` na wiersz jest ta sama.
 - Wyłącznik: flaga eventu `m2_bot_petmat_drop_off 1` (albo `m2_bot_petmat_off 1` – całe MT2009_PLUS_BOT_PET_MATS_V1).
 
