@@ -189,9 +189,12 @@ namespace
 
 bool GrowthPetDBLoadSkillTable()
 {
+	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1: the column is ENUM('NONE','PASSIVE','AUTO') and "type+0" gave the enum's 1-based
+	// index (PASSIVE 2, AUTO 3) to a field read as EGrowthPetSkillUse (PASSIVE 1, AUTO 2) - no passive skill gave its
+	// bonus and no auto skill fired. FIELD() gives NONE 0, PASSIVE 1, AUTO 2 (the game also mends an old db's rows).
 	char q[1024];
 	snprintf(q, sizeof(q),
-			"SELECT pet_vnum, skill_vnum, name, type+0, cooldown, point_on, unit, value_t1, value_t2, value_t3, value_t4, "
+			"SELECT pet_vnum, skill_vnum, name, FIELD(type, 'PASSIVE', 'AUTO'), cooldown, point_on, unit, value_t1, value_t2, value_t3, value_t4, "
 			"value_t5, value_t6, value_t7, value_t8, level_curve, grow_levels, activate, duration FROM growth_pet_skill_proto%s",
 			GetTablePostfix());
 	std::unique_ptr<SQLMsg> msg(CDBManager::instance().DirectQuery(q));
