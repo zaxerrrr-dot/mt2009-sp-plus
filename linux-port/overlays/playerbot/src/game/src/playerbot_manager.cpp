@@ -8081,6 +8081,10 @@ WritePlayerBotGuildStatus(dwNow);
 		CashPlayerBotVouchers(ch, state, dwNow);
 		if (ManagePlayerBotPrivateShop(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: a Sung Ma resident home on a stall trip waits at its pitch for its counter
+		// (playerbot_sungma_stall.h)
+		if (HoldPlayerBotSungmaStallVisitor(ch, state, dwNow))
+			continue;
 
 		ManagePlayerBotSkillBooks(ch, state, dwNow);
 		// The crafting recipes, on a clock of their own: a bot with skill

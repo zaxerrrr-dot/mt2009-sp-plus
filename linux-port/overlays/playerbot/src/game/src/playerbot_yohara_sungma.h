@@ -1499,12 +1499,26 @@
 		return ch->GetEmptyInventory(3) >= 0 && CountPlayerBotFreeInventoryCells(ch) >= PLAYERBOT_SUNGMA_GOODS_FREE;
 	}
 
+	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1 (playerbot_sungma_stall.h, below): the stall trips carry the goods to the
+	// counter; this sale is their fallback only.
+	const char* GetPlayerBotSungmaGoodsSaleFallback(LPCHARACTER ch, DWORD dwNow);
+	void NotePlayerBotSungmaStallBag(LPCHARACTER ch, DWORD dwNow);
+	void NotePlayerBotSungmaStallSaleSkipped();
+	void NotePlayerBotSungmaStallFallbackSale(int pieces, long long gold);
+
 	// The pieces sold.
 	int SellPlayerBotSungmaBagGoods(LPCHARACTER ch, DWORD dwNow)
 	{
 		if (!ch || quest::CQuestManager::instance().GetEventFlag("m2_bot_sungma_goods_sale_off") != 0 ||
 				IsPlayerBotSidekickServing(ch) || IsPlayerBotSungmaBagRoomy(ch))
 			return 0;
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: no sale while a stall trip can take the goods to its counter
+		const char* fallback = GetPlayerBotSungmaGoodsSaleFallback(ch, dwNow);
+		if (!fallback)
+		{
+			NotePlayerBotSungmaStallSaleSkipped();
+			return 0;
+		}
 		std::vector<std::pair<DWORD, LPITEM> > pieces;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
@@ -1532,10 +1546,14 @@
 			return 0;
 		s_kPlayerBotSungmaTrips.goodsSold += (unsigned int)sold;
 		s_kPlayerBotSungmaTrips.goodsGold += gold;
+		NotePlayerBotSungmaStallFallbackSale(sold, gold);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 		PlayerBotLogThrottled("sungma_goods_sale", dwNow,
 				"PLAYERBOT_SUNGMA: bag goods sold pid=%u name=%s map=%ld pieces=%d of=%u gold=%lld dearest_ask=%u free_cells=%d->%d free3=%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), sold, (unsigned int)pieces.size(), gold, dearest, freeBefore,
 				CountPlayerBotFreeInventoryCells(ch), ch->GetEmptyInventory(3) >= 0 ? 1 : 0);
+		PlayerBotLogThrottled("sungma_stall_fallback", dwNow,
+				"PLAYERBOT_SUNGMA_STALL: fallback sale pid=%u name=%s map=%ld why=%s pieces=%d gold=%lld",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), fallback, sold, gold);
 		return sold;
 	}
 
@@ -1546,6 +1564,7 @@
 			return false;
 		if (b.dwLastBagErrand != 0 && dwNow - b.dwLastBagErrand < PLAYERBOT_SUNGMA_TIDY_MS)
 			return false;
+		NotePlayerBotSungmaStallBag(ch, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: the bag's clock
 		const int freeBefore = CountPlayerBotFreeInventoryCells(ch);
 		if (ch->GetEmptyInventory(3) >= 0 && freeBefore >= PLAYERBOT_SUNGMA_TIDY_FREE)
 			return false;
@@ -1825,6 +1844,8 @@
 #endif
 	}
 
+#include "playerbot_sungma_stall.h"	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: the stall trips
+
 	// Why the bot goes home to trade now (NULL: not now). The gaps count from the stay's start or the last trip, whichever
 	// is later (a trip refused by its counter's room does not call the bot round in circles).
 	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: "buy" only - to the stands (see GetPlayerBotSungmaErrandNeed's note); the reasons
@@ -1874,11 +1895,14 @@
 		// column of three, nothing Dongan's merchants take, and goods a counter would.
 		goods = CountPlayerBotSungmaTradeGoods(ch, state);
 		int refused = -1;
-		if (goods >= PLAYERBOT_SUNGMA_TRADE_BAG_GOODS && ch->GetEmptyInventory(3) < 0 &&
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: a bag under pressure (fewer than PLAYERBOT_SUNGMA_GOODS_FREE cells free) is
+		// the bag's reason too, and the counter's other reasons wait the stall trip's gap a bot
+		const bool stall = IsPlayerBotSungmaStallOn();
+		if (goods >= PLAYERBOT_SUNGMA_TRADE_BAG_GOODS && (ch->GetEmptyInventory(3) < 0 || (stall && !IsPlayerBotSungmaBagRoomy(ch))) &&
 				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
 				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
 			refused = 0;
-		else if (gap < PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS)
+		else if (gap < (stall ? GetPlayerBotSungmaStallGapMs() : PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS))
 			refused = -1;
 		else if (WantsPlayerBotGear2TradeTrip(ch))	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: Jaharr's / Seon-Pyeong's work ready
 			refused = 1;
@@ -1946,7 +1970,12 @@
 		// MT2009_PLUS_BOT_MELEY_RUNS_V1: the lair's trips keep to their own cap (WantsPlayerBotMeleyTrip) and leave the
 		// trade trips' to the trade.
 		const bool meley = !strcmp(why, "meley");
-		if (!meley && away - std::min(away, CountPlayerBotMeleyTripsOut(dwNow)) >= cfg.sungmaTradeMax)
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: a stall trip keeps to its own cap (playerbot_sungma_stall.h)
+		const bool stall = IsPlayerBotSungmaStallOn() && GetPlayerBotSungmaStallWhyIndex(why) >= 0;
+		if (stall && !AllowPlayerBotSungmaStallTrip(ch, why, goods, dwNow))
+			return -1;
+		if (!meley && !stall && away - std::min(away, CountPlayerBotMeleyTripsOut(dwNow) +
+				(IsPlayerBotSungmaStallOn() ? CountPlayerBotSungmaStallAway(dwNow) : 0)) >= cfg.sungmaTradeMax)
 		{
 			PlayerBotLogThrottled("sungma_trade_cap", dwNow, "PLAYERBOT_SUNGMA: trade trip waits pid=%u name=%s why=%s away=%d max=%d",
 					ch->GetPlayerID(), ch->GetName(), why, away, cfg.sungmaTradeMax);
@@ -1956,7 +1985,9 @@
 		if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, home, x, y) || IsPlayerBotMapHostedHere(home))
 			return -1;
 		long ox = 0, oy = 0;
-		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x54524144U, PLAYERBOT_SHOP_RING_MIN, PLAYERBOT_SHOP_RING_RADIUS, ox, oy);
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: a stall trip lands on its own pitch (the stall's offset)
+		GetPlayerBotStableOffset(ch->GetPlayerID(), stall ? PLAYERBOT_SUNGMA_STALL_PITCH_SALT : 0x54524144U, PLAYERBOT_SHOP_RING_MIN,
+				PLAYERBOT_SHOP_RING_RADIUS, ox, oy);
 		if (goods < 0)
 			goods = CountPlayerBotSungmaTradeGoods(ch, state);
 		const long backMap = res.lMap;
@@ -1979,6 +2010,8 @@
 			++s_aPlayerBotSungmaStats[slot].tradeTrips;
 			--s_aiPlayerBotSungmaMapCensus[slot];	// the poll counts the rows again
 		}
+		if (stall)
+			NotePlayerBotSungmaStallOut(ch, why, goods, home, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 		if (meley)
 			NotePlayerBotMeleyTripOut(ch, dwNow);	// MT2009_PLUS_BOT_MELEY_RUNS_V1
 		else if (!strcmp(why, "buy"))
@@ -2028,6 +2061,7 @@
 		++s_uPlayerBotSungmaTradeHomeArrived;
 		if (!strcmp(v.szWhy, "meley"))	// MT2009_PLUS_BOT_MELEY_RUNS_V1: a visitor for Schronienie Meley
 			NotePlayerBotMeleyVisitorHome(ch, dwNow);
+		StartPlayerBotSungmaStallHome(ch, v.szWhy, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: the counter's visit
 		sys_log(0, "PLAYERBOT_SUNGMA: trade trip home pid=%u name=%s map=%ld pos=(%ld,%ld) back_to=%ld why=%s gold=%lld member=%d",
 				pid, ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(), backMap, v.szWhy, v.llGold,
 				IsPlayerBotYoharaCohortPID(pid) ? 1 : 0);
@@ -2036,6 +2070,7 @@
 	// The game3 side: a trade trip's bot is back on its Sung Ma map (SettlePlayerBotYoharaArrivals).
 	void NotePlayerBotSungmaTradeLanded(LPCHARACTER ch, DWORD dwNow)
 	{
+		NotePlayerBotSungmaStallLanded(ch, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 		std::map<DWORD, TPlayerBotSungmaTradeOut>::iterator out = s_mapPlayerBotSungmaTradeOut.find(ch->GetPlayerID());
 		if (out == s_mapPlayerBotSungmaTradeOut.end())
 			return;
@@ -2056,6 +2091,10 @@
 		// MT2009_PLUS_BOT_MELEY_RUNS_V1: a visitor for Schronienie Meley stays for its run (playerbot_dgrun_meley.h).
 		if (IsPlayerBotMeleyVisitHeld(ch, dwNow))
 			return false;
+		// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1: a stall visitor - its counter open and served first
+		const int stall = IsPlayerBotSungmaStallHomeDone(ch, state, dwNow);
+		if (stall >= 0)
+			return stall != 0;
 		if (el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS)
 			return true;
 		if (el < PLAYERBOT_SUNGMA_TRADE_HOME_MIN_MS || state.bVisitingShop || state.bMarketTrip)
@@ -2078,6 +2117,7 @@
 	// map it left (the pick's when that one has no room) by a new handover, its purpose "yohara", no draw or cooldown.
 	void ManagePlayerBotSungmaTradeHomes(DWORD dwNow)
 	{
+		PrintPlayerBotSungmaStallCensus(dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 		for (std::map<DWORD, TPlayerBotSungmaTradeHome>::iterator i = s_mapPlayerBotSungmaTradeHome.begin();
 				i != s_mapPlayerBotSungmaTradeHome.end();)
 		{
@@ -2090,6 +2130,7 @@
 				if (!ch)
 					sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u why=logged_out after_s=%u", pid,
 							(dwNow - v.dwSince) / 1000);
+				EndPlayerBotSungmaStallHome(pid, ch, PLAYERBOT_SUNGMA_STALL_FAIL_LOGGED_OUT, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 				s_mapPlayerBotSungmaTradeHome.erase(i++);
 				continue;
 			}
@@ -2122,6 +2163,7 @@
 			{
 				sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u name=%s why=%s after_s=%u", pid, ch->GetName(), stuck,
 						el / 1000);
+				EndPlayerBotSungmaStallHome(pid, ch, PLAYERBOT_SUNGMA_STALL_FAIL_STRANDED, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 				s_mapPlayerBotSungmaTradeHome.erase(i++);
 				continue;
 			}
@@ -2144,6 +2186,7 @@
 					++s_uPlayerBotSungmaTradeStranded;
 					sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u name=%s why=%s back_to=%ld after_s=%u",
 							pid, ch->GetName(), !eligible ? "not_eligible" : "no_room", map, el / 1000);
+					EndPlayerBotSungmaStallHome(pid, ch, PLAYERBOT_SUNGMA_STALL_FAIL_STRANDED, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 					s_mapPlayerBotSungmaTradeHome.erase(i++);
 					continue;
 				}
@@ -2171,6 +2214,7 @@
 					"goods_left=%d gold=%lld->%lld done=%s",
 					pid, ch->GetName(), ch->GetMapIndex(), map, v.szWhy, el / 1000, served, counter ? 1 : 0, goods, v.llGold, gold,
 					el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS ? "timeout" : "served");
+			EndPlayerBotSungmaStallHome(pid, ch, -1, dwNow);	// MT2009_PLUS_BOT_SUNGMA_STALL_TRIP_V1
 			s_mapPlayerBotSungmaTradeHome.erase(i++);
 		}
 	}
