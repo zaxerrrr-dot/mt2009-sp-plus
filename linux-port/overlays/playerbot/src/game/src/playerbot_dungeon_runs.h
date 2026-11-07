@@ -224,6 +224,7 @@ namespace
 	int GetPlayerBotYoharaHydraParties();
 	void NotePlayerBotYoharaHydraRunEnd(const std::vector<DWORD>& members, bool won);
 	void NotePlayerBotYoharaHydraDeath(LPCHARACTER ch);
+	int GetPlayerBotHydraOpenSailMin(DWORD pid);	// MT2009_PLUS_BOT_HYDRA_OPEN_V1: an open group's fewest to sail (0: none)
 	// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra ended (m2_bot_hydra_end / PLAYERBOT_HYDRA_END, or the member's row) - no
 	// new ship for it; the statue's errand instead (playerbot_yohara_bots.h).
 	bool IsPlayerBotHydraEndSwitched();
@@ -4740,7 +4741,9 @@ namespace
 			std::vector<playerbot_dgrun::TCand>& free = g->second;
 			if (busy.count(key))
 				continue;	// part of it still on a ship or on its way
-			if ((int)free.size() < rule.startMin)
+			// MT2009_PLUS_BOT_HYDRA_OPEN_V1: an open group (the ordinary bots of 120) sails with all but one at the least
+			const int sailMin = std::max(rule.startMin, free.empty() ? 0 : GetPlayerBotHydraOpenSailMin(free[0].pid));
+			if ((int)free.size() < sailMin)
 			{
 				if (forced)
 					sys_log(0, "BOT_DGRUN: no call (test) dungeon=hydra party=%d empire=%d - %u free of %d", key / 10 % 100,

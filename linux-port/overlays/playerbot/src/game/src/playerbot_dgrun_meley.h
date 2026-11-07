@@ -74,7 +74,11 @@
 // the default without it, on every core hosting 356 (channel 2's too):
 //   * a run's party is PLAYERBOT_MELEY_SIZE (.env, default 16, 5-16) and is called with size - 2 at the least (14 of
 //     16; event flag m2_bot_meley_least 5-16 to change it) - the training's 3/4 (12) let in the parties of 12-13 that
-//     timed out; the gathering still lets 3/4 of it in (a member lost on the way is no reason to give the run up);
+//     timed out; after PLAYERBOT_MELEY_LEAST_WAIT_MS (30 min) with no call the 3/4 again (12 of 16: 16 of 23 won - better
+//     than no run; a kingdom's free bots of 95+ were 0-14 on the test's pools); the gathering still lets 3/4 of it in
+//     (a member lost on the way is no reason to give the run up);
+//   * the Sung Ma visitors (game3's residents whose helmet needs the lair - the training's pool was half of them) up to
+//     the runs times the size at once (32), PLAYERBOT_MELEY_TRIPS the floor, as the training had it;
 //   * the bots' 3 h cooldown of the panel is off (people have none - MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1; the
 //     quest's five a day stay): on channel 2 it held 32-65 of the ~100 bots of 95+ out of every pool. Event flag
 //     m2_bot_meley_cd_on 1: the 3 h back;
@@ -121,6 +125,8 @@ namespace
 	const int PLAYERBOT_MELEY_VISIT_RUNS = 1;
 	const int PLAYERBOT_MELEY_VISIT_RUNS_TRAIN = 3;
 	const int PLAYERBOT_MELEY_CALLS_A_PASS = 2;
+	const DWORD PLAYERBOT_MELEY_LEAST_WAIT_MS = 30 * 60 * 1000;	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: no call this long - 3/4
+	DWORD s_dwPlayerBotMeleyLastCall = 0;	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: this core's last call (or its start)
 	// MT2009_PLUS_BOT_MELEY16_V1: the guild lair's 4-16 - a run's largest party, the visitors' cap, the roles.
 	const int PLAYERBOT_MELEY_PARTY_MAX = 16;
 	const int PLAYERBOT_MELEY_TRIPS_MAX = 160;
@@ -221,7 +227,9 @@ namespace
 		if (IsPlayerBotMeleyTraining() || !IsPlayerBotMeleyReleaseOn())
 			return std::max(rule.startMin, size * 3 / 4);
 		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_meley_least");
-		const int least = flag > 0 ? std::min(flag, size) : size - 2;
+		int least = flag > 0 ? std::min(flag, size) : size - 2;
+		if (s_dwPlayerBotMeleyLastCall != 0 && get_dword_time() - s_dwPlayerBotMeleyLastCall >= PLAYERBOT_MELEY_LEAST_WAIT_MS)
+			least = std::min(least, size * 3 / 4);	// no call for half an hour: 3/4 rather than none
 		return std::max(rule.startMin, least);
 	}
 
@@ -252,6 +260,8 @@ namespace
 			s_iTrips = ReadPlayerBotYoharaEnvInt("PLAYERBOT_MELEY_TRIPS", 12, 0, PLAYERBOT_MELEY_TRIPS_MAX);
 		if (IsPlayerBotMeleyTraining())
 			return std::min(PLAYERBOT_MELEY_TRIPS_MAX, std::max(s_iTrips, s_kPlayerBotMeleyTrain.parties * s_kPlayerBotMeleyTrain.size));
+		if (IsPlayerBotMeleyReleaseOn())	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: as the training - the runs times the size
+			return std::min(PLAYERBOT_MELEY_TRIPS_MAX, std::max(s_iTrips, GetPlayerBotMeleyRunCap() * GetPlayerBotMeleyPartySize()));
 		return s_iTrips;
 	}
 
@@ -1125,6 +1135,7 @@ namespace
 		mr.iNeeders = needers;
 		mr.iVisitors = visitors;
 		++s_kPlayerBotMeleyStats.called;
+		s_dwPlayerBotMeleyLastCall = dwNow ? dwNow : 1;	// MT2009_PLUS_BOT_MELEY_RELEASE_V1
 		sys_log(0, "BOT_MELEY: called run=%d empire=%u party=%u needers=%d visitors=%d pool=%u train=%d", id, (unsigned int)empire,
 				(unsigned int)picked.size(), needers, visitors, (unsigned int)poolSize, mr.bTrain ? 1 : 0);
 		return id;
@@ -1152,6 +1163,8 @@ namespace
 		ReadPlayerBotMeleyTrainFile(dwNow);
 		if (s_dwStart == 0)
 			s_dwStart = dwNow ? dwNow : 1;
+		if (s_dwPlayerBotMeleyLastCall == 0)	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: the half hour from the start
+			s_dwPlayerBotMeleyLastCall = s_dwStart;
 		if (!forced && s_dwNext != 0 && (int)(dwNow - s_dwNext) < 0)
 			return;
 		s_dwNext = dwNow + PLAYERBOT_MELEY_PLAN_MS;
