@@ -326,6 +326,7 @@ bool ManagePlayerBotRankFruitCraft(LPCHARACTER ch, TPlayerBotAIState& state, DWO
 			++made;
 		}
 	++s_visits_done;
+	ClearPlayerBotFruitCraftHold(ch);	// MT2009_PLUS_RANK_FRUIT_CRAFT_KEEP_V1: what it bought is crafted now
 	sys_log(1, "PLAYERBOT_RANK_FRUIT_CRAFT: visit pid=%u name=%s lv=%d points=%d crafted=%llu failed=%llu",
 			ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), mt2009_rankp::KnownPoints(ch), s_craftedTotal - okBefore,
 			s_failedTotal - failBefore);

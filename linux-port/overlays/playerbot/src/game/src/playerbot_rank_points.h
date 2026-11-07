@@ -815,8 +815,56 @@ namespace
 	// MT2009_PLUS_RANK_FRUIT_CRAFT_KEEP_V1 (the owner, 7 November 2026: "Zawsze odklada sobie nizsze owoce na wyzsze,
 	// ktorych jeszcze potrzebuje do swojego celu rangi. Tylko jakis dany zapas"): the higher pieces a bot holds the
 	// lower fruit for (and buys it for) at once - one craft, seven pieces; the rest goes on its counter. Was 10 (70
-	// pieces, the market saw no fruit). Event flag m2_bot_fruit_craft_ahead N (1..10) overrides.
+	// pieces, the market saw no fruit). Event flag m2_bot_fruit_craft_ahead N (1..10) overrides. The owner, the same day:
+	// "Jak ma yang wiecej, to niech kupuje z rynku wiecej, jesli chce i potrzebuje" - what a bot BUYS for its crafts
+	// (as many as its rank goal wants, GetPlayerBotRankFruitCraftBuyWant) it holds besides until its next visit at
+	// Uriel (PLAYERBOT_FRUIT_CRAFT_HOLD_MS at the most): the cap is on the fruit it drops itself.
 	const int PLAYERBOT_FRUIT_CRAFT_AHEAD = 1;
+
+	const DWORD PLAYERBOT_FRUIT_CRAFT_HOLD_MS = 3 * 60 * 60 * 1000;
+
+	struct TPlayerBotFruitCraftHold
+	{
+		DWORD vnum;
+		int pieces;
+		DWORD at;
+		TPlayerBotFruitCraftHold() : vnum(0), pieces(0), at(0) {}
+	};
+	std::map<DWORD, TPlayerBotFruitCraftHold> s_mapPlayerBotFruitCraftHold;
+
+	void NotePlayerBotFruitCraftHold(LPCHARACTER ch, DWORD vnum, int pieces)
+	{
+		if (!ch || pieces <= 0)
+			return;
+		TPlayerBotFruitCraftHold& h = s_mapPlayerBotFruitCraftHold[ch->GetPlayerID()];
+		if (h.vnum != vnum)
+			h.pieces = 0;
+		h.vnum = vnum;
+		h.pieces = std::min(h.pieces + pieces, 1000);
+		h.at = get_dword_time();
+	}
+
+	// The pieces of `vnum` the bot bought for its crafts and has not taken to Uriel yet.
+	int GetPlayerBotFruitCraftHold(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch)
+			return 0;
+		std::map<DWORD, TPlayerBotFruitCraftHold>::iterator it = s_mapPlayerBotFruitCraftHold.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotFruitCraftHold.end())
+			return 0;
+		if (get_dword_time() - it->second.at > PLAYERBOT_FRUIT_CRAFT_HOLD_MS)
+		{
+			s_mapPlayerBotFruitCraftHold.erase(it);
+			return 0;
+		}
+		return it->second.vnum == vnum ? it->second.pieces : 0;
+	}
+
+	void ClearPlayerBotFruitCraftHold(LPCHARACTER ch)
+	{
+		if (ch)
+			s_mapPlayerBotFruitCraftHold.erase(ch->GetPlayerID());
+	}
 
 	int GetPlayerBotFruitCraftAhead()
 	{
@@ -852,9 +900,14 @@ namespace
 		const int dueIndex = due ? GetPlayerBotRankFruitIndex(due->vnum) : -1;
 		if (dueIndex <= 0 || FRUITS[dueIndex - 1].vnum != vnum)
 			return 0;
-		const int need = std::min(GetPlayerBotRankFruitNeed(*due, GetPlayerBotRankGoal(ch), KnownPoints(ch)),
-				GetPlayerBotFruitCraftAhead()) - (int)ch->CountSpecifyItem(due->vnum);
-		return need > 0 ? need * PLAYERBOT_FRUIT_CRAFT_IN : 0;
+		const int full = GetPlayerBotRankFruitNeed(*due, GetPlayerBotRankGoal(ch), KnownPoints(ch)) -
+				(int)ch->CountSpecifyItem(due->vnum);
+		if (full <= 0)
+			return 0;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_KEEP_V1: its own drops for GetPlayerBotFruitCraftAhead crafts, and what it bought
+		const int keep = std::min(full, GetPlayerBotFruitCraftAhead()) * PLAYERBOT_FRUIT_CRAFT_IN +
+				GetPlayerBotFruitCraftHold(ch, vnum);
+		return std::min(keep, full * PLAYERBOT_FRUIT_CRAFT_IN);
 	}
 
 	// The pieces of this fruit a bot keeps in its bag (the rest is its counter's): the base keep and the craft's.
