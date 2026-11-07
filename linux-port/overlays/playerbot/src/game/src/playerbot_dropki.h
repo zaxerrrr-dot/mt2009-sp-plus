@@ -104,8 +104,11 @@ namespace
 		// would leave a pair that never goes)
 		{ 11, "glebie_slaby", 8, 8, 20, NULL },
 		{ 12, "glebie_silny", 8, 8, 26, "glebie_slaby" },
-		{ 13, "gnolle", 10, 5, 16, NULL },
-		{ 14, "meley", 10, 6, 0, NULL },
+		// MT2009_PLUS_BOT_GNOLLE_SIX_V1: two parties of six (the caves' rule: six with a healing Shaman at the entrance)
+		{ 13, "gnolle", 12, 6, 16, NULL },
+		// MT2009_PLUS_BOT_MELEY_RELEASE_V1 (the owner, 7 November 2026): one party of 14 (the lair's wins came with 14-16
+		// inside; parties of 6 never won - 0 of 29 on the test's channel 2) - registered as the Meley planner's run.
+		{ 14, "meley", 14, 14, 0, NULL },
 		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (size 1), the bots' runner playerbot_dgrun_wieza.h.
 		// MT2009_PLUS_BOT_GNOLLE_V2: none by default (the owner, 6 November: "narazie boty nie wchodza na wieze") - only
 		// the file's own "wieza <n>" line gives the row its Dropki.
@@ -331,8 +334,9 @@ namespace
 						a = 0;
 					}
 					c.count[dg] = std::max(0, std::min(a, 80));
-					if (got >= 3)
-						c.size[dg] = std::max(1, std::min(b, playerbot_dgrun::PARTY_MAX));
+					if (got >= 3)	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: Meley's row up to the lair's 16
+						c.size[dg] = std::max(1, std::min(b, !strcmp(PLAYERBOT_DROPKI_DGS[dg].szKey, "meley")
+								? PLAYERBOT_MELEY_PARTY_MAX : playerbot_dgrun::PARTY_MAX));
 				}
 			}
 			fclose(fp);
@@ -1027,7 +1031,9 @@ namespace
 		slot.lvMin = GetPlayerBotDkDefMinLevel(def);
 		slot.lvMax = gPlayerMaxLevel;
 		slot.partyMin = 1;
-		slot.partyMax = playerbot_dgrun::PARTY_MAX;
+		// MT2009_PLUS_BOT_MELEY_RELEASE_V1: Meley's party of up to 16
+		slot.partyMax = info.bKind == DGRUN_KIND_MELEY ? std::max(playerbot_dgrun::PARTY_MAX, (int)free.size())
+				: playerbot_dgrun::PARTY_MAX;
 		slot.panel = mt2009_dpanel::FindKey(info.szKey);
 		TPlayerBotLfgPlace& place = slot.place[empire];
 		if (!ResolvePlayerBotLfgPlace(info.szKey, 0, empire, slot.lvMin, place))
@@ -1051,6 +1057,8 @@ namespace
 		const int id = OpenPlayerBotDgRun(def, empire, free, slot, free.size(), dwNow, "dropki");
 		if (id == 0)
 			return 0;
+		if (info.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_RELEASE_V1: the run's size (roles, start, second party)
+			NotePlayerBotMeleyDropkiRun(id, (int)free.size());
 		s_mapPlayerBotDropkiRunParty[id] = p.iId;
 		std::map<DWORD, TPlayerBotDropkiSnap>& snaps = s_mapPlayerBotDropkiSnaps[id];
 		snaps.clear();
@@ -1132,7 +1140,10 @@ namespace
 		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
 		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
 		const int size = std::max(1, s_kPlayerBotDropkiCfg.size[dg]);
-		const int least = size == 1 ? 1 : std::max(2, std::min(size, rule.startMin));
+		int least = size == 1 ? 1 : std::max(2, std::min(size, rule.startMin));
+		// MT2009_PLUS_BOT_MELEY_RELEASE_V1: a Meley party of more than eight goes with size - 2 at the least (12 of 14)
+		if (info.bKind == DGRUN_KIND_MELEY && size > playerbot_dgrun::PARTY_MAX)
+			least = GetPlayerBotMeleyCallLeast(size, rule);
 		std::string reqWhy;
 		const bool partyOk = (int)free.size() >= least && (size == 1 || playerbot_dgrun::PartyOk(free, rule)) &&
 				IsPlayerBotGlebiePartyOk(def, free, reqWhy);

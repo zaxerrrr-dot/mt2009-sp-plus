@@ -4935,6 +4935,22 @@ namespace
 					++e;
 			}
 		}
+		// MT2009_PLUS_BOT_GNOLLE_SIX_V1: the caves' party rule (six with a healing Shaman; m2_bot_gnolle_six_off 1: the
+		// old four / three) - read every pass, a line when it changes and every PLAYERBOT_DGRUN_STATUS_MS.
+		{
+			static int s_iGnolleSix = -1;
+			static DWORD s_dwGnolleSixLog = 0;
+			const bool off = quest::CQuestManager::instance().GetEventFlag("m2_bot_gnolle_six_off") != 0;
+			playerbot_dgrun::GnolleSixOff() = off;
+			if (s_iGnolleSix != (off ? 0 : 1) || (int)(dwNow - s_dwGnolleSixLog) >= 0)
+			{
+				s_iGnolleSix = off ? 0 : 1;
+				s_dwGnolleSixLog = dwNow + PLAYERBOT_DGRUN_STATUS_MS;
+				const playerbot_dgrun::TRunRule& g = playerbot_dgrun::RuleFor("gnolle");
+				sys_log(0, "BOT_GNOLLE: party rule six=%d call=%d prefer=%d start=%d healer=%d", s_iGnolleSix, g.callMin, g.preferMin,
+						g.startMin, g.needHealer ? 1 : 0);
+			}
+		}
 		if ((int)(dwNow - s_dwNextPlan) >= 0)
 		{
 			s_dwNextPlan = dwNow + PLAYERBOT_DGRUN_PLAN_MS;
