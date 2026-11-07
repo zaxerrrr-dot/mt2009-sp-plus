@@ -141,10 +141,13 @@ namespace mt2009_seonhae
 	// the same table.
 	DWORD MaterialVnum(LPITEM item)
 	{
+		// MT2009_PLUS_SEONHAE_LEVEL_FIX_V1 (vps3, 7 November 2026: "niebieskim odlamkiem go nie zabiera"): the highest level
+		// limit, not the last - Kapelusz Kardynala (12670-12679) has LIMIT_LEVEL 60 and a second LIMIT_LEVEL 0, the last
+		// one read made it a level-0 item that took Szare Odlamki (39070) instead of Niebieskie (39074).
 		int level = 0;
 		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 			if (item->GetLimitType(i) == LIMIT_LEVEL)
-				level = item->GetLimitValue(i);
+				level = MAX(level, (int)item->GetLimitValue(i));
 		if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_PENDANT)
 			return 39080;
 		if (level == 96 && (item->GetType() == ITEM_WEAPON || (item->GetType() == ITEM_ARMOR &&

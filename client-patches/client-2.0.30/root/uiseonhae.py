@@ -184,7 +184,7 @@ def MaterialVnum(itemVnum):
 		for i in xrange(item.LIMIT_MAX_NUM):
 			(limitType, limitValue) = item.GetLimit(i)
 			if limitType == item.LIMIT_LEVEL:
-				level = limitValue
+				level = max(level, limitValue)  # MT2009_PLUS_SEONHAE_LEVEL_FIX_V1: the highest, not the last (Kapelusz Kardynala: 60 and 0)
 	except Exception:
 		level = 0
 	# MT2009_PLUS_SEONHAE_LUCENT_V1 (fix 3.0 #9): the Lucent shards of the pl-wiki's table (the server has the same)
