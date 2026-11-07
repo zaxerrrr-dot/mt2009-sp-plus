@@ -350,6 +350,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_world_events.h"
 // MT2009_PLUS_POTEGA_MADROSCI_V1 (include): "Potega madrosci" - Uriel's experience bonus for the bots that pass him.
 #include "playerbot_potega.h"
+// MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (include): the rank fruits crafted 7 -> 1 at Uriel (after Potega madrosci, whose
+// FindUriel it asks).
+#include "playerbot_rank_fruit_craft.h"
 // MT2009_PLUS_GUILD_DUTY_V1 (include): the guild leader's duties - the yang
 // collection, the item mission and its bank, the Demon Tower expedition.
 // After the tower and the guild land, whose raid and grounds it uses.
@@ -7611,6 +7614,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_gear_upgrade.h).
 		ManagePlayerBotToolHand(ch, state, dwNow);
 
+		// MT2009_PLUS_RANK_FRUIT_GOAL_V1: the rank fruits looked at above the runs too - a dungeon party ate none
+		// of the Gruszki its boss dropped, hours on end (its own clock: the look below then returns at once).
+		if (IsPlayerBotRankFruitGoalOn())
+			ManagePlayerBotRankPoints(ch, dwNow);
+
 		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
 		// and shouts, and does nothing else (playerbot_shouters.h).
 		if (ManagePlayerBotShouterTick(ch, state, dwNow))
@@ -8489,6 +8497,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// linger and the world travel; its own staggered clock, a few walkers at once.
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin && !curTarget &&
 				ManagePlayerBotPotega(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_V1: a bot near an Uriel with fruit to craft (its surplus while the lower fruit
+		// is overstocked or cheap, the pieces it holds for the fruit it eats) crafts 7 -> 1 there
+		// (playerbot_rank_fruit_craft.h); the same gate and place as Potega madrosci's.
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin && !curTarget &&
+				ManagePlayerBotRankFruitCraft(ch, state, dwNow))
 			continue;
 
 		if (!bBagFirst && ManagePlayerBotTownLinger(ch, state, dwNow))

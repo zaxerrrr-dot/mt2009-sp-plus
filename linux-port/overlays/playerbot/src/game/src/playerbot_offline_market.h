@@ -506,6 +506,7 @@ namespace {
         NotePlayerBotCorBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_MARKET_SINK_V1
         NotePlayerBotGuildMaterialBought(ch, boughtVnum, payPrice);
         NotePlayerBotCraftBought(ch, boughtVnum, payPrice); // MT2009_PLUS_BOT_WORKSHOP_V1
+        NotePlayerBotRankFruitBought(ch, boughtVnum, boughtCount); // MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (the census)
         NotePlayerBotG0DustBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_G0_V1
         NotePlayerBotYoharaShopBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_SHOP_V1
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
