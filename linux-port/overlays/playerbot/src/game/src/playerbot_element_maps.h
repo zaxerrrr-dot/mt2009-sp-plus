@@ -20,6 +20,9 @@
 // weighed by their spawn count), so the same table is right in both modes: in M2_BONUS_MODE=mt2009 the Spider
 // Dungeons, Hwang or Zaklety Las carry no element (zywioly_moby.sql) and their gate is off; the Grotto is lightning in
 // both. A row counts while its element is PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE of the samples or more.
+// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1: the gate column below is the code's column again (it was 0 everywhere since the
+// owner's "no gates yet" of 31 October while this table said 60/75); it is read only with the event flag
+// m2_bot_element_map_gates = 1 (GetPlayerBotElementMapRowGate) - off, every gate is 0 as before.
 //   map  name          element    want gate  shares measured in the test world (global, 31 October)
 //    71  spider_v2     fire        60   60   fire 100%            lv 60-68   (the owner)
 //   217  spider_v3     fire        60   60   fire 100%            lv 60-68   (the owner)
@@ -109,15 +112,15 @@ namespace
 	// The samples: the map's most common ordinary monsters (tools: regen.txt + group.txt + group_group.txt of the test
 	// world, 31 October 2026), percent of its spawns - the rest of a map's spawns are rarer kinds of the same mix.
 	const TPlayerBotElementMapRow PLAYERBOT_ELEMENT_MAP_ROWS[] = {
-		{ PLAYERBOT_MAP_SPIDER_V2, "spider_v2", PLAYERBOT_EM_FIRE, 60, 0,
+		{ PLAYERBOT_MAP_SPIDER_V2, "spider_v2", PLAYERBOT_EM_FIRE, 60, 60,
 			{ { 2133, 15 }, { 2061, 14 }, { 2064, 14 }, { 2062, 13 }, { 2132, 10 }, { 2063, 10 }, { 2065, 10 }, { 2134, 9 } } },
-		{ PLAYERBOT_MAP_SPIDER_V3, "spider_v3", PLAYERBOT_EM_FIRE, 60, 0,
+		{ PLAYERBOT_MAP_SPIDER_V3, "spider_v3", PLAYERBOT_EM_FIRE, 60, 60,
 			{ { 2072, 28 }, { 2073, 25 }, { 2074, 20 }, { 2071, 19 } } },
-		{ PLAYERBOT_MAP_ZAKLETY, "zaklety", PLAYERBOT_EM_WIND, 75, 0,
+		{ PLAYERBOT_MAP_ZAKLETY, "zaklety", PLAYERBOT_EM_WIND, 75, 75,
 			{ { 6402, 37 }, { 6401, 29 }, { 6403, 25 } } },
-		{ PLAYERBOT_MAP_GROTTO_V1, "grotto_v1", PLAYERBOT_EM_ELEC, 75, 0,
+		{ PLAYERBOT_MAP_GROTTO_V1, "grotto_v1", PLAYERBOT_EM_ELEC, 75, 75,
 			{ { 2401, 32 }, { 2402, 17 }, { 1136, 9 }, { 1131, 8 }, { 1132, 7 }, { 1137, 6 }, { 1133, 6 }, { 1135, 6 } } },
-		{ PLAYERBOT_MAP_GROTTO_V2, "grotto_v2", PLAYERBOT_EM_ELEC, 75, 0,
+		{ PLAYERBOT_MAP_GROTTO_V2, "grotto_v2", PLAYERBOT_EM_ELEC, 75, 75,
 			{ { 2411, 28 }, { 2401, 23 }, { 2402, 18 }, { 2412, 10 }, { 2413, 10 }, { 2403, 7 } } },
 		{ PLAYERBOT_MAP_FIRE_LAND, "fire_land", PLAYERBOT_EM_FIRE, 50, 0,
 			{ { 2201, 26 }, { 2203, 25 }, { 2202, 20 }, { 2204, 20 } } },
@@ -147,6 +150,32 @@ namespace
 			{ { 2312, 39 }, { 2313, 26 }, { 2314, 17 }, { 2311, 11 } } },
 	};
 	const int PLAYERBOT_ELEMENT_MAP_ROW_COUNT = (int)(sizeof(PLAYERBOT_ELEMENT_MAP_ROWS) / sizeof(PLAYERBOT_ELEMENT_MAP_ROWS[0]));
+
+	// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1: the table's gate column is the owner's (31 October: Loch Pajakow fire 60,
+	// Zaklety Las wind 75, the Grotto lightning 75) - and the owner's word of the same day, "no gates yet", stands: the
+	// gate is read only with the event flag m2_bot_element_map_gates set (1); otherwise 0 (the want stays a gear goal).
+	// Measured on the test on 7 November 14:54 (PLAYERBOT_ELEMENT map_census, game1 / channel2): the bots aiming at
+	// those maps held 8-24 of the element on average (spider_v2 9, zaklety 9, grotto_v1 11-12, grotto_v2 11-24, max 80) -
+	// the gates on would empty the five maps in one pass, so they wait for the owner's word.
+	bool ArePlayerBotElementMapGatesOn()
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = false;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_map_gates") != 0;
+			s_dwAt = now ? now : 1;
+		}
+		return s_bOn;
+	}
+
+	int GetPlayerBotElementMapRowGate(int row)
+	{
+		if (row < 0 || row >= PLAYERBOT_ELEMENT_MAP_ROW_COUNT || !ArePlayerBotElementMapGatesOn())
+			return 0;
+		return PLAYERBOT_ELEMENT_MAP_ROWS[row].iGate;
+	}
 
 	const char* GetPlayerBotElementMapElementName(int e)
 	{
@@ -293,7 +322,7 @@ namespace
 		out.iRow = row;
 		out.iElement = r.iElement;
 		out.iWant = r.iWant;
-		out.iGate = r.iGate;
+		out.iGate = GetPlayerBotElementMapRowGate(row);	// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1
 		out.iShare = share;
 		out.iResist = GetPlayerBotElementMapResist(ch, r.iElement);
 		return true;
@@ -433,7 +462,7 @@ namespace
 		if (pGated)
 			*pGated = false;
 		const int row = FindPlayerBotElementMapRow(map);
-		if (!ch || row < 0 || PLAYERBOT_ELEMENT_MAP_ROWS[row].iGate <= 0)
+		if (!ch || row < 0 || GetPlayerBotElementMapRowGate(row) <= 0)	// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1
 			return true;
 		const int share = GetPlayerBotElementMapShare(row);
 		if (share < PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
@@ -445,14 +474,15 @@ namespace
 			pView->iRow = row;
 			pView->iElement = r.iElement;
 			pView->iWant = r.iWant;
-			pView->iGate = r.iGate;
+			pView->iGate = GetPlayerBotElementMapRowGate(row);
 			pView->iShare = share;
 			pView->iResist = resist;
 		}
 		if (pGated)
 			*pGated = true;
 		const bool here = GetPlayerBotElementMapBase(ch->GetMapIndex()) == r.lMap;
-		return resist >= (here ? r.iGate - PLAYERBOT_ELEMENT_MAP_STAY_SLACK : r.iGate);
+		const int gate = GetPlayerBotElementMapRowGate(row);
+		return resist >= (here ? gate - PLAYERBOT_ELEMENT_MAP_STAY_SLACK : gate);
 	}
 
 	void NotePlayerBotElementMapWanted(LPCHARACTER ch, long wanted)
@@ -517,7 +547,7 @@ namespace
 				sum[row] += r;
 				minR[row] = std::min(minR[row], r);
 				maxR[row] = std::max(maxR[row], r);
-				under[row] += r < PLAYERBOT_ELEMENT_MAP_ROWS[row].iGate ? 1 : 0;
+				under[row] += r < GetPlayerBotElementMapRowGate(row) ? 1 : 0;
 			}
 			++it;
 		}
@@ -529,7 +559,7 @@ namespace
 			char buf[192];
 			snprintf(buf, sizeof(buf), " %s=[element=%s share=%d want=%d gate=%d bots=%d under_gate=%d resist_avg=%ld min=%d max=%d]",
 					PLAYERBOT_ELEMENT_MAP_ROWS[row].szName, GetPlayerBotElementMapElementName(PLAYERBOT_ELEMENT_MAP_ROWS[row].iElement),
-					GetPlayerBotElementMapShare(row), PLAYERBOT_ELEMENT_MAP_ROWS[row].iWant, PLAYERBOT_ELEMENT_MAP_ROWS[row].iGate,
+					GetPlayerBotElementMapShare(row), PLAYERBOT_ELEMENT_MAP_ROWS[row].iWant, GetPlayerBotElementMapRowGate(row),
 					bots[row], under[row], sum[row] / bots[row], minR[row], maxR[row]);
 			line += buf;
 		}

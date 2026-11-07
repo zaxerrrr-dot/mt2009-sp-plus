@@ -10457,6 +10457,20 @@ namespace
 	bool CanPlayerBotPayForLochTicket(LPCHARACTER ch, LPITEM item, long long price);
 	bool WantsPlayerBotLochTicketFromMarket(LPCHARACTER ch);
 #endif
+#define MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1 1
+	// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1 (playerbot_yohara_resist_hp.h, after playerbot_element_pet.h - the owner,
+	// 7 November 2026: "Odpornosc na zywioly i HP to najwazniejsze bonusy na Yoharze"; Wawoz: "zrob wymagany zywiol"):
+	// The element the talisman's resistance line works for (playerbot_yohara_bonus.h's pendant must): the hunt element,
+	// or the map's other element where the talisman's 25 save more damage there (the hunt element already near the cap
+	// without it - Wawoz / Rozpadlina's ice), or the gate element of a Sung Ma map the bot is building for. -1 none.
+	int GetPlayerBotTalismanResistElement(LPCHARACTER ch);
+	// The Sung Ma map's element gate (playerbot_yohara_sungma.h, PickPlayerBotSungmaMap): false - the bot's resistance
+	// to the map's gate element is short (stay: the stay's lower bar); the refusal makes it a builder for that map.
+	bool PassPlayerBotSungmaElementGate(LPCHARACTER ch, long map, bool stay);
+	// The Yohara bonus pass's stones by what they were spent for (the census): the element phase, a Max HP piece, other.
+	void NotePlayerBotYoharaBonusSpend(LPCHARACTER ch, BYTE wearCell, bool elementPhase, int changes, int adds);
+	// From the top of every tick (playerbot_manager.cpp, beside the hunt elixir): the per-map census's look.
+	void ManagePlayerBotYoharaResistTick(LPCHARACTER ch, DWORD dwNow);
 #define MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 1
 	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h, after playerbot_element_resist.h): a Yohara
 	// bot's second set for a second element E2 (armour, helmet, bracelet, talisman, costume, hairstyle - and the second

@@ -853,6 +853,13 @@
 					++st->hpRefused;
 				continue;
 			}
+#ifdef MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1
+			// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1 (the owner, 7 November 2026, Wawoz: "zrob wymagany zywiol"): the map's
+			// element gate (playerbot_yohara_resist_hp.h) - a bot short of the gate element hunts on lower (the pick goes
+			// on down: Yilad for Wawoz; on the map itself the element rule keeps it there) and builds it meanwhile
+			if (judgeHp && ch->IsItemLoaded() && !PassPlayerBotSungmaElementGate(ch, m.lMap, i == currentSlot))
+				continue;
+#endif
 			if (b != s_mapPlayerBotSungma.end())
 			{
 				std::map<long, DWORD>::const_iterator nn = b->second.mapNotNow.find(m.lMap);
