@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block title %}{{ s.name }} · PVP Fan · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_PVPFAN_V1: konfigurator zestawu ekwipunku PVP Fan (pvpfan.py) #}
+<style>
+.pf-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.pf-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.pf-form input[type=number]{width:7em;padding:6px}
+.pf-form input[type=text]{width:16em;padding:6px}
+.pf-note{font-size:12px;color:var(--muted)}
+.pf-eq td{vertical-align:top;padding:8px 6px;border-top:1px solid var(--edge)}
+.pf-eq input[type=number]{width:6.2em;padding:5px}
+.pf-eq select{padding:5px;max-width:17em}
+.pf-eq .pf-item{position:relative;min-width:18em}
+.pf-eq .pf-item input[type=search]{width:15em;padding:5px}
+.pf-results{position:absolute;z-index:20;left:0;top:34px;background:var(--panel,#1b1e24);border:1px solid var(--edge);border-radius:8px;max-height:280px;overflow:auto;min-width:22em;display:none}
+.pf-results div{padding:5px 8px;cursor:pointer;font-size:13px;display:flex;gap:6px;align-items:center}
+.pf-results div:hover{background:rgba(127,127,127,.18)}
+.pf-results img{width:24px;height:24px}
+.pf-name{font-size:13px;margin-top:4px;display:flex;gap:6px;align-items:center}
+.pf-name img{width:28px;height:28px}
+.pf-bonus{display:grid;grid-template-columns:auto auto;gap:3px 6px}
+.pf-bonus .rare select{border-color:#a7f}
+.pf-max{font-size:11px;color:var(--muted)}
+</style>
+<a class="back" href="{{ url_for('pvpfan', _anchor='zestawy') }}">← PVP Fan · zestawy</a>
+<p class="eyebrow">PVP FAN · ZESTAW EKWIPUNKU</p>
+<h1>🛡️ {{ s.name }}</h1>
+<p class="muted">Każde miejsce: przedmiot (szukaj nazwą albo VNUM), ulepszenie (+0…+9 = VNUM rodziny), ilość, do trzech kamieni (VNUM kamienia; 0 = jak przedmiot wychodzi) i siedem bonusów – 1–5 z puli zwykłych bonusów tego rodzaju przedmiotu, 6–7 z puli 6/7 (z najwyższą wartością, jaką może mieć), albo dowolny bonus po zaznaczeniu „dowolne bonusy”. Przy starcie wojny gra niszczy wszystko, co bot ma, i tworzy ten zestaw od nowa. {% if used %}Używa go {{ used }} wierszy postaci.{% endif %}</p>
+
+<form method="post" id="pf-set">
+<input type="hidden" name="pf_csrf" value="{{ pf_csrf }}">
+<section class="panel">
+<div class="pf-form">
+<label>Nazwa<input type="text" name="name" maxlength="64" value="{{ s.name }}"></label>
+<label>Dla klasy<select name="job"><option value="255" {% if s.job == 255 %}selected{% endif %}>każdej</option>{% for k, v in classes.items() %}<option value="{{ k }}" {% if s.job == k %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></label>
+<label>Ścieżka<select name="skill_group"><option value="0">każda</option><option value="1" {% if s.skill_group == 1 %}selected{% endif %}>1 (Ciało/Skryt./Broń/Smok)</option><option value="2" {% if s.skill_group == 2 %}selected{% endif %}>2 (Mental/Łuk/Magia/Leczenie)</option></select></label>
+<label>Czerwone mikstury (VNUM)<input type="number" name="red_vnum" min="0" value="{{ s.red_vnum }}"></label>
+<label>ile<input type="number" name="red_count" min="0" max="2000" value="{{ s.red_count }}"></label>
+<label>Niebieskie (VNUM)<input type="number" name="blue_vnum" min="0" value="{{ s.blue_vnum }}"></label>
+<label>ile<input type="number" name="blue_count" min="0" max="2000" value="{{ s.blue_count }}"></label>
+<label>Notatka<input type="text" name="note" maxlength="255" value="{{ s.note }}" style="width:22em"></label>
+<label><span><input type="checkbox" id="pf-free"> dowolne bonusy</span></label>
+</div>
+<p class="pf-note">Klasa i ścieżka to tylko opis (i podpowiedź) – zestaw może dostać każdy wiersz postaci. Przedmiot, którego klasa albo poziom nie pozwala założyć, zostanie w plecaku (log PVPFAN). Mikstury: 27003/27006 = (D), 27007/27008 = (XXL).</p>
+</section>
+
+<section class="panel">
+<div class="table-wrap"><table class="pf-eq">
+<thead><tr><th>Miejsce</th><th>Przedmiot</th><th>Ulepszenie / ilość</th><th>Kamienie</th><th>Bonusy 1–5</th><th>Bonusy 6–7</th></tr></thead>
+<tbody>
+{% for key, label, col, itype, subs in slots %}
+{% set it = items.get(key) %}
+<tr data-slot="{{ key }}" data-col="{{ col or '' }}">
+<td><strong>{{ label }}</strong></td>
+<td class="pf-item">
+<input type="search" class="pf-q" placeholder="szukaj nazwy albo VNUM" autocomplete="off">
+<div class="pf-results"></div>
+<div class="pf-name">{% if it and it.vnum and item_icon(it.vnum) %}<img src="{{ item_icon(it.vnum) }}" alt="" loading="lazy">{% endif %}<span>{{ it.item_name if it else '' }}</span></div>
+<label class="pf-note">VNUM <input type="number" name="{{ key }}_vnum" class="pf-vnum" min="0" value="{{ it.vnum if it else 0 }}"></label>
+</td>
+<td><select class="pf-refine"><option value="">ulepszenie…</option></select><br><label class="pf-note">ilość <input type="number" name="{{ key }}_count" min="1" max="200" value="{{ it['count'] if it else 1 }}"></label></td>
+<td>{% for i in range(3) %}<input type="number" name="{{ key }}_s{{ i }}" value="{{ it['socket%d' % i] if it else 0 }}" list="pf-stones" title="kamień {{ i + 1 }}"><br>{% endfor %}</td>
+<td><div class="pf-bonus">{% for i in range(5) %}<select name="{{ key }}_a{{ i }}t" class="pf-bt" data-kind="normal" data-value="{{ it['attrtype%d' % i] if it else 0 }}"></select><input type="number" name="{{ key }}_a{{ i }}v" value="{{ it['attrvalue%d' % i] if it else 0 }}" min="-32768" max="32767">{% endfor %}</div></td>
+<td><div class="pf-bonus rare">{% for i in range(5, 7) %}<select name="{{ key }}_a{{ i }}t" class="pf-bt" data-kind="rare" data-value="{{ it['attrtype%d' % i] if it else 0 }}"></select><input type="number" name="{{ key }}_a{{ i }}v" value="{{ it['attrvalue%d' % i] if it else 0 }}" min="-32768" max="32767">{% endfor %}</div></td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+<datalist id="pf-stones">{% for st in stones %}<option value="{{ st.vnum }}">{{ st.name }}</option>{% endfor %}</datalist>
+</section>
+<section class="panel pf-form">
+<button name="action" value="save">Zapisz zestaw</button>
+<button name="action" value="copy" class="secondary">Kopiuj jako nowy</button>
+{% if s.preset_key %}<button name="action" value="restore" class="secondary" onclick="return confirm('Przywrócić preset (Twoje zmiany w tym zestawie znikną)?');">Przywróć preset</button>
+{% else %}<button name="action" value="delete" class="secondary" onclick="return confirm('Usunąć zestaw? Wiersze, które go używają, wrócą do presetu klasy.');">Usuń zestaw</button>{% endif %}
+</section>
+</form>
+
+<script>
+(function () {
+  var TABLES = {{ tables|tojson }};
+  var LABELS = {{ labels|tojson }};
+  var ITEMS_URL = {{ url_for('pvpfan_api_items')|tojson }};
+  var FAMILY_URL = {{ url_for('pvpfan_api_family')|tojson }};
+  var free = document.getElementById('pf-free');
+  function label(p) { return LABELS[p] || ('bonus #' + p); }
+  function fillSelect(sel, col) {
+    var current = parseInt(sel.getAttribute('data-value') || sel.value || '0', 10) || 0;
+    var list = [];
+    if (free.checked || !col || !TABLES[col]) {
+      Object.keys(LABELS).forEach(function (k) { list.push([parseInt(k, 10), 0]); });
+    } else {
+      list = TABLES[col][sel.getAttribute('data-kind')] || [];
+    }
+    sel.innerHTML = '';
+    var none = document.createElement('option'); none.value = '0'; none.textContent = '— brak —'; sel.appendChild(none);
+    var found = current === 0;
+    list.forEach(function (e) {
+      var o = document.createElement('option'); o.value = e[0];
+      o.textContent = label(e[0]) + (e[1] ? ' (max ' + e[1] + ')' : '');
+      if (e[0] === current) { o.selected = true; found = true; }
+      sel.appendChild(o);
+    });
+    if (!found) {
+      var c = document.createElement('option'); c.value = current; c.selected = true;
+      c.textContent = label(current) + ' (spoza puli)'; sel.appendChild(c);
+    }
+    sel.setAttribute('data-value', sel.value);
+  }
+  function fillAll() {
+    document.querySelectorAll('tr[data-slot]').forEach(function (tr) {
+      tr.querySelectorAll('select.pf-bt').forEach(function (sel) { fillSelect(sel, tr.getAttribute('data-col')); });
+    });
+  }
+  document.addEventListener('change', function (ev) {
+    if (ev.target.classList && ev.target.classList.contains('pf-bt')) ev.target.setAttribute('data-value', ev.target.value);
+  });
+  free.addEventListener('change', fillAll);
+  function setItem(tr, vnum, name, icon) {
+    tr.querySelector('.pf-vnum').value = vnum;
+    var box = tr.querySelector('.pf-name');
+    box.innerHTML = '';
+    if (vnum > 0 && icon) { var img = document.createElement('img'); img.src = icon; img.alt = ''; box.appendChild(img); }
+    var span = document.createElement('span'); span.textContent = name || ''; box.appendChild(span);
+    loadFamily(tr, vnum);
+  }
+  function loadFamily(tr, vnum) {
+    var sel = tr.querySelector('.pf-refine');
+    sel.innerHTML = '<option value="">ulepszenie…</option>';
+    if (!vnum) return;
+    fetch(FAMILY_URL + '?vnum=' + vnum, {credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (d) {
+      sel.innerHTML = '';
+      (d.items || []).forEach(function (it) {
+        var o = document.createElement('option'); o.value = it.vnum; o.textContent = it.name + ' (' + it.vnum + ')';
+        o.setAttribute('data-icon', it.icon || ''); o.setAttribute('data-name', it.name);
+        if (it.vnum === vnum) o.selected = true; sel.appendChild(o);
+      });
+    });
+  }
+  document.querySelectorAll('tr[data-slot]').forEach(function (tr) {
+    var q = tr.querySelector('.pf-q'), res = tr.querySelector('.pf-results'), timer = null;
+    var v = parseInt(tr.querySelector('.pf-vnum').value || '0', 10);
+    if (v > 0) loadFamily(tr, v);
+    tr.querySelector('.pf-refine').addEventListener('change', function () {
+      var o = this.options[this.selectedIndex];
+      if (o && o.value) setItem(tr, parseInt(o.value, 10), o.getAttribute('data-name'), o.getAttribute('data-icon'));
+    });
+    tr.querySelector('.pf-vnum').addEventListener('change', function () { loadFamily(tr, parseInt(this.value || '0', 10)); });
+    q.addEventListener('input', function () {
+      clearTimeout(timer);
+      var text = q.value.trim();
+      if (!text) { res.style.display = 'none'; return; }
+      timer = setTimeout(function () {
+        fetch(ITEMS_URL + '?slot=' + encodeURIComponent(tr.getAttribute('data-slot')) + '&q=' + encodeURIComponent(text),
+              {credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (d) {
+          res.innerHTML = '';
+          (d.items || []).forEach(function (it) {
+            var row = document.createElement('div');
+            if (it.icon) { var img = document.createElement('img'); img.src = it.icon; img.alt = ''; img.loading = 'lazy'; row.appendChild(img); }
+            var span = document.createElement('span'); span.textContent = it.vnum + ' · ' + it.name + (it.level ? ' (lv ' + it.level + ')' : ''); row.appendChild(span);
+            row.addEventListener('click', function () { setItem(tr, it.vnum, it.name, it.icon); res.style.display = 'none'; q.value = ''; });
+            res.appendChild(row);
+          });
+          if (!(d.items || []).length) res.innerHTML = '<div>nic nie pasuje do tego miejsca</div>';
+          res.style.display = 'block';
+        });
+      }, 300);
+    });
+    q.addEventListener('blur', function () { setTimeout(function () { res.style.display = 'none'; }, 250); });
+  });
+  fillAll();
+})();
+</script>
+{% endblock %}

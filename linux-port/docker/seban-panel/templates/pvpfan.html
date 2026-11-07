@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}PVP Fan · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_PVPFAN_V1: wojny botów dla zabawy (pvpfan.py, playerbot_pvpfan.h) #}
+<style>
+.pf-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.pf-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.pf-form input[type=text]{min-width:16em;padding:7px 8px}
+.pf-wide{min-width:34em!important}
+.pf-note{font-size:12px;color:var(--muted)}
+.pf-state{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;border:1px solid var(--edge);white-space:nowrap}
+.pf-state.idle{opacity:.7}.pf-state.fighting{border-color:#d44;color:#f66}.pf-state.waiting,.pf-state.countdown{border-color:#c90;color:#fb3}
+.pf-state.starting,.pf-state.finished,.pf-state.stopping{border-color:#48c;color:#6af}
+.pf-table td{vertical-align:middle;padding:8px 6px}
+.pf-table form{display:inline}
+.pf-table button{padding:5px 9px;margin:2px}
+.pf-chips button{padding:4px 9px;margin:3px 4px 0 0;font-size:12px}
+.pf-vs{font-size:13px}
+.pf-win{color:#6c6;font-weight:600}
+</style>
+<a class="back" href="{{ url_for('events') }}">← Planer eventów</a>
+<p class="eyebrow">WYDARZENIA · PVP</p>
+<h1>⚔️ PVP Fan</h1>
+<p class="muted">Wojny botów dla zabawy: tworzysz kategorię (np. „50 Wojowników Ciało vs 50 Szamanów Smok”), dajesz drużynom ekwipunek z konfiguratora, generujesz postacie, a w grze GM wpisuje <code>/pvpfan start &lt;kod&gt;</code> – boty logują się na arenę, dostają ekwipunek, umiejętności i mikstury i czekają. <code>/pvpfan gotowi &lt;kod&gt;</code> – odliczanie i walka do ostatniego bota jednej strony. Wynik idzie na ogłoszenie i do historii poniżej. Postacie PVP Fan nie grają w normalnym świecie botów (nie polują, nie handlują, nie są w rankingach) – są offline, dopóki nie trwa wojna.</p>
+
+{% if missing %}
+<section class="panel"><h2>Brak tabel</h2><p>Tabele <code>player.pvpfan_*</code> jeszcze nie istnieją – utworzy je migracja przy najbliższym starcie serwera (<code>pvpfan.sql</code> w apply.sh).</p></section>
+{% else %}
+<section class="cards compact">
+<article><span>Moduł w grze</span><strong>{{ 'Włączony' if env_on else 'Wyłączony (M2_PVPFAN=0)' }}</strong><small>zmienna .env M2_PVPFAN</small></article>
+<article><span>Przełącznik</span><strong>{{ 'Wyłączony' if off else 'Włączony' }}</strong><small>flaga m2_pvpfan_off</small></article>
+<article><span>Kategorie</span><strong>{{ cats|length }}</strong><small>trwają: {{ cats|selectattr('busy')|list|length }}</small></article>
+<article><span>Postacie PVP Fan</span><strong>{{ (counts.n or 0) - (counts.retired or 0) }}</strong><small>wycofane do usunięcia: {{ counts.retired or 0 }}{% if cleaned %}, usunięto teraz {{ cleaned }}{% endif %}</small></article>
+</section>
+
+<section class="panel" id="wlacznik">
+<h2>Włącznik</h2>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="action" value="switch">
+{% if off %}<input type="hidden" name="off" value="0"><button>Włącz PVP Fan</button>
+{% else %}<input type="hidden" name="off" value="1"><button class="secondary" onclick="return confirm('Wyłączyć PVP Fan? Trwające wojny zostaną zatrzymane, nowych nie będzie.');">Wyłącz PVP Fan</button>{% endif %}
+</form>
+<p class="pf-note">Wyłączenie działa w ciągu ~10 s bez restartu (gra czyta flagę z bazy). Limit: {{ max_cat }} postaci na kategorię (M2_PVPFAN_MAX_CATEGORY), w grze także M2_PVPFAN_MAX_TOTAL na rdzeń.</p>
+</section>
+
+<section class="panel" id="kategorie">
+<h2>Kategorie</h2>
+<div class="table-wrap"><table class="pf-table">
+<thead><tr><th>Kategoria</th><th>Skład</th><th>Arena</th><th>Stan</th><th>Postacie</th><th>Sterowanie</th></tr></thead>
+<tbody>
+{% for c in cats %}
+<tr>
+<td><a href="{{ url_for('pvpfan_category', cat_id=c.id) }}"><strong>{{ c.name }}</strong></a><br><code>{{ c.code }}</code>{% if not c.enabled %} · <span class="muted">wyłączona</span>{% endif %}</td>
+<td class="pf-vs">{{ c.vs }}</td>
+<td>{% if c.map_index %}{{ map_names.get(c.map_index, 'mapa #' ~ c.map_index) }}<br><span class="pf-note">{{ c.x }}, {{ c.y }} · kanał {{ c.channel }}</span>{% else %}<span class="muted">nie ustawiona</span>{% endif %}</td>
+<td><span class="pf-state {{ c.state }}">{{ c.state_name }}</span>{% if c.alive_text %}<br><span class="pf-note">{{ c.alive_text }}</span>{% endif %}{% if c.state_note %}<br><span class="pf-note">{{ c.state_note }}</span>{% endif %}</td>
+<td>{{ c.chars }} / {{ c.wanted }}{% if c.chars != c.wanted %}<br><span class="pf-note">wygeneruj postacie</span>{% endif %}</td>
+<td style="white-space:nowrap">
+<form method="post"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="id" value="{{ c.id }}">
+<button name="action" value="start" {% if c.busy or not c.map_index %}disabled{% endif %}>Start</button>
+<button name="action" value="ready" {% if c.state != 'waiting' %}disabled{% endif %}>Gotowi!</button>
+<button name="action" value="stop" class="secondary" {% if not c.busy %}disabled{% endif %}>Stop</button></form>
+<a href="{{ url_for('pvpfan_category', cat_id=c.id) }}">edytuj</a></td>
+</tr>
+{% else %}
+<tr><td colspan="6" class="muted">Brak kategorii – utwórz pierwszą poniżej.</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="pf-note">Przyciski wstawiają polecenie do kolejki; wykonuje je rdzeń, który ma mapę areny na kanale kategorii (do 3 s). To samo w grze: <code>/pvpfan start|gotowi|stop &lt;kod&gt;</code>. Strona nie odświeża się sama – odśwież ją, by zobaczyć nowy stan.</p>
+</section>
+
+<section class="panel" id="nowa">
+<h2>Nowa kategoria</h2>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="action" value="new">
+<label>Nazwa<input type="text" name="name" required maxlength="64" placeholder="Ciało vs Smok"></label>
+<label>Kod (do komendy, opcjonalnie)<input type="text" name="code" maxlength="32" pattern="[a-z0-9_\-]+" placeholder="cialo_smok"></label>
+<label>Skład drużyn<input type="text" id="pf-comp" name="composition" class="pf-wide" required value="50 Wojownik Ciało vs 50 Szaman Smok"></label>
+<button>Utwórz</button>
+</form>
+<div class="pf-chips"><span class="pf-note">Szybko:</span>
+{% for comp in ['50 Wojownik Ciało vs 50 Szaman Smok', '50 Wojownik Ciało vs 50 Wojownik Mental', '50 Wojownik Ciało vs 50 Sura Broń', '50 Ninja Skrytobójca vs 50 Ninja Łucznik', '50 Sura Czarna Magia vs 50 Szaman Leczenie', '100 Wojownik Ciało vs 100 Sura Broń', '25 Wojownik Ciało + 25 Szaman Smok vs 25 Sura Broń + 25 Ninja Łucznik', '20 Wojownik Ciało vs 20 Ninja Skrytobójca vs 20 Sura Broń vs 20 Szaman Smok', '250 Wojownik Mental vs 250 Szaman Smok'] %}
+<button type="button" class="secondary" onclick="document.getElementById('pf-comp').value=this.textContent">{{ comp }}</button>
+{% endfor %}</div>
+<p class="pf-note">Drużyny rozdziela „vs”, kilka rodzajów postaci w jednej drużynie – „+”. Klasy: Wojownik, Ninja, Sura, Szaman; ścieżki: Ciało/Mental, Skrytobójca/Łucznik, Broń/Czarna Magia, Smok/Leczenie. Potem na stronie kategorii: arena, poziomy, statystyki, zestawy, płeć, królestwa.</p>
+</section>
+
+<section class="panel" id="zestawy">
+<h2>Zestawy ekwipunku</h2>
+<div class="table-wrap"><table class="pf-table"><thead><tr><th>Zestaw</th><th>Dla</th><th>Przedmiotów</th><th>Mikstury</th><th></th></tr></thead><tbody>
+{% for s in sets %}
+<tr><td><a href="{{ url_for('pvpfan_set', set_id=s.id) }}">{{ s.name }}</a>{% if s.preset_key %} <span class="pf-note">preset {{ s.preset_key }}</span>{% endif %}</td>
+<td>{{ s.class_name }}</td><td>{{ s.items }}</td><td>{{ s.red_count }} + {{ s.blue_count }}</td>
+<td><a href="{{ url_for('pvpfan_set', set_id=s.id) }}">konfiguruj</a></td></tr>
+{% endfor %}
+</tbody></table></div>
+<form method="post" action="{{ url_for('pvpfan_set_new') }}" class="pf-form" style="margin-top:10px"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}">
+<label>Nowy zestaw<input type="text" name="name" maxlength="64" placeholder="np. PvP Wojownik – odporności"></label><button>Utwórz pusty</button></form>
+<p class="pf-note">Wiersz postaci z zestawem „preset klasy” bierze preset swojej klasy i ścieżki (Super PvP – …). Każdy zestaw: przedmiot, ulepszenie, kamienie, 7 bonusów (w tym 6/7), kostiumy, szarfa, talizman, rękawice, alchemia i mikstury. Zmiana działa od następnego startu wojny.</p>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><button name="action" value="presets" class="secondary">Dopisz brakujące presety</button>
+<button name="action" value="cleanup" class="secondary">Usuń wycofane postacie teraz</button></form>
+</section>
+
+<section class="panel" id="wyniki">
+<h2>Ostatnie wojny</h2>
+<div class="table-wrap"><table class="pf-table"><thead><tr><th>#</th><th>Kategoria</th><th>Start walki</th><th>Czas</th><th>Wynik</th><th>Drużyny (ocalali / zabójstwa)</th></tr></thead><tbody>
+{% for w in wars %}
+<tr><td>{{ w.id }}</td><td>{{ w.category_name }}</td><td>{{ w.fight_at or w.started_at }}</td><td>{{ w.clock }}</td>
+<td>{% if w.state == 'won' %}<span class="pf-win">🏆 {{ w.winner_name }}</span>{% elif w.state == 'draw' %}Remis{% elif w.state == 'stopped' %}Przerwana{% else %}Trwa…{% endif %}</td>
+<td class="pf-note">{% for t in w.teams %}{{ t.name }} {{ t.survivors }}/{{ t.fighters }} · {{ t.kills }} zab.{% if not loop.last %} | {% endif %}{% endfor %}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">Jeszcze żadnej wojny.</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+
+<section class="panel" id="kolejka">
+<h2>Kolejka poleceń</h2>
+<div class="table-wrap"><table class="pf-table"><thead><tr><th>Kiedy</th><th>Kategoria</th><th>Polecenie</th><th>Kto</th><th>Odebrał</th><th>Wynik</th></tr></thead><tbody>
+{% for c in commands %}
+<tr><td>{{ c.created_at }}</td><td>{{ c.category_name or c.category_id }}</td><td>{{ c.cmd_name }}</td><td>{{ c.source }}</td>
+<td>{% if c.done %}{{ c.taken_by or '—' }}{% else %}<em>czeka…</em>{% endif %}</td><td class="pf-note">{{ c.result }}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">Pusto.</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+
+<section class="panel" id="komendy">
+<h2>Komendy GM (w grze)</h2>
+<ul class="pf-note" style="font-size:13px">
+<li><code>/pvpfan</code> – lista kategorii</li>
+<li><code>/pvpfan start &lt;kod&gt;</code> – boty wchodzą na arenę, dostają ekwipunek i czekają</li>
+<li><code>/pvpfan gotowi &lt;kod&gt;</code> (też <code>ready</code>) – odliczanie i walka</li>
+<li><code>/pvpfan stop &lt;kod&gt;</code> – koniec w każdej chwili, boty wychodzą</li>
+<li><code>/pvpfan status &lt;kod&gt;</code> – drużyny, żywi, zabójstwa</li>
+<li><code>/pvpfan tu &lt;kod&gt; [nr drużyny]</code> – środek areny (albo punkt drużyny) tam, gdzie stoisz</li>
+<li><code>/pvpfan pozycja</code> – zapisuje twoją pozycję dla przycisku „Użyj pozycji GM” w panelu</li>
+</ul>
+</section>
+{% endif %}
+{% endblock %}

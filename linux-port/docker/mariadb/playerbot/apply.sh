@@ -5439,6 +5439,18 @@ if [ -s /opt/playerbot/language.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_PVPFAN_V1 (the owner, 7 November 2026: bot wars for fun, "PVP Fan"): pvpfan.sql - the categories, teams,
+# slots, equipment sets, the PvP-fan characters' ledger, the wars' results, the command queue of the Seban panel's
+# buttons and the GM's position hint (player.pvpfan_*; playerbot_pvpfan.h, server-patches/pvpfan, the panel's
+# pvpfan.py). Idempotent (CREATE TABLE IF NOT EXISTS / ADD COLUMN IF NOT EXISTS); before the cores.
+if [ -s /opt/playerbot/pvpfan.sql ]; then
+    if db < /opt/playerbot/pvpfan.sql; then
+        echo "[playerbot-migrate] PVP Fan: pvpfan.sql applied"
+    else
+        fail_step "PVP Fan: pvpfan.sql failed (MT2009_PLUS_PVPFAN_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

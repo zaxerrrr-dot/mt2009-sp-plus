@@ -155,6 +155,7 @@ def candidates(cur, vnum, criteria, only_missing, player_id=None):
     # The tool is explicitly for Playerbots.  A level/horse filter alone can
     # also match an administrator or an ordinary player's character.
     conditions.append("(LEFT(a.login,10)='playerbot_' OR p.name LIKE 'bot%%')")
+    conditions.append("LEFT(a.login,12)<>'playerbot_pf'")  # MT2009_PLUS_PVPFAN_V1: never the PVP Fan characters
     if only_missing:
         sql, item_params = has_item_sql(vnum); conditions.append("NOT " + sql); params += item_params
     if player_id is not None: conditions.append("p.id=%s"); params.append(player_id)

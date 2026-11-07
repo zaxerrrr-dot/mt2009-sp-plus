@@ -512,6 +512,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_PET_MATS_V1: the growth pets' evolution materials - the keepers' hunt, the surplus on the counters, the
 // needed drop past the level fade (server-patches/botneeddrop) - after the pets, the market and the drop knowledge
 #include "playerbot_petmat.h"
+// MT2009_PLUS_PVPFAN_V1: "PVP Fan" - the panel's bot wars (/pvpfan): the dedicated characters' logins, loadout and fight, the
+// war's phases and results, the engine's attack and death hooks (server-patches/pvpfan) - after every fight helper it uses
+#include "playerbot_pvpfan.h"
 
 namespace
 {
@@ -3626,6 +3629,8 @@ namespace
 		// A player's companion, on a core no bot has woken yet: the first of
 		// them starts Update and ends this clock (playerbot_sidekick.h).
 		ManagePlayerBotSidekicks(dwNow);
+		// MT2009_PLUS_PVPFAN_V1: the PvP-fan wars and their command queue, on a core no bot has woken too.
+		ManagePlayerBotPvpFan(dwNow);
 		// MT2009_PLUS_SHOUTERS_V1: and the shouters, whatever the population.
 		ManagePlayerBotShouters(dwNow);
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -3694,6 +3699,11 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	const bool bSidekick = m_dwSpawningSidekick != 0 && m_dwSpawningSidekick == dwPlayerID;
 	if (!bSidekick && IsPlayerBotSidekickPID(dwPlayerID))
 		return false;
+	// MT2009_PLUS_PVPFAN_V1: a PvP-fan character (playerbot_pvpfan.h) - an identity of the panel's, never the
+	// registry's: only SpawnPvpFan starts one, with the kingdom and the account its war read.
+	const bool bPvpFan = m_dwSpawningPvpFan != 0 && m_dwSpawningPvpFan == dwPlayerID;
+	if (!bPvpFan && IsPlayerBotPvpFanPID(dwPlayerID))
+		return false;
 
 	// Taken over by a person from the advanced panel (playerbot_takeover.h):
 	// out of the world until the takeover is over.
@@ -3731,7 +3741,7 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// seeded character is Jinno starts as Jinno or does not start at all -
 	// this is the guard that stops a bad call turning a character into a bot
 	// of somebody else's empire, and it is why the argument is only checked.
-	const BYTE bRegisteredEmpire = bSidekick ? bEmpire : GetRegisteredEmpire(dwPlayerID);
+	const BYTE bRegisteredEmpire = (bSidekick || bPvpFan) ? bEmpire : GetRegisteredEmpire(dwPlayerID);
 	if (bRegisteredEmpire == 0)
 		bEmpire = 0;
 	else if (bEmpire != 0 && bEmpire != bRegisteredEmpire)
@@ -3746,7 +3756,7 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// A bot descriptor has no authenticated account session.  Never let a raw
 	// PID turn an ordinary player into a server-controlled character: only the
 	// immutable cohort written by playerbots_seed.sql may use this load path.
-	if (!bSidekick && !IsRegistered(dwPlayerID))
+	if (!bSidekick && !bPvpFan && !IsRegistered(dwPlayerID))
 	{
 		// Expected, not exceptional: every start walks the whole pid range and most
 		// of it is not seeded. Writing a SYSERR per pid put 170 lines into every
@@ -3767,7 +3777,7 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// The two channels with moves: an identity plays on the channel its row
 	// gives it, and only from the row's ready time - a bot that has just been
 	// moved must be out of its old channel before it is loaded on the new one.
-	if (m_bChannelTable && !bSidekick)
+	if (m_bChannelTable && !bSidekick && !bPvpFan)
 	{
 		TPlayerBotAccountMap::const_iterator owner = m_mapBotAccounts.find(dwPlayerID);
 		if (owner == m_mapBotAccounts.end() || owner->second.bChannel != g_bChannel ||
@@ -3820,6 +3830,13 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 		table.iPremium = get_global_time() + 5 * 365 * 24 * 3600;
 #endif
 	}
+	else if (bPvpFan)
+	{
+		// MT2009_PLUS_PVPFAN_V1: its own account (playerbot_pfNNNN), from the war's roster.
+		TAccountTable& table = d->GetAccountTable();
+		table.id = m_dwPvpFanAccountID;
+		strlcpy(table.login, m_strPvpFanLogin.c_str(), sizeof(table.login));
+	}
 
 	m_mapBots.insert(TPlayerBotMap::value_type(dwPlayerID, d));
 	m_mapHandles.insert(THandleToPlayerMap::value_type(d->GetHandle(), dwPlayerID));
@@ -3871,6 +3888,23 @@ static bool LoadPlayerBotChannelPins(std::set<DWORD>& out)
 	(void)out;
 #endif
 	return true;
+}
+
+// MT2009_PLUS_PVPFAN_V1: a PvP-fan character into the world (playerbot_pvpfan.h) - Spawn's own path with the
+// registry's guards stepped over for this one pid (its account is the panel's playerbot_pfNNNN, checked by the war's
+// roster); where it stands is PlacePlayerBotPvpFanLoading's, what it does ManagePlayerBotPvpFanBot's.
+bool CPlayerBotManager::SpawnPvpFan(DWORD dwPlayerID, BYTE bEmpire, DWORD dwAccountID, const char* szLogin)
+{
+	if (!dwPlayerID || !dwAccountID || !szLogin || bEmpire < 1 || bEmpire > 3)
+		return false;
+	m_dwSpawningPvpFan = dwPlayerID;
+	m_dwPvpFanAccountID = dwAccountID;
+	m_strPvpFanLogin = szLogin;
+	const bool ok = Spawn(dwPlayerID, bEmpire);
+	m_dwSpawningPvpFan = 0;
+	m_dwPvpFanAccountID = 0;
+	m_strPvpFanLogin.clear();
+	return ok;
 }
 
 bool CPlayerBotManager::LoadRegisteredBots()
@@ -5579,6 +5613,9 @@ bool CPlayerBotManager::PlaceLoadingSidekick(DWORD dwPlayerID, long& lMapIndex, 
 bool CPlayerBotManager::PlaceLoadingBot(DWORD dwPlayerID, BYTE bEmpire, long lHomeMap, long lHomeX, long lHomeY,
 		long& lMapIndex, long& x, long& y)
 {
+	// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot loads on its spot of the arena, wherever it was saved.
+	if (PlacePlayerBotPvpFanLoading(dwPlayerID, lMapIndex, x, y))
+		return true;
 	static int s_iOn = -1;
 	if (s_iOn < 0)
 	{
@@ -5725,6 +5762,9 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// shouter of the first villages is always there (and the upstream kind,
 		// MT2009_PLUS_MEDAL_SHOUTERS_V1).
 		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid))
+			continue;
+		// MT2009_PLUS_PVPFAN_V1: nor a PvP-fan bot - its war logs it out.
+		if (IsPlayerBotPvpFanPID(pid))
 			continue;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
@@ -5930,6 +5970,8 @@ void CPlayerBotManager::OnPlayerLoaded(LPDESC d)
 		// A player's companion: its role and character, its first setup, and
 		// its owner's side (playerbot_sidekick.h).
 		OnPlayerBotSidekickLoaded(d->GetCharacter(), state, now);
+		// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot's war learns it is in (playerbot_pvpfan.h).
+		OnPlayerBotPvpFanLoaded(d->GetCharacter(), state, now);
 		state.bAmbition = GetPlayerBotStableAmbition(
 				d->GetCharacter(), state.bPersonality);
 
@@ -7159,6 +7201,9 @@ void CPlayerBotManager::Update()
 	// The players' companions: in the world while their owners are here
 	// (playerbot_sidekick.h).
 	ManagePlayerBotSidekicks(dwNow);
+	// MT2009_PLUS_PVPFAN_V1: the PvP-fan wars - the panel's queue, the logins, the countdown, the result, the exits
+	// (playerbot_pvpfan.h); every despawn of theirs is made here, never inside the bots' pass below.
+	ManagePlayerBotPvpFan(dwNow);
 	// MT2009_PLUS_SHOUTERS_V1: the shouters of the first villages.
 	ManagePlayerBotShouters(dwNow);
 	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
@@ -7510,6 +7555,11 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 
 		TPlayerBotAIState& state = s_mapPlayerBotAIStates[it->first];
+
+		// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot is its war's and nothing else's - none of the population's passes
+		// below runs for it (playerbot_pvpfan.h).
+		if (ManagePlayerBotPvpFanBot(d, ch, state, dwNow))
+			continue;
 
 		// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: a safebox answer nobody waits
 		// for is closed before anything works in it (playerbot_town.h).
@@ -9221,7 +9271,7 @@ WritePlayerBotGuildStatus(dwNow);
 			{
 				LPDESC d = it->second;
 				LPCHARACTER ch = d ? d->GetCharacter() : NULL;
-				if (!ch)
+				if (!ch || IsPlayerBotPvpFanPID(it->first)) // MT2009_PLUS_PVPFAN_V1: its war's tick only
 					continue;
 				RunPlayerBotLightTick(d, ch, s_mapPlayerBotAIStates[it->first], dwNow);
 			}
@@ -9778,6 +9828,9 @@ bool CPlayerBotManager::GetPlayerBotArenaObserverPos(DWORD dwGuild1, DWORD dwGui
 // (playerbot_anti_pk.h).
 void CPlayerBotManager::OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker)
 {
+	// MT2009_PLUS_PVPFAN_V1: a PvP-fan war's blow is nobody's PK (no Anti-PK, no defenders).
+	if ((victim && IsPlayerBotPvpFanPID(victim->GetPlayerID())) || (attacker && IsPlayerBotPvpFanPID(attacker->GetPlayerID())))
+		return;
 	NotePlayerBotStruck(victim, attacker, get_dword_time());
 }
 
@@ -9956,6 +10009,9 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	// MT2009_PLUS_SHOUTERS_V1: a shouter answers no whisper.
 	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
 		return;
+	// MT2009_PLUS_PVPFAN_V1: nor does a PvP-fan bot.
+	if (bot && IsPlayerBotPvpFanPID(bot->GetPlayerID()))
+		return;
 	// MT2009_PLUS_BOT_I18N_V1: a whisper in another language - its writer's
 	// language noted (the answer goes in it) and its words put into the
 	// bots' Polish for every reader below.
@@ -9992,7 +10048,7 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 // answered by the conversation, as anybody is.
 void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText)
 {
-	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
+	if (bot && (IsPlayerBotShouterPID(bot->GetPlayerID()) || IsPlayerBotPvpFanPID(bot->GetPlayerID())))
 		return;
 	std::string i18n;	// MT2009_PLUS_BOT_I18N_V1: as OnPlayerWhisper
 	{

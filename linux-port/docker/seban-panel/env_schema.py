@@ -396,6 +396,20 @@ SCHEMA = [
        "Mapy i lochy z Arezzo: Dolina Cyklopów, Pustkowie Faraona, Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla "
        "oraz zestawy kostiumów w ItemShopie. Panel klasyczny przełącza go od razu.",
        "moduly", "bool", "0", GAME),
+    # MT2009_PLUS_PVPFAN_V1: "PVP Fan" - wojny botów z panelu Seban (Wydarzenia -> PVP Fan, /pvpfan w grze)
+    _e("M2_PVPFAN", "PVP Fan (wojny botów)",
+       "Wojny botów dla zabawy: kategorie, drużyny i ekwipunek w panelu Seban (Wydarzenia → PVP Fan), w grze /pvpfan start|gotowi|stop. "
+       "Domyślnie włączony. Bez restartu wyłącza go przełącznik na stronie PVP Fan (flaga m2_pvpfan_off).",
+       "moduly", "bool", "1", ["game"] + SEBAN),
+    _e("M2_PVPFAN_MAX_CATEGORY", "PVP Fan – postaci w jednej wojnie",
+       "Najwięcej postaci jednej kategorii (wszystkie drużyny razem). Panel nie wygeneruje więcej, gra nie wpuści więcej.",
+       "moduly", "int", "500", ["game"] + SEBAN, min=2, max=1000),
+    _e("M2_PVPFAN_MAX_TOTAL", "PVP Fan – postaci na rdzeń",
+       "Najwięcej botów PVP Fan na jednym rdzeniu gry naraz (wszystkie trwające wojny).",
+       "moduly", "int", "1000", ["game"], min=2, max=3000),
+    _e("M2_PVPFAN_SPAWN_PER_SEC", "PVP Fan – logowania na sekundę",
+       "Ile botów wojny loguje się na sekundę po /pvpfan start (500 botów przy 20/s = 25 s). Mniej = lżej dla rdzenia.",
+       "moduly", "int", "20", ["game"], min=1, max=100),
     _e("M2_SEONHAE", "Seon-Hae (6/7 bonus)", "NPC Seon-Hae w pierwszych wioskach dodaje 6. i 7. bonus. Domyślnie włączony. Panel klasyczny przełącza go od razu i ustawia czas oczekiwania.",
        "moduly", "bool", "1", GAME),
     _e("M2_TELEPORT_MAP", "Mapa teleportacji (TAB) – autor: Mur4s",
