@@ -311,6 +311,12 @@ def main():
     ap.add_argument('--stage', default=None)
     ap.add_argument('--out', default='/opt/metin2/dist/aktualizacje/test-plus')
     ap.add_argument('--prev-zip', default=None)
+    # MT2009_PLUS_YOHARA_PKG_GUARD_V1 (7 November 2026, after a data generator died half-way and deleted the forest's
+    # map and motion files in the work tree): the package is what was tested and nothing of the game data vanishes.
+    ap.add_argument('--allow-dirty', action='store_true',
+                    help='build although linux-port/ or server-patches/ have uncommitted changes')
+    ap.add_argument('--allow-removed', action='store_true',
+                    help='build although game/database files of the previous package are gone')
     a = ap.parse_args()
 
     v, tag = a.version, a.version + '-test'
@@ -329,6 +335,14 @@ def main():
     if os.path.exists(stage):
         shutil.rmtree(stage)
     os.makedirs(root)
+
+    # MT2009_PLUS_YOHARA_PKG_GUARD_V1: the engine source and the rest of the ignored trees come from the test tree,
+    # which yohara-deploy.sh fills from the WORK tree - uncommitted changes there would make the package a mix.
+    dirty = subprocess.check_output(['git', '-C', a.repo, 'status', '--porcelain', '--untracked-files=no', '--',
+                                     'linux-port', 'server-patches'], text=True).strip()
+    if dirty and not a.allow_dirty:
+        raise SystemExit('PKG GUARD: uncommitted changes in linux-port/ or server-patches/ (commit them, deploy to the '
+                         'test server, then build; --allow-dirty to override):\n' + dirty)
 
     # 1. tracked files
     commit = subprocess.check_output(['git', '-C', a.repo, 'rev-parse', '--short', a.ref], text=True).strip()
@@ -435,6 +449,15 @@ def main():
                 rel = os.path.relpath(os.path.join(dirpath, fn), prev_root)
                 if not os.path.exists(os.path.join(root, rel)):
                     removed.append(rel)
+        # MT2009_PLUS_YOHARA_PKG_GUARD_V1: game data, quests and database files never vanish unnoticed
+        lost = [r for r in removed if r.replace(os.sep, '/').startswith(('linux-port/docker/game/',
+                                                                       'linux-port/docker/mariadb/'))]
+        if lost and not a.allow_removed:
+            if os.path.exists(out):
+                os.remove(out)      # the full zip of this run is not left in the download folder either
+            raise SystemExit('PKG GUARD: %d game/database files of the %s package are missing from %s (a generator '
+                             'run that failed half-way?); --allow-removed if intended:\n  %s'
+                             % (len(lost), a.prev_version, v, '\n  '.join(sorted(lost)[:60])))
         write(os.path.join(lroot, 'LATKA-%s-INSTRUKCJA.txt' % v),
               LATKA.format(prev=a.prev_version, v=v, name=lname, client=a.client_version, count=count + 1,
                           chain_txt=chain_txt, client_note_latka=note_latka))

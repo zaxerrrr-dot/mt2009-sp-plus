@@ -63,7 +63,11 @@ ITEMS_OUT = os.path.join(PB, 'yohara_items_zaklety.sql')
 JSON_OUT = os.path.join(HERE, 'yzaklety_client.json')
 ICON_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'icon', 'item')
 EARLIER_JSON = YC.EARLIER_JSON + [YC.JSON_OUT]
-OUR_ATLAS = '/opt/metin2/cache/cY/chk/gamedata/atlasinfo.txt'
+# MT2009_PLUS_YZAKLETY_GEN_SAFE_V1 (7 November 2026): the overlap check read the atlas of a client build's temporary
+# check folder (cache/cY/chk), gone after that build - the run died after it had already deleted map/ and data/.
+# Now the repository's client atlas by default (--atlas for a built client's), every input checked before anything
+# is touched, and a failed run puts the old output back (see main()).
+OUR_ATLAS = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'gamedata', 'gamedata', 'atlasinfo.txt')
 
 REGEN = ['regen.txt', 'boss.txt', 'stone.txt']
 MOTIONS = ['trent_soldier', 'trent_magic', 'trent_general', 'trent_boss', 'trent_boss2', 'thunder_boss']
@@ -538,18 +542,53 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--owsap', default='/opt/metin2/cache/owsap/Server/Server')
     ap.add_argument('--gf', default='/opt/metin2/cache/gf/Gameforge_26.1.11/_client')
+    ap.add_argument('--atlas', default=None, help="a client's atlasinfo.txt for the overlap check (default: the repo's)")
     a = ap.parse_args()
-    report = []
-    gen_map(a, report)
-    gm = write_groups(a)
-    write_spawned(gm, report)
-    mob_lines = gen_mobs(a, report)
-    items = gen_items(a, report)
-    byv = dict((i['vnum'], i) for i in items)
-    write_drops(byv)
-    write_sig(byv)
-    write_client(mob_lines, items)
-    report.append('drops: %d groups; chests: %d' % (len(drops()), len(chests())))
+    global OUR_ATLAS
+    if a.atlas:
+        OUR_ATLAS = a.atlas
+    # MT2009_PLUS_YZAKLETY_GEN_SAFE_V1: every outside input there before anything is deleted
+    m = D.MAP
+    need = [OUR_ATLAS, os.path.join(a.owsap, 'share/locale/uk/map', m['owsap'], 'Setting.txt'),
+            os.path.join(a.owsap, 'share/locale/uk/map', m['owsap'], 'Town.txt'),
+            os.path.join(a.gf, m['folder'], 'setting.txt'),
+            os.path.join(ILUZJA, 'map', m['pb_folder'], 'Setting.txt'),
+            os.path.join(ILUZJA, 'map', m['pb_folder'], 'server_attr')]
+    missing = [x for x in need if not os.path.exists(x)]
+    if missing:
+        raise SystemExit('gen_yzaklety: missing inputs, nothing changed:\n  ' + '\n  '.join(missing))
+    # ...and a run that fails half-way puts the old output back
+    import tempfile
+    snap = tempfile.mkdtemp(prefix='yzaklety-snap-')
+    snap_out = os.path.join(snap, 'out')
+    shutil.copytree(OUT, snap_out)
+    files = [SQL_OUT, ZYW_OUT, ITEMS_OUT, JSON_OUT]
+    for f in files:
+        if os.path.exists(f):
+            shutil.copy2(f, os.path.join(snap, os.path.basename(f)))
+    try:
+        report = []
+        gen_map(a, report)
+        gm = write_groups(a)
+        write_spawned(gm, report)
+        mob_lines = gen_mobs(a, report)
+        items = gen_items(a, report)
+        byv = dict((i['vnum'], i) for i in items)
+        write_drops(byv)
+        write_sig(byv)
+        write_client(mob_lines, items)
+        report.append('drops: %d groups; chests: %d' % (len(drops()), len(chests())))
+    except BaseException:
+        shutil.rmtree(OUT, ignore_errors=True)
+        shutil.copytree(snap_out, OUT)
+        for f in files:
+            kept = os.path.join(snap, os.path.basename(f))
+            if os.path.exists(kept):
+                shutil.copy2(kept, f)
+        shutil.rmtree(snap, ignore_errors=True)
+        sys.stderr.write('gen_yzaklety: failed - the previous output was put back\n')
+        raise
+    shutil.rmtree(snap, ignore_errors=True)
     print('\n'.join(report))
 
 

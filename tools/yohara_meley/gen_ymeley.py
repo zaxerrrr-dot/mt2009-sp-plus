@@ -60,7 +60,8 @@ ZYW_OUT = os.path.join(PB, 'yohara_meley_zywioly.sql')
 ITEMS_OUT = os.path.join(PB, 'yohara_items_meley.sql')
 JSON_OUT = os.path.join(HERE, 'ymeley_client.json')
 ICON_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'icon', 'item')
-OUR_ATLAS = '/opt/metin2/cache/cY/chk/gamedata/atlasinfo.txt'
+# MT2009_PLUS_YZAKLETY_GEN_SAFE_V1: the repo's client atlas (was a client build's temporary check folder, since gone)
+OUR_ATLAS = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'gamedata', 'gamedata', 'atlasinfo.txt')
 # the server Setting.txt bases of the test share (docker exec mt2009plustest-game ... - name, MapSize, BasePosition),
 # taken 15 October 2026; and the atlas rows of every Yohara generator's client json (maps the client gets later)
 SERVER_BASES = os.path.join(HERE, 'server_bases.txt')
