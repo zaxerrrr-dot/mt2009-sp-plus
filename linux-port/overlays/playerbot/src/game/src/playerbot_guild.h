@@ -593,6 +593,8 @@ namespace
 			if (!candidate || candidate == master || candidate->IsDead() || candidate->GetGuild() != NULL ||
 					!candidate->GetDesc() || !candidate->GetDesc()->IsBot())
 				continue;
+			if (IsPlayerBotPvpFanPID(it->first))	// MT2009_PLUS_PVPFAN_V1: an arena bot joins nobody's guild
+				continue;
 			if (candidate->GetEmpire() != info.bEmpire)
 				continue;
 			if (IsPlayerBotDropper(it->second.bPersonality) || IsPlayerBotSidekickPID(it->first))

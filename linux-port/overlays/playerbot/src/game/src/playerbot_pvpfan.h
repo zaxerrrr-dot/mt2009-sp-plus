@@ -173,6 +173,8 @@ namespace
 		DWORD retargetAt = 0;
 		DWORD targetPid = 0;
 		long lastX = 0, lastY = 0;
+		DWORD equipRetryAt = 0;		// MT2009_PLUS_PVPFAN_EQUIP_RETRY_V1
+		int equipRetries = 0;
 	};
 
 	struct TPvpFanTeam
@@ -722,12 +724,48 @@ namespace
 		return -1;
 	}
 
+	// MT2009_PLUS_PVPFAN_EQUIP_RETRY_V1 (the first test, 7 November 2026: 20 of 20 bots stood with items=11 worn=0 -
+	// the gear went into the bag right after the load and EquipItem refused it): while the bot waits for the signal its
+	// set's pieces still in the bag are put on again every 2 s (up to 30 tries); a refusal says why once.
+	int RetryPlayerBotPvpFanEquip(LPCHARACTER ch, const TPvpFanWar& war, TPvpFanFighter& f, bool logWhy)
+	{
+		std::map<DWORD, TPvpFanSet>::const_iterator set = war.sets.find(f.setId);
+		if (set == war.sets.end())
+			return 0;
+		int worn = 0;
+		for (size_t i = 0; i < set->second.items.size(); ++i)
+		{
+			const TPvpFanItem& it = set->second.items[i];
+			LPITEM item = NULL;
+			for (int cell = 0; cell < ch->GetInventoryMaxCount() && !item; ++cell)
+			{
+				LPITEM c = ch->GetInventoryItem(cell);
+				if (c && c->GetVnum() == it.vnum && !c->IsEquipped())
+					item = c;
+			}
+			if (!item)
+				continue;
+			if (PlayerBotEquipItem(ch, item, GetPlayerBotPvpFanEquipCell(it.slot)) && item->IsEquipped())
+				++worn;
+			else if (logWhy)
+				sys_log(0, "PVPFAN: wear refused pid=%u name=%s vnum=%u slot=%s level=%d stun=%d busy=%d equipable=%d can=%d "
+						"dead=%d window=%u cell=%u", f.pid, ch->GetName(), it.vnum, it.slot.c_str(), ch->GetLevel(),
+						ch->IsStun() ? 1 : 0, ch->IsBusy() ? 1 : 0, item->IsEquipable() ? 1 : 0,
+						ch->CanEquipNow(item) ? 1 : 0, ch->IsDead() ? 1 : 0, (unsigned int)item->GetWindow(),
+						(unsigned int)item->GetCell());
+		}
+		return worn;
+	}
+
 	void ApplyPlayerBotPvpFanLoadout(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanWar& war, TPvpFanFighter& f)
 	{
 		if (ch->IsRiding())
 			ch->StopRiding();
 		if (ch->GetHorse())
 			ch->HorseSummon(false);
+		// MT2009_PLUS_PVPFAN_V1: an arena bot a bot guild master once took in (the first test) leaves that guild
+		if (CGuild* g = ch->GetGuild())
+			g->RequestRemoveMember(ch->GetPlayerID());
 		// The level and the stats - the way a stat reset and pc.set_level make a level.
 		if (ch->GetLevel() != f.level)
 		{
@@ -1067,6 +1105,21 @@ namespace
 			case PVPFAN_STARTING:
 			case PVPFAN_WAITING:
 			case PVPFAN_COUNTDOWN:
+				if (f->equipRetries < 30 && (int)(dwNow - f->equipRetryAt) >= 0)
+				{
+					PlayerBotResetEquipPulse(ch);
+					const int worn = RetryPlayerBotPvpFanEquip(ch, *war, *f, f->equipRetries == 2);
+					f->equipRetryAt = dwNow + 2000;
+					++f->equipRetries;
+					if (worn > 0)
+					{
+						ch->ComputePoints();
+						ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
+						ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
+						sys_log(0, "PVPFAN: wear retry pid=%u name=%s try=%d worn_now=%d hp=%d", f->pid, ch->GetName(),
+								f->equipRetries, worn, ch->GetMaxHP());
+					}
+				}
 				HoldPlayerBotPvpFanAtSpot(ch, state, *war, *f, dwNow);
 				break;
 			case PVPFAN_FIGHTING:
