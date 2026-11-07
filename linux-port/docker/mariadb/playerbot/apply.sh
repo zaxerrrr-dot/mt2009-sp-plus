@@ -5315,10 +5315,11 @@ fi
 # MT2009_PLUS_DROP307_V1 (the owner's list of 3 November 2026, Yohara 3.x section C): drop307.sql - the level-90 and
 # Yohara rings / gloves / capes stack, trade and come off, Ksiegi Riposty in stacks of 200, Lodowa Runa Aury into the
 # safebox and Kolekcjoner, the tradeable Kamien Kowala / Magiczny Metal (39015 / 39016) and Kowal's recipes 7-10 for
-# them, the yang of Zaklety Las. Last, after every step that writes these rows. Idempotent.
+# them, the yang and the doubled experience (MT2009_PLUS_EXP_REFERENCE_V1) of Zaklety Las. Last, after every step that
+# writes these rows. Idempotent.
 if [ -s /opt/playerbot/drop307.sql ]; then
     if db < /opt/playerbot/drop307.sql; then
-        echo "[playerbot-migrate] drop 3.0.7: rings / gloves / capes, riposte books, ice aura rune, tradeable smith materials, Zaklety Las yang"
+        echo "[playerbot-migrate] drop 3.0.7: rings / gloves / capes, riposte books, ice aura rune, tradeable smith materials, Zaklety Las yang and exp x2"
     else
         fail_step "drop 3.0.7: drop307.sql failed (MT2009_PLUS_DROP307_V1)" >&2
     fi

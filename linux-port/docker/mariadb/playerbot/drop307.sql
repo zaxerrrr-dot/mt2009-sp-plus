@@ -1,7 +1,7 @@
 -- MT2009_PLUS_DROP307_V1 - the owner's list of 3 November 2026 (Yohara 3.x, section C "Przedmioty / drop"), the world's
--- part: item_proto flags, Kowal's recipes for the tradeable smith materials, the yang of Zaklety Las. Run by apply.sh
--- (last step before the copy check, after every file that writes these rows). Idempotent: bit operations, conditions
--- on the package's values, INSERT IGNORE. PROTO_FROM_DB - the cores read it at boot. The client's item_proto carries
+-- part: item_proto flags, Kowal's recipes for the tradeable smith materials, the yang and the exp x2 of Zaklety Las. Run
+-- by apply.sh (last step before the copy check, after every file that writes these rows). Idempotent: bit operations,
+-- conditions on the package's values, INSERT IGNORE. PROTO_FROM_DB - the cores read it at boot. The client's item_proto carries
 -- the same flags (client-patches/client-2.0.30/tools/yitems307/patch_yitems307_client.py).
 --
 -- Bits: flag 4 = ITEM_FLAG_STACKABLE, 256 = ITEM_FLAG_IRREMOVABLE (CHARACTER::CanUnequipNow refuses it);
@@ -73,3 +73,19 @@ UPDATE world.mob_proto
        gold_max = IF(`rank` >= 5, 450000 + (GREATEST(level, 105) - 105) * 15000, 220000 + (GREATEST(level, 103) - 103) * 7500)
  WHERE vnum IN (6405, 6407, 6408) AND `rank` >= 4 AND gold_max < 100000;
 UPDATE world.mob_proto SET gold_min = 22000, gold_max = 38000 WHERE vnum = 8061 AND gold_max < 10000;
+
+-- 6. MT2009_PLUS_EXP_REFERENCE_V1 (the owner, 7 November 2026: "exp mobow Lasu x2"): every monster that lives only in
+--    Zaklety Las (353) and its Erebu (the instances 3530000+) gives twice its experience - the five of the spots
+--    6401-6404 / 6406, Wladca En-Tai 6407, Bagjanamu 6408, Jotun Thrym 6192, Uzdrowiciel Ochao 6409 (Jotun's summon),
+--    the Silni En-Tai 6410-6414 (Metin Lasu's) and the two Metins 8059 / 8061. None of them spawns anywhere else: the
+--    regens of every other map, the groups 6311-6318 / 6330-6333 (only the forest's regen, boss and stone files and
+--    the two Metins call them), the summons (6406 -> 6401, 6407 / 6408 -> 6404, 6414 -> 6410, 6192 -> 6409) and the
+--    quests (zaklety_las, erebu). Not here: Straznik En-Tai 6400 (Swiatynia Ochao, 209), the SZC copies 4260-4272 /
+--    4403 (Szczelina Czasu, 404), Boss Swiata's own rows (worldboss.sql). Bots doing Erebu (playerbot_dgrun_erebu.h)
+--    get the doubled bosses too. Over the original values only (yohara_zaklety.sql's INSERT IGNORE rows; 6402 after
+--    yohara_moby_arkusz.sql's 27356 -> 28934, which runs before), so a value the database editor set stays; a fresh
+--    world gets the same doubling from the package's rows.
+UPDATE world.mob_proto SET `exp` = `exp` * 2
+ WHERE (vnum, `exp`) IN ((6401, 24334), (6402, 28934), (6403, 35468), (6404, 37900), (6406, 53214), (6407, 517920),
+                         (6408, 1154705), (6192, 4564000), (6409, 9843), (6410, 27334), (6411, 31934),
+                         (6412, 38468), (6413, 40900), (6414, 56214), (8059, 51), (8061, 51));
