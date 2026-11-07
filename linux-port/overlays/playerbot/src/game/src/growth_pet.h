@@ -84,7 +84,7 @@ namespace growth_pet
 	bool IsGrowthPetChar(CHARACTER* ch);
 	void Packet(CHARACTER* ch, BYTE header, const char* data);
 	void DBPacket(DWORD dwHandle, BYTE header, const char* data);
-	void Command(CHARACTER* ch, const char* argument);	// GM /pet_set
+	void Command(CHARACTER* ch, const char* argument);	// GM /pet_set (and /pet_set info [name])
 }
 
 #endif

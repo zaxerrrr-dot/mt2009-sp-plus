@@ -42,6 +42,7 @@
 #include "vector.h"
 #include "growth_pet.h"
 #include "growth_pet_data.h"
+#include "questmanager.h"
 
 #include <map>
 #include <set>
@@ -104,7 +105,9 @@ namespace growth_pet
 		DWORD summoned;			// pet id
 		time_t invincibleUntil;
 		bool pendingAsked;
-		Owner() : summoned(0), invincibleUntil(0), pendingAsked(false) {}
+		std::string skillLog;	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1: the last logged bonus line (a log only on change)
+		time_t skillLogAt;
+		Owner() : summoned(0), invincibleUntil(0), pendingAsked(false), skillLogAt(0) {}
 	};
 
 	std::map<DWORD, Pet> s_pets;
@@ -885,6 +888,28 @@ namespace growth_pet
 		return true;
 	}
 
+	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1 (summon kept): the summoned pet's id in a quest flag, so a warp, a map change
+	// or a relog (OnDestroy keeps it) brings the pet out again with its bonuses (OnLoaded); a sent-away, dead, traded
+	// or stored pet clears it (Unsummon).
+	const char* const SUMMON_FLAG = "growth_pet.summoned";
+
+	void RememberSummon(LPCHARACTER ch, DWORD id)
+	{
+		if (!ch || !ch->IsPC())
+			return;
+		quest::PC* pc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+		if (pc && (DWORD)pc->GetFlag(SUMMON_FLAG) != id)
+			pc->SetFlag(SUMMON_FLAG, (int)id);
+	}
+
+	DWORD RememberedSummon(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsPC())
+			return 0;
+		quest::PC* pc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+		return pc ? (DWORD)pc->GetFlag(SUMMON_FLAG) : 0;
+	}
+
 	void Unsummon(LPCHARACTER ch, Pet& p, bool bMessage)
 	{
 		Owner& o = GetOwner(ch);
@@ -893,6 +918,7 @@ namespace growth_pet
 		{
 			o.summoned = 0;
 			o.invincibleUntil = 0;
+			RememberSummon(ch, 0);
 			SendSub(ch, SUBHEADER_PET_UNSUMMON);
 			if (bMessage)
 				Sayf(ch, "Tw\xf3j zwierzak %s wraca do piecz\xea" "ci.", p.d.szName);
@@ -918,7 +944,7 @@ namespace growth_pet
 		return p;
 	}
 
-	bool Summon(LPCHARACTER ch, Pet& p, LPITEM seal)
+	bool Summon(LPCHARACTER ch, Pet& p, LPITEM seal, bool quiet = false)
 	{
 		if (!IsAlive(p))
 		{
@@ -950,7 +976,9 @@ namespace growth_pet
 		}
 		SendSummon(ch, p.d.dwID);
 		SendSet(ch, p);
-		Sayf(ch, "Przywo\xb3" "ano zwierzaka %s.", p.d.szName);
+		if (!quiet)
+			Sayf(ch, "Przywo\xb3" "ano zwierzaka %s.", p.d.szName);
+		RememberSummon(ch, p.d.dwID);
 		ch->ComputePoints();
 		return true;
 	}
@@ -1274,15 +1302,18 @@ namespace growth_pet
 		return POINT_NONE;
 	}
 
-	void ApplyPassive(LPCHARACTER ch, const Pet& p, BYTE skill, int value)
+	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1: the whole units added (0: nothing - not passive, no point, below one unit).
+	int ApplyPassive(LPCHARACTER ch, const Pet& p, BYTE skill, int value)
 	{
 		const TGrowthPetSkillTable* t = BaseSkillProto(skill);
 		if (!t || t->bType != GROWTH_PET_SKILL_USE_PASSIVE)
-			return;
+			return 0;
 		const WORD point = PointOn(t);
 		const int v = value / 10;	// tenths of a per cent / of a metre -> whole units
-		if (point != POINT_NONE && v > 0)
-			ch->PointChange(point, v);
+		if (point == POINT_NONE || v <= 0)
+			return 0;
+		ch->PointChange(point, v);
+		return v;
 	}
 
 	void SetCooltime(LPCHARACTER ch, Pet& p, int slot, DWORD until)
@@ -2266,6 +2297,20 @@ namespace growth_pet
 				SyncSeal(ch, p);
 			SendSet(ch, p);
 		}
+		// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1 (summon kept): the pet out before the warp / logout comes out again
+		if (head->bReason == GROWTH_PET_LOAD_ITEMS && !SummonedPet(ch))
+		{
+			const DWORD id = RememberedSummon(ch);
+			Pet* p = id ? FindPet(id) : NULL;
+			LPITEM seal = p ? FindSealOf(ch, id) : NULL;
+			if (p && seal && p->holder == ch->GetPlayerID() && p->d.bState == GROWTH_PET_STATE_UPBRINGING)
+			{
+				if (!IsAlive(*p) || (int)p->d.dwLevel > ch->GetLevel())
+					RememberSummon(ch, 0);
+				else
+					Summon(ch, *p, seal, true);
+			}
+		}
 		if (head->bReason == GROWTH_PET_LOAD_UNPACK)
 		{
 			LPITEM cage = ITEM_MANAGER::instance().Find(head->dwParam);
@@ -2288,6 +2333,31 @@ namespace growth_pet
 		}
 		const TGrowthPetSkillTable* t = (const TGrowthPetSkillTable*)(data + 2 * sizeof(WORD));
 		s_skills.assign(t, t + count);
+		// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1: a db core built before the fix sends the ENUM's 1-based index ("type+0":
+		// NONE 1, PASSIVE 2, AUTO 3) - every passive skill then looked like an auto one and no auto skill was one, so
+		// no pet skill ever did anything. A type past AUTO can only come from that: the whole table is shifted back.
+		bool oneBased = false;
+		for (size_t i = 0; i < s_skills.size(); ++i)
+			if (s_skills[i].bType > GROWTH_PET_SKILL_USE_AUTO)
+				oneBased = true;
+		if (oneBased)
+		{
+			for (size_t i = 0; i < s_skills.size(); ++i)
+				if (s_skills[i].bType > 0)
+					--s_skills[i].bType;
+			sys_err("GROWTH_PET: skill proto types came 1-based (old db core) - shifted to PASSIVE 1 / AUTO 2");
+		}
+		{
+			int passive = 0, autos = 0;
+			for (size_t i = 0; i < s_skills.size(); ++i)
+			{
+				if (s_skills[i].bType == GROWTH_PET_SKILL_USE_PASSIVE)
+					++passive;
+				else if (s_skills[i].bType == GROWTH_PET_SKILL_USE_AUTO)
+					++autos;
+			}
+			sys_log(0, "GROWTH_PET: skill proto %d passive, %d auto rows", passive, autos);
+		}
 		s_skillIndex.clear();
 		for (size_t i = 0; i < s_skills.size(); ++i)
 			s_skillIndex[((unsigned long long)s_skills[i].dwPetVnum << 8) | s_skills[i].bSkill] = i;
@@ -2776,11 +2846,43 @@ namespace growth_pet
 	}
 
 	// char.cpp ComputePoints (the old MT2009_PLUS_NEW_PET_V1 (points) hook): the summoned pet's bonuses.
+	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1 (log): one line when the summoned pet's skill bonuses change (summon, send away,
+	// learn, upgrade, forget, death), at most one every 5 s a character - ComputePoints runs often.
+	void LogSkillBonuses(CHARACTER* ch, const Pet* p, const std::string& line)
+	{
+		std::map<DWORD, Owner>::iterator it = s_owners.find(ch->GetPlayerID());
+		if (it == s_owners.end())
+			return;
+		Owner& o = it->second;
+		const time_t now = Now();
+		if (o.skillLog == line || now - o.skillLogAt < 5)
+			return;
+		o.skillLog = line;
+		o.skillLogAt = now;
+		if (p)
+			sys_log(0, "GROWTH_PET_SKILLS: %s pet %u (seal %u evo %d lv %u cl %u type %u) bonuses:%s", ch->GetName(), p->d.dwID,
+					p->d.dwVnum, Stage(*p), p->d.dwLevel, p->d.dwChampionLevel, (unsigned)p->d.bType,
+					line.empty() ? " none" : line.c_str());
+		else
+			sys_log(0, "GROWTH_PET_SKILLS: %s no pet out - no skill bonuses", ch->GetName());
+	}
+
+	// The point name of a passive skill (the proto's point_on), "" for an auto one.
+	const char* PointOnName(BYTE skill)
+	{
+		const TGrowthPetSkillTable* t = BaseSkillProto(skill);
+		return t && t->bType == GROWTH_PET_SKILL_USE_PASSIVE ? t->szPointOn : "";
+	}
+
 	void ApplyPoints(CHARACTER* ch)
 	{
 		Pet* p = SummonedPet(ch);
 		if (!p || !IsAlive(*p))
+		{
+			if (s_owners.find(ch->GetPlayerID()) != s_owners.end())
+				LogSkillBonuses(ch, NULL, "-");
 			return;
+		}
 		const long long hp = (long long)ch->GetRealPoint(POINT_MAX_HP) * p->d.dwHP / 100000;
 		const long long sp = (long long)ch->GetRealPoint(POINT_MAX_SP) * p->d.dwSP / 100000;
 		const long long def = (long long)ch->GetPoint(POINT_DEF_GRADE) * p->d.dwDef / 100000;
@@ -2797,13 +2899,32 @@ namespace growth_pet
 			if (p->d.dwChampionPrecision >= 1000)
 				ch->PointChange(POINT_HIT_PCT, (int)(p->d.dwChampionPrecision / 1000));
 		}
+		std::string line;
+		char part[96];
 		if (Stage(*p) >= SKILL_OPEN_STAGE)
 			for (int i = 0; i < GROWTH_PET_SKILL_SLOTS; ++i)
 				if (p->d.aSkill[i].bSkill)
-					ApplyPassive(ch, *p, p->d.aSkill[i].bSkill, SkillValue(*p, p->d.aSkill[i].bSkill, p->d.aSkill[i].bLevel, false));
+				{
+					const BYTE sk = p->d.aSkill[i].bSkill;
+					const int v = ApplyPassive(ch, *p, sk, SkillValue(*p, sk, p->d.aSkill[i].bLevel, false));
+					if (v > 0)
+					{
+						snprintf(part, sizeof(part), " s%u/%u %s+%d", (unsigned)sk, (unsigned)p->d.aSkill[i].bLevel, PointOnName(sk), v);
+						line += part;
+					}
+				}
 		for (int i = 0; i < GROWTH_PET_POTENTIAL_SLOTS; ++i)
 			if (PotentialActive(*p, i))
-				ApplyPassive(ch, *p, p->d.aPotential[i].bSkill, SkillValue(*p, p->d.aPotential[i].bSkill, PotentialLevel(*p, i), true));
+			{
+				const BYTE sk = p->d.aPotential[i].bSkill;
+				const int v = ApplyPassive(ch, *p, sk, SkillValue(*p, sk, PotentialLevel(*p, i), true));
+				if (v > 0)
+				{
+					snprintf(part, sizeof(part), " pot%d s%u/%d %s+%d", i, (unsigned)sk, PotentialLevel(*p, i), PointOnName(sk), v);
+					line += part;
+				}
+			}
+		LogSkillBonuses(ch, p, line);
 	}
 
 	// char.cpp EncodeInsertPacket: a growth pet's scale for the viewer (GC 235).
@@ -2985,6 +3106,52 @@ namespace growth_pet
 	}
 
 	// GM /pet_set <level|clevel|evo|type|exp|iexp|cexp|life|age|skill <slot> <id> <lv>> <value> on the summoned pet.
+	// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1 (GM): /pet_set info [name] - the summoned pet's skills, what each should give
+	// and the bonus points the character has now.
+	void CommandInfo(CHARACTER* gm, CHARACTER* ch)
+	{
+		Pet* p = SummonedPet(ch);
+		gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] %s: skill proto %u rows%s", ch->GetName(), (unsigned)s_skills.size(),
+				s_skills.empty() ? " (NONE - db did not send the table)" : "");
+		if (!p)
+		{
+			gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] no pet summoned (remembered id %u)", RememberedSummon(ch));
+			return;
+		}
+		gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] pet %u seal %u evo %d lv %u cl %u type %u alive %d - skills %s", p->d.dwID,
+				p->d.dwVnum, Stage(*p), p->d.dwLevel, p->d.dwChampionLevel, (unsigned)p->d.bType, IsAlive(*p) ? 1 : 0,
+				Stage(*p) >= SKILL_OPEN_STAGE ? "open" : "closed (below Bohaterski)");
+		for (int i = 0; i < GROWTH_PET_SKILL_SLOTS + GROWTH_PET_POTENTIAL_SLOTS; ++i)
+		{
+			const bool pot = i >= GROWTH_PET_SKILL_SLOTS;
+			const int j = i - GROWTH_PET_SKILL_SLOTS;
+			const BYTE sk = pot ? p->d.aPotential[j].bSkill : p->d.aSkill[i].bSkill;
+			if (!sk || (pot && !PotentialActive(*p, j)))
+				continue;
+			const int lv = pot ? PotentialLevel(*p, j) : p->d.aSkill[i].bLevel;
+			const TGrowthPetSkillTable* t = BaseSkillProto(sk);
+			const TGrowthPetSkillTable* named = SkillProto(p->d.dwVnum, sk);
+			const int value = SkillValue(*p, sk, lv, pot);
+			if (t && t->bType == GROWTH_PET_SKILL_USE_PASSIVE)
+			{
+				const WORD point = PointOn(t);
+				gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] %s%d %s (%u) lv %d passive %s: +%d (raw %d), point %u now %d",
+						pot ? "pot" : "slot", pot ? j : i, named ? named->szName : "?", (unsigned)sk, lv, t->szPointOn,
+						value / 10, value, (unsigned)point, point != POINT_NONE ? (int)ch->GetPoint(point) : 0);
+			}
+			else
+				gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] %s%d %s (%u) lv %d %s: value %d, chance %d%%, cooldown %u s, ready in %d s",
+						pot ? "pot" : "slot", pot ? j : i, named ? named->szName : "?", (unsigned)sk, lv,
+						t ? (t->bType == GROWTH_PET_SKILL_USE_AUTO ? "auto" : "type?") : "no proto", value,
+						pot ? (sk == SKILL_REMOVAL ? value / 10 : (t ? t->abActivate[MINMAX(1, lv, 20) - 1] : 0))
+							: SkillActivatePct(*p, sk, lv, value),
+						t ? (unsigned)t->dwCooldown : 0u,
+						(int)MAX(0L, (long)(pot ? p->potentialCooltime[j] : p->d.aSkill[i].dwCooltime) - (long)Now()));
+		}
+		gm->ChatPacket(CHAT_TYPE_INFO, "[pet info] stats: max HP +%u.%03u%%, DEF +%u.%03u%%, max SP +%u.%03u%%",
+				p->d.dwHP / 1000, p->d.dwHP % 1000, p->d.dwDef / 1000, p->d.dwDef % 1000, p->d.dwSP / 1000, p->d.dwSP % 1000);
+	}
+
 	void Command(CHARACTER* ch, const char* argument)
 	{
 		char a1[64], a2[64], a3[64], a4[64];
@@ -2992,10 +3159,19 @@ namespace growth_pet
 		rest = one_argument(rest, a2, sizeof(a2));
 		rest = one_argument(rest, a3, sizeof(a3));
 		one_argument(rest, a4, sizeof(a4));
+		if (!strcmp(a1, "info"))
+		{
+			LPCHARACTER target = *a2 ? CHARACTER_MANAGER::instance().FindPC(a2) : ch;
+			if (!target)
+				ch->ChatPacket(CHAT_TYPE_INFO, "[pet info] %s is not on this core", a2);
+			else
+				CommandInfo(ch, target);
+			return;
+		}
 		Pet* p = SummonedPet(ch);
 		if (!*a1 || !p)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "pet_set <level|clevel|evo|type|exp|iexp|cexp|life|age|skill slot id lv> <value> (summoned pet)");
+			ch->ChatPacket(CHAT_TYPE_INFO, "pet_set <level|clevel|evo|type|exp|iexp|cexp|life|age|skill slot id lv> <value> | info [name] (summoned pet)");
 			return;
 		}
 		long long v = 0;
