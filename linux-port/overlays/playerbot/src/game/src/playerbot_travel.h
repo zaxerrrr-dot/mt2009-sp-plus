@@ -947,6 +947,9 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
+	// MT2009_PLUS_BOT_YOHARA_BAND_KEEP_V1: playerbot_yohara_bots.h - a Sung Ma resident, a guest of the Loch or a bot on a
+	// dungeon run is not "out of band" on the frontier's ground (its own manager moves it).
+	bool IsPlayerBotFrontierBandExitHeld(LPCHARACTER ch, long mapIndex, long want, DWORD dwNow);
 	// MT2009_PLUS_BOT_SURVIVE_V1: the easier map of a bot dying on the draw's (playerbot_survive.h).
 	long ApplyPlayerBotSurviveStepDown(LPCHARACTER ch, long map);
 
@@ -3872,7 +3875,16 @@ namespace
 					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME);
 			// Outgrowing the map matters as much as running out of potions: neither
 			// Orc Valley nor the Desert has a merchant, a blacksmith or a trainer.
-			const bool outOfBand = GetPlayerBotFrontierMapForLevel(ch) != mapIndex;
+			// MT2009_PLUS_BOT_YOHARA_BAND_KEEP_V1 (7 November 2026): not on Tajemniczy Loch (396) for its guest, not on a
+			// Sung Ma map for its resident, not for a bot on a dungeon run - the draw names the resident's own map there
+			// (r->lMap), so every guest of the Loch was "out of band" at its first tick: 827 rest-outs
+			// (frontier_level_graduated, stay_s 0-20) in 4.7 h, the cohort's dispatch loop. Their managers
+			// (ManagePlayerBotSungmaResident, the Loch's excursion, the run) take them out. m2_bot_yohara_band_keep_off 1: as before.
+			bool outOfBand = false;
+			{
+				const long want = GetPlayerBotFrontierMapForLevel(ch);
+				outOfBand = want != mapIndex && !IsPlayerBotFrontierBandExitHeld(ch, mapIndex, want, dwNow);
+			}
 			// Only a need that actually stops the bot playing is worth the trip
 			// home. Sending it back for a helmet the town cannot sell turned the
 			// journey into a shuttle: it arrived, saw the same unmet need, and
