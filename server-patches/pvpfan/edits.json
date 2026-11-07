@@ -1,0 +1,26 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_PVPFAN_V1 (command declare)",
+  "old": "ACMD(do_bot_runa)\n{\n\tPlayerBotRuneCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_bot_runa)\n{\n\tPlayerBotRuneCommand(ch, argument);\n}\n// MT2009_PLUS_PVPFAN_V1 (command declare): \"/pvpfan\" - PVP Fan, the Seban panel's bot wars: lista, start, gotowi, stop, status, tu, pozycja (playerbot_pvpfan.h)\nvoid PlayerBotPvpFanCommand(LPCHARACTER ch, const char* argument);\nACMD(do_pvpfan)\n{\n\tPlayerBotPvpFanCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_PVPFAN_V1 (command table)",
+  "old": "\t{ \"bot_runa\",\tdo_bot_runa,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_BOT_RUNES_V1 (command table)\n",
+  "new": "\t{ \"bot_runa\",\tdo_bot_runa,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_BOT_RUNES_V1 (command table)\n\t{ \"pvpfan\",\tdo_pvpfan,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_PVPFAN_V1 (command table)\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_PVPFAN_V1 (attackable)",
+  "old": "\tif (!ch->IsGuardNPC())\n\t{\n\t\tSECTREE\t*sectree = NULL;\n",
+  "new": "\t// MT2009_PLUS_PVPFAN_V1 (attackable): a PvP-fan war's bots fight the other teams' bots only - wherever the arena\n\t// stands (a safe zone too), whatever kingdom, guild, party or PK mode; nobody else strikes them, they strike nobody\n\t// else (people only where the category lets them in). -1: not a PvP-fan matter (playerbot_pvpfan.h).\n\t{ int PvpFanAttackable(LPCHARACTER, LPCHARACTER); const int iPvpFan = PvpFanAttackable(ch, victim); if (iPvpFan >= 0) return iPvpFan != 0; }\n\n\tif (!ch->IsGuardNPC())\n\t{\n\t\tSECTREE\t*sectree = NULL;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_PVPFAN_V1 (dead)",
+  "old": "\t\t\tpkKiller->SetQuestNPCID(GetVID());\n\t\t\tquest::CQuestManager::instance().Kill(pkKiller->GetPlayerID(), quest::QUEST_NO_NPC);\n",
+  "new": "\t\t\t// MT2009_PLUS_PVPFAN_V1 (dead): a PvP-fan war's death is no murder - no alignment lost, no item dropped, as a\n\t\t\t// guild war's; the war counts the kill (playerbot_pvpfan.h).\n\t\t\t{ bool PvpFanDeath(LPCHARACTER, LPCHARACTER); if (PvpFanDeath(this, pkKiller)) isUnderGuildWar = true; }\n\n\t\t\tpkKiller->SetQuestNPCID(GetVID());\n\t\t\tquest::CQuestManager::instance().Kill(pkKiller->GetPlayerID(), quest::QUEST_NO_NPC);\n"
+ }
+]

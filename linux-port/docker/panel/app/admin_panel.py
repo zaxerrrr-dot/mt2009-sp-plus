@@ -2325,7 +2325,10 @@ def weekly_tidy(r):
 
 # MT2009_PLUS_RANKING_NO_SIDEKICK_V1: companions (Towarzysze) take no part in the
 # weekly ranking - not in its lists, not among its title holders.
-WEEKLY_NOT_SIDEKICK = "NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {})"
+WEEKLY_NOT_SIDEKICK = ("NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {0})"
+                       # MT2009_PLUS_PVPFAN_V1: nor a PVP Fan character (an account playerbot_pf..., the Seban panel's war bots)
+                       " AND NOT EXISTS (SELECT 1 FROM player.player wpf JOIN account.account wpa ON wpa.id = wpf.account_id"
+                       " WHERE wpf.id = {0} AND LEFT(wpa.login, 12) = 'playerbot_pf')")
 
 
 def read_weekly_ranking(cat=1):

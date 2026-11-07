@@ -7979,6 +7979,8 @@ namespace
 	// fragment that asks these): whose it is, whether it stands at its
 	// owner's side, and what its owner handed it.
 	bool IsPlayerBotSidekickPID(DWORD pid);
+	// MT2009_PLUS_PVPFAN_V1: a PvP-fan war's character on this core (playerbot_pvpfan.h) - in no ranking, no schedule.
+	bool IsPlayerBotPvpFanPID(DWORD pid);
 	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
 	// (playerbot_shouters.h), kept out of everything the population does.
 	bool IsPlayerBotShouterPID(DWORD pid);

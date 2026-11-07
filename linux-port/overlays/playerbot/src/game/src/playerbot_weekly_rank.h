@@ -189,7 +189,9 @@ namespace mt2009_wrank
 		// (the owner, 6 October: "Towarzysze postaci niech nie bior\xb9 udzia\xb3u w
 		// rankingach tygodniowych") - it earns no points and is in no list.
 		return ch && ch->IsPC() && ch->GetDesc() && ch->GetGMLevel() <= GM_PLAYER &&
-				!IsPlayerBotSidekickPID(ch->GetPlayerID());
+				!IsPlayerBotSidekickPID(ch->GetPlayerID()) &&
+				!IsPlayerBotPvpFanPID(ch->GetPlayerID()); // MT2009_PLUS_PVPFAN_V1: nor a PvP-fan war's bot
+
 	}
 
 	// A person who opens the window.
@@ -662,11 +664,14 @@ namespace mt2009_wrank
 	// player.playerbot_sidekick's sidekick_pid, the pool's identities included
 	// once they serve). WRANK_NOT_SIDEKICK(col) takes the ranked pid's column.
 #define WRANK_NOT_SIDEKICK(col) \
-	"NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick sk WHERE sk.sidekick_pid=" col ")"
+	"NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick sk WHERE sk.sidekick_pid=" col ")" \
+	/* MT2009_PLUS_PVPFAN_V1: nor a PvP-fan character (an account playerbot_pf...) */ \
+	" AND NOT EXISTS (SELECT 1 FROM player.player pfp JOIN account.account pfa ON pfa.id=pfp.account_id " \
+	"WHERE pfp.id=" col " AND LEFT(pfa.login,12)='playerbot_pf')"
 	void ReadTop(DWORD season, BYTE cat, int limit, std::vector<Row>& out)
 	{
 		out.clear();
-		char query[900];
+		char query[1600]; // MT2009_PLUS_PVPFAN_V1: room for WRANK_NOT_SIDEKICK's PvP-fan part
 		if (cat == CAT_LEVEL)
 			snprintf(query, sizeof(query),
 					"SELECT p.id, IF(LEFT(IFNULL(a.login,''),10)='playerbot_',1,0), p.level, IFNULL(pi.empire,0), p.exp, p.name "
@@ -902,7 +907,7 @@ namespace mt2009_wrank
 	{
 		pos = 0;
 		value = 0;
-		char query[800];
+		char query[1600]; // MT2009_PLUS_PVPFAN_V1: room for WRANK_NOT_SIDEKICK's PvP-fan part
 		if (cat == CAT_LEVEL)
 		{
 			value = (long long)ch->GetExp();

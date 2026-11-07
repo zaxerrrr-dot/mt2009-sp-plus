@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}{{ cat.name }} · PVP Fan · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_PVPFAN_V1: jedna kategoria PVP Fan – arena, drużyny, postacie, sterowanie, wyniki (pvpfan.py) #}
+<style>
+.pf-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.pf-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.pf-form input[type=number]{width:7.5em;padding:7px 8px}
+.pf-form input[type=text]{width:12em;padding:7px 8px}
+.pf-note{font-size:12px;color:var(--muted)}
+.pf-state{display:inline-block;padding:2px 9px;border-radius:999px;font-size:13px;border:1px solid var(--edge)}
+.pf-state.fighting{border-color:#d44;color:#f66}.pf-state.waiting,.pf-state.countdown{border-color:#c90;color:#fb3}
+.pf-state.starting,.pf-state.finished,.pf-state.stopping{border-color:#48c;color:#6af}
+.pf-team{border:1px solid var(--edge);border-radius:10px;padding:12px;margin:12px 0}
+.pf-slots td{padding:5px 4px;vertical-align:middle}
+.pf-slots input[type=number]{width:4.6em;padding:5px}
+.pf-slots select{padding:5px;max-width:15em}
+.pf-slots button{padding:5px 8px;margin:0 3px 0 0}
+.pf-new td{border-top:1px dashed var(--edge)}
+.pf-ok{color:#6c6}.pf-bad{color:#e96}
+.pf-win{color:#6c6;font-weight:600}
+</style>
+<a class="back" href="{{ url_for('pvpfan') }}">← PVP Fan</a>
+<p class="eyebrow">PVP FAN · KATEGORIA</p>
+<h1>⚔️ {{ cat.name }} <span class="pf-note"><code>{{ cat.code }}</code></span></h1>
+<p class="pf-vs">{{ cat.vs }}</p>
+
+<section class="cards compact">
+<article><span>Stan</span><strong><span class="pf-state {{ cat.state }}">{{ cat.state_name }}</span></strong><small>{{ cat.state_note or '—' }}</small></article>
+<article><span>Na arenie</span><strong>{{ cat.online or 0 }}</strong><small>{{ cat.alive_text or 'nikt' }}{% if cat.core %} · rdzeń {{ cat.core }}{% endif %}</small></article>
+<article><span>Arena</span><strong>{% if cat.map_index %}{{ map_names.get(cat.map_index, 'mapa #' ~ cat.map_index) }}{% else %}nie ustawiona{% endif %}</strong><small>{% if cat.map_index %}{{ cat.x }}, {{ cat.y }} · kanał {{ cat.channel }}{% else %}ustaw poniżej albo /pvpfan tu {{ cat.code }}{% endif %}</small></article>
+<article><span>Postacie</span><strong>{{ cat.chars }} / {{ cat.wanted }}</strong><small>{% if cat.chars != cat.wanted %}kliknij „Generuj postacie”{% else %}gotowe{% endif %}</small></article>
+</section>
+
+<section class="panel" id="sterowanie">
+<h2>Sterowanie</h2>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}">
+<button name="action" value="start" {% if cat.busy or not cat.map_index %}disabled{% endif %}>▶ Start (boty wchodzą)</button>
+<button name="action" value="ready" {% if cat.state != 'waiting' %}disabled{% endif %}>⚔ Gotowi! (odliczanie i walka)</button>
+<button name="action" value="stop" class="secondary" {% if not cat.busy %}disabled{% endif %}>■ Stop</button>
+<button name="action" value="reset_state" class="secondary" onclick="return confirm('Wyczyścić stan bez pytania gry? Tylko gdy rdzeń areny nie działa – w przeciwnym razie użyj Stop.');">Wyczyść stan</button>
+</form>
+<p class="pf-note">W grze: <code>/pvpfan start {{ cat.code }}</code>, <code>/pvpfan gotowi {{ cat.code }}</code>, <code>/pvpfan stop {{ cat.code }}</code>, <code>/pvpfan status {{ cat.code }}</code>. Odśwież stronę, by zobaczyć nowy stan.</p>
+{% if commands %}<p class="pf-note">Ostatnie polecenia: {% for c in commands[:5] %}{{ c.cmd }} ({{ c.source }}, {% if c.done %}{{ c.taken_by }}: {{ c.result }}{% else %}czeka{% endif %}){% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+</section>
+
+<section class="panel" id="ustawienia">
+<h2>Arena i zasady</h2>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="action" value="save">
+<label>Nazwa<input type="text" name="name" maxlength="64" value="{{ cat.name }}"></label>
+<label>Kod<input type="text" name="code" maxlength="32" pattern="[a-z0-9_\-]+" value="{{ cat.code }}"></label>
+<label><span><input type="checkbox" name="enabled" value="1" {% if cat.enabled %}checked{% endif %}> Włączona</span></label>
+<label>Mapa areny<input type="number" name="map_index" min="0" max="99999" value="{{ cat.map_index }}" list="pf-maps"></label>
+<datalist id="pf-maps">{% for idx, nm in map_names.items() %}<option value="{{ idx }}">{{ nm }}</option>{% endfor %}</datalist>
+<label>X (globalne)<input type="number" name="x" min="0" value="{{ cat.x }}"></label>
+<label>Y (globalne)<input type="number" name="y" min="0" value="{{ cat.y }}"></label>
+<label>albo X lokalne<input type="number" name="local_x" min="0" placeholder="{% if cat.map_index in map_bounds and cat.x %}{{ ((cat.x - map_bounds[cat.map_index][0]) // 100) }}{% endif %}"></label>
+<label>Y lokalne<input type="number" name="local_y" min="0" placeholder="{% if cat.map_index in map_bounds and cat.y %}{{ ((cat.y - map_bounds[cat.map_index][1]) // 100) }}{% endif %}"></label>
+<label>Drużyny od środka<input type="number" name="radius" min="200" max="20000" value="{{ cat.radius }}"></label>
+<label>Promień areny<input type="number" name="arena_radius" min="1000" max="50000" value="{{ cat.arena_radius }}"></label>
+<label>Kanał<input type="number" name="channel" min="1" max="4" value="{{ cat.channel }}"></label>
+<label>Odliczanie (s)<input type="number" name="countdown_sec" min="0" max="60" value="{{ cat.countdown_sec }}"></label>
+<label>Limit walki (min)<input type="number" name="max_minutes" min="1" max="180" value="{{ cat.max_minutes }}"></label>
+<label>Wyjście po walce (s)<input type="number" name="exit_sec" min="0" max="600" value="{{ cat.exit_sec }}"></label>
+<label><span><input type="checkbox" name="potions" value="1" {% if cat.potions %}checked{% endif %}> Boty piją mikstury</span></label>
+<label><span><input type="checkbox" name="allow_players" value="1" {% if cat.allow_players %}checked{% endif %}> Gracze mogą się włączyć do walki</span></label>
+<button>Zapisz</button>
+</form>
+<p class="pf-note">Globalne x,y to współrzędne silnika (jak w <code>/pvpfan pozycja</code>); lokalne (te z mapy w grze) przelicza panel dla map, które zna. Drużyny stają w kole wokół środka w podanej odległości (albo w swoich punktach), w szeregach po 10, przodem do środka. Bot dalej niż promień areny wraca do środka. Arena może stać gdziekolwiek, także w strefie bezpiecznej – walczą tylko boty tej wojny; potwory, inni gracze i boty ich nie biją. Po limicie wygrywa drużyna z większą liczbą żywych (potem zabójstw).</p>
+<form method="post" class="pf-form" style="margin-top:8px"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}">
+{% if gm_pos %}<span class="pf-note">Ostatnia pozycja GM: <strong>{{ gm_pos.gm_name }}</strong> – {{ map_names.get(gm_pos.map_index, 'mapa #' ~ gm_pos.map_index) }} ({{ gm_pos.x }}, {{ gm_pos.y }}), {{ gm_pos.at }}</span>
+<button name="action" value="gm_pos" class="secondary">Użyj pozycji GM jako środka areny</button>
+{% else %}<span class="pf-note">Brak pozycji GM – w grze stań na środku areny i wpisz <code>/pvpfan pozycja</code> (albo od razu <code>/pvpfan tu {{ cat.code }}</code>).</span>{% endif %}
+</form>
+</section>
+
+<section class="panel" id="druzyny">
+<h2>Drużyny</h2>
+{% for t in cat.teams %}
+<div class="pf-team">
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="team_id" value="{{ t.id }}">
+<label>Drużyna {{ loop.index }}<input type="text" name="name" maxlength="32" value="{{ t.name }}"></label>
+<label>Królestwo postaci<select name="empire">{% for k, v in empires.items() %}<option value="{{ k }}" {% if t.empire == k %}selected{% endif %}>{{ v }}{% if k == 0 %} ({{ empires[default_empire(t.idx)] }}){% endif %}</option>{% endfor %}</select></label>
+<label>Punkt startowy X<input type="number" name="x" min="0" value="{{ t.x }}"></label>
+<label>Y<input type="number" name="y" min="0" value="{{ t.y }}"></label>
+<label>Przedrostek nazw<input type="text" name="name_prefix" maxlength="12" value="{{ t.name_prefix }}" placeholder="wg ścieżki"></label>
+<button name="action" value="save_team">Zapisz drużynę</button>
+<button name="action" value="delete_team" class="secondary" onclick="return confirm('Usunąć drużynę {{ t.name }} i wycofać jej postacie?');">Usuń</button>
+</form>
+<p class="pf-note">Punkt 0,0 = automatycznie wokół środka areny. <code>/pvpfan tu {{ cat.code }} {{ t.idx }}</code> ustawia go z pozycji GM. Razem: {{ t.wanted }} postaci.</p>
+<div class="table-wrap"><table class="pf-slots">
+<thead><tr><th>Liczba</th><th>Klasa i ścieżka</th><th>Płeć</th><th>Poziom</th><th>Umiejętności</th><th>SIŁ</th><th>WIT</th><th>ZRĘ</th><th>INT</th><th>Zestaw</th><th>Utworzone</th><th></th></tr></thead>
+<tbody>
+{% for s in t.slots %}
+{% set fid = 'slot-' ~ s.id %}
+<tr>
+<td><form id="{{ fid }}" method="post"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="slot_id" value="{{ s.id }}"></form><input form="{{ fid }}" type="number" name="count" min="1" max="500" value="{{ s.count }}"></td>
+<td><select form="{{ fid }}" name="jobgroup">{% for (j, g), p in paths.items() %}<option value="{{ j }}:{{ g }}" {% if s.job == j and s.skill_group == g %}selected{% endif %}>{{ classes[j] }} – {{ p }}</option>{% endfor %}</select></td>
+<td><select form="{{ fid }}" name="sex"><option value="male" {% if s.sex == 'male' %}selected{% endif %}>M</option><option value="female" {% if s.sex == 'female' %}selected{% endif %}>K</option></select></td>
+<td><input form="{{ fid }}" type="number" name="level" min="1" max="250" value="{{ s.level }}"></td>
+<td><select form="{{ fid }}" name="skill_level">{% for v, l in skill_levels %}<option value="{{ v }}" {% if s.skill_level == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></td>
+{% for st in ['st', 'ht', 'dx', 'iq'] %}<td><input form="{{ fid }}" type="number" name="{{ st }}" min="0" max="90" value="{{ s[st] }}" title="0 = preset klasy"></td>{% endfor %}
+<td><select form="{{ fid }}" name="set_id"><option value="0">preset klasy</option>{% for z in sets %}<option value="{{ z.id }}" {% if s.set_id == z.id %}selected{% endif %}>{{ z.name }}</option>{% endfor %}</select></td>
+<td class="{{ 'pf-ok' if made.get(s.id, 0) == s.count else 'pf-bad' }}">{{ made.get(s.id, 0) }} / {{ s.count }}</td>
+<td style="white-space:nowrap"><button form="{{ fid }}" name="action" value="save_slot">Zapisz</button><button form="{{ fid }}" name="action" value="delete_slot" class="secondary" onclick="return confirm('Usunąć ten wiersz i wycofać jego postacie?');">Usuń</button></td>
+</tr>
+{% endfor %}
+{% set nid = 'new-' ~ t.id %}
+<tr class="pf-new">
+<td><form id="{{ nid }}" method="post"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><input type="hidden" name="team_id" value="{{ t.id }}"></form><input form="{{ nid }}" type="number" name="count" min="1" max="500" value="10"></td>
+<td><select form="{{ nid }}" name="jobgroup">{% for (j, g), p in paths.items() %}<option value="{{ j }}:{{ g }}">{{ classes[j] }} – {{ p }}</option>{% endfor %}</select></td>
+<td><select form="{{ nid }}" name="sex"><option value="male">M</option><option value="female">K</option></select></td>
+<td><input form="{{ nid }}" type="number" name="level" min="1" max="250" value="120"></td>
+<td><select form="{{ nid }}" name="skill_level">{% for v, l in skill_levels %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select></td>
+{% for st in ['st', 'ht', 'dx', 'iq'] %}<td><input form="{{ nid }}" type="number" name="{{ st }}" min="0" max="90" value="0"></td>{% endfor %}
+<td><select form="{{ nid }}" name="set_id"><option value="0">preset klasy</option>{% for z in sets %}<option value="{{ z.id }}">{{ z.name }}</option>{% endfor %}</select></td>
+<td></td><td><button form="{{ nid }}" name="action" value="add_slot">Dodaj</button></td>
+</tr>
+</tbody></table></div>
+</div>
+{% endfor %}
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><button name="action" value="add_team" class="secondary">+ Dodaj drużynę</button></form>
+<p class="pf-note">Statystyki 0 = preset klasy i ścieżki (np. Wojownik Ciało: SIŁ 90, WIT 90, ZRĘ 60, INT 46). Umiejętności: wszystkie umiejętności ścieżki na wybranym poziomie (P = 40). Poziom, statystyki, umiejętności i zestaw gra nakłada przy każdym starcie – nie trzeba generować postaci od nowa. Klasa, płeć, królestwo, liczba – tak („Generuj postacie”).</p>
+</section>
+
+<section class="panel" id="postacie">
+<h2>Postacie</h2>
+<form method="post" class="pf-form"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}">
+<button name="action" value="generate" {% if cat.busy %}disabled{% endif %}>Generuj postacie ({{ cat.wanted }})</button>
+<button name="action" value="retire_all" class="secondary" {% if cat.busy %}disabled{% endif %} onclick="return confirm('Wycofać wszystkie postacie tej kategorii? Zostaną usunięte po kwadransie offline.');">Wycofaj wszystkie</button>
+</form>
+<p class="pf-note">Każda postać ma własne konto <code>playerbot_pfNNNN</code> (hasło „!”, status BLOCK – nikt się na nie nie zaloguje), nie należy do zwykłych botów i jest offline poza wojną. Limit: {{ max_cat }} na kategorię. Przykładowe:</p>
+<p class="pf-note">{% for c in sample %}{{ c.name }} ({{ c.level }}){% if not loop.last %}, {% endif %}{% else %}jeszcze żadnych{% endfor %}{% if cat.chars > sample|length %} … i {{ cat.chars - sample|length }} więcej{% endif %}</p>
+</section>
+
+<section class="panel" id="wyniki">
+<h2>Wyniki tej kategorii</h2>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Start walki</th><th>Czas</th><th>Wynik</th><th>Drużyny (ocalali / zabójstwa / polegli)</th><th>Kto</th></tr></thead><tbody>
+{% for w in wars %}
+<tr><td>{{ w.id }}</td><td>{{ w.fight_at or w.started_at }}</td><td>{{ w.clock }}</td>
+<td>{% if w.state == 'won' %}<span class="pf-win">🏆 {{ w.winner_name }}</span>{% elif w.state == 'draw' %}Remis{% elif w.state == 'stopped' %}Przerwana{% else %}Trwa…{% endif %}</td>
+<td class="pf-note">{% for t in w.teams %}{{ t.name }} {{ t.survivors }}/{{ t.fighters }} · {{ t.kills }} · {{ t.deaths }}{% if not loop.last %} | {% endif %}{% endfor %}</td><td class="pf-note">{{ w.started_by }}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">Jeszcze żadnej wojny.</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+
+<section class="panel">
+<form method="post"><input type="hidden" name="pf_csrf" value="{{ pf_csrf }}"><button name="action" value="delete" class="secondary" {% if cat.busy %}disabled{% endif %} onclick="return confirm('Usunąć kategorię {{ cat.name }} razem z drużynami? Postacie zostaną wycofane i usunięte po kwadransie offline.');">Usuń kategorię</button></form>
+</section>
+{% endblock %}

@@ -298,6 +298,12 @@ services:
       # MT2009_PLUS_BOT_LOAD_PLACE_V1: a bot saved on a map its core lacks is placed before the
       # engine's check (handover spot / village) - CPlayerBotManager::PlaceLoadingBot.
       PLAYERBOT_LOAD_PLACE: "${PLAYERBOT_LOAD_PLACE:-1}"
+      # MT2009_PLUS_PVPFAN_V1: "PVP Fan" - the Seban panel's bot wars (/pvpfan, playerbot_pvpfan.h): 1 on (the
+      # default), 0 off; the caps of one war and of all wars of a core, and the logins a second at a start.
+      M2_PVPFAN: "${M2_PVPFAN:-1}"
+      M2_PVPFAN_MAX_CATEGORY: "${M2_PVPFAN_MAX_CATEGORY:-500}"
+      M2_PVPFAN_MAX_TOTAL: "${M2_PVPFAN_MAX_TOTAL:-1000}"
+      M2_PVPFAN_SPAWN_PER_SEC: "${M2_PVPFAN_SPAWN_PER_SEC:-20}"
       PLAYERBOT_ZAKLETY_MAX: "${PLAYERBOT_ZAKLETY_MAX:-100}"
       PLAYERBOT_ZAKLETY_MIN_LEVEL: "${PLAYERBOT_ZAKLETY_MIN_LEVEL:-100}"
       PLAYERBOT_ZAKLETY_MIN_HP: "${PLAYERBOT_ZAKLETY_MIN_HP:-20000}"
@@ -652,6 +658,9 @@ services:
       # every .env already carries, so no install runs on the upstream default.
       SEBAN_SESSION_SECRET: "${M2_SEBAN_SESSION_SECRET:-${M2_ADMINPAGE_PASSWORD:-change-this-before-public-use}}"
       SEBAN_COLLECTOR_INTERVAL: "${M2_SEBAN_COLLECTOR_INTERVAL:-300}"
+      # MT2009_PLUS_PVPFAN_V1: the PVP Fan page shows the game's switch and keeps to its per-war cap (pvpfan.py).
+      M2_PVPFAN: "${M2_PVPFAN:-1}"
+      M2_PVPFAN_MAX_CATEGORY: "${M2_PVPFAN_MAX_CATEGORY:-500}"
       # MT2009_PLUS_DB_LOG_RETENTION_V1: days of the log database the collector
       # keeps (0 = all). MT2009_PLUS_BOT_LOG_TRIM_V1 (the owner, 6 November
       # 2026): 3 days when the .env has no value; .env.example ships 3 too.

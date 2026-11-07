@@ -62,7 +62,9 @@ RUN_EVERY, RUN_AGAIN, FLAG_CHECK = 300, 20, 15
 LOCK = "seban_sm_grants"
 RUN_NOW_KEY, LAST_RUN_KEY, LAST_SUMMARY_KEY, LAST_ERROR_KEY = (
     "sm_grants_run_now", "sm_grants_last_run", "sm_grants_last_summary", "sm_grants_last_error")
-BOT_ACCOUNT = "LEFT(a.login,10)='playerbot_'"
+# MT2009_PLUS_PVPFAN_V1: never the PVP Fan characters (playerbot_pf..., pvpfan.py) - and as status BLOCK accounts they
+# never meet the people's tiers either (a.status = 'OK').
+BOT_ACCOUNT = "(LEFT(a.login,10)='playerbot_' AND LEFT(a.login,12)<>'playerbot_pf')"
 TZ_NAME = os.environ.get("SM_GRANT_TZ", "Europe/Warsaw")
 
 # The same statements as mariadb/playerbot/sm_grants.sql (apply.sh runs that one every start).

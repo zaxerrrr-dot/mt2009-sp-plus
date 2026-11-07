@@ -82,6 +82,15 @@ Runy Wykuwania botów (/bot_runa, Wysoki GM; boty tego rdzenia)
 <runa>: vnum 79605-79659, <rodzaj>:<1-5> (pasy bron zbroja pozostale akcesoria ksiegi zestbron zesthelm zestzbroja rekawice zwierzaki) albo auto:<1-5> - rodzaj, którego bot sam używa
 Flagi (/e): m2_bot_runes_off 1 - boty nie używają/ulepszają run; m2_bot_rune_rewards_on 1 - nagrody z wyzwań; m2_bot_rune_exchange_on 1 - wymiana botów u Yu-Hwana
 
+PVP Fan – wojny botów (/pvpfan, Wysoki GM; kategorie w panelu Seban: Wydarzenia → PVP Fan)
+/pvpfan - lista kategorii (kod, stan, mapa, kanał, postacie)
+/pvpfan start <kod> - boty kategorii wchodzą na arenę, dostają ekwipunek i czekają
+/pvpfan gotowi <kod> - odliczanie i walka do ostatniego bota jednej drużyny (też: ready)
+/pvpfan stop <kod> - koniec w każdej chwili, boty wychodzą
+/pvpfan status <kod> - stan, drużyny, żywi, zabójstwa
+/pvpfan tu <kod> [nr drużyny] - środek areny (albo punkt drużyny) z twojej pozycji
+/pvpfan pozycja - zapisuje twoją pozycję dla panelu („Użyj pozycji GM”)
+
 /setsk <ID-skilla> 59 - ustawiamy skill na P
 
 Sura BM - skille P
@@ -447,6 +456,7 @@ Niektóre polecenia są techniczne, deweloperskie albo zależą od włączonej f
 /bot_despawn  — do_playerbot_despawn
 /bot_despawn_many  — do_playerbot_despawn_many
 /bot_runa  — do_bot_runa
+/pvpfan  — do_pvpfan
 /bot_spawn  — do_playerbot_spawn
 /bot_spawn_many  — do_playerbot_spawn_many
 /botadmin_achievements  — do_botadmin_achievements

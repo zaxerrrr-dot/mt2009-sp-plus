@@ -16,6 +16,8 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		~CPlayerBotManager();
 
 		bool	Spawn(DWORD dwPlayerID, BYTE bEmpire);
+		// MT2009_PLUS_PVPFAN_V1: a PvP-fan character of the panel's (playerbot_pvpfan.h), with its own account.
+		bool	SpawnPvpFan(DWORD dwPlayerID, BYTE bEmpire, DWORD dwAccountID, const char* szLogin);
 		size_t	SpawnRegistered(size_t count, BYTE bEmpire);
 		// The operator's medal droppers, scheduled on top of the population from
 		// the far end of a kingdom's registry, and the level their experience
@@ -392,6 +394,10 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// The companion SpawnSidekick is loading, which Spawn lets past the
 		// population's rules and nothing else does.
 		DWORD			m_dwSpawningSidekick = 0;
+		// MT2009_PLUS_PVPFAN_V1: the PvP-fan character SpawnPvpFan is loading, and its account.
+		DWORD			m_dwSpawningPvpFan = 0;
+		DWORD			m_dwPvpFanAccountID = 0;
+		std::string		m_strPvpFanLogin;
 		std::map<DWORD, DWORD>	m_mapLifeSessionEnd;
 		std::map<DWORD, DWORD>	m_mapLifeRestEnd;
 		std::set<DWORD>		m_setLifeReturning;
