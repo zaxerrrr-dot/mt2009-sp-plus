@@ -52,9 +52,22 @@ INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, 
 --    300 000 + 10 000 a level over 105 .. 450 000 + 15 000; Metin Lasu 22 000-38 000) - the same values, so whichever
 --    of the two steps runs first, the other changes nothing. Only over the package's zero.
 UPDATE world.mob_proto SET
-       gold_min = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 190, 385, 390, 590, 800),
-       gold_max = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 285, 578, 585, 885, 1200)
+       gold_min = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 825, 1670, 1690, 2560, 3470),
+       gold_max = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 1240, 2505, 2535, 3840, 5205)
  WHERE vnum IN (6401, 6402, 6403, 6404, 6406) AND gold_max = 0;
+-- MT2009_PLUS_ZAKLETY_YANG_15_V1 (the owner, 7 November 2026: "w Zakletym Lesie musi leciec okolo 1,5x razy wiecej
+--    yang niz w Grocie Wygnancow v2" - per kill, his choice): the five monsters of the forest (only here and in Erebu's
+--    summons - no other map, group or quest spawns them) x4.34, the rank curve kept (max = 1.5 x min). Expected yang
+--    of a kill (the rank's drop percent x the mean of gold_min/max; the rates, the x5 and the level fade the same on
+--    both maps): Grota V2 (73, its regen's group_group mix of 2401-2404 / 2411-2414) 268.9, the forest (Owsap's 346
+--    group lines, 6311-6317) 93.0 -> 403.4 = 1.50x. The Metins, Wladca En-Tai, Bagjanamu, Jotun Thrym and the Silni
+--    En-Tai (Metin Lasu's, 0 yang) unchanged. Over the original values only, so a value the database editor set stays
+--    (a fresh row gets the new values from the step above).
+UPDATE world.mob_proto SET
+       gold_min = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 825, 1670, 1690, 2560, 3470),
+       gold_max = ELT(FIELD(vnum, 6401, 6402, 6403, 6404, 6406), 1240, 2505, 2535, 3840, 5205)
+ WHERE (vnum, gold_min, gold_max) IN ((6401, 190, 285), (6402, 385, 578), (6403, 390, 585), (6404, 590, 885),
+                                      (6406, 800, 1200));
 UPDATE world.mob_proto
    SET gold_min = IF(`rank` >= 5, 300000 + (GREATEST(level, 105) - 105) * 10000, 150000 + (GREATEST(level, 103) - 103) * 5000),
        gold_max = IF(`rank` >= 5, 450000 + (GREATEST(level, 105) - 105) * 15000, 220000 + (GREATEST(level, 103) - 103) * 7500)
