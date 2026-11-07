@@ -212,7 +212,7 @@ namespace playerbot_dgrun
 		// called, six asked for, six at the entrance, a healing Shaman always - under the default gates (level 2: 4 fit,
 		// level 3: 5 fit and a healer). The test's 48 h (5-7 November, game3, BOT_GNOLLE run end / gate lines): parties of
 		// 6 with a Shaman won 13 of 16 (the one gate-3 pass with 3 fit aside, 12 of 16 under 4/5); parties of 3-5 won 3 of
-		// 9 with the gates down to 3/3 and 2 of 16 under 4/5 (the five of 3 all turned back at the level-2 gate). A death on
+		// 8 with the gates down to 3/3 and 2 of 18 under 4/5 (the five of 3 all turned back at the level-2 gate). A death on
 		// levels 2-3 is final, so the sixth member is what carries a party through both gates. The old rule: GNOLLE_SMALL_RULE
 		// (event flag m2_bot_gnolle_six_off 1 - the engine sets GnolleSixOff()).
 		{ "gnolle", 120, 6, 6, 6, true },
