@@ -952,6 +952,8 @@ namespace
 
 	// MT2009_PLUS_BOT_MATS_FLOW_V1: playerbot_mats_flow.h - the map of a material farm order (Zab Orka).
 	long GetPlayerBotMatsFarmMap(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_PET_MATS_V1: playerbot_petmat.h - the map of a pet keeper's material hunt.
+	long GetPlayerBotPetMatHuntMap(LPCHARACTER ch);
 
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
@@ -1032,6 +1034,13 @@ namespace
 			const long errandMap = GetPlayerBotGuildErrandMap(ch);
 			if (errandMap != 0 && IsPlayerBotFrontierMapIndex(errandMap) && IsPlayerBotMapHostedHere(errandMap))
 				return errandMap;
+		}
+		// MT2009_PLUS_BOT_PET_MATS_V1: a pet keeper short of a material of its pet's next step that the counters do not
+		// hold hunts where a monster of it lives (playerbot_petmat.h).
+		{
+			const long petMap = GetPlayerBotPetMatHuntMap(ch);
+			if (petMap != 0)
+				return petMap;
 		}
 		// MT2009_PLUS_BOT_MATS_FLOW_V1: a material the bot's anvil lacks and the market will not sell it is farmed where
 		// the drop knowledge found it - while its level still gets the drop (playerbot_mats_flow.h).

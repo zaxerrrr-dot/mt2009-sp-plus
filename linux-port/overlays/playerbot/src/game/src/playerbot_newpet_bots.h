@@ -46,6 +46,37 @@ namespace
 {
 	DWORD GetPlayerBotShopAskingPrice(LPITEM item);
 	bool PlayerBotHasGrandMasterToTrain(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_PET_MATS_V1: playerbot_petmat.h (later) - its switches, a hunt's source, the evolutions' count.
+	enum EPlayerBotPetMatPart
+	{
+		PETMAT_HUNT = 0,
+		PETMAT_SELL,
+		PETMAT_DROP,
+		PETMAT_PART_COUNT
+	};
+	bool IsPlayerBotPetMatOn(int part);
+	bool HasPlayerBotPetMatHuntSource(LPCHARACTER ch, DWORD vnum);
+	void NotePlayerBotPetMatEvolved();
+	void NotePlayerBotPetMatListed(LPCHARACTER ch, DWORD vnum, int units);
+
+	// MT2009_PLUS_BOT_PET_MATS_V1: every material an evolution of the growth pet takes (stages 2-6, growth_pet_data.h).
+	bool IsPlayerBotNewPetEvolutionMaterialVnum(DWORD vnum)
+	{
+		static std::set<DWORD> s_set;
+		static bool s_bBuilt = false;
+		if (!s_bBuilt)
+		{
+			s_bBuilt = true;
+			for (int stage = 2; stage <= 6; ++stage)
+			{
+				std::vector<std::pair<DWORD, int> > mats;
+				if (growth_pet::GetEvolutionMaterials(stage, mats))
+					for (size_t i = 0; i < mats.size(); ++i)
+						s_set.insert(mats[i].first);
+			}
+		}
+		return s_set.count(vnum) != 0;
+	}
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item);
 
 	const int PLAYERBOT_NEWPET_SHARE_PERCENT = 50;
@@ -376,7 +407,13 @@ namespace
 				continue;
 			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(mats[i].first);
 			if (!entry || (int)entry->dwSupplyUnits < missing)
+			{
+				// MT2009_PLUS_BOT_PET_MATS_V1: what the counters lack the keeper hunts (playerbot_petmat.h) - it buys the
+				// rest meanwhile
+				if (HasPlayerBotPetMatHuntSource(ch, mats[i].first))
+					continue;
 				return false;
+			}
 		}
 		return true;
 	}
@@ -575,7 +612,26 @@ namespace
 		if (!ch || IsPlayerBotNewPetGoodsVnum(vnum) || !IsPlayerBotNewPetKeeper(ch) || IsPlayerBotNewPetCompanion(ch))
 			return 0;
 		const TPlayerBotNewPetView* v = GetPlayerBotNewPetView(ch);
-		return v ? GetPlayerBotNewPetMaterialNeed(ch, *v, vnum) : 0;
+		if (!v)
+			return 0;
+		const int open = GetPlayerBotNewPetMaterialNeed(ch, *v, vnum);
+		// MT2009_PLUS_BOT_PET_MATS_V1 (sell): the pet's next steps - the next stage's materials however far its level is,
+		// and those of the stages after it whose level the bot is within PLAYERBOT_NEWPET_NEAR_LEVELS of (the champion
+		// step only once it is the next); the rest of a stack is the counter's
+		if (!IsPlayerBotPetMatOn(PETMAT_SELL) || !v->hasPet || !v->nextStage || !IsPlayerBotPetGrowOn(PETGROW_EVOLVE))
+			return open;
+		int keep = 0;
+		for (int stage = v->nextStage; stage <= 6; ++stage)
+		{
+			if (stage > v->nextStage && (stage >= 6 || growth_pet::EvolutionLevel(stage) > (int)ch->GetLevel() + PLAYERBOT_NEWPET_NEAR_LEVELS))
+				break;
+			std::vector<std::pair<DWORD, int> > mats;
+			if (growth_pet::GetEvolutionMaterials(stage, mats))
+				for (size_t i = 0; i < mats.size(); ++i)
+					if (mats[i].first == vnum)
+						keep += mats[i].second;
+		}
+		return std::max(open, keep);
 	}
 
 	int GetPlayerBotNewPetGoodsForSale(LPCHARACTER ch, LPITEM item)
@@ -891,6 +947,7 @@ namespace
 			if (ready && growth_pet::Evolve(ch))
 			{
 				++s_kPlayerBotNewPetStats.evolved;
+				NotePlayerBotPetMatEvolved();	// MT2009_PLUS_BOT_PET_MATS_V1
 				sys_log(0, "PLAYERBOT_NEWPET: evolved pid=%u name=%s pet=%u stage=%d", ch->GetPlayerID(), ch->GetName(),
 						v.pet.id, v.nextStage);
 				return true;

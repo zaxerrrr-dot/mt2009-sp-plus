@@ -1550,6 +1550,11 @@ namespace
 		if (mt2009_seonhae::IsShardVnum(item->GetVnum()))
 			return GetPlayerBotSeonHaeShardKeep(ch, item->GetVnum());
 #endif
+		// MT2009_PLUS_BOT_PET_MATS_V1 (sell): a growth pet's evolution material keeps no "one of anything" - what the anvil
+		// does not take is the counter's (a keeper's own steps: GetPlayerBotStallBaseKeep, GetPlayerBotNewPetStageKeep)
+		if (IsPlayerBotNewPetEvolutionMaterialVnum(item->GetVnum()) && !IsPlayerBotNewPetGoodsVnum(item->GetVnum()) &&
+				IsPlayerBotPetMatOn(PETMAT_SELL))
+			return IsPlayerBotTradeableMaterial(item) ? GetPlayerBotRefineMaterialReserve(ch, item->GetVnum()) : 0;
 		if (IsPlayerBotTradeableMaterial(item))
 			return std::max(1, GetPlayerBotRefineMaterialReserve(ch, item->GetVnum()));
 		if (item->GetType() == ITEM_TREASURE_KEY)

@@ -26,6 +26,11 @@ namespace
 	// MT2009_PLUS_BOT_DROPKNOW_V1 (playerbot_dropknow.h, later in this unit): a monster that drops one of these (its whole
 	// drop, the wiki's tables) or the bot's farm order.
 	bool IsPlayerBotDropKnowWantedMob(LPCHARACTER ch, DWORD race, const std::set<DWORD>* wanted);
+	// MT2009_PLUS_BOT_PET_MATS_V1 (playerbot_petmat.h, later): a pet keeper's material hunt - its monsters, its material.
+	bool IsPlayerBotPetMatHuntRace(LPCHARACTER ch, DWORD race);
+	bool IsPlayerBotPetMatHuntTarget(LPCHARACTER ch, LPCHARACTER mob);
+	bool IsPlayerBotPetMatHunting(LPCHARACTER ch);
+	DWORD GetPlayerBotPetMatHuntVnum(LPCHARACTER ch);
 
 	struct TPlayerBotPartyStrength
 	{
@@ -1283,6 +1288,10 @@ namespace
 			else if (IsPlayerBotDropKnowWantedMob(ch, candidate->GetRaceNum(), wantedDrops))
 				context.activeMaterialTarget = true;
 		}
+		// MT2009_PLUS_BOT_PET_MATS_V1: the monsters of a pet keeper's material hunt, at any level under it - the drop of a
+		// needed item is not faded for a bot (server-patches/botneeddrop)
+		if (!context.activeMaterialTarget && IsPlayerBotPetMatHuntTarget(ch, candidate))
+			context.activeMaterialTarget = true;
 
 		if (huntM2Bestials && candidate->IsMonster() &&
 				(candidate->GetRaceNum() == 533 || candidate->GetRaceNum() == 534))
@@ -1870,9 +1879,13 @@ namespace
 						m_bestHuntDistance = huntDistance;
 					}
 				}
-				const DWORD drop = mob->GetMobDropItemVnum();
+				DWORD drop = mob->GetMobDropItemVnum();
+				// MT2009_PLUS_BOT_PET_MATS_V1: a carrier of the pet keeper's hunted material, at any level under the bot
+				const bool petMat = IsPlayerBotPetMatHuntTarget(m_seeker, mob);
+				if (petMat)
+					drop = GetPlayerBotPetMatHuntVnum(m_seeker);
 				// MT2009_PLUS_BOT_DROPKNOW_V1: or another of its drops (the drop knowledge, its farm order)
-				if ((drop == 0 || m_wanted.find(drop) == m_wanted.end()) &&
+				else if ((drop == 0 || m_wanted.find(drop) == m_wanted.end()) &&
 						!IsPlayerBotDropKnowWantedMob(m_seeker, mob->GetRaceNum(), &m_wanted))
 					return;
 				// Only a carrier the fight at the end of the walk will take.
@@ -1891,7 +1904,7 @@ namespace
 				// herb errand handed in 18 specimens in that hour. What the
 				// level curve leaves out is bought on the market or dropped
 				// where the bot hunts.
-				if (!CanPlayerBotFarmMaterialFrom(m_seeker, mob))
+				if (!petMat && !CanPlayerBotFarmMaterialFrom(m_seeker, mob))
 					return;
 				const int distance = DISTANCE_APPROX(m_seeker->GetX() - mob->GetX(),
 						m_seeker->GetY() - mob->GetY());
@@ -1969,7 +1982,8 @@ namespace
 		DWORD huntMob = GetPlayerBotDesiredQuestMobVnum(ch, state, dwNow);
 		if (huntMob < 500)
 			huntMob = 0;
-		if (wanted.empty() && huntMob == 0)
+		// MT2009_PLUS_BOT_PET_MATS_V1: or a pet keeper's material hunt
+		if (wanted.empty() && huntMob == 0 && !IsPlayerBotPetMatHunting(ch))
 		{
 			state.dwNextMaterialScanTime = dwNow + PLAYERBOT_MATERIAL_SCAN_INTERVAL;
 			return false;
