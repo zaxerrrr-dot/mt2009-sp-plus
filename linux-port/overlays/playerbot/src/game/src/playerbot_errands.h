@@ -229,7 +229,14 @@ namespace
 			++s_kPlayerBotErrandStats.releasedAgain;
 			return true;
 		}
-		const char* why = kind == PLAYERBOT_ERRAND_POTION ? "urgent" :
+		// MT2009_PLUS_BOT_STAND_ERRAND_NOW_V1 (the owner, 7 November 2026: "niech boty z ch2 zmieniaja channel na ch1 i
+		// tam wystawiaja sklepy - przeciez tak bylo to zaprojektowane"): its own stand moves a bot at once, as a potion
+		// (the batch held ~950 bots of channel 2 with their stand alone, ~20 let through in 10 minutes; their goods never
+		// reached a counter). The stand's own pass already waits its 45-75 minutes between services. Event flag
+		// m2_bot_stand_errand_batch 1: the stand waits in the batch again.
+		const bool standNow = kind == PLAYERBOT_ERRAND_STAND &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_stand_errand_batch") != 1;
+		const char* why = kind == PLAYERBOT_ERRAND_POTION ? "urgent" : standNow ? "stand" :
 				open >= GetPlayerBotErrandBatchMin() ? "batch" :
 				oldest >= GetPlayerBotErrandBatchWaitMs() ? "wait" : NULL;
 		if (!why)
@@ -242,7 +249,7 @@ namespace
 			return false;
 		}
 		b.dwReleasedAt = now;
-		if (why[0] == 'u')
+		if (why[0] == 'u' || why[0] == 's')
 			++s_kPlayerBotErrandStats.releasedUrgent;
 		else if (why[0] == 'b')
 			++s_kPlayerBotErrandStats.releasedBatch;

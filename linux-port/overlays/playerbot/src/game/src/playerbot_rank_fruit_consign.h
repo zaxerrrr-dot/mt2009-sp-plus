@@ -122,8 +122,13 @@ namespace
 		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
 				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MERCHANT)
 			return false;
-		if (!PlayerBotHasCounter(ch) || IsPlayerBotArezzoDungeonCohortPID(ch->GetPlayerID()))
+		if (IsPlayerBotArezzoDungeonCohortPID(ch->GetPlayerID()))
 			return true;
+		// MT2009_PLUS_BOT_STAND_ERRAND_NOW_V1: a bot of another channel moves to the shop channel for its own stand
+		// (playerbot_errands.h) and lists there itself; m2_bot_fruit_consign_other_channels 1 makes it a courier again.
+		if (!PlayerBotHasCounter(ch))
+			return g_bChannel == playerbot_channel_rules::SHOP_CHANNEL ||
+					quest::CQuestManager::instance().GetEventFlag("m2_bot_fruit_consign_other_channels") == 1;
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		return !HasPlayerBotOfflineShop(ch) && IsPlayerBotBagUnderPressure(ch);
 #else
