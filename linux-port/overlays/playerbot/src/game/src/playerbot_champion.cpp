@@ -60,11 +60,17 @@ namespace champion
 		return s_aExpTable[iLevel];
 	}
 
+	// MT2009_PLUS_CHAMPION_EXP_RATE_V2 (the owner, 7 November 2026: "dla botow x100, dla graczy x50"): unset = 5000
+	// (x50) for everybody; conqueror_exp_rate_bot multiplies it for bots, unset = 200 (x2 more: x100 in all). A value set
+	// in the panel or by a GM (the event flags) still wins.
+	const int CHAMPION_EXP_RATE_DEFAULT = 5000;
+	const int CHAMPION_EXP_RATE_BOT_DEFAULT = 200;
+
 	int ExpRatePct()
 	{
 		const int iRate = quest::CQuestManager::instance().GetEventFlag("conqueror_exp_rate");
 		if (iRate <= 0)
-			return 100;
+			return CHAMPION_EXP_RATE_DEFAULT;
 		return MIN(iRate, 100000);
 	}
 
@@ -74,7 +80,7 @@ namespace champion
 	{
 		const int iRate = quest::CQuestManager::instance().GetEventFlag("conqueror_exp_rate_bot");
 		if (iRate <= 0)
-			return 100;
+			return CHAMPION_EXP_RATE_BOT_DEFAULT;
 		return MIN(iRate, 100000);
 	}
 
