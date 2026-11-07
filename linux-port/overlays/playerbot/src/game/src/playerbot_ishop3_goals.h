@@ -173,10 +173,14 @@ namespace
 	// no HP / defence line - an add (a piece with room for a line) or a change (a piece with lines, none of them HP /
 	// defence) is urgent: it may take the next day's seventh of the current week. The weekly grant is not raised.
 
+	bool IsPlayerBotShortOfZakletyHp(LPCHARACTER ch);	// MT2009_PLUS_BOT_ZAKLETY_HP_URGENT_V1 (playerbot_yohara_bots.h)
+
 	bool IsPlayerBotHp70BonusUrgent(LPCHARACTER ch, bool add)
 	{
 		long long median = 0;
-		if (!ch || !IsPlayerBotUnderHpMedian(ch, &median))
+		// MT2009_PLUS_BOT_ZAKLETY_HP_URGENT_V1: or under Zaklety Las's health gate (its band).
+		const bool forest = ch && IsPlayerBotShortOfZakletyHp(ch);
+		if (!ch || (!IsPlayerBotUnderHpMedian(ch, &median) && !forest))
 			return false;
 		static const BYTE s_wears[] = { WEAR_BODY, WEAR_SHIELD, WEAR_NECK };
 		for (size_t i = 0; i < sizeof(s_wears) / sizeof(s_wears[0]); ++i)
@@ -194,9 +198,9 @@ namespace
 			if (hp || (add ? lines >= PLAYERBOT_BONUS_MAX_LINES || !CanPlayerBotItemRollNewLine(item) : lines <= 0))
 				continue;
 			PlayerBotLogThrottled("ishop3_hp70_urgent", get_dword_time(),
-					"PLAYERBOT_ISHOP3: hp70 urgent pid=%u name=%s level=%u hp=%d median=%lld wear=%u vnum=%u lines=%d what=%s",
+					"PLAYERBOT_ISHOP3: hp70 urgent pid=%u name=%s level=%u hp=%d median=%lld wear=%u vnum=%u lines=%d what=%s forest=%d",
 					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), (int)ch->GetMaxHP(), median,
-					(unsigned int)s_wears[i], item->GetVnum(), lines, add ? "bonus_add" : "bonus_change");
+					(unsigned int)s_wears[i], item->GetVnum(), lines, add ? "bonus_add" : "bonus_change", forest ? 1 : 0);
 			return true;
 		}
 		return false;

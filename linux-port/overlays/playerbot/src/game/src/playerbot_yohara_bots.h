@@ -1263,6 +1263,8 @@ namespace
 		return p.lMap;
 	}
 
+	bool IsPlayerBotShortOfZakletyHp(LPCHARACTER ch);	// MT2009_PLUS_BOT_ZAKLETY_HP_URGENT_V1 (below)
+
 	// The frontier draw's answer for the owner's route (GetPlayerBotFrontierMapForLevelRaw),
 	// or 0 for the usual draw.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter)
@@ -1352,24 +1354,29 @@ namespace
 		const long loot = GetPlayerBotYoharaLootPlan(ch, dwNow);
 		if (loot != 0)
 			return loot;
-		// The Time Rift: three in four of the band, while there is room.
+		// MT2009_PLUS_BOT_YOHARA_BAND_ALL_V1 (the owner, 7 November 2026: SZC "to mapa, na ktorej sie expi od 110 w prywatnych
+		// PT 2-osobowych. I tylko tutaj sie expi"; the forest from 95): every bot of the band may go - the hash that kept
+		// a quarter of 110-119 from the Time Rift and a third of 100-109 from the forest is gone. Event flag
+		// m2_bot_yohara_band_all_off 1: the old hashes.
+		const bool bandAll = quest::CQuestManager::instance().GetEventFlag("m2_bot_yohara_band_all_off") == 0;
+		// The Time Rift: the band (three in four before), while there is room.
 		if (level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL && cfg.szcMax > 0 &&
 				s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SZC] < cfg.szcMax &&
 				!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_SZC) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
-				PlayerBotNavHash(pid ^ 0x535a4331U) % 4U != 0)
+				(bandAll || PlayerBotNavHash(pid ^ 0x535a4331U) % 4U != 0))
 			return PLAYERBOT_MAP_SZC_PLATEAU;
-		// Zaklety Las: two in three of the band, while there is room (and a
+		// Zaklety Las: the band (two in three before - MT2009_PLUS_BOT_YOHARA_BAND_ALL_V1), while there is room (and a
 		// bot already on its way through the temple keeps it).
 		const bool inTemple = s_mapPlayerBotYoharaTemple.count(pid) != 0;
 		// MT2009_PLUS_BOT_YOHARA_FIX_V1: strong enough for the forest's packs (PLAYERBOT_ZAKLETY_MIN_HP).
 		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < cfg.zakletyMinHp)
-			PlayerBotLogThrottled("zaklety_weak", dwNow, "PLAYERBOT_YOHARA: too weak for the forest pid=%u name=%s level=%d max_hp=%d need=%d",
-					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp);
+			PlayerBotLogThrottled("zaklety_weak", dwNow, "PLAYERBOT_YOHARA: too weak for the forest pid=%u name=%s level=%d max_hp=%d need=%d hp_urgent=%d",
+					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp, IsPlayerBotShortOfZakletyHp(ch) ? 1 : 0);
 		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
 				ch->GetMaxHP() >= cfg.zakletyMinHp && IsPlayerBotOchaoHosted() &&
 				(inTemple || (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax &&
 				 !IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY))) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
-				PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0)
+				(bandAll || PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0))
 			return PLAYERBOT_MAP_ZAKLETY;
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole (80) and Kraina Gigantow (70) on game2 - the
 		// quarter of the draw each that playerbot_travel.h gives them on a core hosting them (the same
@@ -1388,6 +1395,110 @@ namespace
 				return PLAYERBOT_MAP_GIANTLAND;
 		}
 		return 0;
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_BAND_KEEP_V1 (7 November 2026, playerbot_travel.h's frontier exit): the frontier's "out of
+	// band" is not asked of a Sung Ma resident on a Sung Ma map (the Loch included), of a guest of Tajemniczy Loch, nor of
+	// a bot on a dungeon run - ManagePlayerBotSungmaResident, the Loch's excursion (playerbot_yohara_guides.h) and the
+	// run take them out. Event flag m2_bot_yohara_band_keep_off 1: the old exit. Log: PLAYERBOT_BANDKEEP (throttled).
+	unsigned int s_auPlayerBotBandKeepHeld[3] = { 0, 0, 0 };	// the Loch, a Sung Ma map, a dungeon run
+
+	bool IsPlayerBotFrontierBandExitHeld(LPCHARACTER ch, long mapIndex, long want, DWORD dwNow)
+	{
+		if (!ch || quest::CQuestManager::instance().GetEventFlag("m2_bot_yohara_band_keep_off") != 0)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		int why = -1;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (IsPlayerBotYoharaLochGuest(pid, mapIndex))
+			why = 0;
+#endif
+		if (why < 0 && IsPlayerBotSungmaBotMap(mapIndex) && IsPlayerBotSungmaResidentPID(pid))
+			why = 1;
+		if (why < 0 && IsPlayerBotOnDungeonRun(pid))
+			why = 2;
+		if (why < 0)
+			return false;
+		++s_auPlayerBotBandKeepHeld[why];
+		static const char* const s_aszWhy[3] = { "loch", "sungma", "dungeon_run" };
+		PlayerBotLogThrottled("yohara_band_keep", dwNow,
+				"PLAYERBOT_BANDKEEP: frontier exit held pid=%u name=%s level=%u champion=%d map=%ld want=%ld why=%s "
+				"held_loch=%u held_sungma=%u held_dgrun=%u",
+				pid, ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch), mapIndex, want, s_aszWhy[why],
+				s_auPlayerBotBandKeepHeld[0], s_auPlayerBotBandKeepHeld[1], s_auPlayerBotBandKeepHeld[2]);
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_ZAKLETY_HP_URGENT_V1 (7 November 2026): the forest's health gate (PLAYERBOT_ZAKLETY_MIN_HP) stays;
+	// a bot of the forest's band under it counts as short of health for the ItemShop's HP lines (IsPlayerBotHp70BonusUrgent,
+	// playerbot_ishop3_goals.h - the add or the change of an armour, shield or necklace with no HP / defence line may take
+	// the next day's seventh), as one under its band's median does - the existing way to more health, not a pair (the
+	// forest has no pairing: its parties are formed on the map). 33 bots of 8 200-19 700 HP were turned away in ~40 h.
+	// Event flag m2_bot_zaklety_hp_urgent_off 1: the median alone.
+	bool IsPlayerBotShortOfZakletyHp(LPCHARACTER ch)
+	{
+		if (!ch || quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_hp_urgent_off") != 0)
+			return false;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		const int level = ch->GetLevel();
+		return cfg.zakletyMinHp > 0 && level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL &&
+				ch->GetMaxHP() < cfg.zakletyMinHp;
+	}
+
+	// MT2009_PLUS_BOT_SZC_PAIR_V1 (7 November 2026, playerbot_dungeon_runs.h's call): a Time Rift resident alone of its
+	// kingdom on the plateau for PLAYERBOT_SZC_PAIR_ALONE_MS gets a partner - a Sung Ma Champion of its kingdom on this
+	// core, standing free on its own map (no errand, no walk, no Loch, no trip home, health 70%+). The pair's run is the
+	// usual one; after it the Champion's resident flow takes it back to its map. Event flag m2_bot_szc_pair_off 1: none.
+	unsigned int s_uPlayerBotSzcPairOffered = 0;
+
+	bool IsPlayerBotSzcPairOn()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_pair_off") == 0;
+	}
+
+	DWORD GetPlayerBotYoharaSzcAloneMs(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, TPlayerBotYoharaResident>::const_iterator r = s_mapPlayerBotYoharaResident.find(pid);
+		if (r == s_mapPlayerBotYoharaResident.end() || r->second.iPurpose != YOHARA_PURPOSE_SZC)
+			return 0;
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+		if (!ch || ch->GetMapIndex() != PLAYERBOT_MAP_SZC_PLATEAU)
+			return 0;
+		const DWORD from = r->second.dwLastRun ? r->second.dwLastRun : r->second.dwArrived;
+		return from != 0 && (int)(dwNow - from) > 0 ? dwNow - from : 0;
+	}
+
+	bool IsPlayerBotSzcEscortFit(LPCHARACTER ch, DWORD dwNow)
+	{
+		(void)dwNow;
+		if (!ch || ch->IsDead() || !ch->IsItemLoaded() || (int)ch->GetLevel() < gPlayerMaxLevel || GetPlayerBotChampionLevel(ch) < 1)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		const TPlayerBotYoharaResident* r = FindPlayerBotYoharaResident(pid);
+		if (!r || r->iPurpose != YOHARA_PURPOSE_SUNGMA || IsPlayerBotYoharaLeaving(pid) || IsPlayerBotSungmaTradeVisitor(pid))
+			return false;
+		const long base = ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? ch->GetMapIndex() / 10000 : ch->GetMapIndex();
+		if (base != r->lMap)
+			return false;
+		std::map<DWORD, TPlayerBotSungmaBot>::const_iterator b = s_mapPlayerBotSungma.find(pid);
+		if (b != s_mapPlayerBotSungma.end() && (b->second.bErrand || b->second.dwWalkSince != 0))
+			return false;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (IsPlayerBotYoharaLochEntry(ch, PLAYERBOT_MAP_SUNGMA_LOCH))
+			return false;
+#endif
+		return (long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * 70;
+	}
+
+	void NotePlayerBotSzcEscortCalled(LPCHARACTER lone, LPCHARACTER escort, DWORD aloneMs, DWORD dwNow)
+	{
+		++s_uPlayerBotSzcPairOffered;
+		PlayerBotLogThrottled("szc_pair_offered", dwNow,
+				"BOT_SZC_PAIR: partner offered lone=%u name=%s level=%u empire=%u alone_s=%u partner=%u name=%s champion=%d map=%ld offered=%u",
+				lone ? lone->GetPlayerID() : 0, lone ? lone->GetName() : "-", lone ? (unsigned int)lone->GetLevel() : 0,
+				lone ? (unsigned int)lone->GetEmpire() : 0, aloneMs / 1000, escort ? escort->GetPlayerID() : 0,
+				escort ? escort->GetName() : "-", GetPlayerBotChampionLevel(escort), escort ? escort->GetMapIndex() : 0,
+				s_uPlayerBotSzcPairOffered);
 	}
 
 	bool IsPlayerBotYoharaBoundForZaklety(LPCHARACTER ch)

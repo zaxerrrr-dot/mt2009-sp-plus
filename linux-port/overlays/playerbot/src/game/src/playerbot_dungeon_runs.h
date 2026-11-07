@@ -204,6 +204,12 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
+	// MT2009_PLUS_BOT_SZC_PAIR_V1: playerbot_yohara_bots.h - a Time Rift resident's time alone on the plateau, and a
+	// Sung Ma Champion of this core free to be its partner (the call below).
+	DWORD GetPlayerBotYoharaSzcAloneMs(DWORD pid, DWORD dwNow);
+	bool IsPlayerBotSzcPairOn();
+	bool IsPlayerBotSzcEscortFit(LPCHARACTER ch, DWORD dwNow);
+	void NotePlayerBotSzcEscortCalled(LPCHARACTER lone, LPCHARACTER escort, DWORD aloneMs, DWORD dwNow);
 	int GetPlayerBotYoharaSzcParties();
 	// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: playerbot_yohara_bots.h's .env reader, for the core's run cap.
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi);
@@ -344,6 +350,8 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: after a Time Rift's hour the next one soon - "gdy czas minie,
 	// wychodzisz z lochu i wchodzisz kolejny raz".
 	const DWORD PLAYERBOT_DGRUN_SZC_REST_MIN_MS = 2 * 60 * 1000;
+	// MT2009_PLUS_BOT_SZC_PAIR_V1: alone this long on the plateau - a Champion of its kingdom is called as its partner.
+	const DWORD PLAYERBOT_SZC_PAIR_ALONE_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_DGRUN_SZC_REST_SPREAD_MS = 3 * 60 * 1000;
 	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's second floor, where d.jump_all puts the party (cells).
 	const long PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_X = 544;
@@ -4424,6 +4432,13 @@ namespace
 			return;
 		}
 		std::vector<playerbot_dgrun::TCand> buckets[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])][4];
+		// MT2009_PLUS_BOT_SZC_PAIR_V1 (7 November 2026): a Time Rift resident alone of its kingdom on the plateau (a party
+		// is one kingdom's - the engine's PERR_DIFFEMPIRE) waited PLAYERBOT_YOHARA_SZC_IDLE_MS for a second and went home
+		// ("szc_no_party", 19 in ~40 h). After PLAYERBOT_SZC_PAIR_ALONE_MS alone a Sung Ma Champion of its kingdom on this
+		// core, free on its own map, is called with it for the pair's run; the Champion goes back to its map after it
+		// (ManagePlayerBotSungmaResident). Event flag m2_bot_szc_pair_off 1: no partner. Log: BOT_SZC_PAIR.
+		std::vector<playerbot_dgrun::TCand> szcEscorts[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])][4];
+		const bool szcPairOn = IsPlayerBotSzcPairOn();
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
@@ -4446,7 +4461,11 @@ namespace
 			// MT2009_PLUS_BOT_YOHARA_SZC_V1: a bot the handover brought for the Time Rift goes, whatever
 			// its personality's share.
 			const bool szcResident = IsPlayerBotYoharaSzcResident(pid);
-			if (!szcResident && !playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state)))
+			// MT2009_PLUS_BOT_SZC_PAIR_V1: a Sung Ma Champion of this core may be a lone resident's partner (below),
+			// whatever its share - for the Time Rift only.
+			const bool dgGoer = szcResident || playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state));
+			const bool szcEscort = !szcResident && szcPairOn && IsPlayerBotSungmaResidentPID(pid);
+			if (!dgGoer && !szcEscort)
 				continue;
 			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's residents wait for their own party's call.
 			if (IsPlayerBotYoharaHydraResident(pid))
@@ -4481,6 +4500,16 @@ namespace
 				if (!slot.ok || !slot.empireOk[empire] || !playerbot_dgrun::InBand(level, slot.lvMin, slot.lvMax))
 					continue;
 				const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[i];
+				// MT2009_PLUS_BOT_SZC_PAIR_V1: a partner candidate kept aside (a lone resident's kingdom only, below).
+				if (def.bKind == DGRUN_KIND_SZC && szcEscort)
+				{
+					if ((!slot.panel || mt2009_dpanel::CooldownLeft(ch, *slot.panel) <= 0) && IsPlayerBotSzcEscortFit(ch, dwNow))
+						szcEscorts[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
+								ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
+					continue;
+				}
+				if (!dgGoer)
+					continue;
 				// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift only for those, and they only for it.
 				if ((def.bKind == DGRUN_KIND_SZC) != szcResident)
 					continue;
@@ -4549,6 +4578,37 @@ namespace
 					GetPlayerBotWukongGateSetting("wk_gate_level", 50, 1, 250), GetPlayerBotWukongGateSetting("wk_gate_atk_pct", 70, 1, 200),
 					GetPlayerBotWukongGateSetting("wk_gate_hp_pct", 70, 1, 200));
 		}
+		// MT2009_PLUS_BOT_SZC_PAIR_V1: the lone resident's partner - the Champion of the lowest Champion level (the
+		// Twierdza's and Dongan's spare most).
+		if (szcPairOn)
+			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
+			{
+				if (PLAYERBOT_DGRUN_DEFS[i].bKind != DGRUN_KIND_SZC)
+					continue;
+				for (int e = 1; e <= 3; ++e)
+				{
+					if (buckets[i][e].size() != 1 || szcEscorts[i][e].empty())
+						continue;
+					const DWORD aloneMs = GetPlayerBotYoharaSzcAloneMs(buckets[i][e][0].pid, dwNow);
+					if (aloneMs < PLAYERBOT_SZC_PAIR_ALONE_MS)
+						continue;
+					LPCHARACTER best = NULL;
+					size_t bestAt = 0;
+					for (size_t k = 0; k < szcEscorts[i][e].size(); ++k)
+					{
+						LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(szcEscorts[i][e][k].pid);
+						if (c && (!best || GetPlayerBotChampionLevel(c) < GetPlayerBotChampionLevel(best)))
+						{
+							best = c;
+							bestAt = k;
+						}
+					}
+					if (!best)
+						continue;
+					buckets[i][e].push_back(szcEscorts[i][e][bestAt]);
+					NotePlayerBotSzcEscortCalled(CHARACTER_MANAGER::instance().FindByPID(buckets[i][e][0].pid), best, aloneMs, dwNow);
+				}
+			}
 		if (forced == -1)
 			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
 				for (int e = 1; e <= 3; ++e)

@@ -177,6 +177,20 @@ namespace
 		return state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER ? PLAYERBOT_EXP_LOCK_MEDAL_DROPPER : 0;
 	}
 
+	// MT2009_PLUS_BOT_CHAMPION_PIN_V1 (7 November 2026): the death pin below is the 2.x grinder's - a bot at the world's
+	// top level or a Champion (conqueror level 1+) is never pinned: AFFECT_EXP_BLOCK zeroes its Champion exp too
+	// (playerbot_champion.cpp), and the Sung Ma maps pinned 264 of them at 120 (p90 3.7 h held, ~194 bot-hours without
+	// exp in a day). A pin it already carries is let go (the advance's state). Event flag m2_bot_champion_pin_off 1: as
+	// before. Log: PLAYERBOT_PERSONA: champion pin (throttled).
+	int GetPlayerBotChampionLevel(LPCHARACTER ch);	// playerbot_yohara_sungma.h
+	unsigned int s_uPlayerBotChampionPinSkipped = 0, s_uPlayerBotChampionPinLifted = 0;
+
+	bool IsPlayerBotChampionPinExempt(LPCHARACTER ch)
+	{
+		return ch && quest::CQuestManager::instance().GetEventFlag("m2_bot_champion_pin_off") == 0 &&
+				((int)ch->GetLevel() >= gPlayerMaxLevel || GetPlayerBotChampionLevel(ch) > 0);
+	}
+
 	// The level this bot holds at under the switch, or zero for none: a
 	// Conqueror holds nowhere, a Grinder at the lock it reached or, until it
 	// has reached one, at its tier's lock once it gets there. The lock reached
@@ -210,6 +224,23 @@ namespace
 		}
 		if (p.bAdvanced)
 			return 0;
+		// MT2009_PLUS_BOT_CHAMPION_PIN_V1: a death pin of a Champion / a bot at the top level let go.
+		if (p.bLockPinned && IsPlayerBotChampionPinExempt(ch))
+		{
+			++s_uPlayerBotChampionPinLifted;
+			PlayerBotLogThrottled("persona_champion_pin", get_dword_time(),
+					"PLAYERBOT_PERSONA: champion pin lifted pid=%u name=%s level=%u champion=%d lock=%u lifted=%u skipped=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch),
+					(unsigned int)p.bLockLevel, s_uPlayerBotChampionPinLifted, s_uPlayerBotChampionPinSkipped);
+			p.bAdvanced = true;
+			p.bLockLevel = 0;
+			p.bLockPinned = false;
+			p.dwNextAdvanceRoll = 0;
+			p.bHeldLock = 0;
+			p.dwHeldMs = 0;
+			p.bDirty = true;
+			return 0;
+		}
 		const BYTE level = (BYTE)std::min<int>(255, ch->GetLevel());
 		// The whole of the rule is playerbot_persona::ResolveGrinderLock
 		// (unit-tested): a pinned lock holds, the Grinders who never hold and
@@ -529,6 +560,17 @@ namespace
 			NotePlayerBotDistress(ch, state, dwNow);
 		if (!weak || !p.bAdvanced)
 			return;
+		// MT2009_PLUS_BOT_CHAMPION_PIN_V1: no death pin at the top level or for a Champion (above).
+		if (IsPlayerBotChampionPinExempt(ch))
+		{
+			++s_uPlayerBotChampionPinSkipped;
+			p.deaths = playerbot_persona::TDeathWindow();
+			PlayerBotLogThrottled("persona_champion_pin", dwNow,
+					"PLAYERBOT_PERSONA: champion pin skipped pid=%u name=%s level=%u champion=%d map=%ld lifted=%u skipped=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch),
+					ch->GetMapIndex(), s_uPlayerBotChampionPinLifted, s_uPlayerBotChampionPinSkipped);
+			return;
+		}
 		// MT2009_PLUS_BOT_LOCK_TIMEOUT_V1: no death pin in the grace after a lock given up.
 		if (p.dwPinGraceUntil != 0 && (int)(dwNow - p.dwPinGraceUntil) < 0)
 		{

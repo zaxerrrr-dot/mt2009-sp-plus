@@ -1430,6 +1430,8 @@
 		unsigned int errandPotions = 0, errandElixirs = 0;
 		unsigned int tidies = 0, tidySold = 0, tidyStillFull = 0;
 		int tidyFreed = 0;
+		unsigned int goodsSold = 0;	// MT2009_PLUS_BOT_SUNGMA_BAG_GOODS_V1: pieces
+		long long goodsGold = 0;
 		unsigned int m1Buy = 0, m1Counter = 0;
 		unsigned int m1Refused[5] = {};	// bag, craft, goods, shop, routine (looks that would have gone)
 	};
@@ -1455,6 +1457,88 @@
 		return need;
 	}
 
+	// MT2009_PLUS_BOT_SUNGMA_BAG_GOODS_V1 (7 November 2026): the tidy above sells junk only, and a Sung Ma bot's bag is full
+	// of goods - spare weapons and armour of +5/+6 held for its counter (the junk rule's keeps: a family's best two, a
+	// valuable piece, a bonus piece), and its counter stands in its first village where it never goes for a sale (the
+	// owner, 31 October: home only to buy). 328 bots with a full bag in 2 h on game3 (Dongan 1 169 lines, Zejscie 823),
+	// tidy_still_full 162: 130+ bag cells of +5/+6 gear and Will talismans in one bag (P0klikash2). Now, with no free
+	// column of three left after the junk (or fewer than PLAYERBOT_SUNGMA_GOODS_FREE cells free), the cheapest of those
+	// goods by their counter price go to the merchant where the bot stands (the merchant's price, as the junk's) until the
+	// column and the cells are free - at most PLAYERBOT_SUNGMA_GOODS_SALE_MAX a tidy. Never: worn, locked, a piece kept
+	// for itself (its next tier, a wearable upgrade, its Yohara set, its second element set), bound, a policy's, a Stalki,
+	// a sash or Cor, a craft's, an alchemist's, a gambler's, a young heroes' weapon, a talisman (ARMOR_PENDANT - the Will
+	// talismans are Mistrz Chi's), arrows. Event flag m2_bot_sungma_goods_sale_off 1: junk only, as before.
+	// Log: PLAYERBOT_SUNGMA: bag goods sold (throttled), goods_sold / goods_gold in "PLAYERBOT_SUNGMA: trips".
+	const int PLAYERBOT_SUNGMA_GOODS_FREE = 12;
+	const int PLAYERBOT_SUNGMA_GOODS_SALE_MAX = 16;
+
+	bool IsPlayerBotSungmaBagGoodsForSale(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->IsEquipped() || item->isLocked())
+			return false;
+		const BYTE type = item->GetType(), sub = item->GetSubType();
+		if (!((type == ITEM_WEAPON && sub != WEAPON_ARROW && sub != WEAPON_MOUNT_SPEAR) || (type == ITEM_ARMOR && sub <= ARMOR_EAR)))
+			return false;
+#ifdef ENABLE_QUIVER_SYSTEM
+		if (type == ITEM_WEAPON && sub == WEAPON_QUIVER)
+			return false;
+#endif
+		if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE || Mt2009AccountBound(item) ||
+				GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE || IsPlayerBotStalkiItem(item))
+			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return false;
+#endif
+		return !IsPlayerBotGearKeptForSelf(ch, item) && !IsPlayerBotMlodziKept(ch, item) && !IsPlayerBotKeptCraftGoods(ch, item) &&
+				!IsPlayerBotKeptAlchemyGoods(ch, item) && !IsPlayerBotGambleForSale(ch, item) && !IsPlayerBotRareGambleHeldBase(ch, item);
+	}
+
+	bool IsPlayerBotSungmaBagRoomy(LPCHARACTER ch)
+	{
+		return ch->GetEmptyInventory(3) >= 0 && CountPlayerBotFreeInventoryCells(ch) >= PLAYERBOT_SUNGMA_GOODS_FREE;
+	}
+
+	// The pieces sold.
+	int SellPlayerBotSungmaBagGoods(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || quest::CQuestManager::instance().GetEventFlag("m2_bot_sungma_goods_sale_off") != 0 ||
+				IsPlayerBotSidekickServing(ch) || IsPlayerBotSungmaBagRoomy(ch))
+			return 0;
+		std::vector<std::pair<DWORD, LPITEM> > pieces;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotSungmaBagGoodsForSale(ch, item))
+				pieces.push_back(std::make_pair(GetPlayerBotShopAskingPrice(item), item));
+		}
+		std::sort(pieces.begin(), pieces.end(),
+				[](const std::pair<DWORD, LPITEM>& a, const std::pair<DWORD, LPITEM>& z) { return a.first < z.first; });
+		const int freeBefore = CountPlayerBotFreeInventoryCells(ch);
+		int sold = 0;
+		long long gold = 0;
+		DWORD dearest = 0;
+		for (size_t i = 0; i < pieces.size() && sold < PLAYERBOT_SUNGMA_GOODS_SALE_MAX && !IsPlayerBotSungmaBagRoomy(ch); ++i)
+		{
+			LPITEM item = pieces[i].second;
+			const long long price = GetPlayerBotJunkSalePrice(item);
+			PlayerBotChangeGold(ch, price);
+			gold += price;
+			dearest = std::max(dearest, pieces[i].first);
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SUNGMA_GOODS_SELL");
+			++sold;
+		}
+		if (sold == 0)
+			return 0;
+		s_kPlayerBotSungmaTrips.goodsSold += (unsigned int)sold;
+		s_kPlayerBotSungmaTrips.goodsGold += gold;
+		PlayerBotLogThrottled("sungma_goods_sale", dwNow,
+				"PLAYERBOT_SUNGMA: bag goods sold pid=%u name=%s map=%ld pieces=%d of=%u gold=%lld dearest_ask=%u free_cells=%d->%d free3=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), sold, (unsigned int)pieces.size(), gold, dearest, freeBefore,
+				CountPlayerBotFreeInventoryCells(ch), ch->GetEmptyInventory(3) >= 0 ? 1 : 0);
+		return sold;
+	}
+
 	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: the junk sold where the bot stands. True when it sold something.
 	bool TidyPlayerBotSungmaBag(LPCHARACTER ch, TPlayerBotSungmaBot& b, DWORD dwNow)
 	{
@@ -1469,13 +1553,17 @@
 		if (!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
 				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
 		{
+			// MT2009_PLUS_BOT_SUNGMA_BAG_GOODS_V1: no junk - the cheapest goods (above)
+			const bool goods = SellPlayerBotSungmaBagGoods(ch, dwNow) > 0;
 			if (ch->GetEmptyInventory(3) < 0)
 				++s_kPlayerBotSungmaTrips.tidyStillFull;
-			return false;
+			return goods;
 		}
 		bool sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "sungma_tidy_misc");
 		sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "sungma_tidy_weapon") || sold;
 		sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "sungma_tidy_armor") || sold;
+		// MT2009_PLUS_BOT_SUNGMA_BAG_GOODS_V1: the junk was not enough - the cheapest goods (above)
+		sold = SellPlayerBotSungmaBagGoods(ch, dwNow) > 0 || sold;
 		const int freeAfter = CountPlayerBotFreeInventoryCells(ch);
 		++s_kPlayerBotSungmaTrips.tidies;
 		if (sold)
@@ -2362,9 +2450,9 @@
 		{
 			TPlayerBotSungmaTripStats& t = s_kPlayerBotSungmaTrips;
 			sys_log(0, "PLAYERBOT_SUNGMA: trips channel=%u dongan_potions=%u dongan_elixirs=%u tidies=%u tidy_sold=%u "
-					"tidy_freed_cells=%d tidy_still_full=%u m1_buy=%u m1_counter=%u m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u "
-					"m1_refused_%s=%u m1_refused_%s=%u", (unsigned int)g_bChannel, t.errandPotions, t.errandElixirs, t.tidies,
-					t.tidySold, t.tidyFreed, t.tidyStillFull, t.m1Buy, t.m1Counter,
+					"tidy_freed_cells=%d tidy_still_full=%u goods_sold=%u goods_gold=%lld m1_buy=%u m1_counter=%u m1_refused_%s=%u "
+					"m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u", (unsigned int)g_bChannel, t.errandPotions,
+					t.errandElixirs, t.tidies, t.tidySold, t.tidyFreed, t.tidyStillFull, t.goodsSold, t.goodsGold, t.m1Buy, t.m1Counter,
 					PLAYERBOT_SUNGMA_M1_REFUSED[0], t.m1Refused[0], PLAYERBOT_SUNGMA_M1_REFUSED[1], t.m1Refused[1],
 					PLAYERBOT_SUNGMA_M1_REFUSED[2], t.m1Refused[2], PLAYERBOT_SUNGMA_M1_REFUSED[3], t.m1Refused[3],
 					PLAYERBOT_SUNGMA_M1_REFUSED[4], t.m1Refused[4]);
