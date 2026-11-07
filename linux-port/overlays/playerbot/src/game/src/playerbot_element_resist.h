@@ -483,7 +483,7 @@ namespace
 			std::map<DWORD, int>::const_iterator sp = spent.find(item->GetID());
 			int used = sp != spent.end() ? sp->second : 0;
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
-			used -= GetPlayerBotYoharaElementSpentBase(ch, item, used);
+			used -= GetPlayerBotYoharaElementSpentBase(ch, item, used, wear);	// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1
 #endif
 			if (GetPlayerBotYoharaElementTarget(ch, item, wear, used) == 0 && used < GetPlayerBotYoharaElementCap(wear))
 				missing = true;

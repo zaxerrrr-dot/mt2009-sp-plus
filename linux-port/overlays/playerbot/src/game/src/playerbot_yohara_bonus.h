@@ -185,10 +185,12 @@ namespace
 
 	// The hunt element's resistance point a piece in that slot works for: the talisman any of the six (all roll on it),
 	// the armour, bracelet and helmet fire, lightning or wind (GetPlayerBotHuntResistPoint); 0 for none.
+	// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1: the talisman's element is GetPlayerBotTalismanResistElement's - the hunt element,
+	// or the map's other element where its 25 save more (playerbot_yohara_resist_hp.h).
 	BYTE GetPlayerBotYoharaSlotHuntPoint(LPCHARACTER ch, BYTE wearCell)
 	{
 		if (wearCell == WEAR_PENDANT)
-			return GetPlayerBotElementResistPoint(GetPlayerBotHuntElementIndex(ch));
+			return GetPlayerBotElementResistPoint(GetPlayerBotTalismanResistElement(ch));
 		if (wearCell == WEAR_BODY || wearCell == WEAR_WRIST || wearCell == WEAR_HEAD)
 			return GetPlayerBotHuntResistPoint(ch);
 		return 0;
@@ -208,11 +210,13 @@ namespace
 	};
 	std::map<DWORD, std::map<DWORD, TPlayerBotYoharaElementBase> > s_mapPlayerBotYoharaElementBase;
 
-	int GetPlayerBotYoharaElementSpentBase(LPCHARACTER ch, LPITEM item, int spent)
+	// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1: wearCell - the talisman's budget follows its own element (a fresh one when its
+	// line moves to the map's other element).
+	int GetPlayerBotYoharaElementSpentBase(LPCHARACTER ch, LPITEM item, int spent, BYTE wearCell = WEAR_MAX_NUM)
 	{
 		if (!ch || !item)
 			return 0;
-		const int e = GetPlayerBotHuntElementIndex(ch);
+		const int e = wearCell == WEAR_PENDANT ? GetPlayerBotTalismanResistElement(ch) : GetPlayerBotHuntElementIndex(ch);
 		std::map<DWORD, TPlayerBotYoharaElementBase>& bases = s_mapPlayerBotYoharaElementBase[ch->GetPlayerID()];
 		std::map<DWORD, TPlayerBotYoharaElementBase>::iterator it = bases.find(item->GetID());
 		if (it == bases.end())
@@ -598,7 +602,7 @@ namespace
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase; a piece at its element target is done (strong)
 		const BYTE wearCell = PLAYERBOT_YOHARA_BONUS_SLOTS[p.slotIndex].bWearCell;
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
-		const int base = GetPlayerBotYoharaElementRank(wearCell) >= 0 ? GetPlayerBotYoharaElementSpentBase(ch, p.item, piece.spent) : 0;
+		const int base = GetPlayerBotYoharaElementRank(wearCell) >= 0 ? GetPlayerBotYoharaElementSpentBase(ch, p.item, piece.spent, wearCell) : 0;
 #else
 		const int base = 0;
 #endif
@@ -767,6 +771,9 @@ namespace
 					ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 					PLAYERBOT_YOHARA_BONUS_SLOTS[target.slotIndex].szName, stones);
 
+		// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1: the census's count of what the stones went to
+		NotePlayerBotYoharaBonusSpend(ch, PLAYERBOT_YOHARA_BONUS_SLOTS[target.slotIndex].bWearCell, elementPhase,
+				used[playerbot_yohara_bonus_rules::STEP_CHANGE], used[playerbot_yohara_bonus_rules::STEP_ADD]);
 		int tierAfter = playerbot_yohara_bonus_rules::TIER_NONE;
 		for (size_t i = 0; i < pieces.size() && i < built.size(); ++i)
 			if (pieces[i].item == item)
