@@ -115,7 +115,8 @@ quest jotun_szc begin
 		-- Kamien Driad and no mission rewards for bots). The flag 0 (the default): the bots only hunt (21 October).
 		-- Players: nothing changes.
 		function bot_on()
-			return d.getf("mt2009_dgrun") == 1 and game.get_event_flag("m2_bot_szc_boss") == 1 and d.getf("closed") == 0 and
+			-- MT2009_PLUS_BOT_SZC_MODES_V1: a boss run of the bots carries mt2009_szc_boss (the pairs only hunt)
+			return d.getf("mt2009_dgrun") == 1 and d.getf("mt2009_szc_boss") == 1 and d.getf("closed") == 0 and
 				d.getf("level") == 0
 		end
 

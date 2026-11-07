@@ -561,6 +561,8 @@ namespace
 		// MT2009_PLUS_BOT_MELEY16_V1: a run of more than PARTY_MAX (Schronienie Meley's 16, the guild lair's 4-16): the
 		// leader's party of eight and a second one led by this member (0: none yet) - the core's party is of eight.
 		DWORD dwSubLeader;
+		// MT2009_PLUS_BOT_SZC_MODES_V1: a Zaklety Las (SZC) run for the boss (a bigger party), not a pair's hunt.
+		bool bSzcBoss;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
@@ -570,7 +572,7 @@ namespace
 				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0),
 				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0), iHydraParty(0), bShipStarted(false), iShipWave(0),
 				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0), bHydraPairGuard(false),
-				iPairGuards(0), dwSubLeader(0) {}
+				iPairGuards(0), dwSubLeader(0), bSzcBoss(false) {}
 	};
 
 	// MT2009_PLUS_BOT_YDG_V1: playerbot_dungeon_runs_ydg.h, included at the end of this file.
@@ -939,9 +941,30 @@ namespace
 	// and opens the boss room when they are done; here the party hunts the mission's monster (the objective), then
 	// Bagjanamu and Jotun Thrym, and the win is the quest's "won". m2_bot_szc_boss_party (default 5): the call asks
 	// for that many when the kingdom has them free (the hunt's parties were of 2-3). Log: BOT_SZC.
+	//
+	// MT2009_PLUS_BOT_SZC_MODES_V1 (the owner, 7 November 2026: "Do Zakletego Lasu Szczeliny Czasu wchodzi sie po dwie
+	// rzeczy: w party 2-osobowym, aby wbijac poziom od 110 do 120, w wiekszym party, aby robic dungeony. To jest mapa, na
+	// ktorej sie expi od 110 w prywatnych PT 2-osobowych. I tylko tutaj sie expi"): on by default, both at once - the
+	// runs are pairs that hunt (exactly two) and up to m2_bot_szc_boss_runs (default 3) at once on the core are boss
+	// runs of m2_bot_szc_boss_party; a boss run carries the dungeon flag mt2009_szc_boss (jotun_szc.quest counts its
+	// missions by it). Event flag m2_bot_szc_boss_off 1: pairs only (the old release default); m2_bot_szc_boss 1 (the
+	// night's test flag): every run a boss run.
 	bool IsPlayerBotSzcBossOn()
 	{
-		return quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss") == 1;
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss_off") != 1;
+	}
+
+	bool IsPlayerBotSzcBossRun(LPDUNGEON d)
+	{
+		return d && d->GetFlag("mt2009_szc_boss") == 1;
+	}
+
+	int GetPlayerBotSzcBossRunCap()
+	{
+		if (quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss") == 1)
+			return 1000;
+		const int n = quest::CQuestManager::instance().GetEventFlag("m2_bot_szc_boss_runs");
+		return n > 0 ? std::min(20, n) : 3;
 	}
 
 	int GetPlayerBotSzcBossParty()
@@ -970,7 +993,7 @@ namespace
 			out.push_back(4403);	// Jotun Thrym (SZC)
 			return;
 		}
-		if (!IsPlayerBotSzcBossOn())
+		if (!IsPlayerBotSzcBossRun(d))
 			return;
 		switch (GetPlayerBotSzcMission(d))
 		{
@@ -989,7 +1012,7 @@ namespace
 	// One line a minute a run (and at each mission's change): the mission, its count, the boss's health.
 	void LogPlayerBotSzcProgress(const TPlayerBotDgRun& run, LPDUNGEON d, int inside, int alive, DWORD dwNow)
 	{
-		if (!d || (!IsPlayerBotSzcBossOn() && d->GetFlag("level") != 2))
+		if (!d || (!IsPlayerBotSzcBossRun(d) && d->GetFlag("level") != 2))
 			return;
 		DWORD& at = s_mapPlayerBotSzcLogAt[run.iId];
 		if (at != 0 && dwNow - at < 60000)
@@ -3069,6 +3092,8 @@ namespace
 			return false;
 		}
 		d->SetFlag("mt2009_dgrun", 1);
+		if (run.bSzcBoss)	// MT2009_PLUS_BOT_SZC_MODES_V1
+			d->SetFlag("mt2009_szc_boss", 1);
 		run.lInstance = d->GetMapIndex();
 		const long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
 		const long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
@@ -4179,9 +4204,23 @@ namespace
 		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
 		playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 		int preferMin = rule.preferMin;
-		if (info.bKind == DGRUN_KIND_SZC && IsPlayerBotSzcBossOn())	// MT2009_PLUS_BOT_SZC_BOSS_V1: a party for Jotun Thrym
-			preferMin = std::max(preferMin, GetPlayerBotSzcBossParty());
-		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, slot.partyMax, preferMin);
+		int partyMax = slot.partyMax;
+		// MT2009_PLUS_BOT_SZC_MODES_V1: a boss run while under the cap and the kingdom has the party free, else a pair.
+		bool szcBoss = false;
+		if (info.bKind == DGRUN_KIND_SZC)
+		{
+			int bossRuns = 0;
+			for (std::map<int, TPlayerBotDgRun>::const_iterator it = s_mapPlayerBotDgRuns.begin(); it != s_mapPlayerBotDgRuns.end(); ++it)
+				if (it->second.bSzcBoss && !it->second.szResult)
+					++bossRuns;
+			szcBoss = IsPlayerBotSzcBossOn() && bossRuns < GetPlayerBotSzcBossRunCap() &&
+					(int)bucket.size() >= GetPlayerBotSzcBossParty();
+			if (szcBoss)
+				preferMin = std::max(preferMin, GetPlayerBotSzcBossParty());
+			else
+				partyMax = std::min(partyMax, 2);
+		}
+		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, partyMax, preferMin);
 		std::vector<playerbot_dgrun::TCand> picked;
 		playerbot_dgrun::PickParty(bucket, (size_t)std::max(0, want), rng, picked);
 		if (!playerbot_dgrun::PartyOk(picked, rule))
@@ -4204,7 +4243,13 @@ namespace
 				return false;
 			}
 		}
-		return OpenPlayerBotDgRun(def, empire, picked, slot, bucket.size(), dwNow, why) != 0;
+		const int id = OpenPlayerBotDgRun(def, empire, picked, slot, bucket.size(), dwNow, why);
+		if (id != 0 && szcBoss)
+		{
+			s_mapPlayerBotDgRuns[id].bSzcBoss = true;
+			sys_log(0, "BOT_SZC: mode run=%d boss party=%u", id, (unsigned int)picked.size());
+		}
+		return id != 0;
 	}
 
 	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the run of a drawn party (the leader first) - the shout, the answers due;
