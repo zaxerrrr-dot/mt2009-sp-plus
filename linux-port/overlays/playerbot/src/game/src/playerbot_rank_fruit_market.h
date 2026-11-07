@@ -99,7 +99,8 @@ namespace
 		if (!noHigher && !cheaper)
 			return 0;
 		const int spare = std::max(0, (int)ch->CountSpecifyItem(lower) - GetPlayerBotRankFruitBaseKeep(ch, lower));
-		const int want = higherWant * PLAYERBOT_FRUIT_CRAFT_IN - spare;
+		// MT2009_PLUS_RANK_FRUIT_CRAFT_KEEP_V1: no more than its craft reserve (what it buys it would list again).
+		const int want = std::min(higherWant, GetPlayerBotFruitCraftAhead()) * PLAYERBOT_FRUIT_CRAFT_IN - spare;
 		if (want <= 0)
 			return 0;
 		if (lowerOut)

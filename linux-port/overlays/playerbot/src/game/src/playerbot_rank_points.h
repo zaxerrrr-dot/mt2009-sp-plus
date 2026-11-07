@@ -812,7 +812,17 @@ namespace
 	const int PLAYERBOT_FRUIT_CRAFT_IN = 7;		// pieces of the lower fruit
 	const int PLAYERBOT_FRUIT_CRAFT_PERCENT = 95;
 	const long long PLAYERBOT_FRUIT_CRAFT_GOLD = 0;
-	const int PLAYERBOT_FRUIT_CRAFT_AHEAD = 10;	// higher pieces a bot plans to craft ahead (the buyers' BUY_AHEAD)
+	// MT2009_PLUS_RANK_FRUIT_CRAFT_KEEP_V1 (the owner, 7 November 2026: "Zawsze odklada sobie nizsze owoce na wyzsze,
+	// ktorych jeszcze potrzebuje do swojego celu rangi. Tylko jakis dany zapas"): the higher pieces a bot holds the
+	// lower fruit for (and buys it for) at once - one craft, seven pieces; the rest goes on its counter. Was 10 (70
+	// pieces, the market saw no fruit). Event flag m2_bot_fruit_craft_ahead N (1..10) overrides.
+	const int PLAYERBOT_FRUIT_CRAFT_AHEAD = 1;
+
+	int GetPlayerBotFruitCraftAhead()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_fruit_craft_ahead");
+		return flag > 0 ? std::min(flag, 10) : PLAYERBOT_FRUIT_CRAFT_AHEAD;
+	}
 
 	bool IsPlayerBotFruitCraftOn()
 	{
@@ -832,7 +842,7 @@ namespace
 	}
 
 	// The pieces of the fruit below its due one a bot holds for its own crafts: seven a higher piece it still eats
-	// (up to PLAYERBOT_FRUIT_CRAFT_AHEAD, less the higher pieces it holds). They stay off the counter until Uriel.
+	// (up to GetPlayerBotFruitCraftAhead, less the higher pieces it holds). They stay off the counter until Uriel.
 	int GetPlayerBotRankFruitCraftKeep(LPCHARACTER ch, DWORD vnum)
 	{
 		using namespace mt2009_rankp;
@@ -843,7 +853,7 @@ namespace
 		if (dueIndex <= 0 || FRUITS[dueIndex - 1].vnum != vnum)
 			return 0;
 		const int need = std::min(GetPlayerBotRankFruitNeed(*due, GetPlayerBotRankGoal(ch), KnownPoints(ch)),
-				PLAYERBOT_FRUIT_CRAFT_AHEAD) - (int)ch->CountSpecifyItem(due->vnum);
+				GetPlayerBotFruitCraftAhead()) - (int)ch->CountSpecifyItem(due->vnum);
 		return need > 0 ? need * PLAYERBOT_FRUIT_CRAFT_IN : 0;
 	}
 
