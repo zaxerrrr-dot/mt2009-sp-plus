@@ -89,9 +89,9 @@ Group	MT2009_yzl_6407
 	Type	drop
 	1	14220	1	5	-- Opaska Krysztalu Duszy
 	2	27003	10	40	-- Czerwona Mikstura(D) x10
-	3	27105	10	40	-- Fioletowa Mikstura(D) x10
+	3	27105	10	380	-- Fioletowa Mikstura(D) x10
 	4	27006	10	40	-- Niebieska Mikstura(D) x10
-	5	27102	10	40	-- Zielona Mikstura(D) x10
+	5	27102	10	380	-- Zielona Mikstura(D) x10
 	6	50725	8	20	-- Bez x8
 	7	50726	8	20	-- Grzyb Tue x8
 	8	50721	8	20	-- Kwiat Brzoskwini x8
