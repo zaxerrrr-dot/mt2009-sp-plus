@@ -5071,7 +5071,8 @@ fi
 # MT2009_PLUS_SM_GRANTS_V1: Smocze Monety paid to accounts at an interval (the owner, 28 October 2026; seban-panel
 # sm_grants.py) - sm_grants.sql: account.sm_grant_config (the switch, off by default), account.sm_grant_tier (the
 # player and bot tiers) and account.sm_grant_log (one row per account, interval and period). Every start, idempotent:
-# CREATE TABLE IF NOT EXISTS, one INSERT IGNORE of the settings row, no tier seeded.
+# CREATE TABLE IF NOT EXISTS, one INSERT IGNORE of the settings row; MT2009_PLUS_SM_GRANTS_BOT_SEED_V1: the eight bot
+# tiers and the switch on, once, on an install with no bot tier (the marker account.sm_grant_seed).
 if [ -s /opt/playerbot/sm_grants.sql ]; then
     if db < /opt/playerbot/sm_grants.sql; then
         echo "[playerbot-migrate] SM grants: sm_grants.sql applied"

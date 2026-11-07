@@ -52,3 +52,28 @@ CREATE TABLE IF NOT EXISTS account.sm_grant_log (
   KEY period_key (period, period_key),
   KEY granted_at (granted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- MT2009_PLUS_SM_GRANTS_BOT_SEED_V1 (the owner, 7 November 2026: the bots' weekly packages are the default of a new
+-- install, the paying switched on): ONCE - the marker row in account.sm_grant_seed - and only when the install has no
+-- bot tier yet, the eight bot tiers of the test world (28 October) go in and the switch goes on. A tier changed or
+-- deleted later never comes back (the marker stays); an install with its own bot tiers keeps them and its switch.
+-- The players' tiers stay empty (the server owner's to set).
+CREATE TABLE IF NOT EXISTS account.sm_grant_seed (
+  name VARCHAR(32) NOT NULL PRIMARY KEY,
+  applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+SET @mt2009_sm_seed := (SELECT COUNT(*) FROM account.sm_grant_seed WHERE name = 'bot_tiers_v1') = 0
+    AND (SELECT COUNT(*) FROM account.sm_grant_tier WHERE target = 'bot') = 0;
+INSERT INTO account.sm_grant_tier (target, enabled, name, min_level, min_champion_level, amount, period, active_days)
+SELECT t.* FROM (
+  SELECT 'bot' AS target, 1 AS enabled, 'Boty do 30 lvl' AS name, 1 AS min_level, 0 AS min_champion_level, 500 AS amount, 'week' AS period, 0 AS active_days
+  UNION ALL SELECT 'bot', 1, 'Boty 31-55 lvl', 31, 0, 800, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty 56-75 lvl', 56, 0, 1300, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty 76-90 lvl', 76, 0, 2000, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty 91-110 lvl', 91, 0, 3000, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty 111-120 lvl', 111, 0, 4000, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty czempion 10+', 1, 10, 7500, 'week', 0
+  UNION ALL SELECT 'bot', 1, 'Boty czempion 20+', 1, 20, 9000, 'week', 0
+) AS t WHERE @mt2009_sm_seed;
+UPDATE account.sm_grant_config SET enabled = 1 WHERE id = 1 AND @mt2009_sm_seed;
+INSERT IGNORE INTO account.sm_grant_seed (name) VALUES ('bot_tiers_v1');
