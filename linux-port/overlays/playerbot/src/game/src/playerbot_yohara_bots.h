@@ -191,6 +191,12 @@ namespace
 		// from the 100 of "yohara"; to the cores they are the same purpose (the handover rows say "yohara").
 		if (!strcmp(s, "yohara800"))
 			return YOHARA_PURPOSE_SUNGMA;
+		// MT2009_PLUS_BOT_HYDRA_OPEN_V1: the ordinary bots of 120 the cores drew to the Hydra themselves, and the
+		// Champions they became (enrolled onto the Sung Ma maps) - rows of their own, the same purposes to the cores.
+		if (!strcmp(s, "hydra_open"))
+			return YOHARA_PURPOSE_HYDRA;
+		if (!strcmp(s, "yohara_open"))
+			return YOHARA_PURPOSE_SUNGMA;
 		for (int i = YOHARA_PURPOSE_HOME; i < YOHARA_PURPOSE_MAX; ++i)
 			if (!strcmp(s, PlayerBotYoharaPurposeName(i)))
 				return i;
@@ -692,8 +698,11 @@ namespace
 		// champion: YOHARA_CHAMPION_*).
 		int iWins, iChampion;
 		int iChampionLevel;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: player.player's conqueror_level (the dispatcher's band)
+		// MT2009_PLUS_BOT_HYDRA_OPEN_V1: a row the cores wrote (hydra_open / yohara_open), its Hydra runs (all its tries)
+		bool bOpen;
+		int iRuns;
 		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0), iParty(0), iWins(0), iChampion(0),
-			iChampionLevel(0) {}
+			iChampionLevel(0), bOpen(false), iRuns(0) {}
 	};
 	struct TPlayerBotYoharaCohortStats
 	{
@@ -791,7 +800,7 @@ namespace
 		// MT2009_PLUS_BOT_CHAMPION_V1: the wins and the statue's errand too.
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotYoharaCohortChampionColumns
 				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, c.champion, "
-				  "IFNULL(p.conqueror_level, 0) "	// MT2009_PLUS_BOT_YOHARA_MAPS_V1 (czempion.sql's column)
+				  "IFNULL(p.conqueror_level, 0), c.runs "	// MT2009_PLUS_BOT_YOHARA_MAPS_V1 (czempion.sql's column); HYDRA_OPEN_V1: runs
 				  "FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"
 				: s_bPlayerBotYoharaCohortHydraColumns
 				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, 0 "
@@ -824,6 +833,9 @@ namespace
 			m.iWins = row[6] ? atoi(row[6]) : 0;	// MT2009_PLUS_BOT_CHAMPION_V1
 			m.iChampion = row[7] ? atoi(row[7]) : 0;
 			m.iChampionLevel = mysql_num_fields(msg->Get()->pSQLResult) > 8 && row[8] ? atoi(row[8]) : 0;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			// MT2009_PLUS_BOT_HYDRA_OPEN_V1
+			m.bOpen = row[1] && (!strcmp(row[1], "hydra_open") || !strcmp(row[1], "yohara_open"));
+			m.iRuns = mysql_num_fields(msg->Get()->pSQLResult) > 9 && row[9] ? atoi(row[9]) : 0;
 			++size[purpose];
 			resting += m.bResting ? 1 : 0;
 		}
@@ -1972,6 +1984,585 @@ namespace
 					CountPlayerBotHydraMarbles(ch));
 	}
 
+	// ------------------------------------------------------------ the open Hydra (MT2009_PLUS_BOT_HYDRA_OPEN_V1)
+
+	// MT2009_PLUS_BOT_HYDRA_OPEN_V1 - the owner, 7 November 2026: "tak, naucz dobierac boty tak, aby daly rade chodzic Hydre
+	// samodzielnie i awansowac na lvl championa"; "Zwykle boty 120 ... bot 120 sam idzie na Hydre, potem do posagu, i zostaje
+	// czempionem dopuszczonym na mapy Sung Ma - rob". The test server, 7 November: 176 bots of 120 with no Champion level and
+	// a full bar (the statue's bubble) on the old maps, the Hydra's cohort empty (hydra=0/32), the Sung Ma maps the
+	// cohorts' alone (PLAYERBOT_COHORT_EXCLUSIVE). The Hydra's history (playerbot_dungeon_runs.tsv, 22 October, the cohort
+	// of the tool's "super EQ"): parties of 4-8 won 16 of 16, pairs 22 of 48 - six pairs never won (both with a dagger
+	// Ninja: 0 of 6, the Archer's polymorph is the Hydra's damage), five pairs won every time (an Archer Ninja and a
+	// Warrior / a weapon Sura / a healing Shaman).
+	//
+	// The way, done by the cohorts' machinery - the rows of common.playerbot_yohara_cohort, written by the cores:
+	//   * the draw (the home core of a channel - the one hosting a first village - every PLAYERBOT_HYDRA_OPEN_PLAN_MS): the
+	//     bots of this world online here of the top level with no Champion level and the statue's bubble (a quarter of
+	//     the bar), no cohort's, no Dropki's, no companion, shouter, merchant (by personality), Arezzo's or a person's
+	//     party member, not on a run, not away - "eligible"; each held to the strength gate: its real blow (the hand's
+	//     weapon through the damage model, GetPlayerBotRealAttack) at least m2_bot_hydra_open_atk_pct (90) % and its
+	//     max HP m2_bot_hydra_open_hp_pct (90) % of the medians of the bots of its band here (a healing Shaman: the HP
+	//     only), 10 points more for each group of its that lost (its row's runs / the tries); a band with no median
+	//     sends nobody. The groups: PLAYERBOT_HYDRA_OPEN_SIZE (4; 2-8) of one kingdom - an Archer Ninja always (the
+	//     polymorph), a healing Shaman when the size is 3 or more and the kingdom has one that passed, then the
+	//     strongest blows, no class over two. Up to PLAYERBOT_HYDRA_OPEN_MAX (32, never over PLAYERBOT_HYDRA_MAX) in the
+	//     Hydra at once a channel; the group's rows: purpose hydra_open, its party (20-99, one free), champion 0;
+	//   * from there the cohort's: the dispatcher hands them to the pier (368), PlanPlayerBotHydraRuns sails the group
+	//     (four at once, or three after its wait - GetPlayerBotHydraOpenSailMin), the pier's kit (marbles, elixirs,
+	//     arrows), the rest between the runs;
+	//   * a win (the Hydra core): the member's row champion 1 - the statue's errand (ManagePlayerBotYoharaChampion: the
+	//     Hydra's flags, Posag Wojownika, champion::Unlock), its row champion 2, home by the handover;
+	//   * m2_bot_hydra_open_tries (3) runs lost in a row: the group is let go - its rows champion 3, rest_until
+	//     m2_bot_hydra_open_retry_h (6) hours on (an ordinary bot again; drawn anew after it, its gate higher);
+	//   * a Champion of the draw (champion 2): its row becomes purpose yohara_open (champion 0, party 0) - a member of the
+	//     Sung Ma maps' cohort from then on (the dispatcher, PickPlayerBotSungmaMap, the cohort's rest), up to
+	//     PLAYERBOT_HYDRA_OPEN_SUNGMA_MAX (400) such rows; the rest wait as ordinary Champions until there is room.
+	// Switches: .env PLAYERBOT_HYDRA_OPEN (1; 0 off), event flags m2_bot_hydra_open_off 1 (no new group; the groups
+	// under way go on), m2_bot_hydra_open_sungma_off 1 (no new Sung Ma row), the Hydra's end (m2_bot_hydra_end /
+	// PLAYERBOT_HYDRA_END) stops the draw too. Log: PLAYERBOT_HYDRA_OPEN (config, group, win, lost, released, sungma,
+	// census every PLAYERBOT_YOHARA_CENSUS_LOG_MS - eligible, the gate's refusals, the rows by state, this core's runs).
+	bool IsPlayerBotDropkiRole(DWORD pid);	// playerbot_dropki.h (later in this unit)
+
+	const int PLAYERBOT_HYDRA_OPEN_PARTY_FIRST = 20;
+	const int PLAYERBOT_HYDRA_OPEN_PARTY_LAST = 99;
+	const DWORD PLAYERBOT_HYDRA_OPEN_PLAN_MS = 60 * 1000;
+
+	struct TPlayerBotHydraOpenConfig
+	{
+		bool on;
+		int size, max, sungmaMax;
+		TPlayerBotHydraOpenConfig() : on(true), size(4), max(32), sungmaMax(400) {}
+	};
+
+	const TPlayerBotHydraOpenConfig& GetPlayerBotHydraOpenConfig()
+	{
+		static TPlayerBotHydraOpenConfig s_cfg;
+		static bool s_loaded = false;
+		if (s_loaded)
+			return s_cfg;
+		s_loaded = true;
+		s_cfg.on = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_OPEN", 1, 0, 1) != 0;
+		s_cfg.size = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_OPEN_SIZE", 4, 2, 8);
+		s_cfg.max = std::min(ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_OPEN_MAX", 32, 0, 200), GetPlayerBotYoharaConfig().hydraMax);
+		s_cfg.sungmaMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_OPEN_SUNGMA_MAX", 400, 0, 1000);
+		sys_log(0, "PLAYERBOT_HYDRA_OPEN: config on=%d size=%d max=%d sungma_max=%d channel_here=%u", s_cfg.on ? 1 : 0, s_cfg.size,
+				s_cfg.max, s_cfg.sungmaMax, (unsigned int)g_bChannel);
+		return s_cfg;
+	}
+
+	struct TPlayerBotHydraOpenStats
+	{
+		unsigned int groups, members, failed, runs, won, lost, released, unlocked, converted;
+		TPlayerBotHydraOpenStats() : groups(0), members(0), failed(0), runs(0), won(0), lost(0), released(0), unlocked(0), converted(0) {}
+	};
+	TPlayerBotHydraOpenStats s_kPlayerBotHydraOpenStats;
+	// The last draw's look (the census): online here of the top level with no Champion level, by what kept them.
+	struct TPlayerBotHydraOpenLook
+	{
+		int top, eligible, expShort, busy, weakHp, weakAtk, noMedian, passed, groupsNow;
+		TPlayerBotHydraOpenLook() : top(0), eligible(0), expShort(0), busy(0), weakHp(0), weakAtk(0), noMedian(0), passed(0), groupsNow(0) {}
+	};
+	TPlayerBotHydraOpenLook s_kPlayerBotHydraOpenLook;
+	std::map<int, int> s_mapPlayerBotHydraOpenLosses;	// party -> runs lost in a row (the Hydra core)
+
+	int GetPlayerBotHydraOpenSetting(const char* flag, int def, int lo, int hi)
+	{
+		const int v = quest::CQuestManager::instance().GetEventFlag(flag);
+		return v > 0 ? std::max(lo, std::min(hi, v)) : def;
+	}
+
+	bool IsPlayerBotHydraOpenOn()
+	{
+		return GetPlayerBotHydraOpenConfig().on && GetPlayerBotHydraOpenConfig().max > 0 &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_hydra_open_off") == 0 && !IsPlayerBotHydraEndSwitched() &&
+				s_bPlayerBotYoharaCohortChampionColumns && IsPlayerBotYoharaCohortOn() && IsPlayerBotYoharaOn();
+	}
+
+	bool IsPlayerBotHydraOpenRow(const TPlayerBotYoharaCohortMember& m)
+	{
+		return m.bOpen && m.iPurpose == YOHARA_PURPOSE_HYDRA;
+	}
+
+	// PlanPlayerBotHydraRuns (playerbot_dungeon_runs.h): the fewest of an open group that sail (0: not an open group).
+	int GetPlayerBotHydraOpenSailMin(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator m = s_mapPlayerBotYoharaCohort.find(pid);
+		if (m == s_mapPlayerBotYoharaCohort.end() || !IsPlayerBotHydraOpenRow(m->second))
+			return 0;
+		return std::max(2, GetPlayerBotHydraOpenConfig().size - 1);
+	}
+
+	// The strength gate: NULL when it passes (its blow out), else why not.
+	const char* GetPlayerBotHydraOpenWeakness(LPCHARACTER ch, int lostGroups, long long& atk)
+	{
+		atk = GetPlayerBotRealAttack(ch);
+		long long hpMedian = 0, atkMedian = 0;
+		if (!GetPlayerBotBandMedians(ch->GetLevel(), &hpMedian, &atkMedian) || hpMedian <= 0)
+			return "no_median";
+		const long long raise = 10LL * std::min(lostGroups, 6);
+		const long long hpPct = GetPlayerBotHydraOpenSetting("m2_bot_hydra_open_hp_pct", 90, 1, 300) + raise;
+		if ((long long)ch->GetMaxHP() * 100 < hpMedian * hpPct)
+			return "hp";
+		const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
+		const long long atkPct = GetPlayerBotHydraOpenSetting("m2_bot_hydra_open_atk_pct", 90, 1, 300) + raise;
+		if (!healer && atkMedian > 0 && atk * 100 < atkMedian * atkPct)
+			return "atk";
+		return NULL;
+	}
+
+	struct TPlayerBotHydraOpenCand
+	{
+		DWORD pid;
+		long long atk;
+		int job;
+		bool archer, healer;
+		bool again;	// a row of its own already (a group let go): re-enrolled by an UPDATE
+	};
+
+	// One kingdom's group out of its candidates (the strongest blow first): an Archer Ninja, a healing Shaman (3+),
+	// then the strongest, no class over two. False: no group (the candidates left as they were).
+	bool DrawPlayerBotHydraOpenGroup(std::vector<TPlayerBotHydraOpenCand>& v, int size, std::vector<TPlayerBotHydraOpenCand>& group)
+	{
+		group.clear();
+		std::vector<bool> taken(v.size(), false);
+		int perJob[4] = { 0, 0, 0, 0 };
+		for (size_t i = 0; i < v.size(); ++i)
+			if (v[i].archer)
+			{
+				taken[i] = true;
+				group.push_back(v[i]);
+				++perJob[v[i].job & 3];
+				break;
+			}
+		if (group.empty())
+			return false;
+		if (size >= 3)
+			for (size_t i = 0; i < v.size(); ++i)
+				if (!taken[i] && v[i].healer)
+				{
+					taken[i] = true;
+					group.push_back(v[i]);
+					++perJob[v[i].job & 3];
+					break;
+				}
+		const int cap = std::max(1, (size + 1) / 2);
+		for (size_t i = 0; i < v.size() && (int)group.size() < size; ++i)
+		{
+			if (taken[i] || perJob[v[i].job & 3] >= cap)
+				continue;
+			taken[i] = true;
+			group.push_back(v[i]);
+			++perJob[v[i].job & 3];
+		}
+		if ((int)group.size() < size)
+		{
+			group.clear();
+			return false;
+		}
+		std::vector<TPlayerBotHydraOpenCand> left;
+		for (size_t i = 0; i < v.size(); ++i)
+			if (!taken[i])
+				left.push_back(v[i]);
+		v.swap(left);
+		return true;
+	}
+
+	// The open rows a Champion of the draw is (champion 2) become the Sung Ma maps' (yohara_open), while there is room.
+	void ConvertPlayerBotHydraOpenChampions(DWORD dwNow)
+	{
+		const TPlayerBotHydraOpenConfig& cfg = GetPlayerBotHydraOpenConfig();
+		if (quest::CQuestManager::instance().GetEventFlag("m2_bot_hydra_open_sungma_off") != 0)
+			return;
+		int sungma = 0;
+		std::vector<DWORD> ready;
+		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+				i != s_mapPlayerBotYoharaCohort.end(); ++i)
+		{
+			if (!i->second.bOpen)
+				continue;
+			if (i->second.iPurpose == YOHARA_PURPOSE_SUNGMA)
+				++sungma;
+			else if (i->second.iPurpose == YOHARA_PURPOSE_HYDRA && i->second.iChampion == YOHARA_CHAMPION_UNLOCKED &&
+					i->second.iChannel == (int)g_bChannel)
+				ready.push_back(i->first);
+		}
+		for (size_t k = 0; k < ready.size() && sungma < cfg.sungmaMax; ++k)
+		{
+			const DWORD pid = ready[k];
+			char q[320];
+			snprintf(q, sizeof(q), "UPDATE common.playerbot_yohara_cohort SET purpose = 'yohara_open', party = 0, champion = 0, "
+					"rest_until = NULL, last_seen = NOW() WHERE pid = %u AND purpose = 'hydra_open' AND champion = %d", pid,
+					(int)YOHARA_CHAMPION_UNLOCKED);
+			if (RunPlayerBotYoharaSql(q) != 1)
+				continue;
+			TPlayerBotYoharaCohortMember& m = s_mapPlayerBotYoharaCohort[pid];
+			--s_aiPlayerBotYoharaCohortSize[YOHARA_PURPOSE_HYDRA];
+			++s_aiPlayerBotYoharaCohortSize[YOHARA_PURPOSE_SUNGMA];
+			m.iPurpose = YOHARA_PURPOSE_SUNGMA;
+			m.iParty = 0;
+			m.iChampion = YOHARA_CHAMPION_HYDRA;
+			m.bResting = false;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			m.iChampionLevel = ch ? std::max(1, (int)ch->GetConquerorLevel()) : std::max(1, m.iChampionLevel);
+			++sungma;
+			++s_kPlayerBotHydraOpenStats.converted;
+			sys_log(0, "PLAYERBOT_HYDRA_OPEN: sungma pid=%u name=%s champion_level=%d sungma_rows=%d/%d", pid, ch ? ch->GetName() : "-",
+					m.iChampionLevel, sungma, cfg.sungmaMax);
+		}
+		if (!ready.empty() && sungma >= cfg.sungmaMax)
+			PlayerBotLogThrottled("hydra_open_sungma_full", dwNow, "PLAYERBOT_HYDRA_OPEN: sungma full rows=%d/%d waiting=%u", sungma,
+					cfg.sungmaMax, (unsigned int)ready.size());
+	}
+
+	// The draw (the home core, at the poll, every PLAYERBOT_HYDRA_OPEN_PLAN_MS).
+	void ManagePlayerBotHydraOpen(DWORD dwNow)
+	{
+		static DWORD s_dwNext = 0;
+		if (s_dwNext != 0 && (int)(dwNow - s_dwNext) < 0)
+			return;
+		s_dwNext = dwNow + PLAYERBOT_HYDRA_OPEN_PLAN_MS;
+		static const long PLAYERBOT_HYDRA_OPEN_VILLAGE[4] = { 0, 1, 21, 41 };
+		if (!IsPlayerBotMapHostedHere(PLAYERBOT_HYDRA_OPEN_VILLAGE[1]) && !IsPlayerBotMapHostedHere(PLAYERBOT_HYDRA_OPEN_VILLAGE[2]) &&
+				!IsPlayerBotMapHostedHere(PLAYERBOT_HYDRA_OPEN_VILLAGE[3]))
+			return;
+		const TPlayerBotHydraOpenConfig& cfg = GetPlayerBotHydraOpenConfig();
+		if (!s_bPlayerBotYoharaCohortChampionColumns || !IsPlayerBotYoharaCohortOn())
+			return;
+		ConvertPlayerBotHydraOpenChampions(dwNow);
+		TPlayerBotHydraOpenLook look;
+		// A group short of its sail (a member won with another run, or none of the rest left): its rest let go at once -
+		// drawn into a new group at the next draw (the pier would hold them for ever).
+		{
+			const int sailMin = std::max(2, cfg.size - 1);
+			std::map<int, std::vector<DWORD> > byParty;
+			for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+					i != s_mapPlayerBotYoharaCohort.end(); ++i)
+				if (IsPlayerBotHydraOpenRow(i->second) && i->second.iChampion == YOHARA_CHAMPION_HYDRA && i->second.iChannel == (int)g_bChannel)
+					byParty[i->second.iParty].push_back(i->first);
+			for (std::map<int, std::vector<DWORD> >::const_iterator p = byParty.begin(); p != byParty.end(); ++p)
+			{
+				if ((int)p->second.size() >= sailMin)
+					continue;
+				std::string pids;
+				for (size_t k = 0; k < p->second.size(); ++k)
+				{
+					TPlayerBotYoharaCohortMember& m = s_mapPlayerBotYoharaCohort[p->second[k]];
+					m.iChampion = YOHARA_CHAMPION_SKIPPED;
+					pids += (pids.empty() ? "" : ",") + std::to_string(p->second[k]);
+				}
+				const std::string q = "UPDATE common.playerbot_yohara_cohort SET champion = " + std::to_string((int)YOHARA_CHAMPION_SKIPPED) +
+						", party = 0, champion_at = NOW(), rest_until = NULL WHERE purpose = 'hydra_open' AND champion = 0 AND pid IN (" + pids + ")";
+				RunPlayerBotYoharaSql(q.c_str());
+				sys_log(0, "PLAYERBOT_HYDRA_OPEN: orphans party=%d left=%u (sail %d) pids=%s", p->first, (unsigned int)p->second.size(),
+						sailMin, pids.c_str());
+			}
+		}
+		// The rows in the Hydra now (this channel's) and the parties taken (any channel's).
+		int inHydra = 0;
+		std::set<int> partiesTaken;
+		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+				i != s_mapPlayerBotYoharaCohort.end(); ++i)
+		{
+			if (i->second.iPurpose != YOHARA_PURPOSE_HYDRA || i->second.iChampion != YOHARA_CHAMPION_HYDRA)
+				continue;
+			partiesTaken.insert(i->second.iParty);
+			if (i->second.bOpen && i->second.iChannel == (int)g_bChannel)
+				++inHydra;
+		}
+		const bool on = IsPlayerBotHydraOpenOn();
+		const int tries = GetPlayerBotHydraOpenSetting("m2_bot_hydra_open_tries", 3, 1, 50);
+		std::vector<TPlayerBotHydraOpenCand> cands[4];
+		std::map<std::string, int> busyWhy;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			const DWORD pid = it->first;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			if (!ch || (int)ch->GetLevel() < gPlayerMaxLevel || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+				continue;
+#ifdef ENABLE_CONQUEROR_LEVEL
+			if (ch->GetConquerorLevel() >= 1)
+				continue;
+#endif
+			++look.top;
+			// a row already: a cohort's member, or an open row (in the Hydra, a Champion, or let go - again after its rest)
+			std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator row = s_mapPlayerBotYoharaCohort.find(pid);
+			bool again = false;
+			int lostGroups = 0;
+			if (row != s_mapPlayerBotYoharaCohort.end())
+			{
+				if (!IsPlayerBotHydraOpenRow(row->second) || row->second.iChampion != YOHARA_CHAMPION_SKIPPED || row->second.bResting)
+				{
+					++busyWhy[row->second.bOpen ? "open_row" : "cohort"];
+					continue;
+				}
+				again = true;
+				lostGroups = row->second.iRuns / tries;
+			}
+			const char* busy = NULL;
+			if (!IsPlayerBotYoharaEligible(ch))
+				busy = "not_eligible";
+			else if (IsPlayerBotDropkiRole(pid))
+				busy = "dropki";
+			else if (it->second.bPersonality == BOT_PERSONALITY_MERCHANT)
+				busy = "merchant";
+			else if (ch->IsDead() || IsPlayerBotOnDungeonRun(pid))
+				busy = "run_or_dead";
+			else if (FindPlayerBotYoharaResident(pid) || IsPlayerBotYoharaAway(pid) || IsPlayerBotYoharaLeaving(pid) ||
+					IsPlayerBotSungmaTradeVisitor(pid) || !IsPlayerBotYoharaHomeCore(ch))
+				busy = "away";
+			if (busy)
+			{
+				++busyWhy[busy];
+				++look.busy;
+				continue;
+			}
+			++look.eligible;
+			if (ch->GetExp() < ch->GetNextExp() / 4)	// the statue's bubble (champion::UnlockState)
+			{
+				++look.expShort;
+				continue;
+			}
+			long long atk = 0;
+			const char* weak = GetPlayerBotHydraOpenWeakness(ch, lostGroups, atk);
+			if (weak)
+			{
+				if (!strcmp(weak, "hp"))
+					++look.weakHp;
+				else if (!strcmp(weak, "atk"))
+					++look.weakAtk;
+				else
+					++look.noMedian;
+				continue;
+			}
+			++look.passed;
+			TPlayerBotHydraOpenCand c;
+			c.pid = pid;
+			c.atk = atk;
+			c.job = ch->GetJob() % 4;
+			c.archer = IsPlayerBotHydraPolymorpher(ch);
+			c.healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
+			c.again = again;
+			cands[ch->GetEmpire()].push_back(c);
+		}
+		look.groupsNow = 0;
+		std::string why;
+		for (std::map<std::string, int>::const_iterator w = busyWhy.begin(); w != busyWhy.end(); ++w)
+			why += (why.empty() ? "" : ",") + w->first + ":" + std::to_string(w->second);
+		if (on)
+		{
+			for (int e = 1; e <= 3; ++e)
+				std::sort(cands[e].begin(), cands[e].end(), [](const TPlayerBotHydraOpenCand& a, const TPlayerBotHydraOpenCand& b)
+						{ return a.atk > b.atk; });
+			bool drew = true;
+			while (drew && inHydra + cfg.size <= cfg.max)
+			{
+				drew = false;
+				for (int e = 1; e <= 3 && inHydra + cfg.size <= cfg.max; ++e)
+				{
+					std::vector<TPlayerBotHydraOpenCand> group;
+					if (!DrawPlayerBotHydraOpenGroup(cands[e], cfg.size, group))
+						continue;
+					int party = 0;
+					for (int p = PLAYERBOT_HYDRA_OPEN_PARTY_FIRST; p <= PLAYERBOT_HYDRA_OPEN_PARTY_LAST && party == 0; ++p)
+						if (!partiesTaken.count(p))
+							party = p;
+					if (party == 0)
+						break;
+					// the rows: a new one, or (a group let go, rested) its own again - one statement each
+					std::vector<DWORD> done;
+					std::string names;
+					for (size_t i = 0; i < group.size(); ++i)
+					{
+						LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(group[i].pid);
+						char q[512];
+						if (group[i].again)
+							snprintf(q, sizeof(q), "UPDATE common.playerbot_yohara_cohort SET channel = %u, party = %d, champion = 0, "
+									"champion_at = NULL, rest_until = NULL, last_seen = NOW() WHERE pid = %u AND purpose = 'hydra_open' "
+									"AND champion = %d AND (rest_until IS NULL OR rest_until <= NOW())", (unsigned int)g_bChannel, party,
+									group[i].pid, (int)YOHARA_CHAMPION_SKIPPED);
+						else
+							snprintf(q, sizeof(q), "INSERT IGNORE INTO common.playerbot_yohara_cohort (pid, purpose, channel, party, "
+									"level_start, exp_start, last_seen) VALUES (%u, 'hydra_open', %u, %d, %d, %u, NOW())", group[i].pid,
+									(unsigned int)g_bChannel, party, c ? (int)c->GetLevel() : 0, c ? (unsigned int)c->GetExp() : 0U);
+						if (RunPlayerBotYoharaSql(q) != 1)
+							break;
+						done.push_back(group[i].pid);
+						char buf[96];
+						snprintf(buf, sizeof(buf), "%s%s(j%d/%s%s/atk%lld/hp%d)", names.empty() ? "" : ",", c ? c->GetName() : "?",
+								group[i].job, group[i].archer ? "archer" : (group[i].healer ? "healer" : "-"), group[i].again ? "/again" : "",
+								group[i].atk, c ? (int)c->GetMaxHP() : 0);
+						if (names.size() < 400)
+							names += buf;
+					}
+					if (done.size() != group.size())
+					{
+						// one row refused (another core's at the same moment): none of the group
+						std::string list;
+						for (size_t i = 0; i < done.size(); ++i)
+							list += (list.empty() ? "" : ",") + std::to_string(done[i]);
+						if (!list.empty())
+						{
+							const std::string q = "UPDATE common.playerbot_yohara_cohort SET champion = " +
+									std::to_string((int)YOHARA_CHAMPION_SKIPPED) + ", party = 0 WHERE purpose = 'hydra_open' AND "
+									"champion = 0 AND pid IN (" + list + ")";
+							RunPlayerBotYoharaSql(q.c_str());
+						}
+						++s_kPlayerBotHydraOpenStats.failed;
+						PlayerBotLogThrottled("hydra_open_fail", dwNow, "PLAYERBOT_HYDRA_OPEN: group refused party=%d empire=%d rows=%u of %u",
+								party, e, (unsigned int)done.size(), (unsigned int)group.size());
+						continue;
+					}
+					for (size_t i = 0; i < group.size(); ++i)
+					{
+						std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator old = s_mapPlayerBotYoharaCohort.find(group[i].pid);
+						const int runs = old != s_mapPlayerBotYoharaCohort.end() ? old->second.iRuns : 0;
+						TPlayerBotYoharaCohortMember& m = s_mapPlayerBotYoharaCohort[group[i].pid];
+						if (old == s_mapPlayerBotYoharaCohort.end() || !group[i].again)
+							++s_aiPlayerBotYoharaCohortSize[YOHARA_PURPOSE_HYDRA];
+						m = TPlayerBotYoharaCohortMember();
+						m.iPurpose = YOHARA_PURPOSE_HYDRA;
+						m.iChannel = (int)g_bChannel;
+						m.iLevel = gPlayerMaxLevel;
+						m.iParty = party;
+						m.bOpen = true;
+						m.iRuns = runs;
+					}
+					partiesTaken.insert(party);
+					s_mapPlayerBotHydraOpenLosses.erase(party);
+					inHydra += (int)group.size();
+					++look.groupsNow;
+					++s_kPlayerBotHydraOpenStats.groups;
+					s_kPlayerBotHydraOpenStats.members += (unsigned int)group.size();
+					drew = true;
+					sys_log(0, "PLAYERBOT_HYDRA_OPEN: group party=%d empire=%d members=%u in_hydra=%d/%d names=%s", party, e,
+							(unsigned int)group.size(), inHydra, cfg.max, names.c_str());
+				}
+			}
+		}
+		s_kPlayerBotHydraOpenLook = look;
+		if (look.top > 0 || inHydra > 0)
+			PlayerBotLogThrottled("hydra_open_look", dwNow, "PLAYERBOT_HYDRA_OPEN: draw on=%d top_cl0=%d eligible=%d exp_short=%d weak_hp=%d "
+					"weak_atk=%d no_median=%d passed=%d groups_now=%d in_hydra=%d/%d busy=%d (%s)", on ? 1 : 0, look.top, look.eligible,
+					look.expShort, look.weakHp, look.weakAtk, look.noMedian, look.passed, look.groupsNow, inHydra, cfg.max, look.busy,
+					why.empty() ? "-" : why.c_str());
+	}
+
+	// The Hydra core: an open group's run ended (NotePlayerBotYoharaHydraRunEnd) - a win sends its members to the statue,
+	// m2_bot_hydra_open_tries lost in a row lets the group go.
+	void NotePlayerBotHydraOpenRunEnd(const std::vector<DWORD>& members, bool won)
+	{
+		std::set<int> parties;
+		std::string list;
+		for (size_t i = 0; i < members.size(); ++i)
+		{
+			std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator m = s_mapPlayerBotYoharaCohort.find(members[i]);
+			if (m == s_mapPlayerBotYoharaCohort.end() || !IsPlayerBotHydraOpenRow(m->second) || m->second.iChampion != YOHARA_CHAMPION_HYDRA)
+				continue;
+			parties.insert(m->second.iParty);
+			++m->second.iRuns;
+			if (won)
+			{
+				m->second.iChampion = YOHARA_CHAMPION_PENDING;
+				list += (list.empty() ? "" : ",") + std::to_string(members[i]);
+			}
+		}
+		if (parties.empty())
+			return;
+		++s_kPlayerBotHydraOpenStats.runs;
+		if (won)
+		{
+			++s_kPlayerBotHydraOpenStats.won;
+			const std::string q = "UPDATE common.playerbot_yohara_cohort SET champion = " + std::to_string((int)YOHARA_CHAMPION_PENDING) +
+					", last_seen = NOW() WHERE purpose = 'hydra_open' AND champion = 0 AND pid IN (" + list + ")";
+			RunPlayerBotYoharaSql(q.c_str());
+			for (std::set<int>::const_iterator p = parties.begin(); p != parties.end(); ++p)
+				s_mapPlayerBotHydraOpenLosses.erase(*p);
+			sys_log(0, "PLAYERBOT_HYDRA_OPEN: win party=%d members=%u to_statue=%s", *parties.begin(), (unsigned int)members.size(),
+					list.c_str());
+			return;
+		}
+		++s_kPlayerBotHydraOpenStats.lost;
+		const int tries = GetPlayerBotHydraOpenSetting("m2_bot_hydra_open_tries", 3, 1, 50);
+		const int retryH = GetPlayerBotHydraOpenSetting("m2_bot_hydra_open_retry_h", 6, 1, 168);
+		for (std::set<int>::const_iterator p = parties.begin(); p != parties.end(); ++p)
+		{
+			const int lost = ++s_mapPlayerBotHydraOpenLosses[*p];
+			sys_log(0, "PLAYERBOT_HYDRA_OPEN: lost party=%d in_a_row=%d of %d", *p, lost, tries);
+			if (lost < tries)
+				continue;
+			// let go: the group's rows (this channel's) - champion 3, rested retryH hours
+			std::string pids;
+			for (std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator m = s_mapPlayerBotYoharaCohort.begin();
+					m != s_mapPlayerBotYoharaCohort.end(); ++m)
+			{
+				if (!IsPlayerBotHydraOpenRow(m->second) || m->second.iParty != *p || m->second.iChampion != YOHARA_CHAMPION_HYDRA ||
+						m->second.iChannel != (int)g_bChannel)
+					continue;
+				m->second.iChampion = YOHARA_CHAMPION_SKIPPED;
+				m->second.bResting = true;
+				pids += (pids.empty() ? "" : ",") + std::to_string(m->first);
+			}
+			s_mapPlayerBotHydraOpenLosses.erase(*p);
+			if (pids.empty())
+				continue;
+			char head[256];
+			snprintf(head, sizeof(head), "UPDATE common.playerbot_yohara_cohort SET champion = %d, champion_at = NOW(), party = 0, "
+					"rest_until = DATE_ADD(NOW(), INTERVAL %d HOUR), last_seen = NOW() WHERE purpose = 'hydra_open' AND champion = 0 AND pid IN (",
+					(int)YOHARA_CHAMPION_SKIPPED, retryH);
+			const std::string q = std::string(head) + pids + ")";
+			RunPlayerBotYoharaSql(q.c_str());
+			++s_kPlayerBotHydraOpenStats.released;
+			sys_log(0, "PLAYERBOT_HYDRA_OPEN: released party=%d lost=%d retry_h=%d pids=%s", *p, lost, retryH, pids.c_str());
+		}
+	}
+
+	// The census (every PLAYERBOT_YOHARA_CENSUS_LOG_MS on every core): the rows by state, the draw's last look (the home
+	// core), the runs of this core (the Hydra core).
+	void LogPlayerBotHydraOpenCensus()
+	{
+		int inHydra = 0, groups = 0, pending = 0, unlocked = 0, released = 0, resting = 0, sungma = 0;
+		std::set<int> parties;
+		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+				i != s_mapPlayerBotYoharaCohort.end(); ++i)
+		{
+			const TPlayerBotYoharaCohortMember& m = i->second;
+			if (!m.bOpen || m.iChannel != (int)g_bChannel)
+				continue;
+			if (m.iPurpose == YOHARA_PURPOSE_SUNGMA)
+			{
+				++sungma;
+				continue;
+			}
+			if (m.iChampion == YOHARA_CHAMPION_HYDRA)
+			{
+				++inHydra;
+				parties.insert(m.iParty);
+			}
+			else if (m.iChampion == YOHARA_CHAMPION_PENDING)
+				++pending;
+			else if (m.iChampion == YOHARA_CHAMPION_UNLOCKED)
+				++unlocked;
+			else
+			{
+				++released;
+				resting += m.bResting ? 1 : 0;
+			}
+		}
+		groups = (int)parties.size();
+		const TPlayerBotHydraOpenLook& l = s_kPlayerBotHydraOpenLook;
+		const TPlayerBotHydraOpenStats& s = s_kPlayerBotHydraOpenStats;
+		const TPlayerBotHydraOpenConfig& cfg = GetPlayerBotHydraOpenConfig();
+		if (l.top == 0 && inHydra == 0 && pending == 0 && unlocked == 0 && released == 0 && sungma == 0 && s.runs == 0)
+			return;
+		sys_log(0, "PLAYERBOT_HYDRA_OPEN: census channel=%u on=%d top_cl0=%d eligible=%d exp_short=%d weak_hp=%d weak_atk=%d "
+				"no_median=%d passed=%d | rows in_hydra=%d/%d groups=%d won_pending_statue=%d champions_unenrolled=%d released=%d "
+				"(resting=%d) sungma=%d/%d | here groups_drawn=%u members=%u refused=%u runs=%u won=%u lost=%u released=%u "
+				"unlocked=%u sungma_enrolled=%u",
+				(unsigned int)g_bChannel, IsPlayerBotHydraOpenOn() ? 1 : 0, l.top, l.eligible, l.expShort, l.weakHp, l.weakAtk,
+				l.noMedian, l.passed, inHydra, cfg.max, groups, pending, unlocked, released, resting, sungma, cfg.sungmaMax, s.groups,
+				s.members, s.failed, s.runs, s.won, s.lost, s.released, s.unlocked, s.converted);
+	}
+
 	// ------------------------------------------------------------ the statue (MT2009_PLUS_BOT_CHAMPION_V1)
 
 	// The champion's errand of a Hydra member whose Hydra ended (IsPlayerBotYoharaHydraEndedFor), on the pier of
@@ -2034,7 +2625,15 @@ namespace
 			}
 		}
 		if (result == YOHARA_CHAMPION_UNLOCKED)
+		{
 			++s_uPlayerBotChampionUnlocked;
+			if (m != s_mapPlayerBotYoharaCohort.end() && m->second.bOpen)	// MT2009_PLUS_BOT_HYDRA_OPEN_V1
+			{
+				++s_kPlayerBotHydraOpenStats.unlocked;
+				sys_log(0, "PLAYERBOT_HYDRA_OPEN: champion pid=%u name=%s conqueror_level=%u", pid, ch->GetName(),
+						(unsigned int)ch->GetConquerorLevel());
+			}
+		}
 		else if (!strcmp(why, "refused"))
 			++s_uPlayerBotChampionRefused;
 		else
@@ -2810,6 +3409,7 @@ namespace
 		}
 		if (cohort == 0)
 			return;
+		NotePlayerBotHydraOpenRunEnd(members, won);	// MT2009_PLUS_BOT_HYDRA_OPEN_V1: a win to the statue, the losses
 		s_aPlayerBotYoharaCohortStats[YOHARA_PURPOSE_HYDRA].runs += (unsigned int)cohort;
 		if (won)
 			s_aPlayerBotYoharaCohortStats[YOHARA_PURPOSE_HYDRA].wins += (unsigned int)cohort;
@@ -3040,6 +3640,8 @@ namespace
 			}
 			s_mapPlayerBotYoharaOut.erase(o++);
 		}
+		// MT2009_PLUS_BOT_HYDRA_OPEN_V1: the ordinary bots of 120 drawn to the Hydra (rows the dispatcher sends below).
+		ManagePlayerBotHydraOpen(dwNow);
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the members this core is home to, sent.
 		DispatchPlayerBotYoharaCohort(dwNow, seen, live, census);
 		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the Sung Ma bots home to trade - back when their errand is done.
@@ -3127,6 +3729,7 @@ namespace
 					s_uPlayerBotYoharaOutCount, s_uPlayerBotYoharaInCount, s_uPlayerBotYoharaHomeCount,
 					s_uPlayerBotYoharaRefusedCount, s_uPlayerBotYoharaCancelCount);
 			LogPlayerBotYoharaCohortCensus(dwNow, cohortStaying, cohortOnWay);
+			LogPlayerBotHydraOpenCensus();	// MT2009_PLUS_BOT_HYDRA_OPEN_V1
 			LogPlayerBotSungmaCensus(dwNow);	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 		}
 	}

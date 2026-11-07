@@ -208,13 +208,31 @@ namespace playerbot_dgrun
 		{ "glebie_silny", 120, 8, 8, 8, true },
 		// MT2009_PLUS_BOT_GNOLLE_V1: Jaskinie Gnolli 1-3 - the quest's 120 and a Champion level (the panel's 1-8): the clock's
 		// call wants four and a healing Shaman, goes in with three (a YDG training party without one - the run's bonuses).
-		{ "gnolle", 120, 4, 4, 3, true },
+		// MT2009_PLUS_BOT_GNOLLE_SIX_V1 (the owner, 7 November 2026: "to, co da wieksze szanse na ukonczenie lochu"): six
+		// called, six asked for, six at the entrance, a healing Shaman always - under the default gates (level 2: 4 fit,
+		// level 3: 5 fit and a healer). The test's 48 h (5-7 November, game3, BOT_GNOLLE run end / gate lines): parties of
+		// 6 with a Shaman won 13 of 16 (the one gate-3 pass with 3 fit aside, 12 of 16 under 4/5); parties of 3-5 won 3 of
+		// 8 with the gates down to 3/3 and 2 of 18 under 4/5 (the five of 3 all turned back at the level-2 gate). A death on
+		// levels 2-3 is final, so the sixth member is what carries a party through both gates. The old rule: GNOLLE_SMALL_RULE
+		// (event flag m2_bot_gnolle_six_off 1 - the engine sets GnolleSixOff()).
+		{ "gnolle", 120, 6, 6, 6, true },
 		// MT2009_PLUS_BOT_WIEZA_V1: Wieza Sung Mahi - a solo climb (the quest's rule): one bot of 120 with a Champion level.
 		{ "wieza_smh", 120, 1, 1, 1, false },
 	};
 
+	// MT2009_PLUS_BOT_GNOLLE_SIX_V1: the caves' rule before 7 November (four called, three in), while the engine's switch
+	// (the event flag m2_bot_gnolle_six_off) is set.
+	const TRunRule GNOLLE_SMALL_RULE = { "gnolle", 120, 4, 4, 3, true };
+	inline bool& GnolleSixOff()
+	{
+		static bool s_bOff = false;
+		return s_bOff;
+	}
+
 	inline const TRunRule& RuleFor(const char* key)
 	{
+		if (key && GnolleSixOff() && !strcmp(key, "gnolle"))	// MT2009_PLUS_BOT_GNOLLE_SIX_V1
+			return GNOLLE_SMALL_RULE;
 		if (key)
 			for (size_t i = 0; i < sizeof(RUN_RULES) / sizeof(RUN_RULES[0]); ++i)
 				if (!strcmp(RUN_RULES[i].key, key))
