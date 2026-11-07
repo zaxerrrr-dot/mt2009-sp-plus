@@ -475,6 +475,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1: the map's element resistance first - the talisman's line where it saves the most,
 // the Sung Ma element gate (Wawoz: ice), the per-map census (after the element passes, the stones and the pet)
 #include "playerbot_yohara_resist_hp.h"
+// MT2009_PLUS_BOT_YSPOT_ELEMENT_V1: within a Sung Ma map the spot of the elements the bot is dressed for - after the
+// resistance's steady read (playerbot_yohara_resist_hp.h) and the Sung Ma spot tables (playerbot_yohara_bots.h)
+#include "playerbot_yohara_spot_element.h"
 // MT2009_PLUS_BOT_ISHOP_V3_V1: what a bot buys in the ItemShop V3 for its gear (the bonus stones, raw Cors, beans, a
 // sash partner, refine scrolls; the set chests) - after every pass whose needs it reads
 // MT2009_PLUS_BOT_USE_SHOP_AIDS_V1: the bots use Seon-Hae's additives, 71052 on a Champion's glove and 71083 on a
@@ -7564,6 +7567,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_YOHARA_RESIST_HP_V1: the Sung Ma maps' resistance census (playerbot_yohara_resist_hp.h) - its own clock.
 		if (d->IsPhase(PHASE_GAME))
 			ManagePlayerBotYoharaResistTick(ch, dwNow);
+#endif
+#ifdef MT2009_PLUS_BOT_YSPOT_ELEMENT_V1
+		// MT2009_PLUS_BOT_YSPOT_ELEMENT_V1: the Sung Ma spot's element look - the gear's change, the census (its own clock).
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotYSpotTick(ch, dwNow);
 #endif
 		// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: the temple's statue shape ends off
 		// its floors, and on a floor after a while (playerbot_zodiac_bots.h).
