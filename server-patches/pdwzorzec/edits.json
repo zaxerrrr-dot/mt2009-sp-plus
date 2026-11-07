@@ -1,0 +1,32 @@
+[
+  {
+    "file": "constants.cpp",
+    "marker": "MT2009_PLUS_EXP_REFERENCE_V1 (delta table)",
+    "old": "// EXPERIENCE BONUS LV DELTA TABLE\nextern const int aiPercentExperienceByDeltaLev[MAX_EXP_DELTA_OF_LEV] =\n{\n\t1,  //  -15 0\n\t5,  //  -14 1\n\t10, //  -13 2\n\t20, //  -12 3\n\t30, //  -11 4\n\t50, //  -10 5\n\t70, //  -9  6\n\t80, //  -8  7\n\t85, //  -7  8\n\t90, //  -6  9\n\t92, //  -5  10\n\t94, //  -4  11\n\t96, //  -3  12\n\t98, //  -2  13\n\t100,    //  -1  14\n\t100,    //  0   15\n\t102,    //  1   16\n\t105,    //  2   17\n\t108,    //  3   18\n\t111,    //  4   19\n\t114,    //  5   20\n\t117,    //  6   21\n\t120,    //  7   22\n\t123,    //  8   23\n\t126,    //  9   24\n\t130,    //  10  25\n\t133,    //  11  26\n\t136,    //  12  27\n\t139,    //  13  28\n\t142,    //  14  29\n\t145,    //  15  30\n};\n",
+    "new": "// EXPERIENCE BONUS LV DELTA TABLE\n// MT2009_PLUS_EXP_REFERENCE_V1 (delta table): a monster above the player - the reference's +5% a level, 180%\n// at +15 (the owner, 7 November 2026; ours was 102 .. 145). Below the player - unchanged (the same in both).\nextern const int aiPercentExperienceByDeltaLev[MAX_EXP_DELTA_OF_LEV] =\n{\n\t1,  //  -15 0\n\t5,  //  -14 1\n\t10, //  -13 2\n\t20, //  -12 3\n\t30, //  -11 4\n\t50, //  -10 5\n\t70, //  -9  6\n\t80, //  -8  7\n\t85, //  -7  8\n\t90, //  -6  9\n\t92, //  -5  10\n\t94, //  -4  11\n\t96, //  -3  12\n\t98, //  -2  13\n\t100,    //  -1  14\n\t100,    //  0   15\n\t105,    //  1   16\n\t110,    //  2   17\n\t115,    //  3   18\n\t120,    //  4   19\n\t125,    //  5   20\n\t130,    //  6   21\n\t135,    //  7   22\n\t140,    //  8   23\n\t145,    //  9   24\n\t150,    //  10  25\n\t155,    //  11  26\n\t160,    //  12  27\n\t165,    //  13  28\n\t170,    //  14  29\n\t180,    //  15  30\n};\n// The table before (102 .. 145) - GiveExp takes it while the event flag exp_reference_off is 1.\nextern const int aiPercentExperienceByDeltaLevOld[MAX_EXP_DELTA_OF_LEV] =\n{\n\t1,  //  -15 0\n\t5,  //  -14 1\n\t10, //  -13 2\n\t20, //  -12 3\n\t30, //  -11 4\n\t50, //  -10 5\n\t70, //  -9  6\n\t80, //  -8  7\n\t85, //  -7  8\n\t90, //  -6  9\n\t92, //  -5  10\n\t94, //  -4  11\n\t96, //  -3  12\n\t98, //  -2  13\n\t100,    //  -1  14\n\t100,    //  0   15\n\t102,    //  1   16\n\t105,    //  2   17\n\t108,    //  3   18\n\t111,    //  4   19\n\t114,    //  5   20\n\t117,    //  6   21\n\t120,    //  7   22\n\t123,    //  8   23\n\t126,    //  9   24\n\t130,    //  10  25\n\t133,    //  11  26\n\t136,    //  12  27\n\t139,    //  13  28\n\t142,    //  14  29\n\t145,    //  15  30\n};\n"
+  },
+  {
+    "file": "char_battle.cpp",
+    "marker": "MT2009_PLUS_EXP_REFERENCE_V1 (old table)",
+    "old": "#define NEW_GET_LVDELTA(me, victim) aiPercentExperienceByDeltaLev[MINMAX(0, (victim + 15) - me, MAX_EXP_DELTA_OF_LEV - 1)]\n",
+    "new": "#define NEW_GET_LVDELTA(me, victim) aiPercentExperienceByDeltaLev[MINMAX(0, (victim + 15) - me, MAX_EXP_DELTA_OF_LEV - 1)]\n// MT2009_PLUS_EXP_REFERENCE_V1 (old table): the table before (constants.cpp), for exp_reference_off = 1\nextern const int aiPercentExperienceByDeltaLevOld[MAX_EXP_DELTA_OF_LEV];\n#define OLD_GET_LVDELTA(me, victim) aiPercentExperienceByDeltaLevOld[MINMAX(0, (victim + 15) - me, MAX_EXP_DELTA_OF_LEV - 1)]\n"
+  },
+  {
+    "file": "char_battle.cpp",
+    "marker": "MT2009_PLUS_EXP_REFERENCE_V1 (delta switch)",
+    "old": "\tint lvDelta = NEW_GET_LVDELTA(toLevel, fromLevel);\n",
+    "new": "\t// MT2009_PLUS_EXP_REFERENCE_V1 (delta switch): the reference table (constants.cpp); the event flag\n\t// exp_reference_off = 1 brings the old one back without a build.\n\tint lvDelta = quest::CQuestManager::instance().GetEventFlag(\"exp_reference_off\")\n\t\t? OLD_GET_LVDELTA(toLevel, fromLevel) : NEW_GET_LVDELTA(toLevel, fromLevel);\n"
+  },
+  {
+    "file": "party.cpp",
+    "marker": "MT2009_PLUS_EXP_REFERENCE_V1 (include)",
+    "old": "#include \"unique_item.h\"\n#include \"log.h\"\n",
+    "new": "#include \"unique_item.h\"\n#include \"log.h\"\n#include \"questmanager.h\" // MT2009_PLUS_EXP_REFERENCE_V1 (include): exp_reference_off\n"
+  },
+  {
+    "file": "party.cpp",
+    "marker": "MT2009_PLUS_EXP_REFERENCE_V1 (party bonus)",
+    "old": "\tif (GetExpDistributionMode() == PARTY_EXP_DISTRIBUTION_NON_PARITY)\n\t\treturn 0;\n\n\treturn m_iExpBonus + m_iLongTimeExpBonus + m_iEveryClassExpBonus;\n",
+    "new": "\t// MT2009_PLUS_EXP_REFERENCE_V1 (party bonus): the bonus in both modes, as the reference (the owner,\n\t// 7 November 2026) - \"by level\" (NON_PARITY, the default) got 0 before. The event flag\n\t// exp_reference_off = 1 brings the old rule back.\n\tif (GetExpDistributionMode() == PARTY_EXP_DISTRIBUTION_NON_PARITY\n\t\t&& quest::CQuestManager::instance().GetEventFlag(\"exp_reference_off\"))\n\t\treturn 0;\n\n\treturn m_iExpBonus + m_iLongTimeExpBonus + m_iEveryClassExpBonus;\n"
+  }
+]
