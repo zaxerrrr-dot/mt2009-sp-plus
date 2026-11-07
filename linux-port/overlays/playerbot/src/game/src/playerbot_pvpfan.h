@@ -67,6 +67,13 @@ namespace
 	const DWORD PVPFAN_CENSUS_MS = 60000;
 	const DWORD PVPFAN_LOAD_TIMEOUT_MS = 45000;
 	const DWORD PVPFAN_START_TIMEOUT_MS = 4 * 60 * 1000;
+	// MT2009_PLUS_PVPFAN_TIME_FIX_V1 (the first test, 7 November 2026): the tick's dwNow is read before the queue's
+	// command sets stateAt with a later get_dword_time(), so dwNow - stateAt wrapped round to ~4 billion and a war
+	// stopped "after 4 minutes" in its first second. Every elapsed time here: 0 while the mark is still ahead.
+	inline DWORD PvpFanSince(DWORD dwNow, DWORD at)
+	{
+		return (int)(dwNow - at) > 0 ? dwNow - at : 0;
+	}
 	const DWORD PVPFAN_WAIT_TIMEOUT_MS = 45 * 60 * 1000;
 	const DWORD PVPFAN_RETARGET_MS = 1500;
 	const DWORD PVPFAN_STATE_WRITE_MS = 5000;
@@ -1221,7 +1228,7 @@ namespace
 	void FinishPlayerBotPvpFanWar(TPvpFanWar& war, int winner, bool timeUp)
 	{
 		const DWORD dwNow = get_dword_time();
-		const unsigned int secs = war.fightAt ? (dwNow - war.fightAt) / 1000 : 0;
+		const unsigned int secs = war.fightAt ? PvpFanSince(dwNow, war.fightAt) / 1000 : 0;
 		char clock[16];
 		snprintf(clock, sizeof(clock), "%u:%02u", secs / 60, secs % 60);
 		std::string kills, survivors;
@@ -1316,7 +1323,7 @@ namespace
 			FinishPlayerBotPvpFanWar(war, standing == 1 ? last : -1, false);
 			return;
 		}
-		if (dwNow - war.fightAt >= (DWORD)war.maxMinutes * 60 * 1000)
+		if (PvpFanSince(dwNow, war.fightAt) >= (DWORD)war.maxMinutes * 60 * 1000)
 		{
 			int best = -1;
 			bool tie = false;
@@ -1341,7 +1348,7 @@ namespace
 		for (size_t i = 0; i < war.fighters.size(); ++i)
 		{
 			TPvpFanFighter& f = war.fighters[i];
-			if (f.phase == PVPFAN_F_LOADING && dwNow - f.askedAt > PVPFAN_LOAD_TIMEOUT_MS)
+			if (f.phase == PVPFAN_F_LOADING && PvpFanSince(dwNow, f.askedAt) > PVPFAN_LOAD_TIMEOUT_MS)
 			{
 				sys_err("PVPFAN: pid=%u login=%s did not load in %u s - out of this war", f.pid, f.login.c_str(),
 						PVPFAN_LOAD_TIMEOUT_MS / 1000);
@@ -1351,7 +1358,7 @@ namespace
 			}
 			if (f.phase != PVPFAN_F_QUEUED || budget <= 0)
 				continue;
-			if (f.askedAt && dwNow - f.askedAt < 3000)
+			if (f.askedAt && PvpFanSince(dwNow, f.askedAt) < 3000)
 				continue;
 			--budget;
 			f.askedAt = dwNow;
@@ -1555,7 +1562,7 @@ namespace
 	{
 		if (!IsPlayerBotPvpFanEnabled())
 			return;
-		if (s_dwPvpFanLastTick && dwNow - s_dwPvpFanLastTick < PVPFAN_TICK_MS)
+		if (s_dwPvpFanLastTick && PvpFanSince(dwNow, s_dwPvpFanLastTick) < PVPFAN_TICK_MS)
 			return;
 		s_dwPvpFanLastTick = dwNow;
 		PollPlayerBotPvpFanQueue(dwNow);
@@ -1613,14 +1620,14 @@ namespace
 					}
 					else if (!pending)
 						StopPlayerBotPvpFanWar(war.catId, "za malo botow weszlo (druzyna bez nikogo)");
-					else if (dwNow - war.stateAt > PVPFAN_START_TIMEOUT_MS)
+					else if (PvpFanSince(dwNow, war.stateAt) > PVPFAN_START_TIMEOUT_MS)
 						StopPlayerBotPvpFanWar(war.catId, "boty nie weszly w 4 minuty");
 					else if (dwNow >= war.nextStateWrite)
 						WritePlayerBotPvpFanState(war, "Boty wchodza");
 					break;
 				}
 				case PVPFAN_WAITING:
-					if (dwNow - war.stateAt > PVPFAN_WAIT_TIMEOUT_MS)
+					if (PvpFanSince(dwNow, war.stateAt) > PVPFAN_WAIT_TIMEOUT_MS)
 						StopPlayerBotPvpFanWar(war.catId, "nikt nie dal sygnalu przez 45 minut");
 					else if (dwNow >= war.nextStateWrite)
 						WritePlayerBotPvpFanState(war, "Czekaja na sygnal");
@@ -1644,7 +1651,7 @@ namespace
 						std::unique_ptr<SQLMsg> ins = PvpFanQuery(
 								"INSERT INTO player.pvpfan_war (category_id, category_name, started_at, fight_at, state, fighters, started_by) "
 								"VALUES (%u, '%s', NOW() - INTERVAL %u SECOND, NOW(), 'fighting', %u, '%s')", war.catId,
-								PvpFanEscape(war.name).c_str(), (dwNow - war.stateAt) / 1000 + war.countdown, fighters,
+								PvpFanEscape(war.name).c_str(), PvpFanSince(dwNow, war.stateAt) / 1000 + war.countdown, fighters,
 								PvpFanEscape(war.startedBy.substr(0, 46)).c_str());
 						war.warRowId = PvpFanOk(ins) ? ins->Get()->uiInsertID : 0;
 						for (size_t i = 0; i < war.fighters.size(); ++i)
@@ -1667,7 +1674,7 @@ namespace
 						WritePlayerBotPvpFanState(war, "Walka trwa");
 					break;
 				case PVPFAN_FINISHED:
-					if (dwNow - war.stateAt < (DWORD)war.exitSec * 1000)
+					if (PvpFanSince(dwNow, war.stateAt) < (DWORD)war.exitSec * 1000)
 						break;
 					// fall through
 				case PVPFAN_STOPPING:
