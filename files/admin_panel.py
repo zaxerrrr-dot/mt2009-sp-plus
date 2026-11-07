@@ -13713,9 +13713,9 @@ def api_bot_gear_history(pid):
                 item = localized_item_name(vnum, language) if vnum else ""
                 hint = log_text(r.get("hint")).strip()
                 detail = ""
-                if how in ("PLAYERBOT_GIFT_OUT"):
+                if how in ("PLAYERBOT_GIFT_OUT",):
                     detail = "→ " + hint
-                elif how in ("PLAYERBOT_GIFT_IN"):
+                elif how in ("PLAYERBOT_GIFT_IN",):
                     detail = "← " + hint
                 elif how == "PLAYERBOT_STALL_SOLD":
                     # "vnum xCOUNT za PRICE"

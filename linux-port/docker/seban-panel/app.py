@@ -3963,7 +3963,7 @@ def read_student_chest_disabled():
     "not disabled", matching the chest's original always-on behaviour.
     """
     if ENGINE_MT2009:
-        return bool(read_global_quest_flags(("m2_starter_chest_off"))["m2_starter_chest_off"])
+        return bool(read_global_quest_flags(("m2_starter_chest_off",))["m2_starter_chest_off"])
     try:
         row = one("SELECT value FROM common.m2_switches WHERE name='disable_student_chest'")
     except pymysql.MySQLError:
@@ -3998,7 +3998,7 @@ def write_student_chest_disabled(disabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('disable_student_chest', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if disabled else "0"),
+        ("1" if disabled else "0",),
     )
     return "done"
 
@@ -4353,7 +4353,7 @@ def write_include_real_players_in_rankings(enabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('include_real_players_in_rankings', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if enabled else "0"),
+        ("1" if enabled else "0",),
     )
 
 
@@ -4374,7 +4374,7 @@ def write_announce_plus9_refines(enabled):
     rows(
         "INSERT INTO common.m2_switches (name, value) VALUES ('announce_plus9_refines', %s) "
         "ON DUPLICATE KEY UPDATE value = VALUES(value)",
-        ("1" if enabled else "0"),
+        ("1" if enabled else "0",),
     )
 
 
@@ -4417,7 +4417,7 @@ def logstat_marks():
         return _logstat_cache["marks"]
     marks = {}
     try:
-        for row in rows("SELECT name,value FROM player.web_seban_settings WHERE name LIKE %s", ("logstat_wm:%")):
+        for row in rows("SELECT name,value FROM player.web_seban_settings WHERE name LIKE %s", ("logstat_wm:%",)):
             try:
                 marks[row["name"].split(":", 1)[1]] = datetime.strptime(row["value"], "%Y-%m-%d %H:%M:%S")
             except (ValueError, IndexError):
@@ -4928,7 +4928,7 @@ def full_plus9_badges_enabled():
 
 def write_full_plus9_badges_enabled(enabled):
     rows("""INSERT INTO common.m2_switches (name,value) VALUES ('full_plus9_badges_enabled',%s)
-        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0"))
+        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
 
 
 def shop_explain_enabled():
@@ -4949,7 +4949,7 @@ def shop_explain_enabled():
 
 def write_shop_explain_enabled(enabled):
     rows("""INSERT INTO common.m2_switches (name,value) VALUES ('shop_explain_enabled',%s)
-        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0"))
+        ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
 
 
 # MT2009_PLUS_CHAMPION_PANEL_V1: Poziom Czempiona (player.conqueror_level, czempion.sql / MT2009_PLUS_CHAMPION_V1).
@@ -7217,7 +7217,7 @@ def plus9_vnums():
     (it changes only with a database editor apply)."""
     if time.time() - _plus9_vnum_cache["at"] < 600 and _plus9_vnum_cache["vnums"]:
         return _plus9_vnum_cache["vnums"]
-    found = rows("SELECT vnum, HEX(locale_name) AS name_hex FROM player.item_proto WHERE locale_name LIKE %s", ("%+9"))
+    found = rows("SELECT vnum, HEX(locale_name) AS name_hex FROM player.item_proto WHERE locale_name LIKE %s", ("%+9",))
     vnums = frozenset(int(row["vnum"]) for row in found
                       if re.search(r"\+9\s*$", cp1250_hex_text(row.get("name_hex")) or ""))
     _plus9_vnum_cache.update(at=time.time(), vnums=vnums)
@@ -7689,7 +7689,7 @@ def manage_bulk_vip():
             affected = cur.rowcount
     label = dict(PREMIUM_TYPES).get(premium_type, column)
     rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_VIP_GRANT_BULK',%s)",
-         (f"{label} +{days}d, all playerbot accounts"))
+         (f"{label} +{days}d, all playerbot accounts",))
     flash(f"Nadano {label} (+{days} dni) wszystkim botom ({affected} kont).")
     return redirect(url_for("manage"))
 
@@ -9290,7 +9290,7 @@ def api_character_creator_accounts():
     q = request.args.get("q", "").strip()[:60]
     where, params = "", ()
     if q:
-        where, params = " WHERE a.login LIKE %s", (f"%{q}%")
+        where, params = " WHERE a.login LIKE %s", (f"%{q}%",)
     accounts = rows(
         "SELECT a.id,a.login,pi.empire,"
         "(pi.pid1<>0)+(pi.pid2<>0)+(pi.pid3<>0)+(pi.pid4<>0) AS used_slots "
@@ -10209,7 +10209,7 @@ def battlepass():
                         next_id += 1
                         added += 1
                 rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_BATTLEPASS',%s)",
-                     (f"saved {saved}, added {added}, removed {removed}"))
+                     (f"saved {saved}, added {added}, removed {removed}",))
                 flash(f"Misje zapisane (zmienione: {saved}, nowe: {added}, usunięte: {removed}). "
                       "Gra wczyta je w ciągu 30 sekund.", "success")
         except ValueError as error:
@@ -10320,7 +10320,7 @@ def wheel():
         rows("REPLACE INTO itemshop.kola_settings (name, value) VALUES ('override_wheel', %s), ('enabled', %s), ('key_chance', %s)",
              (str(override), enabled, str(key_chance)))
         rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_KOLA',%s)",
-             (f"override={override} enabled={enabled} key_chance={key_chance}"))
+             (f"override={override} enabled={enabled} key_chance={key_chance}",))
         flash("Zapisane. Sklep stosuje to od razu, okno F12 w grze w ciągu 30 sekund. Gracze z innym kołem "
               "wracają przy następnym obrocie na poziom 1 nowego koła.", "success")
         return redirect(url_for("wheel"))
