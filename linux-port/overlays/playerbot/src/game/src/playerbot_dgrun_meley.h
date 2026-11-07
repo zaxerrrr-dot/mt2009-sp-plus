@@ -544,6 +544,31 @@ namespace
 				(unsigned int)run.members.size(), count[0], count[1], count[2], count[3], line.c_str());
 	}
 
+
+	// MT2009_PLUS_BOT_MELEY_REBUFF_V1 (night 6/7 November): stage 3 (the statues from 50% to 1% behind eggs and Idalls)
+	// ran out of the hour in 9 of 13 runs 01:50-03:15 (stage 3 at 2400-3100 s; the wins 940-2390 s). The bots' run
+	// bonus against monsters for Meley is 80% (event flag m2_bot_meley_monster_pct, 1-100; the YDG runs' 50%), and a
+	// member back on its feet gets the bonuses again (a death clears them). Off: event flag m2_bot_meley_rebuff_off.
+	void BoostPlayerBotMeleyMember(LPCHARACTER c)
+	{
+		if (!c)
+			return;
+		BuffPlayerBotYdgMember(c);
+		int pct = quest::CQuestManager::instance().GetEventFlag("m2_bot_meley_monster_pct");
+		pct = pct > 0 ? std::min(pct, 100) : 80;
+		c->AddAffect(AFFECT_PLAYERBOT_YDG_MONSTER, POINT_ATTBONUS_MONSTER, pct, 0, 3700, 0, true);
+	}
+
+	void RebuffPlayerBotMeleyMember(LPCHARACTER ch, const TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		if (!ch || ch->IsDead() || ch->FindAffect(AFFECT_PLAYERBOT_YDG_MONSTER) ||
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_meley_rebuff_off") != 0)
+			return;
+		BoostPlayerBotMeleyMember(ch);
+		PlayerBotLogThrottled("meley_rebuff", dwNow, "BOT_MELEY: rebuff run=%d name=%s hp=%d/%d", run.iId, ch->GetName(),
+				ch->GetHP(), ch->GetMaxHP());
+	}
+
 	void NotePlayerBotMeleyRunStart(const TPlayerBotDgRun& run)
 	{
 		TPlayerBotMeleyRun& mr = s_mapPlayerBotMeleyRuns[run.iId];
@@ -557,7 +582,7 @@ namespace
 			if (!c)
 				continue;
 			MakePlayerBotYdgRoom(c, "meley_start");
-			BuffPlayerBotYdgMember(c);
+			BoostPlayerBotMeleyMember(c);	// MT2009_PLUS_BOT_MELEY_REBUFF_V1
 			std::vector<int>& v = mr.start[run.members[i]];
 			v.assign(3, 0);
 			CountPlayerBotMeleyMats(c, &v[0]);

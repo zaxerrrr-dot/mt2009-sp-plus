@@ -684,6 +684,7 @@ namespace
 	int GetPlayerBotMeleyRunPartyMax(int runId);
 	int GetPlayerBotMeleyRunStartMin(int runId, int startMin);
 	bool FightPlayerBotMeleyRole(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, LPCHARACTER anchor, DWORD dwNow);
+	void RebuffPlayerBotMeleyMember(LPCHARACTER ch, const TPlayerBotDgRun& run, DWORD dwNow);	// MT2009_PLUS_BOT_MELEY_REBUFF_V1
 	// MT2009_PLUS_BOT_DROPKNOW_V1 / MT2009_PLUS_BOT_DROPKI_V1: the drop knowledge's demand on a dungeon, the Dropki
 	// (playerbot_dropknow.h, playerbot_dropki.h - included by playerbot_manager.cpp later in this unit).
 	bool IsPlayerBotDropKnowDemander(DWORD pid, int def);
@@ -2698,6 +2699,8 @@ namespace
 		// the fallback to the camp.
 		if (def.bKind == DGRUN_KIND_YDG && DodgePlayerBotGlebieZones(ch, state, run, dwNow))	// MT2009_PLUS_BOT_GLEBIE_V1: ice circles
 			return true;
+		if (def.bKind == DGRUN_KIND_MELEY)	// MT2009_PLUS_BOT_MELEY_REBUFF_V1
+			RebuffPlayerBotMeleyMember(ch, run, dwNow);
 		if (KeepPlayerBotDgRunAlive(ch, state, run, dwNow))
 			return true;
 		if (HealPlayerBotDgRunFellow(ch, state, run, dwNow))
