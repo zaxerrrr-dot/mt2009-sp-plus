@@ -24,9 +24,29 @@
 //     the one it eats when seven cost less than one at its ask, or when no counter holds the fruit it eats at all.
 // Event flag m2_bot_fruit_craft_off 1: none of it (the keep for crafts too). Census every 10 minutes:
 // "PLAYERBOT_RANK_FRUIT_CRAFT: census ..." (crafted / failed / apples_bought_for_craft / bought_for_craft_no_higher).
+//
+// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1 (the owner, 7 November 2026: "boty nie chodza do Uriela"): the test world's census
+// said visits=0 crafted=0 for days on every core. Why, read in the world (7 November, 10:30):
+//   * no bot had a craft: the "worth" rule wanted the clearing ask or seven lower pieces cheaper than one higher - at
+//     the table's asks (Jablko 13.5 M, Gruszka 20.3 M on the test world) seven cost 4.7 times one, never cheaper; and
+//     the clearing has a 60-minute warm-up after every restart. The craft keep (seven of the lower fruit) needs a bot
+//     due the higher fruit that still holds the lower one - 25 bots of 2 031 under their goal held seven, 5 of them on
+//     an Uriel's map (1, 21, 41, 373). Meanwhile the counters held 1 038 Jablka against 20 sold in 12 hours;
+//   * the 90-240 s clock: a bot in a village for its counter's service (every counter of 1/21/41 stands within 250 m
+//     of Uriel) is there a minute or two, and its look often fell outside.
+// Now (each behind its own switch, the counts on "PLAYERBOT_RANK_FRUIT_CRAFT_WHY: census"):
+//   * m2_bot_fruit_craft_glut_off 0 (default): a fruit the counters are glutted with (PLAYERBOT_FRUIT_CRAFT_GLUT_UNITS
+//     on them and more than PLAYERBOT_FRUIT_CRAFT_GLUT_DAYS days of its sales) is worth crafting - a bot crafts its
+//     surplus of it (above its base keep: the goal's need and the Jablka reserve) instead of listing more of it;
+//   * m2_bot_fruit_craft_arrive_off 0 (default): a bot that comes onto a map looks for its craft within seconds.
 
 #include <unordered_map>
 #include <vector>
+
+namespace
+{
+	bool IsPlayerBotFruitGlutted(int lower);	// below (MT2009_PLUS_RANK_FRUIT_CONSIGN_V1)
+}
 
 namespace mt2009_fruitcraft
 {
@@ -44,8 +64,13 @@ namespace mt2009_fruitcraft
 		DWORD actionAt;
 		DWORD npcVid;
 		bool walking;
-		TVisit() : nextCheck(0), startedAt(0), actionAt(0), npcVid(0), walking(false) {}
+		long lastMap;	// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: the map of the last tick (an arrival asks at once)
+		TVisit() : nextCheck(0), startedAt(0), actionAt(0), npcVid(0), walking(false), lastMap(0) {}
 	};
+
+	// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: why the looks led nowhere ("PLAYERBOT_RANK_FRUIT_CRAFT_WHY: census").
+	unsigned int s_whyChecks = 0, s_whyBusy = 0, s_whyNoWork = 0, s_whyNoRoom = 0, s_whyNoUriel = 0, s_whyArrivals = 0;
+	unsigned int s_whyGlutWork = 0;
 
 	std::unordered_map<DWORD, TVisit> s_visits;
 	std::vector<std::pair<DWORD, DWORD> > s_walkers;	// (pid, start)
@@ -134,20 +159,54 @@ namespace mt2009_fruitcraft
 		}
 		s_noHigherSeen = s_ullPlayerBotRankFruitBoughtNoHigher;
 		s_visits_done = s_going = s_gaveUp = s_capped = 0;
+		// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: the looks and why they led nowhere; which fruits are glutted now.
+		char glut[128];
+		int glen = 0;
+		glut[0] = '\0';
+		for (int i = 0; i + 1 < FRUIT_COUNT; ++i)
+			if (IsPlayerBotFruitGlutted(i) && glen >= 0 && glen < (int)sizeof(glut))
+				glen += snprintf(glut + glen, sizeof(glut) - glen, "%s%u", glen ? "," : "", FRUITS[i].vnum);
+		sys_log(0, "PLAYERBOT_RANK_FRUIT_CRAFT_WHY: census glut_on=%d arrive_on=%d checks=%u busy=%u no_work=%u no_room=%u "
+				"no_uriel=%u glut_work=%u arrivals=%u glutted=%s",
+				BotFruitOn(BOT_FRUIT_CRAFT_GLUT) ? 1 : 0, BotFruitOn(BOT_FRUIT_CRAFT_ARRIVE) ? 1 : 0, s_whyChecks, s_whyBusy,
+				s_whyNoWork, s_whyNoRoom, s_whyNoUriel, s_whyGlutWork, s_whyArrivals, glut[0] ? glut : "-");
+		s_whyChecks = s_whyBusy = s_whyNoWork = s_whyNoRoom = s_whyNoUriel = s_whyArrivals = s_whyGlutWork = 0;
 	}
 }
 
 namespace
 {
+	// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: the counters glutted with a fruit (index `lower`, below Ananas): at least
+	// PLAYERBOT_FRUIT_CRAFT_GLUT_UNITS on them (the shop channel's ledger) and more than PLAYERBOT_FRUIT_CRAFT_GLUT_DAYS
+	// days of its sales (the clearing's 12-hour window, every buyer). Test world, 7 November: Jablka 1 038 on the
+	// counters, 20 sold in 12 h - 26 days. m2_bot_fruit_craft_glut_off 1: never.
+	const DWORD PLAYERBOT_FRUIT_CRAFT_GLUT_UNITS = 300;
+	const DWORD PLAYERBOT_FRUIT_CRAFT_GLUT_DAYS = 3;
+
+	bool IsPlayerBotFruitGlutted(int lower)
+	{
+		using namespace mt2009_rankp;
+		if (lower < 0 || lower + 1 >= FRUIT_COUNT || !BotFruitOn(BOT_FRUIT_CRAFT_GLUT))
+			return false;
+		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(FRUITS[lower].vnum);
+		const DWORD supply = entry ? entry->dwSupplyUnits : 0;
+		if (supply < PLAYERBOT_FRUIT_CRAFT_GLUT_UNITS)
+			return false;
+		// sold in 12 h x 2 = a day's sales
+		return (unsigned long long)GetPlayerBotRankFruitSold12h(FRUITS[lower].vnum) * 2ULL * PLAYERBOT_FRUIT_CRAFT_GLUT_DAYS <
+				(unsigned long long)supply;
+	}
+
 	// Worth crafting a fruit's surplus (index `lower` -> lower + 1): the lower fruit overstocked (the clearing ask is
-	// on) or seven of it at its ask under one of the higher.
+	// on, or MT2009_PLUS_RANK_FRUIT_CONSIGN_V1 the counters glutted with it) or seven of it at its ask under one of the
+	// higher.
 	bool IsPlayerBotFruitCraftWorth(int lower)
 	{
 		using namespace mt2009_rankp;
 		if (lower < 0 || lower + 1 >= FRUIT_COUNT)
 			return false;
 		const DWORD low = FRUITS[lower].vnum, high = FRUITS[lower + 1].vnum;
-		return GetPlayerBotClearingUnit(low) > 0 ||
+		return GetPlayerBotClearingUnit(low) > 0 || IsPlayerBotFruitGlutted(lower) ||
 				(unsigned long long)GetPlayerBotRankFruitListUnit(low) * PLAYERBOT_FRUIT_CRAFT_IN <
 				(unsigned long long)GetPlayerBotRankFruitListUnit(high);
 	}
@@ -238,22 +297,56 @@ bool ManagePlayerBotRankFruitCraft(LPCHARACTER ch, TPlayerBotAIState& state, DWO
 		{
 			// The first look staggered by the pid, so a core's bots never ask together after a start.
 			v.nextCheck = dwNow + CHECK_MIN_MS + (ch->GetPlayerID() * 7919U) % CHECK_MAX_MS;
+			v.lastMap = ch->GetMapIndex();
 			return false;
+		}
+		// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: a bot that has just come onto a map with an Uriel (its village, for its
+		// counter's service: a minute or two there) looks for its craft within seconds, not on the long clock.
+		if (v.lastMap != ch->GetMapIndex())
+		{
+			v.lastMap = ch->GetMapIndex();
+			if (BotFruitOn(mt2009_rankp::BOT_FRUIT_CRAFT_ARRIVE) && (int)(v.nextCheck - dwNow) > 8000 &&
+					HasPlayerBotFruitCraftWork(ch) && mt2009_potega::FindUriel(ch, 0) != NULL)
+			{
+				v.nextCheck = dwNow + number(3000, 8000);
+				++s_whyArrivals;
+			}
 		}
 		if ((int)(dwNow - v.nextCheck) < 0)
 			return false;
 		v.nextCheck = dwNow + number(CHECK_MIN_MS, CHECK_MAX_MS);
+		++s_whyChecks;
 		if (ch->GetMyShop() || ch->GetExchange() || state.bFishingSession || state.bMarketTrip || state.bVisitingShop ||
 				state.bVisitingBiologist || state.bVisitingHerbalist || state.bVisitingStable || state.bVisitingAlchemist ||
 				state.bVisitingUriel || state.bCraftErrand != 0 || state.bWorldEventKind != 0 ||
 				ch->GetVictim() != NULL || state.dwTargetVID != 0 || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch))
+		{
+			++s_whyBusy;
 			return false;
-		if (!HasPlayerBotFruitCraftWork(ch) || CountPlayerBotFreeInventoryCells(ch) < 2)
+		}
+		if (!HasPlayerBotFruitCraftWork(ch))
+		{
+			++s_whyNoWork;
 			return false;
+		}
+		if (CountPlayerBotFreeInventoryCells(ch) < 2)
+		{
+			++s_whyNoRoom;
+			return false;
+		}
 		LPCHARACTER uriel = mt2009_potega::FindUriel(ch, 0);
 		if (!uriel)
+		{
+			++s_whyNoUriel;
 			return false;
+		}
+		for (int i = 0; i + 1 < mt2009_rankp::FRUIT_COUNT; ++i)
+			if (IsPlayerBotFruitGlutted(i) && GetPlayerBotFruitCraftCount(ch, i) > 0)
+			{
+				++s_whyGlutWork;
+				break;
+			}
 		if (Walkers(dwNow) >= MAX_WALKERS)
 		{
 			++s_capped;

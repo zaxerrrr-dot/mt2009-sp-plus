@@ -193,15 +193,23 @@ namespace mt2009_rankp
 	//   m2_bot_rank_fruit_stack_off  a bot's fruit drop joins its stack (a new bag line a drop again)
 	//   m2_bot_fruit_craft_off       MT2009_PLUS_RANK_FRUIT_CRAFT_V1: the bots' 7 -> 1 crafting at Uriel and the
 	//                                lower fruit bought for it (playerbot_rank_fruit_craft.h)
-	enum EBotFruitSwitch { BOT_FRUIT_GOAL, BOT_FRUIT_PRICE, BOT_FRUIT_STACK, BOT_FRUIT_CRAFT, BOT_FRUIT_SWITCHES };
+	//   m2_bot_fruit_consign_off     MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: a bot with no counter of its own hands its
+	//                                surplus to a trader bot that lists it (playerbot_rank_fruit_consign.h)
+	//   m2_bot_fruit_craft_glut_off  MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: the surplus of a fruit the counters are glutted
+	//                                with is worth crafting at Uriel (IsPlayerBotFruitCraftWorth)
+	//   m2_bot_fruit_craft_arrive_off MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: a bot looks for its craft the moment it comes
+	//                                onto a map (an Uriel's village), not on its 90-240 s clock only
+	enum EBotFruitSwitch { BOT_FRUIT_GOAL, BOT_FRUIT_PRICE, BOT_FRUIT_STACK, BOT_FRUIT_CRAFT, BOT_FRUIT_CONSIGN,
+			BOT_FRUIT_CRAFT_GLUT, BOT_FRUIT_CRAFT_ARRIVE, BOT_FRUIT_SWITCHES };
 
 	bool BotFruitOn(EBotFruitSwitch which)
 	{
 		static const char* const FLAGS[BOT_FRUIT_SWITCHES] =
 			{ "m2_bot_rank_fruit_goal_off", "m2_bot_rank_fruit_price_off", "m2_bot_rank_fruit_stack_off",
-			  "m2_bot_fruit_craft_off" };
-		static DWORD s_readAt[BOT_FRUIT_SWITCHES] = { 0, 0, 0, 0 };
-		static int s_off[BOT_FRUIT_SWITCHES] = { 0, 0, 0, 0 };
+			  "m2_bot_fruit_craft_off", "m2_bot_fruit_consign_off", "m2_bot_fruit_craft_glut_off",
+			  "m2_bot_fruit_craft_arrive_off" };
+		static DWORD s_readAt[BOT_FRUIT_SWITCHES] = { 0 };
+		static int s_off[BOT_FRUIT_SWITCHES] = { 0 };
 		const DWORD now = get_dword_time();
 		if (s_readAt[which] == 0 || now - s_readAt[which] >= 10000)
 		{
