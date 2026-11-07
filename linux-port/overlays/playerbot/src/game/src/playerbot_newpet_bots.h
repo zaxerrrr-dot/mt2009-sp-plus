@@ -611,6 +611,13 @@ namespace
 	{
 		if (!ch || IsPlayerBotNewPetGoodsVnum(vnum) || !IsPlayerBotNewPetKeeper(ch) || IsPlayerBotNewPetCompanion(ch))
 			return 0;
+		// MT2009_PLUS_ORNAMENT_FARMER_PETMATS_V1 (the owner, 7 November 2026: "boty dropki ornamentow niech tez dropia
+		// spinki i wstegi i tez niech je wystawiaja"): the ornament farmers kill the Sworn camps (302 Ozdobna Spinka, 304 /
+		// 334 Biala Wstega+) and keep none of a pet's materials - all of it goes on their counter. Event flag
+		// m2_bot_ornament_petmats_keep 1: they keep for their own pet as the other keepers.
+		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_ORNAMENT_FARMER &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_ornament_petmats_keep") != 1)
+			return 0;
 		const TPlayerBotNewPetView* v = GetPlayerBotNewPetView(ch);
 		if (!v)
 			return 0;
