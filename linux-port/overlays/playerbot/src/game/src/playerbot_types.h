@@ -10471,6 +10471,15 @@ namespace
 	void NotePlayerBotYoharaBonusSpend(LPCHARACTER ch, BYTE wearCell, bool elementPhase, int changes, int adds);
 	// From the top of every tick (playerbot_manager.cpp, beside the hunt elixir): the per-map census's look.
 	void ManagePlayerBotYoharaResistTick(LPCHARACTER ch, DWORD dwNow);
+#define MT2009_PLUS_BOT_YSPOT_ELEMENT_V1 1
+	// MT2009_PLUS_BOT_YSPOT_ELEMENT_V1 (playerbot_yohara_spot_element.h, after playerbot_yohara_resist_hp.h - the owner,
+	// 7 November 2026: "Na roznych mapach rozne spoty sa na rozne odpornosci, wiec niech bot wybiera takie expowisko na
+	// mapie, pod jaki zywiol jest ubrany"): a Sung Ma spot's score by the damage its monsters' elements deal through the
+	// bot's (its party's) capped resistances (ChoosePlayerBotHuntingHub, playerbot_wandering.h), the spot it chose
+	// (the hub's change there), and the tick's look (playerbot_manager.cpp): the gear's change re-asks the spot, the census.
+	int AdjustPlayerBotYSpotHubScore(LPCHARACTER ch, long x, long y, int score, DWORD dwNow);
+	void NotePlayerBotYSpotChosen(LPCHARACTER ch, long x, long y, DWORD dwNow);
+	void ManagePlayerBotYSpotTick(LPCHARACTER ch, DWORD dwNow);
 #define MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 1
 	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h, after playerbot_element_resist.h): a Yohara
 	// bot's second set for a second element E2 (armour, helmet, bracelet, talisman, costume, hairstyle - and the second

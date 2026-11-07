@@ -379,7 +379,13 @@ namespace
 				score = worth / (1 + others);
 				// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hunt element's spots, a party's the densest (playerbot_sungma_fight.h)
 				if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()))
+				{
 					score = AdjustPlayerBotSungmaHubScore(ch, hub.x, hub.y, score);
+#ifdef MT2009_PLUS_BOT_YSPOT_ELEMENT_V1
+					// MT2009_PLUS_BOT_YSPOT_ELEMENT_V1: the spots of the elements the bot is dressed for (playerbot_yohara_spot_element.h)
+					score = AdjustPlayerBotYSpotHubScore(ch, hub.x, hub.y, score, dwNow);
+#endif
+				}
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 				score = AdjustPlayerBotYoharaLochHubScore(ch, hub.x, hub.y, score);	// the Loch's ice rooms first
 #endif
@@ -1789,6 +1795,10 @@ namespace
 						hubs[hubIndex].bNeedsParty ? 1 : 0,
 						ch->GetParty() ? (unsigned int)ch->GetParty()->GetMemberCount() : 0U,
 						ch->GetGuild() ? ch->GetGuild()->GetID() : 0U, hubScore);
+#ifdef MT2009_PLUS_BOT_YSPOT_ELEMENT_V1
+				if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && hubs[hubIndex].wBossRace == 0)
+					NotePlayerBotYSpotChosen(ch, hubs[hubIndex].x, hubs[hubIndex].y, dwNow);
+#endif
 			}
 		}
 		else if (IsPlayerBotMonkeyMap(ch->GetMapIndex()))
