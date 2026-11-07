@@ -503,6 +503,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_DEATHLOOP_V1: the revive away from the pack, the loop's map avoided (through the step down), the
 // Monkey Dungeons' solo level gate, the death pin cleared on the easier map - after the step down it feeds
 #include "playerbot_deathloop.h"
+// MT2009_PLUS_BOT_PET_MATS_V1: the growth pets' evolution materials - the keepers' hunt, the surplus on the counters, the
+// needed drop past the level fade (server-patches/botneeddrop) - after the pets, the market and the drop knowledge
+#include "playerbot_petmat.h"
 
 namespace
 {
@@ -8164,6 +8167,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_NEWPET_BOTS_V1: a keeper's New Pet System pet hatched,
 		// fed, raised and summoned (playerbot_newpet_bots.h).
 		ManagePlayerBotNewPet(ch, dwNow);
+		// MT2009_PLUS_BOT_PET_MATS_V1: a keeper short of an evolution material hunts it (playerbot_petmat.h).
+		ManagePlayerBotPetMat(ch, state, dwNow);
 		// Answered every tick and not on the party pass's own clock: the engine
 		// gives an invitation ten seconds to live, and the party pass can be
 		// three minutes away.

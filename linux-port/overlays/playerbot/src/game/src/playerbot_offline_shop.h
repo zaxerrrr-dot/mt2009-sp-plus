@@ -2269,7 +2269,7 @@ namespace {
             cutNote.shape = per::SHAPE_NATURAL_LINE;
             cutNote.keep = keep;
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; NotePlayerBotPetMatListed(ch, item->GetVnum(), take); return cell; }	// MT2009_PLUS_BOT_PET_MATS_V1
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -2277,6 +2277,7 @@ namespace {
             PlayerBotLogPerBot("offline_cut", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d lines=%d small=%d",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep,
                 lines, small);
+            NotePlayerBotPetMatListed(ch, item->GetVnum(), take);	// MT2009_PLUS_BOT_PET_MATS_V1
             return to;
         }
         // The Alchemist's dust goes up in packs, over the hundred a marble
