@@ -426,6 +426,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // own, the spot farmers' grounds and the yang it sends (playerbot_farmer_link.h),
 // after the droppers and the checklist whose eligibility it borrows.
 #include "playerbot_farmer_link.h"
+// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: the rank fruits of a bot with no counter handed to a trader bot that lists them
+// (playerbot_rank_fruit_consign.h), after the farmer link whose query helpers it uses.
+#include "playerbot_rank_fruit_consign.h"
 // MT2009_PLUS_LEGENDS_V1: the System Legend - the tiers' table, the Legends
 // and the Champions, the reputation, the notices and the engine's hooks.
 #include "playerbot_legends.h"
@@ -7618,6 +7621,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// of the Gruszki its boss dropped, hours on end (its own clock: the look below then returns at once).
 		if (IsPlayerBotRankFruitGoalOn())
 			ManagePlayerBotRankPoints(ch, dwNow);
+		// MT2009_PLUS_RANK_FRUIT_CONSIGN_V1: its surplus to a trader when no counter of its own lists it, or - a
+		// trader - a lot taken for its counter (playerbot_rank_fruit_consign.h); above the runs too, as the look.
+		ManagePlayerBotRankFruitConsign(ch, dwNow);
 
 		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
 		// and shouts, and does nothing else (playerbot_shouters.h).
