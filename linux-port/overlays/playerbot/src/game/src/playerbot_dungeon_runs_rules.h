@@ -140,7 +140,9 @@ namespace playerbot_dgrun
 		// is entered from 100 again and its monsters are the official ones -
 		// 6001-6009 of 97-107 (13 700-597 000 HP, 354-487 a blow), the Ignitor
 		// 107, Razador 108 (1.8 million HP). The band is the panel's 100-115.
-		{ "razador", 100, 6, 6, 5, true },
+		// MT2009_PLUS_BOT_DGRUN_BANDS_V1 (7 November 2026): the band 100-115 stood empty for a week (the bots are under
+		// 100 or at 120 - no run since 30 October): 105-120, as Nemere's, which runs. Players: the quest's 100 as before.
+		{ "razador", 105, 6, 6, 5, true },
 		// Nemere's (352): 6101-6109 of 78-88 (9 000-26 000 HP, 240-390 a
 		// blow, ice), the four Szels 88, Nemere 95.
 		// MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1: from 100 too, 6101-6109 of 97-107,
@@ -160,7 +162,9 @@ namespace playerbot_dgrun
 		// From 72, six called, five to go in, a Shaman always.
 		{ "skorpion", 72, 6, 6, 5, true },
 		// The Blue Dragon (208) is no run for three: four at the entrance.
-		{ "smok", 0, 4, 5, 4, false },
+		// MT2009_PLUS_BOT_DGRUN_BANDS_V1: the dungeon's own level gave 90-105, two free bots a kingdom at most (no run
+		// since 22 October): 105-120.
+		{ "smok", 105, 4, 5, 4, false },
 		// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158) - a dungeon one player of 75-80 finishes
 		// alone, the bots' gear twenty levels behind theirs (V2). The owner's 8 October tuning (Morkhot
 		// +150% damage, the Guardian and the Elite +70% HP and damage, denser waves): from 80, five

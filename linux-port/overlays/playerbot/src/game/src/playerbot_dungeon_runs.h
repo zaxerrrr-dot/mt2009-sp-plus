@@ -4244,11 +4244,8 @@ namespace
 			}
 		}
 		const int id = OpenPlayerBotDgRun(def, empire, picked, slot, bucket.size(), dwNow, why);
-		if (id != 0 && szcBoss)
-		{
+		if (id != 0 && szcBoss)		// V2: OpenPlayerBotDgRun marks it by the party's size; the call's choice holds too
 			s_mapPlayerBotDgRuns[id].bSzcBoss = true;
-			sys_log(0, "BOT_SZC: mode run=%d boss party=%u", id, (unsigned int)picked.size());
-		}
 		return id != 0;
 	}
 
@@ -4325,6 +4322,15 @@ namespace
 		sys_log(0, "BOT_DGRUN: called run=%d dungeon=%s empire=%u levels=%d-%d candidates=%u party=%u shaman=%d gather=%ld(%ld,%ld) why=%s names=%s",
 				run.iId, info.szKey, (unsigned int)empire, slot.lvMin, slot.lvMax, (unsigned int)candidates,
 				(unsigned int)run.members.size(), shaman ? 1 : 0, run.place.map, run.place.x, run.place.y, why, names.c_str());
+		// MT2009_PLUS_BOT_SZC_MODES_V2: the mode decided for every caller of a Zaklety Las (SZC) run - the clock, the
+		// Dropki rows and the training open their runs here too (V1 decided it in CallPlayerBotDungeonRun only, so the
+		// Dropki's parties of 4-5 hunted out the hour with no boss - no clear after 10:20 on 7 November): a pair (2)
+		// hunts, a party of 3 or more is a boss run.
+		if (info.bKind == DGRUN_KIND_SZC && IsPlayerBotSzcBossOn() && run.members.size() >= 3)
+		{
+			run.bSzcBoss = true;
+			sys_log(0, "BOT_SZC: mode run=%d boss party=%u why=%s", run.iId, (unsigned int)run.members.size(), why);
+		}
 		s_mapPlayerBotDgRuns[run.iId] = run;
 		return run.iId;
 	}
