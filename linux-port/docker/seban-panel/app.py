@@ -595,6 +595,20 @@ POINT_TO_APPLY = {6: 1, 8: 2, 13: 3, 15: 4, 12: 5, 14: 6, 17: 7, 19: 8, 21: 9, 3
  # applies them straight from the item). A pseudo key of 1000 + point, so
  # the label tables can name them; without it the panel wrote "Bonus #139".
  138: 1138, 139: 1139, 140: 1140, 141: 1141, 142: 1142, 143: 1143, 144: 1144, 145: 1145, 146: 1146, 147: 1147, 148: 1148, 149: 1149, 150: 1150, 151: 1151, 152: 1152, 153: 1153, 154: 1154, 155: 1155, 156: 1156, 157: 1157, 158: 1158, 159: 1159, 160: 1160, 161: 1161, 162: 1162, 163: 1163, 164: 1164, 165: 1165, 166: 1166, 167: 1167, 168: 1168}
+# MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (zgloszenie #25, 8 Nov 2026): every other point an item line can carry on mt2009 -
+# the 6th/7th bonuses (Sung Ma 193-196, Precyzja 197, the wiki's 198-318), MAGIC_ATT_GRADE_BONUS 97 ("Wartosc ataku
+# magicznego", a 6th/7th bonus), and the points that fell through unmapped onto a classic APPLY label of the same
+# number (49 Silny przeciwko Insektom showed as "Odpornosc na spowolnienie", 80 Odbicie strzal as "Odpornosc na sury")
+# or onto one without a label (16 Obrona -> 83) - gets a pseudo key 2000 + point named by the DB editor's POINT_LABELS
+# (dbeditor/items.py, the client's words; "x" = the value, filled in by apply_text).
+if ENGINE_MT2009:
+    from dbeditor.items import POINT_LABELS as _DBE_POINT_LABELS
+    for _point, (_name, _unit) in _DBE_POINT_LABELS.items():
+        if not _point or (_point in POINT_TO_APPLY and POINT_TO_APPLY[_point] in APPLY_LABELS):
+            continue
+        POINT_TO_APPLY[_point] = 2000 + _point
+        APPLY_LABELS[2000 + _point] = (_name, "" if re.search(r"(?<!\w)x(?!\w)", _name) else _unit)
+    del _point, _name, _unit
 # The kingdom of a character: the index, then (r40250 only) the account.
 EMPIRE_EXPR = "COALESCE(NULLIF(pi.empire,0),0)" if ENGINE_MT2009 else "COALESCE(NULLIF(pi.empire,0),a.empire,0)"
 
@@ -1263,6 +1277,9 @@ def apply_text(apply_type, value):
         key = POINT_TO_APPLY.get(key, key)
     name, suffix = APPLY_LABELS.get(key, (f"Bonus #{apply_type}", ""))
     value = int(value or 0)
+    # MT2009_PLUS_GMPANEL_POINT_BONUS_V1: a name with the value's place "x" (the 6th/7th bonuses' wiki words)
+    if re.search(r"(?<!\w)x(?!\w)", name):
+        return re.sub(r"(?<!\w)x(?!\w)", str(value), name.replace("+x", f"{value:+d}").replace("-x", f"-{abs(value)}"), count=1)
     return f"{name} {value:+d}{suffix}"
 
 

@@ -2334,4 +2334,17 @@ if ((Test-Path -LiteralPath $sashSerpentApply -PathType Leaf) -and
     }
 }
 
+# The F9 GM panel's bonuses as POINT_* numbers (server-patches/gmpanelbonus, MT2009_PLUS_GMPANEL_POINT_BONUS_V1;
+# zgloszenie #25, 8 November 2026): cmd_gm.cpp - a number sent as 1000 + point is taken as that point (every 6th/7th
+# bonus), the classic magic attack / magic defence / defence values give the item's *_GRADE_BONUS points.
+$gmPanelBonusApply = Join-Path $repo 'server-patches/gmpanelbonus/Apply-GmPanelBonusPatch.ps1'
+if ((Test-Path -LiteralPath $gmPanelBonusApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_gm.cpp') -PathType Leaf)) {
+    $gmPanelBonusResult = & $gmPanelBonusApply -SourceDir $engineGameSource
+    if ($gmPanelBonusResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} GM panel bonus edit(s).' -f $gmPanelBonusResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
