@@ -358,8 +358,8 @@ SCHEMA = [
        "doświadczenia; każdy potwór ma swój żywioł, a odporność działa w 30% (15% = 4,5% mniej obrażeń). "
        "Alchemia (Smocze Kamienie) w trybie global ma domyślne bonusy (np. Diament: inteligencja, odporność na lód, siła lodu). "
        "Przedmioty zachowują wszystkie bonusy, które już mają; można przełączać w obie strony.",
-       "swiat", "enum", "mt2009", GAME,
-       options=[["mt2009", "mt2009 – bonusy i żywioły MT2009 PLUS"], ["global", "global – jak na serwerze globalnym"]],
+       "swiat", "enum", "global", GAME,
+       options=[["global", "global – jak na serwerze globalnym (domyślnie)"], ["mt2009", "mt2009 – bonusy i żywioły MT2009 PLUS"]],
        note="Działa po restarcie serwera gry (migrator przełącza tabelę bonusów i żywioły potworów)."),
     _e("M2_MOONLIGHT_CHEST_PERMILLE", "Szkatułka Blasku Księżyca z potworów (‰)",
        "Szansa w promilach (10 = 1%), że zabity potwór upuści Szkatułkę Blasku Księżyca. Działa w trakcie wydarzenia ustawionego w panelu. 0 wyłącza.",

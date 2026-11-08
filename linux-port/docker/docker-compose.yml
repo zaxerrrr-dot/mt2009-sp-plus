@@ -178,7 +178,7 @@ services:
       # The item bonuses and the monsters' elements: mt2009 (the default, as it was) or global (the global
       # server's bonus table and every monster's element, MT2009_PLUS_GLOBAL_BONUS_V1). The migrator switches
       # world.item_attr and the elements and writes m2_bonus_global for the cores (apply.sh).
-      M2_BONUS_MODE: "${M2_BONUS_MODE:-mt2009}"
+      M2_BONUS_MODE: "${M2_BONUS_MODE:-global}"
 
     entrypoint: ["/bin/sh", "/opt/playerbot/apply.sh"]
 

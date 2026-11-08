@@ -51,7 +51,7 @@ say() { printf '%s [dragonsoul] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
 # dragon_soul_table.global.txt (the default bonuses, DragonSoul.cpp) in place
 # of the live file - the panel's table is kept for the mt2009 mode, and its
 # status says so.
-case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+case "$(printf '%s' "${M2_BONUS_MODE:-global}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
     global|globalny|1) MODE_NOTE=" (M2_BONUS_MODE=global: the cores use dragon_soul_table.global.txt, the default alchemy bonuses; this table counts in the mt2009 mode)" ;;
     *) MODE_NOTE="" ;;
 esac

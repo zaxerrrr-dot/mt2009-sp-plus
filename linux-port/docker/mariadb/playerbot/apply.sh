@@ -4659,7 +4659,7 @@ fi
 #   * m2_bonus_global (1 = global), every start: the cores read it (element resistance at 30% against monsters,
 #     the double-item chance in the drop, a talisman's own resistance values) and send it to the client at login
 #     (quest zywioly: the tooltip's maxima, the element icons of global mode).
-case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in global|globalny|1) bonus_global=1 ;; *) bonus_global=0 ;; esac
+case "$(printf '%s' "${M2_BONUS_MODE:-global}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in global|globalny|1) bonus_global=1 ;; *) bonus_global=0 ;; esac
 bonus_switched=0
 if bonus_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_mt2009 LIKE world.item_attr;
         SELECT COUNT(*) FROM world.item_attr_mt2009;" 2>/dev/null | tr -d ' \r'); then
