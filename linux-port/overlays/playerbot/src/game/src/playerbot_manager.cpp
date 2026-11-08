@@ -6647,6 +6647,9 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 			busy = busy || stayBusy;
 		}
 		++pinReasons[pinWhy < 17 ? pinWhy : 0];
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		NotePlayerBotErrandPresence(pid, dwNow); // MT2009_PLUS_BOT_ERRAND_PRESENCE_V1
+#endif
 		vecPid.push_back(pid);
 		vecMap.push_back(ch->GetMapIndex());
 		vecCost.push_back(playerbot_channel_rules::MoveCost(busy, liveStand, pinned,

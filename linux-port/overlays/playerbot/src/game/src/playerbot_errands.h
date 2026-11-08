@@ -124,11 +124,13 @@ namespace
 		DWORD dwArrivedAt;	// the shop channel: first seen here after the warm-up (0: not an arrival)
 		DWORD dwLastActivity;	// the shop channel: the last shopping seen
 		DWORD dwNextWeaponAsk;
+		DWORD dwPresenceSeen;	// MT2009_PLUS_BOT_ERRAND_PRESENCE_V1: the channel census saw it in the game on this core
+		DWORD dwFirstPresence;	// MT2009_PLUS_BOT_ERRAND_PRESENCE_V1: ... for the first time
 		bool bSeen;
 		bool bTripStarted;
 
 		TPlayerBotErrandBot() : dwReleasedAt(0), dwNextTick(0), dwArrivedAt(0), dwLastActivity(0), dwNextWeaponAsk(0),
-				bSeen(false), bTripStarted(false)
+				dwPresenceSeen(0), dwFirstPresence(0), bSeen(false), bTripStarted(false)
 		{
 			for (int i = 0; i < PLAYERBOT_ERRAND_KINDS; ++i)
 				first[i] = last[i] = 0;
@@ -271,6 +273,24 @@ namespace
 	}
 
 	// The shop channel's side: pinned while its errands run (PublishChannelPresence), and busy for its first hour.
+	unsigned int s_uPlayerBotErrandResightKept = 0;
+
+	// MT2009_PLUS_BOT_ERRAND_PRESENCE_V1: the channel census's sighting (PublishChannelPresence).
+	// A bot the census sees before its AI pass ever asked for its errands is entered here, so a first errand pass
+	// after the warm-up does not make an "arrival" of a bot that was in the game on this core before it.
+	void NotePlayerBotErrandPresence(DWORD pid, DWORD now)
+	{
+		if (!now)
+			now = 1;
+		if (s_dwPlayerBotErrandCoreStart == 0)
+			s_dwPlayerBotErrandCoreStart = now;
+		TPlayerBotErrandBot& b = s_mapPlayerBotErrands[pid];
+		// first seen, or back after a while away from this core (moved off and back): a new first sighting
+		if (b.dwFirstPresence == 0 || (b.dwPresenceSeen != 0 && (int)(now - b.dwPresenceSeen) > (int)(10 * PLAYERBOT_ERRAND_TICK_MS)))
+			b.dwFirstPresence = now;
+		b.dwPresenceSeen = now;
+	}
+
 	bool IsPlayerBotErrandArrivalPinned(DWORD pid, DWORD now, bool& stayBusy)
 	{
 		stayBusy = false;
@@ -482,7 +502,25 @@ namespace
 		const DWORD pid = ch->GetPlayerID();
 		TPlayerBotErrandBot& b = s_mapPlayerBotErrands[pid];
 		// away from this core for a while (moved off and back): a new sighting
-		if (b.bSeen && b.dwNextTick != 0 && (int)(now - b.dwNextTick) > (int)(10 * PLAYERBOT_ERRAND_TICK_MS))
+		// MT2009_PLUS_BOT_ERRAND_PRESENCE_V1 (night of 8 November 2026): and not merely a bot whose AI pass skipped this
+		// call for five minutes - a Monkey Dungeon run, a dungeon, a duel - while it stood on this core all along: the
+		// channel census (every 10 s, every bot in the game) says it never left. 822 of 1197 bots of channel 1 were
+		// "arrivals" so, each pinned against the roam for up to 45 minutes and sent on an arrival trip, so the roam
+		// brought bots from channel 2 and found none to send back (ch1 1538 / ch2 467 at 01:47 against 60/40).
+		// Switch: event flag m2_bot_errand_presence_off 1. Log: PLAYERBOT_ERRAND: resighting kept (throttled).
+		const bool tickGap = b.bSeen && b.dwNextTick != 0 && (int)(now - b.dwNextTick) > (int)(10 * PLAYERBOT_ERRAND_TICK_MS);
+		const bool stayedHere = tickGap && b.dwPresenceSeen != 0 &&
+				(int)(now - b.dwPresenceSeen) <= (int)(10 * PLAYERBOT_ERRAND_TICK_MS) &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_errand_presence_off") == 0;
+		if (stayedHere)
+		{
+			++s_uPlayerBotErrandResightKept;
+			PlayerBotLogThrottled("errand_resight_kept", now,
+					"PLAYERBOT_ERRAND: resighting kept pid=%u name=%s gap_s=%u map=%ld kept=%u",
+					pid, ch->GetName(), (unsigned int)((now - b.dwNextTick) / 1000U), ch->GetMapIndex(),
+					s_uPlayerBotErrandResightKept);
+		}
+		else if (tickGap)
 		{
 			b.bSeen = false;
 			b.bTripStarted = false;
@@ -496,7 +534,9 @@ namespace
 		if (!b.bSeen)
 		{
 			b.bSeen = true;
-			if (shopChannel && table && now - s_dwPlayerBotErrandCoreStart >= PLAYERBOT_ERRAND_WARMUP_MS)
+			if (shopChannel && table && now - s_dwPlayerBotErrandCoreStart >= PLAYERBOT_ERRAND_WARMUP_MS &&
+					(b.dwFirstPresence == 0 || b.dwFirstPresence - s_dwPlayerBotErrandCoreStart >= PLAYERBOT_ERRAND_WARMUP_MS ||
+					 quest::CQuestManager::instance().GetEventFlag("m2_bot_errand_presence_off") != 0))
 			{
 				b.dwArrivedAt = now;
 				++s_kPlayerBotErrandStats.arrivals;
