@@ -3675,6 +3675,7 @@ CPlayerBotManager::~CPlayerBotManager()
 
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_V1 (include): Swiatynia Ochao, the En-Tai Guardian's clock
 #include "playerbot_arezzo.h" // MT2009_PLUS_AREZZO_MODULE_V1 (include): the Arezzo module switch - guards and send-off
+#include "playerbot_metin_progress.h" // MT2009_PLUS_METIN_PROGRESS_V1: more Metins on a map crowded with bots
 void CPlayerBotManager::StartWorldClock()
 {
 	mt2009_ochao::Start(); // MT2009_PLUS_OCHAO_V1 (start): only where map 209 is hosted
@@ -7530,6 +7531,10 @@ WritePlayerBotGuildStatus(dwNow);
 		if (c && !c->IsDead())
 			++s_mapPlayerBotsOnMap[c->GetMapIndex()];
 	}
+#if defined(PLAYERBOT_ENGINE_MT2009)
+	// MT2009_PLUS_METIN_PROGRESS_V1: the extra Metins of a crowded map, from the census above (playerbot_metin_progress.h).
+	ManagePlayerBotMetinProgress(dwNow);
+#endif
 
 	// The tick proper, inside a time budget (PLAYERBOT_TICK_BUDGET_MS_DEFAULT,
 	// TICK_MS): a pass that runs out of it leaves the pid it stopped at and
