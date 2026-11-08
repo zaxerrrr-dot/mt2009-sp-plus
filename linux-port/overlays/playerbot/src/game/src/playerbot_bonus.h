@@ -1709,10 +1709,16 @@ namespace
 		return false;
 	}
 
+	bool IsPlayerBotElementShopPinnedPiece(LPCHARACTER ch, LPITEM item);	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1
+
 	bool PlayerBotWantsBonusChange(LPCHARACTER ch, const TPlayerBotBonusTarget& target, bool green)
 	{
 		LPITEM item = target.item;
 		if (!ch || !item)
+			return false;
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: a worn piece carrying the element gate's line at its floor (or the kept
+		// element), or the one the element gate works on, is not changed by this pass (playerbot_element_shop.h)
+		if (target.kind == PLAYERBOT_BONUS_TARGET_WORN && IsPlayerBotElementShopPinnedPiece(ch, item))
 			return false;
 		// Rerolled until its lines beat the worn piece's, which is what ends
 		// the hold (IsPlayerBotSwapHeldForBonus).
