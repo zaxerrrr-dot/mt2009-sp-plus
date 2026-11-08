@@ -238,6 +238,10 @@ bool Mt2009RelicIsKeptVnum(DWORD dwVnum);
 // MT2009_PLUS_HORSE40_V1: Pasza dla Konia, 50046 / 50047 / 50049 and the horse skill books 55050-55067 are never a bot's
 // scrap, stall goods or chat deal (konie_rozwoj.cpp; read with the relic's)
 bool Mt2009KonieIsKeptVnum(DWORD dwVnum);
+// MT2009_PLUS_BOT_SKILL_INSTR_V1: the skill instructions (50401-50511) - what one is, the keep rule, the switches and
+// the census counters, before the economy, the town and the counter that ask them
+#define MT2009_PLUS_BOT_SKILL_INSTR_V1 1
+#include "playerbot_skill_instr.h"
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
 #include "playerbot_upstream_botlogic.h" // MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the surplus level-30 weapon to the anvil, the next tier made ready, the own box before the market
@@ -489,6 +493,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 #define MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 1
 #include "playerbot_ishop3_goals.h"
 #include "playerbot_shop_aids.h"
+// MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
+// dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
+#include "playerbot_skill_instr_late.h"
 // MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
 // V3 goals whose purchase it uses
 #include "playerbot_yohara_guides.h"
@@ -2772,6 +2779,158 @@ namespace
 #endif
 	}
 
+#ifdef PLAYERBOT_SKILL_INSTR_LATE
+	// MT2009_PLUS_BOT_SKILL_INSTR_V1 (the reading; the rest: playerbot_skill_instr.h / playerbot_skill_instr_late.h). The
+	// class books in the bag - KU and instructions alike - by skill: the bot's own skills at M1-M9 with a book held. The
+	// FOCUS is the dearest of them (GetPlayerBotSkillInstrWorth: its book's sheet price, the build's earlier skill on a
+	// tie). Only the focus takes a Rada Pustelnika (while the bag has one) and a Zwoj Egzorcyzmu (only while a wait stands
+	// in its way - the bots' m2_bot_book_wait, M2_BOT_BOOK_WAIT_HOURS; with no wait none is spent). It keeps them until it
+	// is G1 or out of books, then the next dearest is the focus. The other skills are read at the same time, each when its
+	// own wait is over and with neither, in the pass's old order (the build's primary skill, the level, the book gate) -
+	// one focus read and one other a pass (PLAYERBOT_SKILL_BOOK_CHECK_INTERVAL). A skill's instruction is read before its
+	// KU (a KU over its keep is the counter's; an instruction is kept until G1 anyway). False: no class book was read.
+	struct TPlayerBotFocusBook
+	{
+		DWORD skill;
+		int cell;
+		int order;
+		DWORD worth;
+		bool instr;
+	};
+
+	bool ReadPlayerBotFocusBookAt(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow, const TPlayerBotFocusBook& b,
+			bool focus, bool rada, bool zwoj)
+	{
+		LPITEM item = ch->GetInventoryItem((WORD)b.cell);
+		if (!item || item->GetType() != ITEM_SKILLBOOK || GetPlayerBotSkillBookSkillVnum(item) != b.skill)
+			return false;
+		const DWORD skill = b.skill;
+		const BYTE oldLevel = ch->GetSkillLevel(skill);
+		const bool exorcised = get_global_time() < ch->GetSkillNextReadTime(skill);
+		char legendReadFlag[64];
+		snprintf(legendReadFlag, sizeof(legendReadFlag), "traning_master_skill.%u.read_count", skill);
+		const int legendReadsBefore = ch->GetQuestFlag(legendReadFlag);
+		const bool adviceOn = ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) != NULL;
+		if (!UsePlayerBotBook(ch, (WORD)b.cell))
+			return false;
+		NotePlayerBotBookRead(ch, skill, exorcised);
+		ApplyPlayerBotLegendBookReads(ch, skill, oldLevel, legendReadsBefore);
+		SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
+		const bool landed = ch->GetSkillLevel(skill) > oldLevel;
+		const bool adviceSpent = adviceOn && !ch->FindAffect(AFFECT_SKILL_BOOK_BONUS);
+		NotePlayerBotSkillInstrRead(skill, b.instr, landed);
+		if (adviceSpent && !focus)
+			++s_kPlayerBotSkillInstrCensus.uRadaSpill;
+		sys_log(0, "PLAYERBOT_AI: read skill book pid=%u name=%s skill=%u old_level=%u new_level=%u success=%d advice=%d gate=%d "
+				"focus=%d instr=%d rada=%d zwoj=%d",
+				ch->GetPlayerID(), ch->GetName(), skill, oldLevel, ch->GetSkillLevel(skill), landed ? 1 : 0,
+				adviceSpent ? 1 : 0, IsPlayerBotBookGateHeld(ch) ? 1 : 0, focus ? 1 : 0, b.instr ? 1 : 0, rada ? 1 : 0,
+				zwoj ? 1 : 0);
+		return true;
+	}
+
+	bool ReadPlayerBotSkillBooksFocused(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow, const TJobSkillBuild& build)
+	{
+		std::map<DWORD, TPlayerBotFocusBook> bySkill;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->GetType() != ITEM_SKILLBOOK || item->isLocked())
+				continue;
+			const DWORD skill = GetPlayerBotSkillBookSkillVnum(item);
+			if (!IsPlayerBotOwnSkill(ch, skill))
+				continue;
+			const BYTE level = ch->GetSkillLevel(skill);
+			if (ch->GetSkillMasterType(skill) != SKILL_MASTER || level < 20 || level >= 30)
+				continue;
+			const bool instr = IsPlayerBotSkillInstruction(item);
+			std::map<DWORD, TPlayerBotFocusBook>::iterator have = bySkill.find(skill);
+			if (have != bySkill.end() && (have->second.instr || !instr))
+				continue;
+			int order = PLAYERBOT_BAG_CELLS;
+			for (BYTE i = 0; i < build.bSkillCount; ++i)
+				if (build.dwSkills[i] == skill)
+				{
+					order = i;
+					break;
+				}
+			const TPlayerBotFocusBook b = { skill, (int)cell, order, GetPlayerBotSkillInstrWorth(skill), instr };
+			bySkill[skill] = b;
+		}
+		if (bySkill.empty())
+			return false;
+		const time_t now = get_global_time();
+		const bool fast = IsPlayerBotFastBooksEnabled();
+		const TPlayerBotFocusBook* focus = NULL;
+		for (std::map<DWORD, TPlayerBotFocusBook>::iterator it = bySkill.begin(); it != bySkill.end(); ++it)
+		{
+			ClampPlayerBotBookWait(ch, it->first);
+			// the BOOKS switch / no bots' wait: the day between two reads waved away, as the old pass did
+			if (fast && now < ch->GetSkillNextReadTime(it->first))
+				ch->SetSkillNextReadTime(it->first, now, true);
+			if (!focus || it->second.worth > focus->worth ||
+					(it->second.worth == focus->worth && it->second.order < focus->order))
+				focus = &it->second;
+		}
+		bool readAny = false;
+		// The focus: a Zwoj only against a wait, a Rada right before the read (the next read of any kind takes it off).
+		const bool focusWaits = now < ch->GetSkillNextReadTime(focus->skill) && !ch->FindAffect(AFFECT_SKILL_NO_BOOK_DELAY);
+		const int zwojCell = focusWaits ? FindPlayerBotBookAffectCell(ch, AFFECT_SKILL_NO_BOOK_DELAY) : -1;
+		const bool focusCanRead = !focusWaits || zwojCell >= 0;
+		{
+			bool zwoj = false, rada = false, ready = !focusWaits;
+			if (!ready && zwojCell >= 0 && ch->UseItem(TItemPos(INVENTORY, (WORD)zwojCell)))
+			{
+				zwoj = ready = ch->FindAffect(AFFECT_SKILL_NO_BOOK_DELAY) != NULL;
+				if (zwoj)
+					++s_kPlayerBotSkillInstrCensus.zwojBySkill[focus->skill];
+			}
+			if (ready)
+			{
+				if (!ch->FindAffect(AFFECT_SKILL_BOOK_BONUS))
+				{
+					const int radaCell = FindPlayerBotBookAffectCell(ch, AFFECT_SKILL_BOOK_BONUS);
+					if (radaCell >= 0 && ch->UseItem(TItemPos(INVENTORY, (WORD)radaCell)))
+					{
+						rada = ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) != NULL;
+						if (rada)
+							++s_kPlayerBotSkillInstrCensus.radaBySkill[focus->skill];
+					}
+				}
+				readAny = ReadPlayerBotFocusBookAt(ch, state, dwNow, *focus, true, rada, zwoj);
+				if (rada || zwoj)
+					PlayerBotLogThrottled("skill_instr_focus", dwNow,
+							"PLAYERBOT_SKILL_INSTR: focus pid=%u name=%s skill=%u worth=%u level=%u instr=%d rada=%d zwoj=%d "
+							"read=%d skills=%u wait_s=%d",
+							ch->GetPlayerID(), ch->GetName(), focus->skill, focus->worth, ch->GetSkillLevel(focus->skill),
+							focus->instr ? 1 : 0, rada ? 1 : 0, zwoj ? 1 : 0, readAny ? 1 : 0, (unsigned int)bySkill.size(),
+							GetPlayerBotBookWaitSeconds());
+			}
+		}
+		// A Rada left on (a read that did not happen) stays for the focus while it can be read.
+		if (ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) && focusCanRead)
+			return readAny;
+		// One other skill, its own wait over (a Zwoj is never spent on it): the pass's old order.
+		const TPlayerBotFocusBook* other = NULL;
+		int bestPriority = INT_MIN;
+		for (std::map<DWORD, TPlayerBotFocusBook>::iterator it = bySkill.begin(); it != bySkill.end(); ++it)
+		{
+			if (&it->second == focus || now < ch->GetSkillNextReadTime(it->first))
+				continue;
+			const int priority = (it->first == build.dwPrimaryMaxSkill ? 10000 : 0) + ch->GetSkillLevel(it->first) +
+					GetPlayerBotBookGateRank(ch, it->first) * 100;	// MT2009_PLUS_BOT_BOOK_GATE_V1: the gate's skills first
+			if (priority > bestPriority)
+			{
+				bestPriority = priority;
+				other = &it->second;
+			}
+		}
+		if (other && ReadPlayerBotFocusBookAt(ch, state, dwNow, *other, false, false, false))
+			readAny = true;
+		return readAny;
+	}
+#endif
+
 	void ManagePlayerBotSkillBooks(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || ch->GetSkillGroup() == 0 ||
@@ -2795,6 +2954,17 @@ namespace
 		}
 
 		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+#ifdef PLAYERBOT_SKILL_INSTR_LATE
+		// MT2009_PLUS_BOT_SKILL_INSTR_V1: the Rada / Zwoj on the dearest skill, the rest in order (m2_bot_skill_instr_focus_off:
+		// the pass below as before); no class book read - a general book, the Rada kept as before
+		if (IsPlayerBotSkillInstrOn(SKILLINSTR_FOCUS))
+		{
+			if (!ReadPlayerBotSkillBooksFocused(ch, state, dwNow, build) &&
+					(!ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) || !PlayerBotHoldsReadableClassBook(ch)))
+				ReadPlayerBotGeneralSkillBook(ch, state, dwNow);
+			return;
+		}
+#endif
 		int bestCell = -1;
 		DWORD bestSkillVnum = 0;
 		int bestPriority = INT_MIN;
@@ -7451,6 +7621,9 @@ WritePlayerBotGuildStatus(dwNow);
 	WritePlayerBotItemShopCensus(dwNow);
 	WritePlayerBotElementStoneCensus(dwNow);	// MT2009_PLUS_ELEMENT_STONES_V1
 	WritePlayerBotElementPetCensus(dwNow);	// MT2009_PLUS_BOT_ELEMENT_PET_V1
+#ifdef PLAYERBOT_SKILL_INSTR_LATE
+	WritePlayerBotSkillInstrCensus(dwNow);	// MT2009_PLUS_BOT_SKILL_INSTR_V1
+#endif
 	// The ore veins, once a minute for the whole world. A vein deletes itself
 	// after 7-15 minutes and nothing in this world's regen files puts one back -
 	// there are no vein spawns on any of its maps at all - so the sites are

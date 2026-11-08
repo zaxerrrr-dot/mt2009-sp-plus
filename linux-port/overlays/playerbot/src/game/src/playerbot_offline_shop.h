@@ -3715,6 +3715,9 @@ namespace {
                         NotePlayerBotEnergyShardLine(ch->GetPlayerID(), (int)addCount, now);
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
                     NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, addVnum, (int)addCount);
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+                    NotePlayerBotSkillInstrListed(addVnum, (int)addCount);   // MT2009_PLUS_BOT_SKILL_INSTR_V1: the census
+#endif
                     if (slipped) {
                         BotOfflineRememberSlip(state, id, now);
                         sys_log(0, "PLAYERBOT_OFFLINE: price slip pid=%u name=%s item=%u vnum=%u count=%u price=%lld meant=%lld at=add",

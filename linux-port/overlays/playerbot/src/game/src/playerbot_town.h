@@ -104,6 +104,15 @@ namespace
 		const DWORD skillVnum = GetPlayerBotSkillBookSkillVnum(item);
 		if (skillVnum == 0 || ch->GetSkillGroup() == 0 || !IsPlayerBotOwnSkill(ch, skillVnum))
 			return true;
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+		// MT2009_PLUS_BOT_SKILL_INSTR_V1: an own skill's instruction is never surplus under G1 (the owner, 8 November:
+		// every one is kept for reading); a KU's keep is raised by the instructions of its skill kept so
+		if (IsPlayerBotSkillInstrKeptWhole(ch, item))
+			return false;
+		if (!IsPlayerBotSkillInstruction(item))
+			return CountPlayerBotSkillBooksAhead(ch, item, skillVnum) >=
+					GetPlayerBotBookKeepLimit(ch, skillVnum) + CountPlayerBotKeptSkillInstr(ch, skillVnum);
+#endif
 		return CountPlayerBotSkillBooksAhead(ch, item, skillVnum) >=
 				GetPlayerBotBookKeepLimit(ch, skillVnum);
 	}
