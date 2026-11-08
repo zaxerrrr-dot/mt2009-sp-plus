@@ -6173,6 +6173,7 @@ namespace
 				NotePlayerBotChestRefused(ch->GetPlayerID(), chestVnum, dwNow);
 				continue;
 			}
+			NotePlayerBotStarterChestOpened(chestVnum);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 			if (!EquipFirstAvailablePlayerBotWeapon(ch))
 				return false;
 			LPITEM weapon = ch->GetWear(WEAR_WEAPON);
@@ -6540,6 +6541,7 @@ namespace
 			state.dwNextEquipmentCheckTime = 0;
 			state.bEquipPending = true;
 			state.dwNextGearAttemptTime = 0;
+			NotePlayerBotStarterChestOpened(chestVnum);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 			sys_log(0, "PLAYERBOT_GEAR: opened progression chest pid=%u name=%s vnum=%u level=%u",
 					ch->GetPlayerID(), ch->GetName(), chestVnum, ch->GetLevel());
 			return true;
@@ -6584,9 +6586,14 @@ namespace
 		// 71018 and 71020 are the chest's Blessings of Life and of the Dragon: a
 		// full restore each, drunk last, when the ordinary reds have run out.
 		// ... and the grilled fish that heal: Crucian, Big Crucian, Tenchi.
-		const DWORD redPotionVnums[] = { 27051, 27001, 27002, 27003, 71018, 71020, 27863, 27865, 27875 };
+		// MT2009_PLUS_BOT_STARTER_USE_V1: and the level-60 chest's Wino z Kwiatu Brzoskwini (76000, USE_POTION_NODELAY,
+		// 500 HP) after the ordinary reds - the merchant had every one of them (switch m2_bot_starter_wine_off).
+		const DWORD redPotionVnums[] = { 27051, 27001, 27002, 27003, PLAYERBOT_STARTER_WINE_VNUM, 71018, 71020, 27863, 27865, 27875 };
 		for (size_t potionIndex = 0; potionIndex < sizeof(redPotionVnums) / sizeof(redPotionVnums[0]); ++potionIndex)
 		{
+			if (redPotionVnums[potionIndex] == PLAYERBOT_STARTER_WINE_VNUM &&
+					!IsPlayerBotStarterUseOn(PLAYERBOT_STARTER_SW_WINE))
+				continue;
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
@@ -6598,6 +6605,7 @@ namespace
 				{
 					PlayerBotLogPerBot("hp_potion", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: used health potion pid=%u name=%s vnum=%u hp=%d/%d",
 							ch->GetPlayerID(), ch->GetName(), potionVnum, ch->GetHP(), ch->GetMaxHP());
+					NotePlayerBotStarterItemUsed(potionVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1
 					NotePlayerBotStrongMapHardship(ch, 2); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 					return true;
 				}
@@ -6652,6 +6660,7 @@ namespace
 				{
 					PlayerBotLogPerBot("sp_potion", ch->GetPlayerID(), get_dword_time(), "PLAYERBOT_AI: used mana potion pid=%u name=%s vnum=%u sp=%d/%d",
 							ch->GetPlayerID(), ch->GetName(), potionVnum, ch->GetSP(), ch->GetMaxSP());
+					NotePlayerBotStarterItemUsed(potionVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1
 					return true;
 				}
 			}

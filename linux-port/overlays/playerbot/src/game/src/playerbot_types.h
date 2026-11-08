@@ -5277,8 +5277,32 @@ namespace
 	// them and the merchant pays pennies for the one thing a refine above +6
 	// cannot be done without: 471 Blessing Scrolls went over that counter in
 	// a single day (jaroszv2), while the weapons they were meant for waited.
+	// MT2009_PLUS_BOT_STARTER_USE_V1 (the owner, 8 November 2026: "Naucz boty korzystac ze wszystkich rzeczy ze
+	// szkatul ucznia"): the switches and the census of playerbot_starter_use.h, declared here for the rules below
+	// and the passes of playerbot_gear.h, which come before it. Every switch is an event flag, read every five
+	// seconds: m2_bot_starter_use_off all of them, and each one on its own (playerbot_starter_use.h).
+	enum EPlayerBotStarterSwitch
+	{
+		PLAYERBOT_STARTER_SW_SCROLL = 0,	// m2_bot_starter_scroll_off: Zwoj Blogoslawienstwa 76016 a safe refine scroll
+		PLAYERBOT_STARTER_SW_WINE,		// m2_bot_starter_wine_off: Wino z Kwiatu Brzoskwini 76000 a red potion
+		PLAYERBOT_STARTER_SW_SNACK,		// m2_bot_starter_snack_off: Przekaska Appaloosa 38103 fed to the Appaloosa
+		PLAYERBOT_STARTER_SW_LEFTOVER,		// m2_bot_starter_leftover_off: the chests' true leftovers sold
+		PLAYERBOT_STARTER_SW_CENSUS,		// m2_bot_starter_census_off: PLAYERBOT_STARTER_CENSUS every ten minutes
+		PLAYERBOT_STARTER_SW_COUNT
+	};
+	bool IsPlayerBotStarterUseOn(int iSwitch);
+	void NotePlayerBotStarterChestOpened(DWORD dwChestVnum);
+	void NotePlayerBotStarterItemUsed(DWORD dwVnum, int iUnits);
+	const DWORD PLAYERBOT_STARTER_BLESSING_SCROLL_VNUM = 76016;	// Zwoj Blogoslawienstwa (bound, value0 0 as 25040)
+	const DWORD PLAYERBOT_STARTER_WINE_VNUM = 76000;		// Wino z Kwiatu Brzoskwini (USE_POTION_NODELAY, 500 HP)
+
 	bool IsPlayerBotRefineScroll(DWORD vnum)
 	{
+		// MT2009_PLUS_BOT_STARTER_USE_V1: the chests' Zwoj Blogoslawienstwa (Skrzynia Eksperta I and II, five each)
+		// is the Blessing Scroll bound to its owner - USE_TUNING, value0 0 like 25040. No list knew it, so the junk
+		// rule sold it at the General Store (14 387 of them on the test world's first night, 7-8 November).
+		if (vnum == PLAYERBOT_STARTER_BLESSING_SCROLL_VNUM && IsPlayerBotStarterUseOn(PLAYERBOT_STARTER_SW_SCROLL))
+			return true;
 		switch (vnum)
 		{
 			case 25040: case 25041: case 39001: case 39007: case 39014:
@@ -5406,6 +5430,9 @@ namespace
 	bool IsPlayerBotSafeRefineScroll(DWORD vnum)
 	{
 		if (vnum == PLAYERBOT_BLESSING_SCROLL_VNUM)
+			return true;
+		// MT2009_PLUS_BOT_STARTER_USE_V1: and its bound copy from the apprentice chests, counted in the scroll keep.
+		if (vnum == PLAYERBOT_STARTER_BLESSING_SCROLL_VNUM && IsPlayerBotStarterUseOn(PLAYERBOT_STARTER_SW_SCROLL))
 			return true;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// On mt2009 only the Gwarancja (REFINE_BONUS_SCROLL) burns what it

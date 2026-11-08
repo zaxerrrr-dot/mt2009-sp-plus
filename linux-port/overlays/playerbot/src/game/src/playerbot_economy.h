@@ -2829,6 +2829,15 @@ namespace
 				return false;
 		}
 
+		// MT2009_PLUS_BOT_STARTER_USE_V1: what the apprentice chests hand out and the rules below had no use for -
+		// the Blessing Scroll and the wine kept, the Appaloosa's snack while there is an Appaloosa to feed, the
+		// true leftovers (the snack with none, the Metin detector) the merchant's (playerbot_starter_use.h).
+		{
+			const int starter = GetPlayerBotStarterJunkVerdict(ch, item);
+			if (starter >= 0)
+				return starter != 0;
+		}
+
 		// MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): Mikstura Geniuszu / Determinacji / Szybkiej
 		// Analizy are withdrawn - refused when used (quest lib m2_mikstury.lua), off Baek-Go's board - so a piece a bot
 		// still holds is the merchant's, never a counter's: no player should buy a potion that does nothing - nor
@@ -3942,6 +3951,7 @@ namespace
 				sys_log(0, "PLAYERBOT_STONE4: merchant pid=%u name=%s vnum=%u units=%u gold=%lld",
 						ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetCount(), salePrice);
 			}
+			NotePlayerBotStarterItemSold(ch, item);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");
 			++soldCount;
 		}
@@ -6007,9 +6017,13 @@ namespace
 #endif
 			if (scrollCell >= 0)
 			{
+				LPITEM scrollItem = ch->GetInventoryItem(scrollCell);
+				const DWORD scrollVnum = scrollItem ? scrollItem->GetVnum() : 0;	// MT2009_PLUS_BOT_STARTER_USE_V1
 				ch->SetRefineMode(scrollCell);
 				attempted = ch->DoRefineWithScroll(item);
 				ch->ClearRefineMode();
+				if (attempted)
+					NotePlayerBotStarterItemUsed(scrollVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 			}
 			else
 			{
@@ -6269,9 +6283,13 @@ namespace
 		const playerbot_high_gear::EScrollKind hgKind = highGear ? GetPlayerBotScrollKind(ch->GetInventoryItem(scrollCell))
 				: playerbot_high_gear::KIND_NONE;
 #endif
+		LPITEM scrollItem = ch->GetInventoryItem(scrollCell);
+		const DWORD scrollVnum = scrollItem ? scrollItem->GetVnum() : 0;	// MT2009_PLUS_BOT_STARTER_USE_V1
 		ch->SetRefineMode(scrollCell);
 		attempted = ch->DoRefineWithScroll(piece);
 		ch->ClearRefineMode();
+		if (attempted)
+			NotePlayerBotStarterItemUsed(scrollVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 		LPITEM after = ch->GetInventoryItem(cell);
 		// The outcome is read off the cell before the piece goes back on. It
 		// was CountSpecifyItem after the re-equip, which counts the bag only,
