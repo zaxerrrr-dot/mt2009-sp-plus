@@ -5985,10 +5985,11 @@ mob 2493 72066 2
 mob 9714 72066 2
 # SHARDS - ordinary monsters (not Metins, not bosses) of these maps, 1 shard per hit of shard_chance %:
 shard_chance 0.5
-# Grotto of Exile V2, Temple of Ochao, Enchanted Forest
+# Grotto of Exile V2, Temple of Ochao, Enchanted Forest, Enchanted Forest (Time Rift) - MT2009_PLUS_BOT_BONUS67_V1
 shard_map 73
 shard_map 209
 shard_map 353
+shard_map 404
 # shard <vnum> <weight>: the shard's colour
 shard 39070 1
 shard 39071 1
@@ -5999,8 +6000,16 @@ shard 39075 1
 shard 39076 1
 shard 39077 1
 shard 39081 1
+# shard_pick <map> <vnum> <weight>: a map's own colours (its players' item levels) instead of the shard lines
+# Enchanted Forest (item levels 90-105): Red, Yellow Lucent; its Time Rift (105-120): Rainbow, Yellow Lucent, Holy
+shard_pick 353 39076 3
+shard_pick 353 39080 1
+shard_pick 404 39077 3
+shard_pick 404 39080 1
+shard_pick 404 39081 1
 """
 SEONHAE_SHARDS = set(range(39070, 39078)) | {39081}
+SEONHAE_PICK_SHARDS = set(range(39070, 39082))  # MT2009_PLUS_BOT_BONUS67_V1: the core's IsShardVnum (the Lucent too)
 SEONHAE_ADDITIVES = {72064, 72065, 72066, 72067}
 
 
@@ -6033,6 +6042,8 @@ def check_seonhae_drops(text):
                     ok = len(nums) == 1 and nums[0] > 0
                 elif key == "shard":
                     ok = len(nums) == 2 and nums[0] in SEONHAE_SHARDS and nums[1] > 0
+                elif key == "shard_pick":  # MT2009_PLUS_BOT_BONUS67_V1
+                    ok = len(nums) == 3 and nums[0] > 0 and nums[1] in SEONHAE_PICK_SHARDS and nums[2] > 0
         except ValueError:
             ok = False
         if not ok:

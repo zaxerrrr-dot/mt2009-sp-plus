@@ -10681,6 +10681,19 @@ namespace
 	int CraftPlayerBotSmithScrolls(LPCHARACTER ch, const char* where);
 	int GetPlayerBotSeonHaeShardKeep(LPCHARACTER ch, DWORD vnum);
 	bool IsPlayerBotSmithScrollStone(DWORD vnum);
+#define MT2009_PLUS_BOT_BONUS67_V1 1
+	// MT2009_PLUS_BOT_BONUS67_V1 (the owner, 8 November 2026: "teach the bots the whole 6/7 system"; playerbot_bonus67_bots.h,
+	// after playerbot_shop_aids.h): from level 75 the owner's pieces get their 6th/7th lines at once by the players'
+	// rules, the shards bought on the market (the chest last), the Silne and 71052 in the ItemShop V3, mixed only with
+	// both lines. Asked by playerbot_shop_aids.h (the keep, the goals, the tick, the old passes off), playerbot_market.h
+	// and playerbot_offline_market.h (the shard's want and price, the purchase's note).
+	bool IsPlayerBotBonus67On();
+	int GetPlayerBotBonus67ShardKeep(LPCHARACTER ch, DWORD vnum);
+	bool WantsPlayerBotBonus67ShardOffer(LPCHARACTER ch, LPITEM offer);
+	DWORD GetPlayerBotBonus67ShardWantVnum(LPCHARACTER ch);
+	bool WantsPlayerBotBonus67ShardsFromMarket(LPCHARACTER ch);
+	bool CanPlayerBotPayForBonus67Shard(LPCHARACTER ch, LPITEM item, long long price);
+	void NotePlayerBotBonus67ShardBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 #endif
 }
 

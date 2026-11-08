@@ -599,10 +599,21 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 //   additive_map <map index> <additive vnum> <count>  (72, 73: 1 x 72065; 353: 1 x 72066)
 //   mob <mob vnum> <additive vnum> <count>            (2493 Beran-Setaou, 9714 Krolowa Dzungli: 2 x 72066)
 //   shard_chance <percent, e.g. 0.5>                  (default 0.5)
-//   shard_map <map index>                             (73, 209, 353)
+//   shard_map <map index>                             (73, 209, 353, 404 - MT2009_PLUS_BOT_BONUS67_V1)
 // MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest's (362) rules are Zaklety Las's (353) now - the forest past the
 // Temple of Ochao, on the Yohara core.
 //   shard <shard vnum> <weight>                       (39070-39077, 39081: 1 each)
+//   shard_pick <map index> <shard vnum> <weight>      (353: 39076 x3, 39080 x1; 404: 39077 x3, 39080 x1, 39081 x1)
+// MT2009_PLUS_BOT_BONUS67_V1 (drops; the owner, 8 November 2026: "add shard drops to Zaklety Las and Szczelina Czasu,
+// the same percentages as in the Grotto of Exile ... a world drop"): Zaklety Las (353) was a shard map already (0.5 %,
+// the colour from every band); Szczelina Czasu's forest (Zaklety Las (SZC), 404) joins the shard maps, and both draw
+// the colour of their players' item levels instead of the whole table - a shard_pick line names a map's own colours
+// (the shard lines stay the other maps'): 353 (monsters 100-108, players 95-109 in item levels 90-105) Czerwony
+// 39076 (90-104) x3 and Zolty Lsniacy 39080 (105) x1; 404 (players 110-119 in item levels 105-120) Teczowy 39077
+// (106-119) x3, Zolty Lsniacy 39080 x1 and Swiety 39081 (120+) x1. The chance is the Grotto's, shard_chance (0.5 %).
+// Map 404 drops nothing else (server-patches/szczelina, MT2009_PLUS_YOHARA_CRACK_V1): its shard comes from
+// Mt2009PlusSeonHaeRiftDrop, the one call the engine's no-drop return makes (the edit "MT2009_PLUS_BOT_BONUS67_V1
+// (rift shards)" there). A file of the panel with shard_map lines replaces the list, so it must name 404 itself.
 #include <sys/stat.h>
 #include <fstream>
 #include <sstream>
@@ -633,6 +644,7 @@ namespace mt2009_seonhae
 		int shardChance;						// per SHARD_CHANCE_SCALE
 		std::set<long> shardMaps;
 		std::vector<WeightedVnum> shards;
+		std::map<long, std::vector<WeightedVnum> > shardPicks;	// MT2009_PLUS_BOT_BONUS67_V1: a map's own colours
 	};
 
 	bool IsShardVnum(DWORD vnum)
@@ -655,10 +667,18 @@ namespace mt2009_seonhae
 		r.shardMaps.insert(73);
 		r.shardMaps.insert(209);
 		r.shardMaps.insert(353);
+		r.shardMaps.insert(404);	// MT2009_PLUS_BOT_BONUS67_V1: Zaklety Las (SZC), Szczelina Czasu
 		r.shards.clear();
 		for (DWORD v = 39070; v <= 39077; ++v)
 			r.shards.push_back(WeightedVnum{ v, 1 });
 		r.shards.push_back(WeightedVnum{ 39081, 1 });
+		// MT2009_PLUS_BOT_BONUS67_V1: the colours of the two forests' item levels (the header above)
+		r.shardPicks.clear();
+		r.shardPicks[353].push_back(WeightedVnum{ 39076, 3 });
+		r.shardPicks[353].push_back(WeightedVnum{ 39080, 1 });
+		r.shardPicks[404].push_back(WeightedVnum{ 39077, 3 });
+		r.shardPicks[404].push_back(WeightedVnum{ 39080, 1 });
+		r.shardPicks[404].push_back(WeightedVnum{ 39081, 1 });
 	}
 
 	DropRules s_drops;
@@ -676,6 +696,7 @@ namespace mt2009_seonhae
 		f.additivePermille = r.additivePermille;
 		f.shardChance = r.shardChance;
 		bool hasAddPct = false, hasAddMaps = false, hasMobs = false, hasShardPct = false, hasShardMaps = false, hasShards = false;
+		bool hasPicks = false;	// MT2009_PLUS_BOT_BONUS67_V1
 		std::string line;
 		int lineNo = 0;
 		while (std::getline(in, line))
@@ -717,6 +738,11 @@ namespace mt2009_seonhae
 				ok = (ss >> a >> b) && IsShardVnum((DWORD)a) && b > 0;
 				if (ok) { f.shards.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasShards = true; }
 			}
+			else if (key == "shard_pick")	// MT2009_PLUS_BOT_BONUS67_V1: shard_pick <map> <shard vnum> <weight>
+			{
+				ok = (ss >> a >> b >> c) && a > 0 && IsShardVnum((DWORD)b) && c > 0;
+				if (ok) { f.shardPicks[a].push_back(WeightedVnum{ (DWORD)b, (int)c }); hasPicks = true; }
+			}
 			std::string extra;
 			if (ok && (ss >> extra))
 				ok = false;
@@ -729,6 +755,7 @@ namespace mt2009_seonhae
 		if (hasShardPct) r.shardChance = f.shardChance;
 		if (hasShardMaps) r.shardMaps = f.shardMaps;
 		if (hasShards) r.shards = f.shards;
+		if (hasPicks) r.shardPicks = f.shardPicks;	// MT2009_PLUS_BOT_BONUS67_V1
 	}
 
 	const DropRules& Drops()
@@ -767,6 +794,13 @@ namespace mt2009_seonhae
 				return v[i].vnum;
 		}
 		return v.back().vnum;
+	}
+
+	// MT2009_PLUS_BOT_BONUS67_V1: the shard of a kill on a shard map - the map's own colours (shard_pick) or the table's
+	DWORD PickShard(const DropRules& r, long map)
+	{
+		std::map<long, std::vector<WeightedVnum> >::const_iterator pick = r.shardPicks.find(map);
+		return pick != r.shardPicks.end() && !pick->second.empty() ? PickWeighted(pick->second) : PickWeighted(r.shards);
 	}
 
 	void AddDrop(std::vector<LPITEM>& out, DWORD vnum, int count)
@@ -818,5 +852,35 @@ void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<L
 	// the shards: ordinary monsters on the shard maps
 	if (!bigOne && victim->IsMonster() && r.shardChance > 0 && r.shardMaps.count(map) &&
 		number(1, SHARD_CHANCE_SCALE) <= r.shardChance)
-		AddDrop(out, PickWeighted(r.shards), 1);
+		AddDrop(out, PickShard(r, map), 1);	// MT2009_PLUS_BOT_BONUS67_V1: the map's own colours
+}
+
+// MT2009_PLUS_BOT_BONUS67_V1 (rift shards): Zaklety Las (SZC) (404) drops nothing (server-patches/szczelina,
+// Mt2009PlusTimeRiftNoDrop) - the engine's no-drop return asks this one first: the shard of an ordinary monster of a
+// shard map, by the rules above (the Grotto's chance, the map's colours), on the ground at the kill with the kill's
+// ownership. The additives stay out (the wiki's "no drop" stands for everything else). A world drop: players and bots.
+LPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);	// playerbot_manager.cpp
+
+void Mt2009PlusSeonHaeRiftDrop(LPCHARACTER victim, LPCHARACTER killer, const PIXEL_POSITION& pos)
+{
+	using namespace mt2009_seonhae;
+	if (!victim || victim->IsPC() || !victim->IsMonster() || !killer || !killer->IsPC() || !killer->GetDesc() || !IsOn())
+		return;
+	if (victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS)
+		return;
+	const DropRules& r = Drops();
+	const long map = victim->GetMapIndex() >= 10000 ? victim->GetMapIndex() / 10000 : victim->GetMapIndex();
+	if (r.shardChance <= 0 || !r.shardMaps.count(map) || number(1, SHARD_CHANCE_SCALE) > r.shardChance)
+		return;
+	std::vector<LPITEM> out;
+	AddDrop(out, PickShard(r, map), 1);
+	if (out.empty())
+		return;
+	LPITEM item = out[0];
+	item->AddToGround(victim->GetMapIndex(), pos);
+	LPCHARACTER owner = Mt2009PlusSidekickLootReceiver(killer, victim->GetMapIndex(), victim->GetX(), victim->GetY());
+	item->SetOwnership(owner ? owner : killer);
+	item->StartDestroyEvent();
+	sys_log(0, "SEONHAE: rift shard %u map %ld from %s (%u) for %s", item->GetVnum(), map, victim->GetName(),
+			(unsigned int)victim->GetRaceNum(), (owner ? owner : killer)->GetName());
 }

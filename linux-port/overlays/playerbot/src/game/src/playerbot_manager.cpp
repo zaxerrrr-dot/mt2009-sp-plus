@@ -499,6 +499,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // stone - after the V3 goals whose purchase it uses
 #include "playerbot_element_shop.h"
 #include "playerbot_shop_aids.h"
+// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 bonus of the stage from 75 - the owner's pieces, the add at once, the shards from the
+// market (the chest last), the Silne and 71052 in V3, mixed only with both lines (after the shop aids, whose helpers it uses)
+#include "playerbot_bonus67_bots.h"
 // MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
 // dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
 #include "playerbot_skill_instr_late.h"
