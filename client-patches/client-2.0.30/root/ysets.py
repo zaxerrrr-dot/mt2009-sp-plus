@@ -152,3 +152,46 @@ def AppendInfo(tooltip, itemVnum, extra):
 		color = active and ACTIVE_COLOR or INACTIVE_COLOR
 		parts = [t for t in (_ApplyText(p, v) for p, v in tiers[n]) if t]
 		tooltip.AppendTextLine("%d cz\xea\x9cci: %s" % (n, ", ".join(parts)), color)
+
+
+# MT2009_PLUS_SASH_SERPENT_V1 (server-patches/szarfawez): a sash that absorbed a serpent weapon or armour keeps the
+# piece's three random base bonuses in its own yextra (YITEM of the sash's cell, bits 8-31 as the piece had them) and
+# gives them at its absorption rate - the server's CItem::CalcAcceBonus (half away from zero, a line never below 1).
+def _AcceValue(value, pct):
+	if not value or pct <= 0 or pct > 100:
+		return 0
+	v = value * pct / 100.0
+	if value > 0:
+		v = max(1.0, v + 0.5)
+	else:
+		v = min(-1.0, v - 0.5)
+	return int(v)
+
+
+def AppendAbsorbed(tooltip, absorbedVnum, extra, pct):
+	"""the absorbed serpent piece's random base bonuses on a sash, at the sash's absorption rate (pct)"""
+	kind, level = _Family(absorbedVnum)
+	if not kind or kind == "h":
+		return
+	try:
+		pct = int(pct)
+	except (TypeError, ValueError):
+		return
+	groups = D.RANDOM_GROUPS[kind]
+	if not (extra >> 8):
+		tooltip.AppendTextLine("3 losowe bonusy podstawowe (%d%%)" % pct, INACTIVE_COLOR)
+		if _lastOwn[0]:
+			_AskServer()
+		return
+	for line in xrange(3):
+		b = (extra >> (8 + 8 * line)) & 0xFF
+		opt, row = (b & 0x0F) - 1, b >> 4
+		if opt < 0 or line >= len(groups) or opt >= len(groups[line]):
+			continue
+		point, rows = groups[line][opt]
+		if row >= len(rows):
+			continue
+		value = _AcceValue(rows[row][level], pct)
+		text = _ApplyText(point, value)
+		if text:
+			tooltip.AppendTextLine(text, RANDOM_COLOR)
