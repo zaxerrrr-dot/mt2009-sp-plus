@@ -45,9 +45,9 @@
 //   * the fee: m2_najemnicy_price_h a summoned mercenary an hour (5 000 000), taken a minute at a time (the first
 //     minute at its entry) from the owner's vault (player.najemnicy_vault, the quest's "Wplac"); a warning when ten
 //     minutes are left; all of the owner's mercenaries dismissed when the vault cannot pay the next minute;
-//   * it leaves when the owner dismisses it, when the owner is out of this core's world for 20 s (a logout, another
-//     core or channel - stage 3 brings it back there by itself; a warp between two maps of one core it follows), when
-//     the vault is empty or when the module is switched off.
+//   * it leaves when the owner dismisses it, when the owner is out of this core's world for 20 s (a logout - it comes
+//     back at the next login, V3) or on another core or channel (at once - and in again there, V3; a warp between two
+//     maps of one core it follows), when the vault is empty or when the module is switched off.
 //
 // MT2009_PLUS_NAJEMNICY_V2 - stage 2, the equipment: the Towarzysz's equipment window (client uisidekickinventory.py,
 // the same bag window, costume panel and protocol) re-targeted to one mercenary - "/najemnicy eq <nr> ..." and
@@ -60,6 +60,20 @@
 // kill, the people's boss loot (CHARACTER::PickupItem lets it - NajemnikMayTakePeopleLoot), the dungeons' rewards that
 // count it among the people (pc.is_najemnik: Razador, Nemere, the Blue Dragon, the Scorpion Ruins, the Ancient Jungle,
 // Wukong's Hill, Atlantis, Meley, the Snake Temple, the Depths) and the Zodiac's chests (every character on the floor).
+//
+// MT2009_PLUS_NAJEMNICY_V3 - stage 3, maps, orders and dungeons (no engine edit; server-patches/najemnicy/README.md):
+//   * the rejoin: player.najemnicy.summoned keeps who is summoned (only a dismissal, the empty vault, the module off or
+//     a load that never came clear it). An owner seen on another core or channel (P2P) takes its mercenaries off this
+//     core at once (owner_moved, still in the owner's party); the quest's login on the core the owner arrived on runs
+//     "/najemnicy przybycie" (OnNajemnicyOwnerArrived): the summoned ones not here are spawned beside the owner (PVP
+//     Fan's spawn and PlaceLoadingBot, a dungeon's instance too), tried every 2 s for 90 s (ProcessNajemnicyRejoins).
+//     player.najemnicy_vault.billed_until carries the paid minute across the move; a paid minute that ran out over
+//     30 s ago makes the arrival a login, when the owner's najemnicy.no_rejoin / m2_najemnicy_rejoin_off decide
+//     ("Najemnicy wracaja..."). The arrival also sends NajemnikVids at once (no 20 s wait for "Ekwipunek");
+//   * the orders (order_mode, no_loot; "/najemnicy rozkaz", the letter, the target board's "Rozkazy"): za mna, stoj
+//     tutaj, bij moj cel, walcz sam w poblizu, the loot switch (ChooseNajemnikFoe);
+//   * the dungeons with the owner as leader (ManageNajemnikDungeon): the party bots' dungeon items and fight round the
+//     owner, the Yohara keys by class over the owner's party (ManagePlayerBotYdgItems), never a way out of its own.
 //
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
