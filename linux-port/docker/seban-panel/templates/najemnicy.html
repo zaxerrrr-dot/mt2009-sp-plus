@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Najemnicy · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_NAJEMNICY_V1: najemnicy graczy – spis, skarbce, odblokowania, przełączniki (najemnicy.py, playerbot_najemnicy.h) #}
+<style>
+.nj-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.nj-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.nj-form input[type=text]{min-width:14em;padding:7px 8px}
+.nj-note{font-size:12px;color:var(--muted)}
+.nj-table td{vertical-align:top;padding:7px 6px}
+.nj-merc{display:block;white-space:nowrap}
+</style>
+<a class="back" href="{{ url_for('events') }}">← Planer eventów</a>
+<p class="eyebrow">WYDARZENIA · GRACZE</p>
+<h1>🛡️ Najemnicy</h1>
+<p class="muted">Stała drużyna botów gracza (etap 1): gracz tworzy w liście „Najemnicy” do 7 najemników. Miejsca dają zadania Kolekcjonera Najemników razem z poziomem: 1 zadanie + 80 poz. → 2, 2 + 85 → 3, 3 + 90 → 4, 4 + 95 → 5, 5 + 100 → 6, 6 + 105 → 7. Gracz wzywa ich do swojej grupy i płaci za każdego wezwanego z własnego skarbca, co minutę. Najemnicy nie są w puli botów, w rankingach ani na rynku.</p>
+
+{% if missing %}
+<section class="panel"><h2>Brak tabel</h2><p>Tabele <code>player.najemnicy*</code> jeszcze nie istnieją – utworzy je migracja przy najbliższym starcie serwera (<code>najemnicy.sql</code> w apply.sh) albo sama gra przy pierwszym użyciu.</p></section>
+{% else %}
+<section class="cards compact">
+<article><span>Moduł</span><strong>{{ 'Wyłączony' if flags.m2_najemnicy_off else 'Włączony' }}</strong><small>flaga m2_najemnicy_off</small></article>
+<article><span>Zadania Kolekcjonera</span><strong>{{ 'Wszyscy mają 6/6 (test)' if flags.m2_najemnicy_free_unlock else 'Jak w grze / panelu' }}</strong><small>flaga m2_najemnicy_free_unlock</small></article>
+<article><span>Opłata</span><strong>{{ price_text }} / h</strong><small>za wezwanego najemnika (m2_najemnicy_price_h)</small></article>
+<article><span>Najemnicy</span><strong>{{ total_mercs }}</strong><small>graczy: {{ owners|length }} · w skarbcach: {{ total_balance }} yang</small></article>
+</section>
+
+<section class="panel" id="ustawienia">
+<h2>Ustawienia</h2>
+<form method="post" class="nj-form"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="action" value="flags">
+<label><span><input type="checkbox" name="off" value="1" {% if flags.m2_najemnicy_off %}checked{% endif %}> Wyłącz najemników</span></label>
+<label><span><input type="checkbox" name="free_unlock" value="1" {% if flags.m2_najemnicy_free_unlock %}checked{% endif %}> Wszyscy mają 6/6 zadań Kolekcjonera (testy; poziom nadal decyduje)</span></label>
+<label>Opłata za godzinę (yang, 0 = 5 000 000)<input type="text" name="price_h" value="{{ flags.m2_najemnicy_price_h or 0 }}" inputmode="numeric"></label>
+<button>Zapisz</button>
+</form>
+<p class="nj-note">Gra czyta te flagi z bazy co ~10 s, bez restartu. Wyłączenie odwołuje wszystkich wezwanych najemników. To samo w grze: <code>/eventflag m2_najemnicy_off 1</code> itd.</p>
+</section>
+
+<section class="panel" id="odblokuj">
+<h2>Zadania Kolekcjonera gracza (odblokowanie)</h2>
+<form method="post" class="nj-form"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}">
+<label>Nick postaci<input type="text" name="name" required maxlength="24"></label>
+<label>Ukończone zadania<select name="tasks">{% for t in range(1, 7) %}<option value="{{ t }}" {% if t == 6 %}selected{% endif %}>{{ t }} → do {{ t + 1 }} najemników (od {{ 75 + t * 5 }} poz.)</option>{% endfor %}</select></label>
+<button name="action" value="unlock">Ustaw</button>
+<button name="action" value="lock" class="secondary">Zablokuj (0 zadań)</button>
+</form>
+<p class="nj-note">Do czasu okna Kolekcjonera Najemników (osobny etap z łatką klienta). W grze GM: <code>/najemnicy odblokuj &lt;nick&gt; [1-6]</code>, <code>/najemnicy zadania &lt;nick&gt; &lt;0-6&gt;</code>, <code>/najemnicy zablokuj &lt;nick&gt;</code> – działa od razu, także dla gracza online. Zmniejszenie z panelu działa pewnie dla gracza offline.</p>
+</section>
+
+<section class="panel" id="lista">
+<h2>Najemnicy graczy</h2>
+<div class="table-wrap"><table class="nj-table">
+<thead><tr><th>Gracz</th><th>Poziom</th><th>Najemnicy (miejsce · imię · klasa)</th></tr></thead>
+<tbody>
+{% for o in owners %}
+<tr><td><strong>{{ o.name }}</strong><br><span class="nj-note">pid {{ o.pid }}</span></td><td>{{ o.level or '–' }}</td>
+<td>{% for m in o.mercs %}<span class="nj-merc">{{ m.slot }}. <strong>{{ m.name }}</strong> · {{ m.label }} · {{ m.sex_name }} <span class="nj-note">(pid {{ m.merc_pid }}, {{ m.login }}, utworzony {{ m.created_at or '–' }}{% if not m.setup_done %}, jeszcze nie wezwany{% endif %})</span></span>{% endfor %}</td></tr>
+{% else %}
+<tr><td colspan="3" class="muted">Nikt jeszcze nie ma najemnika.</td></tr>
+{% endfor %}
+</tbody></table></div>
+{% if retired %}
+<p class="nj-note">Zwolnieni (postać usuwa gra 20 min po zwolnieniu): {% for m in retired %}{{ m.name }} ({{ m.owner_name or m.owner_pid }}, {{ m.retired_at }}){% if not loop.last %}, {% endif %}{% endfor %}</p>
+{% endif %}
+</section>
+
+<section class="panel" id="skarbce">
+<h2>Skarbce</h2>
+<div class="table-wrap"><table class="nj-table">
+<thead><tr><th>Gracz</th><th>Stan</th><th>Wpłacone</th><th>Zapłacone (opłata)</th><th>Ostatnia zmiana</th></tr></thead>
+<tbody>
+{% for v in vaults %}
+<tr><td>{{ v.owner_name or ('#' ~ v.owner_pid) }}</td><td><strong>{{ v.balance_text }}</strong></td><td>{{ v.deposit_text }}</td><td>{{ v.paid_text }}</td><td>{{ v.updated_at or '–' }}</td></tr>
+{% else %}
+<tr><td colspan="5" class="muted">Brak wpłat.</td></tr>
+{% endfor %}
+</tbody></table></div>
+</section>
+
+<section class="panel" id="odblokowani">
+<h2>Zadania Kolekcjonera (ustawione w panelu / przez GM)</h2>
+<div class="table-wrap"><table class="nj-table">
+<thead><tr><th>Gracz</th><th>Poziom</th><th>Zadania</th><th>Miejsca teraz</th><th>Kiedy</th><th>Źródło</th></tr></thead>
+<tbody>
+{% for u in unlocks %}
+<tr><td>{{ u.owner_name or ('#' ~ u.owner_pid) }}</td><td>{{ u.owner_level or '–' }}</td><td>{{ u.tasks }}/6</td><td>{{ u.slots }}</td><td>{{ u.unlocked_at or '–' }}</td><td>{{ u.source }}</td></tr>
+{% else %}
+<tr><td colspan="6" class="muted">Nikomu nie ustawiono zadań ręcznie{% if flags.m2_najemnicy_free_unlock %} (teraz i tak wszyscy mają 6/6 – flaga testowa){% endif %}.</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="nj-note">Spis w logach gry: linie <code>NAJEMNICY: census</code> co 10 minut (syslog rdzeni).</p>
+</section>
+{% endif %}
+{% endblock %}

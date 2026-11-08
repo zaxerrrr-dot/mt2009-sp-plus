@@ -2328,7 +2328,8 @@ def weekly_tidy(r):
 WEEKLY_NOT_SIDEKICK = ("NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {0})"
                        # MT2009_PLUS_PVPFAN_V1: nor a PVP Fan character (an account playerbot_pf..., the Seban panel's war bots)
                        " AND NOT EXISTS (SELECT 1 FROM player.player wpf JOIN account.account wpa ON wpa.id = wpf.account_id"
-                       " WHERE wpf.id = {0} AND LEFT(wpa.login, 12) = 'playerbot_pf')")
+                       # MT2009_PLUS_NAJEMNICY_V1: nor a player's mercenary (playerbot_nj..., playerbot_najemnicy.h)
+                       " WHERE wpf.id = {0} AND LEFT(wpa.login, 12) IN ('playerbot_pf', 'playerbot_nj'))")
 
 
 def read_weekly_ranking(cat=1):

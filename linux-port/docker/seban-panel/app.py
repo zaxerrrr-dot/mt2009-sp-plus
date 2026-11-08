@@ -2130,7 +2130,8 @@ def weekly_tidy(row):
 WEEKLY_NOT_SIDEKICK = ("NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {0})"
                        # MT2009_PLUS_PVPFAN_V1: nor a PVP Fan character (an account playerbot_pf...)
                        " AND NOT EXISTS (SELECT 1 FROM player.player wpf JOIN account.account wpa ON wpa.id = wpf.account_id"
-                       " WHERE wpf.id = {0} AND LEFT(wpa.login, 12) = 'playerbot_pf')")
+                       # MT2009_PLUS_NAJEMNICY_V1: nor a player's mercenary (playerbot_nj..., playerbot_najemnicy.h)
+                       " WHERE wpf.id = {0} AND LEFT(wpa.login, 12) IN ('playerbot_pf', 'playerbot_nj'))")
 
 
 def weekly_rank_rows(cat=1):
@@ -4493,7 +4494,7 @@ def ranking_scope_sql(alias="p", people_only=False):
                     " WHERE sb.sidekick_pid = " + ref + "id)")
     # MT2009_PLUS_PVPFAN_V1: nor the PVP Fan characters (accounts playerbot_pf..., pvpfan.py) - the panel's war bots.
     not_sidekick += (" AND NOT EXISTS (SELECT 1 FROM account.account pfa WHERE pfa.id = " + ref + "account_id"
-                     " AND LEFT(pfa.login, 12) = 'playerbot_pf')")
+                     " AND LEFT(pfa.login, 12) IN ('playerbot_pf', 'playerbot_nj'))")  # MT2009_PLUS_NAJEMNICY_V1: and the mercenaries
     if include_real_players_in_rankings():
         if people_only:
             # A companion is a bot identity, so NOT bot_identity leaves it out.
@@ -12840,6 +12841,10 @@ install_potega_madrosci(app, db, login_required, update_csrf_token, read_events,
 from pvpfan import install as install_pvpfan
 install_pvpfan(app, db, login_required, update_csrf_token, game_text=game_text, map_names=MAP_NAMES,
                map_bounds=MAP_BOUNDS, icon_url=item_icon_url)
+# MT2009_PLUS_NAJEMNICY_V1: "Najemnicy" - the players' mercenaries: the list, the vaults, the unlocks and the switches
+# (najemnicy.py; the game's side playerbot_najemnicy.h, "/najemnicy", najemnicy.quest).
+from najemnicy import install as install_najemnicy
+install_najemnicy(app, db, login_required, update_csrf_token)
 
 # MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
 import dbeditor
