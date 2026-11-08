@@ -498,6 +498,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // as a player builds it - changes and adds on the armour, helmet, bracelet and talisman, the element pet, the protection
 // stone - after the V3 goals whose purchase it uses
 #include "playerbot_element_shop.h"
+// MT2009_PLUS_BOT_PET_GATE_V1: the element pet called at a bot's arrival (login, channel change) and the gates' credit for
+// one not out yet - after the element pet and the shop (playerbot_pet_gate.h; playerbot_progression.h asks it)
+#include "playerbot_pet_gate.h"
 #include "playerbot_shop_aids.h"
 // MT2009_PLUS_BOT_BONUS67_V1: the 6/7 bonus of the stage from 75 - the owner's pieces, the add at once, the shards from the
 // market (the chest last), the Silne and 71052 in V3, mixed only with both lines (after the shop aids, whose helpers it uses)
@@ -8381,6 +8384,10 @@ WritePlayerBotGuildStatus(dwNow);
 		ManagePlayerBotSkills(ch, state, dwNow);
 		if (RescuePlayerBotWithoutSectree(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_BOT_PET_GATE_V1: the element pet out at the arrival, before the first gate weighing
+		// (playerbot_pet_gate.h)
+		SummonPlayerBotPetOnArrival(ch, dwNow);
+		TickPlayerBotPetGateCensus(dwNow);
 
 		// Before the stall, which ends the pass of a bot at its counter.
 		CashPlayerBotVouchers(ch, state, dwNow);
