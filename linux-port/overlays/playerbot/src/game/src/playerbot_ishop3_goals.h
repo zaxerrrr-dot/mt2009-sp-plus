@@ -438,6 +438,14 @@ namespace
 #ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
 	// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (goals): the Seon-Hae additives, 71052 and 71083 (playerbot_shop_aids.h, below).
 	void CollectPlayerBotShopAidGoals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n);
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+	// MT2009_PLUS_BOT_SKILL_INSTR_V1 (playerbot_skill_instr_late.h, later in the include order): the chest of skill
+	// instructions of a bot short of books, a V3 roll chest of them, the set-chest look's exclusion, the goal's answer.
+	void CollectPlayerBotSkillInstrGoals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n);
+	bool ManagePlayerBotSkillInstrV3Chest(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	bool IsPlayerBotSkillInstrV3Chest(DWORD chestId);
+	void NotePlayerBotSkillInstrGoalResult(LPCHARACTER ch, const TPlayerBotIshop3Goal& goal, int got);
+#endif
 #endif
 
 	// (below) the lines of a vnum the bot's level may buy, cheapest a piece first
@@ -688,6 +696,9 @@ namespace
 #ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
 		CollectPlayerBotShopAidGoals(ch, goals, n);
 #endif
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+		CollectPlayerBotSkillInstrGoals(ch, goals, n);	// MT2009_PLUS_BOT_SKILL_INSTR_V1: before the catalogue's comforts
+#endif
 		// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: the catalogue's needs, after every goal above
 		CollectPlayerBotIshop3CatalogueGoals(ch, goals, n);
 		// MT2009_PLUS_BOT_ISHOP_NEED_V1: a goal whose vnum the bot holds its cap of (or bought its day's pieces of) is no
@@ -866,7 +877,12 @@ namespace
 			return false;	// a missing piece of the look is bought outright first
 		std::vector<const TPlayerBotIshop3Chest*> mine;
 		for (size_t i = 0; i < s_vecPlayerBotIshop3Chests.size(); ++i)
-			if (ch->GetLevel() >= s_vecPlayerBotIshop3Chests[i].bMinLevel)
+			if (ch->GetLevel() >= s_vecPlayerBotIshop3Chests[i].bMinLevel
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+					// MT2009_PLUS_BOT_SKILL_INSTR_V1: a chest of skill instructions is no set chest (its own goal buys it)
+					&& !IsPlayerBotSkillInstrV3Chest(s_vecPlayerBotIshop3Chests[i].dwChestId)
+#endif
+					)
 				mine.push_back(&s_vecPlayerBotIshop3Chests[i]);
 		if (mine.empty())
 			return false;
@@ -910,10 +926,17 @@ namespace
 		TPlayerBotIshop3Goal goals[PLAYERBOT_ISHOP3_MAX_GOALS];
 		const int n = CollectPlayerBotIshop3Goals(ch, goals);
 		const DWORD spread = PlayerBotNavHash(ch->GetPlayerID() ^ 0x49533347U) % 30000U;
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+		// MT2009_PLUS_BOT_SKILL_INSTR_V1: a V3 roll chest of skill instructions for a bot short of books (none listed:
+		// nothing asked)
+		const bool instrChest = ManagePlayerBotSkillInstrV3Chest(ch, state, dwNow);
+#else
+		const bool instrChest = false;
+#endif
 		if (n == 0)
 		{
 			s_mapPlayerBotIshop3NextGoal[ch->GetPlayerID()] = dwNow + PLAYERBOT_ISHOP3_GOAL_IDLE_MS + spread;
-			return ManagePlayerBotIshop3Chest(ch, state, dwNow);
+			return ManagePlayerBotIshop3Chest(ch, state, dwNow) || instrChest;
 		}
 		s_mapPlayerBotIshop3NextGoal[ch->GetPlayerID()] = dwNow + PLAYERBOT_ISHOP3_GOAL_STEP_MS + spread;
 		// the balance read fresh once, at the session's start (the grants come from outside the core)
@@ -924,6 +947,9 @@ namespace
 		for (int i = 0; i < n && purchases < PLAYERBOT_ISHOP3_SESSION_PURCHASES; ++i)
 		{
 			const int got = BuyPlayerBotIshop3Pieces(ch, state, goals[i], dwNow, &purchases);
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+			NotePlayerBotSkillInstrGoalResult(ch, goals[i], got);	// MT2009_PLUS_BOT_SKILL_INSTR_V1
+#endif
 			// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: the catalogue's goals in the variety line, opened / bought
 			if (goals[i].bNeed != PLAYERBOT_ISHOP3_NEED_NEVER)
 			{
@@ -942,7 +968,7 @@ namespace
 		if (any)
 			sys_log(0, "PLAYERBOT_ISHOP3: session pid=%u name=%s lv=%d goals=%d bought=[%s] coins=%d marks=%d",
 					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), n, done.c_str(), state.iDragonCoins, state.iDragonMarks);
-		return any;
+		return any || instrChest;
 	}
 }
 

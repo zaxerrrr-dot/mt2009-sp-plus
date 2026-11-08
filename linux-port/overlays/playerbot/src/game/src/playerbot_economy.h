@@ -1894,6 +1894,14 @@ namespace
 		if (item->GetType() == ITEM_SKILLBOOK)
 		{
 			const DWORD skill = GetPlayerBotSkillBookSkillVnum(item);
+#ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
+			// MT2009_PLUS_BOT_SKILL_INSTR_V1: an own skill's instruction under G1 is kept whole; a KU keeps its own
+			// number over the instructions of its skill that are kept so (the kind counts both)
+			if (IsPlayerBotSkillInstrKeptWhole(ch, item))
+				return PLAYERBOT_SKILL_INSTR_KEEP_ALL;
+			if (!IsPlayerBotSkillInstruction(item) && ch->GetSkillGroup() != 0 && IsPlayerBotOwnSkill(ch, skill))
+				return GetPlayerBotBookKeepLimit(ch, skill) + CountPlayerBotKeptSkillInstr(ch, skill);
+#endif
 			return ch->GetSkillGroup() != 0 && IsPlayerBotOwnSkill(ch, skill)
 					? GetPlayerBotBookKeepLimit(ch, skill) : 0;
 		}
