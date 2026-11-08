@@ -921,8 +921,7 @@ namespace
 		// (playerbot_riposty.cpp); a companion's points are its owner's
 		if (!sidekick && ch->GetPoint(POINT_SKILL) > 0)
 		{
-			int RipostyBotSpendPoints(CHARACTER*);
-			RipostyBotSpendPoints(ch);
+			::RipostyBotSpendPoints(ch);
 		}
 	}
 }

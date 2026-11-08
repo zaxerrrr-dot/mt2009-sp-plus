@@ -8398,8 +8398,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_riposty.cpp); a companion's are its owner's.
 		if (!IsPlayerBotSidekickPID(ch->GetPlayerID()))
 		{
-			void RipostyManageBot(CHARACTER*);
-			RipostyManageBot(ch);
+			::RipostyManageBot(ch);
 		}
 		// The vouchers cashed and the shop's goods bought (playerbot_itemshop.h).
 		ManagePlayerBotItemShop(ch, state, dwNow);

@@ -47,4 +47,9 @@ namespace riposty
 	unsigned int BotChoice(const CHARACTER* ch);
 }
 
+// The bot hooks (playerbot_riposty.cpp), global: called from inside playerbot_manager.cpp's anonymous namespace, where a
+// block-scope declaration would name an anonymous-namespace function that is never defined (link error).
+void RipostyManageBot(CHARACTER* ch);
+int RipostyBotSpendPoints(CHARACTER* ch);
+
 #endif
