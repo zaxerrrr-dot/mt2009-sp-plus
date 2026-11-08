@@ -187,3 +187,21 @@ okna petów) i przycisk w pasku bocznym. Brama wersji: `M2_CLIENT_MIN_VERSION` 1
 - **Zaczaruj zwierzaka 55033 (pkt 9)**: ItemShop (linia 40938, 299 SM – cena właściciela 5.11 – w grze i na WWW), Portowy Sklep
   Gaya (rząd III, 2000 Gaya jak wiki, `ygaya.quest`), Battle Pass (trzecia nagroda misji 6 / 9 / 12, jeśli wolna – raz,
   znacznik `pety:bp_enchant_v1`), Koło Losu (`kola-src`). Stos 200 i handel – już były.
+
+## Poprawki 8.11.2026 (zgłoszenia graczy z Discorda)
+
+- **Zwierzak chowany po teleporcie** (`MT2009_PLUS_PET_SUMMON_KEEP_V2`, nakładka, bez edycji silnika): flaga questu
+  `growth_pet.summoned` (V1, 60306f12) przychodzi z asynchronicznego zapytania db o questy (`QID_QUEST`), a zwierzaki
+  z bezpośredniego zapytania db na prośbę gry wysłaną przy wczytaniu przedmiotów – zwykle zwierzaki były pierwsze, flaga
+  jeszcze 0 i zwierzak zostawał w pieczęci (teleport, zmiana mapy / kanału, ponowne logowanie). Przywrócenie czeka na
+  wczytane flagi (`quest::PC::IsLoaded`): od razu albo co 250 ms do 15 s. Flaga przez `GetPCForce` (GetPC przestawiał
+  bieżącą postać menedżera questów).
+- **Pieczęć świeci jak przywołana** (`MT2009_PLUS_PET_SEAL_GLOW_V1`, klient): socket 2 pieczęci to id zwierzaka (każda
+  wykluta pieczęć go ma), więc nie jest flagą przywołania. Świecenie komórki (CSlotWindow `bActive`) zostawało ze
+  starego stanu (SetItemSlot z tym samym vnum go nie czyści), a podświetlenie nowego przedmiotu wygląda tak samo.
+  `uiinventory.RefreshBagSlotWindow` ustawia świecenie pieczęci z prawdziwego stanu (`uipetinfo.SealGlow`: id z socketu
+  2 == `player.GetActivePetItemId()`, GC przywołania / odwołania odświeżają ekwipunek), `HighlightSlot` pomija pieczęcie.
+- **Zwykłe pety bez opisu** (`MT2009_PLUS_PET_PAY_TOOLTIP_V1`, klient): pety z ItemShopu / czasowe (np. mini laleczki)
+  to typ 37 podtyp 12 (`PET_PAY`, 193 wiersze `item_proto`), ten sam typ co zwierzaki domowe – `uipetinfo.IsGrowthPetItem`
+  pomija podtyp 12, więc idą do zwykłej podpowiedzi (`ITEM_TYPE_PET`: bonusy, czas, opis). Jaja, pieczęcie, klatka,
+  księgi i reszta podtypów 0–11 / 13 zostają w gałęzi zwierzaka domowego.

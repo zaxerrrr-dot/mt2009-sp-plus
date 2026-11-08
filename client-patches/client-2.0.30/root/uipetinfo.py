@@ -347,7 +347,21 @@ def ItemKind(vnum):
 
 
 def IsGrowthPetItem(vnum):
-	return ItemKind(vnum)[0] == ITEM_TYPE_GROWTH_PET
+	"""MT2009_PLUS_PET_PAY_TOOLTIP_V1: the growth pet items of type 37 (eggs, seals, the cage, books, food...) - not
+	PET_PAY (subtype 12: the ItemShop / timed pets, e.g. the mini dolls), which share the type: they take the
+	ordinary item tooltip (uitooltip's ITEM_TYPE_PET branch: bonuses, wear limits, time left, description)."""
+	t, s = ItemKind(vnum)
+	return t == ITEM_TYPE_GROWTH_PET and s != PET_PAY
+
+
+def SealGlow(vnum, socket):
+	"""MT2009_PLUS_PET_SEAL_GLOW_V1 (uiinventory.RefreshBagSlotWindow): None for anything but a growth pet seal,
+	else whether the cell glows - only the seal of the pet summoned now (socket 2 = the pet's id, set on every
+	seal, so it is no summoned flag; the summoned id is the exe's, GC pet summon / unsummon)."""
+	if not (55000 <= vnum < 56000) or not IsPetItem(vnum, PET_UPBRINGING):
+		return None
+	petId = U32(socket[2]) if socket and len(socket) > 2 else 0
+	return bool(petId) and petId == ActivePetId()
 
 
 def IsPetItem(vnum, subtype):
