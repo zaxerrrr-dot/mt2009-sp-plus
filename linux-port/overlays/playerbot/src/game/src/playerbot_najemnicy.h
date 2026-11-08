@@ -118,6 +118,25 @@ namespace
 	const DWORD NAJEMNICY_BAG_SWEEP_MS = 5000;
 	const DWORD NAJEMNICY_BAG_FULL_TELL_MS = 5 * 60 * 1000;
 	const DWORD NAJEMNICY_VID_RESEND_MS = 20000;
+	// MT2009_PLUS_NAJEMNICY_V3: the rejoin after a core / channel change and after a login, the orders.
+	const DWORD NAJEMNICY_REJOIN_WINDOW_MS = 90000;		// how long an arrived owner's mercenaries are waited for
+	const DWORD NAJEMNICY_REJOIN_TRY_MS = 2000;			// a try every two seconds (the old core lets them go first)
+	const int NAJEMNICY_MOVE_GRACE_S = 30;					// a paid minute ran out at most 30 s ago: a move, not a login
+	const DWORD NAJEMNICY_ARRIVAL_VID_MS = 3000;			// the VIDs again 3 s after an arrival (the warp's new client)
+	const int NAJEMNICY_HOLD_RETURN = 200;					// "Stoj tutaj": back to its spot beyond 2 m
+	const int NAJEMNICY_HOLD_FIGHT_RANGE = 700;			// ... and what stands within 7 m of the spot it takes on
+	const int NAJEMNICY_FREE_RANGE = 2500;					// "Walcz sam w poblizu": any monster or stone within 25 m of the owner
+	const int NAJEMNICY_FREE_LEASH = 1500;					// ... and back to the owner beyond 15 m when nothing is left
+
+	// MT2009_PLUS_NAJEMNICY_V3: the owner's orders (player.najemnicy.order_mode; the loot switch is no_loot).
+	enum ENajemnikOrder
+	{
+		NAJEMNIK_ORDER_FOLLOW = 0,	// "Za mna" (default): at the owner's side, the owner's fight and what is near
+		NAJEMNIK_ORDER_HOLD = 1,	// "Stoj tutaj": keeps its spot, fights what comes to it
+		NAJEMNIK_ORDER_FOCUS = 2,	// "Bij moj cel": the owner's target only (else what hits the owner or itself)
+		NAJEMNIK_ORDER_FREE = 3,	// "Walcz sam w poblizu": every monster and stone near the owner, bosses too
+		NAJEMNIK_ORDER_COUNT = 4,
+	};
 
 	enum ENajemnikPhase
 	{
@@ -164,6 +183,13 @@ namespace
 		DWORD nextBagSweep = 0;
 		DWORD nextBagFullTell = 0;
 		std::map<DWORD, DWORD> mapItemRetry;	// vnum -> when a buff item of it may be tried again
+		// MT2009_PLUS_NAJEMNICY_V3: its order, the loot switch, the spot of "Stoj tutaj", a rejoin's quiet entry.
+		BYTE order = NAJEMNIK_ORDER_FOLLOW;
+		bool noLoot = false;
+		long holdMap = 0;
+		long holdX = 0;
+		long holdY = 0;
+		bool rejoin = false;
 	};
 
 	struct TNajemnicyOwner
@@ -177,8 +203,20 @@ namespace
 		DWORD nextVidSend = 0;
 	};
 
+	// MT2009_PLUS_NAJEMNICY_V3: an owner who arrived on this core (a login, a warp from another core or channel) and
+	// whose summoned mercenaries are on their way - tried every NAJEMNICY_REJOIN_TRY_MS until NAJEMNICY_REJOIN_WINDOW_MS.
+	struct TNajemnicyRejoin
+	{
+		DWORD until = 0;
+		DWORD nextTry = 0;
+		bool login = false;	// a login (they "come back"), not a move
+	};
+	std::map<DWORD, TNajemnicyRejoin> s_mapNajemnicyRejoin;	// owner pid -> its rejoin
+
 	// MT2009_PLUS_NAJEMNICY_V2: the owner's client told which characters are its mercenaries (defined with the window).
 	void AnnounceNajemnicyVids(LPCHARACTER owner, TNajemnicyOwner& rec, DWORD dwNow);
+	// MT2009_PLUS_NAJEMNICY_V3: the arrived owners' rejoins (defined with the commands, after SummonNajemnik).
+	void ProcessNajemnicyRejoins(DWORD dwNow);
 
 	std::map<DWORD, TNajemnik> s_mapNajemnik;				// mercenary pid -> its runtime (summoned on this core)
 	std::map<DWORD, TNajemnicyOwner> s_mapNajemnicyOwner;	// owner pid -> its billing
@@ -343,7 +381,16 @@ namespace
 		std::unique_ptr<SQLMsg> d(NajemnicyQuery(
 				"ALTER TABLE player.najemnicy_unlock ADD COLUMN IF NOT EXISTS tasks TINYINT UNSIGNED NOT NULL DEFAULT 0 "
 				"AFTER unlocked"));
-		s_bNajemnicyTables = NajemnicyOk(a) && NajemnicyOk(b) && NajemnicyOk(c) && NajemnicyOk(d);
+		// MT2009_PLUS_NAJEMNICY_V3: the rejoin (summoned, the vault's paid-till second) and the orders.
+		std::unique_ptr<SQLMsg> e(NajemnicyQuery(
+				"ALTER TABLE player.najemnicy ADD COLUMN IF NOT EXISTS summoned TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER "
+				"setup_done, ADD COLUMN IF NOT EXISTS order_mode TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER summoned, "
+				"ADD COLUMN IF NOT EXISTS no_loot TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER order_mode"));
+		std::unique_ptr<SQLMsg> f(NajemnicyQuery(
+				"ALTER TABLE player.najemnicy_vault ADD COLUMN IF NOT EXISTS billed_until INT UNSIGNED NOT NULL DEFAULT 0 "
+				"AFTER total_deposit"));
+		s_bNajemnicyTables = NajemnicyOk(a) && NajemnicyOk(b) && NajemnicyOk(c) && NajemnicyOk(d) && NajemnicyOk(e) &&
+				NajemnicyOk(f);
 		if (!s_bNajemnicyTables)
 			sys_err("NAJEMNICY: the tables cannot be made (najemnicy.sql)");
 		return s_bNajemnicyTables;
@@ -359,6 +406,10 @@ namespace
 		bool setupDone = false;
 		std::string login;
 		std::string name;
+		// MT2009_PLUS_NAJEMNICY_V3: summoned when the owner left (it comes back), its last order, the loot switch.
+		bool summoned = false;
+		BYTE order = NAJEMNIK_ORDER_FOLLOW;
+		bool noLoot = false;
 	};
 
 	// The owner's mercenaries in service, by slot.
@@ -368,8 +419,8 @@ namespace
 		if (!EnsureNajemnicyTables())
 			return out;
 		std::unique_ptr<SQLMsg> m(NajemnicyQuery(
-				"SELECT merc_pid, account_id, slot, job, skill_group, setup_done, login, name FROM player.najemnicy "
-				"WHERE owner_pid=%u AND retired=0 ORDER BY slot", ownerPid));
+				"SELECT merc_pid, account_id, slot, job, skill_group, setup_done, login, name, summoned, order_mode, no_loot "
+				"FROM player.najemnicy WHERE owner_pid=%u AND retired=0 ORDER BY slot", ownerPid));
 		if (!NajemnicyOk(m) || !m->Get()->pSQLResult)
 			return out;
 		MYSQL_ROW row;
@@ -385,6 +436,9 @@ namespace
 			v = 0; str_to_number(v, row[5] ? row[5] : "0"); r.setupDone = v != 0;
 			r.login = row[6] ? row[6] : "";
 			r.name = row[7] ? row[7] : "";
+			v = 0; str_to_number(v, row[8] ? row[8] : "0"); r.summoned = v != 0;
+			v = 0; str_to_number(v, row[9] ? row[9] : "0"); r.order = (BYTE)(v < NAJEMNIK_ORDER_COUNT ? v : 0);
+			v = 0; str_to_number(v, row[10] ? row[10] : "0"); r.noLoot = v != 0;
 			if (r.pid)
 				out.push_back(r);
 		}
@@ -1000,6 +1054,119 @@ namespace
 	}
 
 	// The whole tick of a summoned mercenary; true for every mercenary (nothing of the population's runs for it).
+	// MT2009_PLUS_NAJEMNICY_V3: "Walcz sam w poblizu" - the nearest monster or stone within NAJEMNICY_FREE_RANGE of the
+	// owner, bosses and stones included (the Towarzysz's hunt leaves those to the owner).
+	struct FNajemnikFreeFoe
+	{
+		LPCHARACTER self;
+		LPCHARACTER owner;
+		LPCHARACTER best;
+		int bestDist;
+
+		FNajemnikFreeFoe(LPCHARACTER s, LPCHARACTER o) : self(s), owner(o), best(NULL), bestDist(INT_MAX)
+		{
+		}
+
+		void operator()(LPENTITY ent)
+		{
+			if (!ent || !ent->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER c = (LPCHARACTER)ent;
+			if (c == self || c == owner || c->IsDead() || (!c->IsMonster() && !c->IsStone()) ||
+					c->GetMapIndex() != owner->GetMapIndex())
+				return;
+			if (c->IsStone() && IsPlayerBotEventStone(c->GetRaceNum()))
+				return;
+			if (DISTANCE_APPROX(c->GetX() - owner->GetX(), c->GetY() - owner->GetY()) > NAJEMNICY_FREE_RANGE)
+				return;
+			const int d = DISTANCE_APPROX(c->GetX() - self->GetX(), c->GetY() - self->GetY());
+			if (d < bestDist && IsPlayerBotAttackableTarget(self, c))
+			{
+				best = c;
+				bestDist = d;
+			}
+		}
+	};
+
+	// The owner's target as "Bij moj cel" takes it: any monster or stone (a boss too, merely clicked or not), a guild
+	// war's foe, on the owner's map within the Towarzysz's assist range.
+	LPCHARACTER GetNajemnikOwnerTarget(LPCHARACTER ch, LPCHARACTER owner)
+	{
+		LPCHARACTER target = owner->GetTarget();
+		if (!target || target == ch || target->IsDead() || target->GetMapIndex() != owner->GetMapIndex())
+			return NULL;
+		if (!target->IsMonster() && !target->IsStone() && !IsPlayerBotSidekickWarFoe(owner, target))
+			return NULL;
+		if (target->IsStone() && IsPlayerBotEventStone(target->GetRaceNum()))
+			return NULL;
+		if (DISTANCE_APPROX(target->GetX() - owner->GetX(), target->GetY() - owner->GetY()) > PLAYERBOT_SIDEKICK_ASSIST_RANGE)
+			return NULL;
+		return IsPlayerBotAttackableTarget(ch, target) ? target : NULL;
+	}
+
+	// What the mercenary fights now, by its order.
+	LPCHARACTER ChooseNajemnikFoe(LPCHARACTER ch, LPCHARACTER owner, TNajemnik& n, int& why)
+	{
+		bool ownerFighting = false;
+		switch (n.order)
+		{
+			case NAJEMNIK_ORDER_FOCUS:
+			{
+				LPCHARACTER target = GetNajemnikOwnerTarget(ch, owner);
+				if (target)
+				{
+					why = PLAYERBOT_SIDEKICK_FOE_OWNER_TARGET;
+					return target;
+				}
+				// No target of the owner's: only what hits the owner or itself.
+				return FindPlayerBotSidekickFoe(ch, owner, PLAYERBOT_SIDEKICK_STANCE_DEFEND, why, ownerFighting);
+			}
+			case NAJEMNIK_ORDER_FREE:
+			{
+				LPCHARACTER foe = FindPlayerBotSidekickFoe(ch, owner, PLAYERBOT_SIDEKICK_STANCE_ATTACK, why, ownerFighting);
+				if (foe || !owner->GetSectree())
+					return foe;
+				FNajemnikFreeFoe free(ch, owner);
+				owner->GetSectree()->ForEachAround(free);
+				why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
+				return free.best;
+			}
+			case NAJEMNIK_ORDER_HOLD:
+			{
+				if (!ch->GetSectree())
+					return NULL;
+				// The Towarzysz's look round, centred on its spot: what hits it or the owner there, what idles by the spot.
+				FPlayerBotSidekickFoes foes(ch, owner, n.holdX, n.holdY, ch->GetMapIndex());
+				ch->GetSectree()->ForEachAround(foes);
+				if (foes.onSelf)
+				{
+					why = PLAYERBOT_SIDEKICK_FOE_AT_SELF;
+					return foes.onSelf;
+				}
+				if (foes.onOwner)
+				{
+					why = PLAYERBOT_SIDEKICK_FOE_AT_OWNER;
+					return foes.onOwner;
+				}
+				if (foes.idle && DISTANCE_APPROX(foes.idle->GetX() - n.holdX, foes.idle->GetY() - n.holdY) <=
+						NAJEMNICY_HOLD_FIGHT_RANGE)
+				{
+					why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
+					return foes.idle;
+				}
+				LPCHARACTER target = GetNajemnikOwnerTarget(ch, owner);
+				if (target && DISTANCE_APPROX(target->GetX() - n.holdX, target->GetY() - n.holdY) <= NAJEMNICY_HOLD_FIGHT_RANGE)
+				{
+					why = PLAYERBOT_SIDEKICK_FOE_OWNER_TARGET;
+					return target;
+				}
+				return NULL;
+			}
+			default:
+				return FindPlayerBotSidekickFoe(ch, owner, PLAYERBOT_SIDEKICK_STANCE_ATTACK, why, ownerFighting);
+		}
+	}
+
 	bool ManagePlayerBotNajemnikBot(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (s_mapNajemnik.empty() || !ch)
@@ -1106,13 +1273,22 @@ namespace
 			return true;
 		}
 		const int dist = otherMap ? INT_MAX : DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY());
-		if (otherMap || dist > NAJEMNICY_TELEPORT_DISTANCE)
+		// MT2009_PLUS_NAJEMNICY_V3: "Stoj tutaj" keeps its spot on the owner's map, however far the owner walks; another
+		// map (a warp, a dungeon, a rejoin) anchors it anew beside the owner there.
+		const bool hold = n.order == NAJEMNIK_ORDER_HOLD;
+		if (otherMap || (!hold && dist > NAJEMNICY_TELEPORT_DISTANCE))
 		{
 			if (owner->IsDead() || (int)(dwNow - n.nextCatchUp) < 0)
 				return true;
 			n.nextCatchUp = dwNow + 3000;
 			PlaceNajemnikBesideOwner(ch, state, owner, dwNow, otherMap ? "follow" : "catch_up");
 			return true;
+		}
+		if (hold && n.holdMap != ch->GetMapIndex())
+		{
+			n.holdMap = ch->GetMapIndex();
+			n.holdX = ch->GetX();
+			n.holdY = ch->GetY();
 		}
 		if ((int)(dwNow - n.nextParty) >= 0)
 		{
@@ -1133,18 +1309,19 @@ namespace
 			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
 			return true;
 		}
-		// The fight: what the owner fights, what attacks either of them, then what stands near (the Towarzysz's "atakuj").
+		// The fight - by the owner's order (MT2009_PLUS_NAJEMNICY_V3, ChooseNajemnikFoe): "Za mna" what the owner fights,
+		// what attacks either of them, then what stands near (the Towarzysz's "atakuj"); "Bij moj cel" the owner's target;
+		// "Walcz sam" everything near the owner; "Stoj tutaj" what comes to its spot.
 		int why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
-		bool ownerFighting = false;
-		LPCHARACTER foe = owner->IsDead() ? NULL
-				: FindPlayerBotSidekickFoe(ch, owner, PLAYERBOT_SIDEKICK_STANCE_ATTACK, why, ownerFighting);
+		LPCHARACTER foe = owner->IsDead() ? NULL : ChooseNajemnikFoe(ch, owner, n, why);
 		if (foe && !MayNajemnikStrike(ch, foe))
 		{
 			PlayerBotLogThrottled("najemnicy_no_pvp", dwNow, "NAJEMNICY: leaves a character alone pid=%u name=%s foe=%s "
 					"(no guild war of its guild)", n.pid, ch->GetName(), foe->GetName());
 			foe = NULL;
 		}
-		if (foe && why == PLAYERBOT_SIDEKICK_FOE_NEARBY && RunNajemnikLoot(ch, state, n, owner, dwNow))
+		const bool mayLoot = !n.noLoot && !hold;
+		if (foe && why == PLAYERBOT_SIDEKICK_FOE_NEARBY && mayLoot && RunNajemnikLoot(ch, state, n, owner, dwNow))
 			return true;
 		if (foe)
 		{
@@ -1157,19 +1334,36 @@ namespace
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 		}
-		if (RunNajemnikLoot(ch, state, n, owner, dwNow))
+		if (mayLoot && RunNajemnikLoot(ch, state, n, owner, dwNow))
 			return true;
-		if (dist > NAJEMNICY_FOLLOW_DISTANCE)
+		if (hold)
 		{
-			long x = 0, y = 0;
-			GetPlayerBotSidekickSpot(ch, owner, x, y);
-			WalkPlayerBotSidekick(ch, x, y, dwNow, dist > 1500);
-			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
-			state.dwLastMeaningfulActivityTime = dwNow;
-			return true;
+			const int fromSpot = DISTANCE_APPROX(ch->GetX() - n.holdX, ch->GetY() - n.holdY);
+			if (fromSpot > NAJEMNICY_HOLD_RETURN)
+			{
+				WalkPlayerBotSidekick(ch, n.holdX, n.holdY, dwNow, false);
+				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+				state.dwLastMeaningfulActivityTime = dwNow;
+				return true;
+			}
+			if (ch->IsStateMove())
+				ch->Stop();
 		}
-		if (ch->IsStateMove() && dist <= NAJEMNICY_FOLLOW_DISTANCE / 2)
-			ch->Stop();
+		else
+		{
+			const int leash = n.order == NAJEMNIK_ORDER_FREE ? NAJEMNICY_FREE_LEASH : NAJEMNICY_FOLLOW_DISTANCE;
+			if (dist > leash)
+			{
+				long x = 0, y = 0;
+				GetPlayerBotSidekickSpot(ch, owner, x, y);
+				WalkPlayerBotSidekick(ch, x, y, dwNow, dist > 1500);
+				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+				state.dwLastMeaningfulActivityTime = dwNow;
+				return true;
+			}
+			if (ch->IsStateMove() && dist <= NAJEMNICY_FOLLOW_DISTANCE / 2)
+				ch->Stop();
+		}
 		state.dwLastMeaningfulActivityTime = dwNow;
 		if (ch->GetJob() == JOB_SHAMAN && ManagePlayerBotBuffPerson(ch, state, owner, dwNow, true, true))
 			return true;
@@ -1195,13 +1389,21 @@ namespace
 		// The fee: the first minute at its entry, then one a minute (ManagePlayerBotNajemnicy).
 		TNajemnicyOwner& o = s_mapNajemnicyOwner[n.ownerPid];
 		if (o.nextBill == 0)
-			o.nextBill = dwNow;
+		{
+			// MT2009_PLUS_NAJEMNICY_V3: a minute paid on another core (a move) runs out first - no gap, no minute twice.
+			const long long paidLeft = NajemnicyNumber(std::unique_ptr<SQLMsg>(NajemnicyQuery(
+					"SELECT CAST(billed_until AS SIGNED) - UNIX_TIMESTAMP() FROM player.najemnicy_vault WHERE owner_pid=%u",
+					n.ownerPid)), 0);
+			o.nextBill = dwNow + (DWORD)(MINMAX(0LL, paidLeft, 60LL) * 1000);
+		}
 		o.nextVidSend = 0;	// MT2009_PLUS_NAJEMNICY_V2: its VID to the owner's client at the next pass
+		o.vidSig.clear();
 		LPCHARACTER owner = FindNajemnicyOwnerHere(n.ownerPid);
-		if (owner)
+		if (owner && !n.rejoin)
 			TellNajemnicy(owner, "%s jest przy tobie.", ch->GetName());
-		sys_log(0, "NAJEMNICY: entered pid=%u name=%s owner=%u slot=%u map=%ld (%ld,%ld)", n.pid, ch->GetName(), n.ownerPid,
-				(unsigned int)n.slot, ch->GetMapIndex(), ch->GetX(), ch->GetY());
+		sys_log(0, "NAJEMNICY: entered pid=%u name=%s owner=%u slot=%u map=%ld (%ld,%ld) rejoin=%d order=%u no_loot=%d", n.pid,
+				ch->GetName(), n.ownerPid, (unsigned int)n.slot, ch->GetMapIndex(), ch->GetX(), ch->GetY(), n.rejoin ? 1 : 0,
+				(unsigned int)n.order, n.noLoot ? 1 : 0);
 	}
 
 	// Where a mercenary loads (CPlayerBotManager::PlaceLoadingBot, PVP Fan's hook): beside its owner.
@@ -1229,6 +1431,14 @@ namespace
 			return;
 		const DWORD ownerPid = it->second.ownerPid;
 		const std::string name = it->second.name;
+		// MT2009_PLUS_NAJEMNICY_V3: the owner went to another core or channel (owner_moved) or logged out (owner_gone) -
+		// it stays summoned (player.najemnicy.summoned) and comes back where the owner arrives; a move keeps it in the
+		// owner's party too (the engine links it again at its entry, a dungeon's party included). Any other way out
+		// (the owner's dismissal, the empty vault, the module off, a load that never came) ends the summon.
+		const bool move = std::strcmp(why, "owner_moved") == 0;
+		const bool keepSummoned = move || std::strcmp(why, "owner_gone") == 0;
+		if (!keepSummoned)
+			NajemnicyQuery("UPDATE player.najemnicy SET summoned=0 WHERE merc_pid=%u", pid);
 		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 		if (ch)
 		{
@@ -1236,7 +1446,8 @@ namespace
 				ch->GetExchange()->Cancel();
 			if (ch->IsDead())
 				StandPlayerBotUpHere(ch);
-			LeavePlayerBotParty(ch);
+			if (!move)
+				LeavePlayerBotParty(ch);
 			ch->Save();
 		}
 		CPlayerBotManager::instance().Despawn(pid, playerbot_session_rules::OUT_GM);
@@ -1277,8 +1488,8 @@ namespace
 		if (due <= 0)
 			return true;
 		std::unique_ptr<SQLMsg> m(NajemnicyQuery(
-				"UPDATE player.najemnicy_vault SET balance=balance-%lld, total_paid=total_paid+%lld, updated_at=NOW() "
-				"WHERE owner_pid=%u AND balance>=%lld", due, due, ownerPid, due));
+				"UPDATE player.najemnicy_vault SET balance=balance-%lld, total_paid=total_paid+%lld, updated_at=NOW(), "
+				"billed_until=UNIX_TIMESTAMP()+60 WHERE owner_pid=%u AND balance>=%lld", due, due, ownerPid, due));
 		if (NajemnicyOk(m) && m->Get()->uiAffectedRows > 0)
 		{
 			s_llNajemnicyBilled += due;
@@ -1442,6 +1653,7 @@ namespace
 			s_llNajemnicyDbPrice = price;
 		}
 		LogNajemnicyCensus(dwNow, false);
+		ProcessNajemnicyRejoins(dwNow);	// MT2009_PLUS_NAJEMNICY_V3
 		if (s_mapNajemnik.empty())
 			return;
 		const bool off = IsNajemnicyOff();
@@ -1487,10 +1699,23 @@ namespace
 			LPCHARACTER owner = FindNajemnicyOwnerHere(*o);
 			if (!owner)
 			{
+				// MT2009_PLUS_NAJEMNICY_V3: the owner is in the world on another core or channel - its mercenaries leave
+				// here at once (still summoned) and the core the owner arrived on brings them in (OnNajemnicyOwnerArrived).
+				if (P2P_MANAGER::instance().FindByPID(*o))
+				{
+					for (std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.begin(); it != s_mapNajemnik.end(); ++it)
+						if (it->second.ownerPid == *o)
+							out.push_back(std::make_pair(it->first, std::string("owner_moved")));
+					continue;
+				}
 				if (rec.goneSince == 0)
 					rec.goneSince = dwNow;
 				else if (dwNow - rec.goneSince >= NAJEMNICY_OWNER_GONE_MS)
 				{
+					// MT2009_PLUS_NAJEMNICY_V3: a logout - the next entry is a login (the owner's "wracaja po zalogowaniu"
+					// decides), not a move that brings them back whatever the switch says.
+					NajemnicyQuery("UPDATE player.najemnicy_vault SET billed_until=LEAST(billed_until, UNIX_TIMESTAMP()-%d) "
+							"WHERE owner_pid=%u", NAJEMNICY_MOVE_GRACE_S + 1, *o);
 					for (std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.begin(); it != s_mapNajemnik.end(); ++it)
 						if (it->second.ownerPid == *o)
 							out.push_back(std::make_pair(it->first, std::string("owner_gone")));
@@ -1637,21 +1862,26 @@ namespace
 		SyncNajemnicyQuestFlags(ch);
 	}
 
-	bool SummonNajemnik(LPCHARACTER ch, const TNajemnikRow& r, int alreadyCounted)
+	// MT2009_PLUS_NAJEMNICY_V3: rejoin - the owner arrived and it comes back by itself (no word of "already summoned" or
+	// "still leaving": the rejoin tries again; already in the owner's party after a move, it takes no new place there).
+	bool SummonNajemnik(LPCHARACTER ch, const TNajemnikRow& r, int alreadyCounted, bool rejoin = false)
 	{
 		if (FindNajemnikSummoned(ch->GetPlayerID(), r.slot) || IsPlayerBotNajemnikPID(r.pid))
 		{
-			TellNajemnicy(ch, "%s juz jest wezwany.", r.name.c_str());
+			if (!rejoin)
+				TellNajemnicy(ch, "%s juz jest wezwany.", r.name.c_str());
 			return false;
 		}
 		if (CHARACTER_MANAGER::instance().FindByPID(r.pid) || P2P_MANAGER::instance().FindByPID(r.pid))
 		{
-			TellNajemnicy(ch, "%s jeszcze odchodzi z poprzedniego miejsca - sprobuj za pol minuty.", r.name.c_str());
+			if (!rejoin)
+				TellNajemnicy(ch, "%s jeszcze odchodzi z poprzedniego miejsca - sprobuj za pol minuty.", r.name.c_str());
 			return false;
 		}
 		LPPARTY party = ch->GetParty();
 		const int members = party ? (int)party->GetMemberCount() : 1;
-		if (members + alreadyCounted + 1 > PARTY_MAX_MEMBER)
+		const bool inParty = party && party->IsMember(r.pid);
+		if (!inParty && members + alreadyCounted + 1 > PARTY_MAX_MEMBER)
 		{
 			TellNajemnicy(ch, "W grupie nie ma miejsca dla %s.", r.name.c_str());
 			return false;
@@ -1668,6 +1898,9 @@ namespace
 		n.name = r.name;
 		n.phase = NAJEMNIK_LOADING;
 		n.askedAt = get_dword_time();
+		n.order = r.order;		// MT2009_PLUS_NAJEMNICY_V3: its last order and the loot switch
+		n.noLoot = r.noLoot;
+		n.rejoin = rejoin;
 		s_mapNajemnik[r.pid] = n;
 		// PVP Fan's spawn of a dedicated identity (its account, the registry's guards stepped over for this pid).
 		if (!CPlayerBotManager::instance().SpawnPvpFan(r.pid, ch->GetEmpire(), r.accountId, r.login.c_str()))
@@ -1677,8 +1910,9 @@ namespace
 			sys_log(0, "NAJEMNICY: spawn refused pid=%u login=%s owner=%u", r.pid, r.login.c_str(), ch->GetPlayerID());
 			return false;
 		}
-		sys_log(0, "NAJEMNICY: summoned pid=%u name=%s owner=%u owner_name=%s slot=%u map=%ld", r.pid, r.name.c_str(),
-				ch->GetPlayerID(), ch->GetName(), (unsigned int)r.slot, ch->GetMapIndex());
+		NajemnicyQuery("UPDATE player.najemnicy SET summoned=1 WHERE merc_pid=%u", r.pid);	// MT2009_PLUS_NAJEMNICY_V3
+		sys_log(0, "NAJEMNICY: summoned pid=%u name=%s owner=%u owner_name=%s slot=%u map=%ld rejoin=%d", r.pid, r.name.c_str(),
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)r.slot, ch->GetMapIndex(), rejoin ? 1 : 0);
 		return true;
 	}
 
@@ -1776,6 +2010,261 @@ namespace
 			TellNajemnicy(ch, "%s odchodzi.", name.c_str());
 		}
 		SyncNajemnicyQuestFlags(ch);
+	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V3: the rejoin
+
+	// The arrived owner's summoned mercenaries not in this core's world yet, each tried until it comes (the old core
+	// lets it go first: CHARACTER_MANAGER / P2P still know it for a moment) or the window closes.
+	void ProcessNajemnicyRejoins(DWORD dwNow)
+	{
+		if (s_mapNajemnicyRejoin.empty())
+			return;
+		std::vector<DWORD> done;
+		for (std::map<DWORD, TNajemnicyRejoin>::iterator it = s_mapNajemnicyRejoin.begin(); it != s_mapNajemnicyRejoin.end(); ++it)
+		{
+			TNajemnicyRejoin& rj = it->second;
+			if ((int)(dwNow - rj.until) >= 0)
+			{
+				sys_log(0, "NAJEMNICY: rejoin window closed owner=%u", it->first);
+				done.push_back(it->first);
+				continue;
+			}
+			if ((int)(dwNow - rj.nextTry) < 0)
+				continue;
+			rj.nextTry = dwNow + NAJEMNICY_REJOIN_TRY_MS;
+			LPCHARACTER owner = FindNajemnicyOwnerHere(it->first);
+			if (!owner)
+			{
+				if (P2P_MANAGER::instance().FindByPID(it->first))
+					done.push_back(it->first);	// on another core already: that core brings them
+				continue;
+			}
+			if (!owner->GetSectree() || owner->IsWarping() || owner->IsDead() || owner->IsObserverMode())
+				continue;
+			if (IsNajemnicyOff())
+			{
+				done.push_back(it->first);
+				continue;
+			}
+			// A guild war's map: they wait (still summoned) - the next arrival off it brings them.
+			if (CWarMapManager::instance().IsWarMap(owner->GetMapIndex()))
+				continue;
+			const std::vector<TNajemnikRow> rows = LoadNajemnicyOf(it->first);
+			const int slots = GetNajemnicySlotsOf(owner);
+			std::vector<const TNajemnikRow*> wanted;
+			int waiting = 0;
+			for (size_t i = 0; i < rows.size(); ++i)
+			{
+				const TNajemnikRow& r = rows[i];
+				if (!r.summoned || FindNajemnikSummoned(it->first, r.slot) || IsPlayerBotNajemnikPID(r.pid))
+					continue;
+				if ((int)r.slot > slots)
+				{
+					NajemnicyQuery("UPDATE player.najemnicy SET summoned=0 WHERE merc_pid=%u", r.pid);
+					continue;
+				}
+				if (CHARACTER_MANAGER::instance().FindByPID(r.pid) || P2P_MANAGER::instance().FindByPID(r.pid))
+				{
+					++waiting;	// still leaving the old core
+					continue;
+				}
+				wanted.push_back(&r);
+			}
+			if (!wanted.empty())
+			{
+				const int after = CountNajemnicySummonedOf(it->first) + (int)wanted.size();
+				const long long minute = MAX(1LL, GetNajemnicyPriceH() * after / 60);
+				if (GetNajemnicyBalance(it->first) < minute)
+				{
+					TellNajemnicy(owner, "Skarbiec najemnikow jest pusty - najemnicy nie wracaja. Wplac yang i wezwij ich.");
+					NajemnicyQuery("UPDATE player.najemnicy SET summoned=0 WHERE owner_pid=%u", it->first);
+					sys_log(0, "NAJEMNICY: rejoin refused owner=%u vault below a minute of %d", it->first, after);
+					done.push_back(it->first);
+					continue;
+				}
+				int sent = 0;
+				for (size_t i = 0; i < wanted.size(); ++i)
+				{
+					if (SummonNajemnik(owner, *wanted[i], sent, true))
+						++sent;
+					else
+						++waiting;
+				}
+				if (sent > 0)
+				{
+					sys_log(0, "NAJEMNICY: rejoin owner=%u name=%s map=%ld sent=%d waiting=%d login=%d", it->first,
+							owner->GetName(), owner->GetMapIndex(), sent, waiting, rj.login ? 1 : 0);
+					SyncNajemnicyQuestFlags(owner);
+				}
+			}
+			if (waiting == 0)
+				done.push_back(it->first);
+		}
+		for (size_t i = 0; i < done.size(); ++i)
+			s_mapNajemnicyRejoin.erase(done[i]);
+	}
+
+	// The owner entered the world on this core (the Najemnicy quest's login: "/najemnicy przybycie") - a login, a warp
+	// between two maps of this core, a move from another core or channel. The client hears its mercenaries' VIDs at once
+	// (the target board's "Ekwipunek" without the 20 s wait); the summoned ones not here come: always after a move (the
+	// paid minute still running - billed_until), after a login unless the owner switched it off in the letter
+	// (najemnicy.no_rejoin) or the event flag m2_najemnicy_rejoin_off is on.
+	void OnNajemnicyOwnerArrived(LPCHARACTER ch)
+	{
+		const DWORD dwNow = get_dword_time();
+		std::map<DWORD, TNajemnicyOwner>::iterator rec = s_mapNajemnicyOwner.find(ch->GetPlayerID());
+		if (rec != s_mapNajemnicyOwner.end())
+		{
+			rec->second.goneSince = 0;
+			rec->second.vidSig.clear();
+			AnnounceNajemnicyVids(ch, rec->second, dwNow);
+			rec->second.nextVidSend = dwNow + NAJEMNICY_ARRIVAL_VID_MS;	// and once more when the new client stands
+		}
+		if (IsNajemnicyOff() || !EnsureNajemnicyTables())
+			return;
+		const std::vector<TNajemnikRow> rows = LoadNajemnicyOf(ch->GetPlayerID());
+		int away = 0;
+		for (size_t i = 0; i < rows.size(); ++i)
+			if (rows[i].summoned && !IsPlayerBotNajemnikPID(rows[i].pid))
+				++away;
+		if (away == 0)
+			return;
+		const long long paidLeft = NajemnicyNumber(std::unique_ptr<SQLMsg>(NajemnicyQuery(
+				"SELECT CAST(billed_until AS SIGNED) - UNIX_TIMESTAMP() FROM player.najemnicy_vault WHERE owner_pid=%u",
+				ch->GetPlayerID())), -1000000LL);
+		const bool move = paidLeft > -NAJEMNICY_MOVE_GRACE_S;
+		if (!move)
+		{
+			if (ch->GetQuestFlag("najemnicy.no_rejoin") != 0 ||
+					quest::CQuestManager::instance().GetEventFlag("m2_najemnicy_rejoin_off") != 0)
+			{
+				NajemnicyQuery("UPDATE player.najemnicy SET summoned=0 WHERE owner_pid=%u", ch->GetPlayerID());
+				sys_log(0, "NAJEMNICY: login without the rejoin owner=%u name=%s away=%d", ch->GetPlayerID(), ch->GetName(), away);
+				return;
+			}
+			TellNajemnicy(ch, "Najemnicy wracaja... (%d). Wylaczysz to w liscie \"Najemnicy\" -> Rozkazy.", away);
+		}
+		TNajemnicyRejoin& rj = s_mapNajemnicyRejoin[ch->GetPlayerID()];
+		rj.until = dwNow + NAJEMNICY_REJOIN_WINDOW_MS;
+		rj.nextTry = dwNow;
+		rj.login = !move;
+		sys_log(0, "NAJEMNICY: owner arrived owner=%u name=%s map=%ld away=%d move=%d paid_left=%lld", ch->GetPlayerID(),
+				ch->GetName(), ch->GetMapIndex(), away, move ? 1 : 0, paidLeft);
+	}
+
+	// "/najemnicy powrot <0|1>": the summoned ones come back by themselves after a login (1, the default) or not.
+	void SetNajemnicyRejoin(LPCHARACTER ch, const std::string& value)
+	{
+		if (value != "0" && value != "1")
+		{
+			TellNajemnicy(ch, "Powrot po zalogowaniu jest %s. Uzycie: /najemnicy powrot <1 wlacz | 0 wylacz>.",
+					ch->GetQuestFlag("najemnicy.no_rejoin") ? "wylaczony" : "wlaczony");
+			return;
+		}
+		ch->SetQuestFlag("najemnicy.no_rejoin", value == "1" ? 0 : 1);
+		TellNajemnicy(ch, "%s", value == "1" ? "Po zalogowaniu wezwani najemnicy wracaja do ciebie sami." :
+				"Po zalogowaniu najemnicy nie wracaja sami - wezwiesz ich z listu (zmiana rdzenia i kanalu ich nie odwoluje).");
+	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V3: the orders
+
+	const char* GetNajemnikOrderName(int order)
+	{
+		switch (order)
+		{
+			case NAJEMNIK_ORDER_HOLD: return "Stoj tutaj";
+			case NAJEMNIK_ORDER_FOCUS: return "Bij moj cel";
+			case NAJEMNIK_ORDER_FREE: return "Walcz sam w poblizu";
+			default: return "Za mna";
+		}
+	}
+
+	// "/najemnicy rozkaz <nr|wszyscy> <za_mna|stoj|bij|sam|nie_podnos|podnos>" - the letter's "Rozkazy", the target
+	// board's "Rozkazy" (uitarget.py). Kept per mercenary (player.najemnicy.order_mode, no_loot), summoned or not.
+	void OrderNajemnicy(LPCHARACTER ch, const std::string& which, const std::string& whatIn)
+	{
+		std::string what = whatIn;
+		for (size_t i = 0; i < what.size(); ++i)
+			what[i] = (char)tolower((unsigned char)what[i]);
+		int order = -1, loot = -1;
+		if (what == "za_mna" || what == "zamna" || what == "follow" || what == "0")
+			order = NAJEMNIK_ORDER_FOLLOW;
+		else if (what == "stoj" || what == "hold" || what == "1")
+			order = NAJEMNIK_ORDER_HOLD;
+		else if (what == "bij" || what == "cel" || what == "focus" || what == "2")
+			order = NAJEMNIK_ORDER_FOCUS;
+		else if (what == "sam" || what == "walcz" || what == "free" || what == "3")
+			order = NAJEMNIK_ORDER_FREE;
+		else if (what == "nie_podnos" || what == "lup_nie" || what == "noloot")
+			loot = 0;
+		else if (what == "podnos" || what == "lup" || what == "loot")
+			loot = 1;
+		const bool all = which == "wszyscy" || which == "all";
+		const int slot = all ? 0 : ParseNajemnicySlot(which);
+		if ((order < 0 && loot < 0) || (!all && slot <= 0))
+		{
+			TellNajemnicy(ch, "Uzycie: /najemnicy rozkaz <nr|wszyscy> <za_mna | stoj | bij | sam | nie_podnos | podnos>.");
+			return;
+		}
+		const std::vector<TNajemnikRow> rows = LoadNajemnicyOf(ch->GetPlayerID());
+		int changed = 0;
+		std::string names;
+		for (size_t i = 0; i < rows.size(); ++i)
+		{
+			const TNajemnikRow& r = rows[i];
+			if (!all && r.slot != slot)
+				continue;
+			if (order >= 0)
+				NajemnicyQuery("UPDATE player.najemnicy SET order_mode=%d WHERE merc_pid=%u", order, r.pid);
+			else
+				NajemnicyQuery("UPDATE player.najemnicy SET no_loot=%d WHERE merc_pid=%u", loot ? 0 : 1, r.pid);
+			std::map<DWORD, TNajemnik>::iterator it = s_mapNajemnik.find(r.pid);
+			if (it != s_mapNajemnik.end())
+			{
+				TNajemnik& n = it->second;
+				if (order >= 0)
+				{
+					n.order = (BYTE)order;
+					n.holdMap = 0;
+					LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(r.pid);
+					if (order == NAJEMNIK_ORDER_HOLD && sk && sk->GetMapIndex() == ch->GetMapIndex())
+					{
+						n.holdMap = sk->GetMapIndex();
+						n.holdX = sk->GetX();
+						n.holdY = sk->GetY();
+					}
+					if (sk && order != NAJEMNIK_ORDER_FOLLOW && order != NAJEMNIK_ORDER_FREE)
+						sk->SetVictim(NULL);	// a new order drops the old fight; the next tick chooses again
+				}
+				else
+				{
+					n.noLoot = loot == 0;
+					n.lootVid = 0;
+				}
+			}
+			if (!names.empty())
+				names += ", ";
+			names += r.name;
+			++changed;
+		}
+		if (changed == 0)
+		{
+			TellNajemnicy(ch, "Nie masz najemnika na tym miejscu.");
+			return;
+		}
+		if (order >= 0)
+			TellNajemnicy(ch, "Rozkaz \"%s\": %s.", GetNajemnikOrderName(order), names.c_str());
+		else
+			TellNajemnicy(ch, "%s: %s.", loot ? "Podnosza lup" : "Nie podnosza lupu", names.c_str());
+		sys_log(0, "NAJEMNICY: order owner=%u which=%s order=%d loot=%d changed=%d", ch->GetPlayerID(), which.c_str(), order,
+				loot, changed);
+		std::map<DWORD, TNajemnicyOwner>::iterator rec = s_mapNajemnicyOwner.find(ch->GetPlayerID());
+		if (rec != s_mapNajemnicyOwner.end())
+		{
+			rec->second.vidSig.clear();	// the client's "Rozkazy" shows the new order at once
+			AnnounceNajemnicyVids(ch, rec->second, get_dword_time());
+		}
 	}
 
 	void DepositNajemnicy(LPCHARACTER ch, const std::string& amountText)
@@ -2558,9 +3047,11 @@ namespace
 			LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(it->first);
 			if (!sk)
 				continue;
-			char part[96];
-			snprintf(part, sizeof(part), "%s%u:%u:%s", sig.empty() ? "" : ",", (unsigned int)it->second.slot,
-					(unsigned int)(DWORD)sk->GetVID(), EncodePlayerBotSidekickText(sk->GetName(), 24).c_str());
+			// MT2009_PLUS_NAJEMNICY_V3: and its order and loot switch (the target board's "Rozkazy" shows them).
+			char part[160];
+			snprintf(part, sizeof(part), "%s%u:%u:%s:%u:%d", sig.empty() ? "" : ",", (unsigned int)it->second.slot,
+					(unsigned int)(DWORD)sk->GetVID(), EncodePlayerBotSidekickText(sk->GetName(), 24).c_str(),
+					(unsigned int)it->second.order, it->second.noLoot ? 0 : 1);
 			sig += part;
 		}
 		if (sig.empty())
@@ -2853,6 +3344,22 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 		OpenNajemnikWindow(ch, a);
 		return;
 	}
+	// MT2009_PLUS_NAJEMNICY_V3: the owner's arrival on this core (the quest's login), the rejoin switch, the orders.
+	if (cmd == "przybycie")
+	{
+		OnNajemnicyOwnerArrived(ch);
+		return;
+	}
+	if (cmd == "powrot")
+	{
+		SetNajemnicyRejoin(ch, a);
+		return;
+	}
+	if (cmd == "rozkaz")
+	{
+		OrderNajemnicy(ch, a, b);
+		return;
+	}
 	if (IsNajemnicyOff() && cmd != "zabierz" && cmd != "zwolnij")
 	{
 		TellNajemnicy(ch, "Najemnicy sa teraz wylaczeni na tym serwerze.");
@@ -2873,6 +3380,7 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 	else if (cmd == "zwolnij")
 		RetireNajemnik(ch, a, b);
 	else
-		TellNajemnicy(ch, "Komendy: lista, wezwij <nr|wszyscy>, odwolaj <nr|wszyscy>, wplac <yang>, skarbiec, okno <nr>, "
-				"daj <nr> <pole>, zabierz <nr>, gildia <nr>, gildia_wyjdz <nr>, zwolnij <nr> tak.");
+		TellNajemnicy(ch, "Komendy: lista, wezwij <nr|wszyscy>, odwolaj <nr|wszyscy>, rozkaz <nr|wszyscy> <rozkaz>, "
+				"powrot <0|1>, wplac <yang>, skarbiec, okno <nr>, daj <nr> <pole>, zabierz <nr>, gildia <nr>, "
+				"gildia_wyjdz <nr>, zwolnij <nr> tak.");
 }

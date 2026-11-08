@@ -762,6 +762,9 @@ _state = {'eqWindow': None, 'icon': 0, 'lastOrigin': None,
 # mercenaries the server named (VID -> (slot, name)).
 _target = {'slot': 0, 'name': ''}
 _najemnicy = {}
+# MT2009_PLUS_NAJEMNICY_V3: slot -> (order, loot) as the server last named them
+# (0 za mna, 1 stoj, 2 bij moj cel, 3 walcz sam; loot 1 = podnosi lup).
+_najemnikOrders = {}
 
 
 def GetSkillModel():
@@ -1878,8 +1881,10 @@ def NajemnikSlotOfVid(vid):
 
 
 def OnNajemnikVids(*args):
-	"""NajemnikVids <slot>:<vid>:<hex name>,... ("-" for none)."""
+	"""NajemnikVids <slot>:<vid>:<hex name>[:<order>:<loot>],... ("-" for
+	none) - MT2009_PLUS_NAJEMNICY_V3 added the order and the loot switch."""
 	_najemnicy.clear()
+	_najemnikOrders.clear()
 	text = args[0] if args else '-'
 	if text == '-':
 		return
@@ -1892,6 +1897,20 @@ def OnNajemnikVids(*args):
 		if slot > 0 and vid > 0:
 			name = uisidekick.DecodeText(words[2], 24) if len(words) > 2 else ''
 			_najemnicy[vid] = (slot, name)
+			order = ParseInt(words[3], 0) if len(words) > 3 else 0
+			loot = ParseInt(words[4], 1) if len(words) > 4 else 1
+			_najemnikOrders[slot] = (order if 0 <= order <= 3 else 0, 1 if loot else 0)
+
+
+def NajemnikOrderOfSlot(slot):
+	"""MT2009_PLUS_NAJEMNICY_V3: (order, loot) of the mercenary of a slot."""
+	return _najemnikOrders.get(ParseInt(slot, 0), (0, 1))
+
+
+def NajemnikVidList():
+	"""MT2009_PLUS_NAJEMNICY_V3: the VIDs of the player's summoned mercenaries
+	(sidekickcollision.py lets the player walk through them)."""
+	return _najemnicy.keys()
 
 
 def OnNajemnikEqWho(*args):
@@ -2040,6 +2059,7 @@ def Destroy():
 	_target['slot'] = 0
 	_target['name'] = ''
 	_najemnicy.clear()
+	_najemnikOrders.clear()
 
 
 class Keeper(object):

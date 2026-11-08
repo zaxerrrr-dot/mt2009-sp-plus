@@ -57,3 +57,11 @@ ALTER TABLE player.najemnicy ADD COLUMN IF NOT EXISTS retired_at DATETIME NULL A
 ALTER TABLE player.najemnicy_vault ADD COLUMN IF NOT EXISTS total_deposit BIGINT NOT NULL DEFAULT 0 AFTER total_paid;
 ALTER TABLE player.najemnicy_unlock ADD COLUMN IF NOT EXISTS tasks TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER unlocked;
 ALTER TABLE player.najemnicy_unlock ADD COLUMN IF NOT EXISTS source VARCHAR(32) NOT NULL DEFAULT '' AFTER unlocked_at;
+-- MT2009_PLUS_NAJEMNICY_V3 (stage 3): the rejoin after a core / channel change or a login (summoned: it was summoned when
+-- its owner left - the game summons it again where the owner arrives; billed_until: the second the fee is paid till, so a
+-- move bills on without a gap or a double minute) and the owner's orders (order_mode 0 za mna, 1 stoj, 2 bij moj cel,
+-- 3 walcz sam; no_loot 1 = nie podnosi lupu).
+ALTER TABLE player.najemnicy ADD COLUMN IF NOT EXISTS summoned TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER setup_done;
+ALTER TABLE player.najemnicy ADD COLUMN IF NOT EXISTS order_mode TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER summoned;
+ALTER TABLE player.najemnicy ADD COLUMN IF NOT EXISTS no_loot TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER order_mode;
+ALTER TABLE player.najemnicy_vault ADD COLUMN IF NOT EXISTS billed_until INT UNSIGNED NOT NULL DEFAULT 0 AFTER total_deposit;

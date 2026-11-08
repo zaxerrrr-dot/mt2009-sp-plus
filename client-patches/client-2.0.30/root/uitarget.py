@@ -199,6 +199,8 @@ TARGET_BUTTON_REVIVE = getattr(localeInfo, "TARGET_BUTTON_REVIVE", "Wskrzeszenie
 # summoned mercenary (the server names them: NajemnikVids, uisidekickinventory.py)
 # - its equipment window; no duel, friend or report button for it.
 TARGET_BUTTON_NAJEMNIK = "Ekwipunek"
+# MT2009_PLUS_NAJEMNICY_V3: "Rozkazy" beside it - the orders board (uinajemnicyrozkazy.py).
+TARGET_BUTTON_NAJEMNIK_ORDERS = "Rozkazy"
 
 class TargetBoard(ui.ThinBoard):
 
@@ -225,6 +227,7 @@ class TargetBoard(ui.ThinBoard):
 		"EQ",
 		TARGET_BUTTON_REVIVE,
 		TARGET_BUTTON_NAJEMNIK,
+		TARGET_BUTTON_NAJEMNIK_ORDERS,
 	)
 
 	GRADE_NAME =	{
@@ -360,6 +363,7 @@ class TargetBoard(ui.ThinBoard):
 		self.buttonDict["EQ"].SAFE_SetEvent(self.__OnEQClick)
 		self.buttonDict[TARGET_BUTTON_REVIVE].SAFE_SetEvent(self.__OnZodiacRevive)
 		self.buttonDict[TARGET_BUTTON_NAJEMNIK].SAFE_SetEvent(self.__OnNajemnikEquipment)	# MT2009_PLUS_NAJEMNICY_V2
+		self.buttonDict[TARGET_BUTTON_NAJEMNIK_ORDERS].SAFE_SetEvent(self.__OnNajemnikOrders)	# MT2009_PLUS_NAJEMNICY_V3
 
 		self.affectDict = {}
 
@@ -918,6 +922,13 @@ class TargetBoard(ui.ThinBoard):
 			import uisidekickinventory
 			uisidekickinventory.OpenNajemnikWindow(slot, chr.GetNameByVID(self.vid))
 
+	# MT2009_PLUS_NAJEMNICY_V3: its orders ("Za mna", "Stoj tutaj", "Bij moj cel", "Walcz sam", the loot switch).
+	def __OnNajemnikOrders(self):
+		slot = self.__NajemnikSlot()
+		if slot:
+			import uinajemnicyrozkazy
+			uinajemnicyrozkazy.Open(slot, chr.GetNameByVID(self.vid))
+
 	def __IsInZodiacTemple(self):
 		if not getattr(app, "ENABLE_12ZI", 0):
 			return False
@@ -1026,6 +1037,7 @@ class TargetBoard(ui.ThinBoard):
 			self.__HideButton(localeInfo.TARGET_BUTTON_FRIEND)
 			self.__HideButton(localeInfo.TARGET_BUTTON_REPORT)
 			self.__ShowButton(TARGET_BUTTON_NAJEMNIK)
+			self.__ShowButton(TARGET_BUTTON_NAJEMNIK_ORDERS)
 
 		self.__ArrangeButtonPosition()
 
