@@ -178,7 +178,8 @@ namespace
 	void NotePlayerBotCh2StandShopSeen(LPCHARACTER ch);
 	const int PLAYERBOT_CH2STAND_OUTCOME_NO_REASON = 1, PLAYERBOT_CH2STAND_OUTCOME_NOTHING_TO_SELL = 2,
 			PLAYERBOT_CH2STAND_OUTCOME_CANNOT_PAY = 3, PLAYERBOT_CH2STAND_OUTCOME_BUNDLE = 4,
-			PLAYERBOT_CH2STAND_OUTCOME_NO_VILLAGE = 5;	// EPlayerBotCh2StandOutcome
+			PLAYERBOT_CH2STAND_OUTCOME_NO_VILLAGE = 5,
+			PLAYERBOT_CH2STAND_OUTCOME_REFUSED = 7;	// EPlayerBotCh2StandOutcome
 	// MT2009_PLUS_MARKET_LIFE_V1 (playerbot_market_life.h): a Kupon SM this
 	// bot puts on its counter rather than cashing (point 6), and the units of
 	// a kind on the counters of a kingdom's maps (point 4).
