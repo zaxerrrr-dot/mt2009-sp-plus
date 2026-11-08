@@ -508,6 +508,9 @@ namespace {
         NotePlayerBotCraftBought(ch, boughtVnum, payPrice); // MT2009_PLUS_BOT_WORKSHOP_V1
         NotePlayerBotRankFruitBought(ch, boughtVnum, boughtCount); // MT2009_PLUS_RANK_FRUIT_CRAFT_V1 (the census)
         NotePlayerBotG0DustBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_G0_V1
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+        NotePlayerBotBonus67ShardBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_BONUS67_V1
+#endif
         NotePlayerBotYoharaShopBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_SHOP_V1
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
         NotePlayerBotSmCouponBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
@@ -1759,7 +1762,13 @@ namespace {
 #else
         const bool dust = false;
 #endif
-        const bool wants = medal || dust || PlayerBotWantsCraftGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+        // MT2009_PLUS_BOT_BONUS67_V1: the 6/7 add's shard (the look's want; a part of a stack as needed)
+        const DWORD shardWant = GetPlayerBotBonus67ShardWantVnum(ch);
+#else
+        const DWORD shardWant = 0;
+#endif
+        const bool wants = medal || dust || shardWant != 0 || PlayerBotWantsCraftGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
                 PlayerBotWantsSashFromMarket(ch);
         if (!wants) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
@@ -1794,7 +1803,8 @@ namespace {
             for (const auto& [id, line] : shop->GetItems()) {
                 if (!line) continue;
                 const DWORD vnum = line->GetInfo().vnum;
-                if (!IsPlayerBotSinkGoodsVnum(vnum) || (vnum == PLAYERBOT_HORSE_MEDAL_VNUM && !medal) ||
+                if ((!IsPlayerBotSinkGoodsVnum(vnum) && (!shardWant || vnum != shardWant)) ||   // MT2009_PLUS_BOT_BONUS67_V1
+                        (vnum == PLAYERBOT_HORSE_MEDAL_VNUM && !medal) ||
                         (vnum == PLAYERBOT_MAGIC_DUST_VNUM && !dust) ||   // MT2009_PLUS_BOT_DUST_MARKET_V1
                         IsPlayerBotLineClaimedByOther(id, self, now))
                     continue;

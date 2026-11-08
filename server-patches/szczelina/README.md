@@ -28,6 +28,13 @@ znaczniki, bo stare się nie nakładają ponownie):
 
 Lochy: `game/yohara_crack2`, questy `beran_szc`, `razador_szc`, `nemere_szc`.
 
+`MT2009_PLUS_BOT_BONUS67_V1` (8.11.2026, właściciel: odłamki Seon-Hae w Zaklętym Lesie i w Szczelinie Czasu „z takimi
+samymi procentami jak w Grocie Wygnańców”, drop światowy), zmiana `(rift shards)`: na mapach bez dropu `Reward` przed
+`return` woła `Mt2009PlusSeonHaeRiftDrop` (`playerbot_seonhae.h`) – zwykły potwór mapy z listy `shard_map` (domyślnie
+404) upuszcza z szansą `shard_chance` (0,5%, jak Grota) jeden odłamek w kolorze poziomów przedmiotów tej mapy
+(`shard_pick`: Tęczowy 39077 ×3, Żółty Lśniący 39080 ×1, Święty 39081 ×1), z własnością zabójcy. Nic poza tym; mapy
+405–407 nie są na liście – bez zmian.
+
 Linux/VPS: `python3 apply_szczelina.py <game/src>`; Windows: `Apply-SzczelinaPatch.ps1 -SourceDir <game/src>` (wołane
 przez `tools/port/Apply-MT2009PlusEngine.ps1`, po `skill9`). Plik silnika: `char_battle.cpp` (lista
 `launcher/server-update-files.mod.txt`).

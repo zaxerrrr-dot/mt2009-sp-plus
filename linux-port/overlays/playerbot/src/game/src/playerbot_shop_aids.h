@@ -98,6 +98,13 @@ namespace
 	const DWORD PLAYERBOT_SHOP_AIDS_CENSUS_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_SHOP_AIDS_LIGHT_MIN_MS = 60 * 1000;
 	const DWORD PLAYERBOT_SHOP_AIDS_LIGHT_MAX_MS = 120 * 1000;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+	// MT2009_PLUS_BOT_BONUS67_V1 (playerbot_bonus67_bots.h, after this file): the 6/7 pass of the stage from 75 - while it
+	// is on, the Seon-Hae errand below only collects what Seon-Hae already keeps, the Suplementy of its recipe and the
+	// 71052 pass of every other piece (PLAYERBOT_RARE67) are off; the glove's pass stays.
+	void CollectPlayerBotBonus67Goals(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotIshop3Goal* goals, int& n);
+	bool ManagePlayerBotBonus67(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+#endif
 
 	// ---- Seon-Hae
 	const int PLAYERBOT_SEONHAE_MIN_LEVEL = 50;
@@ -428,6 +435,10 @@ namespace
 	// The goal: the recipe's Suplementy the bag lacks.
 	int GetPlayerBotSeonHaeAdditiveNeed(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD& vnum)
 	{
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		if (IsPlayerBotBonus67On())	// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 pass buys its own Silne
+			return 0;
+#endif
 		TPlayerBotSeonHaePlan plan;
 		if (!PlanPlayerBotSeonHae(ch, state, false, plan) || plan.iGrade < 0)
 			return 0;
@@ -575,6 +586,10 @@ namespace
 	{
 		if (mt2009_seonhae::Holding(ch))
 			return ch->GetQuestFlag(mt2009_seonhae::F_READY) <= (int)get_global_time() ? 1 : 0;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		if (IsPlayerBotBonus67On())	// MT2009_PLUS_BOT_BONUS67_V1: no new hand-in - the 6/7 pass adds at once
+			return 0;
+#endif
 		if (s.dwRefusedUntil != 0 && (int)(dwNow - s.dwRefusedUntil) < 0)
 			return 0;
 		++s_kPlayerBotShopAidsStats.looks;
@@ -1014,6 +1029,10 @@ namespace
 	{
 		if (!ch || IsPlayerBotGearFrozen(ch) || IsPlayerBotSidekickPID(ch->GetPlayerID()) || ArePlayerBotShopAidsOff())
 			return NULL;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		if (IsPlayerBotBonus67On())	// MT2009_PLUS_BOT_BONUS67_V1: the mixes are the 6/7 pass's (both lines, the owner's pieces)
+			return NULL;
+#endif
 		TPlayerBotRare67Need need;
 		bool needRead = false;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_RARE67_SLOTS) / sizeof(PLAYERBOT_RARE67_SLOTS[0]); ++i)
@@ -1598,6 +1617,10 @@ namespace
 	// the shard's band is one Seon-Hae would take, none else - the rest goes on the counters.
 	int GetPlayerBotSeonHaeShardKeep(LPCHARACTER ch, DWORD vnum)
 	{
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		if (ch && IsPlayerBotBonus67On())	// MT2009_PLUS_BOT_BONUS67_V1: ten of each band an open add of the stage takes
+			return GetPlayerBotBonus67ShardKeep(ch, vnum);
+#endif
 		if (!ch || ch->GetLevel() < PLAYERBOT_SEONHAE_MIN_LEVEL || !mt2009_seonhae::IsOn())
 			return 0;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_SEONHAE_SLOTS) / sizeof(PLAYERBOT_SEONHAE_SLOTS[0]); ++i)
@@ -1620,6 +1643,10 @@ namespace
 		TPlayerBotAIStateMap::const_iterator state = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
 		if (state == s_mapPlayerBotAIStates.end())
 			return;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 pass's Silne, shard chests and 71052 first (playerbot_bonus67_bots.h)
+		CollectPlayerBotBonus67Goals(ch, state->second, goals, n);
+#endif
 		DWORD vnum = 0;
 		const int additives = n < PLAYERBOT_ISHOP3_MAX_GOALS ? GetPlayerBotSeonHaeAdditiveNeed(ch, state->second, vnum) : 0;
 		if (additives > 0)
@@ -1703,6 +1730,11 @@ namespace
 			return false;
 		LogPlayerBotShopAidsCensus(dwNow);
 		LogPlayerBotHighGearCensus(dwNow);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 pass on its own clock and flag (m2_bot_bonus67_off) - an instant action,
+		// it never holds the bot
+		ManagePlayerBotBonus67(ch, state, dwNow);
+#endif
 		if (ArePlayerBotShopAidsOff())
 			return false;
 		DWORD& light = s_mapPlayerBotShopAidsLight[ch->GetPlayerID()];

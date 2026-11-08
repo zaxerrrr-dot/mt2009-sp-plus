@@ -80,6 +80,13 @@ liczą się jak ich mapa (indeks / 10000).
   (73), Świątynia Ochao (209), Zaklęty Las (353); szansa `shard_chance` 0,5% (ułamki dozwolone),
   1 odłamek, kolor losowany z wag wierszy `shard` (domyślnie równo: 39070–39077, 39081).
 
+- **Odłamki w lasach** (`MT2009_PLUS_BOT_BONUS67_V1`, właściciel 8.11.2026: Zaklęty Las i Szczelina Czasu „z takimi
+  samymi procentami jak w Grocie Wygnańców”, drop światowy): Zaklęty Las (SZC) (404) dołącza do `shard_map` (ta sama
+  szansa 0,5%; mapa bez dropu – silnik woła `Mt2009PlusSeonHaeRiftDrop`, `server-patches/szczelina`, zmiana
+  `(rift shards)`), a oba lasy losują kolor poziomów przedmiotów swoich graczy (wiersz `shard_pick <mapa> <vnum> <waga>`,
+  zamiast wierszy `shard`): 353 (gracze 95–109, przedmioty 90–105) – Czerwony 39076 ×3, Żółty Lśniący 39080 ×1;
+  404 (gracze 110–119, przedmioty 105–120) – Tęczowy 39077 ×3, Żółty Lśniący 39080 ×1, Święty 39081 ×1.
+
 Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego, która
 sprawdza każdy wiersz), czytany ponownie po zmianie (sprawdzany co najwyżej co 5 s). Brak pliku albo
 brak danego rodzaju wierszy = wartości domyślne (wiersze `mob` z pliku zastępują całą domyślną listę,
@@ -96,7 +103,23 @@ shard_map 73
 shard_map 209
 shard_map 353
 shard 39070 1                # shard <vnum odłamka> <waga>; tak samo 39071-39077 i 39081
+shard_map 404                # MT2009_PLUS_BOT_BONUS67_V1
+shard_pick 353 39076 3       # shard_pick <mapa> <vnum odłamka> <waga>: własne kolory mapy
+shard_pick 353 39080 1
+shard_pick 404 39077 3
+shard_pick 404 39080 1
+shard_pick 404 39081 1
 ```
+
+## Boty – `MT2009_PLUS_BOT_BONUS67_V1` (8.11.2026)
+
+Od 75. poziomu (Grota Wygnańców) boty dodają 6./7. bonus tylko biżuterii z Niebiańskich Łez (54) i wyższej (bez
+jadeitu – silnik go odrzuca), biżuterii i butom z odpornością na potrzebny żywioł, zbroi od 61 i hełmom/tarczom od 41 –
+na zasadach gracza (5 bonusów, odłamki poziomu, suplementy, ta sama szansa), ale od razu, bez czekania u Seon-Hae.
+Silne Suplementy i 71052 kupują w ItemShopie V3 (dzienna pula SM), odłamki na rynku, w ostateczności Zdobną Skrz.
+z Odłamkiem; mieszają 71052 tylko przedmiot z dwoma bonusami. Szczegóły i flagi (`m2_bot_bonus67_off` …):
+`linux-port/overlays/playerbot/src/game/src/playerbot_bonus67_bots.h`. Stara wyprawa botów do Seon-Hae i 71052 na
+każdy przedmiot (`playerbot_shop_aids.h`) są wtedy wyłączone.
 
 ## Szansa i poziom bonusu jak na wiki – `MT2009_PLUS_SEONHAE_WIKI_V1`
 

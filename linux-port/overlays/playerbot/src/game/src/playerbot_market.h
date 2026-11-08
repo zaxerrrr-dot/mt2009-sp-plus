@@ -293,6 +293,11 @@ namespace
 		// takes (playerbot_yohara_g0.h).
 		if (WantsPlayerBotG0DustOffer(ch, offer))
 			return true;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		// MT2009_PLUS_BOT_BONUS67_V1: the Seon-Hae shard of the open 6/7 add, up to the ten it takes (playerbot_bonus67_bots.h)
+		if (WantsPlayerBotBonus67ShardOffer(ch, offer))
+			return true;
+#endif
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM for a need's ItemShop purchase short of Smocze Monety (and no other
 		// coupon - they are never a whim's or a reseller's)
@@ -637,6 +642,10 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: the dust of a Champion's G0 package, while a counter holds some.
 		if (WantsPlayerBotG0DustFromMarket(ch))
 			return true;
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		if (WantsPlayerBotBonus67ShardsFromMarket(ch))	// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 add's shard, on a counter
+			return true;
+#endif
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 		if (WantsPlayerBotLochTicketFromMarket(ch))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
 			return true;
@@ -832,6 +841,11 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's dust for its G0 package - its own cap and share of the purse.
 		if (WantsPlayerBotG0DustOffer(ch, item))
 			return CanPlayerBotPayForG0Dust(ch, item, price);
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		// MT2009_PLUS_BOT_BONUS67_V1: the 6/7 add's shard - its own price cap and share of the purse
+		if (WantsPlayerBotBonus67ShardOffer(ch, item))
+			return CanPlayerBotPayForBonus67Shard(ch, item, price);
+#endif
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM - the coins' yang rate at most, out of a share of the purse
 		if (IsPlayerBotSmCouponVnum(item->GetVnum()))
@@ -1223,6 +1237,9 @@ namespace
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
 		NotePlayerBotG0DustBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_YOHARA_G0_V1
+#ifdef MT2009_PLUS_BOT_BONUS67_V1
+		NotePlayerBotBonus67ShardBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_BONUS67_V1
+#endif
 		NotePlayerBotYoharaShopBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_YOHARA_SHOP_V1
 		if (gambleBase)
 			NotePlayerBotGambleBaseBought(ch, pick.dwVnum, paid);
