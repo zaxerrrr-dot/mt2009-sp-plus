@@ -23,6 +23,10 @@
 // MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1: the gate column below is the code's column again (it was 0 everywhere since the
 // owner's "no gates yet" of 31 October while this table said 60/75); it is read only with the event flag
 // m2_bot_element_map_gates = 1 (GetPlayerBotElementMapRowGate) - off, every gate is 0 as before.
+// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (the owner, 8 November 2026): the five progression maps below (spider_v2 / v3
+// fire, grotto_v1 / v2 lightning, zaklety wind) are gated at 40 by default (event flag m2_bot_element_progress_off 1 -
+// the paragraph above again), with early access, retreats and the next map's resistance built ahead - the progression
+// block after GetPlayerBotElementMapResist.
 //   map  name          element    want gate  shares measured in the test world (global, 31 October)
 //    71  spider_v2     fire        60   60   fire 100%            lv 60-68   (the owner)
 //   217  spider_v3     fire        60   60   fire 100%            lv 60-68   (the owner)
@@ -170,9 +174,20 @@ namespace
 		return s_bOn;
 	}
 
+	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (below): the progression maps' own gate (fire 40 the Spider Dungeons, ...), 0 for
+	// any other map or with the progression off.
+	int GetPlayerBotElementProgressGateForMap(long map);
+
 	int GetPlayerBotElementMapRowGate(int row)
 	{
-		if (row < 0 || row >= PLAYERBOT_ELEMENT_MAP_ROW_COUNT || !ArePlayerBotElementMapGatesOn())
+		if (row < 0 || row >= PLAYERBOT_ELEMENT_MAP_ROW_COUNT)
+			return 0;
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the owner's progression of 8 November (default on) takes the row's gate
+		// from its table; the old 60/75 column is read only with it off and m2_bot_element_map_gates = 1.
+		const int progress = GetPlayerBotElementProgressGateForMap(PLAYERBOT_ELEMENT_MAP_ROWS[row].lMap);
+		if (progress > 0)
+			return progress;
+		if (!ArePlayerBotElementMapGatesOn())
 			return 0;
 		return PLAYERBOT_ELEMENT_MAP_ROWS[row].iGate;
 	}
@@ -277,6 +292,622 @@ namespace
 		return std::max(0, std::min(total, PLAYERBOT_ELEMENT_MAP_RESIST_CAP));
 	}
 
+	// ======================================================================================================================
+	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 - the resistance progression of the maps 1-120 (the owner, 8 November 2026:
+	// "Pierwsza odpornosc, jaka powinny wykorzystywac, to odpornosc na ogien w Lochu Pajakow v2. Jesli bot jest ubrany w
+	// odpornosc na ogien (40%), to moze juz tam expic, nawet na 45 poziomie. Jesli nie daje rady, wraca na swoje
+	// expowisko. Kolejna odpornosc to odpornosc na blyskawice w Grocie Wygnancow. Nastepna - odpornosc na wiatr w Zakletym
+	// Lesie. Potem juz odpornosci na dane zywioly danych map Yohary").
+	//
+	//   step  map              element    early  normal entry (panel row)          gate   prebuild window
+	//   0     71  spider_v2    fire        45    54 (spider2)                       40     40-80
+	//   0     217 spider_v3    fire        -     66 (spider3, by the V2 record)     40
+	//   1     72  grotto_v1    lightning   72    78 (grotto1)                       40     67-99
+	//   1     73  grotto_v2    lightning   80    84 (grotto2)                       40
+	//   2     353 zaklety      wind        95    100 (env PLAYERBOT_ZAKLETY_MIN_LEVEL) 40  90-109
+	//   3     the Sung Ma maps - a Yohara bot's hunt element (MT2009_PLUS_BOT_ELEMENT_RESIST_*, MT2009_PLUS_BOT_YRESIST):
+	//         unchanged; a bot with a hunt element has no goal here (GetPlayerBotElementMapGoal) and no early access.
+	// Lightning and wind take the owner's fire number (40): the same slots build any of the three to it (global
+	// item_attr: armour, helmet, bracelet, costume, hairstyle and talisman roll fire / lightning / wind 2-15; ice, earth
+	// and dark only on the talisman, 5-25), and so do the element items (the necklace and the boots of each element, 10
+	// at +9) and Kamien Ochrony Zywiolow (+10 to all six).
+	//
+	//   * the gate: the table's row gate is this one (GetPlayerBotElementMapRowGate) - a bot under it does not pick the map
+	//     and one standing on it leaves PLAYERBOT_ELEMENT_MAP_STAY_SLACK under (the old pass, GatePlayerBotElementMap,
+	//     with its fallback); a resident of Zaklety Las is not asked where it stands (the Yohara stay moves it);
+	//   * early: a bot from the map's early level, under its normal entry, at the gate, with the dungeon's gear (the
+	//     Spider Dungeon's rule), no stone hunter and no retreat running, hunts the map in place of its draw's ground
+	//     (ApplyPlayerBotElementProgressEarly, playerbot_travel.h; Zaklety Las in playerbot_yohara_bots.h); its hubs are
+	//     read lower by the gap and its target reach is the normal entry's (GetPlayerBotTargetLevelDelta);
+	//   * retreat ("jesli nie daje rady"): on a progression map PLAYERBOT_EPROG_DEATHS deaths or PLAYERBOT_EPROG_RETREATS
+	//     HP retreats within PLAYERBOT_EPROG_WINDOW_MS - and for an early bot fewer than PLAYERBOT_EPROG_SLOW_KILLS kills
+	//     in a window there - shut the map for the bot for PLAYERBOT_EPROG_SHUT_MIN minutes: the gate refuses it (an early
+	//     bot gets its draw's ground back, one in the band the gate's fallback), then it may come back;
+	//   * prebuild: within a step's window (its first early level - PLAYERBOT_EPROG_LEAD to its top) the bonus goal is the
+	//     step's element (the latest step whose window holds the level) to the gate + PLAYERBOT_EPROG_PREBUILD_MARGIN - the
+	//     reroll's stop rule, the line and apply scores (the element necklace / boots), the costume line and the
+	//     protection stone (GetPlayerBotElementMapGoal's users) - unless the bot hunts or wants a gated map: its element
+	//     is kept while it hunts there (one gear set below Yohara; the next element is built on the ground between).
+	// Switches (event flags): m2_bot_element_progress_off 1 - all off (the old table, gates by m2_bot_element_map_gates);
+	// m2_bot_element_progress_early_off / _prebuild_off / _retreat_off / _target_off 1 - one part;
+	// m2_bot_element_progress_gate N (10-80) - the gate instead of 40; m2_bot_element_progress_shut_min N (10-1440).
+	// The log: PLAYERBOT_EPROG early_pick / early_none / early_gear_short (a decision change, per bot), retreat, back;
+	// PLAYERBOT_EPROG census every 10 minutes (per band and the totals).
+	// ======================================================================================================================
+	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi);	// playerbot_yohara_bots.h
+	bool IsPlayerBotYoharaBonusMember(LPCHARACTER ch);	// playerbot_yohara_bonus.h (a cohort member or a Champion)
+
+	const int PLAYERBOT_EPROG_GATE = 40;
+	const int PLAYERBOT_EPROG_LEAD = 5;
+	const int PLAYERBOT_EPROG_PREBUILD_MARGIN = 5;
+	const DWORD PLAYERBOT_EPROG_WINDOW_MS = 30 * 60 * 1000;
+	const int PLAYERBOT_EPROG_DEATHS = 3;
+	const int PLAYERBOT_EPROG_RETREATS = 8;
+	const int PLAYERBOT_EPROG_SLOW_KILLS = 25;
+	const int PLAYERBOT_EPROG_SHUT_MIN = 120;
+	const DWORD PLAYERBOT_EPROG_CENSUS_MS = 10 * 60 * 1000;
+	const size_t PLAYERBOT_EPROG_KILLS_KEPT = 64;
+
+	enum { PLAYERBOT_EPROG_ALL = 0, PLAYERBOT_EPROG_EARLY, PLAYERBOT_EPROG_PREBUILD, PLAYERBOT_EPROG_RETREAT,
+		PLAYERBOT_EPROG_TARGET, PLAYERBOT_EPROG_PARTS };
+
+	struct TPlayerBotEProgMap
+	{
+		long lMap;
+		int iStep;
+		int iElement;
+		int iEarly;	// 0: no early access (V3 comes by the V2 record)
+		const char* szName;
+	};
+	const TPlayerBotEProgMap PLAYERBOT_EPROG_MAPS[] = {
+		{ PLAYERBOT_MAP_SPIDER_V2, 0, PLAYERBOT_EM_FIRE, 45, "spider_v2" },
+		{ PLAYERBOT_MAP_SPIDER_V3, 0, PLAYERBOT_EM_FIRE, 0, "spider_v3" },
+		{ PLAYERBOT_MAP_GROTTO_V1, 1, PLAYERBOT_EM_ELEC, 72, "grotto_v1" },
+		{ PLAYERBOT_MAP_GROTTO_V2, 1, PLAYERBOT_EM_ELEC, 80, "grotto_v2" },
+		{ PLAYERBOT_MAP_ZAKLETY, 2, PLAYERBOT_EM_WIND, 95, "zaklety" },
+	};
+	const int PLAYERBOT_EPROG_MAP_COUNT = (int)(sizeof(PLAYERBOT_EPROG_MAPS) / sizeof(PLAYERBOT_EPROG_MAPS[0]));
+	const int PLAYERBOT_EPROG_STEPS = 3;
+
+	bool IsPlayerBotElementProgressOn(int part)
+	{
+		static const char* const s_aszFlags[PLAYERBOT_EPROG_PARTS] = { "m2_bot_element_progress_off",
+			"m2_bot_element_progress_early_off", "m2_bot_element_progress_prebuild_off", "m2_bot_element_progress_retreat_off",
+			"m2_bot_element_progress_target_off" };
+		static DWORD s_dwAt = 0;
+		static bool s_abOn[PLAYERBOT_EPROG_PARTS] = { true, true, true, true, true };
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			const bool all = quest::CQuestManager::instance().GetEventFlag(s_aszFlags[0]) == 0;
+			s_abOn[0] = all;
+			for (int i = 1; i < PLAYERBOT_EPROG_PARTS; ++i)
+				s_abOn[i] = all && quest::CQuestManager::instance().GetEventFlag(s_aszFlags[i]) == 0;
+		}
+		return part >= 0 && part < PLAYERBOT_EPROG_PARTS && s_abOn[part];
+	}
+
+	int GetPlayerBotElementProgressGate()
+	{
+		static DWORD s_dwAt = 0;
+		static int s_iGate = PLAYERBOT_EPROG_GATE;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_progress_gate");
+			s_iGate = flag >= 10 && flag <= PLAYERBOT_ELEMENT_MAP_RESIST_CAP ? flag : PLAYERBOT_EPROG_GATE;
+		}
+		return s_iGate;
+	}
+
+	DWORD GetPlayerBotElementProgressShutMs()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_progress_shut_min");
+		return (DWORD)(flag >= 10 && flag <= 24 * 60 ? flag : PLAYERBOT_EPROG_SHUT_MIN) * 60000U;
+	}
+
+	int FindPlayerBotElementProgressMap(long map)
+	{
+		const long base = GetPlayerBotElementMapBase(map);
+		for (int i = 0; base > 0 && i < PLAYERBOT_EPROG_MAP_COUNT; ++i)
+			if (PLAYERBOT_EPROG_MAPS[i].lMap == base)
+				return i;
+		return -1;
+	}
+
+	int GetPlayerBotElementProgressGateForMap(long map)
+	{
+		if (!IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_ALL) || FindPlayerBotElementProgressMap(map) < 0)
+			return 0;
+		return GetPlayerBotElementProgressGate();
+	}
+
+	// The map's normal entry level (the panel's map table; Zaklety Las by its env, as playerbot_yohara_bots.h reads it).
+	int GetPlayerBotElementProgressNormalLevel(int idx)
+	{
+		using namespace playerbot_progression;
+		if (idx < 0 || idx >= PLAYERBOT_EPROG_MAP_COUNT)
+			return 255;
+		switch (PLAYERBOT_EPROG_MAPS[idx].lMap)
+		{
+			case PLAYERBOT_MAP_SPIDER_V2: return (int)MapFrom(MAP_SPIDER2);
+			case PLAYERBOT_MAP_SPIDER_V3: return (int)MapFrom(MAP_SPIDER3);
+			case PLAYERBOT_MAP_GROTTO_V1: return (int)MapFrom(MAP_GROTTO1);
+			case PLAYERBOT_MAP_GROTTO_V2: return (int)MapFrom(MAP_GROTTO2);
+			case PLAYERBOT_MAP_ZAKLETY:
+			{
+				static int s_iZaklety = -1;
+				if (s_iZaklety < 0)
+					s_iZaklety = ReadPlayerBotYoharaEnvInt("PLAYERBOT_ZAKLETY_MIN_LEVEL", PLAYERBOT_ZAKLETY_MIN_LEVEL,
+							PLAYERBOT_OCHAO_MIN_LEVEL, PLAYERBOT_ZAKLETY_MAX_LEVEL);
+				return s_iZaklety;
+			}
+			default: return 255;
+		}
+	}
+
+	// The step's prebuild window: from its lowest early level (or normal entry) - PLAYERBOT_EPROG_LEAD to its top (the
+	// Spider Dungeons' ceilings; the Grotto to Zaklety Las's entry; Zaklety Las to its band's end).
+	void GetPlayerBotElementProgressStepWindow(int step, int& from, int& to)
+	{
+		using namespace playerbot_progression;
+		from = 255;
+		int zaklety = -1;
+		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT; ++i)
+		{
+			if (PLAYERBOT_EPROG_MAPS[i].lMap == PLAYERBOT_MAP_ZAKLETY)
+				zaklety = i;
+			if (PLAYERBOT_EPROG_MAPS[i].iStep == step)
+				from = std::min(from, PLAYERBOT_EPROG_MAPS[i].iEarly > 0 ? PLAYERBOT_EPROG_MAPS[i].iEarly
+						: GetPlayerBotElementProgressNormalLevel(i));
+		}
+		from = std::max(1, from - PLAYERBOT_EPROG_LEAD);
+		switch (step)
+		{
+			case 0: to = std::max((int)MapTo(MAP_SPIDER2), (int)MapTo(MAP_SPIDER3)); break;
+			case 1: to = GetPlayerBotElementProgressNormalLevel(zaklety) - 1; break;
+			default: to = PLAYERBOT_ZAKLETY_MAX_LEVEL; break;
+		}
+	}
+
+	struct TPlayerBotEProgRecord
+	{
+		long lMap;			// the progression map (base) the bot was last seen on (0: none), and since when
+		DWORD dwArrived;
+		std::deque<DWORD> kills, deaths, retreats;
+		std::map<long, DWORD> shut;	// map -> until (a retreat)
+		long lEarlyMap;			// the early decision's memo for the log
+		int iEarlyDecision;
+		DWORD dwSeen;
+		TPlayerBotEProgRecord() : lMap(0), dwArrived(0), lEarlyMap(-1), iEarlyDecision(-1), dwSeen(0) {}
+	};
+	std::map<DWORD, TPlayerBotEProgRecord> s_mapPlayerBotEProg;
+
+	struct TPlayerBotEProgStats
+	{
+		unsigned int early, retreatDeaths, retreatRetreats, retreatSlow, back, gateRefusals;
+		TPlayerBotEProgStats() : early(0), retreatDeaths(0), retreatRetreats(0), retreatSlow(0), back(0), gateRefusals(0) {}
+	};
+	TPlayerBotEProgStats s_kPlayerBotEProg;
+
+	void PrunePlayerBotEProgWindow(std::deque<DWORD>& q, DWORD now)
+	{
+		while (!q.empty() && now - q.front() >= PLAYERBOT_EPROG_WINDOW_MS)
+			q.pop_front();
+	}
+
+	// The bot's record, its presence on a progression map refreshed (another map starts the window again).
+	TPlayerBotEProgRecord* TouchPlayerBotEProg(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch || !ch->IsPC() || s_mapPlayerBotAIStates.find(ch->GetPlayerID()) == s_mapPlayerBotAIStates.end())
+			return NULL;
+		TPlayerBotEProgRecord& r = s_mapPlayerBotEProg[ch->GetPlayerID()];
+		r.dwSeen = now ? now : 1;
+		const int idx = FindPlayerBotElementProgressMap(ch->GetMapIndex());
+		const long base = idx >= 0 ? PLAYERBOT_EPROG_MAPS[idx].lMap : 0;
+		if (base != r.lMap)
+		{
+			r.lMap = base;
+			r.dwArrived = now ? now : 1;
+			r.kills.clear();
+			r.deaths.clear();
+			r.retreats.clear();
+		}
+		return &r;
+	}
+
+	bool IsPlayerBotElementProgressEarlyHere(LPCHARACTER ch, int idx)
+	{
+		return ch && idx >= 0 && idx < PLAYERBOT_EPROG_MAP_COUNT && PLAYERBOT_EPROG_MAPS[idx].iEarly > 0 &&
+				(int)ch->GetLevel() < GetPlayerBotElementProgressNormalLevel(idx);
+	}
+
+	// Is the map shut for the bot (a retreat running)? An expired one is dropped with a "back" line.
+	bool IsPlayerBotElementProgressShut(LPCHARACTER ch, long map)
+	{
+		if (!ch || s_mapPlayerBotEProg.empty() || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_RETREAT))
+			return false;
+		std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotEProg.end() || it->second.shut.empty())
+			return false;
+		const long base = GetPlayerBotElementMapBase(map);
+		std::map<long, DWORD>::iterator s = it->second.shut.find(base);
+		if (s == it->second.shut.end())
+			return false;
+		if ((int)(s->second - get_dword_time()) > 0)
+			return true;
+		++s_kPlayerBotEProg.back;
+		sys_log(0, "PLAYERBOT_EPROG: back pid=%u name=%s lv=%d map=%ld (the retreat is over, the map may be picked again)",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), base);
+		it->second.shut.erase(s);
+		return false;
+	}
+
+	// The coping check on a progression map, after each death, HP retreat or kill noticed there.
+	void CheckPlayerBotElementProgressCoping(LPCHARACTER ch, TPlayerBotEProgRecord& r, DWORD now)
+	{
+		if (!IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_RETREAT) || r.lMap == 0)
+			return;
+		const int idx = FindPlayerBotElementProgressMap(r.lMap);
+		if (idx < 0)
+			return;
+		PrunePlayerBotEProgWindow(r.kills, now);
+		PrunePlayerBotEProgWindow(r.deaths, now);
+		PrunePlayerBotEProgWindow(r.retreats, now);
+		const bool early = IsPlayerBotElementProgressEarlyHere(ch, idx);
+		const char* why = NULL;
+		if ((int)r.deaths.size() >= PLAYERBOT_EPROG_DEATHS)
+		{
+			why = "deaths";
+			++s_kPlayerBotEProg.retreatDeaths;
+		}
+		else if ((int)r.retreats.size() >= PLAYERBOT_EPROG_RETREATS)
+		{
+			why = "hp_retreats";
+			++s_kPlayerBotEProg.retreatRetreats;
+		}
+		else if (early && now - r.dwArrived >= PLAYERBOT_EPROG_WINDOW_MS && (int)r.kills.size() < PLAYERBOT_EPROG_SLOW_KILLS)
+		{
+			why = "slow_kills";
+			++s_kPlayerBotEProg.retreatSlow;
+		}
+		if (!why)
+			return;
+		const DWORD shutMs = GetPlayerBotElementProgressShutMs();
+		const DWORD until = now + shutMs;
+		r.shut[r.lMap] = until ? until : 1;
+		sys_log(0, "PLAYERBOT_EPROG: retreat pid=%u name=%s lv=%d map=%ld(%s) element=%s resist=%d gate=%d early=%d why=%s "
+				"deaths=%u hp_retreats=%u kills=%u on_map_min=%u shut_min=%u",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), r.lMap, PLAYERBOT_EPROG_MAPS[idx].szName,
+				GetPlayerBotElementMapElementName(PLAYERBOT_EPROG_MAPS[idx].iElement),
+				GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement), GetPlayerBotElementProgressGate(),
+				early ? 1 : 0, why, (unsigned int)r.deaths.size(), (unsigned int)r.retreats.size(), (unsigned int)r.kills.size(),
+				(unsigned int)((now - r.dwArrived) / 60000U), (unsigned int)(shutMs / 60000U));
+		r.kills.clear();
+		r.deaths.clear();
+		r.retreats.clear();
+		r.dwArrived = now ? now : 1;
+	}
+
+	// The slow-kill rule needs a look while nothing happens (no kill, no death): the gate's pass for a bot standing there.
+	void LookPlayerBotElementProgressCoping(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
+			return;
+		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
+		if (r)
+			CheckPlayerBotElementProgressCoping(ch, *r, now);
+	}
+
+	// The hooks: BattlePassOnKill (playerbot_battlepass.h), the death pass and the tactical retreat (playerbot_survival.h).
+	void NotePlayerBotElementProgressKill(LPCHARACTER killer, LPCHARACTER victim)
+	{
+		if (!killer || !victim || victim->IsPC() || !killer->IsPC() || FindPlayerBotElementProgressMap(killer->GetMapIndex()) < 0)
+			return;
+		const DWORD now = get_dword_time();
+		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(killer, now);
+		if (!r)
+			return;
+		r->kills.push_back(now);
+		if (r->kills.size() > PLAYERBOT_EPROG_KILLS_KEPT)
+			r->kills.pop_front();
+	}
+
+	void NotePlayerBotElementProgressDeath(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
+			return;
+		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
+		if (!r)
+			return;
+		r->deaths.push_back(now);
+		CheckPlayerBotElementProgressCoping(ch, *r, now);
+	}
+
+	void NotePlayerBotElementProgressRetreat(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
+			return;
+		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
+		if (!r)
+			return;
+		r->retreats.push_back(now);
+		CheckPlayerBotElementProgressCoping(ch, *r, now);
+	}
+
+	int GetPlayerBotElementProgressStepElement(int step)
+	{
+		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT; ++i)
+			if (PLAYERBOT_EPROG_MAPS[i].iStep == step)
+				return PLAYERBOT_EPROG_MAPS[i].iElement;
+		return -1;
+	}
+
+	int GetPlayerBotElementProgressStepRow(int step)
+	{
+		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT; ++i)
+			if (PLAYERBOT_EPROG_MAPS[i].iStep == step)
+			{
+				const int row = FindPlayerBotElementMapRow(PLAYERBOT_EPROG_MAPS[i].lMap);
+				if (row >= 0)
+					return row;
+			}
+		return -1;
+	}
+
+	// The step's first early level (or its normal entry where no map of it has one).
+	int GetPlayerBotElementProgressStepEarly(int step)
+	{
+		int from = 0, to = 0;
+		GetPlayerBotElementProgressStepWindow(step, from, to);
+		return from + PLAYERBOT_EPROG_LEAD;
+	}
+
+	// The prebuild goal's row in PLAYERBOT_ELEMENT_MAP_ROWS, or -1: the latest step whose window holds the level - but
+	// the step before while the bot holds that one's resistance at the gate, its window still holds the level and the
+	// later step's first early level is not reached (it keeps what it hunts with now); past that early level the later
+	// step is built and the earlier element is kept on the pieces that carry it while its window lasts (*pKeep: that
+	// element, -1 none - IsPlayerBotElementMapLineMissing / HasPlayerBotElementMapLine).
+	int GetPlayerBotElementProgressPrebuildRow(LPCHARACTER ch, int* pStep, int* pKeep = NULL)
+	{
+		if (pStep)
+			*pStep = -1;
+		if (pKeep)
+			*pKeep = -1;
+		if (!ch || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_PREBUILD))
+			return -1;
+		const int level = (int)ch->GetLevel();
+		int step = -1;
+		for (int s = PLAYERBOT_EPROG_STEPS - 1; s >= 0 && step < 0; --s)
+		{
+			int from = 0, to = 0;
+			GetPlayerBotElementProgressStepWindow(s, from, to);
+			if (level >= from && level <= to)
+				step = s;
+		}
+		if (step < 0)
+			return -1;
+		int keep = -1;
+		if (step > 0)
+		{
+			int from = 0, to = 0;
+			GetPlayerBotElementProgressStepWindow(step - 1, from, to);
+			const int prevElement = GetPlayerBotElementProgressStepElement(step - 1);
+			if (level >= from && level <= to && prevElement >= 0 &&
+					GetPlayerBotElementMapResist(ch, prevElement) >= GetPlayerBotElementProgressGate())
+			{
+				if (level < GetPlayerBotElementProgressStepEarly(step))
+					--step;
+				else
+					keep = prevElement;
+			}
+		}
+		const int row = GetPlayerBotElementProgressStepRow(step);
+		if (row < 0)
+			return -1;
+		if (pStep)
+			*pStep = step;
+		if (pKeep)
+			*pKeep = keep;
+		return row;
+	}
+
+	// A piece carrying the kept element's line at the table's level-4 value (10 in global).
+	bool HasPlayerBotElementProgressKeptLine(LPITEM item, int keep)
+	{
+		if (!item || keep < 0 || keep >= 6)
+			return false;
+		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[keep];
+		TItemAttrMap::const_iterator it = g_map_itemAttr.find(point);
+		const long floor = it != g_map_itemAttr.end() ? it->second.lValues[3] : 10;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) == point && item->GetAttributeValue(i) >= floor)
+				return true;
+		return false;
+	}
+
+	// May the bot take the progression map early (from its early level, under its normal entry)? Its resistance at the
+	// gate (PLAYERBOT_ELEMENT_MAP_STAY_SLACK under while it stands there), no retreat running, no Yohara hunt element.
+	// The gear, the role, the errands and the hosting are the caller's.
+	bool CanPlayerBotTakeElementProgressEarly(LPCHARACTER ch, int idx, int* pResist)
+	{
+		if (pResist)
+			*pResist = 0;
+		if (!ch || idx < 0 || idx >= PLAYERBOT_EPROG_MAP_COUNT || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_EARLY))
+			return false;
+		const TPlayerBotEProgMap& m = PLAYERBOT_EPROG_MAPS[idx];
+		const int level = (int)ch->GetLevel();
+		if (m.iEarly <= 0 || level < m.iEarly || level >= GetPlayerBotElementProgressNormalLevel(idx) ||
+				GetPlayerBotHuntElement(ch) != 0 || IsPlayerBotYoharaBonusMember(ch))
+			return false;
+		const int row = FindPlayerBotElementMapRow(m.lMap);
+		if (row < 0 || GetPlayerBotElementMapShare(row) < PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
+			return false;
+		const int resist = GetPlayerBotElementMapResist(ch, m.iElement);
+		if (pResist)
+			*pResist = resist;
+		const bool here = GetPlayerBotElementMapBase(ch->GetMapIndex()) == m.lMap;
+		const int gate = GetPlayerBotElementProgressGate();
+		if (resist < (here ? gate - PLAYERBOT_ELEMENT_MAP_STAY_SLACK : gate))
+			return false;
+		if (here)
+			LookPlayerBotElementProgressCoping(ch, get_dword_time());
+		return !IsPlayerBotElementProgressShut(ch, m.lMap);
+	}
+
+	enum { PLAYERBOT_EPROG_EARLY_PICK = 0, PLAYERBOT_EPROG_EARLY_NONE, PLAYERBOT_EPROG_EARLY_GEAR_SHORT };
+
+	void LogPlayerBotElementProgressEarly(LPCHARACTER ch, long draw, long map, int decision, int resist)
+	{
+		static const char* const s_aszDecisions[3] = { "early_pick", "early_none", "early_gear_short" };
+		if (!ch || decision < 0 || decision > 2)
+			return;
+		std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotEProg.end())
+		{
+			if (decision == PLAYERBOT_EPROG_EARLY_NONE)
+				return;	// nothing to say about a bot never eligible
+			it = s_mapPlayerBotEProg.insert(std::make_pair(ch->GetPlayerID(), TPlayerBotEProgRecord())).first;
+		}
+		const DWORD now = get_dword_time();
+		it->second.dwSeen = now ? now : 1;
+		if (it->second.lEarlyMap == map && it->second.iEarlyDecision == decision)
+			return;
+		if (decision == PLAYERBOT_EPROG_EARLY_NONE && it->second.iEarlyDecision < 0)
+			return;
+		it->second.lEarlyMap = map;
+		it->second.iEarlyDecision = decision;
+		if (decision == PLAYERBOT_EPROG_EARLY_PICK)
+			++s_kPlayerBotEProg.early;
+		const int idx = FindPlayerBotElementProgressMap(map);
+		sys_log(0, "PLAYERBOT_EPROG: %s pid=%u name=%s lv=%d draw=%ld map=%ld(%s) element=%s resist=%d gate=%d here=%ld",
+				s_aszDecisions[decision], ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), draw, map,
+				idx >= 0 ? PLAYERBOT_EPROG_MAPS[idx].szName : "-",
+				idx >= 0 ? GetPlayerBotElementMapElementName(PLAYERBOT_EPROG_MAPS[idx].iElement) : "-", resist,
+				GetPlayerBotElementProgressGate(), ch->GetMapIndex());
+	}
+
+	// Every PLAYERBOT_EPROG_CENSUS_MS: per ten-level band of this core's bots of 40-119 - how many, their fire / lightning /
+	// wind resistance (avg, how many at the gate), how many may hunt each step's maps now (open by level - early or in
+	// band -, at the gate, no retreat), how many are on them and early there, the prebuild goal per step, retreats
+	// running; then the totals since the last census (early picks, retreats by cause, backs, gate refusals).
+	void TickPlayerBotElementProgressCensus(DWORD now)
+	{
+		static DWORD s_dwAt = 0;
+		if (s_dwAt == 0)
+		{
+			s_dwAt = now + PLAYERBOT_EPROG_CENSUS_MS;
+			return;
+		}
+		if ((int)(now - s_dwAt) < 0)
+			return;
+		s_dwAt = now + PLAYERBOT_EPROG_CENSUS_MS;
+		if (!IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_ALL))
+			return;
+		const int BANDS = 8;	// 40-49 .. 110-119
+		int bots[BANDS] = { 0 }, atGate[BANDS][3] = { { 0 } }, eligible[BANDS][3] = { { 0 } }, onMap[BANDS][3] = { { 0 } };
+		int early[BANDS] = { 0 }, prebuild[BANDS][3] = { { 0 } }, shut[BANDS] = { 0 };
+		long sum[BANDS][3] = { { 0 } };
+		const int gate = GetPlayerBotElementProgressGate();
+		const int elements[3] = { PLAYERBOT_EM_FIRE, PLAYERBOT_EM_ELEC, PLAYERBOT_EM_WIND };
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !ch->IsItemLoaded() || ch->GetLevel() < 40 || ch->GetLevel() >= 120)
+				continue;
+			const int b = ((int)ch->GetLevel() - 40) / 10;
+			const int level = (int)ch->GetLevel();
+			++bots[b];
+			for (int s = 0; s < 3; ++s)
+			{
+				const int r = GetPlayerBotElementMapResist(ch, elements[s]);
+				sum[b][s] += r;
+				atGate[b][s] += r >= gate ? 1 : 0;
+			}
+			bool counted[3] = { false, false, false };
+			for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT; ++i)
+			{
+				const int s = PLAYERBOT_EPROG_MAPS[i].iStep;
+				if (s < 0 || s >= 3 || counted[s])
+					continue;
+				const bool open = (PLAYERBOT_EPROG_MAPS[i].iEarly > 0 && level >= PLAYERBOT_EPROG_MAPS[i].iEarly) ||
+						level >= GetPlayerBotElementProgressNormalLevel(i);
+				if (open && GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[i].iElement) >= gate &&
+						!IsPlayerBotElementProgressShut(ch, PLAYERBOT_EPROG_MAPS[i].lMap))
+				{
+					++eligible[b][s];
+					counted[s] = true;
+				}
+			}
+			const int here = FindPlayerBotElementProgressMap(ch->GetMapIndex());
+			if (here >= 0 && PLAYERBOT_EPROG_MAPS[here].iStep < 3)
+			{
+				++onMap[b][PLAYERBOT_EPROG_MAPS[here].iStep];
+				early[b] += IsPlayerBotElementProgressEarlyHere(ch, here) ? 1 : 0;
+			}
+			int step = -1;
+			if (GetPlayerBotHuntElement(ch) == 0 && GetPlayerBotElementProgressPrebuildRow(ch, &step) >= 0 && step >= 0 && step < 3)
+				++prebuild[b][step];
+			std::map<DWORD, TPlayerBotEProgRecord>::const_iterator r = s_mapPlayerBotEProg.find(it->first);
+			if (r != s_mapPlayerBotEProg.end())
+				for (std::map<long, DWORD>::const_iterator s = r->second.shut.begin(); s != r->second.shut.end(); ++s)
+					if ((int)(s->second - now) > 0)
+					{
+						++shut[b];
+						break;
+					}
+		}
+		for (int b = 0; b < BANDS; ++b)
+		{
+			if (!bots[b])
+				continue;
+			sys_log(0, "PLAYERBOT_EPROG: census band=%d-%d bots=%d gate=%d fire=[avg=%ld at_gate=%d] lightning=[avg=%ld at_gate=%d] "
+					"wind=[avg=%ld at_gate=%d] eligible=[spider=%d grotto=%d zaklety=%d] on=[spider=%d grotto=%d zaklety=%d] "
+					"early_on=%d prebuild=[fire=%d lightning=%d wind=%d] shut=%d",
+					40 + b * 10, 49 + b * 10, bots[b], gate, sum[b][0] / bots[b], atGate[b][0], sum[b][1] / bots[b], atGate[b][1],
+					sum[b][2] / bots[b], atGate[b][2], eligible[b][0], eligible[b][1], eligible[b][2], onMap[b][0], onMap[b][1],
+					onMap[b][2], early[b], prebuild[b][0], prebuild[b][1], prebuild[b][2], shut[b]);
+		}
+		sys_log(0, "PLAYERBOT_EPROG: census totals early_picks=%u retreats=[deaths=%u hp_retreats=%u slow_kills=%u] backs=%u "
+				"gate_refusals=%u records=%u",
+				s_kPlayerBotEProg.early, s_kPlayerBotEProg.retreatDeaths, s_kPlayerBotEProg.retreatRetreats,
+				s_kPlayerBotEProg.retreatSlow, s_kPlayerBotEProg.back, s_kPlayerBotEProg.gateRefusals,
+				(unsigned int)s_mapPlayerBotEProg.size());
+		s_kPlayerBotEProg = TPlayerBotEProgStats();
+		// the record of a bot not seen on this core for a day is dropped
+		for (std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.begin(); it != s_mapPlayerBotEProg.end();)
+		{
+			if (now - it->second.dwSeen > 24U * 60U * 60U * 1000U)
+				s_mapPlayerBotEProg.erase(it++);
+			else
+				++it;
+		}
+	}
+
+	// Zaklety Las's entry level for this bot (playerbot_yohara_bots.h, the route's band): the env's, or the early level
+	// for a bot at the wind gate (on the forest, PLAYERBOT_ELEMENT_MAP_STAY_SLACK under) with no retreat running.
+	int GetPlayerBotElementProgressZakletyMinLevel(LPCHARACTER ch, int normal)
+	{
+		const int idx = FindPlayerBotElementProgressMap(PLAYERBOT_MAP_ZAKLETY);
+		if (!ch || idx < 0)
+			return normal;
+		const int level = (int)ch->GetLevel();
+		const TPlayerBotEProgMap& m = PLAYERBOT_EPROG_MAPS[idx];
+		if (m.iEarly <= 0 || level >= normal || level < m.iEarly)
+			return normal;
+		int resist = 0;
+		if (!CanPlayerBotTakeElementProgressEarly(ch, idx, &resist))
+		{
+			LogPlayerBotElementProgressEarly(ch, 0, m.lMap, PLAYERBOT_EPROG_EARLY_NONE, resist);
+			return normal;
+		}
+		LogPlayerBotElementProgressEarly(ch, 0, m.lMap, PLAYERBOT_EPROG_EARLY_PICK, resist);
+		return std::min(normal, m.iEarly);
+	}
+	// ====================================================================== end of MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
+
 	struct TPlayerBotElementMapGoal
 	{
 		long lWanted;	// the map the pick wanted (0: none with an element)
@@ -300,6 +931,8 @@ namespace
 		int iGate;
 		int iShare;
 		int iResist;
+		int iKeep;	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the element kept on its pieces during a prebuild, -1 none
+		bool bPrebuild;	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the goal is the progression's next map (not hunted yet)
 	};
 
 	bool GetPlayerBotElementMapGoal(LPCHARACTER ch, TPlayerBotElementMapView& out)
@@ -313,6 +946,20 @@ namespace
 			row = FindPlayerBotElementMapRow(it->second.lWanted);
 		if (row < 0)
 			row = FindPlayerBotElementMapRow(ch->GetMapIndex());
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the prebuild - a bot that neither hunts nor wants a gated map builds the
+		// resistance of the progression's next map for its level (the gate + PLAYERBOT_EPROG_PREBUILD_MARGIN); one that
+		// does keeps that map's element.
+		bool prebuild = false;
+		int keep = -1;
+		if (row < 0 || GetPlayerBotElementMapRowGate(row) <= 0)
+		{
+			const int next = GetPlayerBotElementProgressPrebuildRow(ch, NULL, &keep);
+			if (next >= 0 && GetPlayerBotElementMapShare(next) >= PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
+			{
+				row = next;
+				prebuild = true;
+			}
+		}
 		if (row < 0)
 			return false;
 		const int share = GetPlayerBotElementMapShare(row);
@@ -323,8 +970,12 @@ namespace
 		out.iElement = r.iElement;
 		out.iWant = r.iWant;
 		out.iGate = GetPlayerBotElementMapRowGate(row);	// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1
+		if (prebuild && out.iGate > 0)
+			out.iWant = std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP, out.iGate + PLAYERBOT_EPROG_PREBUILD_MARGIN);
 		out.iShare = share;
 		out.iResist = GetPlayerBotElementMapResist(ch, r.iElement);
+		out.iKeep = prebuild && keep != r.iElement ? keep : -1;
+		out.bPrebuild = prebuild;
 		return true;
 	}
 
@@ -391,6 +1042,10 @@ namespace
 		if (!GetPlayerBotElementMapGoal(ch, v) || v.iResist >= v.iWant ||
 				(v.iGate <= 0 && v.iWant < PLAYERBOT_ELEMENT_MAP_REROLL_WANT))
 			return false;
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a piece holding the element the bot still hunts with is not rerolled for
+		// the next one
+		if (HasPlayerBotElementProgressKeptLine(item, v.iKeep))
+			return false;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		const int set = item->GetAttributeSetIndex();
 		if (set < 0 || !IsPlayerBotApplyOnAttrSet(point, set))
@@ -411,6 +1066,8 @@ namespace
 		TPlayerBotElementMapView v;
 		if (!ch || !item || !GetPlayerBotElementMapGoal(ch, v))
 			return false;
+		if (HasPlayerBotElementProgressKeptLine(item, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a finishing line too
+			return true;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		TItemAttrMap::const_iterator it = g_map_itemAttr.find(point);
 		const long floor = it != g_map_itemAttr.end() ? it->second.lValues[3] : 10;
@@ -430,6 +1087,8 @@ namespace
 		TPlayerBotElementMapView v;
 		if (!GetPlayerBotElementMapGoal(ch, v) || v.iResist >= v.iWant ||
 				(v.iGate <= 0 && v.iWant < PLAYERBOT_ELEMENT_MAP_REROLL_WANT))
+			return false;
+		if (HasPlayerBotElementProgressKeptLine(costume, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 			return false;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		const int set = costume->GetAttributeSetIndex();
@@ -452,7 +1111,9 @@ namespace
 	bool IsPlayerBotElementMapStoneWanted(LPCHARACTER ch)
 	{
 		TPlayerBotElementMapView v;
-		return GetPlayerBotElementMapGoal(ch, v) && (v.iGate > 0 || v.iWant >= 60) && v.iResist < v.iWant;
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: for a prebuild only as the last piece - its 10 closes the gap to the gate
+		return GetPlayerBotElementMapGoal(ch, v) && (v.iGate > 0 || v.iWant >= 60) && v.iResist < v.iWant &&
+				(!v.bPrebuild || v.iResist + 10 >= v.iGate);
 	}
 
 	// The gate: may the bot pick (or stay on) the map? true for a map without a gate or whose element is off in this
@@ -477,11 +1138,27 @@ namespace
 			pView->iGate = GetPlayerBotElementMapRowGate(row);
 			pView->iShare = share;
 			pView->iResist = resist;
+			pView->iKeep = -1;
+			pView->bPrebuild = false;
 		}
 		if (pGated)
 			*pGated = true;
 		const bool here = GetPlayerBotElementMapBase(ch->GetMapIndex()) == r.lMap;
 		const int gate = GetPlayerBotElementMapRowGate(row);
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a resident of Zaklety Las is not asked where it stands (the Yohara stay
+		// takes it out; the gate is the way in), and a progression map in a retreat is refused until the retreat ends.
+		if (here && r.lMap == PLAYERBOT_MAP_ZAKLETY && GetPlayerBotElementProgressGateForMap(r.lMap) > 0)
+			return true;
+		// and a Yohara bot (a cohort member, a Champion on its G0 trip) keeps its own element rules (step 3)
+		if (GetPlayerBotElementProgressGateForMap(r.lMap) > 0 && IsPlayerBotYoharaBonusMember(ch))
+			return true;
+		if (GetPlayerBotElementProgressGateForMap(r.lMap) > 0)
+		{
+			if (here)
+				LookPlayerBotElementProgressCoping(ch, get_dword_time());
+			if (IsPlayerBotElementProgressShut(ch, r.lMap))
+				return false;
+		}
 		return resist >= (here ? gate - PLAYERBOT_ELEMENT_MAP_STAY_SLACK : gate);
 	}
 

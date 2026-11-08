@@ -1297,7 +1297,9 @@ namespace
 			{
 				case YOHARA_PURPOSE_ZAKLETY:
 					// MT2009_PLUS_BOT_YOHARA_G0_V1: or a Champion there for its G0 package's dust (playerbot_yohara_g0.h)
-					return ((level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL) || IsPlayerBotG0ZakletyStay(ch)) &&
+					// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: from 95 for a bot at the wind gate (playerbot_element_maps.h).
+					return ((level >= GetPlayerBotElementProgressZakletyMinLevel(ch, cfg.zakletyMinLevel) &&
+							level <= PLAYERBOT_ZAKLETY_MAX_LEVEL) || IsPlayerBotG0ZakletyStay(ch)) &&
 							IsPlayerBotMapHostedHere(PLAYERBOT_MAP_ZAKLETY) ? PLAYERBOT_MAP_ZAKLETY : 0;
 				case YOHARA_PURPOSE_SZC:
 					return level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL &&
@@ -1380,11 +1382,14 @@ namespace
 		// Zaklety Las: the band (two in three before - MT2009_PLUS_BOT_YOHARA_BAND_ALL_V1), while there is room (and a
 		// bot already on its way through the temple keeps it).
 		const bool inTemple = s_mapPlayerBotYoharaTemple.count(pid) != 0;
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the forest from 95 for a bot at the wind gate (playerbot_element_maps.h; the
+		// gate itself, wind 40, is the frontier's - GatePlayerBotElementMap).
+		const int zakletyFrom = GetPlayerBotElementProgressZakletyMinLevel(ch, cfg.zakletyMinLevel);
 		// MT2009_PLUS_BOT_YOHARA_FIX_V1: strong enough for the forest's packs (PLAYERBOT_ZAKLETY_MIN_HP).
-		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < cfg.zakletyMinHp)
+		if (level >= zakletyFrom && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < cfg.zakletyMinHp)
 			PlayerBotLogThrottled("zaklety_weak", dwNow, "PLAYERBOT_YOHARA: too weak for the forest pid=%u name=%s level=%d max_hp=%d need=%d hp_urgent=%d",
 					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp, IsPlayerBotShortOfZakletyHp(ch) ? 1 : 0);
-		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
+		if (level >= zakletyFrom && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
 				ch->GetMaxHP() >= cfg.zakletyMinHp && IsPlayerBotOchaoHosted() &&
 				(inTemple || (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax &&
 				 !IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY))) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1

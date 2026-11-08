@@ -1342,6 +1342,7 @@ namespace
 	{
 		const DWORD now = get_dword_time();
 		TickPlayerBotElementMapCensus(now);
+		TickPlayerBotElementProgressCensus(now);	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 		if (!ch || map == 0)
 			return map;
 		NotePlayerBotElementMapWanted(ch, map);
@@ -1356,6 +1357,8 @@ namespace
 			LogPlayerBotElementMapDecision(ch, map, v, here ? PLAYERBOT_EM_STAY : PLAYERBOT_EM_PICK, 0);
 			return map;
 		}
+		if (GetPlayerBotElementProgressGateForMap(map) > 0)
+			++s_kPlayerBotEProg.gateRefusals;	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 		const long fallback = GetPlayerBotElementMapFallback(ch, map);
 		if (fallback == 0)
 		{
@@ -1365,6 +1368,109 @@ namespace
 		}
 		LogPlayerBotElementMapDecision(ch, map, v, here ? PLAYERBOT_EM_LEAVE : PLAYERBOT_EM_SKIP, fallback);
 		return fallback;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a map an errand, a trial, an operator's order, a cohort or a dropper's ground
+	// named (GetPlayerBotFrontierMapForLevelRaw's answers before the draw) - the early access does not move such a bot.
+	bool IsPlayerBotElementProgressErrandMap(LPCHARACTER ch, long map)
+	{
+		if (!ch || map == 0)
+			return true;
+		if (GetPlayerBotArezzoFrontier(ch) != 0 || IsPlayerBotOchaoForced(ch) || IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ||
+				IsPlayerBotL30DropperAtWork(ch) || IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch) ||
+				IsPlayerBotOnBlackSteedTrial(ch))
+			return true;
+		TPlayerBotAIStateMap::const_iterator self = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (self == s_mapPlayerBotAIStates.end() || self->second.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			return true;
+		return map == GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) || map == GetPlayerBotGuildErrandMap(ch) ||
+				map == GetPlayerBotMatsFarmMap(ch) || map == GetPlayerBotPetMatHuntMap(ch) || map == GetPlayerBotFarmerSpotMap(ch);
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the early access (playerbot_element_maps.h) on the draw's map - a bot from a
+	// progression map's early level, under its normal entry, at its gate (CanPlayerBotTakeElementProgressEarly), with the
+	// map's gear (the Spider Dungeons' IsPlayerBotSpiderGearReady), hosted here, no stone hunter, hunts that map instead;
+	// the highest such map first. Zaklety Las is the Yohara route's (playerbot_yohara_bots.h). A draw that is itself a
+	// progression map, or an errand's map, stays.
+	long ApplyPlayerBotElementProgressEarly(LPCHARACTER ch, long map)
+	{
+		if (!ch || map == 0 || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_EARLY) ||
+				FindPlayerBotElementProgressMap(map) >= 0)
+			return map;
+		const int level = (int)ch->GetLevel();
+		bool any = false;
+		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT && !any; ++i)
+			any = PLAYERBOT_EPROG_MAPS[i].iEarly > 0 && PLAYERBOT_EPROG_MAPS[i].lMap != PLAYERBOT_MAP_ZAKLETY &&
+					level >= PLAYERBOT_EPROG_MAPS[i].iEarly && level < GetPlayerBotElementProgressNormalLevel(i);
+		if (!any || IsPlayerBotElementProgressErrandMap(ch, map))
+			return map;
+		TPlayerBotAIStateMap::const_iterator role = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (role == s_mapPlayerBotAIStates.end() || role->second.bBotRole == BOT_ROLE_METIN_HUNTER || IsPlayerBotMetinologNow(ch))
+			return map;	// no stone on any of these maps
+		long last = 0;
+		int lastResist = 0;
+		for (int i = PLAYERBOT_EPROG_MAP_COUNT - 1; i >= 0; --i)
+		{
+			const TPlayerBotEProgMap& m = PLAYERBOT_EPROG_MAPS[i];
+			if (m.iEarly <= 0 || m.lMap == PLAYERBOT_MAP_ZAKLETY || level < m.iEarly ||
+					level >= GetPlayerBotElementProgressNormalLevel(i) || !IsPlayerBotMapHostedHere(m.lMap) ||
+					IsPlayerBotSidekickTripBlocked(ch, m.lMap))
+				continue;
+			int resist = 0;
+			const bool can = CanPlayerBotTakeElementProgressEarly(ch, i, &resist);
+			last = m.lMap;
+			lastResist = resist;
+			if (!can)
+				continue;
+			if (IsPlayerBotSpiderMap(m.lMap) && !IsPlayerBotSpiderGearReady(ch, m.lMap))
+			{
+				LogPlayerBotElementProgressEarly(ch, map, m.lMap, PLAYERBOT_EPROG_EARLY_GEAR_SHORT, resist);
+				return map;
+			}
+			LogPlayerBotElementProgressEarly(ch, map, m.lMap, PLAYERBOT_EPROG_EARLY_PICK, resist);
+			return m.lMap;
+		}
+		if (last != 0)
+			LogPlayerBotElementProgressEarly(ch, map, last, PLAYERBOT_EPROG_EARLY_NONE, lastResist);
+		return map;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: an early bot on its progression map (under the normal entry, at the gate's
+	// stay level - read every 10 s): the gap to the normal entry, 0 for anyone else.
+	int GetPlayerBotElementProgressEarlyGap(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsPC())
+			return 0;
+		const int idx = FindPlayerBotElementProgressMap(ch->GetMapIndex());
+		if (idx < 0 || !IsPlayerBotElementProgressEarlyHere(ch, idx) || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_EARLY))
+			return 0;
+		static std::map<DWORD, std::pair<DWORD, bool> > s_mapOk;
+		const DWORD now = get_dword_time();
+		std::pair<DWORD, bool>& c = s_mapOk[ch->GetPlayerID()];
+		if (c.first == 0 || now - c.first >= 10000)
+		{
+			c.first = now ? now : 1;
+			c.second = GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement) >=
+					GetPlayerBotElementProgressGate() - PLAYERBOT_ELEMENT_MAP_STAY_SLACK;
+			if (s_mapOk.size() > 4096)
+				s_mapOk.clear();
+		}
+		return c.second ? std::max(0, GetPlayerBotElementProgressNormalLevel(idx) - (int)ch->GetLevel()) : 0;
+	}
+
+	// The hubs of the map read lower by the gap (+4, so the deeper ones open too) - ChoosePlayerBotHuntingHub.
+	int GetPlayerBotElementProgressHubShift(LPCHARACTER ch)
+	{
+		const int gap = GetPlayerBotElementProgressEarlyGap(ch);
+		return gap > 0 ? gap + 4 : 0;
+	}
+
+	// The target reach (PLAYERBOT_MAX_TARGET_LEVEL_DELTA over the bot's level) of an early bot: the normal entry's.
+	int GetPlayerBotTargetLevelDelta(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_TARGET))
+			return PLAYERBOT_MAX_TARGET_LEVEL_DELTA;
+		return PLAYERBOT_MAX_TARGET_LEVEL_DELTA + GetPlayerBotElementProgressEarlyGap(ch);
 	}
 
 	// The map whose ordinary spawns still sit inside this bot's useful level
@@ -1406,6 +1512,9 @@ namespace
 		// map the draw above gives a stone hunter in their place.
 		if (IsPlayerBotSpiderMap(map) && IsPlayerBotMetinologNow(ch))
 			map = PLAYERBOT_MAP_SOHAN;
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: the early access - fire 40 the Spider Dungeon V2 from 45, lightning 40 the
+		// Grotto from 72 / 80 (playerbot_element_maps.h), in place of the draw's ground.
+		map = ApplyPlayerBotElementProgressEarly(ch, map);
 		// MT2009_PLUS_BOT_SPIDER_GROUND_V1: only with the dungeon's gear - a
 		// bot short of it hunts Sohan (or the Hwang Temple past Sohan's
 		// stones) until the blacksmith has done his part. A Biologist's row,
