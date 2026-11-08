@@ -4039,9 +4039,14 @@ T = {
  "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Theowahdana działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Theowahdan always works."},
  "rare_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🐉","en":"Saved and switched live, through the in-game helper. 🐉"},
  "rare_ds_title":{"pl":"Odłamki Smoczego Kamienia (Alchemik)","en":"Dragon Stone Shards (the Alchemist)"},
- "rare_ds_help": {"pl":"Od 30 poziomu Alchemik (M1 każdego królestwa) daje Moc Smoczego Oka: potwory upuszczają Odłamki, a każde 10 podniesionych odłamków samo zamienia się w Cor Draconis — tyle razy dziennie, ile ustawisz niżej, odnawiane raz dziennie u Alchemika. Boty liczą tak samo (bez odłamków w plecaku). Działa od razu.","en":"From level 30 the Alchemist (each kingdom's M1) grants the Power of the Dragon Eye: monsters drop Shards, and every 10 shards picked up turn into a Cor Draconis by themselves — as many times a day as set below, renewed once a day at the Alchemist. Bots count the same way (without shards in the bag). Applies at once."},
+ "rare_ds_help": {"pl":"Od 30 poziomu Alchemik (M1 każdego królestwa) daje Moc Smoczego Oka: potwory upuszczają Odłamki, a każde 10 podniesionych odłamków samo zamienia się w Cor Draconis — tyle razy dziennie, ile daje poziom postaci (tabela niżej). Pierwszy Cor i pierwsza Moc są u Alchemika; potem Moc odnawia się sama o północy czasu polskiego (przy logowaniu, przy pierwszym zabitym potworze lub podniesionym odłamku nowego dnia, albo z listu misji) — nie trzeba chodzić do Alchemika. Awans do wyższego progu w ciągu dnia dodaje różnicę do dzisiejszej puli (nigdy jej nie zmniejsza). Boty liczą tak samo (bez odłamków w plecaku). Działa od razu.","en":"From level 30 the Alchemist (each kingdom's M1) grants the Power of the Dragon Eye: monsters drop Shards, and every 10 shards picked up turn into a Cor Draconis by themselves — as many times a day as the character's level gives (table below). The first Cor and the first Power come from the Alchemist; after that the Power renews by itself at Polish midnight (at login, at the first kill or shard picked up of the new day, or from the quest letter) — no walk to the Alchemist. Reaching a higher bracket during the day adds the difference to today's count (never lowers it). Bots count the same way (without shards in the bag). Applies at once."},
+ "rare_ds_table":{"pl":"Cor Draconis dziennie wg poziomu (dolna granica włącznie):","en":"Cor Draconis a day by level (lower bound inclusive):"},
+ "rare_ds_lv":   {"pl":"Poziom postaci","en":"Character level"},
+ "rare_ds_cors": {"pl":"Cor dziennie","en":"Cors a day"},
+ "rare_ds_champ":{"pl":"Czempion, poziom","en":"Champion, level"},
+ "rare_ds_flat": {"pl":"Zamiast tabeli: stała liczba Cor dziennie dla wszystkich (flaga ds_cor_level_off) — wtedy obowiązuje pole niżej","en":"Instead of the table: one flat number of Cors a day for everybody (flag ds_cor_level_off) — then the field below applies"},
  "rare_ds_drop": {"pl":"Szansa na odłamek z potwora, % (1–100, domyślnie 10):","en":"Shard chance per kill, % (1-100, default 10):"},
- "rare_ds_day":  {"pl":"Cor Draconis z odłamków dziennie (1–20, domyślnie 5):","en":"Cor Draconis from shards a day (1-20, default 5):"},
+ "rare_ds_day":  {"pl":"Stała liczba Cor Draconis z odłamków dziennie (tylko gdy tabela wyłączona; 1–20, domyślnie 5):","en":"Flat Cor Draconis from shards a day (only with the table off; 1-20, default 5):"},
  "rare_ds_range":{"pl":"Szansa na odłamek 1–100%, Cor dziennie 1–20. Nic nie zmieniono.","en":"Shard chance 1-100%, Cors a day 1-20. Nothing was changed."},
  "az_nav":       {"pl":"🗺️ Moduł Arezzo","en":"🗺️ Arezzo module"},
  # MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops (event flag m2_shop_big_on)
@@ -6206,16 +6211,25 @@ RARE_LIVE_WAIT = 12.0
 
 RARE_DS_DROP_DEFAULT = 10
 RARE_DS_COR_DAY_DEFAULT = 5
+# MT2009_PLUS_DS_COR_LEVEL_V1 (the owner, 8 November 2026): Cors a day by level, the table of
+# dragon_soul.quest (dragon_soul.per_day) and playerbot_alchemy.h (GetPlayerBotDragonCorsPerDay) -
+# (label, Cors a day, champion row); lower bound inclusive, upper exclusive.
+RARE_DS_LEVEL_TABLE = (("30–44", 10, False), ("45–54", 15, False), ("55–74", 20, False),
+                       ("75–94", 25, False), ("95–109", 30, False), ("110–120", 35, False),
+                       ("1–9", 45, True), ("10–19", 60, True), ("20–30", 80, True))
 
 def read_rare():
     """Both switches as on (1) or off (0); a missing row reads as on. Also the
     Alchemist's shard chance (ds_drop, 1-100) and Cors a day (ds_cor_day,
-    1-20), read the way dragon_soul.quest reads them: out of range = default."""
+    1-20), read the way dragon_soul.quest reads them: out of range = default.
+    MT2009_PLUS_DS_COR_LEVEL_V1: ds_cor_level_off 1 = the flat ds_cor_day
+    instead of the level table (RARE_DS_LEVEL_TABLE)."""
     vals = {"alchemy": 1, "sashes": 1,
-            "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT}
+            "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT,
+            "ds_cor_level_off": 0}
     with db() as c, c.cursor() as cur:
         cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID=0 AND szState='' "
-                    "AND szName IN ('m2_alchemy_off', 'm2_sash_off', 'ds_drop', 'ds_cor_day')")
+                    "AND szName IN ('m2_alchemy_off', 'm2_sash_off', 'ds_drop', 'ds_cor_day', 'ds_cor_level_off')")
         for row in cur.fetchall():
             try:
                 v = int(row["lValue"])
@@ -6228,6 +6242,8 @@ def read_rare():
             elif name == "ds_cor_day":
                 if 1 <= v <= 20:
                     vals["ds_cor_day"] = v
+            elif name == "ds_cor_level_off":
+                vals["ds_cor_level_off"] = 1 if v != 0 else 0
             else:
                 vals["alchemy" if name == "m2_alchemy_off" else "sashes"] = 0 if v > 0 else 1
     return vals
@@ -6395,7 +6411,7 @@ def persist_seonhae(cur, on, wait, lv=None):
             cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                         "VALUES (0, %s, '', %s)", ("m2_rare_lv%d" % (i + 1), int(v)))
 
-def persist_rare(cur, alchemy, sashes, ds_drop=None, ds_cor_day=None):
+def persist_rare(cur, alchemy, sashes, ds_drop=None, ds_cor_day=None, ds_cor_level_off=None):
     """The event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_alchemy_off', '', %s)", (0 if alchemy else 1,))
@@ -6407,6 +6423,9 @@ def persist_rare(cur, alchemy, sashes, ds_drop=None, ds_cor_day=None):
     if ds_cor_day is not None:
         cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                     "VALUES (0, 'ds_cor_day', '', %s)", (int(ds_cor_day),))
+    if ds_cor_level_off is not None:
+        cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                    "VALUES (0, 'ds_cor_level_off', '', %s)", (1 if ds_cor_level_off else 0,))
 
 def gm_reload_mt2009():
     """Ask an online IMPLEMENTOR to run /reload a for us. True when one did.
@@ -8171,7 +8190,12 @@ TPL_RARE = BASE.replace("__BODY__", """
 <label><input type="checkbox" name="sashes" value="1" {% if cur['sashes'] %}checked{% endif %}> {{t('easter_enable')}}</label>
 <h3 style="margin-top:18px">💎 {{t('rare_ds_title')}}</h3>
 <p class="muted">{{t('rare_ds_help')}}</p>
-<label>{{t('rare_ds_drop')}} <input type="number" name="ds_drop" min="1" max="100" step="1" value="{{cur['ds_drop']}}" style="width:90px"></label><br>
+<label>{{t('rare_ds_drop')}} <input type="number" name="ds_drop" min="1" max="100" step="1" value="{{cur['ds_drop']}}" style="width:90px"></label>
+<p style="margin-top:12px">{{t('rare_ds_table')}}</p>
+<table style="max-width:360px"><tr><th>{{t('rare_ds_lv')}}</th><th>{{t('rare_ds_cors')}}</th></tr>
+{% for lv, n, champ in ds_table %}<tr><td>{% if champ %}{{t('rare_ds_champ')}} {% endif %}{{lv}}</td><td>{{n}}</td></tr>
+{% endfor %}</table>
+<label style="display:block;margin-top:10px"><input type="checkbox" name="ds_cor_level_off" value="1" {% if cur['ds_cor_level_off'] %}checked{% endif %}> {{t('rare_ds_flat')}}</label>
 <label>{{t('rare_ds_day')}} <input type="number" name="ds_cor_day" min="1" max="20" step="1" value="{{cur['ds_cor_day']}}" style="width:90px"></label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
@@ -19462,16 +19486,17 @@ def rare():
         if not (1 <= ds_drop <= 100 and 1 <= ds_cor_day <= 20):
             flash(t("rare_ds_range"), "error")
             return redirect(url_for("rare"))
+        ds_level_off = 1 if request.form.get("ds_cor_level_off") else 0
         try:
             with db() as c, c.cursor() as cur:
-                persist_rare(cur, alchemy, sashes, ds_drop, ds_cor_day)
+                persist_rare(cur, alchemy, sashes, ds_drop, ds_cor_day, ds_level_off)
         except Exception:
             flash(t("db_down"), "error")
             return redirect(url_for("rare"))
         try:
-            # arg2 = "shard chance,Cors a day" (web_admin.quest, RARE).
+            # arg2 = "shard chance,flat Cors a day,level table off" (web_admin.quest, RARE).
             status, qid = queue_and_wait("", "RARE", "%d,%d" % (alchemy, sashes),
-                                         "%d,%d" % (ds_drop, ds_cor_day),
+                                         "%d,%d,%d" % (ds_drop, ds_cor_day, ds_level_off),
                                          wait=RARE_LIVE_WAIT)
         except Exception:
             status, qid = "failed", 0
@@ -19489,12 +19514,13 @@ def rare():
         return redirect(url_for("rare"))
 
     cur_rare = {"alchemy": 1, "sashes": 1,
-                "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT}
+                "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT,
+                "ds_cor_level_off": 0}
     try:
         cur_rare = read_rare()
     except Exception:
         flash(t("db_down"), "error")
-    return render_template_string(TPL_RARE, cur=cur_rare)
+    return render_template_string(TPL_RARE, cur=cur_rare, ds_table=RARE_DS_LEVEL_TABLE)
 
 # MT2009_PLUS_FLOWER_V1: the Flower Event's settings and rewards. The game cores
 # (playerbot_flower.h) stat /opt/m2spool/flower_event.tsv every five seconds; a

@@ -1,8 +1,7 @@
 -- Dragon Soul / Alchemy: the Alchemist's (20001) level-30 errand - the letter,
 -- the Dragon Stone Shards (30270) from monsters, the first Cor Draconis (50255)
 -- for ten shards and then the Power of the Dragon Eye: every ten shards picked
--- up turn into a Cor by themselves, a limited number a day, renewed once a day
--- at the Alchemist.
+-- up turn into a Cor by themselves, a limited number a day, renewed once a day.
 --
 -- This file is the package's Gameforge quest (quest/_unused/dragon_soul).
 -- Since 1 October 2026 it speaks with the package's own Polish texts, the
@@ -10,17 +9,46 @@
 -- table collect_quest_lv85 reads too) - the earlier literals were written
 -- when nobody had found that table. The lines without a good key, or whose
 -- key says the wrong thing here, are written out (this file is CP1250 like the
--- other Polish quests in this directory).
+-- other Polish quests in this directory; no string ends with a Polish letter - qc).
 --
 -- MT2009 Plus rules on top of the package:
 --  * the world's alchemy switch (M2_ALCHEMY=0 in .env or the admin panel's
 --    "Alchemia i szarfy" page writes the event flag m2_alchemy_off). While it
 --    is off: no letter, no shard, no hand-in, no renewal - what a character
 --    already holds, and its state here, stays for the day it is on again;
---  * Cors a day: the event flag ds_cor_day (1-20; anything else reads as 5,
---    the operator's choice of 17 September - the package had 10). The panel
---    sets it next to the shard chance; the bots read the same flag
---    (playerbot_alchemy.h);
+--  * MT2009_PLUS_DS_COR_LEVEL_V1 (the owner, 8 November 2026: Cors a day by the
+--    character's level, all values a day; and "misja aktywowala sie i resetowala
+--    sie automatycznie, bez koniecznosci chodzenia do alchemika. Czyli jest
+--    polnoc - mozna aktywowac misje zdalnie z listu (z panelu misji) a nie ze
+--    trzeba isc do alchemika"):
+--      - Cors a day by level (lower bound in, upper bound out): 30-44 10,
+--        45-54 15, 55-74 20, 75-94 25, 95-109 30, 110-120 35; a Champion
+--        (level 120 and pc.get_conqueror_level() >= 1, playerbot_champion.cpp,
+--        MT2009_PLUS_CHAMPION_V1): Champion level 1-9 45, 10-19 60, 20-30 80
+--        (dragon_soul.per_day; the bots' twin is GetPlayerBotDragonCorsPerDay
+--        in playerbot_alchemy.h). The event flag ds_cor_level_off 1 goes back
+--        to the flat ds_cor_day (1-20; anything else reads as 5, the operator's
+--        choice of 17 September - the package had 10), the panel's alchemy page
+--        sets both;
+--      - the day is the Polish calendar day (Europe/Warsaw with summer time,
+--        the same rule as wieza_sung_mahi.warsaw_offset and the bots'
+--        GetPlayerBotMountGateWarsawDay), no longer the UTC day that turned at
+--        01:00/02:00;
+--      - the daily renewal needs no Alchemist: a new day renews by itself at the
+--        login, at the first kill and the first shard picked up, and at a level
+--        up; the letter of a character online over midnight offers it (info);
+--        the Alchemist's talk still renews too. One grant a day: the renewal
+--        stamps eye_timestamp with the day (dragon_soul.is_new_day);
+--      - a level up (or a Champion level) into a higher bracket during the day
+--        raises today's remaining Cors by the difference (eye_grant holds what
+--        today granted); never lowered;
+--      - the first qualification (the first ten shards, the first Cor) stays at
+--        the Alchemist;
+--      - migration: eye_timestamp held the UTC day (get_global_time()/86400);
+--        eye_tz 1 marks it as the Warsaw day. A stamp without eye_tz is the old
+--        UTC day and holds until that UTC day is over (as it did before), then
+--        the renewal stamps the Warsaw day - no second grant and no lost day at
+--        the switch; no raise for a level up on a day stamped the old way;
 --  * shard chance: the event flag ds_drop (1-100; questlib's
 --    drop_gamble_with_flag reads anything else as 10), the panel or /e ds_drop;
 --  * shards only from a monster at most 15 levels under the killer, or any
@@ -35,6 +63,159 @@
 -- ones characters already have; renaming them would reset everybody.
 quest dragon_soul begin
 	state start begin
+		-- MT2009_PLUS_DS_COR_LEVEL_V1: the calendar (as wieza_sung_mahi's).
+		function days_from_civil(y, m, dd)
+			if m <= 2 then
+				y = y - 1
+			end
+			local era = math.floor(y / 400)
+			local yoe = y - era * 400
+			local mp = m + 9
+			if m > 2 then
+				mp = m - 3
+			end
+			local doy = math.floor((153 * mp + 2) / 5) + dd - 1
+			local doe = yoe * 365 + math.floor(yoe / 4) - math.floor(yoe / 100) + doy
+			return era * 146097 + doe - 719468
+		end
+
+		function civil_year(days)
+			local z = days + 719468
+			local era = math.floor(z / 146097)
+			local doe = z - era * 146097
+			local yoe = math.floor((doe - math.floor(doe / 1460) + math.floor(doe / 36524) - math.floor(doe / 146096)) / 365)
+			local y = yoe + era * 400
+			local doy = doe - (365 * yoe + math.floor(yoe / 4) - math.floor(yoe / 100))
+			local mp = math.floor((5 * doy + 2) / 153)
+			if mp >= 10 then
+				y = y + 1
+			end
+			return y
+		end
+
+		-- the last Sunday of a month (a day number from 1970-01-01, a Thursday)
+		function last_sunday(y, m)
+			local last
+			if m == 12 then
+				last = dragon_soul.days_from_civil(y + 1, 1, 1) - 1
+			else
+				last = dragon_soul.days_from_civil(y, m + 1, 1) - 1
+			end
+			return last - math.mod(last + 4, 7)
+		end
+
+		-- the Polish calendar day: UTC+2 from the last Sunday of March 01:00 UTC to the last
+		-- Sunday of October 01:00 UTC, UTC+1 otherwise
+		function today()
+			local t = get_global_time()
+			local y = dragon_soul.civil_year(math.floor(t / 86400))
+			local from = dragon_soul.last_sunday(y, 3) * 86400 + 3600
+			local to = dragon_soul.last_sunday(y, 10) * 86400 + 3600
+			local off = 3600
+			if t >= from and t < to then
+				off = 7200
+			end
+			return math.floor((t + off) / 86400)
+		end
+
+		-- Cors a day for this character (the owner's table, or the flat ds_cor_day)
+		function per_day()
+			if game.get_event_flag("ds_cor_level_off") ~= 0 then
+				local n = game.get_event_flag("ds_cor_day")
+				if n < 1 or n > 20 then
+					n = 5
+				end
+				return n
+			end
+			local lv = pc.get_level()
+			if lv >= 120 then
+				local c = pc.get_conqueror_level()
+				if c >= 20 then
+					return 80
+				elseif c >= 10 then
+					return 60
+				elseif c >= 1 then
+					return 45
+				end
+				return 35
+			elseif lv >= 110 then
+				return 35
+			elseif lv >= 95 then
+				return 30
+			elseif lv >= 75 then
+				return 25
+			elseif lv >= 55 then
+				return 20
+			elseif lv >= 45 then
+				return 15
+			end
+			return 10
+		end
+
+		-- true while today's power is not granted yet (an old UTC stamp holds to its UTC midnight)
+		function is_new_day()
+			local stamp = pc.getf("dragon_soul", "eye_timestamp")
+			if pc.getf("dragon_soul", "eye_tz") == 0 then
+				return math.floor(get_global_time() / 86400) ~= stamp
+			end
+			return dragon_soul.today() ~= stamp
+		end
+
+		-- today's grant: n Cors from now on, stamped with the Warsaw day
+		function grant(n)
+			pc.setf("dragon_soul", "eye_timestamp", dragon_soul.today())
+			pc.setf("dragon_soul", "eye_tz", 1)
+			pc.setf("dragon_soul", "eye_grant", n)
+			pc.setf("dragon_soul", "eye_left", n)
+		end
+
+		-- the daily renewal; true when it renewed (the caller's state moves to farming)
+		function renew()
+			if not dragon_soul.is_new_day() then
+				return false
+			end
+			local n = dragon_soul.per_day()
+			dragon_soul.grant(n)
+			char_log(pc.get_player_id(), 'DS_DAILY', tostring(n))
+			return true
+		end
+
+		-- a higher bracket today: the difference on top of what is left; 0 when nothing changed
+		function top_up()
+			if pc.getf("dragon_soul", "eye_tz") == 0 or dragon_soul.is_new_day() then
+				return 0
+			end
+			local n = dragon_soul.per_day()
+			local g = pc.getf("dragon_soul", "eye_grant")
+			if n <= g then
+				return 0
+			end
+			pc.setf("dragon_soul", "eye_grant", n)
+			pc.setf("dragon_soul", "eye_left", pc.getf("dragon_soul", "eye_left") + n - g)
+			return n - g
+		end
+
+		-- a new day renews, a higher bracket tops up; tells the player; closed = called from
+		-- state_closed_season, which then moves to state_farming (set_state only on a change)
+		function sync(closed)
+			if dragon_soul.renew() then
+				syschat(string.format("Moc Smoczego Oka odnowiona: dziœ %d Cor Draconis z od³amków.", pc.getf("dragon_soul", "eye_left")))
+				if closed then
+					set_state("state_farming")
+				end
+				return true
+			end
+			local up = dragon_soul.top_up()
+			if up > 0 then
+				syschat(string.format("Wy¿szy poziom - Moc Smoczego Oka wzros³a o %d na dziœ (zosta³o %d).", up, pc.getf("dragon_soul", "eye_left")))
+				if closed then
+					set_state("state_farming")
+				end
+				return true
+			end
+			return false
+		end
+
 		when levelup or letter with pc.level >= 30 and game.get_event_flag("m2_alchemy_off") == 0 and not pc.is_bot() begin
 			send_letter(gameforge.dragon_soul._1010_sendLetter)
 			local v = find_npc_by_vnum(20001)
@@ -85,20 +266,18 @@ quest dragon_soul begin
 				end
 			end
 		end
+		-- The first qualification stays at the Alchemist: the first Cor and today's grant less that one.
 		when 20001.chat.gameforge.dragon_soul._1050_sendLetter with game.get_event_flag("m2_alchemy_off") == 0 begin
 			say_title(mob_name(20001))
 			if pc.count_item(30270) >= 10 then
-				local per_day = game.get_event_flag("ds_cor_day")
-				if per_day < 1 or per_day > 20 then
-					per_day = 5
-				end
+				local per_day = dragon_soul.per_day()
 				say(string.format(gameforge.dragon_soul._1070_say, per_day - 1))
+				say("Moc Smoczego Oka odnawia siê sama co dzieñ o pó³nocy[ENTER](czasu polskiego) - nie musisz do mnie wracaæ.[ENTER]Im wy¿szy masz poziom, tym wiêcej Cor Draconis[ENTER]dziennie stworzysz.")
 				pc.remove_item(30270, 10)
 				ds.give_qualification()
 				char_log(pc.get_player_id(), 'DS_QUALIFICATION', 'SUCCESS')
 				pc.give_item2(50255)
-				local today = math.floor(get_global_time() / 86400)
-				pc.setf("dragon_soul", "eye_timestamp", today)
+				dragon_soul.grant(per_day)
 				pc.setf("dragon_soul", "eye_left", per_day - 1)
 				if per_day > 1 then
 					set_state(state_farming)
@@ -111,11 +290,27 @@ quest dragon_soul begin
 		end
 	end
 	state state_farming begin
+		when login with game.get_event_flag("m2_alchemy_off") == 0 begin
+			dragon_soul.sync()
+		end
+		when levelup with game.get_event_flag("m2_alchemy_off") == 0 begin
+			dragon_soul.sync()
+		end
 		when letter with game.get_event_flag("m2_alchemy_off") == 0 begin
 			send_letter(gameforge.dragon_soul._1090_sendLetter)
 		end
 		when info or button with game.get_event_flag("m2_alchemy_off") == 0 begin
+			if dragon_soul.is_new_day() then
+				say(string.format("Nadszed³ nowy dzieñ. Moc Smoczego Oka mo¿e zostaæ[ENTER]odnowiona: dziœ %d Cor Draconis z od³amków.", dragon_soul.per_day()))
+				if select("Odnów Moc Smoczego Oka", "PóŸniej") == 1 then
+					dragon_soul.sync()
+					say(string.format(gameforge.dragon_soul._1100_say, pc.getf("dragon_soul", "eye_left")))
+				end
+				return
+			end
+			dragon_soul.top_up()
 			say(string.format(gameforge.dragon_soul._1100_say, pc.getf("dragon_soul", "eye_left")))
+			say(string.format("Dzienny przydzia³ na twoim poziomie: %d.[ENTER]Odnawia siê sam o pó³nocy (czasu polskiego).", dragon_soul.per_day()))
 		end
 		when kill with game.get_event_flag("m2_alchemy_off") == 0 begin
 			if npc.is_pc() then
@@ -127,6 +322,9 @@ quest dragon_soul begin
 			if pc.is_bot() then
 				return
 			end
+
+			-- A new day (or a higher bracket) on the first kill of it.
+			dragon_soul.sync()
 
 			-- Only a monster at most 15 levels under the character, or any
 			-- higher (operator, 27 September 2026).
@@ -144,6 +342,7 @@ quest dragon_soul begin
 			end
 		end
 		when 30270.pick with game.get_event_flag("m2_alchemy_off") == 0 begin
+			dragon_soul.sync()
 			local eye_left = pc.getf("dragon_soul", "eye_left")
 			if eye_left <= 0 then
 				return
@@ -154,55 +353,65 @@ quest dragon_soul begin
 				pc.remove_item(30270, 10)
 				pc.give_item2(50255)
 				if 1 == eye_left then
-					notice_multiline("Moc Smoczego Oka na dziœ siê wyczerpa³a. Jutro odbierz j¹ ponownie u Alchemika.", notice)
+					notice_multiline("Moc Smoczego Oka na dziœ siê wyczerpa³a. Odnowi siê sama o pó³nocy.", notice)
 					set_state(state_closed_season)
 				end
 			end
 		end
 		when 20001.chat.gameforge.dragon_soul._1120_npcChat with game.get_event_flag("m2_alchemy_off") == 0 begin
 			say_title(mob_name(20001))
-			local today = math.floor(get_global_time() / 86400)
-			if today == pc.getf("dragon_soul", "eye_timestamp") then
-				say(gameforge.dragon_soul._1130_say)
+			if dragon_soul.renew() then
+				say((string.gsub(gameforge.dragon_soul._1140_say, "10 ", pc.getf("dragon_soul", "eye_left") .. " ")))
 			else
-				local per_day = game.get_event_flag("ds_cor_day")
-				if per_day < 1 or per_day > 20 then
-					per_day = 5
-				end
-				say((string.gsub(gameforge.dragon_soul._1140_say, "10 ", per_day .. " ")))
-				pc.setf("dragon_soul", "eye_timestamp", today)
-				pc.setf("dragon_soul", "eye_left", per_day)
+				dragon_soul.top_up()
+				say(gameforge.dragon_soul._1130_say)
 			end
 		end
 	end
 	state state_closed_season begin
+		when login with game.get_event_flag("m2_alchemy_off") == 0 begin
+			dragon_soul.sync(true)
+		end
+		when levelup with game.get_event_flag("m2_alchemy_off") == 0 begin
+			dragon_soul.sync(true)
+		end
 		when letter with game.get_event_flag("m2_alchemy_off") == 0 begin
 			send_letter(gameforge.dragon_soul._1150_sendLetter)
 		end
 		when info or button with game.get_event_flag("m2_alchemy_off") == 0 begin
-			say(gameforge.dragon_soul._1160_say)
-			local today = math.floor(get_global_time() / 86400)
-			if today == pc.getf("dragon_soul", "eye_timestamp") then
-				say(gameforge.dragon_soul._1170_say)
-			else
-				say(gameforge.dragon_soul._1180_say)
+			if dragon_soul.is_new_day() then
+				say(string.format("Nadszed³ nowy dzieñ. Moc Smoczego Oka mo¿e zostaæ[ENTER]odnowiona: dziœ %d Cor Draconis z od³amków.", dragon_soul.per_day()))
+				if select("Odnów Moc Smoczego Oka", "PóŸniej") == 1 then
+					dragon_soul.sync(true)
+					say(string.format(gameforge.dragon_soul._1100_say, pc.getf("dragon_soul", "eye_left")))
+				end
+				return
 			end
+			if dragon_soul.sync(true) then
+				say(string.format(gameforge.dragon_soul._1100_say, pc.getf("dragon_soul", "eye_left")))
+				return
+			end
+			say(gameforge.dragon_soul._1160_say)
+			say("Moc Smoczego Oka odnowi siê sama o pó³nocy[ENTER](czasu polskiego). Nie musisz iœæ do alchemika.")
+		end
+		-- A new day (or a higher bracket) on the first kill of it, so the shards drop again.
+		when kill with game.get_event_flag("m2_alchemy_off") == 0 and not pc.is_bot() begin
+			if npc.is_pc() then
+				return
+			end
+			dragon_soul.sync(true)
 		end
 
 		when 20001.chat.gameforge.dragon_soul._1120_npcChat with game.get_event_flag("m2_alchemy_off") == 0 begin
 			say_title(mob_name(20001))
-			local today = math.floor(get_global_time() / 86400)
-			if today == pc.getf("dragon_soul", "eye_timestamp") then
-				say(gameforge.dragon_soul._1130_say)
-			else
-				local per_day = game.get_event_flag("ds_cor_day")
-				if per_day < 1 or per_day > 20 then
-					per_day = 5
-				end
-				say((string.gsub(gameforge.dragon_soul._1140_say, "10 ", per_day .. " ")))
-				pc.setf("dragon_soul", "eye_timestamp", today)
-				pc.setf("dragon_soul", "eye_left", per_day)
+			if dragon_soul.renew() then
+				say((string.gsub(gameforge.dragon_soul._1140_say, "10 ", pc.getf("dragon_soul", "eye_left") .. " ")))
 				set_state(state_farming)
+			elseif dragon_soul.top_up() > 0 then
+				say(string.format(gameforge.dragon_soul._1100_say, pc.getf("dragon_soul", "eye_left")))
+				set_state(state_farming)
+			else
+				say(gameforge.dragon_soul._1130_say)
 			end
 		end
 	end

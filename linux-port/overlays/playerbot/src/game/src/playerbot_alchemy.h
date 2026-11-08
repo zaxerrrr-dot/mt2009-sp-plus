@@ -6,8 +6,10 @@
 // Every bot of 30 and more does the Alchemist's daily errand the players do
 // (dragon_soul.quest, state_farming): a monster it kills drops a Dragon Stone
 // Shard one time in ten (drop_gamble_with_flag("ds_drop"), 10% unless the
-// flag says otherwise), ten shards are a Cor Draconis, five Cors a day
-// unless the flag ds_cor_day says otherwise. The
+// flag says otherwise), ten shards are a Cor Draconis, so many Cors a day
+// as the character's level gives (MT2009_PLUS_DS_COR_LEVEL_V1, the players'
+// table of dragon_soul.quest; ds_cor_level_off 1: the flat ds_cor_day), the
+// day being the Polish calendar day. The
 // quest skips bots (pc.is_bot), so the pass counts the shards itself instead
 // of filling a bag with them.
 //
@@ -38,7 +40,7 @@ namespace
 	const int PLAYERBOT_ALCHEMY_MIN_LEVEL = 30;
 	const DWORD PLAYERBOT_DS_SHARD_VNUM = 30270;
 	const int PLAYERBOT_DS_SHARDS_PER_COR = 10;
-	// Cors a day: the players' event flag ds_cor_day (dragon_soul.quest, the
+	// Cors a day with ds_cor_level_off 1: the players' event flag ds_cor_day (dragon_soul.quest, the
 	// admin panel's alchemy page; 1-20), this when it is unset or out of range.
 	const int PLAYERBOT_DS_CORS_PER_DAY = 5;
 	const DWORD PLAYERBOT_COR_ROUGH_VNUM = 50255;
@@ -93,6 +95,10 @@ namespace
 	const char* PLAYERBOT_DS_SHARDS_FLAG = "playerbot.ds_shards";
 	const char* PLAYERBOT_DS_DAY_FLAG = "playerbot.ds_day";
 	const char* PLAYERBOT_DS_LEFT_FLAG = "playerbot.ds_left";
+	// MT2009_PLUS_DS_COR_LEVEL_V1: ds_day holds the Warsaw day once ds_tz is 1 (before: the UTC day,
+	// get_global_time() / 86400); ds_grant is what the day granted (a higher bracket tops up the difference).
+	const char* PLAYERBOT_DS_TZ_FLAG = "playerbot.ds_tz";
+	const char* PLAYERBOT_DS_GRANT_FLAG = "playerbot.ds_grant";
 
 	// MT2009_PLUS_BOT_DS_YOHARA800_V1 - the bulk alchemists (the owner, 27 October 2026: "Daj im rowniez cor
 	// draconis legendarne 400 sztuk - naucz je otwierac legendarne cory ... Niech z tych 400 sztuk zrobia mityczna
@@ -248,11 +254,104 @@ namespace
 		return quest::CQuestManager::instance().GetEventFlag("m2_alchemy_off") != 0;
 	}
 
-	// The players' daily Cor count (dragon_soul.quest reads the same flag).
-	int GetPlayerBotDragonCorsPerDay()
+	// MT2009_PLUS_DS_COR_LEVEL_V1 (the owner, 8 November 2026): the players' daily Cor count by level, the table
+	// of dragon_soul.quest (dragon_soul.per_day) - lower bound in, upper bound out: 30-44 10, 45-54 15, 55-74 20,
+	// 75-94 25, 95-109 30, 110-120 35; a Champion (120 and a Champion level of 1 or more) 1-9 45, 10-19 60,
+	// 20-30 80. The event flag ds_cor_level_off 1: the flat ds_cor_day (1-20, else 5) for everybody, as before.
+	int GetPlayerBotDragonCorsPerDay(LPCHARACTER ch)
 	{
-		const int n = quest::CQuestManager::instance().GetEventFlag("ds_cor_day");
-		return (n >= 1 && n <= 20) ? n : PLAYERBOT_DS_CORS_PER_DAY;
+		if (quest::CQuestManager::instance().GetEventFlag("ds_cor_level_off") != 0 || !ch)
+		{
+			const int n = quest::CQuestManager::instance().GetEventFlag("ds_cor_day");
+			return (n >= 1 && n <= 20) ? n : PLAYERBOT_DS_CORS_PER_DAY;
+		}
+		const int lv = (int)ch->GetLevel();
+		if (lv >= 120)
+		{
+			const int c = (int)ch->GetConquerorLevel();
+			if (c >= 20)
+				return 80;
+			if (c >= 10)
+				return 60;
+			if (c >= 1)
+				return 45;
+			return 35;
+		}
+		if (lv >= 110)
+			return 35;
+		if (lv >= 95)
+			return 30;
+		if (lv >= 75)
+			return 25;
+		if (lv >= 55)
+			return 20;
+		if (lv >= 45)
+			return 15;
+		return 10;
+	}
+
+	// MT2009_PLUS_DS_COR_LEVEL_V1: the day of Polish time (Europe/Warsaw: CEST from the last Sunday of March
+	// 01:00 UTC to the last Sunday of October 01:00 UTC, CET otherwise) - the players' dragon_soul.today() and
+	// the same rule as GetPlayerBotMountGateWarsawDay (playerbot_mount_gate.h, included later in the TU).
+	time_t PlayerBotDragonLastSunday(int year, int monthAfter0)
+	{
+		struct tm a;
+		memset(&a, 0, sizeof(a));
+		a.tm_year = year - 1900;
+		a.tm_mon = monthAfter0;
+		a.tm_mday = 1;
+		const time_t last = timegm(&a) - 86400;
+		struct tm b;
+		gmtime_r(&last, &b);
+		return last - (time_t)b.tm_wday * 86400;
+	}
+
+	int GetPlayerBotDragonWarsawDay()
+	{
+		// Every bot's kill asks: computed once a minute.
+		static time_t s_tAt = 0;
+		static int s_iDay = 0;
+		const time_t t = (time_t)get_global_time();
+		if (s_tAt != 0 && t >= s_tAt && t - s_tAt < 60 && (t + 7200) / 86400 == (s_tAt + 7200) / 86400
+				&& (t + 3600) / 86400 == (s_tAt + 3600) / 86400)
+			return s_iDay;
+		struct tm g;
+		gmtime_r(&t, &g);
+		const int y = g.tm_year + 1900;
+		const time_t from = PlayerBotDragonLastSunday(y, 3) + 3600;
+		const time_t to = PlayerBotDragonLastSunday(y, 10) + 3600;
+		const time_t w = t + ((t >= from && t < to) ? 7200 : 3600);
+		s_tAt = t;
+		s_iDay = (int)(w / 86400);
+		return s_iDay;
+	}
+
+	// The bot's daily renewal and top-up, the players' dragon_soul.sync: a new Warsaw day grants the level's
+	// count; a stamp of the old kind (no ds_tz: the UTC day) holds until its UTC day is over, so the switch
+	// gives no second grant and loses no day; a higher bracket the same day adds the difference, never less.
+	void SyncPlayerBotDragonCorDay(LPCHARACTER ch)
+	{
+		const int stamp = ch->GetQuestFlag(PLAYERBOT_DS_DAY_FLAG);
+		const bool warsaw = ch->GetQuestFlag(PLAYERBOT_DS_TZ_FLAG) != 0;
+		const int today = GetPlayerBotDragonWarsawDay();
+		const bool newDay = warsaw ? stamp != today : stamp != (int)(get_global_time() / 86400);
+		const int n = GetPlayerBotDragonCorsPerDay(ch);
+		if (newDay)
+		{
+			ch->SetQuestFlag(PLAYERBOT_DS_DAY_FLAG, today);
+			ch->SetQuestFlag(PLAYERBOT_DS_TZ_FLAG, 1);
+			ch->SetQuestFlag(PLAYERBOT_DS_GRANT_FLAG, n);
+			ch->SetQuestFlag(PLAYERBOT_DS_LEFT_FLAG, n);
+			return;
+		}
+		if (!warsaw)
+			return;
+		const int g = ch->GetQuestFlag(PLAYERBOT_DS_GRANT_FLAG);
+		if (n > g)
+		{
+			ch->SetQuestFlag(PLAYERBOT_DS_GRANT_FLAG, n);
+			ch->SetQuestFlag(PLAYERBOT_DS_LEFT_FLAG, ch->GetQuestFlag(PLAYERBOT_DS_LEFT_FLAG) + n - g);
+		}
 	}
 
 	// The share scaled by the panel's ALCHEMY will (playerbot_config.h; 100 =
@@ -493,12 +592,7 @@ namespace
 		// levels under the killer, or any higher (operator, 27 September 2026).
 		if (!victim || (int)victim->GetLevel() < (int)ch->GetLevel() - 15)
 			return;
-		const int today = (int)(get_global_time() / 86400);
-		if (ch->GetQuestFlag(PLAYERBOT_DS_DAY_FLAG) != today)
-		{
-			ch->SetQuestFlag(PLAYERBOT_DS_DAY_FLAG, today);
-			ch->SetQuestFlag(PLAYERBOT_DS_LEFT_FLAG, GetPlayerBotDragonCorsPerDay());
-		}
+		SyncPlayerBotDragonCorDay(ch); // MT2009_PLUS_DS_COR_LEVEL_V1
 		const int left = ch->GetQuestFlag(PLAYERBOT_DS_LEFT_FLAG);
 		if (left <= 0)
 			return;

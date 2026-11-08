@@ -837,6 +837,9 @@ quest web_admin begin
 			-- and m2_sash_off (the inverse). arg2 = "ds_drop,ds_cor_day"
 			-- (the Alchemist's shard chance 1-100 and Cors a day 1-20,
 			-- dragon_soul.quest), empty from an older panel.
+			-- MT2009_PLUS_DS_COR_LEVEL_V1: arg2 may carry a third number,
+			-- ds_cor_level_off (1 = the flat ds_cor_day instead of the level
+			-- table, 0 = the table); a panel sending two leaves it as it is.
 			local rrows = wa_query("SELECT id, arg1, arg2 FROM player.web_admin_queue WHERE status='pending' AND cmd='RARE' ORDER BY id ASC LIMIT 3")
 			if type(rrows) == "table" then
 				local ri
@@ -862,9 +865,13 @@ quest web_admin begin
 								game.set_event_flag("m2_alchemy_off", 1 - ralch)
 								game.set_event_flag("m2_sash_off", 1 - rsash)
 								if type(rr.arg2) == "string" then
-									local _, _, d1, d2 = string.find(rr.arg2, "^(%d+),(%d+)$")
+									local _, _, d1, d2, d3 = string.find(rr.arg2, "^(%d+),(%d+),?(%d*)$")
 									local rdrop = tonumber(d1)
 									local rday = tonumber(d2)
+									local rlvoff = tonumber(d3)
+									if rlvoff ~= nil and (rlvoff == 0 or rlvoff == 1) then
+										game.set_event_flag("ds_cor_level_off", rlvoff)
+									end
 									if rdrop ~= nil and rdrop >= 1 and rdrop <= 100 then
 										game.set_event_flag("ds_drop", rdrop)
 									end
