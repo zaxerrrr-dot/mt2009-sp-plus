@@ -542,6 +542,12 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_PVPFAN_V1: "PVP Fan" - the panel's bot wars (/pvpfan): the dedicated characters' logins, loadout and fight, the
 // war's phases and results, the engine's attack and death hooks (server-patches/pvpfan) - after every fight helper it uses
 #include "playerbot_pvpfan.h"
+// MT2009_PLUS_BOT_LADA_V1: the bots' counters with no limit, fed from anywhere - the interval pass (merge, take back,
+// list past the pages through the db core's own requests) and the glut's price tiers - after the offline shop, the
+// market, the extra inventory and the reprice it uses
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+#include "playerbot_lada.h"
+#endif
 
 namespace
 {
@@ -8130,6 +8136,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// which subsystem happens to win the tick - that dependency is why stalls
 		// were left standing with their sign over the keeper's head.
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		ManagePlayerBotLada(ch, state, dwNow);	// MT2009_PLUS_BOT_LADA_V1: never claims the tick
 		if (ManagePlayerBotOfflineService(ch, state, dwNow))
 			continue;
 #endif

@@ -58,7 +58,16 @@ inline std::map<uint32_t, uint64_t> soldUnitsByVnum;
 // ikarus_shop_manager.cpp). Every core recorded it, and a bot that changed
 // channel drained the same sale a second time where it arrived - twice in the
 // log and in the panel's gear history.
+// MT2009_PLUS_BOT_LADA_V1 (census): the sales of the counters whose owner is on this core, since the last census.
+inline uint64_t ladaSoldLines = 0, ladaSoldUnits = 0, ladaSoldParts = 0;
+inline long long ladaSoldYang = 0;
 inline void NoteSold(uint32_t ownerid, uint32_t item, uint32_t vnum, uint32_t count, long long price, bool partial = false) {
+    if (ownerid) {
+        ++ladaSoldLines;
+        ladaSoldUnits += count;
+        ladaSoldYang += price;
+        if (partial) ++ladaSoldParts;
+    }
     if (vnum && (soldLinesByVnum.size() < 4096 || soldLinesByVnum.count(vnum)))
         ++soldLinesByVnum[vnum];
     if (vnum && count && (soldUnitsByVnum.size() < 4096 || soldUnitsByVnum.count(vnum)))   // MT2009_PLUS_BOT_MARKET_CLEARING_V1
