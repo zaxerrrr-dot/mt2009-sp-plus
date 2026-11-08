@@ -343,6 +343,40 @@ namespace
 	}
 
 	// The per-bot pass (once a minute a bot, out of a fight) and the census (the first bot past its ten minutes).
+	// MT2009_PLUS_BOT_TELEPORT_RING_KEEP_V1 (the owner, 8 November 2026: chests of skill instructions bought ten in a row
+	// bring a spam of Pierscienie Teleportacji - "jesli potrzebuja, to niech zostawia maksymalnie 4 sztuki"): the ring is
+	// not consumed (the frontier recall, PLAYERBOT_TELEPORT_RING_VNUM, has its own 30-minute clock), so a bot keeps ONE
+	// (m2_bot_teleport_ring_keep N, 1-4) and destroys the rest - the ring cannot be sold to a merchant (ANTI_SELL).
+	// m2_bot_teleport_ring_keep_off 1: as before.
+	unsigned int s_uPlayerBotTeleportRingsRemoved = 0;
+
+	void TrimPlayerBotTeleportRings(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (quest::CQuestManager::instance().GetEventFlag("m2_bot_teleport_ring_keep_off") == 1)
+			return;
+		int keep = (int)quest::CQuestManager::instance().GetEventFlag("m2_bot_teleport_ring_keep");
+		keep = keep <= 0 ? 1 : MIN(keep, 4);
+		int seen = 0, removed = 0;
+		for (int cell = 0; cell < ch->GetInventoryMaxCount(); ++cell)
+		{
+			LPITEM ring = ch->GetInventoryItem(cell);
+			if (!ring || ring->GetCell() != cell || ring->GetVnum() != PLAYERBOT_TELEPORT_RING_VNUM || ring->IsEquipped() ||
+					ring->isLocked() || ring->IsExchanging())
+				continue;
+			if (++seen <= keep)
+				continue;
+			ITEM_MANAGER::instance().RemoveItem(ring, "PLAYERBOT_RING_SURPLUS");
+			++removed;
+		}
+		if (removed > 0)
+		{
+			s_uPlayerBotTeleportRingsRemoved += removed;
+			PlayerBotLogThrottled("starter_ring_trim", dwNow,
+					"PLAYERBOT_STARTER: teleport rings removed pid=%u name=%s removed=%d kept=%d total=%u",
+					ch->GetPlayerID(), ch->GetName(), removed, keep, s_uPlayerBotTeleportRingsRemoved);
+		}
+	}
+
 	bool ManagePlayerBotStarterItems(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead())
@@ -363,6 +397,7 @@ namespace
 		next = dwNow + PLAYERBOT_STARTER_PASS_MS + (PlayerBotNavHash(ch->GetPlayerID()) % 15000U);
 		if (state.bCurrentAction == BOT_ACTION_FIGHT || IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return false;
+		TrimPlayerBotTeleportRings(ch, dwNow);
 		return FeedPlayerBotStarterAppaloosa(ch, dwNow);
 	}
 }
