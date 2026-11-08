@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}ItemShop – rotacja zestawów · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_ISHOP_ROTACJA_V1: dzienna rotacja skrzyń zestawów w ItemShopie V3 graczy (ishop_rotation.py) #}
+<style>
+.rot-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.rot-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.rot-form input[type=number]{width:7em;padding:7px 8px}
+.rot-form input[type=text],.rot-form input[type=date],.rot-form select{padding:7px 8px}
+.rot-note{font-size:12px;color:var(--muted)}
+.rot-day td{vertical-align:top;padding:8px 6px}
+.rot-today{background:color-mix(in srgb,var(--accent,#c90) 12%,transparent)}
+.rot-chest{display:block;margin:0 0 6px}
+.rot-pin{font-size:11px;padding:1px 6px;border-radius:8px;border:1px solid var(--edge);margin-left:6px}
+.rot-pieces{font-size:12px;color:var(--muted)}
+.rot-pieces img{width:20px;height:20px;vertical-align:middle;margin-right:2px}
+</style>
+<a class="back" href="{{ url_for('manage') }}">← Ustawienia</a>
+<p class="eyebrow">USTAWIENIA · GOSPODARKA</p>
+<h1>🎁 ItemShop – rotacja zestawów</h1>
+{% if not ready %}
+<p>Brak tabel rotacji w bazie (<code>itemshop3.rotation_pins</code>, <code>rotation_pieces</code>, <code>set_members</code>). Powstają przy starcie serwera (playerbot-migrate, <code>itemshop3_schema.sql</code>) – uruchom serwer po aktualizacji.</p>
+{% else %}
+<p class="muted">Gracze w ItemShopie V3 (strona i okno w grze) widzą skrzynie zestawów kostiumów z bonusem tylko w zakładce <strong>„Dzisiejsze oferty”</strong>: każdego dnia ({{ tz_name }}, zmiana o północy) tylko wybrane skrzynie, a pod każdą – osobno – przedmioty jej zestawu, które skrzynia może dać (kostium, fryzury, pety, wierzchowiec, nakładki…; o przynależności decyduje definicja zestawu serwera, linie <code>#Z</code> w <code>costume_sets.txt</code>). Zakup skrzyni spoza dzisiejszej rotacji jest odrzucany po stronie serwera. <strong>Boty nie są objęte rotacją</strong> – kupują w grze z <code>itemshop3.shop</code> wszystkie skrzynie jak dotąd.</p>
+
+<section class="cards compact">
+<article><span>Rotacja</span><strong>{{ 'Włączona' if settings.enabled else 'Wyłączona' }}</strong><small>{{ 'tylko „Dzisiejsze oferty”' if settings.enabled else 'wszystkie skrzynie w „Sety Bonusowe”' }}</small></article>
+<article><span>Skrzyń dziennie</span><strong>{{ settings.per_day }}</strong><small>z {{ n_chests }} skrzyń zestawów – każda wraca co ok. {{ cycle_days }} dni</small></article>
+<article><span>Przedmiot zestawu</span><strong>{{ settings.price }} SM</strong><small>na {{ settings.days }} dni (czas rzeczywisty od zakupu)</small></article>
+<article><span>Dziś ({{ today.strftime('%d.%m.%Y') }})</span><strong>{{ plan[0].chests|length }} skrz.</strong><small>{% for c in plan[0].chests %}{{ c.name }}{% if not loop.last %}, {% endif %}{% endfor %}</small></article>
+</section>
+
+<section class="panel" id="ustawienia">
+<h2>Ustawienia</h2>
+<form method="post" class="rot-form">
+<input type="hidden" name="rot_csrf" value="{{ rot_csrf }}"><input type="hidden" name="action" value="config">
+<label><span><input type="checkbox" name="enabled" value="1" {% if settings.enabled %}checked{% endif %}> Rotacja włączona</span></label>
+<label>Skrzyń dziennie<input type="number" name="per_day" min="{{ limits.per_day[0] }}" max="{{ [limits.per_day[1], n_chests]|min }}" value="{{ settings.per_day }}"></label>
+<label>Cena przedmiotu zestawu (SM)<input type="number" name="price" min="{{ limits.price[0] }}" max="{{ limits.price[1] }}" value="{{ settings.price }}"></label>
+<label>Czas przedmiotu (dni)<input type="number" name="days" min="{{ limits.days[0] }}" max="{{ limits.days[1] }}" value="{{ settings.days }}"></label>
+<label>Ziarno losowania<input type="text" name="seed" maxlength="32" value="{{ settings.seed }}"></label>
+<button>Zapisz</button>
+</form>
+<p class="rot-note">Wyłączona = jak dawniej: wszystkie skrzynie w „Sety Bonusowe”, bez zakładki „Dzisiejsze oferty” i bez osobnych przedmiotów zestawów. Cena skrzyni się nie zmienia (jej cena z katalogu). Zmiana liczby skrzyń dziennie albo ziarna układa nowy harmonogram od dziś. Kolejność: w każdym cyklu wszystkie {{ n_chests }} skrzyń po razie, w kolejności losowanej od nowa na każdy cykl (powtarzalnie – to samo ziarno daje ten sam plan).</p>
+</section>
+
+<section class="panel" id="podglad">
+<h2>Podgląd rotacji – {{ days }} dni</h2>
+<p class="rot-note">Pokaż: {% for n in (7, 14, 30, 60) %}<a href="{{ url_for('manage_ishop_rotation', dni=n) }}#podglad">{{ n }} dni</a>{% if not loop.last %} · {% endif %}{% endfor %}. Pod skrzynią: przedmioty sprzedawane osobno ({{ settings.price }} SM / {{ settings.days }} dni); gracz widzi tylko te, które jego postać może założyć.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Dzień</th><th>Skrzynie i przedmioty zestawu</th></tr></thead>
+<tbody>
+{% for d in plan %}
+<tr class="rot-day {% if loop.first %}rot-today{% endif %}">
+<td><strong>{{ d.day.strftime('%d.%m') }}</strong><br><span class="rot-note">{{ ['pon', 'wt', 'śr', 'czw', 'pt', 'sob', 'niedz'][d.day.weekday()] }}{% if loop.first %} · dziś{% endif %}</span></td>
+<td>
+{% for c in d.chests %}
+<span class="rot-chest"><strong>{{ c.name }}</strong> – {{ c.price }} SM <span class="rot-note">(#{{ c.id }}, zestaw {{ c.set_id }})</span>{% if c.id in d.pinned %}<span class="rot-pin">📌 przypięta</span>{% endif %}
+{% set ps = pieces.get(c.id, []) %}
+<br><span class="rot-pieces">{{ ps|length }} przedm.: {% for p in ps %}{% set u = icon(p.vnum) %}{% if u %}<img src="{{ u }}" alt="">{% endif %}{{ p.name }}{% if not loop.last %}, {% endif %}{% endfor %}</span></span>
+{% else %}<span class="rot-note">brak skrzyń</span>{% endfor %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table></div>
+</section>
+
+<section class="panel" id="przypiecia">
+<h2>📌 Przypięcia</h2>
+<p class="rot-note">Przypięta skrzynia jest w danym dniu na pewno (pierwsza); resztę miejsc uzupełnia rotacja. Przypięcia nie przesuwają harmonogramu kolejnych dni.</p>
+<form method="post" class="rot-form">
+<input type="hidden" name="rot_csrf" value="{{ rot_csrf }}"><input type="hidden" name="action" value="pin">
+<label>Dzień<input type="date" name="day" min="{{ today.isoformat() }}" value="{{ today.isoformat() }}" required></label>
+<label>Skrzynia<select name="chest_id" required>{% for cid, c in by_id.items() %}<option value="{{ cid }}">{{ c.name }} (#{{ cid }})</option>{% endfor %}</select></label>
+<button>Przypnij</button>
+</form>
+{% if pins %}
+<div class="table-wrap"><table>
+<thead><tr><th>Dzień</th><th>Skrzynia</th><th></th></tr></thead>
+<tbody>
+{% for p in pins %}
+<tr><td>{{ p.day.strftime('%d.%m.%Y') }}</td><td>{{ by_id[p.chest_id].name if p.chest_id in by_id else '#' ~ p.chest_id }}</td>
+<td><form method="post"><input type="hidden" name="rot_csrf" value="{{ rot_csrf }}"><input type="hidden" name="action" value="unpin"><input type="hidden" name="day" value="{{ p.day.isoformat() }}"><input type="hidden" name="chest_id" value="{{ p.chest_id }}"><button class="secondary">Usuń</button></form></td></tr>
+{% endfor %}
+</tbody>
+</table></div>
+{% else %}<p class="rot-note">Brak przypięć od dziś.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

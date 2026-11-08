@@ -970,6 +970,15 @@ class Shop {
 
 	public function getItemShop($item, $column=NULL)
 	{
+		// MT2009_PLUS_ISHOP_ROTACJA_V1: a set piece of "Dzisiejsze oferty" (itemshop3.rotation_pieces) - available only
+		// while its chest is one of today's
+		if((int)$item >= self::ROT_PIECE_ID_BASE)
+		{
+			$row = $this->rotationPiece((int)$item);
+			if($column==NULL || !$row)
+				return $row;
+			return isset($row[$column]) ? $row[$column] : null;
+		}
 		if($column==NULL)
 			return $this->db->get("shop", "*", ["id" => $item]);
 		
@@ -989,6 +998,8 @@ class Shop {
 	}
 
 	public function checkItemShop($id) {
+		if((int)$id >= self::ROT_PIECE_ID_BASE)	// MT2009_PLUS_ISHOP_ROTACJA_V1
+			return $this->db->has("rotation_pieces", ["id" => (int)$id]);
 		if($this->db->has("shop", [ "id" => $id ]))
 			return true;
 		return false;
@@ -1137,6 +1148,8 @@ class Shop {
 		{
 			switch($this->categoryKind($id))
 			{
+				case 'today':	// MT2009_PLUS_ISHOP_ROTACJA_V1
+					return count($this->rotationTodayItems());
 				case 'items':
 				case 'sets':	// the chests are the lines of category 19
 					return isset($counts[(int)$id]) ? $counts[(int)$id] : 0;
@@ -1158,6 +1171,8 @@ class Shop {
 	public function getItemShopItems($cat, $specific_category, $searchString=null) {
 		if($searchString)
 			return $this->searchItems($searchString, false);
+		if($specific_category && $this->categoryKind($cat)=='today')	// MT2009_PLUS_ISHOP_ROTACJA_V1
+			return $this->rotationTodayItems();
 		if($specific_category)
 			return $this->db->select("shop", "*", $this->wearWhere($this->categoryWhere($cat), ["ORDER" => $this->listOrder($cat)]));
 		return $this->db->select("shop", "*", $this->wearWhere(["category[>]" => 0, "auction" => 0], ["ORDER" => $this->listOrder(null)]));
@@ -1910,15 +1925,22 @@ class Shop {
 		}
 		return isset($columns[$column]);
 	}
-	private function wearWhere($and, $extra = []) {
+	// MT2009_PLUS_ISHOP_ROTACJA_V1: every list of the players' shop (categories, groups, counts, search, "Popularne") also
+	// leaves the costume set chests out while the rotation is on - they are listed only in "Dzisiejsze oferty", on their
+	// day ($rotation = false: the wear filter alone, for that list).
+	private function wearWhere($and, $extra = [], $rotation = true) {
 		foreach($this->wear as $name)
 			$and[$name] = 0;
+		if($rotation && $this->rotationEnabled())
+			$and["OR #mt_rotacja"] = ["chest" => 0, "set_id" => 0];
 		return array_merge(["AND" => $and], $extra);
 	}
 	private function wearSql($alias) {
 		$sql = '';
 		foreach($this->wear as $name)
 			$sql .= ' AND '.$alias.'.'.$name.' = 0';
+		if($this->rotationEnabled())
+			$sql .= ' AND NOT ('.$alias.'.chest > 0 AND '.$alias.'.set_id > 0)';
 		return $sql;
 	}
 	public function isWearable($item) {
@@ -2012,5 +2034,211 @@ class Shop {
 			if(in_array($set['id'], $ids))
 				$sets[] = $set;
 		return $sets;
+	}
+
+	// MT2009_PLUS_ISHOP_ROTACJA_V1 (the owner, 8 November 2026): the costume set chests rotate. A player's shop shows on a
+	// day (Europe/Warsaw - the change at midnight) only rot_per_day of the set chests (itemshop3.chests with a set), in
+	// "Dzisiejsze oferty" (category kind 'today'), each followed by the pieces of its set the chest can give, sold on
+	// their own for rot_price SM / rot_days days (itemshop3.rotation_pieces); every other list leaves the chests out
+	// (wearWhere / wearSql) and a purchase of one that is not today's is refused (rotationBlock, tile.php
+	// mt2009_buy_block - buy.php and buy_chest.php). The bots read itemshop3.shop in the game (playerbot_itemshop.h) and
+	// keep buying every chest: nothing here is on their path.
+	// The schedule: the set chests by id, shuffled once a cycle (md5 of "seed|cycle|i" -> Fisher-Yates); day d (days
+	// since 2026-01-01) takes the slots d*k .. d*k+k-1 of the cycles laid end to end, so every chest comes once a cycle
+	// (45 chests, 2 a day: every 22-23 days). At the seam of two cycles a chest of the last days of the old one is moved
+	// back from the head of the new one (no chest twice a day, none on two days in a row). The admin's pins for a day (itemshop3.rotation_pins) come
+	// first, the rotation fills the rest. seban-panel/ishop_rotation.py is the same algorithm (its preview).
+	const ROT_PIECE_ID_BASE = 800000000;
+	const ROT_EPOCH = '2026-01-01';
+	const ROT_TZ = 'Europe/Warsaw';
+	const ROT_MAX_PER_DAY = 10;
+	private $rotSettings = null, $rotChests = null, $rotOrders = [], $rotToday = null, $rotTodayItems = null;
+	public function rotationSettings() {
+		if($this->rotSettings === null)
+		{
+			$s = ['enabled' => 1, 'per_day' => 2, 'price' => 79, 'days' => 7, 'seed' => 'mt2009plus'];
+			$rows = $this->db->select("settings", ["name", "value"], ["name" => ['rot_enabled', 'rot_per_day', 'rot_price', 'rot_days', 'rot_seed']]);
+			foreach(is_array($rows) ? $rows : [] as $row)
+			{
+				$key = substr($row['name'], 4);
+				$s[$key] = $key == 'seed' ? (string)$row['value'] : (int)$row['value'];
+			}
+			$s['enabled'] = $s['enabled'] ? 1 : 0;
+			$s['per_day'] = max(1, min(self::ROT_MAX_PER_DAY, (int)$s['per_day']));
+			$this->rotSettings = $s;
+		}
+		return $this->rotSettings;
+	}
+	public function rotationEnabled() {
+		$s = $this->rotationSettings();
+		return !empty($s['enabled']) && count($this->rotationChestIds()) > 0;
+	}
+	// the set chests (a chest of no set - the jewellery box - never rotates)
+	public function rotationChestIds() {
+		if($this->rotChests === null)
+		{
+			$this->rotChests = [];
+			$rows = $this->db->select("chests", ["id"], ["set_id[>]" => 0, "ORDER" => ["id" => "ASC"]]);
+			foreach(is_array($rows) ? $rows : [] as $row)
+				$this->rotChests[] = (int)$row['id'];
+		}
+		return $this->rotChests;
+	}
+	// the Europe/Warsaw date of now (or of a unix time) and its day number since ROT_EPOCH
+	public static function rotationDate($time = null) {
+		$d = new DateTime('@'.($time === null ? time() : (int)$time));
+		$d->setTimezone(new DateTimeZone(self::ROT_TZ));
+		return $d->format('Y-m-d');
+	}
+	public static function rotationDayIndex($date) {
+		$a = new DateTime(self::ROT_EPOCH.' 00:00:00', new DateTimeZone('UTC'));
+		$b = new DateTime($date.' 00:00:00', new DateTimeZone('UTC'));
+		return max(0, (int)floor(($b->getTimestamp() - $a->getTimestamp()) / 86400));
+	}
+	private static function rotationHash($text) {
+		return hexdec(substr(md5($text), 0, 8));
+	}
+	private static function rotationShuffle($ids, $seed, $cycle) {
+		for($i = count($ids) - 1; $i > 0; $i--)
+		{
+			$j = self::rotationHash($seed.'|'.$cycle.'|'.$i) % ($i + 1);
+			$t = $ids[$i];
+			$ids[$i] = $ids[$j];
+			$ids[$j] = $t;
+		}
+		return $ids;
+	}
+	private function rotationOrder($cycle) {
+		$ids = $this->rotationChestIds();
+		$n = count($ids);
+		$s = $this->rotationSettings();
+		$k = min($s['per_day'], $n);
+		for($c = count($this->rotOrders); $c <= $cycle; $c++)
+		{
+			$perm = self::rotationShuffle($ids, $s['seed'], $c);
+			if($c > 0)
+			{
+				// across the cycles' seam: the day both share and the day before / after it repeat no chest - the first
+				// head + k of this cycle take none of the last tail + k of the previous one (moved further back)
+				$tail = ($c * $n) % $k;
+				$head = ($k - $tail) % $k;
+				$m = min($n, $head + $k);
+				$avoid = array_slice($this->rotOrders[$c - 1], $n - min($n, $tail + $k));
+				for($i = 0; $i < $m; $i++)
+				{
+					if(!in_array($perm[$i], $avoid))
+						continue;
+					for($j = $m; $j < $n; $j++)
+						if(!in_array($perm[$j], $avoid))
+						{
+							$t = $perm[$i];
+							$perm[$i] = $perm[$j];
+							$perm[$j] = $t;
+							break;
+						}
+				}
+			}
+			$this->rotOrders[$c] = $perm;
+		}
+		return $this->rotOrders[$cycle];
+	}
+	// the chest ids of a date (Y-m-d): the pins, then the rotation's, rot_per_day of them (more when more are pinned)
+	public function rotationDay($date) {
+		$ids = $this->rotationChestIds();
+		$n = count($ids);
+		if(!$n)
+			return [];
+		$s = $this->rotationSettings();
+		$k = min($s['per_day'], $n);
+		$d = self::rotationDayIndex($date);
+		$picks = [];
+		for($j = 0; $j < $k; $j++)
+		{
+			$p = $d * $k + $j;
+			$order = $this->rotationOrder(intdiv($p, $n));
+			$id = $order[$p % $n];
+			if(!in_array($id, $picks))
+				$picks[] = $id;
+		}
+		$pins = [];
+		$rows = $this->db->select("rotation_pins", ["chest_id"], ["day" => $date, "ORDER" => ["date" => "ASC", "chest_id" => "ASC"]]);
+		foreach(is_array($rows) ? $rows : [] as $row)
+			if(in_array((int)$row['chest_id'], $ids) && !in_array((int)$row['chest_id'], $pins))
+				$pins[] = (int)$row['chest_id'];
+		$out = $pins;
+		foreach($picks as $id)
+			if(count($out) < max($k, count($pins)) && !in_array($id, $out))
+				$out[] = $id;
+		return $out;
+	}
+	public function rotationToday() {
+		if($this->rotToday === null)
+			$this->rotToday = $this->rotationEnabled() ? $this->rotationDay(self::rotationDate()) : [];
+		return $this->rotToday;
+	}
+	// seconds until the next change (the next Europe/Warsaw midnight)
+	public static function rotationSecondsLeft() {
+		$now = new DateTime('now', new DateTimeZone(self::ROT_TZ));
+		$next = new DateTime($now->format('Y-m-d').' 00:00:00', new DateTimeZone(self::ROT_TZ));
+		$next->modify('+1 day');
+		return max(60, $next->getTimestamp() - $now->getTimestamp());
+	}
+	// "Dzisiejsze oferty": each of today's chests (its line of itemshop3.shop), then its set pieces the character can wear
+	public function rotationTodayItems() {
+		if($this->rotTodayItems !== null)
+			return $this->rotTodayItems;
+		$this->rotTodayItems = [];
+		$ids = $this->rotationToday();
+		if(!count($ids))
+			return $this->rotTodayItems;
+		$chests = [];
+		$rows = $this->db->select("shop", "*", $this->wearWhere(["chest" => $ids, "set_id[>]" => 0, "auction" => 0], ["ORDER" => ["id" => "ASC"]], false));
+		foreach(is_array($rows) ? $rows : [] as $row)
+			if(!isset($chests[(int)$row['chest']]))
+				$chests[(int)$row['chest']] = $row;
+		$pieces = [];
+		$rows = $this->db->select("rotation_pieces", "*", $this->wearWhere(["rot_chest" => $ids], ["ORDER" => ["set_sort" => "ASC", "vnum" => "ASC"]], false));
+		foreach(is_array($rows) ? $rows : [] as $row)
+			$pieces[(int)$row['rot_chest']][] = $row;
+		$seen = [];
+		foreach($ids as $id)
+		{
+			if(isset($chests[$id]))
+				$this->rotTodayItems[] = $chests[$id];
+			foreach(isset($pieces[$id]) ? $pieces[$id] : [] as $row)
+				if(!isset($seen[(int)$row['id']]))
+				{
+					$seen[(int)$row['id']] = true;
+					$this->rotTodayItems[] = $row;
+				}
+		}
+		return $this->rotTodayItems;
+	}
+	// one piece line by its id: today's row when its chest is one of today's, else a row of it marked not available
+	public function rotationPiece($id) {
+		$today = $this->rotationToday();
+		$rows = $this->db->select("rotation_pieces", "*", ["id" => (int)$id, "ORDER" => ["rot_chest" => "ASC"]]);
+		if(!is_array($rows) || !count($rows))
+			return null;
+		foreach($rows as $row)
+			if(in_array((int)$row['rot_chest'], $today))
+				return $row;
+		$row = $rows[0];
+		$row['available'] = 0;
+		return $row;
+	}
+	// '' or why a player may not buy this line now (a set chest not of today, a set piece of no chest of today)
+	public function rotationBlock($item) {
+		global $lang_shop;
+		$text = isset($lang_shop['mt-rot-not-today']) ? $lang_shop['mt-rot-not-today'] : 'Ta oferta nie jest dziś dostępna.';
+		if(isset($item['source']) && $item['source'] == 'rotation' || (int)$item['id'] >= self::ROT_PIECE_ID_BASE)
+		{
+			if(!$this->rotationEnabled() || empty($item['available']) || !in_array((int)$item['rot_chest'], $this->rotationToday()))
+				return $text;
+			return '';
+		}
+		if(!empty($item['chest']) && !empty($item['set_id']) && $this->rotationEnabled() && !in_array((int)$item['chest'], $this->rotationToday()))
+			return $text;
+		return '';
 	}
 }
