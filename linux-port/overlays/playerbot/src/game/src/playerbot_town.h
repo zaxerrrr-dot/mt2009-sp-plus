@@ -4064,7 +4064,7 @@ namespace
 		// (playerbot_market_clearing.h) - half the sheet was what kept 77 thousand Rybia Osc at 200 thousand and up.
 		if (item && floor > 0)
 		{
-			const DWORD clearUnit = GetPlayerBotClearingUnit(item->GetVnum());
+			const DWORD clearUnit = GetPlayerBotClearingCapUnit(item->GetVnum());	// MT2009_PLUS_BOT_LADA_V1: none under tiers
 			if (clearUnit > 0)
 				floor = (DWORD)std::min<unsigned long long>((unsigned long long)floor,
 						(unsigned long long)clearUnit * (unsigned long long)std::max<DWORD>(1, item->GetCount()));
@@ -4933,7 +4933,7 @@ namespace
 		// clearing ask (playerbot_market_clearing.h) - the last word over the sheet, the index, the memory and the floors
 		// above: "zmniejszamy do momentu, az przedmioty beda znikac z rynku" (the owner, 6 November 2026).
 		{
-			const DWORD clearUnit = GetPlayerBotClearingUnit(item->GetVnum());
+			const DWORD clearUnit = GetPlayerBotClearingCapUnit(item->GetVnum());	// MT2009_PLUS_BOT_LADA_V1: none under tiers
 			if (clearUnit > 0 && unit > clearUnit && refine == 0)
 			{
 				const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(item->GetVnum());
@@ -6233,7 +6233,8 @@ namespace
 		if (!IsPlayerBotMarketIndexedVnum(item->GetVnum()))
 			return score;
 		const int state = GetPlayerBotMarketSupplyState(item->GetVnum());
-		if (state > 0)
+		// MT2009_PLUS_BOT_LADA_V1: a lada is the bot's storage - no "plenty" hold-back for its scan (the tiers price a glut)
+		if (state > 0 && !s_bPlayerBotLadaScan)
 		{
 			if (report)
 				++s_uPlayerBotMarketHeldBack;

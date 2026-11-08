@@ -177,10 +177,42 @@ namespace
 		return it == s_mapPlayerBotClear.end() ? 0 : it->second.clearUnit;
 	}
 
+	// MT2009_PLUS_BOT_LADA_V1 (tiers; the owner, 8 November 2026: "tylko gdy jest duzo przedmiotu i slabo sie sprzedaje,
+	// cena spada - i nie calego rynku: najtansze 10% o 5%, kolejne 10% o 3%, reszta zostaje"): while the bots' counters
+	// are "lady" (playerbot_lada.h, event flag m2_bot_lada_price_off not set) the clearing above no longer caps every ask
+	// of a glutted kind. Its detection (overstock and not disappearing) and its ask, stepping down while nothing sells and
+	// relaxing as the stock falls, stay; they price only the cheap tail of the kind's listings - the line ids of
+	// s_mapPlayerBotLadaTier (950 permille: the cheapest 10% of the kind's units on the stands, 970: the next 10%; ranked
+	// by the unit price, every stand of the shop channel, a person's lines counted, only bots' edited), which the lada's
+	// tier pass recomputes every few minutes. A tier line asks min(ordinary, clearing ask) x its permille, never under
+	// what the merchant pays (BotOfflineRepriceTarget); every other line asks what it would without the glut. When the
+	// cheap lines sell, the next ones are the tail and the stock that is left asks the ordinary price.
+	bool s_bPlayerBotLadaTiers = false;			// refreshed each second by ManagePlayerBotLadaCore
+	bool s_bPlayerBotLadaScan = false;			// the lada's bag scan: no "plenty" hold-back (ScorePlayerBotShopStock)
+	std::unordered_map<DWORD, WORD> s_mapPlayerBotLadaTier;	// line id -> permille (950 / 970)
+	unsigned int s_uPlayerBotLadaTierPriced = 0;	// lines priced by their tier since the last census
+
+	int GetPlayerBotLadaTierPermille(DWORD lineId)
+	{
+		if (!s_bPlayerBotLadaTiers || !lineId)
+			return 0;
+		std::unordered_map<DWORD, WORD>::const_iterator it = s_mapPlayerBotLadaTier.find(lineId);
+		return it == s_mapPlayerBotLadaTier.end() ? 0 : (int)it->second;
+	}
+
+	// The clearing ask that caps every ask and floor of a kind (GetPlayerBotShopAskingPriceRaw, GetPlayerBotListingFloor):
+	// none while the tiers price the glut instead.
+	DWORD GetPlayerBotClearingCapUnit(DWORD vnum)
+	{
+		return s_bPlayerBotLadaTiers ? 0 : GetPlayerBotClearingUnit(vnum);
+	}
+
 	// An offline line of a clearing kind that asks more than the clearing ask and a margin: what the reprice looks at
 	// first.
 	bool IsPlayerBotClearingOverpriced(DWORD vnum, DWORD count, long long totalYang)
 	{
+		if (s_bPlayerBotLadaTiers)	// MT2009_PLUS_BOT_LADA_V1: the tier pass edits the tail itself
+			return false;
 		const DWORD unit = GetPlayerBotClearingUnit(vnum);
 		if (unit == 0 || count == 0)
 			return false;

@@ -108,6 +108,36 @@ namespace {
         ++s_botOfflineBudgetGranted;
         return true;
     }
+    // MT2009_PLUS_BOT_LADA_V1 (remote take-back, playerbot_lada.h): a line taken home from wherever the keeper is, on
+    // any channel - the db core's own remove (SUBHEADER_GD_REMOVE_ITEM: it refuses a line a purchase holds locked, and
+    // only the core that asked puts the piece in the keeper's bag, or in the shop's safebox when the keeper is gone) -
+    // with the engine's own tests of RecvShopRemoveItemClientPacket but the distance and the board: the room in the
+    // bag, and never the last line (the engine closes a stand left empty). The lada sets the switch around its call of
+    // BotOfflineTakeOff / BotOfflineReclaim, so their bookkeeping is the visit's own.
+    bool s_bPlayerBotLadaRemote = false;
+    unsigned int s_uPlayerBotLadaRemoteRefused = 0;
+    bool IsPlayerBotLadaKindItem(LPITEM item);   // playerbot_lada.h: the goods the lada lists, merges and takes back
+    bool IsPlayerBotLadaOn();                    // playerbot_lada.h: m2_bot_lada_off not set
+    void NotePlayerBotLadaHeldOff(DWORD itemid, DWORD now);   // playerbot_lada.h
+    void BotOfflineSendRemove(LPCHARACTER ch, DWORD itemid) {
+        auto& manager = ikashop::GetManager();
+        if (!s_bPlayerBotLadaRemote) {
+            manager.RecvShopRemoveItemClientPacket(ch, itemid);
+            return;
+        }
+        auto shop = manager.GetShopByOwnerID(ch->GetPlayerID());
+        auto line = shop ? shop->GetItem(itemid) : nullptr;
+        const int size = line && line->GetTable() ? (int)line->GetTable()->bSize : 1;
+        if (!line || shop->GetItems().size() <= 1 || ch->GetEmptyInventory(size) < 0 ||
+                ch->GetExchange() || ch->IsOpenSafebox() || ch->IsCubeOpen()) {
+            ++s_uPlayerBotLadaRemoteRefused;
+            return;
+        }
+        manager.SendShopRemoveItemDBPacket(ch->GetPlayerID(), itemid);   // marks the journal's request sent
+        // The line's clock ends with it (ikashop_qol::OnRemoved's row; this core's copy too).
+        DBManager::instance().Query("DELETE FROM ikashop_item_meta WHERE item_id=%u", itemid);
+        s_mapBotOfflineLineSince.erase(itemid);
+    }
     // Why the service cannot run now, or NULL. Named, because a visit ended by
     // one of these says so in the log (BotOfflineInterruptVisit).
     const char* BotOfflineBusyReason(LPCHARACTER ch, const TPlayerBotAIState& state) {
@@ -359,7 +389,9 @@ namespace {
     int BotOfflineFreeCells(NativeShop shop) {
         int used = 0;
         if (shop) for (const auto& [id, line] : shop->GetItems())
-            if (line && line->GetTable()) used += line->GetTable()->bSize;
+            // MT2009_PLUS_BOT_LADA_V1: a lada line stands past the pages (playerbot_lada.h) and takes no cell of them
+            if (line && line->GetTable() && (int)line->GetInfo().pos < PLAYERBOT_OFFLINE_SHOP_CELLS)
+                used += line->GetTable()->bSize;
         return std::max(0, PLAYERBOT_OFFLINE_SHOP_CELLS - used);
     }
     // MT2009_PLUS_BOT_SHOP_MGMT_V1 (below, before BotOfflineKindLinesOf):
@@ -401,6 +433,7 @@ namespace {
         if (shop) for (const auto& [id, line] : shop->GetItems()) {
             if (!line || !line->GetTable()) continue;
             int pos = line->GetInfo().pos, size = line->GetTable()->bSize;
+            if (pos >= PLAYERBOT_OFFLINE_SHOP_CELLS) continue;   // MT2009_PLUS_BOT_LADA_V1: a lada line, past the pages
             if (!playerbot_offline::FitsOnPage(pos, size, SHOP_PLAYER_WIDTH, SHOP_PLAYER_HEIGHT,
                     playerbot_offline::BOT_SHOP_PAGES)) return -1;
             for (int y = 0; y < size; ++y) used[pos + y * SHOP_PLAYER_WIDTH] = true;
@@ -1286,7 +1319,7 @@ namespace {
             }
         }
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
-        ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
+        BotOfflineSendRemove(ch, itemid);   // MT2009_PLUS_BOT_LADA_V1: the visit's remove, or the lada's remote one
         if (!EndCall(ch->GetPlayerID())) return false;
         // MT2009_PLUS_BOT_NAV_SHOP_LOOP_V1: what was asked off, for the next ask.
         state.offlineShop.takeOffItem = itemid;
@@ -1312,6 +1345,10 @@ namespace {
         if (why && strcmp(why, "tackle") == 0)
             s_mapPlayerBotTackleAskedAt.erase(ch->GetPlayerID());
         state.offlineShop.listed.erase(itemid);
+        // MT2009_PLUS_BOT_LADA_V1: a line a visit took home for a reason of its own does not go up again at the lada's
+        // next pass (PLAYERBOT_LADA_HOLD_OFF_MS)
+        if (!s_bPlayerBotLadaRemote)
+            NotePlayerBotLadaHeldOff(itemid, now);
         sys_log(0, "PLAYERBOT_OFFLINE: took off pid=%u name=%s item=%u low_gear_kept=%d reason=%s",
             ch->GetPlayerID(), ch->GetName(), itemid, lowGear, why);
         QueuePlayerBotListingEvent(itemid, ch->GetPlayerID(), lineVnum, lineCount, per::EVENT_TAKE_OFF, linePrice, 0,
@@ -1392,7 +1429,7 @@ namespace {
             }
         }
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
-        ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
+        BotOfflineSendRemove(ch, itemid);   // MT2009_PLUS_BOT_LADA_V1: the visit's remove, or the lada's remote one
         if (!EndCall(ch->GetPlayerID())) return false;
         // Its row ends, and the piece remembers where it came from for the
         // equipment decision that puts it on (playerbot_explain.h).
@@ -1868,6 +1905,8 @@ namespace {
             if (it == items.end() || !it->second) continue;
             LPITEM preview = BotOfflinePreview(*it->second);
             if (!preview) continue;
+            // MT2009_PLUS_BOT_LADA_V1: the lada merges its own kinds, from anywhere (playerbot_lada.h)
+            if (IsPlayerBotLadaOn() && IsPlayerBotLadaKindItem(preview)) { M2_DELETE(preview); continue; }
             const bool kind = IsPlayerBotShopMgmtStackKind(preview) &&
                     GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
                     (int)preview->GetCount() < (int)preview->GetMaxStack() &&
@@ -2479,6 +2518,7 @@ namespace {
             ++rank;
             LPITEM item = ch->GetInventoryItem(cell);
             if (!item || BotOfflineSlot(ch, shop, item) < 0) { ++refused; continue; }
+            if (IsPlayerBotLadaOn() && IsPlayerBotLadaKindItem(item)) { ++refused; continue; }   // MT2009_PLUS_BOT_LADA_V1
 #ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
             if (IsPlayerBotYangRoomHeld(ch, item->GetVnum(), get_dword_time())) { ++refused; continue; }   // MT2009_PLUS_BOT_DUST_MARKET_V1
 #endif
@@ -2682,6 +2722,24 @@ namespace {
         TBotOfflineRepriceTarget out;
         out.price = std::max(asking, repriceFloor);
         out.floor = repriceFloor;
+        // MT2009_PLUS_BOT_LADA_V1 (tiers, playerbot_market_clearing.h): a line of a glutted kind's cheap tail asks
+        // min(ordinary, the clearing ask) less its tier - 5 % the cheapest tenth, 3 % the next - never under what the
+        // merchant pays; the floor yields to it as it yielded to the clearing ask. The rest of the kind asks as above.
+        {
+            const int tier = operatorPriced || preview->GetRefineLevel() > 0 ? 0 : GetPlayerBotLadaTierPermille(id);
+            if (tier > 0 && tier < 1000) {
+                const long long count = std::max<long long>(1, (long long)preview->GetCount());
+                long long anchor = asking;
+                const DWORD clearUnit = GetPlayerBotClearingUnit(preview->GetVnum());
+                if (clearUnit > 0) anchor = std::min(anchor, (long long)clearUnit * count);
+                const long long merchant = (long long)GetPlayerBotClearingFloorUnit(preview->GetVnum()) * count;
+                // never dearer than the ordinary ask (a cheap kind under the merchant's floor keeps its own)
+                const long long tierPrice = std::min(std::max(1LL, asking), std::max(std::max(1LL, merchant), anchor * tier / 1000));
+                out.price = tierPrice;
+                out.floor = std::min(out.floor, tierPrice);
+                ++s_uPlayerBotLadaTierPriced;
+            }
+        }
         out.discount = discount;
         out.markup = markup;
         out.standing = standing;
@@ -3592,6 +3650,8 @@ namespace {
             if (!allowRestock && Due(now, o.nextReprice) && !shop->GetItems().empty()) break;
             ++addRank;
             auto item = ch->GetInventoryItem(cell);
+            // MT2009_PLUS_BOT_LADA_V1: the lada's goods go up from anywhere, merged, on its own clock (playerbot_lada.h)
+            if (item && IsPlayerBotLadaOn() && IsPlayerBotLadaKindItem(item)) { ++addRefused; continue; }
 #ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
             // MT2009_PLUS_BOT_DUST_MARKET_V1: a kind taken home for the goods' room waits off the counter.
             if (item && IsPlayerBotYangRoomHeld(ch, item->GetVnum(), now)) { ++addRefused; continue; }
