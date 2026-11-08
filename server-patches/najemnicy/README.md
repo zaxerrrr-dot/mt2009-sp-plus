@@ -102,5 +102,5 @@ Logi: linie `NAJEMNICY:` w syslog rdzenia (powtarzalne – ograniczane), spis `N
   w plecaku najemnika (także łup bossów, którego boty dziś nie podnoszą – `Mt2009PlusIsPeopleLoot`).
 - Etap 3: ponowne wejście za graczem po zmianie rdzenia/kanału i po zalogowaniu, rozkazy („Za mną”, „Stój”,
   „Bij mój cel”, „Walcz sam”, „Nie podnoś łupu”), skrypty lochów pod lidera-gracza.
-- Osobno: Kolekcjoner Najemników (okno na bazie Kolekcjonera, oddawanie przedmiotów 95%, bonusy za zadania, łatka
-  klienta) – ma tylko podnosić flagę `najemnicy.tasks` (0–6); reszta już ją czyta.
+- Kolekcjoner Najemników jest w osobnej łatce `server-patches/kolekcjoner` (okno, oddawanie przedmiotów 95%, stałe bonusy
+  za zadania). Ukończone zadanie podnosi flagę `najemnicy.tasks` i wiersz `najemnicy_unlock.tasks` (GREATEST).

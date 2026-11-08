@@ -68,6 +68,8 @@ class SystemDialog(ui.ScriptWindow):
 			self.GetChild2("monster_card_button").SAFE_SetEvent(self.__ClickMonsterCardButton)
 		if self.GetChild2("relic_button"):  # MT2009_PLUS_RELIC_V1: Bonus Reliktu
 			self.GetChild2("relic_button").SAFE_SetEvent(self.__ClickRelicButton)
+		if self.GetChild2("kolekcjoner_najemnikow_button"):  # MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1
+			self.GetChild2("kolekcjoner_najemnikow_button").SAFE_SetEvent(self.__ClickKolekcjonerNajemnikowButton)
 		if self.GetChild2("extra_option_button"):  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta)
 			self.GetChild2("extra_option_button").SAFE_SetEvent(self.__ClickExtraOptionButton)
 		self.GetChild("change_button").SAFE_SetEvent(self.__ClickChangeCharacterButton)
@@ -182,6 +184,10 @@ class SystemDialog(ui.ScriptWindow):
 	def __ClickRelicButton(self):  # MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py)
 		self.Close()
 		__import__("uirelikt").OpenWindow()
+
+	def __ClickKolekcjonerNajemnikowButton(self):  # MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (uinajemnicykolekcjoner.py)
+		self.Close()
+		__import__("uinajemnicykolekcjoner").OpenWindow()
 
 	def __ClickExtraOptionButton(self):  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): Opcje dodatkowe
 		self.Close()
