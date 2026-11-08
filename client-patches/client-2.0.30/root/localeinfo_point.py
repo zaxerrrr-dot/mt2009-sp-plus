@@ -508,6 +508,12 @@ AFFECT_DICT[getattr(player, "POINT_IMMUNE_FALL", 90)] = "Odporno\x9c\xe6 na Upad
 AFFECT_DICT[player.POINT_MAX_HP] = "Max P\xaf: +%d"
 AFFECT_DICT[player.POINT_MAX_SP] = "Max PE: +%d"
 AFFECT_DICT[getattr(player, "POINT_ATTBONUS_STONE", 149)] = "Si\xb3a w walce z kamieniami Metin +%d%%"
+# MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (zgloszenie #25): the F9 GM panel of before gave "Wartosc ataku magicznego" /
+# "Magiczna wartosc obrony" / "Obrona" as the character's own points 22 / 23 / 16 (server-patches/gmpanelbonus maps them to
+# the *_BONUS points now) - the items made so then show their line by the same name instead of UNKNOWN_TYPE.
+AFFECT_DICT.setdefault(getattr(player, "POINT_MAGIC_ATT_GRADE", 22), localeInfo.TOOLTIP_MAGIC_ATT_GRADE)
+AFFECT_DICT.setdefault(getattr(player, "POINT_MAGIC_DEF_GRADE", 23), localeInfo.TOOLTIP_MAGIC_DEF_GRADE)
+AFFECT_DICT.setdefault(getattr(player, "POINT_DEF_GRADE", 16), localeInfo.TOOLTIP_DEF_GRADE)
 RARE_AFFECT_DICT = {
 	player.POINT_STEAL_SP: "Absorbuje obra\xbfenia do %d%% jako PE",
 	player.POINT_BLOCK: "%d%% szans na zablokowanie obra\xbfe\xf1 od ataku",

@@ -652,6 +652,86 @@ GM_PANEL_APPLY_SUFFIXES = [
 	(89, "RESIST_DARK"), (90, "ANTI_CRITICAL_PCT"), (91, "ANTI_PENETRATE_PCT"),
 ]
 
+# MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (zgloszenie #25, 8 Nov 2026: "z panelu gm nie mozna tych dziwnych bonusow dodawac,
+# tylko podstawowe 1-5 ... atak magiczny z dodania od gm pisze nierozpoznane"). The list above is the classic APPLY_*
+# enum (1-91), which this engine does not have: an item's bonus type is a POINT_* number (common/length.h) and
+# cmd_gm.cpp mapped the classic number to a point. That map knew no 6th/7th bonus at all (points 193-318) and turned
+# "Wartosc ataku magicznego" (55) into POINT_MAGIC_ATT_GRADE (22) instead of POINT_MAGIC_ATT_GRADE_BONUS (97) - a
+# point the tooltip has no name for ("UNKNOWN_TYPE[22]"). Now the panel offers POINT_* numbers and sends them as
+# 1000 + point (server-patches/gmpanelbonus reads them; an old server skips them, as it skipped the unknown ones):
+# the bonuses of the 1st-5th slots (world.item_attr), the 6th/7th bonuses (world.item_attr_rare, the Seon-Hae / 71051 /
+# 71052 pool - the "[6/7]" ones), then every other point the tooltip can name ("[inne]"). The names are the tooltip's
+# own (localeinfo_point.AFFECT_DICT / RARE_AFFECT_DICT), the value shown as "x".
+GM_PANEL_POINT_SEND_BASE = 1000
+GM_PANEL_NORMAL_POINTS = (6, 8, 13, 15, 12, 14, 17, 19, 21, 32, 33, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 63, 64,
+	65, 67, 68, 69, 70, 71, 72, 73, 74, 139, 147, 77, 10, 79, 81, 116, 84, 80, 88, 89, 95, 152, 153, 154, 155, 156, 157, 49,
+	52, 160, 75, 76, 78, 133, 134, 135, 197, 83, 85)
+GM_PANEL_RARE_POINTS = (6, 8, 37, 81, 95, 97, 149, 66, 67, 193, 194, 195, 196) + tuple(range(198, 252)) + (253, 254, 255,
+	64, 63) + tuple(range(256, 319)) + (90,)
+# Points no item line should carry (the panel's dbeditor TECHNICAL_POINTS, POINT_POLYMORPH 108, the client-only 991) and
+# the character's own DEF_GRADE 16 / MAGIC_ATT_GRADE 22 / MAGIC_DEF_GRADE 23 (named only for the items made before - the
+# item bonus is the *_BONUS point).
+GM_PANEL_TECHNICAL_POINTS = set((1, 2, 3, 4, 5, 7, 9, 11, 16, 20, 22, 23, 24, 25, 26, 27, 29, 30, 31, 35, 36, 91, 92, 102, 103, 104,
+	105, 106, 108, 109, 110, 111, 112, 113, 125, 126, 127, 128, 129, 169, 170, 171, 172, 173, 174, 175, 176, 177, 188, 189,
+	190, 191, 192, 991))
+GM_PANEL_POINT_LABEL_MAX = 56
+
+def GMPanelPointLabel(point, rare):
+	try:
+		import localeinfo_point
+	except Exception:
+		return None
+	source = None
+	if rare:
+		source = localeinfo_point.RARE_AFFECT_DICT.get(point)
+	if source is None:
+		source = localeinfo_point.AFFECT_DICT.get(point)
+	if source is None:
+		return None
+	text = None
+	if callable(source):
+		for probe in (12345, 12345.0):
+			try:
+				text = source(probe)
+				break
+			except Exception:
+				pass
+	else:
+		try:
+			text = source % 12345
+		except TypeError:
+			text = source
+		except Exception:
+			text = None
+	if not text or text.__class__ is not str:
+		return None
+	text = text.replace("12345.0", "x").replace("1234.5", "x").replace("12345", "x").strip()
+	if len(text) > GM_PANEL_POINT_LABEL_MAX:
+		text = text[:GM_PANEL_POINT_LABEL_MAX - 2].rstrip() + ".."
+	return text
+
+def GMPanelPointItems():
+	items = []
+	for (points, prefix, rare) in ((GM_PANEL_NORMAL_POINTS, "", False), (GM_PANEL_RARE_POINTS, "[6/7] ", True)):
+		for point in points:
+			label = GMPanelPointLabel(point, rare)
+			if label:
+				items.append((str(GM_PANEL_POINT_SEND_BASE + point), prefix + label))
+	if not items:
+		return []
+	listed = set(GM_PANEL_NORMAL_POINTS) | set(GM_PANEL_RARE_POINTS)
+	try:
+		import localeinfo_point
+		others = sorted(p for p in localeinfo_point.AFFECT_DICT.keys()
+				if p.__class__ is int and 0 < p < 512 and p not in listed and p not in GM_PANEL_TECHNICAL_POINTS)
+	except Exception:
+		others = []
+	for point in others:
+		label = GMPanelPointLabel(point, False)
+		if label:
+			items.append((str(GM_PANEL_POINT_SEND_BASE + point), "[inne] " + label))
+	return items
+
 # Plain ui.ComboBox with no way to hook "I'm opening now" - subclassed just
 # to close every other combo/search-combo on the panel first, otherwise
 # each one only knows how to close itself and clicking a different field
@@ -1498,8 +1578,14 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 		self._vnumItems = []
 		self._stoneItems = [("0", "(puste)")]
 		self._applyItems = [("0", "(brak)")]
-		for typeId, suffix in GM_PANEL_APPLY_SUFFIXES:
-			self._applyItems.append((str(typeId), self.__ApplyLabel(suffix)))
+		# MT2009_PLUS_GMPANEL_POINT_BONUS_V1: POINT_* bonuses incl. the 6th/7th (sent as 1000 + point); the classic
+		# APPLY_* list only when the tooltip's names cannot be read
+		pointItems = GMPanelPointItems()
+		if pointItems:
+			self._applyItems.extend(pointItems)
+		else:
+			for typeId, suffix in GM_PANEL_APPLY_SUFFIXES:
+				self._applyItems.append((str(typeId), self.__ApplyLabel(suffix)))
 
 		self.__MakeText(page, 10, 6, "Wlasciciel:")
 		self.createOwnerEdit = self.__MakeEdit(page, 90, 2, 140, 24)
@@ -1527,7 +1613,7 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 					defaultValue="0", defaultLabel="(puste)")
 			sx += 87
 
-		self.__MakeText(page, 10, 124, "Bonusy (typ 0 = puste):")
+		self.__MakeText(page, 10, 124, "Bonusy (typ 0 = puste; [6/7] w polach Bonus 6 i 7):")
 		self.createAttrValueEdits = []
 		ay = 142
 		for i in range(7):

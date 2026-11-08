@@ -1,0 +1,26 @@
+[
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (point)",
+  "old": "static BYTE GMPanelClassicApplyToPoint(int classicApply)\n\n{\n\n",
+  "new": "// MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (point): zgloszenie #25 (8 Nov 2026) - the panel (interfacemodule.py\n// GMPanelPointItems) sends a POINT_* number as 1000 + point: every bonus of this engine, the 6th/7th ones too\n// (193-318 - two-byte since wideattr, so the result is a WORD); a classic number (1-91, an older client) still goes\n// through the table below.\nstatic WORD GMPanelClassicApplyToPoint(int classicApply)\n\n{\n\n\tif (classicApply >= 1000)\n\t{\n\t\tconst int iPoint = classicApply - 1000;\n\t\treturn (iPoint > POINT_NONE && iPoint < POINT_MAX_NUM) ? (WORD) iPoint : (WORD) POINT_NONE;\n\t}\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (grade)",
+  "old": "POINT_ATT_GRADE_BONUS, POINT_DEF_GRADE_BONUS, POINT_MAGIC_ATT_GRADE,\n\n\t\tPOINT_MAGIC_DEF_GRADE, POINT_CURSE_PCT,",
+  "new": "POINT_ATT_GRADE_BONUS, POINT_DEF_GRADE_BONUS, POINT_MAGIC_ATT_GRADE_BONUS, // MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (grade)\n\n\t\tPOINT_MAGIC_DEF_GRADE_BONUS, POINT_CURSE_PCT,"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (def grade)",
+  "old": "POINT_RESIST_SHAMAN, POINT_ENERGY, POINT_DEF_GRADE,",
+  "new": "POINT_RESIST_SHAMAN, POINT_ENERGY, POINT_DEF_GRADE_BONUS, // MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (def grade)"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (type)",
+  "old": "\t\tconst BYTE bType = GMPanelClassicApplyToPoint(atoi(fields[10 + i * 2]));\n",
+  "new": "\t\tconst WORD bType = GMPanelClassicApplyToPoint(atoi(fields[10 + i * 2])); // MT2009_PLUS_GMPANEL_POINT_BONUS_V1 (type)\n"
+ }
+]
