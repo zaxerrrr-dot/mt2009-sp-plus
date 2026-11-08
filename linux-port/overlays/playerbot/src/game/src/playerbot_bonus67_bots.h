@@ -78,6 +78,22 @@
 // (10 min at most), Silne waited for 8 min at most, the chest comes after 10 min with no counter (was 30) or 20 min of
 // a plan with none of the shard held whatever the ledger says (was never), 5 a batch / 15 a day (was 3 / 6).
 //
+// MT2009_PLUS_BOT_BONUS67_CHEST_V2 (the owner, 8 November 2026): the census at 21:05 (ch2) - 160 shard chests (1920 SM)
+// in 25 minutes with few useful shards, while 83 of 121 pieces in scope had fewer than five lines and could take no 6/7
+// line at all. The chest now only when BOTH hold:
+//   (a) the planned piece is worn, has its five ordinary lines, fewer than two extra, room in the rare pool, a known band
+//       (its shard vnum) - and the bag holds none of that shard and no Magiczny Przedmiot: it waits for shards only;
+//   (b) no offer of that shard anywhere: no bot stall of the ledger and no counter or lada line of any shop of any
+//       channel (GetPlayerBotBonus67ShardOffer, a scan of the engine's shop copy every minute), for
+//       PLAYERBOT_BONUS67_NO_SUPPLY_MS (10 min) and again at the purchase.
+// Otherwise none: the bots without shards wait for the market (the Grotto of Exile's drops, Zaklety Las, the rifts).
+// The "20 min with none held whatever the market" trigger is gone. No buying for stock: PLAYERBOT_BONUS67_CHEST_BATCH
+// (2) chests a decision - one shard each, the band's colour 1-31 %, an add needs one - and the next decision only after
+// another 10 min with no offer (the clock restarts at the opening); PLAYERBOT_BONUS67_CHEST_DAY 6 a bot a day (was 15:
+// 72 SM a day at most, three decisions; the coins go to the Silne and the marble that bring pieces to five).
+// The census: the chests bought by the piece's line (first / second extra line), the pieces at five waiting on shards
+// (with / without an offer on the market) and the shard offers seen (kinds, lines, units).
+//
 // An implementation fragment: include it once, from playerbot_manager.cpp, right after playerbot_shop_aids.h; the
 // declarations the earlier files ask are in playerbot_types.h.
 
@@ -100,8 +116,8 @@ namespace
 	const int PLAYERBOT_BONUS67_BODY_LEVEL = 61;
 	const int PLAYERBOT_BONUS67_HEAD_LEVEL = 41;	// and the shield
 	const int PLAYERBOT_BONUS67_ADDITIVES_MAX = 5;
-	const int PLAYERBOT_BONUS67_CHEST_DAY = 15;		// MT2009_PLUS_BOT_BONUS67_FIX_V1: was 6 (the V3 line's day cap is 20)
-	const int PLAYERBOT_BONUS67_CHEST_BATCH = 5;		// MT2009_PLUS_BOT_BONUS67_FIX_V1: was 3 (the line's hold cap is 10)
+	const int PLAYERBOT_BONUS67_CHEST_DAY = 6;		// MT2009_PLUS_BOT_BONUS67_CHEST_V2: was 15 (FIX_V1), 6 before
+	const int PLAYERBOT_BONUS67_CHEST_BATCH = 2;		// MT2009_PLUS_BOT_BONUS67_CHEST_V2: one piece's need (was 5)
 	const int PLAYERBOT_BONUS67_KEEP_MAX = 20;
 	const DWORD PLAYERBOT_BONUS67_LOOK_MIN_MS = 2 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_LOOK_MAX_MS = 4 * 60 * 1000;
@@ -110,7 +126,7 @@ namespace
 	const DWORD PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS = 8 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_SHARD_WAIT_MS = 10 * 60 * 1000;	// only while a counter holds the band's shard
 	const DWORD PLAYERBOT_BONUS67_NO_SUPPLY_MS = 10 * 60 * 1000;
-	const DWORD PLAYERBOT_BONUS67_NO_SHARD_MS = 20 * 60 * 1000;	// the ledger says "on a counter" but none came: the chest
+	const DWORD PLAYERBOT_BONUS67_OFFER_SCAN_MS = 60 * 1000;	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the shops' shard lines
 	const DWORD PLAYERBOT_BONUS67_WANT_MS = 15 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_CENSUS_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_ADD_STONE = 71051;	// Magiczny Przedmiot - the engine's add, 100 %
@@ -122,7 +138,9 @@ namespace
 	const int PLAYERBOT_BONUS67_SHARD_PURSE_PCT = 20;	// ... out of a fifth of what the bot can spare
 	const char* const PLAYERBOT_BONUS67_GOAL_ADD = "bonus_b67add";
 	const char* const PLAYERBOT_BONUS67_GOAL_MIX = "bonus_b67mix";
-	const char* const PLAYERBOT_BONUS67_GOAL_CHEST = "bonus_b67chest";
+	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the chest's goal by the piece's line (the census splits the purchases by it)
+	const char* const PLAYERBOT_BONUS67_GOAL_CHEST_L1 = "bonus_b67chest_l1";	// the piece's first extra line
+	const char* const PLAYERBOT_BONUS67_GOAL_CHEST_L2 = "bonus_b67chest_l2";	// its second
 
 	enum
 	{
@@ -159,9 +177,10 @@ namespace
 		DWORD dwShardWant;		// the market's want: the shard and how many
 		int iShardNeed;
 		DWORD dwWantUntil;
-		DWORD dwNoSupplySince;	// no counter has had the shard since (0: one has)
+		DWORD dwNoSupplySince;	// no offer of the shard anywhere since (0: there is one)
+		BYTE bPlanWear;			// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the planned piece's slot
 		TPlayerBotBonus67() : dwNextLook(0), dwPlanItem(0), dwPlanSince(0), dwShardWant(0), iShardNeed(0), dwWantUntil(0),
-			dwNoSupplySince(0) {}
+			dwNoSupplySince(0), bPlanWear(0) {}
 	};
 	std::map<DWORD, TPlayerBotBonus67> s_mapPlayerBotBonus67;
 
@@ -170,12 +189,24 @@ namespace
 		unsigned int looks, addsTried, addsWon, adds71051, addsNoShard, addsWaitShard, addsWaitAdditive, refused;
 		unsigned int mixes, mixesTop, mixesDone, mixesGiveUp, mixesNoStone;
 		unsigned int shardsMarket, shardsChest, shardsChestOther, chestsOpened;
+		unsigned int chestSkipOffer;	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: looks of a chest piece held off by an offer
 		unsigned int additivesUsed[4];
 		long long shardsMarketYang;
 		TPlayerBotBonus67Stats() { memset(this, 0, sizeof(*this)); }
 	};
 	TPlayerBotBonus67Stats s_kPlayerBotBonus67Stats;
 	DWORD s_dwPlayerBotBonus67CensusAt = 0;
+
+	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the shard lines of every shop of the engine's copy (every channel's counters and
+	// ladas, bots' and players'), counted every PLAYERBOT_BONUS67_OFFER_SCAN_MS.
+	struct TPlayerBotBonus67Offer
+	{
+		unsigned int lines;
+		unsigned long long units;
+		TPlayerBotBonus67Offer() : lines(0), units(0) {}
+	};
+	std::map<DWORD, TPlayerBotBonus67Offer> s_mapPlayerBotBonus67Offers;
+	DWORD s_dwPlayerBotBonus67OfferScanAt = 0;
 
 	int GetPlayerBotBonus67Flag(const char* flag)
 	{
@@ -598,6 +629,51 @@ namespace
 		return std::max(0, PLAYERBOT_BONUS67_CHEST_DAY - GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), PLAYERBOT_BONUS67_SHARD_CHEST));
 	}
 
+	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the shops' shard lines, counted again when the last count is a minute old.
+	void RefreshPlayerBotBonus67ShardOffers()
+	{
+		const DWORD now = get_dword_time();
+		if (s_dwPlayerBotBonus67OfferScanAt != 0 && now - s_dwPlayerBotBonus67OfferScanAt < PLAYERBOT_BONUS67_OFFER_SCAN_MS)
+			return;
+		s_dwPlayerBotBonus67OfferScanAt = now;
+		s_mapPlayerBotBonus67Offers.clear();
+#if defined(ENABLE_IKASHOP_RENEWAL)
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			if (!shop || shop->GetDuration() == 0)
+				continue;
+			for (const auto& [id, line] : shop->GetItems())
+				if (line && mt2009_seonhae::IsShardVnum(line->GetVnum()))
+				{
+					TPlayerBotBonus67Offer& o = s_mapPlayerBotBonus67Offers[line->GetVnum()];
+					++o.lines;
+					o.units += line->GetInfo().count;
+				}
+		}
+#endif
+	}
+
+	// Rule (b): an offer of the shard anywhere - a bot stall of the ledger, a counter or lada line of any shop.
+	bool HasPlayerBotBonus67ShardOffer(DWORD vnum)
+	{
+		const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(vnum);
+		if (supply && supply->dwSupplyUnits > 0)
+			return true;
+		RefreshPlayerBotBonus67ShardOffers();
+		std::map<DWORD, TPlayerBotBonus67Offer>::const_iterator it = s_mapPlayerBotBonus67Offers.find(vnum);
+		return it != s_mapPlayerBotBonus67Offers.end() && it->second.lines > 0;
+	}
+
+	// Rule (a): the piece has its five lines, room for an extra one, a known band - and waits for that shard alone (none
+	// of it in the bag, no Magiczny Przedmiot).
+	bool IsPlayerBotBonus67ChestPiece(LPCHARACTER ch, LPITEM piece, DWORD shard)
+	{
+		return piece && CanPlayerBotBonus67Add(piece) && piece->GetAttributeCount() >= ITEM_ATTRIBUTE_NORM_NUM &&
+				piece->GetRareAttrCount() < ITEM_ATTRIBUTE_RARE_NUM && shard != 0 && mt2009_seonhae::IsShardVnum(shard) &&
+				mt2009_seonhae::MaterialVnum(piece) == shard && ch->CountSpecifyItem(shard) == 0 &&
+				ch->CountSpecifyItem(PLAYERBOT_BONUS67_ADD_STONE) == 0;
+	}
+
 	// Asked by CollectPlayerBotShopAidGoals (playerbot_shop_aids.h).
 	void CollectPlayerBotBonus67Goals(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotIshop3Goal* goals, int& n)
 	{
@@ -615,20 +691,23 @@ namespace
 				goals[n++] = g;
 			}
 		}
-		// the shard chest, the last resort (rule 4): no counter has had the shard for PLAYERBOT_BONUS67_NO_SUPPLY_MS, or
-		// (MT2009_PLUS_BOT_BONUS67_FIX_V1) the ledger says one has but the bag still holds none of it after
-		// PLAYERBOT_BONUS67_NO_SHARD_MS - a counter the bot never reaches or cannot pay kept the chest away for good
+		// the shard chest, the last resort (rule 4; MT2009_PLUS_BOT_BONUS67_CHEST_V2): only for the planned piece at five
+		// lines that waits for shards alone (IsPlayerBotBonus67ChestPiece) while no offer of its shard has been anywhere for
+		// PLAYERBOT_BONUS67_NO_SUPPLY_MS and none is now; that piece's need only, never for stock
 		if (planned && n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotBonus67Flag(PLAYERBOT_BONUS67_CHEST_OFF_FLAG) == 0 &&
-				s->second.dwShardWant && s->second.iShardNeed > 0 &&
-				((s->second.dwNoSupplySince != 0 && get_dword_time() - s->second.dwNoSupplySince >= PLAYERBOT_BONUS67_NO_SUPPLY_MS) ||
-				 (ch->CountSpecifyItem(s->second.dwShardWant) == 0 && get_dword_time() - s->second.dwPlanSince >= PLAYERBOT_BONUS67_NO_SHARD_MS)) &&
+				s->second.dwShardWant && s->second.iShardNeed > 0 && s->second.dwNoSupplySince != 0 &&
+				get_dword_time() - s->second.dwNoSupplySince >= PLAYERBOT_BONUS67_NO_SUPPLY_MS &&
 				ch->CountSpecifyItem(PLAYERBOT_BONUS67_SHARD_CHEST) == 0)
 		{
+			LPITEM piece = ch->GetWear(s->second.bPlanWear);
 			const int left = GetPlayerBotBonus67ChestsLeft(ch);
-			if (left > 0)
+			if (piece && piece->GetID() == s->second.dwPlanItem && left > 0 &&
+					IsPlayerBotBonus67ChestPiece(ch, piece, s->second.dwShardWant) &&
+					!HasPlayerBotBonus67ShardOffer(s->second.dwShardWant))
 			{
+				const bool second = piece->GetRareAttrCount() >= 1;
 				const TPlayerBotIshop3Goal g = { PLAYERBOT_BONUS67_SHARD_CHEST, false, std::min(left, PLAYERBOT_BONUS67_CHEST_BATCH),
-					PLAYERBOT_BONUS67_GOAL_CHEST };
+					second ? PLAYERBOT_BONUS67_GOAL_CHEST_L2 : PLAYERBOT_BONUS67_GOAL_CHEST_L1 };
 				goals[n++] = g;
 			}
 		}
@@ -644,18 +723,20 @@ namespace
 	// ------------------------------------------------------------------------------------------------ the actions
 
 	// The chests bought for the last resort, opened here (the chest pass would too - here the census sees them).
-	void OpenPlayerBotBonus67Chests(LPCHARACTER ch, DWORD wanted)
+	int OpenPlayerBotBonus67Chests(LPCHARACTER ch, DWORD wanted)
 	{
+		int opened = 0;
 		for (int tries = 0; tries < PLAYERBOT_BONUS67_CHEST_BATCH; ++tries)
 		{
 			LPITEM chest = FindPlayerBotShopAidBagItem(ch, PLAYERBOT_BONUS67_SHARD_CHEST);
 			if (!chest || ch->GetEmptyInventory(1) < 0)
-				return;
+				return opened;
 			const int before = wanted ? (int)ch->CountSpecifyItem(wanted) : 0;
 			const int chestsBefore = (int)ch->CountSpecifyItem(PLAYERBOT_BONUS67_SHARD_CHEST);
 			if (!ch->UseItem(TItemPos(INVENTORY, chest->GetCell())) ||
 					(int)ch->CountSpecifyItem(PLAYERBOT_BONUS67_SHARD_CHEST) >= chestsBefore)
-				return;
+				return opened;
+			++opened;
 			const int got = wanted ? (int)ch->CountSpecifyItem(wanted) - before : 0;
 			++s_kPlayerBotBonus67Stats.chestsOpened;
 			if (got > 0)
@@ -665,6 +746,7 @@ namespace
 			sys_log(0, "PLAYERBOT_BONUS67: chest pid=%u name=%s wanted=%u got=%d have=%d", ch->GetPlayerID(), ch->GetName(),
 					wanted, got, wanted ? (int)ch->CountSpecifyItem(wanted) : 0);
 		}
+		return opened;
 	}
 
 	// Rule 3: the add, at once - off the body, the shards and the Suplementy out, the roll, the line, on again.
@@ -832,6 +914,7 @@ namespace
 		if (first)
 			return;
 		unsigned int bots = 0, botsWith = 0, pieces = 0, lines0 = 0, lines1 = 0, lines2 = 0, notFive = 0, avLines = 0, top = 0;
+		unsigned int waitShard = 0, waitShardOffered = 0;	// MT2009_PLUS_BOT_BONUS67_CHEST_V2: pieces at five waiting on shards
 		long long avSum = 0;
 		unsigned int scope[6] = { 0, 0, 0, 0, 0, 0 };
 		std::map<WORD, unsigned int> kinds;
@@ -852,6 +935,13 @@ namespace
 				any = true;
 				++pieces;
 				++scope[sc];
+				const DWORD band = mt2009_seonhae::MaterialVnum(item);
+				if (IsPlayerBotBonus67ChestPiece(ch, item, band))
+				{
+					++waitShard;
+					if (HasPlayerBotBonus67ShardOffer(band))
+						++waitShardOffered;
+				}
 				const int rare = item->GetRareAttrCount();
 				if (rare <= 0)
 					++(item->GetAttributeCount() < ITEM_ATTRIBUTE_NORM_NUM ? notFive : lines0);
@@ -890,7 +980,20 @@ namespace
 		const TPlayerBotBonus67Stats& t = s_kPlayerBotBonus67Stats;
 		const TPlayerBotIshop3Census& cAdd = GetPlayerBotIshop3Census(PLAYERBOT_BONUS67_GOAL_ADD);
 		const TPlayerBotIshop3Census& cMix = GetPlayerBotIshop3Census(PLAYERBOT_BONUS67_GOAL_MIX);
-		const TPlayerBotIshop3Census& cChest = GetPlayerBotIshop3Census(PLAYERBOT_BONUS67_GOAL_CHEST);
+		const TPlayerBotIshop3Census& cChest1 = GetPlayerBotIshop3Census(PLAYERBOT_BONUS67_GOAL_CHEST_L1);
+		const TPlayerBotIshop3Census& cChest2 = GetPlayerBotIshop3Census(PLAYERBOT_BONUS67_GOAL_CHEST_L2);
+		const long long chestCoins = cChest1.llCoins + cChest2.llCoins;
+		// the shard offers seen (the shops' scan; the bots' live stalls are in the ledger)
+		RefreshPlayerBotBonus67ShardOffers();
+		unsigned int offerKinds = 0, offerLines = 0;
+		unsigned long long offerUnits = 0;
+		for (std::map<DWORD, TPlayerBotBonus67Offer>::const_iterator it = s_mapPlayerBotBonus67Offers.begin();
+				it != s_mapPlayerBotBonus67Offers.end(); ++it)
+		{
+			++offerKinds;
+			offerLines += it->second.lines;
+			offerUnits += it->second.units;
+		}
 		sys_log(0, "PLAYERBOT_BONUS67: census on=%d min_lv=%d av_target=%d bots=%u with_scope=%u pieces=%u (body=%u head=%u "
 				"shield=%u jewel=%u element=%u) lines0=%u lines1=%u lines2=%u under_five=%u looks=%u adds=%u won=%u by71051=%u "
 				"no_shard=%u wait_shard=%u wait_additive=%u mixes=%u top=%u done=%u give_up=%u no_stone=%u refused=%u",
@@ -899,12 +1002,17 @@ namespace
 				scope[B67_SCOPE_ELEMENT], lines0, lines1, lines2, notFive, t.looks, t.addsTried, t.addsWon, t.adds71051,
 				t.addsNoShard, t.addsWaitShard, t.addsWaitAdditive, t.mixes, t.mixesTop, t.mixesDone, t.mixesGiveUp,
 				t.mixesNoStone, t.refused);
-		sys_log(0, "PLAYERBOT_BONUS67: census shards_market=%u (%lld yang) chests=%u (bought %u, %lld SM) shards_chest=%u "
-				"chest_other=%u additives_used=%u/%u/%u/%u silne_bought=%u (%lld SM) mix_stones_bought=%u (%lld SM) sm_total=%lld "
-				"av_lines=%u av_avg=%.1f av_top=%u top_lines=[%s]", t.shardsMarket, t.shardsMarketYang, t.chestsOpened,
-				cChest.uPieces, cChest.llCoins, t.shardsChest, t.shardsChestOther, t.additivesUsed[0], t.additivesUsed[1],
-				t.additivesUsed[2], t.additivesUsed[3], cAdd.uPieces, cAdd.llCoins, cMix.uPieces, cMix.llCoins,
-				cAdd.llCoins + cMix.llCoins + cChest.llCoins, avLines, avLines ? (double)avSum / avLines : 0.0, top, topLines);
+		sys_log(0, "PLAYERBOT_BONUS67: census shards_market=%u (%lld yang) chests=%u (bought line1=%u line2=%u, %lld SM) "
+				"shards_chest=%u chest_other=%u additives_used=%u/%u/%u/%u silne_bought=%u (%lld SM) mix_stones_bought=%u (%lld SM) "
+				"sm_total=%lld av_lines=%u av_avg=%.1f av_top=%u top_lines=[%s]", t.shardsMarket, t.shardsMarketYang,
+				t.chestsOpened, cChest1.uPieces, cChest2.uPieces, chestCoins, t.shardsChest, t.shardsChestOther,
+				t.additivesUsed[0], t.additivesUsed[1], t.additivesUsed[2], t.additivesUsed[3], cAdd.uPieces, cAdd.llCoins,
+				cMix.uPieces, cMix.llCoins, cAdd.llCoins + cMix.llCoins + chestCoins, avLines,
+				avLines ? (double)avSum / avLines : 0.0, top, topLines);
+		sys_log(0, "PLAYERBOT_BONUS67: census chest_rule at_five_wait_shard=%u (offered=%u no_offer=%u) chest_held_by_offer=%u "
+				"shard_offers kinds=%u lines=%u units=%llu chest_day=%d chest_batch=%d", waitShard, waitShardOffered,
+				waitShard - waitShardOffered, t.chestSkipOffer, offerKinds, offerLines, offerUnits, PLAYERBOT_BONUS67_CHEST_DAY,
+				PLAYERBOT_BONUS67_CHEST_BATCH);
 	}
 
 	// ------------------------------------------------------------------------------------------------ the tick
@@ -936,6 +1044,7 @@ namespace
 			s.dwPlanItem = s.dwPlanSince = s.dwShardWant = 0;
 			s.iShardNeed = 0;
 			s.dwNoSupplySince = 0;
+			s.bPlanWear = 0;
 			return MixPlayerBotBonus67(ch, state, dwNow);
 		}
 		if (s.dwPlanItem != target->GetID())
@@ -943,6 +1052,7 @@ namespace
 			s.dwPlanItem = target->GetID();
 			s.dwPlanSince = dwNow;
 			s.dwNoSupplySince = 0;
+			s.bPlanWear = wear;
 			char lines[96];
 			FormatPlayerBotBonus67Lines(target, lines, sizeof(lines));
 			sys_log(0, "PLAYERBOT_BONUS67: plan pid=%u name=%s lv=%d wear=%u vnum=%u item_lv=%d scope=%d shard=%u have=%d "
@@ -951,7 +1061,8 @@ namespace
 					mt2009_seonhae::MaterialVnum(target), (int)ch->CountSpecifyItem(mt2009_seonhae::MaterialVnum(target)), element, lines);
 		}
 		const DWORD shard = mt2009_seonhae::MaterialVnum(target);
-		OpenPlayerBotBonus67Chests(ch, shard);
+		// the chests a decision bought, opened: the next decision only after another PLAYERBOT_BONUS67_NO_SUPPLY_MS
+		const bool chestsOpened = OpenPlayerBotBonus67Chests(ch, shard) > 0;
 		const int held = (int)ch->CountSpecifyItem(shard);
 		const bool magic = ch->CountSpecifyItem(PLAYERBOT_BONUS67_ADD_STONE) > 0;
 		// the market's want (rule 4) and whether a counter has the shard at all
@@ -960,17 +1071,22 @@ namespace
 		s.dwWantUntil = dwNow + PLAYERBOT_BONUS67_WANT_MS;
 		const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(shard);
 		const bool onMarket = supply && supply->dwSupplyUnits > 0;
-		if (onMarket || s.iShardNeed == 0)
+		// MT2009_PLUS_BOT_BONUS67_CHEST_V2: the chest's clock runs only while no shop anywhere offers the shard
+		const bool offered = HasPlayerBotBonus67ShardOffer(shard);
+		if (offered || s.iShardNeed == 0)
 			s.dwNoSupplySince = 0;
-		else if (s.dwNoSupplySince == 0)
+		else if (s.dwNoSupplySince == 0 || chestsOpened)
 			s.dwNoSupplySince = dwNow;
+		if (offered && IsPlayerBotBonus67ChestPiece(ch, target, shard))
+			++s_kPlayerBotBonus67Stats.chestSkipOffer;
 		if (!magic)
 		{
 			if (held <= 0)
 			{
 				++s_kPlayerBotBonus67Stats.addsNoShard;
 				PlayerBotLogThrottled("b67_no_shard", dwNow, "PLAYERBOT_BONUS67: wait shard pid=%u name=%s vnum=%u shard=%u have=0 "
-						"on_market=%d", ch->GetPlayerID(), ch->GetName(), target->GetVnum(), shard, onMarket ? 1 : 0);
+						"on_market=%d offered=%d", ch->GetPlayerID(), ch->GetName(), target->GetVnum(), shard, onMarket ? 1 : 0,
+						offered ? 1 : 0);
 				return MixPlayerBotBonus67(ch, state, dwNow);
 			}
 			// fewer than ten: wait only while a counter holds the band's shard (the trip may still bring the rest), at
