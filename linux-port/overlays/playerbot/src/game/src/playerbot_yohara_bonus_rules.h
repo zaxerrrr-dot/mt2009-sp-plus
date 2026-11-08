@@ -134,6 +134,10 @@ struct TPiece
 	int elemRank;
 	bool elemShort;
 	int elemCap;
+	// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (playerbot_marble_first.h): a bot with SM changes this piece not now (short of its
+	// five lines - the marble first), and a piece of the 6/7 scope takes the adds and the marble before the rest
+	bool changeBlocked = false;
+	bool fifthPriority = false;
 };
 
 struct TBag
@@ -166,23 +170,28 @@ inline int Pool(const TPiece* pieces, int count, int changeUnits, int reserve)
 inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserve, int safety)
 {
 	TChoice c = { -1, STEP_NONE, WANT_NONE, false, 0, false };
-	// 1. the adds, then the marble's fifth line
-	if (bag.addUnits > 0)
-		for (int i = 0; i < count; ++i)
-			if (pieces[i].lines < pieces[i].maxStoneLines && pieces[i].lineRolls)
-			{
-				c.piece = i;
-				c.step = STEP_ADD;
-				return c;
-			}
-	if (bag.marble)
-		for (int i = 0; i < count; ++i)
-			if (pieces[i].lines == pieces[i].maxStoneLines && pieces[i].lineRolls)
-			{
-				c.piece = i;
-				c.step = STEP_MARBLE;
-				return c;
-			}
+	// 1. the adds, then the marble's fifth line (MT2009_PLUS_BOT_MARBLE_FIRST_V1: the 6/7 scope's pieces first)
+	for (int round = 0; round < 2; ++round)
+	{
+		if (bag.addUnits > 0)
+			for (int i = 0; i < count; ++i)
+				if ((round == 1 || pieces[i].fifthPriority) && pieces[i].lines < pieces[i].maxStoneLines &&
+						pieces[i].lineRolls)
+				{
+					c.piece = i;
+					c.step = STEP_ADD;
+					return c;
+				}
+		if (bag.marble)
+			for (int i = 0; i < count; ++i)
+				if ((round == 1 || pieces[i].fifthPriority) && pieces[i].lines == pieces[i].maxStoneLines &&
+						pieces[i].lineRolls)
+				{
+					c.piece = i;
+					c.step = STEP_MARBLE;
+					return c;
+				}
+	}
 	// the reserve is the next pieces' (a new weapon, a new armour), never spent on these
 	if (bag.changeUnits <= reserve)
 		return c;
@@ -190,7 +199,8 @@ inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserv
 	// within its element budget
 	int elem = -1;
 	for (int i = 0; i < count; ++i)
-		if (pieces[i].lines > 0 && pieces[i].elemRank >= 0 && pieces[i].elemShort && pieces[i].spent < pieces[i].elemCap &&
+		if (pieces[i].lines > 0 && !pieces[i].changeBlocked && pieces[i].elemRank >= 0 && pieces[i].elemShort &&
+				pieces[i].spent < pieces[i].elemCap &&
 				(elem < 0 || pieces[i].elemRank < pieces[elem].elemRank))
 			elem = i;
 	if (elem >= 0)
@@ -210,7 +220,7 @@ inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserv
 	// 2. the changes within each piece's share
 	for (int i = 0; i < count; ++i)
 	{
-		if (pieces[i].lines <= 0)
+		if (pieces[i].lines <= 0 || pieces[i].changeBlocked)
 			continue;
 		const int cap = PieceCap(pieces[i].weight, sumWeights, pool);
 		const EWant want = MainWant(pieces[i].tier, pieces[i].spent, cap);
@@ -228,7 +238,7 @@ inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserv
 	long long bestRatio = 0;
 	for (int i = 0; i < count; ++i)
 	{
-		if (pieces[i].lines <= 0)
+		if (pieces[i].lines <= 0 || pieces[i].changeBlocked)
 			continue;
 		const EWant want = LeftoverWant(pieces[i].tier, bag.changeUnits, reserve, safety);
 		if (want == WANT_FAIR)

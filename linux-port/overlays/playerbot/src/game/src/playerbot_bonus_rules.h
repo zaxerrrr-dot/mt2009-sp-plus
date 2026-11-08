@@ -125,6 +125,11 @@ struct TPiece
 	// full: the change rolls the average again whatever the count
 	// (CItem::ChangeAttribute re-applies the damage addon).
 	bool mixAverage;
+	// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (playerbot_marble_first.h): a bot with SM gives the marble's fifth line to a worn
+	// piece of the rest of the gear too (marbleRest), and the pieces of the 6/7 scope take the adds and the marble before
+	// another piece is changed (fifthPriority).
+	bool marbleRest = false;
+	bool fifthPriority = false;
 };
 
 // What one stone would do to a piece now, and which stone.
@@ -160,7 +165,7 @@ inline TStepChoice StepFor(const TPiece& p, const TBag& bag, const TLimits& limi
 			return greenStonesOnly ? none : TStepChoice{ STEP_ADD, STONE_PLAIN };
 	}
 	else if (p.lines == limits.stoneLines && p.lineRolls && !greenStonesOnly &&
-			p.plain == PLAIN_CATEGORY && p.marbleAllowed && bag.marble)
+			(p.plain == PLAIN_CATEGORY || (p.marbleRest && p.plain == PLAIN_REST)) && p.marbleAllowed && bag.marble)
 		return TStepChoice{ STEP_MARBLE, STONE_MARBLE };
 
 	// Nothing to mix on a piece with no line, and what a companion's owner
@@ -242,6 +247,28 @@ inline int Pick(const TPiece* pieces, int count, const TBag& bag, const TLimits&
 		}
 	// MT2009_PLUS_BOT_SMITHY_V1, point 10: a piece kept for sale is never the
 	// focus the stones come back to - the worn gear is asked first every pass.
+	// MT2009_PLUS_BOT_MARBLE_FIRST_V1: the focus keeps its adds and its marble, but
+	// a change on it waits while a piece of the 6/7 scope can take a line.
+	if (focus >= 0 && focus < count && !pieces[focus].goods)
+	{
+		const TStepChoice c = StepFor(pieces[focus], bag, limits, restOpen, false);
+		if (c.step == STEP_ADD || c.step == STEP_MARBLE)
+		{
+			choice = c;
+			return focus;
+		}
+	}
+	for (int i = 0; i < count; ++i)
+	{
+		if (!pieces[i].fifthPriority || pieces[i].goods)
+			continue;
+		const TStepChoice c = StepFor(pieces[i], bag, limits, restOpen, false);
+		if (c.step == STEP_ADD || c.step == STEP_MARBLE)
+		{
+			choice = c;
+			return i;
+		}
+	}
 	if (focus >= 0 && focus < count && !pieces[focus].goods)
 	{
 		const TStepChoice c = StepFor(pieces[focus], bag, limits, restOpen, false);

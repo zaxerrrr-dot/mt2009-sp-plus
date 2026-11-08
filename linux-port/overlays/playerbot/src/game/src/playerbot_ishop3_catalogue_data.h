@@ -635,7 +635,7 @@ namespace
 		{  55400, PLAYERBOT_ISHOP3_NEED_NEWPET, 1, 1, 0, 1, 1, 1 },	// Skrzynka na Zwierzaka - a keeper with no pet and no egg (MT2009_PLUS_BOT_PET_GROW_V1)
 		{  56000, PLAYERBOT_ISHOP3_NEED_LOOK_MOUNT, 0, 0, 0, 1, 1, 1 },	// Appaloosa - a mount
 		{  70020, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 1 },	// Wino z Kwiatu Brzoskwini - the wine - no potion list of the bots drinks it
-		{  70024, PLAYERBOT_ISHOP3_NEED_BONUS_STONE, 2, 4, 0, 1, 1, 1 },	// Marmur Blogoslawienstwa - the marble for a piece of four lines
+		{  70024, PLAYERBOT_ISHOP3_NEED_BONUS_STONE, 4, 16, 0, 1, 1, 1 },	// Marmur Blogoslawienstwa - the marble for a piece of four lines (MT2009_PLUS_BOT_MARBLE_FIRST_V1: 4 / 16, was 2 / 4)
 		{  70035, PLAYERBOT_ISHOP3_NEED_NEVER, 10, 20, 0, 1, 1, 2 },	// Magiczna Ruda Miedzi - Magiczna Ruda Miedzi - the Blacksmith's Zwoj Wojny is no scroll the bots craft
 		{  70058, PLAYERBOT_ISHOP3_NEED_WISH, 0, 0, 30, 1, 1, 1 },	// Pierscien Teleportacji - the frontier without a ring
 		{  70115, PLAYERBOT_ISHOP3_NEED_NEVER, 0, 0, 0, 1, 1, 1 },	// Kolekcjoner - Kolekcjoner - the collector's storage no bot uses

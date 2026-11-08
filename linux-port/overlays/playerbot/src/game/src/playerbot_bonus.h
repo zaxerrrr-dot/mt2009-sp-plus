@@ -1790,6 +1790,20 @@ namespace
 		piece.mixAverage = item && IsPlayerBotSpecialLevel30Weapon(item) &&
 				(int)item->GetRefineLevel() >= PLAYERBOT_BONUS_L30_MIX_MIN_PLUS &&
 				!HasPlayerBotFinishedBonus(ch, item, WEAR_WEAPON);
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+		// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (playerbot_marble_first.h): a bot with SM changes a worn piece at five lines -
+		// the marble's fifth first (on a piece of the rest too), the 6/7 scope's pieces filled first; a four-line piece
+		// only as the last resort. The level-30 average mix and the green stones as before.
+		if (item && target.kind == PLAYERBOT_BONUS_TARGET_WORN && IsPlayerBotMarbleFirstFor(ch))
+		{
+			piece.marbleRest = true;
+			piece.fifthPriority = piece.lines < PLAYERBOT_BONUS_MARBLE_LINES && piece.lineRolls &&
+					IsPlayerBotMarbleFirstPriority(ch, item);
+			if (piece.wantsPlainChange && !piece.mixAverage &&
+					!IsPlayerBotMarbleFirstChangeAllowed(ch, item, piece.lines, piece.lineRolls))
+				piece.wantsPlainChange = false;
+		}
+#endif
 		return piece;
 	}
 
@@ -2120,6 +2134,14 @@ namespace
 		else if (number(1, 100) <= aiItemAttributeAddPercent[count])
 			item->AddAttribute();
 		ConsumePlayerBotBonusStoneAt(ch, stoneCell);
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+		// MT2009_PLUS_BOT_MARBLE_FIRST_V1: the census - the marble's roll, an ordinary change by the piece's lines
+		if (step == PLAYERBOT_BONUS_STEP_MARBLE)
+			NotePlayerBotMarbleFirstUsed(ch, item, item->GetAttributeCount() > count);
+		else if (step == PLAYERBOT_BONUS_STEP_CHANGE && !IsPlayerBotGreenBonusStone(stoneVnum) &&
+				target.kind == PLAYERBOT_BONUS_TARGET_WORN)
+			NotePlayerBotMarbleFirstChange(ch, count);
+#endif
 		NotePlayerBotStarterItemUsed(stoneVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 		// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1: a change on a piece short of its four lines (no add stone in the bag) -
 		// counted, the count said once a minute.
@@ -2236,6 +2258,13 @@ namespace
 			if (worn && worn->GetAttributeCount() == PLAYERBOT_BONUS_MAX_LINES &&
 					CanPlayerBotRerollItemFor(ch, worn, slots[i]))
 				return true;
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+			// MT2009_PLUS_BOT_MARBLE_FIRST_V1: a bot with SM gives the fifth to a worn piece of the rest too
+			if (worn && worn->GetAttributeCount() == PLAYERBOT_BONUS_MAX_LINES && IsPlayerBotBonusRestPiece(worn) &&
+					!IsPlayerBotOutgrownLowStonePiece(ch, worn) && CanPlayerBotItemRollNewLine(worn) &&
+					IsPlayerBotMarbleFirstFor(ch))
+				return true;
+#endif
 		}
 		return false;
 	}
@@ -2518,6 +2547,9 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextBonusCheckTime)
 			return false;
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+		LogPlayerBotMarbleFirstCensus(dwNow);	// MT2009_PLUS_BOT_MARBLE_FIRST_V1: every 10 minutes
+#endif
 		// MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot holding the ordinary stones bonuses its gear by its own pass
 		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: its costume and hairstyle for Yohara (IsPlayerBotYoharaCostumeLineGood) from

@@ -505,6 +505,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_BONUS67_V1: the 6/7 bonus of the stage from 75 - the owner's pieces, the add at once, the shards from the
 // market (the chest last), the Silne and 71052 in V3, mixed only with both lines (after the shop aids, whose helpers it uses)
 #include "playerbot_bonus67_bots.h"
+// MT2009_PLUS_BOT_MARBLE_FIRST_V1: a bot with SM brings a piece to five lines (the marble) before it changes it, the 6/7
+// scope first; the gate, the shop's marble note and the census (after the 6/7 pass, whose scope it reads)
+#include "playerbot_marble_first.h"
 // MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
 // dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
 #include "playerbot_skill_instr_late.h"
