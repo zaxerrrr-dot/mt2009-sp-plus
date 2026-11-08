@@ -488,6 +488,12 @@ def InGame():
 
 def _Send(text, now):
 	_queue['next'] = now + COMMAND_SPACING
+	# MT2009_PLUS_NAJEMNICY_V2: a whole command ("/najemnicy eq <nr> ...", the
+	# mercenary's equipment window in uisidekickinventory.py) goes as it is,
+	# through the same queue - the server's limit is per character.
+	if text[:1] == '/':
+		net.SendChatPacket(text)
+		return
 	net.SendChatPacket('/towarzysz ' + text)
 
 

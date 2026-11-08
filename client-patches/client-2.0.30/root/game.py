@@ -1173,6 +1173,29 @@ class GameWindow(ui.ScriptWindow):
 		import uisidekickinventory
 		uisidekickinventory.OnSkillEnd(*args)
 
+	# MT2009_PLUS_NAJEMNICY_V2: a player's mercenary's equipment window - the companion's bag window
+	# (uisidekickinventory.py) for the mercenary of a slot; the server names the player's summoned
+	# mercenaries (the target board's "Ekwipunek", uitarget.py) and opens the window for the letter.
+	def __NajemnikVids(self, *args):
+		self.__KeepSidekickInventory()
+		import uisidekickinventory
+		uisidekickinventory.OnNajemnikVids(*args)
+		try:
+			if self.targetBoard and self.targetBoard.IsShow() and self.targetBoard.IsShowButton():
+				self.targetBoard.RefreshButton()
+		except Exception:
+			pass
+
+	def __NajemnikEqWho(self, *args):
+		self.__KeepSidekickInventory()
+		import uisidekickinventory
+		uisidekickinventory.OnNajemnikEqWho(*args)
+
+	def __NajemnikEqOpen(self, *args):
+		self.__KeepSidekickInventory()
+		import uisidekickinventory
+		uisidekickinventory.OnNajemnikEqOpen(*args)
+
 	def	__ReleaseGKey(self):
 		app.PitchCamera(app.CAMERA_STOP)
 
@@ -3762,6 +3785,9 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["SidekickSkillBegin"] = self.__SidekickSkillBegin
 		serverCommandList["SidekickSkill"] = self.__SidekickSkill
 		serverCommandList["SidekickSkillEnd"] = self.__SidekickSkillEnd
+		serverCommandList["NajemnikVids"] = self.__NajemnikVids	# MT2009_PLUS_NAJEMNICY_V2
+		serverCommandList["NajemnikEqWho"] = self.__NajemnikEqWho
+		serverCommandList["NajemnikEqOpen"] = self.__NajemnikEqOpen
 		serverCommandList["WOF"] = self.__WheelOfFortune # MT2009_PLUS_WHEEL_V1
 		serverCommandList["WB"] = self.__WorldBoss # MT2009_PLUS_WORLDBOSS_V1
 		serverCommandList["FP"] = self.__FishPuzzle # MT2009_PLUS_FISH_PUZZLE_V1

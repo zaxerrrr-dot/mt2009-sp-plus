@@ -457,6 +457,11 @@ quest meley_dungeon begin
 				q.begin_other_pc_block(pid)
 				if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == idx then
 					pc.setf("meley_dungeon", "won_idx", idx)
+				-- MT2009_PLUS_NAJEMNICY_V2: a player's mercenary (pc.is_najemnik) wins too - it talks to no chest, so the
+				-- Queen's chest (the reward of whoever does not choose) goes straight into its bag; its owner takes it from
+				-- the mercenary's equipment window.
+				elseif pc.get_player_id() == pid and pc.is_najemnik ~= nil and pc.is_najemnik() and pc.get_map_index() == idx then
+					pc.give_item2(meley_dungeon.cfg().chest_queen, 1)
 				end
 				q.end_other_pc_block()
 			end

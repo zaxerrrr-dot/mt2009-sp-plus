@@ -1039,6 +1039,10 @@ namespace
 // to, 0 for the bag. This unit holds the bots' rules; the engine's unit only asks.
 BYTE PlayerBotEkwRouteWindow(LPCHARACTER ch, LPITEM item, const TItemTable* proto, DWORD dwVnum)
 {
+	// MT2009_PLUS_NAJEMNICY_V2: a player's mercenary keeps everything in its bag - its owner's equipment window
+	// (playerbot_najemnicy.h) shows the bag and the worn gear only.
+	if (ch && IsPlayerBotNajemnikPID(ch->GetPlayerID()))
+		return 0;
 	return PlayerBotEkwRouteDecide(ch, item, proto, dwVnum, true);
 }
 

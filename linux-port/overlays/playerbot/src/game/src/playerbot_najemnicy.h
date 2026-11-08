@@ -49,9 +49,22 @@
 //     core or channel - stage 3 brings it back there by itself; a warp between two maps of one core it follows), when
 //     the vault is empty or when the module is switched off.
 //
+// MT2009_PLUS_NAJEMNICY_V2 - stage 2, the equipment: the Towarzysz's equipment window (client uisidekickinventory.py,
+// the same bag window, costume panel and protocol) re-targeted to one mercenary - "/najemnicy eq <nr> ..." and
+// "/najemnicy okno <nr>" (HandleNajemnikEqCommand; the target board's "Ekwipunek" through NajemnikVids). Only the owner,
+// only a summoned mercenary within 50 m on its map. What it wears and carries stays its owner's: no AI touches it (it
+// sells, drops, trades and stores nothing; nothing goes into the extra inventory's storages - PlayerBotEkwRouteWindow);
+// the engine's rules of wearing apply. It uses its owner's consumables from its bag and never buys
+// (UseNajemnikConsumables): HP/SP potions at the bots' thresholds, the auto potions, and in a fight the green and purple
+// potions, the dews, the Energy Crystal and the other buff items. Its drops and rewards go into its bag: its share of a
+// kill, the people's boss loot (CHARACTER::PickupItem lets it - NajemnikMayTakePeopleLoot), the dungeons' rewards that
+// count it among the people (pc.is_najemnik: Razador, Nemere, the Blue Dragon, the Scorpion Ruins, the Ancient Jungle,
+// Wukong's Hill, Atlantis, Meley, the Snake Temple, the Depths) and the Zodiac's chests (every character on the floor).
+//
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
-// skarbiec | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> | gildia_wyjdz <miejsce> |
+// skarbiec | okno <miejsce> | eq <miejsce> [polecenie] | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> |
+// gildia_wyjdz <miejsce> |
 // zwolnij <miejsce> tak; GM (GM_HIGH_WIZARD): odblokuj <postac> [zadania, 6] | zadania <postac> <0-6> |
 // zablokuj <postac> | spis.
 //
@@ -67,6 +80,8 @@
 
 int NajemnicyBlockAttack(LPCHARACTER ch, LPCHARACTER victim);
 bool NajemnikNoItemDrop(LPCHARACTER ch);
+bool NajemnikMayTakePeopleLoot(LPCHARACTER ch);	// MT2009_PLUS_NAJEMNICY_V2
+bool IsNajemnikCharacter(LPCHARACTER ch);			// MT2009_PLUS_NAJEMNICY_V2
 void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument);
 
 namespace
@@ -93,6 +108,16 @@ namespace
 	const int NAJEMNICY_MAX_TASKS = 6;	// the Kolekcjoner Najemnikow's tasks
 	const int NAJEMNICY_RETIRED_DELETE_MINUTES = 20;
 	const unsigned int NAJEMNICY_MAX_SEQ = 9999;	// playerbot_nj%04u: 16 characters, the account's login column
+	// MT2009_PLUS_NAJEMNICY_V2: the equipment window and the consumables.
+	const int NAJEMNICY_EQ_RANGE = 5000;					// the owner within 50 m of it, on its map
+	const DWORD NAJEMNICY_PENDING_WEAR_MS = 20000;			// how long a piece put on mid-blow waits for its moment
+	const DWORD NAJEMNICY_CONSUMABLE_MS = 1000;
+	const DWORD NAJEMNICY_BUFF_ITEM_MS = 2000;				// one buff item every two seconds at most
+	const DWORD NAJEMNICY_BUFF_RETRY_MS = 30000;			// a buff item the engine refused waits this long
+	const DWORD NAJEMNICY_FIGHT_MEMORY_MS = 10000;			// "in a fight": a blow or a target in the last 10 s
+	const DWORD NAJEMNICY_BAG_SWEEP_MS = 5000;
+	const DWORD NAJEMNICY_BAG_FULL_TELL_MS = 5 * 60 * 1000;
+	const DWORD NAJEMNICY_VID_RESEND_MS = 20000;
 
 	enum ENajemnikPhase
 	{
@@ -126,7 +151,19 @@ namespace
 		bool dismiss = false;
 		std::string dismissWhy;
 		// The Towarzysz's per-companion runtime, which its fight helpers keep (FightPlayerBotSidekickFoe).
+		// MT2009_PLUS_NAJEMNICY_V2: and the equipment window's picture (mapEqSent, dwEqGen, llEqGoldSent).
 		TPlayerBotSidekickRuntime rt;
+		// MT2009_PLUS_NAJEMNICY_V2: a piece the owner put on while a blow was still landing - worn at the first
+		// moment the engine lets it (RetryNajemnikPendingWear), the fight held off for it.
+		DWORD pendingWearItem = 0;
+		int pendingWearSlot = -1;
+		DWORD pendingWearUntil = 0;
+		// MT2009_PLUS_NAJEMNICY_V2: its consumables (UseNajemnikConsumables), its storages' sweep, the full bag's word.
+		DWORD nextConsumable = 0;
+		DWORD nextBuffItem = 0;
+		DWORD nextBagSweep = 0;
+		DWORD nextBagFullTell = 0;
+		std::map<DWORD, DWORD> mapItemRetry;	// vnum -> when a buff item of it may be tried again
 	};
 
 	struct TNajemnicyOwner
@@ -135,7 +172,13 @@ namespace
 		DWORD goneSince = 0;
 		long long carry = 0;	// the fee's remainder (price * n mod 60), carried to the next minute
 		bool warned = false;
+		// MT2009_PLUS_NAJEMNICY_V2: what the owner's client was last told of its mercenaries' VIDs (NajemnikVids).
+		std::string vidSig;
+		DWORD nextVidSend = 0;
 	};
+
+	// MT2009_PLUS_NAJEMNICY_V2: the owner's client told which characters are its mercenaries (defined with the window).
+	void AnnounceNajemnicyVids(LPCHARACTER owner, TNajemnicyOwner& rec, DWORD dwNow);
 
 	std::map<DWORD, TNajemnik> s_mapNajemnik;				// mercenary pid -> its runtime (summoned on this core)
 	std::map<DWORD, TNajemnicyOwner> s_mapNajemnicyOwner;	// owner pid -> its billing
@@ -695,6 +738,10 @@ namespace
 
 	// Its own drops: a thing on the ground whose ownership is the mercenary's and not the owner's (the party's share
 	// of a kill, CParty::GetNextOwnership) - the owner picks up the rest.
+	// MT2009_PLUS_NAJEMNICY_V2 (the owner: "caly drop i wszystkie nagrody trafiaja do ekwipunku najemnika"): also the
+	// people's boss loot a dungeon quest leaves on the ground (game.drop_item_at with people 1, Mt2009PlusIsPeopleLoot) -
+	// a mercenary is one of the people there (pc.is_najemnik in the quests' loot_people), and the engine's pickup lets
+	// it take its own share (CHARACTER::PickupItem, NajemnikMayTakePeopleLoot, server-patches/najemnicy).
 	struct FNajemnikLoot
 	{
 		LPCHARACTER self;
@@ -711,7 +758,7 @@ namespace
 			if (!ent || !ent->IsType(ENTITY_ITEM))
 				return;
 			LPITEM item = (LPITEM)ent;
-			if (!item->GetSectree() || item->GetOwner() || IsPlayerBotPeopleOnlyLoot(item))
+			if (!item->GetSectree() || item->GetOwner())
 				return;
 			if (!item->IsOwnership(self) || item->IsOwnership(owner))
 				return;
@@ -729,13 +776,27 @@ namespace
 		if (n.lootVid == 0 && (int)(dwNow - n.nextLoot) < 0)
 			return false;
 		n.nextLoot = dwNow + NAJEMNICY_LOOT_MS;
-		if (!ch->GetSectree() || IsPlayerBotBagFull(ch))
+		if (!ch->GetSectree())
 			return false;
 		FNajemnikLoot loot(ch, owner);
 		ch->GetSectree()->ForEachAround(loot);
 		if (!loot.best)
 		{
 			n.lootVid = 0;
+			return false;
+		}
+		// MT2009_PLUS_NAJEMNICY_V2: no room for its share - the owner hears it (now and then) and empties its bag.
+		if (ch->GetEmptyInventory(loot.best->GetSize()) < 0)
+		{
+			n.lootVid = 0;
+			if ((int)(dwNow - n.nextBagFullTell) >= 0)
+			{
+				n.nextBagFullTell = dwNow + NAJEMNICY_BAG_FULL_TELL_MS;
+				TellNajemnicy(owner, "%s ma pelny plecak i nie podniesie swojego lupu - zabierz od niego rzeczy (okno "
+						"ekwipunku najemnika).", ch->GetName());
+				sys_log(0, "NAJEMNICY: bag full pid=%u name=%s owner=%u vnum=%u", n.pid, ch->GetName(), n.ownerPid,
+						loot.best->GetVnum());
+			}
 			return false;
 		}
 		const DWORD vid = loot.best->GetVID();
@@ -765,6 +826,177 @@ namespace
 					ch->GetName(), vid, vnum);
 		n.lootVid = 0;
 		return true;
+	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V2: what it uses
+
+	// Any potion of the owner's that heals (HP) or restores mana (SP): ITEM_USE, USE_POTION or USE_POTION_NODELAY with
+	// the amount in value0 (HP) or value1 (SP) - whatever the owner gave it, past the bots' own vnum lists.
+	bool IsNajemnikPotion(LPITEM item, bool hp)
+	{
+		if (!item || item->GetType() != ITEM_USE || item->isLocked() || item->IsExchanging())
+			return false;
+		if (item->GetSubType() != USE_POTION && item->GetSubType() != USE_POTION_NODELAY)
+			return false;
+		return hp ? item->GetValue(0) > 0 : item->GetValue(1) > 0;
+	}
+
+	bool UseNajemnikAnyPotion(LPCHARACTER ch, bool hp)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || !IsNajemnikPotion(item, hp))
+				continue;
+			const DWORD vnum = item->GetVnum();
+			if (ch->UseItem(TItemPos(INVENTORY, cell)))
+			{
+				PlayerBotLogPerBot(hp ? "najemnik_hp" : "najemnik_sp", ch->GetPlayerID(), get_dword_time(),
+						"NAJEMNICY: potion pid=%u name=%s vnum=%u hp=%d/%d sp=%d/%d", ch->GetPlayerID(), ch->GetName(), vnum,
+						(int)ch->GetHP(), (int)ch->GetMaxHP(), (int)ch->GetSP(), (int)ch->GetMaxSP());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// A buff of the owner's from its bag in a fight: the dews and the Energy Crystal (ITEM_BLEND), the attack, defence,
+	// speed and critical potions, the juices - whatever the bots' own reading of a buff item knows
+	// (GetPlayerBotBuffItemAffect), not while the same buff runs as strong (IsPlayerBotBuffItemCovered). Never a book's
+	// affect (the Hermit's Advice, the Exorcism Scroll). One a call; an item the engine refused waits half a minute.
+	bool UseNajemnikBuffItem(LPCHARACTER ch, TNajemnik& n, DWORD dwNow)
+	{
+		if ((int)(dwNow - n.nextBuffItem) < 0)
+			return false;
+		n.nextBuffItem = dwNow + NAJEMNICY_BUFF_ITEM_MS;
+		std::set<DWORD> tried;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->isLocked() || item->IsExchanging())
+				continue;
+			if (item->GetType() != ITEM_BLEND && !(item->GetType() == ITEM_USE &&
+					(item->GetSubType() == USE_AFFECT || item->GetSubType() == USE_ABILITY_UP)))
+				continue;
+			if (IsPlayerBotBookAffectItem(item))
+				continue;
+			DWORD type = 0;
+			WORD point = 0;
+			long value = 0;
+			if (!GetPlayerBotBuffItemAffect(item, type, point, value) || IsPlayerBotBuffItemCovered(ch, item))
+				continue;
+			const DWORD vnum = item->GetVnum();
+			if (!tried.insert(vnum).second)
+				continue;
+			std::map<DWORD, DWORD>::iterator retry = n.mapItemRetry.find(vnum);
+			if (retry != n.mapItemRetry.end() && (int)(dwNow - retry->second) < 0)
+				continue;
+			n.mapItemRetry[vnum] = dwNow + NAJEMNICY_BUFF_RETRY_MS;
+			if (ch->UseItem(TItemPos(INVENTORY, cell)))
+			{
+				PlayerBotLogPerBot("najemnik_buff", ch->GetPlayerID(), dwNow, "NAJEMNICY: buff item pid=%u name=%s vnum=%u "
+						"type=%u point=%u", ch->GetPlayerID(), ch->GetName(), vnum, (unsigned int)type, (unsigned int)point);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Its consumables, all its owner's (it never buys): HP and SP potions at the bots' thresholds (the bots' own vnum
+	// lists first - the reds, the blues, the healing fish and wine - then any potion of the owner's), the auto potions,
+	// and in a fight the green and purple potions and the buff items (UseNajemnikBuffItem), as a bot in a party.
+	void UseNajemnikConsumables(LPCHARACTER ch, TPlayerBotAIState& state, TNajemnik& n, bool fighting, DWORD dwNow)
+	{
+		if ((int)(dwNow - n.nextConsumable) < 0 || ch->IsDead() || !ch->IsItemLoaded())
+			return;
+		n.nextConsumable = dwNow + NAJEMNICY_CONSUMABLE_MS;
+		const bool war = ch->GetWarMap() != NULL;
+		const bool lowHp = ch->GetMaxHP() > 0 && ((long long)ch->GetHP() + ch->GetPoint(POINT_HP_RECOVERY)) * 100 <=
+				(long long)ch->GetMaxHP() * PLAYERBOT_POTION_HP_PERCENT;
+		const bool lowSp = ch->GetMaxSP() > 0 && ((long long)ch->GetSP() + ch->GetPoint(POINT_SP_RECOVERY)) * 100 <=
+				(long long)ch->GetMaxSP() * PLAYERBOT_POTION_SP_PERCENT;
+		if (lowHp && !UseHealthPotion(ch, state, dwNow) && !war)
+			UseNajemnikAnyPotion(ch, true);
+		if (lowSp && !UseManaPotion(ch, state, dwNow))
+			UseNajemnikAnyPotion(ch, false);
+		ManagePlayerBotAutoPotions(ch, dwNow);
+		if (!fighting)
+			return;
+		UseUtilityPotions(ch, state, dwNow);
+		UseNajemnikBuffItem(ch, n, dwNow);
+	}
+
+	// A piece the owner put on while a blow was landing: worn at the engine's first chance. True while it still waits
+	// (the tick holds the fight off meanwhile, as the Towarzysz's equipment pass did).
+	bool RetryNajemnikPendingWear(LPCHARACTER ch, TPlayerBotAIState& state, TNajemnik& n, DWORD dwNow)
+	{
+		if (!n.pendingWearItem)
+			return false;
+		LPITEM item = ITEM_MANAGER::instance().Find(n.pendingWearItem);
+		if (!item || item->GetOwner() != ch || item->IsEquipped() || item->GetWindow() != INVENTORY ||
+				(int)(dwNow - n.pendingWearUntil) >= 0)
+		{
+			if (item && item->GetOwner() == ch && !item->IsEquipped() && (int)(dwNow - n.pendingWearUntil) >= 0)
+				sys_log(0, "NAJEMNICY: pending wear given up pid=%u name=%s vnum=%u", n.pid, ch->GetName(), item->GetVnum());
+			n.pendingWearItem = 0;
+			n.pendingWearSlot = -1;
+			return false;
+		}
+		if (IsPlayerBotEquipWindowShut(ch, state) || item->isLocked() || item->IsExchanging())
+		{
+			if (ch->GetVictim())
+				ch->SetVictim(NULL);
+			state.dwTargetVID = 0;
+			return true;
+		}
+		const int slot = n.pendingWearSlot;
+		LPITEM old = slot >= 0 && slot < WEAR_MAX_NUM ? ch->GetWear(slot) : NULL;
+		if ((slot == WEAR_UNIQUE1 || slot == WEAR_UNIQUE2) && old && old->IsEquipped() &&
+				ch->GetEmptyInventory(old->GetSize()) >= 0)
+			ch->UnequipItem(old);
+		bool worn = PlayerBotEquipItem(ch, item) && item->IsEquipped();
+		if (!worn && old && old->IsEquipped() && ch->GetEmptyInventory(old->GetSize()) >= 0 && ch->UnequipItem(old) &&
+				!old->IsEquipped())
+			worn = PlayerBotEquipItem(ch, item) && item->IsEquipped();
+		sys_log(0, "NAJEMNICY: pending wear pid=%u name=%s vnum=%u slot=%d worn=%d", n.pid, ch->GetName(), item->GetVnum(),
+				slot, worn ? 1 : 0);
+		if (worn)
+		{
+			FlushPlayerBotItemRow(item);
+			FlushPlayerBotItemRow(old);
+			ch->ComputePoints();
+			ch->PointsPacket();
+		}
+		n.pendingWearItem = 0;
+		n.pendingWearSlot = -1;
+		return false;
+	}
+
+	// The extra inventory's storages are never a mercenary's (PlayerBotEkwRouteWindow sends nothing there); what is
+	// there from before comes into its bag, where the owner's window sees it.
+	void SweepNajemnikStorage(LPCHARACTER ch, TNajemnik& n, DWORD dwNow)
+	{
+		if ((int)(dwNow - n.nextBagSweep) < 0)
+			return;
+		n.nextBagSweep = dwNow + NAJEMNICY_BAG_SWEEP_MS;
+		std::vector<LPITEM> stored;
+		CollectPlayerBotEkwStored(ch, stored);
+		int moved = 0;
+		for (size_t i = 0; i < stored.size() && moved < 10; ++i)
+		{
+			LPITEM item = stored[i];
+			if (!item || item->isLocked() || item->IsExchanging())
+				continue;
+			const int cell = ch->GetEmptyInventory(item->GetSize());
+			if (cell < 0)
+				break;
+			item->RemoveFromCharacter();
+			item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)cell));
+			ITEM_MANAGER::instance().FlushDelayedSave(item);
+			++moved;
+		}
+		if (moved > 0)
+			sys_log(0, "NAJEMNICY: storage swept pid=%u name=%s moved=%d", n.pid, ch->GetName(), moved);
 	}
 
 	// The whole tick of a summoned mercenary; true for every mercenary (nothing of the population's runs for it).
@@ -854,8 +1086,10 @@ namespace
 			n.nextSave = dwNow + NAJEMNICY_SAVE_MS;
 			PersistPlayerBot(ch, state, dwNow);
 		}
-		UseHealthPotion(ch, state, dwNow);
-		UseManaPotion(ch, state, dwNow);
+		// MT2009_PLUS_NAJEMNICY_V2: its storages into its bag, and its owner's consumables from it (it never buys).
+		SweepNajemnikStorage(ch, n, dwNow);
+		const bool fighting = state.dwTargetVID != 0 || (DWORD)(dwNow - ch->GetLastAttackTime()) < NAJEMNICY_FIGHT_MEMORY_MS;
+		UseNajemnikConsumables(ch, state, n, fighting, dwNow);
 		// A guild war's map: only a member of the owner's guild goes there.
 		const bool ownerOnWarMap = CWarMapManager::instance().IsWarMap(owner->GetMapIndex());
 		const bool inOwnersGuild = ch->GetGuild() && ch->GetGuild() == owner->GetGuild();
@@ -884,6 +1118,20 @@ namespace
 		{
 			n.nextParty = dwNow + NAJEMNICY_PARTY_CHECK_MS;
 			KeepNajemnikInParty(ch, owner, dwNow);
+		}
+		// MT2009_PLUS_NAJEMNICY_V2: a piece its owner put on mid-blow waits for the engine's moment - no new blow till then.
+		if (RetryNajemnikPendingWear(ch, state, n, dwNow))
+		{
+			if (dist > NAJEMNICY_FOLLOW_DISTANCE)
+			{
+				long x = 0, y = 0;
+				GetPlayerBotSidekickSpot(ch, owner, x, y);
+				WalkPlayerBotSidekick(ch, x, y, dwNow, dist > 1500);
+			}
+			else if (ch->IsStateMove())
+				ch->Stop();
+			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+			return true;
 		}
 		// The fight: what the owner fights, what attacks either of them, then what stands near (the Towarzysz's "atakuj").
 		int why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
@@ -948,6 +1196,7 @@ namespace
 		TNajemnicyOwner& o = s_mapNajemnicyOwner[n.ownerPid];
 		if (o.nextBill == 0)
 			o.nextBill = dwNow;
+		o.nextVidSend = 0;	// MT2009_PLUS_NAJEMNICY_V2: its VID to the owner's client at the next pass
 		LPCHARACTER owner = FindNajemnicyOwnerHere(n.ownerPid);
 		if (owner)
 			TellNajemnicy(owner, "%s jest przy tobie.", ch->GetName());
@@ -996,6 +1245,14 @@ namespace
 		sys_log(0, "NAJEMNICY: dismissed pid=%u name=%s owner=%u why=%s", pid, name.c_str(), ownerPid, why);
 		if (CountNajemnicySummonedOf(ownerPid) == 0)
 			s_mapNajemnicyOwner.erase(ownerPid);
+		// MT2009_PLUS_NAJEMNICY_V2: the owner's client forgets it at once (the target board's "Ekwipunek").
+		LPCHARACTER owner = FindNajemnicyOwnerHere(ownerPid);
+		if (owner)
+		{
+			std::map<DWORD, TNajemnicyOwner>::iterator rec = s_mapNajemnicyOwner.find(ownerPid);
+			TNajemnicyOwner none;
+			AnnounceNajemnicyVids(owner, rec != s_mapNajemnicyOwner.end() ? rec->second : none, get_dword_time());
+		}
 	}
 
 	void DespawnNajemnicyOf(DWORD ownerPid, const char* why)
@@ -1241,6 +1498,7 @@ namespace
 				continue;
 			}
 			rec.goneSince = 0;
+			AnnounceNajemnicyVids(owner, rec, dwNow);	// MT2009_PLUS_NAJEMNICY_V2
 			// The fee, a minute at a time, for the ones in the world (or on their way).
 			if (rec.nextBill == 0 || (int)(dwNow - rec.nextBill) < 0)
 				continue;
@@ -1652,11 +1910,23 @@ namespace
 			if (sk->GetEmptyInventory(worn->GetSize()) < 0 || !sk->UnequipItem(worn) || worn->IsEquipped())
 				++left;
 		}
+		// MT2009_PLUS_NAJEMNICY_V2: its bag and whatever lies in the extra inventory's storages (from before
+		// SweepNajemnikStorage) - everything it holds is its owner's.
+		std::vector<LPITEM> all;
 		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = sk->GetInventoryItem(cell);
-			if (!item || item->GetCell() != cell || item->IsEquipped())
-				continue;
+			if (item && item->GetCell() == cell && !item->IsEquipped())
+				all.push_back(item);
+		}
+		{
+			std::vector<LPITEM> stored;
+			CollectPlayerBotEkwStored(sk, stored);
+			all.insert(all.end(), stored.begin(), stored.end());
+		}
+		for (size_t i = 0; i < all.size(); ++i)
+		{
+			LPITEM item = all[i];
 			if (!GetPlayerBotSidekickHandOverRefusal(item).empty())
 			{
 				++left;
@@ -1698,6 +1968,608 @@ namespace
 					moved, left, sk->GetName());
 		else
 			TellNajemnicy(ch, "Zabrano wszystko od %s (%d przedmiotow).", sk->GetName(), moved);
+	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V2: the equipment window
+	//
+	// The Towarzysz's bag window (client root/uisidekickinventory.py: the equipment picture, the four bag pages, the
+	// costumes panel), opened for one mercenary: "/najemnicy okno <nr>" (the letter) answers NajemnikEqOpen, and the
+	// target board's "Ekwipunek" on a summoned mercenary opens it straight (NajemnikVids tells the owner's client which
+	// characters are its mercenaries). The window's orders are the Towarzysz's own, after "/najemnicy eq <nr>":
+	//   (nothing) / 1          what changed / the whole picture: NajemnikEqWho, then the Towarzysz's protocol
+	//                          (SidekickEqBegin, SidekickEqItem, SidekickEqEmpty, SidekickEqEnd - no Alchemy, no marks)
+	//   daj <your cell> <to>   from the owner's bag into its bag (<to> a cell or -1) or onto a slot (1000 + WEAR_*)
+	//   wez <from> <your cell> from its bag or a slot into the owner's bag (-1 anywhere)
+	//   ruch <from> <to>       inside its gear: a bag cell to another, onto a slot (put on), off a slot (taken off)
+	//   wszystko               everything it carries and wears, and its yang, back to the owner (TakeAllFromNajemnik)
+	//   yang wez <amount>      its yang (kills' yang lands in its purse) to the owner; it is never given any
+	// each answered by SidekickEqResult. Only the owner, only a summoned mercenary in the world, and only within
+	// NAJEMNICY_EQ_RANGE of it on its map (the answer "SidekickEqNone 1 3" otherwise). What it wears and carries stays its
+	// owner's: it sells, drops, trades and stores nothing, loses nothing at its death, and nothing of the AI touches it.
+	// The rules of wearing are the engine's for any character (class, sex, level, stats, a unique's group), checked
+	// before a piece leaves the owner's bag (GetPlayerBotSidekickWearRefusal).
+
+	// The Towarzysz's answers in the mercenary's words.
+	std::string NajemnikWords(const std::string& in)
+	{
+		static const char* const pairs[][2] = {
+			{ "Towarzyszem", "Najemnikiem" }, { "towarzyszem", "najemnikiem" },
+			{ "Towarzysz", "Najemnik" }, { "towarzysz", "najemnik" },
+			{ "torbie", "plecaku" }, { "torby", "plecaka" }, { "torbe", "plecak" },
+		};
+		std::string out = in;
+		for (size_t p = 0; p < sizeof(pairs) / sizeof(pairs[0]); ++p)
+		{
+			const std::string from = pairs[p][0];
+			const std::string to = pairs[p][1];
+			for (size_t at = out.find(from); at != std::string::npos; at = out.find(from, at + to.size()))
+				out.replace(at, from.size(), to);
+		}
+		return out;
+	}
+
+	void AnswerNajemnikEq(LPCHARACTER owner, int code, const std::string& text)
+	{
+		SendPlayerBotSidekickCommand(owner, "SidekickEqResult %d %s", code,
+				EncodePlayerBotSidekickText(NajemnikWords(text).c_str(), 150).c_str());
+	}
+
+	// The owner's summoned mercenary of a slot, in reach of the window; reason: 1 not summoned (or not in the world
+	// yet), 2 the module off, 3 too far (another map or past NAJEMNICY_EQ_RANGE).
+	LPCHARACTER FindNajemnikForWindow(LPCHARACTER owner, int slot, TNajemnik** out, int& reason)
+	{
+		reason = 1;
+		if (IsNajemnicyOff())
+		{
+			reason = 2;
+			return NULL;
+		}
+		TNajemnik* n = slot > 0 ? FindNajemnikSummoned(owner->GetPlayerID(), slot) : NULL;
+		LPCHARACTER sk = n && n->phase == NAJEMNIK_READY ? CHARACTER_MANAGER::instance().FindByPID(n->pid) : NULL;
+		if (!sk || !sk->IsItemLoaded() || !n->setupDone)
+			return NULL;
+		if (sk->GetMapIndex() != owner->GetMapIndex() ||
+				DISTANCE_APPROX(sk->GetX() - owner->GetX(), sk->GetY() - owner->GetY()) > NAJEMNICY_EQ_RANGE)
+		{
+			reason = 3;
+			return NULL;
+		}
+		if (out)
+			*out = n;
+		return sk;
+	}
+
+	// Its bag and worn gear to the owner's window: the whole picture, or only what changed (nothing at all when
+	// nothing did) - SendPlayerBotSidekickEq's way, on the mercenary's own runtime.
+	void SendNajemnikEq(LPCHARACTER owner, LPCHARACTER sk, TNajemnik& n, bool full)
+	{
+		TPlayerBotSidekickRuntime& rt = n.rt;
+		std::map<int, TPlayerBotSidekickEqEntry> now;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = sk->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell)
+				continue;
+			TPlayerBotSidekickEqEntry& e = now[(int)cell];
+			e.item = item;
+			e.flags = 0;
+			e.hash = HashPlayerBotSidekickEqItem(item, 0);
+		}
+		for (int wear = 0; wear < WEAR_MAX_NUM; ++wear)
+		{
+			LPITEM item = sk->GetWear(wear);
+			if (!item)
+				continue;
+			TPlayerBotSidekickEqEntry& e = now[PLAYERBOT_SIDEKICK_EQ_WEAR_BASE + wear];
+			e.item = item;
+			e.flags = 0;
+			e.hash = HashPlayerBotSidekickEqItem(item, 0);
+		}
+		const long long gold = (long long)sk->GetGold();
+		const bool begin = full || rt.dwEqGen == 0;
+		if (!begin)
+		{
+			bool changed = gold != rt.llEqGoldSent || now.size() != rt.mapEqSent.size();
+			for (std::map<int, TPlayerBotSidekickEqEntry>::const_iterator e = now.begin(); !changed && e != now.end(); ++e)
+			{
+				std::map<int, DWORD>::const_iterator sent = rt.mapEqSent.find(e->first);
+				changed = sent == rt.mapEqSent.end() || sent->second != e->second.hash;
+			}
+			if (!changed)
+				return;
+		}
+		++rt.dwEqGen;
+		if (begin)
+		{
+			rt.mapEqSent.clear();
+			// Who the picture is of: the slot, the name (hex), the level and the race - the window's title.
+			SendPlayerBotSidekickCommand(owner, "NajemnikEqWho %u %s %d %u", (unsigned int)n.slot,
+					EncodePlayerBotSidekickText(sk->GetName(), 24).c_str(), (int)sk->GetLevel(), (unsigned int)n.race);
+			SendPlayerBotSidekickCommand(owner, "SidekickEqBegin %d %u %d %d %d %d", PLAYERBOT_SIDEKICK_EQ_PROTOCOL,
+					rt.dwEqGen, PLAYERBOT_BAG_CELLS, PLAYERBOT_SIDEKICK_EQ_PAGE_CELLS, 0, 0);
+		}
+		size_t lines = 0;
+		for (std::map<int, DWORD>::iterator sent = rt.mapEqSent.begin(); sent != rt.mapEqSent.end();)
+		{
+			if (now.find(sent->first) != now.end())
+			{
+				++sent;
+				continue;
+			}
+			if (lines >= PLAYERBOT_SIDEKICK_EQ_MAX_LINES)
+				break;
+			SendPlayerBotSidekickCommand(owner, "SidekickEqEmpty %u %d", rt.dwEqGen, sent->first);
+			++lines;
+			rt.mapEqSent.erase(sent++);
+		}
+		for (std::map<int, TPlayerBotSidekickEqEntry>::const_iterator e = now.begin(); e != now.end(); ++e)
+		{
+			std::map<int, DWORD>::iterator sent = rt.mapEqSent.find(e->first);
+			if (sent != rt.mapEqSent.end() && sent->second == e->second.hash)
+				continue;
+			if (lines >= PLAYERBOT_SIDEKICK_EQ_MAX_LINES)
+				break;
+			SendPlayerBotSidekickEqItem(owner, rt.dwEqGen, e->first, e->second.item, 0);
+			++lines;
+			rt.mapEqSent[e->first] = e->second.hash;
+		}
+		SendPlayerBotSidekickCommand(owner, "SidekickEqEnd %u %lld", rt.dwEqGen, gold);
+		rt.llEqGoldSent = gold;
+	}
+
+	// A piece of its bag put on for the owner, on the slot asked for (-1: where it goes). A blow still landing: worn at
+	// the first moment the engine lets it (RetryNajemnikPendingWear).
+	int EquipNajemnikPiece(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotAIState& state, TNajemnik& n, LPITEM item,
+			int wantWear, std::string& answer)
+	{
+		if (item->IsEquipped())
+		{
+			answer = "Najemnik juz to nosi.";
+			return 0;
+		}
+		const int wear = item->FindEquipCell(sk);
+		const bool unique = wear == WEAR_UNIQUE1 || wear == WEAR_UNIQUE2;
+		const bool uniqueSlot = wantWear == WEAR_UNIQUE1 || wantWear == WEAR_UNIQUE2;
+		if (wantWear >= 0 && wear >= 0 && wear != wantWear && !(unique && uniqueSlot))
+		{
+			answer = "To nie pasuje w to miejsce.";
+			return 2;
+		}
+		const int slot = unique && uniqueSlot ? wantWear : wear;
+		LPITEM old = slot >= 0 && slot < WEAR_MAX_NUM ? sk->GetWear(slot) : NULL;
+		answer = GetPlayerBotSidekickWearRefusal(sk, item, old);
+		if (!answer.empty())
+			return 2;
+		if (old && IS_SET(old->GetFlag(), ITEM_FLAG_IRREMOVABLE))
+		{
+			answer = "Tego, co tam nosi, nie da sie zdjac.";
+			return 2;
+		}
+		if (IsPlayerBotSidekickHairstyle(old) && IsPlayerBotSidekickHairstyle(item))
+		{
+			answer = PLAYERBOT_SIDEKICK_NEEDS_BLEACH_TEXT;
+			return 2;
+		}
+		if (IsPlayerBotGearFrozen(sk))
+		{
+			answer = "Najemnik jest teraz przemieniony - zmiana sprzetu poczeka do konca przemiany.";
+			return 2;
+		}
+		const bool blowFresh = IsPlayerBotEquipWindowShut(sk, state);
+		bool worn = false;
+		if (!blowFresh && !item->isLocked() && !item->IsExchanging())
+		{
+			if (unique && old && old->IsEquipped() && sk->GetEmptyInventory(old->GetSize()) >= 0)
+				sk->UnequipItem(old);
+			worn = PlayerBotEquipItem(sk, item) && item->IsEquipped();
+			if (!worn && old && old->IsEquipped() && sk->GetEmptyInventory(old->GetSize()) >= 0 &&
+					sk->UnequipItem(old) && !old->IsEquipped())
+				worn = PlayerBotEquipItem(sk, item) && item->IsEquipped();
+		}
+		if (worn)
+		{
+			LogManager::instance().ItemLog(sk, item, "NAJEMNIK_ZALOZ", owner->GetName());
+			FlushPlayerBotItemRow(item);
+			FlushPlayerBotItemRow(old);
+			sk->ComputePoints();
+			sk->PointsPacket();
+			n.pendingWearItem = 0;
+			answer = "Zalozone.";
+			return 0;
+		}
+		if (old && sk->GetEmptyInventory(old->GetSize()) < 0)
+		{
+			answer = "Najemnik nie ma miejsca w plecaku na to, co by zdjal - zabierz najpierw cos z jego plecaka.";
+			return 2;
+		}
+		if (blowFresh)
+		{
+			n.pendingWearItem = item->GetID();
+			n.pendingWearSlot = slot;
+			n.pendingWearUntil = get_dword_time() + NAJEMNICY_PENDING_WEAR_MS;
+			answer = "Zalozy to, jak tylko skonczy cios.";
+			return 0;
+		}
+		answer = "Nie da sie tego teraz zalozyc - sprobuj za chwile.";
+		return 2;
+	}
+
+	// A worn piece off into its bag (a cell, or the first that fits).
+	int UnequipNajemnikPiece(LPCHARACTER owner, LPCHARACTER sk, int wear, int toCell, std::string& answer)
+	{
+		LPITEM worn = sk->GetWear(wear);
+		if (!worn)
+		{
+			answer = "Tam nic nie ma.";
+			return 3;
+		}
+		if (IS_SET(worn->GetFlag(), ITEM_FLAG_IRREMOVABLE) || worn->isLocked())
+		{
+			answer = "Tego nie da sie zdjac.";
+			return 2;
+		}
+		if (IsPlayerBotGearFrozen(sk))
+		{
+			answer = "Najemnik jest teraz przemieniony - zmiana sprzetu poczeka do konca przemiany.";
+			return 2;
+		}
+		StopPlayerBotSidekickMountFor(sk, worn);
+		bool done = false;
+		if (toCell >= 0)
+			done = sk->MoveItem(TItemPos(INVENTORY, INVENTORY_MAX_NUM + wear), TItemPos(INVENTORY, toCell),
+					worn->GetCount()) && !worn->IsEquipped();
+		else
+			done = sk->GetEmptyInventory(worn->GetSize()) >= 0 && sk->UnequipItem(worn) && !worn->IsEquipped();
+		if (!done)
+		{
+			answer = sk->GetEmptyInventory(worn->GetSize()) < 0 ? "Najemnik nie ma miejsca w plecaku." :
+					IsPlayerBotSidekickHairstyle(worn) ? PLAYERBOT_SIDEKICK_NEEDS_BLEACH_TEXT :
+					"Nie da sie tego teraz zdjac - sprobuj za chwile.";
+			return 2;
+		}
+		LogManager::instance().ItemLog(sk, worn, "NAJEMNIK_ZDEJMIJ", owner->GetName());
+		FlushPlayerBotItemRow(worn);
+		sk->ComputePoints();
+		sk->PointsPacket();
+		answer = "Zdjete do plecaka najemnika.";
+		return 0;
+	}
+
+	// From the owner's bag to the mercenary: onto a cell, a stack or a slot (put on). What it could never wear stays
+	// with the owner.
+	int GiveNajemnikPiece(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotAIState& state, TNajemnik& n, int fromCell, int to,
+			std::string& answer)
+	{
+		LPITEM item = fromCell >= 0 && fromCell < INVENTORY_MAX_NUM ? owner->GetInventoryItem(fromCell) : NULL;
+		if (!item || item->GetCell() != fromCell || item->GetWindow() != INVENTORY || item->IsEquipped())
+		{
+			answer = "Nie ma tego w twoim ekwipunku.";
+			return 3;
+		}
+		answer = GetPlayerBotSidekickHandOverRefusal(item);
+		if (!answer.empty())
+			return 2;
+		const bool toWear = IsPlayerBotSidekickEqWearPos(to);
+		const int wantWear = toWear ? to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE : -1;
+		const bool hairTool = wantWear == WEAR_COSTUME_HAIR && IsPlayerBotSidekickHairTool(item);
+		if (toWear && !hairTool)
+		{
+			const int wear = item->FindEquipCell(sk);
+			const bool unique = (wear == WEAR_UNIQUE1 || wear == WEAR_UNIQUE2) &&
+					(wantWear == WEAR_UNIQUE1 || wantWear == WEAR_UNIQUE2);
+			if (wear >= 0 && wear != wantWear && !unique)
+			{
+				answer = "To nie pasuje w to miejsce.";
+				return 2;
+			}
+			answer = GetPlayerBotSidekickWearRefusal(sk, item, sk->GetWear(wantWear));
+			if (!answer.empty())
+				return 2;
+		}
+		const std::string pieceName = item->GetName() ? item->GetName() : "";
+		LPITEM stack = IsPlayerBotSidekickEqBagPos(to) ? sk->GetInventoryItem(to) : NULL;
+		if (stack && stack->GetCell() == to)
+		{
+			const DWORD count = (DWORD)item->GetCount();
+			const int poured = PourPlayerBotSidekickStack(owner, item, stack, "NAJEMNIK_DAJ");
+			if (poured > 0)
+			{
+				LogManager::instance().ItemLog(owner, stack, "NAJEMNIK_DAJ", sk->GetName());
+				char text[160];
+				snprintf(text, sizeof(text), "Dolozone do stosu najemnika: %d z %u.", poured, (unsigned int)count);
+				answer = text;
+				return 0;
+			}
+			if (poured == 0)
+			{
+				answer = "Ten stos jest juz pelny.";
+				return 2;
+			}
+		}
+		const int cell = FindPlayerBotSidekickHandOverCell(sk, item, IsPlayerBotSidekickEqBagPos(to) ? to : -1);
+		if (cell < 0)
+		{
+			answer = IsPlayerBotSidekickEqBagPos(to) ? "Tam nie ma miejsca." : "Najemnik nie ma miejsca w plecaku.";
+			return 2;
+		}
+		HandPlayerBotSidekickItemOver(owner, sk, item, cell);
+		LogManager::instance().ItemLog(owner, item, "NAJEMNIK_DAJ", sk->GetName());
+		sys_log(0, "NAJEMNICY: eq given pid=%u owner=%u item=%u vnum=%u cell=%d to=%d", sk->GetPlayerID(),
+				owner->GetPlayerID(), item->GetID(), item->GetVnum(), cell, to);
+		if (hairTool)
+		{
+			std::string used;
+			const int code = UsePlayerBotSidekickHairTool(owner, sk, n.rt, item, used);
+			answer = std::string("Dane: ") + pieceName + ". " + used;
+			return code;
+		}
+		if (toWear)
+		{
+			std::string worn;
+			const int code = EquipNajemnikPiece(owner, sk, state, n, item, wantWear, worn);
+			answer = std::string("Dane: ") + pieceName + ". " + worn;
+			return code;
+		}
+		answer = std::string("Dane najemnikowi: ") + pieceName + ".";
+		return 0;
+	}
+
+	// From the mercenary (its bag or a slot - taken off first) into the owner's bag.
+	int TakeNajemnikPiece(LPCHARACTER owner, LPCHARACTER sk, int from, int toCell, std::string& answer)
+	{
+		const bool fromWear = IsPlayerBotSidekickEqWearPos(from);
+		LPITEM item = fromWear ? sk->GetWear(from - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE)
+				: (IsPlayerBotSidekickEqBagPos(from) ? sk->GetInventoryItem(from) : NULL);
+		if (!item || (!fromWear && item->GetCell() != from))
+		{
+			answer = "Tam nic nie ma.";
+			return 3;
+		}
+		answer = GetPlayerBotSidekickHandOverRefusal(item);
+		if (!answer.empty())
+			return 2;
+		if (fromWear && IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE))
+		{
+			answer = "Tego nie da sie zdjac.";
+			return 2;
+		}
+		if (fromWear && IsPlayerBotGearFrozen(sk))
+		{
+			answer = "Najemnik jest teraz przemieniony - zmiana sprzetu poczeka do konca przemiany.";
+			return 2;
+		}
+		const std::string pieceName = item->GetName() ? item->GetName() : "";
+		const bool ownerCell = toCell >= 0 && toCell < INVENTORY_MAX_NUM;
+		LPITEM stack = ownerCell ? owner->GetInventoryItem(toCell) : NULL;
+		if (!fromWear && stack && stack->GetCell() == toCell)
+		{
+			const DWORD count = (DWORD)item->GetCount();
+			const int poured = PourPlayerBotSidekickStack(sk, item, stack, "NAJEMNIK_ZABIERZ");
+			if (poured > 0)
+			{
+				LogManager::instance().ItemLog(owner, stack, "NAJEMNIK_ZABIERZ", sk->GetName());
+				char text[160];
+				snprintf(text, sizeof(text), "Dolozone do twojego stosu: %d z %u.", poured, (unsigned int)count);
+				answer = text;
+				return 0;
+			}
+			if (poured == 0)
+			{
+				answer = "Twoj stos jest juz pelny.";
+				return 2;
+			}
+		}
+		const int cell = FindPlayerBotSidekickHandOverCell(owner, item, ownerCell ? toCell : -1);
+		if (cell < 0)
+		{
+			answer = ownerCell ? "Tam nie ma miejsca." : "Nie masz miejsca w ekwipunku.";
+			return 2;
+		}
+		if (fromWear)
+			StopPlayerBotSidekickMountFor(sk, item);
+		if (fromWear && (sk->GetEmptyInventory(item->GetSize()) < 0 || !sk->UnequipItem(item) || item->IsEquipped()))
+		{
+			answer = sk->GetEmptyInventory(item->GetSize()) < 0 ?
+					"Najemnik nie ma miejsca w plecaku, zeby to zdjac - zabierz najpierw cos z jego plecaka." :
+					IsPlayerBotSidekickHairstyle(item) ? PLAYERBOT_SIDEKICK_NEEDS_BLEACH_TEXT :
+					"Nie da sie tego teraz zdjac - sprobuj za chwile.";
+			return 2;
+		}
+		const DWORD id = item->GetID();
+		HandPlayerBotSidekickItemOver(sk, owner, item, cell);
+		LogManager::instance().ItemLog(owner, item, "NAJEMNIK_ZABIERZ", sk->GetName());
+		if (fromWear)
+		{
+			sk->ComputePoints();
+			sk->PointsPacket();
+		}
+		sys_log(0, "NAJEMNICY: eq taken pid=%u owner=%u item=%u vnum=%u worn=%d cell=%d", sk->GetPlayerID(),
+				owner->GetPlayerID(), id, item->GetVnum(), fromWear ? 1 : 0, cell);
+		answer = std::string("Zabrane od najemnika: ") + pieceName + ".";
+		return 0;
+	}
+
+	// "/najemnicy eq <nr> [op a b]" - the window's poll and orders.
+	void HandleNajemnikEqCommand(LPCHARACTER owner, const std::string& slotText, const std::string& op,
+			const std::string& a, const std::string& b)
+	{
+		const int slot = ParseNajemnicySlot(slotText);
+		TNajemnik* n = NULL;
+		int reason = 1;
+		LPCHARACTER sk = FindNajemnikForWindow(owner, slot, &n, reason);
+		const bool poll = op.empty() || op == "1";
+		if (!sk || !n)
+		{
+			if (!poll)
+				AnswerNajemnikEq(owner, 1, reason == 3 ? "Podejdz blizej do najemnika (do 50 m)." : reason == 2 ?
+						"Najemnicy sa teraz wylaczeni na tym serwerze." : "Ten najemnik nie jest teraz wezwany.");
+			SendPlayerBotSidekickCommand(owner, "SidekickEqNone %d %d", PLAYERBOT_SIDEKICK_EQ_PROTOCOL, reason);
+			return;
+		}
+		if (poll)
+		{
+			SendNajemnikEq(owner, sk, *n, !op.empty());
+			return;
+		}
+		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(n->pid);
+		if (st == s_mapPlayerBotAIStates.end())
+		{
+			AnswerNajemnikEq(owner, 1, "Ten najemnik nie jest teraz wezwany.");
+			return;
+		}
+		TPlayerBotAIState& state = st->second;
+		const int from = ParsePlayerBotSidekickEqPos(a.c_str());
+		const int to = ParsePlayerBotSidekickEqPos(b.c_str());
+		std::string answer;
+		int code = 9;
+		const bool ownerBag = op == "daj" || op == "wez" || op == "wszystko" || op == "yang";
+		if (sk->IsDead())
+		{
+			answer = "Najemnik lezy - poczekaj, az wstanie.";
+			code = 2;
+		}
+		else if (!sk->CanHandleItem())
+		{
+			answer = "Najemnik jest teraz zajety - sprobuj za chwile.";
+			code = 2;
+		}
+		else if (ownerBag && !owner->CanHandleItem())
+		{
+			answer = "Zamknij najpierw handel, sklep albo magazyn.";
+			code = 2;
+		}
+		else if (op == "wszystko")
+		{
+			int moved = 0;
+			const int left = TakeAllFromNajemnik(owner, sk, moved);
+			char text[160];
+			if (left > 0)
+				snprintf(text, sizeof(text), "Zabrano %d przedmiotow, %d zostalo (brak miejsca u ciebie albo nie da sie ich "
+						"przekazac).", moved, left);
+			else
+				snprintf(text, sizeof(text), "Zabrano wszystko (%d przedmiotow).", moved);
+			answer = text;
+			code = left > 0 ? 2 : 0;
+			n->pendingWearItem = 0;
+			sys_log(0, "NAJEMNICY: eq take all pid=%u owner=%u moved=%d left=%d", sk->GetPlayerID(), owner->GetPlayerID(),
+					moved, left);
+		}
+		else if (op == "yang")
+		{
+			if (a == "wez")
+				code = MovePlayerBotSidekickYang(owner, sk, false, b.c_str(), answer);
+			else
+			{
+				answer = "Najemnik nie potrzebuje yang - niczego nie kupuje.";
+				code = 2;
+			}
+		}
+		else if (op == "odepnij")
+		{
+			answer = "Najemnik sam niczego nie zaklada ani nie zdejmuje - nie ma czego odpinac.";
+			code = 0;
+		}
+		else if (IsPlayerBotSidekickEqDsPos(from) || IsPlayerBotSidekickEqDsPos(to) || to == PLAYERBOT_SIDEKICK_EQ_DS_AUTO)
+		{
+			answer = "Kamieni smoka nie da sie tu przekazac.";
+			code = 2;
+		}
+		else if (op == "daj")
+		{
+			if (from < 0 || from == INT_MIN || to == INT_MIN)
+				answer = "Zle miejsce.";
+			else
+				code = GiveNajemnikPiece(owner, sk, state, *n, from, to, answer);
+		}
+		else if (op == "wez")
+		{
+			if (from == INT_MIN || from == -1 || !(to == -1 || IsPlayerBotSidekickEqBagPos(to)))
+				answer = "Zle miejsce.";
+			else
+				code = TakeNajemnikPiece(owner, sk, from, to, answer);
+		}
+		else if (op == "ruch")
+		{
+			if (from == INT_MIN || to == INT_MIN)
+				answer = "Zle miejsce.";
+			else if (IsPlayerBotSidekickEqBagPos(from) && IsPlayerBotSidekickEqBagPos(to))
+				code = MovePlayerBotSidekickBagItem(sk, from, to, answer);
+			else if (IsPlayerBotSidekickEqBagPos(from) && (to == -1 || IsPlayerBotSidekickEqWearPos(to)))
+			{
+				LPITEM item = sk->GetInventoryItem(from);
+				if (!item || item->GetCell() != from)
+				{
+					answer = "Tam nic nie ma.";
+					code = 3;
+				}
+				else if (IsPlayerBotSidekickHairTool(item) &&
+						(to == -1 || to == PLAYERBOT_SIDEKICK_EQ_WEAR_BASE + WEAR_COSTUME_HAIR))
+					code = UsePlayerBotSidekickHairTool(owner, sk, n->rt, item, answer);
+				else if (to == -1 && !item->IsEquipable())
+				{
+					answer = "Tego nie da sie zalozyc. Najemnik sam uzywa mikstur i wzmocnien ze swojego plecaka.";
+					code = 2;
+				}
+				else
+					code = EquipNajemnikPiece(owner, sk, state, *n, item, to == -1 ? -1 : to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE,
+							answer);
+			}
+			else if (IsPlayerBotSidekickEqWearPos(from) && (to == -1 || IsPlayerBotSidekickEqBagPos(to)))
+				code = UnequipNajemnikPiece(owner, sk, from - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE, to, answer);
+			else
+				answer = "Przeciagnij to do plecaka najemnika.";
+		}
+		else
+			answer = "Nieznane polecenie okna.";
+		sys_log(0, "NAJEMNICY: eq %s owner=%u pid=%u from=%s to=%s code=%d", op.c_str(), owner->GetPlayerID(),
+				sk->GetPlayerID(), a.c_str(), b.c_str(), code);
+		AnswerNajemnikEq(owner, code, answer);
+		SendNajemnikEq(owner, sk, *n, false);
+	}
+
+	// "/najemnicy okno <nr>" (the letter): the owner's client opens the window for that mercenary.
+	void OpenNajemnikWindow(LPCHARACTER owner, const std::string& slotText)
+	{
+		const int slot = ParseNajemnicySlot(slotText);
+		TNajemnik* n = NULL;
+		int reason = 1;
+		LPCHARACTER sk = FindNajemnikForWindow(owner, slot, &n, reason);
+		if (!sk || !n)
+		{
+			TellNajemnicy(owner, "%s", reason == 3 ? "Podejdz blizej do najemnika (do 50 m), zeby otworzyc jego ekwipunek." :
+					reason == 2 ? "Najemnicy sa teraz wylaczeni na tym serwerze." :
+					"Najpierw wezwij tego najemnika - ekwipunek otwiera sie, gdy jest przy tobie.");
+			return;
+		}
+		SendPlayerBotSidekickCommand(owner, "NajemnikEqOpen %u %s", (unsigned int)n->slot,
+				EncodePlayerBotSidekickText(sk->GetName(), 24).c_str());
+	}
+
+	// The owner's client is told which characters are its mercenaries ("NajemnikVids <slot>:<vid>:<hex name>,...", "-"
+	// for none): the target board's "Ekwipunek" button. At every change and every NAJEMNICY_VID_RESEND_MS (a warp makes
+	// the client anew).
+	void AnnounceNajemnicyVids(LPCHARACTER owner, TNajemnicyOwner& rec, DWORD dwNow)
+	{
+		std::string sig;
+		for (std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.begin(); it != s_mapNajemnik.end(); ++it)
+		{
+			if (it->second.ownerPid != owner->GetPlayerID() || it->second.phase != NAJEMNIK_READY || it->second.dismiss)
+				continue;
+			LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!sk)
+				continue;
+			char part[96];
+			snprintf(part, sizeof(part), "%s%u:%u:%s", sig.empty() ? "" : ",", (unsigned int)it->second.slot,
+					(unsigned int)(DWORD)sk->GetVID(), EncodePlayerBotSidekickText(sk->GetName(), 24).c_str());
+			sig += part;
+		}
+		if (sig.empty())
+			sig = "-";
+		if (sig == rec.vidSig && (int)(dwNow - rec.nextVidSend) < 0)
+			return;
+		rec.vidSig = sig;
+		rec.nextVidSend = dwNow + NAJEMNICY_VID_RESEND_MS;
+		SendPlayerBotSidekickCommand(owner, "NajemnikVids %s", sig.c_str());
 	}
 
 	void GuildNajemnik(LPCHARACTER ch, const std::string& slotText, bool join)
@@ -1887,6 +2759,22 @@ bool NajemnikNoItemDrop(LPCHARACTER ch)
 	return ch && !s_mapNajemnik.empty() && IsPlayerBotNajemnikPID(ch->GetPlayerID());
 }
 
+// MT2009_PLUS_NAJEMNICY_V2: CHARACTER::PickupItem's hook (char_item.cpp, server-patches/najemnicy): a mercenary takes its
+// own share of the people's boss loot a dungeon quest left on the ground (game.drop_item_at with people 1), which no other
+// bot touches - the quests count it among the people (pc.is_najemnik).
+bool NajemnikMayTakePeopleLoot(LPCHARACTER ch)
+{
+	return ch && !s_mapNajemnik.empty() && IsPlayerBotNajemnikPID(ch->GetPlayerID());
+}
+
+// MT2009_PLUS_NAJEMNICY_V2: pc.is_najemnik() (questlua_pc.cpp, server-patches/najemnicy) - the quest's character is a
+// player's summoned mercenary: the dungeons' rewards and loot count it as one of the people (its bag; its owner takes
+// them from the equipment window).
+bool IsNajemnikCharacter(LPCHARACTER ch)
+{
+	return NajemnikMayTakePeopleLoot(ch);
+}
+
 // "/najemnicy" (cmd.cpp, server-patches/najemnicy): the player's commands, which the Najemnicy quest's buttons use, and
 // the GM's unlock.
 void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
@@ -1894,8 +2782,8 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 	if (!ch || !ch->GetDesc() || ch->GetDesc()->IsBot())
 		return;
 	std::istringstream in(argument ? argument : "");
-	std::string cmd, a, b, c;
-	in >> cmd >> a >> b >> c;
+	std::string cmd, a, b, c, d;
+	in >> cmd >> a >> b >> c >> d;
 	for (size_t i = 0; i < cmd.size(); ++i)
 		cmd[i] = (char)tolower((unsigned char)cmd[i]);
 	const bool gm = ch->GetGMLevel() >= GM_HIGH_WIZARD;
@@ -1953,6 +2841,18 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 		DismissNajemnicyCommand(ch, a);
 		return;
 	}
+	// MT2009_PLUS_NAJEMNICY_V2: the equipment window - "eq <nr> [polecenie a b]" (the window's poll and orders, answered
+	// in the Towarzysz's window protocol) and "okno <nr>" (the letter opens the window).
+	if (cmd == "eq")
+	{
+		HandleNajemnikEqCommand(ch, a, b, c, d);
+		return;
+	}
+	if (cmd == "okno")
+	{
+		OpenNajemnikWindow(ch, a);
+		return;
+	}
 	if (IsNajemnicyOff() && cmd != "zabierz" && cmd != "zwolnij")
 	{
 		TellNajemnicy(ch, "Najemnicy sa teraz wylaczeni na tym serwerze.");
@@ -1973,6 +2873,6 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 	else if (cmd == "zwolnij")
 		RetireNajemnik(ch, a, b);
 	else
-		TellNajemnicy(ch, "Komendy: lista, wezwij <nr|wszyscy>, odwolaj <nr|wszyscy>, wplac <yang>, skarbiec, daj <nr> <pole>, "
-				"zabierz <nr>, gildia <nr>, gildia_wyjdz <nr>, zwolnij <nr> tak.");
+		TellNajemnicy(ch, "Komendy: lista, wezwij <nr|wszyscy>, odwolaj <nr|wszyscy>, wplac <yang>, skarbiec, okno <nr>, "
+				"daj <nr> <pole>, zabierz <nr>, gildia <nr>, gildia_wyjdz <nr>, zwolnij <nr> tak.");
 }

@@ -195,6 +195,11 @@ def IsDropPreviewTarget(vid):
 # "Tak" spends the Prisms of Revival ("/revive <vid>").
 TARGET_BUTTON_REVIVE = getattr(localeInfo, "TARGET_BUTTON_REVIVE", "Wskrzeszenie")
 
+# MT2009_PLUS_NAJEMNICY_V2: "Ekwipunek" on the target board of the player's own
+# summoned mercenary (the server names them: NajemnikVids, uisidekickinventory.py)
+# - its equipment window; no duel, friend or report button for it.
+TARGET_BUTTON_NAJEMNIK = "Ekwipunek"
+
 class TargetBoard(ui.ThinBoard):
 
 	BUTTON_NAME_LIST = (
@@ -219,6 +224,7 @@ class TargetBoard(ui.ThinBoard):
 		"Sprawdz",
 		"EQ",
 		TARGET_BUTTON_REVIVE,
+		TARGET_BUTTON_NAJEMNIK,
 	)
 
 	GRADE_NAME =	{
@@ -353,6 +359,7 @@ class TargetBoard(ui.ThinBoard):
 		self.buttonDict["Sprawdz"].SAFE_SetEvent(self.__OnGMCheck)
 		self.buttonDict["EQ"].SAFE_SetEvent(self.__OnEQClick)
 		self.buttonDict[TARGET_BUTTON_REVIVE].SAFE_SetEvent(self.__OnZodiacRevive)
+		self.buttonDict[TARGET_BUTTON_NAJEMNIK].SAFE_SetEvent(self.__OnNajemnikEquipment)	# MT2009_PLUS_NAJEMNICY_V2
 
 		self.affectDict = {}
 
@@ -897,6 +904,20 @@ class TargetBoard(ui.ThinBoard):
 	def __OnZodiacRevive(self):
 		net.SendChatPacket("/revivedialog %d" % (self.vid))
 
+	# MT2009_PLUS_NAJEMNICY_V2: the slot of the player's mercenary this target is, 0 for anybody else.
+	def __NajemnikSlot(self):
+		try:
+			import uisidekickinventory
+			return uisidekickinventory.NajemnikSlotOfVid(self.vid)
+		except Exception:
+			return 0
+
+	def __OnNajemnikEquipment(self):
+		slot = self.__NajemnikSlot()
+		if slot:
+			import uisidekickinventory
+			uisidekickinventory.OpenNajemnikWindow(slot, chr.GetNameByVID(self.vid))
+
 	def __IsInZodiacTemple(self):
 		if not getattr(app, "ENABLE_12ZI", 0):
 			return False
@@ -998,6 +1019,13 @@ class TargetBoard(ui.ThinBoard):
 		# character (the server answers only for one lying on a temple floor).
 		if self.__IsInZodiacTemple():
 			self.__ShowButton(TARGET_BUTTON_REVIVE)
+
+		# MT2009_PLUS_NAJEMNICY_V2: the player's own mercenary - its equipment window.
+		if self.__NajemnikSlot():
+			self.__HideButton(localeInfo.TARGET_BUTTON_FIGHT)
+			self.__HideButton(localeInfo.TARGET_BUTTON_FRIEND)
+			self.__HideButton(localeInfo.TARGET_BUTTON_REPORT)
+			self.__ShowButton(TARGET_BUTTON_NAJEMNIK)
 
 		self.__ArrangeButtonPosition()
 
