@@ -574,6 +574,10 @@ namespace {
     }
 
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
+    // MT2009_PLUS_BOT_MATS_BOARD_V1 (playerbot_mats_board.h): what the worn pieces' next steps lack, and the note of a pick.
+    void CollectPlayerBotMatsBoardLack(LPCHARACTER ch, std::map<DWORD, int>& out);
+    void NotePlayerBotMatsBoardBuyPick(LPCHARACTER ch, const std::map<DWORD, int>& missing, DWORD owner, DWORD itemId);
+    int GetPlayerBotMatsBoardBuyPursePct();
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotWeaponUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
     bool FindPlayerBotArmourUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
@@ -734,6 +738,18 @@ namespace {
                 if (!missing.empty() && FindPlayerBotGambleMaterialPick(ch, state, missing, budget, now)) {
                     sys_log(0, "PLAYERBOT_MARKET: scroll-rule piece goes for materials pid=%u name=%s owner=%u item=%u lacking=%u",
                         ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
+            // MT2009_PLUS_BOT_MATS_BOARD_V1: what the next step of any worn piece lacks (the board's demand - the armour,
+            // the helmet and the shield of the gates among it), on every stand of the map, the gambler's way, out of
+            // PLAYERBOT_MATS_BOARD_BUY_PURSE_PCT of the budget; the browse's sixty-four lines found them by chance.
+            {
+                std::map<DWORD, int> missing;
+                CollectPlayerBotMatsBoardLack(ch, missing);
+                const long long boardCap = budget * GetPlayerBotMatsBoardBuyPursePct() / 100;
+                if (!missing.empty() && boardCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, boardCap, now)) {
+                    NotePlayerBotMatsBoardBuyPick(ch, missing, o.buyOwner, o.buyItem);
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }
             }

@@ -524,6 +524,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_MATS_FLOW_V1: the materials on the move - the swap at the Dozorca, the scarce materials and the belts'
 // out of the boxes, the farm map of a material the market cannot sell the bot - after the drop knowledge
 #include "playerbot_mats_flow.h"
+// MT2009_PLUS_BOT_MATS_BOARD_V1: the global board of refine materials - the worn steps' demand against the bags' supply
+// and the stands, the counters' boost, the bot-to-bot sale, the buy pick, the farmers - after the materials' flow
+#include "playerbot_mats_board.h"
 // MT2009_PLUS_BOT_SURVIVE_V1: tier gear 60+, the step down after deaths, exp rings to the market, Dragon God boosters -
 // after the market, the ItemShop V3 and the drop knowledge it uses
 #include "playerbot_survive.h"

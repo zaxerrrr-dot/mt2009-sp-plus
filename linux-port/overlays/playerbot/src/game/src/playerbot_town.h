@@ -142,6 +142,11 @@ namespace
 	// too much of it, 0 otherwise), defined with the market index below.
 	int GetPlayerBotMarketSupplyState(DWORD vnum);
 	bool IsPlayerBotMarketIndexedVnum(DWORD vnum);
+	// MT2009_PLUS_BOT_MATS_BOARD_V1 (playerbot_mats_board.h): a counter's line of a kind the materials' board lacks (out
+	// of the bot's supply), a counter to open for such kinds, the board's premium of a kind.
+	bool IsPlayerBotMatsBoardListing(LPCHARACTER ch, DWORD vnum);
+	bool IsPlayerBotMatsBoardCounterDue(LPCHARACTER ch);
+	int GetPlayerBotMatsBoardPremiumPercent(DWORD vnum);
 	// MT2009_PLUS_MARKET_LIFE_V1 (playerbot_market_life.h): a Kupon SM this
 	// bot puts on its counter rather than cashing (point 6), and the units of
 	// a kind on the counters of a kingdom's maps (point 4).
@@ -2676,6 +2681,11 @@ namespace
 		// stays what it was: an occasional thing one bot in ten does with a spare.
 		if (IsPlayerBotMerchant(state))
 			return PLAYERBOT_SHOP_REASON_MERCHANT;
+		// MT2009_PLUS_BOT_MATS_BOARD_V1: refine materials the board lacks, PLAYERBOT_MATS_BOARD_COUNTER_MIN units of them
+		// over the bot's own need - since the extra inventory's route they lie in the materials' page, where the hoard
+		// below (the bag's cells) never sees them.
+		if (IsPlayerBotMatsBoardCounterDue(ch))
+			return PLAYERBOT_SHOP_REASON_HOARD;
 		// A stock of surplus books is a counter, whatever the personality
 		// rolled: a book never goes to the merchant, so the counter is the
 		// only way it leaves the bag - and the roll left nine bots in ten
@@ -4998,8 +5008,9 @@ namespace
 			return coupon > 0 ? (DWORD)std::min(coupon, 0xFFFFFFFELL) : asking;
 		}
 #endif
+		// MT2009_PLUS_BOT_MATS_BOARD_V1: or the materials' board's premium of a kind short on the market, the higher
 		int markup = markdownPercent > 0 || !item ? 0
-				: GetPlayerBotShortageMarkupPercent(item->GetVnum());
+				: std::max(GetPlayerBotShortageMarkupPercent(item->GetVnum()), GetPlayerBotMatsBoardPremiumPercent(item->GetVnum()));
 		// MT2009_PLUS_MARKET_LIFE_V1, point 5: a rare kind's line, read before
 		// the supply markdown below forgets how long the line has stood.
 		const bool rare = item && IsPlayerBotRareOnMarket(item, std::max<DWORD>(1, item->GetCount()));
@@ -6174,8 +6185,13 @@ namespace
 			return -1;
 		}
 		const int score = ScorePlayerBotShopStockRules(ch, item, merchant, report);
-		if (score <= 0 || !item || GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_STALL ||
-				!IsPlayerBotMarketIndexedVnum(item->GetVnum()))
+		if (score <= 0 || !item || GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_STALL)
+			return score;
+		// MT2009_PLUS_BOT_MATS_BOARD_V1: a kind the materials' board lacks, out of this bot's supply, goes up ahead and is
+		// never held back as "plenty" (a counter's line only - the merchant's scan is not the board's)
+		if (!merchant && IsPlayerBotMatsBoardListing(ch, item->GetVnum()))
+			return score + PLAYERBOT_MARKET_V3_MISSING_SCORE;
+		if (!IsPlayerBotMarketIndexedVnum(item->GetVnum()))
 			return score;
 		const int state = GetPlayerBotMarketSupplyState(item->GetVnum());
 		if (state > 0)

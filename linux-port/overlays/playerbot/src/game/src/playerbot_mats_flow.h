@@ -32,6 +32,8 @@
 //     (GetPlayerBotFrontierMapForLevelRaw, after a guild's errand) - only while the drop still pays at its level
 //     (PERCENT_LVDELTA >= PLAYERBOT_MATS_FARM_MIN_DROP_PCT, 50), the map is a frontier this core hosts, the bot is still
 //     short and at most PLAYERBOT_MATS_FARM_MAX (200) bots of the core farm so at once.
+//     MT2009_PLUS_BOT_MATS_BOARD_V1: and any kind the materials' board (playerbot_mats_board.h) has farmers' places for -
+//     what neither the stands nor the core's bags hold, a place for each PLAYERBOT_MATS_BOARD_FARM_UNITS lacking.
 //   * The belts' materials (the recipes' metals and pearls, PLAYERBOT_BELT_RECIPES): at the same safebox visit a belt
 //     maker takes out what its target recipe lacks; a bot with a counter takes out what is over its own keep (the crafts'
 //     keep, the anvil's, its jewellery's sockets) while its bag holds none of it over the keep - for the counter.
@@ -646,15 +648,24 @@ namespace
 	std::map<DWORD, TPlayerBotMatsFarmAnswer> s_mapPlayerBotMatsFarm;
 	std::map<DWORD, DWORD> s_mapPlayerBotMatsFarmers;	// pid -> last answered with a map
 
+	// MT2009_PLUS_BOT_MATS_BOARD_V1 (playerbot_mats_board.h): a kind the board has farmers' places for, and one taken.
+	bool IsPlayerBotMatsBoardFarmKind(DWORD vnum);
+	bool ClaimPlayerBotMatsBoardFarm(LPCHARACTER ch, DWORD vnum, long map);
+
 	long DecidePlayerBotMatsFarmMap(LPCHARACTER ch, const TPlayerBotDkFarm& f)
 	{
 		const TPlayerBotMatsCfg& c = GetPlayerBotMatsCfg();
-		if (!c.farmVnums.count(f.dwVnum) || !PlayerBotNeedsRefineMaterial(ch, f.dwVnum))
+		// MT2009_PLUS_BOT_MATS_BOARD_V1: and a kind the materials' board lacks (neither the stands nor the core's bags hold
+		// it) - a farmer's place of it, demand-limited, taken last
+		const bool listed = c.farmVnums.count(f.dwVnum) != 0;
+		if ((!listed && !IsPlayerBotMatsBoardFarmKind(f.dwVnum)) || !PlayerBotNeedsRefineMaterial(ch, f.dwVnum))
 			return 0;
 		const int mobLevel = PlayerBotDkMobLevel(f.dwMob);
 		if (mobLevel <= 0 || PERCENT_LVDELTA(ch->GetLevel(), mobLevel) < c.farmMinDropPct)
 			return 0;
 		if (!IsPlayerBotFrontierMapIndex(f.lMap) || !IsPlayerBotMapHostedHere(f.lMap))
+			return 0;
+		if (!listed && !ClaimPlayerBotMatsBoardFarm(ch, f.dwVnum, f.lMap))
 			return 0;
 		return f.lMap;
 	}

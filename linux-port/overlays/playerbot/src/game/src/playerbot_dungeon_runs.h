@@ -701,6 +701,7 @@ namespace
 	bool IsPlayerBotDropKnowDemander(DWORD pid, int def);
 	int CountPlayerBotDropKnowDemand(int def);
 	void ManagePlayerBotDropKnow(DWORD dwNow);
+	void ManagePlayerBotMatsBoard(DWORD dwNow);	// MT2009_PLUS_BOT_MATS_BOARD_V1 (playerbot_mats_board.h)
 	bool IsPlayerBotDropkiActive(DWORD pid);
 	DWORD NotePlayerBotDropkiRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
 	void ManagePlayerBotDropki(DWORD dwNow);
@@ -4982,6 +4983,7 @@ namespace
 		PlanPlayerBotMeleyRuns(dwNow, false);	// MT2009_PLUS_BOT_MELEY_RUNS_V1: Schronienie Meley, on its own clock
 		PlanPlayerBotWiezaTraining(dwNow, false);	// MT2009_PLUS_BOT_WIEZA_V1: the tower's solo climbs (playerbot_wieza_train)
 		ManagePlayerBotDropKnow(dwNow);	// MT2009_PLUS_BOT_DROPKNOW_V1: the index, the needs' pass (its own clocks)
+		ManagePlayerBotMatsBoard(dwNow);	// MT2009_PLUS_BOT_MATS_BOARD_V1: the materials' board (its own clocks)
 		ManagePlayerBotDropki(dwNow);	// MT2009_PLUS_BOT_DROPKI_V1: the Dropki's roles, parties and calls (its own clocks)
 	}
 }
