@@ -913,7 +913,7 @@ namespace
 			sys_log(0, "PLAYERBOT_BONUS67: plan pid=%u name=%s lv=%d wear=%u vnum=%u item_lv=%d scope=%d shard=%u have=%d "
 					"element=%d lines=[%s]", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)wear,
 					target->GetVnum(), GetPlayerBotBonus67ItemLevel(target), GetPlayerBotBonus67Scope(ch, target, element),
-					mt2009_seonhae::MaterialVnum(target), (int)ch->CountSpecifyItem(mt2009_seonhae::MaterialVnum(target)), element);
+					mt2009_seonhae::MaterialVnum(target), (int)ch->CountSpecifyItem(mt2009_seonhae::MaterialVnum(target)), element, lines);
 		}
 		const DWORD shard = mt2009_seonhae::MaterialVnum(target);
 		OpenPlayerBotBonus67Chests(ch, shard);
