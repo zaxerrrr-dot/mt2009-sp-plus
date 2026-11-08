@@ -66,6 +66,8 @@
 //   arrival side (the shop channel): arrived (with an intent), to_m1, opened (+ avg minutes from the arrival),
 //     no_reason, nothing_to_sell, cannot_pay, bundle, no_village, expired, pending, and fee_eased (fee tests passed that
 //     the old reserve refused - every channel), board_sale (the board's direct sale on/off).
+// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: a second line, PLAYERBOT_CH2STAND: stand_spot, every new stand of the core -
+//     submitted / stepped / no_spot / waited / gave_up, held_<reason> and refused_by_<reason> (playerbot_offline_shop.h).
 //
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_mats_board.h, in the anonymous
 // namespace; its hooks are declared where they are asked (playerbot_town.h, playerbot_mats_board.h,
@@ -604,6 +606,18 @@ namespace
 				s.outcome[CH2STAND_REFUSED], pending,
 				s.feeEased);
 		s_kPlayerBotCh2StandStats = TPlayerBotCh2StandStats();
+		// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: every new stand of this core (not only the second channel's), the steps
+		// to a free spot, the waits, the submits held back and the native refusals by their reason.
+		const TPlayerBotStandSpotStats& f = s_kPlayerBotStandSpot;
+		sys_log(0, "PLAYERBOT_CH2STAND: stand_spot channel=%u on=%d submitted=%u stepped=%u no_spot=%u waited=%u gave_up=%u "
+				"held_crowded=%u held_cooldown=%u held_busy=%u refused_by_crowded=%u refused_by_cooldown=%u "
+				"refused_by_busy=%u refused_by_map_limit=%u refused_by_gold=%u refused_by_channel=%u refused_by_unknown=%u",
+				(unsigned int)g_bChannel, IsPlayerBotStandFreeSpotOn() ? 1 : 0, f.submitted, f.stepped, f.noSpot,
+				f.waited, f.gaveUp, f.heldBy[STANDREF_CROWDED], f.heldBy[STANDREF_COOLDOWN], f.heldBy[STANDREF_BUSY],
+				f.refusedBy[STANDREF_CROWDED], f.refusedBy[STANDREF_COOLDOWN], f.refusedBy[STANDREF_BUSY],
+				f.refusedBy[STANDREF_MAP_LIMIT], f.refusedBy[STANDREF_GOLD], f.refusedBy[STANDREF_CHANNEL],
+				f.refusedBy[STANDREF_UNKNOWN]);
+		s_kPlayerBotStandSpot = TPlayerBotStandSpotStats();
 	}
 }
 

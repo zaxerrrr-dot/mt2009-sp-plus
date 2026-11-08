@@ -656,6 +656,248 @@ namespace {
         }
         return true;
     }
+    // The nearest stand to the bot, as CanOpenOnMap's CCheckShopPosition sees
+    // them (a shop entity within sixty units refuses a renewal); -1 for none in
+    // the sectors round it. Only for the diagnostic line: map_ok alone could not
+    // say whether the map's limit or a neighbour said no.
+    struct FPlayerBotNearestStand {
+        LPCHARACTER me;
+        int best;
+        explicit FPlayerBotNearestStand(LPCHARACTER c) : me(c), best(-1) {}
+        void operator()(LPENTITY ent) {
+            if (!ent->IsType(ENTITY_NEWSHOPS))
+                return;
+            const int d = me->DistanceTo(ent);
+            if (best < 0 || d < best)
+                best = d;
+        }
+    };
+    // MT2009_PLUS_BOT_STAND_FREE_SPOT_V1 - a new stand is put up where ikashop takes it (the owner, 8 November 2026:
+    // half the bots moved from the second channel for their stand were refused at the counter). The refusal probe
+    // (MT2009_PLUS_BOT_SHOP_REFUSE_PROBE_V2) of 20:16-20:24 on channel 1: 38 of 38 refusals had another stand's
+    // entity within sixty units (CShopManager::CanOpenOnMap / CCheckShopPosition: nearest 15..60), none the 10-second
+    // open/close rule (openclose_s 500+), none a busy window, a quest, a bad line or the bundle; 39 refused against 8
+    // creates sent. The town leg ends anywhere within PLAYERBOT_MARKET_ARRIVE (450) of the bot's pitch, and keepers
+    // walking in from the same gate stop on the same edge of it - side by side.
+    // Now: once at its pitch the bot asks what ikashop would say (PlayerBotStandRefuseReason, the engine's own
+    // conditions in its order), steps to the nearest spot with no running stand - nor one asked for in the last
+    // half minute, whose entity the db core has not made yet - within PLAYERBOT_STAND_SPOT_CLEAR, up to
+    // PLAYERBOT_STAND_SPOT_TRIES times, waits out the 10-second rule and a busy window (PLAYERBOT_STAND_HOLD_MS at
+    // most), and only then submits. The census line (PLAYERBOT_CH2STAND: census) carries stand_spot and
+    // refused_by_<reason>. m2_bot_stand_free_spot_off 1: the old submit as it stood.
+    const int PLAYERBOT_STAND_SPOT_CLEAR = 95;      // the engine's 60 + the step's own imprecision
+    const int PLAYERBOT_STAND_SPOT_MAX = 500;
+    const unsigned PLAYERBOT_STAND_SPOT_TRIES = 3;
+    const DWORD PLAYERBOT_STAND_STEP_MS = 8000;
+    const DWORD PLAYERBOT_STAND_HOLD_MS = 15000;
+    const DWORD PLAYERBOT_STAND_ATTEMPT_MS = 120000;
+    const DWORD PLAYERBOT_STAND_RECENT_MS = 30000;
+    enum EPlayerBotStandRefuse {
+        STANDREF_NONE = 0,
+        STANDREF_CROWDED,   // another stand within sixty units (CCheckShopPosition)
+        STANDREF_COOLDOWN,  // ten seconds since the last open/close (GetIkarusShopOpenClosedTime)
+        STANDREF_BUSY,      // CheckCharacterActions, BUSY_SHOP_MANAGE, the saddle, a polymorph
+        STANDREF_MAP_LIMIT, // CanOpenOnMap without a neighbour: the map not listed or its stand limit
+        STANDREF_GOLD,      // the fee
+        STANDREF_CHANNEL,   // not the shop channel
+        STANDREF_UNKNOWN,   // none of these: the flood weight or the db core
+        STANDREF_COUNT
+    };
+    const char* const s_aPlayerBotStandRefuseNames[STANDREF_COUNT] = {
+        "none", "crowded", "cooldown", "busy", "map_limit", "gold", "channel", "unknown" };
+    struct TPlayerBotStandSpotStats {
+        unsigned refusedBy[STANDREF_COUNT];   // native refusals after the submit, by the reason read after it
+        unsigned heldBy[STANDREF_COUNT];      // submits not sent because the reason was there before it
+        unsigned submitted, stepped, noSpot, waited, gaveUp;
+        TPlayerBotStandSpotStats() { memset(this, 0, sizeof(*this)); }
+    };
+    TPlayerBotStandSpotStats s_kPlayerBotStandSpot;
+    struct TPlayerBotRecentStand { long map, x, y; DWORD at; };
+    std::vector<TPlayerBotRecentStand> s_vecPlayerBotRecentStands;
+    bool IsPlayerBotStandFreeSpotOn() {
+        return quest::CQuestManager::instance().GetEventFlag("m2_bot_stand_free_spot_off") == 0;
+    }
+    // What ikashop would refuse this stand for now, in the order CShopManager::OpenOfflineShop and
+    // CanOpenOnMap ask (the flood weight is not readable from here). nearest: the nearest stand entity, -1 none.
+    int PlayerBotStandRefuseReason(LPCHARACTER ch, int& nearest) {
+        nearest = -1;
+        if (!ch) return STANDREF_UNKNOWN;
+        if (g_bChannel != 1) return STANDREF_CHANNEL;
+        quest::PC* pc = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
+        if (!ch->CanHandleItem(false, false, BUSY_CAN_HANDLE_ITEM_EXCLUDE | BUSY_SHOP_MANAGE | BUSY_SHOP) ||
+                ch->GetExchange() || ch->GetSafebox() || ch->GetShop() || ch->IsAcceOpened() ||
+                (pc && pc->IsRunning()) || ch->IsHorseRiding() || ch->IsPolymorphed() ||
+                ch->IsBusy(BUSY_SHOP_MANAGE))
+            return STANDREF_BUSY;
+        if (ch->GetSectree()) {
+            FPlayerBotNearestStand f(ch);
+            ch->GetSectree()->ForEachAround(f);
+            nearest = f.best;
+        }
+        if (nearest >= 0 && nearest <= 60) return STANDREF_CROWDED;
+        if (!ikashop::GetManager().CanOpenOnMap(ch)) return STANDREF_MAP_LIMIT;
+        if (ch->GetGold() < aOfflineShopTime[1].price) return STANDREF_GOLD;
+        if (thecore_pulse() - ch->GetIkarusShopOpenClosedTime() < PASSES_PER_SEC(10)) return STANDREF_COOLDOWN;
+        return STANDREF_NONE;
+    }
+    // The nearest spot round the bot, ring by ring, with no running stand of this channel - nor one a bot asked
+    // for in the last PLAYERBOT_STAND_RECENT_MS - within PLAYERBOT_STAND_SPOT_CLEAR, on open ground the bot walks
+    // to in a straight line.
+    bool PlayerBotFindStandSpot(LPCHARACTER ch, DWORD now, long& outX, long& outY) {
+        if (!ch) return false;
+        const long map = ch->GetMapIndex();
+        const long cx = ch->GetX(), cy = ch->GetY();
+        CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(map);
+        if (!navigation.Init(map)) return false;
+        const int clear = PLAYERBOT_STAND_SPOT_CLEAR;
+        std::vector<std::pair<long, long> > near;
+        for (const auto& [owner, other] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+            if (!other || other->GetDuration() == 0 || owner == ch->GetPlayerID()) continue;
+            const auto sp = other->GetSpawn();
+            if (sp.channel != g_bChannel || sp.map != map) continue;
+            if (DISTANCE_APPROX(sp.x - cx, sp.y - cy) <= PLAYERBOT_STAND_SPOT_MAX + clear)
+                near.emplace_back(sp.x, sp.y);
+        }
+        for (const TPlayerBotRecentStand& r : s_vecPlayerBotRecentStands)
+            if (r.map == map && now - r.at < PLAYERBOT_STAND_RECENT_MS &&
+                    DISTANCE_APPROX(r.x - cx, r.y - cy) <= PLAYERBOT_STAND_SPOT_MAX + clear)
+                near.emplace_back(r.x, r.y);
+        static const int kDirs = 12;
+        static const int kCos[kDirs] = { 1000, 866, 500, 0, -500, -866, -1000, -866, -500, 0, 500, 866 };
+        static const int kSin[kDirs] = { 0, 500, 866, 1000, 866, 500, 0, -500, -866, -1000, -866, -500 };
+        const int turn = (int)(ch->GetPlayerID() % kDirs);   // neighbours do not all try the same direction first
+        for (int r = 50; r <= PLAYERBOT_STAND_SPOT_MAX; r += 50) {
+            for (int i = 0; i < kDirs; ++i) {
+                const int k = (i + turn) % kDirs;
+                const long x = cx + (long)r * kCos[k] / 1000;
+                const long y = cy + (long)r * kSin[k] / 1000;
+                if (IsPlayerBotPositionBlocked(map, x, y)) continue;
+                bool crowded = false;
+                for (const auto& p : near)
+                    if (DISTANCE_APPROX(p.first - x, p.second - y) <= clear) { crowded = true; break; }
+                if (crowded || !navigation.SegmentClearWorld(cx, cy, x, y)) continue;
+                outX = x;
+                outY = y;
+                return true;
+            }
+        }
+        return false;
+    }
+    // The town leg's look at a step under way: 1 the step is still walked (the tick is held, the leg would stop
+    // it), 2 the bot stands at the spot it stepped to (the leg is skipped: the spot may be past the leg's 450
+    // units of the pitch), 0 neither.
+    int PlayerBotStandStepHold(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        auto& o = state.offlineShop;
+        if (!ch || !o.standSpotAt) return 0;
+        if (now - o.standSpotAt >= PLAYERBOT_STAND_ATTEMPT_MS) {
+            o.standStepUntil = o.standSpotTries = o.standSpotAt = o.standHoldSince = 0;
+            return 0;
+        }
+        const int d = DISTANCE_APPROX(ch->GetX() - o.standStepX, ch->GetY() - o.standStepY);
+        if (o.standStepUntil) {
+            if (!playerbot_offline::Due(now, o.standStepUntil) && ch->IsStateMove() && d > 40)
+                return 1;
+            o.standStepUntil = 0;
+            ch->Stop();
+        }
+        return o.standSpotTries && d <= 60 ? 2 : 0;
+    }
+    // At the pitch, before the counter is laid out: 1 open now, 0 hold the tick (a step to a free spot, the
+    // 10-second rule or a busy window being waited out), -1 not now (no free spot after the tries, or the wait
+    // too long - the stand pass asks again in a minute or two).
+    int PlayerBotStandPreflight(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        if (!ch || !IsPlayerBotStandFreeSpotOn()) return 1;
+        auto& o = state.offlineShop;
+        if (o.standSpotAt && now - o.standSpotAt >= PLAYERBOT_STAND_ATTEMPT_MS)
+            o.standStepUntil = o.standSpotTries = o.standHoldSince = 0;
+        if (!o.standSpotAt || now - o.standSpotAt >= PLAYERBOT_STAND_ATTEMPT_MS)
+            o.standSpotAt = now;
+        int nearest = -1;
+        const int why = PlayerBotStandRefuseReason(ch, nearest);
+        if (why == STANDREF_CROWDED) {
+            o.standHoldSince = 0;
+            long x = 0, y = 0;
+            if (o.standSpotTries < PLAYERBOT_STAND_SPOT_TRIES && PlayerBotFindStandSpot(ch, now, x, y)) {
+                ++o.standSpotTries;
+                ch->SetRotationToXY(x, y);
+                if (ch->Goto(x, y)) {
+                    ch->SendMovePacket(FUNC_MOVE, 0, x, y, ch->GetCurrentMoveDuration(), now);
+                    o.standStepX = x;
+                    o.standStepY = y;
+                    o.standStepUntil = now + PLAYERBOT_STAND_STEP_MS;
+                    o.standSpotAt = now;
+                    ++s_kPlayerBotStandSpot.stepped;
+                    PlayerBotLogThrottled("stand_free_spot_step", now,
+                        "PLAYERBOT_OFFLINE: stand steps to a free spot pid=%u name=%s map=%ld near_stand=%d from=(%ld,%ld) to=(%ld,%ld) try=%u",
+                        ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), nearest, ch->GetX(), ch->GetY(),
+                        x, y, (unsigned int)o.standSpotTries);
+                    return 0;
+                }
+            }
+            ++s_kPlayerBotStandSpot.noSpot;
+            ++s_kPlayerBotStandSpot.gaveUp;
+            sys_log(0, "PLAYERBOT_OFFLINE: stand put off pid=%u name=%s why=crowded near_stand=%d tries=%u map=%ld pos=(%ld,%ld)",
+                ch->GetPlayerID(), ch->GetName(), nearest, (unsigned int)o.standSpotTries, ch->GetMapIndex(),
+                ch->GetX(), ch->GetY());
+            o.standStepUntil = o.standSpotTries = o.standSpotAt = o.standHoldSince = 0;
+            state.dwNextShopKeepTime = now + number(60000, 120000);
+            return -1;
+        }
+        if (why == STANDREF_COOLDOWN || why == STANDREF_BUSY) {
+            if (!o.standHoldSince) {
+                o.standHoldSince = now;
+                ++s_kPlayerBotStandSpot.waited;
+            }
+            if (now - o.standHoldSince < PLAYERBOT_STAND_HOLD_MS) return 0;
+            ++s_kPlayerBotStandSpot.gaveUp;
+            sys_log(0, "PLAYERBOT_OFFLINE: stand put off pid=%u name=%s why=%s waited_ms=%u map=%ld",
+                ch->GetPlayerID(), ch->GetName(), s_aPlayerBotStandRefuseNames[why],
+                (unsigned int)(now - o.standHoldSince), ch->GetMapIndex());
+            o.standStepUntil = o.standSpotTries = o.standSpotAt = o.standHoldSince = 0;
+            state.dwNextShopKeepTime = now + number(60000, 120000);
+            return -1;
+        }
+        o.standHoldSince = 0;
+        return 1;   // the rest (map limit, fee, channel) is the submit's to refuse and to name
+    }
+    // The submit's last look (any path - the town's, the retirement's): a reason there before the submit holds it
+    // back rather than paying the round for a sure refusal. Crowded, cooldown and busy only - the ones a step or a
+    // few seconds mend; the town pass's preflight steps or waits on the next tick.
+    bool PlayerBotStandHeldBack(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        if (!IsPlayerBotStandFreeSpotOn()) return false;
+        int nearest = -1;
+        const int why = PlayerBotStandRefuseReason(ch, nearest);
+        if (why != STANDREF_CROWDED && why != STANDREF_COOLDOWN && why != STANDREF_BUSY) return false;
+        ++s_kPlayerBotStandSpot.heldBy[why];
+        state.dwNextShopKeepTime = now + (why == STANDREF_CROWDED ? 2000 : 3000);
+        PlayerBotLogThrottled("stand_held_back", now,
+            "PLAYERBOT_OFFLINE: stand held back pid=%u name=%s why=%s near_stand=%d map=%ld pos=(%ld,%ld)",
+            ch->GetPlayerID(), ch->GetName(), s_aPlayerBotStandRefuseNames[why], nearest, ch->GetMapIndex(),
+            ch->GetX(), ch->GetY());
+        return true;
+    }
+    void NotePlayerBotStandSubmitted(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        ++s_kPlayerBotStandSpot.submitted;
+        auto& o = state.offlineShop;
+        o.standStepUntil = o.standSpotTries = o.standSpotAt = o.standHoldSince = 0;
+        for (size_t i = 0; i < s_vecPlayerBotRecentStands.size();)
+            if (now - s_vecPlayerBotRecentStands[i].at >= PLAYERBOT_STAND_RECENT_MS) {
+                s_vecPlayerBotRecentStands[i] = s_vecPlayerBotRecentStands.back();
+                s_vecPlayerBotRecentStands.pop_back();
+            } else
+                ++i;
+        s_vecPlayerBotRecentStands.push_back(TPlayerBotRecentStand{ ch->GetMapIndex(), ch->GetX(), ch->GetY(), now });
+    }
+    // A native refusal, named by what is true just after it.
+    void NotePlayerBotStandRefused(LPCHARACTER ch) {
+        int nearest = -1;
+        const int why = PlayerBotStandRefuseReason(ch, nearest);
+        const int named = why == STANDREF_NONE ? STANDREF_UNKNOWN : why;
+        ++s_kPlayerBotStandSpot.refusedBy[named];
+        sys_log(0, "PLAYERBOT_OFFLINE: refused_by why=%s pid=%u name=%s near_stand=%d map=%ld pos=(%ld,%ld)",
+            s_aPlayerBotStandRefuseNames[named], ch->GetPlayerID(), ch->GetName(), nearest, ch->GetMapIndex(),
+            ch->GetX(), ch->GetY());
+    }
     bool SubmitPlayerBotOfflineShop(LPCHARACTER ch, TPlayerBotAIState& state,
             DWORD now, const char* sign, TShopItemTable* table, BYTE count) {
         using namespace playerbot_offline;
@@ -720,8 +962,11 @@ namespace {
         if (now - state.dwSpawnTime < 120000) return false;
         // MT2009_PLUS_BOT_CH2_STAND_V1: the fee over the base reserve, not the horse's training savings (the stand's
         // sales pay for those) - here, at the renewal's tests below and BotOfflineWouldRenew (GetPlayerBotStandFeeReserve).
-        if (ch->GetGold() - aOfflineShopTime[duration].price < GetPlayerBotStandFeeReserve(ch) ||
-                !BotOfflineBudget(now) || !Begin(ch->GetPlayerID(), Create, 0, now)) return false;
+        if (ch->GetGold() - aOfflineShopTime[duration].price < GetPlayerBotStandFeeReserve(ch)) return false;
+        // MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: a sure refusal (a stand within sixty units, the 10-second rule, a busy
+        // window) is not sent; the stand pass steps or waits and asks again in a few seconds.
+        if (PlayerBotStandHeldBack(ch, state, now)) return false;
+        if (!BotOfflineBudget(now) || !Begin(ch->GetPlayerID(), Create, 0, now)) return false;
 #ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
         // MT2009_PLUS_BOT_SM_MARKET_RULE_V1: the new stand's coupon lines by origin, one after the other - a stand whose
         // coupons the bag's game coins and the need pool do not cover is not opened now (the scoring keeps them apart,
@@ -758,6 +1003,10 @@ namespace {
         state.vecShopOffers.clear(); // native ownership, not the old inventory mirror
         sys_log(0, "PLAYERBOT_OFFLINE: create pid=%u sent=%d lines=%u map=%ld sign=\"%s\"",
             ch->GetPlayerID(), sent, unsigned(count), ch->GetMapIndex(), sign);
+        if (sent)
+            NotePlayerBotStandSubmitted(ch, state, now);   // MT2009_PLUS_BOT_STAND_FREE_SPOT_V1
+        else
+            NotePlayerBotStandRefused(ch);                 // MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: refused_by_<reason>
         if (sent) {
             // The new stand's lines go on the ledger's counts at once, as a
             // reopen's and every add's do. It waited for the next ledger, up to
@@ -2601,22 +2850,7 @@ namespace {
             M2_DELETE(preview);
         return named;
     }
-    // The nearest stand to the bot, as CanOpenOnMap's CCheckShopPosition sees
-    // them (a shop entity within sixty units refuses a renewal); -1 for none in
-    // the sectors round it. Only for the diagnostic line: map_ok alone could not
-    // say whether the map's limit or a neighbour said no.
-    struct FPlayerBotNearestStand {
-        LPCHARACTER me;
-        int best;
-        explicit FPlayerBotNearestStand(LPCHARACTER c) : me(c), best(-1) {}
-        void operator()(LPENTITY ent) {
-            if (!ent->IsType(ENTITY_NEWSHOPS))
-                return;
-            const int d = me->DistanceTo(ent);
-            if (best < 0 || d < best)
-                best = d;
-        }
-    };
+    // FPlayerBotNearestStand: above SubmitPlayerBotOfflineShop (MT2009_PLUS_BOT_STAND_FREE_SPOT_V1).
     // MT2009_PLUS_BOT_COUNTER_RENEW_V1: whether the owner would renew this
     // expired counter at its next visit - the tests the renewal below makes
     // itself: goods on it, the stand still wanted, the fee in hand over the

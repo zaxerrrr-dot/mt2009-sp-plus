@@ -208,6 +208,12 @@ struct State {
     uint32_t nextRenewProbe = 0, renewHoldUntil = 0, renewCalledAt = 0;
     uint32_t renewStepUntil = 0, renewSpotTries = 0;
     long renewStepX = 0, renewStepY = 0;
+    // MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: a new stand's steps to a spot no
+    // stand stands within the engine's sixty units of (PlayerBotStandPreflight):
+    // the step under way, how many this attempt took, and since when the
+    // attempt has held its tick (a cooldown or a busy window waited out).
+    uint32_t standStepUntil = 0, standSpotTries = 0, standSpotAt = 0, standHoldSince = 0;
+    long standStepX = 0, standStepY = 0;
     std::map<uint32_t, ListedLine> listed;
     bool visiting = false;
     bool restockTurn = false;
