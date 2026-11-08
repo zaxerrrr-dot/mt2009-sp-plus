@@ -1,0 +1,26 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V1 (command declare)",
+  "old": "ACMD(do_pvpfan)\n{\n\tPlayerBotPvpFanCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_pvpfan)\n{\n\tPlayerBotPvpFanCommand(ch, argument);\n}\n// MT2009_PLUS_NAJEMNICY_V1 (command declare): \"/najemnicy\" - the player's hired party (the Najemnicy quest's buttons):\n// lista, sync, stworz, wezwij, odwolaj, wplac, skarbiec, daj, zabierz, gildia, gildia_wyjdz, zwolnij; GM: odblokuj, zablokuj,\n// spis (playerbot_najemnicy.h)\nvoid PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument);\nACMD(do_najemnicy)\n{\n\tPlayerBotNajemnicyCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V1 (command table)",
+  "old": "\t{ \"pvpfan\",\tdo_pvpfan,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_PVPFAN_V1 (command table)\n",
+  "new": "\t{ \"pvpfan\",\tdo_pvpfan,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t}, // MT2009_PLUS_PVPFAN_V1 (command table)\n\t{ \"najemnicy\",\tdo_najemnicy,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_NAJEMNICY_V1 (command table): the GM's part checks GM_HIGH_WIZARD itself\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V1 (attackable)",
+  "old": "\t{ int PvpFanAttackable(LPCHARACTER, LPCHARACTER); const int iPvpFan = PvpFanAttackable(ch, victim); if (iPvpFan >= 0) return iPvpFan != 0; }\n",
+  "new": "\t{ int PvpFanAttackable(LPCHARACTER, LPCHARACTER); const int iPvpFan = PvpFanAttackable(ch, victim); if (iPvpFan >= 0) return iPvpFan != 0; }\n\t// MT2009_PLUS_NAJEMNICY_V1 (attackable): a player's mercenary strikes no character and no character strikes it,\n\t// unless their guilds are at war with each other (playerbot_najemnicy.h). Monsters are not its business here.\n\t{ int NajemnicyBlockAttack(LPCHARACTER, LPCHARACTER); if (NajemnicyBlockAttack(ch, victim)) return false; }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V1 (no item drop)",
+  "old": "void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)\n{\n\tif (GetMyShop())\n\t\treturn;\n",
+  "new": "void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)\n{\n\tif (GetMyShop())\n\t\treturn;\n\n\t// MT2009_PLUS_NAJEMNICY_V1 (no item drop): a player's mercenary loses nothing at its death - its gear is its\n\t// owner's (playerbot_najemnicy.h).\n\t{ bool NajemnikNoItemDrop(LPCHARACTER); if (NajemnikNoItemDrop(this)) return; }\n"
+ }
+]

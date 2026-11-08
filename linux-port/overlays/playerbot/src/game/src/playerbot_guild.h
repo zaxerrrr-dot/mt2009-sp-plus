@@ -595,6 +595,8 @@ namespace
 				continue;
 			if (IsPlayerBotPvpFanPID(it->first))	// MT2009_PLUS_PVPFAN_V1: an arena bot joins nobody's guild
 				continue;
+			if (IsPlayerBotNajemnikPID(it->first))	// MT2009_PLUS_NAJEMNICY_V1: a mercenary joins its owner's guild only
+				continue;
 			if (candidate->GetEmpire() != info.bEmpire)
 				continue;
 			if (IsPlayerBotDropper(it->second.bPersonality) || IsPlayerBotSidekickPID(it->first))

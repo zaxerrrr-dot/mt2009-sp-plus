@@ -5462,6 +5462,18 @@ if [ -s /opt/playerbot/pvpfan.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_NAJEMNICY_V1 (the owner, 8 November 2026: "Najemnicy", a player's hired party): najemnicy.sql - the
+# mercenaries (player.najemnicy), the owners' vaults (najemnicy_vault) and the unlocks (najemnicy_unlock;
+# playerbot_najemnicy.h, server-patches/najemnicy, the quest najemnicy.quest, the panel's najemnicy.py). Idempotent
+# (CREATE TABLE IF NOT EXISTS / ADD COLUMN IF NOT EXISTS); before the cores.
+if [ -s /opt/playerbot/najemnicy.sql ]; then
+    if db < /opt/playerbot/najemnicy.sql; then
+        echo "[playerbot-migrate] Najemnicy: najemnicy.sql applied"
+    else
+        fail_step "Najemnicy: najemnicy.sql failed (MT2009_PLUS_NAJEMNICY_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_BOT_SM_MARKET_RULE_V1 (the owner, 8 November 2026: the bots' Smocze Monety on the market only when dropped
 # in the game, or - a bot badly short of yang - out of 1000 SM a day for all the bots together): sm_rynek.sql - the
 # coupons' origin a bot (player.playerbot_sm_origin), the panel's coupon grants already credited

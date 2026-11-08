@@ -552,6 +552,11 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_PVPFAN_V1: "PVP Fan" - the panel's bot wars (/pvpfan): the dedicated characters' logins, loadout and fight, the
 // war's phases and results, the engine's attack and death hooks (server-patches/pvpfan) - after every fight helper it uses
 #include "playerbot_pvpfan.h"
+// MT2009_PLUS_NAJEMNICY_V1: "Najemnicy" - a player's hired party: the identities, the summon (PVP Fan's spawn and load
+// hook), level / stats / skills, the vault and its fee, the party, the follow and the fight (the Towarzysz's helpers),
+// the guild and guild-war rules, the engine's attack and item-drop hooks and "/najemnicy" (server-patches/najemnicy) -
+// after PVP Fan and the Towarzysz, whose helpers it uses
+#include "playerbot_najemnicy.h"
 // MT2009_PLUS_BOT_LADA_V1: the bots' counters with no limit, fed from anywhere - the interval pass (merge, take back,
 // list past the pages through the db core's own requests) and the glut's price tiers - after the offline shop, the
 // market, the extra inventory and the reprice it uses
@@ -3837,6 +3842,8 @@ namespace
 		ManagePlayerBotSidekicks(dwNow);
 		// MT2009_PLUS_PVPFAN_V1: the PvP-fan wars and their command queue, on a core no bot has woken too.
 		ManagePlayerBotPvpFan(dwNow);
+		// MT2009_PLUS_NAJEMNICY_V1: the mercenaries' flags, fee and census, on a core no bot has woken too.
+		ManagePlayerBotNajemnicy(dwNow);
 		// MT2009_PLUS_SHOUTERS_V1: and the shouters, whatever the population.
 		ManagePlayerBotShouters(dwNow);
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -5823,6 +5830,9 @@ bool CPlayerBotManager::PlaceLoadingBot(DWORD dwPlayerID, BYTE bEmpire, long lHo
 	// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot loads on its spot of the arena, wherever it was saved.
 	if (PlacePlayerBotPvpFanLoading(dwPlayerID, lMapIndex, x, y))
 		return true;
+	// MT2009_PLUS_NAJEMNICY_V1: a mercenary loads beside its owner, wherever it was saved.
+	if (PlacePlayerBotNajemnikLoading(dwPlayerID, lMapIndex, x, y))
+		return true;
 	static int s_iOn = -1;
 	if (s_iOn < 0)
 	{
@@ -5972,6 +5982,9 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 			continue;
 		// MT2009_PLUS_PVPFAN_V1: nor a PvP-fan bot - its war logs it out.
 		if (IsPlayerBotPvpFanPID(pid))
+			continue;
+		// MT2009_PLUS_NAJEMNICY_V1: nor a mercenary - its owner's hours.
+		if (IsPlayerBotNajemnikPID(pid))
 			continue;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
@@ -6179,6 +6192,8 @@ void CPlayerBotManager::OnPlayerLoaded(LPDESC d)
 		OnPlayerBotSidekickLoaded(d->GetCharacter(), state, now);
 		// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot's war learns it is in (playerbot_pvpfan.h).
 		OnPlayerBotPvpFanLoaded(d->GetCharacter(), state, now);
+		// MT2009_PLUS_NAJEMNICY_V1: a mercenary is in - its fee starts (playerbot_najemnicy.h).
+		OnPlayerBotNajemnikLoaded(d->GetCharacter(), state, now);
 		state.bAmbition = GetPlayerBotStableAmbition(
 				d->GetCharacter(), state.bPersonality);
 
@@ -7441,6 +7456,9 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_PVPFAN_V1: the PvP-fan wars - the panel's queue, the logins, the countdown, the result, the exits
 	// (playerbot_pvpfan.h); every despawn of theirs is made here, never inside the bots' pass below.
 	ManagePlayerBotPvpFan(dwNow);
+	// MT2009_PLUS_NAJEMNICY_V1: the mercenaries - loads that never came, owners gone, the fee a minute, the dismissals
+	// their tick asked for, the census (playerbot_najemnicy.h); every despawn of theirs is made here, never below.
+	ManagePlayerBotNajemnicy(dwNow);
 	// MT2009_PLUS_SHOUTERS_V1: the shouters of the first villages.
 	ManagePlayerBotShouters(dwNow);
 	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
@@ -7803,6 +7821,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_PVPFAN_V1: a PvP-fan bot is its war's and nothing else's - none of the population's passes
 		// below runs for it (playerbot_pvpfan.h).
 		if (ManagePlayerBotPvpFanBot(d, ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_NAJEMNICY_V1: a mercenary is its owner's and nothing else's - the same (playerbot_najemnicy.h).
+		if (ManagePlayerBotNajemnikBot(d, ch, state, dwNow))
 			continue;
 
 		// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: a safebox answer nobody waits
@@ -9543,7 +9564,7 @@ WritePlayerBotGuildStatus(dwNow);
 			{
 				LPDESC d = it->second;
 				LPCHARACTER ch = d ? d->GetCharacter() : NULL;
-				if (!ch || IsPlayerBotPvpFanPID(it->first)) // MT2009_PLUS_PVPFAN_V1: its war's tick only
+				if (!ch || IsPlayerBotPvpFanPID(it->first) || IsPlayerBotNajemnikPID(it->first)) // MT2009_PLUS_PVPFAN_V1: its war's tick only; MT2009_PLUS_NAJEMNICY_V1: its owner's
 					continue;
 				RunPlayerBotLightTick(d, ch, s_mapPlayerBotAIStates[it->first], dwNow);
 			}
@@ -9598,6 +9619,9 @@ WritePlayerBotGuildStatus(dwNow);
 						s_mapPlayerBotAIStates.find(statusIt->first);
 				if (!statusCh || !statusDesc->IsPhase(PHASE_GAME) ||
 						aiIt == s_mapPlayerBotAIStates.end())
+					continue;
+				// MT2009_PLUS_NAJEMNICY_V1: a player's mercenary is no bot of the population's census.
+				if (IsPlayerBotNajemnikPID(statusIt->first))
 					continue;
 
 				const TPlayerBotAIState& statusState = aiIt->second;
@@ -10036,6 +10060,12 @@ bool CPlayerBotManager::TransferBot(LPCHARACTER bot, LPCHARACTER to)
 
 void CPlayerBotManager::OnGuildInvite(CGuild* guild, LPCHARACTER inviter, LPCHARACTER invitee)
 {
+	// MT2009_PLUS_NAJEMNICY_V1: a mercenary takes its owner's invitation into the owner's guild, nobody else's.
+	if (invitee && IsPlayerBotNajemnikPID(invitee->GetPlayerID()))
+	{
+		OnPlayerBotNajemnikGuildInvite(guild, inviter, invitee);
+		return;
+	}
 	if (!guild || !invitee || !IsRegisteredBotPID(invitee->GetPlayerID()))
 		return;
 	// MT2009_PLUS_SHOUTERS_V1: a shouter answers nobody.
@@ -10102,6 +10132,9 @@ void CPlayerBotManager::OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker)
 {
 	// MT2009_PLUS_PVPFAN_V1: a PvP-fan war's blow is nobody's PK (no Anti-PK, no defenders).
 	if ((victim && IsPlayerBotPvpFanPID(victim->GetPlayerID())) || (attacker && IsPlayerBotPvpFanPID(attacker->GetPlayerID())))
+		return;
+	// MT2009_PLUS_NAJEMNICY_V1: nor a mercenary's (a guild war's only - no Anti-PK, no defenders).
+	if ((victim && IsPlayerBotNajemnikPID(victim->GetPlayerID())) || (attacker && IsPlayerBotNajemnikPID(attacker->GetPlayerID())))
 		return;
 	NotePlayerBotStruck(victim, attacker, get_dword_time());
 }
@@ -10284,6 +10317,9 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	// MT2009_PLUS_PVPFAN_V1: nor does a PvP-fan bot.
 	if (bot && IsPlayerBotPvpFanPID(bot->GetPlayerID()))
 		return;
+	// MT2009_PLUS_NAJEMNICY_V1: nor a mercenary (its orders are stage 3's).
+	if (bot && IsPlayerBotNajemnikPID(bot->GetPlayerID()))
+		return;
 	// MT2009_PLUS_BOT_I18N_V1: a whisper in another language - its writer's
 	// language noted (the answer goes in it) and its words put into the
 	// bots' Polish for every reader below.
@@ -10320,7 +10356,8 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 // answered by the conversation, as anybody is.
 void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText)
 {
-	if (bot && (IsPlayerBotShouterPID(bot->GetPlayerID()) || IsPlayerBotPvpFanPID(bot->GetPlayerID())))
+	if (bot && (IsPlayerBotShouterPID(bot->GetPlayerID()) || IsPlayerBotPvpFanPID(bot->GetPlayerID()) ||
+			IsPlayerBotNajemnikPID(bot->GetPlayerID())))	// MT2009_PLUS_NAJEMNICY_V1
 		return;
 	std::string i18n;	// MT2009_PLUS_BOT_I18N_V1: as OnPlayerWhisper
 	{
