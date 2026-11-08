@@ -311,7 +311,13 @@ namespace
 		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the coins of the Kupon SM the bot bought on the market for a need and cashed
 		// this week - its own yang's, over the grant: added to every day's allowance (this core's memory)
 		long long llBonus;
-		TPlayerBotSmPool() : llSpentDb(0), llSpentMem(0), llFallback(-1), lSeen(0), llBonus(0) {}
+		// MT2009_PLUS_BOT_SM_POOL_BALANCE_V1: the day's balance allowance - the day (unix day), the coins held at its first
+		// look and the week's spent then
+		long lBalanceDay;
+		long long llDayCoins;
+		long long llDaySpentStart;
+		TPlayerBotSmPool() : llSpentDb(0), llSpentMem(0), llFallback(-1), lSeen(0), llBonus(0), lBalanceDay(-1), llDayCoins(0),
+				llDaySpentStart(0) {}
 	};
 
 	struct TPlayerBotSmPoolRoom
@@ -455,6 +461,34 @@ namespace
 		r.bUrgent = IsPlayerBotSmPoolUrgent(ch, reason);
 		r.llToday = base * d / 7 - spent + pool.llBonus;
 		r.llTomorrow = base * std::min(d + 1, 7) / 7 - spent + pool.llBonus;
+		// MT2009_PLUS_BOT_SM_POOL_BALANCE_V1 (the owner, 8 November 2026: "wiekszosc botow nie wydaje SM"): the pool's
+		// base was the week's grant alone (account.sm_grant_log, 500 SM a bot on the test world) - coins the account held
+		// over it (100 000 each at the test's reset) were never spendable, and every playing bot stood at its 500 with
+		// "pool block ... coins=100102" ~700 times a minute. Now a day may also spend a seventh of the coins held at its
+		// first look (and an urgent need a second seventh) - the balance spread over a week, whatever its source; the
+		// grant's allowance stays the floor. No coin is added anywhere. Event flag m2_bot_sm_pool_balance_off 1: as
+		// before. Log: PLAYERBOT_ISHOP3: balance pool (throttled).
+		if (state.bDragonBalanceKnown && quest::CQuestManager::instance().GetEventFlag("m2_bot_sm_pool_balance_off") == 0)
+		{
+			const long day = now / (24 * 60 * 60);
+			if (pool.lBalanceDay != day)
+			{
+				pool.lBalanceDay = day;
+				pool.llDayCoins = std::max(0, state.iDragonCoins);
+				pool.llDaySpentStart = spent;
+			}
+			const long long seventh = pool.llDayCoins / 7;
+			const long long spentToday = std::max(0LL, spent - pool.llDaySpentStart);
+			const long long balToday = seventh - spentToday + pool.llBonus;
+			const long long balTomorrow = seventh * 2 - spentToday + pool.llBonus;
+			if (balToday > r.llToday || balTomorrow > r.llTomorrow)
+				PlayerBotLogThrottled("ishop3_balance_pool", get_dword_time(),
+						"PLAYERBOT_ISHOP3: balance pool pid=%u name=%s coins_day=%lld seventh=%lld spent_today=%lld grant_today=%lld balance_today=%lld reason=%s",
+						ch->GetPlayerID(), ch->GetName(), pool.llDayCoins, seventh, spentToday, r.llToday, balToday,
+						reason ? reason : "");
+			r.llToday = std::max(r.llToday, balToday);
+			r.llTomorrow = std::max(r.llTomorrow, balTomorrow);
+		}
 		return r;
 	}
 
