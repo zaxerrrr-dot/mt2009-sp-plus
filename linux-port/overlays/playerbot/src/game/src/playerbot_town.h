@@ -172,6 +172,7 @@ namespace
 	void NotePlayerBotCh2StandIntent(LPCHARACTER ch, const char* why);
 	void ManagePlayerBotCh2StandAsk(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
 	bool IsPlayerBotCh2StandDriveDue(LPCHARACTER ch, DWORD now);
+	bool IsPlayerBotCh2StandDriveRestExempt(LPCHARACTER ch);	// MT2009_PLUS_BOT_CH2_STAND_NO_REST_V1
 	void NotePlayerBotCh2StandOutcome(LPCHARACTER ch, int outcome);
 	void NotePlayerBotCh2StandToM1(LPCHARACTER ch, long homeMap);
 	void NotePlayerBotCh2StandShopSeen(LPCHARACTER ch);
@@ -6715,7 +6716,14 @@ namespace
 			// change (TransitionPlayerBotMap closes whatever stands) is the
 			// walk to its first village to open one, and the rest here held
 			// it off for half an hour to an hour once it got there.
-			if (bHadShop || !IsPlayerBotMedalStockReady(ch, state))
+			// MT2009_PLUS_BOT_CH2_STAND_NO_REST_V1: nor a bot driven to the stand it moved channels for - the drive's
+			// own map change ("ch2_stand_to_m1") rested its stand pass 30-90 minutes, so it went fishing in its
+			// first village and the coordinator moved it back unopened when the drive's 30-minute pin ran out.
+			bool bStandDrive = false;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			bStandDrive = !bHadShop && IsPlayerBotCh2StandDriveRestExempt(ch);
+#endif
+			if (bHadShop || (!IsPlayerBotMedalStockReady(ch, state) && !bStandDrive))
 				state.dwNextShopKeepTime = dwNow +
 						number(PLAYERBOT_SHOP_REST_MIN, PLAYERBOT_SHOP_REST_MAX);
 		}

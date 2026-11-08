@@ -95,18 +95,18 @@ namespace
 	bool IsPlayerBotCh2StandSwitchOn(int which)
 	{
 		// 3: MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1 (the intent read once the bot's quest data is in)
-		static const char* const s_flags[4] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
-				"m2_bot_stand_fee_full_reserve", "m2_bot_ch2_stand_qload_off" };
+		static const char* const s_flags[5] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
+				"m2_bot_stand_fee_full_reserve", "m2_bot_ch2_stand_qload_off", "m2_bot_ch2_stand_norest_off" };
 		static DWORD s_dwAt = 0;
-		static bool s_bOn[4] = { true, true, true, true };
+		static bool s_bOn[5] = { true, true, true, true, true };
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 1000)
 		{
 			s_dwAt = now ? now : 1;
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < 5; ++i)
 				s_bOn[i] = quest::CQuestManager::instance().GetEventFlag(s_flags[i]) == 0;
 		}
-		return which >= 0 && which < 4 && s_bOn[which];
+		return which >= 0 && which < 5 && s_bOn[which];
 	}
 
 	bool IsPlayerBotStandStorageReasonsOn()
@@ -466,6 +466,17 @@ namespace
 		if (b.arrivedAt == 0)
 			b.arrivedAt = now;
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_CH2_STAND_NO_REST_V1: the stand's close on a map change (ClosePlayerBotShop) gives no rest to a bot
+	// on its live drive - a pure look, no outcome. m2_bot_ch2_stand_norest_off 1: rested as before.
+	bool IsPlayerBotCh2StandDriveRestExempt(LPCHARACTER ch)
+	{
+		if (!ch || g_bChannel != playerbot_channel_rules::SHOP_CHANNEL || !IsPlayerBotCh2StandSwitchOn(0) ||
+				!IsPlayerBotCh2StandSwitchOn(4))
+			return false;
+		std::map<DWORD, TPlayerBotCh2StandBot>::const_iterator it = s_mapPlayerBotCh2Stand.find(ch->GetPlayerID());
+		return it != s_mapPlayerBotCh2Stand.end() && it->second.loaded && IsPlayerBotCh2StandIntentLive(it->second);
 	}
 
 	void NotePlayerBotCh2StandOutcome(LPCHARACTER ch, int outcome)
