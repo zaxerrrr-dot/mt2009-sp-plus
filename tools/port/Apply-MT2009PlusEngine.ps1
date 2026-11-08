@@ -2347,4 +2347,17 @@ if ((Test-Path -LiteralPath $gmPanelBonusApply -PathType Leaf) -and
     }
 }
 
+# Jade jewellery takes the 6th/7th bonus (server-patches/jadeit67, MT2009_PLUS_JADE_BONUS67_V1; the owner, 8 November
+# 2026): item_attribute.cpp - obreczjadeitu's guard against 71051 / 71052 / 72351 / Seon-Hae came back on every run of
+# this chain over the same tree (JADE_BASE_V1 had replaced it with its marker); out for good. After obreczjadeitu2.
+$jadeIt67Apply = Join-Path $repo 'server-patches/jadeit67/Apply-JadeIt67Patch.ps1'
+if ((Test-Path -LiteralPath $jadeIt67Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $jadeIt67Result = & $jadeIt67Apply -SourceDir $engineGameSource
+    if ($jadeIt67Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} jade 6/7 bonus edit(s).' -f $jadeIt67Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

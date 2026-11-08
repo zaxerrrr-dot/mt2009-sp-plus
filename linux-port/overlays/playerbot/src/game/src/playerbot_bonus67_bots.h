@@ -19,9 +19,11 @@
 //       * the jewellery of Niebianskie Lzy ("niebieskie lzy": Bransol. 14200-14209, Naszyj. 16200-16209, Kolczyki
 //         17200-17209, item level 54) and everything above it - every bracelet, necklace and earring of item level 54
 //         and up: Krysztal Duszy (14220 / 16220 / 17220, 58-62), Rubin / Granat / Szmaragd / Szafir / Turmalin
-//         (14500-14579, 16500-16579, 17500-17569, 85-100); the Jade pieces (14580-14619, 16580-16619, 17570-17609,
-//         105) are left out - the engine's AddRareAttribute and ChangeRareAttribute refuse them
-//         (Mt2009JadeBraceletType);
+//         (14500-14579, 16500-16579, 17500-17569, 85-100) and the Jade pieces (Obrecz / Kolia / Klipsy Jadeitu,
+//         14580-14619, 16580-16619, 17570-17609, 105 - Zolte Lsniace Odlamki 39080; MT2009_PLUS_JADE_BONUS67_V1, the
+//         owner 8 Nov 2026 "napraw": their Precyzja and Will are the base attribute (item_yextra,
+//         MT2009_PLUS_JADE_BASE_V1), no 6/7 add or change touches them, both 6th/7th slots are free for the pool -
+//         an old piece with a base line still in a slot moves it out first, Mt2009JadeBaseMigrate);
 //       * jewellery and boots carrying the resistance of the element the bot needs now - the hunt element of a
 //         Yohara bot (GetPlayerBotHuntElementIndex), else the element progression's goal
 //         (MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1, GetPlayerBotElementMapGoal): in the proto (Miedziany / Drewniany /
@@ -242,9 +244,13 @@ namespace
 				return B67_SCOPE_NONE;
 		}
 		BYTE bReserved = 0;
-		if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved) ||
-				Mt2009GloveType(item->GetVnum(), bReserved))
+		if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009GloveType(item->GetVnum(), bReserved))
 			return B67_SCOPE_NONE;
+		// MT2009_PLUS_JADE_BONUS67_V1: a Jade piece is jewellery of item level 105 like any other - an old one's base
+		// line still in its 6th/7th slot leaves it before anything counts the extra bonuses (idempotent, the engine's
+		// AddRareAttribute / ChangeRareAttribute and Seon-Hae do the same)
+		if (Mt2009JadeBraceletType(item->GetVnum(), bReserved))
+			Mt2009JadeBaseMigrate(item);
 		const int level = GetPlayerBotBonus67ItemLevel(item);
 		switch (item->GetSubType())
 		{
