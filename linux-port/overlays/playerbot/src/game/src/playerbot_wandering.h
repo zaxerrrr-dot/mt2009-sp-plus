@@ -1248,7 +1248,7 @@ namespace
 			// whole group counted, the leader included). V1's ice of 81-85 are the
 			// 78 rows, its Setaou the 82-86 ones; the Ice Witch (1192) is a party's
 			// raid, walked to while she stands.
-			// MT2009_PLUS_GROTA_THIN_V1 (8 November 2026): both maps' spawn lines less 30%, evenly (V1 833 -> 583,
+			// MT2009_PLUS_GROTA_THIN_V1 (8 November 2026): V2 spawn lines less 30%, evenly (V1 restored as it was;
 			// V2 2156 -> 1509; tools/grota2/grota_thin.py): every hub here and in grottoV2Hubs keeps lines within
 			// 25 m (grota1/gen_report.txt; V1 1-5, V2 3-22), so no hub stands on emptied ground.
 			const TPlayerBotHuntingHub grottoV1Hubs[] = {
