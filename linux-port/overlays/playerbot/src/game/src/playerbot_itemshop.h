@@ -1506,6 +1506,9 @@ namespace
 #ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 		NotePlayerBotSmCouponsCashed(ch, total, dwNow);	// the market's coupons: the census, the pool's bonus
 #endif
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+		NotePlayerBotSmCouponsCashedOrigin(ch, total);	// MT2009_PLUS_BOT_SM_MARKET_RULE_V1: the account's coupons first
+#endif
 		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			NotePlayerBotSidekickVouchers(ch, total, state.iDragonCoins);
 		return true;
@@ -1529,6 +1532,12 @@ namespace
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x564f5543U) % 15000U;
 		// MT2009_PLUS_SIDEKICK_COINS_V1: a companion by its owner's switch.
 		const bool sidekick = IsPlayerBotSidekickPID(ch->GetPlayerID());
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+		// MT2009_PLUS_BOT_SM_MARKET_RULE_V1: the coupons' origin records, the census and the need sale (a bot badly short
+		// of yang lists account Smocze Monety out of the server-wide daily pool) - playerbot_sm_market_rule.h
+		if (!sidekick && IsPlayerBotItemShopEnabled())
+			TickPlayerBotSmMarketRule(ch, state, dwNow);
+#endif
 		if ((sidekick ? !IsPlayerBotSidekickCoinsOn(ch->GetPlayerID()) : !IsPlayerBotItemShopEnabled()) ||
 				ch->GetExchange() || !FindPlayerBotVoucher(ch))
 			return;
@@ -2492,6 +2501,14 @@ namespace
 	{
 		if (!ch || !PlayerBotHasCounter(ch))
 			return false;
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+		// MT2009_PLUS_BOT_SM_MARKET_RULE_V1: account coupons the need pool does not cover are cashed, never kept for the
+		// counter (an exp-locked bot's too); a need sale's coupons wait for the counter
+		if (PlayerBotMustCashSmAccountCoupons(ch))
+			return false;
+		if (PlayerBotHoldsSmNeedCoupons(ch))
+			return true;
+#endif
 		// MT2009_PLUS_BOT_SM_HP70_V1 (the owner, 6 November 2026, point 6): an exp-locked bot needs no coins now - every
 		// one of its Kupon SM goes on its counter, past the sellers' share and its own needs (playerbot_errands.h).
 		if (IsPlayerBotLockedCouponSeller(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID()))
@@ -2536,7 +2553,7 @@ namespace
 		return true;
 	}
 
-	bool IsPlayerBotVoucherForCounter(LPCHARACTER ch, LPITEM item)
+	bool IsPlayerBotVoucherForCounterOld(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || IsPlayerBotSidekickPID(ch->GetPlayerID()) || !PlayerBotHasCounter(ch))
 			return false;
@@ -2551,6 +2568,21 @@ namespace
 			return true;
 		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotVoucherCounterUntil.find(ch->GetPlayerID());
 		return it != s_mapPlayerBotVoucherCounterUntil.end() && (int)(it->second - get_dword_time()) > 0;
+	}
+
+	bool IsPlayerBotVoucherForCounter(LPCHARACTER ch, LPITEM item)
+	{
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+		// MT2009_PLUS_BOT_SM_MARKET_RULE_V1 (playerbot_sm_market_rule.h): a coupon the old rules put on the counter (or a
+		// need sale's) goes up only within the bag's game coins and the need pool coins the bot holds
+		if (ch && item && IsPlayerBotSmMarketRuleOn() && !IsPlayerBotSidekickPID(ch->GetPlayerID()) && PlayerBotHasCounter(ch))
+		{
+			if (!IsPlayerBotVoucherForCounterOld(ch, item) && !PlayerBotHoldsSmNeedCoupons(ch))
+				return false;
+			return IsPlayerBotSmCouponListable(ch, item);
+		}
+#endif
+		return IsPlayerBotVoucherForCounterOld(ch, item);
 	}
 #else
 	bool IsPlayerBotVoucherForCounter(LPCHARACTER, LPITEM)

@@ -5451,6 +5451,19 @@ if [ -s /opt/playerbot/pvpfan.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_BOT_SM_MARKET_RULE_V1 (the owner, 8 November 2026: the bots' Smocze Monety on the market only when dropped
+# in the game, or - a bot badly short of yang - out of 1000 SM a day for all the bots together): sm_rynek.sql - the
+# coupons' origin a bot (player.playerbot_sm_origin), the panel's coupon grants already credited
+# (playerbot_sm_origin_grant) and the server-wide daily need pool (playerbot_sm_market_pool; playerbot_sm_market_rule.h).
+# Idempotent (CREATE TABLE IF NOT EXISTS); before the cores.
+if [ -s /opt/playerbot/sm_rynek.sql ]; then
+    if db < /opt/playerbot/sm_rynek.sql; then
+        echo "[playerbot-migrate] bot SM market rule: sm_rynek.sql applied"
+    else
+        fail_step "bot SM market rule: sm_rynek.sql failed (MT2009_PLUS_BOT_SM_MARKET_RULE_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

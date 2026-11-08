@@ -10650,6 +10650,28 @@ namespace
 	// service. Defined in playerbot_town.h, before the asking price.
 	long long GetPlayerBotSmCouponYangPerCoin();
 	bool IsPlayerBotSmCouponPriceOutOfBand(DWORD vnum, long long count, long long asked);
+#define MT2009_PLUS_BOT_SM_MARKET_RULE_V1 1
+	// MT2009_PLUS_BOT_SM_MARKET_RULE_V1 (the owner, 8 November 2026: "Jesli boty maja za duzo SM - nie wystawiaja ich na
+	// rynek ... tylko (1) SM wydropione z gry; (2) bot bardzo potrzebuje Yang - max 1000 SM dziennie, wszystkie boty
+	// razem"; playerbot_sm_market_rule.h, after playerbot_sm_coupons.h): the coupons of a bot's account Smocze Monety
+	// (the panel's coupon grants, the need sale's) recorded by coins in player.playerbot_sm_origin; only the game's go on
+	// a counter, the account's out of the server-wide daily need pool alone. Asked by the voucher pass
+	// (playerbot_itemshop.h) and the offline stand's add / create (playerbot_offline_shop.h).
+	struct TPlayerBotSmListSplit
+	{
+		long long llCoins = 0, llGame = 0, llNeed = 0;
+		DWORD dwVnum = 0;
+		bool bRule = false;
+	};
+	bool IsPlayerBotSmMarketRuleOn();
+	bool IsPlayerBotSmCouponListable(LPCHARACTER ch, LPITEM item);
+	bool PlayerBotHoldsSmNeedCoupons(LPCHARACTER ch);
+	bool PlayerBotMustCashSmAccountCoupons(LPCHARACTER ch);
+	bool SplitPlayerBotSmCouponListing(LPCHARACTER ch, DWORD vnum, long long count, long long takenGame, long long takenNeed,
+			TPlayerBotSmListSplit& out);
+	void NotePlayerBotSmCouponListed(LPCHARACTER ch, const TPlayerBotSmListSplit& split, const char* at);
+	void NotePlayerBotSmCouponsCashedOrigin(LPCHARACTER ch, long long coins);
+	void TickPlayerBotSmMarketRule(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
 #define MT2009_PLUS_BOT_SEONHAE_V2 1
 	// MT2009_PLUS_BOT_SEONHAE_V2 (the owner, 28 October 2026; playerbot_shop_aids.h): 71052 on every worn piece with
 	// 6th/7th lines, the Blacksmith's scrolls (Kamien Kowala 71025 / Magiczny Metal 71026 + a Blessing Scroll at Kowal

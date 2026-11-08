@@ -687,6 +687,23 @@ namespace {
         if (now - state.dwSpawnTime < 120000) return false;
         if (ch->GetGold() - aOfflineShopTime[duration].price < GetPlayerBotReservedGold(ch) ||
                 !BotOfflineBudget(now) || !Begin(ch->GetPlayerID(), Create, 0, now)) return false;
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+        // MT2009_PLUS_BOT_SM_MARKET_RULE_V1: the new stand's coupon lines by origin, one after the other - a stand whose
+        // coupons the bag's game coins and the need pool do not cover is not opened now (the scoring keeps them apart,
+        // so this is the last guard).
+        std::vector<TPlayerBotSmListSplit> smSplits(count);
+        {
+            long long takenGame = 0, takenNeed = 0;
+            for (BYTE n = 0; n < count; ++n) {
+                LPITEM item = ch->GetItem(table[n].pos);
+                if (!item || !IsPlayerBotSmCouponVnum(item->GetVnum())) continue;
+                if (!SplitPlayerBotSmCouponListing(ch, item->GetVnum(), (long long)item->GetCount(), takenGame, takenNeed,
+                        smSplits[n])) return false;
+                takenGame += smSplits[n].llGame;
+                takenNeed += smSplits[n].llNeed;
+            }
+        }
+#endif
         // What goes up, read while the items are still in the bag: the create
         // takes them out of it.
         struct TPlayerBotNewLine { DWORD id, vnum, skill, count; BYTE refine; };
@@ -717,6 +734,9 @@ namespace {
             for (BYTE n = 0; n < count; ++n) {
                 const TPlayerBotNewLine& line = newLines[n];
                 if (!line.vnum) continue;
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+                NotePlayerBotSmCouponListed(ch, smSplits[n], "create");   // MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+#endif
                 // The line's explanation: what ManagePlayerBotPrivateShop worked
                 // out for it, and the slip drawn above (playerbot_explain.h).
                 if (IsPlayerBotExplainOn()) {
@@ -3590,6 +3610,15 @@ namespace {
             const WORD at = (WORD)lineCell;
             item = ch->GetInventoryItem(at);
             if (!item || !BotOfflineValid(ch, item, pos)) { ++addRefused; continue; }
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+            // MT2009_PLUS_BOT_SM_MARKET_RULE_V1: a coupon line's coins by origin, read while the item is in hand - none of
+            // the account's but the need pool's (playerbot_sm_market_rule.h)
+            TPlayerBotSmListSplit smSplit;
+            if (!SplitPlayerBotSmCouponListing(ch, item->GetVnum(), (long long)item->GetCount(), 0, 0, smSplit)) {
+                ++addRefused;
+                continue;
+            }
+#endif
             if (IsPlayerBotExplainOn()) {
                 if (preparedLine) {
                     if (!TakePlayerBotListingPending(item->GetID(), explained))
@@ -3684,6 +3713,9 @@ namespace {
                 if (sent) {
                     o.listed[id] = playerbot_offline::ListedLine{
                         addVnum, addSkill, now, addRefine };
+#ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+                    NotePlayerBotSmCouponListed(ch, smSplit, "add");   // MT2009_PLUS_BOT_SM_MARKET_RULE_V1
+#endif
                     // The line's explanation (playerbot_explain.h).
                     if (priceTrace.On()) {
                         explained.itemId = id;
