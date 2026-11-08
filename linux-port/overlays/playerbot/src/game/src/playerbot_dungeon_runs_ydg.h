@@ -508,6 +508,9 @@ namespace
 			return false;
 		if (ch->GetEmptyInventory(1) >= 0)
 			return true;
+		// MT2009_PLUS_NAJEMNICY_V3: a player's mercenary's bag is its owner's - nothing moved or sold for room.
+		if (IsPlayerBotNajemnikPID(ch->GetPlayerID()))
+			return false;
 		if (PlayerBotEkwMakeBagRoom(ch, 1, NULL) && ch->GetEmptyInventory(1) >= 0)
 		{
 			sys_log(0, "BOT_YDG: room made pid=%u name=%s how=storage why=%s", ch->GetPlayerID(), ch->GetName(), why);

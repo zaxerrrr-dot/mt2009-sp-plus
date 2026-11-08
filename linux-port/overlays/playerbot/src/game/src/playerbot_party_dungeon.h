@@ -567,7 +567,9 @@ namespace
 
 	bool TakePlayerBotPdgOwnLoot(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotPdgBot& b, DWORD dwNow)
 	{
-		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()) || !ch->GetParty())
+		// MT2009_PLUS_NAJEMNICY_V3: nor a player's mercenary - its bag is its owner's (no room made by selling), and its
+		// own loot is its own pass's (RunNajemnikLoot).
+		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotNajemnikPID(ch->GetPlayerID()) || !ch->GetParty())
 			return false;
 		FPlayerBotPdgOwnLoot own(ch, FindPlayerBotPartyPerson(ch, ch->GetMapIndex()), state.mapFailedLootVIDs, dwNow);
 		ch->GetSectree()->ForEachAround(own);

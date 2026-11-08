@@ -1167,6 +1167,114 @@ namespace
 		}
 	}
 
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V3: the dungeons
+
+	// A dungeon's instance the bots of a person's party know (IsPlayerBotPartyDungeonMap: the classic and Arezzo
+	// dungeons, Atlantis, Zodiac, the ship, Meley, the Yohara ones).
+	bool IsNajemnikDungeonMap(long map)
+	{
+		return map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && IsPlayerBotPartyDungeonMap(map);
+	}
+
+	// The Yohara dungeon run definition of an instance whose items (keys, cogs, stones) the bots' own script handles
+	// round a member list (ManagePlayerBotYdgItems) - Nemere / Razador / Beran / Jotun, Przebudzeni and Szczeliny.
+	// Not Swiatynia Wezy and Glebie, whose item scripts are the bots' run's own (its registered members, its egg
+	// duties, its dust): there the owner does the mechanics and the mercenaries fight.
+	int FindNajemnikYdgDef(long map)
+	{
+		const long base = map / 10000;
+		for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
+		{
+			const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[i];
+			if (def.bKind != DGRUN_KIND_YDG || def.lMap != base)
+				continue;
+			const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(def.szKey);
+			if (!y || y->iBoss == YDG_WEZE || y->iBoss == YDG_GLEBIE)
+				return -1;
+			return i;
+		}
+		return -1;
+	}
+
+	// An owner's party in one instance as the bots' item script sees a run (never registered in the runs' registry, so
+	// no planner, monitor, pull or stall of theirs ever touches it): the owner's mercenaries there, then the owner -
+	// a key of the wrong class goes to a mercenary of the right one, or to the owner.
+	std::map<DWORD, TPlayerBotDgRun> s_mapNajemnicyDgRun;	// owner pid -> its party's view
+
+	TPlayerBotDgRun& GetNajemnicyDgRun(DWORD ownerPid, int iDef, long map)
+	{
+		TPlayerBotDgRun& run = s_mapNajemnicyDgRun[ownerPid];
+		run.iId = 0;
+		run.iDef = iDef;
+		run.bPhase = DGRUN_PHASE_INSIDE;
+		run.dwLeader = ownerPid;
+		run.dwAnchor = ownerPid;
+		run.lInstance = map;
+		run.members.clear();
+		for (std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.begin(); it != s_mapNajemnik.end(); ++it)
+			if (it->second.ownerPid == ownerPid && !it->second.dismiss)
+				run.members.push_back(it->first);
+		run.members.push_back(ownerPid);
+		return run;
+	}
+
+	// Inside a dungeon at its owner's side ("the player as leader"): the dungeon's items first - a seal or a key it
+	// holds is used, a cog, a Maat stone, a crystal or the Atlantis key handed to its NPC, the Meley ring, Balathor's
+	// arrow (ManagePlayerBotPdgItems), the Yohara dungeons' keys by class (Nemere's Frost Key a Shaman's, the Ice Flower
+	// Key a Ninja's or a Shaman's: ManagePlayerBotYdgItems); then, under "Za mna" and "Walcz sam", the fight of a
+	// person's party bot - the dungeon's own foes only (the Blue Dragon's stones first, no shielded statue, no Metin out
+	// of its order, no Balathor egg, no Zodiac boss left to the person): round the owner (PickPlayerBotPdgFoe) or on its
+	// own (PickPlayerBotPdgSoloFoe). It never leaves: the owner's map is its map (the catch-up above), the dungeon's
+	// d.exit_all its way out. False when nothing here took the tick (the ordinary follow and fight go on, the
+	// dungeon's no-target rules still applied - IsPlayerBotPdgFoe).
+	bool ManageNajemnikDungeon(LPCHARACTER ch, TPlayerBotAIState& state, TNajemnik& n, LPCHARACTER owner, DWORD dwNow)
+	{
+		const long map = ch->GetMapIndex();
+		TPlayerBotPdgBot& b = s_mapPlayerBotPdg[n.pid];
+		if (b.lInstance != map)
+		{
+			b.lInstance = map;
+			b.dwEnteredAt = dwNow;
+			b.dwKills = 0;
+			b.dwPersonGoneSince = 0;
+			sys_log(0, "NAJEMNICY: dungeon pid=%u name=%s owner=%u instance=%ld order=%u", n.pid, ch->GetName(), n.ownerPid,
+					map, (unsigned int)n.order);
+		}
+		if (ManagePlayerBotPdgItems(ch, state, b, dwNow))
+			return true;
+		const int iDef = FindNajemnikYdgDef(map);
+		if (iDef >= 0)
+		{
+			LPDUNGEON dg = ch->GetDungeon() ? ch->GetDungeon() : CDungeonManager::instance().FindByMapIndex(map);
+			if (dg && ManagePlayerBotYdgItems(ch, state, GetNajemnicyDgRun(n.ownerPid, iDef, map), dg, dwNow))
+				return true;
+		}
+		if (n.order != NAJEMNIK_ORDER_FOLLOW && n.order != NAJEMNIK_ORDER_FREE)
+			return false;
+		LPCHARACTER foe = n.order == NAJEMNIK_ORDER_FREE ? PickPlayerBotPdgSoloFoe(ch, state, owner, dwNow)
+				: PickPlayerBotPdgFoe(ch, state, owner, dwNow);
+		if (!foe)
+			return false;
+		if (BreakOffPlayerBotArzDgBoss(ch, state, map, dwNow))
+			return true;
+		if (ch->GetJob() == JOB_SHAMAN && ManagePlayerBotBuffPerson(ch, state, owner, dwNow, false, true))
+			return true;
+		state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
+		const bool fought = FightPlayerBotTowerObjective(ch, state, foe, dwNow);
+		if (state.bLastNavOutcome == PLAYERBOT_NAV_OUT_UNREACHABLE)
+		{
+			// A big monster on cells the routes do not end on (the party bots' way): any cell near it, else beside it.
+			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
+			ClearPlayerBotRoute(state, false);
+			state.dwNextNavPlanTime = 0;
+			MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 24, true, false);
+			if (state.bLastNavOutcome == PLAYERBOT_NAV_OUT_UNREACHABLE)
+				UnstickPlayerBotArzDgFoe(ch, foe, owner->GetX(), owner->GetY(), dwNow);
+		}
+		state.dwLastMeaningfulActivityTime = dwNow;
+		return fought;
+	}
+
 	bool ManagePlayerBotNajemnikBot(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (s_mapNajemnik.empty() || !ch)
@@ -1312,8 +1420,14 @@ namespace
 		// The fight - by the owner's order (MT2009_PLUS_NAJEMNICY_V3, ChooseNajemnikFoe): "Za mna" what the owner fights,
 		// what attacks either of them, then what stands near (the Towarzysz's "atakuj"); "Bij moj cel" the owner's target;
 		// "Walcz sam" everything near the owner; "Stoj tutaj" what comes to its spot.
+		// MT2009_PLUS_NAJEMNICY_V3: a dungeon with the owner - its items and the party bots' dungeon fight first.
+		const bool dungeon = IsNajemnikDungeonMap(ch->GetMapIndex()) && !owner->IsDead();
+		if (dungeon && ManageNajemnikDungeon(ch, state, n, owner, dwNow))
+			return true;
 		int why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
 		LPCHARACTER foe = owner->IsDead() ? NULL : ChooseNajemnikFoe(ch, owner, n, why);
+		if (foe && dungeon && !IsPlayerBotPdgFoe(ch, foe))
+			foe = NULL;	// the dungeon's no-target rules (a Metin out of its order, a shielded statue, an egg)
 		if (foe && !MayNajemnikStrike(ch, foe))
 		{
 			PlayerBotLogThrottled("najemnicy_no_pvp", dwNow, "NAJEMNICY: leaves a character alone pid=%u name=%s foe=%s "
@@ -1392,7 +1506,7 @@ namespace
 		{
 			// MT2009_PLUS_NAJEMNICY_V3: a minute paid on another core (a move) runs out first - no gap, no minute twice.
 			const long long paidLeft = NajemnicyNumber(std::unique_ptr<SQLMsg>(NajemnicyQuery(
-					"SELECT CAST(billed_until AS SIGNED) - UNIX_TIMESTAMP() FROM player.najemnicy_vault WHERE owner_pid=%u",
+					"SELECT CAST(billed_until AS SIGNED) - CAST(UNIX_TIMESTAMP() AS SIGNED) FROM player.najemnicy_vault WHERE owner_pid=%u",
 					n.ownerPid)), 0);
 			o.nextBill = dwNow + (DWORD)(MINMAX(0LL, paidLeft, 60LL) * 1000);
 		}
@@ -2131,7 +2245,7 @@ namespace
 		if (away == 0)
 			return;
 		const long long paidLeft = NajemnicyNumber(std::unique_ptr<SQLMsg>(NajemnicyQuery(
-				"SELECT CAST(billed_until AS SIGNED) - UNIX_TIMESTAMP() FROM player.najemnicy_vault WHERE owner_pid=%u",
+				"SELECT CAST(billed_until AS SIGNED) - CAST(UNIX_TIMESTAMP() AS SIGNED) FROM player.najemnicy_vault WHERE owner_pid=%u",
 				ch->GetPlayerID())), -1000000LL);
 		const bool move = paidLeft > -NAJEMNICY_MOVE_GRACE_S;
 		if (!move)

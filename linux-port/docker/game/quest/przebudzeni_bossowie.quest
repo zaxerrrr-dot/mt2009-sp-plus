@@ -100,13 +100,21 @@ quest przebudzeni_bossowie begin
 				check(pc.get_name())
 			end
 			local far = 0
+			local mercs = 0
 			if party.is_party() then
 				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
 				local pids = {party.get_member_pids()}
 				for i, pid in next, pids, nil do
 					if pid ~= me then
 						q.begin_other_pc_block(pid)
-						if pc.get_player_id() == pid and not pc.is_playerbot() then
+						-- MT2009_PLUS_NAJEMNICY_V3: the player's mercenaries count (a Ninja / Shaman, a member) - they
+						-- are not jumped (no ticket): they follow their owner in by themselves
+						local dx0, dy0 = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and (pc.is_najemnik ~= nil and pc.is_najemnik()) and pc.get_map_index() == lmap and dx0 * dx0 + dy0 * dy0 <= c.near * c.near then
+							mercs = mercs + 1
+							ninja = ninja or pc.get_job() == 1
+							shaman = shaman or pc.get_job() == 3
+						elseif pc.get_player_id() == pid and not pc.is_playerbot() then
 							local dx, dy = pc.get_x() - lx, pc.get_y() - ly
 							if pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
 								table.insert(humans, pid)
@@ -132,7 +140,7 @@ quest przebudzeni_bossowie begin
 				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
-			if not pc.is_gm() and table.getn(humans) < 2 then
+			if not pc.is_gm() and table.getn(humans) + mercs < 2 then
 				say("Sam nie przetrwasz w tym lochu - potrzebujesz")
 				say("co najmniej jednego towarzysza z grupy.")
 				return
@@ -166,6 +174,10 @@ quest przebudzeni_bossowie begin
 		when login with przebudzeni_bossowie.on_plateau() begin
 			local c = przebudzeni_bossowie.cfg()
 			if pc.is_playerbot() then
+				-- MT2009_PLUS_NAJEMNICY_V3: a player's mercenary stays beside its owner
+				if (pc.is_najemnik ~= nil and pc.is_najemnik()) then
+					return
+				end
 				warp_to_village()
 				return
 			end

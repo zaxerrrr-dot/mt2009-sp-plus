@@ -76,7 +76,7 @@ quest najemnicy begin
 					pc.get_player_id() .. " AND retired=0 ORDER BY slot")
 			end
 			-- MT2009_PLUS_NAJEMNICY_V3: rozkazy (player.najemnicy.order_mode, no_loot).
-			local orders = { [0] = "Za mn¹", [1] = "Stój tutaj", [2] = "Bij mój cel", [3] = "Walcz sam w pobli¿u" }
+			local orders = { [0] = "Za mn¹ ", [1] = "Stój tutaj", [2] = "Bij mój cel", [3] = "Walcz sam w pobli¿u" }
 			local function nj_order(row)
 				local o = orders[tonumber(row.order_mode) or 0] or orders[0]
 				if tonumber(row.no_loot) == 1 then
@@ -199,14 +199,14 @@ quest najemnicy begin
 					end
 					say_title("Rozkazy")
 					say("Co maj¹ robiæ? Rozkaz zostaje zapamiêtany")
-					say("(tak¿e po wylogowaniu). To samo daj¹")
-					say("przyciski \"Rozkazy\" po klikniêciu najemnika.")
+					say("(tak¿e po wylogowaniu). Te same rozkazy masz")
+					say("pod przyciskiem 'Rozkazy' po klikniêciu najemnika.")
 					say("")
 					say("Za mn¹ - idzie z tob¹ i walczy przy tobie.")
 					say("Stój tutaj - pilnuje miejsca, w którym stoi.")
 					say("Bij mój cel - tylko to, co zaznaczysz.")
 					say("Walcz sam w pobli¿u - wszystko wokó³ ciebie.")
-					local c = select("Za mn¹", "Stój tutaj", "Bij mój cel", "Walcz sam w pobli¿u", "Nie podnoœ ³upu",
+					local c = select("Za mn¹ ", "Stój tutaj", "Bij mój cel", "Walcz sam w pobli¿u", "Nie podnoœ ³upu",
 						"Podnoœ ³up", "Wstecz")
 					local words = { "za_mna", "stoj", "bij", "sam", "nie_podnos", "podnos" }
 					if c <= 6 then
@@ -214,8 +214,8 @@ quest najemnicy begin
 					end
 				elseif r == 2 then
 					say_title("Powrót po zalogowaniu")
-					say("Wezwani najemnicy id¹ za tob¹ na inny rdzeñ")
-					say("i kana³ zawsze. Po wylogowaniu odchodz¹,")
+					say("Wezwani najemnicy zawsze id¹ za tob¹ na inny")
+					say("rdzeñ i kana³. Po wylogowaniu odchodz¹,")
 					say("a po zalogowaniu wracaj¹ sami (op³ata dalej")
 					say("tylko w czasie wezwania) - chyba ¿e to wy³¹czysz.")
 					local e = select("Wracaj¹ sami (w³¹cz)", "Nie wracaj¹ (wy³¹cz)", "Wstecz")
