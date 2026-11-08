@@ -2530,8 +2530,9 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-owoce/cube.
 # folder, the rooms' spawn files (data/dungeon/jotun_szc: Owsap's points), groups 6178-6184 and 6193 (Owsap's
 # 6401-6408) - none may exist before -, the statue's npc line. No drop file and no chest: the monsters drop nothing
 # there (server-patches/szczelina). Monsters, NPCs, Handlarka Iluzji's Zegarek Kieszonkowy rows: yohara_crack.sql;
-# items: yohara_items_crack.sql. The dungeon panel gets jotun_szc (the ticket Zegarek Kieszonkowy, party 2-8, level 110,
-# the entrance on the plateau beside the statue).
+# items: yohara_items_crack.sql. The dungeon panel gets jotun_szc (the ticket Zegarek Kieszonkowy, party 1-8, level 110,
+# the entrance on the plateau beside the statue). MT2009_PLUS_YOHARA_SZC_SOLO_V1 (the owner, 8 November 2026): a player
+# may go in alone - party 1-8 (was 2-8); the bots' runs keep their own 2+ (playerbot_dungeon_runs_rules.h).
 COPY yohara_crack/ /tmp/yohara-crack-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -2567,7 +2568,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
  && I="$L/dungeon_info.txt" \
  && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+jotun_szc[[:blank:]]' "$I" \
       || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
-           printf 'dungeon\tjotun_szc\t404\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4403\t-\t0\t31147\t1\tZakl\352ty_Las_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; }; } \
+           printf 'dungeon\tjotun_szc\t404\t1\txy\t397\t3178\t18016\t110\t0\t1\t8\t4403\t-\t0\t31147\t1\tZakl\352ty_Las_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; }; } \
  && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+jotun_szc[[:blank:]]' "$I")" = 1 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
@@ -2589,7 +2590,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
 # groups of groups 4201-4207 / 6021-6023 - none may exist before. No drop file and no chest: the monsters drop nothing
 # there (server-patches/szczelina, MT2009_PLUS_YOHARA_CRACK2_V1) but Beran-Setaou (SZC)'s yang. Monsters and NPCs:
 # yohara_crack2.sql; items: yohara_items_crack2.sql. The dungeon panel gets beran_szc / razador_szc / nemere_szc (the
-# ticket Zegarek Kieszonkowy, party 2-8, level 110, the entrance on the plateau beside the statue).
+# ticket Zegarek Kieszonkowy, level 110, the entrance on the plateau beside the statue). MT2009_PLUS_YOHARA_SZC_SOLO_V1:
+# party 1-8 for beran_szc / razador_szc (a player alone); nemere_szc stays 2-8 - its Ninja and Shaman.
 COPY yohara_crack2/ /tmp/yohara-crack2-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack2-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -2631,8 +2633,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack2-add \
  && I="$L/dungeon_info.txt" \
  && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+beran_szc[[:blank:]]' "$I" \
       || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
-           printf 'dungeon\tberan_szc\t405\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4400\t-\t0\t31147\t1\tGrota_Wygna\361c\363w_2_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
-           printf 'dungeon\trazador_szc\t406\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4401\t-\t0\t31147\t1\tTwierdza_Czerwonego_Smoka_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
+           printf 'dungeon\tberan_szc\t405\t1\txy\t397\t3178\t18016\t110\t0\t1\t8\t4400\t-\t0\t31147\t1\tGrota_Wygna\361c\363w_2_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
+           printf 'dungeon\trazador_szc\t406\t1\txy\t397\t3178\t18016\t110\t0\t1\t8\t4401\t-\t0\t31147\t1\tTwierdza_Czerwonego_Smoka_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
            printf 'dungeon\tnemere_szc\t407\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4402\t-\t0\t31147\t1\tStra\277nica_Nemere_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; }; } \
  && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(beran_szc|razador_szc|nemere_szc)[[:blank:]]' "$I")" = 3 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \

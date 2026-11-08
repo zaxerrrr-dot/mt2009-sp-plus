@@ -17,7 +17,7 @@
 --   6. Zabij w³adcê En-Tai (SZC) - Badacz Lasu (SZC) (20521): Szlachetne Drewno (SZC) (31162) z W³adcy En-Tai (SZC)
 --      (4265) - 11 650 000 PD; potem Drzewny Szmaragd (SZC) (31165) z W³adcy - 11 650 000 PD i Kamieñ Driad (SZC)
 --      (31161).
---   Przywódca Stra¿y Lasu (SZC) (20522): "Pomieszczenie bossa" - przywódca grupy, ca³a grupa przy nim, ka¿dy ma Kamieñ
+--   Przywódca Stra¿y Lasu (SZC) (20522): "Pomieszczenie bossa" - gracz sam albo przywódca grupy (MT2009_PLUS_YOHARA_SZC_SOLO_V1), ca³a grupa przy nim, ka¿dy ma Kamieñ
 --   Driad (SZC) (zabierany) - Erebu: Bagjanamu (SZC) (4272), minutê po nim Jotun Thrym (SZC) (4403, wiatr, 135 poz.;
 --   przywo³uje Niszczycieli En-Tai (SZC-125)).
 -- Potwory nie daj¹ dropu (wiki) - silnik nie upuszcza niczego na mapie 404 poza Yangami Jotuna Thryma (SZC)
@@ -459,11 +459,6 @@ quest jotun_szc begin
 		when 20522.chat."Pomieszczenie bossa" with jotun_szc.inside() and d.getf("closed") == 0 and d.getf("level") == 0 and npc.lock() begin
 			local c = jotun_szc.cfg()
 			say_title(mob_name(20522)..":")
-			if not pc.is_gm() and not party.is_party() then
-				say("Do Erebu wchodzi siê tylko w grupie.")
-				npc.unlock()
-				return
-			end
 			if party.is_party() and not party.is_leader() and not pc.is_gm() then
 				say("Tylko przywódca grupy mo¿e poprowadziæ was dalej.")
 				npc.unlock()
