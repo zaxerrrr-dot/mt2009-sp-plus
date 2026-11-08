@@ -97,9 +97,33 @@ namespace
 		// the fire resistance then
 		BYTE bGate55Path;
 		int iGate55Fire;
+		// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1: where the weapon row's piece came from at the last weighing
+		// (PLAYERBOT_PROG_WSRC_*) and, held for it, why (PLAYERBOT_PROG_WSHORT_*)
+		BYTE bWeaponSrc;
+		BYTE bWeaponShort;
+		// MT2009_PLUS_BOT_GATE_TRIAL_V1: the gate trial (below)
+		bool bTrial;			// a trial running
+		BYTE bTrialGate;		// its gate
+		DWORD dwTrialStart;		// get_dword_time() at the start
+		DWORD dwTrialHuntMs;		// the minutes of hunting it has had (the trial's clock)
+		long lTrialFromMap;		// the map it stood on at the start
+		long lTrialLastHuntMap;		// the last hunting map it was seen on in the trial
+		unsigned int uTrialKills, uTrialDeaths, uTrialRetreats;
+		long long llTrialPvpDeaths;	// PLAYER_STATS_DEATH_FROM_PLAYER_FLAG at the last look (a player's kill is no test)
+		long lTrialCooldownUntil;	// get_global_time(): no new trial before it (unless the bot grew)
+		BYTE bTrialCooldownGate;
+		unsigned int uTrialCount;	// trials at this gate (since the login)
+		bool bTrialSig;			// the failed trial's look at the bot, for "it grew since"
+		long long llSigPlus, llSigLevel, llSigSkills, llSigHp;
+		int iSigFire;
+		DWORD dwTrialLastEnd;
 		TPlayerBotProgress() : dwSeen(0), dwLastTick(0), dwNextEval(0), dwNextLog(0), dwHeldMs(0),
 			bLevel(0), bGate(0), bWaived(0), bLoaded(false), bEligible(false), bFishing(false),
-			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0), bGate55Path(0), iGate55Fire(0) {}
+			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0), bGate55Path(0), iGate55Fire(0),
+			bWeaponSrc(0), bWeaponShort(0), bTrial(false), bTrialGate(0), dwTrialStart(0), dwTrialHuntMs(0),
+			lTrialFromMap(0), lTrialLastHuntMap(0), uTrialKills(0), uTrialDeaths(0), uTrialRetreats(0),
+			llTrialPvpDeaths(-1), lTrialCooldownUntil(0), bTrialCooldownGate(0), uTrialCount(0), bTrialSig(false),
+			llSigPlus(0), llSigLevel(0), llSigSkills(0), llSigHp(0), iSigFire(0), dwTrialLastEnd(0) {}
 	};
 	std::map<DWORD, TPlayerBotProgress> s_mapPlayerBotProgress;
 
@@ -122,6 +146,117 @@ namespace
 		TPlayerBotGate55Stats() : passedFire(0), passedPlus6(0), passedFireMin(0), passedPlus6Min(0) {}
 	};
 	TPlayerBotGate55Stats s_kPlayerBotGate55;
+
+	// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1 (the owner, 8 November 2026: "jak botom moze brakowac broni jak maja bron mlodego
+	// bohatera?"). The test world's census of 13:37 held 128 bots at 45 / 55 on the weapon row. The logs of 13:00-13:51
+	// (both channels, 2090 "held at" lines) and the DB after the 13:51 stop answer why: of the 330 bots held there on
+	// the weapon row in that hour, 238 wore a young heroes' weapon at the save and 92 held a TOOL in the hand - 85 a
+	// fishing rod, 5 the herbalist's knife, 2 a pickaxe - each with a valid young heroes' weapon of its tier in the bag;
+	// not one held a real weapon of its own choice. Of the 119 still held on the weapon row at the end of the hour,
+	// 109 had last put a rod in the hand, 3 a pickaxe, 2 the knife, 1 had its young weapon run out (a real weapon of
+	// 45+3 prepared: a true short), 4 a knife between picks. A rod, a pickaxe or the knife takes the weapon's cell, so
+	// the morning's fix (a WORN young weapon is the one read) did not see it, and GetPlayerBotHandWeapon answered the
+	// real weapon prepared in the bag ("bron lv30+7 (ma lv45+3)"): the bot flipped held / passed with every fishing
+	// session and every herb pick (1076 "passed" lines in that hour), its exp lock on and off and its gate clock reset
+	// at each pass. No class or level lacks a young weapon (jobs 0-7 all hold one), its +9 has no level limit (the
+	// bot's own level, GetPlayerBotWeaponEffective) and none was under the row's level. Now, with a tool or nothing in
+	// the hand, the weapon that goes back into it is read - the young heroes' weapon of the bag the equipment pass would
+	// put on (FindPlayerBotMlodziHeld: valid, of its class and level) - before the prepared real weapon.
+	// Event flag m2_bot_prog_mlodzi_tool_off 1: as before.
+	enum { PLAYERBOT_PROG_WSRC_NONE = 0, PLAYERBOT_PROG_WSRC_MLODZI_WORN, PLAYERBOT_PROG_WSRC_MLODZI_BAG,
+		PLAYERBOT_PROG_WSRC_REAL_HAND, PLAYERBOT_PROG_WSRC_REAL_BAG, PLAYERBOT_PROG_WSRC_COUNT };
+	const char* const PLAYERBOT_PROG_WSRC_NAMES[PLAYERBOT_PROG_WSRC_COUNT] = { "none", "mlodzi_worn", "mlodzi_bag_tool",
+		"real_hand", "real_bag" };
+	enum { PLAYERBOT_PROG_WSHORT_MET = 0, PLAYERBOT_PROG_WSHORT_NONE, PLAYERBOT_PROG_WSHORT_LEVEL,
+		PLAYERBOT_PROG_WSHORT_PLUS, PLAYERBOT_PROG_WSHORT_BOTH, PLAYERBOT_PROG_WSHORT_COUNT };
+
+	// ======================================================================================================================
+	// MT2009_PLUS_BOT_GATE_TRIAL_V1 (the owner, 8 November 2026: "bot idzie najpierw, probuje czy daje rade na danej mapie,
+	// jesli nie, wraca i blokada nadal jest aktualna dopoki nie minie czas albo sie nie rozwinie"). Every gate, always:
+	//   * a held bot (eligible as for the gates - no dropper, companion or cohort) held m2_bot_gate_trial_after_min (5)
+	//     minutes gets a trial: its exp lock is lifted up to the gate's level + m2_bot_gate_trial_levels (1) - then
+	//     locked again while the trial goes on - its farm goal (Metins, horse medals) gives way to its frontier, the
+	//     ground its level draws, i.e. the next band's maps (at 35 Orc Valley opens at 36);
+	//   * it is judged with the element progression's coping numbers (MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1), on any map:
+	//     m2_bot_gate_trial_deaths (3) deaths to monsters or m2_bot_gate_trial_retreats (8) HP retreats in the trial fail it
+	//     at once; after m2_bot_gate_trial_min (40) minutes of hunting (the trial's clock runs only on a hunting map, not
+	//     in a village, with no rod / pickaxe / knife in the hand and no fishing) it passes with at least
+	//     m2_bot_gate_trial_kills (25) kills a 30 minutes, else fails for slow kills; with no such clock in
+	//     m2_bot_gate_trial_wall_x (3) times the trial's length it fails for no_hunt;
+	//   * passed: the gate counts as passed (the "given up" flag playerbot.prog_waived takes it, as a timeout does, and
+	//     playerbot.prog_trial_pass) and the bot goes on - "PLAYERBOT_PROGRESS: passed ... passed_by=trial";
+	//   * failed: the exp lock is back, the gate holds on until its rows are met or its timeout (180 min) runs out - the
+	//     timeout counts through the trial - and the map it failed on is marked hard for it for the cooldown
+	//     (MarkPlayerBotSurviveHardMap - the survive step-down: the frontier draw answers the easier ground where the
+	//     materials it lacks drop, "wraca na inna mape i zbiera materialy na rozwoj"). A new trial after
+	//     m2_bot_gate_trial_cooldown (90) minutes, or - at least PLAYERBOT_GATE_TRIAL_MIN_GAP_MS after the last - as soon
+	//     as the bot grew since the failure: more plus or item levels on its eight slots, more skill levels, 5+ fire
+	//     resistance or 500+ HP from items.
+	// The experience of a trial: up to the gate + 1 and no further (the levels flag; 0 keeps it locked at the gate and
+	// tests survival only: m2_bot_gate_trial_survival_only 1). The +1 is the better of the two: a trial is the real hunt - the bot earns while it proves
+	// itself, and passing loses it nothing; the one level stays well inside the gate's retro window (9), so a failed
+	// trial leaves the bot held at the same gate, never past it, and no second trial adds more (the cap is the gate's,
+	// not the trial's); and at 35 the +1 is what opens Orc Valley (36), the next band's ground the trial is about. A
+	// lock kept at the gate would test the very ground the held bot already stands on, for nothing.
+	// Event flags: m2_bot_gate_trial_off 1 - no trials (as before); _min (10-180), _cooldown (10-1440), _after_min (1-180),
+	// _deaths (1-50), _retreats (1-100), _kills (1-1000, a 30 minutes), _levels (1-3), _survival_only 1, _wall_x (2-10). The log: "PLAYERBOT_PROGRESS: trial start / trial end", the census every 10 minutes
+	// ("PLAYERBOT_PROGRESS: trial census gate=..." and "PLAYERBOT_PROGRESS: weapon_row gate=...").
+	// ======================================================================================================================
+	const DWORD PLAYERBOT_GATE_TRIAL_MIN_GAP_MS = 15 * 60 * 1000;
+	const DWORD PLAYERBOT_GATE_TRIAL_CENSUS_MS = 10 * 60 * 1000;
+	const char* const PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD = "playerbot.prog_trial_cd";
+	const char* const PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD_GATE = "playerbot.prog_trial_cdg";
+	const char* const PLAYERBOT_PROGRESSION_FLAG_TRIAL_PASS = "playerbot.prog_trial_pass";
+
+	struct TPlayerBotGateTrialCfg
+	{
+		bool on;
+		int trialMin, cooldownMin, afterMin, deaths, retreats, kills, levels, wallX;
+	};
+
+	int ReadPlayerBotGateTrialFlag(const char* name, int def, int lo, int hi)
+	{
+		const int v = quest::CQuestManager::instance().GetEventFlag(name);
+		return v >= lo && v <= hi ? v : def;
+	}
+
+	const TPlayerBotGateTrialCfg& GetPlayerBotGateTrialCfg()
+	{
+		static TPlayerBotGateTrialCfg s_kCfg;
+		static DWORD s_dwAt = 0;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			s_kCfg.on = quest::CQuestManager::instance().GetEventFlag("m2_bot_gate_trial_off") == 0;
+			s_kCfg.trialMin = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_min", 40, 10, 180);
+			s_kCfg.cooldownMin = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_cooldown", 90, 10, 24 * 60);
+			s_kCfg.afterMin = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_after_min", 5, 1, 180);
+			s_kCfg.deaths = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_deaths", 3, 1, 50);
+			s_kCfg.retreats = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_retreats", 8, 1, 100);
+			s_kCfg.kills = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_kills", 25, 1, 1000);
+			// m2_bot_gate_trial_levels 1-3 (default 1); m2_bot_gate_trial_survival_only 1 - 0 levels (locked at the gate)
+			s_kCfg.levels = quest::CQuestManager::instance().GetEventFlag("m2_bot_gate_trial_survival_only") != 0 ? 0
+					: ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_levels", 1, 1, 3);
+			s_kCfg.wallX = ReadPlayerBotGateTrialFlag("m2_bot_gate_trial_wall_x", 3, 2, 10);
+		}
+		return s_kCfg;
+	}
+
+	enum { PLAYERBOT_GATE_TRIAL_END_PASSED = 0, PLAYERBOT_GATE_TRIAL_END_DEATHS, PLAYERBOT_GATE_TRIAL_END_RETREATS,
+		PLAYERBOT_GATE_TRIAL_END_SLOW_KILLS, PLAYERBOT_GATE_TRIAL_END_NO_HUNT, PLAYERBOT_GATE_TRIAL_END_GATE_MET,
+		PLAYERBOT_GATE_TRIAL_END_TIMEOUT, PLAYERBOT_GATE_TRIAL_END_OTHER, PLAYERBOT_GATE_TRIAL_END_COUNT };
+	const char* const PLAYERBOT_GATE_TRIAL_END_NAMES[PLAYERBOT_GATE_TRIAL_END_COUNT] = { "passed", "deaths",
+		"hp_retreats", "slow_kills", "no_hunt", "gate_met", "timeout", "released" };
+
+	struct TPlayerBotGateTrialStats
+	{
+		unsigned int started, early, cooldownWaits;
+		unsigned int ends[PLAYERBOT_GATE_TRIAL_END_COUNT];
+		TPlayerBotGateTrialStats() : started(0), early(0), cooldownWaits(0) { memset(ends, 0, sizeof(ends)); }
+	};
+	std::map<BYTE, TPlayerBotGateTrialStats> s_mapPlayerBotGateTrialStats;	// per gate, the census period
+	unsigned int s_uPlayerBotWeaponRowMlodziBag = 0;	// weighings whose weapon row a bag young weapon met (period)
 
 	bool IsPlayerBotGate55Gate(const playerbot_progression::TGate& gate)
 	{
@@ -235,6 +370,9 @@ namespace
 	// (playerbot_mount_gate.h)
 	bool IsPlayerBotMountGateMet(LPCHARACTER ch);
 	void NotePlayerBotMountGateRow(DWORD pid, BYTE how, DWORD dwNow);
+	// MT2009_PLUS_BOT_GATE_TRIAL_V1: a failed trial's map marked hard (playerbot_survive.h, included later)
+	bool MarkPlayerBotSurviveHardMap(LPCHARACTER ch, long map, int minutes);
+	void ReportPlayerBotGateTrials(DWORD dwNow);
 
 	// Once a manager tick: the file (a stat every five seconds), the census,
 	// the status file.
@@ -244,6 +382,7 @@ namespace
 			ApplyPlayerBotProgressionToPersona();
 		UpdatePlayerBotProgressCensus(dwNow);
 		WritePlayerBotProgressionStatus(dwNow);
+		ReportPlayerBotGateTrials(dwNow);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 		if (dwNow < s_dwPlayerBotProgressionNextCheck)
 			return;
 		s_dwPlayerBotProgressionNextCheck = dwNow + 5000;
@@ -297,8 +436,10 @@ namespace
 		return true;
 	}
 
-	void MeasurePlayerBotProgress(LPCHARACTER ch, playerbot_progression::TSnapshot& s)
+	void MeasurePlayerBotProgress(LPCHARACTER ch, playerbot_progression::TSnapshot& s, BYTE* pWeaponSrc = NULL)
 	{
+		if (pWeaponSrc)
+			*pWeaponSrc = PLAYERBOT_PROG_WSRC_NONE;
 		s.level = (uint8_t)std::min<int>(255, ch->GetLevel());
 		static const BYTE slots[playerbot_progression::SLOT_COUNT] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR
@@ -316,6 +457,30 @@ namespace
 			if (i == 0 && IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)) &&
 					quest::CQuestManager::instance().GetEventFlag("m2_bot_prog_mlodzi_hand_off") == 0)
 				item = ch->GetWear(WEAR_WEAPON);
+			// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1: a rod, a pickaxe, the knife or nothing in the hand - the young heroes'
+			// weapon that goes back into it (above, by the census).
+			if (i == 0)
+			{
+				LPITEM hand = ch->GetWear(WEAR_WEAPON);
+				BYTE src = PLAYERBOT_PROG_WSRC_NONE;
+				if (hand && hand->GetType() == ITEM_WEAPON)
+					src = item == hand ? (IsPlayerBotMlodziWeapon(hand) ? PLAYERBOT_PROG_WSRC_MLODZI_WORN
+							: PLAYERBOT_PROG_WSRC_REAL_HAND) : (item ? PLAYERBOT_PROG_WSRC_REAL_BAG : PLAYERBOT_PROG_WSRC_NONE);
+				else
+				{
+					LPITEM back = quest::CQuestManager::instance().GetEventFlag("m2_bot_prog_mlodzi_tool_off") == 0
+							? FindPlayerBotMlodziHeld(ch, NULL) : NULL;
+					if (back)
+					{
+						item = back;
+						src = PLAYERBOT_PROG_WSRC_MLODZI_BAG;
+					}
+					else if (item)
+						src = PLAYERBOT_PROG_WSRC_REAL_BAG;
+				}
+				if (pWeaponSrc)
+					*pWeaponSrc = src;
+			}
 			if (!item)
 				continue;
 			s.slot[i].present = true;
@@ -385,6 +550,27 @@ namespace
 	{
 		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(pid);
 		return it != s_mapPlayerBotProgress.end() && it->second.bHeld && it->second.bEligible;
+	}
+
+	// MT2009_PLUS_BOT_GATE_TRIAL_V1: the exp lock's question (ManagePlayerBotExpLock) - held, and not in a gate trial
+	// under its level cap (the gate + m2_bot_gate_trial_levels).
+	bool IsPlayerBotProgressionExpHeld(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotProgress.end() || !it->second.bHeld || !it->second.bEligible)
+			return false;
+		const TPlayerBotProgress& e = it->second;
+		if (!e.bTrial)
+			return true;
+		return (int)ch->GetLevel() >= (int)e.bTrialGate + GetPlayerBotGateTrialCfg().levels;
+	}
+
+	bool IsPlayerBotGateTrialRunning(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(pid);
+		return it != s_mapPlayerBotProgress.end() && it->second.bHeld && it->second.bTrial;
 	}
 
 	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: the held bot's record (NULL: not held) - its gate, minutes and unmet rows.
@@ -494,6 +680,9 @@ namespace
 		const int needs = GetPlayerBotProgressionNeeds(ch->GetPlayerID());
 		if (needs == 0)
 			return PLAYERBOT_PROGRESS_FARM_NONE;
+		// MT2009_PLUS_BOT_GATE_TRIAL_V1: in a trial the bot hunts the ground its level draws, not a farm's
+		if (IsPlayerBotGateTrialRunning(ch->GetPlayerID()))
+			return PLAYERBOT_PROGRESS_FARM_NONE;
 		// MT2009_PLUS_HORSE30_V1: the Monkey Dungeon only while the next paid
 		// training lacks medals - with them in the bag it is the yang and the
 		// materials it lacks, which the Metin window and the ordinary hunting
@@ -526,9 +715,314 @@ namespace
 		}
 	}
 
+	// ---------------------------------------------------------------- MT2009_PLUS_BOT_GATE_TRIAL_V1
+
+	// A death, an HP retreat or a kill of a bot in a trial (the element progression's hooks, playerbot_element_maps.h).
+	// A kill counts for the party members in a trial near the killer too (an assisting member lands few last hits).
+	void NotePlayerBotGateTrialOne(LPCHARACTER ch, int kind)
+	{
+		if (!ch || s_mapPlayerBotProgress.empty())
+			return;
+		std::map<DWORD, TPlayerBotProgress>::iterator it = s_mapPlayerBotProgress.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotProgress.end() || !it->second.bTrial || !it->second.bHeld)
+			return;
+		TPlayerBotProgress& e = it->second;
+		switch (kind)
+		{
+			case PLAYERBOT_GATE_TRIAL_EV_KILL:
+				++e.uTrialKills;
+				break;
+			case PLAYERBOT_GATE_TRIAL_EV_DEATH:
+			{
+				// a player's kill (a war, a duel, the arena) is no test of the ground
+				TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+				if (st != s_mapPlayerBotAIStates.end() && st->second.dwGuildWarEnemyGID != 0)
+					return;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+				const long long pvp = ch->GetSpecialFlag((DWORD)PLAYER_STATS_DEATH_FROM_PLAYER_FLAG);
+				const bool byPlayer = e.llTrialPvpDeaths >= 0 && pvp > e.llTrialPvpDeaths;
+				e.llTrialPvpDeaths = pvp;
+				if (byPlayer)
+					return;
+#endif
+				++e.uTrialDeaths;
+				break;
+			}
+			case PLAYERBOT_GATE_TRIAL_EV_RETREAT:
+				++e.uTrialRetreats;
+				break;
+		}
+	}
+
+	struct FPlayerBotGateTrialPartyKill
+	{
+		LPCHARACTER m_pKiller;
+		explicit FPlayerBotGateTrialPartyKill(LPCHARACTER killer) : m_pKiller(killer) {}
+		void operator()(LPCHARACTER member)
+		{
+			if (!member || member == m_pKiller || member->GetMapIndex() != m_pKiller->GetMapIndex() ||
+					DISTANCE_APPROX(member->GetX() - m_pKiller->GetX(), member->GetY() - m_pKiller->GetY()) >
+						PLAYERBOT_EPROG_PARTY_KILL_RANGE)
+				return;
+			NotePlayerBotGateTrialOne(member, PLAYERBOT_GATE_TRIAL_EV_KILL);
+		}
+	};
+
+	void NotePlayerBotGateTrialEvent(LPCHARACTER ch, int kind, DWORD now)
+	{
+		(void)now;
+		if (!ch || !ch->IsPC() || s_mapPlayerBotProgress.empty())
+			return;
+		NotePlayerBotGateTrialOne(ch, kind);
+		if (kind == PLAYERBOT_GATE_TRIAL_EV_KILL && ch->GetParty())
+		{
+			FPlayerBotGateTrialPartyKill f(ch);
+			ch->GetParty()->ForEachOnMapMember(f, ch->GetMapIndex());
+		}
+	}
+
+	// The trial's clock runs while the bot hunts: on a map outside the villages, alive, no tool in the hand, not fishing.
+	bool IsPlayerBotGateTrialHunting(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch || ch->IsDead() || state.bFishingSession || IsPlayerBotVillageMap(ch->GetMapIndex()))
+			return false;
+		LPITEM hand = ch->GetWear(WEAR_WEAPON);
+		return !hand || hand->GetType() == ITEM_WEAPON;
+	}
+
+	// The bot's growth since a failed trial: the eight slots' plus and levels, the skills, fire, the HP from items.
+	void SignPlayerBotGateTrial(const playerbot_progression::TSnapshot& snap, long long& plus, long long& level,
+			long long& skills, long long& hp, int& fire)
+	{
+		plus = level = skills = 0;
+		for (int i = 0; i < playerbot_progression::SLOT_COUNT; ++i)
+			if (snap.slot[i].present)
+			{
+				plus += snap.slot[i].plus;
+				level += snap.slot[i].level;
+			}
+		for (int i = 0; i < snap.skillCount && i < 16; ++i)
+			skills += snap.skills[i];
+		hp = snap.hp;
+		fire = snap.fire;
+	}
+
+	const char* PlayerBotGateTrialGrewWhy(const TPlayerBotProgress& e, const playerbot_progression::TSnapshot& snap)
+	{
+		if (!e.bTrialSig)
+			return NULL;
+		long long plus = 0, level = 0, skills = 0, hp = 0;
+		int fire = 0;
+		SignPlayerBotGateTrial(snap, plus, level, skills, hp, fire);
+		if (plus > e.llSigPlus)
+			return "plus";
+		if (level > e.llSigLevel)
+			return "item_level";
+		if (skills > e.llSigSkills)
+			return "skills";
+		if (fire >= e.iSigFire + 5)
+			return "fire";
+		if (hp >= e.llSigHp + 500)
+			return "hp";
+		return NULL;
+	}
+
+	void EndPlayerBotGateTrial(LPCHARACTER ch, TPlayerBotProgress& e, int why, const playerbot_progression::TSnapshot* snap,
+			DWORD dwNow)
+	{
+		if (!e.bTrial)
+			return;
+		const TPlayerBotGateTrialCfg& cfg = GetPlayerBotGateTrialCfg();
+		const BYTE gate = e.bTrialGate;
+		if (why >= 0 && why < PLAYERBOT_GATE_TRIAL_END_COUNT)
+			++s_mapPlayerBotGateTrialStats[gate].ends[why];
+		const bool failed = why == PLAYERBOT_GATE_TRIAL_END_DEATHS || why == PLAYERBOT_GATE_TRIAL_END_RETREATS ||
+				why == PLAYERBOT_GATE_TRIAL_END_SLOW_KILLS || why == PLAYERBOT_GATE_TRIAL_END_NO_HUNT;
+		long hardMap = 0;
+		bool stepped = false;
+		if (failed && ch)
+		{
+			e.lTrialCooldownUntil = (long)get_global_time() + (long)cfg.cooldownMin * 60L;
+			e.bTrialCooldownGate = gate;
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD, (int)e.lTrialCooldownUntil);
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD_GATE, gate);
+			if (snap)
+			{
+				SignPlayerBotGateTrial(*snap, e.llSigPlus, e.llSigLevel, e.llSigSkills, e.llSigHp, e.iSigFire);
+				e.bTrialSig = true;
+			}
+			// back to easier ground for the cooldown: the map it failed on (the one it stands on, else the last it hunted)
+			hardMap = IsPlayerBotVillageMap(ch->GetMapIndex()) ? e.lTrialLastHuntMap : ch->GetMapIndex();
+			stepped = MarkPlayerBotSurviveHardMap(ch, hardMap, cfg.cooldownMin);
+		}
+		sys_log(0, "PLAYERBOT_PROGRESS: trial end pid=%u name=%s level=%u gate=%u result=%s hunt_min=%u wall_min=%u "
+				"kills=%u deaths=%u hp_retreats=%u from_map=%ld map=%ld held_min=%u%s%s cooldown_min=%d step_down=%ld trial_no=%u",
+				ch ? ch->GetPlayerID() : 0, ch ? ch->GetName() : "-", ch ? (unsigned)ch->GetLevel() : 0U, (unsigned)gate,
+				why >= 0 && why < PLAYERBOT_GATE_TRIAL_END_COUNT ? PLAYERBOT_GATE_TRIAL_END_NAMES[why] : "?",
+				e.dwTrialHuntMs / 60000U, (dwNow - e.dwTrialStart) / 60000U, e.uTrialKills, e.uTrialDeaths, e.uTrialRetreats,
+				e.lTrialFromMap, ch ? ch->GetMapIndex() : 0L, e.dwHeldMs / 60000U, failed ? " failed=1" : "",
+				why == PLAYERBOT_GATE_TRIAL_END_PASSED ? " passed_by=trial" : "", failed ? cfg.cooldownMin : 0,
+				stepped ? hardMap : 0L, e.uTrialCount);
+		e.bTrial = false;
+		e.dwTrialLastEnd = dwNow ? dwNow : 1;
+		e.dwNextEval = 0;	// the exp lock and the farm goal at once
+	}
+
+	// The trial's turn at a weighing of a held bot (holdGate its gate): true when the trial passed the gate (the caller
+	// releases the bot and returns).
+	bool ManagePlayerBotGateTrial(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotProgress& e, BYTE holdGate,
+			const playerbot_progression::TSnapshot& snap, DWORD dwNow)
+	{
+		const TPlayerBotGateTrialCfg& cfg = GetPlayerBotGateTrialCfg();
+		if (e.bTrial && (!cfg.on || e.bTrialGate != holdGate))
+		{
+			EndPlayerBotGateTrial(ch, e, PLAYERBOT_GATE_TRIAL_END_OTHER, NULL, dwNow);
+			return false;
+		}
+		if (!cfg.on)
+			return false;
+		const DWORD trialMs = (DWORD)cfg.trialMin * 60000U;
+		if (e.bTrial)
+		{
+			if (!IsPlayerBotVillageMap(ch->GetMapIndex()))
+				e.lTrialLastHuntMap = ch->GetMapIndex();
+			int why = -1;
+			if ((int)e.uTrialDeaths >= cfg.deaths)
+				why = PLAYERBOT_GATE_TRIAL_END_DEATHS;
+			else if ((int)e.uTrialRetreats >= cfg.retreats)
+				why = PLAYERBOT_GATE_TRIAL_END_RETREATS;
+			else if (e.dwTrialHuntMs >= trialMs)
+			{
+				// the kill rate: cfg.kills a 30 minutes of the trial's clock
+				const unsigned long long need = (unsigned long long)cfg.kills * (unsigned long long)(e.dwTrialHuntMs / 60000U) / 30ULL;
+				why = (unsigned long long)e.uTrialKills >= need ? PLAYERBOT_GATE_TRIAL_END_PASSED : PLAYERBOT_GATE_TRIAL_END_SLOW_KILLS;
+			}
+			else if (dwNow - e.dwTrialStart >= trialMs * (DWORD)cfg.wallX)
+				why = PLAYERBOT_GATE_TRIAL_END_NO_HUNT;
+			if (why < 0)
+				return false;
+			EndPlayerBotGateTrial(ch, e, why, &snap, dwNow);
+			if (why != PLAYERBOT_GATE_TRIAL_END_PASSED)
+				return false;
+			e.bWaived = holdGate;
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_WAIVED, holdGate);
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_PASS, holdGate);
+			return true;
+		}
+		// a new trial?
+		if (e.dwHeldMs < (DWORD)cfg.afterMin * 60000U)
+			return false;
+		const char* grew = NULL;
+		if (e.lTrialCooldownUntil != 0 && e.bTrialCooldownGate == holdGate && (long)get_global_time() < e.lTrialCooldownUntil)
+		{
+			grew = e.dwTrialLastEnd == 0 || dwNow - e.dwTrialLastEnd >= PLAYERBOT_GATE_TRIAL_MIN_GAP_MS
+					? PlayerBotGateTrialGrewWhy(e, snap) : NULL;
+			if (!grew)
+			{
+				++s_mapPlayerBotGateTrialStats[holdGate].cooldownWaits;
+				return false;
+			}
+			++s_mapPlayerBotGateTrialStats[holdGate].early;
+		}
+		e.bTrial = true;
+		e.bTrialGate = holdGate;
+		e.dwTrialStart = dwNow ? dwNow : 1;
+		e.dwTrialHuntMs = 0;
+		e.lTrialFromMap = ch->GetMapIndex();
+		e.lTrialLastHuntMap = IsPlayerBotVillageMap(ch->GetMapIndex()) ? 0 : ch->GetMapIndex();
+		e.uTrialKills = e.uTrialDeaths = e.uTrialRetreats = 0;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		e.llTrialPvpDeaths = ch->GetSpecialFlag((DWORD)PLAYER_STATS_DEATH_FROM_PLAYER_FLAG);
+#endif
+		++e.uTrialCount;
+		++s_mapPlayerBotGateTrialStats[holdGate].started;
+		// the farm goal gives way to the frontier at once
+		if (e.bFarm != PLAYERBOT_PROGRESS_FARM_NONE && e.bAmbition)
+			state.bAmbition = GetPlayerBotStableAmbition(ch, state.bPersonality);
+		sys_log(0, "PLAYERBOT_PROGRESS: trial start pid=%u name=%s level=%u gate=%u held_min=%u map=%ld frontier=%ld "
+				"trial_min=%d level_cap=%d trial_no=%u%s%s missing: %s",
+				ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel(), (unsigned)holdGate, e.dwHeldMs / 60000U,
+				ch->GetMapIndex(), GetPlayerBotFrontierMapForLevel(ch), cfg.trialMin, (int)holdGate + cfg.levels,
+				e.uTrialCount, grew ? " early_retry=" : "", grew ? grew : "", e.strWhy.c_str());
+		return false;
+	}
+
+	// The census: per gate the trials of the period and the held bots now - in a trial, waiting out a cooldown - and the
+	// weapon row's reasons of the bots held on it.
+	void ReportPlayerBotGateTrials(DWORD dwNow)
+	{
+		static DWORD s_dwNext = 0;
+		if (s_dwNext == 0)
+			s_dwNext = dwNow + PLAYERBOT_GATE_TRIAL_CENSUS_MS;
+		if ((int)(dwNow - s_dwNext) < 0)
+			return;
+		s_dwNext = dwNow + PLAYERBOT_GATE_TRIAL_CENSUS_MS;
+		struct TNow
+		{
+			unsigned int held, running, cooldown, wshort;
+			unsigned int wrow[PLAYERBOT_PROG_WSHORT_COUNT], wsrc[PLAYERBOT_PROG_WSRC_COUNT];
+			TNow() : held(0), running(0), cooldown(0), wshort(0) { memset(wrow, 0, sizeof(wrow)); memset(wsrc, 0, sizeof(wsrc)); }
+		};
+		std::map<BYTE, TNow> now;
+		const long gnow = (long)get_global_time();
+		for (std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.begin();
+				it != s_mapPlayerBotProgress.end(); ++it)
+		{
+			const TPlayerBotProgress& e = it->second;
+			if (dwNow - e.dwSeen > 60000U || !e.bHeld || !e.bEligible)
+				continue;
+			TNow& n = now[e.bGate];
+			++n.held;
+			if (e.bTrial)
+				++n.running;
+			else if (e.lTrialCooldownUntil != 0 && e.bTrialCooldownGate == e.bGate && gnow < e.lTrialCooldownUntil)
+				++n.cooldown;
+			if (e.bWeaponShort != PLAYERBOT_PROG_WSHORT_MET && e.bWeaponShort < PLAYERBOT_PROG_WSHORT_COUNT)
+			{
+				++n.wshort;
+				++n.wrow[e.bWeaponShort];
+				if (e.bWeaponSrc < PLAYERBOT_PROG_WSRC_COUNT)
+					++n.wsrc[e.bWeaponSrc];
+			}
+		}
+		std::set<BYTE> gates;
+		for (std::map<BYTE, TNow>::const_iterator it = now.begin(); it != now.end(); ++it)
+			gates.insert(it->first);
+		for (std::map<BYTE, TPlayerBotGateTrialStats>::const_iterator it = s_mapPlayerBotGateTrialStats.begin();
+				it != s_mapPlayerBotGateTrialStats.end(); ++it)
+			gates.insert(it->first);
+		const TPlayerBotGateTrialCfg& cfg = GetPlayerBotGateTrialCfg();
+		for (std::set<BYTE>::const_iterator g = gates.begin(); g != gates.end(); ++g)
+		{
+			const TNow& n = now[*g];
+			const TPlayerBotGateTrialStats& t = s_mapPlayerBotGateTrialStats[*g];
+			sys_log(0, "PLAYERBOT_PROGRESS: trial census gate=%u on=%d held=%u running=%u cooldown=%u | period: started=%u "
+					"early_retry=%u passed_by_trial=%u failed_deaths=%u failed_hp_retreats=%u failed_slow_kills=%u "
+					"failed_no_hunt=%u ended_gate_met=%u ended_timeout=%u ended_other=%u cooldown_waits=%u | trial_min=%d "
+					"cooldown_min=%d after_min=%d deaths=%d retreats=%d kills30=%d levels=%d wall_x=%d",
+					(unsigned)*g, cfg.on ? 1 : 0, n.held, n.running, n.cooldown, t.started, t.early,
+					t.ends[PLAYERBOT_GATE_TRIAL_END_PASSED], t.ends[PLAYERBOT_GATE_TRIAL_END_DEATHS],
+					t.ends[PLAYERBOT_GATE_TRIAL_END_RETREATS], t.ends[PLAYERBOT_GATE_TRIAL_END_SLOW_KILLS],
+					t.ends[PLAYERBOT_GATE_TRIAL_END_NO_HUNT], t.ends[PLAYERBOT_GATE_TRIAL_END_GATE_MET],
+					t.ends[PLAYERBOT_GATE_TRIAL_END_TIMEOUT], t.ends[PLAYERBOT_GATE_TRIAL_END_OTHER], t.cooldownWaits,
+					cfg.trialMin, cfg.cooldownMin, cfg.afterMin, cfg.deaths, cfg.retreats, cfg.kills, cfg.levels, cfg.wallX);
+			if (n.held != 0)
+				sys_log(0, "PLAYERBOT_PROGRESS: weapon_row gate=%u held=%u short=%u no_weapon=%u level=%u plus=%u level_plus=%u "
+						"| src mlodzi_worn=%u mlodzi_bag_tool=%u real_hand=%u real_bag=%u none=%u | period met_by_mlodzi_bag=%u",
+						(unsigned)*g, n.held, n.wshort, n.wrow[PLAYERBOT_PROG_WSHORT_NONE], n.wrow[PLAYERBOT_PROG_WSHORT_LEVEL],
+						n.wrow[PLAYERBOT_PROG_WSHORT_PLUS], n.wrow[PLAYERBOT_PROG_WSHORT_BOTH],
+						n.wsrc[PLAYERBOT_PROG_WSRC_MLODZI_WORN], n.wsrc[PLAYERBOT_PROG_WSRC_MLODZI_BAG],
+						n.wsrc[PLAYERBOT_PROG_WSRC_REAL_HAND], n.wsrc[PLAYERBOT_PROG_WSRC_REAL_BAG],
+						n.wsrc[PLAYERBOT_PROG_WSRC_NONE], s_uPlayerBotWeaponRowMlodziBag);
+		}
+		s_mapPlayerBotGateTrialStats.clear();
+		s_uPlayerBotWeaponRowMlodziBag = 0;
+	}
+
 	void ReleasePlayerBotProgress(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotProgress& e)
 	{
 		e.bHeld = false;
+		e.bTrial = false;	// MT2009_PLUS_BOT_GATE_TRIAL_V1 (ended by the caller)
 		e.iNeeds = 0;
 		e.strWhy.clear();
 		e.vecShort.clear();	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
@@ -574,6 +1068,7 @@ namespace
 				sys_log(0, "PLAYERBOT_PROGRESS: released pid=%u name=%s level=%u gate=%u why=%s",
 						pid, ch->GetName(), (unsigned)level, (unsigned)e.bGate,
 						!e.bEligible ? "not_eligible" : "checklist_off");
+				EndPlayerBotGateTrial(ch, e, PLAYERBOT_GATE_TRIAL_END_OTHER, NULL, dwNow);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 				ReleasePlayerBotProgress(ch, state, e);
 			}
 			return;
@@ -581,6 +1076,9 @@ namespace
 		// Play time at the gate; a long gap is a logout, not play.
 		if (e.bHeld && dt < 60000U)
 			e.dwHeldMs += dt;
+		// MT2009_PLUS_BOT_GATE_TRIAL_V1: the trial's clock - its hunting time
+		if (e.bTrial && e.bHeld && dt < 60000U && IsPlayerBotGateTrialHunting(ch, state))
+			e.dwTrialHuntMs += dt;
 		if (e.dwNextEval != 0 && dwNow < e.dwNextEval)
 			return;
 		e.dwNextEval = dwNow + PLAYERBOT_PROGRESSION_EVAL_MS + pid % 3000U;
@@ -588,10 +1086,17 @@ namespace
 		{
 			e.bLoaded = true;
 			e.bWaived = (BYTE)std::max(0, std::min(255, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_WAIVED)));
+			// MT2009_PLUS_BOT_GATE_TRIAL_V1: a failed trial's cooldown outlives a logout
+			e.lTrialCooldownUntil = (long)ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD);
+			e.bTrialCooldownGate = (BYTE)std::max(0, std::min(255, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD_GATE)));
 		}
 
 		playerbot_progression::TSnapshot snap;
-		MeasurePlayerBotProgress(ch, snap);
+		BYTE weaponSrc = PLAYERBOT_PROG_WSRC_NONE;	// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1
+		MeasurePlayerBotProgress(ch, snap, &weaponSrc);
+		e.bWeaponSrc = weaponSrc;
+		e.bWeaponShort = PLAYERBOT_PROG_WSHORT_MET;
+		bool weaponRowMet = false;
 		BYTE holdGate = 0;
 		int needs = 0;
 		std::string why;
@@ -631,8 +1136,9 @@ namespace
 			if (IsPlayerBotGate55Gate(gate))
 			{
 				int fireMin = 0, firePlus = 0;
-				GetPlayerBotGate55Fire(&fireMin, &firePlus);
-				alt = playerbot_progression::FireAltLook(rows, snap, fireMin, firePlus);
+				bool anyLevel = true;	// MT2009_PLUS_BOT_GATE55_FIRE_ANYLEVEL_V1
+				GetPlayerBotGate55Fire(&fireMin, &firePlus, &anyLevel);
+				alt = playerbot_progression::FireAltLook(rows, snap, fireMin, firePlus, anyLevel);
 			}
 			bool groupShort = false;	// a helmet / armour / shield row short of its plus as written
 			std::string groupWhy;
@@ -653,11 +1159,25 @@ namespace
 				{
 					if (req.type == playerbot_progression::REQ_HORSE)
 						NotePlayerBotMountGateRow(pid, 1, dwNow);	// MT2009_PLUS_BOT_MOUNT_GATE_V1: met by the horse
+					if (req.type == playerbot_progression::REQ_WEAPON)
+						weaponRowMet = true;
 					continue;
 				}
 				// MT2009_PLUS_PROGRESSION_V2: one of the piece's other rows.
 				if (playerbot_progression::MeetsAlternative(gate, r, snap))
+				{
+					if (req.type == playerbot_progression::REQ_WEAPON)
+						weaponRowMet = true;
 					continue;
+				}
+				// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1: why the weapon row holds (the census)
+				if (req.type == playerbot_progression::REQ_WEAPON && playerbot_progression::IsFirstOfPiece(gate, r))
+				{
+					const playerbot_progression::TPiece& wp = snap.slot[0];
+					const bool lv = (long long)wp.level < req.a, pl = (int)wp.plus < req.b;
+					e.bWeaponShort = !wp.present ? PLAYERBOT_PROG_WSHORT_NONE : lv && pl ? PLAYERBOT_PROG_WSHORT_BOTH
+							: lv ? PLAYERBOT_PROG_WSHORT_LEVEL : PLAYERBOT_PROG_WSHORT_PLUS;
+				}
 				// MT2009_PLUS_BOT_MOUNT_GATE_V1 (the owner, 8 November 2026): a bot with a riding mount (an ItemShop mount
 				// worn or in the bag, permanent or with m2_bot_mountgate_min_days left - not the starter Appaloosa) needs no
 				// horse for the row (playerbot_mount_gate.h; m2_bot_mountgate_off 1: as before)
@@ -724,13 +1244,17 @@ namespace
 		}
 		e.bGate55Path = gate55Path;
 		e.iGate55Fire = snap.fire;
+		if (weaponRowMet && weaponSrc == PLAYERBOT_PROG_WSRC_MLODZI_BAG)
+			++s_uPlayerBotWeaponRowMlodziBag;	// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1
 
 		if (holdGate == 0)
 		{
 			if (e.bHeld)
 			{
-				sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u",
-						pid, ch->GetName(), (unsigned)level, (unsigned)e.bGate, e.dwHeldMs / 60000U);
+				EndPlayerBotGateTrial(ch, e, PLAYERBOT_GATE_TRIAL_END_GATE_MET, &snap, dwNow);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
+				sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u passed_by=requirements weapon_src=%s",
+						pid, ch->GetName(), (unsigned)level, (unsigned)e.bGate, e.dwHeldMs / 60000U,
+						PLAYERBOT_PROG_WSRC_NAMES[weaponSrc < PLAYERBOT_PROG_WSRC_COUNT ? weaponSrc : 0]);
 				// MT2009_PLUS_BOT_GATE55_FIRE_V1: the level-55 gate's path
 				if (e.bGate == PLAYERBOT_GATE55_FIRE_LEVEL &&
 						(gate55Path == PLAYERBOT_GATE55_PATH_FIRE || gate55Path == PLAYERBOT_GATE55_PATH_PLUS6))
@@ -766,6 +1290,7 @@ namespace
 			sys_log(0, "PLAYERBOT_PROGRESS: gate given up pid=%u name=%s level=%u gate=%u held_min=%u missing=%s",
 					pid, ch->GetName(), (unsigned)level, (unsigned)holdGate, e.dwHeldMs / 60000U, why.c_str());
 			NotePlayerBotProgShopGateEnd(pid, holdGate, e.dwHeldMs / 60000U, true);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
+			EndPlayerBotGateTrial(ch, e, PLAYERBOT_GATE_TRIAL_END_TIMEOUT, &snap, dwNow);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 			e.bWaived = holdGate;
 			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_WAIVED, holdGate);
 			ReleasePlayerBotProgress(ch, state, e);
@@ -784,6 +1309,17 @@ namespace
 			e.dwNextLog = dwNow + PLAYERBOT_PROGRESSION_LOG_MS;
 			sys_log(0, "PLAYERBOT_PROGRESS: held at %u pid=%u name=%s level=%u held_min=%u missing: %s",
 					(unsigned)holdGate, pid, ch->GetName(), (unsigned)level, e.dwHeldMs / 60000U, why.c_str());
+		}
+
+		// MT2009_PLUS_BOT_GATE_TRIAL_V1: the trial - started, judged, passed
+		if (ManagePlayerBotGateTrial(ch, state, e, holdGate, snap, dwNow))
+		{
+			sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u passed_by=trial missing: %s",
+					pid, ch->GetName(), (unsigned)level, (unsigned)holdGate, e.dwHeldMs / 60000U, why.c_str());
+			NotePlayerBotProgShopGateEnd(pid, holdGate, e.dwHeldMs / 60000U, false);
+			ReleasePlayerBotProgress(ch, state, e);
+			e.dwNextEval = 0;
+			return;
 		}
 
 		// The push.
