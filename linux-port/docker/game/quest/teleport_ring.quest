@@ -24,8 +24,9 @@
 -- ring in the quest group 10031 ("Group ... Vnum 10031, Type Quest"), so
 -- every ring has SIGVnum 10031 and its use goes to CQuestManager::SIGUse(10031)
 -- - a handler under 70058/use is never looked at (found by Mur4s, 22 Sept).
--- Bots never come through here: they recall home with the ring through
--- TransitionPlayerBotMap on their own 30-minute clock (playerbot_travel.h).
+-- Bots never come through here: they recall home and travel to these places
+-- with the ring through TransitionPlayerBotMap, without the 30-minute pause
+-- and one ring each (MT2009_PLUS_BOT_RING_TRAVEL_V1, playerbot_travel.h).
 -- MT2009_PLUS_TELEPORT_RING_GLOBAL_V2 (the owner, 23 October): Grota Wygnancow
 -- lands at the grotto's entrance, not inside it - Town.txt of map 72 is in
 -- the grotto and skipped Koe-Pung's (20093) level 75 + Krwisty Kamien

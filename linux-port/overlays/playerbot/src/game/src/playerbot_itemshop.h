@@ -2016,7 +2016,10 @@ namespace
 		if (hunting && !PlayerBotHoldsAnyOf(ch, PLAYERBOT_METIN_DETECTOR_VNUMS,
 				sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS) / sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS[0])))
 			add(PLAYERBOT_ISHOP_METIN_DETECTOR_VNUM, false, "metin_detector", true);
-		if (frontier && ch->GetLevel() >= PLAYERBOT_TELEPORT_RING_MIN_LEVEL &&
+		// MT2009_PLUS_BOT_RING_TRAVEL_V1: one ring (no pause for a bot, so one
+		// is enough) for every bot of 30+ that travels with it, not only out on
+		// the frontier - bought only while it has none.
+		if ((frontier || !IsPlayerBotRingTravelOff()) && ch->GetLevel() >= PLAYERBOT_TELEPORT_RING_MIN_LEVEL &&
 				ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM) == 0)
 			add(PLAYERBOT_TELEPORT_RING_VNUM, false, "teleport_ring", true);
 		const bool bookWaits = PlayerBotHoldsReadableClassBook(ch);

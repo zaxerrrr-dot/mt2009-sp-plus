@@ -2041,6 +2041,11 @@ namespace
 	// server's top level, onto a map of the bots' table that is switched on, or after a person of its party).
 	bool IsPlayerBotSungmaEntryAllowed(LPCHARACTER ch, long targetMap, const char* reason);
 
+	// MT2009_PLUS_BOT_RING_TRAVEL_V1: a Teleport Ring's warp to a place of its
+	// list is under way (TryPlayerBotRingTravel) - the ring lands on Loch
+	// Pajakow 1 and leaves it as a player's does, without the desert crossing.
+	bool s_bPlayerBotRingTravelWarp = false;
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
@@ -2119,8 +2124,9 @@ namespace
 		// bots of her window from outside the Spider Dungeon come to her too.
 		const bool raidIntoV2 = (targetMap == PLAYERBOT_MAP_SPIDER_V2 || targetMap == PLAYERBOT_MAP_SPIDER_V1) &&
 				IsPlayerBotBossRaidMove(reason);
+		const bool ringIntoV1 = s_bPlayerBotRingTravelWarp && targetMap == PLAYERBOT_MAP_SPIDER_V1;
 		if (IsPlayerBotSpiderMap(targetMap) && ch->GetMapIndex() != PLAYERBOT_MAP_DESERT &&
-				!IsPlayerBotSpiderMap(ch->GetMapIndex()) && !raidIntoV2)
+				!IsPlayerBotSpiderMap(ch->GetMapIndex()) && !raidIntoV2 && !ringIntoV1)
 		{
 			state.lDesertCrossingTo = targetMap;
 			state.lDesertCrossingX = targetX;
@@ -2132,7 +2138,7 @@ namespace
 					desertX, desertY, dwNow, "desert_crossing_to_v1");
 		}
 		if (IsPlayerBotSpiderMap(ch->GetMapIndex()) && targetMap != PLAYERBOT_MAP_DESERT &&
-				!IsPlayerBotSpiderMap(targetMap))
+				!IsPlayerBotSpiderMap(targetMap) && !s_bPlayerBotRingTravelWarp)
 		{
 			state.lDesertCrossingTo = targetMap;
 			state.lDesertCrossingX = targetX;
@@ -2435,6 +2441,11 @@ namespace
 	const DWORD PLAYERBOT_TELEPORTER_NPC_VNUM = 9012;
 
 	bool PlayerBotHoldsTeleportRing(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_RING_TRAVEL_V1: below, beside the recall.
+	bool TryPlayerBotRingTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
+			long portalX, long portalY, long targetMap, long targetX, long targetY, const char* reason);
+	void NotePlayerBotRingSeen(LPCHARACTER ch, DWORD dwNow);
+	bool IsPlayerBotRingTravelOff();
 
 	// What a player pays outside a city: the Teleporter's (and the ring's)
 	// fare times one and a half.
@@ -2661,6 +2672,10 @@ namespace
 				(targetMap == GetPlayerBotHomeMap(ch, playerbot_empire_rules::MAP_ROLE_M1) ||
 				 targetMap == GetPlayerBotHomeMap(ch, playerbot_empire_rules::MAP_ROLE_M2)) &&
 				TryPlayerBotTeleportRingHome(ch, state, dwNow, targetMap, targetX, targetY, reason))
+			return true;
+		// MT2009_PLUS_BOT_RING_TRAVEL_V1: any other place of the ring's list
+		// (or the place nearest a map's far gate) by the ring as well.
+		if (TryPlayerBotRingTravel(ch, state, dwNow, portalX, portalY, targetMap, targetX, targetY, reason))
 			return true;
 
 		{
@@ -2953,14 +2968,142 @@ namespace
 		return finder.m_found;
 	}
 
-	// The Teleport Ring recall (see PLAYERBOT_TELEPORT_RING_VNUM). Keyed by
-	// pid so the ring keeps its cooldown without a state-struct field.
-	std::map<DWORD, DWORD> s_mapPlayerBotTeleportRingReady;
-
+	// The Teleport Ring recall (see PLAYERBOT_TELEPORT_RING_VNUM).
 	bool PlayerBotHoldsTeleportRing(LPCHARACTER ch)
 	{
 		return ch && ch->GetLevel() >= PLAYERBOT_TELEPORT_RING_MIN_LEVEL &&
 				ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM) > 0;
+	}
+
+	// MT2009_PLUS_BOT_RING_TRAVEL_V1 (the owner, 8 November 2026: "Niech boty
+	// uzywaja pierscienia teleportacji tez do teleportacji na mapy, na ktore
+	// chca isc"; and the same day: "jak boty nie musza miec limitu 30 minut
+	// miedzy teleportami pierscieniem, to wystarczy im jeden"). A bot's ring
+	// takes it to the places of the ring's list (teleport_ring.quest, the
+	// player's menu) whenever its travel heads for one, instead of the walk to
+	// a gate or the Teleporter; and to the place of the list nearest the gate
+	// of a map that is not on it, when that saves a long walk. No 30-minute
+	// pause for a bot (a player's ring keeps its own in socket 0, untouched),
+	// one ring is enough (the ItemShop buys one when it has none), only
+	// PLAYERBOT_RING_MIN_GAP_MS between two uses so nothing can flip back and
+	// forth. The fare is the player's: teleport_ring.quest asks none since
+	// MT2009_PLUS_TELEPORT_RING_GLOBAL_V1 (23 October); m2_bot_ring_fee_on 1
+	// brings back the old far fare (MT2009_PLUS_BOT_FAR_TELEPORT_V1, the
+	// Teleporter's outside a city) for the recall and the trips alike.
+	// m2_bot_ring_travel_off 1: the trips off (the recall home stays, as
+	// before). Log "PLAYERBOT_RING:", the census every ten minutes.
+	const DWORD PLAYERBOT_RING_MIN_GAP_MS = 20000;
+	const DWORD PLAYERBOT_RING_CENSUS_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_RING_FALLBACK_HOLD_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_RING_SEEN_MS = 60 * 1000;
+	const int PLAYERBOT_RING_MIN_WALK = 1500;
+	// Koe-Pung's cave mouth in Dolina Seungryong (teleport_ring.quest, GLOBAL_V2):
+	// the ring's "Grota Wygnancow (wejscie)"; his own entry check stays.
+	const long PLAYERBOT_RING_GROTTO_MOUTH_X = 256000 + 28400;
+	const long PLAYERBOT_RING_GROTTO_MOUTH_Y = 665600 + 145000;
+
+	std::map<DWORD, DWORD> s_mapPlayerBotRingLastUse;
+	struct TPlayerBotRingFallback { long lTarget; DWORD dwUntil; };
+	std::map<DWORD, TPlayerBotRingFallback> s_mapPlayerBotRingFallback;
+	struct TPlayerBotRingSeen { DWORD dwAt; BYTE bRings; bool bReady; };
+	std::map<DWORD, TPlayerBotRingSeen> s_mapPlayerBotRingSeen;
+	std::map<long, unsigned int> s_mapPlayerBotRingTrips;
+	std::map<std::string, unsigned int> s_mapPlayerBotRingFallbacks;
+	unsigned int s_uPlayerBotRingRecalls = 0;
+	unsigned int s_uPlayerBotRingStandIns = 0;
+
+	bool IsPlayerBotRingTravelOff()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_ring_travel_off") == 1;
+	}
+
+	// What the ring asks a bot: what a player pays (nothing), or the old far
+	// fare with m2_bot_ring_fee_on 1.
+	int GetPlayerBotTeleportRingFee(LPCHARACTER ch)
+	{
+		if (quest::CQuestManager::instance().GetEventFlag("m2_bot_ring_fee_on") == 1)
+			return GetPlayerBotFarTeleporterFee(ch);
+		return 0;
+	}
+
+	bool IsPlayerBotRingGapOpen(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotRingLastUse.find(pid);
+		return it == s_mapPlayerBotRingLastUse.end() || dwNow - it->second >= PLAYERBOT_RING_MIN_GAP_MS;
+	}
+
+	void TickPlayerBotRingCensus(DWORD dwNow)
+	{
+		static DWORD s_dwAt = 0;
+		if (s_dwAt == 0)
+		{
+			s_dwAt = dwNow + PLAYERBOT_RING_CENSUS_MS;
+			return;
+		}
+		if ((int)(dwNow - s_dwAt) < 0)
+			return;
+		s_dwAt = dwNow + PLAYERBOT_RING_CENSUS_MS;
+		unsigned int holders = 0, rings = 0, ready = 0, seen = 0;
+		for (std::map<DWORD, TPlayerBotRingSeen>::iterator it = s_mapPlayerBotRingSeen.begin();
+				it != s_mapPlayerBotRingSeen.end();)
+		{
+			if (dwNow - it->second.dwAt > PLAYERBOT_RING_CENSUS_MS)
+			{
+				s_mapPlayerBotRingSeen.erase(it++);
+				continue;
+			}
+			++seen;
+			if (it->second.bRings > 0)
+			{
+				++holders;
+				rings += it->second.bRings;
+				if (it->second.bReady)
+					++ready;
+			}
+			++it;
+		}
+		std::string trips, fallbacks;
+		unsigned int tripTotal = 0, fallbackTotal = 0;
+		char part[48];
+		for (std::map<long, unsigned int>::const_iterator it = s_mapPlayerBotRingTrips.begin();
+				it != s_mapPlayerBotRingTrips.end(); ++it)
+		{
+			snprintf(part, sizeof(part), "%s%ld:%u", trips.empty() ? "" : ",", it->first, it->second);
+			trips += part;
+			tripTotal += it->second;
+		}
+		for (std::map<std::string, unsigned int>::const_iterator it = s_mapPlayerBotRingFallbacks.begin();
+				it != s_mapPlayerBotRingFallbacks.end(); ++it)
+		{
+			snprintf(part, sizeof(part), "%s%s:%u", fallbacks.empty() ? "" : ",", it->first.c_str(), it->second);
+			fallbacks += part;
+			fallbackTotal += it->second;
+		}
+		sys_log(0, "PLAYERBOT_RING: census trips=%u by_map=[%s] stand_ins=%u recalls=%u fallbacks=%u by_reason=[%s] "
+				"bots_seen=%u holders=%u rings=%u ready=%u travel_off=%d fee_on=%d",
+				tripTotal, trips.c_str(), s_uPlayerBotRingStandIns, s_uPlayerBotRingRecalls, fallbackTotal, fallbacks.c_str(),
+				seen, holders, rings, ready, IsPlayerBotRingTravelOff() ? 1 : 0,
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_ring_fee_on") == 1 ? 1 : 0);
+		s_mapPlayerBotRingTrips.clear();
+		s_mapPlayerBotRingFallbacks.clear();
+		s_uPlayerBotRingRecalls = 0;
+		s_uPlayerBotRingStandIns = 0;
+	}
+
+	// For the census: what each bot holds, looked at once a minute.
+	void NotePlayerBotRingSeen(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return;
+		TickPlayerBotRingCensus(dwNow);
+		std::map<DWORD, TPlayerBotRingSeen>::iterator it = s_mapPlayerBotRingSeen.find(ch->GetPlayerID());
+		if (it != s_mapPlayerBotRingSeen.end() && dwNow - it->second.dwAt < PLAYERBOT_RING_SEEN_MS)
+			return;
+		TPlayerBotRingSeen& seen = s_mapPlayerBotRingSeen[ch->GetPlayerID()];
+		seen.dwAt = dwNow;
+		seen.bRings = (BYTE)std::min<long long>(255, (long long)ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM));
+		seen.bReady = seen.bRings > 0 && ch->GetLevel() >= PLAYERBOT_TELEPORT_RING_MIN_LEVEL &&
+				IsPlayerBotRingGapOpen(ch->GetPlayerID(), dwNow) && ch->GetGold() >= GetPlayerBotTeleportRingFee(ch);
 	}
 
 	// Recall home now instead of walking to the exit. Same destination the
@@ -2971,13 +3114,10 @@ namespace
 	{
 		if (!PlayerBotHoldsTeleportRing(ch))
 			return false;
-		std::map<DWORD, DWORD>::const_iterator it =
-				s_mapPlayerBotTeleportRingReady.find(ch->GetPlayerID());
-		if (it != s_mapPlayerBotTeleportRingReady.end() && dwNow < it->second)
+		// MT2009_PLUS_BOT_RING_TRAVEL_V1: no 30-minute clock for a bot, only the gap.
+		if (!IsPlayerBotRingGapOpen(ch->GetPlayerID(), dwNow))
 			return false;
-		// MT2009_PLUS_BOT_FAR_TELEPORT_V1: the ring's fare, as a player pays it
-		// outside a city (teleport_ring.quest); a bot without it walks.
-		const int fee = GetPlayerBotFarTeleporterFee(ch);
+		const int fee = GetPlayerBotTeleportRingFee(ch);
 		if (ch->GetGold() < fee)
 		{
 			PlayerBotLogThrottled("teleport_ring_fee", dwNow,
@@ -2992,10 +3132,274 @@ namespace
 		s_bPlayerBotArezzoRingWarp = false;
 		if (!moved)
 			return false;
-		s_mapPlayerBotTeleportRingReady[ch->GetPlayerID()] = dwNow + PLAYERBOT_TELEPORT_RING_COOLDOWN_MS;
-		PlayerBotChangeGold(ch, -fee);
+		s_mapPlayerBotRingLastUse[ch->GetPlayerID()] = dwNow;
+		++s_uPlayerBotRingRecalls;
+		if (fee > 0)
+			PlayerBotChangeGold(ch, -fee);
 		sys_log(0, "PLAYERBOT_WORLD: teleport ring home pid=%u name=%s to_map=%ld fee=%d gold_left=%lld (%s)",
 				ch->GetPlayerID(), ch->GetName(), destMap, fee, (long long)ch->GetGold(), reason ? reason : "");
+		return true;
+	}
+
+	// The ring's list for this bot (teleport_ring.quest, places()): the map and
+	// where the player lands on it (0, 0: the map's Town.txt for the kingdom).
+	struct TPlayerBotRingPlace { long lMap; long lX; long lY; };
+
+	int GetPlayerBotRingPlaces(LPCHARACTER ch, TPlayerBotRingPlace* out, int max)
+	{
+		int n = 0;
+		if (!ch)
+			return 0;
+		const long rows[] = {
+			GetPlayerBotHomeMap(ch, playerbot_empire_rules::MAP_ROLE_M1),
+			GetPlayerBotHomeMap(ch, playerbot_empire_rules::MAP_ROLE_M2),
+			PLAYERBOT_MAP_ORC_VALLEY, PLAYERBOT_MAP_DESERT, PLAYERBOT_MAP_SOHAN, PLAYERBOT_MAP_FIRE_LAND,
+			PLAYERBOT_MAP_SPIDER_V1,
+		};
+		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]) && n < max; ++i)
+			if (rows[i] > 0)
+			{
+				out[n].lMap = rows[i];
+				out[n].lX = out[n].lY = 0;
+				++n;
+			}
+		// "Grota Wygnancow (wejscie)": the cave mouth on Dolina Seungryong.
+		if (n < max)
+		{
+			out[n].lMap = PLAYERBOT_MAP_ORC_VALLEY;
+			out[n].lX = PLAYERBOT_RING_GROTTO_MOUTH_X;
+			out[n].lY = PLAYERBOT_RING_GROTTO_MOUTH_Y;
+			++n;
+		}
+		if (ch->GetLevel() >= 90)
+		{
+			const long high[] = { 301, 303, 302, 304 };
+			for (size_t i = 0; i < sizeof(high) / sizeof(high[0]) && n < max; ++i)
+			{
+				out[n].lMap = high[i];
+				out[n].lX = out[n].lY = 0;
+				++n;
+			}
+		}
+		// Swiatynia Ochao (209) is left to the temple's own way in (the Guardian,
+		// playerbot_ochao_bots.h), Grota Wygnancow 2 (73) is open from 72 only,
+		// and Dongan (373) for a Champion goes through the Sung Ma gate and the
+		// core handover of TransitionPlayerBotMap.
+		if (ch->GetConquerorLevel() >= 1 && n < max)
+		{
+			out[n].lMap = 373;
+			out[n].lX = out[n].lY = 0;
+			++n;
+		}
+		return n;
+	}
+
+	// Where a ring may not be used from (the quest's blocked_from) or where a
+	// bot's own pass owns the way out: dungeons, wars, events, the temple of
+	// Ochao, the Arezzo maps, the Sung Ma maps, the arenas.
+	bool IsPlayerBotRingTravelSource(long mapIndex)
+	{
+		if (mapIndex <= 0 || mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+			return false;
+		if (mapIndex == 81 || (mapIndex >= 110 && mapIndex <= 113) || (mapIndex >= 181 && mapIndex <= 183) ||
+				mapIndex == 200 || mapIndex == 250)
+			return false;
+		if (IsPlayerBotMonkeyMap(mapIndex) || mapIndex == PLAYERBOT_MAP_DEMON_TOWER || mapIndex == PLAYERBOT_MAP_CATACOMB ||
+				mapIndex == PLAYERBOT_MAP_OCHAO || IsPlayerBotArezzoMap(mapIndex) || champion::IsSungmaMap(mapIndex) ||
+				IsPlayerBotOpenArenaMap(mapIndex) || !IsPlayerBotMapHostedHere(mapIndex))
+			return false;
+		return true;
+	}
+
+	// Moves that belong to someone else's plan: a party's, a dungeon's, a
+	// raid's, a guild's, a temple's.
+	bool IsPlayerBotRingTravelReasonExcluded(const char* reason)
+	{
+		if (!reason)
+			return false;
+		static const char* prefixes[] = { "party", "dungeon", "boss_raid", "guild", "ochao", "arezzo", "zaklety",
+				"yohara", "handover", "sidekick", "companion", "mercenary", "lfg", "war", "zodiac", "event" };
+		for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
+			if (strncmp(reason, prefixes[i], strlen(prefixes[i])) == 0)
+				return true;
+		return false;
+	}
+
+	// A fallback to the walk, counted once a bot and target per
+	// PLAYERBOT_RING_FALLBACK_HOLD_MS (a walk asks every tick); false always.
+	bool NotePlayerBotRingFallback(LPCHARACTER ch, long targetMap, DWORD dwNow, const char* why, const char* reason,
+			bool hold)
+	{
+		TPlayerBotRingFallback& f = s_mapPlayerBotRingFallback[ch->GetPlayerID()];
+		if (f.lTarget == targetMap && (int)(f.dwUntil - dwNow) > 0)
+			return false;
+		f.lTarget = targetMap;
+		f.dwUntil = dwNow + (hold ? PLAYERBOT_RING_FALLBACK_HOLD_MS : 15000);
+		++s_mapPlayerBotRingFallbacks[why];
+		char tag[48];
+		snprintf(tag, sizeof(tag), "ring_fallback:%s", why);
+		PlayerBotLogThrottled(tag, dwNow,
+				"PLAYERBOT_RING: fallback pid=%u name=%s level=%u map=%ld to=%ld why=%s gold=%lld rings=%d reason=%s",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(), targetMap, why,
+				(long long)ch->GetGold(), (int)ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM), reason ? reason : "?");
+		return false;
+	}
+
+	// A walk to a gate or the Teleporter (portalX/portalY on this map) for
+	// targetMap: the ring instead, when it can. True: the bot has moved (or a
+	// core handover is under way).
+	bool TryPlayerBotRingTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
+			long portalX, long portalY, long targetMap, long targetX, long targetY, const char* reason)
+	{
+		if (!ch || targetMap <= 0 || targetMap == ch->GetMapIndex())
+			return false;
+		TickPlayerBotRingCensus(dwNow);
+		if (ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM) <= 0)
+			return false;	// the census counts holders; a bot without one is no fallback
+		const DWORD pid = ch->GetPlayerID();
+		{
+			std::map<DWORD, TPlayerBotRingFallback>::const_iterator f = s_mapPlayerBotRingFallback.find(pid);
+			if (f != s_mapPlayerBotRingFallback.end() && f->second.lTarget == targetMap &&
+					(int)(f->second.dwUntil - dwNow) > 0)
+				return false;
+		}
+		if (IsPlayerBotRingTravelOff())
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "off", reason, true);
+		if (ch->GetLevel() < PLAYERBOT_TELEPORT_RING_MIN_LEVEL)
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "level", reason, true);
+		if (ch->IsDead() || ch->GetExchange())
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "busy", reason, false);
+		if (!IsPlayerBotRingTravelSource(ch->GetMapIndex()))
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "source_map", reason, true);
+		if (IsPlayerBotRingTravelReasonExcluded(reason) || IsPlayerBotBossRaidMove(reason) ||
+				IsPlayerBotDungeonPartyMove(ch, targetMap, reason))
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "reason", reason, true);
+		if ((ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
+				IsPlayerBotDuoShaman(pid))
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "party", reason, true);
+		if ((state.dwLastCombatActionTime != 0 && dwNow - state.dwLastCombatActionTime <= PLAYERBOT_TRAVEL_ENGAGED_WINDOW) ||
+				ch->GetVictim())
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "fight", reason, false);
+		if (!IsPlayerBotRingGapOpen(pid, dwNow))
+			return false;	// a few seconds after the last use; not a fallback worth a line
+		const int walk = DISTANCE_APPROX(ch->GetX() - portalX, ch->GetY() - portalY);
+		if (walk <= PLAYERBOT_RING_MIN_WALK)
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "near", reason, false);
+
+		TPlayerBotRingPlace places[16];
+		const int nPlaces = GetPlayerBotRingPlaces(ch, places, 16);
+		// The target on the list itself (the Grotto by its cave mouth).
+		int pick = -1;
+		bool standIn = false;
+		for (int i = 0; i < nPlaces && pick < 0; ++i)
+		{
+			const bool mouth = places[i].lX != 0;
+			if ((!mouth && places[i].lMap == targetMap) ||
+					(mouth && targetMap == PLAYERBOT_MAP_GROTTO_V1 && ch->GetMapIndex() != PLAYERBOT_MAP_ORC_VALLEY))
+				pick = i;
+		}
+		long landX = 0, landY = 0;
+		// A map not on the list: the place of the list whose gate to it is
+		// nearest, when that is shorter by far than the walk from here.
+		if (pick < 0)
+		{
+			if (walk <= PLAYERBOT_FAR_TELEPORT_MIN_DISTANCE)
+				return NotePlayerBotRingFallback(ch, targetMap, dwNow, "not_listed", reason, true);
+			int best = -1;
+			long bestX = 0, bestY = 0;
+			int bestWalk = walk - PLAYERBOT_FAR_TELEPORT_MIN_GAIN;
+			for (int i = 0; i < nPlaces; ++i)
+			{
+				const long m = places[i].lMap;
+				if (m == ch->GetMapIndex() || places[i].lX != 0 || !IsPlayerBotMapHostedHere(m))
+					continue;
+				PIXEL_POSITION pos;
+				if (!SECTREE_MANAGER::instance().GetRecallPositionByEmpire(m, ch->GetEmpire(), pos))
+					continue;
+				long gateX = 0, gateY = 0;
+				if (!FindPlayerBotWarpNpc(m, targetMap, pos.x, pos.y, dwNow, gateX, gateY))
+					continue;
+				const int there = DISTANCE_APPROX((long)pos.x - gateX, (long)pos.y - gateY);
+				if (there >= bestWalk)
+					continue;
+				CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(m);
+				if (nav.Init(m) && !nav.CanReach(pos.x, pos.y, gateX, gateY))
+					continue;
+				best = i;
+				bestWalk = there;
+				bestX = pos.x;
+				bestY = pos.y;
+			}
+			if (best < 0)
+				return NotePlayerBotRingFallback(ch, targetMap, dwNow, "not_listed", reason, true);
+			pick = best;
+			standIn = true;
+			landX = bestX;
+			landY = bestY;
+		}
+		const long ringMap = places[pick].lMap;
+		if (places[pick].lX != 0)
+		{
+			landX = places[pick].lX;
+			landY = places[pick].lY;
+		}
+		else if (!standIn)
+		{
+			// Where a player lands (pc.teleport: Town.txt by kingdom); a map of
+			// another core keeps the walk's own arrival for the handover.
+			PIXEL_POSITION pos;
+			if (IsPlayerBotMapHostedHere(ringMap) &&
+					SECTREE_MANAGER::instance().GetRecallPositionByEmpire(ringMap, ch->GetEmpire(), pos))
+			{
+				landX = pos.x;
+				landY = pos.y;
+			}
+			else
+			{
+				landX = targetX;
+				landY = targetY;
+			}
+		}
+		if (ringMap == ch->GetMapIndex())
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "same_map", reason, true);
+		const int fee = GetPlayerBotTeleportRingFee(ch);
+		if (ch->GetGold() < fee)
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, "fare", reason, true);
+
+		const long fromMap = ch->GetMapIndex();
+		const long fromX = ch->GetX(), fromY = ch->GetY();
+		char why[96];
+		snprintf(why, sizeof(why), "ring_travel:%s", reason ? reason : "?");
+		s_szPlayerBotTransitionRefusal = NULL;
+		s_bPlayerBotRingTravelWarp = true;
+		s_bPlayerBotArezzoRingWarp = true;
+		const bool moved = TransitionPlayerBotMap(ch, state, ringMap, landX, landY, dwNow, why);
+		s_bPlayerBotArezzoRingWarp = false;
+		s_bPlayerBotRingTravelWarp = false;
+		if (!moved)
+		{
+			const char* refusal = s_szPlayerBotTransitionRefusal ? s_szPlayerBotTransitionRefusal : "refused";
+			char tag[48];
+			snprintf(tag, sizeof(tag), "transition:%s", refusal);
+			return NotePlayerBotRingFallback(ch, targetMap, dwNow, tag, reason, true);
+		}
+		s_mapPlayerBotRingLastUse[pid] = dwNow;
+		s_mapPlayerBotRingFallback.erase(pid);
+		s_mapPlayerBotFarTeleport.erase(pid);
+		state.dwPortalWalkSince = 0;
+		state.iPortalWalkBest = 0;
+		state.wPortalWalkTicks = 0;
+		state.wPortalWalkRouteIndex = 0;
+		++s_mapPlayerBotRingTrips[ringMap];
+		if (standIn)
+			++s_uPlayerBotRingStandIns;
+		if (fee > 0)
+			PlayerBotChangeGold(ch, -fee);
+		PlayerBotLogThrottledEvery("ring_trip", dwNow, 2000,
+				"PLAYERBOT_RING: trip pid=%u name=%s level=%u from=%ld (%ld,%ld) to=%ld at=(%ld,%ld) wanted=%ld%s "
+				"walk_saved=%d fee=%d gold_left=%lld reason=%s",
+				pid, ch->GetName(), (unsigned int)ch->GetLevel(), fromMap, fromX, fromY, ringMap, landX, landY,
+				targetMap, standIn ? " stand_in=1" : "", walk, fee, (long long)ch->GetGold(), reason ? reason : "?");
 		return true;
 	}
 
@@ -3062,6 +3466,8 @@ namespace
 
 	bool ManagePlayerBotWorldTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		// MT2009_PLUS_BOT_RING_TRAVEL_V1: the census's look at the rings held.
+		NotePlayerBotRingSeen(ch, dwNow);
 		if (!ch || state.bVisitingShop || state.bVisitingBiologist ||
 				state.bVisitingStable || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return false;
