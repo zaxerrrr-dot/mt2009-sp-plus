@@ -6560,6 +6560,7 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 	std::vector<long> vecMap;
 	std::vector<int> vecCost;
 	unsigned int busyPins[3] = { 0, 0, 0 };	// MT2009_PLUS_CHANNEL_BUSY_PIN_V1: party, dungeon, fight
+	unsigned int pinReasons[17] = {};	// MT2009_PLUS_CHANNEL_PIN_REASONS_V1: [0] not pinned
 	vecPid.reserve(m_mapBots.size());
 	vecMap.reserve(m_mapBots.size());
 	vecCost.reserve(m_mapBots.size());
@@ -6585,14 +6586,19 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 		// (SpawnMedalDropperCohort): the second channel's core does not know
 		// it, so a dropper moved there would become an ordinary bot and the
 		// top-up here would never bring it back.
-		bool pinned = IsMedalDropperCohortPID(pid) || IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) ||
-				ch->GetMyShop() != NULL ||
-				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotSummoned(pid) ||
-				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
-				playerbot_pvp::GetDuelOpponent(pid, dwNow) != 0 ||
-				(state && (IsPlayerBotOnTowerBusiness(ch, *state) || state->dwGuildWarEnemyGID != 0 ||
-					state->bWorldEventKind != 0)) ||
-				IsPlayerBotKVHeld(pid); // MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a trip, a raid's raider or called defender
+		// MT2009_PLUS_CHANNEL_PIN_REASONS_V1 (night of 8 November 2026): the first reason that pins the bot, counted
+		// for the census line below - channel 1 showed every bot of 1538 pinned (shop_busy 9) while the busy pin
+		// counted 484, so the roam brought bots in and sent none back. Log: PLAYERBOT_CHANNEL: pin reasons.
+		int pinWhy = IsMedalDropperCohortPID(pid) ? 1 : IsPlayerBotSidekickPID(pid) ? 2 : IsPlayerBotShouterPID(pid) ? 3 :
+				ch->GetMyShop() != NULL ? 4 :
+				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) ? 5 : IsPlayerBotSummoned(pid) ? 6 :
+				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? 7 :
+				playerbot_pvp::GetDuelOpponent(pid, dwNow) != 0 ? 8 :
+				(state && IsPlayerBotOnTowerBusiness(ch, *state)) ? 9 :
+				(state && state->dwGuildWarEnemyGID != 0) ? 10 :
+				(state && state->bWorldEventKind != 0) ? 11 :
+				IsPlayerBotKVHeld(pid) ? 12 : 0; // MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a trip, a raid's raider or called defender
+		bool pinned = pinWhy != 0;
 		// MT2009_PLUS_CHANNEL_BUSY_PIN_V1: any party, a dungeon run (the Zodiac's and the lairs' too) and a
 		// fight (a victim, or a blow in the last PLAYERBOT_CHANNEL_FIGHT_PIN_MS) pin the bot where it is.
 		if (!pinned && IsPlayerBotChannelBusyPinOn())
@@ -6604,6 +6610,7 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 			if (why)
 			{
 				pinned = true;
+				pinWhy = 16;
 				++busyPins[why[0] == 'p' ? 0 : why[0] == 'd' ? 1 : 2];
 			}
 		}
@@ -6620,8 +6627,11 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 				!stand->GetItems().empty())
 			liveStand = true;
 		// A shop operation in flight, and a service visit with the board open.
-		pinned = pinned || playerbot_offline::requests.count(pid) != 0 ||
-				(state && state->offlineShop.visiting);
+		if (!pinned && playerbot_offline::requests.count(pid) != 0)
+			pinWhy = 13;
+		else if (!pinned && state && state->offlineShop.visiting)
+			pinWhy = 14;
+		pinned = pinWhy != 0;
 		busy = busy || (state && state->offlineShop.buyOwner != 0);
 #endif
 		// MT2009_PLUS_BOT_ERRAND_BATCH_V1: a bot that came to the shop channel stays while its errands run, and
@@ -6630,14 +6640,23 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 		{
 			bool stayBusy = false;
 			if (IsPlayerBotErrandArrivalPinned(pid, dwNow, stayBusy))
+			{
 				pinned = true;
+				pinWhy = 15;
+			}
 			busy = busy || stayBusy;
 		}
+		++pinReasons[pinWhy < 17 ? pinWhy : 0];
 		vecPid.push_back(pid);
 		vecMap.push_back(ch->GetMapIndex());
 		vecCost.push_back(playerbot_channel_rules::MoveCost(busy, liveStand, pinned,
 				IsPlayerBotVillageMap(ch->GetMapIndex())));
 	}
+	PlayerBotLogThrottledEvery("channel_pin_reasons", dwNow, 5 * 60 * 1000,
+			"PLAYERBOT_CHANNEL: pin reasons channel=%u bots=%u free=%u cohort=%u sidekick=%u shouter=%u myshop=%u human_party=%u summoned=%u instance=%u duel=%u tower_run=%u war=%u event=%u kv=%u offline_req=%u offline_visit=%u errand=%u busy=%u",
+			(unsigned int)g_bChannel, (unsigned int)vecPid.size(), pinReasons[0], pinReasons[1], pinReasons[2], pinReasons[3],
+			pinReasons[4], pinReasons[5], pinReasons[6], pinReasons[7], pinReasons[8], pinReasons[9], pinReasons[10],
+			pinReasons[11], pinReasons[12], pinReasons[13], pinReasons[14], pinReasons[15], pinReasons[16]);
 	if (busyPins[0] + busyPins[1] + busyPins[2] > 0)
 		PlayerBotLogThrottled("channel_busy_pin", dwNow,
 				"PLAYERBOT_CHANNEL: busy pin census channel=%u bots=%u party=%u dungeon=%u fight=%u",
