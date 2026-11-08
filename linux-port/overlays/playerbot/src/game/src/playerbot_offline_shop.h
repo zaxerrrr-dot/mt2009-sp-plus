@@ -832,6 +832,33 @@ namespace {
                 first ? first->GetVnum() : 0u, rp ? rp->dwAntiFlags : 0u,
                 first && first->IsEquipped() ? 1 : 0, first && first->isLocked() ? 1 : 0,
                 (int)strlen(sign), (int)(ch->GetGold() / 1000), (int)ch->GetLevel());
+            // MT2009_PLUS_BOT_SHOP_REFUSE_PROBE_V1: the native checks that refuse the whole stand over one line, line by
+            // line (8 November: 548 refusals of 116 bots in an hour on channel 1 against 104 stands opened), plus the
+            // bundle and the hands - a diagnosis only, nothing is changed.
+            {
+                int badLine = -1, badSlot = -1, badPrice = -1;
+                DWORD badVnum = 0;
+                for (BYTE n = 0; n < count; ++n) {
+                    LPITEM li = ch->GetItem(table[n].pos);
+                    if (!li) { if (badLine < 0) { badLine = n; badVnum = 0; } continue; }
+                    if (badLine < 0 && !ch->CanAddItemToShop(li, table[n].display_pos)) {
+                        badLine = n; badVnum = li->GetVnum(); badSlot = table[n].display_pos;
+                    }
+                    if (badPrice < 0 && (table[n].price < 1 || table[n].price > SHOP_PRICE_MAX))
+                        badPrice = n;
+                }
+                sys_log(0, "PLAYERBOT_OFFLINE: refuse probe pid=%u name=%s lines=%u bad_line=%d bad_vnum=%u bad_slot=%d bad_price_line=%d "
+                    "bundle=%d can_handle=%d exchange=%d time_index=1 map=%ld",
+                    ch->GetPlayerID(), ch->GetName(), unsigned(count), badLine, badVnum, badSlot, badPrice,
+                    (int)ch->CountSpecifyItem(50200), ch->CanHandleItem() ? 1 : 0, ch->GetExchange() ? 1 : 0,
+                    ch->GetMapIndex());
+            }
+#if defined(ENABLE_IKASHOP_RENEWAL)
+            // MT2009_PLUS_BOT_CH2_STAND_END_ON_FAIL_V1: a bot driven here for its stand ends the drive on a refusal,
+            // rather than being pulled back to the same refusal every two minutes (a no-op without a live intent).
+            if (IsPlayerBotCh2StandDriveRestExempt(ch) && quest::CQuestManager::instance().GetEventFlag("m2_bot_ch2_stand_endfail_off") == 0)
+                NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_REFUSED);
+#endif
         }
         return false; // the independent entity owns the stall; AI resumes now
     }

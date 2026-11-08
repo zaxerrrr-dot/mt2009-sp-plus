@@ -95,18 +95,19 @@ namespace
 	bool IsPlayerBotCh2StandSwitchOn(int which)
 	{
 		// 3: MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1 (the intent read once the bot's quest data is in)
-		static const char* const s_flags[5] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
-				"m2_bot_stand_fee_full_reserve", "m2_bot_ch2_stand_qload_off", "m2_bot_ch2_stand_norest_off" };
+		static const char* const s_flags[6] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
+				"m2_bot_stand_fee_full_reserve", "m2_bot_ch2_stand_qload_off", "m2_bot_ch2_stand_norest_off",
+				"m2_bot_ch2_stand_endfail_off" };
 		static DWORD s_dwAt = 0;
-		static bool s_bOn[5] = { true, true, true, true, true };
+		static bool s_bOn[6] = { true, true, true, true, true, true };
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 1000)
 		{
 			s_dwAt = now ? now : 1;
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < 6; ++i)
 				s_bOn[i] = quest::CQuestManager::instance().GetEventFlag(s_flags[i]) == 0;
 		}
-		return which >= 0 && which < 5 && s_bOn[which];
+		return which >= 0 && which < 6 && s_bOn[which];
 	}
 
 	bool IsPlayerBotStandStorageReasonsOn()
@@ -135,6 +136,7 @@ namespace
 		CH2STAND_BUNDLE,
 		CH2STAND_NO_VILLAGE,
 		CH2STAND_EXPIRED,
+		CH2STAND_REFUSED,	// MT2009_PLUS_BOT_CH2_STAND_END_ON_FAIL_V1: the native submit refused the stand
 		CH2STAND_OUTCOMES
 	};
 
@@ -487,10 +489,14 @@ namespace
 		if (it == s_mapPlayerBotCh2Stand.end() || it->second.intentAt == 0)
 			return;
 		++s_kPlayerBotCh2StandStats.outcome[outcome];
-		if (outcome == CH2STAND_CANNOT_PAY)
+		// MT2009_PLUS_BOT_CH2_STAND_END_ON_FAIL_V1: with the drive unrested (NO_REST_V1) a bot that cannot pay went
+		// hunting, was pulled back to its first village 2-4 minutes later and refused again until its 30-minute pin
+		// ran out - the drive ends on it now (the second channel asks again when the purse allows).
+		// m2_bot_ch2_stand_endfail_off 1: it asks again until the TTL, as before.
+		if (outcome == CH2STAND_CANNOT_PAY && !(IsPlayerBotCh2StandSwitchOn(5) && IsPlayerBotCh2StandSwitchOn(4)))
 			return;
 		static const char* const s_names[CH2STAND_OUTCOMES] = { "opened", "no_reason", "nothing_to_sell", "cannot_pay",
-				"bundle", "no_village", "expired" };
+				"bundle", "no_village", "expired", "refused" };
 		PlayerBotLogThrottled("ch2stand_end", get_dword_time(),
 				"PLAYERBOT_CH2STAND: ended pid=%u name=%s why=%s map=%ld gold=%lld min_since_arrival=%u",
 				ch->GetPlayerID(), ch->GetName(), s_names[outcome], ch->GetMapIndex(), (long long)ch->GetGold(),
@@ -586,7 +592,7 @@ namespace
 				"want_spare=%u want_books=%u want_bag=%u no_fee=%u budget_wait=%u held=%u requested=%u town_intents=%u "
 				"reasks=%u left=%u back_unopened=%u owners_here=%u | arrival arrived=%u to_m1=%u opened=%u "
 				"open_avg_min=%u no_reason=%u nothing_to_sell=%u cannot_pay=%u bundle=%u no_village=%u expired=%u "
-				"pending=%u fee_eased=%u",
+				"refused=%u pending=%u fee_eased=%u",
 				(unsigned int)g_bChannel, IsPlayerBotCh2StandSwitchOn(0) ? 1 : 0, GetPlayerBotCh2StandPer10Min(),
 				IsPlayerBotStandStorageReasonsOn() ? 1 : 0, IsPlayerBotCh2StandSwitchOn(2) ? 1 : 0,
 				IsPlayerBotMatsBoardOff(MATS_BOARD_SALE) ? 0 : 1,
@@ -594,7 +600,8 @@ namespace
 				s.noFee, s.budgetWait, s.held, s.requested, s.townIntents, s.reasks, s.left, s.backUnopened, ownersHere,
 				s.arrived, s.toM1, s.opened, s.opened ? s.openMinutes / s.opened : 0U,
 				s.outcome[CH2STAND_NO_REASON], s.outcome[CH2STAND_NOTHING_TO_SELL], s.outcome[CH2STAND_CANNOT_PAY],
-				s.outcome[CH2STAND_BUNDLE], s.outcome[CH2STAND_NO_VILLAGE], s.outcome[CH2STAND_EXPIRED], pending,
+				s.outcome[CH2STAND_BUNDLE], s.outcome[CH2STAND_NO_VILLAGE], s.outcome[CH2STAND_EXPIRED],
+				s.outcome[CH2STAND_REFUSED], pending,
 				s.feeEased);
 		s_kPlayerBotCh2StandStats = TPlayerBotCh2StandStats();
 	}
