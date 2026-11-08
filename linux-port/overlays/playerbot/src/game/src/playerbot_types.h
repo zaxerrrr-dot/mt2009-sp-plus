@@ -5490,6 +5490,9 @@ namespace
 	// it to the engine's own 30-minute cooldown.
 	const DWORD PLAYERBOT_TELEPORT_RING_VNUM = 70058;
 	const BYTE PLAYERBOT_TELEPORT_RING_MIN_LEVEL = 30;
+	// MT2009_PLUS_BOT_RING_TRAVEL_V1 (the owner, 8 November 2026): no longer
+	// read - a bot's ring has no 30-minute pause (one ring is enough), only
+	// PLAYERBOT_RING_MIN_GAP_MS between two uses (playerbot_travel.h).
 	const DWORD PLAYERBOT_TELEPORT_RING_COOLDOWN_MS = 1800000;
 	// A departure held longer than this is reported with what holds it
 	// (PLAYERBOT_DEPARTURE: overdue), once per this interval per bot.
