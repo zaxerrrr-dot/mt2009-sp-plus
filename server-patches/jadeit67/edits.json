@@ -1,0 +1,38 @@
+[
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BONUS67_V1 (change rare)",
+  "olds": [
+   "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare): its Will line\n\t\treturn false;\n\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n",
+   "\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+  ],
+  "new": "\t// MT2009_PLUS_JADE_BONUS67_V1 (change rare): Obrecz / Kolia / Klipsy Jadeitu take the 6th and 7th bonus (the owner, 8 Nov 2026 \"napraw\";\n\t// their Precyzja and Will are the base attribute, never touched here) - MT2009_PLUS_JADE_BRACELET_V1 (change rare)'s guard stays out\n\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BONUS67_V1 (change rare 2)",
+  "olds": [
+   "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare 2): its Will line\n\t\treturn false;\n\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n",
+   "\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+  ],
+  "new": "\t// MT2009_PLUS_JADE_BONUS67_V1 (change rare 2): Obrecz / Kolia / Klipsy Jadeitu take the 6th and 7th bonus (the owner, 8 Nov 2026 \"napraw\";\n\t// their Precyzja and Will are the base attribute, never touched here) - MT2009_PLUS_JADE_BRACELET_V1 (change rare 2)'s guard stays out\n\t{ // MT2009_PLUS_JADE_BASE_V1 (change rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BONUS67_V1 (add rare)",
+  "olds": [
+   "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare): its Will line\n\t\treturn false;\n\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n",
+   "\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+  ],
+  "new": "\t// MT2009_PLUS_JADE_BONUS67_V1 (add rare): Obrecz / Kolia / Klipsy Jadeitu take the 6th and 7th bonus (the owner, 8 Nov 2026 \"napraw\";\n\t// their Precyzja and Will are the base attribute, never touched here) - MT2009_PLUS_JADE_BRACELET_V1 (add rare)'s guard stays out\n\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BONUS67_V1 (add rare 2)",
+  "olds": [
+   "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare 2): its Will line\n\t\treturn false;\n\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n",
+   "\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+  ],
+  "new": "\t// MT2009_PLUS_JADE_BONUS67_V1 (add rare 2): Obrecz / Kolia / Klipsy Jadeitu take the 6th and 7th bonus (the owner, 8 Nov 2026 \"napraw\";\n\t// their Precyzja and Will are the base attribute, never touched here) - MT2009_PLUS_JADE_BRACELET_V1 (add rare 2)'s guard stays out\n\t{ // MT2009_PLUS_JADE_BASE_V1 (add rare 2): the jade's base lines are no bonus any more - an old piece's leave its 6th/7th slots\n"
+ }
+]
