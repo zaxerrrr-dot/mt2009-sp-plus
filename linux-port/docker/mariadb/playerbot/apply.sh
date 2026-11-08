@@ -3996,6 +3996,16 @@ fi
 if [ -s /opt/playerbot/riposty_itemshop.sql ]; then
     db < /opt/playerbot/riposty_itemshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Zwoj Zmiany Treningu" >&2
 fi
+# MT2009_PLUS_RIPOSTY_V2 (report #8, the owner 8 November 2026: "nauka riposty ma byc jak na globalu" - the riposte
+# could not be changed): riposty_itemshop.sql above fills only the OLD web shop's itemshop.ishop_items, which neither the
+# in-game ItemShop nor the second one (V3, its view itemshop3.shop reads common.itemshop_items) shows - so nobody could
+# buy Zwoj Zmiany Treningu, the wiki's only way to choose another riposte. Now in the in-game ItemShop's "Zwoje i ksiegi"
+# (601-699) after Ksiega Zapomnienia Gildii: 632 at 49 Smoczych Monet (the pl-wiki: "w Item-Shop za 49 SM"); V3 lists it
+# through its view. Bots never buy it (playerbot_itemshop.h IsPlayerBotIshop3ExcludedVnum). Once per install
+# (ishop_once) - the operator may change or remove it in the Seban panel; not a second line if the operator has one.
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum = 71000;" 2>/dev/null || echo x)" = "1" ]; then
+ishop_once riposty_zwoj_632 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) SELECT 632, 71000, 1, 49, 'DRAGON_COIN', 0 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM common.itemshop_items WHERE vnum = 71000);" "could not add Zwoj Zmiany Treningu to the ItemShop (MT2009_PLUS_RIPOSTY_V2)"
+fi
 
 # MT2009_PLUS_BUFFI_V1: Buffi, the support shaman of Ameria Project (server-patches/buffi/README.md; tools/buffi/gen_buffi.py):
 # the seals 61025/61026, Zwoj Imienia Buffi 61030, Kamien Duchowy Buffi 61031, the books 61035-61038, skill_proto

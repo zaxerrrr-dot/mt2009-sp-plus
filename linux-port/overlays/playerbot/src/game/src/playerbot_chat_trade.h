@@ -602,6 +602,9 @@ namespace
 				return strncmp(proto->szLocaleName, "Instr. ", 7) == 0
 						? proto->szLocaleName + 7 : proto->szLocaleName;
 		}
+		// MT2009_PLUS_RIPOSTY_V2: a riposte / boost (a Ksiega Zapomnienia of one) - "Riposta: Wir Miecza"
+		if (const char* passive = ::riposty::Name(skillVnum))
+			return passive;
 		return "?";
 	}
 
@@ -651,6 +654,9 @@ namespace
 
 	std::string GetPlayerBotStallLineName(const TItemTable* proto, DWORD skill, bool forget)
 	{
+		// MT2009_PLUS_RIPOSTY_V2: a riposte's / boost's own book keeps its name ("Riposta: Wir Miecza"), no "Instr."
+		if (skill && !forget && ::riposty::IsPassive(skill))
+			return proto ? std::string(proto->szLocaleName) : std::string(::riposty::Name(skill));
 		if (skill)
 		{
 			const char* skillName = GetPlayerBotSkillName(skill);

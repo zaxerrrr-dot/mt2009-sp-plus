@@ -23,6 +23,7 @@ namespace riposty
 	const unsigned int RIPOSTE_FIRST = 221, RIPOSTE_LAST = 228;
 	const unsigned int BOOST_FIRST = 236, BOOST_LAST = 243;
 	const unsigned int ITEM_MANUAL_BOOST = 50514, ITEM_MANUAL_RIPOSTE = 50515, ITEM_RESET = 71000;
+	const unsigned int ITEM_SOUL_STONE_PLUS = 50525;	// Kamien Duchowy+ (G1 -> P)
 
 	bool IsRiposte(unsigned int dwVnum);
 	bool IsBoost(unsigned int dwVnum);
@@ -39,6 +40,11 @@ namespace riposty
 	int Learn(CHARACTER* ch, unsigned int dwVnum);
 	// Zwoj Zmiany Treningu: every riposte and boost to 0, their skill points back; how many were known.
 	int ResetAll(CHARACTER* ch);
+	// MT2009_PLUS_RIPOSTY_V2: "Riposta: Wir Miecza" / "Dopalacz: Wir Miecza" (ASCII, for the bots' chat); NULL other.
+	const char* Name(unsigned int dwVnum);
+	// MT2009_PLUS_RIPOSTY_V2 (bots): the riposte a bot chooses - against the path met most among the other kingdoms'
+	// characters online (a weighted draw), by its pid when nobody is online.
+	unsigned int BotChoice(const CHARACTER* ch);
 }
 
 #endif

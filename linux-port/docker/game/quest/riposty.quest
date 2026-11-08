@@ -4,21 +4,54 @@
 -- / dopalacz od G1 do P jak Kamieñ Duchowy przy zwyk³ych umiejêtnoœciach (pc.learn_grand_master_skill: punkty rangi,
 -- nastêpna próba po 12 h, Zwój Egzorcyzmu od razu); Zwój Zmiany Treningu (71000) - usuwa oba, punkty umiejêtnoœci wracaj¹.
 -- Od 1 do M1: punkty umiejêtnoœci albo ksiêgi 50516-50523 / 50560-50567 (silnik), od M1 do G1: ksiêgi.
+-- MT2009_PLUS_RIPOSTY_V2 (zg³oszenie #8, w³aœciciel 8.11.2026: "nauka riposty ma byæ jak na globalu"): przy ka¿dej
+-- riposcie i dopalaczu klasa i droga, której to umiejêtnoœæ (wiki: Wir Miecza - Wojownik Body ... Przywo³anie
+-- B³yskawicy - Szaman Healer), ¿eby Duchowe Uderzenie Wojownika Mental nie myli³o siê z Duchowym Ciosem Sury BM;
+-- zmiana riposty jak na wiki: Zwój Zmiany Treningu (Item-Shop, "Zwoje i ksiêgi", 49 SM - apply.sh ripost_zwoj_632),
+-- potem nowy Podrêcznik: Riposta.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest riposty begin
 	state start begin
-		function name(vnum)
-			local names = {
-				[221] = "Riposta: Wir Miecza", [222] = "Riposta: Zasadzka", [223] = "Riposta: Uderzenie Palcem",
-				[224] = "Riposta: Strzelaj¹cy Smok", [225] = "Riposta: Duchowe Uderzenie",
-				[226] = "Riposta: Ognista Strza³a", [227] = "Riposta: Mroczne Uderzenie",
-				[228] = "Riposta: Przywo³anie B³yskawicy",
-				[236] = "Dopalacz: Wir Miecza", [237] = "Dopalacz: Zasadzka", [238] = "Dopalacz: Uderzenie Palcem",
-				[239] = "Dopalacz: Strzelaj¹cy Smok", [240] = "Dopalacz: Duchowe Uderzenie",
-				[241] = "Dopalacz: Ognista Strza³a", [242] = "Dopalacz: Mroczne Uderzenie",
-				[243] = "Dopalacz: Przywo³anie B³yskawicy",
+		function skill(vnum)
+			-- the attack skill of a riposte (221-228) / boost (236-243) and the class and path it belongs to (the wiki)
+			local skills = {
+				"Wir Miecza", "Zasadzka", "Uderzenie Palcem", "Strzelaj¹cy Smok", "Duchowe Uderzenie",
+				"Ognista Strza³a", "Mroczne Uderzenie", "Przywo³anie B³yskawicy",
 			}
-			return names[vnum] or ("umiejêtnoœæ " .. vnum)
+			local i = vnum - 220
+			if vnum >= 236 then
+				i = vnum - 235
+			end
+			return skills[i] or ("umiejêtnoœæ " .. vnum)
+		end
+
+		function owner(vnum)
+			local owners = {
+				"Wojownik Body", "Ninja Dagger", "Sura WP", "Szaman Smok", "Wojownik Mental",
+				"Ninja Archer", "Sura BM", "Szaman Healer",
+			}
+			local i = vnum - 220
+			if vnum >= 236 then
+				i = vnum - 235
+			end
+			return owners[i] or "?"
+		end
+
+		function name(vnum)
+			if vnum >= 236 then
+				return "Dopalacz: " .. riposty.skill(vnum)
+			end
+			return "Riposta: " .. riposty.skill(vnum)
+		end
+
+		function note(vnum)
+			-- the names players mix up (zg³oszenie #8)
+			if vnum == 225 or vnum == 240 then
+				return "To umiejêtnoœæ Wojownika Mental - nie Duchowy Cios Sury BM."
+			elseif vnum == 227 or vnum == 242 then
+				return "To pierwsza umiejêtnoœæ Sury BM - nie Duchowy Cios ani Mroczna Sfera."
+			end
+			return ""
 		end
 
 		function grade(level)
@@ -34,7 +67,7 @@ quest riposty begin
 
 		function why(code)
 			if code == 1 then
-				return "Najpierw wybierz drogê umiejêtnoœci (Szkolenie)."
+				return "Najpierw ukoñcz Szkolenie - wybierz drogê umiejêtnoœci u nauczyciela swojej klasy."
 			elseif code == 2 then
 				return "Wymagany jest co najmniej 5. poziom postaci."
 			elseif code == 3 then
@@ -45,14 +78,21 @@ quest riposty begin
 			return "Tej umiejêtnoœci nie mo¿esz siê nauczyæ."
 		end
 
+		function change_info()
+			say("Riposta jest jedna. Aby wybraæ inn¹, u¿yj Zwoju Zmiany")
+			say("Treningu (Item-Shop: Zwoje i ksiêgi) - usunie on")
+			say("ripostê i dopalacz, a wydane na nie punkty umiejêtnoœci wróc¹.")
+			say("Potem u¿yj Podrêcznika: Riposta jeszcze raz.")
+		end
+
 		when 50515.use begin
 			local BOOK = 50515
 			say_title("Podrêcznik: Riposta")
 			local have = pc.get_riposte()
 			if have != 0 then
-				say(string.format("Znasz ju¿ ripostê: %s (%s).", riposty.name(have), riposty.grade(pc.get_skill_level(have))))
-				say("Mo¿na mieæ tylko jedn¹ ripostê. Zwój Zmiany Treningu")
-				say("pozwala zapomnieæ j¹ i wybraæ now¹.")
+				say(string.format("Znasz ju¿ ripostê: %s (%s),", riposty.name(have), riposty.grade(pc.get_skill_level(have))))
+				say(string.format("przeciw umiejêtnoœci klasy %s.", riposty.owner(have)))
+				riposty.change_info()
 				return
 			end
 			if pc.get_skill_group() == 0 then
@@ -63,12 +103,13 @@ quest riposty begin
 				say(riposty.why(2))
 				return
 			end
+			say("Ta prastara ksiêga pozwala wybraæ jedn¹ z oœmiu ripost.")
 			say("Riposta zmniejsza obra¿enia, które otrzymujesz od jednej")
-			say("umiejêtnoœci przeciwnika. Mo¿esz znaæ tylko jedn¹ ripostê -")
-			say("wybieraj m¹drze.")
+			say("umiejêtnoœci przeciwnika - obok nazwy jest klasa i droga,")
+			say("która jej u¿ywa. Mo¿esz znaæ tylko jedn¹ ripostê.")
 			local list = {}
 			for v = 221, 228 do
-				table.insert(list, riposty.name(v))
+				table.insert(list, string.format("%s (%s)", riposty.skill(v), riposty.owner(v)))
 			end
 			table.insert(list, "Anuluj")
 			local s = select_table(list)
@@ -77,10 +118,15 @@ quest riposty begin
 			end
 			local vnum = 220 + s
 			say_title(riposty.name(vnum))
-			say("Ta riposta zmniejszy obra¿enia od tej umiejêtnoœci:")
-			say_reward("1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.")
-			say("Rozwijasz j¹ punktami umiejêtnoœci lub ksiêgami riposty")
-			say("(do M1), ksiêgami (do G1) i Kamieniem Duchowym+ (do P).")
+			say("Zmniejsza obra¿enia otrzymywane od umiejêtnoœci:")
+			say_reward(string.format("%s (%s)", riposty.skill(vnum), riposty.owner(vnum)))
+			if riposty.note(vnum) != "" then
+				say(riposty.note(vnum))
+			end
+			say_reward("Poziom 1: 1,2%, M1: 12%, G1: 19,7%, P: 30%.")
+			say("Rozwój: punkty umiejêtnoœci lub ksiêgi riposty (do M1),")
+			say("ksiêgi (do G1), Kamieñ Duchowy+ (do P).")
+			say("Chcesz opanowaæ tê ripostê?")
 			if select("Naucz siê teraz", "Anuluj") != 1 then
 				return
 			end
@@ -95,8 +141,10 @@ quest riposty begin
 			end
 			pc.remove_item(BOOK, 1)
 			char_log(vnum, "RIPOSTA_LEARN", "50515")
-			say_reward("Nauczy³eœ siê riposty (poziom 1).")
-			say("Znajdziesz j¹ w oknie umiejêtnoœci, obok 9. umiejêtnoœci.")
+			say_reward(string.format("W³adasz teraz umiejêtnoœci¹ %s!", riposty.name(vnum)))
+			say(string.format("Obra¿enia od: %s (%s) ulegaj¹ redukcji.", riposty.skill(vnum), riposty.owner(vnum)))
+			say("Znajdziesz j¹ w oknie umiejêtnoœci (7. pole) - plusem")
+			say("dodajesz punkty umiejêtnoœci, ksiêg¹ riposty j¹ szkolisz.")
 		end
 
 		when 50514.use begin
@@ -105,6 +153,7 @@ quest riposty begin
 			local have = pc.get_boost()
 			if have != 0 then
 				say(string.format("Znasz ju¿ dopalacz: %s (%s).", riposty.name(have), riposty.grade(pc.get_skill_level(have))))
+				say("Zwój Zmiany Treningu usuwa ripostê i dopalacz.")
 				return
 			end
 			local vnum = pc.get_class_boost()
@@ -117,14 +166,19 @@ quest riposty begin
 				return
 			end
 			say("Dopalacz zwiêksza obra¿enia zadawane jedn¹ umiejêtnoœci¹.")
-			say("Ka¿da klasa i droga ma swój dopalacz - twój to:")
+			say("Ka¿da klasa i droga ma z góry ustalony dopalacz.")
+			say(string.format("Twoja droga: %s - twój dopalacz to:", riposty.owner(vnum)))
 			say_reward(riposty.name(vnum))
-			say_reward("1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.")
+			if riposty.note(vnum) != "" then
+				say(riposty.note(vnum))
+			end
+			say_reward("Poziom 1: 0,8%, M1: 8%, G1: 13,1%, P: 20%.")
 			local r = pc.get_riposte()
 			if r == 0 or pc.get_skill_level(r) < 40 then
 				say(riposty.why(4))
 				return
 			end
+			say("Chcesz opanowaæ tê umiejêtnoœæ?")
 			if select("Naucz siê teraz", "Anuluj") != 1 then
 				return
 			end
@@ -139,9 +193,9 @@ quest riposty begin
 			end
 			pc.remove_item(BOOK, 1)
 			char_log(vnum, "DOPALACZ_LEARN", "50514")
-			say_reward("Nauczy³eœ siê dopalacza (poziom 1).")
-			say("Znajdziesz go w oknie umiejêtnoœci, w umiejêtnoœciach")
-			say("pomocniczych (ostatnie pole).")
+			say_reward(string.format("W³adasz teraz umiejêtnoœci¹ %s!", riposty.name(vnum)))
+			say(string.format("Obra¿enia twojej umiejêtnoœci %s wzrastaj¹.", riposty.skill(vnum)))
+			say("Znajdziesz go w oknie umiejêtnoœci (8. pole).")
 		end
 
 		when 50525.use begin
@@ -237,7 +291,8 @@ quest riposty begin
 			say_title("Zwój Zmiany Treningu")
 			local r, b = pc.get_riposte(), pc.get_boost()
 			if r == 0 and b == 0 then
-				say("Nie znasz ¿adnej riposty ani dopalacza.")
+				say("Nie posiadasz ¿adnych ripost ani dopalaczy, które mo¿na")
+				say("by usun¹æ.")
 				return
 			end
 			say("Zwój usunie wszystkie twoje riposty i dopalacze:")
@@ -247,9 +302,16 @@ quest riposty begin
 			if b != 0 then
 				say_reward(string.format("%s (%s)", riposty.name(b), riposty.grade(pc.get_skill_level(b))))
 			end
-			say("Punkty umiejêtnoœci wydane na nie wróc¹. Potem mo¿esz")
-			say("nauczyæ siê ich ponownie z podrêczników.")
-			if select("U¿yj zwoju", "Anuluj") != 1 then
+			say("Punkty umiejêtnoœci wydane na nie wróc¹. Potem wybierzesz")
+			say("now¹ ripostê Podrêcznikiem: Riposta (dopalacz - Podrêcznikiem:")
+			say("Dopalacz, gdy nowa riposta dojdzie do P).")
+			if select("Usuñ riposty i dopalacze", "Anuluj") != 1 then
+				return
+			end
+			say_title("Zwój Zmiany Treningu")
+			say("Czy na pewno chcesz usun¹æ swoje riposty i dopalacze?")
+			say_reward("Tego procesu nie mo¿na cofn¹æ!")
+			if select("Tak", "Nie") != 1 then
 				return
 			end
 			if pc.count_item(SCROLL) < 1 then
@@ -260,7 +322,8 @@ quest riposty begin
 				pc.remove_item(SCROLL, 1)
 				char_log(0, "PASSIVE_RESET", string.format("%d", n))
 				say_title("Zwój Zmiany Treningu")
-				say_reward("Twoje riposty i dopalacze zosta³y zapomniane.")
+				say_reward("Twoje riposty i dopalacze zosta³y usuniête.")
+				say("Pomyœl, zanim wybierzesz swój nastêpny trening!")
 			end
 		end
 	end

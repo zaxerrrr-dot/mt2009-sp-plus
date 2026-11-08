@@ -47,7 +47,15 @@ TEXT_CLASS = "Dopalacz klasy: %s."
 TEXT_GROW_1 = "Do M1: punkty umiej\xeatno\x9cci lub ksi\xeagi (bez gwarancji)."
 TEXT_GROW_M = "Od M1 do G1: ksi\xeagi."
 TEXT_GROW_G = "Od G1 do P: Kamie\xf1 Duchowy+."
-TEXT_RESET = "Zw\xf3j Zmiany Treningu usuwa ripost\xea i dopalacz."
+TEXT_RESET = "Zmiana riposty: Zw\xf3j Zmiany Treningu (Item-Shop)."
+# MT2009_PLUS_RIPOSTY_V2 (report #8: "bm ma ripost\xea duchowego ciosu"): whose skill a riposte is against, and the names
+# players mix up - Duchowe Uderzenie is the Warrior Mental's (not the Sura BM's Duchowy Cios), Mroczne Uderzenie the
+# Sura BM's first skill (the wiki: the BM boost is Mroczne Uderzenie, not Mroczna Sfera)
+TEXT_AGAINST = "Umiej\xeatno\x9c\xe6 klasy: %s."
+TEXT_NOTE = {
+	4: "To nie Duchowy Cios Sury (Czarna Magia).",
+	6: "To nie Duchowy Cios ani Mroczna Sfera.",
+}
 # MT2009_PLUS_RIPOSTY_FORGET_V1: Ksiega Zapomnienia of this skill (server: playerbot_riposty.cpp RipostyLevelDown)
 TEXT_FORGET = "Ksi\xeaga Zapomnienia tej umiej\xeatno\x9cci oddaje wydany punkt (poni\xbfej M1)."
 
@@ -150,9 +158,14 @@ def AppendToolTip(tip, skillIndex, skillGrade, skillLevel):
 	level = RealLevel(skillGrade, skillLevel)
 	tip.AppendSpace(5)
 	if IsBoost(skillIndex):
-		tip.AppendTextLine(TEXT_CLASS % BOOST_CLASS[skillIndex - BOOST_FIRST], tip.CONDITION_COLOR)
+		idx = skillIndex - BOOST_FIRST
+		tip.AppendTextLine(TEXT_CLASS % BOOST_CLASS[idx], tip.CONDITION_COLOR)
 	else:
+		idx = skillIndex - RIPOSTE_FIRST
 		tip.AppendTextLine(TEXT_ONE, tip.CONDITION_COLOR)
+		tip.AppendTextLine(TEXT_AGAINST % BOOST_CLASS[idx], tip.CONDITION_COLOR)	# MT2009_PLUS_RIPOSTY_V2
+	if idx in TEXT_NOTE:
+		tip.AppendTextLine(TEXT_NOTE[idx], tip.DISABLE_COLOR)	# MT2009_PLUS_RIPOSTY_V2
 
 	tip.AppendSpace(5)
 	tip.AppendTextLine(TEXT_LEVEL % LevelName(level), tip.NORMAL_COLOR)
