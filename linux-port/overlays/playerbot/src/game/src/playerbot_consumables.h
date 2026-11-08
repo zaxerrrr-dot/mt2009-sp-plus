@@ -444,6 +444,79 @@ namespace
 				item->GetValue(0) == PLAYERBOT_USE_AFFECT_TIMED_BUFF;
 	}
 
+	// MT2009_PLUS_MIKSTURY_V2 (bots; the owner, 8 November 2026: a potion, dew or juice used again while its effect runs
+	// is refused unless it is stronger - server-patches/mikstury, MiksturyMayRefresh): the (affect type, point, value) a
+	// buff item's use adds, read the way CHARACTER::UseItemEx reads it; false - not such an item, or one with a path of
+	// its own (the flowers, the death-penalty charm, unknown points).
+	bool GetPlayerBotBuffItemAffect(LPITEM item, DWORD& type, WORD& point, long& value)
+	{
+		if (!item)
+			return false;
+		const DWORD vnum = item->GetVnum();
+		if (item->GetType() == ITEM_BLEND)
+		{
+			type = AFFECT_BLEND;
+			point = (WORD)item->GetSocket(0);
+			value = item->GetSocket(1);
+			if (vnum == 51002)	// Krysztal Energii (MT2009_PLUS_ENERGY_V1)
+			{
+				point = POINT_ENERGY;
+				if (value <= 0 || value > 10)
+					value = 1;
+			}
+			return point != POINT_NONE;
+		}
+		if (item->GetType() != ITEM_USE)
+			return false;
+		if (vnum > 50800 && vnum <= 50820)	// the juices and waters
+		{
+			type = AFFECT_EXP_BONUS_EURO_FREE;
+			if (item->GetSubType() == USE_ABILITY_UP)
+				point = (WORD)item->GetValue(0);
+			else if (item->GetSubType() == USE_AFFECT)
+				point = (WORD)item->GetValue(1);
+			else
+				return false;
+			value = item->GetValue(2);
+			return true;
+		}
+		if (item->GetSubType() == USE_ABILITY_UP)
+		{
+			point = (WORD)item->GetValue(0);
+			value = item->GetValue(2);
+			switch (point)
+			{
+				case POINT_MOV_SPEED: type = AFFECT_MOV_SPEED; return true;
+				case POINT_ATT_SPEED: type = AFFECT_ATT_SPEED; return true;
+				case POINT_ST: case POINT_DX: case POINT_HT: case POINT_IQ: case POINT_CASTING_SPEED:
+				case POINT_ATT_GRADE_BONUS: case POINT_DEF_GRADE_BONUS: case POINT_RESIST_MAGIC:
+					type = AFFECT_STR; return true;
+			}
+			return false;
+		}
+		if (item->GetSubType() == USE_AFFECT && item->GetValue(0) > 0 && item->GetValue(0) != 570 &&
+				vnum != 70049)	// UNIQUE_ITEM_SKIP_ITEM_DROP_PENALTY, its own stacking
+		{
+			type = (DWORD)item->GetValue(0);
+			point = (WORD)item->GetValue(1);
+			value = item->GetValue(2);
+			return true;
+		}
+		return false;
+	}
+
+	// The engine refuses such an item while the same (type, point) runs at least as strong: not tried, never spent.
+	bool IsPlayerBotBuffItemCovered(LPCHARACTER ch, LPITEM item)
+	{
+		DWORD type = 0;
+		WORD point = 0;
+		long value = 0;
+		if (!ch || !GetPlayerBotBuffItemAffect(item, type, point, value))
+			return false;
+		const CAffect* aff = ch->FindAffect(type, point);
+		return aff && aff->lApplyValue >= value;
+	}
+
 	// Rada Pustelnika (AFFECT_SKILL_BOOK_BONUS) and the Exorcism Scroll
 	// (AFFECT_SKILL_NO_BOOK_DELAY): read by the book pass, never merchant scrap.
 	// Most of them carry ANTI_SELL; the item shop's copies (71201, 71294) do
@@ -672,6 +745,10 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || !IsPlayerBotBoosterItem(item) ||
 					IsPlayerBotSidekickHeld(ch, item))	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
+				continue;
+			// MT2009_PLUS_MIKSTURY_V2: the same bonus running as strong - the engine refuses it now (a refresh spent a
+			// potion a minute); a stronger stack of the line may still be tried, so the line is not taken
+			if (IsPlayerBotBuffItemCovered(ch, item))
 				continue;
 			const long line = item->GetSubType() * 1000L + item->GetValue(1);
 			if (!triedLines.insert(line).second)

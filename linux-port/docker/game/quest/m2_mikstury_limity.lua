@@ -12,6 +12,8 @@
 --   * the same bonus (this group's affect + the point): a stronger one running refuses the potion, the same value
 --     running at least as long as the new one would refuses it (nothing to refresh), otherwise the new one replaces it
 --     (override + per point) - a refresh or an upgrade. The package refused a re-drink to refresh;
+--     MT2009_PLUS_MIKSTURY_V2 (the owner, 8 November 2026): the same value running refuses it whatever its time left -
+--     no refresh; only a potion that is stronger on a point (or gives a point not running) is drunk;
 --   * a cooldown starts only when the potion was really used (the package started it before its own refusals);
 --   * the fish exceptions (decision 9), the only potions that still exclude one another:
 --       - the EXP fish never run together: S³odka Ryba 27879 < Z³oty Karaœ 27883 < Rak Niebieski 27887 - eating a
@@ -44,7 +46,7 @@ m2_mikstury_limity.EXCLUSIVE = {
 }
 
 m2_mikstury_limity.MSG_STRONGER = "Silniejszy efekt tego rodzaju ju¿ dzia³a."
-m2_mikstury_limity.MSG_LONGER = "Ten efekt ju¿ dzia³a i potrwa d³u¿ej ni¿ nowy."
+m2_mikstury_limity.MSG_LONGER = "Ten efekt ju¿ dzia³a - u¿yj kolejnego, gdy minie, albo silniejszego."	-- MT2009_PLUS_MIKSTURY_V2
 m2_mikstury_limity.MSG_BETTER_FISH = "Dzia³a ju¿ lepsza ryba na doœwiadczenie - s³absza nie zadzia³a razem z ni¹."
 m2_mikstury_limity.MSG_SWITCHED = "Poprzednia ryba na doœwiadczenie przesta³a dzia³aæ - zast¹pi³a j¹ lepsza."
 m2_mikstury_limity.MSG_EXCLUSIVE = "Nie mo¿esz jednoczeœnie u¿ywaæ Z³otego Karasia i Krabu Królewskiego."
@@ -115,6 +117,11 @@ end
 m2_mikstury_limity.may_refresh = function(affect_type, applies, duration)
 	local n = table.getn(applies)
 	if n == 0 then
+		-- MT2009_PLUS_MIKSTURY_V2: a potion without a point (its affect on POINT_NONE) - not again while it runs
+		if pc.has_affect(affect_type, POINT_NONE) then
+			syschat(m2_mikstury_limity.MSG_LONGER)
+			return false
+		end
 		return true
 	end
 	local all_longer = true
@@ -127,7 +134,8 @@ m2_mikstury_limity.may_refresh = function(affect_type, applies, duration)
 				syschat(m2_mikstury_limity.MSG_STRONGER)
 				return false
 			end
-			if current < value or pc.get_affect_duration(affect_type, point) < duration then
+			-- MT2009_PLUS_MIKSTURY_V2: the time left no longer matters - only a stronger value is drunk
+			if current < value then
 				all_longer = false
 			end
 		else

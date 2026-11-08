@@ -7,7 +7,10 @@ tree's lines (the wide-attr WORD points, the Flower Event's use block).
 The rule (the owner, 4 November 2026, M1): different bonuses always run together - no group caps and no cross-family
 blocks; the same bonus (affect type + point) from the same kind of item is refreshed or replaced by an equal or stronger
 one, a weaker one is refused. MiksturyMayRefresh (char_affect.cpp) is that rule for one (type, point); every buff path of
-UseItemEx asks it and then adds with override + per point (IsCube), so a new record replaces the old one."""
+UseItemEx asks it and then adds with override + per point (IsCube), so a new record replaces the old one.
+
+MT2009_PLUS_MIKSTURY_V2 (the owner, 8 November 2026): the same value running is refused whatever its time left - only a
+stronger one replaces it (the last edit, on V1's rule)."""
 import json
 import os
 import sys
@@ -174,6 +177,25 @@ add('char_item.cpp', 'blend',
     '\t\t\t\t\tAddAffect(affect_type, apply_type, apply_value, 0, apply_duration, 0, true, true, item->GetVnum());\n'
     '\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n'
     '\t\t\t\t}\n')
+
+# --- MT2009_PLUS_MIKSTURY_V2 (the owner, 8 November 2026: a potion, dew or juice used again while its effect runs was
+#     spent and its time refreshed - "nie powinno byc mozliwe, chyba ze nowa daje lepszy bonus"): the same value running
+#     is refused whatever its time left; only a stronger one replaces it. Applied on V1's rule (the same file, after it).
+M2 = 'MT2009_PLUS_MIKSTURY_V2'
+E.append(dict(file='char_affect.cpp', marker=M2 + ' (rule2)',
+    old='\tif (pkAff->lApplyValue == lValue && pkAff->lDuration >= lDuration)\n'
+        '\t{\n'
+        '\t\tch->ChatPacket(CHAT_TYPE_INFO, "Ten efekt ju\\277 dzia\\263a i potrwa d\\263u\\277ej ni\\277 nowy.");\n'
+        '\t\treturn false;\n'
+        '\t}\n',
+    new='\t// ' + M2 + ' (rule2): the same value running is refused whatever its time left (the owner, 8 November 2026) -\n'
+        '\t// no refresh by a second potion; only a stronger one replaces it (the caller adds with override + per point).\n'
+        '\t(void)lDuration;\n'
+        '\tif (pkAff->lApplyValue == lValue)\n'
+        '\t{\n'
+        '\t\tch->ChatPacket(CHAT_TYPE_INFO, "Ten efekt ju\\277 dzia\\263a - u\\277yj kolejnego, gdy minie, albo silniejszego.");\n'
+        '\t\treturn false;\n'
+        '\t}\n'))
 
 
 def main():

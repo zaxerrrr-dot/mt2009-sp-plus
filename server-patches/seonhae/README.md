@@ -50,13 +50,13 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 | vnum | nazwa | poziom przedmiotu |
 |---|---|---|
 | 39070 | Szary Odłamek | 0–29 |
-| 39071 | Biały Odłamek | 30–39 |
+| 39071 | Biały Odłamek | 31–39 (30: Szary Lśniący 39078) |
 | 39072 | Zielony Odłamek | 40–49 |
 | 39073 | Żółty Odłamek | 50–59 |
 | 39074 | Niebieski Odłamek | 60–74 |
-| 39075 | Fioletowy Odłamek | 75–89 |
-| 39076 | Czerwony Odłamek | 90–104 |
-| 39077 | Tęczowy Odłamek | 105–119 |
+| 39075 | Fioletowy Odłamek | 76–89 (75: Zielony Lśniący 39079) |
+| 39076 | Czerwony Odłamek | 90–104 (broń, zbroje, hełmy 96: Żółty Lśniący 39080) |
+| 39077 | Tęczowy Odłamek | 106–119 (105: Żółty Lśniący 39080) |
 | 39081 | Święty Odłamek | 120+ |
 | 72064–72067 | Mały / Średni / Duży / Silny Suplement | +1 / 2 / 4 / 10% za sztukę (5 szt.: 5 / 10 / 20 / 50) |
 

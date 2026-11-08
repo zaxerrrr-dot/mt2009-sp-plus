@@ -30,6 +30,11 @@ now this file whole:
   the Blue Dragon lair, the players' map's "Krysztalowa Komnata (GV3)"; 30122), Szkielet-Sura 5 (30128) and the
   way out (10079) are the package's npc.txt, where the global map has them.
 
+MT2009_PLUS_GROTA_THIN_V1 (8 November 2026): the owner, "Grota Wygnancow V1 i V2 - zmniejszyc spoty o 30% od tego co
+jest teraz": 4. the final lines of 1-3 less 30% (tools/grota2/grota_thin.py: evenly, every 64 m square of the map
+its share, the twin points and the most crowded lines first; the bosses, the ghosts, the skeleton and the way out
+untouched). V1 is tools/grota1/gen_grota1.py.
+
 What this writes (GENERATED - edit this file, run it again):
   linux-port/docker/game/grota2/regen.txt  - the map's regen.txt (Dockerfile step MT2009_PLUS_GROTA2_REGEN_V2)
   linux-port/docker/game/grota2/boss.grota2.txt - appended to the map's boss.txt
@@ -43,7 +48,11 @@ import argparse
 import collections
 import os
 import struct
+import sys
 import zlib
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import grota_thin  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, '..', '..'))
@@ -402,6 +411,17 @@ def main():
 
     dist = [INF] * (N * N)
     spread(final)
+    unc_v2 = uncovered_count()
+    v2_count = len(final)
+    v2_groups = dict(sorted(collections.Counter(p[4] for p in final).items()))
+
+    # 4. MT2009_PLUS_GROTA_THIN_V1: less 30%, evenly
+    final, thinned = grota_thin.thin(final)
+    spot_thin = []
+    for name, colour, srooms, before, after, median in spot_rows:
+        spot_thin.append(collections.Counter(p[4] for p in final if any(in_room(r, p[0], p[1]) for r in srooms)))
+    dist = [INF] * (N * N)
+    spread(final)
     unc_final = uncovered_count()
 
     os.makedirs(OUT, exist_ok=True)
@@ -410,8 +430,8 @@ def main():
         os.remove(old)
     with open(os.path.join(OUT, 'regen.txt'), 'w', newline='\r\n') as f:
         f.write('//MT2009_PLUS_GROTA2_REGEN_V2 (tools/grota2/gen_grota2.py, GENERATED): the global dump %d lines, '
-                'fill %d, the spots of the global map %d (%d lines out)\n' % (
-                    len(dump), len(filled), len(spot_lines), len(taken)))
+                'fill %d, the spots of the global map %d (%d lines out); MT2009_PLUS_GROTA_THIN_V1: %d -> %d lines\n' % (
+                    len(dump), len(filled), len(spot_lines), len(taken), v2_count, len(final)))
         f.write('//type\tcx\tcy\tsx\tsy\tz\tdir\ttime\tpercent\tcount\tvnum\n')
         for x, y, sx, sy, v, o in sorted(final, key=lambda p: (p[1] // 50, p[0], p[1], p[4])):
             f.write('r\t%d\t%d\t%d\t%d\t0\t0\t%s\t100\t1\t%d\n' % (x, y, sx, sy, TIME, v))
@@ -444,6 +464,11 @@ def main():
     hdr.append('global dump: %d lines (%d moved off BLOCK, %d left out), uncovered %d m2 (%.0f%%)' % (
         len(dump), moved, len(dropped), unc_dump, 100.0 * unc_dump / walk_main))
     hdr.append('fill: %d points %s' % (len(filled), dict(collections.Counter(p[4] for p in filled))))
+    hdr.append('REGEN_V2: %d lines %s, uncovered %d m2 (%.1f%%)' % (
+        v2_count, v2_groups, unc_v2, 100.0 * unc_v2 / walk_main))
+    hdr.append('MT2009_PLUS_GROTA_THIN_V1 (8 November 2026): %d lines out (%.1f%%), %d twin points among them' % (
+        len(thinned), 100.0 * len(thinned) / v2_count,
+        sum(1 for p in thinned if any(q[0] == p[0] and q[1] == p[1] for q in final + thinned if q is not p))))
     hdr.append('final: %d lines %s, uncovered %d m2 (%.1f%%)' % (
         len(final), dict(sorted(collections.Counter(p[4] for p in final).items())), unc_final,
         100.0 * unc_final / walk_main))
@@ -451,9 +476,10 @@ def main():
     hdr.append('')
     hdr.append('spots (rooms x0-x1/y0-y1; group_group: lines before -> after; the median level of the monsters):')
     hubs = []
-    for name, colour, srooms, before, after, median in spot_rows:
+    for (name, colour, srooms, before, after, median), thin_c in zip(spot_rows, spot_thin):
         hdr.append('  %-22s %-6s %s' % (name, colour, ' '.join('%d-%d/%d-%d' % (r[0], r[2], r[1], r[3]) for r in srooms)))
-        hdr.append('      %s -> %s, median %d' % (dict(sorted(before.items())), dict(sorted(after.items())), median))
+        hdr.append('      %s -> %s, median %d; thinned %s' % (dict(sorted(before.items())), dict(sorted(after.items())),
+                                                             median, dict(sorted(thin_c.items()))))
         for r in srooms:
             cx, cy = (r[0] + r[2]) // 2, (r[1] + r[3]) // 2
             if not clear(cy * N + cx, 5):
