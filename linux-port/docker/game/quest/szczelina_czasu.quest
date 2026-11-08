@@ -2,7 +2,9 @@
 -- Czasu (w³aœciciel, 14.10.2026: "Statua Szczeliny Czasu na P³askowy¿u Iluzji, na razie tylko jeden loch: Zaklêty
 -- Las"; pl-wiki "Statua Szczeliny Czasu" (komórka 103,90), "P³askowy¿ Iluzji" (rozdzia³ "Statua Szczeliny Czasu"),
 -- "Zaklêty Las (SZC)", "Zegarek Kieszonkowy", "Handlarka Iluzji"; tr-wiki "Zaman Catlagi Heykeli"):
---   * od poziomu 110, tylko w grupie (co najmniej 2 osoby, GM sam), otwiera przywódca, ka¿dy cz³onek grupy musi mieæ
+--   * od poziomu 110, sam albo w grupie (MT2009_PLUS_YOHARA_SZC_SOLO_V1, w³aœciciel 8.11.2026: "Na Szczelinê Czasu
+--     gracze mog¹ wchodziæ samodzielnie, bez dodatkowej postaci"; boty nadal tylko po dwa lub wiêcej -
+--     playerbot_dungeon_runs_rules.h), w grupie otwiera przywódca, ka¿dy musi mieæ
 --     Zegarek Kieszonkowy (31147 - u Handlarki Iluzji po 1, 10 i 100 sztuk; znika przy wejœciu do nowej wyprawy);
 --     najwy¿ej 8 osób; ca³a grupa przy statui;
 --   * 60 minut; po ukoñczeniu lub po up³ywie czasu ca³a grupa wraca na P³askowy¿ Iluzji (obok tej statui) - innego
@@ -62,10 +64,6 @@ quest szczelina_czasu begin
 				say("Szczelina Czasu jest dziœ zamkniêta. Wróæ póŸniej.")
 				return
 			end
-			if not pc.is_gm() and not party.is_party() then
-				say("Do Szczeliny Czasu wchodzi siê tylko w grupie.")
-				return
-			end
 			if party.is_party() and not party.is_leader() and not szczelina_czasu.bot_leads() then
 				say("Tylko przywódca grupy mo¿e otworzyæ Szczelinê Czasu.")
 				return
@@ -121,11 +119,7 @@ quest szczelina_czasu begin
 				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
-			if not pc.is_gm() and table.getn(humans) < 2 then
-				say("Sam nie przetrwasz w Szczelinie Czasu - potrzebujesz")
-				say("co najmniej jednego towarzysza z grupy.")
-				return
-			end
+			-- MT2009_PLUS_YOHARA_SZC_SOLO_V1: alone too - the old "at least two" rule is gone (the bots keep theirs)
 			-- MT2009_PLUS_YOHARA_CRACK2_V1: Stra¿nica Nemere (SZC) - a Ninja and a Shaman (Owsap labyrinth_dungeon.quest; the
 			-- tr-wiki's floors 2, 6, 8, 9 need them)
 			if dg.need_jobs and not pc.is_gm() and not (ninja and shaman) then
@@ -158,12 +152,12 @@ quest szczelina_czasu begin
 			local c = szczelina_czasu.cfg()
 			say_title(mob_name(c.statue)..":")
 			say("Za pomoc¹ mojej mocy dostaniecie siê do instancji")
-			say("Szczeliny Czasu. Musicie byæ w grupie, a ka¿dy z was")
+			say("Szczeliny Czasu. Mo¿esz wejœæ sam albo z grup¹, a ka¿dy")
 			say("potrzebuje Zegarka Kieszonkowego od Handlarki Iluzji.")
-			say("Na ukoñczenie instancji macie 60 minut. Potwory nie")
+			say("Na ukoñczenie instancji jest 60 minut. Potwory nie")
 			say("dropuj¹, ale daj¹ wiêcej PD ni¿ zazwyczaj.")
-			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Po ukoñczeniu lub")
-			say_reward("po czasie wrócicie na P³askowy¿ Iluzji.")
+			say_reward("Od poziomu "..c.min_level..", sam albo w grupie. Po ukoñczeniu lub")
+			say_reward("po czasie wrócisz na P³askowy¿ Iluzji.")
 			say_orange("Do Stra¿nicy Nemere (SZC): Ninja i Szaman w grupie.")
 			say_item_vnum(c.ticket)
 			local opts = {}

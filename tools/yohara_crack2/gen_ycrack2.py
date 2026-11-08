@@ -412,7 +412,7 @@ QHEAD = {
 --   * w grocie: gdzie padnie Kapitan Yonghan (SZC) (4207 / 4208), pojawia się Generał Yonghan (SZC) (4209 / 4210);
 --     Kręty Klucz (SZC) (31160) zostawia tylko Generał po Kapitanie (SZC-110) - 4210 (wiki, tr-wiki, arkusz
 --     właściciela; Owsap daje klucz z każdego);
---   * Duch Sura (SZC) (20510): przywódca, cała grupa przy nim, każdy ma 3 Kręte Klucze (SZC) - Świątynia Smoka (SZC);
+--   * Duch Sura (SZC) (20510): gracz sam albo przywódca, cała grupa przy nim, każdy ma 3 Kręte Klucze (SZC) - Świątynia Smoka (SZC);
 --   * Beran-Setaou (SZC) (4400, błyskawica, 122 poz.; przywołuje Wojowników Setaou (SZC)) i cztery Metiny (8120-8123) -
 --     dopóki stoi którykolwiek, smoka nie da się zranić; po śmierci 20 000 000 Yang (tr-wiki).
 -- Potwory nie dają dropu, ale dają więcej PD (wiki) - silnik nie upuszcza niczego na mapie 405 poza Yangami Berana
@@ -479,6 +479,15 @@ KEYS_SZC = '''		-- %s (the keys): the pl-wiki "Generał Yonghan (SZC)" / "Kapita
 			game.drop_item(beran_szc.cfg().key, 1)
 		end
 ''' % M
+# MT2009_PLUS_YOHARA_SZC_SOLO_V1 (the owner, 8 November 2026: players enter the Time Rift alone): beran_pb's
+# "only in a party" gate at Duch Sura goes; a lone player opens the temple portal himself (the bots' runs keep their
+# parties of 2+)
+SOLO_PB = '''			if not pc.is_gm() and not party.is_party() then
+				say("Do Świątyni Smoka wchodzi się tylko w grupie.")
+				npc.unlock()
+				return
+			end
+'''
 NOTICE_NODROP = 'd.notice("Potwory Szczeliny Czasu nie dają dropu, ale dają więcej PD.")'
 
 
@@ -522,6 +531,8 @@ def gen_quests(report):
         if m['quest'] == 'beran_szc':
             assert t.count(KEYS_PB) == 1, 'beran_pb keys block changed - update KEYS_PB'
             t = t.replace(KEYS_PB, KEYS_SZC)
+            assert t.count(SOLO_PB) == 1, 'beran_pb party gate changed - update SOLO_PB'
+            t = t.replace(SOLO_PB, '')
         for bad in ('Metin2', 'Gameforge', 'oficjaln'):
             assert bad.lower() not in t.lower(), (m['quest'], bad)
         left = re.findall(r'\bPB\b', t)

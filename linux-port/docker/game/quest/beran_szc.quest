@@ -7,7 +7,7 @@
 --   * w grocie: gdzie padnie Kapitan Yonghan (SZC) (4207 / 4208), pojawia siê Genera³ Yonghan (SZC) (4209 / 4210);
 --     Krêty Klucz (SZC) (31160) zostawia tylko Genera³ po Kapitanie (SZC-110) - 4210 (wiki, tr-wiki, arkusz
 --     w³aœciciela; Owsap daje klucz z ka¿dego);
---   * Duch Sura (SZC) (20510): przywódca, ca³a grupa przy nim, ka¿dy ma 3 Krête Klucze (SZC) - Œwi¹tynia Smoka (SZC);
+--   * Duch Sura (SZC) (20510): gracz sam albo przywódca, ca³a grupa przy nim, ka¿dy ma 3 Krête Klucze (SZC) - Œwi¹tynia Smoka (SZC);
 --   * Beran-Setaou (SZC) (4400, b³yskawica, 122 poz.; przywo³uje Wojowników Setaou (SZC)) i cztery Metiny (8120-8123) -
 --     dopóki stoi którykolwiek, smoka nie da siê zraniæ; po œmierci 20 000 000 Yang (tr-wiki).
 -- Potwory nie daj¹ dropu, ale daj¹ wiêcej PD (wiki) - silnik nie upuszcza niczego na mapie 405 poza Yangami Berana
@@ -224,11 +224,6 @@ quest beran_szc begin
 		when 20510.chat."Chcê zabiæ tego smoka!" with beran_szc.inside() and d.getf("closed") == 0 and d.getf("level") == 0 and npc.lock() begin
 			local c = beran_szc.cfg()
 			say_title(mob_name(20510)..":")
-			if not pc.is_gm() and not party.is_party() then
-				say("Do Œwi¹tyni Smoka wchodzi siê tylko w grupie.")
-				npc.unlock()
-				return
-			end
 			if party.is_party() and not party.is_leader() and not pc.is_gm() then
 				say("Tylko przywódca grupy mo¿e otworzyæ portal.")
 				npc.unlock()
