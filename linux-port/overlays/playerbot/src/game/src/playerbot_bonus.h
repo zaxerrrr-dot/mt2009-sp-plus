@@ -2114,6 +2114,7 @@ namespace
 		else if (number(1, 100) <= aiItemAttributeAddPercent[count])
 			item->AddAttribute();
 		ConsumePlayerBotBonusStoneAt(ch, stoneCell);
+		NotePlayerBotStarterItemUsed(stoneVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 		// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1: a change on a piece short of its four lines (no add stone in the bag) -
 		// counted, the count said once a minute.
 		if (step == PLAYERBOT_BONUS_STEP_CHANGE && count < PLAYERBOT_BONUS_CHANGE_MIN_LINES &&

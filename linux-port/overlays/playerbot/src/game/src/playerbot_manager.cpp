@@ -220,6 +220,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // keep and buy them: after the gear, whose candidate test and score it asks.
 #include "playerbot_stalki.h"
 #include "playerbot_consumables.h"
+#include "playerbot_starter_use.h" // MT2009_PLUS_BOT_STARTER_USE_V1: the apprentice chests' items put to use
 #include "playerbot_activities.h"
 #include "playerbot_mining.h"
 #include "playerbot_herbalism.h"
@@ -8234,6 +8235,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// deep, and opened 190 in an hour between them. Their bags were not the
 		// problem: 29 cells of 90 in use on average, none above 84.
 		ManagePlayerBotChests(ch, state, dwNow);
+		// MT2009_PLUS_BOT_STARTER_USE_V1: the Appaloosa's snack and the apprentice chests' census
+		// (playerbot_starter_use.h).
+		ManagePlayerBotStarterItems(ch, state, dwNow);
 		// MT2009_PLUS_BOT_MINIGAMES_V1: a deck, a card set or a board in the
 		// bag is played at once, without a table (playerbot_minigames.h).
 		ManagePlayerBotMinigames(ch, state, dwNow);

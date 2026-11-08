@@ -605,6 +605,7 @@ namespace
 			{
 				sys_log(0, "PLAYERBOT_CHEST: auto potion on pid=%u name=%s vnum=%u affect=%u",
 						ch->GetPlayerID(), ch->GetName(), vnum, (unsigned int)affect);
+				NotePlayerBotStarterItemUsed(vnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1
 				used = true;
 			}
 		}
@@ -680,6 +681,7 @@ namespace
 			{
 				sys_log(0, "PLAYERBOT_CHEST: booster pid=%u name=%s vnum=%u",
 						ch->GetPlayerID(), ch->GetName(), vnum);
+				NotePlayerBotStarterItemUsed(vnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1
 				used = true;
 			}
 		}

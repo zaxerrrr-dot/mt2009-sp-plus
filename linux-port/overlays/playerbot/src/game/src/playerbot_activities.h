@@ -1356,6 +1356,7 @@ namespace
 				if (price == 0)
 					price = item->GetProto() ? item->GetProto()->dwGold : 100;
 				PlayerBotChangeGold(ch, (long long)std::max<DWORD>(10, price / 5) * count);
+				NotePlayerBotStarterItemSold(ch, item);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
 				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");
 			}
 			else
