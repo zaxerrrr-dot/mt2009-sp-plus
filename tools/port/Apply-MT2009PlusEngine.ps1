@@ -2320,4 +2320,18 @@ if ((Test-Path -LiteralPath $ladaViewApply -PathType Leaf) -and
     }
 }
 
+# The serpent pieces' random base bonuses on a sash (server-patches/szarfawez, MT2009_PLUS_SASH_SERPENT_V1; the owner,
+# 8 November 2026: "Bronie wezowe po absorpcji bonusow do szarfy nie daja bonusow ktore sa wbudowane w bron"): item.cpp -
+# a sash keeps the absorbed serpent piece's three lines in its yextra and gives them at its absorption rate; char.cpp -
+# the detach clears them. Last: its anchors are ysets' and zywiolbroni's code.
+$sashSerpentApply = Join-Path $repo 'server-patches/szarfawez/Apply-SzarfaWezPatch.ps1'
+if ((Test-Path -LiteralPath $sashSerpentApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $sashSerpentResult = & $sashSerpentApply -SourceDir $engineGameSource
+    if ($sashSerpentResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} sash serpent bonus edit(s).' -f $sashSerpentResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

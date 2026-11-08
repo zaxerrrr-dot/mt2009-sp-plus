@@ -1504,6 +1504,7 @@ class ItemToolTip(ToolTip):
 
 						item.SelectItem(itemAbsorbedVnum)
 					# END EFFECT
+					__import__("ysets").AppendAbsorbed(self, itemAbsorbedVnum, getattr(self, "ysetsExtra", 0), metinSlot[acce.ABSORPTION_SOCKET]) # MT2009_PLUS_SASH_SERPENT_V1: the absorbed serpent piece's random base bonuses at the sash's rate
 					__import__("welem").AppendPower(self, metinSlot[acce.ABSORPTION_SOCKET]) # MT2009_PLUS_WEAPON_ELEMENT_V1: the absorbed weapon's element at the sash's rate
 
 					item.SelectItem(itemVnum)
@@ -2767,6 +2768,7 @@ class ItemToolTip(ToolTip):
 
 					item.SelectItem(itemAbsorbedVnum)
 				# END EFFECT
+				__import__("ysets").AppendAbsorbed(self, itemAbsorbedVnum, __import__("ysets").GetFor(window_type, slotIndex), absChance) # MT2009_PLUS_SASH_SERPENT_V1
 
 			item.SelectItem(itemVnum)
 			## ATTR
@@ -2842,6 +2844,8 @@ class ItemToolTip(ToolTip):
 
 				item.SelectItem(itemAbsorbedVnum)
 			## END EFFECT
+			__import__("ysets").AppendAbsorbed(self, itemAbsorbedVnum, __import__("ysets").GetFor(window_type, slotIndex2), metinSlot[acce.ABSORPTION_SOCKET]) # MT2009_PLUS_SASH_SERPENT_V1: the piece's random base bonuses at the sash's rate
+			item.SelectItem(itemAbsorbedVnum)
 
 			## ATTR
 			item.SelectItem(itemAbsorbedVnum)
