@@ -68,6 +68,16 @@
 // market / from chests, Suplementy used and bought, the SM spent, the average attack value of the 6/7 lines, the top
 // lines).
 //
+// MT2009_PLUS_BOT_BONUS67_FIX_V1 (8 November 2026, "barely does anything"): measured 17:46-20:23 on the test world
+// (both channels, 25 censuses): 3 adds in total, all with one shard + 5 Silne (52 %); no_shard on 107 of 231 looks (ch1)
+// and 133 of 239 (ch2) at 20:02; chests bought (6-24 a census) and opened at once by the chest pass - one shard each
+// or a skill book (26 %), of a random colour (Szary 31 %, Bialy 17 %, Zielony 14 %, Zolty 3 %, Niebieski 2 %) that the
+// slot-ordered plan seldom wanted;
+// the 75+ bots held 64 shards (35 bots) the plan ignored. The fix: the add's piece is chosen by the shards the bag
+// holds (GetPlayerBotBonus67AddTarget), the add goes at once with what is held unless a counter has the band's shard
+// (10 min at most), Silne waited for 8 min at most, the chest comes after 10 min with no counter (was 30) or 20 min of
+// a plan with none of the shard held whatever the ledger says (was never), 5 a batch / 15 a day (was 3 / 6).
+//
 // An implementation fragment: include it once, from playerbot_manager.cpp, right after playerbot_shop_aids.h; the
 // declarations the earlier files ask are in playerbot_types.h.
 
@@ -90,14 +100,17 @@ namespace
 	const int PLAYERBOT_BONUS67_BODY_LEVEL = 61;
 	const int PLAYERBOT_BONUS67_HEAD_LEVEL = 41;	// and the shield
 	const int PLAYERBOT_BONUS67_ADDITIVES_MAX = 5;
-	const int PLAYERBOT_BONUS67_CHEST_DAY = 6;
-	const int PLAYERBOT_BONUS67_CHEST_BATCH = 3;
+	const int PLAYERBOT_BONUS67_CHEST_DAY = 15;		// MT2009_PLUS_BOT_BONUS67_FIX_V1: was 6 (the V3 line's day cap is 20)
+	const int PLAYERBOT_BONUS67_CHEST_BATCH = 5;		// MT2009_PLUS_BOT_BONUS67_FIX_V1: was 3 (the line's hold cap is 10)
 	const int PLAYERBOT_BONUS67_KEEP_MAX = 20;
 	const DWORD PLAYERBOT_BONUS67_LOOK_MIN_MS = 2 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_LOOK_MAX_MS = 4 * 60 * 1000;
-	const DWORD PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS = 20 * 60 * 1000;
-	const DWORD PLAYERBOT_BONUS67_SHARD_WAIT_MS = 45 * 60 * 1000;
-	const DWORD PLAYERBOT_BONUS67_NO_SUPPLY_MS = 30 * 60 * 1000;
+	// MT2009_PLUS_BOT_BONUS67_FIX_V1 (8 November 2026, "always an immediate result"): the waits were 20 / 45 / 30 min,
+	// kept in memory only - every core restart (eight today) started them again, so a bot hardly ever got past them.
+	const DWORD PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS = 8 * 60 * 1000;
+	const DWORD PLAYERBOT_BONUS67_SHARD_WAIT_MS = 10 * 60 * 1000;	// only while a counter holds the band's shard
+	const DWORD PLAYERBOT_BONUS67_NO_SUPPLY_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_BONUS67_NO_SHARD_MS = 20 * 60 * 1000;	// the ledger says "on a counter" but none came: the chest
 	const DWORD PLAYERBOT_BONUS67_WANT_MS = 15 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_CENSUS_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_BONUS67_ADD_STONE = 71051;	// Magiczny Przedmiot - the engine's add, 100 %
@@ -424,33 +437,65 @@ namespace
 
 	// ------------------------------------------------------------------------------------------------ the add's piece
 
-	// Rule 7: the piece the next add goes to - one with a single extra line first (always that one), else the slots'
-	// order. NULL: none.
+	// The kind of Suplementy of the best chance among the held ones (one kind an add, at most five) and that chance.
+	int PickPlayerBotBonus67Additive(LPCHARACTER ch, int shards, int& grade, int& additives)
+	{
+		grade = -1;
+		additives = 0;
+		for (int g = 0; g < 4; ++g)
+		{
+			const DWORD a = PLAYERBOT_SEONHAE_ADDITIVES[g];
+			const int held = std::min((int)ch->CountSpecifyItem(a), PLAYERBOT_BONUS67_ADDITIVES_MAX);
+			if (held > 0 && mt2009_seonhae::ChancePct(shards, mt2009_seonhae::SupportPct(a), held) >
+					mt2009_seonhae::ChancePct(shards, grade >= 0 ? mt2009_seonhae::SupportPct(PLAYERBOT_SEONHAE_ADDITIVES[grade]) : 0, additives))
+			{
+				grade = g;
+				additives = held;
+			}
+		}
+		return mt2009_seonhae::ChancePct(shards, grade >= 0 ? mt2009_seonhae::SupportPct(PLAYERBOT_SEONHAE_ADDITIVES[grade]) : 0,
+				additives);
+	}
+
+	// Rule 7: the piece the next add goes to. MT2009_PLUS_BOT_BONUS67_FIX_V1: the shards the bag already holds count -
+	// the add went to the first slot whatever band its shard was, so a bot with five Szare Odlamki (39070) for its
+	// bracelet waited on Zolte (39073) for its necklace (SzukamMezaPL, 8 Nov). The order now:
+	//   1. a piece with one extra line whose band's shard the bag holds (or a Magiczny Przedmiot is held);
+	//   2. a piece without extra lines whose band's shard the bag holds - the most shards first (held shards are used
+	//      at once, a second one-line piece rather than shards lying in the bag);
+	//   3. a piece with one extra line (its shard is what the market / the chest is asked for);
+	//   4. a piece without extra lines, the slots' order.
+	// NULL: none.
 	LPITEM GetPlayerBotBonus67AddTarget(LPCHARACTER ch, int element, BYTE* wearOut)
 	{
-		LPITEM firstEmpty = NULL;
-		BYTE emptyWear = 0;
+		const bool magic = ch->CountSpecifyItem(PLAYERBOT_BONUS67_ADD_STONE) > 0;
+		LPITEM pick[4] = { NULL, NULL, NULL, NULL };
+		BYTE pickWear[4] = { 0, 0, 0, 0 };
+		int pickHeld[4] = { 0, 0, 0, 0 };
 		for (size_t i = 0; i < PLAYERBOT_BONUS67_SLOT_COUNT; ++i)
 		{
 			const BYTE wear = PLAYERBOT_BONUS67_SLOTS[i].bWear;
 			LPITEM item = ch->GetWear(wear);
 			if (!item || GetPlayerBotBonus67Scope(ch, item, element) == B67_SCOPE_NONE || !CanPlayerBotBonus67Add(item))
 				continue;
-			if (item->GetRareAttrCount() == 1)
+			const int held = magic ? (int)mt2009_seonhae::MATERIAL_MAX :
+					std::min((int)ch->CountSpecifyItem(mt2009_seonhae::MaterialVnum(item)), (int)mt2009_seonhae::MATERIAL_MAX);
+			const int rank = (held > 0 ? 0 : 2) + (item->GetRareAttrCount() == 1 ? 0 : 1);
+			if (!pick[rank] || held > pickHeld[rank])
 			{
-				if (wearOut)
-					*wearOut = wear;
-				return item;
-			}
-			if (!firstEmpty)
-			{
-				firstEmpty = item;
-				emptyWear = wear;
+				pick[rank] = item;
+				pickWear[rank] = wear;
+				pickHeld[rank] = held;
 			}
 		}
-		if (firstEmpty && wearOut)
-			*wearOut = emptyWear;
-		return firstEmpty;
+		for (int r = 0; r < 4; ++r)
+			if (pick[r])
+			{
+				if (wearOut)
+					*wearOut = pickWear[r];
+				return pick[r];
+			}
+		return NULL;
 	}
 
 	// The shards a bag keeps: ten of each band an open add of a worn piece of the scope takes (two pieces of one band:
@@ -570,10 +615,13 @@ namespace
 				goals[n++] = g;
 			}
 		}
-		// the shard chest, the last resort (rule 4): no counter has had the shard for a while and the bag holds too few
+		// the shard chest, the last resort (rule 4): no counter has had the shard for PLAYERBOT_BONUS67_NO_SUPPLY_MS, or
+		// (MT2009_PLUS_BOT_BONUS67_FIX_V1) the ledger says one has but the bag still holds none of it after
+		// PLAYERBOT_BONUS67_NO_SHARD_MS - a counter the bot never reaches or cannot pay kept the chest away for good
 		if (planned && n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotBonus67Flag(PLAYERBOT_BONUS67_CHEST_OFF_FLAG) == 0 &&
-				s->second.dwShardWant && s->second.iShardNeed > 0 && s->second.dwNoSupplySince != 0 &&
-				get_dword_time() - s->second.dwNoSupplySince >= PLAYERBOT_BONUS67_NO_SUPPLY_MS &&
+				s->second.dwShardWant && s->second.iShardNeed > 0 &&
+				((s->second.dwNoSupplySince != 0 && get_dword_time() - s->second.dwNoSupplySince >= PLAYERBOT_BONUS67_NO_SUPPLY_MS) ||
+				 (ch->CountSpecifyItem(s->second.dwShardWant) == 0 && get_dword_time() - s->second.dwPlanSince >= PLAYERBOT_BONUS67_NO_SHARD_MS)) &&
 				ch->CountSpecifyItem(PLAYERBOT_BONUS67_SHARD_CHEST) == 0)
 		{
 			const int left = GetPlayerBotBonus67ChestsLeft(ch);
@@ -639,20 +687,7 @@ namespace
 		{
 			if (shards < 1)
 				return false;
-			// the kind of the best chance among the held ones (one kind an add, at most five)
-			for (int g = 0; g < 4; ++g)
-			{
-				const DWORD a = PLAYERBOT_SEONHAE_ADDITIVES[g];
-				const int held = std::min((int)ch->CountSpecifyItem(a), PLAYERBOT_BONUS67_ADDITIVES_MAX);
-				if (held > 0 && mt2009_seonhae::ChancePct(shards, mt2009_seonhae::SupportPct(a), held) >
-						mt2009_seonhae::ChancePct(shards, grade >= 0 ? mt2009_seonhae::SupportPct(PLAYERBOT_SEONHAE_ADDITIVES[grade]) : 0, additives))
-				{
-					grade = g;
-					additives = held;
-				}
-			}
-			pct = mt2009_seonhae::ChancePct(shards, grade >= 0 ? mt2009_seonhae::SupportPct(PLAYERBOT_SEONHAE_ADDITIVES[grade]) : 0,
-					additives);
+			pct = PickPlayerBotBonus67Additive(ch, shards, grade, additives);
 			if (pct < PLAYERBOT_BONUS67_MIN_PCT)
 				return false;
 		}
@@ -938,14 +973,20 @@ namespace
 						"on_market=%d", ch->GetPlayerID(), ch->GetName(), target->GetVnum(), shard, onMarket ? 1 : 0);
 				return MixPlayerBotBonus67(ch, state, dwNow);
 			}
-			// fewer than ten: wait while a counter may still sell the rest, at most PLAYERBOT_BONUS67_SHARD_WAIT_MS
-			if (held < (int)mt2009_seonhae::MATERIAL_MAX && dwNow - s.dwPlanSince < PLAYERBOT_BONUS67_SHARD_WAIT_MS)
+			// fewer than ten: wait only while a counter holds the band's shard (the trip may still bring the rest), at
+			// most PLAYERBOT_BONUS67_SHARD_WAIT_MS (MT2009_PLUS_BOT_BONUS67_FIX_V1: was 45 min whatever the market had -
+			// with no counter selling it the bot adds at once with what it holds)
+			int grade = -1, additives = 0;
+			const int pctNow = PickPlayerBotBonus67Additive(ch, std::min(held, (int)mt2009_seonhae::MATERIAL_MAX), grade, additives);
+			if (held < (int)mt2009_seonhae::MATERIAL_MAX && onMarket && dwNow - s.dwPlanSince < PLAYERBOT_BONUS67_SHARD_WAIT_MS)
 			{
 				++s_kPlayerBotBonus67Stats.addsWaitShard;
 				return MixPlayerBotBonus67(ch, state, dwNow);
 			}
-			// the Silne the coins buy today: wait for the V3 goal, at most PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS
-			if (GetPlayerBotBonus67AdditiveBuy(ch, state) > 0 && dwNow - s.dwPlanSince < PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS)
+			// the Silne the coins buy today: wait for the V3 goal, at most PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS - or past it
+			// while the chance is still under PLAYERBOT_BONUS67_MIN_PCT (an add then would only be refused)
+			if (GetPlayerBotBonus67AdditiveBuy(ch, state) > 0 &&
+					(dwNow - s.dwPlanSince < PLAYERBOT_BONUS67_ADDITIVE_WAIT_MS || pctNow < PLAYERBOT_BONUS67_MIN_PCT))
 			{
 				++s_kPlayerBotBonus67Stats.addsWaitAdditive;
 				return MixPlayerBotBonus67(ch, state, dwNow);
