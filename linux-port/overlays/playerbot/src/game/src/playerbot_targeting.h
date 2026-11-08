@@ -151,7 +151,7 @@ namespace
 						 !IsPlayerBotMetinWorthFighting(m_owner, candidate) &&
 						 (int)candidate->GetLevel() > (int)m_owner->GetLevel() + PLAYERBOT_STONE_JOIN_LEVEL_DELTA) ||
 						(candidate->IsMonster() &&
-							 candidate->GetLevel() > m_owner->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA &&
+							 candidate->GetLevel() > m_owner->GetLevel() + GetPlayerBotTargetLevelDelta(m_owner) &&	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 							 !CanPlayerBotPartyChallenge(m_owner, candidate, m_dwNow, NULL)))
 					return;
 
@@ -881,7 +881,7 @@ namespace
 			return NULL;
 		if (target->IsStone())
 			return IsPlayerBotMetinWorthFighting(ch, target) ? target : NULL;
-		if ((int)target->GetLevel() > (int)ch->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA &&
+		if ((int)target->GetLevel() > (int)ch->GetLevel() + GetPlayerBotTargetLevelDelta(ch) &&	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 				target->GetVictim() != ch && !CanPlayerBotPartyChallenge(ch, target, dwNow, NULL))
 			return NULL;
 		return target;
@@ -963,7 +963,7 @@ namespace
 				}
 				return;
 			}
-			if ((int)c->GetLevel() > (int)self->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA &&
+			if ((int)c->GetLevel() > (int)self->GetLevel() + GetPlayerBotTargetLevelDelta(self) &&	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 					!CanPlayerBotPartyChallenge(self, c, dwNow, NULL))
 				return;
 			if (danger && victim == person)
@@ -2259,7 +2259,7 @@ namespace
 		const long lAvoidY = bRecentDeath ? state.lDeathY : 0;
 		const int avoidRadius = bRecentDeath ? 800 : 0;
 
-		int maxLevel = ch->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA;
+		int maxLevel = ch->GetLevel() + GetPlayerBotTargetLevelDelta(ch);	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 		int partyChallengeMaxLevel = 0;
 		TPlayerBotPartyStrength partyStrength;
 		if (!bRecentDeath && ch->GetParty() && ch->GetParty()->GetLeaderCharacter() == ch &&
@@ -2478,7 +2478,7 @@ namespace
 
 				if (candidate->GetMapIndex() != m_owner->GetMapIndex() ||
 						IsPlayerBotSafeZone(candidate->GetMapIndex(), candidate->GetX(), candidate->GetY()) ||
-						(candidate->IsMonster() && candidate->GetLevel() > m_owner->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA))
+						(candidate->IsMonster() && candidate->GetLevel() > m_owner->GetLevel() + GetPlayerBotTargetLevelDelta(m_owner)))
 					return false;
 
 				const int distance = DISTANCE_APPROX(

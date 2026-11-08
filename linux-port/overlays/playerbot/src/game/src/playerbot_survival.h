@@ -142,6 +142,7 @@ namespace
 		if (!ch || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return;
 		NotePlayerBotStrongMapHardship(ch, 1); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
+		NotePlayerBotElementProgressRetreat(ch, dwNow); // MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (the retreat's HP retreats)
 		// MT2009_PLUS_BOT_LOOT_PACE_V1: its drops here, to come back for.
 		NotePlayerBotLootLeftBehind(ch, state, dwNow);
 		state.bTacticalRetreat = true;
@@ -455,6 +456,7 @@ namespace
 			++state.bDeathCount;
 			NotePlayerBotStrongMapHardship(ch, 0); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 			NotePlayerBotSpider3Death(ch, dwNow); // MT2009_PLUS_SPIDER3_BOTS_V1 (the V2 record, V3's demotion)
+			NotePlayerBotElementProgressDeath(ch, dwNow); // MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (the retreat's deaths)
 			// A companion's fight goes on with its owner (playerbot_sidekick.h).
 			NotePlayerBotSidekickDown(ch, dwNow);
 			// A Conqueror dying to monsters too often has outgrown its gear

@@ -248,7 +248,8 @@ namespace
 			return false;
 
 		const BYTE level = ch->GetLevel();
-		const int hubShift = GetPlayerBotHubLevelShift(ch->GetMapIndex());
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: an early bot on a progression map reads its hubs lower by its gap.
+		const int hubShift = std::max(GetPlayerBotHubLevelShift(ch->GetMapIndex()), GetPlayerBotElementProgressHubShift(ch));
 		LPPARTY party = ch->GetParty();
 		const bool bLeadsParty = party && party->GetLeaderCharacter() == ch &&
 				(int)party->GetMemberCount() >= PLAYERBOT_PARTY_CHALLENGE_MIN_MEMBERS;
@@ -337,7 +338,7 @@ namespace
 			// looked at it and is no place for a bot on its own; a leader with a
 			// party judges by the party's reach, which the challenge rules apply.
 			if (samples >= PLAYERBOT_SPOT_MIN_SAMPLES && !bLeadsParty &&
-					averageLevel > (int)level + PLAYERBOT_MAX_TARGET_LEVEL_DELTA)
+					averageLevel > (int)level + GetPlayerBotTargetLevelDelta(ch))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 				worth = 0;
 			const int others = CountPlayerBotsNear(ch, crowd, hub.x, hub.y,
 					PLAYERBOT_SPOT_CROWD_RADIUS, hub.bNeedsParty);
