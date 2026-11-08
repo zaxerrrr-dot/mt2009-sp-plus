@@ -9,6 +9,14 @@ cache/yohara/mikstury-analiza.md §C / §5):
 - the same value still running at least as long as the new one would is refused too ("Ten efekt już działa i
   potrwa dłużej niż nowy.") - the item would be spent for nothing.
 
+**MT2009_PLUS_MIKSTURY_V2 (the owner, 8 November 2026):** a potion, dew or juice used again while its effect runs was
+spent and its time refreshed - no more: the same value running is refused whatever its time left ("Ten efekt już
+działa - użyj kolejnego, gdy minie, albo silniejszego."), only a stronger one replaces it. One edit on V1's rule
+(`rule2`, the last of edits.json), the quest side in `m2_mikstury_limity.lua` (`may_refresh`, the same; a potion
+without a point not again while its affect runs), the bots in `playerbot_consumables.h` (`IsPlayerBotBuffItemCovered`:
+the booster pass no longer tries an item whose bonus runs as strong - it spent one a minute under V1). HP/SP potions
+(`USE_POTION`, `USE_POTION_NODELAY`) never go through the rule.
+
 The (type, point) identity stays unique: the server and the client's affect bar key an affect by it, so two copies
 of one bonus never add up (one Czerwona Rosa at a time; the second refreshes or upgrades). The same bonus from
 *different* families (Woda Dok 516 + Czerwona Rosa 531 + Dłoń Krytyka 510 + a herbal potion 352) are separate

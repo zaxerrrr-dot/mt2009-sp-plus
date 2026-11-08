@@ -52,5 +52,11 @@
   "marker": "MT2009_PLUS_MIKSTURY_V1 (blend)",
   "old": "\t\t\t\tif (FindAffect(affect_type, apply_type))\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tif (FindAffect(AFFECT_EXP_BONUS_EURO_FREE, POINT_RESIST_MAGIC))\n\t\t\t\t\t{\n\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This effect is already activated.\"));\n\t\t\t\t\t}\n\t\t\t\t\telse\n\t\t\t\t\t{\n\t\t\t\t\t\tAddAffect(affect_type, apply_type, apply_value, 0, apply_duration, 0, false);\n\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t}\n\t\t\t\t}\n",
   "new": "\t\t\t\t// MT2009_PLUS_MIKSTURY_V1 (blend): the same point refreshes or upgrades; Woda Mong no longer blocks the dews and elixirs\n\t\t\t\tif (MiksturyMayRefresh(this, affect_type, apply_type, apply_value, apply_duration))\n\t\t\t\t{\n\t\t\t\t\tAddAffect(affect_type, apply_type, apply_value, 0, apply_duration, 0, true, true, item->GetVnum());\n\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t}\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_MIKSTURY_V2 (rule2)",
+  "old": "\tif (pkAff->lApplyValue == lValue && pkAff->lDuration >= lDuration)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ten efekt ju\\277 dzia\\263a i potrwa d\\263u\\277ej ni\\277 nowy.\");\n\t\treturn false;\n\t}\n",
+  "new": "\t// MT2009_PLUS_MIKSTURY_V2 (rule2): the same value running is refused whatever its time left (the owner, 8 November 2026) -\n\t// no refresh by a second potion; only a stronger one replaces it (the caller adds with override + per point).\n\t(void)lDuration;\n\tif (pkAff->lApplyValue == lValue)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ten efekt ju\\277 dzia\\263a - u\\277yj kolejnego, gdy minie, albo silniejszego.\");\n\t\treturn false;\n\t}\n"
  }
 ]
