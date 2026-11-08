@@ -847,11 +847,29 @@ namespace {
                     if (badPrice < 0 && (table[n].price < 1 || table[n].price > SHOP_PRICE_MAX))
                         badPrice = n;
                 }
+                // MT2009_PLUS_BOT_SHOP_REFUSE_PROBE_V2: ikashop's own refusals (CShopManager::OpenOfflineShop) - the
+                // first probe of 19:03-19:15 found every line acceptable in all 29 refusals.
+                struct FProbeNearestStand {
+                    LPCHARACTER me; int best;
+                    explicit FProbeNearestStand(LPCHARACTER c) : me(c), best(-1) {}
+                    void operator()(LPENTITY ent) {
+                        if (!ent->IsType(ENTITY_NEWSHOPS)) return;
+                        const int d = me->DistanceTo(ent);
+                        if (best < 0 || d < best) best = d;
+                    }
+                } nearest(ch);
+                if (ch->GetSectree()) ch->GetSectree()->ForEachAround(nearest);
+                quest::PC* qpc = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
                 sys_log(0, "PLAYERBOT_OFFLINE: refuse probe pid=%u name=%s lines=%u bad_line=%d bad_vnum=%u bad_slot=%d bad_price_line=%d "
-                    "bundle=%d can_handle=%d exchange=%d time_index=1 map=%ld",
+                    "bundle=%d can_handle=%d ika_handle=%d exchange=%d safebox=%d npc_shop=%d acce=%d quest=%d openclose_s=%d "
+                    "nearest_stand=%d busy_manage=%d map=%ld",
                     ch->GetPlayerID(), ch->GetName(), unsigned(count), badLine, badVnum, badSlot, badPrice,
-                    (int)ch->CountSpecifyItem(50200), ch->CanHandleItem() ? 1 : 0, ch->GetExchange() ? 1 : 0,
-                    ch->GetMapIndex());
+                    (int)ch->CountSpecifyItem(50200), ch->CanHandleItem() ? 1 : 0,
+                    ch->CanHandleItem(false, false, BUSY_CAN_HANDLE_ITEM_EXCLUDE | BUSY_SHOP_MANAGE | BUSY_SHOP) ? 1 : 0,
+                    ch->GetExchange() ? 1 : 0, ch->GetSafebox() ? 1 : 0, ch->GetShop() ? 1 : 0,
+                    ch->IsAcceOpened() ? 1 : 0, (qpc && qpc->IsRunning()) ? 1 : 0,
+                    (int)((thecore_pulse() - ch->GetIkarusShopOpenClosedTime()) / std::max(1, passes_per_sec)),
+                    nearest.best, ch->IsBusy(BUSY_SHOP_MANAGE) ? 1 : 0, ch->GetMapIndex());
             }
 #if defined(ENABLE_IKASHOP_RENEWAL)
             // MT2009_PLUS_BOT_CH2_STAND_END_ON_FAIL_V1: a bot driven here for its stand ends the drive on a refusal,
