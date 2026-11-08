@@ -1,7 +1,8 @@
 -- MT2009_PLUS_NAJEMNICY_V1: Najemnicy - sta³a dru¿yna botów gracza (w³aœciciel, 8 listopada 2026,
 -- /opt/metin2/cache/yohara/najemnicy-plan.md). Etap 1: list "Najemnicy" (od 80 poziomu, w panelu misji - dostêpny
--- wszêdzie, bez NPC) jest ca³ym interfejsem: tworzenie, lista, wezwanie i odwo³anie, skarbiec, ekwipunek (daj jedn¹
--- rzecz / zabierz wszystko), gildia i zwolnienie najemnika.
+-- wszêdzie, bez NPC) jest ca³ym interfejsem: tworzenie, lista, wezwanie i odwo³anie, skarbiec, ekwipunek (etap 2:
+-- okno ekwipunku najemnika, "najemnicy okno <nr>"; zostaje te¿ "zabierz wszystko" i "daj" po numerze pola), gildia
+-- i zwolnienie najemnika.
 --
 -- Ca³¹ pracê robi komenda serwera /najemnicy (playerbot_najemnicy.h, server-patches/najemnicy): przed menu
 -- "najemnicy sync" ustawia flagi tego questa (unlocked, slots, tasks_view, count, summoned - bit na miejsce, price_h, off),
@@ -282,13 +283,19 @@ quest najemnicy begin
 				if slot == 0 then
 					return
 				end
+				-- MT2009_PLUS_NAJEMNICY_V2: okno ekwipunku najemnika (to samo okno, co u dawnego Towarzysza): komenda
+				-- "najemnicy okno <nr>" otwiera je w kliencie; to samo daje klik na najemnika (przycisk "Ekwipunek").
 				say_title("Ekwipunek najemnika")
-				say("Najemnik nosi w³asne rzeczy. Okno ekwipunku")
-				say("przyjdzie w nastêpnej aktualizacji. Najemnik")
-				say("musi byæ wezwany. Jego drop i nagrody trafiaj¹ do")
-				say("jego plecaka - zabierzesz je tutaj.")
-				local e = select("Daj mu rzecz do za³o¿enia", "Zabierz wszystko", "Wstecz")
+				say("Najemnik musi byæ wezwany i staæ obok ciebie.")
+				say("W oknie przeci¹gasz swoje rzeczy na jego sloty")
+				say("i do jego plecaka (mikstury, rosy, kryszta³y")
+				say("energii, rybki - u¿ywa ich sam). Jego drop")
+				say("i nagrody lochów trafiaj¹ do jego plecaka.")
+				say("Okno otworzysz te¿, klikaj¹c najemnika.")
+				local e = select("Otwórz okno ekwipunku", "Zabierz wszystko", "Daj rzecz (numer pola)", "Wstecz")
 				if e == 1 then
+					command("najemnicy okno " .. slot)
+				elseif e == 3 then
 					say_title("Daj rzecz")
 					say("Podaj numer pola w swoim ekwipunku:")
 					say("1 to lewy górny róg pierwszej strony, dalej")

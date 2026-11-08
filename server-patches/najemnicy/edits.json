@@ -22,5 +22,35 @@
   "marker": "MT2009_PLUS_NAJEMNICY_V1 (no item drop)",
   "old": "void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)\n{\n\tif (GetMyShop())\n\t\treturn;\n",
   "new": "void CHARACTER::ItemDropPenalty(LPCHARACTER pkKiller)\n{\n\tif (GetMyShop())\n\t\treturn;\n\n\t// MT2009_PLUS_NAJEMNICY_V1 (no item drop): a player's mercenary loses nothing at its death - its gear is its\n\t// owner's (playerbot_najemnicy.h).\n\t{ bool NajemnikNoItemDrop(LPCHARACTER); if (NajemnikNoItemDrop(this)) return; }\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V2 (people loot declare)",
+  "old": "\nbool CHARACTER::PickupItem(DWORD dwVID)\n{\n",
+  "new": "\n// MT2009_PLUS_NAJEMNICY_V2 (people loot declare): a player's mercenary takes its own share of the people's boss loot\n// (playerbot_najemnicy.h, NajemnikMayTakePeopleLoot).\nbool NajemnikMayTakePeopleLoot(LPCHARACTER ch);\n\nbool CHARACTER::PickupItem(DWORD dwVID)\n{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V2 (people loot)",
+  "old": "\tif (GetDesc() && GetDesc()->IsBot() && Mt2009PlusIsPeopleLoot(item))\n\t\treturn false;\n",
+  "new": "\t// MT2009_PLUS_NAJEMNICY_V2 (people loot): except a player's mercenary - one of the people of its owner's run, whose\n\t// share goes into its bag and from there to its owner (the quests' loot_people count it: pc.is_najemnik).\n\tif (GetDesc() && GetDesc()->IsBot() && Mt2009PlusIsPeopleLoot(item) && !NajemnikMayTakePeopleLoot(this))\n\t\treturn false;\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V2 (pc declare)",
+  "old": "// #define ENABLE_LOCALECHECK_CHANGENAME\n",
+  "new": "// MT2009_PLUS_NAJEMNICY_V2 (pc declare): pc.is_najemnik (playerbot_najemnicy.h) - at file scope, outside namespace quest.\nbool IsNajemnikCharacter(LPCHARACTER ch);\n\n// #define ENABLE_LOCALECHECK_CHANGENAME\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V2 (pc function)",
+  "old": "\tALUA(pc_is_playerbot)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushboolean(L, ch && ch->GetDesc() && ch->GetDesc()->IsBot());\n\t\treturn 1;\n\t}\n",
+  "new": "\tALUA(pc_is_playerbot)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushboolean(L, ch && ch->GetDesc() && ch->GetDesc()->IsBot());\n\t\treturn 1;\n\t}\n\n\t// MT2009_PLUS_NAJEMNICY_V2 (pc function): whether the quest's character is a player's summoned mercenary (a playerbot\n\t// too) - the dungeons count it among the people for their rewards and loot, which go into its bag.\n\tALUA(pc_is_najemnik)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushboolean(L, ch && ::IsNajemnikCharacter(ch));\n\t\treturn 1;\n\t}\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_NAJEMNICY_V2 (pc table)",
+  "old": "\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n",
+  "new": "\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n\t\t\t{ \"is_najemnik\",\t\tpc_is_najemnik\t}, // MT2009_PLUS_NAJEMNICY_V2 (pc table)\n"
  }
 ]

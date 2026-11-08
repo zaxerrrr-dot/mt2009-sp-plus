@@ -198,7 +198,9 @@ quest razador_dungeon begin
 			local people = {}
 			for i, pid in next, pids, nil do
 				q.begin_other_pc_block(pid)
-				if not pc.is_playerbot() and pc.get_map_index() == here then
+				-- MT2009_PLUS_NAJEMNICY_V2: a player's mercenary (pc.is_najemnik) counts as one of the people - its share goes into
+				-- its bag, and its owner takes it from the mercenary's equipment window.
+				if (not pc.is_playerbot() or (pc.is_najemnik ~= nil and pc.is_najemnik())) and pc.get_map_index() == here then
 					table.insert(people, pid)
 				end
 				q.end_other_pc_block()

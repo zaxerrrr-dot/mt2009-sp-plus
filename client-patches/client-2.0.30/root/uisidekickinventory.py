@@ -100,6 +100,22 @@
 # (a stone into its Alchemy, at the Alchemy's odds as the player's own) and a
 # kept stone back to the player, a double click puts a kept stone on.
 #
+# MT2009_PLUS_NAJEMNICY_V2: the same windows for a player's mercenary
+# ("Najemnicy", playerbot_najemnicy.h on the server) - its bag, its worn gear
+# (with the belt, the talisman and the glove) and its costumes, one mercenary
+# at a time. The window is opened from the target board's "Ekwipunek" on a
+# summoned mercenary of the player's (uitarget.py; the server says which
+# characters those are: "NajemnikVids <slot>:<vid>:<hex name>,..." or "-")
+# and from the Najemnicy letter ("/najemnicy okno <nr>", answered by
+# "NajemnikEqOpen <slot> <hex name>"). Its orders are the companion's own,
+# sent as "/najemnicy eq <slot> <order>" (SendOrder), and the answers are the
+# companion's protocol above - after "NajemnikEqWho <slot> <hex name> <level>
+# <race>", which names the window. No marks, no Alchemy, no yang given (it buys
+# nothing): its yang is taken ("Wez"), and "Zabierz wszystko" takes
+# everything it carries and wears. While a mercenary's window is open, the
+# player's right click on a bag item gives it to the mercenary and a drag from
+# its window to the player's bag takes it back, as with the companion.
+
 # Python 2.7 as the client has it; the Polish letters are CP1250 escapes.
 
 import app
@@ -179,6 +195,12 @@ WEAR_UNIQUE1 = 7
 WEAR_UNIQUE2 = 8
 WEAR_ARROW = 9
 WEAR_SHIELD = 10
+# MT2009_PLUS_NAJEMNICY_V2: the belt, the talisman and the glove (the server's
+# WEAR_BELT, WEAR_PENDANT, WEAR_GLOVE), where the player's own window has them
+# (uiscript/inventorywindow.py).
+WEAR_BELT = 23
+WEAR_PENDANT = 25
+WEAR_GLOVE = 26
 
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the costumes, the server's WEAR_COSTUME_*.
 WEAR_COSTUME_BODY = 19
@@ -188,8 +210,8 @@ WEAR_COSTUME_ACCE = 22
 WEAR_COSTUME_WEAPON = 24
 
 # The player's own equipment slots (uiscript/inventorywindow.py, "EquipmentSlot"
-# on equipment_base.sub): (wear, x, y, width, height). The costumes and the belt
-# may come from the server as well; this window does not draw them.
+# on equipment_base.sub): (wear, x, y, width, height). The costumes come from
+# the server as well; the costume window draws them.
 EQUIPMENT_LAYOUT = (
 	(WEAR_BODY, 39, 37, 32, 64),
 	(WEAR_HEAD, 39, 2, 32, 32),
@@ -202,7 +224,13 @@ EQUIPMENT_LAYOUT = (
 	(WEAR_UNIQUE2, 75, 113, 32, 32),
 	(WEAR_ARROW, 114, 1, 32, 32),
 	(WEAR_SHIELD, 75, 35, 32, 32),
+	# MT2009_PLUS_NAJEMNICY_V2: drawn on a slot frame of their own, as the
+	# player's window draws them (the old picture has no place for them).
+	(WEAR_BELT, 39, 106, 32, 32),
+	(WEAR_PENDANT, 2, 147, 32, 32),
+	(WEAR_GLOVE, 114, 117, 32, 32),
 )
+FRAMED_WEARS = (WEAR_BELT, WEAR_PENDANT, WEAR_GLOVE)
 EQUIPMENT_BASE_IMAGE = 'd:/ymir work/ui/game/windows/equipment_base.sub'
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the player's costume window
 # (uiscript/costumewindow.py): its picture, 113 x 176, and its slots on it.
@@ -318,6 +346,19 @@ TEXT_DS_DECK = 'Zestaw %d'
 TEXT_DS_PAGE = '%d / %d'
 TEXT_COSTUME_HINT = 'Prawy klik: zdejmij. Do swojej torby: we\x9f.'
 TEXT_DS_HINT = 'Przeci\xb9gnij kamie\xf1 ze swojej alchemii na zestaw.'
+# MT2009_PLUS_NAJEMNICY_V2
+TEXT_NAJ_EQ_TITLE = 'Ekwipunek najemnika'
+TEXT_NAJ_EQ_TITLE_NAMED = 'Ekwipunek: %s'
+TEXT_NAJ_COSTUME_TITLE = 'Kostiumy najemnika'
+TEXT_NAJ_COSTUMES = 'Kostiumy'
+TEXT_NAJ_TAKE_ALL = 'Zabierz wszystko'
+TEXT_NAJ_NONE = ((
+	'Nie masz najemnika na tym miejscu.',
+	'Ten najemnik nie jest teraz wezwany.',
+	'Najemnicy s\xb9 tu wy\xb3\xb9czeni.',
+	'Podejd\x9f bli\xbfej do najemnika (do 50 m).',
+))
+TEXT_NAJ_HINT = 'Przeci\xb9gnij rzecz ze swojego ekwipunku.'
 TEXT_DS_OFF = 'Alchemia jest wy\xb3\xb9czona na tym serwerze.'
 TEXT_TIP_DS_UNEQUIP = 'Prawy klik: zdejmij (jak u ciebie - mo\xbfe p\xeakn\xb9\xe6)'
 TEXT_TIP_DS_TAKE = 'Prawy klik: we\x9f do swojej alchemii'
@@ -713,7 +754,14 @@ _skills = SkillModel()
 _state = {'eqWindow': None, 'icon': 0, 'lastOrigin': None,
 	# MT2009_PLUS_SIDEKICK_PANELS_V1: the two panels, the one an answer is
 	# for, and the one poll of them all.
-	'costumeWindow': None, 'alchemyWindow': None, 'asker': None, 'nextPoll': 0.0}
+	'costumeWindow': None, 'alchemyWindow': None, 'asker': None, 'nextPoll': 0.0,
+	# MT2009_PLUS_NAJEMNICY_V2: the mercenary's two windows.
+	'najEqWindow': None, 'najCostumeWindow': None}
+# MT2009_PLUS_NAJEMNICY_V2: whose gear the windows show - 0 the companion's,
+# else the slot of the player's mercenary - and the player's summoned
+# mercenaries the server named (VID -> (slot, name)).
+_target = {'slot': 0, 'name': ''}
+_najemnicy = {}
 
 
 def GetSkillModel():
@@ -808,7 +856,24 @@ def IsCtrlPressed():
 
 def SendOrder(origin, text):
 	_state['lastOrigin'] = origin
-	uisidekick.SendCommand(text)
+	uisidekick.SendCommand(_TargetedText(text))
+
+
+def _TargetedText(text):
+	"""MT2009_PLUS_NAJEMNICY_V2: an order of the bag window as the gear shown
+	takes it - the companion's own words, or "/najemnicy eq <slot> ..." for a
+	mercenary's."""
+	slot = _target['slot']
+	if slot <= 0 or not text.startswith('eq'):
+		return text
+	rest = text[2:].strip()
+	if rest:
+		return '/najemnicy eq %d %s' % (slot, rest)
+	return '/najemnicy eq %d' % slot
+
+
+def PollText():
+	return _TargetedText('eq')
 
 
 def DropIntoPlayerBag(attachedType, attachedPos, cell):
@@ -1022,6 +1087,11 @@ class EquipmentWindow(_Window):
 		# for those lines: the server's answers run to some eighty characters.
 		y = 32
 		self.equipmentBase = self._Image(self, (self.WIDTH - EQUIPMENT_BASE_WIDTH) // 2, y, EQUIPMENT_BASE_IMAGE)
+		# MT2009_PLUS_NAJEMNICY_V2: the frames of the belt, the talisman and the
+		# glove, under the slots (uiscript/inventorywindow.py's own).
+		for wear, x, slotY, width, height in EQUIPMENT_LAYOUT:
+			if wear in FRAMED_WEARS:
+				self._Image(self.equipmentBase, 3 + x, 3 + slotY, SLOT_BASE_IMAGE)
 		equip = ui.SlotWindow()
 		equip.SetParent(self.equipmentBase)
 		equip.SetPosition(3, 3)
@@ -1083,6 +1153,7 @@ class EquipmentWindow(_Window):
 		self.giveYangButton = self._Btn(self, 'small', self.WIDTH - 98, y - 2, TEXT_GIVE_YANG, self.OnGiveYang)
 		self.takeYangButton = self._Btn(self, 'small', self.WIDTH - 52, y - 2, TEXT_TAKE_YANG, self.OnTakeYang)
 		y += 20
+		y = self.BuildExtraRow(y)	# MT2009_PLUS_NAJEMNICY_V2
 		self._StatusLines(y)
 
 		tooltip = uiToolTip.ItemToolTip()
@@ -1092,6 +1163,11 @@ class EquipmentWindow(_Window):
 			tooltip.SetCannotUseItemForceSetDisableColor(False)
 		tooltip.HideToolTip()
 		self.tooltip = tooltip
+
+	def BuildExtraRow(self, y):
+		"""MT2009_PLUS_NAJEMNICY_V2: a row of buttons over the status lines (the
+		mercenary's window); the companion's has none."""
+		return y
 
 	# ---------------------------------------------------------- positions
 
@@ -1382,7 +1458,7 @@ class EquipmentWindow(_Window):
 		now = clientclock.Now()
 		# Nothing changed, nothing comes back: the poll does not wait for an answer.
 		# MT2009_PLUS_SIDEKICK_PANELS_V1: one poll for every window of the gear.
-		if now >= _state['nextPoll'] and uisidekick.TryPoll('eq'):
+		if now >= _state['nextPoll'] and uisidekick.TryPoll(PollText()):
 			_state['nextPoll'] = now + EQ_POLL_INTERVAL
 
 	def Open(self, anchor=None):
@@ -1613,6 +1689,77 @@ class AlchemyWindow(CostumeWindow):
 		CostumeWindow.DropOn(self, pos)
 
 
+# ------------------------------------------- MT2009_PLUS_NAJEMNICY_V2
+
+def NajemnikIdleText(model):
+	"""IdleText in the mercenary's words (SidekickEqNone 1 <reason>: 1 not
+	summoned, 2 switched off, 3 too far)."""
+	if model.state == STATE_NONE:
+		reason = model.reason if 0 <= model.reason < len(TEXT_NAJ_NONE) else 1
+		return TEXT_NAJ_NONE[reason], COLOR_NORMAL
+	return IdleText(model)
+
+
+class NajemnikEquipmentWindow(EquipmentWindow):
+	"""A player's mercenary's bag and worn gear: the companion's bag window
+	with "Kostiumy" where its "Odepnij" stood, no "Daj" for yang (the
+	mercenary buys nothing) and a row with "Zabierz wszystko"."""
+
+	HEIGHT = 614
+	TITLE = TEXT_NAJ_EQ_TITLE
+	KEY = 'najEqWindow'
+
+	def Build(self):
+		EquipmentWindow.Build(self)
+		self.unpinButton.Hide()
+		self.giveYangButton.Hide()
+		self.costumesButton = self._Btn(self.equipmentBase, 'middle', EQUIPMENT_BASE_WIDTH - 63,
+			EQUIPMENT_BASE_HEIGHT - 23, TEXT_NAJ_COSTUMES, self.OnCostumes)
+
+	def BuildExtraRow(self, y):
+		width = uisidekick.BUTTON_WIDTHS.get('xlarge', 180)
+		self.takeAllButton = self._Btn(self, 'xlarge', (self.WIDTH - width) // 2, y, TEXT_NAJ_TAKE_ALL, self.OnTakeAll)
+		return y + 24
+
+	def OnCostumes(self):
+		_ToggleWindow('najCostumeWindow', self)
+
+	def OnTakeAll(self):
+		if IsSidekickAttached():
+			Deattach()
+		self.Order('eq wszystko')
+
+	def RefreshIdleStatus(self):
+		text, color = NajemnikIdleText(_equipment)
+		if _equipment.state == STATE_OK and not text:
+			text = TEXT_NAJ_HINT
+		self.SetIdleStatus(text, color)
+
+	def Close(self):
+		EquipmentWindow.Close(self)
+		window = _state['najCostumeWindow']
+		if window is not None and window.IsShow():
+			window.Close()
+
+
+class NajemnikCostumeWindow(CostumeWindow):
+	"""The mercenary's costumes, the sash and the mount seal (the companion's
+	costume panel, without "Odepnij")."""
+
+	TITLE = TEXT_NAJ_COSTUME_TITLE
+	KEY = 'najCostumeWindow'
+
+	def Build(self):
+		CostumeWindow.Build(self)
+		self.unpinButton.Hide()
+
+	def RefreshIdleStatus(self):
+		text, color = NajemnikIdleText(_equipment)
+		if _equipment.state == STATE_OK:
+			text = TEXT_COSTUME_HINT
+		self.SetIdleStatus(text, color)
+
+
 def SkillName(vnum, grade=0):
 	# skill.GetSkillName raises for a skill the client does not know.
 	try:
@@ -1633,13 +1780,16 @@ def GetEquipmentWindow():
 
 
 def ToggleEquipmentWindow(anchor=None):
+	_UseCompanion()
 	_ToggleWindow('eqWindow', anchor)
 
 
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the bag window and the two panels, each made
 # on its first opening.
-WINDOW_KEYS = ('eqWindow', 'costumeWindow', 'alchemyWindow')
-WINDOW_CLASSES = {'eqWindow': EquipmentWindow, 'costumeWindow': CostumeWindow, 'alchemyWindow': AlchemyWindow}
+WINDOW_KEYS = ('eqWindow', 'costumeWindow', 'alchemyWindow', 'najEqWindow', 'najCostumeWindow')
+WINDOW_CLASSES = {'eqWindow': EquipmentWindow, 'costumeWindow': CostumeWindow, 'alchemyWindow': AlchemyWindow,
+	'najEqWindow': NajemnikEquipmentWindow, 'najCostumeWindow': NajemnikCostumeWindow}
+NAJEMNIK_WINDOW_KEYS = ('najEqWindow', 'najCostumeWindow')
 
 
 def _GetWindow(key):
@@ -1658,12 +1808,108 @@ def _ToggleWindow(key, anchor):
 
 def ToggleCostumeWindow(anchor=None):
 	"""The companion's costumes (the Options page's "Kostiumy")."""
+	_UseCompanion()
 	_ToggleWindow('costumeWindow', anchor)
 
 
 def ToggleAlchemyWindow(anchor=None):
 	"""The companion's Alchemy (the Options page's "Alchemia")."""
+	_UseCompanion()
 	_ToggleWindow('alchemyWindow', anchor)
+
+
+# ---------------------------------------------------------------- MT2009_PLUS_NAJEMNICY_V2
+
+def _SwitchTarget(slot):
+	"""The windows show one gear at a time: another one closes them all and
+	forgets the picture."""
+	if _target['slot'] == slot:
+		return
+	for window in _ShownWindows():
+		window.Close()
+	_target['slot'] = slot
+	_target['name'] = ''
+	_equipment.Reset()
+	_state['nextPoll'] = 0.0
+
+
+def _UseCompanion():
+	_SwitchTarget(0)
+
+
+def _NajemnikTitle():
+	name = _target['name']
+	return TEXT_NAJ_EQ_TITLE_NAMED % name if name else TEXT_NAJ_EQ_TITLE
+
+
+def _RetitleNajemnik():
+	window = _state['najEqWindow']
+	if window is not None:
+		window.SetTitleName(_NajemnikTitle())
+
+
+def OpenNajemnikWindow(slot, name=''):
+	"""The mercenary of a slot's bag window (the target board's "Ekwipunek",
+	the letter's "Otworz okno ekwipunku"); the server answers who it is."""
+	slot = ParseInt(slot, 0)
+	if slot <= 0:
+		return
+	_SwitchTarget(slot)
+	if name:
+		_target['name'] = name
+	elif not _target['name']:
+		for vid, (s, n) in _najemnicy.items():
+			if s == slot:
+				_target['name'] = n
+	window = _GetWindow('najEqWindow')
+	_RetitleNajemnik()
+	if window.IsShow():
+		window.SetTop()
+		window.Order('eq 1')
+	else:
+		window.Open()
+
+
+def NajemnikSlotOfVid(vid):
+	"""The slot of the player's summoned mercenary with this VID, 0 for any
+	other character."""
+	entry = _najemnicy.get(ParseInt(vid, 0))
+	return entry[0] if entry else 0
+
+
+def OnNajemnikVids(*args):
+	"""NajemnikVids <slot>:<vid>:<hex name>,... ("-" for none)."""
+	_najemnicy.clear()
+	text = args[0] if args else '-'
+	if text == '-':
+		return
+	for part in text.split(','):
+		words = part.split(':')
+		if len(words) < 2:
+			continue
+		slot = ParseInt(words[0], 0)
+		vid = ParseInt(words[1], 0)
+		if slot > 0 and vid > 0:
+			name = uisidekick.DecodeText(words[2], 24) if len(words) > 2 else ''
+			_najemnicy[vid] = (slot, name)
+
+
+def OnNajemnikEqWho(*args):
+	"""NajemnikEqWho <slot> <hex name> <level> <race>: the window's title."""
+	if not args or ParseInt(args[0], 0) != _target['slot'] or _target['slot'] <= 0:
+		return
+	name = uisidekick.DecodeText(args[1], 24) if len(args) > 1 else ''
+	if name:
+		_target['name'] = name
+		_RetitleNajemnik()
+
+
+def OnNajemnikEqOpen(*args):
+	"""NajemnikEqOpen <slot> <hex name>: the letter's "Otworz okno"."""
+	if not args:
+		return
+	name = uisidekick.DecodeText(args[1], 24) if len(args) > 1 else ''
+	OpenNajemnikWindow(args[0], name)
 
 
 def _ShownWindows():
@@ -1789,6 +2035,11 @@ def Destroy():
 	_state['nextPoll'] = 0.0
 	_equipment.Reset()
 	_skills.Reset()
+	# MT2009_PLUS_NAJEMNICY_V2: the server names the mercenaries again after a
+	# warp (NajemnikVids, within twenty seconds).
+	_target['slot'] = 0
+	_target['name'] = ''
+	_najemnicy.clear()
 
 
 class Keeper(object):
