@@ -30,6 +30,9 @@
 
 <section class="panel">
 <h2>Kto stoi i dlaczego</h2>
+{% for alt in status.alt_rows %}
+<p class="muted"><strong>Bramka {{ alt.gate }} — alternatywa {% if alt.on %}włączona{% else %}wyłączona (flaga m2_bot_gate55_fire_off){% endif %}:</strong> hełm, zbroja i tarcza +6 (wiersze poniżej) <strong>albo</strong> odporność na ogień ≥ {{ alt.fire_min }}% i hełm, zbroja, tarcza co najmniej +{{ alt.plus }} (broń i pozostałe wiersze bez zmian). Bot zatrzymany bez +6 idzie tańszą drogą: dokupuje odporność w ItemShopie i podnosi brakujące elementy do +{{ alt.plus }}. Flagi: m2_bot_gate55_fire_min, m2_bot_gate55_fire_plus.{% if alt.on %}<br>Teraz w oknie bramki: przeszło przez +6 — {{ alt.counts[0] }}, przez ogień — {{ alt.counts[1] }}; stoi: brak ognia {{ alt.counts[2] }}, brak +{{ alt.plus }} {{ alt.counts[3] }}, brak obu {{ alt.counts[4] }}, inny wymóg {{ alt.counts[5] + alt.counts[6] }}.{% endif %}</p>
+{% endfor %}
 {% if status.req_rows %}
 <div class="table-wrap"><table>
 <thead><tr><th>Bramka</th><th>Brakujący wymóg</th><th>Botów</th></tr></thead>

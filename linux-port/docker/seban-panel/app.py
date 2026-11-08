@@ -6072,7 +6072,8 @@ def parse_progression_form(form):
 
 def read_progression_status():
     """Every core's playerbot_progression_status.tsv, summed."""
-    status = {"cores": 0, "eligible": 0, "held": 0, "waived": 0, "age": None, "gates": {}, "reqs": {}, "fish": {}, "bots": []}
+    status = {"cores": 0, "eligible": 0, "held": 0, "waived": 0, "age": None, "gates": {}, "reqs": {}, "fish": {}, "bots": [],
+              "alts": {}}
     for _channel, path in channel_paths("playerbot_progression_status.tsv"):
         try:
             stamp = path.stat().st_mtime
@@ -6100,6 +6101,16 @@ def read_progression_status():
                     band = status["fish"].setdefault(int(fields[1]), [0, 0])
                     band[0] += int(fields[2])
                     band[1] += int(fields[3])
+                elif fields[0] == "alt":
+                    # MT2009_PLUS_BOT_GATE55_FIRE_V1: alt <gate> <on> <fire min> <plus> <past by +6> <past by fire>
+                    # <held: fire short> <+N short> <both> <another row> <another row, the three by fire>
+                    gate = int(fields[1])
+                    alt = status["alts"].setdefault(gate, {"gate": gate, "on": 0, "fire_min": 0, "plus": 0, "counts": [0] * 7})
+                    alt["on"] = max(alt["on"], int(fields[2]))
+                    alt["fire_min"] = int(fields[3])
+                    alt["plus"] = int(fields[4])
+                    for index, value in enumerate(fields[5:12]):
+                        alt["counts"][index] += int(value)
                 elif fields[0] == "bot":
                     status["bots"].append({"pid": int(fields[1]), "name": fields[2], "level": int(fields[3]),
                                            "gate": int(fields[4]), "minutes": int(fields[5]),
@@ -6110,6 +6121,7 @@ def read_progression_status():
     status["bots"] = status["bots"][:60]
     status["req_rows"] = [{"gate": gate, "req": req, "count": count}
                           for (gate, req), count in sorted(status["reqs"].items(), key=lambda item: (item[0][0], -item[1]))]
+    status["alt_rows"] = [status["alts"][gate] for gate in sorted(status["alts"])]
     status["fish_rows"] = [{"band": band, "live": live, "fishing": fishing,
                             "pct": round(100.0 * fishing / live, 1) if live else 0.0}
                            for band, (live, fishing) in sorted(status["fish"].items())]

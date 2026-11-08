@@ -93,11 +93,55 @@ namespace
 		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: the unmet rows of the gate held at (the first row of each piece, as the
 		// weighing adjusted it - the horse's cap, the slot's best level) - what playerbot_progression_shop.h buys for
 		std::vector<playerbot_progression::TReq> vecShort;
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: the level-55 gate's look at the last weighing (PLAYERBOT_GATE55_PATH_*) and
+		// the fire resistance then
+		BYTE bGate55Path;
+		int iGate55Fire;
 		TPlayerBotProgress() : dwSeen(0), dwLastTick(0), dwNextEval(0), dwNextLog(0), dwHeldMs(0),
 			bLevel(0), bGate(0), bWaived(0), bLoaded(false), bEligible(false), bFishing(false),
-			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0) {}
+			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0), bGate55Path(0), iGate55Fire(0) {}
 	};
 	std::map<DWORD, TPlayerBotProgress> s_mapPlayerBotProgress;
+
+	// MT2009_PLUS_BOT_GATE55_FIRE_V1 (the owner, 8 November 2026): the level-55 gate's helmet / armour / shield rows met
+	// as written (+6) or by the alternative - fire resistance >= m2_bot_gate55_fire_min (50) with the three at
+	// m2_bot_gate55_fire_plus (+4), the weapon and every other row unchanged (playerbot_progression_rules.h,
+	// FireAltLook; the switches GetPlayerBotGate55Fire, playerbot_element_maps.h). A bot held there with the three short
+	// of +6 aims at the cheaper path: its unmet rows (the progression shop's scrolls) are the pieces under +4 and the
+	// fire row, and its element goal is fire at the minimum (GetPlayerBotGate55FireGoal -> GetPlayerBotElementMapGoal:
+	// the element shop's target 52, not the progression's 40 + 2). The status file carries both ("... albo ogien 50%+
+	// i zbroja/helm/tarcza +4 (ma ...)") and an "alt" line for the panel; PLAYERBOT_PROGRESS: gate55 passed_by=... is
+	// logged (throttled) at every pass of a held bot; the progression shop's census counts the paths.
+	enum { PLAYERBOT_GATE55_PATH_NONE = 0, PLAYERBOT_GATE55_PATH_PLUS6, PLAYERBOT_GATE55_PATH_FIRE,
+		PLAYERBOT_GATE55_PATH_HELD_FIRE, PLAYERBOT_GATE55_PATH_HELD_GEAR, PLAYERBOT_GATE55_PATH_HELD_BOTH,
+		PLAYERBOT_GATE55_PATH_HELD_OTHER, PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE };
+	struct TPlayerBotGate55Stats
+	{
+		unsigned int passedFire, passedPlus6;	// held bots let through, by the path (the census period)
+		unsigned long long passedFireMin, passedPlus6Min;
+		TPlayerBotGate55Stats() : passedFire(0), passedPlus6(0), passedFireMin(0), passedPlus6Min(0) {}
+	};
+	TPlayerBotGate55Stats s_kPlayerBotGate55;
+
+	bool IsPlayerBotGate55Gate(const playerbot_progression::TGate& gate)
+	{
+		return gate.level == PLAYERBOT_GATE55_FIRE_LEVEL && GetPlayerBotGate55Fire();
+	}
+
+	int GetPlayerBotGate55FireGoal(LPCHARACTER ch)
+	{
+		int fireMin = 0;
+		if (!ch || !GetPlayerBotGate55Fire(&fireMin))
+			return 0;
+		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotProgress.end() || !it->second.bEligible)
+			return 0;
+		const BYTE path = it->second.bGate55Path;
+		const bool held = it->second.bHeld && it->second.bGate == PLAYERBOT_GATE55_FIRE_LEVEL &&
+				(path == PLAYERBOT_GATE55_PATH_HELD_FIRE || path == PLAYERBOT_GATE55_PATH_HELD_GEAR ||
+				 path == PLAYERBOT_GATE55_PATH_HELD_BOTH || path == PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE);
+		return held || path == PLAYERBOT_GATE55_PATH_FIRE ? fireMin : 0;
+	}
 
 	// The fishing census by ten-level band (index level / 10).
 	int s_aiPlayerBotProgressLive[26];
@@ -322,6 +366,7 @@ namespace
 #endif
 		s.orcTeeth = HasPlayerBotHandedOrcTeeth(ch);
 		s.gold = (long long)ch->GetGold();
+		s.fire = GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_FIRE);	// MT2009_PLUS_BOT_GATE55_FIRE_V1
 	}
 
 	// The horse a gate asks for, as far as this core can give it: the battle
@@ -551,30 +596,55 @@ namespace
 		int needs = 0;
 		std::string why;
 		std::vector<playerbot_progression::TReq> shortReqs;	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
+		BYTE gate55Path = PLAYERBOT_GATE55_PATH_NONE;	// MT2009_PLUS_BOT_GATE55_FIRE_V1
 		for (size_t g = 0; g < c.gates.size() && holdGate == 0; ++g)
 		{
 			const playerbot_progression::TGate& gate = c.gates[g];
 			if (gate.level > level || (unsigned)level > (unsigned)gate.level + c.retro || gate.level <= e.bWaived)
 				continue;
+			// MT2009_PLUS_BOT_GATE55_FIRE_V1: the rows as weighed (below), then the level-55 alternative's look at them
+			std::vector<playerbot_progression::TReq> rows;
+			rows.reserve(gate.reqs.size());
 			for (size_t r = 0; r < gate.reqs.size(); ++r)
 			{
 				playerbot_progression::TReq req = gate.reqs[r];
+				if (req.on)
+				{
+					if (req.type == playerbot_progression::REQ_HORSE)
+						req.a = GetPlayerBotProgressHorseCap(req.a);
+					// MT2009_PLUS_BOT_LAW_NO_BETTER_V1: a gate never asks for a piece
+					// of a higher level than the game has for the bot's slot at its
+					// level - the best there is counts.
+					if (req.type >= playerbot_progression::REQ_WEAPON && req.type <= playerbot_progression::REQ_EARRINGS &&
+							req.a > 0 && IsPlayerBotLawNoBetterOn())
+					{
+						static const int s_aiCell[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS,
+							WEAR_WRIST, WEAR_NECK, WEAR_EAR };
+						const int best = GetPlayerBotBestSlotLevelInGame(ch, s_aiCell[req.type - playerbot_progression::REQ_WEAPON]);
+						if (best >= 0 && req.a > best)
+							req.a = best;
+					}
+				}
+				rows.push_back(req);
+			}
+			playerbot_progression::TFireAltLook alt;
+			if (IsPlayerBotGate55Gate(gate))
+			{
+				int fireMin = 0, firePlus = 0;
+				GetPlayerBotGate55Fire(&fireMin, &firePlus);
+				alt = playerbot_progression::FireAltLook(rows, snap, fireMin, firePlus);
+			}
+			bool groupShort = false;	// a helmet / armour / shield row short of its plus as written
+			std::string groupWhy;
+			int groupNeeds = 0;
+			std::vector<playerbot_progression::TReq> groupShortReqs;
+			const BYTE holdBefore = holdGate;
+			for (size_t r = 0; r < gate.reqs.size(); ++r)
+			{
+				playerbot_progression::TReq req = rows[r];
 				if (!req.on)
 					continue;
-				if (req.type == playerbot_progression::REQ_HORSE)
-					req.a = GetPlayerBotProgressHorseCap(req.a);
-				// MT2009_PLUS_BOT_LAW_NO_BETTER_V1: a gate never asks for a piece
-				// of a higher level than the game has for the bot's slot at its
-				// level - the best there is counts.
-				if (req.type >= playerbot_progression::REQ_WEAPON && req.type <= playerbot_progression::REQ_EARRINGS &&
-						req.a > 0 && IsPlayerBotLawNoBetterOn())
-				{
-					static const int s_aiCell[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS,
-						WEAR_WRIST, WEAR_NECK, WEAR_EAR };
-					const int best = GetPlayerBotBestSlotLevelInGame(ch, s_aiCell[req.type - playerbot_progression::REQ_WEAPON]);
-					if (best >= 0 && req.a > best)
-						req.a = best;
-				}
+				const bool group = alt.applies && playerbot_progression::IsFireAltPiece(req.type);
 				long long flagValue = 0;
 				if (req.type == playerbot_progression::REQ_QUEST_FLAG)
 					flagValue = ch->GetQuestFlag(req.flag);
@@ -600,6 +670,20 @@ namespace
 					}
 					NotePlayerBotMountGateRow(pid, 3, dwNow);
 				}
+				// MT2009_PLUS_BOT_GATE55_FIRE_V1: a helmet / armour / shield row short is weighed with the alternative
+				// after the rows
+				if (group)
+				{
+					groupShort = true;
+					if (!playerbot_progression::IsFirstOfPiece(gate, r))
+						continue;
+					groupNeeds |= playerbot_progression::NeedOf(req.type);
+					groupShortReqs.push_back(req);
+					if (!groupWhy.empty())
+						groupWhy += ", ";
+					groupWhy += one;
+					continue;
+				}
 				holdGate = gate.level;
 				if (!playerbot_progression::IsFirstOfPiece(gate, r))
 					continue;
@@ -609,7 +693,37 @@ namespace
 					why += ", ";
 				why += one;
 			}
+			// MT2009_PLUS_BOT_GATE55_FIRE_V1: the three pieces short of +6 - met by the alternative, else held for them with
+			// the alternative's rows as the bot's work (the cheaper path: the pieces to +4 and the fire)
+			if (alt.applies)
+			{
+				if (groupShort && !alt.Met())
+				{
+					holdGate = gate.level;
+					needs |= groupNeeds | playerbot_progression::NEED_GEAR;
+					for (size_t i = 0; i < alt.shortRows.size(); ++i)
+						shortReqs.push_back(alt.shortRows[i]);
+					if (!why.empty())
+						why += ", ";
+					why += groupWhy;
+					why += ", ";
+					why += alt.why;
+				}
+				const bool heldHere = holdGate == gate.level && holdBefore == 0;
+				if (!heldHere)
+					gate55Path = groupShort ? PLAYERBOT_GATE55_PATH_FIRE : PLAYERBOT_GATE55_PATH_PLUS6;
+				else if (!groupShort)
+					gate55Path = PLAYERBOT_GATE55_PATH_HELD_OTHER;
+				else if (alt.Met())
+					gate55Path = PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE;	// the three met by the fire, held by another row
+				else if (!alt.fireMet && !alt.gearMet)
+					gate55Path = PLAYERBOT_GATE55_PATH_HELD_BOTH;
+				else
+					gate55Path = !alt.fireMet ? PLAYERBOT_GATE55_PATH_HELD_FIRE : PLAYERBOT_GATE55_PATH_HELD_GEAR;
+			}
 		}
+		e.bGate55Path = gate55Path;
+		e.iGate55Fire = snap.fire;
 
 		if (holdGate == 0)
 		{
@@ -617,6 +731,21 @@ namespace
 			{
 				sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u",
 						pid, ch->GetName(), (unsigned)level, (unsigned)e.bGate, e.dwHeldMs / 60000U);
+				// MT2009_PLUS_BOT_GATE55_FIRE_V1: the level-55 gate's path
+				if (e.bGate == PLAYERBOT_GATE55_FIRE_LEVEL &&
+						(gate55Path == PLAYERBOT_GATE55_PATH_FIRE || gate55Path == PLAYERBOT_GATE55_PATH_PLUS6))
+				{
+					const bool byFire = gate55Path == PLAYERBOT_GATE55_PATH_FIRE;
+					const unsigned int heldMin = e.dwHeldMs / 60000U;
+					++(byFire ? s_kPlayerBotGate55.passedFire : s_kPlayerBotGate55.passedPlus6);
+					(byFire ? s_kPlayerBotGate55.passedFireMin : s_kPlayerBotGate55.passedPlus6Min) += heldMin;
+					PlayerBotLogThrottled("gate55_pass", dwNow,
+							"PLAYERBOT_PROGRESS: gate55 passed_by=%s pid=%u name=%s level=%u held_min=%u fire=%d "
+							"armour=+%u helmet=+%u shield=%s+%u weapon=lv%u+%u",
+							byFire ? "fire" : "plus6", pid, ch->GetName(), (unsigned)level, heldMin, snap.fire,
+							(unsigned)snap.slot[1].plus, (unsigned)snap.slot[2].plus, snap.wantsShield ? "" : "(none)",
+							(unsigned)snap.slot[3].plus, (unsigned)snap.slot[0].level, (unsigned)snap.slot[0].plus);
+				}
 				NotePlayerBotProgShopGateEnd(pid, e.bGate, e.dwHeldMs / 60000U, false);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 				ReleasePlayerBotProgress(ch, state, e);
 			}
@@ -710,6 +839,7 @@ namespace
 		std::map<std::pair<int, std::string>, int> perReq;
 		std::vector<std::pair<DWORD, DWORD> > held;  // held ms, pid
 		int eligible = 0, heldCount = 0, waived = 0;
+		int paths[PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE + 1] = { 0 };	// MT2009_PLUS_BOT_GATE55_FIRE_V1
 		for (std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.begin();
 				it != s_mapPlayerBotProgress.end(); ++it)
 		{
@@ -718,6 +848,8 @@ namespace
 				continue;
 			if (e.bEligible)
 				++eligible;
+			if (e.bEligible && e.bGate55Path <= PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE)
+				++paths[e.bGate55Path];
 			if (e.bWaived != 0)
 				++waived;
 			if (!e.bHeld || !e.bEligible)
@@ -751,6 +883,17 @@ namespace
 				c.enabled ? 1 : 0, c.timeoutMin, c.fishCapPct);
 		for (std::map<int, int>::const_iterator it = perGate.begin(); it != perGate.end(); ++it)
 			fprintf(fp, "gate\t%d\t%d\n", it->first, it->second);
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: alt <gate> <on> <fire min> <plus> <bots past it by +6> <by fire> <held: fire
+		// short> <+4 short> <both> <another row, the three by +6> <another row, the three by fire>
+		{
+			int fireMin = 0, firePlus = 0;
+			const bool on = GetPlayerBotGate55Fire(&fireMin, &firePlus);
+			fprintf(fp, "alt\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", PLAYERBOT_GATE55_FIRE_LEVEL, on ? 1 : 0, fireMin,
+					firePlus, paths[PLAYERBOT_GATE55_PATH_PLUS6], paths[PLAYERBOT_GATE55_PATH_FIRE],
+					paths[PLAYERBOT_GATE55_PATH_HELD_FIRE], paths[PLAYERBOT_GATE55_PATH_HELD_GEAR],
+					paths[PLAYERBOT_GATE55_PATH_HELD_BOTH], paths[PLAYERBOT_GATE55_PATH_HELD_OTHER],
+					paths[PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE]);
+		}
 		for (std::map<std::pair<int, std::string>, int>::const_iterator it = perReq.begin(); it != perReq.end(); ++it)
 			fprintf(fp, "req\t%d\t%s\t%d\n", it->first.first, it->first.second.c_str(), it->second);
 		for (int band = 0; band < 26; ++band)

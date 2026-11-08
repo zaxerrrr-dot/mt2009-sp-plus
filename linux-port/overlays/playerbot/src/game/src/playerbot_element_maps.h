@@ -402,6 +402,40 @@ namespace
 		return part >= 0 && part < PLAYERBOT_EPROG_PARTS && s_abOn[part];
 	}
 
+	// MT2009_PLUS_BOT_GATE55_FIRE_V1 (the owner, 8 November 2026; playerbot_progression_rules.h, FireAltLook): the
+	// level-55 gate's alternative to helmet / armour / shield +6 - fire resistance >= min with the three at +plus.
+	// Event flags: m2_bot_gate55_fire_off 1 - the old rule only; m2_bot_gate55_fire_min N (10-80, default 50);
+	// m2_bot_gate55_fire_plus N (1-9, default 4). false: off (min / plus still answered).
+	const int PLAYERBOT_GATE55_FIRE_LEVEL = 55;
+	const int PLAYERBOT_GATE55_FIRE_MIN = 50;
+	const int PLAYERBOT_GATE55_FIRE_PLUS = 4;
+	bool GetPlayerBotGate55Fire(int* pMin = NULL, int* pPlus = NULL)
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		static int s_iMin = PLAYERBOT_GATE55_FIRE_MIN, s_iPlus = PLAYERBOT_GATE55_FIRE_PLUS;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			s_bOn = q.GetEventFlag("m2_bot_gate55_fire_off") == 0;
+			const int fmin = q.GetEventFlag("m2_bot_gate55_fire_min");
+			s_iMin = fmin >= 10 && fmin <= PLAYERBOT_ELEMENT_MAP_RESIST_CAP ? fmin : PLAYERBOT_GATE55_FIRE_MIN;
+			const int fplus = q.GetEventFlag("m2_bot_gate55_fire_plus");
+			s_iPlus = fplus >= 1 && fplus <= 9 ? fplus : PLAYERBOT_GATE55_FIRE_PLUS;
+		}
+		if (pMin)
+			*pMin = s_iMin;
+		if (pPlus)
+			*pPlus = s_iPlus;
+		return s_bOn;
+	}
+
+	// playerbot_progression.h: the fire resistance a bot builds for the level-55 gate's alternative (held there with
+	// helmet / armour / shield short of their rows, or passed by the alternative and still in the gate's window); 0 none.
+	int GetPlayerBotGate55FireGoal(LPCHARACTER ch);
+
 	int GetPlayerBotElementProgressGate()
 	{
 		static DWORD s_dwAt = 0;
@@ -435,6 +469,12 @@ namespace
 	{
 		if (!IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_ALL) || FindPlayerBotElementProgressMap(map) < 0)
 			return 0;
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: the Spider Dungeon V2 never asks more fire than the level-55 gate's
+		// alternative - a bot let through 55 by it qualifies there (with m2_bot_element_progress_gate over the
+		// alternative's minimum; at the defaults 40 < 50, unchanged)
+		int fireMin = 0;
+		if (GetPlayerBotElementMapBase(map) == PLAYERBOT_MAP_SPIDER_V2 && GetPlayerBotGate55Fire(&fireMin))
+			return std::min(GetPlayerBotElementProgressGate(), fireMin);
 		return GetPlayerBotElementProgressGate();
 	}
 
@@ -1113,7 +1153,10 @@ namespace
 				GetPlayerBotElementProgressGateForMap(map) <= 0 || GetPlayerBotHuntElement(ch) != 0)
 			return false;
 		const int idx = FindPlayerBotElementProgressMap(map);
-		return idx >= 0 && GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement) >= GetPlayerBotElementProgressGate();
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: the map's own gate (never over the level-55 alternative's minimum), so a bot
+		// passed 55 by fire >= 50 with +4 gear and a young heroes' weapon wears V2's resist grades (weapon / armour +4)
+		return idx >= 0 && GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement) >=
+				GetPlayerBotElementProgressGateForMap(map);
 	}
 	// ====================================================================== end of MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 
@@ -1169,6 +1212,21 @@ namespace
 				prebuild = true;
 			}
 		}
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: a bot on the level-55 gate's fire path builds fire - the Spider Dungeon V2's
+		// row - unless it hunts or wants a gated map of another element
+		const int fire55 = GetPlayerBotGate55FireGoal(ch);
+		if (fire55 > 0 && (row < 0 || (PLAYERBOT_ELEMENT_MAP_ROWS[row].iElement != PLAYERBOT_EM_FIRE &&
+				(prebuild || GetPlayerBotElementMapRowGate(row) <= 0))))
+		{
+			const int spider = FindPlayerBotElementMapRow(PLAYERBOT_MAP_SPIDER_V2);
+			if (spider >= 0 && GetPlayerBotElementMapShare(spider) >= PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
+			{
+				if (row != spider)
+					keep = -1;
+				row = spider;
+				prebuild = GetPlayerBotElementMapBase(ch->GetMapIndex()) != PLAYERBOT_MAP_SPIDER_V2;
+			}
+		}
 		if (row < 0)
 			return false;
 		const int share = GetPlayerBotElementMapShare(row);
@@ -1185,6 +1243,13 @@ namespace
 		// rule, the stone and the element shop read it)
 		if (out.iGate > 0)
 			out.iWant = std::max(out.iWant, GetPlayerBotElementProgressBoostTarget(ch, r.iElement));
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: the gate's minimum is the goal's gate (the element shop's target is it + its
+		// margin, 52), the want two over it (the reroll's stop rule, the stone, the costume line)
+		if (fire55 > 0 && r.iElement == PLAYERBOT_EM_FIRE)
+		{
+			out.iGate = std::max(out.iGate, fire55);
+			out.iWant = std::max(out.iWant, std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP, fire55 + 2));
+		}
 		out.iShare = share;
 		out.iResist = GetPlayerBotElementMapResist(ch, r.iElement);
 		out.iKeep = prebuild && keep != r.iElement ? keep : -1;
