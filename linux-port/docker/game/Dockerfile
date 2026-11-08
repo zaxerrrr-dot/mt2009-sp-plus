@@ -1211,6 +1211,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map; N=$L/map_n_threeway/npc.txt 
 # PRESUB 1-3 the hardest - Komendant (2414) and Magistrat (2413) groups -, the green SOBA rooms Soldat and
 # Bogenschuetze (2411, 2412), the red and orange ones the dump's own groups topped up; every centre on free ground of
 # the map's server_attr. grota2/boss.grota2.txt: the dump's four Commanders (2491) we lacked (our 20 min).
+# MT2009_PLUS_GROTA_THIN_V1 (8 November 2026, the owner: "zmniejszyc spoty o 30% od tego co jest teraz"): those lines
+# less 30% (2156 -> 1509, tools/grota2/grota_thin.py: evenly, every 64 m square its share, the twin points first).
 COPY grota2/ /tmp/grota2-add/
 RUN set -eu; M=/opt/metin2/share/locale/poland/map/metin2_map_skipia_dungeon_02; A=/tmp/grota2-add; L=/opt/metin2/share/locale/poland \
  && grep -q -E '^73[[:blank:]]+metin2_map_skipia_dungeon_02[[:space:]]*$' "$L/map/index" \
@@ -1218,7 +1220,7 @@ RUN set -eu; M=/opt/metin2/share/locale/poland/map/metin2_map_skipia_dungeon_02;
  && for v in $(awk '$1 == "r" { print $11 }' "$A/regen.txt" | tr -d '\r' | sort -u); do grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$v[[:space:]]*\$" "$L/group_group.txt"; done \
  && test "$(grep -c -E '^//r[[:blank:]].*[[:blank:]]2410[[:space:]]*$' "$M/regen.txt")" = 84 \
  && test "$(grep -c -E '^r[[:blank:]]' "$M/regen.txt")" = 638 \
- && n="$(grep -c -E '^r[[:blank:]]' "$A/regen.txt")" && test "$n" -ge 2000 \
+ && n="$(grep -c -E '^r[[:blank:]]' "$A/regen.txt")" && test "$n" -ge 1400 \
  && ! grep -q -E '^[^/].*[[:blank:]]2410[[:space:]]*$' "$A/regen.txt" \
  && test "$(awk '$1 == "r" && NF == 11 && $2 ~ /^[0-9]+$/ && $3 ~ /^[0-9]+$/ && $2 < 1536 && $3 < 1536 && $8 == "70s"' "$A/regen.txt" | wc -l)" = "$n" \
  && cp "$A/regen.txt" "$M/regen.txt" \
@@ -1229,6 +1231,23 @@ RUN set -eu; M=/opt/metin2/share/locale/poland/map/metin2_map_skipia_dungeon_02;
  && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]2491[[:space:]]*$' "$M/boss.txt")" = "$((b0 + $(grep -c . "$A/boss.grota2.txt")))" \
  && rm -rf "$A" \
  && echo "share: Grota Wygnancow V2 as the global server - $n spawn lines, $(grep -c -E '^m[[:blank:]]' "$M/boss.txt") Commanders"
+
+# MT2009_PLUS_GROTA_THIN_V1: Grota Wygnancow V1 (72, metin2_map_skipia_dungeon_01) - the package's 833 spawn lines
+# less 30% (the owner, 8 November 2026: "Grota Wygnancow V1 i V2 - zmniejszyc spoty o 30% od tego co jest teraz"):
+# grota1/regen.txt (tools/grota1/gen_grota1.py) is the map's regen.txt whole, 583 of the package's own lines as they
+# were, taken out evenly (every 64 m square of the map its share); boss.txt (the Ice Witch) and npc.txt untouched.
+COPY grota1/regen.txt /tmp/grota1-regen.txt
+RUN set -eu; M=/opt/metin2/share/locale/poland/map/metin2_map_skipia_dungeon_01; A=/tmp/grota1-regen.txt; L=/opt/metin2/share/locale/poland \
+ && grep -q -E '^72[[:blank:]]+metin2_map_skipia_dungeon_01[[:space:]]*$' "$L/map/index" \
+ && test "$(grep -c -E '^r[[:blank:]]' "$M/regen.txt")" = 833 \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//' "$A" \
+ && n="$(grep -c -E '^r[[:blank:]]' "$A")" && test "$n" = 583 \
+ && tr -d '\r' < "$M/regen.txt" | grep -E '^r[[:blank:]]' | sort > /tmp/grota1-pkg.txt \
+ && test "$(grep -E '^r[[:blank:]]' "$A" | sort | comm -23 - /tmp/grota1-pkg.txt | wc -l)" = 0 \
+ && sed -i 's/$/\r/' "$A" \
+ && cp "$A" "$M/regen.txt" \
+ && rm -f "$A" /tmp/grota1-pkg.txt \
+ && echo "share: Grota Wygnancow V1 - $n spawn lines (the package's 833 less 30%)"
 
 # The Devil's Catacomb (port/shareify.py renders this step; the quest itself is
 # compiled from quest/devilcatacomb_zone.quest above): its Guardian (20367)
