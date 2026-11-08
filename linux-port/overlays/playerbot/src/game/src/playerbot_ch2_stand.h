@@ -94,18 +94,19 @@ namespace
 	// The switches: 0 the ask and the drive, 1 the reasons' extra inventories, 2 the fee's base reserve.
 	bool IsPlayerBotCh2StandSwitchOn(int which)
 	{
-		static const char* const s_flags[3] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
-				"m2_bot_stand_fee_full_reserve" };
+		// 3: MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1 (the intent read once the bot's quest data is in)
+		static const char* const s_flags[4] = { "m2_bot_ch2_stand_off", "m2_bot_stand_storage_reasons_off",
+				"m2_bot_stand_fee_full_reserve", "m2_bot_ch2_stand_qload_off" };
 		static DWORD s_dwAt = 0;
-		static bool s_bOn[3] = { true, true, true };
+		static bool s_bOn[4] = { true, true, true, true };
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 1000)
 		{
 			s_dwAt = now ? now : 1;
-			for (int i = 0; i < 3; ++i)
+			for (int i = 0; i < 4; ++i)
 				s_bOn[i] = quest::CQuestManager::instance().GetEventFlag(s_flags[i]) == 0;
 		}
-		return which >= 0 && which < 3 && s_bOn[which];
+		return which >= 0 && which < 4 && s_bOn[which];
 	}
 
 	bool IsPlayerBotStandStorageReasonsOn()
@@ -194,6 +195,17 @@ namespace
 		b.lastSeen = now;
 		if (b.loaded)
 			return b;
+		// MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1: the bot's quest flags come from the DB a few seconds after it enters
+		// (the mood's restore waits for them too); a first look before that read the intent as 0 and kept it - the
+		// bot arrived for its stand and never went to it (8 November 15:04: szell / Szumowina entered channel 1 at
+		// 15:04:36, their quest data at 15:04:39-40, no drive, back on channel 2 24 minutes later "back unopened").
+		// Not loaded yet: the entry waits, the next look reads the flag. m2_bot_ch2_stand_qload_off 1: as before.
+		if (IsPlayerBotCh2StandSwitchOn(3))
+		{
+			quest::PC* qpc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+			if (!qpc || !qpc->IsLoaded())
+				return b;
+		}
 		b.loaded = true;
 		b.firstSeen = now;
 		b.intentAt = ch->GetQuestFlag(PLAYERBOT_CH2_STAND_FLAG);
@@ -287,6 +299,8 @@ namespace
 			return;
 		const DWORD now = get_dword_time();
 		TPlayerBotCh2StandBot& b = GetPlayerBotCh2StandEntry(ch, now);
+		if (!b.loaded)
+			return;	// MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1: its flags not read yet - the pass asks again
 		const bool fresh = !IsPlayerBotCh2StandIntentLive(b);
 		b.intentAt = get_global_time();
 		ch->SetQuestFlag(PLAYERBOT_CH2_STAND_FLAG, b.intentAt);
@@ -315,6 +329,8 @@ namespace
 		if (!now)
 			now = 1;
 		TPlayerBotCh2StandBot& b = GetPlayerBotCh2StandEntry(ch, now);
+		if (!b.loaded)
+			return;	// MT2009_PLUS_BOT_CH2_STAND_QLOAD_V1
 		// asked: the request stands until the move (the coordinator's gate and the 30 s of standing)
 		if (b.requestedAt != 0 && now - b.requestedAt < PLAYERBOT_CH2_STAND_REQUEST_HOLD_MS)
 		{
