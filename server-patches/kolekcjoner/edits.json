@@ -1,0 +1,20 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (command declare)",
+  "old": "ACMD(do_najemnicy)\n{\n\tPlayerBotNajemnicyCommand(ch, argument);\n}\n",
+  "new": "ACMD(do_najemnicy)\n{\n\tPlayerBotNajemnicyCommand(ch, argument);\n}\n// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (command declare): \"/kolekcja_najemnikow\" - Kolekcjoner Najemnikow, the mercenaries' unlock (the\n// client's window, the Najemnicy letter): open, lista, oddaj <task> <item> [all]; GM: przeladuj, ukoncz, wyczysc\n// (playerbot_kolekcjoner_najemnikow.cpp)\nvoid KolekcjonerNajemnikowCommand(LPCHARACTER ch, const char* argument);\nACMD(do_kolekcja_najemnikow)\n{\n\tKolekcjonerNajemnikowCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (command table)",
+  "old": "\t{ \"najemnicy\",\tdo_najemnicy,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_NAJEMNICY_V1 (command table): the GM's part checks GM_HIGH_WIZARD itself\n",
+  "new": "\t{ \"najemnicy\",\tdo_najemnicy,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_NAJEMNICY_V1 (command table): the GM's part checks GM_HIGH_WIZARD itself\n\t{ \"kolekcja_najemnikow\",\tdo_kolekcja_najemnikow,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (command table): the GM's part checks GM_HIGH_WIZARD itself\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (compute)",
+  "old": "\t// MT2009_PLUS_HORSE40_V1 (compute): the Sung Ma minima of a horse of 31+ and the constant horse skills while\n",
+  "new": "\t// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (compute): the completed Kolekcjoner Najemnikow tasks' permanent bonuses - added at every\n\t// recompute, never an affect, so nothing expires or can be removed (playerbot_kolekcjoner_najemnikow.cpp)\n\tif (IsPC())\n\t{\n\t\tvoid KolekcjonerNajemnikowComputePoints(LPCHARACTER ch);\n\t\tKolekcjonerNajemnikowComputePoints(this);\n\t}\n\n\t// MT2009_PLUS_HORSE40_V1 (compute): the Sung Ma minima of a horse of 31+ and the constant horse skills while\n"
+ }
+]

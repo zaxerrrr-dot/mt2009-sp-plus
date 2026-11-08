@@ -168,6 +168,8 @@ CATEGORIES = (
 		('world_boss', 'Boss \x8cwiata', (), False),
 		# MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py), no key by default.
 		('relic', 'Bonus Reliktu', (), False),
+		# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: Kolekcjoner Najemnikow (uinajemnicykolekcjoner.py), no key by default.
+		('kolekcjoner_najemnikow', 'Kolekcjoner Najemnik\xf3w', (), False),
 		# MT2009_PLUS_CHAMPION_V2: Poziom Czempiona - the character window's Sung Ma page, no key by default.
 		('champion', 'Czempion', (), False),
 		# MT2009_PLUS_MONSTER_CARDS_V1: Karty Potworow (monstercard.py) - J, the package's key, is

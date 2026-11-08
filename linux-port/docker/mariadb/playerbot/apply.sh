@@ -5474,6 +5474,19 @@ if [ -s /opt/playerbot/najemnicy.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (the owner, 8 November 2026: the mercenaries' unlock, "Kolekcjoner
+# Najemnikow"): kolekcjoner_najemnikow.sql - the six tasks (najemnicy_kolekcjoner_categories / _items / _rewards,
+# seeded with INSERT IGNORE), a character's hand-ins (_progress) and completed tasks (_complete, the permanent bonuses;
+# playerbot_kolekcjoner_najemnikow.cpp, server-patches/kolekcjoner, client root uinajemnicykolekcjoner.py).
+# Idempotent (CREATE TABLE IF NOT EXISTS / ADD COLUMN IF NOT EXISTS / INSERT IGNORE); before the cores.
+if [ -s /opt/playerbot/kolekcjoner_najemnikow.sql ]; then
+    if db < /opt/playerbot/kolekcjoner_najemnikow.sql; then
+        echo "[playerbot-migrate] Kolekcjoner Najemnikow: kolekcjoner_najemnikow.sql applied"
+    else
+        fail_step "Kolekcjoner Najemnikow: kolekcjoner_najemnikow.sql failed (MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_BOT_SM_MARKET_RULE_V1 (the owner, 8 November 2026: the bots' Smocze Monety on the market only when dropped
 # in the game, or - a bot badly short of yang - out of 1000 SM a day for all the bots together): sm_rynek.sql - the
 # coupons' origin a bot (player.playerbot_sm_origin), the panel's coupon grants already credited

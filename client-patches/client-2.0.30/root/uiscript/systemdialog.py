@@ -233,6 +233,22 @@ ElementAddBefore(MAIN_BOARD["children"], "escape_button",
 					"down_image" : ROOT + "XLarge_Button_03.sub",
 				})
 
+# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: "Kolekcjoner Najemnikow" (uinajemnicykolekcjoner.py), after "Bonus Reliktu"
+ElementAddBefore(MAIN_BOARD["children"], "escape_button",
+				{
+					"name" : "kolekcjoner_najemnikow_button",
+					"type" : "button",
+
+					"x" : 10,
+					"y" : -1,
+
+					"text" : "Kolekcjoner Najemnik\xf3w",
+
+					"default_image" : ROOT + "XLarge_Button_01.sub",
+					"over_image" : ROOT + "XLarge_Button_02.sub",
+					"down_image" : ROOT + "XLarge_Button_03.sub",
+				})
+
 # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "Opcje dodatkowe" (uiopcjedodatkowe.py)
 ElementAddBefore(MAIN_BOARD["children"], "escape_button",
 				{

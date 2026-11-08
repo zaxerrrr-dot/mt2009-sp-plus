@@ -518,6 +518,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiekwipunek").DestroyWindow()
 		# MT2009_PLUS_RELIC_V1: Bonus Reliktu's window (uirelikt.py).
 		__import__("uirelikt").DestroyWindow()
+		# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: Kolekcjoner Najemnikow's window (uinajemnicykolekcjoner.py).
+		__import__("uinajemnicykolekcjoner").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -869,6 +871,9 @@ class GameWindow(ui.ScriptWindow):
 			"world_boss"		: (lambda : Window("uiworldboss"), None),
 			# MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py), no key by default (the Esc menu's button opens it too).
 			"relic"				: (lambda : Window("uirelikt"), None),
+			# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: Kolekcjoner Najemnikow (uinajemnicykolekcjoner.py), no key by default
+			# (the Esc menu's button and the Najemnicy letter open it too).
+			"kolekcjoner_najemnikow"	: (lambda : Window("uinajemnicykolekcjoner"), None),
 			# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py) - the action keeps the old New Pet
 			# window's id (and its U), so a key somebody saved for it opens the new window.
 			"new_pet"			: (lambda : __import__("uipetinfo").ToggleWindow(), None),
@@ -1031,6 +1036,11 @@ class GameWindow(ui.ScriptWindow):
 	# window with this one.
 	def __Collector(self, *args):
 		__import__("uicollector").OnServer(*args)
+
+	# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: every "KNAJ ..." line of Kolekcjoner Najemnikow
+	# (uinajemnicykolekcjoner.py; the server's playerbot_kolekcjoner_najemnikow.cpp).
+	def __KolekcjonerNajemnikow(self, *args):
+		__import__("uinajemnicykolekcjoner").OnServer(*args)
 
 	# MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): every "MONSTERCARDSYSTEM ..." line of
 	# the Monster Cards (/cardmonster on the server, the window uimonstercard.py).
@@ -3743,6 +3753,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["SidekickVid"] = self.__SidekickVid
 		serverCommandList["BuffiMark"] = self.__BuffiMark # MT2009_PLUS_BUFFI_PASS_V1
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
+		serverCommandList["KNAJ"] = self.__KolekcjonerNajemnikow # MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
 		serverCommandList["MT2009LANG"] = self.__Mt2009Language # MT2009_PLUS_LANGUAGE_DEFAULT_V1

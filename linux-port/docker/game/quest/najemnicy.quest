@@ -6,7 +6,9 @@
 -- Ca³¹ pracê robi komenda serwera /najemnicy (playerbot_najemnicy.h, server-patches/najemnicy): przed menu
 -- "najemnicy sync" ustawia flagi tego questa (unlocked, slots, tasks_view, count, summoned - bit na miejsce, price_h, off),
 -- a lista i skarbiec s¹ czytane z bazy (mysql_direct_query, tylko odczyt, tylko wiersze tej postaci).
--- Odblokowanie: Kolekcjoner Najemników (6 zadañ; okno i oddawanie przedmiotów to osobny etap z ³atk¹ klienta).
+-- Odblokowanie: Kolekcjoner Najemników (6 zadañ). Jego okno (klient: uinajemnicykolekcjoner.py, serwer: komenda
+-- /kolekcja_najemnikow, MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1) otwiera przycisk "Kolekcjoner Najemników" w tym liœcie,
+-- w menu Esc i klawisz z "Skróty klawiszowe"; ukoñczone zadanie samo podnosi flagê najemnicy.tasks.
 -- Miejsca = ukoñczone zadania, które maj¹ ju¿ swój poziom: 1 + 80 -> 2, 2 + 85 -> 3, 3 + 90 -> 4, 4 + 95 -> 5,
 -- 5 + 100 -> 6, 6 + 105 -> 7. Licznik: flaga najemnicy.tasks (podniesie j¹ quest Kolekcjonera) albo wiersz
 -- player.najemnicy_unlock (GM: /najemnicy odblokuj|zadania <nick>, panel Seban); flaga zdarzenia
@@ -133,6 +135,10 @@ quest najemnicy begin
 				say("ju¿ jego poziom (1 zadanie + 80 poz. = 2 miejsca,")
 				say("2 + 85 = 3, 3 + 90 = 4, 4 + 95 = 5, 5 + 100 = 6,")
 				say("6 + 105 = 7). Ukoñczone zadania: " .. pc.getqf("tasks_view") .. " z 6.")
+				-- MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: the collector's window
+				if select("Kolekcjoner Najemników", "Zamknij") == 1 then
+					command("kolekcja_najemnikow open")
+				end
 				return
 			end
 			local slots = pc.getqf("slots")
@@ -143,7 +149,7 @@ quest najemnicy begin
 			say("Skarbiec: " .. nj_yang(nj_balance()) .. " yang. Op³ata: " .. nj_yang(price) .. " yang")
 			say("za godzinê za ka¿dego wezwanego najemnika.")
 			local m = select("Lista najemników", "Stwórz najemnika", "Wezwij", "Odwo³aj", "Skarbiec",
-				"Ekwipunek", "Gildia", "Zwolnij najemnika", "Zamknij")
+				"Ekwipunek", "Gildia", "Zwolnij najemnika", "Kolekcjoner Najemników", "Zamknij")
 
 			if m == 1 then
 				local rows = nj_rows()
@@ -169,6 +175,9 @@ quest najemnicy begin
 					say("Wszystkie miejsca s¹ zajête.")
 					say("Wiêcej miejsc daj¹ zadania Kolekcjonera")
 					say("Najemników razem z poziomem.")
+					if select("Kolekcjoner Najemników", "Zamknij") == 1 then
+						command("kolekcja_najemnikow open")
+					end
 					return
 				end
 				say_title("Stwórz najemnika")
@@ -324,6 +333,10 @@ quest najemnicy begin
 				if select("Tak, zwolnij", "Nie") == 1 then
 					command("najemnicy zwolnij " .. slot .. " tak")
 				end
+
+			elseif m == 9 then
+				-- MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: the collector's window (more slots: tasks x level)
+				command("kolekcja_najemnikow open")
 			end
 		end
 	end

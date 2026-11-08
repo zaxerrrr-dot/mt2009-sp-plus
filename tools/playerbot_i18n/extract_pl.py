@@ -45,6 +45,7 @@ SKIP_PREFIX = (
     'playerbot_flower', 'playerbot_seonhae', 'playerbot_monster_card', 'playerbot_dungeon_reset',
     'playerbot_digi_qol', 'playerbot_newpet', 'playerbot_ingame_events', 'playerbot_worldboss',
     'playerbot_buffi', 'playerbot_events.h', 'playerbot_catacomb', 'playerbot_minigames',
+    'playerbot_kolekcjoner_najemnikow',
 )
 # A line with one of these is a log, a query, a path or a command - never speech.
 SKIP_LINE = re.compile(
