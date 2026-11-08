@@ -67,6 +67,8 @@ namespace
 			bBought(false) {}
 	};
 	std::map<DWORD, TPlayerBotPShopRecord> s_mapPlayerBotPShop;
+	// MT2009_PLUS_BOT_MOUNT_GATE_V1: the horse row's mount (playerbot_mount_gate.h, included after this file)
+	bool ManagePlayerBotProgShopMount(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotPShopRecord& rec, DWORD dwNow);
 
 	struct TPlayerBotPShopStats
 	{
@@ -380,7 +382,7 @@ namespace
 				"(failed %u),scroll_25041:%u pieces/%u buys (failed %u)] sm=%lld sz=%lld passed=%u (after_purchase=%u) "
 				"given_up=%u (after_purchase=%u) avg_min passed=%llu passed_after_purchase=%llu given_up=%llu | blockers "
 				"gear_level=%u gear_no_recipe=%u gear_no_fee=%u gear_no_mats=%u gear_scroll_short=%u skills_below_m=%u "
-				"skills_reading=%u skills_chest_unopened=%u skills_no_room=%u skills_budget=%u horse_none_in_shop=%u "
+				"skills_reading=%u skills_chest_unopened=%u skills_no_room=%u skills_budget=%u horse_no_mount=%u "
 				"metins_none_in_shop=%u hp_urgent=%u budget=%lld",
 				IsPlayerBotProgShopOn() ? 1 : 0, held, withBuy, gates.c_str(), kinds.c_str(), s.chests, s.chestFails, s.scrolls,
 				s.scrollBuys, s.scrollFails, s.sm, s.marks, s.passed, s.passedBought, s.givenUp, s.givenUpBought,
@@ -446,7 +448,12 @@ namespace
 		{
 			switch (reqs[r].type)
 			{
-				case playerbot_progression::REQ_HORSE: s_kPlayerBotPShop.horse.insert(pid); break;
+				// MT2009_PLUS_BOT_MOUNT_GATE_V1: no medal or horse book in the shop - a riding mount answers the row
+				// (playerbot_mount_gate.h); counted when none could be bought
+				case playerbot_progression::REQ_HORSE:
+					if (!ManagePlayerBotProgShopMount(ch, state, rec, dwNow))
+						s_kPlayerBotPShop.horse.insert(pid);
+					break;
 				case playerbot_progression::REQ_METINS: s_kPlayerBotPShop.metins.insert(pid); break;
 				case playerbot_progression::REQ_HP: s_kPlayerBotPShop.hp.insert(pid); break;	// the bonus goals, urgent
 #ifdef PLAYERBOT_SKILL_INSTR_LATE

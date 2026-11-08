@@ -187,6 +187,10 @@ namespace
 	void WritePlayerBotProgressionStatus(DWORD dwNow);
 	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate passed or given up (playerbot_progression_shop.h, its census)
 	void NotePlayerBotProgShopGateEnd(DWORD pid, BYTE gate, unsigned int heldMin, bool givenUp);
+	// MT2009_PLUS_BOT_MOUNT_GATE_V1: the horse row met by a riding mount, and its result for the census
+	// (playerbot_mount_gate.h)
+	bool IsPlayerBotMountGateMet(LPCHARACTER ch);
+	void NotePlayerBotMountGateRow(DWORD pid, BYTE how, DWORD dwNow);
 
 	// Once a manager tick: the file (a stat every five seconds), the census,
 	// the status file.
@@ -576,10 +580,26 @@ namespace
 					flagValue = ch->GetQuestFlag(req.flag);
 				std::string one;
 				if (playerbot_progression::Meets(req, snap, flagValue, one))
+				{
+					if (req.type == playerbot_progression::REQ_HORSE)
+						NotePlayerBotMountGateRow(pid, 1, dwNow);	// MT2009_PLUS_BOT_MOUNT_GATE_V1: met by the horse
 					continue;
+				}
 				// MT2009_PLUS_PROGRESSION_V2: one of the piece's other rows.
 				if (playerbot_progression::MeetsAlternative(gate, r, snap))
 					continue;
+				// MT2009_PLUS_BOT_MOUNT_GATE_V1 (the owner, 8 November 2026): a bot with a riding mount (an ItemShop mount
+				// worn or in the bag, permanent or with m2_bot_mountgate_min_days left - not the starter Appaloosa) needs no
+				// horse for the row (playerbot_mount_gate.h; m2_bot_mountgate_off 1: as before)
+				if (req.type == playerbot_progression::REQ_HORSE)
+				{
+					if (IsPlayerBotMountGateMet(ch))
+					{
+						NotePlayerBotMountGateRow(pid, 2, dwNow);
+						continue;
+					}
+					NotePlayerBotMountGateRow(pid, 3, dwNow);
+				}
 				holdGate = gate.level;
 				if (!playerbot_progression::IsFirstOfPiece(gate, r))
 					continue;

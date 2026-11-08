@@ -51,9 +51,15 @@ namespace
 	// than a pony: a top Blade Master of Urtopy's "nie ma na to checi". The
 	// operator's answer (27 September): "niech wszyscy rozwijaja konie". A
 	// dropper still takes no trial (IsPlayerBotTrialExempt).
+	// MT2009_PLUS_BOT_MOUNT_GATE_V1: a bot with a riding mount under level 95 raises its horse slowly - at most
+	// m2_bot_mountgate_horse_per_day levels a Polish day (playerbot_mount_gate.h, included later)
+	bool IsPlayerBotHorseDayCapped(LPCHARACTER ch);
+
 	bool CanPlayerBotAdvanceHorse(LPCHARACTER ch)
 	{
 		if (!ch || ch->GetHorseLevel() >= HORSE_MAX_LEVEL) // MT2009_PLUS_HORSE40_V1: to 40
+			return false;
+		if (IsPlayerBotHorseDayCapped(ch))	// MT2009_PLUS_BOT_MOUNT_GATE_V1
 			return false;
 		// A horse at exactly ten is what the battle horse trial asks for, and
 		// training it would make it eleven - after which no NPC in this world
@@ -119,6 +125,10 @@ namespace
 			return false;
 		if (!state.bVisitingStable)
 			state.dwNextHorseCheckTime = dwNow + 3000;
+		// MT2009_PLUS_BOT_MOUNT_GATE_V1: the mounted bot's horse day done - no visit (the trials' collection and the
+		// 21+ feed tries wait too)
+		if (!state.bVisitingStable && IsPlayerBotHorseDayCapped(ch))
+			return false;
 
 		const BYTE horseLevel = ch->GetHorseLevel();
 		const bool bBattleHorseWaiting = IsPlayerBotBattleHorseEarned(ch) &&
