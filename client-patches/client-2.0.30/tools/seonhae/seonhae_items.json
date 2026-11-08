@@ -20,7 +20,7 @@
    "flag": 8196,
    "value1": 0,
    "icon": "icon/item/39071.tga",
-   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39."
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 31-39. Przedmioty na 30. poziom: Szary Lśniący Odłamek."
   },
   {
    "vnum": 39072,
@@ -60,7 +60,7 @@
    "flag": 8196,
    "value1": 0,
    "icon": "icon/item/39075.tga",
-   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89."
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 76-89. Przedmioty na 75. poziom (np. Miecz Żalu): Zielony Lśniący Odłamek."
   },
   {
    "vnum": 39076,
@@ -70,7 +70,7 @@
    "flag": 8196,
    "value1": 0,
    "icon": "icon/item/39076.tga",
-   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104."
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104. Broń, zbroje i hełmy na 96. poziom: Żółty Lśniący Odłamek."
   },
   {
    "vnum": 39077,
@@ -80,7 +80,7 @@
    "flag": 8196,
    "value1": 0,
    "icon": "icon/item/39077.tga",
-   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119."
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 106-119. Przedmioty na 105. poziom: Żółty Lśniący Odłamek."
   },
   {
    "vnum": 39081,

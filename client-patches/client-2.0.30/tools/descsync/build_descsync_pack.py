@@ -22,7 +22,12 @@ SRC = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'locale', 'locale', 
 sys.path.insert(0, '/opt/metin2/cache/tcm/tz')
 sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 NAME = 'locale/pl/itemdesc.txt'
-SYNC = ('30368', '30369', '30370')
+# MT2009_PLUS_SEONHAE_DESC_V1 (8 November 2026, Discord: "w opisie fioletowy odlamek od 75, a przy bonusowaniu zielony"):
+# the shards whose level range held the Lucent shards' levels - 39075 said 75-89, but a level-75 item (Miecz Zalu)
+# takes the Zielony Lsniacy (39079) as the pl-wiki table, playerbot_seonhae.h and uiseonhae.py have it; likewise 30
+# (Szary Lsniacy), 96 weapons/armours/helmets and 105 (Zolty Lsniacy) - 39071 31-39, 39075 76-89, 39076 and 39077
+# 106-119 now say so.
+SYNC = ('30368', '30369', '30370', '39071', '39075', '39076', '39077')
 
 
 def rows_of(b):

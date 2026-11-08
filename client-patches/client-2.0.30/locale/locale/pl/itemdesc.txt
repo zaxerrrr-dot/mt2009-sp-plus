@@ -2884,3 +2884,7 @@
 83033	Srebrny Pakiet Yutnori	Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
 83034	Br¹zowy Pakiet Yutnori	Nagroda za udzia³ w Yutnori. Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
 54700	Skrzynia Berana-Setaou	Ta skrzynia zosta³a wydobyta z Groty Wygnañców. Znajduje siê w niej prawdziwy królewski skarb. Mo¿na j¹ otworzyæ 2 razy - za ka¿dym razem coœ daje.
+39071	Bia³y Od³amek	Materia³, który zwiêksza szansê na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 31-39. Przedmioty na 30. poziom: Szary Lœni¹cy Od³amek.
+39075	Fioletowy Od³amek	Materia³, który zwiêksza szansê na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 76-89. Przedmioty na 75. poziom (np. Miecz ¯alu): Zielony Lœni¹cy Od³amek.
+39076	Czerwony Od³amek	Materia³, który zwiêksza szansê na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104. Broñ, zbroje i he³my na 96. poziom: ¯ó³ty Lœni¹cy Od³amek.
+39077	Têczowy Od³amek	Materia³, który zwiêksza szansê na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 106-119. Przedmioty na 105. poziom: ¯ó³ty Lœni¹cy Od³amek.
