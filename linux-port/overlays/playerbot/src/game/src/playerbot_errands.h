@@ -463,7 +463,15 @@ namespace
 			if (b.dwArrivedAt != 0 && now - b.dwArrivedAt < PLAYERBOT_ERRAND_STAY_MS)
 				++arrivals;
 			// a bot not ticked for an hour is gone from this core
-			if (b.dwNextTick != 0 && now - b.dwNextTick >= PLAYERBOT_ERRAND_STAY_MS)
+			// MT2009_PLUS_BOT_ERRAND_CLEANUP_FIX_V1 (night of 8 November 2026): dwNextTick is the NEXT tick - up to 30 s
+			// ahead - and `now - dwNextTick` unsigned wrapped past an hour for every bot ticked lately: each census (ten
+			// minutes) erased nearly every bot's entry, the next pass saw it "first" after the warm-up and made it an
+			// arrival - 1197..1319 arrivals a census on channel 1 of ~1250 bots, all pinned against the roam and sent on an
+			// arrival trip every ten minutes. Signed now; a census-only entry (never ticked) goes when the census lost it.
+			const bool goneTicked = b.dwNextTick != 0 && (int)(now - b.dwNextTick) >= (int)PLAYERBOT_ERRAND_STAY_MS;
+			const bool goneSeen = b.dwNextTick == 0 && b.dwPresenceSeen != 0 &&
+					(int)(now - b.dwPresenceSeen) >= (int)PLAYERBOT_ERRAND_STAY_MS;
+			if (goneTicked || goneSeen)
 				s_mapPlayerBotErrands.erase(it++);
 			else
 				++it;
