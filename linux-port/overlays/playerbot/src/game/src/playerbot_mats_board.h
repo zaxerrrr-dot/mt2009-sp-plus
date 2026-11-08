@@ -42,7 +42,9 @@
 //         - ScorePlayerBotShopStock), a holder of the first channel with no counter and PLAYERBOT_MATS_BOARD_COUNTER_MIN
 //         units of such kinds opens one (GetPlayerBotShopReason: "nadmiar towaru"), at the market's price with the board's
 //         premium (GetPlayerBotListingPrice: the shortage markup or the board's, the higher);
-//       - the sale: a holder with no counter (the second channel, or none opened yet) sells to a short bot of its core -
+//       - the sale (OFF by default since MT2009_PLUS_BOT_MATS_BOARD_SALE_OPT_IN_V1 - event flag m2_bot_mats_board_sale_on 1
+//         turns it on; the second channel's holders move to the first and open a stand instead, playerbot_ch2_stand.h):
+//         a holder with no counter (the second channel, or none opened yet) sells to a short bot of its core -
 //         the pieces from its bag to the buyer's, the yang the other way (the G0 spare's bot-to-bot sale): the market's
 //         price (GetPlayerBotDealFairPrice - the sales' memory, the stands' cheapest, the asking price) + the premium,
 //         never over an NPC's, the buyer paying out of PLAYERBOT_MATS_BOARD_BUY_PURSE_PCT of its spare purse; up to the
@@ -59,7 +61,8 @@
 // Nothing is made or given: every piece that moves was dropped by somebody and paid for; no Smocze Monety anywhere.
 // Companions (IsPlayerBotSidekickPID) and players take no part on either side.
 //
-// Switches (event flags, looked at once a second): m2_bot_mats_board_off 1 - all of it; m2_bot_mats_board_sale_off,
+// Switches (event flags, looked at once a second): m2_bot_mats_board_off 1 - all of it; m2_bot_mats_board_sale_on 1 - the
+// direct sale on (off by default, MT2009_PLUS_BOT_MATS_BOARD_SALE_OPT_IN_V1); m2_bot_mats_board_sale_off,
 // m2_bot_mats_board_list_off (the counter's boost, reason and premium), m2_bot_mats_board_buy_off,
 // m2_bot_mats_board_farm_off - one part. The numbers (env, read once): PLAYERBOT_MATS_BOARD_PASS_MS (180000),
 // _SCAN_BOTS (25), _SALES_PER_PASS (80), _PREMIUM_MAX (30), _COUNTER_MIN (10), _BUY_PURSE_PCT (60), _FARM_UNITS (5),
@@ -135,7 +138,10 @@ namespace
 			quest::CQuestManager& q = quest::CQuestManager::instance();
 			const bool all = q.GetEventFlag("m2_bot_mats_board_off") != 0;
 			s_abOff[MATS_BOARD_ALL] = all;
-			s_abOff[MATS_BOARD_SALE] = all || q.GetEventFlag("m2_bot_mats_board_sale_off") != 0;
+			// MT2009_PLUS_BOT_MATS_BOARD_SALE_OPT_IN_V1 (the owner, 8 November 2026: the surplus goes through the stands,
+			// not bot to bot): the direct sale only with m2_bot_mats_board_sale_on 1 (and still not with _sale_off 1).
+			s_abOff[MATS_BOARD_SALE] = all || q.GetEventFlag("m2_bot_mats_board_sale_on") == 0 ||
+					q.GetEventFlag("m2_bot_mats_board_sale_off") != 0;
 			s_abOff[MATS_BOARD_LIST] = all || q.GetEventFlag("m2_bot_mats_board_list_off") != 0;
 			s_abOff[MATS_BOARD_BUY] = all || q.GetEventFlag("m2_bot_mats_board_buy_off") != 0;
 			s_abOff[MATS_BOARD_FARM] = all || q.GetEventFlag("m2_bot_mats_board_farm_off") != 0;
@@ -438,9 +444,13 @@ namespace
 
 	// GetPlayerBotShopReason's question (playerbot_town.h): a bot of the first channel with no counter that holds
 	// PLAYERBOT_MATS_BOARD_COUNTER_MIN units of kinds the board lacks opens one.
+	// MT2009_PLUS_BOT_CH2_STAND_V1: and a bot of the second channel that could keep one on the first
+	// (IsPlayerBotCh2StandCandidate) - the reason moves it there (playerbot_ch2_stand.h); PlayerBotHasCounter is false on
+	// every channel but the first, so 48 % of the board's surplus never had a reason.
+	bool IsPlayerBotCh2StandCandidate(LPCHARACTER ch);	// playerbot_ch2_stand.h
 	bool IsPlayerBotMatsBoardCounterDue(LPCHARACTER ch)
 	{
-		if (!ch || IsPlayerBotMatsBoardOff(MATS_BOARD_LIST) || !PlayerBotHasCounter(ch))
+		if (!ch || IsPlayerBotMatsBoardOff(MATS_BOARD_LIST) || (!PlayerBotHasCounter(ch) && !IsPlayerBotCh2StandCandidate(ch)))
 			return false;
 		const TPlayerBotMatsBoardRow* row = GetPlayerBotMatsBoardRow(ch->GetPlayerID());
 		if (!row || row->surplus.empty())

@@ -48,6 +48,7 @@ namespace
 
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	bool HasPlayerBotOfflineShop(LPCHARACTER ch);
+	void NotePlayerBotCh2StandIntent(LPCHARACTER ch, const char* why);	// MT2009_PLUS_BOT_CH2_STAND_V1
 	bool SubmitPlayerBotOfflineShop(LPCHARACTER, TPlayerBotAIState&, DWORD, const char*, TShopItemTable*, BYTE);
 
 	// The stands are the shop channel's alone. With the two channels with
@@ -74,6 +75,10 @@ namespace
 			return false;
 		}
 		const bool requested = CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID());
+		// MT2009_PLUS_BOT_CH2_STAND_V1: the stand rides the move - the first channel drives the bot to it on arrival
+		// (the wait below times out long before most moves: 75 s against a 120 s gate and 30 s of standing).
+		if (requested)
+			NotePlayerBotCh2StandIntent(ch, phase ? phase : "town");
 		if (!state.bWaitingForShopChannel)
 			state.dwShopChannelWaitStarted = now;
 		state.bWaitingForShopChannel = true;
@@ -147,6 +152,22 @@ namespace
 	bool IsPlayerBotMatsBoardListing(LPCHARACTER ch, DWORD vnum);
 	bool IsPlayerBotMatsBoardCounterDue(LPCHARACTER ch);
 	int GetPlayerBotMatsBoardPremiumPercent(DWORD vnum);
+	// MT2009_PLUS_BOT_CH2_STAND_V1 (playerbot_ch2_stand.h): the second channel's bots with goods move to the first and
+	// open their stand there - the reasons over the extra inventories, the stand's fee over the base reserve, the ask
+	// off the shop channel, the intent carried by the move, the drive on arrival and its outcomes.
+	bool IsPlayerBotStandStorageReasonsOn();
+	int GetPlayerBotStandFeeReserve(LPCHARACTER ch);
+	void NotePlayerBotStandFeeEased(LPCHARACTER ch, long long cost);
+	int CountPlayerBotOwnedSurplusSkillBooks(LPCHARACTER ch);
+	void NotePlayerBotCh2StandIntent(LPCHARACTER ch, const char* why);
+	void ManagePlayerBotCh2StandAsk(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
+	bool IsPlayerBotCh2StandDriveDue(LPCHARACTER ch, DWORD now);
+	void NotePlayerBotCh2StandOutcome(LPCHARACTER ch, int outcome);
+	void NotePlayerBotCh2StandToM1(LPCHARACTER ch, long homeMap);
+	void NotePlayerBotCh2StandShopSeen(LPCHARACTER ch);
+	const int PLAYERBOT_CH2STAND_OUTCOME_NO_REASON = 1, PLAYERBOT_CH2STAND_OUTCOME_NOTHING_TO_SELL = 2,
+			PLAYERBOT_CH2STAND_OUTCOME_CANNOT_PAY = 3, PLAYERBOT_CH2STAND_OUTCOME_BUNDLE = 4,
+			PLAYERBOT_CH2STAND_OUTCOME_NO_VILLAGE = 5;	// EPlayerBotCh2StandOutcome
 	// MT2009_PLUS_MARKET_LIFE_V1 (playerbot_market_life.h): a Kupon SM this
 	// bot puts on its counter rather than cashing (point 6), and the units of
 	// a kind on the counters of a kingdom's maps (point 4).
@@ -2551,9 +2572,19 @@ namespace
 		const bool trader = IsPlayerBotResourceTrader(ch->GetPlayerID());
 		const bool chestSeller = IsPlayerBotMoonlightChestSeller(ch->GetPlayerID());
 		std::map<DWORD, int> materials;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_CH2_STAND_V1: the bag and the extra inventory's storages (CollectPlayerBotOwnedItems) - since
+		// the extra inventory's route (MT2009_PLUS_BOT_EKW_ROUTE_V1) every material, key and marble lies in a storage,
+		// and the hoard read the bag's cells only. Event flag m2_bot_stand_storage_reasons_off 1: the bag only.
+		std::vector<LPITEM> owned;
+		if (IsPlayerBotStandStorageReasonsOn())
+			CollectPlayerBotOwnedItems(ch, owned);
+		else
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+				if (LPITEM bagItem = ch->GetInventoryItem(cell))
+					owned.push_back(bagItem);
+		for (size_t o = 0; o < owned.size(); ++o)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
+			LPITEM item = owned[o];
 			if (!item || item->IsEquipped() || item->isLocked())
 				continue;
 			const int count = std::max<int>(1, item->GetCount());
@@ -2701,6 +2732,14 @@ namespace
 		// stalls actually stop.
 		if ((CountPlayerBotSurplusSkillBooks(ch) >= PLAYERBOT_SHOP_BOOK_PRESSURE_MIN ||
 					CountPlayerBotOtherClassBooks(ch) >= PLAYERBOT_SHOP_OTHER_CLASS_BOOK_MIN) &&
+				PlayerBotWeightedRoll(
+					PlayerBotNavHash(ch->GetPlayerID() ^ 0x424f4f4bU) % 1000U,
+					PLAYERBOT_SHOP_BOOK_ROLL, PLAYERBOT_WEIGHT_TRADE))
+			return PLAYERBOT_SHOP_REASON_BOOKS;
+		// MT2009_PLUS_BOT_CH2_STAND_V1: and a counter's worth of them over the bag and BOOK_INVENTORY, where the route
+		// puts every book the bot does not read (the bag's rule above never sees them there) - the same roll.
+		if (IsPlayerBotStandStorageReasonsOn() &&
+				CountPlayerBotOwnedSurplusSkillBooks(ch) >= PLAYERBOT_SHOP_BOOK_PRESSURE_MIN &&
 				PlayerBotWeightedRoll(
 					PlayerBotNavHash(ch->GetPlayerID() ^ 0x424f4f4bU) % 1000U,
 					PLAYERBOT_SHOP_BOOK_ROLL, PLAYERBOT_WEIGHT_TRADE))
@@ -7086,7 +7125,11 @@ namespace
 					state.bVisitingBiologist ? 1 : 0, state.bVisitingStable ? 1 : 0,
 					state.dwNextShopKeepTime > dwNow ? (int)((state.dwNextShopKeepTime - dwNow) / 1000) : 0);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
-		if (HasPlayerBotOfflineShop(ch)) return false;
+		if (HasPlayerBotOfflineShop(ch))
+		{
+			NotePlayerBotCh2StandShopSeen(ch);	// MT2009_PLUS_BOT_CH2_STAND_V1: the stand it came for
+			return false;
+		}
 #endif
 		if (!ch || !ch->IsItemLoaded())
 			return false;
@@ -7114,6 +7157,9 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 			if (!CPlayerBotManager::instance().IsChannelTableMode())
 				return false;
+			// MT2009_PLUS_BOT_CH2_STAND_V1: a bot with goods worth a stand asks to be moved wherever it is, not only in
+			// its first village after a town visit (playerbot_ch2_stand.h); the town pass below goes on as before.
+			ManagePlayerBotCh2StandAsk(ch, state, dwNow);
 #else
 			return false;
 #endif
@@ -7154,7 +7200,15 @@ namespace
 		const bool medalStock = IsPlayerBotMedalStockReady(ch, state) ||
 				(!IsPlayerBotMonkeyMap(ch->GetMapIndex()) && IsPlayerBotClearStockReady(ch, state) &&
 					GetPlayerBotShopReason(ch, state) != PLAYERBOT_SHOP_REASON_NONE);
-		if (medalStock && !IsPlayerBotShopMapAllowed(ch->GetMapIndex()) &&
+		// MT2009_PLUS_BOT_CH2_STAND_V1: a bot moved here from the second channel for its stand (the intent its move
+		// carried, playerbot_ch2_stand.h) goes to it as a medal dropper with its stock does - to its first village from
+		// wherever it spawned, past the in-town gate below; on arrival it had no memory of the stand at all (13 of the
+		// 230 bots moved to this channel in 45 minutes opened one).
+		bool standDrive = false;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		standDrive = !medalStock && !IsPlayerBotHeldForCompany(ch) && IsPlayerBotCh2StandDriveDue(ch, dwNow);
+#endif
+		if ((medalStock || standDrive) && !IsPlayerBotShopMapAllowed(ch->GetMapIndex()) &&
 				!IsPlayerBotHeldForCompany(ch))
 		{
 			long homeMap = 0, homeX = 0, homeY = 0;
@@ -7163,13 +7217,22 @@ namespace
 					!IsPlayerBotMapHostedHere(homeMap) || !IsPlayerBotShopMapAllowed(homeMap))
 			{
 				state.dwNextShopKeepTime = dwNow + number(600000, 900000);
-				sys_log(0, "PLAYERBOT_SHOP: medal stock has no first village here pid=%u name=%s map=%ld home=%ld",
+				sys_log(0, "PLAYERBOT_SHOP: %s has no first village here pid=%u name=%s map=%ld home=%ld",
+						standDrive ? "ch2 stand" : "medal stock",
 						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), homeMap);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+				if (standDrive)
+					NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_NO_VILLAGE);
+#endif
 				return false;
 			}
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			if (standDrive)
+				NotePlayerBotCh2StandToM1(ch, homeMap);
+#endif
 			if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow,
-						"medal_stall_to_m1"))
+						standDrive ? "ch2_stand_to_m1" : "medal_stall_to_m1"))
 			{
 				state.dwNextShopKeepTime = dwNow + number(120000, 240000);
 				return false;
@@ -7228,12 +7291,18 @@ namespace
 		const bool alreadyAtPitch =
 				DISTANCE_APPROX(ch->GetX() - pitchX, ch->GetY() - pitchY) <=
 					PLAYERBOT_SHOP_RING_RADIUS + PLAYERBOT_MARKET_ARRIVE;
-		if (!justFinishedInTown && !alreadyAtPitch && !medalStock)
+		if (!justFinishedInTown && !alreadyAtPitch && !medalStock && !standDrive)
 			return false;
 
 		const BYTE bShopReason = GetPlayerBotShopReason(ch, state);
 		if (bShopReason == PLAYERBOT_SHOP_REASON_NONE)
+		{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			if (standDrive)
+				NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_NO_REASON);
+#endif
 			return false;
+		}
 		// Kept from here rather than from the open itself: the walk to the pitch
 		// runs this pass every tick, and the reason it acts on is this one.
 		state.bShopOpenReason = bShopReason;
@@ -7263,6 +7332,10 @@ namespace
 		if (ch->CountSpecifyItem(71049) > 0)
 		{
 			state.dwNextShopKeepTime = dwNow + number(600000, 900000);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			if (standDrive)
+				NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_BUNDLE);
+#endif
 			PlayerBotLogThrottled("shop_permanent_bundle", dwNow,
 					"PLAYERBOT_SHOP: refused pid=%u name=%s reason=permanent_bundle",
 					ch->GetPlayerID(), ch->GetName());
@@ -7276,13 +7349,32 @@ namespace
 			// keeper that cannot pay does not split and walk first. And not in
 			// the first two minutes after a spawn (see the submit), for the
 			// same reason.
-			need += (long long)aOfflineShopTime[1].price + (long long)GetPlayerBotReservedGold(ch);
+			// MT2009_PLUS_BOT_CH2_STAND_V1: over the base reserve - the horse's training savings held back 1616 stands
+			// in 45 minutes on channel 1 ("cannot_pay", purses of 220-350k against 376-451k for a fee of 8000), and a
+			// stand's sales are what that training is paid from (GetPlayerBotStandFeeReserve).
+			const long long cost = need + (long long)aOfflineShopTime[1].price;
+			need = cost + (long long)GetPlayerBotStandFeeReserve(ch);
 			if (dwNow - state.dwSpawnTime < 120000)
+			{
+				// a bot that came for its stand waits for it in its first village, not on a ring trip away from it
+				if (standDrive)
+				{
+					state.dwLastMeaningfulActivityTime = dwNow;
+					SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+					return true;
+				}
 				return false;
+			}
+			if ((long long)ch->GetGold() >= need)
+				NotePlayerBotStandFeeEased(ch, cost);
 #endif
 			if ((long long)ch->GetGold() < need)
 			{
 				state.dwNextShopKeepTime = dwNow + number(120000, 240000);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+				if (standDrive)
+					NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_CANNOT_PAY);
+#endif
 				PlayerBotLogThrottled("shop_cannot_pay", dwNow,
 						"PLAYERBOT_SHOP: refused pid=%u name=%s reason=cannot_pay gold=%lld need=%lld",
 						ch->GetPlayerID(), ch->GetName(), (long long)ch->GetGold(), need);
@@ -7290,6 +7382,10 @@ namespace
 			}
 		}
 
+		// MT2009_PLUS_BOT_CH2_STAND_V1: a bot driven to its stand from its arrival made no town visit, whose fetch
+		// brings the extra inventory's goods into the bag for the counter - so it is fetched here.
+		if (standDrive)
+			PlayerBotEkwFetchGoods(ch, "ch2_stand");
 		// Sorted best first, so the head of the list is the best score there is.
 		std::vector<std::pair<int, WORD> > scored;
 		CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state));
@@ -7330,6 +7426,10 @@ namespace
 			// not an evening, and it can only open while it happens to be in town.
 			state.dwNextShopKeepTime = dwNow + (scored.empty()
 					? number(300000, 600000) : number(120000, 240000));
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			if (standDrive)
+				NotePlayerBotCh2StandOutcome(ch, PLAYERBOT_CH2STAND_OUTCOME_NOTHING_TO_SELL);
+#endif
 			sys_log(0, "PLAYERBOT_SHOP: nothing to sell pid=%u name=%s lines=%u best=%d",
 					ch->GetPlayerID(), ch->GetName(), (unsigned int)scored.size(),
 					scored.empty() ? 0 : scored[0].first);

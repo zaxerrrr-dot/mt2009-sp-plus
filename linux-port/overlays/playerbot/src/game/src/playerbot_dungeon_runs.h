@@ -702,6 +702,7 @@ namespace
 	int CountPlayerBotDropKnowDemand(int def);
 	void ManagePlayerBotDropKnow(DWORD dwNow);
 	void ManagePlayerBotMatsBoard(DWORD dwNow);	// MT2009_PLUS_BOT_MATS_BOARD_V1 (playerbot_mats_board.h)
+	void ManagePlayerBotCh2Stand(DWORD dwNow);	// MT2009_PLUS_BOT_CH2_STAND_V1 (playerbot_ch2_stand.h)
 	bool IsPlayerBotDropkiActive(DWORD pid);
 	DWORD NotePlayerBotDropkiRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS, DWORD rest);
 	void ManagePlayerBotDropki(DWORD dwNow);
@@ -4984,6 +4985,7 @@ namespace
 		PlanPlayerBotWiezaTraining(dwNow, false);	// MT2009_PLUS_BOT_WIEZA_V1: the tower's solo climbs (playerbot_wieza_train)
 		ManagePlayerBotDropKnow(dwNow);	// MT2009_PLUS_BOT_DROPKNOW_V1: the index, the needs' pass (its own clocks)
 		ManagePlayerBotMatsBoard(dwNow);	// MT2009_PLUS_BOT_MATS_BOARD_V1: the materials' board (its own clocks)
+		ManagePlayerBotCh2Stand(dwNow);	// MT2009_PLUS_BOT_CH2_STAND_V1: the ch2 stands' census (its own clock)
 		ManagePlayerBotDropki(dwNow);	// MT2009_PLUS_BOT_DROPKI_V1: the Dropki's roles, parties and calls (its own clocks)
 	}
 }
