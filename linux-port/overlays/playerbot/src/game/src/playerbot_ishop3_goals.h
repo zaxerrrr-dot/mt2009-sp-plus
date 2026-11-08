@@ -252,6 +252,26 @@ namespace
 		return open;
 	}
 
+	// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (playerbot_marble_first.h): a bot with SM buys a marble for every worn piece of four
+	// lines waiting for its fifth (the marble misses seven times in ten), up to PLAYERBOT_ISHOP3_MARBLE_BATCH_MAX a look -
+	// the hold / day caps still clamp it; else one, as before.
+	const int PLAYERBOT_ISHOP3_MARBLE_BATCH_MAX = 4;
+
+	int GetPlayerBotIshop3MarbleBatch(LPCHARACTER ch, int fourLinePieces)
+	{
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+		if (!IsPlayerBotMarbleFirstFor(ch))
+			return 1;
+		int waiting = 0;
+		for (int wear = 0; wear < WEAR_MAX_NUM; ++wear)
+			if (PlayerBotPieceWantsFifth(ch, ch->GetWear(wear)))
+				++waiting;
+		return std::max(1, std::min(std::max(waiting, fourLinePieces), PLAYERBOT_ISHOP3_MARBLE_BATCH_MAX));
+#else
+		return 1;
+#endif
+	}
+
 	// The ordinary bonus pass's needs (not a Yohara bot's).
 	void CollectPlayerBotIshop3OrdinaryBonus(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n)
 	{
@@ -267,7 +287,8 @@ namespace
 		}
 		if (PlayerBotWantsBlessingMarble(ch) && dust < PLAYERBOT_DUST_PER_MARBLE && n < PLAYERBOT_ISHOP3_MAX_GOALS)
 		{
-			const TPlayerBotIshop3Goal g = { PLAYERBOT_BLESSING_MARBLE_VNUM, false, 1, "bonus_marble" };
+			const TPlayerBotIshop3Goal g = { PLAYERBOT_BLESSING_MARBLE_VNUM, false, GetPlayerBotIshop3MarbleBatch(ch, 1),
+					"bonus_marble" };
 			goals[n++] = g;
 		}
 		// the dust goes to the add first (ManagePlayerBotDustBonusStones), so a change is the shop's unless more is left
@@ -299,6 +320,7 @@ namespace
 		const std::map<DWORD, int>& spent = memory != s_mapPlayerBotYoharaBonusSpent.end() ? memory->second : s_none;
 		int open = 0;
 		bool fourLines = false;
+		int fourLinePieces = 0;	// MT2009_PLUS_BOT_MARBLE_FIRST_V1
 		for (size_t i = 0; i < pieces.size(); ++i)
 		{
 			const playerbot_yohara_bonus_rules::TPiece p = BuildPlayerBotYoharaBonusPiece(ch, pieces[i], spent);
@@ -307,7 +329,10 @@ namespace
 			if (p.lines < p.maxStoneLines)
 				open += p.maxStoneLines - p.lines;
 			else if (p.lines == p.maxStoneLines)
+			{
 				fourLines = true;
+				++fourLinePieces;
+			}
 		}
 		const int addNeed = std::min(open - bag.addUnits, PLAYERBOT_ISHOP3_YOHARA_ADD_BATCH_MAX);
 		if (addNeed > 0 && n < PLAYERBOT_ISHOP3_MAX_GOALS)
@@ -317,7 +342,8 @@ namespace
 		}
 		if (fourLines && bag.marbleCell < 0 && n < PLAYERBOT_ISHOP3_MAX_GOALS)
 		{
-			const TPlayerBotIshop3Goal g = { PLAYERBOT_BLESSING_MARBLE_VNUM, false, 1, "bonus_marble" };
+			const TPlayerBotIshop3Goal g = { PLAYERBOT_BLESSING_MARBLE_VNUM, false,
+					GetPlayerBotIshop3MarbleBatch(ch, fourLinePieces), "bonus_marble" };
 			goals[n++] = g;
 		}
 		// the changes: the pass's Pick with the bag topped up - would it still change a piece?
@@ -968,6 +994,12 @@ namespace
 			const int got = BuyPlayerBotIshop3Pieces(ch, state, goals[i], dwNow, &purchases);
 #ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
 			NotePlayerBotSkillInstrGoalResult(ch, goals[i], got);	// MT2009_PLUS_BOT_SKILL_INSTR_V1
+#endif
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+			// MT2009_PLUS_BOT_MARBLE_FIRST_V1: the marble bought, or refused (pool, coins, caps, no line) - the last resort's
+			// clock (playerbot_marble_first.h)
+			if (goals[i].dwVnum == PLAYERBOT_BLESSING_MARBLE_VNUM && strcmp(goals[i].szReason, "bonus_marble") == 0)
+				NotePlayerBotMarbleFirstShop(ch, goals[i].iPieces, got);
 #endif
 			// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: the catalogue's goals in the variety line, opened / bought
 			if (goals[i].bNeed != PLAYERBOT_ISHOP3_NEED_NEVER)

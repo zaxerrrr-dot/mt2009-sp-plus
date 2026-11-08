@@ -567,6 +567,9 @@ namespace
 	{
 		LPITEM item;
 		int slotIndex;
+		// MT2009_PLUS_BOT_MARBLE_FIRST_V1: a worn piece of this pass (off the body only while its stones are spent) - not
+		// the second set's piece in the bag (playerbot_element_second_set.h)
+		bool bWorn = false;
 	};
 
 	// The worn pieces a stone may go on, in the priority order: really worn in that slot, able to come off (it has to,
@@ -583,7 +586,7 @@ namespace
 					IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
 					!CanPlayerBotTakeBonusStone(item))
 				continue;
-			const TPlayerBotYoharaBonusPiece piece = { item, s };
+			const TPlayerBotYoharaBonusPiece piece = { item, s, true };
 			out.push_back(piece);
 		}
 	}
@@ -612,6 +615,15 @@ namespace
 		piece.elemCap = target >= 0 ? GetPlayerBotYoharaElementCap(wearCell) + base : 0;
 		if (target > 0)
 			piece.tier = playerbot_yohara_bonus_rules::TIER_STRONG;
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+		// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (playerbot_marble_first.h): a bot with SM changes a worn piece at five lines - the
+		// marble's fifth first, the 6/7 scope's pieces filled first; a four-line piece only as the last resort
+		if (p.bWorn && piece.lines > 0 && IsPlayerBotMarbleFirstFor(ch))
+		{
+			piece.fifthPriority = piece.lineRolls && IsPlayerBotMarbleFirstPriority(ch, p.item);
+			piece.changeBlocked = !IsPlayerBotMarbleFirstChangeAllowed(ch, p.item, piece.lines, piece.lineRolls);
+		}
+#endif
 		return piece;
 	}
 
@@ -756,6 +768,13 @@ namespace
 			else if (count < ITEM_ATTRIBUTE_MAX_NUM && number(1, 100) <= aiItemAttributeAddPercent[count])
 				item->AddAttribute();
 			ConsumePlayerBotBonusStoneAt(ch, cell);
+#ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
+			// MT2009_PLUS_BOT_MARBLE_FIRST_V1: the census - the marble's roll, a change by the piece's lines
+			if (choice.step == playerbot_yohara_bonus_rules::STEP_MARBLE)
+				NotePlayerBotMarbleFirstUsed(ch, item, item->GetAttributeCount() > count);
+			else if (choice.step == playerbot_yohara_bonus_rules::STEP_CHANGE)
+				NotePlayerBotMarbleFirstChange(ch, count);
+#endif
 			LogManager::instance().ItemLog(ch, item,
 					choice.step == playerbot_yohara_bonus_rules::STEP_ADD ? "PLAYERBOT_YOHARA_BONUS_ADD"
 						: (choice.step == playerbot_yohara_bonus_rules::STEP_MARBLE ? "PLAYERBOT_YOHARA_BONUS_MARBLE"

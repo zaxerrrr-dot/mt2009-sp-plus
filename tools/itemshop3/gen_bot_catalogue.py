@@ -106,7 +106,7 @@ EXPLICIT = {
     # --- the bonus stones and the refine (owned by the goals)
     71084: ('BONUS_STONE', 60, 60, 'Zaczarowanie: the Yohara plan\'s reserve (40) and a batch'),
     71085: ('BONUS_STONE', 24, 32, 'Wzmocnienie: the open lines of the bot\'s pieces'),
-    70024: ('BONUS_STONE', 2, 4, 'the marble for a piece of four lines'),
+    70024: ('BONUS_STONE', 4, 16, 'the marble for a piece of four lines (MT2009_PLUS_BOT_MARBLE_FIRST_V1: 4 / 16, was 2 / 4)'),
     51501: ('COR', 60, 60, 'raw Cor for a dragon stone kind under its target'),
     72368: ('NEVER', None, None, 'Enasir (MT2009_PLUS_REMOTE_CALL_V1) - a bot never summons him (remote_call.cpp keeps bots out)'),
     72369: ('NEVER', None, None, 'Enasir (MT2009_PLUS_REMOTE_CALL_V1) - a bot never summons him (remote_call.cpp keeps bots out)'),

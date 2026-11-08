@@ -10694,6 +10694,22 @@ namespace
 	bool WantsPlayerBotBonus67ShardsFromMarket(LPCHARACTER ch);
 	bool CanPlayerBotPayForBonus67Shard(LPCHARACTER ch, LPITEM item, long long price);
 	void NotePlayerBotBonus67ShardBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
+#define MT2009_PLUS_BOT_MARBLE_FIRST_V1 1
+	// MT2009_PLUS_BOT_MARBLE_FIRST_V1 (the owner, 8 November 2026: "niech glownie mieszaja przedmioty ktore maja 5 bonusow
+	// ... bot powinien dazyc do 5 bonusow, a jesli nie ma takiej mozliwosci, to w ostatecznosci zmieniac bonusy w
+	// 4-bonusowych przedmiotach. Wyjatkiem jest to, jak boty nie maja w ogole SM"; playerbot_marble_first.h, after
+	// playerbot_bonus67_bots.h): a bot with Smocze Monety it may spend changes (71084) a worn piece only at five lines -
+	// the adds to four, the Marmur Blogoslawienstwa (70024, bought in V3) for the fifth first; a four-line piece only as
+	// the last resort (the marble refused / failing and an urgent bonus need), the pieces of the 6/7 scope first. A bot
+	// with none mixes as before. Asked by playerbot_bonus.h, playerbot_yohara_bonus.h and playerbot_ishop3_goals.h.
+	bool IsPlayerBotMarbleFirstFor(LPCHARACTER ch);
+	bool IsPlayerBotMarbleFirstChangeAllowed(LPCHARACTER ch, LPITEM item, int lines, bool lineRolls);
+	bool IsPlayerBotMarbleFirstPriority(LPCHARACTER ch, LPITEM item);
+	bool PlayerBotPieceWantsFifth(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotMarbleFirstShop(LPCHARACTER ch, int wanted, int got);
+	void NotePlayerBotMarbleFirstUsed(LPCHARACTER ch, LPITEM item, bool won);
+	void NotePlayerBotMarbleFirstChange(LPCHARACTER ch, int lines);
+	void LogPlayerBotMarbleFirstCensus(DWORD dwNow);
 #endif
 }
 
