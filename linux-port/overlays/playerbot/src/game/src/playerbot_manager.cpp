@@ -504,6 +504,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a bot held at a gate of the checklist buys in the ItemShop V3 what meets its unmet
 // rows (the class chest for the skills, the safe scrolls for the plus) - after the class chests and the V3 goals
 #include "playerbot_progression_shop.h"
+// MT2009_PLUS_BOT_MOUNT_GATE_V1: the checklist's horse row met by a riding mount - bought for a held bot in the ItemShop V3,
+// put on; the mounted bot's horse slowly (a level a day under 95) - after the progression shop whose record it uses
+#include "playerbot_mount_gate.h"
 // MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
 // V3 goals whose purchase it uses
 #include "playerbot_yohara_guides.h"
@@ -8389,6 +8392,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate's unmet rows bought in the ItemShop (playerbot_progression_shop.h)
 		ManagePlayerBotProgressionShop(ch, state, dwNow);
 #endif
+		// MT2009_PLUS_BOT_MOUNT_GATE_V1: a bought riding mount put on, the census (playerbot_mount_gate.h)
+		ManagePlayerBotMountGate(ch, state, dwNow);
 		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
 		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).
 		ManagePlayerBotMlodzi(ch, state, dwNow);
