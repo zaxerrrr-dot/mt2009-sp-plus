@@ -142,6 +142,16 @@ namespace
 	// horse bags' items the migration put in the storeroom, looked at once.
 	bool PlayerBotWantsJukiReview(LPCHARACTER ch);
 	int RunPlayerBotJukiSafeboxReview(LPCHARACTER ch, CSafebox* box, const std::set<DWORD>& justDeposited, int* pSell);
+	// MT2009_PLUS_BOT_LADA_BOX_V1: a stand keeper's safebox goods for its lada (playerbot_lada.h, later).
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	int WithdrawPlayerBotLadaBox(LPCHARACTER ch, CSafebox* box, const std::set<DWORD>* pJustDeposited, bool gambling);
+	bool PlayerBotWantsLadaBox(LPCHARACTER ch, DWORD now);
+	bool IsPlayerBotLadaHerbDepositHeld(LPCHARACTER ch);
+#else
+	int WithdrawPlayerBotLadaBox(LPCHARACTER, CSafebox*, const std::set<DWORD>*, bool) { return 0; }
+	bool PlayerBotWantsLadaBox(LPCHARACTER, DWORD) { return false; }
+	bool IsPlayerBotLadaHerbDepositHeld(LPCHARACTER) { return false; }
+#endif
 	bool IsPlayerBotStone4HeldBack(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_MARKET_V3: how the counters stand for a kind (-1 missing, 1
 	// too much of it, 0 otherwise), defined with the market index below.
@@ -552,6 +562,9 @@ namespace
 	{
 		units.clear();
 		if (!ch || !ch->IsItemLoaded() || IsPlayerBotSidekickServing(ch))
+			return 0;
+		// MT2009_PLUS_BOT_LADA_BOX_V1: a stand keeper's spare herbs are its lada's while its bag is clear of pressure
+		if (IsPlayerBotLadaHerbDepositHeld(ch))
 			return 0;
 		std::map<DWORD, std::pair<int, int> > held;   // vnum -> units, stacks
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
@@ -1538,7 +1551,8 @@ namespace
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
 				PlayerBotSidekickWantsBoxSweep(ch) ||	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
 				PlayerBotG0WantsSafebox(ch) ||	// MT2009_PLUS_BOT_YOHARA_G0_V2: the G0 dust in or out
-				PlayerBotWantsJukiReview(ch);	// MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items, whatever the back-off
+				PlayerBotWantsJukiReview(ch) ||	// MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items, whatever the back-off
+				PlayerBotWantsLadaBox(ch, dwNow);	// MT2009_PLUS_BOT_LADA_BOX_V1: the box's goods for the lada
 		if (!state.bTownNeedSafebox && !boxIdle &&
 				PlayerBotWantsOwnBoxGear(ch, state, dwNow))	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
 		{
@@ -8503,7 +8517,7 @@ namespace
 					!PlayerBotG0WantsSafebox(ch) && !PlayerBotWantsJukiReview(ch) &&
 					s_setPlayerBotBoxGearVisit.find(ch->GetPlayerID()) == s_setPlayerBotBoxGearVisit.end() &&
 					!HasPlayerBotSafeboxDeposit(ch, state) && !PlayerBotWantsLppRelease(ch, state, dwNow) &&
-					!PlayerBotWantsMaterialRelease(ch, state, dwNow))
+					!PlayerBotWantsMaterialRelease(ch, state, dwNow) && !PlayerBotWantsLadaBox(ch, dwNow))
 			{
 				PlayerBotLogThrottled("safebox_errand_gone", dwNow,
 						"PLAYERBOT_TOWN: safebox errand gone before the storekeeper pid=%u name=%s free_cells=%d",
@@ -8702,6 +8716,9 @@ namespace
 					taken += RunPlayerBotJukiSafeboxReview(ch, box, justDeposited, &jukiSell);
 					released += jukiSell;
 				}
+				// MT2009_PLUS_BOT_LADA_BOX_V1: a stand keeper's goods for its lada - all but the spare gear and the keeps
+				// (playerbot_lada.h); its next pass lists them.
+				taken += WithdrawPlayerBotLadaBox(ch, box, &justDeposited, IsPlayerBotGambling(state, dwNow));
 				// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's sweep done,
 				// or what is left told to its owner.
 				NotePlayerBotSidekickBoxSwept(ch, box);

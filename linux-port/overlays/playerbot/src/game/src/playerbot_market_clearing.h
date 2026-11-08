@@ -200,6 +200,76 @@ namespace
 		return it == s_mapPlayerBotLadaTier.end() ? 0 : (int)it->second;
 	}
 
+	// MT2009_PLUS_BOT_LADA_TIER_XCH_V1 (the owner, 8 November 2026: why do the new lines listed from channel 2 start at
+	// the ordinary price?): the glut's kinds and their clearing ask, the same on every core of every channel - the
+	// clearing's state (sales windows, steps) lives on the shop channel's cores and differs between them, so one of them
+	// (the writer, playerbot_lada.h IsPlayerBotLadaTierWriter: the core hosting the map of the shop channel's bot stand of
+	// the lowest owner pid) publishes vnum -> clearing ask to player.playerbot_lada_tier at its tier pass and every other
+	// core reads it at its own. Every core then ranks the same lines (its full copy of every shop) into the same
+	// s_mapPlayerBotLadaTier, prices a new line of a glutted kind by where it falls in that ranking
+	// (GetPlayerBotLadaNewLineTier), and edits only the lines of the stands it hosts, as before.
+	std::unordered_map<DWORD, DWORD> s_mapPlayerBotLadaTierClear;	// vnum -> clearing ask per unit (the tiers' input)
+
+	DWORD GetPlayerBotLadaTierClearUnit(DWORD vnum)
+	{
+		std::unordered_map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotLadaTierClear.find(vnum);
+		return it == s_mapPlayerBotLadaTierClear.end() ? 0 : it->second;
+	}
+
+	// A tier's price of a line of `count` units that asks `asking` in all: min(ordinary, the clearing ask) x its
+	// permille, never under what the merchant pays, never over the ordinary ask (BotOfflineRepriceTarget and the lada's
+	// new line alike).
+	long long GetPlayerBotLadaTierPrice(DWORD vnum, long long count, long long asking, int tier)
+	{
+		count = std::max<long long>(1, count);
+		long long anchor = asking;
+		const DWORD clearUnit = GetPlayerBotLadaTierClearUnit(vnum);
+		if (clearUnit > 0)
+			anchor = std::min(anchor, (long long)clearUnit * count);
+		const long long merchant = (long long)GetPlayerBotClearingFloorUnit(vnum) * count;
+		return std::min(std::max(1LL, asking), std::max(std::max(1LL, merchant), anchor * tier / 1000));
+	}
+
+	// The ranking's curve of a glutted kind (built by the tier pass): the unit prices (milli-yang) of its lines in order
+	// and the units up to and including each, so a new line finds its place without a walk.
+	struct TPlayerBotLadaTierCurve
+	{
+		std::vector<unsigned long long> unitMilli;
+		std::vector<unsigned long long> unitsTo;
+		unsigned long long units = 0;
+		unsigned long long added = 0;	// units of new lines listed into a tier since the pass
+	};
+	std::unordered_map<DWORD, TPlayerBotLadaTierCurve> s_mapPlayerBotLadaTierCurve;
+	unsigned int s_uPlayerBotLadaNewLooked = 0;	// new lines of a glutted kind looked at since the last census
+
+	// The tier a new line of a glutted kind would rank into: the units of the kind's lines that ask no more a unit
+	// (ties go before it, the ranking's id order), and the tier lines listed since the pass, against every unit with it.
+	int GetPlayerBotLadaNewLineTier(DWORD vnum, unsigned long long unitMilli, DWORD count)
+	{
+		if (!s_bPlayerBotLadaTiers || GetPlayerBotLadaTierClearUnit(vnum) == 0 || count == 0)
+			return 0;
+		++s_uPlayerBotLadaNewLooked;
+		std::unordered_map<DWORD, TPlayerBotLadaTierCurve>::const_iterator it = s_mapPlayerBotLadaTierCurve.find(vnum);
+		unsigned long long before = 0, units = 0;
+		if (it != s_mapPlayerBotLadaTierCurve.end())
+		{
+			const TPlayerBotLadaTierCurve& c = it->second;
+			const size_t at = std::upper_bound(c.unitMilli.begin(), c.unitMilli.end(), unitMilli) - c.unitMilli.begin();
+			before = (at > 0 ? c.unitsTo[at - 1] : 0ULL) + c.added;
+			units = c.units + c.added;
+		}
+		const unsigned long long share = before * 1000ULL / std::max<unsigned long long>(1ULL, units + count);
+		if (share >= 200)
+			return 0;
+		return share < 100 ? 950 : 970;
+	}
+
+	// A new line went up into a tier: the next new lines of the kind rank behind it until the next pass.
+	void NotePlayerBotLadaNewTierUnits(DWORD vnum, DWORD count)
+	{
+		s_mapPlayerBotLadaTierCurve[vnum].added += count;
+	}
+
 	// The clearing ask that caps every ask and floor of a kind (GetPlayerBotShopAskingPriceRaw, GetPlayerBotListingFloor):
 	// none while the tiers price the glut instead.
 	DWORD GetPlayerBotClearingCapUnit(DWORD vnum)
