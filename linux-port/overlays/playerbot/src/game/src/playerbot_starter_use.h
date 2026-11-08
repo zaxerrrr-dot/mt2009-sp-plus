@@ -345,8 +345,8 @@ namespace
 	// The per-bot pass (once a minute a bot, out of a fight) and the census (the first bot past its ten minutes).
 	// MT2009_PLUS_BOT_TELEPORT_RING_KEEP_V1 (the owner, 8 November 2026: chests of skill instructions bought ten in a row
 	// bring a spam of Pierscienie Teleportacji - "jesli potrzebuja, to niech zostawia maksymalnie 4 sztuki"): the ring is
-	// not consumed (the frontier recall, PLAYERBOT_TELEPORT_RING_VNUM, has its own 30-minute clock), so a bot keeps ONE
-	// (m2_bot_teleport_ring_keep N, 1-4) and destroys the rest - the ring cannot be sold to a merchant (ANTI_SELL).
+	// not consumed and each ring rests 30 minutes on its own (socket 0, teleport_ring.quest), so a bot keeps FOUR - four
+	// trips in half an hour, as a player with four rings (m2_bot_teleport_ring_keep N, 1-4) - and destroys the rest - the ring cannot be sold to a merchant (ANTI_SELL).
 	// m2_bot_teleport_ring_keep_off 1: as before.
 	unsigned int s_uPlayerBotTeleportRingsRemoved = 0;
 
@@ -355,7 +355,7 @@ namespace
 		if (quest::CQuestManager::instance().GetEventFlag("m2_bot_teleport_ring_keep_off") == 1)
 			return;
 		int keep = (int)quest::CQuestManager::instance().GetEventFlag("m2_bot_teleport_ring_keep");
-		keep = keep <= 0 ? 1 : MIN(keep, 4);
+		keep = keep <= 0 ? 4 : MIN(keep, 4);
 		int seen = 0, removed = 0;
 		for (int cell = 0; cell < ch->GetInventoryMaxCount(); ++cell)
 		{
