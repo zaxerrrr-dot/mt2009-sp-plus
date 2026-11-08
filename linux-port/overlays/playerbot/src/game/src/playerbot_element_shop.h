@@ -108,10 +108,15 @@ namespace
 		bool bPlanShort;
 		DWORD dwNext;
 		DWORD dwSeen;
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: a retreat's boost - the HP lines wanted after the element, the pieces given
+		// an HP line by this pass (kept from the ordinary rerolls while the boost lasts)
+		bool bHpWanted;
+		int iBoosts;
+		std::set<DWORD> hpPieces;
 		TPlayerBotEShopRecord() : iElement(-1), iGate(0), iTarget(0), lMap(0), dwStart(0), dwReached(0), bArrivedLogged(false),
 			iResistStart(0), llSpent(0), iChanges(0), iAdds(0), bPetBought(false), bStoneCounted(false), bStoneWanted(false),
 			bStoneOut(false), bPetOut(false), dwStoneWantedSince(0), iFocusWear(-1), dwFocusItem(0), llPlanCost(0),
-			bPlanShort(false), dwNext(0), dwSeen(0) {}
+			bPlanShort(false), dwNext(0), dwSeen(0), bHpWanted(false), iBoosts(0) {}
 	};
 	std::map<DWORD, TPlayerBotEShopRecord> s_mapPlayerBotEShop;
 
@@ -119,12 +124,13 @@ namespace
 	{
 		unsigned int starts, reached, again, left, sessions, windowWaits, noStones, petsBought, petsOut, pieceDone, pieceGiveUp;
 		unsigned int changes, adds;
+		unsigned int boosts, hpPieceDone, hpDone;	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1
 		long long smReached;		// the SM of the bots reached in the period
 		long long minutesReached;	// their minutes
 		long resistStartReached;
 		std::vector<int> minutes;	// each reached bot's minutes (the median)
 		TPlayerBotEShopStats() : starts(0), reached(0), again(0), left(0), sessions(0), windowWaits(0), noStones(0), petsBought(0),
-			petsOut(0), pieceDone(0), pieceGiveUp(0), changes(0), adds(0), smReached(0), minutesReached(0), resistStartReached(0) {}
+			petsOut(0), pieceDone(0), pieceGiveUp(0), changes(0), adds(0), boosts(0), hpPieceDone(0), hpDone(0), smReached(0), minutesReached(0), resistStartReached(0) {}
 	};
 	TPlayerBotEShopStats s_kPlayerBotEShop;
 
@@ -195,6 +201,7 @@ namespace
 	struct TPlayerBotEShopPlan
 	{
 		int iResist, iTarget, iGap;
+		int iGain;	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the chosen options' points (a short plan's reach)
 		std::vector<TPlayerBotEShopPiece> pieces;
 		std::vector<TPlayerBotEShopOption> chosen;	// cheapest a point first
 		double dCost;
@@ -202,7 +209,7 @@ namespace
 		bool bStone, bPet;
 		int iStonePrice, iPetPrice;
 		double dUnitChange, dUnitAdd;
-		TPlayerBotEShopPlan() : iResist(0), iTarget(0), iGap(0), dCost(0), bShort(false), bStone(false), bPet(false), iStonePrice(0),
+		TPlayerBotEShopPlan() : iResist(0), iTarget(0), iGap(0), iGain(0), dCost(0), bShort(false), bStone(false), bPet(false), iStonePrice(0),
 			iPetPrice(0), dUnitChange(0), dUnitAdd(0) {}
 	};
 
@@ -397,6 +404,7 @@ namespace
 				}
 				taken[i] = true;
 				gap -= o.iGain;
+				plan.iGain += o.iGain;
 				plan.dCost += o.dCost;
 				plan.chosen.push_back(o);
 				if (o.iKind == PLAYERBOT_ESHOP_OPT_STONE)
@@ -592,7 +600,11 @@ namespace
 		if (!ch || !item || !IsPlayerBotElementShopOn())
 			return false;
 		const TPlayerBotEShopRecord* rec = FindPlayerBotElementShopRecord(ch);
-		if (rec && rec->dwFocusItem == item->GetID() && IsPlayerBotElementShopActive(rec))
+		if (rec && rec->dwFocusItem == item->GetID() && (IsPlayerBotElementShopActive(rec) || rec->bHpWanted))
+			return true;
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: a piece this pass gave its HP line while the boost lasts
+		if (rec && !rec->hpPieces.empty() && rec->hpPieces.count(item->GetID()) &&
+				GetPlayerBotElementProgressBoostTarget(ch, rec->iElement) > 0)
 			return true;
 		TPlayerBotElementMapView v;
 		if (!GetPlayerBotElementShopView(ch, v))
@@ -627,6 +639,158 @@ namespace
 		if (!IsPlayerBotElementShopOn() || !IsPlayerBotElementShopActive(rec))
 			return 0;
 		return std::min(rec->llPlanCost, std::max(0LL, GetPlayerBotElementShopBudget() - rec->llSpent));
+	}
+
+	// ---------------------------------------------------------------- MT2009_PLUS_BOT_EPROG_BUY_MORE_V1
+
+	// The HP after a retreat's boost: the shield, the necklace, the boots and the earrings (no element line on them in
+	// global mode) each to a Max HP line at the set's level-4 value, one piece a session, within the step's budget.
+	// false: nothing left to do (every piece has it, cannot take it, or was given up).
+	bool WorkPlayerBotElementShopHp(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotEShopRecord& rec,
+			const TPlayerBotElementMapView& v, DWORD dwNow, int* purchases)
+	{
+		static const BYTE s_wears[] = { WEAR_SHIELD, WEAR_NECK, WEAR_FOOTS, WEAR_EAR };
+		const BYTE point = (BYTE)APPLY_MAX_HP;
+		for (size_t i = 0; i < sizeof(s_wears) / sizeof(s_wears[0]); ++i)
+		{
+			TPlayerBotEShopPiece p;
+			if (!ReadPlayerBotElementShopPiece(ch, s_wears[i], point, v.iKeep, p, rec) || p.iSpent >= PLAYERBOT_ESHOP_PIECE_GIVE_UP ||
+					HasPlayerBotElementProgressKeptLine(p.item, v.iElement))
+				continue;
+			if (p.iCur >= p.iFloor)
+			{
+				rec.hpPieces.insert(p.item->GetID());
+				continue;
+			}
+			if (std::max(0LL, GetPlayerBotElementShopBudget() - rec.llSpent) <= 0)
+				return false;
+			rec.dwFocusItem = p.item->GetID();
+			rec.iFocusWear = p.bWear;
+			if (IsPlayerBotEquipWindowShut(ch, state))
+			{
+				++s_kPlayerBotEShop.windowWaits;
+				rec.dwNext = dwNow + PLAYERBOT_ESHOP_WINDOW_RETRY_MS;
+				return true;
+			}
+			WorkPlayerBotElementShopPiece(ch, state, rec, p, point, p.iFloor, dwNow, purchases);
+			if (GetPlayerBotElementShopLine(p.item, point) >= p.iFloor)
+			{
+				rec.hpPieces.insert(p.item->GetID());
+				++s_kPlayerBotEShop.hpPieceDone;
+				sys_log(0, "PLAYERBOT_EPROG_SHOP: hp_piece pid=%u name=%s lv=%d slot=%u vnum=%u hp_line=%d max_hp=%d spent=%lld",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)p.bWear, p.item->GetVnum(),
+						GetPlayerBotElementShopLine(p.item, point), (int)ch->GetMaxHP(), rec.llSpent);
+			}
+			return true;
+		}
+		rec.dwFocusItem = 0;
+		rec.iFocusWear = -1;
+		return false;
+	}
+
+	// The worn costume / hairstyle's room for the element's line (to its set's top) - the Handlarka's 70063 / 70064 for
+	// yang (the costume pass, which reads the raised want).
+	int GetPlayerBotElementShopCostumeRoom(LPCHARACTER ch, int e)
+	{
+		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[e];
+		TItemAttrMap::const_iterator it = g_map_itemAttr.find(point);
+		if (it == g_map_itemAttr.end())
+			return 0;
+		static const BYTE s_wears[] = { WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR };
+		int room = 0;
+		for (size_t i = 0; i < sizeof(s_wears) / sizeof(s_wears[0]); ++i)
+		{
+			LPITEM item = ch->GetWear(s_wears[i]);
+			if (!item || item->GetType() != ITEM_COSTUME)
+				continue;
+			const int set = item->GetAttributeSetIndex();
+			if (set < 0 || set >= ATTRIBUTE_SET_MAX_NUM || !IsPlayerBotApplyOnAttrSet(point, set))
+				continue;
+			const int top = std::max(1, std::min((int)it->second.bMaxLevelBySet[set], 5));
+			room += std::max(0, (int)it->second.lValues[top - 1] - GetPlayerBotElementShopLine(item, point));
+		}
+		return room;
+	}
+
+	bool TryPlayerBotElementShopBoost(LPCHARACTER ch, int element, int* pTarget, const char** how, const char** why,
+			long long* pCost)
+	{
+		*how = "-";
+		*why = "no_view";
+		*pCost = 0;
+		if (!ch || !pTarget)
+			return false;
+		TPlayerBotElementMapView v;
+		if (!GetPlayerBotElementShopView(ch, v) || v.iElement != element)
+			return false;
+		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (st == s_mapPlayerBotAIStates.end())
+			return false;
+		TPlayerBotAIState& state = st->second;
+		TPlayerBotEShopRecord& rec = s_mapPlayerBotEShop[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		int target = *pTarget;
+		// SM: the plan to the target (or what it reaches, +5 at least) within a fresh step's budget and the balance
+		bool sm = false;
+		int smReach = 0;
+		long long cost = 0;
+		const char* smWhy = "no_shop";
+		if (GetPlayerBotItemShopSource() == 2 && IsPlayerBotItemShopEnabled())
+		{
+			if (!state.bDragonBalanceKnown)
+				RefreshPlayerBotDragonBalance(ch, state, now);
+			TPlayerBotEShopRecord fresh = rec;
+			fresh.pieceChanges.clear();
+			fresh.dwStoneWantedSince = 0;
+			fresh.bPetBought = false;
+			TPlayerBotEShopPlan plan;
+			BuildPlayerBotElementShopPlan(ch, v, fresh, target, plan);
+			smReach = plan.bShort ? v.iResist + plan.iGain : target;
+			cost = (long long)plan.dCost;
+			if (smReach < v.iResist + 5)
+				smWhy = "plan_short";
+			else if (cost > GetPlayerBotElementShopBudget() || cost > (long long)state.iDragonCoins)
+				smWhy = "no_sm";
+			else
+				sm = true;
+		}
+		// yang: the costume and hairstyle's line for the Handlarka's reagents (the costume pass's own gold rule)
+		const int costumeRoom = ch->GetGold() >= PLAYERBOT_COSTUME_BONUS_START_GOLD ? GetPlayerBotElementShopCostumeRoom(ch, element) : 0;
+		const bool yang = costumeRoom >= 5;
+		if (!sm && !yang)
+		{
+			*why = smWhy;
+			return false;
+		}
+		if (sm && !yang)
+			target = smReach;
+		else if (!sm)
+			target = std::min(target, v.iResist + costumeRoom);
+		else
+			target = std::min(target, smReach + costumeRoom);
+		*how = sm && yang ? "sm+yang" : sm ? "sm" : "yang";
+		*why = "-";
+		*pTarget = target;
+		*pCost = cost;
+		// the record: a new step at the raised target, urgent at once, the HP after it
+		rec.iElement = v.iElement;
+		rec.iGate = v.iGate;
+		rec.dwReached = 0;
+		rec.dwStart = 0;
+		rec.bArrivedLogged = false;
+		rec.llSpent = 0;
+		rec.iChanges = 0;
+		rec.iAdds = 0;
+		rec.pieceChanges.clear();
+		rec.bStoneWanted = false;
+		rec.dwStoneWantedSince = 0;
+		rec.bStoneCounted = false;
+		rec.bHpWanted = true;
+		++rec.iBoosts;
+		rec.dwNext = 0;
+		rec.dwSeen = now ? now : 1;
+		++s_kPlayerBotEShop.boosts;
+		return true;
 	}
 
 	// ---------------------------------------------------------------- the census
@@ -691,7 +855,7 @@ namespace
 		sys_log(0, "PLAYERBOT_EPROG_SHOP: census%s pet_out=%d stone_out=%d urgent_sm_spent_avg=%lld urgent_plan_left_avg=%lld "
 				"plan_short=%d period=[starts=%u reached=%u again=%u left=%u sm_avg=%lld min_avg=%lld min_median=%d "
 				"resist_start_avg=%ld sessions=%u window_waits=%u no_stones=%u changes=%u adds=%u pets_bought=%u pets_out=%u "
-				"pieces_done=%u pieces_given_up=%u] budget=%lld margin=%d",
+				"pieces_done=%u pieces_given_up=%u boosts=%u hp_pieces=%u hp_done=%u] budget=%lld margin=%d",
 				line.empty() ? " none" : line.c_str(), petOut, stoneOut, urgentAll ? spentActive / urgentAll : 0LL,
 				urgentAll ? planLeft / urgentAll : 0LL, shortPlan, s_kPlayerBotEShop.starts, s_kPlayerBotEShop.reached,
 				s_kPlayerBotEShop.again, s_kPlayerBotEShop.left,
@@ -700,11 +864,33 @@ namespace
 				s_kPlayerBotEShop.reached ? s_kPlayerBotEShop.resistStartReached / (long)s_kPlayerBotEShop.reached : 0L,
 				s_kPlayerBotEShop.sessions, s_kPlayerBotEShop.windowWaits, s_kPlayerBotEShop.noStones, s_kPlayerBotEShop.changes,
 				s_kPlayerBotEShop.adds, s_kPlayerBotEShop.petsBought, s_kPlayerBotEShop.petsOut, s_kPlayerBotEShop.pieceDone,
-				s_kPlayerBotEShop.pieceGiveUp, GetPlayerBotElementShopBudget(), GetPlayerBotElementShopMargin());
+				s_kPlayerBotEShop.pieceGiveUp, s_kPlayerBotEShop.boosts, s_kPlayerBotEShop.hpPieceDone, s_kPlayerBotEShop.hpDone,
+				GetPlayerBotElementShopBudget(), GetPlayerBotElementShopMargin());
 		s_kPlayerBotEShop = TPlayerBotEShopStats();
 	}
 
 	// ---------------------------------------------------------------- the pass
+
+	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: one HP session of a reached boost (out of a fight, every step), the end logged.
+	void WorkPlayerBotElementShopBoostHp(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotEShopRecord& rec,
+			const TPlayerBotElementMapView& v, DWORD dwNow)
+	{
+		rec.dwNext = dwNow + PLAYERBOT_ESHOP_STEP_MS;
+		if (IsPlayerBotGearFrozen(ch) || ch->IsBusy() || ch->GetMyShop() || ch->GetExchange() || !ch->CanHandleItem())
+			return;
+		RefreshPlayerBotItemShopCatalogue(dwNow);
+		if (!state.bDragonBalanceKnown)
+			RefreshPlayerBotDragonBalance(ch, state, dwNow);
+		int purchases = 0;
+		if (WorkPlayerBotElementShopHp(ch, state, rec, v, dwNow, &purchases))
+			return;
+		rec.bHpWanted = false;
+		++s_kPlayerBotEShop.hpDone;
+		sys_log(0, "PLAYERBOT_EPROG_SHOP: hp_done pid=%u name=%s lv=%d element=%s resist=%d target=%d max_hp=%d hp_pieces=%u "
+				"sm=%lld boosts=%d coins=%d", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(),
+				GetPlayerBotElementMapElementName(v.iElement), v.iResist, rec.iTarget, (int)ch->GetMaxHP(),
+				(unsigned int)rec.hpPieces.size(), rec.llSpent, rec.iBoosts, state.iDragonCoins);
+	}
 
 	void ManagePlayerBotElementShop(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -735,7 +921,9 @@ namespace
 			}
 			return;
 		}
-		const int target = std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP, v.iGate + GetPlayerBotElementShopMargin());
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: or a retreat's raised target
+		const int target = std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP, std::max(v.iGate + GetPlayerBotElementShopMargin(),
+				GetPlayerBotElementProgressBoostTarget(ch, v.iElement)));
 		const long map = PLAYERBOT_ELEMENT_MAP_ROWS[v.iRow].lMap;
 		// a new step (another element or gate): a new record
 		if (rec.iElement != v.iElement || rec.iGate != v.iGate)
@@ -760,7 +948,12 @@ namespace
 						v.iResist, (unsigned int)((dwNow - rec.dwReached) / 60000U));
 			}
 			if (v.iResist >= v.iGate)
+			{
+				// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the boost's HP lines after the element
+				if (rec.bHpWanted)
+					WorkPlayerBotElementShopBoostHp(ch, state, rec, v, dwNow);
 				return;
+			}
 			// under the gate again (an expiry): urgent again
 			++s_kPlayerBotEShop.again;
 			sys_log(0, "PLAYERBOT_EPROG_SHOP: again pid=%u name=%s lv=%d element=%s resist=%d gate=%d", ch->GetPlayerID(),
@@ -906,6 +1099,14 @@ namespace
 	bool IsPlayerBotElementShopPinnedPiece(LPCHARACTER, LPITEM) { return false; }
 	long long GetPlayerBotElementShopPoolRoom(LPCHARACTER, const char*) { return -1; }
 	long long GetPlayerBotElementShopReserve(LPCHARACTER) { return 0; }
+	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: no shop - every retreat leaves
+	bool TryPlayerBotElementShopBoost(LPCHARACTER, int, int*, const char** how, const char** why, long long* pCost)
+	{
+		*how = "-";
+		*why = "no_shop";
+		*pCost = 0;
+		return false;
+	}
 }
 
 #endif

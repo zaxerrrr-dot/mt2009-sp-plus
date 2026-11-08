@@ -809,7 +809,9 @@ namespace
 		if (!weapon || weapon->GetType() != ITEM_WEAPON || !armor || !ch->GetWear(WEAR_HEAD) ||
 				(!young && NeedsPlayerBotProperWeapon(ch)))
 			return false;
-		const bool v2 = map == PLAYERBOT_MAP_SPIDER_V2;
+		// MT2009_PLUS_BOT_EPROG_RESIST_GEAR_V1: V2 at V1's grades for a bot holding its fire at the progression's gate
+		// (playerbot_element_maps.h)
+		const bool v2 = map == PLAYERBOT_MAP_SPIDER_V2 && !IsPlayerBotElementProgressResistGear(ch, map);
 		// MT2009_PLUS_SPIDER3_BOTS_V1: V3 one grade over V2, and more potions.
 		const bool v3 = map == PLAYERBOT_MAP_SPIDER_V3;
 		if (weaponPlus < (v3 ? PLAYERBOT_SPIDER_V3_WEAPON_PLUS : v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
@@ -1343,6 +1345,7 @@ namespace
 		const DWORD now = get_dword_time();
 		TickPlayerBotElementMapCensus(now);
 		TickPlayerBotElementProgressCensus(now);	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
+		NotePlayerBotElementProgressAway(ch);	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: a visit ends off the map
 		if (!ch || map == 0)
 			return map;
 		NotePlayerBotElementMapWanted(ch, map);
@@ -1358,7 +1361,7 @@ namespace
 			return map;
 		}
 		if (GetPlayerBotElementProgressGateForMap(map) > 0)
-			++s_kPlayerBotEProg.gateRefusals;	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
+			NotePlayerBotElementProgressRefusal(ch, map);	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 / _EPROG_STAY_FIX_V1
 		const long fallback = GetPlayerBotElementMapFallback(ch, map);
 		if (fallback == 0)
 		{
@@ -1394,6 +1397,7 @@ namespace
 	// progression map, or an errand's map, stays.
 	long ApplyPlayerBotElementProgressEarly(LPCHARACTER ch, long map)
 	{
+		NotePlayerBotElementProgressAway(ch);	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1
 		if (!ch || map == 0 || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_EARLY) ||
 				FindPlayerBotElementProgressMap(map) >= 0)
 			return map;
