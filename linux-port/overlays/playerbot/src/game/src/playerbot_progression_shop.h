@@ -393,6 +393,43 @@ namespace
 				(unsigned int)s.skillsChestHeld.size(), (unsigned int)s.skillsNoRoom.size(), (unsigned int)s.skillsBudget.size(),
 				(unsigned int)s.horse.size(), (unsigned int)s.metins.size(), (unsigned int)s.hp.size(),
 				GetPlayerBotProgShopBudget());
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: the level-55 gate's paths (playerbot_progression.h) - the held bots let through
+		// by each in the period (and their minutes held), the bots of the gate's window now by their look, the unmet
+		// rows of the held ones with the alternative counted (55:fire - the fire short, 55:armour / helmet / shield at
+		// the alternative's plus once the bot is on the fire path)
+		{
+			int fireMin = 0, firePlus = 0;
+			const bool on = GetPlayerBotGate55Fire(&fireMin, &firePlus);
+			int now[PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE + 1] = { 0 };
+			int fireSum = 0, fireBots = 0, fire50 = 0;
+			for (std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.begin();
+					it != s_mapPlayerBotProgress.end(); ++it)
+			{
+				const TPlayerBotProgress& e = it->second;
+				if (!e.bEligible || dwNow - e.dwSeen > 60000U || e.bGate55Path == PLAYERBOT_GATE55_PATH_NONE ||
+						e.bGate55Path > PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE)
+					continue;
+				++now[e.bGate55Path];
+				if (e.bHeld && e.bGate == PLAYERBOT_GATE55_FIRE_LEVEL)
+				{
+					fireSum += e.iGate55Fire;
+					++fireBots;
+					if (e.iGate55Fire >= fireMin)
+						++fire50;
+				}
+			}
+			TPlayerBotGate55Stats& g = s_kPlayerBotGate55;
+			sys_log(0, "PLAYERBOT_PROGSHOP: gate55 on=%d fire_min=%d plus=%d 55:passed_by_fire=%u 55:passed_by_plus6=%u "
+					"avg_held_min fire=%llu plus6=%llu | now past_by_plus6=%d past_by_fire=%d held_fire_short=%d "
+					"held_plus%d_short=%d held_both_short=%d held_other_rows=%d held_other_rows_fire_met=%d | held_fire_avg=%d "
+					"held_at_fire_min=%d/%d",
+					on ? 1 : 0, fireMin, firePlus, g.passedFire, g.passedPlus6,
+					g.passedFire ? g.passedFireMin / g.passedFire : 0ULL, g.passedPlus6 ? g.passedPlus6Min / g.passedPlus6 : 0ULL,
+					now[PLAYERBOT_GATE55_PATH_PLUS6], now[PLAYERBOT_GATE55_PATH_FIRE], now[PLAYERBOT_GATE55_PATH_HELD_FIRE], firePlus,
+					now[PLAYERBOT_GATE55_PATH_HELD_GEAR], now[PLAYERBOT_GATE55_PATH_HELD_BOTH], now[PLAYERBOT_GATE55_PATH_HELD_OTHER],
+					now[PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE], fireBots ? fireSum / fireBots : 0, fire50, fireBots);
+			g = TPlayerBotGate55Stats();
+		}
 		// MT2009_PLUS_BOT_LOOK_MONTHLY_V1: the cosmetics' month (playerbot_itemshop.h)
 		std::string looks;
 		for (int k = 0; k <= PLAYERBOT_LOOK_MONTH_CHEST; ++k)

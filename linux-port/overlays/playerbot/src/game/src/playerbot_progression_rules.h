@@ -139,12 +139,15 @@ namespace playerbot_progression
 		REQ_ORC_TEETH,   // the Biologist's Orc Teeth handed in (collect_quest_lv30 past its teeth)
 		REQ_QUEST_FLAG,  // flag >= a
 		REQ_GOLD,        // a = yang in hand
+		// MT2009_PLUS_BOT_GATE55_FIRE_V1: a = min fire resistance (%) - not a row of the file (ReqTypeOf skips it): the
+		// level-55 gate's alternative (FireAltLook below) puts it among a held bot's unmet rows
+		REQ_FIRE,
 		REQ_COUNT
 	};
 
 	const char* const REQ_KEYS[REQ_COUNT] = {
 		"weapon", "armour", "helmet", "shield", "shoes", "bracelet", "necklace", "earrings",
-		"all_worn", "hp", "skills", "horse", "metins", "orc_teeth", "quest_flag", "gold"
+		"all_worn", "hp", "skills", "horse", "metins", "orc_teeth", "quest_flag", "gold", "fire"
 	};
 
 	// What the bot has to do about a requirement - the engine side pushes the
@@ -384,7 +387,7 @@ namespace playerbot_progression
 	inline int ReqTypeOf(const char* key)
 	{
 		for (int i = 0; i < REQ_COUNT; ++i)
-			if (key && !strcmp(key, REQ_KEYS[i]))
+			if (i != REQ_FIRE && key && !strcmp(key, REQ_KEYS[i]))	// MT2009_PLUS_BOT_GATE55_FIRE_V1: the flags' row
 				return i;
 		return -1;
 	}
@@ -581,8 +584,9 @@ namespace playerbot_progression
 		long long metins;
 		bool orcTeeth;
 		long long gold;
+		int fire;	// MT2009_PLUS_BOT_GATE55_FIRE_V1: the fire resistance the engine counts (GetPlayerBotElementMapResist)
 		TSnapshot() : level(1), wantsShield(true), hp(0), skillCount(0), horse(0), metins(0),
-			orcTeeth(false), gold(0)
+			orcTeeth(false), gold(0), fire(0)
 		{
 			memset(skills, 0, sizeof(skills));
 		}
@@ -681,6 +685,11 @@ namespace playerbot_progression
 				if (!ok)
 					snprintf(buf, sizeof(buf), "yang %lld (ma %lld)", r.a, s.gold);
 				break;
+			case REQ_FIRE:	// MT2009_PLUS_BOT_GATE55_FIRE_V1
+				ok = (long long)s.fire >= r.a;
+				if (!ok)
+					snprintf(buf, sizeof(buf), "odpornosc na ogien %lld%% (ma %d%%)", r.a, s.fire);
+				break;
 			default:
 				return true;
 		}
@@ -718,6 +727,83 @@ namespace playerbot_progression
 			if (g.reqs[i].on && g.reqs[i].type == r.type)
 				return false;
 		return true;
+	}
+
+	// ---------------------------------------------------------------------
+	// MT2009_PLUS_BOT_GATE55_FIRE_V1 (the owner, 8 November 2026: "Na 55 poziomie musimy zmienic wymagania. Robimy albo
+	// tak jak jest teraz czyli helm zbroja i tarcza +6. Albo minimum 50% odpornosci na ogien. Odpornosc na ogien latwiej
+	// zdobyc takim botom. A nawet majac eq +4 i 50% odpornosci albo wiecej na przyklad 60% - takie boty z bronia
+	// bohatera dadza rade w lochu pajakow v2"): at the level-55 gate the armour, helmet and shield rows are met either
+	// as written (+6) or - the alternative - by fire resistance >= fireMin with each of the three at min(row's plus,
+	// plus) (+4), the row's item level kept. The weapon row (a worn young heroes' weapon is +9 of the bot's level) and
+	// every other row stay as they are. The engine measures and passes the rows adjusted the way it weighs them (the
+	// horse's cap, the slot's best level); this only compares.
+	// ---------------------------------------------------------------------
+	inline bool IsFireAltPiece(int type)
+	{
+		return type == REQ_ARMOUR || type == REQ_HELMET || type == REQ_SHIELD;
+	}
+
+	struct TFireAltLook
+	{
+		bool applies;		// the gate has an enabled armour / helmet / shield row the bot is asked for
+		bool gearMet;		// every such piece at the alternative's plus
+		bool fireMet;		// the resistance at fireMin
+		std::vector<TReq> shortRows;	// the alternative's unmet rows: a piece at its alternative plus (the first row of it), fire
+		std::string why;	// "albo ogien 50%+ i zbroja/helm/tarcza +4 (ma ogien 47%; zbroja +3)"
+		TFireAltLook() : applies(false), gearMet(true), fireMet(false) {}
+		bool Met() const { return applies && gearMet && fireMet; }
+	};
+
+	// `rows`: the gate's enabled rows, as the engine adjusted them.
+	inline TFireAltLook FireAltLook(const std::vector<TReq>& rows, const TSnapshot& s, int fireMin, int plus)
+	{
+		TFireAltLook look;
+		static const int s_aiPieces[3] = { REQ_ARMOUR, REQ_HELMET, REQ_SHIELD };
+		std::string have;
+		for (int k = 0; k < 3; ++k)
+		{
+			const int type = s_aiPieces[k];
+			bool any = false, met = false;
+			const TReq* first = NULL;
+			for (size_t i = 0; i < rows.size(); ++i)
+			{
+				if (!rows[i].on || rows[i].type != type)
+					continue;
+				any = true;
+				TReq r = rows[i];
+				r.b = std::min(r.b, plus);
+				std::string unused;
+				if (Meets(r, s, 0, unused))
+					met = true;
+				if (!first)
+					first = &rows[i];
+			}
+			if (!any)
+				continue;
+			look.applies = true;
+			if (met)
+				continue;
+			look.gearMet = false;
+			TReq r = *first;
+			r.b = std::min(r.b, plus);
+			look.shortRows.push_back(r);
+			const TPiece& p = s.slot[type - REQ_WEAPON];
+			char one[48];
+			if (p.present)
+				snprintf(one, sizeof(one), "; %s lv%u+%u", SlotName(type - REQ_WEAPON), (unsigned)p.level, (unsigned)p.plus);
+			else
+				snprintf(one, sizeof(one), "; %s brak", SlotName(type - REQ_WEAPON));
+			have += one;
+		}
+		look.fireMet = s.fire >= fireMin;
+		if (!look.fireMet)
+			look.shortRows.push_back(TReq(REQ_FIRE, fireMin, 0));
+		char buf[160];
+		snprintf(buf, sizeof(buf), "albo ogien %d%%+ i zbroja/helm/tarcza +%d (ma ogien %d%%%s)", fireMin, plus, s.fire,
+				have.c_str());
+		look.why = buf;
+		return look;
 	}
 
 	// The gate that holds a bot of this level, or NULL: the lowest gate at or
