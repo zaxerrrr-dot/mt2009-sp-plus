@@ -5453,6 +5453,7 @@ fi
 # slots, equipment sets, the PvP-fan characters' ledger, the wars' results, the command queue of the Seban panel's
 # buttons and the GM's position hint (player.pvpfan_*; playerbot_pvpfan.h, server-patches/pvpfan, the panel's
 # pvpfan.py). Idempotent (CREATE TABLE IF NOT EXISTS / ADD COLUMN IF NOT EXISTS); before the cores.
+# MT2009_PLUS_PVPFAN_TACTICS_V1: the same file adds pvpfan_category.tactics / squad_size / kite_distance / retreat_hp.
 if [ -s /opt/playerbot/pvpfan.sql ]; then
     if db < /opt/playerbot/pvpfan.sql; then
         echo "[playerbot-migrate] PVP Fan: pvpfan.sql applied"

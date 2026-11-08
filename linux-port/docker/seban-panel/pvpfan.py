@@ -532,6 +532,19 @@ def install(app, db, login_required, csrf_token, game_text=None, map_names=None,
             "allow_players": 1 if form.get("allow_players") else 0,
             "potions": 1 if form.get("potions") else 0,
         }
+        # MT2009_PLUS_PVPFAN_TACTICS_V1: the tactics' columns, once pvpfan.sql has added them (a panel ahead of the
+        # migration saves the rest as before).
+        cur.execute("SELECT COUNT(*) AS n FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='player' "
+                    "AND TABLE_NAME='pvpfan_category' AND COLUMN_NAME IN ('tactics','squad_size','kite_distance','retreat_hp')")
+        if int(cur.fetchone()["n"]) == 4:
+            kite = number(form.get("kite_distance") or 0, "Dystans uciekania", 0, 900)
+            retreat = number(form.get("retreat_hp") or 0, "Odwrót przy HP %", 0, 80)
+            values.update({
+                "tactics": 1 if form.get("tactics") else 0,
+                "squad_size": number(form.get("squad_size") or 5, "Wielkość oddziału", 2, 12),
+                "kite_distance": 0 if kite == 0 else max(150, kite),
+                "retreat_hp": 0 if retreat == 0 else max(5, retreat),
+            })
         cur.execute("UPDATE player.pvpfan_category SET " + ", ".join(f"{k}=%s" for k in values) + " WHERE id=%s",
                     tuple(values.values()) + (cat_id,))
 
