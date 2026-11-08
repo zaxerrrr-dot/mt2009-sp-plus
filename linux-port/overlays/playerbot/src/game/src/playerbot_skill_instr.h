@@ -113,12 +113,16 @@ namespace
 		std::set<DWORD> shortNoChest;	// ... of them, no instruction chest in the ItemShop for their skills
 		unsigned int uGoals, uChestsBought, uChestPieces, uV3Chests, uPoolBlock, uListed, uListedUnits;
 		unsigned int uRadaSpill;	// a Rada affect a non-focus read took (left on from before)
+		// MT2009_PLUS_BOT_CLASS_CHESTS_V1: the class chests (39048-39062) and their encyclopedias (71204-71218) a bot
+		// opened (the quest skrzynie_klas's work, done here), the instructions they gave, the openings that waited for room
+		unsigned int uClassChestsOpened, uClassBooksOpened, uClassBookInstr, uClassNoRoom;
 		std::map<DWORD, std::pair<unsigned int, unsigned int> > readBySkill;	// instructions read / landed
 		std::map<DWORD, std::pair<unsigned int, unsigned int> > kuBySkill;	// KU read / landed (for comparison)
 		std::map<DWORD, unsigned int> radaBySkill, zwojBySkill;
 		std::map<DWORD, unsigned int> chestsByVnum;
 		TPlayerBotSkillInstrCensus() : uGoals(0), uChestsBought(0), uChestPieces(0), uV3Chests(0), uPoolBlock(0),
-				uListed(0), uListedUnits(0), uRadaSpill(0) {}
+				uListed(0), uListedUnits(0), uRadaSpill(0),
+				uClassChestsOpened(0), uClassBooksOpened(0), uClassBookInstr(0), uClassNoRoom(0) {}
 	};
 	TPlayerBotSkillInstrCensus s_kPlayerBotSkillInstrCensus;
 	DWORD s_dwPlayerBotSkillInstrCensusAt = 0;

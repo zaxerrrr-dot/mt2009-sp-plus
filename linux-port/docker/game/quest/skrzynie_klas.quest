@@ -4,6 +4,8 @@
 --   skrzynia     -> 10x Mikstura Madrosci (3h) 71155, 20x Zwoj Egzorcyzmu 71001, 10x Rada Pustelnika 71094,
 --                   5x Pierscien Teleportacji 70058 (bez laczenia w stosy - piec miejsc) i encyklopedia sciezki;
 --   encyklopedia -> 25 losowych instrukcji umiejetnosci tej sciezki (50400 + numer umiejetnosci, stosy do 200).
+-- Boty nie uruchamiaja questow: ta sama tabela i to samo otwieranie sa w playerbot_skill_instr_late.h
+-- (PLAYERBOT_CLASS_CHESTS, MT2009_PLUS_BOT_CLASS_CHESTS_V1) - zmiana tutaj = zmiana tam.
 -- Otworzyc moze kazda postac (jak u GF - skrzynie mozna kupic dla innej postaci konta). cp1250; zaden napis nie konczy
 -- sie polska litera (qc).
 quest skrzynie_klas begin

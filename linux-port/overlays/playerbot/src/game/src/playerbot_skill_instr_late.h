@@ -22,7 +22,12 @@
 // - KU or instruction - in the bag), then the cheapest. One chest at a time: none while the bot holds an unopened one of
 // them, and at most one every PLAYERBOT_SKILL_INSTR_CHEST_GAP_H hours (quest flag playerbot.instr_chest). A Zwoj / Rada in
 // the chest is spent by the reading below; the bots' wish (playerbot_itemshop.h) still buys them when none is held.
-// On 8 November no such line is for sale (the census says chests=0 and short_no_chest counts who would buy one).
+// On 8 November no such line was found (the census said chests=0): the ItemShop's instruction chests are the eight class
+// chests (D) of MT2009_PLUS_CLASS_CHESTS_V1 (V3 lines 100183-100190, 999 SM), ITEM_QUEST items opened by the quest
+// skrzynie_klas - no special_item_group, and the encyclopedia inside is a second item. MT2009_PLUS_BOT_CLASS_CHESTS_V1
+// (the owner, 8 November 2026): the scan knows them (PLAYERBOT_CLASS_CHESTS below - the quest's table, keep the two
+// equal), a giftbox's content that is itself a giftbox is followed into its group (a nested chest), and a bot opens a
+// class chest and its encyclopedia here (OpenPlayerBotClassChests) as the quest does for a player - a bot runs no quest.
 //
 // The dearest skill ("most expensive", the definition): the price-list value of its book - GetPlayerBotBookAskingBase(skill),
 // the KU's sheet price for the skill (PLAYERBOT_BOOK_PRICES: the owner's / Iwakura's prices, the ladder of
@@ -56,9 +61,49 @@ namespace
 		return s_iGap * 3600;
 	}
 
+	// MT2009_PLUS_BOT_CLASS_CHESTS_V1: the class chests (D) and what the quest skrzynie_klas gives (keep equal to
+	// linux-port/docker/game/quest/skrzynie_klas.quest): a chest -> 10x Mikstura Madrosci (3h) 71155, 20x Zwoj Egzorcyzmu
+	// 71001, 10x Rada Pustelnika 71094, 5x Pierscien Teleportacji 70058 (one a cell) and its path's encyclopedia; the
+	// encyclopedia -> 25 random instructions (50400 + skill) of the path, each draw on its own.
+	struct TPlayerBotClassChest
+	{
+		DWORD dwChest, dwBook;
+		BYTE bJob, bGroup;
+		BYTE bSkills;
+		DWORD adwSkills[6];
+	};
+	const TPlayerBotClassChest PLAYERBOT_CLASS_CHESTS[] = {
+		{ 39048, 71204, JOB_WARRIOR, 1, 5, { 1, 2, 3, 4, 5, 0 } },	// Skrz. Woj. M. Ciala (D) / Encyklopedia Saturna (D)
+		{ 39050, 71206, JOB_WARRIOR, 2, 5, { 16, 17, 18, 19, 20, 0 } },	// Skrz. Woj.M. Ducho. (D) / Encyklopedia Ziemi (D)
+		{ 39052, 71208, JOB_ASSASSIN, 1, 5, { 31, 32, 33, 34, 35, 0 } },	// Skrz. Ninja M.Ostrza (D) / Encyklopedia Marsa (D)
+		{ 39054, 71210, JOB_ASSASSIN, 2, 6, { 46, 47, 48, 49, 50, 51 } },	// Skrz. Ninja M. Luku (D) / Encyklop. Jupitera (D)
+		{ 39056, 71212, JOB_SURA, 1, 6, { 61, 62, 63, 64, 65, 66 } },	// Skrzynia Sura Broni (D) / Encyklopedia Urana (D)
+		{ 39058, 71214, JOB_SURA, 2, 6, { 76, 77, 78, 79, 80, 81 } },	// Skrzynia Sura Magii (D) / Encyklopedia Neptuna (D)
+		{ 39060, 71216, JOB_SHAMAN, 1, 6, { 91, 92, 93, 94, 95, 96 } },	// Skrz. Szam. M. Smoka (D) / Encyklop. Merkurego (D)
+		{ 39062, 71218, JOB_SHAMAN, 2, 6, { 106, 107, 108, 109, 110, 111 } },	// Skrz. Szam. M. Lecz. (D) / Encyklopedia Wenus (D)
+	};
+	const size_t PLAYERBOT_CLASS_CHEST_COUNT = sizeof(PLAYERBOT_CLASS_CHESTS) / sizeof(PLAYERBOT_CLASS_CHESTS[0]);
+	const int PLAYERBOT_CLASS_CHEST_DRAWS = 25;
+	const int PLAYERBOT_CLASS_CHEST_CELLS = 9;	// the quest's room: 3 stacks + 5 rings + the encyclopedia
+	const DWORD PLAYERBOT_CLASS_CHEST_LOOK_MS = 30 * 1000;
+
+	// The class chest of a chest's or an encyclopedia's vnum (NULL: neither).
+	const TPlayerBotClassChest* FindPlayerBotClassChest(DWORD vnum, bool* isBook)
+	{
+		for (size_t i = 0; i < PLAYERBOT_CLASS_CHEST_COUNT; ++i)
+			if (PLAYERBOT_CLASS_CHESTS[i].dwChest == vnum || PLAYERBOT_CLASS_CHESTS[i].dwBook == vnum)
+			{
+				if (isBook)
+					*isBook = PLAYERBOT_CLASS_CHESTS[i].dwBook == vnum;
+				return &PLAYERBOT_CLASS_CHESTS[i];
+			}
+		return NULL;
+	}
+
 	struct TPlayerBotSkillInstrChest
 	{
 		DWORD dwVnum;	// the giftbox's vnum (0 for a V3 roll chest)
+		DWORD dwBook;	// MT2009_PLUS_BOT_CLASS_CHESTS_V1: a class chest's encyclopedia (0 for any other)
 		DWORD dwChestId;	// the V3 chest's id (0 for a giftbox)
 		bool bMarks;	// the giftbox's line is Smocze Znaki only
 		std::set<DWORD> skills;
@@ -69,7 +114,9 @@ namespace
 	DWORD s_dwPlayerBotSkillInstrScanAt = 0;
 	size_t s_uPlayerBotSkillInstrScanLines = (size_t)-1;
 
-	void NotePlayerBotSkillInstrContent(TPlayerBotSkillInstrChest& c, DWORD vnum)
+	void CollectPlayerBotSkillInstrGroup(DWORD groupVnum, TPlayerBotSkillInstrChest& c, int depth);
+
+	void NotePlayerBotSkillInstrContent(TPlayerBotSkillInstrChest& c, DWORD vnum, int depth)
 	{
 		if (IsPlayerBotSkillInstructionVnum(vnum))
 		{
@@ -77,7 +124,27 @@ namespace
 			return;
 		}
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
-		if (!proto || proto->bType != ITEM_USE || proto->bSubType != USE_AFFECT)
+		if (!proto)
+			return;
+		// MT2009_PLUS_BOT_CLASS_CHESTS_V1: a content that is a chest itself (a giftbox with its own group, or a class
+		// chest's encyclopedia) - what it gives counts as the outer chest's
+		if (depth < PLAYERBOT_SKILL_INSTR_GROUP_DEPTH)
+		{
+			bool isBook = false;
+			const TPlayerBotClassChest* k = FindPlayerBotClassChest(vnum, &isBook);
+			if (k && isBook)
+			{
+				for (BYTE s = 0; s < k->bSkills; ++s)
+					c.skills.insert(k->adwSkills[s]);
+				return;
+			}
+			if (proto->bType == ITEM_GIFTBOX && ITEM_MANAGER::instance().GetSpecialItemGroup(vnum))
+			{
+				CollectPlayerBotSkillInstrGroup(vnum, c, depth + 1);
+				return;
+			}
+		}
+		if (proto->bType != ITEM_USE || proto->bSubType != USE_AFFECT)
 			return;
 		if ((DWORD)proto->alValues[0] == AFFECT_SKILL_BOOK_BONUS)
 			++c.iRada;
@@ -99,7 +166,7 @@ namespace
 					CollectPlayerBotSkillInstrGroup(items[i].vnum, c, depth + 1);
 				continue;
 			}
-			NotePlayerBotSkillInstrContent(c, items[i].vnum);
+			NotePlayerBotSkillInstrContent(c, items[i].vnum, depth);
 		}
 	}
 
@@ -121,16 +188,32 @@ namespace
 			for (TPlayerBotItemShopTable::const_iterator it = table.begin(); it != table.end(); ++it)
 			{
 				const TItemTable* proto = ITEM_MANAGER::instance().GetTable(it->first);
-				if (!proto || proto->bType != ITEM_GIFTBOX || it->second.empty())
+				bool isBook = false;
+				const TPlayerBotClassChest* klass = FindPlayerBotClassChest(it->first, &isBook);
+				if (!proto || it->second.empty() || (proto->bType != ITEM_GIFTBOX && !klass))
 					continue;
 				if (pass == 1 && s_mapPlayerBotItemShopCoins.find(it->first) != s_mapPlayerBotItemShopCoins.end())
 					continue;	// a coins line of it was taken already
 				TPlayerBotSkillInstrChest c;
 				c.dwVnum = it->first;
+				c.dwBook = 0;
 				c.dwChestId = 0;
 				c.bMarks = pass == 1;
 				c.iRada = c.iZwoj = 0;
-				CollectPlayerBotSkillInstrGroup(it->first, c, 0);
+				if (proto->bType == ITEM_GIFTBOX && ITEM_MANAGER::instance().GetSpecialItemGroup(it->first))
+					CollectPlayerBotSkillInstrGroup(it->first, c, 0);
+				else if (klass)
+				{
+					// MT2009_PLUS_BOT_CLASS_CHESTS_V1: a quest-opened class chest (or its encyclopedia sold alone)
+					for (BYTE s = 0; s < klass->bSkills; ++s)
+						c.skills.insert(klass->adwSkills[s]);
+					if (!isBook)
+					{
+						c.dwBook = klass->dwBook;
+						c.iRada = 10;
+						c.iZwoj = 20;
+					}
+				}
 				if (!c.skills.empty())
 					s_vecPlayerBotSkillInstrChests.push_back(c);
 			}
@@ -140,13 +223,14 @@ namespace
 			const TPlayerBotIshop3Chest& v = s_vecPlayerBotIshop3Chests[i];
 			TPlayerBotSkillInstrChest c;
 			c.dwVnum = 0;
+			c.dwBook = 0;
 			c.dwChestId = v.dwChestId;
 			c.bMarks = false;
 			c.iRada = c.iZwoj = 0;
 			for (size_t d = 0; d < v.drops.size(); ++d)
 				for (size_t k = 0; k < v.drops[d].items.size(); ++k)
 					for (size_t a = 0; a < v.drops[d].items[k].size(); ++a)
-						NotePlayerBotSkillInstrContent(c, v.drops[d].items[k][a].dwVnum);
+						NotePlayerBotSkillInstrContent(c, v.drops[d].items[k][a].dwVnum, 0);
 			if (c.skills.empty())
 				continue;
 			s_vecPlayerBotSkillInstrChests.push_back(c);
@@ -270,8 +354,9 @@ namespace
 		if (last != 0 && get_global_time() - last < GetPlayerBotSkillInstrChestGapSeconds())
 			return false;
 		for (size_t i = 0; i < s_vecPlayerBotSkillInstrChests.size(); ++i)
-			if (s_vecPlayerBotSkillInstrChests[i].dwVnum && ch->CountSpecifyItem(s_vecPlayerBotSkillInstrChests[i].dwVnum) > 0)
-				return false;	// an unopened one: the chest pass opens it first
+			if ((s_vecPlayerBotSkillInstrChests[i].dwVnum && ch->CountSpecifyItem(s_vecPlayerBotSkillInstrChests[i].dwVnum) > 0) ||
+					(s_vecPlayerBotSkillInstrChests[i].dwBook && ch->CountSpecifyItem(s_vecPlayerBotSkillInstrChests[i].dwBook) > 0))
+				return false;	// an unopened one (or its encyclopedia): the chest pass opens it first
 		return true;
 	}
 
@@ -357,6 +442,86 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_CLASS_CHESTS_V1: a class chest or its encyclopedia in the bag is opened the way the quest
+	// skrzynie_klas opens it for a player (a bot runs no quest): the room first (9 cells for a chest, one a skill of the
+	// path for an encyclopedia - the quest's tests), one piece taken, the contents given. Only the bot's own class's (the
+	// chests carry the other classes' antiflags, MT2009_PLUS_CLASS_CHESTS_V2), out of a fight and with no window open;
+	// one opening a look, a look every PLAYERBOT_CLASS_CHEST_LOOK_MS a bot. The chest's Zwoje / Rady go to the focused
+	// reading, the Mikstury Madrosci to the booster pass (USE_AFFECT 510), the rings past one to
+	// TrimPlayerBotTeleportRings (MT2009_PLUS_BOT_TELEPORT_RING_KEEP_V1). Off with m2_bot_skill_instr_off.
+	std::map<DWORD, DWORD> s_mapPlayerBotClassChestNext;
+
+	bool OpenPlayerBotClassChests(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || !IsPlayerBotSkillInstrOn(SKILLINSTR_ALL) ||
+				state.bCurrentAction == BOT_ACTION_FIGHT || ch->GetExchange() || ch->GetMyShop() || !ch->CanHandleItem())
+			return false;
+		if (s_mapPlayerBotClassChestNext.size() > 20000)
+			s_mapPlayerBotClassChestNext.clear();
+		DWORD& next = s_mapPlayerBotClassChestNext[ch->GetPlayerID()];
+		if (next != 0 && (int)(dwNow - next) < 0)
+			return false;
+		next = dwNow + PLAYERBOT_CLASS_CHEST_LOOK_MS;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->isLocked() || item->IsExchanging() || IsPlayerBotSidekickHeld(ch, item))
+				continue;
+			bool isBook = false;
+			const TPlayerBotClassChest* k = FindPlayerBotClassChest(item->GetVnum(), &isBook);
+			if (!k || k->bJob != ch->GetJob() || !item->CanUsedBy(ch))
+				continue;
+			const DWORD vnum = item->GetVnum();
+			const int need = isBook ? (int)k->bSkills : PLAYERBOT_CLASS_CHEST_CELLS;
+			const int empty = ch->CountEmptyInventory();
+			if (empty < need)
+			{
+				++s_kPlayerBotSkillInstrCensus.uClassNoRoom;
+				PlayerBotLogThrottled("class_chest_room", dwNow,
+						"PLAYERBOT_SKILL_INSTR: class chest waits for room pid=%u name=%s vnum=%u empty=%d need=%d",
+						ch->GetPlayerID(), ch->GetName(), vnum, empty, need);
+				continue;
+			}
+			item->SetCount(item->GetCount() - 1);
+			if (!isBook)
+			{
+				ch->AutoGiveItem(71155, 10, -1, false);
+				ch->AutoGiveItem(71001, 20, -1, false);
+				ch->AutoGiveItem(71094, 10, -1, false);
+				for (int r = 0; r < 5; ++r)
+					ch->AutoGiveItem(70058, 1, -1, false);
+				ch->AutoGiveItem(k->dwBook, 1, -1, false);
+				++s_kPlayerBotSkillInstrCensus.uClassChestsOpened;
+				PlayerBotLogThrottled("class_chest_open", dwNow,
+						"PLAYERBOT_SKILL_INSTR: class chest opened pid=%u name=%s lv=%d job=%u group=%u vnum=%u book=%u",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)ch->GetJob(),
+						(unsigned int)ch->GetSkillGroup(), vnum, k->dwBook);
+				return true;
+			}
+			int got[6] = { 0, 0, 0, 0, 0, 0 };
+			for (int d = 0; d < PLAYERBOT_CLASS_CHEST_DRAWS; ++d)
+				++got[number(0, (int)k->bSkills - 1)];
+			std::string list;
+			for (BYTE s = 0; s < k->bSkills; ++s)
+			{
+				if (got[s] <= 0)
+					continue;
+				ch->AutoGiveItem(50400 + k->adwSkills[s], got[s], -1, false);
+				char one[24];
+				snprintf(one, sizeof(one), "%s%u:%d", list.empty() ? "" : ",", 50400 + k->adwSkills[s], got[s]);
+				list += one;
+			}
+			++s_kPlayerBotSkillInstrCensus.uClassBooksOpened;
+			s_kPlayerBotSkillInstrCensus.uClassBookInstr += PLAYERBOT_CLASS_CHEST_DRAWS;
+			PlayerBotLogThrottled("class_book_open", dwNow,
+					"PLAYERBOT_SKILL_INSTR: encyclopedia opened pid=%u name=%s lv=%d job=%u group=%u vnum=%u instr=[%s]",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)ch->GetJob(),
+					(unsigned int)ch->GetSkillGroup(), vnum, list.c_str());
+			return true;
+		}
+		return false;
+	}
+
 	// The dearest skill's worth (the header's definition).
 	DWORD GetPlayerBotSkillInstrWorth(DWORD skill)
 	{
@@ -436,12 +601,13 @@ namespace
 		sys_log(0, "PLAYERBOT_SKILL_INSTR: census short_bots=%u short_no_chest=%u chests=%u (box=%u v3=%u) goals=%u "
 				"chests_bought=%u by_vnum=[%s] v3_bought=%u pool_block=%u instr_read=%u/%u by_skill=[%s] ku_read=%u/%u "
 				"rada=%u by_skill=[%s] zwoj=%u by_skill=[%s] rada_spill=%u listed=%u units=%u book_wait_s=%d "
-				"buy=%d focus=%d keep=%d",
+				"class_chests=%u class_books=%u class_instr=%u class_no_room=%u buy=%d focus=%d keep=%d",
 				(unsigned int)c.shortBots.size(), (unsigned int)c.shortNoChest.size(),
 				(unsigned int)s_vecPlayerBotSkillInstrChests.size(), boxes,
 				(unsigned int)s_vecPlayerBotSkillInstrChests.size() - boxes, c.uGoals, c.uChestsBought, chestBy.c_str(),
 				c.uV3Chests, c.uPoolBlock, iReads, iLanded, instr.c_str(), kReads, kLanded, rada, radaBy.c_str(), zwoj,
 				zwojBy.c_str(), c.uRadaSpill, c.uListed, c.uListedUnits, GetPlayerBotBookWaitSeconds(),
+				c.uClassChestsOpened, c.uClassBooksOpened, c.uClassBookInstr, c.uClassNoRoom,
 				IsPlayerBotSkillInstrOn(SKILLINSTR_BUY) ? 1 : 0, IsPlayerBotSkillInstrOn(SKILLINSTR_FOCUS) ? 1 : 0,
 				IsPlayerBotSkillInstrOn(SKILLINSTR_KEEP) ? 1 : 0);
 		c = TPlayerBotSkillInstrCensus();
