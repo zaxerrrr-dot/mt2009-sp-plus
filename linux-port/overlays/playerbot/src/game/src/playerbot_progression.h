@@ -55,12 +55,22 @@
 namespace
 {
 	BYTE GetPlayerBotStableAmbition(LPCHARACTER ch, BYTE personality);
+	// MT2009_PLUS_BOT_PET_GATE_V1 (playerbot_pet_gate.h, included later): the element pet at the arrival, the credit
+	// for one owned and not out, the arrival's age, the re-hold census
+	void SummonPlayerBotPetOnArrival(LPCHARACTER ch, DWORD dwNow);
+	int GetPlayerBotGatePendingPetResist(LPCHARACTER ch, int e, DWORD dwNow);
+	DWORD GetPlayerBotArrivalAgeMs(LPCHARACTER ch, DWORD dwNow);
+	bool IsPlayerBotGateToleranceOn(DWORD* pGraceMs, DWORD* pReholdMs);
+	void NotePlayerBotGateRehold(bool waited);
 
 	const char* const PLAYERBOT_PROGRESSION_PATH = "/opt/m2spool/playerbot_progression.tsv";
 	const char* const PLAYERBOT_PROGRESSION_STATUS_PATH = "playerbot_progression_status.tsv";
 	const char* const PLAYERBOT_PROGRESSION_FLAG_WAIVED = "playerbot.prog_waived";
 	const char* const PLAYERBOT_PROGRESSION_FLAG_GATE = "playerbot.prog_gate";
 	const char* const PLAYERBOT_PROGRESSION_FLAG_HELD = "playerbot.prog_held_s";
+	// MT2009_PLUS_BOT_PET_GATE_V1: the gate last passed (or found met) and the minutes stood at it before the pass
+	const char* const PLAYERBOT_PROGRESSION_FLAG_PASSED = "playerbot.prog_passed";
+	const char* const PLAYERBOT_PROGRESSION_FLAG_PASSED_HELD = "playerbot.prog_passed_held_s";
 	const DWORD PLAYERBOT_PROGRESSION_EVAL_MS = 15000;
 	const DWORD PLAYERBOT_PROGRESSION_LOG_MS = 30 * 60 * 1000;
 	const DWORD PLAYERBOT_PROGRESSION_STATUS_MS = 30000;
@@ -117,13 +127,18 @@ namespace
 		long long llSigPlus, llSigLevel, llSigSkills, llSigHp;
 		int iSigFire;
 		DWORD dwTrialLastEnd;
+		// MT2009_PLUS_BOT_PET_GATE_V1: the gate passed (PLAYERBOT_PROGRESSION_FLAG_PASSED) and since when a weighing
+		// finds it short again (0: met)
+		BYTE bPassedGate;
+		DWORD dwShortSince;
 		TPlayerBotProgress() : dwSeen(0), dwLastTick(0), dwNextEval(0), dwNextLog(0), dwHeldMs(0),
 			bLevel(0), bGate(0), bWaived(0), bLoaded(false), bEligible(false), bFishing(false),
 			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0), bGate55Path(0), iGate55Fire(0),
 			bWeaponSrc(0), bWeaponShort(0), bTrial(false), bTrialGate(0), dwTrialStart(0), dwTrialHuntMs(0),
 			lTrialFromMap(0), lTrialLastHuntMap(0), uTrialKills(0), uTrialDeaths(0), uTrialRetreats(0),
 			llTrialPvpDeaths(-1), lTrialCooldownUntil(0), bTrialCooldownGate(0), uTrialCount(0), bTrialSig(false),
-			llSigPlus(0), llSigLevel(0), llSigSkills(0), llSigHp(0), iSigFire(0), dwTrialLastEnd(0) {}
+			llSigPlus(0), llSigLevel(0), llSigSkills(0), llSigHp(0), iSigFire(0), dwTrialLastEnd(0),
+			bPassedGate(0), dwShortSince(0) {}
 	};
 	std::map<DWORD, TPlayerBotProgress> s_mapPlayerBotProgress;
 
@@ -272,7 +287,11 @@ namespace
 		if (it == s_mapPlayerBotProgress.end() || !it->second.bEligible)
 			return 0;
 		const BYTE path = it->second.bGate55Path;
-		const bool held = it->second.bHeld && it->second.bGate == PLAYERBOT_GATE55_FIRE_LEVEL &&
+		// MT2009_PLUS_BOT_PET_GATE_V1: or a bot that passed it waiting out a shortfall (rehold_wait) - the element shop
+		// still builds (and calls the pet for) the fire it lacks
+		const bool held = ((it->second.bHeld && it->second.bGate == PLAYERBOT_GATE55_FIRE_LEVEL) ||
+					(!it->second.bHeld && it->second.dwShortSince != 0 &&
+					 it->second.bPassedGate == PLAYERBOT_GATE55_FIRE_LEVEL)) &&
 				(path == PLAYERBOT_GATE55_PATH_HELD_FIRE || path == PLAYERBOT_GATE55_PATH_HELD_GEAR ||
 				 path == PLAYERBOT_GATE55_PATH_HELD_BOTH || path == PLAYERBOT_GATE55_PATH_HELD_OTHER_FIRE);
 		return held || path == PLAYERBOT_GATE55_PATH_FIRE ? fireMin : 0;
@@ -532,6 +551,9 @@ namespace
 		s.orcTeeth = HasPlayerBotHandedOrcTeeth(ch);
 		s.gold = (long long)ch->GetGold();
 		s.fire = GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_FIRE);	// MT2009_PLUS_BOT_GATE55_FIRE_V1
+		// MT2009_PLUS_BOT_PET_GATE_V1: the bot's own fire pet not out yet (a login, a channel change) counts as out
+		s.fire = std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP,
+				s.fire + GetPlayerBotGatePendingPetResist(ch, PLAYERBOT_EM_FIRE, get_dword_time()));
 	}
 
 	// The horse a gate asks for, as far as this core can give it: the battle
@@ -1019,6 +1041,23 @@ namespace
 		s_uPlayerBotWeaponRowMlodziBag = 0;
 	}
 
+	// MT2009_PLUS_BOT_PET_GATE_V1: the gate written down as passed (kept over logins), the minutes stood at it kept for a
+	// re-hold
+	void MarkPlayerBotGatePassed(LPCHARACTER ch, TPlayerBotProgress& e, BYTE gate, DWORD heldS)
+	{
+		e.dwShortSince = 0;
+		if (!ch || gate == 0)
+			return;
+		if (e.bPassedGate != gate)
+		{
+			e.bPassedGate = gate;
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED, gate);
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED_HELD, (int)heldS);
+		}
+		else if (heldS > 0)
+			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED_HELD, (int)heldS);
+	}
+
 	void ReleasePlayerBotProgress(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotProgress& e)
 	{
 		e.bHeld = false;
@@ -1081,6 +1120,9 @@ namespace
 			e.dwTrialHuntMs += dt;
 		if (e.dwNextEval != 0 && dwNow < e.dwNextEval)
 			return;
+		// MT2009_PLUS_BOT_PET_GATE_V1: never weighed on a bag not loaded yet (a login's first ticks)
+		if (!ch->IsItemLoaded())
+			return;
 		e.dwNextEval = dwNow + PLAYERBOT_PROGRESSION_EVAL_MS + pid % 3000U;
 		if (!e.bLoaded)
 		{
@@ -1089,7 +1131,11 @@ namespace
 			// MT2009_PLUS_BOT_GATE_TRIAL_V1: a failed trial's cooldown outlives a logout
 			e.lTrialCooldownUntil = (long)ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD);
 			e.bTrialCooldownGate = (BYTE)std::max(0, std::min(255, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_TRIAL_CD_GATE)));
+			// MT2009_PLUS_BOT_PET_GATE_V1: a gate passed in an earlier session (or on another core)
+			e.bPassedGate = (BYTE)std::max(0, std::min(255, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED)));
 		}
+		// MT2009_PLUS_BOT_PET_GATE_V1: the element pet out before the snapshot, at the arrival (playerbot_pet_gate.h)
+		SummonPlayerBotPetOnArrival(ch, dwNow);
 
 		playerbot_progression::TSnapshot snap;
 		BYTE weaponSrc = PLAYERBOT_PROG_WSRC_NONE;	// MT2009_PLUS_BOT_PROG_MLODZI_TOOL_V1
@@ -1102,11 +1148,13 @@ namespace
 		std::string why;
 		std::vector<playerbot_progression::TReq> shortReqs;	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 		BYTE gate55Path = PLAYERBOT_GATE55_PATH_NONE;	// MT2009_PLUS_BOT_GATE55_FIRE_V1
+		BYTE topGate = 0;	// MT2009_PLUS_BOT_PET_GATE_V1: the highest gate weighed (all met: the gate passed)
 		for (size_t g = 0; g < c.gates.size() && holdGate == 0; ++g)
 		{
 			const playerbot_progression::TGate& gate = c.gates[g];
 			if (gate.level > level || (unsigned)level > (unsigned)gate.level + c.retro || gate.level <= e.bWaived)
 				continue;
+			topGate = std::max(topGate, gate.level);
 			// MT2009_PLUS_BOT_GATE55_FIRE_V1: the rows as weighed (below), then the level-55 alternative's look at them
 			std::vector<playerbot_progression::TReq> rows;
 			rows.reserve(gate.reqs.size());
@@ -1249,6 +1297,12 @@ namespace
 
 		if (holdGate == 0)
 		{
+			// MT2009_PLUS_BOT_PET_GATE_V1: met - the shortfall's clock off, the gate written down as passed
+			e.dwShortSince = 0;
+			if (e.bHeld && e.bGate != 0)
+				MarkPlayerBotGatePassed(ch, e, e.bGate, e.dwHeldMs / 1000U);
+			else if (topGate != 0 && topGate > e.bPassedGate)
+				MarkPlayerBotGatePassed(ch, e, topGate, 0);
 			if (e.bHeld)
 			{
 				EndPlayerBotGateTrial(ch, e, PLAYERBOT_GATE_TRIAL_END_GATE_MET, &snap, dwNow);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
@@ -1276,12 +1330,40 @@ namespace
 			return;
 		}
 
+		// MT2009_PLUS_BOT_PET_GATE_V1: a gate the bot passed is not held again on a passing shortfall - the element pet
+		// not called yet after a login or a channel change, a piece off for its rerolls, the hand's weapon swapped:
+		// not within the arrival's grace, nor before the shortfall has lasted m2_bot_gate_rehold_s
+		DWORD graceMs = 0, reholdMs = 0;
+		const bool rehold = !e.bHeld && holdGate == e.bPassedGate && IsPlayerBotGateToleranceOn(&graceMs, &reholdMs);
+		if (rehold)
+		{
+			if (e.dwShortSince == 0)
+				e.dwShortSince = dwNow ? dwNow : 1;
+			const DWORD shortMs = dwNow - e.dwShortSince;
+			const DWORD arrivalMs = GetPlayerBotArrivalAgeMs(ch, dwNow);
+			if (arrivalMs < graceMs || shortMs < reholdMs)
+			{
+				NotePlayerBotGateRehold(true);
+				PlayerBotLogThrottled("prog_rehold_wait", dwNow,
+						"PLAYERBOT_PROGRESS: rehold_wait pid=%u name=%s level=%u gate=%u why=%s arrival_s=%u short_s=%u fire=%d "
+						"missing: %s", pid, ch->GetName(), (unsigned)level, (unsigned)holdGate,
+						arrivalMs < graceMs ? "arrival" : "debounce", arrivalMs / 1000U, shortMs / 1000U, snap.fire, why.c_str());
+				return;
+			}
+			NotePlayerBotGateRehold(false);
+			sys_log(0, "PLAYERBOT_PROGRESS: rehold pid=%u name=%s level=%u gate=%u short_s=%u held_min_kept=%d fire=%d missing: %s",
+					pid, ch->GetName(), (unsigned)level, (unsigned)holdGate, shortMs / 1000U,
+					std::max(0, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED_HELD)) / 60, snap.fire, why.c_str());
+		}
 		if (e.bGate != holdGate)
 		{
 			// Back at the same gate after a login: the minutes already stood.
 			const int savedGate = ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_GATE);
 			e.dwHeldMs = savedGate == (int)holdGate
 					? (DWORD)std::max(0, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_HELD)) * 1000U : 0U;
+			// MT2009_PLUS_BOT_PET_GATE_V1: held again at the gate it passed - the minutes stood before the pass, not 0
+			if (savedGate != (int)holdGate && holdGate == e.bPassedGate)
+				e.dwHeldMs = (DWORD)std::max(0, ch->GetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_PASSED_HELD)) * 1000U;
 			e.bGate = holdGate;
 			e.dwNextLog = 0;
 		}
@@ -1314,6 +1396,7 @@ namespace
 		// MT2009_PLUS_BOT_GATE_TRIAL_V1: the trial - started, judged, passed
 		if (ManagePlayerBotGateTrial(ch, state, e, holdGate, snap, dwNow))
 		{
+			MarkPlayerBotGatePassed(ch, e, holdGate, e.dwHeldMs / 1000U);	// MT2009_PLUS_BOT_PET_GATE_V1
 			sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u passed_by=trial missing: %s",
 					pid, ch->GetName(), (unsigned)level, (unsigned)holdGate, e.dwHeldMs / 60000U, why.c_str());
 			NotePlayerBotProgShopGateEnd(pid, holdGate, e.dwHeldMs / 60000U, false);
