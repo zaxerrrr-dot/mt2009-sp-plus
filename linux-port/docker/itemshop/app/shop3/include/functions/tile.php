@@ -191,7 +191,11 @@
 	// floor, a VIP effect while the premium account runs (CItemShopManager::BuyItem), too little currency.
 	function mt2009_buy_block($item, $final_price, $qty = 1)
 	{
-		global $lang_shop, $shop_char, $amount_coins, $amount_jcoins, $premium_active;
+		global $lang_shop, $shop_char, $amount_coins, $amount_jcoins, $premium_active, $shop;
+		// MT2009_PLUS_ISHOP_ROTACJA_V1: a costume set chest that is not one of today's, a set piece of no chest of today -
+		// refused here, so in buy.php and buy_chest.php too (server side, not only hidden)
+		if(isset($shop) && $shop && ($rot = $shop->rotationBlock($item)) != '')
+			return $rot;
 		if(!empty($item['arezzo_locked']))
 			return $lang_shop['mt-arezzo-off'];
 		if(!empty($item['auction']) && $item['available']!=1)

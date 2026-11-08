@@ -144,6 +144,12 @@
 				$categoriesbyid[$category['id']]['name'] = 'CAT '.$id;
 		}
 		$categoriesbyid[0]['name'] = $lang_shop['wheel-of-destiny'];
+		// MT2009_PLUS_ISHOP_ROTACJA_V1: the rotation on - "Dzisiejsze oferty" instead of "Sety Bonusowe" (its chests are
+		// the rotation's now); off - as before, no "Dzisiejsze oferty"
+		$mt_rotation_on = $shop->rotationEnabled();
+		foreach($categoriesbyid as $mt_key => $mt_cat)
+			if(isset($mt_cat['kind']) && $mt_cat['kind'] == ($mt_rotation_on ? 'sets' : 'today'))
+				unset($categoriesbyid[$mt_key]);
 		
 		if($happy_hour_discount && $happy_hour_expire<0)
 		{
@@ -221,6 +227,17 @@
 			{
 				header("Location: ".$shop_url."items/1/");
 				die();
+			}
+			// MT2009_PLUS_ISHOP_ROTACJA_V1: a link to the hidden one of "Sety Bonusowe" / "Dzisiejsze oferty" (a bookmark, the
+			// rotation switched meanwhile) - the shown one
+			if($id && $id==intval($id) && !isset($categoriesbyid[(int)$id]) && in_array($shop->categoryKind((int)$id), ['sets', 'today']))
+			{
+				foreach($categoriesbyid as $mt_key => $mt_cat)
+					if(isset($mt_cat['kind']) && in_array($mt_cat['kind'], ['sets', 'today']))
+					{
+						header("Location: ".$shop_url."items/".(int)$mt_key."/");
+						die();
+					}
 			}
 			// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game window's buttons that are no list - the voucher tab, the premium
 			// account page; the top-up link opens the system's browser (index.php) and lands here only without script.

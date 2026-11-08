@@ -12826,6 +12826,10 @@ install_item_grants(app, db, login_required, game_text)
 # MT2009_PLUS_SM_GRANTS_V1: "Smocze Monety - nadawanie" (sm_grants.py); the payments run in seban-item-grants.
 from sm_grants import install as install_sm_grants
 install_sm_grants(app, db, login_required, update_csrf_token)
+# MT2009_PLUS_ISHOP_ROTACJA_V1: "ItemShop - rotacja zestawów" - the players' daily costume set chests in the V3 shop
+# (switch, chests a day, the set pieces' price and days, preview, pins; ishop_rotation.py). The bots are not affected.
+from ishop_rotation import install as install_ishop_rotation
+install_ishop_rotation(app, db, login_required, update_csrf_token, icon_url=item_icon_url)
 # MT2009_PLUS_POTEGA_MADROSCI_V1: "Potęga mądrości" - Uriel's experience bonus by level range (potega_madrosci.py);
 # the switch is the events planner's kind "potega", the ranges and the time player.potega_madrosci_*.
 from potega_madrosci import install as install_potega_madrosci

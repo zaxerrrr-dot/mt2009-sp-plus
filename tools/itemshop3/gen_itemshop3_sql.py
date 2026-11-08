@@ -194,6 +194,10 @@ ANTI_FLAGS = [('female', 1 << 0), ('male', 1 << 1), ('warrior', 1 << 2), ('assas
 # every line of the in-game shop is still listed exactly once.
 CATEGORIES = [
 	(1, 'Polecane', 'featured', 'star', [], 0),
+	# MT2009_PLUS_ISHOP_ROTACJA_V1: "Dzisiejsze oferty" - today's costume set chests and their set pieces (no index range:
+	# its list is made by the shop, include/classes/Shop.php rotation*; the bots never see it - no line of itemshop3.shop
+	# has this category)
+	(20, 'Dzisiejsze oferty', 'today', 'gem', [], 0),
 	(2, 'Wyposażenie', 'items', 'shield-alt', [(1, 99)], 0),
 	(3, 'Uszlachetnianie', 'items', 'refine', [(451, 459)], 0),
 	(4, 'VIPy', 'items', 'gem', [(101, 113)], 0),
@@ -220,6 +224,13 @@ CAT_AUCTIONS = 15
 # of category 19); the V3-only lines (itemshop3.v3_lines, tools/itemshop3/gen_global_catalog.py -> global/v3_extra.json):
 # what the big servers' list has and ours did not, the set pieces not sold yet, and the chests rolled at purchase.
 V3_EXTRA = os.path.join(HERE, 'global', 'v3_extra.json')
+# MT2009_PLUS_ISHOP_ROTACJA_V1: the server's costume set definition (the "#Z" lines the game reads at start,
+# server-patches/zestawy) - which vnums are parts of which set with a bonus; the shop's copy (costume_sets.json) must match.
+SETS_TXT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'costume_sets.txt')
+SETS_JSON = os.path.join(APP, 'shop3', 'include', 'db', 'costume_sets.json')
+CAT_TODAY = 20
+ROT_PIECE_ID_BASE = 800000000	# a rotation piece's line id: this + its vnum (never an id of itemshop3.shop)
+LIMIT_REAL_TIME = 7			# common/length.h ELimitTypes
 
 # root/uiitemshop.py ITEMSHOP_CUSTOM_ITEM_DATA: the in-game window adds this to the name of the line at that index.
 NAME_SUFFIX = {1: '(30 godzin)', 5: '(7 dni)', 101: '(1 dzień)', 102: '(3 dni)', 103: '(1 dzień)', 104: '(3 dni)',
@@ -413,6 +424,70 @@ def v3_extra_sql(w):
 	return len(x['lines']), len(x['chests'])
 
 
+def set_members():
+	"""MT2009_PLUS_ISHOP_ROTACJA_V1: {set id: [(part no, [vnums])]} from the server's "#Z" lines."""
+	sets = {}
+	for line in open(SETS_TXT, encoding='utf-8'):
+		m = re.match(r'^#Z\tP\t(\d+)\t([0-9,]+)\s*$', line)
+		if m:
+			sets.setdefault(int(m.group(1)), []).append([int(v) for v in m.group(2).split(',') if v])
+	data = json.load(open(SETS_JSON, encoding='utf-8'))
+	for st in data['sets']:
+		if st['id'] < 100 and [p['vnums'] for p in st['parts']] != sets.get(st['id']):
+			sys.exit('costume_sets.json set %d differs from the #Z lines of costume_sets.txt - run tools/zestawy/gen_zestawy.py' % st['id'])
+	return {sid: list(enumerate(parts, 1)) for sid, parts in sets.items()}
+
+
+def rotation_sql(w):
+	"""MT2009_PLUS_ISHOP_ROTACJA_V1 (the owner, 8 November 2026): the costume set chests rotate - a player sees only
+	today's N (Europe/Warsaw day) in "Dzisiejsze oferty", with every piece of their sets that the chest can give sold
+	on its own (79 SM, 7 days by default). The bots keep buying every chest from itemshop3.shop (not changed here)."""
+	members = set_members()
+	w('')
+	w('-- MT2009_PLUS_ISHOP_ROTACJA_V1: the daily rotation of the costume set chests (the owner, 8.11.2026). The settings (Seban panel,')
+	w('-- "ItemShop - rotacja zestawow"): rot_enabled 1/0 (0 = every chest listed as before), rot_per_day chests a day, rot_price SM')
+	w('-- and rot_days days of one set piece, rot_seed the shuffle\'s seed. The schedule: include/classes/Shop.php rotationDay() =')
+	w('-- seban-panel/ishop_rotation.py (the same algorithm). Only the web shop of the players reads any of it.')
+	w("INSERT IGNORE INTO itemshop3.settings (name, value) VALUES ('rot_enabled', '1'), ('rot_per_day', '2'), ('rot_price', '79'), ('rot_days', '7'), ('rot_seed', 'mt2009plus');")
+	w('-- a set chest pinned to a day by the admin (shown that day first; the rotation fills the rest)')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.rotation_pins (day DATE NOT NULL, chest_id INT NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (day, chest_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- the parts of every costume set with a bonus, as the game defines them (costume_sets.txt "#Z P" lines): part_no 1.. in')
+	w('-- the definition\'s order, each of its alternatives (sex / class / variant) one row')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.set_members (set_id INT NOT NULL, vnum INT NOT NULL, part_no INT NOT NULL, PRIMARY KEY (set_id, vnum), KEY vnum (vnum)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('START TRANSACTION;')
+	w('DELETE FROM itemshop3.set_members;')
+	rows = ['(%d, %d, %d)' % (sid, v, no) for sid in sorted(members) for no, vs in members[sid] for v in vs]
+	for i in range(0, len(rows), 300):
+		w('INSERT IGNORE INTO itemshop3.set_members (set_id, vnum, part_no) VALUES %s;' % ', '.join(rows[i:i + 300]))
+	w('COMMIT;')
+	# The pieces of a set chest sold on their own: every vnum the chest can give in a result that is not a common item
+	# (the package, the costume / hair / pet / mount results) AND a part of the chest's set by the definition above - not
+	# its other loot (Ksiega Lidera, Magiczny Kamien, beans ...). Only an item with a real-time limit (LIMIT_REAL_TIME):
+	# Player::CreateItem writes now + rot_days into the award's socket0, the db core keeps it (ClientManager
+	# RESULT_SAFEBOX_LOAD), the game removes the item at that time - worn or not; the set bonus counts it while worn.
+	price = "COALESCE((SELECT CAST(st.value AS SIGNED) FROM itemshop3.settings st WHERE st.name = 'rot_price'), 79)"
+	minutes = "COALESCE((SELECT CAST(st.value AS SIGNED) FROM itemshop3.settings st WHERE st.name = 'rot_days'), 7) * 1440"
+	cols = ['%d + r.vnum AS id' % ROT_PIECE_ID_BASE, '%d AS category' % CAT_TODAY, "'2026-11-08 00:00:00' AS date", '1 AS type',
+		"(SELECT d.`desc` FROM itemshop.ishop_items d WHERE d.vnum = r.vnum AND d.`desc` IS NOT NULL AND d.`desc` <> '' ORDER BY d.id LIMIT 1) AS description",
+		'1 AS pay_type', '%s AS coins' % price, '%s AS base_price' % price, '0 AS promo', 'NULL AS promo_end', '1 AS count', 'r.vnum AS vnum']
+	cols += ['0 AS socket%d' % n for n in range(6)] + ['0 AS attrtype%d, 0 AS attrvalue%d' % (n, n) for n in range(7)]
+	cols += ['1 AS available', 'NULL AS last_bought', 'NULL AS expire', '0 AS discount', 'NULL AS discount_expire', '0 AS polymorph',
+		"'FIX' AS book_type", '0 AS book', '%s AS time' % minutes, '0 AS limit_all', '0 AS limit_account', 'NULL AS bonuses',
+		'0 AS bonuses_count', '0 AS friend', '0 AS wheel_level', '0 AS jackpot']
+	cols += ['IF(COALESCE(pr.antiflag, 0) & %d, 1, 0) AS anti_%s' % (bit, name) for name, bit in ANTI_FLAGS]
+	cols += ['0 AS stackable', '1 AS max_stack',
+		"COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT('Vnum: ', r.vnum)) AS name", '0 AS min_level', '0 AS vip',
+		'0 AS vip_type', '0 AS vip_hours', '0 AS value0', '0 AS auction', 'NULL AS auction_start', '0 AS auction_max',
+		'0 AS auction_account_limit', '0 AS auction_bought', '0 AS auction_visible', '0 AS arezzo_locked', "'rotation' AS source",
+		'0 AS chest', "'' AS image", '1 AS in_sets', 'r.set_id * 1000 + r.part_no AS set_sort', 'r.set_id AS set_id',
+		'r.chest_id AS rot_chest', 'r.part_no AS rot_part']
+	w('-- one row a set piece of a set chest (rot_chest), with the columns of itemshop3.shop (the cards, the item window and')
+	w('-- pages/java/buy.php take it as a line); id = %d + vnum. NOT a part of itemshop3.shop: the bots never see it.' % ROT_PIECE_ID_BASE)
+	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.rotation_pieces AS SELECT %s FROM (SELECT ch.id AS chest_id, ch.set_id, ci.vnum, MIN(m.part_no) AS part_no FROM itemshop3.chests ch JOIN itemshop3.chest_drops cd ON cd.chest_id = ch.id AND cd.kind <> \'common\' JOIN itemshop3.chest_items ci ON ci.chest_id = cd.chest_id AND ci.drop_no = cd.drop_no JOIN itemshop3.set_members m ON m.set_id = ch.set_id AND m.vnum = ci.vnum WHERE ch.set_id > 0 GROUP BY ch.id, ch.set_id, ci.vnum) r JOIN world.item_proto pr ON pr.vnum = r.vnum WHERE (pr.limittype0 = %d OR pr.limittype1 = %d);'
+		% (', '.join(cols), LIMIT_REAL_TIME, LIMIT_REAL_TIME))
+	return sum(len(vs) for parts in members.values() for _no, vs in parts)
+
+
 def build():
 	data = json.load(open(DATA, encoding='utf-8'))
 	applies = php_list(os.path.join(APP, 'shop3', 'include', 'functions', 'items.php'), 'EApplyTypes')
@@ -483,6 +558,7 @@ def build():
 	w('CREATE TABLE IF NOT EXISTS player.itemshop_time_auction (item_index INT(10) NOT NULL, buy_count INT(10) NOT NULL DEFAULT 0, PRIMARY KEY (item_index)) ENGINE=InnoDB DEFAULT CHARSET=latin1;')
 	n_lines, n_chests = v3_extra_sql(w)
 	w(shop_view(az_vnums))
+	n_members = rotation_sql(w)	# MT2009_PLUS_ISHOP_ROTACJA_V1
 	w('-- No package offers in the in-game catalogue (the view keeps its columns for the shop\'s code).')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.bundle_items AS SELECT b.id AS id, b.item_id AS item_id, b.vnum AS vnum, b.count AS count, b.socket0 AS socket0, b.socket1 AS socket1, b.socket2 AS socket2 FROM itemshop.ishop_bundle_items b WHERE 1 = 0;')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_names AS SELECT p.vnum AS id, p.vnum AS vnum, \'pl\' AS lang, p.locale_name AS name FROM world.item_proto p;')
@@ -504,7 +580,7 @@ def build():
 	cols += ['p.socket_pct AS gain_socket', 'p.addon_type AS attu_addon']
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_proto AS SELECT %s FROM world.item_proto p;' % ', '.join(cols))
 	open(OUT, 'w', encoding='utf-8', newline='\n').write('\n'.join(L) + '\n')
-	print('wrote %s (%d bonus names, %d skills, %d Arezzo vnums, %d V3 lines, %d set chests)' % (OUT, len(data['locale_game']), len(data['skills']), az_vnums.count(',') + 1, n_lines, n_chests))
+	print('wrote %s (%d bonus names, %d skills, %d Arezzo vnums, %d V3 lines, %d set chests, %d set member vnums)' % (OUT, len(data['locale_game']), len(data['skills']), az_vnums.count(',') + 1, n_lines, n_chests, n_members))
 
 
 if __name__ == '__main__':

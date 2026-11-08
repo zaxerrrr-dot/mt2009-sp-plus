@@ -122,7 +122,15 @@
 					<p><?php print $lang_shop['mt-auctions-card']; ?></p>
 					<a class="btn-default" href="<?php print $shop_url; ?>items/15/"><?php print $lang_shop['mt-check']; ?></a>
 				</div>
-				<?php } } else if($specific_category && $active_cat==13) { ?>
+				<?php } } else if($specific_category && $active_kind=='today') {
+					// MT2009_PLUS_ISHOP_ROTACJA_V1: what the tab is, when it changes, the set pieces' price and time
+					$mt_rot = $shop->rotationSettings();
+				?>
+				<div class="mt-feature-card contrast-box clearfix mt-rot-card">
+					<img src="<?php print $shop_url; ?>images/gf/cat_gem.png" alt="">
+					<p><?php print sprintf($lang_shop['mt-rot-card'], count($shop->rotationToday()), (int)$mt_rot['price'], (int)$mt_rot['days'], htmlspecialchars(strip_tags($shop->secondsToTime(Shop::rotationSecondsLeft(), $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes'])))); ?></p>
+				</div>
+				<?php } else if($specific_category && $active_cat==13) { ?>
 				<div class="mt-feature-card contrast-box clearfix">
 					<img src="<?php print $shop_url; ?>images/item/search_item.png" alt="">
 					<p><?php print $lang_shop['mt-vouchers-card']; ?></p>
@@ -138,7 +146,7 @@
 					// MT2009_PLUS_ITEMSHOP_V3_V4: a group's list is in parts by its subcategories, each with its heading
 					$by_parts = !$list_mode && (!$specific_category || $active_kind=='group');
 					// MT2009_PLUS_ITEMSHOP_V3_V6: "Sety Bonusowe" set by set, each with its name (the chest first, then the pieces)
-					$by_sets = $specific_category && $active_kind=='sets';
+					$by_sets = $specific_category && in_array($active_kind, ['sets', 'today']);	// MT2009_PLUS_ISHOP_ROTACJA_V1: today's sets too
 					foreach($all_items as $key => $item)
 					{
 						$new_group = $by_parts && ($key==0 || $all_items[$key-1]['category']!=$item['category']);

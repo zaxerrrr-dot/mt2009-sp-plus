@@ -311,6 +311,9 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-vip-bought" => "Efekt jest już na koncie - przeloguj postać, żeby zaczął działać.",
 	"mt-arezzo-off" => "Ten przedmiot jest dostępny tylko z włączonym modułem Arezzo.",
 	"mt-not-available" => "Ten przedmiot nie jest teraz dostępny.",
+	// MT2009_PLUS_ISHOP_ROTACJA_V1
+	"mt-rot-not-today" => "Tej oferty nie ma dziś w sklepie - skrzynie zestawów zmieniają się codziennie o północy (zakładka „Dzisiejsze oferty”).",
+	"mt-rot-card" => "<strong>Dzisiejsze oferty</strong>: skrzynie zestawów kostiumów z bonusem (dziś %d), a pod każdą przedmioty jej zestawu osobno - <strong>%d SM za sztukę, na %d dni</strong> (bonus zestawu działa, gdy je nosisz). Oferty zmieniają się o północy, za %s.",
 	"mt-auction-starts" => "Zaczyna się za %s",
 	"mt-auction-ends" => "Koniec za %s",
 	"mt-auction-ended" => "Aukcja zakończona",
