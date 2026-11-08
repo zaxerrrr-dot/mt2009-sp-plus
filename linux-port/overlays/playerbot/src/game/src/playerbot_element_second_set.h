@@ -937,6 +937,8 @@ namespace
 			if (s->adwB[slot] != 0 || FindPlayerBotSecondSetCandidate(ch, *s, slot))
 				continue;
 			const int look = k == 0 ? PLAYERBOT_ISHOP_LOOK_BODY : PLAYERBOT_ISHOP_LOOK_HAIR;
+			if (IsPlayerBotLookMonthBlocked(ch, look))	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1: once a month a kind
+				continue;
 			const std::vector<DWORD>& catalogue = GetPlayerBotLookCatalogue(look);
 			std::vector<DWORD> mine, lasting;
 			for (size_t i = 0; i < catalogue.size(); ++i)

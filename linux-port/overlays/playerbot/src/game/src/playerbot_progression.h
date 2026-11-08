@@ -90,6 +90,9 @@ namespace
 		int iNeeds;
 		std::string strWhy;
 		std::string strName;
+		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: the unmet rows of the gate held at (the first row of each piece, as the
+		// weighing adjusted it - the horse's cap, the slot's best level) - what playerbot_progression_shop.h buys for
+		std::vector<playerbot_progression::TReq> vecShort;
 		TPlayerBotProgress() : dwSeen(0), dwLastTick(0), dwNextEval(0), dwNextLog(0), dwHeldMs(0),
 			bLevel(0), bGate(0), bWaived(0), bLoaded(false), bEligible(false), bFishing(false),
 			bHeld(false), bAmbition(false), bFarm(0), iNeeds(0) {}
@@ -182,6 +185,8 @@ namespace
 	}
 
 	void WritePlayerBotProgressionStatus(DWORD dwNow);
+	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate passed or given up (playerbot_progression_shop.h, its census)
+	void NotePlayerBotProgShopGateEnd(DWORD pid, BYTE gate, unsigned int heldMin, bool givenUp);
 
 	// Once a manager tick: the file (a stat every five seconds), the census,
 	// the status file.
@@ -254,6 +259,15 @@ namespace
 		{
 			// The hand's weapon, not a rod or a pickaxe a session put there.
 			LPITEM item = i == 0 ? GetPlayerBotHandWeapon(ch) : ch->GetWear(slots[i]);
+			// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a young heroes' weapon WORN is the weapon the gate reads. With one in the
+			// hand GetPlayerBotHandWeapon answers the real weapon prepared in the bag (MT2009_PLUS_BOT_MLODZI_V1, the
+			// weapon planning's hand), so the +9 rule below (MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1, the owner, 28 October
+			// 2026) never fired: on the test world of 8 November every bot held at 45 / 55 wore one (603 of 603 sampled)
+			// and was held for "bron lv25+7 (ma lv45+2)" - the prepared weapon's plus. Event flag
+			// m2_bot_prog_mlodzi_hand_off 1: as before.
+			if (i == 0 && IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)) &&
+					quest::CQuestManager::instance().GetEventFlag("m2_bot_prog_mlodzi_hand_off") == 0)
+				item = ch->GetWear(WEAR_WEAPON);
 			if (!item)
 				continue;
 			s.slot[i].present = true;
@@ -322,6 +336,13 @@ namespace
 	{
 		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(pid);
 		return it != s_mapPlayerBotProgress.end() && it->second.bHeld && it->second.bEligible;
+	}
+
+	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: the held bot's record (NULL: not held) - its gate, minutes and unmet rows.
+	const TPlayerBotProgress* FindPlayerBotHeldProgress(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotProgress>::const_iterator it = s_mapPlayerBotProgress.find(pid);
+		return it != s_mapPlayerBotProgress.end() && it->second.bHeld && it->second.bEligible ? &it->second : NULL;
 	}
 
 	int GetPlayerBotProgressionNeeds(DWORD pid)
@@ -461,6 +482,7 @@ namespace
 		e.bHeld = false;
 		e.iNeeds = 0;
 		e.strWhy.clear();
+		e.vecShort.clear();	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 		e.dwHeldMs = 0;
 		e.bGate = 0;
 		e.bFarm = PLAYERBOT_PROGRESS_FARM_NONE;
@@ -524,6 +546,7 @@ namespace
 		BYTE holdGate = 0;
 		int needs = 0;
 		std::string why;
+		std::vector<playerbot_progression::TReq> shortReqs;	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 		for (size_t g = 0; g < c.gates.size() && holdGate == 0; ++g)
 		{
 			const playerbot_progression::TGate& gate = c.gates[g];
@@ -561,6 +584,7 @@ namespace
 				if (!playerbot_progression::IsFirstOfPiece(gate, r))
 					continue;
 				needs |= playerbot_progression::NeedOf(req.type);
+				shortReqs.push_back(req);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 				if (!why.empty())
 					why += ", ";
 				why += one;
@@ -573,6 +597,7 @@ namespace
 			{
 				sys_log(0, "PLAYERBOT_PROGRESS: passed pid=%u name=%s level=%u gate=%u held_min=%u",
 						pid, ch->GetName(), (unsigned)level, (unsigned)e.bGate, e.dwHeldMs / 60000U);
+				NotePlayerBotProgShopGateEnd(pid, e.bGate, e.dwHeldMs / 60000U, false);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 				ReleasePlayerBotProgress(ch, state, e);
 			}
 			return;
@@ -591,6 +616,7 @@ namespace
 		{
 			sys_log(0, "PLAYERBOT_PROGRESS: gate given up pid=%u name=%s level=%u gate=%u held_min=%u missing=%s",
 					pid, ch->GetName(), (unsigned)level, (unsigned)holdGate, e.dwHeldMs / 60000U, why.c_str());
+			NotePlayerBotProgShopGateEnd(pid, holdGate, e.dwHeldMs / 60000U, true);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 			e.bWaived = holdGate;
 			ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_WAIVED, holdGate);
 			ReleasePlayerBotProgress(ch, state, e);
@@ -601,6 +627,7 @@ namespace
 		e.bHeld = true;
 		e.iNeeds = needs;
 		e.strWhy = why;
+		e.vecShort.swap(shortReqs);	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1
 		ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_GATE, holdGate);
 		ch->SetQuestFlag(PLAYERBOT_PROGRESSION_FLAG_HELD, (int)(e.dwHeldMs / 1000U));
 		if (fresh || dwNow >= e.dwNextLog)
