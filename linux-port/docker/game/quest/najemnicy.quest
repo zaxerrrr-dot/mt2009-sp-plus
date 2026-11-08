@@ -18,6 +18,9 @@ quest najemnicy begin
 	state start begin
 		when login with not pc.is_playerbot() and pc.get_level() >= 80 begin
 			command("najemnicy sync")
+			-- MT2009_PLUS_NAJEMNICY_V3: przybycie na ten rdzeñ (logowanie, teleport, zmiana kana³u) - wezwani najemnicy
+			-- wracaj¹ do gracza, a klient od razu dostaje ich VID (przycisk "Ekwipunek" / "Rozkazy" bez czekania 20 s).
+			command("najemnicy przybycie")
 			if pc.getqf("off") == 0 then
 				send_letter("Najemnicy")
 			end
@@ -69,8 +72,17 @@ quest najemnicy begin
 				return row.name .. " (" .. classes[job] .. " " .. paths[job][g] .. ")"
 			end
 			local function nj_rows()
-				return nj_query("SELECT slot, name, job, skill_group FROM player.najemnicy WHERE owner_pid=" ..
+				return nj_query("SELECT slot, name, job, skill_group, order_mode, no_loot FROM player.najemnicy WHERE owner_pid=" ..
 					pc.get_player_id() .. " AND retired=0 ORDER BY slot")
+			end
+			-- MT2009_PLUS_NAJEMNICY_V3: rozkazy (player.najemnicy.order_mode, no_loot).
+			local orders = { [0] = "Za mn¹ ", [1] = "Stój tutaj", [2] = "Bij mój cel", [3] = "Walcz sam w pobli¿u" }
+			local function nj_order(row)
+				local o = orders[tonumber(row.order_mode) or 0] or orders[0]
+				if tonumber(row.no_loot) == 1 then
+					o = o .. ", nie podnosi ³upu"
+				end
+				return o
 			end
 			local function nj_summoned(slot)
 				local mask = pc.getqf("summoned")
@@ -149,7 +161,7 @@ quest najemnicy begin
 			say(pc.getqf("tasks_view") .. " z 6 (ka¿de daje miejsce od swojego poziomu).")
 			say("Skarbiec: " .. nj_yang(nj_balance()) .. " yang. Op³ata: " .. nj_yang(price) .. " yang")
 			say("za godzinê za ka¿dego wezwanego najemnika.")
-			local m = select("Lista najemników", "Stwórz najemnika", "Wezwij", "Odwo³aj", "Skarbiec",
+			local m = select("Lista i rozkazy", "Stwórz najemnika", "Wezwij", "Odwo³aj", "Skarbiec",
 				"Ekwipunek", "Gildia", "Zwolnij najemnika", "Kolekcjoner Najemników", "Zamknij")
 
 			if m == 1 then
@@ -165,10 +177,54 @@ quest najemnicy begin
 						mark = " - wezwany"
 					end
 					say(tostring(rows[i].slot) .. ". " .. nj_label(rows[i]) .. mark)
+					say("    rozkaz: " .. nj_order(rows[i]))
 				end
 				say("")
 				say("Poziom = twój poziom, umiejêtnoœci = po³owa")
 				say("twoich (liczona od M1), statystyki pod drogê.")
+				local auto = "w³¹czony"
+				if pc.getqf("no_rejoin") ~= 0 then
+					auto = "wy³¹czony"
+				end
+				say("Powrót wezwanych po zalogowaniu: " .. auto .. ".")
+				local r = select("Rozkazy", "Powrót po zalogowaniu", "Zamknij")
+				if r == 1 then
+					local slot = nj_pick("Rozkazy", true)
+					if slot == 0 then
+						return
+					end
+					local who = tostring(slot)
+					if slot == -1 then
+						who = "wszyscy"
+					end
+					say_title("Rozkazy")
+					say("Co maj¹ robiæ? Rozkaz zostaje zapamiêtany")
+					say("(tak¿e po wylogowaniu). Te same rozkazy masz")
+					say("pod przyciskiem 'Rozkazy' po klikniêciu najemnika.")
+					say("")
+					say("Za mn¹ - idzie z tob¹ i walczy przy tobie.")
+					say("Stój tutaj - pilnuje miejsca, w którym stoi.")
+					say("Bij mój cel - tylko to, co zaznaczysz.")
+					say("Walcz sam w pobli¿u - wszystko wokó³ ciebie.")
+					local c = select("Za mn¹ ", "Stój tutaj", "Bij mój cel", "Walcz sam w pobli¿u", "Nie podnoœ ³upu",
+						"Podnoœ ³up", "Wstecz")
+					local words = { "za_mna", "stoj", "bij", "sam", "nie_podnos", "podnos" }
+					if c <= 6 then
+						command("najemnicy rozkaz " .. who .. " " .. words[c])
+					end
+				elseif r == 2 then
+					say_title("Powrót po zalogowaniu")
+					say("Wezwani najemnicy zawsze id¹ za tob¹ na inny")
+					say("rdzeñ i kana³. Po wylogowaniu odchodz¹,")
+					say("a po zalogowaniu wracaj¹ sami (op³ata dalej")
+					say("tylko w czasie wezwania) - chyba ¿e to wy³¹czysz.")
+					local e = select("Wracaj¹ sami (w³¹cz)", "Nie wracaj¹ (wy³¹cz)", "Wstecz")
+					if e == 1 then
+						command("najemnicy powrot 1")
+					elseif e == 2 then
+						command("najemnicy powrot 0")
+					end
+				end
 
 			elseif m == 2 then
 				if count >= slots then

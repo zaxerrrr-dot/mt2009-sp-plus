@@ -393,6 +393,10 @@ quest swiatynia_wezy begin
 
 		when die with swiatynia_wezy.inside() and d.getf("started") == 1 begin
 			local c = swiatynia_wezy.cfg()
+			-- MT2009_PLUS_NAJEMNICY_V3: a player's mercenary has no revive limit (it stands up beside its owner after 30 s)
+			if pc.is_najemnik ~= nil and pc.is_najemnik() then
+				return
+			end
 			local n = pc.getf("swiatynia_wezy", "deaths") + 1
 			pc.setf("swiatynia_wezy", "deaths", n)
 			if n > c.revives then

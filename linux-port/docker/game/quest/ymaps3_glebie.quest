@@ -239,6 +239,7 @@ quest ymaps3_glebie begin
 			-- kto idzie: przywódca i ludzie jego dru¿yny obok (c.near pól); boty nie wchodz¹ na mapy Sung Ma
 			local me = pc.get_player_id()
 			local humans = {me}
+			local mercs = 0	-- MT2009_PLUS_NAJEMNICY_V3
 			local bad = {}
 			local function check(name)
 				if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
@@ -259,6 +260,11 @@ quest ymaps3_glebie begin
 					if pid ~= me then
 						q.begin_other_pc_block(pid)
 						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						-- MT2009_PLUS_NAJEMNICY_V3: the player's mercenaries count for the party's size (not jumped: no
+						-- keys - they follow their owner in by themselves)
+						if pc.get_player_id() == pid and (pc.is_najemnik ~= nil and pc.is_najemnik()) and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near then
+							mercs = mercs + 1
+						end
 						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
 							table.insert(humans, pid)
 							if not pc.is_gm() then
@@ -275,10 +281,10 @@ quest ymaps3_glebie begin
 				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
-			if not pc.is_gm() and (table.getn(humans) < c.party_min or table.getn(humans) > c.party_max) then
+			if not pc.is_gm() and (table.getn(humans) + mercs < c.party_min or table.getn(humans) + mercs > c.party_max) then
 				say_title(mob_name(20815)..":")
 				say("Do G³êbi wchodzi dru¿yna od "..c.party_min.." do "..c.party_max.." osób")
-				say("(stoj¹cych obok). Teraz: "..table.getn(humans)..".")
+				say("(stoj¹cych obok, z najemnikami). Teraz: "..(table.getn(humans) + mercs)..".")
 				return
 			end
 			for i, pid in next, humans, nil do

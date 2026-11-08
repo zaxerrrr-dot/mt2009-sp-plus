@@ -60,7 +60,7 @@
 import chr
 import player
 
-_state = {'vid': 0, 'hover': False, 'buffis': set(), 'picked': -1}
+_state = {'vid': 0, 'hover': False, 'buffis': set(), 'picked': -1, 'najemnicy': set()}
 
 # Marks the wrapper on app.UpdateGame, so it is put there once.
 WRAPPER_MARK = 'sidekickCollision'
@@ -92,6 +92,24 @@ def AddBuffi(value, *rest):
 	vid = ParseVid(value)
 	if vid and vid != player.GetMainCharacterIndex():
 		_state['buffis'].add(vid)
+		Install()
+
+
+def SetNajemnicy(vids):
+	"""MT2009_PLUS_NAJEMNICY_V3 (the owner: "przechodzenie przez najemnikow jak
+	przez dawnego Towarzysza"): the player's own summoned mercenaries, as the
+	server names them in "NajemnikVids" (uisidekickinventory.py) - every
+	announcement replaces the set (a dismissed one is gone from it at once).
+	Typed as NPCs through the world's update like the Buffis; the one under the
+	cursor stays a player, so a click on it still opens its target board."""
+	main = player.GetMainCharacterIndex()
+	found = set()
+	for value in vids or ():
+		vid = ParseVid(value)
+		if vid and vid != main:
+			found.add(vid)
+	_state['najemnicy'] = found
+	if found:
 		Install()
 
 
@@ -129,6 +147,13 @@ def BeginWorldUpdate():
 				continue
 			_SetType(buffi, chr.INSTANCE_TYPE_NPC)
 			typed.append(buffi)
+	# MT2009_PLUS_NAJEMNICY_V3: the player's mercenaries - kept while out of view (the server names them again at
+	# every change, so a VID is never somebody else's for long).
+	for merc in _state['najemnicy']:
+		if merc == main or merc == _state['picked'] or merc == vid or merc in typed or not chr.HasInstance(merc):
+			continue
+		_SetType(merc, chr.INSTANCE_TYPE_NPC)
+		typed.append(merc)
 	return typed
 
 
@@ -151,6 +176,7 @@ def _Guarded(call, *args):
 		# and the world goes on being updated.
 		_state['vid'] = 0
 		_state['buffis'] = set()
+		_state['najemnicy'] = set()
 		return []
 
 
@@ -212,6 +238,7 @@ class Keeper(object):
 		_state['hover'] = False
 		_state['buffis'] = set()	# MT2009_PLUS_BUFFI_PASS_V1: the next window hears them again
 		_state['picked'] = -1
+		_state['najemnicy'] = set()	# MT2009_PLUS_NAJEMNICY_V3: NajemnikVids names them again
 
 
 _keeper = []

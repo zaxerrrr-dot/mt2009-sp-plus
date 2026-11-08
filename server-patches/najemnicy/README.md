@@ -1,6 +1,7 @@
-# najemnicy – Najemnicy, etap 1 (rdzeń) i etap 2 (ekwipunek)
+# najemnicy – Najemnicy, etap 1 (rdzeń), etap 2 (ekwipunek) i etap 3 (mapy, rozkazy, lochy)
 
-`MT2009_PLUS_NAJEMNICY_V1` (etap 1) i `MT2009_PLUS_NAJEMNICY_V2` (etap 2, ekwipunek) – decyzje właściciela z 8.11.2026,
+`MT2009_PLUS_NAJEMNICY_V1` (etap 1), `MT2009_PLUS_NAJEMNICY_V2` (etap 2, ekwipunek) i `MT2009_PLUS_NAJEMNICY_V3`
+(etap 3: powrót po zmianie rdzenia/kanału i po zalogowaniu, rozkazy, lochy z graczem jako liderem) – decyzje właściciela z 8.11.2026,
 plan: `/opt/metin2/cache/yohara/najemnicy-plan.md`.
 Stała drużyna botów gracza: od 80 poziomu gracz tworzy najemników (klasa, droga, płeć, imię), wzywa ich do swojej
 grupy, a oni chodzą za nim i walczą. Za każdego wezwanego płaci ze skarbca najemników.
@@ -44,9 +45,9 @@ do listy łatek **za** `pvpfan` (w `yohara-deploy.sh` na końcu listy).
   awansie gracza.
 - **Opłata:** 5 kk/h za każdego wezwanego (flaga `m2_najemnicy_price_h`), pobierana co minutę ze skarbca (pierwsza
   minuta od razu przy wejściu). Ostrzeżenie, gdy zostaje ≤ 10 minut. Pusty skarbiec = wszyscy odchodzą.
-- **Odchodzi:** odwołany, gdy gracz wyloguje się albo przejdzie na inny rdzeń/kanał (po 20 s; ponowne
-  wejście za graczem to etap 3), przy pustym skarbcu albo po wyłączeniu modułu. Przejście gracza na inną mapę
-  tego samego rdzenia (także do lochu) – najemnik idzie za nim.
+- **Odchodzi:** odwołany, przy pustym skarbcu albo po wyłączeniu modułu. Wylogowanie gracza – odchodzi po 20 s, ale
+  zostaje „wezwany” i wraca po zalogowaniu (etap 3). Zmiana rdzenia/kanału – od razu loguje się przy graczu w nowym
+  miejscu (etap 3). Przejście gracza na inną mapę tego samego rdzenia (także do lochu) – najemnik idzie za nim.
 - **Zasady:** brak handlu (wymiana anulowana od razu), sklepu i rynku; nie atakuje graczy poza wojną gildii swojej
   gildii. Może być w gildii gracza („Gildia” w liście albo zwykłe zaproszenie od gracza – tylko od niego); na mapę
   wojny gildii idzie tylko, gdy jest w gildii gracza. Doświadczenie: zwykły podział w grupie.
@@ -100,7 +101,8 @@ do listy łatek **za** `pvpfan` (w `yohara-deploy.sh` na końcu listy).
 
 Gracz (to samo robią przyciski listu): `/najemnicy` (lista), `wezwij <nr|wszyscy>`, `odwolaj <nr|wszyscy>`,
 `wplac <yang>` (np. `50000000` albo `50kk`), `skarbiec`, `okno <nr>` (V2), `eq <nr> …` (V2, okno), `daj <nr> <pole>`,
-`zabierz <nr>`, `gildia <nr>`,
+`zabierz <nr>`, `rozkaz <nr|wszyscy> <za_mna|stoj|bij|sam|nie_podnos|podnos>` (V3), `powrot <0|1>` (V3),
+`przybycie` (V3, quest przy logowaniu), `gildia <nr>`,
 `gildia_wyjdz <nr>`, `zwolnij <nr> tak`, `stworz <rasa 0-7> <droga 1-2> <imię>`, `sync` (flagi listu).
 
 GM (GM_HIGH_WIZARD): `/najemnicy odblokuj <nick> [1-6]` (zadania Kolekcjonera, domyślnie 6),
@@ -113,6 +115,7 @@ W grze `/eventflag <nazwa> <wartość>` albo w panelu (wiersz `player.quest`, gr
 - `m2_najemnicy_off` = 1 – nikt nie wzywa, wezwani odchodzą;
 - `m2_najemnicy_free_unlock` = 1 – każdy ma 6/6 zadań Kolekcjonera (na testy; miejsca dalej wg poziomu);
 - `m2_najemnicy_price_h` – opłata za godzinę za jednego najemnika (0 = 5 000 000).
+- `m2_najemnicy_rejoin_off` = 1 – (V3) po zalogowaniu wezwani nie wracają sami (zmiana rdzenia/kanału – dalej wracają).
 
 Logi: linie `NAJEMNICY:` w syslog rdzenia (powtarzalne – ograniczane), spis `NAJEMNICY: census` co 10 minut.
 
@@ -136,7 +139,8 @@ Logi: linie `NAJEMNICY:` w syslog rdzenia (powtarzalne – ograniczane), spis `N
    z gildii przeciwnej; bez gildii czeka poza mapą wojny i nie bije graczy nigdzie.
 9. Śmierć: daj najemnikowi zginąć – po 30 s wstaje obok, nic nie traci.
 10. **Ekwipunek → Daj mu rzecz do założenia** (np. broń dla jego klasy z pola 1) i **Zabierz wszystko**.
-11. Wyloguj się – po ~20 s najemnicy znikają (syslog: `NAJEMNICY: dismissed … why=owner_gone`).
+11. Wyloguj się – po ~20 s najemnicy znikają (syslog: `NAJEMNICY: dismissed … why=owner_gone`); od etapu 3 wracają
+    po zalogowaniu (punkt 26).
 12. **Zwolnij najemnika** – miejsce wolne; po 20 min postać znika z bazy (`retired character deleted`).
 13. Panel Seban → Wydarzenia → Najemnicy: lista najemników graczy, skarbce, odblokowania, przełączniki.
 
@@ -165,13 +169,134 @@ Logi: linie `NAJEMNICY:` w syslog rdzenia (powtarzalne – ograniczane), spis `N
     przedmiotow).”); przy pełnym ekwipunku część zostaje u niego.
 23. Spróbuj handlu z najemnikiem – anulowany od razu (jak w etapie 1).
 
-## Co dalej (etap 3)
+## Etap 3 – mapy, rozkazy, lochy (`MT2009_PLUS_NAJEMNICY_V3`)
 
-- Etap 3: ponowne wejście za graczem po zmianie rdzenia/kanału i po zalogowaniu, rozkazy („Za mną”, „Stój”,
-  „Bij mój cel”, „Walcz sam”, „Nie podnoś łupu”), skrypty lochów pod lidera-gracza.
-- Z etapu 2 zostaje na etap 3: wejście najemnika do lochów, które wpuszczają tylko listę „ludzi” (`d.new_jump_pids`
-  – Świątynia Węży, Głębie, Meley) i wyrzucają bota przy logowaniu w środku (`when login … pc.is_playerbot()`);
-  nagrody tych lochów są już podpięte pod `pc.is_najemnik()`. Przechodzenie przez najemnika jak przez dawnego
-  Towarzysza (`sidekickcollision.py`). Po teleporcie gracza przycisk „Ekwipunek” wraca w ciągu 20 s (`NajemnikVids`).
+Bez zmian w silniku: łatka `najemnicy` zostaje w wersji V2 (te same edycje), cała logika jest w nakładce
+`playerbot_najemnicy.h`, w questach i w Pythonie klienta (bez zmian w exe). Nowe kolumny (`najemnicy.sql` i
+`EnsureNajemnicyTables`): `player.najemnicy.summoned`, `order_mode`, `no_loot`, `player.najemnicy_vault.billed_until`.
+
+### Powrót po zmianie rdzenia, kanału i po zalogowaniu
+
+- **Zbiór wezwanych jest w bazie** (`najemnicy.summoned` = 1 od wezwania). Kasują go tylko: „Odwołaj”, pusty
+  skarbiec, wyłączenie modułu, nieudane wejście (45 s). Wylogowanie gracza i zmiana rdzenia/kanału go **nie** kasują.
+- **Zmiana rdzenia albo kanału:** stary rdzeń widzi gracza na innym rdzeniu (P2P) i od razu wylogowuje jego najemników
+  (`why=owner_moved`; zostają w grupie gracza). Na rdzeniu docelowym quest „Najemnicy” przy `login` wysyła
+  `/najemnicy przybycie`: wezwani, których tu nie ma, logują się obok gracza (to samo wejście co PVP Fan –
+  `SpawnPvpFan` + `PlaceLoadingBot` na mapie gracza, także w instancji lochu). Próba co 2 s przez 90 s (stary rdzeń
+  musi ich najpierw wypuścić). Na czacie nie ma „… jest przy tobie” (cichy powrót).
+- **Opłata bez przerwy i bez podwójnej minuty:** `billed_until` = sekunda, do której minuta jest zapłacona; nowy rdzeń
+  pobiera następną minutę dopiero wtedy. Opłata liczy się tylko, gdy najemnicy są w świecie.
+- **Wylogowanie:** najemnicy odchodzą po 20 s (opłata staje). **Po zalogowaniu** wracają sami – czat:
+  „[Najemnicy] Najemnicy wracają... (N)”. Gracz wyłącza to w liście: **Najemnicy → Lista i rozkazy → Powrót po
+  zalogowaniu** (`/najemnicy powrot 0|1`, flaga questa `najemnicy.no_rejoin`); globalnie flaga zdarzenia
+  `m2_najemnicy_rejoin_off` = 1. Przełącznik dotyczy tylko logowania – przy zmianie rdzenia/kanału wracają zawsze.
+  „Logowanie” a „przenosiny” rozróżnia `billed_until`: zapłacona minuta skończyła się ponad 30 s temu = logowanie.
+- Przed powrotem skarbiec musi mieć minutę dla wszystkich (inaczej: „Skarbiec … pusty – najemnicy nie wracają”, zbiór
+  wezwanych kasowany). Na mapie wojny gildii powrót czeka (wracają przy następnym wejściu poza nią).
+- **Przycisk „Ekwipunek” bez 20 s:** przy każdym wejściu gracza (logowanie, teleport, zmiana kanału) serwer od razu
+  wysyła `NajemnikVids` i jeszcze raz po 3 s.
+
+### Rozkazy
+
+| Rozkaz | Słowo komendy | Co robi |
+|---|---|---|
+| **Za mną** (domyślny) | `za_mna` | jak dotąd: przy graczu, bije cel gracza, to, co atakuje jego lub gracza, i potwory obok |
+| **Stój tutaj** | `stoj` | pilnuje miejsca, w którym stał w chwili rozkazu: bije to, co atakuje jego lub gracza w pobliżu, i potwory do 7 m od miejsca, potem wraca na miejsce; nie podnosi łupu; nie teleportuje się za graczem na tej samej mapie (inna mapa – idzie za graczem i pilnuje nowego miejsca) |
+| **Bij mój cel** | `bij` | tylko cel gracza (także boss albo kamień tylko zaznaczony); bez celu – broni gracza i siebie |
+| **Walcz sam w pobliżu** | `sam` | wszystko do 25 m od gracza (także bossy i kamienie), wraca do gracza dopiero powyżej 15 m |
+| **Nie podnoś łupu** / **Podnoś łup** | `nie_podnos` / `podnos` | przełącznik łupu (niezależny od rozkazu) |
+
+- Dla jednego najemnika albo dla wszystkich; zapamiętane w bazie (`order_mode`, `no_loot`) także po wylogowaniu.
+- Skąd: **tablica celu** (klik na swojego najemnika → przycisk **„Rozkazy”** obok „Ekwipunek” – okienko z rozkazami dla
+  niego, przełącznikiem łupu i rzędem „Wszyscy najemnicy”, obecny rozkaz jest podświetlony), **list** (Najemnicy →
+  Lista i rozkazy → Rozkazy; lista pokazuje rozkaz każdego) albo komenda `/najemnicy rozkaz <nr|wszyscy> <słowo>`.
+- `NajemnikVids` niesie teraz rozkaz i łup (`slot:vid:imię:rozkaz:łup`); stary klient czyta pierwsze trzy pola.
+
+### Przechodzenie przez najemników
+
+Jak przez dawnego Towarzysza i Buffi: klient (`sidekickcollision.py`) typuje swoich wezwanych najemników (VID-y z
+`NajemnikVids`) jako NPC na czas aktualizacji świata – gracz przez nich przechodzi; ten pod kursorem zostaje postacią
+(klik działa). Tylko Python.
+
+### Lochy (gracz jest liderem)
+
+Najemnik wchodzi do lochu za graczem (na tym samym rdzeniu: od razu na jego mapę; na innym rdzeniu: powrót jak wyżej,
+wprost do instancji). W instancji lochu (`IsPlayerBotPartyDungeonMap`) z graczem robi to, co boty w grupie gracza
+(`playerbot_party_dungeon.h`) i to, co umieją skrypty botów:
+
+- **przedmioty lochu** (`ManagePlayerBotPdgItems`): pieczęcie i klucze używa od razu, Złotą Zębatkę, Kamienie Maat,
+  Kryształy Lodu i klucz Atlantydy oddaje NPC, Pierścień Smoczego Ognia (Meley), Ognistą Strzałę (Balathor);
+- **klucze Yohary wg klasy** (`ManagePlayerBotYdgItems` na grupie gracza: najemnicy na miejscu + gracz): Mroźny Klucz
+  używa Szaman, Klucz Lodowego Kwiatu Ninja albo Szaman – klucz innej klasy przechodzi do najemnika właściwej klasy (albo
+  do gracza); Złota Zębatka, Kamień Maat, Gwiazda Północy do swoich NPC; podnosi klucze swojej klasy z ziemi.
+  Gracz może też włożyć klucz do plecaka najemnika (okno ekwipunku) – najemnik go użyje;
+- **walka w lochu**: „Za mną” – cel gracza, to, co atakuje, kamienie i potwory przy graczu (`PickPlayerBotPdgFoe`);
+  „Walcz sam” – sam czyści loch wokół (`PickPlayerBotPdgSoloFoe`); „Bij mój cel” i „Stój” – jak na mapie. Zawsze
+  z zasadami lochów: najpierw kamienie Niebieskiego Smoka, bez osłoniętych posągów Meley, bez Metinów Świątyni Węży
+  poza kolejnością, bez jaj i Hwachy Balathora, bez bossów Zodiaku zostawionych graczowi;
+- **nigdy nie wychodzi sam**: mapa gracza jest jego mapą (dogania gracza przeniesionego do innej sali), wychodzi
+  z `d.exit_all` albo za graczem;
+- jego plecak nie jest opróżniany na miejsce (boty sprzedają śmieci po kluczu – najemnik nie).
+
+Questy (wejścia i logowanie):
+
+- `when login` w instancji i w poczekalni lochów klasycznych i Arezzo (Razador, Nemere, Smok, Biblioteka, Wukong,
+  Skorpion, Dżungla, Atlantyda) wyrzucał bota – najemnika już nie (`pc.is_najemnik()`); to samo Płaskowyż Iluzji
+  (`przebudzeni_bossowie`). Świątynia Węży, Głębie i Meley przy logowaniu bota nic nie robią – najemnik zostaje.
+- `d.new_jump_pids` przenosi tylko ludzi (bilety, klucze, limity dzienne płacą ludzie) – najemnicy wchodzą sami za
+  graczem; liczą się jednak do warunków drużyny: **Głębie** (`party_min`/`party_max`), **Erebu** (`party_min`),
+  **Przebudzeni Bossowie** („co najmniej dwóch”), **Ninja + Szaman** Strażnicy Nemere (Szczeliny i Przebudzeni),
+  **Krypta Balathora** (członkowie gildii obok mistrza – najemnik w gildii gracza).
+- Świątynia Węży: najemnik nie ma limitu ożywień (wstaje po 30 s przy graczu).
+
+| Loch | Stan |
+|---|---|
+| Świątynia Zodiaku | wchodzi za graczem (piętra – za graczem), walka lochowa, bossy zostawione graczowi pomijane, skrzynie każdej postaci (etap 2) |
+| Nemere (klasyczny 352) | klucze 30760/30762 używa, Kryształy Lodu oddaje pieczęciom; rozmowę z lwem/posągiem robi gracz |
+| Nemere PB / Szczelina (Strażnica Nemere) | Ninja/Szaman: Mroźny Klucz (Szaman), Klucz Lodowego Kwiatu (Ninja/Szaman) – przekazanie do właściwej klasy; Gwiazda Północy do Kostek; najemnik liczy się do Ninja+Szaman przy wejściu |
+| Jotun PB / Szczelina Zaklęty Las (SZC) | walka i przedmioty PB; SZC to polowanie (Metiny, potwory) – działa jak walka lochowa |
+| Erebu (Jotun) | najemnik liczy się do `party_min`; walka; Kamień Driad płaci gracz |
+| Meley | pierścień 30340, posągi zablokowane pomijane, Skrzynia Królowej w plecaku (etap 2); role posągów (skrypt wypraw botów) – nie, grupa bije wspólnie |
+| Głębie (Alastor) | wchodzi za graczem, liczy się do drużyny, walczy; strefy go nie celują (nie jest w p1..p8); jajo i portale – gracz |
+| Krypta Balathora | najemnik w gildii gracza liczy się do członków, strzały do Hwachy, jaja/Hwacha nie są celem; nie testowane w grze |
+| Razador (klasyczny i PB) | Zębatka i Kamienie Maat do Steli; rozmowy z posągiem – gracz |
+| Wukong / Skorpion / Dżungla | pieczęcie fal używa, przerwanie walki z bossem jak boty Arezzo |
+| Atlantyda | klucz 30920 do zamkniętego Filaru (gdy go ma); walka |
+| Niebieski Smok | najpierw kamienie, potem smok; łup – etap 2 |
+| Świątynia Węży | walka (Metiny tylko w kolejności), bez limitu ożywień; klucze/klatki/głowy robi gracz |
+| Beran PB / Szczelina | Kręte Klucze zbiera i trzyma (Duch Sura liczy klucze ludzi – gracz) |
+
+Rozmowy z NPC, które w wyprawach botów robi „lider” (timery `_dgrun_next` działają tylko w instancjach wypraw botów),
+w lochu gracza robi gracz – to on jest liderem.
+
+### Jak przetestować etap 3 (nowy klient: łatka root z tej gałęzi; serwer: nakładka + questy, migracja sama)
+
+24. **Powrót po zmianie kanału:** wezwij 2 najemników, zmień kanał (albo przejdź na mapę innego rdzenia, np. Yohara).
+    Po wejściu najemnicy pojawiają się obok w ciągu kilku sekund, są w grupie. Syslog starego rdzenia: `dismissed …
+    why=owner_moved`; nowego: `owner arrived … move=1`, `summoned … rejoin=1`, `entered … rejoin=1`. Skarbiec: ubywa
+    dalej 1 minuta na minutę (nie dwie przy przejściu).
+25. **Przycisk „Ekwipunek”/„Rozkazy” po teleporcie:** zaraz po wejściu kliknij najemnika – przyciski są od razu (bez
+    czekania 20 s).
+26. **Wylogowanie i logowanie:** wyloguj się, odczekaj ponad 1,5 min, zaloguj – czat „Najemnicy wracają... (2)”,
+    najemnicy wchodzą obok. Lista → Powrót po zalogowaniu → „Nie wracają (wyłącz)”, wyloguj i zaloguj (po 1,5 min) –
+    nie wracają; wezwij ręcznie; włącz z powrotem. „Odwołaj” przed wylogowaniem – po zalogowaniu nie wracają.
+27. **Rozkazy:** klik na najemnika → „Rozkazy”. „Stój tutaj” – odejdź 30 m: stoi i bije potwory, które podejdą.
+    „Bij mój cel” – zaznacz potwora daleko od innych: bije tylko jego. „Walcz sam w pobliżu” – czyści okolicę, także
+    bossa/kamień. „Nie podnoś łupu” – łup leży. „Za mną” – jak zwykle. Rząd „Wszyscy najemnicy” zmienia wszystkich.
+    Wyloguj/zaloguj – rozkaz zostaje (lista pokazuje „rozkaz: …”). Komenda: `/najemnicy rozkaz 1 stoj`.
+28. **Przechodzenie:** wejdź w najemnika – przechodzisz przez niego (klient z tej gałęzi).
+29. **Lochy:** z 2+ najemnikami: Nemere PB z Szamanem-najemnikiem – Mroźny Klucz (włóż mu albo niech podniesie) –
+    syslog `BOT_YDG: used … name=<najemnik>`; Głębie z 1 człowiekiem + najemnicy (`party_min`); Szczelina Strażnica
+    Nemere: gracz Wojownik + najemnik Ninja + najemnik Szaman – wejście przechodzi; Świątynia Zodiaku; Meley; klasyczny
+    Razador/Nemere – najemnik oddaje zębatki/kryształy, które dropnie. Zaloguj się ponownie w środku lochu – najemnicy
+    wracają do instancji (nie są wyrzucani). Syslog: `NAJEMNICY: dungeon …`, `PLAYERBOT_DUNGEON: party bot used/handed in`.
+
+## Co dalej (etap 4)
+
+- Role posągów Meley, jajo i portale Głębi, klucze/klatki Świątyni Węży (skrypty wypraw botów są związane z ich
+  rejestrem wypraw) – gdy właściciel zechce, żeby robili je najemnicy bez gracza.
+- Po zalogowaniu w środku lochu najemnicy, którzy przy wylogowaniu wyszli z grupy, nie dołączą do niej w lochu (silnik:
+  PERR_DUNGEON) – wchodzą i walczą, ale exp/drop dzielą się dopiero po wyjściu.
+- Panel, spis, wiki, changelog (plan: etap 4).
 - Kolekcjoner Najemników jest w osobnej łatce `server-patches/kolekcjoner` (okno, oddawanie przedmiotów 95%, stałe bonusy
   za zadania). Ukończone zadanie podnosi flagę `najemnicy.tasks` i wiersz `najemnicy_unlock.tasks` (GREATEST).

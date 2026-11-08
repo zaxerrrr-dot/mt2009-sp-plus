@@ -642,6 +642,10 @@ quest blue_dragon_lair begin
 			if idx == c.map then
 				-- The lobby (fallback only).
 				if pc.is_playerbot() then
+					-- MT2009_PLUS_NAJEMNICY_V3: a player's mercenary stays - it logged in beside its owner (a rejoin)
+					if (pc.is_najemnik ~= nil and pc.is_najemnik()) then
+						return
+					end
 					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end
@@ -657,6 +661,10 @@ quest blue_dragon_lair begin
 				end
 			elseif blue_dragon_lair.inside() then
 				if pc.is_playerbot() then
+					-- MT2009_PLUS_NAJEMNICY_V3: a player's mercenary stays - it logged in beside its owner (a rejoin)
+					if (pc.is_najemnik ~= nil and pc.is_najemnik()) then
+						return
+					end
 					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end

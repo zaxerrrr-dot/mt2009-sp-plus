@@ -520,6 +520,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uirelikt").DestroyWindow()
 		# MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1: Kolekcjoner Najemnikow's window (uinajemnicykolekcjoner.py).
 		__import__("uinajemnicykolekcjoner").DestroyWindow()
+		# MT2009_PLUS_NAJEMNICY_V3: the mercenaries' orders board (uinajemnicyrozkazy.py).
+		__import__("uinajemnicyrozkazy").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -1193,6 +1195,22 @@ class GameWindow(ui.ScriptWindow):
 		try:
 			if self.targetBoard and self.targetBoard.IsShow() and self.targetBoard.IsShowButton():
 				self.targetBoard.RefreshButton()
+		except Exception:
+			pass
+		# MT2009_PLUS_NAJEMNICY_V3: the player walks through its own mercenaries as through the old companion
+		# (sidekickcollision.py, the VIDs uisidekickinventory.py just read), and the orders board shows the new order.
+		try:
+			import sidekickcollision
+			sidekickcollision.SetNajemnicy(uisidekickinventory.NajemnikVidList())
+			for keeper in self.updateable:
+				if isinstance(keeper, sidekickcollision.Keeper):
+					break
+			else:
+				self.RegisterUpdatable(sidekickcollision.GetKeeper())
+		except Exception:
+			pass
+		try:
+			__import__("uinajemnicyrozkazy").Refresh()
 		except Exception:
 			pass
 

@@ -45,6 +45,21 @@ quest krypta_balathora begin
 			return people
 		end
 
+		-- MT2009_PLUS_NAJEMNICY_V3: the players' mercenaries in the guild beside the master - they count for the members
+		-- (they follow their owner into the Krypta by themselves; no level / Champion / age check - their owner's is made)
+		function near_mercs()
+			local pids = { guild.get_near_pids() }
+			local n = 0
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and pc.is_najemnik ~= nil and pc.is_najemnik() then
+					n = n + 1
+				end
+				q.end_other_pc_block()
+			end
+			return n
+		end
+
 		function member_ok(min_level)
 			return pc.get_level() >= min_level and pc.get_conqueror_level() >= 4
 		end
@@ -85,8 +100,9 @@ quest krypta_balathora begin
 			end
 
 			local people = krypta_balathora.near_people()
-			if table.getn(people) < min_members or table.getn(people) > max_members then
-				say(string.format("Przy mnie musi staæ od %d do %d cz³onków gildii (teraz: %d).", min_members, max_members, table.getn(people)))
+			local all = table.getn(people) + krypta_balathora.near_mercs()
+			if all < min_members or all > max_members then
+				say(string.format("Przy mnie musi staæ od %d do %d cz³onków gildii (teraz: %d).", min_members, max_members, all))
 				return false
 			end
 			local bad = {}
