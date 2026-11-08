@@ -897,7 +897,8 @@ namespace growth_pet
 	{
 		if (!ch || !ch->IsPC())
 			return;
-		quest::PC* pc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+		// MT2009_PLUS_PET_SUMMON_KEEP_V2: GetPCForce - GetPC also moves the quest manager's current pc / character
+		quest::PC* pc = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
 		if (pc && (DWORD)pc->GetFlag(SUMMON_FLAG) != id)
 			pc->SetFlag(SUMMON_FLAG, (int)id);
 	}
@@ -906,8 +907,72 @@ namespace growth_pet
 	{
 		if (!ch || !ch->IsPC())
 			return 0;
-		quest::PC* pc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+		quest::PC* pc = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
 		return pc ? (DWORD)pc->GetFlag(SUMMON_FLAG) : 0;
+	}
+
+	// MT2009_PLUS_PET_SUMMON_KEEP_V2: the quest flags come from the db's asynchronous quest query (QID_QUEST), the
+	// pets from its direct query answering the game's load sent at the item load - after a warp, a channel change or
+	// a relog the pets were mostly answered first, the flag was still 0 then and the pet stayed in its seal. So the
+	// restore waits for the quest flags (quest::PC::IsLoaded) - at once when they are in, else every 250 ms up to 15 s.
+	bool QuestFlagsLoaded(LPCHARACTER ch)
+	{
+		quest::PC* pc = ch ? quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID()) : NULL;
+		return pc && pc->IsLoaded();
+	}
+
+	Pet* SummonedPet(LPCHARACTER ch);
+	bool Summon(LPCHARACTER ch, Pet& p, LPITEM seal, bool quiet = false);
+
+	// true: done (restored, nothing to restore or the flag cleared); false: not yet (the quest flags not loaded)
+	bool RestoreSummon(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsPC())
+			return true;
+		if (!QuestFlagsLoaded(ch))
+			return false;
+		if (SummonedPet(ch))
+			return true;
+		const DWORD id = RememberedSummon(ch);
+		Pet* p = id ? FindPet(id) : NULL;
+		LPITEM seal = p ? FindSealOf(ch, id) : NULL;
+		if (p && seal && p->holder == ch->GetPlayerID() && p->d.bState == GROWTH_PET_STATE_UPBRINGING)
+		{
+			if (!IsAlive(*p) || (int)p->d.dwLevel > ch->GetLevel())
+				RememberSummon(ch, 0);
+			else if (!Summon(ch, *p, seal, true))
+				sys_log(0, "GROWTH_PET: %s pet %u not brought out again after the login", ch->GetName(), id);
+		}
+		return true;
+	}
+
+	EVENTINFO(growth_pet_restore_info)
+	{
+		DWORD pid;
+		int tries;
+		growth_pet_restore_info() : pid(0), tries(0) {}
+	};
+
+	EVENTFUNC(growth_pet_restore)
+	{
+		growth_pet_restore_info* info = dynamic_cast<growth_pet_restore_info*>(event->info);
+		if (!info)
+			return 0;
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(info->pid);
+		if (!ch)
+			return 0;
+		if (RestoreSummon(ch) || ++info->tries >= 60)
+			return 0;
+		return PASSES_PER_SEC(1) / 4;
+	}
+
+	void RestoreSummonLater(LPCHARACTER ch)
+	{
+		if (RestoreSummon(ch))
+			return;
+		growth_pet_restore_info* info = AllocEventInfo<growth_pet_restore_info>();
+		info->pid = ch->GetPlayerID();
+		event_create(growth_pet_restore, info, PASSES_PER_SEC(1) / 4);
 	}
 
 	void Unsummon(LPCHARACTER ch, Pet& p, bool bMessage)
@@ -944,7 +1009,7 @@ namespace growth_pet
 		return p;
 	}
 
-	bool Summon(LPCHARACTER ch, Pet& p, LPITEM seal, bool quiet = false)
+	bool Summon(LPCHARACTER ch, Pet& p, LPITEM seal, bool quiet)
 	{
 		if (!IsAlive(p))
 		{
@@ -2298,19 +2363,9 @@ namespace growth_pet
 			SendSet(ch, p);
 		}
 		// MT2009_PLUS_PET_SKILL_TYPE_FIX_V1 (summon kept): the pet out before the warp / logout comes out again
+		// (MT2009_PLUS_PET_SUMMON_KEEP_V2: once the quest flags are loaded too - RestoreSummonLater)
 		if (head->bReason == GROWTH_PET_LOAD_ITEMS && !SummonedPet(ch))
-		{
-			const DWORD id = RememberedSummon(ch);
-			Pet* p = id ? FindPet(id) : NULL;
-			LPITEM seal = p ? FindSealOf(ch, id) : NULL;
-			if (p && seal && p->holder == ch->GetPlayerID() && p->d.bState == GROWTH_PET_STATE_UPBRINGING)
-			{
-				if (!IsAlive(*p) || (int)p->d.dwLevel > ch->GetLevel())
-					RememberSummon(ch, 0);
-				else
-					Summon(ch, *p, seal, true);
-			}
-		}
+			RestoreSummonLater(ch);
 		if (head->bReason == GROWTH_PET_LOAD_UNPACK)
 		{
 			LPITEM cage = ITEM_MANAGER::instance().Find(head->dwParam);

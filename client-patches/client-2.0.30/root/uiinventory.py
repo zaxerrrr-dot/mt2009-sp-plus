@@ -1199,6 +1199,13 @@ class InventorySlotManager(GridSlotStateManager):
 		self.RefreshSlotWindows() # MT2009_PLUS_SLOT_REFRESH_ONCE_V1
 
 	def HighlightSlot(self, inventorySlot):
+		# MT2009_PLUS_PET_SEAL_GLOW_V1: no new-item glow on a growth pet seal - it read as "summoned"
+		# (RefreshBagSlotWindow sets a seal's glow from the summoned pet)
+		try:
+			if __import__("uipetinfo").SealGlow(player.GetItemIndex(inventorySlot), None) is not None:
+				return
+		except Exception:
+			pass
 		if inventorySlot < len(self.slotStates):
 			self.slotStates[inventorySlot] = self.SLOT_STATE_NEW_ITEM
 
@@ -2305,6 +2312,16 @@ class InventoryWindow(ui.ScriptWindow):
 					wndSlot.ActivateSlot(i)
 				else:
 					wndSlot.DeactivateSlot(i)
+
+			# MT2009_PLUS_PET_SEAL_GLOW_V1: a growth pet seal glows only while its pet is summoned - the slot's glow
+			# (CSlotWindow bActive) is kept by SetItemSlot for the same vnum, and the new-item highlight looks the same
+			# (HighlightSlot skips seals), so a seal's cell is always set from the real state here.
+			sealGlow = __import__("uipetinfo").SealGlow(itemVnum, socket)
+			if sealGlow is not None:
+				if sealGlow:
+					wndSlot.ActivateSlot(localSlot)
+				else:
+					wndSlot.DeactivateSlot(localSlot)
 
 		# MT2009_PLUS_SLOT_REFRESH_ONCE_V1: the bag's own slot window is
 		# refreshed by the state manager below (once, after the states) -
