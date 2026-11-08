@@ -1024,7 +1024,7 @@ namespace
 		const bool ownerRing = ringOwner && ringOwner->FindAffect(AFFECT_EXP_BLOCK) != NULL;
 		// MT2009_PLUS_PROGRESSION_V1: a gate of the checklist holds the bot
 		// where it stands until it has what the gate asks for.
-		const bool progressHeld = !sidekick && IsPlayerBotProgressionHeld(ch->GetPlayerID());
+		const bool progressHeld = !sidekick && IsPlayerBotProgressionExpHeld(ch);	// MT2009_PLUS_BOT_GATE_TRIAL_V1: not in a gate trial under its cap
 		const bool shouldLock = (lockLevel != 0 && ch->GetLevel() >= lockLevel) || ownerRing || progressHeld;
 		const bool locked = ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
 		if (locked == shouldLock)

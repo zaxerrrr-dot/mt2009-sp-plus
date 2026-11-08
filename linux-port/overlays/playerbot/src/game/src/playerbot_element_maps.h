@@ -406,13 +406,16 @@ namespace
 	// level-55 gate's alternative to helmet / armour / shield +6 - fire resistance >= min with the three at +plus.
 	// Event flags: m2_bot_gate55_fire_off 1 - the old rule only; m2_bot_gate55_fire_min N (10-80, default 50);
 	// m2_bot_gate55_fire_plus N (1-9, default 4). false: off (min / plus still answered).
+	// MT2009_PLUS_BOT_GATE55_FIRE_ANYLEVEL_V1: *pAnyLevel - the alternative's three pieces of any item level (default on;
+	// m2_bot_gate55_fire_anylevel_off 1: the rows' levels kept, as before).
 	const int PLAYERBOT_GATE55_FIRE_LEVEL = 55;
 	const int PLAYERBOT_GATE55_FIRE_MIN = 50;
 	const int PLAYERBOT_GATE55_FIRE_PLUS = 4;
-	bool GetPlayerBotGate55Fire(int* pMin = NULL, int* pPlus = NULL)
+	bool GetPlayerBotGate55Fire(int* pMin = NULL, int* pPlus = NULL, bool* pAnyLevel = NULL)
 	{
 		static DWORD s_dwAt = 0;
 		static bool s_bOn = true;
+		static bool s_bAnyLevel = true;
 		static int s_iMin = PLAYERBOT_GATE55_FIRE_MIN, s_iPlus = PLAYERBOT_GATE55_FIRE_PLUS;
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 5000)
@@ -424,11 +427,14 @@ namespace
 			s_iMin = fmin >= 10 && fmin <= PLAYERBOT_ELEMENT_MAP_RESIST_CAP ? fmin : PLAYERBOT_GATE55_FIRE_MIN;
 			const int fplus = q.GetEventFlag("m2_bot_gate55_fire_plus");
 			s_iPlus = fplus >= 1 && fplus <= 9 ? fplus : PLAYERBOT_GATE55_FIRE_PLUS;
+			s_bAnyLevel = q.GetEventFlag("m2_bot_gate55_fire_anylevel_off") == 0;
 		}
 		if (pMin)
 			*pMin = s_iMin;
 		if (pPlus)
 			*pPlus = s_iPlus;
+		if (pAnyLevel)
+			*pAnyLevel = s_bAnyLevel;
 		return s_bOn;
 	}
 
@@ -787,6 +793,11 @@ namespace
 			CheckPlayerBotElementProgressCoping(ch, *r, now);
 	}
 
+	// MT2009_PLUS_BOT_GATE_TRIAL_V1: the gate trial's coping record (playerbot_progression.h, included later) takes the
+	// same three events, on any map.
+	enum { PLAYERBOT_GATE_TRIAL_EV_KILL = 0, PLAYERBOT_GATE_TRIAL_EV_DEATH, PLAYERBOT_GATE_TRIAL_EV_RETREAT };
+	void NotePlayerBotGateTrialEvent(LPCHARACTER ch, int kind, DWORD now);
+
 	// The hooks: BattlePassOnKill (playerbot_battlepass.h), the death pass and the tactical retreat (playerbot_survival.h).
 	void NotePlayerBotElementProgressKillFor(LPCHARACTER ch, DWORD now)
 	{
@@ -820,6 +831,7 @@ namespace
 	{
 		if (!killer || !victim || victim->IsPC() || !killer->IsPC())
 			return;
+		NotePlayerBotGateTrialEvent(killer, PLAYERBOT_GATE_TRIAL_EV_KILL, get_dword_time());	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 		if (FindPlayerBotElementProgressMap(killer->GetMapIndex()) < 0)
 		{
 			NotePlayerBotElementProgressAway(killer);	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1
@@ -836,6 +848,7 @@ namespace
 
 	void NotePlayerBotElementProgressDeath(LPCHARACTER ch, DWORD now)
 	{
+		NotePlayerBotGateTrialEvent(ch, PLAYERBOT_GATE_TRIAL_EV_DEATH, now);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
 			return;
 		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
@@ -847,6 +860,7 @@ namespace
 
 	void NotePlayerBotElementProgressRetreat(LPCHARACTER ch, DWORD now)
 	{
+		NotePlayerBotGateTrialEvent(ch, PLAYERBOT_GATE_TRIAL_EV_RETREAT, now);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
 			return;
 		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);

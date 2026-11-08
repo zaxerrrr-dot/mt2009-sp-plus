@@ -735,7 +735,7 @@ namespace playerbot_progression
 	// zdobyc takim botom. A nawet majac eq +4 i 50% odpornosci albo wiecej na przyklad 60% - takie boty z bronia
 	// bohatera dadza rade w lochu pajakow v2"): at the level-55 gate the armour, helmet and shield rows are met either
 	// as written (+6) or - the alternative - by fire resistance >= fireMin with each of the three at min(row's plus,
-	// plus) (+4), the row's item level kept. The weapon row (a worn young heroes' weapon is +9 of the bot's level) and
+	// plus) (+4), the row's item level kept (MT2009_PLUS_BOT_GATE55_FIRE_ANYLEVEL_V1: dropped, below). The weapon row (a worn young heroes' weapon is +9 of the bot's level) and
 	// every other row stay as they are. The engine measures and passes the rows adjusted the way it weighs them (the
 	// horse's cap, the slot's best level); this only compares.
 	// ---------------------------------------------------------------------
@@ -756,7 +756,13 @@ namespace playerbot_progression
 	};
 
 	// `rows`: the gate's enabled rows, as the engine adjusted them.
-	inline TFireAltLook FireAltLook(const std::vector<TReq>& rows, const TSnapshot& s, int fireMin, int plus)
+	// MT2009_PLUS_BOT_GATE55_FIRE_ANYLEVEL_V1 (the owner, 8 November 2026: "Jesli maja wystarczajaco duzo odpornosci na
+	// ogien, to moga miec slabsze (na mniejszy lvl eq) bo i tak dadza rade"): anyLevel - the alternative asks the three
+	// pieces for their plus only, of any item level (the row's level dropped; a piece must still be worn). The census of
+	// 8 November 13:37: 455 of 550 bots held at 55 short of the three at +4, about 390 of them only for the armour's
+	// level 34 (they needed a new piece, not a refine).
+	inline TFireAltLook FireAltLook(const std::vector<TReq>& rows, const TSnapshot& s, int fireMin, int plus,
+			bool anyLevel = false)
 	{
 		TFireAltLook look;
 		static const int s_aiPieces[3] = { REQ_ARMOUR, REQ_HELMET, REQ_SHIELD };
@@ -773,6 +779,8 @@ namespace playerbot_progression
 				any = true;
 				TReq r = rows[i];
 				r.b = std::min(r.b, plus);
+				if (anyLevel)
+					r.a = 0;
 				std::string unused;
 				if (Meets(r, s, 0, unused))
 					met = true;
@@ -787,6 +795,8 @@ namespace playerbot_progression
 			look.gearMet = false;
 			TReq r = *first;
 			r.b = std::min(r.b, plus);
+			if (anyLevel)
+				r.a = 0;
 			look.shortRows.push_back(r);
 			const TPiece& p = s.slot[type - REQ_WEAPON];
 			char one[48];
@@ -800,8 +810,8 @@ namespace playerbot_progression
 		if (!look.fireMet)
 			look.shortRows.push_back(TReq(REQ_FIRE, fireMin, 0));
 		char buf[160];
-		snprintf(buf, sizeof(buf), "albo ogien %d%%+ i zbroja/helm/tarcza +%d (ma ogien %d%%%s)", fireMin, plus, s.fire,
-				have.c_str());
+		snprintf(buf, sizeof(buf), "albo ogien %d%%+ i zbroja/helm/tarcza +%d%s (ma ogien %d%%%s)", fireMin, plus,
+				anyLevel ? " dowolny lv" : "", s.fire, have.c_str());
 		look.why = buf;
 		return look;
 	}

@@ -473,6 +473,26 @@ namespace
 		return b.lStepMap != 0 ? b.lStepMap : map;
 	}
 
+	// MT2009_PLUS_BOT_GATE_TRIAL_V1: a failed gate trial (playerbot_progression.h) marks the map it failed on hard for the
+	// bot, as a death series does - the frontier draw answers the easier ground (where the materials it lacks drop)
+	// for `minutes`. Only a 2.x hunting map of the table, with the step-down on; false otherwise.
+	bool MarkPlayerBotSurviveHardMap(LPCHARACTER ch, long map, int minutes)
+	{
+		if (!ch || map <= 0 || minutes <= 0 || !IsPlayerBotSurviveOn(SURVIVE_STEPDOWN) || GetPlayerBotSurviveMapLevel(map) < 0)
+			return false;
+		TPlayerBotSurviveBot& b = s_mapPlayerBotSurvive[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		const DWORD until = now + (DWORD)minutes * 60000U;
+		std::map<long, DWORD>::iterator h = b.hard.find(map);
+		if (h == b.hard.end() || (int)(until - h->second) > 0)
+			b.hard[map] = until ? until : 1;
+		b.dwStepAt = 0;	// pick again
+		++s_kPlayerBotSurvive.stepDowns;
+		sys_log(0, "PLAYERBOT_SURVIVE: step down pid=%u name=%s level=%u map=%ld why=gate_trial for_min=%d",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), map, minutes);
+		return true;
+	}
+
 	bool IsPlayerBotSurviveSteppedDown(DWORD pid)
 	{
 		std::map<DWORD, TPlayerBotSurviveBot>::const_iterator it = s_mapPlayerBotSurvive.find(pid);
