@@ -527,6 +527,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_MATS_BOARD_V1: the global board of refine materials - the worn steps' demand against the bags' supply
 // and the stands, the counters' boost, the bot-to-bot sale, the buy pick, the farmers - after the materials' flow
 #include "playerbot_mats_board.h"
+// MT2009_PLUS_BOT_CH2_STAND_V1: the second channel's bots with goods move to the first and open their stand there - the
+// ask, the intent carried by the move, the drive on arrival, the fee's base reserve - after the board whose surplus it moves
+#include "playerbot_ch2_stand.h"
 // MT2009_PLUS_BOT_SURVIVE_V1: tier gear 60+, the step down after deaths, exp rings to the market, Dragon God boosters -
 // after the market, the ItemShop V3 and the drop knowledge it uses
 #include "playerbot_survive.h"
@@ -6832,6 +6835,13 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 				pinned = true;
 				pinWhy = 15;
 			}
+			// MT2009_PLUS_BOT_CH2_STAND_V1: a bot moved here for its stand stays while it goes to open it
+			// (playerbot_ch2_stand.h, at most PLAYERBOT_CH2_STAND_DRIVE_PIN_MS) - counted with the errands' pin.
+			else if (IsPlayerBotCh2StandDrivePinned(pid, dwNow))
+			{
+				pinned = true;
+				pinWhy = 15;
+			}
 			busy = busy || stayBusy;
 		}
 		++pinReasons[pinWhy < 17 ? pinWhy : 0];
@@ -7301,6 +7311,7 @@ void CPlayerBotManager::OnChannelAssignments(void* pvMsg)
 		// MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: moved before its pin was read - its
 		// trip, raid place and defender's call end here, nothing left held.
 		ReleasePlayerBotKVOnLeave(CHARACTER_MANAGER::instance().FindByPID(leave[i]), "channel_move", get_dword_time());
+		NotePlayerBotCh2StandLeaving(leave[i]);	// MT2009_PLUS_BOT_CH2_STAND_V1: counted, read again on its return
 		Despawn(leave[i], playerbot_session_rules::OUT_CHANNEL); // MT2009_PLUS_BOT_SESSIONS_V1
 	}
 	// Nobody moved away is this channel's to start or to top up any more.

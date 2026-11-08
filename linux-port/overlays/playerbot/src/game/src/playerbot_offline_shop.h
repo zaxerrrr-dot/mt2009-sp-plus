@@ -685,7 +685,9 @@ namespace {
         // paid again), harmless to the goods but pointless - and this spreads
         // the reopenings after a restart instead of one a second.
         if (now - state.dwSpawnTime < 120000) return false;
-        if (ch->GetGold() - aOfflineShopTime[duration].price < GetPlayerBotReservedGold(ch) ||
+        // MT2009_PLUS_BOT_CH2_STAND_V1: the fee over the base reserve, not the horse's training savings (the stand's
+        // sales pay for those) - here, at the renewal's tests below and BotOfflineWouldRenew (GetPlayerBotStandFeeReserve).
+        if (ch->GetGold() - aOfflineShopTime[duration].price < GetPlayerBotStandFeeReserve(ch) ||
                 !BotOfflineBudget(now) || !Begin(ch->GetPlayerID(), Create, 0, now)) return false;
 #ifdef MT2009_PLUS_BOT_SM_MARKET_RULE_V1
         // MT2009_PLUS_BOT_SM_MARKET_RULE_V1: the new stand's coupon lines by origin, one after the other - a stand whose
@@ -2538,7 +2540,7 @@ namespace {
     bool BotOfflineWouldRenew(LPCHARACTER ch, const TPlayerBotAIState& state, NativeShop shop) {
         if (!ch || !shop || shop->GetDuration() != 0 || shop->GetItems().empty()) return false;
         if (IsPlayerBotShopReasonRolled(state.bShopOpenReason) && !ShouldPlayerBotKeepShop(ch, state)) return false;
-        return ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotReservedGold(ch);
+        return ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotStandFeeReserve(ch);
     }
     // The nearest spot to the bot, on the first ring round (cx, cy) that has
     // one, with no running stand of this channel within
@@ -3304,7 +3306,7 @@ namespace {
             // (BotOfflineFindRenewSpot) and asks there, at most
             // PLAYERBOT_OFFLINE_RENEW_SPOT_TRIES steps a visit. A refusal for
             // the map's limit (no stand that near) is not walked round.
-            const bool canPay = ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotReservedGold(ch);
+            const bool canPay = ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotStandFeeReserve(ch);
             if (stillWanted && canPay && !shop->GetItems().empty() && !manager.CanOpenOnMap(ch) &&
                     o.renewSpotTries < PLAYERBOT_OFFLINE_RENEW_SPOT_TRIES) {
                 FPlayerBotNearestStand crowd(ch);
@@ -3330,7 +3332,7 @@ namespace {
             }
             o.renewCalledAt = 0;
             if (stillWanted && !shop->GetItems().empty() &&
-                    ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotReservedGold(ch) &&
+                    ch->GetGold() - aOfflineShopTime[1].price >= GetPlayerBotStandFeeReserve(ch) &&
                     Begin(ch->GetPlayerID(), Create, 0, now)) {
                 // Renamed for what it holds now - eight hours of service visits
                 // have added to it - by the same rules as a new stand. A name
