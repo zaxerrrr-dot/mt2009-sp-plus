@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "war_map.h" // MT2009_PLUS_GUILD_WAR_ARENA_V1
 #include "playerbot_manager.h"
+#include "playerbot_riposty.h"	// MT2009_PLUS_RIPOSTY_V2: riposty::Name (playerbot_chat_trade.h)
 #include "playerbot_empire_rules.h"
 #include "playerbot_channel_rules.h"
 #include "playerbot_world_rules.h"
@@ -8393,6 +8394,13 @@ WritePlayerBotGuildStatus(dwNow);
 		ManagePlayerBotCraftRecipes(ch, dwNow);
 		ManagePlayerBotSoulStones(ch, state, dwNow);
 		ManagePlayerBotGrandMasterTraining(ch, state, dwNow);
+		// MT2009_PLUS_RIPOSTY_V2: Riposty i Dopalacze - the Podreczniki, their books and Kamien Duchowy+
+		// (playerbot_riposty.cpp); a companion's are its owner's.
+		if (!IsPlayerBotSidekickPID(ch->GetPlayerID()))
+		{
+			void RipostyManageBot(CHARACTER*);
+			RipostyManageBot(ch);
+		}
 		// The vouchers cashed and the shop's goods bought (playerbot_itemshop.h).
 		ManagePlayerBotItemShop(ch, state, dwNow);
 		ManagePlayerBotZenBeans(ch, dwNow);

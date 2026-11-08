@@ -183,7 +183,8 @@ namespace
 		return (vnum >= 80014 && vnum <= 80019) || vnum == 72800 || vnum == 72801 || vnum == 72802 || vnum == 70115 ||
 				vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM || vnum == playerbot_collector::ITEM_VNUM ||
 				(vnum >= 57000 && vnum <= 57008) ||	// MT2009_PLUS_TITLES_V2: the title certificates - a bot has no title
-				(vnum >= 72368 && vnum <= 72371);	// MT2009_PLUS_REMOTE_CALL_V1: Enasir's items - a bot never summons him
+				(vnum >= 72368 && vnum <= 72371) ||	// MT2009_PLUS_REMOTE_CALL_V1: Enasir's items - a bot never summons him
+				vnum == 71000;	// MT2009_PLUS_RIPOSTY_V2: Zwoj Zmiany Treningu - a bot keeps its riposte (playerbot_riposty.cpp)
 	}
 
 	// A set chest of the "Sety Bonusowe" category (itemshop3.chests / chest_drops / chest_items): its results with

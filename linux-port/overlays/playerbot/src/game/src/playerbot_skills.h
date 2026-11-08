@@ -916,6 +916,14 @@ namespace
 						ch->GetPlayerID(), ch->GetName(), dwSkillVnum, ch->GetSkillLevel(dwSkillVnum), ch->GetPoint(POINT_SKILL));
 			}
 		}
+
+		// MT2009_PLUS_RIPOSTY_V2: what is left after the build's skills - the riposte, then the boost, to M1
+		// (playerbot_riposty.cpp); a companion's points are its owner's
+		if (!sidekick && ch->GetPoint(POINT_SKILL) > 0)
+		{
+			int RipostyBotSpendPoints(CHARACTER*);
+			RipostyBotSpendPoints(ch);
+		}
 	}
 }
 

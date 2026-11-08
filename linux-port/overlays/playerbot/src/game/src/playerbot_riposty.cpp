@@ -12,8 +12,13 @@
 #include "log.h"
 #include "questmanager.h"
 #include "questlua.h"
+#include "char_manager.h"
+#include "affect.h"
+#include "item.h"
+#include "item_manager.h"
 
 #include <cstdio>
+#include <map>
 #include <string>
 
 namespace riposty
@@ -356,6 +361,219 @@ unsigned int RipostyForgetBookSkill(unsigned int dwSkill)
 		return dwSkill;
 	const int i = number(0, PASSIVES - 1);
 	return i < 8 ? RIPOSTE_FIRST + i : BOOST_FIRST + (i - 8);
+}
+
+// ---- bots (MT2009_PLUS_RIPOSTY_V2) -------------------------------------------------------------------------------
+// Report #8 / the owner, 8 November 2026 ("nauka riposty ma byc jak na globalu"): until now no bot had a riposte or a
+// boost - nothing of the bots' read a Podrecznik, a riposte's book or Kamien Duchowy+, and a Podrecznik in a bot's bag
+// went to the merchant. A bot learns them the wiki's way, as a player does, with the same engine functions:
+//   - Podrecznik: Riposta (50515) in the bag, level 5+, a path, no riposte: the riposte against the attack skill of
+//     the path met most among the OTHER kingdoms' characters online (a draw weighted by their number - PvP is between
+//     kingdoms; nobody online: by the pid), riposty::Learn, the book used up;
+//   - Podrecznik: Dopalacz (50514) and a riposte at P: its own class's and path's boost (BoostFor);
+//   - the riposte's / boost's own books (50516-50523 / 50560-50567, level 1 to G1): read through the engine
+//     (ITEM_SKILLBOOK -> LearnSkillByBook: the chance, its wait, Zwoj Egzorcyzmu), the 20 000 experience lent as the
+//     bots' class books do (playerbot_manager.cpp UsePlayerBotBook);
+//   - Kamien Duchowy+ (50525, G1 -> P): what the quest riposty does - the rank 1000 + 500 a grade over G1 (twice below
+//     zero), a third to a half of it on a failure, the stone spent, 12 h to the next (its flag riposty.next_time, the
+//     quest's own) - only while the full price leaves the rank at zero or above (the bots' rule for Kamien Duchowy);
+//   - the class skill points left once every skill of the bot's build is at its top by points
+//     (ManagePlayerBotSkills' last pass): the riposte, then the boost, to M1 (the engine's roll at 17-19).
+// Never Zwoj Zmiany Treningu (71000): a bot keeps its choice (playerbot_itemshop.h IsPlayerBotIshop3ExcludedVnum keeps
+// it out of the bots' ItemShop purchases). A player's companion (sidekick) is left to its owner.
+namespace riposty
+{
+	static const char* const s_aszSkillName[8] =
+	{
+		"Wir Miecza", "Zasadzka", "Uderzenie Palcem", "Strzelajacy Smok", "Duchowe Uderzenie", "Ognista Strzala",
+		"Mroczne Uderzenie", "Przywolanie Blyskawicy",
+	};
+
+	const char* Name(unsigned int dwVnum)
+	{
+		static char s_aszName[16][48];
+		if (!IsPassive(dwVnum))
+			return NULL;
+		const int i = IsRiposte(dwVnum) ? (int) (dwVnum - RIPOSTE_FIRST) : 8 + (int) (dwVnum - BOOST_FIRST);
+		if (!s_aszName[i][0])
+			snprintf(s_aszName[i], sizeof(s_aszName[i]), "%s: %s", i < 8 ? "Riposta" : "Dopalacz", s_aszSkillName[i % 8]);
+		return s_aszName[i];
+	}
+
+	unsigned int BotChoice(const CHARACTER* ch)
+	{
+		if (!ch)
+			return 0;
+		int aiCount[8] = { 0 };
+		int iTotal = 0;
+		CHARACTER_MANAGER::NAME_MAP& pcs = CHARACTER_MANAGER::instance().GetPCMap();
+		for (CHARACTER_MANAGER::NAME_MAP::const_iterator it = pcs.begin(); it != pcs.end(); ++it)
+		{
+			const CHARACTER* other = it->second;
+			if (!other || other == ch || other->GetEmpire() == ch->GetEmpire())
+				continue;
+			const unsigned int b = BoostFor(other->GetJob(), other->GetSkillGroup());
+			if (!b)
+				continue;
+			++aiCount[b - BOOST_FIRST];
+			++iTotal;
+		}
+		if (!iTotal)
+			return RIPOSTE_FIRST + ch->GetPlayerID() % 8;
+		int iRoll = number(1, iTotal);
+		for (int i = 0; i < 8; ++i)
+		{
+			iRoll -= aiCount[i];
+			if (iRoll <= 0)
+				return RIPOSTE_FIRST + i;
+		}
+		return RIPOSTE_LAST;
+	}
+
+	// One item of a vnum the bot can use (not locked, not in a trade).
+	static LPITEM BotItem(CHARACTER* ch, unsigned int dwVnum)
+	{
+		LPITEM item = ch->FindSpecifyItem(dwVnum);
+		if (!item || item->isLocked() || item->IsExchanging())
+			return NULL;
+		return item;
+	}
+
+	static void UseUp(LPITEM item, const char* why)
+	{
+		if (item->GetCount() > 1)
+			item->SetCount(item->GetCount() - 1);
+		else
+			ITEM_MANAGER::instance().RemoveItem(item, why);
+	}
+
+	static bool BotLearn(CHARACTER* ch, unsigned int dwBook, unsigned int dwVnum)
+	{
+		LPITEM book = BotItem(ch, dwBook);
+		if (!book || !dwVnum)
+			return false;
+		const int r = Learn(ch, dwVnum);
+		if (r != 0)
+			return false;
+		UseUp(book, IsRiposte(dwVnum) ? "RIPOSTA_LEARN" : "DOPALACZ_LEARN");
+		sys_log(0, "PLAYERBOT_AI: riposty learn pid=%u name=%s skill=%u (%s)", ch->GetPlayerID(), ch->GetName(), dwVnum,
+				Name(dwVnum));
+		return true;
+	}
+
+	// A book of this riposte / boost (ITEM_SKILLBOOK, its skill in value0) read through the engine.
+	static bool BotReadBook(CHARACTER* ch, unsigned int dwVnum)
+	{
+		const int iLevel = ch->GetSkillLevel(dwVnum);
+		if (iLevel <= 0 || iLevel >= 30)
+			return false;
+		if (get_global_time() < ch->GetSkillNextReadTime(dwVnum) && !ch->FindAffect(AFFECT_SKILL_NO_BOOK_DELAY))
+			return false;
+		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->GetType() != ITEM_SKILLBOOK || item->isLocked() ||
+					item->IsExchanging() || (unsigned int) item->GetValue(0) != dwVnum)
+				continue;
+			const DWORD dwExp = ch->GetExp();
+			const bool lend = dwExp < 20000;
+			if (lend)
+				ch->SetExp(20000);
+			const bool used = ch->UseItem(TItemPos(INVENTORY, cell));
+			if (lend)
+				ch->SetExp(dwExp);
+			sys_log(0, "PLAYERBOT_AI: riposty book pid=%u name=%s skill=%u level=%d->%d used=%d", ch->GetPlayerID(),
+					ch->GetName(), dwVnum, iLevel, (int) ch->GetSkillLevel(dwVnum), used ? 1 : 0);
+			return used;
+		}
+		return false;
+	}
+
+	// Kamien Duchowy+ as the quest riposty uses it.
+	static bool BotSoulStone(CHARACTER* ch, unsigned int dwVnum)
+	{
+		const int iLevel = ch->GetSkillLevel(dwVnum);
+		if (iLevel < 30 || iLevel >= SKILL_MAX_LEVEL)
+			return false;
+		LPITEM stone = BotItem(ch, ITEM_SOUL_STONE_PLUS);
+		if (!stone)
+			return false;
+		const char* flag = "riposty.next_time";
+		const int now = get_global_time();
+		if (now < ch->GetQuestFlag(flag))
+			return false;
+		const int rank = ch->GetRealAlignment();
+		const int cost = (1000 + 500 * (iLevel - 30)) * (rank < 0 ? 2 : 1);
+		if (rank - cost < 0)
+			return false;
+		UseUp(stone, "RIPOSTY_SOUL_STONE");
+		ch->SetQuestFlag(flag, now + 12 * 3600);
+		const bool learned = ch->LearnGrandMasterSkill(dwVnum);
+		ch->UpdateAlignment(-(learned ? cost : number(cost / 3, cost / 2)));
+		sys_log(0, "PLAYERBOT_AI: riposty soul stone %s pid=%u name=%s skill=%u level=%d->%d rank=%d->%d",
+				learned ? "SUCCESS" : "FAILED", ch->GetPlayerID(), ch->GetName(), dwVnum, iLevel,
+				(int) ch->GetSkillLevel(dwVnum), rank, ch->GetRealAlignment());
+		return true;
+	}
+}
+
+// playerbot_manager.cpp, the bot's pass with the skill books (not a companion): one step a minute at most.
+void RipostyManageBot(CHARACTER* ch)
+{
+	if (!ch || !ch->IsPC() || ch->IsDead() || !ch->IsItemLoaded() || !ch->GetSkillGroup() || ch->GetLevel() < 5 ||
+			ch->GetExchange() || ch->GetMyShop() || ch->IsPolymorphed())
+		return;
+	static std::map<DWORD, DWORD> s_mapNext;
+	DWORD& next = s_mapNext[ch->GetPlayerID()];
+	const DWORD now = get_dword_time();
+	if (now < next)
+		return;
+	next = now + 60 * 1000;
+
+	const unsigned int r = RiposteOf(ch);
+	if (!r)
+	{
+		if (BotItem(ch, ITEM_MANUAL_RIPOSTE))
+			BotLearn(ch, ITEM_MANUAL_RIPOSTE, BotChoice(ch));
+		return;
+	}
+	const unsigned int b = BoostOf(ch);
+	if (!b && ch->GetSkillLevel(r) >= SKILL_MAX_LEVEL && BotLearn(ch, ITEM_MANUAL_BOOST, BoostFor(ch->GetJob(), ch->GetSkillGroup())))
+		return;
+	if (BotReadBook(ch, r) || (b && BotReadBook(ch, b)))
+		return;
+	if (BotSoulStone(ch, r) || (b && BotSoulStone(ch, b)))
+		return;
+}
+
+// playerbot_skills.h ManagePlayerBotSkills, after the build's passes (its points are left over): the riposte, then the
+// boost, to M1 by points; how many points went.
+int RipostyBotSpendPoints(CHARACTER* ch)
+{
+	if (!ch || !ch->IsPC() || !ch->GetSkillGroup())
+		return 0;
+	int iSpent = 0;
+	const unsigned int known[2] = { RiposteOf(ch), BoostOf(ch) };
+	for (int k = 0; k < 2; ++k)
+	{
+		const unsigned int v = known[k];
+		if (!v)
+			continue;
+		while (ch->GetPoint(POINT_SKILL) > 0 && ch->GetSkillMasterType(v) == SKILL_NORMAL &&
+				ch->GetSkillLevel(v) > 0 && ch->GetSkillLevel(v) < 20)
+		{
+			const int before = ch->GetSkillLevel(v);
+			ch->SkillLevelUp(v);
+			if (ch->GetSkillLevel(v) == before)
+				break;
+			++iSpent;
+		}
+	}
+	if (iSpent)
+		sys_log(0, "PLAYERBOT_AI: riposty points pid=%u name=%s riposte=%u (%d) boost=%u (%d) spent=%d left=%d",
+				ch->GetPlayerID(), ch->GetName(), known[0], known[0] ? (int) ch->GetSkillLevel(known[0]) : 0, known[1],
+				known[1] ? (int) ch->GetSkillLevel(known[1]) : 0, iSpent, (int) ch->GetPoint(POINT_SKILL));
+	return iSpent;
 }
 
 // ---- quest functions (quest riposty) ------------------------------------------------------------------------------

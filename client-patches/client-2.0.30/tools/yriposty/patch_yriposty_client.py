@@ -23,6 +23,10 @@ SKILLS = [
     (u'Mroczne Uderzenie', u'Mrocznego Uderzenia', u'maryeong', 'MARYUNG'),
     (u'Przywołanie Błyskawicy', u'Przywołania Błyskawicy', u'byeorak', 'BYEURAK'),
 ]
+# MT2009_PLUS_RIPOSTY_V2 (report #8): whose skill it is - the pl-wiki's class column (Dostępne Dopalacze), in the
+# description, so Duchowe Uderzenie (Wojownik Mental) is not taken for the Sura BM's Duchowy Cios
+OWNERS = [u'Wojownik Body', u'Ninja Dagger', u'Sura WP', u'Szaman Smok', u'Wojownik Mental', u'Ninja Archer',
+          u'Sura BM', u'Szaman Healer']
 RIPOSTE_FIRST, BOOST_FIRST = 221, 236
 VNUMS = [RIPOSTE_FIRST + i for i in range(8)] + [BOOST_FIRST + i for i in range(8)]
 ICONS = ['p_' + s[2] for s in SKILLS] + ['pp_' + s[2] for s in SKILLS]
@@ -33,15 +37,16 @@ def desc_lines():
     for i, (name, gen, stem, _k) in enumerate(SKILLS):
         n = u'Riposta: ' + name
         col = [str(RIPOSTE_FIRST + i), u'PASSIVE', n, n, n,
-               u'Zmniejsza obrażenia otrzymywane od umiejętności %s. Umiejętność pasywna - można znać tylko '
-               u'jedną ripostę.' % name,
+               u'Zmniejsza obrażenia otrzymywane od umiejętności %s (%s). Umiejętność pasywna - można znać '
+               u'tylko jedną ripostę.' % (name, OWNERS[i]),
                u'Odporność na ' + name, u'', u'', u'', u'PASSIVE', u'', u'p_' + stem, u'', u'', u'', u'',
                u'Obrona przed umiejętnością %s +%%.1f%%%%' % name, u'24*k', u'']
         out.append(col)
     for i, (name, gen, stem, _k) in enumerate(SKILLS):
         n = u'Dopalacz: ' + name
         col = [str(BOOST_FIRST + i), u'PASSIVE', n, n, n,
-               u'Zwiększa obrażenia zadawane umiejętnością %s. Umiejętność pasywna.' % name,
+               u'Zwiększa obrażenia zadawane umiejętnością %s. Dopalacz klasy %s. Umiejętność pasywna.'
+               % (name, OWNERS[i]),
                u'Ulepszenie: ' + name, u'', u'', u'', u'PASSIVE', u'', u'pp_' + stem, u'', u'', u'', u'',
                u'Dopalacz +%.1f%%', u'16*k', u'']
         out.append(col)

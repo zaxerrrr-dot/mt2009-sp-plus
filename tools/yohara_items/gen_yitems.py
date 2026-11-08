@@ -164,8 +164,24 @@ for v in range(50569, 50576):                                         # 9th skil
 # MT2009_PLUS_RIPOSTY_V1 (server-patches/riposty, quest riposty): Riposty i Dopalacze work now - their books (the Lycan's
 # 50524 / 50568 out), Kamien Duchowy+ (G1 -> P), the two Podreczniki that teach level 1 and Zwoj Zmiany Treningu (the
 # ItemShop's, riposty_itemshop.sql) that removes both (the pl-wiki "Umiejetnosci - Riposty i Dopalacze")
-for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their books
-    add(v)
+# MT2009_PLUS_RIPOSTY_V2 (report #8, the owner 8 November 2026: "nauka riposty ma byc jak na globalu"): each book says
+# whose skill it is about (the wiki's class column) and what it trains - the Polish client's own line said only "uczy cie
+# umiejetnosci redukujacej obrazenia od Duchowego Uderzenia", which players took for the Sura BM's Duchowy Cios
+RIPOSTY_SKILLS = [(u'Wiru Miecza', u'Wir Miecza', u'Wojownika Body', u'wojownika (Body)'),
+                  (u'Zasadzki', u'Zasadzkę', u'Ninja Dagger', u'ninja (Dagger)'),
+                  (u'Uderzenia Palcem', u'Uderzenie Palcem', u'Sury WP', u'sury (Broń)'),
+                  (u'Strzelającego Smoka', u'Strzelającego Smoka', u'Szamana Smok', u'szamana (Smok)'),
+                  (u'Duchowego Uderzenia', u'Duchowe Uderzenie', u'Wojownika Mental', u'wojownika (Mental)'),
+                  (u'Ognistej Strzały', u'Ognistą Strzałę', u'Ninja Archer', u'ninja (Łuk)'),
+                  (u'Mrocznego Uderzenia', u'Mroczne Uderzenie', u'Sury BM', u'sury (Czarna Magia)'),
+                  (u'Przywołania Błyskawicy', u'Przywołanie Błyskawicy', u'Szamana Healer', u'szamana (Leczenie)')]
+for i, (gen, acc, whose, cls) in enumerate(RIPOSTY_SKILLS):                     # the ripostes' books, then the boosts'
+    add(50516 + i, desc=u'Księga ta uczy cię umiejętności redukującej obrażenia od %s - umiejętności %s. Rozwija '
+        u'ripostę, którą wybrałeś Podręcznikiem: Riposta, od 1. poziomu do G1 (do M1 także punktami umiejętności, od G1 '
+        u'do P Kamień Duchowy+). Przeznaczona dla każdej klasy.' % (gen, whose))
+for i, (gen, acc, whose, cls) in enumerate(RIPOSTY_SKILLS):
+    add(50560 + i, desc=u'Księga ta uczy cię umiejętności wzmacniającej %s - dopalacz %s, od 1. poziomu do G1 (do M1 '
+        u'także punktami umiejętności, od G1 do P Kamień Duchowy+). Przeznaczona tylko dla %s.' % (acc, whose, cls))
 add(50525)                                                            # Kamien Duchowy+
 add(50515, desc=u'Księga ta umożliwia ci wybór jednej z ośmiu ripost i naukę jej 1. poziomu. Można znać tylko jedną '
     u'ripostę - wybieraj mądrze! Wymaga 5. poziomu i wybranej drogi umiejętności.')          # Podrecznik: Riposta

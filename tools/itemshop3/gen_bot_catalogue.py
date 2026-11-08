@@ -112,6 +112,7 @@ EXPLICIT = {
     72369: ('NEVER', None, None, 'Enasir (MT2009_PLUS_REMOTE_CALL_V1) - a bot never summons him (remote_call.cpp keeps bots out)'),
     72370: ('NEVER', None, None, 'Enasir (MT2009_PLUS_REMOTE_CALL_V1) - a bot never summons him (remote_call.cpp keeps bots out)'),
     72371: ('NEVER', None, None, 'Enasir (MT2009_PLUS_REMOTE_CALL_V1) - a bot never summons him (remote_call.cpp keeps bots out)'),
+    71000: ('NEVER', None, None, 'Zwoj Zmiany Treningu (MT2009_PLUS_RIPOSTY_V2) - a bot keeps its riposte (playerbot_riposty.cpp)'),
     100300: ('BEAN', 24, 40, 'a strength refine waits, V3\'s bean cheaper than the Alchemist\'s'),
     85001: ('SASH', 3, 4, 'the keeper\'s three'),
     25041: ('REFINE_SCROLL', 6, 6, 'a worn piece under scroll work, no safe scroll held'),
