@@ -347,9 +347,21 @@ namespace
 	const int PLAYERBOT_EPROG_SHUT_MIN = 120;
 	const DWORD PLAYERBOT_EPROG_CENSUS_MS = 10 * 60 * 1000;
 	const size_t PLAYERBOT_EPROG_KILLS_KEPT = 64;
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: a record not touched on its map this long is a new visit (the bot was away -
+	// an errand, the offline shop, a horse medal - and came back), whatever the off-map look below missed.
+	const DWORD PLAYERBOT_EPROG_ABSENT_MS = 10 * 60 * 1000;
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: a party member's kill near the bot counts for it too (an assisting member lands
+	// few last hits) - same map, this far.
+	const int PLAYERBOT_EPROG_PARTY_KILL_RANGE = 5000;
+	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1 (the owner, 8 November 2026): a retreat of a bot that can afford more resistance
+	// raises its target by this step up to this maximum (the slots' practical top: stone 10, pet 10, armour / helmet /
+	// bracelet 15 each, the talisman, the costume and hairstyle) instead of shutting the map.
+	const int PLAYERBOT_EPROG_BOOST_STEP = 10;
+	const int PLAYERBOT_EPROG_BOOST_MAX = 65;
+	const DWORD PLAYERBOT_EPROG_BOOST_KEEP_MS = 24U * 60U * 60U * 1000U;
 
 	enum { PLAYERBOT_EPROG_ALL = 0, PLAYERBOT_EPROG_EARLY, PLAYERBOT_EPROG_PREBUILD, PLAYERBOT_EPROG_RETREAT,
-		PLAYERBOT_EPROG_TARGET, PLAYERBOT_EPROG_PARTS };
+		PLAYERBOT_EPROG_TARGET, PLAYERBOT_EPROG_STAYFIX, PLAYERBOT_EPROG_GEAR, PLAYERBOT_EPROG_BOOST, PLAYERBOT_EPROG_PARTS };
 
 	struct TPlayerBotEProgMap
 	{
@@ -373,9 +385,11 @@ namespace
 	{
 		static const char* const s_aszFlags[PLAYERBOT_EPROG_PARTS] = { "m2_bot_element_progress_off",
 			"m2_bot_element_progress_early_off", "m2_bot_element_progress_prebuild_off", "m2_bot_element_progress_retreat_off",
-			"m2_bot_element_progress_target_off" };
+			"m2_bot_element_progress_target_off",
+			// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1 / MT2009_PLUS_BOT_EPROG_RESIST_GEAR_V1 / MT2009_PLUS_BOT_EPROG_BUY_MORE_V1
+			"m2_bot_element_progress_stayfix_off", "m2_bot_element_progress_gear_off", "m2_bot_element_progress_boost_off" };
 		static DWORD s_dwAt = 0;
-		static bool s_abOn[PLAYERBOT_EPROG_PARTS] = { true, true, true, true, true };
+		static bool s_abOn[PLAYERBOT_EPROG_PARTS] = { true, true, true, true, true, true, true, true };
 		const DWORD now = get_dword_time();
 		if (s_dwAt == 0 || now - s_dwAt >= 5000)
 		{
@@ -481,14 +495,28 @@ namespace
 		long lEarlyMap;			// the early decision's memo for the log
 		int iEarlyDecision;
 		DWORD dwSeen;
-		TPlayerBotEProgRecord() : lMap(0), dwArrived(0), lEarlyMap(-1), iEarlyDecision(-1), dwSeen(0) {}
+		DWORD dwOnMapSeen;		// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: the last touch on lMap
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the raised resistance target after a retreat it could afford (0: none)
+		int iBoostElement;
+		int iBoostTarget;
+		int iBoosts;
+		DWORD dwBoostAt;
+		bool bRefusedCounted;	// the census's distinct refused bots (this period)
+		TPlayerBotEProgRecord() : lMap(0), dwArrived(0), lEarlyMap(-1), iEarlyDecision(-1), dwSeen(0), dwOnMapSeen(0),
+			iBoostElement(-1), iBoostTarget(0), iBoosts(0), dwBoostAt(0), bRefusedCounted(false) {}
 	};
 	std::map<DWORD, TPlayerBotEProgRecord> s_mapPlayerBotEProg;
 
 	struct TPlayerBotEProgStats
 	{
 		unsigned int early, retreatDeaths, retreatRetreats, retreatSlow, back, gateRefusals;
-		TPlayerBotEProgStats() : early(0), retreatDeaths(0), retreatRetreats(0), retreatSlow(0), back(0), gateRefusals(0) {}
+		// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: the refusals by bot and cause; the stale visits dropped
+		unsigned int refusedBots, refusedShut, refusedResist, staleResets, partyKills;
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the retreats' actions
+		unsigned int buyMore, buyMoreSm, buyMoreYang, leave, leaveMaxed, leaveNoFunds, leaveOff;
+		TPlayerBotEProgStats() : early(0), retreatDeaths(0), retreatRetreats(0), retreatSlow(0), back(0), gateRefusals(0),
+			refusedBots(0), refusedShut(0), refusedResist(0), staleResets(0), partyKills(0), buyMore(0), buyMoreSm(0),
+			buyMoreYang(0), leave(0), leaveMaxed(0), leaveNoFunds(0), leaveOff(0) {}
 	};
 	TPlayerBotEProgStats s_kPlayerBotEProg;
 
@@ -499,6 +527,22 @@ namespace
 	}
 
 	// The bot's record, its presence on a progression map refreshed (another map starts the window again).
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1 (the test of 8 November 2026, 09:40: every one of the early bots' slow_kills
+	// retreats came 1 s after the bot came back to the Spider Dungeon V2 - "kills=0 on_map_min=78-130": the record was
+	// touched only on the map, so a bot that went off for an errand (the offline shop, a horse medal, 20-45 min) and came
+	// back found its old lMap, its old arrival and its kills pruned out of the window, and the coping check shut the map
+	// at once. They killed fine there - GIVE_GOLD and CRUSH every few seconds.) Now a visit begins again after
+	// PLAYERBOT_EPROG_ABSENT_MS without a touch on the map, and NotePlayerBotElementProgressAway ends it when the bot is
+	// seen elsewhere.
+	void ResetPlayerBotEProgVisit(TPlayerBotEProgRecord& r, long base, DWORD now)
+	{
+		r.lMap = base;
+		r.dwArrived = now ? now : 1;
+		r.kills.clear();
+		r.deaths.clear();
+		r.retreats.clear();
+	}
+
 	TPlayerBotEProgRecord* TouchPlayerBotEProg(LPCHARACTER ch, DWORD now)
 	{
 		if (!ch || !ch->IsPC() || s_mapPlayerBotAIStates.find(ch->GetPlayerID()) == s_mapPlayerBotAIStates.end())
@@ -508,15 +552,63 @@ namespace
 		const int idx = FindPlayerBotElementProgressMap(ch->GetMapIndex());
 		const long base = idx >= 0 ? PLAYERBOT_EPROG_MAPS[idx].lMap : 0;
 		if (base != r.lMap)
+			ResetPlayerBotEProgVisit(r, base, now);
+		else if (base != 0 && IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_STAYFIX) && r.dwOnMapSeen != 0 &&
+				now - r.dwOnMapSeen >= PLAYERBOT_EPROG_ABSENT_MS)
 		{
-			r.lMap = base;
-			r.dwArrived = now ? now : 1;
-			r.kills.clear();
-			r.deaths.clear();
-			r.retreats.clear();
+			++s_kPlayerBotEProg.staleResets;
+			ResetPlayerBotEProgVisit(r, base, now);
 		}
+		if (base != 0)
+			r.dwOnMapSeen = now ? now : 1;
 		return &r;
 	}
+
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: the bot is seen off its progression map - the visit is over (its next arrival
+	// starts a new window). Cheap: a lookup, nothing for a bot without a record.
+	void NotePlayerBotElementProgressAway(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotEProg.empty() || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_STAYFIX))
+			return;
+		std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotEProg.end() || it->second.lMap == 0)
+			return;
+		if (FindPlayerBotElementProgressMap(ch->GetMapIndex()) >= 0)
+			return;
+		ResetPlayerBotEProgVisit(it->second, 0, get_dword_time());
+		it->second.dwOnMapSeen = 0;
+	}
+
+	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the raised target of the element (0: none, or it is a day old).
+	int GetPlayerBotElementProgressBoostTarget(LPCHARACTER ch, int element)
+	{
+		if (!ch || element < 0 || s_mapPlayerBotEProg.empty() || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_BOOST))
+			return 0;
+		std::map<DWORD, TPlayerBotEProgRecord>::const_iterator it = s_mapPlayerBotEProg.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotEProg.end() || it->second.iBoostElement != element || it->second.iBoostTarget <= 0 ||
+				get_dword_time() - it->second.dwBoostAt >= PLAYERBOT_EPROG_BOOST_KEEP_MS)
+			return 0;
+		return it->second.iBoostTarget;
+	}
+
+	int GetPlayerBotElementProgressBoostStep()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_progress_boost_step");
+		return flag >= 5 && flag <= 30 ? flag : PLAYERBOT_EPROG_BOOST_STEP;
+	}
+
+	int GetPlayerBotElementProgressBoostMax()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_progress_boost_max");
+		return flag >= 45 && flag <= PLAYERBOT_ELEMENT_MAP_RESIST_CAP ? flag : PLAYERBOT_EPROG_BOOST_MAX;
+	}
+
+	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the element shop's side (playerbot_element_shop.h): can the bot afford the
+	// resistance to target now (SM by the plan within the step's budget, or yang for the Handlarka's costume lines)? If
+	// so its record is made urgent again for that target, with the HP lines after it. *pTarget may come down to what the
+	// SM plan reaches (at least +5). how: "sm", "yang" or "sm+yang"; why (false): "no_view", "no_sm", ...
+	bool TryPlayerBotElementShopBoost(LPCHARACTER ch, int element, int* pTarget, const char** how, const char** why,
+			long long* pCost);
 
 	bool IsPlayerBotElementProgressEarlyHere(LPCHARACTER ch, int idx)
 	{
@@ -575,16 +667,70 @@ namespace
 		}
 		if (!why)
 			return;
+		const int element = PLAYERBOT_EPROG_MAPS[idx].iElement;
+		const int resist = GetPlayerBotElementMapResist(ch, element);
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1 (the owner, 8 November 2026: "Boty nie daja rady na Lochu Pajakow V2 -> maja SM
+		// -> wbijaja wiecej odpornosci i wracaja do expa na lochu. Jak nie maja SM lub Yang -> ida na inna mape."): a bot
+		// that can afford it raises its resistance target by the step (to the maximum) - the element shop works it and the
+		// HP lines after it - and stays on the map (the window starts again); only one that cannot goes elsewhere (the shut).
+		const char* action = "leave";
+		const char* via = "-";
+		const char* leaveWhy = "off";
+		long long cost = 0;
+		int target = 0;
+		const int prevBoost = r.iBoostElement == element ? r.iBoostTarget : 0;
+		if (IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_BOOST))
+		{
+			const int boostMax = GetPlayerBotElementProgressBoostMax();
+			target = std::min(boostMax, std::max(std::max(prevBoost, GetPlayerBotElementProgressGate()), resist) +
+					GetPlayerBotElementProgressBoostStep());
+			if (target <= resist)
+				leaveWhy = "maxed";
+			else if (TryPlayerBotElementShopBoost(ch, element, &target, &via, &leaveWhy, &cost))
+				action = "buy_more";
+		}
+		if (strcmp(action, "buy_more") == 0)
+		{
+			r.iBoostElement = element;
+			r.iBoostTarget = target;
+			++r.iBoosts;
+			r.dwBoostAt = now ? now : 1;
+			++s_kPlayerBotEProg.buyMore;
+			if (strstr(via, "sm"))
+				++s_kPlayerBotEProg.buyMoreSm;
+			if (strstr(via, "yang"))
+				++s_kPlayerBotEProg.buyMoreYang;
+			sys_log(0, "PLAYERBOT_EPROG: retreat pid=%u name=%s lv=%d map=%ld(%s) element=%s resist=%d gate=%d early=%d why=%s "
+					"deaths=%u hp_retreats=%u kills=%u on_map_min=%u action=buy_more via=%s target=%d prev_target=%d boosts=%d "
+					"sm_expected=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), r.lMap, PLAYERBOT_EPROG_MAPS[idx].szName,
+					GetPlayerBotElementMapElementName(element), resist, GetPlayerBotElementProgressGate(), early ? 1 : 0, why,
+					(unsigned int)r.deaths.size(), (unsigned int)r.retreats.size(), (unsigned int)r.kills.size(),
+					(unsigned int)((now - r.dwArrived) / 60000U), via, target, prevBoost, r.iBoosts, cost);
+			r.kills.clear();
+			r.deaths.clear();
+			r.retreats.clear();
+			r.dwArrived = now ? now : 1;
+			return;
+		}
+		++s_kPlayerBotEProg.leave;
+		if (strcmp(leaveWhy, "maxed") == 0)
+			++s_kPlayerBotEProg.leaveMaxed;
+		else if (strcmp(leaveWhy, "off") == 0)
+			++s_kPlayerBotEProg.leaveOff;
+		else
+			++s_kPlayerBotEProg.leaveNoFunds;
 		const DWORD shutMs = GetPlayerBotElementProgressShutMs();
 		const DWORD until = now + shutMs;
 		r.shut[r.lMap] = until ? until : 1;
 		sys_log(0, "PLAYERBOT_EPROG: retreat pid=%u name=%s lv=%d map=%ld(%s) element=%s resist=%d gate=%d early=%d why=%s "
-				"deaths=%u hp_retreats=%u kills=%u on_map_min=%u shut_min=%u",
+				"deaths=%u hp_retreats=%u kills=%u on_map_min=%u shut_min=%u action=leave leave_why=%s target=%d prev_target=%d "
+				"boosts=%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), r.lMap, PLAYERBOT_EPROG_MAPS[idx].szName,
-				GetPlayerBotElementMapElementName(PLAYERBOT_EPROG_MAPS[idx].iElement),
-				GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement), GetPlayerBotElementProgressGate(),
+				GetPlayerBotElementMapElementName(element), resist, GetPlayerBotElementProgressGate(),
 				early ? 1 : 0, why, (unsigned int)r.deaths.size(), (unsigned int)r.retreats.size(), (unsigned int)r.kills.size(),
-				(unsigned int)((now - r.dwArrived) / 60000U), (unsigned int)(shutMs / 60000U));
+				(unsigned int)((now - r.dwArrived) / 60000U), (unsigned int)(shutMs / 60000U), leaveWhy, target, prevBoost,
+				r.iBoosts);
 		r.kills.clear();
 		r.deaths.clear();
 		r.retreats.clear();
@@ -602,17 +748,50 @@ namespace
 	}
 
 	// The hooks: BattlePassOnKill (playerbot_battlepass.h), the death pass and the tactical retreat (playerbot_survival.h).
-	void NotePlayerBotElementProgressKill(LPCHARACTER killer, LPCHARACTER victim)
+	void NotePlayerBotElementProgressKillFor(LPCHARACTER ch, DWORD now)
 	{
-		if (!killer || !victim || victim->IsPC() || !killer->IsPC() || FindPlayerBotElementProgressMap(killer->GetMapIndex()) < 0)
-			return;
-		const DWORD now = get_dword_time();
-		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(killer, now);
+		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
 		if (!r)
 			return;
 		r->kills.push_back(now);
 		if (r->kills.size() > PLAYERBOT_EPROG_KILLS_KEPT)
 			r->kills.pop_front();
+	}
+
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: the killer's party members on the map near it (their own kill counted once).
+	struct FPlayerBotEProgPartyKill
+	{
+		LPCHARACTER m_pKiller;
+		DWORD m_dwNow;
+		FPlayerBotEProgPartyKill(LPCHARACTER killer, DWORD now) : m_pKiller(killer), m_dwNow(now) {}
+		void operator()(LPCHARACTER member)
+		{
+			if (!member || member == m_pKiller || member->GetMapIndex() != m_pKiller->GetMapIndex() ||
+					DISTANCE_APPROX(member->GetX() - m_pKiller->GetX(), member->GetY() - m_pKiller->GetY()) > PLAYERBOT_EPROG_PARTY_KILL_RANGE)
+				return;
+			if (s_mapPlayerBotAIStates.find(member->GetPlayerID()) == s_mapPlayerBotAIStates.end())
+				return;
+			++s_kPlayerBotEProg.partyKills;
+			NotePlayerBotElementProgressKillFor(member, m_dwNow);
+		}
+	};
+
+	void NotePlayerBotElementProgressKill(LPCHARACTER killer, LPCHARACTER victim)
+	{
+		if (!killer || !victim || victim->IsPC() || !killer->IsPC())
+			return;
+		if (FindPlayerBotElementProgressMap(killer->GetMapIndex()) < 0)
+		{
+			NotePlayerBotElementProgressAway(killer);	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1
+			return;
+		}
+		const DWORD now = get_dword_time();
+		NotePlayerBotElementProgressKillFor(killer, now);
+		if (killer->GetParty() && IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_STAYFIX))
+		{
+			FPlayerBotEProgPartyKill f(killer, now);
+			killer->GetParty()->ForEachOnMapMember(f, killer->GetMapIndex());
+		}
 	}
 
 	void NotePlayerBotElementProgressDeath(LPCHARACTER ch, DWORD now)
@@ -870,10 +1049,27 @@ namespace
 					sum[b][2] / bots[b], atGate[b][2], eligible[b][0], eligible[b][1], eligible[b][2], onMap[b][0], onMap[b][1],
 					onMap[b][2], early[b], prebuild[b][0], prebuild[b][1], prebuild[b][2], shut[b]);
 		}
-		sys_log(0, "PLAYERBOT_EPROG: census totals early_picks=%u retreats=[deaths=%u hp_retreats=%u slow_kills=%u] backs=%u "
-				"gate_refusals=%u records=%u",
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: the boosts running now (a raised target, a day old at most)
+		int boosted = 0, boostedOn = 0;
+		for (std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.begin(); it != s_mapPlayerBotEProg.end(); ++it)
+		{
+			it->second.bRefusedCounted = false;
+			if (it->second.iBoostTarget > 0 && now - it->second.dwBoostAt < PLAYERBOT_EPROG_BOOST_KEEP_MS)
+			{
+				++boosted;
+				boostedOn += it->second.lMap != 0 ? 1 : 0;
+			}
+		}
+		sys_log(0, "PLAYERBOT_EPROG: census totals early_picks=%u retreats=[deaths=%u hp_retreats=%u slow_kills=%u] "
+				"actions=[buy_more=%u via_sm=%u via_yang=%u leave=%u leave_maxed=%u leave_no_funds=%u leave_off=%u] "
+				"boosted=[bots=%d on_map=%d] backs=%u gate_refusals=%u refused=[bots=%u shut=%u resist=%u] stale_resets=%u "
+				"party_kills=%u records=%u",
 				s_kPlayerBotEProg.early, s_kPlayerBotEProg.retreatDeaths, s_kPlayerBotEProg.retreatRetreats,
-				s_kPlayerBotEProg.retreatSlow, s_kPlayerBotEProg.back, s_kPlayerBotEProg.gateRefusals,
+				s_kPlayerBotEProg.retreatSlow, s_kPlayerBotEProg.buyMore, s_kPlayerBotEProg.buyMoreSm,
+				s_kPlayerBotEProg.buyMoreYang, s_kPlayerBotEProg.leave, s_kPlayerBotEProg.leaveMaxed,
+				s_kPlayerBotEProg.leaveNoFunds, s_kPlayerBotEProg.leaveOff, boosted, boostedOn, s_kPlayerBotEProg.back,
+				s_kPlayerBotEProg.gateRefusals, s_kPlayerBotEProg.refusedBots, s_kPlayerBotEProg.refusedShut,
+				s_kPlayerBotEProg.refusedResist, s_kPlayerBotEProg.staleResets, s_kPlayerBotEProg.partyKills,
 				(unsigned int)s_mapPlayerBotEProg.size());
 		s_kPlayerBotEProg = TPlayerBotEProgStats();
 		// the record of a bot not seen on this core for a day is dropped
@@ -905,6 +1101,19 @@ namespace
 		}
 		LogPlayerBotElementProgressEarly(ch, 0, m.lMap, PLAYERBOT_EPROG_EARLY_PICK, resist);
 		return std::min(normal, m.iEarly);
+	}
+	// MT2009_PLUS_BOT_EPROG_RESIST_GEAR_V1 (the test of 8 November 2026, 09:40: 167 of the ~460 early-eligible bots' last
+	// decision was early_gear_short - 119 of them in body armour under +5, V2's grade; the owner: "Jesli bot jest ubrany w
+	// odpornosc na ogien (40%), to moze juz tam expic, nawet na 45 poziomie"): in the Spider Dungeon V2 a bot holding its
+	// fire at the gate wears V1's grades (weapon and armour +4) - the resistance is its armour there. The helmet, a weapon
+	// of its level and the red potions stay. Event flag m2_bot_element_progress_gear_off 1 - V2's grades for all.
+	bool IsPlayerBotElementProgressResistGear(LPCHARACTER ch, long map)
+	{
+		if (!ch || GetPlayerBotElementMapBase(map) != PLAYERBOT_MAP_SPIDER_V2 || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_GEAR) ||
+				GetPlayerBotElementProgressGateForMap(map) <= 0 || GetPlayerBotHuntElement(ch) != 0)
+			return false;
+		const int idx = FindPlayerBotElementProgressMap(map);
+		return idx >= 0 && GetPlayerBotElementMapResist(ch, PLAYERBOT_EPROG_MAPS[idx].iElement) >= GetPlayerBotElementProgressGate();
 	}
 	// ====================================================================== end of MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 
@@ -972,6 +1181,10 @@ namespace
 		out.iGate = GetPlayerBotElementMapRowGate(row);	// MT2009_PLUS_BOT_ELEMENT_MAP_GATES_V1
 		if (prebuild && out.iGate > 0)
 			out.iWant = std::min(PLAYERBOT_ELEMENT_MAP_RESIST_CAP, out.iGate + PLAYERBOT_EPROG_PREBUILD_MARGIN);
+		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1: a retreat's raised target is the want (the costume line, the reroll's stop
+		// rule, the stone and the element shop read it)
+		if (out.iGate > 0)
+			out.iWant = std::max(out.iWant, GetPlayerBotElementProgressBoostTarget(ch, r.iElement));
 		out.iShare = share;
 		out.iResist = GetPlayerBotElementMapResist(ch, r.iElement);
 		out.iKeep = prebuild && keep != r.iElement ? keep : -1;
@@ -1165,6 +1378,24 @@ namespace
 				return false;
 		}
 		return resist >= (here ? gate - PLAYERBOT_ELEMENT_MAP_STAY_SLACK : gate);
+	}
+
+	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1: a progression gate's refusal for the census - per call (gate_refusals, as before),
+	// per bot once a period, and by cause (a retreat's shut or the resistance).
+	void NotePlayerBotElementProgressRefusal(LPCHARACTER ch, long map)
+	{
+		++s_kPlayerBotEProg.gateRefusals;
+		if (!ch)
+			return;
+		const bool shut = IsPlayerBotElementProgressShut(ch, map);
+		TPlayerBotEProgRecord& r = s_mapPlayerBotEProg[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		r.dwSeen = now ? now : 1;
+		if (r.bRefusedCounted)
+			return;
+		r.bRefusedCounted = true;
+		++s_kPlayerBotEProg.refusedBots;
+		++(shut ? s_kPlayerBotEProg.refusedShut : s_kPlayerBotEProg.refusedResist);
 	}
 
 	void NotePlayerBotElementMapWanted(LPCHARACTER ch, long wanted)
