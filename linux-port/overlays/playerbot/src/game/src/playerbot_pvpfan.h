@@ -1174,6 +1174,10 @@ namespace
 				if (anyAttr)
 				{
 					item->ClearAttribute();
+					// MT2009_PLUS_DS_DISTINCT_ATTR_V1 (pvpfan): ClearAttribute() stops at slot 5 - the 6th/7th
+					// (a new Dragon Stone's third additional bonus) would stay beside the set's own bonuses
+					for (int a = ITEM_ATTRIBUTE_NORM_NUM; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
+						item->ClearAttribute(a);
 					for (int a = 0; a < 7; ++a)
 						if (it.attrType[a] != 0 && it.attrValue[a] != 0)
 							item->SetForceAttribute(a, it.attrType[a], it.attrValue[a]);
