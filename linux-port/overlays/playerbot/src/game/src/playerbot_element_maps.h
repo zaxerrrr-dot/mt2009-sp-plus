@@ -1108,8 +1108,13 @@ namespace
 	// The owner, 31 October: no gates yet - the bots hunt there and gather resistance to hunt faster (the wants 60/75
 	// stay as gear goals; the gates come later). Kamien Ochrony Zywiolow for a bot short of a gated map's resistance
 	// or of a big want (60+) (playerbot_element_stones.h: bought only).
+	bool IsPlayerBotElementShopStoneWanted(LPCHARACTER ch);	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1 (playerbot_element_shop.h)
+
 	bool IsPlayerBotElementMapStoneWanted(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate's plan holds the stone (its cheapest point - 65 SM for 10)
+		if (IsPlayerBotElementShopStoneWanted(ch))
+			return true;
 		TPlayerBotElementMapView v;
 		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: for a prebuild only as the last piece - its 10 closes the gap to the gate
 		return GetPlayerBotElementMapGoal(ch, v) && (v.iGate > 0 || v.iWant >= 60) && v.iResist < v.iWant &&

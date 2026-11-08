@@ -493,6 +493,10 @@ void Mt2009RelicBotTick(LPCHARACTER ch, DWORD dwNow);
 int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 #define MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 1
 #include "playerbot_ishop3_goals.h"
+// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate (fire / lightning / wind 40 of the progression) built from the ItemShop V3
+// as a player builds it - changes and adds on the armour, helmet, bracelet and talisman, the element pet, the protection
+// stone - after the V3 goals whose purchase it uses
+#include "playerbot_element_shop.h"
 #include "playerbot_shop_aids.h"
 // MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
 // dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
@@ -8375,6 +8379,11 @@ WritePlayerBotGuildStatus(dwNow);
 		ManagePlayerBotElementStone(ch, state, dwNow);
 		// MT2009_PLUS_BOT_ELEMENT_PET_V1: and the Maly Zywiolak of its hunt element out (bought, renewed after its 15 days).
 		ManagePlayerBotElementPet(ch, state, dwNow);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_BOT_ISHOP_V3_V1)
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate from the ItemShop - urgent while the bot is in the build-ahead
+		// window of the next element step or refused by a gate (playerbot_element_shop.h)
+		ManagePlayerBotElementShop(ch, state, dwNow);
+#endif
 		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
 		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).
 		ManagePlayerBotMlodzi(ch, state, dwNow);

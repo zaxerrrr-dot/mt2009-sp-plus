@@ -214,6 +214,9 @@ namespace
 		if (strcmp(reason, "element_stone") == 0 || strcmp(reason, "element_pet") == 0 ||
 				strcmp(reason, "sungma_buff_next") == 0)
 			return true;
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate's stones and pet (playerbot_element_shop.h)
+		if (strncmp(reason, "element_shop", 12) == 0)
+			return true;
 		if (strcmp(reason, "bonus_add") == 0 || strcmp(reason, "bonus_change") == 0 || strcmp(reason, "bonus_marble") == 0)
 			return IsPlayerBotYoharaMoveWaitingOnBonus(ch) ||
 					(strcmp(reason, "bonus_marble") != 0 &&
@@ -746,6 +749,8 @@ namespace
 		return (long long)lines[0]->dwPrice * g.iPieces / std::max<DWORD>(1, lines[0]->dwCount);
 	}
 
+	long long GetPlayerBotElementShopReserve(LPCHARACTER ch);	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1 (playerbot_element_shop.h)
+
 	long long GetPlayerBotIshop3GoalReserve(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		(void)state;
@@ -758,6 +763,8 @@ namespace
 			if (!goals[i].bMarks &&	// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: a COMFORT goal keeps nothing back from the look
 					PLAYERBOT_ISHOP3_NEED_CLASS[goals[i].bNeed] != PLAYERBOT_ISHOP3_CLASS_COMFORT)
 				reserve += GetPlayerBotIshop3GoalCost(ch, goals[i]);
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate's plan still to go
+		reserve += GetPlayerBotElementShopReserve(ch);
 		return reserve;
 	}
 

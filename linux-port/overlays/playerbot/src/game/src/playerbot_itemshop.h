@@ -168,7 +168,10 @@ namespace
 	// playerbot_ishop3_goals.h.
 	const int PLAYERBOT_ISHOP3_LOG_CURRENCY_COINS = 11;
 	const int PLAYERBOT_ISHOP3_LOG_CURRENCY_MARKS = 12;
-	const int PLAYERBOT_ISHOP3_MAX_QTY = 10;		// buy.php: 1..10 a purchase
+	const int PLAYERBOT_ISHOP3_MAX_QTY = 10;
+	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: set around the element gate's purchases (playerbot_element_shop.h) - the vnum's day
+	// cap does not apply to them (its hold cap does)
+	bool s_bPlayerBotIshop3NoDayCap = false;		// buy.php: 1..10 a purchase
 	const DWORD PLAYERBOT_ISHOP3_FRESH_MS = 60 * 1000;	// a balance older than this is read again before a purchase
 	const DWORD PLAYERBOT_ISHOP3_CHARGE_SETTLE_MS = 10 * 1000;	// no read on the heels of a charge (async, db core)
 
@@ -440,6 +443,9 @@ namespace
 
 	// What the pool leaves a purchase in Smocze Monety of this reason (inactive: the switch off, a companion, the week
 	// not read, the base not known).
+	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1 (playerbot_element_shop.h): the element gate's own room in SM (-1: not that need)
+	long long GetPlayerBotElementShopPoolRoom(LPCHARACTER ch, const char* reason);
+
 	TPlayerBotSmPoolRoom GetPlayerBotSmPoolRoom(LPCHARACTER ch, const TPlayerBotAIState& state, const char* reason)
 	{
 		TPlayerBotSmPoolRoom r = { false, false, 0, 0 };
@@ -488,6 +494,13 @@ namespace
 						reason ? reason : "");
 			r.llToday = std::max(r.llToday, balToday);
 			r.llTomorrow = std::max(r.llTomorrow, balTomorrow);
+		}
+		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate (urgent) may spend its step's budget of the balance whatever the
+		// day's seventh says - the coins the bot holds, none added (m2_bot_element_shop_budget)
+		{
+			const long long eshop = GetPlayerBotElementShopPoolRoom(ch, reason);
+			if (eshop > r.llTomorrow)
+				r.llTomorrow = eshop;
 		}
 		return r;
 	}
@@ -1001,7 +1014,7 @@ namespace
 		int room = INT_MAX;
 		if (hold > 0)
 			room = std::min(room, hold - CountPlayerBotIshop3Held(ch, vnum));	// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: worn / safebox too
-		if (day > 0)
+		if (day > 0 && !s_bPlayerBotIshop3NoDayCap)	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1
 			room = std::min(room, day - GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), vnum));
 		return std::max(0, room);
 	}
@@ -1157,7 +1170,7 @@ namespace
 			GetPlayerBotIshop3Caps(vnum, hold, day);
 			const int held = CountPlayerBotIshop3Held(ch, vnum);	// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: worn / safebox too
 			const bool overHold = hold > 0 && held >= hold;
-			const bool overDay = !overHold && day > 0 &&
+			const bool overDay = !overHold && day > 0 && !s_bPlayerBotIshop3NoDayCap &&	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1
 					GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), vnum) + (int)pieces > std::max(day, (int)line.dwCount);
 			if (overHold || overDay)
 			{
