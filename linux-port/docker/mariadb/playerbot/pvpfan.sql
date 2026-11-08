@@ -182,6 +182,14 @@ CREATE TABLE IF NOT EXISTS player.pvpfan_gm_pos (
 
 -- Later columns of the first version's tables go here (ADD COLUMN IF NOT EXISTS), never into the CREATEs above only.
 ALTER TABLE player.pvpfan_category ADD COLUMN IF NOT EXISTS potions TINYINT(1) NOT NULL DEFAULT 1 AFTER allow_players;
+-- MT2009_PLUS_PVPFAN_TACTICS_V1 (the owner, 8 November 2026: "a real war, not two blobs"): squads, roles, kiting and
+-- retreats (playerbot_pvpfan.h, "tactics"). Read at each /pvpfan start; a core ahead of this migration fights with
+-- these defaults. The event flag m2_pvpfan_tactics_off turns them off for every category.
+ALTER TABLE player.pvpfan_category
+  ADD COLUMN IF NOT EXISTS tactics TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1: squads, roles, kiting, retreats; 0: the first version''s fight' AFTER potions,
+  ADD COLUMN IF NOT EXISTS squad_size TINYINT UNSIGNED NOT NULL DEFAULT 5 COMMENT 'bots per squad, 2..12' AFTER tactics,
+  ADD COLUMN IF NOT EXISTS kite_distance SMALLINT UNSIGNED NOT NULL DEFAULT 400 COMMENT 'a ranged/support bot steps away from a melee foe this near (150..900, 0 = never)' AFTER squad_size,
+  ADD COLUMN IF NOT EXISTS retreat_hp TINYINT UNSIGNED NOT NULL DEFAULT 35 COMMENT 'HP % under which a bot retreats to mend (5..80, 0 = never)' AFTER kite_distance;
 
 -- A command nobody took within an hour (no core hosts the map on that channel, the core was down) is closed, so the
 -- panel's queue shows what is really waiting.
