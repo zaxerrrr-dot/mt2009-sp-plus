@@ -50,6 +50,8 @@ namespace
 	bool HasPlayerBotOfflineShop(LPCHARACTER ch);
 	void NotePlayerBotCh2StandIntent(LPCHARACTER ch, const char* why);	// MT2009_PLUS_BOT_CH2_STAND_V1
 	bool SubmitPlayerBotOfflineShop(LPCHARACTER, TPlayerBotAIState&, DWORD, const char*, TShopItemTable*, BYTE);
+	int PlayerBotStandStepHold(LPCHARACTER, TPlayerBotAIState&, DWORD);	// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1
+	int PlayerBotStandPreflight(LPCHARACTER, TPlayerBotAIState&, DWORD);	// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1
 
 	// The stands are the shop channel's alone. With the two channels with
 	// moves a bot elsewhere that has business with one - a stand to open, its
@@ -7514,9 +7516,20 @@ namespace
 		}
 
 		SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: a step to a free spot (PlayerBotStandPreflight, below) is walked out
+		// before the leg, which would stop it; a bot standing at the spot it stepped to skips the leg.
+		const int standStep = PlayerBotStandStepHold(ch, state, dwNow);
+		if (standStep == 1)
+			return true;
+		if (standStep != 2 && !MovePlayerBotTownLeg(ch, state, dwNow, stallX, stallY,
+				PLAYERBOT_MARKET_ARRIVE))
+			return true; // still walking to the pitch
+#else
 		if (!MovePlayerBotTownLeg(ch, state, dwNow, stallX, stallY,
 				PLAYERBOT_MARKET_ARRIVE))
 			return true; // still walking to the pitch
+#endif
 		// Counted the moment it opens rather than at the next ledger sweep, or
 		// eight keepers arriving in the same minute would all read six.
 #if !defined(PLAYERBOT_ENGINE_MT2009)
@@ -7532,6 +7545,18 @@ namespace
 		ch->HorseSummon(false);
 		ch->SetVictim(NULL);
 		ch->Stop();
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// MT2009_PLUS_BOT_STAND_FREE_SPOT_V1: what ikashop would refuse the stand for here - another stand within
+		// sixty units (half the stands asked for on 8 November), the 10-second rule, a busy window - is stepped
+		// away from or waited out before the counter is laid out.
+		{
+			const int standReady = PlayerBotStandPreflight(ch, state, dwNow);
+			if (standReady == 0)
+				return true;
+			if (standReady < 0)
+				return false;
+		}
+#endif
 
 		// One table entry per item, in the order they will sit on the counter.
 		// OpenMyShop rejects the entire shop if any single line is unsellable, so
