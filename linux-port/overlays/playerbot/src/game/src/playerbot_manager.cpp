@@ -8411,6 +8411,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// deep, and opened 190 in an hour between them. Their bags were not the
 		// problem: 29 cells of 90 in use on average, none above 84.
 		ManagePlayerBotChests(ch, state, dwNow);
+#ifdef PLAYERBOT_SKILL_INSTR_LATE
+		// MT2009_PLUS_BOT_CLASS_CHESTS_V1: the class chests (D) and their encyclopedias - the quest's opening, for a bot
+		// (playerbot_skill_instr_late.h)
+		OpenPlayerBotClassChests(ch, state, dwNow);
+#endif
 		// MT2009_PLUS_BOT_STARTER_USE_V1: the Appaloosa's snack and the apprentice chests' census
 		// (playerbot_starter_use.h).
 		ManagePlayerBotStarterItems(ch, state, dwNow);
