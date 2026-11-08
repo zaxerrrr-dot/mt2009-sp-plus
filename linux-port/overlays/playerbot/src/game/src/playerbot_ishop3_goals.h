@@ -217,8 +217,14 @@ namespace
 		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate's stones and pet (playerbot_element_shop.h)
 		if (strncmp(reason, "element_shop", 12) == 0)
 			return true;
+		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a held gate's requirement bought (playerbot_progression_shop.h)
+		if (strncmp(reason, "progshop", 8) == 0)
+			return true;
 		if (strcmp(reason, "bonus_add") == 0 || strcmp(reason, "bonus_change") == 0 || strcmp(reason, "bonus_marble") == 0)
 			return IsPlayerBotYoharaMoveWaitingOnBonus(ch) ||
+					// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate holding the bot for its HP from items
+					(strcmp(reason, "bonus_marble") != 0 &&
+					 (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_HP) != 0) ||
 					(strcmp(reason, "bonus_marble") != 0 &&
 					 IsPlayerBotHp70BonusUrgent(ch, strcmp(reason, "bonus_add") == 0));	// MT2009_PLUS_BOT_SM_HP70_V1
 		if (strcmp(reason, "smith_scroll") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "blessing_scroll") == 0)
@@ -879,6 +885,9 @@ namespace
 		const int last = ch->GetQuestFlag(PLAYERBOT_ISHOP3_CHEST_FLAG);
 		if (last != 0 && get_global_time() - last < PLAYERBOT_ISHOP3_CHEST_WEEK)
 			return false;
+		// MT2009_PLUS_BOT_LOOK_MONTHLY_V1: the set chest is a cosmetic kind of its own - once a month (playerbot_itemshop.h)
+		if (IsPlayerBotLookMonthBlocked(ch, PLAYERBOT_LOOK_MONTH_CHEST))
+			return false;
 		int look = 0;
 		if (PickPlayerBotLook(ch, &look) != 0)
 			return false;	// a missing piece of the look is bought outright first
@@ -909,7 +918,10 @@ namespace
 		ch->SetQuestFlag(PLAYERBOT_ISHOP3_CHEST_FLAG, get_global_time());
 		const bool ok = BuyPlayerBotIshop3Chest(ch, state, chest, PLAYERBOT_ISHOP3_CHEST_ROLLS, dwNow);
 		if (ok)
+		{
+			NotePlayerBotLookBought(ch, "look_set_chest");	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1
 			WearPlayerBotBoughtLook(ch, state);
+		}
 		return ok;
 	}
 

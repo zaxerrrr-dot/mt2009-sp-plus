@@ -501,6 +501,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
 // dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
 #include "playerbot_skill_instr_late.h"
+// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a bot held at a gate of the checklist buys in the ItemShop V3 what meets its unmet
+// rows (the class chest for the skills, the safe scrolls for the plus) - after the class chests and the V3 goals
+#include "playerbot_progression_shop.h"
 // MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
 // V3 goals whose purchase it uses
 #include "playerbot_yohara_guides.h"
@@ -8383,6 +8386,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: the element gate from the ItemShop - urgent while the bot is in the build-ahead
 		// window of the next element step or refused by a gate (playerbot_element_shop.h)
 		ManagePlayerBotElementShop(ch, state, dwNow);
+		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate's unmet rows bought in the ItemShop (playerbot_progression_shop.h)
+		ManagePlayerBotProgressionShop(ch, state, dwNow);
 #endif
 		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
 		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).

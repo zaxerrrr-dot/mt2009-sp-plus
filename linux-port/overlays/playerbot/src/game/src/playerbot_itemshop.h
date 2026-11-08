@@ -172,6 +172,7 @@ namespace
 	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1: set around the element gate's purchases (playerbot_element_shop.h) - the vnum's day
 	// cap does not apply to them (its hold cap does)
 	bool s_bPlayerBotIshop3NoDayCap = false;		// buy.php: 1..10 a purchase
+	void NotePlayerBotLookBought(LPCHARACTER ch, const char* reason);	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1 (below)
 	const DWORD PLAYERBOT_ISHOP3_FRESH_MS = 60 * 1000;	// a balance older than this is read again before a purchase
 	const DWORD PLAYERBOT_ISHOP3_CHARGE_SETTLE_MS = 10 * 1000;	// no read on the heels of a charge (async, db core)
 
@@ -252,6 +253,9 @@ namespace
 				return "look";
 		if (strncmp(reason, "element", 7) == 0)
 			return "element";
+		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate's requirement bought (playerbot_progression_shop.h)
+		if (strncmp(reason, "progshop", 8) == 0)
+			return "progshop";
 		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the Sung Ma buys and the Loch tickets apart from the wishes in the census
 		if (strncmp(reason, "sungma", 6) == 0)
 			return "sungma";
@@ -445,6 +449,8 @@ namespace
 	// not read, the base not known).
 	// MT2009_PLUS_BOT_ELEMENT_SHOP_V1 (playerbot_element_shop.h): the element gate's own room in SM (-1: not that need)
 	long long GetPlayerBotElementShopPoolRoom(LPCHARACTER ch, const char* reason);
+	// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1 (playerbot_progression_shop.h): a held gate's own room in SM (-1: not that need)
+	long long GetPlayerBotProgShopPoolRoom(LPCHARACTER ch, const char* reason);
 
 	TPlayerBotSmPoolRoom GetPlayerBotSmPoolRoom(LPCHARACTER ch, const TPlayerBotAIState& state, const char* reason)
 	{
@@ -501,6 +507,13 @@ namespace
 			const long long eshop = GetPlayerBotElementShopPoolRoom(ch, reason);
 			if (eshop > r.llTomorrow)
 				r.llTomorrow = eshop;
+		}
+		// MT2009_PLUS_BOT_PROGRESSION_SHOP_V1: a gate's requirement (urgent) may spend the gate's budget of the balance
+		// whatever the day's seventh says - the coins the bot holds, none added (m2_bot_progshop_budget)
+		{
+			const long long pshop = GetPlayerBotProgShopPoolRoom(ch, reason);
+			if (pshop > r.llTomorrow)
+				r.llTomorrow = pshop;
 		}
 		return r;
 	}
@@ -1255,6 +1268,7 @@ namespace
 			NotePlayerBotSmCouponPurchase(ch, reason);	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a purchase a coupon unblocked
 #endif
 		NotePlayerBotIshop3Bought(ch, vnum, (int)delivered);	// MT2009_PLUS_BOT_ISHOP_NEED_V1
+		NotePlayerBotLookBought(ch, reason);	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1
 		NotePlayerBotIshop3Line(line.dwIndex, vnum);	// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1
 		(marks ? census.llMarks : census.llCoins) += paid;
 		++s_uPlayerBotItemShopBuys;
@@ -1799,6 +1813,94 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1 (the owner, 8 November 2026: "kosmetyki kupuje sie raz na miesiac przewaznie" - no
+	// share of the pool, a month): a bot buys a piece of a cosmetic kind - the costume, the hairstyle, the weapon skin,
+	// the pet seal, the mount seal (the look pass and the element second set's costume / hairstyle alike) and the set
+	// chest of "Sety Bonusowe" - at most once in PLAYERBOT_LOOK_MONTH_DAYS days a kind. The last purchase is kept in the
+	// bot's quest flags (playerbot.look_t_<kind>, unix time), so a restart forgets nothing. A kind bought within the
+	// month is skipped by the look's pick (PickPlayerBotLook goes on to the next kind) and by the second set's; the set
+	// chest's weekly clock waits for the month. Event flags: m2_bot_look_monthly_off 1 - as before (the set chest weekly);
+	// m2_bot_look_monthly_days N (1-90, default 30). The census: playerbot_progression_shop.h (PLAYERBOT_PROGSHOP: looks).
+	const int PLAYERBOT_LOOK_MONTH_DAYS = 30;
+	const int PLAYERBOT_LOOK_MONTH_CHEST = PLAYERBOT_ISHOP_LOOK_COUNT;	// the set chest's kind
+	const char* const PLAYERBOT_LOOK_MONTH_FLAGS[PLAYERBOT_ISHOP_LOOK_COUNT + 1] = {
+		"playerbot.look_t_body", "playerbot.look_t_hair", "playerbot.look_t_weapon", "playerbot.look_t_pet",
+		"playerbot.look_t_mount", "playerbot.look_t_chest"
+	};
+	const char* const PLAYERBOT_LOOK_MONTH_NAMES[PLAYERBOT_ISHOP_LOOK_COUNT + 1] = {
+		"costume", "hair", "weapon_skin", "pet", "mount", "set_chest"
+	};
+	struct TPlayerBotLookMonthStats
+	{
+		unsigned int bought[PLAYERBOT_ISHOP_LOOK_COUNT + 1];
+		std::set<DWORD> blocked[PLAYERBOT_ISHOP_LOOK_COUNT + 1];	// the bots a kind was refused for in the period
+		TPlayerBotLookMonthStats() { memset(bought, 0, sizeof(bought)); }
+	};
+	TPlayerBotLookMonthStats s_kPlayerBotLookMonth;
+
+	bool IsPlayerBotLookMonthlyOn()
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_look_monthly_off") == 0;
+		}
+		return s_bOn;
+	}
+
+	int GetPlayerBotLookMonthSeconds()
+	{
+		const int days = quest::CQuestManager::instance().GetEventFlag("m2_bot_look_monthly_days");
+		return (days >= 1 && days <= 90 ? days : PLAYERBOT_LOOK_MONTH_DAYS) * 24 * 60 * 60;
+	}
+
+	// The kind a purchase's reason is (-1: no cosmetic).
+	int GetPlayerBotLookMonthKind(const char* reason)
+	{
+		if (!reason)
+			return -1;
+		if (strcmp(reason, "look_costume") == 0 || strcmp(reason, "secondset_costume") == 0)
+			return PLAYERBOT_ISHOP_LOOK_BODY;
+		if (strcmp(reason, "hairstyle") == 0 || strcmp(reason, "secondset_hair") == 0 || strcmp(reason, "counter_hairstyle") == 0)
+			return PLAYERBOT_ISHOP_LOOK_HAIR;
+		if (strcmp(reason, "look_weapon_skin") == 0)
+			return PLAYERBOT_ISHOP_LOOK_WEAPON;
+		if (strcmp(reason, "look_pet") == 0)
+			return PLAYERBOT_ISHOP_LOOK_PET;
+		if (strcmp(reason, "look_mount") == 0)
+			return PLAYERBOT_ISHOP_LOOK_MOUNT;
+		if (strcmp(reason, "look_set_chest") == 0)
+			return PLAYERBOT_LOOK_MONTH_CHEST;
+		return -1;
+	}
+
+	// A kind bought within the month (a companion's looks are its owner's business - never held here).
+	bool IsPlayerBotLookMonthBlocked(LPCHARACTER ch, int kind)
+	{
+		if (!ch || kind < 0 || kind > PLAYERBOT_LOOK_MONTH_CHEST || !IsPlayerBotLookMonthlyOn() ||
+				IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
+		const int last = ch->GetQuestFlag(PLAYERBOT_LOOK_MONTH_FLAGS[kind]);
+		if (last <= 0 || get_global_time() - last >= GetPlayerBotLookMonthSeconds())
+			return false;
+		if (s_kPlayerBotLookMonth.blocked[kind].size() < 20000)
+			s_kPlayerBotLookMonth.blocked[kind].insert(ch->GetPlayerID());
+		return true;
+	}
+
+	// A cosmetic bought (the V3 line's purchase and the old catalogue's): its kind's month starts.
+	void NotePlayerBotLookBought(LPCHARACTER ch, const char* reason)
+	{
+		const int kind = GetPlayerBotLookMonthKind(reason);
+		if (!ch || kind < 0 || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return;
+		ch->SetQuestFlag(PLAYERBOT_LOOK_MONTH_FLAGS[kind], get_global_time());
+		++s_kPlayerBotLookMonth.bought[kind];
+	}
+
 	// MT2009_PLUS_BOT_ISHOP_FRESH_V1: how long a bought look lasts, in
 	// seconds; 0 for a permanent one. A REAL_TIME limit of 0 is the engine's
 	// seven days (ITEM_MANAGER::CreateItem).
@@ -1828,6 +1930,9 @@ namespace
 		for (int look = 0; look < PLAYERBOT_ISHOP_LOOK_COUNT; ++look)
 		{
 			if (PlayerBotHasLook(ch, look))
+				continue;
+			// MT2009_PLUS_BOT_LOOK_MONTHLY_V1: a kind bought within the month waits; the next kind is asked
+			if (IsPlayerBotLookMonthBlocked(ch, look))
 				continue;
 			const std::vector<DWORD>& catalogue = GetPlayerBotLookCatalogue(look);
 			std::vector<DWORD> mine;
@@ -2314,6 +2419,7 @@ namespace
 		}
 		++s_uPlayerBotItemShopBuys;
 		++s_mapPlayerBotItemShopBought[wish.dwVnum];
+		NotePlayerBotLookBought(ch, wish.szReason);	// MT2009_PLUS_BOT_LOOK_MONTHLY_V1
 		// MT2009_PLUS_BOT_ISHOP_FRESH_V1: one line a purchase for the monitor -
 		// the level, the balance before and after, how long the piece lasts
 		// (days, 0 = for good) and whether the fresh-balance pace applies.
