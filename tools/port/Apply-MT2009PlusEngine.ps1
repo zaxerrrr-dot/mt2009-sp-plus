@@ -2305,4 +2305,19 @@ if ((Test-Path -LiteralPath $logTrimApply -PathType Leaf) -and
     }
 }
 
+# The stand windows bounded to their pages (server-patches/ladaview, MT2009_PLUS_BOT_LADA_VIEW_V1; the owner, 8 November
+# 2026: "Nie limituj pozycji na bota"): ikarus_shop_manager.cpp - the stand's and the owner's window carry only the lines
+# of the four pages (pos < 320), the shop safebox at most 4000 items, nothing built for a bot; ikarus_shop.cpp - a line
+# added past the pages refreshes no view. The logic is the overlay's ikashop_lada_view.h. Last: its anchors are the
+# patched engine.
+$ladaViewApply = Join-Path $repo 'server-patches/ladaview/Apply-LadaViewPatch.ps1'
+if ((Test-Path -LiteralPath $ladaViewApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $ladaViewResult = & $ladaViewApply -SourceDir $engineGameSource
+    if ($ladaViewResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} stand window bound edit(s).' -f $ladaViewResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

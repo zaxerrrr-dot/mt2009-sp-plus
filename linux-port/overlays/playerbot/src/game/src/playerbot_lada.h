@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <unordered_set>
+#include "ikashop_lada_view.h"	// MT2009_PLUS_BOT_LADA_VIEW_V1: the engine's window bound and its counters (server-patches/ladaview)
 
 // MT2009_PLUS_BOT_LADA_V1 - the bots' "lada": a counter with no limit, fed from anywhere (the owner, 8 November 2026:
 // "Dzialaj z tym systemem" - lada bez limitu, plynna; boty dokladaja z kazdego miejsca i kanalu, wiekszosc dropu idzie
@@ -51,17 +52,23 @@
 //   4. two short lines of a kind on the counter with nothing of it in the bag: the smaller comes home (merge).
 // A lada line stands past the visit's pages (pos 320 and up, its first byte off the locked and premium cells the
 // engine's renewal checks): the stand's window shows the pages, the searches find everything. Caps:
-// m2_bot_lada_cap (300) lines a bot, m2_bot_lada_world_cap (60000) bot lines in the world, the bot's 2 bn per counter.
+// m2_bot_lada_cap (0: none - MT2009_PLUS_BOT_LADA_NOCAP_V1; the window's packet is bounded in the engine,
+// server-patches/ladaview, ikashop_lada_view.h), m2_bot_lada_world_cap (120000 lines of every shop a search walks,
+// PLAYERBOT_LADA_WORLD_CAP_DEFAULT), the bot's 2 bn per counter.
 // The lada's kinds (IsPlayerBotLadaKindItem) are the ordinary goods; the dragon stones, soul stones, energy shards,
 // Cors, Materialy Rzemieslnicze, Moonlight chests, horse medals, SM coupons, refine scrolls, mission books, rare
 // goods, belts, sashes, talismans, costumes, potions and the low gear under its cap stay with the visit's own rules -
 // the visit no longer lists, cuts or restacks the lada's kinds while the lada is on.
 //
-// The price: new lines at the visit's listing price (GetPlayerBotListingPrice, the floor); the glut's tiers
-// (playerbot_market_clearing.h, m2_bot_lada_price_off 1: the old clearing of every line) - a pass every
-// PLAYERBOT_LADA_TIER_MS on the shop channel's cores ranks every line of each glutted kind by its unit price, the
-// cheapest 10 % of the units 950 permille, the next 10 % 970, and edits the bot lines of the stands this core hosts to
-// BotOfflineRepriceTarget (which applies the tier) - PLAYERBOT_LADA_TIER_EDITS_PER_S a second.
+// The price: new lines at the visit's listing price (GetPlayerBotListingPrice, the floor) - or, a glutted kind, the
+// tier the line ranks into (MT2009_PLUS_BOT_LADA_TIER_XCH_V1, any channel); the glut's tiers
+// (playerbot_market_clearing.h, m2_bot_lada_price_off 1: the old clearing of every line) - the glutted kinds and their
+// clearing asks published by one shop-channel core (player.playerbot_lada_tier) and read by every other, every core of
+// every channel ranks every line of each glutted kind by its unit price (every PLAYERBOT_LADA_TIER_RANK_MS), the
+// cheapest 10 % of the units 950 permille, the next 10 % 970, and every PLAYERBOT_LADA_TIER_MS edits the bot lines of
+// the stands this core hosts to BotOfflineRepriceTarget (which applies the tier) - PLAYERBOT_LADA_TIER_EDITS_PER_S a
+// second. The safebox (MT2009_PLUS_BOT_LADA_BOX_V1, below): a stand keeper's box gives the lada its goods, all but the
+// spare gear and the keeps.
 //
 // Junk (what only the merchant takes) stays with the merchant unless m2_bot_lada_junk_on 1: then up to
 // PLAYERBOT_LADA_JUNK_LINES lines of it a bot, back home after PLAYERBOT_LADA_JUNK_STALE_MS unsold (the merchant's
@@ -83,14 +90,30 @@ namespace
 	const int PLAYERBOT_LADA_JUNK_LINES = 40;
 	const int PLAYERBOT_LADA_POS_BASE = SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT * playerbot_offline::BOT_SHOP_PAGES;
 	const int PLAYERBOT_LADA_POS_MAX = 60000;
+	// MT2009_PLUS_BOT_LADA_VIEW_V1: the lada stands where the engine's window bound stops showing lines.
+	static_assert(PLAYERBOT_LADA_POS_BASE == ikashop_lada_view::VISIBLE_CELLS, "the lada starts past the window's pages");
 	const size_t PLAYERBOT_LADA_CENSUS_KINDS = 8;
+
+	// MT2009_PLUS_BOT_LADA_NOCAP_V1 (the owner, 8 November 2026: "Nie limituj pozycji na bota"): no number of lines a
+	// bot - m2_bot_lada_cap 0 (the default) is no cap, a value over 0 caps it again (20..60000). What the cap guarded is
+	// guarded in the engine now (server-patches/ladaview, ikashop_lada_view.h): the stand's window carries only the
+	// lines of its pages, whatever the counter holds. The world's cap stays, for the searches' walk: it counts every
+	// line of every shop this core's copy holds (a person's too - the search walks them all), default
+	// PLAYERBOT_LADA_WORLD_CAP_DEFAULT.
+	// The world's cap: the Dom Towarowy's fill and the filter search walk every line of the copy, a name match each
+	// (MatchItemName lowers the name into a new string). Measured 8 November 2026 on vps1 (Xeon E-2236, g++ -m32 -O2,
+	// the engine's walk rebuilt - std::map of shops, std::map of lines, the proto's unordered_map, the lowered name, the
+	// 113-byte result and the 6000-result trim): 12 086 lines (the test world's now) 2.4-2.9 ms, 60 000 13-16 ms,
+	// 100 000 22-30 ms, 150 000 31-42 ms, 200 000 43-53 ms - 0.20-0.30 us a line on a quiet core. With the author's
+	// 0.4 us a line for a busy core's cold caches, 120 000 lines walk in ~48 ms: the search stays under 50 ms.
+	const int PLAYERBOT_LADA_WORLD_CAP_DEFAULT = 120000;
 
 	struct TPlayerBotLadaCfg
 	{
-		bool on, tiers, xch, junk;
-		int intervalMin, cap, worldCap, rate, passOps;
-		TPlayerBotLadaCfg() : on(true), tiers(true), xch(true), junk(false), intervalMin(30), cap(300), worldCap(60000),
-				rate(6), passOps(24) {}
+		bool on, tiers, xch, junk, box;
+		int intervalMin, cap, worldCap, rate, passOps, boxStacks, boxRate, boxGapMin;
+		TPlayerBotLadaCfg() : on(true), tiers(true), xch(true), junk(false), box(true), intervalMin(30), cap(0),
+				worldCap(PLAYERBOT_LADA_WORLD_CAP_DEFAULT), rate(6), passOps(24), boxStacks(12), boxRate(120), boxGapMin(30) {}
 	};
 	TPlayerBotLadaCfg s_kPlayerBotLadaCfg;
 
@@ -108,21 +131,27 @@ namespace
 			c.tiers = c.on && q.GetEventFlag("m2_bot_lada_price_off") == 0;
 			c.xch = q.GetEventFlag("m2_bot_lada_xch_off") == 0;
 			c.junk = q.GetEventFlag("m2_bot_lada_junk_on") != 0;
+			c.box = c.on && q.GetEventFlag("m2_bot_lada_box_off") == 0;	// MT2009_PLUS_BOT_LADA_BOX_V1
 			auto value = [&q](const char* flag, int def, int lo, int hi) {
 				const int v = q.GetEventFlag(flag);
 				return v <= 0 ? def : std::max(lo, std::min(hi, v));
 			};
 			c.intervalMin = value("m2_bot_lada_min", 30, 5, 240);
-			c.cap = value("m2_bot_lada_cap", 300, 20, 2000);
-			c.worldCap = value("m2_bot_lada_world_cap", 60000, 1000, 400000);
+			c.cap = value("m2_bot_lada_cap", 0, 20, PLAYERBOT_LADA_POS_MAX);	// MT2009_PLUS_BOT_LADA_NOCAP_V1: 0 no cap
+			c.worldCap = value("m2_bot_lada_world_cap", PLAYERBOT_LADA_WORLD_CAP_DEFAULT, 1000, 400000);
 			c.rate = value("m2_bot_lada_rate", 6, 1, 50);
 			c.passOps = value("m2_bot_lada_pass_ops", 24, 1, 200);
+			c.boxStacks = value("m2_bot_lada_box_stacks", 12, 1, 90);		// MT2009_PLUS_BOT_LADA_BOX_V1: stacks a visit
+			c.boxRate = value("m2_bot_lada_box_rate", 120, 1, 2000);		// stacks a minute, a core
+			c.boxGapMin = value("m2_bot_lada_box_gap_min", 30, 5, 720);	// a bot's visits for it
 			s_bPlayerBotLadaTiers = c.tiers;
 			if (was.on != c.on || was.tiers != c.tiers || was.xch != c.xch || was.junk != c.junk || was.intervalMin != c.intervalMin ||
-					was.cap != c.cap || was.worldCap != c.worldCap || was.rate != c.rate || was.passOps != c.passOps)
-				sys_log(0, "PLAYERBOT_LADA: config on=%d tiers=%d cross_channel=%d junk=%d interval_min=%d cap=%d world_cap=%d rate=%d pass_ops=%d",
+					was.cap != c.cap || was.worldCap != c.worldCap || was.rate != c.rate || was.passOps != c.passOps ||
+					was.box != c.box || was.boxStacks != c.boxStacks || was.boxRate != c.boxRate || was.boxGapMin != c.boxGapMin)
+				sys_log(0, "PLAYERBOT_LADA: config on=%d tiers=%d cross_channel=%d junk=%d interval_min=%d cap=%d (0: none) world_cap=%d rate=%d "
+						"pass_ops=%d box=%d box_stacks=%d box_rate=%d box_gap_min=%d",
 						c.on ? 1 : 0, c.tiers ? 1 : 0, c.xch ? 1 : 0, c.junk ? 1 : 0, c.intervalMin, c.cap, c.worldCap, c.rate,
-						c.passOps);
+						c.passOps, c.box ? 1 : 0, c.boxStacks, c.boxRate, c.boxGapMin);
 		}
 		return s_kPlayerBotLadaCfg;
 	}
@@ -215,14 +244,19 @@ namespace
 		unsigned int refusedCap = 0, refusedWorld = 0, refusedYang = 0, refusedBudget = 0, refusedBusy = 0, stuck = 0;
 		unsigned int tierPasses = 0, tierKinds = 0, tier1 = 0, tier2 = 0, tierEdits = 0, tierLooked = 0;
 		unsigned int budgetGranted = 0;
+		// MT2009_PLUS_BOT_LADA_TIER_XCH_V1: the shared glut map (published / read), the new lines listed into a tier
+		unsigned int tierPublished = 0, tierRead = 0, tierReadFailed = 0, newTier = 0, newTierCh2 = 0;
+		// MT2009_PLUS_BOT_LADA_BOX_V1: the safebox's goods for the lada
+		unsigned int boxVisits = 0, boxTaken = 0, boxKept = 0, boxRoom = 0, boxRate = 0, boxLeft = 0, boxDepositHeld = 0;
+		unsigned long long boxUnits = 0;
 	};
 	TPlayerBotLadaCensus s_kPlayerBotLadaCensus;
 
 	// The world's lines, counted once a minute off this core's copy of every shop.
 	struct TPlayerBotLadaWorld
 	{
-		unsigned int botShops = 0, botLines = 0, ladaLines = 0, allLines = 0, maxLines = 0;
-		unsigned long long botUnits = 0;
+		unsigned int botShops = 0, botLines = 0, ladaLines = 0, allLines = 0, maxLines = 0, maxLada = 0;
+		unsigned long long botUnits = 0, maxUnits = 0;
 		DWORD maxOwner = 0;
 	};
 	TPlayerBotLadaWorld s_kPlayerBotLadaWorld;
@@ -361,12 +395,13 @@ namespace
 		if (IsPlayerBotSecondSetStored(ch, item))
 			return false;
 #endif
-		if ((int)shop->GetItems().size() >= c.cap)
+		// MT2009_PLUS_BOT_LADA_NOCAP_V1: no cap a bot unless the flag sets one; the world's counts every line a search walks
+		if (c.cap > 0 && (int)shop->GetItems().size() >= c.cap)
 		{
 			++k.refusedCap;
 			return false;
 		}
-		if ((int)s_kPlayerBotLadaWorld.botLines >= c.worldCap)
+		if ((int)s_kPlayerBotLadaWorld.allLines >= c.worldCap)
 		{
 			++k.refusedWorld;
 			return false;
@@ -383,6 +418,16 @@ namespace
 			const DWORD listing = GetPlayerBotListingPrice(item, GetPlayerBotShopAskingPrice(item), 0, &markup);
 			const DWORD floor = GetPlayerBotListingFloor(item);
 			price.yang = std::max(listing, floor);
+		}
+		// MT2009_PLUS_BOT_LADA_TIER_XCH_V1: a new line of a glutted kind asks the tier it ranks into - the same ranking
+		// and the same shared clearing ask on every core of every channel (the line is not ranked yet: its id is new).
+		int newTier = 0;
+		if (item->GetRefineLevel() == 0 && item->GetCount() > 0 && price.yang > 0)
+		{
+			const DWORD units = (DWORD)item->GetCount();
+			newTier = GetPlayerBotLadaNewLineTier(item->GetVnum(), (unsigned long long)price.yang * 1000ULL / units, units);
+			if (newTier > 0)
+				price.yang = GetPlayerBotLadaTierPrice(item->GetVnum(), (long long)units, (long long)price.yang, newTier);
 		}
 		const long long total = (long long)shop->GetTotalYangValue();
 		if (price.yang <= 0 || price.yang >= PLAYERBOT_GOLD_MAX || total >= PLAYERBOT_GOLD_MAX - (long long)price.yang)
@@ -429,13 +474,25 @@ namespace
 			s_setPlayerBotLadaJunkLines.insert(id);
 			++k.junkListed;
 		}
+		if (newTier > 0)
+		{
+			// this core prices it by its tier until its next ranking takes the line in
+			s_mapPlayerBotLadaTier[id] = (WORD)newTier;
+			NotePlayerBotLadaNewTierUnits(vnum, count);
+			++k.newTier;
+			if (g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+				++k.newTierCh2;
+		}
+		// the world's counts until the next count (the caps between two counts)
+		++s_kPlayerBotLadaWorld.allLines;
+		++s_kPlayerBotLadaWorld.botLines;
 		++k.listed;
 		k.listedUnits += count;
 		PlayerBotLogThrottled("lada_list", now,
-				"PLAYERBOT_LADA: list pid=%u name=%s item=%u vnum=%u count=%u price=%lld pos=%d lines=%u ch=%u stand_ch=%u junk=%d",
+				"PLAYERBOT_LADA: list pid=%u name=%s item=%u vnum=%u count=%u price=%lld pos=%d lines=%u ch=%u stand_ch=%u junk=%d tier=%d",
 				pid, ch->GetName(), id, vnum, (unsigned int)count, (long long)price.yang, pos,
 				(unsigned int)shop->GetItems().size() + 1, (unsigned int)g_bChannel, (unsigned int)shop->GetSpawn().channel,
-				junk ? 1 : 0);
+				junk ? 1 : 0, newTier);
 		return true;
 	}
 
@@ -618,7 +675,7 @@ namespace
 			}
 			if (PlayerBotLadaAdd(ch, state, shop, line, now, junk))
 				return 1;
-			if ((int)shop->GetItems().size() >= c.cap || (int)s_kPlayerBotLadaWorld.botLines >= c.worldCap)
+			if ((c.cap > 0 && (int)shop->GetItems().size() >= c.cap) || (int)s_kPlayerBotLadaWorld.allLines >= c.worldCap)
 				return -1;
 			return 0;
 		};
@@ -708,6 +765,234 @@ namespace
 		L.opItem = 0;
 	}
 
+	// ------------------------------------------------------------------------------------------------ the safebox
+	// MT2009_PLUS_BOT_LADA_BOX_V1 (the owner, 8 November 2026: why is the safebox not emptied down to the spare gear?):
+	// a bot with a stand standing (IsPlayerBotLadaBoxKeeper - the lada's own test: any channel unless
+	// m2_bot_lada_xch_off) takes the lada's goods out of its safebox at a storekeeper's visit (WithdrawPlayerBotLadaBox,
+	// after the box's own withdrawal, the horse bags' review and before the G0 dust; the engine loads a safebox only
+	// through the DB core's answer to a load at the keeper, so not remotely) and the lada's next pass, brought forward to
+	// a minute away, lists them as it lists the bag. What stays in the box:
+	//   * every weapon and armour piece - the spare gear: the element and resistance sets, the second set
+	//     (IsPlayerBotSecondSetStored), the map gear and the families Iwakura's list keeps, the buff set; the box's own
+	//     rules (lpp_released, own_gear, spare_goods, stalki) still take out the gear they let go of;
+	//   * what is no lada kind (IsPlayerBotLadaKindItem: soul and dragon stones, shards, Cors, Materialy Rzemieslnicze,
+	//     chests, medals, SM coupons, refine scrolls, mission books, rare goods, belts, sashes, talismans, costumes,
+	//     potions, policy items), the treasure keys (kept for a chest that may drop), the G0 package's dust;
+	//   * of every kind, its keep: the units the box holds stay while bag keep + box < the largest keep of the kind -
+	//     the anvil's reserve, the herb's, the counter's (GetPlayerBotStallBaseKeep / the books' counted keep), the scarce
+	//     materials' (mats_flow, the Biologist's share), the belts' - a stack comes out only when the rest covers it;
+	//   * a kind the deposit put down in the last PLAYERBOT_SAFEBOX_PINGPONG_MS, and a kind this visit put down.
+	// Into a bag that stays clear of the pressure the deposit waits for; at most m2_bot_lada_box_stacks (12) stacks a
+	// visit and m2_bot_lada_box_rate (120) a minute a core; a bot calls for it every m2_bot_lada_box_gap_min (30)
+	// minutes while its box holds goods (3 h once it holds none), never a companion, never while gambling. The herbs'
+	// deposit (CollectPlayerBotSafeboxHerbs) no longer puts a stand keeper's spare herbs down while its bag is clear of
+	// pressure - they are the lada's (m2_bot_lada_box_off 1: all of it off).
+	const DWORD PLAYERBOT_LADA_BOX_EMPTY_GAP_MS = 3 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_LADA_BOX_PASS_SOON_MS = 60 * 1000;
+
+	struct TPlayerBotLadaBox
+	{
+		DWORD nextAt = 0;
+		int left = -1;	// the goods' stacks the last visit left in the box, -1 not looked yet
+	};
+	std::unordered_map<DWORD, TPlayerBotLadaBox> s_mapPlayerBotLadaBox;
+
+	bool IsPlayerBotLadaBoxKeeper(LPCHARACTER ch)
+	{
+		const TPlayerBotLadaCfg& c = GetPlayerBotLadaCfg();
+		if (!c.on || !c.box || !ch || !ch->GetDesc() || !ch->GetDesc()->IsBot() || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				IsPlayerBotSidekickServing(ch))
+			return false;
+		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+		return shop && shop->GetDuration() > 0 && (c.xch || (int)shop->GetSpawn().channel == (int)g_bChannel);
+	}
+
+	// A bag that takes a piece of `size` cells and stays clear of the deposit's pressure.
+	bool IsPlayerBotLadaBoxBagClear(LPCHARACTER ch, int size)
+	{
+		const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - std::max(1, size);
+		return freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
+				(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
+	}
+
+	// The storekeeper's errand for it (playerbot_town.h, the visit's bTownNeedSafebox).
+	bool PlayerBotWantsLadaBox(LPCHARACTER ch, DWORD now)
+	{
+		if (!IsPlayerBotLadaBoxKeeper(ch) || ch->GetQuestFlag(PLAYERBOT_SAFEBOX_PAID_FLAG) <= 0 ||
+				IsPlayerBotSafeboxIdle(ch->GetPlayerID(), now))
+			return false;
+		TPlayerBotLadaBox& b = s_mapPlayerBotLadaBox[ch->GetPlayerID()];
+		if (b.nextAt == 0)
+		{
+			// the first call spread over the gap by the bot's id, so a core's keepers do not all walk to the keeper at once
+			const DWORD gap = (DWORD)GetPlayerBotLadaCfg().boxGapMin * 60000U;
+			b.nextAt = now + 60000U + (DWORD)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x424F5841U) % gap);
+			return false;
+		}
+		// the gap does the pacing: 30 minutes while the box held goods, 3 h after a visit that found none
+		return (int)(now - b.nextAt) >= 0 && IsPlayerBotLadaBoxBagClear(ch, 3);
+	}
+
+	// The goods of the box for the lada, whole stacks: is this one, and is it over the kind's keep?
+	bool IsPlayerBotLadaBoxGoods(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR || item->GetType() == ITEM_TREASURE_KEY)
+			return false;
+#ifdef ENABLE_SOULBIND_SYSTEM
+		if (item->IsSealed())
+			return false;
+#endif
+		if (IsPlayerBotG0BoxDust(ch, item) || IsPlayerBotBuffSetPiece(ch, item))
+			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return false;
+#endif
+		return IsPlayerBotLadaKindItem(item);
+	}
+
+	int GetPlayerBotLadaBoxKeep(LPCHARACTER ch, LPITEM item, int& stallKeep)
+	{
+		const bool counted = IsPlayerBotCountedSingleGoods(item);
+		stallKeep = counted ? GetPlayerBotCountedGoodsKeep(ch, item) : GetPlayerBotStallBaseKeep(ch, item);
+		int keep = std::max(stallKeep, GetPlayerBotMatsScarceKeep(ch, item->GetVnum()));
+		if (IsPlayerBotMatsBeltVnum(item->GetVnum()))
+			keep = std::max(keep, GetPlayerBotMatsBeltKeep(ch, item));
+		if (IsPlayerBotHerbalismHerb(item->GetVnum()))
+			keep = std::max(keep, GetPlayerBotHerbKeep(ch, item->GetVnum()));
+		return keep;
+	}
+
+	// The core's bucket of stacks taken out (m2_bot_lada_box_rate a minute).
+	bool PlayerBotLadaBoxBudget(DWORD now)
+	{
+		static double s_tokens = 0;
+		static DWORD s_at = 0;
+		const double perMs = GetPlayerBotLadaCfg().boxRate / 60000.0;
+		const double cap = std::max(1.0, GetPlayerBotLadaCfg().boxRate / 4.0);
+		if (s_at == 0)
+		{
+			s_at = now ? now : 1;
+			s_tokens = cap;
+		}
+		s_tokens = std::min(cap, s_tokens + (double)(now - s_at) * perMs);
+		s_at = now ? now : 1;
+		if (s_tokens < 1.0)
+			return false;
+		s_tokens -= 1.0;
+		return true;
+	}
+
+	int WithdrawPlayerBotLadaBox(LPCHARACTER ch, CSafebox* box, const std::set<DWORD>* pJustDeposited, bool gambling)
+	{
+		if (!ch || !box || gambling || !IsPlayerBotLadaBoxKeeper(ch))
+			return 0;
+		const TPlayerBotLadaCfg& c = GetPlayerBotLadaCfg();
+		TPlayerBotLadaCensus& k = s_kPlayerBotLadaCensus;
+		const DWORD pid = ch->GetPlayerID();
+		const DWORD now = get_dword_time();
+		++k.boxVisits;
+		// what the box holds of each kind (the keep is weighed against it)
+		std::map<DWORD, long long> inBox;
+		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM; ++pos)
+		{
+			LPITEM item = box->IsValidPosition(pos) ? box->Get(pos) : NULL;
+			if (item)
+				inBox[item->GetVnum()] += std::max<int>(1, (int)item->GetCount());
+		}
+		int taken = 0, left = 0;
+		unsigned long long units = 0;
+		bool stopped = false;
+		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM; ++pos)
+		{
+			LPITEM item = box->IsValidPosition(pos) ? box->Get(pos) : NULL;
+			if (!item || !IsPlayerBotLadaBoxGoods(ch, item))
+				continue;
+			const DWORD vnum = item->GetVnum();
+			if ((pJustDeposited && pJustDeposited->count(vnum)) ||
+					WasPlayerBotBoxMovedRecently(s_mapPlayerBotBoxPutAt, pid, vnum, now))
+			{
+				++left;	// the deposit's, for now: the next visit's
+				continue;
+			}
+			const long long count = std::max<int>(1, (int)item->GetCount());
+			int stallKeep = 0;
+			const int keep = GetPlayerBotLadaBoxKeep(ch, item, stallKeep);
+			if (inBox[vnum] - count < (long long)std::max(0, keep - stallKeep))
+			{
+				++k.boxKept;
+				continue;
+			}
+			if (stopped)
+			{
+				++left;
+				continue;
+			}
+			if (taken >= c.boxStacks)
+			{
+				stopped = true;
+				++left;
+				continue;
+			}
+			const int cell = IsPlayerBotLadaBoxBagClear(ch, item->GetSize()) ? ch->GetEmptyInventory(item->GetSize()) : -1;
+			if (cell < 0)
+			{
+				++k.boxRoom;
+				stopped = true;
+				++left;
+				continue;
+			}
+			if (!PlayerBotLadaBoxBudget(now))
+			{
+				++k.boxRate;
+				stopped = true;
+				++left;
+				continue;
+			}
+			char szHint[128];
+			snprintf(szHint, sizeof(szHint), "%s %u", item->GetName(), (unsigned int)item->GetCount());
+			box->Remove(pos);
+			item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)cell));
+			FlushPlayerBotItemRow(item);	// the row now, as CInputMain::SafeboxCheckout writes it (WithdrawPlayerBotSafebox)
+			LogManager::instance().ItemLog(ch, item, "SAFEBOX GET", szHint);
+			NotePlayerBotBoxMove(s_mapPlayerBotBoxTakenAt, pid, vnum, now);
+			inBox[vnum] -= count;
+			++taken;
+			units += (unsigned long long)count;
+			PlayerBotLogThrottled("lada_box_take", now,
+					"PLAYERBOT_LADA: box take pid=%u name=%s vnum=%u count=%lld keep=%d stall_keep=%d box_left_kind=%lld free_cells=%d ch=%u",
+					pid, ch->GetName(), vnum, count, keep, stallKeep, inBox[vnum], CountPlayerBotFreeInventoryCells(ch),
+					(unsigned int)g_bChannel);
+		}
+		k.boxTaken += (unsigned int)taken;
+		k.boxUnits += units;
+		k.boxLeft += (unsigned int)left;
+		TPlayerBotLadaBox& b = s_mapPlayerBotLadaBox[pid];
+		b.left = left;
+		b.nextAt = now + (left > 0 ? (DWORD)c.boxGapMin * 60000U : PLAYERBOT_LADA_BOX_EMPTY_GAP_MS);
+		if (taken > 0)
+		{
+			// the lada's next pass lists them, a minute away
+			TPlayerBotLada& L = s_mapPlayerBotLada[pid];
+			if (!L.active && (L.nextPass == 0 || (int)(L.nextPass - (now + PLAYERBOT_LADA_BOX_PASS_SOON_MS)) > 0))
+				L.nextPass = now + PLAYERBOT_LADA_BOX_PASS_SOON_MS;
+			PlayerBotLogThrottled("lada_box_visit", now,
+					"PLAYERBOT_LADA: box visit pid=%u name=%s taken=%d units=%llu left=%d next_min=%u",
+					pid, ch->GetName(), taken, units, left, (unsigned int)((b.nextAt - now) / 60000U));
+		}
+		return taken;
+	}
+
+	// The herbs' deposit of a stand keeper with a bag clear of pressure: none - its spare herbs are the lada's.
+	bool IsPlayerBotLadaHerbDepositHeld(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotLadaBoxKeeper(ch) || IsPlayerBotBagFull(ch) ||
+				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS)
+			return false;
+		++s_kPlayerBotLadaCensus.boxDepositHeld;
+		return true;
+	}
+
 	// ------------------------------------------------------------------------------------------------ the core
 	struct TPlayerBotLadaTierEdit
 	{
@@ -730,100 +1015,262 @@ namespace
 				continue;
 			++w.botShops;
 			w.botLines += lines;
+			unsigned int lada = 0;
+			unsigned long long units = 0;
+			for (const auto& [id, line] : shop->GetItems())
+				if (line)
+				{
+					units += line->GetInfo().count;
+					if ((int)line->GetInfo().pos >= PLAYERBOT_LADA_POS_BASE)
+						++lada;
+				}
+			w.botUnits += units;
+			w.ladaLines += lada;
 			if (lines > w.maxLines)
 			{
 				w.maxLines = lines;
 				w.maxOwner = shop->GetOwnerPID();
+				w.maxLada = lada;
+				w.maxUnits = units;
 			}
-			for (const auto& [id, line] : shop->GetItems())
-				if (line)
-				{
-					w.botUnits += line->GetInfo().count;
-					if ((int)line->GetInfo().pos >= PLAYERBOT_LADA_POS_BASE)
-						++w.ladaLines;
-				}
 		}
 		s_kPlayerBotLadaWorld = w;
 	}
 
-	// The glut's tiers (playerbot_market_clearing.h): on the shop channel's cores, every PLAYERBOT_LADA_TIER_MS.
-	void RankPlayerBotLadaTiers(DWORD now)
+	// ------------------------------------------------------------------------------------------------ the shared tiers
+	// MT2009_PLUS_BOT_LADA_TIER_XCH_V1 (playerbot_market_clearing.h): the glut's kinds and clearing asks, one writer.
+	const DWORD PLAYERBOT_LADA_TIER_RANK_MS = 60 * 1000;		// every core ranks the lines this often (the edits every TIER_MS)
+	const unsigned int PLAYERBOT_LADA_TIER_SHARED_MAX_AGE_S = 15 * 60;	// a writer's rows older than this are let go
+	const size_t PLAYERBOT_LADA_TIER_ROWS_A_QUERY = 80;	// DBManager::Query formats into 4096 bytes: ~41 a row
+
+	struct TPlayerBotLadaTierShared
+	{
+		bool writer = false, tableReady = false;
+		const char* source = "none";	// own (the writer), shared (read), none
+		unsigned int kinds = 0, writerPort = 0;
+		DWORD readAt = 0;
+	};
+	TPlayerBotLadaTierShared s_kPlayerBotLadaTierShared;
+
+	// The writer is one core of the shop channel, the same answer on every core from the full copy: the core hosting
+	// the map of the shop channel's standing stand of the lowest owner pid (a person's or a bot's - every core sees the
+	// same shops; the bots' registry is a core's own).
+	bool IsPlayerBotLadaTierWriter()
+	{
+		if (g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+			return false;
+		DWORD lowest = 0;
+		int map = 0;
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+			if (shop && shop->GetDuration() > 0 && (int)shop->GetSpawn().channel == playerbot_channel_rules::SHOP_CHANNEL &&
+					(lowest == 0 || shop->GetOwnerPID() < lowest))
+			{
+				lowest = shop->GetOwnerPID();
+				map = shop->GetSpawn().map;
+			}
+		return lowest != 0 && IsPlayerBotMapHostedHere(map);
+	}
+
+	bool EnsurePlayerBotLadaTierTable()
+	{
+		TPlayerBotLadaTierShared& s = s_kPlayerBotLadaTierShared;
+		if (s.tableReady)
+			return true;
+		std::unique_ptr<SQLMsg> create(DBManager::instance().DirectQuery(
+				"CREATE TABLE IF NOT EXISTS player.playerbot_lada_tier ("
+				"vnum INT UNSIGNED NOT NULL PRIMARY KEY, "
+				"clear_unit INT UNSIGNED NOT NULL DEFAULT 0, "
+				"port SMALLINT UNSIGNED NOT NULL DEFAULT 0, "
+				"updated INT UNSIGNED NOT NULL DEFAULT 0, "
+				"KEY updated (updated)) ENGINE=InnoDB"));
+		s.tableReady = create && create->Get();
+		return s.tableReady;
+	}
+
+	// The writer's rows: every glutted kind of its clearing, stamped; what it no longer clears goes (async, in order).
+	void PublishPlayerBotLadaTiers(const std::unordered_map<DWORD, DWORD>& glut)
+	{
+		if (!EnsurePlayerBotLadaTierTable())
+			return;
+		const unsigned int stamp = (unsigned int)get_global_time();
+		std::string rows;
+		size_t n = 0;
+		auto flush = [&]() {
+			if (rows.empty())
+				return;
+			DBManager::instance().Query("REPLACE INTO player.playerbot_lada_tier (vnum, clear_unit, port, updated) VALUES %s",
+					rows.c_str());
+			rows.clear();
+			n = 0;
+		};
+		for (const auto& [vnum, unit] : glut)
+		{
+			char row[96];
+			snprintf(row, sizeof(row), "%s(%u,%u,%u,%u)", rows.empty() ? "" : ",", vnum, unit, (unsigned int)mother_port, stamp);
+			rows += row;
+			if (++n >= PLAYERBOT_LADA_TIER_ROWS_A_QUERY)
+				flush();
+		}
+		flush();
+		DBManager::instance().Query("DELETE FROM player.playerbot_lada_tier WHERE updated < %u", stamp);
+		++s_kPlayerBotLadaCensus.tierPublished;
+	}
+
+	// Every other core: the writer's rows, fresh ones only (a writer gone leaves no tiers rather than old ones).
+	bool ReadPlayerBotLadaTiers(std::unordered_map<DWORD, DWORD>& glut)
+	{
+		glut.clear();
+		if (!EnsurePlayerBotLadaTierTable())
+			return false;
+		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+				"SELECT vnum, clear_unit, port FROM player.playerbot_lada_tier WHERE updated >= %u AND clear_unit > 0",
+				(unsigned int)get_global_time() - PLAYERBOT_LADA_TIER_SHARED_MAX_AGE_S));
+		if (!msg || !msg->Get())
+			return false;
+		if (msg->Get()->uiNumRows > 0)
+		{
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				DWORD vnum = 0, unit = 0;
+				unsigned int port = 0;
+				str_to_number(vnum, row[0]);
+				str_to_number(unit, row[1]);
+				str_to_number(port, row[2]);
+				if (vnum && unit)
+					glut[vnum] = unit;
+				s_kPlayerBotLadaTierShared.writerPort = port;
+			}
+		}
+		return true;
+	}
+
+	// The tiers' input, every PLAYERBOT_LADA_TIER_MS: the writer's own clearing (published), or the writer's rows.
+	void RefreshPlayerBotLadaTierInput(DWORD now)
+	{
+		TPlayerBotLadaTierShared& s = s_kPlayerBotLadaTierShared;
+		TPlayerBotLadaCensus& k = s_kPlayerBotLadaCensus;
+		std::unordered_map<DWORD, DWORD> glut;
+		s.writer = IsPlayerBotLadaTierWriter();
+		if (s.writer)
+		{
+			if (s_bPlayerBotLadaTiers)
+				for (const auto& [vnum, kind] : s_mapPlayerBotClear)
+					if (kind.clearUnit != 0)
+						glut[vnum] = kind.clearUnit;
+			PublishPlayerBotLadaTiers(glut);
+			s.source = "own";
+			s.writerPort = (unsigned int)mother_port;
+		}
+		else if (s_bPlayerBotLadaTiers)
+		{
+			if (ReadPlayerBotLadaTiers(glut))
+			{
+				++k.tierRead;
+				s.source = glut.empty() ? "none" : "shared";
+			}
+			else
+			{
+				++k.tierReadFailed;
+				glut = s_mapPlayerBotLadaTierClear;	// the last read stands until a read works
+			}
+		}
+		else
+			s.source = "none";
+		s.kinds = (unsigned int)glut.size();
+		s.readAt = now ? now : 1;
+		s_mapPlayerBotLadaTierClear.swap(glut);
+	}
+
+	// The glut's tiers (playerbot_market_clearing.h): every core of every channel ranks the shop channel's stands' lines
+	// of the shared glutted kinds every PLAYERBOT_LADA_TIER_RANK_MS (the same lines, the same input: the same tiers
+	// everywhere), and every PLAYERBOT_LADA_TIER_MS queues the edits of the stands this core hosts.
+	void RankPlayerBotLadaTiers(DWORD now, bool queueEdits)
 	{
 		TPlayerBotLadaCensus& k = s_kPlayerBotLadaCensus;
 		std::unordered_map<DWORD, WORD> tiers;
 		std::unordered_map<DWORD, DWORD> owners;
-		if (s_bPlayerBotLadaTiers && g_bChannel == playerbot_channel_rules::SHOP_CHANNEL)
+		std::unordered_map<DWORD, TPlayerBotLadaTierCurve> curves;
+		if (s_bPlayerBotLadaTiers && !s_mapPlayerBotLadaTierClear.empty())
 		{
-			std::set<DWORD> glut;
-			for (const auto& [vnum, kind] : s_mapPlayerBotClear)
-				if (kind.clearUnit != 0)
-					glut.insert(vnum);
-			if (!glut.empty())
+			struct TLine { unsigned long long unitMilli; DWORD id, count, owner; };
+			std::map<DWORD, std::vector<TLine> > byKind;
+			for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
 			{
-				struct TLine { unsigned long long unitMilli; DWORD id, count, owner; };
-				std::map<DWORD, std::vector<TLine> > byKind;
-				for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+				if (!shop || shop->GetDuration() == 0 || (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL)
+					continue;
+				for (const auto& [id, line] : shop->GetItems())
 				{
-					if (!shop || shop->GetDuration() == 0 || (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL)
+					if (!line || line->GetInfo().count == 0 || !s_mapPlayerBotLadaTierClear.count(line->GetInfo().vnum))
 						continue;
-					for (const auto& [id, line] : shop->GetItems())
-					{
-						if (!line || !glut.count(line->GetInfo().vnum) || line->GetInfo().count == 0)
-							continue;
-						const long long yang = (long long)line->GetPrice().GetTotalYangAmount();
-						if (yang <= 0)
-							continue;
-						byKind[line->GetInfo().vnum].push_back(TLine{ (unsigned long long)yang * 1000ULL / line->GetInfo().count, id,
-								(DWORD)line->GetInfo().count, shop->GetOwnerPID() });
-					}
+					const long long yang = (long long)line->GetPrice().GetTotalYangAmount();
+					if (yang <= 0)
+						continue;
+					byKind[line->GetInfo().vnum].push_back(TLine{ (unsigned long long)yang * 1000ULL / line->GetInfo().count, id,
+							(DWORD)line->GetInfo().count, shop->GetOwnerPID() });
 				}
-				for (auto& [vnum, lines] : byKind)
+			}
+			for (auto& [vnum, lines] : byKind)
+			{
+				std::sort(lines.begin(), lines.end(), [](const TLine& a, const TLine& b) {
+					return a.unitMilli != b.unitMilli ? a.unitMilli < b.unitMilli : a.id < b.id; });
+				TPlayerBotLadaTierCurve& curve = curves[vnum];
+				curve.unitMilli.reserve(lines.size());
+				curve.unitsTo.reserve(lines.size());
+				unsigned long long units = 0;
+				for (const TLine& l : lines)
 				{
-					std::sort(lines.begin(), lines.end(), [](const TLine& a, const TLine& b) {
-						return a.unitMilli != b.unitMilli ? a.unitMilli < b.unitMilli : a.id < b.id; });
-					unsigned long long units = 0;
-					for (const TLine& l : lines)
-						units += l.count;
-					if (units == 0)
-						continue;
+					units += l.count;
+					curve.unitMilli.push_back(l.unitMilli);
+					curve.unitsTo.push_back(units);
+				}
+				curve.units = units;
+				if (units == 0)
+					continue;
+				if (queueEdits)
 					++k.tierKinds;
-					unsigned long long before = 0;
-					for (const TLine& l : lines)
-					{
-						const unsigned long long share = before * 1000ULL / units;
-						before += l.count;
-						if (share >= 200)
-							break;
-						tiers[l.id] = share < 100 ? 950 : 970;
-						owners[l.id] = l.owner;
-						if (share < 100)
-							++k.tier1;
-						else
-							++k.tier2;
-					}
+				unsigned long long before = 0;
+				for (const TLine& l : lines)
+				{
+					const unsigned long long share = before * 1000ULL / units;
+					before += l.count;
+					if (share >= 200)
+						break;
+					tiers[l.id] = share < 100 ? 950 : 970;
+					owners[l.id] = l.owner;
+					if (!queueEdits)
+						continue;
+					if (share < 100)
+						++k.tier1;
+					else
+						++k.tier2;
 				}
 			}
 		}
-		// The bot lines of the stands this core hosts whose tier came or went (or stays: the clearing ask moves) are
-		// edited to their target.
-		CPlayerBotManager& bots = CPlayerBotManager::instance();
-		auto queue = [&](DWORD id, DWORD owner) {
-			if (!bots.IsRegisteredBotPID(owner) || IsPlayerBotSidekickPID(owner))
-				return;
-			auto shop = ikashop::GetManager().GetShopByOwnerID(owner);
-			if (!shop || (int)shop->GetSpawn().channel != (int)g_bChannel || !IsPlayerBotMapHostedHere(shop->GetSpawn().map))
-				return;
-			s_dequePlayerBotLadaTierEdits.push_back(TPlayerBotLadaTierEdit{ owner, id });
-		};
-		s_dequePlayerBotLadaTierEdits.clear();
-		for (const auto& [id, owner] : owners)
-			queue(id, owner);
-		for (const auto& [id, owner] : s_mapPlayerBotLadaTierOwner)
-			if (!owners.count(id))
+		if (queueEdits)
+		{
+			// The bot lines of the stands this core hosts whose tier came or went (or stays: the clearing ask moves)
+			// are edited to their target - by this core alone: the stand's host, as before.
+			CPlayerBotManager& bots = CPlayerBotManager::instance();
+			auto queue = [&](DWORD id, DWORD owner) {
+				if (!bots.IsRegisteredBotPID(owner) || IsPlayerBotSidekickPID(owner))
+					return;
+				auto shop = ikashop::GetManager().GetShopByOwnerID(owner);
+				if (!shop || (int)shop->GetSpawn().channel != (int)g_bChannel || !IsPlayerBotMapHostedHere(shop->GetSpawn().map))
+					return;
+				s_dequePlayerBotLadaTierEdits.push_back(TPlayerBotLadaTierEdit{ owner, id });
+			};
+			s_dequePlayerBotLadaTierEdits.clear();
+			for (const auto& [id, owner] : owners)
 				queue(id, owner);
+			for (const auto& [id, owner] : s_mapPlayerBotLadaTierOwner)
+				if (!owners.count(id))
+					queue(id, owner);
+			s_mapPlayerBotLadaTierOwner.swap(owners);
+			++k.tierPasses;
+		}
 		s_mapPlayerBotLadaTier.swap(tiers);
-		s_mapPlayerBotLadaTierOwner.swap(owners);
-		++k.tierPasses;
+		s_mapPlayerBotLadaTierCurve.swap(curves);
 		(void)now;
 	}
 
@@ -887,6 +1334,19 @@ namespace
 				(unsigned long long)playerbot_offline::ladaSoldParts, playerbot_offline::ladaSoldYang, k.tierPasses, k.tierKinds,
 				k.tier1, k.tier2, (unsigned int)s_mapPlayerBotLadaTier.size(), k.tierLooked, k.tierEdits,
 				s_uPlayerBotLadaTierPriced, (unsigned int)s_dequePlayerBotLadaTierEdits.size());
+		// MT2009_PLUS_BOT_LADA_NOCAP_V1 / _VIEW_V1 / _TIER_XCH_V1 / _BOX_V1: the second line (the log's lines end at 1 KB) -
+		// the biggest counter, what the stand windows carried, the shared tiers, the safebox's goods.
+		sys_log(0, "PLAYERBOT_LADA: census2 ch=%u max_lines=%u max_lada_lines=%u max_units=%llu max_owner=%u cap=%d world_lines=%u "
+				"world_cap=%d view_max_sent=%u view_max_held=%u views=%llu view_hidden=%llu view_refresh_skipped=%llu tier_src=%s "
+				"tier_writer=%d tier_writer_port=%u tier_kinds_shared=%u tier_published=%u tier_read=%u tier_read_failed=%u "
+				"new_looked=%u new_tier=%u ch2_tier_hits=%u box_visits=%u box_taken=%u box_units=%llu box_kept=%u box_room=%u "
+				"box_rate=%u box_left=%u box_deposit_held=%u",
+				(unsigned int)g_bChannel, w.maxLines, w.maxLada, w.maxUnits, w.maxOwner, c.cap, w.allLines, c.worldCap,
+				ikashop_lada_view::maxSent, ikashop_lada_view::maxHeld, ikashop_lada_view::views, ikashop_lada_view::hidden,
+				ikashop_lada_view::refreshSkipped, s_kPlayerBotLadaTierShared.source, s_kPlayerBotLadaTierShared.writer ? 1 : 0,
+				s_kPlayerBotLadaTierShared.writerPort, s_kPlayerBotLadaTierShared.kinds, k.tierPublished, k.tierRead,
+				k.tierReadFailed, s_uPlayerBotLadaNewLooked, k.newTier, k.newTierCh2, k.boxVisits, k.boxTaken, k.boxUnits,
+				k.boxKept, k.boxRoom, k.boxRate, k.boxLeft, k.boxDepositHeld);
 		// The kinds of the most bot lines: lines, units, bots, the lada's lines of them, the tier lines.
 		struct TKind { unsigned int lines = 0, lada = 0, owners = 0, tiered = 0; unsigned long long units = 0; DWORD lastOwner = 0; };
 		std::map<DWORD, TKind> kinds;
@@ -928,13 +1388,16 @@ namespace
 		playerbot_offline::ladaSoldYang = 0;
 		s_uPlayerBotLadaTierPriced = 0;
 		s_uPlayerBotLadaRemoteRefused = 0;
+		s_uPlayerBotLadaNewLooked = 0;
+		ikashop_lada_view::maxSent = ikashop_lada_view::maxHeld = 0;
+		ikashop_lada_view::views = ikashop_lada_view::hidden = ikashop_lada_view::refreshSkipped = 0;
 		(void)now;
 	}
 
 	// The core's clocks, from any bot's tick.
 	void ManagePlayerBotLadaCore(DWORD now)
 	{
-		static DWORD s_dwAt = 0, s_dwWorld = 0, s_dwTier = 0, s_dwCensus = 0;
+		static DWORD s_dwAt = 0, s_dwWorld = 0, s_dwTier = 0, s_dwRank = 0, s_dwCensus = 0;
 		if (s_dwAt != 0 && now - s_dwAt < 1000)
 			return;
 		s_dwAt = now ? now : 1;
@@ -944,13 +1407,21 @@ namespace
 			s_dwWorld = now ? now : 1;
 			CountPlayerBotLadaWorld();
 		}
-		// The tiers on (and off: the lines edited back once), on the shop channel's cores.
-		if (g_bChannel == playerbot_channel_rules::SHOP_CHANNEL &&
-				(s_dwTier == 0 || now - s_dwTier >= PLAYERBOT_LADA_TIER_MS) &&
-				(c.tiers || !s_mapPlayerBotLadaTier.empty() || !s_mapPlayerBotLadaTierOwner.empty()))
+		// The tiers on (and off: the lines edited back once), on every core of every channel
+		// (MT2009_PLUS_BOT_LADA_TIER_XCH_V1): the input (published by the writer, read by the others) and the ranking
+		// with the edits every PLAYERBOT_LADA_TIER_MS, the ranking alone every PLAYERBOT_LADA_TIER_RANK_MS between them.
+		const bool tierWork = c.tiers || !s_mapPlayerBotLadaTier.empty() || !s_mapPlayerBotLadaTierOwner.empty() ||
+				!s_mapPlayerBotLadaTierClear.empty() || s_kPlayerBotLadaTierShared.writer;
+		if (tierWork && (s_dwTier == 0 || now - s_dwTier >= PLAYERBOT_LADA_TIER_MS))
 		{
-			s_dwTier = now ? now : 1;
-			RankPlayerBotLadaTiers(now);
+			s_dwTier = s_dwRank = now ? now : 1;
+			RefreshPlayerBotLadaTierInput(now);
+			RankPlayerBotLadaTiers(now, true);
+		}
+		else if (tierWork && now - s_dwRank >= PLAYERBOT_LADA_TIER_RANK_MS)
+		{
+			s_dwRank = now ? now : 1;
+			RankPlayerBotLadaTiers(now, false);
 		}
 		if (!s_dequePlayerBotLadaTierEdits.empty())
 			PumpPlayerBotLadaTierEdits(now);

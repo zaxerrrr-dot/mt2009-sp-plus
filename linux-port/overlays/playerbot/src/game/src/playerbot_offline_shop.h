@@ -2728,13 +2728,10 @@ namespace {
         {
             const int tier = operatorPriced || preview->GetRefineLevel() > 0 ? 0 : GetPlayerBotLadaTierPermille(id);
             if (tier > 0 && tier < 1000) {
-                const long long count = std::max<long long>(1, (long long)preview->GetCount());
-                long long anchor = asking;
-                const DWORD clearUnit = GetPlayerBotClearingUnit(preview->GetVnum());
-                if (clearUnit > 0) anchor = std::min(anchor, (long long)clearUnit * count);
-                const long long merchant = (long long)GetPlayerBotClearingFloorUnit(preview->GetVnum()) * count;
-                // never dearer than the ordinary ask (a cheap kind under the merchant's floor keeps its own)
-                const long long tierPrice = std::min(std::max(1LL, asking), std::max(std::max(1LL, merchant), anchor * tier / 1000));
+                // never dearer than the ordinary ask (a cheap kind under the merchant's floor keeps its own); the
+                // clearing ask is the one every core shares (MT2009_PLUS_BOT_LADA_TIER_XCH_V1)
+                const long long tierPrice = GetPlayerBotLadaTierPrice(preview->GetVnum(), (long long)preview->GetCount(),
+                        asking, tier);
                 out.price = tierPrice;
                 out.floor = std::min(out.floor, tierPrice);
                 ++s_uPlayerBotLadaTierPriced;

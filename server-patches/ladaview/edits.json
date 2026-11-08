@@ -1,0 +1,74 @@
+[
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (include)",
+  "old": "#include \"ikashop_qol.h\" // MT2009_PLUS_SHOP_QOL_V2 (include) - Autor: Vekirion (server-patches/shopqol)\n",
+  "new": "#include \"ikashop_qol.h\" // MT2009_PLUS_SHOP_QOL_V2 (include) - Autor: Vekirion (server-patches/shopqol)\n#include \"ikashop_lada_view.h\" // MT2009_PLUS_BOT_LADA_VIEW_V1 (include) (server-patches/ladaview)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (open)",
+  "old": "\tvoid CShopManager::SendShopOpenClientPacket(LPCHARACTER ch, ikashop::CShop* shop)\n\t{\n\t\tif (!ch->GetDesc())\n\t\t\treturn;\n",
+  "new": "\tvoid CShopManager::SendShopOpenClientPacket(LPCHARACTER ch, ikashop::CShop* shop)\n\t{\n\t\tif (!ch->GetDesc())\n\t\t\treturn;\n\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (open): nothing built for a bot (DESC::Packet drops it), and below only the\n\t\t// lines of the window's pages - a bot's counter has no number of lines (ikashop_lada_view.h)\n\t\tif (ch->GetDesc()->IsBot())\n\t\t\treturn;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (open size)",
+  "old": "\t\tpack.subheader\t= SUBHEADER_GC_SHOP_OPEN;\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopOpen) + sizeof(TShopItem)* items.size();\n",
+  "new": "\t\tpack.subheader\t= SUBHEADER_GC_SHOP_OPEN;\n\t\tconst unsigned int shown = ikashop_lada_view::CountShown(items); // MT2009_PLUS_BOT_LADA_VIEW_V1 (open size)\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopOpen) + sizeof(TShopItem) * shown;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (open count)",
+  "old": "\t\tsubpack.isOwnerOnline = shop->IsOwnerOnline();\n\t\tsubpack.shop.count = shop->GetItems().size();\n",
+  "new": "\t\tsubpack.isOwnerOnline = shop->IsOwnerOnline();\n\t\tsubpack.shop.count = shown; // MT2009_PLUS_BOT_LADA_VIEW_V1 (open count)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (open lines)",
+  "old": "\t\tbuff.write(&pack, sizeof(pack));\n\t\tbuff.write(&subpack, sizeof(subpack));\n\n\t\tfor (auto& [id, item] : items)\n\t\t{\n\t\t\tauto& itemInfo = item->GetInfo();\n\t\t\tbuff.write(&itemInfo, sizeof(itemInfo));\n\t\t}\n",
+  "new": "\t\tbuff.write(&pack, sizeof(pack));\n\t\tbuff.write(&subpack, sizeof(subpack));\n\n\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (open lines): the same lines CountShown counted\n\t\tikashop_lada_view::WriteShown(items, [&buff](const TShopItem& itemInfo) { buff.write(&itemInfo, sizeof(itemInfo)); });\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (owner)",
+  "old": "\t\tauto shop = ch->GetIkarusShop();\n\t\tauto owner = ch->GetPlayerID();\n\n\t\tconst auto& items = shop->GetItems();\n\n\t\tTPacketGCNewIkarusShop pack{};\n\t\tpack.header = HEADER_GC_NEW_OFFLINESHOP;\n\t\tpack.subheader\t= SUBHEADER_GC_SHOP_OPEN_OWNER;\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopOpenOwner) + sizeof(TShopItem) * items.size();\n",
+  "new": "\t\tauto shop = ch->GetIkarusShop();\n\t\tauto owner = ch->GetPlayerID();\n\n\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (owner): nothing built for a bot, and only the lines of the window's pages\n\t\tif (ch->GetDesc()->IsBot())\n\t\t\treturn;\n\t\tconst auto& items = shop->GetItems();\n\t\tconst unsigned int shown = ikashop_lada_view::CountShown(items);\n\n\t\tTPacketGCNewIkarusShop pack{};\n\t\tpack.header = HEADER_GC_NEW_OFFLINESHOP;\n\t\tpack.subheader\t= SUBHEADER_GC_SHOP_OPEN_OWNER;\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopOpenOwner) + sizeof(TShopItem) * shown;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (owner count)",
+  "old": "\t\tsubpack.shop.count = items.size();\n\t\tsubpack.shop.duration = shop->GetDuration();\n\t\tsubpack.shop.ownerid = owner;\n",
+  "new": "\t\tsubpack.shop.count = shown; // MT2009_PLUS_BOT_LADA_VIEW_V1 (owner count)\n\t\tsubpack.shop.duration = shop->GetDuration();\n\t\tsubpack.shop.ownerid = owner;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (owner lines)",
+  "old": "\t\tbuff.write(&subpack, sizeof(subpack));\t\t\n\n\t\tfor (auto& [id, item] : items)\n\t\t{\t\t\t\n\t\t\tauto& itemInfo = item->GetInfo();\n\t\t\tbuff.write(&itemInfo, sizeof(itemInfo));\n\t\t}\n",
+  "new": "\t\tbuff.write(&subpack, sizeof(subpack));\n\n\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (owner lines)\n\t\tikashop_lada_view::WriteShown(items, [&buff](const TShopItem& itemInfo) { buff.write(&itemInfo, sizeof(itemInfo)); });\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (safebox)",
+  "old": "\t\tTPacketGCNewIkarusShop pack{};\n\t\tpack.header = HEADER_GC_NEW_OFFLINESHOP;\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopSafeboxRefresh) + sizeof(TShopPlayerItem) * vec.size();\n\t\tpack.subheader = SUBHEADER_GC_SHOP_SAFEBOX_REFRESH;\n\n\t\tTSubPacketGCShopSafeboxRefresh subpack{};\n\t\tsubpack.itemcount = vec.size();\n",
+  "new": "\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (safebox): nothing built for a bot, and at most SAFEBOX_SEND_MAX items\n\t\tif (ch->GetDesc()->IsBot())\n\t\t\treturn;\n\t\tconst size_t shown = std::min<size_t>(vec.size(), ikashop_lada_view::SAFEBOX_SEND_MAX);\n\t\tTPacketGCNewIkarusShop pack{};\n\t\tpack.header = HEADER_GC_NEW_OFFLINESHOP;\n\t\tpack.size = sizeof(pack) + sizeof(TSubPacketGCShopSafeboxRefresh) + sizeof(TShopPlayerItem) * shown;\n\t\tpack.subheader = SUBHEADER_GC_SHOP_SAFEBOX_REFRESH;\n\n\t\tTSubPacketGCShopSafeboxRefresh subpack{};\n\t\tsubpack.itemcount = shown;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (safebox lines)",
+  "old": "\t\tfor (auto& sitem : vec)\n\t\t{\n\t\t\tauto& info = static_cast<const TShopPlayerItem&>(sitem->GetInfo());\n\t\t\tbuff.write(&info, sizeof(info));\n\t\t}\n",
+  "new": "\t\tfor (size_t i = 0; i < shown; ++i) // MT2009_PLUS_BOT_LADA_VIEW_V1 (safebox lines)\n\t\t{\n\t\t\tauto& info = static_cast<const TShopPlayerItem&>(vec[i]->GetInfo());\n\t\t\tbuff.write(&info, sizeof(info));\n\t\t}\n"
+ },
+ {
+  "file": "ikarus_shop.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (include)",
+  "old": "#include \"ikarus_shop.h\"\n#include \"ikarus_shop_manager.h\"\n",
+  "new": "#include \"ikarus_shop.h\"\n#include \"ikarus_shop_manager.h\"\n#include \"ikashop_lada_view.h\" // MT2009_PLUS_BOT_LADA_VIEW_V1 (include) (server-patches/ladaview)\n"
+ },
+ {
+  "file": "ikarus_shop.cpp",
+  "marker": "MT2009_PLUS_BOT_LADA_VIEW_V1 (add)",
+  "old": "\t\t// forwarding update to guests\n\t\tif (updateGuestView)\n\t\t\t_RefreshViews();\n",
+  "new": "\t\t// forwarding update to guests\n\t\t// MT2009_PLUS_BOT_LADA_VIEW_V1 (add): not for a line past the window's pages, which no view shows\n\t\tif (updateGuestView && !ikashop_lada_view::IsShownPos((int) item.pos))\n\t\t\t++ikashop_lada_view::refreshSkipped;\n\t\telse if (updateGuestView)\n\t\t\t_RefreshViews();\n"
+ }
+]
