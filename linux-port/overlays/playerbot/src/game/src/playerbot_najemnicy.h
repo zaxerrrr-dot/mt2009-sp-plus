@@ -75,6 +75,13 @@
 //   * the dungeons with the owner as leader (ManageNajemnikDungeon): the party bots' dungeon items and fight round the
 //     owner, the Yohara keys by class over the owner's party (ManagePlayerBotYdgItems), never a way out of its own.
 //
+// MT2009_PLUS_NAJEMNICY_V4 - stage 4, the dungeons' mechanics as the bots' runs have them (no engine edit, no client
+// change; server-patches/najemnicy/README.md "Etap 4"): the owner's party is a run of its own to the bots' scripts
+// (a negative run id, never in the runs' registry) - the stage's objective, Meley's roles and rings, Glebie's egg
+// chamber, portals and zones, Swiatynia Wezy's keys, cages, heads and dust, Beran's keys to the owner, Krypta
+// Balathora's player list (ManageNajemnikDungeon); and the owner's party rejoined inside a dungeon after the owner's
+// relog (KeepNajemnikInParty: CParty::Join / Link, the instance's party count kept).
+//
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
 // skarbiec | okno <miejsce> | eq <miejsce> [polecenie] | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> |
@@ -115,6 +122,7 @@ namespace
 	const int NAJEMNICY_LOOT_RANGE = 1200;
 	const int NAJEMNICY_FOLLOW_DISTANCE = 450;
 	const int NAJEMNICY_TELEPORT_DISTANCE = 3000;
+	const int NAJEMNICY_DG_TELEPORT_DISTANCE = 7000;	// MT2009_PLUS_NAJEMNICY_V4: inside a dungeon (the objective's room)
 	const long long NAJEMNICY_DEFAULT_PRICE_H = 5000000LL;
 	const int NAJEMNICY_WARN_MINUTES = 10;
 	const int NAJEMNICY_MIN_LEVEL = 80;
@@ -204,6 +212,9 @@ namespace
 		long holdX = 0;
 		long holdY = 0;
 		bool rejoin = false;
+		// MT2009_PLUS_NAJEMNICY_V4: a dungeon's duty under way (the egg chamber, an NPC across the room, the objective) -
+		// no catch-up beside the owner till then while both stand in one instance (ManageNajemnikDungeon).
+		DWORD dutyUntil = 0;
 	};
 
 	struct TNajemnicyOwner
@@ -771,8 +782,15 @@ namespace
 		LPPARTY party = owner->GetParty();
 		if (party && ch->GetParty() == party)
 			return;
-		if (owner->GetDungeon())
-			return;	// the engine takes no new member inside a dungeon (PERR_DUNGEON); it was in before or follows outside
+		// MT2009_PLUS_NAJEMNICY_V4: inside a dungeon too. The engine's PERR_DUNGEON is the invitation's rule
+		// (CHARACTER::IsPartyJoinableMutableCondition - no stranger brought into a running instance); CParty::Join and
+		// Link check nothing of it. Only a mercenary joins here, only its owner's party, only in the owner's instance -
+		// the owner's relog inside a dungeon left them out (their party went with the logout) and the instance's
+		// bookkeeping is kept below (CDungeon::IncPartyMember, as CHARACTER::SetDungeon counts a member that came in
+		// with its party), so the instance's party count stays even when they leave it.
+		LPDUNGEON dungeon = owner->GetDungeon();
+		if (dungeon && ch->GetMapIndex() != owner->GetMapIndex())
+			return;
 		if (party && party->GetMemberCount() >= PARTY_MAX_MEMBER)
 		{
 			PlayerBotLogThrottled("najemnicy_party_full", dwNow, "NAJEMNICY: the owner's party is full pid=%u name=%s owner=%u",
@@ -786,12 +804,17 @@ namespace
 			party = CPartyManager::instance().CreateParty(owner);
 			if (!party)
 				return;
-			sys_log(0, "NAJEMNICY: made a party for owner=%u name=%s", owner->GetPlayerID(), owner->GetName());
+			if (dungeon)
+				dungeon->IncPartyMember(party, owner);	// the owner was counted alone at its entry (IncMember)
+			sys_log(0, "NAJEMNICY: made a party for owner=%u name=%s dungeon=%ld", owner->GetPlayerID(), owner->GetName(),
+					dungeon ? owner->GetMapIndex() : 0L);
 		}
 		party->Join(ch->GetPlayerID());
 		party->Link(ch);
-		sys_log(0, "NAJEMNICY: joined the owner's party pid=%u name=%s owner=%u members=%d", ch->GetPlayerID(),
-				ch->GetName(), owner->GetPlayerID(), (int)party->GetMemberCount());
+		if (dungeon && ch->GetParty() == party && ch->GetDungeon() == dungeon)
+			dungeon->IncPartyMember(party, ch);	// it was counted alone at its entry (IncMember - the set keeps it once)
+		sys_log(0, "NAJEMNICY: joined the owner's party pid=%u name=%s owner=%u members=%d dungeon=%ld", ch->GetPlayerID(),
+				ch->GetName(), owner->GetPlayerID(), (int)party->GetMemberCount(), dungeon ? owner->GetMapIndex() : 0L);
 	}
 
 	// A character the mercenary may strike: any monster or stone; a character only in a guild war of its own guild.
@@ -1190,35 +1213,70 @@ namespace
 		return map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && IsPlayerBotPartyDungeonMap(map);
 	}
 
-	// The Yohara dungeon run definition of an instance whose items (keys, cogs, stones) the bots' own script handles
-	// round a member list (ManagePlayerBotYdgItems) - Nemere / Razador / Beran / Jotun, Przebudzeni and Szczeliny.
-	// Not Swiatynia Wezy and Glebie, whose item scripts are the bots' run's own (its registered members, its egg
-	// duties, its dust): there the owner does the mechanics and the mercenaries fight.
-	int FindNajemnikYdgDef(long map)
+	// MT2009_PLUS_NAJEMNICY_V4: the bots' run definition of a dungeon's instance (PLAYERBOT_DGRUN_DEFS by its map) whose
+	// leader's objectives and scripts fit a party its owner leads - not the Arezzo ones (the cohort's plan, which the
+	// party pass already plays: seals, the boss's break-off), the Demon Tower, the ship, the Gnolle caves or the Sung Mahi
+	// tower. Glebie by the instance's kind (the weak or the strong Alastor). -1: none.
+	int FindNajemnikDgRunDef(long map, LPDUNGEON d)
 	{
+		if (map < PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+			return -1;
 		const long base = map / 10000;
+		const char* glebie = base == PLAYERBOT_GLEBIE_MAP ? (GetPlayerBotGlebieDKind(d) == 2 ? "glebie_silny" : "glebie_slaby") : NULL;
 		for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
 		{
 			const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[i];
-			if (def.bKind != DGRUN_KIND_YDG || def.lMap != base)
+			if (def.lMap != base || (glebie && (!def.szKey || std::strcmp(def.szKey, glebie) != 0)))
 				continue;
-			const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(def.szKey);
-			if (!y || y->iBoss == YDG_WEZE || y->iBoss == YDG_GLEBIE)
-				return -1;
-			return i;
+			switch (def.bKind)
+			{
+				case DGRUN_KIND_BIBLIO:
+				case DGRUN_KIND_RAZADOR:
+				case DGRUN_KIND_NEMERE:
+				case DGRUN_KIND_SMOK:
+				case DGRUN_KIND_ATLANTYDA:
+				case DGRUN_KIND_MELEY:
+				case DGRUN_KIND_SZC:
+				case DGRUN_KIND_EREBU:
+				case DGRUN_KIND_YDG:
+					return i;
+				default:
+					return -1;
+			}
 		}
 		return -1;
 	}
 
-	// An owner's party in one instance as the bots' item script sees a run (never registered in the runs' registry, so
-	// no planner, monitor, pull or stall of theirs ever touches it): the owner's mercenaries there, then the owner -
-	// a key of the wrong class goes to a mercenary of the right one, or to the owner.
+	// The Yohara dungeon run definition of an instance whose items (keys, cogs, stones, stars) and scripts the bots' own
+	// item pass handles round a member list (ManagePlayerBotYdgItems) - Nemere / Razador / Beran / Jotun, Przebudzeni and
+	// Szczeliny, and (MT2009_PLUS_NAJEMNICY_V4) Swiatynia Wezy (its keys, cages, heads - ManagePlayerBotWezeItems) and
+	// Glebie (the egg chamber's duty and its portals - ManagePlayerBotGlebieBot, with the record below).
+	int FindNajemnikYdgDef(long map, LPDUNGEON d)
+	{
+		const int i = FindNajemnikDgRunDef(map, d);
+		if (i < 0 || PLAYERBOT_DGRUN_DEFS[i].bKind != DGRUN_KIND_YDG || !FindPlayerBotYdgDef(PLAYERBOT_DGRUN_DEFS[i].szKey))
+			return -1;
+		return i;
+	}
+
+	// MT2009_PLUS_NAJEMNICY_V4: an owner's party's own id among the runs' records - negative, so it is never a bots' run
+	// (their ids count up from 1) and never in the runs' registry (no planner, monitor, pull, stall or member lookup of
+	// theirs ever finds it: FPlayerBotDgRunThreat and IsPlayerBotDgRunMemberOf see no member of it).
+	int GetNajemnicyDgRunId(DWORD ownerPid)
+	{
+		return -1 - (int)(ownerPid & 0x3fffffffU);
+	}
+
+	// An owner's party in one instance as the bots' item and duty scripts see a run (never registered in the runs'
+	// registry, so no planner, monitor, pull or stall of theirs ever touches it): the owner's mercenaries there, then the
+	// owner - the leader (a key of the wrong class goes to a mercenary of the right one, or to the owner; the leader has
+	// no egg duty; the zones' dodge steps towards the leader).
 	std::map<DWORD, TPlayerBotDgRun> s_mapNajemnicyDgRun;	// owner pid -> its party's view
 
 	TPlayerBotDgRun& GetNajemnicyDgRun(DWORD ownerPid, int iDef, long map)
 	{
 		TPlayerBotDgRun& run = s_mapNajemnicyDgRun[ownerPid];
-		run.iId = 0;
+		run.iId = GetNajemnicyDgRunId(ownerPid);
 		run.iDef = iDef;
 		run.bPhase = DGRUN_PHASE_INSIDE;
 		run.dwLeader = ownerPid;
@@ -1232,6 +1290,346 @@ namespace
 		return run;
 	}
 
+	// A character of the owner's party: the owner, or one of the owner's mercenaries.
+	bool IsNajemnikPartyOf(LPCHARACTER c, DWORD ownerPid)
+	{
+		if (!c || !c->IsPC())
+			return false;
+		if (c->GetPlayerID() == ownerPid)
+			return true;
+		std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.find(c->GetPlayerID());
+		return it != s_mapNajemnik.end() && it->second.ownerPid == ownerPid;
+	}
+
+	// ---- MT2009_PLUS_NAJEMNICY_V4: Glebie (Alastor) - the egg chamber and the ground zones as a bots' run has them
+
+	// The bots' run record (s_mapPlayerBotGlebieRuns) of an owner's party in Glebie, under the party's own id: how many
+	// go to the egg chamber (a mercenary of two or more, two of six or more - the leader, the owner, never), its egg
+	// duty picked when Alastor wakes (PickPlayerBotGlebieEggBots: Ninja, Sura, Warrior, the strongest first), its
+	// portals' and dodges' counts. Made anew for every instance, dropped when the party is in another dungeon.
+	std::map<DWORD, long> s_mapNajemnicyGlebie;	// owner pid -> the instance its record is of
+
+	void KeepNajemnicyGlebieRecord(DWORD ownerPid, const TPlayerBotDgRun& run, LPDUNGEON d)
+	{
+		const bool glebie = d && run.iDef >= 0 && GetPlayerBotGlebieRunKind(run) != 0;
+		std::map<DWORD, long>::iterator g = s_mapNajemnicyGlebie.find(ownerPid);
+		if (g != s_mapNajemnicyGlebie.end() && (!glebie || g->second != run.lInstance))
+		{
+			s_mapPlayerBotGlebieRuns.erase(run.iId);
+			s_mapNajemnicyGlebie.erase(g);
+			g = s_mapNajemnicyGlebie.end();
+		}
+		if (!glebie)
+			return;
+		TPlayerBotGlebieRun& gr = s_mapPlayerBotGlebieRuns[run.iId];
+		if (g == s_mapNajemnicyGlebie.end())
+		{
+			gr = TPlayerBotGlebieRun();
+			s_mapNajemnicyGlebie[ownerPid] = run.lInstance;
+		}
+		gr.iKind = GetPlayerBotGlebieDKind(d);
+		if (!gr.bEggPicked)
+		{
+			int mercs = 0;
+			for (size_t i = 0; i < run.members.size(); ++i)
+			{
+				LPCHARACTER c = run.members[i] != ownerPid ? CHARACTER_MANAGER::instance().FindByPID(run.members[i]) : NULL;
+				mercs += c && c->GetMapIndex() == run.lInstance ? 1 : 0;
+			}
+			const int wanted = mercs >= 6 ? 2 : (mercs >= 2 ? 1 : 0);
+			if (wanted != gr.iEggWanted)
+				sys_log(0, "NAJEMNICY: glebie owner=%u instance=%ld kind=%d mercs=%d egg_duty=%d", ownerPid, run.lInstance, gr.iKind,
+						mercs, wanted);
+			gr.iEggWanted = wanted;
+		}
+	}
+
+	// ---- MT2009_PLUS_NAJEMNICY_V4: Schronienie Meley - the roles of the bots' Meley run (MT2009_PLUS_BOT_MELEY16_V1)
+
+	const int NAJEMNICY_MELEY_ROLE_STATUE = 0;	// with the owner: the eggs, Idall, then the most hurt statue (the objective)
+	const int NAJEMNICY_MELEY_ROLE_HEAL = 1;	// a healing Shaman: the party's buffs and heals first
+	const int NAJEMNICY_MELEY_ROLE_EGG = 2;		// an egg of its own while eggs stand (the statues' shield)
+	const int NAJEMNICY_MELEY_ROLE_MAGMA = 3;	// the magma guard: what strikes the party (the healers first in stages 2-3)
+	const DWORD NAJEMNICY_MELEY_ROLE_MS = 60 * 1000;
+
+	struct TNajemnicyMeley
+	{
+		long instance = 0;
+		DWORD nextAssign = 0;
+		std::string sig;
+		std::map<DWORD, std::pair<int, int> > roles;	// mercenary pid -> role, its index among the role's members
+	};
+	std::map<DWORD, TNajemnicyMeley> s_mapNajemnicyMeley;	// owner pid -> its party's roles in the lair
+
+	// The bots' run's roles (AssignPlayerBotMeleyRoles) for the owner's mercenaries in the lair, again whenever who is
+	// inside changed and every minute: the healing Shamans heal; of two or more the strongest quarter (one at the least)
+	// break the eggs; of four or more a quarter of the bodies (the Warriors, then the Suras, the most health first) is the
+	// magma guard; the rest are the statue team with the owner. A bots' run gives roles from nine up - its leader is a
+	// bot; here the owner leads and the eggs are the reason a small party never got past the second stage.
+	void AssignNajemnicyMeleyRoles(DWORD ownerPid, long instance, TNajemnicyMeley& m, DWORD dwNow)
+	{
+		std::vector<LPCHARACTER> mercs;
+		std::string sig;
+		for (std::map<DWORD, TNajemnik>::const_iterator it = s_mapNajemnik.begin(); it != s_mapNajemnik.end(); ++it)
+		{
+			if (it->second.ownerPid != ownerPid || it->second.dismiss)
+				continue;
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!c || c->GetMapIndex() != instance)
+				continue;
+			mercs.push_back(c);
+			sig += std::to_string(it->first) + ",";
+		}
+		if (m.instance == instance && m.sig == sig && (int)(dwNow - m.nextAssign) < 0)
+			return;
+		m.instance = instance;
+		m.sig = sig;
+		m.nextAssign = dwNow + NAJEMNICY_MELEY_ROLE_MS;
+		m.roles.clear();
+		if (mercs.size() < 2)
+			return;
+		int count[4] = { 0, 0, 0, 0 };
+		std::vector<LPCHARACTER> rest;
+		for (size_t i = 0; i < mercs.size(); ++i)
+		{
+			if (mercs[i]->GetJob() == JOB_SHAMAN && mercs[i]->GetSkillGroup() != 0)
+				m.roles[mercs[i]->GetPlayerID()] = std::make_pair(NAJEMNICY_MELEY_ROLE_HEAL, count[NAJEMNICY_MELEY_ROLE_HEAL]++);
+			else
+				rest.push_back(mercs[i]);
+		}
+		const int all = (int)mercs.size();
+		const int quarter = std::max(1, all / 4);
+		const int magmaWanted = all >= 4 ? quarter : 0;
+		std::sort(rest.begin(), rest.end(), [](LPCHARACTER a, LPCHARACTER b)
+				{
+					const int ka = a->GetJob() == JOB_WARRIOR ? 0 : (a->GetJob() == JOB_SURA ? 1 : 2);
+					const int kb = b->GetJob() == JOB_WARRIOR ? 0 : (b->GetJob() == JOB_SURA ? 1 : 2);
+					return ka != kb ? ka < kb : a->GetMaxHP() > b->GetMaxHP();
+				});
+		std::vector<LPCHARACTER> left;
+		for (size_t i = 0; i < rest.size(); ++i)
+			if (count[NAJEMNICY_MELEY_ROLE_MAGMA] < magmaWanted && (int)(rest.size() - i) > quarter)
+				m.roles[rest[i]->GetPlayerID()] = std::make_pair(NAJEMNICY_MELEY_ROLE_MAGMA, count[NAJEMNICY_MELEY_ROLE_MAGMA]++);
+			else
+				left.push_back(rest[i]);
+		std::sort(left.begin(), left.end(), [](LPCHARACTER a, LPCHARACTER b) { return ScorePlayerBotYdg(a) > ScorePlayerBotYdg(b); });
+		for (size_t i = 0; i < left.size(); ++i)
+			if (count[NAJEMNICY_MELEY_ROLE_EGG] < quarter)
+				m.roles[left[i]->GetPlayerID()] = std::make_pair(NAJEMNICY_MELEY_ROLE_EGG, count[NAJEMNICY_MELEY_ROLE_EGG]++);
+			else
+				m.roles[left[i]->GetPlayerID()] = std::make_pair(NAJEMNICY_MELEY_ROLE_STATUE, count[NAJEMNICY_MELEY_ROLE_STATUE]++);
+		static const char* const name[4] = { "statue", "heal", "egg", "magma" };
+		std::string line;
+		for (std::map<DWORD, std::pair<int, int> >::const_iterator r = m.roles.begin(); r != m.roles.end(); ++r)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(r->first);
+			if (line.size() < 400)
+				line += std::string(line.empty() ? "" : ",") + (c ? c->GetName() : "?") + ":" + name[r->second.first & 3];
+		}
+		sys_log(0, "NAJEMNICY: meley roles owner=%u instance=%ld mercs=%d statue=%d heal=%d egg=%d magma=%d (%s)", ownerPid, instance,
+				all, count[0], count[1], count[2], count[3], line.c_str());
+	}
+
+	int GetNajemnikMeleyRole(const TNajemnik& n, long instance, DWORD dwNow)
+	{
+		TNajemnicyMeley& m = s_mapNajemnicyMeley[n.ownerPid];
+		AssignNajemnicyMeleyRoles(n.ownerPid, instance, m, dwNow);
+		std::map<DWORD, std::pair<int, int> >::const_iterator r = m.roles.find(n.pid);
+		return r == m.roles.end() ? NAJEMNICY_MELEY_ROLE_STATUE : r->second.first;
+	}
+
+	// An egg killer's egg (by its index among the killers, the eggs by vid) or the magma guard's monster (one on the
+	// owner's party round the owner - in stages 2-3 only one on a healer, else it joins the objective as the bots'
+	// guard does, MT2009_PLUS_BOT_MELEY_GUARD_HEALERS_V1). NULL: the role has nothing now, or the mercenary is under a
+	// fifth of its health (FightPlayerBotMeleyRole's rule) - then the objective and the party pass.
+	LPCHARACTER PickNajemnikMeleyRoleFoe(LPCHARACTER ch, TPlayerBotAIState& state, const TNajemnik& n, LPCHARACTER owner, LPDUNGEON d,
+			DWORD dwNow)
+	{
+		const int stage = d ? d->GetFlag("stage") : 0;
+		if (stage < 1 || stage > 4 || state.bRecoveringAfterDeath || ch->GetMaxHP() <= 0 ||
+				(long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * PLAYERBOT_MELEY_ROLE_FOCUS_HP)
+			return NULL;
+		TNajemnicyMeley& m = s_mapNajemnicyMeley[n.ownerPid];
+		AssignNajemnicyMeleyRoles(n.ownerPid, ch->GetMapIndex(), m, dwNow);
+		std::map<DWORD, std::pair<int, int> >::const_iterator r = m.roles.find(n.pid);
+		if (r == m.roles.end() || (r->second.first != NAJEMNICY_MELEY_ROLE_EGG && r->second.first != NAJEMNICY_MELEY_ROLE_MAGMA))
+			return NULL;
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(ch->GetMapIndex(), dwNow);
+		if (r->second.first == NAJEMNICY_MELEY_ROLE_EGG)
+		{
+			std::vector<LPCHARACTER> eggs;
+			for (size_t i = 0; i < scan.foes.size(); ++i)
+			{
+				if (scan.foes[i].dwRace != 20422)
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+				if (IsPlayerBotPdgFoe(ch, c))
+					eggs.push_back(c);
+			}
+			if (eggs.empty())
+				return NULL;
+			std::sort(eggs.begin(), eggs.end(), [](LPCHARACTER a, LPCHARACTER b) { return (DWORD)a->GetVID() < (DWORD)b->GetVID(); });
+			return eggs[(size_t)r->second.second % eggs.size()];
+		}
+		LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+		LPCHARACTER best = NULL;
+		int bestScore = INT_MAX;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			const DWORD race = scan.foes[i].dwRace;
+			if (race >= 20000 || race == 6118 || race == 6116)
+				continue;
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!IsPlayerBotPdgFoe(ch, c))
+				continue;
+			LPCHARACTER v = c->GetVictim();
+			if (!IsNajemnikPartyOf(v, n.ownerPid) ||
+					DISTANCE_APPROX(owner->GetX() - c->GetX(), owner->GetY() - c->GetY()) > PLAYERBOT_PDG_HUNT_RANGE)
+				continue;
+			if (stage >= 2 && stage <= 3 && v->GetJob() != JOB_SHAMAN)
+				continue;
+			int score = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+			if (v->GetJob() == JOB_SHAMAN)
+				score -= 3000;
+			if (c == cur)
+				score -= 2000;
+			if (score < bestScore)
+			{
+				bestScore = score;
+				best = c;
+			}
+		}
+		return best;
+	}
+
+	// ---- MT2009_PLUS_NAJEMNICY_V4: the objective of the stage, as the bots' run leader takes it
+
+	const int NAJEMNICY_DG_GOAL_RANGE = 6000;	// an objective this near the owner (its room)
+	const int NAJEMNICY_DG_GOAL_HP = 30;		// under it the mercenary leaves the objective to the party pass
+	const int NAJEMNICY_DG_OWNER_LOW_HP = 40;	// the owner under it and struck: the party pass defends the owner first
+
+	// The stage's objective (GetPlayerBotDgRunObjectives - what the bots' run leader hits and its party with it): the
+	// Biblioteka's Metins, Queens and Baroness, Razador's Ignitor, Metin and Razador, Nemere's Szels, Pillar and Nemere,
+	// the Blue Dragon's stones, Atlantis's shells and Guardians, Meley's eggs, Idall and statues, Erebu's healers, the
+	// Yohara dungeons' key monsters, Metins and bosses, Swiatynia Wezy's Metin of the turn (never one out of its order),
+	// its Time Metins, Warriors and Nethis, Alastor. Within NAJEMNICY_DG_GOAL_RANGE of the owner and reachable; the
+	// owner's own target first when it is one, Meley's statues the most hurt first (MT2009_PLUS_BOT_MELEY_STATUE_FOCUS_V1),
+	// else the one in hand, else the nearest. NULL: no objective now (the party pass's fight round the owner).
+	LPCHARACTER PickNajemnikDgObjective(LPCHARACTER ch, const TPlayerBotAIState& state, LPCHARACTER owner, LPDUNGEON d, int iDef,
+			DWORD dwNow)
+	{
+		if (iDef < 0 || !d || ch->GetMaxHP() <= 0 || (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * NAJEMNICY_DG_GOAL_HP)
+			return NULL;
+		if (owner->GetMaxHP() > 0 && (long long)owner->GetHP() * 100 < (long long)owner->GetMaxHP() * NAJEMNICY_DG_OWNER_LOW_HP)
+			return NULL;
+		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[iDef];
+		const long map = ch->GetMapIndex();
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
+		std::vector<DWORD> goals;
+		GetPlayerBotDgRunObjectives(def, d, scan, goals);
+		if (goals.empty())
+			return NULL;
+		const bool meley = def.bKind == DGRUN_KIND_MELEY;
+		LPCHARACTER ownerTarget = owner->GetTarget();
+		LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+		LPCHARACTER best = NULL;
+		long long bestScore = 0;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			const DWORD race = scan.foes[i].dwRace;
+			if (std::find(goals.begin(), goals.end(), race) == goals.end() || IsPlayerBotZodiacLeftToPerson(race))
+				continue;
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!IsPlayerBotPdgFoe(ch, c) || (def.bKind == DGRUN_KIND_YDG && IsPlayerBotYdgGoalAway(map, c)))
+				continue;
+			if (DISTANCE_APPROX(owner->GetX() - c->GetX(), owner->GetY() - c->GetY()) > NAJEMNICY_DG_GOAL_RANGE)
+				continue;
+			long long score = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+			if (meley && race == 6118 && c->GetMaxHP() > 0)
+				score += (long long)c->GetHP() * 100 / c->GetMaxHP() * 100000LL;
+			if (c == cur)
+				score -= meley && race == 6118 ? 150000LL : 3000LL;
+			if (c == ownerTarget)
+				score -= 100000000LL;
+			if (!best || score < bestScore)
+			{
+				best = c;
+				bestScore = score;
+			}
+		}
+		if (best && best != cur && !IsPlayerBotReachable(map, ch->GetX(), ch->GetY(), best->GetX(), best->GetY()))
+			return NULL;
+		return best;
+	}
+
+	// ---- MT2009_PLUS_NAJEMNICY_V4: what the bots' runs do with the people's part of a dungeon
+
+	// Swiatynia Wezy: Pyl Wezowy from the mercenary's bag (its owner's - it never buys one) while the Portal's clock is
+	// under the quest's 60 minutes - a minute a dust (UsePlayerBotWezeDust's rule), one use in the instance every 3 s.
+	std::map<long, DWORD> s_mapNajemnicyWezeDust;	// instance -> the next use
+
+	bool UseNajemnikWezeDust(LPCHARACTER ch, LPDUNGEON d, DWORD dwNow)
+	{
+		if (!IsPlayerBotWezeDungeon(d))
+			return false;
+		const long map = d->GetMapIndex();
+		if (d->GetFlag("closed") == 1)
+		{
+			s_mapNajemnicyWezeDust.erase(map);
+			return false;
+		}
+		if (d->GetFlag("started") != 1)
+			return false;
+		DWORD& next = s_mapNajemnicyWezeDust[map];
+		if (next != 0 && (int)(next - dwNow) > 0)
+			return false;
+		next = dwNow + 3000;
+		const int before = d->GetFlag("limit_at");
+		if ((d->GetFlag("start") + PLAYERBOT_WEZE_LIMIT_MAX_S - before) / 60 <= 0)
+			return false;
+		const int cell = FindPlayerBotTowerItemCell(ch, PLAYERBOT_WEZE_DUST);
+		if (cell < 0)
+			return false;
+		const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell));
+		sys_log(0, "NAJEMNICY: weze dust pid=%u name=%s instance=%ld ok=%d limit_at=%d->%d", ch->GetPlayerID(), ch->GetName(), map,
+				ok ? 1 : 0, before, d->GetFlag("limit_at"));
+		return true;
+	}
+
+	// Beran (Przebudzeni and Szczelina): Duch Sura takes three Krete Klucze from every PERSON inside (krypta's people,
+	// not the bots) - the mercenaries' keys (their kills' drops, picked up by the item pass) go to their owner while the
+	// owner holds fewer than three, the whole stack into a free cell of the owner's (the window's "Zabierz").
+	bool HandNajemnikBeranKeys(LPCHARACTER ch, LPCHARACTER owner, LPDUNGEON d, int iYdgDef, DWORD dwNow)
+	{
+		if (iYdgDef < 0 || !d || d->GetFlag("level") != 0 || owner->GetMapIndex() != ch->GetMapIndex() || !owner->IsItemLoaded())
+			return false;
+		const TPlayerBotYdgDef* y = FindPlayerBotYdgDef(PLAYERBOT_DGRUN_DEFS[iYdgDef].szKey);
+		if (!y || y->iBoss != YDG_BERAN)
+			return false;
+		const DWORD key = PlayerBotYdgVnum(*y, 31180);
+		const int has = (int)owner->CountSpecifyItem(key);
+		if (has >= PLAYERBOT_YDG_KEYS_EACH)
+			return false;
+		const int cell = FindPlayerBotTowerItemCell(ch, key);
+		LPITEM item = cell >= 0 ? ch->GetInventoryItem(cell) : NULL;
+		if (!item)
+			return false;
+		const int to = owner->GetEmptyInventory(item->GetSize());
+		if (to < 0)
+		{
+			PlayerBotLogThrottled("najemnicy_beran_keys_full", dwNow, "NAJEMNICY: beran keys wait pid=%u name=%s owner=%u (owner's bag full)",
+					ch->GetPlayerID(), ch->GetName(), owner->GetPlayerID());
+			return false;
+		}
+		const int count = (int)item->GetCount();
+		HandPlayerBotSidekickItemOver(ch, owner, item, to);
+		LogManager::instance().ItemLog(owner, item, "NAJEMNIK_KLUCZ", ch->GetName());
+		TellNajemnicy(owner, "%s oddaje ci Krete Klucze: %d (masz %d/%d).", ch->GetName(), count, has + count, PLAYERBOT_YDG_KEYS_EACH);
+		sys_log(0, "NAJEMNICY: beran keys pid=%u name=%s owner=%u vnum=%u count=%d owner_had=%d", ch->GetPlayerID(), ch->GetName(),
+				owner->GetPlayerID(), (unsigned int)key, count, has);
+		return true;
+	}
+
 	// Inside a dungeon at its owner's side ("the player as leader"): the dungeon's items first - a seal or a key it
 	// holds is used, a cog, a Maat stone, a crystal or the Atlantis key handed to its NPC, the Meley ring, Balathor's
 	// arrow (ManagePlayerBotPdgItems), the Yohara dungeons' keys by class (Nemere's Frost Key a Shaman's, the Ice Flower
@@ -1241,6 +1639,20 @@ namespace
 	// own (PickPlayerBotPdgSoloFoe). It never leaves: the owner's map is its map (the catch-up above), the dungeon's
 	// d.exit_all its way out. False when nothing here took the tick (the ordinary follow and fight go on, the
 	// dungeon's no-target rules still applied - IsPlayerBotPdgFoe).
+	//
+	// MT2009_PLUS_NAJEMNICY_V4 - what a bots' run does there, with the owner as the run's leader (GetNajemnicyDgRun):
+	//   * Krypta Balathora: the module's player list and the ice's polymorph (ManagePlayerBotBalathorBot, in the tick);
+	//   * Glebie: the ground zones stepped out of (DodgePlayerBotGlebieZonesOnly - no run bonus), the egg chamber's
+	//     duty and its portals (ManagePlayerBotGlebieBot through the Yohara item pass, the record above), Alastor the
+	//     objective; waking him is the leader's - the owner's touch of the White Dragon Egg;
+	//   * Swiatynia Wezy: the Kolumny's keys, the cages' keys, the Heads' shards (ManagePlayerBotWezeItems through the
+	//     Yohara item pass), the dust it carries, the Metin of the turn and the 4th level's and Nethis as objectives;
+	//   * Beran: the keys to the owner (Duch Sura counts the people's);
+	//   * Meley: the roles (the egg killers, the magma guard, the healers; the statue team on the objective);
+	//   * every dungeon of a bots' run (FindNajemnikDgRunDef): the stage's objective (PickNajemnikDgObjective).
+	// A duty that takes it away from the owner (the egg chamber, an NPC across the room) holds the catch-up off
+	// (n.dutyUntil). The talks a run's leader has (Razador's statue, Nemere's lion, Beran's Duch Sura, Wezy's Portal and
+	// Smith, Glebie's egg, Meley's Dolnarr) stay the owner's - the owner is the leader.
 	bool ManageNajemnikDungeon(LPCHARACTER ch, TPlayerBotAIState& state, TNajemnik& n, LPCHARACTER owner, DWORD dwNow)
 	{
 		const long map = ch->GetMapIndex();
@@ -1254,21 +1666,63 @@ namespace
 			sys_log(0, "NAJEMNICY: dungeon pid=%u name=%s owner=%u instance=%ld order=%u", n.pid, ch->GetName(), n.ownerPid,
 					map, (unsigned int)n.order);
 		}
-		if (ManagePlayerBotPdgItems(ch, state, b, dwNow))
-			return true;
-		const int iDef = FindNajemnikYdgDef(map);
-		if (iDef >= 0)
+		LPDUNGEON dg = ch->GetDungeon() ? ch->GetDungeon() : CDungeonManager::instance().FindByMapIndex(map);
+		const int iDef = FindNajemnikDgRunDef(map, dg);
+		const int iYdg = FindNajemnikYdgDef(map, dg);
+		TPlayerBotDgRun& run = GetNajemnicyDgRun(n.ownerPid, iDef, map);
+		KeepNajemnicyGlebieRecord(n.ownerPid, run, dg);
+		// Glebie's ground zones before anything (the bots' run's rule).
+		if (iYdg >= 0 && DodgePlayerBotGlebieZonesOnly(ch, state, run, dwNow))
 		{
-			LPDUNGEON dg = ch->GetDungeon() ? ch->GetDungeon() : CDungeonManager::instance().FindByMapIndex(map);
-			if (dg && ManagePlayerBotYdgItems(ch, state, GetNajemnicyDgRun(n.ownerPid, iDef, map), dg, dwNow))
+			n.dutyUntil = dwNow + 3000;
+			return true;
+		}
+		if (ManagePlayerBotPdgItems(ch, state, b, dwNow))
+		{
+			n.dutyUntil = dwNow + 5000;
+			return true;
+		}
+		if (iYdg >= 0 && dg)
+		{
+			if (ManagePlayerBotYdgItems(ch, state, run, dg, dwNow))
+			{
+				n.dutyUntil = dwNow + 8000;
+				return true;
+			}
+			if (HandNajemnikBeranKeys(ch, owner, dg, iYdg, dwNow) || UseNajemnikWezeDust(ch, dg, dwNow))
 				return true;
 		}
 		if (n.order != NAJEMNIK_ORDER_FOLLOW && n.order != NAJEMNIK_ORDER_FREE)
 			return false;
-		LPCHARACTER foe = n.order == NAJEMNIK_ORDER_FREE ? PickPlayerBotPdgSoloFoe(ch, state, owner, dwNow)
-				: PickPlayerBotPdgFoe(ch, state, owner, dwNow);
+		LPCHARACTER foe = NULL;
+		const char* why = "party";
+		const bool meley = iDef >= 0 && PLAYERBOT_DGRUN_DEFS[iDef].bKind == DGRUN_KIND_MELEY;
+		if (meley && dg)
+		{
+			// the healers' party buffs and heals before any role or objective (the bots' Meley healers)
+			if (GetNajemnikMeleyRole(n, map, dwNow) == NAJEMNICY_MELEY_ROLE_HEAL && BuffPlayerBotTowerFellows(ch, state, dwNow))
+				return true;
+			foe = PickNajemnikMeleyRoleFoe(ch, state, n, owner, dg, dwNow);
+			if (foe)
+				why = foe->GetRaceNum() == 20422 ? "meley_egg" : "meley_magma";
+		}
+		if (!foe)
+		{
+			foe = PickNajemnikDgObjective(ch, state, owner, dg, iDef, dwNow);
+			if (foe)
+				why = "objective";
+		}
+		if (!foe)
+			foe = n.order == NAJEMNIK_ORDER_FREE ? PickPlayerBotPdgSoloFoe(ch, state, owner, dwNow)
+					: PickPlayerBotPdgFoe(ch, state, owner, dwNow);
 		if (!foe)
 			return false;
+		if (std::strcmp(why, "party") != 0)
+		{
+			n.dutyUntil = dwNow + 4000;
+			PlayerBotLogThrottled("najemnicy_dg_goal", dwNow, "NAJEMNICY: dungeon goal pid=%u name=%s owner=%u instance=%ld why=%s foe=%u hp=%d/%d",
+					n.pid, ch->GetName(), n.ownerPid, map, why, (unsigned int)foe->GetRaceNum(), foe->GetHP(), foe->GetMaxHP());
+		}
 		if (BreakOffPlayerBotArzDgBoss(ch, state, map, dwNow))
 			return true;
 		if (ch->GetJob() == JOB_SHAMAN && ManagePlayerBotBuffPerson(ch, state, owner, dwNow, false, true))
@@ -1375,6 +1829,10 @@ namespace
 			n.nextSave = dwNow + NAJEMNICY_SAVE_MS;
 			PersistPlayerBot(ch, state, dwNow);
 		}
+		// MT2009_PLUS_NAJEMNICY_V4: Krypta Balathora's player list kept (in at its entry, out with its arrows when it
+		// leaves) and the ice's polymorph ended - the bots' presence pass, which a mercenary's tick never reached (it is
+		// no bots' Krypta run's member, so nothing else of that pass runs for it).
+		ManagePlayerBotBalathorBot(ch, state, dwNow);
 		// MT2009_PLUS_NAJEMNICY_V2: its storages into its bag, and its owner's consumables from it (it never buys).
 		SweepNajemnikStorage(ch, n, dwNow);
 		const bool fighting = state.dwTargetVID != 0 || (DWORD)(dwNow - ch->GetLastAttackTime()) < NAJEMNICY_FIGHT_MEMORY_MS;
@@ -1398,7 +1856,12 @@ namespace
 		// MT2009_PLUS_NAJEMNICY_V3: "Stoj tutaj" keeps its spot on the owner's map, however far the owner walks; another
 		// map (a warp, a dungeon, a rejoin) anchors it anew beside the owner there.
 		const bool hold = n.order == NAJEMNIK_ORDER_HOLD;
-		if (otherMap || (!hold && dist > NAJEMNICY_TELEPORT_DISTANCE))
+		// MT2009_PLUS_NAJEMNICY_V4: inside the owner's dungeon a duty (the egg chamber, a hand-in, the stage's objective)
+		// keeps it where the duty is, and the room's objective may lie a little further than the open map's leash.
+		const bool sameDungeon = !otherMap && IsNajemnikDungeonMap(ch->GetMapIndex());
+		const bool onDuty = sameDungeon && n.dutyUntil != 0 && (int)(n.dutyUntil - dwNow) > 0;
+		const int catchUp = sameDungeon ? NAJEMNICY_DG_TELEPORT_DISTANCE : NAJEMNICY_TELEPORT_DISTANCE;
+		if (otherMap || (!hold && !onDuty && dist > catchUp))
 		{
 			if (owner->IsDead() || (int)(dwNow - n.nextCatchUp) < 0)
 				return true;
