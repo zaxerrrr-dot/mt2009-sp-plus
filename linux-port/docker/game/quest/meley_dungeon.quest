@@ -776,7 +776,10 @@ quest meley_dungeon begin
 				return
 			end
 			local person = meley_dungeon.person_here()
-			if person == 0 or d.getf("mt2009_dgrun") == 1 then
+			-- MT2009_PLUS_NAJEMNICY_V4: a player's mercenary keeps the ring of its own kill - it picks it up and puts it on a
+			-- statue in stage 4 by itself (playerbot_party_dungeon.h PLAYERBOT_PDG_USE_ITEMS, as a bots' run does)
+			local merc = pc.is_najemnik ~= nil and pc.is_najemnik()
+			if person == 0 or merc or d.getf("mt2009_dgrun") == 1 then
 				game.drop_item_with_ownership(c.ring, 1, 60)
 				return
 			end
