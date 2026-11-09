@@ -1,7 +1,8 @@
-# najemnicy – Najemnicy, etap 1 (rdzeń), etap 2 (ekwipunek) i etap 3 (mapy, rozkazy, lochy)
+# najemnicy – Najemnicy, etap 1 (rdzeń), etap 2 (ekwipunek), etap 3 (mapy, rozkazy, lochy) i etap 4 (mechanika lochów)
 
-`MT2009_PLUS_NAJEMNICY_V1` (etap 1), `MT2009_PLUS_NAJEMNICY_V2` (etap 2, ekwipunek) i `MT2009_PLUS_NAJEMNICY_V3`
-(etap 3: powrót po zmianie rdzenia/kanału i po zalogowaniu, rozkazy, lochy z graczem jako liderem) – decyzje właściciela z 8.11.2026,
+`MT2009_PLUS_NAJEMNICY_V1` (etap 1), `MT2009_PLUS_NAJEMNICY_V2` (etap 2, ekwipunek), `MT2009_PLUS_NAJEMNICY_V3`
+(etap 3: powrót po zmianie rdzenia/kanału i po zalogowaniu, rozkazy, lochy z graczem jako liderem) i `MT2009_PLUS_NAJEMNICY_V4`
+(etap 4: mechanika lochów jak w wyprawach botów, powrót do grupy w środku lochu) – decyzje właściciela z 8.11.2026,
 plan: `/opt/metin2/cache/yohara/najemnicy-plan.md`.
 Stała drużyna botów gracza: od 80 poziomu gracz tworzy najemników (klasa, droga, płeć, imię), wzywa ich do swojej
 grupy, a oni chodzą za nim i walczą. Za każdego wezwanego płaci ze skarbca najemników.
@@ -249,25 +250,7 @@ Questy (wejścia i logowanie):
   **Krypta Balathora** (członkowie gildii obok mistrza – najemnik w gildii gracza).
 - Świątynia Węży: najemnik nie ma limitu ożywień (wstaje po 30 s przy graczu).
 
-| Loch | Stan |
-|---|---|
-| Świątynia Zodiaku | wchodzi za graczem (piętra – za graczem), walka lochowa, bossy zostawione graczowi pomijane, skrzynie każdej postaci (etap 2) |
-| Nemere (klasyczny 352) | klucze 30760/30762 używa, Kryształy Lodu oddaje pieczęciom; rozmowę z lwem/posągiem robi gracz |
-| Nemere PB / Szczelina (Strażnica Nemere) | Ninja/Szaman: Mroźny Klucz (Szaman), Klucz Lodowego Kwiatu (Ninja/Szaman) – przekazanie do właściwej klasy; Gwiazda Północy do Kostek; najemnik liczy się do Ninja+Szaman przy wejściu |
-| Jotun PB / Szczelina Zaklęty Las (SZC) | walka i przedmioty PB; SZC to polowanie (Metiny, potwory) – działa jak walka lochowa |
-| Erebu (Jotun) | najemnik liczy się do `party_min`; walka; Kamień Driad płaci gracz |
-| Meley | pierścień 30340, posągi zablokowane pomijane, Skrzynia Królowej w plecaku (etap 2); role posągów (skrypt wypraw botów) – nie, grupa bije wspólnie |
-| Głębie (Alastor) | wchodzi za graczem, liczy się do drużyny, walczy; strefy go nie celują (nie jest w p1..p8); jajo i portale – gracz |
-| Krypta Balathora | najemnik w gildii gracza liczy się do członków, strzały do Hwachy, jaja/Hwacha nie są celem; nie testowane w grze |
-| Razador (klasyczny i PB) | Zębatka i Kamienie Maat do Steli; rozmowy z posągiem – gracz |
-| Wukong / Skorpion / Dżungla | pieczęcie fal używa, przerwanie walki z bossem jak boty Arezzo |
-| Atlantyda | klucz 30920 do zamkniętego Filaru (gdy go ma); walka |
-| Niebieski Smok | najpierw kamienie, potem smok; łup – etap 2 |
-| Świątynia Węży | walka (Metiny tylko w kolejności), bez limitu ożywień; klucze/klatki/głowy robi gracz |
-| Beran PB / Szczelina | Kręte Klucze zbiera i trzyma (Duch Sura liczy klucze ludzi – gracz) |
-
-Rozmowy z NPC, które w wyprawach botów robi „lider” (timery `_dgrun_next` działają tylko w instancjach wypraw botów),
-w lochu gracza robi gracz – to on jest liderem.
+Stan każdego lochu po etapie 4 – tabela w sekcji „Etap 4” niżej.
 
 ### Jak przetestować etap 3 (nowy klient: łatka root z tej gałęzi; serwer: nakładka + questy, migracja sama)
 
@@ -291,12 +274,105 @@ w lochu gracza robi gracz – to on jest liderem.
     Razador/Nemere – najemnik oddaje zębatki/kryształy, które dropnie. Zaloguj się ponownie w środku lochu – najemnicy
     wracają do instancji (nie są wyrzucani). Syslog: `NAJEMNICY: dungeon …`, `PLAYERBOT_DUNGEON: party bot used/handed in`.
 
-## Co dalej (etap 4)
+## Etap 4 – mechanika lochów jak w wyprawach botów (`MT2009_PLUS_NAJEMNICY_V4`)
 
-- Role posągów Meley, jajo i portale Głębi, klucze/klatki Świątyni Węży (skrypty wypraw botów są związane z ich
-  rejestrem wypraw) – gdy właściciel zechce, żeby robili je najemnicy bez gracza.
-- Po zalogowaniu w środku lochu najemnicy, którzy przy wylogowaniu wyszli z grupy, nie dołączą do niej w lochu (silnik:
-  PERR_DUNGEON) – wchodzą i walczą, ale exp/drop dzielą się dopiero po wyjściu.
-- Panel, spis, wiki, changelog (plan: etap 4).
+Bez zmian w silniku i w kliencie: łatka `najemnicy` dalej ma tylko edycje V1/V2, wszystko jest w nakładce
+(`playerbot_najemnicy.h`, drobne zmiany w `playerbot_dungeon_runs_ydg_glebie.h` i `playerbot_dungeon_runs_ydg_weze.h`)
+i w `meley_dungeon.quest`. Klient (exe i Python) – bez zmian.
+
+### Grupa gracza jako „wyprawa” dla skryptów botów
+
+Drużyna gracza w instancji lochu jest dla skryptów wypraw botów osobną wyprawą (`GetNajemnicyDgRun`): lider = gracz,
+członkowie = jego najemnicy w instancji + gracz, **ujemny numer wyprawy** – nigdy nie trafia do rejestru wypraw botów
+(żaden planer, nadzór, wyciąganie z lochu ani „utknięcie” botów jej nie dotyka). Na tej podstawie najemnicy robią to,
+co robią boty w swojej wyprawie, a rozmowy lidera (posąg Razadora, lew Nemere, Duch Sura, Portal i Kowal Świątyni Węży,
+jajo Alastora, Dolnarr) robi gracz – to on jest liderem.
+
+- **Cel etapu** (`PickNajemnikDgObjective`, rozkazy „Za mną” i „Walcz sam”): to, co bije lider wyprawy botów –
+  Metiny/Królowe/Baronowa Biblioteki, Zapalnik/Metin/Razador, Szele/Filar/Nemere, kamienie Niebieskiego Smoka, muszle
+  i Strażnicy Atlantydy, jaja/Idalle/posągi Meley, Uzdrowiciele i bossowie Erebu, potwory z kluczami, Metiny i bossowie
+  lochów Yohary, Metin Świątyni Węży **tylko w kolejności**, Metiny Czasu, Wojownicy i Nethis, Alastor. Do 60 m od
+  gracza i osiągalny; najpierw cel gracza (gdy jest celem etapu), w Meley najbardziej zbity posąg, potem ten w ręku,
+  potem najbliższy. Gdy najemnik ma < 30% PŻ albo gracz < 40% PŻ – zwykła walka drużynowa (obrona gracza).
+- Obowiązek z dala od gracza (komnata jaj, NPC po drugiej stronie sali, cel etapu) wstrzymuje „dociąganie” do gracza;
+  w lochu dociąga dopiero powyżej 70 m (na zwykłej mapie 30 m).
+
+### Loch po lochu
+
+- **Schronienie Meley – role posągów** (jak w wyprawie botów `MT2009_PLUS_BOT_MELEY16_V1`, ale już od 2 najemników):
+  Szamani (droga) – leczą i buffują drużynę; ćwierć najsilniejszych (min. 1) – **zabójcy jaj** (każdy swoje jajo, póki
+  jaja stoją – tarcza posągów); od 4 najemników ćwierć Wojowników/Sur z największym PŻ – **straż magmy** (to, co bije
+  drużynę; w etapach 2–3 tylko to, co bije Szamana – inaczej idzie na cel etapu); reszta z graczem – **drużyna posągu**
+  (jaja, Idall, potem najbardziej zbity posąg). Role przeliczane, gdy zmieni się skład w instancji, i co minutę
+  (syslog `NAJEMNICY: meley roles`). **Pierścienie:** pierścień z zabójstwa najemnika jest jego (quest daje go zabójcy-
+  najemnikowi), najemnik go podnosi i w etapie 4 sam kładzie na statuę bez pierścienia (bez warunku odległości – jak bot).
+  Pierścienie z zabójstw gracza są gracza (może je też włożyć najemnikowi do plecaka).
+- **Głębie (Alastor) – jajo i portale:** komnata jaj jak w wyprawie botów – gdy Alastor się budzi, 1 najemnik (2 przy
+  6–7 najemnikach; Ninja, Sura, Wojownik, najsilniejszy; nigdy gracz) idzie przez Kryształ (3971) i portal 3972 do
+  komnaty i zbija Białe Jaja Smoka (najbardziej zbite najpierw), reszta bije Alastora; najemnik bez obowiązku, który
+  znalazł się w komnacie, wraca portalem 3973. Wszyscy schodzą z kręgów na ziemi (kolce, Śmiertelny Chłód) – bez bonusów
+  wypraw botów. Budzi Alastora gracz (lider dotyka Białego Jaja Smoka). Syslog: `NAJEMNICY: glebie`, `BOT_GLEBIE: egg
+  duty / portal / dodge / egg run=-…`.
+- **Świątynia Węży – klucze, klatki, kolejność:** Klucze Wężowe podnosi i oddaje właściwej Kolumnie (ta, gdzie stał Metin
+  Czasu tej tury – flaga questa), Klucze do Więzienia oddaje kowalom w klatkach, Odłamki Węża – Głowie z kolejki
+  (pozostałe trzyma na swoją kolej), Pył Wężowy z plecaka używa, dopóki zegar Portalu < 60 min (sam nie kupuje – daje
+  gracz). Metiny Wężowe 3. poziomu tylko w kolejności (zły Metin nigdy nie jest celem, także „Bij mój cel”).
+  Syslog: `BOT_YDG: weze handed in run=-… what=column|cage|head`, `NAJEMNICY: weze dust`.
+- **Beran (PB i Szczelina):** Duch Sura bierze 3 Kręte Klucze od każdego **człowieka** – klucze, które podniosą
+  najemnicy, oddają graczowi, dopóki ma mniej niż 3 (czat „… oddaje ci Krete Klucze”).
+- **Krypta Balathora:** najemnik jest na liście graczy Krypty (jak bot w drużynie gracza) i polimorf lodu kończy od razu.
+- **Powrót do grupy w środku lochu:** po zalogowaniu gracza w lochu (jego grupa zniknęła przy wylogowaniu) najemnicy
+  wchodzą do instancji i **dołączają do grupy gracza** (grupa tworzy się sama). Silnik odmawia tylko zaproszenia
+  (`PERR_DUNGEON` w `IsPartyJoinableMutableCondition`); `CParty::Join/Link` tego nie sprawdza – dołącza tylko najemnik,
+  tylko do grupy swojego gracza i tylko w jego instancji, a licznik grupy w instancji (`CDungeon::IncPartyMember`) jest
+  prowadzony tak, jak przy wejściu z grupą. Syslog: `NAJEMNICY: made a party … dungeon=<instancja>`, `joined the owner's
+  party … dungeon=<instancja>`.
+
+### Stan lochów (gracz + tylko najemnicy)
+
+| Loch | Stan po etapie 4 |
+|---|---|
+| Świątynia Zodiaku | za graczem po piętrach, walka lochowa; posągi, armata i bossy zostawione graczowi (jak boty w drużynie), skrzynie każdej postaci – do przejścia |
+| Nemere (klasyczny 352) | klucze 30760/30762 używa, Kryształy Lodu oddaje pieczęciom, cel etapu (Szele, Filar, Nemere); rozmowa z lwem/posągiem – gracz (lider) – do przejścia |
+| Nemere PB / Szczelina | Mroźny Klucz (Szaman), Klucz Lodowego Kwiatu (Ninja/Szaman), Gwiazda Północy do Kostek, cel etapu; najemnik liczy się do Ninja+Szaman – do przejścia |
+| Jotun PB / Zaklęty Las (SZC) | przedmioty i cele misji PB (Wojownik, Druid, Metin, Niszczyciel, Władca En-Tai, bossy); SZC – walka lochowa – do przejścia |
+| Erebu | liczy się do `party_min`, najpierw Uzdrowiciele, potem Bagjanamu i Jotun Thrym; Kamień Driad płaci gracz – do przejścia |
+| Meley | role (jaja, magma, leczenie, posąg), pierścienie z własnych zabójstw w etapie 4, Skrzynia Królowej w plecaku – mechanika kompletna (siła drużyny 8 osób zależy od sprzętu; boty mają w wyprawach bonus 80%, najemnicy nie) |
+| Głębie (Alastor) | komnata jaj, portale, uniki stref, Alastor jako cel; budzenie – gracz (lider) – do przejścia |
+| Krypta Balathora | najemnik w gildii gracza liczy się do członków, lista graczy Krypty i polimorf, strzały do Hwachy, jaja/Hwacha nie są celem; strzał z Hwachy i spychanie Ognistych Jaj – gracz (mistrz gildii). **Nie sprawdzone w grze** (kod przejrzany) |
+| Razador (klasyczny i PB) | Zębatka i Kamienie Maat do Steli, cel etapu (Zapalnik, Metin, Razador); rozmowy z posągiem – gracz – do przejścia |
+| Beran PB / Szczelina | Kręte Klucze do gracza (do 3), cel etapu (Yonghany, 4 Metiny, Beran-Setaou); Duch Sura – gracz – do przejścia |
+| Wukong / Skorpion / Dżungla | pieczęcie fal używa, kamienie najpierw, przerwanie walki z bossem jak boty Arezzo – do przejścia |
+| Atlantyda | klucz 30920 do zamkniętego Filaru, cel etapu (muszle, Strażnicy, Morkhot) – do przejścia |
+| Niebieski Smok | najpierw kamienie, potem smok (cel etapu), łup – etap 2 – do przejścia |
+| Świątynia Węży | klucze do Kolumn, klucze do klatek, odłamki do Głów, pył, Metiny w kolejności; rozmowy z Portalem i Kowalem – gracz – do przejścia |
+
+### Jak przetestować etap 4 (serwer: nakładka + `meley_dungeon.quest`; klient bez zmian)
+
+30. **Powrót do grupy w lochu:** wejdź z 3 najemnikami do dowolnego lochu (np. Razador), wyloguj się w środku, odczekaj
+    ponad 1,5 min, zaloguj. Najemnicy wracają do instancji i w ciągu kilku sekund są **w grupie** (okno grupy, exp
+    dzielony). Syslog: `made a party for owner=… dungeon=<instancja>`, `joined the owner's party … dungeon=<instancja>`.
+    Wyjdź z lochu – grupa zostaje, brak `cannot find party` w syslogu.
+31. **Meley:** 6–7 najemników (2 Szamanów, Wojownicy). Syslog `NAJEMNICY: meley roles … egg=… magma=…`. W etapie 2 jaja
+    padają (zabójcy jaj), straż magmy bije potwory na Szamanach, posągi zbijane po kolei od najbardziej zbitego. Pierścień
+    z zabójstwa najemnika (5% w etapach 1–2) – `PLAYERBOT_DUNGEON: party bot picked up … vnum=30340`; w etapie 4, gdy jaja
+    padną – `party bot used … vnum=30340 … ok=1` i statua płonie.
+32. **Głębie:** gracz + 3 najemników (w tym Ninja/Sura). Dotknij Białego Jaja Smoka. Syslog `NAJEMNICY: glebie … egg_duty=1`,
+    `BOT_GLEBIE: egg duty run=-…`, `portal run=-… portal=3972`, `egg run=-…`; jeden najemnik bije jaja w komnacie, reszta
+    Alastora, wszyscy schodzą z kręgów (`BOT_GLEBIE: dodge run=-…`). Po zabiciu Alastora wraca do gracza.
+33. **Świątynia Węży:** gracz + najemnicy, daj jednemu kilka Pyłów Wężowych. Rozpocznij walkę u Portalu: pył się zużywa
+    (`NAJEMNICY: weze dust`), na 3. poziomie najemnicy biją tylko Metin z kolejki (spróbuj „Bij mój cel” na złym Metinie –
+    nie bije), na 5. oddają Klucze Wężowe Kolumnom (`weze handed in … what=column right=1`), na 6. klucze do klatek
+    (`what=cage`), na 7. odłamki Głowom (`what=head`); Nethis – cel etapu.
+34. **Beran PB:** najemnicy zabijają Yonghany i podnoszą Kręte Klucze – czat „… oddaje ci Krete Klucze: 1 (masz 1/3)”; przy
+    3 kluczach u gracza przestają oddawać (trzymają resztę). Rozmowa z Duchem Sura otwiera Świątynię Smoka.
+35. **Cel etapu:** Razador / Nemere / Biblioteka / Erebu – najemnicy na „Za mną” sami biją Zapalnik, Szele, Uzdrowicieli
+    itd. (syslog `NAJEMNICY: dungeon goal … why=objective`). Gracz z < 40% PŻ – bronią gracza.
+36. **Krypta Balathora** (gracz w gildii z najemnikami): po wejściu najemnicy są na liście Krypty (polimorf lodu znika po
+    ~1,5 s), ładują strzały do Hwachy, nie biją jaj ani Hwachy.
+
+## Co dalej
+
+- Panel, spis, wiki, changelog (plan: etap 4 „Dopracowanie”).
 - Kolekcjoner Najemników jest w osobnej łatce `server-patches/kolekcjoner` (okno, oddawanie przedmiotów 95%, stałe bonusy
   za zadania). Ukończone zadanie podnosi flagę `najemnicy.tasks` i wiersz `najemnicy_unlock.tasks` (GREATEST).

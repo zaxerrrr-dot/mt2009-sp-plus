@@ -75,6 +75,13 @@
 //   * the dungeons with the owner as leader (ManageNajemnikDungeon): the party bots' dungeon items and fight round the
 //     owner, the Yohara keys by class over the owner's party (ManagePlayerBotYdgItems), never a way out of its own.
 //
+// MT2009_PLUS_NAJEMNICY_V4 - stage 4, the dungeons' mechanics as the bots' runs have them (no engine edit, no client
+// change; server-patches/najemnicy/README.md "Etap 4"): the owner's party is a run of its own to the bots' scripts
+// (a negative run id, never in the runs' registry) - the stage's objective, Meley's roles and rings, Glebie's egg
+// chamber, portals and zones, Swiatynia Wezy's keys, cages, heads and dust, Beran's keys to the owner, Krypta
+// Balathora's player list (ManageNajemnikDungeon); and the owner's party rejoined inside a dungeon after the owner's
+// relog (KeepNajemnikInParty: CParty::Join / Link, the instance's party count kept).
+//
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
 // skarbiec | okno <miejsce> | eq <miejsce> [polecenie] | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> |
@@ -1634,8 +1641,7 @@ namespace
 	// dungeon's no-target rules still applied - IsPlayerBotPdgFoe).
 	//
 	// MT2009_PLUS_NAJEMNICY_V4 - what a bots' run does there, with the owner as the run's leader (GetNajemnicyDgRun):
-	//   * Krypta Balathora: the module's player list (CBalathor::Login, the ice's polymorph ended - the bots' presence
-	//     pass, ManagePlayerBotBalathorBot, which a mercenary's tick never reaches otherwise);
+	//   * Krypta Balathora: the module's player list and the ice's polymorph (ManagePlayerBotBalathorBot, in the tick);
 	//   * Glebie: the ground zones stepped out of (DodgePlayerBotGlebieZonesOnly - no run bonus), the egg chamber's
 	//     duty and its portals (ManagePlayerBotGlebieBot through the Yohara item pass, the record above), Alastor the
 	//     objective; waking him is the leader's - the owner's touch of the White Dragon Egg;
@@ -1660,10 +1666,6 @@ namespace
 			sys_log(0, "NAJEMNICY: dungeon pid=%u name=%s owner=%u instance=%ld order=%u", n.pid, ch->GetName(), n.ownerPid,
 					map, (unsigned int)n.order);
 		}
-		// MT2009_PLUS_NAJEMNICY_V4: Krypta Balathora's player list and the ice's polymorph (nothing for a mercenary else -
-		// it is no bots' Krypta run's member).
-		if (map / 10000 == 420)
-			ManagePlayerBotBalathorBot(ch, state, dwNow);
 		LPDUNGEON dg = ch->GetDungeon() ? ch->GetDungeon() : CDungeonManager::instance().FindByMapIndex(map);
 		const int iDef = FindNajemnikDgRunDef(map, dg);
 		const int iYdg = FindNajemnikYdgDef(map, dg);
@@ -1827,6 +1829,10 @@ namespace
 			n.nextSave = dwNow + NAJEMNICY_SAVE_MS;
 			PersistPlayerBot(ch, state, dwNow);
 		}
+		// MT2009_PLUS_NAJEMNICY_V4: Krypta Balathora's player list kept (in at its entry, out with its arrows when it
+		// leaves) and the ice's polymorph ended - the bots' presence pass, which a mercenary's tick never reached (it is
+		// no bots' Krypta run's member, so nothing else of that pass runs for it).
+		ManagePlayerBotBalathorBot(ch, state, dwNow);
 		// MT2009_PLUS_NAJEMNICY_V2: its storages into its bag, and its owner's consumables from it (it never buys).
 		SweepNajemnikStorage(ch, n, dwNow);
 		const bool fighting = state.dwTargetVID != 0 || (DWORD)(dwNow - ch->GetLastAttackTime()) < NAJEMNICY_FIGHT_MEMORY_MS;

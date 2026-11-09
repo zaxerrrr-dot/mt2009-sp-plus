@@ -571,6 +571,10 @@ namespace
 	{
 		if (lvl < 3 || lvl > 7 || !run.lInstance || ch->GetMapIndex() != run.lInstance)
 			return false;
+		// MT2009_PLUS_NAJEMNICY_V4: not a player's mercenary - its owner leads it through the rooms (the catch-up beside
+		// the owner), and a hop to a group of another room would take it away from the owner's fight.
+		if (IsPlayerBotNajemnikPID(ch->GetPlayerID()))
+			return false;
 		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(ch->GetMapIndex());
 		if (!nav.Init(ch->GetMapIndex()))
 			return false;
