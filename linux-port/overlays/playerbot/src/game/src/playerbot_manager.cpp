@@ -4050,6 +4050,13 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 		TAccountTable& table = d->GetAccountTable();
 		table.id = m_dwPvpFanAccountID;
 		strlcpy(table.login, m_strPvpFanLogin.c_str(), sizeof(table.login));
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_NAJEMNICY_VIP_V1 (the owner, 9 November 2026: "Najemnicy maja tylko VIP i nic wiecej"):
+		// a mercenary (its own account playerbot_njNNNN, spawned through this path) holds the premium
+		// subscription like every population bot - and no other bonus; PVP Fan fighters stay without it.
+		if (strncmp(table.login, "playerbot_nj", 12) == 0)
+			table.iPremium = get_global_time() + 5 * 365 * 24 * 3600;
+#endif
 	}
 
 	m_mapBots.insert(TPlayerBotMap::value_type(dwPlayerID, d));
