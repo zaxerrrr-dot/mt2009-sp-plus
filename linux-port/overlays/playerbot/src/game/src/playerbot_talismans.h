@@ -732,6 +732,11 @@ namespace
 		const TPlayerBotTalismanPlan& p = GetPlayerBotTalismanPlan(ch);
 		if (p.projectId != 0 && item->GetID() == p.projectId)
 			return true;
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: the best lightning and the best wind talisman of a bot with a wind set (each set's)
+		if (IsPlayerBotWindSetTalismanKept(ch, item))
+			return true;
+#endif
 		// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: a talisman of another element at least as strong as the worn one is the
 		// talisman of another map (the Yohara maps' cohort carries one an element - tools/yohara_bot_cohort_sungma.py),
 		// not goods for the merchant or a counter.

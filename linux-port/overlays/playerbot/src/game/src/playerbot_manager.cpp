@@ -501,6 +501,10 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // as a player builds it - changes and adds on the armour, helmet, bracelet and talisman, the element pet, the protection
 // stone - after the V3 goals whose purchase it uses
 #include "playerbot_element_shop.h"
+// MT2009_PLUS_BOT_WIND_SET_V1: a 90+ bot's second, wind set beside the lightning set - its pieces, bonusing (the V3
+// stones of the element shop), refine target, swap on the map, the lightning set's sale and the census - after the
+// element shop whose purchase and line reading it uses
+#include "playerbot_element_wind_set.h"
 // MT2009_PLUS_BOT_PET_GATE_V1: the element pet called at a bot's arrival (login, channel change) and the gates' credit for
 // one not out yet - after the element pet and the shop (playerbot_pet_gate.h; playerbot_progression.h asks it)
 #include "playerbot_pet_gate.h"
@@ -8830,6 +8834,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// one is due (playerbot_element_second_set.h); its own clocks, never the tick's owner.
 		if (!bServingPerson && !state.bMultiPullActive && d->IsPhase(PHASE_GAME))
 			ManagePlayerBotSecondSet(ch, state, dwNow);
+#endif
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: a 90+ bot's wind set - its look, bonusing, swap and sale on its own clocks
+		// (playerbot_element_wind_set.h), never the tick's owner
+		if (!bServingPerson && !state.bMultiPullActive && d->IsPhase(PHASE_GAME))
+			ManagePlayerBotWindSet(ch, state, dwNow, curTarget != NULL || bFightingMetin);
 #endif
 
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and

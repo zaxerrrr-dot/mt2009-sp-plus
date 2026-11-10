@@ -10659,6 +10659,42 @@ namespace
 	void NotePlayerBotSecondSetG0Piece(LPCHARACTER ch, LPITEM item);
 	// The AI's tick (playerbot_manager.cpp, beside the world set): the set's look, swap and census on its own clocks.
 	void ManagePlayerBotSecondSet(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+#define MT2009_PLUS_BOT_WIND_SET_V1 1
+	// MT2009_PLUS_BOT_WIND_SET_V1 (playerbot_element_wind_set.h, after playerbot_element_shop.h - the owner, 10 November
+	// 2026: "EQ na blyskawice niech zostawia ... Na wiatr niech zrobi nowe EQ, nowe kostiumy, nowa fryzure, nowa bizuterie"):
+	// a bot of 90-119 (no Yohara hunt element) keeps its lightning set and builds a second, wind set (armour, helmet,
+	// bracelet, costume, hairstyle; the wind talisman beside it) in the bag - market, ItemShop V3, the anvil, the V3 stones
+	// - and wears it on Zaklety Las, the lightning set on the lightning maps; the lightning set is sold only once the bot
+	// has left the lightning maps for good.
+	// The set's piece waiting in the bag (the wind set, or the lightning set while the wind set is on): kept like the
+	// second set's (IsPlayerBotSecondSetStored answers it too).
+	bool IsPlayerBotWindSetStored(LPCHARACTER ch, LPITEM item);
+	// The wind set's piece worn now (IsPlayerBotSecondSetWornLocked answers it too).
+	bool IsPlayerBotWindSetWornLocked(LPCHARACTER ch, LPITEM item);
+	// A worn piece of the lightning set while the bot builds its wind set: never rerolled for wind.
+	bool IsPlayerBotWindSetGuardedPiece(LPCHARACTER ch, LPITEM item);
+	// The bot builds its wind set (record on, the set not worn): the element shop leaves its wind goal to the set.
+	bool IsPlayerBotWindSetBuilding(LPCHARACTER ch);
+	// A swap of the sets is due.
+	bool IsPlayerBotWindSetSwapPending(LPCHARACTER ch);
+	// The element's resistance (map index 0-5) with the stored set on instead of the worn one (-1: no such set).
+	int GetPlayerBotWindSetElementResist(LPCHARACTER ch, int e);
+	// The refine target of a wind set's piece (-1 not one) and the anvil's new item for it.
+	int GetPlayerBotWindSetRefineTarget(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotWindSetRefined(LPCHARACTER ch, DWORD oldId, LPITEM made);
+	// The market (through the second set's hooks) and the ItemShop look.
+	bool WantsPlayerBotWindSetOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForWindSetOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	void CollectPlayerBotWindSetMissing(LPCHARACTER ch, std::map<DWORD, int>& missing);
+	void NotePlayerBotWindSetBought(LPCHARACTER ch, DWORD vnum, long long price);
+	DWORD PickPlayerBotWindSetLook(LPCHARACTER ch, int* pLook);
+	// The costume pass (playerbot_bonus.h): the set's costume pieces in the bag and their reagent.
+	bool RunPlayerBotWindSetCostumeRoll(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	DWORD GetPlayerBotWindSetCostumeReagentNeed(LPCHARACTER ch);
+	// The talisman workshop's keep: the best lightning and wind talisman of a bot with a wind set.
+	bool IsPlayerBotWindSetTalismanKept(LPCHARACTER ch, LPITEM item);
+	// The AI's tick (beside the second set): look, bonusing, swap, sale, census.
+	void ManagePlayerBotWindSet(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow, bool bFighting);
 #define MT2009_PLUS_BOT_G0_DUST_RULE_V1 1
 	// MT2009_PLUS_BOT_G0_DUST_RULE_V1 (playerbot_g0_dust_rule.h, after playerbot_element_second_set.h; the owner, 28
 	// October 2026: a bot with its G0 saves dust only when it cannot cope with its G0 set and wants a second one): the
