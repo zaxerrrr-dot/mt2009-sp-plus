@@ -832,6 +832,9 @@ namespace
 		if (!killer || !victim || victim->IsPC() || !killer->IsPC())
 			return;
 		NotePlayerBotGateTrialEvent(killer, PLAYERBOT_GATE_TRIAL_EV_KILL, get_dword_time());	// MT2009_PLUS_BOT_GATE_TRIAL_V1
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		NotePlayerBotBonusMixEvent(killer, PLAYERBOT_GATE_TRIAL_EV_KILL, get_dword_time());	// MT2009_PLUS_BOT_BONUSMIX_V1
+#endif
 		if (FindPlayerBotElementProgressMap(killer->GetMapIndex()) < 0)
 		{
 			NotePlayerBotElementProgressAway(killer);	// MT2009_PLUS_BOT_EPROG_STAY_FIX_V1
@@ -849,6 +852,9 @@ namespace
 	void NotePlayerBotElementProgressDeath(LPCHARACTER ch, DWORD now)
 	{
 		NotePlayerBotGateTrialEvent(ch, PLAYERBOT_GATE_TRIAL_EV_DEATH, now);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		NotePlayerBotBonusMixEvent(ch, PLAYERBOT_GATE_TRIAL_EV_DEATH, now);	// MT2009_PLUS_BOT_BONUSMIX_V1
+#endif
 		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
 			return;
 		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
@@ -861,6 +867,9 @@ namespace
 	void NotePlayerBotElementProgressRetreat(LPCHARACTER ch, DWORD now)
 	{
 		NotePlayerBotGateTrialEvent(ch, PLAYERBOT_GATE_TRIAL_EV_RETREAT, now);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		NotePlayerBotBonusMixEvent(ch, PLAYERBOT_GATE_TRIAL_EV_RETREAT, now);	// MT2009_PLUS_BOT_BONUSMIX_V1
+#endif
 		if (!ch || FindPlayerBotElementProgressMap(ch->GetMapIndex()) < 0)
 			return;
 		TPlayerBotEProgRecord* r = TouchPlayerBotEProg(ch, now);
