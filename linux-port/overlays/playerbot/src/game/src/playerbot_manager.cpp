@@ -156,6 +156,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "pvp.h"
 #include "playerbot_types.h"
 #include "playerbot_price_tables.h"
+#include "playerbot_fish_roast.h" // MT2009_PLUS_BOT_FISH_ROAST_V1: the owner's fish rules - open, roast the valuable kinds, junk to the NPC, the roasted on the lada
 #include "playerbot_item_tiers.h"
 #include "playerbot_persona_tables.h"
 #include "playerbot_weapon_atlas.h"
@@ -8761,6 +8762,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// Horse medals are equally real resources: a bot leaves combat, walks to
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHorse(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: a fire burning owns the tick (the bake); a bot holding dead fish of a valuable
+		// kind away from the water lights one (playerbot_activities.h, ManagePlayerBotFishRoast).
+		if (!state.bMultiPullActive && !bFightingMetin && ManagePlayerBotFishRoast(ch, state, dwNow))
 			continue;
 
 		// A handful of M1 bots fish the riverbank instead of grinding. This owns

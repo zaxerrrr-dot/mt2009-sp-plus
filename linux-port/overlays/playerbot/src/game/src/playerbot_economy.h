@@ -1369,9 +1369,17 @@ namespace
 	}
 
 	// A fish of the family worth its line: the proto's gold a unit at least m2_bot_lada_min_cheap.
+	// MT2009_PLUS_BOT_FISH_ROAST_V1 (the owner, 10 November 2026: "Ryby, ktore maja wartosc - maja wartosc po
+	// przepaleniu"): with the rule on (playerbot_fish_roast.h) only a roasted fish of a valuable kind - one with his
+	// price - is goods and a lada kind; a live fish is opened, a dead one roasted or sold to the NPC, a "smieci" roasted
+	// one keeps the old potion handling. The proto-gold floor is the rule-off way.
 	bool IsPlayerBotLadaFishOf(DWORD vnum, const TItemTable* t)
 	{
-		return IsPlayerBotFishFamilyOf(vnum, t) && (long long)t->dwGold >= (long long)s_iPlayerBotLadaMinCheap;
+		if (!IsPlayerBotFishFamilyOf(vnum, t))
+			return false;
+		if (IsPlayerBotFishRoastOn())
+			return GetPlayerBotRoastedFishOwnerPrice(vnum) > 0;
+		return (long long)t->dwGold >= (long long)s_iPlayerBotLadaMinCheap;
 	}
 
 	// What a bot keeps of a fish: the grilled fish it drinks (PLAYERBOT_LADA_FISH_USE_KEEP), the cheap dead fish an
@@ -2907,6 +2915,12 @@ namespace
 				return false;
 		}
 
+		// MT2009_PLUS_BOT_FISH_ROAST_V1 (the owner, 10 November 2026): a dead fish of a "smieci" kind is the merchant's,
+		// whatever the bag holds; one of a valuable kind never is - it goes on the fire (ManagePlayerBotFishRoast). The
+		// old keep of ten cheap dead fish for the fire is the rule-off way (below).
+		if (item->GetType() == ITEM_FISH && item->GetSubType() == FISH_DEAD && IsPlayerBotFishRoastOn())
+			return IsPlayerBotJunkDeadFish(item->GetVnum());
+
 		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: a Krysztal Energii is the bot's energy or a counter's (3 000 000 on the
 		// sheet) - the merchant paid 10 yang for one (shop price 0, the rule's default below).
 		if (IsPlayerBotEnergyCrystalVnum(item->GetVnum()))
@@ -3908,8 +3922,10 @@ namespace
 		// box stacks to 200 now - the stack goes whole, so it is paid by
 		// count (it was one unit's price for the stack).
 		long long salePrice = (long long)price;
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: and a stack of junk dead fish, sold whole after the opening.
 		if (item->GetCount() > 1 && (item->GetType() == ITEM_METIN ||
-				item->GetType() == ITEM_GIFTBOX || item->GetType() == ITEM_TREASURE_BOX))
+				item->GetType() == ITEM_GIFTBOX || item->GetType() == ITEM_TREASURE_BOX ||
+				(item->GetType() == ITEM_FISH && IsPlayerBotFishRoastOn())))
 			salePrice *= (long long)item->GetCount();
 		return salePrice;
 	}
@@ -4029,6 +4045,9 @@ namespace
 			const long long salePrice = GetPlayerBotJunkSalePrice(item);
 			totalSoldGold += salePrice;
 			PlayerBotChangeGold(ch, salePrice);
+			// MT2009_PLUS_BOT_FISH_ROAST_V1: the census of the junk dead fish (playerbot_fish_roast.h).
+			if (IsPlayerBotJunkDeadFish(item->GetVnum()))
+				NotePlayerBotFishJunkSold(std::max<int>(1, (int)item->GetCount()), salePrice, false);
 			// MT2009_PLUS_BOT_STONE4_MARKET_V1: a +4 past the market's and the
 			// box's caps, counted for the report.
 			if (item->GetType() == ITEM_METIN && IsPlayerBotStone4Vnum(item->GetVnum()))

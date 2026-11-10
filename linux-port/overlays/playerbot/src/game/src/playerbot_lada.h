@@ -583,6 +583,7 @@ namespace
 			{
 				++k.fishListed;
 				k.fishListedUnits += count;
+				NotePlayerBotFishRoastListed(vnum, (unsigned int)count);	// MT2009_PLUS_BOT_FISH_ROAST_V1
 			}
 			else if (IsPlayerBotLadaPotionKindOf(lt))
 			{

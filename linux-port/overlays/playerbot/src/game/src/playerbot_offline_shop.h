@@ -1163,6 +1163,7 @@ namespace {
             QueuePlayerBotListingEvent(line.item, ch->GetPlayerID(), vnum, line.count, per::EVENT_SOLD,
                 line.price, 0, "", 0, line.price, slip ? per::LFLAG_SLIP : 0);
             NotePlayerBotEnergyLineSold(vnum, (int)line.count, line.price);   // MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census
+            NotePlayerBotFishRoastSold(vnum, (unsigned int)line.count, (long long)line.price);   // MT2009_PLUS_BOT_FISH_ROAST_V1: the census
             // Every sale with how long its line stood, which is what the work on
             // unsold stock has to be measured by. -1 for a line this core never
             // saw go up: a restart inherited it, and its age is not known.
