@@ -4108,7 +4108,7 @@ T = {
  "seon_lv":      {"pl":"Szanse poziomów 6. i 7. bonusu","en":"Odds of each level of the 6th and 7th bonus"},
  "seon_lv_help": {"pl":"Jak często wypada wartość lv1…lv5 z tabeli bonusów 6/7 (Seon-Hae i Zaczarowanie 71051). Liczby to wagi, najlepiej w sumie 100. Poziom nie przekroczy „maks. poziomu” bonusu dla typu przedmiotu. Działa od razu.","en":"How often the lv1…lv5 value of the 6/7 bonus table drops (Seon-Hae and the Enchant 71051). Weights, best summing to 100. Never above the bonus's max level for the item type. Works at once."},
  "seon_drops":   {"pl":"Drop Odłamków i Suplementów","en":"Powershard and Additive drops"},
- "seon_drops_help":{"pl":"Suplementy tylko dla prawdziwych graczy (nie botów), Odłamki także dla botów (te same szanse); wszystko tylko gdy Seon-Hae jest włączony. Suplementy: z Metinów i bossów map z wiersza additive_map, każde zabicie losuje additive_chance (%); wiersz mob <vnum potwora> <vnum suplementu> <liczba> dotyczy jednego potwora (dowolnej rangi, na każdej mapie) zamiast reguły jego mapy. Odłamki: ze zwykłych potworów (nie Metinów, nie bossów) map z wiersza shard_map, szansa shard_chance (%, ułamki dozwolone, np. 0.5), 1 odłamek, kolor według wag z wierszy shard <vnum> <waga>. Brak danego rodzaju wierszy = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"Additives for real players only (not bots), shards for bots too (the same chances); all only while Seon-Hae is on. Additives: from Metins and bosses on the maps of an additive_map line, each kill rolling additive_chance (%); a mob <mob vnum> <additive vnum> <count> line names one monster (any rank, any map) and replaces its map's rule. Shards: from ordinary monsters (not Metins, not bosses) on the maps of a shard_map line, shard_chance (%, fractions allowed, e.g. 0.5), one shard, its colour by the weights of the shard <vnum> <weight> lines. A kind of line missing = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
+ "seon_drops_help":{"pl":"Suplementy tylko dla prawdziwych graczy (nie botów), Odłamki także dla botów (te same szanse); wszystko tylko gdy Seon-Hae jest włączony. Suplementy: z Metinów i bossów map z wiersza additive_map, każde zabicie losuje additive_chance (%); wiersz mob <vnum potwora> <vnum suplementu> <liczba> dotyczy jednego potwora (dowolnej rangi, na każdej mapie) zamiast reguły jego mapy. Odłamki: ze zwykłych potworów (nie Metinów, nie bossów) map z wiersza shard_map, szansa shard_chance (%, ułamki dozwolone, np. 0.5), 1 odłamek, kolor według wag z wierszy shard <vnum> <waga>. Mapy Yohary (wiersze shard_map_yohara, bez Płaskowyżu Iluzji): wszystkie dwanaście odłamków, wagi mapy w wierszach shard_pick <mapa> <vnum> <waga> (wiersze z pliku zastępują tylko mapy, które wymieniają), bez odłamka z potwora o więcej niż shard_level_gap (15) poziomów niższego od zabójcy (0 = wyłączone). Brak danego rodzaju wierszy = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"Additives for real players only (not bots), shards for bots too (the same chances); all only while Seon-Hae is on. Additives: from Metins and bosses on the maps of an additive_map line, each kill rolling additive_chance (%); a mob <mob vnum> <additive vnum> <count> line names one monster (any rank, any map) and replaces its map's rule. Shards: from ordinary monsters (not Metins, not bosses) on the maps of a shard_map line, shard_chance (%, fractions allowed, e.g. 0.5), one shard, its colour by the weights of the shard <vnum> <weight> lines. The Yohara maps (shard_map_yohara lines, not Plaskowyz Iluzji): all twelve shards, the map's weights in shard_pick <map> <vnum> <weight> lines (a file's lines replace only the maps they name), no shard from a monster more than shard_level_gap (15) levels under the killer (0 = off). A kind of line missing = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
  "seon_drops_bad":{"pl":"Nie zapisano reguł dropu - błędne wiersze: %s","en":"Drop rules not saved - wrong lines: %s"},
  # MT2009_PLUS_FLOWER_V1: the Flower Event's settings and rewards (playerbot_flower.h).
  "fl_nav":       {"pl":"🌸 Dzieci Kwiaty","en":"🌸 Flower Event"},
@@ -6332,11 +6332,9 @@ mob 2493 72066 2
 mob 9714 72066 2
 # SHARDS - ordinary monsters (not Metins, not bosses) of these maps, 1 shard per hit of shard_chance %:
 shard_chance 0.5
-# Grotto of Exile V2, Temple of Ochao, Enchanted Forest, Enchanted Forest (Time Rift) - MT2009_PLUS_BOT_BONUS67_V1
+# Grotto of Exile V2, Temple of Ochao (Zaklety Las 353 and its Time Rift 404: the Yohara list below)
 shard_map 73
 shard_map 209
-shard_map 353
-shard_map 404
 # shard <vnum> <weight>: the shard's colour
 shard 39070 1
 shard 39071 1
@@ -6347,23 +6345,76 @@ shard 39075 1
 shard 39076 1
 shard 39077 1
 shard 39081 1
-# shard_pick <map> <vnum> <weight>: a map's own colours (its players' item levels) instead of the shard lines
-# Enchanted Forest (item levels 90-105): Red, Yellow Lucent; its Time Rift (105-120): Rainbow, Yellow Lucent, Holy
-shard_pick 353 39076 3
-shard_pick 353 39080 1
-shard_pick 404 39077 3
-shard_pick 404 39080 1
-shard_pick 404 39081 1
 """
+# MT2009_PLUS_SEONHAE_YOHARA_V1 (the owner, 10 November 2026): the Yohara list - every Yohara map and dungeon but
+# Plaskowyz Iluzji (397), from ordinary monsters, at shard_chance; all twelve shards by the map's profile (sums 100:
+# the colours of its players' item levels 75, the others 25) - the core's defaults (playerbot_seonhae.h).
+SEONHAE_YOHARA_PROFILES = (
+    ("Sung Ma maps and dungeons (monsters 118-127, Champions, item levels 120+): Holy 40, Rainbow 20, Yellow Lucent 15",
+     (373, 374, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 396),
+     ((39081, 40), (39077, 20), (39080, 15), (39076, 8), (39075, 4), (39079, 3), (39074, 3), (39073, 2), (39072, 2),
+      (39071, 1), (39078, 1), (39070, 1))),
+    ("Time Rift / Awakening dungeons, the Hydra, the Port (monsters 107-125, item levels 105-120): Rainbow 45, "
+     "Yellow Lucent 15, Holy 15",
+     (367, 368, 369, 370, 371, 398, 404, 405, 406, 407),
+     ((39077, 45), (39080, 15), (39081, 15), (39076, 8), (39075, 4), (39079, 3), (39074, 3), (39073, 2), (39072, 2),
+      (39071, 1), (39078, 1), (39070, 1))),
+    ("Zaklety Las, Schronienie Meley (monsters 97-110, item levels 90-105): Red 56, Yellow Lucent 19",
+     (353, 356),
+     ((39076, 56), (39080, 19), (39077, 7), (39075, 5), (39079, 3), (39074, 2), (39081, 2), (39073, 2), (39072, 1),
+      (39071, 1), (39078, 1), (39070, 1))),
+)
+SEONHAE_YOHARA_MAPS = {m for _, maps, _ in SEONHAE_YOHARA_PROFILES for m in maps}
+
+
+def _seonhae_yohara_block():
+    out = ["# YOHARA - MT2009_PLUS_SEONHAE_YOHARA_V1: every Yohara map and dungeon but Plaskowyz Iluzji (397), ordinary",
+           "# monsters, shard_chance; all twelve shards, the map's item levels 75 of 100.",
+           "# shard_map_yohara <map>: this list (a line of it replaces the whole default list; both lists drop shards)",
+           "# shard_level_gap <levels>: on these maps no shard from a monster more levels than this under the killer (0: off)",
+           "shard_level_gap 15"]
+    for note, maps, _ in SEONHAE_YOHARA_PROFILES:
+        out.append("# " + note)
+        out += ["shard_map_yohara %d" % m for m in maps]
+    out.append("# shard_pick <map> <vnum> <weight>: a map's own colours instead of the shard lines "
+               "(a file's lines replace only the maps they name)")
+    for _, maps, pick in SEONHAE_YOHARA_PROFILES:
+        for m in maps:
+            out += ["shard_pick %d %d %d" % (m, v, w) for v, w in pick]
+    return "\n".join(out) + "\n"
+
+
+# the default Yohara block - also what a file of the old kind (no shard_map_yohara line) gets added on the page, its
+# old shard_pick lines for these maps dropped (the core ignores them in such a file)
+SEONHAE_DROPS_YOHARA_BLOCK = _seonhae_yohara_block()
+SEONHAE_DROPS_DEFAULT += SEONHAE_DROPS_YOHARA_BLOCK
 SEONHAE_SHARDS = set(range(39070, 39078)) | {39081}
 SEONHAE_PICK_SHARDS = set(range(39070, 39082))  # MT2009_PLUS_BOT_BONUS67_V1: the core's IsShardVnum (the Lucent too)
 SEONHAE_ADDITIVES = {72064, 72065, 72066, 72067}
 
 
+def upgrade_seonhae_drops(text):
+    """MT2009_PLUS_SEONHAE_YOHARA_V1: a file of the old kind (no shard_map_yohara line) shown with the Yohara block
+    added and its old shard_pick lines of the Yohara maps left out - as the core reads it; saved, it is the new kind."""
+    lines = text.splitlines()
+    if any(l.split("#", 1)[0].split()[:1] == ["shard_map_yohara"] for l in lines):
+        return text
+    keep = []
+    for l in lines:
+        p = l.split("#", 1)[0].split()
+        try:
+            if len(p) >= 2 and p[0] == "shard_pick" and int(p[1]) in SEONHAE_YOHARA_MAPS:
+                continue
+        except ValueError:
+            pass
+        keep.append(l)
+    return "\n".join(keep).rstrip("\n") + "\n" + SEONHAE_DROPS_YOHARA_BLOCK
+
+
 def read_seonhae_drops():
     try:
         with open(SEONHAE_DROPS, encoding="utf-8", errors="replace") as fh:
-            return fh.read()
+            return upgrade_seonhae_drops(fh.read())
     except OSError:
         return SEONHAE_DROPS_DEFAULT
 
@@ -6385,8 +6436,10 @@ def check_seonhae_drops(text):
                 nums = [int(x) for x in args]
                 if key in ("additive_map", "mob"):
                     ok = len(nums) == 3 and nums[0] > 0 and nums[1] in SEONHAE_ADDITIVES and 1 <= nums[2] <= 50
-                elif key == "shard_map":
+                elif key in ("shard_map", "shard_map_yohara"):  # MT2009_PLUS_SEONHAE_YOHARA_V1: the Yohara list
                     ok = len(nums) == 1 and nums[0] > 0
+                elif key == "shard_level_gap":  # MT2009_PLUS_SEONHAE_YOHARA_V1
+                    ok = len(nums) == 1 and 0 <= nums[0] <= 300
                 elif key == "shard":
                     ok = len(nums) == 2 and nums[0] in SEONHAE_SHARDS and nums[1] > 0
                 elif key == "shard_pick":  # MT2009_PLUS_BOT_BONUS67_V1

@@ -614,6 +614,28 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 // Map 404 drops nothing else (server-patches/szczelina, MT2009_PLUS_YOHARA_CRACK_V1): its shard comes from
 // Mt2009PlusSeonHaeRiftDrop, the one call the engine's no-drop return makes (the edit "MT2009_PLUS_BOT_BONUS67_V1
 // (rift shards)" there). A file of the panel with shard_map lines replaces the list, so it must name 404 itself.
+// MT2009_PLUS_SEONHAE_YOHARA_V1 (the owner, 10 November 2026: "Dodaj drop wszystkich odlamkow do bonusow 6/7 na mapach
+// Yohary", from the ordinary monsters, not on Plaskowyz Iluzji): every Yohara map and dungeon is a shard map of its own
+// list, shard_map_yohara (beside shard_map - a file of the old kind, with shard_map lines but none of these, keeps the
+// Yohara list at its defaults; the effective shard maps are both lists). Every one of the twelve shards can drop there
+// (shard_pick, by the map's profile): the colours of its players' item levels weigh 75 of 100, the nine others share
+// the remaining 25 - the nearer the band, the more. Three profiles (the maps' ordinary monsters, tools/yohara_*):
+//   Sung Ma (monsters 118-127, level-120 Champions in item levels 120+): 373 374 376 377 385 388 389 393 394, Glebie
+//     Pln. Wiatru 395, Tajemnicza Instancja 396, Krolestwo Zywiolow 378-381, Swiatynia Wezy 390 391, Jaskinie Gnolli
+//     382-384, Wieza Sung Mahi 386 387 - Swiety 39081 x40, Teczowy 39077 x20, Zolty Lsniacy 39080 x15;
+//   110-120 (the Time Rift and Awakening dungeons, the Hydra, monsters 107-125, players 110-119 in item levels 105-120):
+//     Obrona Statku 367, Port 368, PB 369 370 371 398, SZC 404-407 - Teczowy 39077 x45, Zolty Lsniacy 39080 x15,
+//     Swiety 39081 x15 (404's 3:1:1 of MT2009_PLUS_BOT_BONUS67_V1);
+//   the forests' (monsters 97-110, players 90-109 in item levels 90-105): Zaklety Las 353, Schronienie Meley 356 -
+//     Czerwony 39076 x56, Zolty Lsniacy 39080 x19 (353's 3:1).
+// The rest of every profile, 25: the next band up and down 7-8, the farther ones 1-5 (the table in DefaultDropRules).
+// The chance is the Grotto's, shard_chance (0.5 %). Plaskowyz Iluzji (397, the hub) is no shard map. The level rule of
+// the Yohara list's maps: no shard from a monster more than shard_level_gap (15) levels under the killer (0: off).
+//   shard_map_yohara <map index>                      (the list above; a line of it replaces the whole list)
+//   shard_level_gap <levels>                          (default 15)
+// A file's shard_pick lines replace the defaults of the maps they name only (the others keep theirs); a file of the old
+// kind (no shard_map_yohara line) keeps the new colours of the Yohara list's maps - its shard_pick lines for them (the
+// old 353 / 404 defaults) are not read.
 #include <sys/stat.h>
 #include <fstream>
 #include <sstream>
@@ -645,7 +667,34 @@ namespace mt2009_seonhae
 		std::set<long> shardMaps;
 		std::vector<WeightedVnum> shards;
 		std::map<long, std::vector<WeightedVnum> > shardPicks;	// MT2009_PLUS_BOT_BONUS67_V1: a map's own colours
+		std::set<long> yoharaShardMaps;		// MT2009_PLUS_SEONHAE_YOHARA_V1: shard_map_yohara
+		int shardLevelGap;					// MT2009_PLUS_SEONHAE_YOHARA_V1: shard_level_gap (0: off)
 	};
+
+	// MT2009_PLUS_SEONHAE_YOHARA_V1: the Yohara maps and their profiles (the header above). Not 397, Plaskowyz Iluzji.
+	const long YOHARA_SUNGMA_SHARD_MAPS[] = { 373, 374, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388,
+			389, 390, 391, 393, 394, 395, 396 };
+	const long YOHARA_RIFT_SHARD_MAPS[] = { 367, 368, 369, 370, 371, 398, 404, 405, 406, 407 };
+	const long YOHARA_FOREST_SHARD_MAPS[] = { 353, 356 };
+	// 39070 Szary, 39071 Bialy, 39072 Zielony, 39073 Zolty, 39074 Niebieski, 39075 Fioletowy, 39076 Czerwony,
+	// 39077 Teczowy, 39078 Szary Lsn., 39079 Zielony Lsn., 39080 Zolty Lsn., 39081 Swiety - each list sums to 100
+	const WeightedVnum YOHARA_SUNGMA_PICK[] = { { 39081, 40 }, { 39077, 20 }, { 39080, 15 }, { 39076, 8 }, { 39075, 4 },
+			{ 39079, 3 }, { 39074, 3 }, { 39073, 2 }, { 39072, 2 }, { 39071, 1 }, { 39078, 1 }, { 39070, 1 } };
+	const WeightedVnum YOHARA_RIFT_PICK[] = { { 39077, 45 }, { 39080, 15 }, { 39081, 15 }, { 39076, 8 }, { 39075, 4 },
+			{ 39079, 3 }, { 39074, 3 }, { 39073, 2 }, { 39072, 2 }, { 39071, 1 }, { 39078, 1 }, { 39070, 1 } };
+	const WeightedVnum YOHARA_FOREST_PICK[] = { { 39076, 56 }, { 39080, 19 }, { 39077, 7 }, { 39075, 5 }, { 39079, 3 },
+			{ 39074, 2 }, { 39081, 2 }, { 39073, 2 }, { 39072, 1 }, { 39071, 1 }, { 39078, 1 }, { 39070, 1 } };
+	const int YOHARA_SHARD_LEVEL_GAP = 15;
+
+	void AddYoharaShardProfile(DropRules& r, const long* maps, size_t mapCount, const WeightedVnum* pick, size_t pickCount)
+	{
+		for (size_t i = 0; i < mapCount; ++i)
+		{
+			r.yoharaShardMaps.insert(maps[i]);
+			std::vector<WeightedVnum>& v = r.shardPicks[maps[i]];
+			v.assign(pick, pick + pickCount);
+		}
+	}
 
 	bool IsShardVnum(DWORD vnum)
 	{
@@ -666,19 +715,23 @@ namespace mt2009_seonhae
 		r.shardMaps.clear();
 		r.shardMaps.insert(73);
 		r.shardMaps.insert(209);
-		r.shardMaps.insert(353);
-		r.shardMaps.insert(404);	// MT2009_PLUS_BOT_BONUS67_V1: Zaklety Las (SZC), Szczelina Czasu
+		// MT2009_PLUS_SEONHAE_YOHARA_V1: Zaklety Las (353) and Zaklety Las (SZC) (404) are on the Yohara list now
 		r.shards.clear();
 		for (DWORD v = 39070; v <= 39077; ++v)
 			r.shards.push_back(WeightedVnum{ v, 1 });
 		r.shards.push_back(WeightedVnum{ 39081, 1 });
 		// MT2009_PLUS_BOT_BONUS67_V1: the colours of the two forests' item levels (the header above)
+		// MT2009_PLUS_SEONHAE_YOHARA_V1: every Yohara map draws all twelve shards by its profile (353's 3:1 and 404's
+		// 3:1:1 of MT2009_PLUS_BOT_BONUS67_V1 kept as the profiles' main colours)
 		r.shardPicks.clear();
-		r.shardPicks[353].push_back(WeightedVnum{ 39076, 3 });
-		r.shardPicks[353].push_back(WeightedVnum{ 39080, 1 });
-		r.shardPicks[404].push_back(WeightedVnum{ 39077, 3 });
-		r.shardPicks[404].push_back(WeightedVnum{ 39080, 1 });
-		r.shardPicks[404].push_back(WeightedVnum{ 39081, 1 });
+		r.yoharaShardMaps.clear();
+		AddYoharaShardProfile(r, YOHARA_SUNGMA_SHARD_MAPS, sizeof(YOHARA_SUNGMA_SHARD_MAPS) / sizeof(YOHARA_SUNGMA_SHARD_MAPS[0]),
+				YOHARA_SUNGMA_PICK, sizeof(YOHARA_SUNGMA_PICK) / sizeof(YOHARA_SUNGMA_PICK[0]));
+		AddYoharaShardProfile(r, YOHARA_RIFT_SHARD_MAPS, sizeof(YOHARA_RIFT_SHARD_MAPS) / sizeof(YOHARA_RIFT_SHARD_MAPS[0]),
+				YOHARA_RIFT_PICK, sizeof(YOHARA_RIFT_PICK) / sizeof(YOHARA_RIFT_PICK[0]));
+		AddYoharaShardProfile(r, YOHARA_FOREST_SHARD_MAPS, sizeof(YOHARA_FOREST_SHARD_MAPS) / sizeof(YOHARA_FOREST_SHARD_MAPS[0]),
+				YOHARA_FOREST_PICK, sizeof(YOHARA_FOREST_PICK) / sizeof(YOHARA_FOREST_PICK[0]));
+		r.shardLevelGap = YOHARA_SHARD_LEVEL_GAP;
 	}
 
 	DropRules s_drops;
@@ -695,6 +748,8 @@ namespace mt2009_seonhae
 		DropRules f;
 		f.additivePermille = r.additivePermille;
 		f.shardChance = r.shardChance;
+		f.shardLevelGap = r.shardLevelGap;	// MT2009_PLUS_SEONHAE_YOHARA_V1
+		bool hasYoharaMaps = false;			// MT2009_PLUS_SEONHAE_YOHARA_V1
 		bool hasAddPct = false, hasAddMaps = false, hasMobs = false, hasShardPct = false, hasShardMaps = false, hasShards = false;
 		bool hasPicks = false;	// MT2009_PLUS_BOT_BONUS67_V1
 		std::string line;
@@ -733,6 +788,16 @@ namespace mt2009_seonhae
 				ok = (ss >> a) && a > 0;
 				if (ok) { f.shardMaps.insert(a); hasShardMaps = true; }
 			}
+			else if (key == "shard_map_yohara")	// MT2009_PLUS_SEONHAE_YOHARA_V1
+			{
+				ok = (ss >> a) && a > 0;
+				if (ok) { f.yoharaShardMaps.insert(a); hasYoharaMaps = true; }
+			}
+			else if (key == "shard_level_gap")	// MT2009_PLUS_SEONHAE_YOHARA_V1
+			{
+				ok = (ss >> a) && a >= 0 && a <= 300;
+				if (ok) f.shardLevelGap = (int)a;
+			}
 			else if (key == "shard")
 			{
 				ok = (ss >> a >> b) && IsShardVnum((DWORD)a) && b > 0;
@@ -755,7 +820,30 @@ namespace mt2009_seonhae
 		if (hasShardPct) r.shardChance = f.shardChance;
 		if (hasShardMaps) r.shardMaps = f.shardMaps;
 		if (hasShards) r.shards = f.shards;
-		if (hasPicks) r.shardPicks = f.shardPicks;	// MT2009_PLUS_BOT_BONUS67_V1
+		// MT2009_PLUS_SEONHAE_YOHARA_V1: a file's colours replace only the maps they name; an old file's (no
+		// shard_map_yohara line) for the Yohara list's maps are its old defaults and give way to the profiles
+		const std::set<long> defaultYohara = r.yoharaShardMaps;
+		if (hasPicks)
+			for (std::map<long, std::vector<WeightedVnum> >::const_iterator it = f.shardPicks.begin(); it != f.shardPicks.end(); ++it)
+				if (hasYoharaMaps || !defaultYohara.count(it->first))
+					r.shardPicks[it->first] = it->second;
+		if (hasYoharaMaps) r.yoharaShardMaps = f.yoharaShardMaps;
+		r.shardLevelGap = f.shardLevelGap;
+	}
+
+	// MT2009_PLUS_SEONHAE_YOHARA_V1: a shard map of either list
+	bool IsShardMap(const DropRules& r, long map)
+	{
+		return r.shardMaps.count(map) || r.yoharaShardMaps.count(map);
+	}
+
+	// MT2009_PLUS_SEONHAE_YOHARA_V1: the level rule of the Yohara list's maps - the monster at most shard_level_gap
+	// levels under the killer
+	bool ShardLevelOk(const DropRules& r, long map, LPCHARACTER victim, LPCHARACTER killer)
+	{
+		if (r.shardLevelGap <= 0 || !r.yoharaShardMaps.count(map))
+			return true;
+		return (int)killer->GetLevel() <= (int)victim->GetLevel() + r.shardLevelGap;
 	}
 
 	const DropRules& Drops()
@@ -771,9 +859,10 @@ namespace mt2009_seonhae
 				LoadDropRules(s_drops);
 				s_dropsMtime = mtime;
 				s_dropsLoaded = true;
-				sys_log(0, "SEONHAE: drop rules %s (additive maps %u, mobs %u, shard maps %u)",
+				sys_log(0, "SEONHAE: drop rules %s (additive maps %u, mobs %u, shard maps %u, Yohara shard maps %u, level gap %d)",
 						mtime ? "read from the file" : "at their defaults", (unsigned int)s_drops.additiveMaps.size(),
-						(unsigned int)s_drops.mobs.size(), (unsigned int)s_drops.shardMaps.size());
+						(unsigned int)s_drops.mobs.size(), (unsigned int)s_drops.shardMaps.size(),
+						(unsigned int)s_drops.yoharaShardMaps.size(), s_drops.shardLevelGap);
 			}
 		}
 		return s_drops;
@@ -850,7 +939,7 @@ void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<L
 		AddDrop(out, additive->vnum, additive->count);
 
 	// the shards: ordinary monsters on the shard maps
-	if (!bigOne && victim->IsMonster() && r.shardChance > 0 && r.shardMaps.count(map) &&
+	if (!bigOne && victim->IsMonster() && r.shardChance > 0 && IsShardMap(r, map) && ShardLevelOk(r, map, victim, killer) &&
 		number(1, SHARD_CHANCE_SCALE) <= r.shardChance)
 		AddDrop(out, PickShard(r, map), 1);	// MT2009_PLUS_BOT_BONUS67_V1: the map's own colours
 }
@@ -870,7 +959,8 @@ void Mt2009PlusSeonHaeRiftDrop(LPCHARACTER victim, LPCHARACTER killer, const PIX
 		return;
 	const DropRules& r = Drops();
 	const long map = victim->GetMapIndex() >= 10000 ? victim->GetMapIndex() / 10000 : victim->GetMapIndex();
-	if (r.shardChance <= 0 || !r.shardMaps.count(map) || number(1, SHARD_CHANCE_SCALE) > r.shardChance)
+	if (r.shardChance <= 0 || !IsShardMap(r, map) || !ShardLevelOk(r, map, victim, killer) ||
+			number(1, SHARD_CHANCE_SCALE) > r.shardChance)
 		return;
 	std::vector<LPITEM> out;
 	AddDrop(out, PickShard(r, map), 1);
