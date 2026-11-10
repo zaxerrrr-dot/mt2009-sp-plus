@@ -2619,6 +2619,12 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.classPopup = None			# powstaje w __Build, gdy znana jest szerokosc przycisku
 		self.__Build()
 		self.Hide()
+		# MT2009_PLUS_SZKLO_MIDDLECLICK_V1: srodkowy przycisk myszy na przedmiocie -> to okno z tym przedmiotem (szklohandlu.py)
+		try:
+			__import__("szklohandlu").Install(self)
+		except:
+			import dbg
+			dbg.TraceError("szklohandlu.Install failed")
 
 	def __del__(self):
 		ui.BoardWithTitleBar.__del__(self)
