@@ -7,5 +7,5 @@ SET NAMES utf8mb4;
 UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 16384 WHERE vnum IN (4260,4261,4262,4263,4264,4265,4267,4268,4269,4270,4271,4272,4403);
 -- no element (the Metins): 8126,8127
 UPDATE world.mob_proto SET setRaceFlag = (setRaceFlag + 0) & ~129024 WHERE vnum IN (8126,8127) AND (setRaceFlag + 0) & 129024 <> 0;
--- race DEVIL: 4403
-UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~2047) | 4 WHERE vnum IN (4403) AND (setRaceFlag + 0) & 2047 <> 4;
+-- race DEVIL,ORC: 4403
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~2047) | 20 WHERE vnum IN (4403) AND (setRaceFlag + 0) & 2047 <> 20;

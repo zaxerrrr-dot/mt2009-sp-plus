@@ -59,7 +59,7 @@ OVERRIDE = {
 #    Metin no race).
 RACE_BITS = 2047
 RACE = {
-    4403: 'DEVIL',                             # SZC: Jotun Thrym - was ORC
+    4403: 'ORC,DEVIL',                         # SZC: Jotun Thrym - ORC as the pl-wiki, DEVIL (owner)
 }
 
 # -- NPCs (our NPC numbers - gen_ymaps_sql.npc_row); Statua Szczeliny Czasu 20472 is yohara_iluzja.sql's row --------

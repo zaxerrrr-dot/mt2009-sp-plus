@@ -10,5 +10,5 @@ UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 2048 WH
 UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 16384 WHERE vnum IN (4340,4341,4342,4343,4344,4345,4347,4348,4349,4350,4351,4352,4413);
 -- no element (the Metins - the wiki gives a Metin none): 8130,8131,8132,8133,8136,8137
 UPDATE world.mob_proto SET setRaceFlag = (setRaceFlag + 0) & ~129024 WHERE vnum IN (8130,8131,8132,8133,8136,8137) AND (setRaceFlag + 0) & 129024 <> 0;
--- race DEVIL: 4413
-UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~2047) | 4 WHERE vnum IN (4413) AND (setRaceFlag + 0) & 2047 <> 4;
+-- race DEVIL,ORC: 4413
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~2047) | 20 WHERE vnum IN (4413) AND (setRaceFlag + 0) & 2047 <> 20;

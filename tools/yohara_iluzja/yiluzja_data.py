@@ -76,7 +76,7 @@ MOBS = {
 #    Metin no race).
 RACE_BITS = 2047
 RACE = {
-    4413: 'DEVIL',                             # PB: Jotun Thrym - was ORC
+    4413: 'ORC,DEVIL',                         # PB: Jotun Thrym - ORC as the pl-wiki, DEVIL (owner)
 }
 
 # -- NPCs (our NPC numbers - gen_ymaps_sql.npc_row) ------------------------------------------------------------------
