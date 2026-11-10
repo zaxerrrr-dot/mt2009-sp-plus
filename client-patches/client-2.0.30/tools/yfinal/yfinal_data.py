@@ -110,6 +110,10 @@ SET_RE = re.compile(r'^UPDATE world\.mob_proto SET setRaceFlag = \(\(setRaceFlag
                     r'WHERE vnum IN \(([\d,]+)\);$')
 CLR_RE = re.compile(r'^UPDATE world\.mob_proto SET setRaceFlag = \(setRaceFlag \+ 0\) & ~129024 WHERE vnum IN '
                     r'\(([\d,]+)\) AND \(setRaceFlag \+ 0\) & 129024 <> 0;$')
+# MT2009_PLUS_YOHARA_RASY_V1: the dungeons' *_zywioly.sql also fix races (bits 0-10, e.g. Jotun Thrym a devil) - not this
+# step's bits (the race comes with each dungeon's own client rows), so they are recognised and skipped.
+RACE_RE = re.compile(r'^UPDATE world\.mob_proto SET setRaceFlag = \(\(setRaceFlag \+ 0\) & ~2047\) \| (\d+) '
+                     r'WHERE vnum IN \(([\d,]+)\) AND \(setRaceFlag \+ 0\) & 2047 <> \1;$')
 ALL_RE = re.compile(r'^UPDATE world\.mob_proto SET setRaceFlag = \(setRaceFlag \+ 0\) & ~129024 WHERE '
                     r'\(setRaceFlag \+ 0\) & 129024 <> 0 AND vnum NOT IN \(([\d,]+)\);$')
 
@@ -137,6 +141,10 @@ def server_elements():
             if m:
                 for n in m.group(1).split(','):
                     bits[int(n)] = 0
+                continue
+            m = RACE_RE.match(l)
+            if m:
+                assert int(m.group(1)) & ~2047 == 0, (f, l[:120])
                 continue
             m = ALL_RE.match(l)
             if m and i == 0:
