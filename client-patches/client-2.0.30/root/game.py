@@ -3241,6 +3241,10 @@ class GameWindow(ui.ScriptWindow):
 		if hasattr(self.interface.wndCube, "SetImproveInfo"):
 			self.interface.wndCube.SetImproveInfo(int(vnum), int(bonus), int(category))
 
+	def __CubeBatch(self, ok, tried, vnum, count): # MT2009_PLUS_CUBE_BATCH_V1: the end of "/cube make <n>" (uicuberenewal.py)
+		if hasattr(self.interface.wndCube, "OnCubeBatch"):
+			self.interface.wndCube.OnCubeBatch(int(ok), int(tried), int(vnum), int(count))
+
 	def __CubeReload(self):  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta): /reload c - the recipe lists are asked again
 		self.cubeInformation = {}
 
@@ -3560,6 +3564,7 @@ class GameWindow(ui.ScriptWindow):
 	def __ServerCommand_Build(self):
 		serverCommandList={
 			"CubeImprove": self.__CubeImprove,  # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+			"CubeBatch": self.__CubeBatch,  # MT2009_PLUS_CUBE_BATCH_V1
 			"CubeReload": self.__CubeReload,  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta)
 			"AutoTargetAggro": self.__AutoTargetAggro,
 			"AutoTargetAggroReady": self.__AutoTargetAggroReady,

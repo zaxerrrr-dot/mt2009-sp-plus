@@ -2360,4 +2360,19 @@ if ((Test-Path -LiteralPath $jadeIt67Apply -PathType Leaf) -and
     }
 }
 
+# The crafting window's "/cube make <n>" (server-patches/cubebatch, MT2009_PLUS_CUBE_BATCH_V1; Discord, 9 November 2026:
+# "nie przerabia sokow wody po 200 szt. - wylogowuje"): cube.cpp Cube_make_batch - n attempts in one command, the
+# materials / Yang / Gaya taken at once, the results as full stacks; cmd_general.cpp do_cube - a number after "make".
+# The window sent "/cube make" n times in a frame: the command limit cut them and 300 packets a second closed the
+# connection (FLOOD_HEADER_3). Last: its anchors are the NPC craft window's and the helm100 / gaya / sets code.
+$cubeBatchApply = Join-Path $repo 'server-patches/cubebatch/Apply-CubeBatchPatch.ps1'
+if ((Test-Path -LiteralPath $cubeBatchApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $cubeBatchResult = & $cubeBatchApply -SourceDir $engineGameSource
+    if ($cubeBatchResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} cube batch edit(s).' -f $cubeBatchResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

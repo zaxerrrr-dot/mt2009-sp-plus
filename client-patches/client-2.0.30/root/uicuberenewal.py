@@ -1400,8 +1400,28 @@ class CubeRenewalWindow(_RenewalBase):
 			self.batchLeft = quantity
 			self.batchOk = 0
 			self.batchUntil = app.GetTime() + BATCH_TIMEOUT
-		for i in xrange(quantity):
+			# MT2009_PLUS_CUBE_BATCH_V1 (Discord, 9 November 2026: 200 juices at once logged the player out): one
+			# "/cube make <n>" for the n attempts - n commands in one frame were cut by the server's command limit (10 a
+			# half second) and 300 packets a second closed the connection. The server answers "CubeBatch" (OnCubeBatch).
+			net.SendChatPacket("/cube make %d" % quantity)
+		else:
 			net.SendChatPacket("/cube make")
+
+	def OnCubeBatch(self, ok, tried, itemVnum, count):
+		# MT2009_PLUS_CUBE_BATCH_V1: the server's "CubeBatch <ok> <tried> <vnum> <count>" - the end of "/cube make <n>"
+		if self.batchTotal <= 0:
+			self.__ShowImprove()
+			self.listDirty = True
+			return
+		self.batchTotal = max(0, tried)
+		self.batchLeft = 0
+		self.batchOk = max(0, ok)
+		if tried > 0:
+			self.__EndBatch(True)
+		else:
+			self.__EndBatch(False)	# nothing made - the server said why
+		self.__ShowImprove()
+		self.listDirty = True
 
 	def __EndBatch(self, report):
 		if report and self.batchTotal > 0:
