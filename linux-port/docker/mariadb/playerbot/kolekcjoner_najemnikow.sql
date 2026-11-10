@@ -114,3 +114,42 @@ INSERT IGNORE INTO player.najemnicy_kolekcjoner_rewards (collection_index, point
   (5, 'MAX_HP', 5000),
   (6, 'ATT_GRADE_BONUS', 100),
   (6, 'MAGIC_ATT_GRADE_BONUS', 100);
+
+-- MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2 (the owner, 10 November 2026): the tasks are edited in the Seban panel
+-- ("Wydarzenia -> Najemnicy -> Kolekcjoner", kolekcjoner_config.py). The window shows the task's title and description
+-- ('' = the client's built-in ones), min_level = the level a hand-in needs (0 = none), sort_order = the window's
+-- order; an item's sort_order is its place in the window (item_index stays the progress rows' key). The tiers: the
+-- n-th completed task -> so many mercenaries from that level (playerbot_najemnicy.h counts the slots from this table).
+-- The panel writes the event flag m2_kolekcjoner_najemnikow_ver at every change; the game reads it again within 30 s.
+ALTER TABLE player.najemnicy_kolekcjoner_categories ADD COLUMN IF NOT EXISTS title VARCHAR(64) NOT NULL DEFAULT '' AFTER percent;
+ALTER TABLE player.najemnicy_kolekcjoner_categories ADD COLUMN IF NOT EXISTS description VARCHAR(200) NOT NULL DEFAULT '' AFTER title;
+ALTER TABLE player.najemnicy_kolekcjoner_categories ADD COLUMN IF NOT EXISTS min_level SMALLINT UNSIGNED NOT NULL DEFAULT 0 AFTER description;
+ALTER TABLE player.najemnicy_kolekcjoner_categories ADD COLUMN IF NOT EXISTS sort_order SMALLINT NOT NULL DEFAULT 0 AFTER min_level;
+ALTER TABLE player.najemnicy_kolekcjoner_items ADD COLUMN IF NOT EXISTS sort_order SMALLINT NOT NULL DEFAULT 0 AFTER unopened;
+
+CREATE TABLE IF NOT EXISTS player.najemnicy_kolekcjoner_tiers (
+  nr TINYINT UNSIGNED NOT NULL COMMENT 'the n-th completed collector task (1..16)',
+  slots TINYINT UNSIGNED NOT NULL DEFAULT 2 COMMENT 'mercenaries allowed with it (1..7)',
+  level SMALLINT UNSIGNED NOT NULL DEFAULT 80 COMMENT 'from this character level',
+  PRIMARY KEY (nr)
+) ENGINE=InnoDB;
+
+-- The owner's table (8 November 2026), only into an empty table (the panel's rows are never overwritten).
+INSERT IGNORE INTO player.najemnicy_kolekcjoner_tiers (nr, slots, level)
+  SELECT * FROM (SELECT 1 AS nr, 2 AS slots, 80 AS level UNION ALL SELECT 2, 3, 85 UNION ALL SELECT 3, 4, 90
+    UNION ALL SELECT 4, 5, 95 UNION ALL SELECT 5, 6, 100 UNION ALL SELECT 6, 7, 105) seed
+  WHERE NOT EXISTS (SELECT 1 FROM player.najemnicy_kolekcjoner_tiers);
+
+-- The six tasks' titles and descriptions - only where the panel left them empty (all sort_order 0 = by index).
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Skrzynie bossów' WHERE collection_index=1 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Kamienie Duszy' WHERE collection_index=2 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Cor Draconis' WHERE collection_index=3 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Odłamki Energii' WHERE collection_index=4 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Perły i małże' WHERE collection_index=5 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET title='Bossowie lochów' WHERE collection_index=6 AND title='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Szkatułki bossów, oddawane po jednej.' WHERE collection_index=1 AND description='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Kamienie Duszy +4, oddawane po jednym.' WHERE collection_index=2 AND description='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Cor Draconis z misji Alchemika, paczki po 10.' WHERE collection_index=3 AND description='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Odłamki Energii, oddawane w paczkach po 100.' WHERE collection_index=4 AND description='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Perły po jednej, małże w paczkach po 10.' WHERE collection_index=5 AND description='';
+UPDATE player.najemnicy_kolekcjoner_categories SET description='Skrzynie bossów lochów, tylko nieotwierane.' WHERE collection_index=6 AND description='';
