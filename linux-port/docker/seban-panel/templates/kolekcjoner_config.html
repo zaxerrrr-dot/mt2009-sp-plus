@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Kolekcjoner Najemników · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_KOLEKCJONER_CONFIG_V1: zadania Kolekcjonera Najemników – zadania, przedmioty, bonusy, progi (kolekcjoner_config.py) #}
+<style>
+.nj-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:6px 0}
+.nj-form label{display:grid;gap:4px;color:var(--muted);font-size:13px}
+.nj-form input[type=text],.nj-form input[type=number]{padding:6px 7px}
+.nj-form input.w-s{width:6em}.nj-form input.w-m{width:11em}.nj-form input.w-l{width:22em}
+.nj-note{font-size:12px;color:var(--muted)}
+.nj-table td{vertical-align:middle;padding:5px 6px}
+.nj-table form{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0}
+.nj-table input{padding:4px 6px}
+.nj-task{border-left:3px solid var(--accent, #c8a060)}
+.nj-bad{color:#e07070}
+.nj-inline{display:inline}
+</style>
+<a class="back" href="{{ url_for('najemnicy') }}">← Najemnicy</a>
+<p class="eyebrow">WYDARZENIA · NAJEMNICY</p>
+<h1>🏺 Kolekcjoner Najemników – zadania</h1>
+<p class="muted">Zadania Kolekcjonera Najemników: nazwa i opis w oknie gry, szansa jednego oddania, minimalny poziom oddawania, przedmioty (ilość, paczka, tylko nieotwierane) i stałe bonusy za ukończenie. Progi niżej mówią, ile najemników daje <em>n‑te</em> ukończone zadanie i od jakiego poziomu (kolejność ukończenia dowolna). Każda zmiana ustawia flagę <code>m2_kolekcjoner_najemnikow_ver</code> – gra wczytuje zadania w ciągu ~30 s, a progi w ciągu ~10 s, bez restartu.{% if reload_version %} <span class="nj-note">(ostatnia zmiana: {{ reload_version }})</span>{% endif %}</p>
+
+{% if missing %}
+<section class="panel"><h2>Brak tabel</h2><p>Tabele <code>player.najemnicy_kolekcjoner_*</code> jeszcze nie istnieją – utworzy je migracja <code>kolekcjoner_najemnikow.sql</code> przy najbliższym starcie serwera albo gra przy pierwszym otwarciu okna Kolekcjonera.</p></section>
+{% else %}
+
+<section class="panel" id="progi">
+<h2>Progi najemników</h2>
+<form method="post"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}">
+<div class="table-wrap"><table class="nj-table">
+<thead><tr><th>Ukończone zadania (nr)</th><th>Najemników (1–{{ max_slots }})</th><th>Od poziomu (1–{{ max_level }})</th><th>Odblokowuje</th><th></th></tr></thead>
+<tbody>
+{% for nr, slots, level in tiers %}
+<tr><td><input type="hidden" name="tier_nr" value="{{ nr }}"><strong>{{ nr }}</strong></td>
+<td><input type="number" name="tier_slots" value="{{ slots }}" min="1" max="{{ max_slots }}" class="w-s"></td>
+<td><input type="number" name="tier_level" value="{{ level }}" min="1" max="{{ max_level }}" class="w-s"></td>
+<td class="nj-note">{{ nr }}. ukończone zadanie → do {{ slots }} najemników od {{ level }} poz.</td>
+<td><button form="tier-del-{{ nr }}" class="secondary" onclick="return confirm('Usunąć próg {{ nr }}?')">Usuń</button></td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="nj-form"><button name="action" value="tier_save">Zapisz progi</button>
+<button name="action" value="tier_add" class="secondary">Dodaj próg</button></p>
+</form>
+{% for nr, slots, level in tiers %}<form id="tier-del-{{ nr }}" method="post" class="nj-inline"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="action" value="tier_delete"><input type="hidden" name="nr" value="{{ nr }}"></form>{% endfor %}
+<p class="nj-note">Liczba najemników i poziom nie mogą maleć z kolejnym progiem. Pusta tabela = wbudowana (1 → 2 od 80, … 6 → 7 od 105).</p>
+</section>
+
+{% for t in tasks %}
+{% set ti = t.collection_index %}
+<section class="panel nj-task" id="zadanie-{{ ti }}">
+<h2>{{ loop.index }}. {{ t.title or t.name }} <span class="nj-note">(zadanie {{ ti }}, ukończyło {{ t.completed }} graczy)</span></h2>
+<form method="post" class="nj-form"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="task" value="{{ ti }}">
+<label>Klucz (ASCII, do logów)<input type="text" name="name" value="{{ t.name }}" maxlength="48" required class="w-m"></label>
+<label>Nazwa w oknie<input type="text" name="title" value="{{ t.title }}" maxlength="64" class="w-m" placeholder="pusta = wbudowana"></label>
+<label>Opis (jedna linia)<input type="text" name="description" value="{{ t.description }}" maxlength="200" class="w-l" placeholder="pusty = wbudowany"></label>
+<label>Szansa %<input type="number" name="percent" value="{{ t.percent }}" min="1" max="100" class="w-s"></label>
+<label>Min. poziom oddawania<input type="number" name="min_level" value="{{ t.min_level }}" min="0" max="{{ max_level }}" class="w-s"></label>
+<label>Kolejność<input type="number" name="sort_order" value="{{ t.sort_order }}" class="w-s"></label>
+<button name="action" value="task_save">Zapisz</button>
+<button name="action" value="task_up" class="secondary" title="Wyżej">▲</button>
+<button name="action" value="task_down" class="secondary" title="Niżej">▼</button>
+<button name="action" value="task_delete" class="secondary" onclick="return confirm('Usunąć zadanie {{ ti }} ({{ t.title or t.name }}) z przedmiotami, bonusami i postępem graczy? Ukończyło je {{ t.completed }} graczy – zachowają próg najemników, ale stracą jego bonus.')">Usuń zadanie</button>
+</form>
+
+<h3>Przedmioty</h3>
+<div class="table-wrap"><table class="nj-table">
+<thead><tr><th>#</th><th>Przedmiot</th><th>Vnum · ilość · paczka · nieotwierane · kolejność</th></tr></thead>
+<tbody>
+{% for i in t["items"] %}
+<tr><td>{{ i.item_index }}</td><td{% if not i.known %} class="nj-bad"{% endif %}>{{ i.item_label }}</td>
+<td><form method="post"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="task" value="{{ ti }}"><input type="hidden" name="item" value="{{ i.item_index }}">
+<input type="number" name="vnum" value="{{ i.item_vnum }}" min="1" class="w-m" title="vnum">
+<input type="number" name="count" value="{{ i.item_count }}" min="1" class="w-s" title="ilość">
+<input type="number" name="pack" value="{{ i.pack }}" min="1" class="w-s" title="paczka (jedno oddanie)">
+<label class="nj-note"><input type="checkbox" name="unopened" value="1" {% if i.unopened %}checked{% endif %}> nieotwierane</label>
+<input type="number" name="sort_order" value="{{ i.sort_order }}" class="w-s" title="kolejność">
+<button name="action" value="item_save">Zapisz</button>
+<button name="action" value="item_up" class="secondary">▲</button><button name="action" value="item_down" class="secondary">▼</button>
+<button name="action" value="item_delete" class="secondary" onclick="return confirm('Usunąć przedmiot {{ i.item_vnum }} z zadania? Postęp graczy w nim też zniknie.')">Usuń</button>
+</form></td></tr>
+{% else %}
+<tr><td colspan="3" class="nj-bad">Brak przedmiotów – gra pomija to zadanie.</td></tr>
+{% endfor %}
+<tr><td>+</td><td class="nj-note">Nowy przedmiot</td>
+<td><form method="post"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="task" value="{{ ti }}">
+<input type="number" name="vnum" min="1" class="w-m" placeholder="vnum" required>
+<input type="number" name="count" min="1" class="w-s" placeholder="ilość" required>
+<input type="number" name="pack" min="1" value="1" class="w-s" title="paczka">
+<label class="nj-note"><input type="checkbox" name="unopened" value="1"> nieotwierane</label>
+<button name="action" value="item_add">Dodaj</button>
+</form></td></tr>
+</tbody></table></div>
+
+<h3>Stałe bonusy za ukończenie</h3>
+<div class="table-wrap"><table class="nj-table">
+<tbody>
+{% for r in t.rewards %}
+<tr><td{% if not r.known %} class="nj-bad"{% endif %}>{{ r.label }}</td>
+<td><form method="post"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="task" value="{{ ti }}"><input type="hidden" name="old_point" value="{{ r.point_name }}">
+<select name="point">{% for name, lab in points %}<option value="{{ name }}" {% if name == r.point_name %}selected{% endif %}>{{ lab|replace('%d', 'N')|replace('%%', '%') }} ({{ name }})</option>{% endfor %}</select>
+<input type="number" name="value" value="{{ r.value }}" class="w-s">
+<button name="action" value="reward_save">Zapisz</button>
+<button name="action" value="reward_delete" class="secondary" onclick="return confirm('Usunąć bonus?')">Usuń</button>
+</form></td></tr>
+{% else %}
+<tr><td colspan="2" class="muted">Brak bonusu.</td></tr>
+{% endfor %}
+<tr><td class="nj-note">Nowy bonus</td>
+<td><form method="post"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="task" value="{{ ti }}">
+<select name="point">{% for name, lab in points %}<option value="{{ name }}">{{ lab|replace('%d', 'N')|replace('%%', '%') }} ({{ name }})</option>{% endfor %}</select>
+<input type="number" name="value" class="w-s" placeholder="wartość" required>
+<button name="action" value="reward_add">Dodaj</button>
+</form></td></tr>
+</tbody></table></div>
+</section>
+{% else %}
+<section class="panel"><p class="muted">Nie ma jeszcze żadnego zadania.</p></section>
+{% endfor %}
+
+<section class="panel" id="nowe-zadanie">
+<h2>Nowe zadanie</h2>
+<form method="post" class="nj-form"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}"><input type="hidden" name="action" value="task_add">
+<label>Klucz (ASCII)<input type="text" name="name" maxlength="48" required class="w-m"></label>
+<label>Nazwa w oknie<input type="text" name="title" maxlength="64" class="w-m"></label>
+<label>Opis<input type="text" name="description" maxlength="200" class="w-l"></label>
+<label>Szansa %<input type="number" name="percent" value="95" min="1" max="100" class="w-s"></label>
+<label>Min. poziom oddawania<input type="number" name="min_level" value="0" min="0" max="{{ max_level }}" class="w-s"></label>
+<button>Dodaj zadanie</button>
+</form>
+<p class="nj-note">Nowe zadanie trafia na koniec listy. Bez przedmiotów gra go nie pokazuje. Każde ukończone zadanie (dowolne) to kolejny próg z tabeli wyżej.</p>
+</section>
+{% endif %}
+{% endblock %}

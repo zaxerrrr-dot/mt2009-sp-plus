@@ -15,21 +15,21 @@ side playerbot_najemnicy.h ("/najemnicy", the quest najemnicy.quest).
 """
 import secrets
 
+from kolekcjoner_config import read_tiers
+
 CLASSES = {0: "Wojownik", 1: "Ninja", 2: "Sura", 3: "Szaman"}
 PATHS = {(0, 1): "Ciało", (0, 2): "Mental", (1, 1): "Skrytobójca", (1, 2): "Łucznik",
          (2, 1): "Broń", (2, 2): "Czarna Magia", (3, 1): "Smok", (3, 2): "Leczenie"}
 FLAGS = ("m2_najemnicy_off", "m2_najemnicy_free_unlock", "m2_najemnicy_price_h")
 DEFAULT_PRICE_H = 5000000
-MAX_TASKS = 6
+MAX_TASKS = 16	# the game's clamp (MT2009_PLUS_KOLEKCJONER_CONFIG_V1: the panel may add tasks; the tiers decide the slots)
 
 
-def slots_for(tasks, level):
-    """The game's GetNajemnicySlots: a task done counts once the level of its tier is there."""
-    tiers = 0
-    for t in range(1, min(int(tasks or 0), MAX_TASKS) + 1):
-        if int(level or 0) >= 80 + (t - 1) * 5:
-            tiers = t
-    return min(7, tiers + 1) if tiers else 0
+def slots_for(tasks, level, tiers=None):
+    """The game's GetNajemnicySlots over the tier table (player.najemnicy_kolekcjoner_tiers, MT2009_PLUS_KOLEKCJONER_CONFIG_V1:
+    the n-th completed task -> slots from a level); the built-in 1 + 80 -> 2 ... 6 + 105 -> 7 when it is empty/missing."""
+    from kolekcjoner_config import slots_for_tiers
+    return slots_for_tiers(tiers, tasks, level)
 DDL_CHECK = "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA='player' AND TABLE_NAME='najemnicy'"
 
 
@@ -63,6 +63,9 @@ def yang(value):
 
 
 def install(app, db, login_required, csrf_token):
+    # MT2009_PLUS_KOLEKCJONER_CONFIG_V1: the sub-page "Kolekcjoner Najemnikow - zadania" (/events/najemnicy/kolekcjoner).
+    import kolekcjoner_config
+    kolekcjoner_config.install(app, db, login_required, csrf_token)
     from flask import abort, flash, redirect, render_template, request, session, url_for
 
     def check_csrf():
@@ -104,9 +107,9 @@ def install(app, db, login_required, csrf_token):
                         try:
                             tasks = int(request.form.get("tasks") or MAX_TASKS) if action == "unlock" else 0
                         except ValueError:
-                            raise ValueError("Zadania: liczba od 0 do 6.")
+                            raise ValueError(f"Zadania: liczba od 0 do {MAX_TASKS}.")
                         if tasks < 0 or tasks > MAX_TASKS:
-                            raise ValueError("Zadania: liczba od 0 do 6.")
+                            raise ValueError(f"Zadania: liczba od 0 do {MAX_TASKS}.")
                         cur.execute("INSERT INTO player.najemnicy_unlock (owner_pid, unlocked, tasks, unlocked_at, source) "
                                     "VALUES (%s, %s, %s, NOW(), 'panel') ON DUPLICATE KEY UPDATE unlocked=%s, tasks=%s, "
                                     "unlocked_at=NOW(), source='panel'", (row["id"], 1 if tasks else 0, tasks,
@@ -115,7 +118,7 @@ def install(app, db, login_required, csrf_token):
                         # character offline; one online keeps its flag in memory: /najemnicy zadania|zablokuj in the game.
                         cur.execute("UPDATE player.quest SET lValue=%s WHERE dwPID=%s AND szName='najemnicy' "
                                     "AND szState='tasks' AND lValue>%s", (tasks, row["id"], tasks))
-                        slots = slots_for(tasks, row["level"])
+                        slots = slots_for(tasks, row["level"], read_tiers(cur))
                         flash(f"{row['name']} (poziom {row['level']}): zadania Kolekcjonera {tasks}/{MAX_TASKS} – "
                               f"miejsca na najemników teraz: {slots}.", "success")
                     else:
@@ -153,12 +156,13 @@ def install(app, db, login_required, csrf_token):
                            FROM player.najemnicy_unlock u LEFT JOIN player.player o ON o.id = u.owner_pid
                            ORDER BY u.tasks DESC, u.unlocked_at DESC LIMIT 500""")
             unlocks = cur.fetchall()
+            tiers = read_tiers(cur)
             for u in unlocks:
-                u["slots"] = slots_for(u["tasks"], u["owner_level"])
+                u["slots"] = slots_for(u["tasks"], u["owner_level"], tiers)
             price = int(flags["m2_najemnicy_price_h"] or 0) or DEFAULT_PRICE_H
             total_balance = sum(int(v["balance"] or 0) for v in vaults)
             return render_template("najemnicy.html", missing=False, flags=flags, price=price, price_text=yang(price),
                                    owners=sorted(owners.values(), key=lambda o: (o["name"] or "").lower()),
                                    retired=retired, vaults=vaults, unlocks=unlocks,
                                    total_mercs=sum(len(o["mercs"]) for o in owners.values()),
-                                   total_balance=yang(total_balance), nj_csrf=csrf_token())
+                                   total_balance=yang(total_balance), tiers=tiers, nj_csrf=csrf_token())
