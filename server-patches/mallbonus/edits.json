@@ -1,0 +1,8 @@
+[
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_MALL_BONUS_NOCAP_V1",
+  "old": "\t\tcase POINT_MALL_ATTBONUS:\n\t\tcase POINT_MALL_DEFBONUS:\n\t\tcase POINT_MALL_EXPBONUS:\n\t\tcase POINT_MALL_GOLDBONUS:\n\t\tcase POINT_MELEE_MAGIC_ATT_BONUS_PER:\n\t\tcase POINT_MAGIC_ATT_BONUS_PER: // MT2009_PLUS_MAGIC_ATT_PER_V1\n\t\tcase POINT_IMMUNE_STUN_BREAK:\n\t\t\tif (GetPoint(type) + amount > 100)\n",
+  "new": "\t\t// MT2009_PLUS_MALL_BONUS_NOCAP_V1: the percent bonuses (attack, defence, experience, yang, melee/magic attack) have\n\t\t// no 100 cap - the owner's rule, bonuses stack without limits. The cap also clipped an amount on the way in and took\n\t\t// it off whole on the way out, so a bonus could end below what the character really had.\n\t\tcase POINT_MALL_ATTBONUS:\n\t\tcase POINT_MALL_DEFBONUS:\n\t\tcase POINT_MALL_EXPBONUS:\n\t\tcase POINT_MALL_GOLDBONUS:\n\t\tcase POINT_MELEE_MAGIC_ATT_BONUS_PER:\n\t\tcase POINT_MAGIC_ATT_BONUS_PER: // MT2009_PLUS_MAGIC_ATT_PER_V1\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n\t\t\tval = GetPoint(type);\n\t\t\tbreak;\n\n\t\tcase POINT_IMMUNE_STUN_BREAK:\n\t\t\tif (GetPoint(type) + amount > 100)\n"
+ }
+]

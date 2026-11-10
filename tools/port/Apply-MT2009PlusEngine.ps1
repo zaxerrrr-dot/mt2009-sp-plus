@@ -2375,4 +2375,17 @@ if ((Test-Path -LiteralPath $cubeBatchApply -PathType Leaf) -and
     }
 }
 
+# Percent bonuses without the 100 cap (server-patches/mallbonus, MT2009_PLUS_MALL_BONUS_NOCAP_V1; owner, 10 November 2026:
+# "bonusy powinny nie miec ograniczen"): char.cpp PointChange - attack/defence/exp/yang/melee-magic percent stack freely.
+# Last: its anchor is the MAGIC_ATT_PER case list.
+$mallBonusApply = Join-Path $repo 'server-patches/mallbonus/Apply-MallBonusPatch.ps1'
+if ((Test-Path -LiteralPath $mallBonusApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $mallBonusResult = & $mallBonusApply -SourceDir $engineGameSource
+    if ($mallBonusResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mall bonus edit(s).' -f $mallBonusResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
