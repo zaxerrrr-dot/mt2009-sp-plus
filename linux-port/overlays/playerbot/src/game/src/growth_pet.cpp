@@ -642,7 +642,10 @@ namespace growth_pet
 	void ChampionGains(Pet& p, int cl, DWORD gain[3])
 	{
 		const int type = MINMAX(1, (int)p.d.bType, 8);
-		const DWORD applies[3] = { p.d.dwChampionResApply, p.d.dwChampionBlockPenApply, p.d.dwChampionPrecisionApply };
+		// MT2009_PLUS_PET_CHAMPION_GAIN_FIX_V1 (player report, 10 November 2026): the apply fields keep the champion start values in
+		// their high 16 bits (<< 16, see the start helpers below) - only the low 16 bits are the even types' fixed gain;
+		// adding the whole field gave e.g. 39 x (100 + 65276) / 100 ~ 25496 at a champion level-up.
+		const DWORD applies[3] = { p.d.dwChampionResApply & 0xFFFF, p.d.dwChampionBlockPenApply & 0xFFFF, p.d.dwChampionPrecisionApply & 0xFFFF };
 		for (int k = 0; k < 3; ++k)
 		{
 			gain[k] = 0;
@@ -2335,6 +2338,32 @@ namespace growth_pet
 				"ekwipunku.", p.d.szName, p.d.dwLevel);
 	}
 
+	// MT2009_PLUS_PET_CHAMPION_GAIN_FIX_V1: a pet already inflated by the old gain (the start << 16 added on a level-up)
+	// gets its champion values back at load - the excess is a multiple of the start field, the rest is the real value.
+	void FixChampionStats(Pet& p)
+	{
+		if (!IsChampion(p))
+			return;
+		DWORD* vals[3] = { &p.d.dwChampionRes, &p.d.dwChampionBlockPen, &p.d.dwChampionPrecision };
+		const DWORD applies[3] = { p.d.dwChampionResApply, p.d.dwChampionBlockPenApply, p.d.dwChampionPrecisionApply };
+		bool fixed = false;
+		for (int k = 0; k < 3; ++k)
+		{
+			const DWORD u = applies[k] & 0xFFFF0000u;	// the start << 16
+			if (u && *vals[k] >= u)
+			{
+				*vals[k] %= u;
+				fixed = true;
+			}
+		}
+		if (fixed)
+		{
+			MarkDirty(p);
+			sys_log(0, "GROWTH_PET champion fix: pet %u: res %u blockpen %u precision %u", p.d.dwID,
+				p.d.dwChampionRes, p.d.dwChampionBlockPen, p.d.dwChampionPrecision);
+		}
+	}
+
 	void OnLoaded(LPCHARACTER ch, const TPacketDGGrowthPetLoad* head, const TGrowthPet* pets)
 	{
 		for (WORD i = 0; i < head->wCount; ++i)
@@ -2350,6 +2379,7 @@ namespace growth_pet
 				p.d = row;
 				for (int k = 0; k < GROWTH_PET_SKILL_SLOTS; ++k)
 					p.d.aSkill[k].dwCooltime = 0;
+				FixChampionStats(p);
 			}
 			p.holder = ch->GetPlayerID();
 			if (head->bReason == GROWTH_PET_LOAD_PENDING)
