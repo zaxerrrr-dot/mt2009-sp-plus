@@ -56,6 +56,13 @@
 // reserve keeps the plan's remaining SM back (GetPlayerBotElementShopReserve).
 // Switches (event flags): m2_bot_element_shop_off 1 - the pass off (the pins, the stone membership, the pool's room,
 // the reserve with it); m2_bot_element_shop_margin N (1-20, 99 none; default 2); m2_bot_element_shop_budget N.
+// MT2009_PLUS_BOT_WIND_BUILD_V1 (the owner, 10 November 2026: the bots of 90+ build wind with the ItemShop; see
+// playerbot_element_maps.h): the lightning kept on the fewest pieces (the rest are the plan's), the lightning goal of the
+// wind window built without its pet, a kept piece's both option (OPT_BOTH, WorkPlayerBotElementShopBoth) when still
+// short, the wind step's budget PLAYERBOT_ESHOP_WIND_BUDGET (m2_bot_wind_shop_budget N; m2_bot_wind_both_off 1 - no both
+// option; m2_bot_eprog_keep_all 1 - the old kept-line rule). Log: PLAYERBOT_EPROG_SHOP: both / both_no_funds, and
+// PLAYERBOT_WIND_CENSUS with the census (the bots of 90+ by band: wind spread, lightning without the pet, goals, pet,
+// stone, lightning pieces kept / freed; the period's wind starts, reached, median minutes, SM, changes, adds, pets, both).
 // The log: PLAYERBOT_EPROG_SHOP: start / plan / pet / work / piece_done / piece_give_up / reached / arrived / again /
 // left / short, and a census every PLAYERBOT_ESHOP_CENSUS_MS (the bots in the window - urgent now, reached - their
 // resistance at the start and now, the SM spent, the minutes from the start to the gate, the stones used, the
@@ -85,7 +92,18 @@ namespace
 	// the change's level odds (CItem::ChangeAttribute's tmpChangeProb, levels 1-5)
 	const int PLAYERBOT_ESHOP_CHANGE_LEVEL_PCT[5] = { 0, 10, 40, 35, 15 };
 
-	enum { PLAYERBOT_ESHOP_OPT_STONE = 0, PLAYERBOT_ESHOP_OPT_PET, PLAYERBOT_ESHOP_OPT_FLOOR, PLAYERBOT_ESHOP_OPT_TOP };
+	enum { PLAYERBOT_ESHOP_OPT_STONE = 0, PLAYERBOT_ESHOP_OPT_PET, PLAYERBOT_ESHOP_OPT_FLOOR, PLAYERBOT_ESHOP_OPT_TOP,
+		PLAYERBOT_ESHOP_OPT_BOTH };	// MT2009_PLUS_BOT_WIND_BUILD_V1
+
+	// MT2009_PLUS_BOT_WIND_BUILD_V1: a piece the kept element stays on (IsPlayerBotElementProgressKeptPiece) may still take
+	// the goal's line beside it - changed until both lines stand (the kept one at what the kept gate needs), in one go
+	// so the kept line never stays off the piece; offered only when the plan is short without it and a hit is likelier
+	// than one in PLAYERBOT_ESHOP_BOTH_CAP. m2_bot_wind_both_off 1 - never.
+	const int PLAYERBOT_ESHOP_BOTH_CAP = 250;
+	const int PLAYERBOT_ESHOP_BOTH_RESTORE = 80;	// past the cap: changes to bring the kept line back
+	// MT2009_PLUS_BOT_WIND_BUILD_V1: the wind step's budget (a step may spend this much of the balance; the both option
+	// is the dear one) - event flag m2_bot_wind_shop_budget N (100-200000)
+	const long long PLAYERBOT_ESHOP_WIND_BUDGET = 15000;
 
 	struct TPlayerBotEShopRecord
 	{
@@ -125,12 +143,19 @@ namespace
 		unsigned int starts, reached, again, left, sessions, windowWaits, noStones, petsBought, petsOut, pieceDone, pieceGiveUp;
 		unsigned int changes, adds;
 		unsigned int boosts, hpPieceDone, hpDone;	// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: the wind step's work this period
+		unsigned int windStarts, windReached, windChanges, windAdds, windPets, windSessions, windShort, bothDone, bothFail,
+			bothChanges, holderSessions;
+		long long windSm;
+		std::vector<int> windMinutes;
 		long long smReached;		// the SM of the bots reached in the period
 		long long minutesReached;	// their minutes
 		long resistStartReached;
 		std::vector<int> minutes;	// each reached bot's minutes (the median)
 		TPlayerBotEShopStats() : starts(0), reached(0), again(0), left(0), sessions(0), windowWaits(0), noStones(0), petsBought(0),
-			petsOut(0), pieceDone(0), pieceGiveUp(0), changes(0), adds(0), boosts(0), hpPieceDone(0), hpDone(0), smReached(0), minutesReached(0), resistStartReached(0) {}
+			petsOut(0), pieceDone(0), pieceGiveUp(0), changes(0), adds(0), boosts(0), hpPieceDone(0), hpDone(0), windStarts(0),
+			windReached(0), windChanges(0), windAdds(0), windPets(0), windSessions(0), windShort(0), bothDone(0), bothFail(0),
+			bothChanges(0), holderSessions(0), windSm(0), smReached(0), minutesReached(0), resistStartReached(0) {}
 	};
 	TPlayerBotEShopStats s_kPlayerBotEShop;
 
@@ -158,6 +183,22 @@ namespace
 	{
 		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_element_shop_budget");
 		return flag >= 100 && flag <= 200000 ? (long long)flag : PLAYERBOT_ESHOP_BUDGET;
+	}
+
+	// MT2009_PLUS_BOT_WIND_BUILD_V1: the step's budget for the bot's goal now - the wind step's own (never under the
+	// common one)
+	long long GetPlayerBotElementShopBudgetFor(int element)
+	{
+		const long long common = GetPlayerBotElementShopBudget();
+		if (element != PLAYERBOT_EM_WIND)
+			return common;
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_wind_shop_budget");
+		return std::max(common, flag >= 100 && flag <= 200000 ? (long long)flag : PLAYERBOT_ESHOP_WIND_BUDGET);
+	}
+
+	bool IsPlayerBotElementShopBothOn()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_wind_both_off") == 0;
 	}
 
 	// The element goal this pass builds: a gated goal (the prebuild window or a gated map wanted) of fire, lightning or
@@ -188,6 +229,12 @@ namespace
 		double dTopP;	// ... at the top
 		double dAdds;	// the add stones expected to fill it to four lines
 		int iSpent;		// changes this step
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: a kept piece's both option - the kept line's point and the value it must keep
+		bool bBoth;
+		BYTE bKeepPoint;
+		int iKeepMin;
+		TPlayerBotEShopPiece() : bWear(0), item(NULL), iSet(-1), iCur(0), iFloor(0), iTop(0), iLines(0), dFloorP(0), dTopP(0),
+			dAdds(0), iSpent(0), bBoth(false), bKeepPoint(0), iKeepMin(0) {}
 	};
 
 	struct TPlayerBotEShopOption
@@ -247,7 +294,7 @@ namespace
 			return false;
 		const int set = item->GetAttributeSetIndex();
 		if (set < 0 || set >= ATTRIBUTE_SET_MAX_NUM || !IsPlayerBotApplyOnAttrSet(point, set) ||
-				HasPlayerBotElementProgressKeptLine(item, keep))
+				IsPlayerBotElementProgressKeptPiece(ch, item, keep))
 			return false;
 		TItemAttrMap::const_iterator it = g_map_itemAttr.find(point);
 		if (it == g_map_itemAttr.end())
@@ -342,7 +389,8 @@ namespace
 		// the pet: its element's seal out (held: no cost)
 		plan.iPetPrice = (int)GetPlayerBotItemShopCheapest(ch, PLAYERBOT_ELEMPET_VNUMS[v.iElement], false);
 #if defined(__PET_SYSTEM__) && defined(USE_PET_SEAL_ON_LOGIN)
-		if (!IsPlayerBotElementShopPetOut(ch, v.iElement))
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: not for a bot of the wind window on lightning - its pet is wind's next
+		if (!IsPlayerBotWindBuildHolder(ch, v.iElement) && !IsPlayerBotElementShopPetOut(ch, v.iElement))
 		{
 			const bool petHeld = FindPlayerBotBagElementPet(ch, PLAYERBOT_ELEMPET_VNUMS[v.iElement]) != NULL;
 			// one purchase a step: a seal bought and not found (another window) is not bought again
@@ -412,6 +460,62 @@ namespace
 				else if (o.iKind == PLAYERBOT_ESHOP_OPT_PET)
 					plan.bPet = true;
 			}
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: still short - one kept piece takes the goal's line beside the kept one (the
+		// likeliest; the kept line may come down only by what the kept element holds over its gate)
+		if (gap > 0 && changes && v.iKeep >= 0 && v.iKeep < 6 && IsPlayerBotElementShopBothOn())
+		{
+			const BYTE keepPoint = PLAYERBOT_ELEMENT_MAP_POINTS[v.iKeep];
+			// the kept element over its gate, the lines on the free pieces (rolled away for the goal) not counted on
+			int slack = GetPlayerBotElementMapResistOwn(ch, v.iKeep) - GetPlayerBotElementProgressKeepNeed(ch, v.iKeep);
+			static const BYTE s_free[] = { WEAR_BODY, WEAR_HEAD, WEAR_WRIST,
+#ifdef ENABLE_PENDANT_SYSTEM
+				WEAR_PENDANT,
+#endif
+				WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR };
+			for (size_t i = 0; i < sizeof(s_free) / sizeof(s_free[0]); ++i)
+			{
+				LPITEM worn = ch->GetWear(s_free[i]);
+				if (worn && !IsPlayerBotElementProgressKeptPiece(ch, worn, v.iKeep))
+					slack -= GetPlayerBotElementShopLine(worn, keepPoint);
+			}
+			TPlayerBotEShopPiece best;
+			double bestCost = 0;
+			for (size_t i = 0; slack >= 0 && i < sizeof(s_wears) / sizeof(s_wears[0]); ++i)
+			{
+				LPITEM worn = ch->GetWear(s_wears[i]);
+				if (!worn || !IsPlayerBotElementProgressKeptPiece(ch, worn, v.iKeep))
+					continue;
+				TPlayerBotEShopPiece p, k;
+				if (!ReadPlayerBotElementShopPiece(ch, s_wears[i], point, -1, p, rec) ||
+						!ReadPlayerBotElementShopPiece(ch, s_wears[i], keepPoint, -1, k, rec) ||
+						p.iSpent >= PLAYERBOT_ESHOP_PIECE_GIVE_UP || p.iCur >= p.iFloor)
+					continue;
+				const int keepMin = std::max(k.iFloor, k.iCur - slack);
+				if (keepMin > k.iTop)
+					continue;
+				const double both = p.dFloorP * (keepMin <= k.iFloor ? k.dFloorP : k.dTopP);
+				if (both * PLAYERBOT_ESHOP_BOTH_CAP < 1.0)
+					continue;
+				const double cost = p.dAdds * std::max(1.0, plan.dUnitAdd) + std::max(1.0, plan.dUnitChange) / both;
+				if (!best.item || cost < bestCost)
+				{
+					best = p;
+					best.bBoth = true;
+					best.bKeepPoint = keepPoint;
+					best.iKeepMin = keepMin;
+					bestCost = cost;
+				}
+			}
+			if (best.item)
+			{
+				const TPlayerBotEShopOption o = { PLAYERBOT_ESHOP_OPT_BOTH, (int)plan.pieces.size(), best.iFloor - best.iCur, bestCost };
+				plan.pieces.push_back(best);
+				gap -= o.iGain;
+				plan.iGain += o.iGain;
+				plan.dCost += o.dCost;
+				plan.chosen.push_back(o);
+			}
+		}
 		plan.bShort = gap > 0;
 	}
 
@@ -571,6 +675,93 @@ namespace
 		return used;
 	}
 
+	// MT2009_PLUS_BOT_WIND_BUILD_V1: the both option's work - off, filled to four lines, changed until the goal's line
+	// stands at its floor and the kept line at iKeepMin (PLAYERBOT_ESHOP_BOTH_CAP changes at most; past them only until
+	// the kept line is back, PLAYERBOT_ESHOP_BOTH_RESTORE more), the stones bought as they run out, on again. One go -
+	// the kept line is never left off the piece between two steps. The changes spent.
+	int WorkPlayerBotElementShopBoth(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotEShopRecord& rec,
+			const TPlayerBotEShopPiece& p, BYTE point, DWORD dwNow, int* purchases)
+	{
+		LPITEM item = p.item;
+		const int want = p.iFloor;
+		const int windBefore = GetPlayerBotElementShopLine(item, point);
+		const int keepBefore = GetPlayerBotElementShopLine(item, p.bKeepPoint);
+		// the start: room for the cap's stones in the step's budget and the balance (else a lost kept line could stay)
+		const double unit = std::max(1.0, GetPlayerBotElementShopUnitPrice(ch, PLAYERBOT_BONUS_CHANGE_VNUM));
+		const long long room = GetPlayerBotElementShopBudgetFor(rec.iElement) - rec.llSpent;
+		const long long need = (long long)(unit * (PLAYERBOT_ESHOP_BOTH_CAP + PLAYERBOT_ESHOP_BOTH_RESTORE) / 2);
+		if (room < need || (long long)state.iDragonCoins + ch->CountSpecifyItem(PLAYERBOT_BONUS_CHANGE_VNUM) * (long long)unit < need)
+		{
+			PlayerBotLogThrottled("eshop_both_funds", dwNow,
+					"PLAYERBOT_EPROG_SHOP: both_no_funds pid=%u name=%s lv=%d slot=%u room=%lld need=%lld coins=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)p.bWear, room, need, state.iDragonCoins);
+			return 0;
+		}
+		if (FindPlayerBotElementShopStone(ch, PLAYERBOT_BONUS_CHANGE_VNUM, item) < 0)
+			rec.llSpent += BuyPlayerBotElementShopBatch(ch, state, PLAYERBOT_BONUS_CHANGE_VNUM, PLAYERBOT_ESHOP_CHANGE_BATCH,
+					"element_shop_change", dwNow, purchases);
+		if (FindPlayerBotElementShopStone(ch, PLAYERBOT_BONUS_CHANGE_VNUM, item) < 0)
+		{
+			++s_kPlayerBotEShop.noStones;
+			return 0;
+		}
+		if (!ch->UnequipItem(item))
+			return 0;
+		int changes = 0, adds = 0;
+		bool done = false;
+		for (int guard = 0; guard < PLAYERBOT_ESHOP_BOTH_CAP + PLAYERBOT_ESHOP_BOTH_RESTORE + PLAYERBOT_BONUS_MAX_LINES * 4; ++guard)
+		{
+			const bool keepOk = GetPlayerBotElementShopLine(item, p.bKeepPoint) >= p.iKeepMin;
+			if (keepOk && GetPlayerBotElementShopLine(item, point) >= want)
+			{
+				done = true;
+				break;
+			}
+			if (changes >= PLAYERBOT_ESHOP_BOTH_CAP && (keepOk || changes >= PLAYERBOT_ESHOP_BOTH_CAP + PLAYERBOT_ESHOP_BOTH_RESTORE))
+				break;
+			const int count = item->GetAttributeCount();
+			int cell = -1;
+			if (count < PLAYERBOT_BONUS_MAX_LINES && CanPlayerBotItemRollNewLine(item) &&
+					(cell = FindPlayerBotElementShopStone(ch, PLAYERBOT_BONUS_ADD_VNUM, item)) >= 0)
+			{
+				if (number(1, 100) <= aiItemAttributeAddPercent[count])
+					item->AddAttribute();
+				ConsumePlayerBotBonusStoneAt(ch, cell);
+				++adds;
+				continue;
+			}
+			cell = FindPlayerBotElementShopStone(ch, PLAYERBOT_BONUS_CHANGE_VNUM, item);
+			if (cell < 0)
+			{
+				rec.llSpent += BuyPlayerBotElementShopBatch(ch, state, PLAYERBOT_BONUS_CHANGE_VNUM, PLAYERBOT_ESHOP_CHANGE_BATCH,
+						"element_shop_change", dwNow, purchases);
+				cell = FindPlayerBotElementShopStone(ch, PLAYERBOT_BONUS_CHANGE_VNUM, item);
+				if (cell < 0)
+					break;
+			}
+			item->ChangeAttribute();
+			ConsumePlayerBotBonusStoneAt(ch, cell);
+			++changes;
+		}
+		LogManager::instance().ItemLog(ch, item, "PLAYERBOT_ESHOP_BOTH", item->GetName());
+		if (!PlayerBotEquipItem(ch, item))
+			sys_err("PLAYERBOT_EPROG_SHOP: could not re-equip pid=%u name=%s vnum=%u slot=%u changes=%d", ch->GetPlayerID(),
+					ch->GetName(), item->GetVnum(), (unsigned int)p.bWear, changes);
+		rec.iChanges += changes;
+		rec.iAdds += adds;
+		rec.pieceChanges[item->GetID()] += done ? changes : std::max(changes, PLAYERBOT_ESHOP_PIECE_GIVE_UP);
+		s_kPlayerBotEShop.changes += (unsigned int)changes;
+		s_kPlayerBotEShop.adds += (unsigned int)adds;
+		s_kPlayerBotEShop.bothChanges += (unsigned int)changes;
+		++(done ? s_kPlayerBotEShop.bothDone : s_kPlayerBotEShop.bothFail);
+		sys_log(0, "PLAYERBOT_EPROG_SHOP: both pid=%u name=%s lv=%d slot=%u vnum=%u line=%d->%d want=%d kept=%d->%d kept_min=%d "
+				"changes=%d adds=%d done=%d spent=%lld coins=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (unsigned int)p.bWear, item->GetVnum(), windBefore,
+				GetPlayerBotElementShopLine(item, point), want, keepBefore, GetPlayerBotElementShopLine(item, p.bKeepPoint),
+				p.iKeepMin, changes, adds, done ? 1 : 0, rec.llSpent, state.iDragonCoins);
+		return changes + adds;
+	}
+
 	// ---------------------------------------------------------------- the hooks of the other passes
 
 	TPlayerBotEShopRecord* FindPlayerBotElementShopRecord(LPCHARACTER ch)
@@ -609,7 +800,7 @@ namespace
 		TPlayerBotElementMapView v;
 		if (!GetPlayerBotElementShopView(ch, v))
 			return false;
-		if (HasPlayerBotElementProgressKeptLine(item, v.iKeep))
+		if (IsPlayerBotElementProgressKeptPiece(ch, item, v.iKeep))
 			return true;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		const int set = item->GetAttributeSetIndex();
@@ -629,7 +820,7 @@ namespace
 		const TPlayerBotEShopRecord* rec = FindPlayerBotElementShopRecord(ch);
 		if (!IsPlayerBotElementShopActive(rec))
 			return -1;
-		return std::max(0LL, GetPlayerBotElementShopBudget() - rec->llSpent);
+		return std::max(0LL, GetPlayerBotElementShopBudgetFor(rec->iElement) - rec->llSpent);
 	}
 
 	// playerbot_ishop3_goals.h (GetPlayerBotIshop3GoalReserve): the plan's SM still to go, kept back from the look.
@@ -638,7 +829,7 @@ namespace
 		const TPlayerBotEShopRecord* rec = FindPlayerBotElementShopRecord(ch);
 		if (!IsPlayerBotElementShopOn() || !IsPlayerBotElementShopActive(rec))
 			return 0;
-		return std::min(rec->llPlanCost, std::max(0LL, GetPlayerBotElementShopBudget() - rec->llSpent));
+		return std::min(rec->llPlanCost, std::max(0LL, GetPlayerBotElementShopBudgetFor(rec->iElement) - rec->llSpent));
 	}
 
 	// ---------------------------------------------------------------- MT2009_PLUS_BOT_EPROG_BUY_MORE_V1
@@ -662,7 +853,7 @@ namespace
 				rec.hpPieces.insert(p.item->GetID());
 				continue;
 			}
-			if (std::max(0LL, GetPlayerBotElementShopBudget() - rec.llSpent) <= 0)
+			if (std::max(0LL, GetPlayerBotElementShopBudgetFor(rec.iElement) - rec.llSpent) <= 0)
 				return false;
 			rec.dwFocusItem = p.item->GetID();
 			rec.iFocusWear = p.bWear;
@@ -749,7 +940,7 @@ namespace
 			cost = (long long)plan.dCost;
 			if (smReach < v.iResist + 5)
 				smWhy = "plan_short";
-			else if (cost > GetPlayerBotElementShopBudget() || cost > (long long)state.iDragonCoins)
+			else if (cost > GetPlayerBotElementShopBudgetFor(element) || cost > (long long)state.iDragonCoins)
 				smWhy = "no_sm";
 			else
 				sm = true;
@@ -866,6 +1057,85 @@ namespace
 				s_kPlayerBotEShop.adds, s_kPlayerBotEShop.petsBought, s_kPlayerBotEShop.petsOut, s_kPlayerBotEShop.pieceDone,
 				s_kPlayerBotEShop.pieceGiveUp, s_kPlayerBotEShop.boosts, s_kPlayerBotEShop.hpPieceDone, s_kPlayerBotEShop.hpDone,
 				GetPlayerBotElementShopBudget(), GetPlayerBotElementShopMargin());
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: the wind of the bots of 90+ (no Yohara hunt element) by band - its spread, the
+		// lightning held without the pet, the goal (wind / lightning first / other), the wind pet and stone out, the
+		// lightning pieces freed for wind - and the period's wind work in the shop
+		{
+			const int BANDS = 3;	// 90-94, 95-99, 100-119
+			static const char* const s_aszBands[BANDS] = { "90-94", "95-99", "100+" };
+			int bots[BANDS] = { 0 }, spread[BANDS][5] = { { 0 } }, elecOk[BANDS] = { 0 }, goalWind[BANDS] = { 0 };
+			int goalElec[BANDS] = { 0 }, goalOther[BANDS] = { 0 }, windPet[BANDS] = { 0 }, stone[BANDS] = { 0 };
+			int freed[BANDS] = { 0 }, kept[BANDS] = { 0 }, inZaklety[BANDS] = { 0 };
+			long windSum[BANDS] = { 0 }, elecSum[BANDS] = { 0 };
+			const int elecGate = GetPlayerBotElementProgressKeepNeed(NULL, PLAYERBOT_EM_ELEC);
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+				if (!ch || !ch->IsItemLoaded() || ch->GetLevel() < 90 || ch->GetLevel() >= 120 || GetPlayerBotHuntElement(ch) != 0 ||
+						IsPlayerBotYoharaBonusMember(ch))
+					continue;
+				const int b = ch->GetLevel() < 95 ? 0 : ch->GetLevel() < 100 ? 1 : 2;
+				++bots[b];
+				const int wind = GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_WIND);
+				const int elecOwn = GetPlayerBotElementMapResistOwn(ch, PLAYERBOT_EM_ELEC);
+				windSum[b] += wind;
+				elecSum[b] += elecOwn;
+				++spread[b][wind < 20 ? 0 : wind < 30 ? 1 : wind < 40 ? 2 : wind < 45 ? 3 : 4];
+				elecOk[b] += elecOwn >= elecGate ? 1 : 0;
+				windPet[b] += IsPlayerBotElementShopPetOut(ch, PLAYERBOT_EM_WIND) ? 1 : 0;
+				stone[b] += FindPlayerBotWornElementStone(ch) ? 1 : 0;
+				inZaklety[b] += GetPlayerBotElementMapBase(ch->GetMapIndex()) == PLAYERBOT_MAP_ZAKLETY ? 1 : 0;
+				TPlayerBotElementMapView v;
+				if (!GetPlayerBotElementMapGoal(ch, v))
+					++goalOther[b];
+				else if (v.iElement == PLAYERBOT_EM_WIND)
+				{
+					++goalWind[b];
+					static const BYTE s_wears[] = { WEAR_BODY, WEAR_HEAD, WEAR_WRIST,
+#ifdef ENABLE_PENDANT_SYSTEM
+						WEAR_PENDANT,
+#endif
+					};
+					for (size_t w = 0; v.iKeep >= 0 && w < sizeof(s_wears) / sizeof(s_wears[0]); ++w)
+					{
+						LPITEM piece = ch->GetWear(s_wears[w]);
+						if (!piece || !HasPlayerBotElementProgressKeptLine(piece, v.iKeep))
+							continue;
+						++(IsPlayerBotElementProgressKeptPiece(ch, piece, v.iKeep) ? kept[b] : freed[b]);
+					}
+				}
+				else if (IsPlayerBotWindBuildHolder(ch, v.iElement))
+					++goalElec[b];
+				else
+					++goalOther[b];
+			}
+			std::string bands;
+			for (int b = 0; b < BANDS; ++b)
+			{
+				if (!bots[b])
+					continue;
+				char buf[384];
+				snprintf(buf, sizeof(buf), " %s=[bots=%d wind_avg=%ld lt20=%d 20-29=%d 30-39=%d 40-44=%d 45+=%d lightning_own_avg=%ld "
+						"lightning_own_ok=%d goal_wind=%d goal_lightning_first=%d goal_other=%d wind_pet=%d stone=%d "
+						"lightning_pieces_kept=%d freed=%d in_zaklety=%d]",
+						s_aszBands[b], bots[b], windSum[b] / bots[b], spread[b][0], spread[b][1], spread[b][2], spread[b][3],
+						spread[b][4], elecSum[b] / bots[b], elecOk[b], goalWind[b], goalElec[b], goalOther[b], windPet[b], stone[b],
+						kept[b], freed[b], inZaklety[b]);
+				bands += buf;
+			}
+			std::vector<int>& wm = s_kPlayerBotEShop.windMinutes;
+			std::sort(wm.begin(), wm.end());
+			sys_log(0, "PLAYERBOT_WIND_CENSUS:%s period=[starts=%u reached=%u min_median=%d sessions=%u short=%u sm=%lld "
+					"changes=%u adds=%u pets_bought=%u both_done=%u both_failed=%u both_changes=%u lightning_first_sessions=%u] "
+					"wind_from=%d budget=%lld keep_all=%d both=%d",
+					bands.empty() ? " none" : bands.c_str(), s_kPlayerBotEShop.windStarts, s_kPlayerBotEShop.windReached,
+					wm.empty() ? -1 : wm[wm.size() / 2], s_kPlayerBotEShop.windSessions, s_kPlayerBotEShop.windShort,
+					s_kPlayerBotEShop.windSm, s_kPlayerBotEShop.windChanges, s_kPlayerBotEShop.windAdds, s_kPlayerBotEShop.windPets,
+					s_kPlayerBotEShop.bothDone, s_kPlayerBotEShop.bothFail, s_kPlayerBotEShop.bothChanges,
+					s_kPlayerBotEShop.holderSessions, GetPlayerBotElementProgressWindFrom(),
+					GetPlayerBotElementShopBudgetFor(PLAYERBOT_EM_WIND), IsPlayerBotElementProgressKeepAll() ? 1 : 0,
+					IsPlayerBotElementShopBothOn() ? 1 : 0);
+		}
 		s_kPlayerBotEShop = TPlayerBotEShopStats();
 	}
 
@@ -891,6 +1161,9 @@ namespace
 				GetPlayerBotElementMapElementName(v.iElement), v.iResist, rec.iTarget, (int)ch->GetMaxHP(),
 				(unsigned int)rec.hpPieces.size(), rec.llSpent, rec.iBoosts, state.iDragonCoins);
 	}
+
+	void WorkPlayerBotElementShopStep(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotEShopRecord& rec,
+			const TPlayerBotElementMapView& v, const TPlayerBotEShopPlan& plan, DWORD dwNow, int* purchases);	// below
 
 	void ManagePlayerBotElementShop(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -980,6 +1253,11 @@ namespace
 				s_kPlayerBotEShop.minutesReached += minutes;
 				s_kPlayerBotEShop.resistStartReached += rec.iResistStart;
 				s_kPlayerBotEShop.minutes.push_back((int)minutes);
+				if (v.iElement == PLAYERBOT_EM_WIND)	// MT2009_PLUS_BOT_WIND_BUILD_V1
+				{
+					++s_kPlayerBotEShop.windReached;
+					s_kPlayerBotEShop.windMinutes.push_back((int)minutes);
+				}
 				sys_log(0, "PLAYERBOT_EPROG_SHOP: reached pid=%u name=%s lv=%d element=%s gate=%d target=%d resist=%d->%d sm=%lld "
 						"minutes=%u changes=%d adds=%d pet=%d stone=%d map=%ld(%s) prebuild=%d coins=%d",
 						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), GetPlayerBotElementMapElementName(v.iElement), v.iGate,
@@ -995,6 +1273,8 @@ namespace
 			rec.dwStart = dwNow ? dwNow : 1;
 			rec.iResistStart = v.iResist;
 			++s_kPlayerBotEShop.starts;
+			if (v.iElement == PLAYERBOT_EM_WIND)	// MT2009_PLUS_BOT_WIND_BUILD_V1
+				++s_kPlayerBotEShop.windStarts;
 			sys_log(0, "PLAYERBOT_EPROG_SHOP: start pid=%u name=%s lv=%d element=%s resist=%d gate=%d target=%d map=%ld(%s) "
 					"prebuild=%d keep=%d coins=%d", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(),
 					GetPlayerBotElementMapElementName(v.iElement), v.iResist, v.iGate, target, map,
@@ -1035,7 +1315,8 @@ namespace
 							o.iGain, o.dCost);
 				else
 					snprintf(buf, sizeof(buf), "%sslot%u_%s+%d:%.0f", what.empty() ? "" : ",", (unsigned int)plan.pieces[o.iPiece].bWear,
-							o.iKind == PLAYERBOT_ESHOP_OPT_FLOOR ? "floor" : "top", o.iGain, o.dCost);
+							o.iKind == PLAYERBOT_ESHOP_OPT_FLOOR ? "floor" : o.iKind == PLAYERBOT_ESHOP_OPT_BOTH ? "both" : "top",
+							o.iGain, o.dCost);
 				what += buf;
 			}
 			PlayerBotLogThrottled("eshop_plan", dwNow,
@@ -1051,15 +1332,43 @@ namespace
 						plan.iResist, target, (unsigned int)plan.pieces.size(), what.c_str());
 		}
 		int purchases = 0;
-		if (plan.bPet)
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: a bot of the wind window building lightning keeps its lightning pet out while it
+		// does (the plan counts it not - the pieces must hold the gate without it)
+		const bool holder = IsPlayerBotWindBuildHolder(ch, v.iElement);
+		if (holder)
+			++s_kPlayerBotEShop.holderSessions;
+		if (v.iElement == PLAYERBOT_EM_WIND)
+		{
+			++s_kPlayerBotEShop.windSessions;
+			if (plan.bShort && !wasShort)
+				++s_kPlayerBotEShop.windShort;
+		}
+		const long long spentBefore = rec.llSpent;
+		const int changesBefore = rec.iChanges, addsBefore = rec.iAdds;
+		const bool petBoughtBefore = rec.bPetBought;
+		if (plan.bPet || (holder && !IsPlayerBotElementShopPetOut(ch, v.iElement)))
 			ManagePlayerBotElementShopPet(ch, state, rec, v.iElement, dwNow, &purchases);
+		WorkPlayerBotElementShopStep(ch, state, rec, v, plan, dwNow, &purchases);
+		if (v.iElement == PLAYERBOT_EM_WIND)
+		{
+			s_kPlayerBotEShop.windSm += rec.llSpent - spentBefore;
+			s_kPlayerBotEShop.windChanges += (unsigned int)std::max(0, rec.iChanges - changesBefore);
+			s_kPlayerBotEShop.windAdds += (unsigned int)std::max(0, rec.iAdds - addsBefore);
+			s_kPlayerBotEShop.windPets += rec.bPetBought && !petBoughtBefore ? 1 : 0;
+		}
+	}
+
+	// The step's piece: the one being worked while the plan keeps it, else the plan's cheapest.
+	void WorkPlayerBotElementShopStep(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotEShopRecord& rec,
+			const TPlayerBotElementMapView& v, const TPlayerBotEShopPlan& plan, DWORD dwNow, int* purchases)
+	{
 		// the piece: the one being worked while the plan keeps it, else the plan's cheapest
 		int pick = -1;
 		int want = 0;
 		for (size_t i = 0; i < plan.chosen.size(); ++i)
 		{
 			const TPlayerBotEShopOption& o = plan.chosen[i];
-			if (o.iKind != PLAYERBOT_ESHOP_OPT_FLOOR && o.iKind != PLAYERBOT_ESHOP_OPT_TOP)
+			if (o.iKind != PLAYERBOT_ESHOP_OPT_FLOOR && o.iKind != PLAYERBOT_ESHOP_OPT_TOP && o.iKind != PLAYERBOT_ESHOP_OPT_BOTH)
 				continue;
 			const TPlayerBotEShopPiece& p = plan.pieces[o.iPiece];
 			const int w = o.iKind == PLAYERBOT_ESHOP_OPT_FLOOR ? p.iFloor : p.iTop;
@@ -1086,7 +1395,10 @@ namespace
 			rec.dwNext = dwNow + PLAYERBOT_ESHOP_WINDOW_RETRY_MS;
 			return;
 		}
-		WorkPlayerBotElementShopPiece(ch, state, rec, p, PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement], want, dwNow, &purchases);
+		if (p.bBoth)
+			WorkPlayerBotElementShopBoth(ch, state, rec, p, PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement], dwNow, purchases);
+		else
+			WorkPlayerBotElementShopPiece(ch, state, rec, p, PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement], want, dwNow, purchases);
 	}
 }
 
