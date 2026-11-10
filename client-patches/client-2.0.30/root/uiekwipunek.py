@@ -591,19 +591,33 @@ def QuickAddText():
 	"""The tooltip's hint line while a right click here gives the item away."""
 	target = _QuickTarget()
 	if not target:
-		return ""
+		return _AuraHint()	# MT2009_PLUS_AURA_RUNE_STACK_V1
 	if target[1] == "exchange":
 		return TEXT_QUICK_EXCHANGE
 	return TEXT_QUICK_SHOP
 
 
+def _AuraHint():
+	try:
+		return __import__("uiaura").QuickHint()
+	except Exception:
+		return ""
+
+
 def QuickAdd(window, cell):
 	"""A right click on a storage's item with the trade or a shop window open:
 	the item goes there (the price window for a shop). True when one was open
-	(the click is taken)."""
+	(the click is taken). MT2009_PLUS_AURA_RUNE_STACK_V1 (the owner, 10 November
+	2026): with Theowahdan's aura window open the item (the runes - the whole
+	stack -, a material) goes into it (uiaura.TakeItem)."""
 	target = _QuickTarget()
 	if not target:
-		return False
+		if IsInUse(window, cell):
+			return False
+		try:
+			return bool(__import__("uiaura").TakeItem(window, cell))
+		except Exception:
+			return False
 	if IsInUse(window, cell):
 		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_IN_USE)
 		return True

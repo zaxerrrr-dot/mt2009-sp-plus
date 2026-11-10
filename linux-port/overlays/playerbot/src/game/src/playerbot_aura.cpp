@@ -13,15 +13,21 @@
 //
 // MT2009_PLUS_AURA_NAMES_V1: the owner's names - growth (runes) is "rozwoj", evolution "ewolucja".
 // Theowahdan's (60003) three windows - Owsap's packets replaced by chat commands, like Transmutacja:
-//   client -> "/aura in <slot> <cell>" (slot 0 the outfit, 1 the jewel / rune / material), "/aura out <slot>",
+//   client -> "/aura in <slot> <cell> [<window>]" (slot 0 the outfit, 1 the jewel / rune / material; window: the
+//             bag (INVENTORY, the default) or, for slot 1, a Dodatkowy ekwipunek storage), "/aura out <slot>",
 //             "/aura accept", "/aura cancel"
-//   server -> "AURA open <type>" (0 absorb, 1 growth, 2 evolution), "AURA set <slot> <cell> <vnum> <count>",
+//   server -> "AURA open <type>" (0 absorb, 1 growth, 2 evolution), "AURA set <slot> <cell> <vnum> <count> <window>",
 //             "AURA del <slot>", "AURA close", "AURA done"
 // The window holds item ids; "accept" checks everything again (an item moved, worn, traded or locked is refused).
 //   absorb     an outfit without bonuses + a bracelet / necklace / earrings / shield: its bonuses go onto the
 //              outfit, the item is destroyed (Swiadectwo Aury+ 89999 clears an outfit again)
 //   growth     an outfit + Lodowa / Ognista Runa Aury (49990-49995: 1, 10, 50, 100, 250, 500 exp): runes one by one
 //              until the level's top (49, 99, 149, 199, 249) is full; only the runes used are taken
+//              MT2009_PLUS_AURA_RUNE_STACK_V1 (the owner, 10 November 2026): one "accept" spends as much of the whole
+//              stack as the outfit takes (Lodowa Runa Aury stacks to 9999 now, szata_aury.sql) - every level-up of
+//              the grade at once; the grade's top still stops it (the evolution costs Yang and a material, so it
+//              stays its own window), the runes left over stay in the stack. The rune may lie in the bag or in the
+//              Dodatkowy ekwipunek's storage (the runes are routed there, playerbot_ekwipunek.cpp).
 //   evolution  a full outfit at the top of its grade + the grade's material and Yang (pl-wiki: Agat x10 5 mln,
 //              Prosty / Ladny Kamien Chaosu x10 5 mln, Wspanialy x10 8 mln, Wspanialy x20 10 mln; always succeeds):
 //              the next outfit, the level + 1, the bonuses kept
@@ -49,6 +55,7 @@
 #include "packet.h"
 #include "playerbot_item_extra_apply.h"
 
+#include <climits>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -218,13 +225,19 @@ namespace aura
 		return it == s_sessions.end() ? NULL : &it->second;
 	}
 
-	// An item of the character's bag (not worn, not traded, not locked); NULL otherwise.
+	// MT2009_PLUS_AURA_RUNE_STACK_V1: the bag or a Dodatkowy ekwipunek storage (UPGRADE_INVENTORY .. CHEST_INVENTORY)
+	bool IsBagWindow(BYTE window)
+	{
+		return window == INVENTORY || Mt2009IsSpecialWindow(window);
+	}
+
+	// An item of the character's bag or storages (not worn, not traded, not locked); NULL otherwise.
 	LPITEM BagItem(LPCHARACTER ch, DWORD id)
 	{
 		if (!id)
 			return NULL;
 		LPITEM item = ITEM_MANAGER::instance().Find(id);
-		if (!item || item->GetOwner() != ch || item->GetWindow() != INVENTORY || item->IsEquipped())
+		if (!item || item->GetOwner() != ch || !IsBagWindow(item->GetWindow()) || item->IsEquipped())
 			return NULL;
 		if (item->IsExchanging() || item->isLocked())
 			return NULL;
@@ -251,7 +264,8 @@ namespace aura
 	void Set(LPCHARACTER ch, TSession& s, int slot, LPITEM item)
 	{
 		s.item[slot] = item->GetID();
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "AURA set %d %d %u %u", slot, (int) item->GetCell(), item->GetVnum(), (unsigned int) item->GetCount());
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "AURA set %d %d %u %u %d", slot, (int) item->GetCell(), (unsigned int) item->GetVnum(),
+				(unsigned int) item->GetCount(), (int) item->GetWindow());
 	}
 
 	void Open(LPCHARACTER ch, BYTE type)
@@ -286,7 +300,7 @@ namespace aura
 	{
 		if (slot == SLOT_MAIN)
 		{
-			if (!IsAura(item) || !IsAuraVnum(item->GetVnum()))
+			if (!IsAura(item) || !IsAuraVnum(item->GetVnum()) || item->GetWindow() != INVENTORY)	// the outfit: the bag only
 			{
 				ch->ChatPacket(CHAT_TYPE_INFO, "Tu mo\xbfna w\xb3o\xbfy\xe6 tylko szat\xea aury.");
 				return false;
@@ -371,13 +385,28 @@ namespace aura
 		return true;
 	}
 
-	void CheckIn(LPCHARACTER ch, TSession& s, int slot, int cell)
+	void CheckIn(LPCHARACTER ch, TSession& s, int slot, int cell, int window)
 	{
 		if (slot < 0 || slot >= SLOT_MAX || s.item[slot])
 			return;
-		if (cell < 0 || cell >= INVENTORY_MAX_NUM)
+		LPITEM item = NULL;
+		if (window == INVENTORY)
+		{
+			if (cell < 0 || cell >= INVENTORY_MAX_NUM)
+				return;
+			item = ch->GetInventoryItem(cell);
+		}
+		else if (slot == SLOT_SUB && window > 0 && window <= 255 && Mt2009IsSpecialWindow((BYTE) window))
+		{
+			// MT2009_PLUS_AURA_RUNE_STACK_V1: a rune / material straight from its storage
+			if (cell < 0 || cell >= SPECIAL_INVENTORY_MAX_NUM)
+				return;
+			item = ch->Mt2009SpecialGetItem((BYTE) window, (WORD) cell);
+			if (item && (item->GetWindow() != window || item->GetCell() != cell))
+				item = NULL;
+		}
+		else
 			return;
-		LPITEM item = ch->GetInventoryItem(cell);
 		if (!item || !BagItem(ch, item->GetID()))
 		{
 			ch->ChatPacket(CHAT_TYPE_INFO, "Tego przedmiotu nie mo\xbfna teraz u\xbfy\xe6 (za\xb3o\xbfony, w handlu albo zablokowany).");
@@ -443,27 +472,35 @@ namespace aura
 		ch->ChatPacket(CHAT_TYPE_INFO, "Parametry przeniesione na szat\xea aury.");
 	}
 
+	// MT2009_PLUS_AURA_RUNE_STACK_V1: the whole stack in one accept - Grow takes as many runes as the outfit's grade
+	// has room for (every level-up up to the grade's top), the rest stays in the stack.
 	void AcceptGrowth(LPCHARACTER ch, TSession& s, LPITEM main, LPITEM sub)
 	{
 		TState st = StateOf(main);
-		const int used = Grow(main->GetVnum(), st, (int) sub->GetCount(), RuneExp(sub->GetVnum()));
+		const int levelBefore = st.level;
+		const int have = (int) MIN(sub->GetCount(), (ITEM_COUNT) INT_MAX);
+		const DWORD runeVnum = sub->GetVnum();
+		const int used = Grow(main->GetVnum(), st, have, RuneExp(runeVnum));
 		if (used <= 0)
 		{
 			Del(ch, s, SLOT_SUB);
 			return;
 		}
-		char hint[96];
-		snprintf(hint, sizeof(hint), "growth %d x %u -> level %d exp %d", used, sub->GetVnum(), st.level, st.exp);
+		char hint[128];
+		snprintf(hint, sizeof(hint), "growth %d/%d x %u -> level %d (from %d) exp %d", used, have, (unsigned int) runeVnum,
+				st.level, levelBefore, st.exp);
 		main->SetSocket(SOCKET_LEVEL, Encode(st));
 		main->UpdatePacket();
 		main->Save();
 		LogManager::instance().ItemLog(ch, main, "AURA_GROWTH", hint);
-		sub->SetCount(sub->GetCount() - used);
+		sub->SetCount(sub->GetCount() - (ITEM_COUNT) used);	// 0: the stack is gone (CItem::SetCount)
 		Finish(ch, s);
+		const int left = have - used;
 		if (IsFull(main->GetVnum(), st) && GradeOf(main->GetVnum()) < 5)
-			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany. Teraz mo\xbfliwa jest ewolucja szaty (Szata aury: ewolucja).");
+			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany: zu\xbfyto %d run, poziom %d -> %d (zosta\xb3o %d). Teraz mo\xbfliwa jest ewolucja szaty (Szata aury: ewolucja).",
+					used, levelBefore, st.level, left);
 		else
-			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany: poziom %d.", st.level);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany: zu\xbfyto %d run, poziom %d -> %d.", used, levelBefore, st.level);
 	}
 
 	void AcceptEvolve(LPCHARACTER ch, TSession& s, LPITEM main, LPITEM sub)
@@ -775,12 +812,13 @@ namespace quest
 	}
 }
 
-// cmd.cpp: "/aura in <slot> <cell> | out <slot> | accept | cancel"
+// cmd.cpp: "/aura in <slot> <cell> [<window>] | out <slot> | accept | cancel"
 ACMD(do_aura)
 {
-	char arg1[32], arg2[32], arg3[32];
+	char arg1[32], arg2[32], arg3[32], arg4[32];
 	const char* rest = one_argument(argument, arg1, sizeof(arg1));
-	two_arguments(rest, arg2, sizeof(arg2), arg3, sizeof(arg3));
+	rest = two_arguments(rest, arg2, sizeof(arg2), arg3, sizeof(arg3));
+	one_argument(rest, arg4, sizeof(arg4));
 	if (!ch || !ch->IsPC())
 		return;
 
@@ -795,10 +833,12 @@ ACMD(do_aura)
 		aura::Close(ch, false);
 	else if (!strcmp(arg1, "in"))
 	{
-		int slot = -1, cell = -1;
+		int slot = -1, cell = -1, window = INVENTORY;
 		str_to_number(slot, arg2);
 		str_to_number(cell, arg3);
-		aura::CheckIn(ch, *s, slot, cell);
+		if (*arg4)	// MT2009_PLUS_AURA_RUNE_STACK_V1: the item's window (an old client sends none: the bag)
+			str_to_number(window, arg4);
+		aura::CheckIn(ch, *s, slot, cell, window);
 	}
 	else if (!strcmp(arg1, "out"))
 	{

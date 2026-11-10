@@ -3,7 +3,8 @@
 #
 #   49101-49106  Zwyczajna .. Promienista Szata Aury  ITEM_COSTUME / COSTUME_AURA (28/5), specular 100; the official
 #                                                     49001-49006 are our Death Ruler skins - icons GF 49001-49006
-#   49990        Lodowa Runa Aury                     material, stack 200 (1 exp)
+#   49990        Lodowa Runa Aury                     material, stack 9999 (1 exp; MT2009_PLUS_AURA_RUNE_STACK_V1,
+#                                                     10 November 2026 - was 200)
 #   49994/49995  Ognista Runa Aury (250) / (500)      material, stack 200 - the icon of 49991 (as GF's item_list)
 #   89999        Swiadectwo Aury+                     ITEM_USE / USE_SPECIAL (3/10), stack 200, APPLICABLE (dragged onto
 #                                                     an outfit)
@@ -49,7 +50,7 @@ ITEMS = (
      D_AURA + u' Od poziomu 249 można ją rozwijać.'),
     (49106, u'Radiant Aura Outfit', u'Promienista Szata Aury', 28, 5, 1, ANTI_PKDROP | ANTI_STACK, FLAG_LOG, 0, 100,
      u'icon/item/49106.tga', u'Możesz przenosić parametry z biżuterii (bransolety, naszyjnika, kolczyków) i tarczy na szatę aury z pewnym stopniem absorpcji - u Theowahdana. Najwyższy poziom: 250 (25% absorpcji). Można nią handlować.'),
-    (49990, u'Aura Ice Rune', u'Lodowa Runa Aury', 5, 0, 200, ANTI_DROP | ANTI_GIVE | ANTI_PKDROP | ANTI_MYSHOP | ANTI_SAFEBOX,
+    (49990, u'Aura Ice Rune', u'Lodowa Runa Aury', 5, 0, 9999, ANTI_DROP | ANTI_GIVE | ANTI_PKDROP | ANTI_MYSHOP | ANTI_SAFEBOX,
      FLAG_STACKABLE, 1, 0, u'icon/item/49990.tga', D_RUNE + u' Daje 1 punkt doświadczenia szaty. Wypada z potworów.'),
     (49994, u'Aura Fire Rune (250)', u'Ognista Runa Aury (250)', 5, 0, 200, ANTI_DROP | ANTI_PKDROP, FLAG_STACKABLE, 250, 0,
      u'icon/item/49991.tga', D_RUNE + u' Daje 250 punktów doświadczenia szaty.'),

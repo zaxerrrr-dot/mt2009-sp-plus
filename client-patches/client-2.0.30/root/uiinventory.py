@@ -3464,6 +3464,13 @@ class InventoryWindow(ui.ScriptWindow):
 				acce.Add(player.INVENTORY, slotIndex, 255)
 				return
 
+		# MT2009_PLUS_AURA_RUNE_STACK_V1 (the owner, 10 November 2026): with Theowahdan's aura window open an outfit
+		# goes into its left slot, a rune / jewel / material (the whole stack) into the right one (uiaura.TakeItem).
+		if __import__("uiaura").TakeInventoryItem(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return
+
 		# MT2009_PLUS_SWITCHBOT_V1: with the switchbot open, a weapon or an armour goes into its selected tab
 		# (or the first free one) instead of being put on - as the old bonus switcher did.
 		if __import__("uiswitchbot").TakeInventoryItem(slotIndex):
