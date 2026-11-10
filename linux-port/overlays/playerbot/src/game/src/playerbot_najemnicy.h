@@ -30,6 +30,9 @@
 //     skills are "half" the owner's counted from M1 - L < 20: L, else 20 + (L - 20) / 2 (P -> G1, M4 -> M2, M1 -> M1),
 //     the owner's best skill onto the mercenary's main one (the path's build order, GetPlayerBotSkillBuild), the
 //     second onto the second and so on; again at every summon, every owner's level-up and when it outgrows the owner;
+//     MT2009_PLUS_NAJEMNICY_BUFFI_V1: a shaman's buffs (Blogoslawienstwo 94 / Pomoc Smoka 96, Szybkosc 110 /
+//     Zwiekszenie Ataku 111) = exactly the owner's Buffi levels (164-167), its other skills the half rule; again when
+//     the Buffi's levels change (GetNajemnikBuffiSig); a Buffi skill at 0 leaves its buff to the half rule;
 //   * its tick is its own (ManagePlayerBotNajemnikBot, before every pass of the population - as a PvP-fan bot's): in
 //     the owner's party (made when the owner has none), at the owner's side, fighting what the owner fights and what
 //     attacks either of them, as the Towarzysz did - the same helpers (FindPlayerBotSidekickFoe,
@@ -200,6 +203,7 @@ namespace
 		DWORD lootSince = 0;
 		DWORD nextCatchUp = 0;
 		int syncedOwnerLevel = -1;
+		int syncedBuffi = -1;	// MT2009_PLUS_NAJEMNICY_BUFFI_V1: the owner's Buffi levels at the last sync (GetNajemnikBuffiSig)
 		bool dismiss = false;
 		std::string dismissWhy;
 		// The Towarzysz's per-companion runtime, which its fight helpers keep (FightPlayerBotSidekickFoe).
@@ -350,6 +354,44 @@ namespace
 		if (ownerLevel < 20)
 			return MAX(0, ownerLevel);
 		return 20 + (ownerLevel - 20) / 2;
+	}
+
+	// MT2009_PLUS_NAJEMNICY_BUFFI_V1 (the owner, 10 November 2026): "Najemnik szaman ma dokladnie takie same poziomy
+	// skilli co Buffi gracza. Rozwijajac Buffi, rozwijaja sie skille najemnika szamana - Pomoc Smoka, Blogoslawienstwo,
+	// Zwiekszenie Ataku i Zwinnosc. Reszta skilli: zasada polowy." The owner's Buffi skills (playerbot_buffi.cpp, the
+	// owner's own skill levels 164-167) onto the shaman skills whose affect they are: Blogoslawienstwo 164 -> 94 and
+	// Pomoc Smoka 165 -> 96 (the Dragon path), Szybkosc (Zwinnosc) 166 -> 110 and Zwiekszenie Ataku 167 -> 111 (the
+	// Healer path). A mercenary knows its own path's two only: the other path's skills are a player's (the skill hack,
+	// playerbot_skillhack.cpp - never a bot's; CanUseSkill refuses them). A Buffi skill of level 0 (no Buffi, or no name
+	// for Szybkosc / Zwiekszenie Ataku) leaves that buff to the half rule.
+	const DWORD NAJEMNICY_BUFFI_SKILLS[4][2] =
+	{
+		{ 164, 94 },	// Blogoslawienstwo (Hosin)
+		{ 165, 96 },	// Pomoc Smoka (Gicheon)
+		{ 166, 110 },	// Szybkosc / Zwinnosc (Kwaesok)
+		{ 167, 111 },	// Zwiekszenie Ataku (Jeungryeok)
+	};
+
+	// The Buffi level for the mercenary's shaman skill, 0 = none (not a shaman, no such Buffi skill, or level 0).
+	int GetNajemnikBuffiLevel(LPCHARACTER owner, BYTE job, DWORD dwSkill)
+	{
+		if (!owner || job != JOB_SHAMAN)
+			return 0;
+		for (int i = 0; i < 4; ++i)
+			if (NAJEMNICY_BUFFI_SKILLS[i][1] == dwSkill)
+				return MINMAX(0, owner->GetSkillLevel(NAJEMNICY_BUFFI_SKILLS[i][0]), SKILL_MAX_LEVEL);
+		return 0;
+	}
+
+	// The owner's four Buffi levels in one number (8 bits each) - a change re-syncs a shaman mercenary; 0 for others.
+	int GetNajemnikBuffiSig(LPCHARACTER owner, BYTE job)
+	{
+		if (!owner || job != JOB_SHAMAN)
+			return 0;
+		int sig = 0;
+		for (int i = 0; i < 4; ++i)
+			sig |= (MINMAX(0, owner->GetSkillLevel(NAJEMNICY_BUFFI_SKILLS[i][0]), 255) << (8 * i));
+		return sig;
 	}
 
 	const char* GetNajemnikClassName(BYTE race)
@@ -739,17 +781,28 @@ namespace
 			ch->SetSkillGroup(n.group);
 			changed = true;
 		}
+		// MT2009_PLUS_NAJEMNICY_BUFFI_V1: a shaman's buffs = the owner's Buffi levels; the half rule for the rest (the
+		// owner's best skills onto its other skills in its build's order).
 		std::vector<DWORD> ownerSkills, mine;
+		const BYTE job = GetNajemnikJobOfRace(n.race);
 		GetNajemnikPathSkills(owner->GetJob(), owner->GetSkillGroup(), owner->GetPlayerID(), ownerSkills);
-		GetNajemnikPathSkills(GetNajemnikJobOfRace(n.race), n.group, n.pid, mine);
+		GetNajemnikPathSkills(job, n.group, n.pid, mine);
 		std::vector<int> levels;
 		for (size_t i = 0; i < ownerSkills.size(); ++i)
 			levels.push_back(owner->GetSkillLevel(ownerSkills[i]));
 		std::sort(levels.begin(), levels.end(), std::greater<int>());
-		int skillsSet = 0;
+		int skillsSet = 0, fromBuffi = 0;
+		size_t next = 0;
 		for (size_t i = 0; i < mine.size(); ++i)
 		{
-			const int want = i < levels.size() ? GetNajemnikHalfSkill(levels[i]) : 0;
+			int want = GetNajemnikBuffiLevel(owner, job, mine[i]);
+			if (want > 0)
+				++fromBuffi;
+			else
+			{
+				want = next < levels.size() ? GetNajemnikHalfSkill(levels[next]) : 0;
+				++next;
+			}
 			if (ch->GetSkillLevel(mine[i]) != want)
 			{
 				ch->SetSkillLevel(mine[i], want);
@@ -762,10 +815,12 @@ namespace
 				ch->PointChange(POINT_SKILL, -ch->GetPoint(POINT_SKILL));
 			ch->SkillLevelPacket();
 			changed = true;
-			sys_log(0, "NAJEMNICY: skills pid=%u name=%s owner=%u why=%s set=%d main=%d owner_best=%d", n.pid, ch->GetName(),
-					n.ownerPid, why, skillsSet, mine.empty() ? 0 : ch->GetSkillLevel(mine[0]), levels.empty() ? 0 : levels[0]);
+			sys_log(0, "NAJEMNICY: skills pid=%u name=%s owner=%u why=%s set=%d main=%d owner_best=%d buffi=%d", n.pid,
+					ch->GetName(), n.ownerPid, why, skillsSet, mine.empty() ? 0 : ch->GetSkillLevel(mine[0]),
+					levels.empty() ? 0 : levels[0], fromBuffi);
 		}
 		n.syncedOwnerLevel = owner->GetLevel();
+		n.syncedBuffi = GetNajemnikBuffiSig(owner, job);
 		if (changed)
 		{
 			ch->ComputePoints();
@@ -1846,6 +1901,10 @@ namespace
 			n.nextSync = dwNow + NAJEMNICY_SYNC_CHECK_MS;
 			if (n.syncedOwnerLevel != (int)owner->GetLevel() || ch->GetLevel() != owner->GetLevel())
 				SyncNajemnik(ch, state, n, owner, dwNow, n.syncedOwnerLevel < 0 ? "summon" : "owner_level");
+			// MT2009_PLUS_NAJEMNICY_BUFFI_V1: the owner's Buffi trained (a book, Kamien Duchowy Buffi, the first call
+			// or the name's M1) - a shaman's buffs follow within NAJEMNICY_SYNC_CHECK_MS.
+			else if (n.syncedBuffi != GetNajemnikBuffiSig(owner, GetNajemnikJobOfRace(n.race)))
+				SyncNajemnik(ch, state, n, owner, dwNow, "buffi");
 		}
 		if ((int)(dwNow - n.nextSave) >= 0)
 		{
@@ -2022,6 +2081,7 @@ namespace
 		n.readyAt = dwNow;
 		n.nextSync = 0;
 		n.syncedOwnerLevel = -1;
+		n.syncedBuffi = -1;
 		n.nextSave = dwNow + NAJEMNICY_SAVE_MS;
 		state.bBotRole = BOT_ROLE_PARTY_FIGHTER;
 		++s_uNajemnicySummons;
