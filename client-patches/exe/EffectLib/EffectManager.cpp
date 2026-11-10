@@ -109,6 +109,17 @@ void CEffectManager::Render()
 	}
 }
 
+// MT2009_PLUS_WIKI_V1 (the owner's Render Target Shining package, RenderOne): one instance, for a preview's model
+void CEffectManager::Mt2009RenderOne(DWORD dwInstanceIndex)
+{
+	TEffectInstanceMap::iterator it = m_kEftInstMap.find(dwInstanceIndex);
+	if (it == m_kEftInstMap.end() || !it->second)
+		return;
+	STATEMANAGER.SetTexture(0, NULL);
+	STATEMANAGER.SetTexture(1, NULL);
+	it->second->Render();
+}
+
 BOOL CEffectManager::RegisterEffect(const char * c_szFileName,bool isExistDelete,bool isNeedCache)
 {
 	std::string strFileName;

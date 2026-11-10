@@ -317,6 +317,18 @@ class TargetBoard(ui.ThinBoard):
 		self.mobDropButton.Hide()
 		self.eventMobDrop = None
 
+		# MT2009_PLUS_WIKI_V1: the (i) of the owner's Valiant2 wiki package - the monster's page in the wiki
+		# (uiwiki.py), left of the name while the HP bar is up for a monster or a Metin stone
+		self.wikiButton = ui.Button()
+		self.wikiButton.SetParent(self)
+		self.wikiButton.SetUpVisual("d:/ymir work/ui/game/wiki/winfo1.png")
+		self.wikiButton.SetOverVisual("d:/ymir work/ui/game/wiki/winfo2.png")
+		self.wikiButton.SetDownVisual("d:/ymir work/ui/game/wiki/winfo3.png")
+		self.wikiButton.SetPosition(4, 11)
+		self.wikiButton.SetToolTipText("Encyklopedia")
+		self.wikiButton.SetEvent(ui.__mem_func__(self.OnPressedWiki))
+		self.wikiButton.Hide()
+
 		self.buttonDict = {}
 		self.showingButtonList = []
 		for buttonName in self.BUTTON_NAME_LIST:
@@ -403,6 +415,7 @@ class TargetBoard(ui.ThinBoard):
 		self.closeButton = None
 		self.mobDropButton = None
 		self.eventMobDrop = None
+		self.wikiButton = None	# MT2009_PLUS_WIKI_V1
 		self.showingButtonList = None
 		self.buttonDict = None
 		self.name = None
@@ -425,6 +438,12 @@ class TargetBoard(ui.ThinBoard):
 
 	def SetMobDropEvent(self, callback):
 		self.eventMobDrop = callback
+
+	def OnPressedWiki(self):	# MT2009_PLUS_WIKI_V1
+		if self.vid:
+			vnum = nonplayer.GetVnumByVID(self.vid)
+			if vnum > 0:
+				__import__("uiwiki").OpenMob(vnum)
 
 	def OnPressedMobDrop(self):
 		if self.eventMobDrop and self.vid:
@@ -539,6 +558,8 @@ class TargetBoard(ui.ThinBoard):
 		if self.mobDropButton:
 			self.mobDropButton.Hide()
 			self.closeButton.Show()
+		if getattr(self, "wikiButton", None):	# MT2009_PLUS_WIKI_V1
+			self.wikiButton.Hide()
 		self.hpText.Hide()
 		self.bonusText.Hide() # MT2009_PLUS_TARGET_BONUS_V1
 		if app.ENABLE_ELEMENTAL_TARGET:
@@ -585,6 +606,12 @@ class TargetBoard(ui.ThinBoard):
 			else:
 				self.mobDropButton.Hide()
 				self.closeButton.Show()
+		if getattr(self, "wikiButton", None):	# MT2009_PLUS_WIKI_V1: monsters and Metin stones the wiki knows
+			if IsDropPreviewTarget(vid) and __import__("uiwiki").Available():
+				self.wikiButton.Show()
+				self.wikiButton.SetTop()
+			else:
+				self.wikiButton.Hide()
 		if app.ENABLE_ELEMENTAL_TARGET:
 			self.SetRaceElement(vid)
 

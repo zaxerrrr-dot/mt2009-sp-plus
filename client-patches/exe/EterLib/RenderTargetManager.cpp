@@ -79,7 +79,8 @@ bool CRenderTargetManager::CreateA8R8G8B8Texture(DWORD width, DWORD height, int 
 
 bool CRenderTargetManager::__CreateRenderTargetTexture(int index, DWORD width, DWORD height, D3DFORMAT format, D3DFORMAT depthFormat)
 {
-	if (index < 0 || index >= RENDER_TARGET_INDEX_MAX || GetRenderTargetTexture(index))
+	// MT2009_PLUS_WIKI_V1: an index from RENDER_TARGET_INDEX_MT2009_FREE on is a preview's (Mt2009WikiModel.cpp)
+	if (index < 0 || (index >= RENDER_TARGET_INDEX_MAX && index < RENDER_TARGET_INDEX_MT2009_FREE) || GetRenderTargetTexture(index))
 		return false;
 
 	CGraphicRenderTargetTexture* pRenderTargetTexture = new CGraphicRenderTargetTexture();
@@ -100,6 +101,18 @@ CGraphicRenderTargetTexture* CRenderTargetManager::GetRenderTargetTexture(int in
 		return it->second;
 
 	return nullptr;
+}
+
+// MT2009_PLUS_WIKI_V1: a preview's texture gone (its view destroyed or resized)
+void CRenderTargetManager::RemoveRenderTargetTexture(int index)
+{
+	const auto it = m_RenderTargetMap.find(index);
+	if (it == m_RenderTargetMap.end())
+		return;
+	if (m_pRenderTargetTexture == it->second)
+		m_pRenderTargetTexture = nullptr;
+	delete it->second;
+	m_RenderTargetMap.erase(it);
 }
 
 bool CRenderTargetManager::GetRenderTargetRect(int index, RECT* rect) const

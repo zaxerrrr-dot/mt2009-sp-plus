@@ -91,6 +91,9 @@ OPTIONS = (
 	# the filter is the simple one - a kind is picked up or not - and its rules
 	# stay saved for when it is on again. On by default (DEFAULT_ON).
 	("pickup_advanced", "Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)", lambda: True),
+	# MT2009_PLUS_TOOLTIP_MODEL_PREVIEW_V1: the item tooltip's 3D preview (tooltipmodel.py; the owner's Render Target
+	# package's DISABLE_MODEL_PREVIEW) - shown unless ticked; only with the exe's renderTarget.
+	("modelpreview_off", "Wy\xb3\xb9cz podgl\xb9d modelu w opisie przedmiotu", lambda: __import__("tooltipmodel").Available()),
 )
 # Options ticked until the player unticks them.
 DEFAULT_ON = ("pickup_advanced",)

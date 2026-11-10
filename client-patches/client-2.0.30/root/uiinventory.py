@@ -518,8 +518,10 @@ class SidebarWindow(ui.Window):
 		("missions", "Usuñ misje", "OnClickClearMissions", None),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
-		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
-		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
+		# MT2009_PLUS_WIKI_V1: the wiki (uiwiki.py, the owner's Valiant2 package) in the old drop wiki's place - its
+		# picture: the package's side_inv/wikipedia*.png (tools/wikiv2/make_wiki_images.py). The old window keeps the
+		# keybind "drop_wiki" (no key by default).
+		("wiki", "Encyklopedia", "OnClickWiki", "wiki"),
 		# MT2009_PLUS_SIDEBAR_WINDOWS_V1 (the owner, 10 November 2026): Karty Potworow (monstercard.py), as the Esc menu's
 		# button and the keybind "monster_card"; the icon: the Zlote Pudelko Kart Potwora (83037), tools/sidebar2.
 		("monstercard", "Karty Potwor\xf3w", "OnClickMonsterCard", "monster_card"),
@@ -998,6 +1000,9 @@ class SidebarWindow(ui.Window):
 	def OnClickDropWiki(self):
 		import uidropwiki
 		uidropwiki.ToggleWindow()
+
+	def OnClickWiki(self):	# MT2009_PLUS_WIKI_V1
+		__import__("uiwiki").Toggle()
 
 	def OnClickMonsterCard(self):	# MT2009_PLUS_SIDEBAR_WINDOWS_V1: as the Esc menu's "Karty Potworow"
 		__import__("monstercard").Toggle()

@@ -681,13 +681,16 @@ class ItemToolTip(ToolTip):
 		self.compareShown = None
 
 	# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): ALT shows the worn item next to this one (digiqol.py)
+	# MT2009_PLUS_TOOLTIP_MODEL_PREVIEW_V1: and the 3D preview of a wearable item beside the tooltip (tooltipmodel.py)
 	def HideToolTip(self):
 		ToolTip.HideToolTip(self)
 		__import__("digiqol").HideCompare(self)
+		__import__("tooltipmodel").Hide(self)
 
 	def OnUpdate(self):
 		ToolTip.OnUpdate(self)
 		__import__("digiqol").UpdateCompare(self)
+		__import__("tooltipmodel").Update(self)
 
 	def SetRawItem(self, itemVnum, metinSlot=None, attrSlot=None, isClearToolTip=True):
 		if 0 == itemVnum:

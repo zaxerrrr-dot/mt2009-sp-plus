@@ -31,6 +31,7 @@ class CEffectManager : public CScreen, public CSingleton<CEffectManager>
 		void UpdateSound();
 		void Update();
 		void Render();
+		void Mt2009RenderOne(DWORD dwInstanceIndex); // MT2009_PLUS_WIKI_V1: one instance (a preview's effect)
 
 		void GetInfo(std::string* pstInfo);
 

@@ -21,7 +21,9 @@ public:
 #if defined(ENABLE_MONSTER_CARD_MODEL)
 		RENDER_TARGET_INDEX_ILLUSTRATED, // MT2009_PLUS_MONSTER_CARD_MODEL_V1: the Monster Cards' 3D preview
 #endif
-		RENDER_TARGET_INDEX_MAX
+		RENDER_TARGET_INDEX_MAX,
+		// MT2009_PLUS_WIKI_V1: from here on, the textures of the wiki / tooltip previews (Mt2009WikiModel.cpp)
+		RENDER_TARGET_INDEX_MT2009_FREE = 1000
 	};
 
 	void Initialize();
@@ -37,6 +39,7 @@ public:
 	bool CreateA8R8G8B8Texture(DWORD width, DWORD height, int index);
 
 	CGraphicRenderTargetTexture* GetRenderTargetTexture(int index) const;
+	void RemoveRenderTargetTexture(int index); // MT2009_PLUS_WIKI_V1
 	bool GetRenderTargetRect(int index, RECT* rect) const;
 
 	bool ChangeRenderTarget(int index);

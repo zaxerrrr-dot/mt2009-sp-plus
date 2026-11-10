@@ -175,7 +175,12 @@ CATEGORIES = (
 		# MT2009_PLUS_MONSTER_CARDS_V1: Karty Potworow (monstercard.py) - J, the package's key, is
 		# the Kosz here, so none by default (the Esc menu's button opens it too).
 		('monster_card', 'Karty Potwor\xf3w', (), False),
-		('drop_wiki', 'Drop wiki', ((0, 'DIK_SLASH'),), False),	# MT2009_PLUS_DROP_WIKI_V1
+		# MT2009_PLUS_WIKI_V1: the wiki (uiwiki.py) takes the old drop wiki's key "/" (H is the help, Alt+H / Ctrl+H
+		# are taken); Shift+H over an item's tooltip opens that item (anywhere else: the wiki). The old window keeps
+		# its action, without a key.
+		('wiki', 'Encyklopedia', ((0, 'DIK_SLASH'),), False),
+		('wiki_item', 'Encyklopedia - przedmiot spod kursora', ((SHIFT, 'DIK_H'),), False),
+		('drop_wiki', 'Drop wiki (stara)', (), False),	# MT2009_PLUS_DROP_WIKI_V1
 		('hide_ui', 'Ukryj interfejs', ((CTRL, 'DIK_TAB'),), False),
 		('quest_buttons', 'Ukryj/poka\xbf ikony zada\xf1', ((CTRL, 'DIK_Q'),), False),
 		('screenshot', 'Zrzut ekranu', ((0, 'DIK_SYSRQ'),), False),

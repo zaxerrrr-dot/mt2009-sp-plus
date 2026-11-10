@@ -226,6 +226,10 @@
 #if defined(RENDER_TARGET)
 #define ENABLE_MONSTER_CARD_MODEL
 #endif
+// MT2009_PLUS_WIKI_V1: the in-game wiki (the owner's Valiant2 package - module wikipedia, UserInterface/Mt2009Wiki.cpp)
+// and the 3D previews of the wiki and the item tooltip (module renderTarget, UserInterface/Mt2009WikiModel.cpp,
+// the owner's Render Target 2.0 + Shining package on our render target path; needs RENDER_TARGET for the previews).
+#define ENABLE_MT2009_WIKI
 // MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, Swiatynia Zodiaku, nowy-system 0.35.0): GC 220 (boss effects),
 // the 15 Zodiac SE_*/EFFECT_* effects, the mission chat types 13..15, chrmgr.IsDead/IsPC and the scripts'
 // constants (UserInterface/Mt2009Zodiak.cpp). The image cooltime is MT2009_PLUS_MINIGAMES_V1's.

@@ -374,6 +374,9 @@ class GameWindow(ui.ScriptWindow):
 		self.Hide()
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		__import__("uidropwiki").DestroyWindow()
+		# MT2009_PLUS_WIKI_V1: the wiki (uiwiki.py) and the tooltip's 3D preview (tooltipmodel.py)
+		__import__("uiwiki").Destroy()
+		__import__("tooltipmodel").Destroy()
 		__import__("uichangelook").DestroyWindow() # MT2009_PLUS_CHANGE_LOOK_V1
 		__import__("uiaura").DestroyWindow() # MT2009_PLUS_AURA_V1
 
@@ -894,6 +897,9 @@ class GameWindow(ui.ScriptWindow):
 			"monster_card"		: (lambda : Window("monstercard"), None),
 			# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 			"drop_wiki"			: (lambda : __import__("uidropwiki").ToggleWindow(), None),
+			# MT2009_PLUS_WIKI_V1: the wiki (uiwiki.py); Shift+H the item under the mouse's tooltip (tooltipmodel.py)
+			"wiki"				: (lambda : __import__("uiwiki").Toggle(), None),
+			"wiki_item"			: (lambda : __import__("tooltipmodel").OpenWikiForTooltip(), None),
 			"hide_ui"			: (lambda : self.__HideUserInterface(), None),
 			"quest_buttons"		: (QuestButtons, None),
 			"screenshot"		: (lambda : self.SaveScreen(), None),

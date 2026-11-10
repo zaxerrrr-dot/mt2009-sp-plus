@@ -306,6 +306,8 @@
     <ClCompile Include="PythonYutnoriManager.cpp" />
     <ClCompile Include="Mt2009ClientQol.cpp" />
     <ClCompile Include="Mt2009MonsterModel.cpp" />
+    <ClCompile Include="Mt2009WikiModel.cpp" />
+    <ClCompile Include="Mt2009Wiki.cpp" />
     <ClCompile Include="Mt2009Zodiak.cpp" />
     <ClCompile Include="Mt2009Champion.cpp" />
     <ClCompile Include="Mt2009ChangeLook.cpp" />
