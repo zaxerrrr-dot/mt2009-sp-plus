@@ -922,8 +922,10 @@ namespace
 					? pin->second.maxPct * 10U : (DWORD)c.maxPct * 10U);
 			const DWORD pinUnit = pin != s_mapPlayerBotFairPins.end() ? pin->second.pin : 0U;
 			// the market's imbalance
-			const double rate = (double)soldW / (double)watchedH;			// units an hour
-			const double rate6 = (double)sold6 / (double)std::min<DWORD>(6U, watchedH);
+			// units an hour - the current hour counted for the part of it gone, so a fresh hour reads no slowdown
+			const double partial = std::max(1.0 / 60.0, (double)(nowS % 3600U) / 3600.0);
+			const double rate = (double)soldW / ((double)watchedH - 1.0 + partial);
+			const double rate6 = (double)sold6 / ((double)std::min<DWORD>(6U, watchedH) - 1.0 + partial);
 			const double stock = (double)book.units;
 			double xc = 0.0;
 			if (stock <= 0.0)
