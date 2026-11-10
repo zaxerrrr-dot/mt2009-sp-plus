@@ -401,6 +401,15 @@ class ExtraOptionsWindow(ui.BoardWithTitleBar):
 				row = GroupRow(self, name)
 				row.SetParent(self)
 				self.groupRows[name] = row
+		# MT2009_PLUS_SIDEBAR_CONFIG_V1: the inventory's side bar - which buttons and in what order (uisidebarconfig.py)
+		sidebarButton = ui.Button()
+		sidebarButton.SetParent(self)
+		sidebarButton.SetUpVisual("d:/ymir work/ui/public/xlarge_button_01.sub")
+		sidebarButton.SetOverVisual("d:/ymir work/ui/public/xlarge_button_02.sub")
+		sidebarButton.SetDownVisual("d:/ymir work/ui/public/xlarge_button_03.sub")
+		sidebarButton.SetText("Pasek boczny ekwipunku...")
+		sidebarButton.SAFE_SetEvent(self.OpenSidebarSettings)
+		self.sidebarButton = sidebarButton
 		self.Layout()
 		self.Refresh()
 
@@ -410,7 +419,13 @@ class ExtraOptionsWindow(ui.BoardWithTitleBar):
 	def Destroy(self):
 		self.rows = {}
 		self.groupRows = {}
+		if getattr(self, "sidebarButton", None):	# MT2009_PLUS_SIDEBAR_CONFIG_V1
+			self.sidebarButton.ClearEvent()
+			self.sidebarButton = None
 		self.Hide()
+
+	def OpenSidebarSettings(self):	# MT2009_PLUS_SIDEBAR_CONFIG_V1
+		__import__("uisidebarconfig").OpenWindow()
 
 	# AH_V1 [Autor: Vekirion]: zwykle opcje po kolei, pod nimi grupy: naglowek, a pod rozwinietym
 	# jego opcje z wcieciem. Okno ma wysokosc tego, co widac.
@@ -446,6 +461,11 @@ class ExtraOptionsWindow(ui.BoardWithTitleBar):
 					y += self.ROW
 				else:
 					row.Hide()
+		if getattr(self, "sidebarButton", None):	# MT2009_PLUS_SIDEBAR_CONFIG_V1
+			y += 6
+			self.sidebarButton.SetPosition(18, y)
+			self.sidebarButton.Show()
+			y += self.sidebarButton.GetHeight()
 		self.SetSize(self.WIDTH, y + 14)
 
 	def ToggleGroup(self, name):

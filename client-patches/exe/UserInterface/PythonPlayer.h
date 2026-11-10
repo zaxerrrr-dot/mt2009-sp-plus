@@ -795,6 +795,10 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		DWORD	AutoHuntTest_SetSkillSlot(int iSlot, DWORD dwSkillSlotPos);
 		DWORD	AutoHuntTest_SetItemSlot(int iSlot, DWORD dwCell);
 		void	AutoHuntTest_SetSlotValue(int iSlot, DWORD dwValue);
+		// MT2009_PLUS_AUTOHUNT_DIRECT_V1: our own Auto Lowy (root uiautohunt.py) borrow the TEST hunt's approach
+		bool	AutoHuntDirect_Attack(DWORD dwVID);
+		int		AutoHuntDirect_InReach(DWORD dwVID);
+		void	AutoHuntDirect_PassMonsters(bool bOn);
 	protected:
 		DWORD			__AutoHuntTest_SkillTime(DWORD dwSkillSlotPos);
 		CInstanceBase*	__AutoHuntTest_FindTarget(CInstanceBase* pkInstMain);

@@ -610,8 +610,88 @@ void CPythonPlayer::AutoHuntTest_Update()
 	pkInstMain->NEW_GetPixelPosition(&r.kStuckPos);
 }
 
+// MT2009_PLUS_AUTOHUNT_DIRECT_V1 (the owner, 10 November 2026: our Auto Lowy should reach a target as the TEST hunt
+// does, on foot and mounted). root uiautohunt.py keeps choosing the target (the server's /autohunt_target) and walking
+// the ways round walls itself; for the last straight leg and the fight it hands the target to the client's own
+// "click on a monster" walk, as AutoHuntTest_Update does: __Update_AutoAttack walks to the target's live place every
+// frame, stops at its body's edge plus 150 (CActorInstance::IsClickableDistanceDestInstance) - or at the bow's range -
+// turns to it and swings. AutoHuntDirect_Attack(0) gives the walk back (root then orders its own steps).
+bool CPythonPlayer::AutoHuntDirect_Attack(DWORD dwVID)
+{
+	if (!dwVID)
+	{
+		if (m_dwAutoAttackTargetVID)
+		{
+			__ClearAutoAttackTargetActorID();
+			__ClearReservedAction();
+		}
+		return true;
+	}
+	CInstanceBase* pkInstMain = NEW_GetMainActorPtr();
+	CInstanceBase* pkTarget = NEW_FindActorPtr(dwVID);
+	if (!pkInstMain || !pkTarget || pkTarget->IsDead() || pkInstMain->IsDead())
+		return false;
+	if (pkInstMain->IsMountingHorse() && !pkInstMain->CanAttackHorseLevel())
+		return false;	// the client's auto attack would let it go at once (__Update_AutoAttack)
+	if (!pkInstMain->IsAttackableInstance(*pkTarget))
+		return false;
+	if (__GetTargetVID() != dwVID)
+		SetTarget(dwVID);
+	if (m_dwAutoAttackTargetVID != dwVID)
+	{
+		__SetAutoAttackTargetActorID(dwVID);
+		__ReserveClickActor(dwVID);
+	}
+	return true;
+}
+
+int CPythonPlayer::AutoHuntDirect_InReach(DWORD dwVID)
+{
+	CInstanceBase* pkInstMain = NEW_GetMainActorPtr();
+	CInstanceBase* pkTarget = NEW_FindActorPtr(dwVID);
+	if (!pkInstMain || !pkTarget)
+		return -1;
+	return pkInstMain->NEW_IsClickableDistanceDestInstance(*pkTarget) ? 1 : 0;
+}
+
+void CPythonPlayer::AutoHuntDirect_PassMonsters(bool bOn)
+{
+	if (m_kAutoHuntTest.bRunning)
+		return;		// the TEST hunt's own switch
+	CInstanceBase* pkInstMain = NEW_GetMainActorPtr();
+	if (pkInstMain)
+		pkInstMain->SetAutoHuntTestPass(bOn);
+}
+
 namespace
 {
+	// MT2009_PLUS_AUTOHUNT_DIRECT_V1: player.AutoHuntDirectAttack(vid) -> 1 taken / 0 not (vid 0 gives the walk back),
+	// player.AutoHuntInReach(vid) -> 1 / 0 / -1 (not seen), player.AutoHuntPassMonsters(on)
+	PyObject* playerAutoHuntDirectAttack(PyObject* poSelf, PyObject* poArgs)
+	{
+		int iVID;
+		if (!PyTuple_GetInteger(poArgs, 0, &iVID))
+			return Py_BuildException();
+		return Py_BuildValue("i", CPythonPlayer::Instance().AutoHuntDirect_Attack(iVID > 0 ? (DWORD)iVID : 0) ? 1 : 0);
+	}
+
+	PyObject* playerAutoHuntInReach(PyObject* poSelf, PyObject* poArgs)
+	{
+		int iVID;
+		if (!PyTuple_GetInteger(poArgs, 0, &iVID))
+			return Py_BuildException();
+		return Py_BuildValue("i", iVID > 0 ? CPythonPlayer::Instance().AutoHuntDirect_InReach((DWORD)iVID) : -1);
+	}
+
+	PyObject* playerAutoHuntPassMonsters(PyObject* poSelf, PyObject* poArgs)
+	{
+		int iOn;
+		if (!PyTuple_GetInteger(poArgs, 0, &iOn))
+			return Py_BuildException();
+		CPythonPlayer::Instance().AutoHuntDirect_PassMonsters(iOn != 0);
+		return Py_BuildNone();
+	}
+
 	PyObject* playerAutoHuntTestStart(PyObject* poSelf, PyObject* poArgs)
 	{
 		int iOn;
@@ -758,6 +838,9 @@ void Mt2009AutoHuntTest_RegisterPython()
 		{ "AutoHuntTestClearSlots",			playerAutoHuntTestClearSlots,		METH_VARARGS },
 		{ "AutoHuntTestGetTarget",			playerAutoHuntTestGetTarget,		METH_VARARGS },
 		{ "AutoHuntTestGetStartPosition",	playerAutoHuntTestGetStartPosition,	METH_VARARGS },
+		{ "AutoHuntDirectAttack",			playerAutoHuntDirectAttack,			METH_VARARGS },	// MT2009_PLUS_AUTOHUNT_DIRECT_V1
+		{ "AutoHuntInReach",				playerAutoHuntInReach,				METH_VARARGS },
+		{ "AutoHuntPassMonsters",			playerAutoHuntPassMonsters,			METH_VARARGS },
 		{ NULL, NULL, 0 },
 	};
 	PyObject* poModule = PyImport_AddModule("player");	// borrowed

@@ -325,6 +325,45 @@ NAV_BLOCK_RADIUS = 100
 NAV_DETOUR_RATIO = 2.5
 NAV_DETOUR_SLACK = 600.0
 NAV_MAX_NODES = 60000
+# MT2009_PLUS_AUTOHUNT_DIRECT_V1 (the owner, 10 November 2026: the TEST auto
+# hunt "picks a new target much faster, walks straight to it and attacks,
+# especially when mounted; ours picks a target and circles round it"). Why
+# ours circled: "in reach" was the distance between the two middles
+# (player.GetCharacterDistance) under a fixed MELEE_REACH of 200, and the walk
+# went to a point reach * STOP_SHORT_SHARE = 120 from the target's middle, every
+# MOVE_INTERVAL. A monster whose body (its collision spheres) is wider than
+# that, and any monster for a rider (the horse's own body is wide), holds the
+# character at its edge before 200: the client's actor collision slides the
+# walk sideways along the body, the next step aims at the middle again, and the
+# character runs round the monster without a single swing until STUCK_SECONDS
+# give it up. The TEST hunt lets the exe's own "click on a monster" walk do it
+# (CPythonPlayer::__Update_AutoAttack): reach is the body's edge plus 150
+# (CActorInstance::IsClickableDistanceDestInstance), the walk follows the
+# target's live position every frame, faces it and swings - and the hunter
+# walks through monsters. Here:
+# - an exe with player.AutoHuntDirectAttack (Mt2009AutoHuntTest.cpp, the same
+#   MT2009_PLUS_AUTOHUNT_DIRECT_V1) takes the last straight leg and the fight
+#   from that walk, like the TEST hunt; player.AutoHuntInReach is the exe's
+#   reach and player.AutoHuntPassMonsters the walk through monsters. Our ways
+#   round walls (NavChase, the server's /autohunt_path, the box, the step off a
+#   wall) stay first: a planned way or a step is walked by us, and any WalkTo
+#   takes the walk back from the exe (StopDirect).
+# - an older exe: a walk held at the target's body (no CONTACT_GAIN closer in
+#   CONTACT_SECONDS, within CONTACT_SLACK - CONTACT_SLACK_MOUNTED for a rider -
+#   beyond the reach) counts as in reach, a target once fought stays in reach
+#   REACH_KEEP further (a blow's knock-back no longer starts a walk), the last
+#   leg is ordered again every CHASE_MOVE_INTERVAL to the target's live place,
+#   and the character faces it at once.
+# - with no target the server is asked every IDLE_REQUEST_INTERVAL (the TEST
+#   hunt looks every 0.25 s), not TARGET_REQUEST_INTERVAL.
+DIRECT_EXE = all(hasattr(player, name) for name in ('AutoHuntDirectAttack', 'AutoHuntInReach'))
+CONTACT_SLACK = 250.0
+CONTACT_SLACK_MOUNTED = 400.0
+CONTACT_SECONDS = 0.3
+CONTACT_GAIN = 15.0
+REACH_KEEP = 100.0
+CHASE_MOVE_INTERVAL = 0.15
+IDLE_REQUEST_INTERVAL = 0.3
 
 
 def NavExe():
@@ -1328,6 +1367,13 @@ class Hunter(object):
         self.ResetEscape()
         self.ResetNavigation()
         self.attacking = False
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the exe's walk-and-swing (StartDirect)
+        # and the measures of the walk held at a body (InReach).
+        if getattr(self, 'directVid', 0):
+            self.StopDirect()
+        self.directVid = 0
+        self.nextPassMonsters = 0.0
+        self.ResetContact()
         self.anchor = (0, 0)
         self.nextRequest = 0.0
         self.nextMove = 0.0
@@ -1459,9 +1505,16 @@ class Hunter(object):
 
         # MT2009_PLUS_AUTOHUNT_MOUNT_V1: the remount takes the whole frame.
         if self.HandleMountRecovery(now):
+            self.SyncDirect()  # MT2009_PLUS_AUTOHUNT_DIRECT_V1
             return
         if not self.running:
             return
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the exe's walk only for the live
+        # target; the walk through monsters again after a warp (a new actor).
+        self.SyncDirect()
+        if now >= self.nextPassMonsters:
+            self.nextPassMonsters = now + 1.0
+            self.PassMonsters(True)
 
         if player.GetStatus(player.HP) <= 0:
             
@@ -1559,6 +1612,7 @@ class Hunter(object):
         self.anchor = (int(x), int(y))
         self.running = True
         SetPassThroughPlayers(True)
+        self.PassMonsters(True)  # MT2009_PLUS_AUTOHUNT_DIRECT_V1
         # MT2009_PLUS_AUTOHUNT_QUICK_V1: the quick start says its own line.
         chat.AppendChat(chat.CHAT_TYPE_INFO, startText or (T('Auto \xa3owy: start, zasi\xeag %d.',
             'Auto Hunt: started, range %d.') % self.config['range']))
@@ -1581,6 +1635,9 @@ class Hunter(object):
         self.ResetRider()
         self.running = False
         SetPassThroughPlayers(False)
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1
+        self.StopDirect()
+        self.PassMonsters(False)
         # MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): the server stops
         # taking a blow at a bot for a hunt's at once, not 5 s after the last
         # /autohunt_target (cmd_general.cpp do_autohunt_stop).
@@ -2051,6 +2108,9 @@ class Hunter(object):
         # four times a second.
         if self.TargetMode() == TARGET_MODE_NEAREST:
             self.nextRequest = now + NEAREST_REQUEST_INTERVAL
+        elif not self.targetVid:
+            # MT2009_PLUS_AUTOHUNT_DIRECT_V1: nobody in hand - asked again soon.
+            self.nextRequest = now + IDLE_REQUEST_INTERVAL
         else:
             self.nextRequest = now + TARGET_REQUEST_INTERVAL
         self.lastTargetRequestAt = now
@@ -2086,6 +2146,91 @@ class Hunter(object):
             skips += piece
         command += ' ' + (skips or '0') + tail
         self.Command(command, now)
+
+    # MT2009_PLUS_AUTOHUNT_DIRECT_V1 ----------------------------------------
+    def ResetContact(self):
+        self.contactVid = 0
+        self.contactBest = 0.0
+        self.contactSince = 0.0
+        self.reachVid = 0
+
+    def InReach(self, now, vid, distance):
+        """Whether the target can be hit from where the character stands -
+        see MT2009_PLUS_AUTOHUNT_DIRECT_V1."""
+        reach = self.Reach()
+        if distance <= reach:
+            self.reachVid = vid
+            return True
+        if DIRECT_EXE:
+            try:
+                if player.AutoHuntInReach(vid) == 1:
+                    self.reachVid = vid
+                    return True
+                return False
+            except Exception:
+                pass
+        if reach > MELEE_REACH:
+            # A bow reaches by its own range; no body to stop at.
+            return False
+        if self.reachVid == vid and distance <= reach + REACH_KEEP:
+            return True
+        slack = CONTACT_SLACK_MOUNTED if IsMounted() else CONTACT_SLACK
+        if distance > reach + slack or now < self.skillHoldUntil:
+            # Too far for its body, or standing still on purpose (a skill's motion).
+            self.contactVid = 0
+            return False
+        if self.contactVid != vid or distance < self.contactBest - CONTACT_GAIN:
+            self.contactVid = vid
+            self.contactBest = distance
+            self.contactSince = now
+            return False
+        if now - self.contactSince < CONTACT_SECONDS:
+            return False
+        self.reachVid = vid
+        return True
+
+    def StartDirect(self, now, vid):
+        """The exe's own walk-and-swing at vid (the TEST hunt's), True when taken."""
+        if not DIRECT_EXE or not vid:
+            return False
+        try:
+            ok = player.AutoHuntDirectAttack(vid)
+        except Exception:
+            return False
+        if not ok:
+            return False
+        if self.attacking:
+            self.ReleaseAttack()
+        if self.directVid != vid:
+            self.ResetWalkKeep()
+        self.directVid = vid
+        return True
+
+    def StopDirect(self):
+        if not self.directVid:
+            return
+        self.directVid = 0
+        try:
+            player.AutoHuntDirectAttack(0)
+        except Exception:
+            pass
+
+    def SyncDirect(self):
+        """The exe's walk only for the live target of a running hunt on foot or on a horse."""
+        if not self.directVid:
+            return
+        if (not self.running or self.directVid != self.targetVid or self.lootSweeping or
+                self.escapeUntil or self.returning or self.mountRecoveryPhase or self.RiderActive() or
+                player.GetStatus(player.HP) <= 0 or self.IsKnownDead(self.directVid)):
+            self.StopDirect()
+
+    def PassMonsters(self, on):
+        """The TEST hunt's walk through monsters and stones (exe: AutoHuntPassMonsters)."""
+        try:
+            if hasattr(player, 'AutoHuntPassMonsters'):
+                player.AutoHuntPassMonsters(1 if on else 0)
+        except Exception:
+            pass
 
     def ResetChaseMovement(self):
         self.chasePosition = None
@@ -2934,7 +3079,8 @@ class Hunter(object):
             self.ResetPath()
 
         reach = self.Reach()
-        if distance > reach:
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the reach of the target's body, not of its middle.
+        if not self.InReach(now, vid, distance):
             # MT2009_PLUS_AUTOHUNT_PRIORITY_V1: "Fokus" measures in reach only.
             self.focusLastProgress = now
             self.targetSetSince = 0.0
@@ -2972,8 +3118,19 @@ class Hunter(object):
                 if self.config.get('return', 0):
                     self.ReturnToAnchor(now)
                 return
+            # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the straight last leg - no way
+            # round planned or asked - is the exe's own walk to the live
+            # target (the TEST hunt's), which stops at its body and swings.
+            if now >= self.skillHoldUntil and self.StartDirect(now, vid):
+                (px, py, pz) = player.GetMainCharacterPosition()
+                self.walkIntentAt = now
+                self.NoteChaseWalk(now, vid, px, py, distance)
+                return
             if now >= self.nextMove and now >= self.skillHoldUntil:
-                self.nextMove = now + MOVE_INTERVAL
+                # An older exe: the step again to the target's live place,
+                # CHASE_MOVE_INTERVAL apart (it was MOVE_INTERVAL to a place
+                # the target had often left - worse on a fast horse).
+                self.nextMove = now + CHASE_MOVE_INTERVAL
                 (px, py, pz) = player.GetMainCharacterPosition()
                 (tx, ty, tz) = chr.GetPixelPosition(vid)
                 (sx, sy) = StopPoint(px, py, tx, ty, reach * STOP_SHORT_SHARE)
@@ -2992,7 +3149,14 @@ class Hunter(object):
         # health for FOCUS_IDLE_SECONDS in reach - another target.
         if self.FocusIdle(now, vid):
             return
-        if now >= self.nextFace:
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the exe faces the target and swings
+        # by itself (it walks the step again if the target is knocked back).
+        if self.StartDirect(now, vid):
+            self.targetSetSince = 0.0
+            return
+        # An older exe: facing at once on coming into reach, not up to
+        # FACE_INTERVAL later (the first swings went past the target).
+        if now >= self.nextFace or not self.attacking:
             self.nextFace = now + FACE_INTERVAL
             self.Face(vid)
             
@@ -3339,6 +3503,8 @@ class Hunter(object):
     def WalkTo(self, x, y):
         # MT2009_PLUS_AUTOHUNT_MOUNT_V1: a step ordered somewhere (not a stop
         # where it stands) is a walk WatchMountStuck measures.
+        # MT2009_PLUS_AUTOHUNT_DIRECT_V1: our own step takes the walk back from the exe.
+        self.StopDirect()
         (px, py, pz) = player.GetMainCharacterPosition()
         if (px - x) ** 2 + (py - y) ** 2 >= (2 * COMBAT_MOVE_THRESHOLD) ** 2:
             self.walkIntentAt = clientclock.Now()
@@ -3372,6 +3538,9 @@ class Hunter(object):
         if goal is None or now - self.walkGoalAt > WALK_KEEP_SECONDS:
             return False
         if self.attacking or now < self.skillHoldUntil or self.walkKeepTries >= WALK_KEEP_TRIES:
+            return False
+        if self.directVid:
+            # MT2009_PLUS_AUTOHUNT_DIRECT_V1: the exe walks (and walks again) by itself.
             return False
         if now - self.walkStillSince < WALK_KEEP_STILL or now < self.walkKeepNext:
             return False

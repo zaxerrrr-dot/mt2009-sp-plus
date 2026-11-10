@@ -3055,16 +3055,56 @@ void CInstanceBase::__ClearArmorRefineEffect()
 	}
 }
 
+#ifdef ENABLE_MT2009_REFINE_EFFECT_15
+// MT2009_PLUS_REFINE_EFFECT_15_V1: the item's own plus when it is +10 or more (Serpent +10..+15), else -1.
+// GetRefine() is vnum % 10, which wraps at +10. Asked two ways:
+//  - the chain of the proto: the +9 one vnum below the item's "+0" row (vnum - vnum % 10 - 1, e.g. 369 for 370..375)
+//    is the same kind of item and refines into vnum - vnum % 10 (369 -> 370);
+//  - the name's "+N" at its end (as the server's weapon_element.cpp RefineOf), for a proto without the refine chain.
+static int Mt2009PlusAboveNine(CItemData* pItem)
+{
+	const DWORD dwVnum = pItem->GetIndex();
+	const DWORD dwRest = dwVnum % 10;
+	if (dwRest <= 5 && dwVnum >= 10)
+	{
+		CItemData* pNine = NULL;
+		const DWORD dwNine = dwVnum - dwRest - 1;
+		if (CItemManager::Instance().GetItemDataPointer(dwNine, &pNine) && pNine &&
+			pNine->GetType() == pItem->GetType() && pNine->GetSubType() == pItem->GetSubType() &&
+			pNine->GetTable() && pNine->GetTable()->dwRefinedVnum == dwVnum - dwRest)
+			return 10 + (int)dwRest;
+	}
+	const char* szName = pItem->GetName();
+	const char* szPlus = szName ? strrchr(szName, '+') : NULL;
+	if (szPlus && szPlus[1] >= '0' && szPlus[1] <= '9')
+	{
+		const int iPlus = atoi(szPlus + 1);
+		if (iPlus >= 10 && iPlus <= 99)
+			return iPlus;
+	}
+	return -1;
+}
+#endif
+
 // #define ENABLE_SIMPLE_REFINED_EFFECT_CHECK
 // #define USE_WEAPON_COSTUME_WITH_EFFECT
 // #define USE_BODY_COSTUME_WITH_EFFECT
 UINT CInstanceBase::__GetRefinedEffect(CItemData* pItem)
 {
-#ifdef ENABLE_SIMPLE_REFINED_EFFECT_CHECK
-	DWORD refine = pItem->GetRefine();
+#ifdef ENABLE_MT2009_REFINE_EFFECT_15
+	// MT2009_PLUS_REFINE_EFFECT_15_V1: +10..+15 are drawn as +9 (with the item's sockets as before); never above
+	// 9 - EFFECT_*_REFINED7 + refine - 7 would run into the next weapon kind's effects.
+	const DWORD dwBaseRefine = Mt2009PlusAboveNine(pItem) >= 10 ? 9 : pItem->GetRefine();
 #else
-	DWORD refine = max(pItem->GetRefine() + pItem->GetSocketCount(),ITEM_SOCKET_MAX_NUM) - ITEM_SOCKET_MAX_NUM;
+	const DWORD dwBaseRefine = pItem->GetRefine();
 #endif
+#ifdef ENABLE_SIMPLE_REFINED_EFFECT_CHECK
+	DWORD refine = dwBaseRefine;
+#else
+	DWORD refine = max(dwBaseRefine + pItem->GetSocketCount(),ITEM_SOCKET_MAX_NUM) - ITEM_SOCKET_MAX_NUM;
+#endif
+	if (refine > 9)
+		refine = 9;
 	switch (pItem->GetType())
 	{
 	case ITEM_WEAPON:
