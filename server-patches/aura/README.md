@@ -20,8 +20,10 @@ Aury”, „Szaty Aury”, „Zwyczajna … Promienista Szata Aury”, „Lodowa
   szatę `Mt2009AuraModifyPoints` i nic więcej z nią nie robi.
 - **Okna u Theowahdana bez nowych pakietów** (jak Transmutacja): komendy czatu, okno w pythonie
   (`root/uiaura.py`), serwer sprawdza wszystko jeszcze raz przy „accept” po id przedmiotów.
-  - klient → `/aura in <pole> <komórka>` (0 szata, 1 drugi przedmiot), `/aura out <pole>`, `/aura accept`, `/aura cancel`
-  - serwer → `AURA open <typ>` (0 przenoszenie, 1 rozwój – runy, 2 ewolucja), `AURA set <pole> <komórka> <vnum> <ilość>`,
+  - klient → `/aura in <pole> <komórka> [<okno>]` (0 szata, 1 drugi przedmiot; okno: torba albo – dla pola 1 – magazyn
+    dodatkowego ekwipunku 11–15), `/aura out <pole>`, `/aura accept`, `/aura cancel`; PPM na przedmiot w torbie lub w
+    dodatkowym ekwipunku przy otwartym oknie wkłada go (szata – lewe pole, reszta – prawe)
+  - serwer → `AURA open <typ>` (0 przenoszenie, 1 rozwój – runy, 2 ewolucja), `AURA set <pole> <komórka> <vnum> <ilość> <okno>`,
     `AURA del <pole>`, `AURA close`, `AURA done`
 - **Wygląd u innych**: `AURA view <vid> <vnum>` (0: brak) – gdy postać wchodzi w pole widzenia (`EncodeInsertPacket`)
   i gdy jej szata się zmienia (`UpdatePacket`, tylko raz na zmianę; postać bez szaty nic nie wysyła). Efekt rysuje
@@ -36,7 +38,7 @@ Aury”, „Szaty Aury”, „Zwyczajna … Promienista Szata Aury”, „Lodowa
 | Szata zakładana jak szarfa | własne miejsce kostiumu 27, bez limitu poziomu |
 | Przenieś parametry (Theowahdan, okno: szata + bransoleta / naszyjnik / kolczyki / tarcza, przedmiot znika) | okno 0; szata bez przeniesionych parametrów; kopiowane wszystkie bonusy, `socket0` = vnum |
 | Świadectwo Aury+ usuwa parametry | 89999 przeciągnięte na szatę w ekwipunku: bonusy i `socket0` czyszczone, poziom zostaje |
-| Rozwój runami (Lodowa 1, Ogniste 10/50/100/250/500 PD) | okno 1 („Szata aury: rozwój”); runy po kolei aż do szczytu rodzaju, zabierane tylko użyte |
+| Rozwój runami (Lodowa 1, Ogniste 10/50/100/250/500 PD) | okno 1 („Szata aury: rozwój”); runy po kolei aż do szczytu rodzaju, zabierane tylko użyte – od 10.11.2026 (`MT2009_PLUS_AURA_RUNE_STACK_V1`) jedno „Akceptuj” zużywa cały stos naraz (Lodowa Runa Aury do 9999 w stosie), wszystkie awanse do szczytu rodzaju, reszta run zostaje; okno pyta z liczbami („Zużyć X z Y run? Poziom A -> B”) |
 | Poziom: 1000 / 2000 / 4000 / 8000 / 16000 PD | jak u Owsapa (Zwyczajna … Wytworna) |
 | Ewolucja na 49/99/149/199/249: Agat x10 5 mln, Prosty KC x10 5 mln, Ładny KC x10 5 mln, Wspaniały KC x10 8 mln, Wspaniały KC x20 10 mln; zawsze się udaje, +1 poziom | okno 2 („Szata aury: ewolucja”); nowa szata (vnum + 1), bonusy i `socket0` zachowane, poziom + 1; materiał liczony z całego ekwipunku |
 | Stopień absorpcji zależy od poziomu | `poziom / 10 %` (Owsap) |

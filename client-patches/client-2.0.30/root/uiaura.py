@@ -4,10 +4,14 @@
 #   window 0  przenies parametry  the outfit (left) + a bracelet / necklace / earrings / shield (right, destroyed);
 #             the small slot shows the outfit with the bonuses it will get
 #   window 1  rozwoj              the outfit + Lodowa / Ognista Runa Aury (only the runes needed are taken)
+#             MT2009_PLUS_AURA_RUNE_STACK_V1 (the owner, 10 November 2026): one accept spends the whole stack (Lodowa
+#             Runa Aury stacks to 9999) as far as the grade's top - every level-up at once, the rest stays; asks first
+#             with the numbers. A right click on an item of the bag or of the Dodatkowy ekwipunek's storages puts it
+#             into the open window (TakeItem: an outfit -> the left slot, anything else -> the right one).
 #   window 2  ewolucja            the outfit at the top of its grade, full + the grade's material and Yang
-# server -> "AURA open <type>", "AURA set <slot> <cell> <vnum> <count>", "AURA del <slot>", "AURA close", "AURA done",
-#           "AURA view <vid> <vnum>" (the outfit another character wears: the 3.0 exe's chrmgr.SetAura draws it)
-# client -> /aura in <slot> <cell> | out <slot> | accept | cancel
+# server -> "AURA open <type>", "AURA set <slot> <cell> <vnum> <count> [<window>]", "AURA del <slot>", "AURA close",
+#           "AURA done", "AURA view <vid> <vnum>" (the outfit another character wears: the 3.0 exe's chrmgr.SetAura)
+# client -> /aura in <slot> <cell> [<window>] | out <slot> | accept | cancel
 # Also here: the outfit's tooltip lines (AppendToolTip, uitooltip.py), its costume slot (SLOT, uiinventory.py).
 # The outfit's sockets (Owsap's): socket 0 the absorbed item's vnum, socket 1 (1000 + level) * 100000 + exp - a new
 # outfit (0) is its grade's first level. The numbers are the server's (playerbot_aura.cpp).
@@ -70,8 +74,13 @@ TEXT_PUT_MAIN = 'Najpierw w\xb3\xf3\xbf szat\xea aury.'
 TEXT_PUT_BOTH = 'W\xb3\xf3\xbf oba przedmioty.'
 TEXT_QUESTION_ABSORB = 'Przedmiot z prawego pola zniknie. Przenie\x9c\xe6 parametry?'
 TEXT_QUESTION_EVOLVE = 'Ewoluowa\xe6 szat\xea za %s Yang i materia\xb3?'
+TEXT_QUESTION_GROWTH = 'Zu\xbfy\xe6 %d z %d run? Poziom %d -> %d.'			# MT2009_PLUS_AURA_RUNE_STACK_V1
+TEXT_QUESTION_GROWTH_TOP = 'Zu\xbfy\xe6 %d z %d run? Poziom %d -> %d (szczyt rodzaju, reszta zostaje).'
+TEXT_GROWTH_NOTHING = 'Ta szata nie przyjmie ju\xbf run - czas na ewolucj\xea.'
+TEXT_SLOT_TAKEN = 'Najpierw wyjmij przedmiot z prawego pola.'
+TEXT_QUICK_AURA = 'PPM: w\xb3\xf3\xbf do okna szaty aury'
 TEXT_NOW = 'Teraz:'
-TEXT_AFTER = 'Po rozwoju (%d szt.):'
+TEXT_AFTER = 'Po rozwoju (%d z %d szt.):'
 TEXT_EVOLVED = 'Po ewolucji:'
 TEXT_LEVEL = 'Poziom %d (%s), absorpcja %.1f%%'
 TEXT_EXP = 'Do\x9cwiadczenie: %d%%'
@@ -370,9 +379,21 @@ class AuraWindow(ui.ScriptWindow):
 			self.Close()
 
 	# ---- the server -------------------------------------------------------------------------------------------------
-	def SetSlot(self, slot, cell, vnum, count):
-		self.items[slot] = (cell, vnum, count)
+	def SetSlot(self, slot, cell, vnum, count, window=None):
+		if window is None:
+			window = player.INVENTORY
+		self.items[slot] = (cell, vnum, count, window)
 		self.Refresh()
+
+	def __Count(self, slot):
+		"""MT2009_PLUS_AURA_RUNE_STACK_V1: the stack's count now (a pickup may have joined it), the server's otherwise."""
+		(cell, vnum, count, window) = self.items[slot]
+		try:
+			if player.GetItemIndex(window, cell) == vnum:
+				return max(1, int(player.GetItemCount(window, cell)))
+		except Exception:
+			pass
+		return count
 
 	def DelSlot(self, slot):
 		if slot in self.items:
@@ -380,7 +401,7 @@ class AuraWindow(ui.ScriptWindow):
 		self.Refresh()
 
 	def __MainState(self):
-		(cell, vnum, count) = self.items[SLOT_MAIN]
+		(cell, vnum, count, window) = self.items[SLOT_MAIN]
 		return (vnum,) + Decode(vnum, player.GetItemMetinSocket(cell, SOCKET_LEVEL))
 
 	def Refresh(self):
@@ -388,8 +409,9 @@ class AuraWindow(ui.ScriptWindow):
 			return
 		for slot in (SLOT_MAIN, SLOT_SUB, SLOT_RESULT):
 			self.wndItem.ClearSlot(slot)
-		for (slot, (cell, vnum, count)) in self.items.items():
-			self.wndItem.SetItemSlot(slot, vnum, count if count > 1 else 0)
+		for slot in self.items.keys():
+			count = self.__Count(slot)
+			self.wndItem.SetItemSlot(slot, self.items[slot][1], count if count > 1 else 0)
 		if self.type == TYPE_ABSORB and SLOT_MAIN in self.items and SLOT_SUB in self.items:
 			self.wndItem.SetItemSlot(SLOT_RESULT, self.items[SLOT_MAIN][1], 0)
 		for text in self.texts:
@@ -410,9 +432,10 @@ class AuraWindow(ui.ScriptWindow):
 		grade = Grade(vnum)
 		lines = [TEXT_NOW, TEXT_LEVEL % (level, GRADE_NAMES[grade], level / 10.0), TEXT_EXP % ExpPct(vnum, level, exp)]
 		if SLOT_SUB in self.items:
-			(cell, rune, count) = self.items[SLOT_SUB]
+			rune = self.items[SLOT_SUB][1]
+			count = self.__Count(SLOT_SUB)
 			(used, level2, exp2) = Grow(vnum, level, exp, count, RUNE_EXP.get(rune, 0))
-			lines += [TEXT_AFTER % used, TEXT_LEVEL % (level2, GRADE_NAMES[grade], level2 / 10.0),
+			lines += [TEXT_AFTER % (used, count), TEXT_LEVEL % (level2, GRADE_NAMES[grade], level2 / 10.0),
 				TEXT_READY if IsFull(vnum, level2, exp2) and grade < 5 else TEXT_EXP % ExpPct(vnum, level2, exp2)]
 		self.__Lines(lines)
 
@@ -428,31 +451,65 @@ class AuraWindow(ui.ScriptWindow):
 
 	# ---- the player -------------------------------------------------------------------------------------------------
 	def __AttachedBagCell(self):
+		"""(window, cell) of the item on the cursor - the bag or (MT2009_PLUS_AURA_RUNE_STACK_V1) a Dodatkowy
+		ekwipunek storage; (-1, -1) otherwise."""
 		if not mouseModule.mouseController.isAttached():
-			return -1
-		if mouseModule.mouseController.GetAttachedType() != player.SLOT_TYPE_INVENTORY:
-			mouseModule.mouseController.DeattachObject()
-			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_BAG)
-			return -1
+			return (-1, -1)
+		attachedType = mouseModule.mouseController.GetAttachedType()
 		cell = mouseModule.mouseController.GetAttachedSlotNumber()
+		window = _StorageWindowOfSlotType(attachedType)
 		mouseModule.mouseController.DeattachObject()
-		if cell >= getattr(player, 'EQUIPMENT_SLOT_START', 1 << 16):
-			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_BAG)
-			return -1
-		return cell
+		if attachedType == player.SLOT_TYPE_INVENTORY:
+			if cell >= getattr(player, 'EQUIPMENT_SLOT_START', 1 << 16):
+				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_BAG)
+				return (-1, -1)
+			return (player.INVENTORY, cell)
+		if window >= 0:
+			return (window, cell)
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_BAG)
+		return (-1, -1)
 
 	def __DropOnSlot(self, slot):
 		if slot == SLOT_RESULT:
 			mouseModule.mouseController.DeattachObject()
 			return
-		cell = self.__AttachedBagCell()
+		(window, cell) = self.__AttachedBagCell()
 		if cell < 0:
 			return
+		self.PutItem(slot, window, cell)
+
+	def PutItem(self, slot, window, cell):
+		"""Ask the server to put the item of (window, cell) into `slot` (a drop or a right click)."""
 		if slot == SLOT_SUB and SLOT_MAIN not in self.items:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_PUT_MAIN)
 			return
 		snd.PlaySound('sound/ui/drop.wav')
-		net.SendChatPacket('/aura in %d %d' % (slot, cell))
+		if window == player.INVENTORY:
+			net.SendChatPacket('/aura in %d %d' % (slot, cell))
+		else:
+			net.SendChatPacket('/aura in %d %d %d' % (slot, cell, window))
+
+	def TakeItem(self, window, cell):
+		"""MT2009_PLUS_AURA_RUNE_STACK_V1 (the owner, 10 November 2026): a right click on an item of the bag or of a
+		storage with this window open - an outfit goes into the left slot, anything else (the jewel, the runes - the
+		whole stack -, the material) into the right one; the server checks it as a drop. True: the click is taken."""
+		if not self.IsShow() or self.loadedType < 0:
+			return False
+		vnum = player.GetItemIndex(window, cell)
+		if not vnum:
+			return True
+		slot = SLOT_MAIN if IsAuraVnum(vnum) else SLOT_SUB
+		if slot in self.items:
+			(oldCell, oldVnum, x, oldWindow) = self.items[slot]
+			if (oldCell, oldWindow) == (cell, window):
+				return True
+			if slot == SLOT_SUB or SLOT_SUB not in self.items:
+				net.SendChatPacket('/aura out %d' % slot)	# a swap: the old item out first (an outfit only with the right slot empty)
+			else:
+				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_SLOT_TAKEN)
+				return True
+		self.PutItem(slot, window, cell)
+		return True
 
 	def __TakeOut(self, slot):
 		if mouseModule.mouseController.isAttached():
@@ -468,14 +525,15 @@ class AuraWindow(ui.ScriptWindow):
 		if slot == SLOT_RESULT:
 			self.__ResultToolTip()
 		elif slot in self.items:
-			self.toolTipItem.SetInventoryItem(self.items[slot][0])
+			(cell, vnum, count, window) = self.items[slot]
+			self.toolTipItem.SetInventoryItem(cell, window)
 
 	def __ResultToolTip(self):
 		"""The outfit as it will be: the right item's vnum and bonuses on it."""
 		if SLOT_MAIN not in self.items or SLOT_SUB not in self.items:
 			return
-		(mainCell, mainVnum, x) = self.items[SLOT_MAIN]
-		(subCell, subVnum, x) = self.items[SLOT_SUB]
+		(mainCell, mainVnum, x, y) = self.items[SLOT_MAIN]
+		(subCell, subVnum, x, y) = self.items[SLOT_SUB]
 		toolTip = self.toolTipItem
 		toolTip.ClearToolTip()
 		item.SelectItem(mainVnum)
@@ -499,6 +557,18 @@ class AuraWindow(ui.ScriptWindow):
 		elif self.type == TYPE_EVOLVE:
 			grade = Grade(self.items[SLOT_MAIN][1])
 			text = TEXT_QUESTION_EVOLVE % Money(GRADES[grade][5])
+		elif self.type == TYPE_GROWTH:
+			# MT2009_PLUS_AURA_RUNE_STACK_V1: the whole stack in one go - say how many runes and which level
+			(vnum, level, exp) = self.__MainState()
+			count = self.__Count(SLOT_SUB)
+			(used, level2, exp2) = Grow(vnum, level, exp, count, RUNE_EXP.get(self.items[SLOT_SUB][1], 0))
+			if used <= 0:
+				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_GROWTH_NOTHING)
+				return
+			if used < count and IsFull(vnum, level2, exp2):
+				text = TEXT_QUESTION_GROWTH_TOP % (used, count, level, level2)
+			else:
+				text = TEXT_QUESTION_GROWTH % (used, count, level, level2)
 		if not text:
 			net.SendChatPacket('/aura accept')
 			return
@@ -522,6 +592,46 @@ class AuraWindow(ui.ScriptWindow):
 
 
 _window = {'wnd': None}
+
+
+def _StorageWindowOfSlotType(slotType):
+	"""The Dodatkowy ekwipunek storage window of a slot type (uiekwipunek.py), -1 for none."""
+	try:
+		return __import__('uiekwipunek').WindowOfSlotType(slotType)
+	except Exception:
+		return -1
+
+
+def IsOpen():
+	wnd = _window['wnd']
+	try:
+		return bool(wnd and wnd.loadedType >= 0 and wnd.IsShow())
+	except Exception:
+		return False
+
+
+def TakeItem(window, cell):
+	"""MT2009_PLUS_AURA_RUNE_STACK_V1: uiinventory.py UseItemSlot / uiekwipunek.py QuickAdd (a right click) - with
+	the aura window open the item goes into it. True when taken (only while the window is open)."""
+	if not IsOpen():
+		return False
+	try:
+		return bool(_window['wnd'].TakeItem(window, cell))
+	except Exception:
+		import dbg
+		import sys
+		dbg.TraceError('uiaura.TakeItem: %s %s' % (sys.exc_info()[0], sys.exc_info()[1]))
+		return False
+
+
+def TakeInventoryItem(cell):
+	"""uiinventory.py UseItemSlot: a right click on a bag item."""
+	return TakeItem(player.INVENTORY, cell)
+
+
+def QuickHint():
+	"""The tooltip's hint line of a storage item while a right click puts it into the aura window."""
+	return TEXT_QUICK_AURA if IsOpen() else ''
 
 
 def GetWindow(toolTip=None):
@@ -569,7 +679,8 @@ def OnCommand(toolTip, *args):
 	elif what == 'set' and len(rest) >= 3:
 		wnd = _window['wnd']
 		if wnd:
-			wnd.SetSlot(_Int(rest[0]), _Int(rest[1]), _Int(rest[2]), _Int(rest[3] if len(rest) > 3 else 1, 1))
+			window = _Int(rest[4], player.INVENTORY) if len(rest) > 4 else player.INVENTORY
+			wnd.SetSlot(_Int(rest[0]), _Int(rest[1]), _Int(rest[2]), _Int(rest[3] if len(rest) > 3 else 1, 1), window)
 	elif what == 'del' and rest:
 		wnd = _window['wnd']
 		if wnd:
