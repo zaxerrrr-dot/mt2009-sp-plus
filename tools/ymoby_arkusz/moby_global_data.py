@@ -27,6 +27,9 @@ SAME_NAME = {2301, 2302, 2311, 2312, 3790}
 # drops: what the sheet lists and we leave out - besides chestdrops SKIP, ymoby_data.EXCLUDE, a quest's own items
 # (any vnum a quest of ours gives, counts or takes) and the materials no recipe, shop, chest or drop of our world uses
 EXCLUDE = dict((v, 'Seon-Hae event shard') for v in range(39070, 39078))
+# MT2009_PLUS_NO_TRZECH_WLADCOW_V1 (the owner, 10 November 2026: "Tarcza Trzech Wladcow do wywalenia calkowicie z dropu ze
+# wszystkiego"): the shield 13160-13169 in no drop; the game Dockerfile's last drop step cuts it from every file too
+EXCLUDE.update((v, 'Tarcza Trzech Wladcow - out of every drop (owner 10.11)') for v in range(13160, 13170))
 
 # MT2009_PLUS_MOBY_GLOBAL_OCHAO_BASE_V1: monsters our apply.sh makes (not in mob_proto.mt2009plus.sql) - the values a
 # fresh world gets from apply.sh (world.ochao_mob), not the test world's: that one held the panel's database-editor

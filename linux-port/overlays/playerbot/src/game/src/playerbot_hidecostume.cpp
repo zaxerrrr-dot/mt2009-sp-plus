@@ -129,6 +129,10 @@ void Mt2009HideCostumeParts(LPCHARACTER ch, DWORD* awPart)
 {
 	if (!ch || !awPart || !ch->IsPC() || ch->IsPolymorphed())
 		return;
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	// MT2009_PLUS_TRANSMUT_FIX_V1 (packet parts): a worn transmuted piece always goes out as its look (playerbot_changelook.cpp)
+	{ void Mt2009ChangeLookPacketParts(LPCHARACTER ch, DWORD* awPart); Mt2009ChangeLookPacketParts(ch, awPart); }
+#endif
 	const BYTE bMask = hidecostume::Mask(ch);
 	if (!bMask)
 		return;

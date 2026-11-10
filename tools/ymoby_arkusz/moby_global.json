@@ -164,19 +164,6 @@
 ]
 ]
 },
-"1070": {
-"kind": "normal",
-"name": "Nieśm. Duch",
-"rows": [
-[
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-]
-]
-},
 "108": {
 "kind": "normal",
 "name": "Dzik",
@@ -610,13 +597,6 @@
 "kind": "boss",
 "name": "Silna Lodowa Wiedźma",
 "rows": [
-[
-13166,
-1,
-5.0,
-"Tarcza Trzech Władców+6",
-"default:gear+6"
-],
 [
 39079,
 1,
@@ -1390,19 +1370,6 @@
 ]
 ]
 },
-"2062": {
-"kind": "normal",
-"name": "Śmiert. Trujący Pająk",
-"rows": [
-[
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-]
-]
-},
 "2071": {
 "kind": "normal",
 "name": "Best. Młody Truj. Pająk",
@@ -1947,13 +1914,6 @@
 "default:gear+0-5"
 ],
 [
-13162,
-1,
-10.0,
-"Tarcza Trzech Władców+2",
-"default:gear+0-5"
-],
-[
 14163,
 1,
 10.0,
@@ -2138,13 +2098,6 @@
 "name": "Skorpion Łucznik",
 "rows": [
 [
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-],
-[
 30055,
 1,
 0.5,
@@ -2157,13 +2110,6 @@
 "kind": "normal",
 "name": "Wężowy Miecznik",
 "rows": [
-[
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-],
 [
 30022,
 1,
@@ -2471,56 +2417,10 @@
 ]
 ]
 },
-"2432": {
-"kind": "normal",
-"name": "????",
-"rows": [
-[
-13163,
-1,
-0.5,
-"Tarcza Trzech Władców+3",
-"default:gear+0-5"
-]
-]
-},
-"2452": {
-"kind": "normal",
-"name": "?????",
-"rows": [
-[
-13164,
-1,
-0.5,
-"Tarcza Trzech Władców+4",
-"default:gear+0-5"
-]
-]
-},
-"2492": {
-"kind": "boss",
-"name": "Generał Yonghan",
-"rows": [
-[
-13163,
-1,
-10.0,
-"Tarcza Trzech Władców+3",
-"default:gear+0-5"
-]
-]
-},
 "2495": {
 "kind": "boss",
 "name": "Generał Huashin",
 "rows": [
-[
-13164,
-1,
-10.0,
-"Tarcza Trzech Władców+4",
-"default:gear+0-5"
-],
 [
 39079,
 1,
@@ -2561,13 +2461,6 @@
 "name": "Zły Piekielny Włócznik",
 "rows": [
 [
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-],
-[
 30196,
 1,
 0.07,
@@ -2580,13 +2473,6 @@
 "kind": "normal",
 "name": "Zły Piekielny Major",
 "rows": [
-[
-13160,
-1,
-0.5,
-"Tarcza Trzech Władców+0",
-"default:gear+0-5"
-],
 [
 30196,
 1,
@@ -20842,6 +20728,12 @@
 "Zbroja Nocnego Cienia+7",
 "the Lycan's (no such class here)",
 1
+],
+[
+13160,
+"Tarcza Trzech Władców",
+"out of every drop - owner 10.11.2026 (MT2009_PLUS_NO_TRZECH_WLADCOW_V1)",
+12
 ]
 ],
 "source": "Metin2_Moby_statystyki_EXP_i_drop.xlsx",

@@ -21,8 +21,9 @@ magazyn 85/128, handel) mają na końcu 4 bajty wyglądu – tylko exe 3.0 je zn
 
 ## Zasady (pl-wiki)
 
-- Broń – wygląd broni tego samego podtypu i tych samych flag klasy (jednoręczna z jednoręcznej itd.) albo wizerunku
-  broni jej rodzaju; zbroja i kostium (pancerz) – między sobą; wizerunek broni – z broni swojego rodzaju; płeć
+- Broń – wygląd broni tego samego podtypu (jednoręczna z jednoręcznej, sztylet ze sztyletu itd.), którą może nosić
+  każda klasa mogąca nosić przedmiot (liczą się tylko bity klas flag – `MT2009_PLUS_TRANSMUT_FIX_V1`; inne bity, np.
+  zakaz sprzedaży, nie blokują), albo wizerunku broni jej rodzaju; zbroja z innej zbroi na tej samej zasadzie; zbroja i kostium (pancerz) – między sobą; wizerunek broni – z broni swojego rodzaju; płeć
   kostiumów musi się zgadzać. Wierzchowiec – z innego wierzchowca (osobne okno, „Polimorfia wierzchowca”).
 - Koszt 50 000 000 Yang (wierzchowiec 30 000 000) albo bilet w małym polu: Bilet Transmutacji 72326 / 72341 (handlowy),
   Bilet Polimorfii Wierzchowca 72344.
@@ -33,6 +34,8 @@ magazyn 85/128, handel) mają na końcu 4 bajty wyglądu – tylko exe 3.0 je zn
 - Zakładając przedmiot: wygląd musi pasować do klasy postaci (a wygląd kostiumu – do płci).
 - Wygląd widzą wszyscy (części postaci: `PART_MAIN`, `PART_WEAPON`; wierzchowiec – `Mt2009MountMobVnum`); „Ukryj
   cudze” (playerqol) też pokazuje zbroję i broń w ich wyglądzie.
+  Pakiety postaci (dodanie / aktualizacja) zawsze niosą wygląd założonej przemienionej rzeczy, nawet gdy część postaci
+  zapisała jej zwykły numer (zdjęcie kostiumu, ukrycie kostiumu, koniec polimorfii…) – `Mt2009ChangeLookPacketParts`.
 
 ## Okno
 
