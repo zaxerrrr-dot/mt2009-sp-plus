@@ -1343,6 +1343,67 @@ namespace
 		return s_nonGear.find(vnum) != s_nonGear.end();
 	}
 
+	// MT2009_PLUS_BOT_LADA_FISH_V1 (the owner, 10 November 2026: "Sprawdz dlaczego nie wystawiaja rakow. Mialo to
+	// dzialac, ze teraz wystawiaja wiekszosc przedmiotow i nie chomikuja, a jak czegos potrzebuja, to sciagaja z lady";
+	// and: no junk on the lada - cheap red / basic potions and gear worth ~20k at the NPC keep their old handling).
+	// The fish family - ITEM_FISH (alive and dead) and the grilled fish 27863-27887 (ITEM_USE potions and ITEM_POTION
+	// food alike) - had no rule of the counter's scoring at all: every one fell to its last "return -1", so neither the
+	// visit nor the lada ever saw a dead or a grilled fish (the grilled ITEM_POTION ones only as Baek-Go's "surplus
+	// potion" over a keep of five, which no bot holding one to four of a rare kind reaches), and the lada's kinds
+	// excluded ITEM_POTION and the USE_POTION subtypes outright. Now a fish of the family worth at least
+	// m2_bot_lada_min_cheap (1000 yang, the proto's gold a unit) is goods over what the bot uses of it
+	// (GetPlayerBotLadaFishKeep) and a lada kind; the cheaper ones (the carp, the crucians ... at 140-900 yang - the
+	// heal / SP food the bots drink and the campfire's inputs) keep the old handling. Refreshed each second by
+	// GetPlayerBotLadaCfg (playerbot_lada.h).
+	int s_iPlayerBotLadaMinCheap = 1000;	// m2_bot_lada_min_cheap: fish and potions, the proto's gold a unit
+	int s_iPlayerBotLadaMinGear = 50000;	// m2_bot_lada_min_gear: a weapon or armour piece, its reference ask a unit
+	// What a dead fish's gold stays under to be the campfire's input (the 140-900 yang kinds).
+	const DWORD PLAYERBOT_LADA_FISH_COOK_GOLD = 1000;
+	// The grilled fish a bot drinks itself (the red and blue lists of playerbot_gear.h, the boosters): this many stay.
+	const int PLAYERBOT_LADA_FISH_USE_KEEP = 10;
+
+	bool IsPlayerBotFishFamilyOf(DWORD vnum, const TItemTable* t)
+	{
+		return t && (t->bType == ITEM_FISH ||
+				(vnum >= PLAYERBOT_GRILLED_FISH_FIRST_VNUM && vnum <= PLAYERBOT_GRILLED_FISH_LAST_VNUM));
+	}
+
+	// A fish of the family worth its line: the proto's gold a unit at least m2_bot_lada_min_cheap.
+	bool IsPlayerBotLadaFishOf(DWORD vnum, const TItemTable* t)
+	{
+		return IsPlayerBotFishFamilyOf(vnum, t) && (long long)t->dwGold >= (long long)s_iPlayerBotLadaMinCheap;
+	}
+
+	// What a bot keeps of a fish: the grilled fish it drinks (PLAYERBOT_LADA_FISH_USE_KEEP), the cheap dead fish an
+	// angler with campfire wood grills (PLAYERBOT_DEAD_FISH_KEEP in all, cheapest kind first - the junk rule's own
+	// number). Nothing of anything else: no bot eats the EXP food (Pieczona Slodka Ryba, Zloty Karas, Rak Niebieski -
+	// group 4, which DrinkPlayerBotCraftedPotion skips), a live fish is opened on the catch, a valuable dead fish is
+	// the market's (the fire takes the cheap ones).
+	int GetPlayerBotLadaFishKeep(LPCHARACTER ch, DWORD vnum, const TItemTable* t)
+	{
+		if (!t)
+			return 0;
+		static const DWORD s_used[] = { 27863, 27864, 27865, 27866, 27873, 27875, 27876 };
+		for (size_t i = 0; i < sizeof(s_used) / sizeof(s_used[0]); ++i)
+			if (s_used[i] == vnum)
+				return PLAYERBOT_LADA_FISH_USE_KEEP;
+		if (!ch || t->bType != ITEM_FISH || t->bSubType != FISH_DEAD || t->dwGold >= PLAYERBOT_LADA_FISH_COOK_GOLD ||
+				ch->CountSpecifyItem(PLAYERBOT_CAMPFIRE_VNUM) <= 0)
+			return 0;
+		int below = 0;	// the dead fish run 27833 (Martwy Karas) to 27857 (Martwy Rak Niebieski)
+		for (DWORD v = 27833; v < vnum && below < PLAYERBOT_DEAD_FISH_KEEP; ++v)
+		{
+			const TItemTable* o = ITEM_MANAGER::instance().GetTable(v);
+			if (o && o->bType == ITEM_FISH && o->bSubType == FISH_DEAD && o->dwGold < PLAYERBOT_LADA_FISH_COOK_GOLD)
+				below += (int)ch->CountSpecifyItem(v);
+		}
+		return std::max(0, PLAYERBOT_DEAD_FISH_KEEP - below);
+	}
+
+	// A lada keeper (a bot with a stand standing that the lada serves; playerbot_lada.h): its valuable fish are the
+	// lada's, never the merchant's.
+	bool IsPlayerBotLadaFishKeeper(LPCHARACTER ch);
+
 	// The fisherman's keepsakes: kept whatever else is true, because they are
 	// the entire point of a fishing trip and the road to +7 and beyond. They are
 	// counted here so the stock cap below does not spend its eight cells on them.
@@ -1601,6 +1662,10 @@ namespace
 		// own off the counter (IsPlayerBotCapeBuild).
 		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))
 			return PLAYERBOT_CAPE_KEEP;
+		// MT2009_PLUS_BOT_LADA_FISH_V1: a valuable fish keeps what the bot uses of it (none of the EXP food), not the
+		// "one of anything" below, nor Baek-Go's reserve of five a grilled ITEM_POTION fish was counted against.
+		if (IsPlayerBotLadaFishOf(item->GetVnum(), item->GetProto()))
+			return GetPlayerBotLadaFishKeep(ch, item->GetVnum(), item->GetProto());
 		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: a potion's split leaves the
 		// bot's reserve in the bag (GetPlayerBotCraftedPotionKeep).
 		if (IsPlayerBotCraftedPotion(item))
@@ -3439,6 +3504,9 @@ namespace
 		// from the water is thrown away (DiscardPlayerBotFishedDyes) but for
 		// the colour a bot has yet to use and the few kept for a counter.
 		if (IsPlayerBotHairDye(vnum))
+			return false;
+		// MT2009_PLUS_BOT_LADA_FISH_V1: a lada keeper's valuable fish (Martwy Rak Niebieski and its like) is the lada's.
+		if (IsPlayerBotLadaFishOf(vnum, item->GetProto()) && IsPlayerBotLadaFishKeeper(ch))
 			return false;
 		// A dead fish waits for the campfire at the end of the next session, as
 		// long as the bot has the wood for one; a grilled fish is a potion.

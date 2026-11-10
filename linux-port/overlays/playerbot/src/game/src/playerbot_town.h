@@ -5430,6 +5430,16 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return -1;
 		}
+		// MT2009_PLUS_BOT_LADA_FISH_V1: a valuable fish - alive, dead or grilled, the EXP food (Pieczony Rak Niebieski)
+		// included - is goods over what the bot uses of it (GetPlayerBotLadaFishKeep: none of the EXP food). No rule
+		// below named a fish, so every one fell to the last "return -1". The cheap ones keep the old rules.
+		if (IsPlayerBotLadaFishOf(item->GetVnum(), item->GetProto()))
+		{
+			const int fishKeep = GetPlayerBotLadaFishKeep(ch, item->GetVnum(), item->GetProto());
+			const int fishHeld = ch ? (int)ch->CountSpecifyItem(item->GetVnum()) : (int)item->GetCount();
+			return fishHeld > fishKeep ? PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS, fishHeld, fishKeep)
+					: -1;
+		}
 		// MT2009_PLUS_BOT_DUST_MARKET_V1: Polyskujaca Muszla is a counter's (the owner, 31 October: "niech ja
 		// sprzedaja, jest droga") - a gift box no other rule here lists, kept shut by the chest pass
 		// (playerbot_consumables.h) and priced off the list's 3 410 000 (GetPlayerBotMaterialAskingBase).
