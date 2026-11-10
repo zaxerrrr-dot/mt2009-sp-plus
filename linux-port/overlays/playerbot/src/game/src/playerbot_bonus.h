@@ -1730,6 +1730,13 @@ namespace
 		// marble-first gate still applies after this (BuildPlayerBotBonusPiece)
 		if (!green && target.kind == PLAYERBOT_BONUS_TARGET_WORN)
 		{
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+			// MT2009_PLUS_BOT_BONUSMIX_V1 (playerbot_bonusmix.h): by the bot's need, not a fixed strong target - a piece
+			// meeting its need (or locked as enough) is never changed, of those below it the lowest-risk one only
+			const int verdictMix = GetPlayerBotBonusMixChangeVerdict(ch, item, target.wearCell);
+			if (verdictMix >= 0)
+				return verdictMix > 0;
+#endif
 			const int verdict75 = GetPlayerBotBonus75ChangeVerdict(ch, item, target.wearCell);
 			if (verdict75 >= 0)
 				return verdict75 > 0;
@@ -2570,6 +2577,9 @@ namespace
 #ifdef MT2009_PLUS_BOT_BONUS75_V1
 		LogPlayerBotBonus75Census(dwNow);	// MT2009_PLUS_BOT_BONUS75_V1: every 10 minutes
 #endif
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		LogPlayerBotBonusMixCensus(dwNow);	// MT2009_PLUS_BOT_BONUSMIX_V1: every 10 minutes
+#endif
 		// MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot holding the ordinary stones bonuses its gear by its own pass
 		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: its costume and hairstyle for Yohara (IsPlayerBotYoharaCostumeLineGood) from
@@ -3155,6 +3165,20 @@ namespace
 	// and EquipItem refuses within a second and a half of a blow.
 	bool ManagePlayerBotFieldBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		// MT2009_PLUS_BOT_BONUSMIX_V1 (playerbot_bonusmix.h): the try's hunting clock and judgement (75+ bots), and the
+		// pass on a map whenever it is safe - the action stays FIGHT through a whole hunt, so the gate below let the
+		// pass run at the blacksmith's in town and in looting gaps only
+		TickPlayerBotBonusMix(ch, state, dwNow);
+		if (IsPlayerBotBonusMixFieldOn())
+		{
+			if (!ch || ch->IsDead() || state.bVisitingShop || state.bRecoveringAfterDeath || state.bTacticalRetreat ||
+					ch->GetMyShop() || dwNow < state.dwNextBonusCheckTime || IsPlayerBotEquipWindowShut(ch, state) ||
+					!IsPlayerBotBonusMixFieldSafe(ch, state, dwNow))
+				return false;
+			return ManagePlayerBotBonusReroll(ch, state, dwNow);
+		}
+#endif
 		if (!ch || ch->IsDead() || state.bCurrentAction == BOT_ACTION_FIGHT || state.bVisitingShop ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat || state.dwTargetVID != 0 ||
 				ch->GetMyShop())

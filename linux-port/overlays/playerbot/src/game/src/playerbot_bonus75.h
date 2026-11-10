@@ -357,6 +357,9 @@ namespace
 		const int s = FindPlayerBotBonus75Slot(wearCell);
 		if (s < 0)
 			return;
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		NotePlayerBotBonusMixChange(ch, yohara);	// MT2009_PLUS_BOT_BONUSMIX_V1: in the field or in town, the mix's clock
+#endif
 		if (yohara)
 		{
 			++s_kPlayerBotBonus75Stats.changesYohara[s];

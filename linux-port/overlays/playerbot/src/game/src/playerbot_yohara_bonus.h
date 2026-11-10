@@ -635,6 +635,23 @@ namespace
 			piece.changeBlocked = !IsPlayerBotMarbleFirstChangeAllowed(ch, p.item, piece.lines, piece.lineRolls);
 		}
 #endif
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		// MT2009_PLUS_BOT_BONUSMIX_V1 (playerbot_bonusmix.h): a 75+ bot's worn piece by its need - meeting it (or locked as
+		// enough) it is done, out of the element phase too; below it, only the pick's lowest-risk piece takes a change
+		const int mix = p.bWorn ? GetPlayerBotBonusMixPieceState(ch, p.item, wearCell) : -1;
+		if (mix == 0)
+		{
+			piece.tier = playerbot_yohara_bonus_rules::TIER_STRONG;
+			piece.elemShort = false;
+		}
+		else if (mix > 0)
+		{
+			if (piece.tier >= playerbot_yohara_bonus_rules::TIER_STRONG)
+				piece.tier = playerbot_yohara_bonus_rules::TIER_NONE;
+			if (!IsPlayerBotBonusMixYoharaPicked(ch, wearCell))
+				piece.changeBlocked = true;
+		}
+#endif
 		return piece;
 	}
 
@@ -642,20 +659,52 @@ namespace
 			const std::vector<TPlayerBotYoharaBonusPiece>& pieces, const std::map<DWORD, int>& spent,
 			const TPlayerBotYoharaBonusBag& bag, std::vector<playerbot_yohara_bonus_rules::TPiece>& built)
 	{
-		built.clear();
-		for (size_t i = 0; i < pieces.size(); ++i)
-			built.push_back(BuildPlayerBotYoharaBonusPiece(ch, pieces[i], spent));
 		const playerbot_yohara_bonus_rules::TBag kinds = {
 			bag.addCell >= 0 ? bag.addUnits : 0, bag.changeCell >= 0 ? bag.changeUnits : 0, bag.marbleCell >= 0
 		};
-		if (built.empty())
+		const playerbot_yohara_bonus_rules::TChoice none = { -1, playerbot_yohara_bonus_rules::STEP_NONE,
+				playerbot_yohara_bonus_rules::WANT_NONE, false, 0, false };
+#ifdef MT2009_PLUS_BOT_BONUSMIX_V1
+		// MT2009_PLUS_BOT_BONUSMIX_V1: the below-need piece of the lowest risk is the one a change may go on; one this pass
+		// cannot change (its share spent, not in the list) gives the turn to the next
+		unsigned int exclude = 0;
+		playerbot_yohara_bonus_rules::TChoice choice = none;
+		// the worn piece off the body for its stones (ManagePlayerBotYoharaBonus asks again between them)
+		LPITEM inHand = NULL;
+		BYTE inHandWear = 0;
+		for (size_t i = 0; i < pieces.size(); ++i)
 		{
-			const playerbot_yohara_bonus_rules::TChoice none = { -1, playerbot_yohara_bonus_rules::STEP_NONE,
-					playerbot_yohara_bonus_rules::WANT_NONE, false, 0, false };
-			return none;
+			const BYTE wear = PLAYERBOT_YOHARA_BONUS_SLOTS[pieces[i].slotIndex].bWearCell;
+			if (pieces[i].bWorn && ch->GetWear(wear) != pieces[i].item)
+			{
+				inHand = pieces[i].item;
+				inHandWear = wear;
+			}
 		}
+		for (int round = 0; round <= PLAYERBOT_YOHARA_BONUS_SLOT_COUNT; ++round)
+		{
+			const int chosen = GetPlayerBotBonusMixChosenSlot(ch, true, exclude, inHand, inHandWear);
+			SetPlayerBotBonusMixYoharaPick(ch, chosen);
+			built.clear();
+			for (size_t i = 0; i < pieces.size(); ++i)
+				built.push_back(BuildPlayerBotYoharaBonusPiece(ch, pieces[i], spent));
+			choice = built.empty() ? none : playerbot_yohara_bonus_rules::Pick(&built[0], (int)built.size(), kinds,
+					PLAYERBOT_YOHARA_BONUS_CHANGE_RESERVE, PLAYERBOT_YOHARA_BONUS_SAFETY);
+			if (choice.piece >= 0 || chosen < 0)
+				break;
+			exclude |= 1U << chosen;
+		}
+		SetPlayerBotBonusMixYoharaPick(NULL, -1);
+		return choice;
+#else
+		built.clear();
+		for (size_t i = 0; i < pieces.size(); ++i)
+			built.push_back(BuildPlayerBotYoharaBonusPiece(ch, pieces[i], spent));
+		if (built.empty())
+			return none;
 		return playerbot_yohara_bonus_rules::Pick(&built[0], (int)built.size(), kinds,
 				PLAYERBOT_YOHARA_BONUS_CHANGE_RESERVE, PLAYERBOT_YOHARA_BONUS_SAFETY);
+#endif
 	}
 
 	char PlayerBotYoharaBonusTierChar(int tier)

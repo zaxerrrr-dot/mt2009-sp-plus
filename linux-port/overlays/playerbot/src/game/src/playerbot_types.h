@@ -10730,6 +10730,25 @@ namespace
 	void NotePlayerBotBonusScrollRefine(LPCHARACTER ch, int linesBefore, bool scroll, bool success, int stepProb);
 	void NotePlayerBotBonusScrollWait(LPCHARACTER ch, LPITEM item);
 	void NotePlayerBotBonusScrollShop(int wanted, int got);
+#define MT2009_PLUS_BOT_BONUSMIX_V1 1
+	// MT2009_PLUS_BOT_BONUSMIX_V1 (the owner, 10 November 2026: "zeby bot wiedzial, czy ma jeszcze zapas na jakies bonusy
+	// czy nie, czy miksowac dalej czy nie ... Miksowac rowniez moga na mapach"; playerbot_bonusmix.h, after
+	// playerbot_bonus75.h): a 75+ bot's bonus targets by its need - a ladder per slot (step 0 the map's minimum, raised
+	// one step after a failed try: deaths, HP retreats, a slow kill rate), a try of real hunting after a candidate set,
+	// the pieces that met it locked as enough; a piece meeting its need is never rerolled, the lowest-risk piece below
+	// its need is the one mixed; and the bonus pass in the field when it is safe. Asked by playerbot_bonus.h,
+	// playerbot_yohara_bonus.h, playerbot_bonus75.h and playerbot_element_maps.h.
+	int GetPlayerBotBonusMixChangeVerdict(LPCHARACTER ch, LPITEM item, BYTE wearCell);
+	int GetPlayerBotBonusMixPieceState(LPCHARACTER ch, LPITEM item, BYTE wearCell);
+	int GetPlayerBotBonusMixChosenSlot(LPCHARACTER ch, bool yohara, unsigned int excludeMask, LPITEM inHand, BYTE inHandWear);
+	void SetPlayerBotBonusMixYoharaPick(LPCHARACTER ch, int chosenSlot);
+	bool IsPlayerBotBonusMixYoharaPicked(LPCHARACTER ch, BYTE wearCell);
+	void NotePlayerBotBonusMixChange(LPCHARACTER ch, bool yohara);
+	void NotePlayerBotBonusMixEvent(LPCHARACTER ch, int kind, DWORD now);
+	void TickPlayerBotBonusMix(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
+	bool IsPlayerBotBonusMixFieldOn();
+	bool IsPlayerBotBonusMixFieldSafe(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
+	void LogPlayerBotBonusMixCensus(DWORD dwNow);
 #endif
 }
 
