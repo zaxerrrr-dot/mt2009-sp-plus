@@ -3019,6 +3019,11 @@ namespace {
                 ++s_uPlayerBotLadaTierPriced;
             }
         }
+        // MT2009_PLUS_BOT_FAIR_PRICE_V1: a fair-market good is marked down by nothing - its keeper's one price of the
+        // kind (GetPlayerBotListingPrice / GetPlayerBotListingFloor above) is all of it.
+        if (!operatorPriced && preview->GetRefineLevel() == 0 && IsPlayerBotFairPriceOn() &&
+                IsPlayerBotFairGoods(preview->GetVnum()))
+            discount = 0;
         out.discount = discount;
         out.markup = markup;
         out.standing = standing;
@@ -4149,7 +4154,10 @@ namespace {
                     it != shop->GetItems().end(); ++look) {
                 bool edited = false;
                 o.repriceItem = it->first;
-                if (it->second) {
+                // MT2009_PLUS_BOT_FAIR_PRICE_V1: a fair-market good's lines are its stand host's to price, all of a kind
+                // at the bot's one price, at the bot's own checks (playerbot_lada.h, CheckPlayerBotFairSellers) - the
+                // visit passes them over.
+                if (it->second && !(IsPlayerBotFairPriceOn() && IsPlayerBotFairGoods(it->second->GetInfo().vnum))) {
                     auto preview = BotOfflinePreview(*it->second);
                     if (preview) {
                         // The keeper's own spread, as when the line went up.

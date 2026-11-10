@@ -162,7 +162,7 @@ namespace
 			c.minGear = value("m2_bot_lada_min_gear", 50000, 1, 100000000);
 			s_iPlayerBotLadaMinCheap = c.minCheap;
 			s_iPlayerBotLadaMinGear = c.minGear;
-			s_bPlayerBotLadaTiers = c.tiers;
+			s_bPlayerBotLadaTiers = c.tiers && !IsPlayerBotFairPriceOn();	// MT2009_PLUS_BOT_FAIR_PRICE_V1: no tiers under the fair market
 			if (was.on != c.on || was.tiers != c.tiers || was.xch != c.xch || was.junk != c.junk || was.intervalMin != c.intervalMin ||
 					was.cap != c.cap || was.worldCap != c.worldCap || was.rate != c.rate || was.passOps != c.passOps ||
 					was.box != c.box || was.boxStacks != c.boxStacks || was.boxRate != c.boxRate || was.boxGapMin != c.boxGapMin ||
@@ -1298,6 +1298,16 @@ namespace
 	// owner's line only, the host core's edit as every tier edit. The census counts what is still under the floor.
 	void RepairPlayerBotLadaCrashedLines(DWORD now, const std::unordered_map<DWORD, WORD>& tiers)
 	{
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: the fair market's host sweep repairs its goods' lines (CheckPlayerBotFairSellers:
+		// every line to its bot's one price, never under the bot's floor) - this sweep is the old way's.
+		if (IsPlayerBotFairPriceOn())
+		{
+			s_mapPlayerBotMarketNormalRef.clear();
+			s_kPlayerBotLadaCensus.normalKinds = 0;
+			s_kPlayerBotLadaCensus.crashedLines = 0;
+			s_kPlayerBotLadaCensus.crashedUnits = 0;
+			return;
+		}
 		TPlayerBotLadaCensus& k = s_kPlayerBotLadaCensus;
 		struct TUnits { unsigned long long unitMilli; DWORD count; };
 		std::unordered_map<DWORD, bool> goods;
@@ -1525,6 +1535,188 @@ namespace
 		}
 	}
 
+	// ------------------------------------------------------------------------------------------------ the fair market's host
+	// MT2009_PLUS_BOT_FAIR_PRICE_V1 (playerbot_fair_price.h; the owner's final rule, 10 November 2026): the core hosting
+	// a bot's stand (its map on the stand's channel - the one core that edits its lines, as the tiers did) keeps the bot's
+	// multiplier of every kind on it. Every m2_bot_fair_check_min..max minutes (drawn per bot, kind and look, so the
+	// bots do not move at once) it looks: anything of the kind sold since the last look (every core sees every sale,
+	// playerbot_offline::fairSales) -> the price up m2_bot_fair_step_lo..hi %, nothing sold -> down as much, never past
+	// the bot's own floor or ceiling of the fair price (GetPlayerBotFairBand). Then every line of the kind on the stand
+	// is edited to the one price (the fair price x the multiplier, GetPlayerBotFairLineTotal) - and every
+	// PLAYERBOT_FAIR_SYNC_S every line that strayed from it by more than 2 % (the fair price moved, a line came from
+	// another core, an old line crashed by the tiers: the repair) as well. The edits go out m2_bot_fair_edits_s a second.
+	struct TPlayerBotFairEdit
+	{
+		DWORD owner, item;
+	};
+	std::deque<TPlayerBotFairEdit> s_dequePlayerBotFairEdits;
+	const size_t PLAYERBOT_FAIR_EDITS_MAX = 30000;
+	const DWORD PLAYERBOT_FAIR_SYNC_S = 10 * 60;
+	const DWORD PLAYERBOT_FAIR_HOSTED_FORGET_S = 6 * 3600;	// a kind gone from the stand this long: its price is forgotten here
+	const DWORD PLAYERBOT_FAIR_SELLER_FORGET_S = 24 * 3600;
+
+	void CheckPlayerBotFairSellers(DWORD now)
+	{
+		const TPlayerBotFairCfg& c = GetPlayerBotFairCfg();
+		TPlayerBotFairCensus& k = s_kPlayerBotFairCensus;
+		const DWORD nowS = (DWORD)get_global_time();
+		static DWORD s_dwSyncS = 0;
+		const bool sync = s_dwSyncS == 0 || nowS - s_dwSyncS >= PLAYERBOT_FAIR_SYNC_S;
+		if (sync)
+			s_dwSyncS = nowS ? nowS : 1;
+		CPlayerBotManager& bots = CPlayerBotManager::instance();
+		struct TLine { DWORD id, count; long long yang; };
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			if (!shop || shop->GetDuration() == 0)
+				continue;
+			const DWORD owner = shop->GetOwnerPID();
+			if (!bots.IsRegisteredBotPID(owner) || IsPlayerBotSidekickPID(owner) ||
+					(int)shop->GetSpawn().channel != (int)g_bChannel || !IsPlayerBotMapHostedHere(shop->GetSpawn().map))
+				continue;
+			std::unordered_map<DWORD, std::vector<TLine> > kinds;
+			for (const auto& [id, line] : shop->GetItems())
+				if (line && line->GetInfo().count > 0 && IsPlayerBotFairGoods(line->GetInfo().vnum))
+					kinds[line->GetInfo().vnum].push_back(TLine{ id, (DWORD)line->GetInfo().count,
+							(long long)line->GetPrice().GetTotalYangAmount() });
+			for (const auto& [vnum, lines] : kinds)
+			{
+				const DWORD fair = GetPlayerBotFairUnitByVnum(vnum);
+				if (fair == 0)
+					continue;
+				TPlayerBotFairSeller& st = s_mapPlayerBotFairSellers[PlayerBotFairKey(owner, vnum)];
+				const TPlayerBotFairBand band = GetPlayerBotFairBand(owner, vnum);
+				st.lastSeen = nowS;
+				bool due = false;
+				if (!st.hosted || st.multPm <= 0.0)
+				{
+					// The first look here (a start, a stand come to this core, a kind new on it): the bot's price off its
+					// lines, else its start, and its first look drawn within the check interval.
+					unsigned long long units = 0, yang = 0;
+					for (const TLine& l : lines)
+						if (l.yang > 0 && !(l.count == 1 && IsPlayerBotPriceSlipDrawn(l.id) &&
+								(unsigned long long)l.yang > (unsigned long long)fair * 5ULL))	// a slip says nothing of its price
+						{
+							units += l.count;
+							yang += (unsigned long long)l.yang;
+						}
+					st.multPm = units ? std::max((double)band.floorPm, std::min((double)band.ceilPm,
+							(double)yang / (double)units * 1000.0 / (double)fair)) : (double)band.startPm;
+					st.hosted = true;
+					st.lastCheck = nowS;
+					st.soldSinceCheck = 0;
+					st.nextCheck = nowS + (DWORD)c.checkMin * 60U +
+							PlayerBotNavHash(owner ^ (vnum * 2654435761U) ^ nowS) % ((DWORD)(c.checkMax - c.checkMin) * 60U + 60U);
+					due = true;
+				}
+				else if (nowS >= st.nextCheck)
+				{
+					// The owner's rule: sold since the last look -> up, nothing sold -> down, 3..5 %.
+					const bool sold = st.soldSinceCheck > 0;
+					const DWORD h = PlayerBotNavHash((owner * 2654435761U) ^ (vnum * 40503U) ^ (st.seq * 0x9E3779B9U));
+					const int step = c.stepLo + (int)(h % (DWORD)(c.stepHi - c.stepLo + 1));
+					const double was = st.multPm;
+					st.multPm *= sold ? 1.0 + (double)step / 100.0 : 1.0 - (double)step / 100.0;
+					st.multPm = std::max((double)band.floorPm, std::min((double)band.ceilPm, st.multPm));
+					++k.checks;
+					if (st.multPm > was)
+						++k.raised;
+					else if (st.multPm < was)
+						++k.lowered;
+					if (st.multPm <= (double)band.floorPm)
+						++k.atFloor;
+					else if (st.multPm >= (double)band.ceilPm)
+						++k.atCeil;
+					++st.seq;
+					st.lastCheck = nowS;
+					st.soldSinceCheck = 0;
+					st.nextCheck = nowS + (DWORD)c.checkMin * 60U +
+							PlayerBotNavHash(h ^ 0x5BD1E995U) % ((DWORD)(c.checkMax - c.checkMin) * 60U + 1U);
+					due = true;
+				}
+				if (!due && !sync)
+					continue;
+				for (const TLine& l : lines)
+				{
+					const long long target = GetPlayerBotFairLineTotal(owner, vnum, (long long)l.count);
+					if (target <= 0)
+						continue;
+					// Iwakura's slip (one zero too many on a single piece) stands its hours; the core puts it right.
+					if (l.count == 1 && IsPlayerBotPriceSlipDrawn(l.id) && l.yang > target * 5LL)
+						continue;
+					const long long moved = target > l.yang ? target - l.yang : l.yang - target;
+					if (l.yang > 0 && moved * 100LL <= l.yang * 2LL)
+						continue;
+					if (s_dequePlayerBotFairEdits.size() >= PLAYERBOT_FAIR_EDITS_MAX)
+					{
+						++k.editsSkipped;
+						continue;
+					}
+					s_dequePlayerBotFairEdits.push_back(TPlayerBotFairEdit{ owner, l.id });
+					++k.editsQueued;
+				}
+			}
+		}
+		// A kind gone from its stand keeps its price here a while (sold out, listed again), then it is forgotten.
+		for (auto it = s_mapPlayerBotFairSellers.begin(); it != s_mapPlayerBotFairSellers.end(); )
+		{
+			TPlayerBotFairSeller& st = it->second;
+			if (st.hosted && nowS - st.lastSeen > PLAYERBOT_FAIR_HOSTED_FORGET_S)
+			{
+				st.hosted = false;
+				st.multPm = 0.0;
+			}
+			if (!st.hosted && nowS - st.lastSeen > PLAYERBOT_FAIR_SELLER_FORGET_S)
+				it = s_mapPlayerBotFairSellers.erase(it);
+			else
+				++it;
+		}
+		(void)now;
+	}
+
+	void PumpPlayerBotFairEdits(DWORD now)
+	{
+		const TPlayerBotFairCfg& c = GetPlayerBotFairCfg();
+		TPlayerBotFairCensus& k = s_kPlayerBotFairCensus;
+		auto& manager = ikashop::GetManager();
+		for (int n = 0; n < c.editsPerS && !s_dequePlayerBotFairEdits.empty(); )
+		{
+			const TPlayerBotFairEdit e = s_dequePlayerBotFairEdits.front();
+			s_dequePlayerBotFairEdits.pop_front();
+			auto shop = manager.GetShopByOwnerID(e.owner);
+			auto line = shop ? shop->GetItem(e.item) : nullptr;
+			if (!line || shop->GetDuration() == 0 || shop->IsEditMode() || playerbot_offline::requests.count(e.owner))
+			{
+				++k.editsSkipped;
+				continue;
+			}
+			const DWORD vnum = line->GetInfo().vnum;
+			const long long count = (long long)line->GetInfo().count;
+			const long long asked = (long long)line->GetPrice().yang;
+			const long long target = GetPlayerBotFairLineTotal(e.owner, vnum, count);
+			if (!IsPlayerBotRepriceWorthEdit(asked, target, 0))
+			{
+				++k.editsSkipped;
+				continue;
+			}
+			ikashop::TPriceInfo price{};
+			price.yang = target;
+			manager.SendShopEditItemDBPacket(e.owner, e.item, price);
+			QueuePlayerBotListingEvent(e.item, e.owner, vnum, count, per::EVENT_REPRICE, target, asked, "", 0, 0, 0);
+			++k.editsDone;
+			const long long floor = (long long)GetPlayerBotFairFloorUnit(e.owner, vnum) * std::max(1LL, count);
+			if (asked < floor && target > asked)
+			{
+				++k.repaired;
+				k.repairedYang += (unsigned long long)(target - asked);
+				PlayerBotLogThrottled("fair_repair", now,
+						"PLAYERBOT_FAIR: repair owner=%u item=%u vnum=%u count=%lld asked=%lld price=%lld floor=%lld fair_unit=%u",
+						e.owner, e.item, vnum, count, asked, target, floor, GetPlayerBotFairUnitByVnum(vnum));
+			}
+			++n;
+		}
+	}
+
 	void LogPlayerBotLadaCensus(DWORD now)
 	{
 		const TPlayerBotLadaCfg& c = GetPlayerBotLadaCfg();
@@ -1670,6 +1862,30 @@ namespace
 		{
 			s_dwWorld = now ? now : 1;
 			CountPlayerBotLadaWorld();
+		}
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: the fair market - its writer (the tier writer: one shop-channel core), its books,
+		// sales and rows on every core, and the stand host's checks and edits.
+		{
+			static DWORD s_dwFairWriterAt = 0, s_dwFairHost = 0;
+			static bool s_bFairWriter = false;
+			if (s_dwFairWriterAt == 0 || now - s_dwFairWriterAt >= 60000)
+			{
+				s_dwFairWriterAt = now ? now : 1;
+				s_bFairWriter = IsPlayerBotLadaTierWriter();
+			}
+			ManagePlayerBotFairCore(now, s_bFairWriter);
+			if (IsPlayerBotFairPriceOn())
+			{
+				if (s_dwFairHost == 0 || now - s_dwFairHost >= 60000)
+				{
+					s_dwFairHost = now ? now : 1;
+					CheckPlayerBotFairSellers(now);
+				}
+				if (!s_dequePlayerBotFairEdits.empty())
+					PumpPlayerBotFairEdits(now);
+			}
+			else
+				s_dequePlayerBotFairEdits.clear();
 		}
 		// The tiers on (and off: the lines edited back once), on every core of every channel
 		// (MT2009_PLUS_BOT_LADA_TIER_XCH_V1): the input (published by the writer, read by the others) and the ranking

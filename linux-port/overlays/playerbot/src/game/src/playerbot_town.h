@@ -4083,6 +4083,15 @@ namespace
 		if (item && IsPlayerBotSmCouponVnum(item->GetVnum()))
 			return 0;
 #endif
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: a good of the fair market - its keeper's own floor of the fair price
+		// (playerbot_fair_price.h, GetPlayerBotFairBand: 60..110 % by the bot), written up.
+		if (item && item->GetRefineLevel() == 0)
+		{
+			const DWORD fairFloor = GetPlayerBotFairFloorUnit(GetPlayerBotPricingKeeper(item), item->GetVnum());
+			if (fairFloor != 0)
+				return HumanizePlayerBotPrice((DWORD)std::min<unsigned long long>(0xFFFFFFFEULL,
+						(unsigned long long)fairFloor * (unsigned long long)std::max<DWORD>(1, item->GetCount())), true);
+		}
 		DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
 				GetPlayerBotMarketFloor(item));
 		// MT2009_PLUS_BOT_MARKET_CLEARING_V1: no floor holds a line of a clearing kind over its clearing ask
@@ -4387,9 +4396,14 @@ namespace
 		// memory: the lada's fresh line asks exactly his price; the listing's markdown / glut tiers take it down to
 		// the market floor, never over it (GetPlayerBotListingPrice).
 		{
-			const DWORD fishUnit = GetPlayerBotRoastedFishOwnerPrice(item->GetVnum());
+			DWORD fishUnit = GetPlayerBotRoastedFishOwnerPrice(item->GetVnum());
 			if (fishUnit != 0)
 			{
+				// MT2009_PLUS_BOT_FAIR_PRICE_V1: his number is the fish's reference; the fair market moves it in its
+				// bounds (playerbot_fair_price.h)
+				const DWORD fairFish = PlayerBotFairAskUnit(item->GetVnum(), fishUnit, 'O');
+				if (fairFish != 0)
+					fishUnit = fairFish;
 				const DWORD fish = (DWORD)std::min<unsigned long long>(0xFFFFFFFEULL,
 						(unsigned long long)fishUnit * std::max<DWORD>(1, (DWORD)item->GetCount()));
 				PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, fish, fishUnit);
@@ -4769,6 +4783,7 @@ namespace
 		// PLAYERBOT_MARKET_*_WALLET_* constants for why the merchant's markup
 		// alone was a giveaway. A soul stone keeps its grade table.
 		const DWORD wallet = GetPlayerBotMarketMedianWallet();
+		bool fairWalletPrior = false;	// MT2009_PLUS_BOT_FAIR_PRICE_V1: the wallet set the prior (no sheet reference)
 		if (wallet > 0 && item->GetType() != ITEM_METIN && bookSkill == 0 &&
 				materialBase == 0 && iwakuraBase == 0 && rareBase == 0 && !hairstyle && !magicDust)
 		{
@@ -4803,6 +4818,7 @@ namespace
 			unit = std::max(unit, std::max<DWORD>(1, std::min(walletUnit, stackCap)));
 			if (unit != walletBefore)
 			{
+				fairWalletPrior = true;
 				if (walletUnit > stackCap)
 					PlayerBotPriceStep(per::STEP_WALLET_STACK_CAP, stackCap, PLAYERBOT_MARKET_STACK_WALLET_PERCENT);
 				PlayerBotPriceStep(per::STEP_WALLET, unit, wallet, permille, worthPercent);
@@ -4826,6 +4842,26 @@ namespace
 		// anything.
 		const DWORD prior = unit;
 		const DWORD dwNow = get_dword_time();
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: a good of the fair market asks its fair price - the prior is its reference
+		// ('S': the sheet through the curve and the inflation; 'P': the merchant's or the wallet's prior, which the
+		// writer replaces by the sales' own once it has them) and the market's ratio moves it (playerbot_fair_price.h).
+		// No sale memory, index, ledger, step limiter or clearing cap: the fair market is all of them.
+		if (refine == 0 && investment == 0 && bookSkill == 0)
+		{
+			const bool sheet = priorStep != 0 && priorStep != per::STEP_PRIOR_MERCHANT &&
+					priorStep != per::STEP_NO_MERCHANT_PRIOR && priorStep != per::STEP_PRIOR_LEVEL30 && !fairWalletPrior;
+			const DWORD fair = PlayerBotFairAskUnit(item->GetVnum(), prior, sheet ? 'S' : 'P');
+			if (fair != 0)
+			{
+				PlayerBotPriceStep(per::STEP_LEDGER, fair, 0, GetPlayerBotFairStockUnits(item->GetVnum()),
+						(long long)((unsigned long long)fair * 100ULL / std::max<DWORD>(1, prior)));
+				const DWORD fairPrice = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
+						(unsigned long long)fair * (unsigned long long)std::max<DWORD>(1, item->GetCount()));
+				if (item->GetCount() > 1)
+					PlayerBotPriceStep(per::STEP_COUNT, fairPrice, item->GetCount());
+				return fairPrice == 0 ? 1U : fairPrice;
+			}
+		}
 
 		// What the market has paid, blended with the prior by how much of it
 		// there is - w = n / (n + n0), in log space so a tenfold gap is halved
@@ -5069,9 +5105,49 @@ namespace
 
 	DWORD ApplyPlayerBotDropkiPriceFloor(LPITEM item, DWORD asking, DWORD price);	// MT2009_PLUS_BOT_DROPKI_V1 (playerbot_dropki.h)
 
+	// MT2009_PLUS_BOT_FAIR_PRICE_V1: what a bot's line of `count` units of a fair-market good asks - its one unit price
+	// of the kind (the fair price x its multiplier, playerbot_fair_price.h) written the way a person writes it, never
+	// under its floor; 0 when the kind is not the fair market's (the old way then). The lada's host sweep asks it too.
+	long long GetPlayerBotFairLineTotal(DWORD owner, DWORD vnum, long long count)
+	{
+		const DWORD unit = GetPlayerBotFairSellerUnit(owner, vnum);
+		if (unit == 0)
+			return 0;
+		count = std::max(1LL, count);
+		const unsigned long long raw = std::min<unsigned long long>(0xFFFFFFFEULL, (unsigned long long)unit * (unsigned long long)count);
+		const unsigned long long floorRaw = std::min<unsigned long long>(0xFFFFFFFEULL,
+				(unsigned long long)GetPlayerBotFairFloorUnit(owner, vnum) * (unsigned long long)count);
+		long long price = (long long)HumanizePlayerBotPrice((DWORD)raw, false);
+		const long long floor = floorRaw ? (long long)HumanizePlayerBotPrice((DWORD)floorRaw, true) : 0;
+		price = std::max(price, floor);
+		return std::max(1LL, std::min<long long>(price, (long long)PLAYERBOT_GOLD_MAX - 1));
+	}
+
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: a fair-market good asks its keeper's one price of the kind - no markdown of age,
+		// markup, rare premium or glut of a family; the keeper's own steps move it (playerbot_lada.h).
+		if (item && item->GetRefineLevel() == 0)
+		{
+			const long long fair = GetPlayerBotFairLineTotal(GetPlayerBotPricingKeeper(item), item->GetVnum(),
+					(long long)std::max<DWORD>(1, item->GetCount()));
+			if (fair > 0)
+			{
+				if (markupOut)
+					*markupOut = 0;
+				DWORD price = (DWORD)std::min<long long>(fair, 0xFFFFFFFELL);
+				const long long npcCap = GetPlayerBotNpcShopCapUnit(item) * (long long)std::max<int>(1, (int)item->GetCount());
+				if (npcCap > 0 && npcCap < 0xFFFFFFFFLL && (long long)price > npcCap)
+					price = (DWORD)npcCap;
+				if (IsPlayerBotListingTracing())
+					PlayerBotListingStep(per::STEP_ROUND, price);
+				++s_kPlayerBotFairCensus.listed;
+				(void)asking;
+				(void)markdownPercent;
+				return price;
+			}
+		}
 #ifdef MT2009_PLUS_BOT_SM_COUPON_PRICE_V1
 		// MT2009_PLUS_BOT_SM_COUPON_PRICE_V1: a Kupon SM asks the coin rule's band - no markup, rare premium or glut of a
 		// family; the line's markdown only a quarter, within the band (GetPlayerBotSmCouponListPrice).

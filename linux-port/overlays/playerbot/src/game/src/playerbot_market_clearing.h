@@ -45,6 +45,10 @@ namespace
 	bool IsPlayerBotFixedPriceTalismanVnum(DWORD vnum);
 	bool IsPlayerBotGuildBuildMaterial(DWORD vnum);
 	const std::set<DWORD>& GetPlayerBotRefineMaterialVnums();
+	// MT2009_PLUS_BOT_FAIR_PRICE_V1 (playerbot_fair_price.h, after this header): while the fair market is on, the
+	// clearing, its cap, its overpriced jump and the lada's tiers are off - the fair price and the bots' own prices
+	// replace them (m2_bot_fairprice_off 1: all of this as before, the 90 % floor included).
+	bool IsPlayerBotFairPriceOn();
 
 	struct TPlayerBotClearingConfig
 	{
@@ -229,7 +233,7 @@ namespace
 	// The clearing ask of a kind per unit, or 0 when the kind is not being cleared.
 	DWORD GetPlayerBotClearingUnit(DWORD vnum)
 	{
-		if (!GetPlayerBotClearingConfig().on)
+		if (!GetPlayerBotClearingConfig().on || IsPlayerBotFairPriceOn())	// MT2009_PLUS_BOT_FAIR_PRICE_V1
 			return 0;
 		std::map<DWORD, TPlayerBotClearKind>::const_iterator it = s_mapPlayerBotClear.find(vnum);
 		return it == s_mapPlayerBotClear.end() ? 0 : it->second.clearUnit;
@@ -253,7 +257,7 @@ namespace
 
 	int GetPlayerBotLadaTierPermille(DWORD lineId)
 	{
-		if (!s_bPlayerBotLadaTiers || !lineId)
+		if (!s_bPlayerBotLadaTiers || !lineId || IsPlayerBotFairPriceOn())	// MT2009_PLUS_BOT_FAIR_PRICE_V1
 			return 0;
 		std::unordered_map<DWORD, WORD>::const_iterator it = s_mapPlayerBotLadaTier.find(lineId);
 		return it == s_mapPlayerBotLadaTier.end() ? 0 : (int)it->second;
@@ -304,7 +308,7 @@ namespace
 	// (ties go before it, the ranking's id order), and the tier lines listed since the pass, against every unit with it.
 	int GetPlayerBotLadaNewLineTier(DWORD vnum, unsigned long long unitMilli, DWORD count)
 	{
-		if (!s_bPlayerBotLadaTiers || GetPlayerBotLadaTierClearUnit(vnum) == 0 || count == 0)
+		if (!s_bPlayerBotLadaTiers || GetPlayerBotLadaTierClearUnit(vnum) == 0 || count == 0 || IsPlayerBotFairPriceOn())
 			return 0;
 		++s_uPlayerBotLadaNewLooked;
 		std::unordered_map<DWORD, TPlayerBotLadaTierCurve>::const_iterator it = s_mapPlayerBotLadaTierCurve.find(vnum);
@@ -339,7 +343,7 @@ namespace
 	// first.
 	bool IsPlayerBotClearingOverpriced(DWORD vnum, DWORD count, long long totalYang)
 	{
-		if (s_bPlayerBotLadaTiers)	// MT2009_PLUS_BOT_LADA_V1: the tier pass edits the tail itself
+		if (s_bPlayerBotLadaTiers || IsPlayerBotFairPriceOn())	// MT2009_PLUS_BOT_LADA_V1 / MT2009_PLUS_BOT_FAIR_PRICE_V1
 			return false;
 		const DWORD unit = GetPlayerBotClearingUnit(vnum);
 		if (unit == 0 || count == 0)
@@ -385,7 +389,8 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		sold.swap(playerbot_offline::soldUnitsByVnum);
 #endif
-		if (!c.on || g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+		// MT2009_PLUS_BOT_FAIR_PRICE_V1: the fair market prices the glut instead (its own sales window, every core).
+		if (!c.on || g_bChannel != playerbot_channel_rules::SHOP_CHANNEL || IsPlayerBotFairPriceOn())
 		{
 			s_mapPlayerBotClear.clear();
 			return;
