@@ -107,6 +107,16 @@ namespace changelook
 #endif
 	}
 
+	// MT2009_PLUS_TRANSMUT_FIX_V1 (class): the anti-flags that say which classes may wear an item
+	DWORD ClassAntiFlags()
+	{
+		DWORD dw = ITEM_ANTIFLAG_WARRIOR | ITEM_ANTIFLAG_ASSASSIN | ITEM_ANTIFLAG_SURA | ITEM_ANTIFLAG_SHAMAN;
+#ifdef ENABLE_WOLFMAN_CHARACTER
+		dw |= ITEM_ANTIFLAG_WOLFMAN;
+#endif
+		return dw;
+	}
+
 	// Owsap's CanAddItem: what can take a look (and give one) in this window.
 	bool CanTakeLook(BYTE type, LPITEM item)
 	{
@@ -139,8 +149,14 @@ namespace changelook
 
 		if (left->GetSubType() != right->GetSubType())
 			return false;
+		// MT2009_PLUS_TRANSMUT_FIX_V1 (class): the look fits the classes (pl-wiki: "zgodna z klasa") - every class that may
+		// wear the item may wear the look too, so the item never becomes unwearable for one of them. Only the class bits
+		// of the anti-flags count, not the whole word as Owsap compares it: our item_proto marks pieces of one kind
+		// differently in the other bits (ANTI_SELL on Bezduszny Noz / Miecz Trytona / Brzegowe Ostrze / Pogromca Nieb.
+		// Smoka / the Smoka armours, bit 18 on the level-96+ Smok Mroku / Zodiak / Waz weapons and armours, the event
+		// and quest pieces' trade bits), so a level-100+ sword or Bezduszny Noz -> Kozik was refused.
 		if (left->GetType() == ITEM_ARMOR || left->GetType() == ITEM_WEAPON)
-			if (left->GetAntiFlag() != right->GetAntiFlag())
+			if ((right->GetAntiFlag() & ClassAntiFlags()) & ~(left->GetAntiFlag() & ClassAntiFlags()))
 				return false;
 		if (IsCostumeBody(left))
 		{
@@ -479,6 +495,45 @@ void Mt2009ChangeLookRefreshParts(LPCHARACTER ch, LPITEM self, LPITEM leaving)
 	ch->SetPart(PART_MAIN, dwMain);
 	ch->SetPart(PART_WEAPON, dwWeapon);
 	ch->UpdatePacket();
+}
+
+// MT2009_PLUS_TRANSMUT_FIX_V1 (packet parts): "Po zmianie kostiumu transmutacja znika, do ponownego zalozenia
+// przedmiotu" - the character add / update packets (char.cpp, through Mt2009HideCostumeParts, which every one of them
+// calls) never carry the plain vnum of a worn transmuted piece: a part that is the real vnum of the worn costume / armour
+// (weapon skin / weapon) whose look is set becomes that look. The parts themselves are kept right by
+// Mt2009ChangeLookRefreshParts at every ModifyPoints; this is the last word for any path that wrote the plain vnum
+// after it (the engine's costume branch sends the armour's own vnum when a costume comes off, ComputePoints starts
+// from the bare body, a hidden costume, a mount, a polymorph ending...), so the look cannot get lost until the piece
+// is worn again. A part that already is the upper layer's look is left alone (a costume may carry an armour's look).
+namespace
+{
+	void ChangeLookPacketPart(DWORD& rdwPart, LPITEM upper, LPITEM lower)
+	{
+		if (upper)
+		{
+			if (rdwPart == upper->GetLookVnum())
+				return;
+			if (upper->GetTransmutation() && rdwPart == upper->GetVnum())
+			{
+				rdwPart = upper->GetTransmutation();
+				return;
+			}
+		}
+		if (lower && lower->GetTransmutation() && rdwPart == lower->GetVnum())
+			rdwPart = lower->GetTransmutation();
+	}
+}
+
+void Mt2009ChangeLookPacketParts(LPCHARACTER ch, DWORD* awPart)
+{
+	if (!ch || !awPart || !ch->IsPC() || ch->IsPolymorphed())
+		return;
+	ChangeLookPacketPart(awPart[CHR_EQUIPPART_ARMOR], ch->GetWear(WEAR_COSTUME_BODY), ch->GetWear(WEAR_BODY));
+	LPITEM costumeWeapon = NULL;
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+	costumeWeapon = ch->GetWear(WEAR_COSTUME_WEAPON);
+#endif
+	ChangeLookPacketPart(awPart[CHR_EQUIPPART_WEAPON], costumeWeapon, ch->GetWear(WEAR_WEAPON));
 }
 
 // A mount seal's mount: the look's (a mount "polymorphed" into another, pl-wiki) or its own. Every place that

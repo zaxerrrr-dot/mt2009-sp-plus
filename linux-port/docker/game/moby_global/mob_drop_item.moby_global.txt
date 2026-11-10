@@ -766,12 +766,6 @@ Group	MT2009_mglobal_1064
 	Type	drop
 	1	30193	1	0.5	-- Kosc Palca
 }
-Group	MT2009_mglobal_1070
-{
-	Mob	1070	-- Niesm. Duch
-	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-}
 Group	MT2009_mglobal_1093
 {
 	Mob	1093	-- Umarly Rozpruwacz
@@ -926,8 +920,7 @@ Group	MT2009_mglobal_1192
 {
 	Mob	1192	-- Silna Lodowa Wiedzma
 	Type	drop
-	1	13166	1	5	-- Tarcza Trzech Wladcow+6
-	2	39079	1	40	-- Zielony Lsniacy Odlamek
+	1	39079	1	40	-- Zielony Lsniacy Odlamek
 }
 Group	MT2009_mglobal_1301
 {
@@ -1060,12 +1053,6 @@ Group	MT2009_mglobal_2061
 	1	13194	1	0.5	-- Pieciokatna Tarcza+4
 	2	13205	1	0.5	-- Czarna Okragla Tarcza+5
 }
-Group	MT2009_mglobal_2062
-{
-	Mob	2062	-- Smiert. Trujacy Pajak
-	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-}
 Group	MT2009_mglobal_2071
 {
 	Mob	2071	-- Best. Mlody Truj. Pajak
@@ -1176,18 +1163,17 @@ Group	MT2009_mglobal_2092
 	25	13102	1	10	-- Lwia Tarcza+2
 	26	13122	1	10	-- Tarcza Smoka+2
 	27	13140	1	10	-- Tarcza Tytanow+0
-	28	13162	1	10	-- Tarcza Trzech Wladcow+2
-	29	14163	1	10	-- Krysztalowa Bransoleta+3
-	30	14201	1	10	-- Bransol. Z Niebian.Lez+1
-	31	16163	1	10	-- Krysztalowy Naszyjnik+3
-	32	16201	1	10	-- Naszyj. Z Niebian.Lez+1
-	33	17163	1	10	-- Krysztalowe Kolczyki+3
-	34	17201	1	10	-- Kolczyki Z Niebian.Lez+1
-	35	39079	1	40	-- Zielony Lsniacy Odlamek
-	36	55003	1	10	-- Ksiega Mlodego Zwierza
-	37	55009	1	4	-- Skrzynia Ksiag Peta
-	38	55402	1	4	-- Jajo Pajaczka
-	39	70058	1	4	-- Pierscien Teleportacji
+	28	14163	1	10	-- Krysztalowa Bransoleta+3
+	29	14201	1	10	-- Bransol. Z Niebian.Lez+1
+	30	16163	1	10	-- Krysztalowy Naszyjnik+3
+	31	16201	1	10	-- Naszyj. Z Niebian.Lez+1
+	32	17163	1	10	-- Krysztalowe Kolczyki+3
+	33	17201	1	10	-- Kolczyki Z Niebian.Lez+1
+	34	39079	1	40	-- Zielony Lsniacy Odlamek
+	35	55003	1	10	-- Ksiega Mlodego Zwierza
+	36	55009	1	4	-- Skrzynia Ksiag Peta
+	37	55402	1	4	-- Jajo Pajaczka
+	38	70058	1	4	-- Pierscien Teleportacji
 }
 Group	MT2009_mglobal_2105
 {
@@ -1224,15 +1210,13 @@ Group	MT2009_mglobal_2132
 {
 	Mob	2132	-- Skorpion Lucznik
 	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-	2	30055	1	0.5	-- Szpon Skorpiona
+	1	30055	1	0.5	-- Szpon Skorpiona
 }
 Group	MT2009_mglobal_2133
 {
 	Mob	2133	-- Wezowy Miecznik
 	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-	2	30022	1	0.5	-- Ogon Weza
+	1	30022	1	0.5	-- Ogon Weza
 }
 Group	MT2009_mglobal_2134
 {
@@ -1347,30 +1331,11 @@ Group	MT2009_mglobal_2412
 	Type	drop
 	1	8005	1	0.5	-- Srebrna Strzala
 }
-Group	MT2009_mglobal_2432
-{
-	Mob	2432	-- ????
-	Type	drop
-	1	13163	1	0.5	-- Tarcza Trzech Wladcow+3
-}
-Group	MT2009_mglobal_2452
-{
-	Mob	2452	-- ?????
-	Type	drop
-	1	13164	1	0.5	-- Tarcza Trzech Wladcow+4
-}
-Group	MT2009_mglobal_2492
-{
-	Mob	2492	-- General Yonghan
-	Type	drop
-	1	13163	1	10	-- Tarcza Trzech Wladcow+3
-}
 Group	MT2009_mglobal_2495
 {
 	Mob	2495	-- General Huashin
 	Type	drop
-	1	13164	1	10	-- Tarcza Trzech Wladcow+4
-	2	39079	1	40	-- Zielony Lsniacy Odlamek
+	1	39079	1	40	-- Zielony Lsniacy Odlamek
 }
 Group	MT2009_mglobal_2506
 {
@@ -1388,15 +1353,13 @@ Group	MT2009_mglobal_2543
 {
 	Mob	2543	-- Zly Piekielny Wlocznik
 	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-	2	30196	1	0.07	-- Demoniczne Prochy
+	1	30196	1	0.07	-- Demoniczne Prochy
 }
 Group	MT2009_mglobal_2545
 {
 	Mob	2545	-- Zly Piekielny Major
 	Type	drop
-	1	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-	2	30196	1	0.07	-- Demoniczne Prochy
+	1	30196	1	0.07	-- Demoniczne Prochy
 }
 Group	MT2009_mglobal_2547
 {

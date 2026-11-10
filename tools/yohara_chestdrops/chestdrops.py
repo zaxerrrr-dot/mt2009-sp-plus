@@ -97,6 +97,9 @@ for _v in (6045, 6046, 6047, 6073, 6074, 6093, 6130, 6150, 21073, 21074, 21075, 
     SKIP[_v] = _LYCAN
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia out of every drop and chest (the owner, 15 October 2026, fix 7)
 SKIP[50124] = 'no Sprochniala Skrzynia in any drop - owner 15.10'
+# MT2009_PLUS_NO_TRZECH_WLADCOW_V1: Tarcza Trzech Wladcow out of every drop and chest (the owner, 10 November 2026)
+for _v in range(13160, 13170):
+    SKIP[_v] = 'no Tarcza Trzech Wladcow in any drop - owner 10.11'
 
 # MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (tools/antimagic, 28 October 2026): Kamien Antymagii is ours now. The sheet has two
 # rows of each grade, both "Kamien Antymagii+N" with the armour stone's vnum (28045 + 100*N - the official weapon and
