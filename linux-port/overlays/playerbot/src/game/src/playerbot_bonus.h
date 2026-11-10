@@ -1724,6 +1724,17 @@ namespace
 		// the hold (IsPlayerBotSwapHeldForBonus).
 		if (target.kind == PLAYERBOT_BONUS_TARGET_HELD)
 			return true;
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		// MT2009_PLUS_BOT_BONUS75_V1 (playerbot_bonus75.h): a worn piece of a bot of level 75+ is changed by its slot's
+		// target (strong / fair) and its change budget - not by the score, the old finish or the protected lines; the
+		// marble-first gate still applies after this (BuildPlayerBotBonusPiece)
+		if (!green && target.kind == PLAYERBOT_BONUS_TARGET_WORN)
+		{
+			const int verdict75 = GetPlayerBotBonus75ChangeVerdict(ch, item, target.wearCell);
+			if (verdict75 >= 0)
+				return verdict75 > 0;
+		}
+#endif
 		// MT2009_PLUS_BOT_SMITHY_V1, point 10: a protected line is never mixed
 		// off by an ordinary change - but where the operator mixes to the
 		// finish (the level-30 weapons' average line, the young bot's
@@ -2143,6 +2154,12 @@ namespace
 			NotePlayerBotMarbleFirstChange(ch, count);
 #endif
 		NotePlayerBotStarterItemUsed(stoneVnum, 1);	// MT2009_PLUS_BOT_STARTER_USE_V1: the census
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		// MT2009_PLUS_BOT_BONUS75_V1: the piece's change budget and the census
+		if (step == PLAYERBOT_BONUS_STEP_CHANGE && !IsPlayerBotGreenBonusStone(stoneVnum) &&
+				target.kind == PLAYERBOT_BONUS_TARGET_WORN)
+			NotePlayerBotBonus75Change(ch, item, target.wearCell, false);
+#endif
 		// MT2009_PLUS_BOT_CHANGE_NO_ADD_V1: a change on a piece short of its four lines (no add stone in the bag) -
 		// counted, the count said once a minute.
 		if (step == PLAYERBOT_BONUS_STEP_CHANGE && count < PLAYERBOT_BONUS_CHANGE_MIN_LINES &&
@@ -2549,6 +2566,9 @@ namespace
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
 #ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
 		LogPlayerBotMarbleFirstCensus(dwNow);	// MT2009_PLUS_BOT_MARBLE_FIRST_V1: every 10 minutes
+#endif
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		LogPlayerBotBonus75Census(dwNow);	// MT2009_PLUS_BOT_BONUS75_V1: every 10 minutes
 #endif
 		// MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot holding the ordinary stones bonuses its gear by its own pass
 		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.

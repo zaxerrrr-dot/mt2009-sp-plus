@@ -4174,7 +4174,11 @@ namespace
 	// lines, a prize piece). Its level is asked apart (POLICY_EXPENSIVE_LEVEL).
 	bool IsPlayerBotRefinePolicyValuable(LPITEM item)
 	{
-		return item && (IsPlayerBotScrollOnlyWeapon(item) || IsPlayerBotFourLinePiece(item) || IsPlayerBotPrizeItem(item));
+		return item && (IsPlayerBotScrollOnlyWeapon(item) || IsPlayerBotFourLinePiece(item) || IsPlayerBotPrizeItem(item)
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+				|| IsPlayerBotBonusScrollPiece(item->GetOwner(), item)	// MT2009_PLUS_BOT_BONUS75_V1: never the cheap policy's anvil
+#endif
+				);
 	}
 
 	// A shield or a helmet the village merchants sell (FindPlayerBotMerchantOffer of its +0), of the cheap levels.
@@ -4595,6 +4599,12 @@ namespace
 			return false;
 		if (IsPlayerBotFourLinePiece(item))
 			return true;
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		// MT2009_PLUS_BOT_BONUS75_V1 (playerbot_bonus75.h, the owner, 10 November 2026): a bot with the ItemShop raises an
+		// already bonused piece under a scroll only - the plain anvil burns it with its bonuses
+		if (IsPlayerBotBonusScrollPiece(ch, item))
+			return true;
+#endif
 		// MT2009_PLUS_BOT_REFINE_POLICY_V1: the cheap merchant shield / helmet to +6, and every cheap piece at good
 		// odds, takes the plain anvil's risk ("Bojowa Tarcza+4" held at +4 by 769 bots, 6 November).
 		if (IsPlayerBotPlainAnvilPolicyStep(item, (int)recipe->prob))
@@ -5943,7 +5953,12 @@ namespace
 				continue;
 			}
 			if (scrollCell < 0 && scrollStepAllowed && handAtRisk)
+			{
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+				NotePlayerBotBonusScrollWait(ch, item);	// MT2009_PLUS_BOT_BONUS75_V1: the census
+#endif
 				continue;
+			}
 			// No scroll, a roll that can fail, and a weapon worth more than the
 			// next plus: leave it. The blacksmith burns what he fails. A weapon of
 			// the anvil table is not held here: its ceiling answers for it. Only
@@ -6017,6 +6032,7 @@ namespace
 			const long long goldBeforeAttempt = (long long)ch->GetGold();
 			const WORD cellBefore = item->GetCell();
 			const DWORD idBefore = item->GetID();
+			const int linesBeforeAttempt = item->GetAttributeCount();	// MT2009_PLUS_BOT_BONUS75_V1: the census
 			bool attempted = false;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the scroll's kind, read before the step spends it
@@ -6066,6 +6082,9 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 				if (highGear)
 					NotePlayerBotHighGearStep(ch, hgKind, (int)plusLevel, stepProb, success);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+#endif
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+				NotePlayerBotBonusScrollRefine(ch, linesBeforeAttempt, scrollCell >= 0, success, stepProb);	// MT2009_PLUS_BOT_BONUS75_V1
 #endif
 				// Only a refine that landed is news. A scroll's failure hands the
 				// piece back a grade down and a plain one burns it, and both were
@@ -6293,6 +6312,7 @@ namespace
 #endif
 		LPITEM scrollItem = ch->GetInventoryItem(scrollCell);
 		const DWORD scrollVnum = scrollItem ? scrollItem->GetVnum() : 0;	// MT2009_PLUS_BOT_STARTER_USE_V1
+		const int linesBeforeAttempt = piece->GetAttributeCount();	// MT2009_PLUS_BOT_BONUS75_V1: the census
 		ch->SetRefineMode(scrollCell);
 		attempted = ch->DoRefineWithScroll(piece);
 		ch->ClearRefineMode();
@@ -6311,6 +6331,9 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			if (highGear)
 				NotePlayerBotHighGearStep(ch, hgKind, (int)plus, recipe ? (int)recipe->prob : 100, success);
+#endif
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+			NotePlayerBotBonusScrollRefine(ch, linesBeforeAttempt, true, success, recipe ? (int)recipe->prob : 100);
 #endif
 			if (success)
 			{

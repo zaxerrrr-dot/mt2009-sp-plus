@@ -267,7 +267,8 @@ namespace
 		if (strcmp(reason, "blessing_scroll") == 0)
 			return "refine";
 		if (strncmp(reason, "bonus_", 6) == 0 || strcmp(reason, "cor") == 0 || strcmp(reason, "bean") == 0 ||
-				strcmp(reason, "sash") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "chest") == 0)
+				strcmp(reason, "sash") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "chest") == 0 ||
+				strcmp(reason, "refine_bonus") == 0)	// MT2009_PLUS_BOT_BONUS75_V1
 			return reason;
 		return "wish";
 	}

@@ -10712,6 +10712,24 @@ namespace
 	void NotePlayerBotMarbleFirstUsed(LPCHARACTER ch, LPITEM item, bool won);
 	void NotePlayerBotMarbleFirstChange(LPCHARACTER ch, int lines);
 	void LogPlayerBotMarbleFirstCensus(DWORD dwNow);
+#define MT2009_PLUS_BOT_BONUS75_V1 1
+	// MT2009_PLUS_BOT_BONUS75_V1 (the owner, 10 November 2026; playerbot_bonus75.h, after playerbot_marble_first.h):
+	// (1) from level 75 the 1-5 bonus targets per slot - the armour, helmet and shield for Max HP, the defence lines, the
+	// stun resistance and the element needed; the weapon and the jewellery for critical, strong vs devils... - in the
+	// ordinary pass (a change budget per piece) and the Yohara pass (its roles); (2) a bot with ItemShop access raises an
+	// already bonused piece under refine scrolls, never at the plain anvil (which burns it with its bonuses), the V3
+	// buying the Zwoj Blogoslawienstwa a waiting piece needs; (3) the census. Asked by playerbot_bonus.h,
+	// playerbot_yohara_bonus.h, playerbot_economy.h, playerbot_demon_tower.h and playerbot_ishop3_goals.h.
+	bool IsPlayerBotBonus75Stage(LPCHARACTER ch);
+	int GetPlayerBotBonus75RoleFor(LPCHARACTER ch, BYTE wearCell, WORD type, bool addonWeapon, BYTE elem);
+	int GetPlayerBotBonus75ChangeVerdict(LPCHARACTER ch, LPITEM item, BYTE wearCell);
+	void NotePlayerBotBonus75Change(LPCHARACTER ch, LPITEM item, BYTE wearCell, bool yohara);
+	void LogPlayerBotBonus75Census(DWORD dwNow);
+	bool PlayerBotHasItemShopAccess(LPCHARACTER ch);
+	bool IsPlayerBotBonusScrollPiece(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotBonusScrollRefine(LPCHARACTER ch, int linesBefore, bool scroll, bool success, int stepProb);
+	void NotePlayerBotBonusScrollWait(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotBonusScrollShop(int wanted, int got);
 #endif
 }
 

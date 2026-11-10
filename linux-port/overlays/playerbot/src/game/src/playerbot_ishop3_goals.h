@@ -694,6 +694,11 @@ namespace
 		}
 	}
 
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+	// MT2009_PLUS_BOT_BONUS75_V1 (playerbot_bonus75.h): the Zwoj Blogoslawienstwa a worn bonused piece waits for
+	void CollectPlayerBotBonusScrollGoals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n);
+#endif
+
 	// Every open goal, in the order the coins go: the bonus stones, the marble, the Cors, the beans, the sash, the
 	// scrolls (Smocze Znaki - no coins taken from the rest).
 	int CollectPlayerBotIshop3Goals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals)
@@ -728,6 +733,9 @@ namespace
 			const TPlayerBotIshop3Goal g = { PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM, true, PLAYERBOT_ISHOP3_REFINE_BATCH, "refine" };
 			goals[n++] = g;
 		}
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		CollectPlayerBotBonusScrollGoals(ch, goals, n);	// MT2009_PLUS_BOT_BONUS75_V1: a bonused piece's scroll
+#endif
 #ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
 		CollectPlayerBotShopAidGoals(ch, goals, n);
 #endif
@@ -994,6 +1002,10 @@ namespace
 			const int got = BuyPlayerBotIshop3Pieces(ch, state, goals[i], dwNow, &purchases);
 #ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
 			NotePlayerBotSkillInstrGoalResult(ch, goals[i], got);	// MT2009_PLUS_BOT_SKILL_INSTR_V1
+#endif
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+			if (strcmp(goals[i].szReason, "refine_bonus") == 0)
+				NotePlayerBotBonusScrollShop(goals[i].iPieces, got);	// MT2009_PLUS_BOT_BONUS75_V1: the census
 #endif
 #ifdef MT2009_PLUS_BOT_MARBLE_FIRST_V1
 			// MT2009_PLUS_BOT_MARBLE_FIRST_V1: the marble bought, or refused (pool, coins, caps, no line) - the last resort's
