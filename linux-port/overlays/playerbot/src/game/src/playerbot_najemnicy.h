@@ -1776,7 +1776,7 @@ namespace
 				sys_log(0, "NAJEMNICY: died pid=%u name=%s owner=%u map=%ld", n.pid, ch->GetName(), n.ownerPid,
 						ch->GetMapIndex());
 			}
-			if (dwNow - n.deadAt >= NAJEMNICY_REVIVE_MS)
+			if ((int)(dwNow - n.deadAt) >= (int)NAJEMNICY_REVIVE_MS)	// MT2009_PLUS_NAJEMNICY_V5: signed (see the load timeout)
 			{
 				StandPlayerBotUpHere(ch);
 				ch->PointChange(POINT_HP, ch->GetMaxHP() / 2 - ch->GetHP());
@@ -2264,7 +2264,10 @@ namespace
 			}
 			if (n.phase == NAJEMNIK_LOADING)
 			{
-				if (dwNow - n.askedAt > NAJEMNICY_LOAD_TIMEOUT_MS)
+				// MT2009_PLUS_NAJEMNICY_V5: signed - a rejoin (ProcessNajemnicyRejoins, earlier in this very pass) sets askedAt
+				// from get_dword_time() a few ms AFTER this pass's dwNow; the unsigned "dwNow - askedAt" wrapped to ~4e9 and
+				// timed every rejoined mercenary out at once (the channel change's "did not load in 45 s", 10.11.2026).
+				if ((int)(dwNow - n.askedAt) > (int)NAJEMNICY_LOAD_TIMEOUT_MS)
 				{
 					sys_err("NAJEMNICY: pid=%u login=%s did not load in %u s", n.pid, n.login.c_str(),
 							NAJEMNICY_LOAD_TIMEOUT_MS / 1000);
@@ -2301,7 +2304,7 @@ namespace
 				}
 				if (rec.goneSince == 0)
 					rec.goneSince = dwNow;
-				else if (dwNow - rec.goneSince >= NAJEMNICY_OWNER_GONE_MS)
+				else if ((int)(dwNow - rec.goneSince) >= (int)NAJEMNICY_OWNER_GONE_MS)	// MT2009_PLUS_NAJEMNICY_V5: signed
 				{
 					// MT2009_PLUS_NAJEMNICY_V3: a logout - the next entry is a login (the owner's "wracaja po zalogowaniu"
 					// decides), not a move that brings them back whatever the switch says.
