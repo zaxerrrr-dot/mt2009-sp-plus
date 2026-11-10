@@ -234,6 +234,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_ornament_farmers.h" // MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmers of the second villages' Sworn camps
 #include "playerbot_newpet_bots.h" // MT2009_PLUS_NEWPET_BOTS_V1: the bots hatch, feed, raise and evolve New Pet System pets; the pet goods on their counters
 #include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
+#include "playerbot_energy_crystals.h" // MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: Krysztaly Energii made at the Alchemist, used while hunting, the surplus on the counters; the scrap's worth test
 // MT2009_PLUS_RELIC_V1: Bonus Reliktu's souls, Pakiet Dusz, relics and shards are never a bot's scrap or stall goods
 // (playerbot_relikty.cpp; read by IsPlayerBotJunkItem and ScorePlayerBotShopStockRules)
 bool Mt2009RelicIsKeptVnum(DWORD dwVnum);

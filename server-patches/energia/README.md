@@ -58,7 +58,10 @@ daje udział przedmiotów założonych teraz – można go wołać zawsze (brak 
 ## Poza zakresem
 
 - Inne źródła kryształu z wiki („Skrzynka na Ozdoby”) – takiej skrzynki nie ma w naszej bazie.
-- Boty: nie robią ani nie używają kryształów (dalej rozkładają złom na odłamki i sprzedają je –
-  `playerbot_energy_shards.h`).
+- Boty (od 10 listopada 2026, `MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1`, `playerbot_energy_crystals.h`): rozkładają u
+  Alchemika złom, którego oczekiwane odłamki są warte więcej niż płaci handlarz; składają kryształy jak w queście
+  (30 odłamków + 1 000 Yang, pierwszy pewny, potem 30%); od 35 poziomu używają kryształu w polowaniu, gdy energia nie
+  działa; trzymają rezerwę (flaga `m2_bot_energy_reserve_h`, 4 h = 2 kryształy), nadwyżkę kryształów i odłamków
+  wystawiają na rynek. Flagi i spis – nagłówek pliku.
 - Paczka właściciela (francuska) to nieoficjalna wersja na flagach questa (losowy bonus zamiast energii, `cmdchat`,
   `mysql_query`, flaga zdarzenia „energy”) – przeniesione są tylko obrazki paska; zasady są oficjalne.

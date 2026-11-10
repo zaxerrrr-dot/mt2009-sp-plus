@@ -724,16 +724,22 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1 (playerbot_energy_crystals.h, further down the unit).
+	bool UsePlayerBotEnergyCrystal(LPCHARACTER ch);
+	void SamplePlayerBotEnergyUptime(LPCHARACTER ch, DWORD now);
+
 	bool UsePlayerBotBoosters(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || dwNow < state.dwNextBoosterTime)
 			return false;
 		ManagePlayerBotAutoPotions(ch, dwNow);
+		SamplePlayerBotEnergyUptime(ch, dwNow);	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census's uptime
 		if (state.bCurrentAction != BOT_ACTION_FIGHT || state.bVisitingShop ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return false;
 		state.dwNextBoosterTime = dwNow + PLAYERBOT_BOOSTER_INTERVAL;
-		bool used = false;
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: a Krysztal Energii while hunting, never while the energy runs.
+		bool used = UsePlayerBotEnergyCrystal(ch);
 		// Anything the engine treats as a timed buff, one attempt per buff line
 		// per pass: the engine itself refuses a second Mikstura Ataku while the
 		// first runs ("This effect is already activated"), so a refusal is the

@@ -2231,8 +2231,10 @@ namespace
 		if (!state.bVisitingAlchemist)
 		{
 			const int stones = CollectPlayerBotDustStones(ch, NULL, &dust, &fee);
+			// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: and the crystals to make, on the Alchemist's own clock.
+			const bool energyCraft = WantsPlayerBotEnergyCrystalCraft(ch);
 			if ((stones < PLAYERBOT_ALCHEMIST_MIN_STONES ||
-					CountPlayerBotFreeInventoryCells(ch) < (dust + 199) / 200 + 1) && !energyScrap)
+					CountPlayerBotFreeInventoryCells(ch) < (dust + 199) / 200 + 1) && !energyScrap && !energyCraft)
 			{
 				state.dwNextAlchemistCheckTime = dwNow + number(
 						PLAYERBOT_ALCHEMIST_CHECK_MIN_MS, PLAYERBOT_ALCHEMIST_CHECK_MAX_MS);
@@ -2328,6 +2330,9 @@ namespace
 		const int energyPieces = CollectPlayerBotEnergyScrap(ch, NULL);
 		if (energyPieces > 0)
 			DismantlePlayerBotEnergyScrap(ch);
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: then the shards into Krysztaly Energii, the quest's way
+		// (energia_krysztal.quest: 30 shards + 1 000 Yang a try, the first sure, then 30 %).
+		CraftPlayerBotEnergyCrystals(ch);
 
 		state.bVisitingAlchemist = false;
 		state.dwNextAlchemistActionTime = 0;
@@ -5484,6 +5489,11 @@ namespace
 		// for one more (playerbot_energy_shards.h); the rest waits in the bag.
 		if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
 			return (ch && GetPlayerBotEnergyShardLinesForSale(ch) > 0)
+					? PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS) : -1;
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: Krysztaly Energii over the bot's reserve, while the world's counters have
+		// room (GetPlayerBotEnergyCrystalsForSale, playerbot_energy_crystals.h).
+		if (IsPlayerBotEnergyCrystalVnum(item->GetVnum()))
+			return (ch && GetPlayerBotEnergyCrystalsForSale(ch) > 0)
 					? PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS) : -1;
 		// MT2009_PLUS_BELT_MATS_V1: the belts and their materials are sheet goods
 		// whatever their type (IsPlayerBotBeltGoodsVnum) - the counter's.

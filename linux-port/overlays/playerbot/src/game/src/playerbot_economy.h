@@ -900,7 +900,8 @@ namespace
 			return 1;
 		if (item->GetType() == ITEM_USE || item->GetType() == ITEM_METIN ||
 				item->GetType() == ITEM_TREASURE_KEY ||
-				(item->GetVnum() >= 27992 && item->GetVnum() <= 27994))
+				(item->GetVnum() >= 27992 && item->GetVnum() <= 27994) ||
+				IsPlayerBotEnergyCrystalVnum(item->GetVnum()))	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: a crystal a line
 			return 1;
 		if (item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return PLAYERBOT_CHEST_LINE_UNITS;
@@ -1523,6 +1524,10 @@ namespace
 	{
 		if (!item)
 			return 1;
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: a Krysztal Energii keeps the bot's next hours of energy - all of them while
+		// selling is off or the world's counters hold their cap (playerbot_energy_crystals.h).
+		if (IsPlayerBotEnergyCrystalVnum(item->GetVnum()))
+			return GetPlayerBotEnergyCrystalKeep(ch);
 		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a herb keeps what the bot's own
 		// rows of Baek-Go's board brew from (GetPlayerBotHerbKeep).
 		if (IsPlayerBotHerbalismHerb(item->GetVnum()))
@@ -2836,6 +2841,11 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return false;
 		}
+
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: a Krysztal Energii is the bot's energy or a counter's (3 000 000 on the
+		// sheet) - the merchant paid 10 yang for one (shop price 0, the rule's default below).
+		if (IsPlayerBotEnergyCrystalVnum(item->GetVnum()))
+			return false;
 
 		// MT2009_PLUS_BOT_STARTER_USE_V1: what the apprentice chests hand out and the rules below had no use for -
 		// the Blessing Scroll and the wine kept, the Appaloosa's snack while there is an Appaloosa to feed, the
