@@ -1225,8 +1225,10 @@ namespace
 		// A sale is the one measurement of demand there is. The asking price on
 		// a counter is what a seller hoped for; this is what a buyer did.
 		// With the skill, so a book sale lands on its own market.
+		// MT2009_PLUS_BOT_LADA_FIX_V1: never a signal under the market floor (PlayerBotSaleSignalUnit).
 		RememberPlayerBotSale(pick.dwVnum, pick.bRefine,
-				(DWORD)paid / std::max<DWORD>(1, pick.wCount), get_dword_time(),
+				PlayerBotSaleSignalUnit(pick.dwVnum, pick.bRefine, (DWORD)paid / std::max<DWORD>(1, pick.wCount),
+						get_dword_time()), get_dword_time(),
 				pick.dwSkillVnum);
 		if (pick.dwVnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			NotePlayerBotChestBought(ch->GetPlayerID(), get_dword_time());
