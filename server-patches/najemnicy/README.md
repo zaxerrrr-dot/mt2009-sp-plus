@@ -2,7 +2,9 @@
 
 `MT2009_PLUS_NAJEMNICY_V1` (etap 1), `MT2009_PLUS_NAJEMNICY_V2` (etap 2, ekwipunek), `MT2009_PLUS_NAJEMNICY_V3`
 (etap 3: powrót po zmianie rdzenia/kanału i po zalogowaniu, rozkazy, lochy z graczem jako liderem) i `MT2009_PLUS_NAJEMNICY_V4`
-(etap 4: mechanika lochów jak w wyprawach botów, powrót do grupy w środku lochu) – decyzje właściciela z 8.11.2026,
+(etap 4: mechanika lochów jak w wyprawach botów, powrót do grupy w środku lochu) i `MT2009_PLUS_NAJEMNICY_V5` (etap 5,
+uwagi właściciela z 10.11.2026: powrót po zmianie kanału, „Stój tutaj” po wezwaniu, zakładka „Najemnicy” w oknie
+Kolekcjonera, progi z panelu – sekcja „Etap 5” na końcu) – decyzje właściciela z 8.11.2026,
 plan: `/opt/metin2/cache/yohara/najemnicy-plan.md`.
 Stała drużyna botów gracza: od 80 poziomu gracz tworzy najemników (klasa, droga, płeć, imię), wzywa ich do swojej
 grupy, a oni chodzą za nim i walczą. Za każdego wezwanego płaci ze skarbca najemników.
@@ -201,8 +203,8 @@ Bez zmian w silniku: łatka `najemnicy` zostaje w wersji V2 (te same edycje), ca
 
 | Rozkaz | Słowo komendy | Co robi |
 |---|---|---|
-| **Za mną** (domyślny) | `za_mna` | jak dotąd: przy graczu, bije cel gracza, to, co atakuje jego lub gracza, i potwory obok |
-| **Stój tutaj** | `stoj` | pilnuje miejsca, w którym stał w chwili rozkazu: bije to, co atakuje jego lub gracza w pobliżu, i potwory do 7 m od miejsca, potem wraca na miejsce; nie podnosi łupu; nie teleportuje się za graczem na tej samej mapie (inna mapa – idzie za graczem i pilnuje nowego miejsca) |
+| **Za mną** | `za_mna` | jak dotąd: przy graczu, bije cel gracza, to, co atakuje jego lub gracza, i potwory obok |
+| **Stój tutaj** (po pierwszym wezwaniu w sesji, V5) | `stoj` | **od V5 bierny:** stoi w miejscu, w którym stał w chwili rozkazu (albo wejścia), nic nie bije (także tego, co bije jego), nie używa umiejętności ani buffów (tylko mikstury PŻ/PE), nie podnosi łupu, wraca na miejsce, gdy go zepchnąć; nie teleportuje się za graczem na tej samej mapie (inna mapa – idzie za graczem i stoi w nowym miejscu) |
 | **Bij mój cel** | `bij` | tylko cel gracza (także boss albo kamień tylko zaznaczony); bez celu – broni gracza i siebie |
 | **Walcz sam w pobliżu** | `sam` | wszystko do 25 m od gracza (także bossy i kamienie), wraca do gracza dopiero powyżej 15 m |
 | **Nie podnoś łupu** / **Podnoś łup** | `nie_podnos` / `podnos` | przełącznik łupu (niezależny od rozkazu) |
@@ -376,3 +378,68 @@ jajo Alastora, Dolnarr) robi gracz – to on jest liderem.
 - Panel, spis, wiki, changelog (plan: etap 4 „Dopracowanie”).
 - Kolekcjoner Najemników jest w osobnej łatce `server-patches/kolekcjoner` (okno, oddawanie przedmiotów 95%, stałe bonusy
   za zadania). Ukończone zadanie podnosi flagę `najemnicy.tasks` i wiersz `najemnicy_unlock.tasks` (GREATEST).
+
+## Etap 5 – uwagi właściciela z 10.11.2026 (`MT2009_PLUS_NAJEMNICY_V5`)
+
+Bez zmian w silniku (łatka `najemnicy` dalej V1/V2). Nakładka `playerbot_najemnicy.h`, quest `najemnicy.quest`,
+klient (Python: `uinajemnicykolekcjoner.py`, `uinajemnicyrozkazy.py`, `uisidekickinventory.py`, `game.py`,
+`interfacemodule.py`), panel Seban (`kolekcjoner_config.py`) i tabela progów z `kolekcjoner_najemnikow.sql`.
+
+### 1. Najemnicy nie pojawiali się na nowym kanale – przyczyna i poprawka
+
+Log testowy (9.11, 08:45): stary rdzeń `dismissed … why=owner_moved`, nowy `owner arrived … move=1`, `summoned … rejoin=1`
+i **w tej samej sekundzie** `did not load in 45 s` + `dismissed … why=load_timeout`. Powrót (`ProcessNajemnicyRejoins`)
+wzywa najemnika w trakcie przebiegu zegara modułu i zapisuje `askedAt = get_dword_time()` – kilka ms **później** niż
+`dwNow` tego przebiegu. Porównanie `dwNow - askedAt > 45000` było na liczbach bez znaku, więc różnica „−3 ms” stawała się
+~4 mld ms i ten sam przebieg odwoływał każdego wracającego najemnika jako „nie dotarł”; odwołanie kasowało też
+`summoned`, więc już nie wracali. To samo trafiało powrót po zalogowaniu. Teraz porównania zegara (wejście, wstawanie po
+śmierci, odejście gracza) są ze znakiem.
+
+### 2. Domyślny rozkaz po wezwaniu: „Stój tutaj” (bierny)
+
+- **Pierwsze „Wezwij”** danego najemnika w sesji logowania gracza ustawia mu „Stój tutaj” (zapisane w bazie,
+  `order_mode=1`) i czat mówi „… stoi w miejscu – daj mu ekwipunek i wydaj rozkaz”. Najemnik nic nie bije, nie używa
+  umiejętności ani buffów – gracz go ubiera i dopiero wysyła rozkazem.
+- **Kolejne wezwania w tej samej sesji** zachowują ostatni rozkaz. **Powrót** (zmiana kanału/rdzenia, powrót po
+  zalogowaniu) też zachowuje rozkaz – najemnik pracował, gdy gracz odchodził (np. rozłączenie w lochu).
+- Sesja = klucz logowania z serwera autoryzacji (ten sam przy zmianie kanału i rdzenia, nowy przy każdym logowaniu);
+  flagi questa `najemnicy.session` i `najemnicy.session_mask` (bit na miejsce). Syslog:
+  `NAJEMNICY: first summon of the session pid=… order 0 -> 1`.
+
+### 3–5. Okno: zakładka „Najemnicy” w oknie Kolekcjonera
+
+List „Najemnicy” jest już tylko wejściem: klik → `/najemnicy panel otworz` → okno Kolekcjonera na zakładce
+„Najemnicy”. Okno ma wygląd okna „Sesja farmienia” (pasek tytułu, płaskie zakładki, ramki, nagłówki, te same kolory).
+Zakładka ma: miejsca (zajęte/dostępne) i wymaganie następnego miejsca (zadanie Kolekcjonera + poziom), tworzenie
+najemnika (klasa, płeć, droga, imię), wiersz na każdego najemnika (twarz/klasa, droga, poziom, stan: niewezwany / w
+drodze / przy tobie / padł, rozkaz, łup, gildia) z przyciskami **Wezwij/Odwołaj, Ekwipunek, Rozkazy, Łup, Gildia,
+Zwolnij** (z pytaniem), skarbiec (stan, koszt na godzinę przy obecnych wezwaniach, na ile wystarczy, wpłata),
+„Wezwij wszystkich” / „Odwołaj wszystkich” i przełącznik powrotu po zalogowaniu. Okno „Rozkazy” i przyciski okna
+ekwipunku najemnika są w tym samym stylu.
+
+Protokół (`CHAT_TYPE_COMMAND`): `NAJP begin <miejsca> <zadania> <poziom> <liczba> <opłata_h> <skarbiec> <wył> <powrót>`,
+`NAJP tier <nr> <miejsca> <poziom>`, `NAJP merc <miejsce> <rasa> <droga> <imię hex> <stan 0-3> <rozkaz> <łup> <gildia -1/0/1>
+<poziom>`, `NAJP end <otwórz 0|1>`. Klient: `/najemnicy panel` (stan + odświeżanie na żywo), `/najemnicy panel zamknij`,
+a reszta to dotychczasowe komendy przez kolejkę komend klienta. Serwer odświeża zakładkę po każdej komendzie gracza,
+wejściu, odejściu, śmierci i wstaniu najemnika, co minutę (opłata) i po ukończeniu zadania Kolekcjonera (raz na
+sekundę zbiorczo).
+
+### 6. Progi z panelu
+
+Liczba miejsc liczy się z tabeli `player.najemnicy_kolekcjoner_tiers` (n‑te ukończone zadanie → tyle najemników od
+poziomu), którą edytuje panel Seban (Wydarzenia → Najemnicy → Kolekcjoner). Gra czyta ją razem z flagami co ~10 s; pusta
+tabela = tabela właściciela (1 + 80 → 2 … 6 + 105 → 7). Liczy się do 16 zadań; komendy GM `zadania <nick> <0-16>`.
+
+### Jak przetestować etap 5 (serwer: nakładka + quest + migracja; klient: łatka root z tej gałęzi)
+
+37. **Zmiana kanału:** wezwij 2 najemników, zmień kanał. W ciągu kilku sekund są obok, w grupie, z tym samym rozkazem.
+    Syslog nowego rdzenia: `owner arrived … move=1`, `summoned … rejoin=1`, `entered … rejoin=1` – **bez**
+    `did not load in 45 s`. To samo przy przejściu na mapę innego rdzenia i po wylogowaniu/zalogowaniu (po 1,5 min).
+38. **Pierwsze wezwanie:** zaloguj się, wezwij najemnika – stoi („stoi w miejscu…” na czacie, w zakładce rozkaz „Stój
+    tutaj”). Zaatakuj potwora obok niego / daj się bić – najemnik nie bije, nie buffuje (Szaman), nie podnosi łupu.
+    Ubierz go (Ekwipunek), daj „Za mną” – walczy. Odwołaj i wezwij znowu – dalej „Za mną”. Wyloguj się, zaloguj,
+    wyłącz powrót, wezwij – znów „Stój tutaj”.
+39. **Okno:** kliknij list „Najemnicy” – otwiera się okno Kolekcjonera na zakładce „Najemnicy”. Sprawdź miejsca i
+    „następne miejsce”, stwórz najemnika (zajęte imię – odmowa na czacie), wezwij/odwołaj (stan zmienia się sam w
+    ~1 s), wpłać `10kk` (stan i czas skarbca od razu), rozkazy, łup, gildia (stan po ~2 s), zwolnij (pytanie).
+    Zostaw okno otwarte – co minutę skarbiec maleje bez klikania. Zmień zakładkę na „Kolekcjoner” – odświeżanie staje.
