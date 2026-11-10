@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    MT2009 PLUS - Yohara Patcher (MT2009_PLUS_YOHARA_PATCHER_V1).
+    The patcher of the Yohara (3.x) client, next to and separate from the 2.x
+    MT2009-Patcher (../patcher). .NET Framework 4.8 WPF, built on Linux:
+    build.sh (Docker, dotnet/sdk:8.0).
+    Shared with the 2.x patcher (linked, not copied): the server status / VPS
+    window, the news box, the ember animation code and the fonts. The window
+    art is the 2.x art recoloured by tools/grafika_yohara.py into gen/.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>MT2009-Yohara-Patcher</AssemblyName>
+    <RootNamespace>N2_Patcher</RootNamespace>
+    <StartupObject>MT2009Yohara.Entry</StartupObject>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>gen\resources\icon.ico</ApplicationIcon>
+    <Deterministic>true</Deterministic>
+    <DebugType>none</DebugType>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TwoX>..\..\patcher\MT2009-Patcher</TwoX>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <!-- Embedded into the exe (App.ResolveEmbedded), not copied next to it. -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" ExcludeAssets="runtime" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- shared with the 2.x patcher -->
+    <Compile Include="$(TwoX)\N2_Patcher\Core\CoopServer.cs" Link="Shared\CoopServer.cs" />
+    <Compile Include="$(TwoX)\N2_Patcher\Core\ServerProbe.cs" Link="Shared\ServerProbe.cs" />
+    <Compile Include="$(TwoX)\N2_Patcher\Model\ChannelState.cs" Link="Shared\ChannelState.cs" />
+    <Compile Include="$(TwoX)\N2_Patcher\Model\NewsItem.cs" Link="Shared\NewsItem.cs" />
+    <Compile Include="$(TwoX)\N2_Patcher\Control\NewsSystem.cs" Link="Shared\NewsSystem.cs" />
+    <Compile Include="$(TwoX)\N2_Patcher\Control\PicWarpper.cs" Link="Shared\PicWarpper.cs" />
+    <Page Include="$(TwoX)\view\VpsWindow.xaml" Link="view\VpsWindow.xaml" />
+    <Compile Include="$(TwoX)\view\VpsWindow.xaml.cs" Link="view\VpsWindow.xaml.cs" DependentUpon="VpsWindow.xaml" />
+    <Resource Include="$(TwoX)\fonts\*.ttf" Link="fonts\%(Filename)%(Extension)" />
+    <Resource Include="..\..\patcher\tools\Cinzel.ttf" Link="fonts\Cinzel.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(PkgNewtonsoft_Json)\lib\net45\Newtonsoft.Json.dll" LogicalName="Newtonsoft.Json.dll" Visible="false" />
+    <Resource Include="gen\resources\**\*.png" Link="resources\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Resource Include="gen\resources\icon.ico" Link="resources\icon.ico" />
+  </ItemGroup>
+</Project>
