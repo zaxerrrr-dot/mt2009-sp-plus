@@ -1380,6 +1380,9 @@ void CPythonApplication::Destroy()
 #ifdef ENABLE_MT2009_TITLES
 	{ void Mt2009Titles_Destroy(); Mt2009Titles_Destroy(); } // MT2009_PLUS_TITLES_V1
 #endif
+#ifdef ENABLE_MT2009_WIKI
+	{ void Mt2009WikiModel_Destroy(); Mt2009WikiModel_Destroy(); } // MT2009_PLUS_WIKI_V1: the previews before their textures
+#endif
 #if defined(RENDER_TARGET)
 	m_kRenderTargetManager.Destroy();
 #endif

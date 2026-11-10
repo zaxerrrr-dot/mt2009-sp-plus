@@ -907,6 +907,11 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #ifdef ENABLE_MT2009_TITLES
 	{ void Mt2009Titles_RegisterPython(); Mt2009Titles_RegisterPython(); } // MT2009_PLUS_TITLES_V1 (after the Monster Cards' render hook)
 #endif
+#ifdef ENABLE_MT2009_WIKI
+	// MT2009_PLUS_WIKI_V1: module renderTarget (after the Monster Cards' and the Titles' render hooks) and module wikipedia
+	{ void Mt2009WikiModel_RegisterPython(); Mt2009WikiModel_RegisterPython(); }
+	{ void Mt2009Wiki_RegisterPython(); Mt2009Wiki_RegisterPython(); }
+#endif
 #ifdef ENABLE_MT2009_REMOTE_CALL
 	{ void Mt2009RemoteCall_RegisterPython(); Mt2009RemoteCall_RegisterPython(); } // MT2009_PLUS_REMOTE_CALL_V1: module remoteCall
 #endif

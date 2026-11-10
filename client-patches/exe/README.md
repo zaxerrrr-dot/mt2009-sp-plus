@@ -18,6 +18,26 @@ Katalog `Server/` **nie** idzie do `Source Client/` (pętla po `*/` musi go pomi
 Każda zmiana ma znacznik w komentarzu i jest za `#ifdef` z `Locale_inc.h`, więc wyłączenie
 definicji przywraca stary exe.
 
+## Encyklopedia (wiki) i podgląd modelu – `MT2009_PLUS_WIKI_V1` (`ENABLE_MT2009_WIKI`), `MT2009_PLUS_TOOLTIP_MODEL_PREVIEW_V1`
+
+Paczka Valiant2 (wiki) i paczka „Render Target 2.0 edit by Volvox” + „RenderTarget_Shining” właściciela, przebudowane na
+naszą ścieżkę render target (ta sama co Karty Potworów, `Mt2009MonsterModel.cpp` – model rysowany w renderze okna).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_WIKI` |
+| `UserInterface/Mt2009Wiki.cpp` (nowy) | moduł `wikipedia`: dane z `locale/common/wiki/*.txt` (paczka `wikiv2`, generowane z tabel serwera – `client-2.0.30/tools/wikiv2`), łańcuchy i kroki ulepszeń, drop z szansą, skrzynie, receptury i NPC, sklepy, wyszukiwarka przedmiotów / potworów, `ItemExists` / `MobExists`; `app.ENABLE_WIKI`. Naprawione błędy Valiant2: flagi sura/szaman, `sCube::resetAllData`, test „+9” w nazwie, „szyfrowane” pliki dropu |
+| `UserInterface/Mt2009WikiModel.cpp` (nowy) | moduł `renderTarget` (nazwy z Render Target 2.0 / Valiant2): `GetFreeIndex`, `SelectModel`, `SetModel(i, rasa, zbroja, broń, fryzura, szarfa, aura)`, `SetArmor/SetWeapon/SetHair/SetAcce/SetAura`, `SetBackground`, `SetVisibility`, `SetRotation`, `Rotate/Zoom/UpDown/ResetView/Motion`, `Destroy`; wiele widoków naraz, każdy z własną teksturą; rasa gracza (0–7) jako TYPE_PC z częściami, reszta jak w Kartach Potworów; efekty przyczepione do modelu (błysk +7.., tabela błysków, efekt szarfy/aury) rysowane z modelem pod jego własnym frustum; bez „wjazdu” alfy |
+| `UserInterface/UserInterface.cpp` | rejestracja obu modułów (po hakach Kart Potworów i Tytułów – łańcuch hooków) |
+| `UserInterface/PythonApplication.cpp` | `Mt2009WikiModel_Destroy` przed `m_kRenderTargetManager.Destroy()` |
+| `EterLib/RenderTargetManager.h/.cpp` | `RENDER_TARGET_INDEX_MT2009_FREE = 1000` (indeksy podglądów), `RemoveRenderTargetTexture` |
+| `EffectLib/EffectManager.h/.cpp` | `Mt2009RenderOne(id)` (RenderOne z paczki Shining) |
+| `GameLib/ActorInstance.h`, `GameLib/ActorInstanceAttach.cpp` | `Mt2009RenderAttachingEffects()` |
+| `UserInterface/UserInterface.vcxproj(.filters)` | dwa nowe pliki |
+
+Stary root bez tych modułów: `uiwiki.py` / `tooltipmodel.py` sprawdzają ich obecność. Zbudowane MSVC (exe-src-wiki → exe-out-wiki,
+10.11.2026), start do ekranu logowania pod Wine OK; okno wiki sprawdzone na ekranie logowania (harness), model 3D wymaga gry.
+
 ## Błyszczenie i żywioł na +10…+15 – `MT2009_PLUS_REFINE_EFFECT_15_V1` (`ENABLE_MT2009_REFINE_EFFECT_15`)
 
 Wężowa broń i zbroje (+0…+15) od +10 nie miały błyszczenia ani efektu żywiołu. `CItemData::GetRefine()` to `vnum % 10`,

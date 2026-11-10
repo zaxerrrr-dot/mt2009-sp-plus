@@ -568,6 +568,15 @@ void CActorInstance::UseAlphaWeaponTrace()
 			);
 }
 
+// MT2009_PLUS_WIKI_V1 (the owner's Render Target Shining package): the effects attached to a preview's model, drawn by
+// its window (UserInterface/Mt2009WikiModel.cpp) - the world's pass never sees a model outside the character manager.
+void CActorInstance::Mt2009RenderAttachingEffects()
+{
+	CEffectManager& rkEftMgr = CEffectManager::Instance();
+	for (std::list<TAttachingEffect>::iterator it = m_AttachingEffectList.begin(); it != m_AttachingEffectList.end(); ++it)
+		rkEftMgr.Mt2009RenderOne(it->dwEffectIndex);
+}
+
 void CActorInstance::UpdateAttachingInstances()
 {
 	CEffectManager& rkEftMgr=CEffectManager::Instance();

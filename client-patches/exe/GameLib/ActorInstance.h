@@ -320,6 +320,7 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		// Attach Effect
 		BOOL GetAttachingBoneName(DWORD dwPartIndex, const char ** c_szBoneName);
 		void UpdateAttachingInstances();
+		void Mt2009RenderAttachingEffects(); // MT2009_PLUS_WIKI_V1: a preview's effects (Render Target Shining)
 		void  DettachEffect(DWORD dwEID);
 		DWORD AttachEffectByName(DWORD dwParentPartIndex, const char * c_pszBoneName, const char * c_pszEffectFileName);
 #ifdef ENABLE_MT2009_SKILL_COLOR
