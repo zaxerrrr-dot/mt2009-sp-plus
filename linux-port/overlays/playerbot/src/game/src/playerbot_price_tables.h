@@ -682,6 +682,7 @@ namespace
 		{ 30525,   600000 },	// Kamien Lodowego Plomienia
 		{ 30550,   120000 },	// Niebieski Rzemyk
 		{ 51001,    30000 },	// Odlamek Energii (MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's 30 000; scaled like the sheet since MT2009_PLUS_SHEET_PRICES_ONLY_V1)
+		{ 51002,  3000000 },	// Krysztal Energii (MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: 30 shards a try at 30 % - 100 shards x 30 000, the expected cost)
 		{ 50701,     3800 },	// Kwiat Brzoskwini
 		{ 50702,     1710 },	// Pokrzywa
 		{ 50703,     1805 },	// Kwiat Kaki

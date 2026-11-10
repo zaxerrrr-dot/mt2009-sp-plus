@@ -72,6 +72,12 @@ namespace
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotBagUnderPressure(LPCHARACTER ch);
 	bool IsPlayerBotSidekickPID(DWORD pid);
+	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1 (playerbot_energy_crystals.h, right after this file): the crystals' shard keep,
+	// the world's shard cap as a flag, the scrap's worth test, the census.
+	int GetPlayerBotEnergyCraftShardKeep(LPCHARACTER ch);
+	int GetPlayerBotEnergyShardMarketUnits();
+	bool IsPlayerBotEnergyScrapWorthIt(LPCHARACTER ch, LPITEM item, bool note);
+	void NotePlayerBotEnergyDismantled(int pieces, int empty, int shards);
 
 	const DWORD PLAYERBOT_ENERGY_SHARD_VNUM = 51001;
 	// The quest's two levels: the player's and the item's.
@@ -82,6 +88,8 @@ namespace
 	// The whole world's bot counters: at most this many shards, on at most this
 	// many counters at once.
 	// 1000 since 8 October (the owner: "Odblokuj również limit odłamków energii do 1000 na sklepach").
+	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the default of the flag m2_bot_energy_shard_market now
+	// (GetPlayerBotEnergyShardMarketUnits).
 	const int PLAYERBOT_ENERGY_SHARD_MARKET_UNITS = 1000;
 	// How long a piece held for the Alchemist may wait for the walk.
 	const DWORD PLAYERBOT_ENERGY_SCRAP_HOLD_MS = 45 * 60 * 1000;
@@ -172,12 +180,18 @@ namespace
 			s_mapPlayerBotEnergyShardKeep[pid] = keep;
 	}
 
-	int GetPlayerBotEnergyShardKeep(LPCHARACTER ch)
+	int GetPlayerBotEnergyBeltShardKeep(LPCHARACTER ch)
 	{
 		if (!ch)
 			return 0;
 		std::map<DWORD, int>::const_iterator it = s_mapPlayerBotEnergyShardKeep.find(ch->GetPlayerID());
 		return it == s_mapPlayerBotEnergyShardKeep.end() ? 0 : it->second;
+	}
+
+	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the belt's keep and the next crystals' (playerbot_energy_crystals.h).
+	int GetPlayerBotEnergyShardKeep(LPCHARACTER ch)
+	{
+		return ch ? GetPlayerBotEnergyBeltShardKeep(ch) + GetPlayerBotEnergyCraftShardKeep(ch) : 0;
 	}
 
 	int CountPlayerBotEnergyShards(LPCHARACTER ch)
@@ -277,7 +291,7 @@ namespace
 		int units = 0;
 		std::set<DWORD> shops;
 		GetPlayerBotEnergyShardMarket(now, units, shops);
-		return std::max(0, PLAYERBOT_ENERGY_SHARD_MARKET_UNITS - units) / PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
+		return std::max(0, GetPlayerBotEnergyShardMarketUnits() - units) / PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
 	}
 
 	// The packs of ten this bot puts up now: its spare in whole packs, as far
@@ -305,7 +319,7 @@ namespace
 		int units = 0;
 		std::set<DWORD> shops;
 		GetPlayerBotEnergyShardMarket(now, units, shops);
-		if (units > PLAYERBOT_ENERGY_SHARD_MARKET_UNITS)
+		if (units > GetPlayerBotEnergyShardMarketUnits())
 		{
 			if (why) *why = "energy_shard_units";
 			return true;
@@ -354,7 +368,7 @@ namespace
 
 	// A piece of this bot's that the merchant would buy and the Alchemist
 	// takes: junk by every rule there is, and nothing the operator named.
-	bool IsPlayerBotEnergyScrap(LPCHARACTER ch, LPITEM item)
+	bool IsPlayerBotEnergyScrap(LPCHARACTER ch, LPITEM item, bool note = false)
 	{
 		if (!ch || !item || (int)ch->GetLevel() < PLAYERBOT_ENERGY_MIN_LEVEL || item->IsEquipped() ||
 				item->isLocked() || !IsPlayerBotEnergyScrapPiece(item))
@@ -363,7 +377,16 @@ namespace
 			return false;
 		if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
 			return false;
-		return IsPlayerBotJunkItem(ch, item);
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: nor a set piece (the Shaman's buff set, a stored element set).
+		if (IsPlayerBotBuffSetPiece(ch, item))
+			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return false;
+#endif
+		// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: and only junk whose expected shards are worth more than the merchant's
+		// yang for it (IsPlayerBotEnergyScrapWorthIt) - asked last, it prices the piece.
+		return IsPlayerBotJunkItem(ch, item) && IsPlayerBotEnergyScrapWorthIt(ch, item, note);
 	}
 
 	// Since when this bot holds scrap for the Alchemist (the first piece held).
@@ -379,7 +402,7 @@ namespace
 	// bag for the Alchemist instead.
 	bool ShouldPlayerBotKeepScrapForAlchemist(LPCHARACTER ch, LPITEM item, DWORD now)
 	{
-		if (!IsPlayerBotEnergyScrap(ch, item))
+		if (!IsPlayerBotEnergyScrap(ch, item, true))	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census counts the worth test here
 			return false;
 		playerbot_empire_rules::TPoint alchemist;
 		if (!playerbot_empire_rules::GetAlchemist(ch->GetMapIndex(), alchemist))
@@ -482,6 +505,7 @@ namespace
 			ch->AutoGiveItem(PLAYERBOT_ENERGY_SHARD_VNUM, chunk, -1, false);
 			left -= chunk;
 		}
+		NotePlayerBotEnergyDismantled((int)scrap.size(), empty, shards);	// MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census
 		sys_log(0, "PLAYERBOT_ENERGY: at the Alchemist pid=%u name=%s pieces=%u shards=%d nothing=%d held_shards=%d",
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)scrap.size(), shards, empty,
 				CountPlayerBotEnergyShards(ch));

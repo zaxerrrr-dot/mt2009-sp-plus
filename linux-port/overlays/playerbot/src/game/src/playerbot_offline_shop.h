@@ -1162,6 +1162,7 @@ namespace {
             // The line's row: sold, for what (playerbot_explain.h).
             QueuePlayerBotListingEvent(line.item, ch->GetPlayerID(), vnum, line.count, per::EVENT_SOLD,
                 line.price, 0, "", 0, line.price, slip ? per::LFLAG_SLIP : 0);
+            NotePlayerBotEnergyLineSold(vnum, (int)line.count, line.price);   // MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census
             // Every sale with how long its line stood, which is what the work on
             // unsold stock has to be measured by. -1 for a line this core never
             // saw go up: a restart inherited it, and its age is not known.
@@ -4084,6 +4085,7 @@ namespace {
                     NotePlayerBotCappedLineOnCounter(addVnum, (int)addCount);
                     if (IsPlayerBotEnergyShardVnum(addVnum))   // MT2009_PLUS_BOT_ENERGY_SHARDS_V1
                         NotePlayerBotEnergyShardLine(ch->GetPlayerID(), (int)addCount, now);
+                    NotePlayerBotEnergyLineListed(addVnum, (int)addCount);   // MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
                     NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, addVnum, (int)addCount);
 #ifdef MT2009_PLUS_BOT_SKILL_INSTR_V1
