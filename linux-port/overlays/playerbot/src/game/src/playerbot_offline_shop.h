@@ -311,7 +311,8 @@ namespace {
         }
         if (r.done) {
             if (r.success && r.op == playerbot_offline::Buy && r.count && r.unitPrice) {
-                RememberPlayerBotSale(r.vnum, r.refine, r.unitPrice, now, r.skill);
+                // MT2009_PLUS_BOT_LADA_FIX_V1: a crashed line bought is no price signal under the market floor
+                RememberPlayerBotSale(r.vnum, r.refine, PlayerBotSaleSignalUnit(r.vnum, r.refine, r.unitPrice, now), now, r.skill);
                 // A book of its own skill is read at once: the book pass
                 // looks again on this tick rather than on its clock.
                 if (r.skill) {
@@ -3002,15 +3003,15 @@ namespace {
         out.price = std::max(asking, repriceFloor);
         out.floor = repriceFloor;
         // MT2009_PLUS_BOT_LADA_V1 (tiers, playerbot_market_clearing.h): a line of a glutted kind's cheap tail asks
-        // min(ordinary, the clearing ask) less its tier - 5 % the cheapest tenth, 3 % the next - never under what the
-        // merchant pays; the floor yields to it as it yielded to the clearing ask. The rest of the kind asks as above.
+        // its ordinary price less its tier - 5 % the cheapest tenth, 3 % the next - never under what the merchant pays;
+        // the floor yields to it. The rest of the kind asks as above. MT2009_PLUS_BOT_LADA_FIX_V1: the ordinary price is
+        // what this line asks without the glut (out.price), never the clearing ask.
         {
             const int tier = operatorPriced || preview->GetRefineLevel() > 0 ? 0 : GetPlayerBotLadaTierPermille(id);
             if (tier > 0 && tier < 1000) {
-                // never dearer than the ordinary ask (a cheap kind under the merchant's floor keeps its own); the
-                // clearing ask is the one every core shares (MT2009_PLUS_BOT_LADA_TIER_XCH_V1)
+                // never dearer than the ordinary ask (a cheap kind under the merchant's floor keeps its own)
                 const long long tierPrice = GetPlayerBotLadaTierPrice(preview->GetVnum(), (long long)preview->GetCount(),
-                        asking, tier);
+                        out.price, tier);
                 out.price = tierPrice;
                 out.floor = std::min(out.floor, tierPrice);
                 ++s_uPlayerBotLadaTierPriced;

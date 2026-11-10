@@ -129,8 +129,8 @@ namespace
 
 	struct TPlayerBotClearCounters
 	{
-		unsigned int started, stepped, held, relaxed, released, capped;
-		TPlayerBotClearCounters() : started(0), stepped(0), held(0), relaxed(0), released(0), capped(0) {}
+		unsigned int started, stepped, held, relaxed, released, capped, floored;
+		TPlayerBotClearCounters() : started(0), stepped(0), held(0), relaxed(0), released(0), capped(0), floored(0) {}
 	};
 	TPlayerBotClearCounters s_kPlayerBotClearCounters;
 
@@ -154,7 +154,45 @@ namespace
 			a.minUnit = unit;
 	}
 
-	DWORD GetPlayerBotClearingFloorUnit(DWORD vnum)
+	// MT2009_PLUS_BOT_LADA_FIX_V1 (the owner, 10 November 2026: "Ceny przedmiotow spadaja baaaaardzo mocno pod wplywem
+	// duzej ilosci przedmiotow... a to mialo dzialac tak, ze przecena jest o 10%, o 5% od najtanszych przedmiotow, a nie ze
+	// wartosc 10 i 5%"). Measured on vps3 the same day: Zwoj Blogoslawienstwa (25040, the ordinary ~1.17 M a piece)
+	// started clearing at 121 972 - the start ask is capped at 5 % of the median buyer wallet (2 439 451), a tenth of the
+	// counters' own mean of 923 468 - and stepped 10 % every 30 minutes to 12 007 (22 steps); the tiers asked
+	// min(ordinary, clearing ask) x 950, so the cheapest tenth of its lines asked 11 406 - 1 % of the ordinary. 99 of the
+	// 102 glutted kinds had a clearing ask under 90 % of their median line (11 % on average), 2 964 lines and 87 084 units
+	// stood at or under it. So:
+	//   * the tiers are relative to the line's ordinary price and nothing else (GetPlayerBotLadaTierPrice);
+	//   * the clearing ask itself never goes under m2_bot_market_floor_pct (90) percent of the kind's normal price
+	//     (GetPlayerBotMarketNormalUnit: the ordinary ask's anchor - what the sheet, index and sale memory ask before any
+	//     clearing - or, with none on this core, the 60th percentile of the units on the shop channel's stands), start
+	//     and steps alike; it still detects the glut, which is what puts a kind into the tiers;
+	//   * a bot's purchase under that floor teaches the sale memory no price under it (PlayerBotSaleSignalUnit), so the
+	//     crashed lines bought up do not drag the ordinary price after them;
+	//   * the lines already crashed come back (playerbot_lada.h, the repair sweep of the tier pass).
+	int s_iPlayerBotMarketFloorPct = 90;	// m2_bot_market_floor_pct (50..100), refreshed each second by GetPlayerBotLadaCfg
+	std::unordered_map<DWORD, DWORD> s_mapPlayerBotMarketNormalRef;	// vnum -> 60th percentile unit (the tier pass)
+	unsigned int s_uPlayerBotSaleSignalClamped = 0;	// purchases remembered at the floor, not at their price (census)
+
+	// The normal price of a unit of a kind, 0 when unknown.
+	DWORD GetPlayerBotMarketNormalUnit(DWORD vnum, DWORD dwNow)
+	{
+		const DWORD ask = GetPlayerBotLastAsk(vnum, 0, dwNow);
+		if (ask > 0)
+			return ask;
+		std::unordered_map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotMarketNormalRef.find(vnum);
+		return it == s_mapPlayerBotMarketNormalRef.end() ? 0 : it->second;
+	}
+
+	// The lowest a bot's clearing ask may go: m2_bot_market_floor_pct of the normal unit price.
+	DWORD GetPlayerBotMarketFloorUnit(DWORD vnum, DWORD dwNow)
+	{
+		const DWORD normal = GetPlayerBotMarketNormalUnit(vnum, dwNow);
+		return normal == 0 ? 0 : (DWORD)std::max<unsigned long long>(1ULL,
+				(unsigned long long)normal * (unsigned long long)s_iPlayerBotMarketFloorPct / 100ULL);
+	}
+
+	DWORD GetPlayerBotClearingMerchantUnit(DWORD vnum)
 	{
 		// What the merchant pays for one (the engine's sell arithmetic, GetPlayerBotNpcSellUnitPrice): a floor, never an
 		// anchor - nobody sells to a counter for less than the merchant gives.
@@ -166,6 +204,26 @@ namespace
 				npc -= npc * 3 / 100;
 			}
 		return std::max(GetPlayerBotClearingConfig().minUnit, npc);
+	}
+
+	// The clearing ask's floor: the merchant's price, and m2_bot_market_floor_pct of the normal price
+	// (MT2009_PLUS_BOT_LADA_FIX_V1).
+	DWORD GetPlayerBotClearingFloorUnit(DWORD vnum)
+	{
+		return std::max(GetPlayerBotClearingMerchantUnit(vnum), GetPlayerBotMarketFloorUnit(vnum, get_dword_time()));
+	}
+
+	// MT2009_PLUS_BOT_LADA_FIX_V1: what a bot's purchase of a unit at `unitPrice` teaches the sale memory - a clearing
+	// good bought under the floor (a line crashed before the fix, or one a person put up cheap) is remembered at the floor.
+	DWORD PlayerBotSaleSignalUnit(DWORD vnum, BYTE refine, DWORD unitPrice, DWORD dwNow)
+	{
+		if (refine != 0 || unitPrice == 0 || !IsPlayerBotClearingGoods(vnum))
+			return unitPrice;
+		const DWORD floor = GetPlayerBotMarketFloorUnit(vnum, dwNow);
+		if (floor <= unitPrice)
+			return unitPrice;
+		++s_uPlayerBotSaleSignalClamped;
+		return floor;
 	}
 
 	// The clearing ask of a kind per unit, or 0 when the kind is not being cleared.
@@ -184,9 +242,10 @@ namespace
 	// relaxing as the stock falls, stay; they price only the cheap tail of the kind's listings - the line ids of
 	// s_mapPlayerBotLadaTier (950 permille: the cheapest 10% of the kind's units on the stands, 970: the next 10%; ranked
 	// by the unit price, every stand of the shop channel, a person's lines counted, only bots' edited), which the lada's
-	// tier pass recomputes every few minutes. A tier line asks min(ordinary, clearing ask) x its permille, never under
-	// what the merchant pays (BotOfflineRepriceTarget); every other line asks what it would without the glut. When the
-	// cheap lines sell, the next ones are the tail and the stock that is left asks the ordinary price.
+	// tier pass recomputes every few minutes. A tier line asks its ordinary price x its permille - 5 % or 3 % off, never
+	// the clearing ask (MT2009_PLUS_BOT_LADA_FIX_V1) - never under what the merchant pays (BotOfflineRepriceTarget); every
+	// other line asks what it would without the glut. When the cheap lines sell, the next ones are the tail and the stock
+	// that is left asks the ordinary price.
 	bool s_bPlayerBotLadaTiers = false;			// refreshed each second by ManagePlayerBotLadaCore
 	bool s_bPlayerBotLadaScan = false;			// the lada's bag scan: no "plenty" hold-back (ScorePlayerBotShopStock)
 	std::unordered_map<DWORD, WORD> s_mapPlayerBotLadaTier;	// line id -> permille (950 / 970)
@@ -216,18 +275,17 @@ namespace
 		return it == s_mapPlayerBotLadaTierClear.end() ? 0 : it->second;
 	}
 
-	// A tier's price of a line of `count` units that asks `asking` in all: min(ordinary, the clearing ask) x its
-	// permille, never under what the merchant pays, never over the ordinary ask (BotOfflineRepriceTarget and the lada's
-	// new line alike).
+	// A tier's price of a line of `count` units whose ordinary price is `asking` in all: the ordinary x its permille
+	// (950: 5 % off, 970: 3 % off), never under what the merchant pays, never over the ordinary ask
+	// (BotOfflineRepriceTarget and the lada's new line alike). MT2009_PLUS_BOT_LADA_FIX_V1: the clearing ask takes no part
+	// - min(ordinary, clearing ask) x 950 was what asked 11 406 for a scroll of 1.17 M.
 	long long GetPlayerBotLadaTierPrice(DWORD vnum, long long count, long long asking, int tier)
 	{
 		count = std::max<long long>(1, count);
-		long long anchor = asking;
-		const DWORD clearUnit = GetPlayerBotLadaTierClearUnit(vnum);
-		if (clearUnit > 0)
-			anchor = std::min(anchor, (long long)clearUnit * count);
-		const long long merchant = (long long)GetPlayerBotClearingFloorUnit(vnum) * count;
-		return std::min(std::max(1LL, asking), std::max(std::max(1LL, merchant), anchor * tier / 1000));
+		asking = std::max(1LL, asking);
+		tier = std::max(900, std::min(1000, tier));
+		const long long merchant = (long long)GetPlayerBotClearingMerchantUnit(vnum) * count;
+		return std::min(asking, std::max(merchant, asking * tier / 1000));
 	}
 
 	// The ranking's curve of a glutted kind (built by the tier pass): the unit prices (milli-yang) of its lines in order
@@ -390,7 +448,15 @@ namespace
 					if (walletCap > 0 && (start == 0 || walletCap < start))
 						start = walletCap;
 					const DWORD floor = GetPlayerBotClearingFloorUnit(vnum);
-					if (start > floor)
+					// MT2009_PLUS_BOT_LADA_FIX_V1: the wallet's cap (5 % of the median wallet) started 25040 at a tenth of
+					// its counters' mean; the start is held at the floor (m2_bot_market_floor_pct of the normal price).
+					const bool normalKnown = GetPlayerBotMarketNormalUnit(vnum, dwNow) > 0;
+					if (normalKnown && start > 0 && start < floor)
+					{
+						start = floor;
+						++s_kPlayerBotClearCounters.floored;
+					}
+					if (start > floor || (normalKnown && start == floor && mean > 0))
 					{
 						k.clearUnit = k.startUnit = start;
 						k.stepAt = dwNow;
@@ -407,6 +473,14 @@ namespace
 				++it;
 				continue;
 			}
+			// MT2009_PLUS_BOT_LADA_FIX_V1: an ask under the floor (stepped there before the fix, or the normal price came
+			// up) comes up to it at once, not at the next step.
+			const DWORD floor = GetPlayerBotClearingFloorUnit(vnum);
+			if (k.clearUnit < floor)
+			{
+				k.clearUnit = floor;
+				++s_kPlayerBotClearCounters.floored;
+			}
 			if (dwNow - k.stepAt < c.stepMs)
 			{
 				++it;
@@ -417,7 +491,6 @@ namespace
 			const unsigned long long base = std::max<DWORD>(1, std::max(supply, k.supplyAtStep));
 			const bool disappearing = (unsigned long long)k.soldSinceStep * 1000ULL >= base * c.sellPermille ||
 					(unsigned long long)fell * 1000ULL >= base * c.sellPermille;
-			const DWORD floor = GetPlayerBotClearingFloorUnit(vnum);
 			if (released)
 			{
 				k.clearUnit = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
@@ -438,7 +511,10 @@ namespace
 			}
 			else if (overstock && !disappearing && k.clearUnit > floor)
 			{
-				k.clearUnit = std::max<DWORD>(floor, (DWORD)((unsigned long long)k.clearUnit * (100ULL - c.stepPct) / 100ULL));
+				const DWORD stepped = (DWORD)((unsigned long long)k.clearUnit * (100ULL - c.stepPct) / 100ULL);
+				if (stepped < floor)
+					++s_kPlayerBotClearCounters.floored;
+				k.clearUnit = std::max<DWORD>(floor, stepped);
 				++k.steps;
 				++s_kPlayerBotClearCounters.stepped;
 				PlayerBotLogThrottled("market_clear_step", dwNow,
@@ -479,10 +555,11 @@ namespace
 					k.startUnit, k.steps, mean, a != s_mapPlayerBotClearAsks.end() ? a->second.minUnit : 0U);
 			top += buf;
 		}
-		sys_log(0, "PLAYERBOT_MARKET_CLEAR: census watched=%u active=%u started=%u stepped=%u held=%u relaxed=%u released=%u capped_prices=%u wallet=%u top:%s",
+		sys_log(0, "PLAYERBOT_MARKET_CLEAR: census watched=%u active=%u started=%u stepped=%u held=%u relaxed=%u released=%u capped_prices=%u floor_hits=%u floor_pct=%d wallet=%u top:%s",
 				(unsigned int)s_mapPlayerBotClear.size(), active, s_kPlayerBotClearCounters.started,
 				s_kPlayerBotClearCounters.stepped, s_kPlayerBotClearCounters.held, s_kPlayerBotClearCounters.relaxed,
-				s_kPlayerBotClearCounters.released, s_kPlayerBotClearCounters.capped, wallet, top.c_str());
+				s_kPlayerBotClearCounters.released, s_kPlayerBotClearCounters.capped, s_kPlayerBotClearCounters.floored,
+				s_iPlayerBotMarketFloorPct, wallet, top.c_str());
 		s_kPlayerBotClearCounters = TPlayerBotClearCounters();
 	}
 }

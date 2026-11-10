@@ -111,9 +111,10 @@ namespace
 	struct TPlayerBotLadaCfg
 	{
 		bool on, tiers, xch, junk, box;
-		int intervalMin, cap, worldCap, rate, passOps, boxStacks, boxRate, boxGapMin;
+		int intervalMin, cap, worldCap, rate, passOps, boxStacks, boxRate, boxGapMin, floorPct;
 		TPlayerBotLadaCfg() : on(true), tiers(true), xch(true), junk(false), box(true), intervalMin(30), cap(0),
-				worldCap(PLAYERBOT_LADA_WORLD_CAP_DEFAULT), rate(6), passOps(24), boxStacks(12), boxRate(120), boxGapMin(30) {}
+				worldCap(PLAYERBOT_LADA_WORLD_CAP_DEFAULT), rate(6), passOps(24), boxStacks(12), boxRate(120), boxGapMin(30),
+				floorPct(90) {}
 	};
 	TPlayerBotLadaCfg s_kPlayerBotLadaCfg;
 
@@ -144,14 +145,18 @@ namespace
 			c.boxStacks = value("m2_bot_lada_box_stacks", 12, 1, 90);		// MT2009_PLUS_BOT_LADA_BOX_V1: stacks a visit
 			c.boxRate = value("m2_bot_lada_box_rate", 120, 1, 2000);		// stacks a minute, a core
 			c.boxGapMin = value("m2_bot_lada_box_gap_min", 30, 5, 720);	// a bot's visits for it
+			// MT2009_PLUS_BOT_LADA_FIX_V1: the clearing ask never under this percent of the normal price (50..100)
+			c.floorPct = value("m2_bot_market_floor_pct", 90, 50, 100);
+			s_iPlayerBotMarketFloorPct = c.floorPct;
 			s_bPlayerBotLadaTiers = c.tiers;
 			if (was.on != c.on || was.tiers != c.tiers || was.xch != c.xch || was.junk != c.junk || was.intervalMin != c.intervalMin ||
 					was.cap != c.cap || was.worldCap != c.worldCap || was.rate != c.rate || was.passOps != c.passOps ||
-					was.box != c.box || was.boxStacks != c.boxStacks || was.boxRate != c.boxRate || was.boxGapMin != c.boxGapMin)
+					was.box != c.box || was.boxStacks != c.boxStacks || was.boxRate != c.boxRate || was.boxGapMin != c.boxGapMin ||
+					was.floorPct != c.floorPct)
 				sys_log(0, "PLAYERBOT_LADA: config on=%d tiers=%d cross_channel=%d junk=%d interval_min=%d cap=%d (0: none) world_cap=%d rate=%d "
-						"pass_ops=%d box=%d box_stacks=%d box_rate=%d box_gap_min=%d",
+						"pass_ops=%d box=%d box_stacks=%d box_rate=%d box_gap_min=%d market_floor_pct=%d",
 						c.on ? 1 : 0, c.tiers ? 1 : 0, c.xch ? 1 : 0, c.junk ? 1 : 0, c.intervalMin, c.cap, c.worldCap, c.rate,
-						c.passOps, c.box ? 1 : 0, c.boxStacks, c.boxRate, c.boxGapMin);
+						c.passOps, c.box ? 1 : 0, c.boxStacks, c.boxRate, c.boxGapMin, c.floorPct);
 		}
 		return s_kPlayerBotLadaCfg;
 	}
@@ -249,6 +254,10 @@ namespace
 		// MT2009_PLUS_BOT_LADA_BOX_V1: the safebox's goods for the lada
 		unsigned int boxVisits = 0, boxTaken = 0, boxKept = 0, boxRoom = 0, boxRate = 0, boxLeft = 0, boxDepositHeld = 0;
 		unsigned long long boxUnits = 0;
+		// MT2009_PLUS_BOT_LADA_FIX_V1: the repair of the crashed lines (queued, looked at, edited up, the yang they came
+		// up by) and, at the last tier pass, the bot lines of a clearing good still under the floor
+		unsigned int repairQueued = 0, repairLooked = 0, repairEdited = 0, crashedLines = 0, normalKinds = 0;
+		unsigned long long repairYang = 0, crashedUnits = 0;
 	};
 	TPlayerBotLadaCensus s_kPlayerBotLadaCensus;
 
@@ -997,7 +1006,12 @@ namespace
 	struct TPlayerBotLadaTierEdit
 	{
 		DWORD owner, item;
+		bool repair;	// MT2009_PLUS_BOT_LADA_FIX_V1: a line under the market floor, not a tier line
 	};
+	// MT2009_PLUS_BOT_LADA_FIX_V1: the repair sweep - at most this many lines a tier pass, a line looked at once an hour
+	const unsigned int PLAYERBOT_LADA_REPAIR_PER_PASS = 3000;
+	const DWORD PLAYERBOT_LADA_REPAIR_AGAIN_MS = 60 * 60 * 1000;
+	std::unordered_map<DWORD, DWORD> s_mapPlayerBotLadaRepairSeen;	// line id -> when the sweep queued it
 	std::deque<TPlayerBotLadaTierEdit> s_dequePlayerBotLadaTierEdits;
 	std::unordered_map<DWORD, DWORD> s_mapPlayerBotLadaTierOwner;	// tier line -> its owner (the edit back after it)
 
@@ -1182,6 +1196,100 @@ namespace
 		s_mapPlayerBotLadaTierClear.swap(glut);
 	}
 
+	// MT2009_PLUS_BOT_LADA_FIX_V1: the normal price of every clearing good (s_mapPlayerBotMarketNormalRef: the 60th
+	// percentile of its units on the shop channel's stands - the median of what stands above the tiers' fifth) and the
+	// repair of the bot lines the old tiers crashed: a bot line of a clearing good on a stand this core hosts, not in a
+	// tier now, asking under m2_bot_market_floor_pct of its kind's normal price, is queued for the tier edits, which
+	// price it by BotOfflineRepriceTarget (its ordinary price; the tier's 5 / 3 % off once it ranks into one) - its own
+	// owner's line only, the host core's edit as every tier edit. The census counts what is still under the floor.
+	void RepairPlayerBotLadaCrashedLines(DWORD now, const std::unordered_map<DWORD, WORD>& tiers)
+	{
+		TPlayerBotLadaCensus& k = s_kPlayerBotLadaCensus;
+		struct TUnits { unsigned long long unitMilli; DWORD count; };
+		std::unordered_map<DWORD, bool> goods;
+		std::unordered_map<DWORD, std::vector<TUnits> > byKind;
+		auto isGoods = [&goods](DWORD vnum) {
+			auto it = goods.find(vnum);
+			if (it == goods.end())
+				it = goods.emplace(vnum, IsPlayerBotClearingGoods(vnum)).first;
+			return it->second;
+		};
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			if (!shop || shop->GetDuration() == 0 || (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL)
+				continue;
+			for (const auto& [id, line] : shop->GetItems())
+			{
+				if (!line || line->GetInfo().count == 0 || !isGoods(line->GetInfo().vnum))
+					continue;
+				const long long yang = (long long)line->GetPrice().GetTotalYangAmount();
+				if (yang > 0)
+					byKind[line->GetInfo().vnum].push_back(TUnits{ (unsigned long long)yang * 1000ULL / line->GetInfo().count,
+							(DWORD)line->GetInfo().count });
+			}
+		}
+		std::unordered_map<DWORD, DWORD> refs;
+		for (auto& [vnum, lines] : byKind)
+		{
+			std::sort(lines.begin(), lines.end(), [](const TUnits& a, const TUnits& b) { return a.unitMilli < b.unitMilli; });
+			unsigned long long units = 0;
+			for (const TUnits& l : lines)
+				units += l.count;
+			const unsigned long long at = units * 6ULL / 10ULL;
+			unsigned long long before = 0;
+			for (const TUnits& l : lines)
+			{
+				before += l.count;
+				if (before > at)
+				{
+					refs[vnum] = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, std::max<unsigned long long>(1ULL, l.unitMilli / 1000ULL));
+					break;
+				}
+			}
+		}
+		s_mapPlayerBotMarketNormalRef.swap(refs);
+		k.normalKinds = (unsigned int)s_mapPlayerBotMarketNormalRef.size();
+
+		// the sweep's memory: what it queued in the last hour is not queued again
+		for (auto it = s_mapPlayerBotLadaRepairSeen.begin(); it != s_mapPlayerBotLadaRepairSeen.end(); )
+			if (now - it->second >= PLAYERBOT_LADA_REPAIR_AGAIN_MS)
+				it = s_mapPlayerBotLadaRepairSeen.erase(it);
+			else
+				++it;
+		CPlayerBotManager& bots = CPlayerBotManager::instance();
+		unsigned int crashed = 0, queued = 0;
+		unsigned long long crashedUnits = 0;
+		for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			if (!shop || shop->GetDuration() == 0 || (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL)
+				continue;
+			const DWORD owner = shop->GetOwnerPID();
+			if (!bots.IsRegisteredBotPID(owner) || IsPlayerBotSidekickPID(owner))
+				continue;
+			const bool hosted = (int)shop->GetSpawn().channel == (int)g_bChannel && IsPlayerBotMapHostedHere(shop->GetSpawn().map);
+			for (const auto& [id, line] : shop->GetItems())
+			{
+				if (!line || line->GetInfo().count == 0 || !isGoods(line->GetInfo().vnum))
+					continue;
+				const unsigned long long floor = GetPlayerBotMarketFloorUnit(line->GetInfo().vnum, now);
+				const long long yang = (long long)line->GetPrice().GetTotalYangAmount();
+				if (floor == 0 || yang <= 0 || (unsigned long long)yang >= floor * (unsigned long long)line->GetInfo().count)
+					continue;
+				++crashed;
+				crashedUnits += line->GetInfo().count;
+				if (!hosted || tiers.count(id) || queued >= PLAYERBOT_LADA_REPAIR_PER_PASS ||
+						s_mapPlayerBotLadaRepairSeen.count(id))
+					continue;
+				s_mapPlayerBotLadaRepairSeen[id] = now ? now : 1;
+				s_dequePlayerBotLadaTierEdits.push_back(TPlayerBotLadaTierEdit{ owner, id, true });
+				++queued;
+			}
+		}
+		k.crashedLines = crashed;
+		k.crashedUnits = crashedUnits;
+		k.repairQueued += queued;
+	}
+
 	// The glut's tiers (playerbot_market_clearing.h): every core of every channel ranks the shop channel's stands' lines
 	// of the shared glutted kinds every PLAYERBOT_LADA_TIER_RANK_MS (the same lines, the same input: the same tiers
 	// everywhere), and every PLAYERBOT_LADA_TIER_MS queues the edits of the stands this core hosts.
@@ -1258,7 +1366,7 @@ namespace
 				auto shop = ikashop::GetManager().GetShopByOwnerID(owner);
 				if (!shop || (int)shop->GetSpawn().channel != (int)g_bChannel || !IsPlayerBotMapHostedHere(shop->GetSpawn().map))
 					return;
-				s_dequePlayerBotLadaTierEdits.push_back(TPlayerBotLadaTierEdit{ owner, id });
+				s_dequePlayerBotLadaTierEdits.push_back(TPlayerBotLadaTierEdit{ owner, id, false });
 			};
 			s_dequePlayerBotLadaTierEdits.clear();
 			for (const auto& [id, owner] : owners)
@@ -1268,6 +1376,7 @@ namespace
 					queue(id, owner);
 			s_mapPlayerBotLadaTierOwner.swap(owners);
 			++k.tierPasses;
+			RepairPlayerBotLadaCrashedLines(now, tiers);
 		}
 		s_mapPlayerBotLadaTier.swap(tiers);
 		s_mapPlayerBotLadaTierCurve.swap(curves);
@@ -1290,6 +1399,8 @@ namespace
 			if (!preview)
 				continue;
 			++k.tierLooked;
+			if (e.repair)
+				++k.repairLooked;
 			TPlayerBotPricingKeeper pricing(e.owner);
 			TPlayerBotPriceTraceScope priceTrace;
 			std::map<uint32_t, playerbot_offline::ListedLine> scratch;
@@ -1308,6 +1419,14 @@ namespace
 			manager.SendShopEditItemDBPacket(e.owner, e.item, price);
 			QueuePlayerBotListingEvent(e.item, e.owner, vnum, count, per::EVENT_REPRICE, target.price, asked, "", 0, 0, 0);
 			++k.tierEdits;
+			if (e.repair && target.price > asked)
+			{
+				++k.repairEdited;
+				k.repairYang += (unsigned long long)(target.price - asked);
+				PlayerBotLogThrottled("lada_repair", now,
+						"PLAYERBOT_LADA: repair owner=%u item=%u vnum=%u count=%lld asked=%lld price=%lld normal_unit=%u",
+						e.owner, e.item, vnum, count, asked, (long long)target.price, GetPlayerBotMarketNormalUnit(vnum, now));
+			}
 			++n;
 		}
 	}
@@ -1347,6 +1466,11 @@ namespace
 				s_kPlayerBotLadaTierShared.writerPort, s_kPlayerBotLadaTierShared.kinds, k.tierPublished, k.tierRead,
 				k.tierReadFailed, s_uPlayerBotLadaNewLooked, k.newTier, k.newTierCh2, k.boxVisits, k.boxTaken, k.boxUnits,
 				k.boxKept, k.boxRoom, k.boxRate, k.boxLeft, k.boxDepositHeld);
+		// MT2009_PLUS_BOT_LADA_FIX_V1: the market floor and the repair of the crashed lines
+		sys_log(0, "PLAYERBOT_LADA: census3 ch=%u market_floor_pct=%d normal_kinds=%u crashed_lines=%u crashed_units=%llu "
+				"repair_queued=%u repair_looked=%u repair_edited=%u repair_yang=%llu sales_clamped=%u",
+				(unsigned int)g_bChannel, c.floorPct, k.normalKinds, k.crashedLines, k.crashedUnits, k.repairQueued,
+				k.repairLooked, k.repairEdited, k.repairYang, s_uPlayerBotSaleSignalClamped);
 		// The kinds of the most bot lines: lines, units, bots, the lada's lines of them, the tier lines.
 		struct TKind { unsigned int lines = 0, lada = 0, owners = 0, tiered = 0; unsigned long long units = 0; DWORD lastOwner = 0; };
 		std::map<DWORD, TKind> kinds;
@@ -1389,6 +1513,7 @@ namespace
 		s_uPlayerBotLadaTierPriced = 0;
 		s_uPlayerBotLadaRemoteRefused = 0;
 		s_uPlayerBotLadaNewLooked = 0;
+		s_uPlayerBotSaleSignalClamped = 0;
 		ikashop_lada_view::maxSent = ikashop_lada_view::maxHeld = 0;
 		ikashop_lada_view::views = ikashop_lada_view::hidden = ikashop_lada_view::refreshSkipped = 0;
 		(void)now;
