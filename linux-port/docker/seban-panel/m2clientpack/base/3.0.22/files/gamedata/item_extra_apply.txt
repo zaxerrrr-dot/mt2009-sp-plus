@@ -1,0 +1,14 @@
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: dodatkowe bonusy przedmiotow (ponad 3 z item_proto),
+# z edytora bazy danych panelu Seban. vnum<TAB>typ bonusu (POINT_*, jak applytype)<TAB>wartosc
+39119	178	10
+39119	179	10
+39119	180	10
+39119	181	10
+39119	182	10
+39119	183	10
+39120	76	10
+39120	75	10
+39120	133	10
+39120	78	10
+39120	134	10
+39120	135	10
