@@ -1703,6 +1703,19 @@ def NajemnikIdleText(model):
 	return IdleText(model)
 
 
+def _NajemnikFlatButton(window, parent, size, x, y, text, event, *args):
+	"""MT2009_PLUS_NAJEMNICY_V5: the mercenary's windows' buttons in the look of "Sesja farmienia" and the
+	collector's Najemnicy tab (uifarmsession's flat buttons) - the companion's windows keep their image buttons."""
+	import uifarmsession
+	width = uisidekick.BUTTON_WIDTHS.get(size, 61)
+	button = uifarmsession._FlatButton(width, 20, text, uifarmsession.STYLE_BUTTON, ui.__mem_func__(event), *args)
+	button.SetParent(parent)
+	button.SetPosition(x, y)
+	button.Show()
+	window.widgets.append(button)
+	return button
+
+
 class NajemnikEquipmentWindow(EquipmentWindow):
 	"""A player's mercenary's bag and worn gear: the companion's bag window
 	with "Kostiumy" where its "Odepnij" stood, no "Daj" for yang (the
@@ -1711,6 +1724,9 @@ class NajemnikEquipmentWindow(EquipmentWindow):
 	HEIGHT = 614
 	TITLE = TEXT_NAJ_EQ_TITLE
 	KEY = 'najEqWindow'
+
+	def _Btn(self, parent, size, x, y, text, event, *args):
+		return _NajemnikFlatButton(self, parent, size, x, y, text, event, *args)
 
 	def Build(self):
 		EquipmentWindow.Build(self)
@@ -1722,6 +1738,10 @@ class NajemnikEquipmentWindow(EquipmentWindow):
 	def BuildExtraRow(self, y):
 		width = uisidekick.BUTTON_WIDTHS.get('xlarge', 180)
 		self.takeAllButton = self._Btn(self, 'xlarge', (self.WIDTH - width) // 2, y, TEXT_NAJ_TAKE_ALL, self.OnTakeAll)
+		# MT2009_PLUS_NAJEMNICY_V5: the answer lines on a dark framed strip (uifarmsession's box)
+		import uifarmsession
+		frame = uifarmsession._MakeFrame(self, 8, y + 22, self.WIDTH - 16, STATUS_LINES * STATUS_LINE_HEIGHT + 6)
+		self.widgets.append(frame)
 		return y + 24
 
 	def OnCostumes(self):
@@ -1751,6 +1771,9 @@ class NajemnikCostumeWindow(CostumeWindow):
 
 	TITLE = TEXT_NAJ_COSTUME_TITLE
 	KEY = 'najCostumeWindow'
+
+	def _Btn(self, parent, size, x, y, text, event, *args):
+		return _NajemnikFlatButton(self, parent, size, x, y, text, event, *args)
 
 	def Build(self):
 		CostumeWindow.Build(self)

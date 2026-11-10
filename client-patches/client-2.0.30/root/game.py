@@ -1044,6 +1044,11 @@ class GameWindow(ui.ScriptWindow):
 	def __KolekcjonerNajemnikow(self, *args):
 		__import__("uinajemnicykolekcjoner").OnServer(*args)
 
+	# MT2009_PLUS_NAJEMNICY_V5: every "NAJP ..." line - the Najemnicy tab of the collector's window
+	# (uinajemnicykolekcjoner.py; the server's playerbot_najemnicy.h, "/najemnicy panel").
+	def __NajemnicyPanel(self, *args):
+		__import__("uinajemnicykolekcjoner").OnNajpServer(*args)
+
 	# MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): every "MONSTERCARDSYSTEM ..." line of
 	# the Monster Cards (/cardmonster on the server, the window uimonstercard.py).
 	def __MonsterCardSystem(self, *args):
@@ -3795,6 +3800,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["BuffiMark"] = self.__BuffiMark # MT2009_PLUS_BUFFI_PASS_V1
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["KNAJ"] = self.__KolekcjonerNajemnikow # MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1
+		serverCommandList["NAJP"] = self.__NajemnicyPanel # MT2009_PLUS_NAJEMNICY_V5
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
 		serverCommandList["MT2009LANG"] = self.__Mt2009Language # MT2009_PLUS_LANGUAGE_DEFAULT_V1
