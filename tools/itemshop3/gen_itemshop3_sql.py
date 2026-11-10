@@ -231,6 +231,7 @@ SETS_JSON = os.path.join(APP, 'shop3', 'include', 'db', 'costume_sets.json')
 CAT_TODAY = 20
 ROT_PIECE_ID_BASE = 800000000	# a rotation piece's line id: this + its vnum (never an id of itemshop3.shop)
 LIMIT_REAL_TIME = 7			# common/length.h ELimitTypes
+LIMIT_REAL_TIME_START_FIRST_USE = 8	# ... the seals of the set mounts (Feniks Wieczornej Zorzy 71293 ...): time from the first use
 
 # root/uiitemshop.py ITEMSHOP_CUSTOM_ITEM_DATA: the in-game window adds this to the name of the line at that index.
 NAME_SUFFIX = {1: '(30 godzin)', 5: '(7 dni)', 101: '(1 dzień)', 102: '(3 dni)', 103: '(1 dzień)', 104: '(3 dni)',
@@ -460,11 +461,19 @@ def rotation_sql(w):
 	for i in range(0, len(rows), 300):
 		w('INSERT IGNORE INTO itemshop3.set_members (set_id, vnum, part_no) VALUES %s;' % ', '.join(rows[i:i + 300]))
 	w('COMMIT;')
-	# The pieces of a set chest sold on their own: every vnum the chest can give in a result that is not a common item
-	# (the package, the costume / hair / pet / mount results) AND a part of the chest's set by the definition above - not
-	# its other loot (Ksiega Lidera, Magiczny Kamien, beans ...). Only an item with a real-time limit (LIMIT_REAL_TIME):
-	# Player::CreateItem writes now + rot_days into the award's socket0, the db core keeps it (ClientManager
-	# RESULT_SAFEBOX_LOAD), the game removes the item at that time - worn or not; the set bonus counts it while worn.
+	# The pieces of a set chest sold on their own: every vnum the chest can give in any of its results (the package, the
+	# costume / hair / pet / mount results and a common one - Lizak Potegi of Skrzynia Czarnych Szponow) that is a part
+	# of the chest's set by the definition above - not its other loot (Ksiega Lidera, Magiczny Kamien, beans ...).
+	# Only an item that expires (never a permanent one for rot_days):
+	# - LIMIT_REAL_TIME (costumes, hairs, weapon skins, pets, lollipops): Player::CreateItem writes now + rot_days into the
+	#   award's socket0, the db core keeps it (ClientManager RESULT_SAFEBOX_LOAD), the game removes the item at that time;
+	# - MT2009_PLUS_ISHOP_ROTACJA_V2 (the owner, 10.11.2026: "Feniks Wieczornej Zorzy" of Czerwony Smoczy Rycerz was not
+	#   sold on its own): LIMIT_REAL_TIME_START_FIRST_USE, the mount seals of 15 set chests. Player::CreateItem writes
+	#   rot_days as a duration into socket0 (socket1 0 = not used yet); the first Ctrl+G / equip makes it now + duration
+	#   (char_item.cpp MT2009_PLUS_REALTIME_FIRSTUSE_V1) and real_time_expire_event removes it then - the same as the
+	#   chest's own 15 / 30 day mounts.
+	# The set bonus counts them while worn (costume, hair, weapon skin and mount slots, both unique slots) or, for a
+	# pet, while its seal's pet is summoned (server-patches/zestawy Mt2009PlusSetWorn).
 	price = "COALESCE((SELECT CAST(st.value AS SIGNED) FROM itemshop3.settings st WHERE st.name = 'rot_price'), 79)"
 	minutes = "COALESCE((SELECT CAST(st.value AS SIGNED) FROM itemshop3.settings st WHERE st.name = 'rot_days'), 7) * 1440"
 	cols = ['%d + r.vnum AS id' % ROT_PIECE_ID_BASE, '%d AS category' % CAT_TODAY, "'2026-11-08 00:00:00' AS date", '1 AS type',
@@ -483,8 +492,8 @@ def rotation_sql(w):
 		'r.chest_id AS rot_chest', 'r.part_no AS rot_part']
 	w('-- one row a set piece of a set chest (rot_chest), with the columns of itemshop3.shop (the cards, the item window and')
 	w('-- pages/java/buy.php take it as a line); id = %d + vnum. NOT a part of itemshop3.shop: the bots never see it.' % ROT_PIECE_ID_BASE)
-	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.rotation_pieces AS SELECT %s FROM (SELECT ch.id AS chest_id, ch.set_id, ci.vnum, MIN(m.part_no) AS part_no FROM itemshop3.chests ch JOIN itemshop3.chest_drops cd ON cd.chest_id = ch.id AND cd.kind <> \'common\' JOIN itemshop3.chest_items ci ON ci.chest_id = cd.chest_id AND ci.drop_no = cd.drop_no JOIN itemshop3.set_members m ON m.set_id = ch.set_id AND m.vnum = ci.vnum WHERE ch.set_id > 0 GROUP BY ch.id, ch.set_id, ci.vnum) r JOIN world.item_proto pr ON pr.vnum = r.vnum WHERE (pr.limittype0 = %d OR pr.limittype1 = %d);'
-		% (', '.join(cols), LIMIT_REAL_TIME, LIMIT_REAL_TIME))
+	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.rotation_pieces AS SELECT %s FROM (SELECT ch.id AS chest_id, ch.set_id, ci.vnum, MIN(m.part_no) AS part_no FROM itemshop3.chests ch JOIN itemshop3.chest_drops cd ON cd.chest_id = ch.id JOIN itemshop3.chest_items ci ON ci.chest_id = cd.chest_id AND ci.drop_no = cd.drop_no JOIN itemshop3.set_members m ON m.set_id = ch.set_id AND m.vnum = ci.vnum WHERE ch.set_id > 0 GROUP BY ch.id, ch.set_id, ci.vnum) r JOIN world.item_proto pr ON pr.vnum = r.vnum WHERE (pr.limittype0 IN (%d, %d) OR pr.limittype1 IN (%d, %d));'
+		% (', '.join(cols), LIMIT_REAL_TIME, LIMIT_REAL_TIME_START_FIRST_USE, LIMIT_REAL_TIME, LIMIT_REAL_TIME_START_FIRST_USE))
 	return sum(len(vs) for parts in members.values() for _no, vs in parts)
 
 
