@@ -1856,6 +1856,30 @@ namespace
 	const TPlayerBotDamageTier PLAYERBOT_SKILL_DAMAGE_TIERS[] = {
 		{ 1, 120 }, { 11, 200 }, { 20, 400 }, { 25, 1400 }, { 30, 3000 }
 	};
+
+	// MT2009_PLUS_BOT_FISH_ROAST_V1 (the owner's fish sheet, 10 November 2026, his last column): the roasted fish that
+	// have a value, yang a piece, written by hand like the owner's other edits here. The number is the asking price
+	// as it stands - NOT through the yang-rate curve nor the inflation (GetPlayerBotRoastedFishOwnerPrice,
+	// playerbot_fish_roast.h): the lada's fresh line asks exactly this, its glut tiers go down to the market floor
+	// (m2_bot_market_floor_pct, 90 %). Every other roasted kind (27863-27865, 27867, 27869, 27871, 27872, 27875,
+	// 27876, 27878 - "smieci" - and Pieczony Piskorz 27877, which nobody catches) has no row: its dead fish is the
+	// NPC's right after it is opened.
+	const TPlayerBotMaterialPrice PLAYERBOT_ROASTED_FISH_PRICES[] = {
+		{ 27866,    40000 },	// Pieczony Karp
+		{ 27868,    50000 },	// Pieczony Amur
+		{ 27870,    40000 },	// Pieczony Wegorz
+		{ 27873,    40000 },	// Pieczona Krasnopiorka
+		{ 27874,    40000 },	// Pieczony Okon
+		{ 27879,    40000 },	// Pieczona Slodka Ryba
+		{ 27880,    80000 },	// Pieczony Gromadnik
+		{ 27881,    60000 },	// Pieczona Shiri
+		{ 27882,    50000 },	// Pieczony Lustrzany Karp
+		{ 27883,   200000 },	// Pieczony Zloty Karas
+		{ 27884,   100000 },	// Pieczony Wezoglow
+		{ 27885,   100000 },	// Pieczony Skaber
+		{ 27886,   100000 },	// Pieczony Krab Krolewski
+		{ 27887,   800000 },	// Pieczony Rak Niebieski
+	};
 }
 
 #endif

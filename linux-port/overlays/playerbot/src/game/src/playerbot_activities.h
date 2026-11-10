@@ -1057,6 +1057,137 @@ namespace
 		return count;
 	}
 
+	// MT2009_PLUS_BOT_FISH_ROAST_V1: the dead fish the fire takes - the valuable kinds (playerbot_fish_roast.h), every
+	// dead fish with the rule off.
+	bool IsPlayerBotFishForTheFire(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_FISH || item->GetSubType() != FISH_DEAD)
+			return false;
+		return !IsPlayerBotFishRoastOn() || IsPlayerBotValuableDeadFish(item->GetVnum());
+	}
+
+	int CountPlayerBotRoastableFish(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		int count = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotFishForTheFire(item) && !item->isLocked() &&
+					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE)
+				count += std::max<int>(1, item->GetCount());
+		}
+		return count;
+	}
+
+	// MT2009_PLUS_BOT_FISH_ROAST_V1: the engine lights the fire a hundred units ahead of the character's rotation and
+	// refuses water there (char_item.cpp, ITEM_CAMPFIRE). An angler is turned from the river by the bank's table; a
+	// bot anywhere else turns, 45 degrees at a time, until the spot ahead is dry ground. False: water all round.
+	bool FacePlayerBotDryGround(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		const float start = ch->GetRotation();
+		for (int step = 0; step < 8; ++step)
+		{
+			float rot = start + 45.0f * (float)step;
+			while (rot >= 360.0f)
+				rot -= 360.0f;
+			float fx = 0.0f, fy = 0.0f;
+			GetDeltaByDegree(rot, 100.0f, &fx, &fy);
+			const long x = ch->GetX() + (long)fx, y = ch->GetY() + (long)fy;
+			LPSECTREE tree = SECTREE_MANAGER::instance().Get(ch->GetMapIndex(), x, y);
+			if (!tree || tree->IsAttr(x, y, ATTR_WATER))
+				continue;
+			if (step != 0)
+				ch->SetRotation(rot);
+			return true;
+		}
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_FISH_ROAST_V1: one piece of Wysuszone Drzewo at the Fisherman's price (9009's shop, 20 000), for
+	// a bot that has none - within the core's hourly cap (m2_bot_fish_wood_cap). True: the bot holds wood now.
+	bool BuyPlayerBotFishWood(LPCHARACTER ch, DWORD dwNow, const char* why)
+	{
+		if (!ch)
+			return false;
+		if (ch->CountSpecifyItem(PLAYERBOT_CAMPFIRE_VNUM) > 0)
+			return true;
+		TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_CAMPFIRE_VNUM);
+		if (!proto)
+			return false;
+		const long long price = GetPlayerBotNpcPurchasePrice(proto, 1);
+		if (price <= 0 || ch->GetEmptyInventory(1) < 0)
+			return false;
+		if ((long long)ch->GetGold() < price)
+		{
+			++s_kPlayerBotFishRoastCensus.woodNoGold;
+			return false;
+		}
+		if (!ReservePlayerBotFishWood(dwNow))
+		{
+			PlayerBotLogThrottled("fishroast_wood_cap", dwNow,
+					"PLAYERBOT_FISHROAST: firewood cap reached pid=%u name=%s cap_hour=%d",
+					ch->GetPlayerID(), ch->GetName(), GetPlayerBotFishRoastCfg().woodCapHour);
+			return false;
+		}
+		if (!ch->AutoGiveItem(PLAYERBOT_CAMPFIRE_VNUM, 1, -1, false))
+			return false;
+		PlayerBotChangeGold(ch, -price);
+		++s_kPlayerBotFishRoastCensus.woodBought;
+		s_kPlayerBotFishRoastCensus.woodYang += (unsigned long long)price;
+		sys_log(0, "PLAYERBOT_FISHROAST: bought firewood pid=%u name=%s price=%lld why=%s",
+				ch->GetPlayerID(), ch->GetName(), price, why ? why : "?");
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_FISH_ROAST_V1: the dead fish of a "smieci" kind go to the NPC right after the opening, when the bot
+	// stands at a fishing bank - the Fisherman (9009) is there; elsewhere the next merchant visit takes them (the junk
+	// rule). The merchant's rate: a fifth of the proto's shop price a piece, at least 10 (GetPlayerBotJunkSalePrice).
+	const int PLAYERBOT_FISH_JUNK_SELL_FISHERMAN_RANGE = 3000;
+
+	int SellPlayerBotJunkDeadFishAtBank(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotFishRoastOn() || IsPlayerBotSidekickServing(ch))
+			return 0;
+		const TPlayerBotFishingBank* bank = GetPlayerBotFishingBank(ch->GetMapIndex());
+		if (!bank)
+			return 0;
+		if (DISTANCE_APPROX(ch->GetX() - bank->fisherman.x, ch->GetY() - bank->fisherman.y) > PLAYERBOT_FISH_JUNK_SELL_FISHERMAN_RANGE &&
+				DISTANCE_APPROX(ch->GetX() - bank->centre.x, ch->GetY() - bank->centre.y) > bank->radius)
+			return 0;
+		int units = 0;
+		long long gold = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->isLocked() || item->IsExchanging() ||
+					!IsPlayerBotJunkDeadFish(item->GetVnum()) ||
+					GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE || IsPlayerBotSidekickGift(ch, item))
+				continue;
+			DWORD unit = item->GetShopBuyPrice();
+			if (unit == 0)
+				unit = item->GetProto() ? item->GetProto()->dwGold : 100;
+			unit = std::max<DWORD>(10, unit / 5);
+			const int count = std::max<int>(1, item->GetCount());
+			const long long paid = (long long)unit * count;
+			PlayerBotChangeGold(ch, paid);
+			units += count;
+			gold += paid;
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");
+		}
+		if (units > 0)
+		{
+			NotePlayerBotFishJunkSold(units, gold, true);
+			PlayerBotLogThrottled("fishroast_junk_bank", dwNow,
+					"PLAYERBOT_FISHROAST: junk fish sold at the bank pid=%u name=%s units=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), units, gold);
+		}
+		return units;
+	}
+
 	// Light the fire at the end of a session with dead fish in the bag; the
 	// engine does the rest once the fish are handed over. Returns whether a
 	// fire was lit.
@@ -1065,7 +1196,11 @@ namespace
 		// The threshold moved here from the purchase, where it could never be
 		// met. One log grills any number of fish, so it is worth lighting for a
 		// session's catch and not for a single fish.
-		if (!ch || CountPlayerBotDeadFish(ch) < PLAYERBOT_BAKE_MIN_FISH)
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: only the valuable kinds go on it, and one of them is worth a fire (the cheapest
+		// roasted value, 40 000, against the wood's 20 000); m2_bot_fish_roast_min raises it.
+		const bool roastRule = IsPlayerBotFishRoastOn();
+		if (!ch || CountPlayerBotRoastableFish(ch) <
+				(roastRule ? GetPlayerBotFishRoastCfg().minBatch : PLAYERBOT_BAKE_MIN_FISH))
 			return false;
 
 		// Turn your back on the river before striking a light.
@@ -1082,11 +1217,24 @@ namespace
 		// standing on, which is dry by construction. waterY of zero means the
 		// bank table had no row for this stand, and the session reads that as
 		// "keep your own Y"; mirroring has to read it the same way.
-		long waterX = 0, waterY = 0;
-		GetPlayerBotFishingFacing(ch->GetPlayerID(), ch->GetMapIndex(), waterX, waterY);
-		if (waterX != 0 || waterY != 0)
-			ch->SetRotationToXY(2 * ch->GetX() - waterX,
-					waterY != 0 ? 2 * ch->GetY() - waterY : ch->GetY());
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: the bank's mirror for an angler at its stand; any other bot (a holder of
+		// valuable dead fish away from the water, ManagePlayerBotFishRoast) only turns until the spot ahead is dry.
+		if (state.bFishingSession || !roastRule)
+		{
+			long waterX = 0, waterY = 0;
+			GetPlayerBotFishingFacing(ch->GetPlayerID(), ch->GetMapIndex(), waterX, waterY);
+			if (waterX != 0 || waterY != 0)
+				ch->SetRotationToXY(2 * ch->GetX() - waterX,
+						waterY != 0 ? 2 * ch->GetY() - waterY : ch->GetY());
+		}
+		if (roastRule && !FacePlayerBotDryGround(ch))
+		{
+			++s_kPlayerBotFishRoastCensus.fireRefused;
+			PlayerBotLogThrottled("fishroast_no_dry_ground", dwNow,
+					"PLAYERBOT_FISHROAST: no dry ground for a fire pid=%u name=%s map=%ld x=%ld y=%ld",
+					ch->GetPlayerID(), ch->GetName(), (long)ch->GetMapIndex(), (long)ch->GetX(), (long)ch->GetY());
+			return false;
+		}
 
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
@@ -1104,11 +1252,13 @@ namespace
 						"PLAYERBOT_FISHING: campfire refused pid=%u name=%s cell=%u riding=%d fish=%d",
 						ch->GetPlayerID(), ch->GetName(), (unsigned int)cell,
 						ch->IsRiding() ? 1 : 0, CountPlayerBotDeadFish(ch));
+				++s_kPlayerBotFishRoastCensus.fireRefused;	// MT2009_PLUS_BOT_FISH_ROAST_V1
 				return false;
 			}
 			state.dwBakeUntil = dwNow + PLAYERBOT_BAKE_WINDOW;
-			sys_log(0, "PLAYERBOT_FISHING: campfire lit pid=%u name=%s dead_fish=%d",
-					ch->GetPlayerID(), ch->GetName(), CountPlayerBotDeadFish(ch));
+			++s_kPlayerBotFishRoastCensus.fires;	// MT2009_PLUS_BOT_FISH_ROAST_V1
+			sys_log(0, "PLAYERBOT_FISHING: campfire lit pid=%u name=%s dead_fish=%d roastable=%d",
+					ch->GetPlayerID(), ch->GetName(), CountPlayerBotDeadFish(ch), CountPlayerBotRoastableFish(ch));
 			return true;
 		}
 		// Enough fish to be worth a fire and no log in the bag. Said once a
@@ -1139,18 +1289,73 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetType() != ITEM_FISH || item->GetSubType() != FISH_DEAD)
+			// MT2009_PLUS_BOT_FISH_ROAST_V1: the valuable kinds only - a "smieci" dead fish is the NPC's, not the fire's.
+			if (!item || item->GetCell() != cell || !IsPlayerBotFishForTheFire(item) || item->isLocked() ||
+					GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
 				continue;
 			const int count = item->GetCount();
+			const DWORD deadVnum = item->GetVnum();
 			if (ch->GiveItem(finder.m_found, TItemPos(INVENTORY, cell)))
+			{
 				baked += count;
+				NotePlayerBotFishRoasted(deadVnum, count);
+			}
 		}
-		if (CountPlayerBotDeadFish(ch) == 0)
+		if (CountPlayerBotRoastableFish(ch) == 0)
 		{
 			sys_log(0, "PLAYERBOT_FISHING: baked pid=%u name=%s fish=%d", ch->GetPlayerID(), ch->GetName(), baked);
 			state.dwBakeUntil = 0;
 			return false;
 		}
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_FISH_ROAST_V1: any bot that holds dead fish of a valuable kind and is not at the water roasts
+	// them - an angler between sessions, a bot that took them off a lada or out of a trade, the stock the old rules
+	// left in the bags (vps3, 10 November: 159 Martwy Rak Niebieski in bot bags). Looked at every
+	// m2_bot_fish_roast_check_min minutes a bot (so a few fish make one fire), m2_bot_fish_roast_min fish at least;
+	// the wood bought if it has none (BuyPlayerBotFishWood); never in a fight, never a companion serving a person.
+	// While a fire burns, the bake owns the tick (BakePlayerBotFish) - an angler's too. The census is logged from here.
+	std::map<DWORD, DWORD> s_mapPlayerBotFishRoastNext;
+
+	bool ManagePlayerBotFishRoast(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || ch->IsDead())
+			return false;
+		if (state.dwBakeUntil != 0)
+			return BakePlayerBotFish(ch, state, dwNow);
+		LogPlayerBotFishRoastCensus(dwNow);
+		// Not in an instance (a dungeon's copy of a map, index 10000 and up): the fire waits for the open world.
+		if (!IsPlayerBotFishRoastOn() || state.bFishingSession || !ch->IsItemLoaded() || IsPlayerBotSidekickServing(ch) ||
+				ch->GetMapIndex() >= 10000)
+			return false;
+		const TPlayerBotFishRoastCfg& cfg = GetPlayerBotFishRoastCfg();
+		std::map<DWORD, DWORD>::iterator next = s_mapPlayerBotFishRoastNext.find(ch->GetPlayerID());
+		if (next == s_mapPlayerBotFishRoastNext.end())
+		{
+			// The first look is spread over the period, so a core's bots do not all look on one tick.
+			const DWORD spread = PlayerBotNavHash(ch->GetPlayerID() ^ 0x524f4153U) % ((DWORD)cfg.checkMin * 60000U);
+			s_mapPlayerBotFishRoastNext[ch->GetPlayerID()] = dwNow + spread;
+			return false;
+		}
+		if ((int)(dwNow - next->second) < 0)
+			return false;
+		next->second = dwNow + (DWORD)cfg.checkMin * 60000U;
+		if (CountPlayerBotRoastableFish(ch) < cfg.minBatch)
+			return false;
+		LPCHARACTER victim = state.dwTargetVID != 0 ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+		if ((victim && !victim->IsDead()) || ch->GetVictim())
+		{
+			next->second = dwNow + 30000;	// after the fight
+			return false;
+		}
+		if (!BuyPlayerBotFishWood(ch, dwNow, "holder"))
+			return false;
+		ch->Stop();
+		if (!LightPlayerBotCampfire(ch, state, dwNow))
+			return false;
+		sys_log(0, "PLAYERBOT_FISHROAST: fire away from the water pid=%u name=%s map=%ld fish=%d",
+				ch->GetPlayerID(), ch->GetName(), (long)ch->GetMapIndex(), CountPlayerBotRoastableFish(ch));
 		return true;
 	}
 
@@ -1229,6 +1434,10 @@ namespace
 			// ("nastroj natychmiast poprawia sie", playerbot_mood.h).
 			if (aliveFish)
 			{
+				// MT2009_PLUS_BOT_FISH_ROAST_V1: opened - and a "smieci" kind's dead fish is the Fisherman's at once
+				// when the bot stands at his bank (SellPlayerBotJunkDeadFishAtBank), else the next merchant's.
+				NotePlayerBotFishOpened();
+				SellPlayerBotJunkDeadFishAtBank(ch, get_dword_time());
 				if (ch->CountSpecifyItem(PLAYERBOT_SHELLFISH_VNUM) > shellBefore)
 					NotePlayerBotMoodValuable(ch, PLAYERBOT_SHELLFISH_VNUM, 0, ITEM_USE, "fish");
 				else if (ch->CountSpecifyItem(PLAYERBOT_FISH_BONE_VNUM) > boneBefore)
@@ -1400,6 +1609,8 @@ namespace
 					? number(PLAYERBOT_WEDKARZ_REST_MIN_MS, PLAYERBOT_WEDKARZ_REST_MAX_MS)
 					: number(PLAYERBOT_FISHING_REST_MIN, PLAYERBOT_FISHING_REST_MAX));
 		StowPlayerBotRod(ch);
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: what the session's catch left of the "smieci" kinds, at the Fisherman's.
+		SellPlayerBotJunkDeadFishAtBank(ch, dwNow);
 		// The Rybak sells them to the Fisherman beside the bank, and only from
 		// a bag seventy percent full; without the switch they are thrown away.
 		if (!IsPlayerBotPersonaEnabled())
@@ -1590,7 +1801,10 @@ namespace
 		// between them, and not one fire was ever lit. An angler on its way out
 		// buys one; thirty thousand yang against an angler's wallet is not a
 		// decision worth making twice.
-		if (ch->CountSpecifyItem(PLAYERBOT_CAMPFIRE_VNUM) <= 0)
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: through the hourly cap and the census (BuyPlayerBotFishWood).
+		if (IsPlayerBotFishRoastOn())
+			BuyPlayerBotFishWood(ch, dwNow, "angler");
+		else if (ch->CountSpecifyItem(PLAYERBOT_CAMPFIRE_VNUM) <= 0)
 		{
 			TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_CAMPFIRE_VNUM);
 			if (proto)

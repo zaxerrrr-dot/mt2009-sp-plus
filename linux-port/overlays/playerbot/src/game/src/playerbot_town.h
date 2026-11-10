@@ -4031,6 +4031,8 @@ namespace
 				sheet = std::max(sheet, GetPlayerBotGearSheetPriceAt(item,
 						std::max((int)item->GetRefineLevel(), std::min(9, GetPlayerBotPricedPlus(item)))));
 		}
+		else if (GetPlayerBotRoastedFishOwnerPrice(vnum) != 0)
+			sheet = GetPlayerBotRoastedFishOwnerPrice(vnum);	// MT2009_PLUS_BOT_FISH_ROAST_V1: the owner's, unscaled
 		else
 			sheet = GetPlayerBotMaterialAskingBase(vnum);
 		const unsigned long long count = std::max<DWORD>(1, item->GetCount());
@@ -4379,6 +4381,20 @@ namespace
 			const DWORD rune = (DWORD)std::min<long long>(0xFFFFFFFELL, std::max(1LL, unit * std::max<long long>(1, (long long)item->GetCount())));
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, rune, (DWORD)std::min<long long>(0xFFFFFFFELL, unit));
 			return rune;
+		}
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: a roasted fish of a valuable kind asks the owner's number a piece, as he wrote
+		// it (PLAYERBOT_ROASTED_FISH_PRICES) - not through the yang-rate curve nor the inflation, not moved by the sale
+		// memory: the lada's fresh line asks exactly his price; the listing's markdown / glut tiers take it down to
+		// the market floor, never over it (GetPlayerBotListingPrice).
+		{
+			const DWORD fishUnit = GetPlayerBotRoastedFishOwnerPrice(item->GetVnum());
+			if (fishUnit != 0)
+			{
+				const DWORD fish = (DWORD)std::min<unsigned long long>(0xFFFFFFFEULL,
+						(unsigned long long)fishUnit * std::max<DWORD>(1, (DWORD)item->GetCount()));
+				PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, fish, fishUnit);
+				return fish;
+			}
 		}
 		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
 		// (playerbot_craft_exchange.h).
@@ -5071,11 +5087,14 @@ namespace
 		}
 #endif
 		// MT2009_PLUS_BOT_MATS_BOARD_V1: or the materials' board's premium of a kind short on the market, the higher
-		int markup = markdownPercent > 0 || !item ? 0
+		// MT2009_PLUS_BOT_FISH_ROAST_V1: a valuable roasted fish asks the owner's number - no shortage markup, no rare
+		// premium over it; the markdowns and the tiers below it as for any good.
+		const bool ownerFish = item && GetPlayerBotRoastedFishOwnerPrice(item->GetVnum()) != 0;
+		int markup = markdownPercent > 0 || !item || ownerFish ? 0
 				: std::max(GetPlayerBotShortageMarkupPercent(item->GetVnum()), GetPlayerBotMatsBoardPremiumPercent(item->GetVnum()));
 		// MT2009_PLUS_MARKET_LIFE_V1, point 5: a rare kind's line, read before
 		// the supply markdown below forgets how long the line has stood.
-		const bool rare = item && IsPlayerBotRareOnMarket(item, std::max<DWORD>(1, item->GetCount()));
+		const bool rare = item && !ownerFish && IsPlayerBotRareOnMarket(item, std::max<DWORD>(1, item->GetCount()));
 		const int standingMarkdown = markdownPercent;
 		if (markdownPercent > 0 && item)
 		{
