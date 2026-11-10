@@ -31,15 +31,19 @@
 //   countdown - "/pvpfan gotowi <kod>": countdown_sec notices on the arena map, then
 //   fighting  - each bot fights the other teams' bots only (PvpFanAttackable, server-patches/pvpfan battle.cpp: a
 //               team's members never hit each other, nobody else hits them and they hit nobody else - people only
-//               with allow_players), kingdom, guild, party and PK mode do not matter; a target is picked by distance
-//               and how many already fight it, the fight is the duel's and the guild war's (buffs, gap closers,
-//               casters from range, archers from 800, potions per potions); a bot that strays past arena_radius walks
-//               back; the fallen stay down (their dead event is cancelled - no restart, no experience lost) and a
+//               with allow_players), kingdom, guild, party and PK mode do not matter; MT2009_PLUS_PVPFAN_WARSTYLE_V1
+//               (the owner, 10 November 2026): the fight is a guild war's - each bot draws a random enemy near it
+//               (near ones likelier, a light spread), keeps it until it falls, gets away or 8-15 s pass, chases it
+//               without a stop and strikes as the duel and the guild war do (buffs, gap closers, casters from range,
+//               archers from 800 with a step back, the due skills in a random order, potions per potions), shamans
+//               heal and buff now and then (see "the fight" above FightPlayerBotPvpFanWarStyle); a bot that strays
+//               past arena_radius walks back; the fallen stay down (their dead event is cancelled - no restart, no experience lost) and a
 //               death is no murder (PvpFanDeath, char_battle.cpp: no alignment, no dropped item). When at most one
 //               team stands - or after max_minutes, the team with more standing (then more kills) - the result goes
 //               to everybody (BroadcastNotice) and to player.pvpfan_war / _war_team (the panel's history);
-//               MT2009_PLUS_PVPFAN_TACTICS_V1 (the owner, 8 November 2026: "a real war, not two blobs"): with the
-//               category's tactics on (default) the teams start as squads side by side and fight as squads - objectives
+//               MT2009_PLUS_PVPFAN_TACTICS_V1 (the owner, 8 November 2026: "a real war, not two blobs"; experimental
+//               since 10 November - it stuttered): with the category's tactics = 2 the teams start as squads side by
+//               side and fight as squads - objectives
 //               spread over the enemy front, shared focus, flanks, ranged that keep their range and kite, melee that
 //               peel and chase casters, healers behind, wounded that retreat and drink, squads that regroup and come
 //               back; the whole design is at "tactics: roles, squads, the formation" below;
@@ -53,11 +57,12 @@
 //
 // Switches: env M2_PVPFAN (1 by default; 0 = the module does nothing, the hooks answer "not mine"), the event flag
 // m2_pvpfan_off (game flag or the player.quest row the panel writes - no new war, running ones stopped), caps
-// M2_PVPFAN_MAX_CATEGORY (500) and M2_PVPFAN_MAX_TOTAL (1000, per core), M2_PVPFAN_SPAWN_PER_SEC (20). Tactics:
-// pvpfan_category.tactics (1), squad_size (5), kite_distance (400, 0 = no kiting), retreat_hp (35, 0 = no retreats);
-// the event flag m2_pvpfan_tactics_off (game flag or player.quest row) puts every war back to the fight before the
-// tactics. Logs: "PVPFAN:" lines, a census a minute while a war runs (with tactics also "census tactics": squads,
-// skirmish spots, spread, kites, retreats, regroups, skirmish length) and a "tactics summary" at the result.
+// M2_PVPFAN_MAX_CATEGORY (500) and M2_PVPFAN_MAX_TOTAL (1000, per core), M2_PVPFAN_SPAWN_PER_SEC (20). The
+// experimental squads: pvpfan_category.tactics = 2 (0 and 1: the guild war's fight, the default), squad_size (5),
+// kite_distance (400, 0 = no kiting), retreat_hp (35, 0 = no retreats) - read only with tactics = 2; the event flag
+// m2_pvpfan_tactics_off (game flag or player.quest row) puts every war on the guild war's fight. Logs: "PVPFAN:"
+// lines, a census a minute while a war runs ("census fight": foes drawn and let go, the spread over targets, the
+// fighters' tick gaps; with the squads also "census tactics") and a "fight summary" / "tactics summary" at the result.
 //
 // An implementation fragment in the sense playerbot_types.h describes: included once, after playerbot_petmat.h.
 #include <unordered_map>
@@ -69,7 +74,7 @@ void PlayerBotPvpFanCommand(LPCHARACTER ch, const char* argument);
 
 namespace
 {
-	const DWORD PVPFAN_TICK_MS = 250;
+	const DWORD PVPFAN_TICK_MS = 200;	// MT2009_PLUS_PVPFAN_WARSTYLE_V1: under the bot-manager's ~240 ms, so every tick
 	const DWORD PVPFAN_COMMAND_POLL_MS = 3000;
 	const DWORD PVPFAN_FLAG_POLL_MS = 10000;
 	const DWORD PVPFAN_CENSUS_MS = 60000;
@@ -90,7 +95,24 @@ namespace
 	const int PVPFAN_ROW = 10;
 	const int PVPFAN_MAX_TEAMS = 8;
 
-	// MT2009_PLUS_PVPFAN_TACTICS_V1 (see "tactics" above FightPlayerBotPvpFan). Distances in world units (100 = 1 m).
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1 (the owner, 10 November 2026): the default fight is a guild war's - see "the fight"
+	// above FightPlayerBotPvpFanWarStyle. Distances in world units (100 = 1 m).
+	const DWORD PVPFAN_BOT_TICK_MIN_MS = 150;		// the fighters' own pass, every bot-manager tick (~240 ms), not oftener
+	const int PVPFAN_PICK_RADIUS = 1800;			// a new foe drawn from the enemies this near (the grid)
+	const int PVPFAN_KEEP_RANGE = 2600;				// a foe further than this has got away: draw another
+	const DWORD PVPFAN_KEEP_MIN_MS = 8000;			// a foe is kept 8-15 s (drawn per pick), then another is drawn
+	const DWORD PVPFAN_KEEP_MAX_MS = 15000;
+	const DWORD PVPFAN_LOOK_MS = 600;				// nobody near: look again after this
+	const DWORD PVPFAN_LOOK_FAR_MS = 2000;			// ... and over the whole arena no oftener than this
+	const int PVPFAN_PICK_FALLOFF = 450;			// the draw's weight 1 / (1 + d / falloff)^2: near ones far likelier
+	const int PVPFAN_PICK_CROWD = 2;				// ... divided by (1 + crowd / this): a light spread over the enemies
+	const DWORD PVPFAN_CHASE_MS = 500;				// a chase's new goal at most this often (the light tick's pace)
+	const int PVPFAN_CHASE_DRIFT = 120;				// ... and only when the foe has moved this far from the last one
+	const DWORD PVPFAN_SUPPORT_MIN_MS = 1500;		// a shaman's look at its mates: every 1.5-2.5 s ("now and then")
+	const DWORD PVPFAN_SUPPORT_MAX_MS = 2500;
+
+	// MT2009_PLUS_PVPFAN_TACTICS_V1 - experimental since MT2009_PLUS_PVPFAN_WARSTYLE_V1 (pvpfan_category.tactics = 2):
+	// see "tactics" above FightPlayerBotPvpFanTactics.
 	const DWORD PVPFAN_GRID_MS = 500;				// the spatial grid's rebuild
 	const DWORD PVPFAN_SQUAD_DECIDE_MS = 1000;		// every squad's decision
 	const int PVPFAN_SQUAD_SPACING = 160;			// between two members of a formation
@@ -256,6 +278,10 @@ namespace
 		int kiteCount = 0;
 		DWORD threatLookAt = 0, supportLookAt = 0, castFailUntil = 0, kiteMoveUntil = 0, foeLookAt = 0;
 		long retreatX = 0, retreatY = 0;
+		// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the foe's keep, the chase's last goal, the archer's steps back, the tick's clock.
+		DWORD keepUntil = 0, chaseAt = 0, lookFarAt = 0, stepWindowAt = 0, tickAt = 0;
+		long chaseX = 0, chaseY = 0;
+		int steps = 0;
 	};
 
 	// MT2009_PLUS_PVPFAN_TACTICS_V1: a squad - 3..12 bots of one team that move, engage, regroup and pick their
@@ -319,8 +345,8 @@ namespace
 		std::unordered_map<DWORD, int> crowd;
 		// MT2009_PLUS_PVPFAN_TACTICS_V1: the category's switches (pvpfan_category.tactics, squad_size, kite_distance,
 		// retreat_hp), the event flag's verdict, the squads, the spatial grid and the census' counters.
-		bool tactics = true;
-		bool tacticsOn = true;
+		bool tactics = false;		// MT2009_PLUS_PVPFAN_WARSTYLE_V1: experimental, pvpfan_category.tactics = 2
+		bool tacticsOn = false;
 		int squadSize = 5, kiteDist = 400, retreatHp = 35;
 		std::vector<TPvpFanSquad> squads;
 		DWORD nextGrid = 0, nextSquads = 0;
@@ -331,6 +357,11 @@ namespace
 				regroupsTotal = 0, mergesTotal = 0, engagesMin = 0, healsMin = 0, healsTotal = 0, peelsMin = 0;
 		unsigned long long engMsMin = 0, engMsTotal = 0;
 		unsigned int engEndsMin = 0, engEndsTotal = 0;
+		// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the census of the default fight (per minute / whole war) and the fighters'
+		// tick gaps (the stutter's measure: the time between two ticks of one bot).
+		unsigned int picksMin = 0, picksTotal = 0, endDeadMin = 0, endFledMin = 0, endTimeMin = 0, stepsMin = 0;
+		unsigned long long gapSumMs = 0;
+		unsigned int gapN = 0, gapMaxMs = 0, gapOver600 = 0;
 	};
 
 	std::map<DWORD, TPvpFanWar> s_mapPvpFanWars;
@@ -375,7 +406,7 @@ namespace
 	}
 
 	// MT2009_PLUS_PVPFAN_TACTICS_V1: "m2_pvpfan_tactics_off" (game flag or the player.quest row) - every war fights
-	// as before the tactics: no squads, the nearest foe, the leash (a running war switches at its next evaluation).
+	// the guild war's way, the experimental squads too (a running war switches at its next evaluation).
 	bool IsPlayerBotPvpFanTacticsFlagOff()
 	{
 		return s_bPvpFanDbTacticsOff || quest::CQuestManager::instance().GetEventFlag("m2_pvpfan_tactics_off") != 0;
@@ -873,7 +904,9 @@ namespace
 		war.potions = PvpFanLong(row[14]) != 0;
 		if (tacticsColumns)
 		{
-			war.tactics = PvpFanLong(row[15]) != 0;
+			// MT2009_PLUS_PVPFAN_WARSTYLE_V1: only 2 is the experimental squads; 0 and 1 (the old default) the guild
+			// war's fight
+			war.tactics = PvpFanLong(row[15]) == 2;
 			war.squadSize = MINMAX(2, (int)PvpFanLong(row[16]), 12);
 			war.kiteDist = PvpFanLong(row[17]) <= 0 ? 0 : MINMAX(150, (int)PvpFanLong(row[17]), 900);
 			war.retreatHp = PvpFanLong(row[18]) <= 0 ? 0 : MINMAX(5, (int)PvpFanLong(row[18]), 80);
@@ -998,8 +1031,9 @@ namespace
 			PlacePlayerBotPvpFanSquadSpots(war);
 		else
 			PlacePlayerBotPvpFanSpots(war);
-		sys_log(0, "PVPFAN: tactics category=%u code=%s on=%d (column=%d flag_off=%d) squad_size=%d squads=%u kite=%d "
-				"retreat_hp=%d", war.catId, war.code.c_str(), war.tacticsOn ? 1 : 0, war.tactics ? 1 : 0,
+		sys_log(0, "PVPFAN: fight category=%u code=%s style=%s (experimental column=%d flag_off=%d) squad_size=%d "
+				"squads=%u kite=%d retreat_hp=%d", war.catId, war.code.c_str(),
+				war.tacticsOn && !war.squads.empty() ? "squads-experimental" : "guild-war", war.tactics ? 1 : 0,
 				IsPlayerBotPvpFanTacticsFlagOff() ? 1 : 0, war.squadSize, (unsigned int)war.squads.size(), war.kiteDist,
 				war.retreatHp);
 		return true;
@@ -1268,31 +1302,6 @@ namespace
 			ch->SetRotationToXY(war.cx, war.cy);
 	}
 
-	// The nearest enemy that is up, weighed by how many already fight it - so a crowd spreads over the enemy line.
-	LPCHARACTER FindPlayerBotPvpFanFoe(TPvpFanWar& war, TPvpFanFighter& f, LPCHARACTER ch)
-	{
-		long best = LONG_MAX;
-		DWORD bestPid = 0;
-		for (size_t i = 0; i < war.fighters.size(); ++i)
-		{
-			const TPvpFanFighter& e = war.fighters[i];
-			if (e.team == f.team || e.dead || e.phase != PVPFAN_F_READY)
-				continue;
-			const long d = DISTANCE_APPROX(e.lastX - ch->GetX(), e.lastY - ch->GetY());
-			std::unordered_map<DWORD, int>::const_iterator c = war.crowd.find(e.pid);
-			const long score = d + (c != war.crowd.end() ? c->second : 0) * 250 + (long)((e.pid ^ f.pid) % 97);
-			if (score < best)
-			{
-				best = score;
-				bestPid = e.pid;
-			}
-		}
-		if (!bestPid)
-			return NULL;
-		LPCHARACTER foe = CHARACTER_MANAGER::instance().FindByPID(bestPid);
-		return foe && !foe->IsDead() && foe->GetMapIndex() == ch->GetMapIndex() ? foe : NULL;
-	}
-
 	bool IsPlayerBotPvpFanFoeUp(TPvpFanWar& war, TPvpFanFighter& f, LPCHARACTER ch, LPCHARACTER foe)
 	{
 		if (!foe || foe->IsDead() || foe->GetHP() <= 0 || !foe->IsPC() || foe->GetMapIndex() != ch->GetMapIndex())
@@ -1300,6 +1309,15 @@ namespace
 		TPvpFanWar* fw = NULL;
 		TPvpFanFighter* e = FindPlayerBotPvpFanFighter(foe->GetPlayerID(), &fw);
 		return e && fw == &war && e->team != f.team && !e->dead;
+	}
+
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the duel's / guild war's cast with the due skills in a random order.
+	bool CastPlayerBotPvpFanSkill(LPCHARACTER ch, LPCHARACTER foe, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		s_bPlayerBotShuffleAttackSkills = true;
+		const bool cast = CastPlayerBotDuelSkill(ch, foe, state, dwNow);
+		s_bPlayerBotShuffleAttackSkills = false;
+		return cast;
 	}
 
 	// The blow itself - the fight a duel and a guild war are: the aura first, a caster from its range, a warrior across
@@ -1320,14 +1338,18 @@ namespace
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		const bool isBow = weapon && weapon->GetType() == ITEM_WEAPON && weapon->GetSubType() == WEAPON_BOW;
 		const int combatRange = isBow ? 800 : PLAYERBOT_DUEL_MELEE_RANGE;
-		const bool caster = ch->GetJob() == JOB_SHAMAN || (ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
+		// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the guild war's casters (ManagePlayerBotGuildWar): the dragon shaman goes in
+		// for its splash like a fighter; the experimental squads (holdRange) keep it a caster.
+		const bool caster = (ch->GetJob() == JOB_SHAMAN && (holdRange || playerbot_war_rules::KindOf(ch->GetJob(),
+				ch->GetSkillGroup()) != playerbot_war_rules::KIND_SHAMAN_DRAGON)) ||
+				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
 		if (distance > combatRange)
 		{
 			if (!isBow && caster && distance <= PLAYERBOT_DUEL_CASTER_RANGE && dwNow >= state.dwNextSkillCastTime)
 			{
 				if (ch->IsStateMove())
 					ch->Stop();
-				if (CastPlayerBotDuelSkill(ch, foe, state, dwNow))
+				if (CastPlayerBotPvpFanSkill(ch, foe, state, dwNow))
 					return;
 				if (holdRange)
 					f.castFailUntil = dwNow + PVPFAN_CAST_FAIL_MS;
@@ -1353,17 +1375,24 @@ namespace
 				}
 				return;
 			}
-			if (dwNow >= state.dwNextGuildWarMoveTime)
+			// MT2009_PLUS_PVPFAN_WARSTYLE_V1: one continuous chase - a new goal when the foe has moved off the last
+			// one (at most every PVPFAN_CHASE_MS), at once when the walk has ended; never a Stop on the way.
+			const bool walking = ch->IsStateMove();
+			if (!walking ? PvpFanSince(dwNow, f.chaseAt) >= 200
+					: PvpFanSince(dwNow, f.chaseAt) >= PVPFAN_CHASE_MS &&
+						DISTANCE_APPROX(foe->GetX() - f.chaseX, foe->GetY() - f.chaseY) > PVPFAN_CHASE_DRIFT)
 			{
-				state.dwNextGuildWarMoveTime = dwNow + 700;
-				MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 4, false, false);
+				f.chaseAt = dwNow;
+				f.chaseX = foe->GetX();
+				f.chaseY = foe->GetY();
+				MovePlayerBot(ch, f.chaseX, f.chaseY, dwNow, 4, false, false);
 			}
 			return;
 		}
 		if (ch->IsStateMove())
 			ch->Stop();
 		ch->SetPosition(POS_FIGHTING);
-		if (!CastPlayerBotDuelSkill(ch, foe, state, dwNow))
+		if (!CastPlayerBotPvpFanSkill(ch, foe, state, dwNow))
 			ExecutePlayerBotBasicAttack(ch, foe, state, dwNow);
 	}
 
@@ -2145,6 +2174,253 @@ namespace
 		StrikePlayerBotPvpFanFoe(ch, state, war, f, foe, dwNow, f.role != PVPFAN_ROLE_MELEE);
 	}
 
+	// ------------------------------------------------------------------ the fight (the guild war's)
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1 - the owner, 10 November 2026, after watching the squads: "it lags and jumps -
+	// three steps, stop, three steps, a skill, stop; it must fight like normal bot PvP or a guild war: attack skills in
+	// a random way, random enemies, not assigned ones, and they spread out naturally". The default fight of every
+	// category (pvpfan_category.tactics 0 or 1; the squads only with 2, "eksperymentalne"):
+	//   the foe   - drawn at random from the enemies within PVPFAN_PICK_RADIUS (the spatial grid, never the whole war),
+	//               a near one far likelier (1 / (1 + d / PVPFAN_PICK_FALLOFF)^2) and one many already fight a little
+	//               less likely (/ (1 + crowd / PVPFAN_PICK_CROWD)); kept until it falls, gets away (further than
+	//               PVPFAN_KEEP_RANGE or out of the arena) or 8-15 s pass, then another is drawn. Nobody near: the
+	//               nearest enemy anywhere (looked for every PVPFAN_LOOK_FAR_MS), else the arena's centre;
+	//   the blow  - the guild war's (StrikePlayerBotPvpFanFoe): buffs, a caster's spell from 600, a warrior's gap
+	//               closer, the bow from 800, the blade in reach; the due attack skills in a random order
+	//               (CastPlayerBotPvpFanSkill); one continuous chase (a new goal only when the foe has moved);
+	//   the bow   - steps back from a foe nearer than PLAYERBOT_GUILD_WAR_ARCHER_KEEP_AWAY, at most
+	//               PLAYERBOT_GUILD_WAR_ARCHER_STEPS_MAX in PLAYERBOT_GUILD_WAR_ARCHER_STEP_WINDOW_MS, as at a guild war;
+	//   the dagger- goes in unseen (the guild war's Stealth);
+	//   shamans   - every 1.5-2.5 s a look at their mates within reach (the grid): the healer cures the lowest under
+	//               PVPFAN_HEAL_HP, both paths put a buff on a mate; otherwise they fight like anybody else.
+	// The spread comes from the random foes and the arena; nothing assigns, gathers or holds a bot anywhere.
+	// The fighters' tick is their own pass (TickPlayerBotPvpFanBots, every bot-manager tick), not the population's
+	// budgeted sweep - that sweep reached them once in ~2 s on a busy core, the stutter's cause.
+
+	// The draw: one of the enemies within radius of the bot, weighted; NULL when nobody stands there.
+	LPCHARACTER DrawPlayerBotPvpFanFoe(TPvpFanWar& war, TPvpFanFighter& f, LPCHARACTER ch, long radius)
+	{
+		std::vector<std::pair<int, double> > pool;
+		double sum = 0.0;
+		ForEachPlayerBotPvpFanNear(war, ch->GetX(), ch->GetY(), radius, [&](int i, TPvpFanFighter& e)
+		{
+			if (e.team == f.team || e.phase != PVPFAN_F_READY)
+				return;
+			const double d = (double)DISTANCE_APPROX(e.lastX - ch->GetX(), e.lastY - ch->GetY());
+			std::unordered_map<DWORD, int>::const_iterator c = war.crowd.find(e.pid);
+			const int crowd = c != war.crowd.end() ? c->second : 0;
+			const double near = 1.0 + d / (double)PVPFAN_PICK_FALLOFF;
+			const double w = 1.0 / (near * near) / (1.0 + (double)crowd / (double)PVPFAN_PICK_CROWD);
+			pool.push_back(std::make_pair(i, w));
+			sum += w;
+		});
+		while (!pool.empty() && sum > 0.0)
+		{
+			double r = (double)number(0, 999999) / 1000000.0 * sum;
+			size_t k = 0;
+			for (; k + 1 < pool.size(); ++k)
+			{
+				r -= pool[k].second;
+				if (r < 0.0)
+					break;
+			}
+			LPCHARACTER foe = CHARACTER_MANAGER::instance().FindByPID(war.fighters[pool[k].first].pid);
+			if (IsPlayerBotPvpFanFoeUp(war, f, ch, foe))
+				return foe;
+			sum -= pool[k].second;
+			pool.erase(pool.begin() + k);
+		}
+		return NULL;
+	}
+
+	// The nearest enemy anywhere in the arena (the grid over its whole reach) - for a bot with nobody near.
+	LPCHARACTER FindPlayerBotPvpFanNearestFoe(TPvpFanWar& war, TPvpFanFighter& f, LPCHARACTER ch)
+	{
+		long best = LONG_MAX;
+		int bestI = -1;
+		ForEachPlayerBotPvpFanNear(war, ch->GetX(), ch->GetY(), war.arenaRadius * 5 / 2, [&](int i, TPvpFanFighter& e)
+		{
+			if (e.team == f.team || e.phase != PVPFAN_F_READY)
+				return;
+			const long d = DISTANCE_APPROX(e.lastX - ch->GetX(), e.lastY - ch->GetY());
+			if (d < best)
+			{
+				best = d;
+				bestI = i;
+			}
+		});
+		if (bestI < 0)
+			return NULL;
+		LPCHARACTER foe = CHARACTER_MANAGER::instance().FindByPID(war.fighters[bestI].pid);
+		return IsPlayerBotPvpFanFoeUp(war, f, ch, foe) ? foe : NULL;
+	}
+
+	// A shaman now and then: the healer cures the lowest mate in reach under PVPFAN_HEAL_HP, both paths buff a mate
+	// (CastPlayerBotSupportBuff, the guild war's and the party's). The mates from the grid - O(the cells near it).
+	bool SupportPlayerBotPvpFanMates(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanWar& war, TPvpFanFighter& f,
+			DWORD dwNow, bool heal)
+	{
+		if (ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0 || (int)(dwNow - f.supportLookAt) < 0)
+			return false;
+		f.supportLookAt = dwNow + (DWORD)number((int)PVPFAN_SUPPORT_MIN_MS, (int)PVPFAN_SUPPORT_MAX_MS);
+		std::vector<LPCHARACTER> mates;
+		LPCHARACTER low = NULL;
+		int lowPct = PVPFAN_HEAL_HP + 1;
+		ForEachPlayerBotPvpFanNear(war, ch->GetX(), ch->GetY(), PVPFAN_SUPPORT_REACH, [&](int, TPvpFanFighter& e)
+		{
+			if (e.team != f.team || e.phase != PVPFAN_F_READY || mates.size() >= 16)
+				return;
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(e.pid);
+			if (!c || c->IsDead() || c->GetMapIndex() != ch->GetMapIndex() || c->GetMaxHP() <= 0)
+				return;
+			mates.push_back(c);
+			const int pct = (int)((long long)MAX(0, c->GetHP()) * 100 / c->GetMaxHP());
+			if (pct < lowPct)
+			{
+				lowPct = pct;
+				low = c;
+			}
+		});
+		if (heal && low && playerbot_war_rules::KindOf(ch->GetJob(), ch->GetSkillGroup()) ==
+				playerbot_war_rules::KIND_SHAMAN_HEAL && ch->GetSkillLevel(109) > 0 &&
+				CanPlayerBotAffordSkill(ch, state, 109, dwNow) && PlayerBotUseSkill(ch, state, 109, low, dwNow))
+		{
+			SendPlayerBotSkillPacket(ch, 109);
+			state.dwLastBotSkillTime = dwNow;
+			state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
+			++war.healsMin;
+			++war.healsTotal;
+			PlayerBotLogThrottled("pvpfan_heal", dwNow, "PVPFAN: healed category=%u pid=%u name=%s fellow=%s hp_pct=%d",
+					war.catId, f.pid, ch->GetName(), low->GetName(), lowPct);
+			return true;
+		}
+		if (mates.empty())
+			return false;
+		std::sort(mates.begin(), mates.end(), [ch](LPCHARACTER a, LPCHARACTER b)
+		{
+			return DISTANCE_APPROX(ch->GetX() - a->GetX(), ch->GetY() - a->GetY()) <
+					DISTANCE_APPROX(ch->GetX() - b->GetX(), ch->GetY() - b->GetY());
+		});
+		LPCHARACTER target = NULL;
+		DWORD vnum = 0;
+		return CastPlayerBotSupportBuff(ch, state, dwNow, mates, true, "pvpfan", target, vnum) != 0;
+	}
+
+	// The bow's step back, as at a guild war (StepPlayerBotWarArcherBack, without its camps): away from the foe that
+	// came too close, toward the arena's centre when it stands on the archer, inside the arena, a few in a while.
+	bool StepPlayerBotPvpFanArcherBack(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanWar& war, TPvpFanFighter& f,
+			LPCHARACTER foe, DWORD dwNow)
+	{
+		if (PvpFanSince(dwNow, f.stepWindowAt) > PLAYERBOT_GUILD_WAR_ARCHER_STEP_WINDOW_MS)
+		{
+			f.stepWindowAt = dwNow;
+			f.steps = 0;
+		}
+		if (f.steps >= PLAYERBOT_GUILD_WAR_ARCHER_STEPS_MAX || (int)(dwNow - state.dwNextGuildWarMoveTime) < 0)
+			return false;
+		long toX = 0, toY = 0;
+		playerbot_war_rules::StepAway(ch->GetX(), ch->GetY(), foe->GetX(), foe->GetY(), war.cx, war.cy,
+				PLAYERBOT_GUILD_WAR_ARCHER_STEP, toX, toY);
+		ClampPlayerBotPvpFanToArena(war, toX, toY);
+		if (DISTANCE_APPROX(toX - ch->GetX(), toY - ch->GetY()) < PLAYERBOT_GUILD_WAR_ARCHER_STEP / 3)
+			return false;
+		long spotX = toX, spotY = toY;
+		if (!FindPlayerBotWarGround(war.map, toX, toY, 300, spotX, spotY) ||
+				DISTANCE_APPROX(spotX - ch->GetX(), spotY - ch->GetY()) < PLAYERBOT_GUILD_WAR_ARCHER_STEP / 3)
+			return false;
+		++f.steps;
+		++war.stepsMin;
+		state.dwNextGuildWarMoveTime = dwNow + 700;
+		f.chaseAt = dwNow;
+		MovePlayerBot(ch, spotX, spotY, dwNow, 4, false, false);
+		return true;
+	}
+
+	void DropPlayerBotPvpFanFoe(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanFighter& f)
+	{
+		state.dwTargetVID = 0;
+		f.targetPid = 0;
+		if (ch->GetVictim())
+			ch->SetVictim(NULL);
+	}
+
+	// A bot's tick in the default fight (riding, potions and the arena's leash are done by the caller).
+	void FightPlayerBotPvpFanWarStyle(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanWar& war, TPvpFanFighter& f,
+			DWORD dwNow)
+	{
+		const playerbot_war_rules::EKind kind = playerbot_war_rules::KindOf(f.job, f.group);
+		if (SupportPlayerBotPvpFanMates(ch, state, war, f, dwNow, true))
+			return;
+		// The foe in hand, while it stands, is near enough, inside the arena and its keep has not run out.
+		LPCHARACTER foe = NULL;
+		if (f.targetPid != 0)
+		{
+			LPCHARACTER held = CHARACTER_MANAGER::instance().FindByPID(f.targetPid);
+			if (!IsPlayerBotPvpFanFoeUp(war, f, ch, held))
+				++war.endDeadMin;
+			else if (DISTANCE_APPROX(held->GetX() - ch->GetX(), held->GetY() - ch->GetY()) > PVPFAN_KEEP_RANGE ||
+					DISTANCE_APPROX(held->GetX() - war.cx, held->GetY() - war.cy) > war.arenaRadius)
+				++war.endFledMin;
+			else if ((int)(dwNow - f.keepUntil) >= 0)
+				++war.endTimeMin;
+			else
+				foe = held;
+			if (!foe)
+			{
+				DropPlayerBotPvpFanFoe(ch, state, f);
+				f.foeLookAt = dwNow;
+			}
+		}
+		if (!foe && (int)(dwNow - f.foeLookAt) >= 0)
+		{
+			f.foeLookAt = dwNow + PVPFAN_LOOK_MS + f.pid % 200;
+			foe = DrawPlayerBotPvpFanFoe(war, f, ch, PVPFAN_PICK_RADIUS);
+			if (!foe && (int)(dwNow - f.lookFarAt) >= 0)
+			{
+				f.lookFarAt = dwNow + PVPFAN_LOOK_FAR_MS + f.pid % 500;
+				foe = FindPlayerBotPvpFanNearestFoe(war, f, ch);
+			}
+			if (foe)
+			{
+				f.keepUntil = dwNow + (DWORD)number((int)PVPFAN_KEEP_MIN_MS, (int)PVPFAN_KEEP_MAX_MS);
+				f.targetPid = foe->GetPlayerID();
+				f.chaseAt = dwNow - PVPFAN_CHASE_MS;	// the chase's first goal at once (never 0: see PvpFanSince)
+				++war.picksMin;
+				++war.picksTotal;
+				// the crowd counts it at once, not at the next evaluation: the next draw of a mate sees it
+				++war.crowd[f.targetPid];
+			}
+		}
+		if (!foe)
+		{
+			DropPlayerBotPvpFanFoe(ch, state, f);
+			// nobody near: toward the middle, where the fight is
+			if (DISTANCE_APPROX(ch->GetX() - war.cx, ch->GetY() - war.cy) > 600)
+			{
+				if (!ch->IsStateMove() && PvpFanSince(dwNow, f.chaseAt) >= 1000)
+				{
+					f.chaseAt = dwNow;
+					MovePlayerBot(ch, war.cx, war.cy, dwNow, 8, true, false);
+				}
+			}
+			else if (ch->IsStateMove())
+				ch->Stop();
+			return;
+		}
+		const int distance = DISTANCE_APPROX(ch->GetX() - foe->GetX(), ch->GetY() - foe->GetY());
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		const bool isBow = weapon && weapon->GetType() == ITEM_WEAPON && weapon->GetSubType() == WEAPON_BOW;
+		if (kind == playerbot_war_rules::KIND_NINJA_DAGGER && distance > PLAYERBOT_GUILD_WAR_ASSASSIN_STEALTH_RANGE &&
+				TryPlayerBotWarStealth(ch, state, dwNow))
+			return;
+		if (isBow && distance < PLAYERBOT_GUILD_WAR_ARCHER_KEEP_AWAY &&
+				StepPlayerBotPvpFanArcherBack(ch, state, war, f, foe, dwNow))
+			return;
+		// an archer's step is walked to its end, then it shoots
+		if (isBow && ch->IsStateMove() && (int)(dwNow - state.dwNextGuildWarMoveTime) < 0 && distance <= 800)
+			return;
+		StrikePlayerBotPvpFanFoe(ch, state, war, f, foe, dwNow, false);
+	}
+
 	void FightPlayerBotPvpFan(LPCHARACTER ch, TPlayerBotAIState& state, TPvpFanWar& war, TPvpFanFighter& f, DWORD dwNow)
 	{
 		if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
@@ -2176,43 +2452,20 @@ namespace
 			}
 			return;
 		}
-		// MT2009_PLUS_PVPFAN_TACTICS_V1: squads, roles, kites and retreats; m2_pvpfan_tactics_off (or the category's
-		// tactics=0) is the fight below, as it was.
+		// MT2009_PLUS_PVPFAN_TACTICS_V1: the experimental squads (pvpfan_category.tactics = 2, unless
+		// m2_pvpfan_tactics_off); every other war fights the guild war's way (MT2009_PLUS_PVPFAN_WARSTYLE_V1).
 		if (war.tacticsOn && f.squad >= 0 && f.squad < (int)war.squads.size())
 		{
 			FightPlayerBotPvpFanTactics(ch, state, war, f, dwNow);
 			return;
 		}
-		LPCHARACTER foe = NULL;
-		if (state.dwTargetVID != 0)
-		{
-			LPCHARACTER held = CHARACTER_MANAGER::instance().Find(state.dwTargetVID);
-			if (IsPlayerBotPvpFanFoeUp(war, f, ch, held))
-				foe = held;
-		}
-		if (!foe || dwNow >= f.retargetAt)
-		{
-			f.retargetAt = dwNow + PVPFAN_RETARGET_MS + f.pid % 700;
-			LPCHARACTER chosen = FindPlayerBotPvpFanFoe(war, f, ch);
-			if (chosen && (!foe || DISTANCE_APPROX(chosen->GetX() - ch->GetX(), chosen->GetY() - ch->GetY()) + 300 <
-					DISTANCE_APPROX(foe->GetX() - ch->GetX(), foe->GetY() - ch->GetY())))
-				foe = chosen;
-		}
-		if (!foe)
-		{
-			state.dwTargetVID = 0;
-			f.targetPid = 0;
-			if (ch->GetVictim())
-				ch->SetVictim(NULL);
-			if (ch->IsStateMove())
-				ch->Stop();
-			return;
-		}
-		StrikePlayerBotPvpFanFoe(ch, state, war, f, foe, dwNow, false);
+		FightPlayerBotPvpFanWarStyle(ch, state, war, f, dwNow);
 	}
 
 	// Every tick of a bot of a war on this core - the whole of it: nothing of the population's AI runs for it.
-	bool ManagePlayerBotPvpFanBot(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1: called from the fighters' own pass (TickPlayerBotPvpFanBots), every bot-manager
+	// tick; the population's sweep only leaves them alone (ManagePlayerBotPvpFanBot).
+	bool TickPlayerBotPvpFanBot(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (s_mapPvpFanPid.empty() || !ch)
 			return false;
@@ -2273,10 +2526,12 @@ namespace
 								f->equipRetries, worn, ch->GetMaxHP());
 					}
 				}
-				// MT2009_PLUS_PVPFAN_TACTICS_V1: a shaman buffs its squad on its spot, as a guild war's camp does.
-				if (war->state != PVPFAN_STARTING && war->tacticsOn && f->squad >= 0 && f->squad < (int)war->squads.size() &&
-						DISTANCE_APPROX(ch->GetX() - f->x, ch->GetY() - f->y) <= 400 &&
-						SupportPlayerBotPvpFanSquad(ch, state, *war, *f, war->squads[f->squad], dwNow))
+				// MT2009_PLUS_PVPFAN_TACTICS_V1: a shaman buffs its squad on its spot, as a guild war's camp does
+				// (MT2009_PLUS_PVPFAN_WARSTYLE_V1: its mates near it, from the grid, outside the squads).
+				if (war->state != PVPFAN_STARTING && DISTANCE_APPROX(ch->GetX() - f->x, ch->GetY() - f->y) <= 400 &&
+						(war->tacticsOn && f->squad >= 0 && f->squad < (int)war->squads.size()
+							? SupportPlayerBotPvpFanSquad(ch, state, *war, *f, war->squads[f->squad], dwNow)
+							: SupportPlayerBotPvpFanMates(ch, state, *war, *f, dwNow, false)))
 					break;
 				HoldPlayerBotPvpFanAtSpot(ch, state, *war, *f, dwNow);
 				break;
@@ -2292,6 +2547,59 @@ namespace
 				break;
 		}
 		return true;
+	}
+
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the population's sweep (CPlayerBotManager::Update) runs inside a time budget and
+	// on a busy core reaches a bot once in several of its passes - on the test core with ~1200 bots 225 of 256 passes
+	// a minute ran out of it, a sweep took ~2 s - and a war's bots were left out of the light tick in between, so each
+	// moved, struck or cast once in ~2 s: "three steps, stop, three steps, a skill, stop". The sweep now only leaves
+	// them alone; their tick is TickPlayerBotPvpFanBots below, every bot-manager tick.
+	bool ManagePlayerBotPvpFanBot(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		(void)d;
+		(void)state;
+		(void)dwNow;
+		return !s_mapPvpFanPid.empty() && ch && IsPlayerBotPvpFanPID(ch->GetPlayerID());
+	}
+
+	// Every fighter of every war on this core that is in the game, each bot-manager tick (~240 ms, at most every
+	// PVPFAN_BOT_TICK_MIN_MS). In the fight the gap between two ticks of one bot is counted for the census.
+	void TickPlayerBotPvpFanBots(DWORD dwNow)
+	{
+		static DWORD s_dwLast = 0;
+		if (s_mapPvpFanWars.empty() || (s_dwLast && PvpFanSince(dwNow, s_dwLast) < PVPFAN_BOT_TICK_MIN_MS))
+			return;
+		s_dwLast = dwNow;
+		for (std::map<DWORD, TPvpFanWar>::iterator it = s_mapPvpFanWars.begin(); it != s_mapPvpFanWars.end(); ++it)
+		{
+			TPvpFanWar& war = it->second;
+			for (size_t i = 0; i < war.fighters.size(); ++i)
+			{
+				TPvpFanFighter& f = war.fighters[i];
+				if (f.phase != PVPFAN_F_LOADED && f.phase != PVPFAN_F_READY)
+					continue;
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(f.pid);
+				if (!ch)
+					continue;
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(f.pid);
+				if (st == s_mapPlayerBotAIStates.end())
+					continue;
+				if (war.state == PVPFAN_FIGHTING && !f.dead && f.phase == PVPFAN_F_READY)
+				{
+					if (f.tickAt)
+					{
+						const DWORD gap = PvpFanSince(dwNow, f.tickAt);
+						war.gapSumMs += gap;
+						++war.gapN;
+						war.gapMaxMs = std::max(war.gapMaxMs, (unsigned int)gap);
+						if (gap > 600)
+							++war.gapOver600;
+					}
+					f.tickAt = dwNow;
+				}
+				TickPlayerBotPvpFanBot(ch->GetDesc(), ch, st->second, dwNow);
+			}
+		}
 	}
 
 	// A PvP-fan bot's login (CPlayerBotManager::OnPlayerLoaded).
@@ -2487,6 +2795,12 @@ namespace
 					war.retreatsTotal, war.regroupsTotal, war.healsTotal, war.mergesTotal, war.engEndsTotal,
 					war.engEndsTotal ? war.engMsTotal / 1000.0 / war.engEndsTotal : 0.0);
 		}
+		else
+			// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the default fight's summary (the last minute's tick gaps)
+			sys_log(0, "PVPFAN: fight summary category=%u code=%s war=%u style=guild-war secs=%u picks=%u heals=%u "
+					"tick_gap_avg_ms=%llu tick_gap_max_ms=%u tick_gaps_over_600=%u/%u", war.catId, war.code.c_str(),
+					war.warRowId, secs, war.picksTotal, war.healsTotal, war.gapN ? war.gapSumMs / war.gapN : 0ULL,
+					war.gapMaxMs, war.gapOver600, war.gapN);
 		BeginPlayerBotPvpFanExit(war, PVPFAN_FINISHED, text);
 	}
 
@@ -2724,6 +3038,32 @@ namespace
 		war.engMsMin = 0;
 	}
 
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the default fight's minute - foes drawn, foes let go (fell / got away / kept
+	// long enough), how the war is spread over its targets (from the crowd of the last evaluation), the archers'
+	// steps, the heals, and the fighters' tick gaps (avg / max / over 600 ms: the stutter's measure, in both styles).
+	void LogPlayerBotPvpFanFightCensus(TPvpFanWar& war, DWORD dwNow)
+	{
+		unsigned int targets = 0, attacking = 0, busiest = 0;
+		for (std::unordered_map<DWORD, int>::const_iterator c = war.crowd.begin(); c != war.crowd.end(); ++c)
+			if (c->second > 0)
+			{
+				++targets;
+				attacking += (unsigned int)c->second;
+				busiest = std::max(busiest, (unsigned int)c->second);
+			}
+		const unsigned int fightSec = war.fightAt ? PvpFanSince(dwNow, war.fightAt) / 1000 : 0;
+		sys_log(0, "PVPFAN: census fight category=%u code=%s style=%s t=%u:%02u picks=%u/%u ends_fell=%u ends_fled=%u "
+				"ends_time=%u targets=%u attacking=%u busiest=%u archer_steps=%u heals=%u/%u tick_gap_avg_ms=%llu "
+				"tick_gap_max_ms=%u tick_gaps_over_600=%u/%u", war.catId, war.code.c_str(),
+				war.tacticsOn && !war.squads.empty() ? "squads-experimental" : "guild-war", fightSec / 60, fightSec % 60,
+				war.picksMin, war.picksTotal, war.endDeadMin, war.endFledMin, war.endTimeMin, targets, attacking, busiest,
+				war.stepsMin, war.healsMin, war.healsTotal, war.gapN ? war.gapSumMs / war.gapN : 0ULL, war.gapMaxMs,
+				war.gapOver600, war.gapN);
+		war.picksMin = war.endDeadMin = war.endFledMin = war.endTimeMin = war.stepsMin = 0;
+		war.gapSumMs = 0;
+		war.gapN = war.gapMaxMs = war.gapOver600 = 0;
+	}
+
 	void LogPlayerBotPvpFanCensus(DWORD dwNow)
 	{
 		if (s_mapPvpFanWars.empty() || (s_dwPvpFanNextCensus && (int)(dwNow - s_dwPvpFanNextCensus) < 0))
@@ -2747,7 +3087,11 @@ namespace
 					"failed=%u out=%u teams:%s", war.catId, war.code.c_str(), PvpFanStateCode(war.state),
 					(unsigned int)war.fighters.size(), phases[0], phases[1], phases[2], phases[3], phases[4], phases[5],
 					teams.c_str());
-			if (war.state == PVPFAN_FIGHTING && war.tacticsOn && !war.squads.empty())
+			if (war.state != PVPFAN_FIGHTING)
+				continue;
+			// before the tactics census, which zeroes the heals of the minute
+			LogPlayerBotPvpFanFightCensus(war, dwNow);
+			if (war.tacticsOn && !war.squads.empty())
 				LogPlayerBotPvpFanTacticsCensus(war, dwNow);
 		}
 	}
@@ -2886,10 +3230,8 @@ namespace
 
 	// From Update (and the world clock on a core no bot has woken): the queue, the logins, the countdown, the
 	// evaluation, the exits.
-	void ManagePlayerBotPvpFan(DWORD dwNow)
+	void ManagePlayerBotPvpFanWars(DWORD dwNow)
 	{
-		if (!IsPlayerBotPvpFanEnabled())
-			return;
 		if (s_dwPvpFanLastTick && PvpFanSince(dwNow, s_dwPvpFanLastTick) < PVPFAN_TICK_MS)
 			return;
 		s_dwPvpFanLastTick = dwNow;
@@ -2915,11 +3257,19 @@ namespace
 				if (tacticsOn != war.tacticsOn)
 				{
 					sys_log(0, "PVPFAN: tactics category=%u code=%s %s (m2_pvpfan_tactics_off)", war.catId, war.code.c_str(),
-							tacticsOn ? "on again" : "off - the fight as before the tactics");
+							tacticsOn ? "on again" : "off - the guild war's fight");
 					war.tacticsOn = tacticsOn;
 					war.nextGrid = war.nextSquads = dwNow;
 				}
 				EvaluatePlayerBotPvpFanWar(war, dwNow);
+			}
+			// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the spatial grid for every war on its spots and in the fight (the foes'
+			// draw, the shamans' mates), every PVPFAN_GRID_MS.
+			if ((war.state == PVPFAN_WAITING || war.state == PVPFAN_COUNTDOWN || war.state == PVPFAN_FIGHTING) &&
+					(int)(dwNow - war.nextGrid) >= 0)
+			{
+				war.nextGrid = dwNow + PVPFAN_GRID_MS;
+				BuildPlayerBotPvpFanGrid(war);
 			}
 			switch (war.state)
 			{
@@ -3001,6 +3351,12 @@ namespace
 							war.fighters[i].retreatCdUntil = war.fighters[i].kiteMoveUntil = war.fighters[i].retargetAt = dwNow;
 							war.fighters[i].threatLookAt = war.fighters[i].supportLookAt = war.fighters[i].foeLookAt = dwNow;
 							war.fighters[i].castFailUntil = dwNow;
+							// MT2009_PLUS_PVPFAN_WARSTYLE_V1
+							war.fighters[i].keepUntil = war.fighters[i].chaseAt = war.fighters[i].lookFarAt = dwNow;
+							war.fighters[i].stepWindowAt = dwNow;
+							war.fighters[i].tickAt = 0;
+							war.fighters[i].targetPid = 0;
+							war.fighters[i].steps = 0;
 						}
 						// MT2009_PLUS_PVPFAN_TACTICS_V1: every squad marches first; the grid and the decisions at once.
 						for (size_t q = 0; q < war.squads.size(); ++q)
@@ -3023,14 +3379,9 @@ namespace
 					break;
 				}
 				case PVPFAN_FIGHTING:
-					// MT2009_PLUS_PVPFAN_TACTICS_V1: the grid every PVPFAN_GRID_MS, the squads' decisions every second.
+					// MT2009_PLUS_PVPFAN_TACTICS_V1: the squads' decisions every second (experimental; the grid above).
 					if (war.tacticsOn && !war.squads.empty())
 					{
-						if ((int)(dwNow - war.nextGrid) >= 0)
-						{
-							war.nextGrid = dwNow + PVPFAN_GRID_MS;
-							BuildPlayerBotPvpFanGrid(war);
-						}
 						if ((int)(dwNow - war.nextSquads) >= 0)
 						{
 							war.nextSquads = dwNow + PVPFAN_SQUAD_DECIDE_MS;
@@ -3064,6 +3415,15 @@ namespace
 			ForgetPlayerBotPvpFanWar(done[i]);
 		}
 		LogPlayerBotPvpFanCensus(dwNow);
+	}
+
+	// The wars (their own clock, PVPFAN_TICK_MS), then their fighters (MT2009_PLUS_PVPFAN_WARSTYLE_V1).
+	void ManagePlayerBotPvpFan(DWORD dwNow)
+	{
+		if (!IsPlayerBotPvpFanEnabled())
+			return;
+		ManagePlayerBotPvpFanWars(dwNow);
+		TickPlayerBotPvpFanBots(dwNow);
 	}
 
 	// ------------------------------------------------------------------ the GM's command

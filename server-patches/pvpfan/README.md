@@ -33,61 +33,72 @@ Przełączniki: `M2_PVPFAN` (domyślnie 1), flaga `m2_pvpfan_off` (gra albo wier
 `M2_PVPFAN_MAX_CATEGORY` (500), `M2_PVPFAN_MAX_TOTAL` (1000 na rdzeń), `M2_PVPFAN_SPAWN_PER_SEC` (20).
 Logi: `PVPFAN:` (spis co minutę w trakcie wojny).
 
-## Taktyka (alpha 2)
+## Taktyka (walka jak na wojnie gildii)
 
-`MT2009_PLUS_PVPFAN_TACTICS_V1` (właściciel, 8.11.2026: „ma wyglądać jak prawdziwa wojna, a nie dwie kule, które na
-siebie wpadają”). Bez zmian w silniku – wszystko w `playerbot_pvpfan.h` (sekcja „tactics”). Boty nie są słabsze ani
-bierniejsze: walka trwa dłużej dzięki ruchowi, odstępom, uciekaniu, odwrotom i rozkładaniu celów.
+`MT2009_PLUS_PVPFAN_WARSTYLE_V1` (właściciel, 10.11.2026, po obejrzeniu taktyki oddziałów: „laguje i skacze – trzy
+kroki, stop, trzy kroki, skill, stop; ma walczyć jak normalne PvP botów albo wojna gildii: skille losowo, losowe
+postacie, a nie przypisane, i naturalnie się rozchodzić”). Domyślna walka **wszystkich** kategorii. Bez zmian w
+silniku – wszystko w `playerbot_pvpfan.h` (sekcja „the fight”).
 
-**Jak to wygląda:**
+**Przyczyna „zacinania”.** Boty wojny PVP Fan miały swój ruch w ogólnym przebiegu botów (`CPlayerBotManager::Update`),
+który działa w budżecie czasu i przy dużej liczbie botów dochodzi do każdego bota co kilka przebiegów. Na serwerze
+testowym (~1200 botów) 225 z 256 przebiegów na minutę kończyło budżet, pełny obieg trwał ~2 s, a boty PVP Fan były
+wyłączone z „lekkiego” ticku pomiędzy (który botom na wojnie gildii prowadzi pościg i zwykłe ciosy). Każdy bot wojny
+decydował, ruszał się, bił albo rzucał czar raz na ~2 s: krok do miejsca, gdzie wróg był, stop, czar, stop. Taktyka
+oddziałów (odskoki co 0,4 s, punkty zborne przesuwane co 1 s, zatrzymania na miejscu w szyku, czekanie magów w
+miejscu na czar, odwroty i przegrupowania – w wojnie z 10.11: 79 odskoków, 16 odwrotów i 10 przegrupowań w 25 s)
+dokładała do tego ciągłe zmiany kierunku. Teraz boty wojny mają własny przebieg co tick menedżera (~0,24 s), poza
+budżetem ogólnym, a ogólny przebieg je tylko pomija.
 
-- **Oddziały.** Każda drużyna dzieli się na oddziały po `squad_size` botów (domyślnie 5), każdy z tą samą mieszanką
-  klas. Na starcie oddziały stoją obok siebie w szeregu (przy wąskim froncie w dwóch liniach), w każdym oddziale z przodu
-  walczący wręcz, za nimi dystansowcy, na końcu uzdrowiciele.
-- **Natarcie szykiem.** Po „WALKA!” oddziały idą w szyku (punkt zborny prowadzi oddział) na swój cel – najbliższy oddział
-  wroga, którego nie wziął już inny oddział tej drużyny, więc starcia wybuchają w kilku miejscach naraz. Skrajne
-  oddziały szerokiego frontu oskrzydlają (zachodzą z boku, dopiero blisko celu skręcają na niego).
-- **Starcie (potyczka).** Oddział ma wspólny cel (najsłabszy z oddziału wroga, najpierw uzdrowiciele i magowie) i bije
-  go razem, ale na jednego bota idzie najwyżej ~4 (reszta bierze sąsiadów).
-- **Role:**
-  - *dystansowcy* (Ninja Łucznik, Sura Magia, Szaman Smok) trzymają dystans (łuk ~720, czary ~520–600), czekając na
-    następny czar stoją w miejscu zamiast wchodzić w miecze; walczący wręcz bliżej niż `kite_distance` (400) = odskok w
-    bok/do swojego oddziału, w obrębie areny (przy krawędzi wzdłuż niej) – najwyżej 2 odskoki na 6 s, potem walczą;
-  - *walczący wręcz* skracają dystans (szarża, Uderzenie Miecza), wolą wspólny cel, bronią swoich dystansowców (biorą
-    wroga, który do nich doszedł) i gonią magów/uzdrowicieli;
-  - *Szaman Leczenie* stoi za oddziałem, leczy najsłabszego z oddziału (poniżej 60%), buffuje oddział, też odskakuje.
-    Szamani buffują swój oddział także czekając na sygnał.
-- **Odwrót rannego.** Bot poniżej `retreat_hp` (35%) cofa się do uzdrowiciela oddziału albo w stronę swojej strony,
-  pije mikstury (gdy kategoria je pozwala), wraca przy 75% albo po 15 s; następny odwrót najwcześniej po 25 s. Bez
-  mikstur i bez uzdrowiciela nie ma odwrotu (byłaby to tylko bierność); dwóch ostatnich z drużyny się nie cofa.
-- **Przegrupowanie oddziału.** Po co najmniej 10 s starcia oddział poobijany (średnio < 45% HP, gdy może się podleczyć),
-  rozproszony albo w przewadze wroga 2:1 cofa się ~10 m w stronę swojej strony, zbiera, leczy i po 3,5–9 s znowu
-  naciera (nie częściej niż co 30 s). Wróg może go gonić. Resztka oddziału (≤ 1/3) dołącza do najbliższego oddziału.
-- **Arena.** Wszystkie ruchy zostają w promieniu areny; bot za promieniem wraca jak dotąd.
+**Jak to wygląda teraz:**
+
+- **Start bez zmian.** Drużyny stoją w szeregach po 10 przodem do środka, czekają na „gotowi”; szamani buffują swoich.
+- **Losowy cel.** Każdy bot losuje przeciwnika spośród wrogów w promieniu ~18 m: bliżsi znacznie częściej (waga
+  1 / (1 + d / 4,5 m)²), a ten, na którego idzie już kilku, trochę rzadziej – lekkie rozłożenie, nikt nikogo nie
+  przydziela. Cel trzyma, aż padnie, ucieknie (dalej niż ~26 m albo poza arenę) albo minie losowe 8–15 s, wtedy losuje
+  następnego. Nikogo w pobliżu: najbliższy wróg na arenie (szukany najwyżej co 2 s), a bez wrogów – w stronę środka.
+- **Pościg i ciosy jak na wojnie gildii.** Ciągły pościg (nowy cel ruchu dopiero, gdy wróg się przesunął, bez
+  zatrzymywania po drodze), buffy, wojownik doskakuje (Szarża / Uderzenie Miecza), Sura Magia i Szaman Leczenie
+  rzucają czary z ~6 m i między czarami biją wręcz, Szaman Smok wchodzi w środek jak wojownik (jak na wojnie gildii),
+  Ninja Skrytobójca podchodzi w ukryciu, łucznik strzela z ~8 m i odskakuje od wroga bliżej niż 4 m (najwyżej 3 razy
+  na 8 s, jak na wojnie gildii). Bez stawania co chwilę i bez uciekania „w kółko”.
+- **Losowe umiejętności.** Gotowe (po czasie odnowienia) umiejętności ataku są próbowane w losowej kolejności, nie w
+  stałej rotacji.
+- **Leczenie.** Szaman co 1,5–2,5 s patrzy na swoich w promieniu ~10 m: Szaman Leczenie leczy najsłabszego poniżej 60%,
+  oba szamany nakładają brakujące buffy; poza tym walczą jak reszta.
+- **Rozchodzenie się** wynika z losowych celów i granicy areny; bot za promieniem areny wraca jak dotąd. Wynik
+  (ostatnia stojąca drużyna albo limit czasu) bez zmian.
+
+**Wydajność.** Bez przeszukiwania całej wojny co tick: siatka przestrzenna (komórki ≥ 500) odbudowywana co 0,5 s
+(także w czekaniu), losowanie celu z kilku komórek wokół bota tylko przy zmianie celu (bez celu co ~0,6 s), cała
+arena najwyżej co 2 s i tylko dla bota bez nikogo w pobliżu, szamani co 1,5–2,5 s z komórek wokół siebie.
+
+**Logi** (`PVPFAN:`): przy starcie `fight ... style=guild-war|squads-experimental`; co minutę `census fight` –
+wylosowane cele (`picks`), porzucone cele (`ends_fell` / `ends_fled` / `ends_time`), na ilu wrogów rozkłada się
+wojna (`targets`, `attacking`, `busiest`), odskoki łuczników, leczenia oraz przerwy między tickami jednego bota
+(`tick_gap_avg_ms`, `tick_gap_max_ms`, `tick_gaps_over_600` – miara zacinania; powinno być ~240 ms i prawie zero
+ponad 600); przy wyniku `fight summary`.
+
+**Jak przetestować (serwer testowy):** kategoria `1` (50 Wojownik Ciało vs 50 Szaman Smok, mapa 21), panel Start,
+Gotowi. Oczekiwane: płynny pościg bez „krok–stop”, `tick_gap_avg_ms` ~240, `targets` wyraźnie > 1 (cele rozłożone),
+`ends_time` > 0 (zmiany celu po 8–15 s), walka wyraźnie dłuższa niż 25 s z 10.11. Potem kategoria mieszana (np. 3
+drużyny: Wojownik Ciało, Ninja Łucznik, Sura Magia, Ninja Skrytobójca, Szaman Leczenie) – `heals` > 0, łucznicy
+odskakują (`archer_steps`).
+
+### Oddziały – eksperymentalne
+
+`MT2009_PLUS_PVPFAN_TACTICS_V1` (alpha 2 z 8.11.2026) zostaje tylko jako opcja eksperymentalna: kolumna `tactics` = 2
+(panel: „Oddziały – eksperymentalne”). Drużyna dzieli się na oddziały po `squad_size` botów, stoi w szyku oddziałów,
+naciera szykiem na różne oddziały wroga, skrajne oskrzydlają; dystansowcy trzymają dystans i odskakują od walczących
+wręcz bliżej niż `kite_distance`; ranni poniżej `retreat_hp` cofają się do uzdrowiciela i piją mikstury; oddział
+poobijany, rozproszony albo w przewadze wroga się przegrupowuje. Logi `census tactics` i `tactics summary` jak dotąd.
+Też korzysta z własnego przebiegu botów wojny, ale jego odskoki, punkty zborne i odwroty nadal zmieniają kierunek
+ruchu częściej niż wojna gildii.
 
 **Ustawienia** (panel → kategoria → Ustawienia; kolumny `pvpfan_category`, migracja w `pvpfan.sql` przy każdym starcie):
-`tactics` (1 = włączona), `squad_size` (5; 2–12), `kite_distance` (400; 150–900, 0 = bez odskoków), `retreat_hp`
-(35; 5–80, 0 = bez odwrotów). Flaga `m2_pvpfan_tactics_off` = 1 (w grze albo wiersz `player.quest`) wyłącza taktykę
-we wszystkich kategoriach, także w trwającej wojnie – walka jak przed alpha 2.
+`tactics` (0 albo 1 = walka jak na wojnie gildii, domyślnie; 2 = oddziały eksperymentalne), a tylko przy `tactics` = 2:
+`squad_size` (5; 2–12), `kite_distance` (400; 150–900, 0 = bez odskoków), `retreat_hp` (35; 5–80, 0 = bez odwrotów).
+Domyślna wartość kolumny `tactics` to teraz 0 (`pvpfan.sql`); istniejące wiersze z 1 walczą jak na wojnie gildii bez
+żadnej zmiany w bazie. Flaga `m2_pvpfan_tactics_off` = 1 (w grze albo wiersz `player.quest`) wyłącza oddziały we
+wszystkich kategoriach, także w trwającej wojnie.
 
-**Wydajność.** Bez przeszukiwania całej wojny przez każdego bota: siatka przestrzenna (komórki ≥ 500) odbudowywana co
-0,5 s, decyzje oddziałów raz na sekundę dla całej wojny (O(boty + oddziały²)), wybór celu z kilku komórek wokół bota,
-co ~1,5–2,2 s (bez celu co 0,4 s), sprawdzenie zagrożenia co 0,4 s, leczenie/buffy co 1,2 s tylko w obrębie oddziału.
-
-**Logi** (`PVPFAN:`): co minutę `census tactics` – oddziały żywe (natarcie / starcie / przegrupowanie), miejsca
-potyczek (`skirmish_spots`), średnia odległość między botami (`spread_pair`) i w oddziałach (`spread_squad`), odskoki,
-odwroty, przegrupowania, leczenia, obrony (`peels`), połączenia oddziałów, średnia długość starcia
-(`skirmish_avg_s`, `running_avg_s`, `war_avg_s`); przy wyniku `tactics summary`; pojedyncze decyzje (`squad`,
-`kite`, `retreat`, `heal`, `merge`) ograniczone do jednej linii na minutę.
-
-**Jak przetestować (serwer testowy):**
-
-1. Kategoria `wcs` – 2 drużyny: 50 × Wojownik Ciało vs 50 × Szaman Smok (level 120, P, zestawy domyślne), arena
-   o promieniu ≥ 5000, mikstury włączone, taktyka domyślna. `/pvpfan start wcs`, `/pvpfan gotowi wcs`. Oczekiwane:
-   10 oddziałów na stronę w dwóch liniach, kilka miejsc starć (`skirmish_spots` ≥ 3 w pierwszych minutach), szamani
-   odskakują (`kites` > 0), ranni się cofają (`retreats` > 0), walka wyraźnie dłuższa niż przed alpha 2.
-2. Kategoria `mix3` – 3 drużyny po 30, każda mieszana (np. 6 Wojownik Ciało, 6 Ninja Łucznik, 6 Sura Magia, 6 Ninja
-   Skrytobójca, 6 Szaman Leczenie): oddziały po 5 z uzdrowicielem z tyłu, `heals` > 0, `peels` > 0, potyczki na trzech
-   frontach.
-3. Porównanie: ta sama kategoria z `tactics` = 0 (albo `m2_pvpfan_tactics_off` = 1) – walka jak dotąd; w logu czas
-   wojny (`result ... czas`) i `tactics summary`.

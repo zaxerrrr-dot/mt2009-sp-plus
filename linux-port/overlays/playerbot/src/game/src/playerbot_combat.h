@@ -1055,6 +1055,11 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_PVPFAN_WARSTYLE_V1 (playerbot_pvpfan.h): set by a caller for the length of one cast - the build's
+	// attack skills that are due are then tried in a random order (a player's "whatever is off cooldown"), not the
+	// build's fixed one. Off (false) for every other caller.
+	bool s_bPlayerBotShuffleAttackSkills = false;
+
 	bool ExecutePlayerBotAttackSkill(LPCHARACTER ch, LPCHARACTER target, TPlayerBotAIState& state, DWORD dwNow,
 			DWORD selectedDuelSkill = 0)
 	{
@@ -1142,6 +1147,10 @@ namespace
 				}
 			}
 		}
+		// MT2009_PLUS_PVPFAN_WARSTYLE_V1: the due skills in a random order (Fisher-Yates over the slots).
+		if (s_bPlayerBotShuffleAttackSkills && !selectedDuelSkill && !legendPvp)
+			for (size_t i = skillSlots - 1; i > 0; --i)
+				std::swap(skillOrder[i], skillOrder[(size_t)number(0, (int)i)]);
 		for (size_t k = 0; k < skillSlots; ++k)
 		{
 			const size_t i = skillOrder[k];

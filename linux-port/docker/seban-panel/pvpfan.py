@@ -540,7 +540,8 @@ def install(app, db, login_required, csrf_token, game_text=None, map_names=None,
             kite = number(form.get("kite_distance") or 0, "Dystans uciekania", 0, 900)
             retreat = number(form.get("retreat_hp") or 0, "Odwrót przy HP %", 0, 80)
             values.update({
-                "tactics": 1 if form.get("tactics") else 0,
+                # MT2009_PLUS_PVPFAN_WARSTYLE_V1: 2 = the experimental squads; 0 = the guild war's fight (default)
+                "tactics": 2 if form.get("tactics") else 0,
                 "squad_size": number(form.get("squad_size") or 5, "Wielkość oddziału", 2, 12),
                 "kite_distance": 0 if kite == 0 else max(150, kite),
                 "retreat_hp": 0 if retreat == 0 else max(5, retreat),
