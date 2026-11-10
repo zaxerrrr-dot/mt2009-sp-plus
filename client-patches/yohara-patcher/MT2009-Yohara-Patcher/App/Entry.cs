@@ -1,6 +1,7 @@
 using MT2009Yohara.Core;
 using N2_Patcher.Model;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -159,6 +160,33 @@ namespace MT2009Yohara
 				}
 			};
 			return app.Run();
+		}
+
+		// Starts a program of the client folder (the game, its config tool) through
+		// ShellExecute, with the client folder as the working folder. The game exe may
+		// need elevation (a requireAdministrator manifest, "run as administrator" in its
+		// compatibility settings, a protected folder): CreateProcess (UseShellExecute =
+		// false) then fails with ERROR_ELEVATION_REQUIRED (740), ShellExecute shows the
+		// UAC prompt instead. 740 even through ShellExecute -> once more with "runas".
+		public const int ErrorElevationRequired = 740;
+		public const int ErrorCancelled = 1223;
+
+		public static void StartExternal(string file)
+		{
+			ProcessStartInfo info = new ProcessStartInfo(file)
+			{
+				WorkingDirectory = Folder,
+				UseShellExecute = true
+			};
+			try
+			{
+				Process.Start(info);
+			}
+			catch (Win32Exception e) when (e.NativeErrorCode == ErrorElevationRequired)
+			{
+				info.Verb = "runas";
+				Process.Start(info);
+			}
 		}
 
 		// Starts the (new) patcher again after a self-update; the new one waits

@@ -60,7 +60,7 @@ namespace MT2009Yohara
 					if (play)
 					{
 						string exe = Path.Combine(Entry.Folder, Config.GetStartFile());
-						Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = Entry.Folder, UseShellExecute = false });
+						Entry.StartExternal(exe);
 					}
 					return 0;
 				default:
