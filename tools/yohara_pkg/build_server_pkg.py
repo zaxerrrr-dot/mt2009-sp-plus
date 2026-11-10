@@ -23,6 +23,14 @@ klient-test-yohara-3.0.19-latka.zip \
         --client-note-file tools/yohara_pkg/client-note-3.0.8.txt \
         --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.7-test-serwer.zip
     (the chain spelled out: 3.0.7 - 3.0.17 one by one; 3.0.9b and 3.0.18 are not needed)
+    python3 tools/yohara_pkg/build_server_pkg.py --version 3.0.11 --prev-version 3.0.10 \
+        --client-version 3.0.23 --changelog /opt/metin2/cache/yohara/CHANGELOG-YOHARA-3.0.11.md \
+        --client-patcher http://141.94.100.53/aktualizacje/yohara/MT2009-Yohara-Patcher.exe --client-chain-base 3.0.19 \
+        --client-chain klient-test-yohara-3.0.20-latka.zip,klient-test-yohara-3.0.21-latka.zip,\
+klient-test-yohara-3.0.22-latka.zip,klient-test-yohara-3.0.23-latka.zip \
+        --client-note-file /opt/metin2/cache/yohara/client-note-3.0.11.txt \
+        --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.10-test-serwer.zip
+    (the Yohara patcher brings any Yohara 3.0.0+ client to the version; the chain is the manual way)
 
 What goes in (the way 3.0.0-3.0.2 were made, written down):
   * every file git tracks at --ref, without the repository-only trees
@@ -201,18 +209,10 @@ Pozostale kroki sa takie same jak przy zwyklej paczce (SERWER_PL.md).
 
 KLIENT
 ------
-Potrzebny jest klient Yohara {client}:
- 1. klient 2.0.64,
- 2. na niego klient-test-yohara-3.0.0.zip,
- 3. na to, po kolei: {chain_txt}
-    (http://141.94.100.53/aktualizacje/test-plus/)
-    - kazdy rozpakuj do folderu klienta i zastap pliki.
-{client_note}Ten klient ma 3 Loch Pajakow i Krypte Balathora - w tej paczce sa domyslnie
+{client_steps}{client_note}Ten klient ma 3 Loch Pajakow i Krypte Balathora - w tej paczce sa domyslnie
 wlaczone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1). Starszy klient zamyka sie
 przy wejsciu na te mapy.
-Wazne: NIE uruchamiaj MT2009-Patcher.exe i nie klikaj w launcherze
-"aktualizuj klienta" - patcher sciaga klienta 2.x i nadpisalby pliki
-Yohary. Gre uruchamiaj bezposrednio przez plik exe gry (albo
+{client_warn} Gre uruchamiaj bezposrednio przez plik exe gry (albo
 przyciskiem GRAJ w launcherze).
 Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
 
@@ -250,12 +250,53 @@ AKTUALIZACJE I EDYTOR .env
 - 3 Loch Pająków i Krypta Balathora są włączone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1) – potrzebny klient Yohara {client}.
 
 KLIENT
-- Wgraj klienta Yohara {client}: na klienta Yohara 3.0.0 po kolei {chain_txt}
-  (http://141.94.100.53/aktualizacje/test-plus/) – bez niego nowe mapy i okna nie zadziałają.
-{client_note_latka}- Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
+{client_steps_latka}{client_note_latka}- Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
 
 Twój plik .env, hasła, postacie i świat zostają bez zmian.
 Plików w łatce: {count}.
+"""
+
+
+# MT2009_PLUS_YOHARA_PKG_PATCHER_V1 (10 November 2026): the client's way in both instructions - the chain of client
+# zips on the Yohara 3.0.0 client (3.0.0-3.0.10 packages), or the Yohara patcher with the chain as the manual way
+# (--client-patcher; the chain then starts at --client-chain-base).
+CLIENT_STEPS_CHAIN = """Potrzebny jest klient Yohara {client}:
+ 1. klient 2.0.64,
+ 2. na niego klient-test-yohara-3.0.0.zip,
+ 3. na to, po kolei: {chain_txt}
+    (http://141.94.100.53/aktualizacje/test-plus/)
+    - kazdy rozpakuj do folderu klienta i zastap pliki.
+"""
+CLIENT_WARN_CHAIN = """Wazne: NIE uruchamiaj MT2009-Patcher.exe i nie klikaj w launcherze
+"aktualizuj klienta" - patcher sciaga klienta 2.x i nadpisalby pliki
+Yohary."""
+CLIENT_STEPS_LATKA_CHAIN = """- Wgraj klienta Yohara {client}: na klienta Yohara 3.0.0 po kolei {chain_txt}
+  (http://141.94.100.53/aktualizacje/test-plus/) – bez niego nowe mapy i okna nie zadziałają.
+"""
+CLIENT_STEPS_PATCHER = """Potrzebny jest klient Yohara {client}. Najprosciej - patcher Yohary:
+ 1. pobierz MT2009-Yohara-Patcher.exe:
+    {patcher}
+ 2. wloz go do folderu klienta Yohara (obok pliku exe gry i folderu
+    "pack") - wystarczy klient Yohara 3.0.0 albo dowolny nowszy,
+ 3. uruchom go: pobierze tylko zmienione pliki i doprowadzi klienta do
+    wersji {client}; przycisk "Napraw klienta" sprawdza wszystkie pliki
+    i pobiera uszkodzone albo brakujace. Wymaga .NET Framework 4.8
+    (jest w Windows 10 1903+ i 11).
+Recznie (bez patchera): na klienta Yohara {base} wgraj po kolei
+    {chain_txt}
+    (http://141.94.100.53/aktualizacje/test-plus/)
+    - kazdy rozpakuj do folderu klienta i zastap pliki.
+"""
+CLIENT_WARN_PATCHER = """Wazne: NIGDY nie uruchamiaj patchera 2.x (MT2009-Patcher.exe) w folderze
+klienta Yohara i nie klikaj w launcherze "aktualizuj klienta" - patcher
+2.x sciaga klienta 2.x i nadpisalby pliki Yohary. Do klienta Yohara sluzy
+tylko MT2009-Yohara-Patcher.exe."""
+CLIENT_STEPS_LATKA_PATCHER = """- Wgraj klienta Yohara {client} – bez niego nowe mapy i okna nie zadziałają. Najprościej: pobierz
+  MT2009-Yohara-Patcher.exe ({patcher}), włóż go do folderu klienta Yohara
+  (klient Yohara 3.0.0 albo dowolny nowszy) i uruchom – doprowadzi klienta do {client} i naprawi uszkodzone pliki
+  („Napraw klienta”). Ręcznie: na klienta Yohara {base} po kolei {chain_txt}
+  (http://141.94.100.53/aktualizacje/test-plus/).
+- NIGDY nie uruchamiaj patchera 2.x (MT2009-Patcher.exe) w folderze klienta Yohara.
 """
 
 
@@ -300,6 +341,10 @@ def main():
                     help='client zips put on the Yohara 3.0.0 client, in order, comma separated '
                          '(default: klient-yohara-<client>-aktualizacja-od-3.0.0.zip)')
     ap.add_argument('--changelog', required=True)
+    # MT2009_PLUS_YOHARA_PKG_PATCHER_V1: the Yohara patcher's address; the chain is then the manual way from
+    # --client-chain-base
+    ap.add_argument('--client-patcher', default=None)
+    ap.add_argument('--client-chain-base', default='3.0.0')
     # MT2009_PLUS_YOHARA_PKG_V2: what else the players must know about the client (the version the auth core
     # demands, optional patches) - two blocks split by a line '----': the full package's INSTRUKCJA (ASCII, indented
     # by 4) and the patch's LATKA (Polish letters, '- ' lines); a missing file = no note (3.0.0-3.0.6 packages).
@@ -322,6 +367,13 @@ def main():
     v, tag = a.version, a.version + '-test'
     chain = (a.client_chain or 'klient-yohara-%s-aktualizacja-od-3.0.0.zip' % a.client_version).split(',')
     chain_txt = ', '.join(chain)
+    fmt = dict(client=a.client_version, chain_txt=chain_txt, patcher=a.client_patcher, base=a.client_chain_base)
+    if a.client_patcher:
+        client_steps, client_warn, client_steps_latka = (t.format(**fmt) for t in (
+            CLIENT_STEPS_PATCHER, CLIENT_WARN_PATCHER, CLIENT_STEPS_LATKA_PATCHER))
+    else:
+        client_steps, client_warn, client_steps_latka = (t.format(**fmt) for t in (
+            CLIENT_STEPS_CHAIN, CLIENT_WARN_CHAIN, CLIENT_STEPS_LATKA_CHAIN))
     note_full = note_latka = ''
     if a.client_note_file:
         with open(a.client_note_file, encoding='utf-8') as f:
@@ -416,7 +468,7 @@ def main():
     write(os.path.join(root, '.m2launcher-rebuild-pending'), 'Yohara %s: first build required\n' % tag)
     write(os.path.join(root, 'INSTRUKCJA-YOHARA-TEST.txt'),
           INSTRUKCJA.format(tag=tag, v=v, prev=a.prev_version or '?', client=a.client_version,
-                            chain_txt=chain_txt, client_note=note_full).replace('\n', '\r\n'))
+                            client_steps=client_steps, client_warn=client_warn, client_note=note_full).replace('\n', '\r\n'))
     shutil.copy2(a.changelog, os.path.join(root, 'CHANGELOG-YOHARA-%s.md' % v))
     for keep in ('linux-port/docker/game/src/serverfiles/share/package', 'linux-port/docker/game/src/serverfiles/mark-default'):
         os.makedirs(os.path.join(root, keep), exist_ok=True)
@@ -460,7 +512,7 @@ def main():
                              % (len(lost), a.prev_version, v, '\n  '.join(sorted(lost)[:60])))
         write(os.path.join(lroot, 'LATKA-%s-INSTRUKCJA.txt' % v),
               LATKA.format(prev=a.prev_version, v=v, name=lname, client=a.client_version, count=count + 1,
-                          chain_txt=chain_txt, client_note_latka=note_latka))
+                          client_steps_latka=client_steps_latka, client_note_latka=note_latka))
         lout = os.path.join(a.out, 'MT2009-PLUS-Yohara-latka-%s-do-%s-test.zip' % (a.prev_version, v))
         ldigest = zip_dir(stage, lname, lout)
         write(os.path.join(stage, 'latka-obsolete-files.txt'), '\n'.join(sorted(removed)) + '\n')
