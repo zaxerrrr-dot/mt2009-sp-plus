@@ -391,7 +391,7 @@ namespace
 		b.bRepeat = false;
 		b.iMobs = 0;
 		NotePlayerBotRaidDeath(ch, state, b, dwNow);	// MT2009_PLUS_BOT_RAID_DEATHS_V1
-		if (!IsPlayerBotDeathloopCase(ch, state))
+		if (!IsPlayerBotDeathloopCase(ch, state) || IsPlayerBotDeathNotMob(ch))	// MT2009_PLUS_BOT_PVP_DEATH_V1
 			return;
 		const TPlayerBotDeathloopConfig& c = GetPlayerBotDeathloopConfig();
 		++s_kPlayerBotDeathloop.deaths;

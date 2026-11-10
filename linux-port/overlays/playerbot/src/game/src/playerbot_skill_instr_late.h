@@ -61,6 +61,24 @@ namespace
 		return s_iGap * 3600;
 	}
 
+	// MT2009_PLUS_BOT_NEEDED_BOOKS_V1 (the owner, 10 November 2026: the books of the skills a bot needs, from the market AND
+	// the ItemShop): a bot of PLAYERBOT_SKILL_INSTR_GAP70_LEVEL+ whose build skill at M has no book left buys its path's
+	// chest of instructions (all of them its own path's skills) every PLAYERBOT_SKILL_INSTR_GAP70_H hours instead of the
+	// common gap (12 h: one chest of 25 random instructions for 5-6 skills at M1-M9 kept the 70+ bots at M7). Event flag
+	// m2_bot_skill_instr_gap70_h N (1-48; 0 or unset - the default). SM is not short (the daily pool); the purchase stays
+	// the V3 goal's (never urgent, the pool, the session cap).
+	const int PLAYERBOT_SKILL_INSTR_GAP70_LEVEL = 70;
+	const int PLAYERBOT_SKILL_INSTR_GAP70_H = 4;
+	int GetPlayerBotSkillInstrChestGapSecondsFor(LPCHARACTER ch)
+	{
+		const int common = GetPlayerBotSkillInstrChestGapSeconds();
+		if (!ch || (int)ch->GetLevel() < PLAYERBOT_SKILL_INSTR_GAP70_LEVEL || !IsPlayerBotNeededBooksOn())
+			return common;
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_skill_instr_gap70_h");
+		const int hours = flag >= 1 && flag <= 48 ? flag : PLAYERBOT_SKILL_INSTR_GAP70_H;
+		return std::min(common, hours * 3600);
+	}
+
 	// MT2009_PLUS_BOT_CLASS_CHESTS_V1: the class chests (D) and what the quest skrzynie_klas gives (keep equal to
 	// linux-port/docker/game/quest/skrzynie_klas.quest): a chest -> 10x Mikstura Madrosci (3h) 71155, 20x Zwoj Egzorcyzmu
 	// 71001, 10x Rada Pustelnika 71094, 5x Pierscien Teleportacji 70058 (one a cell) and its path's encyclopedia; the
@@ -351,7 +369,7 @@ namespace
 			return false;
 		}
 		const int last = ch->GetQuestFlag(PLAYERBOT_SKILL_INSTR_CHEST_FLAG);
-		if (last != 0 && get_global_time() - last < GetPlayerBotSkillInstrChestGapSeconds())
+		if (last != 0 && get_global_time() - last < GetPlayerBotSkillInstrChestGapSecondsFor(ch))
 			return false;
 		for (size_t i = 0; i < s_vecPlayerBotSkillInstrChests.size(); ++i)
 			if ((s_vecPlayerBotSkillInstrChests[i].dwVnum && ch->CountSpecifyItem(s_vecPlayerBotSkillInstrChests[i].dwVnum) > 0) ||

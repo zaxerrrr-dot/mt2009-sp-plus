@@ -104,7 +104,10 @@ namespace playerbot_progression
 		{ "fire_land",   66, 80, true,  60 },
 		{ "red_forest",  77, 255, false, 71 },
 		{ "grotto1",     78, 255, false, 72 },
-		{ "grotto2",     84, 255, false, 78 },
+		// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1 (the owner, 10 November 2026): the Grotto V2 from 80 (was 84) - the step after
+		// the Spider Dungeons and the Forest / Doyyumhwaji (to 80) now that the Red Forest and the Grotto V1 are no exp
+		// ground (IsPlayerBotExpClosedMap); 78-79 with lightning 40 by the element progression's early access.
+		{ "grotto2",     80, 255, false, 78 },
 		// MT2009_PLUS_SPIDER3_BOTS_V1 (the owner, 28 October 2026: "the bots that do very well on V2 move on
 		// to V3"): the third Spider Dungeon's band - from 66, two under its strongest spider (68) and the upper
 		// half of V2's 60-68; to 80 like the Forest and Doyyumhwaji, past V2's 78. Inside it a bot goes only

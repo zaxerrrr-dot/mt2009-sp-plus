@@ -11129,7 +11129,8 @@ namespace
 			const TPlayerBotSidekickPlanRow& r = PLAYERBOT_SIDEKICK_PLAN_ROWS[i];
 			if (level < (int)MapFrom(r.row) || IsPlayerBotMapOverCeiling(r.map, level) ||
 					(r.map == PLAYERBOT_MAP_ORC_VALLEY && level > (int)MapTo(MAP_ORC_VALLEY)) ||
-					!IsPlayerBotMapHostedHere(r.map) || IsPlayerBotSidekickTripBlocked(ch, r.map))
+					!IsPlayerBotMapHostedHere(r.map) || IsPlayerBotSidekickTripBlocked(ch, r.map) ||
+					IsPlayerBotExpClosedMap(r.map))	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 				continue;
 			std::map<long, DWORD>::const_iterator avoid = plan.mapAvoidUntil.find(r.map);
 			if (avoid != plan.mapAvoidUntil.end() && (int)(avoid->second - dwNow) > 0)
@@ -11142,7 +11143,8 @@ namespace
 				bool lower = false;
 				for (int j = i + 1; j < PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT && !lower; ++j)
 					lower = level >= (int)MapFrom(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].row) &&
-							IsPlayerBotMapHostedHere(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].map);
+							IsPlayerBotMapHostedHere(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].map) &&
+							!IsPlayerBotExpClosedMap(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].map);
 				if (lower)
 					continue;
 			}

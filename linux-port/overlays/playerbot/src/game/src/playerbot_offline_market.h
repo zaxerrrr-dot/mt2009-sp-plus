@@ -570,7 +570,38 @@ namespace {
     }
     // The order a held bot's books go in: a skill under the gate's level before one past it, the highest of those first
     // - the books gather on the skills nearest the gate instead of one each on all of them. 0 for a bot not held.
+    // MT2009_PLUS_BOT_NEEDED_BOOKS_V1 (playerbot_progression_needs.h): the units of a skill's books (KU by its socket,
+    // instructions by their value) on the bots' stands of the shop channel, per map - rebuilt once a minute.
+    std::map<std::pair<long, DWORD>, int> s_mapPlayerBotBookSupply;
+    DWORD s_dwPlayerBotBookSupplyAt = 0;
+    int GetPlayerBotBookSupplyForSkill(long map, DWORD skill) {
+        const DWORD now = get_dword_time();
+        if (s_dwPlayerBotBookSupplyAt == 0 || now - s_dwPlayerBotBookSupplyAt >= 60000) {
+            s_dwPlayerBotBookSupplyAt = now ? now : 1;
+            s_mapPlayerBotBookSupply.clear();
+            const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
+                    ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
+            for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+                if (!shop || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
+                const auto spawn = shop->GetSpawn();
+                if ((int)spawn.channel != shopChannel) continue;
+                for (const auto& [id, line] : shop->GetItems()) {
+                    if (!line || !line->GetTable() || line->GetTable()->bType != ITEM_SKILLBOOK) continue;
+                    const auto& info = line->GetInfo();
+                    const DWORD lineSkill = info.vnum == 50300 ? (DWORD)info.alSockets[0] : (DWORD)line->GetTable()->alValues[0];
+                    if (lineSkill)
+                        s_mapPlayerBotBookSupply[std::make_pair((long)spawn.map, lineSkill)] += (int)std::max<DWORD>(1, info.count);
+                }
+            }
+        }
+        std::map<std::pair<long, DWORD>, int>::const_iterator it = s_mapPlayerBotBookSupply.find(std::make_pair(map, skill));
+        return it != s_mapPlayerBotBookSupply.end() ? it->second : 0;
+    }
+
     int GetPlayerBotBookGateRank(LPCHARACTER ch, DWORD skill) {
+        // MT2009_PLUS_BOT_NEEDED_BOOKS_V1: a bot not held by a gate takes the skill it holds the fewest books of first
+        if (!IsPlayerBotBookGateHeld(ch) && skill && IsPlayerBotNeededBooksOn())
+            return std::max(0, 50 - CountPlayerBotOwnedSkillBooks(ch, skill));
         if (!IsPlayerBotBookGateHeld(ch) || !skill) return 0;
         const int level = (int)ch->GetSkillLevel(skill);
         return level < PLAYERBOT_BOOK_GATE_SKILL_LEVEL ? 100 + level : level;
@@ -2161,6 +2192,7 @@ namespace {
 }
 #else
 namespace {
+    int GetPlayerBotBookSupplyForSkill(long, DWORD) { return 0; }   // MT2009_PLUS_BOT_NEEDED_BOOKS_V1
     // The classic stalls of r40250 are the keepers' online counters, bought
     // from where the buyer stands (FindPlayerBotStallPick): a gambler there
     // goes from the storekeeper to the anvil as it always did.

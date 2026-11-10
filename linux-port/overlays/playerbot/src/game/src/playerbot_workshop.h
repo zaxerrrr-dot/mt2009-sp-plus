@@ -257,6 +257,7 @@ namespace
 		{
 			DecidePlayerBotBeltSeed(ch);
 			DecidePlayerBotTalismanSeed(ch);
+			GivePlayerBotFirstTalisman(ch);	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1
 		}
 		WearPlayerBotBestTalisman(ch);
 		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: on a Sung Ma map, the elixirs of resistance to its elements and the census

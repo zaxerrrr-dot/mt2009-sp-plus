@@ -51,6 +51,20 @@
 //    the below-need pieces held for a high line, and since start: tries started / passed / failed by cause, the raises
 //    per slot, maxed, locks, the changes in the field and in town (ordinary / Yohara).
 //
+// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1 (the owner, 10 November 2026; on the test 4 of 1311 tries passed, 232 failed on deaths -
+// a third of them PvP - while the counts and the hunting clock started again on every map change, 8.5 an hour):
+//   * only the map's monsters: a death a player / a duel / a war / a dungeon caused and an HP retreat from a player are not
+//     counted (MT2009_PLUS_BOT_PVP_DEATH_V1, playerbot_types.h / playerbot_survival.h); nor anything in a village or an
+//     instance (as before);
+//   * the clock and the counts go on over a map change (any hunting ground counts; r.lMap is the last one);
+//   * the thresholds are the map's: the 75+ bots' monster deaths and HP retreats per bot-hour on the map (the last one to
+//     two hours, PLAYERBOT_BONUSMIX_RATE_*) - a try fails on deaths at max(3, 2 x the map's rate x the try's hours + 1),
+//     at most 10, and on retreats at max(8, the same of the retreats), at most 24; a map without enough data
+//     (PLAYERBOT_BONUSMIX_RATE_MIN_BOT_H) keeps 3 / 8. A crowded map where every bot dies (packs, the crowd, a revive in a
+//     group) is the map's, not the bonuses'. The slow rule is unchanged (25 kills / 30 min);
+//   * the raise is capped: a slot goes up at most once a day (m2_bot_bonusmix_raise_gap_h N, 1-168, default 24) and never
+//     over step 2 (m2_bot_bonusmix_max_step N, 1-3, default 2); a failure with no slot it may raise is "capped" - no raise,
+//     no mixing, the bot watches - so no change stones or SM are burnt on a ground that is hard for everybody.
 // Flags: m2_bot_bonusmix_off 1 - all off (bonus75's strong / fair targets, the old field gate); m2_bot_bonusmix_field_off
 // 1 - the old field gate only; m2_bot_bonusmix_try_min N (10-180, default 40) - the try's minutes of hunting;
 // m2_bot_bonusmix_field_hp N (30-95, default 60); m2_bot_bonusmix_start_step N (1-3: the start step; 0 - step 0).
@@ -141,6 +155,7 @@ namespace
 		unsigned int kills, deaths, retreats;
 		long lMap;
 		unsigned int tries, fails;
+		DWORD raisedAt[8];	// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: the slot's last raise (0 never)
 		TPlayerBotBonusMixBot() { memset(this, 0, sizeof(*this)); }
 	};
 	std::map<DWORD, TPlayerBotBonusMixBot> s_mapPlayerBotBonusMix;
@@ -151,6 +166,7 @@ namespace
 		unsigned int raises[8];
 		unsigned int changesField[2], changesTown[2];	// [0 ordinary, 1 Yohara]
 		unsigned int fieldPasses, fieldUnsafe;
+		unsigned int capped, capStep, capGap;	// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: failures with no raise (slots skipped for)
 		TPlayerBotBonusMixStats() { memset(this, 0, sizeof(*this)); }
 	};
 	TPlayerBotBonusMixStats s_kPlayerBotBonusMixStats;
@@ -185,6 +201,80 @@ namespace
 	{
 		const int v = GetPlayerBotBonusMixFlag(PLAYERBOT_BONUSMIX_FIELD_HP_FLAG);
 		return v >= 30 && v <= 95 ? v : PLAYERBOT_BONUSMIX_FIELD_HP;
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: the map's own rates
+	const DWORD PLAYERBOT_BONUSMIX_RATE_PERIOD_MS = 60 * 60 * 1000;
+	const int PLAYERBOT_BONUSMIX_RATE_MIN_BOT_H = 2;	// bot-hours of data before the map's rate is used
+	const int PLAYERBOT_BONUSMIX_DEATHS_MAX = 10;
+	const int PLAYERBOT_BONUSMIX_RETREATS_MAX = 24;
+	const int PLAYERBOT_BONUSMIX_MAX_STEP = 2;
+	const int PLAYERBOT_BONUSMIX_RAISE_GAP_H = 24;
+
+	struct TPlayerBotBonusMixMapRate
+	{
+		DWORD periodStart;
+		unsigned int deaths[2], retreats[2], samples[2];	// [0 this period, 1 the one before]
+		TPlayerBotBonusMixMapRate() { memset(this, 0, sizeof(*this)); }
+	};
+	std::map<long, TPlayerBotBonusMixMapRate> s_mapPlayerBotBonusMixMapRate;
+
+	TPlayerBotBonusMixMapRate& TouchPlayerBotBonusMixMapRate(long map, DWORD now)
+	{
+		TPlayerBotBonusMixMapRate& m = s_mapPlayerBotBonusMixMapRate[map];
+		if (m.periodStart == 0)
+			m.periodStart = now ? now : 1;
+		else if (now - m.periodStart >= PLAYERBOT_BONUSMIX_RATE_PERIOD_MS)
+		{
+			const bool stale = now - m.periodStart >= 2 * PLAYERBOT_BONUSMIX_RATE_PERIOD_MS;
+			m.deaths[1] = stale ? 0 : m.deaths[0];
+			m.retreats[1] = stale ? 0 : m.retreats[0];
+			m.samples[1] = stale ? 0 : m.samples[0];
+			m.deaths[0] = m.retreats[0] = m.samples[0] = 0;
+			m.periodStart = now ? now : 1;
+		}
+		return m;
+	}
+
+	// The events a try is allowed on the map for its whole length: max(floor, 2 x the map's rate per bot-hour x the try's
+	// hours + 1), at most cap; the floor alone without enough data. kind: PLAYERBOT_GATE_TRIAL_EV_DEATH / _RETREAT.
+	int GetPlayerBotBonusMixAllowed(long map, int kind, DWORD tryMs, int* pRateX100)
+	{
+		const bool death = kind == PLAYERBOT_GATE_TRIAL_EV_DEATH;
+		const int floor = death ? PLAYERBOT_EPROG_DEATHS : PLAYERBOT_EPROG_RETREATS;
+		const int cap = death ? PLAYERBOT_BONUSMIX_DEATHS_MAX : PLAYERBOT_BONUSMIX_RETREATS_MAX;
+		if (pRateX100)
+			*pRateX100 = -1;
+		std::map<long, TPlayerBotBonusMixMapRate>::iterator it = s_mapPlayerBotBonusMixMapRate.find(map);
+		if (it == s_mapPlayerBotBonusMixMapRate.end())
+			return floor;
+		TPlayerBotBonusMixMapRate& m = TouchPlayerBotBonusMixMapRate(map, get_dword_time());
+		// a sample is a bot's half a minute (PLAYERBOT_BONUSMIX_LOOK_MS)
+		const unsigned long long samples = (unsigned long long)m.samples[0] + m.samples[1];
+		const unsigned long long perHour = 3600000ULL / PLAYERBOT_BONUSMIX_LOOK_MS;
+		if (samples < (unsigned long long)PLAYERBOT_BONUSMIX_RATE_MIN_BOT_H * perHour)
+			return floor;
+		const unsigned long long events = death ? (unsigned long long)m.deaths[0] + m.deaths[1]
+				: (unsigned long long)m.retreats[0] + m.retreats[1];
+		// rate = events / (samples / perHour) per bot-hour; allowed = ceil(2 x rate x tryMs / 1 h) + 1
+		const unsigned long long num = 2ULL * events * perHour * (unsigned long long)tryMs;
+		const unsigned long long den = samples * 3600000ULL;
+		const int allowed = (int)std::min<unsigned long long>((unsigned long long)cap, (num + den - 1) / den + 1ULL);
+		if (pRateX100)
+			*pRateX100 = (int)std::min<unsigned long long>(100000ULL, events * perHour * 100ULL / samples);
+		return std::max(floor, std::min(cap, allowed));
+	}
+
+	int GetPlayerBotBonusMixMaxStep()
+	{
+		const int v = GetPlayerBotBonusMixFlag("m2_bot_bonusmix_max_step");
+		return v >= 1 && v <= PLAYERBOT_BONUSMIX_STEPS - 1 ? v : PLAYERBOT_BONUSMIX_MAX_STEP;
+	}
+
+	DWORD GetPlayerBotBonusMixRaiseGapMs()
+	{
+		const int v = GetPlayerBotBonusMixFlag("m2_bot_bonusmix_raise_gap_h");
+		return (DWORD)(v >= 1 && v <= 168 ? v : PLAYERBOT_BONUSMIX_RAISE_GAP_H) * 3600000U;
 	}
 
 	TPlayerBotBonusMixBot& TouchPlayerBotBonusMix(LPCHARACTER ch)
@@ -433,8 +523,18 @@ namespace
 	void CountPlayerBotBonusMixEvent(LPCHARACTER ch, int kind)
 	{
 		std::map<DWORD, TPlayerBotBonusMixBot>::iterator it = s_mapPlayerBotBonusMix.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotBonusMix.end() || it->second.phase == PLAYERBOT_BONUSMIX_PHASE_MIX ||
-				!IsPlayerBotBonusMixGround(ch))
+		if (it == s_mapPlayerBotBonusMix.end() || !IsPlayerBotBonusMixGround(ch))
+			return;
+		// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: the map's tally of every 75+ bot's monster deaths and HP retreats
+		if (kind == PLAYERBOT_GATE_TRIAL_EV_DEATH || kind == PLAYERBOT_GATE_TRIAL_EV_RETREAT)
+		{
+			TPlayerBotBonusMixMapRate& m = TouchPlayerBotBonusMixMapRate(ch->GetMapIndex(), get_dword_time());
+			if (kind == PLAYERBOT_GATE_TRIAL_EV_DEATH)
+				++m.deaths[0];
+			else
+				++m.retreats[0];
+		}
+		if (it->second.phase == PLAYERBOT_BONUSMIX_PHASE_MIX)
 			return;
 		if (kind == PLAYERBOT_GATE_TRIAL_EV_KILL)
 			++it->second.kills;
@@ -551,14 +651,29 @@ namespace
 		const int count = why == PLAYERBOT_BONUSMIX_FAIL_SLOW
 				? (int)(sizeof(PLAYERBOT_BONUSMIX_ATTACK_ORDER) / sizeof(PLAYERBOT_BONUSMIX_ATTACK_ORDER[0]))
 				: (int)(sizeof(PLAYERBOT_BONUSMIX_DEFENCE_ORDER) / sizeof(PLAYERBOT_BONUSMIX_DEFENCE_ORDER[0]));
+		// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: a slot at the step cap (2) or raised within the day is not raised again
+		const int maxStep = GetPlayerBotBonusMixMaxStep();
+		const DWORD gapMs = GetPlayerBotBonusMixRaiseGapMs();
+		const DWORD now = get_dword_time();
 		int pick = -1, pickStep = PLAYERBOT_BONUSMIX_STEPS;
+		int skippedStep = 0, skippedGap = 0;
 		for (int i = 0; i < count; ++i)
 		{
 			const int s = order[i];
 			if (!IsPlayerBotBonusMixPiece(ch, ch->GetWear(PLAYERBOT_BONUS75_SLOTS[s].bWearCell)))
 				continue;
 			const int step = GetPlayerBotBonusMixStep(ch, r, s);
-			if (step < PLAYERBOT_BONUSMIX_STEPS - 1 && step < pickStep)
+			if (step >= maxStep)
+			{
+				++skippedStep;
+				continue;
+			}
+			if (r.raisedAt[s] != 0 && now - r.raisedAt[s] < gapMs)
+			{
+				++skippedGap;
+				continue;
+			}
+			if (step < pickStep)
 			{
 				pick = s;
 				pickStep = step;
@@ -570,15 +685,21 @@ namespace
 		++r.fails;
 		if (pick < 0)
 		{
-			++s_kPlayerBotBonusMixStats.maxed;
+			++s_kPlayerBotBonusMixStats.capped;
+			s_kPlayerBotBonusMixStats.capStep += (unsigned int)skippedStep;
+			s_kPlayerBotBonusMixStats.capGap += (unsigned int)skippedGap;
+			if (skippedGap == 0)
+				++s_kPlayerBotBonusMixStats.maxed;
 			sys_log(0, "PLAYERBOT_BONUSMIX: try failed pid=%u name=%s lv=%d map=%ld phase=%s why=%s hunt_min=%u kills=%u "
-					"deaths=%u hp_retreats=%u raise=none (maxed)",
+					"deaths=%u hp_retreats=%u raise=none (capped: at_max_step=%d raised_today=%d max_step=%d)",
 					ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), r.lMap, PLAYERBOT_BONUSMIX_PHASE_NAMES[r.phase],
-					PLAYERBOT_BONUSMIX_FAIL_NAMES[why], (unsigned int)(r.huntMs / 60000U), r.kills, r.deaths, r.retreats);
+					PLAYERBOT_BONUSMIX_FAIL_NAMES[why], (unsigned int)(r.huntMs / 60000U), r.kills, r.deaths, r.retreats,
+					skippedStep, skippedGap, maxStep);
 			EnterPlayerBotBonusMixPhase(r, PLAYERBOT_BONUSMIX_PHASE_WATCH);
 			return;
 		}
 		r.step[pick] = pickStep + 1;
+		r.raisedAt[pick] = now ? now : 1;
 		r.raised |= 1U << pick;
 		r.locked[pick] = 0;
 		++s_kPlayerBotBonusMixStats.raises[pick];
@@ -613,11 +734,12 @@ namespace
 		if (r.nextLook != 0 && (int)(now - r.nextLook) < 0)
 			return;
 		r.nextLook = now + PLAYERBOT_BONUSMIX_LOOK_MS;
-		if (hunting && r.lMap != ch->GetMapIndex())
+		// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: another ground goes on with the same clock and counts (they were reset on every
+		// map change - 8.5 an hour - so a 40-minute try hardly ever ended); the map's presence sample for its rates
+		if (hunting)
 		{
-			// another ground: the counts start again there (a try goes on, judged on the new map)
 			r.lMap = ch->GetMapIndex();
-			ResetPlayerBotBonusMixCounts(r);
+			++TouchPlayerBotBonusMixMapRate(r.lMap, now).samples[0];
 		}
 		// can a below-need piece be mixed now? (a change stone in the bag, a piece the rule would change)
 		TPlayerBotYoharaBonusBag bag;
@@ -632,12 +754,13 @@ namespace
 		const DWORD tryMs = GetPlayerBotBonusMixTryMs();
 		if (r.phase == PLAYERBOT_BONUSMIX_PHASE_TRY || r.phase == PLAYERBOT_BONUSMIX_PHASE_WATCH)
 		{
-			if ((int)r.deaths >= PLAYERBOT_EPROG_DEATHS)
+			// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: the map's thresholds (its 75+ bots' rates), not a flat 3 / 8
+			if ((int)r.deaths >= GetPlayerBotBonusMixAllowed(r.lMap, PLAYERBOT_GATE_TRIAL_EV_DEATH, tryMs, NULL))
 			{
 				FailPlayerBotBonusMixTry(ch, r, PLAYERBOT_BONUSMIX_FAIL_DEATHS);
 				return;
 			}
-			if ((int)r.retreats >= PLAYERBOT_EPROG_RETREATS)
+			if ((int)r.retreats >= GetPlayerBotBonusMixAllowed(r.lMap, PLAYERBOT_GATE_TRIAL_EV_RETREAT, tryMs, NULL))
 			{
 				FailPlayerBotBonusMixTry(ch, r, PLAYERBOT_BONUSMIX_FAIL_RETREATS);
 				return;
@@ -797,11 +920,32 @@ namespace
 				reserveKept, stepText.c_str());
 		sys_log(0, "PLAYERBOT_BONUSMIX: census events tries=%u passed=%u failed deaths=%u hp_retreats=%u slow_kills=%u "
 				"(watching=%u) maxed=%u locks=%u raises [%s] changes field=%u/%u town=%u/%u (ordinary/yohara) "
-				"field_passes=%u field_unsafe=%u",
+				"field_passes=%u field_unsafe=%u capped=%u (at_max_step=%u raised_today=%u) max_step=%d "
+				"deaths_by_mob=%u deaths_not_mob=%u",
 				st.tries, st.passes, st.fails[PLAYERBOT_BONUSMIX_FAIL_DEATHS], st.fails[PLAYERBOT_BONUSMIX_FAIL_RETREATS],
 				st.fails[PLAYERBOT_BONUSMIX_FAIL_SLOW], st.watchFails, st.maxed, st.locks, raiseText.c_str(),
 				st.changesField[0], st.changesField[1], st.changesTown[0], st.changesTown[1], st.fieldPasses,
-				st.fieldUnsafe);
+				st.fieldUnsafe, st.capped, st.capStep, st.capGap, GetPlayerBotBonusMixMaxStep(),
+				s_uPlayerBotDeathsByMob, s_uPlayerBotDeathsNotMob);
+		// MT2009_PLUS_BOT_BONUSMIX_FAIR_V1: the maps' rates and the thresholds a try of the configured length gets there
+		{
+			const DWORD tryMs = GetPlayerBotBonusMixTryMs();
+			std::string rates;
+			for (std::map<long, TPlayerBotBonusMixMapRate>::iterator m = s_mapPlayerBotBonusMixMapRate.begin();
+					m != s_mapPlayerBotBonusMixMapRate.end(); ++m)
+			{
+				int dRate = -1, rRate = -1;
+				const int dAllowed = GetPlayerBotBonusMixAllowed(m->first, PLAYERBOT_GATE_TRIAL_EV_DEATH, tryMs, &dRate);
+				const int rAllowed = GetPlayerBotBonusMixAllowed(m->first, PLAYERBOT_GATE_TRIAL_EV_RETREAT, tryMs, &rRate);
+				if (m->second.samples[0] + m->second.samples[1] == 0)
+					continue;
+				snprintf(buf, sizeof(buf), "%s%ld:d%d.%02d/h>=%d r%d.%02d/h>=%d", rates.empty() ? "" : " ", m->first,
+						dRate < 0 ? 0 : dRate / 100, dRate < 0 ? 0 : dRate % 100, dAllowed,
+						rRate < 0 ? 0 : rRate / 100, rRate < 0 ? 0 : rRate % 100, rAllowed);
+				rates += buf;
+			}
+			sys_log(0, "PLAYERBOT_BONUSMIX: census maps [%s]", rates.c_str());
+		}
 	}
 }
 

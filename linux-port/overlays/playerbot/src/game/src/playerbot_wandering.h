@@ -1290,21 +1290,23 @@ namespace
 			// join them, the far ones too - the white/blue rooms of 93 are where
 			// a bot of 90-95 belongs; the straight line still halves a far hub's
 			// worth, the navigation (CanReach, A*) walks the maze.
+			// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1: the map opens at 80 now (was 84) - the outer hubs from 80, the inner from 82
+			// (were 84 / 86); the white / blue rooms of 93 stay from 90.
 			const TPlayerBotHuntingHub grottoV2Hubs[] = {
-				{  216100, 1269400, 84, 255, false, 0 },
-				{  233200, 1283400, 84, 255, false, 0 },
-				{  245700, 1288000, 84, 255, false, 0 },
-				{  214800, 1288000, 86, 255, false, 0 },
-				{  233600, 1258300, 86, 255, false, 0 },
-				{  253900, 1264900, 86, 255, false, 0 },
-				{  239200, 1268000, 84, 255, false, 0 },
-				{  201900, 1269000, 86, 255, false, 0 },
-				{  261200, 1289500, 86, 255, false, 0 },
+				{  216100, 1269400, 80, 255, false, 0 },
+				{  233200, 1283400, 80, 255, false, 0 },
+				{  245700, 1288000, 80, 255, false, 0 },
+				{  214800, 1288000, 82, 255, false, 0 },
+				{  233600, 1258300, 82, 255, false, 0 },
+				{  253900, 1264900, 82, 255, false, 0 },
+				{  239200, 1268000, 80, 255, false, 0 },
+				{  201900, 1269000, 82, 255, false, 0 },
+				{  261200, 1289500, 82, 255, false, 0 },
 				// MT2009_PLUS_GROTA2_REGEN_V1: inner rooms (2409's Setaou) the package left empty - 12-14 spawn lines
 				// each, 1.1-1.5 km of walking from the arrival, the room's centre with 5 m of free ground all round
 				// (tools/grota2/gen_grota2.py's server_attr). The third (261800, 1266200) is V2's white 1078:637 now.
-				{  247700, 1295700, 86, 255, false, 0 },	// the orange 950:950 (2409, 32 lines)
-				{  259500, 1255900, 86, 255, false, 0 },
+				{  247700, 1295700, 82, 255, false, 0 },	// the orange 950:950 (2409, 32 lines)
+				{  259500, 1255900, 82, 255, false, 0 },
 				// MT2009_PLUS_GROTA2_REGEN_V2: the spots of the global map (grota2/gen_report.txt): each spot room's
 				// middle with 5 m free all round, the band the median level of its monsters less three - the white
 				// and blue ones Komendant/Magistrat (2414/2413, 93) from 90, the green SOBA and the red MAXIMAXI
@@ -1329,8 +1331,8 @@ namespace
 				{  245100, 1238900, 88, 255, false, 0 },	// SOBA 2
 				{  178400, 1230800, 88, 255, false, 0 },	// MAXIMAXI (250:414)
 				{  178500, 1244600, 88, 255, false, 0 },	// MAXIMAXI
-				{  228700, 1296100, 86, 255, false, 0 },	// EISSOBA 2 (750:1000)
-				{  228900, 1304600, 86, 255, false, 0 }	// EISSOBA 2
+				{  228700, 1296100, 82, 255, false, 0 },	// EISSOBA 2 (750:1000)
+				{  228900, 1304600, 82, 255, false, 0 }	// EISSOBA 2
 			};
 			// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) - its second part only
 			// (the Giants, the ogres and the golems; the first part's cursed animals

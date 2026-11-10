@@ -375,7 +375,10 @@ namespace
 		{ PLAYERBOT_MAP_SPIDER_V2, 0, PLAYERBOT_EM_FIRE, 45, "spider_v2" },
 		{ PLAYERBOT_MAP_SPIDER_V3, 0, PLAYERBOT_EM_FIRE, 0, "spider_v3" },
 		{ PLAYERBOT_MAP_GROTTO_V1, 1, PLAYERBOT_EM_ELEC, 72, "grotto_v1" },
-		{ PLAYERBOT_MAP_GROTTO_V2, 1, PLAYERBOT_EM_ELEC, 80, "grotto_v2" },
+		// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1 (the owner, 10 November 2026): the Grotto V2 is the lightning step's map - early
+		// from 78 (was 80), its normal entry 80 (was 84); the Grotto V1's row stays for the step's prebuild window (from
+		// 67) and its gate, but no bot is sent there early (IsPlayerBotExpClosedMap).
+		{ PLAYERBOT_MAP_GROTTO_V2, 1, PLAYERBOT_EM_ELEC, 78, "grotto_v2" },
 		{ PLAYERBOT_MAP_ZAKLETY, 2, PLAYERBOT_EM_WIND, 95, "zaklety" },
 	};
 	const int PLAYERBOT_EPROG_MAP_COUNT = (int)(sizeof(PLAYERBOT_EPROG_MAPS) / sizeof(PLAYERBOT_EPROG_MAPS[0]));
@@ -508,6 +511,8 @@ namespace
 		}
 	}
 
+	int GetPlayerBotElementProgressWindFrom();	// MT2009_PLUS_BOT_WIND_AHEAD_V1 (below)
+
 	// The step's prebuild window: from its lowest early level (or normal entry) - PLAYERBOT_EPROG_LEAD to its top (the
 	// Spider Dungeons' ceilings; the Grotto to Zaklety Las's entry; Zaklety Las to its band's end).
 	void GetPlayerBotElementProgressStepWindow(int step, int& from, int& to)
@@ -524,6 +529,10 @@ namespace
 						: GetPlayerBotElementProgressNormalLevel(i));
 		}
 		from = std::max(1, from - PLAYERBOT_EPROG_LEAD);
+		// MT2009_PLUS_BOT_WIND_AHEAD_V1: the wind step's window opens at its build level when that is lower
+		const int windFrom = step == 2 ? GetPlayerBotElementProgressWindFrom() : 0;
+		if (windFrom > 0)
+			from = std::min(from, windFrom);
 		switch (step)
 		{
 			case 0: to = std::max((int)MapTo(MAP_SPIDER2), (int)MapTo(MAP_SPIDER3)); break;
@@ -659,6 +668,7 @@ namespace
 	bool IsPlayerBotElementProgressEarlyHere(LPCHARACTER ch, int idx)
 	{
 		return ch && idx >= 0 && idx < PLAYERBOT_EPROG_MAP_COUNT && PLAYERBOT_EPROG_MAPS[idx].iEarly > 0 &&
+				!IsPlayerBotExpClosedMap(PLAYERBOT_EPROG_MAPS[idx].lMap) &&	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 				(int)ch->GetLevel() < GetPlayerBotElementProgressNormalLevel(idx);
 	}
 
@@ -851,6 +861,10 @@ namespace
 
 	void NotePlayerBotElementProgressDeath(LPCHARACTER ch, DWORD now)
 	{
+		// MT2009_PLUS_BOT_PVP_DEATH_V1: only a death to the map's monsters is a failure of the gate trial, the bonus mix try
+		// or the progression map's retreat record - a player's kill, a duel, a war or a dungeon is none
+		if (IsPlayerBotDeathNotMob(ch))
+			return;
 		NotePlayerBotGateTrialEvent(ch, PLAYERBOT_GATE_TRIAL_EV_DEATH, now);	// MT2009_PLUS_BOT_GATE_TRIAL_V1
 #ifdef MT2009_PLUS_BOT_BONUSMIX_V1
 		NotePlayerBotBonusMixEvent(ch, PLAYERBOT_GATE_TRIAL_EV_DEATH, now);	// MT2009_PLUS_BOT_BONUSMIX_V1
@@ -907,6 +921,35 @@ namespace
 		return from + PLAYERBOT_EPROG_LEAD;
 	}
 
+	// MT2009_PLUS_BOT_WIND_AHEAD_V1 (the owner, 10 November 2026: wind built before 95, so that a bot of 95 can already hunt
+	// Zaklety Las - on 10 November the bots of 90+ held wind ~17): the level a step's element starts to be built while the
+	// bot still holds the step before at the gate - the step's first early level, but the wind step (2) from
+	// PLAYERBOT_EPROG_WIND_FROM (event flag m2_bot_element_progress_wind_from N, 85-100; m2_bot_wind_ahead_off 1 - the early
+	// level, 95, as before). The same level lets a bot of the Grotto (a gated map it hunts) build wind there with its
+	// lightning kept (GetPlayerBotElementMapGoal).
+	const int PLAYERBOT_EPROG_WIND_FROM = 90;
+	int GetPlayerBotElementProgressWindFrom()
+	{
+		static DWORD s_dwAt = 0;
+		static int s_iFrom = PLAYERBOT_EPROG_WIND_FROM;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			const int flag = q.GetEventFlag("m2_bot_element_progress_wind_from");
+			s_iFrom = q.GetEventFlag("m2_bot_wind_ahead_off") != 0 ? 0 : (flag >= 85 && flag <= 100 ? flag : PLAYERBOT_EPROG_WIND_FROM);
+		}
+		return s_iFrom;	// 0: off
+	}
+
+	int GetPlayerBotElementProgressStepBuildFrom(int step)
+	{
+		const int early = GetPlayerBotElementProgressStepEarly(step);
+		const int wind = step == 2 ? GetPlayerBotElementProgressWindFrom() : 0;
+		return wind > 0 ? std::min(early, wind) : early;
+	}
+
 	// The prebuild goal's row in PLAYERBOT_ELEMENT_MAP_ROWS, or -1: the latest step whose window holds the level - but
 	// the step before while the bot holds that one's resistance at the gate, its window still holds the level and the
 	// later step's first early level is not reached (it keeps what it hunts with now); past that early level the later
@@ -940,10 +983,19 @@ namespace
 			if (level >= from && level <= to && prevElement >= 0 &&
 					GetPlayerBotElementMapResist(ch, prevElement) >= GetPlayerBotElementProgressGate())
 			{
-				if (level < GetPlayerBotElementProgressStepEarly(step))
+				if (level < GetPlayerBotElementProgressStepBuildFrom(step))	// MT2009_PLUS_BOT_WIND_AHEAD_V1
 					--step;
 				else
 					keep = prevElement;
+			}
+			// MT2009_PLUS_BOT_WIND_AHEAD_V1: a bot of the wind window short of the Grotto's lightning, under Zaklety Las's
+			// first early level, builds lightning first (the map it can hunt now), not wind
+			else if (step == 2 && GetPlayerBotElementProgressWindFrom() > 0 && level >= from && level <= to &&
+					prevElement >= 0)
+			{
+				const int z = FindPlayerBotElementProgressMap(PLAYERBOT_MAP_ZAKLETY);
+				if (z >= 0 && PLAYERBOT_EPROG_MAPS[z].iEarly > 0 && level < PLAYERBOT_EPROG_MAPS[z].iEarly)
+					--step;
 			}
 		}
 		const int row = GetPlayerBotElementProgressStepRow(step);
@@ -982,7 +1034,8 @@ namespace
 		const TPlayerBotEProgMap& m = PLAYERBOT_EPROG_MAPS[idx];
 		const int level = (int)ch->GetLevel();
 		if (m.iEarly <= 0 || level < m.iEarly || level >= GetPlayerBotElementProgressNormalLevel(idx) ||
-				GetPlayerBotHuntElement(ch) != 0 || IsPlayerBotYoharaBonusMember(ch))
+				GetPlayerBotHuntElement(ch) != 0 || IsPlayerBotYoharaBonusMember(ch) ||
+				IsPlayerBotExpClosedMap(m.lMap))	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 			return false;
 		const int row = FindPlayerBotElementMapRow(m.lMap);
 		if (row < 0 || GetPlayerBotElementMapShare(row) < PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
@@ -1232,6 +1285,27 @@ namespace
 			if (next >= 0 && GetPlayerBotElementMapShare(next) >= PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE)
 			{
 				row = next;
+				prebuild = true;
+			}
+		}
+		// MT2009_PLUS_BOT_WIND_AHEAD_V1: a bot of 90+ that hunts (or wants) the lightning step's map - the Grotto V2, 90-95
+		// its only exp ground - and holds its lightning at the gate + PLAYERBOT_EPROG_PREBUILD_MARGIN (and over a retreat's
+		// raised target) builds the wind of Zaklety Las there, the pieces carrying lightning kept (iKeep); under that it
+		// builds lightning as before.
+		else if (GetPlayerBotElementProgressWindFrom() > 0 && (int)ch->GetLevel() >= GetPlayerBotElementProgressWindFrom())
+		{
+			const int idx = FindPlayerBotElementProgressMap(PLAYERBOT_ELEMENT_MAP_ROWS[row].lMap);
+			int step = -1, nextKeep = -1;
+			const int next = idx >= 0 && PLAYERBOT_EPROG_MAPS[idx].iStep == 1
+					? GetPlayerBotElementProgressPrebuildRow(ch, &step, &nextKeep) : -1;
+			const int element = PLAYERBOT_ELEMENT_MAP_ROWS[row].iElement;
+			if (next >= 0 && step == 2 && nextKeep == element &&
+					GetPlayerBotElementMapShare(next) >= PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE &&
+					GetPlayerBotElementMapResist(ch, element) >= std::max(GetPlayerBotElementMapRowGate(row) +
+							PLAYERBOT_EPROG_PREBUILD_MARGIN, GetPlayerBotElementProgressBoostTarget(ch, element)))
+			{
+				row = next;
+				keep = nextKeep;
 				prebuild = true;
 			}
 		}

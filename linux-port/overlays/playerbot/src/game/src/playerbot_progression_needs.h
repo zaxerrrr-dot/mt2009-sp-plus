@@ -114,9 +114,68 @@ namespace {
     // MT2009_PLUS_PROGRESSION_V1: and the bot a gate of the checklist holds
     // for its skills (playerbot_progression.h).
     int GetPlayerBotProgressionNeeds(DWORD pid);
+    // MT2009_PLUS_BOT_NEEDED_BOOKS_V1 (the owner, 10 November 2026: "boty maja sie nauczyc kupowac / zdobywac ksiegi do
+    // umiejetnosci, ktorych potrzebuja"; on the test the bots 80-97 held 5% of their attack skills at G, short_bots=1105,
+    // and the market's 5.5k books were of the wrong skills while a needed one had 1-6 lines): a bot of
+    // PLAYERBOT_NEEDED_BOOKS_MIN_LEVEL+ whose own build skill stands at M1-M9 with fewer than PLAYERBOT_NEEDED_BOOKS_LOW
+    // books of it studies books - but only while a stand of its first village holds a book of THAT skill
+    // (GetPlayerBotBookSupplyForSkill, playerbot_offline_market.h: KU and instructions by their skill, not the 50300
+    // ledger, which the plentiful wrong books filled) - so the trip and the stand look are for the book it needs, out of
+    // the book purse (half its yang an hour). The pick takes the needed skill with the fewest books first.
+    // Event flag m2_bot_needed_books_off 1 - as before.
+    const int PLAYERBOT_NEEDED_BOOKS_MIN_LEVEL = 50;
+    const int PLAYERBOT_NEEDED_BOOKS_LOW = 3;
+    int GetPlayerBotBookSupplyForSkill(long map, DWORD skill);   // playerbot_offline_market.h
+    bool IsPlayerBotNeededBooksOn() {
+        static DWORD s_dwAt = 0;
+        static bool s_bOn = true;
+        const DWORD now = get_dword_time();
+        if (s_dwAt == 0 || now - s_dwAt >= 5000) {
+            s_dwAt = now ? now : 1;
+            s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_needed_books_off") == 0;
+        }
+        return s_bOn;
+    }
+    // The build skill at M1-M9 short of books whose book a stand of the bot's first village holds (0: none) - the one
+    // with the fewest books first.
+    DWORD GetPlayerBotNeededBookOnMarket(LPCHARACTER ch) {
+        if (!ch || !ch->IsItemLoaded() || !ch->GetSkillGroup() || (int)ch->GetLevel() < PLAYERBOT_NEEDED_BOOKS_MIN_LEVEL ||
+                !IsPlayerBotNeededBooksOn())
+            return 0;
+        // asked per offer and per look: the answer is kept 10 s a bot
+        static std::map<DWORD, std::pair<DWORD, DWORD> > s_mapMemo;
+        const DWORD now = get_dword_time();
+        std::pair<DWORD, DWORD>& memo = s_mapMemo[ch->GetPlayerID()];
+        if (memo.first != 0 && now - memo.first < 10000)
+            return memo.second;
+        if (s_mapMemo.size() > 8192) {
+            s_mapMemo.clear();
+            return 0;
+        }
+        const long home = playerbot_empire_rules::GetHomeMap(ch->GetEmpire(), playerbot_empire_rules::MAP_ROLE_M1);
+        const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+        DWORD best = 0;
+        int bestOwned = PLAYERBOT_NEEDED_BOOKS_LOW;
+        for (BYTE i = 0; i < build.bSkillCount; ++i) {
+            const DWORD skill = build.dwSkills[i];
+            if (!skill || ch->GetSkillMasterType(skill) != SKILL_MASTER || ch->GetSkillLevel(skill) < 20 ||
+                    ch->GetSkillLevel(skill) >= 30)
+                continue;
+            const int owned = CountPlayerBotOwnedSkillBooks(ch, skill);
+            if (owned >= bestOwned || GetPlayerBotBookSupplyForSkill(home, skill) <= 0)
+                continue;
+            best = skill;
+            bestOwned = owned;
+        }
+        std::pair<DWORD, DWORD>& slot = s_mapMemo[ch->GetPlayerID()];
+        slot.first = now ? now : 1;
+        slot.second = best;
+        return best;
+    }
     bool PlayerBotStudiesBooks(LPCHARACTER ch) {
         return PlayerBotStudiesAtTheMarket(ch) || PlayerBotBuysBooksAsTrader(ch) || PlayerBotStudiesFromSurplus(ch) ||
-            (ch && (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_SKILLS) != 0);
+            (ch && (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_SKILLS) != 0) ||
+            GetPlayerBotNeededBookOnMarket(ch) != 0;   // MT2009_PLUS_BOT_NEEDED_BOOKS_V1
     }
     // Quantity needed, not a boolean reason to buy an arbitrarily large stack.
     int GetPlayerBotProgressionNeed(LPCHARACTER ch, LPITEM offer) {
@@ -230,7 +289,10 @@ namespace {
         // The ledger is advisory; the actual offer is revalidated at purchase.
         const bool studies = PlayerBotStudiesAtTheMarket(ch);
         const TPlayerBotMarketLedgerEntry* books = GetPlayerBotMarketLedgerEntry(50300);
-        if (PlayerBotStudiesBooks(ch) && books && books->dwSupplyUnits > 0 && ch->GetSkillGroup()) {
+        // MT2009_PLUS_BOT_NEEDED_BOOKS_V1: a book of a skill the bot needs on a stand of its first village - by the skill,
+        // not by any KU on the ledger (the wrong books sent the bots on trips for nothing)
+        if (GetPlayerBotNeededBookOnMarket(ch) != 0) return true;
+        if (!IsPlayerBotNeededBooksOn() && PlayerBotStudiesBooks(ch) && books && books->dwSupplyUnits > 0 && ch->GetSkillGroup()) {
             const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
             for (BYTE i = 0; i < build.bSkillCount; ++i) {
                 DWORD skill = build.dwSkills[i];
