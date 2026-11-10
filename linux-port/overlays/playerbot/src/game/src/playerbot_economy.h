@@ -5266,6 +5266,15 @@ namespace
 	{
 		if (!item || item->GetRefinedVnum() == 0 || IsPlayerBotSidekickPinned(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: a wind set's armour / helmet / bracelet in the bag climbs to the plus of the lightning
+		// piece of its slot (GetPlayerBotWindSetRefineTarget) - the junk and spare rules are not asked of it
+		{
+			const int windTarget = GetPlayerBotWindSetRefineTarget(ch, item);
+			if (windTarget >= 0)
+				return (int)item->GetRefineLevel() < windTarget;
+		}
+#endif
 		// The bow or fan a keeper builds for its sash (playerbot_sash.h).
 		if (IsPlayerBotSashGrailProject(ch, item))
 			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
@@ -6164,6 +6173,11 @@ namespace
 				LPITEM after = ch->GetInventoryItem(cellBefore);
 				state.adwRefineTakenOffItem[wearCell] = after ? after->GetID() : 0;
 			}
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+			// MT2009_PLUS_BOT_WIND_SET_V1: a wind set's piece is the new item the anvil handed back (or gone)
+			if (attempted)
+				NotePlayerBotWindSetRefined(ch, idBefore, ch->GetInventoryItem(cellBefore));
+#endif
 			// The piece the anvil handed back - a new item in the same cell -
 			// remembers what it was made from (playerbot_explain.h).
 			if (attempted && IsPlayerBotExplainOn())

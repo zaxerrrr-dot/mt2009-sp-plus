@@ -2616,6 +2616,12 @@ namespace
 		const int yoharaStones = ManagePlayerBotYoharaBonus(ch, state, dwNow);
 		if (yoharaStones >= 0)
 			return yoharaStones > 0 || costumeRolled;
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: a 90+ bot's wind set costume / hairstyle in the bag, the wind line from the 70063 /
+		// 70064 it bought at Handlarka (playerbot_element_wind_set.h)
+		if (RunPlayerBotWindSetCostumeRoll(ch, state, dwNow))
+			return true;
+#endif
 		// MT2009_PLUS_BOT_DUST_BONUS_V1: the marble first, else an add or a
 		// change stone the pass below spends at once.
 		if (!ManagePlayerBotDustMarble(ch))
@@ -3012,6 +3018,11 @@ namespace
 		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the worn pieces finished - the second set's costume pieces' reagent
 		if ((!wornTarget || !need) && IsPlayerBotYoharaBonusMember(ch))
 			need = GetPlayerBotSecondSetCostumeReagentNeed(ch);
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: and a 90+ bot's wind set costume pieces
+		else if (!wornTarget || !need)
+			need = GetPlayerBotWindSetCostumeReagentNeed(ch);
+#endif
 #else
 		if (!wornTarget)
 			need = 0;

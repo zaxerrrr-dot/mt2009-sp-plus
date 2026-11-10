@@ -270,6 +270,12 @@ namespace
 
 	bool IsPlayerBotSecondSetStored(LPCHARACTER ch, LPITEM item)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: a 90+ bot's wind set in the bag, or its lightning set there while the wind set is on
+		// (playerbot_element_wind_set.h) - every hook of this answer keeps it the same way
+		if (IsPlayerBotWindSetStored(ch, item))
+			return true;
+#endif
 		if (!ch || !item || s_mapPlayerBotSecondSet.empty() || item->IsEquipped() || item->GetID() == 0)
 			return false;
 		std::map<DWORD, TPlayerBotSecondSet>::const_iterator it = s_mapPlayerBotSecondSet.find(ch->GetPlayerID());
@@ -284,6 +290,10 @@ namespace
 
 	bool IsPlayerBotSecondSetWornLocked(LPCHARACTER ch, LPITEM item)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		if (IsPlayerBotWindSetWornLocked(ch, item))	// MT2009_PLUS_BOT_WIND_SET_V1: the wind set worn
+			return true;
+#endif
 		if (!ch || !item || s_mapPlayerBotSecondSet.empty() || !item->IsEquipped() || item->GetID() == 0)
 			return false;
 		std::map<DWORD, TPlayerBotSecondSet>::const_iterator it = s_mapPlayerBotSecondSet.find(ch->GetPlayerID());
@@ -331,6 +341,10 @@ namespace
 
 	bool IsPlayerBotSecondSetSwapPending(LPCHARACTER ch)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		if (IsPlayerBotWindSetSwapPending(ch))	// MT2009_PLUS_BOT_WIND_SET_V1
+			return true;
+#endif
 		if (!ch || s_mapPlayerBotSecondSet.empty())
 			return false;
 		const TPlayerBotSecondSet* s = GetPlayerBotSecondSet(ch, false);
@@ -846,6 +860,10 @@ namespace
 
 	bool WantsPlayerBotSecondSetOffer(LPCHARACTER ch, LPITEM offer)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		if (WantsPlayerBotWindSetOffer(ch, offer))	// MT2009_PLUS_BOT_WIND_SET_V1: a piece of the wind set
+			return true;
+#endif
 		if (!ch || !offer || s_mapPlayerBotSecondSet.empty() || offer->GetType() != ITEM_ARMOR)
 			return false;
 		const TPlayerBotSecondSet* s = GetPlayerBotSecondSet(ch, false);
@@ -856,6 +874,10 @@ namespace
 
 	bool CanPlayerBotPayForSecondSetOffer(LPCHARACTER ch, LPITEM offer, long long price)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		if (WantsPlayerBotWindSetOffer(ch, offer))	// MT2009_PLUS_BOT_WIND_SET_V1
+			return CanPlayerBotPayForWindSetOffer(ch, offer, price);
+#endif
 		if (!ch || !offer || price <= 0)
 			return false;
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
@@ -864,6 +886,9 @@ namespace
 
 	void CollectPlayerBotSecondSetMissing(LPCHARACTER ch, std::map<DWORD, int>& missing)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		CollectPlayerBotWindSetMissing(ch, missing);	// MT2009_PLUS_BOT_WIND_SET_V1
+#endif
 		const TPlayerBotSecondSet* s = s_mapPlayerBotSecondSet.empty() ? NULL : GetPlayerBotSecondSet(ch, false);
 		if (!s || s->iE2 < 0 || s->bWorn)
 			return;
@@ -912,6 +937,9 @@ namespace
 
 	void NotePlayerBotSecondSetBought(LPCHARACTER ch, DWORD vnum, long long price)
 	{
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		NotePlayerBotWindSetBought(ch, vnum, price);	// MT2009_PLUS_BOT_WIND_SET_V1
+#endif
 		TPlayerBotSecondSet* s = s_mapPlayerBotSecondSet.empty() ? NULL : GetPlayerBotSecondSet(ch, false);
 		if (!s || s->iE2 < 0 || s->bWorn)
 			return;
@@ -930,7 +958,11 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		TPlayerBotSecondSet* s = s_mapPlayerBotSecondSet.empty() ? NULL : GetPlayerBotSecondSet(ch, false);
 		if (!s || s->iE2 < 0 || s->bWorn || !pLook)
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+			return PickPlayerBotWindSetLook(ch, pLook);	// MT2009_PLUS_BOT_WIND_SET_V1: the wind set's costume / hairstyle
+#else
 			return 0;
+#endif
 		for (int k = 0; k < 2; ++k)
 		{
 			const int slot = PLAYERBOT_SS_COSTUME + k;

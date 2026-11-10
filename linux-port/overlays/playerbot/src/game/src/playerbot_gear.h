@@ -4683,6 +4683,14 @@ namespace
 		// table and scrolls decide how (playerbot_sash.h).
 		if (IsPlayerBotSashGrailProject(ch, item))
 			return std::max<BYTE>(GetPlayerBotRefineTargetOwn(ch, item), PLAYERBOT_SASH_GRAIL_PLUS);
+#ifdef MT2009_PLUS_BOT_WIND_SET_V1
+		// MT2009_PLUS_BOT_WIND_SET_V1: a wind set's piece - to the plus of the lightning piece of its slot
+		{
+			const int windTarget = GetPlayerBotWindSetRefineTarget(ch, item);
+			if (windTarget >= 0)
+				return (BYTE)windTarget;
+		}
+#endif
 		const BYTE target = GetPlayerBotRefineTargetOwn(ch, item);
 		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon is never refined, and the bot's own weapon waits at its
 		// plus while the hold holds - but for what the anvil makes for a counter (the level-30 weapon of another
