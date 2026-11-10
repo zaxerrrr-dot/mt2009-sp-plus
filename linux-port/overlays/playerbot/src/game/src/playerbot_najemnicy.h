@@ -82,6 +82,16 @@
 // Balathora's player list (ManageNajemnikDungeon); and the owner's party rejoined inside a dungeon after the owner's
 // relog (KeepNajemnikInParty: CParty::Join / Link, the instance's party count kept).
 //
+// MT2009_PLUS_NAJEMNICY_V5 - the owner's notes of 10 November 2026 (server-patches/najemnicy/README.md "Etap 5"):
+//   * the rejoin after a core / channel change works: the module clock's comparisons are signed (a rejoin's askedAt is
+//     a few ms after the pass's dwNow - the unsigned difference wrapped and timed every rejoined mercenary out);
+//   * "Stoj tutaj" is passive (no blow, skill, buff or loot) and the first "Wezwij" of a mercenary in the owner's login
+//     session sets it (GetNajemnicySessionMask); later summons and the rejoins keep the last order;
+//   * the slots come from player.najemnicy_kolekcjoner_tiers (the Seban panel's; GetNajemnicyTiers);
+//   * "/najemnicy panel [otworz|zamknij]" - the collector window's "Najemnicy" tab (NAJP lines, SendNajemnicyPanel),
+//     pushed again after every change of the owner's mercenaries (MarkNajemnicyPanelDirty / FlushNajemnicyPanels);
+//     the letter only opens it.
+//
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
 // skarbiec | okno <miejsce> | eq <miejsce> [polecenie] | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> |
