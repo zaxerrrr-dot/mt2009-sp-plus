@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Linux tests of the non-UI code of MT2009-Yohara-Patcher (the same Core/*.cs files). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>SYSLIB0014;SYSLIB0021;SYSLIB0022;SYSLIB0041</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Compile Include="..\MT2009-Yohara-Patcher\Core\*.cs" Link="Core\%(Filename).cs" />
+  </ItemGroup>
+</Project>

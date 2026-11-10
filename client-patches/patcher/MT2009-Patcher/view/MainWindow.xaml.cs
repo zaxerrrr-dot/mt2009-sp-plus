@@ -111,7 +111,20 @@ namespace N2_Patcher
 			// MT2009 PLUS: the patch list is an update of an installed client (packs,
 			// metin2client.exe), not a whole client - outside a client folder it
 			// would only fill the folder with files that cannot run.
-			if (System.IO.Directory.Exists(string.Concat(Functions.GetCurrentFolder(), "pack")))
+			if (PatchCore.IsYoharaClient(Functions.GetCurrentFolder()))
+			{
+				// MT2009_PLUS_YOHARA_PATCHER_V1: a Yohara (3.x) client - its own
+				// patcher updates it; 2.x files would break it. Nothing is
+				// checked or downloaded (GRAJ stays off).
+				this.readyInfo.Text = "To klient Yohara - użyj MT2009-Yohara-Patcher.exe.";
+				this.readyInfo.Visibility = Visibility.Visible;
+				this.checkClientTitle.Visibility = Visibility.Hidden;
+				this.checkClientInfo.Visibility = Visibility.Hidden;
+				this.Loaded += (s, e) => MessageBox.Show(this,
+					"W tym folderze jest klient MT2009 PLUS Yohara (3.x).\r\n\r\nTen patcher (MT2009-Patcher.exe) aktualizuje tylko klienta 2.x i niczego tu nie zmieni. Klienta Yohara aktualizuje MT2009-Yohara-Patcher.exe.",
+					Program.Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
+			else if (System.IO.Directory.Exists(string.Concat(Functions.GetCurrentFolder(), "pack")))
 			{
 				Program.Patchlist_Thread();
 			}

@@ -70,6 +70,13 @@ internal static class Program
 		File.WriteAllText(Path.Combine(dir, "pack", "x.index"), "hello");
 		string md5Hello = "5D41402ABC4B2A76B9719D911017C592";
 		Check(PatchCore.GetMD5(dir + "same.txt") == md5Hello, "MD5 wielkimi literami (BitConverter)");
+		Check(!PatchCore.IsYoharaClient(dir), "klient 2.x: nie Yohara");
+		File.WriteAllText(Path.Combine(dir, "pack", "hydra_map.index"), "y");
+		Check(PatchCore.IsYoharaClient(dir), "Yohara po paczce hydra_map (patcher 2.x odmawia)");
+		File.Delete(Path.Combine(dir, "pack", "hydra_map.index"));
+		File.WriteAllText(dir + "YOHARA_VERSION", "3.0.23");
+		Check(PatchCore.IsYoharaClient(dir), "Yohara po YOHARA_VERSION (patcher 2.x odmawia)");
+		File.Delete(dir + "YOHARA_VERSION");
 		string json = JsonConvert.SerializeObject(new object[] {
 			new { name = "same.txt", size = 5, md5 = md5Hello, uid = "a", delete = 0 },
 			new { name = "other.txt", size = 5, md5 = md5Hello, uid = "b", delete = 0 },

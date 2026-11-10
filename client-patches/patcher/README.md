@@ -47,6 +47,16 @@ domyślnie (logowanie 11000, CH1 13000, 2 kanały, CH2 = CH1 + 10), zapis,
 poprawianie i usuwanie. Walidacja jest identyczna z aktualizatorem i z
 `serverinfo.py` klienta (sprawdzone testami - niżej).
 
+### Klient Yohara (3.x) - nie ten patcher (MT2009_PLUS_YOHARA_PATCHER_V1)
+
+W folderze klienta Yohara (plik `YOHARA_VERSION` albo paczka
+`pack\hydra_map.index` / `balathor_map.index` / `seoganland_map.index`,
+`PatchCore.IsYoharaClient`) patcher 2.x niczego nie sprawdza ani nie pobiera,
+GRAJ zostaje wyłączone, a okno mówi, że klienta Yohara aktualizuje
+`MT2009-Yohara-Patcher.exe` (`client-patches/yohara-patcher`, własny serwer
+`http://141.94.100.53/aktualizacje/yohara/`). Patcher Yohary tak samo odmawia
+w folderze klienta 2.x.
+
 ### Stan serwera
 
 Nad przyciskiem GRAJ: nazwa serwera i **Logowanie / CH1 / CH2: ONLINE /

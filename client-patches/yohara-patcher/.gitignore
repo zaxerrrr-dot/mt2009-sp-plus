@@ -1,0 +1,4 @@
+bin/
+obj/
+# build.sh: tools/grafika_yohara.py writes the window art here (from ../patcher)
+MT2009-Yohara-Patcher/gen/

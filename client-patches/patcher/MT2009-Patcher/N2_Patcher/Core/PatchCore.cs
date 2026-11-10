@@ -89,6 +89,32 @@ namespace N2_Patcher.Core
 			return str1.Remove(str1.Length - 1);
 		}
 
+		// MT2009_PLUS_YOHARA_PATCHER_V1: the Yohara (3.x) client has its own
+		// patcher (MT2009-Yohara-Patcher.exe, client-patches/yohara-patcher) and
+		// its own update server; this patcher must never put 2.x files into it.
+		// The same markers as MT2009Yohara.Core.YoharaClient: YOHARA_VERSION in
+		// the client root, or a pack only the Yohara client has.
+		public static readonly string[] YoharaMarkers = new string[]
+		{
+			"YOHARA_VERSION",
+			"pack\\hydra_map.index",
+			"pack\\balathor_map.index",
+			"pack\\seoganland_map.index"
+		};
+
+		// folder ends with a separator (as Functions.GetCurrentFolder()).
+		public static bool IsYoharaClient(string folder)
+		{
+			foreach (string marker in PatchCore.YoharaMarkers)
+			{
+				if (File.Exists(PatchCore.LocalPath(folder, marker)))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		// The files that must be downloaded; deletes the entries marked
 		// "delete" on the way. The same rules as the original
 		// Functions.GetPatchlist; onChecked runs once per entry (progress bar).
