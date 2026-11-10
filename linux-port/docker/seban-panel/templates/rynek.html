@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Rynek – uczciwa cena · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_BOT_FAIR_PRICE_V1: rynek uczciwej ceny botów – ceny po rodzajach, przypięcia, granice, przełączniki (rynek.py, playerbot_fair_price.h) #}
+<style>
+.ry-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.ry-form label{display:grid;gap:5px;color:var(--muted);font-size:13px;max-width:22em}
+.ry-form input[type=text]{min-width:8em;padding:6px 8px}
+.ry-note{font-size:12px;color:var(--muted)}
+.ry-table td,.ry-table th{padding:6px 6px;vertical-align:top;white-space:nowrap}
+.ry-table td.ry-name{white-space:normal;min-width:12em}
+.ry-up{color:#2e9d57}.ry-down{color:#c0503a}
+.ry-icon{width:24px;height:24px;vertical-align:middle;margin-right:4px}
+.ry-flags{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.ry-flags label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+</style>
+<a class="back" href="{{ url_for('economy_shops') }}">← Rynek (sklepy offline)</a>
+<p class="eyebrow">GOSPODARKA · RYNEK BOTÓW</p>
+<h1>⚖️ Rynek – uczciwa cena</h1>
+<p class="muted">Każdy rodzaj przedmiotu ma <strong>uczciwą cenę</strong>: cenę bazową (cennik z kursem yang i inflacją, cena właściciela, a bez cennika – średnia z prawdziwych sprzedaży) razy mnożnik, który rynek przesuwa co kilkanaście minut w granicach {{ flags.m2_bot_fair_min_pct or 60 }}–{{ flags.m2_bot_fair_max_pct or 200 }}% ceny bazowej: w górę, gdy towar szybko schodzi i kupujący płacą uczciwą cenę albo więcej, w dół, gdy zalega. Każdy bot wystawia cały swój zapas danego rodzaju po jednej cenie, w swoim własnym przedziale (handlarze taniej, cierpliwi drożej), i co 30–60 min podnosi ją o 3–5%, jeśli coś sprzedał, albo obniża, jeśli nie. Szczegóły: <code>docs/RYNEK_UCZCIWA_CENA.md</code>.</p>
+
+{% if missing %}
+<section class="panel"><h2>Brak tabel</h2><p>Tabele <code>player.playerbot_market_fair*</code> jeszcze nie istnieją – utworzy je migracja przy najbliższym starcie serwera (<code>rynek_fair.sql</code> w apply.sh) albo sama gra przy pierwszym przeliczeniu.</p></section>
+{% else %}
+<section class="cards compact">
+<article><span>System</span><strong>{{ 'Stary (wyłączony)' if flags.m2_bot_fairprice_off else 'Uczciwa cena' }}</strong><small>flaga m2_bot_fairprice_off</small></article>
+<article><span>Rodzaje</span><strong>{{ summary.n or 0 }}</strong><small>poniżej bazy: {{ summary.below or 0 }} · powyżej: {{ summary.above or 0 }} · przypięte: {{ summary.pinned or 0 }}</small></article>
+<article><span>Na straganach</span><strong>{{ yang(summary.units) }}</strong><small>sztuk tych rodzajów (boty i gracze, oba kanały)</small></article>
+<article><span>Ostatnie przeliczenie</span><strong>{% if age is none %}–{% elif age < 120 %}{{ age }} s temu{% else %}{{ (age // 60) }} min temu{% endif %}</strong><small>rdzeń zapisujący: port {{ summary.port or '–' }}</small></article>
+</section>
+
+<section class="panel" id="lista">
+<h2>Rodzaje</h2>
+<form method="get" class="ry-form">
+<label>Szukaj (nazwa lub VNUM)<input type="text" name="q" value="{{ q }}"></label>
+<label>Sortuj<select name="sort">
+{% for key, label in [('stock','najwięcej na rynku'),('sold','najwięcej sprzedaży'),('sellers','najwięcej sprzedawców'),('down','najtańsze względem bazy'),('up','najdroższe względem bazy'),('move','najszybciej tanieją'),('name','nazwa'),('vnum','VNUM')] %}<option value="{{ key }}" {% if sort == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+</select></label>
+<label><span><input type="checkbox" name="pinned" value="1" {% if pinned %}checked{% endif %}> tylko przypięte</span></label>
+<button>Pokaż</button>
+</form>
+<div class="table-wrap"><table class="ry-table">
+<thead><tr><th>Przedmiot</th><th>Baza</th><th>Uczciwa</th><th>Granice</th><th>Zapas (dni)</th><th>Sprzedaż / dzień</th><th>Na rynku</th><th>Sprzedawcy</th><th>Najtańsza</th><th>p25 · mediana · p75</th><th>Najdroższa</th><th>Ruch / h</th><th>Pewność</th></tr></thead>
+<tbody>
+{% for k in kinds %}
+<tr>
+<td class="ry-name">{% if k.icon %}<img class="ry-icon" src="{{ k.icon }}" alt="">{% endif %}<a href="{{ url_for('rynek_kind', vnum=k.vnum) }}"><strong>{{ k.name }}</strong></a><br><span class="ry-note">{{ k.vnum }}{% if k.p_pin or k.p_min_pct or k.p_max_pct %} · 📌 przypięte{% endif %}</span></td>
+<td>{{ k.ref_unit_text }}<br><span class="ry-note">{{ k.src_label }}</span></td>
+<td><strong>{{ k.fair_unit_text }}</strong><br><span class="ry-note {{ 'ry-up' if k.ratio_pct > 100 else ('ry-down' if k.ratio_pct < 100 else '') }}">{{ k.ratio_pct }}% bazy</span></td>
+<td>{{ k.min_pct }}–{{ k.max_pct }}%</td>
+<td>{{ k.cover_days if k.cover_days is not none else '∞' }}</td>
+<td>{{ k.sold_day }}<br><span class="ry-note">{{ k.events_w }} transakcji / {{ k.window_h }} h</span></td>
+<td>{{ k.stock_text }}<br><span class="ry-note">{{ k.offer_lines }} linii</span></td>
+<td>{{ k.sellers }}</td>
+<td>{{ k.p_min_text }}</td>
+<td>{{ k.p25_text }} · {{ k.p50_text }} · {{ k.p75_text }}</td>
+<td>{{ k.p_max_text }}</td>
+<td class="{{ 'ry-up' if k.move_h > 0 else ('ry-down' if k.move_h < 0 else '') }}">{{ '%+.2f'|format(k.move_h) }}%</td>
+<td>{{ (k.conf * 100)|round|int }}%</td>
+</tr>
+{% else %}
+<tr><td colspan="13" class="muted">Brak danych – gra zapisuje rodzaje co {{ flags.m2_bot_fair_step_min or 15 }} min (rdzeń kanału handlowego).</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="ry-note">Zapas = sztuki na rynku / sprzedaż na godzinę (w dniach). Ruch = o ile uczciwa cena zmieniła się w ostatnim przeliczeniu (na godzinę). Pewność rośnie z liczbą transakcji – rzadkie przedmioty prawie się nie ruszają. Kliknij nazwę: historia, przypięcie ceny, własne granice.</p>
+</section>
+
+<section class="panel" id="przypnij">
+<h2>Przypnij cenę / ustaw granice</h2>
+<form method="post" class="ry-form"><input type="hidden" name="ry_csrf" value="{{ ry_csrf }}"><input type="hidden" name="action" value="pin">
+<label>VNUM<input type="text" name="vnum" required inputmode="numeric"></label>
+<label>Przypięta uczciwa cena (yang / szt., puste = brak)<input type="text" name="pin_unit" inputmode="numeric"></label>
+<label>Dolna granica (% bazy, puste = globalna)<input type="text" name="min_pct" inputmode="numeric"></label>
+<label>Górna granica (% bazy, puste = globalna)<input type="text" name="max_pct" inputmode="numeric"></label>
+<label>Notatka<input type="text" name="note" maxlength="80"></label>
+<button>Zapisz</button>
+</form>
+<p class="ry-note">Wszystkie pola puste = usuń przypięcie i granice. Boty dalej wystawiają w swoich przedziałach wokół przypiętej ceny.</p>
+</section>
+
+<section class="panel" id="ustawienia">
+<h2>Ustawienia (flagi gry)</h2>
+<form method="post"><input type="hidden" name="ry_csrf" value="{{ ry_csrf }}"><input type="hidden" name="action" value="flags">
+<p><label><input type="checkbox" name="m2_bot_fairprice_off" value="1" {% if flags.m2_bot_fairprice_off %}checked{% endif %}> {{ flag_specs[0][1] }}</label></p>
+<div class="ry-flags">
+{% for name, label, default, lo, hi, help in flag_specs[1:] %}
+<label>{{ label }}<input type="text" name="{{ name }}" value="{{ flags[name] or '' }}" placeholder="{{ default }}" inputmode="numeric"><span class="ry-note">{{ name }} · {{ lo }}–{{ hi }}, puste = {{ default }}{% if help %} · {{ help }}{% endif %}</span></label>
+{% endfor %}
+</div>
+<p><button>Zapisz ustawienia</button></p>
+</form>
+<p class="ry-note">Gra czyta te flagi co ~10 s, bez restartu. To samo w grze: <code>/eventflag m2_bot_fair_up_pct 20</code> itd. Spis w logach: linie <code>PLAYERBOT_FAIR: census</code> i <code>PLAYERBOT_FAIR: kind</code> co 10 minut.</p>
+</section>
+{% endif %}
+{% endblock %}

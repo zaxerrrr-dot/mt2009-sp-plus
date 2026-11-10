@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ kind.name }} – rynek · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_BOT_FAIR_PRICE_V1: jeden rodzaj – uczciwa cena, rozrzut ofert, historia godzinowa, przypięcie (rynek.py) #}
+<style>
+.ry-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.ry-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.ry-form input[type=text]{min-width:9em;padding:6px 8px}
+.ry-note{font-size:12px;color:var(--muted)}
+.ry-chart{width:100%;max-width:660px;height:auto;background:var(--panel-2,rgba(127,127,127,.06));border-radius:8px}
+.ry-chart polyline{fill:none;stroke-width:2}
+.ry-table td,.ry-table th{padding:5px 6px;white-space:nowrap}
+</style>
+<a class="back" href="{{ url_for('rynek') }}">← Rynek – uczciwa cena</a>
+<p class="eyebrow">GOSPODARKA · RYNEK BOTÓW · {{ kind.vnum }}</p>
+<h1>{% if icon %}<img src="{{ icon }}" alt="" style="width:32px;height:32px;vertical-align:middle"> {% endif %}{{ kind.name }}</h1>
+{% if kind.missing %}
+<section class="panel"><p>Tego rodzaju nie ma jeszcze w rynku uczciwej ceny (nikt go nie wystawia ani nie kupił w oknie, albo nie jest to towar tego rynku – sprzęt, księgi, kamienie, Cory, kupony, runy…). Możesz mimo to przypiąć mu cenę poniżej – zadziała, gdy pojawi się na rynku.</p></section>
+{% else %}
+<section class="cards compact">
+<article><span>Uczciwa cena</span><strong>{{ kind.fair_unit_text }}</strong><small>{{ kind.ratio_pct }}% ceny bazowej {{ kind.ref_unit_text }} ({{ kind.src_label }})</small></article>
+<article><span>Granice</span><strong>{{ kind.min_pct }}–{{ kind.max_pct }}%</strong><small>{% if kind.pin_unit %}przypięta: {{ kind.pin_unit_text }}{% else %}automatyczna{% endif %}</small></article>
+<article><span>Na rynku</span><strong>{{ kind.stock_text }}</strong><small>{{ kind.offer_lines }} linii · {{ kind.sellers }} sprzedawców · zapas {{ kind.cover_days if kind.cover_days is not none else '∞' }} dni</small></article>
+<article><span>Sprzedaż</span><strong>{{ kind.sold_day }} / dzień</strong><small>{{ kind.sold_w }} szt. w {{ kind.events_w }} transakcjach ({{ kind.window_h }} h) · 6 h: {{ kind.sold_6h }}{% if kind.hi_share is not none %} ({{ kind.hi_share }}% po uczciwej lub drożej){% endif %}</small></article>
+<article><span>Rozrzut ofert</span><strong>{{ kind.p_min_text }} – {{ kind.p_max_text }}</strong><small>p25 {{ kind.p25_text }} · mediana {{ kind.p50_text }} · p75 {{ kind.p75_text }}</small></article>
+<article><span>Ostatnie przeliczenie</span><strong>{{ '%+.2f'|format(kind.move_h) }}% / h</strong><small>nierównowaga {{ kind.x }} · pewność {{ (kind.conf * 100)|round|int }}% · średnia sprzedaży {{ kind.sale_mean_text }}</small></article>
+</section>
+{% endif %}
+
+<section class="panel" id="historia">
+<h2>Historia (ostatnie {{ hours }} h)</h2>
+<p class="ry-note"><a href="?h=48">48 h</a> · <a href="?h=168">7 dni</a> · <a href="?h=336">14 dni</a></p>
+{% if charts.fair_unit[0] or charts.p50[0] %}
+<svg class="ry-chart" viewBox="0 0 640 120" role="img" aria-label="uczciwa cena i mediana ofert">
+{% if charts.fair_unit[0] %}<polyline points="{{ charts.fair_unit[0] }}" stroke="#3b82c4"/>{% endif %}
+{% if charts.p50[0] %}<polyline points="{{ charts.p50[0] }}" stroke="#d08a2c" stroke-dasharray="4 3"/>{% endif %}
+{% if charts.sale_mean[0] %}<polyline points="{{ charts.sale_mean[0] }}" stroke="#2e9d57" stroke-dasharray="1 3"/>{% endif %}
+</svg>
+<p class="ry-note"><span style="color:#3b82c4">━ uczciwa cena</span> ({{ yang(charts.fair_unit[1]) }} – {{ yang(charts.fair_unit[2]) }}) · <span style="color:#d08a2c">╍ mediana ofert</span> ({{ yang(charts.p50[1]) }} – {{ yang(charts.p50[2]) }}) · <span style="color:#2e9d57">┈ średnia sprzedaży</span>. Każda linia w swojej skali.</p>
+{% else %}
+<p class="muted">Za mało punktów (zapis co godzinę).</p>
+{% endif %}
+{% if bars %}
+<svg class="ry-chart" viewBox="0 0 640 70" role="img" aria-label="sprzedaż na godzinę">
+{% for x, h in bars %}<rect x="{{ '%.1f'|format(x - 1.5) }}" y="{{ '%.1f'|format(66 - h) }}" width="3" height="{{ '%.1f'|format(h) }}" fill="#7a8aa0"/>{% endfor %}
+</svg>
+<p class="ry-note">Sprzedane sztuki na godzinę (najwięcej: {{ max_sold }}).</p>
+{% endif %}
+<div class="table-wrap"><table class="ry-table">
+<thead><tr><th>Godzina</th><th>Uczciwa</th><th>Baza</th><th>Na rynku</th><th>Sprzedane</th><th>Transakcje</th><th>Po uczciwej+</th><th>Średnia sprzedaży</th><th>Mediana ofert</th><th>Sprzedawcy</th></tr></thead>
+<tbody>
+{% for p in points %}
+<tr><td>{{ p.when_text }}</td><td>{{ yang(p.fair_unit) }}</td><td>{{ yang(p.ref_unit) }}</td><td>{{ yang(p.stock) }}</td><td>{{ p.sold }}</td><td>{{ p.events }}</td><td>{{ p.sold_hi }}</td><td>{{ yang(p.sale_mean) }}</td><td>{{ yang(p.p50) }}</td><td>{{ p.sellers }}</td></tr>
+{% else %}
+<tr><td colspan="10" class="muted">Brak historii.</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="ry-note">Ostatnie 48 godzin, od najnowszej (czas serwera panelu).</p>
+</section>
+
+<section class="panel" id="przypnij">
+<h2>Przypnij cenę / własne granice</h2>
+<form method="post" action="{{ url_for('rynek') }}" class="ry-form"><input type="hidden" name="ry_csrf" value="{{ ry_csrf }}"><input type="hidden" name="action" value="pin"><input type="hidden" name="back" value="kind"><input type="hidden" name="vnum" value="{{ kind.vnum }}">
+<label>Przypięta uczciwa cena (yang / szt.)<input type="text" name="pin_unit" value="{{ pin.pin_unit or '' }}" inputmode="numeric"></label>
+<label>Dolna granica (% bazy)<input type="text" name="min_pct" value="{{ pin.min_pct or '' }}" inputmode="numeric"></label>
+<label>Górna granica (% bazy)<input type="text" name="max_pct" value="{{ pin.max_pct or '' }}" inputmode="numeric"></label>
+<label>Notatka<input type="text" name="note" value="{{ pin.note or '' }}" maxlength="80"></label>
+<button>Zapisz</button>
+</form>
+<p class="ry-note">Puste pola = automatycznie (globalne granice). Gra przejmie zmianę przy najbliższym przeliczeniu (do ~15 min); boty przestawią swoje linie przy swoim sprawdzeniu albo w ciągu 10 min.</p>
+</section>
+{% endblock %}
