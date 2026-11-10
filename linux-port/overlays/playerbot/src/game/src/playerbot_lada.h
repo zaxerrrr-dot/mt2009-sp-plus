@@ -59,6 +59,11 @@
 // Cors, Materialy Rzemieslnicze, Moonlight chests, horse medals, SM coupons, refine scrolls, mission books, rare
 // goods, belts, sashes, talismans, costumes, potions and the low gear under its cap stay with the visit's own rules -
 // the visit no longer lists, cuts or restacks the lada's kinds while the lada is on.
+// MT2009_PLUS_BOT_LADA_FISH_V1 (10 November 2026): the fish family (alive, dead, grilled - the EXP food too) and
+// Baek-Go's potions are lada kinds over the cheap floor (m2_bot_lada_min_cheap, 1000 yang of the proto's gold a unit);
+// no basic shop potion (anything an NPC sells, the packed green / purple, the personal buff reserve), and no weapon or
+// armour piece whose reference ask a unit is under m2_bot_lada_min_gear (50 000) - those keep the old handling. A fish
+// keeps what the bot uses of it (GetPlayerBotLadaFishKeep, playerbot_economy.h); census4 counts them.
 //
 // The price: new lines at the visit's listing price (GetPlayerBotListingPrice, the floor) - or, a glutted kind, the
 // tier the line ranks into (MT2009_PLUS_BOT_LADA_TIER_XCH_V1, any channel); the glut's tiers
@@ -112,11 +117,13 @@ namespace
 	{
 		bool on, tiers, xch, junk, box;
 		int intervalMin, cap, worldCap, rate, passOps, boxStacks, boxRate, boxGapMin, floorPct;
+		int minCheap, minGear;	// MT2009_PLUS_BOT_LADA_FISH_V1
 		TPlayerBotLadaCfg() : on(true), tiers(true), xch(true), junk(false), box(true), intervalMin(30), cap(0),
 				worldCap(PLAYERBOT_LADA_WORLD_CAP_DEFAULT), rate(6), passOps(24), boxStacks(12), boxRate(120), boxGapMin(30),
-				floorPct(90) {}
+				floorPct(90), minCheap(1000), minGear(50000) {}
 	};
 	TPlayerBotLadaCfg s_kPlayerBotLadaCfg;
+	unsigned int s_uPlayerBotLadaGearFloorRefused = 0;	// MT2009_PLUS_BOT_LADA_FISH_V1: gear under m2_bot_lada_min_gear asked
 
 	const TPlayerBotLadaCfg& GetPlayerBotLadaCfg()
 	{
@@ -148,15 +155,22 @@ namespace
 			// MT2009_PLUS_BOT_LADA_FIX_V1: the clearing ask never under this percent of the normal price (50..100)
 			c.floorPct = value("m2_bot_market_floor_pct", 90, 50, 100);
 			s_iPlayerBotMarketFloorPct = c.floorPct;
+			// MT2009_PLUS_BOT_LADA_FISH_V1: the lada's value floors - a fish or a potion by its proto's gold a unit
+			// (1..1000000, default 1000), a weapon or an armour piece by its reference ask a unit (1..100000000, default
+			// 50 000). Under them the item keeps its old handling (the merchant, its use, the visit's pages).
+			c.minCheap = value("m2_bot_lada_min_cheap", 1000, 1, 1000000);
+			c.minGear = value("m2_bot_lada_min_gear", 50000, 1, 100000000);
+			s_iPlayerBotLadaMinCheap = c.minCheap;
+			s_iPlayerBotLadaMinGear = c.minGear;
 			s_bPlayerBotLadaTiers = c.tiers;
 			if (was.on != c.on || was.tiers != c.tiers || was.xch != c.xch || was.junk != c.junk || was.intervalMin != c.intervalMin ||
 					was.cap != c.cap || was.worldCap != c.worldCap || was.rate != c.rate || was.passOps != c.passOps ||
 					was.box != c.box || was.boxStacks != c.boxStacks || was.boxRate != c.boxRate || was.boxGapMin != c.boxGapMin ||
-					was.floorPct != c.floorPct)
+					was.floorPct != c.floorPct || was.minCheap != c.minCheap || was.minGear != c.minGear)
 				sys_log(0, "PLAYERBOT_LADA: config on=%d tiers=%d cross_channel=%d junk=%d interval_min=%d cap=%d (0: none) world_cap=%d rate=%d "
-						"pass_ops=%d box=%d box_stacks=%d box_rate=%d box_gap_min=%d market_floor_pct=%d",
+						"pass_ops=%d box=%d box_stacks=%d box_rate=%d box_gap_min=%d market_floor_pct=%d min_cheap=%d min_gear=%d",
 						c.on ? 1 : 0, c.tiers ? 1 : 0, c.xch ? 1 : 0, c.junk ? 1 : 0, c.intervalMin, c.cap, c.worldCap, c.rate,
-						c.passOps, c.box ? 1 : 0, c.boxStacks, c.boxRate, c.boxGapMin, c.floorPct);
+						c.passOps, c.box ? 1 : 0, c.boxStacks, c.boxRate, c.boxGapMin, c.floorPct, c.minCheap, c.minGear);
 		}
 		return s_kPlayerBotLadaCfg;
 	}
@@ -167,6 +181,30 @@ namespace
 	}
 
 	// ------------------------------------------------------------------------------------------------ the kinds
+	// MT2009_PLUS_BOT_LADA_FISH_V1: a potion - ITEM_POTION, or ITEM_USE drunk (USE_POTION / _NODELAY / _CONTINUE).
+	bool IsPlayerBotLadaPotionKindOf(const TItemTable* t)
+	{
+		return t && (t->bType == ITEM_POTION || (t->bType == ITEM_USE && (t->bSubType == USE_POTION ||
+				t->bSubType == USE_POTION_NODELAY || t->bSubType == USE_POTION_CONTINUE)));
+	}
+
+	// MT2009_PLUS_BOT_LADA_FISH_V1: the potions the lada carries (the fish family aside, IsPlayerBotLadaFishOf) -
+	// Baek-Go's juices, waters and mixtures over the cheap floor (m2_bot_lada_min_cheap, the proto's gold a unit).
+	// Never a basic shop potion: nothing an NPC's shop sells (the reds and blues 27001-27008, the General Store's
+	// green and purple, Baek-Go's sold waters), the green / purple mixtures in their packs (the visit's rule), the
+	// personal buff reserve (27101 / 27104), the withdrawn ones.
+	bool IsPlayerBotLadaPotionOf(DWORD vnum, const TItemTable* t)
+	{
+		if (!IsPlayerBotLadaPotionKindOf(t))
+			return false;
+		if ((long long)t->dwGold < (long long)s_iPlayerBotLadaMinCheap)
+			return false;
+		if ((vnum >= 27100 && vnum <= 27105) || (vnum >= 27110 && vnum <= 27115) || IsPlayerBotPersonalBuffPotion(vnum) ||
+				IsPlayerBotWithdrawnPotion(vnum))
+			return false;
+		return GetPlayerBotNpcShopUnitPrice(vnum) <= 0;
+	}
+
 	// The goods the lada lists, merges and takes back - by the proto (a line's and a bag item's alike).
 	bool IsPlayerBotLadaKindOf(DWORD vnum, const TItemTable* t)
 	{
@@ -175,13 +213,23 @@ namespace
 		switch (t->bType)
 		{
 			case ITEM_DS: case ITEM_SPECIAL_DS: case ITEM_METIN: case ITEM_COSTUME: case ITEM_BELT: case ITEM_QUEST:
-			case ITEM_POTION:
 				return false;
 			default:
 				break;
 		}
-		if (t->bType == ITEM_USE && (t->bSubType == USE_POTION || t->bSubType == USE_POTION_NODELAY ||
-				t->bSubType == USE_POTION_CONTINUE || t->bSubType == USE_TUNING))
+		// MT2009_PLUS_BOT_LADA_FISH_V1: the fish family and the potions by their own rules (ITEM_POTION and the
+		// USE_POTION subtypes were left out whole - Pieczony Rak Niebieski is ITEM_POTION, Pieczony Karas USE_POTION).
+		if (IsPlayerBotFishFamilyOf(vnum, t))
+		{
+			if (!IsPlayerBotLadaFishOf(vnum, t))
+				return false;
+		}
+		else if (IsPlayerBotLadaPotionKindOf(t))
+		{
+			if (!IsPlayerBotLadaPotionOf(vnum, t))
+				return false;
+		}
+		if (t->bType == ITEM_USE && t->bSubType == USE_TUNING)
 			return false;
 		if (IS_SET(t->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
 			return false;
@@ -205,9 +253,37 @@ namespace
 			return false;
 		if (IsPlayerBotPlainLowGearPiece(item) || CountsAgainstPlayerBotLowGearCap(item))
 			return false;
-		if (IsPlayerBotPackedPotion(item) || IsPlayerBotCraftedPotion(item))
+		// MT2009_PLUS_BOT_LADA_FISH_V1: a crafted potion over the floor is the lada's now (IsPlayerBotLadaKindOf); the
+		// packed green and purple stay the visit's.
+		if (IsPlayerBotPackedPotion(item))
 			return false;
+		// MT2009_PLUS_BOT_LADA_FISH_V1: no junk gear - a weapon or an armour piece whose reference ask a unit (the
+		// asking price every buyer reads: the sheet, its lines, the market's memory) is under m2_bot_lada_min_gear
+		// (50 000) keeps the old handling. Asked read-only: a look is no counter's ask (s_bPlayerBotAskStepReadOnly).
+		if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+		{
+			const bool wasReadOnly = s_bPlayerBotAskStepReadOnly;
+			s_bPlayerBotAskStepReadOnly = true;
+			const long long ask = (long long)GetPlayerBotShopAskingPrice(item);
+			s_bPlayerBotAskStepReadOnly = wasReadOnly;
+			if (ask / std::max<long long>(1, (long long)item->GetCount()) < (long long)s_iPlayerBotLadaMinGear)
+			{
+				++s_uPlayerBotLadaGearFloorRefused;
+				return false;
+			}
+		}
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_LADA_FISH_V1 (playerbot_economy.h's junk rule): a bot with a stand standing the lada serves.
+	bool IsPlayerBotLadaFishKeeper(LPCHARACTER ch)
+	{
+		const TPlayerBotLadaCfg& c = GetPlayerBotLadaCfg();
+		if (!c.on || !ch || !ch->GetDesc() || !ch->GetDesc()->IsBot() || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				IsPlayerBotSidekickServing(ch))
+			return false;
+		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+		return shop && shop->GetDuration() > 0 && (c.xch || (int)shop->GetSpawn().channel == (int)g_bChannel);
 	}
 
 	bool IsPlayerBotLadaStackableOf(const TItemTable* t)
@@ -258,6 +334,9 @@ namespace
 		// up by) and, at the last tier pass, the bot lines of a clearing good still under the floor
 		unsigned int repairQueued = 0, repairLooked = 0, repairEdited = 0, crashedLines = 0, normalKinds = 0;
 		unsigned long long repairYang = 0, crashedUnits = 0;
+		// MT2009_PLUS_BOT_LADA_FISH_V1: the fish and the potions listed since the last census
+		unsigned int fishListed = 0, potionListed = 0;
+		unsigned long long fishListedUnits = 0, potionListedUnits = 0;
 	};
 	TPlayerBotLadaCensus s_kPlayerBotLadaCensus;
 
@@ -497,6 +576,20 @@ namespace
 		++s_kPlayerBotLadaWorld.botLines;
 		++k.listed;
 		k.listedUnits += count;
+		// MT2009_PLUS_BOT_LADA_FISH_V1: the fish and the potions among them
+		if (const TItemTable* lt = ITEM_MANAGER::instance().GetTable(vnum))
+		{
+			if (IsPlayerBotFishFamilyOf(vnum, lt))
+			{
+				++k.fishListed;
+				k.fishListedUnits += count;
+			}
+			else if (IsPlayerBotLadaPotionKindOf(lt))
+			{
+				++k.potionListed;
+				k.potionListedUnits += count;
+			}
+		}
 		PlayerBotLogThrottled("lada_list", now,
 				"PLAYERBOT_LADA: list pid=%u name=%s item=%u vnum=%u count=%u price=%lld pos=%d lines=%u ch=%u stand_ch=%u junk=%d tier=%d",
 				pid, ch->GetName(), id, vnum, (unsigned int)count, (long long)price.yang, pos,
@@ -1471,6 +1564,51 @@ namespace
 				"repair_queued=%u repair_looked=%u repair_edited=%u repair_yang=%llu sales_clamped=%u",
 				(unsigned int)g_bChannel, c.floorPct, k.normalKinds, k.crashedLines, k.crashedUnits, k.repairQueued,
 				k.repairLooked, k.repairEdited, k.repairYang, s_uPlayerBotSaleSignalClamped);
+		// MT2009_PLUS_BOT_LADA_FISH_V1: the fish and the potions on the bots' counters (this core's copy), the crayfish
+		// (27827 / 27857 / 27887) apart, what was listed of them since the last census, the gear the value floor left out.
+		{
+			unsigned int fishLines = 0, fishLada = 0, potionLines = 0, potionLada = 0, crayLines = 0;
+			unsigned long long fishUnits = 0, potionUnits = 0, crayUnits = 0;
+			CPlayerBotManager& reg = CPlayerBotManager::instance();
+			for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+			{
+				if (!shop || !reg.IsRegisteredBotPID(shop->GetOwnerPID()))
+					continue;
+				for (const auto& [id, line] : shop->GetItems())
+				{
+					if (!line || !line->GetTable())
+						continue;
+					const DWORD v = line->GetInfo().vnum;
+					const bool lada = (int)line->GetInfo().pos >= PLAYERBOT_LADA_POS_BASE;
+					if (IsPlayerBotFishFamilyOf(v, line->GetTable()))
+					{
+						++fishLines;
+						fishUnits += line->GetInfo().count;
+						if (lada)
+							++fishLada;
+						if (v == 27827 || v == 27857 || v == 27887)
+						{
+							++crayLines;
+							crayUnits += line->GetInfo().count;
+						}
+					}
+					else if (IsPlayerBotLadaPotionKindOf(line->GetTable()))
+					{
+						++potionLines;
+						potionUnits += line->GetInfo().count;
+						if (lada)
+							++potionLada;
+					}
+				}
+			}
+			sys_log(0, "PLAYERBOT_LADA: census4 ch=%u min_cheap=%d min_gear=%d fish_lines=%u fish_units=%llu fish_lada_lines=%u "
+					"crayfish_lines=%u crayfish_units=%llu potion_lines=%u potion_units=%llu potion_lada_lines=%u "
+					"fish_listed=%u fish_listed_units=%llu potion_listed=%u potion_listed_units=%llu gear_floor_refused=%u",
+					(unsigned int)g_bChannel, c.minCheap, c.minGear, fishLines, fishUnits, fishLada, crayLines, crayUnits,
+					potionLines, potionUnits, potionLada, k.fishListed, k.fishListedUnits, k.potionListed, k.potionListedUnits,
+					s_uPlayerBotLadaGearFloorRefused);
+			s_uPlayerBotLadaGearFloorRefused = 0;
+		}
 		// The kinds of the most bot lines: lines, units, bots, the lada's lines of them, the tier lines.
 		struct TKind { unsigned int lines = 0, lada = 0, owners = 0, tiered = 0; unsigned long long units = 0; DWORD lastOwner = 0; };
 		std::map<DWORD, TKind> kinds;
