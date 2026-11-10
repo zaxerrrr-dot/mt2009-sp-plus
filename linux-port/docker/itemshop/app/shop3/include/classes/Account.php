@@ -89,6 +89,10 @@ class Account {
 				if($this->check_account_column('availDt') && $this->check_availDt($user['id']))
 					return 2;
 				
+				// MT2009_PLUS_SHOP3_TOKEN_V1: a web login is a new session - nothing of an earlier (in-game) one stays,
+				// not its character either.
+				unset($_SESSION['game'], $_SESSION['pid']);
+				@session_regenerate_id(true);
 				$_SESSION['id'] = $user['id'];
 				$_SESSION['password'] = $this->securityPassword($user['password']);
 				$_SESSION['fingerprint'] = md5($_SERVER['HTTP_USER_AGENT'] . 'x' . $_SERVER['REMOTE_ADDR']);
@@ -110,44 +114,27 @@ class Account {
 			return 1;
 	}
 	
-	public function AutoLoginShop($PID,$SAS){
-		global $database, $game_ishop_key, $shop_url;
-		
-		if(!is_numeric($PID))
-			return false;
-		
-		$account_id = $this->player->getPlayerData('account_id', $PID);
-		
-		$hash_generate = md5($PID.$account_id.$game_ishop_key);
-		if(is_numeric($PID) && $SAS && $hash_generate == $SAS){
-			$user = $this->db->get("account", [
-				"id",
-				"status",
-				"password"
-			], ["id" => $account_id]);
-
-			if($user['status']=='OK')
-			{
-				if($this->check_account_column('availDt') && $this->check_availDt($user['id']))
-					return false;
-				
-				$_SESSION['id'] = $user['id'];
-				$_SESSION['game'] = true;
-				// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the link - the shop shows what it can wear
-				// (header.php) and names it at the purchase.
-				$_SESSION['pid'] = (int)$PID;
-				$_SESSION['password'] = $this->securityPassword($user['password']);
-				$_SESSION['fingerprint'] = md5($_SERVER['HTTP_USER_AGENT'] . 'x' . $_SERVER['REMOTE_ADDR']);
-				
-				header("Location: ".$shop_url);
-				die();
-			} else return false;
-
-			return false;
-		} else
-			return false;
+	// MT2009_PLUS_SHOP3_TOKEN_V1: the in-game login is include/functions/game_login.php (a fresh HMAC token of the game core
+	// on every open, a new session each time). The package's AutoLoginShop (the static md5 link, written into whatever
+	// session the browser had) is gone; these two are what that page needs here.
+	public function gameLoginAllowed($account_id)
+	{
+		$status = $this->getAccountData('status', (int)$account_id);
+		return $status === 'OK';
 	}
-	
+
+	public function startGameSession($account_id, $pid)
+	{
+		$password = $this->getAccountData('password', (int)$account_id);
+		$_SESSION['id'] = (int)$account_id;
+		$_SESSION['game'] = true;
+		// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the link - the shop shows what it can wear
+		// (header.php) and names it at the purchase.
+		$_SESSION['pid'] = (int)$pid;
+		$_SESSION['password'] = $this->securityPassword((string)$password);
+		$_SESSION['fingerprint'] = md5((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') . 'x' . $_SERVER['REMOTE_ADDR']);
+	}
+
 	public function doLogout()
 	{
 		session_destroy();
