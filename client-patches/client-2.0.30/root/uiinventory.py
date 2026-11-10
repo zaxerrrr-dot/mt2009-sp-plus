@@ -520,10 +520,20 @@ class SidebarWindow(ui.Window):
 		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
+		# MT2009_PLUS_SIDEBAR_WINDOWS_V1 (the owner, 10 November 2026): Karty Potworow (monstercard.py), as the Esc menu's
+		# button and the keybind "monster_card"; the icon: the Zlote Pudelko Kart Potwora (83037), tools/sidebar2.
+		("monstercard", "Karty Potwor\xf3w", "OnClickMonsterCard", "monster_card"),
 		# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py).
 		("ekwipunek", "Dodatkowy ekwipunek", "OnClickExtraInventory", "extra_inventory"),
+		# MT2009_PLUS_SIDEBAR_WINDOWS_V1: Bonus Reliktu's window (uirelikt.py), as the Esc menu's button and the keybind
+		# "relic"; the icon: the Relikt Duszy (30272).
+		("relikt", "Relikty", "OnClickRelic", "relic"),
 		# MT2009_PLUS_GROWTH_PET_V1: the growth pet's window (uipetinfo.py), the official taskbar pet button's picture.
 		("pet", "Zwierzak domowy", "OnClickPet", "new_pet"),
+		# MT2009_PLUS_SIDEBAR_WINDOWS_V1: Kolekcjoner Najemnikow on its "Najemnicy" tab (uinajemnicykolekcjoner.py), as
+		# the Najemnicy letter opens it - no keybind shown (the key "kolekcjoner_najemnikow" opens the collector's tab);
+		# the icon: the warrior's face of the tab's mercenaries (icon/face/warrior_m.tga).
+		("najemnicy", "Najemnicy", "OnClickNajemnicy", None),
 		# MT2009_PLUS_REMOTE_CALL_V1: Enasir (uiremotecall.py) - the last one: left out without the exe's remoteCall (the
 		# tooltips are zipped with this tuple); GF's btn_peddler_call at the bar's size (mt2009_ui/sidebar/enasir_0x.tga).
 		("enasir", "Enasir", "OnClickEnasir", None),
@@ -988,6 +998,25 @@ class SidebarWindow(ui.Window):
 	def OnClickDropWiki(self):
 		import uidropwiki
 		uidropwiki.ToggleWindow()
+
+	def OnClickMonsterCard(self):	# MT2009_PLUS_SIDEBAR_WINDOWS_V1: as the Esc menu's "Karty Potworow"
+		__import__("monstercard").Toggle()
+
+	def OnClickRelic(self):	# MT2009_PLUS_SIDEBAR_WINDOWS_V1: as the keybind "relic"
+		__import__("uirelikt").ToggleWindow()
+
+	# MT2009_PLUS_SIDEBAR_WINDOWS_V1: Kolekcjoner Najemnikow on its "Najemnicy" tab - closed when it shows that tab
+	# already; shown on the collector's tab, it turns to the mercenaries' (SelectTab asks the server for the panel).
+	def OnClickNajemnicy(self):
+		module = __import__("uinajemnicykolekcjoner")
+		window = module.GetWindow()
+		if not window.IsShow():
+			window.Open(module.TAB_MERCS)
+		elif window.tab == module.TAB_MERCS:
+			window.Close()
+		else:
+			window.SelectTab(module.TAB_MERCS)
+			window.SetTop()
 
 class GridSlotStateManager():
 	SLOT_STATE_NONE = 0
