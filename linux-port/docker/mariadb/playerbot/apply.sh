@@ -5479,6 +5479,18 @@ if [ -s /opt/playerbot/najemnicy.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_BOT_FAIR_PRICE_V1 (the owner, 10 November 2026: the "fair price" market): rynek_fair.sql - the fair price
+# by kind (player.playerbot_market_fair, written by one game core, read by the others and the panel), its hourly
+# history (playerbot_market_fair_hist) and the panel's pins and bounds (playerbot_market_fair_pin; playerbot_fair_price.h,
+# the panel's rynek.py). Idempotent (CREATE TABLE IF NOT EXISTS); before the cores.
+if [ -s /opt/playerbot/rynek_fair.sql ]; then
+    if db < /opt/playerbot/rynek_fair.sql; then
+        echo "[playerbot-migrate] Rynek: rynek_fair.sql applied"
+    else
+        fail_step "Rynek: rynek_fair.sql failed (MT2009_PLUS_BOT_FAIR_PRICE_V1)" >&2
+    fi
+fi
+
 # MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1 (the owner, 8 November 2026: the mercenaries' unlock, "Kolekcjoner
 # Najemnikow"): kolekcjoner_najemnikow.sql - the six tasks (najemnicy_kolekcjoner_categories / _items / _rewards,
 # seeded with INSERT IGNORE), a character's hand-ins (_progress) and completed tasks (_complete, the permanent bonuses;

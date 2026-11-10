@@ -267,6 +267,7 @@ bool Mt2009KonieIsKeptVnum(DWORD dwVnum);
 // asking price.
 #include "playerbot_shop_name_rules.h"
 #include "playerbot_market_clearing.h" // MT2009_PLUS_BOT_MARKET_CLEARING_V1: the supply-driven clearing ask (before the town's prices)
+#include "playerbot_fair_price.h" // MT2009_PLUS_BOT_FAIR_PRICE_V1: the fair price market - the fair price by kind, the bots' own prices (before the town's prices)
 #include "playerbot_town.h"
 #include "playerbot_juki.h" // MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items the migration put in the storeroom, looked at once
 #include "playerbot_alchemy.h"

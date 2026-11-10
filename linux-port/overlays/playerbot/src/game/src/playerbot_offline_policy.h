@@ -53,6 +53,14 @@ inline std::map<uint32_t, uint32_t> soldLinesByVnum;
 // MT2009_PLUS_BOT_MARKET_CLEARING_V1: and the units of those lines, until the clearing price takes them
 // (UpdatePlayerBotMarketClearing, playerbot_market_clearing.h - the same once-a-minute ledger pass).
 inline std::map<uint32_t, uint64_t> soldUnitsByVnum;
+// MT2009_PLUS_BOT_FAIR_PRICE_V1: and every sale with its price and line, until the fair market takes them
+// (DrainPlayerBotFairSales, playerbot_fair_price.h - every core, once a second). The owner is 0 where the engine does
+// not give it (the owner on another core); the fair market finds it by the line. Bounded for a core that never drains.
+struct FairSale {
+    uint32_t vnum = 0, count = 0, item = 0, owner = 0;
+    long long price = 0;
+};
+inline std::vector<FairSale> fairSales;
 // An owner of 0 counts the line and records no sale: the engine passes the
 // owner only on the core the owner is on (MT2009_PLUS_SALE_ONCE_V1,
 // ikarus_shop_manager.cpp). Every core recorded it, and a bot that changed
@@ -72,6 +80,15 @@ inline void NoteSold(uint32_t ownerid, uint32_t item, uint32_t vnum, uint32_t co
         ++soldLinesByVnum[vnum];
     if (vnum && count && (soldUnitsByVnum.size() < 4096 || soldUnitsByVnum.count(vnum)))   // MT2009_PLUS_BOT_MARKET_CLEARING_V1
         soldUnitsByVnum[vnum] += count;
+    if (vnum && count && price > 0 && fairSales.size() < 50000) {   // MT2009_PLUS_BOT_FAIR_PRICE_V1
+        FairSale fs;
+        fs.vnum = vnum;
+        fs.count = count;
+        fs.item = item;
+        fs.owner = ownerid;
+        fs.price = price;
+        fairSales.push_back(fs);
+    }
     if (!ownerid) return;
     auto& lines = sold[ownerid];
     // An owner nobody drains - a real player, or a bot that has left the

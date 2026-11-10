@@ -12846,6 +12846,11 @@ install_pvpfan(app, db, login_required, update_csrf_token, game_text=game_text, 
 from najemnicy import install as install_najemnicy
 install_najemnicy(app, db, login_required, update_csrf_token)
 
+# MT2009_PLUS_BOT_FAIR_PRICE_V1: "Rynek - uczciwa cena" - the bots' fair price by kind, the spread of the offers, the
+# hourly history, pins and bounds per kind and the switches (rynek.py; the game's side playerbot_fair_price.h).
+from rynek import install as install_rynek
+install_rynek(app, db, login_required, update_csrf_token, game_text=game_text, icon_url=item_icon_url)
+
 # MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
 import dbeditor
 
