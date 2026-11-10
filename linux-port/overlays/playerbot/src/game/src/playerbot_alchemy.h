@@ -2272,6 +2272,10 @@ namespace
 	// The tick: the local work (qualification, Cors, stones, deck) on a short
 	// clock anywhere; the Alchemist's (elixir, refine) walked to in a first
 	// village, travelled to when there is any.
+	// MT2009_PLUS_BOT_VILLAGE70_V1: defined in playerbot_pearl_fishers.h.
+	bool PlayerBotVillage70HoldsAlchemistTrip(LPCHARACTER ch, DWORD dwNow);
+	void NotePlayerBotVillage70AlchemistTrip(LPCHARACTER ch, DWORD dwNow);
+
 	bool ManagePlayerBotAlchemy(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !IsPlayerBotAlchemyUser(ch))
@@ -2346,9 +2350,16 @@ namespace
 				else if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, homeMap, homeX, homeY) ||
 						!IsPlayerBotMapHostedHere(homeMap) || !playerbot_empire_rules::GetAlchemist(homeMap, alchemist))
 					return false;
+				// MT2009_PLUS_BOT_VILLAGE70_V1: a bot of 70+ goes to the first village's Alchemist on its own once in
+				// m2_bot_village70_alch_min; between, the work waits for the next time it is there anyway (its stall,
+				// a service - ManagePlayerBotPearlBot clears this clock on the arrival). Dongan's is not held.
+				if (homeMap != PLAYERBOT_MAP_SUNGMA_DONGAN && PlayerBotVillage70HoldsAlchemistTrip(ch, dwNow))
+					return false;
 				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 				if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow, "alchemy_to_alchemist"))
 					return false;
+				if (homeMap != PLAYERBOT_MAP_SUNGMA_DONGAN)
+					NotePlayerBotVillage70AlchemistTrip(ch, dwNow);
 				++s_kPlayerBotAlchemyStats.trips;
 				state.dwNextDsCheckTime = 0;
 				return true;

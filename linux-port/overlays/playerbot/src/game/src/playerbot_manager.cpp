@@ -572,6 +572,11 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 #include "playerbot_lada.h"
 #endif
+// MT2009_PLUS_BOT_PEARL_FISHERS_V1 / MT2009_PLUS_BOT_VILLAGE70_V1: the pearls' market (the fishers' share by the shortage,
+// the clams opened, the pearls listed), the 70+ bots' village time cut (the stall's long round, renew first, the
+// Alchemist batched, no fishing for the hunters), the free firewood, the census - after the board, the fair price and
+// the lada it reads
+#include "playerbot_pearl_fishers.h"
 
 namespace
 {
@@ -8769,6 +8774,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// kind away from the water lights one (playerbot_activities.h, ManagePlayerBotFishRoast).
 		if (!state.bMultiPullActive && !bFightingMetin && ManagePlayerBotFishRoast(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_BOT_PEARL_FISHERS_V1 / MT2009_PLUS_BOT_VILLAGE70_V1: the pearls' market's clocks and the 70+
+		// arrival in a first village (playerbot_pearl_fishers.h); never owns the tick.
+		ManagePlayerBotPearlBot(ch, state, dwNow);
 
 		// A handful of M1 bots fish the riverbank instead of grinding. This owns
 		// the whole tick: the rod sits in the weapon slot, so combat and the gear

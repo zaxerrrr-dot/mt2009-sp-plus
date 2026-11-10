@@ -400,6 +400,14 @@ namespace
 	}
 
 	bool PlayerBotProgressionBlocksFishing(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_PEARL_FISHERS_V1 / MT2009_PLUS_BOT_VILLAGE70_V1: defined in playerbot_pearl_fishers.h.
+	bool IsPlayerBotPearlFisher(LPCHARACTER ch);
+	bool IsPlayerBotHunterNoFish(LPCHARACTER ch);
+	bool IsPlayerBotFishWoodFree();
+	int GetPlayerBotPearlFisherClamKeep(LPCHARACTER ch);
+	void NotePlayerBotPearlClamCaught();
+	void NotePlayerBotPearlClamOpened(LPCHARACTER ch, int outcome);
+	DWORD GetPlayerBotPearlFisherRestMs();
 
 	bool IsPlayerBotAngler(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
@@ -427,6 +435,13 @@ namespace
 		// MT2009_PLUS_BP_BOTS_V1: gone fishing for a Battle Pass mission.
 		if (playerbot_bpbots::WantsFishing(ch))
 			return true;
+		// MT2009_PLUS_BOT_PEARL_FISHERS_V1: a designated pearl fisher (the pearls' market draws it,
+		// playerbot_pearl_fishers.h) fishes whatever its mood and its band's share; MT2009_PLUS_BOT_VILLAGE70_V1: a hunter
+		// of 70+ that is none does not ("70+ nie lowia, chyba ze sa wyznaczonymi rybakami", the owner, 10 November 2026).
+		if (IsPlayerBotPearlFisher(ch))
+			return true;
+		if (IsPlayerBotHunterNoFish(ch))
+			return false;
 		// MT2009_PLUS_PROGRESSION_V1: not while the checklist holds it with
 		// something missing, and not past its level band's share at the water
 		// (the panel's "Progresja botow"; playerbot_progression.h).
@@ -1118,6 +1133,19 @@ namespace
 		TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_CAMPFIRE_VNUM);
 		if (!proto)
 			return false;
+		// MT2009_PLUS_BOT_PEARL_FISHERS_V1 (the owner, 10 November 2026: "pieczenie ryb dla botow jest darmowe"): the
+		// piece is given, no yang and no hourly cap - a bot-only exception (m2_bot_fish_wood_free_off 1: bought again).
+		// Still only for the valuable kinds: the callers ask for wood only with such fish to roast.
+		if (IsPlayerBotFishWoodFree())
+		{
+			if (ch->GetEmptyInventory(1) < 0 || !ch->AutoGiveItem(PLAYERBOT_CAMPFIRE_VNUM, 1, -1, false))
+				return false;
+			++s_kPlayerBotFishRoastCensus.woodFree;
+			PlayerBotLogThrottled("fishroast_wood_free", dwNow,
+					"PLAYERBOT_FISHROAST: firewood given pid=%u name=%s why=%s",
+					ch->GetPlayerID(), ch->GetName(), why ? why : "?");
+			return true;
+		}
 		const long long price = GetPlayerBotNpcPurchasePrice(proto, 1);
 		if (price <= 0 || ch->GetEmptyInventory(1) < 0)
 			return false;
@@ -1391,7 +1419,15 @@ namespace
 			// no shells on its counters, where twenty-six recipes want them
 			// ("boty otwieraja malze za szybko", LazyBastarden, 23 September).
 			bool rybakShell = false;
-			if (vnum == PLAYERBOT_SHELLFISH_VNUM && IsPlayerBotPersonaEnabled())
+			// MT2009_PLUS_BOT_PEARL_FISHERS_V1: a designated pearl fisher, while pearls are short more than clams, opens
+			// every clam over its keep (PLAYERBOT_SHELLFISH_KEEP, or the anvil's reserve when it needs clams itself).
+			const int pearlKeep = vnum == PLAYERBOT_SHELLFISH_VNUM ? GetPlayerBotPearlFisherClamKeep(ch) : -1;
+			if (pearlKeep >= 0)
+			{
+				if ((int)ch->CountSpecifyItem(PLAYERBOT_SHELLFISH_VNUM) <= pearlKeep)
+					continue;
+			}
+			else if (vnum == PLAYERBOT_SHELLFISH_VNUM && IsPlayerBotPersonaEnabled())
 			{
 				const int held = (int)ch->CountSpecifyItem(PLAYERBOT_SHELLFISH_VNUM);
 				std::map<DWORD, TPlayerBotShellTally>::iterator tally =
@@ -1439,7 +1475,10 @@ namespace
 				NotePlayerBotFishOpened();
 				SellPlayerBotJunkDeadFishAtBank(ch, get_dword_time());
 				if (ch->CountSpecifyItem(PLAYERBOT_SHELLFISH_VNUM) > shellBefore)
+				{
+					NotePlayerBotPearlClamCaught();	// MT2009_PLUS_BOT_PEARL_FISHERS_V1: the census
 					NotePlayerBotMoodValuable(ch, PLAYERBOT_SHELLFISH_VNUM, 0, ITEM_USE, "fish");
+				}
 				else if (ch->CountSpecifyItem(PLAYERBOT_FISH_BONE_VNUM) > boneBefore)
 					NotePlayerBotMoodValuable(ch, PLAYERBOT_FISH_BONE_VNUM, 0, ITEM_MATERIAL, "fish");
 			}
@@ -1470,6 +1509,7 @@ namespace
 				else if (ch->CountSpecifyItem(PLAYERBOT_STONE_PIECE_VNUM) > stoneBefore)
 					outcome = PLAYERBOT_SHELL_STONE;
 				RememberPlayerBotShellfishOutcome(outcome);
+				NotePlayerBotPearlClamOpened(ch, outcome);	// MT2009_PLUS_BOT_PEARL_FISHERS_V1: the census
 			}
 
 			sys_log(0, "PLAYERBOT_FISHING: processed catch pid=%u name=%s vnum=%u kind=%s",
@@ -1608,6 +1648,9 @@ namespace
 				(IsPlayerBotRareNow(state.persona, playerbot_persona::RARE_WEDKARZ, dwNow)
 					? number(PLAYERBOT_WEDKARZ_REST_MIN_MS, PLAYERBOT_WEDKARZ_REST_MAX_MS)
 					: number(PLAYERBOT_FISHING_REST_MIN, PLAYERBOT_FISHING_REST_MAX));
+		// MT2009_PLUS_BOT_PEARL_FISHERS_V1: a designated pearl fisher is back at the water after a short rest.
+		if (ch && IsPlayerBotPearlFisher(ch))
+			state.dwNextFishingCheckTime = dwNow + GetPlayerBotPearlFisherRestMs();
 		StowPlayerBotRod(ch);
 		// MT2009_PLUS_BOT_FISH_ROAST_V1: what the session's catch left of the "smieci" kinds, at the Fisherman's.
 		SellPlayerBotJunkDeadFishAtBank(ch, dwNow);
@@ -1903,6 +1946,9 @@ namespace
 					(IsPlayerBotPersonaEnabled() && state.persona.bRestored
 						? GetPlayerBotRybakSessionMs(state, dwNow)
 						: (DWORD)number(PLAYERBOT_FISHING_SESSION_MIN, PLAYERBOT_FISHING_SESSION_MAX));
+			// MT2009_PLUS_BOT_PEARL_FISHERS_V1: a designated pearl fisher stays the whole hour.
+			if (IsPlayerBotPearlFisher(ch))
+				state.dwFishingSessionEndTime = dwNow + PLAYERBOT_RYBAK_MAX_SESSION;
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 			ch->Stop();

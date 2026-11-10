@@ -590,6 +590,7 @@ namespace
 				++k.potionListed;
 				k.potionListedUnits += count;
 			}
+			NotePlayerBotPearlListed(vnum, (unsigned int)count);	// MT2009_PLUS_BOT_PEARL_FISHERS_V1: the pearls' census
 		}
 		PlayerBotLogThrottled("lada_list", now,
 				"PLAYERBOT_LADA: list pid=%u name=%s item=%u vnum=%u count=%u price=%lld pos=%d lines=%u ch=%u stand_ch=%u junk=%d tier=%d",

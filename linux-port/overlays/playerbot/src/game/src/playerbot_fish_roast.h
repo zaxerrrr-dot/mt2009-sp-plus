@@ -20,6 +20,10 @@
 //   m2_bot_fish_roast_off        1: the whole rule off - the old fish handling (the proto-gold lada floor, the ten
 //                                cheap dead fish kept for the fire, every dead fish on the fire, the sheet's scaling);
 //   m2_bot_fish_wood_cap         the firewood a core buys in an hour, all bots together (default 600, 1..100000);
+//                                MT2009_PLUS_BOT_PEARL_FISHERS_V1 (the owner, 10 November 2026: "pieczenie ryb dla botow
+//                                jest darmowe"): the wood is given, not bought, and no cap applies (the census's
+//                                wood_free) - m2_bot_fish_wood_free_off 1 buys it again (playerbot_activities.h,
+//                                BuyPlayerBotFishWood);
 //   m2_bot_fish_roast_min        the valuable dead fish a bot that is not fishing holds before it lights a fire of its
 //                                own (default 1 - the cheapest roasted value, 40 000, is twice the wood's 20 000);
 //   m2_bot_fish_roast_check_min  how often such a bot looks, minutes (default 10, 1..240): the catch of a lada
@@ -121,7 +125,7 @@ namespace
 		unsigned long long junkNowYang = 0, junkMerchantYang = 0;
 		unsigned int listedLines = 0, soldLines = 0;
 		unsigned long long listedUnits = 0, soldUnits = 0, soldYang = 0;
-		unsigned int woodBought = 0, woodCapped = 0, woodNoGold = 0;
+		unsigned int woodBought = 0, woodCapped = 0, woodNoGold = 0, woodFree = 0;	// woodFree: MT2009_PLUS_BOT_PEARL_FISHERS_V1
 		unsigned long long woodYang = 0;
 	};
 	TPlayerBotFishRoastCensus s_kPlayerBotFishRoastCensus;
@@ -186,6 +190,38 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_PEARL_FISHERS_V1: the pearls (27992-27994) and the clam (27987) put up on the lada / sold off the
+	// stands, by kind (white, blue, red, clam) - logged and cleared by the pearls' census (playerbot_pearl_fishers.h).
+	struct TPlayerBotPearlStallCensus
+	{
+		unsigned int listedUnits[4] = { 0, 0, 0, 0 }, soldUnits[4] = { 0, 0, 0, 0 };
+		unsigned long long soldYang[4] = { 0, 0, 0, 0 };
+	};
+	TPlayerBotPearlStallCensus s_kPlayerBotPearlStallCensus;
+
+	int GetPlayerBotPearlStallKind(DWORD vnum)
+	{
+		if (vnum >= 27992 && vnum <= 27994)
+			return (int)(vnum - 27992);
+		return vnum == 27987 ? 3 : -1;
+	}
+
+	void NotePlayerBotPearlListed(DWORD vnum, unsigned int count)
+	{
+		const int kind = GetPlayerBotPearlStallKind(vnum);
+		if (kind >= 0)
+			s_kPlayerBotPearlStallCensus.listedUnits[kind] += count;
+	}
+
+	void NotePlayerBotPearlSold(DWORD vnum, unsigned int count, long long price)
+	{
+		const int kind = GetPlayerBotPearlStallKind(vnum);
+		if (kind < 0)
+			return;
+		s_kPlayerBotPearlStallCensus.soldUnits[kind] += count;
+		s_kPlayerBotPearlStallCensus.soldYang[kind] += (unsigned long long)std::max(0LL, price);
+	}
+
 	void LogPlayerBotFishRoastCensus(DWORD dwNow)
 	{
 		static DWORD s_dwAt = 0;
@@ -214,11 +250,11 @@ namespace
 		sys_log(0, "PLAYERBOT_FISHROAST: census on=%d opened=%u fires=%u fire_refused=%u roasted=%u roasted_kinds=%s "
 				"junk_bank_units=%u junk_bank_yang=%llu junk_merchant_units=%u junk_merchant_yang=%llu "
 				"listed_lines=%u listed_units=%llu sold_lines=%u sold_units=%llu sold_yang=%llu "
-				"wood_bought=%u wood_yang=%llu wood_capped=%u wood_no_gold=%u wood_this_hour=%d",
+				"wood_bought=%u wood_yang=%llu wood_capped=%u wood_no_gold=%u wood_this_hour=%d wood_free=%u",
 				IsPlayerBotFishRoastOn() ? 1 : 0, k.opened, k.fires, k.fireRefused, k.roasted, used ? kinds : "-",
 				k.junkNowUnits, k.junkNowYang, k.junkMerchantUnits, k.junkMerchantYang,
 				k.listedLines, k.listedUnits, k.soldLines, k.soldUnits, k.soldYang,
-				k.woodBought, k.woodYang, k.woodCapped, k.woodNoGold, s_iPlayerBotFishWoodThisHour);
+				k.woodBought, k.woodYang, k.woodCapped, k.woodNoGold, s_iPlayerBotFishWoodThisHour, k.woodFree);
 		k = TPlayerBotFishRoastCensus();
 	}
 }

@@ -3,6 +3,11 @@
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 // Included once after playerbot_town.h. All transfers use native Ikarus.
 namespace {
+    // MT2009_PLUS_BOT_VILLAGE70_V1: defined in playerbot_pearl_fishers.h.
+    bool IsPlayerBotVillage70(LPCHARACTER ch);
+    DWORD GetPlayerBotOfflineFarServiceMs(LPCHARACTER ch);
+    bool PlayerBotSlipCallsFromAfar(LPCHARACTER ch);
+    bool PlayerBotStallRenewFirst(LPCHARACTER ch, DWORD visitStarted);
     using NativeShop = ikashop::CShopManager::SHOP_HANDLE;
     // A bot's stand is playerbot_offline::BOT_SHOP_PAGES pages of a person's
     // grid, one under the other (prodnathin, 28 September; the engine's add
@@ -1164,6 +1169,7 @@ namespace {
                 line.price, 0, "", 0, line.price, slip ? per::LFLAG_SLIP : 0);
             NotePlayerBotEnergyLineSold(vnum, (int)line.count, line.price);   // MT2009_PLUS_BOT_ENERGY_CRYSTALS_V1: the census
             NotePlayerBotFishRoastSold(vnum, (unsigned int)line.count, (long long)line.price);   // MT2009_PLUS_BOT_FISH_ROAST_V1: the census
+            NotePlayerBotPearlSold(vnum, (unsigned int)line.count, (long long)line.price);   // MT2009_PLUS_BOT_PEARL_FISHERS_V1: the census
             // Every sale with how long its line stood, which is what the work on
             // unsold stock has to be measured by. -1 for a line this core never
             // saw go up: a restart inherited it, and its age is not known.
@@ -3331,8 +3337,10 @@ namespace {
             o.clearStockAskedAt = 0;
             o.clearStockBefore = -1;
         }
+        // MT2009_PLUS_BOT_VILLAGE70_V1: a bot of 70+ clears its stock on its long round, not every quarter of an hour.
         const bool clearLines = !o.visiting && !medalLines && shop && o.lastServedAt != 0 &&
-                Due(now, o.lastServedAt + PLAYERBOT_CLEAR_STOCK_SERVICE_MS) &&
+                Due(now, o.lastServedAt + (IsPlayerBotVillage70(ch) ? GetPlayerBotOfflineFarServiceMs(ch)
+                        : PLAYERBOT_CLEAR_STOCK_SERVICE_MS)) &&
                 Due(now, o.clearStockHoldUntil) &&
                 BotOfflineRoomForGoods(shop) > 0 && IsPlayerBotClearStockReady(ch, state);   // MT2009_PLUS_BOT_SHOP_MGMT_V1
         if (clearLines && o.clearStockAskedAt == 0) {
@@ -3508,12 +3516,16 @@ namespace {
         // reclaim probe above), nor does the first visit after a start, nor a
         // slipped price whose time is out (the slip probe above), nor a rod or
         // a pickaxe the owner's session is waiting for (AskPlayerBotTackleHome).
+        // MT2009_PLUS_BOT_VILLAGE70_V1: a bot of 70+ waits its own long round
+        // (GetPlayerBotOfflineFarServiceMs, m2_bot_village70_stall_min), and a
+        // slipped price does not call it from afar while the lada is on - the
+        // lada and the fair price reach a running stand's lines from anywhere.
         if (!o.visiting && !medalLines && !clearLines && !o.renewCalledAt && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
-                o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS) &&
+                o.lastServedAt != 0 && !Due(now, o.lastServedAt + GetPlayerBotOfflineFarServiceMs(ch)) &&
                 !IsPlayerBotTackleAskedHome(ch->GetPlayerID(), now)) {
             long long normal = 0;
             int ageMin = -1;
-            if (!BotOfflineDueSlipLine(ch, state, shop, now, normal, ageMin)) {
+            if (!BotOfflineDueSlipLine(ch, state, shop, now, normal, ageMin) || !PlayerBotSlipCallsFromAfar(ch)) {
                 o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
                 return false;
             }
@@ -3586,49 +3598,59 @@ namespace {
         if (shop->GetDuration() == 0) {
             // An expired stand needs no edit mode to give a line back, and one
             // it would no longer take comes off before the stand is renewed.
-            int lowGear = 0;
-            const char* why = "";
-            const DWORD unwanted = BotOfflineUnwantedLine(ch, shop, lowGear, &why);
-            if (unwanted && BotOfflineTakeOff(ch, state, unwanted, lowGear, now, why)) {
-                BotOfflineFinishVisit(ch, state, now);
-                BotOfflineChainVisit(state, now);
-                return false;
-            }
-            // And a Cor Draconis or a sash nobody bought, for the merchant.
-            if (BotOfflineTakeOffStaleRare(ch, state, shop, now)) {
-                BotOfflineFinishVisit(ch, state, now);
-                return false;
-            }
-            // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: and bonus goods unsold a day.
-            if (BotOfflineTakeOffStaleBonusGoods(ch, state, shop, now)) {
-                BotOfflineFinishVisit(ch, state, now);
-                return false;
-            }
-            // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: and weak-bonus scrap.
-            {
-                bool chained = false;
-                if (BotOfflineTakeOffWeakScrap(ch, state, shop, now, chained)) {
+            // MT2009_PLUS_BOT_VILLAGE70_V1: not for a bot of 70+ - its stand is
+            // renewed first, and the take-offs wait for a later visit: one
+            // take-off a visit and the bot back out, the renewal never reached
+            // and the expired stand calling again a quarter of an hour later,
+            // was most of the first channel's 8 222 stall trips in six hours
+            // (10 November). A renewal that did not take (the stand expired
+            // again within half an hour of a renew-first visit) goes the old
+            // way: the take-offs first.
+            if (!PlayerBotStallRenewFirst(ch, o.visitStarted)) {
+                int lowGear = 0;
+                const char* why = "";
+                const DWORD unwanted = BotOfflineUnwantedLine(ch, shop, lowGear, &why);
+                if (unwanted && BotOfflineTakeOff(ch, state, unwanted, lowGear, now, why)) {
                     BotOfflineFinishVisit(ch, state, now);
-                    if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                    BotOfflineChainVisit(state, now);
                     return false;
                 }
-            }
-            // MT2009_PLUS_BOT_SHOP_MGMT_V1: and what the shop management takes home.
-            {
-                bool chained = false;
-                if (BotOfflineTakeOffShopMgmt(ch, state, shop, now, chained)) {
+                // And a Cor Draconis or a sash nobody bought, for the merchant.
+                if (BotOfflineTakeOffStaleRare(ch, state, shop, now)) {
                     BotOfflineFinishVisit(ch, state, now);
-                    if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
                     return false;
                 }
-            }
-            // So does a piece the owner should be wearing.
-            {
-                long long gain = 0;
-                const DWORD reclaim = BotOfflineReclaimLine(ch, state, shop, now, gain);
-                if (reclaim && BotOfflineReclaim(ch, state, reclaim, gain, now)) {
+                // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: and bonus goods unsold a day.
+                if (BotOfflineTakeOffStaleBonusGoods(ch, state, shop, now)) {
                     BotOfflineFinishVisit(ch, state, now);
                     return false;
+                }
+                // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: and weak-bonus scrap.
+                {
+                    bool chained = false;
+                    if (BotOfflineTakeOffWeakScrap(ch, state, shop, now, chained)) {
+                        BotOfflineFinishVisit(ch, state, now);
+                        if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                        return false;
+                    }
+                }
+                // MT2009_PLUS_BOT_SHOP_MGMT_V1: and what the shop management takes home.
+                {
+                    bool chained = false;
+                    if (BotOfflineTakeOffShopMgmt(ch, state, shop, now, chained)) {
+                        BotOfflineFinishVisit(ch, state, now);
+                        if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                        return false;
+                    }
+                }
+                // So does a piece the owner should be wearing.
+                {
+                    long long gain = 0;
+                    const DWORD reclaim = BotOfflineReclaimLine(ch, state, shop, now, gain);
+                    if (reclaim && BotOfflineReclaim(ch, state, reclaim, gain, now)) {
+                        BotOfflineFinishVisit(ch, state, now);
+                        return false;
+                    }
                 }
             }
             // The operator moved the TRADE slider while this stand was up. An
