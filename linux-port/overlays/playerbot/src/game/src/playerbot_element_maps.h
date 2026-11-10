@@ -1081,6 +1081,64 @@ namespace
 		return wind > 0 ? std::min(early, wind) : early;
 	}
 
+	// MT2009_PLUS_BOT_WIND_BUILD_V1 (the owner, 10 November 2026: "No to niech boty daza do tego, aby budowac eq na wiatr,
+	// z itemshopem to w 15 minut zrobia"). The test of 10 November, 19:20-19:40 (after the wind-ahead merge): of the bots
+	// of 90+ building wind in the element shop 193 of 212 had a short plan - "pieces=0 []": every armour, helmet and
+	// bracelet carried lightning (2.8 pieces of 3 on average, 47 lightning in lines) and the kept-line rule kept each of
+	// them, so the plan held the stone and the wind pet only (wind 20). And the bots at the edge flipped: the wind goal
+	// asked lightning >= 45 with the lightning pet out, the wind pet sent it back (50 -> 40), the lightning goal (42)
+	// called its pet again - the pets swapped every 30 s. Now:
+	//   * a step's element is measured without its own Maly Zywiolak where the next step takes the pet slot
+	//     (GetPlayerBotElementMapResistOwn): the wind window opens when lightning holds the gate without its pet, and the
+	//     lightning goal of a bot in the wind window builds its pieces, not the pet (IsPlayerBotWindBuildHolder);
+	//   * the kept element is kept on the fewest pieces that hold its gate without the pet (IsPlayerBotElementProgressKeptPiece
+	//     - the set losing the least of the next element's room: the talisman last); the rest are free for the next
+	//     element. Event flag m2_bot_eprog_keep_all 1 - every piece with the line kept (the old rule).
+	long GetPlayerBotElementPetResist(LPCHARACTER ch, BYTE point);	// playerbot_element_pet.h
+
+	int GetPlayerBotElementMapResistOwn(LPCHARACTER ch, int e)
+	{
+		if (!ch || e < 0 || e >= 6)
+			return 0;
+		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[e];
+		const int total = Bonus67Total(ch, point) - (int)GetPlayerBotElementPetResist(ch, point);
+		return std::max(0, std::min(total, PLAYERBOT_ELEMENT_MAP_RESIST_CAP));
+	}
+
+	bool IsPlayerBotElementProgressKeepAll()
+	{
+		static DWORD s_dwAt = 0;
+		static bool s_bAll = false;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bAll = quest::CQuestManager::instance().GetEventFlag("m2_bot_eprog_keep_all") != 0;
+		}
+		return s_bAll;
+	}
+
+	// The resistance a kept element must hold: its progression map's gate (or a retreat's raised target).
+	int GetPlayerBotElementProgressKeepNeed(LPCHARACTER ch, int keep)
+	{
+		int gate = 0;
+		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT && gate <= 0; ++i)
+			if (PLAYERBOT_EPROG_MAPS[i].iElement == keep)
+				gate = GetPlayerBotElementProgressGateForMap(PLAYERBOT_EPROG_MAPS[i].lMap);
+		if (gate <= 0)
+			gate = GetPlayerBotElementProgressGate();
+		return std::max(gate, GetPlayerBotElementProgressBoostTarget(ch, keep));
+	}
+
+	// A bot of the wind window (WIND_AHEAD's level, no Yohara hunt element) whose goal is the lightning step's element:
+	// it builds lightning without its pet, so that the pet slot is free for wind once lightning holds.
+	bool IsPlayerBotWindBuildHolder(LPCHARACTER ch, int element)
+	{
+		const int from = GetPlayerBotElementProgressWindFrom();
+		return ch && from > 0 && (int)ch->GetLevel() >= from && element >= 0 &&
+				element == GetPlayerBotElementProgressStepElement(1) && GetPlayerBotHuntElement(ch) == 0;
+	}
+
 	// The prebuild goal's row in PLAYERBOT_ELEMENT_MAP_ROWS, or -1: the latest step whose window holds the level - but
 	// the step before while the bot holds that one's resistance at the gate, its window still holds the level and the
 	// later step's first early level is not reached (it keeps what it hunts with now); past that early level the later
@@ -1111,8 +1169,10 @@ namespace
 			int from = 0, to = 0;
 			GetPlayerBotElementProgressStepWindow(step - 1, from, to);
 			const int prevElement = GetPlayerBotElementProgressStepElement(step - 1);
-			if (level >= from && level <= to && prevElement >= 0 &&
-					GetPlayerBotElementMapResist(ch, prevElement) >= GetPlayerBotElementProgressGate())
+			// MT2009_PLUS_BOT_WIND_BUILD_V1: the wind step asks lightning without its pet (the pet goes to wind)
+			const int prevResist = prevElement < 0 ? 0 : step == 2 && GetPlayerBotElementProgressWindFrom() > 0
+					? GetPlayerBotElementMapResistOwn(ch, prevElement) : GetPlayerBotElementMapResist(ch, prevElement);
+			if (level >= from && level <= to && prevElement >= 0 && prevResist >= GetPlayerBotElementProgressGate())
 			{
 				if (level < GetPlayerBotElementProgressStepBuildFrom(step))	// MT2009_PLUS_BOT_WIND_AHEAD_V1
 					--step;
@@ -1151,6 +1211,78 @@ namespace
 			if (item->GetAttributeType(i) == point && item->GetAttributeValue(i) >= floor)
 				return true;
 		return false;
+	}
+
+	// MT2009_PLUS_BOT_WIND_BUILD_V1: is the piece one the kept element stays on? Of the worn armour, helmet, bracelet,
+	// talisman, costume and hairstyle carrying the kept line, the set that holds the element's gate without its pet
+	// (GetPlayerBotElementProgressKeepNeed) and gives up the least room of the next element (the talisman 25, the armour,
+	// helmet and bracelet 15, the costume and hairstyle 8 - the Handlarka's yang), the fewest pieces on a tie. A piece
+	// not worn (or on another slot) keeps the old rule: kept when it carries the line.
+	bool IsPlayerBotElementProgressKeptPiece(LPCHARACTER ch, LPITEM item, int keep)
+	{
+		if (!HasPlayerBotElementProgressKeptLine(item, keep))
+			return false;
+		if (!ch || IsPlayerBotElementProgressKeepAll() || !item->IsEquipped() || item->GetOwner() != ch)
+			return true;
+		static const BYTE s_wears[] = { WEAR_BODY, WEAR_HEAD, WEAR_WRIST,
+#ifdef ENABLE_PENDANT_SYSTEM
+			WEAR_PENDANT,
+#endif
+			WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR };
+		const int count = (int)(sizeof(s_wears) / sizeof(s_wears[0]));
+		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[keep];
+		int base = Bonus67Total(ch, point) - (int)GetPlayerBotElementPetResist(ch, point);
+		int value[8] = { 0 }, worth[8] = { 0 };
+		int n = 0, mine = -1;
+		for (int w = 0; w < count && n < 8; ++w)
+		{
+			LPITEM piece = ch->GetWear(s_wears[w]);
+			if (!piece)
+				continue;
+			int line = 0;
+			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+				if (piece->GetAttributeType(i) == point)
+					line += (int)piece->GetAttributeValue(i);
+			base -= line;	// a lower line (not kept) may be rolled away too: never counted on
+			if (!HasPlayerBotElementProgressKeptLine(piece, keep))
+				continue;
+			value[n] = line;
+#ifdef ENABLE_PENDANT_SYSTEM
+			worth[n] = s_wears[w] == WEAR_PENDANT ? 25 : (s_wears[w] == WEAR_COSTUME_BODY || s_wears[w] == WEAR_COSTUME_HAIR) ? 8 : 15;
+#else
+			worth[n] = (s_wears[w] == WEAR_COSTUME_BODY || s_wears[w] == WEAR_COSTUME_HAIR) ? 8 : 15;
+#endif
+			if (piece == item)
+				mine = n;
+			++n;
+		}
+		if (mine < 0)
+			return true;
+		const int need = GetPlayerBotElementProgressKeepNeed(ch, keep);
+		int best = -1, bestWorth = 0, bestCount = 0, bestValue = 0;
+		for (int mask = 0; mask < (1 << n); ++mask)
+		{
+			int sum = base, lost = 0, pieces = 0;
+			for (int i = 0; i < n; ++i)
+				if (mask & (1 << i))
+				{
+					sum += value[i];
+					lost += worth[i];
+					++pieces;
+				}
+			if (sum < need)
+				continue;
+			if (best < 0 || lost < bestWorth || (lost == bestWorth && (pieces < bestCount ||
+					(pieces == bestCount && sum > bestValue))))
+			{
+				best = mask;
+				bestWorth = lost;
+				bestCount = pieces;
+				bestValue = sum;
+			}
+		}
+		// no set holds the gate: every piece with the line is kept (the step before is still being built)
+		return best < 0 || (best & (1 << mine)) != 0;
 	}
 
 	// May the bot take the progression map early (from its early level, under its normal entry)? Its resistance at the
@@ -1440,8 +1572,10 @@ namespace
 			const int element = PLAYERBOT_ELEMENT_MAP_ROWS[row].iElement;
 			if (next >= 0 && step == 2 && nextKeep == element &&
 					GetPlayerBotElementMapShare(next) >= PLAYERBOT_ELEMENT_MAP_ACTIVE_SHARE &&
-					GetPlayerBotElementMapResist(ch, element) >= std::max(GetPlayerBotElementMapRowGate(row) +
-							PLAYERBOT_EPROG_PREBUILD_MARGIN, GetPlayerBotElementProgressBoostTarget(ch, element)))
+					// MT2009_PLUS_BOT_WIND_BUILD_V1: lightning at its gate without its pet (was: +5 with the pet out -
+					// the wind pet sent the bot back to lightning at once)
+					GetPlayerBotElementMapResistOwn(ch, element) >= std::max(GetPlayerBotElementMapRowGate(row),
+							GetPlayerBotElementProgressBoostTarget(ch, element)))
 			{
 				row = next;
 				keep = nextKeep;
@@ -1490,6 +1624,19 @@ namespace
 		out.iResist = GetPlayerBotElementMapResist(ch, r.iElement);
 		out.iKeep = prebuild && keep != r.iElement ? keep : -1;
 		out.bPrebuild = prebuild;
+		// MT2009_PLUS_BOT_WIND_BUILD_V1: a bot of the wind window on the lightning goal builds lightning without its pet
+		// (the reroll's stop rule, the element shop read this resistance) and keeps the wind it already has
+		if (IsPlayerBotWindBuildHolder(ch, r.iElement))
+		{
+			out.iResist = GetPlayerBotElementMapResistOwn(ch, r.iElement);
+			if (out.iKeep < 0)
+				out.iKeep = PLAYERBOT_EM_WIND;
+		}
+		// and its wind goal of Zaklety Las itself (95+, the forest wanted) keeps the lightning that holds the Grotto's gate
+		// (a failed trial sends it back there) while it has it - the fewest pieces, the rest free for wind
+		else if (r.iElement == PLAYERBOT_EM_WIND && out.iKeep < 0 && IsPlayerBotWindBuildHolder(ch, PLAYERBOT_EM_ELEC) &&
+				GetPlayerBotElementMapResistOwn(ch, PLAYERBOT_EM_ELEC) >= GetPlayerBotElementProgressKeepNeed(ch, PLAYERBOT_EM_ELEC))
+			out.iKeep = PLAYERBOT_EM_ELEC;
 		return true;
 	}
 
@@ -1558,7 +1705,7 @@ namespace
 			return false;
 		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a piece holding the element the bot still hunts with is not rerolled for
 		// the next one
-		if (HasPlayerBotElementProgressKeptLine(item, v.iKeep))
+		if (IsPlayerBotElementProgressKeptPiece(ch, item, v.iKeep))
 			return false;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		const int set = item->GetAttributeSetIndex();
@@ -1580,7 +1727,7 @@ namespace
 		TPlayerBotElementMapView v;
 		if (!ch || !item || !GetPlayerBotElementMapGoal(ch, v))
 			return false;
-		if (HasPlayerBotElementProgressKeptLine(item, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a finishing line too
+		if (IsPlayerBotElementProgressKeptPiece(ch, item, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1: a finishing line too
 			return true;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		TItemAttrMap::const_iterator it = g_map_itemAttr.find(point);
@@ -1602,7 +1749,7 @@ namespace
 		if (!GetPlayerBotElementMapGoal(ch, v) || v.iResist >= v.iWant ||
 				(v.iGate <= 0 && v.iWant < PLAYERBOT_ELEMENT_MAP_REROLL_WANT))
 			return false;
-		if (HasPlayerBotElementProgressKeptLine(costume, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
+		if (IsPlayerBotElementProgressKeptPiece(ch, costume, v.iKeep))	// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1
 			return false;
 		const BYTE point = PLAYERBOT_ELEMENT_MAP_POINTS[v.iElement];
 		const int set = costume->GetAttributeSetIndex();
