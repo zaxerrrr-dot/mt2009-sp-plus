@@ -49,6 +49,19 @@ OVERRIDE = {
     4403: dict(SummonVnum='4271', MinGold='10000000', MaxGold='27000000'),
 }
 
+# -- MT2009_PLUS_YOHARA_RASY_V1: the races (setRaceFlag bits 0-10 - the "Silny przeciwko ..." bonuses, battle.cpp
+#    CalcAttBonus) where they differ from Owsap's row. The owner, 10 November 2026: "Silny przeciwko diabłom" works on
+#    every monster and boss of Zaklęty Las, its PB and its SZC - all of them are devils (the pl-wiki "Rasa = Diabły" of
+#    every En-Tai / Bagjanamu / Uzdrowiciel Ochao), only Jotun Thrym was not (Owsap: ORC). Jotun Thrym (SZC):
+#    the pl-wiki "Jotun Thrym (SZC)" gives no race ("Rasa =") - the orc goes, the devil comes.
+#    The row (INSERT IGNORE) carries it and the elements' file sets bits 0-10 of these vnums every start (a world
+#    made earlier, either bonus mode - M2_BONUS_MODE touches only bits 11-16). The Metins keep none (the wiki gives a
+#    Metin no race).
+RACE_BITS = 2047
+RACE = {
+    4403: 'DEVIL',                             # SZC: Jotun Thrym - was ORC
+}
+
 # -- NPCs (our NPC numbers - gen_ymaps_sql.npc_row); Statua Szczeliny Czasu 20472 is yohara_iluzja.sql's row --------
 NPCS = {
     20519: ('TR: Guard. of the Forest', 'SZC: Strażnik Lasu'),
