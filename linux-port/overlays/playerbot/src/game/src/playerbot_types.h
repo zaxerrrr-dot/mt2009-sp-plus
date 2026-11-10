@@ -3899,6 +3899,29 @@ namespace
 	// no bot could stand on.
 	const long PLAYERBOT_MAP_GROTTO_V1 = 72;
 	const long PLAYERBOT_MAP_GROTTO_V2 = 73;
+
+	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1 (the owner, 10 November 2026: "Czerwony Las i Grota Wygnancow V1 - niech w ogole
+	// nie expia"): the Red Forest (earth, 0.28-0.36 exp per HP, ~2 deaths a bot an hour) and the Grotto V1 (lightning 53 /
+	// ice 47, ice only from a talisman) are no exp ground for a bot - the hunting draw, the fallbacks, the survive step
+	// down, a companion's plan and the element progression's early access pass over them; the Grotto V2 (lightning, the
+	// resistance the bots build) is the step after the Spider Dungeons. Not closed for what names the map itself: a
+	// Metin hunter's stones in the Red Forest (Metins of the Red Forest stay its ground), a material / pet material /
+	// Biologist / guild errand, a dropper's or a farmer's spot, a boss raid, the Battle Pass. Event flag
+	// m2_bot_no_rf_g1_exp_off 1: the old draw.
+	bool IsPlayerBotExpClosedMap(long map)
+	{
+		if (map != PLAYERBOT_MAP_RED_FOREST && map != PLAYERBOT_MAP_GROTTO_V1)
+			return false;
+		static DWORD s_dwAt = 0;
+		static bool s_bOn = true;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			s_bOn = quest::CQuestManager::instance().GetEventFlag("m2_bot_no_rf_g1_exp_off") == 0;
+		}
+		return s_bOn;
+	}
 	// The Spider Dungeon is entered from the desert, the way the game has it:
 	// NPC 10016 "Kuahlo Dong" in the desert's bottom-right corner (cell 1425,
 	// 1477 of metin2_map_n_desert_01) sends a character to (600, 4960) in V1,
@@ -10302,6 +10325,77 @@ namespace
 	{
 		return IsPlayerBotOnTowerBusiness(ch, state) ||
 				(ch && ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN);
+	}
+
+	// MT2009_PLUS_BOT_PVP_DEATH_V1 (the owner, 10 November 2026: a death in PvP is no failure - only a death to the map's
+	// monsters counts): the one verdict on the death just detected, made once in HandleDeath (playerbot_survival.h) before
+	// any counter hears of it - the gate trial (playerbot_progression.h), the bonus mix try (playerbot_bonusmix.h), the
+	// element progression's retreat record (playerbot_element_maps.h), the persona's death pin (the experience lock,
+	// playerbot_persona.h) and the survive step down read it. Not the map's monster: the engine counted a player's kill
+	// (PLAYER_STATS_DEATH_FROM_PLAYER_FLAG over the bot's own baseline, kept while it is alive), a duel, a guild war, a
+	// dungeon's business (an instance, the tower); with no baseline yet (the first death after a login) a player as the
+	// bot's target or victim. On ~330 of ~1100 deaths an hour of the bots 70+ (10 November) the counters heard PvP.
+	std::map<DWORD, long long> s_mapPlayerBotPvpDeathBase;
+	std::set<DWORD> s_setPlayerBotDeathNotMob;
+	unsigned int s_uPlayerBotDeathsByMob = 0, s_uPlayerBotDeathsNotMob = 0;
+
+	// Alive: the baseline of the engine's count of the bot's deaths at a player's hands (once, then at each death).
+	void NotePlayerBotPvpDeathBaseline(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		if (ch && !ch->IsDead() && s_mapPlayerBotPvpDeathBase.find(ch->GetPlayerID()) == s_mapPlayerBotPvpDeathBase.end())
+			s_mapPlayerBotPvpDeathBase[ch->GetPlayerID()] = ch->GetSpecialFlag((DWORD)PLAYER_STATS_DEATH_FROM_PLAYER_FLAG);
+#else
+		(void)ch;
+#endif
+	}
+
+	// The verdict, once per death (HandleDeath). true: the map's monster.
+	bool JudgePlayerBotDeath(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		bool notMob = state.dwGuildWarEnemyGID != 0 || playerbot_pvp::GetDuelOpponent(pid, dwNow) != 0 ||
+				IsPlayerBotInDungeonBusiness(ch, state);
+		bool known = false;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		{
+			const long long now = ch->GetSpecialFlag((DWORD)PLAYER_STATS_DEATH_FROM_PLAYER_FLAG);
+			std::map<DWORD, long long>::iterator it = s_mapPlayerBotPvpDeathBase.find(pid);
+			if (it != s_mapPlayerBotPvpDeathBase.end())
+			{
+				known = true;
+				notMob = notMob || now > it->second;
+				it->second = now;
+			}
+			else
+				s_mapPlayerBotPvpDeathBase[pid] = now;
+		}
+#endif
+		if (!known && !notMob)
+		{
+			LPCHARACTER target = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+			LPCHARACTER victim = ch->GetVictim();
+			notMob = (target && target->IsPC()) || (victim && victim->IsPC());
+		}
+		if (notMob)
+		{
+			s_setPlayerBotDeathNotMob.insert(pid);
+			++s_uPlayerBotDeathsNotMob;
+		}
+		else
+		{
+			s_setPlayerBotDeathNotMob.erase(pid);
+			++s_uPlayerBotDeathsByMob;
+		}
+		return !notMob;
+	}
+
+	// The death being noted now (or the bot's last one) was not to the map's monsters.
+	bool IsPlayerBotDeathNotMob(LPCHARACTER ch)
+	{
+		return ch && s_setPlayerBotDeathNotMob.count(ch->GetPlayerID()) != 0;
 	}
 
 	void SetPlayerBotAction(TPlayerBotAIState& state, BYTE action, DWORD dwNow)

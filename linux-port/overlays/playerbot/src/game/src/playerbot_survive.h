@@ -297,7 +297,7 @@ namespace
 			b.llPlayerDeaths = now;
 		}
 #endif
-		if (byPlayer || !IsPlayerBotSurviveOn(SURVIVE_STEPDOWN))
+		if (byPlayer || IsPlayerBotDeathNotMob(ch) || !IsPlayerBotSurviveOn(SURVIVE_STEPDOWN))	// MT2009_PLUS_BOT_PVP_DEATH_V1
 			return;
 		const long map = ch->GetMapIndex();
 		if (GetPlayerBotSurviveMapLevel(map) < 0 || IsPlayerBotInDungeonBusiness(ch, state) || state.dwGuildWarEnemyGID != 0)
@@ -389,6 +389,8 @@ namespace
 				continue;
 			if (map == PLAYERBOT_MAP_DEMON_TOWER)
 				continue;	// a dungeon's road, not a ground to settle on
+			if (IsPlayerBotExpClosedMap(map))
+				continue;	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1: the Red Forest and the Grotto V1 are no exp ground
 			if (!PassPlayerBotElementMapGate(ch, map, NULL, NULL))
 				continue;
 			candidates.push_back(map);

@@ -752,7 +752,7 @@ namespace
 		{
 			if (rows[i].map == map || level < (int)MapFrom(rows[i].row) ||
 					IsPlayerBotMapOverCeiling(rows[i].map, level) || (stoneHunter && !rows[i].stones) ||
-					!IsPlayerBotMapHostedHere(rows[i].map))
+					!IsPlayerBotMapHostedHere(rows[i].map) || IsPlayerBotExpClosedMap(rows[i].map))	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 				continue;
 			return rows[i].map;
 		}
@@ -901,7 +901,9 @@ namespace
 		if (!ch || level < PLAYERBOT_HUNT70_MIN_LEVEL)
 			return 0;
 		using namespace playerbot_progression;
-		const long red = level >= (int)MapFrom(MAP_RED_FOREST) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_RED_FOREST)
+		// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1: the Red Forest only for a Metin hunter's stones (no exp ground otherwise).
+		const long red = level >= (int)MapFrom(MAP_RED_FOREST) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_RED_FOREST) &&
+				(stoneHunter || !IsPlayerBotExpClosedMap(PLAYERBOT_MAP_RED_FOREST))
 				? PLAYERBOT_MAP_RED_FOREST
 				: (level >= (int)MapFrom(MAP_FOREST) && !IsPlayerBotMapOverCeiling(PLAYERBOT_MAP_FOREST, level) &&
 					IsPlayerBotMapHostedHere(PLAYERBOT_MAP_FOREST) ? PLAYERBOT_MAP_FOREST : 0);
@@ -949,6 +951,8 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
+	// MT2009_PLUS_BOT_WIND_AHEAD_V1: playerbot_yohara_bots.h - the Yohara route's Zaklety Las draw for a bot at home now.
+	bool IsPlayerBotZakletyEarlyDraw(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_BAND_KEEP_V1: playerbot_yohara_bots.h - a Sung Ma resident, a guest of the Loch or a bot on a
 	// dungeon run is not "out of band" on the frontier's ground (its own manager moves it).
 	bool IsPlayerBotFrontierBandExitHeld(LPCHARACTER ch, long mapIndex, long want, DWORD dwNow);
@@ -1119,6 +1123,12 @@ namespace
 		if (!stoneHunter && (int)level >= PLAYERBOT_GROTTO2_ONLY_MIN_LEVEL && (int)level <= PLAYERBOT_GROTTO2_ONLY_MAX_LEVEL &&
 				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2))
 		{
+			// MT2009_PLUS_BOT_WIND_AHEAD_V1 (the owner, 10 November 2026: "at 95 they can already exp in Zaklety Las"): a bot
+			// the Yohara route takes to Zaklety Las now (its early access - wind at the gate, the HP, the room) goes there;
+			// anything else of the route waits for 96 as before.
+			if (GetPlayerBotElementProgressWindFrom() > 0 && (int)level >= (int)PLAYERBOT_OCHAO_MIN_LEVEL &&
+					IsPlayerBotZakletyEarlyDraw(ch))
+				return PLAYERBOT_MAP_ZAKLETY;
 			PlayerBotLogThrottled("grotto2_only", get_dword_time(),
 					"PLAYERBOT_TRAVEL: grotto v2 for 90-95 pid=%u name=%s level=%u",
 					ch->GetPlayerID(), ch->GetName(), (unsigned int)level);
@@ -1166,7 +1176,9 @@ namespace
 		// first level (GetPlayerBotHunt70Map), only where experience is earned;
 		// a Metin hunter at any level from seventy (the Grottos have no stone,
 		// and it was sent to Sohan).
-		if ((int)level >= PLAYERBOT_HUNT70_MIN_LEVEL && ((int)level < (int)MapFrom(MAP_GROTTO1) || stoneHunter))
+		// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1: with the Grotto V1 closed, to the Grotto V2's first level.
+		const int grottoEntry = IsPlayerBotExpClosedMap(PLAYERBOT_MAP_GROTTO_V1) ? (int)MapFrom(MAP_GROTTO2) : (int)MapFrom(MAP_GROTTO1);
+		if ((int)level >= PLAYERBOT_HUNT70_MIN_LEVEL && ((int)level < grottoEntry || stoneHunter))
 		{
 			const long hunt70 = GetPlayerBotHunt70Map(ch, (int)level, draw, stoneHunter, true);
 			if (hunt70 != 0)
@@ -1184,21 +1196,25 @@ namespace
 		// grotto this core does not host is passed over here rather than
 		// filtered to nothing after the draw, or a bot of eighty on such a core
 		// would have no frontier at all.
+		// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1 (the owner, 10 November 2026): the Grotto V1 is no exp ground - the Grotto V2
+		// takes every draw from its first level (80); the Red Forest's share of the rows below is the Forest's.
+		const bool g1Closed = IsPlayerBotExpClosedMap(PLAYERBOT_MAP_GROTTO_V1);
 		if (!stoneHunter && level >= MapFrom(MAP_GROTTO2) &&
 				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2))
 		{
-			if ((draw % 3U) != 2 || !IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
+			if (g1Closed || (draw % 3U) != 2 || !IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
 				return PLAYERBOT_MAP_GROTTO_V2;
 			return PLAYERBOT_MAP_GROTTO_V1;
 		}
-		if (!stoneHunter && level >= MapFrom(MAP_GROTTO1) && (draw % 3U) != 2 &&
+		if (!g1Closed && !stoneHunter && level >= MapFrom(MAP_GROTTO1) && (draw % 3U) != 2 &&
 				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
 			return PLAYERBOT_MAP_GROTTO_V1;
 		if (level >= MapFrom(MAP_RED_FOREST))
 		{
 			switch (draw % 3U)
 			{
-				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_RED_FOREST;
+				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : (IsPlayerBotExpClosedMap(PLAYERBOT_MAP_RED_FOREST)
+						? PlayerBotMapUnderCeiling(PLAYERBOT_MAP_FOREST, level, false) : PLAYERBOT_MAP_RED_FOREST);
 				case 1: return PlayerBotMapUnderCeiling(stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_FOREST, level, stoneHunter);
 				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
@@ -1290,7 +1306,8 @@ namespace
 		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
 		{
 			if (rows[i].map == blocked || (int)ch->GetLevel() < rows[i].minLevel ||
-					IsPlayerBotMapOverCeiling(rows[i].map, (int)ch->GetLevel()))
+					IsPlayerBotMapOverCeiling(rows[i].map, (int)ch->GetLevel()) ||
+					IsPlayerBotExpClosedMap(rows[i].map))	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 				continue;
 			if (!IsPlayerBotMapHostedHere(rows[i].map) || IsPlayerBotSidekickTripBlocked(ch, rows[i].map))
 				continue;
@@ -1325,6 +1342,10 @@ namespace
 			const long map = rows[i].map;
 			if (map == blocked || level < rows[i].minLevel || IsPlayerBotMapOverCeiling(map, level) ||
 					!IsPlayerBotMapHostedHere(map) || IsPlayerBotSidekickTripBlocked(ch, map))
+				continue;
+			// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1: never the two closed maps, and from seventy no ground that pays nothing
+			// (Sohan, Hwang, ...) - with none left the bot keeps the gated map ("no_fallback") rather than idle there.
+			if (IsPlayerBotExpClosedMap(map) || IsPlayerBotNoExpGroundAt(map, level))
 				continue;
 			// the Ochao temple from its level only while it pays (its own draw's rule, without the draw)
 			if (map == PLAYERBOT_MAP_OCHAO && !WantsPlayerBotOchao(ch, 0, false))
@@ -1405,6 +1426,7 @@ namespace
 		bool any = false;
 		for (int i = 0; i < PLAYERBOT_EPROG_MAP_COUNT && !any; ++i)
 			any = PLAYERBOT_EPROG_MAPS[i].iEarly > 0 && PLAYERBOT_EPROG_MAPS[i].lMap != PLAYERBOT_MAP_ZAKLETY &&
+					!IsPlayerBotExpClosedMap(PLAYERBOT_EPROG_MAPS[i].lMap) &&	// MT2009_PLUS_BOT_NO_RF_G1_EXP_V1
 					level >= PLAYERBOT_EPROG_MAPS[i].iEarly && level < GetPlayerBotElementProgressNormalLevel(i);
 		if (!any || IsPlayerBotElementProgressErrandMap(ch, map))
 			return map;
@@ -1416,7 +1438,7 @@ namespace
 		for (int i = PLAYERBOT_EPROG_MAP_COUNT - 1; i >= 0; --i)
 		{
 			const TPlayerBotEProgMap& m = PLAYERBOT_EPROG_MAPS[i];
-			if (m.iEarly <= 0 || m.lMap == PLAYERBOT_MAP_ZAKLETY || level < m.iEarly ||
+			if (m.iEarly <= 0 || m.lMap == PLAYERBOT_MAP_ZAKLETY || level < m.iEarly || IsPlayerBotExpClosedMap(m.lMap) ||
 					level >= GetPlayerBotElementProgressNormalLevel(i) || !IsPlayerBotMapHostedHere(m.lMap) ||
 					IsPlayerBotSidekickTripBlocked(ch, m.lMap))
 				continue;

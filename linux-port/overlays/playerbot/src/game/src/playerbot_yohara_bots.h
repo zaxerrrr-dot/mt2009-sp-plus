@@ -1279,6 +1279,37 @@ namespace
 
 	// The frontier draw's answer for the owner's route (GetPlayerBotFrontierMapForLevelRaw),
 	// or 0 for the usual draw.
+	// MT2009_PLUS_BOT_WIND_AHEAD_V1 (playerbot_travel.h, the Grotto V2's 90-95 rule): would the route's Zaklety Las draw take
+	// this bot at home now - the same conditions as GetPlayerBotYoharaFrontier's forest branch (the band from its early
+	// level at the wind gate, the HP, the room, the hash), with nothing of the route ahead of it (no resident, cohort or
+	// cooldown); no loot plan or Sung Ma pick is made here.
+	bool IsPlayerBotZakletyEarlyDraw(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		const int level = ch->GetLevel();
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		if (FindPlayerBotYoharaResident(pid) || !IsPlayerBotYoharaOn() || !IsPlayerBotYoharaHomeCore(ch) ||
+				!IsPlayerBotYoharaEligible(ch) || IsPlayerBotSungmaTradeVisitor(pid) ||
+				GetPlayerBotYoharaCohortPurpose(pid) != YOHARA_PURPOSE_NONE)
+			return false;
+		std::map<DWORD, DWORD>::const_iterator cd = s_mapPlayerBotYoharaCooldown.find(pid);
+		if (cd != s_mapPlayerBotYoharaCooldown.end() && (int)(cd->second - get_dword_time()) > 0)
+			return false;
+		if (level > PLAYERBOT_ZAKLETY_MAX_LEVEL || cfg.zakletyMax <= 0 || ch->GetMaxHP() < cfg.zakletyMinHp ||
+				!IsPlayerBotOchaoHosted())
+			return false;
+		const bool inTemple = s_mapPlayerBotYoharaTemple.count(pid) != 0;
+		if (!inTemple && (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] >= cfg.zakletyMax ||
+				IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY)))
+			return false;
+		const bool bandAll = quest::CQuestManager::instance().GetEventFlag("m2_bot_yohara_band_all_off") == 0;
+		if (!bandAll && PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U == 0)
+			return false;
+		return level >= GetPlayerBotElementProgressZakletyMinLevel(ch, cfg.zakletyMinLevel);
+	}
+
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter)
 	{
 		if (!ch)

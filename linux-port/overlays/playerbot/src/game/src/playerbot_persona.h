@@ -356,6 +356,34 @@ namespace
 		return (DWORD)minutes * 60000U;
 	}
 
+	// MT2009_PLUS_BOT_DEATH_LOCK_1H_V1 (the owner, 10 November 2026): the death pin's hold (three deaths to monsters in
+	// half an hour - the experience locked at the bot's level) of a bot of 70+ lets go after an hour instead of the
+	// checklist's three (on 10 November ~18 bots an hour gave up only after the full 180 minutes). Event flag
+	// m2_bot_death_lock_min N (10-1440, default 60); m2_bot_death_lock_1h_off 1 - the common timeout as before. Never longer
+	// than the common timeout; the timeout switched off (0) stays off.
+	const int PLAYERBOT_DEATH_LOCK_MIN_LEVEL = 70;
+	const int PLAYERBOT_DEATH_LOCK_MIN = 60;
+	DWORD GetPlayerBotDeathPinTimeoutMs(LPCHARACTER ch, bool pinned)
+	{
+		const DWORD common = GetPlayerBotLockTimeoutMs();
+		if (common == 0 || !pinned || !ch || (int)ch->GetLevel() < PLAYERBOT_DEATH_LOCK_MIN_LEVEL)
+			return common;
+		static DWORD s_dwAt = 0;
+		static int s_iMin = PLAYERBOT_DEATH_LOCK_MIN;
+		const DWORD now = get_dword_time();
+		if (s_dwAt == 0 || now - s_dwAt >= 5000)
+		{
+			s_dwAt = now ? now : 1;
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			const int flag = q.GetEventFlag("m2_bot_death_lock_min");
+			s_iMin = q.GetEventFlag("m2_bot_death_lock_1h_off") != 0 ? 0 :
+					(flag >= 10 && flag <= 24 * 60 ? flag : PLAYERBOT_DEATH_LOCK_MIN);
+		}
+		if (s_iMin <= 0)
+			return common;
+		return std::min(common, (DWORD)s_iMin * 60000U);
+	}
+
 	// The Law of Advancement, asked of a Grinder that has reached its lock.
 	// Meeting it does not move the bot on: it is asked when the law is first
 	// met and then once an hour, and its character says how likely it is to
@@ -395,7 +423,7 @@ namespace
 		}
 		else if (heldDt < 60000U)
 			p.dwHeldMs += heldDt;
-		const DWORD limitMs = GetPlayerBotLockTimeoutMs();
+		const DWORD limitMs = GetPlayerBotDeathPinTimeoutMs(ch, p.bLockPinned);	// MT2009_PLUS_BOT_DEATH_LOCK_1H_V1
 		if (limitMs != 0 && p.dwHeldMs >= limitMs)
 		{
 			sys_log(0, "PLAYERBOT_PERSONA: lock given up pid=%u name=%s level=%u lock=%u pinned=%d gaps=%d held_min=%u",
@@ -411,7 +439,10 @@ namespace
 			// pinned again by their deaths within half an hour, held at the next
 			// level for the whole timeout. For the timeout's own minutes the deaths
 			// are the step down's and the death loop's (an easier map), not a new pin.
-			p.dwPinGraceUntil = (dwNow + limitMs) ? dwNow + limitMs : 1;
+			// MT2009_PLUS_BOT_DEATH_LOCK_1H_V1: the grace keeps the common timeout's length (a shorter hold is no reason
+			// for a sooner pin)
+			const DWORD graceMs = std::max(limitMs, GetPlayerBotLockTimeoutMs());
+			p.dwPinGraceUntil = (dwNow + graceMs) ? dwNow + graceMs : 1;
 			p.bDirty = true;
 			return;
 		}
@@ -551,7 +582,8 @@ namespace
 		TPlayerBotPersona& p = state.persona;
 		const bool byPlayer = WasPlayerBotKilledByPlayer(ch, p);
 		NotePlayerBotAntiPkDeath(ch, state, dwNow, byPlayer);
-		if (byPlayer)
+		// MT2009_PLUS_BOT_PVP_DEATH_V1: the death pin (the experience lock) counts the map's monsters only
+		if (byPlayer || IsPlayerBotDeathNotMob(ch))
 			return;
 		const bool weak = playerbot_persona::NoteDeath(p.deaths);
 		// Three deaths to monsters in half an hour is a bot that visibly cannot

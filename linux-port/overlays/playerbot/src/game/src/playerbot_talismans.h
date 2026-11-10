@@ -794,6 +794,64 @@ namespace
 		ForgetPlayerBotTalismanPlan(ch);
 	}
 
+	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1 (the owner, 10 November 2026: "587 of 669 bots of the talisman programme have no
+	// talisman - find why and fix it"). Why: the plan's project is the talisman of the hunting map's own element
+	// (p.projectId 0 while the bot owns none of it - BOT_TALISMAN_CHEAP's no_talisman), and the only ways to one were the
+	// seed (35% of the workers, once, at level 30, of the element of that day's map), a counter's +0 at the owner's price
+	// (700 000, at most 40% of the spare purse - the bots 70+ hold 0.4-0.9 M) or the cheap step, which needs a project
+	// already AND a body armour at +7 (the bots 70-97 wear +4/+5: the pearls). So a worker never got the talisman of the
+	// element it fights. Now a worker of PLAYERBOT_TALISMAN_FIRST_MIN_LEVEL+ with no talisman of its plan's element gets the
+	// Talisman +0 of it from the Blacksmith for PLAYERBOT_TALISMAN_FIRST_YANG (its spare purse), at most one in
+	// PLAYERBOT_TALISMAN_FIRST_GAP_H hours (quest flag playerbot.talisman_first - a map change of element does not buy one
+	// each time), and wears it when it is the best for the map; its steps go on by the old rules. Event flags:
+	// m2_bot_talisman_first_off 1 - off; m2_bot_talisman_first_yang N (10 000-5 000 000).
+	const int PLAYERBOT_TALISMAN_FIRST_MIN_LEVEL = 60;
+	const long long PLAYERBOT_TALISMAN_FIRST_YANG = 150000LL;
+	const int PLAYERBOT_TALISMAN_FIRST_GAP_H = 24;
+	const char* const PLAYERBOT_TALISMAN_FIRST_FLAG = "playerbot.talisman_first";
+	unsigned int s_uPlayerBotTalismanFirst = 0, s_uPlayerBotTalismanFirstPurse = 0;
+
+	bool GivePlayerBotFirstTalisman(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || (int)ch->GetLevel() < PLAYERBOT_TALISMAN_FIRST_MIN_LEVEL ||
+				!IsPlayerBotTalismanWorker(ch) || IsPlayerBotGearFrozen(ch) || ch->GetExchange() || ch->GetMyShop())
+			return false;
+		quest::CQuestManager& q = quest::CQuestManager::instance();
+		if (q.GetEventFlag("m2_bot_talisman_first_off") != 0)
+			return false;
+		const int last = ch->GetQuestFlag(PLAYERBOT_TALISMAN_FIRST_FLAG);
+		if (last != 0 && get_global_time() - last < PLAYERBOT_TALISMAN_FIRST_GAP_H * 3600)
+			return false;
+		const TPlayerBotTalismanPlan p = GetPlayerBotTalismanPlan(ch);
+		if (p.projectId != 0 || p.element < 0 || p.element >= PLAYERBOT_TALISMAN_ELEMENTS || GetPlayerBotTalismanSeedLeft(ch) > 0)
+			return false;
+		const DWORD vnum = PLAYERBOT_TALISMAN_ELEMENT[p.element].baseVnum;
+		if (ch->CountSpecifyItem(vnum) > 0 || !IsPlayerBotWearableAtLevel(ch, vnum))
+			return false;
+		const int flag = q.GetEventFlag("m2_bot_talisman_first_yang");
+		const long long price = flag >= 10000 && flag <= 5000000 ? (long long)flag : PLAYERBOT_TALISMAN_FIRST_YANG;
+		if (GetPlayerBotTalismanSpare(ch) < price)
+		{
+			++s_uPlayerBotTalismanFirstPurse;
+			return false;
+		}
+		if (ch->GetEmptyInventory(1) < 0)
+			return false;
+		PlayerBotChangeGold(ch, -price);
+		if (!ch->AutoGiveItem(vnum, 1, -1, false))
+		{
+			PlayerBotChangeGold(ch, price);
+			return false;
+		}
+		ch->SetQuestFlag(PLAYERBOT_TALISMAN_FIRST_FLAG, get_global_time());
+		++s_uPlayerBotTalismanFirst;
+		ForgetPlayerBotTalismanPlan(ch);
+		sys_log(0, "PLAYERBOT_TALISMAN: first talisman pid=%u name=%s lv=%d element=%s vnum=%u dominant=%d price=%lld gold=%lld",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), PLAYERBOT_TALISMAN_ELEMENT[p.element].name, vnum, p.dominant,
+				price, (long long)ch->GetGold());
+		return true;
+	}
+
 	// ---- wearing --------------------------------------------------------------------------
 
 	// Puts on the best talisman for the hunting map, when it is not on already. The equipment
@@ -974,9 +1032,10 @@ namespace
 	void LogPlayerBotTalismanCensus()
 	{
 		const TPlayerBotTalismanStats& s = s_kPlayerBotTalismanStats;
-		sys_log(0, "PLAYERBOT_TALISMAN: census steps=%u wears=%u seeded=%u seed_steps=%u flowers=%u bought=%u bought_yang=%llu fees=%llu maps=%u",
+		sys_log(0, "PLAYERBOT_TALISMAN: census steps=%u wears=%u seeded=%u seed_steps=%u flowers=%u bought=%u bought_yang=%llu fees=%llu maps=%u "
+				"first=%u first_short_purse=%u",
 				s.steps, s.wears, s.seeded, s.seedGifts, s.flowersBought, s.bought, s.boughtYang, s.fees,
-				(unsigned)s_mapPlayerBotElementCensus.size());
+				(unsigned)s_mapPlayerBotElementCensus.size(), s_uPlayerBotTalismanFirst, s_uPlayerBotTalismanFirstPurse);	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1
 		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: the cheap steps since the core started, and the bots' talismans now - the
 		// workers, their projects at +0, and what holds the rest of them back.
 		unsigned workers = 0, atZero = 0, noProject = 0, cheapReady = 0, shortGear = 0, shortPurse = 0, ready = 0;
@@ -1029,6 +1088,7 @@ namespace
 	bool IsPlayerBotKeptTalisman(LPCHARACTER, LPITEM) { return false; }
 	void NotePlayerBotTalismanBought(LPCHARACTER, DWORD, long long) {}
 	void DecidePlayerBotTalismanSeed(LPCHARACTER) {}
+	bool GivePlayerBotFirstTalisman(LPCHARACTER) { return false; }	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1
 	bool WearPlayerBotBestTalisman(LPCHARACTER) { return false; }
 	int BuyPlayerBotTalismanFlowers(LPCHARACTER, int) { return 0; }
 	bool RefinePlayerBotTalismanStep(LPCHARACTER) { return false; }

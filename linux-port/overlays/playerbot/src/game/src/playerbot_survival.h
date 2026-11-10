@@ -142,7 +142,10 @@ namespace
 		if (!ch || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return;
 		NotePlayerBotStrongMapHardship(ch, 1); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
-		NotePlayerBotElementProgressRetreat(ch, dwNow); // MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (the retreat's HP retreats)
+		// MT2009_PLUS_BOT_ELEMENT_PROGRESS_V1 (the retreat's HP retreats); MT2009_PLUS_BOT_PVP_DEATH_V1: a retreat from a
+		// player (or in a dungeon's business) is no failure of the trials either
+		if (!(threat && threat->IsPC()) && !IsPlayerBotInDungeonBusiness(ch, state))
+			NotePlayerBotElementProgressRetreat(ch, dwNow);
 		// MT2009_PLUS_BOT_LOOT_PACE_V1: its drops here, to come back for.
 		NotePlayerBotLootLeftBehind(ch, state, dwNow);
 		state.bTacticalRetreat = true;
@@ -428,11 +431,15 @@ namespace
 			}
 			state.dwDeathDetectedTime = 0;
 			state.dwNextReviveAttemptTime = 0;
+			NotePlayerBotPvpDeathBaseline(ch);	// MT2009_PLUS_BOT_PVP_DEATH_V1
 			return false;
 		}
 
 		if (state.dwDeathDetectedTime == 0)
 		{
+			// MT2009_PLUS_BOT_PVP_DEATH_V1: the death's verdict (a player's / a duel / a war / a dungeon or the map's
+			// monster) before any counter below hears of it (playerbot_types.h)
+			JudgePlayerBotDeath(ch, state, dwNow);
 			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a Sung Ma resident's death and its cause, before the state forgets it.
 			NotePlayerBotSungmaFallen(ch, state, dwNow);
 			state.bTacticalRetreat = false;
