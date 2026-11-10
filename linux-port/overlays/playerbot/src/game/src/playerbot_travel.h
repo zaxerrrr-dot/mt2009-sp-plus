@@ -951,6 +951,7 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
 	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
+	bool IsPlayerBotZakletyTrialBack(LPCHARACTER ch);	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1 (playerbot_yohara_bots.h)
 	// MT2009_PLUS_BOT_WIND_AHEAD_V1: playerbot_yohara_bots.h - the Yohara route's Zaklety Las draw for a bot at home now.
 	bool IsPlayerBotZakletyEarlyDraw(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_BAND_KEEP_V1: playerbot_yohara_bots.h - a Sung Ma resident, a guest of the Loch or a bot on a
@@ -1131,6 +1132,17 @@ namespace
 				return PLAYERBOT_MAP_ZAKLETY;
 			PlayerBotLogThrottled("grotto2_only", get_dword_time(),
 					"PLAYERBOT_TRAVEL: grotto v2 for 90-95 pid=%u name=%s level=%u",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)level);
+			return PLAYERBOT_MAP_GROTTO_V2;
+		}
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1 (the owner, 10 November 2026): back from a failed Zaklety Las trial - the Grotto of
+		// Exile V2, the map before the forest, while it builds better gear (playerbot_yohara_bots.h's back-off); then the
+		// forest's draw again.
+		if (!stoneHunter && (int)level <= (int)PLAYERBOT_ZAKLETY_MAX_LEVEL && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2) &&
+				IsPlayerBotZakletyTrialBack(ch))
+		{
+			PlayerBotLogThrottled("zaklety_trial_back", get_dword_time(),
+					"PLAYERBOT_ZAKLETY_TRIAL: grotto v2 while growing pid=%u name=%s level=%u",
 					ch->GetPlayerID(), ch->GetName(), (unsigned int)level);
 			return PLAYERBOT_MAP_GROTTO_V2;
 		}

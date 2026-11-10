@@ -805,11 +805,25 @@ namespace
 	// PLAYERBOT_TALISMAN_FIRST_GAP_H hours (quest flag playerbot.talisman_first - a map change of element does not buy one
 	// each time), and wears it when it is the best for the map; its steps go on by the old rules. Event flags:
 	// m2_bot_talisman_first_off 1 - off; m2_bot_talisman_first_yang N (10 000-5 000 000).
+	// MT2009_PLUS_BOT_TALISMAN_DAILY_V1 (the owner, 10 November 2026: 150 000 was too cheap - 500 000, one a day, and with it
+	// the talisman goes up one "+" a day): the Blacksmith's daily deal, PLAYERBOT_TALISMAN_FIRST_YANG (now 500 000) at most
+	// once in PLAYERBOT_TALISMAN_FIRST_GAP_H hours (the same flag) -
+	//   * a worker with no talisman of its plan's element: the Talisman +0 of it, as before;
+	//   * a worker that has it (the project, its next plus wearable) with no spare +0 of the element in the bag, no seed
+	//     owed and no cheap step (MT2009_PLUS_BOT_TALISMAN_CHEAP_V1 sells the goods for less - its armour +7 rule is not
+	//     asked here): the step's goods - the Talisman +0 the recipe eats and the Ornament (30031) when the bag lacks one -
+	//     for the same price, and only when the rest of that step is in the purse too, so the anvil's next visit makes the +1.
+	// The step stays the recipe's (refine_proto 20001-21200: 10 Kwiat Zywiolu at Mistrz's 100 000, 1 Ornament, 1 Talisman +0
+	// of the element, the fee - 280 000 to +49, 3 375 000 from +50 ... 20 950 000 at +199 - and 100%): after the deal the
+	// fee and the missing flowers must fit PLAYERBOT_TALISMAN_SPEND_PERCENT of what is left (CanPlayerBotPayTalismanStep),
+	// i.e. a +1 under +50 is ~1.8 M a day in all (500 000 + 1 000 000 flowers + 280 000 fee). Event flag
+	// m2_bot_talisman_daily_step_off 1 - the first talisman only (as before).
 	const int PLAYERBOT_TALISMAN_FIRST_MIN_LEVEL = 60;
-	const long long PLAYERBOT_TALISMAN_FIRST_YANG = 150000LL;
+	const long long PLAYERBOT_TALISMAN_FIRST_YANG = 500000LL;
 	const int PLAYERBOT_TALISMAN_FIRST_GAP_H = 24;
 	const char* const PLAYERBOT_TALISMAN_FIRST_FLAG = "playerbot.talisman_first";
 	unsigned int s_uPlayerBotTalismanFirst = 0, s_uPlayerBotTalismanFirstPurse = 0;
+	unsigned int s_uPlayerBotTalismanDailyStep = 0, s_uPlayerBotTalismanDailyStepPurse = 0;	// MT2009_PLUS_BOT_TALISMAN_DAILY_V1
 
 	bool GivePlayerBotFirstTalisman(LPCHARACTER ch)
 	{
@@ -823,13 +837,51 @@ namespace
 		if (last != 0 && get_global_time() - last < PLAYERBOT_TALISMAN_FIRST_GAP_H * 3600)
 			return false;
 		const TPlayerBotTalismanPlan p = GetPlayerBotTalismanPlan(ch);
-		if (p.projectId != 0 || p.element < 0 || p.element >= PLAYERBOT_TALISMAN_ELEMENTS || GetPlayerBotTalismanSeedLeft(ch) > 0)
+		if (p.element < 0 || p.element >= PLAYERBOT_TALISMAN_ELEMENTS || GetPlayerBotTalismanSeedLeft(ch) > 0)
 			return false;
 		const DWORD vnum = PLAYERBOT_TALISMAN_ELEMENT[p.element].baseVnum;
-		if (ch->CountSpecifyItem(vnum) > 0 || !IsPlayerBotWearableAtLevel(ch, vnum))
-			return false;
 		const int flag = q.GetEventFlag("m2_bot_talisman_first_yang");
 		const long long price = flag >= 10000 && flag <= 5000000 ? (long long)flag : PLAYERBOT_TALISMAN_FIRST_YANG;
+		// MT2009_PLUS_BOT_TALISMAN_DAILY_V1: a project already - the day's step goods
+		if (p.projectId != 0)
+		{
+			if (q.GetEventFlag("m2_bot_talisman_daily_step_off") != 0 || !p.stepWearable || p.spares >= 1 ||
+					IsPlayerBotTalismanCheapStep(ch, p))
+				return false;
+			LPITEM project = GetPlayerBotTalismanProject(ch);
+			const long long fee = project ? GetPlayerBotTalismanStepFee(ch, project) : -1;
+			if (!project || fee < 0 || IsPlayerBotSidekickLockedItem(ch, project))
+				return false;
+			const int flowersMissing = std::max(0, PLAYERBOT_TALISMAN_FLOWERS_A_STEP - p.flowers);
+			const long long rest = fee + flowersMissing * GetPlayerBotTalismanFlowerPrice();
+			const long long spare = GetPlayerBotTalismanSpare(ch);
+			if (spare < price || (spare - price) * PLAYERBOT_TALISMAN_SPEND_PERCENT / 100 < rest)
+			{
+				++s_uPlayerBotTalismanDailyStepPurse;
+				return false;
+			}
+			const bool ornament = p.ornaments < 1;
+			if (CountPlayerBotFreeInventoryCells(ch) < (ornament ? 2 : 1))
+				return false;
+			PlayerBotChangeGold(ch, -price);
+			if (!ch->AutoGiveItem(vnum, 1, -1, false))
+			{
+				PlayerBotChangeGold(ch, price);
+				return false;
+			}
+			if (ornament)
+				ch->AutoGiveItem(PLAYERBOT_TALISMAN_ORNAMENT_VNUM, 1, -1, false);
+			ch->SetQuestFlag(PLAYERBOT_TALISMAN_FIRST_FLAG, get_global_time());
+			++s_uPlayerBotTalismanDailyStep;
+			ForgetPlayerBotTalismanPlan(ch);
+			sys_log(0, "PLAYERBOT_TALISMAN: daily step goods pid=%u name=%s lv=%d element=%s plus=%d vnum=%u ornament=%d price=%lld "
+					"step_rest=%lld (fee=%lld flowers_missing=%d) gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), PLAYERBOT_TALISMAN_ELEMENT[p.element].name, p.plus, vnum,
+					ornament ? 1 : 0, price, rest, fee, flowersMissing, (long long)ch->GetGold());
+			return true;
+		}
+		if (ch->CountSpecifyItem(vnum) > 0 || !IsPlayerBotWearableAtLevel(ch, vnum))
+			return false;
 		if (GetPlayerBotTalismanSpare(ch) < price)
 		{
 			++s_uPlayerBotTalismanFirstPurse;
@@ -1033,9 +1085,10 @@ namespace
 	{
 		const TPlayerBotTalismanStats& s = s_kPlayerBotTalismanStats;
 		sys_log(0, "PLAYERBOT_TALISMAN: census steps=%u wears=%u seeded=%u seed_steps=%u flowers=%u bought=%u bought_yang=%llu fees=%llu maps=%u "
-				"first=%u first_short_purse=%u",
+				"first=%u first_short_purse=%u daily_step=%u daily_step_short_purse=%u",
 				s.steps, s.wears, s.seeded, s.seedGifts, s.flowersBought, s.bought, s.boughtYang, s.fees,
-				(unsigned)s_mapPlayerBotElementCensus.size(), s_uPlayerBotTalismanFirst, s_uPlayerBotTalismanFirstPurse);	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1
+				(unsigned)s_mapPlayerBotElementCensus.size(), s_uPlayerBotTalismanFirst, s_uPlayerBotTalismanFirstPurse,
+				s_uPlayerBotTalismanDailyStep, s_uPlayerBotTalismanDailyStepPurse);	// MT2009_PLUS_BOT_TALISMAN_FIRST_V1
 		// MT2009_PLUS_BOT_TALISMAN_CHEAP_V1: the cheap steps since the core started, and the bots' talismans now - the
 		// workers, their projects at +0, and what holds the rest of them back.
 		unsigned workers = 0, atZero = 0, noProject = 0, cheapReady = 0, shortGear = 0, shortPurse = 0, ready = 0;

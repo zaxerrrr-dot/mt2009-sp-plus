@@ -405,7 +405,7 @@ namespace
 		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
 		if (cfg.zakletyMax <= 0 || s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] >= cfg.zakletyMax ||
 				IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY) || !IsPlayerBotOchaoHosted() ||
-				ch->GetMaxHP() < cfg.zakletyMinHp || number(1, 100) > PLAYERBOT_G0_TRIP_CHANCE)
+				ch->GetMaxHP() < GetPlayerBotZakletyMinHp() || number(1, 100) > PLAYERBOT_G0_TRIP_CHANCE)	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 			return 0;
 		b.dwTripUntil = dwNow + PLAYERBOT_G0_TRIP_PLAN_MS;
 		++b.iTrips;
