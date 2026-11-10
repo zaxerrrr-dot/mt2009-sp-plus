@@ -1,0 +1,41 @@
+{
+ "client": "3.0.22",
+ "files": {
+  "d:/ymir work/ui/skill/common/support/hit_attribute.sub": {
+   "ctype": 2,
+   "sha256": "B997AE05DDBB59E706B1A2452082DCB2A5CAA9B03778665E85C433B4E8DA3E54",
+   "size": 98
+  },
+  "gamedata/item_extra_apply.txt": {
+   "ctype": 2,
+   "sha256": "492582A2787AD458D7EE157D2A1EA6E4C3356FB3501CF8180B929832A57598FA",
+   "size": 350
+  },
+  "gamedata/item_proto": {
+   "ctype": 0,
+   "sha256": "AD04C1D9D7D0DDFDB4255E161A48B2908A798FE436DFF8F814EC6709797AB1A1",
+   "size": 330732
+  },
+  "gamedata/skilltable.txt": {
+   "ctype": 2,
+   "sha256": "92BBB72DE58F356FAA74E5588FB9F420DDA7BD2D3AD3BFA256A9C132BFE0C3AE",
+   "size": 17535
+  },
+  "locale/pl/itemdesc.txt": {
+   "ctype": 2,
+   "sha256": "A356B542AB5FFFBC5FB6D69CE557BF9145033218B520D3438143F70E1F359CB5",
+   "size": 632099
+  },
+  "locale/pl/skilldesc.txt": {
+   "ctype": 2,
+   "sha256": "459AD968AF677625B8EDA1DE78BB311344D2DEE8B1193AD448BB7C7DE10CDF4D",
+   "size": 33489
+  }
+ },
+ "pack": {
+  "dataSha256": "A6A81C8ABE1A2B3ECD73294229347E20BB4C6AA8A40F2568B1611FB46227159D",
+  "dataSize": 508672,
+  "indexSha256": "E04294D2AA5BE9A05698365E1C0544FC391FD8C122E316F6ADD838B7AD6DE93C",
+  "indexSize": 372
+ }
+}
