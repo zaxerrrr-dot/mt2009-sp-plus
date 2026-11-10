@@ -159,7 +159,8 @@ quest collect_quest_lv90  begin
 		end
 		when 1901.kill or 1304.kill or 1092.kill or 1093.kill or 2206.kill or 2091.kill or 792.kill or 2306.kill begin
 			local s = number(1, 100)
-			if s <= 30 and pc.count_item(30227)==0 then
+			-- MT2009_PLUS_BIOLOG_NO_CARRY_CAP_V1: no carry cap - it drops whatever the bag holds.
+			if s <= 30 then
 				pc.give_item2(30227, 1)
 				send_letter(gameforge.collect_quest_lv90._250_send_letter)
 			end	
