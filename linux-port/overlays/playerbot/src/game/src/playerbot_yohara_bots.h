@@ -342,6 +342,71 @@ namespace
 		return s_cfg;
 	}
 
+	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1 (the owner, 10 November 2026): Zaklety Las asks no health any more - the wind gate
+	// and the trial (playerbot_element_maps.h) instead. The env's PLAYERBOT_ZAKLETY_MIN_HP (20 000) is the gate again only
+	// with the event flag m2_bot_zaklety_hp_gate 1; 0 - none.
+	int GetPlayerBotZakletyMinHp()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_hp_gate") != 0
+				? GetPlayerBotYoharaConfig().zakletyMinHp : 0;
+	}
+
+	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the home core's memory of a failed trial - since when, and the wind and health the
+	// bot came home with. While it lasts the bot hunts the Grotto of Exile V2 (playerbot_travel.h) and builds its wind
+	// there (the boost target); the forest again after GetPlayerBotZakletyTrialBackMs once it grew, or after twice that.
+	struct TPlayerBotZakletyBack
+	{
+		DWORD dwAt;
+		int iWind, iMaxHp;
+	};
+	std::map<DWORD, TPlayerBotZakletyBack> s_mapPlayerBotZakletyBack;
+
+	void NotePlayerBotZakletyTrialBack(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch)
+			return;
+		TPlayerBotZakletyBack& b = s_mapPlayerBotZakletyBack[ch->GetPlayerID()];
+		b.dwAt = now ? now : 1;
+		b.iWind = GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_WIND);
+		b.iMaxHp = (int)ch->GetMaxHP();
+		SetPlayerBotZakletyTrialBoost(ch, b.iWind, now);
+		++s_kPlayerBotZakletyTrial.back;
+		sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: back to the grotto pid=%u name=%s lv=%d wind=%d max_hp=%d back_min=%u wind_target=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), b.iWind, b.iMaxHp,
+				(unsigned int)(GetPlayerBotZakletyTrialBackMs() / 60000U), GetPlayerBotElementProgressBoostTarget(ch, PLAYERBOT_EM_WIND));
+	}
+
+	bool IsPlayerBotZakletyTrialBack(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotZakletyBack.empty())
+			return false;
+		std::map<DWORD, TPlayerBotZakletyBack>::iterator it = s_mapPlayerBotZakletyBack.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotZakletyBack.end())
+			return false;
+		if (!IsPlayerBotZakletyTrialOn() || (int)ch->GetLevel() > PLAYERBOT_ZAKLETY_MAX_LEVEL)
+		{
+			s_mapPlayerBotZakletyBack.erase(it);
+			return false;
+		}
+		const DWORD now = get_dword_time();
+		const DWORD elapsed = now - it->second.dwAt;
+		const DWORD backMs = GetPlayerBotZakletyTrialBackMs();
+		if (elapsed < backMs)
+			return true;
+		const int wind = GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_WIND);
+		const int maxHp = (int)ch->GetMaxHP();
+		const bool grew = wind >= it->second.iWind + PLAYERBOT_ZAKLETY_TRIAL_GROW_WIND ||
+				maxHp >= it->second.iMaxHp + PLAYERBOT_ZAKLETY_TRIAL_GROW_HP;
+		if (!grew && elapsed < 2 * backMs)
+			return true;
+		++s_kPlayerBotZakletyTrial.retry;
+		sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: tries again pid=%u name=%s lv=%d wind=%d (was %d) max_hp=%d (was %d) back_min=%u grew=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), wind, it->second.iWind, maxHp, it->second.iMaxHp,
+				elapsed / 60000U, grew ? 1 : 0);
+		s_mapPlayerBotZakletyBack.erase(it);
+		return false;
+	}
+
 	bool IsPlayerBotYoharaSwitchedOff()
 	{
 		return quest::CQuestManager::instance().GetEventFlag("m2_bot_handover_off") != 0;
@@ -456,10 +521,11 @@ namespace
 		int iPurpose;
 		DWORD dwAt;
 		bool bDeaths;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: a way home its deaths asked for (the long rest)
+		bool bTrial;	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: a way home a failed Zaklety Las trial asked for
 		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: a Sung Ma resident's trade trip home - the map it goes back to, and why
 		long lTradeMap;
 		char szTradeWhy[16];
-		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0), bDeaths(false), lTradeMap(0) { szTradeWhy[0] = '\0'; }
+		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0), bDeaths(false), bTrial(false), lTradeMap(0) { szTradeWhy[0] = '\0'; }
 	};
 	// A bot living on this core for a purpose (this core is not its home).
 	struct TPlayerBotYoharaResident
@@ -1297,8 +1363,8 @@ namespace
 		std::map<DWORD, DWORD>::const_iterator cd = s_mapPlayerBotYoharaCooldown.find(pid);
 		if (cd != s_mapPlayerBotYoharaCooldown.end() && (int)(cd->second - get_dword_time()) > 0)
 			return false;
-		if (level > PLAYERBOT_ZAKLETY_MAX_LEVEL || cfg.zakletyMax <= 0 || ch->GetMaxHP() < cfg.zakletyMinHp ||
-				!IsPlayerBotOchaoHosted())
+		if (level > PLAYERBOT_ZAKLETY_MAX_LEVEL || cfg.zakletyMax <= 0 || ch->GetMaxHP() < GetPlayerBotZakletyMinHp() ||
+				!IsPlayerBotOchaoHosted() || IsPlayerBotZakletyTrialBack(ch))	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 			return false;
 		const bool inTemple = s_mapPlayerBotYoharaTemple.count(pid) != 0;
 		if (!inTemple && (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] >= cfg.zakletyMax ||
@@ -1417,11 +1483,14 @@ namespace
 		// gate itself, wind 40, is the frontier's - GatePlayerBotElementMap).
 		const int zakletyFrom = GetPlayerBotElementProgressZakletyMinLevel(ch, cfg.zakletyMinLevel);
 		// MT2009_PLUS_BOT_YOHARA_FIX_V1: strong enough for the forest's packs (PLAYERBOT_ZAKLETY_MIN_HP).
-		if (level >= zakletyFrom && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < cfg.zakletyMinHp)
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: no health gate unless m2_bot_zaklety_hp_gate 1; a bot back from a failed trial
+		// grows in the Grotto first
+		const int zakletyMinHp = GetPlayerBotZakletyMinHp();
+		if (level >= zakletyFrom && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < zakletyMinHp)
 			PlayerBotLogThrottled("zaklety_weak", dwNow, "PLAYERBOT_YOHARA: too weak for the forest pid=%u name=%s level=%d max_hp=%d need=%d hp_urgent=%d",
-					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp, IsPlayerBotShortOfZakletyHp(ch) ? 1 : 0);
+					pid, ch->GetName(), level, (int)ch->GetMaxHP(), zakletyMinHp, IsPlayerBotShortOfZakletyHp(ch) ? 1 : 0);
 		if (level >= zakletyFrom && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
-				ch->GetMaxHP() >= cfg.zakletyMinHp && IsPlayerBotOchaoHosted() &&
+				ch->GetMaxHP() >= zakletyMinHp && IsPlayerBotOchaoHosted() && !IsPlayerBotZakletyTrialBack(ch) &&
 				(inTemple || (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax &&
 				 !IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY))) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 				(bandAll || PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0))
@@ -2868,14 +2937,23 @@ namespace
 		switch (res.iPurpose)
 		{
 			case YOHARA_PURPOSE_ZAKLETY:
+			{
+				// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the forest's trial failed twice (or with nothing to pay for more) - home,
+				// and to the Grotto of Exile V2 to grow (the handover's reason "zaklety_trial"; the home core's back-off).
+				// The trial's deaths are the map's monsters only; the stay's own death rule stays as a net at twice its
+				// count (a cohort member or a Champion keeps it as before).
+				const bool trial = IsPlayerBotZakletyTrialOn() && !IsPlayerBotYoharaCohortPID(pid) && !IsPlayerBotYoharaBonusMember(ch);
+				if (trial && IsPlayerBotElementProgressShut(ch, PLAYERBOT_MAP_ZAKLETY))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "zaklety_trial") ? 1 : 0;
 				// MT2009_PLUS_BOT_YOHARA_FIX_V1: too many deaths - out of the forest, back in three hours.
-				if (IsPlayerBotYoharaDeathsOver(res))
+				if (trial ? res.iDeaths >= 2 * PLAYERBOT_YOHARA_DEATHS_STAY : IsPlayerBotYoharaDeathsOver(res))
 					return SendPlayerBotYoharaHome(ch, state, dwNow, "zaklety_deaths") ? 1 : 0;
 				// The forest is a frontier: its visit, its band and its exit are the frontier's.
 				if (base == PLAYERBOT_MAP_ZAKLETY)
 					return -1;
 				return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_ZAKLETY, PLAYERBOT_ZAKLETY_ARRIVAL_X,
 						PLAYERBOT_ZAKLETY_ARRIVAL_Y, dwNow, "zaklety_back") ? 1 : 0;
+			}
 			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow - frontiers of game2, as the forest.
 			case YOHARA_PURPOSE_SNAKEFIELD:
 			case YOHARA_PURPOSE_GIANTLAND:
@@ -3042,13 +3120,20 @@ namespace
 				}
 				if (res.iPurpose == YOHARA_PURPOSE_SUNGMA)	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: back from its trade trip
 					NotePlayerBotSungmaTradeLanded(ch, dwNow);
+				// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: a route bot's stay in the forest begins with its trial
+				if (res.iPurpose == YOHARA_PURPOSE_ZAKLETY && !IsPlayerBotYoharaCohortPID(a->first) && !IsPlayerBotYoharaBonusMember(ch))
+					StartPlayerBotZakletyTrial(ch, dwNow);
 			}
 			// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to trade - no cooldown, its way back is the errand's own
 			else if (a->second.lTradeMap > 0)
 				StartPlayerBotSungmaTradeHome(ch, a->second.lTradeMap, a->second.szTradeWhy, dwNow);
 			else
+			{
 				s_mapPlayerBotYoharaCooldown[a->first] = dwNow + (a->second.bDeaths ? PLAYERBOT_YOHARA_DEATHS_COOLDOWN_MS
 						: PLAYERBOT_YOHARA_TRIP_COOLDOWN_MS);
+				if (a->second.bTrial)	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: back from a failed trial - the Grotto, growing
+					NotePlayerBotZakletyTrialBack(ch, dwNow);
+			}
 			sys_log(0, "PLAYERBOT_HANDOVER: arrived pid=%u name=%s level=%u map=%ld pos=(%ld,%ld) purpose=%s took_ms=%u",
 					a->first, ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
 					PlayerBotYoharaPurposeName(a->second.iPurpose), dwNow - a->second.dwAt);
@@ -3129,7 +3214,7 @@ namespace
 						continue;
 					const int level = ch->GetLevel();
 					const bool band = IsPlayerBotYoharaInBand(purpose, level) &&
-							(purpose != YOHARA_PURPOSE_ZAKLETY || ch->GetMaxHP() >= GetPlayerBotYoharaConfig().zakletyMinHp);
+							(purpose != YOHARA_PURPOSE_ZAKLETY || ch->GetMaxHP() >= GetPlayerBotZakletyMinHp());	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 					++looked;
 					if (!band)
 						continue;
@@ -3505,19 +3590,20 @@ namespace
 		snprintf(query, sizeof(query),
 				"SELECT pid, state, target_map, x, y, purpose, ready_at <= NOW(), "
 				"updated_at > DATE_SUB(NOW(), INTERVAL %d SECOND), reason LIKE '%%deaths%%', "
-				"IF(reason LIKE 'sungma\\_trade:%%', reason, '') "	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
+				"IF(reason LIKE 'sungma\\_trade:%%', reason, ''), "	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
+				"reason LIKE 'zaklety\\_trial%%' "	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 				"FROM common.playerbot_core_handover WHERE channel=%u",
 				PLAYERBOT_YOHARA_STALE_S, (unsigned int)g_bChannel);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
-		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh, deaths; long tradeMap; char tradeWhy[16]; };
+		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh, deaths, trial; long tradeMap; char tradeWhy[16]; };
 		std::vector<TRow> rows;
 		MYSQL_ROW row;
 		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
 		{
 			TRow t;
-			t.pid = 0; t.state = 0; t.map = t.x = t.y = 0; t.ready = t.fresh = t.deaths = false;
+			t.pid = 0; t.state = 0; t.map = t.x = t.y = 0; t.ready = t.fresh = t.deaths = t.trial = false;
 			t.tradeMap = 0; t.tradeWhy[0] = '\0';
 			if (row[0]) str_to_number(t.pid, row[0]);
 			if (row[1]) str_to_number(t.state, row[1]);
@@ -3531,6 +3617,7 @@ namespace
 			// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: a Sung Ma resident's trade trip home
 			if (mysql_num_fields(msg->Get()->pSQLResult) > 9 && row[9] && *row[9])
 				ParsePlayerBotSungmaTradeReason(row[9], t.tradeMap, t.tradeWhy, sizeof(t.tradeWhy));
+			t.trial = mysql_num_fields(msg->Get()->pSQLResult) > 10 && row[10] && atoi(row[10]) != 0;	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 			if (t.pid != 0)
 				rows.push_back(t);
 		}
@@ -3595,6 +3682,7 @@ namespace
 				s_mapPlayerBotYoharaOut.erase(t.pid);
 				TPlayerBotYoharaArrival& a = s_mapPlayerBotYoharaArrival[t.pid];
 				a.lMap = t.map; a.lX = t.x; a.lY = t.y; a.iPurpose = t.purpose; a.dwAt = dwNow; a.bDeaths = t.deaths;
+				a.bTrial = t.trial;	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1
 				a.lTradeMap = t.purpose == YOHARA_PURPOSE_HOME ? t.tradeMap : 0;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
 				strlcpy(a.szTradeWhy, t.tradeWhy, sizeof(a.szTradeWhy));
 				// MT2009_PLUS_BOT_CHAMPION_V1: a member coming home - its row read again first (the statue's core may
@@ -3700,6 +3788,11 @@ namespace
 			{
 				LPCHARACTER rc = CHARACTER_MANAGER::instance().FindByPID(r->first);
 				const bool dead = rc && rc->IsDead() && !IsPlayerBotOnDungeonRun(r->first);
+				// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: in the forest (the trial's rules) a player's kill, a duel or a war is no
+				// death of the stay (MT2009_PLUS_BOT_PVP_DEATH_V1's verdict)
+				if (dead && !r->second.bDead && r->second.iPurpose == YOHARA_PURPOSE_ZAKLETY && IsPlayerBotZakletyTrialOn() &&
+						IsPlayerBotDeathNotMob(rc))
+					r->second.bDead = true;
 				if (dead && !r->second.bDead)
 				{
 					if (r->second.dwWindowStart == 0 || dwNow - r->second.dwWindowStart > PLAYERBOT_YOHARA_DEATH_WINDOW_MS)

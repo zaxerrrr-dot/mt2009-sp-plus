@@ -484,6 +484,14 @@ namespace
 		int fireMin = 0;
 		if (GetPlayerBotElementMapBase(map) == PLAYERBOT_MAP_SPIDER_V2 && GetPlayerBotGate55Fire(&fireMin))
 			return std::min(GetPlayerBotElementProgressGate(), fireMin);
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: Zaklety Las's wind gate - the progression's (40) unless
+		// m2_bot_zaklety_wind_gate N (10-80) names its own
+		if (GetPlayerBotElementMapBase(map) == PLAYERBOT_MAP_ZAKLETY)
+		{
+			const int wind = quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_wind_gate");
+			if (wind >= 10 && wind <= PLAYERBOT_ELEMENT_MAP_RESIST_CAP)
+				return wind;
+		}
 		return GetPlayerBotElementProgressGate();
 	}
 
@@ -557,8 +565,12 @@ namespace
 		int iBoosts;
 		DWORD dwBoostAt;
 		bool bRefusedCounted;	// the census's distinct refused bots (this period)
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the Zaklety Las trial of this stay - the retries (a buy_more) and its pass
+		int iTrialRetries;
+		bool bTrialPassed;
 		TPlayerBotEProgRecord() : lMap(0), dwArrived(0), lEarlyMap(-1), iEarlyDecision(-1), dwSeen(0), dwOnMapSeen(0),
-			iBoostElement(-1), iBoostTarget(0), iBoosts(0), dwBoostAt(0), bRefusedCounted(false) {}
+			iBoostElement(-1), iBoostTarget(0), iBoosts(0), dwBoostAt(0), bRefusedCounted(false), iTrialRetries(0),
+			bTrialPassed(false) {}
 	};
 	std::map<DWORD, TPlayerBotEProgRecord> s_mapPlayerBotEProg;
 
@@ -693,6 +705,90 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1 (the owner, 10 November 2026: Zaklety Las from 95 without the 20 000 HP - the wind
+	// gate and a trial, as every gate: "try first"). A bot of the Yohara route on Zaklety Las is judged by the coping check
+	// below (the progression's numbers - PLAYERBOT_EPROG_DEATHS deaths to the map's monsters or PLAYERBOT_EPROG_RETREATS HP
+	// retreats in PLAYERBOT_EPROG_WINDOW_MS, under 95-99 also PLAYERBOT_EPROG_SLOW_KILLS kills in that window; a player's
+	// kill, a duel, a war or a dungeon is no failure - MT2009_PLUS_BOT_PVP_DEATH_V1):
+	//   * the window over with none of that: the trial is passed - it stays and plays (its stay, ~2 h, as before);
+	//   * failed: it builds better gear for the forest (the wind target raised by the boost step - the element shop's SM /
+	//     yang, MT2009_PLUS_BOT_EPROG_BUY_MORE_V1) and tries again on the spot - at most m2_bot_zaklety_trial_retries (1)
+	//     times a stay;
+	//   * failed again (or it could not pay for more): the forest is shut for it, it goes home (handover reason
+	//     "zaklety_trial") and back to the Grotto of Exile V2 for m2_bot_zaklety_trial_back_min (120) minutes, its wind
+	//     target raised there; then it tries again once it grew (wind +PLAYERBOT_ZAKLETY_TRIAL_GROW_WIND or max HP
+	//     +PLAYERBOT_ZAKLETY_TRIAL_GROW_HP since the failure) or after twice that time - and so on.
+	// Event flags: m2_bot_zaklety_trial_off 1 - the old way (the stay's deaths alone, PLAYERBOT_YOHARA_DEATHS_*);
+	// m2_bot_zaklety_trial_retries N (1-5, -1 none); m2_bot_zaklety_trial_back_min N (10-1440); m2_bot_zaklety_wind_gate N (10-80);
+	// m2_bot_zaklety_hp_gate 1 - the old 20 000 HP gate (PLAYERBOT_ZAKLETY_MIN_HP) back. Log: PLAYERBOT_ZAKLETY_TRIAL.
+	const int PLAYERBOT_ZAKLETY_TRIAL_RETRIES = 1;
+	const int PLAYERBOT_ZAKLETY_TRIAL_BACK_MIN = 120;
+	const int PLAYERBOT_ZAKLETY_TRIAL_GROW_WIND = 5;
+	const int PLAYERBOT_ZAKLETY_TRIAL_GROW_HP = 1000;
+	struct TPlayerBotZakletyTrialStats
+	{
+		unsigned int started, passed, retried, failed, back, retry;
+		TPlayerBotZakletyTrialStats() : started(0), passed(0), retried(0), failed(0), back(0), retry(0) {}
+	};
+	TPlayerBotZakletyTrialStats s_kPlayerBotZakletyTrial;
+
+	bool IsPlayerBotZakletyTrialOn()
+	{
+		return IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_RETREAT) &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_trial_off") == 0;
+	}
+
+	int GetPlayerBotZakletyTrialRetries()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_trial_retries");
+		return flag >= 1 && flag <= 5 ? flag : (flag < 0 ? 0 : PLAYERBOT_ZAKLETY_TRIAL_RETRIES);
+	}
+
+	DWORD GetPlayerBotZakletyTrialBackMs()
+	{
+		const int flag = quest::CQuestManager::instance().GetEventFlag("m2_bot_zaklety_trial_back_min");
+		return (DWORD)(flag >= 10 && flag <= 24 * 60 ? flag : PLAYERBOT_ZAKLETY_TRIAL_BACK_MIN) * 60000U;
+	}
+
+	// A new stay on Zaklety Las (playerbot_yohara_bots.h, the arrival): a fresh trial.
+	void StartPlayerBotZakletyTrial(LPCHARACTER ch, DWORD now)
+	{
+		if (!ch || !IsPlayerBotZakletyTrialOn())
+			return;
+		TPlayerBotEProgRecord& r = s_mapPlayerBotEProg[ch->GetPlayerID()];
+		r.lMap = PLAYERBOT_MAP_ZAKLETY;
+		r.dwArrived = now ? now : 1;
+		r.dwSeen = r.dwOnMapSeen = now ? now : 1;
+		r.kills.clear();
+		r.deaths.clear();
+		r.retreats.clear();
+		r.shut.erase(PLAYERBOT_MAP_ZAKLETY);
+		r.iTrialRetries = 0;
+		r.bTrialPassed = false;
+		++s_kPlayerBotZakletyTrial.started;
+		sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: start pid=%u name=%s lv=%d wind=%d gate=%d max_hp=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_WIND),
+				GetPlayerBotElementProgressGateForMap(PLAYERBOT_MAP_ZAKLETY), (int)ch->GetMaxHP());
+	}
+
+	// The wind target a bot sent back from the forest builds (the boost record, a day; playerbot_element_shop.h).
+	void SetPlayerBotZakletyTrialBoost(LPCHARACTER ch, int wind, DWORD now)
+	{
+		if (!ch || !IsPlayerBotElementProgressOn(PLAYERBOT_EPROG_BOOST))
+			return;
+		TPlayerBotEProgRecord& r = s_mapPlayerBotEProg[ch->GetPlayerID()];
+		const int prev = r.iBoostElement == PLAYERBOT_EM_WIND ? r.iBoostTarget : 0;
+		const int target = std::min(GetPlayerBotElementProgressBoostMax(),
+				std::max(std::max(prev, GetPlayerBotElementProgressGateForMap(PLAYERBOT_MAP_ZAKLETY)), wind) +
+				GetPlayerBotElementProgressBoostStep());
+		if (target <= prev)
+			return;
+		r.iBoostElement = PLAYERBOT_EM_WIND;
+		r.iBoostTarget = target;
+		r.dwBoostAt = now ? now : 1;
+		r.dwSeen = now ? now : 1;
+	}
+
 	// The coping check on a progression map, after each death, HP retreat or kill noticed there.
 	void CheckPlayerBotElementProgressCoping(LPCHARACTER ch, TPlayerBotEProgRecord& r, DWORD now)
 	{
@@ -721,8 +817,23 @@ namespace
 			why = "slow_kills";
 			++s_kPlayerBotEProg.retreatSlow;
 		}
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the forest's trial for a bot of the route (not a cohort's / a Champion's own rules)
+		const bool zakletyTrial = PLAYERBOT_EPROG_MAPS[idx].lMap == PLAYERBOT_MAP_ZAKLETY && IsPlayerBotZakletyTrialOn() &&
+				!IsPlayerBotYoharaBonusMember(ch);
 		if (!why)
+		{
+			if (zakletyTrial && !r.bTrialPassed && now - r.dwArrived >= PLAYERBOT_EPROG_WINDOW_MS)
+			{
+				r.bTrialPassed = true;
+				++s_kPlayerBotZakletyTrial.passed;
+				sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: passed pid=%u name=%s lv=%d wind=%d max_hp=%d deaths=%u hp_retreats=%u "
+						"kills=%u on_map_min=%u retries=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), GetPlayerBotElementMapResist(ch, PLAYERBOT_EM_WIND),
+						(int)ch->GetMaxHP(), (unsigned int)r.deaths.size(), (unsigned int)r.retreats.size(),
+						(unsigned int)r.kills.size(), (unsigned int)((now - r.dwArrived) / 60000U), r.iTrialRetries);
+			}
 			return;
+		}
 		const int element = PLAYERBOT_EPROG_MAPS[idx].iElement;
 		const int resist = GetPlayerBotElementMapResist(ch, element);
 		// MT2009_PLUS_BOT_EPROG_BUY_MORE_V1 (the owner, 8 November 2026: "Boty nie daja rady na Lochu Pajakow V2 -> maja SM
@@ -742,6 +853,8 @@ namespace
 					GetPlayerBotElementProgressBoostStep());
 			if (target <= resist)
 				leaveWhy = "maxed";
+			else if (zakletyTrial && r.iTrialRetries >= GetPlayerBotZakletyTrialRetries())
+				leaveWhy = "retried";	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: tried again and failed again - back to the Grotto
 			else if (TryPlayerBotElementShopBoost(ch, element, &target, &via, &leaveWhy, &cost))
 				action = "buy_more";
 		}
@@ -752,6 +865,15 @@ namespace
 			++r.iBoosts;
 			r.dwBoostAt = now ? now : 1;
 			++s_kPlayerBotEProg.buyMore;
+			if (zakletyTrial)	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: better gear, the trial again
+			{
+				++r.iTrialRetries;
+				r.bTrialPassed = false;
+				++s_kPlayerBotZakletyTrial.retried;
+				sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: retry pid=%u name=%s lv=%d why=%s wind=%d target=%d max_hp=%d retries=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), why, resist, target, (int)ch->GetMaxHP(),
+						r.iTrialRetries);
+			}
 			if (strstr(via, "sm"))
 				++s_kPlayerBotEProg.buyMoreSm;
 			if (strstr(via, "yang"))
@@ -774,11 +896,20 @@ namespace
 			++s_kPlayerBotEProg.leaveMaxed;
 		else if (strcmp(leaveWhy, "off") == 0)
 			++s_kPlayerBotEProg.leaveOff;
-		else
+		else if (strcmp(leaveWhy, "retried") != 0)	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the trial's (its own count)
 			++s_kPlayerBotEProg.leaveNoFunds;
 		const DWORD shutMs = GetPlayerBotElementProgressShutMs();
 		const DWORD until = now + shutMs;
 		r.shut[r.lMap] = until ? until : 1;
+		if (zakletyTrial)	// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the resident goes home (playerbot_yohara_bots.h)
+		{
+			++s_kPlayerBotZakletyTrial.failed;
+			sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: failed pid=%u name=%s lv=%d why=%s leave_why=%s wind=%d max_hp=%d deaths=%u "
+					"hp_retreats=%u kills=%u on_map_min=%u retries=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), why, leaveWhy, resist, (int)ch->GetMaxHP(),
+					(unsigned int)r.deaths.size(), (unsigned int)r.retreats.size(), (unsigned int)r.kills.size(),
+					(unsigned int)((now - r.dwArrived) / 60000U), r.iTrialRetries);
+		}
 		sys_log(0, "PLAYERBOT_EPROG: retreat pid=%u name=%s lv=%d map=%ld(%s) element=%s resist=%d gate=%d early=%d why=%s "
 				"deaths=%u hp_retreats=%u kills=%u on_map_min=%u shut_min=%u action=leave leave_why=%s target=%d prev_target=%d "
 				"boosts=%d",
@@ -1188,6 +1319,14 @@ namespace
 				s_kPlayerBotEProg.refusedResist, s_kPlayerBotEProg.staleResets, s_kPlayerBotEProg.partyKills,
 				(unsigned int)s_mapPlayerBotEProg.size());
 		s_kPlayerBotEProg = TPlayerBotEProgStats();
+		// MT2009_PLUS_BOT_ZAKLETY_TRIAL_V1: the forest's trials this period
+		sys_log(0, "PLAYERBOT_ZAKLETY_TRIAL: census on=%d gate=%d retries_max=%d back_min=%u started=%u passed=%u retried=%u "
+				"failed=%u sent_back=%u back_to_try=%u",
+				IsPlayerBotZakletyTrialOn() ? 1 : 0, GetPlayerBotElementProgressGateForMap(PLAYERBOT_MAP_ZAKLETY),
+				GetPlayerBotZakletyTrialRetries(), (unsigned int)(GetPlayerBotZakletyTrialBackMs() / 60000U),
+				s_kPlayerBotZakletyTrial.started, s_kPlayerBotZakletyTrial.passed, s_kPlayerBotZakletyTrial.retried,
+				s_kPlayerBotZakletyTrial.failed, s_kPlayerBotZakletyTrial.back, s_kPlayerBotZakletyTrial.retry);
+		s_kPlayerBotZakletyTrial = TPlayerBotZakletyTrialStats();
 		// the record of a bot not seen on this core for a day is dropped
 		for (std::map<DWORD, TPlayerBotEProgRecord>::iterator it = s_mapPlayerBotEProg.begin(); it != s_mapPlayerBotEProg.end();)
 		{
