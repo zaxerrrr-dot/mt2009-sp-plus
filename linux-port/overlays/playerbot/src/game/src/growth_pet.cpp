@@ -2380,6 +2380,10 @@ namespace growth_pet
 				for (int k = 0; k < GROWTH_PET_SKILL_SLOTS; ++k)
 					p.d.aSkill[k].dwCooltime = 0;
 				FixChampionStats(p);
+				// MT2009_PLUS_PET_CAGE_SHOP_V1 (load): a caged pet is never left dirty in memory - its row stays the
+				// latest state (OnItemAdd drops a cage's copy and reloads it)
+				if (p.dirty && p.d.bState == GROWTH_PET_STATE_BAG)
+					SaveNow(p);
 			}
 			p.holder = ch->GetPlayerID();
 			if (head->bReason == GROWTH_PET_LOAD_PENDING)
@@ -2805,6 +2809,30 @@ namespace growth_pet
 			return;
 		const DWORD id = (DWORD)item->GetSocket(2);
 		Pet* p = FindPet(id);
+		// MT2009_PLUS_PET_CAGE_SHOP_V1 (players, 10 November 2026): a cage may now go through a player's offline shop /
+		// the trade house (the cage lost ITEM_ANTIFLAG_MYSHOP, tools/pety/gen_pety_sql.py). The item leaves this core
+		// through the shop's own tables and may come back - to the buyer, or to the seller who takes it back - after
+		// the pet was opened, grown and caged again on another core; the copy this core kept since the cage left is
+		// then stale (the old code would use it and save it over the newer row). A caged pet changes only through
+		// SaveNow (Pack saves it, nothing else touches it until Unpack), so the db core's row is always its latest
+		// state: a cage that comes in drops this core's copy and loads the row anew (the trade window, the storeroom
+		// the same way - one load). The pet's id is the cage's socket 2, so it moves with the item and a buyer gets
+		// exactly the pet of the cage he bought; no item is made here, so nothing can be doubled.
+		if (p && IsBag(item))
+		{
+			LPCHARACTER old = p->holder != ch->GetPlayerID() ? HolderChar(*p) : NULL;
+			if (old)
+			{
+				if (SummonedPet(old) == p)
+					Unsummon(old, *p, false);
+				SendDelete(old, id);
+			}
+			DestroyMob(*p);
+			if (p->dirty && p->d.bState == GROWTH_PET_STATE_BAG)
+				SaveNow(*p);	// sent before the load below - the db core answers in order
+			s_pets.erase(id);
+			p = NULL;
+		}
 		if (!p)
 		{
 			std::vector<DWORD> ids(1, id);

@@ -25,7 +25,7 @@ param(
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
-#   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
+#   seal kept at death char_battle.cpp, char.cpp (MT2009_PLUS_MOUNT_DEATH_KEEP_SEAL_V2; V1 taken out)
 #   saddlebags on a mount char.cpp               (MT2009_PLUS_SADDLEBAG_MOUNT_V1)
 #   stones stand still char.cpp, char_state.cpp  (MT2009_PLUS_STONE_STILL_V1)
 #   bot sash drop      item_manager.cpp, char_item.cpp (MT2009_PLUS_BOT_SASH_DROP_V1)
@@ -223,7 +223,7 @@ if ((Test-Path -LiteralPath $rareToggleApply -PathType Leaf) -and
         Write-Host 'Cor Draconis and sash drops follow the world switches.' -ForegroundColor DarkGray
     }
 }
-# A mount seal comes off into the bag at death (server-patches/mountdeath).
+# Death only dismounts: the mount seal stays worn, its mount comes back at the revive (server-patches/mountdeath, V2).
 $mountDeathApply = Join-Path $repo 'server-patches/mountdeath/Apply-MountDeathPatch.ps1'
 $charBattleSource = Join-Path $engineGameSource 'char_battle.cpp'
 if ((Test-Path -LiteralPath $mountDeathApply -PathType Leaf) -and
@@ -231,7 +231,7 @@ if ((Test-Path -LiteralPath $mountDeathApply -PathType Leaf) -and
     $mountDeathResult = & $mountDeathApply -SourceFile $charBattleSource
     if ($mountDeathResult.Changed) {
         $syncedFiles++
-        Write-Host 'Mount seal off into the bag at death.' -ForegroundColor DarkGray
+        Write-Host 'Mount seal stays worn at death.' -ForegroundColor DarkGray
     }
 }
 # The horse saddlebags open on a mount seal too (server-patches/saddlebagmount).

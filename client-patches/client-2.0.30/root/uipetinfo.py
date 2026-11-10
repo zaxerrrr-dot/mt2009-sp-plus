@@ -2709,6 +2709,11 @@ def ItemTooltip(tt, vnum, metinSlot):
 			tt.AppendTextLine(T("TT_EGG_TIME") % Duration(sockets[0] - now), tt.CONDITION_COLOR)
 		elif sockets[0]:
 			tt.AppendTextLine(T("TT_EGG_EXPIRED"), tt.NEGATIVE_COLOR)
+		# MT2009_PLUS_PET_EGG_LIFE_TOOLTIP_V1: the egg's time is the time left to hatch it; the pet's own life is rolled
+		# at the hatching per species (pl-wiki; the server's growth_pet_data.h hatchMin / hatchMax)
+		life = getattr(PD, "HATCH_LIFE_DAYS", {}).get(seal)
+		if life:
+			tt.AppendTextLine(T("TT_EGG_LIFE") % life, tt.NORMAL_COLOR)
 		if seal in PD.SEALS:
 			species = PD.SEALS[seal][0]
 			skills = [SkillInfo(s)[0] for s in PD.POTENTIAL.get(species, ())]

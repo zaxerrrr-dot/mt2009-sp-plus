@@ -52,6 +52,24 @@ SEALS = {
 	55713: (13, 55413, 'Mini-Dow\xf3dca', (34165, 34166, 34228), 3, 8),
 	55714: (14, 55414, 'Ma\xb3y Aamon', (34229, 34230, 34231), 3, 8),
 }
+# MT2009_PLUS_PET_EGG_LIFE_TOOLTIP_V1: seal vnum -> (min, max) days of life rolled at the hatching (the server's
+# Species hatchMin / hatchMax) - the egg tooltip; the egg's own time is only the time left to hatch it
+HATCH_LIFE_DAYS = {
+	55701: (1, 14),
+	55702: (1, 14),
+	55703: (1, 14),
+	55704: (1, 14),
+	55705: (1, 14),
+	55706: (15, 45),
+	55707: (1, 14),
+	55708: (1, 14),
+	55709: (7, 28),
+	55710: (15, 45),
+	55711: (15, 45),
+	55712: (15, 45),
+	55713: (15, 45),
+	55714: (15, 45),
+}
 # egg vnum -> seal vnum
 EGGS = {
 	55401: 55701,

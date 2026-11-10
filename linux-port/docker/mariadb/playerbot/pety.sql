@@ -238,7 +238,7 @@ END//
 DELIMITER ;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (55001,'Odzywka',_cp1250 X'4F64BF79776B61',37,3,200,0,1,0,4,0,'',50000,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-(55002,'Klatka Transportowa',_cp1250 X'4B6C61746B61205472616E73706F72746F7761',37,2,1,0,1,115072,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+(55002,'Klatka Transportowa',_cp1250 X'4B6C61746B61205472616E73706F72746F7761',37,2,1,0,1,49536,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55003,'Ksiega Mlodego Zwierza',_cp1250 X'4B7369EA6761204DB36F6465676F205A776965727A61',5,0,200,0,1,0,4,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55004,'Ksiega Dzikiego Zwierza',_cp1250 X'4B7369EA676120447A696B6965676F205A776965727A61',5,0,200,0,1,0,4,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (55005,'Ksiega Dzielnego Zwierza',_cp1250 X'4B7369EA676120447A69656C6E65676F205A776965727A61',5,0,200,0,1,0,4,0,'',10000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
@@ -395,6 +395,17 @@ BEGIN NOT ATOMIC
 		UPDATE world.item_proto SET stack = 200, antiflag = antiflag & ~32768, flag = flag | 4 WHERE vnum = 55028;
 		UPDATE world.item_proto SET stack = 200, antiflag = antiflag & ~32768, flag = flag | 4 WHERE vnum = 55031;
 		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:stack_v2', NOW());
+	END IF;
+END//
+DELIMITER ;
+
+-- ---- The Klatka Transportowa may be listed in a player's shop / the trade house (players, 10 November 2026), once
+-- on a world that has the row: pety:cage_shop_v1 ------------------------------------------------------------------------
+DELIMITER //
+BEGIN NOT ATOMIC
+	IF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pety:cage_shop_v1') = 0 THEN
+		UPDATE world.item_proto SET antiflag = antiflag & ~65536 WHERE vnum = 55002;
+		INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('pety:cage_shop_v1', NOW());
 	END IF;
 END//
 DELIMITER ;
