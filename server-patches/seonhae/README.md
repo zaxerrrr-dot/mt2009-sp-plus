@@ -87,6 +87,23 @@ liczą się jak ich mapa (indeks / 10000).
   zamiast wierszy `shard`): 353 (gracze 95–109, przedmioty 90–105) – Czerwony 39076 ×3, Żółty Lśniący 39080 ×1;
   404 (gracze 110–119, przedmioty 105–120) – Tęczowy 39077 ×3, Żółty Lśniący 39080 ×1, Święty 39081 ×1.
 
+- **Odłamki na mapach Yohary** (`MT2009_PLUS_SEONHAE_YOHARA_V1`, właściciel 10.11.2026: „drop wszystkich odłamków do
+  bonusów 6/7 na mapach Yohary”, ze zwykłych mobów, bez Płaskowyżu Iluzji 397): osobna lista `shard_map_yohara`
+  (obok `shard_map`; obie dają odłamki), szansa `shard_chance` (0,5%, jak Grota), wszystkie dwanaście odłamków
+  (39070–39081), wagi profilu mapy (`shard_pick`, suma 100 – kolory poziomów przedmiotów graczy mapy 75, pozostałe 25):
+  - Sung Ma (moby 118–127, Czempioni, przedmioty 120+): 373 374 376 377 385 388 389 393 394, Głębie 395, Tajemnicza
+    Instancja 396, Królestwo Żywiołów 378–381, Świątynia Węży 390 391, Jaskinie Gnolli 382–384, Wieża Sung Mahi 386 387 –
+    Święty 40, Tęczowy 20, Żółty Lśniący 15, Czerwony 8, Fioletowy 4, Zielony Lśniący 3, Niebieski 3, Żółty 2, Zielony 2,
+    Biały 1, Szary Lśniący 1, Szary 1;
+  - 110–120 (Szczelina Czasu, Przebudzenie, Hydra, Port; moby 107–125, przedmioty 105–120): 367 368 369 370 371 398
+    404–407 – Tęczowy 45, Żółty Lśniący 15, Święty 15, dalej jak wyżej (8/4/3/3/2/2/1/1/1);
+  - lasy (moby 97–110, przedmioty 90–105): Zaklęty Las 353, Schronienie Meley 356 – Czerwony 56, Żółty Lśniący 19,
+    Tęczowy 7, Fioletowy 5, Zielony Lśniący 3, Niebieski 2, Święty 2, Żółty 2, Zielony 1, Biały 1, Szary Lśniący 1, Szary 1.
+  Na mapach tej listy bez odłamka z potwora o więcej niż `shard_level_gap` (15) poziomów niższego od zabójcy (0 = wył.).
+  Wiersze `shard_pick` z pliku zastępują teraz tylko mapy, które wymieniają. Plik starego rodzaju (bez wiersza
+  `shard_map_yohara`) ma listę Yohary domyślną, a jego `shard_pick` dla map Yohary (stare 353/404) rdzeń pomija; panel
+  pokazuje go już z blokiem Yohary (zapis = nowy rodzaj).
+
 Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego, która
 sprawdza każdy wiersz), czytany ponownie po zmianie (sprawdzany co najwyżej co 5 s). Brak pliku albo
 brak danego rodzaju wierszy = wartości domyślne (wiersze `mob` z pliku zastępują całą domyślną listę,
