@@ -67,6 +67,23 @@ def flags(v, allowed):
     return ','.join(f for f in v.split(',') if f.strip() in allowed)
 
 
+def race_sql(races):
+    """MT2009_PLUS_YOHARA_RASY_V1: the UPDATEs setting the races (setRaceFlag bits 0-10, RACE) of {vnum: 'ORC,DEVIL'} -
+    the elements (bits 11-16) kept; for a generator's elements' file (every start, after its INSERT IGNORE)."""
+    by = {}
+    for v, f in races.items():
+        names = [x.strip() for x in f.split(',') if x.strip()]
+        assert all(x in RACE for x in names), (v, f)
+        by.setdefault(sum(1 << RACE.index(x) for x in names), []).append(v)
+    L = []
+    for bits in sorted(by):
+        vs = ','.join(map(str, sorted(by[bits])))
+        L += ['-- race %s: %s' % (','.join(x for i, x in enumerate(RACE) if bits >> i & 1) or 'none', vs),
+              'UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~%d) | %d WHERE vnum IN (%s) AND '
+              '(setRaceFlag + 0) & %d <> %d;' % ((1 << len(RACE)) - 1, bits, vs, (1 << len(RACE)) - 1, bits)]
+    return L
+
+
 def num(v):
     return int(float(v or 0))
 

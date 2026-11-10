@@ -58,6 +58,19 @@ OVERRIDE = {
     6192: dict(SummonVnum='6409', MinGold='10000000', MaxGold='27000000'),
 }
 
+# -- MT2009_PLUS_YOHARA_RASY_V1: the races (setRaceFlag bits 0-10 - the "Silny przeciwko ..." bonuses, battle.cpp
+#    CalcAttBonus) where they differ from Owsap's row. The owner, 10 November 2026: "Silny przeciwko diabłom" works on
+#    every monster and boss of Zaklęty Las, its PB and its SZC - all of them are devils (the pl-wiki "Rasa = Diabły" of
+#    every En-Tai / Bagjanamu / Uzdrowiciel Ochao), only Jotun Thrym was not (Owsap: ORC). Jotun Thrym: the
+#    pl-wiki "Jotun Thrym": "Rasa = Orki" - the orc stays, the devil is added.
+#    The row (INSERT IGNORE) carries it and the elements' file sets bits 0-10 of these vnums every start (a world
+#    made earlier, either bonus mode - M2_BONUS_MODE touches only bits 11-16). The Metins keep none (the wiki gives a
+#    Metin no race).
+RACE_BITS = 2047
+RACE = {
+    6192: 'ORC,DEVIL',                         # Jotun Thrym - was ORC
+}
+
 # -- NPCs: our numbers where the official ones are taken (20409-20411 are Królewski Łucznik in Orc Valley here) -
 #    the official races (GF npclist 20409-20412: redguild_guard_M / _M_2 / _M_3, jinno_patrol_spear) ---------------
 NPCS = {
