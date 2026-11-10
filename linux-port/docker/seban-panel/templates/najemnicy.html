@@ -36,11 +36,17 @@
 <p class="nj-note">Gra czyta te flagi z bazy co ~10 s, bez restartu. Wyłączenie odwołuje wszystkich wezwanych najemników. To samo w grze: <code>/eventflag m2_najemnicy_off 1</code> itd.</p>
 </section>
 
+<section class="panel" id="kolekcjoner">
+<h2>Kolekcjoner Najemników – zadania i progi</h2>
+<p>Zadania (nazwy, opisy, przedmioty, paczki, szanse, minimalny poziom, stałe bonusy) i progi najemników (które ukończone zadanie daje ilu najemników od jakiego poziomu) – <a href="{{ url_for('najemnicy_kolekcjoner') }}"><strong>edytor Kolekcjonera →</strong></a></p>
+<p class="nj-note">Progi teraz: {% for nr, slots, level in tiers %}{{ nr }} zad. + {{ level }} poz. → {{ slots }}{% if not loop.last %}, {% endif %}{% endfor %}. Gra wczytuje zmiany sama (~30 s), bez restartu.</p>
+</section>
+
 <section class="panel" id="odblokuj">
 <h2>Zadania Kolekcjonera gracza (odblokowanie)</h2>
 <form method="post" class="nj-form"><input type="hidden" name="nj_csrf" value="{{ nj_csrf }}">
 <label>Nick postaci<input type="text" name="name" required maxlength="24"></label>
-<label>Ukończone zadania<select name="tasks">{% for t in range(1, 7) %}<option value="{{ t }}" {% if t == 6 %}selected{% endif %}>{{ t }} → do {{ t + 1 }} najemników (od {{ 75 + t * 5 }} poz.)</option>{% endfor %}</select></label>
+<label>Ukończone zadania<select name="tasks">{% for nr, slots, level in tiers %}<option value="{{ nr }}" {% if loop.last %}selected{% endif %}>{{ nr }} → do {{ slots }} najemników (od {{ level }} poz.)</option>{% endfor %}</select></label>
 <button name="action" value="unlock">Ustaw</button>
 <button name="action" value="lock" class="secondary">Zablokuj (0 zadań)</button>
 </form>
@@ -83,7 +89,7 @@
 <thead><tr><th>Gracz</th><th>Poziom</th><th>Zadania</th><th>Miejsca teraz</th><th>Kiedy</th><th>Źródło</th></tr></thead>
 <tbody>
 {% for u in unlocks %}
-<tr><td>{{ u.owner_name or ('#' ~ u.owner_pid) }}</td><td>{{ u.owner_level or '–' }}</td><td>{{ u.tasks }}/6</td><td>{{ u.slots }}</td><td>{{ u.unlocked_at or '–' }}</td><td>{{ u.source }}</td></tr>
+<tr><td>{{ u.owner_name or ('#' ~ u.owner_pid) }}</td><td>{{ u.owner_level or '–' }}</td><td>{{ u.tasks }}</td><td>{{ u.slots }}</td><td>{{ u.unlocked_at or '–' }}</td><td>{{ u.source }}</td></tr>
 {% else %}
 <tr><td colspan="6" class="muted">Nikomu nie ustawiono zadań ręcznie{% if flags.m2_najemnicy_free_unlock %} (teraz i tak wszyscy mają 6/6 – flaga testowa){% endif %}.</td></tr>
 {% endfor %}

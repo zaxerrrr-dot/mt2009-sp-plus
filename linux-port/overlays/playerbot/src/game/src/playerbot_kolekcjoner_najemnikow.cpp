@@ -44,6 +44,17 @@
 //   KNAJ end <open 0|1>
 //   KNAJ res <task> <item> <code> <successes> <failures> <units used>      (EKnResult)
 //   KNAJ done <task> <nr> <tasks done>
+//   KNAJ tier <nr> <slots> <level>                                     (V2, after begin: every tier)
+//   KNAJ info <task> <hex title|-> <min level> <sort>                   (V2, after its task line; CP1250 hex)
+//   KNAJ desc <task> <hex description|->                                (V2)
+//   res code 10 (V2): the character's level is below the task's min_level
+// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2 (the owner, 10 November 2026): the tasks are the Seban panel's
+// ("Wydarzenia -> Najemnicy -> Kolekcjoner", kolekcjoner_config.py): title, description, min_level and sort_order of a
+// task, sort_order of an item (item_index stays the progress' key), any reward of s_aKnPoints, and the tiers table
+// najemnicy_kolekcjoner_tiers (the n-th task done -> slots from a level; playerbot_najemnicy.h counts the slots from it).
+// The panel writes the event flag m2_kolekcjoner_najemnikow_ver at every change; KnReady reads it at most every 30 s
+// and reads the definitions again (every character's state too) - no restart. A changed reward reaches an online
+// character at its next recompute of points (a level, an item, a warp).
 // Switch: event flag m2_kolekcjoner_najemnikow_off = 1 - no hand-ins (the window and the bonuses stay).
 // Logs: "KOLEKCJONER_NAJ:" lines in the syslog, item log "KOLEKCJONER_NAJ" (vnum, hint task/item/units/ok/fail).
 #include "stdafx.h"
@@ -95,7 +106,10 @@ namespace
 		KN_BAD = 7,		// no such task / item
 		KN_TOO_FAST = 8,
 		KN_NOT_READY = 9,	// the tables or the character's state could not be read
+		KN_LEVEL = 10,		// V2: the character's level is below the task's min_level
 	};
+	const DWORD KN_VERSION_POLL_MS = 30 * 1000;	// V2: the panel's reload flag (m2_kolekcjoner_najemnikow_ver), at most this often
+	const int KN_MAX_TIER_TASKS = 16;
 
 	// The bonuses a task may give (najemnicy_kolekcjoner_rewards.point_name) and how a notice names them (one %d).
 	struct TKnPoint
@@ -126,6 +140,49 @@ namespace
 		{ "RESIST_WIND", POINT_RESIST_WIND, "Odporno\x9c\xe6 na wiatr +%d%%" },
 		{ "RESIST_EARTH", POINT_RESIST_EARTH, "Odporno\x9c\xe6 na ziemi\xea +%d%%" },
 		{ "RESIST_DARK", POINT_RESIST_DARK, "Odporno\x9c\xe6 na ciemno\x9c\xe6 +%d%%" },
+		// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2: the Seban panel's choice (the same list and order as its
+		// kolekcjoner_config.py POINTS and the client's uinajemnicykolekcjoner.py POINTS).
+		{ "ATT_SPEED", POINT_ATT_SPEED, "Szybko\x9c\xe6 ataku +%d%%" },
+		{ "MOV_SPEED", POINT_MOV_SPEED, "Szybko\x9c\xe6 ruchu +%d%%" },
+		{ "CASTING_SPEED", POINT_CASTING_SPEED, "Szybko\x9c\xe6 zakl\xea\xe6 +%d%%" },
+		{ "HP_REGEN", POINT_HP_REGEN, "Regeneracja P\xaf +%d%%" },
+		{ "SP_REGEN", POINT_SP_REGEN, "Regeneracja PE +%d%%" },
+		{ "STEAL_HP", POINT_STEAL_HP, "Absorpcja P\xaf +%d%%" },
+		{ "STEAL_SP", POINT_STEAL_SP, "Absorpcja PE +%d%%" },
+		{ "ATTBONUS_ANIMAL", POINT_ATTBONUS_ANIMAL, "Silny przeciwko zwierz\xeatom +%d%%" },
+		{ "ATTBONUS_ORC", POINT_ATTBONUS_ORC, "Silny przeciwko orkom +%d%%" },
+		{ "ATTBONUS_MILGYO", POINT_ATTBONUS_MILGYO, "Silny przeciwko mistykom +%d%%" },
+		{ "ATTBONUS_UNDEAD", POINT_ATTBONUS_UNDEAD, "Silny przeciwko nieumar\xb3ym +%d%%" },
+		{ "ATTBONUS_DEVIL", POINT_ATTBONUS_DEVIL, "Silny przeciwko diab\xb3om +%d%%" },
+		{ "ATTBONUS_WARRIOR", POINT_ATTBONUS_WARRIOR, "Silny przeciwko wojownikom +%d%%" },
+		{ "ATTBONUS_ASSASSIN", POINT_ATTBONUS_ASSASSIN, "Silny przeciwko ninja +%d%%" },
+		{ "ATTBONUS_SURA", POINT_ATTBONUS_SURA, "Silny przeciwko surom +%d%%" },
+		{ "ATTBONUS_SHAMAN", POINT_ATTBONUS_SHAMAN, "Silny przeciwko szamanom +%d%%" },
+		{ "RESIST_WARRIOR", POINT_RESIST_WARRIOR, "Odporno\x9c\xe6 na wojownik\xf3w +%d%%" },
+		{ "RESIST_ASSASSIN", POINT_RESIST_ASSASSIN, "Odporno\x9c\xe6 na ninja +%d%%" },
+		{ "RESIST_SURA", POINT_RESIST_SURA, "Odporno\x9c\xe6 na sury +%d%%" },
+		{ "RESIST_SHAMAN", POINT_RESIST_SHAMAN, "Odporno\x9c\xe6 na szaman\xf3w +%d%%" },
+		{ "BLOCK", POINT_BLOCK, "Szansa na blok +%d%%" },
+		{ "DODGE", POINT_DODGE, "Szansa na unik strza\xb3 +%d%%" },
+		{ "RESIST_SWORD", POINT_RESIST_SWORD, "Odporno\x9c\xe6 na miecze +%d%%" },
+		{ "RESIST_TWOHAND", POINT_RESIST_TWOHAND, "Odporno\x9c\xe6 na bro\xf1 dwur\xea" "czn\xb9 +%d%%" },
+		{ "RESIST_DAGGER", POINT_RESIST_DAGGER, "Odporno\x9c\xe6 na sztylety +%d%%" },
+		{ "RESIST_BELL", POINT_RESIST_BELL, "Odporno\x9c\xe6 na dzwony +%d%%" },
+		{ "RESIST_FAN", POINT_RESIST_FAN, "Odporno\x9c\xe6 na wachlarze +%d%%" },
+		{ "RESIST_BOW", POINT_RESIST_BOW, "Odporno\x9c\xe6 na strza\xb3y +%d%%" },
+		{ "RESIST_MAGIC", POINT_RESIST_MAGIC, "Odporno\x9c\xe6 na magi\xea +%d%%" },
+		{ "RESIST_CRITICAL", POINT_RESIST_CRITICAL, "Odporno\x9c\xe6 na krytyczne uderzenia +%d%%" },
+		{ "RESIST_PENETRATE", POINT_RESIST_PENETRATE, "Odporno\x9c\xe6 na przeszywaj\xb9" "ce uderzenia +%d%%" },
+		{ "NORMAL_HIT_DAMAGE_BONUS", POINT_NORMAL_HIT_DAMAGE_BONUS, "\x8cr" "ednie obra\xbf" "enia +%d%%" },
+		{ "SKILL_DAMAGE_BONUS", POINT_SKILL_DAMAGE_BONUS, "Obra\xbf" "enia umiej\xeatno\x9c" "ci +%d%%" },
+		{ "NORMAL_HIT_DEFEND_BONUS", POINT_NORMAL_HIT_DEFEND_BONUS, "Odporno\x9c\xe6 na \x9cr" "ednie obra\xbf" "enia +%d%%" },
+		{ "SKILL_DEFEND_BONUS", POINT_SKILL_DEFEND_BONUS, "Odporno\x9c\xe6 na obra\xbf" "enia umiej\xeatno\x9c" "ci +%d%%" },
+		{ "POISON_PCT", POINT_POISON_PCT, "Szansa na otrucie +%d%%" },
+		{ "STUN_PCT", POINT_STUN_PCT, "Szansa na omdlenie +%d%%" },
+		{ "SLOW_PCT", POINT_SLOW_PCT, "Szansa na spowolnienie +%d%%" },
+		{ "EXP_DOUBLE_BONUS", POINT_EXP_DOUBLE_BONUS, "Szansa na podw\xf3jne do\x9cwiadczenie +%d%%" },
+		{ "GOLD_DOUBLE_BONUS", POINT_GOLD_DOUBLE_BONUS, "Szansa na podw\xf3jny yang +%d%%" },
+		{ "ITEM_DROP_BONUS", POINT_ITEM_DROP_BONUS, "Szansa na podw\xf3jny drop +%d%%" },
 	};
 
 	// The six elements: a task giving all six the same value is named once ("each element").
@@ -159,6 +216,21 @@ namespace
 		int percent = 95;
 		std::vector<TKnItem> items;
 		std::vector<TKnReward> rewards;
+		// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2 (the Seban panel): the Polish title and description (CP1250; empty = the
+		// built-in ones), the level a hand-in needs (0 = none) and the window's order.
+		std::string title;
+		std::string description;
+		int minLevel = 0;
+		int sort = 0;
+	};
+
+	// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2: the n-th completed task -> so many mercenaries from a level
+	// (player.najemnicy_kolekcjoner_tiers; playerbot_najemnicy.h reads the same table for the slots).
+	struct TKnTier
+	{
+		int nr = 0;
+		int slots = 0;
+		int level = 0;
 	};
 
 	struct TKnPlayer
@@ -178,6 +250,9 @@ namespace
 	DWORD s_dwKnDefsTriedAt = 0;
 	std::vector<TKnTask> s_vecKnTasks;
 	std::map<DWORD, TKnPlayer> s_mapKnPlayer;
+	std::vector<TKnTier> s_vecKnTiers;
+	long long s_llKnVersion = LLONG_MIN;	// V2: the reload flag last seen (LLONG_MIN: not read yet)
+	DWORD s_dwKnVersionAt = 0;
 
 	std::unique_ptr<SQLMsg> KnQuery(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
 	std::unique_ptr<SQLMsg> KnQuery(const char* fmt, ...)
@@ -218,6 +293,40 @@ namespace
 		return v;
 	}
 
+	// V2: a HEX() column back to its bytes (the title and description in CP1250 whatever the connection's charset).
+	std::string KnUnhex(const char* hex)
+	{
+		std::string out;
+		if (!hex)
+			return out;
+		for (const char* p = hex; p[0] && p[1]; p += 2)
+		{
+			int v = 0;
+			for (int k = 0; k < 2; ++k)
+			{
+				const char c = p[k];
+				v = v * 16 + (c >= '0' && c <= '9' ? c - '0' : c >= 'a' && c <= 'f' ? c - 'a' + 10 : c >= 'A' && c <= 'F' ?
+						c - 'A' + 10 : 0);
+			}
+			out += (char)(v < 32 ? '?' : v);
+		}
+		return out;
+	}
+
+	// V2: bytes to the client's lowercase hex ("-" for none), at most maxBytes of them.
+	std::string KnHex(const std::string& text, size_t maxBytes)
+	{
+		static const char kDigits[] = "0123456789abcdef";
+		std::string out;
+		for (size_t i = 0; i < text.size() && i < maxBytes; ++i)
+		{
+			const unsigned char c = (unsigned char)text[i];
+			out += kDigits[c >> 4];
+			out += kDigits[c & 15];
+		}
+		return out.empty() ? std::string("-") : out;
+	}
+
 	int KnKey(int task, int pos)
 	{
 		return task * 256 + pos;
@@ -233,6 +342,8 @@ namespace
 
 	const char* KnTaskName(const TKnTask& task)
 	{
+		if (!task.title.empty())	// V2: the panel's title
+			return task.title.c_str();
 		const int n = (int)(sizeof(s_apszKnTaskNames) / sizeof(s_apszKnTaskNames[0]));
 		if (task.index >= 1 && task.index < n)
 			return s_apszKnTaskNames[task.index];
@@ -267,7 +378,22 @@ namespace
 		std::unique_ptr<SQLMsg> e(KnQuery("CREATE TABLE IF NOT EXISTS player.najemnicy_kolekcjoner_complete ("
 				"pid INT UNSIGNED NOT NULL, collection_index TINYINT UNSIGNED NOT NULL, nr TINYINT UNSIGNED NOT NULL DEFAULT 0, "
 				"completed_at DATETIME NULL, PRIMARY KEY (pid, collection_index)) ENGINE=InnoDB"));
-		s_bKnTables = KnOk(a) && KnOk(b) && KnOk(c) && KnOk(d) && KnOk(e);
+		// MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2: the Seban panel's columns and the tiers (kolekcjoner_najemnikow.sql).
+		std::unique_ptr<SQLMsg> f(KnQuery("ALTER TABLE player.najemnicy_kolekcjoner_categories "
+				"ADD COLUMN IF NOT EXISTS title VARCHAR(64) NOT NULL DEFAULT '', "
+				"ADD COLUMN IF NOT EXISTS description VARCHAR(200) NOT NULL DEFAULT '', "
+				"ADD COLUMN IF NOT EXISTS min_level SMALLINT UNSIGNED NOT NULL DEFAULT 0, "
+				"ADD COLUMN IF NOT EXISTS sort_order SMALLINT NOT NULL DEFAULT 0"));
+		std::unique_ptr<SQLMsg> g(KnQuery("ALTER TABLE player.najemnicy_kolekcjoner_items "
+				"ADD COLUMN IF NOT EXISTS sort_order SMALLINT NOT NULL DEFAULT 0"));
+		std::unique_ptr<SQLMsg> h(KnQuery("CREATE TABLE IF NOT EXISTS player.najemnicy_kolekcjoner_tiers ("
+				"nr TINYINT UNSIGNED NOT NULL, slots TINYINT UNSIGNED NOT NULL DEFAULT 2, "
+				"level SMALLINT UNSIGNED NOT NULL DEFAULT 80, PRIMARY KEY (nr)) ENGINE=InnoDB"));
+		std::unique_ptr<SQLMsg> i(KnQuery("INSERT IGNORE INTO player.najemnicy_kolekcjoner_tiers (nr, slots, level) "
+				"SELECT * FROM (SELECT 1, 2, 80 UNION ALL SELECT 2, 3, 85 UNION ALL SELECT 3, 4, 90 UNION ALL SELECT 4, 5, 95 "
+				"UNION ALL SELECT 5, 6, 100 UNION ALL SELECT 6, 7, 105) seed WHERE NOT EXISTS "
+				"(SELECT 1 FROM player.najemnicy_kolekcjoner_tiers)"));
+		s_bKnTables = KnOk(a) && KnOk(b) && KnOk(c) && KnOk(d) && KnOk(e) && KnOk(f) && KnOk(g) && KnOk(h) && KnOk(i);
 		if (!s_bKnTables)
 			sys_err("KOLEKCJONER_NAJ: the tables cannot be made (kolekcjoner_najemnikow.sql)");
 		return s_bKnTables;
@@ -277,10 +403,12 @@ namespace
 	{
 		if (!KnEnsureTables())
 			return false;
-		std::unique_ptr<SQLMsg> mc(KnQuery("SELECT collection_index, name, percent FROM player.najemnicy_kolekcjoner_categories "
-				"ORDER BY collection_index"));
+		std::unique_ptr<SQLMsg> mc(KnQuery("SELECT collection_index, name, percent, HEX(CONVERT(title USING cp1250)), "
+				"HEX(CONVERT(description USING cp1250)), min_level, sort_order FROM player.najemnicy_kolekcjoner_categories "
+				"ORDER BY sort_order, collection_index"));
 		std::unique_ptr<SQLMsg> mi(KnQuery("SELECT collection_index, item_index, item_vnum, item_count, pack, unopened "
-				"FROM player.najemnicy_kolekcjoner_items ORDER BY collection_index, item_index"));
+				"FROM player.najemnicy_kolekcjoner_items ORDER BY collection_index, sort_order, item_index"));
+		std::unique_ptr<SQLMsg> mt(KnQuery("SELECT nr, slots, level FROM player.najemnicy_kolekcjoner_tiers ORDER BY nr"));
 		std::unique_ptr<SQLMsg> mr(KnQuery("SELECT collection_index, point_name, value FROM player.najemnicy_kolekcjoner_rewards "
 				"ORDER BY collection_index, point_name"));
 		if (!KnOk(mc) || !KnOk(mi) || !KnOk(mr) || !mc->Get()->pSQLResult)
@@ -296,6 +424,10 @@ namespace
 			t.index = KnInt(row[0], 0);
 			t.name = row[1] ? row[1] : "";
 			t.percent = MINMAX(1, KnInt(row[2], 95), 100);
+			t.title = KnUnhex(row[3]);
+			t.description = KnUnhex(row[4]);
+			t.minLevel = MAX(0, KnInt(row[5], 0));
+			t.sort = KnInt(row[6], 0);
 			if (t.index > 0 && t.index < 256)
 				tasks.push_back(t);
 		}
@@ -352,18 +484,76 @@ namespace
 			else
 				sys_err("KOLEKCJONER_NAJ: task %d has no items - left out", tasks[i].index);
 		s_vecKnTasks.swap(kept);
+		// V2: the tiers (none read - the owner's table of 8 November 2026)
+		std::vector<TKnTier> tiers;
+		if (KnOk(mt) && mt->Get()->pSQLResult)
+			while (NULL != (row = mysql_fetch_row(mt->Get()->pSQLResult)))
+			{
+				TKnTier t;
+				t.nr = KnInt(row[0], 0);
+				t.slots = KnInt(row[1], 0);
+				t.level = KnInt(row[2], 0);
+				if (t.nr >= 1 && t.nr <= KN_MAX_TIER_TASKS && t.slots >= 1 && t.slots <= 7)
+					tiers.push_back(t);
+			}
+		if (tiers.empty())
+			for (int n = 1; n <= 6; ++n)
+			{
+				TKnTier t;
+				t.nr = n;
+				t.slots = n + 1;
+				t.level = KN_TIER_FIRST_LEVEL + (n - 1) * KN_TIER_LEVEL_STEP;
+				tiers.push_back(t);
+			}
+		s_vecKnTiers.swap(tiers);
 		size_t items = 0;
 		for (size_t i = 0; i < s_vecKnTasks.size(); ++i)
 			items += s_vecKnTasks[i].items.size();
-		sys_log(0, "KOLEKCJONER_NAJ: %u task(s), %u item(s) read", (unsigned int)s_vecKnTasks.size(), (unsigned int)items);
+		sys_log(0, "KOLEKCJONER_NAJ: %u task(s), %u item(s), %u tier(s) read", (unsigned int)s_vecKnTasks.size(),
+				(unsigned int)items, (unsigned int)s_vecKnTiers.size());
 		return true;
+	}
+
+	// V2: the Seban panel's reload flag (player.quest dwPID 0, m2_kolekcjoner_najemnikow_ver = the change's unix time).
+	long long KnReadVersion()
+	{
+		std::unique_ptr<SQLMsg> m(KnQuery("SELECT lValue FROM player.quest WHERE dwPID=0 AND "
+				"szName='m2_kolekcjoner_najemnikow_ver' LIMIT 1"));
+		MYSQL_ROW row = NULL;
+		if (!KnOk(m) || !m->Get()->pSQLResult || !(row = mysql_fetch_row(m->Get()->pSQLResult)) || !row[0])
+			return 0;
+		long long v = 0;
+		str_to_number(v, row[0]);
+		return v;
+	}
+
+	// The definitions again (GM "przeladuj", the panel's flag): every state is read again at its next use.
+	void KnForgetDefinitions()
+	{
+		s_bKnDefs = false;
+		s_dwKnDefsTriedAt = 0;
+		for (std::map<DWORD, TKnPlayer>::iterator it = s_mapKnPlayer.begin(); it != s_mapKnPlayer.end(); ++it)
+			it->second.vid = 0;
 	}
 
 	bool KnReady()
 	{
+		const DWORD now = get_dword_time();
+		// V2: a change in the Seban panel is read within KN_VERSION_POLL_MS (no restart, no GM command).
+		if (s_llKnVersion == LLONG_MIN || (int)(now - s_dwKnVersionAt) >= (int)KN_VERSION_POLL_MS)
+		{
+			s_dwKnVersionAt = now;
+			const long long v = KnReadVersion();
+			if (s_llKnVersion != LLONG_MIN && v != s_llKnVersion && s_bKnDefs)
+			{
+				sys_log(0, "KOLEKCJONER_NAJ: the panel changed the definitions (version %lld -> %lld), reading again",
+						s_llKnVersion, v);
+				KnForgetDefinitions();
+			}
+			s_llKnVersion = v;
+		}
 		if (s_bKnDefs)
 			return true;
-		const DWORD now = get_dword_time();
 		if (s_dwKnDefsTriedAt && now - s_dwKnDefsTriedAt < KN_RETRY_MS)
 			return false;
 		s_dwKnDefsTriedAt = now;
@@ -454,12 +644,29 @@ namespace
 	// The n-th task done: "2. miejsce najemnika od 80 poziomu" (the first one: the 1st and 2nd).
 	std::string KnTierText(int nr)
 	{
+		// V2: from the tiers - the slots this tier adds over the ones before it, from its level.
+		int slots = 0, level = 0, before = 0;
+		bool found = false;
+		for (size_t i = 0; i < s_vecKnTiers.size(); ++i)
+		{
+			if (s_vecKnTiers[i].nr == nr)
+			{
+				slots = s_vecKnTiers[i].slots;
+				level = s_vecKnTiers[i].level;
+				found = true;
+			}
+			else if (s_vecKnTiers[i].nr < nr)
+				before = MAX(before, s_vecKnTiers[i].slots);
+		}
 		char buf[128];
-		const int level = KN_TIER_FIRST_LEVEL + (nr - 1) * KN_TIER_LEVEL_STEP;
-		if (nr <= 1)
+		if (!found || slots <= before)
+			snprintf(buf, sizeof(buf), "%s", "bez nowego miejsca najemnika");
+		else if (before == 0 && slots == 2)
 			snprintf(buf, sizeof(buf), "1. i 2. miejsce najemnika (od %d poziomu)", level);
+		else if (slots > before + 1)
+			snprintf(buf, sizeof(buf), "%d.-%d. miejsce najemnika (od %d poziomu)", before + 1, slots, level);
 		else
-			snprintf(buf, sizeof(buf), "%d. miejsce najemnika (od %d poziomu)", nr + 1, level);
+			snprintf(buf, sizeof(buf), "%d. miejsce najemnika (od %d poziomu)", slots, level);
 		return buf;
 	}
 
@@ -608,6 +815,10 @@ namespace
 	{
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ task %d %d %d %s", task.index, task.percent, KnDoneNr(p, task.index),
 				KnRewardWire(task).c_str());
+		// V2: the panel's title, level and order; the description on a line of its own (the chat line's 512 bytes).
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ info %d %s %d %d", task.index, KnHex(task.title, 64).c_str(), task.minLevel,
+				task.sort);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ desc %d %s", task.index, KnHex(task.description, 200).c_str());
 		for (size_t i = 0; i < task.items.size(); ++i)
 		{
 			const TKnItem& it = task.items[i];
@@ -621,6 +832,9 @@ namespace
 	void KnSendAll(LPCHARACTER ch, const TKnPlayer& p, bool open)
 	{
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ begin %d %d", (int)p.done.size(), (int)s_vecKnTasks.size());
+		for (size_t i = 0; i < s_vecKnTiers.size(); ++i)	// V2: the tiers (the window's "od N poziomu", the next slot)
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ tier %d %d %d", s_vecKnTiers[i].nr, s_vecKnTiers[i].slots,
+					s_vecKnTiers[i].level);
 		for (size_t i = 0; i < s_vecKnTasks.size(); ++i)
 			KnSendTask(ch, p, s_vecKnTasks[i]);
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "KNAJ end %d", open ? 1 : 0);
@@ -724,6 +938,11 @@ namespace
 		if (p.done.count(task->index))
 		{
 			KnResult(ch, taskIndex, pos, KN_TASK_DONE, 0, 0, 0);
+			return;
+		}
+		if (task->minLevel > 0 && ch->GetLevel() < task->minLevel)	// V2: the panel's level of the task
+		{
+			KnResult(ch, taskIndex, pos, KN_LEVEL, 0, 0, 0);
 			return;
 		}
 		const int key = KnKey(task->index, it->pos);
@@ -847,14 +1066,10 @@ void KolekcjonerNajemnikowCommand(LPCHARACTER ch, const char* argument)
 
 	if (gm && cmd == "przeladuj")
 	{
-		s_bKnDefs = false;
-		s_dwKnDefsTriedAt = 0;
+		KnForgetDefinitions();	// every state is read again at the next use (the tasks' items may have changed)
 		const bool ok = KnReady();
 		KnTell(ch, CHAT_TYPE_INFO, "Kolekcjoner Najemnikow: %s (%u zadan).", ok ? "definicje wczytane" : "blad bazy",
 				(unsigned int)s_vecKnTasks.size());
-		// every state is read again at the next use (the tasks' items may have changed)
-		for (std::map<DWORD, TKnPlayer>::iterator it = s_mapKnPlayer.begin(); it != s_mapKnPlayer.end(); ++it)
-			it->second.vid = 0;
 		return;
 	}
 	TKnPlayer* p = KnState(ch);

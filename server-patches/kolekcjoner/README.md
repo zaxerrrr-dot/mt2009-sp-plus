@@ -1,6 +1,7 @@
 # kolekcjoner – Kolekcjoner Najemników
 
-`MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1` (decyzje właściciela z 8.11.2026, plan: `/opt/metin2/cache/yohara/najemnicy-plan.md`,
+`MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V1` i `_V2` (V2: uwagi właściciela z 10.11.2026 – zadania z panelu Seban, odświeżanie
+okna na żywo, nowy wygląd i zakładka „Najemnicy”; sekcja „V2” na końcu) (decyzje właściciela z 8.11.2026, plan: `/opt/metin2/cache/yohara/najemnicy-plan.md`,
 sekcje „Odblokowanie: Kolekcjoner Najemników” i „Stałe bonusy za zadania Kolekcjonera”).
 Sześć zadań w dowolnej kolejności, każde raz. Przedmioty oddaje się jak u Biologa: przy każdej próbie przedmiot znika
 z ekwipunku, szansa na zaliczenie to 95%, a nieudana próba nie podnosi licznika. Nie ma limitu czasu.
@@ -151,3 +152,60 @@ Pliki klienta: `root/uinajemnicykolekcjoner.py` (nowy), `root/uiscript/najemnicy
    `/eventflag m2_kolekcjoner_najemnikow_off 1`: „Kolekcjoner nie przyjmuje teraz przedmiotów”, a bonusy dalej działają.
    Potem wróć do 0.
 10. Na koniec `/kolekcja_najemnikow wyczysc` (GM). Wszystko jest od zera, a bonusy znikają po przeliczeniu.
+
+## V2 – uwagi właściciela z 10.11.2026 (`MT2009_PLUS_KOLEKCJONER_NAJEMNIKOW_V2`)
+
+Bez nowych edycji silnika (łatka `kolekcjoner` jak w V1). Zmiany: `playerbot_kolekcjoner_najemnikow.cpp`,
+`kolekcjoner_najemnikow.sql`, panel Seban (`kolekcjoner_config.py`, `templates/kolekcjoner_config.html`) i klient
+(`uinajemnicykolekcjoner.py`, `uiscript/najemnicykolekcjonerwindow.py`, `interfacemodule.py`, `game.py`).
+
+### Zadania z panelu (zaawansowana konfiguracja)
+
+Panel Seban → Wydarzenia → Najemnicy → **Kolekcjoner** (`/events/najemnicy/kolekcjoner`):
+- zadanie: klucz (ASCII, do logów), **tytuł** i **opis** (pokazywane w oknie; puste = wbudowane), **minimalny poziom**
+  oddawania (0 = bez), **szansa** (1–100%), kolejność; dodaj / zapisz / w górę / w dół / usuń;
+- przedmioty zadania: vnum (sprawdzany w `item_proto`, z nazwą), ile w sumie, paczka (1..ile), „tylko nieotwierane”,
+  kolejność; dodaj / zapisz / w górę / w dół / usuń;
+- bonusy stałe: dowolnie wiele wierszy „typ + wartość” z listy (62 typy: dotychczasowe + szybkości, regeneracja,
+  absorpcja, silny przeciwko rasom i klasom, odporności na klasy i bronie, krytyki/przeszywające, średnie obrażenia i
+  umiejętności, otrucie/omdlenie/spowolnienie, podwójne exp/yang/drop);
+- **progi najemników** (`najemnicy_kolekcjoner_tiers`): n‑te ukończone zadanie → tyle najemników od poziomu (domyślnie
+  1 → 2 od 80 … 6 → 7 od 105); miejsca i poziomy nie mogą maleć.
+
+Walidacja: vnum istnieje, ilość ≥ 1, paczka 1..ilość, szansa 1–100, typ bonusu z listy, wartość ≠ 0, tytuł/opis w CP1250.
+Usunięcie przedmiotu kasuje postęp graczy w nim; usunięcie zadania – jego przedmioty, bonusy i postęp (ukończenia
+zostają, gracze zachowują próg, tracą bonus tego zadania; panel pyta, podając liczbę graczy). Przestawianie zmienia tylko
+`sort_order` (`item_index` zostaje kluczem postępu).
+
+**Bez restartu:** każda zmiana zapisuje flagę `m2_kolekcjoner_najemnikow_ver`; gra sprawdza ją najwyżej co 30 s i wczytuje
+definicje (i stan postaci) od nowa – syslog `KOLEKCJONER_NAJ: the panel changed the definitions (version … -> …)`.
+Zmieniony bonus trafia do postaci online przy najbliższym przeliczeniu punktów (awans, zmiana przedmiotu, teleport).
+Progi najemników czyta co ~10 s `playerbot_najemnicy.h`. Sześć zadań właściciela zostaje domyślnymi (seed `INSERT
+IGNORE` + polskie tytuły i opisy wpisywane tylko do pustych pól).
+
+Protokół (nowe linie): `KNAJ tier <nr> <miejsca> <poziom>` (po `begin`), `KNAJ info <zadanie> <tytuł hex> <min. poziom>
+<kolejność>`, `KNAJ desc <zadanie> <opis hex>` (po linii `task`), `KNAJ res … 10` = za niski poziom.
+
+### Okno
+
+- Wygląd okna „Sesja farmienia”: tytuł „Kolekcjoner Najemników” na pasku, płaskie zakładki **Kolekcjoner** i
+  **Najemnicy**, ramki z nagłówkami, te same kolory i czcionki. Zakładka „Najemnicy” – opis w `server-patches/najemnicy`
+  (etap 5).
+- **Odświeżanie na żywo:** gdy okno jest otwarte, każda zmiana ekwipunku lub dodatkowego ekwipunku (każdy pakiet
+  przedmiotu → `interfacemodule.RefreshInventory`) przelicza „Masz: N” po stronie klienta (plecak + magazyny
+  dodatkowego ekwipunku, skrzynie „nieotwierane” tylko z gniazdem 0 = 0), najwyżej co 0,25 s, bez zapytań do serwera;
+  „Oddaj” włącza się od razu.
+
+### Jak przetestować V2
+
+11. Panel → Kolekcjoner: zmień tytuł zadania 3 na „Smocze serca”, szansę na 50%, dodaj przedmiot 27992 ×2 (paczka 1),
+    dodaj bonus „Szybkość ruchu +5”, przesuń zadanie 3 na górę. Po ≤ 30 s otwórz okno w grze: zadanie 3 jest pierwsze,
+    ma nowy tytuł, „Szansa: 50%”, nowy kafelek i bonus. Syslog: `the panel changed the definitions`.
+12. Walidacja: vnum 999999, paczka większa od ilości, szansa 0, próg z mniejszą liczbą miejsc niż poprzedni – czerwony
+    komunikat, nic nie zapisane.
+13. Min. poziom 120 dla zadania – „Oddaj” daje „Za niski poziom”. Wróć do 0.
+14. Progi: ustaw próg 1 na 3 miejsca od 80 – zakładka „Najemnicy” po ≤ 10 s pokazuje 3 miejsca (postać 80+ z 1 zadaniem).
+    Przywróć 2.
+15. Odświeżanie: otwórz okno na zadaniu 1, wyrzuć/podnieś szkatułkę 50077, przenieś Odłamki 51001 między plecakiem a
+    dodatkowym ekwipunkiem – „Masz: N” i „Oddaj” zmieniają się od razu.
+16. Usuń dodane w pkt 11 przedmiot i bonus, przywróć tytuł (puste pole = nazwa wbudowana) i szansę 95%.

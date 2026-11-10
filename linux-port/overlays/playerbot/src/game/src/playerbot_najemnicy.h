@@ -82,6 +82,16 @@
 // Balathora's player list (ManageNajemnikDungeon); and the owner's party rejoined inside a dungeon after the owner's
 // relog (KeepNajemnikInParty: CParty::Join / Link, the instance's party count kept).
 //
+// MT2009_PLUS_NAJEMNICY_V5 - the owner's notes of 10 November 2026 (server-patches/najemnicy/README.md "Etap 5"):
+//   * the rejoin after a core / channel change works: the module clock's comparisons are signed (a rejoin's askedAt is
+//     a few ms after the pass's dwNow - the unsigned difference wrapped and timed every rejoined mercenary out);
+//   * "Stoj tutaj" is passive (no blow, skill, buff or loot) and the first "Wezwij" of a mercenary in the owner's login
+//     session sets it (GetNajemnicySessionMask); later summons and the rejoins keep the last order;
+//   * the slots come from player.najemnicy_kolekcjoner_tiers (the Seban panel's; GetNajemnicyTiers);
+//   * "/najemnicy panel [otworz|zamknij]" - the collector window's "Najemnicy" tab (NAJP lines, SendNajemnicyPanel),
+//     pushed again after every change of the owner's mercenaries (MarkNajemnicyPanelDirty / FlushNajemnicyPanels);
+//     the letter only opens it.
+//
 // Commands (cmd.cpp "najemnicy", server-patches/najemnicy; the quest's buttons use them): /najemnicy [lista] | sync |
 // stworz <rasa 0-7> <droga 1-2> <imie> | wezwij <miejsce|wszyscy> | odwolaj <miejsce|wszyscy> | wplac <yang> |
 // skarbiec | okno <miejsce> | eq <miejsce> [polecenie] | daj <miejsce> <pole> | zabierz <miejsce> | gildia <miejsce> |
@@ -127,7 +137,9 @@ namespace
 	const int NAJEMNICY_WARN_MINUTES = 10;
 	const int NAJEMNICY_MIN_LEVEL = 80;
 	const int NAJEMNICY_MAX_SLOTS = 7;
-	const int NAJEMNICY_MAX_TASKS = 6;	// the Kolekcjoner Najemnikow's tasks
+	const int NAJEMNICY_MAX_TASKS = 16;	// the Kolekcjoner Najemnikow's tasks counted at most (V5: the panel may add tasks;
+											// the tiers table decides what they bring - GetNajemnicyTierCount)
+	const DWORD NAJEMNICY_PANEL_PUSH_MS = 1000;	// MT2009_PLUS_NAJEMNICY_V5: the collector window's tab, pushes coalesced
 	const int NAJEMNICY_RETIRED_DELETE_MINUTES = 20;
 	const unsigned int NAJEMNICY_MAX_SEQ = 9999;	// playerbot_nj%04u: 16 characters, the account's login column
 	// MT2009_PLUS_NAJEMNICY_V2: the equipment window and the consumables.
@@ -146,7 +158,6 @@ namespace
 	const int NAJEMNICY_MOVE_GRACE_S = 30;					// a paid minute ran out at most 30 s ago: a move, not a login
 	const DWORD NAJEMNICY_ARRIVAL_VID_MS = 3000;			// the VIDs again 3 s after an arrival (the warp's new client)
 	const int NAJEMNICY_HOLD_RETURN = 200;					// "Stoj tutaj": back to its spot beyond 2 m
-	const int NAJEMNICY_HOLD_FIGHT_RANGE = 700;			// ... and what stands within 7 m of the spot it takes on
 	const int NAJEMNICY_FREE_RANGE = 2500;					// "Walcz sam w poblizu": any monster or stone within 25 m of the owner
 	const int NAJEMNICY_FREE_LEASH = 1500;					// ... and back to the owner beyond 15 m when nothing is left
 
@@ -242,8 +253,25 @@ namespace
 	void AnnounceNajemnicyVids(LPCHARACTER owner, TNajemnicyOwner& rec, DWORD dwNow);
 	// MT2009_PLUS_NAJEMNICY_V3: the arrived owners' rejoins (defined with the commands, after SummonNajemnik).
 	void ProcessNajemnicyRejoins(DWORD dwNow);
+	// MT2009_PLUS_NAJEMNICY_V5: the collector window's "Najemnicy" tab told again (defined with the commands).
+	void MarkNajemnicyPanelDirty(DWORD ownerPid);
+	void FlushNajemnicyPanels();
 
 	std::map<DWORD, TNajemnik> s_mapNajemnik;				// mercenary pid -> its runtime (summoned on this core)
+	// MT2009_PLUS_NAJEMNICY_V5: the tiers (player.najemnicy_kolekcjoner_tiers, the Seban panel's; read with the flags every
+	// 10 s): the n-th collector task done -> so many mercenaries from that level. Empty = the owner's table of 8 November.
+	struct TNajemnicyTier
+	{
+		int nr;
+		int slots;
+		int level;
+	};
+	std::vector<TNajemnicyTier> s_vecNajemnicyTiers;
+	// MT2009_PLUS_NAJEMNICY_V5: the owners whose collector window shows the "Najemnicy" tab ("/najemnicy panel") and the
+	// ones of them whose state changed since the last push (sent at the next tick: SendNajemnicyPanel).
+	std::set<DWORD> s_setNajemnicyPanel;
+	std::set<DWORD> s_setNajemnicyPanelDirty;
+	std::map<DWORD, DWORD> s_mapNajemnicyPanelLater;	// owner -> when to tell again (a guild change lands later)
 	std::map<DWORD, TNajemnicyOwner> s_mapNajemnicyOwner;	// owner pid -> its billing
 	DWORD s_dwNajemnicyNextTick = 0;
 	DWORD s_dwNajemnicyNextFlagPoll = 0;
@@ -287,13 +315,33 @@ namespace
 	// MT2009_PLUS_NAJEMNICY_V1 (the Kolekcjoner Najemnikow, the owner, 8 November 2026): every task of the collector
 	// done is a tier, and a tier counts once the character has its level - 1 task + 80 -> 2 mercenaries, 2 + 85 -> 3,
 	// 3 + 90 -> 4, 4 + 95 -> 5, 5 + 100 -> 6, 6 + 105 -> 7. Tasks done early wait for the level. 0 = locked.
+	// MT2009_PLUS_NAJEMNICY_V5: the tiers come from player.najemnicy_kolekcjoner_tiers (GetNajemnicyTiers) - the same
+	// table by default; a tier counts when tasks >= its nr and level >= its level, the most slots of those win.
+	const std::vector<TNajemnicyTier>& GetNajemnicyTiers()
+	{
+		static std::vector<TNajemnicyTier> builtIn;
+		if (builtIn.empty())
+			for (int t = 1; t <= 6; ++t)
+			{
+				TNajemnicyTier tier = { t, t + 1, NAJEMNICY_MIN_LEVEL + (t - 1) * 5 };
+				builtIn.push_back(tier);
+			}
+		return s_vecNajemnicyTiers.empty() ? builtIn : s_vecNajemnicyTiers;
+	}
+
+	int GetNajemnicyTierCount()
+	{
+		return MIN(NAJEMNICY_MAX_TASKS, (int)GetNajemnicyTiers().size());
+	}
+
 	int GetNajemnicySlots(int tasks, int level)
 	{
-		int tiers = 0;
-		for (int t = 1; t <= MIN(tasks, NAJEMNICY_MAX_TASKS); ++t)
-			if (level >= NAJEMNICY_MIN_LEVEL + (t - 1) * 5)
-				tiers = t;
-		return tiers > 0 ? MIN(NAJEMNICY_MAX_SLOTS, tiers + 1) : 0;
+		const std::vector<TNajemnicyTier>& tiers = GetNajemnicyTiers();
+		int slots = 0;
+		for (size_t i = 0; i < tiers.size(); ++i)
+			if (tiers[i].nr <= MIN(tasks, NAJEMNICY_MAX_TASKS) && level >= tiers[i].level)
+				slots = MAX(slots, tiers[i].slots);
+		return MINMAX(0, slots, NAJEMNICY_MAX_SLOTS);
 	}
 
 	// The skill of a mercenary from the owner's: the same below M1, half the way above it.
@@ -486,7 +534,7 @@ namespace
 		if (!ch)
 			return 0;
 		if (IsNajemnicyFreeUnlock())
-			return NAJEMNICY_MAX_TASKS;
+			return GetNajemnicyTierCount();
 		int tasks = MINMAX(0, ch->GetQuestFlag("najemnicy.tasks"), NAJEMNICY_MAX_TASKS);
 		if (EnsureNajemnicyTables())
 		{
@@ -1169,36 +1217,9 @@ namespace
 				return free.best;
 			}
 			case NAJEMNIK_ORDER_HOLD:
-			{
-				if (!ch->GetSectree())
-					return NULL;
-				// The Towarzysz's look round, centred on its spot: what hits it or the owner there, what idles by the spot.
-				FPlayerBotSidekickFoes foes(ch, owner, n.holdX, n.holdY, ch->GetMapIndex());
-				ch->GetSectree()->ForEachAround(foes);
-				if (foes.onSelf)
-				{
-					why = PLAYERBOT_SIDEKICK_FOE_AT_SELF;
-					return foes.onSelf;
-				}
-				if (foes.onOwner)
-				{
-					why = PLAYERBOT_SIDEKICK_FOE_AT_OWNER;
-					return foes.onOwner;
-				}
-				if (foes.idle && DISTANCE_APPROX(foes.idle->GetX() - n.holdX, foes.idle->GetY() - n.holdY) <=
-						NAJEMNICY_HOLD_FIGHT_RANGE)
-				{
-					why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
-					return foes.idle;
-				}
-				LPCHARACTER target = GetNajemnikOwnerTarget(ch, owner);
-				if (target && DISTANCE_APPROX(target->GetX() - n.holdX, target->GetY() - n.holdY) <= NAJEMNICY_HOLD_FIGHT_RANGE)
-				{
-					why = PLAYERBOT_SIDEKICK_FOE_OWNER_TARGET;
-					return target;
-				}
+				// MT2009_PLUS_NAJEMNICY_V5 (the owner, 10 November 2026): "Stoj tutaj" is passive - it stands on its spot
+				// and strikes nothing (not even what hits it), so the owner can dress it first and then send it out.
 				return NULL;
-			}
 			default:
 				return FindPlayerBotSidekickFoe(ch, owner, PLAYERBOT_SIDEKICK_STANCE_ATTACK, why, ownerFighting);
 		}
@@ -1775,8 +1796,9 @@ namespace
 					TellNajemnicy(owner, "%s padl - wstanie przy tobie za 30 sekund.", ch->GetName());
 				sys_log(0, "NAJEMNICY: died pid=%u name=%s owner=%u map=%ld", n.pid, ch->GetName(), n.ownerPid,
 						ch->GetMapIndex());
+				MarkNajemnicyPanelDirty(n.ownerPid);	// MT2009_PLUS_NAJEMNICY_V5
 			}
-			if (dwNow - n.deadAt >= NAJEMNICY_REVIVE_MS)
+			if ((int)(dwNow - n.deadAt) >= (int)NAJEMNICY_REVIVE_MS)	// MT2009_PLUS_NAJEMNICY_V5: signed (see the load timeout)
 			{
 				StandPlayerBotUpHere(ch);
 				ch->PointChange(POINT_HP, ch->GetMaxHP() / 2 - ch->GetHP());
@@ -1785,6 +1807,7 @@ namespace
 				if (owner && !owner->IsWarping())
 					PlaceNajemnikBesideOwner(ch, state, owner, dwNow, "revive");
 				sys_log(0, "NAJEMNICY: stood up pid=%u name=%s owner=%u", n.pid, ch->GetName(), n.ownerPid);
+				MarkNajemnicyPanelDirty(n.ownerPid);	// MT2009_PLUS_NAJEMNICY_V5
 			}
 			return true;
 		}
@@ -1836,7 +1859,8 @@ namespace
 		// MT2009_PLUS_NAJEMNICY_V2: its storages into its bag, and its owner's consumables from it (it never buys).
 		SweepNajemnikStorage(ch, n, dwNow);
 		const bool fighting = state.dwTargetVID != 0 || (DWORD)(dwNow - ch->GetLastAttackTime()) < NAJEMNICY_FIGHT_MEMORY_MS;
-		UseNajemnikConsumables(ch, state, n, fighting, dwNow);
+		// MT2009_PLUS_NAJEMNICY_V5: "Stoj tutaj" uses no buff item (HP/SP potions only).
+		UseNajemnikConsumables(ch, state, n, fighting && n.order != NAJEMNIK_ORDER_HOLD, dwNow);
 		// A guild war's map: only a member of the owner's guild goes there.
 		const bool ownerOnWarMap = CWarMapManager::instance().IsWarMap(owner->GetMapIndex());
 		const bool inOwnersGuild = ch->GetGuild() && ch->GetGuild() == owner->GetGuild();
@@ -1892,6 +1916,30 @@ namespace
 			else if (ch->IsStateMove())
 				ch->Stop();
 			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+			return true;
+		}
+		// MT2009_PLUS_NAJEMNICY_V5: "Stoj tutaj" (the first summon of a session's order) - passive: no fight, no skill,
+		// no buff, no loot, a dungeon's duties too; back to its spot when pushed off it.
+		if (hold)
+		{
+			if (state.dwTargetVID != 0 || ch->GetVictim())
+			{
+				state.dwTargetVID = 0;
+				ch->SetVictim(NULL);
+			}
+			const int fromSpot = DISTANCE_APPROX(ch->GetX() - n.holdX, ch->GetY() - n.holdY);
+			if (fromSpot > NAJEMNICY_HOLD_RETURN)
+			{
+				WalkPlayerBotSidekick(ch, n.holdX, n.holdY, dwNow, false);
+				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			}
+			else
+			{
+				if (ch->IsStateMove())
+					ch->Stop();
+				SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+			}
+			state.dwLastMeaningfulActivityTime = dwNow;
 			return true;
 		}
 		// The fight - by the owner's order (MT2009_PLUS_NAJEMNICY_V3, ChooseNajemnikFoe): "Za mna" what the owner fights,
@@ -1992,6 +2040,7 @@ namespace
 		LPCHARACTER owner = FindNajemnicyOwnerHere(n.ownerPid);
 		if (owner && !n.rejoin)
 			TellNajemnicy(owner, "%s jest przy tobie.", ch->GetName());
+		MarkNajemnicyPanelDirty(n.ownerPid);	// MT2009_PLUS_NAJEMNICY_V5
 		sys_log(0, "NAJEMNICY: entered pid=%u name=%s owner=%u slot=%u map=%ld (%ld,%ld) rejoin=%d order=%u no_loot=%d", n.pid,
 				ch->GetName(), n.ownerPid, (unsigned int)n.slot, ch->GetMapIndex(), ch->GetX(), ch->GetY(), n.rejoin ? 1 : 0,
 				(unsigned int)n.order, n.noLoot ? 1 : 0);
@@ -2045,6 +2094,7 @@ namespace
 		s_mapNajemnik.erase(it);
 		++s_uNajemnicyDismissals;
 		sys_log(0, "NAJEMNICY: dismissed pid=%u name=%s owner=%u why=%s", pid, name.c_str(), ownerPid, why);
+		MarkNajemnicyPanelDirty(ownerPid);	// MT2009_PLUS_NAJEMNICY_V5
 		if (CountNajemnicySummonedOf(ownerPid) == 0)
 			s_mapNajemnicyOwner.erase(ownerPid);
 		// MT2009_PLUS_NAJEMNICY_V2: the owner's client forgets it at once (the target board's "Ekwipunek").
@@ -2242,9 +2292,38 @@ namespace
 			s_bNajemnicyDbOff = off;
 			s_bNajemnicyDbFreeUnlock = freeUnlock;
 			s_llNajemnicyDbPrice = price;
+			// MT2009_PLUS_NAJEMNICY_V5: the tiers the Seban panel edits (kolekcjoner_najemnikow.sql); no table or no row -
+			// the built-in table. A bad row (slots 1..7, nr 1..16) is skipped.
+			std::unique_ptr<SQLMsg> tiers(NajemnicyQuery(
+					"SELECT nr, slots, level FROM player.najemnicy_kolekcjoner_tiers ORDER BY nr"));
+			if (NajemnicyOk(tiers) && tiers->Get()->pSQLResult)
+			{
+				std::vector<TNajemnicyTier> read;
+				while (NULL != (row = mysql_fetch_row(tiers->Get()->pSQLResult)))
+				{
+					TNajemnicyTier t = { 0, 0, 0 };
+					str_to_number(t.nr, row[0] ? row[0] : "0");
+					str_to_number(t.slots, row[1] ? row[1] : "0");
+					str_to_number(t.level, row[2] ? row[2] : "0");
+					if (t.nr >= 1 && t.nr <= NAJEMNICY_MAX_TASKS && t.slots >= 1 && t.slots <= NAJEMNICY_MAX_SLOTS && t.level >= 0)
+						read.push_back(t);
+				}
+				bool changed = read.size() != s_vecNajemnicyTiers.size();
+				for (size_t i = 0; !changed && i < read.size(); ++i)
+					changed = read[i].nr != s_vecNajemnicyTiers[i].nr || read[i].slots != s_vecNajemnicyTiers[i].slots ||
+							read[i].level != s_vecNajemnicyTiers[i].level;
+				if (changed)
+				{
+					s_vecNajemnicyTiers.swap(read);
+					sys_log(0, "NAJEMNICY: tiers read count=%u", (unsigned int)s_vecNajemnicyTiers.size());
+					for (std::set<DWORD>::const_iterator o = s_setNajemnicyPanel.begin(); o != s_setNajemnicyPanel.end(); ++o)
+						s_setNajemnicyPanelDirty.insert(*o);
+				}
+			}
 		}
 		LogNajemnicyCensus(dwNow, false);
 		ProcessNajemnicyRejoins(dwNow);	// MT2009_PLUS_NAJEMNICY_V3
+		FlushNajemnicyPanels();			// MT2009_PLUS_NAJEMNICY_V5
 		if (s_mapNajemnik.empty())
 			return;
 		const bool off = IsNajemnicyOff();
@@ -2264,7 +2343,10 @@ namespace
 			}
 			if (n.phase == NAJEMNIK_LOADING)
 			{
-				if (dwNow - n.askedAt > NAJEMNICY_LOAD_TIMEOUT_MS)
+				// MT2009_PLUS_NAJEMNICY_V5: signed - a rejoin (ProcessNajemnicyRejoins, earlier in this very pass) sets askedAt
+				// from get_dword_time() a few ms AFTER this pass's dwNow; the unsigned "dwNow - askedAt" wrapped to ~4e9 and
+				// timed every rejoined mercenary out at once (the channel change's "did not load in 45 s", 10.11.2026).
+				if ((int)(dwNow - n.askedAt) > (int)NAJEMNICY_LOAD_TIMEOUT_MS)
 				{
 					sys_err("NAJEMNICY: pid=%u login=%s did not load in %u s", n.pid, n.login.c_str(),
 							NAJEMNICY_LOAD_TIMEOUT_MS / 1000);
@@ -2301,7 +2383,7 @@ namespace
 				}
 				if (rec.goneSince == 0)
 					rec.goneSince = dwNow;
-				else if (dwNow - rec.goneSince >= NAJEMNICY_OWNER_GONE_MS)
+				else if ((int)(dwNow - rec.goneSince) >= (int)NAJEMNICY_OWNER_GONE_MS)	// MT2009_PLUS_NAJEMNICY_V5: signed
 				{
 					// MT2009_PLUS_NAJEMNICY_V3: a logout - the next entry is a login (the owner's "wracaja po zalogowaniu"
 					// decides), not a move that brings them back whatever the switch says.
@@ -2325,6 +2407,7 @@ namespace
 			if (count == 0)
 				continue;
 			rec.nextBill = dwNow + NAJEMNICY_BILL_MS;
+			MarkNajemnicyPanelDirty(*o);	// MT2009_PLUS_NAJEMNICY_V5: the vault's balance and time left
 			if (!BillNajemnicyOwner(*o, rec, count, owner))
 			{
 				++s_uNajemnicyEmpty;
@@ -2453,6 +2536,30 @@ namespace
 		SyncNajemnicyQuestFlags(ch);
 	}
 
+	// MT2009_PLUS_NAJEMNICY_V5 (the owner, 10 November 2026): the first "Wezwij" of a mercenary in the owner's login session
+	// stands it in "Stoj tutaj" (passive: the owner dresses it, then gives an order); a later summon in the same session
+	// keeps its last order, and so does a rejoin (a core / channel change, the return after a login - it was at work when
+	// the owner left). The session is the auth's login key (kept across a core / channel change, new at every login);
+	// the mercenaries already out in it are a bit a slot (quest flags najemnicy.session and najemnicy.session_mask).
+	int GetNajemnicySessionMask(LPCHARACTER ch)
+	{
+		const DWORD key = ch && ch->GetDesc() ? ch->GetDesc()->GetLoginKey() : 0;
+		if (!ch)
+			return 0;
+		if (key != 0 && (DWORD)ch->GetQuestFlag("najemnicy.session") != key)
+		{
+			ch->SetQuestFlag("najemnicy.session", (int)key);
+			ch->SetQuestFlag("najemnicy.session_mask", 0);
+		}
+		return ch->GetQuestFlag("najemnicy.session_mask");
+	}
+
+	void MarkNajemnikInSession(LPCHARACTER ch, int slot)
+	{
+		if (slot >= 1 && slot <= NAJEMNICY_MAX_SLOTS)
+			ch->SetQuestFlag("najemnicy.session_mask", GetNajemnicySessionMask(ch) | (1 << slot));
+	}
+
 	// MT2009_PLUS_NAJEMNICY_V3: rejoin - the owner arrived and it comes back by itself (no word of "already summoned" or
 	// "still leaving": the rejoin tries again; already in the owner's party after a move, it takes no new place there).
 	bool SummonNajemnik(LPCHARACTER ch, const TNajemnikRow& r, int alreadyCounted, bool rejoin = false)
@@ -2492,6 +2599,10 @@ namespace
 		n.order = r.order;		// MT2009_PLUS_NAJEMNICY_V3: its last order and the loot switch
 		n.noLoot = r.noLoot;
 		n.rejoin = rejoin;
+		// MT2009_PLUS_NAJEMNICY_V5: the session's first summon stands it (GetNajemnicySessionMask).
+		const bool firstOfSession = !rejoin && (GetNajemnicySessionMask(ch) & (1 << r.slot)) == 0;
+		if (firstOfSession)
+			n.order = NAJEMNIK_ORDER_HOLD;
 		s_mapNajemnik[r.pid] = n;
 		// PVP Fan's spawn of a dedicated identity (its account, the registry's guards stepped over for this pid).
 		if (!CPlayerBotManager::instance().SpawnPvpFan(r.pid, ch->GetEmpire(), r.accountId, r.login.c_str()))
@@ -2502,6 +2613,15 @@ namespace
 			return false;
 		}
 		NajemnicyQuery("UPDATE player.najemnicy SET summoned=1 WHERE merc_pid=%u", r.pid);	// MT2009_PLUS_NAJEMNICY_V3
+		MarkNajemnikInSession(ch, r.slot);	// MT2009_PLUS_NAJEMNICY_V5
+		if (firstOfSession && r.order != NAJEMNIK_ORDER_HOLD)
+		{
+			NajemnicyQuery("UPDATE player.najemnicy SET order_mode=%d WHERE merc_pid=%u", (int)NAJEMNIK_ORDER_HOLD, r.pid);
+			sys_log(0, "NAJEMNICY: first summon of the session pid=%u owner=%u order %u -> %d", r.pid, ch->GetPlayerID(),
+					(unsigned int)r.order, (int)NAJEMNIK_ORDER_HOLD);
+		}
+		if (firstOfSession)
+			TellNajemnicy(ch, "%s stoi w miejscu (rozkaz \"Stoj tutaj\") - daj mu ekwipunek i wydaj rozkaz.", r.name.c_str());
 		sys_log(0, "NAJEMNICY: summoned pid=%u name=%s owner=%u owner_name=%s slot=%u map=%ld rejoin=%d", r.pid, r.name.c_str(),
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)r.slot, ch->GetMapIndex(), rejoin ? 1 : 0);
 		return true;
@@ -3788,13 +3908,13 @@ namespace
 			const int slots = GetNajemnicySlotsOf(target);
 			if (unlock)
 				TellNajemnicy(target, "Zadania Kolekcjonera Najemnikow: %d z %d. Miejsca na najemnikow: %d - zajrzyj do listu "
-						"\"Najemnicy\".", tasks, NAJEMNICY_MAX_TASKS, slots);
+						"\"Najemnicy\".", tasks, GetNajemnicyTierCount(), slots);
 			else
 				TellNajemnicy(target, "%s", "Najemnicy zostali dla ciebie zablokowani.");
 			if (slots < CountNajemnicySummonedOf(pid))
 				DespawnNajemnicyOf(pid, "locked");
 		}
-		TellNajemnicy(gm, "%s: zadania Kolekcjonera %d z %d (%s).", name.c_str(), tasks, NAJEMNICY_MAX_TASKS,
+		TellNajemnicy(gm, "%s: zadania Kolekcjonera %d z %d (%s).", name.c_str(), tasks, GetNajemnicyTierCount(),
 				unlock ? "odblokowani" : "zablokowani");
 		sys_log(0, "NAJEMNICY: tasks set pid=%u name=%s tasks=%d by=%s", pid, name.c_str(), tasks, gm->GetName());
 	}
@@ -3815,7 +3935,143 @@ namespace
 		AcceptPlayerBotGuildInvite(invitee, guild, inviter);
 		sys_log(0, "NAJEMNICY: accepted the owner's guild invitation pid=%u owner=%u guild=%u", invitee->GetPlayerID(),
 				inviter->GetPlayerID(), guild->GetID());
+		s_mapNajemnicyPanelLater[inviter->GetPlayerID()] = get_dword_time() + 2000;	// MT2009_PLUS_NAJEMNICY_V5
 	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_NAJEMNICY_V5: the "Najemnicy" tab
+
+	// The collector window's "Najemnicy" tab (client uinajemnicykolekcjoner.py) - the whole state of the owner's
+	// mercenaries in one answer (CHAT_TYPE_COMMAND):
+	//   NAJP begin <slots> <tasks> <level> <count> <price_h> <balance> <off 0|1> <rejoin 0|1>
+	//   NAJP tier <nr> <slots> <level>                     every tier (the next slot's task and level)
+	//   NAJP merc <slot> <race> <group> <hex name> <state 0 out|1 on its way|2 here|3 dead> <order 0-3> <loot 0|1>
+	//             <guild -1 unknown|0|1 in the owner's guild> <level>
+	//   NAJP end <open 0|1>                                1: the client opens the window on the tab (the letter)
+	void SendNajemnicyPanel(LPCHARACTER ch, bool open)
+	{
+		if (!ch || !ch->GetDesc() || !EnsureNajemnicyTables())
+			return;
+		const DWORD pid = ch->GetPlayerID();
+		const int tasks = GetNajemnicyTasks(ch);
+		const int slots = GetNajemnicySlots(tasks, ch->GetLevel());
+		const std::vector<TNajemnikRow> rows = LoadNajemnicyOf(pid);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "NAJP begin %d %d %d %d %lld %lld %d %d", slots, tasks, (int)ch->GetLevel(),
+				(int)rows.size(), GetNajemnicyPriceH(), GetNajemnicyBalance(pid), IsNajemnicyOff() ? 1 : 0,
+				ch->GetQuestFlag("najemnicy.no_rejoin") ? 0 : 1);
+		const std::vector<TNajemnicyTier>& tiers = GetNajemnicyTiers();
+		for (size_t i = 0; i < tiers.size(); ++i)
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "NAJP tier %d %d %d", tiers[i].nr, tiers[i].slots, tiers[i].level);
+		// The levels and guilds of the ones not in this world, from the database.
+		std::map<int, std::pair<int, DWORD> > offline;
+		if (!rows.empty())
+		{
+			std::unique_ptr<SQLMsg> m(NajemnicyQuery(
+					"SELECT n.slot, IFNULL(p.level, 0), IFNULL(g.guild_id, 0) FROM player.najemnicy n "
+					"LEFT JOIN player.player p ON p.id=n.merc_pid LEFT JOIN player.guild_member g ON g.pid=n.merc_pid "
+					"WHERE n.owner_pid=%u AND n.retired=0", pid));
+			MYSQL_ROW row;
+			if (NajemnicyOk(m) && m->Get()->pSQLResult)
+				while (NULL != (row = mysql_fetch_row(m->Get()->pSQLResult)))
+				{
+					int slot = 0, level = 0;
+					DWORD guild = 0;
+					str_to_number(slot, row[0] ? row[0] : "0");
+					str_to_number(level, row[1] ? row[1] : "0");
+					str_to_number(guild, row[2] ? row[2] : "0");
+					offline[slot] = std::make_pair(level, guild);
+				}
+		}
+		CGuild* ownerGuild = ch->GetGuild();
+		for (size_t i = 0; i < rows.size(); ++i)
+		{
+			const TNajemnikRow& r = rows[i];
+			const TNajemnik* n = FindNajemnikSummoned(pid, r.slot);
+			LPCHARACTER sk = n && n->phase == NAJEMNIK_READY ? CHARACTER_MANAGER::instance().FindByPID(r.pid) : NULL;
+			int state = 0;
+			if (n)
+				state = !sk ? 1 : (sk->IsDead() ? 3 : 2);
+			const std::map<int, std::pair<int, DWORD> >::const_iterator db = offline.find(r.slot);
+			int guild = -1;
+			int level = db != offline.end() ? db->second.first : 0;
+			if (sk)
+			{
+				guild = ownerGuild && sk->GetGuild() == ownerGuild ? 1 : 0;
+				level = sk->GetLevel();
+			}
+			else if (db != offline.end())
+				guild = ownerGuild && db->second.second == ownerGuild->GetID() ? 1 : 0;
+			const int order = n ? n->order : r.order;
+			const bool noLoot = n ? n->noLoot : r.noLoot;
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "NAJP merc %u %u %u %s %d %d %d %d %d", (unsigned int)r.slot,
+					(unsigned int)r.race, (unsigned int)r.group, EncodePlayerBotSidekickText(r.name.c_str(), 24).c_str(), state,
+					order, noLoot ? 0 : 1, guild, level);
+		}
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "NAJP end %d", open ? 1 : 0);
+	}
+
+	void MarkNajemnicyPanelDirty(DWORD ownerPid)
+	{
+		if (!s_setNajemnicyPanel.empty() && s_setNajemnicyPanel.count(ownerPid))
+			s_setNajemnicyPanelDirty.insert(ownerPid);
+	}
+
+	// From the module's clock: every owner whose tab changed is told once (a "Wezwij wszystkich" is one answer, not seven).
+	void FlushNajemnicyPanels()
+	{
+		if (!s_mapNajemnicyPanelLater.empty())
+		{
+			const DWORD now = get_dword_time();
+			for (std::map<DWORD, DWORD>::iterator it = s_mapNajemnicyPanelLater.begin(); it != s_mapNajemnicyPanelLater.end(); )
+			{
+				if ((int)(now - it->second) >= 0)
+				{
+					MarkNajemnicyPanelDirty(it->first);
+					s_mapNajemnicyPanelLater.erase(it++);
+				}
+				else
+					++it;
+			}
+		}
+		if (s_setNajemnicyPanelDirty.empty())
+			return;
+		std::set<DWORD> dirty;
+		dirty.swap(s_setNajemnicyPanelDirty);
+		for (std::set<DWORD>::const_iterator o = dirty.begin(); o != dirty.end(); ++o)
+		{
+			LPCHARACTER owner = FindNajemnicyOwnerHere(*o);
+			if (!owner)
+			{
+				s_setNajemnicyPanel.erase(*o);	// gone from this core: the next "/najemnicy panel" there marks it again
+				continue;
+			}
+			SendNajemnicyPanel(owner, false);
+		}
+	}
+
+	// "/najemnicy panel [otworz|zamknij]": the tab asks for the state (and live pushes till it closes); "otworz" is the
+	// Najemnicy letter - the client opens the window on the tab.
+	void NajemnicyPanelCommand(LPCHARACTER ch, const std::string& what)
+	{
+		if (what == "zamknij" || what == "0")
+		{
+			s_setNajemnicyPanel.erase(ch->GetPlayerID());
+			s_setNajemnicyPanelDirty.erase(ch->GetPlayerID());
+			return;
+		}
+		s_setNajemnicyPanel.insert(ch->GetPlayerID());
+		s_setNajemnicyPanelDirty.erase(ch->GetPlayerID());
+		SendNajemnicyPanel(ch, what == "otworz" || what == "1");
+	}
+
+	// After any command of the owner's: the tab is told at the next tick (when it is open).
+	struct TNajemnicyPanelTouch
+	{
+		DWORD pid;
+		~TNajemnicyPanelTouch()
+		{
+			MarkNajemnicyPanelDirty(pid);
+		}
+	};
 }
 
 // The engine's attack hook (battle.cpp, server-patches/najemnicy): 1 = no blow - a mercenary strikes no character and
@@ -3869,16 +4125,18 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 	for (size_t i = 0; i < cmd.size(); ++i)
 		cmd[i] = (char)tolower((unsigned char)cmd[i]);
 	const bool gm = ch->GetGMLevel() >= GM_HIGH_WIZARD;
+	// MT2009_PLUS_NAJEMNICY_V5: whatever the command changed, the collector window's "Najemnicy" tab hears it.
+	TNajemnicyPanelTouch touch = { ch->GetPlayerID() };
 	// odblokuj <nick> [zadania 1-6, domyslnie 6]; zadania <nick> <0-6>; zablokuj <nick> (= 0 zadan).
 	if (gm && (cmd == "odblokuj" || cmd == "unlock" || cmd == "zadania" || cmd == "tasks"))
 	{
 		const int tasks = ParseNajemnicyInt(b, NAJEMNICY_MAX_TASKS);
 		if ((cmd == "zadania" || cmd == "tasks") && tasks < 0)
 		{
-			TellNajemnicy(ch, "Uzycie: /najemnicy zadania <nick> <0-6>");
+			TellNajemnicy(ch, "Uzycie: /najemnicy zadania <nick> <0-%d>", NAJEMNICY_MAX_TASKS);
 			return;
 		}
-		SetNajemnicyUnlock(ch, a, tasks < 0 ? NAJEMNICY_MAX_TASKS : tasks);
+		SetNajemnicyUnlock(ch, a, tasks < 0 ? GetNajemnicyTierCount() : tasks);
 		return;
 	}
 	if (gm && (cmd == "zablokuj" || cmd == "lock"))
@@ -3901,6 +4159,12 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 	if (cmd == "sync")
 	{
 		SyncNajemnicyQuestFlags(ch);
+		return;
+	}
+	if (cmd == "panel")	// MT2009_PLUS_NAJEMNICY_V5
+	{
+		touch.pid = 0;	// answered here and now
+		NajemnicyPanelCommand(ch, a);
 		return;
 	}
 	if (cmd.empty() || cmd == "lista" || cmd == "list")
@@ -3964,10 +4228,11 @@ void PlayerBotNajemnicyCommand(LPCHARACTER ch, const char* argument)
 		GiveNajemnikItem(ch, a, b);
 	else if (cmd == "zabierz")
 		TakeNajemnikItems(ch, a);
-	else if (cmd == "gildia")
-		GuildNajemnik(ch, a, true);
-	else if (cmd == "gildia_wyjdz")
-		GuildNajemnik(ch, a, false);
+	else if (cmd == "gildia" || cmd == "gildia_wyjdz")
+	{
+		GuildNajemnik(ch, a, cmd == "gildia");
+		s_mapNajemnicyPanelLater[ch->GetPlayerID()] = get_dword_time() + 2000;	// MT2009_PLUS_NAJEMNICY_V5: the guild lands later
+	}
 	else if (cmd == "zwolnij")
 		RetireNajemnik(ch, a, b);
 	else

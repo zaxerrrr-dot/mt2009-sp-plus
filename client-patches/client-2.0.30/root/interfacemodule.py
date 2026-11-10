@@ -5436,6 +5436,7 @@ class Interface(object):
 		if self.wndInventory:
 			self.wndInventory.RefreshItemSlot()
 		__import__("uiekwipunek").Refresh() # MT2009_PLUS_EKWIPUNEK_V1
+		__import__("uinajemnicykolekcjoner").RefreshInventory() # MT2009_PLUS_NAJEMNICY_V5: the collector's live counts
 		__import__("uibuffi").Refresh() # MT2009_PLUS_BUFFI_V2: the buffi's costume slots
 		__import__("uiswitchbot").RefreshInventory() # MT2009_PLUS_SWITCHBOT_V1
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
