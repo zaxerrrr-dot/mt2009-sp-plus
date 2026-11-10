@@ -113,7 +113,7 @@ namespace
 	long long GetPlayerBotMlodziRealBestScore(LPCHARACTER ch, LPITEM* bestOut);
 	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch);
 	LPITEM GetPlayerBotMlodziPreparedWeapon(LPCHARACTER ch);
-	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old);
+	int PlayerBotMlodziHandRule(LPCHARACTER ch, LPITEM item, LPITEM old);
 	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a two-handed weapon a Body Warrior owns
 	// that hits far harder than any sword it owns (defined below the damage
 	// model). fresh reads the swords again.
@@ -571,6 +571,9 @@ namespace
 			return false;
 		if (GetPlayerBotLawPlusForSlot(ch, item->GetSubType() == ARMOR_BODY ? WEAR_BODY : WEAR_HEAD) == 0)
 			return false;
+		// MT2009_PLUS_BOT_STALKI_ARMOUR80_V1: the black-steel armour of 66 is the end armour (no 80 / 90 one in the world).
+		if (item->GetSubType() == ARMOR_BODY && playerbot_stalki_rules::KindOf(item->GetVnum()) == playerbot_stalki_rules::KIND_ARMOUR)
+			return false;
 		return (int)item->GetLevelLimit() + (int)playerbot_persona::AWANS_LEVEL_WINDOW < (int)ch->GetLevel() &&
 				!IsPlayerBotSlotNoBetter(ch, item->GetSubType() == ARMOR_BODY ? WEAR_BODY : WEAR_HEAD,
 						(int)item->GetLevelLimit());	// MT2009_PLUS_BOT_LAW_NO_BETTER_V1
@@ -636,10 +639,79 @@ namespace
 		return owns;
 	}
 
+	// MT2009_PLUS_BOT_STALKI_ARMOUR80_V1 (the owner, 10 November 2026: "na mapach 90 lvl i w Zakletym Lesie dropia zbroje
+	// ze stali na 66 lvl, wiec niech w nich chodza i je rozwijaja"): no body armour of 80 or 90 exists in the world - the
+	// Niebieska Stal's 71123 / 71129 have no source - so the black-steel armours of 66 (Zbroja z Czarnej Stali 11290,
+	// Ubranie Czarnego Wiatru 11490, Zbroja Plytowa Czarnej Magii 11690, Czarna Szata 11890 - the Stalki,
+	// playerbot_stalki_rules.h; the Setaou of Grota 2 and Zly Piekielny General drop them) are the end armour of a bot:
+	//   - from level PLAYERBOT_STALKI_ARMOUR_STEP_LEVEL (80, m2_bot_stalki_armour_step_level; m2_bot_stalki_armour_step_off
+	//     1: as before) a body armour under 66 is outdated while the bot owns a Stalki armour it can wear: the equipment
+	//     pass puts the Stalki on whatever the two score (as the level-41 shield), the anvil, the bonus pass and the 6/7
+	//     pass work on it from there, and none of them spends on the old one (the material board and flow, the 6/7 scope
+	//     and the ordinary stones skip an outdated piece). The test world of 10 November: 552 Stalki armours in the
+	//     bags of bots of 58+, 259 worn; 190 bots of 90+ in level-61 armour +4/+5;
+	//   - a Stalki armour is never outdated by the 30 levels nor stale by the law's window - there is nothing to give way to.
+	// The census: "PLAYERBOT_MARKET: stalki census ... armour_worn".
+	const int PLAYERBOT_STALKI_ARMOUR_STEP_LEVEL = 80;
+
+	int GetPlayerBotStalkiArmourStepLevel()
+	{
+		quest::CQuestManager& q = quest::CQuestManager::instance();
+		if (q.GetEventFlag("m2_bot_stalki_armour_step_off") != 0)
+			return 0;
+		const int v = q.GetEventFlag("m2_bot_stalki_armour_step_level");
+		return v > 0 ? std::max(playerbot_stalki_rules::ARMOUR_LEVEL, std::min<int>((int)PLAYER_MAX_LEVEL_CONST, v))
+				: PLAYERBOT_STALKI_ARMOUR_STEP_LEVEL;
+	}
+
+	bool IsPlayerBotStalkiArmourVnum(DWORD vnum)
+	{
+		return playerbot_stalki_rules::KindOf(vnum) == playerbot_stalki_rules::KIND_ARMOUR;
+	}
+
+	// A Stalki armour this bot owns and can wear now, other than `piece` - worn or in the bag.
+	bool PlayerBotOwnsWearableStalkiArmour(LPCHARACTER ch, LPITEM piece)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_BODY);
+		if (worn && worn != piece && IsPlayerBotStalkiArmourVnum(worn->GetVnum()))
+			return true;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM held = ch->GetInventoryItem(cell);
+			if (held && held != piece && held->GetCell() == cell && !held->IsEquipped() &&
+					IsPlayerBotStalkiArmourVnum(held->GetVnum()) && (int)held->GetLevelLimit() <= (int)ch->GetLevel() &&
+					held->CanUsedBy(ch) && IsPlayerBotEquipmentCandidate(ch, held))
+				return true;
+		}
+		return false;
+	}
+
+	// A body armour under the Stalki's 66 on a bot of the step level that owns a Stalki armour it can wear.
+	bool IsPlayerBotStalkiStepOutdated(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_ARMOR || item->GetSubType() != ARMOR_BODY ||
+				IsPlayerBotStalkiArmourVnum(item->GetVnum()))
+			return false;
+		const int step = GetPlayerBotStalkiArmourStepLevel();
+		return step > 0 && (int)ch->GetLevel() >= step && (int)item->GetLevelLimit() < playerbot_stalki_rules::ARMOUR_LEVEL &&
+				PlayerBotOwnsWearableStalkiArmour(ch, item);
+	}
+
 	bool IsPlayerBotOutdatedGear(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->GetType() != ITEM_ARMOR || !IsPlayerBotOutdatedGearSubType(item->GetSubType()))
 			return false;
+		// MT2009_PLUS_BOT_STALKI_ARMOUR80_V1: the end armour is never outdated; one under it is, from the step level,
+		// while the bot owns one it can wear.
+		if (item->GetSubType() == ARMOR_BODY)
+		{
+			if (IsPlayerBotStalkiArmourVnum(item->GetVnum()))
+				return false;
+			if (IsPlayerBotStalkiStepOutdated(ch, item))
+				return true;
+		}
 		// MT2009_PLUS_BOT_LAW_GEAR_V1: under the law's level window.
 		if (IsPlayerBotLawStaleGear(ch, item))
 			return true;
@@ -2670,7 +2742,7 @@ namespace
 			// longer fights with (a Ninja's dagger of level one, an Archer from level five) gives way.
 			// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: otherwise the score decides, a young one is no longer put over any other.
 			const int mlodziRule = wearCell == WEAR_WEAPON && !stoneMode
-					? PlayerBotMlodziHandRule(item, oldDoesNotFit ? NULL : oldItem) : 0;
+					? PlayerBotMlodziHandRule(ch, item, oldDoesNotFit ? NULL : oldItem) : 0;
 			if (mlodziRule < 0)
 				continue;
 			const long long oldScore = oldItem

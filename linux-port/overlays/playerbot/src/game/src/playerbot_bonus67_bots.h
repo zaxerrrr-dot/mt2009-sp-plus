@@ -299,6 +299,9 @@ namespace
 		switch (item->GetSubType())
 		{
 			case ARMOR_BODY:
+				// MT2009_PLUS_BOT_STALKI_ARMOUR80_V1: not the armour under 66 a Stalki one in the bag replaces.
+				if (IsPlayerBotStalkiStepOutdated(ch, item))
+					return B67_SCOPE_NONE;
 				return level >= PLAYERBOT_BONUS67_BODY_LEVEL ? B67_SCOPE_BODY : B67_SCOPE_NONE;
 			case ARMOR_HEAD:
 				return level >= PLAYERBOT_BONUS67_HEAD_LEVEL ? B67_SCOPE_HEAD : B67_SCOPE_NONE;

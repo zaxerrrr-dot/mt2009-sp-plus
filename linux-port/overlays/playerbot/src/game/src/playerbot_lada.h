@@ -53,7 +53,7 @@
 // A lada line stands past the visit's pages (pos 320 and up, its first byte off the locked and premium cells the
 // engine's renewal checks): the stand's window shows the pages, the searches find everything. Caps:
 // m2_bot_lada_cap (0: none - MT2009_PLUS_BOT_LADA_NOCAP_V1; the window's packet is bounded in the engine,
-// server-patches/ladaview, ikashop_lada_view.h), m2_bot_lada_world_cap (120000 lines of every shop a search walks,
+// server-patches/ladaview, ikashop_lada_view.h), m2_bot_lada_world_cap (400000 lines of every shop a search walks,
 // PLAYERBOT_LADA_WORLD_CAP_DEFAULT), the bot's 2 bn per counter.
 // The lada's kinds (IsPlayerBotLadaKindItem) are the ordinary goods; the dragon stones, soul stones, energy shards,
 // Cors, Materialy Rzemieslnicze, Moonlight chests, horse medals, SM coupons, refine scrolls, mission books, rare
@@ -111,7 +111,20 @@ namespace
 	// 113-byte result and the 6000-result trim): 12 086 lines (the test world's now) 2.4-2.9 ms, 60 000 13-16 ms,
 	// 100 000 22-30 ms, 150 000 31-42 ms, 200 000 43-53 ms - 0.20-0.30 us a line on a quiet core. With the author's
 	// 0.4 us a line for a busy core's cold caches, 120 000 lines walk in ~48 ms: the search stays under 50 ms.
-	const int PLAYERBOT_LADA_WORLD_CAP_DEFAULT = 120000;
+	// MT2009_PLUS_BOT_LADA_WORLD_CAP_V2 (10 November 2026: 99 884 lines of 120 000, ~1 000 more an hour; the owner:
+	// "musimy podniesc limit, zdecydowanie"): 400 000, the flag m2_bot_lada_world_cap 1000..600000. Measured again
+	// 10 November on vps1 (g++ -m32 -O2, the engine's walk rebuilt as above, 2400 shops, 2500 kinds - the test world
+	// has 2352 shops and 1561 kinds over 106 793 rows): the fill by name 0.34-0.45 us a line before (120 000: 39-42 ms,
+	// 400 000: 147-172 ms, 500 000: 210-224 ms), by filters alone 0.26-0.28. With server-patches/flealimit
+	// MT2009_PLUS_FLEA_MARKET_FAST_V1 (the name test once a kind, no result built for a line past the trim's cut, the
+	// same listings sent): 0.13-0.16 us a line by name or by filters - 120 000: 13-18 ms, 400 000: 52-64 ms, 500 000:
+	// 64-78 ms. 400 000 walks in about what 120 000 did before (the walk of the two std::maps itself is ~0.13 us a line,
+	// what is left). The filter search (2500 results) stops at its 2500th match. Memory: a line of a core's copy is
+	// ~129 bytes on the 32-bit core (the 75-byte line, its shared_ptr block, the std::map node) - 400 000 lines ~50 MB a
+	// game core (+36 MB over 120 000), each core of each channel holding the whole copy; the busiest core is at ~2 GB of
+	// its 4 GB now.
+	const int PLAYERBOT_LADA_WORLD_CAP_DEFAULT = 400000;
+	const int PLAYERBOT_LADA_WORLD_CAP_MAX = 600000;
 
 	struct TPlayerBotLadaCfg
 	{
@@ -146,7 +159,7 @@ namespace
 			};
 			c.intervalMin = value("m2_bot_lada_min", 30, 5, 240);
 			c.cap = value("m2_bot_lada_cap", 0, 20, PLAYERBOT_LADA_POS_MAX);	// MT2009_PLUS_BOT_LADA_NOCAP_V1: 0 no cap
-			c.worldCap = value("m2_bot_lada_world_cap", PLAYERBOT_LADA_WORLD_CAP_DEFAULT, 1000, 400000);
+			c.worldCap = value("m2_bot_lada_world_cap", PLAYERBOT_LADA_WORLD_CAP_DEFAULT, 1000, PLAYERBOT_LADA_WORLD_CAP_MAX);
 			c.rate = value("m2_bot_lada_rate", 6, 1, 50);
 			c.passOps = value("m2_bot_lada_pass_ops", 24, 1, 200);
 			c.boxStacks = value("m2_bot_lada_box_stacks", 12, 1, 90);		// MT2009_PLUS_BOT_LADA_BOX_V1: stacks a visit

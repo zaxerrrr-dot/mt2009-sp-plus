@@ -232,6 +232,70 @@ namespace
 	int ZrunPrisms() { const int v = GetZrunSetting("zrun_prisms", 30); return v < 0 ? 0 : v; }
 	// V6: deaths a bot on one floor before the run is pulled ("wipe"; the test's "wipe <n>").
 	int ZrunWipe() { return std::max(1, GetZrunSetting("zrun_wipe", ZRUN_WIPE_DEATHS_PER_BOT)); }
+	// MT2009_PLUS_ZODIAC_WALL_V1 (10 November 2026, the test world: 318 own runs of mao / yin today, none past floor
+	// 13, 499 of 520 deaths on floor 8 - its 8 Metins and 108-142 monsters of level 59 at the floor's first second - the
+	// party of 7 bots of 89-94 (14-16k HP, defence ~390) down in 20 s, 20 deaths and 16 Prisms a run, 56 % "wipe"):
+	//   - an own run pays its Prisms: pulled at ZRUN_OWN_WIPE_DEATHS_PER_BOT deaths a bot on a floor (zrun_own_wipe), not
+	//     the test's four - the revive is where the floor began, in the same pack;
+	//   - the wall: ZRUN_WALL_FAILS own runs of the core ended on one floor short of their target (wipe, leader_out,
+	//     expelled, stalled) within ZRUN_WALL_MEMORY_MS make it a wall - the next own runs go to the floor under it
+	//     ("target", the floors' gifts without the deaths) until a party of ZRUN_WALL_LEVEL_MARGIN levels over the
+	//     strongest that failed comes, or the memory runs out (one probe a ZRUN_WALL_MEMORY_MS; a failure arms it
+	//     again). A run past the floor clears it. zrun_wall -1: off; "status" lists the walls.
+	const int ZRUN_OWN_WIPE_DEATHS_PER_BOT = 2;
+	const int ZRUN_WALL_FAILS = 3;
+	const DWORD ZRUN_WALL_MEMORY_MS = 3 * 60 * 60 * 1000;
+	const int ZRUN_WALL_LEVEL_MARGIN = 3;
+	int ZrunOwnWipe() { return std::max(1, GetZrunSetting("zrun_own_wipe", ZRUN_OWN_WIPE_DEATHS_PER_BOT)); }
+	bool ZrunWallOn() { return GetZrunSetting("zrun_wall", 1) > 0; }
+	struct TZrunWall
+	{
+		int iFails;
+		int iBestMinLevel;	// the strongest party's lowest level that failed there
+		DWORD dwLastAt;
+		TZrunWall() : iFails(0), iBestMinLevel(0), dwLastAt(0) {}
+	};
+	TZrunWall s_aZrunWall[41];
+	unsigned int s_uZrunWallCapped = 0;
+
+	// The lowest wall at or under `target` for a party whose lowest level is minLevel; 0 none.
+	int GetZrunWallFloor(int target, int minLevel, DWORD dwNow)
+	{
+		if (!ZrunWallOn())
+			return 0;
+		for (int f = 1; f <= std::min(40, target); ++f)
+		{
+			const TZrunWall& w = s_aZrunWall[f];
+			if (w.iFails >= ZRUN_WALL_FAILS && dwNow - w.dwLastAt < ZRUN_WALL_MEMORY_MS &&
+					minLevel < w.iBestMinLevel + ZRUN_WALL_LEVEL_MARGIN)
+				return f;
+		}
+		return 0;
+	}
+
+	void NoteZrunWall(int floor, int target, const char* result, int minLevel, DWORD dwNow)
+	{
+		if (!result || floor <= 0 || floor > 40)
+			return;
+		const bool failed = floor < target && (!strcmp(result, "wipe") || !strcmp(result, "leader_out") ||
+				!strcmp(result, "expelled") || !strcmp(result, "stalled"));
+		if (!failed)
+		{
+			// a floor gone past (or the run's own end on it) is no wall
+			for (int f = 1; f < floor || (f == floor && (!strcmp(result, "target") || !strcmp(result, "finished"))); ++f)
+				s_aZrunWall[f] = TZrunWall();
+			return;
+		}
+		TZrunWall& w = s_aZrunWall[floor];
+		if (w.dwLastAt != 0 && dwNow - w.dwLastAt >= ZRUN_WALL_MEMORY_MS)
+			w = TZrunWall();
+		++w.iFails;
+		w.iBestMinLevel = std::max(w.iBestMinLevel, minLevel);
+		w.dwLastAt = dwNow ? dwNow : 1;
+		if (w.iFails == ZRUN_WALL_FAILS)
+			sys_log(0, "ZODIAC_RUN: wall floor=%d fails=%d best_min_level=%d - own runs stop at %d", floor, w.iFails,
+					w.iBestMinLevel, floor - 1);
+	}
 	// V6: the test's "mixed 1": a party of the three kingdoms (more bots of the band; a test only).
 	bool ZrunMixed() { return quest::CQuestManager::instance().GetEventFlag("zrun_mixed") > 0; }
 	int ZrunGapSeconds() { return std::max(10, GetZrunSetting("zrun_gap", 60)); }
@@ -923,6 +987,24 @@ namespace
 			target = std::min(target, picked[i].ready);
 		if (target >= 39)
 			target = 40;
+		// MT2009_PLUS_ZODIAC_WALL_V1: no further than the floor under a wall this party is no stronger for.
+		if (!forced)
+		{
+			int minLevel = 0;
+			for (size_t i = 0; i < picked.size(); ++i)
+				minLevel = i == 0 ? (int)picked[i].level : std::min(minLevel, (int)picked[i].level);
+			const int wall = GetZrunWallFloor(target, minLevel, dwNow);
+			if (wall > 0)
+			{
+				++s_uZrunWallCapped;
+				PlayerBotLogThrottled("zrun_wall_cap", dwNow,
+						"ZODIAC_RUN: own call held under the wall sign=%s kingdom=%d target=%d wall=%d min_level=%d best_failed=%d capped=%u",
+						ZRUN_SIGN[sign], best, target, wall, minLevel, s_aZrunWall[wall].iBestMinLevel, s_uZrunWallCapped);
+				if (wall - 1 < ZRUN_OWN_MIN_FLOOR)
+					return false;
+				target = wall - 1;
+			}
+		}
 		if (!OpenZrun(sign, (BYTE)best, picked, true, target, pools[best], dwNow, why))
 			return false;
 		ShoutZrunCall(CHARACTER_MANAGER::instance().FindByPID(picked[0].pid), sign, (int)picked.size() - 1, target);
@@ -1420,6 +1502,8 @@ namespace
 		st.uBestFloor = std::max<unsigned int>(st.uBestFloor, run.bMaxFloor);
 		st.uFloorSum += run.bMaxFloor;
 		st.uDeaths += run.iDeaths;
+		if (run.bOwn)
+			NoteZrunWall((int)run.bMaxFloor, run.iTargetFloor, run.szResult, run.iMinLevel, dwNow);	// MT2009_PLUS_ZODIAC_WALL_V1
 		sys_log(0, "ZODIAC_RUN: closed run=%d sign=%s kind=%s result=%s floor=%u target=%d seconds=%u floors=%s deaths=%d prism_revives=%d free_revives=%d death_outs=%d spheres=%d prisms_bought=%d parchments=%d milbon_prisms=%d flowers=%d",
 				run.iId, ZRUN_SIGN[run.bSign], run.bOwn ? "own" : "test", run.szResult ? run.szResult : "?",
 				(unsigned int)run.bMaxFloor, run.iTargetFloor, (dwNow - run.dwCalledAt) / 1000,
@@ -1737,7 +1821,8 @@ namespace
 				run.lFloorY = leader->GetY();
 			}
 			// V2: a floor that kills the party over and over is over; so is a temple whose first floor never came.
-			if (!run.szResult && run.iFloorDeaths >= ZrunWipe() * (int)run.members.size())
+			// MT2009_PLUS_ZODIAC_WALL_V1: an own run (paid Prisms) at fewer.
+			if (!run.szResult && run.iFloorDeaths >= (run.bOwn ? ZrunOwnWipe() : ZrunWipe()) * (int)run.members.size())
 				PullZrun(run, "wipe");
 			if (!run.szResult && run.bFloor == 0 && dwNow - run.dwEnteredAt > 120000)
 				PullZrun(run, "no_floor");
@@ -1828,6 +1913,21 @@ namespace
 				open.empty() ? "-" : open.c_str(), ZrunSize(), ZrunMinLevel(), ZrunTargetFloor(), ZrunBoost(), ZrunPrisms(),
 				ZrunGapSeconds(), (unsigned int)s_bZrunNextSign);
 		LogZrunStrengthCensus(get_dword_time(), false);	// MT2009_PLUS_ZODIAC_STRENGTH_V2
+		// MT2009_PLUS_ZODIAC_WALL_V1: the walls the own runs stop under.
+		const DWORD now = get_dword_time();
+		std::string walls;
+		for (int f = 1; f <= 40; ++f)
+		{
+			const TZrunWall& w = s_aZrunWall[f];
+			if (w.iFails <= 0 || now - w.dwLastAt >= ZRUN_WALL_MEMORY_MS)
+				continue;
+			char part[64];
+			snprintf(part, sizeof(part), "%s%d:%d/lv%d/%umin", walls.empty() ? "" : ",", f, w.iFails, w.iBestMinLevel,
+					(unsigned int)((now - w.dwLastAt) / 60000));
+			walls += part;
+		}
+		sys_log(0, "ZODIAC_RUN: status walls on=%d fails_for_wall=%d own_wipe=%d capped=%u floors=%s", ZrunWallOn() ? 1 : 0,
+				ZRUN_WALL_FAILS, ZrunOwnWipe(), s_uZrunWallCapped, walls.empty() ? "-" : walls.c_str());
 	}
 
 	BYTE ParseZrunSign(const char* arg)

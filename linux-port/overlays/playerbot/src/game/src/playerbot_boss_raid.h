@@ -281,6 +281,9 @@ namespace
 		state.wBossRaidRace = 0;
 		state.lBossRaidMap = 0;
 		state.dwNextBossRaidMoveTime = 0;
+		state.bBossRaidMapJumps = 0; // MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1
+		state.bBossRaidFarJumps = 0;
+		state.dwBossRaidFarJumpAt = 0;
 		if (ch)
 			ForgetPlayerBotOchaoWalk(ch->GetPlayerID()); // MT2009_PLUS_OCHAO_BOTS_V1 (walk)
 		if (ch)
@@ -361,6 +364,10 @@ namespace
 				x = openX;
 				y = openY;
 			}
+			// MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1: never a spot in a wall - a bot
+			// put there is rescued back to the map's entry.
+			if (IsPlayerBotPositionBlocked(row.lMap, x, y))
+				continue;
 			if (!nav || bossGround == 0 || navigation.GetComponentAtWorld(x, y, 4) == bossGround)
 			{
 				outX = x;
@@ -1459,7 +1466,18 @@ namespace
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 			if (dwNow < state.dwNextBossRaidMoveTime)
 				return true;
-			state.dwNextBossRaidMoveTime = dwNow + 5000;
+			// MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1: a way onto his map refused
+			// again and again is not tried for the rest of the raid.
+			if (state.bBossRaidMapJumps >= PLAYERBOT_BOSS_RAID_MAP_JUMPS_MAX)
+			{
+				sys_log(0, "PLAYERBOT_RAID: member gave up the way pid=%u name=%s map=%ld boss_map=%ld jumps=%u",
+						pid, ch->GetName(), ch->GetMapIndex(), row.lMap, (unsigned int)state.bBossRaidMapJumps);
+				raid->members.erase(pid);
+				ClearPlayerBotBossRaidState(state, ch, raid->dwBossVID);
+				return false;
+			}
+			++state.bBossRaidMapJumps;
+			state.dwNextBossRaidMoveTime = dwNow + 5000 * (DWORD)state.bBossRaidMapJumps;
 			long rallyX = 0, rallyY = 0;
 			GetPlayerBotBossRaidRally(pid, *raid, rallyX, rallyY);
 			TransitionPlayerBotMap(ch, state, row.lMap, rallyX, rallyY, dwNow, "boss_raid");
@@ -1493,10 +1511,37 @@ namespace
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 			if (dwNow < state.dwNextBossRaidMoveTime)
 				return true;
-			state.dwNextBossRaidMoveTime = dwNow + 5000;
-			long rallyX = 0, rallyY = 0;
-			GetPlayerBotBossRaidRally(pid, *raid, rallyX, rallyY);
-			TransitionPlayerBotMap(ch, state, row.lMap, rallyX, rallyY, dwNow, "boss_raid_far");
+			// MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1: one jump to its spot, then
+			// the walk to him; another jump only after the backoff (60 s,
+			// doubling), and after PLAYERBOT_BOSS_RAID_FAR_JUMPS_MAX jumps
+			// still far the bot leaves the raid.
+			const DWORD backoff = PLAYERBOT_BOSS_RAID_FAR_JUMP_BACKOFF_MS <<
+					(state.bBossRaidFarJumps > 0 ? state.bBossRaidFarJumps - 1 : 0);
+			if (state.bBossRaidFarJumps == 0 || dwNow - state.dwBossRaidFarJumpAt >= backoff)
+			{
+				if (state.bBossRaidFarJumps >= PLAYERBOT_BOSS_RAID_FAR_JUMPS_MAX)
+				{
+					sys_log(0, "PLAYERBOT_RAID: member gave up the far jumps pid=%u name=%s map=%ld pos=(%ld,%ld) boss=(%ld,%ld) distance=%d jumps=%u",
+							pid, ch->GetName(), row.lMap, ch->GetX(), ch->GetY(), boss->GetX(), boss->GetY(), distance,
+							(unsigned int)state.bBossRaidFarJumps);
+					raid->members.erase(pid);
+					ClearPlayerBotBossRaidState(state, ch, raid->dwBossVID);
+					return false;
+				}
+				long rallyX = 0, rallyY = 0;
+				GetPlayerBotBossRaidRally(pid, *raid, rallyX, rallyY);
+				++state.bBossRaidFarJumps;
+				state.dwBossRaidFarJumpAt = dwNow;
+				state.dwNextBossRaidMoveTime = dwNow + 5000;
+				if (state.bBossRaidFarJumps > 1)
+					sys_log(0, "PLAYERBOT_RAID: far jump again pid=%u name=%s map=%ld pos=(%ld,%ld) rally=(%ld,%ld) distance=%d jumps=%u",
+							pid, ch->GetName(), row.lMap, ch->GetX(), ch->GetY(), rallyX, rallyY, distance,
+							(unsigned int)state.bBossRaidFarJumps);
+				TransitionPlayerBotMap(ch, state, row.lMap, rallyX, rallyY, dwNow, "boss_raid_far");
+				return true;
+			}
+			state.dwNextBossRaidMoveTime = dwNow + 2000;
+			MovePlayerBot(ch, boss->GetX(), boss->GetY(), dwNow, 8, true, true);
 			return true;
 		}
 		LPCHARACTER bossVictim = boss->GetVictim();

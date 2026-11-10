@@ -2028,6 +2028,15 @@ namespace
 	// kilometres from its spot), while one warped in from another map was
 	// there at once.
 	const int PLAYERBOT_BOSS_RAID_WALK_MAX = 20000;
+	// MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1 (10 November: a bot whose spot lay in
+	// a wall of Grota 2 was put back at the map's entry each time and jumped
+	// to the same spot every 5 s until the raid ended - 900-2000 jumps/h): one
+	// jump, then the walk to him; another jump only after the backoff (doubling
+	// from this), and after this many jumps still far, or this many failed
+	// jumps onto his map, the bot leaves the raid.
+	const DWORD PLAYERBOT_BOSS_RAID_FAR_JUMP_BACKOFF_MS = 60 * 1000;
+	const BYTE PLAYERBOT_BOSS_RAID_FAR_JUMPS_MAX = 3;
+	const BYTE PLAYERBOT_BOSS_RAID_MAP_JUMPS_MAX = 4;
 	// MT2009_PLUS_BOSS_RAID_V2 (2.2.51): half its health is enough - the walk
 	// to him is its time for the potions (was 80).
 	const int PLAYERBOT_BOSS_RAID_MIN_HP_PERCENT = 50;
@@ -9967,6 +9976,12 @@ namespace
 		WORD wBossRaidRace = 0;
 		long lBossRaidMap = 0;
 		DWORD dwNextBossRaidMoveTime = 0;
+		// MT2009_PLUS_BOT_BOSS_RAID_JUMPS_V1: the jumps this bot made for this
+		// raid onto the boss's map (from another map) and to its spot from the
+		// far end of his own map, and when the last of the latter was.
+		BYTE bBossRaidMapJumps = 0;
+		BYTE bBossRaidFarJumps = 0;
+		DWORD dwBossRaidFarJumpAt = 0;
 		// A world event (playerbot_world_events.h): which one this bot answered
 		// (a playerbot_events kind, zero when none), the map it runs on, what
 		// the bot was sent after - its pirate, or the stone or boss of a Zuo

@@ -1593,6 +1593,10 @@ namespace
 		// A piece in the bag kept for sale, bonused where it lies: a level-30
 		// weapon, or the piece a caller of ApplyPlayerBotGreenBonusToItem names.
 		PLAYERBOT_BONUS_TARGET_GOODS,
+		// MT2009_PLUS_MLODZI_EARLY_REAL_V1: the real weapon prepared in the bag behind a young heroes' one in the hand
+		// (GetPlayerBotMlodziPreparedWeapon), bonused where it lies as the weapon it will be: the ordinary change rule,
+		// the marble's fifth.
+		PLAYERBOT_BONUS_TARGET_PREPARED,
 	};
 
 	// plain is how the ordinary stones may reach the piece
@@ -1793,7 +1797,8 @@ namespace
 			piece.plain = playerbot_bonus_rules::PLAIN_NONE;
 		piece.greenFits = CanPlayerBotTakeGreenBonusStone(item);
 		// The fifth line is the marble's, on a worn piece.
-		piece.marbleAllowed = target.kind == PLAYERBOT_BONUS_TARGET_WORN;
+		piece.marbleAllowed = target.kind == PLAYERBOT_BONUS_TARGET_WORN ||
+				target.kind == PLAYERBOT_BONUS_TARGET_PREPARED;	// MT2009_PLUS_MLODZI_EARLY_REAL_V1
 		piece.wantsPlainChange = PlayerBotWantsBonusChange(ch, target, false);
 		piece.wantsGreenChange = piece.greenFits && PlayerBotWantsBonusChange(ch, target, true);
 		// What a companion's owner put on keeps the lines the owner chose it
@@ -2055,6 +2060,20 @@ namespace
 				out.push_back(target);
 				continue;
 			}
+			// MT2009_PLUS_MLODZI_EARLY_REAL_V1: a young heroes' weapon in the hand takes no stone; while the bot prepares
+			// its real weapon (the hold over: the early level, the expiry windows) the prepared one in the bag takes them.
+			if (wearCell == WEAR_WEAPON && IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)) && IsPlayerBotMlodziEarlyPrep(ch))
+			{
+				LPITEM prepared = GetPlayerBotMlodziPreparedWeapon(ch);
+				if (prepared && !IsPlayerBotSidekickLockedItem(ch, prepared) &&
+						CanPlayerBotRerollItemFor(ch, prepared, WEAR_WEAPON))
+				{
+					const TPlayerBotBonusTarget target = { prepared, wearCell, (BYTE)PLAYERBOT_BONUS_TARGET_PREPARED,
+							(BYTE)(plainWaits ? playerbot_bonus_rules::PLAIN_NONE : playerbot_bonus_rules::PLAIN_CATEGORY) };
+					out.push_back(target);
+					continue;
+				}
+			}
 			// A worn piece comes off for its stones, so only one the engine
 			// really wears in that slot and lets come off.
 			LPITEM item = ch->GetWear(wearCell);
@@ -2072,7 +2091,9 @@ namespace
 			else
 				continue;
 			// MT2009_PLUS_BOT_LOW_GEAR_STONES_V1: no ordinary stone on outgrown low gear (a green one may still fit).
-			if (plain != playerbot_bonus_rules::PLAIN_NONE && IsPlayerBotOutgrownLowStonePiece(ch, item))
+			// MT2009_PLUS_BOT_STALKI_ARMOUR80_V1: nor on the armour under 66 a Stalki one in the bag replaces.
+			if (plain != playerbot_bonus_rules::PLAIN_NONE &&
+					(IsPlayerBotOutgrownLowStonePiece(ch, item) || IsPlayerBotStalkiStepOutdated(ch, item)))
 			{
 				if (!CanPlayerBotTakeGreenBonusStone(item))
 					continue;
@@ -2662,9 +2683,9 @@ namespace
 			state.dwNextBonusCheckTime = dwNow + PLAYERBOT_EQUIPMENT_COMBAT_DELAY;
 			return false;
 		}
-		static const char* const targetKinds[] = { "worn", "held", "goods" };
+		static const char* const targetKinds[] = { "worn", "held", "goods", "prepared" };
 		static const char* const plainKinds[] = { "category", "rest", "green" };
-		const char* const on = targetKinds[target.kind < 3 ? target.kind : 0];
+		const char* const on = targetKinds[target.kind < 4 ? target.kind : 0];
 		const char* const reach = plainKinds[target.plain < 3 ? target.plain : 0];
 		if (greenPick)
 		{

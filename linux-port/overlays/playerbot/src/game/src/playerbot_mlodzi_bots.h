@@ -64,6 +64,23 @@
 //   - the log: "PLAYERBOT_MLODZI: window plan=... days_left ..." when a bot enters a window or its plan changes, and an
 //     hourly "PLAYERBOT_MLODZI: window census".
 //
+// MT2009_PLUS_MLODZI_EARLY_REAL_V1 (the owner, 10 November 2026: a bot that finds a good real weapon of its level - a
+// level-75 one - may work on it already: refine it, change its lines; it puts it on only when it no longer has a young
+// heroes' weapon, and wears the young one while it lasts). The test world of 10 November: 86-94 % of the bots of 70-97
+// on the level-70 young weapon, "window census refine_real=0" - the 7-day window opens about 17 November.
+//   - the preparation starts at once, whatever the days left, for a bot of the last tier (no next tier, nothing
+//     offered) of level PLAYERBOT_MLODZI_EARLY_LEVEL (75, m2_bot_mlodzi_early_level; m2_bot_mlodzi_early_off 1: as
+//     before): "prep reason=early_real" - the hold ends, so the weapon goal, the market, the anvil (the prepared bag
+//     weapon's refine target, IsPlayerBotMlodziKept) and the bonus pass (the prepared weapon a held target,
+//     CollectPlayerBotBonusTargets) work on the real weapon. No "200%" plan (the 7-day window keeps its own) - but the
+//     refine decisions read the real weapon (IsPlayerBotMlodziRealWeaponView);
+//   - the hand (PlayerBotMlodziHandRule): no real weapon goes on while the bot has a valid young heroes' weapon it can
+//     wear (worn, or in the bag of its class and level with a tool or nothing in the hand) - the young one stays on to
+//     its last two minutes, the switch then puts the prepared one on (m2_bot_mlodzi_hand_keep_off 1: V3's score rule);
+//   - the 6/7 pass (playerbot_bonus67_bots.h) takes no weapon by the owner's rule 2 of 8 November - nothing changes there;
+//     the progression's weapon row reads the worn young weapon (+9 of the bot's level) as before, the prepared one only
+//     with the hand empty and no young one left.
+//
 // An implementation fragment in the sense playerbot_types.h describes: included once, from
 // playerbot_manager.cpp, right after playerbot_gear.h (which forward-declares what it asks of this file).
 
@@ -100,6 +117,22 @@ namespace
 	const long PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS = 10L * 60L;
 	const size_t PLAYERBOT_MLODZI_RATE_SAMPLES = 19;
 	const long PLAYERBOT_MLODZI_RATE_MIN_SECONDS = 30L * 60L;
+	// MT2009_PLUS_MLODZI_EARLY_REAL_V1: the level from which a last-tier bot prepares its real weapon at once.
+	const int PLAYERBOT_MLODZI_EARLY_LEVEL = 75;
+
+	int GetPlayerBotMlodziEarlyLevel()
+	{
+		quest::CQuestManager& q = quest::CQuestManager::instance();
+		if (q.GetEventFlag("m2_bot_mlodzi_early_off") != 0)
+			return 0;
+		const int v = q.GetEventFlag("m2_bot_mlodzi_early_level");
+		return v > 0 ? std::max(70, std::min<int>((int)PLAYER_MAX_LEVEL_CONST, v)) : PLAYERBOT_MLODZI_EARLY_LEVEL;
+	}
+
+	bool IsPlayerBotMlodziHandKeepOn()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_mlodzi_hand_keep_off") == 0;
+	}
 
 	bool IsPlayerBotMlodziWeapon(LPITEM item)
 	{
@@ -119,6 +152,7 @@ namespace
 		PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED,
 		PLAYERBOT_MLODZI_PREP_LAST_TIER,
 		PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL,
+		PLAYERBOT_MLODZI_PREP_EARLY_REAL,	// MT2009_PLUS_MLODZI_EARLY_REAL_V1
 	};
 
 	const char* GetPlayerBotMlodziPrepName(int prep)
@@ -127,6 +161,7 @@ namespace
 		{
 			case PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED: return "dropper_locked";
 			case PLAYERBOT_MLODZI_PREP_LAST_TIER: return "last_tier";
+			case PLAYERBOT_MLODZI_PREP_EARLY_REAL: return "early_real";	// MT2009_PLUS_MLODZI_EARLY_REAL_V1
 			case PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL: return "cant_level_in_time";	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: from 4 days (was the last day)
 			default: return "none";
 		}
@@ -322,8 +357,16 @@ namespace
 	// `left` seconds gets its real weapon now (PLAYERBOT_MLODZI_PREP_NONE: it keeps levelling, the planning waits).
 	int GetPlayerBotMlodziPrepReason(LPCHARACTER ch, TPlayerBotMlodziMemo& memo, LPITEM held, long left)
 	{
-		if (!ch || !held || left > PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS)
+		if (!ch || !held)
 			return PLAYERBOT_MLODZI_PREP_NONE;
+		// MT2009_PLUS_MLODZI_EARLY_REAL_V1: the last tier at the early level - the real weapon now, the young one worn.
+		if (left > PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS)
+		{
+			const int early = GetPlayerBotMlodziEarlyLevel();
+			if (early > 0 && (int)ch->GetLevel() >= early && mlodzi::CurrentOffer(ch) <= 0 && !PlayerBotMlodziNextTierExists(ch))
+				return PLAYERBOT_MLODZI_PREP_EARLY_REAL;
+			return PLAYERBOT_MLODZI_PREP_NONE;
+		}
 		const bool locked = IsPlayerBotMlodziExpLocked(ch);
 		const DWORD pid = ch->GetPlayerID();
 		// (a) a dropper or a spot farmer held at its level for good.
@@ -466,6 +509,11 @@ namespace
 					item->GetLevelLimit() > ch->GetLevel() || !item->CanUsedBy(ch) || !IsPlayerBotWeapon(ch, item) ||
 					!IsPlayerBotMlodziWeaponValid(item))
 				continue;
+			// MT2009_PLUS_MLODZI_EARLY_REAL_V1: with a tool or nothing in the hand the young one goes back on whatever
+			// the prepared real weapon scores (PlayerBotMlodziHandRule) - it holds.
+			if (!realKnown && IsPlayerBotMlodziHandKeepOn() && !(worn && worn->GetType() == ITEM_WEAPON &&
+					worn->GetSubType() != WEAPON_ARROW && IsPlayerBotWeapon(ch, worn) && !IsPlayerBotMlodziWeapon(worn)))
+				realKnown = true;
 			if (!realKnown)
 			{
 				realScore = GetPlayerBotMlodziRealBestScore(ch, NULL);
@@ -550,7 +598,40 @@ namespace
 	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the refine decisions read the real weapon while a window is open.
 	bool IsPlayerBotMlodziRealWeaponView(LPCHARACTER ch)
 	{
-		return GetPlayerBotMlodziWindowPlan(ch) != PLAYERBOT_MLODZI_PLAN_NONE;
+		if (GetPlayerBotMlodziWindowPlan(ch) != PLAYERBOT_MLODZI_PLAN_NONE)
+			return true;
+		// MT2009_PLUS_MLODZI_EARLY_REAL_V1: the early preparation reads the real weapon too (the memo just refreshed above).
+		std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = ch ? s_mapPlayerBotMlodzi.find(ch->GetPlayerID())
+				: s_mapPlayerBotMlodzi.end();
+		return it != s_mapPlayerBotMlodzi.end() && it->second.iPrep == PLAYERBOT_MLODZI_PREP_EARLY_REAL;
+	}
+
+	// MT2009_PLUS_MLODZI_EARLY_REAL_V1: whether the bot prepares its real weapon early (the bonus pass's held target).
+	bool IsPlayerBotMlodziEarlyPrep(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotWeaponPlanSuspended(ch))
+			return false;
+		std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = s_mapPlayerBotMlodzi.find(ch->GetPlayerID());
+		return it != s_mapPlayerBotMlodzi.end() && it->second.iPrep != PLAYERBOT_MLODZI_PREP_NONE;
+	}
+
+	// MT2009_PLUS_MLODZI_EARLY_REAL_V1: a valid young heroes' weapon the bot can wear - worn, or in the bag of its class
+	// and a level it has reached.
+	bool HasPlayerBotWearableMlodzi(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (IsPlayerBotMlodziWeaponValid(worn))
+			return true;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotMlodziWeaponValid(item) &&
+					item->GetLevelLimit() <= ch->GetLevel() && item->CanUsedBy(ch) && IsPlayerBotWeapon(ch, item))
+				return true;
+		}
+		return false;
 	}
 
 	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the weight gates of a bot in a window (IsPlayerBotWeightGateOpen, by pid - the last answer).
@@ -671,12 +752,25 @@ namespace
 	// gives way to anything.
 	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: otherwise the score decides - a young heroes' weapon is worn only while it
 	// scores over the best real weapon (V1 put a valid one over any other: level-120 Champions wore the level-70 one).
-	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old)
+	// MT2009_PLUS_MLODZI_EARLY_REAL_V1 (the owner, 10 November 2026): a real weapon goes on only when the bot has no young
+	// heroes' weapon it can wear - one worn stays on, and with a tool or nothing in the hand the young one goes back.
+	int PlayerBotMlodziHandRule(LPCHARACTER ch, LPITEM item, LPITEM old)
 	{
 		if (IsPlayerBotMlodziWeapon(item) && !IsPlayerBotMlodziWeaponValid(item))
 			return -1;
 		if (old && IsPlayerBotMlodziWeapon(old) && !IsPlayerBotMlodziWeaponValid(old))
 			return 1;
+		if (item && item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW && !IsPlayerBotMlodziWeapon(item) &&
+				IsPlayerBotMlodziHandKeepOn())
+		{
+			// the young one in the hand stays on; with a real weapon in the hand (worn before this rule) the score decides
+			if (old && IsPlayerBotMlodziWeaponValid(old))
+				return -1;
+			const bool oldReal = old && old->GetType() == ITEM_WEAPON && old->GetSubType() != WEAPON_ARROW &&
+					!IsPlayerBotMlodziWeapon(old) && IsPlayerBotWeapon(ch, old);
+			if (!oldReal && HasPlayerBotWearableMlodzi(ch))
+				return -1;
+		}
 		return 0;
 	}
 
