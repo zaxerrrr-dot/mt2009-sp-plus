@@ -448,6 +448,7 @@ namespace
 	// (IsPlayerBotCh2StandCandidate) - the reason moves it there (playerbot_ch2_stand.h); PlayerBotHasCounter is false on
 	// every channel but the first, so 48 % of the board's surplus never had a reason.
 	bool IsPlayerBotCh2StandCandidate(LPCHARACTER ch);	// playerbot_ch2_stand.h
+	bool IsPlayerBotPearlFisherPearlVnum(LPCHARACTER ch, DWORD vnum);	// playerbot_pearl_fishers.h
 	bool IsPlayerBotMatsBoardCounterDue(LPCHARACTER ch)
 	{
 		if (!ch || IsPlayerBotMatsBoardOff(MATS_BOARD_LIST) || (!PlayerBotHasCounter(ch) && !IsPlayerBotCh2StandCandidate(ch)))
@@ -461,6 +462,9 @@ namespace
 			const TPlayerBotMatsBoardEntry* e = GetPlayerBotMatsBoardEntry(it->first);
 			if (e && e->unmet > 0)
 				units += std::min(it->second, e->unmet);
+			// MT2009_PLUS_BOT_PEARL_FISHERS_V1: a designated pearl fisher with a short pearl to sell needs no ten units.
+			if (e && e->unmet > 0 && it->second > 0 && IsPlayerBotPearlFisherPearlVnum(ch, it->first))
+				units += GetPlayerBotMatsBoardCfg().counterMin;
 		}
 		if (units < GetPlayerBotMatsBoardCfg().counterMin)
 			return false;

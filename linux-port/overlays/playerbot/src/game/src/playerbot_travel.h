@@ -2159,6 +2159,8 @@ namespace
 	// Pajakow 1 and leaves it as a player's does, without the desert crossing.
 	bool s_bPlayerBotRingTravelWarp = false;
 
+	void NotePlayerBotVillage70Trip(LPCHARACTER ch, long targetMap, const char* reason);	// playerbot_pearl_fishers.h
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
@@ -2384,6 +2386,8 @@ namespace
 		sys_log(0, "PLAYERBOT_WORLD: transitioned pid=%u name=%s from=%ld to=%ld pos=(%ld,%ld) reason=%s",
 				ch->GetPlayerID(), ch->GetName(), oldMap, targetMap, targetX, targetY,
 				reason ? reason : "?");
+		// MT2009_PLUS_BOT_VILLAGE70_V1: a bot of 70+ into a village, counted by the kind of trip.
+		NotePlayerBotVillage70Trip(ch, targetMap, reason);
 		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: the town-service exits, counted.
 		if (IsPlayerBotServicesExitReason(reason))
 			NotePlayerBotServicesExit(ch, dwNow);
