@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # special_item_group.snapshot.txt (MT2009_PLUS_CHEST_EDITOR_V1): the chests page's
 # copy of the game's file, shown until the game publishes its own; starred
 # for the same reason as VERSION.
-COPY app.py m2i18n.py collector.py item_grants.py sm_grants.py potega_madrosci.py pvpfan.py najemnicy.py decisions.py decision_tables.py event_autogen.py env_schema.py env_editor.py server_config.py server_profiles.txt log_maintenance.py snapshot_retention.py bot_stats.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
+COPY app.py m2i18n.py collector.py item_grants.py sm_grants.py potega_madrosci.py pvpfan.py najemnicy.py ishop_rotation.py decisions.py decision_tables.py event_autogen.py env_schema.py env_editor.py server_config.py server_profiles.txt log_maintenance.py snapshot_retention.py bot_stats.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
 COPY dbeditor ./dbeditor
 # MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (market_preview/__init__.py).
 COPY market_preview ./market_preview
