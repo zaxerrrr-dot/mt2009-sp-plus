@@ -1612,6 +1612,11 @@ namespace
 				IsPlayerBotKeptStalki(ch, item) || IsPlayerBotFourLinePiece(item) ||
 				IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		// MT2009_PLUS_BOT_BONUS75_V1: nor an already bonused piece of a bot with the ItemShop (a scroll's only)
+		if (IsPlayerBotBonusScrollPiece(ch, item))
+			return false;
+#endif
 		const BYTE plus = item->GetRefineLevel();
 		const bool spareGear = IsPlayerBotHigherTierSpare(ch, item);
 		if (spareOut)

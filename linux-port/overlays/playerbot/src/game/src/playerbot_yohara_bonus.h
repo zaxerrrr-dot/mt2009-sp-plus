@@ -298,6 +298,17 @@ namespace
 				return ROLE_MUST;
 			return type == POINT_ATTBONUS_DESERT || type == POINT_ATTBONUS_HUMAN ? ROLE_WANTED : ROLE_OTHER;
 		}
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+		// MT2009_PLUS_BOT_BONUS75_V1 (playerbot_bonus75.h): from level 75 the owner's lists - the armour, helmet and shield
+		// for Max HP, the defence lines, the stun resistance and the hunt element; the weapon and the jewellery for
+		// critical and strong vs devils (this pass's own tiers, shares and element phase)
+		if (IsPlayerBotBonus75Stage(ch))
+		{
+			const int role75 = GetPlayerBotBonus75RoleFor(ch, wearCell, type, addonWeapon, hunt);
+			if (role75 >= 0)
+				return role75;
+		}
+#endif
 		const bool arrow = type == POINT_RESIST_BOW;
 		const bool magicResist = type == POINT_RESIST_MAGIC;
 		// MT2009_PLUS_STEAL_CAP_V1: the rest of the gear already gives the 50% cap - absorption here is wasted.
@@ -764,6 +775,9 @@ namespace
 			{
 				item->ChangeAttribute();
 				++spent[item->GetID()];
+#ifdef MT2009_PLUS_BOT_BONUS75_V1
+				NotePlayerBotBonus75Change(ch, item, PLAYERBOT_YOHARA_BONUS_SLOTS[target.slotIndex].bWearCell, true);
+#endif
 			}
 			else if (count < ITEM_ATTRIBUTE_MAX_NUM && number(1, 100) <= aiItemAttributeAddPercent[count])
 				item->AddAttribute();

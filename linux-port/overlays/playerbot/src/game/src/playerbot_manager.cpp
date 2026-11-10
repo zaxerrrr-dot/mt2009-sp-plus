@@ -508,6 +508,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_MARBLE_FIRST_V1: a bot with SM brings a piece to five lines (the marble) before it changes it, the 6/7
 // scope first; the gate, the shop's marble note and the census (after the 6/7 pass, whose scope it reads)
 #include "playerbot_marble_first.h"
+// MT2009_PLUS_BOT_BONUS75_V1: the 75+ bonus targets per slot, bonused pieces raised under scrolls by the bots with the
+// ItemShop (the V3 scroll goal), the census - after the marble-first gate, which both bonus passes ask after it
+#include "playerbot_bonus75.h"
 // MT2009_PLUS_BOT_SKILL_INSTR_V1: the ItemShop chests of skill instructions a bot short of books buys (a V3 goal), the
 // dearest skill a Rada / Zwoj goes to, the census - after the V3 goals and the shop aids
 #include "playerbot_skill_instr_late.h"
