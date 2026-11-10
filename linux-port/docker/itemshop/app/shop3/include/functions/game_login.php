@@ -21,7 +21,8 @@
 	//
 	// The old static link (pid + sas only) is refused unless M2_SHOP3_LEGACY_SAS=1 (a core without this change).
 
-	define('SHOP3_TOKEN_TTL', 120);		// seconds a token lives (the game answers "/in_game_mall" at once)
+	define('SHOP3_TOKEN_TTL', 21600);	// MT2009_PLUS_SHOP3_TOKEN_V2 (players, 10 Nov 2026: "Otwórz sklep ponownie z gry"): 6 h - the client may keep
+	// the link it got at login and open it later; the token stays signed and bound to its account and character		// seconds a token lives (the game answers "/in_game_mall" at once)
 	define('SHOP3_TOKEN_SKEW', 30);		// a token "from the future" by up to this much (two containers, one clock)
 
 	function shop3_token_key()
@@ -127,7 +128,10 @@
 				&& isset($_SESSION['pid']) && (int)$_SESSION['pid'] === (int)$pid;
 			$age = time() - (int)$ts;
 			$fresh = $age <= SHOP3_TOKEN_TTL && $age >= -SHOP3_TOKEN_SKEW;
-			if (!$fresh || !shop3_token_burn($nonce))
+			// MT2009_PLUS_SHOP3_TOKEN_V2: a reused genuine token (the client opens the shop again with the link it got) is fine -
+			// it is signed and bound to this account and character; the session is reset to them below.
+			shop3_token_burn($nonce);
+			if (!$fresh)
 			{
 				if ($same_session && $account->gameLoginAllowed($owner))
 				{
@@ -141,7 +145,9 @@
 		else
 		{
 			// The core's old static link - only where that core still runs.
-			if (getenv('M2_SHOP3_LEGACY_SAS') !== '1')
+			// MT2009_PLUS_SHOP3_TOKEN_V2: older clients (before 3.0.23) send only this link - accepted unless the operator set
+			// M2_SHOP3_LEGACY_SAS=0; the session is reset to this account below, so another account's shop is never shown
+			if (getenv('M2_SHOP3_LEGACY_SAS') === '0')
 				shop3_game_login_failed('static link without token');
 			$sas = strtolower((string)$_GET['sas']);
 			if (!preg_match('/^[0-9a-f]{32}$/', $sas) || !hash_equals(md5($pid . $owner . $game_ishop_key), $sas))

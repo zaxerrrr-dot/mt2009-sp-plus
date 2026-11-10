@@ -734,9 +734,9 @@ services:
       M2_MALL_SAS_KEY: "${M2_MALL_SAS_KEY:-GF9001}"
       # MT2009_PLUS_SHOP3_TOKEN_V1: the game's ItemShop link carries a fresh HMAC token (120 s, single use) of the
       # account in game - the key as the game service has it. The old static md5 link alone (sas, valid for ever)
-      # is refused unless M2_SHOP3_LEGACY_SAS=1 (only for a game core built without the token).
+      # MT2009_PLUS_SHOP3_TOKEN_V2: the old static link of clients before 3.0.23 is accepted unless M2_SHOP3_LEGACY_SAS=0.
       M2_SHOP3_TOKEN_SECRET: "${M2_SHOP3_TOKEN_SECRET:-}"
-      M2_SHOP3_LEGACY_SAS: "${M2_SHOP3_LEGACY_SAS:-0}"
+      M2_SHOP3_LEGACY_SAS: "${M2_SHOP3_LEGACY_SAS:-1}"
       # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the shop's language for a visitor who has not picked one (m2lang cookie, the
       # character's own game language).
       M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"
