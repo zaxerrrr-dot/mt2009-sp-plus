@@ -205,3 +205,24 @@ okna petów) i przycisk w pasku bocznym. Brama wersji: `M2_CLIENT_MIN_VERSION` 1
   to typ 37 podtyp 12 (`PET_PAY`, 193 wiersze `item_proto`), ten sam typ co zwierzaki domowe – `uipetinfo.IsGrowthPetItem`
   pomija podtyp 12, więc idą do zwykłej podpowiedzi (`ITEM_TYPE_PET`: bonusy, czas, opis). Jaja, pieczęcie, klatka,
   księgi i reszta podtypów 0–11 / 13 zostają w gałęzi zwierzaka domowego.
+
+## Poprawki 10.11.2026 (zgłoszenia graczy)
+
+- **Zwierzak w klatce w sklepie** (`MT2009_PLUS_PET_CAGE_SHOP_V1`): Klatka Transportowa 55002 miała
+  `ITEM_ANTIFLAG_MYSHOP` – sklep offline / dom handlowy Ikarusa (`CheckItem` w `char_shop.cpp`, aukcja w
+  `ikarus_shop_manager.cpp`) i okno klienta (`uiikashop.py`) ją odrzucały. Klatka służy do zmiany właściciela
+  zwierzaka (wiki), więc traci tę flagę (`gen_pety_sql.py`; istniejący świat raz znacznikiem `pety:cage_shop_v1`,
+  klient: `pety_items.json` → `dbdata` item_proto). Pieczęć zostaje z `A_GIVE | A_MYSHOP` – zwierzaka sprzedaje się
+  w klatce. Id zwierzaka to socket 2 klatki, więc idzie z przedmiotem (sklep kopiuje sockety); kupujący dostaje
+  wiersz `growth_pet` przez `OnItemAdd` → wczytanie z db. Nowe w `growth_pet.cpp`: klatka, która przychodzi,
+  zawsze zrzuca kopię zwierzaka z pamięci tego rdzenia i wczytuje wiersz od nowa (zwierzak w klatce zmienia się
+  tylko przez `SaveNow`, więc wiersz db jest najnowszy) – stara kopia sprzedającego (klatka wróciła z innego
+  kanału po wyjęciu, rozwinięciu i ponownym zamknięciu zwierzaka) nie nadpisze nowszego wiersza. Żaden przedmiot
+  nie powstaje w tej ścieżce – nie ma czego zdublować. Zwierzak w klatce wczytany z poprawką czempiona jest
+  zapisywany od razu (nigdy „brudny” w pamięci).
+- **Jajo 7 dni, zwierzak 4 dni** (`MT2009_PLUS_PET_EGG_LIFE_TOOLTIP_V1`, klient): tak ma być wg pl-wiki – 7 dni
+  jaja (`LIMIT_REAL_TIME`, socket 0) to czas na wyklucie, a czas trwania zwierzaka losuje się przy wykluciu wg
+  gatunku (1–14 dni, Baashido 7–28, Meley / Nessie / Exedyar / Alastor / Dowódca / Aamon 15–45; Odżywka odnawia
+  go do 100%). Myliła podpowiedź „Jajo ważne jeszcze: …”. Teraz: „Czas na wyklucie: …” i „Czas trwania zwierzaka
+  po wykluciu: losowo X-Y dni” (`petdata.HATCH_LIFE_DAYS` z `pety_data.SPECIES`, `gen_pety_root.py`). Serwer bez
+  zmian.

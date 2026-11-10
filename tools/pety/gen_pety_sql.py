@@ -34,6 +34,12 @@ NAMES_MARKER = 'pety:names_v1'  # the items' names (pl-wiki) put on an existing 
 # Smakolyk+ 55031; Smaczny Smakolyk 55042 already did). A world that wrote pety:items_v1 gets the new stack / flags once.
 STACK_MARKER = 'pety:stack_v2'
 STACK_VNUMS = (55028, 55031)
+# MT2009_PLUS_PET_CAGE_SHOP_V1 (players, 10 November 2026: "zwierzak w klatce nie ma mozliwosci wystawienia w
+# sklepie"): the Klatka Transportowa is how a pet changes hands (pl-wiki), so it goes into a player's offline shop /
+# the trade house like into the trade window - no A_MYSHOP any more. The seal keeps A_GIVE | A_MYSHOP (a pet is sold
+# in its cage). The existing world loses the flag once under this marker.
+CAGE_SHOP_MARKER = 'pety:cage_shop_v1'
+CAGE_VNUM = 55002
 # Item 9: Zaczaruj zwierzaka 55033 as a Battle Pass reward (pl-wiki: "System przepustki bojowej") - the third reward of
 # the last mission of the seeded Metin / monster / fish chains (6, 9, 12), once and only where that reward is free.
 BP_MARKER = 'pety:bp_enchant_v1'
@@ -61,7 +67,7 @@ def items():
     out.append(item(55002, u"Klatka Transportowa",
                     u"Przeciągnij pieczęć zwierzaka na klatkę: zwierzak może zmienić właściciela przez 30 dni i nie "
                     u"starzeje się w klatce. Prawy przycisk myszy na klatce ze zwierzakiem wyjmuje go.",
-                    ITEM_PET, PET_BAG, stack=1, antiflag=A_SELL | A_MYSHOP | A_DROP | A_PKDROP))
+                    ITEM_PET, PET_BAG, stack=1, antiflag=A_SELL | A_DROP | A_PKDROP))  # no A_MYSHOP: MT2009_PLUS_PET_CAGE_SHOP_V1
     books = [(55003, u"Księga Młodego Zwierza", u"Dziki"), (55004, u"Księga Dzikiego Zwierza", u"Dzielny"),
              (55005, u"Księga Dzielnego Zwierza", u"Bohaterski"), (55006, u"Bohat. Księga Zwierza", u"Przebudzony"),
              (55007, u"Przeb. Księga Zwierza", u"Mocny")]
@@ -351,6 +357,20 @@ def gen_sql():
             w("\t\tUPDATE world.item_proto SET stack = %d, antiflag = antiflag & ~%d, flag = flag | %d WHERE vnum = %d;"
               % (it['stack'], A_STACK, F_STACK, it['vnum']))
     w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % STACK_MARKER)
+    w("\tEND IF;")
+    w("END//")
+    w("DELIMITER ;")
+    w("")
+    # ---- the cage in a player's shop (MT2009_PLUS_PET_CAGE_SHOP_V1) ----
+    cage = [it for it in its if it['vnum'] == CAGE_VNUM][0]
+    assert not cage['antiflag'] & A_MYSHOP, cage
+    w("-- ---- The Klatka Transportowa may be listed in a player's shop / the trade house (players, 10 November 2026), once")
+    w("-- on a world that has the row: %s ------------------------------------------------------------------------" % CAGE_SHOP_MARKER)
+    w("DELIMITER //")
+    w("BEGIN NOT ATOMIC")
+    w("\tIF (SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '%s') = 0 THEN" % CAGE_SHOP_MARKER)
+    w("\t\tUPDATE world.item_proto SET antiflag = antiflag & ~%d WHERE vnum = %d;" % (A_MYSHOP, CAGE_VNUM))
+    w("\t\tINSERT INTO player.playerbot_migrations (name, done_at) VALUES ('%s', NOW());" % CAGE_SHOP_MARKER)
     w("\tEND IF;")
     w("END//")
     w("DELIMITER ;")

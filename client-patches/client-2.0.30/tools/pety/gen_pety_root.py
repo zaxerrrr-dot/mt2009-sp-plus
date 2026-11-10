@@ -230,7 +230,11 @@ TEXTS = [
     ('TT_SKILL', u'%s (poz. %d)'),
     ('TT_SUMMONED', u'Przywołany'),
     ('TT_EGG_HATCH', u'Wykluwa: %s'),
-    ('TT_EGG_TIME', u'Jajo ważne jeszcze: %s'),
+    # MT2009_PLUS_PET_EGG_LIFE_TOOLTIP_V1 (players, 10 November 2026: "jajko jest ważne 7 dni a po wykluciu czas
+    # trwania wynosi 4 dni"): the egg's 7 days are the time left to hatch it, the pet's life is the species' own roll
+    # (pl-wiki) - the tooltip names both
+    ('TT_EGG_TIME', u'Czas na wyklucie: %s'),
+    ('TT_EGG_LIFE', u'Czas trwania zwierzaka po wykluciu: losowo %d-%d dni'),
     ('TT_EGG_EXPIRED', u'Jajo straciło ważność.'),
     ('TT_EGG_POTENTIAL', u'Potencjał czempiona: %s'),
     ('TT_BAG_EMPTY', u'Klatka jest pusta.'),
@@ -303,6 +307,12 @@ def petdata():
     for s in D.SPECIES:
         L.append('\t%d: (%d, %d, %s, (%d, %d, %d), %d, %d),' % (s[2], s[0], s[1], esc(s[3]), s[5], s[6], s[7],
                                                                 s[10][1], s[11]))
+    L.append('}')
+    L.append('# MT2009_PLUS_PET_EGG_LIFE_TOOLTIP_V1: seal vnum -> (min, max) days of life rolled at the hatching (the server\'s')
+    L.append('# Species hatchMin / hatchMax) - the egg tooltip; the egg\'s own time is only the time left to hatch it')
+    L.append('HATCH_LIFE_DAYS = {')
+    for s in D.SPECIES:
+        L.append('\t%d: (%d, %d),' % (s[2], s[8][0], s[8][1]))
     L.append('}')
     L.append('# egg vnum -> seal vnum')
     L.append('EGGS = {')
