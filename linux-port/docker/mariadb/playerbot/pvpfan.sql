@@ -190,6 +190,11 @@ ALTER TABLE player.pvpfan_category
   ADD COLUMN IF NOT EXISTS squad_size TINYINT UNSIGNED NOT NULL DEFAULT 5 COMMENT 'bots per squad, 2..12' AFTER tactics,
   ADD COLUMN IF NOT EXISTS kite_distance SMALLINT UNSIGNED NOT NULL DEFAULT 400 COMMENT 'a ranged/support bot steps away from a melee foe this near (150..900, 0 = never)' AFTER squad_size,
   ADD COLUMN IF NOT EXISTS retreat_hp TINYINT UNSIGNED NOT NULL DEFAULT 35 COMMENT 'HP % under which a bot retreats to mend (5..80, 0 = never)' AFTER kite_distance;
+-- MT2009_PLUS_PVPFAN_WARSTYLE_V1 (the owner, 10 November 2026: the squads stuttered - "it must fight like a guild
+-- war"): the default fight is the guild war's for every category; the squads are experimental, only with tactics = 2
+-- (0 and 1, the old default, both mean the guild war's fight, so no row needs changing). Idempotent at every start.
+ALTER TABLE player.pvpfan_category
+  MODIFY COLUMN tactics TINYINT(1) NOT NULL DEFAULT 0 COMMENT '2: experimental squads, roles, kiting, retreats; 0/1: the guild war''s fight (default)';
 
 -- A command nobody took within an hour (no core hosts the map on that channel, the core was down) is closed, so the
 -- panel's queue shows what is really waiting.
