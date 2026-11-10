@@ -18,6 +18,37 @@ Katalog `Server/` **nie** idzie do `Source Client/` (pętla po `*/` musi go pomi
 Każda zmiana ma znacznik w komentarzu i jest za `#ifdef` z `Locale_inc.h`, więc wyłączenie
 definicji przywraca stary exe.
 
+## Błyszczenie i żywioł na +10…+15 – `MT2009_PLUS_REFINE_EFFECT_15_V1` (`ENABLE_MT2009_REFINE_EFFECT_15`)
+
+Wężowa broń i zbroje (+0…+15) od +10 nie miały błyszczenia ani efektu żywiołu. `CItemData::GetRefine()` to `vnum % 10`,
+więc +10…+15 (vnumy …0–…5, np. 370–375, 21320–21325) liczyły się jak +0…+5 i `__GetRefinedEffect` (`< 7`) nic nie
+dołączał. Efekt żywiołu (`Mt2009WeaponElement.cpp`) rysuje się tylko obok efektu ulepszenia, więc znikał razem z nim.
+Plików efektów +10…+15 nie ma (GF ma tylko `sword_7/8/9`, `armor_7/8/9`), więc +10…+15 dostają efekt +9.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_REFINE_EFFECT_15` |
+| `UserInterface/InstanceBase.cpp` | `Mt2009PlusAboveNine`: przedmiot jest +10 lub więcej, gdy przedmiot +9 tuż pod jego „+0” (`vnum - vnum%10 - 1`, np. 369) jest tego samego typu/podtypu i ulepsza się w `vnum - vnum%10` (369 → 370), albo gdy nazwa kończy się na „+N”, N ≥ 10 (jak `RefineOf` serwera). Wtedy `__GetRefinedEffect` liczy go jak +9 (z gniazdami jak dotąd); wynik zawsze ≤ 9 (`EFFECT_*_REFINED7 + refine - 7` nie wchodzi na efekty innej broni). Broń i zbroja (`ARMOR_BODY`) idą tą samą funkcją; żywioł wraca sam |
+
+Bez zmian paczek i Pythona. Sprawdzone: kompilacja `InstanceBase.cpp` clang-cl z całą nakładką (10.11.2026).
+
+## Auto Łowy: podejście do celu jak w testowych – `MT2009_PLUS_AUTOHUNT_DIRECT_V1` (`ENABLE_MT2009_AUTOHUNT_TEST`)
+
+Nasze Auto Łowy (root `uiautohunt.py`) krążyły wokół celu: „w zasięgu” liczyły od środka do środka (200), a szły do
+punktu 120 od środka potwora – szerszy potwór (i każdy dla jeźdźca, koń ma szerokie ciało) zatrzymywał postać na swoim
+brzegu, kolizja aktorów zsuwała ją bokiem po ciele, kolejny krok znowu do środka – bieg w kółko bez ciosu. Testowe Auto
+Łowy (Alt+H) oddają podejście i walkę exe (`__Update_AutoAttack`: co klatkę do żywej pozycji celu, stop na brzegu ciała
++150 – `IsClickableDistanceDestInstance` – obrót i cios) i przechodzą przez potwory. Teraz nasze też – ostatni prosty
+odcinek i walkę; omijanie ścian (siatka `NavGrid`, `/autohunt_path`, „box”, krok od ściany) zostaje w Pythonie.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/PythonPlayer.h` | `AutoHuntDirect_Attack`, `AutoHuntDirect_InReach`, `AutoHuntDirect_PassMonsters` |
+| `UserInterface/Mt2009AutoHuntTest.cpp` | `player.AutoHuntDirectAttack(vid)` (cel + `__SetAutoAttackTargetActorID` + `__ReserveClickActor`; 0 oddaje chód Pythonowi; 0 = nie wzięte: martwy, nieatakowalny, koń bez poziomu do walki), `player.AutoHuntInReach(vid)` (`NEW_IsClickableDistanceDestInstance`: 1/0/-1), `player.AutoHuntPassMonsters(on)` (chód przez potwory i kamienie, jak w teście; nie rusza go, gdy test działa) |
+
+Stary exe: root sprawdza `hasattr` i ma własne obejście (kontakt z ciałem, częstszy krok, natychmiastowy obrót). Bez nowych
+pakietów. Sprawdzone: kompilacja `Mt2009AutoHuntTest.cpp`, `PythonPlayer.cpp` clang-cl z całą nakładką (10.11.2026).
+
 ## Wierzchowce stojące (deska, chmury, drakkary) – `MT2009_PLUS_STANDING_MOUNT_V1` (`ENABLE_MT2009_STANDING_MOUNT_FIX`), efekty w ruchu – `MT2009_PLUS_FIX_EFFECT_MOVEMENT_V1` (`ENABLE_FIX_EFFECT_MOVEMENT`)
 
 Wierzchowce stojące to rasy `MT2009_STANDING_MOUNT_FIRST..LAST` = 40003–40007 (pieczęcie 52202, 52204–52207).

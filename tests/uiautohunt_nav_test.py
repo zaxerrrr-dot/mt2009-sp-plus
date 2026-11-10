@@ -26,9 +26,13 @@ class Dummy(object):
         return Dummy()
 
 
+# what an exe without MT2009_PLUS_AUTOHUNT_DIRECT_V1 lacks (install(direct=True) gives a fake one)
+MISSING = set(('AutoHuntDirectAttack', 'AutoHuntInReach', 'AutoHuntPassMonsters'))
+
+
 class StubModule(types.ModuleType):
     def __getattr__(self, name):
-        if name.startswith('__'):
+        if name.startswith('__') or name in MISSING:
             raise AttributeError(name)
         if name[:1].isupper() and name.isupper():
             return 0
@@ -133,9 +137,12 @@ class World(object):
         self.mobs = {}
         self.walks = []
         self.target = 0
+        self.direct = []        # player.AutoHuntDirectAttack calls
+        self.attackKey = False
+        self.bodyReach = 0      # the fake exe's reach of the target's body (AutoHuntInReach)
 
 
-def install(world, grid):
+def install(world, grid, direct=False):
     names = ['app', 'autologin', 'chat', 'chr', 'clientclock', 'item', 'mouseModule', 'net', 'player', 'skill', 'ui',
              'wndMgr', 'playerbot_lang', 'background', 'chrmgr', 'warpsafe', 'uipickupfilter']
     for n in names:
@@ -148,8 +155,15 @@ def install(world, grid):
                                           if vid in world.mobs else -1)
     p.GetMainCharacterIndex = lambda: 1
     p.GetTargetVID = lambda: world.target
-    p.ClearTarget = lambda: None
-    p.SetAttackKeyState = lambda on: None
+    p.ClearTarget = lambda: setattr(world, 'target', 0)
+    p.SetTarget = lambda vid: setattr(world, 'target', vid)
+    p.IsMountingHorse = lambda: 0
+    p.SetAttackKeyState = lambda on: setattr(world, 'attackKey', bool(on))
+    if direct:
+        p.AutoHuntDirectAttack = lambda vid: world.direct.append(vid) or 1
+        p.AutoHuntInReach = lambda vid: 1 if (vid in world.mobs and math.hypot(
+            world.mobs[vid][0] - world.me[0], world.mobs[vid][1] - world.me[1]) <= world.bodyReach) else 0
+        p.AutoHuntPassMonsters = lambda on: None
     p.IsBowEquipped = lambda: False
     p.IsTargetDead = lambda vid: False
     c = sys.modules['chr']
@@ -291,6 +305,75 @@ class OldExeTest(unittest.TestCase):
         self.assertFalse(h.pathNav)
         x, y = world.walks[-1]
         self.assertGreater(x, 650)              # straight at it, as before
+
+
+class DirectTest(unittest.TestCase):
+    """MT2009_PLUS_AUTOHUNT_DIRECT_V1: the reach of a body, the exe's walk, the quicker question."""
+
+    def test_old_exe_walk_held_at_a_body_fights(self):
+        world = World()
+        mod, h = install(world, None)
+        self.assertFalse(mod.DIRECT_EXE)
+        world.mobs[7] = [550, 250]              # 300 from the middle: a wide body holds the walk there
+        h.OnServerTarget('7')
+        for i in range(6):
+            h.Chase(world.now)
+            world.now += 0.1
+        self.assertTrue(h.attacking)            # in reach of its body after CONTACT_SECONDS, no circling
+        self.assertTrue(world.attackKey)
+        world.mobs[7] = [640, 250]              # knocked back a little: still fought (REACH_KEEP)
+        h.Chase(world.now)
+        self.assertTrue(h.attacking)
+
+    def test_old_exe_far_target_walks(self):
+        world = World()
+        mod, h = install(world, None)
+        world.mobs[7] = [950, 250]
+        h.OnServerTarget('7')
+        for i in range(6):
+            h.Chase(world.now)
+            world.me[0] += 60                   # it gains ground: never "in reach" from afar
+            world.now += 0.1
+        self.assertFalse(h.attacking)
+        self.assertGreater(len(world.walks), 2)  # the step again every CHASE_MOVE_INTERVAL
+
+    def test_direct_exe_walks_and_fights_by_itself(self):
+        world = World()
+        mod, h = install(world, None, direct=True)
+        self.assertTrue(mod.DIRECT_EXE)
+        world.mobs[7] = [950, 250]
+        h.OnServerTarget('7')
+        h.Chase(world.now)
+        self.assertEqual(world.direct[-1], 7)
+        self.assertEqual(world.walks, [])       # no step of ours
+        world.bodyReach = 800                   # the exe: in reach of its body
+        h.Chase(world.now)
+        self.assertEqual(world.direct[-1], 7)
+        self.assertFalse(world.attackKey)       # the exe swings, no held attack key
+        h.WalkTo(250, 250)                      # any step of ours (a box, a way round) takes the walk back
+        self.assertEqual(world.direct[-1], 0)
+        self.assertEqual(h.directVid, 0)
+
+    def test_direct_exe_target_gone_stops_it(self):
+        world = World()
+        mod, h = install(world, None, direct=True)
+        world.mobs[7] = [950, 250]
+        h.OnServerTarget('7')
+        h.Chase(world.now)
+        h.targetVid = 0
+        h.SyncDirect()
+        self.assertEqual(world.direct[-1], 0)
+
+    def test_idle_question_is_quicker(self):
+        world = World()
+        mod, h = install(world, None)
+        h.config['target_mode'] = mod.TARGET_MODE_FOCUS
+        h.RequestTarget(world.now)
+        self.assertAlmostEqual(h.nextRequest - world.now, mod.IDLE_REQUEST_INTERVAL)
+        world.mobs[7] = [950, 250]
+        h.OnServerTarget('7')
+        h.RequestTarget(world.now)
+        self.assertAlmostEqual(h.nextRequest - world.now, mod.TARGET_REQUEST_INTERVAL)
 
 
 if __name__ == '__main__':

@@ -447,12 +447,36 @@ class BeltInventoryWindow(ui.ScriptWindow):
 # one frame for all eight (the Kolo Fortuny's wheel added later), and the
 # tab's arrows mt2009_ui/sidebar/tab_left|tab_right_01/02/03.tga.
 SIDEBAR_IMAGE = "mt2009_ui/sidebar/%s_%02d.tga"
+# MT2009_PLUS_SIDEBAR_CONFIG_V1 (the owner, 10 November 2026): which buttons the bar shows and in what order is the
+# player's own (uisidebarconfig.py - the gear under the buttons, or Esc > Opcje Gry > Dodatkowe); BUTTONS below is the
+# catalogue and the default. The gear: the Dodatkowy ekwipunek window's settings button (39x21).
+SIDEBAR_GEAR_IMAGE = "mt2009_ui/ekwipunek/settings_%d.png"
+
+
+def SidebarCatalogue():
+	"""MT2009_PLUS_SIDEBAR_CONFIG_V1: the side bar's buttons this client can show, in the default order."""
+	entries = []
+	for entry in SidebarWindow.BUTTONS:
+		if entry[0] == "enasir":	# MT2009_PLUS_REMOTE_CALL_V1: not without the exe's remoteCall
+			try:
+				if not __import__("uiremotecall").IsAvailable():
+					continue
+			except Exception:
+				continue
+		entries.append(entry)
+	return entries
+
 
 class SidebarWindow(ui.Window):
 	BUTTON_WIDTH = 32
 	BUTTON_HEIGHT = 32
 	BUTTON_GAP_X = 16
 	BUTTON_GAP_Y = 10
+	# MT2009_PLUS_SIDEBAR_CONFIG_V1: a second column when the buttons do not fit the inventory's height (a short bag,
+	# many buttons) - the bar used to grow past the inventory's bottom and, by the screen's bottom, off the screen.
+	COLUMN_GAP = 8
+	GEAR_WIDTH = 39
+	GEAR_HEIGHT = 21
 
 	# The fold tab: beside the first icon, on the board's outer edge.
 	TAB_WIDTH = 14
@@ -518,6 +542,9 @@ class SidebarWindow(ui.Window):
 		self.folded = False
 		self.foldedLoaded = False
 		self.buttons = []
+		self.buttonDefs = []		# MT2009_PLUS_SIDEBAR_CONFIG_V1: the entries of self.buttons
+		self.gearButton = None
+		self.configVersion = None
 		self.keybindVersion = -1
 		self.quickHuntButton = None	# MT2009_PLUS_AUTOHUNT_QUICK_V1
 		self.quickHuntRunning = False
@@ -534,6 +561,14 @@ class SidebarWindow(ui.Window):
 		for button in self.buttons:
 			button.Hide()
 		self.buttons = []
+		self.buttonDefs = []
+		if self.gearButton:	# MT2009_PLUS_SIDEBAR_CONFIG_V1
+			self.gearButton.Hide()
+			self.gearButton = None
+		try:
+			__import__("uisidebarconfig").DestroyWindow()
+		except Exception:
+			pass
 		self.quickHuntButton = None
 		if self.tab:
 			self.tab.Hide()
@@ -548,11 +583,33 @@ class SidebarWindow(ui.Window):
 		board = ui.Board()
 		board.SetParent(self)
 		self.board = board
+		self.__CreateButtons()
+		board.Show()
+
+	# MT2009_PLUS_SIDEBAR_CONFIG_V1: the buttons the player chose, in the player's order (uisidebarconfig.py), built
+	# again when the choice changes; the default list while there is no character yet or no file.
+	def __Arrangement(self):
+		try:
+			config = __import__("uisidebarconfig")
+			self.configVersion = config.GetVersion()
+			return config.Visible(SidebarCatalogue())
+		except Exception:
+			import dbg
+			dbg.TraceError("SidebarWindow: uisidebarconfig failed, the default buttons")
+			return SidebarCatalogue()
+
+	def __CreateButtons(self):
+		board = self.board
+		for button in self.buttons:
+			button.Hide()
+		self.buttons = []
+		self.buttonDefs = []
+		self.quickHuntButton = None
+		self.quickHuntRunning = False
+		self.keybindVersion = -1
 
 		y = self.BUTTON_GAP_Y
-		for name, text, handler, action in self.BUTTONS:
-			if name == "enasir" and not __import__("uiremotecall").IsAvailable():	# MT2009_PLUS_REMOTE_CALL_V1
-				continue
+		for name, text, handler, action in self.__Arrangement():
 			button = ui.Button()
 			button.SetParent(board)
 			button.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
@@ -571,12 +628,31 @@ class SidebarWindow(ui.Window):
 			button.SetPosition(self.BUTTON_GAP_X, y)
 			button.Show()
 			self.buttons.append(button)
+			self.buttonDefs.append((name, text, handler, action))
 			if name == "autohuntgo":
 				self.quickHuntButton = button
 			y += self.BUTTON_HEIGHT + self.BUTTON_GAP_Y
 
+		if self.gearButton is None:
+			gear = ui.Button()
+			gear.SetParent(board)
+			try:
+				gear.SetUpVisual(SIDEBAR_GEAR_IMAGE % 1)
+				gear.SetOverVisual(SIDEBAR_GEAR_IMAGE % 2)
+				gear.SetDownVisual(SIDEBAR_GEAR_IMAGE % 3)
+			except Exception:
+				gear.SetUpVisual("d:/ymir work/ui/public/small_button_01.sub")
+				gear.SetOverVisual("d:/ymir work/ui/public/small_button_02.sub")
+				gear.SetDownVisual("d:/ymir work/ui/public/small_button_03.sub")
+			gear.SetToolTipText("Ustawienia paska")
+			gear.disableClickSound = True
+			gear.SAFE_SetEvent(self.OnClickSettings)
+			gear.Show()
+			self.gearButton = gear
+		self.gearButton.SetPosition((self.BUTTON_GAP_X * 2 + self.BUTTON_WIDTH - self.GEAR_WIDTH) / 2, y)
+		y += self.GEAR_HEIGHT + self.BUTTON_GAP_Y
+
 		board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X, y)
-		board.Show()
 		self.__RefreshToolTips()
 
 	# "Kosz (J)": the key each window has now (keybind.py).
@@ -589,7 +665,7 @@ class SidebarWindow(ui.Window):
 		if version == self.keybindVersion:
 			return
 		self.keybindVersion = version
-		for button, (name, text, handler, action) in zip(self.buttons, self.BUTTONS):
+		for button, (name, text, handler, action) in zip(self.buttons, self.buttonDefs):
 			if action:
 				button.SetToolTipText(keybind.DecorateLabel(text, action))
 
@@ -659,18 +735,29 @@ class SidebarWindow(ui.Window):
 			return 0
 
 	def __FitBoard(self, height):
+		# MT2009_PLUS_SIDEBAR_CONFIG_V1: the gear under the buttons, and as many columns as the inventory's height
+		# needs (each at least 2 px between buttons); the board never grows past the inventory's bottom while two
+		# columns are enough.
 		count = len(self.buttons)
-		if not self.board or count == 0 or height <= 0:
+		if not self.board or height <= 0:
 			return
-		free = height - count * self.BUTTON_HEIGHT
-		gap = max(2, free / (count + 1))
-		top = max(2, (height - count * self.BUTTON_HEIGHT - (count - 1) * gap) / 2)
-		y = top
-		for button in self.buttons:
-			button.SetPosition(self.BUTTON_GAP_X, y)
-			y += self.BUTTON_HEIGHT + gap
-		self.board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X,
-				max(height, y - gap + top))
+		gearHeight = self.GEAR_HEIGHT + 2
+		perColumn = max(1, (height - gearHeight - 2) / (self.BUTTON_HEIGHT + 2))
+		columns = max(1, (count + perColumn - 1) / perColumn)
+		rows = max(1, (count + columns - 1) / columns) if count else 0
+		free = height - rows * self.BUTTON_HEIGHT - gearHeight
+		gap = max(2, free / (rows + 2))
+		top = max(2, (height - rows * self.BUTTON_HEIGHT - max(0, rows - 1) * gap - gap - gearHeight) / 2)
+		width = self.BUTTON_GAP_X * 2 + columns * self.BUTTON_WIDTH + (columns - 1) * self.COLUMN_GAP
+		for index, button in enumerate(self.buttons):
+			column, row = index / rows, index % rows
+			button.SetPosition(self.BUTTON_GAP_X + column * (self.BUTTON_WIDTH + self.COLUMN_GAP),
+					top + row * (self.BUTTON_HEIGHT + gap))
+		y = top + rows * (self.BUTTON_HEIGHT + gap)
+		if self.gearButton:
+			self.gearButton.SetPosition((width - self.GEAR_WIDTH) / 2, y)
+		self.board.SetSize(width, max(height, y + gearHeight + top))
+		self.fullWidth = self.TAB_WIDTH + width
 
 	# The side is chosen by the unfolded width, so folding and unfolding
 	# never move the bar across the inventory.
@@ -702,6 +789,8 @@ class SidebarWindow(ui.Window):
 		x, y, width, onLeft, folded, inventoryHeight = layout
 		self.__FitBoard(inventoryHeight)	# MT2009_PLUS_SIDEBAR_FIT_V1
 		boardWidth = self.board.GetWidth()
+		# MT2009_PLUS_SIDEBAR_CONFIG_V1: a second column makes the bar wider - the side is chosen again
+		onLeft = self.__IsOnLeft(x)
 
 		if folded:
 			self.board.Hide()
@@ -720,9 +809,9 @@ class SidebarWindow(ui.Window):
 			frameWidth = self.fullWidth
 
 		# MT2009_PLUS_INVENTORY_V2_V1: the v2 bag alone (the equipment window undocked or closed) is shorter than the
-		# bar - the bar stays on the screen
-		if getattr(self.wndInventory, "wndEquipWindow", None):
-			y = max(0, min(y, wndMgr.GetScreenHeight() - self.GetHeight()))
+		# bar - the bar stays on the screen. MT2009_PLUS_SIDEBAR_CONFIG_V1: for every inventory - the old one at the
+		# screen's bottom right had its last buttons (Dodatkowy ekwipunek, the pet, Enasir) under the screen's edge.
+		y = max(0, min(y, wndMgr.GetScreenHeight() - self.GetHeight()))
 
 		if onLeft:
 			self.SetPosition(x - frameWidth, y)
@@ -768,10 +857,32 @@ class SidebarWindow(ui.Window):
 				return
 		except (ReferenceError, AttributeError):
 			return
+		self.__RefreshArrangement()	# MT2009_PLUS_SIDEBAR_CONFIG_V1
 		if self.__GetLayout() != self.lastLayout:
 			self.AdjustPosition()
 		self.__RefreshToolTips()
 		self.__RefreshQuickHunt()
+
+	# MT2009_PLUS_SIDEBAR_CONFIG_V1: the player's choice changed (the settings window) or a character was read
+	def __RefreshArrangement(self):
+		try:
+			version = __import__("uisidebarconfig").GetVersion()
+		except Exception:
+			return
+		if version == self.configVersion or not self.board:
+			return
+		self.__CreateButtons()
+		self.lastLayout = None
+		self.AdjustPosition()
+		try:
+			wndBelt = getattr(self.wndInventory, "wndBelt", None)
+			if wndBelt and wndBelt.IsShow():
+				wndBelt.AdjustPositionAndSize()
+		except ReferenceError:
+			pass
+
+	def OnClickSettings(self):	# MT2009_PLUS_SIDEBAR_CONFIG_V1
+		__import__("uisidebarconfig").ToggleWindow()
 
 	# MT2009_PLUS_AUTOHUNT_QUICK_V1: the quick button's badge follows the
 	# hunt, however it was started or stopped (K's window, a server's

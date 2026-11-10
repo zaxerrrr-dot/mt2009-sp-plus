@@ -270,6 +270,11 @@
 // the actor's data like the aura (needs ENABLE_MT2009_AURA), drawn only while the weapon shows its refine effect
 // (UserInterface/Mt2009WeaponElement.cpp). An old exe has no chrmgr.SetWeaponElement - root then draws nothing.
 #define ENABLE_MT2009_WEAPON_ELEMENT
+// MT2009_PLUS_REFINE_EFFECT_15_V1 (the owner, 10 November 2026: no glow and no element above +9 - Serpent weapons and
+// armour go to +15): CItemData::GetRefine() is vnum % 10, so +10..+15 (vnums ...0-...5) counted as +0..+5 and got no
+// refine effect - and the element (Mt2009WeaponElement.cpp) is drawn only beside one. InstanceBase.cpp
+// __GetRefinedEffect counts such an item as +9 (the highest effect there is; no +10..+15 effect files exist).
+#define ENABLE_MT2009_REFINE_EFFECT_15
 // MT2009_PLUS_BUFFI_V2 (Buffi, server-patches/buffi): Ameria's four costume slots of the buffi - WEAR_BUFFI_BODY / HEAD /
 // WEAPON / SASH 28-31 (Server/common/length.h; the free wear cells under WEAR_MAX 32, so no cell layout, packet or
 // database change), c_Buffi_Slot_* (GameType.h), item.BUFFI_SLOT_START/BODY/HEAD/WEAPON/SASH/COUNT
