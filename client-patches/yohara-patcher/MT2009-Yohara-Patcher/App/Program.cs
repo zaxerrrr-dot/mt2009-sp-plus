@@ -33,7 +33,7 @@ namespace N2_Patcher
 			}
 			try
 			{
-				Process.Start(new ProcessStartInfo(Path.Combine(Program.Folder(), Config.GetConfigFile())) { WorkingDirectory = Program.Folder(), UseShellExecute = false });
+				MT2009Yohara.Entry.StartExternal(Path.Combine(Program.Folder(), Config.GetConfigFile()));
 			}
 			catch
 			{
@@ -55,16 +55,23 @@ namespace N2_Patcher
 			}
 			try
 			{
-				// the client reads coop.cfg and its packs relative to the working folder
-				Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = Program.Folder(), UseShellExecute = false });
+				// the client reads coop.cfg and its packs relative to the working folder;
+				// ShellExecute (UAC prompt) - the game exe may need elevation
+				MT2009Yohara.Entry.StartExternal(exe);
 				MT2009Yohara.PatcherLog.Write("uruchomiono grę: " + exe);
 				if (Config.isCLoseOnStart())
 				{
 					Environment.Exit(0);
 				}
 			}
+			catch (System.ComponentModel.Win32Exception cancelled) when (cancelled.NativeErrorCode == MT2009Yohara.Entry.ErrorCancelled)
+			{
+				MT2009Yohara.PatcherLog.Write("uruchomienie gry anulowane (UAC)");
+				MessageBox.Show("Gra nie została uruchomiona: anulowano zgodę na uprawnienia administratora (UAC). Kliknij GRAJ ponownie i wybierz \"Tak\".", Program.Title, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+			}
 			catch (Exception exception)
 			{
+				MT2009Yohara.PatcherLog.Write("nie udało się uruchomić gry: " + exception.Message);
 				MessageBox.Show(string.Concat("Nie udało się uruchomić gry:\r\n", exception.Message), Program.Title, MessageBoxButton.OK, MessageBoxImage.Hand);
 			}
 		}

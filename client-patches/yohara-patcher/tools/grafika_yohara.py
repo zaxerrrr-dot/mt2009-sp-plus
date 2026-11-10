@@ -8,7 +8,9 @@ window to MT2009-Yohara-Patcher/gen/resources/ (not in git):
   - the flame frame of bg.png, the ember animation (animate/*.png), the GRAJ
     button, the progress bar, the news box, the arrows and the window buttons
     get a turquoise "Yohara" hue instead of the 2.x red/orange fire;
-  - bg.png gets a big "YOHARA" under the MT2009 logo;
+  - bg.png: no extra text under the MT2009 logo (the big "YOHARA" there was
+    removed on the owner's request, 10 Nov 2026 - the window header
+    "YOHARA PATCHER" and the version line are enough);
   - icon.ico: the same hue + a "Y" badge;
   - the artwork inside the frame stays as it is.
 
@@ -20,7 +22,7 @@ import argparse
 import os
 import shutil
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PATCHER = os.path.normpath(os.path.join(HERE, '..', '..', 'patcher'))
@@ -71,36 +73,6 @@ def font(size):
     return f
 
 
-def text_glow(base, xy, text, size, anchor='mm', spacing=10):
-    """Turquoise text with a dark outline and a soft glow, letter-spaced."""
-    f = font(size)
-    widths = [f.getlength(ch) for ch in text]
-    total = sum(widths) + spacing * (len(text) - 1)
-    x0 = xy[0] - total / 2 if anchor == 'mm' else xy[0]
-    layer = Image.new('RGBA', base.size, (0, 0, 0, 0))
-    glow = Image.new('RGBA', base.size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(layer)
-    g = ImageDraw.Draw(glow)
-    x = x0
-    for ch, w in zip(text, widths):
-        g.text((x, xy[1]), ch, font=f, fill=ACCENT + (200,), anchor='lm')
-        d.text((x, xy[1]), ch, font=f, fill=(224, 255, 250, 255), anchor='lm',
-               stroke_width=3, stroke_fill=(6, 30, 34, 255))
-        x += w + spacing
-    glow = glow.filter(ImageFilter.GaussianBlur(9))
-    base.alpha_composite(glow)
-    base.alpha_composite(glow)
-    base.alpha_composite(layer)
-    # thin turquoise fill over the light core (keeps it readable on the art)
-    core = Image.new('RGBA', base.size, (0, 0, 0, 0))
-    c = ImageDraw.Draw(core)
-    x = x0
-    for ch, w in zip(text, widths):
-        c.text((x, xy[1]), ch, font=f, fill=ACCENT + (150,), anchor='lm')
-        x += w + spacing
-    base.alpha_composite(core)
-
-
 def build_bg(src, out):
     bg = Image.open(os.path.join(src, 'bg.png')).convert('RGBA')
     shifted = hue(bg)
@@ -109,7 +81,6 @@ def build_bg(src, out):
     # the thin gold divider line across the artwork -> turquoise as well
     line = bg.crop((IN_L, 366, IN_R, 382))
     shifted.paste(hue(line), (IN_L, 366))
-    text_glow(shifted, (775, 322), 'YOHARA', 50)
     shifted.save(os.path.join(out, 'bg.png'), optimize=False)
 
 

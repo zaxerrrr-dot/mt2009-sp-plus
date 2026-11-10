@@ -22,7 +22,7 @@ folderze „swojego” klienta i pobiera tylko ze „swojego” serwera.
 |---|---|---|
 | Plik | `MT2009-Patcher.exe` (+ `.exe.config`) | `MT2009-Yohara-Patcher.exe` (sam exe; `.exe.config` opcjonalny) |
 | Tytuł okna | MT2009 PLUS Patcher | **MT2009 PLUS – Yohara Patcher** |
-| Wygląd | czerwono-pomarańczowy ogień | turkusowa ramka i iskry, napis **YOHARA** pod logo, nagłówek „YOHARA PATCHER”, wiersz „Klient Yohara 3.0.23 · kanał test”, ikona z „Y” |
+| Wygląd | czerwono-pomarańczowy ogień | turkusowa ramka i iskry, nagłówek „YOHARA PATCHER”, wiersz „Klient Yohara 3.0.23 · kanał test”, ikona z „Y” |
 | Serwer | `http://141.94.100.53/patcher/` (patchlist.json, MD5) | `http://141.94.100.53/aktualizacje/yohara/` (channels.json + manifest.json, SHA-256) |
 | Folder | klient 2.x; **odmawia w folderze Yohary** | tylko klient Yohara; **odmawia w folderze 2.x** i w folderze bez klienta |
 | Jedna kopia naraz | po nazwie procesu `MT2009-Patcher` | mutex `Local\MT2009PLUS-Yohara-Patcher-<folder>` (osobno dla każdego folderu) |
