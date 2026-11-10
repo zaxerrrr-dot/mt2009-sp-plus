@@ -154,13 +154,15 @@ quest collect_quest_lv94 begin
 		end
 
 		when 2493.kill begin
-			if pc.count_item(30228) == 0 then
+			-- MT2009_PLUS_BIOLOG_NO_CARRY_CAP_V1: no carry cap - it drops whatever the bag holds.
+			if true then
 				pc.give_item2(30228, 1)
 			end
 		end
 
 		when 2495.kill begin
-			if number(1, 20) == 1 and pc.count_item(30228) == 0 then
+			-- MT2009_PLUS_BIOLOG_NO_CARRY_CAP_V1: no carry cap - it drops whatever the bag holds.
+			if number(1, 20) == 1 then
 				pc.give_item2(30228, 1)
 			end
 		end

@@ -494,6 +494,11 @@ db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 30202 AND (flag 
 # Biologist's level-70 branch, stacks to 200: collect_quest_lv70.quest now
 # drops one whatever the bag holds. Idempotent; never lowers a stack.
 db -e "UPDATE world.item_proto SET flag = flag | 4, stack = GREATEST(stack, 200) WHERE vnum = 30165 AND ((flag & 4) = 0 OR stack < 200);" || fail_step "could not make Konar Zelkova stack" >&2
+# MT2009_PLUS_BIOLOG_NO_CARRY_CAP_V1 (the owner, 10 November 2026): the Biologist's quests drop every specimen
+# and key item at their chance whatever the bag holds (quest/make_herb_lv*, collect_quest_lv30-94), so all of
+# them stack to 200 - the herbs 50701-50706, the specimens 30006 30015 30047 30050 30165-30168 30251 30252
+# 31230-31232 and the keys 30220-30228 (the package left the keys unstackable). Idempotent; never lowers a stack.
+db -e "UPDATE world.item_proto SET flag = flag | 4, stack = GREATEST(stack, 200) WHERE (vnum BETWEEN 50701 AND 50706 OR vnum BETWEEN 30220 AND 30228 OR vnum BETWEEN 30165 AND 30168 OR vnum BETWEEN 31230 AND 31232 OR vnum IN (30006, 30015, 30047, 30050, 30251, 30252)) AND ((flag & 4) = 0 OR stack < 200);" || fail_step "could not make the Biologist's items stack" >&2
 # The skill books (type 17), the Forgetting Book (22) and Kamien Duchowy
 # (50513) stacked to the package's ten; the operator's two hundred (DUDU,
 # 26 September). PROTO_FROM_DB: the db core reads it at boot, and books of
