@@ -742,5 +742,17 @@
   "marker": "MT2009_PLUS_BOT_LOAD_PLACE_V1",
   "old": "\tpTab->lMapIndex = lMapIndex;\n\n\tif (!SECTREE_MANAGER::instance().GetValidLocation(pTab->lMapIndex, pTab->x, pTab->y, lMapIndex, pos, d->GetEmpire()))\n",
   "new": "\tpTab->lMapIndex = lMapIndex;\n\n\t// MT2009_PLUS_BOT_LOAD_PLACE_V1 (server-patches/enginefixes; 6 November 2026, the second bot analysis, item 10):\n\t// a bot saved on a map this core does not host gets its place before the check below - a handover's or a\n\t// companion's spot, else its kingdom's first village when this core hosts it (CPlayerBotManager::\n\t// PlaceLoadingBot; PLAYERBOT_LOAD_PLACE=0 turns it off). The same places the hook further down and\n\t// ENABLE_GOHOME_IF_MAP_NOT_EXIST gave after two SYSERR lines (~5 000 a day on the Yohara test).\n\tif (d->IsBot())\n\t{\n\t\tconst BYTE bMt2009BotEmpire = d->GetAccountTable().bEmpire;\n\t\tlong lMt2009BotMap = pTab->lMapIndex, lMt2009BotX = pTab->x, lMt2009BotY = pTab->y;\n\t\tif (CPlayerBotManager::instance().PlaceLoadingBot(pTab->id, bMt2009BotEmpire, (long) EMPIRE_START_MAP(bMt2009BotEmpire),\n\t\t\t\t(long) EMPIRE_START_X(bMt2009BotEmpire), (long) EMPIRE_START_Y(bMt2009BotEmpire), lMt2009BotMap, lMt2009BotX, lMt2009BotY))\n\t\t{\n\t\t\tpTab->lMapIndex = lMt2009BotMap;\n\t\t\tpTab->x = lMt2009BotX;\n\t\t\tpTab->y = lMt2009BotY;\n\t\t}\n\t}\n\n\tif (!SECTREE_MANAGER::instance().GetValidLocation(pTab->lMapIndex, pTab->x, pTab->y, lMapIndex, pos, d->GetEmpire()))\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_SHOP3_TOKEN_V1 (declare)",
+  "old": "ACMD(do_in_game_mall)\n{\n",
+  "new": "// MT2009_PLUS_SHOP3_TOKEN_V1 (declare) (server-patches/enginefixes): the ItemShop's fresh in-game login token\n// (overlay mt2009_shop3_token.cpp).\nbool Mt2009Shop3Token(unsigned int pid, unsigned int aid, char* out, size_t outLen);\n\nACMD(do_in_game_mall)\n{\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_SHOP3_TOKEN_V1 (link)",
+  "old": "\t\tsnprintf(buf, sizeof(buf), \"mall http://%s/ishop?pid=%u&c=%s&sid=%d&sas=%s\",\n\t\t\t\tg_strWebMallURL.c_str(), ch->GetPlayerID(), country_code, g_server_id, sas);\n",
+  "new": "\t\t// MT2009_PLUS_SHOP3_TOKEN_V1 (link) (server-patches/enginefixes): every answer carries a fresh token of the\n\t\t// account and character (aid, ts, n, tok - HMAC-SHA256, 120 s, single use; shop3 game_login.php). The shop\n\t\t// signs in as exactly that account on every open, whatever session the client's browser still has.\n\t\tchar shop3Token[256];\n\t\tif (!Mt2009Shop3Token(ch->GetPlayerID(), ch->GetAID(), shop3Token, sizeof(shop3Token)))\n\t\t\tshop3Token[0] = '\\0';\n\n\t\tsnprintf(buf, sizeof(buf), \"mall http://%s/ishop?pid=%u&c=%s&sid=%d&sas=%s%s\",\n\t\t\t\tg_strWebMallURL.c_str(), ch->GetPlayerID(), country_code, g_server_id, sas, shop3Token);\n"
  }
 ]

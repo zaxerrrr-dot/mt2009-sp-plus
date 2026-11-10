@@ -380,6 +380,9 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-chest-failed" => "Zakup się nie udał - nic nie zostało pobrane. Spróbuj jeszcze raz.",
 	"mt-set-max" => "pełny bonus (%d części): %s",
 	"mt-buy-token" => "To okno jest już nieaktualne - otwórz przedmiot jeszcze raz i kup ponownie.",
+	// MT2009_PLUS_SHOP3_TOKEN_V1: a link from the game that did not sign in (pages/shop/reopen.php)
+	"mt-reopen-title" => "Otwórz sklep ponownie z gry",
+	"mt-reopen-text" => "Ten link do sklepu jest już nieaktualny. Zamknij sklep i otwórz go jeszcze raz w grze (Shift+F12 albo przycisk ItemShop) - sklep sam zaloguje Cię na konto, na którym właśnie grasz.",
 ]);
 
 ?>

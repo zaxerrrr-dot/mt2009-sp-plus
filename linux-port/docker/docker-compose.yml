@@ -255,6 +255,9 @@ services:
       M2_MAX_LEVEL: "${M2_MAX_LEVEL:-120}"
       M2_TEST_SERVER: "${M2_TEST_SERVER:-0}"
       M2_MALL_URL: "${M2_MALL_URL:-${M2_PUBLIC_ADDRESS:-127.0.0.1}:${M2_ITEMSHOP_PUBLIC_PORT:-7791}}"
+      # MT2009_PLUS_SHOP3_TOKEN_V1: the key of the ItemShop's in-game login token (the itemshop service reads the
+      # same); empty = derived from M2_DB_PASSWORD, which both services have.
+      M2_SHOP3_TOKEN_SECRET: "${M2_SHOP3_TOKEN_SECRET:-}"
       # Where a GM's "Podglad" (the player window's preview) opens <url>players/<pid>:
       # the classic panel's character card, which the package pointed at its
       # author's own panel.mt2009.pl (playerbotify.py, apply_gm_panel_url).
@@ -729,6 +732,11 @@ services:
       # The r40250 core signs the shop link with "GF9001"; only a core built
       # with another key needs this changed.
       M2_MALL_SAS_KEY: "${M2_MALL_SAS_KEY:-GF9001}"
+      # MT2009_PLUS_SHOP3_TOKEN_V1: the game's ItemShop link carries a fresh HMAC token (120 s, single use) of the
+      # account in game - the key as the game service has it. The old static md5 link alone (sas, valid for ever)
+      # is refused unless M2_SHOP3_LEGACY_SAS=1 (only for a game core built without the token).
+      M2_SHOP3_TOKEN_SECRET: "${M2_SHOP3_TOKEN_SECRET:-}"
+      M2_SHOP3_LEGACY_SAS: "${M2_SHOP3_LEGACY_SAS:-0}"
       # MT2009_PLUS_LANGUAGE_DEFAULT_V1: the shop's language for a visitor who has not picked one (m2lang cookie, the
       # character's own game language).
       M2_DEFAULT_LANGUAGE: "${M2_DEFAULT_LANGUAGE:-pl}"

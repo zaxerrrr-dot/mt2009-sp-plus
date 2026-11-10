@@ -6,11 +6,15 @@
 	session_set_cookie_params(['path' => '/shop3/', 'httponly' => true]);
 	session_start();
 	
-	header('Cache-control: private');
+	// MT2009_PLUS_SHOP3_TOKEN_V1: no page of the shop is kept by the browser - each one is one account's (the client's
+	// embedded browser served "private" pages of the account it had before).
+	header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0, private');
+	header('Pragma: no-cache');
 	include 'config.php';
 	include 'include/functions/items.php';
 	
 	include 'include/functions/language.php';
+	include 'include/functions/game_login.php';	// MT2009_PLUS_SHOP3_TOKEN_V1
 	
 	$current_page = isset($_GET['p']) ? $_GET['p'] : 'home';
 	
@@ -98,8 +102,10 @@
 	$wheel_lv3_time = $settingsDB['wheel_lv3_time']['value'];
 	$wheel_web = $settingsDB['wheel_web']['value'];
 
-	if(isset($_GET['pid']) && isset($_GET['sas']))
-		$account->AutoLoginShop($_GET['pid'], $_GET['sas']);
+	// MT2009_PLUS_SHOP3_TOKEN_V1: a link from the game (pid + its fresh token) always signs in as its account and
+	// character in a new session, or logs the old one out and asks to open the shop again from the game - never the
+	// account the browser had before (include/functions/game_login.php).
+	shop3_game_login($account, $player);
 	
 	// MT2009_PLUS_ITEMSHOP_V3_V1: the package's PayPal IPN and e-payouts callbacks (?p=paypal,
 	// ?p=epayouts) are gone - a singleplayer server sells nothing for money, and both credited
@@ -157,7 +163,7 @@
 			$shop->stopHappyHour();
 		}
 
-		// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the in-game link (Account::AutoLoginShop) - its name for the
+		// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the in-game link (game_login.php) - its name for the
 		// purchase box, and the wear filter: a man does not see women's costumes, a class no item of another
 		// class only (the item's antiflags; races 0..8: warrior, ninja, sura, shaman, then the other sex, lycan).
 		$shop_char = null;

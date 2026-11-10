@@ -9,8 +9,8 @@
 # and the ItemShop storage (player.item_award), in the look of the big servers' shop (1016 x 655, its own
 # CSS and scripts; the wheel over the page scrolls it - exe CWebBrowser WebBrowser_ForwardMouseWheel).
 #
-# The link has to be signed by the server for the account (sas = md5(pid . account id . key)), and
-# only the server knows the account id: Open() asks it with /in_game_mall, the same command the old
+# The link has to be signed by the server for the account (since MT2009_PLUS_SHOP3_TOKEN_V1 a fresh HMAC token of the
+# account and character on every open - _ShopUrl), and only the server knows the account id: Open() asks it with /in_game_mall, the same command the old
 # web shop used, and game.py hands the "mall <url>" answer here while the request is fresh. The
 # answer names /ishop (the old shop's entry, cmd_general.cpp ACMD(do_in_game_mall)); this window
 # opens /shop3/ with the same pid and sas, which the new shop checks the same way.
@@ -58,13 +58,21 @@ _TakeWebPageCommand = getattr(app, 'TakeWebPageCommand', None)
 
 def _ShopUrl(url):
 	# "http://host:port/ishop?pid=..&c=..&sid=..&sas=.." -> "http://host:port/shop3/?pid=..&sas=.."
+	# MT2009_PLUS_SHOP3_TOKEN_V1: the server's answer carries a fresh login token of the account and character in game
+	# (aid, ts, n, tok - HMAC, 120 s, single use; server-patches/enginefixes, overlay mt2009_shop3_token.cpp). The shop
+	# signs in as exactly that account on every open and drops whatever session the browser kept (another account after
+	# a switch at the login screen). With the token the old static md5 (sas, valid for ever) stays out of the browser's
+	# history; a link without one (an older core) goes on unchanged.
 	base, sep, query = url.partition('?')
 	if not sep:
 		return None
 	i = base.rfind('/ishop')
 	if i < 0:
 		return None
-	return base[:i] + '/shop3/?' + query
+	parts = [p for p in query.split('&') if p]
+	if [p for p in parts if p.startswith('tok=')]:
+		parts = [p for p in parts if not p.startswith('sas=')]
+	return base[:i] + '/shop3/?' + '&'.join(parts)
 
 
 class ItemShopV3Window(ui.BoardWithTitleBar):
