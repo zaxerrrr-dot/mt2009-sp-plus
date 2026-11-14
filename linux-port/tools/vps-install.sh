@@ -868,6 +868,46 @@ cmd_check() {
     return 0
 }
 
+# MT2009_PLUS_YOHARA_UPGRADE_V1 (14 November 2026): this 2.x server up to the
+# newest Yohara with a supporter's code (our Discord bot: !kod). The hub's own
+# bootstrap kod.sh does it - the same command the bot sends: it enters the code
+# in the supporters' hub (this server's id and key go to .env), downloads the
+# package from the hub, checks its SHA-256 and hands it to `update' here
+# (M2_UPDATE_MANIFEST_FILE / M2_UPDATE_ZIP). Characters and the database stay.
+# A copy of the database first: `update' replaces files, it does not undo a
+# new major version.
+cmd_yohara() {
+    check_tree
+    _code=$(printf '%s' "${1:-}" | tr 'a-z' 'A-Z' | tr -cd 'A-Z0-9')
+    [ -n "$_code" ] || die "podaj kod wspierajacego: sudo sh $SELF yohara TWOJ-KOD (kod przysyla bot na Discordzie: !kod; Yohara jest dla wspierajacych projekt - https://buycoffee.to/mt2009plus)"
+    [ -f "$ENV_FILE" ] || die "nie ma linux-port/docker/.env - najpierw: sh $SELF install"
+    _hub=$(sed -n 's/^M2_SUPPORTER_HUB=//p' "$ENV_FILE" 2>/dev/null | head -n 1 | tr -d '\r"')
+    case "$_hub" in https://*) ;; *) _hub=https://hub.metin2sp.pl ;; esac
+    _hub=${_hub%/}
+    _kod="$ROOT/.yohara-kod.sh"
+    say "Pobieram polecenie aktualizacji z hubu wspierajacych ($_hub/upd/kod.sh)..."
+    if have curl; then curl -fsSL "$_hub/upd/kod.sh" -o "$_kod"
+    elif have wget; then wget -qO "$_kod" "$_hub/upd/kod.sh"
+    else die "potrzebny curl albo wget (apt-get install -y curl)"; fi || { rm -f "$_kod"; die "hub wspierajacych nie odpowiada - serwer dziala dalej bez zmian"; }
+    if have docker && db_answers; then
+        _bk="$ROOT/backups/db-przed-yohara-$(date +%Y%m%d-%H%M%S).sql.gz"
+        mkdir -p "$ROOT/backups"
+        say "Kopia bazy przed Yohara: $_bk"
+        ( cd "$COMPOSE_DIR" && docker compose exec -T mariadb sh -c 'MYSQL_PWD="$MARIADB_ROOT_PASSWORD" exec mariadb-dump -uroot --all-databases --single-transaction --routines' ) | gzip > "$_bk"
+        if [ "$(gzip -dc "$_bk" 2>/dev/null | grep -c '^CREATE TABLE')" -lt 10 ]; then
+            rm -f "$_kod" "$_bk"
+            die "kopia bazy sie nie udala - niczego nie zmieniono (sprawdz: sh $SELF status)"
+        fi
+        chmod 600 "$_bk"
+    else
+        say "Baza nie odpowiada (serwer zatrzymany?) - kopia bazy pominieta."
+    fi
+    M2_SUPPORTER_HUB="$_hub" sh "$_kod" "$_code" "$ROOT"
+    _rc=$?
+    rm -f "$_kod"
+    return $_rc
+}
+
 usage() {
     cat <<'EOF'
 uzycie: sudo sh linux-port/tools/vps-install.sh [polecenie] [opcje]
@@ -877,6 +917,8 @@ uzycie: sudo sh linux-port/tools/vps-install.sh [polecenie] [opcje]
   status       czy budowa trwa, skonczyla sie albo nie udala (i koniec logu)
   passwords    hasla kont gry z /root/metin2-accounts.txt
   update       nowa wersja z GitHuba (update.sh run) w tle
+  yohara KOD   aktualizacja do Yohary kodem wspierajacego (bot na Discordzie:
+               !kod; Yohara jest dla wspierajacych projekt, dowolna kwota)
   logs [N]     log instalacji i ostatnie N linii logow serwera
   check        tylko sprawdza maszyne, niczego nie zmienia
   add-account LOGIN [OPIS]   nowe konto gry z losowym haslem (dla znajomego)
@@ -964,6 +1006,7 @@ case "$_cmd" in
     status)      cmd_status ;;
     passwords)   cmd_passwords ;;
     update)      cmd_update ;;
+    yohara)      cmd_yohara "$P1" ;;
     logs)        cmd_logs "${P1:-200}" ;;
     check)       cmd_check ;;
     add-account) cmd_add_account "$P1" "$P2" ;;

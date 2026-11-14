@@ -17,6 +17,31 @@ every version here.
 
 ---
 
+## 2.43.0 — 2026-11-14 — Aktualizuj do Yohary: nowy wygląd launchera
+
+Nie wymaga nowego klienta – wystarczy klient **2.0.71**. Zmienia się tylko launcher; serwer, boty i baza zostają bez zmian.
+
+### Nowy wygląd launchera
+- Tło z Yohary i nowe logo **MT2009 SINGLEPLAYER PLUS** w nagłówku.
+- Na pulpicie duży przycisk **AKTUALIZUJ DO YOHARY**.
+
+### Aktualizacja do Yohary kodem wspierającego
+Yohara jest na razie dostępna tylko dla wspierających projekt – za dowolną kwotę. Kod wspierającego przysyła bot na Discordzie (napisz do niego `!kod`).
+
+- Kliknij **AKTUALIZUJ DO YOHARY**, wpisz kod i potwierdź.
+- Launcher sprawdza kod w hubie wspierających i od razu mówi, jeśli coś jest nie tak: zły kod, kod nieaktywny, oba miejsca kodu zajęte (jeden kod działa na 2 instalacjach serwera – zwalnia je `!kod reset`) albo brak jeszcze Yohary na Twoim kanale (wtedy serwer zostaje na 2.x i dalej dostaje zwykłe aktualizacje, a kod jest zapamiętany).
+- Przed aktualizacją launcher zapisuje kopię bazy świata (`backups\db-backup-…-przed-yohara.zip`) i kopię podmienianych plików (`backups\update-…`).
+- Najnowsza Yohara pobiera się z hubu wspierających (suma SHA-256 sprawdzana), pliki serwera są podmieniane, serwer przebudowuje się, a launcher uruchamia się ponownie już w wersji Yohara. Postacie, przedmioty i boty zostają.
+- Gdy pobieranie się nie uda, nic nie jest zmieniane – wystarczy kliknąć przycisk jeszcze raz (bez kodu).
+
+Kolejne wersje Yohary launcher pobiera już sam, bez wpisywania kodu. Do gry na Yoharze potrzebny jest klient Yohara.
+
+W menu tekstowym launchera to opcja **43**.
+
+### Serwer na VPS
+- W oknie VPS launchera nowy przycisk **AKTUALIZUJ VPS DO YOHARY** – serwer na VPS sam wpisuje kod, pobiera Yoharę i przebudowuje się.
+- Bez launchera, na VPS w folderze serwera: `sudo sh linux-port/tools/vps-install.sh yohara TWÓJ-KOD` (najpierw kopia bazy do `backups/`).
+
 ## 2.42.0 — 2026-11-06 — boty szybciej się rozwijają, mniej śmierci, rynek z sensownymi cenami
 
 Nie wymaga nowego klienta – wystarczy klient **2.0.71**.

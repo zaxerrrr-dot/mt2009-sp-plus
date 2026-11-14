@@ -1,8 +1,12 @@
 ﻿[CmdletBinding()]
 param(
-    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'RepairClientExe', 'Diagnose', 'Logs', 'SendLogs', 'Report', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin', 'VpsConnect', 'VpsCheck', 'VpsInstall', 'VpsUpdate', 'VpsStatus', 'VpsPanel', 'VpsPanelClose', 'VpsLogs', 'VpsPasswords', 'VpsClient', 'VpsInvite', 'DockerRam', 'RestartDockerWsl')]
+    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'RepairClientExe', 'Diagnose', 'Logs', 'SendLogs', 'Report', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin', 'VpsConnect', 'VpsCheck', 'VpsInstall', 'VpsUpdate', 'VpsStatus', 'VpsPanel', 'VpsPanelClose', 'VpsLogs', 'VpsPasswords', 'VpsClient', 'VpsInvite', 'DockerRam', 'RestartDockerWsl', 'UpdateYohara', 'SupporterCode', 'VpsYohara')]
     [string]$Action = 'Menu',
     [string]$Manifest = '',
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: UpdateYohara / SupporterCode / VpsYohara -
+    # the supporter's code (our Discord bot: !kod); asked for when empty.
+    # UpdateYohara without a code uses the code this install already has.
+    [string]$SupporterCode = '',
     [int]$BotCount = -1,
     # The spawn plan beside the count (SetBots): -1 leaves .env as it is.
     [int]$SpawnMinutes = -1,
@@ -959,6 +963,120 @@ function Update-Server {
     Set-Content -LiteralPath $rebuildMarkerPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding UTF8
     Rebuild-Server
     Write-Host "Serwer działa w wersji $($result.Version)." -ForegroundColor Green
+}
+
+# MT2009_PLUS_YOHARA_UPGRADE_V1 (14 November 2026): this 2.x server up to the
+# newest Yohara with a supporter's code. The code is entered in the hub
+# (Register-M2SupporterCode: the install id and key go to .env), the package
+# comes from the supporters' hub on the code's channel (a signed link, SHA-256
+# checked) and is applied by the same Update-Server as every update: the
+# replaced files are copied to backups\update-<time> first, the characters and
+# the database stay, the server is rebuilt. Before that the world's database is
+# saved to backups\db-backup-<time>-przed-yohara.zip (BACKUP DB / RESTORE DB
+# take it back) - a new major version is not undone by putting files back.
+function Get-YoharaSupporterCode {
+    $code = $SupporterCode
+    if (-not $code -and $Action -eq 'Menu') {
+        Write-Host 'Yohara jest obecnie dostępna tylko dla wspierających projekt - za dowolną kwotę: https://buycoffee.to/mt2009plus' -ForegroundColor Cyan
+        Write-Host 'Kod wspierającego przysyła bot na Discordzie (napisz do niego: !kod).' -ForegroundColor Gray
+        $code = Read-Host 'Kod wspierającego (Enter = kod, który ta instalacja już ma)'
+    }
+    return ([string]$code).Trim()
+}
+
+function Backup-DatabaseBeforeYohara {
+    # The world saved before the jump to a new major version. No database yet
+    # (a fresh install never started) is nothing to save; a backup that fails
+    # stops the upgrade before anything is downloaded.
+    if (-not (Test-M2DockerRunning)) {
+        Write-Host 'Uruchamiam Docker Desktop, aby zapisać kopię bazy przed aktualizacją...' -ForegroundColor Cyan
+        Start-Docker
+    }
+    $target = Get-CurrentInstallTargetVolume
+    if (-not $target -or -not (Test-M2VolumeInitialized -Volume $target)) {
+        Write-Host 'Ta instalacja nie ma jeszcze bazy świata - kopia bazy nie jest potrzebna.' -ForegroundColor Gray
+        return $null
+    }
+    Write-Host 'Zatrzymuję serwer i zapisuję kopię bazy świata (postacie, przedmioty, boty) przed Yoharą...' -ForegroundColor Cyan
+    Stop-Server
+    try { $result = New-M2DatabaseBackup -Volume $target -BackupRoot (Join-Path $serverRoot 'backups') -Label 'przed-yohara' }
+    catch { throw ('Kopia bazy przed aktualizacją do Yohary nie powiodła się - niczego nie pobrano ani nie zmieniono. Szczegóły: ' + $_.Exception.Message) }
+    Write-Host ("Kopia bazy: {0} ({1} postaci)." -f $result.Zip, $result.Players) -ForegroundColor Green
+    return $result
+}
+
+function Update-ServerToYohara {
+    $code = Get-YoharaSupporterCode
+    if ($code) {
+        Write-Phase 'kod wspierającego'
+        Write-Host 'Sprawdzam kod wspierającego w hubie...' -ForegroundColor Cyan
+        $registered = Register-M2SupporterCode -Code $code -ServerRoot $serverRoot
+        Write-Host $registered.Message -ForegroundColor Green
+    }
+    elseif (-not (Get-M2SupporterSettings -ServerRoot $serverRoot).Enabled) {
+        throw 'Ta instalacja nie ma jeszcze kodu wspierającego. Kliknij AKTUALIZUJ DO YOHARY i wpisz kod (bot na Discordzie: !kod).'
+    }
+    $remote = Get-M2SupporterManifest
+    $component = Get-ManifestComponent -RemoteManifest $remote -Name 'server'
+    if (-not $component) {
+        Write-Host ([string]$remote.statusMessage) -ForegroundColor Yellow
+        Write-Host 'Kod jest zapisany w tej instalacji - gdy Yohara pojawi się na Twoim kanale, kliknij AKTUALIZUJ DO YOHARY jeszcze raz (kod nie będzie już potrzebny). Do tego czasu serwer zostaje na 2.x i dostaje zwykłe aktualizacje.' -ForegroundColor Yellow
+        return
+    }
+    if ((Compare-M2Version -Left ([string]$component.version) -Right '3') -lt 0) {
+        throw ('Hub wspierających podał wersję {0}, a to nie jest Yohara. Nic nie zostało zmienione - napisz na Discordzie.' -f $component.version)
+    }
+    $state = Read-State
+    if (-not (Test-InstalledVersion -Installed ([string]$state.server) -Available ([string]$component.version))) {
+        Write-Host ('Yohara {0} z hubu wspierających ({1} MB). Pliki serwera zostaną podmienione (kopia w folderze backups), postacie i baza zostają.' -f $component.version, [int]([double]$component.size / 1MB)) -ForegroundColor Cyan
+        if (-not (Confirm-Operation ('Zaktualizować serwer do Yohary {0}?' -f $component.version))) { Write-Host 'Anulowano.' -ForegroundColor Yellow; return }
+        Write-Phase 'kopia bazy przed Yohara'
+        [void](Backup-DatabaseBeforeYohara)
+    }
+    Write-Phase 'aktualizacja do Yohary'
+    Show-UpdateStatus -RemoteManifest $remote
+    $versionPath = Join-Path $serverRoot 'VERSION'
+    $before = (Get-Content -LiteralPath $versionPath -Raw).Trim()
+    try { Update-Server -RemoteManifest $remote }
+    catch {
+        # A failed download, a refused link or a wrong SHA-256 come before any
+        # file is swapped: say so in words, with the hub's reason. A failure of
+        # the build (files already Yohara) keeps its own message and guidance.
+        $after = (Get-Content -LiteralPath $versionPath -Raw).Trim()
+        if ($after -eq $before) {
+            throw ('Aktualizacja do Yohary nie powiodła się przed podmianą plików - serwer zostaje na wersji {0}, nic nie zostało zmienione. Kliknij AKTUALIZUJ DO YOHARY jeszcze raz (kod nie jest już potrzebny). Powód: {1}' -f $before, $_.Exception.Message)
+        }
+        throw
+    }
+    if ([string](Read-State).server -like '3.*') {
+        Write-Host 'Gotowe - serwer ma Yoharę. Kolejne wersje Yohary pobierze launcher sam (AKTUALIZUJ), bez ponownego wpisywania kodu.' -ForegroundColor Green
+        Write-Host 'Do gry na Yoharze potrzebny jest klient Yohara (MT2009-Yohara-Patcher.exe doprowadzi go do najnowszej wersji).' -ForegroundColor Cyan
+    }
+}
+
+function Update-VpsToYoharaAction {
+    # The VPS in the launcher's VPS window up to Yohara: the hub's own kod.sh
+    # run there as root, with the code. It activates the code for the VPS (its
+    # own install id and slot), checks the package and hands it to the VPS's
+    # installed updater - the same as the one command the bot sends.
+    $state = Get-VpsStateForAction
+    $code = (Get-YoharaSupporterCode).ToUpperInvariant() -replace '[^A-Z0-9]', ''
+    if ($code.Length -lt 12 -or $code.Length -gt 32) { throw 'Podaj kod wspierającego (np. ABCD-EFGH-JKLM-NPQR) - przysyła go bot na Discordzie: !kod.' }
+    if (-not (Confirm-Operation ('Zaktualizować serwer na VPS {0} do Yohary kodem wspierającego? Postacie i baza zostają, serwer zostanie przebudowany.' -f $state.host))) { return }
+    $hub = (Get-M2SupporterSettings -ServerRoot $serverRoot).Hub
+    $script = $hub + '/upd/kod.sh'
+    # The VPS's own vps-install.sh yohara (2.43.0 and later: a database copy
+    # first) when it has one, the hub's kod.sh straight away when it is older.
+    $installer = '{0}/linux-port/tools/vps-install.sh' -f $state.remoteDir
+    $command = ("sh -c 'if grep -q cmd_yohara {3} 2>/dev/null; then sh {3} yohara {1}; else (curl -fsSL {0} || wget -qO- {0}) > /tmp/mt2009-kod.sh && sh /tmp/mt2009-kod.sh {1} {2}; rc=`$?; rm -f /tmp/mt2009-kod.sh; exit `$rc; fi'" -f $script, $code, $state.remoteDir, $installer)
+    Write-Phase 'aktualizacja VPS do Yohary'
+    Write-Host ('VPS {0}: wpisuję kod i aktualizuję do Yohary (to samo co polecenie od bota: curl -fsSL {1} | sudo sh -s -- KOD)...' -f $state.host, $script)
+    $run = Invoke-M2Vps -State $state -Sudo -Command $command -Stream -TimeoutSeconds 0
+    if ($run.ExitCode -ne 0) { throw ('Aktualizacja VPS do Yohary nie powiodła się (kod {0}) - powód jest w logu wyżej. Serwer na VPS działa dalej na swojej wersji.' -f $run.ExitCode) }
+    $final = Get-M2VpsStatus -State $state
+    $state.lastVersion = [string]$final.Version
+    Save-M2VpsState -ServerRoot $serverRoot -State $state
+    Write-Host ('VPS {0}: wersja {1}.' -f $state.host, $final.Version) -ForegroundColor Green
 }
 
 function Assert-ClientNotRunning {
@@ -2974,6 +3092,9 @@ function Invoke-Action {
         }
         'UpdateServer' {
             $remote = Get-M2UpdateManifest -Source (Get-ManifestSource $config)
+            # MT2009_PLUS_YOHARA_UPGRADE_V1: a 2.x install with a supporter's code
+            # whose update is Yohara goes the Yohara way (the database saved first).
+            if ((Get-M2UpdateSource) -eq 'hub' -and [string](Read-State).server -like '2.*') { Update-ServerToYohara; break }
             Show-UpdateStatus -RemoteManifest $remote
             Update-Server -RemoteManifest $remote
         }
@@ -2982,12 +3103,18 @@ function Invoke-Action {
             Show-UpdateStatus -RemoteManifest $remote
             Update-Client -RemoteManifest $remote -Config $config
         }
+        # MT2009_PLUS_YOHARA_UPGRADE_V1: SupporterCode is the name kod.ps1 (the
+        # hub's bootstrap) looks for in a launcher that knows the code.
+        'UpdateYohara' { Update-ServerToYohara }
+        'SupporterCode' { Update-ServerToYohara }
+        'VpsYohara' { Update-VpsToYoharaAction }
         'RepairClientExe' {
             $remote = Get-M2UpdateManifest -Source (Get-ManifestSource $config)
             Repair-ClientExe -RemoteManifest $remote -Config $config
         }
         'UpdateAll' {
             $remote = Get-M2UpdateManifest -Source (Get-ManifestSource $config)
+            if ((Get-M2UpdateSource) -eq 'hub' -and [string](Read-State).server -like '2.*') { Update-ServerToYohara; break }
             Show-UpdateStatus -RemoteManifest $remote
             $clientComponent = Get-ManifestComponent -RemoteManifest $remote -Name 'client'
             $hasPatcher = [bool](Get-M2ClientPatcher -ClientFolder (Get-M2ClientFolder -Config $config))
@@ -3104,6 +3231,10 @@ function Show-Menu {
             Write-Host ' 41. Zgłoś błąd, propozycję albo pytanie (do autora, z logami)'
         }
         Write-Host ' 42. Pamięć RAM Dockera (sprawdź; ustaw .wslconfig, gdy jest jej za mało)'
+        Write-Host ' 43. AKTUALIZUJ DO YOHARY (kod wspierającego)' -ForegroundColor Yellow
+        if (Get-Command Install-M2Vps -ErrorAction SilentlyContinue) {
+            Write-Host ' 44. VPS: aktualizuj serwer na VPS do Yohary (kod wspierającego)'
+        }
         Write-Host '  0. Wyjście'
         Write-Host ''
         $choice = Read-Host 'Wybierz opcję'
@@ -3141,13 +3272,15 @@ function Show-Menu {
             '40' { 'VpsInvite' }
             '41' { 'Report' }
             '42' { 'DockerRam' }
+            '43' { 'UpdateYohara' }
+            '44' { 'VpsYohara' }
             '0' { return }
             default { '' }
         }
         if (-not $selected) { continue }
         try { Invoke-Action -SelectedAction $selected }
         catch { Write-Host "BŁĄD: $($_.Exception.Message)" -ForegroundColor Red }
-        if ($selected -in @('DockerRam', 'Start', 'StartDocker', 'UpdateServer', 'UpdateAll')) { $memoryNotice = Get-DockerMemoryAdviceSafe }
+        if ($selected -in @('DockerRam', 'Start', 'StartDocker', 'UpdateServer', 'UpdateAll', 'UpdateYohara')) { $memoryNotice = Get-DockerMemoryAdviceSafe }
         $script:dockerMemoryChecked = $false
         Write-Host ''
         Read-Host 'Naciśnij Enter, aby wrócić do menu' | Out-Null

@@ -310,6 +310,7 @@ $script:Strings = @{
         dbAccess     = 'DANE DO BAZY (NAVICAT)'
         gmPanel      = 'PANEL GM F9 (TEST)'
         updateClient = 'AKTUALIZUJ KLIENTA'
+        yoharaUpgrade = 'AKTUALIZUJ DO YOHARY'
         dbAccessTitle = 'Dane do polaczenia z baza'
         dbAccessHint = 'Wpisz te dane w Navicat, HeidiSQL albo DBeaver (typ MySQL/MariaDB, polaczenie TCP). Konto root widzi wszystko, konto gry tylko bazy gry. Baza slucha wylacznie na tym komputerze. Jesli baza odrzuca haslo, kliknij NAPRAW DOSTEP DO BAZY - ustawia oba konta na hasla z pliku .env. Nie wklejaj tych hasel na Discordzie.'
         dbAccessProtoNote = 'Na plikach 2.x przedmioty i potwory (item_proto, mob_proto) sa w bazie world; player.item_proto i player.mob_proto to tylko widoki. Zmiany w world zostaja po restarcie serwera.'
@@ -390,6 +391,7 @@ $script:Strings = @{
         dbAccess     = 'DATABASE LOGIN (NAVICAT)'
         gmPanel      = 'GM PANEL F9 (BETA)'
         updateClient = 'UPDATE CLIENT'
+        yoharaUpgrade = 'UPGRADE TO YOHARA'
         dbAccessTitle = 'Database connection details'
         dbAccessHint = 'Enter these in Navicat, HeidiSQL or DBeaver (MySQL/MariaDB, TCP connection). root sees everything, the game account only the game databases. The database listens on this computer only. If it rejects the password, click REPAIR DATABASE ACCESS - it sets both accounts to the passwords in .env. Never paste these passwords on Discord.'
         dbAccessProtoNote = 'On the 2.x files items and monsters (item_proto, mob_proto) live in the world database; player.item_proto and player.mob_proto are views. Changes in world survive a server restart.'
@@ -2359,7 +2361,7 @@ function Test-DockerMemoryCheckWanted {
     # The actions that build the server: an update, and GRAJ while a build
     # is outstanding.
     param([Parameter(Mandatory = $true)][string]$Action)
-    if ($Action -eq 'UpdateServer' -or $Action -eq 'UpdateAll') { return $true }
+    if ($Action -eq 'UpdateServer' -or $Action -eq 'UpdateAll' -or $Action -eq 'UpdateYohara') { return $true }
     if ($Action -eq 'Start') { return (Test-Path -LiteralPath (Join-Path $root '.m2launcher-rebuild-pending') -PathType Leaf) }
     return $false
 }
@@ -2810,8 +2812,12 @@ if (Test-Path -LiteralPath $vpsModulePath -PathType Leaf) {
 # somebody who cannot read the window needs to find it without reading anything.
 $languageButton = New-Button (T 'language') 508 702 218 28 ([Drawing.Color]::FromArgb(60, 70, 95))
 $languageButton.Add_Click({ Switch-LauncherLanguage })
+# MT2009_PLUS_YOHARA_UPGRADE_V1: AKTUALIZUJ DO YOHARY (Show-YoharaUpgradeDialog).
+# In the plain window a small button beside the language; the layout makes it
+# the big one on the home page.
+$yoharaButton = New-Button (T 'yoharaUpgrade') 262 702 230 28 ([Drawing.Color]::FromArgb(184, 134, 46))
 
-foreach ($button in @($installButton, $playButton, $dockerButton, $stopButton, $panelButton, $clientButton, $updateButton, $bundleButton, $diagnosticsButton, $openLogButton, $folderButton, $botCountButton, $importDbButton, $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton)) {
+foreach ($button in @($installButton, $playButton, $dockerButton, $stopButton, $panelButton, $clientButton, $updateButton, $bundleButton, $diagnosticsButton, $openLogButton, $folderButton, $botCountButton, $importDbButton, $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton, $yoharaButton)) {
     $script:form.Controls.Add($button)
 }
 if ($coopButton) { $script:form.Controls.Add($coopButton) }
@@ -3657,7 +3663,8 @@ function Show-VpsDialog {
         @('connect', '1. POŁĄCZ (KLUCZ SSH)', 0, 0, '#2D6EBE'), @('check', 'SPRAWDŹ VPS', 1, 0, ''), @('install', '2. ZAINSTALUJ NA VPS', 2, 0, '#1B9658'),
         @('update', 'AKTUALIZUJ VPS', 0, 1, ''), @('status', 'STAN VPS', 1, 1, ''), @('logs', 'LOGI VPS', 2, 1, ''),
         @('panel', 'OTWÓRZ PANEL (TUNEL SSH)', 0, 2, '#B47D23'), @('tunnelClose', 'ZAMKNIJ TUNEL', 1, 2, ''), @('passwords', 'HASŁA KONT', 2, 2, ''),
-        @('client', 'DOPISZ DO KLIENTA GRY', 0, 3, ''), @('invite', 'KOD DLA ZNAJOMEGO (COOP)', 1, 3, '#28788F'))
+        @('client', 'DOPISZ DO KLIENTA GRY', 0, 3, ''), @('invite', 'KOD DLA ZNAJOMEGO (COOP)', 1, 3, '#28788F'),
+        @('yohara', 'AKTUALIZUJ VPS DO YOHARY', 2, 3, '#B8862E'))
     foreach ($spec in $grid) {
         $button = [Windows.Forms.Button]::new()
         $button.Text = $spec[1]
@@ -3780,6 +3787,16 @@ function Show-VpsDialog {
         if ($answer -ne [Windows.Forms.DialogResult]::Yes) { return }
         $dialog.Close()
         Start-LauncherAction -Action 'VpsUpdate' -Yes
+    })
+
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: the VPS up to Yohara with a supporter's code.
+    $buttons['yohara'].Add_Click({
+        $vps = & $saveFields
+        if (-not $vps) { return }
+        $answer = Show-YoharaUpgradeDialog -ForVps -VpsHost $vps.host
+        if ([string]$answer.Result -ne 'go') { return }
+        $dialog.Close()
+        Start-LauncherAction -Action 'VpsYohara' -Yes -ExtraArgs @('-SupporterCode', [string]$answer.Code)
     })
 
     $buttons['status'].Add_Click({
@@ -3964,6 +3981,262 @@ $panelButton.Add_Click({
         Start-Process $url
     }
 })
+# MT2009_PLUS_YOHARA_UPGRADE_V1 (14 November 2026): AKTUALIZUJ DO YOHARY. The
+# window asks for the supporter's code, says that Yohara is for the project's
+# supporters (any amount) and links the one support page. The code is checked
+# in the supporters' hub right here, so a wrong or used-up code is answered in
+# the window and the player can correct it; the upgrade itself then runs as the
+# action UpdateYohara (Metin2-Launcher.ps1), with its progress in the log.
+# -ForVps only collects the code: the VPS enters it in the hub itself, as its
+# own install (its own slot).
+function Get-YoharaText([string]$Pl, [string]$En) {
+    if ($script:Lang -eq 'en') { return $En }
+    return $Pl
+}
+
+function Show-YoharaUpgradeDialog {
+    param([switch]$ForVps, [string]$VpsHost = '')
+    $gold = [Drawing.Color]::FromArgb(231, 191, 115)
+    $text = [Drawing.Color]::FromArgb(244, 239, 229)
+    $muted = [Drawing.Color]::FromArgb(178, 185, 185)
+    $dialog = [Windows.Forms.Form]::new()
+    $dialog.Text = Get-YoharaText 'Aktualizuj do Yohary' 'Upgrade to Yohara'
+    $dialog.ClientSize = [Drawing.Size]::new(600, 600)
+    $dialog.StartPosition = 'CenterParent'
+    $dialog.FormBorderStyle = 'FixedDialog'
+    $dialog.MaximizeBox = $false
+    $dialog.MinimizeBox = $false
+    $dialog.BackColor = [Drawing.Color]::FromArgb(16, 22, 26)
+    $dialog.ForeColor = $text
+    $dialog.Font = [Drawing.Font]::new('Segoe UI', 10)
+    $dialog.Tag = @{ Result = 'cancel'; Code = ''; Latest = '' }
+
+    $logoPath = Join-Path $root 'Metin2-Launcher-GUI.Logo.png'
+    if (Test-Path -LiteralPath $logoPath -PathType Leaf) {
+        try {
+            $logoSource = [Drawing.Image]::FromFile($logoPath)
+            try {
+                $logo = [Windows.Forms.PictureBox]::new()
+                $logo.Image = [Drawing.Bitmap]::new($logoSource)
+                $logo.SizeMode = 'Zoom'
+                $logo.Location = [Drawing.Point]::new(170, 12)
+                $logo.Size = [Drawing.Size]::new(260, 120)
+                $logo.BackColor = [Drawing.Color]::Transparent
+                $dialog.Controls.Add($logo)
+            }
+            finally { $logoSource.Dispose() }
+        }
+        catch { Write-LocalLog ('Logo okna Yohary: ' + $_.Exception.Message) -FileOnly }
+    }
+
+    $title = [Windows.Forms.Label]::new()
+    $title.Text = if ($ForVps) { Get-YoharaText 'AKTUALIZUJ VPS DO YOHARY' 'UPGRADE THE VPS TO YOHARA' } else { Get-YoharaText 'AKTUALIZUJ DO YOHARY' 'UPGRADE TO YOHARA' }
+    $title.Font = [Drawing.Font]::new('Georgia', 17, [Drawing.FontStyle]::Bold)
+    $title.ForeColor = $gold
+    $title.TextAlign = 'MiddleCenter'
+    $title.Location = [Drawing.Point]::new(20, 138)
+    $title.Size = [Drawing.Size]::new(560, 36)
+    $dialog.Controls.Add($title)
+
+    $about = [Windows.Forms.Label]::new()
+    $about.Text = Get-YoharaText `
+        ('Yohara jest obecnie dostępna tylko dla wspierających projekt - za dowolną kwotę. ' +
+         'Po wsparciu dostaniesz na Discordzie rolę Wspierający, a nasz bot przyśle Ci kod wspierającego (napisz do niego: !kod).') `
+        ('Yohara is currently available only to the project''s supporters - for any amount. ' +
+         'After your support you get the Supporter role on our Discord, and our bot sends you a supporter code (write to it: !kod).')
+    $about.Location = [Drawing.Point]::new(30, 182)
+    $about.Size = [Drawing.Size]::new(540, 66)
+    $dialog.Controls.Add($about)
+
+    # The only support page there is (owner, 8 November): never another one.
+    $supportUrl = 'https://buycoffee.to/mt2009plus'
+    $support = [Windows.Forms.LinkLabel]::new()
+    $support.Text = (Get-YoharaText 'Wesprzyj projekt: ' 'Support the project: ') + $supportUrl
+    $support.LinkArea = [Windows.Forms.LinkArea]::new($support.Text.Length - $supportUrl.Length, $supportUrl.Length)
+    $support.Font = [Drawing.Font]::new('Segoe UI Semibold', 11)
+    $support.ForeColor = $text
+    $support.LinkColor = $gold; $support.ActiveLinkColor = $gold; $support.VisitedLinkColor = $gold
+    $support.TextAlign = 'MiddleCenter'
+    $support.Location = [Drawing.Point]::new(30, 250)
+    $support.Size = [Drawing.Size]::new(540, 28)
+    $support.Add_LinkClicked({
+        try { Start-Process 'https://buycoffee.to/mt2009plus' } catch { Write-LocalLog ('Nie otwarto strony wsparcia: ' + $_.Exception.Message) }
+    })
+    $dialog.Controls.Add($support)
+
+    $codeLabel = [Windows.Forms.Label]::new()
+    $codeLabel.Text = Get-YoharaText 'Kod wspierającego:' 'Supporter code:'
+    $codeLabel.Font = [Drawing.Font]::new('Segoe UI Semibold', 10)
+    $codeLabel.ForeColor = $gold
+    $codeLabel.Location = [Drawing.Point]::new(30, 292)
+    $codeLabel.Size = [Drawing.Size]::new(540, 22)
+    $dialog.Controls.Add($codeLabel)
+
+    $codeBox = [Windows.Forms.TextBox]::new()
+    $codeBox.Font = [Drawing.Font]::new('Consolas', 16)
+    $codeBox.CharacterCasing = 'Upper'
+    $codeBox.MaxLength = 40
+    $codeBox.BackColor = [Drawing.Color]::FromArgb(39, 48, 53)
+    $codeBox.ForeColor = $text
+    $codeBox.BorderStyle = 'FixedSingle'
+    $codeBox.Location = [Drawing.Point]::new(30, 316)
+    $codeBox.Size = [Drawing.Size]::new(540, 34)
+    $dialog.Controls.Add($codeBox)
+
+    $state = [Windows.Forms.Label]::new()
+    $state.Location = [Drawing.Point]::new(30, 360)
+    $state.Size = [Drawing.Size]::new(540, 64)
+    $state.ForeColor = $muted
+    $dialog.Controls.Add($state)
+
+    $note = [Windows.Forms.Label]::new()
+    $note.Text = if ($ForVps) {
+        Get-YoharaText ('Serwer na VPS {0} wpisze kod w hubie wspierających sam, pobierze najnowszą Yoharę i przebuduje się (postacie i baza zostają). Jeden kod działa na 2 instalacjach serwera.' -f $VpsHost) `
+            ('The server on the VPS {0} enters the code in the supporters'' hub itself, downloads the newest Yohara and rebuilds (characters and the database stay). One code works on 2 server installs.' -f $VpsHost)
+    }
+    else {
+        Get-YoharaText 'Przed aktualizacją launcher zapisze kopię bazy świata i podmienianych plików (folder backups). Postacie, przedmioty i boty zostają. Jeden kod działa na 2 instalacjach serwera. Do gry potrzebny będzie klient Yohara.' `
+            'Before the upgrade the launcher saves a copy of the world database and of the replaced files (the backups folder). Characters, items and bots stay. One code works on 2 server installs. You will need the Yohara game client to play.'
+    }
+    $note.Font = [Drawing.Font]::new('Segoe UI', 9)
+    $note.ForeColor = $muted
+    $note.Location = [Drawing.Point]::new(30, 428)
+    $note.Size = [Drawing.Size]::new(540, 72)
+    $dialog.Controls.Add($note)
+
+    $go = [Windows.Forms.Button]::new()
+    $go.Text = if ($ForVps) { Get-YoharaText 'AKTUALIZUJ VPS' 'UPGRADE THE VPS' } else { Get-YoharaText 'AKTUALIZUJ DO YOHARY' 'UPGRADE TO YOHARA' }
+    $go.Font = [Drawing.Font]::new('Segoe UI Semibold', 12)
+    $go.BackColor = [Drawing.Color]::FromArgb(184, 134, 46)
+    $go.ForeColor = [Drawing.Color]::White
+    $go.FlatStyle = 'Flat'; $go.FlatAppearance.BorderSize = 0
+    $go.Cursor = [Windows.Forms.Cursors]::Hand
+    $go.Location = [Drawing.Point]::new(30, 520)
+    $go.Size = [Drawing.Size]::new(380, 52)
+    $dialog.Controls.Add($go)
+    $dialog.AcceptButton = $go
+
+    $cancel = [Windows.Forms.Button]::new()
+    $cancel.Text = Get-YoharaText 'Anuluj' 'Cancel'
+    $cancel.Font = [Drawing.Font]::new('Segoe UI', 10)
+    $cancel.BackColor = [Drawing.Color]::FromArgb(39, 48, 53)
+    $cancel.ForeColor = $text
+    $cancel.FlatStyle = 'Flat'
+    $cancel.Location = [Drawing.Point]::new(426, 520)
+    $cancel.Size = [Drawing.Size]::new(144, 52)
+    $cancel.DialogResult = [Windows.Forms.DialogResult]::Cancel
+    $dialog.Controls.Add($cancel)
+    $dialog.CancelButton = $cancel
+
+    # An install that entered its code before (no release on its channel then,
+    # or an upgrade that failed) needs no code again.
+    $hasCode = $false
+    if (-not $ForVps -and -not $script:YoharaDialogPreview) {
+        $known = Get-M2SupporterStatus
+        if ($known -and [string]$known.status -eq 'active') {
+            $hasCode = $true
+            $state.Text = Get-YoharaText ('Ta instalacja ma już aktywny kod (miejsca: {0}/{1}). Zostaw pole puste, aby go użyć, albo wpisz nowy kod.' -f $known.slots_used, $known.slots_max) `
+                ('This install already has an active code (slots: {0}/{1}). Leave the field empty to use it, or enter a new code.' -f $known.slots_used, $known.slots_max)
+            $state.ForeColor = [Drawing.Color]::LightGreen
+        }
+        elseif ($known) {
+            $state.Text = [string]$known.error
+            $state.ForeColor = [Drawing.Color]::Tomato
+        }
+    }
+    $dialog.Tag.HasCode = $hasCode
+    $dialog.Tag.ForVps = [bool]$ForVps
+    $dialog.Tag.State = $state
+    $dialog.Tag.CodeBox = $codeBox
+
+    $go.Add_Click({
+        $form = $this.FindForm()
+        $info = $form.Tag
+        $say = {
+            param([string]$Message, [string]$Kind)
+            $info.State.Text = $Message
+            $info.State.ForeColor = switch ($Kind) { 'ok' { [Drawing.Color]::LightGreen } 'bad' { [Drawing.Color]::Tomato } default { [Drawing.Color]::FromArgb(231, 191, 115) } }
+            [Windows.Forms.Application]::DoEvents()
+        }
+        $code = ($info.CodeBox.Text.ToUpperInvariant() -replace '[^A-Z0-9]', '')
+        if (-not $code -and -not $info.HasCode) {
+            & $say (Get-YoharaText 'Wpisz kod wspierającego - przysyła go bot na Discordzie (napisz do niego: !kod).' 'Enter the supporter code - our Discord bot sends it (write to it: !kod).') 'bad'
+            $info.CodeBox.Focus() | Out-Null
+            return
+        }
+        if ($code -and ($code.Length -lt 12 -or $code.Length -gt 32)) {
+            & $say (Get-YoharaText 'To nie wygląda na kod wspierającego (np. ABCD-EFGH-JKLM-NPQR).' 'That does not look like a supporter code (e.g. ABCD-EFGH-JKLM-NPQR).') 'bad'
+            return
+        }
+        if ($info.ForVps) {
+            $info.Code = $code
+            $info.Result = 'go'
+            $form.Close()
+            return
+        }
+        $form.Cursor = [Windows.Forms.Cursors]::WaitCursor
+        $this.Enabled = $false
+        try {
+            if ($code) {
+                & $say (Get-YoharaText 'Sprawdzam kod w hubie wspierających...' 'Checking the code in the supporters'' hub...') 'wait'
+                try { $registered = Register-M2SupporterCode -Code $code -ServerRoot $root }
+                catch {
+                    Write-LocalLog ('Kod wspierającego nie został przyjęty: ' + $_.Exception.Message)
+                    & $say ([string]$_.Exception.Message) 'bad'
+                    return
+                }
+                Write-LocalLog ($registered.Message + ' Kanał: ' + $registered.Channel + '.')
+                $info.HasCode = $true
+            }
+            & $say (Get-YoharaText 'Kod przyjęty. Sprawdzam najnowszą Yoharę na Twoim kanale...' 'Code accepted. Looking for the newest Yohara on your channel...') 'ok'
+            $known = Get-M2SupporterStatus
+            if (-not $known -or [string]$known.status -ne 'active') {
+                & $say $(if ($known) { [string]$known.error } else { Get-YoharaText 'Ta instalacja nie ma kodu - wpisz go.' 'This install has no code - enter it.' }) 'bad'
+                return
+            }
+            if (-not [string]$known.latest) {
+                & $say (Get-YoharaText 'Kod przyjęty i zapisany, ale na Twoim kanale nie ma jeszcze wydania Yohary. Serwer zostaje na 2.x i dostaje zwykłe aktualizacje - spróbuj później (kod nie będzie już potrzebny).' 'The code is accepted and saved, but your channel has no Yohara release yet. The server stays on 2.x with its usual updates - try again later (no code needed then).') 'wait'
+                return
+            }
+            $info.Latest = [string]$known.latest
+            $answer = [Windows.Forms.MessageBox]::Show(
+                (Get-YoharaText ("Zainstalować teraz Yoharę {0}?`r`n`r`n- najpierw kopia bazy świata (backups\db-backup-...-przed-yohara.zip),`r`n- pobranie paczki z hubu wspierających i podmiana plików serwera (kopia w backups\update-...),`r`n- przebudowa serwera: kilkanaście-kilkadziesiąt minut, postęp w logu launchera.`r`n`r`nPostacie, przedmioty i boty zostają. Do gry potrzebny będzie klient Yohara." -f $known.latest) `
+                    ("Install Yohara {0} now?`r`n`r`n- first a copy of the world database (backups\db-backup-...-przed-yohara.zip),`r`n- the package from the supporters' hub replaces the server files (copies in backups\update-...),`r`n- the server is rebuilt: ten to a few dozen minutes, progress in the launcher log.`r`n`r`nCharacters, items and bots stay. You will need the Yohara game client to play." -f $known.latest)),
+                (Get-YoharaText 'Aktualizuj do Yohary' 'Upgrade to Yohara'), 'YesNo', 'Question')
+            if ($answer -ne [Windows.Forms.DialogResult]::Yes) {
+                & $say (Get-YoharaText 'Kod jest zapisany - aktualizację uruchomisz później tym samym przyciskiem, bez kodu.' 'The code is saved - start the upgrade later with the same button, no code needed.') 'ok'
+                return
+            }
+            $info.Result = 'go'
+            $form.Close()
+        }
+        finally {
+            if (-not $form.IsDisposed) { $form.Cursor = [Windows.Forms.Cursors]::Default; $this.Enabled = $true }
+        }
+    })
+
+    $script:YoharaDialog = $dialog
+    if ($script:YoharaDialogPreview) { return $dialog }
+    [void]$dialog.ShowDialog($script:form)
+    $result = $dialog.Tag
+    $dialog.Dispose()
+    $script:YoharaDialog = $null
+    return $result
+}
+
+function Start-YoharaUpgrade {
+    if ((Get-InstalledServerVersion) -like '3.*') {
+        [Windows.Forms.MessageBox]::Show((Get-YoharaText 'Ten serwer ma już Yoharę - kolejne wersje pobierze przycisk AKTUALIZUJ.' 'This server already runs Yohara - the UPDATE button fetches its next versions.'), 'Yohara', 'OK', 'Information') | Out-Null
+        return
+    }
+    $result = Show-YoharaUpgradeDialog
+    if ([string]$result.Result -ne 'go') { return }
+    Write-LocalLog ('Aktualizacja do Yohary {0} - kopia bazy, pobieranie z hubu wspierających, przebudowa.' -f $result.Latest)
+    # The package brings the Yohara launcher: the window starts again on it.
+    $script:restartAfterUpdate = $true
+    Start-LauncherAction -Action 'UpdateYohara' -Yes
+}
+$yoharaButton.Add_Click({ Start-YoharaUpgrade })
 $clientButton.Add_Click({ [void](Select-ClientExecutable) })
 $updateButton.Add_Click({
     # One button for the whole flow: check in-process, and only offer to install

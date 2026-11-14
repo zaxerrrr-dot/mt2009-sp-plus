@@ -265,6 +265,30 @@ $languageButton.Dock = 'Right'; $languageButton.Width = 86
 $languageButton.AccessibleName = UI-Text 'Zmień język launchera' 'Change launcher language'
 $header.Controls.Add($languageButton)
 $script:ui.Cards += @{ Page = 'header'; Button = $languageButton; Card = $header; Hint = $null }
+# MT2009_PLUS_YOHARA_UPGRADE_V1: the project's logo (the one of ItemShop V3
+# and the advanced panel) in place of the written title. Cloned like the
+# background, so an update can replace the file while the window is open.
+$script:ui.Logo = $null
+$logoPath = Join-Path $PSScriptRoot 'Metin2-Launcher-GUI.Logo.png'
+if (Test-Path -LiteralPath $logoPath -PathType Leaf) {
+    try {
+        $logoSource = [Drawing.Image]::FromFile($logoPath)
+        try {
+            $logoBox = [Windows.Forms.PictureBox]::new()
+            $logoBox.Image = [Drawing.Bitmap]::new($logoSource)
+            $logoBox.SizeMode = 'Zoom'
+            $logoBox.Dock = 'Left'; $logoBox.Width = 132
+            $logoBox.BackColor = [Drawing.Color]::Transparent
+            $header.Controls.Add($logoBox)
+            $script:ui.Logo = $logoBox
+            $title.Visible = $false
+            $subtitle.Dock = 'Fill'; $subtitle.TextAlign = 'MiddleLeft'
+            $subtitle.Padding = [Windows.Forms.Padding]::new(14, 0, 0, 0)
+            $subtitle.Font = [Drawing.Font]::new('Segoe UI Semibold', 10)
+        }
+        finally { $logoSource.Dispose() }
+    } catch { Write-LocalLog ('Nie można wczytać logo launchera: ' + $_.Exception.Message) }
+}
 
 $artPanel = 'M2LauncherArtPanel2' -as [type]
 if ($artPanel) { $main = $artPanel::new() }
@@ -493,6 +517,49 @@ for ($i = 0; $i -lt 4; $i++) {
 }
 $script:ui.Pages.home.Heading.Height = 40
 $script:ui.Pages.home.Description.Height = 36
+# MT2009_PLUS_YOHARA_UPGRADE_V1: the big AKTUALIZUJ DO YOHARY on the home
+# page, where its heading was: a banner above the cards (the heading and its
+# line give it their room, so the cards still fit 1280 x 820 unscrolled).
+$yoharaBanner = [Windows.Forms.Panel]::new()
+$yoharaBanner.Dock = 'Top'; $yoharaBanner.Height = 84
+$yoharaBanner.BackColor = [Drawing.Color]::FromArgb(225, 22, 30, 32)
+$yoharaBanner.Padding = [Windows.Forms.Padding]::new(10, 10, 14, 10)
+$yoharaBanner.Add_Paint({
+    param($sender, $eventArgs)
+    $edge = [Drawing.Pen]::new([Drawing.Color]::FromArgb(200, 214, 170, 92), 2)
+    try { $eventArgs.Graphics.DrawRectangle($edge, 1, 1, ($sender.Width - 2), ($sender.Height - 2)) }
+    finally { $edge.Dispose() }
+})
+$yoharaText = [Windows.Forms.Label]::new()
+$yoharaText.Dock = 'Fill'
+$yoharaText.BackColor = [Drawing.Color]::Transparent
+$yoharaText.Padding = [Windows.Forms.Padding]::new(16, 4, 0, 0)
+$yoharaText.Font = [Drawing.Font]::new('Segoe UI', 10)
+$yoharaText.ForeColor = $script:ui.Text
+$yoharaText.Text = UI-Text "Yohara - nowe mapy, lochy i wyzwania.`r`nTeraz dla wspierających projekt (dowolna kwota) - kliknij, wpisz kod i gotowe." "Yohara - new maps, dungeons and challenges.`r`nNow for the project's supporters (any amount) - click, enter your code, done."
+$yoharaBanner.Controls.Add($yoharaText)
+UI-ButtonStyle $yoharaButton
+$yoharaButton.Text = UI-Text 'AKTUALIZUJ DO YOHARY' 'UPGRADE TO YOHARA'
+$yoharaButton.Dock = 'Left'; $yoharaButton.Width = 360
+$yoharaButton.Font = [Drawing.Font]::new('Georgia', 15, [Drawing.FontStyle]::Bold)
+$yoharaButton.BackColor = UI-Color '#B8862E'; $yoharaButton.ForeColor = [Drawing.Color]::White
+$yoharaButton.FlatAppearance.BorderColor = UI-Color '#F0CF86'
+$yoharaButton.FlatAppearance.MouseOverBackColor = UI-Color '#D29E3E'
+$yoharaButton.FlatAppearance.MouseDownBackColor = UI-Color '#9A6E22'
+$yoharaButton.AccessibleName = UI-Text 'Aktualizuj serwer do Yohary kodem wspierającego' 'Upgrade the server to Yohara with a supporter code'
+$yoharaBanner.Controls.Add($yoharaButton)
+$yoharaGap = [Windows.Forms.Panel]::new(); $yoharaGap.Dock = 'Top'; $yoharaGap.Height = 8
+$yoharaGap.BackColor = [Drawing.Color]::Transparent
+$homePanel = $script:ui.Pages.home.Panel
+$homePanel.Controls.Add($yoharaGap)
+$homePanel.Controls.Add($yoharaBanner)
+# Docked from the last control to the first: the banner, the gap, then the cards.
+$homePanel.Controls.SetChildIndex($yoharaBanner, $homePanel.Controls.Count - 1)
+$homePanel.Controls.SetChildIndex($yoharaGap, $homePanel.Controls.Count - 2)
+$script:ui.Pages.home.Heading.Visible = $false
+$script:ui.Pages.home.Description.Visible = $false
+$homePanel.Padding = [Windows.Forms.Padding]::new(28, 8, 28, 12)
+$script:ui.Cards += @{ Page = 'home'; Button = $yoharaButton; Card = $yoharaBanner; Hint = $yoharaText }
 UI-Card 'home' $playButton (UI-Text 'Uruchom serwer i rozpocznij przygodę.' 'Start the server and begin your adventure.') '#21694F'
 UI-Card 'home' $stopButton (UI-Text 'Bezpieczne zatrzymanie z zachowaniem postępu.' 'Stop safely and keep your progress.') '#6A3C39'
 UI-Card 'home' $panelButton (UI-Text 'Statystyki, rankingi i panel zarządzania.' 'Statistics, rankings and management panel.')
@@ -640,6 +707,13 @@ function Invoke-LayoutSelfTest([string]$OutputDirectory) {
             if ($script:ui.CurrentPage -ne $id) { throw "Navigation failed: $id" }
             if (-not $script:ui.SideVersions.Visible -or $sidebar.Width -ne 252) { throw 'Permanent sidebar missing' }
             Test-UISidebarFits "$id/$($dimensions[0])"
+            if ($id -eq 'home') {
+                # MT2009_PLUS_YOHARA_UPGRADE_V1: the big button and the whole card grid seen without scrolling.
+                $homeEntry = $script:ui.Pages.home
+                if ($yoharaBanner.Top -gt $homeEntry.Grid.Top) { throw 'Yohara banner is below the cards' }
+                if ($dimensions[0] -eq 1280 -and $homeEntry.Grid.Bottom -gt $homeEntry.Panel.ClientSize.Height) { throw "Home cards need scrolling at 1280: grid bottom $($homeEntry.Grid.Bottom), page $($homeEntry.Panel.ClientSize.Height)" }
+                if ($yoharaButton.Width -lt 300 -or $yoharaButton.Height -lt 56) { throw 'Yohara button is not big' }
+            }
             foreach ($entry in $script:ui.Cards | Where-Object { $_.Page -eq $id }) {
                 if (-not $entry.Button.Visible -or $entry.Button.Parent -ne $entry.Card) { throw "Lost action: $($entry.Button.Text)" }
                 if ($entry.Button.Width -lt 200 -or $entry.Hint.Height -lt 30) { throw "Card is clipped: $($entry.Button.Text)" }
@@ -675,14 +749,32 @@ function Invoke-LayoutSelfTest([string]$OutputDirectory) {
     if (-not $coffeeButton.Visible) { throw 'Coffee link is not visible' }
     $expected = @($installButton, $playButton, $stopButton, $panelButton, $clientButton, $updateButton,
         $bundleButton, $diagnosticsButton, $openLogButton, $folderButton, $botCountButton, $importDbButton,
-        $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton, $ratesButton)
+        $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton, $ratesButton, $yoharaButton)
     if ($coopButton) { $expected += $coopButton }
     if ($vpsButton) { $expected += $vpsButton }
     if ($reportButton) { $expected += $reportButton }
     foreach ($button in $expected) {
         if (@($script:ui.Cards | Where-Object { $_.Button -eq $button }).Count -ne 1) { throw "Missing/duplicate action: $($button.Text)" }
     }
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: the AKTUALIZUJ DO YOHARY window, drawn
+    # without the hub (no status read) and closed again.
+    $script:YoharaDialogPreview = $true
+    $yoharaDialog = Show-YoharaUpgradeDialog
+    $yoharaDialog.StartPosition = 'Manual'; $yoharaDialog.Location = [Drawing.Point]::new(-30000, -30000); $yoharaDialog.ShowInTaskbar = $false
+    $yoharaDialog.Tag.CodeBox.Text = 'ABCD-EFGH-JKLM-NPQR'
+    $yoharaDialog.Show()
+    [Windows.Forms.Application]::DoEvents()
+    $links = @($yoharaDialog.Controls | Where-Object { $_ -is [Windows.Forms.LinkLabel] })
+    if ($links.Count -ne 1 -or $links[0].Text -notmatch 'https://buycoffee\.to/mt2009plus$') { throw 'Yohara window: support link missing' }
+    if (($yoharaDialog.Controls | ForEach-Object { $_.Text }) -join ' ' -match '(?i)metin2|gameforge|oficjal') { throw 'Yohara window: forbidden name' }
+    $bitmap = [Drawing.Bitmap]::new($yoharaDialog.Width, $yoharaDialog.Height)
+    try {
+        $yoharaDialog.DrawToBitmap($bitmap, [Drawing.Rectangle]::new(0, 0, $yoharaDialog.Width, $yoharaDialog.Height))
+        $bitmap.Save((Join-Path $OutputDirectory "$($script:Lang)-yohara-dialog.png"), [Drawing.Imaging.ImageFormat]::Png)
+    } finally { $bitmap.Dispose() }
+    $yoharaDialog.Close(); $yoharaDialog.Dispose()
+    $script:YoharaDialogPreview = $false
     $reportBox = if ($reportButton) { 'OK' } else { 'no module' }
-    [pscustomobject]@{ Checks = $results; ActionCards = $expected.Count; Navigation = 'OK'; Sidebar = 'OK'; ReportBox = $reportBox; LogToggle = 'OK'; LogScroll = 'OK'; RatesRoute = 'OK'; CoffeeLink = 'OK'; ResizeMsPerStep = $resizeMsPerStep; ResizeReleaseMs = $releaseMs } | ConvertTo-Json -Depth 4
+    [pscustomobject]@{ Checks = $results; ActionCards = $expected.Count; Navigation = 'OK'; Sidebar = 'OK'; ReportBox = $reportBox; YoharaDialog = 'OK'; LogToggle = 'OK'; LogScroll = 'OK'; RatesRoute = 'OK'; CoffeeLink = 'OK'; ResizeMsPerStep = $resizeMsPerStep; ResizeReleaseMs = $releaseMs } | ConvertTo-Json -Depth 4
     $script:form.Close()
 }
