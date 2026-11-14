@@ -17,33 +17,180 @@ every version here.
 
 ---
 
-## 2.43.0 — 2026-11-14 — Aktualizuj do Yohary: nowy wygląd launchera
+## 2.43.0 — 2026-11-14 — Odblokowana automatyczna aktualizacja do Yohary, nowy wygląd launchera
 
-Nie wymaga nowego klienta – wystarczy klient **2.0.71**. Zmienia się tylko launcher; serwer, boty i baza zostają bez zmian.
+Nie wymaga nowego klienta 2.x – wystarczy klient **2.0.71**. Ta aktualizacja zmienia launcher; serwer, boty i baza 2.x zostają bez zmian. Najważniejsze: od tej wersji każdy serwer 2.x może sam, jednym przyciskiem, przejść na **Yoharę (linia 3.x)**. Poniżej najpierw to, co zmienia sama 2.43.0, a dalej pełny opis wszystkiego, co wnosi Yohara.
 
-### Nowy wygląd launchera
-- Tło z Yohary i nowe logo **MT2009 SINGLEPLAYER PLUS** w nagłówku.
-- Na pulpicie duży przycisk **AKTUALIZUJ DO YOHARY**.
+### Automatyczna aktualizacja do Yohary – odblokowana
+Yohara jest dostępna dla wspierających projekt – za dowolną kwotę. Po wsparciu dostajesz na Discordzie rolę Wspierający, a mój bot przysyła Ci osobisty **kod wspierającego**: napisz do niego `!kod` albo kliknij przycisk **„Uzyskaj kod”** na Discordzie. Kod działa od razu.
 
-### Aktualizacja do Yohary kodem wspierającego
-Yohara jest na razie dostępna tylko dla wspierających projekt – za dowolną kwotę. Kod wspierającego przysyła bot na Discordzie (napisz do niego `!kod`).
-
-- Kliknij **AKTUALIZUJ DO YOHARY**, wpisz kod i potwierdź.
-- Launcher sprawdza kod w hubie wspierających i od razu mówi, jeśli coś jest nie tak: zły kod, kod nieaktywny, oba miejsca kodu zajęte (jeden kod działa na 2 instalacjach serwera – zwalnia je `!kod reset`) albo brak jeszcze Yohary na Twoim kanale (wtedy serwer zostaje na 2.x i dalej dostaje zwykłe aktualizacje, a kod jest zapamiętany).
-- Przed aktualizacją launcher zapisuje kopię bazy świata (`backups\db-backup-…-przed-yohara.zip`) i kopię podmienianych plików (`backups\update-…`).
-- Najnowsza Yohara pobiera się z hubu wspierających (suma SHA-256 sprawdzana), pliki serwera są podmieniane, serwer przebudowuje się, a launcher uruchamia się ponownie już w wersji Yohara. Postacie, przedmioty i boty zostają.
+- Na stronie głównej launchera jest nowy, duży przycisk **AKTUALIZUJ DO YOHARY**. Otwiera okno z polem na kod.
+- Launcher sprawdza kod w hubie wspierających (https://hub.metin2sp.pl) i od razu mówi, jeśli coś jest nie tak: zły kod, kod nieaktywny (brak roli Wspierający), oba miejsca kodu zajęte (jeden kod działa na 2 instalacjach serwera – zwalnia je `!kod reset`) albo brak wydania na Twoim kanale (wtedy serwer zostaje na 2.x, dalej dostaje zwykłe aktualizacje, a kod jest zapamiętany).
+- Przed aktualizacją launcher zapisuje kopię bazy świata (`backups\db-backup-…-przed-yohara.zip`) i kopię każdego podmienianego pliku (`backups\update-…`).
+- Najnowsza Yohara pobiera się z hubu wspierających (link ważny kilka godzin, suma SHA-256 sprawdzana), pliki serwera są podmieniane, serwer się przebudowuje, a launcher uruchamia się ponownie już jako launcher Yohary. Postacie, przedmioty, gildie i boty zostają. U mnie na Windowsie całość – od pobrania do działającego serwera – trwała około 20 minut.
 - Gdy pobieranie się nie uda, nic nie jest zmieniane – wystarczy kliknąć przycisk jeszcze raz (bez kodu).
-
-Kolejne wersje Yohary launcher pobiera już sam, bez wpisywania kodu. Do gry na Yoharze potrzebny jest klient Yohara.
-
-W menu tekstowym launchera to opcja **43**.
-
-### Pobieranie aktualizacji
-- Aktualizacje pobierają się szybciej, a launcher pokazuje postęp: pobrane MB, procent, prędkość i pozostały czas, potem rozpakowywanie i podmianę plików. Ostrzeżenie „nic się nie zmienia” nie pojawia się już w trakcie długiego pobierania.
+- Kolejne wersje Yohary launcher sprawdza przy każdym starcie i proponuje sam – kodu nie trzeba wpisywać drugi raz.
+- Do gry na Yoharze potrzebny jest klient Yohara; aktualizuje go **MT2009-Yohara-Patcher.exe** (osobny patcher Yohary, nie patcher 2.x).
+- W menu tekstowym launchera to opcja **43**.
 
 ### Serwer na VPS
-- W oknie VPS launchera nowy przycisk **AKTUALIZUJ VPS DO YOHARY** – serwer na VPS sam wpisuje kod, pobiera Yoharę i przebudowuje się.
-- Bez launchera, na VPS w folderze serwera: `sudo sh linux-port/tools/vps-install.sh yohara TWÓJ-KOD` (najpierw kopia bazy do `backups/`).
+- W oknie VPS launchera nowy przycisk **AKTUALIZUJ VPS DO YOHARY** – serwer na VPS sam wpisuje kod, pobiera Yoharę i się przebudowuje.
+- Bez launchera, na VPS w folderze serwera: `sudo sh linux-port/tools/vps-install.sh yohara TWÓJ-KOD` (najpierw kopia bazy do `backups/`). W menu tekstowym launchera to opcja **44**.
+
+### Nowy wygląd launchera
+- Tło z ekranu logowania Yohary, nowe logo **MT2009 SINGLEPLAYER PLUS** w nagłówku, złote akcenty.
+- Nowy tytuł okna: **MT2009 PLUS - Singleplayer Playerbots**.
+
+### Pobieranie aktualizacji
+- Aktualizacje pobierają się szybciej, a launcher pokazuje postęp: pobrane MB, procent, prędkość i pozostały czas, potem rozpakowywanie, porównywanie i podmianę plików. Ostrzeżenie „nic się nie zmienia” nie pojawia się już w trakcie długiego pobierania, a gdy postęp wraca, znika samo.
+
+### Co wnosi Yohara — pełny opis
+Yohara to linia 3.x MT2009 PLUS: nowy kontynent, Poziom Czempiona, kilkanaście nowych lochów, nowe zestawy ekwipunku do +15, dziesiątki nowych systemów i boty, które z tego wszystkiego korzystają. Poniżej opisuję wszystko, co jest w Yoharze 3.0.16 względem serwera 2.x.
+
+#### Nowy kontynent i mapy
+- **Przylądek Smoczego Ognia** – brama do Yohary. Stoi tu Rybak (wejście do Obrony Statku – Hydry), Kawuco (buty) i Theowahdan (aura, transmutacja, szarfy).
+- **Zbocze Gautama, Nefrytowa Zatoka i Gromiste Góry** – trzy nowe mapy (od 90 poziomu, w Teleporterze na drugiej stronie). Wejście do Świątyni Ochao jest teraz na Zboczu Gautama.
+- **Port Nowego Kontynentu** (od 90 poziomu, po wygranej Obronie Statku albo przez Pierścień Hydry) – Statua Wojownika (awans Czempiona, ranking lochów, Kamienie Gaya, Portowy Sklep Gaya), pięciu Kowali Zestawów i Staruszek, który przenosi do Królestwa Żywiołów.
+- **Mapy Yohary** (od 120 poziomu, na każdym kanale osobny rdzeń „Yohara”): Opuszczona Twierdza → Dongan → Seoganland → Namgan → Przełęcz Yilad → Wąwóz Północnego Wiatru → Rozpadlina Dusz → Schronienie Północnego Wiatru → Zejście Północnego Wiatru. Każda mapa ma swoje potwory, Metiny, bossów, NPC, rudy i żywioły potworów.
+- **Przełęcz Yilad** – 6 Metinów co 30 minut. **Zejście Północnego Wiatru** – Wódz Wojenny Schronienia co 30 minut.
+- **Żyły jadeitu** (Słońca, Nocy, Dymu, Mgły) do kopania – z Rudy Jadeitu robisz Jadeit. Przenośna Żyła Jadeitu stawia żyłę obok gracza.
+- **Królestwo Żywiołów** – Staruszek w porcie przenosi do każdego z 9 obszarów żywiołów (90 poziom, 50 000 000 Yang). **Płaskowyż Sił Natury** – tylko przez Pierścień Siły Natury użyty w Królestwie.
+- **Płaskowyż Iluzji** – miejsce lochów przebudzonych: Statua Przebudzenia, Handlarka Iluzji, Statua Kowala Zbroi, Statua Fabryki Broni i Teleporter. Wejście przez Statuę Iluzji w Yongan, Joan i Pyungmoo.
+- **Wężowe Pole i Kraina Gigantów** – nowe mapy z terenem, potworami, Metinami i NPC; wejście przez prawy dolny portal Pustyni Yongbi. Stara Przełęcz (mapa 69) zniknęła – postacie, które tam stały, trafiają na Wężowe Pole, a Min-Sun (Labirynt, Czarna Stal) stoi na Pustyni Yongbi przy portalu.
+- **Boss Świata** – co 120 minut jeden z 6 bossów pojawia się na Dolinie Seungryong, Pustyni Yongbi, Doyyumhwan albo Górze Sohan. Serwer ogłasza miejsce i kanał, ikona bossa jest na dużej mapie i minimapie. Ranking obrażeń, progi nagród I–IV, misja dnia (+20% ataku na 3 h) i sezony po 8 tygodni z rankingiem postaci i gildii każdego królestwa. Boty walczą i są w rankingach.
+- **Metiny progresywne** – na mapie z dużą liczbą botów pojawia się więcej Metinów tej mapy (+2 / +3 / +6 / +10 każdego rodzaju przy 50 / 100 / 200 / 300 botach), na otwartym terenie, z normalnym odrodzeniem.
+- Każda mapa ma swoje otoczenie (niebo, mgła, światło), nowy ekran logowania i 6 losowych ekranów wczytywania map.
+
+#### Poziom Czempiona, Sung Ma i Precyzja
+- **Poziom Czempiona** (do 30) – awans u Statuy Wojownika w porcie: 120 poziom, ukończona Obrona Statku i pełna kula doświadczenia. Niebieski poziom Czempiona nad głową i niebieski pasek doświadczenia. Każdy poziom daje +40 PŻ i +20 PE (do +1200 / +600). PD Czempiona domyślnie ×50 dla graczy.
+- **Sung Ma** – cztery statystyki (Siła, Witalność, Ruch, Odporność), 3 punkty na poziom Czempiona, strona „Status Sung Ma” w oknie postaci. Każda mapa Yohary ma swoje wymagania; za mało to kara (½ obrażeń, ½ PŻ, ½ szybkości albo rzadsze efekty), ikona na pasku efektów mówi, czy wystarcza. **Wola Sung Ma ponad wymaganie** daje premię: Siła – obrażenia, Witalność – maks. PŻ, Odporność – szybkość, Inteligencja – ogłuszenie i spowolnienie.
+- **Nowa Wola** (4 rodzaje) – reset punktów Sung Ma (ItemShop, 50 SM).
+- **Precyzja** – nowa statystyka. Mapy Yohary jej wymagają; przy za małej część ciosów to pudła („BLOK”). Źródła: biżuteria z jadeitu, Rękawice Sung Ma i umiejętność pasywna Precyzja (Księga Precyzji od 1. poziomu Czempiona, wypada też z Króla Bao).
+- Procentowe bonusy Sung Ma (Siła / Witalność / Ruch / Odporność %).
+- Nowe okno statystyk Czempiona (poziom i doświadczenie Czempiona, ikony statystyk, Precyzja) i okno szczegółów postaci ze wszystkimi bonusami w kategoriach.
+
+#### Lochy i Szczeliny Czasu
+- **Obrona Statku (Hydra)** – u Rybaka na Przylądku: od 90 poziomu, solo albo w drużynie, 5 000 000 Yang, 10 wejść dziennie. Fale potworów, obrona masztu (pasek PŻ masztu, Deski Naprawcze), na końcu Hydra. Skarb Hydry daje 3–6 Skrzyń Hydry (każda otwiera się 3 razy, ok. 4% na Magiczny Kamień). Pierścień Hydry – 3 teleporty do portu.
+- **Schronienie Meley** (nowy loch) – Strażnik Smoków Dolnarr na Doyyumhwaji: od 90 poziomu, solo albo do 8 osób, 7 500 000 Yang, 5 wejść dziennie, 60 minut. Cztery etapy ze Smoczymi Statuami, Jajami i Strażnikami Idallami, na końcu Pierścień Smoczego Ognia i wybór Skrzyni Królowej Meley albo Skrzyni Smoczych Strażników. Z Meley są materiały na hełmy 100 poziomu.
+- **Krypta Balathora** – leże Białego Smoka dla gildii: u Dolnarra na Górze Sohan, 120 poziom i Poziom Czempiona 4, 4–16 osób z jednej gildii (członkostwo od 24 h), 600 punktów rankingu i 500 000 Yang ze skarbca gildii. Mroźne Skrzynie Balathora (zawsze 5 różnych pozycji) dla każdego obecnego członka gildii, a z materiałów Balathora Wężowy Czepiec – hełm 120 poziomu do +15.
+- **Jaskinie Gnolli 1–3** – Halabardnik w Dongan, od 1. poziomu Czempiona, z przepustką.
+- **Wieża Sung Mahi** – 50 pięter, wejście w Seoganland, tylko solo (bez drużyny, wierzchowca i przemiany), śmierć kończy wspinaczkę. Okno wieży z przejściami sezonu, nagrodami, żywiołem piętra, Twoim czasem i miejscem; misje pięter losowane „z worka” (siedem różnych, zanim któraś się powtórzy), Handlarka z miksturami wieżowymi, teleport na ukończone piętra, Sztandar Czaszki otwiera wybór piętra. Spirala Czasu (30%) jako nagroda pięter 3–48.
+- **Tajemnicza Instancja** – Tajemniczy Ołtarz w Namgan, Tajemniczy Bilet.
+- **Świątynia Węży** – Strażnik Węży na Przełęczy Yilad, 7 poziomów, Klucz Wężowy, Pył Wężowy (+1 minuta), Klucz do Więzienia; kolce i atak spod ziemi potrafią zabić.
+- **Głębie Północnego Wiatru (Alastor)** – 1–8 osób, 3 Zamarznięte Klucze na osobę, Śmiertelny Chłód w strefach na ziemi, Alastor w szale bije mocniej.
+- **Lochy przebudzone**: Razador, Nemere, Beran-Setaou i Jotun Thrym w wersjach przebudzonych – od 110 poziomu, drużyna od 2 osób, Książka Przebudzenia na osobę, codzienna misja „Świat Iluzji”. Z nich są materiały do sprzętu Smoka Mroku.
+- **Razador i Nemere** – wejście od 100 poziomu, potwory 97–107 poziomu, pełna gęstość sal i zadania „wyczyść salę”. Bossowie Razador, Nemere i Beran-Setaou zostawiają 8–10 skrzyń plus dodatkowy drop wokół siebie, a członkowie drużyny kolejno dostają prawo do podniesienia; po bossie 60 sekund na wyjście.
+- **Zaklęty Las** (Jotun Thrym) zamiast dawnego Zaczarowanego Lasu: 7 misji, drużyna do 5 osób, 2 godziny. Potwory lasu dają 2× więcej PD i więcej Yang, a „Silny przeciwko diabłom” działa na wszystkie potwory i bossów lasu.
+- **Szczeliny Czasu** (Statua Szczeliny Czasu): Zaklęty Las, Grota Wygnańców 2 + Świątynia Smoka z Beranem-Setaou, Twierdza Czerwonego Smoka z Razadorem i Strażnica Nemere. Potwory i Metiny Szczeliny dają 5× więcej PD niż w bazie, a Metiny Lasu i Szczeliny wyrzucają Kamienie Duchowe +0…+4. Gracze mogą wchodzić sami.
+- **3 Loch Pająków** – mapa do expienia za portalem na końcu 2 Lochu Pająków: pająki nie są agresywne, dropią przedmioty z grupy 60 poziomu.
+- **Grota Wygnańców V2** – pełne rozstawienie sal (Komendanci, Magistraci, grupy), o 30% mniej punktów pojawiania się równo na całej mapie; dwa razy więcej małży.
+- **Arena Koloseum** – walki PvP 1v1, 3v3 i 5v5 dla zabawy, równymi postaciami areny (99 poziom, ten sam zestaw +9, 20 000 PŻ). Rundy z odliczaniem, mecz 1:30, ranking i rangi od Brązu do Diamentu. Wejście przez medalion pod minimapą – Twoja postać zostaje tam, gdzie stała. Boty dołączają po 15 sekundach szukania jako przeciwnicy albo sojusznicy.
+- Lochy z 2.x zostają (Zodiak, Wukong, Wieża Demonów, Katakumby Diabła i inne), a znane błędy są poprawione: zaginiony cel w lochu pojawia się ponownie, żaden etap nie kończy się sam.
+
+#### Ekwipunek, zestawy i rzemiosło
+- **Sprzęt węży i Smoka Mroku** – bronie, zbroje i hełmy **+0…+15** z losowymi bonusami podstawowymi. Broń i zbroje +10…+15 mają mocniejszy blask niż +9, a broń z żywiołem – efekt żywiołu.
+- **Zestawy ekwipunku** – pięciu Kowali Zestawów w porcie (Święty, Okazały, Rycerski, Książęcy, Majestatyczny), Statua Węży oraz Statue Kowala Zbroi i Fabryki Broni. Efekt zestawu nadajesz na przedmiot +7 (odłamki, Projekt Zestawu, Gaya, Yang); bonus zestawu działa przy 2–3 częściach.
+- **Kamienie Gaya** – Gaya jest walutą (licznik obok Yang). Statua Wojownika szlifuje Kamyki na Gaya (30 Kamyków + Kamień Duszy + 15 000 Yang = 3 Gaya, 70%). Portowy Sklep Gaya ma własne okno 3×3 z resetem i rozszerzeniem.
+- **Biżuteria z jadeitu** – Obręcze, Kolie i Klipsy Jadeitu (Mgły / Słońca / Nocy / Dymu, +0…+9, 105 poziom): zawsze Wola Sung Ma, w 80% Precyzja, gniazda z Diamentu i jadeity w gniazdach. Robi je Mistrz Chi w Dongan. Przyjmuje 6./7. bonus. Przetapianie jadeitu 1 500 000 Yang, 30%.
+- **Rękawice Sung Ma** – nowy slot w ekwipunku, 4 rodzaje (Mocy, Zwinne, Pancerne, Ochronne), 5 zwykłych bonusów + 6./7. Kamienie Demonów +0…+4 tylko do rękawic. **Rękawice Węża** (120 poziom) Mistrz Chi robi z Rękawic Sung Ma i ulepsza Kamieniem Rękawic.
+- **Talizmany Woli** (SIŁA / ODP / WIT / INT +0…+9) – zawsze Wola Sung Ma, w 80% moc żywiołu; ulepszane Topazem Woli. **Tajemniczy Talizman +0…+9** z dwoma losowymi bonusami bazowymi. **Talizmany żywiołów** z 2.x zostają (ulepszanie zawsze 100%).
+- **Hełmy na 100 poziom** u Strażnika Smoków Jaharra (Yongan / Joan / Pyungmoo) z hełmu 80 poziomu +5…+9: hełmy Smoków (30–70%, przy porażce hełm przepada) i hełmy Dragona (10–50%, przy porażce hełm zostaje). Materiały z Meley, Skrzydła Smoka w Sklepie Gaya. **Wężowy Czepiec** (120 poziom) z materiałów Balathora, do +15, z jednym losowym bonusem dodatkowym.
+- **Buty**: Seon-Pyeong robi Buty Zimorodka, Euforii, Qilina i Kozaki Glorii; Kawuco robi Ogniste Buty i Buty Oceanu (5–50% zależnie od plusa).
+- **Bronie 87 poziomu** u Seon-Pyeonga z broni 80 poziomu +9. Bronie przebudzone i Rytuał Przebudzenia zniknęły – każda broń przebudzona zamieniła się w broń 87 poziomu tego samego rodzaju i plusa, z bonusami i kamieniami.
+- **Szarfy** u Theowahdana (wytwarzanie, łączenie, przenoszenie bonusów). Do szarfy da się wchłonąć także łuk, a wchłonięta broń lub zbroja wężowa przenosi na szarfę swoje trzy bonusy wężowe według procentu wchłaniania. Zaczarowanie żywiołu broni też przechodzi na szarfę. **Szarfa unikatowa**: 200 Delikatnych Sukien + 8 000 000 Yang, 90%.
+- **Szata Aury** – nowe miejsce w oknie kostiumów, 6 stopni (Zwyczajna → Promienista). Theowahdan przenosi na nią parametry bransolety, naszyjnika, kolczyków albo tarczy (do 25% na 250). Ulepszasz ją Lodowymi i Ognistymi Runami Aury (Lodowa Runa łączy się do 9999, jedno zatwierdzenie zużywa tyle run, ile trzeba do końca stopnia), Świadectwo Aury+ czyści parametry.
+- **Transmutacja** u Theowahdana (broń, zbroja, kostium, wierzchowiec) i **ukrywanie** kostiumu, fryzury, nakładki broni, szarfy i szaty aury.
+- **Zaczarowanie Żywiołu Broni** – broń od +7 zaczarujesz zwojem żywiołu (Ogień, Lód, Błyskawica, Wiatr, Ziemia, Mrok) do +3: każdy poziom dodaje losową Siłę Żywiołu i Wartość Ataku, 30% na próbę, porażka nie niszczy broni. Zwój Klątwy obniża poziom, Zwój Zmiany zmienia żywioł. Przy +3 efekt żywiołu widzą wszyscy. Zwoje u Stróża Medali na ziemiach gildii (gildia od 21 / 24 poziomu).
+- **Bonus Reliktu** (od 120 poziomu) – Relikt Duszy swojej klasy za komplet czterech dusz losuje do 4 z 16 bonusów (m.in. automatyczne zbieranie dropu, reset czasów odnowienia, uniknięcie śmierci, większy drop z bossów, ściąganie potworów). Działa 1–12 h, doładowujesz go kolejnym kompletem. Dusze i relikty z misji w Dongan, dusze także w ItemShopie.
+- **Runy Wykuwania** – 55 run (11 rodzajów po 1*–5*) kładzionych w pole „Podwyższ szansę” w oknie wytwarzania (+1 do +20% w swojej kategorii); u Yu-Hwana łączysz 2 runy w wyższą.
+- **Nowe okno wytwarzania** u NPC i w misjach: kategorie, wyszukiwarka, liczba możliwych prób, materiały „masz / potrzeba” (także z Dodatkowego ekwipunku) i wytwarzanie seriami do 200 sztuk naraz.
+- **Szanse ulepszeń** – każdy krok u Kowala ma co najmniej szansę z Podręcznika Kowala minus 15 punktów (najmniej 5%) – nigdy mniej niż dotąd. Kamień Rytualny daje +15% przy ulepszaniu przedmiotów powyżej 80 poziomu, Magiczny Kamień ulepsza z szansą kowala, a przy porażce przedmiot zostaje.
+- **Hełmy 60 poziomu** ze Straszydła, **Kamienie Antymagii** (tylko w PvP), **Kamień Ochrony Żywiołów** i **Kamień Mocy Żywiołów** (+10% odporności albo mocy każdego żywiołu na 7 dni).
+- **Stosy do 200** – każdy przedmiot, który się łączy, łączy się do 200 sztuk (małże, perły, Zwoje Błogosławieństwa, klucze, księgi, rudy, ryby i inne).
+
+#### Bonusy, żywioły i alchemia
+- **Tryb bonusów `global`** jest domyślny w nowej instalacji (`M2_BONUS_MODE`): bonusy przedmiotów z limitami (maks. PŻ 2000, PE, regeneracja, odporności na ogień / błyskawice / wiatr, szansa na exp i podwójny drop) i żywioły na wszystkich potworach. Serwer, który ma w `.env` tryb `mt2009`, przy nim zostaje.
+- **Żywioły** – ikona żywiołu potwora w oknie celu, Siła Żywiołu i odporności liczone na każdej mapie Yohary. Eliksiry mocy i odporności na żywioły u Huahn-So (+8–20%), a **Złote Eliksiry** (12 rodzajów, zawsze +20% na 10 minut) ze Złotego Zioła.
+- **Bonusy 6/7 (Seon-Hae)** – pełna pula: siła żywiołu, Silny przeciwko Metinom, bonusy na bossów, +x% łącznej wartości, bonusy rękawic, a do tego linie zbroi (obrażenia niższe przy ponad 90% PŻ, odporność na upadek, krwawienie) i broni (pochłanianie PŻ, krótszy czas odnowienia, dłuższy czas trwania, ogłuszenie i odrzut umiejętności). Przedmioty mogą mieć ponad 255 rodzajów bonusów. Seon-Hae jest domyślnie włączony, 71052 działa na każdy przedmiot, Lśniące Odłamki (Szary / Zielony / Żółty), Duży Suplement 4% za sztukę. Wszystkie odłamki do bonusów 6/7 wypadają ze zwykłych potworów na mapach i w lochach Yohary.
+- **Alchemia** – liczba Corów dziennie rośnie z poziomem (od 10 do 80 na 20+ poziomie Czempiona), Moc Smoczego Oka odnawia się sama o północy, Smoczy Płomień i Kamienie Smoczej Alchemii działają w oknie alchemika i w sklepie offline.
+- **System Energii** – Kryształ Energii u Alchemika (30 odłamków) podnosi bonusy założonego ekwipunku o 1–10% na 2 godziny.
+- **Kostiumy z bonusami** – Wizerunki broni+, Fryzury+ i Kostiumy+ mają bonusy z tymi samymi limitami co zwykły ekwipunek, a kostiumy, fryzury i nakładki z ItemShopu dostają 1–3 losowe bonusy. 48 zestawów kostiumów z bonusami za 2–6 części.
+- Wchłanianie PŻ i PE z ataku do 50%; szansa na EXP i Yang bez limitu 100%.
+
+#### Umiejętności
+- **9. umiejętność** każdej ścieżki: Trzęsienie, Światło Gwiazd, Strzał Wichury, Piekielny Cios, Fala Śmierci, Meteor, Tarcza Eteru. Księgi od Czempiona, z G1 na P Miksturą Talentu.
+- **Riposty i Dopalacze** – riposta zmniejsza obrażenia od jednej umiejętności wroga (do 30%), dopalacz zwiększa obrażenia jednej Twojej (do 20%). Podręczniki, księgi do G1, Kamień Duchowy+ do P, Zwój Zmiany Treningu.
+- **Kolor umiejętności** – przycisk „Kolory” w oknie umiejętności: pięć warstw efektu, paleta i kod #RRGGBB, od poziomu P; Twoje kolory widzą inni gracze.
+- Nowe okno umiejętności z etapami M → G → P, osobne rzędy na ripostę, dopalacz i 9. umiejętność.
+- Druga ścieżka umiejętności istnieje, ale jest domyślnie wyłączona.
+
+#### Postać, ekwipunek i interfejs
+- **Ekwipunek v2 i 4 strony wyposażenia** – wyposażenie nad torbą, okrągłe przyciski Alchemia / Magazyn ItemShopu / Sklep offline / Kostiumy, aż 4 strony wyposażenia przełączane zakładkami albo umiejętnością.
+- **Dodatkowy ekwipunek** (Shift+I) – zakładki Materiały ulepszeń, Księgi, Kamienie Duszy, Zaczarowania i Skrzynie; przedmioty wpadają same, ulepszanie, wymiana i sklep offline działają prosto z niego, a przedmioty z niego nie wypadają po śmierci w PvP.
+- **Bonus Switcher** – 5 przedmiotów naraz, 5 zestawów bonusów dla każdego, zapisane zestawy.
+- **Odnowione okno misji** (8 kategorii, liczniki, nieprzeczytane), **Spirala Czasu** skracająca oczekiwanie misji, **rozszerzony pasek szybkich slotów** (4 × 8), **liczby obrażeń** z krytykiem, przebiciem, unikiem i blokiem.
+- **Encyklopedia w grze** – każdy przedmiot, potwór i Metin, drop z szansami, ścieżki ulepszeń, wytwarzanie z miejscem NPC, zestawy kostiumów i podgląd 3D przedmiotu na Twojej postaci.
+- **Społeczność** – jedno okno znajomych, ulubionych, zablokowanych, zaproszeń i gildii ze statusem i opisem. **Lokalizator NPC** – mapa świata z wyszukiwarką NPC i przewodnikiem po potworach; Kamień Teleportacji przenosi obok wybranego NPC.
+- **Języki gry** – polski, angielski, niemiecki, turecki, rumuński, hiszpański, włoski, francuski, portugalski, czeski, węgierski, grecki i arabski: teksty klienta, komunikaty serwera, misje, nazwy przedmiotów i potworów, wypowiedzi botów, panele i ItemShop.
+- **Tytuły** nad postacią (ranking „Zabójca”, Okey, Goblin Skarbów, certyfikaty), **Enasir** (przywoływany magazyn albo sklep), **Sesja farmienia** (klawisz Y: drop, wykres, statystyki), **Szkło Handlu** (środkowy przycisk myszy otwiera Dom Aukcyjny z tym przedmiotem).
+- **Auto Łowy** – postać chodzi po siatce terenu i omija przeszkody, podchodzi prosto do celu, nie krąży wokół dużych potworów (także na wierzchowcu) i odnawia wzmocnienia na czas.
+- Pasek boczny ekwipunku z własną kolejnością przycisków, efekty pierścieni i amuletów na postaci, deski i chmury, na których postać stoi, okno bez ramki na cały ekran.
+
+#### Zwierzaki, wierzchowce i towarzysze
+- **Najemnicy** – Twoja własna drużyna: tworzysz najemnika (klasa, płeć, ścieżka, imię), przywołujesz go i walczy z Tobą, wchodzi z Tobą do lochów i wraca po zmianie kanału czy teleporcie. Własny ekwipunek najemnika, rozkazy (za mną, stój, bij mój cel, walcz sam, łup) i opłata godzinowa ze schowka. Miejsca na najemników odblokowuje **Kolekcjoner Najemników** (sześć zadań, stały bonus za każde).
+- **Buffi** – szamanka, która chodzi za Tobą i rzuca Błogosławieństwo, Smoczą Pomoc, Szybkość i Zwiększenie Ataku; własne kostiumy, rozwój ksiąg do P (od 55 poziomu).
+- **Zwierzaki domowe – nowy system**: jaja, okno zwierzaka (U), poziomy 1–105, ewolucje (Młody → Dziki → Dzielny → Bohaterski → Przebudzony → Mocny) bez wymogu wieku, typy 1–8, 23 księgi umiejętności, poziomy Czempiona zwierzaka, potencjał, Klatka Transportowa do handlu. Zwierzak daje PŻ / Obronę / PE, a na poziomach Czempiona także Wolę Sung Ma, Precyzję i Przebicie bloku. Stare zwierzaki przeszły do nowego systemu same.
+- **Koń do 40 poziomu** – okno rozwoju konia u Stajennego, karmienie Paszą, próby awansu, umiejętności konia z ksiąg i statystyki z tabeli poziomu konia na każdym wierzchowcu. Juki konne zniknęły – ich zawartość przeszła do ekwipunku albo magazynu.
+- Towarzysz z 2.x jest domyślnie wyłączony (zastępują go Najemnicy).
+
+#### Eventy i zabawy
+- **Rytuał Krwi** – Ołtarz Krwi w stolicach i na Przylądku: codziennie 10 sztuk jednego materiału za Ofiarę Krwi, zbieranie dusz z potworów (do 20 albo do 150 z Cenną Ofiarą Krwi) i **Ruletka Dusz** (50 dusz + 250 000 Yang za obrót, 5 plansz nagród i plansze specjalne).
+- **Koło Losu** – siedem kół z kluczami, automatyczne kręcenie i nowe Koło Płomieni Nocy.
+- **Event Super Kamieni**, **Wędkarskie Puzzle**, **Potęga mądrości** (premia PD od Uriela), **Halloween** z Jackiem Pumpkinem, ustawienia SAPPHIRE i EMERALD w kalendarzu eventów.
+- **Łowienie** – wędki +1…+20 i Wędka Węglowa, rzadkie ryby, Złoty Tuńczyk, nowa minigra wędkarska; ryby łowisz od 30 poziomu bez karty wędkarskiej.
+- **Karty Potworów** z Yohary (18 poziomów, 40 zestawów), **Biolog** z kolejnymi misjami (92, 94 poziom i trzy misje Chaegiraba dla Czempionów), **owoce rangi** przerabiane u Uriela (7 niższych → 1 wyższy).
+- **Gildie** do 40 poziomu (do 204 członków) z nowymi umiejętnościami Burza, Wola i Nieugiętość Balathora.
+
+#### ItemShop V3
+- **Szybki zakup** – wybór ilości 1/5/10/20/50, „Kup” od razu z listy, okno z tym, co wpadło, i „Kup ponownie”.
+- **Tombola** – codzienna loteria (10 losów dziennie, 1 darmowy), losy na jutro taniej, symbole szczęścia, wygrana dnia i kalendarz 31 nagród.
+- **Aukcja Błyskawiczna** – cena spada co kilka sekund do minimum, liczba sztuk ograniczona; boty licytują razem z graczami.
+- **Dzisiejsze oferty** – codziennie 2 zestawy kostiumów i każdy ich element osobno (także wierzchowce).
+- ItemShop w grze zawsze loguje się na konto, na którym grasz, działa na dwóch kontach naraz i w trybie COOP. Nowe pozycje: Nowa Wola, Bilety Transmutacji, Szata Aury, Strony ekwipunku, Pety, Certyfikaty tytułów, Enasir, Pasza i Zestaw Opieki nad Koniem, Kamienie Ochrony / Mocy Żywiołów, Dusze reliktów, Spirale Czasu, skrzynie klas i inne.
+
+#### Hub wspierających, patcher, aktualizacje i monitoring
+- **Hub wspierających** (https://hub.metin2sp.pl) – przenoszenie postaci między serwerami Yohary: wizyta na innym serwerze i powrót do domu. Połączenie z hubem jest domyślnie włączone (tylko wychodzące, niczego nie pobiera; wyłączysz je `M2_TRANSFER_ENABLED=0`). Panel Seban → „Transfer postaci / HUB”.
+- **Patcher Yohary** – `MT2009-Yohara-Patcher.exe` doprowadza klienta Yohara do najnowszej wersji i naprawia uszkodzone pliki. Patcher 2.x nie działa w folderze Yohary.
+- **Automatyczne aktualizacje** – na Yoharze duży złoty przycisk **URUCHOM AUTOMATYCZNE AKTUALIZACJE**: kod wpisujesz raz, a launcher przy każdym starcie sam sprawdza i proponuje nową wersję. Przycisk pokazuje wtedy „AUTOMATYCZNE AKTUALIZACJE: WŁĄCZONE”, a kod można zmienić albo usunąć. Na VPS: `sudo sh linux-port/tools/vps-install.sh kod TWÓJ-KOD` – kolejne wersje instalują się same w nocy (domyślnie 4–6). Aktualizacje Yohary idą tylko z hubu – nigdy z GitHuba.
+- **Monitoring (dobrowolny)** – przełącznik w oknie automatycznych aktualizacji albo `vps-install.sh monitor on`: serwer co 5 minut wysyła do hubu krótki raport (czy działa, nowe błędy, awarie rdzenia, bez haseł), dzięki czemu szybciej widzę i naprawiam błędy. Domyślnie wyłączony.
+
+#### Boty na Yoharze
+- **Rozwój do Yohary** – boty 120 poziomu idą do Hydry w dobranych grupach, po wygranej do posągu, a potem jako Czempioni na mapy Sung Ma. Mapę wybierają po zmierzonym doświadczeniu Czempiona, trzymają się bezpiecznych miejsc i drużyn jednego żywiołu, używają buffów Sung Ma.
+- **Żywioły** – przed wejściem na mapę boty budują odporność na jej żywioł: zbroja, talizman, kostium, fryzura, eliksiry, Kamień Ochrony Żywiołów, Mały Żywiołak, a pod niższą mapę osobny, drugi zestaw (np. osobny ekwipunek na wiatr i na błyskawice). Odporność na następną mapę budują z wyprzedzeniem; 40% odporności otwiera im Loch Pająków, Grotę Wygnańców i Zaklęty Las wcześniej.
+- **Hydra** – drużyny po 6–8 botów, zawsze z Szamanem (najlepiej z Ninją Łucznikiem w polimorfii), do 100 botów na Hydrze ze wszystkich kanałów. 1–2 obrońców masztu na drużynę, reszta pomaga, gdy na maszcie robi się tłoczno; boty stoją poza linią ataku Hydry, oszczędzają deski na drugą falę i naprawiają maszt. Na odporność na lód kupują i przerabiają osobny Talizman Lodu, a Ninje uczą się polimorfii i trzymają kulki na Hydrę.
+- **Lochy Yohary** – boty-farmerzy robią drużynami Erebu, Szczeliny Czasu, lochy przebudzone, Świątynię Węży (wszystkie 7 poziomów), Głębie, Jaskinie Gnolli (drużyny po sześć z leczącym Szamanem), Schronienie Meley (14–16 botów, biją jaja i najbardziej poranione posągi), Kryptę Balathora i Labirynt. Zaklęty Las: pary expią 110–120, drużyny po 5 idą do bossa. Boty z Twojej drużyny wchodzą z Tobą do lochów Yohary. Na czas lochu boty dostają premie, żeby nadążały za graczem – same lochy i nagrody są takie same jak dla graczy.
+- **Ekwipunek i ulepszanie** – boty zbierają cały sprzęt Yohary: relikty, konie do 40 poziomu, zwierzaki (wykluwają, karmią, polują na materiały ewolucji), talizmany (krok po kroku, gdy tylko stać je na następny), szarfy (łuki dla klas fizycznych, wachlarze dla magicznych), biżuterię, broń od 75 poziomu. Sprzęt od 100 poziomu ulepszają tylko zwojami, które go nie niszczą.
+- **Bonusy** – boty uczą się całego systemu 6/7 od Groty Wygnańców, mają cele bonusów na każdy element ekwipunku, sprawdzają na polowaniu, czy obecne bonusy wystarczają, i dopiero wtedy miksują dalej. Marmur Błogosławieństwa, Kryształy Energii i alchemia (otwieranie Cor, uszlachetnianie kamieni) – tak jak gracz.
+- **ItemShop i Smocze Monety** – boty kupują tylko w ItemShopie V3 i tylko to, czego potrzebują, z dzienną i tygodniową pulą Smoczych Monet; grają też w Tombolę, licytują w Aukcji Błyskawicznej i kręcą Ruletką Dusz.
+- **Rynek botów** – uczciwa cena dla każdego rodzaju towaru (60–200% ceny wzorcowej, podąża za sprzedażą i zapasem), lada bez limitu pozycji, stoiska, które nie wygasają, i rynek na każdym kanale (boty wystawiają tam, gdzie grają, a kupują ze wszystkich kanałów – funkcja eksperymentalna). Przedmioty z bonusami wyceniają według jakości bonusów, kostiumy w SM według dni i bonusów, a słaby sprzęt w nadmiarze przepalają na Odłamki Energii.
+- **Farmerzy** – farmerzy odłamków (broń od handlarza → Odłamki Energii u Alchemika → lada), farmerzy ozdób (Spinki i Wstęgi z obozów Zaprzysiężonych), łowcy Metinów, zielarze (soki, wody, rosy, eliksiry) i **fish boty** – 5% botów łowi ryby całą dobę przy wodzie w pierwszej wiosce i sprzedaje połów na ladzie.
+- **Gospodarka** – boty otwierają małże i ryby, wymieniają perły, przerabiają owoce rangi u Uriela, dzielą się materiałami ulepszeń przez wspólną tablicę, przekazują yang swojej głównej postaci (dropki) i wiedzą, z jakiej mapy i potwora zdobyć to, czego brakuje na rynku.
+- **Śmierci i kanały** – boty wstają z 50% PŻ, uciekają w bezpieczne miejsce i wracają na spot, po wielu śmierciach schodzą na łatwiejszą mapę. Nie stoją AFK w miastach, nie są przenoszone między kanałami w walce ani w lochu, mają darmowe teleporty.
+- **Arena Koloseum i PVP Fan** – boty walczą na arenie z graczami, a w panelu Seban „PVP Fan” urządzisz wojny botów dla zabawy (kategorie klas, gotowe zestawy, wyniki).
+- Boty mówią w języku czytelnika, mają poziom Czempiona i ×100 PD Czempiona, a ich drop nie ma kary za różnicę poziomów (gracze bez zmian).
+
+#### Panele i serwer
+- **Panel zaawansowany i klasyczny** w 13 językach, edytor „Ustawienia serwera (.env)”, strony Boss Świata, Statystyki botów, Rynek – uczciwa cena, Aukcja Błyskawiczna, PVP Fan, edytor Kolekcjonera Najemników, Transfer postaci / HUB, ranking „Zbite Metiny”, Smocze Monety dla kont według progów.
+- **Edytor bazy danych** – grupy potworów, mnożniki obrażeń i umiejętności potworów, łowienie, „Stosy i handel”, ikony 31 883 przedmiotów, pliki klienta z Twoimi własnymi przedmiotami.
+- **Panel GM (F9)** w nowej wersji – pełna lista bonusów (także 6/7), szybki spawn według poziomów i Czempionów, teleporty Yohary, zakładka „Świat i eventy”.
+- Baza danych z większą pamięcią podręczną, logi trzymane 3 dni, rdzeń gry zapisuje pełny ślad błędu w crash.txt. Instalator VPS zatrzymuje stary serwer przed budową, zakłada plik wymiany i nie zawiesza VPS przy kompilacji.
+
+#### Co zniknęło albo zmieniło się względem 2.x
+- Bronie przebudzone i Rytuał Przebudzenia (zamienione na bronie 87 poziomu), stara Przełęcz (mapa 69), Zaczarowany Las z Arezzo (zastąpił go Zaklęty Las), juki konne (zamiast nich rozwój konia), stary system zwierzaków (przeniesiony do nowego), karta i quest wędkarski, receptury zielarstwa u Baek-Go, napełnianie eliksirów u Alchemika (Eliksiry Słońca i Księżyca są zawsze pełne), sklep Ah-Yu, Tarcza Trzech Władców i Spróchniała Skrzynia z dropu.
+- Towarzysz jest domyślnie wyłączony (`M2_SIDEKICK=1` go włącza).
+
+#### Podziękowania
+Za części Yohary dziękuję: **Digi Rasta** (Sesja farmienia, Panel GM, poprawki silnika, botów i paneli), **Vekirion** (filtr podnoszenia, sklepy offline), **Owsap** (Szata Aury, Transmutacja, ukrywanie kostiumów, wzór Meley), **dracaryS** (Krypta Balathora), **Nazox** (systemy gildii), **Best Studio** (Społeczność, Lokalizator NPC), **EREMIT STUDIO** (duże liczby w slotach) i **mur4s** (poprawki botów i Auto Łowów).
 
 ## 2.42.0 — 2026-11-06 — boty szybciej się rozwijają, mniej śmierci, rynek z sensownymi cenami
 

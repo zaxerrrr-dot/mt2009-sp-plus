@@ -19,6 +19,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -165,13 +167,31 @@ def main():
     hook = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
     if not hook:
         sys.exit("DISCORD_WEBHOOK_URL is not set (repository secret)")
-    for msg in msgs:
-        req = urllib.request.Request(hook + ("&" if "?" in hook else "?") + "wait=true",
-                                     data=json.dumps(msg).encode("utf-8"), method="POST",
-                                     headers={"Content-Type": "application/json",
-                                              "User-Agent": "mt2009-plus-release-notes"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            print(f"posted {version}: HTTP {resp.status}")
+    # A long changelog goes out whole, in order, as many messages as it needs
+    # (2.43.0: the whole of Yohara described). Discord's webhook allows about
+    # 5 requests in 2 s and 30 a minute per channel: one message every 2.5 s,
+    # and a 429 waits for its Retry-After and sends the same message again.
+    for n, msg in enumerate(msgs, 1):
+        if n > 1:
+            time.sleep(2.5)
+        for attempt in range(6):
+            req = urllib.request.Request(hook + ("&" if "?" in hook else "?") + "wait=true",
+                                         data=json.dumps(msg).encode("utf-8"), method="POST",
+                                         headers={"Content-Type": "application/json",
+                                                  "User-Agent": "mt2009-plus-release-notes"})
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    print(f"posted {version} {n}/{len(msgs)}: HTTP {resp.status}")
+                break
+            except urllib.error.HTTPError as e:
+                if e.code != 429 or attempt == 5:
+                    raise
+                try:
+                    wait = float(json.loads(e.read().decode("utf-8", "replace")).get("retry_after", 2))
+                except (ValueError, AttributeError):
+                    wait = float(e.headers.get("Retry-After") or 2)
+                print(f"rate limited at {n}/{len(msgs)}, waiting {wait:.1f} s")
+                time.sleep(min(60.0, wait + 0.5))
 
 
 if __name__ == "__main__":
