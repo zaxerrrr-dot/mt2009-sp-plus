@@ -1,13 +1,13 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-11-06T17:00:00Z",
- "statusMessage": "MT2009 PLUS 2.42.0: boty szybciej sie rozwijaja (blokady expa, materialy, ulepszanie), mniej smierci botow, rynek botow z sensownymi cenami. Klient bez zmian (2.0.71).",
+ "publishedAt": "2026-11-14T14:49:38Z",
+ "statusMessage": "MT2009 PLUS 2.43.0: odblokowana automatyczna aktualizacja do Yohary (przycisk AKTUALIZUJ DO YOHARY, kod wspierajacego z Discorda: !kod), nowy wyglad launchera. Klient bez zmian (2.0.71).",
  "server": {
-  "version": "2.42.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.42.0/metin2-server-update-2.42.0.zip",
-  "sha256": "AE58A6B3C24175766672F035B454884E6C967CB3DD9588F86598FADFF0A9D2EC",
-  "size": 117108051
+  "version": "2.43.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.43.0/metin2-server-update-2.43.0.zip",
+  "sha256": "EC0C7E26DF5060AA7154DA3432F4EA6141296C57483B21FF2EB202E1D26FF199",
+  "size": 117949158
  },
  "client": {
   "version": "2.0.71",
