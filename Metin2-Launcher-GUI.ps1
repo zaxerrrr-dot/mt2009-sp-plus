@@ -813,14 +813,21 @@ function Set-ActionPhase {
     # A build step is a phase of its own for the clock: "game builder" is the
     # same name for its three steps, and the one that takes the time is the
     # compile in the middle.
-    param([Parameter(Mandatory = $true)][string]$Phase, [int]$Step = 0, [int]$Total = 0, [string]$Label = '')
+    param([Parameter(Mandatory = $true)][string]$Phase, [int]$Step = 0, [int]$Total = 0, [string]$Label = '', [switch]$Progress)
     if ($script:activePhase -ne $Phase -or $script:activePhaseStep -ne $Step) {
+        # MT2009_PLUS_UPDATE_PROGRESS_V1: movement again after the stall
+        # notice - said once, and the next stall may be reported anew.
+        if ($script:activeStallNoticed) {
+            $script:activeStallNoticed = $false
+            Write-LocalLog ('Postęp wznowiony: {0}.' -f $Phase)
+        }
         $script:activePhase = $Phase
         $script:activePhaseSince = Get-Date
     }
     $script:activePhaseStep = $Step
     $script:activePhaseTotal = $Total
     $script:activePhaseLabel = $Label
+    $script:activePhaseProgress = [bool]$Progress
 }
 
 function Get-BuildStepLabel {
@@ -872,6 +879,13 @@ function Update-ActionPhase {
         $script:activeLowMemory = $true
         return
     }
+    # MT2009_PLUS_UPDATE_PROGRESS_V1: "[postep] NAME|DONE|TOTAL|EXTRA" from the
+    # module (download in MB with its speed, unpack and copy in files).
+    if ($Line -match '^\[postep\]\s*([^|]+)\|(\d+)\|(\d+)\|(.*)$') {
+        if ([int]$Matches[3] -gt 0) { Set-ActionPhase $Matches[1].Trim() ([int]$Matches[2]) ([int]$Matches[3]) $Matches[4].Trim() -Progress }
+        else { Set-ActionPhase ('{0} {1} {2}' -f $Matches[1].Trim(), $Matches[2], $Matches[4].Trim()) }
+        return
+    }
     if ($Line -match '^\[faza\]\s*(.+?)\s*(\(|$)') {
         Set-ActionPhase $Matches[1]
         return
@@ -913,7 +927,10 @@ function Update-ActionStatusText {
         # every image built before this one, so it cannot say whether the
         # compile has been going for one minute or for ten.
         $inStep = if ($script:activePhaseSince) { (Get-Date) - $script:activePhaseSince } else { [TimeSpan]::Zero }
-        if ($script:activePhaseLabel) { $text += ' — {0} {1}' -f $script:activePhaseLabel, (Format-StepClock -Span $inStep) }
+        # A module progress line ([postep]) moves every few seconds: its own
+        # words (MB/s, time left) and no step clock.
+        if ($script:activePhaseProgress) { if ($script:activePhaseLabel) { $text += ' — {0}' -f $script:activePhaseLabel } }
+        elseif ($script:activePhaseLabel) { $text += ' — {0} {1}' -f $script:activePhaseLabel, (Format-StepClock -Span $inStep) }
         else { $text += ' {0}' -f (Format-StepClock -Span $inStep) }
         if ($script:activePhaseLabel -eq 'kompilacja rdzenia gry') {
             $long = $inStep.TotalSeconds -ge $script:activeCompileHintSeconds
@@ -965,7 +982,7 @@ function Update-ActionStream {
         foreach ($line in ($complete -split '\r?\n')) {
             if (-not $line.Trim()) { continue }
             Update-ActionPhase -Line $line
-            if ($line -match $script:M2_NOISY_BUILD) { Write-LocalLog $line -FileOnly }
+            if ($line -match $script:M2_NOISY_BUILD -or $line -match '^\[postep\]') { Write-LocalLog $line -FileOnly }
             else { Write-LocalLog $line }
         }
     }
@@ -2592,6 +2609,7 @@ function Start-LauncherAction {
     # The game core's compile: its label, the minute a slow one gets a word in
     # the log, and whether the build said the Docker VM is short of memory.
     $script:activePhaseLabel = ''
+    $script:activePhaseProgress = $false
     $script:activeCompileHintSeconds = 600
     $script:activeCompileHintNoticed = $false
     $script:activeLowMemory = $false
@@ -2906,7 +2924,10 @@ function Update-VersionFooter {
     $latestText = if ($script:latestServerVersion) { $script:latestServerVersion }
         elseif ($script:latestVersionChecked) { 'nie udalo sie sprawdzic' }
         else { 'sprawdzanie...' }
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: the supporters' hub carries no client -
+    # Yohara has its own client and patcher.
     $latestClientText = if ($script:latestClientVersion) { $script:latestClientVersion }
+        elseif ([string](Get-M2UpdateSource) -eq 'hub') { 'osobny klient Yohara (patcher)' }
         elseif ($script:latestVersionChecked) { 'nie udalo sie sprawdzic' }
         else { 'sprawdzanie...' }
     # Three lines, asked for on the Discord: the server, the launcher itself

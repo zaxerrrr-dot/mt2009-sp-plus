@@ -1216,6 +1216,71 @@ function New-M2AccessDeniedError {
     return ($lines -join [Environment]::NewLine)
 }
 
+# MT2009_PLUS_UPDATE_PROGRESS_V1 (14 November 2026): the long parts of an
+# update say how far they are. "[postep] NAME|DONE|TOTAL|EXTRA" lines go to the
+# action's output (at most one per label every 3 s); the window reads them as
+# phase progress (bar, percent), so a slow download or unpack is never taken
+# for a stall. The first 2.43.0 test on Windows: 284 s of a silent 242 MB
+# download raised "nic się nie zmienia" half-way through.
+$script:M2ProgressClock = $null
+$script:M2ProgressLabel = ''
+function Write-M2Progress {
+    param([Parameter(Mandatory = $true)][string]$Label, [long]$Done, [long]$Total, [string]$Extra = '', [switch]$Force)
+    if (-not $script:M2ProgressClock -or $script:M2ProgressLabel -ne $Label) {
+        $script:M2ProgressClock = [Diagnostics.Stopwatch]::StartNew()
+        $script:M2ProgressLabel = $Label
+        $Force = $true
+    }
+    if (-not $Force -and $script:M2ProgressClock.ElapsedMilliseconds -lt 3000) { return }
+    $script:M2ProgressClock.Restart()
+    Write-Host ('[postep] {0}|{1}|{2}|{3}' -f $Label, $Done, $Total, $Extra)
+}
+
+function Save-M2HttpDownload {
+    # One HTTP(S) download streamed to a file with its progress in MB, %, MB/s
+    # and the time left. Invoke-WebRequest -OutFile on Windows PowerShell 5.1
+    # draws its progress bar for every block it reads, which held the first
+    # Yohara download from the hub at 0.85 MB/s on a line that does far more.
+    param(
+        [Parameter(Mandatory = $true)][string]$Url,
+        [Parameter(Mandatory = $true)][string]$Destination,
+        [int]$TimeoutSec = 60,
+        [string]$Label = 'pobieranie paczki (MB)'
+    )
+    try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+    $request = [Net.HttpWebRequest]::Create($Url)
+    $request.UserAgent = 'mt2009-launcher/2'
+    $request.Timeout = $TimeoutSec * 1000
+    $request.ReadWriteTimeout = 120000
+    $request.AllowAutoRedirect = $true
+    $response = $request.GetResponse()
+    try {
+        $total = [long]$response.ContentLength
+        $totalMb = if ($total -gt 0) { [int][Math]::Ceiling($total / 1MB) } else { 0 }
+        $stream = $response.GetResponseStream()
+        $output = [IO.File]::Open($Destination, [IO.FileMode]::Create, [IO.FileAccess]::Write, [IO.FileShare]::None)
+        try {
+            $buffer = New-Object byte[] (1MB)
+            $done = [long]0
+            $clock = [Diagnostics.Stopwatch]::StartNew()
+            Write-M2Progress -Label $Label -Done 0 -Total $totalMb -Force
+            while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+                $output.Write($buffer, 0, $read)
+                $done += $read
+                $seconds = [Math]::Max(0.1, $clock.Elapsed.TotalSeconds)
+                $speed = $done / 1MB / $seconds
+                $left = ''
+                if ($total -gt 0 -and $speed -gt 0) { $left = ', zostało ~{0}' -f ([TimeSpan]::FromSeconds([int](($total - $done) / 1MB / $speed))).ToString('m\:ss') }
+                Write-M2Progress -Label $Label -Done ([int]($done / 1MB)) -Total $totalMb -Extra ('{0:N1} MB/s{1}' -f $speed, $left)
+            }
+            if ($total -gt 0 -and $done -ne $total) { throw ('Pobieranie przerwane: {0:N1} z {1:N1} MB.' -f ($done / 1MB), ($total / 1MB)) }
+            Write-M2Progress -Label $Label -Done $totalMb -Total $totalMb -Extra ('{0:N1} MB/s' -f ($done / 1MB / [Math]::Max(0.1, $clock.Elapsed.TotalSeconds))) -Force
+        }
+        finally { $output.Dispose(); $stream.Dispose() }
+    }
+    finally { $response.Close() }
+}
+
 function Get-M2Download {
     param(
         [Parameter(Mandatory = $true)][string]$Source,
@@ -1261,7 +1326,7 @@ function Get-M2Download {
                 $noticeShown = $true
             }
             try {
-                Invoke-WebRequest -Uri $sources[$index] -OutFile $Destination -UseBasicParsing -TimeoutSec $timeout
+                Save-M2HttpDownload -Url $sources[$index] -Destination $Destination -TimeoutSec $timeout
                 if ($expected) {
                     $actual = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash.ToUpperInvariant()
                     if ($actual -ne $expected) {
@@ -1297,7 +1362,11 @@ function Expand-M2SafeZip {
     $root = [IO.Path]::GetFullPath($Destination).TrimEnd('\') + '\'
     $archive = [IO.Compression.ZipFile]::OpenRead($ArchivePath)
     try {
+        $entryCount = $archive.Entries.Count
+        $entryIndex = 0
         foreach ($entry in $archive.Entries) {
+            $entryIndex++
+            Write-M2Progress -Label 'rozpakowywanie paczki (pliki)' -Done $entryIndex -Total $entryCount
             $relative = $entry.FullName.Replace('/', '\').TrimStart('\')
             if (-not $relative) { continue }
             if ([IO.Path]::IsPathRooted($relative) -or $relative.Split('\') -contains '..') {
@@ -1403,8 +1472,10 @@ function Invoke-M2PackageUpdate {
         $downloadMb = [Math]::Round((Get-Item -LiteralPath $download).Length / 1MB, 1)
         Write-Host ("[faza] pakiet pobrany i sprawdzony: {0} MB w {1} s" -f $downloadMb, [int]$downloadWatch.Elapsed.TotalSeconds) -ForegroundColor DarkCyan
 
+        Write-Host '[faza] rozpakowywanie paczki' -ForegroundColor DarkCyan
         Expand-M2SafeZip -ArchivePath $download -Destination $expanded
         $files = @(Get-ChildItem -LiteralPath $expanded -Recurse -File -Force)
+        Write-Host ('[faza] porównywanie plików ({0})' -f $files.Count) -ForegroundColor DarkCyan
         if ($files.Count -eq 0) { throw 'Pakiet aktualizacji jest pusty.' }
 
         $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -1412,7 +1483,10 @@ function Invoke-M2PackageUpdate {
         New-Item -ItemType Directory -Path $backup -Force | Out-Null
 
         $changes = @()
+        $fileIndex = 0
         foreach ($file in $files) {
+            $fileIndex++
+            Write-M2Progress -Label 'porównywanie plików' -Done $fileIndex -Total $files.Count
             $relative = $file.FullName.Substring($expanded.Length).TrimStart('\')
             if (Test-M2ProtectedPath -RelativePath $relative) {
                 throw "Pakiet próbuje zmienić chroniony plik: $relative"
@@ -1437,7 +1511,11 @@ function Invoke-M2PackageUpdate {
             }
         }
 
+        Write-Host ('[faza] kopia zapasowa i podmiana {0} plików' -f $changes.Count) -ForegroundColor DarkCyan
+        $changeIndex = 0
         foreach ($change in $changes) {
+            $changeIndex++
+            Write-M2Progress -Label 'kopia zapasowa plików' -Done $changeIndex -Total $changes.Count
             if ($change.Existed) {
                 $backupFile = Join-Path $backup $change.Relative
                 New-Item -ItemType Directory -Path (Split-Path -Parent $backupFile) -Force | Out-Null
@@ -1452,7 +1530,10 @@ function Invoke-M2PackageUpdate {
         # how carefully the copy loop had named the cause.
         $applied = @()
         try {
+            $changeIndex = 0
             foreach ($change in $changes) {
+                $changeIndex++
+                Write-M2Progress -Label 'podmiana plików serwera' -Done $changeIndex -Total $changes.Count
                 New-Item -ItemType Directory -Path (Split-Path -Parent $change.Destination) -Force | Out-Null
                 try {
                     Invoke-M2FileRetry { Copy-Item -LiteralPath $change.Source -Destination $change.Destination -Force }

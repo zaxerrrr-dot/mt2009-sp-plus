@@ -38,6 +38,9 @@ Kolejne wersje Yohary launcher pobiera już sam, bez wpisywania kodu. Do gry na 
 
 W menu tekstowym launchera to opcja **43**.
 
+### Pobieranie aktualizacji
+- Aktualizacje pobierają się szybciej, a launcher pokazuje postęp: pobrane MB, procent, prędkość i pozostały czas, potem rozpakowywanie i podmianę plików. Ostrzeżenie „nic się nie zmienia” nie pojawia się już w trakcie długiego pobierania.
+
 ### Serwer na VPS
 - W oknie VPS launchera nowy przycisk **AKTUALIZUJ VPS DO YOHARY** – serwer na VPS sam wpisuje kod, pobiera Yoharę i przebudowuje się.
 - Bez launchera, na VPS w folderze serwera: `sudo sh linux-port/tools/vps-install.sh yohara TWÓJ-KOD` (najpierw kopia bazy do `backups/`).

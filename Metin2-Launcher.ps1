@@ -898,6 +898,23 @@ function Show-UpdateStatus {
     Write-Host "Zainstalowany serwer: $($state.server)" -ForegroundColor Gray
     Write-Host "Dostępny serwer:     $(if ($serverComponent) { $serverComponent.version } else { 'brak w tym kanale' })" -ForegroundColor Cyan
     Write-Host "Zainstalowany klient: $($state.client)" -ForegroundColor Gray
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: the supporters' hub carries the server
+    # only - Yohara has its own client and its own patcher, never this
+    # launcher's client update. The hub may name them ("yoharaClient":
+    # {"version", "patcher", "note"}); otherwise this says what to use.
+    if (-not $clientComponent -and (Get-M2UpdateSource) -eq 'hub') {
+        $yc = $RemoteManifest.PSObject.Properties['yoharaClient']
+        $ycVersion = ''; $ycLink = ''; $ycNote = ''
+        if ($yc -and $yc.Value) {
+            $field = $yc.Value.PSObject.Properties['version']; if ($field) { $ycVersion = [string]$field.Value }
+            $field = $yc.Value.PSObject.Properties['patcher']; if ($field -and [string]$field.Value -match '^https://') { $ycLink = [string]$field.Value }
+            $field = $yc.Value.PSObject.Properties['note']; if ($field) { $ycNote = [string]$field.Value }
+        }
+        Write-Host ("Klient Yohara:        {0}osobny klient Yohara z własnym patcherem (MT2009-Yohara-Patcher.exe) - ten launcher go nie aktualizuje" -f $(if ($ycVersion) { $ycVersion + ' - ' } else { '' })) -ForegroundColor Cyan
+        if ($ycLink) { Write-Host ("Patcher klienta Yohara: {0}" -f $ycLink) -ForegroundColor Cyan }
+        if ($ycNote) { Write-Host $ycNote -ForegroundColor Gray }
+        return
+    }
     Write-Host "Dostępny klient:      $(if ($clientComponent) { $clientComponent.version } else { 'brak w tym kanale' })" -ForegroundColor Cyan
 }
 
