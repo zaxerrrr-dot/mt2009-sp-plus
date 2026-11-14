@@ -198,6 +198,8 @@ function Register-M2SupporterCode {
     if ($key -notmatch '^[A-Za-z0-9_-]{32,64}$') { throw 'Hub wspierających odpowiedział bez klucza instalacji. Spróbuj ponownie za chwilę.' }
     Set-M2SupporterEnvValue -EnvPath $settings.EnvPath -Name 'M2_SUPPORTER_HUB' -Value $settings.Hub
     Set-M2SupporterEnvValue -EnvPath $settings.EnvPath -Name 'M2_SUPPORTER_KEY' -Value $key
+    # the code's last four characters for the Yohara launcher's button (never the code itself)
+    try { [IO.File]::WriteAllText((Join-Path $ServerRoot '.m2launcher-supporter-code'), $clean.Substring($clean.Length - 4)) } catch { }
     [pscustomobject]@{
         Message = [string]$answer.message
         Channel = [string]$answer.channel

@@ -157,7 +157,7 @@ if (Test-Path -LiteralPath $reportModulePath -PathType Leaf) { Import-Module $re
 function Write-Header {
     Clear-Host
     Write-Host '========================================================' -ForegroundColor DarkYellow
-    Write-Host '  Metin2 Singleplayer - Launcher i aktualizacje' -ForegroundColor Yellow
+    Write-Host '  MT2009 PLUS - Launcher i aktualizacje' -ForegroundColor Yellow
     Write-Host '========================================================' -ForegroundColor DarkYellow
     Write-Host ''
 }

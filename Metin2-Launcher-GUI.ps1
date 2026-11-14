@@ -280,7 +280,7 @@ function Get-LauncherConfig {
 # strings and are not covered by this switch.
 $script:Strings = @{
     pl = @{
-        formTitle    = 'Metin2 Singleplayer Playerbots - All in One'
+        formTitle    = 'MT2009 PLUS - Singleplayer Playerbots'
         title        = 'METIN2 SINGLEPLAYER - PLAYERBOTS'
         subtitle     = 'Prosty launcher: Docker, serwer, klient, aktualizacje i diagnostyka w jednym miejscu.'
         install      = '1. ZAINSTALUJ / PRZYGOTUJ'
@@ -346,8 +346,8 @@ $script:Strings = @{
         clientLangTitle = 'Język gry'
         clientLangAsk = "Launcher jest po angielsku, a klient gry po polsku.`r`n`r`nPrzełączyć klienta gry na angielski? Język można potem zmienić na ekranie logowania (Ustawienia)."
         clientLangDone = 'Klient gry uruchomi się po angielsku.'
-        clientPickTitle = 'Wybierz plik uruchamiający klienta Metin2'
-        clientPickFilter = 'Program klienta Metin2 (*.exe)|*.exe|Wszystkie pliki (*.*)|*.*'
+        clientPickTitle = 'Wybierz plik uruchamiający klienta gry'
+        clientPickFilter = 'Program klienta gry (*.exe)|*.exe|Wszystkie pliki (*.*)|*.*'
         clientNotChosen = 'Nie wybrano klienta. Użyj przycisku „Wybierz klienta”.'
         clientStartFailed = 'Nie udało się uruchomić klienta'
         patcherRun = 'Aktualizacja przez patcher...'
@@ -361,7 +361,7 @@ $script:Strings = @{
         clientMissing = "W folderze klienta nie ma już pliku {0}. Najczęściej zabiera go program antywirusowy: Windows Defender potrafi uznać klienta za zagrożenie (np. Trojan:Script/Wacatac). To fałszywy alarm: plik nie ma podpisu cyfrowego, więc ocenia go heurystyka.`r`n`r`nCo zrobić: Zabezpieczenia Windows > Ochrona przed wirusami i zagrożeniami > Historia ochrony > wpis z {0} > Akcje > Przywróć. Potem dodaj folder klienta do wykluczeń: Ochrona przed wirusami i zagrożeniami > Zarządzaj ustawieniami > Wykluczenia > Dodaj wykluczenie > Folder. Na koniec kliknij GRAJ jeszcze raz.`r`n`r`nJeśli przeniosłeś klienta w inne miejsce, wskaż go przyciskiem WYBIERZ KLIENTA."
     }
     en = @{
-        formTitle    = 'Metin2 Singleplayer Playerbots - All in One'
+        formTitle    = 'MT2009 PLUS - Singleplayer Playerbots'
         title        = 'METIN2 SINGLEPLAYER - PLAYERBOTS'
         subtitle     = 'One launcher: Docker, the server, the client, updates and diagnostics in one place.'
         install      = '1. INSTALL / PREPARE'
@@ -427,8 +427,8 @@ $script:Strings = @{
         clientLangTitle = 'Game language'
         clientLangAsk = "The launcher is in English, but the game client is set to Polish.`r`n`r`nSwitch the game client to English? You can change it later on the login screen (Settings)."
         clientLangDone = 'The game client will start in English.'
-        clientPickTitle = 'Choose the Metin2 client program'
-        clientPickFilter = 'Metin2 client program (*.exe)|*.exe|All files (*.*)|*.*'
+        clientPickTitle = 'Choose the game client program'
+        clientPickFilter = 'Game client program (*.exe)|*.exe|All files (*.*)|*.*'
         clientNotChosen = 'No client chosen. Use the "CHOOSE CLIENT" button.'
         clientStartFailed = 'Could not start the client'
         patcherRun = 'Updating through the patcher...'
@@ -694,7 +694,7 @@ function Start-ConfiguredClient {
     if (-not $executable) {
         [Windows.Forms.MessageBox]::Show(
             (T 'clientNotChosen'),
-            'Metin2 Playerbots', 'OK', 'Information') | Out-Null
+            'MT2009 PLUS', 'OK', 'Information') | Out-Null
         return
     }
     # The full packages' two stray executables go, and a launcher that started
@@ -2701,7 +2701,7 @@ function Install-Or-Prepare {
         $shortcut = $shell.CreateShortcut($shortcutPath)
         $shortcut.TargetPath = Join-Path $root 'Metin2-Launcher-GUI.bat'
         $shortcut.WorkingDirectory = $root
-        $shortcut.Description = 'Metin2 Singleplayer Playerbots'
+        $shortcut.Description = 'MT2009 PLUS - Singleplayer Playerbots'
         $shortcut.Save()
         Write-LocalLog 'Sprawdzono paczkę i utworzono skrót na pulpicie.'
     }
@@ -2979,6 +2979,8 @@ function Write-UpdateSourceNotice {
     if (-not $source -or $source -eq 'github') { return }
     if ($script:lastUpdateSourceNotice -eq $source) { return }
     $script:lastUpdateSourceNotice = $source
+    # MT2009_PLUS_YOHARA_UPGRADE_V1: the supporters' hub is not a fallback.
+    if ($source -eq 'hub') { Write-LocalLog 'Aktualizacje Yohary: hub wspierających (kod zapisany).'; return }
     Write-LocalLog "GitHub niedostępny - pobieram z serwera zapasowego ($source)."
 }
 
@@ -4010,6 +4012,7 @@ $panelButton.Add_Click({
 # action UpdateYohara (Metin2-Launcher.ps1), with its progress in the log.
 # -ForVps only collects the code: the VPS enters it in the hub itself, as its
 # own install (its own slot).
+$script:YoharaDialogPreview = $false
 function Get-YoharaText([string]$Pl, [string]$En) {
     if ($script:Lang -eq 'en') { return $En }
     return $Pl
